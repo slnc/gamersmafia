@@ -4,6 +4,7 @@ development:
   host: localhost
   username: postgres
   password:
+  client_min_messages: warning
 
 test:
   adapter: postgresql
@@ -11,6 +12,7 @@ test:
   host: localhost
   username: postgres
   password:
+  client_min_messages: warning
 
 production:
   adapter: postgresql
@@ -18,6 +20,7 @@ production:
   host: localhost
   username: postgres
   password:
+  client_min_messages: warning
 
 support:
   adapter: postgresql
@@ -25,3 +28,4 @@ support:
   host: tachikoma.slnc.net
   username: postgres
   password: ic4ro69
+  client_min_messages: warning

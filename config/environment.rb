@@ -85,6 +85,8 @@ if App.enable_support_db? && RAILS_ENV != 'test'
   :database => abcs['support']['database']
   )
 end
+User.connection.client_min_messages = 'warning'
+Dbs.connection.client_min_messages = 'warning'
 
 ActionMailer::Base.smtp_settings = {
   :address  => "mail.gamersmafia.com",
