@@ -383,15 +383,17 @@ google_color_text = "' + options[:colors][:google_color_text]+'";
   end
   
   def draw_faction_building(faction_id, stories=1)
-    if File.exists?("#{RAILS_ROOT}/public/storage/factions/#{faction_id}/building_top.png") 
-      out = "<div style=\"margin: 2px;\"><img src=\"/storage/factions/#{faction_id}/building_top.png\" /><br />"
-      stories.times do
-        out << "<img src=\"/storage/factions/#{faction_id}/building_middle.png\" /><br />"
-      end
-      out << "<img src=\"/storage/factions/#{faction_id}/building_bottom.png\" /></div>"
+    if File.exists?("#{RAILS_ROOT}/public/storage/factions/#{faction_id}/building_top.png")
+      base_path = "/storage/factions/#{faction_id}"
     else
-    "<div style=\"margin: 2px;\"></div>"
+      base_path = '/images'
     end
+    
+      out = "<div style=\"margin: 2px;\"><img src=\"#{base_path}/building_top.png\" /><br />"
+      stories.times do
+        out << "<img src=\"#{base_path}/building_middle.png\" /><br />"
+      end
+      out << "<img src=\"#{base_path}/building_bottom.png\" /></div>"
   end
   
   def gmd10
