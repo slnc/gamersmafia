@@ -251,20 +251,20 @@ if prev_nicks.size > 0 then %>
 <% end # cache -%>
   <div style="clear: left;"></div>
   <% s = @curuser.hstate 
-     if s == 'disabled' then %>
+     if s == 'disabled' && !@curuser.is_bot? then %>
 	 <div class="warning">
 	 	Esta cuenta está <strong>deshabilitada</strong>.
 	 </div>
-  <% elsif s == 'deleted' then %>
+  <% elsif s == 'deleted'  && !@curuser.is_bot? then %>
      <div class="warning">Este usuario ha sido <strong>eliminado</strong> del sistema.</div>
-  <% elsif s == 'banned' then %>
+  <% elsif s == 'banned'  && !@curuser.is_bot? then %>
   	 <div class="warning">Este usuario está <strong>baneado</strong>.</div>
   <% elsif @curuser.antiflood_level > -1 then %>
   <div class="warning">    
     <p>Este usuario es un <strong>flooder <%=User::ANTIFLOOD_LEVELS[@curuser.antiflood_level]%></strong>. Su
     capacidad para comentar en la web está limitada.</p>
 	 </div>
-  <% elsif s == 'zombie' then %>
+  <% elsif s == 'zombie'  && !@curuser.is_bot? then %>
   	 <div class="warning">Este usuario es un <strong>zombie</strong>, hace más de 3 meses que no da señales de vida. 
 	 </div>
   <% end %>
