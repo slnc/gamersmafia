@@ -22,6 +22,7 @@ namespace :test do
     #`find /home/slnc/bamboo/xml-data/build-dir/GM-TRUNK/public/storage/ -type f -exec rm {} \\;`
     `git submodule init`
     `git submodule update`
+    `git checkout staging`
     Rake::Task['db:test:real_prepare'].invoke
     Rake::Task['gm:update_default_skin_styles'].invoke
     Rake::Task['ci:setup:testunit'].invoke
