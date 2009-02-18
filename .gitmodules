@@ -4,3 +4,6 @@
 [submodule "plugins"]
 	path = plugins
 	url = https://balrog.slnc.net/vendor_plugins.git
+[submodule "vendor/plugins"]
+	path = vendor/plugins
+	url = https://balrog.slnc.net/vendor_plugins.git

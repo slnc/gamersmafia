@@ -17,8 +17,11 @@ end
 namespace :test do
   desc "Lanza las tasks necesarias para ejecutar todos los tests en bamboo"
   task :bamboo_launch do
+
     #`exec rm -r #{RAILS_ROOT}/public/storage/*` if `hostname`.strip == 'white'
     #`find /home/slnc/bamboo/xml-data/build-dir/GM-TRUNK/public/storage/ -type f -exec rm {} \\;`
+    `git submodule init`
+    `git submodule update`
     Rake::Task['db:test:real_prepare'].invoke
     Rake::Task['gm:update_default_skin_styles'].invoke
     Rake::Task['ci:setup:testunit'].invoke
