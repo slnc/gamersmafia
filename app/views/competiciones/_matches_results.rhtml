@@ -1,0 +1,19 @@
+<table>
+<% for cm in matches
+  if cm.result == 1
+    p1_class = p2_class = 'match-tie'
+  else
+    p1_class = (cm.result == 0) ? 'match-won' : 'match-lost'
+    p2_class = (cm.result == 2) ? 'match-won' : 'match-lost'
+  end
+  c = cm.competition
+  %>
+    <tr class="<%=oddclass%>">
+      <td style="font-size: 11px;"><a href="/competiciones/partida/<%=cm.id%>"><%=match_vs_name(cm)%></a>
+        <div class="infoinline"><div style="float: left; margin-right: 2px;"><%=faction_favicon(c.game)%></div> <a href="/competiciones/show/<%=c.id%>"><%=truncate(c.name, 25, '..')%></a></div>
+      </td>
+      <td class="<%=p1_class%>"><%=cm.score_participant1%></td>
+      <td class="<%=p2_class%>"><%=cm.score_participant2%></td>
+    </tr>
+  <% end -%>
+</table>

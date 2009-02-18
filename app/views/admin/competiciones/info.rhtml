@@ -1,0 +1,26 @@
+<% content_support do %>
+  <div class="subheader first"><div>Acciones</div></div>
+  <% if @competition.can_be_deleted? then %>
+  <form method="post" action="/admin/competiciones/destroy">
+    <input type="hidden" name="id" value="<%=@competition.id%>" />
+    <div class="centered-link"><input type="submit" class="button" value="Eliminar" onclick="return confirm('¿Estás seguro?');" /></div>
+  </form>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+  <%mftext(@competition.name) do %>
+  <table>
+    <% @competition.competitions_logs_entries.each do |cle| %>
+      <tr class="<%=oddclass%>">
+        <td class="timestamp infoinline"><%= print_tstamp(cle.created_on) %></td>
+        <td><%= cle.message %></td>
+      </tr>
+    <% end %>
+    <tr class="<%=oddclass%>">
+      <td class="timestamp infoinline"><%= print_tstamp(@competition.created_on) %></td>
+      <td>Competición creada</td>
+    </tr>
+  </table>
+<% end -%>
+<% end -%>

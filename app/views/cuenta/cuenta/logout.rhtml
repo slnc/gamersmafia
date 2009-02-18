@@ -1,0 +1,29 @@
+<div id="notice">Sesión finalizada correctamente.</div>
+
+<% 
+# TODO mostrar avatar de personalidades
+phrases = [['Te echaremos de menos.', 'MrGod'],
+           ['Vuelve pronto.', 'MrCheater'],
+           ['En el fondo nos caes bien.', 'MrCheater'],
+           ['Nosotros somos tus amigos de verdad, ¡no lo olvides!', 'MrCheater'],
+           ['Al final todos vuelven..', 'MrGod'],
+           ['Demasiado tarde, ya nos hemos introducido en tu subconsciente y controlamos tus hábitos de navegación.', 'MrGod'],
+           ['¿Pero a dónde vas a ir hombre/mujer de dios?', 'MrGod'],
+           ['Solo aquí estarás a salvo de la SGAE, recuérdalo.', 'MrGod'],
+           ['Deja el mundo real para la gente aburrida!', 'MrCheater'],
+           ['Sabemos desde donde conectas. Te estaremos vigilando.', 'MrGod'],
+           ['Te he enseñado todo lo que sé. Ya estás listo para enfrentarte al mundo real joven padawan. Que la fuerza te acompañe.', 'MrCheater']]
+
+ rnd = phrases[Kernel.rand(phrases.size-1)]
+ %>
+ <br />
+ <br />
+ <div style="padding: 20px;"><a href="<%=gmurl(rnd[1])%>"><%=rnd[1]%></a>: <strong><%=rnd[0]%></strong></div>
+
+ <div class="infoinline">Este mensaje se autodestruirá en 6 segundos.</div>
+<script type="text/javascript">
+function remove() {
+	document.location.href='/';
+}
+setTimeout(remove, 6000);
+</script>

@@ -1,0 +1,26 @@
+<% content_support do %>
+	<% mftext('Comprar nuevo canal') do %>
+	<div class="centered-link"><strong><a href="/cuenta/tienda">Ir a la tienda</a></strong></div>
+	<% end -%>
+<% end -%>
+	
+<% content_main do %>
+	<% mftext('Mis canales GMTV') do %>
+<table>
+	<tr class="<%=oddclass%>">
+		<th class="w25">Canal</th>
+		<th></th>
+		<th class="centered">Tipo</th>
+		<th class="centered"></th>
+	</tr>
+	<% @user.gmtv_channels.find(:all, :order => 'id ASC').each do |gmtvc| %>
+	<tr class="<%=oddclass%>">
+		<td class="centered"><%=gmtvc.id%></td>
+		<td><% if gmtvc.file.to_s != '' then%><%=flash_obj(:url => "/#{gmtvc.file}", :width => '100%', :height => '61px', :name => 'gmtvc')%><% else %><div class="infoinline centered">Canal no configurado</div><% end -%></td>
+		<td class="centered"><%=gmtvc.faction_id ? "Local<br /> (#{gmtvc.faction.name})" : 'Global'%></td>
+		<td class="centered"><a href="/cuenta/mis_canales/editar/<%=gmtvc.id%>">Editar</a></td>
+	</tr>
+	<% end -%>
+</table>
+<% end -%>
+<% end -%>

@@ -1,0 +1,1 @@
+find app/views/ -name *.rhtml -exec grep -c "\n" {} \; > sum_views.txt

@@ -1,0 +1,98 @@
+#cpagein.w760 {
+    width: 760px;
+}
+
+#cpagein.w984 {
+    width: 984px;
+}
+
+#cright {
+    float: right;
+    width: 150px;
+}
+
+#cmain {
+	margin-right: 0;
+}
+
+#csupport {
+	display: none;
+	visibility: hidden;
+}
+
+body.lycolumns2-left #ccontent {
+    margin-left: 155px;
+}
+
+body.lycolumns2-right #ccontent {
+    margin-right: 155px;
+}
+
+body.lycolumns3 #ccontent {
+    margin: 0 155px;
+}
+
+body.lycolumns2-left #cright {
+    display: none;
+    visibility: hidden
+}
+
+body.lycolumns2-right #cleft {
+    display: none;
+    visibility: hidden
+}
+
+#cpagein.w760 #ccontent {
+    width: 450px;
+}
+
+#cpagein.w984 #ccontent {
+    width: 810px;
+}
+
+body.lycolumns3 #cpagein.w760 #ccontent {
+    width: 440px;
+}
+
+body.lycolumns3 #cpagein.w984 #ccontent {
+    width: 660px;
+}
+/**
+ * Clan menú
+ */
+#mgclanmenu {
+    height: 40px;
+	line-height: 40px;
+	margin-bottom: 0;
+}
+
+#mgclanmenu ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#mgclanmenu li {
+    float: left;
+    margin: 0 10px;
+}
+/**
+ * Clan submenú
+ */
+#mgclansubmenu { margin-bottom: 0; }
+#mgclansubmenu ul {
+    list-style: none;
+    height: 22px;
+}
+
+#mgclansubmenu li {
+    float: left;
+    margin: 0 10px;
+}
+
+
+#mgbreadcrumb ul { margin-left: 10px; }
+
+#mggmtv {
+		height: 65px;
+}

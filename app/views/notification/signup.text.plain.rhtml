@@ -1,0 +1,15 @@
+Hola <%= @recipient%>,
+
+Para completar el proceso de registro debes confirmar tu nueva cuenta.
+
+La clave de validación es:
+
+<%= @recipient.validkey %>
+
+También puedes completar la activación visitando esta dirección:
+
+<%=@base_url%>cuenta/do_confirmar?k=<%=@recipient.validkey%>&email=<%=@recipient.email%>
+
+Gracias,
+
+<%=@footer%>

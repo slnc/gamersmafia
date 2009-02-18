@@ -1,0 +1,66 @@
+<% slog_entries_filter[:order] = 'slog_entries.id DESC' %>
+<div class="grid-6">
+<%mftext('Sin asignar') do %>
+<table>
+<%SlogEntry.get(:open, slog_entries_filter).each do |sle| %>
+<tr class="<%=oddclass%>" id="sle<%=sle.id%>" style="vertical-align: top;">
+	<td style="width: 16px;"><img class="slog-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
+	<td><%=sle.headline%>
+	<% if sle.completed_on && sle.reviewer_user_id then %><div class="right infoinline">Resuelto por <%=user_link(sle.reviewer)%> (<%=print_tstamp(sle.completed_on)%>)</div><% end -%>
+	<% if sle.completed_on.nil? then %><div class="infoinline"><%=print_tstamp(sle.created_on)%></div><%end -%>
+	</td>
+	
+	<% if sle.reviewer_user_id.nil? then %>
+	<td class="w25"><%=link_to_remote "<img title=\"Asignarme este evento\" class=\"icon\" src=\"/skins/default/images/icons/status_assigned.gif\" \>", :url => "/slog/slog_entry_assigntome/#{sle.id}", :confirm => '¿Estás seguro?', :complete => "$j('#sle#{sle.id}').fadeOut('normal');" %></td>
+	<% end -%>
+	<% if sle.completed_on.nil? then %>
+	<td class="w25"><%=link_to_remote "<img title=\"Marcar como resuelto\" class=\"icon\" src=\"/skins/default/images/icons/confirm_16.png\" \>", :url => "/slog/slog_entry_reviewed/#{sle.id}", :confirm => '¿Estás seguro?', :complete => "$j('#sle#{sle.id}').fadeOut('normal');" %></td>
+	<% end -%>	
+</tr>
+<% end # each %>
+</table>
+<% end -%>
+
+<%mftext('Asignadas a mi') do %>
+<table>
+<%SlogEntry.get(:assigned_to_me, slog_entries_filter.merge(:user_id => @user.id)).each do |sle| %>
+<tr class="<%=oddclass%>" id="sle<%=sle.id%>" style="vertical-align: top;">
+	<td style="width: 16px;"><img class="slog-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
+	<td><%=sle.headline%>
+	<div class="infoinline">Creada: <%=print_tstamp(sle.created_on)%></div>
+	</td>
+	
+	<td class="w25"><%=link_to_remote "<img title=\"Marcar como resuelto\" class=\"icon\" src=\"/skins/default/images/icons/confirm_16.png\" \>", :url => "/slog/slog_entry_reviewed/#{sle.id}", :confirm => '¿Estás seguro?', :complete => "$j('#sle#{sle.id}').fadeOut('normal');" %></td>	
+</tr>
+<% end # each %>
+</table>
+<% end -%>
+
+<%mftext('Asignadas a otros') do %>
+<table>
+<%SlogEntry.get(:assigned_to_others, slog_entries_filter.merge(:user_id => @user.id)).each do |sle| %>
+<tr class="<%=oddclass%>" id="sle<%=sle.id%>" style="vertical-align: top;">
+	<td style="width: 16px;"><img class="slog-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
+	<td><%=sle.headline%>
+	<div class="infoinline">Creada: <%=print_tstamp(sle.created_on)%></div>
+	</td>
+	<td class="infoinline"><%=user_link(sle.reviewer)%></td>
+</tr>
+<% end # each %>
+</table>
+<% end -%>
+
+<%mftext('Resueltas') do %>
+<table>
+<%SlogEntry.get(:closed, slog_entries_filter.merge(:order => 'completed_on DESC', :limit => 10)).each do |sle| %>
+<tr class="<%=oddclass%>" id="sle<%=sle.id%>" style="vertical-align: top;">
+	<td style="width: 16px;"><img class="slog-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
+	<td><%=sle.headline%>
+	<div class="right infoinline">Resuelto por <%=user_link(sle.reviewer)%> (<%=print_tstamp(sle.completed_on)%>)</div>
+	</td>
+</tr>
+<% end # each %>
+</table>
+<div class="right infoinline"><a href="/slog/historial?domain=<%=slog_entries_filter[:domain]%>&scope=<%=slog_entries_filter[:scope]%>">Ver historial</a></div>
+<% end -%>
+</div>

@@ -1,0 +1,175 @@
+<% mftext('Perfil') do %>
+<%= form_tag({:action=> 'update_profile' }, :multipart => true) %>
+<% @post = @user %>
+
+<% @newuser and if error_messages_for 'newuser' %>
+<div class="Message"><%= error_messages_for 'newuser' %></div>
+<% end %>
+
+<table cellpadding="3" cellspacing="3" border="0" class="signup">
+  <tr>
+    <th colspan="2" style="padding-top: 30px;">General</th>
+  </tr>
+  <tr>
+    <td><label for="post_firstname">Nombre</label></td>
+    <td><%= text_field "post", "firstname", :size => 20, :class=>"text form"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_lastname">Apellido</label></td>
+    <td><%= text_field "post", "lastname", :size => 20, :class=>"text form"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_lastname">Localidad</label></td>
+    <td><%= text_field "post", "city", :size => 20, :class=>"text form"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_lastname">País</label></td>
+    <td><%= collection_select :user, :country_id, Country.find(:all, :order => 'lower(name) ASC'), :id, :name, {:include_blank => true} %></td>
+  </tr>
+  <tr>
+    <td><label for="post_lastname">Sexo</label></td>
+    <td><select name="sex">
+    	<option <%=@user.sex == 0 ? 'selected="selected"' : ''%> value="0">Hombre</option>
+		<option <%=@user.sex == 1 ? 'selected="selected"' : ''%> value="1">Mujer</option>
+	</select></td>
+  </tr>
+  <tr>
+    <td><label for="post_lastname"><%=Inflector::sexualize('Interesado', @user.sex)%> en</label></td>
+    <td><select name="interested_in">
+    	<option <%=@user.pref_interested_in == 'men' ? 'selected="selected"' : ''%> value="0">Hombres</option>
+		<option <%=@user.pref_interested_in == 'women' ? 'selected="selected"' : ''%> value="1">Mujeres</option>
+		<option <%=@user.pref_interested_in == 'men women' ? 'selected="selected"' : ''%> value="1">Hombres y Mujeres</option>
+		<option <%=@user.pref_interested_in == '' ? 'selected="selected"' : ''%> value="1">Nada</option>
+	</select></td>
+  </tr>
+  <tr>
+    <td><label for="post_lastname">Buscas</label></td>
+    <td>
+    	<label><input <%='checked="checked"' if @user.pref_looking_for.include?('Amistad')%> type="checkbox" name="user[pref_looking_for] "/> Amistad</label><br />
+		<label><input <%='checked="checked"' if @user.pref_looking_for.include?('Quedar')%> type="checkbox" name="user[pref_looking_for] "/> Quedar</label><br />
+		<label><input <%='checked="checked"' if @user.pref_looking_for.include?('Amor')%> type="checkbox" name="user[pref_looking_for] "/> Amor</label><br />
+	</select></td>
+  </tr>
+  <tr>
+    <td><label for="post_lastname">Fecha de nacimiento</label></td>
+    <td><%= date_select "post", "birthday", :class=>"text", :start_year => 1900, :end_year => Time.now.year%></td>
+  </tr>
+
+  <tr>
+    <td><label for="post_login">Tu foto</label></td>
+    <td>
+      <p><label for="image_file">Archivo .JPG (se mostrará a 193x193)</label><br/>
+      <% if @user.photo then %>
+      <%=fc_thumbnail(@user.photo, 'k', '153x115')%>
+      <% end -%>
+
+      <%= file_field 'user', 'photo' %></td>
+  </tr>
+
+  <tr>
+    <td><label for="post_login">Foto para competiciones</label></td>
+    <td>
+      <p><label for="image_file">Archivo .JPG (se mostrará a 50x50)</label><br/>
+      <strong>SOLO SUBIR FOTO REAL</strong>
+      <% if @user.competition_roster then %>
+      <%=fc_thumbnail(@user.competition_roster, 'f', '50x50')%>
+      <% end -%>
+
+      <%= file_field 'user', 'competition_roster' %></td>
+  </tr>
+
+
+
+  <tr>
+    <th colspan="2" style="padding-top: 30px;">Contacto</th>
+  </tr>
+  <tr>
+    <td><label for="post_msn">MSN</label></td>
+    <td><%= text_field "post", "msn", :size => 20, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_msn">GoogleTalk</label></td>
+    <td><%= text_field "post", "googletalk", :size => 20, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_msn">Yahoo IM</label></td>
+    <td><%= text_field "post", "yahoo_im", :size => 20, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_msn">Xfire</label></td>
+    <td><%= text_field "post", "xfire", :size => 20, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_msn">IRC</label></td>
+    <td><%= text_field "post", "irc", :size => 20, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_homepage">Página personal</label></td>
+    <td><%= text_field "post", "homepage", :size => 20, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_msn">Wii Code</label></td>
+    <td><%= text_field "post", "wii_code", :size => 20, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_msn">GamerTag (Xbox360)</label></td>
+    <td><%= text_field "post", "gamertag", :size => 20, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <th colspan="2" style="padding-top: 30px;">Hardware</th>
+  </tr>
+  <tr>
+    <td><label for="post_firstname">Ratón</label></td>
+    <td><%= text_field "post", "hw_mouse", :size => 50, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_firstname">Procesador</label></td>
+    <td><%= text_field "post", "hw_processor", :size => 50, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_firstname">Placa</label></td>
+    <td><%= text_field "post", "hw_motherboard", :size => 50, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_firstname">RAM</label></td>
+    <td><%= text_field "post", "hw_ram", :size => 50, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_firstname">Disco duro</label></td>
+    <td><%= text_field "post", "hw_hdd", :size => 50, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_firstname">Gráfica</label></td>
+    <td><%= text_field "post", "hw_graphiccard", :size => 50, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_firstname">Monitor</label></td>
+    <td><%= text_field "post", "hw_monitor", :size => 50, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_firstname">Tarjeta de sonido</label></td>
+    <td><%= text_field "post", "hw_soundcard", :size => 50, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_firstname">Auriculares</label></td>
+    <td><%= text_field "post", "hw_headphones", :size => 50, :class=>"text"%></td>
+  </tr>
+  <tr>
+    <td><label for="post_firstname">Conexión</label></td>
+    <td><%= text_field "post", "hw_connection", :size => 50, :class=>"text"%></td>
+  </tr>
+
+  <tr>
+    <td><label for="post_firstname">Descripción</label></td>
+    <td><textarea class="text form" cols="80" id="post_description" name="post[description]" rows="20"><%=@user.description%></textarea><br />(Tags HTML permitidos: a, img, p, br, em, strong, ul, li)</td>
+  </tr>
+
+
+  <tr><td>&nbsp;</td>
+    <td>
+      <input type="submit" class="button primary" value="Guardar" />
+  </td></tr>
+
+</table>
+</form>
+<% end -%>

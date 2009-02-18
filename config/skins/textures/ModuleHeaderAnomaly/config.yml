@@ -1,0 +1,21 @@
+# Estilo http://www.anomaly.ie/index.php?page=0.
+attributes:
+    base_background_color_value:
+       name: "Color"
+       type: RgbColor
+       default_color_gen_hint: css_body_bg
+       
+    base_font_a_color_value:
+       name: "Color"
+       type: RgbColor
+       default_color_gen_hint: css_body_text
+       
+    base_font_b_color_value:
+       name: "Color"
+       type: RgbColor
+       
+    height:
+        name: "Altura"
+        type: PixelSize
+        min: 16
+        max: 32

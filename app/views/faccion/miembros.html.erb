@@ -1,0 +1,30 @@
+<% mftext('Miembros de la facción') do %>
+<% cache("/common/facciones/miembros/#{@faction.id}/page_#{params[:page]}") do 
+@member_pages, @members = controller.paginate :user, :conditions => ['faction_id = ?', @faction.id], :order => 'lower(login) asc', :per_page => 40
+%>
+<%= render :partial => 'shared/pager', :object => @member_pages, :locals => {'pos' => 'top'} %>
+<table>
+  <tr>
+    <th class="sm-icon"></td>
+    <th>Usuario</th>
+    <th>Karma</th>
+    <th>Fe</th>
+    <th class="timestamp">Antigüedad en la facción</th>
+  </tr>
+  
+<% 
+for member in @members
+%>
+  <tr class="<%=oddclass%>">
+    <td class="sm-icon"><%=member_state(member.hstate)%></td>
+    <td><%=link_to member.login, :controller => 'miembros', :action => member.login%></td>
+    <td class="infoinline"><%=render :partial => '/shared/karmabar', :locals => {:user => member}%></td>
+    <td class="infoinline"><%=render :partial => '/shared/faithbar', :locals => {:user => member}%></td>
+    <td class="infoinline"><%=format_interval((Time.now - member.faction_last_changed_on).to_i, 'días')%></td>
+  </tr>
+<% end %>
+</table>
+
+<%= render :partial => 'shared/pager', :object => @member_pages, :locals => {'pos' => 'bottom'} %>
+<% end -%>
+<% end -%>

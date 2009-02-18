@@ -1,0 +1,6 @@
+if @element_id
+  page.visual_effect :fade, @element_id
+    page.delay(5.seconds) do
+    page.remove @element_id
+  end
+end

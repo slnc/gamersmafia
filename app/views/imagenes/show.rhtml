@@ -1,0 +1,99 @@
+<% content_support do %>
+<% if @image.is_public? then %>
+<% mftext('Navegador de galería') do %>
+<ul class="sidelist images">
+  <% cache("/common/imagenes/show/g#{@image.images_category_id}/#{@image.id}") do %>
+  <% 
+  # cogemos la imagen anterior y la posterior
+  im_prev = @image.images_category.images.find(:first, :conditions => ['state = ? and id < ?', Cms::PUBLISHED, @image.id], :order => 'id DESC')
+
+  im_next = @image.images_category.images.find(:first, :conditions => ['state = ? and id > ?', Cms::PUBLISHED, @image.id], :order => 'id ASC')
+  %>
+  <% if im_prev %>
+    <li><div class="image"><a class="new" href="/imagenes/show/<%=im_prev.id%>"><%=fc_thumbnail(im_prev.file, 'i', '85x85', false)%></a></div></li>
+  <% end -%>
+
+  <li style="background: #f3f3f3;"><div class="image"><%=fc_thumbnail(@image.file, 'i', '85x85', false)%></div></li>
+
+  <% if im_next %>
+    <li><div class="image"><a class="new" href="/imagenes/show/<%=im_next.id%>"><%=fc_thumbnail(im_next.file, 'i', '85x85', false)%></a></div></li>
+  <% end -%>
+<% end -%>
+</ul>
+<% end -%>
+
+	
+  
+	
+		<% #= render :partial => '/imagenes/random', :locals => {:category => @image.images_category} %>
+	
+<%= render :partial => '/imagenes/best_rated', :locals => {:category => @image.images_category} %>
+
+<% cache("/#{controller.portal_code}/imagenes/show/_other_images_by_user/#{@image.user_id % 1000}/#{@image.user_id}") do %>
+<% mftext("Más imágenes de #{@image.user.login}") do %>
+<ul class="sidelist images">
+  <% controller.portal.image.find(:published, :conditions => ['user_id = ?', @image.user_id], :order => 'created_on DESC', :limit => 2).each do |image| %>
+  <li><div class="image"><a class="new" href="/imagenes/show/<%=image.id%>"><%=fc_thumbnail(image.file, 'i', '85x85', false)%></a></div></li>
+  <% end -%>
+  </ul>
+<% end -%>
+
+<% end -%>
+<% else %>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @image } %>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+<%mfcontent(@image) do %>
+<div style="margin: 10px; text-align: center;">
+<script type="text/javascript">
+	var prev_w;
+	
+	function maximize_image(a_im) {
+		$j('#cleft').addClass('hidden');
+		$j('#csupport').addClass('hidden');
+		$j('#ccontent').addClass('maximized');
+		$j('#cmain').addClass('maximized');
+		
+		a_im.title = 'Haz click para ver la imagen más pequeña'
+		
+		var previm = a_im.childNodes[0].src;
+		prev_w = a_im.childNodes[0].width;
+		a_im.childNodes[0].src = '/images/spinner.gif';
+		a_im.childNodes[0].src = previm.replace('/cache/thumbnails/k/460x345', '/cache/thumbnails/k/930x700');
+		a_im.childNodes[0].style.width = '';
+		document.location = '#ccontent';
+		a_im.onclick = function() {
+			return minimize_image(a_im);
+		}
+		
+		return false;
+	}
+	
+	function minimize_image(a_im) {	
+		a_im.childNodes[0].src = a_im.childNodes[0].src.replace('/cache/thumbnails/k/930x700', '/cache/thumbnails/k/460x345');
+		a_im.title = 'Haz click para ver la imagen más grande'
+		
+		$j('#ccontent').removeClass('maximized');
+		$j('#cmain').removeClass('maximized');
+		$j('#cleft').removeClass('hidden');
+		$j('#csupport').removeClass('hidden');
+		
+		a_im.childNodes[0].style.width = prev_w;
+
+		document.location = '#ccontent';
+		a_im.onclick = function(){
+			return maximize_image(a_im);
+		}
+		return false;
+	}
+</script>
+
+  <div class="image"><a href="/cache/thumbnails/k/980x700/<%=@image.file%>" title="Haz click para ver la imagen más grande" onclick="return maximize_image(this);"><img src="/cache/thumbnails/k/460x345/<%=@image.file%>" /></a></div>
+
+  <p style="margin-right: 108px;"><%=@image.description%></p>
+</div>
+
+<% end -%>
+<% end -%>

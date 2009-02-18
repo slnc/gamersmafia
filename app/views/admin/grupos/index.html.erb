@@ -1,0 +1,24 @@
+
+<%mftext('Grupos') do %>
+<table>
+	<tr>
+		<th>Nombre</th>
+		<th>Propietario</th>
+		<th>Miembros</th>
+	</tr>
+<%Group.find(:all, :order => 'lower(name)').each do |g| %>
+	<tr class="<%=oddclass%>">
+		<td><a href="/admin/grupos/edit/<%=g.id%>"><%=h g.name%></a></td>
+		<td><%=g.owner.login%></td>
+		<td><%=g.members_count%></td>
+	</tr>
+<% end -%>
+</table>
+<% end -%>
+
+
+<%mftext('Nuevo') do %>
+<form method="post" action="/admin/grupos/create">
+<%=render :partial => 'form' %>
+</form>
+<% end -%>

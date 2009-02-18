@@ -1,0 +1,30 @@
+accepted_own:
+  id: 1
+  sender_user_id: 1
+  receiver_user_id: 2
+  accepted_on: 2006-01-01 00:00:00
+  
+accepted_other:
+  id: 2
+  sender_user_id: 3
+  receiver_user_id: 1
+  accepted_on: 2006-01-01 00:00:00
+  
+not_accepted_own:
+  id: 3
+  sender_user_id: 1
+  receiver_user_id: 4
+  accepted_on: 
+  
+not_accepted_other:
+  id: 4
+  sender_user_id: 5
+  receiver_user_id: 1
+  accepted_on: 
+  
+external_not_accepted:
+  id: 5
+  sender_user_id: 1
+  receiver_email: juan@juanalonso.net
+  invitation_text: guapeton ven aqui
+  external_invitation_key: 4d186321c1a7f0f354b297e8914ab240

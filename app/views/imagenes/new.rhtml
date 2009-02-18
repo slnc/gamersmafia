@@ -1,0 +1,44 @@
+<% content_support do %>
+  <%= render :partial => '/shared/drafts', :locals => { :cls => Image } if user_is_authed %>
+  <% mftext('Información') do %>
+  <p>Las imágenes gore y las imágenes porno no están permitidas.</p>
+  <% end -%>
+  <br />
+  <% mftext('Alegría del día') do %>
+  <p>Elige <strong>Especiales &raquo; Babes</strong> (Chicas) o <strong>Especiales &raquo; Dudes</strong> (Chicos) si quieres enviar imágenes para esas galerías.</p>
+  <% end -%>
+<%= render :partial => 'shared/pending', :object => Image.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Nueva imagen') do %>
+
+<%= form_tag({:action => 'create'}, :multipart => true)%>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Crear' %>
+</form>
+<br />
+
+<% end -%>
+<% if Cms.user_can_mass_upload(@user) then %>
+<%mftext('Añadir imágenes en masa') do %>
+<%= form_tag({:action => 'create_from_zip'}, :multipart => true) %>
+  <p><label >Categoría</label><br/>
+<select name="image[images_category_id]">
+<% for ic in ImagesCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc') %>
+<optgroup label="<%=ic.name%>">
+<% for gallery in ic.children %>
+<option <%= (gallery.id == @image.images_category_id) ? 'selected="selected"' : ''%> value="<%=gallery.id%>"><%=gallery.name%></option>
+<% end -%>
+</optgroup>
+<% end -%>
+</select>
+  <p><label for="image_file">Archivo</label><br/>
+  <%= file_field 'image', 'file' %></p>
+  <%= submit_tag 'Crear' %>
+</form>
+<% end -%>
+<br />
+<% end -%>
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>

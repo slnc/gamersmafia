@@ -1,0 +1,24 @@
+<h1>Dominio en el limbo</h1>
+<p>El dominio <strong><%=controller.request.host%></strong> de momento no existe más que en la mente del creador.</p> 
+
+<p>Hasta que le llegue su oportunidad de darse a conocer te recomendamos visitar alguna de nuestras estupendas webs: </p>
+<h2>Web principal<br /><img class="icon" src="/favicon.ico"  style="vertical-align: middle; margin-right: 3px;" /><a href="http://<%=App.domain%>"><%=App.domain%></a></h2>
+<div style="margin-top: 40px;"> </div>
+
+  <h2>Webs específicas de juegos</h2>
+  <table style="width: 300px; margin-left: auto; margin-right: auto; margin-top: 20px;">
+    <tr>
+      <th>Portal</th>
+      <th>Juegos</th>
+    </tr>
+<% cache('/portales') do %>
+  <% for p in FactionsPortal.find(:all, :order => 'lower(name) asc') %>
+  <tr class="<%=oddclass%>">
+      <td><a href="http://<%=p.code%>.<%=App.domain%>"><%=p.name%></a></th>
+      <td><% for f in p.factions %>
+        <img class="icon" src="<%=ASSET_URL%>/storage/games/<%=f.code%>.gif" title="<%=f.name%>" />
+        <% end -%></th>
+    </tr>
+  <% end %>
+<%  end %>
+</table>

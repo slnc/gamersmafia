@@ -1,0 +1,10 @@
+<% mftext('Editar foro') do %>
+
+<%= form_tag :action => 'forum_update', :id => @topics_category %>
+  <%= render :partial => 'forum_edit' %>
+  <%= submit_tag 'Edit' %>
+</form>
+
+<%= link_to 'Show', :action => 'show', :id => @topics_category %> |
+<%= link_to 'Back', :action => 'list' %>
+<% end -%>

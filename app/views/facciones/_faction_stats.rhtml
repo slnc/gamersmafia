@@ -1,0 +1,31 @@
+<% cache("/common/facciones/#{Time.now.strftime('%Y%m%d')}/stats/#{faction.id}") do %>
+  <table class="compact infoinline">
+	<tr class="<%=oddclass%>">
+  		<td style="padding-left: 3px;">Karma</td>
+		<td><%=draw_karma_bar_sm(faction)%></td>
+		<td style="width: 75px; background: #fff;" class="right" rowspan="5"><%=draw_faction_building(faction.id)%></td>
+  	</tr>
+	
+  	<tr class="<%=oddclass%>">
+  		<td style="padding-left: 3px;">Amistad</td>
+		<td><%=faction_cohesion(faction)%></td>
+  	</tr>
+	
+	<tr class="<%=oddclass%>">
+  		<td style="padding-left: 3px;">Miembros</td>
+		<td><span title="Miembros" class="members-count"><%=faction.members_count%></span></td>
+  	</tr>
+	
+	<tr class="<%=oddclass%>">
+  		<td style="padding-left: 3px;">Incorporaciones/día</td>
+		<td><span title="Miembros" class="members-count"><%="%.2f" % faction.new_members_per_day%></span></td>
+  	</tr>
+	
+	<tr class="<%=oddclass%>">
+  		<td style="padding-left: 3px;">Salud</td>
+		<td><span title="Miembros" class="members-count"><%=(faction.health * 100).to_i %>%</span></td>
+  	</tr>
+  </table>
+    
+  <div style="clear: right;">&nbsp;</div>
+<% end -%>

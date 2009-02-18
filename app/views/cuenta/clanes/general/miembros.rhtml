@@ -1,0 +1,20 @@
+<% content_main do %>
+  <% for clangroup in @clan.clans_groups.find(:all, :order => 'id ASC') %>
+  <%mftext(clangroup.name) do %>
+  <table>
+    <% for member in clangroup.users %>
+    <tr class="<%=oddclass%>">
+      <td><a href="<%=gmurl(member)%>"><%=member.login%></a></td>
+      <td><a href="/cuenta/clanes/remove_member_from_group/?clans_group_id=<%=clangroup.id%>&user_id=<%=member.id%>" onclick="return confirm('¿Estás seguro?');">Borrar</a></td>
+    </tr>
+    <% end -%>
+  </table>
+
+  <form method="post" action="/cuenta/clanes/add_member_to_group">
+    <input type="hidden" name="clans_group_id" value="<%=clangroup.id%>" />
+    Usuario: <input type="text" class="text" name="login" /><br />
+    <input type="submit" class="button" value="Añadir" />
+  </form>
+  <% end -%>
+  <% end %>
+<% end -%>

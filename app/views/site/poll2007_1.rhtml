@@ -1,0 +1,163 @@
+<script type="text/javascript">
+function select_group(obj)
+{
+  var par = obj.parentNode.parentNode;
+  // alert(par);
+  var i = 0;
+  for (i = 0; i < par.childNodes.length; i ++)
+  {
+    // (par.childNodes[i]
+    if (par.childNodes[i].nodeName == 'LABEL')
+    {
+      if (par.childNodes[i].childNodes[0].checked)
+        par.childNodes[i].style.color = '#000088';
+      else
+        par.childNodes[i].style.color = '#aaaaaa';
+    }
+
+  }
+  return true;
+}
+
+function valButton(btn) {
+    var cnt = -1;
+    for (var i=btn.length-1; i > -1; i--) {
+        if (btn[i].checked) {cnt = i; i = -1;}
+    }
+    if (cnt > -1) return btn[cnt].value;
+    else return null;
+}
+
+</script>
+<div style="font-weight: bold;"><div class="avatar" style="float: left; margin-right: 5px; margin-bottom: 10px;"><a title="Ir a la ficha de nagato" href="/miembros/nagato"><img class="icon avatar" src="<%=User.find_by_login('nagato').show_avatar%>" /></a></div> En nuestro afán por hacer de la web un lugar que más se ajuste a ti nos gustaría saber tu opinión sobre una serie de aspectos de la web.</div>
+<form name="myfff" method="post" action="/site/macropoll_send" style="clear: left; margin-top: 10px;">
+<%
+
+@options = {}
+@i = 0
+def rank(txt, opts, options=@options, i=@i)
+  @i = i
+  @i += 1
+  options[@i] = txt.bare.gsub('-', '')
+  out = "<div style=\"margin: 5px 0 15px 0; padding: 3px;\" class=\"#{oddclass}\"><div style=\"clear: left; font-weight: bold; font-size: 14px;\"> #{@i}. #{txt}</div>"
+
+  opts.each do |opt|
+  out<< "<label style=\"display: block;  color: #aaa; width: 125px; margin-right: 10px; float: left;\"><input onclick=\"return select_group(this);\" type=\"radio\" name=\"#{txt.bare.gsub('-', '')}\" value=\"#{opt.bare}\" /> #{opt}</label> "
+  end
+  out<< "<br /><br /><span style=\"clear: left;\"></span></div>"
+end
+
+def yes_or_no(txt)
+  rank(txt, %w(Sí No))
+end
+
+def comment(txt)
+@i ||= 0
+@i += 1
+"<div style=\"margin: 5px 0 15px 0; padding: 3px;\" class=\"#{oddclass}\"><div style=\"clear: left; font-weight: bold; font-size: 14px;\"> #{@i}. #{txt}<br /><textarea style=\"width: 90%; height: 80px;\" name=\"#{txt.bare.gsub('-', '')}\"></textarea><br /><br /></div></div>"
+end
+
+%>
+<h1>Sobre la web</h1>
+<%=rank('El diseño de la web te parece', %w(Muy\ malo Malo Regular Bueno Muy\ bueno))%>
+
+<%=rank('Las cabeceras te parecen', %w(Muy\ malas Malas Regulares Buenas Muy\ buenas))%>
+
+<%=rank('El logo de la web te gusta', %w(Muy\ poco Poco Regular Bastante Mucho))%>
+
+<%=rank('La rapidez de carga de las páginas te parece', %w(Muy\ mala Mala Regular Buena Muy\ buena))%>
+
+<%=rank('El número de funciones de la web te parece', %w(Muy\ bajo Bajo Regular Elevado Muy\ elevado))%>
+
+<%=rank('El número de funciones de la web te parece (bis)', %w(Muy\ poco\ adecuado Poco\ adecuado Regular Adecuado Muy\ adecuado))%>
+
+<%=rank('La cantidad de publicidad que aparece en la web te parece', %w(Muy\ baja Baja Regular Alta Muy\ alta))%>
+
+<%=rank('La actitud de los administradores, bosses y moderadores de la web te parece', %w(Muy\ mala Mala Regular Buena Muy\ buena))%>
+
+<%=rank('La labor de los administradores, bosses y moderadores de la web te parece', %w(Muy\ mala Mala Regular Buena Muy\ buena))%>
+
+<%=rank('Tu opinión general sobre la web es', %w(Muy\ mala Mala Regular Buena Muy\ buena))%>
+
+<%=rank('Razón principal por la que visitas la web', %w(Noticias Foros Otros\ contenidos La\ gente Costumbre Aburrimiento Otras\ razones))%>
+
+<br />
+<h1>Sobre los contenidos</h1>
+
+<%=rank('La calidad de los contenidos te parece', %w(Muy\ mala Mala Regular Buena Muy\ buena))%>
+
+<%=rank('La cantidad de contenidos que se publican en la web te parece', %w(Muy\ mala Mala Regular Buena Muy\ buena))%>
+
+<%=yes_or_no('¿Sabes que puedes enviar contenidos?')%>
+
+<%=yes_or_no('¿Sabes que puedes decidir si un contenido se publica o no?')%>
+
+<br />
+<h1>Sobre las secciones</h1>
+<%=yes_or_no('¿Sabes que puedes crear tus propias competiciones o participar en competiciones dentro de la web?')%>
+
+<%=rank('El ambiente en los comentarios es', %w(Muy\ malo Malo Regular Bueno Muy\ bueno))%>
+
+<%=rank('La sección de foros te parece', %w(Muy\ mala Mala Regular Buena Muy\ buena))%>
+
+<%=rank('La sección de babes/dudes te gusta', %w(Muy\ poco Poco Regular Bastante Mucho Muchísimo))%>
+
+
+<br />
+<h1>Sobre ti</h1>
+
+<%=yes_or_no('¿Tienes alguna videoconsola?')%>
+
+<%=rank('¿De entre las webs de juegos que visitas frecuentemente dónde nos situarías?', %w(De\ las\ peores Normalilla De\ las\ mejores Mi\ preferida))%>
+
+<%=rank('Según el tiempo que le dedicas a los juegos te consideras un jugador', %w(Hardcore Asíduo Esporádico Retirado))%>
+
+<%=rank('Te sientes identificado con la web', %w(Muy\ poco Poco Regular Bastante Mucho Yo\ y\ GM\ somos\ uno))%>
+
+<%=rank('Participas en competiciones/clanbase', %w(Muy\ poco Poco Regular Bastante Mucho ))%>
+
+<%=yes_or_no('¿Echas en falta funciones importantes en la web?')%>
+
+<%=yes_or_no('Preferirías no ver más que los contenidos de tu juego')%>
+
+<%=yes_or_no('¿Estás en algún clan?')%>
+
+<%=rank('Si ofreciésemos de nuevo el sistema de webs para clanes, ¿crees que tu clan lo usaría?', %w(Sí Depende\ de\ lo\ que\ tenga No))%>
+
+<br />
+<h1>Pregunas curiosas</h1>
+
+<%=yes_or_no('¿Estás suscrito a feeds RSS?')%>
+
+<%=rank('¿Te gusta el manga/anime?', %w(Sí Sí Sí No))%>
+
+<%=rank('Si pudieses le regalarías al webmaster un billete a', %w(Islas\ Hawai el\ psiquiátrico Alcatraz el\ infierno Salsa\ Rosa))%>
+
+<script type="text/javascript">
+function do_send()
+{
+  var go = true;
+  <% @i.times do |i| %>
+    var btn = valButton(document.forms['myfff'].<%=@options[i+1]%>);
+  if (go) {
+    if (btn == null) 
+    {
+      go = false;
+      alert('La pregunta <%=i+1%> no tiene respuesta.');
+    }
+  }
+  <% end %>
+  return go;
+}
+</script>
+
+
+<br />
+<h1>Conclusión</h1>
+<%=comment('¿Qué crees que deberíamos mejorar de forma más urgente en la web?')%>
+
+<%=comment('¿Qué tendría que tener la web para que fuese perfecta para ti?')%>
+
+<input type="submit" class="button" value="Enviar" onclick="return confirm('¿Estás seguro?') && do_send();" />
+
+</form>

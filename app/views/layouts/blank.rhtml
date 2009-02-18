@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+	<title><%=controller.title%></title>
+	<%#=css_includes %>
+	<%=javascript_includes %>
+</head>
+<body class="lyblank <%="wp#{controller.wmenu_pos} "%><%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=send('first_render'.to_sym).to_s.split('/').last%>">
+
+<%= @content_for_layout %>
+<script type="text/javascript">cfgPage(<%=user_is_authed%>, [], '<%=controller.controller_name%>', '<%=controller.action_name%>', '<%=params[:id]%>'<%= params['_xnvi'] ? ", '#{params['_xnvi']}'" : ', undefined'%><%= params['_xab'].size > 0 ? ", '#{CGI::escape(params['_xab'].to_json)}'" : ', undefined'%><%= params['_xad'].size > 0 ? ", '#{CGI::escape(params['_xad'].to_json)}'" : ', undefined'%>);</script>
+<% if App.enable_google_analytics? then %>
+  <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-130555-1");
+pageTracker._setDomainName("gamersmafia.com");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+<% end -%>
+</body>
+</html>

@@ -1,0 +1,8 @@
+<%
+  avatars_pages = ActionController::Pagination::Paginator.new self, Avatar.count(:conditions => "#{params[:mode]}_id IS NOT NULL"), 50, params['page']
+  avatars_pages.current_page = avatars_pages.last if params['page'].nil?
+%>
+<%= render :partial => 'shared/pager', :object => avatars_pages, :locals => {:pos => 'top', :options => {:preserve_keys => %w(mode) } } %>
+    <%= render :partial => 'latest_avatars', :locals =>  { :avatars => Avatar.find(:all, :conditions => "#{params[:mode]}_id is not null", :order => 'created_on DESC', :limit => avatars_pages.current.to_sql[0], :offset => avatars_pages.current.to_sql[1])} %>
+<%= render :partial => 'shared/pager', :object => avatars_pages, :locals => {:pos => 'bottom', :options => {:preserve_keys => %w(mode) } } %>
+<a href="/avatares">Volver</a>

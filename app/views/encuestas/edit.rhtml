@@ -1,0 +1,28 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Poll } if user_is_authed %>
+<%=render :partial => 'shared/content_details', :locals => { :object => @poll} %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Mínimo 2 opciones</li>
+<li>Máximo 5 o 6</li>
+<li>De interés general</li>
+</ul>
+<% end -%>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @poll} %>
+<%= render :partial => 'shared/pending', :object => Poll.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Editar encuesta') do %>
+<%= form_tag({:action => 'update', :id => @poll}, { :name => 'editing_content' }) %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @poll}%>
+<%=render :partial => '/shared/change_authorship', :locals => {:object => @poll}%>
+
+<br />
+<%= link_to 'Mostrar encuesta', gmurl(@poll) %> |
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

@@ -1,0 +1,71 @@
+<% content_support do %>
+<% end -%>
+
+<% content_main do %>
+<div class="contenttitle message-content" style="border: 0;">
+    <div class="titleavatar"><img src="<%=ASSET_URL%><%=@curmessage.sender.show_avatar%>" /></div> <h1><%=@curmessage.title%></h1>
+    <div class="infoinline"><ul>
+    <li class="first">de <%=link_to @curmessage.sender.login, :controller => '/miembros', :action => @curmessage.sender.login%> para <%=link_to @curmessage.recipient.login, :controller => '/miembros', :action => @curmessage.recipient.login%></li>
+    <li><%=print_tstamp @curmessage.created_on%></li>
+    <% begin 
+        @user.friends.find(@curmessage.sender.id)
+      rescue %>
+      <li><a href="/cuenta/amigos/iniciar_amistad/<%=@curmessage.sender.login%>?redirto=<%=request.path%>">Añadir a mi lista de amigos</a></li>
+    <% end -%>
+    </ul></div>
+<%
+def message_quotize(txt)
+  prev_is_quoted = false
+	txt.split("\n").collect do |ln|
+	  puts ln[0..0]
+    if ln[0..0] == '>' && !prev_is_quoted
+          prev_is_quoted = true
+      '[quote]'<<ln
+
+    elsif ln[0..0] != '>' && prev_is_quoted
+          prev_is_quoted = false
+      ln<<'[/quote]'
+
+    else
+      ln
+    end
+	end.join("\n")
+end
+
+%>
+</div>
+  <div class="message-body"><%=auto_link(smilelize(Comments::formatize(message_quotize(@curmessage.message))))%></div>
+  
+<div class="subheader"><div>Conversación</div></div>
+<%=print_thread_tree(Message.find(@curmessage.thread_id), @curmessage)%>
+
+
+<%= form_tag :action => 'create_message' %>
+<input type="hidden" name="message[message_type]" value="<%=Message::R_USER%>" />
+<input type="hidden" name="message[recipient_user_login]" value="<%=@curmessage.sender.login%>" />
+<br />
+<br />
+<div class="subheader"><div>Responder</div></div>
+<p>
+<% 
+@message.message = "" # \n\n\n> [~#{@curmessage.sender.login}] escribió (#{print_tstamp(@curmessage.created_on)})\n" << Comments::unformatize(@curmessage.message.strip).gsub(/^/,'> ')
+
+if @curmessage.title[0,3] != 'Re:' then
+  @message.title = "Re: #{@curmessage.title}" 
+else
+  @message.title = @curmessage.title
+end %>
+
+<input type="hidden" name="message[title]" value="<%=@message.title.gsub('"', '&quot;')%>" />
+<input type="hidden" name="message[in_reply_to]" value="<%=@curmessage.id%>" />
+
+<p>
+<textarea id="message_message" name="message[message]" style="width: 100%; height: 150px;"><%=@message.message%></textarea></p>
+<%= render :partial => '/shared/smileys', :locals => { :dom_id => 'message_message' } %>
+<br />
+<script type="text/javascript">
+$j('#message_message').focus();
+</script>
+  <%= submit_tag 'Enviar' %>
+</form>
+<% end -%>

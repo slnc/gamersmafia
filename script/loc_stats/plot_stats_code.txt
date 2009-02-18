@@ -1,0 +1,8 @@
+wset xdata time
+set ylabel "LOC"
+set timefmt "%Y-%m-%d %H:%M:%S"
+set xrange ["2005-10-31 22:44:32":"2006-08-05 22:36:02"]
+set format x "%d/%b/%Y"
+set terminal png size 1000 400
+set output "stats.png"
+plot "stats.txt" using 3:2 notitle with boxes

@@ -1,0 +1,32 @@
+<% content_main do %>
+  <% mftext('Mis apuestas') do %>
+  <%
+  @ticket_pages, @tickets = controller.paginate :bets_ticket, :conditions => ['user_id = ? and bets_tickets.ammount > 0', @user.id], :order => 'bets_option_id DESC', :include => :bets_option, :per_page => 30
+  %>
+
+  <%= render :partial => 'shared/pager', :object => @ticket_pages, :locals => {:pos => 'top'} %>
+  <table>
+  <tr>
+    <th>Partida</th>
+    <th>Participante</th>
+    <th>Tu apuesta</th>
+    <th class="timestamp">Estado</th>
+  </tr>
+
+  <%
+  # for ticket in BetsTicket.find(:all, :conditions => ['user_id = ?', @user.id], :order => 'bets_option_id DESC', :include => :bets_option)
+  for ticket in @tickets
+  bet = ticket.bets_option.bet
+  %>
+  <tr class="<%=oddclass%>">
+    <td><%=faction_favicon(bet.main_category)%> <a href="<%=gmurl(bet)%>"><%=bet.resolve_hid%></a></td>
+    <td><%=ticket.bets_option.name%></td>
+    <td class="timestamp"><%=ticket.ammount%><%=gmd11%></td>
+    <td class="infoinline"><% if bet.completed? then %>Confirmada<% elsif bet.closes_on < Time.now then %>Pendiente de confirmar<% else %>Abierta<% end %></td>
+  </tr>
+  <% end %>
+  </table>
+
+  <%= render :partial => 'shared/pager', :object => @ticket_pages, :locals => {:pos => 'bottom'} %>
+  <% end -%>
+<% end -%>

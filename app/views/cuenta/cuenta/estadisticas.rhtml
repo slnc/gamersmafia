@@ -1,0 +1,93 @@
+<% content_support do %>
+  
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Karma') do %>
+  <p>Tu nivel actual de karma es: <strong><%=Karma::level(@user.karma_points)%></strong> (<%=@user.karma_points%> puntos). Próximo nivel: <strong><%=Karma::level(@user.karma_points) + 1%></strong> (<%=Karma.kp_for_level(Karma::level(@user.karma_points)+1).to_i%> puntos).</p>
+  <table>
+    <tr>
+      <th>Contenido</th>
+      <th>Puntos</th>
+    </tr>
+    <% contents_stats = @user.contents_stats
+    # buscamos el máximo
+    for key in contents_stats.sort
+      points = Karma::KPS_CREATE[Inflector::singularize(Cms::translate_content_name(key[0], 0))]
+      if points.nil? then
+        raise "#{key[0]} #{Inflector::singularize(Cms::translate_content_name(key[0], 0))}"
+      end
+    %>
+        <tr class="<%=oddclass%>">
+            <td style="width: 120px;"><%=key[0]%></td>
+            <td><%=draw_pcent_bar(key[1].to_f * points / ((@user.karma_points > 0) ? @user.karma_points : 1))%><br />
+              <% if nil %>
+              <%=key[1]%> * <%=Karma::KPS_CREATE[Inflector::singularize(Cms::translate_content_name(key[0], 0))]%> = <%=key[1] * Karma::KPS_CREATE[Inflector::singularize(Cms::translate_content_name(key[0], 0))]%>
+            <% end -%></td>
+        </tr>
+    <% end -%>
+    <tr class="<%=oddclass%>">
+      <td>Editor</td>
+      <td><%=draw_pcent_bar(@user.karma_points_editor.to_f / ((@user.karma_points > 0) ? @user.karma_points : 1))%><br />
+    </tr>
+  </table>
+  <% end -%>
+  
+
+  <% if nil %><h2>Por facción</h2>
+  <br />
+  <% end -%>
+
+  <% mftext('Fe') do %>
+  <p>Tu nivel actual de fe es: <strong><%=Faith::NAMES[Faith::level(@user.faith_points)]%></strong> (<%=@user.faith_points%> puntos). Próximo nivel: <strong><%=Faith::NAMES[Faith::level(@user.faith_points) + 1]%></strong> (<%=Faith.kp_for_level(Faith::level(@user.faith_points)+1)%> puntos).</p>
+  <table>
+    <tr>
+      <th>Fuente</th>
+      <th>Total</th>
+      <th>Puntos</th>
+    </tr>
+
+    <tr class="<%=oddclass%>">
+      <td><a href="/cuenta/estadisticas/registros">Registros</a></td>
+      <td><%=Faith.registrations_active(@user)%></td>
+      <td><%=draw_pcent_bar(Faith.registrations_active(@user) * Faith::FPS_ACTIONS['registration'].to_f / ((@user.faith_points > 0) ? @user.faith_points : 1))%></td>
+    </tr>
+
+    <tr class="<%=oddclass%>">
+      <td><a href="/cuenta/estadisticas/resurrecciones">Resurrecciones</a></td>
+      <td><%=Faith.resurrections_active(@user) + Faith.resurrections_own_active(@user)%></td>
+      <td><%=draw_pcent_bar((Faith.resurrections_active(@user) * Faith::FPS_ACTIONS['resurrection'].to_f + Faith.resurrections_own_active(@user) * Faith::FPS_ACTIONS['resurrection_own']) / ((@user.faith_points > 0) ? @user.faith_points : 1))%></td>
+    </tr>
+
+    <tr class="<%=oddclass%>">
+      <td>Valoraciones de contenidos</td>
+      <td><%=@user.content_ratings.count%></td>
+      <td><%=draw_pcent_bar(@user.content_ratings.count * Faith::FPS_ACTIONS['rating'].to_f / ((@user.faith_points > 0) ? @user.faith_points : 1))%></td>
+    </tr>
+
+    <tr class="<%=oddclass%>">
+      <td>Valoraciones de comentarios</td>
+      <td><%=@user.comments_valorations.count%></td>
+      <td><%=draw_pcent_bar(@user.comments_valorations.count * Faith::FPS_ACTIONS['rating'].to_f / ((@user.faith_points > 0) ? @user.faith_points : 1))%></td>
+    </tr>
+
+    <tr class="<%=oddclass%>">
+      <td><a href="/cuenta/estadisticas/hits">Hits</a></td>
+      <td><%=Faith.hits(@user)%></td>
+      <td><%=draw_pcent_bar(Faith.hits(@user) * Faith::FPS_ACTIONS['hit'].to_f / ((@user.faith_points > 0) ? @user.faith_points : 1))%></td>
+    </tr>
+
+    <tr class="<%=oddclass%>">
+      <td>Partidas de <a href="/competiciones">competiciones</a></td>
+      <td><%=Faith.competitions_matches(@user)%></td>
+      <td><%=draw_pcent_bar(Faith.competitions_matches(@user) * Faith::FPS_ACTIONS['competitions_match'].to_f / ((@user.faith_points > 0) ? @user.faith_points : 1))%></td>
+    </tr>
+
+    <tr class="<%=oddclass%>">
+      <td>Decisiones de publicación</td>
+      <td><%=Faith.publishing_decisions(@user)%></td>
+      <td><%=draw_pcent_bar(Faith.publishing_decisions(@user) * Faith::FPS_ACTIONS['publishing_decision'].to_f / ((@user.faith_points > 0) ? @user.faith_points : 1))%></td>
+    </tr>
+  </table>
+  <% end -%>
+<% end -%>

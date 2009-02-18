@@ -1,0 +1,12 @@
+<% content_main do %>
+<%mftext('Nueva categoría del FAQ') do %>
+
+<%= form_tag :action => 'create' %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag "Crear" %>
+</form>
+
+<br />
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

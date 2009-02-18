@@ -1,0 +1,147 @@
+#mggnav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 100%;
+    background: #fafafa;
+    color: #ccc;
+	font-family: tahoma;
+    padding-left: 0;
+	z-index: 10;
+}
+
+#mggnav td {
+	color: #777;
+	}
+
+#mggnav a {
+    color: #0115d1;
+	font-weight: bold;
+    text-decoration: none;
+}
+
+#mggnav-factions-list a,
+#mggnav-clans-list a,
+#mggnav-hq-list a { color: #ccc; font-weight: normal;} 
+
+#mggnav a:hover {
+    text-decoration: underline;
+}
+
+#mggnav ul {
+    list-style: none;
+    display: inline;
+}
+
+#mggnav li {
+    float: left;
+    padding: 0 10px;
+    line-height: 18px;
+    height: 20px;
+    font-variant: small-caps;
+    list-style: none;
+}
+
+li#mggnav-gm {
+	padding-left: 20px;
+}
+
+#mggnav-factions-list {
+    position: absolute;
+    z-index: 4;
+    top: 20px;
+    left: 125px;
+    width: 660px;
+    height: 190px;
+    background: #000;
+}
+
+#mggnav-factions-list {
+    position: absolute;
+    z-index: 4;
+    top: 47px;
+    left: 229px;
+    width: 670px;
+    height: 220px;
+    background: #b82004;
+	border: 1px solid #880000;
+}
+
+#mggnav-factions-list a { color: #fff; }
+
+#mggnav-factions-list td,
+#mggnav-clans-list td,
+#mggnav-hq-list td {
+    text-align: left;
+    font-variant: normal;
+    font-size: 11px;
+    padding-left: 15px;
+    width: 33%;
+}
+
+#mggnav-clans-list table {
+	width: 100%;
+	}
+#mggnav-clans-list td {
+	width: 25%;
+}
+
+#mggnav-factions-list a,
+#mggnav-clans-list a,
+#mggnav-hq-list a {
+    line-height: 16px;
+    display: block;
+}
+
+#mggnav-factions-list a img,
+#mggnav-clans-list a img {
+    margin-right: 5px;
+}
+
+#mggnav-games-list {
+    width: 500px;
+    float: left;
+}
+
+#mggnav-platforms-list {
+	border-left: 1px solid #880000;
+    width: 150px;
+    float: left;
+    margin-left: 10px;
+}
+
+#mggnav-see-all-clans {
+    position: absolute;
+	margin-top: 147px;
+	z-index: 5;
+	font-size: 11px;
+	margin-left: 590px;
+}
+
+
+#mggnav-clans-list {
+    display: none;
+    visibility: hidden;
+    position: absolute;
+    z-index: 4;
+    top: 20px;
+    left: 312px;
+    width: 650px;
+    height: 170px;
+    background: #000;
+}
+
+#mggnav-hq-list {
+    display: none;
+    visibility: hidden;
+    position: absolute;
+    z-index: 4;
+    top: 20px;
+    left: 327px;
+    width: 110px;
+    height: 75px;
+    background: #000;
+}
+
+

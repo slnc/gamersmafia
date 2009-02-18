@@ -1,0 +1,308 @@
+<%= error_messages_for 'competition' %>
+
+<!--[form:competition]-->
+<p><label for="competition_name">Nombre</label><br/>
+<%= text_field 'competition', 'name', :class => 'text'  %> <span class="infoinline">No cambiar innecesariamente.</span></p>
+
+<% if @competition.new_record? then %>
+<% if @user.is_superadmin? and @competition.new_record? then %>
+<p><label for="competition_pro"><%= check_box 'competition', 'pro'  %> ¿Competición Pro (Portal propio, etc)?</label></p>
+<% end -%>
+
+<p><label for="competition_description">Juego</label><br/>
+<%= select("competition", "game_id", Game.find(:all, :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%></p>
+
+<p><label for="competition_description">Tipo de competición</label><br/>
+<select name="competition[type]">
+  <option></option>
+  <option value="League">Liga</option>
+  <option value="Tournament">Torneo</option>
+  <option value="Ladder">Ladder</option>
+</select>
+</p>
+
+<p><label for="competition_description">Tipo de participantes</label><br/>
+<%= select("competition", "competitions_participants_type_id", CompetitionsParticipantsType.find(:all, :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%></p>
+
+<% else %>
+<div class="subheader"><div>General</div></div>
+<p><label for="competition_description">Descripción</label><br/>
+<%=wysiwyg('competition[description]', :value => @competition.description, :height => '200px')%></p>
+
+
+<p><label for="competition_description">Reglas</label><br/>
+<%=wysiwyg('competition[rules]', :value => @competition.rules, :height => '400px')%></p>
+
+<% if @competition.pro? then%><p><label for="competition_header_image">Banner de la competición .JPG <span class="infoinline">Dimensiones recomendadas: 650x100</span></label><br/>
+  <% if @competition.header_image then %>
+  <%=fc_thumbnail(@competition.header_image, 'k', '153x53')%> 
+  <% end -%>
+  <%= file_field 'competition', 'header_image' %></p><% end -%>
+
+
+<% if @competition.state < 3 then %>
+<script type="text/javascript">
+function check_maps(val)
+{
+  if (!val)
+  {
+    hideblock('maps');
+    hideblock('maps-points');
+  }
+  else
+  {
+    showblock('maps');
+    showblock('maps-points');
+  }
+}
+
+function check_participants(val)
+{
+  if (val == 'false')
+    hideblock('invitational-participants');
+  else
+    showblock('invitational-participants');
+}
+</script>
+<br />
+<br />
+
+<div class="subheader"><div>Participantes</div></div>
+<strong>Precio admisión</strong><br />
+<label><input type="radio" value="false" name="competition_fee_on" <%=@competition.fee.nil? ? 'checked="checked"' : '' %> /> Gratis</label><br />
+<label><input type="radio" value="true" name="competition_fee_on" <%= @competition.fee ? 'checked="checked"' : '' %> /> Hay que pagar </label><input type="text" style="text-align: right;" class="text sm-text" name="competition[fee]" value="<%=@competition.fee%>" /> <%=gmd12%> para poder unirse a la competición.</p>
+<br />
+<br />
+
+<strong>¿Quién puede unirse?</strong><br />
+<label><input type="radio" value="false" onchange="check_participants(this.value);" name="competition[invitational]" <%= (not @competition.invitational?) ? 'checked="checked"' : '' %> /> Cualquier <%=@competition.competitions_participants_type_id == 1 ? 'usuario' : 'clan'%> registrado en la web</label><br />
+<label><input type="radio" value="true" onchange="check_participants(this.value);" name="competition[invitational]" <%= @competition.invitational? ? 'checked="checked"' : '' %> /> Invitacional. Los únicos participantes admitidos son:</label><br />
+<div id="invitational-participants"><textarea rows="20" style="width: 300px;" name="competition[allowed_competitions_participants]"><% for p in @competition.allowed_participants %><%=p%>
+<% end -%></textarea><span class="infoinline">Uno por línea.</span></div></p>
+<br />
+<br />
+<script type="text/javascript">
+  check_participants('<%=@competition.invitational%>');
+</script>
+
+<% if @competition.has_options? then
+opts = @competition.competitions_types_options %>
+<div class="subheader"><div>Opciones de <%=@competition.class.name%></div></div>
+<% case @competition.class.name
+    when 'League': %>
+    <% if nil then %>
+    <p>Divisiones/grupos:<br />
+    <textarea name="competition[competitions_types_options][league_allowed_participants]">
+    </textarea><span class="infoinline">Un nombre por línea. Dejar en blanco para no usarlo.</span></p>
+    <% end -%>
+<%  when 'Tournament': %>
+<% if nil then %><p><label><input type="checkbox" <%=opts && opts[:tourney_use_winners_losers] ? 'checked="checked"' : ''%> name="competition[competitions_types_options][tourney_use_winners_losers]" />Usar winner/loser brackets</label></p><% end -%>
+<p><label><input type="checkbox" <%=opts && opts[:tourney_use_classifiers]  ? 'checked="checked"' : ''%> name="competition[competitions_types_options][tourney_use_classifiers]" />Usar fase clasificatoria (grupos) antes de las rondas eliminatorias</label><div class="infoinline">Los grupos se podrán configurar cuando se cierren las inscripciones.</div></p>
+    Número de participantes por grupo que pasan a rondas eliminatorias: <input type="name" class="sm-text" name="competition[competitions_types_options][tourney_classifiers_rounds]" value="<%=opts && opts[:tourney_classifiers_rounds] ? opts[:tourney_classifiers_rounds] : ''%>" /> <br />
+    <input type="hidden" name="competition[competitions_types_options][tourney_classifiers_rounds]" value="2" />
+    <input type="hidden" name="competition[competitions_types_options][tourney_rounds]" value="4" />
+    
+    Empezar fase eliminatoria en: 
+    <select id="tourney_rounds" name="competition[competitions_types_options][tourney_rounds]">
+      <option value="3">Cuartos</option>
+      <option value="4" selected="selected">Octavos</option>
+      <option value="5">Dieciseisavos</option>
+    </select>
+    <script type="text/javascript"> $j('#tourney_rounds').val('<%=opts && opts[:tourney_rounds] ? opts[:tourney_rounds] : ''%>)';</script>
+<% end -%>
+
+<% end -%>
+<% end -%>
+
+<% if @competition.state < 4 then %>
+<div class="subheader"><div>Mapas</div></div>
+<% if @competition.state < 3 then %>
+<p><label for="competition_description">Número de mapas por partida</label><br/>
+<input type="text" id="maps-selector" name="competition[default_maps_per_match]" class="text sm-text " onkeyup="check_maps(this.value);" value="<%=@competition.default_maps_per_match%>" /> <span class="infoinline">Dejar en blanco para no gestionar mapas en esta competición.</span></p>
+
+<% end -%>
+
+<div id="maps">
+<p>Mapas disponibles para esta competición<br/>
+
+<% # TODO  copypasteado de configuración de clanes
+total_games_maps = @competition.game.games_maps.count
+
+g = @competition.game
+f = g.faction
+
+if total_games_maps == 0 then 
+%>
+<div id="error">El juego <strong><%=g.name%></strong> no tiene ningún mapa. Por favor, ponte en contacto con los <a href="<%=gmurl(f)%>">líderes de la facción de <%=g.name%></a> antes de crear la competición para que ellos añadan los mapas necesarios.</div>
+<%
+else
+interval = total_games_maps / 3
+i = 0
+col1 = ''
+col2 = ''
+col3 = ''
+
+for g in @competition.game.games_maps.find(:all, :order => 'lower(name) ASC')
+  if i < interval then
+    dst = col1
+  elsif i < interval * 2 then
+    dst = col2
+  else
+    dst = col3
+  end
+
+  # TODO too heavy?
+  selected = @competition.games_maps.find(:first, :conditions => "games_map_id = #{g.id}") ? "checked=\"checked\"" : ''
+  dst<< "<label><input type=\"checkbox\" name=\"competition[games_map_ids][]\" #{selected} value=\"#{g.id}\" /> #{popup(g.name, '/competiciones/mapa/' << g.id.to_s, 350, 225)}</label><br />"
+  i += 1
+end
+%>
+<table>
+  <tr style="vertical-align: top;">
+    <td><%=col1%></td>
+    <td><%=col2%></td>
+    <td><%=col3%></td>
+  </tr>
+</table>
+
+<%
+
+game = @competition.game
+faction = game.faction
+%>
+<div class="infoinline">Si deseas usar más mapas de competición ponte en contacto con los <a href="<%=gmurl(faction)%>">líderes de la facción de <%=game.name%></a> antes de crear la competición para que ellos los añadan.</div>
+<% end %>
+</p>
+
+
+<% if @competition.state < 3 then %>
+<% if @competition.kind_of?(Ladder) then %>
+<input type="hidden" name="competition[forced_maps]" value ="false" />
+<% else %>
+<p><strong>Elección de mapas</strong></label><br/>
+<label><input onchange="check_randommap_selection_mode(this.value);" type="radio" name="competition[forced_maps]" value="false" <%=(not @competition.forced_maps) ? 'checked="checked"' : '' %> /> Los jugadores deciden los mapas a jugar</label><br />
+<label><input onchange="check_randommap_selection_mode(this.value);" type="radio" name="competition[forced_maps]" value="true" <%= @competition.forced_maps ? 'checked="checked"' : '' %> /> Los mapas se seleccionan de forma aleatoria</label></p>
+
+<p id="random-map-selection-mode"><strong>Modo de selección aleatoria de mapas</strong><br />
+<select name="competition[random_map_selection_mode]">
+  <option></option>
+  <option <%=@competition.random_map_selection_mode == 0 ? 'selected="selected"' : ''%> value="0">Mapas aleatorios para cada partida</option>
+  <option <%=@competition.random_map_selection_mode == 1 ? 'selected="selected"' : ''%> value="1">Mismo mapa para todas las partidas de una ronda</option>
+</select>
+<% end -%>
+<% end -%>
+</p>
+
+</div>
+<script type="text/javascript">
+function check_timetable_mode(val)
+{
+  if (val == '1')
+    showblock('timetable-options');
+  else
+    hideblock('timetable-options');
+}
+
+function check_randommap_selection_mode(val)
+{
+  if (val == 'true')
+    showblock('random-map-selection-mode');
+  else
+    hideblock('random-map-selection-mode');
+}
+check_randommap_selection_mode('<%=@competition.forced_maps.to_s%>');
+</script>
+
+<% if @competition.class.name != 'Ladder' && @competition.state < 3 then %>
+<div class="subheader"><div>Fechas de las partidas</div></div>
+<p><strong>Fechas de las partidas</strong><br />
+<select id="timetable_for_matches" name="competition[timetable_for_matches]" onchange="check_timetable_mode(this.value);">
+  <option></option>
+  <option <%=@competition.timetable_for_matches == 0 ? 'selected="selected"' : ''%> value="0">No poner fechas automáticas a las partidas</option>
+  <option <%=@competition.timetable_for_matches == 1 ? 'selected="selected"' : ''%> value="1">Organizar fechas de partidas automáticamente</option>
+</select>
+<br />
+<br />
+
+<%
+  t_opt = @competition.timetable_options ? @competition.timetable_options : nil
+%>
+<div id="timetable-options">
+<strong>Organizar partidas</strong><br />
+<%
+starts_on_day = (t_opt) ? t_opt[:starts_on_day] : 7.days.from_now.day 
+starts_on_month = (t_opt) ? t_opt[:starts_on_month] : 7.days.from_now.month 
+starts_on_year = (t_opt) ? t_opt[:starts_on_year] : 7.days.from_now.year 
+%>
+Día de comienzo de las partidas: 
+<%=select_day(starts_on_day.to_i, :prefix => 'competition[timetable_options]', :field_name => 'starts_on_day')%> 
+<%=select_month(starts_on_month.to_i, :prefix => 'competition[timetable_options]', :field_name => 'starts_on_month')%> 
+<%=select_year(starts_on_year.to_i, :prefix => 'competition[timetable_options]', :field_name => 'starts_on_year')%> 
+<table>
+  <tr style="vertical-align: top;">
+    <td style="width: 50%;">
+      <strong>Días de la semana disponibles</strong><br />
+<% 7.times do |dow| 
+dow += 1
+dow = 0 unless dow < 7
+%>
+<label><input type="checkbox" name="competition[timetable_options][dow_<%=dow%>]" <%=(t_opt && t_opt["dow_#{dow}".to_sym]) ? 'checked="checked"' : ''%> /> <%=Date::DAYNAMES[dow]%></label><br />
+<% end %>
+</td>
+<td>
+<strong>Horario disponible entre semana</strong><br />
+<table>
+  <%  
+  t_start_week = t_opt ? Time.local(1,1,1,t_opt[:time_start_week_hours],t_opt[:time_start_week_mins]) : Time.local(1,1,1,20)
+  t_end_week = t_opt ? Time.local(1,1,1,t_opt[:time_end_week_hours],t_opt[:time_end_week_mins]) : Time.local(1,1,1,0)
+  t_start_weekend = t_opt ? Time.local(1,1,1,t_opt[:time_start_weekend_hours],t_opt[:time_start_weekend_mins]) : Time.local(1,1,1,15)
+  t_end_weekend = t_opt ? Time.local(1,1,1,t_opt[:time_end_weekend_hours],t_opt[:time_end_weekend_mins]) : Time.local(1,1,1,0)
+  %>
+  <tr>
+    <td>Desde</td>
+    <td><%=select_hour(t_start_week, :prefix => 'competition[timetable_options]', :field_name => 'time_start_week_hours')%> <%=select_minute(t_start_week, :prefix => 'competition[timetable_options]', :field_name => 'time_start_week_mins')%></td>
+  </tr>
+  <tr>
+    <td>Hasta</td>
+    <td><%=select_hour(t_end_week, :prefix => 'competition[timetable_options]', :field_name => 'time_end_week_hours')%> <%=select_minute(t_end_week, :prefix => 'competition[timetable_options]', :field_name => 'time_end_week_mins')%></td>
+  </tr>
+</table>
+<br />
+<strong>Horario disponible fin de semana</strong><br />
+<table>
+  <tr>
+    <td>Desde</td>
+    <td><%=select_hour(t_start_weekend, :prefix => 'competition[timetable_options]', :field_name => 'time_start_weekend_hours')%> <%=select_minute(t_start_weekend, :prefix => 'competition[timetable_options]', :field_name => 'time_start_weekend_mins')%></td>
+  </tr>
+  <tr>
+    <td>Hasta</td>
+    <td><%=select_hour(t_end_weekend, :prefix => 'competition[timetable_options]', :field_name => 'time_end_weekend_hours')%> <%=select_minute(t_end_weekend, :prefix => 'competition[timetable_options]', :field_name => 'time_end_weekend_mins')%></td>
+  </tr>
+</table>
+</td>
+</tr>
+</table>
+Máximo de partidas al día: <input type="text" name="competition[timetable_options][max_matches_per_day]" class="text sm-text" value="<%=t_opt ? t_opt[:max_matches_per_day] : ''%>" /> <br />
+
+<div class="infoinline">Más adelante se puede modificar la fecha y hora de las partidas de forma individual.</div>
+<br />
+<br />
+</div>
+<script type="text/javascript">
+  check_timetable_mode($j('#timetable_for_matches').val);
+</script>
+<% end -%>
+
+
+<% if @competition.state < Competition::STARTED then %>
+<div class="subheader"><div>Puntuación</div></div>
+<p><strong>Modo de puntuar</strong></label><br/>
+<label><input type="radio" name="competition[scoring_mode]" value="<%=Competition::SCORING_SIMPLE%>" <%=@competition.scoring_mode == Competition::SCORING_SIMPLE ? 'checked="checked"' : '' %> /> Modo simple</label><br />
+<label><input type="radio" name="competition[scoring_mode]" value="<%=Competition::SCORING_PARTIAL%>" <%=@competition.scoring_mode == Competition::SCORING_PARTIAL ? 'checked="checked"' : '' %> /> Por suma de puntos/mapas/rondas</label><br />
+<label id="maps-points"><input type="radio" name="competition[scoring_mode]" value="<%=Competition::SCORING_SIMPLE_PER_MAP%>" <%= @competition.scoring_mode == Competition::SCORING_SIMPLE_PER_MAP ? 'checked="checked"' : '' %> /> Por número de mapas ganados <span class="infoinline">Require indicar un "Número de mapas por partida"</label></p>
+<% end -%>
+<% end -%>
+<%=(@competition.default_maps_per_match.nil? or @competition.default_maps_per_match == 0) ? '<script type="text/javascript">check_maps($j("#maps-selector").val);</script>' : ''%>
+<% end -%>
+<!--[eoform:competition]-->
+

@@ -1,0 +1,8 @@
+<h1>New games_map</h1>
+
+<%= form_tag({:action => 'create'}, :multipart => true)%>
+  <%= render :partial => 'form' %>
+  <%= submit_tag "Create" %>
+</form>
+
+<%= link_to 'Back', :action => 'list' %>

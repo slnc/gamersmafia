@@ -1,0 +1,27 @@
+User-agent: *
+Disallow: /account
+Disallow: /admin
+Disallow: /cache
+Disallow: /comments
+Disallow: /cuenta
+Disallow: /comentarios
+Disallow: /site/rate_content
+Crawl-delay: 10
+
+User-agent: e-SocietyRobot
+Disallow: /
+
+User-agent: twiceler
+Disallow: /
+
+User-Agent: VoilaBot
+Disallow: /
+
+User-Agent WebAlta Crawler/2.0
+Disallow: /
+
+User-Agent WebAlta Crawler
+Disallow: /
+
+User-Agent WebAlta
+Disallow: /

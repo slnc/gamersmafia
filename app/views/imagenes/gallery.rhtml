@@ -1,0 +1,53 @@
+<% content_support do %>
+  	
+		<% #= render :partial => '/imagenes/random', :locals => {:category => @category} %>
+	
+
+	<%= render :partial => '/imagenes/best_rated', :locals => {:category => @category} %>
+  
+  <% mftext('Aportaciones a la galería') do %>
+  <ul class="content-hid">
+<% cache("/common/imagenes/gallery/#{@category.id}/aportaciones") do %>
+  <% 
+  dbusers = User.db_query("select user_id, count(id) from images where images_category_id in (#{@category.id}) and state = 2 group by (user_id) order by count(id) desc limit 5")
+  total = @category.images.count(:conditions => "state = #{Cms::PUBLISHED}")
+  for dbuser in dbusers %>
+  <li><%=draw_user_info(User.find(dbuser['user_id'].to_i))%><br /><%=draw_pcent_bar(dbuser['count'].to_f / total)%></li>
+  <% end %>
+  </ul>
+  <% end -%>
+  
+  <% mftext('Otras galerías') do %>
+  <ul class="content-hid">
+    <strong><%=@category.parent.name%></strong>
+  <% for gallery in @category.parent.children %>
+  <% if @category.id == gallery.id then %>
+  <li class="current"><%=link_to gallery.name, gmurl(gallery)%></li>
+  <% else %>
+  <li><%=link_to gallery.name, gmurl(gallery)%></li>
+  <% end -%>
+  <% end -%>
+<% end -%>
+  </ul>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% mftext("#{@category.parent.name} &raquo; #{@category.name}") do %>
+<div class="imagesgallery">
+<%
+@image_pages = ActionController::Pagination::Paginator.new self, Image.count(:conditions => ['images_category_id = ? and state = 2', @category.id]), 16, params['page']
+%>
+<%= render :partial => 'shared/pager', :object => @image_pages, :locals => {:pos => 'top'} %>
+<% cache("/common/imagenes/gallery/#{@category.id}/page_#{params[:page]}") do
+@images = Image.find(:published, :conditions => ['images_category_id = ?', @category.id], :order => 'id asc', :limit => @image_pages.current.to_sql[0], :offset => @image_pages.current.to_sql[1])
+
+for image in @images %>
+  <span class="screenshot"><%=link_to fc_thumbnail(image.file, 'f', '153x115', false), gmurl(image)%></span>
+<% end %>
+<% end %>
+<div style="clear: both;">&nbsp;</div>
+<%= render :partial => 'shared/pager', :object => @image_pages, :locals => {:pos => 'bottom'} %>
+</div>
+<% end -%>
+<% end -%>

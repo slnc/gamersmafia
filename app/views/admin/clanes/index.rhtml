@@ -1,0 +1,29 @@
+<% content_main do %>
+<%mftext('Clanes') do %>
+
+<table>
+  <tr>
+    <th>Nombre</th>
+    <th class="w50">Tag</th>
+    <th class="w50">Miembros</th>
+    <th>Juegos</th>
+    <th style="text-align: right;">Creado</th>
+  </tr>
+  
+<% for clan in @clans %>
+  <tr class="<%=oddclass%>">
+    <td><a href="/admin/clanes/edit/<%=clan.id%>"><%=clan.name.to_s == '' ? "\##{clan.id}" : clan.name%></a></td>
+    <td class="w50"><%=notags(clan.tag)%></td>
+    <td class="w50"><%=clan.members_count%></td>
+    <td><% for game in clan.games%><%=faction_favicon(game)%> <% end -%></td>
+    <td class="infoinline timestamp"><%=print_tstamp(clan.created_on)%></td>
+    <td class="timestamp"><a href="/admin/clanes/destroy/<%=clan.id%>?page=<%=params[:page]%>" onclick="if (confirm('¿Estás seguro?')) { var f = document.createElement('form'); this.parentNode.appendChild(f); f.method = 'POST'; f.action = this.href; f.submit(); };return false;">Borrar</a></td>
+  </tr>
+<% end %>
+</table>
+
+<%= render :partial => 'shared/pager', :object => @clan_pages, :locals => {:pos => 'bottom'} %>
+
+<%= link_to 'New clan', :action => 'new' %>
+<% end -%>
+<% end -%>

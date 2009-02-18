@@ -1,0 +1,10 @@
+<% mftext('Bloggers mejor valorados') do %>
+<ul class="content-hid">
+<% cache("/common/miembros/_top_bloggers/#{Time.now.to_i/86400}") do %>
+<% Blogs.top_bloggers.each do |u|%>
+    <li><a href="/blogs/<%=u.login%>"><%=u.login%></a></li>
+<% end -%>
+<% end -%>
+</ul>
+<div><a href="/blogs/ranking">Ver ranking completo</a></div>
+<% end -%>

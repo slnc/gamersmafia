@@ -1,0 +1,19 @@
+<%mftext('¿Publicamos?') do %>
+<table>
+  <% object.unique_content.publishing_decisions.find(:all, :order => 'updated_on DESC', :include => 'user').each do |pd| 
+    odd = oddclass
+  %>
+  <tr class="<%=odd%>">
+    <td class="w20"><img class="<%=pd.publish? ? 'publish16' : 'deny16'%>" src="/images/blank.gif" /></td>
+    <td><a href="<%=gmurl(pd.user)%>"><%=pd.user.login%></a><% if not pd.publish? then %> <span class="infoinline" >(<%=pd.deny_reason%>)</span><% elsif pd.publish? && pd.accept_comment.to_s != '' then %> <span class="infoinline" >(<%=pd.accept_comment%>)</span><% end %></td>
+    <td class="w50" class="<%=pd.publish? ? 'publishbar' : 'denybar'%>"><%=draw_pcent_bar(pd.user_weight)%></td>
+    <% if Cms::user_can_edit_content?(@user, object) and ! pd.publish? then %><td class="w25"><a title="Cambiar a publicar ya que el contenido se ha modificado" onclick="return confirm('¿Estás seguro?');" href="/admin/contenidos/switch_decision/<%=pd.id%>"><img class="change-publishing-state" src="/images/blank.gif" /></a></td><% end -%>
+  </tr>
+  
+  <tr class="<%=odd%>">
+    
+  </tr>
+  
+<% end %>
+</table>
+<% end -%>

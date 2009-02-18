@@ -1,0 +1,22 @@
+<%= error_messages_for 'ad' %>
+
+<!--[form:ad]-->
+<p><label for="ad_question">Nombre</label><br/>
+<%= text_field 'ad', 'name', :class => 'text', :size => 80 %></p>
+
+<p><label for="image_file">Imagen</label><br/>
+<% if @ad.file then %>
+<%=fc_thumbnail(@ad.file, 'k', '153x115')%> <%=@ads_slot.image_dimensions if @ads_slot%> 
+<% end -%>
+<%= file_field 'ad', 'file' %>
+<% if !@ad.new_record? then %>
+<div class="infoinline">No se recomienda cambiar la imagen sustancialmente ya que los datos históricos no serían coherentes. Es preferible crear un nuevo anuncio y dar de baja el anuncio viejo.</div>
+<% end -%>
+</p>
+
+<p><label for="ad_question">Enlace de la imagen</label><br/>
+<%= text_field 'ad', 'link_file', :class => 'text'%></p>
+
+
+<!--[eoform:ad]-->
+

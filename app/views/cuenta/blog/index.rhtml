@@ -1,0 +1,33 @@
+<% content_support do %>
+  <% mftext('Nueva entrada') do %>
+  <div class="centered-link"><a href="/cuenta/blog/new">Redactar nueva entrada</a></div>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Entradas de blog') do %>
+<%  blogentries_pages, blogentries = controller.paginate :blogentries, :conditions => ['user_id = ? and state = ?', @user.id, Cms::PUBLISHED], :order => 'created_on DESC', :per_page => 20 %>
+
+  <%= render :partial => 'shared/pager', :object => blogentries_pages, :locals => {:pos => 'top'} %>
+  <table>
+    <tr>
+      <th>Título</th>
+      <th class="timestamp">Publicada</th>
+      <th>Comentarios</th>
+      <th>Visitas</th>
+    </tr>
+
+    <% for be in blogentries %>
+    <tr class="<%=oddclass%>">
+      <td><a href="/cuenta/blog/edit/<%=be.id%>"><%=be.title%></a></td>
+      <td class="infoinline timestamp"><%=print_tstamp(be.created_on)%></td>
+      <td><%=be.cache_comments_count%></td>
+      <td><%=be.hits_anonymous + be.hits_registered%></td>
+      <td><%=link_to 'Borrar', {:controller => '/cuenta/blog', :action => 'destroy', :id => be.id}, { :confirm => '¿Estás seguro?', :method => :post }%></td>
+    </tr>
+    <% end -%>
+  </table>
+
+  <%= render :partial => 'shared/pager', :object => blogentries_pages, :locals => {:pos => 'bottom'} %>
+  <% end -%>
+<% end -%>

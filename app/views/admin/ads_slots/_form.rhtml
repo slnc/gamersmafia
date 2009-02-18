@@ -1,0 +1,34 @@
+<%= error_messages_for 'ads_slot' %>
+
+<!--[form:ad]-->
+<p><label for="ads_slot_question">Nombre</label><br/>
+<%= text_field 'ads_slot', 'name', :class => 'text', :size => 80 %></p>
+
+<p><label for="ads_slot_question">Behaviour class</label><br/>
+<select name="ads_slot[behaviour_class]">
+	<%=options_for_select(Ads::SlotsBehaviours::VALID_BEHAVIOURS, @ads_slot.behaviour_class)%>
+</select>
+</p>
+
+<p><label for="ads_slot_question">Location</label><br/>
+<select name="ads_slot[location]">
+	<%=options_for_select(AdsSlot::VALID_LOCATIONS, @ads_slot.location)%>
+</select>
+</p>
+
+<p><label for="ads_slot_imagedimensions">Dimensiones de la imagen</label><br/>
+<%= text_field 'ads_slot', 'image_dimensions', :class => 'text', :size => 10 %></p>
+</p>
+
+<p><label for="ads_slot_question">Anunciante</label><br/>
+<select name="ads_slot[advertiser_id]">
+	<option value=""></option>
+	<%=options_from_collection_for_select(Advertiser.find(:all), :id, :name, @ads_slot.advertiser_id)%>
+</select>
+</p>
+
+<p><label for="ads_slot_question">Position</label><br/>
+<%= text_field 'ads_slot', 'position', :class => 'text', :size => 3 %></p>
+
+<!--[eoform:ad]-->
+

@@ -1,0 +1,36 @@
+<% content_main do %>
+<%mftext('Editar portal') do %>
+<form method="post" action="/admin/portales/update/<%=@theportal.id%>">
+	<table>
+		<tr class="<%=oddclass%>">
+			<td>Cabecera por defecto</td>
+			<td><select name="portal[default_gmtv_channel_id]"><% @theportal.channels.each do |channel| %><option <%="selected=\"selected\"" if channel.id == @theportal.default_gmtv_channel_id%> value="<%=channel.id%>"><%=channel.id%> (<%=File.basename(channel.file)%>)</option><%end%></select></td>
+		</tr>
+		
+		<tr class="<%=oddclass%>">
+			<td>Skin</td>
+			<td><%=@theportal.skin_id%></td>
+		</tr>
+		
+		<tr class="<%=oddclass%>">
+			<td>Code</td>
+			<td><%=@theportal.code%></td>
+		</tr>
+		
+		<tr class="<%=oddclass%>">
+			<td>Tipo</td>
+			<td><%=@theportal.type%></td>
+		</tr>
+		<% if @theportal.respond_to? :factions_portal_home then %>
+		<tr class="<%=oddclass%>">
+			<td>Home</td>
+			<td><select name="portal[factions_portal_home]"><option name=""></option>
+			<% FactionsPortal::VALID_HOMES.each do |home| %><option <%="selected=\"selected\"" if home == @theportal.factions_portal_home%> value="<%=home%>"><%=home%></option>
+			<%end%></select></td>
+		</tr>
+		<% end -%>
+	</table>
+	<input type="submit" class="button" value="Guardar" />
+</form>
+<% end -%>
+<% end -%>

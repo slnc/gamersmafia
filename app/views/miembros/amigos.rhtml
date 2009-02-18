@@ -1,0 +1,41 @@
+<% content_support do %>
+  
+<% end -%>
+
+<% content_main do %>
+  <% mftext("Amigos de #{@curuser.login}") do %> 
+  <table>
+  <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/friends_#{Time.now.to_i/(86400*30)}") do %>
+  <% friends = @curuser.friends
+f_count = friends.size
+  if f_count < 10 then %>
+    <%friends.each do |friend| %>
+    <tr class="<%=oddclass%>"><td><a style="display: block; float: left;" href="<%=gmurl(friend)%>"><img style="width: 32px; height: 32px;" src="/cache/thumbnails/i/32x32<%=friend.show_photo%>" /></a> <a href="<%=gmurl(friend)%>"><%=friend.login%></a></td></tr>
+    <% end -%>
+    <% else 
+    parts = f_count / 3
+    part1 = ''
+    part2 = ''
+    part3 = ''
+    i = 0
+    friends.each do |friend|
+    out = "<tr class=\"#{oddclass}\"><td style=\"line-height: 32px;\"><a style=\"display: block; float: left; margin-right: 5px;\" href=\"#{gmurl(friend)}\"><img style=\"width: 32px; height: 32px;\" src=\"/cache/thumbnails/i/32x32#{friend.show_avatar}\" /></a> <strong><a href=\"#{gmurl(friend)}\">#{friend.login}</a></strong></td></tr>"
+    if i <= parts
+      part1 << out
+    elsif i <= parts * 2 + 1
+      part2 << out
+    else
+      part3 << out
+    end
+    i += 1
+    end -%>
+  <tr>
+    <td style="vertical-align: top; width: 33%;"><table><%=part1%></table></td>
+    <td style="vertical-align: top; width: 33%;"><table><%=part2%></table></td>
+    <td style="vertical-align: top; width: 33%;"><table><%=part3%></table></td>
+  </tr>
+  <% end -%>
+<% end -%>
+</table>
+<% end -%>
+<% end -%>

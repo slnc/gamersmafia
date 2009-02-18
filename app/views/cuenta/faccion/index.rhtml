@@ -1,0 +1,89 @@
+<% content_support do %>
+<% if @faction then %>
+<% mftext('Cambiar de facción') do %>
+  <% if @user.can_change_faction? then %>
+  <form method="post" action="/cuenta/faccion/join">
+      <%= collection_select :user, :id,  [Faction.new({:id => '', :name => '(Ninguna)'})] + Faction.find(:all, :conditions => ['name <> ?', @faction.name], :order => 'lower(name) ASC'), :id, :name %>
+      <br />
+      <br />
+	  <input type="submit" class="button" value="Unirme" onclick="return confirm('¿Estás seguro de que quieres abandonar tu facción actual y unirte a la seleccionada?');" />
+      </form>
+  <% else %>
+    <p>No puedes cambiar de facción hasta el <strong><%=print_tstamp @user.can_change_faction_after%></strong>.</p>
+  <% end # if -%>
+  <% end #mftext -%>
+
+
+<% mftext('Staff') do %>
+Líderes:<br />
+<% if @faction.boss then %>
+<%=draw_user_info(@faction.boss)%>
+<% end -%>
+<% if @faction.underboss then %>
+<%=draw_user_info(@faction.underboss)%>
+<% end -%>
+
+<% if @faction.boss.nil? and @faction.underboss.nil? then %>
+<p>Esta facción no tiene líderes.</p>
+<% end -%>
+<% end #mftext -%>
+
+<% mftext('Estadísticas') do %>
+<%= render :partial => 'content_stats', :locals => { :faction => @faction } %>
+<% end #if faction -%>
+<% end #mftext -%>
+<% end # content support-%>
+
+<% content_main do %>
+
+<% if @user.is_faction_leader? then %>
+<%mftext('Estadísticas') do %>
+<div id="line1"></div>
+<script type="text/javascript">
+	<% cache("/common/stats/factions/#{Time.now.strftime('%Y-%m-%d')}/#{@user.faction_id}") do %>
+	<% 	
+	ddata = User.db_query("select avg(karma) as karma, (extract('epoch' from created_on) / 259200)::int as epoch from stats.portals where portal_id = (select id from portals where code = '#{@user.faction.code}') group by (extract('epoch' from created_on) / 259200)::int order by (extract('epoch' from created_on) / 259200)::int desc limit 30")
+	ddata.reverse!
+	data = ddata.collect { |dbr| dbr['karma'].to_i } 
+	data_ready = data.collect { |da| "[#{da}]" }
+	i = 0
+	axis = ddata.collect { |da|
+	i += 1
+		if i % 4 == 0 then  
+		Time.at(da['epoch'].to_i*86440*3).strftime("'%d %b'")
+		else
+		"' '"
+		end 
+	}
+	%>
+var api = new jGCharts.Api(); 
+jQuery('<img>') 
+.attr('src', api.make({ 
+data: [<%=data.join(',')%>],
+axis_labels: [<%=axis.join(',')%>],
+fillarea: true,
+fillbottom: true,
+size: '500x150',
+title: 'Karma en los últimos 3 meses', 
+type: 'lc'})) 
+.appendTo("#line1");
+</script>
+<% end # cache -%>
+<% end -%>
+<% end -%>
+
+<% mftext('Elegir facción') do %>
+<% if not @faction and (@user.faction_last_changed_on.nil? or @user.faction_last_changed_on < 1.month.ago) then %>
+  <div class="warning">Si eliges una facción y luego quieres cambiar a otra tendrás que esperar un mes.</div>
+  <form method="post" action="/cuenta/faccion/join">
+  <%= collection_select :user, :id, Faction.find(:all, :order => 'lower(name) ASC'), :id, :name, {:include_blank => true} %>
+  <br />
+  <br />
+  <input type="submit" class="button" value="Unirme" />
+  </form>
+  <div class="system-message">Si quieres saber más sobre facciones puedes visitar la <a href="/site/faq">sección de ayuda</a>.</div>
+<% elsif not @faction and @user.faction_last_changed_on >= 1.month.ago %>
+   <p>No puedes elegir una nueva facción hasta <strong><%=print_tstamp @user.can_change_faction_after%></strong>.</p>
+<% end # if -%>
+<% end # mftext -%>
+<% end # content-%>

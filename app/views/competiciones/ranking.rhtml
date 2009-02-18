@@ -1,0 +1,34 @@
+<% content_main do %>
+  <% mftext('Ranking') do %>
+  <%
+    winners = @competition.winners(3)
+    w = winners.size > 0 ? [winners[0].id, winners[1] ? winners[1].id : nil, winners[2] ? winners[2].id : nil] : []
+    winner = 0
+  %>
+<table>
+  <tr>
+    <th class="centered">#</th>
+    <th>Participante</th>
+    <th class="w50">Puntos</th>
+    <th class="w50">Ganadas</th>
+    <th class="w50">Empatadas</th>
+    <th class="w50">Perdidas</th>
+  </tr>
+  <% 
+  i = 1
+  for p in @competition.winners(100) %>
+  <tr class="<%=oddclass%>">
+    <td class="w20"><%=i%></td>
+    <td><a href="/competiciones/participante/<%=p.id%>"><%=notags(p.name)%></a> <%=w.include?(p.id) ? "<img src=\"/images/blank.gif\" class=\"competition-cup cup#{winner}\" />" : ''%></td>
+
+    <td class="centered"><%=p.points%></td>
+    <td class="centered"><%=p.wins%></td>
+    <td class="centered"><%=p.ties%></td>
+    <td class="centered"><%=p.losses%></td>
+  </tr>
+<%  winner += 1 if w.include?(p.id)  
+    i += 1
+  end -%>
+</table>
+<% end -%>
+<% end -%>

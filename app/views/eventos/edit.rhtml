@@ -1,0 +1,21 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Event } if user_is_authed %>
+<%= render :partial => 'shared/content_details', :locals => { :object => @event} %>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @event} %>
+<%= render :partial => 'shared/pending', :object => Event.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Editar evento') do %>
+<%= form_tag({:action => 'update', :id => @event}, { :name => 'editing_content' }) %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @event}%>
+<%=render :partial => '/shared/change_authorship', :locals => {:object => @event}%>
+
+<br />
+<%= link_to 'Mostrar evento publicado', gmurl(@event) %> |
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

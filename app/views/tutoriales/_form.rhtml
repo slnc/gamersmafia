@@ -1,0 +1,17 @@
+<p><label >Categoría</label><br/>
+<%= render_tree_select TutorialsCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc'), 'name', 'tutorial[tutorials_category_id]', @tutorial.tutorials_category_id %>
+
+<p><label for="tutorial_title">Título</label><br/>
+<%= text_field 'tutorial', 'title', :class => 'text'  %></p>
+
+<p><label for="tutorial_description">Descripción</label><br/>
+<%=wysiwyg('tutorial[description]', :value => @tutorial.description, :height => '200px')%></p>
+
+<p><label for="tutorial_text">Contenido</label><br/>
+<%=wysiwyg('tutorial[main]', :value => @tutorial.main)%></p>
+
+<p><label for="image_file">Imagen para portada (.JPG que se mostrará a 105x54)</label><br/>
+<%=fc_thumbnail(@tutorial.home_image, 'f', '105x54')%>
+<%= file_field 'tutorial', 'home_image' %></p>
+
+<%=draft_check_box(@tutorial)%>

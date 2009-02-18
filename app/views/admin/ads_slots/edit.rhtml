@@ -1,0 +1,128 @@
+<% content_support(:show_ads => false) do %>
+<% mftext('Herramientas') do %>
+<form method="post" action="/admin/ads_slots/copy/<%=@ads_slot.id%>">
+Nombre: <input type="text" name="ads_slot[name]" /><br />
+<input type="submit" value="Copiar" />	
+</form>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+<h1>Editar ads slot</h1>
+
+<%= form_tag({:action => 'update', :id => @ads_slot}, :multipart => true )%>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+
+
+<h1>Ads asociados a este slot</h1>
+<% 
+instances = @ads_slot.ads_slots_instances.find(:all, :conditions => 'deleted is false')
+adsis = @ads_slot.ads_slots_instance_ids
+adsis = [0] if adsis.size == 0
+
+db_ctrs = User.db_query("SELECT avg(ctr), max(ctr) FROM stats.ads_daily WHERE ads_slots_instance_id IN (#{adsis.join(',')}) AND created_on >= now() - '30 days'::interval GROUP BY ads_slots_instance_id;")
+
+avg_ctrs = []
+max_group_ctr = nil
+
+db_ctrs.each do |dbr|
+  max_group_ctr = dbr['max'].to_f if max_group_ctr.nil? || dbr['max'].to_f > max_group_ctr
+  avg_ctrs << (dbr['avg'].to_f * 1000)
+end
+
+low_ctr_threshold = avg_ctrs.percentile(0.25)
+high_ctr_threshold = avg_ctrs.percentile(0.75)
+max_ctr = max_group_ctr.to_f * 1000
+# [0]['max'].to_f * 1000
+%>
+
+<% #=low_ctr_threshold%><br />
+<% #=high_ctr_threshold%><br />
+<% #=avg_ctrs.mean%>
+<table>
+	<tr>
+		<th>Anuncio</th>
+		<th>Último mes</th>
+		<th>CTR</th>
+		<th>Clicks</th>
+		<th>Pageviews</th>
+	</tr>
+<%
+instances.each do |adsi|
+	ddata = User.db_query("select avg(ctr) as ctr, sum(hits) as hits, sum(pageviews) as pageviews, (extract('epoch' from created_on) / 259200)::int as epoch from stats.ads_daily where ads_slots_instance_id = #{adsi.id} group by (extract('epoch' from created_on) / 259200)::int order by (extract('epoch' from created_on) / 259200)::int desc limit 30")
+	ddata.reverse!
+	data = ddata.collect { |dbr| dbr['ctr'].to_f*1000 } 
+cur_mean_ctr = ddata.collect { |dbr| dbr['ctr'].to_f }.mean * 1000
+
+%>
+<tr class="<%=oddclass%> value-is-<%='low' if cur_mean_ctr <= low_ctr_threshold %><%='high' if cur_mean_ctr >= high_ctr_threshold %>" id="adsi<%=adsi.id%>">
+	<td><a href="/admin/ads/edit/<%=adsi.ad.id%>"><%=adsi.ad.name%></a><br />
+	<%=fc_thumbnail(adsi.ad.file, 'k', '153x60') if adsi.ad.file%></td>
+	<td><%=sparkline(:size => '125x50', :data => data, :max => max_ctr)%></td>
+<td class="centered value" style="font-weight: bold;"><%=sprintf("%.2f", cur_mean_ctr)%></td>
+<td class="right"><%=ddata.collect { |dbr| dbr['hits'].to_i }.sum2 %></td>
+<td class="right"><%=ddata.collect { |dbr| dbr['pageviews'].to_i }.sum2 %></td>
+</tr>
+<% end -%>
+</table>
+
+
+<br />
+<br />
+<h1>Ads asociados a este slot</h1>
+<div class="subheader"><div>Nuevo</div></div>
+<% @ad = Ad.new %>
+
+<%= form_tag('/admin/ads/create_and_associate', :multipart => true )%>
+<input type="hidden" name="redirto" value="/admin/ads_slots/edit/<%=@ads_slot.id%>" />
+<input type="hidden" name="ads_slot_id" value="<%=@ads_slot.id%>" />
+  <%=render :partial => '/admin/ads/form' %>
+  <%= submit_tag 'Crear y asociar ad' %>
+</form>
+
+<div class="subheader"><div>Existente</div></div>
+
+
+<%= form_tag({:action => 'update_slots_instances', :id => @ads_slot})%>
+<table>
+<% 
+instances = @ads_slot.ads_slots_instances.find(:all, :conditions => 'deleted is false').collect { |asi| asi.ad_id }
+Ad.find(:all, :order => 'name').each do |ad| %>
+<tr class="<%=oddclass%>">
+	<td class="checkbox"><input type="checkbox" name="ads[]" value="<%=ad.id%>" <%='checked="checked"' if instances.include?(ad.id) %>/></td>
+	<td><a href="/admin/ads/edit/<%=ad.id%>"><%=ad.name%></a></td>
+</tr>
+<% end -%>
+</table>
+<%= submit_tag 'Guardar ads asociados' %>
+</form>
+
+<br />
+
+<div class="subheader"><div>Portales en los que aparece</div></div>
+<form method="post" action="/admin/ads_slots/add_to_portal/<%=@ads_slot.id%>">
+	Portal: 
+	<select name="portal_id">
+		<%=options_for_select([['gm', GmPortal.new.id], ['arena', ArenaPortal.new.id], ['bazar', BazarPortal.new.id]] + Portal.find(:all, :conditions => 'type <> \'ClansPortal\'', :order => 'code').collect { |o| [o.code, o.id] }) %>
+	</select><br />
+	<input type="submit" value="Asociar" />
+</form>
+<% if @ads_slot.portals.size == 0 then %>
+<p>Aparece en todos los portales</p>
+<% else %>
+<p>Solo aparece en los portales: 
+<table>
+	<%@ads_slot.portals.each do |portal| %>
+	<tr class="<%=oddclass%>">
+		<td><%=portal.code%></td>
+		<td><a href="/admin/ads_slots/remove_from_portal/<%=@ads_slot.id%>?portal_id=<%=portal.id%>">Quitar</a></td>
+	</tr>
+	<% end -%>
+</table>
+</p>
+<% end -%>
+<%= link_to 'Volver', :action => 'index' %>
+
+<% end -%>

@@ -1,0 +1,11 @@
+<div class="centered"><br />
+  Han jugado: 
+  <select name="participation">
+    <option value="both" <%='selected="selected"' if (!match.forfeit_participant1 && !match.forfeit_participant2)%>>Ambos</option>
+    <option value="p1" <%='selected="selected"' if (!match.forfeit_participant1 && match.forfeit_participant2)%>><%=notags(match.participant1.name)%></option>
+    <option value="p2" <%='selected="selected"' if (match.forfeit_participant1 && !match.forfeit_participant2)%>><%=notags(match.participant2.name)%></option>
+    <option value="noone" <%='selected="selected"' if (match.forfeit_participant1 && match.forfeit_participant2)%>></option>
+  </select>
+  <br />
+  <br />
+</div>

@@ -1,0 +1,128 @@
+<% content_support do %>
+  <% if @competition.user_is_admin(@user.id) then %>
+  <% mftext('Estado actual') do %>
+  <ul class="skeletal">
+    <% for s in Competition::STATES_ES.keys 
+    next if @competition.kind_of?(Ladder) && [1,2].include?(s)
+    %>
+  <li class="centered"><%= @competition.state == s ? '<strong>' : ''%><%=Competition::STATES_ES[s]%><%= @competition.state == s ? '</strong>' : ''%></li>
+  <% end -%>
+  </ul>
+  <% end -%>
+
+  <% case @competition.current_state 
+  when 'created':
+  %>
+  <% mftext('Avanzar competición') do %>
+  <div class="centered" style="padding: 10px 0;">
+    <% if @competition.configured? then %>
+      <form method="post" action="/cuenta/competiciones/change_state">
+      <input type="hidden" name="new_state_id" value="<%=@competition.kind_of?(Ladder) ? 3 : 1%>" />
+      <input type="submit" class="button" value="<%=@competition.kind_of?(Ladder) ? 'Iniciar competición' : 'Abrir inscripciones'%>" onclick="return confirm('¿Estás seguro?');" />
+    <% else %>
+    <p>Debes <a href="/cuenta/competiciones/configuracion">configurar la competición</a> antes de abrir las inscripciones.</p>
+    <% end -%>
+  </form>
+</div>
+<% end -%>
+  <%
+  when 'inscriptions_open':
+  %>
+  <% mftext('Avanzar competición') do %>
+  <div class="centered" style="padding: 10px 0;">  
+    <% if @competition.competitions_participants.count < 3 then %>
+    <p>No se ha alcanzado el número mínimo de participantes (3) para esta competición.</p>
+    <% else %>
+    <form method="post" action="/cuenta/competiciones/change_state">
+      <input type="hidden" name="new_state_id" value="2" />
+      <input type="submit" class="button" value="Cerrar inscripciones" onclick="return confirm('¿Estás seguro?');" />
+    </form>
+    <% end -%>
+  </div>
+  <% end -%>
+  <%
+  when 'inscriptions_closed':
+  %>
+  <% mftext('Avanzar competición') do %>
+  <div class="centered" style="padding: 10px 0;">	
+  <form method="post" action="/cuenta/competiciones/change_state">
+    <input type="hidden" name="new_state_id" value="3" />
+    <input type="submit" class="button" value="Iniciar competición" onclick="return confirm('¿Estás seguro?');" />
+  </form>
+  <br />
+  <br />
+  <a class="infoinline" href="/cuenta/competiciones/reopen_inscriptions" onclick="return confirm('Las partidas se resetearán. ¿Estás seguro?');">Reabrir inscripciones</a>
+</div>
+<% end -%>
+  <%
+  when 'started':
+  %>
+  <% mftext('Avanzar competición') do %>
+  <div class="centered" style="padding: 10px 0;">
+    <% if @competition.can_be_closed? then %>
+    <form method="post" action="/cuenta/competiciones/change_state">
+      <input type="hidden" name="new_state_id" value="4" />
+      <input type="submit" class="button" value="Cerrar competición" onclick="return confirm('¿Estás seguro?');" />
+    </form>
+    <% else 
+        pending = @competition.matches(:result_pending).size
+        if pending > 0 then %>
+        <p>Quedan por confirmar los resultados de <strong><%=pending%></strong> partidas.</p>
+    <%  else 
+          last = @competition.matches(:completed, :order => 'completed_on DESC', :limit => 1)[0]
+          if last then%>
+            <p>Todavía no han pasado 7 días desde la conclusión del campeonato. Quedan <%=format_interval(Time.now.to_i - last.completed_on.to_i)%>.</p>
+            <% else %>
+            <p>La competición no se puede cerrar por una causa desconocida.</p>
+            <% end -%>
+     <% end -%>
+    <% end -%>
+  </div>
+  <% end -%>
+  <%
+  when 'closed':
+  %>
+  <p>Competición finalizada. No son posibles nuevos cambios.</p>
+<%
+  end %>
+<% end -%>
+
+<% if @competition.state < 3 then %>
+<% mftext('Borrar competición') do %>
+<form method="post" action="/cuenta/competiciones/destroy">
+  <div class="centered-link"><input type="submit" class="button" value="Borrar" onclick="return confirm('¿Estás seguro de que deseas BORRAR la competición?');" /></div>
+</form>
+<% end -%>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% if @competition.user_is_admin(@user.id) then %>
+    <% if @user.is_superadmin then %>
+  <div id="error"><strong>Acciones temporales para pruebas (SOLO LO VEMOS LOS SUPERADMINS)</strong><br />
+  <ul>
+    <li><form method="post" action="/cuenta/competiciones/hack/add_participants">
+      Añadir número de participantes: <input type="text" class="text sm-text" name="participants_count" />
+      <input type="submit" class="button" value="Añadir" /> (Esta opción es leeeeenta)
+    </form>
+    </li>
+    <li><a onclick="return confirm('¿Estás seguro?');" href="/cuenta/competiciones/hack/remove_all_participants">Quitar todos los participantes actuales</a></li>
+    <li><a onclick="return confirm('¿Estás seguro?');" href="/cuenta/competiciones/hack/recreate_matches">Recrear todas las partidas según configuración actual</a></li>
+    <% if (@competition.default_maps_per_match and @competition.forced_maps) then %>
+      <li><a onclick="return confirm('¿Estás seguro?');" href="/cuenta/competiciones/hack/reselect_maps">Reelegir todos los mapas para las partidas según configuración actual</a></li>
+    <% end -%>
+    <% if @competition.state > 0 then %>
+      <li><a onclick="return confirm('¿Estás seguro?');" href="/cuenta/competiciones/hack/previous_stage">Ir al estado de competición anterior</a></li>
+    <% end -%>
+  </ul>
+  </div>
+    <% end -%>
+    <% mftext('Consejos') do %>
+    <div class="subheader"><div>Informa con coverages</div></div>
+    <p>Mantén informados a tus jugadores. Avísales de cambios en las reglas o noticias importantes:</p>
+    <div style="margin-left: 20px;"><strong><a href="/coverages/new?coverage[event_id]=<%=@competition.event_id%>">Nuevo coverage</a></strong></div>
+    <div class="subheader"><div>Seriedad</div></div>
+    <p>Si te tienen que criticar de algo que sea de ser demasiado severo y de querer hacer bien las cosas, no hay nada malo en ello.</p>
+  <% end -%>
+  <% end -%>
+<% end -%>

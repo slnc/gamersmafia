@@ -1,0 +1,11 @@
+
+<%content_main do%>
+<img src="/skins/default/images/401.png" align="right" />
+<h1>Acceso denegado</h1>
+
+<% if user_is_authed then %>
+<p>No tienes permiso para acceder a esta página.</p>
+<% else %>
+<p>Necesitas iniciar sesión para poder acceder a esta página.</p>
+<% end -%>
+<% end -%>

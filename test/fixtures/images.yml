@@ -1,0 +1,63 @@
+published:
+  id: 1
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  images_category_id: 1
+  approved_by_user_id: 1
+  file: storage/images/foo.jpg
+  state: 2
+
+unpublished:
+  id: 2
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  images_category_id: 1
+  file: storage/images/foo2.jpg
+  state: 1
+
+deleted:
+  id: 3
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  images_category_id: 1
+  approved_by_user_id: 1
+  file: storage/images/foo3.jpg
+
+babe:
+  id: 4
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  images_category_id: 5
+  approved_by_user_id: 1
+  file: storage/images/babe.jpg
+  state: 2
+
+dude:
+  id: 5
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  images_category_id: 6
+  approved_by_user_id: 1
+  file: storage/images/dude.jpg
+  state: 3
+

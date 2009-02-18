@@ -1,0 +1,32 @@
+<% content_support do %>
+  <%= render :partial => '/shared/drafts', :locals => { :cls => News } if user_is_authed %>
+  <%=render :partial => 'shared/content_details', :locals => { :object => @news } %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Escueta</li>
+<li>Revisar ortografía y gramática</li>
+<li>Objetiva</li>
+<li>De interés general</li>
+<li>Indicar fuente</li>
+</ul>
+<% end -%>
+
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @news} %>
+<%= render :partial => 'shared/pending', :object => News.pending %>
+<% end -%>
+
+<% content_main do %>
+<%mftext('Editar noticia') do %>
+
+<% form_tag({:action => 'update', :id => @news}, { :name => 'editing_content', :multipart => true }) do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+<% end %>
+<%=render :partial => '/shared/accept_or_deny', :locals => { :object => @news }%>
+<%=render :partial => '/shared/change_authorship', :locals => {:object => @news}%>
+
+<br />
+<%= link_to 'Ver noticia publicada', gmurl(@news) %> |
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

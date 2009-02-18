@@ -1,0 +1,672 @@
+body, body td {
+    font-family: Tahoma;
+    font-size: 12px;
+}
+
+#userbox {
+    font-family: arial;
+    font-size: 10px;
+}
+
+#ccontent .content-hid li, #csupport ul.sidelist, #csupport .fcontents-basic li {
+    line-height: 23px;
+}
+
+h2 {
+    letter-spacing: 0;
+}
+
+#navigator select {
+    font-family: tahoma;
+    font-size: 10px;
+}
+
+#cleft {
+    font-size: 10px;
+    font-family: tahoma;
+}
+
+#cleft li {
+    line-height: 14px;
+}
+
+a {
+    text-decoration: underline;
+}
+
+#tracker a, #lastcomments a, #userbox a {
+    text-decoration: none;
+}
+
+#cmain .module .mtitle {
+    font-size: 15px;
+}
+
+#cmain .module .mcontent {
+    padding-left: 2px;
+}
+
+#mgbreadcrumb {
+    font-family: tahoma;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+#mgsearch input.text {
+    padding: 2px;
+    font-size: 11px;
+}
+
+.pager-top a, .pager-bottom a {
+    text-decoration: none;
+}
+
+#ccontent .contentinfobar {
+    font-family: verdana;
+    font-size: 10px;
+}
+
+.contentinfobar ul a {
+    line-height: 24px;
+}
+/* really dirty down here */
+/* TEMP NOTCLEAN typography * /
+/* :=TYPOGRAPHY */ body {
+    font-family: Tahoma;
+    font-size: 12px;
+}
+
+tr, td {
+    font-size: 12px;
+}
+
+#navpath {
+    font-family: arial;
+    font-size: 11px;
+}
+
+#userbox, #userbox td {
+    font-family: arial;
+    font-size: 10px;
+}
+
+#userbox a {
+    text-decoration: none;
+}
+
+.pager-top .currentpage, .pager-bottom .currentpage {
+    font-family: verdana;
+    font-size: 11px;
+}
+
+.pager-top a, .pager-bottom a {
+    text-decoration: none;
+    font-family: verdana;
+    font-size: 11px;
+}
+
+#mgfooter {
+    font-family: arial;
+    font-size: 11px;
+}
+
+#mgfooter a {
+    text-decoration: underline;
+}
+
+#userbox a:hover, #mgfooter a:hover {
+    text-decoration: underline;
+}
+
+.homebox .title {
+    font-family: Verdana;
+    font-weight: bold;
+    font-size: 0.85em;
+    line-height: 27px;
+}
+
+.homebox {
+    font-family: verdana;
+    font-size: 11px;
+}
+
+.homebox .screenshot {
+    text-align: center;
+}
+
+.homebox li {
+    line-height: 155%;
+}
+
+.homebox.articles li {
+    line-height: 100%;
+}
+
+.homebox .classifier {
+    font-weight: bold;
+    text-align: left;
+    font-size: 10px;
+}
+
+#csupport .current a {
+    font-family: verdana;
+    font-weight: bold;
+    font-size: 11px;
+    text-decoration: underline;
+}
+
+h2 {
+    font-size: 17px;
+}
+
+.contenttitle h1 {
+    line-height: 27px;
+    font-family: tahoma;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+body.lypopup h1 {
+    font-size: 15px;
+    font-weight: bold;
+    font-family: tahoma;
+    padding: 10px 10px;
+    margin: 0 0 10px 0;
+}
+
+.contenttitle .infoinline {
+    font-family: arial;
+    font-size: 10px;
+}
+
+.contenttitle .author {
+    font-family: verdana;
+    font-size: 11px;
+}
+
+#userbox .nick {
+    font-weight: bold;
+    font-size: larger;
+}
+
+.userinfobox .nick {
+    line-height: 52px;
+}
+/* comentarios TODO cleanup */
+/* COMMENTS */
+.comments-area .authorship .userinfo {
+    line-height: normal;
+}
+
+.comments-area .nav.title {
+    font-weight: bold;
+}
+
+.comments-area .comment-number, .number {
+    font-weight: bold;
+    font-size: 15px;
+    font-family: Georgia;
+}
+
+.comments-area .author {
+    font-weight: bold;
+}
+
+.comments-area .userinfo .attributes, .userinfobox .attributes {
+    font-family: tahoma;
+    font-size: 10px;
+}
+
+.karmapoints, .reputation {
+    font-weight: bold;
+}
+
+.comments-area .userinfo .rank {
+    text-align: right;
+}
+
+.karmalevel {
+    line-height: normal;
+}
+
+.infoinline, #ccontent .pageviews-count, #ccontent .comments-count, .infoinline td {
+    font-size: 10px;
+    font-family: verdana;
+}
+
+.subheader {
+    /* line-height: 23px; */
+    font-family: Tahoma;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.smallfont select {
+    font-size: 10px;
+    font-family: arial;
+}
+
+#ccontent th {
+    text-align: left;
+}
+
+#ccontent td.content-hid {
+    line-height: 18px;
+}
+
+#tracker li {
+    font-size: 10px;
+    font-family: arial;
+}
+
+#tracker li.updated a, #lasttopics li.updated a {
+    text-decoration: none;
+}
+
+#online td, #online {
+    font-family: tahoma;
+    font-size: 10px;
+}
+
+#lasttopics li {
+    line-height: 15px;
+    font-family: arial;
+    font-size: 10px;
+    padding-left: 2px;
+}
+
+#lasttopics li.new {
+    font-weight: bold;
+}
+
+#online td.userscount {
+    text-align: right;
+}
+
+.homebox table.calendar, .homebox table.calendar td, #ccontent .homebox table.calendar th {
+    font-family: arial;
+    font-size: 10px;
+    text-align: center;
+}
+
+.homebox .calendar .day.today {
+    font-weight: bold;
+}
+
+.homebox table.calendar .dayName th {
+    text-align: center;
+}
+
+.homebox table tr.monthName td {
+    text-align: left;
+}
+
+.homebox table.factions td, .homebox table.factions th {
+    font-size: 11px;
+    font-family: tahoma;
+}
+
+.homebox table.factions th {
+    font-weight: bold;
+}
+/* downloads  */
+tr.downloads-folder td.first {
+    font-family: tahoma;
+    font-size: 11px;
+    line-height: 15px;
+}
+
+tr.downloads-download td.first {
+    font-family: tahoma;
+    font-size: 11px;
+    line-height: 15px;
+}
+
+tr.downloads-folder a, tr.downloads-download a {
+    text-decoration: none;
+}
+
+.content-category {
+    font-family: tahoma;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: normal;
+}
+
+.more {
+    text-align: right;
+}
+
+.more a {
+    font-size: 11px;
+}
+
+.more a:hover {
+    font-size: 11px;
+}
+
+.homebox .content-hid a, .homebox .content-hid2 a, .messages .new a {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.homebox .content-hid a:visited, .homebox .content-hid2 a:visited {
+    font-weight: normal;
+}
+
+ul.online li, .userinfobox {
+    font-weight: bold;
+}
+/* wysiwyg */
+.wsEditor {
+}
+
+.button.selectable {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#ccontent label {
+    font-weight: bold;
+}
+
+#ccontent .homebox label {
+    font-weight: normal;
+}
+
+img.none {
+}
+
+.faq_category {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+input, textarea {
+    font-family: tahoma;
+    font-size: 11px;
+}
+
+#userbox .unread a {
+    font-weight: bold;
+}
+
+#online th {
+    text-align: left;
+    font-size: 10px;
+}
+
+#minichat {
+    overflow: auto;
+    font-size: 11px;
+    font-family: tahoma;
+}
+
+#minichat .nick {
+    font-weight: bold;
+}
+
+.day-separator {
+    font-weight: bold;
+}
+
+.summary {
+    line-height: 1.3em;
+}
+
+#ccontent table label {
+    font-weight: normal;
+}
+
+#mgbreadcrumb li {
+    line-height: 23px;
+}
+
+#mgbreadcrumb a, #mgsubmenu a, #mgsubmenu2 a {
+    font-family: tahoma;
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+#mgbreadcrumb a {
+    text-decoration: underline;
+}
+
+#mgsubmenu a:hover, #mgsubmenu2 a:hover, #mgbreadcrumb a:hover {
+    text-decoration: underline;
+}
+
+#mgbreadcrumb a:hover {
+    text-decoration: underline;
+}
+
+#mgsubmenu li.title, #mgsubmenu2 li.title {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 10px;
+}
+
+#mgsubmenu li span, #mgsubmenu2 li span {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
+}
+
+#homecontents .subheader, #homecommunity .subheader, #homegamer .subheader {
+    font-family: "Arial Black", Arial;
+    font-size: 15px;
+    text-transform: uppercase;
+    font-weight: normal;
+    line-height: 20px;
+}
+
+#homecontents .container a, #homecommunity .container a, #homegamer .container a {
+    text-decoration: none;
+}
+
+.more a {
+    font-weight: bold;
+}
+
+textarea {
+    font-family: tahoma;
+    font-size: 12px;
+}
+
+.contentinfobar li {
+    line-height: 27px;
+}
+
+.contentinfobar {
+    font-size: 10px;
+    font-family: verdana;
+}
+
+#userbox .unread a {
+    font-weight: bold;
+}
+
+#ccontent table.calendar .monthName th {
+    text-transform: uppercase;
+}
+
+.homebox .factions td.members {
+    text-align: right;
+}
+
+#ccontent .signup-step {
+    font-family: Georgia;
+    font-size: 30px;
+}
+
+.warning {
+    font-family: Georgia;
+    font-size: 13px;
+}
+
+#csupport select {
+    font-size: 10px;
+}
+
+th.timestamp, td.timestamp, th.number, td.number {
+    text-align: right;
+}
+
+th.sm-icon, td.sm-icon {
+    text-align: center;
+}
+
+.karma .points, .faith .points {
+    font-weight: bold;
+    text-align: right;
+    font-family: arial;
+    font-size: 10px;
+}
+
+.userinfonick a {
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.cash-in, .cash-out {
+    font-weight: bold;
+}
+
+.feedback-ok {
+    font-weight: bold;
+}
+
+#mgfooter li {
+    
+}
+
+#lastcomments a {
+    text-decoration: none;
+}
+
+.comment-rating-state {
+    font-family: verdana;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+#ccontent .moderate-comments a {
+    font-family: verdana;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.moderate-comments-opener {
+    font-family: verdana;
+    font-size: 10px;
+}
+
+#lastcomments li, #tracker li {
+    font-size: 10px;
+}
+
+#mgbreadcrumb li.current {
+    font-family: verdana;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+#mgbreadcrumb a {
+    text-decoration: none;
+}
+
+#mgbreadcrumb a:hover {
+    text-decoration: underline;
+}
+
+#navigator select {
+    font-size: 11px;
+}
+
+.matchmap-tourney td {
+    font-size: 11px;
+}
+
+.match-won, .match-lost, .match-tie {
+    font-weight: bold;
+    font-size: 10px;
+    font-family: verdana;
+}
+
+#ccontent dt {
+    font-weight: bold;
+}
+
+#ccontent .message-preview {
+    font-weight: normal;
+}
+
+#ccontent .comments-mood {
+    font-size: 11px;
+    font-weight: normal;
+}
+
+#content-stats {
+    font-size: 10px;
+    font-family: verdana;
+}
+/**
+ * Userbox
+ */
+#new-content-selector .close {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+#new-content-selector .title {
+    font-size: 11px;
+    font-weight: bold;
+}
+
+#new-content-selector li a {
+    font-weight: bold;
+    font-family: arial;
+}
+
+#new-content-selector li {
+    font-size: 11px;
+}
+
+#online-info a {
+    font-size: 10px;
+}
+
+#ccontent .cmain tr.forum-category td.infoinline {
+    font-weight: bold;
+}
+
+tr.forum-category td {
+    background: #ddd;
+}
+
+#admin-stats .good,
+#admin-stats .goodsoft {
+    font-family: Georgia;
+    font-size: 17px;
+}
+
+#admin-stats .bad,
+#admin-stats .badsoft {
+    font-family: Georgia;
+    font-size: 17px;
+}
+
+#admin-stats .default-treatment {
+    font-family: Georgia;
+    font-size: 17px;
+}
+
+#content .sm {
+	font-size: 10px;
+	font-weight: normal;
+}
+
+a { text-decoration: none; }
+
+#ccontent .account-balance { font-size: 18px; font-family: georgia, "Courier New", serif}

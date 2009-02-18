@@ -1,0 +1,40 @@
+<table>
+	<tr style="vertical-align: top;">
+		<td style="width: 50%;">
+		<% mftext('Productos comprados sin usar') do %>
+		<table>
+			<%SoldProduct.find(:all, :conditions => 'used is false', :order => 'created_on desc').each do |sp| %>
+			<tr class="<%=oddclass%>">
+				<td><%=sp.product.name%></td>
+				<td><a href="<%=gmurl(sp.user)%>"><%=sp.user.login%></a></td>
+				<td class="infoinline tstamp"><%=print_tstamp(sp.created_on)%></td>
+			</tr>
+			<% end -%>
+		</table>
+		<% end -%>
+		</td>
+		<td style="width: 50%;">
+		<% mftext('Últimas compras') do %>
+		<table>
+			<%SoldProduct.find(:all, :order => 'created_on desc', :limit => 10).each do |sp| %>
+			<tr class="<%=oddclass%>">
+				<td><%=sp.product.name%></td>
+				<td><a href="<%=gmurl(sp.user)%>"><%=sp.user.login%></a></td>
+				<td class="infoinline tstamp"><%=print_tstamp(sp.created_on)%></td>
+			</tr>
+			<% end -%>
+		</table>
+		<% end -%>
+		
+		<% mftext('Configuración de productos') do %>
+		<table>
+			<%Product.find(:all, :order => 'lower(name) asc').each do |p| %>
+			<tr class="<%=oddclass%>">
+				<td><a href="/admin/tienda/producto/<%=p.id%>"><%=p.name%></a></td>
+			</tr>
+			<% end -%>
+		</table>
+		<% end -%>
+		</td>
+	</tr>
+</table>

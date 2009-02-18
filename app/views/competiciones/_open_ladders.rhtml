@@ -1,0 +1,12 @@
+<table>
+<% pro_mode = (mode == 'pro') 
+
+Competition.find(:all, :conditions => ['type = \'Ladder\' and pro = ? AND state > 1 and state < 4', pro_mode], :order => 'game_id ASC, lower(name) ASC').each do |competition| %>
+    <tr class="<%=oddclass%>">
+      <td style="line-height: 20px;"><%=competition.pro? ? '<div style="float: right; margin: 3px 3px 0 0;"><img class="competition-pro" src="/images/blank.gif" /></div>' : ''%>
+         <%=faction_favicon(competition.game)%> <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a><br />
+            <td style="width: 35px;" class="infoinline"><div class="<%=competition.competitions_participants_type_id == 1 ? 'members' : 'clans'%>-count"><%=competition.competitions_participants.count%></div></td>
+      </td>
+    </tr>
+  <% end %>
+</table>

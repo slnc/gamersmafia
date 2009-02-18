@@ -1,0 +1,39 @@
+<% content_support do %>
+  <% mftext('Información') do %>
+  <p>Se permite editar comentarios hasta 15 minutos después de su creación. 
+<cite>Quince es el número que se contará. Y el número de la cuenta será quince. No se deberán contar dieciséis ni se contarán catorce, salvo para seguir después a quince. Eliminado será el diecisiete.</cite>
+  </p>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Modificar comentario') do %>
+<form method="post" action="/comments/update/<%=@comment.id%>" name="REPLIER"> 
+<p><label for="comment_comment">Comentario</label><br/>
+<%= error_messages_for 'comment' %>
+<%= hidden_field_tag 'redirto', params[:redirto] %>
+
+    <input type="button" class="button" value="http://" name="URL" onclick="tag_url()" />
+    <input type="button" class="button" value="IMG" name="IMG" onclick="tag_image()" />
+    <input type="button" class="button" name="QUOTE" value="QUOTE" onclick="simpletag('QUOTE')" />
+    <input type="button" class="button" name="CODE" value="CODE" onclick="simpletag('CODE')" />
+    <input type="button" class="button" value="B" name="B" onclick="simpletag('B')" />
+    <input type="button" class="button" value="I" name="I" onclick="simpletag('I')" />
+    <input type="hidden" name="tagcount" value="" /><br />
+                <textarea id="comment_comment" name="comment[comment]" rows="10" style="width: 98%;"><%=Comments::unformatize(@comment.comment)%></textarea>
+                <%= render :partial => '/shared/smileys', :locals => { :dom_id => 'comment_comment' } %>
+  <script type="text/javascript">
+  if (is_ie)
+    $j('#comment_comment').css('width', '100%');
+  </script>
+  <p style="clear: right;"><% if not Cms::user_can_edit_content?(@user, @comment) then %>Nota: Dispones de 15 minutos (hasta <strong><%=print_tstamp (Time.now + 60 * 15)%></strong>) para modificar el comentario. No se guardarán los cambios después de ese momento.<% end -%></p>
+  <% if @user.id != @comment.user_id then %>
+  <% if @comment.lastedited_by_user_id then %>
+  <div class="infoinline">Editado por última vez por <strong><%=user_link(User.find(@comment.lastedited_by_user_id))%></strong> a las <strong><%=print_tstamp(@comment.updated_on)%></strong></div>
+  <% end -%>
+  		<label style="display: block; margin-bottom: 10px;"><input type="checkbox" name="comment[netiquette_violation]" value="true" <%= 'checked="checked"' if (@comment.netiquette_violation.nil? || @comment.netiquette_violation? == true)%> /> Modificado por violar el código de conducta.</label>
+  <% end -%>
+  <%= submit_tag 'Guardar' %>
+</form>
+<% end -%>
+<% end -%>

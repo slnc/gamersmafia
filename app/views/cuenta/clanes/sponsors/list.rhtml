@@ -1,0 +1,28 @@
+<% content_main do %>
+  <% mftext('Sponsors') do %>
+
+<table>
+  <tr>
+    <th>Nombre</th>
+    <th>Url</th>
+    <th>Imagen</th>
+  </tr>
+  
+<% for clans_sponsor in @clans_sponsors %>
+  <tr class="<%=oddclass%>">
+    <td><a href="/cuenta/clanes/sponsors/edit/<%=clans_sponsor.id%>"><%=clans_sponsor.name%></a></td>
+    <td><%=clans_sponsor.url%></td>
+    <td><%=fc_thumbnail(clans_sponsor.image, 'f', '88x31')%></td>
+    <td><%= link_to 'Borrar', { :action => 'destroy', :id => clans_sponsor }, :confirm => '¿Estás seguro?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Página anterior', { :page => @clans_sponsor_pages.current.previous } if @clans_sponsor_pages.current.previous %>
+<%= link_to 'Página siguiente', { :page => @clans_sponsor_pages.current.next } if @clans_sponsor_pages.current.next %> 
+
+<br />
+
+<strong><%= link_to 'Nuevo sponsor', :action => 'new' %></strong>
+<% end -%>
+<% end -%>

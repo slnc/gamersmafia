@@ -1,0 +1,27 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Funthing } if user_is_authed %>
+<% mftext('Ideas') do %>
+<ul class="content-hid">
+<li>Enlaces curiosos</li>
+<li>Youtube</li>
+<li>Juegos/Películas Flash</li>
+<li>Descripción recomendada</li>
+</ul>
+<% end -%>
+
+<%= render :partial => 'shared/pending', :object => Funthing.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Nueva curiosidad') do %>
+
+<%= form_tag({:action => 'create'}, :multipart => true )%>
+  <%= render :partial => 'form' %>
+  <br />
+  <%= submit_tag 'Crear' %>
+</form>
+
+<br />
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

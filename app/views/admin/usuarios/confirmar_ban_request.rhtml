@@ -1,0 +1,147 @@
+<div class="grid-10">
+<%mftext('Información del ban') do %>
+<table>
+	<tr class="<%=oddclass%>">
+		<td class="w125">Usuario a banear</td>
+		<td><a href="<%=gmurl(@br.banned_user)%>"><%=@br.banned_user.login%></a></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<td>Razón</td>
+		<td><%=Comments::formatize(@br.reason)%></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<td>Fecha</td>
+		<td><%=print_tstamp @br.created_on%></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<td>Capo</td>
+		<td><a href="<%=gmurl(@br.user)%>"><%=@br.user.login%></a></td>
+	</tr>
+<% if @br.confirming_user_id then %>
+	<tr class="<%=oddclass%>">
+		<td>Aprobado por</td>
+		<td><a href="<%=gmurl(@br.confirming_user)%>"><%=@br.confirming_user.login%></a></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<td>Fecha de aprobación</td>
+		<td><%=print_tstamp @br.confirmed_on%></td>
+	</tr>
+<% end -%>
+
+<% if @br.unban_user_id then %>
+	<tr class="<%=oddclass%>">
+		<td colspan="2">Proceso de unban</td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<td>Razón</td>
+		<td><%=Comments::formatize(@br.reason_unban)%></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<td>Fecha iniciado</td>
+		<td><%=print_tstamp @br.unban_created_on%></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<td>Capo</td>
+		<td><a href="<%=gmurl(@br.user)%>"><%=@br.unban_user.login%></a></td>
+	</tr>
+<% if @br.unban_confirming_user_id then %>
+	<tr class="<%=oddclass%>">
+		<td>Aprobado por</td>
+		<td><a href="<%=gmurl(@br.unban_confirming_user)%>"><%=@br.unban_confirming_user.login%></a></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<td>Fecha de aprobación</td>
+		<td><%=print_tstamp @br.unban_confirmed_on%></td>
+	</tr>
+<% end -%>
+<% end -%>
+</table>
+
+<% if @user.has_admin_permission?(:capo) then %>
+<% if @br.confirming_user_id.nil? then %>
+<% if @user.id != @br.user_id then %>
+<br />
+<form method="post" action="/admin/usuarios/confirm_ban_request">
+	<input type="hidden" name="id" value="<%=@br.id%>" />
+	<input type="submit" class="button" value="Doy mi aprobación a este ban" onclick="return confirm('¿Estás seguro con el usuario Y la razón?');" />
+</form>
+<% else %>
+<form method="post" action="/admin/usuarios/cancel_ban_request">
+	<input type="hidden" name="id" value="<%=@br.id%>" />
+	<input type="submit" class="button" value="Cancelar ban" onclick="return confirm('¿Estás seguro?');" />
+</form>
+<% end -%>
+<% elsif @br.unban_user_id.nil? then %>
+<br />
+<%mftext('Iniciar unban') do %>
+
+<form method="post" action="/admin/usuarios/create_unban_request">
+<input type="hidden" name="login" value="<%=@br.banned_user.login%>" />
+Razón unban:<br />
+<textarea style="width: 80%; height: 30px;" name="reason_unban"></textarea><br />
+<br />
+<input type="submit" class="button" value="Desbanear" onclick="return confirm('¿Estás seguro?')"/>
+</form>
+<% end # end if @br.confirming_user_id-%>
+
+<% elsif @br.unban_confirming_user_id.nil? && @user.id != @br.unban_user_id then %>
+<br />
+<form method="post" action="/admin/usuarios/confirm_unban_request">
+	<input type="hidden" name="id" value="<%=@br.id%>" />
+	<input type="submit" class="button" value="Doy mi aprobación a este unban" onclick="return confirm('¿Estás seguro con el usuario Y la razón para desbanearle?');" />
+</form>
+<% end -%>
+<% end -%>
+<% end -%>
+</div>
+
+<div class="grid-5 glast">
+	<%mftext('Historial', :has_submodules => true) do %>
+	<%mftext('Otros bans globales') do 
+brs = BanRequest.find(:all, :conditions => ['id <> ? AND banned_user_id = ?', @br.id, @br.banned_user_id], :order => 'created_on DESC') 
+if brs.size == 0 then %> 
+<div class="infoinline centered">No tiene otros bans globales.</div>
+<% else %>
+	<table>
+		<tr class="<%=oddclass%>">
+			<th>id</th>
+			<th>creado</th>
+			<th>estado</th>
+		</tr>
+	<%brs.each do |br| %>
+		<tr class="<%=oddclass%>">
+			<td><strong><a href="/admin/usuarios/confirmar_ban_request/<%=br.id%>"><%=br.id%></a></strong></td>
+			<td><%=print_tstamp(br.created_on)%></td>
+			<td><%=br.state%></td>
+		</tr>
+	<% end -%>
+	</table>
+	<% end -%>
+<% end # if -%>
+	
+	<%mftext('Bans de facción') do 
+		fbus = FactionsBannedUser.find(:all, :conditions => ['user_id = ?', @br.banned_user_id], :order => 'created_on DESC')
+if fbus.size == 0 then %>
+<div class="centered infoinline">No tiene bans de facción.</div>
+<% else %>
+	<table>
+		<tr class="<%=oddclass%>">
+			<th>id</th>
+			<th>creado</th>
+		</tr>
+	<%fbus.each do |fbu| %>
+		<tr class="<%=oddclass%>">
+			<td><strong><%=fbu.id%></strong></td>
+			<td><%=print_tstamp(fbu.created_on)%></td>
+			<td><a href="http://<%=fbu.faction.code%>.<%=App.domain%>/"><%=fbu.faction.code%></a></td>
+		</tr>
+	<% end -%>
+	</table>
+	<% end -%>
+	<% end # if -%>
+	
+	
+	
+	<% end #mftext historial -%>
+</div>
+

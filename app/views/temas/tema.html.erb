@@ -1,0 +1,13 @@
+	<% content_3col do %>
+		<%=mfcontents_basic('Noticias', NewsCategory.find_by_code(params[:code]).news.find(:published, :order => 'created_on DESC', :limit => 15), nil)%>
+		
+		<%=render :partial => '/home/articles' %>
+	<% end -%>
+	
+	<% content_3col do %>
+		<%=mfcontents_basic('Foros', TopicsCategory.find_by_code(params[:code]).topics.find(:published, :order => 'created_on DESC', :limit => 15), nil)%>
+	<% end -%>
+	
+	<% content_3col do %>
+	<%= render :partial => '/imagenes/random', :locals => {:category => ImagesCategory.find_by_code(params[:code])} %>
+	<% end -%>

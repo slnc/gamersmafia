@@ -1,0 +1,42 @@
+<% content_support do %>
+<% cache ('/coverages/list/better_rated') do %>
+<% mftext('Mejor valoradas') do %>
+<ul class="sidelist">
+  <% # TODO sick
+  %>
+  <% for c in Coverage.find(:published, :conditions => "cache_rated_times > 1 and state = #{Cms::PUBLISHED}", :order => 'coalesce(cache_weighted_rank, 0) DESC, (hits_anonymous + hits_registered) DESC', :limit => 5) %>
+  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
+  <% end -%>
+  </ul>
+  <% end -%>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+  <%mftext('Noticias') do %>
+<% @coverages_pages = ActionController::Pagination::Paginator.new self, Coverage.count(:conditions => "state = #{Cms::PUBLISHED}"), 20, params['page']
+
+  if params['page'].nil? then
+    @coverages_pages.current_page = @coverages_pages.last
+  end
+  %>
+  <%=render :partial => 'shared/pager', :object => @coverages_pages, :locals => {:pos => 'top'} %>
+
+<% cache ("/coverages/list/page_#{params['page']}") do
+  previous_day = nil
+  Coverage.find(:published, 
+				:conditions => "state = #{Cms::PUBLISHED}", 
+				:order => 'created_on asc', 
+				:limit => @coverages_pages.current.to_sql[0], :offset => @coverages_pages.current.to_sql[1]).each do |news|
+    cur_day = Date.new(news.created_on.year, news.created_on.month, news.created_on.day)
+
+    if cur_day != previous_day then 
+      previous_day = Date.new(news.created_on.year, news.created_on.month, news.created_on.day) %>
+    <div class="day-separator"><%=print_tstamp(cur_day, 'date')%></div>
+    <% end %>
+    <%=render(:partial => 'news', :object => @object = news)%>
+  <% end %>
+  <% end -%>
+  <%= render :partial => 'shared/pager', :object => @coverages_pages, :locals => {:pos => 'bottom'} %>
+  <% end -%>
+<% end -%>

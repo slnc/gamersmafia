@@ -1,0 +1,105 @@
+<% content_support do %>
+  <%mftext('Modo') do %>
+  <div style="text-align: center;"><a href="/site/online" onclick="setpref('chat', 'mini');">Cambiar a <strong>miniChat</strong></a></div>
+  <% end -%>
+
+  <%mftext('Online') do %>
+  <ul class="skeletal">
+    <% 
+    now = Time.now.to_i
+    max = 60 * 30
+
+    for u in @online_users %>
+    <li class="<%=oddclass%>"><div style="float: right; width: 67px; margin-top: 5px;" class="infoinline"><%=draw_pcent_bar(1 - (now - u.lastseen_on.to_i) / max.to_f, "#{format_interval(now - u.lastseen_on.to_i, 'secs')}")%></div><span class="nick"><%=link_to u.login, gmurl(u) %></span></li>
+  <% end -%>
+  </ul>
+  <% end -%>
+
+  <p style="clear: left;">.. y <strong><%=Stats::online_users['anonymous']%></strong> anónimos.
+<% end -%>
+
+<% content_main do %>
+<%mftext('Bigchat') do %>
+  <div>
+<ul id="bigchat"  style="background: #fafafa;">
+
+  <% now = Time.now.to_i %>
+<script type="text/javascript">
+  cur_time_chat=<%=now%>;
+</script>
+  <% for chatline in Chatline.latest %>
+  <li id="chatline<%=chatline.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 0px; margin-bottom: 0px;">
+    <div class="avatar" style="float: left; margin-right: 3px;"><img style="border: 1px solid black; width: 32px; height: 32px;" src="<%=ASSET_URL%>/cache/thumbnails/f/32x32<%=chatline.user.show_avatar%>" /></div>
+    <div style="float: right; margin-right: 5px;" class="infoinline"><% if user_is_authed and (@user.has_admin_permission?(:capo) or @user.is_superadmin) then %>
+      <%=link_to_remote('x', :update => 'bigchat', :url => "/site/del_chatline/#{chatline.id}?time=#{now}")%> | 
+    <% end -%>
+    <%=print_tstamp(chatline.created_on, 'time')%></div>
+  <div style="padding-left: 40px;">
+  	<div class="nick" style="background: #efefef; padding: 0 4px; float: left;">
+  	<% if chatline.user_id != 8 then %><strong><%=user_link(chatline.user)%></strong>
+	<% else %>
+	&lt;<%=chatline.line.match(/^<([^>]+)>/)[1]%>&gt;
+	<% end -%></div>: 
+	<% if chatline.user_id != 8 then %>
+		<%=auto_link(smilelize(Comments::formatize(chatline.line)))%>
+	<% else %>
+		<%=auto_link(smilelize(Comments::formatize(chatline.line.gsub(/^(<[^>]+>: )/, ''))))%>
+	<% end -%>
+	<div style="clear: left;"></div></div></li>
+<% end -%>
+</ul>
+
+<script type="text/javascript">
+//<![CDATA[
+setInterval(function(){
+	$j.get('/site/update_chatlines?time='+cur_time_chat, function(data) { 
+		$j('#bigchat').html(data);
+	})
+}, 15000);
+//]]>
+</script>
+
+<br />
+<% if user_is_authed then %>
+<script type="text/javascript">
+function send_chatline() {
+	$j.get('/site/new_chatline?time='+cur_time_chat, {line: $j('#newline').val()}, function(data) { $j('#bigchat').html(data); });
+	return false;		
+}
+</script>
+<form id="uberform" action="/site/new_chatline?time=1154219146" method="post" onsubmit="return send_chatline();">
+<input style="float: right;" type="submit" class="button" value="Enviar mensaje" id="newlinesend" onclick="setTimeout('disablesend()', 25); return true;" />
+<div style="margin-right: 100px;"><textarea id="newline" name="line" style="width: 98%; height: 45px;">
+</textarea></div>
+<br />
+<script type="text/javascript">
+function disablesend()
+{
+document.getElementById('newlinesend').disabled = 'disabled';
+}
+</script>
+</form>
+
+<br />
+<br />
+    <%= render :partial => '/shared/smileys', :locals => { :dom_id => 'newline' } %>
+<% end -%>
+  </div>
+<% end -%>
+  <div class="right infoinline">(<a title="Enlazado con #gamersmafia en Quakenet" href="irc://irc.quakenet.org/#gamersmafia">#gamersmafia</a>)</div>
+<script type="text/javascript">
+  function check_chat_size()
+{
+  var o = document.getElementById('bigchat');
+  // TODO ie
+  if (navigator.appName.indexOf("Microsoft")!=-1) {
+    o.style.height = (document.body.offsetHeight - 300) + 'px';
+  }
+  else {
+    o.style.height = (window.innerHeight - 300) + 'px';
+  }
+}
+window.onresize=check_chat_size;
+check_chat_size();
+</script>
+<% end -%>

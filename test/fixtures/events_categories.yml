@@ -1,0 +1,37 @@
+ut_events_category:
+  id: 1
+  name: Unreal Tournament
+  code: ut
+  root_id: 1
+
+first_reviews_category:
+  id: 2
+  name: foo
+  code: gm
+  root_id: 2
+  
+second:
+  id: 3
+  name: rejects faction
+  code: rj
+  root_id: 3
+  
+third:
+  id: 4
+  name: third faction
+  code: th
+  root_id: 4
+
+  
+fourth:
+  id: 5
+  name: Wii
+  code: wii
+  root_id: 5
+  
+clan:
+  id: 6
+  name: mapaches
+  code: mapaches
+  root_id: 6
+  clan_id: 2

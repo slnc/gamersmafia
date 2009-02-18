@@ -1,0 +1,63 @@
+<% 
+participant = @competition.get_active_participant_for_user(@user)
+content_support do %>
+  <%  
+  raise ActiveRecord::RecordNotFound if participant.nil?
+  %>
+  <% if @competition.kind_of?(Ladder) then %>
+  <% mftext('Retos a otros') do %>
+     <table>
+     <% for cm in @competition.matches(:unapproved_by_adversaries, :participant => participant) %>
+       <tr class="<%=oddclass%>">
+         <td><a href="/competiciones/participante/<%=cm.participant2_id%>"><%=cm.participant2.name%></a></td>
+         <td class="right"><a title="Cancelar reto" onclick="return confirm('¿Estás seguro?');" href="/competiciones/cancelar_reto/<%=cm.participant1_id%>/<%=cm.participant2_id%>">Cancelar</a></td>
+       </tr>
+     <% end -%>
+     </table>
+	 <% end -%>
+
+
+  <% mftext('Retos a confirmar') do %>
+  <table>
+  <% @competition.matches(:unapproved_by_participant, :participant => participant).each do |cm| %>
+  <tr class="<%=oddclass%>">
+    <td><a href="/competiciones/responder_reto/<%=cm.id%>"><%=cm.participant1.name%> <span class="infoinline">(#<%=cm.id%>)</span></a></td>
+  </tr>
+  <% end -%>  
+  </table>
+  <% end -%>
+  <!--
+     <form method="post" action="/competiciones/retos_a_mi/<%=participant.id%>">
+     <table>
+       <tr>
+         <th></th>
+         <th style="width: 50px;" class="centered">Aceptar</th>
+         <th style="width: 50px;" class="centered">Rechazar</th>
+       </tr>
+     <% for cm in @competition.matches(:unapproved_by_participant, :participant => participant) %>
+       <tr class="<%=oddclass%>">
+         <td><a href="/competiciones/participante/<%=cm.participant1_id%>"><%=cm.participant1.name%></a><br /><span class="infoinline"><%=print_tstamp(cm.play_on) if cm.play_on%></span></td>
+         <td class="centered"><input type="radio" name="retos[<%=cm.participant1_id%>]" value="accept" /></td>
+         <td class="centered"><input type="radio" name="retos[<%=cm.participant1_id%>]" value="reject" /></td>
+       </tr>
+     <% end -%>
+     </table>
+     <div style="padding: 10px;" class="centered"><input type="submit" class="button" value="Aplicar cambios" onclick="return confirm('¿Estás seguro?');" /></div>
+   </form>
+   -->
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Mis partidas en esta competición') do %>
+  <ul>
+  <% for match in @competition.matches(:approved, :participant => participant) %>
+    <% if @competition.state == Competition::STARTED then #@competition.current_match_stage == match.stage then %>
+      <li><a href="/competiciones/partida/<%=match.id%>"><%=match_vs_name(match)%></a></li>
+    <% else %>
+      <li><%=match_vs_name(match)%></li>
+    <% end %>
+  <% end -%>
+  </ul>
+  <% end -%>
+<% end -%>

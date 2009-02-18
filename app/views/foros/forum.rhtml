@@ -1,0 +1,40 @@
+<% content_support do %>
+  <%=render :partial => '/foros/nuevo_topic'%>
+  
+  <%=render :partial => '/shared/last_commented_items_in_category', :object => @object = @forum%>
+  <%=render :partial => 'most_active_users', :object => @object = @forum%>
+  <%=render :partial => 'most_active_topics', :object => @object = @forum%>
+
+<% if @forum.parent then %>
+  <%mftext('Subforos') do %>
+<ul class="content-hid">
+<strong><%=@forum.parent.name%></strong>
+<% for subforum in @forum.parent.children %>
+<% if @forum.id == subforum.id then %>
+<li class="current"><%=link_to subforum.name, :action => 'forum', :id => subforum.id%></li>
+<% else %>
+<li><%=link_to subforum.name, :action => 'forum', :id => subforum.id%></li>
+<% end -%>
+<% end -%>
+<% end -%>
+</ul>
+<% end -%>
+
+<% end -%>
+
+<% content_main do %>
+  <%mftext(@title) do %>
+
+<table>
+  <tr>
+    <th colspan="2">Foro</td>
+    <th style="text-align: center; width: 50px;">Tópics</td>
+    <th style="text-align: center; width: 50px;">Comentarios</td>
+    <th style="text-align: right; width: 150px;">Último</td>
+  </tr>
+<%=render(:partial => 'forums_list', :locals => {:parent_id => @forum.id}) %>
+</table>
+
+<%=render(:partial => 'topics_list', :locals => {:forum => @forum})%>
+<% end -%>
+<% end -%>

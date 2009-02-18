@@ -1,0 +1,145 @@
+<% #content_support do %>
+<%# = render :partial => 'rightside'%>
+<% #end -%>
+
+<%content_3col do %>
+<%mftext('Top Karma') do%>
+      <table>
+        <% cache("/common/miembros/index/top_karma_#{Time.now.to_i/21600}") do # 6 horas 
+        %>
+        <% i=0
+        for u in User.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED} and cache_karma_points is not null and cache_karma_points > 0 and is_bot is false", :order => 'cache_karma_points DESC', :limit => 10) %>
+        <tr class="<%=oddclass%>">
+          <td class="sm-icon number"><%=i+=1%></td>
+          <td><%if i <= 3 then %><%=draw_user_info(u)%>
+            <% else %><%=member_state(u.hstate)%> <%=link_to u.login, gmurl(u) %><br /> <div class="infoinline" style="width: 67px;"><%=render :partial => '/shared/karmabar', :locals => {:user => u}%></div><% end -%></td>
+        </tr>
+        <% end -%>
+      <% end -%>
+      </table>
+	  <% end -%>
+	  
+	  <%mftext('Top amigos') do %>
+	  <table>
+          <% cache("/common/miembros/index/top_popularity_#{Time.now.to_i/21600}") do # 6 horas  
+          %>
+          <% 
+          i=0
+          max = nil
+
+          for dbu in User.most_popular
+            u = dbu[:user] 
+            max = dbu[:friends].to_i if max.nil?
+          %>
+          <tr class="<%=oddclass%>">
+            <td class="sm-icon number"><%=i+=1%></td>
+            <td>
+              <%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span><br /> <div class="infoinline" style="width: 67px;"><%=draw_pcent_bar(dbu[:friends].to_f / max, "#{dbu[:friends]} usuarios activos le consideran su amigo")%></div></td>
+          </tr>
+          <% end -%>
+          <% end # cache de 6h 
+          %>
+        </table>
+		<% end -%>
+<% end -%>
+
+<%content_3col do %>
+<%mftext('Top Fe') do%>
+<table>
+        <% cache("/common/miembros/index/top_faith_#{Time.now.to_i/21600}") do # 6 horas  
+        %>
+        <% i=0
+        for u in User.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED} and cache_faith_points is not null and cache_faith_points > 0 and is_bot is false", :order => 'cache_faith_points DESC', :limit => 10) %>
+        <tr class="<%=oddclass%>">
+          <td class="sm-icon number"><%=i+=1%></td>
+          <td><%if i <= 3 then %><%=draw_user_info(u)%>
+            <% else %><%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span><br /> <div class="infoinline" style="width: 67px;"><%=render :partial => '/shared/faithbar', :locals => {:user => u}%></div><% end -%></td>
+        </tr>
+        <% end -%>
+      <% end -%>
+      </table>
+<% end -%>
+
+<%mftext('Top ricos') do %>
+<table>
+          <% cache("/common/miembros/index/top_richest_#{Time.now.to_i/21600}") do # 6 horas  
+          %>
+          <% 
+          i = 0
+          max = nil
+          for u in User.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED} and cash > 0 and is_bot is false", :order => 'cash DESC', :limit => 10) 
+            max = u.cash if max.nil? 
+          %>
+          <tr class="<%=oddclass%>">
+            <td class="sm-icon number"><%=i+=1%></td>
+            <td>
+              <%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span><br /> <div class="infoinline" style="width: 67px;"><%=draw_pcent_bar(u.cash / max, "#{(Math.log10(u.cash) + 1).to_i} dígitos")%></div></td>
+          </tr>
+          <% end -%>
+          <% end # cache de 6h 
+          %>
+        </table>
+		<% end -%>
+<% end -%>
+
+<%content_3col do %>
+<%mftext('Top personas referidas') do%>
+		<table>
+          <% cache("/common/miembros/index/top_referrals_logins_#{Time.now.to_i/21600}") do # 6 horas  
+          %>
+          <% 
+          i = 0
+          max = nil
+          for dbu in User.db_query("select count(referer_user_id), referer_user_id as user_id from users where state <> #{User::ST_UNCONFIRMED} and lastseen_on > now() - '3 months'::interval group by(referer_user_id) order by count(referer_user_id) DESC limit 10"):
+            next if dbu['user_id'].to_i == 0
+            u = User.find(dbu['user_id'].to_i)
+            if max.nil? then
+              max = dbu['count'].to_f
+            end
+          %>
+          <tr class="<%=oddclass%>">
+            <td class="sm-icon number"><%=i+=1%></td>
+            <td>
+              <%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span><br /> <div class="infoinline" style="width: 67px;"><%=draw_pcent_bar(dbu['count'].to_i / max, "#{dbu['count']} usuarios referidos activos")%></div></td>
+          </tr>
+          <% end -%>
+          <% end # cache de 6h 
+          %>
+        </table>
+		<% end -%>
+		
+		<%mftext('Top visitas referidas') do %>
+		<table>
+          <% cache("/common/miembros/index/top_referrals_#{Time.now.to_i/21600}") do # 6 horas  
+          %>
+          <% 
+          i = 0
+          max = nil
+          for dbu in User.db_query('select user_id, count(user_id) from refered_hits group by (user_id) order by count(user_id) desc limit 10'):
+            u = User.find(dbu['user_id'].to_i)
+            if max.nil? then
+              max = dbu['count'].to_f
+            end
+          %>
+          <tr class="<%=oddclass%>">
+            <td class="sm-icon number"><%=i+=1%></td>
+            <td>
+              <%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span><br /> <div class="infoinline" style="width: 67px;"><%=draw_pcent_bar(dbu['count'].to_i / max, "#{dbu['count']} visitas referidas")%></div></td>
+          </tr>
+          <% end -%>
+          <% end # cache de 6h 
+          %>
+        </table>
+		<% end -%>
+		
+<% if nil then %>
+<%mftext('Top online') do %>
+<% end -%>
+
+<%mftext('Top mejores comentarios') do %>
+<% end -%>
+
+<%mftext('Top mejores contenidos') do %>
+<% end -%>
+<% end -%>
+<% end -%>

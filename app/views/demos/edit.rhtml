@@ -1,0 +1,32 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Demo } if user_is_authed %>
+<%=render :partial => 'shared/content_details', :locals => { :object => @demo} %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Descripción informativa</li>
+</ul>
+<% end -%>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @demo } %>
+<%= render :partial => 'shared/pending', :object => Demo.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Editar demo') do %>
+
+<%= form_tag({:action => 'update', :id => @demo}, {:multipart => true, :name => 'editing_content' }) %>
+  <%= render :partial => 'form' %>
+  <br />
+  <p><label for="demo_mirrors">Mirrors (1 url por línea)</label><br />
+    <textarea name="demo[demo_mirrors]" rows="10" cols="60"><% for mirror in @demo.demo_mirrors %><%=mirror.url%>
+<% end -%></textarea>
+  </label>
+  <br />
+  <%= submit_tag 'Guardar' %>
+</form>
+<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @demo}%>
+<%=render :partial => '/shared/change_authorship', :locals => {:object => @demo}%>
+
+<%= link_to 'Ver demo publicada', gmurl(@demo) %> |
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

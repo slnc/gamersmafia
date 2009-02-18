@@ -1,0 +1,4 @@
+<% matches = Competitions.find_all_matches_from_clan(controller.portal.clan, "NOT (#{Competition::COMPLETED_ON_SQL})", 10)  
+mftext('Próximas partidas') do %>
+<%= render :partial => '/competiciones/matches_results', :locals =>  { :matches => matches }%>
+<% end if matches.size > 0 -%>

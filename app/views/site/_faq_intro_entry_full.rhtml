@@ -1,0 +1,13 @@
+<% nest_level ||= 0 %>
+<li style="list-style: none; margin: 0 0 10px <%=nest_level*20%>px;"><span class="faq_category"><a name="cat<%=faq_intro_entry.id%>"><%=faq_intro_entry.name%></a></span>
+<ul>
+<% for faqentry in faq_intro_entry.faq_entries.find(:all, :order => 'position ASC'): %>
+<li>
+<p><a class="nolink" name="question<%=faqentry.id%>"><strong><%=faqentry.question%></strong></a></p>
+<p><%=faqentry.answer%></p>
+</li>
+<% end %>
+</ul>
+
+<% faq_intro_entry.children.each do |c| %><%=render :partial => 'faq_intro_entry_full', :locals => { :faq_intro_entry => c, :nest_level => nest_level + 1 }%><% end %>
+</li>

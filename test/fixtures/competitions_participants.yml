@@ -1,0 +1,22 @@
+first:
+  id: 1
+  participant_id: 1
+  competitions_participants_type_id: 1
+  competition_id: 1
+  name: superadmin
+  wins: 0
+  losses: 0
+  ties: 0
+  created_on: 2006-01-01 00:00:00
+
+second:
+  id: 2
+  participant_id: 2
+  competitions_participants_type_id: 1
+  competition_id: 1
+  name: panzer
+  wins: 0
+  losses: 0
+  ties: 0
+  created_on: 2006-01-01 00:00:00
+  

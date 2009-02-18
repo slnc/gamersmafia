@@ -1,0 +1,41 @@
+#ccontent .messages {
+    table-layout: fixed;
+    /*	border-top: 5px solid #333;*/
+    border-collapse: collapse;
+    background: #fff;
+}
+
+#ccontent .messages td.preview {
+    padding: 2px 5px;
+    text-overflow: none;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#ccontent .messages-thread table {
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+#ccontent .messages-thread .preview {
+    text-overflow: none;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#ccontent td.preview a {
+    text-decoration: none;
+}
+
+#ccontent .messages-controls {
+    margin-right: 20px;
+    float: left;
+}
+
+#ccontent .messages .preview span {
+    padding-left: 13px;
+}
+
+#ccontent .messages .preview span.replied {
+    background: url(/skins/default/images/icons/replied.gif) left center no-repeat;
+}

@@ -1,0 +1,108 @@
+<% content_support do %>
+<% if @bet.is_public? then %>
+
+<% if @bet.can_be_reopened? && user_is_authed && Cms::user_can_edit_content?(@user, @bet) then %>
+<%mftext('Cambiar Resultado') do %>
+	<div class="centered"><a href="/apuestas/cambiar_resultado/<%=@bet.id%>" onclick="return confirm('¿Estás seguro?');">Cambiar resultado</a></div>
+<% end -%>
+<% end -%>
+
+<% if @bet.closes_on > Time.now then %>
+  <%mftext('Apuestas abiertas') do %>
+Las apuestas para esta partida se cierran en <br /><div class="centered"><strong><%=format_interval(@bet.closes_on.to_i - Time.now.to_i)%></strong></div>
+<% end -%>
+<% else %>
+<%mftext('Apuesta cerradas') do %>
+La partida está en curso o finalizada, ya no se permiten las apuestas.
+<% end -%>
+<% end -%>
+
+
+<% # TODO esto está mal , revisar todas, no podemos poner and id <> ?
+%>
+<% cache("/common/apuestas/show/latest_by_cat_#{@bet.bets_category_id}") do %>
+<% other_bets = Bet.find(:all, :conditions => ["bets_category_id IN (#{(@bet.bets_category.get_all_children.<<(@bet.bets_category.id)).join(',')}) and state = #{Cms::PUBLISHED} AND created_on <= now()", @bet.id], :order => 'created_on desc', :limit => 5)
+if other_bets.size > 0 then %>
+<%mfcontents_list('Más apuestas', other_bets, :faction_favicon => true) do |item| %>
+<%=content_category(item)%><%=controller.url_for_content(item, item.title)%><div class="infoinline"><%=draw_rating(item.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(item)%>#comments"><%=item.cache_comments_count%></a></span></div>
+<% end -%>
+
+<% end -%>
+<% end # cache
+-%>
+<% else %>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @bet } %>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+<%mfcontent(@bet) do %>
+
+<%=@bet.description%>
+<br />
+<% if @bet.completed? then 
+if @bet.cancelled then %><div class="warning">Partida cancelada</div><% elsif @bet.forfeit then %><div class="warning">Forfeit</div><% elsif @bet.tie then %><div class="warning">Empate</div><% else %><div class="notice">Ganador: <strong><%=BetsOption.find(@bet.winning_bets_option_id).name%></strong></div><% end -%>
+<% end %>
+<%mftext('Estado') do %>
+<br />
+<table class="betvotes">
+<%
+total_ammount = @bet.total_ammount
+
+opts = @bet.bets_options.find(:all, :order => 'lower(name) asc')
+sum_pc = 0
+i = 0
+for option in opts
+  #votes = option.bets_votes.size
+  if total_ammount > 0 then
+    cur_pc = (option.ammount.to_f / total_ammount * 100).to_i
+  else
+    cur_pc = 0
+  end
+  sum_pc += cur_pc
+
+  if i == opts.length - 1 and sum_pc < 100 and option.ammount.to_i > 0 then
+    cur_pc += 1
+  end
+%>
+<tr class="<%=oddclass%>">
+<td style="width: 200px;" class="content-hid"><strong><%= option.name %></strong></td>
+<td><img src="/images/blank.gif" style="border: 1px solid #099B05; background: #5ED95E; width: <%=cur_pc%>%; height: 9px;" /><br /><strong><%=option.ammount%></strong> <%=gmd11%> <span class="infoinline" style="color: #099B05">(<%=cur_pc%>%)</span></td>
+</tr>
+<%
+  i += 1
+end
+%>
+</table>
+<% end -%>
+
+<% if user_is_authed and @bet.closes_on > Time.now then %>
+<%mftext('Tus apuestas para esta partida') do %>
+<div class="infoinline">(mínimo por opción: 5<%=gmd10%>)</div>
+<form method="post" action="/apuestas/update_cash_for_bet/<%=@bet.id%>">
+<table class="betvotes">
+<%
+total_ammount = @bet.total_ammount
+
+for option in @bet.bets_options.find(:all, :order => 'lower(name) asc')
+  # TODO hack
+  cash_option = User.db_query("SELECT COALESCE(sum(ammount), 0) as ammount from bets_tickets where bets_option_id = #{option.id} and user_id = #{@user.id}")[0]['ammount'].to_f
+  #votes = option.bets_votes.size
+  if total_ammount > 0 then
+    cur_pc = (option.ammount.to_f / total_ammount * 100).to_i
+  else
+    cur_pc = 0
+  end
+%>
+<tr class="<%=oddclass%>">
+<td style="width: 200px;" class="content-hid"><strong><%= option.name %></strong></td>
+<td><input type="text" class="text" name="bet_options[<%=option.id%>]" value="<%=cash_option%>" /><%=gmd11%> </span></td>
+</tr>
+<% end %>
+</table>
+<input type="submit" class="button" value="Guardar mi nueva apuesta" onclick="return confirm('¿Estás seguro?');" />
+</form>
+<% end -%>
+<% end %>
+<% end -%>
+<% end -%>

@@ -1,0 +1,14 @@
+<!--[form:ad]-->
+<p><label for="ad_question">Título</label><br/>
+<%= text_field 'global_notification', 'title', :class => 'text', :size => 80 %></p>
+
+<p><label for="global_notification_question">Tipo</label><br/>
+<select name="global_notification[recipient_type]">
+	<%=options_for_select(GlobalNotification::VALID_RECIPIENT_TYPES, @global_notification.recipient_type)%>
+</select>
+</p>
+
+<p><label for="ad_question">Código HTML (TODO no ambos)</label><br/>
+<%= wysiwyg 'global_notification[main]', :value => @global_notification.main %></p>
+<!--[eoform:ad]-->
+

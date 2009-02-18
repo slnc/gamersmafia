@@ -1,0 +1,29 @@
+<%=render :partial => 'scope_selector', :locals => { :collection => @available_scopes, :active_scope => @scope } %>
+
+<%=render :partial => 'task_browser', :locals => { :slog_entries_filter => { :domain => :bazar_district_bigboss, :scope => @scope } } %>
+
+<div class="grid-9 glast">
+<% bd = BazarDistrict.find(@scope)%>
+
+<%mftext('Estadísticas', :has_submodules => true) do%>
+<%mftext('Karma', :blast => true) do %>
+	<%=sparkline(:size => '250x50', :data => Stats::Portals.daily_karma(BazarDistrictPortal.find_by_code(bd.code), 31.days.ago, 1.day.ago))%>
+<% end -%>
+<%mftext('Visitas', :blast => true) do %>
+	<%=sparkline(:size => '250x50', :data => Stats::Portals.daily_pageviews(BazarDistrictPortal.find_by_code(bd.code), 31.days.ago, 1.day.ago))%>
+<% end -%>
+<% end -%>
+
+<%mftext('Staff', :has_submodules => true) do %>
+<%mftext('Eventos pendientes', :grid => 4, :blast => true) do %>
+<table>
+	<tr class="<%=oddclass%>">
+		<td>Sicarios</td>
+		<td class="centered"><a href="/slog/sicario?scope=<%=@scope%>"><%=SlogEntry.ccount(:open, { :domain => :sicario, :scope => @scope})%></a></td>
+	</tr>
+</table>
+<% end -%>
+<% end -%>
+
+<div class="right"><strong><a href="/cuenta/distrito">Administración</a></strong></div>
+</div>

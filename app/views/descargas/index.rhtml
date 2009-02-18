@@ -1,0 +1,85 @@
+<% content_support do %>
+<% if defined? @category and not @category.nil? then %>
+<%=render :partial => '/descargas/esenciales2', :locals => { :category => @category }%>
+
+<% mftext('Los más descargados') do %>
+<ul class="content-hid">
+<% cache("/common/descargas/index/most_downloaded_#{@category.root_id}") do %>
+  <% @category.root.find(:published, :order => 'downloaded_times DESC', :limit => 5).each do |d| %>
+  <li class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%>
+  <div class="infoinline"><span class="downloads-count"><%=d.downloaded_times%></span> | <%=draw_rating(d.rating[0])%></div></li>
+  <% end -%>
+<% end -%>
+</ul>
+<% end -%>
+<% end -%>
+
+<% mftext('Los que más han aportado') do %>
+<% cache("/common/descargas/index/most_productive_author_by_cat_#{@category.nil? ? '' : @category.id}") do %>
+<%=render :partial => '/shared/most_productive_authors', :locals => {:cls => controller.portal.download.items_class, :category => @category}%>
+<% end -%>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+<% mftext(@title) do %>
+<table>
+  <tr>
+    <th>Carpeta</th>
+    <th>Archivos</th>
+  </tr>
+
+<% 
+if params[:category]
+  cache_path = "/common/descargas/index/folders_#{@category.id}"
+else
+  cache_path = "/#{controller.portal_code}/descargas/index/folders"
+end
+
+cache(cache_path) do
+
+if params[:category] then
+  @categories = controller.portal.download.category_class.find(:all, :conditions => ['parent_id = ?', params[:category]], :order => 'lower(name) ASC')
+else
+  @categories = controller.portal.downloads_categories
+end %>
+
+<% for subcategory in @categories %>
+<tr class="downloads-folder <%=oddclass%>">
+  <td class="first"><%=link_to subcategory.name, gmurl(subcategory)%></td>
+  <td class="infoinline"><%=subcategory.items_count%></td>
+</tr>
+<% end -%>
+<% end -%>
+</table>
+<% end -%>
+
+<% if @category then %>
+<%mftext('Archivos en esta carpeta') do %>
+<%
+@download_pages = ActionController::Pagination::Paginator.new self, @category.count(:published, :treemode => false), 30, params['page']
+@download_pages.current_page = @download_pages.first if params['page'].nil?
+%>
+<%= render :partial => 'shared/pager', :object => @download_pages, :locals => {:pos => 'top'} %>
+<table>
+<tr class="downloads-download <%=oddclass%>">
+  <th class="first">Archivo</th>
+  <th class="timestamp">Publicado</th>
+  <th class="centered w150">Veces descargado</th>
+  <th class="timestamp">Tamaño</th>
+</tr>
+<% cache("/common/descargas/index/downloads_#{@category.id}/page_#{params[:page]}") do %>
+<% @category.find(:published, :treemode => false, :order => 'lower(title) asc', :limit => @download_pages.current.to_sql[0], :offset => @download_pages.current.to_sql[1]).each do |download| %>
+<tr class="downloads-download <%=oddclass%>">
+  <td class="first"><%=link_to download.title, gmurl(download)%></td>
+  <td class="infoinline timestamp centered"><%=print_tstamp download.created_on%></td>
+  <td class="infoinline centered"><%=download.downloaded_times%></td>
+  <td class="infoinline timestamp"><%=(download.file.to_s != '' and File.exists?("#{RAILS_ROOT}/public/#{download.file}")) ? number_to_human_size(File.size("#{RAILS_ROOT}/public/#{download.file}")) : ''%></td>
+</tr>
+<% end -%>
+<% end -%>
+</table>
+<%= render :partial => 'shared/pager', :object => @download_pages, :locals => {:pos => 'bottom'} %>
+<% end -%>
+<% end -%>
+<% end -%>

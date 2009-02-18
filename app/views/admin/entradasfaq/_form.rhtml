@@ -1,0 +1,14 @@
+<%= error_messages_for 'faq_entry' %>
+
+<!--[form:faq_entry]-->
+<p><label >Categoría</label><br/>
+<%= render_tree_select FaqCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc'), 'name', 'faq_entry[faq_category_id]', @faq_entry.faq_category_id %>
+
+<p><label for="faq_entry_question">Pregunta</label><br/>
+<%= text_field 'faq_entry', 'question', :class => 'text', :size => 80 %></p>
+
+
+<p><label for="faq_entry_answer">Respuesta</label><br/>
+<%=wysiwyg('faq_entry[answer]', :value => @faq_entry.answer)%>
+<!--[eoform:faq_entry]-->
+

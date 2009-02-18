@@ -1,0 +1,9 @@
+<h1>Nueva categoría</h1>
+
+<%= form_tag( {:action => 'categorias_create'}, {:multipart => true})%>
+<input type="hidden" name="type_name" value="<%=params[:type_name]%>" />
+  <%= render :partial => 'categorias_edit' %>
+  <%= submit_tag "Crear" %>
+</form>
+
+<%= link_to 'Volver', "/admin/categorias/#{params[:type_name]}" %>

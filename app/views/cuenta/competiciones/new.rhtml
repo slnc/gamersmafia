@@ -1,0 +1,28 @@
+<% content_support do %>
+  <% mftext('Tipos de competiciones') do %>
+  <dl>
+    <dt><strong>Liga</strong></dt>
+    <dd>Cada participante se enfrenta a todos los demás. Gana aquel que al acabar todas las partidas logre un mayor número de victorias.</dd>
+
+    <dt><strong>Torneo</strong></dt>
+    <dd>Todos los participantes se agrupan de forma aleatoria por parejas. Los ganadores se enfrentan entre sí hasta que solo quede un participante.</dd>
+
+    <dt><strong>Ladder</strong></dt>
+    <dd>Competición que nunca terminan. Las partidas las acuerdan los propios participantes.</dd>
+  </dl>
+  <% end -%>
+
+  <% mftext('Competiciones PRO') do %>
+  <p>Si representas a una party u otra organización relacionada con los
+  videojuegos y estás interesado en usar nuestro servicio de competición manda un email a <strong><%=hide_email('competiciones@gamersmafia.com')%></strong></p>
+  <% end -%> 
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Nueva competición') do %>
+  <%= form_tag :action => 'create' %>
+    <%= render :partial => 'form' %>
+    <%= submit_tag 'Crear' %>
+  </form>
+  <% end -%>
+<% end -%>

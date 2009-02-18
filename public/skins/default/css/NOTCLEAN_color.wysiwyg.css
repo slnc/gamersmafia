@@ -1,0 +1,71 @@
+.wsEditorToolbar input {
+    background: url(../images/icons/wysiwyg.png);
+}
+
+.wsEditorToolbar .btnredo {
+    background-position: 0 0;
+}
+
+.wsEditorToolbar .btnundo {
+    background-position: -20px 0;
+}
+
+.wsEditorToolbar .btncut {
+    background-position: -40px 0;
+}
+
+.wsEditorToolbar .btncopy {
+    background-position: -60px 0;
+}
+
+.wsEditorToolbar .btnpaste {
+    background-position: -80px 0;
+}
+
+.wsEditorToolbar .btnbold {
+    background-position: -100px 0;
+}
+
+.wsEditorToolbar .btnitalic {
+    background-position: -120px 0;
+}
+
+.wsEditorToolbar .btnIndent {
+    background-position: -140px 0;
+}
+
+.wsEditorToolbar .btnOutdent {
+    background-position: -160px 0;
+}
+
+.wsEditorToolbar .btncreateLink {
+    background-position: -180px 0;
+}
+
+.wsEditorToolbar .btninsertImage {
+    background-position: -200px 0;
+}
+
+.wsEditorToolbar .btnjustifyLeft {
+    background-position: -220px 0;
+}
+
+.wsEditorToolbar .btnjustifyCenter {
+    background-position: -240px 0;
+}
+
+.wsEditorToolbar .btnjustifyRight {
+    background-position: -260px 0;
+}
+
+.wsEditorToolbar .btnInsertUnorderedList {
+    background-position: -280px 0;
+}
+
+.wsEditorToolbar .btnclean {
+    background-position: -300px 0;
+}
+
+.button.selectable {
+    color: blue;
+}

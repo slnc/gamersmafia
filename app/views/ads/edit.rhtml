@@ -1,0 +1,36 @@
+<% content_support(:show_ads => false) do %>
+	<%mftext('Información') do %>
+	<table>
+		<tr>
+			<td>Fecha de creación</td>
+			<td class="timestamp"><%=print_tstamp(@ad.created_on, 'date')%></td>
+		</tr>
+	</table>
+	<% end %>
+<% if nil then %>
+	<%mftext('Slots asociados') do %>
+		<ul>
+		<% @ad.ads_slots.find(:all, :conditions => 'ads_slots_instances.deleted is false', :order => 'id ASC').each do |asl| %>
+		<li><a href="/ads/slot/<%=asl.id%>"><%=asl.name%></a></li>
+		<% end -%>
+		</ul>
+	<% end -%>
+	<% end -%>
+<% end -%>
+
+<%content_main do %>
+<%mftext('Editar banner') do%>
+<%= form_tag({:action => 'update', :id => @ad}, :multipart => true )%>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+<% end -%>
+
+<%mftext('Borrar banner') do%>
+<form method="post" action="/ads/destroy/<%=@ad.id%>">
+<input type="submit" value="Borrar banner" onclick="return confirm('¿Estás seguro de que deseas borrar este banner?');" />	
+</form>
+<br />
+
+<% end -%>
+<% end -%>

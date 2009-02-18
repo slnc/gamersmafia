@@ -1,0 +1,21 @@
+	<%mftext('Alegría del día') do %>
+		<div style="width: auto; background: none; text-align: right; float: right; padding: 0px 4px 0 0;" >
+		<a class="daily-joy-babe2" title="Ver chicas" onclick="setpref('sex', 'babe');"><img src="/images/blank.gif" /></a> 
+		<a class="daily-joy-dude2"  title="Ver chicos" onclick="setpref('sex', 'dude');"><img src="/images/blank.gif" /></a> 
+		<a class="daily-joy-void2" title="No ver nada" onclick="setpref('sex', 'void');"><img class="icon" src="/images/blank.gif" /></a></div><div></div>
+		<div style="clear: right;"></div>
+		<%
+if cookies.keys.include?('sexpref') and cookies['sexpref'] == 'dude'
+	images_cat = 977
+elsif cookies.keys.include?('sexpref') and cookies['sexpref'] == 'void'
+	images_cat = nil
+else
+	images_cat = 976
+end
+
+if images_cat then
+%>
+		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => images_cat}%>		
+<% end -%>
+
+<% end -%>

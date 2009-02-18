@@ -1,0 +1,2 @@
+module Cuenta::SkinsHelper
+end

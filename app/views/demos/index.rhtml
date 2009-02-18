@@ -1,0 +1,70 @@
+<% content_support do %>
+<% mftext('Últimas demos subidas') do %>
+<%=generic_contents_list(controller.portal.demo.find(:published, :order => 'created_on DESC', :limit => 5))%>
+<% end -%>
+
+<% mftext('Las más descargadas') do %>
+<ul class="content-hid">
+<%	# TODO cache %>
+<% controller.portal.demo.find(:published, :order => 'downloaded_times DESC', :limit => 5).each do |d| %>
+<li class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%>
+  <div class="infoinline"><span class="downloads-count"><%=d.downloaded_times%></span> | <%=draw_rating(d.rating[0])%></div></li>
+<% end -%>
+</ul>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Buscar demos') do %>
+
+<form method="get" action="/demos/buscar">
+<% @demo = Demo.new %>
+<table>
+<tr>
+    <td>Juego</td>
+    <% games = controller.portal.respond_to?(:factions) ? controller.portal.factions.find(:all).collect { |f| "'#{f.code}'" } : Game.find(:all).collect { |g| "'#{g.code}'" } %>
+    <td><%= select("demo", "demos_category_id", DemosCategory.find(:all, :conditions => "parent_id is null AND code IN (#{games.join(',')})", :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%></p></td>
+</tr>
+<tr>
+    <td>Modo de juego</td>
+    <td><select id="games_mode_id" name="demo[games_mode_id]">
+</select></td>
+</tr>
+<tr>
+    <td>Jugador/Clan</td>
+    <td><input type="text" class="text" name="demo[entity]" /></td>
+</tr>
+<tr>
+    <td>Evento</td>
+    <td><%= select("demo", "event_id", Event.find(:published, :conditions => 'parent_id is null', :order => 'lower(title) ASC').collect {|p| [ p.title, p.id ] }, { :include_blank => true })%></td>
+</tr>
+<tr>
+    <td>Tipo</td>
+    <td><%= select("demo", "demotype", Demo::DEMOTYPES.each {|k,v| [ k, v ] }, { :include_blank => true })%></td>
+</tr>
+<tr>
+    <td>Mapa</td>
+    <td><select id="games_map_id" name="demo[games_map_id]">
+<% if @demo.games_map_id then %>
+<% end -%>
+</select></td>
+</tr>
+<tr>
+    <td>POV</td>
+    <td><%= select("demo", "pov_type", Demo::POVS.each {|k,v| [ k, v ] }, { :include_blank => true })%></td>
+</tr>
+
+
+<tr>
+    <td>Versión del juego</td>
+    <td><select id="games_version_id" name="demo[games_version_id]">
+</select></td>
+</tr>
+</table>
+<%= observe_field "demo_demos_category_id", :update => "games_map_id", :with => "demos_category_id", :url => '/demos/get_games_maps' %>
+<%= observe_field "demo_demos_category_id", :update => "games_mode_id", :with => "demos_category_id", :url => '/demos/get_games_modes' %>
+<%= observe_field "demo_demos_category_id", :update => "games_version_id", :with => "demos_category_id", :url => '/demos/get_games_versions' %>
+<input type="submit" class="button" class="button" value="Buscar" />
+</form>
+<% end -%>
+<% end -%>

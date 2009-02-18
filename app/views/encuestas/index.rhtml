@@ -1,0 +1,45 @@
+<% content_support do %>
+<% mftext('Más populares') do %>
+<ul class="sidelist">
+<% cache ("/#{controller.portal_code}/encuestas/index/most_votes") do %>
+<% 
+cat_ids = controller.portal.categories(Poll).collect { |cat| cat.id }
+%>
+
+<%
+Poll.find_by_sql("select a.id from polls a join polls_options b on a.id = b.poll_id WHERE polls_category_id IN (#{cat_ids.join(',')}) group by (a.id) order by sum(b.polls_votes_count) desc limit 3").each do |p|
+  p.reload %>
+  <li class="<%=oddclass%>"><%=controller.url_for_content(p, p.title)%><br /><div class="infoinline"><%=p.votes%> votos | <span class="comments-count"><a style="display: inline;" href="<%=gmurl(p)%>#comments"><%=p.cache_comments_count%></a></span></div></li>
+  <% end -%>
+<% end -%>
+</ul>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+    <% mftext('Encuestas') do %>
+<% 
+@poll_pages = ActionController::Pagination::Paginator.new self, controller.portal.poll.count(:published), 20, params['page']
+@poll_pages.current_page = @poll_pages.last if params['page'].nil?
+%>
+    <%= render :partial => 'shared/pager', :object => @poll_pages, :locals => {:pos => 'top'} %>
+
+    <table>
+<% cache("/#{@controller.portal_code}/encuestas/index/page_#{params[:page]}") do %>
+<% 
+# TODO it doesn't work for portals
+controller.portal.poll.find(:published, :order => 'created_on asc', :limit => @poll_pages.current.to_sql[0], :offset => @poll_pages.current.to_sql[1]).reverse.each do |poll| %>
+    <tr class="<%=oddclass%>">
+      <td class="icon"><%=faction_favicon(Organizations.find_by_content(poll))%></td>
+      <td><strong><%=link_to poll.title, gmurl(poll) %></strong><br /><br /></td>
+      <td class="infoinline w75 right"><strong><%=poll.votes%></strong> votos</td>
+      <td class="w50"><span class="pageviews-count" style="line-height: 18px;" title="Leído <%=poll.hits_anonymous + poll.hits_registered%> veces"><%=poll.hits_anonymous + poll.hits_registered%></span> </td>
+      <td class="w50"><span class="comments-count"><a title="Ver comentarios" href="<%=controller.url_for_content_onlyurl(poll)%>#comments"><%=poll.cache_comments_count%></a></span></td>
+      <td class="timestamp infoinline"><%=print_tstamp(poll.created_on)%></td>
+    </tr>
+  <% end %>
+<% end %>
+</table>
+    <%= render :partial => 'shared/pager', :object => @poll_pages, :locals => {:pos => 'bottom'} %>
+	<% end -%>
+<% end -%>

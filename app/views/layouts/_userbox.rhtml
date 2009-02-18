@@ -1,0 +1,71 @@
+    <div class="module" id="userbox"><div class="mcontent">
+        <% if user_is_authed then %>
+        <div id="userbox-logged">
+          <div id="userbox-logout"></div>
+          
+          <div id="userbox-avatar"><a class="content" href="<%=gmurl(@user)%>"><img style="border: 0;" alt="<%=@user.login%>" title="<%=@user.login%>" src="<%=ASSET_URL%><%=@user.show_avatar%>" /></a></div>           
+            <ul id="userbox-bars">
+              <li><div class="userbox-karma-bar"><%=draw_karma_bar_sm(@user)%></div></li>
+              <li><div class="userbox-faith-bar"><%=draw_faith_bar_sm(@user)%></div></li>
+            </ul>
+            
+            <ul id="userbox-gmf-and-ratings">
+              <li class="usercash"><a class="nav" title="Ir al banco" href="/cuenta/banco"><%=@user.cash.to_i%></a><img class="gmd10" src="/images/blank.gif" /></li>
+              <li class="ratings"><% rem = @user.remaining_rating_slots%><img src="/images/blank.gif" class="left-ratings <%='none-remaining' if rem == 0%>" /><%=rem%></li>
+            </ul>            
+
+            <ul id="userbox-indicators">
+                <li class="messages<%= ' has-unread' if @user.unread_messages > 0%>"><a class="nav" title="Leer mis mensajes" href="/cuenta/mensajes"><%=@user.unread_messages%></a></li>
+                <li class="competition<%= ' activated' if @user.enable_competition_indicator?%>"><a class="nav" title="Ver novedades de competición" class="buttonic" href="/cuenta/competiciones"><img class="icon" src="/images/blank.gif" /></a></li>
+				<% if @user.is_hq? then  
+%>
+<li class="slog "><a class="nav" title="Ver log del sistema" class="buttonic" href="/site/slog"><img class="icon" src="/images/blank.gif" /></a></li><% end -%>
+                <!-- <li class="friendship-requests">R</li> -->
+            </ul>
+            
+            
+            <ul id="userbox-action-links">
+              <li><a class="nav buttonic" href="/cuenta">mi cuenta</a></li>
+              <li><a class="nav" onclick="return confirm('¿Estás seguro?');" href="/cuenta/logout">logout</a></li>
+            </ul>
+          <% if !(controller.portal.respond_to?(:clan_id) && controller.portal.clan_id) || controller.portal.clan.user_is_member(@user.id) then %><div id="sendbutton"><a class="nav" href="#" onclick="open_new_content_selector();"><input type="image" src="/images/blank.gif" onMouseOver="this.className = 'sendbutton-mouseover';" onMouseOut="this.className = '';" /></a></div><% end -%>
+        </div>
+        <% else %>
+        <%=render :partial => '/cuenta/cuenta/login'%>
+        <ul class="anonymous">
+          <li class="alta first"><%=link_to('registrarme', {:controller => '/cuenta', :action => 'alta'} ) %></li>
+          <li class="olvide-clave"><%= link_to('olvidé la contraseña', {:controller => '/cuenta', :action => 'olvide_clave'} ) %></li>
+        </ul>
+        <% end -%></div></div>
+
+<% if user_is_authed then %>
+          <div id="new-content-selector" class="hidden">
+            <div class="title centered drafts"><a class="nav" onclick="close_new_content_selector();" href="/cuenta/mis_borradores">Mis borradores</a></div>
+            <div class="title centered">Enviar contenidos</div>
+            <ul>
+              <% if @controller.portal && @controller.portal.class.name == 'ClansPortal' then %>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="/noticias/new">Noticia</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="/descargas/new">Descarga</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="/imagenes/new">Imagen</a></li>
+			  <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="/encuestas/new">Encuesta</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="/eventos/new">Evento</a></li>
+              <% else %>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/apuestas/new">Apuesta</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/columnas/new">Columna</a></li>
+			  <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/coverages/new">Coverage</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/curiosidades/new">Curiosidad</a></li>
+              <li class="alt1"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/descargas/new">Descarga</a></li>
+              <li class="alt1"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/demos/new">Demo</a></li>
+              <li class="alt1"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/encuestas/new">Encuesta</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/entrevistas/new">Entrevista</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/eventos/new">Evento</a></li>
+              <li class="alt1"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/imagenes/new">Imagen</a></li>
+              <li class="alt1"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/noticias/new">Noticia</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/reviews/new">Review</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/tutoriales/new">Tutorial</a></li>
+              <li style="padding-top: 10px;" class="alt0"><a onclick="close_new_content_selector();" href="http://<%=App.domain%>/cuenta/blog/new">Entrada de blog</a></li>
+              <% end -%>
+              <li class="centered"><a class="nav" onclick="close_new_content_selector();" href="#">cerrar</a></li>
+            </ul>
+          </div>
+          <% end -%>

@@ -1,0 +1,12 @@
+<% content_support do %>
+<% end -%>
+
+<% content_main do %>
+  <form method="post" action="/competiciones/update_report/<%=params[:id]%>">
+    <p><label for="competitions_matches_report_report">Informe</label><br/>
+	<%=wysiwyg('competitions_matches_report[report]', :value => @competitions_matches_report.report, :height => '300px')%>
+    </p>
+    <br />
+    <input type="submit" class="button" value="Enviar" />
+  </form>
+<% end -%>

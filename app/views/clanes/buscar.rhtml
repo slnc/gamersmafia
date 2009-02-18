@@ -1,0 +1,33 @@
+<% content_support do %>
+  <%= render :partial => 'searchbox' %>
+<% end -%>
+
+<% content_main do %>
+  <%mftext('Miembros') do %>
+<%= render :partial => 'shared/pager', :object => @clan_pages, :locals => {:pos => 'top', :options => {:params => {:s => params[:s]}}} %>
+  <%mftext('Clanes') do %>
+  <table>
+    <tr class="<%=oddclass%>">
+      <th>Nombre</th>
+      <th>Tag</th>
+      <th>Juegos</th>
+      <th>Miembros</th>
+      <th>Web oficial</th>
+    </tr>
+
+<% for clan in @clans %>
+    <tr class="<%=oddclass%>">
+      <td><a href="/clanes/clan/<%=clan.id%>"><%=clan.name%></a></td>
+      <td><%=notags(clan.tag)%></td>
+      <td><% for game in clan.games%><%=faction_favicon(game)%> <% end -%></td>
+      <td><%=clan.members_count%></td>
+      <td><%if clan.website_external.to_s =~ (/^http:\/\//) then %><a href="<%=clan.website_external%>">Web oficial</a><% end -%></td>
+    </tr>
+  <% end -%>
+</table>
+
+<%= render :partial => 'shared/pager', :object => @clan_pages, :locals => {:pos => 'bottom'} %>
+
+<% end -%>
+<% end -%>
+<% end -%>

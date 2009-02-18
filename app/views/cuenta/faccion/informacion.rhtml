@@ -1,0 +1,9 @@
+<%=form_tag :action => 'informacion_update'%>
+<p><label for="news_title">Descripción</label><br/>
+<%=wysiwyg('faction[description]', :value => @faction.description, :height => '300px')%></p>
+
+<p><label for="news_title">¿Por qué unirte?</label><br/>
+<%=wysiwyg('faction[why_join]', :value =>@faction.why_join, :height => '300px')%></p>
+
+<%=submit_tag 'Guardar'%>
+</form>

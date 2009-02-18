@@ -1,0 +1,33 @@
+<%=@ipinfo[7]%> (<%=@ipinfo[4]%> <%=ip_country_flag(@ipinfo[0])%>)
+<br />
+
+    <div id="map" style="width: 250px; height: 200px"> </div>
+	
+	    <script type="text/javascript">
+    //<![CDATA[
+    //]]>
+
+
+  //google.load("maps", "2.x");
+  //function WIMIAload() {
+    if (GBrowserIsCompatible()) {
+        var map = new GMap2(document.getElementById("map"));
+    	    map.addControl(new GSmallMapControl());
+    	    map.addControl(new GScaleControl());
+	    map.enableScrollWheelZoom();
+	    var WIMIAtext = "a";
+	    map.setCenter(new GLatLng(<%=@ipinfo[9]%>, <%=@ipinfo[10]%>), 8);
+
+		function createMarker(point, number) {
+		  var marker = new GMarker(point);
+		  var ipdetails = "<%=@ipinfo[0]%>";
+		  GEvent.addListener(marker, "click", function() {marker.openInfoWindowHtml(ipdetails);});
+		  return marker;
+		}
+		  var point = new GLatLng(<%=@ipinfo[9]%>, <%=@ipinfo[10]%>);
+		  map.addOverlay(createMarker(point, 1));
+     }
+  //}
+  //google.setOnLoadCallback(WIMIAload);
+
+    </script>

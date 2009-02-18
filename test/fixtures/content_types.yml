@@ -1,0 +1,49 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+first_content_type:
+  id: 1
+  name: News
+bet:
+  id: 15
+  name: Bet
+image:
+  id: 4
+  name: Image
+download:
+  id: 5
+  name: Download
+forumtopIc:
+  id: 6
+  name: Topic
+poll:
+  id: 7
+  name: Poll
+event:
+  id: 8
+  name: Event
+eventsneWs:
+  id: 9
+  name: Coverage
+tutorial:
+  id: 10
+  name: Tutorial
+intervieW:
+  id: 11
+  name: Interview
+column:
+  id: 12
+  name: Column
+review:
+  id: 13
+  name: Review
+funthing:
+  id: 14
+  name: Funthing
+blogentrY:
+  id: 17
+  name: Blogentry
+demos:
+  id: 23
+  name: Demo
+questions:
+  id: 24
+  name: Question

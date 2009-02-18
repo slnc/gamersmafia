@@ -1,0 +1,26 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Interview } if user_is_authed %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Debe tener una cierta longitud</li>
+<li>Revisar ortografía y gramática</li>
+<li>De interés general</li>
+</ul>
+<% end -%>
+
+<%= render :partial => 'shared/pending', :object => Interview.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Nueva entrevista') do %>
+
+<%= form_tag({:action => 'create'}, :multipart => true )%>
+  <%= render :partial => 'form' %>
+  <br />
+  <%= submit_tag 'Crear' %>
+</form>
+
+<br />
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

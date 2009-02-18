@@ -1,0 +1,27 @@
+.gallery-info {
+    float: left;
+    width: 175px;
+}
+
+.toplevel-gallery dt {
+    clear: both;
+}
+
+.toplevel-gallery dd {
+    margin: 0 0 20px 0;
+    padding: 0;
+}
+
+.toplevel-gallery dd .preview {
+    margin-left: 175px;
+}
+
+.images-index li {
+    margin: 0;
+    padding: 0 0 0 10px;
+    display: inline;
+}
+
+.images-index ul, ul.online {
+    list-style: none;
+}

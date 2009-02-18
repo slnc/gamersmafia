@@ -1,0 +1,5 @@
+<option value=""></option>
+<% g_id = @g[0]['id'].to_i
+GamesVersion.find(:all, :conditions => ['game_id = ?', g_id]).each do |gm| %>
+<option value="<%= gm.id %>"><%= gm.version %></option>
+<% end %>

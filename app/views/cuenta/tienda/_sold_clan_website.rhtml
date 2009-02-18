@@ -1,0 +1,6 @@
+Clan:
+<select name="clan_id">
+	<%@user.clans.each do |c| 
+	next unless c.user_is_clanleader(@user.id) && !c.website_activated? 
+	%><option value="<%=c.id%>"><%=c.name%></option><% end %>
+</select>

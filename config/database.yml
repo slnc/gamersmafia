@@ -1,0 +1,27 @@
+development:
+  adapter: postgresql
+  database: gamersmafia
+  host: localhost
+  username: postgres
+  password:
+
+test:
+  adapter: postgresql
+  database: gamersmafia_test
+  host: localhost
+  username: postgres
+  password:
+
+production:
+  adapter: postgresql
+  database: gamersmafia
+  host: localhost
+  username: postgres
+  password:
+
+support:
+  adapter: postgresql
+  database: gamersmafia_replicated
+  host: tachikoma.slnc.net
+  username: postgres
+  password: ic4ro69

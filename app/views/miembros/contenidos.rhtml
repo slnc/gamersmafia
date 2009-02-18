@@ -1,0 +1,20 @@
+<% content_main do %>
+  <% mftext('Contenidos publicados') do %>
+    <table>
+    <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/contents_stats") do %>
+      <% for key in @curuser.contents_stats.keys
+      if ['Reviews', 'Curiosidades'].include?(key) then
+        next
+        end %>
+        <tr class="<%=oddclass%>">
+            <td style="width: 120px;"><%=key%></td>
+            <td style="text-align: right;"><%if key.downcase != 'comentarios' then %><%=link_to @curuser.contents_stats[key], "#{gmurl(@curuser)}/contenidos/#{key.downcase.normalize}"%><% else %><%=@curuser.contents_stats[key]%><% end -%></td>
+        </tr>
+      <% end -%>
+    <% end -%>
+    </table>
+    <br />
+    <br />
+    <a href="<%=gmurl(@curuser)%>">&laquo; Volver a su ficha</a>
+	<% end -%>
+<% end -%>

@@ -1,0 +1,12 @@
+<% mftext('Experimentos activos') do %>
+<div id="admin-stats">
+<table>
+<% AbTest.find(:all, :conditions => 'active = \'t\' AND completed_on is null', :order => 'id').each do |t| %>
+<%= render :partial => 'stats_hipotesis_tr', :locals => { :t => t} %>
+<% end -%>
+</table>
+<br />
+<div class="infoinline right">Las estadísticas se refrescan cada día.</div>
+<strong><a href="/site/stats_hipotesis_archivo">Ver experimentos completados</a></strong>
+</div>
+<% end -%>

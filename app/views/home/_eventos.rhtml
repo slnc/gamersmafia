@@ -1,0 +1,10 @@
+<div class="homebox" id="hhome-events">
+<div id="home-events" class="subheader"><div><span>Eventos</span></div></div>
+<% # TODO hacer algo con esto, no se usa
+        cache("/#{@controller.portal.code}/home/index/eventos/#{Time.now.strftime('%Y%m%d')}") do %>
+<%mfcontents_table(nil, Event.current(EventsCategory.find(:all, :conditions => "root_id IN (#{(controller.portal.categories(Event).collect { |c| c.id} + [0]).join(',')})"))) do |e| %>
+        <td style="font-size: 11px;"><a href="<%=get_url(e)%>"><%=content_category(e)%><%=e.title%></a></td>
+        <td style="font-size: 11px;"><%=member_state('active')%><%=e.users.count%></td>
+      <% end # for -%>
+<% end # cache-%>
+</div>

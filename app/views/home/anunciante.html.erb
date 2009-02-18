@@ -1,0 +1,50 @@
+<% mftext('Slots') do %>
+<% if nil then %>
+<div style="margin: 0 0 15px 0;" class="right">Intervalo de tiempo: <select>
+	<option value="30">Últimos 30 días</option>
+	<option value="7">Última semana</option>
+	<option value="1">Último día</option>
+</select>
+</div>
+<% end -%>
+
+<table>
+  <tr>
+    <th>Slot</th>
+	<th>Portales</th>
+	<th>Comportamiento</th>
+	<th>Dimensiones</th>
+	<th>Anuncios</th>
+	<% if nil then %>
+	<th>Impresiones</th>
+	<th>Clicks</th>
+	<th>CPM</th>
+	<th>spark</th>
+	<% end -%>
+  </tr>
+<% AdsSlot.find(:all, :conditions =>"advertiser_id IN (#{@advertisers_ids.join(',')})", :order => 'lower(name)').each do |ads| 
+ads_pageviews30 = ads.pageviews(:sum, 30)
+ads_clicks30 = ads.clicks(:sum, 30)
+ads_portals = ads.portals
+%>
+<tr class="<%=oddclass%>">
+	<td><a href="/ads/slot/<%=ads.id%>"><%=ads.name%></a></td>
+	<td><% if ads_portals.size == 0 then %>
+		(Todos)
+		<% else %>
+		<ul><%ads_portals.each do |portal| %><li><a href="http://<%=portal.code%>.<%=App.domain%>/"><%=portal.name%></a></li><% end %></ul>
+		<% end -%>
+	</td>
+	<td><%=ads.behaviour.name.gsub('Ads::SlotsBehaviours::', '')%></td>
+	<td><%=ads.image_dimensions%></td>
+	<td><%=ads.ads_slots_instances.count(:conditions => 'deleted=\'f\'')%></td>
+	<% if nil then %>
+	<td><%=ads_pageviews30%></td>
+	<td><%=ads_clicks30%></td>
+	<td><%=(ads_pageviews30 || 0) / (ads_clicks30.to_f || 1)* 1000%></td>
+	<td><%=ads.clicks(:data, 30)%></td>
+	<% end -%>
+  </tr>
+<% end -%>
+</table>
+<% end -%>

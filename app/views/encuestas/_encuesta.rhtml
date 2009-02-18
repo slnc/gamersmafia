@@ -1,0 +1,50 @@
+<div class="<%=oddclass%>">  
+    <div id="content<%=poll.unique_content.id%>" class="new"><a href="<%=gmurl(poll)%>"><%=content_category(poll)%><%=poll.title%></a></div>
+
+  <%= form_tag(:action => 'vote', :controller => 'encuestas', :id => poll.id) %>
+  <ul style="padding-left: 3px;">
+   <% if user_is_authed and poll.user_voted(controller.user) then
+              stats_reg = PollsOption.db_query("SELECT a.id, 
+                                                          a.name, 
+                                                          COALESCE(count(b.id), 0) as count
+                                                     FROM polls_options a 
+                                                     LEFT JOIN polls_votes b ON a.id = b.polls_option_id  AND b.user_id is not null
+                                                     WHERE a.poll_id = #{poll.id}
+                                                       
+                                                  GROUP BY a.id, 
+                                                           a.name ORDER BY id asc")
+
+              stats_anon = PollsOption.db_query("SELECT a.id, 
+                                                          a.name, 
+                                                          COALESCE(count(b.id), 0) as count
+                                                     FROM polls_options a 
+                                                     LEFT JOIN polls_votes b ON a.id = b.polls_option_id AND b.user_id is null
+                                                     WHERE a.poll_id = #{poll.id} 
+                                                       
+                                                  GROUP BY a.id, 
+                                                           a.name ORDER BY id asc")
+        max_reg = 1
+        max_anon = 1
+
+        stats_reg.each { |option| max_reg = option['count'].to_i if option['count'].to_i > max_reg  }
+        stats_anon.each { |option| max_anon = option['count'].to_i if option['count'].to_i > max_anon  }
+
+        i = 0
+        for option in stats_reg %>
+          <li class="option"><%=option['name']%><div class="percent" style="margin-bottom: 0;"><img src="/images/blank.gif" style="width: <%=(option['count'].to_f / max_reg * 100).round%>%;" /></div>
+          <div class="percent" style="margin-top: 1px;"><img src="/images/blank.gif" style="background-color: #666; width: <%=(stats_anon[i]['count'].to_f / max_anon * 100).round%>%;" /></div></li><% 
+          i += 1
+        end
+      else # usuario puede votar
+          for option in poll.polls_options.find(:all, :order => 'id asc') %>
+            <li><label><input id="poll_option[<%=option.id%>]" name="poll_option" value="<%=option.id%>" type="radio" /><%=option.name%></label></li>
+        <% end %>
+    <% end %>
+  </ul>
+  <% if not (user_is_authed and poll.user_voted(controller.user)) then %>
+    <%= submit_tag('Votar') %> | 
+  <% end -%>
+  <div class="infoinline" style="text-align: right; padding-right: 3px;"><strong><%=poll.votes%></strong> votos | <span class="comments-count"><a style="display: inline;" href="<%=gmurl(poll)%>#comments"><%=poll.cache_comments_count%></a></span></div>
+  </form>
+  <br />
+</div>

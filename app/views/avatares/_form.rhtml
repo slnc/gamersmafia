@@ -1,0 +1,28 @@
+<%= error_messages_for 'avatar' %>
+
+<!--[form:avatar]-->
+<p><label for="avatar_name">Name</label><br/>
+<%= text_field 'avatar', 'name', :class => 'text'  %></p>
+
+
+<% case @avatar.mode
+when 'faction': %>
+<p><label for="avatar_level">Min Karma Level</label><br/>
+<%= text_field 'avatar', 'level', :class => 'text'  %></p>
+
+<p><label for="avatar_level">Faction</label><br/>
+<%= collection_select :avatar, :faction_id, Faction.find(:all, :order => 'lower(name) ASC'), :id, :name%>
+<% when 'clan': %>
+<p><label for="avatar_level">Clan</label><br/>
+<a href="/clanes/show/<%=@avatar.clan_id%>"><%=@avatar.clan.name%></a>
+<% when 'user':%>
+<p><label for="avatar_level">Usuario</label><br/>
+<%=user_link(@avatar.user)%>
+<% end -%>
+<p><label for="avatar_file">File</label><br/>
+<% if @avatar.path then %>
+<%=fc_thumbnail(@avatar.path, 'k', '50x50')%> 
+<% end -%>
+<%= file_field 'avatar', 'path' %></p>
+<!--[eoform:avatar]-->
+

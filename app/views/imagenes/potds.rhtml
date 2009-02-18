@@ -1,0 +1,49 @@
+<% content_support do %>
+<% mftext('Mejor valoradas') do %>
+<ul class="content-hid">
+<%  # TODO portal unsafe
+  cache("/common/imagenes/potds/best_rated_all#{Time.now.strftime('%Y%m%d')}") do %>
+  <% for c in ImagesCategory.most_rated_items %>
+  <li class="<%=oddclass%>"><span class="screenshot"><%=link_to fc_thumbnail(c.file, 'f', '85x60', false), gmurl(c)%></span><br /><%=draw_rating(c.rating[0])%></li>
+  <% end -%>
+<% end -%>
+</ul>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Imágenes del día') do %>
+
+<div class="imagesgallery">
+<% 
+if controller.portal_code == 'gm' then
+  @image_pages = ActionController::Pagination::Paginator.new self, Potd.count(:conditions => 'portal_id is null'), 16, params['page']
+else
+  @image_pages = ActionController::Pagination::Paginator.new self, Potd.count(:conditions => "portal_id = #{controller.portal.id}"), 16, params['page']
+end
+
+if params['page'].nil? then
+  @image_pages.current_page = @image_pages.last
+end
+%>
+    <%= render :partial => 'shared/pager', :object => @image_pages, :locals => {:pos => 'top'} %>
+<%
+cache("/#{@controller.portal_code}/imagenes/potds/page_#{params[:page]}") do 
+
+
+if controller.portal_code == 'gm' then
+  @images = Image.find(:all, :conditions => 'portal_id is null', :joins => 'JOIN potds ON images.id = potds.image_id', :order => 'potds.date ASC', :limit => @image_pages.current.to_sql[0], :offset => @image_pages.current.to_sql[1])
+else
+  @images = Image.find(:all, :conditions => ['portal_id = ?', controller.portal.id], :joins => 'JOIN potds ON images.id = potds.image_id', :order => 'potds.date ASC', :limit => @image_pages.current.to_sql[0], :offset => @image_pages.current.to_sql[1])
+end
+
+for image in @images %>
+<div class="screenshot" style="float: left; width: 160px;"><div style="text-align: center"><%=Potd.find_by_image_id(image.id).date%></div><%=link_to "<img src=\"#{ASSET_URL}/cache/thumbnails/f/153x115/#{image.file}\" />", gmurl(image)%></div>
+<% end %>
+<% end %>
+<div style="clear: both;">&nbsp;</div>
+    <%= render :partial => 'shared/pager', :object => @image_pages, :locals => {:pos => 'bottom'} %>
+</div>
+</div>
+<% end -%>
+<% end -%>

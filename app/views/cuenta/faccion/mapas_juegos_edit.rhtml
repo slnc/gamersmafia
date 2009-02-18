@@ -1,0 +1,7 @@
+<% mftext('Editar mapa del juego') do %>
+
+<%= form_tag({:action => 'mapas_juegos_update', :id => @games_map}, :multipart => true)%>
+  <%= render :partial => 'mapas_juegos_form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+<% end -%>

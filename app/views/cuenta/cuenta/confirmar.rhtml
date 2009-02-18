@@ -1,0 +1,35 @@
+<% content_main do %>
+  <div class="warning"><ul>
+      <li>Debes confirmar tu cuenta antes de poder usarla</li>
+      <li>Revisa la carpeta de correo basura o spam</li>
+  </ul></div>
+  <% mftext('Confirmar la creación de una cuenta') do %>
+    <% if !flash['notice'] %>
+    <div class="Message">Esta página permite confirmar la creación de una
+    cuenta. Por favor, introduce el email usado en el proceso de registro y la clave de activación que te hemos enviado por email.</div>
+    <% end %>
+
+    <form method="post" action="/cuenta/do_confirmar">
+		<table cellpadding="1" cellspacing="1" border="0" class="signup">
+		<tr><td>
+		<label for="user_email">Email</label>
+    </td><td><input type="text" class="text" name="email" value="<%=params[:em]%>" /></td></tr>
+
+		<tr><td>
+		<label for="user_email">Clave de activación (32 caracteres)</label>
+    </td><td><input type="text" name="k" /></td></tr>
+
+		<tr><td>&nbsp;</td>
+		<td>
+    <input type="submit" class="button primary" value="Confirmar &#187;" />
+		</td></tr>
+
+		<tr><td>&nbsp;</td>
+		<td>
+		<%= link_to 'Reenviar email de activación', :action => "resendsignup" %>
+		</td></tr>
+		
+		</table>
+  </form>
+  <% end -%>
+<% end -%>

@@ -1,0 +1,13 @@
+one:
+  id: 1
+  name: fourfrags
+  email: dharana@gamersmafia.com
+  due_on_day: 7
+  created_on: 2007-01-01 00:00:00
+
+two:
+  id: 2
+  name: nls
+  email: webmaster@gamersmafia.com
+  due_on_day: 16
+  created_on: 2007-01-01 00:00:00

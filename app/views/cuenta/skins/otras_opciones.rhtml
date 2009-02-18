@@ -1,0 +1,11 @@
+<% content_main do %>
+<% mftext('Otras opciones') do %>
+<form method="post" action="/cuenta/skins/do_otras_opciones" enctype="multipart/form-data">
+	<input type="hidden" name="id" value="<%=params[:id]%>" />
+	<% # TODO mostrar el favicon actual %>
+<%=fc_thumbnail(@skin.intelliskin_favicon, 'f', '16x16') if @skin.intelliskin_favicon %> 
+Favicon: <input type="file" name="skin[intelliskin_favicon]" /><br />
+<input type="submit" class="button" value="Guardar" />
+</form>
+<% end %>
+<% end %>

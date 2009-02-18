@@ -1,0 +1,22 @@
+<p><label >Categoría</label><br/>
+<% cats = @download.new_record? ? @portal.downloads_categories : DownloadsCategory.toplevel %>
+<%= render_tree_select cats, 'name', 'download[downloads_category_id]', @download.downloads_category_id %></p>
+
+
+<p><label for="download_title">Nombre</label><br/>
+<%= text_field 'download', 'title', :class => 'text'  %></p>
+
+<p><label for="download_description">Descripción</label><br/>
+<%=wysiwyg('download[description]', :value => @download.description, :height => '200px')%></p>
+
+<p><label for="image_file">Archivo</label><br/>
+<% if @download.file then 
+real_path = "#{RAILS_ROOT}/public/" + @download.file
+%>
+<a href="<%=fc_path(@download.file)%>"><%=File.basename(@download.file)%></a> <span class="infoinline"><%=(File.exists?(real_path) ? number_to_human_size(File.size(real_path)) : 'El archivo físico no existe')%></span>
+<% end -%>
+<%= file_field 'download', 'file' %></p>
+
+<p><%=check_box'download', 'essential' %> <label for="download_essential">Es esencial para jugar</label></p>
+
+<%=draft_check_box(@download)%>

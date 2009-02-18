@@ -1,0 +1,2 @@
+class SoldWheelOfFortune < SoldProduct
+end

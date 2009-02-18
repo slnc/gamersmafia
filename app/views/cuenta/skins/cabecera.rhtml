@@ -1,0 +1,28 @@
+<% content_main do %>
+<% mftext('Cabecera') do %>
+<form method="post" action="/cuenta/skins/do_cabecera" enctype="multipart/form-data">
+	<input type="hidden" name="id" value="<%=params[:id]%>" />
+<%=fc_thumbnail(@skin.intelliskin_header, 'k', '153x115') if @skin.intelliskin_header %> 
+Cabecera: <input type="file" name="skin[intelliskin_header]" /><br />
+
+  Altura de la cabecera:
+  <div id="track1" style="width:159px;background-color:#aaa;height:5px;">
+    <div id="handle1" style="width:7px;height:16px;background-color:#f00;cursor:move;"> </div>
+  </div> <input size="4" id="header-height" type="text" class="text" name="skin[intelliskin][header_height]" value="<%= @skin.config[:intelliskin][:header_height] ? @skin.config[:intelliskin][:header_height] : 65%> "/> <span id="debug1" class="infoinline"></span>
+  
+  
+  <script type="text/javascript">
+  	 <%=prototype_includes%>
+Event.observe(window, 'load', function() { 
+var sl = new Control.Slider('handle1','track1',{
+      onSlide:function(v){$j('#debug1').html('('+ (65 + 159*v).toFixed() + ')')},
+      onChange:function(v){$j('#header-height').val((65 + 159*v).toFixed())}});
+	  sl.setValue(((parseFloat($j('#header-height').val()) - 65) /159)); 
+});
+
+	  </script>
+	  <br />
+<input type="submit" class="button" value="Guardar" />
+</form>
+<% end %>
+<% end %>

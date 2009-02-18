@@ -1,0 +1,8 @@
+<!--[form:blogentry]-->
+<p><label for="blogentry_title">Título</label><br/>
+<%= text_field 'blogentry', 'title', :class => 'text'  %></p>
+
+<p><label for="blogentry_main">Contenido</label><br/>
+<%=wysiwyg('blogentry[main]', :value => @blogentry.main)%></p>
+<!--[eoform:blogentry]-->
+

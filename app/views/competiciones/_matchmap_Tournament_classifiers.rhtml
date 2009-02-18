@@ -1,0 +1,48 @@
+<% groups = competition.tourney_classifier_groups %>
+<% content_support do %>
+  <% for group in groups %>
+  
+  <table style="margin-bottom: 20px;">
+    <tr>
+      <th style="text-align: center;" colspan="4">Grupo <%=group%></th>
+    </tr>
+    <% for p in group.participants %>
+  <tr class="<%=oddclass%>">
+      <td><a href="/competiciones/participante/<%=p.id%>"><%=p%></a></td>
+      <td class="w20"><%=p.wins%></td>
+      <td class="w20"><%=p.ties%></td>
+      <td class="w20"><%=p.losses%></td>
+    </tr>
+    <% end -%>
+  </table>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+  <%mftext('Rondas clasificatorias') do %>
+<% for group in groups %>
+<div class="subheader"><div>Partidas grupo <%=group%></div></div>
+<table>
+  <% 
+  prev_stage = 0
+  for match in group.matches 
+    if match.stage > prev_stage then 
+      prev_stage = match.stage
+    %>
+    <tr>
+      <td colspan="3" style="margin-top: 0px;">&nbsp;</td>
+    </tr>
+    <% end -%>
+  <tr class="<%=oddclass%>">
+    <td class="w150"><a href="/competiciones/partida/<%=match.id%>"><%=match_vs_name(match)%></a></td>
+    <td class="timestamp infoinline"><%=print_tstamp(match.play_on)%></td>
+  </tr>
+  <% end -%>
+</table>
+<% end -%>
+<% end -%>
+
+<div style="clear: right;"><%mftext('Rondas eliminatorias') do %>
+<%=render :partial => "matchmap_#{competition.class.name}_#{competition.competitions_types_options[:tourney_rounds].to_i}", :locals => { :competition => competition, :base_stage => competition.tourney_rounds_starting_stage} %>
+<% end -%></div>
+<% end -%>

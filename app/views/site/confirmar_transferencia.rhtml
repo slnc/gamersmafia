@@ -1,0 +1,13 @@
+<%mftext('Confirmar transferencia') do %>
+<form method="post" action="/site/transferencia_confirmada">
+  <input type="hidden" name="redirto" value="<%=params[:redirto]%>" />
+  <input type="hidden" name="ammount" value="<%=params[:ammount]%>" />
+  <input type="hidden" name="description" value="<%=strip_tags(params[:description])%>" />
+  <input type="hidden" name="sender_class" value="<%=params[:sender_class]%>" />
+  <input type="hidden" name="sender_id" value="<%=params[:sender_id]%>" />
+  <input type="hidden" name="recipient_class" value="<%=params[:recipient_class]%>" />
+  <input type="hidden" name="recipient_id" value="<%=@recipient.id%>" />
+  <div class="centered" style="margin: 20px;"><p>¿Estás seguro de que quieres transferir <strong><%=params[:ammount]%></strong> <%=gmd12%> a <strong><a href="<%=get_url(@recipient)%>"><%=@recipient%></a></strong> con la razón <strong><%=params[:description]%></strong>?</p></div>
+  <div class="centered"><input type="submit" class="button" value="Confirmar transferencia" /></div>
+</form>
+<% end -%>

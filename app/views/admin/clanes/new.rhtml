@@ -1,0 +1,11 @@
+<% content_main do %>
+  <%mftext('Nuevo clan') do %>
+
+<%= form_tag({:action => 'create'}, :multipart => true) %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag "Crear" %>
+</form>
+
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

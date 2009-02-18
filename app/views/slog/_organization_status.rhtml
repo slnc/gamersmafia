@@ -1,0 +1,36 @@
+<%mftext('Status') do %>
+<table>
+<tr class="<%=oddclass%>">
+	<td><%=cls.name == 'BazarDistrict' ? 'Distrito' : 'Facción' %></td>
+	<td>Karma</td>
+	<td>Impresiones</td>
+	<td>Particip</td>
+	<td>Delincue</td>
+	<td>Eventos</td>
+</tr>
+<% # buscamos los maximos de visitas y de karma
+max_pageviews = 0
+max_karma = 0
+stats_karma = {}
+stats_pageviews = {}
+bds = cls.find(:all, :order => 'lower(name)')
+bds.each do |bd|
+  stats_karma[bd.id] = Stats::Portals.daily_karma(Portal.find_by_code(bd.code), 31.days.ago, 1.day.ago)
+  max_karma = stats_karma[bd.id].max if stats_karma[bd.id].size > 0 && stats_karma[bd.id].max > max_karma
+
+  stats_pageviews[bd.id] = Stats::Portals.daily_pageviews(Portal.find_by_code(bd.code), 31.days.ago, 1.day.ago)
+  max_pageviews = stats_pageviews[bd.id].max if stats_pageviews[bd.id].size > 0 && stats_pageviews[bd.id].max > max_pageviews 
+end
+
+bds.each do |bd| %>
+<tr class="<%=oddclass%>">
+	<td><strong><%=bd.code%></strong></td>
+	<td style="height: 29px;"><%=sparkline(:size => '145x25', :data => stats_karma[bd.id], :max => max_karma)%></td>
+	<td style="height: 29px; padding-left: 1px;"><%=sparkline(:size => '145x25', :data => stats_pageviews[bd.id], :max => max_pageviews)%></td>
+	<td class="centered">n/a</td>
+	<td class="centered">n/a</td>
+	<td class="centered"><a href="/slog/<%=Inflector::singularize(Inflector::tableize(cls.name))%>_bigboss?scope_id=<%=bd.id%>"><%=SlogEntry.recursive_ccount(:open, { :domain => "#{Inflector::singularize(Inflector::tableize(cls.name))}_bigboss".to_sym, :scope => bd.id})%></a></td>
+</tr>
+<% end -%>
+</table>
+<% end -%>

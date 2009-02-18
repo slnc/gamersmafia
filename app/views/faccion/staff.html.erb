@@ -1,0 +1,100 @@
+<% content_support do%>
+<%mftext('Descripciones de los puestos') do %>
+<dl>
+	<dt>Boss</dt>
+	<dd>Encargado de administrar la facción. Entre sus labores están: gestionar baneados, promocionar la facción, gestionar la ficha de información, gestionar los avatares disponibles, supervisar que todo marcha correctamente, gestionar el staff de la facción y cobrar un sueldo semanal.</dd>
+	<dt>Underboss</dt>
+	<dd>Tiene las mismas funciones que el boss con excepción de elegir un underboss.</dd>
+	<dt>Editor</dt>
+	<dd>Se encarga de publicar contenidos de alta calidad en su sección y de revisar que los contenidos enviados por el resto de usuarios estén bien formateados, elegantes y legibles.</dd>
+	<dt>Moderador</dt>
+	<dd>Se asegura de que los comentarios de la facción cumplan el código de conducta de la web y de supervisar los foros y asegurarse de que todo marche sobre ruedas.</dd>
+</dl>
+<% end -%>
+<% end -%> 
+
+<%content_main do%>
+<div class="grid-5">
+<%mftext('Boss') do
+if @faction.boss then %>
+<%=user_link(@faction.boss, :avatar => true)%>
+<% else # no boss -%>
+<p>Esta facción no tiene boss. Tú puedes ser su boss comprándola desde la <a href="/cuenta/tienda">tienda</a>.</p>
+<% end -%>
+<% end -%>
+</div>
+
+<div class="grid-4">
+<%mftext('Underboss') do
+if @faction.underboss then %>
+<%=user_link(@faction.underboss, :avatar => true)%>
+<% else # no boss -%>
+<p>Esta facción no tiene underboss.</p>
+<% end -%>
+<% end -%>
+</div>
+
+
+
+<div class="grid-6">
+<%mftext('Editores', :has_submodules => true) do 
+editors = @faction.editors
+%>
+<%
+if editors then
+prev_ctype = nil
+ordered = {}
+ctypes = []
+editors.each do |content_type, user|
+  ordered[content_type.name] ||= []
+  ordered[content_type.name] << user
+  ctypes << content_type.name
+end
+ctypes.uniq!
+ctypes_i = 1
+ctypes.each do |ctype| 
+%>
+<div class="grid-2 <%='glast' if ctypes_i % 3 == 0%>">
+<% mftext(Cms.translate_content_name(ctype)) do %>
+<table>
+<% ordered[ctype].each do |u| %>
+	<tr class="<%=oddclass%>">
+		<td><%=user_link(u)%></td>
+	</tr>
+<% end # ordered -%>
+</table>
+<%end #mftext -%>
+</div>
+<% if ctypes_i % 3 == 0 then %><div class="clearb"></div><% end -%>
+<% ctypes_i += 1 
+end #ctypes.each -%>
+<% end #if -%>
+<% end -%>
+</div>
+
+<div class="grid-3">
+<%mftext('Vacantes') do 
+cat_names = (Cms::CONTENTS_WITH_CATEGORIES - %w(Topic)).collect { |cn| "'#{cn}'" }
+missing_ctypes = ContentType.find(:all, :conditions => "name IN (#{cat_names.join(',')}) AND id NOT IN (SELECT content_type_id FROM factions_editors WHERE faction_id = #{@faction.id})") %>
+<table>
+<% missing_ctypes.each do |ct|
+next unless UsersRole 
+%>
+<tr class="<%=oddclass%>"><td><%=Cms.translate_content_name(ct.name).titleize%></td></tr>
+<% end #each -%>
+</table>
+<% end -%>	
+
+
+
+<%mftext('Moderadores') do %>
+<table>
+	<%@faction.moderators.each do |moderator| %>
+	<tr class="<%=oddclass%>"><td><%=user_link(moderator)%></td></tr>
+	<% end -%>
+</table>
+<% end -%>	
+</div>
+
+<div class="clearb"></div>
+<%end -%>

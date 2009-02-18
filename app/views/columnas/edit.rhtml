@@ -1,0 +1,31 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Column } if user_is_authed %>
+<%=render :partial => 'shared/content_details', :locals => { :object => @column} %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Debe tener una cierta longitud</li>
+<li>Revisar ortografía y gramática</li>
+<li>De interés general</li>
+</ul>
+<% end -%>
+
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @column} %>
+
+<%= render :partial => 'shared/pending', :object => Column.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Editando columna') do %>
+
+<%= form_tag({:action => 'update', :id => @column}, { :multipart => true, :name => 'editing_content' }) %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @column}%>
+<%=render :partial => '/shared/change_authorship', :locals => {:object => @column}%>
+
+<br />
+<%= link_to 'Ver columna publicado', gmurl(@column) %> |
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

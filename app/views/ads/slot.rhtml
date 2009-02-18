@@ -1,0 +1,81 @@
+<% mftext('Estadísticas de los banners asociados a este slot') do %>
+<%
+
+# TODO funcionalidad duplicada 
+instances = @ads_slot.ads_slots_instances.find(:all, :conditions => 'deleted = \'f\'')
+adsis = instances.collect { |i| i.id }
+adsis = [0] if adsis.size == 0
+avgs_ctr = {}
+
+db_ctrs = User.db_query("SELECT ads_slots_instance_id, avg(ctr), max(ctr) FROM stats.ads_daily WHERE ads_slots_instance_id IN (#{adsis.join(',')}) AND created_on >= now() - '30 days'::interval GROUP BY ads_slots_instance_id;")
+
+avg_ctrs = []
+max_group_ctr = nil
+
+db_ctrs.each do |dbr|
+  max_group_ctr = dbr['max'].to_f if max_group_ctr.nil? || dbr['max'].to_f > max_group_ctr
+  avg_ctrs << (dbr['avg'].to_f * 100) 
+avgs_ctr[dbr['ads_slots_instance_id'].to_i] = (dbr['avg'].to_f * 100)
+%>
+  <% #=dbr['ads_slots_instance_id']%> <%= (dbr['avg'].to_f * 100)%><br />
+<%
+end
+%>
+<%
+low_ctr_threshold = avg_ctrs.percentile(0.15)
+high_ctr_threshold = avg_ctrs.percentile(0.85)
+max_ctr = max_group_ctr.to_f * 100
+# [0]['max'].to_f * 100
+%>
+
+
+
+<% #=low_ctr_threshold%><br />
+<% #=high_ctr_threshold%><br />
+<% #=avg_ctrs.mean%>
+<table>
+	<tr>
+		<th>Anuncio</th>
+		<th>CTR diario</th>
+		<th>CTR</th>
+		<th>Clicks</th>
+		<th>Pageviews</th>
+	</tr>
+<%
+instances.each do |adsi|
+	ddata = User.db_query("select avg(ctr) as ctr, sum(hits) as hits, sum(pageviews) as pageviews, (extract('epoch' from created_on) / 259200)::int as epoch from stats.ads_daily where ads_slots_instance_id = #{adsi.id} group by (extract('epoch' from created_on) / 259200)::int order by (extract('epoch' from created_on) / 259200)::int desc limit 30")
+	ddata.reverse!
+	data = ddata.collect { |dbr| dbr['ctr'].to_f*100 } 
+	cur_mean_ctr = avgs_ctr[adsi.id] # ddata.collect { |dbr| dbr['ctr'].to_f }.mean * 100
+%>
+<tr class="<%=oddclass%> value-is-<%='low' if cur_mean_ctr <= low_ctr_threshold %><%='high' if cur_mean_ctr >= high_ctr_threshold %>" id="adsi<%=adsi.id%>">
+	<td><strong><a href="/ads/edit/<%=adsi.ad.id%>"><%=adsi.ad.name%></a></strong><br />
+	<%=fc_thumbnail(adsi.ad.file, 'k', '153x60') if adsi.ad.file%></td>
+	<td style="padding: 5px 0;" class="w150 centered"><%=sparkline(:size => '125x50', :data => data, :max => max_ctr) unless cur_mean_ctr == 0.0%></td>
+<td class="centered value" style="font-weight: bold;"><%=sprintf("%.3f", cur_mean_ctr)%>%</td>
+<td class="right"><%=ddata.collect { |dbr| dbr['hits'].to_i }.sum2 %></td>
+<td class="right"><%=ddata.collect { |dbr| dbr['pageviews'].to_i }.sum2 %></td>
+</tr>
+<% end -%>
+</table>
+<div class="infoinline right">Las estadísticas muestran los datos del último mes y se recalculan de madrugada. Última actualización: <strong><%=Stats::Ads.last_update%></strong></div>
+<div class="infoinline">
+Rendimiento bajo a partir de CTR <strong><%=sprintf("%.3f", low_ctr_threshold)%>%</strong>.<br /> 
+Rendimiento alto a partir de CTR <strong><%=sprintf("%.3f", high_ctr_threshold)%>%</strong>.<br />
+El rendimiento se mide comparándolos con el resto de banners por lo que siempre habrá banners en rojo y en verde.<br />
+</div>
+<div class="infoinline">
+	<strong>Clicks</strong>: Número de clicks en el banner.<br />
+	<strong>Pageview</strong>: Número de veces que se ha mostrado el banner.<br />
+	<strong>CTR</strong>: (Clicks / Pageviews) * 100. Un banner con mayor CTR que otro significa que atrae más clicks y por tanto es más rentable.</div>
+<% end -%>
+
+<%mftext('Nuevo banner') do %>
+<% @ad = Ad.new %>
+
+<%= form_tag('/ads/create', :multipart => true )%>
+  <input type="hidden" name="ads_slot_id" value="<%=@ads_slot.id%>" />
+  <%=render :partial => '/ads/form' %>
+  <%= submit_tag 'Crear banner' %>
+</form>
+<% end -%>

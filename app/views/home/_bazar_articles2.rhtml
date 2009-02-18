@@ -1,0 +1,17 @@
+<% cache("/common/home/index/articles2b#{bazar_district.code}") do %>
+<%
+bazar_district_portal = BazarDistrictPortal.find_by_code(bazar_district.code)
+# TODO :'(((
+names = {'Interview' => 'Entrevista', 'Column' => 'Columna', 'Tutorial' => 'Tutorial', 'Review' => 'Review'}
+namess = {'Interview' => 'entrevistas', 'Column' => 'columnas', 'Tutorial' => 'tutoriales', 'Review' => 'reviews'}
+%>
+<%
+mfcontents_list('Artículos',  
+					Proc.new { bazar_district_portal.latest_articles },				
+					:blast => true) do |o| %>
+					
+<%=draw_content_favicon(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
+    <% if o.home_image then %><div style="float: right;"><%=fc_thumbnail(o.home_image, 'f', '105x54', false)%></div><% end -%>
+    <div class="infoinline" style="text-transform: uppercase;"><%=names[o.class.name]%></div>
+<% end -%>
+<% end -%>

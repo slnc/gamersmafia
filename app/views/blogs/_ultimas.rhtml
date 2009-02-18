@@ -1,0 +1,18 @@
+<% cache("/common/home/index/blogentries") do %>
+<ul class="content-hid">
+<% 
+shown_blogentries = []
+User.db_query("select user_id, (select created_on from blogentries where state = #{Cms::PUBLISHED} AND user_id = parent.user_id order by created_on desc limit 1) as lastone from blogentries as parent WHERE state = #{Cms::PUBLISHED} group by user_id, lastone order by lastone desc limit 5").each do |dbb|
+  blogentry = Blogentry.find(:first, :conditions => ['user_id = ? AND state = ?', dbb['user_id'].to_i, Cms::PUBLISHED], :order => 'created_on DESC', :limit => 1)
+  u = blogentry.user
+  shown_blogentries << blogentry.unique_content.id 
+%>
+<li id="content<%=blogentry.unique_content.id%>" class="new <%=oddclass%>">
+	<div class="avatar" style="float: right; margin-right: 3px;"><img style="border: 1px solid black; width: 32px; height: 32px;" src="<%=ASSET_URL%>/cache/thumbnails/f/32x32<%=blogentry.user.show_avatar%>" /></div>
+	<a href="<%=gmurl(blogentry)%>"><%=truncate(blogentry.title, 32, '..')%></a><br /><span style="margin-left: 12px;" class="infoinline">por <a style="background: none; margin: 0; padding: 0; list-style: none;" href="<%=gmurl(u)%>"><%=u.login%></a></span>
+	</li>
+<% end %>
+</ul>
+<script type="text/javascript">contents = contents.concat(<%=shown_blogentries.join(',')%>);</script>
+    <div class="more"><a title="Ver más blogs" href="/blogs">Ver más blogs &raquo;</a></div>
+<% end -%>

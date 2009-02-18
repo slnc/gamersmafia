@@ -1,0 +1,40 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Question } if user_is_authed %>
+<%=render :partial => 'shared/content_details', :locals => { :object => @question} %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Debe tener una cierta longitud</li>
+<li>Revisar ortografía y gramática</li>
+<li>De interés general</li>
+</ul>
+<% end -%>
+
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @question} %>
+
+<%= render :partial => 'shared/pending', :object => Question.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Editando questiona') do %>
+
+<%= form_tag({:action => 'update', :id => @question}, { :multipart => true, :name => 'editing_content' }) %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @question}%>
+<%=render :partial => '/shared/change_authorship', :locals => {:object => @question}%>
+
+<br />
+<%= link_to 'Ver questiona publicado', gmurl(@question) %> |
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+
+<% if @question.answered_on && @question.created_on > 3.months.ago then %>
+<%mftext('Revertir mejor respuesta') do %>
+<br />
+<form method="post" action="/respuestas/revert_mejor_respuesta/<%=@question.id%>">
+	<input type="submit" value="Quitar mejor respuesta" onclick="return confirm('¿Estás seguro de que quieres quitar la mejor respuesta actual?');" />
+</form>
+<% end -%>
+<% end -%>
+<% end -%>

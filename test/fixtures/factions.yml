@@ -1,0 +1,25 @@
+first_faction:
+  id: 1
+  name: Unreal Tournament
+  code: ut
+  cash: 0
+
+second_faction:
+  id: 2
+  name: rejects faction
+  code: rj
+  cash: 0
+  
+
+third_faction:
+  id: 3
+  name: third faction
+  code: th
+  cash: 0
+  
+platform:
+  id: 4
+  name: Wii
+  code: wii
+  cash: 0
+  is_platform: t

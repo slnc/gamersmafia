@@ -1,0 +1,9 @@
+Hola <%=@user%>,
+
+<%=@signer%> te ha dejado una nueva firma en tu libro de firmas.
+
+<%=@base_url%>/miembros/<%=@signer%>/firmas?vk=<%=@recipient.validkey%>
+
+Gracias,
+
+<%=@footer%>

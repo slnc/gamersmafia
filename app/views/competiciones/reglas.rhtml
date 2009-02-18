@@ -1,0 +1,15 @@
+<% content_support do %>
+  <% mftext('Mapas para esta competición') do %>
+  <ul class="skeletal centered">
+    <% for m in @competition.games_maps.find(:all, :order => 'lower(name) ASC') %>
+    <li class="<%=oddclass%>"><a href="/competiciones/mapa/<%=m.id%>" onclick="window.open('/competiciones/mapa/<%=m.id%>', '_blank', 'height=200,width=400'); return false;"><%=fc_thumbnail(m.screenshot, 'k', '153x115', false)%><br /><strong><%=m.name%></strong></a></li>
+    <% end -%>
+  </ul>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Reglas') do %>
+  <%=@competition.rules%>
+  <% end -%>
+<% end %>

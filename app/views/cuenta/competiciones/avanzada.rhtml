@@ -1,0 +1,285 @@
+<% 
+opts = HashWithIndifferentAccess.new({ :tourney_groups => 8, :tourney_winners_per_group => 2, :tourney_rounds => 4 })
+opts.merge!(@competition.competitions_types_options)
+-%>
+<% content_support do %>
+  <% mftext('Jugadores disponibles') do %>
+  <select id="player_to_situate" size="10" onchange="document.getElementById('player_to_situate_send').disabled = '';">
+    <% @competition.competitions_participants.find(:all, :order => 'position ASC').each do |cp| %>
+    <option id="player_to_situate_opt<%=cp.id%>" value="<%=cp.id%>"><%=notags(cp.name)%></option>
+    <% end %>
+  </select>
+  <% end -%>
+
+  <br />
+  <select id="dst_group">
+    <% # TODO aquí lo hacemos con ruby y abajo con jscript, solo una forma please
+    %>
+    <% opts[:tourney_groups].to_i.times do |i| %>
+    <option value="<%=i+1%>">Grupo <%=i+1%></option>
+    <% end %>
+  </select> <input id="player_to_situate_send" type="button" class="button" value="Enviar" onclick="send_player();" disabled="disabled" />
+  <br />
+  <br />
+  <input type="button" class="button" value="Colocar resto de jugadores" onclick="set_remaining_players();" />
+<% end -%>
+
+<% content_main do %>
+<% mftext('1er PASO: Configuración de grupos') do %>
+  <form method="post" action="/cuenta/competiciones/update_tourney_groups/<%=@competition.id%>" enctype="multipart/form-data">
+    <% # TODO temp, solo para torneos ahora mismo
+    %>
+    <script type="text/javascript">
+
+var avail = new Array(<%=@competition.competitions_participants.find(:all, :order => 'position ASC').collect! { |x| x = x.id }.join(',')%>);
+function set_remaining_players()
+{
+  // buscamos índices de participantes no ocultos
+  var i, j;
+  var l = avail.length;
+  var player, group;
+  var min = new Array(-1, new Array()); // min[0] -> cantidad, min[1] -> ids con esa cantidad
+
+  for (i = 0; i < l; i ++)
+  {
+    player = $j('#player_to_situate_opt'+avail[i])
+
+    if (player.css('display') != 'none')
+    {
+      // buscamos el grupo que tenga menos jugadores
+      for (j = 0; j < <%=opts[:tourney_groups]%>; j ++)
+      {
+        group = document.getElementById('players_for_group'+(j+1));
+        if (j == 0 || group.childNodes.length < min[0])
+        {
+          //alert('checking group' + (j + 1) + ' | j == 0 || group is LOWER than known ('+min[0]+')');
+          min[0] = group.childNodes.length;
+          min[1] = new Array();
+          min[1].push(j);
+        }
+        else if (group.childNodes.length == min[0])
+        {
+          //alert('checking group' + (j + 1) + ' | group is EQUAL than known ('+min[0]+')');
+          min[1].push(j);
+        }
+        // else
+          //alert('checking group' + (j + 1) + ' | doing nothing ('+min[0]+')');
+      }
+
+      // cogemos un id de grupo aleatorio y mandamos al jugador allí
+      var selindex = 0; // min[1].length > 1 ? Math.round(Math.random() % (min[1].length - 1)) : 0;
+
+      // todo copypasted de abajo
+      window.status = 'selindex: ' + selindex + ' | min[1] length: ' + min[1].length + ' | value at min[1]['+selindex+']: ' + min[1][selindex];
+      var sel = document.getElementById('players_for_group'+(min[1][selindex]+1)); // sumamos 1 porque el contador de grupos empieza de 1
+      var newopt = sel.appendChild(document.createElement('option'));
+      newopt.value = avail[i];
+      newopt.appendChild(document.createTextNode(player.html()));
+      hideblock(player.id);
+    }
+  }
+}
+
+
+
+function send_player()
+{
+  var player_to_situate = document.getElementById('player_to_situate');
+  var sel = document.getElementById('players_for_group'+document.getElementById('dst_group').value);
+  var newopt = sel.appendChild(document.createElement('option'));
+  newopt.value = player_to_situate.value;
+  var pl_to_situate_opt = document.getElementById('player_to_situate_opt'+player_to_situate.value);
+  newopt.appendChild(document.createTextNode(pl_to_situate_opt.innerHTML));
+  player_to_situate.selectedIndex = -1;
+  hideblock(pl_to_situate_opt.id);
+  document.getElementById('player_to_situate_send').disabled = 'disabled';
+}
+
+function update_tournament_starting_point()
+{
+  var participants_count = <%=@competition.competitions_participants.count%>;
+  var num_groups = $j('#field_tourney_groups').val;
+  var num_winners_per_group = $j('#field_tourney_winners_per_group').val;
+
+  if (!(isNaN(num_groups) || isNaN(num_winners_per_group)))
+  {
+    // si no hay suficientes jugadores avisamos
+    var expected_tourney_phase = num_winners_per_group * num_groups;
+    if (expected_tourney_phase > participants_count)
+      window.status = 'Hay menos jugadores inscritos de los necesarios';
+
+    if (expected_tourney_phase <= 4)
+    {
+      tourney_starting_desc = 'semifinales';
+      tourney_rounds = 2;
+    }
+    else if (expected_tourney_phase <= 8)
+    {
+      tourney_starting_desc = 'cuartos';
+      tourney_rounds = 3;
+    }
+    else if (expected_tourney_phase <= 16)
+    {
+      tourney_starting_desc = 'octavos';
+      tourney_rounds = 4;
+    }
+    else if (expected_tourney_phase <= 32)
+    {
+      tourney_starting_desc = 'dieciseisavos';
+      tourney_rounds = 5;
+    }
+    else
+      alert('No soportado');
+
+    $j('#field_tourney_tourney_rounds_desc').html(tourney_starting_desc);
+    $j('#field_tourney_tourney_rounds').val(tourney_rounds);
+    window.status = 'num_groups = ' + num_groups +' |  num_winners_per_group ' + num_winners_per_group;
+  }
+  else
+    window.status = 'num_groups isNaN o num_winners_per_group isNaN';
+}
+
+/* 
+   analiza las opciones hechas y manda el form
+   TODO: como no metan todos los jugadores cosas malas le ocurrirán a su competición
+   TODO: los grupos que tengan más jugadores que otros grupos deben estar
+         forzosamente al principio y sin espacios, si no el algoritmo posterior
+         no funcionará
+ */
+function send_seeds()
+{
+  /* necesitamos averiguar la nueva posición de los viejos participantes */
+  // la vieja posición nos la da su posición en el select inicial
+
+  // la nueva posición nos la da el grupo en el que están multiplicado por el
+  // índice de posición que ocupa en el select de jugadores de su grupo
+
+
+  // Recorremos los select de los grupos en orden: primero del grupo 1, primero
+  // del grupo 2, primero del grupo 3, segundo del grupo 1, segundo del grupo 2,
+  // etc, hasta que recorramos todos.
+  // Para cada jugador sabemos su nueva posición, simplemente buscamos la
+  // posición vieja y creamos los hidden fields para relacionar
+  var i;
+  var l = avail.length;
+  var id_pos_vieja, id_pos_nueva;
+
+  for (i = 0; i < l; i ++)
+  {
+    // a ver a quién hemos encontrado. SIEMPRE encontraremos a alguien ya que
+    // todos los jugadores se han repartido
+    cur_group_id = (i % <%=opts[:tourney_groups]%>) + 1;
+    player_in_this_pos = document.getElementById('players_for_group'+cur_group_id).options[Math.floor(i / <%=opts[:tourney_groups]%>)]; // un option de los selects creados dinámicamente
+
+    // buscamos su posición en el array inicial vieja y los intercambiamos
+    old_player = avail[i];
+    // alert(player_in_this_pos.value + ' ' + old_player);
+
+    // creamos el hidden field para pos vieja
+    var uf = document.getElementById('uberform');
+    var h = uf.appendChild(document.createElement('input'));
+    h.type = 'hidden';
+    h.name = 'participants['+i+'][old_participant_id]';
+    h.value = old_player;
+
+    // creamos el hidden field para pos vieja
+    h = uf.appendChild(document.createElement('input'));
+    h.type = 'hidden';
+    h.name = 'participants['+i+'][new_participant_id]';
+    h.value = player_in_this_pos.value;
+  }
+
+  return;
+
+
+
+
+
+  // OLD DELETE
+  var i;
+  var l = avail.length;
+  var id_pos_vieja, id_pos_nueva;
+
+  for (i = 0; i < l; i ++)
+  {
+    // buscamos pos vieja (es decir, simplemente su id)
+    id_pos_vieja = document.getElementById('player_to_situate').childNodes[i].value;
+
+    // buscamos pos nueva (es decir, el id del elemento al que reemplaza)
+    // buscamos el grupo en el que está ahora
+    group_id = jugadores_grupos[id_pos_vieja];
+    var groupobj = document.getElementById('players_for_group'+group_id);
+    var found;
+
+    for (j = 0; j < groupobj.options.length; j ++)
+    {
+      if (groupobj.options[j].value == id_pos_vieja)
+      {
+        found = 1;
+        break;
+      }
+    }
+
+    if (found != 1)
+      alert('No se ha encontrado a ' + id_pos_vieja + ' en el grupo indicado!!');
+  }
+}
+
+    </script>
+    <table>
+      <tr>
+        <td>Jugadores inscritos</td>
+        <td><%=@competition.competitions_participants.count%></td>
+      </tr>
+      <tr>
+        <td>Número de grupos</td>
+        <td><input id="field_tourney_groups" type="text" class="text" name="tourney_groups" value="<%=opts[:tourney_groups]%>" onchange="update_tournament_starting_point();" /></td>
+      </tr>
+      <tr>
+        <td>Ganadores por grupo</td>
+        <td><input id="field_tourney_winners_per_group" type="text" class="text" name="tourney_winners_per_group" value="<%=opts[:tourney_winners_per_group]%>" onchange="update_tournament_starting_point();" /></td>
+      </tr>
+      <tr>
+        <td>Fase de comienzo del torneo</td>
+        <td><input id="field_tourney_tourney_rounds" type="hidden" name="tourney_rounds" value="<%=opts[:tourney_rounds]%>" /><span id="field_tourney_tourney_rounds_desc">octavos</span></td>
+      </tr>
+    </table>
+
+    <input type="submit" class="button" value="Guardar" onclick="return confirm('Al guardar se borrará cualquier selección de seeds. ¿Seguro que quieres continuar?');" />
+  </form>
+  <% end -%>
+
+  <br />
+
+  <% mftext('2do PASO: Seeds') do %>
+  <form method="post" action="/cuenta/competiciones/update_tourney_seeds/<%=@competition.id%>" enctype="multipart/form-data">
+    <div id="uberform">
+  <script type="text/javascript">
+    var i;
+    var uf = document.getElementById('uberform');
+    var select;
+    var div;
+    for (i = 1; i <= <%=opts[:tourney_groups]%>; i ++)
+    {
+      div = uf.appendChild(document.createElement('div'));
+      div.style.width = '200px';
+      div.style.textAlign = 'center';
+      div.style.fontWeight = 'bold';
+      div.style.marginBottom = '20px';
+      div.style.cssFloat = 'left';
+      div.style.styleFloat = 'left';
+      div.appendChild(document.createTextNode('Grupo ' + i));
+      div.appendChild(document.createElement('br'));
+      select = div.appendChild(document.createElement('select'));
+      select.id = 'players_for_group' + i;
+      select.style.width = '100%';
+      select.size = 10;
+    }
+  </script>
+</div>
+<div style="clear: left;">
+  <input type="submit" class="button" value="Guardar seeds" onclick="return (confirm('¿Seguro?') && send_seeds());" />
+  </div>
+  </form>
+  <% end -%>
+<% end -%>

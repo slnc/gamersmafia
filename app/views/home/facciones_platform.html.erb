@@ -1,0 +1,133 @@
+<div class="grid-5">
+<%mftext('Noticias', :has_submodules => true) do %>
+	<div class="grid-5 glast">
+		<%=mfcontents_basic("Generales", 
+					Proc.new { controller.portal.news.find(:published, :order => 'created_on desc', :limit => 10) }, 
+					[],
+					:truncate_at => 36, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/news2")%>
+					</div>
+
+<% end -%>	
+</div>
+
+<%mftext('En los foros', :has_submodules => true, :glast => true) do %>
+	
+	<%=mfcontents_basic("Tópics activos", 
+					Proc.new { controller.portal.topic.find(:published, :conditions => 'closed is false and sticky is false AND topics_category_id not in (select id from topics_categories where nohome = \'t\')', :order => 'updated_on desc', :limit => 10) }, 
+					[],
+					:truncate_at => 44, :faction_favicon => true, :grid => 6, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
+	
+	<%mftext('Foros', :grid => 4, :glast => true, :blast => true) do %>
+	<ul class="content-hid">
+		<%controller.portal.categories(Topic)[0].children.find(:all, :conditions => 'parent_id = root_id', :order => 'updated_on DESC', :limit => 5).sort_by { |e| e.name.downcase }.each do |tc| %>
+		<li><a href="<%=gmurl(tc)%>"><%=truncate(tc.name, 20, '..')%></a></li>
+		<% end -%>
+		</ul>
+	<% end -%>
+	
+<% end -%>
+
+<div class="grid-12">	
+
+<% mflist("Imágenes", Proc.new { controller.portal.image.find(:published, :order => 'created_on desc', :limit => 4) }, :class_container => 'mflist-row-images', :grid => 6, :glast => true ) do |im| %>
+		<%=link_to fc_thumbnail(im.file, 'i', Cms::IMG_SIZE_GRID2, false), gmurl(im)%>
+	<% end # mflist-%>
+
+<div class="clearb"></div>
+
+<% cache("/#{controller.portal_code}/home/index/articles2") do %>
+<%mftext('Artículos', :has_submodules => true, :grid => 12, :glast => true) do 
+	revs = controller.portal.review.count > 0 ? true : false
+	classes = %w(Column Interview Tutorial Review)
+	if revs
+		classes = classes - ['Review']
+		grid_size = 4
+		thumb_width = '198'
+	else
+		grid_size = 3
+		thumb_width = '143'
+	end 
+	
+%>
+<% classes.each do |it| %>
+<% dafirst = true
+mfcontents_list(Cms::translate_content_name(it),  
+					Proc.new { controller.portal.send(it.downcase).find(:published, :order => 'created_on desc', :limit => 3) }, 					
+					:truncate_at => 26, :grid => grid_size, :glast => (it == classes.last)) do |o| %>
+					
+<%=draw_content_favicon(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
+<% if dafirst && o.home_image then %><div style="margin: 5px 0 10px 0;"><a href="<%=gmurl(o)%>"><%=fc_thumbnail(o.home_image, 'i', "#{thumb_width}x54", false)%></a></div><% end -%>
+<%	dafirst = false 
+	end -%>
+<% end -%> 
+<% end -%>
+<% end -%>
+
+
+<div class="clearb"></div>
+
+
+<%mftext('Descargas', :has_submodules => true, :grid => 8) do
+cache("/#{controller.portal_code}/home/index/downloads2") do 
+category = controller.portal.categories(Download)[0]
+%>
+	<div class="grid-4">
+	<%=mfcontents_basic('Últimas', 
+					Proc.new { category.root.find(:published, :order => 'created_on DESC', :limit => 12) },
+					[],
+					:truncate_at => 28, :faction_favicon => true)%>
+	</div>
+	
+	<div class="grid-4 glast">
+	<%=mfcontents_basic('Esenciales', 
+					Proc.new { category.root.find(:published, :conditions => "essential is true", :order => 'created_on DESC', :limit => 12) },
+					[],
+					:truncate_at => 28, :faction_favicon => true)%>
+	</div>
+<% end # cache -%>
+<% end -%>
+
+
+<%=render :partial => '/home/poll' %>
+</div>
+
+<div class="grid-3 glast">
+<%=render :partial => '/home/faction_stats' %>
+
+<%mftext('Destacados') do %>
+<%= render :partial => '/home/outstanding_entity', :locals => { :outstanding_entity_cls => OutstandingUser } %>
+<%= render :partial => '/home/outstanding_entity', :locals => { :outstanding_entity_cls => OutstandingClan } %>
+<% end -%>		
+
+<% cache("/#{controller.portal_code}/home/index/questions") do %>
+<% mfcontents_list("Preguntas", 
+				   Proc.new { controller.portal.question.find(:published, :conditions => 'answered_on IS NULL AND created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, created_on DESC', :limit => 5)}
+				   ) do |o| %>
+<a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a>
+<% end -%>
+<% end -%>
+
+<%mftext('Imagen del día') do %>
+<% d = Date.today
+cache("/#{controller.portal_code}/home/index/potd20085_#{d.strftime('%Y%m%d')}") do
+
+@daily_img = Potd.current_portal(controller.portal)
+@daily_img = @daily_img.image if @daily_img
+
+if @daily_img then %>
+   	<%=render :partial => '/imagenes/image_thumbnail', :locals => {:image => @daily_img, :size => Cms::IMG_SIZE_GRID3}%>
+    <div class="more"><a href="/imagenes/potds">Ver anteriores..</a></div>
+<% end -%>
+<% end 
+-%>
+<% end -%>
+
+<% cache("/#{controller.portal_code}/home/index/eventos2/#{Time.now.strftime('%Y%m%d')}") do %>
+<% mfcontents_table('Eventos', 
+				   Proc.new { Event.current(EventsCategory.find(:all, :conditions => "root_id IN (#{(controller.portal.categories(Event).collect { |c| c.id} + [0]).join(',')})"))}
+				   ) do |e| %>
+	<td style="font-size: 11px;"><%=draw_content_favicon(e)%><a href="<%=get_url(e)%>"><%=e.title%></a></td>
+    <td style="font-size: 11px;"><%=member_state('active')%><%=e.users.count%></td>
+<% end -%>
+<% end # cache -%>
+</div>

@@ -1,0 +1,30 @@
+<%= error_messages_for 'category' %>
+
+<!--[form:category]-->
+<p><label for="topics_category_name">Nombre</label><br/>
+<%= text_field 'category', 'name', :class => 'text'  %></p>
+<p><label for="topics_category_code">Nombre corto</label><br/>
+<%= text_field 'category', 'code', :class => 'text'  %></p>
+
+<p><label for="topics_category_description">Descripción</label><br/>
+<%= text_field 'category', 'description', :class => 'text'  %></p>
+
+<% if @category.class.name == 'TopicsCategory' then %>
+<p><label for="category_nohome">Oculto (No aparecerá en portada)</label><br/>
+<%= check_box 'category', 'nohome'  %></p>
+<% end -%>
+
+<% if @category.class.name == 'NewsCategory' then %>
+<p><label for="category_file">Archivo .JPG de 188x110</label><br/>
+<img src="<%=ASSET_URL%>/cache/thumbnails/f/188x110/<%=@category.file%>" />
+<%= file_field 'category', 'file' %></p>
+<% end -%>
+
+
+<%= hidden_field_tag 'type_name', params[:type_name]%>
+
+<p><label for="topics_category_parent">Categoría de la que depende:</label><br />
+<%= render_tree_select @tld, 'name', 'category[parent_id]', @category.parent_id%></p>
+
+<!--[eoform:category]-->
+

@@ -1,0 +1,90 @@
+<% content_support do %>
+  <% mftext('Clanes más recientes') do %>
+  <table>
+    <% 
+    cache("/#{@controller.portal_code}/clanes/index/newest") do
+	games = (@controller.portal_code != 'gm' && @controller.portal.respond_to?(:games))? @controller.portal.games : [] 
+    if games.size > 0 
+      clans = Clan.find_by_games(:games => games, :conditions => 'deleted is false', :order => 'created_on DESC', :limit => 5)
+    else
+      clans = Clan.find(:all, :conditions => 'deleted is false', :order => 'created_on DESC', :limit => 5)
+    end
+    
+    clans.each do |clan| %> 
+    <tr class="<%=oddclass%>">
+      <td><a href="/clanes/clan/<%=clan.id%>"><%=notags(clan.name)%></a><br />
+        <div class="infoinline timestamp"><%=print_tstamp(clan.created_on)%></div></td>
+    </tr>
+<% end %>
+<% end %>
+</table>
+<% end -%>
+
+  <% mftext('Clanes más numerosos') do %>
+  <table>
+    <% 
+    cache("/#{@controller.portal_code}/clanes/index/biggest") do 
+    games = (@controller.portal_code != 'gm' && @controller.portal.respond_to?(:games))? @controller.portal.games : [] 
+    if games.size > 0 
+      clans = Clan.find_by_games(:games => games, :conditions => 'deleted is false and members_count > 0', :order => 'members_count DESC', :limit => 10)
+    else
+      clans = Clan.find(:all, :conditions => 'deleted is false', :order => 'members_count DESC', :limit => 10)
+    end %>
+      <% clans.each do |clan| %>
+    <tr class="<%=oddclass%>">
+      <td><a href="/clanes/clan/<%=clan.id%>"><%=notags(clan.name)%></a></td>
+      <td><span class="members-count"><%=clan.members_count%></span></td>
+    </tr>
+<% end %>
+<% end %>
+</table>
+<% end -%>
+<% end -%>
+
+
+<% content_main do %>
+  <% mftext('Clanes') do %>
+<% cache("/#{@controller.portal_code}/clanes/index/page_#{params[:page]}") do %>
+<%
+	games = (@controller.portal_code != 'gm' && @controller.portal.respond_to?(:games))? @controller.portal.games : [] 
+if games.size > 0 
+  #clans = Clan.find_by_games(:games => @controller.portal.games, :conditions => 'deleted is false', :order => 'created_on DESC', :limit => 5)
+  @clans_pages = ActionController::Pagination::Paginator.new self, Clan.count_by_games(:games => games, :conditions => 'deleted is false'), 40, params['page']
+else
+  #clans = Clan.find(:all, :conditions => 'deleted is false', :order => 'created_on DESC', :limit => 5)
+  @clans_pages = ActionController::Pagination::Paginator.new self, Clan.count(:conditions => 'deleted is false'), 40, params['page']
+end
+%>
+<%= render :partial => 'shared/pager', :object => @clans_pages, :locals => {'pos' => 'top'} %>
+
+  <table>
+    <tr class="<%=oddclass%>">
+      <th>Nombre</th>
+      <th>Tag</th>
+      <th>Juegos</th>
+      <th>Miembros</th>
+      <th>Web oficial</th>
+    </tr>
+
+    <% 
+games = (@controller.portal_code != 'gm' && @controller.portal.respond_to?(:games))? @controller.portal.games : [] 
+    if games.size > 0 
+  clans = Clan.find_by_games(:games => games, :conditions => 'deleted is false', :order => 'lower(name) ASC', :limit => "#{@clans_pages.current.to_sql.join(' OFFSET ')}")
+else
+  clans = Clan.find(:all, :conditions => 'deleted is false', :order => 'lower(name) ASC', :limit => "#{@clans_pages.current.to_sql.join(' OFFSET ')}")
+end
+    for clan in clans %>
+    <tr class="<%=oddclass%>">
+      <td><a href="/clanes/clan/<%=clan.id%>"><%=clan.name%></a></td>
+      <td><%=notags(clan.tag)%></td>
+      <td><% for game in clan.games%><%=faction_favicon(game)%> <% end -%></td>
+      <td><%=clan.members_count%></td>
+      <td><%="<a href=\"#{clan.website}\">Web oficial</a>" if clan.website%></td>
+    </tr>
+  <% end -%>
+  </table>
+
+<%= render :partial => 'shared/pager', :object => @clans_pages, :locals => {'pos' => 'bottom'} %>
+<% end -%>
+<% end -%>
+<% end -%>

@@ -1,0 +1,8 @@
+<% 
+require 'digest/md5'
+100.times do |time| %>
+anonymous_user_<%=time%>:
+  id: <%=time%>
+  session_id: <%=Digest::MD5.hexdigest((Time.now.to_i + Kernel.rand).to_s)%>
+  lastseen_on: <%=Time.at(Time.now.to_i)%>
+<% end %>

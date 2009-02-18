@@ -1,0 +1,84 @@
+<% if !user_is_authed then %>
+<p><strong><a href="/cuenta/alta">Regístrate</a></strong> para personalizar este listado de foros.</p>
+<% end -%>
+
+<div class="grid-12" id="my-forums-cont">
+<%forumz = user_is_authed ? Personalization.get_user_forums(@user) : Personalization.default_user_forums 
+%>
+<% i = 0
+i0 = 0
+forumz.each do |fcontainer|
+	i0 += 1
+%>
+<div class="grid-4 blast <%='glast' if i0 == 3%>">
+	<ul id="col-forums-<%=i0%>" class="widget">
+<% 
+	fcontainer.each do |forum_id|
+forum = TopicsCategory.find(forum_id) %>
+<li class="widget" id="forum_<%=forum[:id]%>">
+		<%=mfcontents_basic("#{faction_favicon(forum)} #{truncate(forum.name, 23, '..')}", 
+					Proc.new { forum.last_updated_items(7) }, 
+					[],
+					:faction_favicon => true, :blast => true,
+					:truncate_at => 26, :cache => "/common/home/foros/topics_#{forum.id}")%>
+					
+</li>
+<% i += 1 
+end # fcontainer.each %>
+</ul></div>
+<%
+end # forumz each -%>
+</div>
+
+<%mftext('Navegador', :grid => 3, :glast => true, :id => 'foros-right-nav') do %>
+<ul>
+	<script type="text/javascript">
+		function show_tcnav(code) {
+			prev = $j('#'+code).hasClass('hidden');
+			$j('ul.tcnav').addClass('hidden');
+			if (prev)
+				$j('#'+code).removeClass('hidden');
+				
+			return false;
+		}
+	</script>
+	<% cache('/common/home/foros/topics_list') do %>
+<% TopicsCategory.toplevel_groups.each do |name, code| %>
+	<li class="<%=oddclass%> infoinline"><div><strong><a href="#" onclick="return show_tcnav('tcn<%=code%>');"><%=faction_favicon(code)%> <%=name%></a></strong></div>
+	<ul id="tcn<%=code%>" class="tcnav hidden">
+	<%TopicsCategory.find_by_toplevel_group_code(code).each do |tc| %>
+		<li><a href="<%=gmurl(tc)%>"><%=truncate(tc.name, 19, '..')%></a></li>
+	<% end -%>
+	
+	</ul>
+	</li>
+	<% end -%>
+<% end -%>
+</ul>
+<% end -%>
+
+<% if user_is_authed then %>
+<script src="<%=ASSET_URL%>/javascripts/jquery-ui-personalized-1.6rc2.js?<%=SVNVERSION%>" type="text/javascript"></script>
+<script type="text/javascript">
+function hilightCols() {
+	$j('#my-forums-cont .grid-4 > ul').addClass('highlighted');
+}
+function stopHilightCols() {
+	$j('#my-forums-cont .grid-4 > ul').removeClass('highlighted');
+}
+
+var tooSoon = false;
+function ajax_update_backend() {
+	if (tooSoon)
+		return;
+		
+	setTimeout(function() { tooSoon = false; }, 250);
+	tooSoon = true;
+	
+	GM.personalization.update_user_forums_order(<%=@user.id%>, $j('#col-forums-1').sortable('serialize').replace(/forum/g, 'buckets1'), $j('#col-forums-2').sortable('serialize').replace(/forum/g, 'buckets2'), $j('#col-forums-3').sortable('serialize').replace(/forum/g, 'buckets3'));
+}
+$j('#col-forums-1').sortable({connectWith: ['#col-forums-2', '#col-forums-3'], start: hilightCols, stop: stopHilightCols, handle: '.mtitle', update: ajax_update_backend});
+$j('#col-forums-2').sortable({connectWith: ['#col-forums-1', '#col-forums-3'], start: hilightCols, stop: stopHilightCols, handle: '.mtitle', update: ajax_update_backend});
+$j('#col-forums-3').sortable({connectWith: ['#col-forums-1', '#col-forums-2'], start: hilightCols, stop: stopHilightCols, handle: '.mtitle', update: ajax_update_backend});
+</script>
+<% end -%>

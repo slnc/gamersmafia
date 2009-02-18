@@ -1,0 +1,6 @@
+<strong><%= link_to @object.name, gmurl(@object), {:class => 'nav'} %></strong><br />
+<div class="infoinline"><%=@object.description%>
+<% subforums = @object.children.find(:all, :order => 'lower(name) ASC')
+  if subforums.size > 0 then %>
+  <br /><strong>Subforos</strong>: <% for subforum in subforums %><%= link_to subforum.name, gmurl(subforum)%>, <% end -%>
+<% end -%></div>

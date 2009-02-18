@@ -1,0 +1,9 @@
+<%mftext('Editar categoría del FAQ') do %>
+
+<%= form_tag :action => 'update', :id => @faq_category %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+<br />
+<%= link_to 'Volver', :action => 'index' %>
+<% end -%>

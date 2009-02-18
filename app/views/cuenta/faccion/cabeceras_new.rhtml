@@ -1,0 +1,14 @@
+<% content_main do %>
+  <% mftext('Nueva cabecera') do %>
+
+  <form method="post" action="/cuenta/faccion/cabeceras/create" enctype="multipart/form-data">
+  
+    <%= render :partial => 'factions_header' %>
+    <%= submit_tag 'Crear' %>
+  </form>
+
+  <br />
+  <br />
+  <a href="/cuenta/faccion/cabeceras">Volver</a>
+  <% end -%>
+<% end -%>

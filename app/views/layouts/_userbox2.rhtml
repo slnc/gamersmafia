@@ -1,0 +1,103 @@
+<%mftext('') do %>
+<div id="userbox2" style="margin-bottom: 5px;">
+<% if user_is_authed then %>
+<div style="float: right;"><a href="/cuenta">mi cuenta</a></div>
+<div class="ratings" style="float: right; margin-right: 25px;"><% rem = @user.remaining_rating_slots%><img src="/images/blank.gif" class="left-ratings <%='none-remaining' if rem == 0%>" /><%=rem%></div>
+<div id="messages-indicator"><div style="float: left;" class="messages<%= ' has-unread' if @user.unread_messages > 0%>"><a class="nav" title="Leer mis mensajes" href="/cuenta/mensajes"><%=@user.unread_messages%></a></div></div>
+<% # TODO clear cache%>
+
+<% cache("/common/globalnavbar/#{@user.id % 1000}/#{@user.id}_avatar") do %>
+<div style="clear: left; padding-top: 5px; height: 40px; width: 100%;">
+<div style="margin-right: 0px; clear: none; float: left; width: 32px;"><a href="<%=gmurl(@user)%>"><img class="icon" src="/cache/thumbnails/i/32x32/<%=@user.show_avatar%>" /></a><% end -%> <br />
+<div style="clear:left;"><a class="nav" onclick="return confirm('¿Estás seguro?');" href="/cuenta/logout">logout</a></div>
+</div>
+            <ul id="userbox-bars2" style="width: 90px; clear: none; float: right; margin: 0;">
+              <li style="height: 10px;"><div class="userbox-karma-bar"><%=draw_karma_bar_sm(@user)%></div></li>
+              <li style="height: 10px;"><div class="userbox-faith-bar"><%=draw_faith_bar_sm(@user)%></div></li>
+			  <li style="text-align: left; line-height: 16px;">
+			  <div style="float:right;" class="competition<%= ' activated' if @user.enable_competition_indicator?%>"><a class="nav" title="Ver novedades de competición" class="buttonic" href="/cuenta/competiciones"><img class="icon" src="/images/blank.gif" /></a></div>
+			  
+<% if @user.is_staff? then 
+# cache("/common/slog/#{@user.id}") do  %>
+	<div class="slog <%='activated2' if @user.pending_slog > 0 %>" style="float: right; margin-right: 5px;"><a class="nav" title="Ver log del sistema" class="buttonic" href="/slog"><img class="icon" src="/images/blank.gif" /></a></div>
+<% # end -%>
+<% end # if @user.is_staff? -%>
+			  <div class="usercash" style="float: left;"><a class="nav" title="Ir al banco" href="/cuenta/banco"><%=@user.cash.to_i%></a><img class="gmd10" src="/images/blank.gif" /></div></li>
+            </ul>
+
+</div>
+<div style="clear: left;">
+</div>
+<% else %>
+<div class="centered">
+	<div style="margin-bottom: 10px;"><a href="/cuenta/alta"><img class="icon" src="/skins/default/images/btn_register.png" /></a></div>
+	<a onclick="$j('#login-box').removeClass('hidden'); return false;" href="">iniciar sesión</a>
+	
+	<div class="<%= ' hidden' unless cookies[:login] %>" id="login-box">
+		<form action="/cuenta/do_login" method="post">
+<% if not (/login/ =~ request.path) then%><input type="hidden" name="redirto" value="<%=request.path%>" /><% end -%>
+		<table class="signup" style="margin-top: 10px;">
+  <tr>
+    <td><label for="post_login">login</label></td>
+    <td><input id="post_login" name="login" size="20" type="text" class="text" value="<%=@user%>" /></td>
+	<script type="text/javascript">try { $j('#post_login').focus(); } catch (e) {} </script>
+  </tr>
+  <tr>
+    <td style="padding-right: 3px;"><label for="post_password">contraseña</label></td>
+    <td><input id="post_password" name="password" size="20" class="text" type="password" /></td>
+  </tr>
+</table>
+<div class="centered"><input type="submit" value="iniciar sesión" /></div>
+</form>
+	</div>
+</div>
+<% end -%>
+
+<% end -%>
+
+<% if user_is_authed then %>
+<%mftext() do%>
+<%
+  count_pending = controller.global_vars['pending_contents'].to_i %>
+	<div class="moderation-queue <%='has-pending' if count_pending > 0%> infoinline right" style="text-align: right; margin-bottom: 5px;">
+<a class="nav" href="/admin/contenidos" title="Ir a la cola de moderación">En cola (<span style="<%= 'font-weight: bold;' if count_pending > 0%>"><%=count_pending%></span>)</a></div>
+<div class="centered">
+	<div style="margin-bottom: 10px;"><a onclick="return open_new_content_selector();" href=""><img class="icon" src="/skins/default/images/btn_nuevo_contenido.png" /></a></div>
+</div>
+</div>
+<% end -%>
+
+<% if user_is_authed then %>
+          <div id="new-content-selector" class="hidden">
+            <div class="title centered drafts"><a class="nav" onclick="close_new_content_selector();" href="/cuenta/mis_borradores">Mis borradores</a></div>
+            <div class="title centered">Enviar contenidos</div>
+            <ul>
+              <% if @controller.portal && @controller.portal.class.name == 'ClansPortal' then %>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="/noticias/new">Noticia</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="/descargas/new">Descarga</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="/imagenes/new">Imagen</a></li>
+			  <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="/encuestas/new">Encuesta</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="/eventos/new">Evento</a></li>
+              <% else %>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/apuestas/new">Apuesta</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/columnas/new">Columna</a></li>
+			  <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/coverages/new">Coverage</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/curiosidades/new">Curiosidad</a></li>
+              <li class="alt1"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/descargas/new">Descarga</a></li>
+              <li class="alt1"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/demos/new">Demo</a></li>
+              <li class="alt1"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/encuestas/new">Encuesta</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/entrevistas/new">Entrevista</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/eventos/new">Evento</a></li>
+              <li class="alt1"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/imagenes/new">Imagen</a></li>
+              <li class="alt1"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/noticias/new">Noticia</a></li>
+			  <li class="alt1"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/respuestas/new">Pregunta</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/reviews/new">Review</a></li>
+              <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="http://<%=App.domain%>/tutoriales/new">Tutorial</a></li>
+              <li style="padding-top: 10px;" class="alt0"><a onclick="close_new_content_selector();" href="http://<%=App.domain%>/cuenta/blog/new">Entrada de blog</a></li>
+              <% end -%>
+              <li class="centered"><a class="nav" onclick="close_new_content_selector();" href="#">cerrar</a></li>
+            </ul>
+          </div>
+          <% end -%>
+		 
+<% end -%>

@@ -1,0 +1,36 @@
+<h1>Descargando: <%=@demo.title%></h1>
+<div class="popup-contents">
+<% if @demo.file then %>
+<script type="text/javascript">
+function Demoit()
+{
+  document.location = '<%=fc_path(@demo.file)%>'
+}
+function updatecounter()
+{
+  prev = Number($j('#counter').html());
+
+  if (prev != 0)
+  {
+    $j('#counter').html(Number($j('#counter').html()) - 1);
+    setTimeout(updatecounter, 1000);
+  }
+}
+setTimeout(Demoit, 10000);
+setTimeout(updatecounter, 1000);
+</script>
+<p>La demo comenzará automáticamente dentro de <strong id="counter">10</strong> segundos.</p><p><a onclick="$j('#counter').html(0);" href="<%=fc_path(@demo.file)%>">Si quieres demor sin esperar pincha aquí.</a></p>
+<% if @demo.demo_mirrors.size > 0 then %>
+<br />
+<p>Si te da problemas nuestro enlace también puedes demorlo desde estos mirrors externos:</p>
+<%=render :partial => 'demo_mirrors'%>
+<% end -%>
+<% elsif @demo.demo_mirrors.size > 0 then %>
+  <p>El archivo que has elegido solo está disponible a través de mirrors externos. Por favor, elige uno:</p>
+<%=render :partial => 'demo_mirrors'%>
+<% else 
+  # TODO generar aviso
+  %>
+  <p>El archivo elegido no está disponible. Se ha generado un aviso al encargado y se arreglará lo antes posible. Disculpa las molestias.</p>
+<% end %>
+</div>

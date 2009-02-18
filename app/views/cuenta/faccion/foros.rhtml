@@ -1,0 +1,37 @@
+<% content_support do %>
+  <% mftext('Edición') do %>
+  <%= link_to 'Nuevo foro', '/cuenta/faccion/foros/new' %>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Foros') do %>
+<table>
+  <tr>
+    <th>Nombre</th>
+    <th>Nombre corto</th>
+    <th>Tópics</th>
+    <th></th>
+  </tr>
+  
+<% for topics_category in @topics_categories%>
+  <tr class="<%=oddclass%>">
+    <td><%=
+      obj = topics_category
+      path = [link_to topics_category.name, "/cuenta/faccion/foros/edit/#{topics_category.id}"]
+      obj = obj.parent
+      while obj != nil and obj.id != obj.parent_id and obj.id != obj.root_id
+        path<< obj.name
+        obj = obj.parent
+      end
+      path = path.reverse
+      path.join(' » ')
+      %></td>
+    <td><%=topics_category.code%></td>
+    <td><%=topics_category.topics.count%></td>
+    <td><%= link_to 'Eliminar', "/cuenta/faccion/foros/destroy/#{topics_category.id}" %></td>
+  </tr>
+<% end %>
+</table>
+<% end -%>
+<% end -%>

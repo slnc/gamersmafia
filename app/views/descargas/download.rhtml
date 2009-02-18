@@ -1,0 +1,79 @@
+<style type="text/css">
+	body { background: #fff; padding: 0; margin: 0; text-align: center; font-family: Arial;
+		font-size: 14px;}
+		
+	body a  {color: #0049a3}
+	.mgdownloadtop {
+		
+		color: #cdcdcd;
+	}
+	.mgdownloadtop a { color: #fff; text-decoration: none; }
+	.mgdownloadtop a:hover { text-decoration: underline; }
+	.mgdownloadtop p { margin-bottom: 5px; }
+	.mgdownloadtop a { font-weight: bold; }
+		.mgdownloadmiddle {
+		
+	}
+		.mgdownloadbottom img {
+		
+border: 0;
+	}
+</style>
+<div class="mgdownloadtop" style="height: 281px; width: 100%; background: #000 url(/images/bg_patdownload.png) 0 0 repeat-x;">
+	<a href="http://<%=App.domain%>/"><img src="/images/logo_patdownload.png" style="margin-top: 58px; border: 0;"/></a>
+	<p>Estás descargando <a href="<%=gmurl(@download)%>"><strong><%=@download.title%></strong></a>.</p>
+	<p>Si la descarga no se inicia automáticamente <a href="<%=@download_link%>"><strong>haz click aquí</strong></a> o <a href="<%=gmurl(@download)%>"><strong>elige otro mirror</strong>.</p>
+</div>
+<div class="mgdownloadmiddle" style="line-height: 40px; height: 40px; background: #f1f1f1;"><strong><a href="<%=gmurl(@download)%>">&laquo; Volver a descargas</a></strong></div>
+<div class="mgdownloadbottom" style="margin-top: 30px;">
+<% if @download_link.include?(Download::MIRRORS_DOWNLOAD[1]) then %>
+	<%=ads_slots('download-page-nls')%>
+<% else %>
+	<%=ads_slots('download-page')%>
+<% end -%>
+</div>
+<script type="text/javascript">
+	window.setTimeout(function() { document.location = '<%=@download_link%>'}, 2000); 
+</script>
+
+
+
+<% if nil then %>
+<h1>Descargando: <%=@download.title%></h1>
+<div class="popup-contents">
+<% if @download.file then %>
+<script type="text/javascript">
+function downloadit()
+{
+  document.location = '<%=fc_path(@download.file)%>'
+}
+function updatecounter()
+{
+  prev = Number($j('#counter').html());
+
+  if (prev != 0)
+  {
+    $j('#counter').html(Number($j('#counter').html()) - 1);
+    setTimeout(updatecounter, 1000);
+  }
+}
+setTimeout(downloadit, 10000);
+setTimeout(updatecounter, 1000);
+</script>
+<p>La descarga comenzará automáticamente dentro de <strong id="counter">10</strong> segundos.</p><p><a onclick="$j('#counter').html(0);" href="<%=fc_path(@download.file)%>">Si quieres descargar sin esperar pincha aquí.</a></p>
+<% if @download.download_mirrors.size > 0 then %>
+<br />
+<p>Si te da problemas nuestro enlace también puedes descargarlo desde estos mirrors externos:</p>
+<%=render :partial => 'download_mirrors'%>
+<% end -%>
+<% elsif @download.download_mirrors.size > 0 then %>
+  <p>El archivo que has elegido solo está disponible a través de mirrors externos. Por favor, elige uno:</p>
+<%=render :partial => 'download_mirrors'%>
+<% else 
+  # TODO generar aviso
+  %>
+  <p>El archivo elegido no está disponible. Se ha generado un aviso al encargado y se arreglará lo antes posible. Disculpa las molestias.</p>
+<% end %>
+</div>
+
+<% end -%>

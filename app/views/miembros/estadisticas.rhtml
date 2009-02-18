@@ -1,0 +1,67 @@
+<% content_support do %>
+<% end -%>
+
+<% content_main do %>
+  <% mftext('General') do %>
+  <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/general_stats_#{Time.now.to_i / 86400}") do %>
+  <table>
+    <tr class="<%=oddclass%>">
+      <td class="w150">Karma</td>
+      <td><%=((@curuser.karma_points.to_f)*100).to_i.to_f / 100%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td>Karma al día</td>
+      <td><%=((@curuser.karma_points.to_f / ((Time.now.to_i + 1 - @curuser.created_on.to_i) / 86400.0))*100).to_i.to_f / 100%></td>
+    </tr>
+	<tr class="<%=oddclass%>">
+      <td>Comentarios</td>
+      <td><%=@curuser.comments.count%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td>Comentarios al día</td>
+      <td><%=((@curuser.comments.count(:conditions => 'deleted = \'f\' AND created_on >= now() - \'3 months\'::interval').to_f / ((Time.now.to_i + 1 - 3.months.ago.to_i) / 86400.0))*100).to_i.to_f / 100%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td>Usuarios referidos activos</td>
+      <td><%=User.count(:conditions => ["state <> #{User::ST_UNCONFIRMED} AND referer_user_id = ?", @curuser.id])%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td>Usuarios resucitados activos</td>
+      <td><%=User.count(:conditions => ["state <> #{User::ST_UNCONFIRMED} AND resurrected_by_user_id = ?", @curuser.id])%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td>Visitas referidas</td>
+      <td><%=User.db_query("SELECT count(user_id) FROM refered_hits WHERE user_id = #{@curuser.id}")[0]['count']%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td>Popularidad</td>
+      <td><%=@curuser.friends_count%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td>Fe</td>
+      <td><%=@curuser.faith_points%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td>Fe al día</td>
+      <td><%=((@curuser.faith_points.to_f / ((Time.now.to_i + 1 - [@curuser.created_on, Time.local(2006, 3, 18)].max.to_i) / 86400.0))*100).to_i.to_f / 100%></td>
+    </tr>
+    <% end %>
+  </table>
+  <% end -%>
+
+    <% mftext('Contenidos publicados') do %>
+    <table>
+      <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/contents_stats") do %>
+      <%
+	  stats = @curuser.contents_stats 
+for key in (stats.keys.sort - ['Comentarios']) %>
+        <tr class="<%=oddclass%>">
+            <td class="w150"><%=key%></td>
+            <td><%if stats[key] > 0 then %><%=link_to stats[key], "#{gmurl(@curuser)}/contenidos/#{key}"%><% else %><%=stats[key]%><% end -%></td>
+        </tr>
+      <% end -%>
+    <% end -%>
+    </table>
+	<% end -%>
+	
+<% end -%>

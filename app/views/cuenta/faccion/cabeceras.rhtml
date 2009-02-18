@@ -1,0 +1,30 @@
+<% content_support do %>
+  <% mftext('Crear cabecera') do %>
+    <p><a href="/cuenta/faccion/cabeceras/new">Nueva cabecera</a></p>
+	<% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Cabeceras') do %>
+
+<%= render :partial => 'shared/pager', :object => @header_pages, :locals => {:pos => 'bottom'} %>
+
+<table>
+  <tr>
+    <th style="width: 500px;"></th>
+    <th>Nombre</th>
+    <th></th>
+  </tr>
+  
+<% for factions_header in @factions_headers %>
+  <tr class="<%=oddclass%>">
+    <td><img src="<%=ASSET_URL%>/cache/thumbnails/f/500x60/storage/factions_headers/<%=factions_header.faction_id%>/<%=factions_header.id%>.jpg" style="width: 500px; height: 60px;" />
+      <td><a href="/cuenta/faccion/cabeceras/edit/<%=factions_header.id%>"><%=factions_header.name%></a></td>
+      <td><%= link_to 'Borrar', { :controller =>'/cuenta/faccion/cabeceras', :action => 'destroy', :id => factions_header}, :confirm => '¿Estás seguro?' %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= render :partial => 'shared/pager', :object => @header_pages, :locals => {:pos => 'bottom'} %>
+<% end -%>
+<% end -%>

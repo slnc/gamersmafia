@@ -1,0 +1,49 @@
+bd1:
+  id: 1
+  name: Anime
+  code: anime
+  
+bd2:
+  id: 2 
+  name: Cine
+  code: cine
+  
+bd3:
+  id: 3
+  name: Deportes
+  code: deportes
+  
+bd4:
+  id: 4
+  name: Desarrollo
+  code: desarrollo
+  
+bd5:
+  id: 5
+  name: Estudiantes
+  code: estudiantes
+  
+bd6:
+  id: 6
+  name: Hardware
+  code: hardware
+  
+bd7:
+  id: 7
+  name: Software
+  code: software
+  
+bd8:
+  id: 8 
+  name: Internet
+  code: inet
+  
+bd9:
+  id: 9
+  name: Musica
+  code: musica
+  
+bd10:
+  id: 10
+  name: Literatura
+  code: literatura

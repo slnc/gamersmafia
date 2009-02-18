@@ -1,0 +1,24 @@
+<% content_support do %>
+  <%= render :partial => 'top_bloggers' %>
+  <%= render :partial => 'best_entries' %>
+<% end %>
+
+<% content_main do %>
+<% mftext('Últimas entradas') do %>
+<% # TODO cachear !!!
+%>
+<% @blogentry_pages, @blogentries = controller.paginate :blogentries, :conditions => "state = #{Cms::PUBLISHED}", :order_by => 'created_on DESC', :per_page => 20 %>
+<%= render :partial => 'shared/pager', :object => @blogentry_pages, :locals => {:pos => 'top'} %>
+
+<% for blogentry in @blogentries 
+u = blogentry.user
+%>
+<div style="height: 60px; clear: left; margin-bottom: 10px; padding: 2px;" class="<%=oddclass%>">
+<div style="float: left;"><img src="<%=ASSET_URL%><%=u.show_avatar%>" /></div>
+<h2><a href="/blogs/<%=u.login%>/<%=blogentry.id%>"><%=blogentry.title%></a></h2>
+<div class="infoinline"><a href="<%=gmurl(u)%>"><%=u.login%></a> | <%=print_tstamp(blogentry.created_on)%></div>
+</div>
+<% end -%>
+<%= render :partial => 'shared/pager', :object => @blogentry_pages, :locals => {:pos => 'top'} %>
+<% end -%>
+<% end -%>

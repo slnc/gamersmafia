@@ -1,0 +1,51 @@
+<% content_support do %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Resultados de la búsqueda') do %>
+<table>
+<tr>
+    <th>Id</th>
+    <th>Participante A</th>
+    <th>Participante B</th>
+    <th>Mapa</th>
+    <th>Modo</th>
+    <th class="w25"><img class="pageviews-count" title="Comentarios" src="/images/blank.gif" /></th>
+    <th class="w25"><img class="comments-count" title="Comentarios" src="/images/blank.gif" /></th>
+    <th class="w25"><img class="downloads-count" title="Veces descargada" src="/images/blank.gif" /></th>
+</tr>
+<% @demos.each do |demo| %>
+<tr class="<%=oddclass%>">
+    <td><strong><a href="<%=get_url(demo)%>">#<%=demo.id%></a></strong></td>
+	<% if demo.entity1_local_id then%>
+	<td class="infoinline"><a href="/demos/buscar?demo%5Bentity1_local_id%5D=<%=demo.entity1_local_id%>"><%=demo.entity1%></a></td>
+	<% else %>
+	<td class="infoinline"><a href="/demos/buscar?demo%5Bentity_external%5D=<%=demo.entity1_external%>"><%=demo.entity1%></a></td>
+	<% end -%>
+    
+    <% if demo.entity2_local_id then%>
+	<td class="infoinline"><a href="/demos/buscar?demo%5Bentity2_local_id%5D=<%=demo.entity2_local_id%>"><%=demo.entity2%></a></td>
+	<% else %>
+	<td class="infoinline"><a href="/demos/buscar?demo%5Bentity_external%5D=<%=demo.entity2_external%>"><%=demo.entity2%></a></td>
+	<% end -%>
+    <td class="infoinline"><% if demo.games_map_id then %><a href="/demos/buscar?demo%5Bgames_map_id%5D=<%=demo.games_map_id%>"><%=demo.games_map.name%></a><% end -%></td>
+    <td class="infoinline"><% if demo.games_mode_id then %><a href="/demos/buscar?demo%5Bgames_mode_id%5D=<%=demo.games_mode_id%>"><%=demo.games_mode.name%></a><% end -%></td>
+    <td class="infoinline"><%=(demo.hits_anonymous + demo.hits_registered)%></td>
+    <td class="infoinline"><%=demo.cache_comments_count%></td>
+    <td class="infoinline"><%=demo.downloaded_times%></td>
+</tr>
+<% end %>
+</table>
+
+<% if @demos.size == 0 then %>
+<div class="warning">No se ha encontrado ninguna demo con las condiciones indicadas.</div>
+<% end -%>
+
+<% if @limited then %>
+<div class="warning">Se han encontrado más de 50 demos con las condiciones indicadas pero los resultados están limitados a 50 demos. Indica más condiciones si no encuentras la demo que buscas.</div>
+<% end -%>
+<br />
+<br />
+<a href="/demos">Nueva búsqueda</a>
+<% end -%>
+<% end -%>

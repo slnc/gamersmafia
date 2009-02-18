@@ -1,0 +1,86 @@
+<%mftext('Últimas decisiones de publicación') do %>
+<% cpublishable = Cms::contents_classes_publishable.collect { |c| "'#{c.name}'" }
+cond = "content_type_id IN (SELECT id FROM content_types WHERE name IN (#{cpublishable.join(',')})) AND state > 1"
+if controller.portal.id < 0 then
+	cond<< " AND clan_id IS NULL"
+elsif controller.portal.kind_of?(ClansPortal) then
+	cond<< " AND clan_id = #{controller.portal.clan_id}"
+elsif controller.portal.kind_of?(BazarDistrictPortal) then
+	cond<< " AND clan_id IS NULL"
+else # Facción, cargamos los platform_ids y game_ids válidos más los que sean null
+# TODO inconsistencia, la lista d eelementos a moderar muestra _todo_
+	g = controller.portal.games
+	g = g.collect { |x| x.id } if g.size > 0
+	if g.size > 0
+    	cond<< " AND game_id IN (#{g.join(',')})"
+	else # si no tiene games tiene platforms 
+		plat_codes = controller.portal.factions.find(:all, :conditions => 'is_platform = \'t\'').collect { |x| "'#{x.code}'" }
+		plats_ids = Platform.find(:all, :conditions => "code IN (#{plat_codes.join(',')})").collect { |x| x.id }
+		cond<< " AND platform_id IN (#{plats_ids.join(',')})" if plats_ids.size > 0
+	end
+end
+
+@news_pages = ActionController::Pagination::Paginator.new self, Content.count(:conditions => cond), 50, params['page']
+
+  @news_pages.current_page = @news_pages.first if params['page'].nil?
+  %>
+  <%=render :partial => 'shared/pager', :object => @news_pages, :locals => {:pos => 'top'} %>
+
+<table>
+  <tr>
+    <th class="w25">Tipo</th>
+    <th>Contenido</th>
+    <th class="w50"></th>
+    <th class="w50"></th>
+    <th class="w50"></th>
+    <th>Publicado hace</th>
+    <th>Autor</th>
+  </tr>
+  <% 
+  params[:page] = 1 unless params[:page]
+
+cache_category_paths = {}
+  Content.find(:all, :conditions => cond, :order => 'id DESC', :limit => 50, :offset => (params[:page]-1)*50).each do |uniq|
+  content = uniq.real_content
+  @item = content
+  sums = PublishingDecision.find_sum_for_content(content, true)
+  vcount = PublishingDecision.find_voters_count_for_content(content)
+%>
+  <tr id="content<%=uniq.id%>" class="<%=oddclass%>">
+  <td class="infoinline" style="font-weight: bold;"><%=Cms::translate_content_name(@item.class.name)[0..2].upcase%></td>
+    <% 
+        if @item.class.name == 'Image' then %>
+        <%
+            if cache_category_paths.keys.include?(@item.images_category.id)
+              paths = cache_category_paths[@item.images_category.id]
+            else
+              paths, navpath = @item.images_category.get_category_address
+              cache_category_paths[@item.images_category.id] = paths
+            end
+          %>
+          <td><table class="compact">
+              <tr>
+                <td class="w100"><%=link_to fc_thumbnail(@item.file, 'f', '85x60', false), get_url(@item).gsub('show', 'edit')%><br /><span class="infoinline"><%=format_interval((Time.now - @item.created_on).to_i)%></span></td>
+                <td>
+                  <span class="infoinline">en <strong><%=paths.join(' &raquo; ')%></strong></span>
+                </td>
+              </tr>
+            </table>
+        </td>
+        <% else %>
+        <% if Cms::user_can_edit_content?(@user, @item) then %>
+      <td><a href="<%=get_url(@item).gsub('show', 'edit')%>"><%=@item.resolve_hid%></a></td>
+      <% else %>
+      <td><%=@item.resolve_hid%></td>
+      <% end %>
+      <% end -%>
+    <td><%=member_state('active')%> <%=vcount%></td>
+    <td <% if @item.state == Cms::PUBLISHED then%>style="background: #99CF9A;"<% end -%>><img class="publish16" src="/images/blank.gif" /> <%=(sums[0]*10).to_i.to_f / 10%></td>
+    <td <% if @item.state == Cms::DELETED then%>style="background: #C99A9A;"<% end -%>><img class="deny16" src="/images/blank.gif" /> <%=(sums[1]*10).to_i.to_f / 10%></td>
+    <td class="infoinline" style="width: 200px;"><%=format_interval((Time.now.to_i - @item.updated_on.to_i), 'minutos')%></td>
+    <td style="width: 125px;"><%=link_to @item.user.login, :controller => '/miembros', :action => @item.user.login%></td>
+    </tr>
+<% end -%>
+</table>
+  <%=render :partial => 'shared/pager', :object => @news_pages, :locals => {:pos => 'top'} %>
+<% end -%>

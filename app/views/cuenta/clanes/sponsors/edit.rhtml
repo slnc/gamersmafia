@@ -1,0 +1,11 @@
+<% content_main do %>
+  <% mftext('Editar sponsor') do %>
+
+<%= form_tag({:action => 'update', :id => @clans_sponsor}, :multipart => true)%>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

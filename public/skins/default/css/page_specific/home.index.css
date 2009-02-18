@@ -1,0 +1,445 @@
+#homecontents {
+    float: left;
+    width: 32%;
+}
+
+#homecommunity {
+    float: left;
+    width: 33%;
+    margin: 0 8px;
+}
+
+#homegamer {
+    float: left;
+    width: 31%;
+}
+
+#homecontents .subheader, #homecommunity .subheader, #homegamer .subheader, #homebazar .subheader {
+    border: 1px solid #000;
+    margin-bottom: 3px;
+    height: 26px;
+}
+
+#homecontents .container, #homecommunity .container, #homegamer .container, #homebazar .container {
+    border: 1px solid #dfdfdf;;
+}
+
+#homegamer .calendar a {
+    display: block;
+    width: 100%;
+}
+
+.homebox .subheader div {
+    width: 200px;
+    height: 26px;
+}
+
+.lyarena .homebox .subheader div {
+	width: 200px;
+}
+
+#homecontents .homebox .subheader {
+    background: #2E228B url(../../images/layout/cabeceras_portada.png) left 0 repeat-x;
+}
+
+#homecommunity .homebox .subheader {
+    background: url(../../images/layout/cabeceras_portada.png) left -26px repeat-x;
+}
+
+#homegamer .homebox .subheader {
+    background: url(../../images/layout/cabeceras_portada.png) left -52px repeat-x;
+}
+
+#homebazar .homebox .subheader {
+    background: url(../../images/layout/cabeceras_portada.png) left -78px repeat-x;
+}
+
+#home-news div {
+    background: url(../../images/layout/cabeceras_portada.png) left -104px no-repeat;
+}
+
+#home-articles div {
+    background: url(../../images/layout/cabeceras_portada.png) left -130px no-repeat;
+}
+
+#home-downloads div {
+    background: url(../../images/layout/cabeceras_portada.png) left -156px no-repeat;
+}
+
+#home-topics div {
+    background: url(../../images/layout/cabeceras_portada.png) left -260px no-repeat;
+}
+
+#home-polls div {
+    background: url(../../images/layout/cabeceras_portada.png) left -234px no-repeat;
+}
+
+#home-topfactions div {
+    background: url(../../images/layout/cabeceras_portada.png) left -286px no-repeat;
+}
+
+#home-factions div {
+    background: url(../../images/layout/cabeceras_portada.png) left -338px no-repeat;
+}
+
+#home-thefaction div {
+    background: url(../../images/layout/cabeceras_portada.png) left -312px no-repeat;
+}
+
+#home-blogs div {
+    background: url(../../images/layout/cabeceras_portada.png) left -182px no-repeat;
+}
+
+#home-outstanding div {
+    background: url(../../images/layout/cabeceras_portada.png) left -208px no-repeat;
+}
+
+#home-events div {
+    background: url(../../images/layout/cabeceras_portada.png) left -442px no-repeat;
+}
+
+#home-competitions div {
+    background: url(../../images/layout/cabeceras_portada.png) left -390px no-repeat;
+}
+
+#home-bets div {
+    background: url(../../images/layout/cabeceras_portada.png) left -364px no-repeat;
+}
+
+#home-demos div {
+    background: url(../../images/layout/cabeceras_portada.png) left -416px no-repeat;
+}
+
+#home-offtopics div {
+    background: url(../../images/layout/cabeceras_portada.png) left -468px no-repeat;
+}
+
+#home-sex div {
+    background: url(../../images/layout/cabeceras_portada.png) left -520px no-repeat;
+}
+
+#home-funthings div {
+    background: url(../../images/layout/cabeceras_portada.png) left -546px no-repeat;
+}
+
+#home-images div {
+    background: url(../../images/layout/cabeceras_portada.png) left -494px no-repeat;
+}
+
+#home-we-need {
+    background: url(../../images/layout/cabeceras_portada.png) left -364px no-repeat;
+}
+
+#home-xd div {
+    background: url(../../images/layout/cabeceras_portada.png) left -572px no-repeat;
+}
+
+#home-wallpapers div {
+    background: url(../../images/layout/cabeceras_portada.png) left -598px no-repeat;
+}
+
+#home-anime div {
+    background: url(../../images/layout/cabeceras_portada.png) left -624px no-repeat;
+}
+
+#home-diseno div {
+    background: url(../../images/layout/cabeceras_portada.png) left -728px no-repeat;
+}
+
+#home-cine div {
+    background: url(../../images/layout/cabeceras_portada.png) left -650px no-repeat;
+}
+
+#home-hardware div {
+    background: url(../../images/layout/cabeceras_portada.png) left -676px 	no-repeat;
+}
+
+#home-musica div {
+    background: url(../../images/layout/cabeceras_portada.png) left -702px 	no-repeat;
+}
+
+#home-estudiante div {
+    background: url(../../images/layout/cabeceras_portada.png) left -1066px 	no-repeat;
+}
+
+#home-questions div {
+    background: url(../../images/layout/cabeceras_portada.png) left -1092px 	no-repeat;
+}
+
+
+#home-seriestv div {
+    background: url(../../images/layout/cabeceras_portada.png) left -728px 	no-repeat;
+}
+
+#home-informatica div {
+    background: url(../../images/layout/cabeceras_portada.png) left -468px 	no-repeat;
+}
+
+#home-hw div {
+    background: url(../../images/layout/cabeceras_portada.png) left -676px 	no-repeat;
+}
+
+#home-deportes div {
+    background: url(../../images/layout/cabeceras_portada.png) left -1014px 	no-repeat;
+}
+
+#home-desarrollo div {
+    background: url(../../images/layout/cabeceras_portada.png) left -1040px 	no-repeat;
+}
+
+#home-newsgamer div {
+    background: url(../../images/layout/cabeceras_portada.png) left -754px 	no-repeat;
+}
+
+#home-results div {
+    background: url(../../images/layout/cabeceras_portada.png) left -780px 	no-repeat;
+}
+
+#home-inscribete div {
+    background: url(../../images/layout/cabeceras_portada.png) left -806px 	no-repeat;
+}
+
+#home-forosgamer div {
+    background: url(../../images/layout/cabeceras_portada.png) left -832px 	no-repeat;
+}
+
+#home-ladders div {
+    background: url(../../images/layout/cabeceras_portada.png) left -858px 	no-repeat;
+}
+
+#home-gamesplayednow div {
+    background: url(../../images/layout/cabeceras_portada.png) left -884px 	no-repeat;
+}
+
+#home-nextgames div {
+    background: url(../../images/layout/cabeceras_portada.png) left -910px 	no-repeat;
+}
+
+#home-outstanding-clan div {
+    background: url(../../images/layout/cabeceras_portada.png) left -936px 	no-repeat;
+}
+
+#home-esenciales div {
+    background: url(../../images/layout/cabeceras_portada.png) left -962px 	no-repeat;
+}
+
+#home-coverages div {
+    background: url(../../images/layout/cabeceras_portada.png) left -988px 	no-repeat;
+}
+
+
+.homebox .subheader div span {
+    display: none;
+    visibility: hidden;
+}
+
+#home-sex, #home-sex div {
+    display: block;
+    visibility: visible;
+}
+
+#home-sex #home-sex-title {
+    display: none;
+    visibility: hidden;
+}
+
+#homecontents .container li > a, #homecommunity .container li > a, #homegamer .container li > a, #homebazar .container li > a {
+    width: auto;
+}
+
+.homebox .screenshot {
+    margin: 5px 0;
+}
+
+.homebox .screenshot img {
+    border: 1px solid;
+}
+
+.homebox ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.homebox .content-hid2 li {
+    line-height: 24px;
+    clear: left;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.homebox .classifier {
+    margin-left: 3px;
+    padding-top: 4px;
+}
+
+.homebox .factions td.percent {
+    width: 50%;
+}
+
+.homebox.poll .option, 
+.faction-poll .option,
+#small-poll .option {
+    margin-left: 5px;
+}
+
+.homebox.poll .percent, 
+.faction-poll .percent,
+#small-poll .percent {
+    width: 98%;
+    margin-right: 5px;
+    margin-bottom: 10px;
+}
+
+.homebox .percent img, 
+.faction-poll .percent img,
+#small-poll .percent img {
+    height: 7px;
+}
+
+.homebox.articles li {
+    line-height: 100%;
+    margin-bottom: 10px;
+}
+
+.homebox.articles img {
+    border: 1px solid;
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+
+.daily-joy-babe, .daily-joy-dude, .daily-joy-void, .daily-joy-babe2, .daily-joy-dude2, .daily-joy-void2 {
+    display: inline;
+    width: auto;
+    cursor: pointer;
+}
+
+.daily-joy-babe img {
+    width: 16px;
+    height: 16px;
+    background: url(/skins/default/images/icons/sex.2.png) left top no-repeat;
+}
+
+.daily-joy-dude img {
+    width: 16px;
+    height: 16px;
+    background: url(/skins/default/images/icons/sex.2.png) -16px 0 no-repeat;
+}
+
+.daily-joy-void img {
+    width: 16px;
+    height: 16px;
+    background: url(/skins/default/images/icons/sex.2.png) -32px 0 no-repeat;
+}
+
+#ccontent a.daily-joy-babe2 img {
+    width: 16px;
+    height: 16px;
+	border: 0;
+    background: url(/skins/default/images/icons/sex.2.png) left -16px no-repeat;
+}
+
+#ccontent a.daily-joy-dude2 img {
+    width: 16px;
+    height: 16px;
+	border: 0;
+    background: url(/skins/default/images/icons/sex.2.png) -16px -16px no-repeat;
+}
+
+#ccontent a.daily-joy-void2 img {
+    width: 16px;
+    height: 16px;
+	border: 0;
+    background: url(/skins/default/images/icons/sex.2.png) -32px -16px no-repeat;
+}
+
+
+#homecontents .container, #homecommunity .container, #homegamer .container, #homebazar .container {
+    border-color: #DFDFDF;
+}
+
+#homecontents .subheader {
+    color: #ffffff;
+    border-color: #0B0060;
+}
+
+#homecontents .content-hid .alt1 a, body.contents .alt1 {
+    background-color: #F9F9FD;
+}
+
+#homecontents .content-hid .alt1 a:hover {
+    background-color: #EFEFFA;
+}
+
+#homecontents .content-hid .alt0 a:hover {
+    background-color: #F4F4FB;
+}
+
+
+
+#homecommunity .subheader {
+    color: #ffffff;
+}
+
+#homecommunity .content-hid .alt1 a, body.community .alt1 {
+    background-color: #FDF9F9;
+}
+
+#homecommunity .content-hid .alt1 a:hover {
+    background-color: #FAEFEF;
+}
+
+#homecommunity .content-hid .alt0 a:hover {
+    background-color: #FBF4F4;
+}
+
+#homecommunity .percent img,
+#small-poll .percent img,
+.faction-poll .percent img {
+    background-color: #AD0011;
+}
+
+#homegamer .subheader {
+    color: #ffffff;
+}
+
+#homegamer .content-hid .alt1 a, body.gamer .alt1 {
+    background-color: #F9FDF9;
+}
+
+#homegamer .content-hid .alt1 a:hover {
+    background-color: #EFFAEF;
+}
+
+#homegamer .content-hid .alt0 a:hover {
+    background-color: #F4FBF4;
+}
+
+#homegamer .percent img {
+    background-color: #228B29;
+}
+
+#homebazar .subheader {
+    color: #ffffff;
+}
+
+#homebazar .content-hid .alt1 a, body.contents .alt1 {
+    background-color: #fcf9fd;
+}
+
+#homebazar .content-hid .alt1 a:hover {
+    background-color: #f8effa;
+}
+
+#homebazar .content-hid .alt0 a:hover {
+    background-color: #fbf4fb;
+}
+
+#homecontents .content-hid li.new a {
+    background: url(../images/icons/content-hid-new-contents.png) left center no-repeat;
+}
+
+
+
+#home-factions td { padding-bottom: 10px; }

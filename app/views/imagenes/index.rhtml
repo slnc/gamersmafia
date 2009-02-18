@@ -1,0 +1,47 @@
+<% content_support do %>
+<% mftext('Últimas imágenes del día') do %>
+<ul class="sidelist images">
+<% cache("/#{@controller.portal_code}/imagenes/index/last_potds_#{Time.now.to_i/86400}") do %>
+<%  # TODO portal
+for im in Image.find_by_sql('SELECT a.* FROM images a JOIN potds b on a.id = b.image_id ORDER BY b.date DESC LIMIT 3') %>
+<li><%=render :partial => '/imagenes/image_thumbnail', :locals => {:image => im}%></li>
+<% end -%>
+<% end -%>
+</ul>
+  <div class="more"><a href="/imagenes/potds">Ver anteriores..</a></div>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Galerías') do %>
+
+<table>
+  <tr>
+    <th style="width: 75px;">Sección</th>
+    <th style="width: 90px;">Última</th>
+    <th>Últimas galerías actualizadas</th>
+    <th>Imágenes</th>
+  </tr>
+<% cache("/#{@controller.portal_code}/imagenes/index/galleries") do %>
+<% @categories.each do |category|
+    if category.children.size > 0 then %>
+  <tr class="<%=oddclass%>">
+    <td><%=link_to category.name, gmurl(category)%></td>
+    <td><% im_last = category.last_created_items(1)[0]
+      if im_last then
+      %>
+      <span class="screenshot"><%=link_to fc_thumbnail(im_last.file, 'f', '85x60', false), gmurl(im_last)%></span>
+     <% end %></td>
+    <td><% cats = category.last_updated(3)
+		cats.each do |subcategory| %>
+      <%=link_to subcategory.name, gmurl(subcategory)%> <span class="infoinline">(<%=subcategory.items_count%>)</span> <%=',' unless subcategory.id == cats.last.id%> 
+    <% end -%>
+    </td>
+    <td class="infoinline right"><%=category.items_count%></td>
+  <%    end %>
+  </tr>
+<% end -%>
+<% end -%>
+</table>
+<% end -%>
+<% end -%>

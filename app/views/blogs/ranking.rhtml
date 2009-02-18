@@ -1,0 +1,36 @@
+<% content_support do %>
+  <% mftext('¿Qué es la autoridad?') do %>
+	<p>La autoridad intenta representar la calidad y la repercusión de un blogger a partir de sus entradas. En la fórmula para calcular la autoridad se tiene en cuenta:</p>
+	<ul>
+		<li>número de entradas publicadas</li>
+		<li>valoración de dichas entradas</li>
+	</ul>
+	<% end -%>
+<% end -%>
+
+<% content_main do %>
+	<% mftext('Ranking de bloggers') do %>
+<table>
+	<tr>
+	<th class="w25">Pos.</th>
+    <th>Usuario</th>
+	<th class="w150">Autoridad</th>
+	<th class="w150">Entradas publicadas</th>
+	<th class="w150">Media lecturas/entrada</th>
+</tr>
+<% cache("/common/miembros/ranking/#{Time.now.to_i/21600}") do %>
+<% i = 1 %>
+<% Blogs.top_bloggers(:limit => :all).each do |u|%>
+<tr class="<%=oddclass%>">
+	<td><%=i%></td>
+    <td><a href="/blogs/<%=u.login%>"><%=u.login%></a></td>
+	<td><%=(Blogs.user_authority(u)*100).to_i.to_f / 100%></td>
+	<td><%=u.blogentries.count(:all, :conditions => "state = #{Cms::PUBLISHED}")%></td>
+	<td><%=User.db_query("select sum(hits_anonymous + hits_registered)/count(*) as media from blogentries where state = #{Cms::PUBLISHED} AND user_id = #{u.id}")[0]['media']%></td>
+</tr>
+<% i += 1
+end -%>
+<% end -%>
+</table>
+<% end -%>
+<% end -%>

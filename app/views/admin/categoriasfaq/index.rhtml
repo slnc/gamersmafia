@@ -1,0 +1,17 @@
+<% content_support do %><div class="subheader first"><div>Nueva categoría</div></div>
+<div class="centered-link"><strong><%= link_to 'Nueva categoría del FAQ', :action => 'new' %></strong></div>
+<% end %>
+<% content_main do %>
+<%mftext('Categorías del FAQ') do %>
+
+<table>  
+<% last_pos = User.db_query("SELECT COALESCE(max(position),0) as max FROM faq_categories")[0]['max'].to_i
+min_pos = User.db_query("SELECT COALESCE(min(position),0) as min FROM faq_categories")[0]['min'].to_i
+i = 1
+for faq_category in @faq_categories %>
+<%=render(:partial => 'faq_category_entry', :locals => { :faq_category => faq_category, :last_pos => last_pos, :min_pos => min_pos } )%> 
+<% i += 1
+end %>
+</table>
+<% end -%>
+<% end -%>

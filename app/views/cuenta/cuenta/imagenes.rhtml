@@ -1,0 +1,65 @@
+<div style="background: #fff;">
+  <script language="JavaScript">
+  function select_image(img_src)
+  {
+    var im = $j('#selectedImg');
+    im.attr('src', img_src);
+    $j('#must-select').addClass('hidden');
+    $j('#insertit').removeClass('hidden');
+    return false;
+  }
+
+  function insert_image()
+  {
+    var im = $j('#selectedImg');
+    var img_src = im.attr('src');
+
+    if (img_src == '')
+      return;
+	  
+	if (window.opener.SetUrl) 
+		window.opener.SetUrl(img_src);
+	else {
+		window.opener.wsEditorInsertImage('<%=params[:sEditorId]%>', img_src);
+		
+	}
+	window.close();
+  }
+  </script>
+  <div style="float: right; width: 180px;">
+  <h2>Insertar</h2>
+  <div id="must-select"> <p>No has seleccionado ninguna imagen.</p> </div>
+  <div id="insertit" class="hidden">
+    <img id="selectedImg" width="80" height="80" src="bl.gif" style="border: 1px solid #ccc;" />
+    <input type="button" class="button" onclick="insert_image();" value="Insertar Imagen" />
+  </div>
+  <br />
+  <br />
+  <h2>Subir al servidor</h2>
+  <p>Formatos admitidos: JPG, GIF y PNG. Si subes un archivo ZIP que contenga
+  imágenes éstas serán descomprimidas.</p>
+  <form method="post" action="/cuenta/cuenta/subir_imagen/?sEditorId=<%=params[:sEditorId]%>" enctype="multipart/form-data">
+  <input type="file" name="file" style="font-size: 10px;" /><br />
+  <input type="submit" class="button" value="Subir" />
+  </form>
+  </div>
+
+  <h2>Elegir</h2>
+  <div style="width: 250px; clear: left;">
+  <table>
+<% 
+fid = 0
+for f in @user.get_my_files 
+  if f.match(/\.(jpg|gif|png|jpeg)$/i) %>
+  <tr class="<%=oddclass%>" id="fid<%=fid%>">
+  	<td><a href="#" onclick="select_image('<%="#{@user.get_tmp_basedir}#{f}"%>');"><%=f%></a></td>
+	<td><%=link_to_remote('Borrar', :url => "/cuenta/imagenes/borrar?filename=#{File.basename(f)}&sEditorId=#{params[:sEditorId]}", :complete => "$j('#fid#{fid}').fadeOut('normal');")%></td></tr>
+<%
+ 
+  end
+fid += 1
+end
+%>
+  </table>
+  </div>
+</div>

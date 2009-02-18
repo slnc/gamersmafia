@@ -1,0 +1,104 @@
+<style type="text/css">
+	#netiquette li { margin-bottom: 15px; line-height: 15px; }
+	#netiquette ul { margin-bottom: 30px;} 
+</style>
+<div id="netiquette">
+<% content_support(:show_ads => false) do %>
+	<% mftext('Versión resumida') do %>
+		<p>No generes mal ambiente, comparte y disfruta.</p>
+	<% end 	%>
+	
+	<%mftext('La Cárcel') do %>
+	<div class="centered"><a href="/site/carcel"><img class="icon" src="/images/carcel.png" /></a></div>
+	<p><strong><strong><a href="/site/carcel"><% cache('/common/carcel') do %><%=User.count(:conditions => "state = #{User::ST_BANNED}")%><% end -%></strong> personas</a></strong> se pasaron de mafiosos y disfrutan de unas vacaciones con todos los gastos pagados.</p>
+	<% end -%>
+	
+	<%mftext('Infracciones') do %>
+	<p>En la <a href="/site/staff">sección de staff</a> de la web puedes encontrar a los responsables de los distintos apartados de la web a los que te animamos que informes de violaciones de este código.</p>
+	<% end -%>
+<% end %>
+
+<% content_main do %>
+	<% mftext('Código de conducta general') do %>
+<p>El incumplimiento de este código de conducta puede suponer la desactivación temporal o permanente de una cuenta. El desconocimiento de estas normas no exime de su cumplimiento.</p>
+
+<h2>Política general</h2>
+<p>Como usuario registrado de Gamersmafia y mientras te encuentres en ella te comprometes a no publicar, transmitir o facilitar la distribución de cualquier contenido, incluyendo texto, imágenes, sonido, archivos, información o software, que:</p>
+<ul>
+      <li>incite o manifieste racismo, xenofobia o discriminación sexual.
+
+      <li>trate de hacerse pasar por otro usuario.
+
+      <li>sea ilegal o viole leyes internacionales incluyendo pero no limitado a: pornografía infantil, software pirateado (warez) o propiedad intelectual que no te pertenezca.</li>
+
+      <li>esté pensado para amenazar, difamar, degradar, victimizar o intimidar a un usuario o a un grupo de usuarios por cualquier razón, incluídas edad, género, discapacidad, etnia, orientación sexual, raza o religión o incitar o promover a otros a hacerlo.</li>
+
+      <li>esté pensado para dañar, aprovecharse de fallos y vulnerabilidades o invadir el ordenador de otro usuario.</li>
+
+      <li>intente engañar a otros usuarios haciéndose pasar por otro usuario.</li>
+
+      <li>trate de explotar cualquier fallo o vulnerabilidad en cualquier parte de las webs de la red incluyendo pero no limitado a los sistemas de karma o de reputación de cualquier forma.</li>
+
+      <li>tenga intención de mofarse o de rebajar a los jugadores de un determinado juego.</li>
+      </ul>
+
+  <p>No se permiten los comentarios o contenidos cuyo tema principal sea la política ya que invariablemente enrarecen el ambiente y convierten la límpida y pura zona de comentarios en una orgía de insultos y malas vibraciones.</p>
+  
+  <p>Si un usuario cede su cuenta voluntariamente para su uso por un usuario baneado dicha cuenta será baneada aunque su dueño no sea el usuario baneado.</p>
+
+  <p>Gamersmafia es una comunidad con multitud de juegos por lo que es imperativo el respeto entre todos. Si un juego no te agrada puedes ocultarlo en las preferencias.</p>
+<p>&nbsp;</p>
+
+<h2>Política específica sobre comentarios</h2>
+<ul>
+      <li>Comentar masivamente para aumentar los puntos de karma está terminantemente prohibido.
+
+      <li>Los comentarios críticos tanto positivos como negativos son bien recibidos pero deben ser constructivos. Los comentarios críticos que no tengan una intención claramente constructiva serán eliminados.
+
+      <li>Los insultos o ataques personales contra otros usuarios no están permitidos.
+
+      <li>Se permite editar los propios comentarios hasta 10 minutos después de haber sido enviados por lo que publicar más de un comentario para corregir faltas o modificar opiniones ya expresadas no está permitido.
+
+      <li>Los comentarios deben estar en español/castellano. Los comentarios en otros idiomas serán eliminados.</li>
+
+      <li>Los comentarios a preguntas inocentes del tipo "búscalo en google" o "newbie" y similares serán eliminados.</li>
+      </ul>
+	<% end 	%>
+	
+	<%mftext('Código de conducta para miembros del staff') do %>
+	<p>Las siguientes acciones son delictivas y motivo de pérdida de poderes especiales. Si algun miembro del staff se extralimita por favor informar a su boss correspondiente o a <a href="http://<%=App.domain%>/site/staff">cualquiera de los capos</a>.</p>
+	<h2>Bosses y underbosses</h2>
+	<ul>
+    	<li>No actuar en beneficio de la facción de forma manifiesta (diciendo que no le importa mucho la facción) o de forma inmanifiesta (que se le detecte borrando contenidos, comentarios o actuando con mala fe desde el punto de vista de capos)</li>
+    	<li>Actuar de forma parcial. Ejemplo: en medio de un flame de un tópic en el que dos usuarios se están tirando los trastos editar o borrar los comentarios de uno y dejar el otro intacto.</li>
+    	<li>No dar razones o dar razones banales a la hora de banear o denegar contenidos que pasaron por la cola de moderación.</li>
+		<li>Ignorar o hacer mal uso de los eventos del log del sistema.</li>
+	</ul>
+	
+	<h2>Editores y sicarios</h2>
+	<ul>
+    	<li>Publicar contenidos que no cumplen los requisitos mínimos de calidad (noticias que son dos líneas, contenidos a categorías incorrectas, etc)
+		<li>Ignorar o hacer mal uso de los eventos del log del sistema.</li>
+	</ul>
+	
+	<h2>Moderadores y sicarios</h2>
+	<ul>
+    	<li>Borrar o editar comentarios o partes de comentarios que no incumplan el código de conducta y sin que haya una causa justificada.</li>
+    	<li>Editar comentarios de otras personas poniendo como razón de la modificación joyas del estilo: "me la comes" o "neo, para qué quieres un teléfono si no puedes hablar".</li>
+    	<li>Editar comentarios cambiando la opinión que quería expresar el autor (ejempl: cambiar "me gusta el juego A" a "no me gusta el juego A").</li>
+    	<li>Cerrar tópics "porque me da la gana" o "porque me apetece" o "porque no me gusta de lo que se habla". Para cerrar un tópic debe haber una causa seria justificada y debe ser la que se escriba como razón a la hora de cerrar un tópic.</li>
+    	<li>Quitar enlaces hacia otras webs cuando dicho enlace tenga relación. Ejemplo: se está hablando de un nuevo juego y alguien pone enlaces a reviews de dicho juego de otra página (aunque sea de webs españolas o de la competencia).</li>
+		<li>Ignorar o hacer mal uso de los eventos del log del sistema.</li>
+    	<li><strong>Cualquier impedimento a la participación y a la libre expresión de opiniones va contra las normas siempre y cuando no se esté violando este código de conducta.</strong></li>
+	</ul>
+	<%end -%>
+	
+<%mftext('Últimas palabras') do %>	
+<p>Cuando te comuniques a través de internet recomendamos que lo hagas de la forma más clara posible para evitar confusiones. La comunicación textual no da demasiado juego para interpretrar posibles dobles sentidos, ironías o sarcasmo. En caso de duda recomendamos usar el sentido común y tratar de ser lo más claro posible.</p>
+
+<p>Todo el staff de gamersmafia dedica parte de su tiempo libre a velar por el bienestar del proyecto. Estas normas no están para reducir la libertad de los usuarios sino para garantizar una convivencia y un respetuo común así como para protegerse de posibles amenazas para la web.</p>
+
+<p>Gamersmafia se reserva el derecho de modificar este código de conducta sin previo aviso.</p>
+<% end %>
+<% end %>
+</div>

@@ -1,0 +1,7 @@
+<% mftext('Nuevo mapa del juego') do %>
+
+<%= form_tag({:action => 'mapas_juegos_create'}, :multipart => true)%>
+  <%= render :partial => 'mapas_juegos_form' %>
+  <%= submit_tag "Crear" %>
+</form>
+<% end -%>

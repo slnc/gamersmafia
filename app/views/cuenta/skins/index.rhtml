@@ -1,0 +1,30 @@
+<% content_support do %>
+<% end -%>
+
+<% content_main do %>
+<%mftext('Crear tu skin') do %>
+<form method="post" action="/cuenta/skins/create">
+Nombre: <input type="text" class="text" name="skin[name]" /><br />
+Tipo: <select name="skin[type]">
+<option value="FactionsSkin">Skin de Facción</option>
+<option value="ClansSkin">Skin de Clan</option>
+</select>
+<br />
+<input type="submit" class="button" value="Crear" />
+</form>
+<% end -%>
+
+<%mftext('Mis skins') do %>
+<table>
+<%@user.skins.each do |skin| %>
+<tr class="<%=oddclass%>">
+    <td><a href="/cuenta/skins/edit/<%=skin.id%>"><%=skin.name%></a></td>
+    <td><%=skin.type%></td>
+    <td><%=skin.is_public?%></td>
+    <td><a href="/<%=skin.file%>">Descargar</a></td>
+    <td><a href="/cuenta/skins/destroy/<%=skin.id%>" onclick="return confirm('¿Estás seguro?');">Borrar</a></td>
+</tr>
+<% end -%>
+</table>
+<% end -%>
+<% end -%>

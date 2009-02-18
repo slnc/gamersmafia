@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title><%=@title%></title>
+  <link rel="alternate" type="application/xml" title="RSS" href="/rss/noticias" />
+  <link href="/stylesheets/gm.css?1" media="all" rel="Stylesheet" type="text/css" />
+  <%=javascript_includes %>
+</head>
+<body class="popup" style="margin: 30px; text-align: center;">
+  <div id="content">
+    <%= @content_for_layout %>
+  </div>
+  <script type="text/javascript">cfgPage(<%=user_is_authed%>, contents, '<%=controller.controller_name%>', '<%=controller.action_name%>', '<%=params[:id]%>'<%= params['_xnvi'] ? ", '#{params['_xnvi']}'" : ', undefined'%><%= params['_xab'].size > 0 ? ", '#{CGI::escape(params['_xab'].to_json)}'" : ', undefined'%><%= params['_xad'].size > 0 ? ", '#{CGI::escape(params['_xad'].to_json)}'" : ', undefined'%>);</script>
+</body>
+</html>

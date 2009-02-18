@@ -1,0 +1,48 @@
+<% content_support(:show_ads => false) do %>
+<% mftext('Partners y sponsors') do %>
+<div class="centered">
+	<a href="/site/sponsors/atlassian"><img class="icon" src="/images/atlassian.jpg" /></a><br /><br />
+	<a href="/site/sponsors/fourfrags"><img class="icon" src="/images/sponsors/fourfrags.jpg" /></a><br /><br />
+	<a href="/site/sponsors/nls"><img class="icon" src="/images/sponsors/nls.jpg" /></a>
+</div>
+<% end -%>
+
+<% mftext('Aquellos maravillosos años') do %>
+<div class="centered">
+<a title="Ir al álbum de fotos" href="/site/album"><img style="border: 0;" src="/images/history/<%=Dir.entries("#{RAILS_ROOT}/public/images/history").collect { |e| e if  /thumb\-/ =~ e }.compact.sort.rand%>" /></a>
+</div>
+<% end -%>
+
+
+<% if nil then %>
+<% mftext('Gamersmafia Alumni') do %>
+<p>Gamersmafia ha llegado a donde está gracias a muchísimas personas. En <a href="/site/alumin">Gamersmafia Alumni</a> queremos dejar constancia de quienes más han aportado pero ya se han retirado de Gamersmafia.</p>
+<% end -%>
+<% end -%>
+<% end -%>
+
+
+<% content_main do %>
+<% mftext('Acerca de Gamersmafia') do %>
+<img src="/images/i_gm.png" style="float: right; "/>
+<p>Tenemos una sencilla misión: conectar a todos los gamers de habla hispana y promover los videojuegos.</p>
+<br />
+
+<h2>Gamersmafia en 4 palabras</h2>
+
+<p style="margin-bottom: 30px;"><div style="margin-bottom: 5px; font-size: 24px; font-weight: bold; color: #ce0202;">Abierta</div>
+Entre nuestras filas hay gamers retirados y gamers que prácticamente llevan todavía el biberón colgando. En cuanto a juegos cubrimos desde videoconsolas familiares hasta juegos competitivos como la serie Call of Duty, Unreal Tournament o Medal of Honor.</p>
+
+<p style="margin-bottom: 30px;"><div style="margin-bottom: 5px; font-size: 24px; font-weight: bold; color: #ce0202;">Divertida</div>
+Ya que los videojuegos son divertidos una web sobre videojuegos también debería serlo.</p>
+
+<p style="margin-bottom: 30px;"><div style="margin-bottom: 5px; font-size: 24px; font-weight: bold; color: #ce0202;">Social</div>
+Antes que una web de noticias, de información o unos foros somos una comunidad y por ello luchamos por mantener un ambiente agradable y ofrecer un abanico de posibilidades para conectar e interactuar con otros gamers.</p>
+
+<p style="margin-bottom: 30px;"><div style="margin-bottom: 5px; font-size: 24px; font-weight: bold; color: #ce0202;">Experimentada</div>
+Algunas de las facciones que forman Gamersmafia se formaron hace más de 10 años lo que nos convierte en una de las comunidades más veteranas.</p>
+
+<h2 style="margin-top: 40px;">Más información</h2>
+<p>Si quieres saber más sobre nosotros te recomendamos <a href="/site/faq">nuestro FAQ</a>.</p>
+<% end %>
+<% end %>

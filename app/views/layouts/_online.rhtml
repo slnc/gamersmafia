@@ -1,0 +1,46 @@
+<% mftext('Usuarios online', :id => 'mgonline') do %>
+        <div id="online-info"><div id="online-detail"></div>
+<%
+# cacheamos la info de users online durante 60 secs
+cache("/site/_online_state/stats/#{Time.now.to_i/60}") do
+online_stats = Stats::online_users 
+@anon = online_stats['anonymous'].to_i
+@reg = online_stats['registered'].to_i
+total = @anon + @reg
+# necesario porque actualizamos user online _después_ de pintar la página para evitar contar webcrawlers ya que se pide por jscript
+if total == 0 then
+  total = 1
+  user_is_authed ?  @reg = 1 : @anon = 1
+end
+%>
+<div class="users-online infoinline"><strong><%=total unless total == 1%></strong> online</div>
+<div class="righta"><%=link_to "WebChat", {:controller => '/site', :action => 'online'}, :class => 'nav', :title => 'Ver detalles y mini-chat' %> &nbsp;</div>
+<%=draw_pcent_bar(@reg.to_f / total, "#{(@reg.to_f / total*100).to_i}% registrados / #{(@anon.to_f / total*100).to_i}% anónimos")%>
+<% end -%>
+
+<% if user_is_authed then
+  cache("/site/_online_state/stats/friends_#{@user.id}_#{Time.now.to_i/60}") do
+  friends = @user.friends_online %>
+    <br />
+	<div style="text-align: center; margin-bottom: 10px;"><a href="/cuenta/amigos"><img class="icon" src="/skins/default/images/btn_add_amigo.png" /></a></div>
+    <table>
+    <tr>
+      <td style=""></td>
+    </tr>
+<% for friend in friends %>
+      <tr class="<%=oddclass%>">
+        <td><%=link_to friend.login, gmurl(friend)%></td>
+      </tr>
+    <% end -%>
+</table>
+  <% if friends.size == 0 then %>
+
+  <% end -%>
+  <% end # cache
+end -%>
+
+<% cache("/site/_online_state/stats_registered/#{Time.now.to_i/1440}") do %>
+  <div class="users-registered"><strong><%=User.count(:conditions => "state not in (#{[User::ST_DELETED, User::ST_UNCONFIRMED_1W, User::ST_UNCONFIRMED_2W, User::ST_UNCONFIRMED].join(',')})")%></strong> mafiosos</div>
+<% end -%>
+      </div>
+<% end -%>

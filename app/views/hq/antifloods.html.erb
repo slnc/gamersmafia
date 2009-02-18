@@ -1,0 +1,13 @@
+<table>
+	<tr>
+		<th>Usuario</th>
+	</tr>
+	
+	<%User.find(:all, :conditions => "state in (#{User::STATES_CAN_LOGIN.join(',')}) AND antiflood_level > 0", :order => 'lower(login)').each do |u| %>
+	<tr class="<%=oddclass%>">
+		<td><%=user_link(u)%></td>
+	</tr>
+	<% end -%>
+</table>
+<br />
+<a href="/slog/capo">&laquo; Volver</a>

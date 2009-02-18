@@ -1,0 +1,17 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Coverage } if user_is_authed %>
+<%= render :partial => 'shared/pending', :object => Coverage.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Nuevo coverage') do %>
+
+<%= form_tag :action => 'create' %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Crear' %>
+</form>
+
+<br />
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

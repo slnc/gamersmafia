@@ -1,0 +1,26 @@
+<div class="facebox-title">Recomendar este contenido a un amigo</div>
+
+<div class="facebox-content">
+<div id="aaa"></div>
+<% content = Content.find(params[:content_id]) %>
+<%=form_remote_tag({:update => 'aaa', :url => "/site/do_recommend_to_friend/#{params[:id]}", :evalScripts => true})%>
+<input type="hidden" name="content_id" value="<%=content.id%>" />
+<select name="friends[]" id="friend_user_id" multiple="multiple" style="height: 80px;">
+	<%@user.friends.each do |f| %>
+	<option value="<%=f.id%>"><%=f.login%></option>
+	<% end -%>
+</select>
+<div class="infoinline">Mantén pulsada la tecla <strong>Control</strong> para seleccionar más de un amigo.</div>
+<br />
+<input type="text" class="w100pc text virgin" id="report-user-reason" name="reason" value="Comentario (opcional)" /><br />
+<br />
+<input type="submit" value="Recomendar" />
+<input type="button" value="Cancelar" onclick="closeFacebox();" />
+</form>
+<script type="text/javascript">
+  $j('#report-user-reason').val("Comentario (opcional)").one('click', function(){
+    $j(this).val("").removeClass('virgin');
+  });
+  $j('#friend_user_id').focus();
+</script>
+</div>

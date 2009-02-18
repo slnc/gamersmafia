@@ -1,0 +1,2 @@
+class SoldBroadcastMessage < SoldProduct
+end

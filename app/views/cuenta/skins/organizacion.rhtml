@@ -1,0 +1,63 @@
+<script type="text/javascript">
+	function set_page_width(mode) {
+    var d = document.getElementById('cpagein');
+    if (mode == '760')
+        d.className = 'w760';
+    else if (mode == '984')
+            d.className = 'w984';
+            else
+            d.className = 'w100pc';
+}
+</script>
+
+<% content_main do %>
+<% mftext('Organización') do %>
+<form method="post" action="/cuenta/skins/do_organizacion">
+	<input type="hidden" name="id" value="<%=params[:id]%>" />
+Anchura de la web: <select name="skin[intelliskin][page_width]" onchange="set_page_width(this.value);">
+<option value="760" <%='selected="selected"' if @skin.config[:intelliskin][:page_width] == '760'%>>Ancho fijo a 760px (800x600)</option>
+<option value="984" <%='selected="selected"' if @skin.config[:intelliskin][:page_width] == '984'%>>Ancho fijo a 984px (1024x768)</option>
+<option value="100pc" <%='selected="selected"' if @skin.config[:intelliskin][:page_width] == '100pc'%>>Ancho dinámico</option>
+</select>
+
+<script type="text/javascript">
+function set_sidebar_pos() {
+    set_num_columns($j('#lynumcolumns').val());
+}
+
+function set_num_columns(num) {
+	document.body.className = document.body.className.replace('lycolumns2-left', '');
+	document.body.className = document.body.className.replace('lycolumns2-right', '');
+	document.body.className = document.body.className.replace('lycolumns3', '');
+	
+	if (parseInt(num) == 2) {
+		//hideblock('cright');
+		// showblock('cleft');
+		// assume pos is left
+		showblock('selside');
+		document.body.className = document.body.className + ' lycolumns2-'+$j('#lyside').val();
+	}
+	else { // 3
+		hideblock('selside');
+		//showblock('cleft');
+		//showblock('cright');
+		document.body.className = document.body.className + ' lycolumns3';
+	}
+}
+</script>
+<br />
+Columnas: <select id="lynumcolumns" name="skin[intelliskin][lycolumns]" onchange="set_num_columns(this.value);">
+<option value="2" <%='selected="selected"' if @skin.config[:intelliskin][:lycolumns] == '2'%>>2</option>
+<option value="3" <%='selected="selected"' if @skin.config[:intelliskin][:lycolumns] == '3'%>>3</option>
+</select>
+
+<div id="selside">
+Mostrar columna en: <select id="lyside" name="skin[intelliskin][lyside]" onchange="set_sidebar_pos();">
+<option value="left" <%='selected="selected"' if @skin.config[:intelliskin][:lyside] == 'left'%>>izquierda</option>
+<option value="right" <%='selected="selected"' if @skin.config[:intelliskin][:lyside] == 'right'%>>derecha</option>
+</select>
+</div>
+<input type="submit" class="button" value="Guardar" />
+</form>
+<% end %>
+<% end %>

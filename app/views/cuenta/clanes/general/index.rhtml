@@ -1,0 +1,60 @@
+<% content_support do %>
+  <% if @clan && @clan.user_is_clanleader(@user.id) then %>
+  <% if (not @clan.website_activated?) then %>
+        <%mftext('Activar página web') do %>
+        <% if @user.sold_products.count(:conditions => "product_id = #{Product.find_by_cls('SoldClanWebsite').id} AND used is false") > 0 then %>
+        <div class="centered-link"><a href="/cuenta/clanes/general/activate_website" onclick="return confirm('¿Estás seguro de que deseas la página web para el clan <%=@clan.name%>');">Activar</a></div>
+        <% else %>
+        <p>Si quieres activar la página web para tu clan debes comprar una "Web de clan" en la <a href="/cuenta/tienda">tienda</a>.</p>
+      <% end -%>
+	  <% end #mftext -%>
+	<% else %>
+	<%mftext('Página web') do %>
+		<div class="centered-link"><a href="http://<%="#{@clan.clans_portals.find(:first).code}.#{App.domain}"%>">Visitar</a></div>
+    <% end -%>
+	<% end -%>
+<% end -%>
+
+    <% if @clan && (@clan.admins.size > 1 || !@clan.user_is_clanleader(@user.id)) then %>
+    <%mftext('Abandonar el clan') do %>
+    <p class="centered"><a onclick="return confirm('¿Estás seguro de que no deseas seguir perteneciendo a este clan?');" href="/cuenta/clanes/general/abandonar?clan_id=<%=@clan.id%>">Abandonar el clan <%=@clan.name%></a></p>
+	<% end -%>
+    <% elsif @clan && @clan.user_is_clanleader(@user.id) then %>
+    <%mftext('Borrar el clan') do %>
+    <p class="centered"><a onclick="return confirm('¿Estás seguro de que deseas eliminar este clan?');" href="/cuenta/clanes/general/borrar?clan_id=<%=@clan.id%>">Borrar el clan <%=@clan.name%></a></p>
+	<% end -%>
+  <% end -%>
+<% end %>
+
+<% content_main do %>
+  <% mftext('Mis clanes') do %>
+  <p>
+<%=clan_switcher%>
+</p>
+<p>Para crear un clan elige la opción "Crear nuevo clan" del menú desplegable.</p>
+<% end -%>
+
+<% if @clan then %>
+<br />
+<br />
+<% mftext(@clan.name) do %>
+<% if @clan.logo then %><div class="clanlogo"><img src="<%=ASSET_URL%>/cache/thumbnails/k/250x250/<%=@clan.logo%>"></div><% end -%>
+<table>
+<tr class="<%=oddclass%>">
+	<td class="w200">Miembros</td>
+	<td><%=(@clan.members.collect { |u| u.id } + @clan.admins.collect { |u| u.id }).uniq.size%> miembros</td>
+</tr>	
+<tr class="<%=oddclass%>">
+	<td>Saldo de la cuenta del clan</td>
+	<td><%=@clan.cash%> <%=gmd12%></td>	
+</tr>
+<tr class="<%=oddclass%>">
+	<td>Competiciones activas</td>
+	<td><ul class="skeletal"><%Competition.find_active_and_related_with_clan(@clan.id).each do |comp| %>
+	<li><a href="/competiciones/show/<%=comp.id%>"><%=comp.name%></a></li>
+	<% end -%></ul></td>
+</tr>	
+</table>
+<% end -%>
+<% end -%>
+<% end -%>

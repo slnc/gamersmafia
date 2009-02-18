@@ -1,0 +1,10 @@
+.wsEditorToolbar input {
+    cursor: pointer;
+    border: 0;
+    width: 20px;
+    height: 20px;
+}
+
+.button.selectable {
+    cursor: pointer;
+}

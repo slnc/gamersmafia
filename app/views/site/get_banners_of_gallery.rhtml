@@ -1,0 +1,20 @@
+<%
+groups_on = false
+@banners.each do |ban|
+  next unless ban.match(/(.+)_([0-9]+x[0-9]+)\.(jpeg|gif|png)/)
+  if ban.count('_') > 1
+    groups_on = true
+    break
+  end
+end
+
+prev = nil
+@banners.each do |ban|
+  next unless ban.match(/(.+)_([0-9]+x[0-9]+)\.(jpeg|gif|png)/)
+  if groups_on && prev && prev.split('_')[0] != ban.split('_')[0] then %>
+  <div style="clear: left; margin-bottom: 15px;">&nbsp;</div>
+<% end %>
+<div style="float: left; text-align: center; margin: 2px 7px;"><a href="" onclick="return select_banner(this);"><img src="/images/banners/<%=params[:gallery]%>/<%=ban%>" /></a><br />
+<span class="infoinline"><%=ban.gsub(/(_[0-9]+x[0-9]+\.(jpeg|gif|png))/, '')%> <%=ban.match(/(.+)_([0-9]+x[0-9]+)\.(jpeg|gif|png)/)[2]%></span></div>
+<% prev = ban
+end -%>

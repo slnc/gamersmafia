@@ -1,0 +1,10 @@
+<%mftext('Iniciar ban') do %>
+
+<form method="post" action="/admin/usuarios/create_ban_request">
+<input type="hidden" name="login" value="<%=params[:login]%>" />
+Razón:<br />
+<textarea style="width: 80%; height: 200px;" name="reason"></textarea><br />
+<br />
+<input type="submit" class="button" value="Banear" onclick="return confirm('¿Estás seguro?')"/>
+</form>
+<% end -%>

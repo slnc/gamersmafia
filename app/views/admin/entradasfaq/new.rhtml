@@ -1,0 +1,9 @@
+<h1>Nueva entrada de FAQ</h1>
+
+<%= form_tag :action => 'create' %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Crear' %>
+</form>
+
+<br />
+<%= link_to 'Volver', :action => 'index' %>

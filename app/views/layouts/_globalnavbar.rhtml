@@ -1,0 +1,74 @@
+<div id="mggnav">
+	<% if user_is_authed then %>
+	<div style="float: right; font-size: 11px; padding: 2px 10px 0 0;"><a class="nav" onclick="return confirm('¿Estás seguro?');" href="/cuenta/logout">logout</a></div>
+	<% end -%>
+	<ul>
+             <li id="mggnav-gm"><a href="http://<%=App.domain%>/">gamersmafia.com</a></li>
+             <li id="mggnav-factions"><a onclick="return showFactionsList();" href="">Facciones</a></li>
+             <li id="mggnav-competition"><a title="Ladders, torneos y ligas online" href="http://arena.<%=App.domain%>/">Arena</a></li>
+             <li id="mggnav-bazar"><a title="La zona oscura de Gamersmafia" href="http://bazar.<%=App.domain%>/">Bazar</a></li>
+             <li id="mggnav-clans"><a onclick="showClansList(); return false;" href="">Clanes</a></li>
+			 <% if user_is_authed && @user.is_hq? then %><li id="mggnav-hq"><a onclick="showHqList(); return false;" href="">HQ</a></li><% end -%>
+			 <% if 1 == 0 && user_is_authed then 
+				  cache("/common/globalnavbar/#{@user.id % 1000}/#{@user.id}_clans") do
+					@user.clans.each do |clan| 
+						next if clan.website_activated%>
+					<li class="mggnav-clan"><a target="_blank" href="<%=clan.website%>"><%=clan.tag%></a></li>
+					<% end %>
+			 <% end # cache
+				end -%>
+           </ul>
+		   <div id="mggnav-factions-list">
+		   	<% if user_is_authed then %><div id=""><a href="/cuenta/tienda/9">Nueva facción</a></div><% end -%>
+		   	<table id="mggnav-games-list">
+		   		<tr colspan="3">
+		   			<td>Juegos</td>
+		   		</tr>
+		   	</table>
+			<div id="mggnav-see-all-games" class=""><a href="http://<%=App.domain%>/facciones">Ver todos..</a></div>
+			<div id="mggnav-see-all-platforms" class=""><a href="http://<%=App.domain%>/facciones">Ver todas..</a></div>
+			<table id="mggnav-platforms-list">
+		   		<tr>
+		   			<td>Plataformas</td>
+		   		</tr>
+		   	</table>
+		   </div>
+		   
+		   <% if user_is_authed && @user.is_hq? then %>
+		   <div id="mggnav-hq-list">
+		   	<table>
+		   		<tr>
+		   			<td><a title="Gestor de incidencias" href="http://hq.gamersmafia.com/"><img class="icon" src="/images/jira.png" /> JIRA</a></td>
+				</tr>
+				<tr>
+					<td><a href="http://hq.gamersmafia.com/confluence"><img class="icon" src="/images/confluence.png" /> Wiki</a></td>
+				</tr>
+				<tr>
+					<td><a style="padding-left: 19px;" href="http://<%=App.domain%>/site/stats_hipotesis">Experimentos</a></td>
+				</tr>
+		   	</table>
+		   	</div>
+		   <% end -%>
+		   
+		   <div id="mggnav-clans-list">
+		   	<table>
+		   		<tr>
+		   			<td>Los + visitados</td>
+		   		</tr>
+		   	</table>
+			<div id="mggnav-see-all-clans" class=""><a href="http://<%=App.domain%>/clanes">Ver todos..</a></div>
+		   </div>
+		   <script type="text/javascript">
+		   	<% cache("/common/gnav/#{Time.now.strftime('%Y-%m-%d')}") do %>			
+<%			a = {}
+			a2 = {}
+			a3 = {}
+			Portal.find(:all, :conditions => "code IN (select code from games)", :order => 'cache_recent_hits_count desc', :limit => 18).each { |g| a[g.code] = truncate(g.name, 21, '..')}
+			Portal.find(:all, :conditions => "code IN (select code from platforms)", :order => 'cache_recent_hits_count desc', :limit => 6).each { |g| a2[g.code] = truncate(g.name, 21, '..')}
+			Portal.find(:all, :conditions => "clan_id IS NOT NULL", :order => 'cache_recent_hits_count desc', :limit => 24).each { |g| a3[g.code] = truncate(g.name, 23, '..')}
+%>			
+			setupFactionsList(<%=a.to_json%>, <%=a2.to_json%>, <%=a3.to_json%>);
+			<% end -%>
+		   </script>
+</div>
+<%= render :partial => '/shared/dbstats' if App.enable_dbstats? %>

@@ -1,0 +1,228 @@
+<form method="post" action="/admin/usuarios" style="clear:left;">
+  <input size="20" type="text" class="text" name="s" />
+  <input type="submit" class="button" name="search" value="Buscar" /> <span class="infoinline">"m%@hotmail.com" encontrará "mike@hotmail.com" y "mik666@hotmail.com"</span>
+</form>
+
+<% content_support do %>
+  <div style="text-align: centered;"><a href="/admin/usuarios/send_hq_invitation/<%=@edituser.id%>" onclick="return confirm('¿Seguro?');">Invitar al HQ</a></div>
+  <div class="subheader first"><div>General</div></div>
+  <div class="centered-link infoinline"><a href="<%=gmurl(@edituser)%>">Ver ficha pública</a></div>
+  <table>
+    <tr>
+      <td class="infoinline">Registro:</td>
+      <td class="infoinline"><%=print_tstamp(@edituser.created_on)%><div id="check_registered_on"><%=link_to_remote('check', :update => 'check_registered_on', :url => "/admin/usuarios/check_registered_on/#{@edituser.id}")%></div></td>
+    </tr>
+	<tr>
+      <td class="infoinline">Bans globales:</td>
+      <td class="infoinline"><%=@edituser.global_bans%></td>
+    </tr>
+	<tr>
+      <td class="infoinline">Facciones en las que está baneado:</td>
+      <td class="infoinline"><%=@edituser.factions_banned_users.count%></td>
+    </tr>
+    <tr>
+      <td class="infoinline">Último acceso:</td>
+      <td class="infoinline"><%=print_tstamp(@edituser.lastseen_on)%></td>
+    </tr>
+    <tr>
+      <td class="infoinline">Última ip:</td>
+      <td class="infoinline"><%=@edituser.ipaddr%></td>
+    </tr>
+    <tr>
+      <td class="infoinline">Karma:</td>
+      <td class="infoinline"><div id="check_karma"><%=draw_karma_bar_sm(@edituser)%><%=link_to_remote('check', :update => 'check_karma', :url => "/admin/usuarios/check_karma/#{@edituser.id}")%></div></td>
+    </tr>
+    <tr>
+      <td class="infoinline">Fe:</td>
+      <td class="infoinline"><div id="check_faith"><%=draw_faith_bar_sm(@edituser)%><%=link_to_remote('check', :update => 'check_faith', :url => "/admin/usuarios/check_faith/#{@edituser.id}")%></div></td>
+    </tr>
+    <tr>
+      <td class="infoinline"><%=gmd12%></td>
+      <td class="infoinline"><div id="check_gmf"><%=@edituser.cash%> <%=gmd10%> <%=link_to_remote('check', :update => 'check_gmf', :url => "/admin/usuarios/check_gmf/#{@edituser.id}")%></div></td>
+    </tr>
+  </table>
+
+  Avatar: <img class="avatar" src="<%=ASSET_URL%><%=@edituser.show_avatar%>" /><br />
+
+  <div class="centered-link"><form method="post" action="/admin/usuarios/reset_avatar"><input type="hidden" name="id" value="<%=@edituser.id%>" /><input type="submit" class="button" value="Resetear" onclick="return confirm('¿Estás seguro?');" /></form></div>
+    <br />
+  <br />
+
+  <div class="subheader"><div>Comentarios al día</div></div>
+  <table>
+    <% for dbc in User.db_query("select count(id), date_trunc('day', created_on) from comments where deleted = \'f\' AND user_id = #{@edituser.id} group by  date_trunc('day', created_on) order by date_trunc('day', created_on) desc LIMIT 14") 
+        d = dbc['date_trunc']
+        t = Time.local(d[0..3], d[5..6], d[8..9])
+    %>
+    <tr class="<%=oddclass%>">
+      <td><%=dbc['count']%></td>
+      <td class="timestamp"><%=print_tstamp(t, 'date')%></td>
+    </tr>
+    <% end -%>
+  </table>
+    
+
+  <div class="subheader"><div>Referidos</div></div>
+  <ul class="sidelist">
+    <% for u in User.find(:all, :conditions => ['referer_user_id = ?', @edituser.id]): %>
+    <li><%=member_state(u.hstate)%> <a href="/admin/usuarios/edit/<%=u.id%>"><%=u.login%></a></li>
+<% end -%>
+  </ul>
+
+  <div class="subheader"><div>Su nivel de moderación</div></div>
+  <%= render :partial => '/miembros/publishing_experience', :locals => { :curuser => @edituser, :detailed => true } %>
+<% end -%>
+
+<% content_main do %>
+<%mftext(@edituser) do %>
+<table>
+<tr><td>
+
+ <%= form_tag({:action=> "update" }, :multipart => true, :onSubmit => "Toggle.display('edituser_spinner')") %>
+ <input type="hidden" name="id" value="<%=@edituser.id%>" />
+
+  <% if flash['notice'] %>
+  <div class="Message">
+  <%= flash['notice'] %>
+  </div>
+  <% end %>
+
+  <% @edituser and if error_messages_for 'edituser' %>
+  <div class="Message"><%= error_messages_for 'edituser' %></div>
+  <% end %>
+
+	<div id="edituserinfo"></div>
+
+<table cellpadding="3" cellspacing="3" border="0" class="signup">
+
+
+<tr><td>
+	<label for="edituser_login">Usuario</label>
+</td><td>
+  <%= text_field "edituser", "login", :size => 20, :class=>"textform" %>
+</td>
+</tr>
+
+<tr>
+  <td><label for="edituser_password">Password</label></td>
+  <td><input type="password" size="20" name="edituser[password]" /></td>
+</tr>
+
+
+<tr><td>
+  <label for="edituser_passwordconfirmation">Password (repetir)</label>
+</td>
+  <td><input type="password" size="20" name="edituser[password_confirmation]" /></td>
+</tr>
+
+<tr>
+   <td>
+      <label for="edituser_email">email</label>
+   </td>
+   <td>
+      <%= text_field "edituser", "email", :size => 20, :class => "text form" %>
+   </td>
+</tr>
+
+<% if not @edituser.newemail.nil? %>
+<tr>
+   <td>
+      New email address waiting
+   </td>
+   <td>
+      <%= @edituser.newemail %>
+   </td>
+</tr>
+<% end %>
+
+  <tr>
+   <td><label for="post_confirmed">Estado de la cuenta:</label></td>
+   <% user_state = @edituser.state %>
+   <td><select name="edituser[state]">
+   	<% User::HSTATES.each do |st| %>
+       <option <%=user_state == User.const_get("ST_#{st.upcase}") ? 'selected="selected"' : ''%> value="<%=User.const_get("ST_#{st.upcase}")%>"><%=st%></option>
+	   <% end -%>
+     </select></td>
+  </tr>
+<tr><td colspan="2">
+<hr width="200"/>
+</td></tr>
+
+<tr><td>&nbsp;</td>
+<td>
+  <input type="submit" class="button primary" value="Guardar" />
+<%= image_tag("spinner.gif", :align => 'absmiddle', :border=> 0, :id=>"edituser_spinner", :style=>"display: none;" ) %>
+</td></tr>
+
+</table>
+
+<td><td valign="top">
+  <table>
+    <tr>
+       <td><label for="post_confirmed">¿Es miembro de HQ?</label></td>
+       <td><%=check_box "edituser", "is_hq"%></td>
+    </tr>
+<tr>
+       <td><label for="post_confirmed">Permisos de admin</label></td>
+       <td>
+<%=input "edituser", "admin_permissions"%><br /> <% User::ADMIN_PERMISSIONS_INDEXES.values.sort.each do |v| %><%=User::ADMIN_PERMISSIONS_INDEXES.index(v)%>, <%end%><br />
+</td>
+    </tr>
+	<tr>
+	<td><label for="post_confirmed">Roles</label></td>
+	<td>
+		<table>
+		<% @edituser.users_roles.find(:all, :order => 'role, role_data').each do |role| %>
+		<tr class="<%=oddclass%>" id="users_role<%=role.id%>">
+			<td><%=role.role%></td>
+			<td><%=role.role_data%></td>
+			<td><%=link_to_remote 'del', :url => "/admin/usuarios/users_role_destroy/#{role.id}&aj=1", :confirm => '¿Estás seguro de que deseas cancelar esta invitación?', :complete => "$j('#users_role#{role.id}').fadeOut('normal');"%></td>
+		</tr>
+		<% end -%>
+	</table>
+	
+	Añadir rol<br />
+	<select name="users_role[role]">
+		<option value=""></option>
+		<%=options_for_select(UsersRole::VALID_ROLES.collect { |r| [r, r] } )%>
+	</select>
+	<input type="text" class="text" name="users_role[role_data]" />
+	<input type="submit" class="button submit" value="Añadir" />
+	</td>
+	</tr>
+<tr>
+<td><label for="post_faction_id">Facción</label></td>
+<td>      <%= collection_select :edituser, :faction_id, Faction.find(:all, :order => 'lower(name) ASC'), :id, :name, {:include_blank => true} %></td>
+</tr>
+  </table>
+
+</td></tr>
+</table>
+
+</form>
+<br />
+<br />
+
+<div class="subheader"><div>Movimientos de dinero</div></div>
+<%= render :partial => '/shared/cash_movements', :locals => { :entity => @edituser } %>
+
+<div class="subheader"><div>Últimos 50 comentarios</div></div>
+
+<a name="comments"></a>
+<form method="post" action="/admin/usuarios/del_comments" >
+<input type="hidden" name="user_id" value="<%=@edituser.id%>" />
+<table>
+	<tr>
+		<th class="checkbox"><input type="checkbox" onclick="slnc.checkboxSwitchGroup(this);" /></th><th>Seleccionar todos</th>
+	</tr>
+<%@edituser.comments.find(:all, :conditions => 'deleted = \'f\'', :order => 'comments.created_on DESC', :limit => 50, :include => :content).each do |comment| %>
+	<tr class="<%=oddclass%>">
+		<td class="w25"><input type="checkbox" name="comments[]" value="<%=comment.id%>" /></td>
+		<td class="w150 infoinline"><strong><a href="<%=get_url(comment.content.real_content)%>"><%=comment.content.name[0..25]%></a></strong><br /><%=print_tstamp(comment.created_on)%></td><td><%=strip_tags(comment.comment[0..100]).gsub('<br />', ' ')%></td>
+	</tr>
+	<% end -%>
+</table>
+<input type="submit" class="button" value="Borrar" onclick="return confirm('¿Estás seguro de BORRAR todos los comentarios?');" />
+</form>
+<% end -%>
+<% end -%>

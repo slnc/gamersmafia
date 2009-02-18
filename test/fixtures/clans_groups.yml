@@ -1,0 +1,22 @@
+first:
+  id: 1
+  name: clanleaders
+  clan_id: 1
+  clans_groups_type_id: 1
+second:
+  id: 2
+  name: members
+  clan_id: 1
+  clans_groups_type_id: 2
+
+third:
+  id: 3
+  name: clanleaders
+  clan_id: 2
+  clans_groups_type_id: 1
+fourth:
+  id: 4
+  name: members
+  clan_id: 2
+  clans_groups_type_id: 2
+  

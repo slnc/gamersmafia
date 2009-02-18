@@ -1,0 +1,26 @@
+<%mftext('Portales') do %>
+<div style="float: left; width: 49%;">
+<div class="subheader first"><div>Clanes (<%=ClansPortal.count%>)</div></div>
+<table>
+<%ClansPortal.find(:all, :order => 'lower(name)').each do |portal| %>
+<tr class="<%=oddclass%>">
+<td><strong><a href="/admin/portales/editar/<%=portal.id%>"><%=portal.name%></a></strong><br /><span class="infoinline"><a href="http://<%=portal.code%>.<%=App.domain%>"><%=portal.code%>.<%=App.domain%></a></span></td>
+</tr>
+<% end -%>
+</table>
+</div>
+
+<div style="float: left; width: 49%;">
+<div class="subheader first"><div>Facciones (<%=FactionsPortal.count%>)</div></div>
+<table>
+<%FactionsPortal.find(:all, :order => 'lower(name)').each do |portal| %>
+<tr class="<%=oddclass%>">
+<td><strong><a href="/admin/portales/editar/<%=portal.id%>"><%=portal.name%></a></strong><br /><span class="infoinline"><a href="http://<%=portal.code%>.<%=App.domain%>"><%=portal.code%>.<%=App.domain%></a><br />
+<%portal.factions.each do |pf| %><%=pf.code%>, <%end%></span></td>
+<td class="w100"><%=portal.factions_portal_home if portal.respond_to? :factions_portal_home%></td>
+<td class="w25 <%="flhdr" if portal.default_gmtv_channel_id%>"></td>
+</tr>
+<% end -%>
+</table>
+</div>
+<% end -%>

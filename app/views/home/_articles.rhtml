@@ -1,0 +1,43 @@
+<% cache("/#{controller.portal_code}/home/index/articles") do %>
+    <div class="homebox articles">
+        <div id="home-articles" class="subheader first"><div><span>Artículos</span></div></div>
+        <ul class="content-hid2">
+<% 
+articles = []
+articles += controller.portal.interview.find(:published, :limit => 8, :order => 'created_on DESC') if controller.portal.interview
+articles += controller.portal.column.find(:published, :limit => 8, :order => 'created_on DESC') if  controller.portal.column
+articles += controller.portal.tutorial.find(:published, :limit => 8, :order => 'created_on DESC') if controller.portal.tutorial
+articles += controller.portal.review.find(:published, :limit => 8, :order => 'created_on DESC') if controller.portal.review
+
+ordered = {}
+for a in articles
+  ordered[a.created_on.to_i] = a
+end
+
+articles = ordered.sort.reverse
+
+shown_articles = []
+
+# TODO :'(((
+names = {'Interview' => 'Entrevista', 'Column' => 'Columna', 'Tutorial' => 'Tutorial', 'Review' => 'Review'}
+namess = {'Interview' => 'entrevistas', 'Column' => 'columnas', 'Tutorial' => 'tutoriales', 'Review' => 'reviews'}
+
+i = 0
+while i < 8 and i < articles.length do
+  article = articles[i][1]
+  shown_articles << article.unique_content.id 
+%>
+    <li id="content<%=article.unique_content.id%>" class="new <%=oddclass%>">
+    <div class="content-category"><%=faction_favicon(article.main_category)%></div>
+    <%=link_to article.title, gmurl(article)%>
+    <% if article.home_image then %><div style="float: right;"><%=fc_thumbnail(article.home_image, 'f', '105x54', false)%></div><% end -%>
+    <div class="infoinline" style="text-transform: uppercase;"><%=names[article.class.name]%></div>
+    <div style="clear: right;"></div>
+    </li>
+<%  i += 1
+end %>
+</ul>
+<script type="text/javascript">contents = contents.concat(<%=shown_articles.join(',')%>);</script>
+<div class="more"><a title="Ver más tutoriales" href="/tutoriales/" style="display: inline;">Tutoriales</a>, <a title="Ver más columnas" href="/columnas/" style="display: inline;">Columnas</a>, <a title="Ver más entrevistas" href="/entrevistas/" style="display: inline;">Entrevistas &raquo;</a></div>
+    </div>
+<% end -%>

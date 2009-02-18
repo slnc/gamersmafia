@@ -1,0 +1,30 @@
+<% content_support do %>
+  <% mftext('Crear link') do %>
+    <p><a href="/cuenta/faccion/links/new">Nuevo link</a></p>
+	<% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Links') do %>
+
+<%= render :partial => 'shared/pager', :object => @link_pages, :locals => {:pos => 'bottom'} %>
+
+<table>
+  <tr>
+    <th style="width: 90px;"></th>
+    <th>Nombre</th>
+    <th></th>
+  </tr>
+  
+<% for factions_link in @factions_links %>
+  <tr class="<%=oddclass%>">
+    <td><%=fc_thumbnail(factions_link.image, 'f', '88x31', false)%></td>
+      <td><a href="/cuenta/faccion/links/edit/<%=factions_link.id%>"><%=factions_link.name%></a></td>
+      <td><%= link_to 'Borrar', { :controller =>'/cuenta/faccion/links', :action => 'destroy', :id => factions_link}, :confirm => '¿Estás seguro?' %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= render :partial => 'shared/pager', :object => @link_pages, :locals => {:pos => 'bottom'} %>
+<% end -%>
+<% end -%>

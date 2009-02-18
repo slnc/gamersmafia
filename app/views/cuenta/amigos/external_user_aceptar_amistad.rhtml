@@ -1,0 +1,29 @@
+<dl class="primary">
+  <dt class="primary">Registrarme</dt>
+  <dd>
+  <h1>Aceptar amistad y completar proceso de registro</h1>
+<form method="post" action="/cuenta/amigos/create_and_accept_friendship">
+	<input type="hidden" name="eik" value="<%=params[:eik]%>" />
+  <table>
+    <tr class="<%=oddclass%>">
+      <td class="w150">Nombre de usuario</td>
+      <td><input type="text" name="u[login]" value="<%=@suggested_login%>" /> <span class="sm">ej: juan</span></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td>Contraseña</td>
+      <td><input type="password" name="u[password]" /></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td>Confirmar contraseña</td>
+      <td><input type="password" name="u[password_confirm]" /></td>
+    </tr>
+	<tr class="<%=oddclass%>">
+      <td>Amigo de</td>
+      <td><strong><a href="<%=gmurl(@friendship.sender)%>"><%=@friendship.sender.login%></a></strong></td>
+    </tr>
+  </table>
+  <br />
+  <input type="submit" value="Completar proceso de registro" />
+</form>
+</dd>
+</dl>

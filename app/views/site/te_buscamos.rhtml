@@ -1,0 +1,31 @@
+<% content_support do %>
+  <%mftext('Facciones que buscan a su boss') do %>
+  <ul class="content-hid">
+  <% Faction.find_orphaned.each do |faction| %>
+  <li><div style="float: left; margin-top: 2px;"><%=faction_favicon(faction)%></div><a style="padding-left: 5px;background: none;" href="<%=gmurl(faction)%>"><%=faction.name%></a></li>
+  <% end -%>
+  </ul>
+  <% end -%>
+  <p></p>
+<% end -%>
+
+<% content_main do %>
+  <%mftext('Te necesitamos') do %>
+  <p>Esta facción no tiene un boss que se encargue de ella. Los bosses son usuarios de gamersmafia
+  cuya función es promover el movimiento en una facción y velar por ella.</p>
+  <p><strong>Las tareas principales de un boss son:</strong></p>
+  <ul>
+    <li>Encargarse de que se publiquen contenidos de los distintos tipos regularmente.</li>
+    <li>Asegurarse de que el ambiente en los comentarios es agradable (en otras palabras, que no violen el código de conducta).</li>
+    <li>Montar un grupo de usuarios que llamamos staff que le ayude en estas labores.</li>
+  </ul>
+  <br />
+  <p><strong>Requerimiento obligatorio para ser boss:</strong></p>
+  <ul>
+    <li>Buscamos personas serias y con tiempo para dedicarle a la facción.</li>
+	<li>Haber enviado contenidos anteriormente a la facción. Si un usuario que ha estado enviando noticias, descargas, etc, de forma regular durante unos días a una facción que no tiene boss tiene muchas posibilidades de ser aceptado. Si el usuario acaba de registrarse y ni siquiera ha comentado las posibilidades de ser aceptado como boss son remotas.</li>
+  </ul>
+  <br />
+  <p>¿Estás interesado? Puedes comprar la facción y hacerte cargo de ella comprando un producto <strong>"Facción Huérfana"</strong> en <a href="/cuenta/tienda">la tienda</a>.</p>
+  <% end -%>
+<% end -%>

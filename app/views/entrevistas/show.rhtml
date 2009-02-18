@@ -1,0 +1,17 @@
+<% content_support do %>
+<% if @interview.is_public? then %>
+<%=mfcontents_basic("Más entrevistas de #{@interview.user.login}", 
+	controller.portal.interview, 
+	[:published, {:conditions => ['user_id = ?', @interview.user_id], :order => 'created_on DESC', :limit => 5}],
+    :cache => "/#{controller.portal_code}/entrevistas/show/latest_by_author_#{@interview.user_id}",
+ 	:rating => true,
+	:comments_count => true,
+	:more_link => "<a href=\"#{gmurl(@interview.user)}/contenidos/entrevistas\">Ver todas sus entrevistas (#{@interview.user.interviews.count})</a>")%>
+<% else %>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @interview } %>
+<% end -%>
+<% end -%>
+
+<% content_main do %> 
+  <%=mfcontent(@interview)%>
+<%end -%>

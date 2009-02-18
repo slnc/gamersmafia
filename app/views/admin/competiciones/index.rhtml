@@ -1,0 +1,33 @@
+<h1>Competiciones</h1>
+
+<%= render :partial => 'shared/pager', :object => @competition_pages, :locals => {:pos => 'bottom'} %>
+
+<table>
+  <tr>
+    <th class="checkbox"></th>
+    <th>Nombre</th>
+    <th>Tipo</th>
+    <th>Admins</th>
+    <th>Estado</th>
+    <th>Tipo partic.</th>
+    <th>Partici.</th>
+    <th>Partidas</th>
+    <th class="timestamp">Creado</th>
+  </tr>
+  
+<% for competition in @competitions %>
+  <tr class="<%=oddclass%>">
+    <td class="checkbox"><%=faction_favicon(competition.game)%></td>
+    <td><strong><%=link_to competition.name, :action => 'info', :id => competition %></strong></td>
+    <td><%=competition.class.name%></td>
+    <td><%=competition.admins.collect { |a| "<a href=\"#{gmurl(a)}\">#{a.login}</a>"} .join(', ') %></td>
+    <td><%=Competition::STATES_ES[competition.state]%></td>
+    <td><%=Competition::COMPETITIONS_PARTICIPANTS_TYPES_ES[competition.competitions_participants_type_id]%></td>
+    <td><%=competition.competitions_participants.count%></td>
+    <td><%=competition.competitions_matches.count%></td>
+    <td class="infoinline"><%=print_tstamp(competition.created_on)%></td>
+  </tr>
+<% end %>
+</table>
+
+<%= render :partial => 'shared/pager', :object => @competition_pages, :locals => {:pos => 'bottom'} %>

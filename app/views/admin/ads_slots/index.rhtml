@@ -1,0 +1,21 @@
+<% content_support do %>
+	<a href="/admin/ads_slots/new">Nuevo</a>
+<% end -%>
+
+<% content_main do %>
+<%mftext('Ads Slots') do %>
+
+<table>
+  <tr>
+    <th>Ads Slot</th>
+  </tr>
+<% AdsSlot.find(:all, :order => 'location, name').each do |ad| %>
+<tr class="<%=oddclass%>">
+	<td><%=ad.location%></td>
+	<td><a href="/admin/ads_slots/edit/<%=ad.id%>"><%=ad.name%></a></td>
+	<td><%=ad.position%></td>
+  </tr>
+<% end -%>
+</table>
+<% end -%>
+<% end -%>

@@ -1,0 +1,11 @@
+<% cache("/common/facciones/#{Time.now.strftime('%Y%m%d')}/stats/2_#{@cur_faction.id}") do %>
+<% if @cur_faction then %>
+<%mftext('La Facción', :has_submodules => true) do %>
+	<div style="float: left;" class="mgimage-right"><%=draw_faction_building(controller.portal.factions[0].id, 2)%></div>
+	<%mftext('Karma', :blast => true) do %><div class="infoinline" style="float: left;"></div><div class="infoinline right"><%=number_with_delimiter(@cur_faction.karma_points, '.', '')%></div><% end -%>
+	<%mftext('Miembros', :blast => true) do %><div class="infoinline right"><%=@cur_faction.members_count%></div><% end -%>
+	<%mftext('Inc/día', :blast => true) do %><div class="infoinline right"><%="%.2f" % @cur_faction.new_members_per_day%></div><% end -%>
+	<div class="clearb"><%=sparkline(:size => '145x25', :data => Stats::Portals.daily_karma(@portal, 31.days.ago, 1.day.ago))%></div>
+<% end -%>
+<% end -%>
+<% end -%>

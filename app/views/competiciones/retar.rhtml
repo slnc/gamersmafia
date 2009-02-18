@@ -1,0 +1,81 @@
+<% content_main do %>
+  <% if !@competitions_match.new_record? then %>
+  <% mftext('Aceptar reto') do %>
+        <form method="post" action="/competiciones/do_accept_challenge">
+        <input type="hidden" name="competitions_match_id" value="<%=@competitions_match.id%>" />
+      <table>
+    <tr>
+    <td>Fecha y hora</td><td><%=@competitions_match.play_on ? print_tstamp(@competitions_match.play_on) : 'Sin especificar' %></td>
+    </tr>
+    <tr>
+    <td>Servidor/es</td><td><%=@competitions_match.servers ? @competitions_match.servers : 'Sin especificar' %></td>
+    </tr>
+	<tr>
+	    <td>Reglas específicas</td><td><%=@competitions_match.ladder_rules%></td>
+    </tr>
+	<% if [Competition::SCORING_PARTIAL, Competition::SCORING_SIMPLE_PER_MAP].include?(@competition.scoring_mode) then %>
+	<tr>
+	    <td>Mapas</td><td><%@competitions_match.competitions_matches_games_maps.each do |gm| %><%=gm.games_map.name%><br /><% end %></td>
+    </tr>
+	<% end -%>
+    </table>
+	
+  <input type="submit" class="button" value="Aceptar" onclick="return confirm('¿Estás seguro?');" />
+    </form>
+	<% end -%>
+
+  <% end -%>
+  
+  <% mftext('Condiciones del reto') do %>
+<% if @competitions_match.new_record? then 
+specified_maps = []
+%>
+  <form method="post" action="/competiciones/do_retar">
+    <input type="hidden" name="id" value="<%=@competitions_participant.id%>" />
+<% else 
+specified_maps = @competitions_match.competitions_matches_games_maps
+%>
+  <form method="post" action="/competiciones/do_responder_reto">
+    <input type="hidden" name="competitions_match_id" value="<%=@competitions_match.id%>" />
+<% end -%>
+    <table>
+    <tr>
+    <td>Fecha y hora</td><td><%= datetime_select 'competitions_match', 'play_on'  %></td>
+    </tr>
+    <tr>
+    <td>Servidor/es</td><td><%= text_field 'competitions_match', 'servers', :class => 'text' %><br /><span class="infoinline">ej: "66.29.112.96, ut1.gamersmafia.com"</span></td>
+    </tr>
+    <tr></tr><td>Reglas específicas</td><td><%= text_field 'competitions_match', 'ladder_rules', :class => 'text' %></td></tr>
+	<% if [Competition::SCORING_PARTIAL, Competition::SCORING_SIMPLE_PER_MAP].include?(@competition.scoring_mode) then %>
+	<tr>
+		<td>Mapas</td>
+
+<td>
+	        <table>
+        <% i = 0
+          @competition.default_maps_per_match.times do |time| 
+			selected_opt = specified_maps.size >= (i + 1) ? specified_maps[i].games_map_id : nil
+%>
+                <tr>
+                  <td class="centered"><%=select('play_maps', time, @competition.games_maps.find(:all, :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true, :selected => selected_opt }) %></td>
+                </tr>
+         <%  i += 1
+end %>
+        </table></td>
+		</tr>
+		         <% end %>
+		    </table>
+    <input type="submit" class="button" value="<% if @competitions_match.new_record? then %>Retar<% else %>Contrarreto<% end%>" onclick="return confirm('¿Estás seguro?');" />
+  </form>
+  <% end -%>
+  
+    <% if !@competitions_match.new_record? then %><br />
+  
+    <% mftext('Rechazar reto') do %>
+            <form method="post" action="/competiciones/do_deny_challenge">
+                    <input type="hidden" name="competitions_match_id" value="<%=@competitions_match.id%>" />
+    <input type="submit" class="button" value="Rechazar" onclick="return confirm('¿Estás seguro?');" />
+    </form>
+	<% end #mftext -%>
+    <%end -%>
+<% end -%>

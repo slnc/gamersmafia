@@ -1,0 +1,19 @@
+<%  # TODO
+#cache("/competiciones/partidas/#{@competition.id}") do %>
+  <%
+  if @competition.kind_of?(Tournament) && @competition.competitions_types_options[:tourney_use_classifiers] then 
+  %>
+    <%= render :partial => "matchmap_#{@competition.class.name}_classifiers", :locals => { :competition => @competition } %>
+  <%
+  else %>
+
+      <% mftext('Partidas') do %>
+    <% if @competition.state >= 3 then %>
+      <%= render :partial => "matchmap_#{@competition.class.name}", :locals => { :competition => @competition } %>
+      <% else %>
+    <p>La competición todavía no ha comenzado.</p>
+    <% end -%>
+	<% end -%>
+  <% end -%>
+
+<% # end -%>

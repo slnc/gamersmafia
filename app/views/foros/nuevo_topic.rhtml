@@ -1,0 +1,58 @@
+<% content_support do %>
+  <%mftext('Consejos') do %>
+<p>Malos Títulos:</p>
+<ul>
+<li>Ayuda</li>
+<li>omfg! habeis visto esto??</li>
+<li>Nuevo Clan</li>
+</ul>
+
+<p>Buenos títulos:</p>
+<ul>
+<li>Problemas con pb y cod2</li>
+<li>Intento de timo de un newbie</li>
+<li>Lords of the Underground: nuevo clan de ut2004</li>
+</ul>
+<% end %>
+<% end -%>
+
+<% content_main do %>
+    <%mftext('Nuevo tópic') do %>
+<form method="post" action="/foros/create_topic" name="REPLIER" style="width: 100%;">
+<%
+@topic = Topic.new unless defined?(@topic)
+@topic.topics_category_id = params[:forum_id] 
+%>
+<% # TODO semi copypasted de forum.rhtml
+%>
+<table>
+  <tr class="<%=oddclass%>">
+    <td style="padding: 5px 0;" class="w100">Foro</td>
+    <td style="padding: 5px 0;">
+      <%=render_tree_select controller.portal.topics_categories, 'name', 'topic[topics_category_id]', @topic.topics_category_id%>
+    </td>
+  </tr>
+  <tr class="<%=oddclass%>">
+    <td style="padding: 5px 0;">Título</td>
+    <td style="padding: 5px 0;"><%=text_field(:topic, "title", :class => 'text w200') %></td>
+  </tr>
+<tr  class="<%=oddclass%>" style="vertical-align: top;">
+<td style="padding: 5px 0;">Texto</td>
+<td style="padding: 5px 0;">
+<input type="button" class="button" value="http://" name="URL" onclick="tag_url()" />
+<input type="button" class="button" value="IMG" name="IMG" onclick="tag_image()" />
+<input type="button" class="button" name="QUOTE" value="QUOTE" onclick="simpletag('QUOTE')" />
+<input type="button" class="button" name="CODE" value="CODE" onclick="simpletag('CODE')" />
+<input type="button" class="button" value="B" name="B" onclick="simpletag('B')" />
+<input type="button" class="button" value="I" name="I" onclick="simpletag('I')" />
+<input type="hidden" name="tagcount" value="" /><br />
+    <% # TODO comment_comment necesario por el js de los botones %>
+    <textarea style="width: 500px; background: #fcfcfc; border: 1px solid #aaa;" id="comment_comment" name="topic[main]" rows="20"><%=@topic.main%></textarea> 
+<%= render :partial => '/shared/smileys', :locals => { :dom_id => 'comment_comment' } %>
+  </td>
+<input type="hidden" name="add_to_tracker" value="1" />
+</table>
+<div class="right"><input type="image" src="/images/blank.gif" class="btn-crear" /></div>
+</form>
+<% end -%>
+<% end -%>

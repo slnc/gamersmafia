@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<channels <%="default_gmtv_channel_id=\"#{controller.portal.default_gmtv_channel_id}\"" if controller.portal.default_gmtv_channel_id%> >
+<% cache("/#{controller.portal.code}/channels") do 
+	controller.portal.channels.each do |channel| %>
+  <channel updated_on="<%=print_tstamp(channel.updated_on)%>" author="<%=channel.user.login%>" popularity="0" id="<%=channel.id%>" screenshot="/<%=channel.screenshot%>">/<%=channel.file%></channel>
+<% end 
+end -%>
+</channels>

@@ -1,0 +1,24 @@
+<%content_support(:show_ads => false) do %>
+	<% if @ab_test.completed_on.nil? then %>
+<%mftext('Finalizar experimento') do %>
+  <%= form_tag :action => 'end_experiment', :id => @ab_test %>
+ 	<%=draw_pcent_bar(@ab_test.experiment_completedness) if @ab_test.conversion_rates(false)%><br />
+	<div class="centered"><strong><span class="sm"><%="%.2f" % (@ab_test.experiment_completedness * 100) if @ab_test.conversion_rates(false)%>%</span></strong><br /><br />
+  <input type="submit" class="button submit" value="Finalizar" onclick="return confirm('¿Estás seguro?');" /></div>
+</form>
+<% end -%>
+<% end -%>
+<% end -%>
+
+<%content_main do %>
+<%mftext('Editar hipótesis') do %>
+
+<% if @ab_test.dirty? then %>
+<div class="warning">Los parámetros de la hipótesis han cambiado pero los datos de conversión todavía no muestran los cambios.</div>
+<% end -%>
+<%= form_tag :action => 'update', :id => @ab_test %>
+  <%= render :partial => 'form' %>
+  <input type="submit" class="button submit" value="Guardar" />
+</form>
+<% end -%>
+<% end -%>

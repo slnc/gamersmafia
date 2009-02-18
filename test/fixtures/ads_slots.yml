@@ -1,0 +1,10 @@
+as1:
+  id: 1
+  name: Lateral izquierdo
+  location: sideleft
+  behaviour_class: Random
+  image_dimensions: 450x117
+  position: 0
+  advertiser_id: 1
+  
+  

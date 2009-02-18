@@ -1,0 +1,29 @@
+<%= error_messages_for 'faction' %>
+
+<!--[form:faction]-->
+<p><label for="faction_name">Boss</label> <br/>
+<%=text_field 'faction', 'boss', :class => 'text' %></p>
+
+<p><label for="faction_name">Underboss</label> <br/>
+<%=text_field 'faction', 'underboss', :class => 'text' %></p>
+
+<p><label for="faction_file">Building Top (PNG)</label><br/>
+<img src="<%=ASSET_URL%>/storage/factions/<%=@faction.id%>/building_top.png" />
+<%= file_field 'faction', 'building_top' %></p>
+
+<p><label for="faction_file">Building Middle (PNG)</label><br/>
+<img src="<%=ASSET_URL%>/storage/factions/<%=@faction.id%>/building_middle.png" />
+<%= file_field 'faction', 'building_middle' %></p>
+
+<p><label for="faction_file">Building Bottom (PNG)</label><br/>
+<img src="<%=ASSET_URL%>/storage/factions/<%=@faction.id%>/building_bottom.png" />
+<%= file_field 'faction', 'building_bottom' %></p>
+
+<p><label for="faction_name">Descripción</label> <br/>
+<%=text_area 'faction', 'description' %></p>
+
+<p><label for="faction_name">¿Por qué unirte?</label> <br/>
+<%=text_area 'faction', 'why_join' %></p>
+
+<!--[eoform:faction]-->
+

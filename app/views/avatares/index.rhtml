@@ -1,0 +1,14 @@
+<%mftext('Avatares de facción') do %>
+<a href="/avatares/factions_avatars_overview">Overview</a> | <a href="/avatares/list?mode=faction">Todos</a><% if @user.is_superadmin? then %>| <a href="/avatares/new">Nuevo</a><% end -%><br />
+<%= render :partial => 'latest_avatars', :locals => { :avatars => Avatar.find(:all, :conditions => 'faction_id is not null', :order => 'created_on DESC', :limit => 10) }%>
+<% end -%>
+
+<%mftext('Avatares de clan') do %>
+<a href="/avatares/list?mode=clan">Todos</a><br />
+<%= render :partial => 'latest_avatars', :locals => { :avatars => Avatar.find(:all, :conditions => 'clan_id is not null', :order => 'created_on DESC', :limit => 10) }%>
+<% end -%>
+
+<%mftext('Avatares de usuario') do %>
+<a href="/avatares/list?mode=user">Todos</a><br />
+<%= render :partial => 'latest_avatars', :locals => { :avatars => Avatar.find(:all, :conditions => 'user_id is not null', :order => 'created_on DESC', :limit => 10) }%>
+<% end -%>

@@ -1,0 +1,30 @@
+<% 
+categories.each do |nc|
+  next if %w(inet bazar).include?(nc.code)
+  cache("/bazar/home/categories/#{nc.code}") do
+	tc = TopicsCategory.find(:first, :conditions => ['code = ?', nc.code])
+    next unless tc 
+%>
+<div id="home-<%=tc.code%>" class="subheader"><div><span><%=tc.name%></span></div></div>
+<ul class="content-hid">
+<% 
+shown_offtopics = []
+raise nc.code unless tc
+nc.news.find(:published, :limit => 12, :order => 'created_on DESC').each do |offtopic|
+  shown_offtopics << offtopic.unique_content.id 
+%>
+    <li id="content<%=offtopic.unique_content.id%>" class="new <%=oddclass%>"><%=link_to truncate(offtopic.title, 35), gmurl(offtopic)%></li>
+<% end %>
+</ul>
+<script type="text/javascript">contents = contents.concat(<%=shown_offtopics.join(',')%>);</script>
+		<table>
+			<% tc.topics.find(:all, :conditions => "state = #{Cms::PUBLISHED}", :order => 'updated_on DESC', :limit => 3).each do |topic| %>
+			<tr class="<%=oddclass%>">
+				<td id="content<%=topic.unique_content.id%>" class="new"><a href="<%=gmurl(topic)%>"><%=topic.title%></a></td>
+				<td class="w50 right"><span class="comments-count"><a href="<%=gmurl(topic)%>#comments"><%=topic.cache_comments_count%></a></span></td>
+			</tr>
+			<% end -%>
+		</table>
+		<br />
+  <% end -%>
+<% end -%>

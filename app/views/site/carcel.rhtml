@@ -1,0 +1,23 @@
+<%content_support do %>
+<div class="centered"><img class="icon" src="/images/carcel.png" /><br />
+Aparte de producir peligrosos criminales Gamersmafia también es conocida por generar importantes <strong><a href="/site/trastornos">trastornos psíquicos</a></strong>.</div>
+<% end -%>
+
+<%content_main do %>
+	<%mftext('Los reclusos') do %>
+	<div style="float: right;">
+	<img src="/skins/default/images/prison.jpg" /><br /><br />
+	<img src="/skins/default/images/prison2.jpg" /><br /><br />
+	<img src="/skins/default/images/prison3.jpg" /><br /><br />
+	<img src="/skins/default/images/prison4.jpg" /><br /><br />
+	<img src="/skins/default/images/prison5.jpg" /><br /><br />
+	</div>
+	<ul><%cache("/common/carcel_full") do%>
+	<%User.find(:all, :conditions => ['state = ?', User::ST_BANNED], :order => 'lower(login)').each do |u| %>
+		<li><%=user_link(u)%></li>
+	<% end -%>
+	<% end -%>
+	</ul>
+	<% end -%>
+<% end -%>
+

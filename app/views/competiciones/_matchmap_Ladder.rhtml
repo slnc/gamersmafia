@@ -1,0 +1,34 @@
+  <% @matches_pages = ActionController::Pagination::Paginator.new self, @competition.competitions_matches.count, 25, params['page'] 
+  @matches_pages.current_page = @matches_pages.last if params['page'].nil? 
+  %>
+  <%=render :partial => 'shared/pager', :object => @matches_pages, :locals => {:pos => 'top'} %>
+  <table>
+<% 
+# TODO refactor
+# TODO paginar
+ %>
+  <% for cm in @competition.matches(:completed, :order => 'play_on DESC, completed_on DESC') %>
+  <tr class="<%=oddclass%>">
+    <td class="infoinline w100"><% if cm.completed? then %><%=print_tstamp(cm.completed_on, 'date')%><% end %></td>
+    <td><a href="/competiciones/partida/<%=cm.id%>"><%=cm.participant1.name%> <span class="infoinline">vs</span> <%=cm.participant2.name%></a></td>
+    <td class="centered"><% 
+        if cm.completed? then
+          case cm.result
+            when 0: %><span class="infoinline">Gana</span> <%=cm.participant1.name%><%
+            when 1: %>Empate<%
+            when 2: %><span class="infoinline">Gana</span> <%=cm.participant2.name%><%
+            else 
+          end 
+         end-%>
+             </td>
+<% if @competition.default_maps_per_match then %><td class="infoinline w150"><%cm.competitions_matches_games_maps.each do |map| %><%=map.games_map.name%>, <% end %></td>
+    <% end %>
+
+
+    <td class="centered" style="width: 20px;"><%= cm.result && cm.competitions_matches_uploads.count > 0  ? '<img class="downloads-count" title="Archivos adjuntos" src="/images/blank.gif" />' : ''%></td>
+    <td class="centered" style="width: 20px;"><%= cm.result && cm.competitions_matches_reports.count > 0  ? '<img class="pageviews-count" title="Informes adjuntos" src="/images/blank.gif" />' : ''%></td>
+  </tr>
+<% end -%>
+</table>
+  <%=render :partial => 'shared/pager', :object => @matches_pages, :locals => {:pos => 'bottom'} %>
+</form>

@@ -1,0 +1,38 @@
+<% content_main do %>
+<%mftext('Editar canal GMTV') do %>
+<table>
+	<tr class="<%=oddclass%>">
+		<th class="w125">Id</th>
+		<td><%=@gmtv_channel.id%></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<th>Creado</th>
+		<td class="infoinline"><%=print_tstamp(@gmtv_channel.created_on)%></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<th>Actualizado</th>
+		<td class="infoinline"><%=print_tstamp(@gmtv_channel.updated_on)%></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<th>Archivo</th>
+		<td><%=@gmtv_channel.file ? '/'<< @gmtv_channel.file : '<span class="infoinline">(Sin usar)</span>'%></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<th>Tipo</th>
+		<td><%=faction_favicon(@gmtv_channel.faction)%></td>
+	</tr>
+</table>
+
+<br />
+<br />
+<h2>Resetear</h2>
+<form method="post" action="/admin/canales/reset/<%=@gmtv_channel.id%>">
+<label><input type="checkbox" name="notify" value="1" /> Notificar al autor</label><br />
+<textarea name="reset_reason"></textarea><br />
+<input type="submit" class="button" value="Resetear" />
+</form>
+<br />
+<br />
+<a href="/admin/canales">Volver</a>
+<% end -%>
+<% end -%>

@@ -1,0 +1,10 @@
+<%= error_messages_for 'faq_category' %>
+
+<!--[form:faq_category]-->
+<p><label for="faq_category_name">Nombre</label><br/>
+<%= text_field 'faq_category', 'name', :class => 'text'  %></p>
+
+<p><label >Categoría padre</label><br/>
+<%= render_tree_select FaqCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc'), 'name', 'faq_category[parent_id]', @faq_category.parent_id %>
+<!--[eoform:faq_category]-->
+

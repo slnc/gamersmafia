@@ -1,0 +1,57 @@
+<% content_support do %>
+<%= render :partial => '/respuestas/preguntar' if user_is_authed %>
+<%= render :partial => '/respuestas/top_sabios', :locals => { :category => @question.questions_category } %>
+<% if @question.is_public? then %>
+<%=mfcontents_basic("Más preguntas de #{@question.user.login}", 
+	controller.portal.question,
+ 	[:published, {:conditions => ['user_id = ?', @question.user_id], :order => 'created_on DESC', :limit => 5}],
+    :cache => "/#{controller.portal_code}/respuestas/show/latest_by_author_#{@question.user_id}",
+ 	:rating => true,
+	:comments_count => true,
+	:more_link => "<a href=\"#{gmurl(@question.user)}/contenidos/respuestas\">Ver todas sus preguntas (#{@question.user.questions.count})</a>")%>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @question } %>
+<% else %>
+<% end -%>
+<% end -%>
+
+<% content_main do %> 
+  <%mfcontent(@question) do %>
+  <%=@question.description%>
+  	<% if @question.accepted_answer_comment_id then 
+		comment = @question.best_answer %>
+		
+		<div class="question-best-answer-comment">
+			<%mftext('Mejor respuesta') do %>
+			  <div class="user-info">
+  	<div class="user-info-holder">
+     <div class="avatar" style="margin-bottom: 2px;"><img src="<%=ASSET_URL%><%=comment.user.show_avatar%>" /></div> 
+     <div style="height: 12px; width: 50px;"><%=draw_karma_bar_sm(comment.user)%></div>
+     <div style=" width: 50px;"><%=draw_faith_bar_sm(comment.user)%></div>
+     <div style=" width: 50px;"><%=draw_comments_bar_sm(comment.user, comment)%></div>
+  </div></div>
+  
+			<div class="author" style="padding-left: 15px;"><a class="nav" href="<%=gmurl(comment.user)%>"><%=comment.user.login%></a> <%=faction_favicon(comment.user)%></div>
+			<%=comment.comment%>
+			<div style="clear: left;"></div>
+			<% end -%>
+			</div>
+	<% elsif @question.answered_on then %>
+			<%mftext('Pregunta cancelada') do %>
+				Esta pregunta ha sido cancelada o ha sido resuelta por su autor.
+			<% end -%>
+	<% else %>
+	<% if user_is_authed && @question.user_can_set_no_question?(@user) then %>
+	<a onclick="return confirm('¿Seguro que quieres cerrar esta pregunta sin elegir una mejor respuesta?');" href="/respuestas/sin_respuesta/<%=@question.id%>"><img src="/skins/default/images/btn_sin_respuesta.png" class="icon" /></a>
+	<% end -%>
+	<div class="question-prize">Recompensa: <span class="ammount"><%=@question.prize.to_i%><%=gmd12%></ammount></span> 
+	<% if user_is_authed && @user.id == @question.user_id && @question.answered_on.nil? then %>
+	<form style="display: inline;" method="post" action="/respuestas/update_ammount/<%=@question.id%>">
+	| Subir a: <input type="text" size="4" name="question[ammount]" value="<%=@question.ammount ? @question.ammount : ''%>" /> <input type="submit" value="Guardar" onclick="return confirm('¿Estás seguro? La recompensa se puede subir pero no bajar.');" />
+	</form>
+	<% end -%>
+	
+	</div>
+	<div style="clear: left;">&nbsp;</div>
+	<% end # if -%>
+  <% end # mfcontent -%>
+<%end # content_main -%>

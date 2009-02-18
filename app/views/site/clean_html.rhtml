@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response>
+  <method>wsEditorUpdateContentRemote</method>
+  <result><![CDATA[var res = new Object;
+  res.editorId = '<%=params[:editorId]%>';
+res.content = unescape('<%=URI::escape(@content)%>');]]></result>
+</response>

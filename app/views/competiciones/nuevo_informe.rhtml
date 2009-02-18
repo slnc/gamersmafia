@@ -1,0 +1,9 @@
+<% content_main do %>
+  <form method="post" action="/competiciones/create_report/<%=params[:id]%>">
+    <p><label for="competitions_matches_report_report">Report</label><br/>
+    <%= text_area 'competitions_matches_report', 'report'  %></p>
+    <%=wysiwyg('competitions_matches_report[report]', :value => @competitions_matches_report.report, :height => '300px')%>
+    <br />
+    <input type="submit" class="button" value="Enviar" />
+  </form>
+<% end -%>

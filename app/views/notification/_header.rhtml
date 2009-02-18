@@ -1,0 +1,152 @@
+<html>
+  <body style="margin: 0; padding: 0;">
+  	
+    <style type="text/css">
+    	
+    
+      <!--
+	  
+      .body {
+
+      }
+
+      td { font-size: 12px; }
+
+      .infoinline { font-size: 10px; color: #818181; margin-left: 12px; }
+      a { color: #000bea; text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .message {
+        padding: 0 12px;
+        line-height: 16px;
+      }
+      .actions { padding: 0 4px; }
+
+      .footer,
+      .footer a {
+        text-align: center;
+        font-family: verdana;
+        font-size: 10px;
+        color: #A9A9A9;
+      }
+
+      .actions ul {
+        margin: 0;
+        padding: 0 0 0 8px;
+      }
+
+      .actions li {
+        line-height: 20px;
+        list-style-position: inside;
+      }
+
+      .actions a {
+        color: #030AA7;
+        font-weight: bold;
+      }
+
+      #footer-detail {
+        height: 16px;
+        background: url(/images/emails/footer-bg.png) left center repeat-x;
+        text-align: right;
+      }
+
+      img.avatar {
+        border: 1px solid #000;
+      }
+
+      #footer-detail img {
+        border: 0;
+      }
+
+      .actions {
+        border-top: 7px solid #000000;
+        padding: 12px;
+      }
+
+      .message {
+        padding: 12px 12px 30px 12px;
+      }
+
+      #header-left {
+        height: 34px;
+        background: url(/images/emails/header-left.gif) left center no-repeat;
+        padding-left: 18px;
+      }
+       
+      #header-center {
+        height: 34px;
+        background: url(/images/emails/header-bg.gif) left center repeat-x;
+      }
+
+      #header-right {
+        float: right;
+        height: 85px;
+        width: 86px;
+        background: url(/images/emails/header-right.gif) right center no-repeat;
+      }
+
+      #header-right img {
+        border: 0;
+        margin-left: 18px;
+        margin-top: 19px;
+      }
+
+      .title {
+        height: 34px;
+        line-height: 34px;
+        font-weight: bold;
+        font-size: 16px;
+        font-family: Arial;
+        color: #ffffff;
+      }
+
+      h1 {
+        font-size: 16px;
+      }
+
+      .w100 { width: 100px; }
+      .w50 { width: 50px; }
+      .w25 { width: 25px; }
+      .w125 { width: 125px; }
+      .w150 { width: 150px; }
+
+      .pcent-bar .bar { height: 20px; border: 1px solid; }
+
+.warning10 .pcent-bar .bar { background: #ff172f; }
+.warning9 .pcent-bar .bar { background: #CA4200; }
+.warning8 .pcent-bar .bar { background: #F95E00; }
+.warning7 .pcent-bar .bar { background: orange; }
+.warning6 .pcent-bar .bar { background: #FFDF00; }
+.warning5 .pcent-bar .bar { background: yellow; }
+.warning4 .pcent-bar .bar { background: #C7FF04; }
+.warning3 .pcent-bar .bar { background: #71FF1C; }
+.warning2 .pcent-bar .bar { background: #00E624; }
+.warning1 .pcent-bar .bar { background: green; }
+
+
+.warning10 .pcent-bar { border-color: #ff172f; }
+.warning9 .pcent-bar { border-color: #CA4200; }
+.warning8 .pcent-bar { border-color: #F95E00; }
+.warning7 .pcent-bar { border-color: orange; }
+.warning6 .pcent-bar { border-color: #FFDF00; }
+.warning5 .pcent-bar { border-color: yellow; }
+.warning4 .pcent-bar { border-color: #C7FF04; }
+.warning3 .pcent-bar { border-color: #71FF1C; }
+.warning2 .pcent-bar { border-color: #00E624; }
+.warning1 .pcent-bar { border-color: green; }
+
+.centered { text-align: center; }
+      -->
+    </style>
+	<table class="body" style="width: 100%; padding: 5px 0px 40px 0px; font-family: verdana; font-size: 12px; background-color: #fafafa; background-image: url(http://<%=App.domain%>/skins/default/images/bricks.jpg); background-position: 0 0; background-repeat: repeat;"><tr><td>
+	<img src="http://<%=App.domain%>/site/logoe?mid=<%=@message_key%>" style="margin: 0 0 1px 7px; border: 0; padding: 0;" />
+	<table style="width: 100%; border: 1px solid #d2d2d2; background-color: #fff; margin: 0 10px; padding: 0; border-collapse: collapse;">
+		<tr style="vertical-align: top;">
+			<td style="border: 0; margin: 0; padding: 0;">
+				<table style="width: 100%; border: 0; margin: 0; padding: 0;  border-collapse: collapse;">
+					<tr>
+						<td style="padding: 0 0 0 15px; border: 0; background-image: url(http://<%=App.domain%>/skins/default/images/notifications/header_right.gif); background-position: right bottom; background-repeat: no-repeat; background-color: #000; color: #fff; line-height: 33px; font-weight: bold; font-family: tahoma; font-size: 16px;"><%=@title%></td>
+					</tr>
+					<tr>
+						<td style="padding: 15px;">

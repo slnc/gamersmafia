@@ -1,0 +1,22 @@
+<% content_support do %>
+  <%= render :partial => '/shared/drafts', :locals => { :cls => Image } if user_is_authed %>
+<%= render :partial => 'shared/content_details', :locals => { :object => @image} %>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @image} %>
+<%= render :partial => 'shared/pending', :object => Image.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Editar imagen') do %>
+
+<%= form_tag({:action => 'update', :id => @image}, {:multipart => true, :name => 'editing_content' }) %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @image}%>
+<%=render :partial => '/shared/change_authorship', :locals => {:object => @image}%>
+
+<br />
+<%= link_to 'Mostrar imagen publicada', gmurl(@image) %> |
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

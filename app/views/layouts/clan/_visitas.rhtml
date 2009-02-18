@@ -1,0 +1,3 @@
+<% mftext('Visitas') do %>
+	<div class="hits centered-link"><%=User.db_query("select coalesce(sum(hits), 0) from portal_hits where portal_id = #{controller.portal.id}")[0]['coalesce']%></div>
+<% end %>

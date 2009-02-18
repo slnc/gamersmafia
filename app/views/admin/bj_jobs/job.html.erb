@@ -1,0 +1,9 @@
+<h1>Job</h1>
+<table>
+<%@bjob.each do |k,v| %>
+<tr class="<%=oddclass%>">
+	<td class="w100"><%=k%></td>
+	<td><pre style="margin: 0; padding: 0;"><%=v%></pre></td>
+</tr>
+<% end %>
+</table>

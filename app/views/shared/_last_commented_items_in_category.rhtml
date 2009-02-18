@@ -1,0 +1,5 @@
+<%=mfcontents_basic("Activos en #{@object.root.code.upcase}", 
+					Proc.new { @object.root.active_items }, 
+					[],
+					:faction_favicon => true, 
+					:cache => "/common/foros/by_root/#{@object.root.id}")%>

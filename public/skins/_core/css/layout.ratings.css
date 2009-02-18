@@ -1,0 +1,69 @@
+#content-stats {
+	float: right;
+	width: 120px;
+	text-align: center;
+	margin-right: 0px;
+	margin-top: 5px;
+	
+}
+
+#content-stats div.pageviews-count { margin-top: 10px; }
+#content-stats > div.pageviews-count { margin-top: 20px; }
+
+.content-rating {  
+	width: 120px; 
+	text-align: center;
+	line-height: 16px;
+	height: 16px;
+}
+
+.rating {
+   width: 65px;
+   height: 13px;
+   font-size:13px;
+}
+
+.rating img {
+   width: 65px;
+   height: 13px;
+   margin: 0;
+}
+
+.rating span {
+   width: 65px;
+   height: 13px;
+}
+
+
+.infoinline .rating span {
+      border-bottom: 0;
+}
+
+.starsgrey span { background-position: 0 -274px; }
+.stars1 span { background-position: 0 -287px; }
+.stars2 span { background-position: 0 -300px; }
+.stars3 span { background-position: 0 -313px; }
+.stars4 span { background-position: 0 -326px; }
+.stars5 span { background-position: 0 -339px; }
+.stars6 span { background-position: 0 -352px }
+.stars7 span { background-position: 0 -365px; }
+.stars8 span { background-position: 0 -378px; }
+.stars9 span { background-position: 0 -391px; }
+.stars10 span { background-position: 0 -404px; }
+
+#content-stats-title { float: right; width: 65px; height: 16px; margin-top: 8px; margin-right: 15px; }
+#content-stats-title .content-rating { width: auto; }
+#cmain .module .mtitle #content-stats-title .content-rating { text-align: left; }
+#cmain .module .mtitle #content-stats-title .content-rating span { margin: 0 ; padding: 0;}
+
+#content-stats-title .starsgrey span { background-position: -66px -274px; }
+#content-stats-title .stars1 span { background-position: -66px -287px; }
+#content-stats-title .stars2 span { background-position: -66px -300px; }
+#content-stats-title .stars3 span { background-position: -66px -313px; }
+#content-stats-title .stars4 span { background-position: -66px -326px; }
+#content-stats-title .stars5 span { background-position: -66px -339px; }
+#content-stats-title .stars6 span { background-position: -66px -352px }
+#content-stats-title .stars7 span { background-position: -66px -365px; }
+#content-stats-title .stars8 span { background-position: -66px -378px; }
+#content-stats-title .stars9 span { background-position: -66px -391px; }
+#content-stats-title .stars10 span { background-position: -66px -404px; }

@@ -1,0 +1,29 @@
+<%content_support do%>
+<%mftext('¿Qué es una feed RSS?') do %>
+<p>Es un archivo que contiene titulares y enlaces a los contenidos indicados por los titulares.</p>
+<p>Sirve para estar al tanto de las actualizaciones de una web sin tener que visitarla.</p>
+<p><a href="http://es.wikipedia.org/wiki/RSS" target="_blank" class="external">Más información</a></p>
+<% end -%>
+<% end -%>
+
+<%content_main do %>
+<%mftext('Feeds RSS de noticias') do%>
+<img src="/skins/default/images/rss.png" style="float: right; "/>
+<ul class="rss16">
+	<li><a href="http://<%=App.domain%>/rss/noticias">Todas</a></li>
+</ul>
+<table>
+	<tr style="vertical-align: top;"><td style="width: 20em;">
+<ul class="rss16">
+<%FactionsPortal.find(:all, :conditions => "code In (SELECT code from games)", :order => 'lower(name)').each do |portal| %>
+	<li><a href="http://<%=portal.code%>.<%=App.domain%>/rss/noticias"><%=portal.name%></a></li>
+<% end -%>
+</ul></td>
+<td><ul class="rss16">
+<%FactionsPortal.find(:all, :conditions => "code In (SELECT code from platforms)", :order => 'lower(name)').each do |portal| %>
+	<li><a href="http://<%=portal.code%>.<%=App.domain%>/rss/noticias"><%=portal.name%></a></li>
+<% end -%>
+</ul></td>
+</tr></table>
+<% end -%>
+<% end -%>

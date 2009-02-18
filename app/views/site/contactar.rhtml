@@ -1,0 +1,32 @@
+<%content_main do %>
+<%mftext('Contactar con Gamersmafia') do %>
+<form method="post" id="contact" action="/site/do_contactar">
+	<table>
+		<tr>
+			<td class="w100">Asunto</td>
+			<td><select name="subject">
+				<option value="sugerencias">Sugerencias o comentarios sobre la web</option>
+				<option value="bug">Bugs o fallos</option>
+				<option value="problemas_cuenta">Problema con mi cuenta</option>
+				<option value="publicidad">Publicidad</option>
+				<option value="otros">Otros</option>
+				</select></td>
+		</tr>
+		<% if !user_is_authed then %>
+		<tr>
+			<td>Tu email</td>
+			<td><input type="text" class="text" name="email" style="width: 100px;"/></td>
+		</tr>
+		<% end -%>
+		<tr style="vertical-align: top;">
+			<td>Mensaje</td>
+			<td><textarea class="text" name="message" style="width: 490px; height: 200px;"></textarea></td>
+		</tr>
+	</table>
+	<script type="text/javascript">
+	$j('form#contact').append($j('<input type="hidden" />').attr('name', 'fsckspmr').attr('value', '<%=controller.class.do_contactar_key%>'));
+	</script>
+	<input type="submit" class="button" value="Enviar" />
+</form>
+<% end -%>
+<% end -%>

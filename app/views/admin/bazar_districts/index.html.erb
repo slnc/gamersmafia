@@ -1,0 +1,27 @@
+<%mftext('Distritos del bazar') do %>
+<table>
+	<tr>
+		<th></th>
+	<th>Distrito</th>
+	<th>Don</th>
+	<th>Mano Derecha</th>
+</tr>
+<%BazarDistrict.find(:all, :order => 'lower(name)').each do |bd| %>
+<tr class="<%=oddclass%>">
+	<td style="width: 16px;"><%="<img src=\"#{fc_path(bd.icon)}\" />" if bd.icon%></td>
+	<td><a href="/admin/bazar_districts/edit/<%=bd.id%>"><%=bd.name%></a></td>
+	<td><%=user_link(bd.don) if bd.has_don?%></td>
+	<td><%=user_link(bd.mano_derecha) if bd.has_mano_derecha?%></td>
+</tr>
+<% end -%>
+</table>
+<% end -%>
+<% if @user.is_superadmin? then %>
+<%mftext('Crear nuevo distrito') do %>
+<form method="post" action="/admin/bazar_districts/create">
+	Nombre: <input type="text" name="bazar_district[name]" /><br />
+	Code: <input type="text" name="bazar_district[code]" /><br />
+	<input type="submit" value="Crear" />
+	</form>
+<% end -%>
+<% end -%>

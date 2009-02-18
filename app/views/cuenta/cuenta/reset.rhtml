@@ -1,0 +1,29 @@
+<% content_main do %>
+<%mftext('Resetear tu contraseña') do %>
+<form method="post" action="/cuenta/do_reset">
+  <input type="hidden" name="k" value="<%=params[:k]%>" />
+  <input type="hidden" name="login" value="<%=params[:login]%>" />
+    <% if @newuser and error_messages_for 'newuser' %>
+    <div class="Message"><%= error_messages_for 'newuser' %></div>
+    <% end %>
+		<table class="signup">
+
+		<tr><td>Nueva contraseña</td><td>
+        <input type="password" name="password" />
+		</td>
+		</tr>
+
+		<tr><td>Repetir la nueva contraseña</td><td>
+        <input type="password" name="password_confirmation" />
+		</td>
+		</tr>
+
+		<tr><td>&nbsp;</td>
+		<td>
+		<input type="submit" class="button primary" value="Cambiar mi contraseña&#187;" />
+		</td></tr>
+		</table>
+</div>
+</form>
+<% end -%>
+<% end -%>

@@ -1,0 +1,152 @@
+one:
+  created_on: 2006-12-29 02:13:31.235315
+  name: Avatar Personalizado
+  price:  7500.0
+  updated_on: 2006-12-29 02:13:31.235315
+  id: "1"
+  description: "<p>\xC2\xBFQuieres tener tu propio y elitista avatar personalizado?</p><p>Cuando lo compres ve a <a href=\"/cuenta/avatar\">la secci\xC3\xB3n de              avatares</a> y podr\xC3\xA1s subir una imagen como tu avatar personalizado.</p><p><strong>Importante:</strong><br /><ul><li>Una vez que subas el avatar <strong             >NO SE PODR\xC3\x81 CAMBIAR POR OTRO</strong></li><li>El avatar subido <strong>no puede ser gore ni porno</strong>.</li></ul></p>"
+  cls: SoldUserAvatar
+
+two:
+  created_on: 2006-12-30 03:37:21.276897
+  name: Anuncio 100 imp
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.276897
+  id: "2"
+  description:
+  cls: SoldAd100
+
+attributes3:
+  created_on: 2006-12-30 03:37:21.337004
+  name: Birra
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.337004
+  id: "3"
+  description:
+  cls: SoldBeer
+
+attributes4:
+  created_on: 2006-12-30 03:37:21.346898
+  name: Mensaje cabecera
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.346898
+  id: "4"
+  description:
+  cls: SoldBroadcastMessage
+
+attributes5:
+  created_on: 2006-12-30 03:37:21.354958
+  name: Web de clan
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.354958
+  id: "5"
+  description:
+  cls: SoldClanWebsite
+
+attributes6:
+  created_on: 2006-12-30 03:37:21.362876
+  name: "Facci\xC3\xB3n"
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.362876
+  id: "6"
+  description:
+  cls: SoldFaction
+
+attributes7:
+  created_on: 2006-12-30 03:37:21.370037
+  name: Canal de Gmtv
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.370037
+  id: "7"
+  description:
+  cls: SoldGmtvChannel
+
+attributes8:
+  created_on: 2006-12-30 03:37:21.376958
+  name: Clan destacado
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.376958
+  id: "8"
+  description:
+  cls: SoldOutstandingClan
+
+attributes9:
+  created_on: 2006-12-30 03:37:21.384093
+  name: "Facci\xC3\xB3n destacada"
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.384093
+  id: "9"
+  description:
+  cls: SoldOutstandingFaction
+
+attributes10:
+  created_on: 2006-12-30 03:37:21.393081
+  name: Usuario destacado
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.393081
+  id: "10"
+  description:
+  cls: SoldOutstandingUser
+
+attributes11:
+  created_on: 2006-12-30 03:37:21.402884
+  name: Firmas en tu perfil
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.402884
+  id: "11"
+  description:
+  cls: SoldProfileSignatures
+
+attributes12:
+  created_on: 2006-12-30 03:37:21.424588
+  name: Noche de sexo
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.424588
+  id: "12"
+  description:
+  cls: SoldSexNight
+
+attributes13:
+  created_on: 2006-12-30 03:37:21.453125
+  name: Partida en la ruleta
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.453125
+  id: "13"
+  description:
+  cls: SoldWheelOfFortune
+
+attributes14:
+  created_on: 2006-12-30 03:37:21.453125
+  name: Cambio de nick
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.453125
+  id: "14"
+  description:
+  cls: SoldChangeNick
+
+attributes15:
+  created_on: 2006-12-30 03:37:21.453125
+  name: Avatar de facción
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.453125
+  id: "15"
+  description:
+  cls: SoldFactionAvatar
+
+attributes16:
+  created_on: 2006-12-30 03:37:21.453125
+  name: Avatar de clan
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.453125
+  id: "16"
+  description:
+  cls: SoldClanAvatar
+
+attributes17:
+  created_on: 2006-12-30 03:37:21.453125
+  name: Firma en comentarios
+  price:  1.0
+  updated_on: 2006-12-30 03:37:21.453125
+  id: "17"
+  description:
+  cls: SoldCommentsSig

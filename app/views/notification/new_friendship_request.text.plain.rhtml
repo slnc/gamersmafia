@@ -1,0 +1,20 @@
+Hola <%=@name%>,
+
+El usuario <%=@sender.login%> quiere ser tu amigo.
+
+<% if @invitation_text then %>
+<%=@invitation_text%>
+<% end %>
+
+ACEPTAR AMISTAD
+http://<%=App.domain%>/cuenta/amigos/aceptar_amistad/<%=@sender.login%>?vk=<%=@recipient.validkey%>
+
+RECHAZAR AMISTAD
+http://<%=App.domain%>/cuenta/amigos/cancelar_amistad/<%=@sender.login%>?vk=<%=@recipient.validkey%>
+
+Ficha de <%=@sender.login%>:
+http://<%=App.domain%>/miembros/<%=@sender.login%>?vk=<%=@recipient.validkey%>
+
+Gracias,
+
+<%=@footer%>

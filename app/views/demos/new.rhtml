@@ -1,0 +1,24 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Demo } if user_is_authed %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+  <li style="margin-bottom: 10px;">Rellena el mayor número de campos para facilitar búsquedas futuras</li>
+</ul>
+<% end -%>
+<%= render :partial => 'shared/pending', :object => Demo.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Nueva demo') do %>
+
+<%= form_tag({:action => 'create'}, :multipart => true) %>
+  <%= render :partial => 'form' %>
+  <p><label for="demo_mirrors">Mirrors (1 url por línea)</label><br />
+  <%= text_area("demo", "demo_mirrors", "columns" => 40, "rows" => 5) %></p>
+  <%= submit_tag 'Crear' %>
+</form>
+<br />
+<br />
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

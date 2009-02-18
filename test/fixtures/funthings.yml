@@ -1,0 +1,40 @@
+published:
+  id: 1
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo
+  description: bar
+  main: http://youtube.com/ha
+  approved_by_user_id: 1
+  state: 2
+
+unpublished:
+  id: 2
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo2
+  description: bar2
+  main: http://youtube.com/ha2
+  state: 1
+
+deleted:
+  id: 3
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo3
+  description: bar3
+  main: http://youtube.com/ha3
+  approved_by_user_id: 1
+  state: 3

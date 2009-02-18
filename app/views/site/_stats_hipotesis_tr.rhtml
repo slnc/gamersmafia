@@ -1,0 +1,115 @@
+<%
+crates = t.conversion_rates(false)
+cdate = t.expected_completion_date
+experiment_completedness = t.experiment_completedness(false)
+css_cls = oddclass
+%>
+<tr class="<%=css_cls%>">
+	<td>
+	<div id="abtinfo<%=t.id%>min">
+	
+	<table class="compact">
+		<tr style="vertical-align: top;">
+    <td style="width: 250px; font-size: 11px;"><a style="font-weight: bold;" href="" onclick="return switch_block_visi('abtinfo<%=t.id%>');"><%=t.name%></a></td>
+	<td class="w35 centered infoinline"><% if t.info_url.to_s != '' then %><a title="Información sobre este experimento"  target="_blank" href="<%=t.info_url%>">info</a><% end -%></td>
+        <td class="infoinline"><% if crates && !t.dirty? then %>
+		<% t.metrics.each do |metric| 
+		best_info = t.best_treatment(metric) %>
+		<%=best_info[:abbrv]%> 
+		<% if best_info[:value].nil? then %>
+			-
+		<% else %>
+			<%=best_info[:type]%> <strong><%='%.2f' % best_info[:value]%></strong> <% if best_info[:type] != 'C' then %><% css_cls2 = best_info[:relative_improvement] >= (t.min_difference * 100) ? 'smgood' : ''%><%="<span class=\"#{css_cls2}\">(#{'%.2f' % (best_info[:relative_improvement])}%)</span>"%><% end -%>
+		<% end -%>
+		 
+		<%= '|' unless metric == t.metrics.last%>  
+	<% end #each metric -%>
+	<% end -%>
+	</td>
+	<td class="w75 infoinline"><%=format_interval_single_unit(t.running_time, 'días')%></td>
+	<td class="w100"><%=draw_pcent_bar(experiment_completedness) if experiment_completedness%></td>
+	</tr>
+	</table>
+	</div>
+		
+	<div class="hidden" id="abtinfo<%=t.id%>max">
+		<table class="compact">
+			<tr style="vertical-align: top;">
+				<td style="width: 250px; font-size: 11px;"><a style="font-weight: bold;" href="" onclick="return switch_block_visi('abtinfo<%=t.id%>');"><%=t.name%></a><br />
+        		<span class="sm">Completado: <strong><%= crates ? ('%.2f%%' % (experiment_completedness*100)) : '-'%></strong><br />
+				Finalización: <strong><% if t.completed_on then%><%=print_tstamp(t.completed_on)%><%else %><% if crates then %><%=cdate.kind_of?(String) ? cdate : print_tstamp(cdate)%><% else %>-<%end -%><% end -%></strong><br />
+				Diferencia mínima: <strong><%=(t.min_difference * 100).to_i%>%</strong><br />
+				Estadísticas recalculadas: <strong><%=print_tstamp(t.updated_on) if t.updated_on%></strong>
+				<% if t.info_url.to_s != '' then %><br /><a title="Información sobre este experimento" target="_blank" href="<%=t.info_url%>">info</a><% end -%>
+				<% if @user.id == 1 then %>
+				<br /><a href="/admin/hipotesis/editar/<%=t.id%>">Editar</a>
+				<% end -%>
+				</span>
+  		        </td>
+    <% if (!t.dirty?) && crates && crates[t.metrics[0].to_sym][0][:impressions] && crates[t.metrics[0].to_sym][0][:impressions] > 0 then %>
+    	<td>
+            <table>
+            <tr>
+            <th></th>
+            <% t.metrics.each do |metric| %>
+                <th><%=metric%><br /><span class="sm">impresiones / conversiones</span></th>
+            <% end -%>
+            </tr>
+        <% (t.treatments+1).times do |treatment| %>
+            <tr class="<%=oddclass%>">
+                <td style="width: 100px;"><%=treatment == 0 ? 'Control' : "Alternativa #{treatment}"%><br />
+				<span class="members-count infoinline"><%=crates[t.metrics.first.to_sym][treatment][:treated_visitors]%></span></td>
+                <% t.metrics.each do |metric|
+metric = metric.to_sym
+mclass = crates[metric][treatment][:rate] > crates[metric][0][:rate] ? 'good' : 'bad'
+mclass = 'default-treatment' if treatment == 0
+
+relmetric = crates[metric][treatment][:rate] / crates[metric][0][:rate]
+mclass = 'default-treatment' if relmetric.abs < t.min_difference
+%>
+<td><strong><span class="<%=mclass%>"><%='%.2f' % (crates[metric][treatment][:rate]*100)%>%</span></strong><br />
+                <span class="sm"><%=crates[metric][treatment][:impressions].to_i%> / <%=crates[metric][treatment][:conversions].to_i%> / <span class="<%=mclass%>"><%='%.2f%%' % ((relmetric > 1.0 ? (relmetric-1.0) : -1.0 +relmetric)*100) unless treatment == 0%></span></span>
+                </td>
+                <% end # t.metrics -%>
+            </tr>
+        <% end #t.treatments -%>
+        </table>
+        </td>
+    <% elsif (!t.dirty?) && crates && crates[t.metrics[0].to_sym][0][:stddev] then # asumimos que es una métrica de un solo valor %>
+        <td>
+            <table>
+            <tr>
+            <th></th>
+            <% t.metrics.each do |metric| %>
+                <th><%=metric%></th>
+            <% end -%>
+            </tr>
+        <% (t.treatments+1).times do |treatment| %>
+            <tr class="<%=oddclass%>">
+                <td style="width: 100px;"><%=treatment == 0 ? 'Control' : "Alternativa #{treatment}"%><br />
+				<span class="members-count infoinline"><%=crates[t.metrics.first.to_sym][treatment][:treated_visitors]%></span></td>
+                <% t.metrics.each do |metric|
+metric = metric.to_sym
+mclass =  crates[metric][treatment][:rate] > crates[metric][0][:rate] ? 'good' : 'bad'
+relmetric = crates[metric][treatment][:rate] / crates[metric][0][:rate]
+relperf = (relmetric > 1.0 ? (relmetric-1.0) : -1.0 +relmetric)*100
+mclass << 'soft' if relperf.abs < t.min_difference * 100
+mclass = 'default-treatment' if treatment == 0
+%>
+                <td><strong><span class="<%=mclass%>"><%='%.2f' % (crates[metric][treatment][:rate])%></span></strong><br />
+                <span class="<%=mclass%>"><%='%.2f%%' % ((relmetric > 1.0 ? (relmetric-1.0) : -1.0 +relmetric)*100) unless treatment == 0%></span></span>
+                </td>
+                <% end # tmetrics -%>
+
+            </tr>
+        <% end # t.treatments-%>
+		</table>
+		</td>
+        <% else %>
+		<td class="infoinline">(Datos recalculándose en estos momentos)</td>
+        <% end #crates -%>
+		</tr>
+		</table>
+			</div>
+        </td>
+	</tr>

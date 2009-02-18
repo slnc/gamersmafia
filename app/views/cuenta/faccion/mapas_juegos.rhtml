@@ -1,0 +1,30 @@
+<% content_support do %>
+  <% mftext('Nuevo mapa') do %>
+  <div class="centered-link"><strong><a href="/cuenta/faccion/mapas_juegos_new">Nuevo mapa del juego</a></div></strong>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Mapas de juegos') do %>
+
+<%= render :partial => 'shared/pager', :object => @games_map_pages, :locals => {:pos => 'top'} %>
+
+<table>
+  <tr>
+    <th>Mapa</th>
+    <th>Screenshot</th>
+    <th></th>
+  </tr>
+  
+<% for games_map in @games_maps %>
+  <tr class="<%=oddclass%>">
+    <td><a href="/cuenta/faccion/mapas_juegos/mapas_juegos_edit/<%=games_map.id%>"><%=games_map.name%></a></td>
+    <td><%=fc_thumbnail(games_map.screenshot, 'k', '85x60')%></td>
+    <td><%= link_to 'Destroy', { :action => 'mapas_juegos_destroy', :id => games_map }, :confirm => 'Are you sure?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= render :partial => 'shared/pager', :object => @games_map_pages, :locals => {:pos => 'bottom'} %>
+<% end -%>
+<% end -%>

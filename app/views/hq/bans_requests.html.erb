@@ -1,0 +1,17 @@
+<% @ban_requests_pages, @ban_requests = controller.paginate :ban_request, :conditions => 'confirming_user_id is not null or unban_confirming_user_id is not null', :order => 'coalesce(ban_requests.unban_confirmed_on, ban_requests.confirmed_on) desc', :include => :banned_user, :per_page => 50 %>
+<%= render :partial => 'shared/pager', :object => @ban_requests_pages, :locals => {'pos' => 'top'} %>
+<table>
+	<tr>
+		<th class="w20">Id</th>
+		<th>Usuario en el ajo</th>
+		<th>Fecha de ban/unban</th>
+	</tr>
+	<%@ban_requests.each do |b|%>
+	<tr class="<%=oddclass%>">
+		<td class="w20"><%=b.id%></td>
+		<td><%=member_state(b.banned_user.hstate)%> <a href="/admin/usuarios/confirmar_ban_request/<%=b.id%>"><%=b.banned_user.login%></a></td>
+		<td><%=print_tstamp(b.unban_confirmed_on ? b.unban_confirmed_on : b.confirmed_on)%></td>
+	</tr>
+	<% end%>
+</table>
+<%= render :partial => 'shared/pager', :object => @ban_requests_pages, :locals => {'pos' => 'bottom'} %>

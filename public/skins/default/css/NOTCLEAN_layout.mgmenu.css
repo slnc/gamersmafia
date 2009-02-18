@@ -1,0 +1,39 @@
+#cmain .module .mtitle { padding: 1px; }
+#cmain .module .mtitle span { display: block; padding: 7px 5px; }
+
+
+#mgfooter li {
+    
+}
+
+#mgbreadcrumb li a, #mgbreadcrumb li span {
+    padding: 0px 12px 0pt 12px;
+}
+
+#mgbreadcrumb {
+    margin-left: 0;
+}
+
+#mgmenu {
+    margin-bottom: 0;
+	margin-left: 180px;
+	margin-right: 10px;
+	margin-top: 10px;
+}
+
+#mgmenu {
+		z-index: 11;
+}
+
+#mggmtv {border-bottom: 1px solid #dfdfdf;}
+
+#mgonline .mtitle, #tracker .mtitle, #lastcomments .mtitle {
+    display: none;
+    visibility: hidden;
+}
+
+#mgmenu .mcontent {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}

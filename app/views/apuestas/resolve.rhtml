@@ -1,0 +1,44 @@
+<% content_support do %>
+<%mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Mínimo 2 opciones</li>
+<li>Máximo 5 o 6</li>
+<li>De interés general</li>
+</ul>
+<% end -%>
+<%= render :partial => 'shared/pending', :object => @pending %>
+<% end -%>
+
+<% content_main do %>
+<%mftext('Fecha del partido') do %>
+<% if @bet.winning_bets_option_id then %>
+<div class="warning">La apuesta ha sido completada, imposible cambiar la fecha de término.</div>
+<% else %>
+<form method="post" action="/apuestas/update/<%=@bet.id%>">
+<p><label for="bet_closes_on">Fecha y hora a la que se juega la partida</label><br/>
+<%= datetime_select 'bet', 'closes_on'  %></p>
+<input type="submit" class="button" value="Guardar cambios" />
+</form>
+<% end -%>
+<% end -%>
+
+<%mftext('Completar apuesta') do %>
+<form method="post" action="/apuestas/complete/<%=@bet.id%>">
+<label>Opción ganadora</label><br />
+  <% for option in @bet.bets_options.find(:all, :order => 'lower(name) asc')%>
+  <label><input type="radio" name="winner" value="<%=option.id%>" /> <%=option.name%></label><br />
+  <% end -%>
+<br />
+<label>Situaciones especiales</label><br />
+  <label><input type="radio" name="winner" value="tie" /> Empate</label><br />
+  <label><input type="radio" name="winner" value="forfeit" /> Uno de los dos equipos no se presentó o fue descalificado (se eligió un ganador por defecto/forfeit)</label><br />
+  <label><input type="radio" name="winner" value="cancelled" /> La partida se canceló por alguna razón</label>
+<br />
+<br />
+<input type="submit" class="button" value="Completar apuesta" onclick="return confirm('¿Estás seguro de que has elegido el resultado correcto?');" />
+</form>
+<% end # mftext -%>
+
+<%= link_to 'Mostrar apuesta', gmurl(@bet) %> |
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>

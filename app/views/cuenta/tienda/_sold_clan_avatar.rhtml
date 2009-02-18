@@ -1,0 +1,7 @@
+Clan:
+<select name="clan_id">
+	<%@user.clans.each do |c| %><option value="<%=c.id%>"><%=c.name%></option><% end %>
+</select>
+<br />
+<br />
+Imagen: <input type="file" name="path" />

@@ -1,0 +1,7 @@
+first_faq_entry:
+  id: 1
+  question: foo?
+  answer: bar
+  faq_category_id: 1
+  updated_on: 2006-01-01 00:00:00
+  position: 1

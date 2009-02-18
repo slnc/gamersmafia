@@ -1,0 +1,29 @@
+<% content_main do %>
+  <% mftext('Sponsors') do %>
+
+<table>
+  <tr>
+  <% for column in CompetitionsSponsor.content_columns %>
+    <th><%= column.human_name %></th>
+  <% end %>
+  </tr>
+  
+<% for competitions_sponsor in @competitions_sponsors %>
+  <tr>
+  <% for column in CompetitionsSponsor.content_columns %>
+    <td><%=h competitions_sponsor.send(column.name) %></td>
+  <% end %>
+    <td><%= link_to 'Editar', :action => 'sponsors_edit', :id => competitions_sponsor %></td>
+    <td><%= link_to 'Borrar', { :action => 'sponsors_destroy', :id => competitions_sponsor }, :confirm => '¿Estás seguro?', :method => :post %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= link_to 'Previous page', { :page => @competitions_sponsor_pages.current.previous } if @competitions_sponsor_pages.current.previous %>
+<%= link_to 'Next page', { :page => @competitions_sponsor_pages.current.next } if @competitions_sponsor_pages.current.next %> 
+
+<br />
+
+<%= link_to 'Nuevo sponsor', :action => 'sponsors_new' %>
+<% end -%>
+<% end -%>

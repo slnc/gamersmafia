@@ -1,0 +1,10 @@
+<% if (not defined?(size)) or size.to_s == '' then
+size = '85x60'
+end 
+
+if (not defined?(mode)) or mode.to_s == '' then
+mode = 'f'
+end 
+-%>
+<div class="screenshot"><%=link_to fc_thumbnail(image.file, mode, size, false), gmurl(image)%>
+  <div class="infoinline" style="margin-top: 2px;"><%=faction_favicon(image.images_category)%> | <span class="comments-count"><a title="Ver comentarios" style="display: inline;" href="<%=gmurl(image)%>#comments"><%=image.cache_comments_count%></a></span></div></div>

@@ -1,0 +1,43 @@
+<% content_main do %>
+	<% mftext('Configuración') do %>
+  <form method="post" action="/cuenta/clanes/general/update" enctype="multipart/form-data">
+		
+  <p><label for="clan_name">Nombre</label><br/>
+  <%= text_field 'clan', 'name', :class => 'text'  %></p>
+
+  <p><label for="clan_tag">Tag</label><br/>
+  <%= text_field 'clan', 'tag', :class => 'text'  %></p>
+
+  <p><label for="clan_logo">Logo del clan .JPG</label><br/>
+  <% if @clan.logo then %>
+  <%=fc_thumbnail(@clan.logo, 'k', '153x115')%> 
+  <% end -%>
+  <%= file_field 'clan', 'logo' %></p>
+
+  <p><label for="clan_logo">Logo para competiciones</label><br/>
+  <% if @clan.competition_roster then %>
+  <%=fc_thumbnail(@clan.competition_roster, 'f', '50x50')%> 
+  <% end -%>
+  <%= file_field 'clan', 'competition_roster' %> <span class="infoinline">Se verá a 50x50</span></p>
+
+  <p><label for="clan_irc_channel">Canal de IRC</label><br/>
+  #<%= text_field 'clan', 'irc_channel', :class => 'text'  %> <span class="infoinline">ej: gamersmafia</span></p>
+
+  <p><label for="clan_irc_server">Servidor de IRC</label><br/>
+  <%= text_field 'clan', 'irc_server', :class => 'text'  %> <span class="infoinline">ej: irc.quakenet.org</span></p>
+
+  <p><label for="clan_irc_server">Web oficial</label><br/>
+  <%= text_field 'clan', 'website_external', :class => 'text'  %> <span class="infoinline">ej: http://gamersmafia.com, gamersmafia.com</span></p>
+	
+	
+  <br />
+
+  <%mftext('Juegos a los que juega tu clan') do %>
+  <%=games_selector 'clan[game_ids]', @clan.game_ids%>
+  
+  <input type="submit" class="button" value="Guardar" />
+
+  </form>
+  <% end -%>
+  <% end %>
+<% end %>

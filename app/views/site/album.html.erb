@@ -1,0 +1,7 @@
+<% mftext('Álbum de fotos') do %>
+<%@files.each do |f| %>
+<a style="padding-left: 13px; padding-right: 13px;" target="_blank" href="/images/history/<%=f.gsub('thumb-', '')%>"><img class="icon" src="/images/history/<%=f%>" /></a>
+<% end -%>
+
+<div class="centered" style="padding-top: 20px; clear: both;"><strong><a href="/site">Volver al presente</a></strong></div>
+<% end -%>

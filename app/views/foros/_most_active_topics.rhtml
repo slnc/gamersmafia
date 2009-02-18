@@ -1,0 +1,5 @@
+<%=mfcontents_basic("Más populares en #{@object.root.code.upcase}", 
+					Proc.new { @object.most_active_items }, 
+					[], 
+					:faction_favicon => true,
+					:cache => "/common/foros/_most_active_topics/#{@object.id}/_#{Time.now.to_i/86400}")%>

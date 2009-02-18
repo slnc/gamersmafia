@@ -1,0 +1,116 @@
+<% content_support do %>
+  <div class="subheader first"><div>Estadísticas</div></div>
+<%
+  total = User.count
+  confirmed = User.count(:conditions => "state <> #{User::ST_UNCONFIRMED}")
+  unconfirmed = total - confirmed
+  active = User.count(:conditions => "state = #{User::ST_ACTIVE}")
+  banned = User.count(:conditions => "state = #{User::ST_BANNED}")
+  disabled = User.count(:conditions => "state = #{User::ST_DISABLED}")
+  zombies = total - unconfirmed - active - banned - disabled
+  antiflood = User.count(:conditions => 'antiflood_level > -1')
+%>
+  <table>
+    <tr class="<%=oddclass%>">
+      <th>Totales</th>
+      <td class="number"><%=total%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <th>Confirmados</th>
+      <td class="number"><a href="?sm=confirmed"><%=confirmed%></a></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <th>Confirmación pendiente</th>
+      <td class="number"><a href="?sm=unconfirmed"><%=unconfirmed%></a></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <th>Activos</th>
+      <td class="number"><a href="?sm=active"><%=active%></a></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <th>Zombies</th>
+      <td class="number"><a href="?sm=zombies"><%=zombies%></a></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <th>Baneados</th>
+      <td class="number"><a href="?sm=banned"><%=banned%></a></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <th>Deshabilitados</th>
+      <td class="number"><a href="?sm=disabled"><%=disabled%></a></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <th>Antiflood</th>
+      <td class="number"><a href="?sm=antiflood"><%=antiflood%></a></td>
+    </tr>
+  </table>
+
+  <br />
+  <br />
+  <div class="subheader"><div>Último contenido de líderes de facción</div></div>
+  <% # TODO copypasted de mi facción/staff y a su vez de mi facción/index
+
+  for user in User.find_by_sql('SELECT * from users where id IN (select id from users_roles where role in (\'Boss\', \'Underboss\')) ORDER BY lower(login) ASC')
+  
+  # buscamos contenido
+  last_most_recent = nil
+
+  for c in Cms.categories_classes
+    last = c.items_class.find(:first, :conditions => "state = #{Cms::PUBLISHED} and user_id = #{user.id} ", :order => 'created_on DESC')
+
+    if last_most_recent.nil? or (last and last.created_on > last_most_recent.created_on) then
+      last_most_recent = last
+    end
+  end
+  %>
+  <strong><a href="/admin/usuarios/edit/<%=user.id%>"><%=user.login%></a></strong><br /><div class="infoinline">
+  <%
+  max_t = 86400 * 14 # 2 semanas
+
+    if last_most_recent then
+        last_t = (Time.now - last_most_recent.created_on).to_i
+    %>
+      Hace <%=format_interval(last_t, 'horas') %>
+  <%
+        if last_t > max_t then
+          last_t = max_t
+        end
+    else
+      last_t = max_t %>
+      Nunca
+    <% end %></div>
+  <div class="warning<%=(last_t.to_f/max_t * 10).to_i%>"><%=draw_pcent_bar(last_t.to_f / max_t) %></div>
+  <br />
+  <% end -%>
+
+
+<% end -%>
+
+<% content_main do %>
+<form method="post" action="/admin/usuarios" style="clear:left;">
+  <input size="20" type="text" class="text" name="s" />
+  <input type="submit" class="button" name="search" value="Buscar" /> <span class="infoinline">"m%@hotmail.com" encontrará "mike@hotmail.com" y "mik666@hotmail.com"</span>
+</form>
+
+<br />
+<strong>Online:</strong> <% for u in User.online('lower(login)') %>
+<a href="/admin/usuarios/edit/<%=u.id%>"><%=u.login%></a>, 
+<% end
+%>
+<br />
+<br />
+
+<%= render :partial => 'shared/pager', :object => @user_pages, :locals => {:pos => 'top'} %>
+
+<table>
+  <tr>
+		<th>Login</th>
+		<th>Email</th>
+    <th class="timestamp">Última visita</th>
+		<th>Borrar</th>
+	</tr>
+<%= render :partial => "user", :collection => @users %>
+</table>
+
+<%= render :partial => 'shared/pager', :object => @user_pages, :locals => {:pos => 'bottom'} %>
+<% end -%>

@@ -1,0 +1,74 @@
+<% content_support do %>
+  <% mftext('Trofeos') do %>
+  <table>
+<% Competition.find_related_with_user(@curuser.id).each do |c|
+    next if (c.kind_of?(Ladder) and c.state < 2) or (!c.kind_of?(Ladder) and c.state != 4)
+    winners = c.winners(3)
+    p = c.get_active_participant_for_user(@curuser)
+    trophey = nil
+    if winners[0] && winners[0].id == p.id
+      trophey = '0'
+    elsif winners[1] && winners[1].id == p.id
+      trophey = '1'
+    elsif winners[2] && winners[2].id == p.id
+      trophey = '2'
+    end
+    next if trophey.nil?
+    %>
+    <tr class="<%=oddclass%>">
+      <td><div><div style="float: left; margin-right: 2px;"><%=faction_favicon(c.game)%></div> <strong><a href="/competiciones/show/<%=c.id%>"><%=truncate(c.name, 25, '..')%></a></strong></div></td>
+      <td><img class="competition-cup cup<%=trophey%>" src="/images/blank.gif" /></td>
+    </tr>
+<% end %>
+  </table>
+  <% end -%>
+
+  <%mftext('Está participando en') do %>
+  <table>
+<% Competition.find_related_with_user(@curuser.id).each do |c|
+    next if c.state != 3
+    %>
+    <tr class="<%=oddclass%>">
+      <td><div><div style="float: left; margin-right: 2px;"><%=faction_favicon(c.game)%></div> <strong><a href="/competiciones/show/<%=c.id%>"><%=truncate(c.name, 25, '..')%></a></strong></div></td>
+    </tr>
+<% end %>
+</table>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+  <%mftext('Todas sus partidas') do %>
+
+  <table>
+<% 
+# TODO cache
+# cache("/miembros/#{@curuser.id % 1000}/#{@curuser.id}/competition_matches") do
+  Competitions.find_all_matches_from_user(@curuser).each do |cm|
+  p = cm.competition.get_active_participant_for_user(@curuser)
+  if cm.completed_on.nil?
+    p1_class = ''
+  elsif cm.result == 1 
+    p1_class = p2_class = 'match-tie'
+  else
+    # nuestro participant va a estar siempre a la izquierda en la lista
+    p1_class = ((cm.result == 0 && p.id == cm.participant1_id) or (cm.result == 2 && p.id == cm.participant2_id)) ? 'match-won' : 'match-lost'
+    # p2_class = (p1_class == 'match-lost') ? 'match-won' : 'match-lost'
+  end
+
+  c = cm.competition
+  %>
+    <tr class="<%=oddclass%>">
+      <td class="w150 infoinline"><div style="float: left; margin-right: 2px;"><%=faction_favicon(c.game)%></div> <a href="/competiciones/show/<%=c.id%>"><%=truncate(c.name, 25, '..')%></a></td>
+      <td><a href="/competiciones/partida/<%=cm.id%>"><%=match_vs_name(cm, left_participant=p)%></a></td>
+      <td class="<%=p1_class%> bgtoo"><%=cm.score_participant1%></td>
+      <td class="match-tie"><%=cm.score_participant2%></td>
+      <td class="centered" style="width: 20px;"><%= cm.result && cm.competitions_matches_uploads.count > 0  ? '<img class="downloads-count" title="Archivos adjuntos" src="/images/blank.gif" />' : ''%></td>
+      <td class="centered" style="width: 20px;"><%= cm.result && cm.competitions_matches_reports.count > 0  ? '<img class="pageviews-count" title="Informes adjuntos" src="/images/blank.gif" />' : ''%></td>
+      <td class="timestamp infoinline"><%=cm.completed_on ? print_tstamp(cm.completed_on) : print_tstamp(cm.play_on)%></td>
+    </tr>
+  <% end %>
+  <% # end 
+  %>
+</table>
+<% end -%>
+<% end -%>

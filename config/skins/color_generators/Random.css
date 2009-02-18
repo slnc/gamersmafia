@@ -1,0 +1,8 @@
+body {
+	background-color: #${pagebg_color};
+	color: #${text_color};
+}
+
+a {
+	color: #${link_color};
+}

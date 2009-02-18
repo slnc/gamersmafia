@@ -1,0 +1,7 @@
+one:
+  id: 1
+  created_on: 2006-01-01 00:00:00
+  headline: foo
+  info: bar
+  type_id: <%=SlogEntry::TYPES[:security]%>
+  reporter_user_id: 1

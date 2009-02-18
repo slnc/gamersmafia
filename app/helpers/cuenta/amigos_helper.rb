@@ -1,0 +1,2 @@
+module Cuenta::AmigosHelper
+end

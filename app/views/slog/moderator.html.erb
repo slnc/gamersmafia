@@ -1,0 +1,23 @@
+<%=render :partial => 'scope_selector', :locals => { :collection => @available_scopes, :active_scope => @scope } %>
+
+<%=render :partial => 'task_browser', :locals => { :slog_entries_filter => { :domain => :moderator, :scope => @scope } } %>
+
+<div class="grid-9 glast">
+	<% if nil then %>
+<%mftext('Actividad') do %>
+
+select count(*), date_trunc('day', a.created_on) from comments a join contents b on a.content_id = b.id where b.game_id = 25 and a.created_on >= now() - '90 days'::interval group by date_trunc('day', a.created_on) order by date_trunc('day', a.created_on) DESC;
+<% end -%>
+<% end -%>
+
+<%mftext('Moderación', :has_submodules => true) do %>
+	<%mftext('Comentarios', :grid => 3) do %>
+	<% end -%>
+	
+	<%mftext('Tópics cerrados', :grid => 3) do %>
+	<% end -%>
+	
+	<%mftext('Delincuentes', :grid => 3, :glast => true) do %>
+	<% end -%>
+<% end -%>
+</div>

@@ -1,0 +1,342 @@
+<% require 'digest/md5' %>
+superadmin:
+  id: 1
+  login: superadmin
+  state: <%=User::ST_ACTIVE%>
+  password: <%=Digest::MD5.hexdigest('lalala') %>
+  created_on: <%=1.day.ago.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  faction_last_changed_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: superadmin@gamersmafia.com
+  validkey: matsuhiratomatsuhiratomatsuhiratomatsuhi
+  ipaddr: 127.0.0.1
+  is_superadmin: true
+  secret: mamba
+  enable_competition_indicator: false
+  is_hq: true
+  enable_profile_signatures: true
+  admin_permissions: '00000000000000'
+
+panzer:
+  id: 2
+  state: <%=User::ST_ACTIVE%>
+  login: panzer
+  password: <%=Digest::MD5.hexdigest('lelele') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: panzer@gamersmafia.com
+  validkey: matsuhiratomatsuhiratomatsuhiratomatsuh1
+  ipaddr: 127.0.0.1
+  secret: mambohahaha
+  enable_competition_indicator: false
+  is_hq: false
+  enable_profile_signatures: false
+  admin_permissions: '00000000000000'
+  photo: blah/bleh/bluh.jpg
+
+mralariko:
+  id: 3
+  state: <%=User::ST_ACTIVE%>
+  login: MrAlariko
+  password: <%=Digest::MD5.hexdigest('lelele') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: mralariko@gamersmafia.com
+  validkey: matsuhiratomatsuhiratomatsuhiratomatsu10
+  ipaddr: 127.0.0.1
+  secret: mambohahaha2
+  enable_competition_indicator: false
+  is_hq: true
+  enable_profile_signatures: false
+  admin_permissions: '00000000000000'
+
+panzer4:
+  id: 4
+  state: <%=User::ST_ACTIVE%>
+  login: panzer4
+  password: <%=Digest::MD5.hexdigest('lelele') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: panzer4@gamersmafia.com
+  validkey: matsuhiratomatsuhiratomatsuhiratomatsuhk
+  ipaddr: 127.0.0.1
+  secret: mam2f2v1sa
+  enable_competition_indicator: false
+  is_hq: false
+  enable_profile_signatures: false
+  admin_permissions: '00000000000000'
+
+panzer5:
+  id: 5
+  state: <%=User::ST_ACTIVE%>
+  login: panzer5
+  password: <%=Digest::MD5.hexdigest('lelele') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: panzer5@gamersmafia.com
+  validkey: matsuhiratomatsuhiratoma4suhiratomatsuhk
+  ipaddr: 127.0.0.1
+  secret: mambohahahasac
+  enable_competition_indicator: false
+  is_hq: false
+  enable_profile_signatures: false
+  admin_permissions: '00000000000000'
+
+faction_boss:
+  id: 10
+  state: <%=User::ST_ACTIVE%>
+  login: reject
+  password: <%=Digest::MD5.hexdigest('lelele') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: reject@gamersmafia.com
+  validkey: matsuhiratomatsuhiratomatsuhiratomatsu11
+  ipaddr: 127.0.0.1
+  secret: mambusefuealaguerra
+  enable_competition_indicator: false
+  is_hq: true
+  enable_profile_signatures: false
+  admin_permissions: '00000000000000'
+
+faction_editor:
+  id: 11
+  state: <%=User::ST_ACTIVE%>
+  login: reject2
+  password: <%=Digest::MD5.hexdigest('lelele') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: reject2@gamersmafia.com
+  validkey: matsuhiratomatsuhiratomatsuhiratomatsu12
+  ipaddr: 127.0.0.1
+  secret: mireudmireudquepena
+  enable_competition_indicator: false
+  is_hq: true
+  enable_profile_signatures: false
+  admin_permissions: '00000000000000'
+    
+faction_moderator:
+  id: 12
+  state: <%=User::ST_ACTIVE%>
+  login: reject3
+  password: <%=Digest::MD5.hexdigest('lelele') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: reject1@gamersmafia.com
+  validkey: matsuhiratomatsuhiratomatsuhiratomatsu13
+  ipaddr: 127.0.0.1
+  enable_competition_indicator: false
+  is_hq: true
+  enable_profile_signatures: false
+  admin_permissions: '00000000000000'
+
+faction_moderator2:
+  id: 13
+  state: <%=User::ST_ACTIVE%>
+  login: reject4
+  password: <%=Digest::MD5.hexdigest('lelele') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: reject4@gamersmafia.com
+  validkey: matsuhiratomatsuhiratomatsuhiratomatsu14
+  ipaddr: 127.0.0.1
+  enable_competition_indicator: false
+  is_hq: true
+  enable_profile_signatures: false
+  admin_permissions: '00000000000000'
+
+faction_moderator3:
+  id: 14
+  state: <%=User::ST_ACTIVE%>
+  login: reject5
+  password: <%=Digest::MD5.hexdigest('lelele') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: reject5@gamersmafia.com
+  validkey: matsuhiratomatsuhiratomatsuhiratomatsu15
+  ipaddr: 127.0.0.1
+  enable_competition_indicator: false
+  is_hq: true
+  enable_profile_signatures: false
+  admin_permissions: '00000000000000'
+
+unconfirmed:
+  id: 50
+  state: <%=User::ST_UNCONFIRMED%>
+  login: unconfirmed_user
+  password: <%=Digest::MD5.hexdigest('lelele') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: unconfirmed@gamersmafia.com
+  validkey: blablabla16
+  ipaddr: 127.0.0.1
+  enable_competition_indicator: false
+  is_hq: false
+  enable_profile_signatures: false
+  admin_permissions: '00000000000000'
+
+banned:
+  id: 51
+  state: <%=User::ST_BANNED%>
+  login: banned_user
+  password: <%=Digest::MD5.hexdigest('lelele') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: banned@gamersmafia.com
+  validkey: blablablablbilib17
+  ipaddr: 127.0.0.1
+  enable_competition_indicator: false
+  is_hq: false
+  enable_profile_signatures: false
+  admin_permissions: '00000000000000'
+
+disabled:
+  id: 52
+  state: <%=User::ST_DISABLED%>
+  login: disabled_user
+  password: <%=Digest::MD5.hexdigest('lelele') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: disabled@gamersmafia.com
+  validkey: blablablableblel18
+  ipaddr: 127.0.0.1
+  enable_competition_indicator: false
+  is_hq: false
+  enable_profile_signatures: false
+  admin_permissions: '00000000000000'
+
+mrman:
+  id: 53
+  state: <%=User::ST_ACTIVE%>
+  login: mrman
+  password: <%=Digest::MD5.hexdigest('mrmanpass') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: mrman@gamersmafia.com
+  validkey: blablablableblella19
+  ipaddr: 127.0.0.1
+  enable_competition_indicator: false
+  is_superadmin: true
+  is_hq: true
+  enable_profile_signatures: false
+  is_bot: true
+  admin_permissions: '00000000000000'
+
+nagato:
+  id: 54
+  state: <%=User::ST_ACTIVE%>
+  login: nagato
+  password: <%=Digest::MD5.hexdigest('nagatopass') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: nagato@gamersmafia.com
+  validkey: blablablableblella20
+  ipaddr: 127.0.0.1
+  enable_competition_indicator: false
+  is_superadmin: false
+  is_hq: true
+  enable_profile_signatures: false
+  is_bot: true
+  admin_permissions: '00000000000000'
+
+mrcheater:
+  id: 55
+  state: <%=User::ST_ACTIVE%>
+  login: MrCheater
+  password: <%=Digest::MD5.hexdigest('mrcheaterpass') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: mrcheater@gamersmafia.com
+  validkey: blablablableblella21
+  ipaddr: 127.0.0.1
+  enable_competition_indicator: false
+  is_superadmin: false
+  is_hq: false
+  enable_profile_signatures: false
+  is_bot: true
+  admin_permissions: '00000000000000'
+
+superadmin2:
+  id: 56
+  state: <%=User::ST_ACTIVE%>
+  login: superadmin2
+  password: <%=Digest::MD5.hexdigest('lalala') %>
+  created_on: <%=1.day.ago.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: superadmin2@gamersmafia.com
+  validkey: matsuhiratomatsuhiratomatsuhiratomatsuh2
+  ipaddr: 127.0.0.1
+  is_superadmin: true
+  enable_competition_indicator: false
+  is_hq: true
+  enable_profile_signatures: true
+  admin_permissions: '00000000000000'
+
+raulinho:
+  id: 57
+  state: <%=User::ST_ACTIVE%>
+  login: RAULINHO
+  password: <%=Digest::MD5.hexdigest('lalala') %>
+  created_on: <%=1.day.ago.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: raulinho@gamersmafia.com
+  validkey: matsuhiratomatsuhiratomatsuhiratomatsuh3
+  ipaddr: 127.0.0.1
+  is_superadmin: false
+  enable_competition_indicator: false
+  is_hq: false
+  enable_profile_signatures: true
+  admin_permissions: '00000000000000'
+
+mrachmed:
+  id: 58
+  state: <%=User::ST_ACTIVE%>
+  login: MrAchmed
+  password: <%=Digest::MD5.hexdigest('mrcheaterpass') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: mrachmed@gamersmafia.com
+  validkey: blablablableblella50
+  ipaddr: 127.0.0.1
+  enable_competition_indicator: false
+  is_superadmin: false
+  is_hq: false
+  enable_profile_signatures: false
+  is_bot: true
+  admin_permissions: '00000000000000'
+
+advertiser:
+  id: 59
+  state: <%=User::ST_ACTIVE%>
+  login: crusad3r
+  password: <%=Digest::MD5.hexdigest('mrcheaterpass') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: crusad3r@gamersmafia.com
+  validkey: blablablableblella72
+  ipaddr: 127.0.0.1
+  enable_competition_indicator: false
+  is_superadmin: false
+  is_hq: false
+  enable_profile_signatures: false
+  is_bot: true
+  admin_permissions: '00000000001000'

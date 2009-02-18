@@ -1,0 +1,27 @@
+<% content_support do %>
+  <%=render :partial => '/foros/nuevo_topic'%>
+  
+  <%=render :partial => '/shared/last_commented_items_in_category', :object => @object = @forum%>
+  <%=render :partial => 'most_active_users', :object => @object = @forum%>
+  <%=render :partial => 'most_active_topics', :object => @object = @forum%>
+  <%= render :partial => 'go_to_competition', :object => @object = @forum%>
+
+  
+  <% # TODO cachear esto %>
+  <% cache("/common/foros/subforos/#{@forum.parent_id}") do %>
+<% if (not @forum.respond_to? :competition or not @forum.competition) and @forum.parent then %>
+  <%mftext('Subforos') do %>
+<ul class="content-hid">
+<strong><%=@forum.parent.name%></strong>
+<% for subforum in @forum.parent.children %>
+<li><%=link_to subforum.name, :action => 'forum', :id => subforum.id%></li>
+<% end -%>
+</ul>
+<% end -%>
+<% end -%>
+<% end -%>
+<% end -%>
+
+<% content_main do %> 
+  <%=mfcontent(@topic)%>
+<%end -%>

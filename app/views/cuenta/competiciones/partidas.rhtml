@@ -1,0 +1,87 @@
+<% content_support do %>
+  <% if @competition.kind_of?(Ladder) then %>
+  <% mftext('Retos sin aprobar') do %>
+  <%=matches_list(@competition.matches(:unapproved))%>
+  <% end -%>
+  <% end -%>
+
+  <% if @competition.can_recreate_matches? then %>
+  <% mftext('Resetear') do %>
+  	<form method="post" action="/cuenta/competiciones/hack/recreate_matches" class="centered">
+  		<input type="submit" value="Volver a crear las partidas" onclick="return confirm('¿Estás seguro?');" />
+  	</form>
+  <% end -%>
+  <% end -%>
+  
+  <% mftext('Resultado pendiente') do %>
+  <%=matches_list(@competition.matches(:result_pending))%>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Todas las partidas de la competición') do %>
+  <% @matches_pages = ActionController::Pagination::Paginator.new self, @competition.competitions_matches.count, 25, params['page'] 
+  @matches_pages.current_page = @matches_pages.last if params['page'].nil? 
+
+  %>
+  <%=render :partial => 'shared/pager', :object => @matches_pages, :locals => {:pos => 'top'} %>
+  <form id="superform" method="post" action="/cuenta/competiciones/partidas">
+  <table>
+    <tr class="<%=oddclass%>">
+      <th class="checkbox"><input type="checkbox" onclick="slnc.checkboxSwitchGroup(this);" /></th>
+      <th class="w125">Participante A</th>
+      <th class="w125">Participante B</th>
+      <th>Resultado<%=@competition.default_maps_per_match ? ' / Mapas' : ''%></th>
+      <th class="timestamp">Fecha establecida</th>
+      <th>Fase</th>
+    </tr>
+
+    <% for match in @competition.competitions_matches.find(:all, :order => 'stage DESC, competitions_matches.id DESC', :limit => @matches_pages.current.to_sql[0], :offset => @matches_pages.current.to_sql[1], :include => [:participant1, :participant2]) %>
+    <tr class="<%=oddclass%>">
+      <td><input type="checkbox" onclick="slnc.hilit_row(this, 'selrow');" name="competitions_matches[]" value="<%=match.id%>" /></td>
+      <td><% if match.participant1_id then%><a href="/competiciones/participante/<%=match.participant1_id%>"><%=match.participant1.name%></a><% end -%></td>
+      <td><% if match.participant2_id then%><a href="/competiciones/participante/<%=match.participant2_id%>"><%=match.participant2.name%></a><% end -%></td>
+      <td><% case match.result
+        when 0: %><span class="infoinline">Gana</span> <%=match.participant1.name%><%
+        when 1: %>Empate<%
+        when 2: %><span class="infoinline">Gana</span> <%=match.participant2.name%><%
+        else 
+          if match.accepted then %><span class="infoinline">No jugado</span><%
+          else %><span class="infoinline">Aún no ha sido aceptado (retado hace <%=format_interval(Time.now.to_i - match.created_on.to_i, 'días')%>)</span>
+       <% end -%>
+<%      end -%>
+<% if @competition.default_maps_per_match then %><div class="infoinline"><%match.competitions_matches_games_maps.each do |map| %><%=map.games_map.name%>, <% end %></div>
+      <% end %>
+      </td>
+      <td class="timestamp infoinline"><%=print_tstamp(match.play_on)%></td>
+      <td><%=match.stage%></td>
+    </tr>
+  <% end -%>
+  </table>
+  <%=render :partial => 'shared/pager', :object => @matches_pages, :locals => {:pos => 'bottom'} %>
+  <% end -%>
+
+  
+  <% mftext('Modificar fecha de partidas seleccionadas') do %>
+  Nueva fecha de juego: <%=datetime_select 'matches', 'play_on'  %>
+  <input type="submit" class="button" value="Guardar nueva fecha" onclick="form_sym_action('superform', 'partidas', 'update_matches_play_on');" />
+  <% end -%>
+  
+  <% mftext('Modificar mapas de partidas seleccionadas') do %>
+<% if @competition.default_maps_per_match then
+@competition.default_maps_per_match.times do |time|
+%><select name="new_maps[]">
+  <option value=""></option>
+  <% @competition.games_maps.each do |map| %><option value="<%=map.id%>"><%=map.name%></option><% end -%>
+</select>
+<%
+   end
+   %>
+  <input type="submit" class="button" value="Guardar nuevos mapas" onclick="form_sym_action('superform', 'partidas', 'update_matches_games_maps');" />
+  <%
+end
+
+  %>
+</form>
+<% end -%>
+<% end -%>

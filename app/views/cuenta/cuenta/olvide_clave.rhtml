@@ -1,0 +1,22 @@
+<% content_main do %>
+  <% mftext('Recuperar cuenta') do %>
+  <form method="post" action="/cuenta/do_olvide_clave">
+<p>Introduce tu email:</p>
+<input type="text" class="text form" name="email" size="20" />
+<br /><br />
+<input type="submit" class="button primary" value="Recuperar contraseña &#187;" />
+</form>
+<br />
+<br />
+  <form method="post" action="/cuenta/do_olvide_clave">
+<p>Si no recuerdas el email que usaste puedes indicarnos tu login:</p>
+<input type="text" class="text form" name="login" size="20" />
+<br /><br />
+<input type="submit" class="button primary" value="Recuperar contraseña &#187;" />
+</form>
+<br />
+<br />
+<p>¿Problemas para recuperar tu cuenta?</p>
+<p>Puedes contactar con nosotros en <a href="mailto:ayuda@gamersmafia.com">ayuda@gamersmafia.com</a>.</p>
+<% end -%>
+<% end -%>

@@ -1,0 +1,96 @@
+faction_portal:
+  id: 1
+  name: Unreal Tournament
+  code: ut
+  type: FactionsPortal
+
+unrealers:
+  id: 11
+  type: FactionsPortal
+  name: unrealers
+  code: unreal
+
+qr2:
+  id: 17
+  type: ClansPortal
+  name: mapaches
+  code: mapaches
+  clan_id: 2
+
+wii:
+  id: 20
+  type: FactionsPortal
+  name: Wii
+  code: wii
+  
+rj:
+  id: 21
+  type: FactionsPortal
+  name: rejects faction
+  code: rj
+  
+th:
+  id: 22
+  type: FactionsPortal
+  name: third faction
+  code: th
+  
+bd1:
+  id: 31
+  name: Anime
+  code: anime
+  type: BazarDistrictPortal
+  
+bd2:
+  id: 32 
+  name: Cine
+  code: cine
+  type: BazarDistrictPortal
+  
+bd3:
+  id: 33
+  name: Deportes
+  code: deportes
+  type: BazarDistrictPortal
+  
+bd4:
+  id: 34
+  name: Desarrollo
+  code: desarrollo
+  type: BazarDistrictPortal
+  
+bd5:
+  id: 35
+  name: Estudiantes
+  code: estudiantes
+  type: BazarDistrictPortal
+  
+bd6:
+  id: 36
+  name: Hardware
+  code: hardware
+  type: BazarDistrictPortal
+  
+bd7:
+  id: 37
+  name: Software
+  code: software
+  type: BazarDistrictPortal
+  
+bd8:
+  id: 38 
+  name: Internet
+  code: inet
+  type: BazarDistrictPortal
+  
+bd9:
+  id: 39
+  name: Musica
+  code: musica
+  type: BazarDistrictPortal
+  
+bd10:
+  id: 40
+  name: Literatura
+  code: literatura
+  type: BazarDistrictPortal

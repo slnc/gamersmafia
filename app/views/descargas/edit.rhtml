@@ -1,0 +1,31 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Download } if user_is_authed %>
+<%=render :partial => 'shared/content_details', :locals => { :object => @download} %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Descripción informativa</li>
+</ul>
+<% end -%>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @download } %>
+<%= render :partial => 'shared/pending', :object => Download.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Editar descarga') do %>
+
+<%= form_tag({:action => 'update', :id => @download}, {:multipart => true, :name => 'editing_content' }) %>
+  <%= render :partial => 'form' %>
+  <br />
+  <p><label for="download_mirrors">Mirrors (1 url por línea)</label><br />
+    <textarea name="download[download_mirrors]" rows="10" cols="60"><% for mirror in @download.download_mirrors %><%=mirror.url%>
+<% end -%></textarea>
+  </label>
+  <%= submit_tag 'Guardar' %>
+</form>
+<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @download}%>
+<%=render :partial => '/shared/change_authorship', :locals => {:object => @download}%>
+
+<%= link_to 'Ver descarga publicada', gmurl(@download) %> |
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

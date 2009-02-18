@@ -1,0 +1,2 @@
+module Admin::BjJobsHelper
+end

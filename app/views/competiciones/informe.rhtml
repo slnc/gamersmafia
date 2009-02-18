@@ -1,0 +1,19 @@
+<% content_support do %>
+  <% mftext('Informes de la partida') do %>
+  <ul class="skeletal">
+    <% for r in @competitions_match.competitions_matches_reports.find(:all, :order => 'competitions_matches_reports.created_on ASC', :include => :user) %>
+    <li><a href="/competiciones/informe/<%=r.id%>">Informe de <%=r.user%></a><br />
+    <span class="infoinline"><%=print_tstamp(r.created_on)%></span></li>
+    <% end -%>
+  </ul>
+  <% end #mftext -%>
+<% end -%>
+
+
+<% content_main do %>
+  <% mftext("Informe de #{@report.user.login}") do %>
+  <div style="float: right; margin: 5px;"><%=participant_roster(@competitions_participant)%></div>
+  <%=@report.report%>
+  <div style="clear: left; margin-top: 20px;"><a href="/competiciones/partida/<%=@competitions_match.id%>">&laquo; Volver a la partida</a></div>
+  <% end -%>
+<% end -%>

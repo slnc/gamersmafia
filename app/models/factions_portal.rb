@@ -1,0 +1,270 @@
+class FactionsPortal < Portal
+  VALID_HOMES = %w(fps softcore)
+  before_save :check_factions_portal_home
+  
+  def juego_title
+    @_cache_mgmenu_juego_title ||= begin
+      games = self.games
+      platforms = self.platforms
+      if games.size > 1
+      'Juegos'
+      elsif games.size == 1
+      'Juego'
+      elsif platforms.size > 1
+      'Plataformas'
+      else
+      'Plataforma'
+      end
+    end
+  end
+  
+  def check_factions_portal_home
+    if factions_portal_home.to_s == '' || VALID_HOMES.include?(factions_portal_home)
+      true
+    else
+      self.errors.add('factions_portal_home', "El home especificado '#{self.factions_portal_home}' no es válido")
+      false
+    end
+  end
+  
+  def home
+      if self.juego_title == 'Plataforma' 
+        'facciones_platform'
+      elsif self.factions_portal_home.to_s != ''
+        "facciones_#{self.factions_portal_home}"
+      else
+        'facciones_fps'
+      end
+  end
+  
+  def layout
+    'gm'
+  end
+  
+  def channels
+    cond = "OR gmtv_channels.faction_id IN (#{faction_ids.join(',')})"  
+    GmtvChannel.find(:all, :conditions => "gmtv_channels.file is not null AND (gmtv_channels.faction_id IS NULL #{cond})", :order => 'gmtv_channels.id ASC', :include => :user)
+  end
+  
+  def needs_you
+    self.factions.count == 1 && self.factions.find(:first).needs_you
+  end
+  
+  # Devuelve todas las categorías de primer nivel visibles en la clase dada
+  def categories(content_class)
+    cats = []
+    for f in self.factions
+      catz = content_class.category_class.toplevel(:conditions => "code = \'#{f.code}\'")
+      cats<< catz[0] if catz.size > 0
+    end
+    cats
+  end
+  
+  # devuelve array de ints con las ids de las categorías visibles del tipo dado
+  def get_categories(cls)
+    # buscamos los nombres de todas las categorías de los juegos que tenemos
+    # asociados
+    cats_full = [0]
+    
+    for f in self.factions
+      for category in cls.find(:all, :conditions => ["root_id = (SELECT id FROM #{Inflector::tableize(cls.name)} where root_id = id and code = ?)", f.code])
+        cats_full<< category.id
+      end
+    end
+    
+    @categories = cats_full
+    
+    @categories
+  end
+  
+  def games
+    self.factions.collect {|f| Game.find_by_code(f.code)} .compact.sort {|a,b| a.code <=> b.code }
+  end
+  
+  def platforms
+    self.factions.collect {|f| Platform.find_by_code(f.code)} .compact.sort {|a,b| a.code <=> b.code }
+  end
+  
+  
+  def competitions
+    FactionsPortalCompetitionProxy.new(self)
+  end
+  
+  def topics_categories
+    TopicsCategory.find(:all, :conditions => "parent_id is null and root_id in (#{get_categories(TopicsCategory).join(',')})", :order => 'UPPER(name) ASC')
+  end
+  
+  def method_missing(method_id, *args)
+    if Cms::contents_classes_symbols.include?(method_id) # contents
+      if method_id == :poll
+        FactionsPortalPollProxy.new(self)
+      elsif method_id == :coverage
+        FactionsPortalCoverageProxy.new(self) 
+      else
+        obj = Object.const_get(Inflector::camelize(Inflector::singularize(method_id)))
+        if obj.respond_to?(:is_categorizable?)
+          # ahora reemplazamos obj por la categoría de primer nivel si es facción o plataforma
+          g = self.games
+          if g.size > 1
+            obj = obj.category_class.find_by_code(g[0].code) # cargamos la categoría como proxy para hacer consultas y que incluya la constraint de category_id
+          elsif self.factions.size > 0 # platform
+            obj = obj.category_class.find_by_code(self.factions[0].code)
+          end
+          
+          #if obj.class.name == 'ImagesCategory'
+            # newc = obj.category_class.find(:first, :conditions => 'id = root_id and code = \'bazar\'')
+            #obj.add_sibling(newc) if newc
+          #end
+          if g.size > 1
+            g.delete_at(0)
+            g.each { |gg| obj.add_sibling(obj.class.find_by_code(gg.code)) }
+          end
+          obj
+        end
+        obj
+      end
+    elsif /(news|downloads|topics|events|tutorials|polls|images|questions)_categories/ =~ method_id.to_s then
+      # Devolvemos categorías de primer nivel de esta facción
+      # it must have at least one
+      cls = Object.const_get("#{Inflector::singularize(Inflector::camelize(method_id))}")
+      cls.find(:all, :conditions => "parent_id is null and id = root_id AND code IN (#{toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC')
+    else
+      super
+    end
+  end
+  
+  def respond_to?(method_id, *args)
+    if Cms::contents_classes_symbols.include?(method_id) # contents
+      true
+    elsif /(news|downloads|topics|events|tutorials|polls|images|questions)_categories/ =~ method_id.to_s then
+      true
+    else
+      super
+    end
+  end
+  
+  # Devuelve los banners asociados a este portal
+  def factions_links
+    banners = []
+    urls = []
+    self.factions.each do |f| 
+      f.factions_links.find(:all, :order => 'lower(name)').each do |fl| 
+        next if urls.include?(fl.url)
+        banners<< fl 
+        urls<< fl.url
+      end
+    end
+    banners
+  end
+  
+  private
+  def toplevel_categories_codes
+    factions.collect {|f| "'#{f.code}'" }
+  end
+end
+
+class FactionsPortalPollProxy
+  def initialize(portal)
+    @portal = portal
+  end
+  
+  def current
+    Poll.find(:published, :conditions => "polls_category_id IN (#{@portal.get_categories(Poll.category_class).join(',')}) and starts_on <= now() and ends_on >= now()", :order => 'created_on DESC', :limit => 1)
+  end
+  
+  def respond_to?(method_id, include_priv = false)
+    true
+  end
+  
+  def method_missing(method_id, *args)
+    obj = Poll
+    g = @portal.games
+    if g.size > 1
+      obj = obj.category_class.find_by_code(g[0].code) # cargamos la categoría como proxy para hacer consultas y que incluya la constraint de category_id
+    elsif @portal.factions.size > 0 # platform
+      obj = obj.category_class.find_by_code(@portal.factions[0].code)
+    end
+    
+    if g.size > 1
+      g.delete_at(0)
+      g.each { |gg| obj.add_sibling(obj.class.find_by_code(gg.code)) }
+    end
+    obj.send(method_id, *args)
+  end
+end
+
+class FactionsPortalCoverageProxy
+  def initialize(portal)
+    @portal = portal
+  end
+  
+  def _add_event_ids_cond(*args)
+    options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
+    codes = @portal.factions.collect { |g| "'#{g.code}'" }
+    codes = [] if codes.size == 0
+    # if codes.size == 0
+    #  codes = @portal.platforms.collect { |g| "'#{g.code}'" }
+    #end
+    new_cond = "event_id IN (SELECT id 
+                               FROM events 
+                              WHERE events_category_id IN (select id 
+                                                             from events_categories 
+                                                            where id = root_id 
+                                                              and code in (#{codes.join(',')})))"
+    
+    if options[:conditions].kind_of?(Array)
+      options[:conditions][0]<< "AND #{new_cond}"
+    elsif options[:conditions] then
+      options[:conditions]<< " AND #{new_cond}"
+    else
+      options[:conditions] = new_cond
+    end
+    args.push(options)
+  end
+  
+  def find(*args)
+    args = _add_event_ids_cond(*args)
+    Coverage.find(*args)
+  end
+  
+  # Cuenta imágenes asociadas a esta categoría o a una de sus hijas
+  # TODO se puede optimizar usando caches en categorías para images
+  def count(*args)
+    args = _add_cats_ids_cond(*args)
+    Competition.count(*args)
+  end
+end
+
+class FactionsPortalCompetitionProxy
+  def initialize(portal)
+    @portal = portal
+  end
+  
+  def _add_cats_ids_cond(*args)
+    options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
+    g_ids = @portal.games.collect { |g| g.id }
+    g_ids = [0] if g_ids.size == 0
+    new_cond = "game_id IN (#{g_ids.join(',')})"
+    
+    if options[:conditions].kind_of?(Array)
+      options[:conditions][0]<< "AND #{new_cond}"
+    elsif options[:conditions] then
+      options[:conditions]<< " AND #{new_cond}"
+    else
+      options[:conditions] = new_cond
+    end
+    args.push(options)
+  end
+  
+  def find(*args)
+    args = _add_cats_ids_cond(*args)
+    Competition.find(*args)
+  end
+  
+  # Cuenta imágenes asociadas a esta categoría o a una de sus hijas
+  # TODO se puede optimizar usando caches en categorías para images
+  def count(*args)
+    args = _add_cats_ids_cond(*args)
+    Competition.count(*args)
+  end
+end

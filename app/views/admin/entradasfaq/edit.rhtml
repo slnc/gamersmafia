@@ -1,0 +1,9 @@
+<h1>Editar entrada de FAQ</h1>
+
+<%= form_tag :action => 'update', :id => @faq_entry %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+
+<br />
+<%= link_to 'Volver', :action => 'index' %>

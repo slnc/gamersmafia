@@ -1,0 +1,104 @@
+first_forum_topic:
+  id: 1
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  topics_category_id: 3
+  title: footopic
+  main: footopic
+  closed: false
+  sticky: false
+  state: 2
+
+second_forum_topic:
+  id: 2
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  topics_category_id: 3
+  title: footopicunpub
+  main: footopic
+  closed: false
+  sticky: false
+  state: 1
+  
+third_forum_topic:
+  id: 3
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  topics_category_id: 3
+  title: footopicdel
+  main: footopicdel
+  closed: false
+  sticky: false
+  state: 3
+
+fourth_forum_topic:
+  id: 9734
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  topics_category_id: 3
+  title: footopicdel trast
+  main: footopicdel ttrast
+  closed: false
+  sticky: false
+  state: 3
+
+fifth_forum_topic:
+  id: 7761
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  topics_category_id: 3
+  title: footopicdel trast 7761
+  main: footopicdel ttrast 7761
+  closed: false
+  sticky: false
+  state: 3
+
+sixth_forum_topic:
+  id: 3417
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  topics_category_id: 3
+  title: footopicdel trast 3417
+  main: footopicdel ttrast 3417
+  closed: false
+  sticky: false
+  state: 3
+
+seventh_forum_topic:
+  id: 1265
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  topics_category_id: 3
+  title: footopicdel trast 1265
+  main: footopicdel ttrast 1265
+  closed: false
+  sticky: false
+  state: 3

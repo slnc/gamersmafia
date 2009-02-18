@@ -1,0 +1,48 @@
+<script type="text/javascript">
+function open_download_win(download_id)
+{
+  window.open('/descargas/download/'+download_id, 'download_'+download_id, 'height=300,width=600,menubar=no,resizable=no,scrollbars=yes');
+  return false;
+}
+</script>
+
+<% content_support do %>
+	<% if !@download.is_public? then %>
+	<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @download } %>
+	<% end -%>
+<% end -%>
+
+<% content_main do %> 
+  <% mfcontent(@download) do %>
+  <% if nil then %><div style="float: right; margin-right: 10px;"><span class="infoinline"><strong><%=@download.downloaded_times%></strong> descargas</span></div><% end -%>
+  <%=auto_link(smilelize(@download.description))%>
+
+
+	<div style="margin: 20px; text-align: center;">
+<% if @download.file.to_s != '' then %>
+<a href="/descargas/download/<%=@download.id%>"><img class="icon" src="/skins/default/images/btn_descargar.png" /></a><br />
+<% end -%>
+
+	<% mirrors = @download.download_mirrors.find(:all, :order => 'lower(url)') 
+if mirrors.size > 0 then %>
+	<table style="margin-top: 20px; border: 1px solid #efefef;">
+		<tr>
+			<th colspan="2">Desgargas alternativas</th>
+		</tr>
+		<%mirrors.each do |dm| %>
+		<% begin 
+      mirror_name = URI.parse(dm.url).host.gsub(/www./, '') 
+    rescue
+      mirror_name = nil
+    end
+%>	
+		<tr class="<%=oddclass%>">
+			<td style="text-align: left;"><% if mirror_name then %><a target="_blank" href="http://<%=mirror_name%>/"><%=mirror_name%></a><% end -%></td>
+			<td class="right"><a href="/descargas/download/<%=@download.id%>?r=<%=dm.url%>"><img class="icon" src="/skins/default/images/btn_descargar_mirror.png" /></a></td>
+		</tr>
+		<% end -%>
+	</table>
+	<% end -%>
+	</div>
+  <% end %>
+<%end -%>

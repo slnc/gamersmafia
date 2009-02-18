@@ -1,0 +1,21 @@
+general:
+  parentskin: 
+
+google_ads:
+  google_color_border: ffffff
+  google_color_bg: fafafa
+  google_alternate_color: ffffff
+  google_color_link: AD0011
+  google_color_text: a0a0a0
+  google_color_url: 008000
+  
+google_ads_bottom:
+  google_color_border: ffffff
+  google_color_bg: ffffff
+  google_alternate_color: ffffff
+  google_color_link: AD0011
+  google_color_text: DDDDDD
+  google_color_url: 008000
+
+gmtv:
+  default_channel_id: 

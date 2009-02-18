@@ -1,0 +1,16 @@
+<%mftext(params[:category] ? "Top sabios de #{@category.root.name}" : 'Top sabios') do %>
+<table>
+<%
+# TODO PERF serías más eficiente con unos contadores en users
+# TODO CACHE
+# TODO limitar a las preguntas del portal activo
+Question.top_sages(params[:category] ? @category : nil).each do |dbu| %>
+		<tr class="<%=oddclass%>">
+			<td><img style="border: 1px solid black; width: 32px; height: 32px;" src="<%=ASSET_URL%>/cache/thumbnails/f/32x32<%=dbu[:user].show_avatar%>" /></td>
+			<td><%=user_link(dbu[:user])%></td>
+			<td class="right"><%=dbu[:points]%></td>
+		</tr>
+<% end -%>
+</table>
+<div class="right infoinline">Un punto = una mejor respuesta</div>
+<% end -%>

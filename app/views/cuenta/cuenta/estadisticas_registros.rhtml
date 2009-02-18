@@ -1,0 +1,18 @@
+<% content_main do %>
+<% mftext('Registros referidos') do %>
+<table>
+  <tr>
+    <th>Usuario</th>
+    <th>¿Confirmada?</th>
+    <th class="timestamp">Última actividad</th>
+  </tr>
+<% for u in User.find(:all, :conditions => ['referer_user_id = ?', @user.id], :order => 'created_on asc') %>
+  <tr class="<%=oddclass%>">
+    <td><%=link_to u.login, gmurl(u)%></td>
+    <td><%=(u.state != User::ST_UNCONFIRMED) ? 'Sí' : '<span class="warning">No</span>'%></td>
+    <td class="timestamp"><%=print_tstamp(u.lastseen_on)%></td>
+  </tr>
+<% end -%>
+</table>
+<% end -%>
+<% end -%>

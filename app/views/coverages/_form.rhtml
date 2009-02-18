@@ -1,0 +1,14 @@
+<p><label for="event_edited_on">Evento</label><br/>
+<% @coverage.event_id = Competition.find(@user.last_competition_id).event.id if @coverage.new_record? && @user.last_competition_id && (params[:coverage].nil? || params[:coverage][:event_id].nil?) %>
+<%=collection_select(:coverage, :event_id, Event.find(:all, :conditions => 'state = 2 and ends_on > now() and parent_id is null', :order => 'lower(title) asc'), :id, :title) %>
+
+<p><label for="news_title">Título</label><br/>
+<%= text_field 'coverage', 'title', :class => 'text'  %></p>
+
+<p><label for="news_description">Contenido</label><br/>
+<%=wysiwyg('coverage[description]', :value => @coverage.description, :height => '300px')%></p>
+
+<p><label for="news_main">Información adicional (sólo saldrá en la página completa de la noticia)</label><br/>
+<%=wysiwyg('coverage[main]', :value => @coverage.main)%></p>
+
+<%=draft_check_box(@coverage)%>

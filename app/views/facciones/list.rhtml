@@ -1,0 +1,135 @@
+<% content_support do %>
+<% mftext('Las más jóvenes') do%>
+  <table>
+<% cache("/common/facciones/index/newest_#{Time.now.strftime('%Y%m%d')}") do %>
+    <% Faction.find(:all, :order => 'created_on DESC', :limit => 3).each do |f| %>
+    <tr class="<%=oddclass%>">
+      <td style="padding-left: 4px; "><%=faction_favicon(f)%> <%=link_to f.name, gmurl(f)%></td>
+	  <td style="padding-left: 0; width: 75px;" class="infoinline timestamp"><%=print_tstamp(f.created_on, 'date')%></td>
+    </tr>
+    <% end -%>
+<% end # cache -%>
+  </table>
+  
+<% end #mftext -%>
+
+
+<% mftext('Top karma generado') do%>
+  <table>
+<% cache("/common/facciones/index/fastest_karma_generators_#{Time.now.strftime('%Y%m%d')}") do %>
+    <% for f in Faction.fastest_karma_generators %>
+    <tr class="<%=oddclass%>">
+      <td><%=faction_favicon(f[1])%> <%=link_to f[1].name, gmurl(f[1])%></td>
+      <td class="infoinline"><%="#{f[0].to_i}"%></td>
+    </tr>
+    <% end -%>
+  </table>
+  <% end -%>
+<% end -%>
+
+<% mftext('Top crecimiento de karma') do%>
+  <table>
+<% cache("/common/facciones/index/fastest_karma_growers_#{Time.now.strftime('%Y%m%d')}") do %>
+    <% for f in Faction.fastest_karma_growing %>
+    <tr class="<%=oddclass%>">
+      <td><%=faction_favicon(f[1])%> <%=link_to f[1].name, gmurl(f[1])%></td>
+      <td class="infoinline"><%="#{f[0].to_i}"%>%</td>
+    </tr>
+    <% end -%>
+  </table>
+  <% end -%>
+<% end -%>
+
+<% mftext('Top incorporaciones/día') do%>
+  <table>
+<% cache("/common/facciones/index/fastest_growing_#{Time.now.strftime('%Y%m%d')}") do %>
+    <% for f in Faction.fastest_growing %>
+    <tr class="<%=oddclass%>">
+      <td><%=faction_favicon(f[1])%> <%=link_to f[1].name, gmurl(f[1])%></td>
+      <td class="infoinline"><%="#{f[0].to_i}.#{f[0].to_f.to_s.split('.')[1][0..1].ljust(2, '0')}"%></td>
+    </tr>
+    <% end -%>
+  </table>
+  <% end -%>
+  <% end -%>
+  
+<% mftext('Top conectadas') do%>
+  <table>
+<% cache("/common/facciones/index/top_cohesion_#{Time.now.strftime('%Y%m%d')}") do %>
+    <% Faction.top_cohesion.each do |f| %>
+    <tr class="<%=oddclass%>">
+      <td><%=faction_favicon(f)%> <%=link_to f.name, gmurl(f)%></td>
+      <td class="infoinline right"><%=faction_cohesion(f)%></td>
+    </tr>
+    <% end -%>
+  </table>
+  <% end -%>
+<% end -%>
+
+<% mftext('Top miembros') do%>
+  <table>
+<% cache("/common/facciones/index/top_members_#{Time.now.strftime('%Y%m%d')}") do %>
+    <% for f in Faction.find(:all, :order => 'members_count DESC', :limit => 3) %>
+    <tr class="<%=oddclass%>">
+      <td><%=faction_favicon(f)%> <%=link_to f.name, gmurl(f)%></td>
+      <td class="infoinline right"><span class="members-count infoinline"><%=f.members_count %></span></td>
+    </tr>
+    <% end -%>
+  </table>
+  <% end -%>
+<% end -%>
+
+
+<% end -%>
+
+<% content_main do %>
+<% cache("/common/facciones/list_#{params[:page]}") do %>
+  <%mftext('Juegos online') do %>
+<table>
+  <tr>
+    <th>Nombre</th>
+    <th>Miembros</th>
+    <th>Boss</th>
+    <th>Underboss</th>
+    <th>PIB</th>
+    <th>Cohesión</th>
+  </tr>
+  
+<% for faction in Faction.find(:all, :conditions => 'is_platform = \'f\'', :order => 'lower(name) asc') %>
+  <tr class="<%=oddclass%>">
+    <td><%=faction_favicon(faction)%> <%=link_to faction.name, gmurl(faction) %></td>
+    <td><span class="members-count infoinline"><%=faction.members_count %></a></td>
+    <td><%=if faction.boss then link_to faction.boss.login, gmurl(faction.boss) end%></td>
+    <td><%=if faction.underboss then link_to faction.underboss.login, gmurl(faction.underboss) end%></td>
+    <td class="infoinline right"><%=faction.pib.to_i.to_s.gsub(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1.")%></td>
+    <td class="infoinline right"><%=faction_cohesion(faction)%></td>
+  </tr>
+<% end %>
+</table>
+<% end -%>
+
+<%mftext('Plataformas') do %>
+<table>
+  <tr>
+    <th>Nombre</th>
+    <th>Miembros</th>
+    <th>Boss</th>
+    <th>Underboss</th>
+    <th>PIB</th>
+    <th>Amistad</th>
+  </tr>
+  
+<% for faction in Faction.find(:all, :conditions => 'is_platform = \'t\'', :order => 'lower(name) asc') %>
+  <tr class="<%=oddclass%>">
+    <td><%=faction_favicon(faction)%> <%=link_to faction.name, gmurl(faction) %></td>
+    <td><span class="members-count infoinline"><%=faction.members_count %></span></td>
+    <td><%=if faction.boss then link_to faction.boss.login, gmurl(faction.boss) end%></td>
+    <td><%=if faction.underboss then link_to faction.underboss.login, gmurl(faction.underboss) end%></td>
+    <td class="infoinline right"><%=faction.pib.to_i.to_s.gsub(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1.")%></td>
+    <td class="infoinline right"><%=faction_cohesion(faction)%></td>
+  </tr>
+<% end %>
+</table>
+<% end -%>
+<% end -%>
+<% end -%>

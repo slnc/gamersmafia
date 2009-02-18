@@ -1,0 +1,84 @@
+<p><label >Juego</label><br/>
+<% games = controller.portal.respond_to?(:factions) ? controller.portal.factions.find(:all).collect { |f| "'#{f.code}'" } : Game.find(:all).collect { |g| "'#{g.code}'" } %>
+<%= select("demo", "demos_category_id", DemosCategory.find(:all, :conditions => "parent_id is null AND code IN (#{games.join(',')})", :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%></p>
+
+<p><label>Modo de juego</label><br/>
+<select id="games_mode_id" name="demo[games_mode_id]">
+<% if @demo.demos_category_id then %>
+<% 
+g_id = User.db_query("SELECT id FROM games WHERE code = (SELECT code FROM demos_categories WHERE id = #{@demo.demos_category_id})")[0]['id'].to_i
+GamesMode.find(:all, :conditions => ['game_id = ?', g_id]).each do |gm| %>
+    <option <%='selected="selected"' if gm.id == @demo.games_mode_id%>value="<%= gm.id %>"><%= gm.name %></option>
+<% end %>
+<% end -%>
+</select>
+</p>
+
+<p><label for="image_file">Archivo</label><br/>
+<% if @demo.file then 
+real_path = "#{RAILS_ROOT}/public/" + @demo.file
+%>
+<a href="<%=fc_path(@demo.file)%>"><%=File.basename(@demo.file)%></a> <span class="infoinline"><%=(File.exists?(real_path) ? number_to_human_size(File.size(real_path)) : 'El archivo físico no existe')%></span>
+<% end -%>
+<%= file_field 'demo', 'file' %><span class="infoinline">Subir ZIPs o RARs.</span></p>
+
+<table class="skeletal">
+<tr>
+    <td>Jugador/Equipo 1</td>
+    <td><input type="text" class="text" name="demo[entity1_external]" value="<%=@demo.entity1_local_id ? @demo.entity1.to_s : @demo.entity1_external%>" /> &nbsp; &nbsp; <input type="checkbox" name="demo[entity1_is_local]" value="1" <%='checked="checked"' if @demo.entity1_local_id%> /> Registrado en gm</td>
+</tr>
+<tr>
+    <td>Jugador/Equipo 2</td>
+    <td><input type="text" class="text" name="demo[entity2_external]" value="<%=@demo.entity2_local_id ? @demo.entity2.to_s : @demo.entity2_external%>" /> &nbsp; &nbsp; <input type="checkbox" name="demo[entity2_is_local]" value="1" <%='checked="checked"' if @demo.entity2_local_id%> /> Registrado en gm</td>
+</tr>
+</table>
+
+<p><strong>Los campos a partir de aquí son opcionales</strong></p>
+<p><label>Fecha en que se jugó</label><br/>
+<%= date_select("demo", "played_on", {:start_year => 2000, :include_blank => true})%></p>
+
+<p><label >Tipo</label><br/>
+<%= select("demo", "demotype", Demo::DEMOTYPES.each {|k,v| [ k, v ] })%></p>
+
+<p><label >POV</label><br/>
+<%= select("demo", "pov_type", Demo::POVS.each {|k,v| [ k, v ]  })%></p>
+
+<p><label>Mapa</label><br/>
+<select id="games_map_id" name="demo[games_map_id]">
+<% if @demo.demos_category_id then %>
+<% 
+g_id = User.db_query("SELECT id FROM games WHERE code = (SELECT code FROM demos_categories WHERE id = #{@demo.demos_category_id})")[0]['id'].to_i
+GamesMap.find(:all, :conditions => ['game_id = ?', g_id], :order => 'lower(name) asc').each do |gm| %>
+    <option <%='selected="selected"' if gm.id == @demo.games_map_id%>value="<%= gm.id %>"><%= gm.name %></option>
+<% end %>
+<% end -%>
+</select>
+</p>
+
+<p><label>Versión</label><br/>
+<select id="games_version_id" name="demo[games_version_id]">
+<% if @demo.demos_category_id then %>
+<% 
+g_id = User.db_query("SELECT id FROM games WHERE code = (SELECT code FROM demos_categories WHERE id = #{@demo.demos_category_id})")[0]['id'].to_i
+GamesVersion.find(:all, :conditions => ['game_id = ?', g_id]).each do |gm| %>
+    <option <%='selected="selected"' if gm.id == @demo.games_version_id%>value="<%= gm.id %>"><%= gm.version %></option>
+<% end %>
+<% end -%>
+</select>
+</p>
+
+<p><label>Evento</label><br/>
+<%= select("demo", "event_id", Event.find(:published, :conditions => 'parent_id is null', :order => 'lower(title) ASC').collect {|p| [ p.title, p.id ] }, { :include_blank => true })%></p>
+</p>
+
+<%= observe_field "demo_demos_category_id", :update => "games_map_id", :with => "demos_category_id", :url => '/demos/get_games_maps' %>
+<%= observe_field "demo_demos_category_id", :update => "games_mode_id", :with => "demos_category_id", :url => '/demos/get_games_modes' %>
+<%= observe_field "demo_demos_category_id", :update => "games_version_id", :with => "demos_category_id", :url => '/demos/get_games_versions' %>
+
+<!--<p><label for="demo_name">Nombre</label><br/>
+<%= text_field 'Demo', 'name'  %></p> -->
+
+<p><label for="demo_description">Descripción</label><br/>
+<%=wysiwyg('demo[description]', :value => @demo.description, :height => '200px')%></p>
+
+<%=draft_check_box(@demo)%>

@@ -1,0 +1,11 @@
+<% if Cms::user_can_edit_content?(@user, object) then %>
+<%mftext('Cambiar autoría') do %>
+<%=form_tag :controller => '/admin/contenidos', :action => 'change_authorship'%>
+<input type="hidden" name="redirto" value="<%=controller.request.request_uri%>" />
+<input type="hidden" name="content_id" value="<%=object.unique_content.id%>" />
+Autor actual: <strong><%=object.user.login%></strong><br />
+Nuevo autor: <input type="text" class="text" name="login" /><br />
+<%=submit_tag 'Cambiar' %>
+</form>
+<% end -%>
+<% end -%>

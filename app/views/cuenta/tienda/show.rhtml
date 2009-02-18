@@ -1,0 +1,20 @@
+<% content_support do %>
+  <%= render :partial => 'unused_products' %>
+<% end -%>
+
+<% content_main do %>
+  <% mftext(@product.name) do %>
+  <div style="float: right;"><%=product_img(@product, false)%><%=product_line(@product)%></div>
+  <%=@product.description%>
+
+  <div style="margin-top: 20px; margin-right: 90px;">
+  <% if not @product.can_be_bought_by_user(@user) then %>
+  <div class="warning">No puedes comprar el producto porque <%=@product.cant_be_bought_by_user_reason(@user)%></div>
+  <% elsif @user.cash >= @product.price then %>
+  <div style="text-align: center;"><a href="/cuenta/tienda/<%=@product.id%>/buy" onclick="return confirm('¿Estás seguro de que quieres comprar este producto?');"></a><a href="/cuenta/tienda/<%=@product.id%>/buy" onclick="return confirm('¿Estás seguro de que quieres comprar este producto?');"><img class="shop-buy" src="/images/blank.gif" /></a></div>
+  <% else %>
+  <div class="warning">Lo sentimos pero no tienes suficiente dinero para comprar este producto.</div>
+  <% end -%>
+</div>
+<% end -%>
+<% end -%>

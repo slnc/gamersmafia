@@ -1,0 +1,98 @@
+<% content_support do %>
+<%=render :partial => '/competiciones/inscripciones_abiertas' %>
+
+  <% mftext('Últimos resultados') do %>
+  <%=render :partial => 'competiciones/ultimos_resultados' %>
+  <% end -%>
+
+  <% mftext('Competiciones finalizadas') do %>
+  <ul class="sidelist">
+  <% cache("/#{controller.portal.code}/competiciones/index/competiciones_finalizadas") do %>
+  <% controller.portal.competitions.find(:all, :conditions => 'state >= 4').each do |competition| %>
+    <li><%=competition.pro? ? '<div style="float: right; margin: 3px 3px 0 0;"><img class="competition-pro" src="/images/blank.gif" /></div>' : ''%><div style="float: right;" class="infoinline"><%=competition.kind_of?(League) ? 'liga' : 'torneo'%></div><%=faction_favicon(competition.game)%> <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a></li>
+  <% end -%>
+<% end -%>
+  </ul>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Competiciones en curso') do %>
+  <br />
+
+<% cache("/#{controller.portal.code}/competiciones/index/competiciones_en_curso") do %>
+<div style="float: left; width: 49%;">
+    <%mftext('Ladders') do %>
+  <table>
+  <% controller.portal.competitions.find(:all, :conditions => 'type = \'Ladder\' and state > 1 and state < 4', :order => 'game_id ASC, lower(name) ASC').each do |competition| %>
+    <tr class="<%=oddclass%>">
+      <td><%=competition.pro? ? '<div style="float: right; margin: 3px 3px 0 0;"><img class="competition-pro" src="/images/blank.gif" /></div>' : ''%>
+         <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a><br />
+        <table class="compact">
+          <tr>
+            <td class="w20"><%=faction_favicon(competition.game)%></td>
+            <td class="infoinline centered"><div style="float: left;">Actividad:</div> <div style="float: left; margin-top: 4px; width: 50px; text-align: left;"><%=ladder_activity(competition)%></div></td>
+            <td style="width: 35px;" class="infoinline"><div class="<%=competition.competitions_participants_type_id == 1 ? 'members' : 'clans'%>-count"><%=competition.competitions_participants.count%></div></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+  <% end -%>
+  </div>
+  
+  <div style="float: left; width: 49%;">
+    <%mftext('Ligas') do %>  
+  	<% leagues = controller.portal.competitions.find(:all, :conditions => 'type = \'League\' and state > 1 and state < 4', :order => 'game_id ASC, lower(name) ASC') %>
+	<% if leagues.size > 0 then %>
+	<table>
+	<%leagues.each do |competition| %>
+    <tr class="<%=oddclass%>">
+      <td><%=competition.pro? ? '<div style="float: right; margin: 3px 3px 0 0;"><img class="competition-pro" src="/images/blank.gif" /></div>' : ''%>
+         <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a><br />
+        <table class="compact">
+          <tr>
+            <td class="w20"><%=faction_favicon(competition.game)%></td>
+            <td class="infoinline centered"><div style="float: left;">Avance:</div> <div style="float: left; margin-top: 4px; width: 50px; text-align: left;"><%=competition_progress(competition)%></div></td>
+            <td style="width: 35px;" class="infoinline"><div class="<%=competition.competitions_participants_type_id == 1 ? 'members' : 'clans'%>-count"><%=competition.competitions_participants.count%></div></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+  <% else %>
+  <div class="centered infoinline">No hay ligas en curso.</div>
+  <% end %>
+  <% end -%>
+  
+    <%mftext('Torneos') do %>
+ <% tournaments = controller.portal.competitions.find(:all, :conditions => 'type = \'Tournament\' and state > 1 and state < 4', :order => 'game_id ASC, lower(name) ASC') %>
+	<% if tournaments.size > 0 then %>
+	<table>
+	<%tournaments.each do |competition| %>
+    <tr class="<%=oddclass%>">
+      <td><%=competition.pro? ? '<div style="float: right; margin: 3px 3px 0 0;"><img class="competition-pro" src="/images/blank.gif" /></div>' : ''%>
+         <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a><br />
+        <table class="compact">
+          <tr>
+            <td class="w20"><%=faction_favicon(competition.game)%></td>
+            <td class="infoinline centered"><div style="float: left;">Avance:</div> <div style="float: left; margin-top: 4px; width: 50px; text-align: left;"><%=competition_progress(competition)%></div></td>
+            <td style="width: 35px;" class="infoinline"><div class="<%=competition.competitions_participants_type_id == 1 ? 'members' : 'clans'%>-count"><%=competition.competitions_participants.count%></div></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  <% end %>
+  </table>
+  <% else %>
+  <div class="centered infoinline">No hay torneos en curso.</div>
+  <% end %>
+  <% end -%>
+  </div>
+<% end -%>
+<% end -%>
+
+  <div style="clear: left; margin-top: 10px;"></div>
+<% end -%>

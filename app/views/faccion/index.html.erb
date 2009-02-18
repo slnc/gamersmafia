@@ -1,0 +1,120 @@
+<% content_support do %>
+  <% if @faction.needs_you then %>
+  <% mftext('Te buscamos') do %>
+    <%=render :partial => '/site/te_buscamos' %>
+  <% end -%>
+  <% end -%>
+
+  <% if user_is_authed and @user.faction != @faction then %>
+  <% mftext('Únete a esta facción') do %>
+  <% if @user.can_change_faction? then %>
+  <div class="centered-link"><%=link_to 'Unirme a esta facción', {:controller => '/cuenta/faccion', :action => 'join', :id => @faction}, :confirm => '¿Estás seguro de que deseas unirte a esta facción?'%></div>
+  <% else %>
+    <p>No puedes cambiar de facción hasta el <strong><%=print_tstamp @user.can_change_faction_after%></strong>.</p>
+  <% end -%>
+  <% end -%>
+<% elsif user_is_authed then %>
+<% mftext('Antigüedad') do %>
+<%=format_interval(Time.now - @user.faction_last_changed_on, 'días')%>
+<% end -%>
+<% else %>
+
+<% mftext('Únete a esta facción') do %>
+<p><a href="/cuenta/alta">Regístrate</a> o <a href="/cuenta/login">inicia sesión</a> para unirte a esta facción.</p>
+<% end -%>
+<% end -%>
+<%mftext('Estadísticas') do %>
+<%= render :partial => '/facciones/faction_stats', :locals => {:faction => @faction} %>
+<% end -%>
+
+<% @category = DownloadsCategory.find(:first, :conditions => ['root_id = id and code = ?', @faction.code]) %>
+<% cache("/common/descargas/index/essential3_#{@category.nil? ? '' : @category.root_id}") do %>
+<% mftext('Descargas esenciales') do %>
+<ul class="content-hid">
+<% for d in Download.find(:all, :conditions => "state = #{Cms::PUBLISHED} and essential is true and downloads_category_id in (#{@category.root.get_all_children.join(',')})", :order => 'created_on DESC', :limit => 12) %>
+  <li style="clear: left;" class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%></li>
+  <% end -%>
+<% end -%>
+</ul>
+<% end -%>
+
+<% mftext('Últimas incorporaciones') do %>
+<% cache("/common/facciones/#{@faction.id}/last_joined") do %>
+<table>
+  <% for user in User.find(:all, :conditions => ['faction_id = ?', @faction.id], :order => 'faction_last_changed_on desc', :limit => 10)%>
+  <tr class="<%=oddclass%>">
+    <td><%=link_to user.login, gmurl(user)%></td>
+    <td class="infoinline"><%=print_tstamp(user.faction_last_changed_on, 'date')%></td>
+  </tr>
+  <% end -%>
+<% end -%>
+</table>
+<% end -%>
+
+<% mftext('Estado de los miembros') do %>
+
+<div class="centered"><img src="/cache/graphs/faction_users_ratios/<%=Time.now.strftime('%Y%m%d')%>/<%=@faction.id%>.png" /></div>
+<% end -%>
+
+<% mftext('Webs aliadas') do %>
+<% cache("/common/facciones/#{@faction.id}/webs_aliadas") do %>
+  <% for l in @faction.factions_links.find(:all, :order => 'id asc') %>
+  <div style="text-align: center; margin-top: 3px;"><a href="<%=l.url%>" title="<%=l.name%>" target="_blank"><img class="icon" src="<%=fc_path(l.image)%>" style="width: 88px; height: 31px;" /></a></div>
+  <% end -%>
+<% end -%>
+<% end -%>
+
+<% if user_is_authed && @user.has_admin_permission?(:capo) && @faction.created_on >= 2.weeks.ago then %>
+<% mftext("Administración") do%>
+<div class="sidething-spaced"><strong><a href="/facciones/borrar/<%=@faction.id%>" onclick="return confirm('¿Estás ABSOLUTAMENTE seguro de que hay que borrar esta facción?')">Borrar</a></strong></div>
+<% end -%>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+<% mftext(@faction.name) do %>
+<%=@faction.description%>
+<div style="clear: left;">&nbsp;</div>
+<div class="subheader"><div>¿Por qué deberías unirte a nuestra facción?</div></div>
+<%=@faction.why_join%>
+
+<div class="subheader"><div>Staff</div></div>
+<%
+cache("/common/facciones/#{@faction.id}/staff") do
+
+  parsed_users = []
+  boss = @faction.boss
+  underboss = @faction.underboss
+
+  if boss then 
+    parsed_users<< boss.id
+    %><%=draw_faction_portrait(boss, @faction)%><%
+  end
+
+  if underboss then 
+    parsed_users<< underboss.id
+    %><%=draw_faction_portrait(underboss, @faction)%><%
+  end
+
+  @faction.editors.each do |content_type, user|
+    if not parsed_users.include?(user.id)
+      parsed_users<< user.id
+      %><%=draw_faction_portrait(user, @faction)%><%
+    end
+  end
+
+  @faction.moderators.each do |moderator|
+    if not parsed_users.include?(moderator.id)
+      parsed_users<< moderator.id
+      %><%=draw_faction_portrait(moderator, @faction)%><%
+    end
+  end
+
+end
+
+%>
+<div style="clear: left;">&nbsp;</div>
+<strong>Todos los miembros</strong><br />
+<a href="/facciones/show/<%=@faction.id%>/miembros">Ver todos los miembros (<%=@faction.members_count%>)</a>
+<% end -%>
+<% end -%>

@@ -1,0 +1,222 @@
+<% content_support do %>
+  <% mftext('Resultado') do %>
+  <% if controller.user_can_set_result then %>
+  <% case @competition.scoring_mode
+      when Competition::SCORING_SIMPLE:
+      %>
+      <form method="post" action="/competiciones/confirmar_resultado">
+        <input type="hidden" name="id" value="<%=@competitions_match.id%>" />
+        <% if @competitions_match.participant1_id then %><label><input type="radio" name="result" value="0" <%=@competitions_match.result == 0 ? 'checked="checked"' : ''%> /> Gana <%=notags(@competitions_match.participant1.name)%></label><br /><% end -%>
+        <% if (not @competition.kind_of?(Tournament)) and @competitions_match.participant1_id and @competitions_match.participant2_id then %><label><input type="radio" name="result" value="1" <%=@competitions_match.result == 1 ? 'checked="checked"' : ''%> /> Empate</label><br /><% end -%>
+        <% if @competitions_match.participant2_id then %><label><input type="radio" name="result" value="2" <%=@competitions_match.result == 2 ? 'checked="checked"' : ''%> /> Gana <%=notags(@competitions_match.participant2.name)%></label><br /><% end -%>
+        <br />
+        <%=render :partial => 'match_participation', :locals => { :match => @competitions_match } %>
+        <div class="centered"><input type="submit" class="button" value="<%if @competitions_match.completed? then %>Cambiar<% else %>Enviar<% end -%> resultado" onclick="return confirm('¿Estás seguro?');" /></div>
+      </form>
+
+        <% when Competition::SCORING_PARTIAL: %>
+        <form method="post" action="/competiciones/confirmar_resultado">
+          <input type="hidden" name="id" value="<%=@competitions_match.id%>" />
+        <table>
+        <%
+          @competitions_match.maps.times do |time|
+            m = @competitions_match.competitions_matches_games_maps.find(:all, :order => 'id ASC', :limit => 1, :offset => time)
+            if m.size > 0 then
+                m = m[0]
+                %>
+                <tr>
+                  <td colspan="2"><div class="centered"><strong><%=m.games_map.name%></strong></div></td>
+                </tr>
+                <tr class="<%=oddclass%>">
+                  <td><%=notags(@competitions_match.participant1.name)%></td>
+                  <td class="right"><input type="text" class="text sm-text" name="partial_scores[<%=m.id%>][participant1]" value="<%=m.partial_participant1_score%>" /></td>
+                </tr>
+                <tr class="<%=oddclass%>">
+                  <td><%=notags(@competitions_match.participant2.name)%></td>
+                  <td class="right"><input type="text" class="text sm-text" name="partial_scores[<%=m.id%>][participant2]" value="<%=m.partial_participant2_score%>" /></td>
+                </tr>
+                <%
+              else
+                %>
+                <tr>
+                  <td class="centered" colspan="2"><%=select('played_maps', time, @competitions_match.competition.games_maps.find(:all, :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true }) %></td>
+                </tr>
+                <tr class="<%=oddclass%>">
+                  <td><%=notags(@competitions_match.participant1.name)%></td>
+                  <td class="right"><input type="text" class="text sm-text" name="partial_scores_new_maps[<%=time%>][participant1]" /></td>
+                </tr>
+                <tr class="<%=oddclass%>">
+                  <td><%=notags(@competitions_match.participant2.name)%></td>
+                  <td class="right"><input type="text" class="text sm-text" name="partial_scores_new_maps[<%=time%>][participant2]" /></td>
+                </tr>
+            <% end %>
+         <% end %>
+        </table>
+        <%=render :partial => 'match_participation', :locals => { :match => @competitions_match } %>
+        <div class="centered"><input type="submit" class="button" value="<%if @competitions_match.completed? then %>Cambiar<% else %>Enviar<% end -%> resultado" onclick="return confirm('¿Estás seguro?');" /></div>
+      </form>
+
+      <% when Competition::SCORING_SIMPLE_PER_MAP: %>
+        <form method="post" action="/competiciones/confirmar_resultado">
+          <input type="hidden" name="id" value="<%=@competitions_match.id%>" />
+        <table>
+          <tr class="<%=oddclass%>">
+            <th>Participante</th>
+            <th class="right">Mapas ganados</th>
+          </tr>
+          <tr class="<%=oddclass%>">
+            <td><%=notags(@competitions_match.participant1.name)%></td>
+            <td class="right"><input type="text" class="text sm-text" name="score_participant1" value="<%=@competitions_match.score_participant1%>" /></td>
+          </tr>
+          <tr class="<%=oddclass%>">
+            <td><%=notags(@competitions_match.participant2.name)%></td>
+            <td class="right"><input type="text" class="text sm-text" name="score_participant2" value="<%=@competitions_match.score_participant2%>" /></td>
+          </tr>
+        </table>
+
+        <%=render :partial => 'match_participation', :locals => { :match => @competitions_match } %>
+        <div class="centered"><input type="submit" class="button" value="Enviar resultado" onclick="return confirm('¿Estás seguro?');" /></div>
+        </form>
+        <% # TODO que digan los mapas que nos falten
+        %>
+      <% else
+      raise 'unimplemented'
+      end %>
+  <%  elsif not @competitions_match.accepted? then %>
+  <p>La partida todavía no ha sido aceptada.</p>
+  <%  elsif not @competitions_match.completed? then %>
+  <p>La partida no está completada.</p>
+  <% else %>
+  <div class="centered"><% if @competitions_match.winner == 2 then
+    %><strong>Empate</strong><% else %>
+          Ganador: <strong><%=@competitions_match.winner%></strong>
+        </div>
+  <%  end %>
+  <% 
+  
+        cm = @competitions_match
+    c = cm.competition
+    if cm.result == 1
+      p1_class = p2_class = 'match-tie'
+    else
+      p1_class = (cm.result == 0) ? 'match-won' : 'match-lost'
+      p2_class = (cm.result == 2) ? 'match-won' : 'match-lost'
+    end
+  case @competition.scoring_mode 
+        when 1: %>
+        <% #~TODO duplicado en list.rhtml y otros sitios
+    %>
+    <table>
+      <tr class="<%=oddclass%>">
+        <td><a href="/competiciones/participante/<%=cm.participant1_id%>"><%=cm.participant1%></a></td>
+        <td class="<%=p1_class%>"><%=cm.score_participant1%></td>
+      </tr>
+      <tr class="<%=oddclass%>">
+        <td><a href="/competiciones/participante/<%=cm.participant2_id%>"><%=cm.participant2%></a></td>
+        <td class="<%=p2_class%>"><%=cm.score_participant2%></td>
+      </tr>
+  </table>
+
+    <%  when 2: %>
+    <table>
+      <tr class="<%=oddclass%>">
+        <td><a href="/competiciones/participante/<%=cm.participant1_id%>"><%=cm.participant1%></a></td>
+        <td class="<%=p1_class%>"><%=cm.score_participant1%></td>
+      </tr>
+      <tr class="<%=oddclass%>">
+        <td><a href="/competiciones/participante/<%=cm.participant2_id%>"><%=cm.participant2%></a></td>
+        <td class="<%=p2_class%>"><%=cm.score_participant2%></td>
+      </tr>
+  </table>
+    <% end %>
+  <% end %>
+  <% end #mftext -%>
+
+  <% if user_is_authed && @competitions_match.user_can_upload_attachment(@user) then 
+     existing_report = @competitions_match.competitions_matches_reports.find_by_user_id(@user.id) 
+  %>
+  <% mftext('Informe de la partida') do %>
+    <% if existing_report.nil? then %>
+        <div class="centered-link"><a href="/competiciones/nuevo_informe/<%=@competitions_match.id%>">Crear informe de la partida</a></div>
+    <% else %>
+        <div class="centered-link"><a href="/competiciones/editar_informe/<%=existing_report.id%>">Modificar mi informe</a></div>
+    <% end -%>
+  <% end -%>
+  <% end -%>
+
+  <% if user_is_authed && @competitions_match.user_can_upload_attachment(@user) then %>
+  <% mftext('Subir archivo') do %>
+  <p>Solo demos comprimidas o capturas de pantalla.</p>
+  <form method="post" action="/competiciones/upload_file/<%=@competitions_match.id%>" enctype="multipart/form-data">
+    <input type="file" name="competitions_matches_upload[file]" /><br />
+    Descripción:<br />
+    <textarea name="competitions_matches_upload[description]" style="width: 200px; height: 50px;"></textarea>
+    <div class="centered-link"><input type="submit" class="button" value="Subir archivo" /></div>
+  </form>
+  <% end -%>
+  <% end -%>
+  
+  <% if user_is_authed && @competition.user_is_admin(@user.id) && @competition.matches_can_be_reset? then %>
+  <% mftext('Resetear resultado') do %>
+  	<a href="/competiciones/reset_match/<%=@competitions_match.id%>" onclick="return confirm('¿Estás seguro de que quieres RESETEAR el resultado de la partida?');">Resetear resultado</a>
+  <% end -%>
+  <% end -%>
+  
+<% end -%>
+
+<% content_main do %>
+<% mftext(strip_tags(match_vs_name(@competitions_match, nil, false))) do %>
+  <br />
+  Fecha y Hora del reto: <strong><%=@competitions_match.play_on ? print_tstamp(@competitions_match.play_on) : 'Sin especificar' %></strong>
+  <% end -%>
+  <% mftext('Mapas') do %>
+  <div class="competitions-match-maps">
+  <% 
+  if @competitions_match.maps then 
+  @competitions_match.maps.times do |time|
+  m = @competitions_match.competitions_matches_games_maps.find(:all, :order => 'id ASC', :limit => 1, :offset => time)
+    if m then
+      m = m[0]
+    end
+
+    if m then %>
+      <%=fc_thumbnail(m.games_map.screenshot, 'k', '153x115', false)%>
+      <%  else %>
+      <img class="unknown-map" src="/images/blank.gif" />
+      <% end
+  end %>
+  <% end -%>
+</div>
+<% end -%>
+
+  <% user_is_competition_admin = (user_is_authed && @competition.user_is_admin(@user.id)) %>
+  <% mftext('Informes') do %>
+  <table>
+  <% for r in @competitions_match.competitions_matches_reports.find(:all, :order => 'created_on DESC') %>
+    <tr class="<%=oddclass%>" id="u<%=r.id%>">
+      <td><a href="/competiciones/informe/<%=r.id%>">Informe de <%=r.user.login%></a></td>
+      <td><a href="<%=gmurl(r.user)%>"><%=r.user.login%></a></td>
+      <td class="timestamp infoinline"><%=print_tstamp(r.created_on)%></td>
+      <% if user_is_competition_admin then %><td><%=link_to_remote 'Borrar', :url => "/competiciones/borrar_upload/#{r.id}" %></td><% end -%>
+    </tr>
+  <% end -%>
+  </table>
+  <% end -%>
+
+  <% mftext('Archivos') do %>
+  <table>
+  <% for f in @competitions_match.competitions_matches_uploads.find(:all, :order => 'created_on DESC') %>
+    <tr class="<%=oddclass%>" id="u<%=f.id%>">
+      <td><a target="_blank" href="/<%=f.file%>"><%=f.file ? File.basename(f.file) : ''%></a></td>
+      <td><%=notags(f.description)%></td>
+      <td class="infoinline"><%=(f.file && File.exists?("#{RAILS_ROOT}/public/#{f.file}")) ? number_to_human_size(File.size("#{RAILS_ROOT}/public/#{f.file}")) : ''%></a></td>
+      <td><a href="<%=gmurl(f.user)%>"><%=f.user.login%></a></td>
+      <td class="timestamp infoinline"><%=print_tstamp(f.created_on)%></td>
+      <% if user_is_competition_admin then %><td><%=link_to_remote 'Borrar', :url => "/competiciones/borrar_upload/#{f.id}" %></td><% end -%>
+    </tr>
+  <% end -%>
+  </table>
+  <% end -%>
+
+  <%= render(:partial => 'shared/comments', :locals => { :object => @competitions_match.event} ) %>
+<% end -%>

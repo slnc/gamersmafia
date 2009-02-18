@@ -1,0 +1,17 @@
+Hola <%= @recipient %>,
+
+¡Enhorabuena! Has conseguido resucitar al usuario <%=@resurrected%>.
+
+Ficha de <%=@resurrected%>:
+
+  <%= @base_url %>miembros/<%=@resurrected%>?vk=<%=@recipient.validkey%>
+
+
+Estadísticas de resurrecciones:
+
+  <%= @base_url %>cuenta/estadisticas/resurrecciones
+
+
+Gracias,
+
+<%=@footer%>

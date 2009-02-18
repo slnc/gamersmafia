@@ -1,0 +1,6 @@
+<div style="margin: 5px;">
+<%avatars.each do |avatar| %>
+<div style="text-align: center; float: left;margin: 0 5px 15px 5px;"><a href="/avatares/edit/<%=avatar.id%>"><img class="avatar" src="/<%=avatar.path%>" /></a><br /><span class="infoinline"><%=user_link(avatar.submitter)%></span></div>
+<% end -%>
+</div>
+<div style="clear: left;">&nbsp;</div>

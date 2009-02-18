@@ -1,0 +1,38 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Download } if user_is_authed %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+  <li style="margin-bottom: 10px;">Este formulario no es un buscador</li>
+  <li style="margin-bottom: 10px;">En el campo descripción debes poner para qué sirve, qué hace el archivo o si es un mapa/mod cuál es el tema, diferencias, etc. Es imprescindible rellenarlo.</li>
+  <li style="margin-bottom: 10px;">Si el archivo ocupa menos de 4Mb o 5Mb elígelo de tu disco duro en el campo Archivo</li>
+  <li style="margin-bottom: 10px;">Un mirror es una dirección alternativa para descargar el archivo</li>
+</ul>
+<% end -%>
+<%= render :partial => 'shared/pending', :object => Download.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Nueva descarga') do %>
+
+<%= form_tag({:action => 'create'}, :multipart => true) %>
+  <%= render :partial => 'form' %>
+  <p><label for="download_mirrors">Mirrors (1 url por línea)</label><br />
+  <%= text_area("download", "download_mirrors", "columns" => 40, "rows" => 5) %></p>
+  <%= submit_tag 'Crear' %>
+</form>
+<% end -%>
+
+<% if Cms.user_can_mass_upload(@user) then %>
+<%mftext('Añadir archivos en masa') do %>
+<%= form_tag({:action => 'create_from_zip'}, :multipart => true) %>
+  <p><label >Categoría</label><br/>
+  <%= render_tree_select DownloadsCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc'), 'name', 'download[downloads_category_id]', @download.downloads_category_id %>
+  <p>El archivo .zip debe contener dentro un único archivo por cada descarga que quieras añadir. Las descargas se crearán con el nombre del archivo en la categoría elegida en el campo anterior y sin descripción.</p>
+  <p><label for="image_file">Archivo</label><br/>
+  <%= file_field 'download', 'file' %></p>
+  <%= submit_tag 'Crear' %>
+</form>
+<% end -%>
+<% end -%>
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>

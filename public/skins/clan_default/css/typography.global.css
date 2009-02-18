@@ -1,0 +1,9 @@
+#mgfooter { text-align: center; }
+
+#cleft .module .hits, 
+#cright .module .hits { 
+	font-family: Georgia;
+	font-size: 2em;
+}
+
+#mgclanmenu a, #mgclansubmenu a { font-weight: bold; } 

@@ -1,0 +1,786 @@
+news_deleted:
+  id: 2000
+  content_type_id: 1
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1001  
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/noticias/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+bet_deleted:
+  id: 2002
+  content_type_id: 15
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1021
+  comments_count: 0
+  url: http://arena.gamersmafia.dev/apuestas/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+column_deleted:
+  id: 2003
+  content_type_id: 12
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1031
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/columnas/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+funthing_deleted:
+  id: 2004
+  content_type_id: 14
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1041
+  comments_count: 0
+  url: http://bazar.gamersmafia.dev/curiosidades/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+download_deleted:
+  id: 2005
+  content_type_id: 5
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1051
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/descargas/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+poll_deleted:
+  id: 2006
+  content_type_id: 7
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1061
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/encuestas/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+tutorial_deleted:
+  id: 2007
+  content_type_id: 10
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1071
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/tutoriales/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+interview_deleted:
+  id: 2008
+  content_type_id: 11
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1081
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/entrevistas/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+event_deleted:
+  id: 2010
+  content_type_id: 8
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1101
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/eventos/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+coverage_deleted:
+  id: 2011
+  content_type_id: 9
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1111
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/coverages/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+review_deleted:
+  id: 2012
+  content_type_id: 13
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1121
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/reviews/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+forums_topic_deleted:
+  id: 2013
+  content_type_id: 6
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1131
+  comments_count: 0
+  url: http://gamersmafia.dev/foros/topic/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+image_deleted:
+  id: 2014
+  content_type_id: 4
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1141
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/imagenes/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+demo_deleted:
+  id: 2015
+  content_type_id: 23
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1151
+  comments_count: 0
+  url: http://arena.gamersmafia.dev/demos/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+
+news_unpublished:
+  id: 1000
+  content_type_id: 1
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki100
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/noticias/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+bet_unpublished:
+  id: 1002
+  content_type_id: 15
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki102
+  comments_count: 0
+  url: http://arena.gamersmafia.dev/apuestas/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+column_unpublished:
+  id: 1003
+  content_type_id: 12
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki103
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/columnas/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+funthing_unpublished:
+  id: 1004
+  content_type_id: 14
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki104
+  comments_count: 0
+  url: http://bazar.gamersmafia.dev/curiosidades/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+download_unpublished:
+  id: 1005
+  content_type_id: 5
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki105
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/descargas/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+poll_unpublished:
+  id: 1006
+  content_type_id: 7
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki106
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/encuestas/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+tutorial_unpublished:
+  id: 1007
+  content_type_id: 10
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki107
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/tutoriales/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+interview_unpublished:
+  id: 1008
+  content_type_id: 11
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki108
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/entrevistas/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+event_unpublished:
+  id: 1010
+  content_type_id: 8
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki110
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/eventos/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+coverage_unpublished:
+  id: 1011
+  content_type_id: 9
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki111
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/coverages/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+review_unpublished:
+  id: 1012
+  content_type_id: 13
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki112
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/reviews/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+forums_topic_unpublished:
+  id: 1013
+  content_type_id: 6
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki113
+  comments_count: 0
+  url: http://gamersmafia.dev/foros/topic/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+image_unpublished:
+  id: 1014
+  content_type_id: 4
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki114
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/imagenes/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+  
+demo_unpublished:
+  id: 1015
+  content_type_id: 23
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki11t
+  comments_count: 0
+  url: http://arena.gamersmafia.dev/demos/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+news_published:
+  id: 1
+  content_type_id: 1
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki
+  comments_count: 0
+  is_public: true
+  game_id: 1
+  url: http://ut.gamersmafia.dev/noticias/show/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+bet_published:
+  id: 2
+  content_type_id: 15
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki2
+  comments_count: 0
+  game_id: 1
+  is_public: true
+  url: http://arena.gamersmafia.dev/apuestas/show/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+column_published:
+  id: 3
+  content_type_id: 12
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki3
+  comments_count: 0
+  game_id: 1
+  is_public: true
+  url: http://ut.gamersmafia.dev/columnas/show/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+funthing_published:
+  id: 4
+  content_type_id: 14
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki4
+  comments_count: 0
+  is_public: true
+  url: http://bazar.gamersmafia.dev/curiosidades/show/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+download_published:
+  id: 5
+  content_type_id: 5
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki5
+  comments_count: 0
+  game_id: 1
+  is_public: true
+  url: http://ut.gamersmafia.dev/descargas/show/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+poll_published:
+  id: 6
+  content_type_id: 7
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki6
+  comments_count: 0
+  game_id: 1
+  is_public: true
+  url: http://ut.gamersmafia.dev/encuestas/show/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+tutorial_published:
+  id: 7
+  content_type_id: 10
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki7
+  comments_count: 0
+  game_id: 1
+  is_public: true
+  url: http://ut.gamersmafia.dev/tutoriales/show/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+interview_published:
+  id: 8
+  content_type_id: 11
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki8
+  comments_count: 0
+  game_id: 1
+  is_public: true
+  url: http://ut.gamersmafia.dev/entrevistas/show/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+event_published:
+  id: 10
+  content_type_id: 8
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki10
+  comments_count: 0
+  game_id: 1
+  is_public: true
+  url: http://ut.gamersmafia.dev/eventos/show/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+coverage_published:
+  id: 11
+  content_type_id: 9
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki11
+  comments_count: 0
+  game_id: 1
+  is_public: true
+  url: http://ut.gamersmafia.dev/coverages/show/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+review_published:
+  id: 12
+  content_type_id: 13
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki12
+  comments_count: 0
+  game_id: 1
+  is_public: true
+  url: http://ut.gamersmafia.dev/reviews/show/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+forums_topic_published:
+  id: 13
+  content_type_id: 6
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki13
+  comments_count: 0
+  game_id: 1
+  is_public: true
+  url: http://ut.gamersmafia.dev/foros/topic/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+image_published:
+  id: 14
+  content_type_id: 4
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki14
+  comments_count: 0
+  game_id: 1
+  is_public: true
+  url: http://ut.gamersmafia.dev/imagenes/show/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+image_babe:
+  id: 15
+  content_type_id: 4
+  external_id: 4
+  updated_on: 2006-01-01 00:00:00
+  name: babe
+  comments_count: 0
+  url: http://gamersmafia.dev/imagenes/show/4
+  is_public: true
+  user_id: 1
+  portal_id: 1
+
+image_dude:
+  id: 16
+  content_type_id: 4
+  external_id: 5
+  updated_on: 2006-01-01 00:00:00
+  name: dude
+  comments_count: 0
+  url: http://gamersmafia.dev/imagenes/show/5
+  is_public: true
+  user_id: 1
+  portal_id: 1
+  
+demo_published:
+  id: 17
+  content_type_id: 23
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: fadasdkjadlkjald
+  comments_count: 0
+  url: http://arena.gamersmafia.dev/demos/show/1
+  is_public: true
+  user_id: 1
+  portal_id: 1
+
+
+
+<% i = 100 %>
+<% [0,1,2,3,4].each do |state| %>
+  <% %w(League Tournament Ladder).each do |competitions_type| %>
+    <% [1,2].each do |competitions_participants_type| %>
+      <% [true, false].each do |fee| %>
+        <% [true, false].each do |invitational| %>
+          <% [0,1,2].each do |scoring_mode| %>
+
+<%=competitions_type%><%=i%>:
+  id: <%=i%>
+  content_type_id: 8
+  external_id: <%=i - 90%>
+  updated_on: 2006-01-01 00:00:00
+  name: <%=competitions_type%><%=i%>
+  comments_count: 0
+  game_id: 1
+  is_public: true
+  url: http://arena.gamersmafia.dev/competiciones/show/<%=i - 90%>
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+            <% i += 1 %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+blogentry_first:
+  id: 1001
+  content_type_id: 17
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooikitapang
+  comments_count: 0
+  is_public: true
+  url: http://gamersmafia.dev/blogs/superadmin/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+blogentry_second:
+  id: 1200
+  content_type_id: 17
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooikitapang2
+  comments_count: 0
+  is_public: true
+  url: http://gamersmafia.dev/blogs/panzer/2
+  state: 2
+  user_id: 2
+  portal_id: 1
+
+noticia_clan1:
+  id: 1100
+  content_type_id: 1
+  external_id: 4
+  updated_on: 2006-01-01 00:00:00
+  name: foooikitapang
+  comments_count: 0
+  is_public: true
+  url: http://mapaches.gamersmafia.dev/noticias/show/4
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+foo3vsbar3:
+  id: 1102
+  content_type_id: 8
+  external_id: 5000
+  updated_on: 2006-01-01 00:00:00
+  name: foo3vsbar3
+  comments_count: 0
+  is_public: true
+  url: http://ut.gamersmafia.dev/eventos/show/5000
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+news_pending_clan1:
+  id: 1103
+  content_type_id: 1
+  external_id: 5
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1001
+  comments_count: 0
+  url: http://mapaches.gamersmafia.dev/noticias/show/5
+  state: 1
+  user_id: 1
+  portal_id: 1
+  
+news_64:
+  id: 1104
+  content_type_id: 1
+  external_id: 64
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1001 64
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/noticias/show/64
+  state: 1
+  user_id: 1
+  portal_id: 1
+
+topics_1265:
+  id: 1105
+  content_type_id: 6
+  external_id: 1265
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1131 1265
+  comments_count: 0
+  url: http://gamersmafia.dev/foros/topic/1265
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+topics_9734:
+  id: 1106
+  content_type_id: 6
+  external_id: 9734
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1131 9734
+  comments_count: 0
+  url: http://gamersmafia.dev/foros/topic/9734
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+topics_7761:
+  id: 1107
+  content_type_id: 6
+  external_id: 7761
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1131 7761
+  comments_count: 0
+  url: http://gamersmafia.dev/foros/topic/7761
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+topics_3417:
+  id: 1108
+  content_type_id: 6
+  external_id: 3417
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1131 3417
+  comments_count: 0
+  url: http://gamersmafia.dev/foros/topic/3417
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+topics_1265:
+  id: 1109
+  content_type_id: 6
+  external_id: 1265
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1131 1265
+  comments_count: 0
+  url: http://gamersmafia.dev/foros/topic/1265
+  state: 3
+  user_id: 1
+  portal_id: 1
+  
+question_published:
+  id: 1110
+  content_type_id: 24
+  external_id: 1
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki7
+  comments_count: 0
+  game_id: 1
+  is_public: true
+  url: http://ut.gamersmafia.dev/respuestas/show/1
+  state: 2
+  user_id: 1
+  portal_id: 1
+
+question_unpublished:
+  id: 1111
+  content_type_id: 24
+  external_id: 2
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki112
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/respuestas/show/2
+  state: 1
+  user_id: 1
+  portal_id: 1
+  
+question_deleted:
+  id: 1112
+  content_type_id: 24
+  external_id: 3
+  updated_on: 2006-01-01 00:00:00
+  name: foooiki1001  
+  comments_count: 0
+  url: http://ut.gamersmafia.dev/respuestas/show/3
+  state: 3
+  user_id: 1
+  portal_id: 1
+
+news_published_anime:
+  id: 1113
+  content_type_id: 1
+  external_id: 65
+  updated_on: 2006-01-01 00:00:00
+  name: noticia de anime 1
+  comments_count: 0
+  is_public: true
+  url: http://bazar.gamersmafia.dev/noticias/show/65
+  state: 2
+  user_id: 1
+  portal_id: -2
+
+news_published_gm:
+  id: 1114
+  content_type_id: 1
+  external_id: 66
+  updated_on: 2006-01-01 00:00:00
+  name: noticia de gm 1
+  comments_count: 0
+  is_public: true
+  url: http://gamersmafia.dev/noticias/show/66
+  state: 2
+  user_id: 1
+  portal_id: -1
+

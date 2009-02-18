@@ -1,0 +1,75 @@
+<%content_support do %>
+<% if user_is_authed then %>
+	<%mftext do %>
+		<div class="centered"><a href="/reclutamiento/nuevo"><img class="icon" alt="Nuevo anuncio" src="/skins/default/images/btn_nuevo_anuncio.png" /></a></div>
+	<% end -%>
+<% end -%>
+
+<% mflist("Últimos anuncios", Proc.new { RecruitmentAd.find(:all, :conditions => 'deleted = \'f\'', :order => 'created_on desc', :limit => 10) }, :class => 'lh16') do |ra| %>
+		<%=faction_favicon(ra.game)%> <a href="/reclutamiento/anuncio/<%=ra.id%>"><%=ra.title%></a>
+		<div class="infoinline right"><%=print_tstamp(ra.created_on, 'intelligent')%></div>
+	<% end # mflist-%>
+
+<% mflist("Movimientos", Proc.new { ClansMovement.find(:all, :conditions => 'clan_id NOT IN (SELECT id FROM clans where deleted = \'t\')', :order => 'created_on DESC', :limit => 10)}) do |cm| %>
+		<%=user_link(cm.user)%> <%=ClansMovement.translate_direction(cm.direction)%> <%=clan_link(cm.clan)%>
+	<% end # mflist-%>	
+<% end -%>
+
+<% content_main do %>
+
+<%mftext('Buscar') do %>
+<form method="get" action="/reclutamiento">
+	<input type="hidden" name="search" value="1">
+	<table>
+		<tr class="<%=oddclass%>">
+			<td>Juego</td>
+			<td><select name="game_id">
+				<option value=""></option>
+				<%Game.find(:all, :order => 'lower(name)').each do |game| %>
+					<option <%="selected=\"selected\"" if params[:game_id].to_i == game.id || (params[:game_id].to_s == '' && user_is_authed && @user.faction_id && @user.faction.code == game.code) %>value="<%=game.id%>"><%=game.name%></option>
+				<% end -%>
+				</select>
+			</td>
+		</tr>
+		<tr class="<%=oddclass%>">
+			<td>Tipo</td>
+			<td><select name="type">
+					<option <%='selected="selected" ' if params[:type] == 'searching_clan' %> value="searching_clan">Clanes reclutando</option>
+					<option <%='selected="selected" ' if params[:type] == 'searching_users' %> value="searching_users">Gamers buscando clan</option>ion>
+				</select></td>
+		</tr>
+		<tr class="<%=oddclass%>">
+			<td>Skills</td>
+			<td><label><input type="checkbox" name="levels[]" value="low" > low</label> <label><input type="checkbox" name="levels[]" value="med" > med</label> <label><input type="checkbox" name="levels[]" value="high" > high</label></td>
+		</tr>
+	</table>
+	<br />
+	<input type="submit" class="button" value="Buscar anuncios" />
+	</form>
+<% end -%>
+
+<% if @results then %>
+<%mftext('Resultados de la búsqueda') do %>
+<div class="infoinline">Mostrando anuncios de <strong><%=params[:type] == 'searching_clan' ? 'Clanes reclutando' : 'Gamers buscando clan'%></strong> en <strong><%=@game.name%></strong> <% if params[:levels] && params[:levels].size > 0 then %>con skills <%params[:levels].each do |lvl| %><strong><%=lvl%></strong>, <% end -%><% end -%></div>
+<table>
+	<tr>
+		<th>Anuncio</th>
+		<th>Publicado por</th>
+		<th class="timestamp">Publicado</th>
+	</tr>
+<%@results.each do |res| %>
+<tr class="<%=oddclass%>">
+	<td><%=faction_favicon(res.game)%> <a href="/reclutamiento/anuncio/<%=res.id%>"><%=truncate(res.message, 100, '..')%></a></td>
+	<td class="w125"><%=res.clan_id ? clan_link(res.clan) : user_link(res.user)%></td>
+	<td class="infoinline timestamp"><%=print_tstamp(res.created_on)%></td>
+</tr>
+<% end -%>
+</table>
+
+<% if @results.size == 0 then %>
+<p class="warning">No se han encontrado resultados.</p>
+<% end -%>
+
+<% end -%>
+<% end -%>
+<% end -%>

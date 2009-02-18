@@ -1,0 +1,4 @@
+first_faq_category:
+  id: 1
+  name: foo
+  position: 1

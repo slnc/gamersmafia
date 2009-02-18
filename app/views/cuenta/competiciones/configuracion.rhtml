@@ -1,0 +1,9 @@
+<% content_main do %>
+  <% mftext('Competición') do %>
+
+  <form method="post" action="/cuenta/competiciones/update/<%=@competition.id%>" enctype="multipart/form-data">
+    <%= render :partial => 'form' %>
+    <%= submit_tag 'Guardar' %>
+  </form>
+  <% end -%>
+<% end -%>

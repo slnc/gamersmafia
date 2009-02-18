@@ -1,0 +1,41 @@
+<% content_support do %>
+  <div class="subheader first"><div>Nueva entrada</div></div>
+  <div class="centered-link"><%= link_to 'Nueva entrada al FAQ', :action => 'new' %></div>
+<% end -%>
+
+<% content_main do %>
+<%mftext('Entradas en el FAQ') do %>
+<%= render :partial => 'shared/pager', :object => @faq_entry_pages, :locals => {:pos => 'top'} %>
+<table>
+  <tr>
+    <th>Pregunta</th>
+  </tr>
+  
+<% 
+i = 0
+j = 1
+prev = nil
+for faq_entry in @faq_entries 
+if prev.nil? || prev.id != faq_entry.faq_category_id then 
+i += 1
+j = 1
+prev = faq_entry.faq_category %>
+<% last_pos = User.db_query("SELECT COALESCE(max(position),0) as max FROM faq_entries WHERE faq_category_id = #{prev.id}")[0]['max'].to_i
+min_pos = User.db_query("SELECT COALESCE(min(position),0) as min FROM faq_entries WHERE faq_category_id = #{prev.id}")[0]['min'].to_i %>
+<tr>
+<th style="padding-top: 20px;" colspan="2"><%=i%>. <%=prev.name%></th>
+</th>
+<% end -%>
+  <tr>
+    <td><a href="/admin/entradasfaq/edit/<%=faq_entry.id%>"><%=i%>.<%=j%> <%=faq_entry.question%></td>
+    <td><% if faq_entry.position && faq_entry.position > min_pos then %><a href="/admin/entradasfaq/moveup/<%=faq_entry.id%>">arriba</a><% end %></td>
+    <td><% if faq_entry.position && faq_entry.position < last_pos then %><a href="/admin/entradasfaq/movedown/<%=faq_entry.id%>">abajo</a><% end %></td>
+    <td><%= link_to 'Borrar', { :action => 'destroy', :id => faq_entry }, :confirm => '¿Estás seguro?' %></td>
+  </tr>
+<% 
+j += 1
+end %>
+</table>
+<%= render :partial => 'shared/pager', :object => @faq_entry_pages, :locals => {:pos => 'top'} %>
+<% end -%>
+<% end -%>

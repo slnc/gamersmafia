@@ -1,0 +1,75 @@
+<%mftext('Banners de Gamersmafia') do 
+
+def gmbanners_galleries
+  (Dir.entries("#{RAILS_ROOT}/public/images/banners") - %w(. ..)).collect { |d|
+	(File.directory?("#{RAILS_ROOT}/public/images/banners/#{d}") && d[0..0] != '.') ? d : nil
+  }.compact.sort
+end
+%>
+  <% default_gal = 'simples' %>
+  <style type="text/css">
+  	#banners-gallery a { padding: 3px; display: block;}
+  	a.banner-selected { background: red; }
+	a.banner-selected img { background: #fff; }
+  </style>
+  <script type="text/javascript">
+  	function update_gallery_banners(gallery) {
+		$j.get('/site/get_banners_of_gallery?gallery='+gallery, function(data) { $j('#banners-gallery').html(data); })
+	}
+	var prev;
+	
+	function select_banner(a_tag) {
+		if (prev != undefined) {
+			prev.className = '';
+		}
+		prev = a_tag;
+		
+		a_tag.className = 'banner-selected';
+		update_banner_code();
+		return false;
+	}
+	
+	function update_banner_code() {
+		var code = '';
+		js_code = 'uberjs';
+		var add_ref_code = (document.getElementById('add_ref_link') && document.getElementById('add_ref_link').checked) ? '?rusid=<%=user_is_authed ? @user.id : ''%>' : ''; 
+		html_code = '<a href="http://gamersmafia.com/'+ add_ref_code +'"><img  style="border: none;" src="' + prev.childNodes[0].src +'" /></a>';	
+		
+		if (document.getElementById('code-format-js').checked) {
+			$j('#banner-code').val(js_code);
+		}
+		else {
+			$j('#banner-code').val(html_code);
+		}
+		$j('#banner-preview').html(html_code); 
+	}
+  </script>
+  <h2>1. Elige galería</h2>
+	<select id="available-galleries" onchange="update_gallery_banners(this.value);">
+		<%gmbanners_galleries.each do |gmg|%>
+		<option <%='selected="selected"' if gmg == default_gal%> value="<%=gmg%>"><%=gmg%></option>
+		<%end%>
+	</select>
+	  
+  <h2 style="margin-top: 20px;">2. Elige un banner</h2>
+  <div id="banners-gallery">
+  	<script type="text/javascript">update_gallery_banners($j('#available-galleries').val());</script>
+  </div>
+  
+  <h2 style="padding-top: 40px; clear: left;">3. Opciones</h2>
+  <% if !user_is_authed then %><p>Debes estar registrado para poder personalizar el código.</p><% end -%>
+  <table class="w100pc hidden">
+  	<tr>
+  		<td style="width: 50%; text-align: center;"><label><input type="radio" id="code-format-js" name="code_format" value="javascript" onchange="update_banner_code();" /> Javascript (recomendado)</label></td>
+		<td style="width: 50%; text-align: center;"><label><input type="radio" name="code_format" value="simple" checked="checked" onchange="update_banner_code();" /> Simple</label></td>
+  	</tr>
+  </table>
+  <% if user_is_authed then %><label><input type="checkbox" checked="checked" onchange="update_banner_code();" id="add_ref_link" value="1" /> Ganar fe cada vez que alguien haga click en el banner.</label><% end -%>
+  
+  <h2 style="margin-top: 40px; clear: left;">4. Tu Código</h2>
+  <textarea style="width: 600px; height: 50px;" id="banner-code" onclick="select();">
+  	
+  </textarea>
+  <p>Preview: </p>
+  <div id="banner-preview"></div>
+<% end -%>

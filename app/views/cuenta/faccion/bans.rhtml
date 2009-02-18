@@ -1,0 +1,37 @@
+<% content_support do %>
+  <% mftext('Banear a un usuario') do %>
+  <form method="post" action="/cuenta/faccion/ban_user">
+    <table>
+    <tr>
+    <td>Nick:</td>
+    <td><input type="text" class="text" name="login" /></td>
+    </tr>
+    <tr>
+    <td>Razón:</td>
+    <td><input type="text" class="text" name="reason" /></td>
+    </tr>
+    </table>
+    <div class="centered-link"><input type="submit" class="button" value="Banear" /></div>
+  </form>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Bans activos') do %>
+  <table>
+  <tr>
+  <th>Usuario</th>
+  <th>Desde</th>
+  <th>Baneado por</th>
+  </tr>
+    <% @faction.factions_banned_users.find(:all, :include => [:user, :banner_user]).each do |banned_user| %>
+      <tr class="<%=oddclass%>">
+        <td><%=user_link(banned_user.user)%></td>
+        <td class="infoinline timestamp-short"><%= print_tstamp(banned_user.created_on, 'intelligent') %></td>
+        <td class="infoinline"><%=user_link(banned_user.banner_user)%>: <%= banned_user.reason %></td>
+        <td><a href="/cuenta/faccion/unban_user?login=<%=banned_user.user.login%>">quitar</a></td>
+      </tr>
+    <% end %>
+  </table>
+  <% end -%>
+<% end -%> 

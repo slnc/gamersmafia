@@ -1,0 +1,9 @@
+<% if defined?(category) and not category.nil? and not category.parent_id.nil? then %>
+<%mftext('Otras categorías') do %>
+<ul class="content-hid">
+  <% for c in TutorialsCategory.find(:all, :conditions => ['parent_id = ?', category.parent_id], :order => 'lower(name) ASC') %>
+  <li><%if category.id == c.id%><strong><% end -%><%=link_to c.name, gmurl(c)%><%if category.id == c.id%></strong><% end -%></li>
+  <% end -%>
+</ul>
+<% end -%>
+<% end -%>

@@ -1,0 +1,24 @@
+<% content_support do %>
+<a href="/admin/hipotesis/nueva">Nueva</a>
+<% end -%>
+
+<% content_main do %>
+<h1>Índice de hipótesis</h1>
+
+<table>
+  <tr>
+    <th>Nombre</th>
+  </tr>
+  
+<% for ab_test in AbTest.find(:all, :order => 'completed_on is null, LOWER(name)') %>
+  <tr class="<%=oddclass%>">
+    <td><a href="/admin/hipotesis/editar/<%=ab_test.id%>"><%=ab_test.name%></a></td>
+	<td class="w125"><%=draw_pcent_bar(ab_test.experiment_completedness)%></td>
+	<td class="infoinline timestamp"><%=print_tstamp(ab_test.created_on) %></td>
+	<td class="infoinline timestamp"><%=print_tstamp(ab_test.completed_on) if ab_test.completed_on%></td>
+	<td><%=ab_test.active? ? "Activa" : "Inactiva" %></td>
+	<td><%=ab_test.completed_on.nil? ? "Incompleta" : "Completa" %></td>
+  </tr>
+<% end %>
+</table>
+<% end -%>

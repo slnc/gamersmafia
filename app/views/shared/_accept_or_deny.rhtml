@@ -1,0 +1,78 @@
+<% if object.state == Cms::PENDING || (object.state == Cms::DELETED && Cms.user_can_edit_content?(@user, object))
+      object = object.unique_content %>
+      <hr />
+
+<script type="text/javascript">
+  function check_reason_selected()
+{
+  var f = document.forms['accept_or_deny'];
+  var myOption = -1;
+
+  for (i=f.deny_reason.length-1; i > -1; i--) {
+    if (f.deny_reason[i].checked) {
+      myOption = i; i = -1;
+    }
+  }
+  if (myOption == -1) {
+    alert('Debes elegir una razón para denegar este contenido');
+    return false;
+  }
+  else
+  return true;
+}
+
+function publishContent()
+{
+    // Metemos la condición de aceptar en el form de edición y enviamos ese form para que se guarden los cambios
+    var f = document.forms['editing_content'];
+    var t = document.createElement('input');
+    t.setAttribute('type', 'hidden');
+    t.setAttribute('name', 'publish_content');
+    t.setAttribute('value', '1');
+    f.appendChild(t);
+	
+	var t2 = document.createElement('input');
+    t2.setAttribute('type', 'hidden');
+    t2.setAttribute('name', 'accept_comment');
+    t2.setAttribute('value', $j('#accept_comment').val());
+    f.appendChild(t2);
+	
+    f.submit();
+
+    return false;
+}
+</script>
+<table style="width: 100%" class="accept-or-deny">
+  <tr valign="top">
+    <td style="width: 50%; text-align: center;">
+      <form name="accept_or_deny" method="post" action="/admin/contenidos/deny_content/<%=object.id%>">
+        
+        <div style="margin-left: auto; margin-right: auto; width: 200px; text-align: left; margin-bottom: 10px;" class="infoinline">
+          <div class="infoinline">Elige la primera opción aplicable:</div>
+<%        ['Duplicado', 'Tipo de contenido incorrecto', 'Viola el código de conducta', 'Categoría incorrecta', 'Ilegible', 'Otra'].each do |r| %>
+          <label><input type="radio" name="deny_reason" value="<%=r%>" /> <%=r%></label><br />
+          <% 
+          defset = true
+          end -%>
+          <input type="text" class="text" name="deny_reason_other" size="20" style="margin-left: 25px;" />
+        </div>
+		<input type="image" title="Denegar este contenido" class="content-deny" src="/images/blank.gif" onclick="return check_reason_selected();" /><br />
+      </form>
+    </td>
+    <td style="width: 50%; text-align: center;">
+		<% if Cms.user_can_edit_content?(@user, object.real_content) then %>
+		<div class="infoinline" style="margin-bottom: 10px;">Comentario: <input id="accept_comment" type="text" class="text" name="accept_comment" size="20" style="margin-left: 25px;" /></div>
+        <input type="image" title="Publicar este contenido" class="content-publish" src="/images/blank.gif" onclick="return publishContent();" />
+        <% else %>
+              <form method="post" action="/admin/contenidos/publish_content/<%=object.id%>">
+            <div class="infoinline" style="margin-bottom: 10px;">Comentario: <input type="text" class="text" name="accept_comment" size="20" style="margin-left: 25px;" /></div>
+			<input type="image" title="Publicar este contenido" class="content-publish" src="/images/blank.gif" />
+              </form>
+
+<% end -%>
+
+
+    </td>
+  </tr>
+</table>
+<% end -%>

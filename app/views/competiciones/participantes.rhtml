@@ -1,0 +1,40 @@
+<% content_support do %>
+  <% mftext('Últimas inscripciones') do %>
+    <table>
+<% cache("/common/competiciones/#{@competition.id}/ultimas_inscripciones") do %>
+  <% for p in @competition.competitions_participants.find(:all, :order => 'created_on DESC', :limit => 10) %>
+  <tr class="<%=oddclass%>">
+    <td><a href="/competiciones/participante/<%=p.id%>"><%=notags(p.name)%></a></td>
+    <td class="timestamp infoinline"><%=print_tstamp(p.created_on)%></td>
+  </tr>
+  <% end -%>
+<% end -%>
+</table>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Participantes') do %>
+  <table>
+    <tr>
+      <th colspan="2">Nombre</th>
+      <th class="right timestamp">Inscripción</th>
+    </tr>
+<% cache("/common/competiciones/#{@competition.id}/participantes") do %>
+    <% 
+    winners = (@competition.state == 4 || @competition.can_be_closed?) ? @competition.winners(3) : []
+    w = winners.size > 0 ? [winners[0].id, winners[1] ? winners[1].id : nil, winners[2] ? winners[2].id : nil] : []
+    winner = 0
+    for p in @competition.competitions_participants.find(:all, :order => 'lower(name) ASC') 
+    # TODO paging
+    %><tr class="<%=oddclass%>">
+      <td class="w50"><%=participant_roster(p)%></td>
+      <td><a href="/competiciones/participante/<%=p.id%>"><%=notags(p.name)%></a> <%=w.include?(p.id) ? "<img class=\"competition-cup cup#{w.index(p.id)}\" src=\"/images/blank.gif\" />" : ''%></td>
+      <td class="timestamp infoinline"><%=print_tstamp(p.created_on)%></td>
+    </tr><%
+    winner += 1 if w.include?(p.id) 
+    end
+end %>
+  </table>
+  <% end -%>
+<% end -%>

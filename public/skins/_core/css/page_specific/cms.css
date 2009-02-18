@@ -1,0 +1,36 @@
+.publish16 {
+    width: 16px;
+    height: 16px;
+    background: url(../../images/icons/publish16.gif);
+}
+
+.deny16 {
+    width: 16px;
+    height: 16px;
+    background: url(../../images/icons/deny16.gif);
+}
+
+.content-locked {
+    padding-left: 20px;
+    line-height: 16px;
+    height: 16px;
+    background: url(../../images/icons/lock.png) left center no-repeat;
+}
+
+.content-publish {
+    width: 162px;
+    height: 66px;
+    background: url(../../images/icons/publish.gif);
+}
+
+.content-deny {
+    width: 162px;
+    height: 66px;
+    background: url(../../images/icons/deny.gif);
+}
+
+.change-publishing-state {
+    background: url(../../images/icons/change_publishing_state.gif);
+    width: 16px;
+    height: 16px;
+}

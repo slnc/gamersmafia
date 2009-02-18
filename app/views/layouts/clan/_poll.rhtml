@@ -1,0 +1,7 @@
+<% cur_poll = controller.portal.polls.find(:published, :conditions => "polls_category_id IN (#{controller.portal.polls_categories.collect {|pc| pc.id }.join(',')}) and starts_on <= now() and ends_on >= now()", :order => 'created_on DESC')
+if cur_poll.size > 0 then 
+cur_poll = cur_poll[0]
+mftext('Encuesta') do %>
+		<%=render :partial => '/encuestas/encuesta', :locals => { :poll => cur_poll } %>
+<% end -%>
+<% end -%>

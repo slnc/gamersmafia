@@ -1,0 +1,17 @@
+<table>
+	<tr><td style="width: 50%;  vertical-align: top;">
+	<%mftext('Secciones') do %>
+	
+<ul class="content-hid" style="list-style: none;">
+<%controller.submenu_items.each do |entry, url| %>
+<li><strong><a href="<%=url%>"><%=entry%></a></strong></li>
+<% end -%>
+</ul>
+<% end -%>
+</td>
+<td style="width: 50%; vertical-align: top;">
+<%mftext('Avisos') do %>
+<% end -%>
+</td>
+</tr>
+</table>

@@ -1,0 +1,2 @@
+class SoldSexNight < SoldProduct
+end

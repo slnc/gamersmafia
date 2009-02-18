@@ -1,0 +1,24 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Poll } if user_is_authed %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Mínimo 2 opciones</li>
+<li>Máximo 5 o 6</li>
+<li>De interés general</li>
+</ul>
+<% end -%>
+
+<%= render :partial => 'shared/pending', :object => Poll.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Nueva encuesta') do %>
+
+<%= form_tag :action => 'create' %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Crear' %>
+</form>
+
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

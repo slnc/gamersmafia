@@ -1,0 +1,32 @@
+<% content_support do %>
+<% end -%>
+
+<% content_main do %>
+	<% mftext('Editar canal') do %>
+	<form method="post" action="/cuenta/mis_canales/update/<%=@gmtv_channel.id%>" enctype="multipart/form-data">
+		<% if @gmtv_channel.file then 
+real_path = "#{RAILS_ROOT}/public/" + @gmtv_channel.file
+%>
+<% end -%>
+<table>
+	<tr class="<%=oddclass%>">
+		<td class="w125">Archivo Flash (.swf)</td>
+		<td><%=flash_obj(:url => "/#{@gmtv_channel.file}", :width => '100%', :height => '61px', :name => 'gmtvc')%><% if @gmtv_channel.file then%><br /><a href="<%=fc_path(@gmtv_channel.file)%>"><%=File.basename(@gmtv_channel.file)%></a> <span class="infoinline"><%=(File.exists?(real_path) ? number_to_human_size(File.size(real_path)) : 'El archivo físico no existe')%></span><% end -%><input type="file" name="gmtv_channel[file]" /></td>
+	</tr>
+	
+	<tr class="<%=oddclass%>">
+		<td class="w125">Screenshot (se mostrará a 50x50)</td>
+		<td><% if @gmtv_channel.screenshot then %>
+<%=fc_thumbnail(@gmtv_channel.screenshot, 'k', '153x115')%> 
+<% end -%>
+<%= file_field 'gmtv_channel', 'screenshot' %></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<td>Facción</td>
+		<td><%= select("gmtv_channel", "faction_id", Faction.find(:all, :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%><br /><span class="infoinline">Déjalo en blanco si quieres que esté disponible en todos los portales.</span></td>
+	</tr>
+</table>
+		<input type="submit" class="button" value="Guardar" />
+	</form>
+	<% end -%>
+<% end -%>

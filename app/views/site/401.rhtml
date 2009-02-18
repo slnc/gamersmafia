@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+   "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+  <style type="text/css">
+#loginbutton {
+   float: right; width: 40px; height: 45px; margin: 0 0 0 0; padding: 0 7px 0 0;
+}
+
+#userbox table.signup {
+   width: 155px;
+}
+
+#userbox label,
+#userbox input {
+   margin: 0; padding: 0;
+}
+
+#loginbutton input {
+   width: 40px; height: 45px; border: 0; margin: 0; background: url(/skins/default/images/icons/login.gif) center top no-repeat;
+}
+body, td, input { font-family: verdana; font-size: 11px; }
+  </style>
+<body style="background: #DFDDDE;">
+  <% msg = user_is_authed ? CGI.escape('No tienes permiso para acceder a esta página.') : CGI.escape('Debes iniciar sesión para acceder a esta página.') %>
+
+  <div style="width: 600px; margin-left: auto; margin-right: auto;"><object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="600px" height="450" align="middle"><param name="movie" value="/flash/error401.swf?msgweb=<%=msg%>" /><param name="quality" value="high" /><embed src="/flash/error401.swf?msgweb=<%=msg%>" quality="high" width="600px" height="450px" name="gmtv" align="middle" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" /></object><br />
+  
+    <% if not user_is_authed then %>
+  <div style="width: 220px; margin-left: auto; margin-right: auto; margin-top: 0; padding-top: 0; background: #eee; border: 1px solid #ccc; padding-bottom: 5px;">
+<form action="/cuenta/do_login" method="post">
+  <input type="hidden" name="redirto" value="<%=controller.request.path%>" />
+<div style="padding: 5px; background: #dadada; font-weight: bold; margin-bottom: 3px;">Iniciar sesión</div>
+<div id="loginbutton"><input type="image" src="/images/blank.gif" onMouseOver="this.className='mouseover';" onMouseOut="this.className = '';" /></div>
+<table class="signup" style=" padding: 5px;">
+  <tr>
+    <td><label for="post_login">login</label></td>
+    <td><input id="post_login" name="login" size="12" class="text" type="text" value="" /></td>
+  </tr>
+  <tr>
+    <td><label for="post_password">contraseña</label></td>
+    <td><input id="post_password" name="password" size="12" class="text" type="password" /></td>
+  </tr>
+</table>
+<label><input id="post_keepalive" name="keepalive" type="checkbox" value="1" checked="checked" /><input id="post_keepalive" name="post[keepalive]" type="hidden" value="0" /> Recordarme</label>
+</form>
+<script type="text/javascript">document.forms[0].login.focus();</script>
+  </div>
+  <% end -%>
+  </div>
+</body>
+</html>

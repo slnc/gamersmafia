@@ -1,0 +1,14 @@
+<% mftext('Miembros') do %>
+<ul>
+<%controller.portal.clan.clans_groups.find(:all).each do |cg| %>
+<li><div class="group-name"><%=cg.name%></div>
+<div class="group-members">
+<ul>
+<%cg.users.each do |u| %>
+<li><%=u.login%></li>
+<% end -%>
+</ul></div>
+</li>
+<% end -%>
+</ul>
+<% end%>

@@ -1,0 +1,9 @@
+Hola <%=@recipient%>,
+
+Para resetear tu contraseña por favor visita la siguiente dirección:
+
+<%=@base_url%>cuenta/reset/?k=<%=@recipient.validkey%>&login=<%=@recipient.login%>
+
+Gracias,
+
+<%=@footer%>

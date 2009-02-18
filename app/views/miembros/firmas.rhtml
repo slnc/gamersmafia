@@ -1,0 +1,43 @@
+<% content_support do %>
+  <% if user_is_authed and @user.id != @curuser.id then 
+  my_ps = @curuser.profile_signatures.find_by_signer_user_id(@user.id)
+  my_ps = @curuser.profile_signatures.new if my_ps.nil?
+  %>
+  <% mftext("Di algo sobre #{@curuser.login}") do %>
+    <form method="post" action="<%=gmurl(@curuser)%>/update_signature">
+      <textarea style="width: 225px; height: 200px;" name="profile_signature[signature]"><%=my_ps.signature%></textarea><br />
+      <br />
+      <input type="submit" class="button" value="<%=my_ps.new_record? ? 'Dejar mi firma' : 'Actualizar mi firma'%>" />
+    </form>
+  <% end -%>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% mftext("Lo que opinan de #{@curuser.login}") do %>
+  <% if @curuser.profile_signatures_count == 0 and Friendship.find_between(User.find_by_login('mrcheater'), @curuser).nil? then %>
+  <p>Todavía no tienes ninguna firma. Envía esta página a tus amigos para que se animen y te pongan algo porque.. seguro que tienes amigos, ¿verdad? </p>
+  <% if user_is_authed and @curuser.id == @user.id then %>
+  <ul>
+    <li>Sí que tengo, ahora les aviso</li>
+    <li><a href="<%=gmurl(@curuser)%>/no_tengo_amigos">No, no tengo :(</a></li>
+  </ul>
+  <% end -%>
+  <% end -%>
+
+  <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/firmas") do %>
+  <% @curuser.profile_signatures.find(:all, :order => 'updated_on DESC', :include => :signer).each do |ps| %>
+  <div id="ps<%=ps.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 20px; padding: 3px;">
+  <div class="hidden infoinline delprofilesignature"><%=link_to_remote 'Borrar', :url => "/miembros/del_firma/#{ps.id}", :confirm => '¿Estás seguro?', :complete => "$j('#ps#{ps.id}').fadeOut('normal');"%></div>
+  
+    <div style="float: left;" class="avatar"><img src="<%=ASSET_URL%><%=ps.signer.show_avatar%>" /></div>
+    <div style="margin-left: 60px;"><strong><a href="<%=gmurl(ps.signer)%>"><%=ps.signer.login%></a></strong><br />
+    <span class="infoinline"><%=print_tstamp(ps.updated_on)%></span><br /><%=Comments::formatize(ps.signature)%></div>
+  </div>
+<%  end %>
+<%  end %>
+<% if user_is_authed && @user.has_admin_permission?(:capo) then %>
+<script type="text/javascript">$j('div.delprofilesignature').removeClass('hidden');</script>
+<% end -%>
+<% end -%>
+<% end -%>

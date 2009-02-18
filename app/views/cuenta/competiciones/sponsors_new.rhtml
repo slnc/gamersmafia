@@ -1,0 +1,11 @@
+<% content_main do %>
+  <% mftext('Nuevo sponsor') do %>
+
+<%= form_tag({:action => 'sponsors_create'}, :multipart => true)%>
+  <%= render :partial => 'sponsors_form' %>
+  <%= submit_tag 'Crear' %>
+</form>
+
+<%= link_to 'Volver', :action => 'sponsors_list' %>
+<% end -%>
+<% end -%>

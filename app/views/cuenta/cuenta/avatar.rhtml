@@ -1,0 +1,127 @@
+<% content_support do %>
+  <% mftext('Tu avatar actual') do %>
+  <p class="centered"><img id="change_avatar_to" class="avatar" /><br />
+  <%= form_tag :action => 'save_avatar' %>
+      <input type="hidden" name="action" value="user_avatar_change" />
+      <input type="hidden" name="new_avatar_id" id="new_avatar_id" value="" />
+      <div class="centered"><%= submit_tag 'Guardar cambios', :id => 'btn_change_avatar' %></div>
+  </form>
+  </p>
+  <br />
+  <br />
+  <div class="infoinline">Si cambias de avatar es posible que no se vean los cambios inmediatamente en las páginas de comentarios. No hay que hacer nada, al cabo de unas horas se actualizarán solas.</div>
+
+  <% end -%>
+
+  <% if @user.avatars.count(:conditions => 'path is null or path = \'\'') > 0 then %>
+  <% mftext('Avatares personalizados') do %>
+    <form method="post" action="/cuenta/cuenta/custom_avatars_set" enctype="multipart/form-data"> 
+      <table>
+    <% @user.avatars.find(:all, :conditions => 'path is null or path = \'\'', :order => 'id ASC').each do |a| %>
+      <tr class="<%=oddclass%>">
+        <td><%=a.name%></td>
+        <td><input type="file" size="10" name="custom_avatars[<%=a.id%>]" /></td>
+      </tr>
+    <% end -%>
+  </table>
+  <div class="centered-link"><input type="submit" class="button" value="Guardar" onclick="return confirm('Una vez configurado el avatar la imagen no se puede cambiar. ¿Estás seguro de que es la imagen CORRECTA?');" /></div>
+    </form>
+	<% end -%>
+  <% end -%>
+<% end -%>
+
+
+<% content_main do %>
+  <% mftext('Elige tu avatar') do %>
+<script type="text/JavaScript">
+function select_new_avatar(imgNode, realId)
+{
+  if (!imgNode)
+    return;
+
+  var new_avatar = $j('#change_avatar_to');
+  var new_avatar_id = $j('#new_avatar_id');
+
+  if (new_avatar_id.val() != '')
+    $j('#avatar'+new_avatar_id.val()).removeClass('selected');
+
+  new_avatar.attr('src', imgNode.attr('src'));
+
+  imgNode.addClass('selected');
+  new_avatar_id.val(realId);
+}
+</script>
+
+<% if @user.avatars.count(:conditions => 'path is not null AND path <> \'\'') > 0 then %>
+<strong>Avatares personalizados</strong>
+<table>
+  <tr>
+    <td>
+<% @user.avatars.find(:all, :conditions => 'path is NOT NULL AND path <> \'\'', :order => 'id ASC').each do |avatar| %>
+<div class="choose-avatar"><img id="avatar<%=avatar.id%>" onclick="select_new_avatar($j(this), <%=avatar.id%>);" class="avatar" src="/<%=avatar.path%>" /></div>
+<% end -%>
+</td>
+</tr>
+</table>
+<br />
+<br />
+<% end -%>
+
+<% # avatares de clan
+clans_ids = @user.clans_ids
+if clans_ids.size > 0 then
+  clans_avatars = Avatar.find(:all, :conditions => "clan_id IN (#{clans_ids.join(',')})")
+  if clans_avatars.size > 0 then %>
+ <strong>Avatares de clan</strong>
+<table>
+  <tr>
+    <td>
+<% clans_avatars.each do |avatar| %>
+<div class="choose-avatar"><img id="avatar<%=avatar.id%>" onclick="select_new_avatar($j(this), <%=avatar.id%>);" class="avatar" src="/<%=avatar.path%>" /></div>
+<% end -%>
+</td>
+</tr>
+</table>
+<br />
+<br /> 
+  <%
+  end
+end
+%>
+
+
+<% if @user.faction then %>
+<strong><%=@user.faction.name%></strong>
+<p>
+<table>
+  <tr>
+    <td class="avatar-level"><h2><strong>Nivel 0</strong></h2></td>
+    <td>
+<% previous_level = 0
+user_is_faction_boss = @user.faction.is_bigboss?(@user)  
+for avatar in @avatars 
+    if avatar.level > previous_level then
+        previous_level = avatar.level
+        # TODO no estructurado r_r
+        if previous_level > Karma.level(@user) && !user_is_faction_boss then
+            break
+        end
+%>
+</td>
+</tr>
+<tr>
+  <td class="avatar-level"><h2><strong>Nivel <%=previous_level%></strong></h2></td>
+  <td>
+<%  end %>
+<div class="choose-avatar"><img id="avatar<%=avatar.id%>" onclick="select_new_avatar($j(this), <%=avatar.id%>);" class="avatar" src="/<%=avatar.path%>" /></div>
+<% end -%>
+</table>
+<% end -%>
+</p>
+<% if @user.avatar_id then %>
+<script type="text/javascript">
+select_new_avatar($j('#avatar<%=@user.avatar_id%>'), <%=@user.avatar_id%>);
+</script>
+<% end -%>
+<% end -%>
+<% end -%>

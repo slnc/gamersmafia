@@ -1,0 +1,43 @@
+<%= error_messages_for 'message' %>
+<script type="text/javascript">
+function set_recipients_dropdown(v) {
+	hideinline('dest-user');
+	hideinline('dest-clans');
+	switch (v) {
+		case '<%=Message::R_USER%>':
+		showinline('dest-user');
+		break;
+		case '<%=Message::R_CLAN%>':
+		showinline('dest-clans');
+		break;
+	}
+}
+</script>
+<!--[form:message]-->
+<p><label for="message_title">Destinatario</label> 
+<select id="message_message_type" onchange="set_recipients_dropdown(this.value);" name="message[message_type]">
+	<option value="<%=Message::R_USER%>">Usuario</option>
+	<option value="<%=Message::R_CLAN%>">Mi clan</option>
+	<option value="<%=Message::R_FRIENDS%>">Mis amigos</option>
+	<% if @user.faction_id && @user.faction.is_bigboss?(@user) then %>
+		<option value="<%=Message::R_FACTION%>">Miembros de mi facción</option>
+		<option value="<%=Message::R_FACTION_STAFF%>">Staff de mi facción</option>
+	<% end -%>
+</select><br/>
+<input style="margin-top: 3px;" type="text" class="text hidden" name="message[recipient_user_login]" size="32" id="dest-user" />
+<select style="margin-top: 3px;" id="dest-clans" name="message[recipient_clan_id]" class="hidden">
+	<%controller.user.clans.each do |c| %>
+	<option <%= 'selected="selected"' if controller.user.last_clan_id == c.id %> value="<%=c.id%>"><%=h c.name%></option>
+	<% end %>
+</select></p>
+<script type="text/javascript">set_recipients_dropdown($j('#message_message_type').val());</script>
+
+<p><label for="message_title">Asunto</label><br/>
+<%= text_field 'message', 'title', :size => 32, :class => 'text' %></p>
+
+<p><label for="message_message">Contenido</label><br/>
+<textarea name="message[message]" style="width: 210px; height: 300px;" id="message_message"><%=@message.message%></textarea></p>
+
+<%= render :partial => '/shared/smileys', :locals => { :dom_id => 'message_message' } %>
+<!--[eoform:message]-->
+

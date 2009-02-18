@@ -1,0 +1,34 @@
+<% content_support do %>
+  <% mftext('Configuración') do %>
+  <form method="post" action="/cuenta/cuenta/save_tracker_config">
+  <label><%=check_box 'user', 'comment_adds_to_tracker_enabled' %> Por defecto activar "Añadir al tracker" en tus comentarios</label><br />
+  <label style="margin-top: 10px; display: block;"><%=check_box 'user', 'tracker_autodelete_old_contents' %> Eliminar del tracker automáticamente contenidos sin nuevos comentarios después de 3 meses</label><br />
+  <div style="text-align: center;"><input style="margin: 5px;" type="submit" class="button" value="Guardar" /></div>
+  </form>
+  <div style="margin-top: 25px; text-align: center;"><strong><a class="nav" href="/cuenta/cuenta/notificaciones">Configurar notificaciones por email</a></strong></div>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Contenidos') do %>
+<% # @tracker_item_pages, @tracker_items = controller.paginate :tracker_item, :conditions => ['tracker_items.user_id = ?', @user.id], :order => 'lastseen_on desc', :per_page => 50, :include => :content %>
+  <table>
+    <tr>
+      <th>Tipo</th>
+      <th>Contenido</th>
+      <th>Actualizado</th>
+      <th> </th>
+      <th> </th>
+    </tr>
+<% TrackerItem.updated_for_user(@user, false).each do |item|
+  c = Content.new(item) %>
+    <tr class="<%=oddclass%>">
+      <td><%=Cms::translate_content_name(c.real_content.class.name)%></td>
+      <td><%=controller.url_for_content(c.real_content, c.name)%></td>
+      <td><%=print_tstamp(c.updated_on, 'intelligent')%></td>
+      <td><%=item[:id]%><%=link_to 'Quitar', {:controller => '/site', :action => 'del_from_tracker', :id => c.real_content.unique_content.id, :params => {:redirto => request.request_uri}}, :confirm => '¿Estás seguro de que quieres borrarlo de tu tracker?' %></td>
+    </tr>
+<% end -%>
+  </table>
+  <% end -%>
+<% end -%>

@@ -1,0 +1,10 @@
+/*
+--------------------------------------------------------------------------------
+Enables the IE PNG fix.
+
+visibility turned off in IE to prevent initially showing ugly grey backgrounds.
+--------------------------------------------------------------------------------
+*/
+img {
+	behavior:	 url("/JSLibrary2/CSS/pngbehavior.htc");
+}

@@ -1,0 +1,13 @@
+<%mftext('Cumplen años hoy') do %>
+  <table>
+    <% 
+    now = Time.now()
+    cache("/common/miembros/_rightside/birthdays_#{now.strftime('%Y%m%d')}") do %>
+      <% for u in User.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED} and date_part('day', birthday)::text || date_part('month', birthday)::text = date_part('day', now())::text || date_part('month', now())::text", :order => 'created_on ASC') %>
+      <tr class="<%=oddclass%>">
+        <td><%=member_state(u.hstate)%> <%=link_to u.login, gmurl(u) %><br /> <span class="infoinline">Cumple <strong><%=u.age%></strong> años</span></td>
+      </tr>
+      <% end -%>
+    <% end -%>
+  </table>
+<% end -%>

@@ -1,0 +1,63 @@
+# General Apache options
+AddHandler fastcgi-script .fcgi
+AddHandler cgi-script .cgi
+Options +FollowSymLinks +ExecCGI
+
+# If you don't want Rails to look in certain directories,
+# use the following rewrite rules so that Apache won't rewrite certain requests
+# 
+# Example:
+#   RewriteCond %{REQUEST_URI} ^/notrails.*
+#   RewriteRule .* - [L]
+
+# Redirect all requests not available on the filesystem to Rails
+# By default the cgi dispatcher is used which is very slow
+# 
+# For better performance replace the dispatcher with the fastcgi one
+#
+# Example:
+#   RewriteRule ^(.*)$ dispatch.fcgi [QSA,L]
+RewriteEngine On
+
+# If your Rails application is accessed via an Alias directive,
+# then you MUST also set the RewriteBase in this htaccess file.
+#
+# Example:
+#   Alias /myrailsapp /path/to/myrailsapp/public
+#   RewriteBase /myrailsapp
+
+RewriteRule ^stylesheets/([0-9]+/(.+))$ stylesheets/$2 [QSA]
+RewriteRule ^javascripts/([0-9]+/(.+))$ javascripts/$2 [QSA]
+RewriteRule ^flash/([0-9]+/(.+))$ flash/$2 [QSA]
+# TODO añadir señal de que está redirigido permanentemente
+RewriteRule ^foros/([0-9]+)/([0-9]+)(/*)$ /foros/topic/$2 [L,R=301]
+RewriteRule ^foros/([0-9]+)(/*)$ /foros/forum/$1 [L,R=301]
+RewriteRule ^descargas/([0-9]+)/([0-9]+)(/*)$ /descargas/show/$2 [L,R=301]
+RewriteRule ^imagenes/([0-9]+)/([0-9]+)(/*)$ /imagenes/show/$2 [L,R=301]
+RewriteRule ^eventos/([0-9]+)(/*)$ /eventos/show/$1 [L,R=301]
+RewriteRule ^noticias/([0-9]+)(/*)$ /noticias/show/$1 [L,R=301]
+RewriteRule ^entrevistas/([0-9]+)(/*)$ /entrevistas/show/$1 [L,R=301]
+RewriteRule ^columnas/([0-9]+)(/*)$ /columnas/show/$1 [L,R=301]
+#RewriteRule ^tutoriales/([0-9]+)(/*)$ /tutoriales/$1 [L,R=301]
+RewriteRule ^tutoriales/([0-9]+)/([0-9]+)(/*)$ /tutoriales/show/$2 [L,R=301]
+RewriteRule ^miembros/([^/]+)/contents(/*)$ /miembros/$1 [L,R=301]
+RewriteRule ^rss(/*)$ /rss/noticias [L,R=301]
+# cambiar la siguiente por un error 404
+RewriteRule ^cache/(.*)/$ / [L,G]
+
+RewriteRule ^account/messages(/*)$ /cuenta/mensajes [L,R=301]
+
+
+RewriteRule ^$ index.html [QSA]
+RewriteRule ^([^.]+)$ $1.html [QSA]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ dispatch.fcgi [QSA,L]
+
+
+# In case Rails experiences terminal errors
+# Instead of displaying this message you can supply a file here which will be rendered instead
+# 
+# Example:
+#   ErrorDocument 500 /500.html
+
+ErrorDocument 500 "<h2>Application error</h2> application failed to start properly"

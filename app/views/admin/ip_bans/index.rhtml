@@ -1,0 +1,45 @@
+<div class="infoinline">Las IPs baneadas no pueden crearse nuevas cuentas.</div>
+<%mftext('Nuevo ban') do %>
+<form method="post" action="/admin/ip_bans/create">
+	<table>
+		<tr class="<%=oddclass%>">
+			<td>IP</td>
+			<td><input type="text" class="text"  name="ip_ban[ip]" /></td>
+		</tr>
+		<tr class="<%=oddclass%>">
+			<td>Comentario</td>
+			<td><input type="text" class="text"  name="ip_ban[comment]" size="50" /></td>
+		</tr>
+		<tr class="<%=oddclass%>">
+			<td>Expiración</td>
+			<td><%= datetime_select 'ip_ban', 'expires_on'  %></td>
+		</tr>
+		<tr class="<%=oddclass%>">
+			<td colspan="2"><input type="submit" class="button" value="Banear" /></td>
+			</tr>
+	</table>	 
+</form>
+<% end -%>
+	
+<%mftext('Bans activos') do %>
+<table>
+	<tr class="<%=oddclass%>">
+		<th class="w100">IP</th>
+		<th class="timestamp">Creado</th>
+		<th>Impuesto por</th>
+		<th>Comentario</th>
+		<th class="timestamp">Caduca</th>
+		<th class="w50"></th>
+	</tr>
+	<% IpBan.find(:all, :conditions => 'expires_on >= now()', :order => 'created_on DESC').each do |ban| %>
+	<tr class="<%=oddclass%>" id="ipban<%=ban.id%>">
+		<td class="w100"><%=ban.ip%></td>
+		<td class="timestamp infoinline"><%=print_tstamp(ban.created_on)%></td>
+		<td class="infoinline"><%=user_link(ban.user) if ban.user_id%></td>
+		<td><%=ban.comment%></td>
+		<td class="timestamp infoinline"><%=print_tstamp(ban.expires_on)%><br />(<%=distance_of_time_in_words_to_now(ban.expires_on) if ban.expires_on %>)</td>
+		<td class="w50"><%=link_to_remote 'Borrar', :url => "/admin/ip_bans/destroy/#{ban.id}", :complete => "$j('#ipban#{ban.id}').fadeOut('normal');"%></td>
+	</tr>
+	<% end -%>
+</table>
+<% end -%>

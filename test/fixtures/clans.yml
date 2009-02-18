@@ -1,0 +1,21 @@
+indios:
+  id: 1
+  name: Indios Mataharis
+  tag: indios
+  website_external: http://indiosmataharis.com/
+  created_on: 2006-01-01 00:00:00
+  irc_channel: indiosmataharis
+  irc_server: irc.quakenet.org
+  cash: 0
+  website_activated: false
+
+fuuu:
+  id: 2
+  name: Mapaches
+  tag: mapaches
+  website_external: http://indiosmataharis.com/
+  created_on: 2006-01-01 00:00:00
+  irc_channel: mapaches
+  irc_server: irc.quakenet.org
+  cash: 0
+  website_activated: true

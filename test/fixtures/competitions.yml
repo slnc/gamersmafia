@@ -1,0 +1,49 @@
+<% require 'yaml'%>
+liga:
+  id: 1
+  name: liga_1
+  type: League
+  game_id: 1
+  state: 0
+  competitions_participants_type_id: 1
+  forced_maps: false
+  scoring_mode: 0
+  pro: false
+  cash: 0
+  timetable_for_matches: 0
+  invitational: false
+  competitions_types_options: <%=YAML.dump(HashWithIndifferentAccess.new)%>
+  timetable_options: <%=YAML.dump(HashWithIndifferentAccess.new)%>
+
+<% i = 10 %>
+<% [0,1,2,3,4].each do |state| %>
+  <% %w(League Tournament Ladder).each do |competitions_type| %>
+    <% [1,2].each do |competitions_participants_type| %>
+      <% [true, false].each do |fee| %>
+        <% [true, false].each do |invitational| %>
+          <% [0,1,2].each do |scoring_mode| %>
+
+<%=competitions_type%><%=i%>:
+  id: <%=i%>
+  name: <%=competitions_type%><%=i%>
+  type: <%=competitions_type%>
+  game_id: 1
+  event_id: <%=i%>
+  state: <%=state.to_s%>
+  competitions_participants_type_id: <%=competitions_participants_type%>
+  forced_maps: false
+  scoring_mode: <%=scoring_mode%>
+  pro: false
+  cash: 0
+  timetable_for_matches: 0
+  invitational: <%=invitational.to_s%>
+  competitions_types_options: <%=YAML.dump(HashWithIndifferentAccess.new)%>
+  timetable_options: <%=YAML.dump(HashWithIndifferentAccess.new)%>
+<% if fee then %>  fee: 10 <% end %>
+            <% i += 1 %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

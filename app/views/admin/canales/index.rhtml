@@ -1,0 +1,23 @@
+
+<%mftext('Canales GMTV') do %>
+<table>
+	<tr class="<%=oddclass%>">
+		<th>Id</th>
+		<th>Tipo</th>
+		<th class="timestamp">Actualizado</th>
+		<th>Archivo</th>
+		<th>Autor</th>
+		<th></th>
+	</tr>
+	<%GmtvChannel.find(:all, :order => 'gmtv_channels.id desc', :include => [:faction, :user]).each do |gmtvc| %>
+	<tr class="<%=oddclass%>">
+		<td><strong><%=gmtvc.id%></strong></td>
+		<td class="centered"><%=faction_favicon(gmtvc.faction)%></td>
+		<td class="centered infoinline"><%=print_tstamp(gmtvc.updated_on, 'compact')%></td>
+		<td><a href="/admin/canales/info/<%=gmtvc.id%>"><%=gmtvc.file ? '/'<< gmtvc.file : '<span class="infoinline">(Sin usar)</span>'%></a></td>
+		<td class="infoinline"><a href="<%=gmurl(gmtvc.user)%>"><%=gmtvc.user.login%></a></td>
+		<td class="centered"><strong><a href="/admin/canales/del/#{gmtvc.id}" onclick="return confirm('¿Estás seguro?');">Borrar</a></strong></td>
+	</tr>
+	<% end%>
+</table>
+<% end -%>

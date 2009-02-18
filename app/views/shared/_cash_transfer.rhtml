@@ -1,0 +1,56 @@
+<script type="text/javascript">
+function update_transfer_recipient(id)
+{
+  hideblock('Useropt');
+  hideblock('Clanopt');
+  hideblock('Factionopt');
+  
+  if (id != '')
+    showblock(id + 'opt');
+}
+</script>
+  <%mftext('Hacer transferencia') do %>
+  <form method="post" action="/site/confirmar_transferencia">
+   
+  <input type="hidden" name="sender_class" value="<%=sender.class.name%>" />
+  <input type="hidden" name="sender_id" value="<%=sender.id%>" />
+  <input type="hidden" name="redirto" value="<%=controller.request.path%>" />
+  
+  <table class="w100pc">
+  	<tr>
+  		<td>Destinatario</td>
+		<td><select name="recipient_class" onchange="update_transfer_recipient(this.value);">
+    <option></option>
+    <option value="User">Usuario</option>
+    <option value="Clan">Clan</option>
+    <option value="Faction">Facción</option>
+  </select></td>
+  	</tr>
+	
+	<tr>
+  	<td colspan="2">
+	<select class="hidden" id="Factionopt" name="recipient_Faction_id">
+  	<% cache("/common/shared/_cash_transfer_factions") do %>
+    <% Faction.find(:all, :order => 'lower(name) ASC').each do |f|
+    next if sender.class.name == 'Faction' && sender.id == f.id
+    %>
+    <option value="<%=f.id%>"><%=f.name%></option>
+    <% end -%>
+	<% end -%>
+	</select>
+	
+	<span class="hidden" id="Clanopt">Nombre <input type="text" class="text" name="recipient_clan_name" /></span>	
+	<span class="hidden" id="Useropt">Nombre <input type="text" class="text" name="recipient_user_login" /></span>
+  </td>
+  </tr>
+  <tr>
+  	<td>Cantidad</td>
+	<td><input type="text" class="text" name="ammount" /><%=gmd12%></td>
+  <tr>
+  	<td>Concepto</td>
+	<td><input type="text" class="text" name="description" /></td>
+  </tr>
+  </table>  
+  <div class="centered-link"><input type="submit" class="button" value="Siguiente" /></div>
+  </form>
+<% end -%>

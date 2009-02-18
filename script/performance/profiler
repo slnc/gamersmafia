@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../../config/boot'
+module RubyProf
+  def self.clock_mode= val
+    measure_mode= val
+  end
+end
+require 'commands/performance/profiler'

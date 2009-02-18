@@ -1,0 +1,33 @@
+<%= error_messages_for 'ad' %>
+
+<!--[form:ad]-->
+<p><label for="ad_question">Nombre</label><br/>
+<%= text_field 'ad', 'name', :class => 'text', :size => 80 %></p>
+
+<table>
+	<tr>
+		<td class="w50pc">
+<p><label for="image_file">Imagen</label><br/>
+<% if @ad.file then %>
+<%=fc_thumbnail(@ad.file, 'k', '153x115')%> 
+<% end -%>
+<%= file_field 'ad', 'file' %></p>
+
+<p><label for="ad_question">Enlace Imagen</label><br/>
+<%= text_field 'ad', 'link_file', :class => 'text'%></p>
+</td>
+
+<td>
+<p><label for="ad_question">Código HTML (TODO no ambos)</label><br/>
+<%= text_area 'ad', 'html', :class => 'text' %></p>
+</td>
+</tr>
+
+<tr class="<%=oddclass%>">
+		<td>Publicitante</td>
+		<td><%= select("ad", "advertiser_id", Advertiser.find(:all, :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%></td>
+	</tr>
+</table>
+
+<!--[eoform:ad]-->
+

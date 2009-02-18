@@ -1,0 +1,64 @@
+<% content_support do %>
+<% end -%>
+
+<% content_main do
+  participants = Competitions.participants_of_user(@user) 
+  participants_ids = [0]
+  participants.each { |participant| participants_ids<< participant.id }
+  %>
+  <% mftext('Partidas pendientes de confirmar resultado') do %>
+  <table>
+  <tr>
+    <th>Partida</th>
+    <th>Competición</th>
+    <th>Fecha</th>
+  </tr>
+  <%
+  CompetitionsMatch.find_pending_to_confirm_result(participants_ids, [:competition]).each do |m| %>
+  <tr class="<%=oddclass%>">
+    <td><a href="/competiciones/partida/<%=m.id%>"><%=match_vs_name(m)%></a></td>
+    <td><a href="/competiciones/show/<%=m.competition.id%>"><%=m.competition.name%></a></td>
+    <td class="timestamp infoinline"><%=print_tstamp(m.play_on)%></td>
+  </tr>
+<% end %>
+</table>
+<% end -%>
+<%
+  # busco todos los clanes y usuarios de este usuario de ladders activas y busco todos los partidos pendientes de confirmar resultado de dichas ladders
+  participants_ladders = Competitions.participants_of_user(@user, 'Ladder')
+
+  participants_ids = [0]
+  participants.each { |participant| participants_ids<< participant.id }
+  competitions = {}
+
+  for m in CompetitionsMatch.find(:all, :conditions => "participant2_id IN (#{participants_ids.join(',')}) AND accepted = 'f'", :include => :competition)
+    if not competitions.has_key?(m.id)
+      competitions[m.id] ||= [m.competition, 0]
+      competitions[m.id][1] += 1
+    end
+  end
+  %>
+  <% if competitions.size > 0 then %>
+  <% mftext('Retos pendientes de responder') do %>
+  <table>
+    <tr>
+      <th>Ladder</th>
+      <th>Retos pendientes de aceptar</th>
+      <th>Tu puesto</th>
+    </tr>
+  <%
+  for c_key in competitions.keys
+  c = competitions[c_key][0]
+  %>
+    <tr class="<%=oddclass%>">
+      <td><a href="/cuenta/competiciones/switch_active_competition/<%=c.id%>"><%=c.name%></a></td>
+      <td><%=competitions[c_key][1]%></td>
+      <td>?</td>
+    </tr>
+    <%
+  end
+  %>
+  </table>
+  <% end #mftext -%>
+<% end %>
+<% end -%>

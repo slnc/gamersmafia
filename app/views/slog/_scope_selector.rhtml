@@ -1,0 +1,14 @@
+<% if collection.size > 1 then %>
+<div style="padding: 3px 0 3px 5px; background: #efefef; margin-bottom: 10px;">
+<select id="scope-selector">
+	<option></option>
+	<%collection.each do |item| %>
+	<option <%='selected="selected"' if active_scope == item.id %> value="<%=item.id%>"><%=item.name%></option>
+	<% end -%>	
+</select>
+</div>
+
+<script type="text/javascript">
+	$j('#scope-selector').bind('change', function (e) { document.location = '?scope='+this.value; });
+</script>
+<% end -%>

@@ -1,0 +1,17 @@
+<p><label for="news_category">Categoría</label><br/>
+<%= render_tree_select ColumnsCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc'), 'name', 'column[columns_category_id]', @column.columns_category_id %>
+
+<p><label for="column_title">Título</label><br/>
+<%= text_field 'column', 'title', :class => 'text'  %></p>
+
+<p><label for="column_description">Resumen</label><br/>
+<%=wysiwyg('column[description]', :value => @column.description, :height => '200px')%></p>
+
+<p><label for="column_content">Contenido</label><br/>
+<%=wysiwyg('column[main]', :value => @column.main)%></p>
+
+<p><label for="image_file">Imagen para portada (.JPG que se mostrará a 105x54)</label><br/>
+<%=fc_thumbnail(@column.home_image, 'f', '105x54')%>
+<%= file_field 'column', 'home_image' %></p>
+
+<%=draft_check_box(@column)%>

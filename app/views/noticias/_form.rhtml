@@ -1,0 +1,74 @@
+<% cats = @news.new_record? ? @portal.news_categories : NewsCategory.toplevel%>
+<strong>Categoría</strong><br/>
+<table class="compact">
+	<tr style="vertical-align: top;">
+		<td style="width: 50%;">
+<strong>Principal:</strong> <select id="firstlevelcat" name="news[news_category_id]" onchange="update_secondary_cat();">
+	<% cats.each do |c| %>
+	<option <%='selected="selected"' if @news.news_category_id && @news.news_category.root_id == c.id %> value="<%=c.id%>"><%=c.name%></option>
+	<% end %> 
+</select></td>
+		<td>
+
+<script type="text/javascript">
+	
+	function update_secondary_cat() {
+		$j('#new_secondary_cat_name').val('');
+		
+		$j.getJSON('/noticias/second_level_categories/'+$j('#firstlevelcat').val(), function (json) {
+			update_second_level_dropdown(json);
+		});
+	}
+	
+	function update_second_level_dropdown(new_second_level_categories) {
+		var o = document.getElementById('secondary-cat-existing');
+		while (o.childNodes.length > 0)
+			o.removeChild(o.childNodes[0]);
+			
+		// blank node
+		var newopt = document.createElement('option');
+		o.appendChild(newopt);
+			
+		for (var i = 0; i < new_second_level_categories.length; i ++) {
+			newopt = document.createElement('option');
+			newopt.value = new_second_level_categories[i][0];
+			newopt.innerHTML = new_second_level_categories[i][1];
+			o.appendChild(newopt);
+		}
+	}
+</script>
+<span id="secondary-cat">
+	<strong>Secundaria: <select name="second_level_news_category_id" id="secondary-cat-existing">
+		<option value=""></option>
+		<% if @news.news_category_id then 
+		tld = NewsCategory.find(@news.news_category.root_id) 
+tld.children.each do |ch| %>
+		<option <%='selected="selected"' if @news.news_category_id == ch.id %> value="<%=ch.id%>"><%=ch.name%></option>
+<% end %>
+	<% end %>
+	</select></strong>
+	<% if @user.is_hq || Karma.level(@user.karma_points) > 6 then %><br />
+	<br />
+	<strong>Nueva categoría secundaria:</strong><br />
+	<table class="compact">
+		<tr><td>Nombre</td><td><input type="text" class="text" id="new_secondary_cat_name" name="new_subcategory_name" /></tr>
+		<tr><td>Imagen</td><td><input type="file" id="" name="new_subcategory_file" /></td></tr>
+	</table>
+	<span class="infoinline">(La imagen se mostrará a 188x110)</span><% end -%>
+</span>
+</td>
+	</tr>
+</table>
+</p>
+
+<p><label for="news_title">Título</label><br/>
+<%= text_field 'news', 'title', :class => 'text' %></p>
+
+<p><label for="news_description">Contenido</label><br/>
+<%=wysiwyg('news[description]', :value => @news.description, :height => '300px')%></p>
+
+<p><label for="news_main">Información adicional (sólo saldrá en la página completa de la noticia)</label><br/>
+<%=wysiwyg('news[main]', :value => @news.main)%>
+</p>
+
+<%=draft_check_box(@news)%>

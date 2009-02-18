@@ -1,0 +1,14 @@
+<%= error_messages_for 'factions_link' %>
+
+<!--[form:factions_link]-->
+<p><label for="factions_link_name">Nombre</label><br/>
+<%= text_field 'factions_link', 'name', :class => 'text'  %></p>
+
+<p><label for="factions_link_name">Url</label><br/>
+<%= text_field 'factions_link', 'url', :class => 'text'  %></p>
+
+<p><label for="factions_link_image">Archivo .JPG, .GIF, .PNG de 88x31</label><br/>
+<%=fc_thumbnail(@factions_link.image, 'f', '88x31')%>
+<%= file_field 'factions_link', 'image' %></p>
+<!--[eoform:factions_link]-->
+

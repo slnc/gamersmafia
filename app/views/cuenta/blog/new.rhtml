@@ -1,0 +1,12 @@
+<% content_main do %>
+<% mftext('Nueva entrada de blog') do %>
+<%= form_tag :action => 'create' %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag "Crear" %>
+</form>
+
+<br />
+<br />
+<%= link_to 'Volver', :action => 'index' %>
+<% end -%>
+<% end -%>

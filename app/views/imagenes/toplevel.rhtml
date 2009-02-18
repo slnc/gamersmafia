@@ -1,0 +1,39 @@
+<% content_support do %>
+<% end -%>
+
+<% content_main do %>
+<% mftext(@category.name) do %>
+
+<% @subcategories_pages = ActionController::Pagination::Paginator.new self, ImagesCategory.count(:conditions => ['parent_id = ?', @category.id]), 10, params['page'] %>
+
+<%= render :partial => 'shared/pager', :object => @subcategories_pages, :locals => {:pos => 'top'} %>
+
+<dl class="root-gallery"> 
+<%
+cache("/common/imagenes/toplevel/#{@category.id}/page_#{params[:page]}") do
+#@subcategories_pages, @subcategories = paginate :images_category, :conditions => [, :order => 'lower(name) ASC', :per_page => 10
+@subcategories = ImagesCategory.find(:all, :conditions => ['parent_id = ?', @category.id], :order => 'lower(name) asc', :limit => @subcategories_pages.current.to_sql[0], :offset => @subcategories_pages.current.to_sql[1])
+  
+  for subcategory in  @subcategories%>
+<dt style="clear: left;"><h2><%= link_to subcategory.name, gmurl(subcategory)%></h2></dt>
+<dd>
+  <div class="gallery-info infoinline">Imágenes: <strong><%=subcategory.images.length%></strong><br />Actualizada: <%=subcategory.updated_on.strftime("%d/%m/%Y")%><br />
+  <% topcontrib = subcategory.top_contributor
+  if topcontrib then %>
+  Contribuidor principal: <%=topcontrib[0].login%> (<%=topcontrib[1].to_i*100/subcategory.images.length%>%)
+  <% end -%>
+  </div>
+  <div class="gallery-preview">
+  <% for image in subcategory.images.find(:all, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 3) %>
+      <span class="screenshot"><%=link_to fc_thumbnail(image.file, 'f', '85x60', false), gmurl(image)%></span>
+  <% end -%>
+  </div>
+  
+  </dd>
+<% end -%>
+<% end -%>
+</dl>
+
+<%= render :partial => 'shared/pager', :object => @subcategories_pages, :locals => {:pos => 'bottom'} %>
+<% end -%>
+<% end -%>

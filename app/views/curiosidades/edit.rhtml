@@ -1,0 +1,31 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Funthing } if user_is_authed %>
+<%=render :partial => 'shared/content_details', :locals => { :object => @funthing} %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Enlaces curiosos</li>
+<li>Youtube</li>
+<li>Juegos/Películas Flash</li>
+<li>Descripción recomendada</li>
+</ul>
+<% end -%>
+
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @funthing } %>
+<%= render :partial => 'shared/pending', :object => Funthing.pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Editar curiosidad') do %>
+
+<%= form_tag({:action => 'update', :id => @funthing}, { :name => 'editing_content' }) %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Edit' %>
+</form>
+<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @funthing}%>
+<%=render :partial => '/shared/change_authorship', :locals => {:object => @funthing}%>
+
+<br />
+<%= link_to 'Mostrar funthing publicado', gmurl(@funthing) %> |
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

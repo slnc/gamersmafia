@@ -1,0 +1,11 @@
+<%= error_messages_for 'factions_header' %>
+
+<!--[form:factions_header]-->
+<p><label for="factions_header_name">Nombre</label><br/>
+<%= text_field 'factions_header', 'name', :class => 'text'  %></p>
+
+<p><label for="factions_header_file">Archivo .JPG de 1200x91</label><br/>
+<img src="<%=ASSET_URL%>/cache/thumbnails/f/500x60/storage/factions_headers/<%=@factions_header.faction_id%>/<%=@factions_header.id%>.jpg" />
+<%= file_field 'factions_header', 'file' %></p>
+<!--[eoform:factions_header]-->
+

@@ -1,0 +1,14 @@
+<% content_main do %>
+<% mftext("Confirma que deseas borrar el foro #{@topics_category.name}") do %>
+<%= form_tag :action => 'forum_destroy_confirm', :id => @topics_category %>
+<% if @topics_category.topics.size > 0 then %>
+  <p>Mover los tópics de este foro a:
+  <%= render_tree_select TopicsCategory.find(:all, :conditions => ['parent_id is null and id = ?', @forum.id], :order => 'lower(name) asc'), 'name', 'destination_forum_id', @topics_category.parent_id%>
+  </p>
+  <% end -%>
+  <%= submit_tag 'Confirmar' %>
+</form>
+
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

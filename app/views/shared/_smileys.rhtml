@@ -1,0 +1,14 @@
+<script type="text/javascript">
+	function show_smileys(){
+		$j.get('/site/smileys?dom_id=<%=dom_id%>', function(data){
+			$j('#available-smileys').html(data);
+			showblock('available-smileys');
+			showinline('hidesmileys');
+			hideinline('showsmileys');
+		});
+		return false;
+	}
+</script>
+      <div class="infoinline" style="margin-bottom: 10px;"><a class="action" id="showsmileys" onclick="return show_smileys();" href="">Ver smileys disponibles</a> <a style="display: none; visibility: hidden;" id="hidesmileys" onclick="hideblock('available-smileys'); hideinline('hidesmileys'); showinline('showsmileys'); return false;" href="">Ocultar smileys disponibles</a></div>
+	  <script type="text/javascript"></script>
+    <div id="available-smileys"></div>

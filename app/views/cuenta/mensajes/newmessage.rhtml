@@ -1,0 +1,27 @@
+<% content_support do %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Escueta</li>
+<li>Revisar ortografía y gramática</li>
+<li>Objetiva</li>
+<li>De interés general</li>
+<li>Indicar fuente / poner enlaces</li>
+</ul>
+<% end -%>
+<%= render :partial => 'shared/pending', :object => @pending %>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Nuevo mensaje') do %>
+
+<%= form_tag :action => 'create' %>
+  <%= render :partial => 'form' %>
+<br />
+  <%= submit_tag 'Crear' %>
+</form>
+
+<br />
+<br />
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>

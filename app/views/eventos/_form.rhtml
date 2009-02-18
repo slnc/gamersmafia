@@ -1,0 +1,28 @@
+<% 
+cats = EventsCategory.toplevel 
+p cats
+if cats.size > 1 then %>
+<p><label >Categoría</label><br/>
+<%= render_tree_select cats, 'name', 'event[events_category_id]', @event.events_category_id %></p>
+<% else 
+@event.events_category_id = cats[0].id%>
+<%= hidden_field 'event', 'events_category_id' %></p>
+<% end -%>
+
+<p><label for="event_title">Nombre</label><br/>
+<%= text_field 'event', 'title', :class => 'text'  %></p>
+
+<p><label for="event_title">Página web</label><br/>
+<%= text_field 'event', 'website', :class => 'text'  %></p>
+
+<p><label for="event_description">Descripción</label><br/>
+<%=wysiwyg('event[description]', :value => @event.description, :height => '200px')%></p>
+
+
+<p><label for="event_starts_on">Comienza</label><br/>
+<%= datetime_select 'event', 'starts_on'  %></p>
+
+<p><label for="event_ends_on">Termina</label><br/>
+<%= datetime_select 'event', 'ends_on'  %></p>
+
+<%=draft_check_box(@event)%>

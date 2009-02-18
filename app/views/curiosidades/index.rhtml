@@ -1,0 +1,33 @@
+<% content_support do %>
+  <%= render :partial => 'shared/best_rated', :locals => { :cls => Funthing } %>
+<% end -%>
+
+
+<% content_main do %>
+<% mftext('Curiosidades') do %>
+<%
+@funthing_pages = ActionController::Pagination::Paginator.new self, Funthing.count(:conditions => "state = #{Cms::PUBLISHED} "), 20, params['page']
+
+@funthing_pages.current_page = @funthing_pages.last if params['page'].nil?
+%>
+<%= render :partial => 'shared/pager', :object => @funthing_pages, :locals => {:pos => 'top'} %>
+
+<table>
+<% cache("/common/curiosidades/index/page_#{params[:page]}") do %>
+<% 
+@funthings = Funthing.find(:published, :order => 'created_on asc', :limit => @funthing_pages.current.to_sql[0], :offset => @funthing_pages.current.to_sql[1])
+for funthing in @funthings.reverse %>
+<tr class="<%=oddclass%>">
+  <td><strong><%=link_to funthing.title, gmurl(funthing) %></strong><br /><span class="infoinline"><%=truncate(strip_tags(funthing.description), 150)%></span></td>
+  <td><%=draw_rating(funthing.rating[0])%></td>
+  <td class="w50"><span class="pageviews-count" style="line-height: 18px;" title="Leído <%=funthing.hits_anonymous + funthing.hits_registered%> veces"><%=funthing.hits_anonymous + funthing.hits_registered%></span> </td>
+  <td class="w50"><span class="comments-count"><a title="Ver comentarios" href="<%=controller.url_for_content_onlyurl(funthing)%>#comments"><%=funthing.cache_comments_count%></a></span></td>
+  <td class="timestamp infoinline"><%=print_tstamp(funthing.created_on)%></td>
+</tr>
+<% end %>
+<% end %>
+</table>
+
+<%= render :partial => 'shared/pager', :object => @funthing_pages, :locals => {:pos => 'bottom'} %>
+<% end -%>
+<% end -%>

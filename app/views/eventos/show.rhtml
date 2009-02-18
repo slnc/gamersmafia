@@ -1,0 +1,74 @@
+<script type="text/javascript">
+  function create_member_link(tag_id, login)
+{
+  if ($j('#' + tag_id))
+    showblock(tag_id);
+  else
+  {
+    var u = document.getElementById('userslist');
+    var li = u.appendChild(document.createElement('li'));
+    li.id = tag_id;
+    var a = li.appendChild(document.createElement('a'));
+    a.href = '/miembros/' + login;
+    a.appendChild(document.createTextNode(login));
+  }
+}
+</script>
+<% content_support do %>
+<% if @event.is_public? then %>
+<% if @event.respond_to?(:coverages) then %>
+<% mftext('Noticias relacionadas') do %>
+<% # TODO cache this %>
+<%=generic_contents_list(@event.coverages.find(:published, :order => 'created_on DESC'))%>
+<% end -%>
+<% end -%>
+<br />
+
+<% else %>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @event } %>
+<% end -%>
+  <% users = @event.users %>
+  <% if user_is_authed then %>
+  <% mftext('¿Estarás en este evento?') do %>
+  <div class="centered-link">
+    <div id="leave-link"><%=link_to_remote 'No', :complete => "$j('#user#{@user.id}').fadeOut('normal'); hideblock('leave-link'); showblock('join-link');", :url => "/eventos/member_leave/#{@event.id}" %></div>
+    <div id="join-link"><%=link_to_remote 'Sí', :complete => "create_member_link('user#{@user.id}', '#{@user.login}'); hideblock('join-link'); showblock('leave-link');", :url => "/eventos/member_join/#{@event.id}" %></div>
+  </div>
+  <% end -%>
+    <script type="text/javascript">
+    <% if users.find_by_id(@user.id) %>
+    showblock('leave-link'); hideblock('join-link');
+    <% else %>
+    showblock('join-link'); hideblock('leave-link');
+    <% end -%>
+    </script>
+  <% end -%>
+
+  <% mftext('Estarán en este evento') do %>
+  <ul class="skeletal" id="userslist">
+  <% for u in users %>
+    <li id="user<%=u.id%>"><a href="<%=gmurl(u)%>"><%=u.login%></a></li>
+  <% end -%>
+</ul>
+<% end -%>
+
+
+<% end -%>
+
+<% content_main do %>
+<% mfcontent(@event) do %>
+<table>
+    <tr>
+        <td style="width: 100px;">Página web:</td>
+        <td><% if @event.website.to_s != '' then %><strong><a href="<%=@event.website%>"><%=@event.website%></a></strong><% end -%></td>
+    </tr>
+        <td>Comienza</td>
+        <td><strong><%=print_tstamp(@event.starts_on)%></strong></td>
+    </tr>
+        <td>Termina</td>
+        <td><strong><%=print_tstamp(@event.ends_on)%></strong></td>
+    </tr>
+</table>
+<p><%=@event.description%></p>
+<% end -%>
+<% end -%>

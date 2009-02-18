@@ -1,0 +1,38 @@
+<% if @actions.size > 0 then %>
+<table style="width: 238px; border: 0; padding: 0; margin: 20px 0 0 0; border-collapse: collapse; background-color: #f9f9f9;">
+	<tr>
+		<td style="background-image: url(http://<%=App.domain%>/skins/default/images/notifications/actionslisttop.gif); background-position: left top; background-repeat: no-repeat; height: 11px;"></td>
+	<tr>
+		<td style="background: url(http://<%=App.domain%>/skins/default/images/notifications/actionslistmiddle.gif) 0 0 repeat; font-weight: bold; font-size: 11px; font-family: Tahoma; list-style: none; padding-left: 12px;">
+		Enlaces relacionados:<br />
+<ul style="margin-bottom: 0; padding: 0 0 0 5px;">
+<% @actions.each do |text, link| %>
+  <li style="background: url(http://<%=App.domain%>/skins/default/images/notifications/lidetail.gif) left 1px no-repeat; line-height: 18px; margin: 0; padding: 0 0 0 12px; list-style: none;"><a href="<%=@base_url unless link.include?('http://')%><%=link%>"><%=text%></a></li>
+<% end -%>
+</ul>
+</td>
+</tr>
+<tr>
+		<td style="background-image: url(http://<%=App.domain%>/skins/default/images/notifications/actionslistbottom.gif); background-position: 0 0; background-repeat: no-repeat; height: 11px;"></td>
+	<tr>
+</table>
+<% end -%>
+
+</td>
+					</tr>
+				</table>
+				
+			</td>
+			<td style="width: 103px; text-align: right;">
+				<img src="http://<%=App.domain%>/skins/default/images/notifications/message.png" style="margin: 0 5px 0 0; margin-top: -13px; border: 0; padding: 0;" />
+			</td>
+		</tr>
+	</table>
+	</td></tr></table>		
+	<table style="margin: 0; padding: 0; border-collapse: collapse; width: 100%; border: 0;">
+		<tr>
+			 <td style="background: #fff; line-height: 35px; border-top: 1px solid #d2d2d2; border-bottom: 1px solid #fff; text-align: right; padding-right: 15px; margin: 0;"><a style="font-family: tahoma; font-weight: bold; font-size: 11px; color: #3b638c;" href="<%=@base_url%>/cuenta/notificaciones<%=@sl%>">Dejar de recibir notificaciones de este tipo</a></td>
+		</tr>
+	</table>	
+	</body>
+	</html>

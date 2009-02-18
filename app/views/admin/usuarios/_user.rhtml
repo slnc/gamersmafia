@@ -1,0 +1,10 @@
+  <tr class="<%=oddclass%>" id="user-<%= user.id %>">
+    <td><%=member_state(user.hstate)%> <a href="/admin/usuarios/edit/<%=user.id%>"><%=user.login%></a><% if user.referer_user_id then u = User.find(user.referer_user_id)%><br /><span class="infoinline" style="margin-left: 19px;">referido por: <a href="/admin/usuarios/edit/<%=u.id%>"><%=u.login%></a></span><% end -%></td>
+    <td><%=user.email%></td>
+    <td class="timestamp infoinline"><%= print_tstamp(user.lastseen_on)%><br /><%=user.ipaddr %></td>
+		<td class="infoinline">
+		<a onclick="return confirm('¿Estás seguro de querer BORRAR a <%=user.login%>?');" href="/admin/usuarios/destroy/<%=user.id%>">Borrar</a><br />
+		<a onclick="return confirm('¿Estás seguro de querer BANEAR a <%=user.login%>?');" href="/admin/usuarios/ban/<%=user.id%>">Banear</a><br />
+		</td>
+	 </tr>
+

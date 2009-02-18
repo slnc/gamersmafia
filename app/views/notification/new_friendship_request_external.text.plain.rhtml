@@ -1,0 +1,23 @@
+Hola <%=@name%>,
+
+El usuario <%=@sender.login%> quiere ser tu amigo.
+
+<% if @invitation_text then %>
+<%=@invitation_text%>
+<% end %>
+
+ACEPTAR
+http://<%=App.domain%>/cuenta/amigos/aceptar_amistad/?eik=<%=@invitation_key%>
+
+RECHAZAR
+http://<%=App.domain%>/cuenta/amigos/cancelar_amistad/?eik=<%=@invitation_key%>
+
+Ficha de <%=@sender.login%>:
+http://<%=App.domain%>/miembros/<%=@sender.login%>
+
+Si no deseas recibir más emails de Gamersmafia haz click en el siguiente enlace:
+http://<%=App.domain%>/cuenta/amigos/colvidadme/?eik=<%=@invitation_key%>
+
+Gracias,
+
+<%=@footer%>

@@ -1,0 +1,3 @@
+class FactionsSkin < Skin
+
+end

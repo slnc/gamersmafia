@@ -1,0 +1,28 @@
+<% content_support do %>
+<%= render :partial => '/shared/drafts', :locals => { :cls => Bet } if user_is_authed %>
+<%=render :partial => 'shared/content_details', :locals => { :object => @bet} %>
+<%mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Mínimo 2 opciones</li>
+<li>Máximo 5 o 6</li>
+<li>De interés general</li>
+</ul>
+<% end -%>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @bet } %>
+<%= render :partial => 'shared/pending', :object => Bet.pending %>
+<% end %>
+
+<% content_main do %>
+<%mftext('Editar apuesta') do %>
+<%= form_tag({:action => 'update', :id => @bet}, { :name => 'editing_content' }) %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @bet}%>
+<%=render :partial => '/shared/change_authorship', :locals => {:object => @bet}%>
+
+<br />
+<%= link_to 'Mostrar apuesta', gmurl(@bet) %> |
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end-%>

@@ -1,0 +1,12 @@
+<% content_main do %>
+<% mftext('Resurrección iniciada') do %>
+
+<p>Si antes de 7 días <strong><%=@resurrected_user.login%></strong> no inicia sesión en la web el proceso de resurrección se cancelará.</p>
+<p>Ir a
+<ul>
+  <li><a href="<%=gmurl(@resurrected_user)%>">ficha de <%=@resurrected_user.login%></a>.</li>
+  <li><a href="/cuenta/estadisticas/resurrecciones">sección de estadísticas de resurrecciones</a>.</li>
+</ul>
+</p>
+<% end -%>
+<% end -%>

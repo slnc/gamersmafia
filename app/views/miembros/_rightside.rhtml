@@ -1,0 +1,38 @@
+  <%mftext('Buscar usuarios') do %>
+  <div class="sidething-spaced">
+  <%= form_tag({:action=> "buscar" }) %>
+<input type="text" class="text form" size="20" name="s" />
+    <input type="submit" class="button" name="search" value="buscar" />
+  </form>
+</div>
+<% end -%>
+
+  <%mftext('Buscar por GUID') do %>
+  <% cache("/common/miembros/_rightside/buscar_por_guid") do %>
+  <div class="sidething-spaced">
+  <%= form_tag({:action=> "buscar_por_guid" }) %>
+    <select name="game_id">
+      <% for g in Game.find(:all, :conditions => 'has_guids = \'t\'', :order => 'lower(name) ASC') %>
+      <option value="<%=g.id%>"><%=g.code%></option>
+      <% end -%>
+    </select>
+    <br /><%=popup('GUID', '/site/ejemplos_guids', 350, 225)%>: <input type="text" class="text form" size="13" name="guid" />
+    <input type="submit" class="button" name="search" value="buscar" />
+  </form>
+  </div>
+  <% end -%>
+  <% end -%>
+
+  <%mftext('Últimos registros') do %>
+  <table>
+    <% cache('/common/miembros/_rightside/ultimos_registros') do %>
+      <% for u in User.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED}", :order => 'created_on DESC', :limit => 5) %>
+      <tr class="<%=oddclass%>">
+        <td><%=member_state(u.hstate)%> <%=link_to u.login, gmurl(u) %><br /> <span class="infoinline"><%=print_tstamp(u.created_on)%></span></td>
+      </tr>
+      <% end -%>
+    <% end -%>
+  </table>
+  <% end -%>
+
+<%=render :partial => '/miembros/cumpleanios' %>

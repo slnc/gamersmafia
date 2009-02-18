@@ -1,0 +1,43 @@
+<% content_support do%>
+<%mftext('Descripciones de los puestos') do %>
+<dl>
+	<dt>Don</dt>
+	<dd>Encargado de administrar el distrito. Entre sus labores están: promocionar el distrito, supervisar que todo marcha correctamente y gestionar el staff del distrito.</dd>
+	<dt>Mano derecha</dt>
+	<dd>Tiene las mismas funciones que el don con excepción de de elegir una mano derecha.</dd>
+	<dt>Sicario</dt>
+	<dd>Se encarga de publicar contenidos de alta calidad en todo el distrito y de revisar que los contenidos enviados por el resto de usuarios estén bien formateados, elegantes y legibles. También se encarga de supervisar los foros y mantener la ley y el orden en los comentarios.</dd>
+</dl>
+<% end -%>
+<% end -%> 
+<%content_main do%>
+<div class="grid-5">
+<%mftext('Don') do
+if @cur_district.has_don? then %>
+<%=user_link(@cur_district.don, :avatar => true)%>
+<% else # no don -%>
+<p>Este distrito no tiene don.</p>
+<% end -%>
+<% end -%>
+</div>
+
+<div class="grid-4">
+<%mftext('Mano derecha') do
+if @cur_district.has_mano_derecha? then %>
+<%=user_link(@cur_district.mano_derecha, :avatar => true)%>
+<% else # no don -%>
+<p>Este distrito no tiene mano derecha.</p>
+<% end -%>
+<% end -%>
+</div>
+<div class="clearl" style="clear: left;"></div>
+<%mftext('Sicarios', :grid => 9) do %>
+<table>
+	<%@cur_district.sicarios.each do |sicario| %>
+	<tr class="<%=oddclass%>"><td><%=user_link(sicario)%></td></tr>
+	<% end -%>
+</table>
+<% end -%>	
+
+
+<%end -%>

@@ -1,0 +1,42 @@
+<%
+topics_pages = ActionController::Pagination::Paginator.new self, forum.count(:published), 50, params[:page]
+
+topics_pages.current_page = topics_pages.last if params[:page].nil? 
+%>
+<%= render :partial => 'shared/pager', :object => topics_pages, :locals => {:pos => 'top'} %>
+<%
+cache("/common/foros/_topics_list/#{forum.id}/page_#{params[:page]}") do
+topics = forum.find(:published, :order => "sticky asc, #{Inflector::pluralize(Inflector::underscore(forum.class.items_class.name))}.updated_on asc", :limit => 50, :offset => ((topics_pages.current_page.to_i - 1) * 50), :include => Inflector::underscore(forum.class.name).to_sym)
+        %>
+<table>
+  <tr>
+    <th class="topic-indicators">&nbsp;</th>
+    <th>Tópic</th>
+    <% if defined?(show_forum_name) %>
+    <th>Foro</th>
+    <% end -%>
+    <th style="text-align: right;"><img class="comments-count" src="/images/blank.gif" alt="Comentarios" /></th>
+    <th style="text-align: right;">Visitas</th>
+    <th style="text-align: right;">Último comentario</th>
+  </tr>
+<% 
+for topic in topics.reverse
+    author = topic.user
+    last_comment = topic.last_comment
+%>
+  <tr class="<%=oddclass%>">
+    <td class="topic-indicators"><%=draw_topic_indicators(topic)%></td>
+    <td class="content-hid"><%=link_to topic.title, {:action => 'topic', :id =>topic.id}, {:class => 'content'} %><br />
+      <div class="infoinline">por <%=link_to author.login, :controller => 'miembros', :action => author.login%></div></td>
+    <% if defined?(show_forum_name) %>
+      <td class="infoinline"><%=print_forum_path(topic.topics_category)%></td>
+    <% end -%>
+    <td class="infoinline" style="text-align: right; padding-right: 4px;"><%=topic.cache_comments_count.to_s%></td>
+    <td class="infoinline" style="text-align: right; padding-right: 4px;"><%=(topic.hits_anonymous + topic.hits_registered)%></td>
+    <td class="infoinline" style="text-align: right; padding-right: 4px;"><% if last_comment != nil %><%=print_tstamp(last_comment.created_on)%><br /><%=link_to last_comment.user.login, :controller => 'miembros', :action => last_comment.user.login %> <a href="<%=gmurl(topic)%>#comment<%=last_comment.id%>"><img class="go-to-topic" src="/images/blank.gif" /></a><% end -%></td>
+  </tr>
+<% end -%>
+</table>
+<% end -%>
+
+<%= render :partial => 'shared/pager', :object => topics_pages, :locals => {:pos => 'bottom'} %>

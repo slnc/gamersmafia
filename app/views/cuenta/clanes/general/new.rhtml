@@ -1,0 +1,23 @@
+<% content_main do %>
+  <% mftext('Nuevo clan') do %>
+  <form method="post" action="/cuenta/clanes/general/create" enctype="multipart/form-data">
+  <%= error_messages_for 'clan' %>
+
+  <!--[form:clan]-->
+  <p><label for="clan_name">Nombre</label><br/>
+  <%= text_field 'newclan', 'name', :class => 'text'  %></p>
+
+  <p><label for="clan_tag">Tag</label><br/>
+  <%= text_field 'newclan', 'tag', :class => 'text'  %></p>
+
+  <p><label for="newclan_logo">Logo del clan .JPG</label><br/>
+  <% if @newclan.logo then %>
+  <%=fc_thumbnail(@newclan.logo, 'k', '153x115')%> 
+  <% end -%>
+  <%= file_field 'newclan', 'logo' %></p>
+<!--[eoform:clan]-->
+
+  <input type="submit" class="button" value="Crear" />
+  </form>
+  <% end -%>
+<% end -%>

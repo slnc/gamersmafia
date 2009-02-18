@@ -1,0 +1,20 @@
+<% content_support do %>
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Mis borradores') do %>
+  <table>
+<% Cms::contents_classes_publishable.each do |cls|
+    cls.find(:all, :conditions => ['state = ? AND user_id = ?', Cms::DRAFT, @user.id]).each do |o|
+    %>
+    <tr class="<%=oddclass%>">
+      <td><a href="<%=get_url(o).gsub('show', 'edit')%>"><%=o.resolve_hid%></a></td>
+      <td class="infoinline right w150"><%=print_tstamp(o.created_on)%></td>
+      <td class="infoinline right w150"><%=link_to('Borrar', get_url(o).gsub('show', 'destroy'), {:method => :post, :confirm => '¿Estás seguro?'})%></td>
+    </tr>
+    <%
+    end
+  end %>
+</table>
+<% end -%>
+<% end -%>

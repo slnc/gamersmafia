@@ -1,0 +1,17 @@
+<% content_support do %>
+<% if @column.is_public? then %>
+<%=mfcontents_basic("Más columnas de #{@column.user.login}", 
+	controller.portal.column,
+ 	[:published, {:conditions => ['user_id = ?', @column.user_id], :order => 'created_on DESC', :limit => 5}],
+    :cache => "/#{controller.portal_code}/columnas/show/latest_by_author_#{@column.user_id}",
+ 	:rating => true,
+	:comments_count => true,
+	:more_link => "<a href=\"#{gmurl(@column.user)}/contenidos/columnas\">Ver todas sus columnas (#{@column.user.columns.count})</a>")%>
+<% else %>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @column } %>
+<% end -%>
+<% end -%>
+
+<% content_main do %> 
+  <%=mfcontent(@column)%>
+<%end -%>

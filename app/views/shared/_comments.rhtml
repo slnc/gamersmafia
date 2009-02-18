@@ -1,0 +1,219 @@
+<%
+if defined?(allinone) and allinone == true then
+  per_page = 1000000
+else
+  per_page = Cms.comments_per_page
+end
+
+uniq_id = object.unique_content.id
+params[:page] = Cms::page_to_show(@user, object, @object_lastseen_on) if user_is_authed and not params[:page]
+params[:page] = (params[:page].nil? or params[:page].to_i < 1) ? 1 : params[:page].to_i
+ckey = object.updated_on < 1.month.ago ? 'perm' : Time.now.to_i/(86400*7)
+questions_mode = (object.class.name == 'Question') ? true : false 
+cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{per_page}_#{params['page']}") do 
+
+@comments_pages, @comments = controller.paginate :comment, :conditions => ['deleted = \'f\' AND content_id = ?', object.unique_content.id], :order => 'comments.created_on asc', :per_page => per_page, :include => :user
+%>
+<script type="text/javascript">var comments = new Array();</script> 
+<div class="comments-container"><a name="comments"></a>
+<%    udata = Comments.get_comments_ratings_for_content(object)
+    cvt = udata[0]
+%>
+  <div style="padding: 15px 5px;"><%=flash_obj(:url => "/flash/comments_count.swf?commentscount=#{Comment.count(:conditions => ['deleted = \'f\' AND content_id = ?', object.unique_content.id])}&pcent=#{(udata[1]*100).to_i}&dir=#{udata[0].direction}", :width => '74px', :height => '34px')%></div>
+  <div class="comments-area">
+<%= render :partial => 'shared/pager', :object => @comments_pages, :locals => {:pos => 'top'} %>
+<%
+if params[:page] then
+  i = (params[:page].to_i - 1) * per_page + 1
+else
+  i = 1
+end
+
+positive_valorations_types = CommentsValorationsType.find_positive
+neutral_valorations_types = CommentsValorationsType.find_neutral
+negative_valorations_types = CommentsValorationsType.find_negative
+
+@comments.each do |comment| 
+  i+=1 
+  show_signature = comment.user.enable_comments_sig? && comment.user.comments_sig.to_s != ''
+  show_signature = false if questions_mode
+%>
+<div class="comment" id="comment<%=comment.id%>"></a>
+<script type="text/javascript">comments[<%=comment.id%>] = new Array(<%=comment.created_on.to_i%>, <%=comment.user_id%>);</script>
+ 
+  <div class="user-info">
+  	<div class="user-info-holder">
+     <div class="avatar" style="margin-bottom: 2px;"><img src="<%=ASSET_URL%><%=comment.user.show_avatar%>" /></div> 
+     <div style="margin-left: 3px; height: 12px; width: 50px;"><%=draw_karma_bar_sm(comment.user)%></div>
+     <div style="margin-left: 3px;  width: 50px;"><%=draw_faith_bar_sm(comment.user)%></div>
+     <div style="margin-left: 3px;  width: 50px;"><%=draw_comments_bar_sm(comment.user, comment)%></div>
+	 <div class="emblemas">
+	 	<%if ckey != 'perm' && comment.user.emblems_mask.to_s.index('1') then
+			
+		    emi = 0 
+			comment.user.emblems_mask.split('').each do |char|
+			  if char == '1' then
+			 %>
+		 	<img class="emblema emblema-<%=Emblems::EMBLEMS_BY_INDEX[emi]%>" src="/images/blank.gif" title="<%=Emblems::EMBLEMS[Emblems::EMBLEMS_BY_INDEX[emi]][:title]%>" />
+			<% end # if -%>
+		<% emi+=1 
+end # each -%>
+		<% end # if -%>
+		</div>
+  </div></div>
+
+  <div class="comment-header">
+    <div class="comment-info infoinline"> 
+      <span class="hidden" id="comment<%=comment.id%>editlink"><% if nil then %><a class="action" href="" onclick="editcomment(<%=comment.id%>); return false;">Editar2</a><% end -%><a class="action" href="" onclick="document.location='/comments/edit/<%=comment.id%>?redirto=<%=request.path%>'; return false;">Editar</a> |</span>
+      <span class="hidden" id="comment<%=comment.id%>dellink"><a class="action" href="" onclick="return confirm('¿Estás seguro de que quieres borrar este comentario?') && (document.location = '/comments/destroy/<%=comment.id%>?redirto=<%=request.path%>') && false;">Borrar</a> |</span>
+      <%=print_tstamp comment.created_on%> <span class="commentlink"><a title="Enlace a este comentario" href="#comment<%=comment.id%>"><img src="/images/blank.gif" class="icon16" /></a></span>
+    </div>
+
+    <div class="comment-number">#<span><%=i-1%></span></div>
+    <div class="author" style="padding-left: 15px;"><a class="nav" href="<%=gmurl(comment.user)%>"><%=comment.user.login%></a> <%=faction_favicon(comment.user)%></div>
+  </div>
+  <% crating = comment.get_rating
+    colour = case crating[0].direction
+      when 0: 'normal-rating'
+      when 1: 'positive-rating'
+      when -1: 'negative-rating'
+      else raise "error! #{crating[0].direction}"
+      end
+  if crating[0].name != 'Normal' then 
+    if crating[1] == 1.0
+      opacity = '1.0'
+      ie_opacity = '100'
+    else
+       opacity = (crating[1]*10).to_i / 10.0
+       ie_opacity = (crating[1]*100).to_i
+      end
+  %>
+    <div class="comment-rating-state <%=colour%>" style="opacity: <%=opacity%>; filter=alpha(opacity=<%=ie_opacity%>)"><div><%=comments_icon(crating[0].name.to_sym, true)%> <%=crating[0].name%></div></div>
+  <% end -%>
+
+  <div class="text" id="commenttext<%=comment.id%>"><%=auto_link(smilelize(comment.comment)) do |text| 
+    truncate(text.gsub(/http:\/\//, ''), 50)
+    end%>
+	
+	<% if questions_mode && comment.user.id != object.user_id then %>
+		<div class="questions-best-answer hidden"><a href="/respuestas/mejor_respuesta/<%=comment.id%>" onclick="return confirm('¿Estás seguro? Una vez marcada no se puede cambiar la mejor respuesta.');"><img class="icon" src="/skins/default/images/btn_mejor_respuesta.png" /></a></div>
+	<% end -%>
+	
+	<% if show_signature then %>
+	<div class="hidden comments-sig"><%=h comment.user.comments_sig%></div>
+	<% end -%>
+	</div>
+	
+	<div class="hidden report-comments infoinline <%='report-comment-with-sig' if show_signature %>" id="report-comments<%=comment.id%>">
+		<a href="" title="Reportar este comentario por violación del código de conducta" onclick="return report_comment(<%=comment.id%>);">Reportar</a>
+	</div>
+    
+      <div class="moderate-comments-opener-detail">
+      <div class="moderate-comments-opener hidden" id="moderate-comments-opener<%=comment.id%>" onmouseout="hideblock('moderate-comments<%=comment.id%>')" onmouseover="showblock('moderate-comments<%=comment.id%>')">Mi valoración: <strong><span id="moderate-comments-opener-rating<%=comment.id%>">Ninguna</span></strong><br />
+    <div class="hidden moderate-comments" id="moderate-comments<%=comment.id%>">
+    <ul class="positive">
+    <% positive_valorations_types.each do |cvt| %>
+    <li><a href="" onclick="rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
+    <% end -%>
+    </ul>
+    <ul class="negative">
+    <% negative_valorations_types.each do |cvt| %>
+    <li><a href="" onclick="return rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
+    <% end -%>
+    </ul>
+    <ul class="neutral">
+    <% neutral_valorations_types.each do |cvt| %>
+    <li><a href="" onclick="return rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
+    <% end -%>
+    </ul>
+    </div>
+    </div>
+    </div>
+</div>
+<div style="clear: left; margin-bottom: 35px;"> </div>
+<% end -%>
+<%= render :partial => 'shared/pager', :object => @comments_pages, :locals => {:pos => 'bottom'} %>
+
+<% 
+end # cache
+%>
+
+<% if questions_mode && user_is_authed && object.answered_on.nil? && (@_cache_can_select ||= Cms.user_can_select_best_answer(@user, object)) then %>
+<script type="text/javascript">$j('div.questions-best-answer').removeClass('hidden');</script>
+<% end -%> 
+
+<% if (user_is_authed && @user.comment_show_sigs?) then %>
+<script type="text/javascript">$j('div.comments-sig').removeClass('hidden');</script>
+<% end -%>
+
+<% # TODO moderadores de facción no pueden moderar ahora mismo
+if user_is_authed and not (defined?(nohighlight) and nohighlight == true) then %>
+<script type="text/javascript">
+function load_comments()
+{
+       if (arguments.callee.done) return;
+       // flag this function so we don't do the same thing twice
+       arguments.callee.done = true;
+      check_comments_controls(<%=Comments::user_can_moderate_comments_of_content(@user, object)%>, <%=@user.id%>, <%=@object_lastseen_on.to_i%>, <%=Time.now.to_i%>, <%=ActiveSupport::JSON.encode(Comments::comments_ratings_for_user_in_object_in_page(@user, object, params[:page]))%>, <%=Karma.level(@user.karma_points) > 0 ? @user.remaining_rating_slots : 0%>, <%=ActiveSupport::JSON.encode(@user.created_on < 7.days.ago)%>, <%=@user.is_hq?%>, <%=@first_time_content%>, '<%=@user.pref_comments_autoscroll%>');
+}
+   /* for Mozilla */
+   if (document.addEventListener) {
+       document.addEventListener("DOMContentLoaded", load_comments, false);
+   }
+   
+    window.onload = load_comments;
+</script>
+<% end -%>
+
+<div class="infoinline right"><a style="background: url(/skins/default/images/top.png) right 0 no-repeat; padding-right: 18px;" href="#" onclick="return GM.utils.gototop();">Volver arriba</a></div>
+<%
+if user_is_authed then
+  begin
+    # TODO
+	Comments.require_user_can_comment_on_content(@user, object)
+  rescue Exception => e
+    %><p class="centered"><%=e.to_s%></p><%
+  else
+    if @user.antiflood_level > -1 then
+      max = (5 - @user.antiflood_level) * 5
+      cur = Comment.count(:conditions => "user_id = #{@user.id} and created_on::date = now()::date")
+    end
+%>
+
+    <form action="/comments/create" method="post" name="REPLIER" style="padding-top: 25px;">
+    <%= hidden_field_tag 'comment[content_id]', uniq_id %>
+    <%= hidden_field_tag 'redirto', request.path %>
+      <input type="button" class="button" value="http://" name="URL" onclick="tag_url()" />
+      <input type="button" class="button" value="IMG" name="IMG" onclick="tag_image()" />
+      <input type="button" class="button" name="QUOTE" value="QUOTE" onclick="simpletag('QUOTE')" />
+      <input type="button" class="button" name="CODE" value="CODE" onclick="simpletag('CODE')" />
+      <input type="button" class="button" value="B" name="B" onclick="simpletag('B')" />
+      <input type="button" class="button" value="I" name="I" onclick="simpletag('I')" />
+      <input type="hidden" name="tagcount" value="" />
+      <br />
+      <textarea id="comment_comment" name="comment[comment]" rows="10" style="width: 98%; background: #fcfcfc; border: 1px solid #aaa;"></textarea>
+      <%= render :partial => '/shared/smileys', :locals => { :dom_id => 'comment_comment' } %>
+      <script type="text/javascript">
+      if (is_ie)
+        $j('#comment_comment').css('width', '100%');
+      </script>
+	  <% if @user.comment_adds_to_tracker_enabled? then %><input type="hidden" value="1" name="add_to_tracker"  /><% end -%>
+      <div class="right"><input type="image" src="/images/blank.gif" class="btn-<%= (questions_mode && @user.id != object.user_id) ? 'responder' : 'comentar'%>" /></div>
+    </form>
+	
+    <% end # begin..rescue
+    %>
+    <% end #if user_is_authed
+    %>
+
+
+<% if !user_is_authed then %>
+    <div class="system-message">
+      <% h_imgs = ['009d48', '14826d', '2d3058', '73ec88', 'e5cbc8', '068b5b', '21db24', '2e7ded', '74254', 'ff0d19', '1108b2', '2bc937', '334d5e', '7984ec'] %>
+
+      <div class="register-now"><a href="/cuenta/alta"><img src="/images/hentai/<%=h_imgs[Kernel.rand(13)]%>.jpg" /></a></div>
+      <p><a href="/cuenta/alta">Regístrate</a> para poder comentar.<br /><br />Si ya estás registrado solo tienes que <%=link_to 'iniciar sesión', :controller => 'cuenta', :action => 'login'%>.</p>
+    </div>
+<% end -%>
+  </div>
+</div>

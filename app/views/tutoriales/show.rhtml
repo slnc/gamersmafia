@@ -1,0 +1,19 @@
+<% content_support do %>
+<% if @tutorial.is_public? then %>
+<%=mfcontents_basic("Más tutoriales de #{@tutorial.tutorials_category.name}", 
+	Tutorial,
+	[:published, {:conditions => "tutorials_category_id IN (#{(@tutorial.tutorials_category.get_all_children.<<(@tutorial.tutorials_category.id)).join(',')})", :order => 'created_on desc', :limit => 5}],
+    :cache => "/tutoriales/latest_by_cat_#{@tutorial.tutorials_category_id}",
+ 	:rating => true,
+	:faction_favicon => true,
+	:skip_id => @tutorial.id,
+	:comments_count => true)%>	
+<%=render :partial => 'other_categories', :locals => {:category => @tutorial.tutorials_category} %>
+<% else %>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @tutorial } %>
+<% end -%>
+<% end -%>
+
+<% content_main do %> 
+  <%=mfcontent(@tutorial)%>
+<%end -%>

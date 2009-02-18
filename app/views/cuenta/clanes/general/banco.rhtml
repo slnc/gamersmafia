@@ -1,0 +1,15 @@
+<% content_support do %>
+	<%mftext('Transferencia') do %>
+  <div class="centered"><img class="icon" src="/images/bank.png" /></div>
+  <p>Cuenta bancaria del clan.</p>
+  <% end %>
+  <%=render :partial => '/shared/cash_transfer', :locals => { :sender => @clan } %>
+<% end %>
+
+<% content_main do %>
+  <% mftext('Banco') do %>
+  <p>Saldo del clan: <strong><code><%=@clan.cash%></code></strong><%=gmd11%></p>
+  <% end %>
+  
+  <%= render :partial => '/shared/cash_movements', :locals => { :entity => @clan } %>
+<% end %>

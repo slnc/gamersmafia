@@ -1,0 +1,22 @@
+<p><label >Categoría</label><br/>
+<select name="image[images_category_id]">
+<% cats = @image.new_record? ? @portal.images_categories : ImagesCategory.toplevel %>
+<% for ic in controller.portal.images_categories %>
+<optgroup label="<%=ic.name%>">
+<% for gallery in ic.children %>
+<option <%= (gallery.id == @image.images_category_id) ? 'selected="selected"' : ''%> value="<%=gallery.id%>"><%=gallery.name%></option>
+<% end -%>
+</optgroup>
+<% end -%>
+</select>
+
+<p><label for="image_file">Archivo .JPG</label><br/>
+<% if @image.file then %>
+<%=fc_thumbnail(@image.file, 'k', '153x115')%> 
+<% end -%>
+<%= file_field 'image', 'file' %></p>
+
+<p><label for="image_description">Descripción</label><br/>
+<%=wysiwyg('image[description]', :value => @image.description, :height => '100px')%></p>
+
+<%=draft_check_box(@image)%>

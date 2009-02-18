@@ -1,0 +1,86 @@
+<%= render :partial => '/notification/header' %>
+<% total = Stats.total_advertiser_clicks_in_timerange(@tstart, @tend, @advertiser)
+daily = Stats.advertiser_daily_hits_in_timestamp(@tstart, @tend, @advertiser)
+%>
+<table>
+  <tr>
+    <td>Clicks/día:</td>
+    <td><strong><%="%.2f" % (total.to_f/((@tend.to_i - @tstart.to_i)/86400.0))%></strong></td>
+    <td><%=sparklines(daily)%></td>
+  </tr>
+  <tr>
+    <td>Total:</td>
+    <td><strong><%=total%></strong></td>
+    <td></td>
+  </tr>
+</table>
+<br />
+<br />
+
+<%=notification_header('Banners')%>
+<table>
+<tr>
+  <th style="font-size: 11px;">Banner</th>
+  <th style="font-size: 11px;">CTR</th>
+  <th style="font-size: 11px;">Clicks/día</th>
+  <th style="font-size: 11px;">Clicks</th>
+  <th style="font-size: 11px;">Impresiones</th>
+</tr>
+<%AdsSlotsInstance.find(:all, :conditions => "deleted='f' AND ad_id IN (SELECT id FROM ads WHERE advertiser_id = #{@advertiser.id})", :order => 'LOWER(ads.name)', :include => :ad).each do |adsi|
+bi = Stats.adsi_info_in_tstamp(@tstart, @tend, adsi)
+ad = Ad.find(adsi.ad_id)
+%>
+<tr>
+  <td><a href="http://<%=App.domain%>/<%=ad.file%>"><img style="border: 1px solid #000;" src="http://<%=App.domain%>/cache/thumbnails/k/88x31/<%=ad.file%>" /></a><br /><span style="font-size: 10px;"><a href="http://<%=App.domain%>/<%=ad.file%>"><%=truncate(ad.name, 15, '..')%></a></span></td>
+  <td><%=bi[:pageviews] > 0 ? ("%.2f" % (bi[:ctr]*100)) : 0%>%</td>
+  <td><%=sparklines(bi[:daily_hits])%></td>
+  <td><%=bi[:hits]%></td>
+  <td><%=bi[:pageviews]%></td>
+</tr>
+<% end -%>
+</table>
+<br />
+<br />
+
+<%=notification_header('Portales general')%>
+<% stats_by_portals = Stats.adsi_by_portals_in_tstamp(@tstart, @tend, @advertiser)
+sum = 0.0
+stats_by_portals.each { |s| sum += s['count'].to_i } %>
+<table>
+<tr>
+  <th style="font-size: 11px;">Portal</th>
+  <th style="font-size: 11px;">Clicks</th>
+  <th style="font-size: 11px; width: 25px;">%</th>
+  <th style="font-size: 11px; width: 250px;"></th>
+  <th></th>
+</tr>
+<% stats_by_portals.each do |dbi| %>
+<tr>
+  <td><a href="http://<%=dbi['code']%>.<%=App.domain%>"><%=dbi['name']%></a></td>
+  <td><%=dbi['count']%></td>
+  <td><%="%.2f" % ((dbi['count'].to_i / sum)*100)%>%</td>
+  <td><div style="width: <%=(dbi['count'].to_i / sum)*100.to_i%>%; background: #333; height: 20px;"></div></td>
+  <td><% #= sparklines(dbi['daily_hits'])%></td>
+</tr>
+<% end -%>
+</table>
+
+<% if nil then %>
+<%=notification_header('Los 5 Portales de mayor rendimiento')%>
+<table>
+<tr>
+  <th style="font-size: 11px;">Portal</th>
+  <th style="font-size: 11px;">% clicks</th>
+  <th style="font-size: 11px;">Top Banners</th>
+</tr>
+<% Stats.best_ads_portals_in_tstamp(@advertiser, @tstart, @tend).each do |dbi| %>
+<tr>
+  <td><%=dbi['portal'].name%></td>
+  <td><%=pcent_bar(dbi['clicks'] / total.to_f)%></td>
+  <td><%=sparklines(dbi['daily_hits'])%></td>
+</tr>
+<% end -%>
+</table>
+<% end -%>
+
+<%= render :partial => '/notification/footer' %>

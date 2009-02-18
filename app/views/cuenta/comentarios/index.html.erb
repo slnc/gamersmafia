@@ -1,0 +1,23 @@
+<%content_support do %>
+<% if @user.enable_comments_sig? then %>
+<%mftext('Aviso') do %>
+<p>Cuando actives tu firma es posible que no se vea automáticamente en las páginas de comentarios antiguas. Al cabo de unos días se actualizarán.</p>
+<% end -%>
+<% end -%>
+<% end -%>
+
+<%content_main do %>
+<% mftext('Configuración de comentarios') do %>
+<%=form_tag(:action=> 'save') %>
+<% if @user.enable_comments_sig? then %>Mi firma<br />
+<input class="text" type="text" style="width: 100%;" maxlength="70" name="user[comments_sig]" value="<%=h @user.comments_sig%>" /><br />
+<% end -%>
+<span class="infoinline">La firma ha de ser única.</span>
+<br />
+<label><%=check_box 'user', 'comment_show_sigs' %> Mostrar firmas en comentarios</label><br />
+<label><%=check_box 'user', 'pref_comments_autoscroll' %> Hacer autoscroll en comentarios</label><br />
+<br />
+<input type="submit" value="Guardar" />
+</form>
+<% end -%>
+<% end -%>

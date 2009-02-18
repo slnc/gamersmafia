@@ -1,0 +1,16 @@
+<div class="facebox-title">Reportar comentario</div>
+
+<div class="facebox-content">
+<div id="aaa"></div>
+<%=form_remote_tag({:update => 'aaa', :url => "/comments/report/#{params[:id]}", :evalScripts => true})%>
+<input type="text" class="w100pc text virgin" id="report-comment-reason" name="reason" value="Razón..." /><br />
+<br />
+<input type="submit" value="Reportar" />
+<input type="button" value="Cancelar" onclick="closeFacebox();" />
+</form>
+<script type="text/javascript">
+  $j('#report-comment-reason').val("Razón..").one('click', function(){
+    $j(this).val("").removeClass('virgin');
+  });
+</script>
+</div>

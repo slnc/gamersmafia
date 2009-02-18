@@ -1,0 +1,63 @@
+<% content_support do %>
+<% if !@poll.is_public? then %>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @poll } %>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+<%mfcontent(@poll) do %>
+<br />
+<%
+total_votes_reg = 0
+total_votes_anon = 0
+max_reg = 0
+max_anon = 0
+for option in @poll.polls_options.find(:all, :order => 'id asc')
+  cur_votes_count_reg = option.polls_votes.count(:conditions => 'user_id is not null')
+  cur_votes_count_anon = option.polls_votes.count(:conditions => 'user_id is null')
+  max_reg = cur_votes_count_reg if max_reg < cur_votes_count_reg
+  max_anon = cur_votes_count_anon if max_anon < cur_votes_count_anon
+  total_votes_reg += cur_votes_count_reg
+  total_votes_anon += cur_votes_count_anon
+end
+
+%>
+<h2><%=faction_favicon(@poll.my_faction)%> Resultados de la encuesta (<%=total_votes_anon + total_votes_reg%> votos)</h2>
+<br />
+<table class="pollvotes">
+  <tr>
+    <th>Opción</th>
+    <th>Registrados</th>
+    <th>Anónimos</th>
+    <th>Votos</th>
+  </tr>
+<%
+
+for option in @poll.polls_options.find(:all, :order => 'id asc')
+  votes_reg = option.polls_votes.count(:conditions => 'user_id is not null')
+  votes_anon = option.polls_votes.count(:conditions => 'user_id is null')
+  cur_pc_reg = total_votes_reg > 0 ? (votes_reg.to_f / max_reg * 100).to_i : 0
+  cur_pc_reg_abs = total_votes_reg > 0 ? (votes_reg.to_f / total_votes_reg * 100).to_i : 0
+  cur_pc_anon = total_votes_anon > 0 ? (votes_anon.to_f / max_anon * 100).to_i : 0
+  cur_pc_anon_abs = total_votes_anon > 0 ? (votes_anon.to_f / total_votes_anon * 100).to_i : 0
+%>
+<tr class="<%=oddclass%>">
+<td style="width: 200px;" class="content-hid"><strong><%= option.name %></strong></td>
+<td class="w125"><img src="/images/blank.gif" style="border: 0px solid #9b2405; background: #A63131; width: <%=cur_pc_reg%>%; height: 10px;" /></td>
+<td class="w125"><img src="/images/blank.gif" style="border: 0px solid #823939; background: #777; width: <%=cur_pc_anon%>%; height: 10px;" /></td>
+<td class="w100 centered">
+  <strong style="color: #A63131"><%=votes_reg%></strong> / <strong style="color: #A09090"><%=votes_anon%></strong> 
+  <br />
+  <span class="infoinline" style="color: #d95e5e"><%=cur_pc_reg_abs%>%</span> / <span class="infoinline" style="color: #A09090"><%=cur_pc_anon_abs%>%</span>
+</td>
+</tr>
+<%
+end
+%>
+<tr>
+  <th colspan="3">Total:</th>
+  <td class="centered"><strong style="color: #d95e5e"><%=total_votes_reg%></strong> / <strong style="color: #A09090"><%=total_votes_anon%></strong> </td>
+</tr>
+</table>
+<% end -%>
+<% end -%>

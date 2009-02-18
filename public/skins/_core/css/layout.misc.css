@@ -1,0 +1,81 @@
+/* clean */
+.centered-link {
+    padding: 15px 0;
+    text-align: center;
+}
+
+.centered {
+    text-align: center;
+}
+
+img.icon,
+a img.icon {
+    border: 0;
+}
+
+.show {
+    display: block;
+    visibility: visible;
+}
+
+/* .mcontent { overflow: hidden; } */
+/* .xmain { overflow: hidden; }
+.xdescription { overflow: hidden; } */
+
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}
+
+/* not clean */
+.gmd10 {
+    background: url(../images/icons/gmd10.png);
+    width: 7px;
+    height: 7px;
+}
+
+.gmd11 {
+    background: url(../images/icons/gmd11.png);
+    width: 9px;
+    height: 8px;
+}
+
+.gmd12 {
+    background: url(../images/icons/gmd12.png);
+    width: 9px;
+    height: 9px;
+}
+
+.comments-icon {
+    width: 12px;
+    height: 12px;
+    background: url(../images/icons/comments.gif) 0 0 no-repeat;
+}
+
+
+img.pageviews-count {
+    width: 16px;
+    height: 16px;
+    background: url(../images/icons/pageviews.gif);
+}
+
+img.comments-count {
+    width: 16px;
+    height: 16px;
+    background: url(../images/icons/comments_16x16.gif);
+}
+
+img.downloads-count {
+    width: 16px;
+    height: 16px;
+    background: url(../images/icons/downloads_count.gif);
+}
+
+
+table.form {
+	/* TODO */
+}
+
+table.form td.field { /* TODO */ }
+table.form td.value { /* TODO */ }

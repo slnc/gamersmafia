@@ -1,0 +1,57 @@
+<% mftext('Configuración de cuenta') do %>
+<%=form_tag(:action=> 'update_configuration') %>
+<% @post = @user %>
+
+  <% @newuser and if error_messages_for 'newuser' %>
+  <div class="Message"><%= error_messages_for 'newuser' %></div>
+  <% end %>
+<table>
+<tr>
+  <td>Usuario</td>
+  <td><%=@user.login %></td>
+</tr>
+<tr>
+    <td><label for="post_password">Contraseña</label></td>
+    <td><input type="password" name="user[password]" size="20" /></td>
+</tr>
+<tr>
+    <td><label for="post_passwordbis">Repetir contraseña</label></td>
+    <td><input type="password" name="user[password_confirmation]" size="20" /></td>
+</tr>
+
+<tr>
+   <td> <label for="post_newemail">Email</label> </td>
+   <td>
+      <%= text_field "user", "newemail", :size => 20, :class => "text form", :value => @user.email %>
+   </td>
+</tr>
+<% if not @user.newemail.nil? %>
+<tr>
+   <td>Nuevo email</td>
+   <td>
+      <%= @user.newemail %>
+   </td>
+</tr>
+
+<tr><td>&nbsp;</td>
+<td>
+<%= link_to 'Reenviar confirmación de cambio de email', '/cuenta/resendnewemail' %>
+</td></tr>
+<% else %>
+<tr>
+  <td colspan="2">Nota: Deberás confirmar por email el cambio de dirección de correo. </td>
+</tr>  
+<% end %>
+<tr><td>&nbsp;</td>
+<td>
+  <input type="submit" class="button primary" value="Guardar" />
+</td></tr>
+
+</table>
+</form>
+
+<% if @user.is_editor? then %>
+RSS de elementos pendientes de moderar: <a href="http://gamersmafia.com/rss/cola_moderacion/?secret=<%=@user.get_secret%>">http://gamersmafia.com/rss/cola_moderacion/?secret=<%=@user.get_secret%></a>
+<% end -%>
+
+<% end -%>

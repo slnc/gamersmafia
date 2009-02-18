@@ -1,0 +1,9 @@
+<h1>Editing games_map</h1>
+
+<%= form_tag({:action => 'update', :id => @games_map}, :multipart => true)%>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Edit' %>
+</form>
+
+<%= link_to 'Show', :action => 'show', :id => @games_map %> |
+<%= link_to 'Back', :action => 'list' %>

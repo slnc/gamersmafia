@@ -1,0 +1,25 @@
+<% if @user.id == @cur_district.don.id then %>
+<%mftext('Mano derecha') do %>
+<form method="post" action="/cuenta/distrito/update_mano_derecha">
+Usuario: <input type="text" class="text" name="login" value="<%=@cur_district.mano_derecha.login if @cur_district.mano_derecha %>"/><br />
+<input type="submit" class="button" value="Guardar" />
+</form>
+<% end -%>
+<% end -%>
+
+<%mftext('Sicarios') do %>
+<form method="post" action="/cuenta/distrito/add_sicario">
+Usuario: <input type="text" class="text" name="login" value=""/><br />
+<input type="submit" class="button" value="Añadir" />
+</form>
+<br />
+<br />
+  <table>
+    <% @cur_district.sicarios.each do |member| %>
+    <tr class="<%=oddclass%>">
+      <td><a href="<%=gmurl(member)%>"><%=member.login%></a></td>
+      <td><a href="/cuenta/distrito/del_sicario?user_id=<%=member.id%>" onclick="return confirm('¿Estás seguro?');">Borrar</a></td>
+    </tr>
+    <% end -%>
+  </table>
+<% end -%>

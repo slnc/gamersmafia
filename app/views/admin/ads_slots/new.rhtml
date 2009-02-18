@@ -1,0 +1,9 @@
+<h1>Nuevo Ad</h1>
+
+<%= form_tag({:action => 'create' }, :multipart => true )%>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Crear' %>
+</form>
+
+<br />
+<%= link_to 'Volver', :action => 'index' %>

@@ -1,0 +1,28 @@
+#mgmenubazar {
+    height: 25px;
+    margin: 0;
+    padding: 0;
+	background: url(../images/menu_bg.png) 0 0 repeat-x;
+	border-top: 1px solid #ccc;
+	border-bottom: 0;
+
+}
+
+#mgmenubazar ul {
+	padding-left: 0;
+	margin-top: 0;
+	margin-left: 0;
+}
+
+#mgmenubazar li {
+    float: left;
+    list-style: none;
+	margin-left: 15px;
+	line-height: 25px;
+	font-size: 11px;
+	font-weight: bold;
+}
+
+#mgmenubazar { padding-top: 0; margin-top: 0;}
+#mgmenubazar a { 	color: #fff; text-decoration: none;}
+#mgmenubazar a:hover { text-decoration: underline;}

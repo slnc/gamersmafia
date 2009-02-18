@@ -1,0 +1,55 @@
+<% content_support do %>
+<% mftext('Mejor valoradas') do %>
+<ul class="sidelist">
+<% cache("/#{controller.portal_code}/columnas/index/best_rated#{Time.now.strftime('%Y%m%d')}") do %>
+<% controller.portal.column.best_rated(:limit => 3).each do |c| %>
+  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
+  <% end -%>
+<% end -%>
+</ul>
+<% end -%>
+
+<% mftext('Más populares') do %>
+<ul class="sidelist">
+<% cache ("/#{controller.portal.code}/columnas/index/most_popular_#{Time.now.to_i/(86400)}") do %>
+<% controller.portal.column.most_popular.each do |c| %>
+  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
+  <% end -%>
+<% end -%>
+</ul>
+<% end -%>
+
+<% mftext('Autores más populares') do %>
+<ul class="sidelist">
+<% cache("/#{controller.portal.code}/columnas/index/most_popular_authors_#{Time.now.to_i/(86400)}") do %>
+<% controller.portal.column.most_popular_authors.each do |u| %>
+  <li class="<%=oddclass%>"><%=draw_user_info(u[0])%><div class="more"><a href="<%=gmurl(u[0])%>/contenidos/columnas">Ver sus columnas (<%=u[0].columns.count(:conditions => "state = #{Cms::PUBLISHED}")%>)</a></div></li>
+  <% end -%>
+<% end -%>
+</ul>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+    <% mftext('Columnas') do %>
+<% 
+@column_pages = ActionController::Pagination::Paginator.new self, controller.portal.column.count(:published), controller.class::COLUMNS_PER_PAGE, params['page']
+@column_pages.current_page = @column_pages.last if params['page'].nil?
+%>
+<%= render :partial => 'shared/pager', :object => @column_pages, :locals => {:pos => 'top'} %>
+<% cache("/#{controller.portal.code}/columnas/index/page_#{params[:page]}") do
+@columns = controller.portal.column.find(:published, :order => 'created_on asc', :limit => @column_pages.current.to_sql[0], :offset => @column_pages.current.to_sql[1])
+@columns.reverse.each do |column| %>
+    <div class="<%=oddclass%>">
+            <h2><%= link_to column.title, gmurl(column) %></h2>
+      <%=draw_contentheadline(column)%>
+      <% if column.home_image then %><div style="float: left;  margin-top: 5px;margin-right: 10px;"><%=fc_thumbnail(column.home_image, 'f', '105x54', false)%></div><% end -%>
+      <div style="margin-left: 110px;" class="summary"><%=column.description%></div>
+    </div>
+    <br />
+    <% end %>
+<% end %>
+
+    <%= render :partial => 'shared/pager', :object => @column_pages, :locals => {:pos => 'bottom'} %>
+	<% end -%>
+<% end -%>

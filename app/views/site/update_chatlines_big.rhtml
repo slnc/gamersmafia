@@ -1,0 +1,28 @@
+<% 
+now = Time.now.to_i
+for chatline in Chatline.latest %>
+  <li id="chatline<%=chatline.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 0px; margin-bottom: 0px;">
+    <div class="avatar" style="float: left; margin-right: 3px;"><img style="border: 1px solid black; width: 32px; height: 32px;" src="<%=ASSET_URL%>/cache/thumbnails/f/32x32<%=chatline.user.show_avatar%>" /></div>
+    <div style="float: right; margin-right: 5px;" class="infoinline"><% if user_is_authed and (@user.has_admin_permission?(:capo) or @user.is_superadmin) then %>
+      <%=link_to_remote('x', {:update => 'bigchat', :url => { :action => 'del_chatline', :id => chatline.id}}, :class => 'action')%> | 
+    <% end -%>
+    <%=print_tstamp(chatline.created_on, 'time')%></div>
+  <div style="padding-left: 40px;"><span class="nick" style="background: #efefef; padding: 0 4px;"><% if chatline.user_id != 8 then %><strong><%=link_to chatline.user.login, {:controller => 'miembros', :action => chatline.user.login}, :class => 'nav'%></strong><% else %>&lt;<%=chatline.line.match(/^<([^>]+)>/)[1]%>&gt;<% end -%></span>: <% if chatline.user_id != 8 then %><%=smilelize(Comments::formatize(chatline.line))%><% else %><%=smilelize(Comments::formatize(chatline.line.gsub(/^(<[^>]+>: )/, '')))%><% end -%><div style="clear: left;"></div></div></li>
+  <% if chatline.created_on.to_i > params[:time].to_i then %>
+  <script type="text/javascript"><%=visual_effect(:highlight, "chatline#{chatline.id}", :duration => 0.5)%></script>
+<%  end %>
+<% end -%>
+</ul>
+
+<script type="text/javascript">
+  cur_time_chat=<%=now%>;
+<% if user_is_authed && @clear_comment_line then %>
+$j('#newline').val('');
+document.getElementById('newlinesend').disabled = '';
+<% end -%>
+chatbar = $j('#chatbar');
+if (chatbar) {
+	chatbar.attr('src', '/images/chat_progress.gif');
+	$j('#newline').focus();
+}
+</script>

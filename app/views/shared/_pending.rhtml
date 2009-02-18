@@ -1,0 +1,12 @@
+<%mftext('Pendientes de moderar') do %>
+<ul class="content-hid">
+<% for obj in pending %>
+<% if Cms::user_can_edit_content?(@user, obj) then %>
+<li><%=link_to obj.resolve_hid, :action => 'edit', :id => obj%><br />
+<% else %>
+<li><%=obj.resolve_hid%><br />
+<% end -%>
+<span class="infoinline">En cola desde: <%=print_tstamp(obj.created_on)%></span></li>
+<% end -%>
+</ul>
+<% end -%>

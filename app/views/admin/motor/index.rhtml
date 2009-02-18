@@ -1,0 +1,39 @@
+  <%mftext('CMS') do %>
+  <table>
+    <%=show_var('Contenidos acertados para 99% de poder de publicación', Cms::min_hits_before_reaching_max_publishing_power('News'))%>
+    <%
+    tmax = {}
+    Cms::SAFE_PUBLICATION_THRESHOLDS.each { |k,v| tmax[k] = format_interval(v) }
+    %>
+    <%=show_hash_var('Tiempo máximo entre contenidos publicados', tmax)%>
+    <%=show_var('Contenidos con categorías', Cms::CONTENTS_WITH_CATEGORIES.join('<br />'))%>
+    <%=show_var('Contenidos moderables', Cms::contents_classes_publishable.collect { |cls| cls.name }.join('<br />'))%>
+</table>
+<% end -%>
+
+  
+  <%mftext('Karma') do %>
+  <table>
+    <%=show_hash_var('Puntos por tipo de contenido publicado', Karma::KPS_CREATE)%>
+    <%=show_hash_var('Puntos por tipo de contenido moderado (OBSOLETO desde 2007.1)', Karma::KPS_SAVE)%>
+    <%
+    karma_table = {}
+    (1..10).to_a.each { |i| karma_table[i] =  Karma.kp_for_level(i) }
+    %>
+    <%=show_hash_var('Puntos para 10 primeros niveles', karma_table)%>
+  </table>
+  <% end -%>
+  
+  <%mftext('Fe') do %>
+  <table>
+    <%=show_hash_var('Puntos por acción', Faith::FPS_ACTIONS)%>
+    <%
+    f_levels = {}
+    Faith::NAMES.keys.sort.each do |k|
+    f_levels["#{k} #{Faith::NAMES[k]}"] = Faith.kp_for_level(k)
+    end
+
+    %>
+    <%=show_hash_var('Niveles de fe', f_levels)%>
+  </table>
+  <% end -%>

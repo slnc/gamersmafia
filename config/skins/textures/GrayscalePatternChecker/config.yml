@@ -1,0 +1,6 @@
+base_color_value:
+    name: "Color"
+    type: RgbColor
+    default_color_gen_hint: css_body_bg
+    
+strength: 0.8

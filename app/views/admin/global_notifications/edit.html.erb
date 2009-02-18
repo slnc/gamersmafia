@@ -1,0 +1,25 @@
+<% content_support do %>
+
+<% end -%>
+
+<%content_main do %>
+<%mftext('Editar notificación global') do%>
+<%= form_tag({:action => 'update', :id => @global_notification}, :multipart => true )%>
+<% if @global_notification.confirmed? then %>
+<p class="warning">Notificación confirmada y en proceso de envío.</p>
+<% end -%>
+  <%= render :partial => 'form' %>
+  <%= submit_tag "Guardar #{@global_notification.confirmed? ? '' : 'borrador'}" %>
+</form>
+<% if !@global_notification.confirmed? then %>
+<br />
+<br />
+<form class="right" method="post" action="/admin/global_notifications/confirm/<%=@global_notification.id%>">
+  <input class="button" type="submit" value="Confirmar y enviar" onclick="return confirm('¿Estás seguro?');" />
+</form>
+<% end -%>
+
+<br />
+<%= link_to 'Volver', :action => 'index' %>
+<% end -%>
+<% end -%>

@@ -1,0 +1,2 @@
+class SoldOutstandingFaction < SoldProduct
+end

@@ -1,0 +1,42 @@
+<table>
+	<tr>
+		<td>¿Qué buscas?</td>
+		<td><label><input <%='checked="checked"' if @recruitment_ad.clan_id.nil? %> onclick="update_reclutamiento_nuevo('clan');" type="radio" name="reclutsearching" value="clan" /> Un clan al que unirme</label><br />
+			<label><input <%='checked="checked"' unless @recruitment_ad.clan_id.nil? %> onclick="update_reclutamiento_nuevo('users');" type="radio" name="reclutsearching" value="users" /> Miembros para mi clan</label><br />
+		</td>
+	</tr>
+	<tr id="searching_users" class="hidden">
+		<td>Tu clan</td>
+		<td><%uclans = @user.clans 
+		if uclans.size == 0 then %>
+			Necesitas registrar tu clan antes de poder poner anuncios.
+		<% else %>
+		<select name="recruitment_ad[clan_id]">
+			<%uclans.each do |uc|%><option value="<%=uc.id%>" <%="selected=\"selected\"" if @user.last_clan_id == uc.id %>><%=uc.name%></option>
+			<% end -%>
+		</select>		
+		<% end -%>
+		</td>
+	</tr>
+	<tr>
+		<td>Juego</td>
+		<td><select name="recruitment_ad[game_id]">
+				<option value=""></option>
+				<%Game.find(:all, :order => 'lower(name)').each do |game| %>
+					<option <%="selected=\"selected\"" if (@recruitment_ad.game_id && @recruitment_ad.game_id == game.id) || (@recruitment_ad.game_id.nil? && @user.faction_id && @user.faction.code == game.code) %>value="<%=game.id%>"><%=game.name%></option>
+				<% end -%>
+				</select>
+		</td>		
+	</tr>
+	<tr>
+		<td>Skills</td>
+		<% skillz = (@recruitment_ad.levels || []) %>
+		<td><label><input type="checkbox" name="recruitment_ad[levels][]" <%='checked="checked"' if skillz.include?('low') %> value="low" > low</label> 
+			<label><input type="checkbox" name="recruitment_ad[levels][]" <%='checked="checked"' if skillz.include?('med') %> value="med" > med</label> 
+			<label><input type="checkbox" name="recruitment_ad[levels][]" <%='checked="checked"' if skillz.include?('high') %> value="high" > high</label></td>
+	</tr>
+	<tr>
+		<td>Mensaje del anuncio</td>
+		<td><textarea name="recruitment_ad[message]"><%=@recruitment_ad.message%></textarea></td>
+	</tr>
+</table>

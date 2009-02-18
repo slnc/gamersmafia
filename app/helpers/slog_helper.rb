@@ -1,0 +1,2 @@
+module SlogHelper
+end

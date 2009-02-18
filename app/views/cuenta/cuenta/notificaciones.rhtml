@@ -1,0 +1,12 @@
+<% mftext('Configuración de cuenta') do %>
+<form method="post" action="/cuenta/cuenta/update_notifications">
+<p>Selecciona qué notificaciones deseas recibir por email.</p>
+<label><%= check_box 'user', 'notifications_global', {} %> Noticias importantes y actualizaciones sobre gamersmafia</label><br />
+<label><%= check_box 'user', 'notifications_newmessages', {} %> Nuevos mensajes privados</label><br />
+<label><%= check_box 'user', 'notifications_newregistrations', {} %> Nuevos registros referidos por mi</label><br />
+<label><%= check_box 'user', 'notifications_trackerupdates', {} %> Nuevos comentarios en contenidos de mi tracker</label><br />
+<% if @user.enable_profile_signatures? then %><label><%= check_box 'user', 'notifications_newprofilesignature', {} %> Nuevas firmas en tu libro de firmas</label><br /><% end -%>
+<br />
+<%= submit_tag 'Guardar' %>
+</form>
+<% end -%>

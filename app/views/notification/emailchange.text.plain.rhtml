@@ -1,0 +1,11 @@
+Hola <%=@recipient%>,
+
+Has solicitado cambiar tu dirección de email. Por seguridad necesitas confirmar este cambio.
+
+Por favor, visita la siguiente dirección para confirmar el cambio:
+
+<%=@base_url %>cuenta/do_change_email?k=<%=@recipient.validkey%>&email=<%=@recipient.email%>
+
+Gracias,
+
+<%=@footer%>

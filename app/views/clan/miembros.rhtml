@@ -1,0 +1,12 @@
+<%controller.portal.clan.clans_groups.find(:all).each do |cg| %>
+<div class="contentitle nav"><h1><%=cg.name%></h1></div>
+
+<table class="w100pc">
+<%cg.users.each do |u| %>
+<tr class="<%=oddclass%>">
+	<td><strong><%=u.login%></strong></td>
+	<td class="w100"><%=fc_thumbnail(u.show_photo, 'f', '80x80')%></td>
+</tr>
+<% end -%>
+</table>
+<% end -%>

@@ -1,0 +1,2 @@
+module Cuenta::MisCanalesHelper
+end

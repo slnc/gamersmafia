@@ -1,0 +1,10 @@
+<%mftext('Añadir participante') do %>
+<form method="post" action="/cuenta/competiciones/add_participant">
+<% if @competition.competitions_participants_type_id == Competition::USERS then %>
+<%= render :partial => '/shared/user_selector', :locals => { :field_name => 'participant_hid', :with_games => [@competition.game_id] } %>
+<% else %>
+<%= render :partial => '/shared/clan_selector', :locals => { :field_name => 'participant_hid' } %>
+<% end -%>
+<input type="submit" class="button" value="Añadir participante" <% if @competition.state == 2 then %>onclick="return confirm('Se volverán a generar las partidas. ¿Estás seguro?');"<% end -%> />
+</form>
+<% end -%>

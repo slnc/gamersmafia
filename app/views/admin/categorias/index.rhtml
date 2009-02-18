@@ -1,0 +1,47 @@
+<% content_support do %>
+<% end %>
+
+<% content_main do %>
+  <%mftext('Categorías') do %>
+<%=collection_select(:content_type, :name, @editable_content_types, :name, :name, :include_blank => true)%>
+<script type="text/javascript">
+	$j('#content_type_name').val('<%=params[:type_name]%>').change(function() { document.location = '/admin/categorias/' + this.value });
+</script>
+
+<% if @categories then %>
+<br />
+<br />
+<%= link_to 'Nueva categoría', "/admin/categorias/#{params[:type_name]}/new/" if @categories %>
+
+  <%= render :partial => 'shared/pager', :object => @category_pages, :locals => {:pos => 'top', :options => { :preserve_keys => [:type_name], :params => {:type_name => params[:type_name]} }} %>
+
+  <table>
+    <tr>
+      <th>Nombre</th>
+      <th>Nombre corto</th>
+      <th></th>
+    </tr>
+    
+  <% for category in @categories %>
+    <tr class="<%=oddclass%>">
+      <td><%=
+        obj = category
+        path = [link_to(category.name, "/admin/categorias/#{params[:type_name]}/edit/#{category.id}")]
+        obj = obj.parent
+        while obj != nil and obj.id != obj.parent_id
+          path<< obj.name
+          obj = obj.parent
+        end
+        path = path.reverse
+        path.join(' » ')
+        %></td>
+      <td><%=category.code%></td>
+      <td><%= link_to 'Eliminar', "/admin/categorias/#{params[:type_name]}/destroy/#{category.id}" %></td>
+    </tr>
+  <% end %>
+  </table>
+
+  <%= render :partial => 'shared/pager', :object => @category_pages, :locals => {:pos => 'bottom', :options => { :preserve_keys => [:type_name], :params => {:type_name => params[:type_name]} }} %>
+<% end -%>
+<% end -%>
+<% end -%>

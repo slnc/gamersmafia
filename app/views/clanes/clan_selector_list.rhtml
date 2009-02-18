@@ -1,0 +1,5 @@
+<% @clans = Clan.find(:all, :order => 'lower(name) ASC') -%>
+var clans_selector = new Array(<%= @clans.size %>);
+<% @clans.each_with_index do |clan, index| %>
+clans_selector[<%=index%>] = "<%=clan.name %>" ;
+<% end %>

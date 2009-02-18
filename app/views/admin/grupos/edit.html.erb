@@ -1,0 +1,21 @@
+<%mftext('Detalles') do %>
+<form method="post" action="/admin/grupos/update/<%=@group.id%>">
+<%=render :partial => 'form' %>
+</form>
+<% end -%>
+
+<%= form_remote_tag(:url => "/admin/grupos/add_user_to_group/#{@group.id}") %>
+Usuario: <input type="text" name="login" /><br />
+<input type="submit" value="Añadir" />
+</form>
+
+<%mftext('Miembros') do %>
+<table>
+<%@group.members.each do |gm| %>
+	<tr class="<%=oddclass%>" id="gm<%=gm.id%>">
+		<td><%=user_link(gm)%></td>
+		<td><%=link_to_remote 'Borrar', :url => "/admin/grupos/remove_user_from_group/#{@group.id}?user_id=#{gm.id}", :complete => "$j('#gm#{gm.id}').fadeOut('normal');"%></td>
+	</tr>
+<% end -%>
+</table>
+<% end -%>

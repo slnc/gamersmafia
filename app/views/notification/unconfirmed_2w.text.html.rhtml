@@ -1,0 +1,7 @@
+<%= render :partial => '/notification/header' %>
+Todavía no has confirmado tu nueva cuenta. Si no la confirmas antes de 3 días será eliminada automáticamente.<br />
+<br />
+Para completar el proceso de registro y poder usarla debes confirmarla visitando el enlace que aparece abajo.<br />
+<br />
+Si el enlace te da problemas puedes hacer la validación manualmente. Tu clave de confirmación es: <strong><%= @recipient.validkey %></strong>
+<%= render :partial => '/notification/footer' %>

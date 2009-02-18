@@ -1,0 +1,163 @@
+<% content_support do %>
+<%mftext('¿Sabías que..') do %>
+<div style="text-align: right;">..cada amigo que introduzcas en Gamersmafia hace subir tu nivel de fe*?</div>
+<div class="infoinline" style="margin-top: 15px;">*Sólo mientras no se vuelvan <a href="/site/faq#cat1">zombies</a>.</div> 
+<%end%>
+
+<% pending_users = @user.friendships_sent_pending
+if pending_users.size > 0 then %>
+<%mftext('Te tienen que responder') do %>
+  	<table class="w100pc">
+  	<% pending_users.each do |f| %>
+		<tr class="<%=oddclass%>" id="friendship<%=f.id%>">
+			<td class="sm-icon"><%=member_state(f.receiver.hstate) if f.receiver%></td>
+			<% if f.receiver then %>
+			<td><%=user_link(f.receiver)%><br /><span class="infoinline">enviada el <strong><%=print_tstamp(f.created_on, 'date')%></strong></span></td>
+			<% else %>
+			<td><%=f.receiver_email%></td>
+			<% end %>
+			<td style="text-align: right;"><%=link_to_remote 'Cancelar', :url => "/cuenta/amigos/cancelar_amistad/?eid=#{f.external_invitation_key}&aj=1", :confirm => '¿Estás seguro de que deseas cancelar esta invitación?', :complete => "$j('#friendship#{f.id}').fadeOut('normal');"%></td>
+		</tr>
+	<% end -%>
+	</table>
+<% end #mftext -%>
+<% end #if pending -%>
+<% end #csupport -%>
+
+<% content_main do %>
+
+  	<% received_pending = @user.friendships_received_pending
+if received_pending.size > 0 then %>
+<%mftext('Quieren ser tus amigos') do %>
+  	<table>
+  	<% received_pending.each do |f| %>
+		<tr class="<%=oddclass%>" id="friendship<%=f.id%>">
+			<td class="sm-icon"><%=member_state(f.sender.hstate)%></td>
+			<td><%=user_link(f.sender)%></td>
+			<td class="timestamp"><%=print_tstamp(f.created_on, 'date')%></td>
+			<td style="width: 117px; text-align: center;"><%=link_to_remote '<img class="icon" title="Aceptar amistad" alt="Aceptar amistad" src="/skins/default/images/btn_aceptar_sm.png" />', :url => "/cuenta/amigos/aceptar_amistad/#{f.sender.login}?aj=1", :complete => "$j('#friendship#{f.id}').fadeOut('normal');"%></td>
+			<td style="width: 117px; text-align: center;"><%=link_to_remote '<img class="icon" title="Rechazar amistad" alt="Rechazar amistad" src="/skins/default/images/btn_rechazar_sm.png" />', :url => "/cuenta/amigos/cancelar_amistad/#{f.sender.login}?aj=1", :complete => "$j('#friendship#{f.id}').fadeOut('normal');"%></td>
+		</tr>
+	<% end -%>
+	</table>
+<% end -%>
+<% end -%>
+
+
+<%mftext('Invitar a mis contactos de webmail') do %>
+<div style="margin-bottom: 10px;">
+  		<script type="text/javascript">
+  			function activate_ftab(m) {
+				slnc.hide('tab-msn');
+				slnc.hide('tab-yahoo');
+				slnc.hide('tab-googletalk');
+				slnc.show('tab-'+m);
+				return false;
+			}
+  		</script>
+		
+  		<ul id="ftablist" class="inline">
+  			<li>Elige tu proveedor:</li>
+  			<li style="margin-left: 10px;"><a onclick="return activate_ftab('msn');" href=""><img class="icon" src="/images/services/hotmail_109x14.gif" title="Hotmail" alt="Hotmail" /></a></li>
+  			<li style="margin-left: 10px;"><a onclick="return activate_ftab('yahoo');" href=""><img class="icon" src="/images/services/yahoo_80x23.gif" title="Yahoo" alt="Yahoo" /></a></li>
+			<li style="margin-left: 10px;"><a onclick="return activate_ftab('googletalk');" href=""><img class="icon" src="/images/services/gmail_50x23.gif" title="Gmail" alt="Gmail" /></a></li>
+  		</ul>
+  	</div>
+  	<div id="tab-msn">
+  	<strong>Hotmail</strong><br />
+	<form style="margin-top: 10px;" method="post" action="/cuenta/amigos/invitar_contactos">
+	<input type="hidden" name="source" value="hotmail" />
+	<table>
+		<tr>
+			<td style="width: 75px;">Usuario</td>
+			<td><input type="text" name="login" />@hotmail.com</td>
+		</tr>
+		<tr>
+			<td>Contraseña</td>
+			<td><input type="password" name="password" /></td>
+		</tr>
+	</table>
+	<div style="margin: 10px 0 0 0;"><input type="submit" value="Siguiente &raquo;" /></div>
+	</form>
+	</div>
+	
+	<div id="tab-yahoo" class="hidden">
+	<strong>Yahoo</strong><br />
+	<form style="margin-top: 10px;" method="post" action="/cuenta/amigos/invitar_contactos">
+	<input type="hidden" name="source" value="yahoo" />
+	<table>
+		<tr>
+			<td style="width: 75px;">Usuario</td>
+			<td><input type="text" name="login" />@yahoo.com</td>
+		</tr>
+		<tr>
+			<td>Contraseña</td>
+			<td><input type="password" name="password" /></td>
+		</tr>
+	</table>
+	<div style="margin: 10px 0 0 0;"><input type="submit" value="Siguiente &raquo;" /></div>
+	</form>
+	</div>
+	<div id="tab-googletalk" class="hidden">
+	<strong>Gmail</strong><br />
+	<form style="margin-top: 10px;" method="post" action="/cuenta/amigos/invitar_contactos">
+	<input type="hidden" name="source" value="gmail" />
+	<table>
+		<tr>
+			<td style="width: 75px;">Usuario</td>
+			<td><input type="text" name="login" />@gmail.com</td>
+		</tr>
+		<tr>
+			<td>Contraseña</td>
+			<td><input type="password" name="password" /></td>
+		</tr>
+	</table>
+	<div style="margin: 10px 0 0 0;"><input type="submit" value="Siguiente &raquo;" /></div>
+	</form>
+	</div>
+	<div class="infoinline" style="margin-top: 10px;">
+	<ul>
+	<li>No se enviará ningún email sin tu permiso.</li>
+	<li>Gamersmafia no guarda esta información.</li>
+	</ul></div>
+<% end -%>
+
+<%mftext('Invitar por email') do %>
+<form method="post" action="/cuenta/amigos/invitar_email" style="margin-top: 10px;">
+<table>
+	
+	<tr>
+		<th>Email</th>
+		<th>Mensaje</th>
+	</tr>
+	<% (1..7).each do |i| %>	
+	<tr class="<%=oddclass%>">
+		<td><input type="text" style="width: 150px;" name="email_invitation_eml<%=i%>" /></td>
+		<td><input style="width: 220px;" type="text" name="email_invitation_msg<%=i%>" value="Te invito a unirte a mi red de amigos en Gamersmafia" /></td>
+	</tr>
+	<% end %>
+	</table>
+	<input type="submit" value="Enviar invitación" />
+	
+	</form>
+<% end -%>
+
+<%mftext('Tus amigos') do %>
+<% friends = @user.friends
+if friends.size == 0 then %>
+<div class="centered sm">Todavía no tienes amigos.</div>
+<% else  %>
+  	<table class="w100pc">
+  	  	<% friends.each do |f| %>
+		<tr id="friendshipu<%=f.id%>" class="<%=oddclass%>">
+			<td class="sm-icon"><%=member_state(f.hstate)%></td>
+			<td><%=user_link(f)%></td>
+			<td class="w100 sm" style="text-align: right;"><%=link_to_remote 'Terminar amistad', :url => "/cuenta/amigos/cancelar_amistad/#{f.login}?aj=1", :confirm => '¿Estás seguro de que deseas terminar con esta amistad? Mira que nunca sabemos qué puede pasar en el futuro..', :complete => "$j('#friendshipu#{f.id}').fadeOut('normal');"%></td>
+			
+		</tr>
+	<% end -%>
+	</table>		
+<% end -%>
+<% end -%>
+
+<% end -%>

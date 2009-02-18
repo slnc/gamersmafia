@@ -1,0 +1,62 @@
+/* TODO es identica a SoftColors */
+body {
+	background-color: #${body_background_color};
+	color: #${body_color};
+}
+
+#cpagein {
+	background-color: #${page_container_background_color};
+}
+
+.header {
+   border-color: #${nav_background_color};
+}
+
+#content,
+#ccontent.nav,
+#ccontent.info {
+	background-color: #${content_background_color};
+}
+
+.nav,
+.nav #content,
+.nav .info {
+	background-color: #${nav_background_color};
+	color: #${nav_color};
+}
+
+
+.info,
+.info #content,
+.info .nav {
+	background-color: #${info_background_color};
+	color: #${info_color};
+}
+
+
+a {
+	color: #${link_color};
+}
+
+a:visited {
+	color: #${link_visited_color};
+}
+
+a:hover {
+	color: #${link_hover_color};
+}
+
+
+.nav a,
+.nav a:visited {
+	color: #${nav_link_color};
+}
+
+.nav a:hover {
+	color: #${nav_link_hover_color};	
+}
+
+#ccontent.comment .authorship {
+	background-color: #${comments_background_color};
+	border-color: #${comments_border_color};
+}

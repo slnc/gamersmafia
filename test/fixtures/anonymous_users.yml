@@ -1,0 +1,9 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+valid_anonymous_user:
+  id: 1
+  session_id: 12345678901234567890123456789012
+  lastseen_on: 2006-08-28 00:00:00
+another_valid_anonymous_user:
+  id: 2
+  session_id: 56789012890123434567890121234567
+  lastseen_on: 2006-08-28 12:00:00

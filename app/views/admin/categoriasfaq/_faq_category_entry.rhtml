@@ -1,0 +1,24 @@
+<% last_pos = User.db_query("SELECT COALESCE(max(position),0) as max FROM faq_categories")[0]['max'].to_i
+min_pos = User.db_query("SELECT COALESCE(min(position),0) as min FROM faq_categories")[0]['min'].to_i %>
+<tr class="<%=oddclass%>">
+    <td>
+    	<td><%=
+        obj = faq_category
+        path = ["<a href=\"/admin/categoriasfaq/edit/#{faq_category.id}\">#{faq_category.name}</a>"]
+        obj = obj.parent
+        while obj != nil and obj.id != obj.parent_id
+          path<< obj.name
+          obj = obj.parent
+        end
+        path = path.reverse
+        path.join(' » ')
+        %></td>
+		
+		</td>
+    <td><% if faq_category.position && faq_category.position > min_pos then %><a href="/admin/categoriasfaq/moveup/<%=faq_category.id%>">arriba</a><% end %></td>
+    <td><% if faq_category.position && faq_category.position < last_pos then %><a href="/admin/categoriasfaq/movedown/<%=faq_category.id%>">abajo</a><% end %></td>
+    <td><%= link_to 'Borrar', { :action => 'destroy', :id => faq_category }, :confirm => '¿Estás seguro?' %></td>
+  </tr>
+<% faq_category.children.each do |child| %> 
+<%= render :partial => 'faq_category_entry', :locals => { :faq_category => child } %>
+<% end -%>

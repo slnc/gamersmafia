@@ -1,0 +1,8 @@
+one:
+  id: 1
+  name: Mi skin
+  hid: skinguay
+  user_id: 1
+  is_public: true
+  type: FactionsSkin
+  version: 0

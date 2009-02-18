@@ -1,0 +1,43 @@
+<% content_support do %>
+<% mftext('Enviar mensaje') do %>
+<%= form_tag :action => 'create_message' %>
+  <%= render :partial => 'message' %>
+<br />
+  <%= submit_tag 'Enviar' %>
+</form>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+<% mftext(@title) do %>
+<%= form_tag(:action=> 'del_messages')%>
+<div style="float: right; margin-top: -20px;"><%= render :partial => 'shared/pager', :object => @message_pages, :locals => {:pos => 'top'} %></div>
+<div style="margin: 10px 0;"><input type="submit" class="button primary" onclick="return confirm('¿Estás seguro de que quieres borrar los mensajes seleccionados?');" value="Borrar" /></div>
+<table class="messages">
+<% if nil then %><tr>
+  <th class="w25"><input type="checkbox" onclick="slnc.checkboxSwitchGroup(this);" /></th>
+  <th>Asunto</th>
+  <th class="w150">Enviado por</th>
+  <th>Fecha</th>
+</tr>
+<% end -%>
+<% 
+
+odd = 0
+for message in @messages
+  odd = 1 - odd%>
+<tr class="<%=oddclass%><%=(message.is_read == false && message.user_id_to == @user.id) ? ' new' : ''%>">
+  <td class="w20"><input type="checkbox" name="messages[]" onclick="slnc.hilit_row(this, 'selrow');" value="<%=message.id%>" /></td>
+  <td class="w125"><%= link_to message.send(@highlighted_user).login, :controller => '/miembros', :action => message.send(@highlighted_user).login %></td>
+  <td class="preview"><span <%='class="replied"' if @highlighted_user == :receiver || message.has_replies %>>&nbsp;</span><a title="Haz click para leer el mensaje completo" href="/cuenta/mensajes/mensaje/<%=message.id%>"><%=message.title%> <span class="message-preview">- <%=message.preview%></span></a></td>
+  <td class="infoinline timestamp-short"><%= print_tstamp(message.created_on, 'intelligent') %></td>
+</tr>
+<% end %>
+</table>
+<br />
+<div style="float: right; margin-top: -20px;"><%= render :partial => 'shared/pager', :object => @message_pages, :locals => {:pos => 'bottom'} %></div>
+<div style="margin: 10px 0;"><input type="submit" class="button primary" onclick="return confirm('¿Estás seguro de que quieres borrar los mensajes seleccionados?');" value="Borrar" /></div>
+<input type="hidden" name="redirto" value="<%=request.request_uri%>" />
+</form>
+<% end -%>
+<% end -%>

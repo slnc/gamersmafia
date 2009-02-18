@@ -1,0 +1,16 @@
+<%= error_messages_for 'competitions_sponsor' %>
+
+<!--[form:competitions_sponsor]-->
+<p><label for="competitions_sponsor_name">Name</label><br/>
+<%= text_field 'competitions_sponsor', 'name', :class => 'text'  %></p>
+
+<p><label for="competitions_sponsor_url">Url</label><br/>
+<%= text_field 'competitions_sponsor', 'url', :class => 'text'  %></p>
+
+<p><label for="competition_logo">Archivo .JPG</label><br/>
+<% if @competitions_sponsor.image then %>
+<%=fc_thumbnail(@competitions_sponsor.image, 'k', '153x115')%> 
+<% end -%>
+<%= file_field 'competitions_sponsor', 'image' %></p>
+<!--[eoform:competitions_sponsor]-->
+

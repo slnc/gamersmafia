@@ -1,0 +1,10 @@
+<%
+if params[:cids] then 
+ids = params[:cids].gsub(/%2C/, ',')
+if user_is_authed and ids =~ /[0-9,]+/ then
+  items = User.db_query("select a.id from contents a join tracker_items b on a.id = b.content_id where b.user_id = #{@user.id} and b.content_id in (#{ids}) and b.lastseen_on >= a.updated_on")
+
+for item in items %>mark_visited(<%=item['id']%>);
+<% end -%>
+<% end -%>
+<% end -%>

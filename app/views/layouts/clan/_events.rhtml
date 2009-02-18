@@ -1,0 +1,26 @@
+<% mftext('Próximos eventos') do %>
+<% # TODO duplicado en gran parte en home %>
+<% # TODO hacer algo con esto, no se usa
+        cache("/#{@controller.portal.code}/home/index/eventos/#{Time.now.strftime('%Y%m%d')}") do %>
+  <%
+  hotmap = Event.hotmap(Time.now)
+  transmap = { 0 => '', 1 => 'low', 2 => 'medium', 3 => 'high' }
+  %>
+  <%= calendar(:year => Time.now.year, :month => Time.now.month, :day => Time.now.day) do |d| 
+    classname = hotmap[d.day] ? transmap[hotmap[d.day]] : ''
+  ["<a class=\"nav\" href=\"/eventos/dia/#{d.year}#{d.month.to_s.rjust(2, '0')}#{d.day.to_s.rjust(2, '0')}\">#{d.day}", 
+    { :class => (d == Date.today) ? "#{classname} day today" : "#{classname} day"
+    }]
+    end %>
+    <table>
+      <% 
+      
+      for e in Event.current(EventsCategory.find(:all, :conditions => "root_id IN (#{(controller.portal.categories(Event).collect { |c| c.id} + [0]).join(',')})")) %>
+      <tr class="<%=oddclass%>">
+        <td style="font-size: 11px;"><a href="<%=get_url(e)%>"><%=e.title%></a></td>
+        <td style="font-size: 11px;"><%=member_state('active')%><%=e.users.count%></td>
+      </tr>
+      <% end -%>
+    </table>
+    <% end -%>
+<% end %>

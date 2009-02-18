@@ -1,0 +1,35 @@
+<% content_support do %>
+<div class="subheader first"><div>Información</div></div>
+<table class="skeletal">
+<tr>
+<td class="infoinline">Creado</td><td  class="infoinline"><%=print_tstamp(@avatar.created_on)%></td>
+</tr>
+<tr>
+<td class="infoinline">Subido por</td><td class="infoinline"><%=user_link(@avatar.submitter)%></td>
+</tr>
+</table>
+<div class="centered-link"><strong><a href="/avatares/destroy_returning/<%=@avatar.id%>" onclick="return confirm('¿Estás seguro?');">Borrar (devolviendo GMFs)</a></strong></div>
+<br />
+<br />
+<div class="centered-link"><strong><a href="/avatares/destroy/<%=@avatar.id%>" onclick="return confirm('¿Estás seguro?');">Borrar (sin devolver GMFs)</a></strong></div>
+<br />
+<br />
+<div class="subheader"><div>Usuarios que lo usan</div></div>
+<ul class="content-hid">
+<%@avatar.users.find(:all, :order => 'lower(login) ASC').each do |user| %>
+<li><%=user_link(user)%></li>
+<% end -%>
+</ul>
+<% end -%>
+
+<% content_main do %>
+<h1>Editando avatar</h1>
+
+<%= form_tag({:action => 'update', :id => @avatar}, :multipart => true) %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+<br />
+<br />
+<%= link_to 'Volver', :action => 'list', :mode => @avatar.mode %>
+<% end -%>

@@ -1,0 +1,14 @@
+<!--[form:games_map]-->
+<p><label for="games_map_name">Nombre</label><br/>
+<%= text_field 'games_map', 'name', :class => 'text'  %></p>
+
+<p><label for="games_map_screenshot">Archivo .JPG</label><br/>
+<% if @games_map.screenshot then %>
+<%=fc_thumbnail(@games_map.screenshot, 'k', '153x115')%> 
+<% end -%>
+<%= file_field 'games_map', 'screenshot' %></p>
+
+<p><label for="games_map_game_id">ID de Descarga asociada</label><br/>
+<%= text_field 'games_map', 'download_id', :class => 'text' %> <span class="infoinline">Si el mapa no viene con el juego subirlo como descarga y poner aquí el ID (número en la url) de dicha descarga.</span></p>
+<!--[eoform:games_map]-->
+

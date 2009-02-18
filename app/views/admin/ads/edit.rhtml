@@ -1,0 +1,21 @@
+<% content_support do %>
+	<%mftext('Slots asociados') do %>
+		<ul>
+		<% @ad.ads_slots.find(:all, :conditions => 'ads_slots_instances.deleted is false', :order => 'id ASC').each do |asl| %>
+		<li><a href="/admin/ads_slots/edit/<%=asl.id%>"><%=asl.name%></a></li>
+		<% end -%>
+		</ul>
+	<% end -%>
+<% end -%>
+
+<%content_main do %>
+<%mftext('Editar ad') do%>
+<%= form_tag({:action => 'update', :id => @ad}, :multipart => true )%>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+
+<br />
+<%= link_to 'Volver', :action => 'index' %>
+<% end -%>
+<% end -%>

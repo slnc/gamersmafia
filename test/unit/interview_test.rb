@@ -1,0 +1,13 @@
+require File.dirname(__FILE__) + '/../test_helper'
+
+class InterviewTest < Test::Unit::TestCase
+
+  def setup
+    @interview = Interview.find(1)
+  end
+
+  # Replace this with your real tests.
+  def test_truth
+    assert_kind_of Interview,  @interview
+  end
+end

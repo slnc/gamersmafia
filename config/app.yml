@@ -1,0 +1,83 @@
+# common config (not usable directly, must use basic roles or specific machines)
+common: &common
+  platform: <%=(RUBY_PLATFORM =~ /(win|w)32$/) ? WINDOWS : LINUX%>
+  windows?: <%=(RUBY_PLATFORM =~ /(win|w)32$/) ? true : false %>
+  tidy_path: <%= (RUBY_PLATFORM =~ /(win|w)32$/) ? 'c:\tidy.dll' : '/usr/lib/libtidy.so' %>
+  domain: gamersmafia.com
+  domain_bazar: bazar.gamersmafia.com
+  domain_arena: arena.gamersmafia.com
+  asset_domain: gamersmafia.com
+  enable_global_notifications?: false
+  enable_google_analytics?: false
+  enable_bgjobs?: false
+  enable_support_db?: false
+  ia_auto_abtests: MrAchmed
+  mirror_auth_key: 4ffff4e235041687dd31b55a9867f385
+  webmaster_user_id: 1
+  enable_dbstats?: false
+  compress_skins?: true
+  compress_js?: true
+  domain_aliases:
+    - 4americasarmy.com
+    - 4coders.net
+    - 4doomers.net
+    - 4guildwars.com
+    - 4mohers.com
+    - 4ragnarok.com
+    - 4soldiers.net
+    - nwnspain.com
+    - 4unrealers.com
+    - 4quakers.com
+    - dowforever.com
+    - 4warcraft.com
+    - battlefieldspain.com
+    - bf1942spain.com
+    - defuseit.com
+    - sc2-esp.net
+    - quakereligion.com
+  system_mail_host: mail.gamersmafia.com
+  system_mail_domain: gamersmafia.com
+  system_mail_user: nagatodev@gamersmafia.com
+  system_mail_password: megustanlasgalletas
+  jira_username: alariko
+  jira_password:  katapultapsicologica
+
+# basic roles (usable)
+production: &production
+  enable_bgjobs?: true
+  enable_support_db?: true
+  enable_global_notifications?: true
+  enable_google_analytics?: true
+  system_mail_user: nagato@gamersmafia.com
+  <<: *common
+
+development: &development
+  domain: gamersmafia.dev
+  domain_bazar: bazar.gamersmafia.dev
+  domain_arena: arena.gamersmafia.dev
+  asset_domain: gamersmafia.dev
+  enable_dbstats?: true
+  compress_skins?: false
+  <<: *common
+  
+test: &test
+  domain: gamersmafia.dev
+  domain_bazar: bazar.gamersmafia.dev
+  domain_arena: arena.gamersmafia.dev
+  asset_domain: gamersmafia.dev
+  <<: *common
+
+    
+# specific machines or profiles
+blackwings:
+  compress_skins?: false
+  compress_js?: false
+  enable_dbstats?: true
+  enable_bgjobs?: true
+  enable_support_db?: false
+  <<: *development
+  
+doll2:
+  domain: gamersmafia.dev2
+  asset_domain: gamersmafia.dev2
+  <<: *development

@@ -1,0 +1,20 @@
+<% content_support do %>
+<% cache ("/#{controller.portal_code}/noticias/index/best_rated#{Time.now.strftime('%Y%m%d')}") do %>
+<%mftext('Mejor valoradas') do %>
+<ul class="sidelist">
+<% controller.portal.news.best_rated(:limit => 5).each do |c| %>
+  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></div></li>
+  <% end -%>
+  </ul>
+<% end -%>
+<% end -%>
+<% end -%>
+
+<% content_main do %>  
+<%= mfcontents_summaries('Noticias', 
+						controller.portal.news,
+						[:published, {:order => 'created_on asc'}],
+						{:cache => "/#{controller.portal_code}/noticias/index/page_#{params['page']}",
+						:pager => ActionController::Pagination::Paginator.new(self, controller.portal.news.count(:published), controller.class::NEWS_PER_PAGE, params[:page]),
+						:show_day_separator => true})%>
+<% end -%>

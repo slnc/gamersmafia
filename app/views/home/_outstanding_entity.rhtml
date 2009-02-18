@@ -1,0 +1,9 @@
+<% cache("/#{controller.portal.code}/#{Inflector::tableize(outstanding_entity_cls)}2/#{Time.now.strftime('%Y%m%d')}") do 
+outstanding_entity = outstanding_entity_cls.current(controller.portal.id)
+if outstanding_entity then
+%><div style="font-size: 11px; line-height: 15px;">        
+  <div style="float: left; margin-right: 5px;"><a href="<%=gmurl(outstanding_entity.entity)%>"><img src="<%=ASSET_URL%>/cache/thumbnails/f/50x50/<%=outstanding_entity.logo%>" /></a></div><strong><a href="<%=gmurl(outstanding_entity.entity)%>"><%=outstanding_entity.name%></a></strong><br />
+	<%=outstanding_entity.reason%>
+	</div>
+<% end -%>
+<% end #cache -%>

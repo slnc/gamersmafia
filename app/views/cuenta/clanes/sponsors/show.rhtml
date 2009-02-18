@@ -1,0 +1,10 @@
+<% mftext('Sponsors') do %>
+<% for column in ClansSponsor.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%=h @clans_sponsor.send(column.name) %>
+</p>
+<% end %>
+
+<%= link_to 'Edit', :action => 'edit', :id => @clans_sponsor %> |
+<%= link_to 'Back', :action => 'list' %>
+<% end -%>

@@ -1,0 +1,21 @@
+<%mftext('Mis permisos') do %>
+<script type="text/javascript">
+	function del_permiso(urid) {
+		if (confirm('Esta acción no se puede deshacer. ¿Estás seguro?')) {
+			$j.get('/cuenta/cuenta/del_role/' + urid);
+			$j('#ur'+urid).addClass('hidden');
+		}
+		return false;
+	}
+</script>
+<table>
+	
+<%@user.users_roles.find(:all, :order => 'lower(role)').each do |ur| %>
+<tr id="ur<%=ur.id%>" class="<%=oddclass%>">
+	<td class="w150"><%=ur.role%></td>
+	<td><%=role_data(ur)%></td>
+	<td class="w100"><a href="" onclick="return del_permiso(<%=ur.id%>);">Eliminar</a></td>
+</tr>
+<% end # each -%>
+</table>
+<% end # mftext -%>

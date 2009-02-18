@@ -1,0 +1,64 @@
+<% content_support do %>
+  <% mftext('¿Para qué sirve?') do %>
+  <p>Si configuras los juegos en los que participas habitualmente saldrás en
+  las búsquedas de jugadores de dichos juegos. Además, es necesario que lo
+  configures para recibir dinero y fe en las competiciones.</p>
+  <% end -%>
+
+  <% mftext('Aviso sobre GUIDS') do %>
+  <ul class="skeletal">
+    <li>Los GUIDs <strong>no se mostrarán completos</strong> más que a los administradores de
+    competiciones por medidas de seguridad. El resto de usuarios no verán los
+    primeros dígitos de los mismos.</li>
+    <li>Una vez introducido <strong>un GUID no se borrará de la web</strong> aunque se cambie
+    por uno nuevo o aún cuando la cuenta se dé de baja.</li>
+  </ul>
+  <% end -%>
+  
+  <% mftext('Ejemplos de GUIDs') do %>
+  <p>Ver <%=popup('ejemplos de GUIDs', '/site/ejemplos_guids', 350, 225)%>.</p>
+  <% end -%>
+<% end -%>
+
+<% content_main do %>
+  <% mftext('Juegos y GUIDs') do %>
+  <p>Marca los juegos en los que participas habitualmente.</p>
+  <%
+  g_ids = []
+
+  for g in @user.games
+    g_ids<< g.id
+  end
+  %>
+  <form method="post" action="/cuenta/guids/guardar">
+  <table>
+    <tr>
+      <th class="w20"></th>
+      <th class="w20"></th>
+      <th>Juego</th>
+      <th>GUID Actual</th>
+      <th>Nuevo GUID</th>
+    </tr>
+    <% for g in Game.find(:all, :order => 'lower(name) ASC') 
+    last = @user.users_guids.find_last(@user, g) %>
+    <tr class="<%=oddclass%>">
+      <td class="w20"><input type="checkbox" name="games[]" value="<%=g.id%>" <%=g_ids.include?(g.id) ? 'checked="checked"' : ''%> /></td>
+      <td class="w20"><%=faction_favicon(g)%></td>
+      <td><%=g.name%></td>
+      <td><%=last.to_s%></td>
+      <td><% if g.has_guids? then %>
+        <table>
+          <tr>
+            <td class="w125">Nuevo GUID:</td>
+            <td><input type="text" class="text w100pc" name="guid<%=g.id%>[guid]" /></td>
+        </tr>
+        <%if last then %><tr><td>Razón del cambio:</td><td><input type="text" class="text w100pc" name="guid<%=g.id%>[reason]" /></td></tr><% end -%></table>
+      <% end -%>
+      </td>
+    </tr>
+    <% end -%>
+  </table>
+  <input type="submit" class="button" value="Guardar" />
+</form>
+<% end -%>
+<% end -%>

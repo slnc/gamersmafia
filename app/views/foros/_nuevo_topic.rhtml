@@ -1,0 +1,8 @@
+  <% if user_is_authed then %>
+      <% mftext do 
+		qc = QuestionsCategory.find_by_code(@forum.root.code) if @forum
+%>
+	    <div class="centered" style="margin-bottom: 15px;"><a href="/respuestas/new?questions_category_id=<%=qc.id if @forum && qc%>"><img src="/images/blank.gif" class="icon btn-nueva-pregunta" /></a></div>
+	    <div class="centered"><a href="/foros/nuevo_topic?forum_id=<%=@forum.id if @forum%>"><img src="/images/blank.gif" class="icon btn-nuevo-topic" /></a></div>
+  	  <% end -%>
+  <% end -%>

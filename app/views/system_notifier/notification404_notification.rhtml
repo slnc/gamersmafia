@@ -1,0 +1,8 @@
+uri: <%=@uri%>
+referer: <%=@referer%>
+-------------------------------
+Environment:
+-------------------------------
+<% for key, value in @request.env -%>
+* <%= key %>: <%= value.to_s.strip %>
+<% end -%>

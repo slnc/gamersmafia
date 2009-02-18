@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<head>
+  <title><%=controller.title%></title>
+  <link rel="alternate" type="application/xml" title="RSS" href="/rss/noticias" />
+  <%=css_includes %>
+  <% if File.exists?("#{RAILS_ROOT}/public/storage/skins/#{controller.skin.hid}/favicon.png") then %><link rel="shortcut icon" href="/storage/skins/<%=controller.skin.hid%>/favicon.png"><% end %>
+  <%=javascript_includes %>
+</head>
+
+<body class="lydefault lycolumns<%=controller.skin.config[:intelliskin][:lycolumns] if controller.skin.config[:intelliskin] %><%= "-#{controller.skin.config[:intelliskin][:lyside]}" if controller.skin.config[:intelliskin] && controller.skin.config[:intelliskin][:lycolumns] == '2'%> <%=' has-submenu ' if controller.submenu %><%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=send('first_render'.to_sym).to_s.split('/').last%>">
+  <div id="cpageout" class="container">
+	<div id="cpagein" class="container <%="w#{controller.skin.config[:intelliskin][:page_width]}" if controller.skin.is_intelliskin?%>">
+<%= render :partial => '/layouts/userbox' %>
+	  <div id="mggmtv" class="module"><div class="mcontent"><% if controller.skin.intelliskin_header then%><img style="height: <%=controller.skin.config[:intelliskin][:header_height]%>px;" src="/<%=controller.skin.intelliskin_header%>" /><% else -%><%=flash_obj(:url => "/flash/gmtv2.swf?cuo=#{controller.global_vars['gmtv_channels_updated_on'].to_time.to_i}", :width => '100%', :height => '65px', :name => 'gmtv')%><% end -%></div></div>
+	  <div id="mgclanmenu" class="module">
+	  	<div clas="mcontent"><ul>
+          <li><a class="nav" href="/">Portada</a></li>
+              <li><a class="nav" href="/noticias">Noticias</a></li>
+              <li><a class="nav" href="/foros">Foros</a></li>
+              <li><a class="nav" href="/descargas">Descargas</a></li>
+              <li><a class="nav" href="/imagenes">Imagenes</a></li>
+              <li><a class="nav" href="/eventos">Eventos</a></li>
+		      <li><a class="nav" href="/encuestas">Encuestas</a></li>
+              <li><a class="nav" href="/clan/miembros">Miembros</a></li>
+              <% if user_is_authed && controller.portal.clan.user_is_clanleader(@user.id) then%><li><a class="nav" href="/cuenta/clanes/general/menu">Admin</a></li><% end -%>
+</ul></div></div>
+
+<div id="cleft" class="container <%=controller.skin.config[:intelliskin][:sidebar_position] if controller.skin.is_intelliskin?%>">
+<% if controller.skin.config[:intelliskin] then %>
+<% if nil then %><div id="wmad" class="module"><div class="wmcontent">
+<script type="text/javascript"><!--
+	      google_ad_client = "pub-6007823011396728";
+	      google_alternate_color = "FFFFFF";
+	      google_ad_width = 125;
+	      google_ad_height = 125;
+	      google_ad_format = "125x125_as";
+	      google_ad_type = "text";
+	      google_ad_channel ="4498901023";
+		  google_color_border = "ffffff";
+		  google_color_bg = "fafafa";
+		  google_color_link = "AD0011";
+		  google_color_text = "a0a0a0";
+		  google_color_url = "008000";
+	      //--></script>
+	     <script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"> </script> 
+</div></div><% end -%>
+
+<%controller.skin.config[:intelliskin][:modules_left].each do |mod| %>
+	<%= render :partial => "/layouts/#{mod}" %>
+<% end %>
+<% end -%>
+</div>
+
+<div id="cright" class="container">
+  <%controller.skin.config[:intelliskin][:modules_right].each do |mod| %>	
+	<%= render :partial => "/layouts/#{mod}" %>
+  <% end %>
+</div>
+<% if controller.submenu then %>
+<div id="mgclansubmenu" class="module"><div clas="mcontent"><ul>
+<% controller.submenu_items.each do |item| %>
+<li><a class="nav" href="<%=item[1]%>"><%=item[0]%></a></li>
+<% end -%>
+</ul></div></div>
+<% end %>
+
+<div id="mgbreadcrumb" class="module"><div class="mcontent"><%=navpath%></div></div>
+  
+<div id="ccontent" class="container">
+	<script type="text/javascript">var contents = [];</script>
+<% if flash[:error] -%><div id="error" class="bad"><%= flash[:error] %></div><% end -%>
+<% if flash[:notice] -%><div id="notice" class="good"><%= flash[:notice] %></div><% end -%>
+<%= @content_for_layout %>
+
+</div>
+<div style="clear:both;"></div>
+<div id="mgfooter" class="module"><div class="mcontents">Powered by <a id="gm-from-clans" class="slncadt content" href="http://gamersmafia.com/">Gamersmafia</a></div></div>
+</div>
+<script type="text/javascript">cfgPage(<%=user_is_authed%>, contents, '<%=controller.controller_name%>', '<%=controller.action_name%>', '<%=params[:id]%>'<%= params['_xnvi'] ? ", '#{params['_xnvi']}'" : ', undefined'%><%= params['_xab'].size > 0 ? ", '#{CGI::escape(params['_xab'].to_json)}'" : ', undefined'%><%= params['_xad'].size > 0 ? ", '#{CGI::escape(params['_xad'].to_json)}'" : ', undefined'%>);</script>
+<% if App.enable_google_analytics? then %>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+var pageTracker = _gat._getTracker("UA-130555-1");
+pageTracker._setDomainName("gamersmafia.com");
+pageTracker._initData();
+pageTracker._trackPageview();
+</script>
+<% end -%>
+<%= render :partial => '/layouts/globalnavbar' %>
+</body>
+</html>

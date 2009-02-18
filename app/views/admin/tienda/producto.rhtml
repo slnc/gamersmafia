@@ -1,0 +1,7 @@
+<form method="post" action="/admin/tienda/update_product">
+	<input type="hidden" name="id" value="<%=@product.id%>"/>
+	
+	<p><label for="interview_title">Descripción</label><br/>
+	<%=wysiwyg('product[description]', :value => @product.description)%></p>
+<input type="submit" class="button" value="Guardar" />
+</form>

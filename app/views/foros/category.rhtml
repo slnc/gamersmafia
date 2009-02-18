@@ -1,0 +1,20 @@
+<% content_support do %>
+  <%=render :partial => '/foros/nuevo_topic'%>
+  <%=render :partial => '/shared/last_commented_items_in_category', :object => @object = @forum%>
+  <%=render :partial => 'most_active_users', :object => @object = @forum%>
+  <%=render :partial => 'most_active_topics', :object => @object = @forum%>
+<% end -%>
+
+<% content_main do %>
+  <%mftext(@forum.name) do %>
+<table>
+  <tr>
+    <th colspan="2">Foro</td>
+    <th style="text-align: center; width: 50px;">Tópics</td>
+    <th style="text-align: center; width: 50px;">Comentarios</td>
+    <th style="text-align: right; width: 150px;">Último</td>
+  </tr>
+  <%=render(:partial => 'forums_list', :locals => {:parent_id => @forum.id}) %>
+</table>
+<% end -%>
+<% end -%>

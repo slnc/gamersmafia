@@ -1,0 +1,33 @@
+<%= error_messages_for 'clan' %>
+
+<!--[form:clan]-->
+<p><label for="clan_name">Nombre</label><br/>
+<%= text_field 'clan', 'name', :class => 'text'  %></p>
+
+<p><label for="clan_tag">Tag</label><br/>
+<%= text_field 'clan', 'tag', :class => 'text'  %></p>
+
+<p><label for="clan_website_external">Website oficial</label><br/>
+<%= text_field 'clan', 'website_external', :class => 'text'  %></p>
+
+<p><label for="clan_irc_channel">Canal de IRC</label><br/>
+<%= text_field 'clan', 'irc_channel', :class => 'text'  %></p>
+
+<p><label for="clan_irc_server">Servidor de IRC</label><br/>
+<%= text_field 'clan', 'irc_server', :class => 'text'  %></p>
+
+<p><label for="clan_irc_server">Borrado</label><br/>
+<%= check_box 'clan', 'deleted'  %></p>
+
+<p><label for="clan_logo">Logo del clan .JPG</label><br/>
+<% if @clan.logo then %>
+<%=fc_thumbnail(@clan.logo, 'k', '153x115')%> 
+<% end -%>
+<%= file_field 'clan', 'logo' %></p>
+
+<p><label for="clan_description">Descripción</label><br/>
+<%=wysiwyg('clan[description]', :value => @clan.description, :height => '100px')%>
+</p>
+
+<!--[eoform:clan]-->
+

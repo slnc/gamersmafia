@@ -1,0 +1,7 @@
+<% mftext('Últimos perfiles actualizados') do %>
+		<ul class="user-listing">
+		<% User.find(:all, :conditions => "profile_last_updated_on is not null and state NOT IN (#{User::STATES_CANNOT_LOGIN.join(',')})", :order => 'profile_last_updated_on DESC', :limit => 5).each do |user| %>
+			<li class="<%=oddclass%>"><div class="photo"><a href="<%=gmurl(user)%>"><img src="/cache/thumbnails/i/48x48/<%=user.show_photo%>" /></a></div><a href="<%=gmurl(user)%>"><span class="nick"><%=user.login%></span></a></li>
+		<% end -%>
+		</ul>
+	<% end -%>

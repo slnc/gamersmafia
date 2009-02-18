@@ -1,0 +1,2 @@
+class ClansSkin < Skin
+end

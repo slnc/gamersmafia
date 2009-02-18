@@ -1,0 +1,10 @@
+<p><label for="funthing_name">Nombre</label><br/>
+<%= text_field 'funthing', 'title', :class => 'text'  %></p>
+
+<p><label for="funthing_main">URL/HTML/Embed</label><br/>
+<%= text_area 'funthing', 'main', 'cols' => 80, 'rows' => 5  %></p>
+
+<p><label for="funthing_description">Descripción</label><br/>
+<%=wysiwyg('funthing[description]', :value => @funthing.description, :height => '100px')%></p>
+
+<%=draft_check_box(@funthing)%>

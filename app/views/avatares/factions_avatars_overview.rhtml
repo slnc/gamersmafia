@@ -1,0 +1,61 @@
+<%mftext("Avatares (total: #{Avatar.count})") do %>
+<% 
+  # TODO optimizar 
+  @factions = Faction.find(:all, :order => 'lower(name) ASC') 
+max_levels = {}
+@max_level = Avatar.find(:first, :order => 'level DESC')
+
+if @max_level then
+  @max_level = @max_level['level']
+else
+  @max_level = 0
+end %>
+<table>
+  <tr>
+    <th>Lvl</th>
+    <% for f in @factions %>
+    <th class="centered"><a href="/avatares/faction/<%=f.id%>"><%=faction_favicon(f)%></a></th>
+    <% end -%>
+  </tr>
+  
+<% 0.upto(@max_level) do |x| %>
+  <tr class="<%=oddclass%>">
+    <td><strong><%=x%></strong></td>
+    <% for f in @factions %>
+    <td class="centered"><%total = f.avatars.find(:all, :conditions => ['level = ?', x])%><%= total.empty? ? '<div style="background: #f00;">0</div>' : total.size%></td>
+    <% end -%>
+  </tr>
+<% end %>
+
+  <tr>
+    <th style="padding-top: 20px;" colspan="<%=1+@factions.size%>">Total avatares</th>
+  </tr>
+
+  <tr class="<%=oddclass%>">
+    <td></td>
+    <% for f in @factions %>
+    <td class="centered"><%=f.avatars.count%></td>
+    <% end -%>
+  </tr>
+
+  <tr>
+    <th style="padding-top: 20px;" colspan="<%=1+@factions.size%>">Usuario de mayor nivel en cada facción</th>
+  </tr>
+
+  <tr class="<%=oddclass%>">
+    <td></td>
+    <% for f in @factions %>
+    <td class="centered"><%= if f.members.size > 0 then 
+      Karma.level(f.users.find(:first, :order => 'cache_karma_points desc').cache_karma_points)
+      else
+        '-'
+        end -%></td>
+    <% end -%>
+  </tr>
+  
+</table>
+
+<br />
+<a href="/avatares">Volver</a>
+<%= link_to 'Nuevo avatar', :action => 'new' %>
+<% end -%>

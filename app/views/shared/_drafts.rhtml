@@ -1,0 +1,8 @@
+<% 
+objs = cls.find(:all, :conditions => "state = #{Cms::DRAFT} AND user_id = #{@user.id}", :order => 'created_on ASC')
+
+if objs.size > 0 then %>
+<%mftext('Mis borradores') do %>
+<%= generic_contents_list(objs, :action => :edit) %>
+<% end-%>
+<% end -%>
