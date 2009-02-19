@@ -10,6 +10,6 @@ Content.find(:all).each do |c|
     else
       new_state = Cms::PENDING
     end
-    User.db_query("UPDATE contents SET state = #{new_state} WHERE id = #{c.id}; UPDATE #{Inflector::tableize(rc.class.name)} SET state = #{new_state} WHERE id = #{rc.id}")
+    User.db_query("UPDATE contents SET state = #{new_state} WHERE id = #{c.id}; UPDATE #{ActiveSupport::Inflector::tableize(rc.class.name)} SET state = #{new_state} WHERE id = #{rc.id}")
   end
 end

@@ -44,7 +44,7 @@ class Admin::CategoriasController < ApplicationController
     @category = self.get_cls(params[:type_name]).find(params[:id])
     @title = "Editando categoría de #{params[:type_name]}: #{@category.name}"
     @navpath = [['Admin', '/admin'], ['Categorías de Contenidos', '/admin/categorias'], [params[:type_name], "/admin/categorias/#{params[:type_name]}"], [@category.name, "/admin/categorias/#{params[:type_name]}/edit/#{@category.id}"]]
-    @tld = portal.send("#{Inflector::tableize(params[:type_name])}_categories")
+    @tld = portal.send("#{ActiveSupport::Inflector::tableize(params[:type_name])}_categories")
   end
   
   def categorias_destroy
@@ -52,16 +52,16 @@ class Admin::CategoriasController < ApplicationController
   end
   
   def categorias_new
-    @tld = portal.send("#{Inflector::tableize(params[:type_name])}_categories")
+    @tld = portal.send("#{ActiveSupport::Inflector::tableize(params[:type_name])}_categories")
     @category = self.get_cls(params[:type_name]).new
     @category.root_id = @tld.id
-    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @tld.id})
+    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @tld.id})
   end
   
   def categorias_update
     @category = self.get_cls(params[:type_name]).find(params[:id])
-    @tld = portal.send("#{Inflector::tableize(params[:type_name])}_categories")
-    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @tld.id})
+    @tld = portal.send("#{ActiveSupport::Inflector::tableize(params[:type_name])}_categories")
+    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @tld.id})
     valid_categories = @tld[0].get_all_children(@tld[0])
     if @portal.respond_to?(:clan_id) && !valid_categories.include?(params[:category][:parent_id].to_i)
       flash[:error] = 'La categoría padre elegida no es válida.'
@@ -76,11 +76,11 @@ class Admin::CategoriasController < ApplicationController
   
   def categorias_create
     # TODO permissions
-    @tld = portal.send("#{Inflector::tableize(params[:type_name])}_categories")
+    @tld = portal.send("#{ActiveSupport::Inflector::tableize(params[:type_name])}_categories")
     @category = self.get_cls(params[:type_name]).new(params[:category])
     @category.root_id = @tld.id
     @category.clan_id = @portal.clan_id if @portal.respond_to? :clan_id
-    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @tld.id})
+    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @tld.id})
     
     valid_categories = @tld[0].get_all_children(@tld[0])
     if @portal.respond_to?(:clan_id) && !valid_categories.include?(params[:category][:parent_id].to_i)

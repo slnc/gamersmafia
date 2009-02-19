@@ -29,6 +29,7 @@ end
 
 class ActionController::Caching::Fragments::UnthreadedFileStore
   def write(name, value, options = nil) #:nodoc:
+    puts "writing to #{name}"
     ensure_cache_path(File.dirname(real_file_path(name)))
     f = File.open(real_file_path(name), "wb+")
     f.write(value)

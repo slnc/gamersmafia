@@ -19,7 +19,7 @@ controller.portal.topics_categories.each do |category|
   <tr class="subheader <%= 'forum-category' if controller.portal_code and controller.portal.id > -1%>">
     <td style="width: 20px;"><%=faction_favicon(category)%></td>
     <td style="line-height: 18px;"><strong><div style="float: left; vertical-align: middle; width: 20px;"></div> <a class="nav" href="<%=gmurl(category)%>"><%=category.name%></a></strong></td>
-    <td style="" class="infoinline timestamp"><%=category.send("#{Inflector::pluralize(Inflector::underscore(category.class.items_class.name))}_count".to_sym)%></td>
+    <td style="" class="infoinline timestamp"><%=category.send("#{ActiveSupport::Inflector::pluralize(ActiveSupport::Inflector::underscore(category.class.items_class.name))}_count".to_sym)%></td>
     <td style="" class="infoinline timestamp"><%=category.comments_count%></td>
     <td class="timestamp infoinline" style="font-weight: normal;"><%last = category.get_last_updated_item
     if last then %><%=print_tstamp(category.updated_on)%> <a class="nav" href="<%=gmurl(Topic.find(last))%>"><img class="go-to-topic" src="/images/blank.gif" /></a><% end -%></td>

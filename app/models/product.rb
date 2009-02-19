@@ -3,11 +3,11 @@ class Product < ActiveRecord::Base
   
   public
   def can_be_bought_by_user(u)
-    send "can_be_bought_by_user_#{Inflector::underscore(self.cls)}".to_sym, u
+    send "can_be_bought_by_user_#{ActiveSupport::Inflector::underscore(self.cls)}".to_sym, u
   end
   
   def cant_be_bought_by_user_reason(u)
-    send "cant_be_bought_by_user_reason_#{Inflector::underscore(self.cls)}".to_sym, u
+    send "cant_be_bought_by_user_reason_#{ActiveSupport::Inflector::underscore(self.cls)}".to_sym, u
   end
   
   # TODO refactorize

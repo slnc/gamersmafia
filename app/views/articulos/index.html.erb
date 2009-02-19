@@ -8,7 +8,7 @@ next if collection.size == 0 %>
 mfcontents_list(Cms::translate_content_name(it).titleize,  
 					Proc.new { collection }, 					
 					{:truncate_at => 28, :blast => true,
-:bottom => "<div class=\"right\"><a href=\"/#{Cms::CONTENTS_CONTROLLERS[it]}/\">Más #{Inflector::pluralize(Cms::translate_content_name(it))}</a> &raquo;</div>"}) do |o| %>
+:bottom => "<div class=\"right\"><a href=\"/#{Cms::CONTENTS_CONTROLLERS[it]}/\">Más #{ActiveSupport::Inflector::pluralize(Cms::translate_content_name(it))}</a> &raquo;</div>"}) do |o| %>
 					
 <%=draw_content_favicon(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
 <% if dafirst then
