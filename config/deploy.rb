@@ -11,7 +11,7 @@ set :scm_command, '/usr/local/hosting/bin/git'
 set :git_enable_submodules, 1
 set :branch, 'production'
 
-role :app, "gamersmafia.com"
+role :app, "127.0.0.1"
 role :web, "127.0.0.1"
 role :db,  "127.0.0.1", :primary => true
 
@@ -43,7 +43,7 @@ namespace(:customs) do
   end
   
   task :check_clean_wc, :roles => :app do
-    run "cd #{release_path} && ./check_clean_wc"
+    run "cd #{latest_release} && ./check_clean_wc"
   end
 end
 
