@@ -11,9 +11,9 @@ set :scm_command, '/usr/local/hosting/bin/git'
 set :git_enable_submodules, 1
 set :branch, 'production'
 
-role :app, "127.0.0.1"
-role :web, "127.0.0.1"
-role :db,  "127.0.0.1", :primary => true
+role :app, "httpd@gamersmafia.com:62331"
+role :web, "httpd@gamersmafia.com:62331"
+role :db,  "httpd@gamersmafia.com:62331", :primary => true
 
 default_environment['PATH'] = '/bin:/usr/bin:/usr/local/bin:/usr/local/hosting/bin'
 default_environment['SVN_SSH'] = 'ssh -p 62331 -l slnc'
@@ -25,8 +25,6 @@ SHARED_DIRS = [
 ['tmp/fragment_cache', 'system/fragment_cache'],
 ['tmp/sessions', 'sessions'],
 ]
-
-
 
 namespace(:customs) do
   task :symlink, :roles => :app do
