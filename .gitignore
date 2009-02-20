@@ -7,3 +7,10 @@ public/storage
 *.swp
 REVISION
 mode
+PREV_VERSION
+public/fckeditor/
+public/gm.js
+public/javascripts/wseditor.pack.js
+public/skins/arena/style_compressed.css
+public/skins/bazar/style_compressed.css
+public/skins/default/style_compressed.css

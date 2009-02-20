@@ -40,64 +40,37 @@ def compress_js():
     
 
 def send_changelog_email():
-    p = os.popen('svn info %s/' % wc_path)
-    cur_version = p.read()
-    p.close()
+    cur = os.popen('REVISION').read().strip()
     
-    for w in ('Revision', 'Revisión'):
-      pat = re.compile('%s: ([0-9]+)' % w)
-      m = pat.search(cur_version)
-      if m:
-        cur_version = m.group(1)
-        break
-
-    # Treat the svnversion output. Possibles: 1025:1042, 1020M, etc
-    semicolon = cur_version.find(':')
-    if semicolon != -1:
-        cur_version = cur_version[0:semicolon]
-    cur_version = int(cur_version.replace('M', ''))
-
-    try:
-        prev_version = int(open('%s/public/storage/last_version' % wc_path_clean, 'r').read())
-        prev_version += 1 # necesario para que no muestre última línea del commit anterior
-    except IOError:
-        prev_version = 2092
-
-    p = os.popen('svn log --xml -r%d:%d `readlink %s`' % (prev_version, cur_version, wc_path_clean))
-    log_output = p.read()
-    p.close()
-
-    try:
-        dom = xml.dom.minidom.parseString(log_output)
-    except xml.parsers.expat.ExpatError:
-        print "WARNING: We are already on the last version!"
-        sys.exit(0)
+    if os.path.exists('PREV_REVISION'):
+        prev = os.popen('PREV_REVISION').read().strip()
+        interval = '%s..%s' % (prev, cur)
     else:
-        log = "Listado de cambios\r\n\r\n"
+        prev = 'N/A'
+        interval = ''
     
-        for entry in dom.getElementsByTagName('logentry'):
-            if len(entry.getElementsByTagName('msg')) > 0:
-                log = "%s\n\n%s" % (log, getText(entry.getElementsByTagName('msg')[0].childNodes).strip())
+    log = os.popen('echo -e `git log --pretty=format:"- %%s\n%%b" %s production' % interval).read()
+
+    # send the email
+    fromaddr = 'webmaster@gamersmafia.com'
+    toaddrs = 'dharana@gamersmafia.com'
     
-        # send the email
-        fromaddr = 'webmaster@gamersmafia.com'
-        toaddrs = 'dharana@gamersmafia.com'
+
+
+    msg = ("Content-Type: text/plain; charset=UTF-8\r\nSubject: GM actualizada a la versión %s\r\nFrom: %s\r\nTo: %s\r\n\r\n%s" % (cur, fromaddr, toaddrs, log.encode('utf-8')))
+    server = smtplib.SMTP('mail.gamersmafia.com')
+    #server.set_debuglevel(1)
+    server.login('nagato.gamersmafia.com', 'megustanlasgalletas')
+    server.sendmail(fromaddr, toaddrs, msg)
+    server.quit()
     
-        msg = ("Content-Type: text/plain; charset=UTF-8\r\nSubject: GM actualizada a la versión %d\r\nFrom: %s\r\nTo: %s\r\n\r\n%s" % (cur_version, fromaddr, toaddrs, log.encode('utf-8')))
-        server = smtplib.SMTP('mail.gamersmafia.com')
-        #server.set_debuglevel(1)
-        server.login('nagato.gamersmafia.com', 'megustanlasgalletas')
-        server.sendmail(fromaddr, toaddrs, msg)
-        server.quit()
-        
-        open('%s/public/storage/last_version' % wc_path_clean, 'w').write('%i' % cur_version)
+    open('%s/PREV_VERSION' % wc_path_clean, 'w').write('%s' % cur)
 
 def app_update():
 	output_dep = os.popen('rake gm:after_deploy').read()
 	print output_dep
 
 if __name__ == '__main__':
-    os.popen('svnversion app > version')
     compress_js()
     send_changelog_email()
     app_update()
