@@ -1,60 +1,73 @@
-set :application, "gamersmafia.com"
-set :repository,  "svn+ssh://slnc@hq.gamersmafia.com/home/slnc/svn/gamersmafia/trunk"
-set :deploy_to, "/home/httpd/websites/#{application}"
-set :shared_dir, "#{deploy_to}/shared"
+set :application, "Gamersmafia"
+set :repository,  "https://balrog.slnc.net/gamersmafia.git"
+set :user, 'slnc'
 set :use_sudo, false
 
+set :deploy_to, "/home/slnc/websites/gamersmafia"
+set :deploy_via, :remote_cache
+set :scm, :git
+set :scm_username, 'slnc'
+set :scm_command, '/usr/local/hosting/bin/git'
+set :git_enable_submodules, 1
+set :branch, 'production'
 
+role :app, "127.0.0.1"
+role :web, "127.0.0.1"
+role :db,  "127.0.0.1", :primary => true
 
-role :app, "httpd@gamersmafia.com:62331"
-role :web, "httpd@gamersmafia.com:62331"
-role :db,  "httpd@gamersmafia.com:62331", :primary => true
-
-default_environment['PATH'] = '/bin:/usr/bin:/usr/local/bin:/usr/local/hosting/bin'
-default_environment['SVN_SSH'] = 'ssh -p 62331 -l slnc'
-default_environment['RAILS_ENV'] = 'production'
-#default_environment['RAILS_ROOT'] = "#{current_path}"
-
-after "deploy:setup" do
-  run "mkdir -m 777 #{shared_dir}/system/cache"
-  run "mkdir -m 777 #{shared_dir}/system/storage"
-  run "mkdir -m 777 #{shared_dir}/system/fragment_cache"
-  run "mkdir -m 777 #{shared_dir}/system/sessions"
-end
-
-# symlink, shared
 SHARED_DIRS = [
-['log', 'log'],
 ['public/storage', 'system/storage'],
 ['public/cache', 'system/cache'],
 ['tmp/fragment_cache', 'system/fragment_cache'],
 ['tmp/sessions', 'sessions'],
 ]
 
-namespace :deploy do
-  desc "This will deploy the app"
-  task :update_code do
-    # Para acelerar hacemos una copia de la versión actual y luego svn up en lugar de svn export
-    run "cp -rP `readlink #{current_path}` #{release_path}"
-
+namespace(:customs) do
+  task :symlink, :roles => :app do
     SHARED_DIRS.each do |dinfo|
-      dir = "#{release_path}/#{dinfo[0]}"
-      # Nos aseguramos de que no borramos los directorios reales borrando
-      # primero symlink y luego los directorios vacíos
-      run "if [ -h #{dir} ]; then rm #{dir}; fi"
+      run <<-CMD
+       rm -rf #{release_path}/#{dinfo[0]} &&
+       ln -s #{shared_path}/#{dinfo[1]} #{release_path}/#{dinfo[0]}
+     CMD
     end
-
-    run "svn up --quiet #{release_path}"
-
-    SHARED_DIRS.each do |dinfo|
-      dir = "#{release_path}/#{dinfo[0]}"
-      # Nos aseguramos de que no borramos los directorios reales borrando
-      # primero symlink y luego los directorios vacíos
-      run "if [ -d #{dir} ]; then rm -rf #{dir}; fi"
-      run "ln -s #{shared_dir}/#{dinfo[1]} #{dir}"
-    end
-    
-    run "ln -nfs #{release_path} #{current_path}"
+  end
+  
+  task :updated_app, :roles => :app do
     run "cd #{release_path} && ./update.py"
   end
+  
+  task :setup, :roles => :app do
+    SHARED_DIRS.each do |dinfo|
+      run "mkdir #{shared_path}/#{dinfo[1]}"
+    end
+  end
+  
+  task :check_clean_wc, :roles => :app do
+    run "cd #{latest_release} && ./check_clean_wc"
+  end
+end
+
+before "deploy:update","customs:check_clean_wc"
+after "deploy:setup","customs:setup"
+after "deploy:symlink","customs:symlink"
+after "deploy","customs:updated_app"
+# Hasta que no esté seguro de que funciona bien el nuevo sistema de 
+# comprobación de wc antes de updatear no activo esto:
+#after "deploy", "deploy:cleanup"
+
+# monkey patch para no hacer un touch a los assets ya que no hacemos uso de ello
+namespace :deploy do
+  task :finalize_update, :except => { :no_release => true } do 
+    run "chmod -R g+w #{latest_release}" if fetch(:group_writable, true)
+    
+    # mkdir -p is making sure that the directories are there for some SCM's that don't
+    # save empty folders
+    run <<-CMD
+       rm -rf #{latest_release}/log #{latest_release}/tmp/pids &&
+       mkdir -p #{latest_release}/public &&
+       mkdir -p #{latest_release}/tmp &&
+       ln -s #{shared_path}/log #{latest_release}/log &&
+       ln -s #{shared_path}/pids #{latest_release}/tmp/pids
+     CMD
+  end 
 end
