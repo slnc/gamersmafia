@@ -49,13 +49,17 @@ namespace(:customs) do
   end
   
   task :check_clean_wc, :roles => :app do
-    if latest_release != ''
-      #puts "HOLA MUNDO"
-      #puts release_path
-      #puts latest_release.class.name
-      
-      run "if [ -d #{latest_release} ]; then cd #{latest_release} && ./check_clean_wc; fi"
-    end
+    begin
+      latest_release
+    rescue # first deployment
+    else
+      begin
+        run "if [ -d #{latest_release} ]; then cd #{latest_release} && ./check_clean_wc; fi"
+      rescue
+        puts "\n\tERROR: production has dirty wc!\n\n"
+        raise
+      end
+    end    
   end
 end
 
