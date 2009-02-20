@@ -1,6 +1,6 @@
 [submodule "public/javascripts/web.shared"]
 	path = public/javascripts/web.shared
-	url = https://balrog.slnc.net/web.shared.git
+	url = ssh://slnc@balrog.slnc.net:62331/web.shared.git
 [submodule "vendor/plugins"]
 	path = vendor/plugins
-	url = https://balrog.slnc.net/vendor_plugins.git
+	url = ssh://slnc@balrog.slnc.net:62331/vendor_plugins.git
