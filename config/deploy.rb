@@ -15,12 +15,18 @@ role :app, "127.0.0.1"
 role :web, "127.0.0.1"
 role :db,  "127.0.0.1", :primary => true
 
+default_environment['PATH'] = '/bin:/usr/bin:/usr/local/bin:/usr/local/hosting/bin'
+default_environment['SVN_SSH'] = 'ssh -p 62331 -l slnc'
+default_environment['RAILS_ENV'] = 'production'
+
 SHARED_DIRS = [
 ['public/storage', 'system/storage'],
 ['public/cache', 'system/cache'],
 ['tmp/fragment_cache', 'system/fragment_cache'],
 ['tmp/sessions', 'sessions'],
 ]
+
+
 
 namespace(:customs) do
   task :symlink, :roles => :app do
@@ -43,7 +49,13 @@ namespace(:customs) do
   end
   
   task :check_clean_wc, :roles => :app do
-    run "cd #{latest_release} && ./check_clean_wc"
+    if latest_release != ''
+      #puts "HOLA MUNDO"
+      #puts release_path
+      #puts latest_release.class.name
+      
+      run "if [ -d #{latest_release} ]; then cd #{latest_release} && ./check_clean_wc; fi"
+    end
   end
 end
 
