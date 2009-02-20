@@ -403,7 +403,7 @@ Request information:
     if request.env.include?('HTTP_CLIENT_IP') and (request.env['HTTP_CLIENT_IP'] =~ /^unknown$|^(10|172\.(1[6-9]|2[0-9]|30|31)|192\.168)\./i).nil? then
       request.env['HTTP_CLIENT_IP'] = request.env['REMOTE_ADDR']
     end
-    
+
     if [App.domain, 'kotoko'].include?(request.host) 
       @portal = GmPortal.new
     elsif request.host == "bazar.#{App.domain}"
