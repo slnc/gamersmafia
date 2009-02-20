@@ -1,6 +1,8 @@
 .project
-log/*.log
+log
 *.pyc
 public/skins/_core/css/games_sprites.css
-public/storage/*
+public/cache
+public/storage
 *.swp
+REVISION
