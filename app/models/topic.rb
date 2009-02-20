@@ -53,7 +53,7 @@ class Topic < ActiveRecord::Base
     # TODO bug actualizar contadores de topics de foros afectados
     self.topics_category = new_forum
     self.topics_category_id = new_forum.id
-    self.class.db_query("UPDATE #{Inflector::tableize(self.class.name)} SET topics_category_id = #{new_forum.id} WHERE id = #{self.id}")
+    self.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} SET topics_category_id = #{new_forum.id} WHERE id = #{self.id}")
   end
   
   def hot?

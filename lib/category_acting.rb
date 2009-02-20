@@ -17,7 +17,7 @@ module CategoryActing
       acts_as_tree :order => 'name'
       
       
-      has_many Inflector.pluralize(self.name.gsub(/Category/, '').downcase).to_sym
+      has_many ActiveSupport::Inflector.pluralize(self.name.gsub(/Category/, '').downcase).to_sym
       belongs_to :root, :class_name => self.name, :foreign_key => 'root_id'
       has_one :last_updated_item, :class_name => self.name.gsub(/Category/, '')
       has_one :competition if name == 'TopicsCategory' # TODO hack
@@ -32,7 +32,7 @@ module CategoryActing
     end
     
     def items_class
-      Object.const_get(Inflector.singularize(self.name.gsub('Category', '')))
+      Object.const_get(ActiveSupport::Inflector.singularize(self.name.gsub('Category', '')))
     end
   end
   
@@ -76,9 +76,9 @@ module CategoryActing
         @siblings.each { |s| @_cache_cats_ids += s.get_all_children }
         # options[:conditions] = (options[:conditions]) ? ' AND ' : ''
         
-        new_cond = "#{Inflector::underscore(self.class.name)}_id IN (#{@_cache_cats_ids.join(',')})"
+        new_cond = "#{ActiveSupport::Inflector::underscore(self.class.name)}_id IN (#{@_cache_cats_ids.join(',')})"
       else
-        new_cond = "#{Inflector::underscore(self.class.name)}_id IN (#{([self.id] + @siblings.collect { |s| s.id }).join(',')})"
+        new_cond = "#{ActiveSupport::Inflector::underscore(self.class.name)}_id IN (#{([self.id] + @siblings.collect { |s| s.id }).join(',')})"
       end
       options.delete :treemode
       
@@ -168,7 +168,7 @@ module CategoryActing
       end
       
       paths = paths.reverse
-      navpath = [[Inflector::titleize(href), "/#{href2}"], ] + navpath.reverse
+      navpath = [[ActiveSupport::Inflector::titleize(href), "/#{href2}"], ] + navpath.reverse
       
       return paths, navpath
     end
@@ -311,7 +311,7 @@ module CategoryActing
         end
       end
       
-      self.class.items_class.find(:published, :conditions => "#{Inflector::underscore(self.class.name)}_id IN (#{cat_ids.join(',')})", :order => 'updated_on DESC', :limit => limit)
+      self.class.items_class.find(:published, :conditions => "#{ActiveSupport::Inflector::underscore(self.class.name)}_id IN (#{cat_ids.join(',')})", :order => 'updated_on DESC', :limit => limit)
     end
     
     def most_active_items
@@ -339,8 +339,8 @@ module CategoryActing
       end
       
       self.class.items_class.find_by_sql("SELECT a.*
-                                    FROM #{Inflector::tableize(self.class.items_class.name)} a join contents b on a.id = b.external_id and b.content_type_id = 6 
-                                   WHERE #{Inflector::underscore(self.class.name)}_id IN (#{cat_ids.join(',')}) and a.updated_on > now() - '3 months'::interval
+                                    FROM #{ActiveSupport::Inflector::tableize(self.class.items_class.name)} a join contents b on a.id = b.external_id and b.content_type_id = 6 
+                                   WHERE #{ActiveSupport::Inflector::underscore(self.class.name)}_id IN (#{cat_ids.join(',')}) and a.updated_on > now() - '3 months'::interval
                                      AND a.state = #{Cms::PUBLISHED}
                                 ORDER BY (comments_count / extract (epoch from (now() - a.created_on))) desc 
                                    LIMIT 5")
@@ -359,11 +359,11 @@ module CategoryActing
     
     def items_count(obj = nil, force = false)
       obj = self if obj.nil?
-      attr_count = "#{Inflector::pluralize(Inflector::underscore(obj.class.items_class.name)).downcase}_count"
+      attr_count = "#{ActiveSupport::Inflector::pluralize(ActiveSupport::Inflector::underscore(obj.class.items_class.name)).downcase}_count"
       
       if obj.attributes[attr_count].nil? or force then
         # obj es una instancia de una categoría
-        count = obj.class.items_class.count(:conditions => "#{(Inflector::underscore(self.class.name)).downcase}_id = #{obj.id} and state = #{Cms::PUBLISHED}")
+        count = obj.class.items_class.count(:conditions => "#{(ActiveSupport::Inflector::underscore(self.class.name)).downcase}_id = #{obj.id} and state = #{Cms::PUBLISHED}")
         
         for i in obj.children
           raise "#{i.id} error al contar items_count en categoría" if items_count(i).nil?
@@ -371,7 +371,7 @@ module CategoryActing
         end
         
         # no usamos save para no tocar updated_on, created_on porque record_timestamps falla
-        obj.class.db_query("UPDATE #{Inflector::tableize(self.class.name)} SET #{attr_count} = #{count} WHERE id = #{self.id}")
+        obj.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} SET #{attr_count} = #{count} WHERE id = #{self.id}")
         obj.reload
       end
       
@@ -381,7 +381,7 @@ module CategoryActing
     
     def top_contributor
       # devuelve el usuario que más contenidos ha aportado a la categoría
-      us_info = User.db_query("select user_id, count(id) from #{Inflector.tableize(self.class.items_class.name)} where #{Inflector.underscore(self.class.name)}_id = #{self.id} and state = #{Cms::PUBLISHED} group by user_id order by count(id) desc limit 1")[0]
+      us_info = User.db_query("select user_id, count(id) from #{ActiveSupport::Inflector.tableize(self.class.items_class.name)} where #{ActiveSupport::Inflector.underscore(self.class.name)}_id = #{self.id} and state = #{Cms::PUBLISHED} group by user_id order by count(id) desc limit 1")[0]
       
       if not us_info then
         return 
@@ -402,14 +402,14 @@ module CategoryActing
         cat_ids = self.get_all_children
         
         if self.class.items_class.name == 'Topic' then
-          obj = self.class.items_class.find(:first, :conditions => "state = #{Cms::PUBLISHED} and sticky is false and closed is false and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'updated_on DESC')
+          obj = self.class.items_class.find(:first, :conditions => "state = #{Cms::PUBLISHED} and sticky is false and closed is false and #{ActiveSupport::Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'updated_on DESC')
         else
-          obj = self.class.items_class.find(:first, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'updated_on DESC')
+          obj = self.class.items_class.find(:first, :conditions => "state = #{Cms::PUBLISHED} and #{ActiveSupport::Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'updated_on DESC')
         end
         
         if obj then
           # no usamos save para no tocar updated_on, created_on porque record_timestamps falla
-          self.class.db_query("UPDATE #{Inflector::tableize(self.class.name)} SET last_updated_item_id = #{obj.id} WHERE id = #{self.id}")
+          self.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} SET last_updated_item_id = #{obj.id} WHERE id = #{self.id}")
           self.reload
           obj
         end
@@ -420,7 +420,7 @@ module CategoryActing
     
     def get_related_portals
       portals = [GmPortal.new]
-      f = Organizations.find_by_content(self.class.items_class.new("#{Inflector::singularize(Inflector::tableize(self.class.name))}_id".to_sym => self.id))
+      f = Organizations.find_by_content(self.class.items_class.new("#{ActiveSupport::Inflector::singularize(ActiveSupport::Inflector::tableize(self.class.name))}_id".to_sym => self.id))
       if f.nil? then # No es un contenido de facción o es de categoría gm/otros TODO PERF esto no usarlo con caches, madre del amor hermoso
         portals += Portal.find(:all, :conditions => 'type <> \'ClansPortal\'')
       elsif f.class.name == 'Faction'
@@ -434,7 +434,7 @@ module CategoryActing
     
     def last_updated_items(limit = 5)
       cat_ids = self.get_all_children
-      self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'updated_on DESC', :limit => limit)
+      self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{ActiveSupport::Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'updated_on DESC', :limit => limit)
     end
     
     #    def get_all_children(obj = nil)
@@ -442,12 +442,12 @@ module CategoryActing
     #      cats = [obj.id]
     #      
     #      if obj.id == obj.root_id then # shortcut
-    #        db_cats = self.db_query("select id from #{Inflector.tableize(self.class.name)} where root_id = #{self.id} and id <> #{self.id}")
+    #        db_cats = self.db_query("select id from #{ActiveSupport::Inflector.tableize(self.class.name)} where root_id = #{self.id} and id <> #{self.id}")
     #        for c in db_cats
     #          cats<< c['id'].to_i
     #        end
     #      else
-    #        db_cats = obj.db_query("select id from #{Inflector.tableize(self.class.name)} where parent_id = #{self.id}")
+    #        db_cats = obj.db_query("select id from #{ActiveSupport::Inflector.tableize(self.class.name)} where parent_id = #{self.id}")
     #        
     #        for c in db_cats
     #          cats<< c['id'].to_i
@@ -468,10 +468,10 @@ module CategoryActing
       cats = [obj.id]
       
       if obj.id == obj.root_id then # shortcut
-        # puts "select id from #{Inflector.tableize(self.class.name)} where root_id = #{obj.id} and id <> #{obj.id}"
-        db_query("select id from #{Inflector.tableize(self.class.name)} where root_id = #{obj.id} and id <> #{obj.id}").each { |dbc| cats<< dbc['id'].to_i }
+        # puts "select id from #{ActiveSupport::Inflector.tableize(self.class.name)} where root_id = #{obj.id} and id <> #{obj.id}"
+        db_query("select id from #{ActiveSupport::Inflector.tableize(self.class.name)} where root_id = #{obj.id} and id <> #{obj.id}").each { |dbc| cats<< dbc['id'].to_i }
       else # hay que ir preguntando categoría por categoría
-        #        db_cats = db_query("select id from #{Inflector.tableize(self.class.name)} where parent_id = #{self.id}")
+        #        db_cats = db_query("select id from #{ActiveSupport::Inflector.tableize(self.class.name)} where parent_id = #{self.id}")
         obj.children.each { |i| cats.concat(get_all_children(i)) }
       end
       cats.uniq
@@ -479,27 +479,27 @@ module CategoryActing
     
     def random(limit=3)
       cat_ids = self.get_all_children
-      self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'RANDOM()', :limit => limit)
+      self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{ActiveSupport::Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'RANDOM()', :limit => limit)
     end
     
     def most_rated_items(limit=3)
       cat_ids = self.get_all_children
-      self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and cache_rated_times > 1 and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'coalesce(cache_weighted_rank, 0) DESC', :limit => limit)
+      self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and cache_rated_times > 1 and #{ActiveSupport::Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'coalesce(cache_weighted_rank, 0) DESC', :limit => limit)
     end
     
     def most_popular_items(limit=3)
       cat_ids = self.get_all_children
-      self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and cache_rated_times > 1 and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => '(coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0)) DESC', :limit => limit)
+      self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and cache_rated_times > 1 and #{ActiveSupport::Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => '(coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0)) DESC', :limit => limit)
     end
     
     def last_created_items(limit = 3) # TODO esta ya sobra me parece, mirar en tutoriales
       cat_ids = self.get_all_children
-      self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'created_on DESC', :limit => limit)
+      self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{ActiveSupport::Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'created_on DESC', :limit => limit)
     end
     
     def random_item
       cat_ids = self.get_all_children
-      self.class.items_class.find(:first, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'random()')
+      self.class.items_class.find(:first, :conditions => "state = #{Cms::PUBLISHED} and #{ActiveSupport::Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'random()')
     end
   end
   

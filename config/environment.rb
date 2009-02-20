@@ -1,4 +1,4 @@
-RAILS_GEM_VERSION = '2.0.2' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.1.2' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -42,11 +42,13 @@ Rails::Initializer.run do |config|
   
   # Enable page/fragment caching by setting a file-based store
   # (remember to create the caching directory and make it readable to the application)
-  config.action_controller.fragment_cache_store = :file_store, FRAGMENT_CACHE_PATH
+  config.action_controller.cache_store = :file_store, FRAGMENT_CACHE_PATH
   config.action_controller.session = { 
     :session_key => "adn2", 
     :secret => "2595bb97b561a0311a2766ec174265f48ec10a58ef4091c4d621b74b92247b02aff39f9c67146b003ff2ea6a963ac69b758af0d6942e3c36cbf771775e6a2d85" 
   }
+  
+  config.action_controller.cache_store = :file_store, FRAGMENT_CACHE_PATH
   
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
@@ -56,7 +58,7 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
   # config.plugins = [:file_column, :all]
 end
-ActionController::Base.fragment_cache_store = :file_store, FRAGMENT_CACHE_PATH
+ActionController::Base.cache_store = :file_store, FRAGMENT_CACHE_PATH
 #ActionController::Base.session_store = :p_store
 require File.join(File.dirname(__FILE__), 'app_config')
 require 'vendor/plugins/rails_mixings/lib/action_controller.rb'

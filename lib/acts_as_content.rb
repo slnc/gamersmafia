@@ -47,7 +47,7 @@ module ActsAsContent
       def most_popular_authors(opts={})
         q_add = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
         opts[:limit] ||= 5
-        dbitems = User.db_query("SELECT count(id), user_id from #{Inflector::tableize(self.name)} WHERE state = #{Cms::PUBLISHED}#{q_add} GROUP BY (user_id) ORDER BY sum((coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0))) desc limit #{opts[:limit]}")
+        dbitems = User.db_query("SELECT count(id), user_id from #{ActiveSupport::Inflector::tableize(self.name)} WHERE state = #{Cms::PUBLISHED}#{q_add} GROUP BY (user_id) ORDER BY sum((coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0))) desc limit #{opts[:limit]}")
         dbitems.collect { |dbitem| [User.find(dbitem['user_id']), dbitem['count'].to_i] }
       end
       
@@ -86,7 +86,7 @@ module ActsAsContent
       
       # Soporte para find(:published) find(:drafts) find(:deleted), etc
       def find(*args)
-        t_name = Inflector::tableize(table_name)
+        t_name = ActiveSupport::Inflector::tableize(table_name)
         agfirst = args.first
         if agfirst.is_a?(Symbol) && [:drafts, :published, :deleted, :pending].include?(agfirst) then
           options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
@@ -256,7 +256,7 @@ module ActsAsContent
       self.del_karma if is_public?
       
       # TODO ya no :p hacemos esto para no triggerear record_timestamps
-      # self.class.db_query("UPDATE #{Inflector::tableize(self.class.name)} SET user_id = #{new_user.id} WHERE id = #{self.id}")
+      # self.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} SET user_id = #{new_user.id} WHERE id = #{self.id}")
       # self.reload
       self.user_id = new_user.id
       self.user = new_user # necesario hacer ambos cambios por si ya se ha cargado self.user antes
@@ -287,7 +287,7 @@ module ActsAsContent
     # TODO this shouldn't go here
     def main_category
       cls = Cms::category_class_from_content_name(self.class.name)
-      cls.find(self.attributes["#{Inflector::underscore(cls.name)}_id"])
+      cls.find(self.attributes["#{ActiveSupport::Inflector::underscore(cls.name)}_id"])
     end
     
     # TODO refactor this
@@ -447,14 +447,14 @@ module ActsAsContent
         # calculamos "m"
         if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
           cat_ids = self.main_category.root.get_all_children
-          q = "AND #{Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})"
+          q = "AND #{ActiveSupport::Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})"
         else
           q = ''
         end
         
         total = self.class.count(:conditions => "state = #{Cms::PUBLISHED} #{q}")
         dbm = User.db_query("SELECT cache_rated_times 
-                         FROM #{Inflector::tableize(self.class.name)}
+                         FROM #{ActiveSupport::Inflector::tableize(self.class.name)}
                         WHERE state = #{Cms::PUBLISHED} #{q}
                           AND cache_rated_times > 0
                      ORDER BY cache_rated_times LIMIT 1 OFFSET #{(total/100*25 + 0.5).to_i}")
@@ -467,7 +467,7 @@ module ActsAsContent
         c = get_mean_vote(m) 
         self.cache_weighted_rank = (v / (v+m)) * r + (m / (v+m)) * c
         
-        self.class.db_query("UPDATE #{Inflector::tableize(self.class.name)} 
+        self.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} 
                                 SET cache_rating = #{self.cache_rating}, 
                                     cache_rated_times = #{self.cache_rated_times},
                                     cache_weighted_rank = #{self.cache_weighted_rank}
@@ -488,20 +488,20 @@ module ActsAsContent
       if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
         cat_ids = self.main_category.root.get_all_children
         mean = User.db_query("SELECT avg(cache_rating) 
-                                FROM #{Inflector::tableize(self.class.name)} 
+                                FROM #{ActiveSupport::Inflector::tableize(self.class.name)} 
                                WHERE cache_rating is not null 
                                  AND cache_rated_times >= #{m} 
-                                 AND #{Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})")[0]['avg'].to_f
+                                 AND #{ActiveSupport::Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})")[0]['avg'].to_f
       else
         mean = User.db_query("SELECT avg(cache_rating) 
-                                FROM #{Inflector::tableize(self.class.name)} 
+                                FROM #{ActiveSupport::Inflector::tableize(self.class.name)} 
                                WHERE cache_rating is not null 
                                  AND cache_rated_times >= #{m}")[0]['avg'].to_f
       end
     end
     
     def clear_rating_cache
-      self.class.db_query("UPDATE #{Inflector::tableize(self.class.name)} 
+      self.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} 
                               SET cache_rating = NULL, 
                                   cache_rated_times = NULL, 
                                   cache_weighted_rank = NULL WHERE id = #{self.id}")

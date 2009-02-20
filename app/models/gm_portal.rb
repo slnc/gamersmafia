@@ -46,7 +46,7 @@ class GmPortal
       if method_id == :poll
         GmPortalPollProxy
       else
-        cls_name = Inflector::camelize(Inflector::singularize(method_id))
+        cls_name = ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id))
         cls = Object.const_get(cls_name)
         if Cms::CLANS_CONTENTS.include?(cls_name)  # es una clase cuya tabla tiene clan_id, añadimos constraint
           GenericContentProxy.new(cls)
@@ -56,8 +56,8 @@ class GmPortal
       end
     elsif /_categories/ =~ method_id.to_s then
       # it must have at least one
-      cls_name = Inflector::camelize(Inflector::singularize(method_id))
-      single_name = Inflector::camelize(Inflector::singularize(method_id.to_s.gsub('_categories', '')))
+      cls_name = ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id))
+      single_name = ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id.to_s.gsub('_categories', '')))
       cls = Object.const_get(cls_name)
       cond = Cms::CLANS_CONTENTS.include?(single_name) ? "AND clan_id IS NULL" : ''
       cls.find(:all, :conditions => "parent_id is null and id = root_id #{cond}", :order => 'UPPER(name) ASC')

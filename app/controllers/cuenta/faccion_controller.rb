@@ -256,14 +256,14 @@ class Cuenta::FaccionController < ApplicationController
     @title = "Editando categoría #{params[:type_name]}: #{@category.name}"
     @navpath = [['Cuenta', '/cuenta'], ['Facción', '/cuenta/faccion'], ['Categorias', '/cuenta/faccion/categorias'], [params[:type_name], "/cuenta/faccion/categorias/#{params[:type_name]}"], [@category.name, "/cuenta/faccion/categorias/#{params[:type_name]}/edit/#{@category.id}"]]
     
-    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @category.id})
+    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @category.id})
     raise AccessDenied unless Cms::user_can_edit_content?(@user, dummy)
   end
   
   def categorias_destroy
     @faction = @user.faction
     @category = self.get_cls(params[:type_name]).find(params[:id])
-    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @category.id})
+    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @category.id})
     raise AccessDenied unless Cms::user_can_edit_content?(@user, dummy)
   end
   
@@ -273,7 +273,7 @@ class Cuenta::FaccionController < ApplicationController
     @category = self.get_cls(params[:type_name]).new
     @category = @tld.children.new
     @category.root_id = @tld.id
-    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @tld.id})
+    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @tld.id})
     raise AccessDenied unless Cms::user_can_edit_content?(@user, dummy)
   end
   
@@ -281,7 +281,7 @@ class Cuenta::FaccionController < ApplicationController
     @faction = @user.faction
     @category = self.get_cls(params[:type_name]).find(params[:id])
     @tld = self.get_cls(params[:type_name]).find(:first, :conditions => ["name = ? and root_id = id", @faction.name])
-    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @tld.id})
+    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @tld.id})
     raise AccessDenied unless Cms::user_can_edit_content?(@user, dummy)
     
     if params[:category][:parent_id].empty? then
@@ -303,7 +303,7 @@ class Cuenta::FaccionController < ApplicationController
     @tld = self.get_cls(params[:type_name]).find(:first, :conditions => ["name = ? and root_id = id", @faction.name])
     @category = self.get_cls(params[:type_name]).new(params[:category])
     @category.root_id = @tld.id
-    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @tld.id})
+    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @tld.id})
     raise AccessDenied unless Cms::user_can_edit_content?(@user, dummy)
     
     if params[:category][:parent_id].empty? then
@@ -322,7 +322,7 @@ class Cuenta::FaccionController < ApplicationController
     @tld = self.get_cls(params[:type_name]).find(:first, :conditions => ["name = ? and root_id = id", @faction.name])
     # TODO validation
     @category = self.get_cls(params[:type_name]).find(params[:id])
-    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @tld.id})
+    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @tld.id})
     raise AccessDenied unless Cms::user_can_edit_content?(@user, dummy)
     
     # TODO

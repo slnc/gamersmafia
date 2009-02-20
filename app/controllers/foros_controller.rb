@@ -56,7 +56,7 @@ class ForosController < ComunidadController
       redirect_to(obj.unique_content.url, :status => 301) and return
     end
     
-    @forum = @topic.send(Inflector::underscore(@topic.class.category_class.name))
+    @forum = @topic.send(ActiveSupport::Inflector::underscore(@topic.class.category_class.name))
     @title = @topic.title
     @navpath = [['Foros', '/foros']]
     @forum.get_ancestors.reverse.each { |p| @navpath<< [p.name, "/foros/forum/#{p.id}"] }

@@ -355,15 +355,15 @@ class Faction < ActiveRecord::Base
       if c_cls.name == 'TopicsCategory':
         stats = self.class.db_query("SELECT COUNT(id) * #{Karma::KPS_CREATE['Topic']} as total_1, 
                                                          SUM(COALESCE(cache_comments_count, 0)) * #{Karma::KPS_CREATE['Comment']} as total_2
-                                                    FROM #{Inflector.tableize(c.class.items_class.name)} 
-                                                   WHERE #{Inflector.underscore(c.class.name)}_id in (#{cat_ids.join(',')}) 
+                                                    FROM #{ActiveSupport::Inflector.tableize(c.class.items_class.name)} 
+                                                   WHERE #{ActiveSupport::Inflector.underscore(c.class.name)}_id in (#{cat_ids.join(',')}) 
                                                      AND state = #{Cms::PUBLISHED}")
       else
         kps_per_content = Karma::KPS_CREATE[c.class.items_class.name] + Karma::KPS_SAVE[c.class.items_class.name]
         stats = self.class.db_query("SELECT COUNT(id) * #{kps_per_content} as total_1, 
                                                          SUM(COALESCE(cache_comments_count, 0)) * #{Karma::KPS_CREATE['Comment']} as total_2
-                                                    FROM #{Inflector.tableize(c.class.items_class.name)} 
-                                                   WHERE #{Inflector.underscore(c.class.name)}_id in (#{cat_ids.join(',')}) 
+                                                    FROM #{ActiveSupport::Inflector.tableize(c.class.items_class.name)} 
+                                                   WHERE #{ActiveSupport::Inflector.underscore(c.class.name)}_id in (#{cat_ids.join(',')}) 
                                                      AND state = #{Cms::PUBLISHED}")
       end
       

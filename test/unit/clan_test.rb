@@ -58,10 +58,10 @@ class ClanTest < Test::Unit::TestCase
   def test_activate_website_should_create_contents_categories
     @c = Clan.find(1)
     prev_counts = {}
-    Cms::CLANS_CONTENTS.each { |ccn| prev_counts[ccn] = Object.const_get("#{Inflector::pluralize(ccn)}Category").count }
+    Cms::CLANS_CONTENTS.each { |ccn| prev_counts[ccn] = Object.const_get("#{ActiveSupport::Inflector::pluralize(ccn)}Category").count }
     test_activate_website_should_create_clans_portal
     Cms::CLANS_CONTENTS.each do |ccn| 
-      assert_equal true, Object.const_get("#{Inflector::pluralize(ccn)}Category").count > prev_counts[ccn]
+      assert_equal true, Object.const_get("#{ActiveSupport::Inflector::pluralize(ccn)}Category").count > prev_counts[ccn]
     end 
   end
 end

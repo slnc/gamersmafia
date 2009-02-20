@@ -12,23 +12,26 @@ class Time
 end
 
 
+# if nil # ruby 1.8.7
 class Date
-  MONTHNAMES.replace([nil, 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo',
+  MONTHNAMES = [nil, 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo',
       'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 
-      'Diciembre'])
+      'Diciembre']
   
-  ABBR_MONTHNAMES.replace([nil, 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
-      'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dec'])
+  ABBR_MONTHNAMES = [nil, 'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+      'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dec']
   
-  DAYNAMES.replace(['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 
-      'Viernes', 'Sábado'])
+  DAYNAMES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 
+      'Viernes', 'Sábado']
   
   ABBR_DAYSNAMES = ['D', 'L', 'M', 'X', 'J', 'V', 'S']
 end
 
 
+
 class ActionController::Caching::Fragments::UnthreadedFileStore
   def write(name, value, options = nil) #:nodoc:
+    puts "writing to #{name}"
     ensure_cache_path(File.dirname(real_file_path(name)))
     f = File.open(real_file_path(name), "wb+")
     f.write(value)

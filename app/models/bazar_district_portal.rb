@@ -24,7 +24,7 @@ class BazarDistrictPortal < Portal
     # buscamos los nombres de todas las categorías de los juegos que tenemos
     # asociados
     
-    cats = cls.find(:all, :conditions => ["root_id = (SELECT id FROM #{Inflector::tableize(cls.name)} where root_id = id and code = ?)", self.code]).collect { |c| c.id }
+    cats = cls.find(:all, :conditions => ["root_id = (SELECT id FROM #{ActiveSupport::Inflector::tableize(cls.name)} where root_id = id and code = ?)", self.code]).collect { |c| c.id }
     cats << [0] # just in case
     cats
   end
@@ -37,7 +37,7 @@ class BazarDistrictPortal < Portal
     if method_id == :poll
       BazarDistrictPortalPollProxy.new(self)
     elsif Cms::contents_classes_symbols.include?(method_id) # contents      
-      obj = Object.const_get(Inflector::camelize(Inflector::singularize(method_id)))
+      obj = Object.const_get(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id)))
       if obj.respond_to?(:is_categorizable?)
         obj = obj.category_class.find_by_code(self.code)
         obj
@@ -46,7 +46,7 @@ class BazarDistrictPortal < Portal
     elsif /(news|downloads|topics|events|tutorials|polls|images|questions)_categories/ =~ method_id.to_s then
       # Devolvemos categorías de primer nivel de esta facción
       # it must have at least one
-      cls = Object.const_get("#{Inflector::singularize(Inflector::camelize(method_id))}")
+      cls = Object.const_get("#{ActiveSupport::Inflector::singularize(ActiveSupport::Inflector::camelize(method_id))}")
       cls.find(:all, :conditions => ["parent_id is null and id = root_id AND code = ?", self.code], :order => 'UPPER(name) ASC')
     else
       super

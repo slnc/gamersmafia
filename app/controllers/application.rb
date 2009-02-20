@@ -204,7 +204,7 @@ Request information:
   def self.gmurl(object)
     cls_name = object.class.name
     if cls_name.index('Category')
-      href = Cms::translate_content_name(Inflector::singularize(cls_name.gsub('Category', '')))
+      href = Cms::translate_content_name(ActiveSupport::Inflector::singularize(cls_name.gsub('Category', '')))
       href = href.normalize
       case href
         when 'topics':
@@ -448,7 +448,7 @@ Request information:
   end
   
   def check_portal_access_mode(allowed_portals)
-    if defined?(allowed_portals) and not allowed_portals.include?(Inflector::singularize(Inflector::underscore(@portal.class.name.gsub('Portal', ''))).to_sym)
+    if defined?(allowed_portals) and not allowed_portals.include?(ActiveSupport::Inflector::singularize(ActiveSupport::Inflector::underscore(@portal.class.name.gsub('Portal', ''))).to_sym)
       raise ActiveRecord::RecordNotFound 
     end
   end
@@ -719,7 +719,7 @@ Request information:
     @name_action_infinitive = model.id.nil? ? 'crear' : 'actualizar'
     if model.save
       flash[:notice] = "#{model.class.name} #{@name_action_participe} correctamente."
-      redirect_to (success_dst.kind_of?(String) ? success_dst.gsub("@#{Inflector::underscore(model.class.name)}.id", model.id.to_s) : success_dst)
+      redirect_to (success_dst.kind_of?(String) ? success_dst.gsub("@#{ActiveSupport::Inflector::underscore(model.class.name)}.id", model.id.to_s) : success_dst)
     else
       flash[:error] = "Error al #{@name_action_infinitive} el #{model.class.name}: #{model.errors.full_messages_html}"
       render :action => error_render_action
@@ -727,9 +727,9 @@ Request information:
   end
   
   def update_attributes_or_error(model, success_dst, error_render_action)
-    if model.update_attributes(params[Inflector::underscore(model.class.name)])
+    if model.update_attributes(params[ActiveSupport::Inflector::underscore(model.class.name)])
       flash[:notice] = "#{model.class.name} actualizado correctamente."
-      redirect_to success_dst.kind_of?(String) ? success_dst.gsub("@#{Inflector::underscore(model.class.name)}.id", model.id.to_s) : success_dst
+      redirect_to success_dst.kind_of?(String) ? success_dst.gsub("@#{ActiveSupport::Inflector::underscore(model.class.name)}.id", model.id.to_s) : success_dst
     else
       flash[:error] = "Error al actualizar el #{model.class.name}: #{model.errors.full_messages_html}"
       render :action => error_render_action
