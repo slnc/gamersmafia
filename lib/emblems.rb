@@ -30,7 +30,7 @@ module Emblems
     :baby => {:title => 'Recién registrado', :index => 25},
   }
   
-  EMBLEMS_TO_REPORT = %w(best_overall karma_fury faith_avalanche most_knowledgeable living_legend funniest profoundest most_informational most_interesting wealthiest bets_master talker best_blogger)
+  EMBLEMS_TO_REPORT = %w(best_overall karma_fury faith_avalanche most_knowledgeable living_legend funniest profoundest most_informational most_interesting wealthiest bets_master talker best_blogger okupa)
   
   EMBLEMS_BY_INDEX = begin
     res = {} 
