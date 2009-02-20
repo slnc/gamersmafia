@@ -1,5 +1,5 @@
 set :application, "Gamersmafia"
-set :repository,  "https://balrog.slnc.net/gamersmafia.git"
+set :repository,  "ssh://slnc@balrog.slnc.net:62331/home/slnc/git/gamersmafia.git"
 set :user, 'slnc'
 set :use_sudo, false
 
