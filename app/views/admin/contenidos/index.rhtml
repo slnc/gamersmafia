@@ -13,13 +13,10 @@
   </ul>
   <% end -%>
   
-  <%mftext('Preguntas en el limbo') do %>
-  <ul class="content-hid">
-  	<% for question in Question.find(:published, :conditions => "created_on < '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'created_on ASC') %>
-    <li><a href="<%=gmurl(question)%>"><%=question.title%></a></li>
-	<% end -%>
-  	</ul>
-  <% end -%>
+<%=mfcontents_basic("Preguntas en el limbo", 
+					Proc.new { Question.find(:published, :conditions => "created_on < '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'questions_category_id, created_on ASC') }, 
+					[],
+					:truncate_at => 28, :faction_favicon => true, :blast => true)%>
 
   <%mftext('Mi nivel de moderación') do %>
   <%= render :partial => '/miembros/publishing_experience', :locals => { :curuser => @user } %>
