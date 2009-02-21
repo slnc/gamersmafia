@@ -84,7 +84,7 @@ module GmSys
       end
     end
     
-    Rake::Task["gm:spawn_worker"].invoke
+    Rake::Task["gm:spawn_worker"].invoke if App.enable_bgjobs?
   end
   
   def self.check_workers_pids
@@ -99,7 +99,7 @@ module GmSys
       end
     end
     
-    Rake::Task["gm:spawn_worker"].invoke if working_workers == 0
+    Rake::Task["gm:spawn_worker"].invoke if App.enable_bgjobs? && working_workers == 0
   end
   
   
