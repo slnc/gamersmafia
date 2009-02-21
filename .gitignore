@@ -1,4 +1,3 @@
-.project
 log
 *.pyc
 public/skins/_core/css/games_sprites.css
@@ -14,3 +13,4 @@ public/javascripts/wseditor.pack.js
 public/skins/arena/style_compressed.css
 public/skins/bazar/style_compressed.css
 public/skins/default/style_compressed.css
+nohup.out

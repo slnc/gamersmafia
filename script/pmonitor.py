@@ -12,7 +12,7 @@ import urllib2
 
 
 # START config
-webapp = 'gamersmafia.com'
+webapp = 'gamersmafia'
 homeurl = 'gamersmafia.com'
 max_mem = 200000 # size in KiB (1024)
 base_dir = "/home/httpd/websites/%s/current" % webapp
@@ -89,8 +89,8 @@ def get_running_mongrels():
 
 def mongrel_is_alive(port):
     req = urllib2.Request('http://127.0.0.1:%i/' % port)
-    req.add_header('User-Agent', '%s Maintenance Script' % webapp)
-    req.add_header('Host', webapp)
+    req.add_header('User-Agent', '%s Maintenance Script' % homeurl)
+    req.add_header('Host', homeurl)
     try:
         r = urllib2.urlopen(req)
     except urllib2.URLError, e:
