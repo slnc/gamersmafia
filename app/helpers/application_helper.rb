@@ -743,7 +743,7 @@ END
   
   def navpathgm20085
     out = '<ul>'
-    firstlevelname = controller.active_sawmode ? controller.active_sawmode.titleize : 'Portada'
+    firstlevelname = "Portada #{controller.portal.code}" # controller.active_sawmode ? controller.active_sawmode.titleize : 'Portada'
     out<< "<li class=\"home\"><a title=\"Ir a portada\" class=\"nav\" href=\"/\"><span>#{firstlevelname}</span></a></li>" 
     if @navpath # TODO oldschool navpath, remove all of 'em
       #return '' if @navpath.size == 1
