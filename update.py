@@ -40,10 +40,10 @@ def compress_js():
     
 
 def send_changelog_email():
-    cur = os.popen('REVISION').read().strip()
+    cur = open('REVISION').read().strip()
     
     if os.path.exists('PREV_REVISION'):
-        prev = os.popen('PREV_REVISION').read().strip()
+        prev = open('PREV_REVISION').read().strip()
         interval = '%s..%s' % (prev, cur)
     else:
         prev = 'N/A'
