@@ -7,8 +7,8 @@ import sys
 import smtplib
 
 # START CONFIG
-wc_path = '/home/httpd/websites/gamersmafia.com/current/update.py'
-wc_path_clean = '/home/httpd/websites/gamersmafia.com/current'
+wc_path = '/home/httpd/websites/gamersmafia/current/update.py'
+wc_path_clean = '/home/httpd/websites/gamersmafia/current'
 # END CONFIG
 
 
@@ -40,31 +40,29 @@ def compress_js():
     
 
 def send_changelog_email():
-    cur = os.popen('REVISION').read().strip()
+    cur = open('REVISION').read().strip()
     
     if os.path.exists('PREV_REVISION'):
-        prev = os.popen('PREV_REVISION').read().strip()
+        prev = open('PREV_REVISION').read().strip()
         interval = '%s..%s' % (prev, cur)
     else:
         prev = 'N/A'
         interval = ''
     
-    log = os.popen('echo -e `git log --pretty=format:"- %%s\n%%b" %s production' % interval).read()
+    log = os.popen('echo -e `git log --pretty=format:"- %%s\\n%%b" %s production`' % interval).read()
 
     # send the email
     fromaddr = 'webmaster@gamersmafia.com'
     toaddrs = 'dharana@gamersmafia.com'
-    
 
-
-    msg = ("Content-Type: text/plain; charset=UTF-8\r\nSubject: GM actualizada a la versión %s\r\nFrom: %s\r\nTo: %s\r\n\r\n%s" % (cur, fromaddr, toaddrs, log.encode('utf-8')))
+    msg = ("Content-Type: text/plain; charset=UTF-8\r\nSubject: GM actualizada a la versión %s\r\nFrom: %s\r\nTo: %s\r\n\r\n%s" % (cur, fromaddr, toaddrs, log))
     server = smtplib.SMTP('mail.gamersmafia.com')
     #server.set_debuglevel(1)
     server.login('nagato.gamersmafia.com', 'megustanlasgalletas')
     server.sendmail(fromaddr, toaddrs, msg)
     server.quit()
     
-    open('%s/PREV_VERSION' % wc_path_clean, 'w').write('%s' % cur)
+    #open('%s/PREV_REVISION' % wc_path_clean, 'w').write('%s' % cur)
 
 def app_update():
 	output_dep = os.popen('rake gm:after_deploy').read()
