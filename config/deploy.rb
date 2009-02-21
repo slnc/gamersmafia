@@ -48,11 +48,11 @@ namespace(:customs) do
   
   task :check_clean_wc, :roles => :app do
     begin
-      latest_release
+      current_path
     rescue # first deployment
     else
       begin
-        run "if [ -d #{latest_release} ]; then cd #{latest_release} && ./check_clean_wc; fi"
+        run "if [ -d #{current_path} ]; then cd #{current_path} && ./check_clean_wc; fi"
       rescue
         puts "\n\tERROR: production has dirty wc!\n\n"
         raise

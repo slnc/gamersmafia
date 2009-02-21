@@ -62,7 +62,7 @@ def send_changelog_email():
     server.sendmail(fromaddr, toaddrs, msg)
     server.quit()
     
-    #open('%s/PREV_REVISION' % wc_path_clean, 'w').write('%s' % cur)
+    open('%s/PREV_REVISION' % wc_path_clean, 'w').write('%s' % cur)
 
 def app_update():
 	output_dep = os.popen('rake gm:after_deploy').read()
