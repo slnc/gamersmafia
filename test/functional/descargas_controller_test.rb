@@ -18,6 +18,7 @@ class DescargasControllerTest < Test::Unit::TestCase
     add_file_to_d1
     d = Download.find(1)
     orig = d.downloaded_times
+    @request.host = "ut.#{App.domain}"
     assert_count_increases(DownloadedDownload) do
       get :download, :id => d.id, :h => 0
       assert_response :success
@@ -38,6 +39,7 @@ class DescargasControllerTest < Test::Unit::TestCase
   def test_download_should_create_cookie_symlink
     # TODO chequear cuando no es local
     add_file_to_d1
+    @request.host = "ut.#{App.domain}"
     d = Download.find(1)
     assert_count_increases(DownloadedDownload) { get :download, :id => d.id, :h => 0 }
     dd = DownloadedDownload.find(:first, :order => 'id DESC', :limit => 1)
