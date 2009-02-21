@@ -328,7 +328,7 @@ Request information:
       items<< ['Mapas', '/admin/mapas_juegos']
     end
     
-    if user.is_superadmin? || user.has_admin_permission?(:bazar_manager)
+    if user.is_superadmin? || user.has_admin_permission?(:bazar_manager) || user.has_admin_permission?(:capo) 
       items<< ['Cat Contenidos', '/admin/categorias']
     end
     

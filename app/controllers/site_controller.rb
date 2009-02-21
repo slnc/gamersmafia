@@ -374,11 +374,13 @@ class SiteController < ApplicationController
   def stats_hipotesis
     require_auth_hq
     @title = "Hipótesis activas"
+    @active_sawmode = 'hq'
   end
   
   def stats_hipotesis_archivo
     require_auth_hq
     @title = "Hipótesis completadas"
+    @active_sawmode = 'hq'
   end
   
   def x
