@@ -180,10 +180,9 @@ having portal_id in (select id
                                         and id IN #{Faction.factions_ids_with_bigbosses}))
              AND sum(karma) = 0)").each do |f|
       # avisamos de que mañana se provocará golpe de estado si no hacen nada
-      [f.boss, f.underboss].each do |uid|
-        puts "f#{f.id} #{f.boss.to_s} #{f.underboss.to_s}"
-        next if uid.nil?
-        Message.create(:user_id_from => mrcheater.id, :user_id_to => uid, :title => 'Peligro: Golpe de estado inminente', :message => "Han pasado 6 días sin generarse ni un comentario o contenido en la facción #{f.name}. Si la situación no cambia hoy perderás el control de la facción.")
+      [f.boss, f.underboss].each do |u|
+        next if u.nil?
+        m = Message.create(:user_id_from => mrcheater.id, :user_id_to => u.id, :title => 'Peligro: Golpe de estado inminente', :message => "Han pasado 6 días sin generarse ni un comentario o contenido en la facción #{f.name}. Si la situación no cambia hoy perderás el control de la facción.")
       end
     end
     
