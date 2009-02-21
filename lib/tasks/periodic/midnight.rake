@@ -9,6 +9,7 @@ namespace :gm do
     #dbi = Stats::Metrics::mdata('NewUsers', s, e)
     #`python script/spark.py metric #{dbi.collect {|dbr| dbr['count'] }.concat([0] * (days - dbi.size)).reverse.join(',')} "#{dst_file}"`
     #return
+
     generate_top_bets_winners_minicolumns
     update_factions_stats # Order is important
     update_general_stats
@@ -18,7 +19,10 @@ namespace :gm do
   end
   
   def reset_remaining_rating_slots
-    User.db_query('UPDATE users SET cache_remaining_rating_slots = NULL WHERE lastseen_on > now() - \'1 day\'::interval')
+# lo hacemos de uno en uno porque si no incurreimos en deadlocks
+    User.db_query("SELECT id FROM users where lastseen_on >= now() - '5 days'::interval").each do |dbr| 
+       User.db_query("UPDATE users SET cache_remaining_rating_slots = NULL WHERE id = #{dbr['id']}")
+    end
   end
   
   def update_factions_cohesion
