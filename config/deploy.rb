@@ -37,7 +37,7 @@ namespace(:customs) do
   end
   
   task :updated_app, :roles => :app do
-    run "cd #{release_path} && ./update.py"
+    run "cd #{release_path} && echo 'production' > mode && ./update.py"
   end
   
   task :setup, :roles => :app do
