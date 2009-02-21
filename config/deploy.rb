@@ -11,9 +11,9 @@ set :scm_command, '/usr/local/hosting/bin/git'
 set :git_enable_submodules, 1
 set :branch, 'production'
 
-role :app, "httpd@gamersmafia.com:62331"
-role :web, "httpd@gamersmafia.com:62331"
-role :db,  "httpd@gamersmafia.com:62331", :primary => true
+role :app, "httpd@kenpachi.gamersmafia.com:62331"
+role :web, "httpd@kenpachi.gamersmafia.com:62331"
+role :db,  "httpd@kenpachi.gamersmafia.com:62331", :primary => true
 
 default_environment['PATH'] = '/bin:/usr/bin:/usr/local/bin:/usr/local/hosting/bin'
 default_environment['SVN_SSH'] = 'ssh -p 62331 -l slnc'
