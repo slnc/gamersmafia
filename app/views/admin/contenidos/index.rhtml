@@ -139,7 +139,7 @@ function mass_deny()
     return false;
 }
 </script>
-<% if @user.is_superadmin or @user.has_admin_permission?(:capo) then %>
+<% if @user.is_superadmin || @user.has_admin_permission?(:capo) || @user.is_editor? || @user.is_sicario? then %>
 <hr />
 <table style="width: 100%" class="accept-or-deny">
   <tr valign="top">
