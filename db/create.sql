@@ -23,13 +23,6 @@ CREATE SCHEMA archive;
 
 
 --
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON SCHEMA public IS 'Standard public schema';
-
-
---
 -- Name: stats; Type: SCHEMA; Schema: -; Owner: -
 --
 
@@ -43,11 +36,3464 @@ CREATE SCHEMA stats;
 CREATE PROCEDURAL LANGUAGE plpgsql;
 
 
+SET search_path = _gamersmafia, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
 --
--- Name: plpythonu; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: -
+-- Name: sl_archive_counter; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
 --
 
-CREATE PROCEDURAL LANGUAGE plpythonu;
+CREATE TABLE sl_archive_counter (
+    ac_num bigint,
+    ac_timestamp timestamp without time zone
+);
+
+
+--
+-- Name: TABLE sl_archive_counter; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_archive_counter IS 'Table used to generate the log shipping archive number.
+';
+
+
+--
+-- Name: COLUMN sl_archive_counter.ac_num; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_archive_counter.ac_num IS 'Counter of SYNC ID used in log shipping as the archive number';
+
+
+--
+-- Name: COLUMN sl_archive_counter.ac_timestamp; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_archive_counter.ac_timestamp IS 'Time at which the archive log was generated on the subscriber';
+
+
+--
+-- Name: sl_config_lock; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_config_lock (
+    dummy integer
+);
+
+
+--
+-- Name: TABLE sl_config_lock; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_config_lock IS 'This table exists solely to prevent overlapping execution of configuration change procedures and the resulting possible deadlocks.
+';
+
+
+--
+-- Name: COLUMN sl_config_lock.dummy; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_config_lock.dummy IS 'No data ever goes in this table so the contents never matter.  Indeed, this column does not really need to exist.';
+
+
+--
+-- Name: sl_confirm; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_confirm (
+    con_origin integer,
+    con_received integer,
+    con_seqno bigint,
+    con_timestamp timestamp without time zone DEFAULT (timeofday())::timestamp without time zone
+);
+
+
+--
+-- Name: TABLE sl_confirm; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_confirm IS 'Holds confirmation of replication events.  After a period of time, Slony removes old confirmed events from both this table and the sl_event table.';
+
+
+--
+-- Name: COLUMN sl_confirm.con_origin; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_confirm.con_origin IS 'The ID # (from sl_node.no_id) of the source node for this event';
+
+
+--
+-- Name: COLUMN sl_confirm.con_seqno; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_confirm.con_seqno IS 'The ID # for the event';
+
+
+--
+-- Name: COLUMN sl_confirm.con_timestamp; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_confirm.con_timestamp IS 'When this event was confirmed';
+
+
+--
+-- Name: sl_listen; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_listen (
+    li_origin integer NOT NULL,
+    li_provider integer NOT NULL,
+    li_receiver integer NOT NULL
+);
+
+
+--
+-- Name: TABLE sl_listen; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_listen IS 'Indicates how nodes listen to events from other nodes in the Slony-I network.';
+
+
+--
+-- Name: COLUMN sl_listen.li_origin; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_listen.li_origin IS 'The ID # (from sl_node.no_id) of the node this listener is operating on';
+
+
+--
+-- Name: COLUMN sl_listen.li_provider; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_listen.li_provider IS 'The ID # (from sl_node.no_id) of the source node for this listening event';
+
+
+--
+-- Name: COLUMN sl_listen.li_receiver; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_listen.li_receiver IS 'The ID # (from sl_node.no_id) of the target node for this listening event';
+
+
+--
+-- Name: sl_node; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_node (
+    no_id integer NOT NULL,
+    no_active boolean,
+    no_comment text,
+    no_spool boolean
+);
+
+
+--
+-- Name: TABLE sl_node; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_node IS 'Holds the list of nodes associated with this namespace.';
+
+
+--
+-- Name: COLUMN sl_node.no_id; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_node.no_id IS 'The unique ID number for the node';
+
+
+--
+-- Name: COLUMN sl_node.no_active; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_node.no_active IS 'Is the node active in replication yet?';
+
+
+--
+-- Name: COLUMN sl_node.no_comment; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_node.no_comment IS 'A human-oriented description of the node';
+
+
+--
+-- Name: COLUMN sl_node.no_spool; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_node.no_spool IS 'Is the node being used for log shipping?';
+
+
+--
+-- Name: sl_nodelock; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_nodelock (
+    nl_nodeid integer NOT NULL,
+    nl_conncnt integer NOT NULL,
+    nl_backendpid integer
+);
+
+
+--
+-- Name: TABLE sl_nodelock; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_nodelock IS 'Used to prevent multiple slon instances and to identify the backends to kill in terminateNodeConnections().';
+
+
+--
+-- Name: COLUMN sl_nodelock.nl_nodeid; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_nodelock.nl_nodeid IS 'Clients node_id';
+
+
+--
+-- Name: COLUMN sl_nodelock.nl_conncnt; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_nodelock.nl_conncnt IS 'Clients connection number';
+
+
+--
+-- Name: COLUMN sl_nodelock.nl_backendpid; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_nodelock.nl_backendpid IS 'PID of database backend owning this lock';
+
+
+--
+-- Name: sl_path; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_path (
+    pa_server integer NOT NULL,
+    pa_client integer NOT NULL,
+    pa_conninfo text NOT NULL,
+    pa_connretry integer
+);
+
+
+--
+-- Name: TABLE sl_path; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_path IS 'Holds connection information for the paths between nodes, and the synchronisation delay';
+
+
+--
+-- Name: COLUMN sl_path.pa_server; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_path.pa_server IS 'The Node ID # (from sl_node.no_id) of the data source';
+
+
+--
+-- Name: COLUMN sl_path.pa_client; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_path.pa_client IS 'The Node ID # (from sl_node.no_id) of the data target';
+
+
+--
+-- Name: COLUMN sl_path.pa_conninfo; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_path.pa_conninfo IS 'The PostgreSQL connection string used to connect to the source node.';
+
+
+--
+-- Name: COLUMN sl_path.pa_connretry; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_path.pa_connretry IS 'The synchronisation delay, in seconds';
+
+
+--
+-- Name: sl_registry; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_registry (
+    reg_key text NOT NULL,
+    reg_int4 integer,
+    reg_text text,
+    reg_timestamp timestamp without time zone
+);
+
+
+--
+-- Name: TABLE sl_registry; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_registry IS 'Stores miscellaneous runtime data';
+
+
+--
+-- Name: COLUMN sl_registry.reg_key; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_registry.reg_key IS 'Unique key of the runtime option';
+
+
+--
+-- Name: COLUMN sl_registry.reg_int4; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_registry.reg_int4 IS 'Option value if type int4';
+
+
+--
+-- Name: COLUMN sl_registry.reg_text; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_registry.reg_text IS 'Option value if type text';
+
+
+--
+-- Name: COLUMN sl_registry.reg_timestamp; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_registry.reg_timestamp IS 'Option value if type timestamp';
+
+
+--
+-- Name: sl_seqlog; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_seqlog (
+    seql_seqid integer,
+    seql_origin integer,
+    seql_ev_seqno bigint,
+    seql_last_value bigint
+);
+
+
+--
+-- Name: TABLE sl_seqlog; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_seqlog IS 'Log of Sequence updates';
+
+
+--
+-- Name: COLUMN sl_seqlog.seql_seqid; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_seqlog.seql_seqid IS 'Sequence ID';
+
+
+--
+-- Name: COLUMN sl_seqlog.seql_origin; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_seqlog.seql_origin IS 'Publisher node at which the sequence originates';
+
+
+--
+-- Name: COLUMN sl_seqlog.seql_ev_seqno; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_seqlog.seql_ev_seqno IS 'Slony-I Event with which this sequence update is associated';
+
+
+--
+-- Name: COLUMN sl_seqlog.seql_last_value; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_seqlog.seql_last_value IS 'Last value published for this sequence';
+
+
+--
+-- Name: sl_sequence; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_sequence (
+    seq_id integer NOT NULL,
+    seq_reloid oid NOT NULL,
+    seq_relname name NOT NULL,
+    seq_nspname name NOT NULL,
+    seq_set integer,
+    seq_comment text
+);
+
+
+--
+-- Name: TABLE sl_sequence; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_sequence IS 'Similar to sl_table, each entry identifies a sequence being replicated.';
+
+
+--
+-- Name: COLUMN sl_sequence.seq_id; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_sequence.seq_id IS 'An internally-used ID for Slony-I to use in its sequencing of updates';
+
+
+--
+-- Name: COLUMN sl_sequence.seq_reloid; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_sequence.seq_reloid IS 'The OID of the sequence object';
+
+
+--
+-- Name: COLUMN sl_sequence.seq_relname; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_sequence.seq_relname IS 'The name of the sdequence in pg_catalog.pg_class.relname used to recover from a dump/restore cycle';
+
+
+--
+-- Name: COLUMN sl_sequence.seq_nspname; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_sequence.seq_nspname IS 'The name of the schema in pg_catalog.pg_namespace.nspname used to recover from a dump/restore cycle';
+
+
+--
+-- Name: COLUMN sl_sequence.seq_set; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_sequence.seq_set IS 'Indicates which replication set the object is in';
+
+
+--
+-- Name: COLUMN sl_sequence.seq_comment; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_sequence.seq_comment IS 'A human-oriented comment';
+
+
+--
+-- Name: sl_subscribe; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_subscribe (
+    sub_set integer NOT NULL,
+    sub_provider integer,
+    sub_receiver integer NOT NULL,
+    sub_forward boolean,
+    sub_active boolean
+);
+
+
+--
+-- Name: TABLE sl_subscribe; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_subscribe IS 'Holds a list of subscriptions on sets';
+
+
+--
+-- Name: COLUMN sl_subscribe.sub_set; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_subscribe.sub_set IS 'ID # (from sl_set) of the set being subscribed to';
+
+
+--
+-- Name: COLUMN sl_subscribe.sub_provider; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_subscribe.sub_provider IS 'ID# (from sl_node) of the node providing data';
+
+
+--
+-- Name: COLUMN sl_subscribe.sub_receiver; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_subscribe.sub_receiver IS 'ID# (from sl_node) of the node receiving data from the provider';
+
+
+--
+-- Name: COLUMN sl_subscribe.sub_forward; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_subscribe.sub_forward IS 'Does this provider keep data in sl_log_1/sl_log_2 to allow it to be a provider for other nodes?';
+
+
+--
+-- Name: COLUMN sl_subscribe.sub_active; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_subscribe.sub_active IS 'Has this subscription been activated?  This is not set on the subscriber until AFTER the subscriber has received COPY data from the provider';
+
+
+--
+-- Name: sl_table; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_table (
+    tab_id integer NOT NULL,
+    tab_reloid oid NOT NULL,
+    tab_relname name NOT NULL,
+    tab_nspname name NOT NULL,
+    tab_set integer,
+    tab_idxname name NOT NULL,
+    tab_altered boolean NOT NULL,
+    tab_comment text
+);
+
+
+--
+-- Name: TABLE sl_table; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_table IS 'Holds information about the tables being replicated.';
+
+
+--
+-- Name: COLUMN sl_table.tab_id; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_table.tab_id IS 'Unique key for Slony-I to use to identify the table';
+
+
+--
+-- Name: COLUMN sl_table.tab_reloid; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_table.tab_reloid IS 'The OID of the table in pg_catalog.pg_class.oid';
+
+
+--
+-- Name: COLUMN sl_table.tab_relname; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_table.tab_relname IS 'The name of the table in pg_catalog.pg_class.relname used to recover from a dump/restore cycle';
+
+
+--
+-- Name: COLUMN sl_table.tab_nspname; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_table.tab_nspname IS 'The name of the schema in pg_catalog.pg_namespace.nspname used to recover from a dump/restore cycle';
+
+
+--
+-- Name: COLUMN sl_table.tab_set; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_table.tab_set IS 'ID of the replication set the table is in';
+
+
+--
+-- Name: COLUMN sl_table.tab_idxname; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_table.tab_idxname IS 'The name of the primary index of the table';
+
+
+--
+-- Name: COLUMN sl_table.tab_altered; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_table.tab_altered IS 'Has the table been modified for replication?';
+
+
+--
+-- Name: COLUMN sl_table.tab_comment; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_table.tab_comment IS 'Human-oriented description of the table';
+
+
+--
+-- Name: sl_trigger; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_trigger (
+    trig_tabid integer NOT NULL,
+    trig_tgname name NOT NULL
+);
+
+
+--
+-- Name: TABLE sl_trigger; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_trigger IS 'Holds information about triggers on tables managed using Slony-I';
+
+
+--
+-- Name: COLUMN sl_trigger.trig_tabid; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_trigger.trig_tabid IS 'Slony-I ID number of table the trigger is on';
+
+
+--
+-- Name: COLUMN sl_trigger.trig_tgname; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_trigger.trig_tgname IS 'Indicates the name of a trigger';
+
+
+SET search_path = archive, pg_catalog;
+
+--
+-- Name: pageviews; Type: TABLE; Schema: archive; Owner: -; Tablespace: 
+--
+
+CREATE TABLE pageviews (
+    id integer NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    ip inet NOT NULL,
+    referer character varying,
+    controller character varying,
+    action character varying,
+    medium character varying,
+    campaign character varying,
+    model_id character varying,
+    url character varying,
+    visitor_id character varying,
+    session_id character varying,
+    user_agent character varying,
+    user_id integer,
+    flash_error character varying,
+    abtest_treatment character varying,
+    portal_id integer,
+    source character varying,
+    ads_shown character varying
+);
+
+
+SET search_path = public, pg_catalog;
+
+SET default_with_oids = true;
+
+--
+-- Name: tracker_items; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE tracker_items (
+    id integer NOT NULL,
+    content_id integer NOT NULL,
+    user_id integer NOT NULL,
+    lastseen_on timestamp without time zone DEFAULT now() NOT NULL,
+    is_tracked boolean DEFAULT false NOT NULL,
+    notification_sent_on timestamp without time zone
+);
+
+
+--
+-- Name: tracker_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE tracker_items_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: tracker_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE tracker_items_id_seq OWNED BY tracker_items.id;
+
+
+SET search_path = archive, pg_catalog;
+
+--
+-- Name: tracker_items; Type: TABLE; Schema: archive; Owner: -; Tablespace: 
+--
+
+CREATE TABLE tracker_items (
+    id integer DEFAULT nextval('public.tracker_items_id_seq'::regclass) NOT NULL,
+    content_id integer NOT NULL,
+    user_id integer NOT NULL,
+    lastseen_on timestamp without time zone DEFAULT now() NOT NULL,
+    is_tracked boolean DEFAULT false NOT NULL,
+    notification_sent_on timestamp without time zone
+);
+
+
+SET default_with_oids = false;
+
+--
+-- Name: treated_visitors; Type: TABLE; Schema: archive; Owner: -; Tablespace: 
+--
+
+CREATE TABLE treated_visitors (
+    id integer NOT NULL,
+    ab_test_id integer NOT NULL,
+    visitor_id character varying NOT NULL,
+    treatment integer NOT NULL,
+    user_id integer
+);
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: ab_tests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE ab_tests_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: ab_tests; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ab_tests (
+    id integer DEFAULT nextval('ab_tests_id_seq'::regclass) NOT NULL,
+    name character varying NOT NULL,
+    treatments integer NOT NULL,
+    finished boolean DEFAULT false NOT NULL,
+    minimum_difference numeric(10,2),
+    metrics character varying,
+    info_url character varying,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    completed_on timestamp without time zone,
+    min_difference numeric(10,2) DEFAULT 0.05 NOT NULL,
+    cache_conversion_rates character varying,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    dirty boolean DEFAULT true NOT NULL,
+    cache_expected_completion_date timestamp without time zone,
+    active boolean DEFAULT true NOT NULL
+);
+
+
+--
+-- Name: ads; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ads (
+    id integer NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    updated_on timestamp without time zone NOT NULL,
+    name character varying NOT NULL,
+    file character varying,
+    link_file character varying,
+    html character varying,
+    advertiser_id integer
+);
+
+
+--
+-- Name: ads_slots; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ads_slots (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    location character varying NOT NULL,
+    behaviour_class character varying NOT NULL,
+    "position" integer DEFAULT 0 NOT NULL,
+    advertiser_id integer,
+    image_dimensions character varying
+);
+
+
+--
+-- Name: ads_slots_instances; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ads_slots_instances (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    ads_slot_id integer NOT NULL,
+    ad_id integer NOT NULL,
+    deleted boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: ads_slots_portals; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ads_slots_portals (
+    id integer NOT NULL,
+    ads_slot_id integer NOT NULL,
+    portal_id integer NOT NULL
+);
+
+
+--
+-- Name: advertisers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE advertisers (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    email character varying NOT NULL,
+    due_on_day smallint NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: allowed_competitions_participants; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE allowed_competitions_participants (
+    id integer NOT NULL,
+    competition_id integer NOT NULL,
+    participant_id integer NOT NULL
+);
+
+
+--
+-- Name: anonymous_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE anonymous_users (
+    id integer NOT NULL,
+    session_id character(32) NOT NULL,
+    lastseen_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: autologin_keys; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE autologin_keys (
+    id integer NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    key character varying(40),
+    user_id integer NOT NULL,
+    lastused_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: avatars; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE avatars (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    level integer DEFAULT (-1) NOT NULL,
+    path character varying,
+    faction_id integer,
+    user_id integer,
+    clan_id integer,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    submitter_user_id integer NOT NULL
+);
+
+
+--
+-- Name: babes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE babes (
+    id integer NOT NULL,
+    date date NOT NULL,
+    image_id integer NOT NULL
+);
+
+
+--
+-- Name: ban_requests; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ban_requests (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    banned_user_id integer NOT NULL,
+    confirming_user_id integer,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    confirmed_on timestamp without time zone,
+    reason character varying NOT NULL,
+    unban_user_id integer,
+    unban_confirming_user_id integer,
+    reason_unban character varying,
+    unban_created_on timestamp without time zone,
+    unban_confirmed_on timestamp without time zone
+);
+
+
+--
+-- Name: bazar_districts; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bazar_districts (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    code character varying NOT NULL,
+    icon character varying
+);
+
+
+--
+-- Name: bets; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bets (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    approved_by_user_id integer,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    title character varying NOT NULL,
+    description character varying,
+    bets_category_id integer NOT NULL,
+    closes_on timestamp without time zone NOT NULL,
+    total_ammount numeric(14,2) DEFAULT 0 NOT NULL,
+    winning_bets_option_id integer,
+    cancelled boolean DEFAULT false NOT NULL,
+    forfeit boolean DEFAULT false NOT NULL,
+    tie boolean DEFAULT false NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: bets_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bets_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    bets_count integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: bets_options; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bets_options (
+    id integer NOT NULL,
+    bet_id integer NOT NULL,
+    name character varying NOT NULL,
+    ammount numeric(14,2)
+);
+
+
+--
+-- Name: bets_tickets; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bets_tickets (
+    id integer NOT NULL,
+    bets_option_id integer NOT NULL,
+    user_id integer NOT NULL,
+    ammount numeric(14,2),
+    created_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: bj_config; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bj_config (
+    bj_config_id integer NOT NULL,
+    hostname text,
+    key text,
+    value text,
+    "cast" text
+);
+
+
+--
+-- Name: bj_job; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bj_job (
+    bj_job_id integer NOT NULL,
+    command text,
+    state text,
+    priority integer,
+    tag text,
+    is_restartable integer,
+    submitter text,
+    runner text,
+    pid integer,
+    submitted_at timestamp without time zone,
+    started_at timestamp without time zone,
+    finished_at timestamp without time zone,
+    env text,
+    stdin text,
+    stdout text,
+    stderr text,
+    exit_status integer
+);
+
+
+--
+-- Name: bj_job_archive; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bj_job_archive (
+    bj_job_archive_id integer NOT NULL,
+    command text,
+    state text,
+    priority integer,
+    tag text,
+    is_restartable integer,
+    submitter text,
+    runner text,
+    pid integer,
+    submitted_at timestamp without time zone,
+    started_at timestamp without time zone,
+    finished_at timestamp without time zone,
+    archived_at timestamp without time zone,
+    env text,
+    stdin text,
+    stdout text,
+    stderr text,
+    exit_status integer
+);
+
+
+--
+-- Name: blogentries; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE blogentries (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    title character varying NOT NULL,
+    main text NOT NULL,
+    user_id integer NOT NULL,
+    log character varying,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    deleted boolean DEFAULT false NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: cash_movements; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE cash_movements (
+    id integer NOT NULL,
+    description character varying NOT NULL,
+    object_id_from integer,
+    object_id_to integer,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    ammount numeric(14,2),
+    object_id_from_class character varying,
+    object_id_to_class character varying
+);
+
+
+SET default_with_oids = true;
+
+--
+-- Name: chatlines; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE chatlines (
+    id integer NOT NULL,
+    line character varying NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    sent_to_irc boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: clans; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE clans (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    tag character varying NOT NULL,
+    simple_mode boolean DEFAULT true NOT NULL,
+    website_external character varying,
+    created_on timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
+    irc_channel character varying,
+    irc_server character varying,
+    o3_websites_dynamicwebsite_id integer,
+    logo character varying,
+    description text,
+    competition_roster character varying,
+    cash numeric(14,2) DEFAULT 0 NOT NULL,
+    deleted boolean DEFAULT false NOT NULL,
+    members_count integer DEFAULT 0 NOT NULL,
+    website_activated boolean DEFAULT false NOT NULL,
+    creator_user_id integer
+);
+
+
+--
+-- Name: clans_friends; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE clans_friends (
+    from_clan_id integer NOT NULL,
+    from_wants boolean DEFAULT false NOT NULL,
+    to_clan_id integer NOT NULL,
+    to_wants boolean DEFAULT false NOT NULL,
+    id integer NOT NULL
+);
+
+
+--
+-- Name: clans_games; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE clans_games (
+    clan_id integer NOT NULL,
+    game_id integer NOT NULL
+);
+
+
+--
+-- Name: clans_groups; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE clans_groups (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    clans_groups_type_id integer NOT NULL,
+    clan_id integer
+);
+
+
+--
+-- Name: clans_groups_types; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE clans_groups_types (
+    id integer NOT NULL,
+    name character varying NOT NULL
+);
+
+
+--
+-- Name: clans_groups_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE clans_groups_users (
+    clans_group_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+SET default_with_oids = false;
+
+--
+-- Name: clans_logs_entries; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE clans_logs_entries (
+    id integer NOT NULL,
+    message character varying,
+    clan_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: clans_movements; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE clans_movements (
+    id integer NOT NULL,
+    clan_id integer NOT NULL,
+    user_id integer,
+    direction smallint NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+SET default_with_oids = true;
+
+--
+-- Name: clans_sponsors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE clans_sponsors (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    clan_id integer NOT NULL,
+    url character varying,
+    image character varying
+);
+
+
+SET default_with_oids = false;
+
+--
+-- Name: columns; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE columns (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    description text NOT NULL,
+    main text NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    approved_by_user_id integer,
+    columns_category_id integer NOT NULL,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    deleted boolean DEFAULT false NOT NULL,
+    home_image character varying,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: columns_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE columns_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    columns_count integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: comments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE comments (
+    id integer NOT NULL,
+    content_id integer NOT NULL,
+    user_id integer NOT NULL,
+    host inet NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    comment text NOT NULL,
+    has_comments_valorations boolean DEFAULT false NOT NULL,
+    portal_id integer,
+    cache_rating character varying,
+    netiquette_violation boolean,
+    lastowner_version character varying,
+    lastedited_by_user_id integer,
+    deleted boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: comments_valorations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE comments_valorations (
+    id integer NOT NULL,
+    comment_id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    comments_valorations_type_id integer NOT NULL,
+    weight real NOT NULL
+);
+
+
+--
+-- Name: comments_valorations_types; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE comments_valorations_types (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    direction smallint NOT NULL
+);
+
+
+--
+-- Name: competitions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    description text,
+    game_id integer NOT NULL,
+    state smallint DEFAULT 0 NOT NULL,
+    rules text,
+    competitions_participants_type_id integer NOT NULL,
+    default_maps_per_match smallint,
+    forced_maps boolean DEFAULT true NOT NULL,
+    random_map_selection_mode smallint,
+    scoring_mode smallint DEFAULT 0 NOT NULL,
+    pro boolean DEFAULT false NOT NULL,
+    cash numeric(14,2) DEFAULT 0 NOT NULL,
+    force_guids boolean DEFAULT false NOT NULL,
+    estimated_end_on timestamp without time zone,
+    timetable_for_matches smallint DEFAULT 0 NOT NULL,
+    timetable_options character varying,
+    fee numeric(14,2),
+    invitational boolean DEFAULT false NOT NULL,
+    competitions_types_options character varying,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    closed_on timestamp without time zone,
+    event_id integer,
+    topics_category_id integer,
+    header_image character varying,
+    type character varying NOT NULL,
+    send_notifications boolean DEFAULT true NOT NULL
+);
+
+
+--
+-- Name: competitions_admins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_admins (
+    competition_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+--
+-- Name: competitions_games_maps; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_games_maps (
+    competition_id integer NOT NULL,
+    games_map_id integer NOT NULL
+);
+
+
+--
+-- Name: competitions_logs_entries; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_logs_entries (
+    id integer NOT NULL,
+    message character varying,
+    competition_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: competitions_matches; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_matches (
+    id integer NOT NULL,
+    competition_id integer NOT NULL,
+    participant1_id integer,
+    participant2_id integer,
+    result smallint,
+    participant1_confirmed_result boolean DEFAULT false NOT NULL,
+    participant2_confirmed_result boolean DEFAULT false NOT NULL,
+    admin_confirmed_result boolean DEFAULT false NOT NULL,
+    stage smallint DEFAULT 0 NOT NULL,
+    maps smallint,
+    score_participant1 integer,
+    score_participant2 integer,
+    accepted boolean DEFAULT true NOT NULL,
+    completed_on timestamp without time zone,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    play_on timestamp without time zone,
+    event_id integer,
+    forfeit_participant1 boolean DEFAULT false NOT NULL,
+    forfeit_participant2 boolean DEFAULT false NOT NULL,
+    servers character varying,
+    ladder_rules character varying,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: competitions_matches_clans_players; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_matches_clans_players (
+    id integer NOT NULL,
+    competitions_match_id integer NOT NULL,
+    competitions_participant_id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: competitions_matches_games_maps; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_matches_games_maps (
+    competitions_match_id integer NOT NULL,
+    games_map_id integer NOT NULL,
+    partial_participant1_score integer,
+    partial_participant2_score integer,
+    id integer NOT NULL
+);
+
+
+--
+-- Name: competitions_matches_reports; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_matches_reports (
+    id integer NOT NULL,
+    competitions_match_id integer NOT NULL,
+    user_id integer NOT NULL,
+    report text NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: competitions_matches_uploads; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_matches_uploads (
+    id integer NOT NULL,
+    competitions_match_id integer NOT NULL,
+    user_id integer NOT NULL,
+    file character varying,
+    description character varying,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: competitions_participants; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_participants (
+    competition_id integer NOT NULL,
+    participant_id integer NOT NULL,
+    competitions_participants_type_id smallint NOT NULL,
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    wins integer DEFAULT 0 NOT NULL,
+    losses integer DEFAULT 0 NOT NULL,
+    ties integer DEFAULT 0 NOT NULL,
+    roster character varying,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    points integer,
+    "position" integer DEFAULT (random() * (100000)::double precision) NOT NULL
+);
+
+
+--
+-- Name: competitions_participants_types; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_participants_types (
+    id integer NOT NULL,
+    name character varying NOT NULL
+);
+
+
+--
+-- Name: competitions_sponsors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_sponsors (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    competition_id integer NOT NULL,
+    url character varying,
+    image character varying
+);
+
+
+--
+-- Name: competitions_supervisors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_supervisors (
+    competition_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+--
+-- Name: content_ratings; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE content_ratings (
+    id integer NOT NULL,
+    user_id integer,
+    ip inet NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    content_id integer NOT NULL,
+    rating smallint NOT NULL
+);
+
+
+--
+-- Name: content_types; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE content_types (
+    id integer NOT NULL,
+    name character varying NOT NULL
+);
+
+
+--
+-- Name: contents; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE contents (
+    id integer NOT NULL,
+    content_type_id integer NOT NULL,
+    external_id integer NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    name character varying NOT NULL,
+    comments_count integer DEFAULT 0 NOT NULL,
+    is_public boolean DEFAULT false NOT NULL,
+    game_id integer,
+    state smallint DEFAULT 0 NOT NULL,
+    clan_id integer,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    platform_id integer,
+    url character varying,
+    user_id integer NOT NULL,
+    portal_id integer,
+    bazar_district_id integer
+);
+
+
+--
+-- Name: contents_locks; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE contents_locks (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    content_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+--
+-- Name: contents_recommendations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE contents_recommendations (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    sender_user_id integer NOT NULL,
+    receiver_user_id integer NOT NULL,
+    content_id integer NOT NULL,
+    seen_on timestamp without time zone,
+    marked_as_bad boolean DEFAULT false NOT NULL,
+    confidence double precision,
+    expected_rating smallint,
+    comment character varying
+);
+
+
+--
+-- Name: contents_versions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE contents_versions (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    content_id integer NOT NULL,
+    data text
+);
+
+
+--
+-- Name: countries; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE countries (
+    id integer NOT NULL,
+    code character varying,
+    name character varying
+);
+
+
+--
+-- Name: coverages; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE coverages (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    approved_by_user_id integer,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    description text NOT NULL,
+    main text,
+    event_id integer NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: demo_mirrors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE demo_mirrors (
+    id integer NOT NULL,
+    demo_id integer NOT NULL,
+    url character varying NOT NULL
+);
+
+
+--
+-- Name: demos; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE demos (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    approved_by_user_id integer,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    deleted boolean DEFAULT false NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    title character varying NOT NULL,
+    description character varying,
+    demos_category_id integer NOT NULL,
+    entity1_local_id integer,
+    entity2_local_id integer,
+    entity1_external character varying,
+    entity2_external character varying,
+    games_map_id integer,
+    event_id integer,
+    pov_type smallint,
+    pov_entity smallint,
+    file character varying,
+    file_hash_md5 character varying,
+    downloaded_times integer DEFAULT 0 NOT NULL,
+    file_size bigint,
+    games_mode_id integer,
+    games_version_id integer,
+    demotype smallint,
+    played_on date,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: demos_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE demos_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    demos_count integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: download_mirrors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE download_mirrors (
+    id integer NOT NULL,
+    download_id integer NOT NULL,
+    url character varying NOT NULL
+);
+
+
+--
+-- Name: downloaded_downloads; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE downloaded_downloads (
+    id integer NOT NULL,
+    download_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    ip inet NOT NULL,
+    session_id character varying,
+    referer character varying,
+    user_id integer,
+    download_cookie character varying(32)
+);
+
+
+--
+-- Name: downloads; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE downloads (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    description text,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    approved_by_user_id integer,
+    downloads_category_id integer NOT NULL,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    file character varying,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    essential boolean DEFAULT false NOT NULL,
+    downloaded_times integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    file_hash_md5 character(32),
+    clan_id integer,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: downloads_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE downloads_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    description character varying,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    root_id integer,
+    code character varying,
+    downloads_count integer DEFAULT 0 NOT NULL,
+    last_updated_item_id integer,
+    clan_id integer
+);
+
+
+--
+-- Name: dudes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE dudes (
+    id integer NOT NULL,
+    date date NOT NULL,
+    image_id integer NOT NULL
+);
+
+
+--
+-- Name: events; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE events (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    description text,
+    events_category_id integer NOT NULL,
+    starts_on timestamp without time zone NOT NULL,
+    ends_on timestamp without time zone NOT NULL,
+    website character varying,
+    parent_id integer,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    user_id integer NOT NULL,
+    approved_by_user_id integer,
+    deleted boolean DEFAULT false NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    clan_id integer,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: events_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE events_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    events_count integer DEFAULT 0 NOT NULL,
+    clan_id integer
+);
+
+
+--
+-- Name: events_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE events_users (
+    event_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+--
+-- Name: f; Type: VIEW; Schema: public; Owner: -
+--
+
+CREATE VIEW f AS
+    SELECT count(comments.id) AS count FROM comments GROUP BY date_trunc('day'::text, comments.created_on) ORDER BY date_trunc('day'::text, comments.created_on) DESC OFFSET 1 LIMIT 360;
+
+
+--
+-- Name: factions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE factions (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    boss_user_id integer,
+    underboss_user_id integer,
+    building_bottom character varying,
+    building_top character varying,
+    building_middle character varying,
+    description character varying,
+    why_join character varying,
+    code character varying,
+    members_count integer DEFAULT 0 NOT NULL,
+    cash numeric(14,2) DEFAULT 0 NOT NULL,
+    is_platform boolean DEFAULT false NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    cache_member_cohesion numeric
+);
+
+
+--
+-- Name: factions_banned_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE factions_banned_users (
+    id integer NOT NULL,
+    faction_id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    reason character varying,
+    banner_user_id integer NOT NULL
+);
+
+
+--
+-- Name: factions_capos; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE factions_capos (
+    id integer NOT NULL,
+    faction_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+--
+-- Name: factions_editors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE factions_editors (
+    id integer NOT NULL,
+    faction_id integer NOT NULL,
+    user_id integer NOT NULL,
+    content_type_id integer NOT NULL
+);
+
+
+--
+-- Name: factions_headers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE factions_headers (
+    id integer NOT NULL,
+    faction_id integer NOT NULL,
+    name character varying NOT NULL,
+    lasttime_used_on timestamp without time zone
+);
+
+
+--
+-- Name: factions_links; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE factions_links (
+    id integer NOT NULL,
+    faction_id integer NOT NULL,
+    name character varying NOT NULL,
+    url character varying NOT NULL,
+    image character varying
+);
+
+
+--
+-- Name: factions_portals; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE factions_portals (
+    faction_id integer NOT NULL,
+    portal_id integer NOT NULL
+);
+
+
+SET default_with_oids = true;
+
+--
+-- Name: faq_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE faq_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    "position" integer,
+    parent_id integer,
+    root_id integer
+);
+
+
+--
+-- Name: faq_entries; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE faq_entries (
+    id integer NOT NULL,
+    question character varying NOT NULL,
+    answer character varying NOT NULL,
+    faq_category_id integer NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    "position" integer
+);
+
+
+SET default_with_oids = false;
+
+--
+-- Name: friends_recommendations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE friends_recommendations (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    recommended_user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone,
+    added_as_friend boolean,
+    reason character varying
+);
+
+
+SET default_with_oids = true;
+
+--
+-- Name: friendships; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE friendships (
+    sender_user_id integer NOT NULL,
+    receiver_user_id integer,
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    accepted_on timestamp without time zone,
+    receiver_email character varying,
+    invitation_text character varying,
+    external_invitation_key character(32)
+);
+
+
+SET default_with_oids = false;
+
+--
+-- Name: funthings; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE funthings (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    description character varying,
+    main character varying,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    approved_by_user_id integer,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+SET default_with_oids = true;
+
+--
+-- Name: games; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE games (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    code character varying NOT NULL,
+    has_guids boolean DEFAULT false NOT NULL,
+    guid_format character varying
+);
+
+
+SET default_with_oids = false;
+
+--
+-- Name: games_maps; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE games_maps (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    game_id integer NOT NULL,
+    download_id integer,
+    screenshot character varying
+);
+
+
+--
+-- Name: games_modes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE games_modes (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    game_id integer NOT NULL,
+    entity_type smallint
+);
+
+
+--
+-- Name: games_platforms; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE games_platforms (
+    game_id integer NOT NULL,
+    platform_id integer NOT NULL
+);
+
+
+--
+-- Name: games_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE games_users (
+    game_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+--
+-- Name: games_versions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE games_versions (
+    id integer NOT NULL,
+    version character varying NOT NULL,
+    game_id integer NOT NULL
+);
+
+
+--
+-- Name: global_notifications; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE global_notifications (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    completed_on timestamp without time zone,
+    recipient_type character varying,
+    title character varying,
+    main character varying,
+    confirmed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: global_vars; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE global_vars (
+    id integer NOT NULL,
+    online_anonymous integer DEFAULT 0 NOT NULL,
+    online_registered integer DEFAULT 0 NOT NULL,
+    svn_revision integer,
+    ads_slots_updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    gmtv_channels_updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    pending_contents integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: gmtv_broadcast_messages; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE gmtv_broadcast_messages (
+    id integer NOT NULL,
+    message character varying NOT NULL,
+    starts_on timestamp without time zone DEFAULT now() NOT NULL,
+    ends_on timestamp without time zone DEFAULT (now() + '00:03:00'::interval) NOT NULL
+);
+
+
+--
+-- Name: gmtv_channels; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE gmtv_channels (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    faction_id integer,
+    file character varying,
+    screenshot character varying
+);
+
+
+--
+-- Name: groups; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE groups (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    description character varying,
+    owner_user_id integer
+);
+
+
+--
+-- Name: images; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE images (
+    id integer NOT NULL,
+    description character varying,
+    file character varying,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    approved_by_user_id integer,
+    images_category_id integer NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    file_hash_md5 character(32),
+    clan_id integer,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: images_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE images_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    images_count integer DEFAULT 0 NOT NULL,
+    clan_id integer
+);
+
+
+--
+-- Name: interviews; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE interviews (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    description text NOT NULL,
+    main text NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    approved_by_user_id integer,
+    interviews_category_id integer NOT NULL,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    home_image character varying,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: interviews_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE interviews_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    interviews_count integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: ip_bans; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ip_bans (
+    id integer NOT NULL,
+    ip inet NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    expires_on timestamp without time zone,
+    comment character varying,
+    user_id integer
+);
+
+
+--
+-- Name: ip_passwords_resets_requests; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ip_passwords_resets_requests (
+    id integer NOT NULL,
+    ip inet NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: macropolls; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE macropolls (
+    poll_id integer NOT NULL,
+    user_id integer,
+    answers text,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    ipaddr inet DEFAULT '0.0.0.0'::inet NOT NULL,
+    host character varying
+);
+
+
+--
+-- Name: macropolls_2007_1; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE macropolls_2007_1 (
+    id integer NOT NULL,
+    lacantidaddecontenidosquesepublicanenlawebteparece character varying,
+    __sabesquepuedesenviarcontenidos_ character varying,
+    __sabesquepuedesdecidirsiuncontenidosepublicaono_ character varying,
+    __echasenfaltafuncionesimportantesenlaweb_ character varying,
+    __estassuscritoafeedsrss_ character varying,
+    participasencompeticiones_clanbase character varying,
+    __tegustaelmanga_anime_ character varying,
+    larapidezdecargadelaspaginasteparece character varying,
+    lasecciondeforosteparece character varying,
+    tesientesidentificadoconlaweb character varying,
+    prefeririasnovermasqueloscontenidosdetujuego character varying,
+    __quecreesquedeberiamosmejorardeformamasurgenteenlaweb_ character varying,
+    ellogodelawebtegusta character varying,
+    __estasenalgunclan_ character varying,
+    eldisenodelawebteparece character varying,
+    elnumerodefuncionesdelawebteparece_bis_ character varying,
+    laactituddelosadministradores_bossesymoderadoresdelawebteparece character varying,
+    __tienesalgunavideoconsola_ character varying,
+    siofreciesemosdenuevoelsistemadewebsparaclanes___creesquetuclan character varying,
+    sipudiesesleregalariasalwebmasterunbilletea character varying,
+    elambienteenloscomentarioses character varying,
+    elnumerodefuncionesdelawebteparece character varying,
+    seguneltiempoquelededicasalosjuegosteconsiderasunjugador character varying,
+    lacantidaddepublicidadqueapareceenlawebteparece character varying,
+    lalabordelosadministradores_bossesymoderadoresdelawebteparece character varying,
+    __sabesquepuedescreartuspropiascompeticionesoparticiparencompet character varying,
+    lascabecerasteparecen character varying,
+    tuopiniongeneralsobrelawebes character varying,
+    razonprincipalporlaquevisitaslaweb character varying,
+    lacalidaddeloscontenidosteparece character varying,
+    lasecciondebabes_dudestegusta character varying,
+    __quetendriaquetenerlawebparaquefueseperfectaparati_ character varying,
+    __deentrelaswebsdejuegosquevisitasfrecuentementedondenossituari character varying,
+    user_id integer,
+    created_on character varying NOT NULL,
+    ipaddr inet NOT NULL,
+    host character varying
+);
+
+
+SET default_with_oids = true;
+
+--
+-- Name: messages; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE messages (
+    id integer NOT NULL,
+    user_id_from integer NOT NULL,
+    user_id_to integer NOT NULL,
+    title character varying NOT NULL,
+    message text NOT NULL,
+    created_on timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
+    is_read boolean DEFAULT false NOT NULL,
+    in_reply_to integer,
+    has_replies boolean DEFAULT false NOT NULL,
+    message_type smallint DEFAULT 0 NOT NULL,
+    sender_deleted boolean DEFAULT false NOT NULL,
+    receiver_deleted boolean DEFAULT false NOT NULL,
+    thread_id integer
+);
+
+
+SET default_with_oids = false;
+
+--
+-- Name: news; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE news (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    title character varying NOT NULL,
+    description text NOT NULL,
+    main text,
+    approved_by_user_id integer,
+    news_category_id integer NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    clan_id integer,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: news_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE news_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    news_count integer DEFAULT 0 NOT NULL,
+    clan_id integer,
+    file character varying
+);
+
+
+--
+-- Name: outstanding_entities; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE outstanding_entities (
+    id integer NOT NULL,
+    entity_id integer NOT NULL,
+    portal_id integer,
+    active_on date NOT NULL,
+    type character varying NOT NULL,
+    reason character varying
+);
+
+
+--
+-- Name: platforms; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE platforms (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    code character varying NOT NULL
+);
+
+
+--
+-- Name: polls; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE polls (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    approved_by_user_id integer,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    starts_on timestamp without time zone NOT NULL,
+    ends_on timestamp without time zone NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    polls_category_id integer NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    clan_id integer,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: polls_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE polls_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    description character varying,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    root_id integer,
+    code character varying,
+    polls_count integer DEFAULT 0 NOT NULL,
+    last_updated_item_id integer,
+    clan_id integer
+);
+
+
+--
+-- Name: polls_options; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE polls_options (
+    id integer NOT NULL,
+    poll_id integer NOT NULL,
+    name character varying NOT NULL,
+    polls_votes_count integer DEFAULT 0 NOT NULL,
+    "position" integer
+);
+
+
+--
+-- Name: polls_votes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE polls_votes (
+    polls_option_id integer NOT NULL,
+    user_id integer,
+    id integer NOT NULL,
+    remote_ip inet NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: portal_headers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE portal_headers (
+    id integer NOT NULL,
+    date timestamp without time zone NOT NULL,
+    factions_header_id integer NOT NULL,
+    portal_id integer NOT NULL
+);
+
+
+--
+-- Name: portal_hits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE portal_hits (
+    portal_id integer,
+    date date DEFAULT (now())::date NOT NULL,
+    hits integer DEFAULT 0 NOT NULL,
+    id integer NOT NULL
+);
+
+
+--
+-- Name: portals; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE portals (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    code character varying NOT NULL,
+    type character varying DEFAULT 'FactionsPortal'::character varying NOT NULL,
+    fqdn character varying,
+    options character varying,
+    clan_id integer,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    skin_id integer,
+    default_gmtv_channel_id integer,
+    cache_recent_hits_count integer,
+    factions_portal_home character varying
+);
+
+
+--
+-- Name: portals_skins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE portals_skins (
+    portal_id integer NOT NULL,
+    skin_id integer NOT NULL
+);
+
+
+--
+-- Name: potds; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE potds (
+    id integer NOT NULL,
+    date date NOT NULL,
+    image_id integer NOT NULL,
+    portal_id integer,
+    images_category_id integer
+);
+
+
+--
+-- Name: products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE products (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    price numeric(14,2) NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    description character varying,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    cls character varying NOT NULL
+);
+
+
+--
+-- Name: profile_signatures; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE profile_signatures (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    signer_user_id integer NOT NULL,
+    signature character varying NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: publishing_decisions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE publishing_decisions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    content_id integer NOT NULL,
+    publish boolean NOT NULL,
+    user_weight numeric NOT NULL,
+    deny_reason character varying,
+    is_right boolean,
+    accept_comment character varying
+);
+
+
+--
+-- Name: publishing_personalities; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE publishing_personalities (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    content_type_id integer NOT NULL,
+    experience numeric DEFAULT 0.0
+);
+
+
+--
+-- Name: questions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE questions (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    questions_category_id integer NOT NULL,
+    description text,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    accepted_answer_comment_id integer,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    approved_by_user_id integer,
+    ammount numeric(10,2),
+    answered_on timestamp without time zone,
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: questions_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE questions_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    forum_category_id integer,
+    questions_count integer DEFAULT 0 NOT NULL,
+    updated_on timestamp without time zone,
+    parent_id integer,
+    description character varying,
+    root_id integer,
+    code character varying,
+    last_question_id integer,
+    comments_count integer DEFAULT 0,
+    last_updated_item_id integer,
+    avg_popularity double precision,
+    clan_id integer,
+    nohome boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: recruitment_ads; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE recruitment_ads (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    clan_id integer,
+    game_id integer NOT NULL,
+    levels character varying,
+    country_id integer,
+    message character varying,
+    deleted boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: refered_hits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE refered_hits (
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    ipaddr inet NOT NULL,
+    referer character varying NOT NULL,
+    id integer NOT NULL
+);
+
+
+--
+-- Name: reviews; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE reviews (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    description text NOT NULL,
+    main text NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    approved_by_user_id integer,
+    reviews_category_id integer NOT NULL,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    home_image character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: reviews_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE reviews_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    reviews_count integer DEFAULT 0 NOT NULL
+);
+
+
+SET search_path = _gamersmafia, pg_catalog;
+
+--
+-- Name: sl_rowid_seq; Type: SEQUENCE; Schema: _gamersmafia; Owner: -
+--
+
+CREATE SEQUENCE sl_rowid_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: SEQUENCE sl_rowid_seq; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON SEQUENCE sl_rowid_seq IS 'Application tables that do not have a natural primary key must be modified and an int8 column added that serves as a rowid for us.  The values are assigned with a default from this sequence.';
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: schema_info; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE schema_info (
+    version integer NOT NULL,
+    "_Slony-I_gamersmafia_rowID" bigint DEFAULT nextval('_gamersmafia.sl_rowid_seq'::regclass) NOT NULL
+);
+
+
+--
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE schema_migrations (
+    version character varying
+);
+
+
+--
+-- Name: sent_emails; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sent_emails (
+    id integer NOT NULL,
+    message_key character varying NOT NULL,
+    title character varying,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    first_read_on timestamp without time zone,
+    sender character varying,
+    recipient character varying,
+    recipient_user_id integer,
+    global_notification_id integer
+);
+
+
+--
+-- Name: silenced_emails; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE silenced_emails (
+    id integer NOT NULL,
+    email character varying NOT NULL
+);
+
+
+--
+-- Name: skin_textures; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE skin_textures (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    skin_id integer NOT NULL,
+    texture_id integer NOT NULL,
+    textured_element_position integer NOT NULL,
+    texture_skin_position integer NOT NULL,
+    user_config character varying,
+    element character varying NOT NULL
+);
+
+
+--
+-- Name: skins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE skins (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    hid character varying NOT NULL,
+    user_id integer NOT NULL,
+    is_public boolean DEFAULT false NOT NULL,
+    type character varying NOT NULL,
+    file character varying,
+    version integer DEFAULT 0 NOT NULL,
+    intelliskin_header character varying,
+    intelliskin_favicon character varying
+);
+
+
+--
+-- Name: slog_entries; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE slog_entries (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    type_id integer NOT NULL,
+    info character varying NOT NULL,
+    headline character varying NOT NULL,
+    request text,
+    reporter_user_id integer,
+    reviewer_user_id integer,
+    short_version character varying,
+    long_version character varying,
+    completed_on timestamp without time zone,
+    scope integer
+);
+
+
+--
+-- Name: slog_visits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE slog_visits (
+    user_id integer NOT NULL,
+    lastvisit_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+--
+-- Name: sold_products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sold_products (
+    id integer NOT NULL,
+    product_id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    price_paid numeric(14,2) NOT NULL,
+    used boolean DEFAULT false NOT NULL,
+    type character varying
+);
+
+
+--
+-- Name: textures; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE textures (
+    id integer NOT NULL,
+    name character varying,
+    generator character varying NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    valid_element_selectors character varying
+);
+
+
+--
+-- Name: topics; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE topics (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    topics_category_id integer NOT NULL,
+    main text NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    closed boolean DEFAULT false NOT NULL,
+    sticky boolean DEFAULT false NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    moved_on timestamp without time zone,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    clan_id integer,
+    cache_weighted_rank numeric(10,2)
+);
+
+
+--
+-- Name: topics_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE topics_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    forum_category_id integer,
+    topics_count integer DEFAULT 0 NOT NULL,
+    updated_on timestamp without time zone,
+    parent_id integer,
+    description character varying,
+    root_id integer,
+    code character varying,
+    last_topic_id integer,
+    comments_count integer DEFAULT 0,
+    last_updated_item_id integer,
+    avg_popularity double precision,
+    clan_id integer,
+    nohome boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: treated_visitors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE treated_visitors_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: treated_visitors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE treated_visitors (
+    id integer DEFAULT nextval('treated_visitors_id_seq'::regclass) NOT NULL,
+    ab_test_id integer NOT NULL,
+    visitor_id character varying NOT NULL,
+    treatment integer NOT NULL,
+    user_id integer
+);
+
+
+--
+-- Name: tutorials; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE tutorials (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    description text NOT NULL,
+    main text NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    approved_by_user_id integer,
+    tutorials_category_id integer NOT NULL,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    home_image character varying,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL
+);
+
+
+--
+-- Name: tutorials_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE tutorials_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    tutorials_count integer DEFAULT 0
+);
+
+
+--
+-- Name: user_login_changes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE user_login_changes (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    old_login character varying NOT NULL
+);
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE users (
+    id integer NOT NULL,
+    login character varying(80),
+    password character varying(40),
+    validkey character varying(40),
+    email character varying(100) DEFAULT ''::character varying NOT NULL,
+    newemail character varying(100),
+    ipaddr character varying(15) DEFAULT ''::character varying,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_at timestamp without time zone DEFAULT now() NOT NULL,
+    firstname character varying DEFAULT ''::character varying,
+    lastname character varying DEFAULT ''::character varying,
+    image bytea,
+    lastseen_on timestamp without time zone DEFAULT now() NOT NULL,
+    faction_id integer,
+    faction_last_changed_on timestamp without time zone,
+    avatar_id integer,
+    city character varying,
+    homepage character varying,
+    sex smallint,
+    msn character varying,
+    icq character varying,
+    send_global_announces boolean DEFAULT true NOT NULL,
+    birthday date,
+    cache_karma_points integer,
+    irc character varying,
+    country_id integer,
+    photo character varying,
+    hw_mouse character varying,
+    hw_processor character varying,
+    hw_motherboard character varying,
+    hw_ram character varying,
+    hw_hdd character varying,
+    hw_graphiccard character varying,
+    hw_soundcard character varying,
+    hw_headphones character varying,
+    hw_monitor character varying,
+    hw_connection character varying,
+    description text,
+    is_superadmin boolean DEFAULT false NOT NULL,
+    comments_count integer DEFAULT 0 NOT NULL,
+    referer_user_id integer,
+    cache_faith_points integer,
+    notifications_global boolean DEFAULT true NOT NULL,
+    notifications_newmessages boolean DEFAULT true NOT NULL,
+    notifications_newregistrations boolean DEFAULT true NOT NULL,
+    notifications_trackerupdates boolean DEFAULT true NOT NULL,
+    xfire character varying,
+    cache_unread_messages integer DEFAULT 0,
+    resurrected_by_user_id integer,
+    resurrection_started_on timestamp without time zone,
+    using_tracker boolean DEFAULT false NOT NULL,
+    secret character(32),
+    cash numeric(14,2) DEFAULT 0.00 NOT NULL,
+    lastcommented_on timestamp without time zone,
+    global_bans integer DEFAULT 0 NOT NULL,
+    last_clan_id integer,
+    antiflood_level smallint DEFAULT (-1) NOT NULL,
+    last_competition_id integer,
+    competition_roster character varying,
+    enable_competition_indicator boolean DEFAULT false NOT NULL,
+    is_hq boolean DEFAULT false NOT NULL,
+    enable_profile_signatures boolean DEFAULT false NOT NULL,
+    profile_signatures_count integer DEFAULT 0 NOT NULL,
+    wii_code character(16),
+    email_public boolean DEFAULT false NOT NULL,
+    gamertag character varying,
+    googletalk character varying,
+    yahoo_im character varying,
+    notifications_newprofilesignature boolean DEFAULT true NOT NULL,
+    tracker_autodelete_old_contents boolean DEFAULT true NOT NULL,
+    comment_adds_to_tracker_enabled boolean DEFAULT true NOT NULL,
+    cache_remaining_rating_slots integer,
+    has_seen_tour boolean DEFAULT false NOT NULL,
+    is_bot boolean DEFAULT false NOT NULL,
+    admin_permissions character varying DEFAULT '00000'::bpchar NOT NULL,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_is_faction_leader boolean DEFAULT false NOT NULL,
+    profile_last_updated_on timestamp without time zone,
+    visitor_id character varying,
+    comments_valorations_type_id integer,
+    comments_valorations_strength numeric(10,2),
+    enable_comments_sig boolean DEFAULT false NOT NULL,
+    comments_sig character varying,
+    comment_show_sigs boolean,
+    has_new_friend_requests boolean DEFAULT false NOT NULL,
+    default_portal character varying,
+    emblems_mask character varying,
+    random_id double precision DEFAULT random(),
+    is_staff boolean DEFAULT false NOT NULL,
+    pending_slog integer DEFAULT 0 NOT NULL
+);
+
+
+--
+-- Name: users_actions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE users_actions (
+    id integer NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    user_id integer,
+    type_id integer NOT NULL,
+    data character varying,
+    object_id integer
+);
+
+
+--
+-- Name: users_emblems; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE users_emblems (
+    id integer NOT NULL,
+    created_on date DEFAULT (now())::date NOT NULL,
+    user_id integer,
+    emblem character varying NOT NULL,
+    details character varying
+);
+
+
+--
+-- Name: users_guids; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE users_guids (
+    id integer NOT NULL,
+    guid character varying NOT NULL,
+    game_id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    reason character varying
+);
+
+
+--
+-- Name: users_lastseen_ips; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE users_lastseen_ips (
+    id integer NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    lastseen_on timestamp without time zone NOT NULL,
+    user_id integer NOT NULL,
+    ip inet NOT NULL
+);
+
+
+--
+-- Name: users_newsfeeds; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE users_newsfeeds (
+    id integer NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    user_id integer,
+    summary character varying NOT NULL,
+    users_action_id integer
+);
+
+
+--
+-- Name: users_preferences; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE users_preferences (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    name character varying NOT NULL,
+    value character varying
+);
+
+
+--
+-- Name: users_roles; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE users_roles (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    role character varying NOT NULL,
+    role_data character varying,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+SET search_path = stats, pg_catalog;
+
+--
+-- Name: ads; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ads (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    referer character varying,
+    user_id integer,
+    user_agent character varying,
+    portal_id integer,
+    url character varying NOT NULL,
+    element_id character varying,
+    ip inet NOT NULL,
+    visitor_id character varying,
+    session_id character varying
+);
+
+
+--
+-- Name: ads_daily; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ads_daily (
+    id integer NOT NULL,
+    ads_slots_instance_id integer,
+    created_on date NOT NULL,
+    hits integer NOT NULL,
+    ctr double precision NOT NULL,
+    pageviews integer NOT NULL
+);
+
+
+--
+-- Name: bandit_treatments; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bandit_treatments (
+    id integer NOT NULL,
+    behaviour_class character varying NOT NULL,
+    abtest_treatment character varying NOT NULL,
+    round integer DEFAULT (-1) NOT NULL,
+    lever0_reward character varying,
+    lever1_reward character varying,
+    lever2_reward character varying,
+    lever3_reward character varying,
+    lever4_reward character varying,
+    lever5_reward character varying,
+    lever6_reward character varying,
+    lever7_reward character varying,
+    lever8_reward character varying,
+    lever9_reward character varying,
+    lever10_reward character varying,
+    lever11_reward character varying,
+    lever12_reward character varying,
+    lever13_reward character varying,
+    lever14_reward character varying,
+    lever15_reward character varying,
+    lever16_reward character varying,
+    lever17_reward character varying,
+    lever18_reward character varying,
+    lever19_reward character varying,
+    lever20_reward character varying
+);
+
+
+--
+-- Name: bets_results; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE bets_results (
+    id integer NOT NULL,
+    bet_id integer NOT NULL,
+    user_id integer NOT NULL,
+    net_ammount numeric(10,2)
+);
+
+
+--
+-- Name: dates; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE dates (
+    date date NOT NULL
+);
+
+
+--
+-- Name: general; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE general (
+    created_on date DEFAULT (now())::date NOT NULL,
+    users_total integer DEFAULT 0 NOT NULL,
+    users_confirmed integer DEFAULT 0 NOT NULL,
+    users_active integer DEFAULT 0 NOT NULL,
+    users_banned integer DEFAULT 0 NOT NULL,
+    users_disabled integer DEFAULT 0 NOT NULL,
+    karma_diff integer DEFAULT 0.0 NOT NULL,
+    faith_diff integer DEFAULT 0 NOT NULL,
+    cash_diff numeric(10,4) DEFAULT 0 NOT NULL,
+    new_comments integer DEFAULT 0 NOT NULL,
+    refered_hits integer DEFAULT 0 NOT NULL,
+    avg_users_online double precision DEFAULT 0 NOT NULL,
+    users_unconfirmed integer DEFAULT 0 NOT NULL,
+    users_zombie integer DEFAULT 0 NOT NULL,
+    users_resurrected integer DEFAULT 0 NOT NULL,
+    users_shadow integer DEFAULT 0 NOT NULL,
+    users_deleted integer DEFAULT 0 NOT NULL,
+    users_unconfirmed_1w integer DEFAULT 0 NOT NULL,
+    users_unconfirmed_2w integer DEFAULT 0 NOT NULL,
+    new_clans integer,
+    new_closed_topics integer,
+    new_clans_portals integer,
+    avg_page_render_time real,
+    users_generating_karma integer,
+    karma_per_user real,
+    stddev_page_render_time real,
+    active_factions_portals integer,
+    completed_competitions_matches integer,
+    active_clans_portals integer,
+    proxy_errors integer,
+    new_factions integer,
+    http_401 integer,
+    http_500 integer,
+    http_404 integer,
+    avg_db_queries_per_request double precision,
+    stddev_db_queries_per_request double precision,
+    requests integer,
+    database_size bigint,
+    sent_emails integer,
+    downloaded_downloads_count integer
+);
+
+
+--
+-- Name: pageloadtime; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE pageloadtime (
+    controller character varying,
+    action character varying,
+    "time" numeric(10,2),
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    id integer NOT NULL,
+    portal_id integer,
+    http_status integer,
+    db_queries integer,
+    db_rows integer
+);
+
+
+--
+-- Name: pageviews; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE pageviews (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    ip inet NOT NULL,
+    referer character varying,
+    controller character varying,
+    action character varying,
+    medium character varying,
+    campaign character varying,
+    model_id character varying,
+    url character varying,
+    visitor_id character varying,
+    session_id character varying,
+    user_agent character varying,
+    user_id integer,
+    flash_error character varying,
+    abtest_treatment character varying,
+    portal_id integer,
+    source character varying,
+    ads_shown character varying
+);
+
+
+--
+-- Name: portals; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE portals (
+    id integer NOT NULL,
+    created_on date NOT NULL,
+    portal_id integer,
+    karma integer NOT NULL,
+    pageviews integer,
+    visits integer,
+    unique_visitors integer,
+    unique_visitors_reg integer
+);
+
+
+--
+-- Name: users_karma_daily_by_portal; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE users_karma_daily_by_portal (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    portal_id integer,
+    karma integer,
+    created_on date NOT NULL
+);
 
 
 SET search_path = _gamersmafia, pg_catalog;
@@ -6535,6 +9981,7 @@ COMMENT ON FUNCTION upgradeschema(text) IS 'Called during "update functions" by 
 --
 
 CREATE SEQUENCE sl_action_seq
+    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -6546,106 +9993,6 @@ CREATE SEQUENCE sl_action_seq
 --
 
 COMMENT ON SEQUENCE sl_action_seq IS 'The sequence to number statements in the transaction logs, so that the replication engines can figure out the "agreeable" order of statements.';
-
-
-SET default_tablespace = '';
-
-SET default_with_oids = false;
-
---
--- Name: sl_archive_counter; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-CREATE TABLE sl_archive_counter (
-    ac_num bigint,
-    ac_timestamp timestamp without time zone
-);
-
-
---
--- Name: TABLE sl_archive_counter; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON TABLE sl_archive_counter IS 'Table used to generate the log shipping archive number.
-';
-
-
---
--- Name: COLUMN sl_archive_counter.ac_num; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_archive_counter.ac_num IS 'Counter of SYNC ID used in log shipping as the archive number';
-
-
---
--- Name: COLUMN sl_archive_counter.ac_timestamp; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_archive_counter.ac_timestamp IS 'Time at which the archive log was generated on the subscriber';
-
-
---
--- Name: sl_config_lock; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-CREATE TABLE sl_config_lock (
-    dummy integer
-);
-
-
---
--- Name: TABLE sl_config_lock; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON TABLE sl_config_lock IS 'This table exists solely to prevent overlapping execution of configuration change procedures and the resulting possible deadlocks.
-';
-
-
---
--- Name: COLUMN sl_config_lock.dummy; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_config_lock.dummy IS 'No data ever goes in this table so the contents never matter.  Indeed, this column does not really need to exist.';
-
-
---
--- Name: sl_confirm; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-CREATE TABLE sl_confirm (
-    con_origin integer,
-    con_received integer,
-    con_seqno bigint,
-    con_timestamp timestamp without time zone DEFAULT (timeofday())::timestamp without time zone
-);
-
-
---
--- Name: TABLE sl_confirm; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON TABLE sl_confirm IS 'Holds confirmation of replication events.  After a period of time, Slony removes old confirmed events from both this table and the sl_event table.';
-
-
---
--- Name: COLUMN sl_confirm.con_origin; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_confirm.con_origin IS 'The ID # (from sl_node.no_id) of the source node for this event';
-
-
---
--- Name: COLUMN sl_confirm.con_seqno; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_confirm.con_seqno IS 'The ID # for the event';
-
-
---
--- Name: COLUMN sl_confirm.con_timestamp; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_confirm.con_timestamp IS 'When this event was confirmed';
 
 
 --
@@ -6664,45 +10011,6 @@ CREATE SEQUENCE sl_event_seq
 --
 
 COMMENT ON SEQUENCE sl_event_seq IS 'The sequence for numbering events originating from this node.';
-
-
---
--- Name: sl_listen; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-CREATE TABLE sl_listen (
-    li_origin integer NOT NULL,
-    li_provider integer NOT NULL,
-    li_receiver integer NOT NULL
-);
-
-
---
--- Name: TABLE sl_listen; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON TABLE sl_listen IS 'Indicates how nodes listen to events from other nodes in the Slony-I network.';
-
-
---
--- Name: COLUMN sl_listen.li_origin; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_listen.li_origin IS 'The ID # (from sl_node.no_id) of the node this listener is operating on';
-
-
---
--- Name: COLUMN sl_listen.li_provider; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_listen.li_provider IS 'The ID # (from sl_node.no_id) of the source node for this listening event';
-
-
---
--- Name: COLUMN sl_listen.li_receiver; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_listen.li_receiver IS 'The ID # (from sl_node.no_id) of the target node for this listening event';
 
 
 --
@@ -6754,92 +10062,6 @@ This is not yet in use.
 
 
 --
--- Name: sl_node; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-CREATE TABLE sl_node (
-    no_id integer NOT NULL,
-    no_active boolean,
-    no_comment text,
-    no_spool boolean
-);
-
-
---
--- Name: TABLE sl_node; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON TABLE sl_node IS 'Holds the list of nodes associated with this namespace.';
-
-
---
--- Name: COLUMN sl_node.no_id; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_node.no_id IS 'The unique ID number for the node';
-
-
---
--- Name: COLUMN sl_node.no_active; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_node.no_active IS 'Is the node active in replication yet?';
-
-
---
--- Name: COLUMN sl_node.no_comment; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_node.no_comment IS 'A human-oriented description of the node';
-
-
---
--- Name: COLUMN sl_node.no_spool; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_node.no_spool IS 'Is the node being used for log shipping?';
-
-
---
--- Name: sl_nodelock; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-CREATE TABLE sl_nodelock (
-    nl_nodeid integer NOT NULL,
-    nl_conncnt integer NOT NULL,
-    nl_backendpid integer
-);
-
-
---
--- Name: TABLE sl_nodelock; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON TABLE sl_nodelock IS 'Used to prevent multiple slon instances and to identify the backends to kill in terminateNodeConnections().';
-
-
---
--- Name: COLUMN sl_nodelock.nl_nodeid; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_nodelock.nl_nodeid IS 'Clients node_id';
-
-
---
--- Name: COLUMN sl_nodelock.nl_conncnt; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_nodelock.nl_conncnt IS 'Clients connection number';
-
-
---
--- Name: COLUMN sl_nodelock.nl_backendpid; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_nodelock.nl_backendpid IS 'PID of database backend owning this lock';
-
-
---
 -- Name: sl_nodelock_nl_conncnt_seq; Type: SEQUENCE; Schema: _gamersmafia; Owner: -
 --
 
@@ -6857,500 +10079,7 @@ CREATE SEQUENCE sl_nodelock_nl_conncnt_seq
 ALTER SEQUENCE sl_nodelock_nl_conncnt_seq OWNED BY sl_nodelock.nl_conncnt;
 
 
---
--- Name: sl_path; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-CREATE TABLE sl_path (
-    pa_server integer NOT NULL,
-    pa_client integer NOT NULL,
-    pa_conninfo text NOT NULL,
-    pa_connretry integer
-);
-
-
---
--- Name: TABLE sl_path; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON TABLE sl_path IS 'Holds connection information for the paths between nodes, and the synchronisation delay';
-
-
---
--- Name: COLUMN sl_path.pa_server; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_path.pa_server IS 'The Node ID # (from sl_node.no_id) of the data source';
-
-
---
--- Name: COLUMN sl_path.pa_client; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_path.pa_client IS 'The Node ID # (from sl_node.no_id) of the data target';
-
-
---
--- Name: COLUMN sl_path.pa_conninfo; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_path.pa_conninfo IS 'The PostgreSQL connection string used to connect to the source node.';
-
-
---
--- Name: COLUMN sl_path.pa_connretry; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_path.pa_connretry IS 'The synchronisation delay, in seconds';
-
-
---
--- Name: sl_registry; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-CREATE TABLE sl_registry (
-    reg_key text NOT NULL,
-    reg_int4 integer,
-    reg_text text,
-    reg_timestamp timestamp without time zone
-);
-
-
---
--- Name: TABLE sl_registry; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON TABLE sl_registry IS 'Stores miscellaneous runtime data';
-
-
---
--- Name: COLUMN sl_registry.reg_key; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_registry.reg_key IS 'Unique key of the runtime option';
-
-
---
--- Name: COLUMN sl_registry.reg_int4; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_registry.reg_int4 IS 'Option value if type int4';
-
-
---
--- Name: COLUMN sl_registry.reg_text; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_registry.reg_text IS 'Option value if type text';
-
-
---
--- Name: COLUMN sl_registry.reg_timestamp; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_registry.reg_timestamp IS 'Option value if type timestamp';
-
-
---
--- Name: sl_rowid_seq; Type: SEQUENCE; Schema: _gamersmafia; Owner: -
---
-
-CREATE SEQUENCE sl_rowid_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: SEQUENCE sl_rowid_seq; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON SEQUENCE sl_rowid_seq IS 'Application tables that do not have a natural primary key must be modified and an int8 column added that serves as a rowid for us.  The values are assigned with a default from this sequence.';
-
-
---
--- Name: sl_seqlog; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-CREATE TABLE sl_seqlog (
-    seql_seqid integer,
-    seql_origin integer,
-    seql_ev_seqno bigint,
-    seql_last_value bigint
-);
-
-
---
--- Name: TABLE sl_seqlog; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON TABLE sl_seqlog IS 'Log of Sequence updates';
-
-
---
--- Name: COLUMN sl_seqlog.seql_seqid; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_seqlog.seql_seqid IS 'Sequence ID';
-
-
---
--- Name: COLUMN sl_seqlog.seql_origin; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_seqlog.seql_origin IS 'Publisher node at which the sequence originates';
-
-
---
--- Name: COLUMN sl_seqlog.seql_ev_seqno; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_seqlog.seql_ev_seqno IS 'Slony-I Event with which this sequence update is associated';
-
-
---
--- Name: COLUMN sl_seqlog.seql_last_value; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_seqlog.seql_last_value IS 'Last value published for this sequence';
-
-
---
--- Name: sl_sequence; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-CREATE TABLE sl_sequence (
-    seq_id integer NOT NULL,
-    seq_reloid oid NOT NULL,
-    seq_relname name NOT NULL,
-    seq_nspname name NOT NULL,
-    seq_set integer,
-    seq_comment text
-);
-
-
---
--- Name: TABLE sl_sequence; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON TABLE sl_sequence IS 'Similar to sl_table, each entry identifies a sequence being replicated.';
-
-
---
--- Name: COLUMN sl_sequence.seq_id; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_sequence.seq_id IS 'An internally-used ID for Slony-I to use in its sequencing of updates';
-
-
---
--- Name: COLUMN sl_sequence.seq_reloid; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_sequence.seq_reloid IS 'The OID of the sequence object';
-
-
---
--- Name: COLUMN sl_sequence.seq_relname; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_sequence.seq_relname IS 'The name of the sdequence in pg_catalog.pg_class.relname used to recover from a dump/restore cycle';
-
-
---
--- Name: COLUMN sl_sequence.seq_nspname; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_sequence.seq_nspname IS 'The name of the schema in pg_catalog.pg_namespace.nspname used to recover from a dump/restore cycle';
-
-
---
--- Name: COLUMN sl_sequence.seq_set; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_sequence.seq_set IS 'Indicates which replication set the object is in';
-
-
---
--- Name: COLUMN sl_sequence.seq_comment; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_sequence.seq_comment IS 'A human-oriented comment';
-
-
---
--- Name: sl_subscribe; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-CREATE TABLE sl_subscribe (
-    sub_set integer NOT NULL,
-    sub_provider integer,
-    sub_receiver integer NOT NULL,
-    sub_forward boolean,
-    sub_active boolean
-);
-
-
---
--- Name: TABLE sl_subscribe; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON TABLE sl_subscribe IS 'Holds a list of subscriptions on sets';
-
-
---
--- Name: COLUMN sl_subscribe.sub_set; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_subscribe.sub_set IS 'ID # (from sl_set) of the set being subscribed to';
-
-
---
--- Name: COLUMN sl_subscribe.sub_provider; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_subscribe.sub_provider IS 'ID# (from sl_node) of the node providing data';
-
-
---
--- Name: COLUMN sl_subscribe.sub_receiver; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_subscribe.sub_receiver IS 'ID# (from sl_node) of the node receiving data from the provider';
-
-
---
--- Name: COLUMN sl_subscribe.sub_forward; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_subscribe.sub_forward IS 'Does this provider keep data in sl_log_1/sl_log_2 to allow it to be a provider for other nodes?';
-
-
---
--- Name: COLUMN sl_subscribe.sub_active; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_subscribe.sub_active IS 'Has this subscription been activated?  This is not set on the subscriber until AFTER the subscriber has received COPY data from the provider';
-
-
---
--- Name: sl_table; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-CREATE TABLE sl_table (
-    tab_id integer NOT NULL,
-    tab_reloid oid NOT NULL,
-    tab_relname name NOT NULL,
-    tab_nspname name NOT NULL,
-    tab_set integer,
-    tab_idxname name NOT NULL,
-    tab_altered boolean NOT NULL,
-    tab_comment text
-);
-
-
---
--- Name: TABLE sl_table; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON TABLE sl_table IS 'Holds information about the tables being replicated.';
-
-
---
--- Name: COLUMN sl_table.tab_id; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_table.tab_id IS 'Unique key for Slony-I to use to identify the table';
-
-
---
--- Name: COLUMN sl_table.tab_reloid; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_table.tab_reloid IS 'The OID of the table in pg_catalog.pg_class.oid';
-
-
---
--- Name: COLUMN sl_table.tab_relname; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_table.tab_relname IS 'The name of the table in pg_catalog.pg_class.relname used to recover from a dump/restore cycle';
-
-
---
--- Name: COLUMN sl_table.tab_nspname; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_table.tab_nspname IS 'The name of the schema in pg_catalog.pg_namespace.nspname used to recover from a dump/restore cycle';
-
-
---
--- Name: COLUMN sl_table.tab_set; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_table.tab_set IS 'ID of the replication set the table is in';
-
-
---
--- Name: COLUMN sl_table.tab_idxname; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_table.tab_idxname IS 'The name of the primary index of the table';
-
-
---
--- Name: COLUMN sl_table.tab_altered; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_table.tab_altered IS 'Has the table been modified for replication?';
-
-
---
--- Name: COLUMN sl_table.tab_comment; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_table.tab_comment IS 'Human-oriented description of the table';
-
-
---
--- Name: sl_trigger; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-CREATE TABLE sl_trigger (
-    trig_tabid integer NOT NULL,
-    trig_tgname name NOT NULL
-);
-
-
---
--- Name: TABLE sl_trigger; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON TABLE sl_trigger IS 'Holds information about triggers on tables managed using Slony-I';
-
-
---
--- Name: COLUMN sl_trigger.trig_tabid; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_trigger.trig_tabid IS 'Slony-I ID number of table the trigger is on';
-
-
---
--- Name: COLUMN sl_trigger.trig_tgname; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_trigger.trig_tgname IS 'Indicates the name of a trigger';
-
-
-SET search_path = archive, pg_catalog;
-
---
--- Name: pageviews; Type: TABLE; Schema: archive; Owner: -; Tablespace: 
---
-
-CREATE TABLE pageviews (
-    id integer NOT NULL,
-    created_on timestamp without time zone NOT NULL,
-    ip inet NOT NULL,
-    referer character varying,
-    controller character varying,
-    "action" character varying,
-    medium character varying,
-    campaign character varying,
-    model_id character varying,
-    url character varying,
-    visitor_id character varying,
-    session_id character varying,
-    user_agent character varying,
-    user_id integer,
-    flash_error character varying,
-    abtest_treatment character varying,
-    portal_id integer,
-    source character varying,
-    ads_shown character varying
-);
-
-
---
--- Name: tracker_items; Type: TABLE; Schema: archive; Owner: -; Tablespace: 
---
-
-CREATE TABLE tracker_items (
-    id integer NOT NULL,
-    content_id integer NOT NULL,
-    user_id integer NOT NULL,
-    lastseen_on timestamp without time zone NOT NULL,
-    is_tracked boolean NOT NULL,
-    notification_sent_on timestamp without time zone
-);
-
-
---
--- Name: treated_visitors; Type: TABLE; Schema: archive; Owner: -; Tablespace: 
---
-
-CREATE TABLE treated_visitors (
-    id integer NOT NULL,
-    ab_test_id integer NOT NULL,
-    visitor_id character varying NOT NULL,
-    treatment integer NOT NULL,
-    user_id integer
-);
-
-
 SET search_path = public, pg_catalog;
-
---
--- Name: ab_tests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE ab_tests_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: ab_tests; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE ab_tests (
-    id integer DEFAULT nextval('ab_tests_id_seq'::regclass) NOT NULL,
-    name character varying NOT NULL,
-    treatments integer NOT NULL,
-    finished boolean DEFAULT false NOT NULL,
-    minimum_difference numeric(10,2),
-    metrics character varying,
-    info_url character varying,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    completed_on timestamp without time zone,
-    min_difference numeric(10,2) DEFAULT 0.05 NOT NULL,
-    cache_conversion_rates character varying,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    dirty boolean DEFAULT true NOT NULL,
-    cache_expected_completion_date timestamp without time zone,
-    active boolean DEFAULT true NOT NULL
-);
-
-
---
--- Name: ads; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE ads (
-    id integer NOT NULL,
-    created_on timestamp without time zone NOT NULL,
-    updated_on timestamp without time zone NOT NULL,
-    name character varying NOT NULL,
-    file character varying,
-    link_file character varying,
-    html character varying,
-    advertiser_id integer
-);
-
 
 --
 -- Name: ads_id_seq; Type: SEQUENCE; Schema: public; Owner: -
@@ -7368,21 +10097,6 @@ CREATE SEQUENCE ads_id_seq
 --
 
 ALTER SEQUENCE ads_id_seq OWNED BY ads.id;
-
-
---
--- Name: ads_slots; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE ads_slots (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    "location" character varying NOT NULL,
-    behaviour_class character varying NOT NULL,
-    "position" integer DEFAULT 0 NOT NULL,
-    advertiser_id integer,
-    image_dimensions character varying
-);
 
 
 --
@@ -7404,19 +10118,6 @@ ALTER SEQUENCE ads_slots_id_seq OWNED BY ads_slots.id;
 
 
 --
--- Name: ads_slots_instances; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE ads_slots_instances (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    ads_slot_id integer NOT NULL,
-    ad_id integer NOT NULL,
-    deleted boolean DEFAULT false NOT NULL
-);
-
-
---
 -- Name: ads_slots_instances_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -7432,17 +10133,6 @@ CREATE SEQUENCE ads_slots_instances_id_seq
 --
 
 ALTER SEQUENCE ads_slots_instances_id_seq OWNED BY ads_slots_instances.id;
-
-
---
--- Name: ads_slots_portals; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE ads_slots_portals (
-    id integer NOT NULL,
-    ads_slot_id integer NOT NULL,
-    portal_id integer NOT NULL
-);
 
 
 --
@@ -7464,19 +10154,6 @@ ALTER SEQUENCE ads_slots_portals_id_seq OWNED BY ads_slots_portals.id;
 
 
 --
--- Name: advertisers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE advertisers (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    email character varying NOT NULL,
-    due_on_day smallint NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
 -- Name: advertisers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -7492,17 +10169,6 @@ CREATE SEQUENCE advertisers_id_seq
 --
 
 ALTER SEQUENCE advertisers_id_seq OWNED BY advertisers.id;
-
-
---
--- Name: allowed_competitions_participants; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE allowed_competitions_participants (
-    id integer NOT NULL,
-    competition_id integer NOT NULL,
-    participant_id integer NOT NULL
-);
 
 
 --
@@ -7524,17 +10190,6 @@ ALTER SEQUENCE allowed_competitions_participants_id_seq OWNED BY allowed_competi
 
 
 --
--- Name: anonymous_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE anonymous_users (
-    id integer NOT NULL,
-    session_id character(32) NOT NULL,
-    lastseen_on timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
 -- Name: anonymous_users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -7550,19 +10205,6 @@ CREATE SEQUENCE anonymous_users_id_seq
 --
 
 ALTER SEQUENCE anonymous_users_id_seq OWNED BY anonymous_users.id;
-
-
---
--- Name: autologin_keys; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE autologin_keys (
-    id integer NOT NULL,
-    created_on timestamp without time zone NOT NULL,
-    "key" character varying(40),
-    user_id integer NOT NULL,
-    lastused_on timestamp without time zone DEFAULT now() NOT NULL
-);
 
 
 --
@@ -7584,23 +10226,6 @@ ALTER SEQUENCE autologin_keys_id_seq OWNED BY autologin_keys.id;
 
 
 --
--- Name: avatars; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE avatars (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    "level" integer DEFAULT -1 NOT NULL,
-    path character varying,
-    faction_id integer,
-    user_id integer,
-    clan_id integer,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    submitter_user_id integer NOT NULL
-);
-
-
---
 -- Name: avatars_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -7616,17 +10241,6 @@ CREATE SEQUENCE avatars_id_seq
 --
 
 ALTER SEQUENCE avatars_id_seq OWNED BY avatars.id;
-
-
---
--- Name: babes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE babes (
-    id integer NOT NULL,
-    date date NOT NULL,
-    image_id integer NOT NULL
-);
 
 
 --
@@ -7648,26 +10262,6 @@ ALTER SEQUENCE babes_id_seq OWNED BY babes.id;
 
 
 --
--- Name: ban_requests; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE ban_requests (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    banned_user_id integer NOT NULL,
-    confirming_user_id integer,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    confirmed_on timestamp without time zone,
-    reason character varying NOT NULL,
-    unban_user_id integer,
-    unban_confirming_user_id integer,
-    reason_unban character varying,
-    unban_created_on timestamp without time zone,
-    unban_confirmed_on timestamp without time zone
-);
-
-
---
 -- Name: ban_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -7686,18 +10280,6 @@ ALTER SEQUENCE ban_requests_id_seq OWNED BY ban_requests.id;
 
 
 --
--- Name: bazar_districts; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE bazar_districts (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    code character varying NOT NULL,
-    icon character varying
-);
-
-
---
 -- Name: bazar_districts_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -7713,54 +10295,6 @@ CREATE SEQUENCE bazar_districts_id_seq
 --
 
 ALTER SEQUENCE bazar_districts_id_seq OWNED BY bazar_districts.id;
-
-
---
--- Name: bets; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE bets (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    approved_by_user_id integer,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    title character varying NOT NULL,
-    description character varying,
-    bets_category_id integer NOT NULL,
-    closes_on timestamp without time zone NOT NULL,
-    total_ammount numeric(14,2) DEFAULT 0 NOT NULL,
-    winning_bets_option_id integer,
-    cancelled boolean DEFAULT false NOT NULL,
-    forfeit boolean DEFAULT false NOT NULL,
-    tie boolean DEFAULT false NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: bets_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE bets_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    bets_count integer DEFAULT 0 NOT NULL
-);
 
 
 --
@@ -7800,18 +10334,6 @@ ALTER SEQUENCE bets_id_seq OWNED BY bets.id;
 
 
 --
--- Name: bets_options; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE bets_options (
-    id integer NOT NULL,
-    bet_id integer NOT NULL,
-    name character varying NOT NULL,
-    ammount numeric(14,2)
-);
-
-
---
 -- Name: bets_options_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -7827,19 +10349,6 @@ CREATE SEQUENCE bets_options_id_seq
 --
 
 ALTER SEQUENCE bets_options_id_seq OWNED BY bets_options.id;
-
-
---
--- Name: bets_tickets; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE bets_tickets (
-    id integer NOT NULL,
-    bets_option_id integer NOT NULL,
-    user_id integer NOT NULL,
-    ammount numeric(14,2),
-    created_on timestamp without time zone DEFAULT now() NOT NULL
-);
 
 
 --
@@ -7861,19 +10370,6 @@ ALTER SEQUENCE bets_tickets_id_seq OWNED BY bets_tickets.id;
 
 
 --
--- Name: bj_config; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE bj_config (
-    bj_config_id integer NOT NULL,
-    hostname text,
-    "key" text,
-    value text,
-    "cast" text
-);
-
-
---
 -- Name: bj_config_bj_config_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -7889,57 +10385,6 @@ CREATE SEQUENCE bj_config_bj_config_id_seq
 --
 
 ALTER SEQUENCE bj_config_bj_config_id_seq OWNED BY bj_config.bj_config_id;
-
-
---
--- Name: bj_job; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE bj_job (
-    bj_job_id integer NOT NULL,
-    command text,
-    state text,
-    priority integer,
-    tag text,
-    is_restartable integer,
-    submitter text,
-    runner text,
-    pid integer,
-    submitted_at timestamp without time zone,
-    started_at timestamp without time zone,
-    finished_at timestamp without time zone,
-    env text,
-    "stdin" text,
-    "stdout" text,
-    stderr text,
-    exit_status integer
-);
-
-
---
--- Name: bj_job_archive; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE bj_job_archive (
-    bj_job_archive_id integer NOT NULL,
-    command text,
-    state text,
-    priority integer,
-    tag text,
-    is_restartable integer,
-    submitter text,
-    runner text,
-    pid integer,
-    submitted_at timestamp without time zone,
-    started_at timestamp without time zone,
-    finished_at timestamp without time zone,
-    archived_at timestamp without time zone,
-    env text,
-    "stdin" text,
-    "stdout" text,
-    stderr text,
-    exit_status integer
-);
 
 
 --
@@ -7979,30 +10424,6 @@ ALTER SEQUENCE bj_job_bj_job_id_seq OWNED BY bj_job.bj_job_id;
 
 
 --
--- Name: blogentries; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE blogentries (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    title character varying NOT NULL,
-    main text NOT NULL,
-    user_id integer NOT NULL,
-    log character varying,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    deleted boolean DEFAULT false NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
 -- Name: blogentries_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -8021,22 +10442,6 @@ ALTER SEQUENCE blogentries_id_seq OWNED BY blogentries.id;
 
 
 --
--- Name: cash_movements; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE cash_movements (
-    id integer NOT NULL,
-    description character varying NOT NULL,
-    object_id_from integer,
-    object_id_to integer,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    ammount numeric(14,2),
-    object_id_from_class character varying,
-    object_id_to_class character varying
-);
-
-
---
 -- Name: cash_movements_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -8052,21 +10457,6 @@ CREATE SEQUENCE cash_movements_id_seq
 --
 
 ALTER SEQUENCE cash_movements_id_seq OWNED BY cash_movements.id;
-
-
-SET default_with_oids = true;
-
---
--- Name: chatlines; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE chatlines (
-    id integer NOT NULL,
-    line character varying NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    sent_to_irc boolean DEFAULT false NOT NULL
-);
 
 
 --
@@ -8088,44 +10478,6 @@ ALTER SEQUENCE chatlines_id_seq OWNED BY chatlines.id;
 
 
 --
--- Name: clans; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE clans (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    tag character varying NOT NULL,
-    simple_mode boolean DEFAULT true NOT NULL,
-    website_external character varying,
-    created_on timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
-    irc_channel character varying,
-    irc_server character varying,
-    o3_websites_dynamicwebsite_id integer,
-    logo character varying,
-    description text,
-    competition_roster character varying,
-    cash numeric(14,2) DEFAULT 0 NOT NULL,
-    deleted boolean DEFAULT false NOT NULL,
-    members_count integer DEFAULT 0 NOT NULL,
-    website_activated boolean DEFAULT false NOT NULL,
-    creator_user_id integer
-);
-
-
---
--- Name: clans_friends; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE clans_friends (
-    from_clan_id integer NOT NULL,
-    from_wants boolean DEFAULT false NOT NULL,
-    to_clan_id integer NOT NULL,
-    to_wants boolean DEFAULT false NOT NULL,
-    id integer NOT NULL
-);
-
-
---
 -- Name: clans_friends_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -8141,28 +10493,6 @@ CREATE SEQUENCE clans_friends_id_seq
 --
 
 ALTER SEQUENCE clans_friends_id_seq OWNED BY clans_friends.id;
-
-
---
--- Name: clans_games; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE clans_games (
-    clan_id integer NOT NULL,
-    game_id integer NOT NULL
-);
-
-
---
--- Name: clans_groups; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE clans_groups (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    clans_groups_type_id integer NOT NULL,
-    clan_id integer
-);
 
 
 --
@@ -8184,16 +10514,6 @@ ALTER SEQUENCE clans_groups_id_seq OWNED BY clans_groups.id;
 
 
 --
--- Name: clans_groups_types; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE clans_groups_types (
-    id integer NOT NULL,
-    name character varying NOT NULL
-);
-
-
---
 -- Name: clans_groups_types_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -8212,16 +10532,6 @@ ALTER SEQUENCE clans_groups_types_id_seq OWNED BY clans_groups_types.id;
 
 
 --
--- Name: clans_groups_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE clans_groups_users (
-    clans_group_id integer NOT NULL,
-    user_id integer NOT NULL
-);
-
-
---
 -- Name: clans_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -8237,20 +10547,6 @@ CREATE SEQUENCE clans_id_seq
 --
 
 ALTER SEQUENCE clans_id_seq OWNED BY clans.id;
-
-
-SET default_with_oids = false;
-
---
--- Name: clans_logs_entries; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE clans_logs_entries (
-    id integer NOT NULL,
-    message character varying,
-    clan_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL
-);
 
 
 --
@@ -8272,19 +10568,6 @@ ALTER SEQUENCE clans_logs_entries_id_seq OWNED BY clans_logs_entries.id;
 
 
 --
--- Name: clans_movements; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE clans_movements (
-    id integer NOT NULL,
-    clan_id integer NOT NULL,
-    user_id integer,
-    direction smallint NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
 -- Name: clans_movements_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -8300,21 +10583,6 @@ CREATE SEQUENCE clans_movements_id_seq
 --
 
 ALTER SEQUENCE clans_movements_id_seq OWNED BY clans_movements.id;
-
-
-SET default_with_oids = true;
-
---
--- Name: clans_sponsors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE clans_sponsors (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    clan_id integer NOT NULL,
-    url character varying,
-    image character varying
-);
 
 
 --
@@ -8333,52 +10601,6 @@ CREATE SEQUENCE clans_sponsors_id_seq
 --
 
 ALTER SEQUENCE clans_sponsors_id_seq OWNED BY clans_sponsors.id;
-
-
-SET default_with_oids = false;
-
---
--- Name: columns; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE columns (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    description text NOT NULL,
-    main text NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    approved_by_user_id integer,
-    columns_category_id integer NOT NULL,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    deleted boolean DEFAULT false NOT NULL,
-    home_image character varying,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: columns_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE columns_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    columns_count integer DEFAULT 0 NOT NULL
-);
 
 
 --
@@ -8418,28 +10640,6 @@ ALTER SEQUENCE columns_id_seq OWNED BY columns.id;
 
 
 --
--- Name: comments; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE comments (
-    id integer NOT NULL,
-    content_id integer NOT NULL,
-    user_id integer NOT NULL,
-    host inet NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    "comment" text NOT NULL,
-    has_comments_valorations boolean DEFAULT false NOT NULL,
-    portal_id integer,
-    cache_rating character varying,
-    netiquette_violation boolean,
-    lastowner_version character varying,
-    lastedited_by_user_id integer,
-    deleted boolean DEFAULT false NOT NULL
-);
-
-
---
 -- Name: comments_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -8455,20 +10655,6 @@ CREATE SEQUENCE comments_id_seq
 --
 
 ALTER SEQUENCE comments_id_seq OWNED BY comments.id;
-
-
---
--- Name: comments_valorations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE comments_valorations (
-    id integer NOT NULL,
-    comment_id integer NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    comments_valorations_type_id integer NOT NULL,
-    weight real NOT NULL
-);
 
 
 --
@@ -8490,17 +10676,6 @@ ALTER SEQUENCE comments_valorations_id_seq OWNED BY comments_valorations.id;
 
 
 --
--- Name: comments_valorations_types; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE comments_valorations_types (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    direction smallint NOT NULL
-);
-
-
---
 -- Name: comments_valorations_types_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -8516,61 +10691,6 @@ CREATE SEQUENCE comments_valorations_types_id_seq
 --
 
 ALTER SEQUENCE comments_valorations_types_id_seq OWNED BY comments_valorations_types.id;
-
-
---
--- Name: competitions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    description text,
-    game_id integer NOT NULL,
-    state smallint DEFAULT 0 NOT NULL,
-    rules text,
-    competitions_participants_type_id integer NOT NULL,
-    default_maps_per_match smallint,
-    forced_maps boolean DEFAULT true NOT NULL,
-    random_map_selection_mode smallint,
-    scoring_mode smallint DEFAULT 0 NOT NULL,
-    pro boolean DEFAULT false NOT NULL,
-    cash numeric(14,2) DEFAULT 0 NOT NULL,
-    force_guids boolean DEFAULT false NOT NULL,
-    estimated_end_on timestamp without time zone,
-    timetable_for_matches smallint DEFAULT 0 NOT NULL,
-    timetable_options character varying,
-    fee numeric(14,2),
-    invitational boolean DEFAULT false NOT NULL,
-    competitions_types_options character varying,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    closed_on timestamp without time zone,
-    event_id integer,
-    topics_category_id integer,
-    header_image character varying,
-    "type" character varying NOT NULL,
-    send_notifications boolean DEFAULT true NOT NULL
-);
-
-
---
--- Name: competitions_admins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_admins (
-    competition_id integer NOT NULL,
-    user_id integer NOT NULL
-);
-
-
---
--- Name: competitions_games_maps; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_games_maps (
-    competition_id integer NOT NULL,
-    games_map_id integer NOT NULL
-);
 
 
 --
@@ -8592,18 +10712,6 @@ ALTER SEQUENCE competitions_id_seq OWNED BY competitions.id;
 
 
 --
--- Name: competitions_logs_entries; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_logs_entries (
-    id integer NOT NULL,
-    message character varying,
-    competition_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
 -- Name: competitions_logs_entries_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -8622,54 +10730,10 @@ ALTER SEQUENCE competitions_logs_entries_id_seq OWNED BY competitions_logs_entri
 
 
 --
--- Name: competitions_matches; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_matches (
-    id integer NOT NULL,
-    competition_id integer NOT NULL,
-    participant1_id integer,
-    participant2_id integer,
-    result smallint,
-    participant1_confirmed_result boolean DEFAULT false NOT NULL,
-    participant2_confirmed_result boolean DEFAULT false NOT NULL,
-    admin_confirmed_result boolean DEFAULT false NOT NULL,
-    stage smallint DEFAULT 0 NOT NULL,
-    maps smallint,
-    score_participant1 integer,
-    score_participant2 integer,
-    accepted boolean DEFAULT true NOT NULL,
-    completed_on timestamp without time zone,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    play_on timestamp without time zone,
-    event_id integer,
-    forfeit_participant1 boolean DEFAULT false NOT NULL,
-    forfeit_participant2 boolean DEFAULT false NOT NULL,
-    servers character varying,
-    ladder_rules character varying,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
--- Name: competitions_matches_clans_players; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_matches_clans_players (
-    id integer NOT NULL,
-    competitions_match_id integer NOT NULL,
-    competitions_participant_id integer NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
 -- Name: competitions_matches_clans_players_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE competitions_matches_clans_players_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -8681,19 +10745,6 @@ CREATE SEQUENCE competitions_matches_clans_players_id_seq
 --
 
 ALTER SEQUENCE competitions_matches_clans_players_id_seq OWNED BY competitions_matches_clans_players.id;
-
-
---
--- Name: competitions_matches_games_maps; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_matches_games_maps (
-    competitions_match_id integer NOT NULL,
-    games_map_id integer NOT NULL,
-    partial_participant1_score integer,
-    partial_participant2_score integer,
-    id integer NOT NULL
-);
 
 
 --
@@ -8733,19 +10784,6 @@ ALTER SEQUENCE competitions_matches_id_seq OWNED BY competitions_matches.id;
 
 
 --
--- Name: competitions_matches_reports; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_matches_reports (
-    id integer NOT NULL,
-    competitions_match_id integer NOT NULL,
-    user_id integer NOT NULL,
-    report text NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
 -- Name: competitions_matches_reports_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -8761,20 +10799,6 @@ CREATE SEQUENCE competitions_matches_reports_id_seq
 --
 
 ALTER SEQUENCE competitions_matches_reports_id_seq OWNED BY competitions_matches_reports.id;
-
-
---
--- Name: competitions_matches_uploads; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_matches_uploads (
-    id integer NOT NULL,
-    competitions_match_id integer NOT NULL,
-    user_id integer NOT NULL,
-    file character varying,
-    description character varying,
-    created_on timestamp without time zone DEFAULT now() NOT NULL
-);
 
 
 --
@@ -8796,26 +10820,6 @@ ALTER SEQUENCE competitions_matches_uploads_id_seq OWNED BY competitions_matches
 
 
 --
--- Name: competitions_participants; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_participants (
-    competition_id integer NOT NULL,
-    participant_id integer NOT NULL,
-    competitions_participants_type_id smallint NOT NULL,
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    wins integer DEFAULT 0 NOT NULL,
-    losses integer DEFAULT 0 NOT NULL,
-    ties integer DEFAULT 0 NOT NULL,
-    roster character varying,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    points integer,
-    "position" integer DEFAULT (random() * (100000)::double precision) NOT NULL
-);
-
-
---
 -- Name: competitions_participants_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -8831,16 +10835,6 @@ CREATE SEQUENCE competitions_participants_id_seq
 --
 
 ALTER SEQUENCE competitions_participants_id_seq OWNED BY competitions_participants.id;
-
-
---
--- Name: competitions_participants_types; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_participants_types (
-    id integer NOT NULL,
-    name character varying NOT NULL
-);
 
 
 --
@@ -8862,19 +10856,6 @@ ALTER SEQUENCE competitions_participants_types_id_seq OWNED BY competitions_part
 
 
 --
--- Name: competitions_sponsors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_sponsors (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    competition_id integer NOT NULL,
-    url character varying,
-    image character varying
-);
-
-
---
 -- Name: competitions_sponsors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -8890,30 +10871,6 @@ CREATE SEQUENCE competitions_sponsors_id_seq
 --
 
 ALTER SEQUENCE competitions_sponsors_id_seq OWNED BY competitions_sponsors.id;
-
-
---
--- Name: competitions_supervisors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_supervisors (
-    competition_id integer NOT NULL,
-    user_id integer NOT NULL
-);
-
-
---
--- Name: content_ratings; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE content_ratings (
-    id integer NOT NULL,
-    user_id integer,
-    ip inet NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    content_id integer NOT NULL,
-    rating smallint NOT NULL
-);
 
 
 --
@@ -8935,16 +10892,6 @@ ALTER SEQUENCE content_ratings_id_seq OWNED BY content_ratings.id;
 
 
 --
--- Name: content_types; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE content_types (
-    id integer NOT NULL,
-    name character varying NOT NULL
-);
-
-
---
 -- Name: content_types_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -8960,30 +10907,6 @@ CREATE SEQUENCE content_types_id_seq
 --
 
 ALTER SEQUENCE content_types_id_seq OWNED BY content_types.id;
-
-
---
--- Name: contents; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE contents (
-    id integer NOT NULL,
-    content_type_id integer NOT NULL,
-    external_id integer NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    name character varying NOT NULL,
-    comments_count integer DEFAULT 0 NOT NULL,
-    is_public boolean DEFAULT false NOT NULL,
-    game_id integer,
-    state smallint DEFAULT 0 NOT NULL,
-    clan_id integer,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    platform_id integer,
-    url character varying,
-    user_id integer NOT NULL,
-    portal_id integer,
-    bazar_district_id integer
-);
 
 
 --
@@ -9005,19 +10928,6 @@ ALTER SEQUENCE contents_id_seq OWNED BY contents.id;
 
 
 --
--- Name: contents_locks; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE contents_locks (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    content_id integer NOT NULL,
-    user_id integer NOT NULL
-);
-
-
---
 -- Name: contents_locks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -9033,24 +10943,6 @@ CREATE SEQUENCE contents_locks_id_seq
 --
 
 ALTER SEQUENCE contents_locks_id_seq OWNED BY contents_locks.id;
-
-
---
--- Name: contents_recommendations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE contents_recommendations (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    sender_user_id integer NOT NULL,
-    receiver_user_id integer NOT NULL,
-    content_id integer NOT NULL,
-    seen_on timestamp without time zone,
-    marked_as_bad boolean DEFAULT false NOT NULL,
-    confidence double precision,
-    expected_rating smallint,
-    "comment" character varying
-);
 
 
 --
@@ -9072,18 +10964,6 @@ ALTER SEQUENCE contents_recommendations_id_seq OWNED BY contents_recommendations
 
 
 --
--- Name: contents_versions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE contents_versions (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    content_id integer NOT NULL,
-    data text
-);
-
-
---
 -- Name: contents_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -9102,54 +10982,6 @@ ALTER SEQUENCE contents_versions_id_seq OWNED BY contents_versions.id;
 
 
 --
--- Name: countries; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE countries (
-    id integer NOT NULL,
-    code character varying,
-    name character varying
-);
-
-
---
--- Name: coverages; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE coverages (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    approved_by_user_id integer,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    description text NOT NULL,
-    main text,
-    event_id integer NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: demo_mirrors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE demo_mirrors (
-    id integer NOT NULL,
-    demo_id integer NOT NULL,
-    url character varying NOT NULL
-);
-
-
---
 -- Name: demo_mirrors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -9165,65 +10997,6 @@ CREATE SEQUENCE demo_mirrors_id_seq
 --
 
 ALTER SEQUENCE demo_mirrors_id_seq OWNED BY demo_mirrors.id;
-
-
---
--- Name: demos; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE demos (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    approved_by_user_id integer,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    deleted boolean DEFAULT false NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    title character varying NOT NULL,
-    description character varying,
-    demos_category_id integer NOT NULL,
-    entity1_local_id integer,
-    entity2_local_id integer,
-    entity1_external character varying,
-    entity2_external character varying,
-    games_map_id integer,
-    event_id integer,
-    pov_type smallint,
-    pov_entity smallint,
-    file character varying,
-    file_hash_md5 character varying,
-    downloaded_times integer DEFAULT 0 NOT NULL,
-    file_size bigint,
-    games_mode_id integer,
-    games_version_id integer,
-    demotype smallint,
-    played_on date,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: demos_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE demos_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    demos_count integer DEFAULT 0 NOT NULL
-);
 
 
 --
@@ -9263,17 +11036,6 @@ ALTER SEQUENCE demos_id_seq OWNED BY demos.id;
 
 
 --
--- Name: download_mirrors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE download_mirrors (
-    id integer NOT NULL,
-    download_id integer NOT NULL,
-    url character varying NOT NULL
-);
-
-
---
 -- Name: download_mirrors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -9292,22 +11054,6 @@ ALTER SEQUENCE download_mirrors_id_seq OWNED BY download_mirrors.id;
 
 
 --
--- Name: downloaded_downloads; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE downloaded_downloads (
-    id integer NOT NULL,
-    download_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    ip inet NOT NULL,
-    session_id character varying,
-    referer character varying,
-    user_id integer,
-    download_cookie character varying(32)
-);
-
-
---
 -- Name: downloaded_downloads_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -9323,54 +11069,6 @@ CREATE SEQUENCE downloaded_downloads_id_seq
 --
 
 ALTER SEQUENCE downloaded_downloads_id_seq OWNED BY downloaded_downloads.id;
-
-
---
--- Name: downloads; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE downloads (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    description text,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    approved_by_user_id integer,
-    downloads_category_id integer NOT NULL,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    file character varying,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    essential boolean DEFAULT false NOT NULL,
-    downloaded_times integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    file_hash_md5 character(32),
-    clan_id integer,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: downloads_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE downloads_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    description character varying,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    root_id integer,
-    code character varying,
-    downloads_count integer DEFAULT 0 NOT NULL,
-    last_updated_item_id integer,
-    clan_id integer
-);
 
 
 --
@@ -9410,17 +11108,6 @@ ALTER SEQUENCE downloads_id_seq OWNED BY downloads.id;
 
 
 --
--- Name: dudes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE dudes (
-    id integer NOT NULL,
-    date date NOT NULL,
-    image_id integer NOT NULL
-);
-
-
---
 -- Name: dudes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -9436,55 +11123,6 @@ CREATE SEQUENCE dudes_id_seq
 --
 
 ALTER SEQUENCE dudes_id_seq OWNED BY dudes.id;
-
-
---
--- Name: events; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE events (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    description text,
-    events_category_id integer NOT NULL,
-    starts_on timestamp without time zone NOT NULL,
-    ends_on timestamp without time zone NOT NULL,
-    website character varying,
-    parent_id integer,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    user_id integer NOT NULL,
-    approved_by_user_id integer,
-    deleted boolean DEFAULT false NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    clan_id integer,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: events_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE events_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    events_count integer DEFAULT 0 NOT NULL,
-    clan_id integer
-);
 
 
 --
@@ -9542,61 +11180,6 @@ ALTER SEQUENCE events_news_id_seq OWNED BY coverages.id;
 
 
 --
--- Name: events_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE events_users (
-    event_id integer NOT NULL,
-    user_id integer NOT NULL
-);
-
-
---
--- Name: f; Type: VIEW; Schema: public; Owner: -
---
-
-CREATE VIEW f AS
-    SELECT count(comments.id) AS count FROM comments GROUP BY date_trunc('day'::text, comments.created_on) ORDER BY date_trunc('day'::text, comments.created_on) DESC OFFSET 1 LIMIT 360;
-
-
---
--- Name: factions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE factions (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    boss_user_id integer,
-    underboss_user_id integer,
-    building_bottom character varying,
-    building_top character varying,
-    building_middle character varying,
-    description character varying,
-    why_join character varying,
-    code character varying,
-    members_count integer DEFAULT 0 NOT NULL,
-    cash numeric(14,2) DEFAULT 0 NOT NULL,
-    is_platform boolean DEFAULT false NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    cache_member_cohesion numeric
-);
-
-
---
--- Name: factions_banned_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE factions_banned_users (
-    id integer NOT NULL,
-    faction_id integer NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    reason character varying,
-    banner_user_id integer NOT NULL
-);
-
-
---
 -- Name: factions_banned_users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -9612,17 +11195,6 @@ CREATE SEQUENCE factions_banned_users_id_seq
 --
 
 ALTER SEQUENCE factions_banned_users_id_seq OWNED BY factions_banned_users.id;
-
-
---
--- Name: factions_capos; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE factions_capos (
-    id integer NOT NULL,
-    faction_id integer NOT NULL,
-    user_id integer NOT NULL
-);
 
 
 --
@@ -9644,18 +11216,6 @@ ALTER SEQUENCE factions_capos_id_seq OWNED BY factions_capos.id;
 
 
 --
--- Name: factions_editors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE factions_editors (
-    id integer NOT NULL,
-    faction_id integer NOT NULL,
-    user_id integer NOT NULL,
-    content_type_id integer NOT NULL
-);
-
-
---
 -- Name: factions_editors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -9671,18 +11231,6 @@ CREATE SEQUENCE factions_editors_id_seq
 --
 
 ALTER SEQUENCE factions_editors_id_seq OWNED BY factions_editors.id;
-
-
---
--- Name: factions_headers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE factions_headers (
-    id integer NOT NULL,
-    faction_id integer NOT NULL,
-    name character varying NOT NULL,
-    lasttime_used_on timestamp without time zone
-);
 
 
 --
@@ -9722,19 +11270,6 @@ ALTER SEQUENCE factions_id_seq OWNED BY factions.id;
 
 
 --
--- Name: factions_links; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE factions_links (
-    id integer NOT NULL,
-    faction_id integer NOT NULL,
-    name character varying NOT NULL,
-    url character varying NOT NULL,
-    image character varying
-);
-
-
---
 -- Name: factions_links_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -9750,31 +11285,6 @@ CREATE SEQUENCE factions_links_id_seq
 --
 
 ALTER SEQUENCE factions_links_id_seq OWNED BY factions_links.id;
-
-
---
--- Name: factions_portals; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE factions_portals (
-    faction_id integer NOT NULL,
-    portal_id integer NOT NULL
-);
-
-
-SET default_with_oids = true;
-
---
--- Name: faq_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE faq_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    "position" integer,
-    parent_id integer,
-    root_id integer
-);
 
 
 --
@@ -9796,20 +11306,6 @@ ALTER SEQUENCE faq_categories_id_seq OWNED BY faq_categories.id;
 
 
 --
--- Name: faq_entries; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE faq_entries (
-    id integer NOT NULL,
-    question character varying NOT NULL,
-    answer character varying NOT NULL,
-    faq_category_id integer NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    "position" integer
-);
-
-
---
 -- Name: faq_entries_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -9825,31 +11321,6 @@ CREATE SEQUENCE faq_entries_id_seq
 --
 
 ALTER SEQUENCE faq_entries_id_seq OWNED BY faq_entries.id;
-
-
-SET default_with_oids = false;
-
---
--- Name: topics_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE topics_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    forum_category_id integer,
-    topics_count integer DEFAULT 0 NOT NULL,
-    updated_on timestamp without time zone,
-    parent_id integer,
-    description character varying,
-    root_id integer,
-    code character varying,
-    last_topic_id integer,
-    comments_count integer DEFAULT 0,
-    last_updated_item_id integer,
-    avg_popularity double precision,
-    clan_id integer,
-    nohome boolean DEFAULT false NOT NULL
-);
 
 
 --
@@ -9871,33 +11342,6 @@ ALTER SEQUENCE forum_forums_id_seq OWNED BY topics_categories.id;
 
 
 --
--- Name: topics; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE topics (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    topics_category_id integer NOT NULL,
-    main text NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    closed boolean DEFAULT false NOT NULL,
-    sticky boolean DEFAULT false NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    moved_on timestamp without time zone,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    clan_id integer,
-    cache_weighted_rank numeric(10,2)
-);
-
-
---
 -- Name: forum_topics_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -9916,25 +11360,11 @@ ALTER SEQUENCE forum_topics_id_seq OWNED BY topics.id;
 
 
 --
--- Name: friends_recommendations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE friends_recommendations (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    recommended_user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone,
-    added_as_friend boolean,
-    reason character varying
-);
-
-
---
 -- Name: friends_recommendations_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE friends_recommendations_id_seq
+    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -9946,24 +11376,6 @@ CREATE SEQUENCE friends_recommendations_id_seq
 --
 
 ALTER SEQUENCE friends_recommendations_id_seq OWNED BY friends_recommendations.id;
-
-
-SET default_with_oids = true;
-
---
--- Name: friendships; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE friendships (
-    sender_user_id integer NOT NULL,
-    receiver_user_id integer,
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    accepted_on timestamp without time zone,
-    receiver_email character varying,
-    invitation_text character varying,
-    external_invitation_key character(32)
-);
 
 
 --
@@ -9984,33 +11396,6 @@ CREATE SEQUENCE friends_users_id_seq
 ALTER SEQUENCE friends_users_id_seq OWNED BY friendships.id;
 
 
-SET default_with_oids = false;
-
---
--- Name: funthings; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE funthings (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    description character varying,
-    main character varying,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    approved_by_user_id integer,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
 --
 -- Name: funthings_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
@@ -10029,21 +11414,6 @@ CREATE SEQUENCE funthings_id_seq
 ALTER SEQUENCE funthings_id_seq OWNED BY funthings.id;
 
 
-SET default_with_oids = true;
-
---
--- Name: games; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE games (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    code character varying NOT NULL,
-    has_guids boolean DEFAULT false NOT NULL,
-    guid_format character varying
-);
-
-
 --
 -- Name: games_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
@@ -10060,21 +11430,6 @@ CREATE SEQUENCE games_id_seq
 --
 
 ALTER SEQUENCE games_id_seq OWNED BY games.id;
-
-
-SET default_with_oids = false;
-
---
--- Name: games_maps; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE games_maps (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    game_id integer NOT NULL,
-    download_id integer,
-    screenshot character varying
-);
 
 
 --
@@ -10096,18 +11451,6 @@ ALTER SEQUENCE games_maps_id_seq OWNED BY games_maps.id;
 
 
 --
--- Name: games_modes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE games_modes (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    game_id integer NOT NULL,
-    entity_type smallint
-);
-
-
---
 -- Name: games_modes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -10123,37 +11466,6 @@ CREATE SEQUENCE games_modes_id_seq
 --
 
 ALTER SEQUENCE games_modes_id_seq OWNED BY games_modes.id;
-
-
---
--- Name: games_platforms; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE games_platforms (
-    game_id integer NOT NULL,
-    platform_id integer NOT NULL
-);
-
-
---
--- Name: games_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE games_users (
-    game_id integer NOT NULL,
-    user_id integer NOT NULL
-);
-
-
---
--- Name: games_versions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE games_versions (
-    id integer NOT NULL,
-    version character varying NOT NULL,
-    game_id integer NOT NULL
-);
 
 
 --
@@ -10175,21 +11487,6 @@ ALTER SEQUENCE games_versions_id_seq OWNED BY games_versions.id;
 
 
 --
--- Name: global_notifications; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE global_notifications (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    completed_on timestamp without time zone,
-    recipient_type character varying,
-    title character varying,
-    main character varying,
-    confirmed boolean DEFAULT false NOT NULL
-);
-
-
---
 -- Name: global_notifications_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -10205,21 +11502,6 @@ CREATE SEQUENCE global_notifications_id_seq
 --
 
 ALTER SEQUENCE global_notifications_id_seq OWNED BY global_notifications.id;
-
-
---
--- Name: global_vars; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE global_vars (
-    id integer NOT NULL,
-    online_anonymous integer DEFAULT 0 NOT NULL,
-    online_registered integer DEFAULT 0 NOT NULL,
-    svn_revision integer,
-    ads_slots_updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    gmtv_channels_updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    pending_contents integer DEFAULT 0 NOT NULL
-);
 
 
 --
@@ -10241,18 +11523,6 @@ ALTER SEQUENCE global_vars_id_seq OWNED BY global_vars.id;
 
 
 --
--- Name: gmtv_broadcast_messages; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE gmtv_broadcast_messages (
-    id integer NOT NULL,
-    message character varying NOT NULL,
-    starts_on timestamp without time zone DEFAULT now() NOT NULL,
-    ends_on timestamp without time zone DEFAULT (now() + '00:03:00'::interval) NOT NULL
-);
-
-
---
 -- Name: gmtv_broadcast_messages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -10268,21 +11538,6 @@ CREATE SEQUENCE gmtv_broadcast_messages_id_seq
 --
 
 ALTER SEQUENCE gmtv_broadcast_messages_id_seq OWNED BY gmtv_broadcast_messages.id;
-
-
---
--- Name: gmtv_channels; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE gmtv_channels (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    faction_id integer,
-    file character varying,
-    screenshot character varying
-);
 
 
 --
@@ -10308,24 +11563,10 @@ ALTER SEQUENCE gmtv_channels_id_seq OWNED BY gmtv_channels.id;
 --
 
 CREATE SEQUENCE goals_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
     CACHE 1;
-
-
---
--- Name: groups; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE groups (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    description character varying,
-    owner_user_id integer
-);
 
 
 --
@@ -10344,85 +11585,6 @@ CREATE SEQUENCE groups_id_seq
 --
 
 ALTER SEQUENCE groups_id_seq OWNED BY groups.id;
-
-
---
--- Name: groups_messages; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE groups_messages (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    title character varying,
-    main character varying,
-    parent_id integer,
-    root_id integer,
-    user_id integer
-);
-
-
---
--- Name: groups_messages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE groups_messages_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: groups_messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE groups_messages_id_seq OWNED BY groups_messages.id;
-
-
---
--- Name: images; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE images (
-    id integer NOT NULL,
-    description character varying,
-    file character varying,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    approved_by_user_id integer,
-    images_category_id integer NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    file_hash_md5 character(32),
-    clan_id integer,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: images_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE images_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    images_count integer DEFAULT 0 NOT NULL,
-    clan_id integer
-);
 
 
 --
@@ -10462,49 +11624,6 @@ ALTER SEQUENCE images_id_seq OWNED BY images.id;
 
 
 --
--- Name: interviews; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE interviews (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    description text NOT NULL,
-    main text NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    approved_by_user_id integer,
-    interviews_category_id integer NOT NULL,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    home_image character varying,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: interviews_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE interviews_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    interviews_count integer DEFAULT 0 NOT NULL
-);
-
-
---
 -- Name: interviews_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -10541,20 +11660,6 @@ ALTER SEQUENCE interviews_id_seq OWNED BY interviews.id;
 
 
 --
--- Name: ip_bans; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE ip_bans (
-    id integer NOT NULL,
-    ip inet NOT NULL,
-    created_on timestamp without time zone NOT NULL,
-    expires_on timestamp without time zone,
-    "comment" character varying,
-    user_id integer
-);
-
-
---
 -- Name: ip_bans_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -10570,17 +11675,6 @@ CREATE SEQUENCE ip_bans_id_seq
 --
 
 ALTER SEQUENCE ip_bans_id_seq OWNED BY ip_bans.id;
-
-
---
--- Name: ip_passwords_resets_requests; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE ip_passwords_resets_requests (
-    id integer NOT NULL,
-    ip inet NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL
-);
 
 
 --
@@ -10602,70 +11696,11 @@ ALTER SEQUENCE ip_passwords_resets_requests_id_seq OWNED BY ip_passwords_resets_
 
 
 --
--- Name: macropolls; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE macropolls (
-    poll_id integer NOT NULL,
-    user_id integer,
-    answers text,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    ipaddr inet DEFAULT '0.0.0.0'::inet NOT NULL,
-    host character varying
-);
-
-
---
--- Name: macropolls_2007_1; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE macropolls_2007_1 (
-    id integer NOT NULL,
-    lacantidaddecontenidosquesepublicanenlawebteparece character varying,
-    __sabesquepuedesenviarcontenidos_ character varying,
-    __sabesquepuedesdecidirsiuncontenidosepublicaono_ character varying,
-    __echasenfaltafuncionesimportantesenlaweb_ character varying,
-    __estassuscritoafeedsrss_ character varying,
-    participasencompeticiones_clanbase character varying,
-    __tegustaelmanga_anime_ character varying,
-    larapidezdecargadelaspaginasteparece character varying,
-    lasecciondeforosteparece character varying,
-    tesientesidentificadoconlaweb character varying,
-    prefeririasnovermasqueloscontenidosdetujuego character varying,
-    __quecreesquedeberiamosmejorardeformamasurgenteenlaweb_ character varying,
-    ellogodelawebtegusta character varying,
-    __estasenalgunclan_ character varying,
-    eldisenodelawebteparece character varying,
-    elnumerodefuncionesdelawebteparece_bis_ character varying,
-    laactituddelosadministradores_bossesymoderadoresdelawebteparece character varying,
-    __tienesalgunavideoconsola_ character varying,
-    siofreciesemosdenuevoelsistemadewebsparaclanes___creesquetuclan character varying,
-    sipudiesesleregalariasalwebmasterunbilletea character varying,
-    elambienteenloscomentarioses character varying,
-    elnumerodefuncionesdelawebteparece character varying,
-    seguneltiempoquelededicasalosjuegosteconsiderasunjugador character varying,
-    lacantidaddepublicidadqueapareceenlawebteparece character varying,
-    lalabordelosadministradores_bossesymoderadoresdelawebteparece character varying,
-    __sabesquepuedescreartuspropiascompeticionesoparticiparencompet character varying,
-    lascabecerasteparecen character varying,
-    tuopiniongeneralsobrelawebes character varying,
-    razonprincipalporlaquevisitaslaweb character varying,
-    lacalidaddeloscontenidosteparece character varying,
-    lasecciondebabes_dudestegusta character varying,
-    __quetendriaquetenerlawebparaquefueseperfectaparati_ character varying,
-    __deentrelaswebsdejuegosquevisitasfrecuentementedondenossituari character varying,
-    user_id integer,
-    created_on character varying NOT NULL,
-    ipaddr inet NOT NULL,
-    host character varying
-);
-
-
---
 -- Name: macropolls_2007_1_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE macropolls_2007_1_id_seq
+    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -10677,29 +11712,6 @@ CREATE SEQUENCE macropolls_2007_1_id_seq
 --
 
 ALTER SEQUENCE macropolls_2007_1_id_seq OWNED BY macropolls_2007_1.id;
-
-
-SET default_with_oids = true;
-
---
--- Name: messages; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE messages (
-    id integer NOT NULL,
-    user_id_from integer NOT NULL,
-    user_id_to integer NOT NULL,
-    title character varying NOT NULL,
-    message text NOT NULL,
-    created_on timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
-    is_read boolean DEFAULT false NOT NULL,
-    in_reply_to integer,
-    has_replies boolean DEFAULT false NOT NULL,
-    message_type smallint DEFAULT 0 NOT NULL,
-    sender_deleted boolean DEFAULT false NOT NULL,
-    receiver_deleted boolean DEFAULT false NOT NULL,
-    thread_id integer
-);
 
 
 --
@@ -10718,54 +11730,6 @@ CREATE SEQUENCE messages_id_seq
 --
 
 ALTER SEQUENCE messages_id_seq OWNED BY messages.id;
-
-
-SET default_with_oids = false;
-
---
--- Name: news; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE news (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    title character varying NOT NULL,
-    description text NOT NULL,
-    main text,
-    approved_by_user_id integer,
-    news_category_id integer NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    clan_id integer,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: news_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE news_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    news_count integer DEFAULT 0 NOT NULL,
-    clan_id integer,
-    file character varying
-);
 
 
 --
@@ -10805,20 +11769,6 @@ ALTER SEQUENCE news_id_seq OWNED BY news.id;
 
 
 --
--- Name: outstanding_entities; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE outstanding_entities (
-    id integer NOT NULL,
-    entity_id integer NOT NULL,
-    portal_id integer,
-    active_on date NOT NULL,
-    "type" character varying NOT NULL,
-    reason character varying
-);
-
-
---
 -- Name: outstanding_users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -10837,17 +11787,6 @@ ALTER SEQUENCE outstanding_users_id_seq OWNED BY outstanding_entities.id;
 
 
 --
--- Name: platforms; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE platforms (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    code character varying NOT NULL
-);
-
-
---
 -- Name: platforms_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -10863,51 +11802,6 @@ CREATE SEQUENCE platforms_id_seq
 --
 
 ALTER SEQUENCE platforms_id_seq OWNED BY platforms.id;
-
-
---
--- Name: polls; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE polls (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    approved_by_user_id integer,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    starts_on timestamp without time zone NOT NULL,
-    ends_on timestamp without time zone NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    polls_category_id integer NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    clan_id integer,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: polls_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE polls_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    description character varying,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    root_id integer,
-    code character varying,
-    polls_count integer DEFAULT 0 NOT NULL,
-    last_updated_item_id integer,
-    clan_id integer
-);
 
 
 --
@@ -10947,19 +11841,6 @@ ALTER SEQUENCE polls_id_seq OWNED BY polls.id;
 
 
 --
--- Name: polls_options; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE polls_options (
-    id integer NOT NULL,
-    poll_id integer NOT NULL,
-    name character varying NOT NULL,
-    polls_votes_count integer DEFAULT 0 NOT NULL,
-    "position" integer
-);
-
-
---
 -- Name: polls_options_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -10975,19 +11856,6 @@ CREATE SEQUENCE polls_options_id_seq
 --
 
 ALTER SEQUENCE polls_options_id_seq OWNED BY polls_options.id;
-
-
---
--- Name: polls_votes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE polls_votes (
-    polls_option_id integer NOT NULL,
-    user_id integer,
-    id integer NOT NULL,
-    remote_ip inet NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL
-);
 
 
 --
@@ -11009,18 +11877,6 @@ ALTER SEQUENCE polls_votes_id_seq OWNED BY polls_votes.id;
 
 
 --
--- Name: portal_headers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE portal_headers (
-    id integer NOT NULL,
-    date timestamp without time zone NOT NULL,
-    factions_header_id integer NOT NULL,
-    portal_id integer NOT NULL
-);
-
-
---
 -- Name: portal_headers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11039,22 +11895,11 @@ ALTER SEQUENCE portal_headers_id_seq OWNED BY portal_headers.id;
 
 
 --
--- Name: portal_hits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE portal_hits (
-    portal_id integer,
-    date date DEFAULT (now())::date NOT NULL,
-    hits integer DEFAULT 0 NOT NULL,
-    id integer NOT NULL
-);
-
-
---
 -- Name: portal_hits_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE portal_hits_id_seq
+    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -11066,26 +11911,6 @@ CREATE SEQUENCE portal_hits_id_seq
 --
 
 ALTER SEQUENCE portal_hits_id_seq OWNED BY portal_hits.id;
-
-
---
--- Name: portals; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE portals (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    code character varying NOT NULL,
-    "type" character varying DEFAULT 'FactionsPortal'::character varying NOT NULL,
-    fqdn character varying,
-    options character varying,
-    clan_id integer,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    skin_id integer,
-    default_gmtv_channel_id integer,
-    cache_recent_hits_count integer,
-    factions_portal_home character varying
-);
 
 
 --
@@ -11107,29 +11932,6 @@ ALTER SEQUENCE portals_id_seq OWNED BY portals.id;
 
 
 --
--- Name: portals_skins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE portals_skins (
-    portal_id integer NOT NULL,
-    skin_id integer NOT NULL
-);
-
-
---
--- Name: potds; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE potds (
-    id integer NOT NULL,
-    date date NOT NULL,
-    image_id integer NOT NULL,
-    portal_id integer,
-    images_category_id integer
-);
-
-
---
 -- Name: potds_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11145,21 +11947,6 @@ CREATE SEQUENCE potds_id_seq
 --
 
 ALTER SEQUENCE potds_id_seq OWNED BY potds.id;
-
-
---
--- Name: products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE products (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    price numeric(14,2) NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    description character varying,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    cls character varying NOT NULL
-);
 
 
 --
@@ -11181,19 +11968,6 @@ ALTER SEQUENCE products_id_seq OWNED BY products.id;
 
 
 --
--- Name: profile_signatures; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE profile_signatures (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    signer_user_id integer NOT NULL,
-    signature character varying NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
 -- Name: profile_signatures_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11209,24 +11983,6 @@ CREATE SEQUENCE profile_signatures_id_seq
 --
 
 ALTER SEQUENCE profile_signatures_id_seq OWNED BY profile_signatures.id;
-
-
---
--- Name: publishing_decisions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE publishing_decisions (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    content_id integer NOT NULL,
-    publish boolean NOT NULL,
-    user_weight numeric NOT NULL,
-    deny_reason character varying,
-    is_right boolean,
-    accept_comment character varying
-);
 
 
 --
@@ -11248,18 +12004,6 @@ ALTER SEQUENCE publishing_decisions_id_seq OWNED BY publishing_decisions.id;
 
 
 --
--- Name: publishing_personalities; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE publishing_personalities (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    content_type_id integer NOT NULL,
-    experience numeric DEFAULT 0.0
-);
-
-
---
 -- Name: publishing_personalities_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11275,57 +12019,6 @@ CREATE SEQUENCE publishing_personalities_id_seq
 --
 
 ALTER SEQUENCE publishing_personalities_id_seq OWNED BY publishing_personalities.id;
-
-
---
--- Name: questions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE questions (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    questions_category_id integer NOT NULL,
-    description text,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    accepted_answer_comment_id integer,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    approved_by_user_id integer,
-    ammount numeric(10,2),
-    answered_on timestamp without time zone,
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: questions_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE questions_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    forum_category_id integer,
-    questions_count integer DEFAULT 0 NOT NULL,
-    updated_on timestamp without time zone,
-    parent_id integer,
-    description character varying,
-    root_id integer,
-    code character varying,
-    last_question_id integer,
-    comments_count integer DEFAULT 0,
-    last_updated_item_id integer,
-    avg_popularity double precision,
-    clan_id integer,
-    nohome boolean DEFAULT false NOT NULL
-);
 
 
 --
@@ -11365,24 +12058,6 @@ ALTER SEQUENCE questions_id_seq OWNED BY questions.id;
 
 
 --
--- Name: recruitment_ads; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE recruitment_ads (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    clan_id integer,
-    game_id integer NOT NULL,
-    levels character varying,
-    country_id integer,
-    message character varying,
-    deleted boolean DEFAULT false NOT NULL
-);
-
-
---
 -- Name: recruitment_ads_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11401,19 +12076,6 @@ ALTER SEQUENCE recruitment_ads_id_seq OWNED BY recruitment_ads.id;
 
 
 --
--- Name: refered_hits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE refered_hits (
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    ipaddr inet NOT NULL,
-    referer character varying NOT NULL,
-    id integer NOT NULL
-);
-
-
---
 -- Name: refered_hits_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11429,49 +12091,6 @@ CREATE SEQUENCE refered_hits_id_seq
 --
 
 ALTER SEQUENCE refered_hits_id_seq OWNED BY refered_hits.id;
-
-
---
--- Name: reviews; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE reviews (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    description text NOT NULL,
-    main text NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    approved_by_user_id integer,
-    reviews_category_id integer NOT NULL,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    home_image character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: reviews_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE reviews_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    reviews_count integer DEFAULT 0 NOT NULL
-);
 
 
 --
@@ -11511,42 +12130,6 @@ ALTER SEQUENCE reviews_id_seq OWNED BY reviews.id;
 
 
 --
--- Name: schema_info; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE schema_info (
-    version integer NOT NULL,
-    "_Slony-I_gamersmafia_rowID" bigint DEFAULT nextval('_gamersmafia.sl_rowid_seq'::regclass) NOT NULL
-);
-
-
---
--- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE schema_migrations (
-    version character varying
-);
-
-
---
--- Name: sent_emails; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE sent_emails (
-    id integer NOT NULL,
-    message_key character varying NOT NULL,
-    title character varying,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    first_read_on timestamp without time zone,
-    sender character varying,
-    recipient character varying,
-    recipient_user_id integer,
-    global_notification_id integer
-);
-
-
---
 -- Name: sent_emails_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11565,21 +12148,10 @@ ALTER SEQUENCE sent_emails_id_seq OWNED BY sent_emails.id;
 
 
 --
--- Name: silenced_emails; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE silenced_emails (
-    id integer NOT NULL,
-    email character varying NOT NULL
-);
-
-
---
 -- Name: silenced_emails_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE silenced_emails_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -11591,22 +12163,6 @@ CREATE SEQUENCE silenced_emails_id_seq
 --
 
 ALTER SEQUENCE silenced_emails_id_seq OWNED BY silenced_emails.id;
-
-
---
--- Name: skin_textures; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE skin_textures (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    skin_id integer NOT NULL,
-    texture_id integer NOT NULL,
-    textured_element_position integer NOT NULL,
-    texture_skin_position integer NOT NULL,
-    user_config character varying,
-    element character varying NOT NULL
-);
 
 
 --
@@ -11628,24 +12184,6 @@ ALTER SEQUENCE skin_textures_id_seq OWNED BY skin_textures.id;
 
 
 --
--- Name: skins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE skins (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    hid character varying NOT NULL,
-    user_id integer NOT NULL,
-    is_public boolean DEFAULT false NOT NULL,
-    "type" character varying NOT NULL,
-    file character varying,
-    version integer DEFAULT 0 NOT NULL,
-    intelliskin_header character varying,
-    intelliskin_favicon character varying
-);
-
-
---
 -- Name: skins_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11661,26 +12199,6 @@ CREATE SEQUENCE skins_id_seq
 --
 
 ALTER SEQUENCE skins_id_seq OWNED BY skins.id;
-
-
---
--- Name: slog_entries; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE slog_entries (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    type_id integer NOT NULL,
-    info character varying NOT NULL,
-    headline character varying NOT NULL,
-    request text,
-    reporter_user_id integer,
-    reviewer_user_id integer,
-    long_version character varying,
-    short_version character varying,
-    completed_on timestamp without time zone,
-    scope integer
-);
 
 
 --
@@ -11702,31 +12220,6 @@ ALTER SEQUENCE slog_entries_id_seq OWNED BY slog_entries.id;
 
 
 --
--- Name: slog_visits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE slog_visits (
-    user_id integer NOT NULL,
-    lastvisit_on timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
--- Name: sold_products; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE sold_products (
-    id integer NOT NULL,
-    product_id integer NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    price_paid numeric(14,2) NOT NULL,
-    used boolean DEFAULT false NOT NULL,
-    "type" character varying
-);
-
-
---
 -- Name: sold_products_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11745,19 +12238,6 @@ ALTER SEQUENCE sold_products_id_seq OWNED BY sold_products.id;
 
 
 --
--- Name: textures; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE textures (
-    id integer NOT NULL,
-    name character varying,
-    generator character varying NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    valid_element_selectors character varying
-);
-
-
---
 -- Name: textures_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11773,109 +12253,6 @@ CREATE SEQUENCE textures_id_seq
 --
 
 ALTER SEQUENCE textures_id_seq OWNED BY textures.id;
-
-
-SET default_with_oids = true;
-
---
--- Name: tracker_items; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE tracker_items (
-    id integer NOT NULL,
-    content_id integer NOT NULL,
-    user_id integer NOT NULL,
-    lastseen_on timestamp without time zone DEFAULT now() NOT NULL,
-    is_tracked boolean DEFAULT false NOT NULL,
-    notification_sent_on timestamp without time zone
-);
-
-
---
--- Name: tracker_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE tracker_items_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: tracker_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE tracker_items_id_seq OWNED BY tracker_items.id;
-
-
---
--- Name: treated_visitors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE treated_visitors_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
-SET default_with_oids = false;
-
---
--- Name: treated_visitors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE treated_visitors (
-    id integer DEFAULT nextval('treated_visitors_id_seq'::regclass) NOT NULL,
-    ab_test_id integer NOT NULL,
-    visitor_id character varying NOT NULL,
-    treatment integer NOT NULL,
-    user_id integer
-);
-
-
---
--- Name: tutorials; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE tutorials (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    description text NOT NULL,
-    main text NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    approved_by_user_id integer,
-    tutorials_category_id integer NOT NULL,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    home_image character varying,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: tutorials_categories; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE tutorials_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    tutorials_count integer DEFAULT 0
-);
 
 
 --
@@ -11915,18 +12292,6 @@ ALTER SEQUENCE tutorials_id_seq OWNED BY tutorials.id;
 
 
 --
--- Name: user_login_changes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE user_login_changes (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    old_login character varying NOT NULL
-);
-
-
---
 -- Name: user_login_changes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11945,122 +12310,11 @@ ALTER SEQUENCE user_login_changes_id_seq OWNED BY user_login_changes.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE users (
-    id integer NOT NULL,
-    "login" character varying(80),
-    "password" character varying(40),
-    validkey character varying(40),
-    email character varying(100) DEFAULT ''::character varying NOT NULL,
-    newemail character varying(100),
-    ipaddr character varying(15) DEFAULT ''::character varying,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_at timestamp without time zone DEFAULT now() NOT NULL,
-    firstname character varying DEFAULT ''::character varying,
-    lastname character varying DEFAULT ''::character varying,
-    image bytea,
-    lastseen_on timestamp without time zone DEFAULT now() NOT NULL,
-    faction_id integer,
-    faction_last_changed_on timestamp without time zone,
-    avatar_id integer,
-    city character varying,
-    homepage character varying,
-    sex smallint,
-    msn character varying,
-    icq character varying,
-    send_global_announces boolean DEFAULT true NOT NULL,
-    birthday date,
-    cache_karma_points integer,
-    irc character varying,
-    country_id integer,
-    photo character varying,
-    hw_mouse character varying,
-    hw_processor character varying,
-    hw_motherboard character varying,
-    hw_ram character varying,
-    hw_hdd character varying,
-    hw_graphiccard character varying,
-    hw_soundcard character varying,
-    hw_headphones character varying,
-    hw_monitor character varying,
-    hw_connection character varying,
-    description text,
-    is_superadmin boolean DEFAULT false NOT NULL,
-    comments_count integer DEFAULT 0 NOT NULL,
-    referer_user_id integer,
-    cache_faith_points integer,
-    notifications_global boolean DEFAULT true NOT NULL,
-    notifications_newmessages boolean DEFAULT true NOT NULL,
-    notifications_newregistrations boolean DEFAULT true NOT NULL,
-    notifications_trackerupdates boolean DEFAULT true NOT NULL,
-    xfire character varying,
-    cache_unread_messages integer DEFAULT 0,
-    resurrected_by_user_id integer,
-    resurrection_started_on timestamp without time zone,
-    using_tracker boolean DEFAULT false NOT NULL,
-    secret character(32),
-    cash numeric(14,2) DEFAULT 0.00 NOT NULL,
-    lastcommented_on timestamp without time zone,
-    global_bans integer DEFAULT 0 NOT NULL,
-    last_clan_id integer,
-    antiflood_level smallint DEFAULT -1 NOT NULL,
-    last_competition_id integer,
-    competition_roster character varying,
-    enable_competition_indicator boolean DEFAULT false NOT NULL,
-    is_hq boolean DEFAULT false NOT NULL,
-    enable_profile_signatures boolean DEFAULT false NOT NULL,
-    profile_signatures_count integer DEFAULT 0 NOT NULL,
-    wii_code character(16),
-    email_public boolean DEFAULT false NOT NULL,
-    gamertag character varying,
-    googletalk character varying,
-    yahoo_im character varying,
-    notifications_newprofilesignature boolean DEFAULT true NOT NULL,
-    tracker_autodelete_old_contents boolean DEFAULT true NOT NULL,
-    comment_adds_to_tracker_enabled boolean DEFAULT true NOT NULL,
-    cache_remaining_rating_slots integer,
-    has_seen_tour boolean DEFAULT false NOT NULL,
-    is_bot boolean DEFAULT false NOT NULL,
-    admin_permissions character varying DEFAULT '00000'::bpchar NOT NULL,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_is_faction_leader boolean DEFAULT false NOT NULL,
-    profile_last_updated_on timestamp without time zone,
-    visitor_id character varying,
-    comments_valorations_type_id integer,
-    comments_valorations_strength numeric(10,2),
-    enable_comments_sig boolean DEFAULT false NOT NULL,
-    comments_sig character varying,
-    comment_show_sigs boolean,
-    has_new_friend_requests boolean DEFAULT false NOT NULL,
-    default_portal character varying,
-    emblems_mask character varying,
-    random_id double precision DEFAULT random(),
-    is_staff boolean DEFAULT false NOT NULL,
-    pending_slog integer DEFAULT 0 NOT NULL
-);
-
-
---
--- Name: users_actions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE users_actions (
-    id integer NOT NULL,
-    created_on timestamp without time zone NOT NULL,
-    user_id integer,
-    type_id integer NOT NULL,
-    data character varying,
-    object_id integer
-);
-
-
---
 -- Name: users_actions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE users_actions_id_seq
+    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12072,19 +12326,6 @@ CREATE SEQUENCE users_actions_id_seq
 --
 
 ALTER SEQUENCE users_actions_id_seq OWNED BY users_actions.id;
-
-
---
--- Name: users_emblems; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE users_emblems (
-    id integer NOT NULL,
-    created_on date DEFAULT (now())::date NOT NULL,
-    user_id integer,
-    emblem character varying NOT NULL,
-    details character varying
-);
 
 
 --
@@ -12103,20 +12344,6 @@ CREATE SEQUENCE users_emblems_id_seq
 --
 
 ALTER SEQUENCE users_emblems_id_seq OWNED BY users_emblems.id;
-
-
---
--- Name: users_guids; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE users_guids (
-    id integer NOT NULL,
-    guid character varying NOT NULL,
-    game_id integer NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    reason character varying
-);
 
 
 --
@@ -12156,24 +12383,10 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
--- Name: users_lastseen_ips; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE users_lastseen_ips (
-    id integer NOT NULL,
-    created_on timestamp without time zone NOT NULL,
-    lastseen_on timestamp without time zone NOT NULL,
-    user_id integer NOT NULL,
-    ip inet NOT NULL
-);
-
-
---
 -- Name: users_lastseen_ips_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE users_lastseen_ips_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12188,23 +12401,11 @@ ALTER SEQUENCE users_lastseen_ips_id_seq OWNED BY users_lastseen_ips.id;
 
 
 --
--- Name: users_newsfeeds; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE users_newsfeeds (
-    id integer NOT NULL,
-    created_on timestamp without time zone NOT NULL,
-    user_id integer,
-    summary character varying NOT NULL,
-    users_action_id integer
-);
-
-
---
 -- Name: users_newsfeeds_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
 CREATE SEQUENCE users_newsfeeds_id_seq
+    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12216,18 +12417,6 @@ CREATE SEQUENCE users_newsfeeds_id_seq
 --
 
 ALTER SEQUENCE users_newsfeeds_id_seq OWNED BY users_newsfeeds.id;
-
-
---
--- Name: users_preferences; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE users_preferences (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    name character varying NOT NULL,
-    value character varying
-);
 
 
 --
@@ -12249,19 +12438,6 @@ ALTER SEQUENCE users_preferences_id_seq OWNED BY users_preferences.id;
 
 
 --
--- Name: users_roles; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE users_roles (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    "role" character varying NOT NULL,
-    role_data character varying,
-    created_on timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
 -- Name: users_roles_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -12280,39 +12456,6 @@ ALTER SEQUENCE users_roles_id_seq OWNED BY users_roles.id;
 
 
 SET search_path = stats, pg_catalog;
-
---
--- Name: ads; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
---
-
-CREATE TABLE ads (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    referer character varying,
-    user_id integer,
-    user_agent character varying,
-    portal_id integer,
-    url character varying NOT NULL,
-    element_id character varying,
-    ip inet NOT NULL,
-    visitor_id character varying,
-    session_id character varying
-);
-
-
---
--- Name: ads_daily; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
---
-
-CREATE TABLE ads_daily (
-    id integer NOT NULL,
-    ads_slots_instance_id integer,
-    created_on date NOT NULL,
-    hits integer NOT NULL,
-    ctr double precision NOT NULL,
-    pageviews integer NOT NULL
-);
-
 
 --
 -- Name: ads_daily_id_seq; Type: SEQUENCE; Schema: stats; Owner: -
@@ -12337,6 +12480,7 @@ ALTER SEQUENCE ads_daily_id_seq OWNED BY ads_daily.id;
 --
 
 CREATE SEQUENCE ads_id_seq
+    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12351,43 +12495,11 @@ ALTER SEQUENCE ads_id_seq OWNED BY ads.id;
 
 
 --
--- Name: bandit_treatments; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
---
-
-CREATE TABLE bandit_treatments (
-    id integer NOT NULL,
-    behaviour_class character varying NOT NULL,
-    abtest_treatment character varying NOT NULL,
-    round integer DEFAULT -1 NOT NULL,
-    lever0_reward character varying,
-    lever1_reward character varying,
-    lever2_reward character varying,
-    lever3_reward character varying,
-    lever4_reward character varying,
-    lever5_reward character varying,
-    lever6_reward character varying,
-    lever7_reward character varying,
-    lever8_reward character varying,
-    lever9_reward character varying,
-    lever10_reward character varying,
-    lever11_reward character varying,
-    lever12_reward character varying,
-    lever13_reward character varying,
-    lever14_reward character varying,
-    lever15_reward character varying,
-    lever16_reward character varying,
-    lever17_reward character varying,
-    lever18_reward character varying,
-    lever19_reward character varying,
-    lever20_reward character varying
-);
-
-
---
 -- Name: bandit_treatments_id_seq; Type: SEQUENCE; Schema: stats; Owner: -
 --
 
 CREATE SEQUENCE bandit_treatments_id_seq
+    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12399,18 +12511,6 @@ CREATE SEQUENCE bandit_treatments_id_seq
 --
 
 ALTER SEQUENCE bandit_treatments_id_seq OWNED BY bandit_treatments.id;
-
-
---
--- Name: bets_results; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
---
-
-CREATE TABLE bets_results (
-    id integer NOT NULL,
-    bet_id integer NOT NULL,
-    user_id integer NOT NULL,
-    net_ammount numeric(10,2)
-);
 
 
 --
@@ -12432,80 +12532,6 @@ ALTER SEQUENCE bets_results_id_seq OWNED BY bets_results.id;
 
 
 --
--- Name: dates; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
---
-
-CREATE TABLE dates (
-    date date NOT NULL
-);
-
-
---
--- Name: general; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
---
-
-CREATE TABLE general (
-    created_on date DEFAULT (now())::date NOT NULL,
-    users_total integer DEFAULT 0 NOT NULL,
-    users_confirmed integer DEFAULT 0 NOT NULL,
-    users_active integer DEFAULT 0 NOT NULL,
-    users_banned integer DEFAULT 0 NOT NULL,
-    users_disabled integer DEFAULT 0 NOT NULL,
-    karma_diff integer DEFAULT 0.0 NOT NULL,
-    faith_diff integer DEFAULT 0 NOT NULL,
-    cash_diff numeric(10,4) DEFAULT 0 NOT NULL,
-    new_comments integer DEFAULT 0 NOT NULL,
-    refered_hits integer DEFAULT 0 NOT NULL,
-    avg_users_online double precision DEFAULT 0 NOT NULL,
-    users_unconfirmed integer DEFAULT 0 NOT NULL,
-    users_zombie integer DEFAULT 0 NOT NULL,
-    users_resurrected integer DEFAULT 0 NOT NULL,
-    users_shadow integer DEFAULT 0 NOT NULL,
-    users_deleted integer DEFAULT 0 NOT NULL,
-    users_unconfirmed_1w integer DEFAULT 0 NOT NULL,
-    users_unconfirmed_2w integer DEFAULT 0 NOT NULL,
-    new_clans integer,
-    new_closed_topics integer,
-    new_clans_portals integer,
-    avg_page_render_time real,
-    users_generating_karma integer,
-    karma_per_user real,
-    stddev_page_render_time real,
-    active_factions_portals integer,
-    completed_competitions_matches integer,
-    active_clans_portals integer,
-    proxy_errors integer,
-    new_factions integer,
-    http_401 integer,
-    http_500 integer,
-    http_404 integer,
-    avg_db_queries_per_request double precision,
-    stddev_db_queries_per_request double precision,
-    requests integer,
-    database_size bigint,
-    sent_emails integer,
-    downloaded_downloads_count integer
-);
-
-
---
--- Name: pageloadtime; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
---
-
-CREATE TABLE pageloadtime (
-    controller character varying,
-    "action" character varying,
-    "time" numeric(10,2),
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    id integer NOT NULL,
-    portal_id integer,
-    http_status integer,
-    db_queries integer,
-    db_rows integer
-);
-
-
---
 -- Name: pageloadtime_id_seq; Type: SEQUENCE; Schema: stats; Owner: -
 --
 
@@ -12521,33 +12547,6 @@ CREATE SEQUENCE pageloadtime_id_seq
 --
 
 ALTER SEQUENCE pageloadtime_id_seq OWNED BY pageloadtime.id;
-
-
---
--- Name: pageviews; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
---
-
-CREATE TABLE pageviews (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    ip inet NOT NULL,
-    referer character varying,
-    controller character varying,
-    "action" character varying,
-    medium character varying,
-    campaign character varying,
-    model_id character varying,
-    url character varying,
-    visitor_id character varying,
-    session_id character varying,
-    user_agent character varying,
-    user_id integer,
-    flash_error character varying,
-    abtest_treatment character varying,
-    portal_id integer,
-    source character varying,
-    ads_shown character varying
-);
 
 
 --
@@ -12569,26 +12568,11 @@ ALTER SEQUENCE pageviews_id_seq OWNED BY pageviews.id;
 
 
 --
--- Name: portals; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
---
-
-CREATE TABLE portals (
-    id integer NOT NULL,
-    created_on date NOT NULL,
-    portal_id integer,
-    karma integer NOT NULL,
-    pageviews integer,
-    visits integer,
-    unique_visitors integer,
-    unique_visitors_reg integer
-);
-
-
---
 -- Name: portals_stats_id_seq; Type: SEQUENCE; Schema: stats; Owner: -
 --
 
 CREATE SEQUENCE portals_stats_id_seq
+    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12600,19 +12584,6 @@ CREATE SEQUENCE portals_stats_id_seq
 --
 
 ALTER SEQUENCE portals_stats_id_seq OWNED BY portals.id;
-
-
---
--- Name: users_karma_daily_by_portal; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
---
-
-CREATE TABLE users_karma_daily_by_portal (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    portal_id integer,
-    karma integer,
-    created_on date NOT NULL
-);
 
 
 --
@@ -13215,13 +13186,6 @@ ALTER TABLE groups ALTER COLUMN id SET DEFAULT nextval('groups_id_seq'::regclass
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE groups_messages ALTER COLUMN id SET DEFAULT nextval('groups_messages_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE images ALTER COLUMN id SET DEFAULT nextval('images_id_seq'::regclass);
 
 
@@ -13731,6 +13695,14 @@ SET search_path = archive, pg_catalog;
 
 ALTER TABLE ONLY pageviews
     ADD CONSTRAINT pageviewspkey PRIMARY KEY (id);
+
+
+--
+-- Name: tracker_items_pkey; Type: CONSTRAINT; Schema: archive; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY tracker_items
+    ADD CONSTRAINT tracker_items_pkey PRIMARY KEY (id);
 
 
 --
@@ -14728,14 +14700,6 @@ ALTER TABLE ONLY gmtv_channels
 
 
 --
--- Name: groups_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY groups_messages
-    ADD CONSTRAINT groups_messages_pkey PRIMARY KEY (id);
-
-
---
 -- Name: groups_name_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -15405,7 +15369,7 @@ CREATE INDEX anonymous_users_lastseen ON anonymous_users USING btree (lastseen_o
 -- Name: autologin_keys_key; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX autologin_keys_key ON autologin_keys USING btree ("key");
+CREATE UNIQUE INDEX autologin_keys_key ON autologin_keys USING btree (key);
 
 
 --
@@ -15745,24 +15709,10 @@ CREATE UNIQUE INDEX contents_locks_uniq ON contents_locks USING btree (content_i
 
 
 --
--- Name: contents_recommendations_content_id_sender_user_id_receiver_use; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX contents_recommendations_content_id_sender_user_id_receiver_use ON contents_recommendations USING btree (content_id, sender_user_id, receiver_user_id);
-
-
---
--- Name: contents_recommendations_receiver_user_id_marked_as_bad; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX contents_recommendations_receiver_user_id_marked_as_bad ON contents_recommendations USING btree (receiver_user_id, marked_as_bad);
-
-
---
 -- Name: contents_recommendations_seen_on_content_id_receiver_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX contents_recommendations_seen_on_content_id_receiver_user_id ON contents_recommendations USING btree (content_id, receiver_user_id);
+CREATE INDEX contents_recommendations_seen_on_content_id_receiver_user_id ON contents_recommendations USING btree (content_id, receiver_user_id);
 
 
 --
@@ -15770,6 +15720,13 @@ CREATE UNIQUE INDEX contents_recommendations_seen_on_content_id_receiver_user_id
 --
 
 CREATE INDEX contents_recommendations_sender_user_id ON contents_recommendations USING btree (sender_user_id);
+
+
+--
+-- Name: contents_recommendations_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX contents_recommendations_uniq ON contents_recommendations USING btree (content_id, sender_user_id, receiver_user_id);
 
 
 --
@@ -16098,7 +16055,7 @@ CREATE INDEX images_user_id ON images USING btree (user_id);
 -- Name: index_bj_config_on_hostname_and_key; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX index_bj_config_on_hostname_and_key ON bj_config USING btree (hostname, "key");
+CREATE UNIQUE INDEX index_bj_config_on_hostname_and_key ON bj_config USING btree (hostname, key);
 
 
 --
@@ -16175,7 +16132,7 @@ CREATE INDEX news_user_id ON news USING btree (user_id);
 -- Name: outstanding_entities_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX outstanding_entities_uniq ON outstanding_entities USING btree ("type", portal_id, active_on);
+CREATE UNIQUE INDEX outstanding_entities_uniq ON outstanding_entities USING btree (type, portal_id, active_on);
 
 
 --
@@ -16224,7 +16181,7 @@ CREATE UNIQUE INDEX portal_hits_uniq ON portal_hits USING btree (portal_id, date
 -- Name: portals_name_code_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX portals_name_code_type ON portals USING btree (name, code, "type");
+CREATE UNIQUE INDEX portals_name_code_type ON portals USING btree (name, code, type);
 
 
 --
@@ -16469,14 +16426,14 @@ CREATE INDEX users_lastseen ON users USING btree (lastseen_on);
 -- Name: users_lower_all; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX users_lower_all ON users USING btree (lower(("login")::text), lower((email)::text), lower((firstname)::text), lower((lastname)::text), ipaddr);
+CREATE INDEX users_lower_all ON users USING btree (lower((login)::text), lower((email)::text), lower((firstname)::text), lower((lastname)::text), ipaddr);
 
 
 --
 -- Name: users_lower_login; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX users_lower_login ON users USING btree (lower(("login")::text));
+CREATE INDEX users_lower_login ON users USING btree (lower((login)::text));
 
 
 --
@@ -16504,21 +16461,21 @@ CREATE INDEX users_random_id ON users USING btree (random_id);
 -- Name: users_roles_role; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX users_roles_role ON users_roles USING btree ("role");
+CREATE INDEX users_roles_role ON users_roles USING btree (role);
 
 
 --
 -- Name: users_roles_role_role_data; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX users_roles_role_role_data ON users_roles USING btree ("role", role_data);
+CREATE INDEX users_roles_role_role_data ON users_roles USING btree (role, role_data);
 
 
 --
 -- Name: users_roles_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX users_roles_uniq ON users_roles USING btree (user_id, "role", role_data);
+CREATE UNIQUE INDEX users_roles_uniq ON users_roles USING btree (user_id, role, role_data);
 
 
 --
@@ -16553,7 +16510,7 @@ CREATE UNIQUE INDEX users_uniq_lower_email ON users USING btree (lower((email)::
 -- Name: users_uniq_lower_login; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX users_uniq_lower_login ON users USING btree (lower(("login")::text));
+CREATE UNIQUE INDEX users_uniq_lower_login ON users USING btree (lower((login)::text));
 
 
 --
@@ -17994,30 +17951,6 @@ ALTER TABLE ONLY gmtv_channels
 
 ALTER TABLE ONLY gmtv_channels
     ADD CONSTRAINT gmtv_channels_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: groups_messages_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY groups_messages
-    ADD CONSTRAINT groups_messages_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES groups_messages(id) MATCH FULL;
-
-
---
--- Name: groups_messages_root_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY groups_messages
-    ADD CONSTRAINT groups_messages_root_id_fkey FOREIGN KEY (root_id) REFERENCES groups_messages(id) MATCH FULL;
-
-
---
--- Name: groups_messages_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY groups_messages
-    ADD CONSTRAINT groups_messages_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 
 
 --
