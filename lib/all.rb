@@ -44,13 +44,24 @@ end
 Infinity = 1.0/0
 
 module GmSys
+  class DjJobWrapper
+    def initialize(task)
+      @task = task
+    end
+    
+    def perform
+      eval(@task)
+    end
+  end
+  
   def self.job(task)
     # performs or schedules a lengthy job depending on the current configuration 
     if App.enable_bgjobs?
-      Bj.submit('./script/runner /dev/stdin', 
-                :rails_env => 'production',
-                :stdin => task,
-                :tag => task)
+      Delayed::Job.enqueue DjJobWrapper.new(task)
+      #Bj.submit('./script/runner /dev/stdin', 
+      #          :rails_env => 'production',
+      #          :stdin => task,
+      #          :tag => task)
     else
       eval(task)
     end
