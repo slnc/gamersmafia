@@ -12,7 +12,7 @@ env_config = nconfig.send(mode)
 ::App = OpenStruct.new(env_config)
 
 module AppR
-  def self.ondisk_svn_version
-    File.exists?("#{RAILS_ROOT}/version") ? File.open("#{RAILS_ROOT}/version").read.strip : 'HEAD'
+  def self.ondisk_git_version
+    File.exists?("#{RAILS_ROOT}/REVISION") ? File.open("#{RAILS_ROOT}/REVISION").read.strip[0..6] : 'HEAD'
   end
 end
