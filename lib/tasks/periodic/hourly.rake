@@ -2,6 +2,7 @@ namespace :gm do
   desc "Hourly operations"
   task :hourly => :environment do
     require 'app/controllers/application.rb'
+    GmSys.kill_workers # just in case they leak, a refresh is not bad at all
     GmSys.job('Competitions.update_user_competitions_indicators')
     Notification.check_system_emails
     GmSys.command("find #{FRAGMENT_CACHE_PATH}/site/_online_state -type f -mmin +2 -exec rm {} \\\;")

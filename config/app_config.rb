@@ -13,6 +13,10 @@ env_config = nconfig.send(mode)
 
 module AppR
   def self.ondisk_git_version
+    @_cache_v  ||= begin
     File.exists?("#{RAILS_ROOT}/REVISION") ? File.open("#{RAILS_ROOT}/REVISION").read.strip[0..6] : 'HEAD'
+      ActiveRecord::Base.db_query("UPDATE global_vars set svn_revision = '#{v}'")
+      puts "hola #{v}"
+      end
   end
 end
