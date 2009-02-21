@@ -28,4 +28,14 @@ class BlogsController < ComunidadController
   def ranking
     @title = "Ranking de autoridad"
   end
+  
+  def close
+    obj = Blogentry.find(params[:id])
+    require_user_can_edit(obj)
+    
+    obj.update_attributes(:closed => true) unless obj.closed
+    
+    flash[:notice] = "#{Cms::CLASS_NAMES['Blogentry']} cerrado a comentarios."
+    redirect_to gmurl(obj)
+  end
 end
