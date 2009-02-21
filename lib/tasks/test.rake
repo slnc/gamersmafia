@@ -42,6 +42,18 @@ end
     Rake::Task['db:test:real_prepare'].invoke
     Rake::Task['gm:update_default_skin_styles'].invoke
     Rake::Task['ci:setup:testunit'].invoke
+    Rake::Task['test'].invoke
+  end
+  
+  task :bamboo_launch_rcov do
+    raise "NO" unless `hostname`.strip == 'balrog'
+    `rm -r #{RAILS_ROOT}/coverage/*` if File.exists?("#{RAILS_ROOT}/coverage")
+    `rm -r #{RAILS_ROOT}/public/storage/*` if File.exists?("#{RAILS_ROOT}/public/storage")
+    # `svn up #{RAILS_ROOT}/public/storage`
+    #`find /home/slnc/bamboo/xml-data/build-dir/GM-TRUNK/public/storage/ -type f -exec rm {} \\;`
+    Rake::Task['db:test:real_prepare'].invoke
+    Rake::Task['gm:update_default_skin_styles'].invoke
+    Rake::Task['ci:setup:testunit'].invoke
     Rake::Task['test:rcov'].invoke
   end
   
