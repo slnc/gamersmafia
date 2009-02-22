@@ -1,3 +1,21 @@
+begin
+class Tidybuf
+
+  # Mimic TidyBuffer.
+  #
+  TidyBuffer = struct [
+    "int* allocator",
+    "byte* bp",
+    "uint size",
+    "uint allocated",
+    "uint next"
+  ]
+end
+rescue
+end
+
+
+
 require 'RMagick'
 require 'net/http'
 require 'open-uri'
