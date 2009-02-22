@@ -37,7 +37,7 @@ UsersActionObserver.instance
 
 TIMEZONE = '+0100'
 
-FileUtils.mkdir("#{RAILS_ROOT}/public/storage/skins") unless File.exists?("#{RAILS_ROOT}/public/storage/skins")
+FileUtils.mkdir_p("#{RAILS_ROOT}/public/storage/skins") unless File.exists?("#{RAILS_ROOT}/public/storage/skins")
 ActiveRecord::Base.partial_updates = false if ActiveRecord::Base.respond_to?(:partial_updates) 
 
 raise "libtidy not found" unless File.exists?(App.tidy_path)
