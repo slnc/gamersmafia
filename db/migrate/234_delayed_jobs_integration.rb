@@ -1,8 +1,8 @@
 class DelayedJobsIntegration < ActiveRecord::Migration
   def self.up
-    slonik_execute "CREATE TABLE public.delayed_jobs
+    execute "CREATE TABLE public.delayed_jobs
 (
-  id integer NOT NULL DEFAULT nextval('delayed_jobs_id_seq'::regclass),
+  id serial,
   priority integer DEFAULT 0,
   attempts integer DEFAULT 0,
   \"handler\" text,
@@ -17,7 +17,7 @@ class DelayedJobsIntegration < ActiveRecord::Migration
 ) 
 WITHOUT OIDS;"
     
-    slonik_execute "alter table global_vars alter column svn_revision type varchar;"
+    execute "alter table global_vars alter column svn_revision type varchar;"
   end
   
   def self.down
