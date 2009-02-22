@@ -7,6 +7,8 @@ class Content < ActiveRecord::Base
   has_many :tracker_items, :dependent => :destroy
   has_many :contents_locks, :dependent => :destroy
   has_many :publishing_decisions
+  has_many :contents_recommendations, :dependent => :destroy
+  
   after_save do |m| 
     m.contents_locks.clear if m.contents_locks
     old_url = m.url 
@@ -47,6 +49,9 @@ class Content < ActiveRecord::Base
       end
     end
     
+    if self.slnc_changed?(:state) && self.state != Cms::PUBLISHED
+      self.contents_recommendations.each { |cr| cr.destroy }
+    end
     self.name = rc.resolve_hid if self.name != rc.resolve_hid
     self.is_public = rc.is_public?
     self.user_id = rc.user_id

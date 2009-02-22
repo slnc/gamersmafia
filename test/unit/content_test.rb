@@ -27,6 +27,9 @@ class ContentTest < Test::Unit::TestCase
   
   def test_del_recommendations_after_delete_content
     c = Content.find(:first, :conditions => "state = #{Cms::PUBLISHED}")
-    cr = ContentsRecommendation.create(:user_id => 1, )
+    cr = ContentsRecommendation.create(:sender_user_id => 1, :content_id => c.id, :receiver_user_id => 3)
+    assert !cr.new_record?
+    assert c.update_attributes(:state => Cms::DELETED)
+    assert ContentsRecommendation.find_by_id(cr.id).nil?
   end
 end
