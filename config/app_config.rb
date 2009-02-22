@@ -13,6 +13,14 @@ env_config = nconfig.send(mode)
 
 module AppR
   def self.ondisk_git_version
-    File.exists?("#{RAILS_ROOT}/REVISION") ? File.open("#{RAILS_ROOT}/REVISION").read.strip[0..6] : 'HEAD'
+    @_cache_v  ||= begin
+      v = File.exists?("#{RAILS_ROOT}/REVISION") ? File.open("#{RAILS_ROOT}/REVISION").read.strip[0..6] : 'HEAD'
+      # esto es necesario porque en bamboo peta si no
+      begin
+        ActiveRecord::Base.db_query("UPDATE global_vars set svn_revision = '#{v}'")
+      rescue
+      end 
+v
+ end
   end
 end
