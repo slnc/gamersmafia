@@ -62,9 +62,9 @@ namespace(:customs) do
 end
 
 before "deploy:update","customs:check_clean_wc"
+after "deploy:update","customs:updated_app"
 after "deploy:setup","customs:setup"
 after "deploy:symlink","customs:symlink"
-after "deploy:symlink","customs:updated_app"
 #after "deploy:migrations","customs:updated_app"
 # Hasta que no esté seguro de que funciona bien el nuevo sistema de 
 # comprobación de wc antes de updatear no activo esto:
