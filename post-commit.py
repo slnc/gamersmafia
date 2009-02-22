@@ -39,5 +39,3 @@ if __name__ == '__main__':
         time.sleep(1)
         print 'main Awaiting..'
     print 'main finished'
-
-# dumm
