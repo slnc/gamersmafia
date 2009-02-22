@@ -45,7 +45,7 @@ common: &common
 # basic roles (usable)
 production: &production
   enable_bgjobs?: true
-  enable_support_db?: true
+  enable_support_db?: false
   enable_global_notifications?: true
   enable_google_analytics?: true
   system_mail_user: nagato@gamersmafia.com
