@@ -2189,7 +2189,7 @@ CREATE TABLE global_vars (
     id integer NOT NULL,
     online_anonymous integer DEFAULT 0 NOT NULL,
     online_registered integer DEFAULT 0 NOT NULL,
-    svn_revision integer,
+    svn_revision character varying,
     ads_slots_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     gmtv_channels_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     pending_contents integer DEFAULT 0 NOT NULL

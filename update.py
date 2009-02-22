@@ -12,13 +12,6 @@ wc_path_clean = '/home/httpd/websites/gamersmafia/current'
 # END CONFIG
 
 
-def getText(nodelist):
-    rc = ""
-    for node in nodelist:
-        if node.nodeType == node.TEXT_NODE:
-            rc = rc + node.data
-    return rc
-
 def compress_file(src, dst):
     p = os.popen('java -jar script/yuicompressor-2.3.6.jar %s -o %s --line-break 500' % (src, dst))
 
@@ -63,6 +56,9 @@ def send_changelog_email():
     server.quit()
     
     open('%s/PREV_REVISION' % wc_path_clean, 'w').write('%s' % cur)
+    os.popen('git add PREV_REVISION')
+    os.popen('git commit -m "new deployment: %s"' % cur)
+    os.popen('git push origin production')
 
 def app_update():
 	output_dep = os.popen('rake gm:after_deploy').read()
