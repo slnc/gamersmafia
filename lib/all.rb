@@ -95,7 +95,7 @@ module GmSys
       if running?(m[1].to_i)
         working_workers += 1
       else
-        File.unlink("#{RAILS_ROOT}/tmp/pids/#{fname}")
+        File.unlink(fname)
       end
     end
     
