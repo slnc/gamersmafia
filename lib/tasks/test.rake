@@ -99,7 +99,7 @@ namespace :test do
       
       desc "Batería de tests de rendimiento"
       task :performance do
-        Rake::Task['test:bamboo'].invoke
+        Rake::Task['test:bamboo:init'].invoke
         raise "TODO"
       end
     end
