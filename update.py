@@ -65,6 +65,6 @@ def app_update():
 	print output_dep
 
 if __name__ == '__main__':
-    #compress_js()
+    compress_js()
     send_changelog_email()
-    #app_update()
+    app_update()
