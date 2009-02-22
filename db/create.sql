@@ -1685,43 +1685,6 @@ CREATE TABLE delayed_jobs (
 
 
 --
--- Name: delayed_jobs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE delayed_jobs (
-    id integer NOT NULL,
-    priority integer DEFAULT 0,
-    attempts integer DEFAULT 0,
-    "handler" text,
-    last_error character varying(255),
-    run_at timestamp without time zone,
-    locked_at timestamp without time zone,
-    failed_at timestamp without time zone,
-    locked_by character varying(255),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
-);
-
-
---
--- Name: delayed_jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE delayed_jobs_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: delayed_jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE delayed_jobs_id_seq OWNED BY delayed_jobs.id;
-
-
---
 -- Name: demo_mirrors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2226,7 +2189,7 @@ CREATE TABLE global_vars (
     id integer NOT NULL,
     online_anonymous integer DEFAULT 0 NOT NULL,
     online_registered integer DEFAULT 0 NOT NULL,
-    svn_revision character varying,
+    svn_revision integer,
     ads_slots_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     gmtv_channels_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     pending_contents integer DEFAULT 0 NOT NULL
@@ -13058,13 +13021,6 @@ ALTER TABLE delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_id_se
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE demo_mirrors ALTER COLUMN id SET DEFAULT nextval('demo_mirrors_id_seq'::regclass);
 
 
@@ -14402,14 +14358,6 @@ ALTER TABLE ONLY contents_versions
 
 ALTER TABLE ONLY countries
     ADD CONSTRAINT countries_pkey PRIMARY KEY (id);
-
-
---
--- Name: delayed_jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY delayed_jobs
-    ADD CONSTRAINT delayed_jobs_pkey PRIMARY KEY (id);
 
 
 --
