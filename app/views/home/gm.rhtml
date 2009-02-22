@@ -279,8 +279,53 @@ if @daily_img then %>
     </div>
 <% end -%>
 <% end -%>
+
+<% cache("/common/home/index/news_inet") do 
+nc = NewsCategory.find(:first, :conditions => 'code = \'inet\' AND id = root_id')
+%>
+    <div class="homebox">
+        <div id="home-offtopics" class="subheader first"><div><span>Offtopic</span></div></div>
+        <ul class="content-hid">
+<% 
+shown_offtopics = []
+@last_offtopics = nc.news.find(:published, :limit => 5, :order => 'created_on DESC')
+for offtopic in @last_offtopics
+  shown_offtopics << offtopic.unique_content.id 
+%>
+    <li id="content<%=offtopic.unique_content.id%>" class="new <%=oddclass%>"><%=link_to truncate(offtopic.title, 30), gmurl(offtopic)%></li>
+<% end %>
+</ul>
+<script type="text/javascript">contents = contents.concat(<%=shown_offtopics.join(',')%>);</script>
+    <div class="more"><a title="Ver más noticias offtopic" href="http://bazar.<%=App.domain%>/noticias">Más noticias de Internet &raquo;</a></div>
+    </div>
+<% end -%>
+
+
+
+      <div class="homebox">
+        <%=render :partial => 'daily_joy' %>
+      </div>
+
+<% cache('/common/home/index/curiosidades') do %>
+    <div class="homebox">
+        <div id="home-funthings" class="subheader first"><div><span>Curiosidades</span></div></div>
+        <ul class="content-hid">
+<% 
+shown_funthings = []
+@last_funthings = Funthing.find(:published, :order => 'created_on DESC LIMIT 5')
+for funthing in @last_funthings
+  shown_funthings << funthing.unique_content.id 
+%>
+    <li id="content<%=funthing.unique_content.id%>" class="new <%=oddclass%>"><%=link_to truncate(funthing.title, 30), gmurl(funthing)%></li>
+<% end %>
+</ul>
+<script type="text/javascript">contents = contents.concat(<%=shown_funthings.join(',')%>);</script>
+    <div class="more"><a title="Ver más curiosidades" href="/curiosidades">Más curiosidades &raquo;</a></div>
+    </div>
+<% end -%>
 	</div>
 <!-- end homebazar -->
+
 
     </div>
   </div>

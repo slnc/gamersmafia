@@ -46,9 +46,9 @@ module ActsAsContentBrowser
       # puts "http://#{request.host}#{request.request_uri} #{obj.unique_content.url}"
       # puts "http://#{request.host}#{request.request_uri}".index(obj.unique_content.url)
       ApplicationController.gmurl(obj.unique_content) if obj.unique_content.url.nil?
-      if "http://#{request.host}#{request.request_uri}".index(obj.unique_content.url).nil?
-        redirect_to(obj.unique_content.url, :status => 301) and return
-      end
+      #if "http://#{request.host}#{request.request_uri}".index(obj.unique_content.url).nil?
+      #  redirect_to(obj.unique_content.url, :status => 301) and return
+      #end
       @title = obj.resolve_hid
       # TODO si tiene categoría se la añadimos al navpath
       track_item(obj)
