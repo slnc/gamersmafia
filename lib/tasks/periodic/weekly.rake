@@ -30,7 +30,7 @@ having portal_id in (select id
                                         and id IN #{Faction.factions_ids_with_bigbosses}))
              AND sum(karma) > 0").each do |dbr|
       f = Faction.find_by_code(dbr['code'])
-      next unless f
+      next unless f && (f.boss || f.underboss)
       
       if f.boss && f.underboss
         ammount_boss = 0.05 * 0.6 * dbr['sum'].to_i
@@ -45,7 +45,7 @@ else next
       end
       # puts "#{f.code} #{ammount_boss} #{ammount_underboss}"
       # TODO tests de esto
-      Bank.transfer(:bank, f.boss, ammount_boss, "Sueldo de boss de la facción #{f.name}")
+      Bank.transfer(:bank, f.boss, ammount_boss, "Sueldo de boss de la facción #{f.name}") if ammount_boss
       Bank.transfer(:bank, f.underboss, ammount_underboss, "Sueldo de underboss de la facción #{f.name}") if ammount_underboss
     end
   end
