@@ -42,7 +42,7 @@ def send_changelog_email():
         prev = 'N/A'
         interval = ''
     
-    log = os.popen('echo -e `git log --pretty=format:"- %%s\\n%%b" %s production`' % interval).read()
+    log = os.system('echo -e `git log --pretty=format:"- %%s\\n%%b" %s production`' % interval).read()
 
     # send the email
     fromaddr = 'webmaster@gamersmafia.com'
