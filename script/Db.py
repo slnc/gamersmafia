@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import logging
 from time import time
 
@@ -212,7 +213,7 @@ class Db(object):
     def triggerConnection(self):
         if not self.db_conn:
             try:
-                self.db_conn = psycopg2.connect('dbname=gamersmafia user=postgres password=')
+                self.db_conn = psycopg2.connect('dbname=gamersmafia user=postgres password= host=/tmp/.s.PGSQL.5432')
             except psycopg2.OperationalError, inst:
                 logging.getLogger('app').critical('Unable to connect to db: %s' % inst)
                 raise
