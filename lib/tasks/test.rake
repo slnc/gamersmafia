@@ -32,14 +32,14 @@ end
   desc "Lanza las tasks necesarias para ejecutar todos los tests en bamboo"
   task :bamboo_launch do
     raise "NO" unless `hostname`.strip == 'balrog'
-    raise "branch not specified!" unless ENV['BAMBOO_BRANCH']
+    # raise "branch not specified!" unless ENV['BAMBOO_BRANCH']
     `rm -r #{RAILS_ROOT}/coverage/*` if File.exists?("#{RAILS_ROOT}/coverage")
     `rm -r #{RAILS_ROOT}/public/storage/*` if File.exists?("#{RAILS_ROOT}/public/storage")
-    `git branch --track #{ENV['BAMBOO_BRANCH']} origin/#{ENV['BAMBOO_BRANCH']}`
-    `git checkout #{ENV['BAMBOO_BRANCH']}`
+    #`git branch --track #{ENV['BAMBOO_BRANCH']} origin/#{ENV['BAMBOO_BRANCH']}`
+    #`git checkout #{ENV['BAMBOO_BRANCH']}`
     `git submodule init`
     `git submodule update`
-    `git pull origin`
+    #`git pull origin`
     Rake::Task['db:test:real_prepare'].invoke
     Rake::Task['gm:update_default_skin_styles'].invoke
     Rake::Task['ci:setup:testunit'].invoke
