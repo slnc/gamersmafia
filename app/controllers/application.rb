@@ -525,7 +525,7 @@ Request information:
       redirect_to("http://#{App.domain}", :status => 301)
       
       when ContentLocked
-      render(:layout => 'gm_default', :file => "#{RAILS_ROOT}/app/views/site/content_locked.rhtml", :status => '403 Forbidden')
+      render(:layout => 'portal_gm', :file => "#{RAILS_ROOT}/app/views/site/content_locked.rhtml", :status => '403 Forbidden')
       
       when AccessDenied
       http_401
