@@ -24,4 +24,9 @@ class ContentTest < Test::Unit::TestCase
     c = Content.find(1)
     assert !c.locked_for_user?(User.find(2))
   end
+  
+  def test_del_recommendations_after_delete_content
+    c = Content.find(:first, :conditions => "state = #{Cms::PUBLISHED}")
+    cr = ContentsRecommendation.create(:user_id => 1, )
+  end
 end

@@ -111,11 +111,11 @@ class Faction < ActiveRecord::Base
   
   def editors(content_type=nil)
     if content_type.nil?
-      UsersRole.find(:all, :conditions => "role = 'Editor' AND role_data LIKE '%faction_id: #{self.id}%\\n'", :include => :user, :order => 'lower(users.login)').collect do |ur| 
+      UsersRole.find(:all, :conditions => "role = 'Editor' AND role_data LIKE E'%faction_id: #{self.id}%\\n'", :include => :user, :order => 'lower(users.login)').collect do |ur| 
         [ContentType.find(ur.role_data_yaml[:content_type_id].to_i), ur.user] 
       end
     else
-      UsersRole.find(:all, :conditions => "role = 'Editor' AND role_data LIKE '%faction_id: #{self.id}%\\n' AND role_data LIKE '%content_type_id: #{content_type.id}%\\n'", :include => :user, :order => 'lower(users.login)').collect do |ur| 
+      UsersRole.find(:all, :conditions => "role = 'Editor' AND role_data LIKE E'%faction_id: #{self.id}%\\n' AND role_data LIKE E'%content_type_id: #{content_type.id}%\\n'", :include => :user, :order => 'lower(users.login)').collect do |ur| 
         ur.user 
       end
     end
@@ -134,14 +134,14 @@ class Faction < ActiveRecord::Base
   end
   
   def add_editor(user, content_type)
-    if UsersRole.count(:conditions => ["role = 'Editor' AND user_id = ? AND role_data LIKE '%%faction_id: #{self.id}\\n%%' AND role_data LIKE '%%content_type_id: #{content_type.id}\\n%%'", user.id]) == 0
+    if UsersRole.count(:conditions => ["role = 'Editor' AND user_id = ? AND role_data LIKE E'%%faction_id: #{self.id}\\n%%' AND role_data LIKE E'%%content_type_id: #{content_type.id}\\n%%'", user.id]) == 0
       ur = UsersRole.new(:role => 'Editor', :user_id => user.id, :role_data => {:faction_id => self.id, :content_type_id => content_type.id}.to_yaml)
       ur.save
     end
   end
   
   def del_editor(user, content_type)
-    ur = UsersRole.find(:first, :conditions => ["role = 'Editor' AND user_id = ? AND role_data LIKE '%%faction_id: #{self.id}\\n%%' AND role_data LIKE '%%content_type_id: #{content_type.id}\\n%%'", user.id])
+    ur = UsersRole.find(:first, :conditions => ["role = 'Editor' AND user_id = ? AND role_data LIKE E'%%faction_id: #{self.id}\\n%%' AND role_data LIKE E'%%content_type_id: #{content_type.id}\\n%%'", user.id])
     ur.destroy if ur
   end
   
@@ -179,7 +179,7 @@ class Faction < ActiveRecord::Base
   end
   
   def editors_total
-    UsersRole.count(:conditions => "role = 'Moderator' AND role_data LIKE '%%faction_id: #{self.id}\\\n%%'")
+    UsersRole.count(:conditions => "role = 'Moderator' AND role_data LIKE E'%%faction_id: #{self.id}\\\n%%'")
   end
   
   def moderators_total
@@ -459,7 +459,7 @@ class Faction < ActiveRecord::Base
     return true if user.is_superadmin || user.has_admin_permission?(:capo)
     if self.is_bigboss?(user)
       true
-    elsif UsersRole.count(:conditions => ["role = 'Editor' AND user_id = ? AND role_data LIKE '%%faction_id: #{self.id}\\n%%' AND role_data LIKE '%%content_type_id: #{content_type.id}\\n%%'", user.id]) != 0
+    elsif UsersRole.count(:conditions => ["role = 'Editor' AND user_id = ? AND role_data LIKE E'%%faction_id: #{self.id}\\n%%' AND role_data LIKE E'%%content_type_id: #{content_type.id}\\n%%'", user.id]) != 0
       true
     else
       false
