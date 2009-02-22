@@ -3,7 +3,7 @@ require 'lib/redefine_task'
 desc 'Batería de tests por defecto'
 redefine_task :test do
   got_error = false
-  %w(functionals helpers integration lib plugins scripts tasks units).each do |tpack|
+  %w(functionals helpers integration libs plugins scripts tasks units).each do |tpack|
     Rake::Task["test:#{tpack}"].invoke rescue got_error = true
   end
   
