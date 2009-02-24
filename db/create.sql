@@ -885,17 +885,6 @@ CREATE TABLE avatars (
 
 
 --
--- Name: babes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE babes (
-    id integer NOT NULL,
-    date date NOT NULL,
-    image_id integer NOT NULL
-);
-
-
---
 -- Name: ban_requests; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -997,70 +986,6 @@ CREATE TABLE bets_tickets (
     user_id integer NOT NULL,
     ammount numeric(14,2),
     created_on timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
--- Name: bj_config; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE bj_config (
-    bj_config_id integer NOT NULL,
-    hostname text,
-    key text,
-    value text,
-    "cast" text
-);
-
-
---
--- Name: bj_job; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE bj_job (
-    bj_job_id integer NOT NULL,
-    command text,
-    state text,
-    priority integer,
-    tag text,
-    is_restartable integer,
-    submitter text,
-    runner text,
-    pid integer,
-    submitted_at timestamp without time zone,
-    started_at timestamp without time zone,
-    finished_at timestamp without time zone,
-    env text,
-    stdin text,
-    stdout text,
-    stderr text,
-    exit_status integer
-);
-
-
---
--- Name: bj_job_archive; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE bj_job_archive (
-    bj_job_archive_id integer NOT NULL,
-    command text,
-    state text,
-    priority integer,
-    tag text,
-    is_restartable integer,
-    submitter text,
-    runner text,
-    pid integer,
-    submitted_at timestamp without time zone,
-    started_at timestamp without time zone,
-    finished_at timestamp without time zone,
-    archived_at timestamp without time zone,
-    env text,
-    stdin text,
-    stdout text,
-    stderr text,
-    exit_status integer
 );
 
 
@@ -1370,16 +1295,6 @@ CREATE TABLE competitions (
 
 
 --
--- Name: competitions_admins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_admins (
-    competition_id integer NOT NULL,
-    user_id integer NOT NULL
-);
-
-
---
 -- Name: competitions_games_maps; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1524,16 +1439,6 @@ CREATE TABLE competitions_sponsors (
     competition_id integer NOT NULL,
     url character varying,
     image character varying
-);
-
-
---
--- Name: competitions_supervisors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE competitions_supervisors (
-    competition_id integer NOT NULL,
-    user_id integer NOT NULL
 );
 
 
@@ -1830,17 +1735,6 @@ CREATE TABLE downloads_categories (
 
 
 --
--- Name: dudes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE dudes (
-    id integer NOT NULL,
-    date date NOT NULL,
-    image_id integer NOT NULL
-);
-
-
---
 -- Name: events; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1941,29 +1835,6 @@ CREATE TABLE factions_banned_users (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     reason character varying,
     banner_user_id integer NOT NULL
-);
-
-
---
--- Name: factions_capos; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE factions_capos (
-    id integer NOT NULL,
-    faction_id integer NOT NULL,
-    user_id integer NOT NULL
-);
-
-
---
--- Name: factions_editors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE factions_editors (
-    id integer NOT NULL,
-    faction_id integer NOT NULL,
-    user_id integer NOT NULL,
-    content_type_id integer NOT NULL
 );
 
 
@@ -2192,7 +2063,8 @@ CREATE TABLE global_vars (
     svn_revision character varying,
     ads_slots_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     gmtv_channels_updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    pending_contents integer DEFAULT 0 NOT NULL
+    pending_contents integer DEFAULT 0 NOT NULL,
+    git_prev_revision character varying
 );
 
 
@@ -2945,16 +2817,6 @@ CREATE TABLE slog_entries (
     long_version character varying,
     completed_on timestamp without time zone,
     scope integer
-);
-
-
---
--- Name: slog_visits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE slog_visits (
-    user_id integer NOT NULL,
-    lastvisit_on timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -10263,24 +10125,6 @@ ALTER SEQUENCE avatars_id_seq OWNED BY avatars.id;
 
 
 --
--- Name: babes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE babes_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: babes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE babes_id_seq OWNED BY babes.id;
-
-
---
 -- Name: ban_requests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -10386,60 +10230,6 @@ CREATE SEQUENCE bets_tickets_id_seq
 --
 
 ALTER SEQUENCE bets_tickets_id_seq OWNED BY bets_tickets.id;
-
-
---
--- Name: bj_config_bj_config_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE bj_config_bj_config_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: bj_config_bj_config_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE bj_config_bj_config_id_seq OWNED BY bj_config.bj_config_id;
-
-
---
--- Name: bj_job_archive_bj_job_archive_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE bj_job_archive_bj_job_archive_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: bj_job_archive_bj_job_archive_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE bj_job_archive_bj_job_archive_id_seq OWNED BY bj_job_archive.bj_job_archive_id;
-
-
---
--- Name: bj_job_bj_job_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE bj_job_bj_job_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: bj_job_bj_job_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE bj_job_bj_job_id_seq OWNED BY bj_job.bj_job_id;
 
 
 --
@@ -11146,24 +10936,6 @@ ALTER SEQUENCE downloads_id_seq OWNED BY downloads.id;
 
 
 --
--- Name: dudes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE dudes_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: dudes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE dudes_id_seq OWNED BY dudes.id;
-
-
---
 -- Name: events_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11233,42 +11005,6 @@ CREATE SEQUENCE factions_banned_users_id_seq
 --
 
 ALTER SEQUENCE factions_banned_users_id_seq OWNED BY factions_banned_users.id;
-
-
---
--- Name: factions_capos_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE factions_capos_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: factions_capos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE factions_capos_id_seq OWNED BY factions_capos.id;
-
-
---
--- Name: factions_editors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE factions_editors_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: factions_editors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE factions_editors_id_seq OWNED BY factions_editors.id;
 
 
 --
@@ -12720,13 +12456,6 @@ ALTER TABLE avatars ALTER COLUMN id SET DEFAULT nextval('avatars_id_seq'::regcla
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE babes ALTER COLUMN id SET DEFAULT nextval('babes_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE ban_requests ALTER COLUMN id SET DEFAULT nextval('ban_requests_id_seq'::regclass);
 
 
@@ -12763,27 +12492,6 @@ ALTER TABLE bets_options ALTER COLUMN id SET DEFAULT nextval('bets_options_id_se
 --
 
 ALTER TABLE bets_tickets ALTER COLUMN id SET DEFAULT nextval('bets_tickets_id_seq'::regclass);
-
-
---
--- Name: bj_config_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE bj_config ALTER COLUMN bj_config_id SET DEFAULT nextval('bj_config_bj_config_id_seq'::regclass);
-
-
---
--- Name: bj_job_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE bj_job ALTER COLUMN bj_job_id SET DEFAULT nextval('bj_job_bj_job_id_seq'::regclass);
-
-
---
--- Name: bj_job_archive_id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE bj_job_archive ALTER COLUMN bj_job_archive_id SET DEFAULT nextval('bj_job_archive_bj_job_archive_id_seq'::regclass);
 
 
 --
@@ -13070,13 +12778,6 @@ ALTER TABLE downloads_categories ALTER COLUMN id SET DEFAULT nextval('downloads_
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE dudes ALTER COLUMN id SET DEFAULT nextval('dudes_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
 
 
@@ -13099,20 +12800,6 @@ ALTER TABLE factions ALTER COLUMN id SET DEFAULT nextval('factions_id_seq'::regc
 --
 
 ALTER TABLE factions_banned_users ALTER COLUMN id SET DEFAULT nextval('factions_banned_users_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE factions_capos ALTER COLUMN id SET DEFAULT nextval('factions_capos_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE factions_editors ALTER COLUMN id SET DEFAULT nextval('factions_editors_id_seq'::regclass);
 
 
 --
@@ -13889,22 +13576,6 @@ ALTER TABLE ONLY avatars
 
 
 --
--- Name: babes_date_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY babes
-    ADD CONSTRAINT babes_date_key UNIQUE (date);
-
-
---
--- Name: babes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY babes
-    ADD CONSTRAINT babes_pkey PRIMARY KEY (id);
-
-
---
 -- Name: ban_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -13974,30 +13645,6 @@ ALTER TABLE ONLY bets_tickets
 
 ALTER TABLE ONLY bets
     ADD CONSTRAINT bets_title_key UNIQUE (title);
-
-
---
--- Name: bj_config_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bj_config
-    ADD CONSTRAINT bj_config_pkey PRIMARY KEY (bj_config_id);
-
-
---
--- Name: bj_job_archive_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bj_job_archive
-    ADD CONSTRAINT bj_job_archive_pkey PRIMARY KEY (bj_job_archive_id);
-
-
---
--- Name: bj_job_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY bj_job
-    ADD CONSTRAINT bj_job_pkey PRIMARY KEY (bj_job_id);
 
 
 --
@@ -14161,14 +13808,6 @@ ALTER TABLE ONLY comments_valorations_types
 
 
 --
--- Name: competitions_admins_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY competitions_admins
-    ADD CONSTRAINT competitions_admins_pkey PRIMARY KEY (competition_id, user_id);
-
-
---
 -- Name: competitions_games_maps_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -14270,14 +13909,6 @@ ALTER TABLE ONLY competitions
 
 ALTER TABLE ONLY competitions_sponsors
     ADD CONSTRAINT competitions_sponsors_pkey PRIMARY KEY (id);
-
-
---
--- Name: competitions_supervisors_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY competitions_supervisors
-    ADD CONSTRAINT competitions_supervisors_pkey PRIMARY KEY (competition_id, user_id);
 
 
 --
@@ -14433,22 +14064,6 @@ ALTER TABLE ONLY downloads
 
 
 --
--- Name: dudes_date_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY dudes
-    ADD CONSTRAINT dudes_date_key UNIQUE (date);
-
-
---
--- Name: dudes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY dudes
-    ADD CONSTRAINT dudes_pkey PRIMARY KEY (id);
-
-
---
 -- Name: events_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -14513,27 +14128,11 @@ ALTER TABLE ONLY factions
 
 
 --
--- Name: factions_capos_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY factions_capos
-    ADD CONSTRAINT factions_capos_pkey PRIMARY KEY (id);
-
-
---
 -- Name: factions_code_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY factions
     ADD CONSTRAINT factions_code_key UNIQUE (code);
-
-
---
--- Name: factions_editors_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY factions_editors
-    ADD CONSTRAINT factions_editors_pkey PRIMARY KEY (id);
 
 
 --
@@ -15169,14 +14768,6 @@ ALTER TABLE ONLY slog_entries
 
 
 --
--- Name: slog_visits_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY slog_visits
-    ADD CONSTRAINT slog_visits_pkey PRIMARY KEY (user_id);
-
-
---
 -- Name: sold_products_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -15713,13 +15304,6 @@ CREATE UNIQUE INDEX competitions_participants_uniq ON competitions_participants 
 
 
 --
--- Name: competitions_supervisors_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX competitions_supervisors_uniq ON competitions_supervisors USING btree (competition_id, user_id);
-
-
---
 -- Name: content_ratings_comb; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -15944,20 +15528,6 @@ CREATE UNIQUE INDEX factions_banned_users_fu ON factions_banned_users USING btre
 
 
 --
--- Name: factions_capos_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX factions_capos_uniq ON factions_capos USING btree (faction_id, user_id);
-
-
---
--- Name: factions_editors_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX factions_editors_uniq ON factions_editors USING btree (faction_id, user_id, content_type_id);
-
-
---
 -- Name: factions_headers_lasttime_used_on; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -16102,13 +15672,6 @@ CREATE INDEX images_state ON images USING btree (state);
 --
 
 CREATE INDEX images_user_id ON images USING btree (user_id);
-
-
---
--- Name: index_bj_config_on_hostname_and_key; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_bj_config_on_hostname_and_key ON bj_config USING btree (hostname, key);
 
 
 --
@@ -16831,14 +16394,6 @@ ALTER TABLE ONLY avatars
 
 
 --
--- Name: babes_image_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY babes
-    ADD CONSTRAINT babes_image_id_fkey FOREIGN KEY (image_id) REFERENCES images(id) MATCH FULL ON DELETE CASCADE;
-
-
---
 -- Name: ban_requests_banned_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -17127,22 +16682,6 @@ ALTER TABLE ONLY comments_valorations
 
 
 --
--- Name: competitions_admins_competition_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_admins
-    ADD CONSTRAINT competitions_admins_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id);
-
-
---
--- Name: competitions_admins_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_admins
-    ADD CONSTRAINT competitions_admins_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
-
-
---
 -- Name: competitions_competitions_participants_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -17300,22 +16839,6 @@ ALTER TABLE ONLY competitions_participants
 
 ALTER TABLE ONLY competitions_sponsors
     ADD CONSTRAINT competitions_sponsors_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: competitions_supervisors_competition_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_supervisors
-    ADD CONSTRAINT competitions_supervisors_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: competitions_supervisors_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_supervisors
-    ADD CONSTRAINT competitions_supervisors_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
 
 
 --
@@ -17583,14 +17106,6 @@ ALTER TABLE ONLY downloads
 
 
 --
--- Name: dudes_image_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY dudes
-    ADD CONSTRAINT dudes_image_id_fkey FOREIGN KEY (image_id) REFERENCES images(id) MATCH FULL ON DELETE CASCADE;
-
-
---
 -- Name: events_approved_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -17732,46 +17247,6 @@ ALTER TABLE ONLY factions_banned_users
 
 ALTER TABLE ONLY factions
     ADD CONSTRAINT factions_boss_user_id_fkey FOREIGN KEY (boss_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: factions_capos_faction_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions_capos
-    ADD CONSTRAINT factions_capos_faction_id_fkey FOREIGN KEY (faction_id) REFERENCES factions(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: factions_capos_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions_capos
-    ADD CONSTRAINT factions_capos_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: factions_editors_content_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions_editors
-    ADD CONSTRAINT factions_editors_content_type_id_fkey FOREIGN KEY (content_type_id) REFERENCES content_types(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: factions_editors_faction_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions_editors
-    ADD CONSTRAINT factions_editors_faction_id_fkey FOREIGN KEY (faction_id) REFERENCES factions(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: factions_editors_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions_editors
-    ADD CONSTRAINT factions_editors_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
 
 
 --
@@ -18548,14 +18023,6 @@ ALTER TABLE ONLY slog_entries
 
 ALTER TABLE ONLY slog_entries
     ADD CONSTRAINT slog_entries_reviewer_user_id_fkey FOREIGN KEY (reviewer_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: slog_visits_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY slog_visits
-    ADD CONSTRAINT slog_visits_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
 
 
 --
