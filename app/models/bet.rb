@@ -259,23 +259,23 @@ class Bet < ActiveRecord::Base
         end
       else
         # No usamos total_ammount porque lo que queremos es repartir el dinero de la opción que NO ha ganado
-        sum = db_query("SELECT COALESCE(sum(ammount), 0) as ammount from bets_options where bet_id = #{self.id} and id <> #{self.winning_bets_option_id}")[0]['ammount'].to_f
-        if sum > 0 then
-          # calculamos porcentajes de la gente que ha apostado por la opción
-          # ganadora
-          bopt = BetsOption.find(winning_bets_option_id)
-          self.winning_bets_option_id = winning_bets_option_id
-          total = bopt.ammount
+        self.winning_bets_option_id = winning_bets_option_id
+        
+        # Calculamos total a repartir por la opción NO ganadora
+        sum = db_query("SELECT COALESCE(sum(ammount), 0) as ammount 
+			  FROM bets_options where bet_id = #{self.id} 
+                           AND id <> #{self.winning_bets_option_id}")[0]['ammount'].to_f
+        # calculamos porcentajes de la gente que ha apostado por la opción
+        # ganadora
+        bopt = BetsOption.find(winning_bets_option_id)
+        totalw = bopt.ammount # calculamos total de dinero apostado por opción ganadora
           
-          for ticket in bopt.bets_tickets # un ticket por persona
-            new_cash = (ticket.ammount / total) * sum + ticket.ammount # le devolvemos lo que apostó por esta opción además del porcentaje del resto de opciones
-            if new_cash > 0 then
-              u = ticket.user
-              Bank.transfer(:bank, u, new_cash, "Ganancias por tu apuesta por \"#{self.resolve_hid}\"")
-            end
-          end
+        for ticket in bopt.bets_tickets # para cada persona que haya votado por opción ganadora
+          new_cash = ticket.ammount     # le devolvemos lo que apostó
+          new_cash += (ticket.ammount / totalw) * sum  # más una parte del dinero apostado por todos a la opción perdedora correspondiente al dinero apostado
+          Bank.transfer(:bank, ticket.user, new_cash, "Ganancias por tu apuesta por \"#{self.resolve_hid}\"")
         end
-      end # if users.length < 2
+      end # if
     end
     
     # Guardamos las stats de los users que han participado
