@@ -30,7 +30,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
   #end
   
   def test_should_clear_events_box_when_someone_joins_an_event
-    e = Event.new({:user_id => 1, :title => 'evento tal cual', :events_category_id => 1, :starts_on => 2.days.ago, :ends_on => 3.days.since})
+    e = Event.new({:user_id => 1, :title => 'evento tal cual', :terms => 1, :starts_on => 2.days.ago, :ends_on => 3.days.since})
     assert_equal true, e.save
     e.change_state(Cms::PUBLISHED, User.find(1))
     assert_equal true, e.is_public?

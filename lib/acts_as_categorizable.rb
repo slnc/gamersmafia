@@ -32,7 +32,7 @@ module ActsAsCategorizable
       # raise "#{Inflector::tableize(self.name)}_category"
       belongs_to "#{Inflector::tableize(self.name)}_category".to_sym
       observe_attr "#{Inflector::tableize(self.name)}_category_id".to_sym
-      validates_presence_of "#{Inflector::tableize(self.name)}_category", :message => "El campo categoría no puede estar en blanco"
+      # validates_presence_of "#{Inflector::tableize(self.name)}_category", :message => "El campo categoría no puede estar en blanco"
       
       class_eval <<-END
         include ActsAsCategorizable::InstanceMethods
@@ -81,7 +81,7 @@ module ActsAsCategorizable
         end
       elsif self.slnc_changed?(:state) && self.state == Cms::DELETED
        (self.main_category.get_ancestors + [self.main_category]).each do |anc|
-          anc.class.decrement_counter("#{Inflector::tableize(self.class.name)}_count", anc.id)
+          anc.class.decrement_counter("contents_count", anc.id)
         end
       end
     end

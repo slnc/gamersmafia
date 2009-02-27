@@ -12,6 +12,7 @@ published:
   title: foo
   approved_by_user_id: 1
   state: 2
+  unique_content_id: 10
 
 unpublished:
   id: 2
@@ -26,6 +27,7 @@ unpublished:
   ends_on: 2006-01-30 00:00:00
   title: foo2
   state: 1
+  unique_content_id: 1010
 
 deleted:
   id: 3
@@ -41,9 +43,11 @@ deleted:
   title: foo3
   approved_by_user_id: 1
   state: 3
+  unique_content_id: 2010
 
 
 <% i = 10 %>
+<% ii = 100 %>
 <% [0,1,2,3,4].each do |state| %>
   <% %w(League Tournament Ladder).each do |competitions_type| %>
     <% [1,2].each do |competitions_participants_type| %>
@@ -65,8 +69,10 @@ deleted:
   ends_on: 2006-01-30 00:00:00
   approved_by_user_id: 1
   state: 2
+  unique_content_id: <%=ii%>
 
             <% i += 1 %>
+            <% ii += 1 %>
           <% end %>
         <% end %>
       <% end %>
@@ -89,3 +95,4 @@ competitions_event:
   title: foo3vsbar3
   approved_by_user_id: 1
   state: 1
+  unique_content_id: 1102

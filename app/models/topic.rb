@@ -31,7 +31,7 @@ class Topic < ActiveRecord::Base
     while p
       p.topics_count += 1 # no usamos :counter_cache por los estados
       p.last_topic_id = self.id
-      p.last_updated_item_id = self.id
+      p.last_updated_item_id = self.unique_content.id
       p.save # tb actualizamos updated_on
       p = p.parent
     end
@@ -69,5 +69,27 @@ class Topic < ActiveRecord::Base
     else
       false
     end
+  end
+  
+  def self.latest_by_category(limit=20)
+    contents_r_root_id = {}
+    i = 0
+    Content.find_by_sql("SELECT contents.* 
+                           FROM contents 
+                          WHERE state = #{Cms::PUBLISHED}
+                            AND clan_id IS NULL
+                            AND id IN (SELECT last_updated_item_id 
+                                         FROM terms 
+                                        WHERE root_id = parent_id 
+                                          AND taxonomy = 'TopicsCategory' 
+                                          AND updated_on >= now() - '1 week'::interval)
+                       ORDER BY updated_on DESC").each do |content|
+      break if i >= limit
+      next if contents_r_root_id.values.include?(content.real_content.id)
+      root_term = content.terms.find(:all, :conditions => 'taxonomy = \'TopicsCategory\'')[0]
+      contents_r_root_id[root_term.id] ||= content.real_content.id
+      i += 1
+    end
+    contents_r_root_id.values
   end
 end

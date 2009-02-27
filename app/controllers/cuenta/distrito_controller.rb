@@ -66,7 +66,7 @@ class Cuenta::DistritoController < ApplicationController
     @editable_content_types = []
     if params[:type_name] then
       @tld = @cur_district.top_level_category(Object.const_get(params[:type_name]))
-      children_ids = @tld.get_all_children.collect { |cat| cat.id } + [@tld.id]
+      children_ids = @tld.all_children_ids.collect { |cat| cat.id } + [@tld.id]
       @category_pages, @categories = paginate self.get_cls(params[:type_name]), :conditions => ["parent_id IN (#{children_ids.join(',')}) and id <> ?", @tld.id], :order => 'parent_id desc, lower(name) asc', :per_page => 50
       @title = "Editando categorías #{params[:type_name]}"
       @navpath = [['Cuenta', '/cuenta'], ['Distrito', '/cuenta/distrito'], ['Categorias', '/cuenta/distrito/categorias'], [params[:type_name], "/cuenta/distrito/categorias/#{params[:type_name]}"]]

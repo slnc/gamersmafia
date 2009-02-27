@@ -24,7 +24,7 @@ class KarmaObserverTest < Test::Unit::TestCase
   def test_should_give_karma_when_content_is_published
     u2 = User.find(2)
     u2_kp_initial = u2.karma_points
-    n = News.new({:title => 'noticia foo', :description => 'sumario de noticia guay', :news_category_id => 1, :user_id => 2})
+    n = News.new({:title => 'noticia foo', :description => 'sumario de noticia guay', :terms => 1, :user_id => 2})
     assert_equal true, n.save
     u2.reload
     assert_equal u2_kp_initial, u2.karma_points
@@ -84,7 +84,7 @@ class KarmaObserverTest < Test::Unit::TestCase
   def test_should_do_nothing_to_karma_if_content_is_deleted_and_is_not_public
     u2 = User.find(2)
     u2_kp_initial = u2.karma_points
-    n = News.new({:title => 'noticia foo', :description => 'sumario de noticia guay', :news_category_id => 1, :user_id => 2})
+    n = News.new({:title => 'noticia foo', :description => 'sumario de noticia guay', :terms => 1, :user_id => 2})
     assert_equal true, n.save
     n.destroy
     u2.reload
@@ -94,7 +94,7 @@ class KarmaObserverTest < Test::Unit::TestCase
   def test_should_do_nothing_to_karma_if_content_has_its_authorship_changed_and_is_not_published
     u = User.find(2)
     kp_initial = u.karma_points
-    n = News.new({:title => 'noticia foo', :description => 'sumario de noticia guay', :news_category_id => 1, :user_id => 2})
+    n = News.new({:title => 'noticia foo', :description => 'sumario de noticia guay', :terms => 1, :user_id => 2})
     assert_equal true, n.save
     u1 = User.find(1)
     n.change_authorship(u1, u1)

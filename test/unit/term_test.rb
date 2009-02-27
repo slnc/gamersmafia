@@ -32,7 +32,7 @@ class TermTest < ActiveSupport::TestCase
     assert @t.save
     
     @t.mirror_category_tree(dcsss1, 'DownloadsCategory')
- 
+    
     ndcs1 = @t.children.find(:first, :conditions => 'name = \'subhijo1\' AND taxonomy = \'DownloadsCategory\'')
     assert ndcs1
     ndcss1 = ndcs1.children.find(:first, :conditions => 'name = \'subhijo11\' AND taxonomy = \'DownloadsCategory\'')
@@ -83,14 +83,132 @@ class TermTest < ActiveSupport::TestCase
     assert_nil @lasttc.last_published_content('Download', :user_id => (@content.user_id + 1))
   end
   
-  def test_recalculate_count_works
+  def test_recalculate_contents_count_works
     test_mirror_category
     @lasttc = Term.find(:first, :order => 'id DESC')
     @content = Content.find(:first, :conditions => "state = #{Cms::PUBLISHED}", :order => 'id DESC')
     @lasttc.link(@content)
     assert_equal 1, @lasttc.count
-    @lasttc.update_attributes(:count => 0)
-    @lasttc.recalculate_count
+    @lasttc.update_attributes(:contents_count => 0)
+    @lasttc.recalculate_contents_count
     assert_equal 1, @lasttc.count
+  end
+  
+  def test_should_automatically_create_slug
+    @n1 = Term.create({:name => 'Hola Mundo!!'})
+    assert_not_nil @n1
+    assert_equal 'hola-mundo', @n1.slug
+  end
+  
+  def test_should_creating_a_root_category_should_properly_initialize_attributes
+    @n1 = Term.create({:name => 'cacttest1'})
+    assert_not_nil @n1
+    assert_equal @n1.id, @n1.root_id
+    assert_nil @n1.parent_id
+  end
+  
+  def test_find_contents_should_work
+    root_term = Term.single_toplevel(:slug => 'ut')
+    nlist = root_term.find(:all, :content_type => 'News')
+    assert nlist.size > 0
+    assert_equal 'News', nlist[0].class.name
+    assert_equal root_term.id, nlist[0].terms[0].id
+  end
+  
+  def test_find_contents_through_shortcut_should_work
+    root_term = Term.single_toplevel(:slug => 'ut')
+    nlist = root_term.news.find(:all)
+    assert nlist.size > 0
+    assert_equal 'News', nlist[0].class.name
+    assert_equal root_term.id, nlist[0].terms[0].id
+  end
+  
+  def test_should_properly_create_children
+    test_should_creating_a_root_category_should_properly_initialize_attributes
+    @n1child = @n1.children.create({:name => 'first_child'})
+    assert_not_nil @n1child
+    assert_equal @n1.id, @n1child.root_id
+  end
+  
+  def test_should_properly_update_root_id_when_moving_a_category_from_one_root_to_another
+    test_should_properly_create_children
+    @n2 = Term.create({:name => 'cacttest2'})
+    assert_not_nil @n2
+    @n1child.parent_id = @n2.id
+    @n1child.save
+    assert_equal @n2.id, @n1child.root_id
+  end
+  
+  def test_should_properly_update_root_id_when_moving_a_category_from_one_root_to_another_and_it_has_subcategories
+    test_should_properly_create_children
+    @n2 = Term.create({:name => 'cacttest2'})
+    assert_not_nil @n2
+    @n1.parent_id = @n2.id
+    @n1.save
+    assert_equal @n2.id, @n1.root_id
+    @n1child.reload
+    assert_equal @n2.id, @n1child.root_id
+  end
+  
+  def test_should_properly_return_related_portals_if_not_matching_a_factions_code
+    nc = Term.new({:name => 'catnonfaction'})
+    assert_equal true, nc.save
+    assert_equal (FactionsPortal.count + BazarDistrictPortal.count + 1), nc.get_related_portals.size
+    assert_equal 'GmPortal', nc.get_related_portals[0].class.name
+  end
+  
+  def test_should_properly_return_related_portals_if_not_matching_a_factions_code_and_child
+    nc = Term.new({:name => 'catnonfaction'})
+    assert nc.save
+    ncchild = nc.children.create({:name => 'subcat'})
+    assert_equal true, ncchild.save
+    assert_equal (FactionsPortal.count + BazarDistrictPortal.count + 1), ncchild.get_related_portals.size
+    assert_equal 'GmPortal', ncchild.get_related_portals[0].class.name
+  end
+  
+  def test_should_properly_return_related_portals_if_matching_a_factions_code
+    nc = Term.single_toplevel(:slug => 'ut')
+    assert_not_nil nc 
+    assert_equal 3, nc.get_related_portals.size, nc.get_related_portals
+  end
+  
+  def test_all_children_ids_should_properly_return_if_root_id_given
+    @nc = Term.create({:name => 'catnonfaction'})
+    @ncchild = @nc.children.create({:name => 'subcat'})
+    @cats = @nc.all_children_ids
+    assert_equal 2, @cats.size
+    @cats.each { |catid| assert_equal true, catid.kind_of?(Fixnum)}
+    assert_equal true, @cats.include?(@nc.id)
+    assert_equal true, @cats.include?(@ncchild.id)
+  end
+  
+  # TODO
+  def atest_all_children_ids_should_return_the_same_if_same_cat_asked_in_different_ways
+    test_all_children_ids_should_properly_return_if_root_id_given
+    cats2 = @nc.all_children_ids(@nc)
+    assert_equal true, @cats == cats2
+  end
+  
+  # TODO
+  def atest_all_children_ids_should_properly_work_if_asking_for_non_root_id_cat
+    @nc = Term.create({:name => 'catnonfaction'})
+    @ncchild = @nc.children.create({:name => 'subcat'})
+    @ncsubchild = @ncchild.children.create({:name => 'subsubcat'})
+    @cats = @ncchild.all_children_ids
+    assert_equal 2, @cats.size
+    assert_equal true, @cats.include?(@ncchild.id)
+    assert_equal true, @cats.include?(@ncsubchild.id)
+  end
+  
+  def test_reset_contents_urls
+    flunk
+  end
+  
+  def test_get_last_updated_item_id
+    flunk
+  end
+  
+  def test_get_ancestors
+    
   end
 end

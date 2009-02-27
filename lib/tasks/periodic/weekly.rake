@@ -59,7 +59,7 @@ else next
         root_cat = rc.main_category.root
         proc_root_cat_id = "#{Inflector::tableize(rc.class.name)}#{root_cat.id}"
         next if processed_root_cats.include?(proc_root_cat_id)
-        cat_ids = root_cat.get_all_children
+        cat_ids = root_cat.all_children_ids
         q = "WHERE #{Inflector::tableize(rc.class.name)}_category_id IN (#{cat_ids.join(',')})"
         processed_root_cats<< proc_root_cat_id
       else

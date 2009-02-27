@@ -3,7 +3,7 @@
 <%=mfcontents_basic("Más reviews de #{@review.reviews_category.name}", 
 	Review,
 	[:published, 
-	{:conditions => ["reviews_category_id IN (#{(@review.reviews_category.get_all_children.<<(@review.reviews_category.id)).join(',')})", @review.id], :order => 'created_on desc', :limit => 5}],
+	{:conditions => ["reviews_category_id IN (#{(@review.reviews_category.all_children_ids.<<(@review.reviews_category.id)).join(',')})", @review.id], :order => 'created_on desc', :limit => 5}],
     :cache => "/common/reviews/_latest_by_cat/#{@review.reviews_category_id}",
  	:rating => true,
 	:skip_id => @review.id,

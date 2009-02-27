@@ -11,6 +11,7 @@ published:
   main: http://youtube.com/ha
   approved_by_user_id: 1
   state: 2
+  unique_content_id: 4
 
 unpublished:
   id: 2
@@ -24,6 +25,7 @@ unpublished:
   description: bar2
   main: http://youtube.com/ha2
   state: 1
+  unique_content_id: 1004
 
 deleted:
   id: 3
@@ -38,3 +40,4 @@ deleted:
   main: http://youtube.com/ha3
   approved_by_user_id: 1
   state: 3
+  unique_content_id: 2004

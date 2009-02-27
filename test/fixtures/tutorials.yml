@@ -12,6 +12,7 @@ published:
   tutorials_category_id: 1
   approved_by_user_id: 1
   state: 2
+  unique_content_id: 7
 
 unpublished:
   id: 2
@@ -26,6 +27,7 @@ unpublished:
   main: foo2
   tutorials_category_id: 1
   state: 1
+  unique_content_id: 1007
 
 deleted:
   id: 3
@@ -41,4 +43,4 @@ deleted:
   tutorials_category_id: 1
   approved_by_user_id: 1
   state: 3
-
+  unique_content_id: 2007 

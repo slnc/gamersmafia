@@ -357,7 +357,7 @@ class CmsTest < Test::Unit::TestCase
     
     @n1 = News.find(1)
     prev_content_url = @n1.unique_content.url
-    @on = Cms.transform_content(@n1, Tutorial, {:tutorials_category_id => 1})
+    @on = Cms.transform_content(@n1, Tutorial, {:terms => 1})
     assert_equal false, @on.new_record?
     assert_equal 'Tutorial', @on.class.name
     # Verificamos que los atributos únicos de offtopic se han completado con la info de noticia
@@ -429,7 +429,7 @@ class CmsTest < Test::Unit::TestCase
     assert ut.update_boss(u10)
     u10.faction_id = ut.id
     assert u10.save
-    assert Cms.user_can_edit_content?(u10, Image.new(:images_category_id => 1))
+    assert Cms.user_can_edit_content?(u10, Image.new(:terms => 1))
   end
   
   def test_sicario_can_edit_contents_of_own_district

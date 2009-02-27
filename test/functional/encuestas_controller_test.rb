@@ -6,7 +6,7 @@ require 'encuestas_controller'
 class EncuestasController; def rescue_action(e) raise e end; end
 
 class EncuestasControllerTest < Test::Unit::TestCase
-  test_common_content_crud :name => 'Poll', :form_vars => {:title => 'footapang', :polls_category_id => 1, :starts_on => 2.days.since, :ends_on => 9.days.since}
+  test_common_content_crud :name => 'Poll', :form_vars => {:title => 'footapang', :terms => 1, :starts_on => 2.days.since, :ends_on => 9.days.since}
 
   def setup
     @controller = EncuestasController.new
@@ -15,7 +15,7 @@ class EncuestasControllerTest < Test::Unit::TestCase
   end
 
   def test_should_create_with_options
-    post :create, {:poll => {:title => 'footapang', :polls_category_id => 1, :starts_on => 2.days.since, :ends_on => 9.days.since},
+    post :create, {:poll => {:title => 'footapang', :terms => 1, :starts_on => 2.days.since, :ends_on => 9.days.since},
                    :options_new => ['opcion1', 'opcion2'], 
                   },
                   { :user => 1 }

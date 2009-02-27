@@ -342,7 +342,7 @@ class Faction < ActiveRecord::Base
   end
   
   def referenced_thing_field
-    "#{rthing.class.name.downcase}_id".to_sym
+    "#{self.referenced_thing.class.name.downcase}_id".to_sym
   end
   
   def single_toplevel_term
@@ -360,8 +360,6 @@ class Faction < ActiveRecord::Base
     
     Cms::CONTENTS_WITH_CATEGORIES.each do |cls_name|
       cat_ids = root_term.all_children_ids(:taxonomy => "#{Inflector::pluralize(cls_name)}Category")
-      # c = c_cls.find(:first, :conditions => ['code = ? and root_id = id', self.code])
-      # cat_ids = c.get_all_children
       
       if cls_name == 'Topic':
         stats = self.class.db_query("SELECT COUNT(id) * #{Karma::KPS_CREATE['Topic']} as total_1, 

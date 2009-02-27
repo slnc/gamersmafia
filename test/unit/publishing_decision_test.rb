@@ -41,7 +41,7 @@ class PublishingDecisionTest < Test::Unit::TestCase
     personality = PublishingPersonality.find_or_create(user, ContentType.find_by_name('News'))
     # creamos 20 noticias y las publicamos
      (Cms::min_hits_before_reaching_max_publishing_power('News') + 1).times do |i|
-      n = News.create({:title => "maximize_exp#{i}", :description => 'foo', :news_category_id => 1, :user_id => @mrman.id})
+      n = News.create({:title => "maximize_exp#{i}", :description => 'foo', :terms => 1, :user_id => @mrman.id})
       assert_not_nil n
       Cms.publish_content(n, user)
       Cms.publish_content(n, @superadmin)
@@ -169,13 +169,13 @@ class PublishingDecisionTest < Test::Unit::TestCase
     maximize_exp(@mralariko)
     
     6.times do |t|
-      n = News.create({:title => "maximize_exp#{t}", :description => 'foo', :news_category_id => 1, :user_id => @mrman.id, :state => 1})
+      n = News.create({:title => "maximize_exp#{t}", :description => 'foo', :terms => 1, :user_id => @mrman.id, :state => 1})
       assert_not_nil n
       Cms.publish_content(n, @superadmin)
       Cms.publish_content(n, @panzer)
     end
     
-    n = News.create({:title => "maximize_exp2", :description => 'foo', :news_category_id => 1, :user_id => @mrman.id, :state => 1})
+    n = News.create({:title => "maximize_exp2", :description => 'foo', :terms => 1, :user_id => @mrman.id, :state => 1})
     assert_not_nil n
     Cms.publish_content(n, @mralariko)
     Cms.publish_content(n, @panzer)
@@ -189,13 +189,13 @@ class PublishingDecisionTest < Test::Unit::TestCase
     maximize_exp(@mralariko)
     
     6.times do |t|
-      n = News.create({:title => "maximize_exp#{t}", :description => 'foo', :news_category_id => 1, :user_id => @mrman.id, :state => 1})
+      n = News.create({:title => "maximize_exp#{t}", :description => 'foo', :terms => 1, :user_id => @mrman.id, :state => 1})
       assert_not_nil n
       Cms.publish_content(n, @superadmin)
       Cms.publish_content(n, @panzer)
     end
     
-    @n = News.create({:title => "maximize_exp2", :description => 'foo', :news_category_id => 1, :user_id => @mrman.id, :state => 1})
+    @n = News.create({:title => "maximize_exp2", :description => 'foo', :terms => 1, :user_id => @mrman.id, :state => 1})
     assert_not_nil @n
     Cms.deny_content(@n, @mralariko, 'feo')
     Cms.deny_content(@n, @panzer, 'feo')
@@ -238,7 +238,7 @@ class PublishingDecisionTest < Test::Unit::TestCase
   end
   
   def test_non_editor_cant_vote_on_his_content
-    n = News.create({:title => "check_exp_non_editor", :description => 'foo', :news_category_id => 1, :user_id => @panzer.id, :state => Cms::PENDING})
+    n = News.create({:title => "check_exp_non_editor", :description => 'foo', :terms => 1, :user_id => @panzer.id, :state => Cms::PENDING})
     assert_not_nil n
     assert_equal Cms::PENDING, n.state
     assert_raises(AccessDenied) { Cms::publish_content(n, @panzer) }

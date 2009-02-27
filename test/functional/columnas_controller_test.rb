@@ -6,7 +6,7 @@ require 'columnas_controller'
 class ColumnasController; def rescue_action(e) raise e end; end
 
 class ColumnasControllerTest < Test::Unit::TestCase
-  test_common_content_crud :name => 'Column', :form_vars => {:title => 'footapang', :description => "abracadabra", :main => 'hellouu', :columns_category_id => 1, }
+  test_common_content_crud :name => 'Column', :form_vars => {:title => 'footapang', :description => "abracadabra", :main => 'hellouu', :terms => 1, }
 
   def setup
     @controller = ColumnasController.new

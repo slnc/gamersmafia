@@ -7,12 +7,15 @@ module Organizations
     obj = obj.content.real_content if obj.class.name == 'Comment'
     return nil unless Cms::CONTENTS_WITH_CATEGORIES.include?(obj.class.name)
     
-    org = Faction.find_by_code(obj.main_category.root.code)
+    maincat = obj.main_category
+    return if maincat.nil?
+    
+    org = Faction.find_by_code(maincat.root.code)
     return org unless org.nil?
     
     # las categorias de distritos cuelgan de bazar
     
-    org = BazarDistrict.find_by_code(obj.main_category.root.code)
+    org = BazarDistrict.find_by_code(maincat.root.code)
     return org unless org.nil?
   end
   

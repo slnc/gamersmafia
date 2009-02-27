@@ -3,14 +3,14 @@ require File.dirname(__FILE__) + '/../test_functional_content_helper'
 require 'apuestas_controller'
 
 class ApuestasControllerTest < ActionController::TestCase
-  test_common_content_crud :name => 'Bet', :form_vars => {:title => 'footapang', :bets_category_id => 1, :closes_on => Time.now}
+  test_common_content_crud :name => 'Bet', :form_vars => {:title => 'footapang', :terms => 1, :closes_on => Time.now}
   
   # TODO más tests
   #
   def test_should_create_with_options
     sym_login 1
     post :create, {:bet => {:title => 'footapang', 
-        :bets_category_id => 1, 
+        :terms => 1, 
         :closes_on => 1.week.since},
       :options_new => ['opcion1', 'opcion2'], 
     }

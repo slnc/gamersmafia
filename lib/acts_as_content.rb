@@ -9,7 +9,11 @@ module ActsAsContent
     def acts_as_content # necesario para registrar los distintos callbacks
       after_create :do_after_create
       after_update :do_after_update
+      after_save :do_after_save
       after_destroy :do_after_destroy
+      
+      belongs_to :unique_content, :class_name => 'Content'
+      
       validates_presence_of :user
       before_create { |m| m.log = nil; m.log_action('creado', m.user.login) }
       before_save :do_before_save
@@ -27,6 +31,11 @@ module ActsAsContent
             m.cur_editor = User.find(m.cur_editor) if m.cur_editor.kind_of?(Fixnum)
             m.log_action('modificado', m.cur_editor) 
           end
+        end
+        
+        if m.attributes[:terms]
+          @_terms_to_add = m.attributes[:terms]
+          m.attributes.delete :terms
         end
       end
       
@@ -158,10 +167,25 @@ module ActsAsContent
       self.add_karma if is_public?
     end
     
+    def do_after_save
+      if @_terms_to_add
+        @_terms_to_add.each do |tid|
+          Term.find(tid).link(self.unique_content)
+        end
+      end
+      true
+    end
+    
     def do_after_create
       create_unique_content
       # Lo añadimos al tracker del usuario
       Users.add_to_tracker(self.user, self.unique_content)
+    end
+    
+    def terms=(new_terms)
+      @_terms_to_add ||= []
+      new_terms = [new_terms] unless new_terms.kind_of?(Array)
+      @_terms_to_add += new_terms 
     end
     
     def do_before_save      
@@ -221,9 +245,15 @@ module ActsAsContent
     end
     
     
+    def terms(*args)
+      self.unique_content.send(:terms, *args)
+    end
+    
     def get_game_id
       if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-        tld_code = self.main_category.root.code
+        maincat = self.main_category
+        return unless maincat
+        tld_code = maincat.root.code
         g = Game.find_by_code(tld_code)
         g.id if g
       end
@@ -231,7 +261,9 @@ module ActsAsContent
     
     def get_my_platform_id
       if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-        tld_code = self.main_category.root.code
+        maincat = self.main_category
+        return unless maincat
+        tld_code = maincat.root.code
         p = Platform.find_by_code(tld_code)
         p.id if p
       end
@@ -239,7 +271,9 @@ module ActsAsContent
     
     def get_my_bazar_district_id
       if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-        tld_code = self.main_category.root.code
+        maincat = self.main_category
+        return unless maincat
+        tld_code = maincat.root.code
         p = BazarDistrict.find_by_code(tld_code)
         p.id if p
       end
@@ -287,7 +321,9 @@ module ActsAsContent
     # Devuelve la primera categoría asociada a este contenido
     def main_category
       # DEPRECATED
-      cats = self.unique_content.linked_terms("#{Inflector::pluralize(self.class.name)}Category")
+      uniq = self.unique_content
+      return nil if uniq.nil? # no linked_terms yet
+      cats = uniq.linked_terms("#{Inflector::pluralize(self.class.name)}Category")
       if cats.size > 0
         cats[0]
       else
@@ -309,7 +345,7 @@ module ActsAsContent
           # actualizamos la categoría actual
           p = self.main_category
           while p
-            p.last_updated_item_id = self.id
+            p.last_updated_item_id = self.unique_content.id
             p.save
             p = p.parent
           end
@@ -318,7 +354,7 @@ module ActsAsContent
             p = self.class.category_class.find(self.slnc_changed_old_values[self.class.category_attrib_name])
             while p
               last = p.last_updated_items(1) # tenemos que chequear el último de cada una de las categorías superiores
-              p.last_updated_item_id = (last.size > 0) ? last[0].id : nil
+              p.last_updated_item_id = (last.size > 0) ? last[0].unique_content.id : nil
               p.save
               p = p.parent
             end
@@ -349,7 +385,7 @@ module ActsAsContent
     end
     
     # funciones para crear contenido único
-    def unique_content
+    def OLD_unique_content
       @_cache_unique_content ||= self.unique_content_type.contents.find(:first, :conditions => "external_id = #{self.id}")
     end
     
@@ -362,7 +398,9 @@ module ActsAsContent
       myctype = ContentType.find(:first, :conditions => "name = '#{self.class.name}'")
       base_opts = {:content_type_id => myctype.id, :external_id => self.id, :name => self.resolve_hid, :updated_on => self.created_on, :state => self.state}
       base_opts.merge!({:clan_id => clan_id}) if self.respond_to? :clan_id
-      Content.create(base_opts)
+      c = Content.create(base_opts)
+      self.unique_content_id = c.id
+      User.db_query("UPDATE #{Inflector::tableize(self.class.name)} SET unique_content_id = #{c.id} WHERE id = #{self.id}")
       
       # añadimos karma si es un contenido que no necesita ser moderado
       add_karma if %w(topic blogentry question).include?(self.class.name.downcase)
@@ -451,7 +489,7 @@ module ActsAsContent
         # cogemos el numero de votos como el valor del 1er cuartil ordenando la lista de contenidos por votos asc
         # calculamos "m"
         if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-          cat_ids = self.main_category.root.get_all_children
+          cat_ids = self.main_category.root.all_children_ids
           q = "AND #{Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})"
         else
           q = ''
@@ -491,7 +529,7 @@ module ActsAsContent
       # calcula el voto medio para un contenido dependiendo de si tiene categoría o no
       # asumo que cada contenido y cada facción tiene su propia media
       if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-        cat_ids = self.main_category.root.get_all_children
+        cat_ids = self.main_category.root.all_children_ids
         mean = User.db_query("SELECT avg(cache_rating) 
                                 FROM #{Inflector::tableize(self.class.name)} 
                                WHERE cache_rating is not null 

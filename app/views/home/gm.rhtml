@@ -78,12 +78,12 @@ for topic in @last_topics
 <%
 else #GmPortal
 # TODO bug
-@last_topics = Topic.find_by_sql("select * from topics where clan_id IS NULL AND id in (SELECT last_updated_item_id from topics_categories where id = root_id and updated_on >= now() - '1 week'::interval) and state = #{Cms::PUBLISHED} AND topics_category_id not in (select id from topics_categories where nohome = \'t\') order by updated_on desc limit 20")
+@last_topics = Topic.latest_by_category(20)
 
 for topic in @last_topics
   shown_topics << topic.unique_content.id
   root = topic.topics_category.root
-  active_topics = TopicsCategory.db_query("SELECT (count(id) - 1) as count FROM topics WHERE topics_category_id IN (#{root.get_all_children.join(',')}) AND updated_on > now() - '1 week'::interval")[0]['count']
+  active_topics = TopicsCategory.db_query("SELECT (count(id) - 1) as count FROM topics WHERE topics_category_id IN (#{root.all_children_ids.join(',')}) AND updated_on > now() - '1 week'::interval")[0]['count']
 %>
 <li id="content<%=topic.unique_content.id%>" class="new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "<div class=\"content-category\">#{faction_favicon(topic.topics_category)}</div>#{truncate(topic.title.gsub('<', ''), 28)}", gmurl(topic)%></li>
     <% end # for %>
@@ -281,7 +281,7 @@ if @daily_img then %>
 <% end -%>
 
 <% cache("/common/home/index/news_inet") do 
-nc = Term.single_toplevel(:bazar_district_id => BazarDistrict.find_by_code('inet'))
+nc = Term.single_toplevel(:bazar_district_id => BazarDistrict.find_by_code('inet').id)
 %>
     <div class="homebox">
         <div id="home-offtopics" class="subheader first"><div><span>Offtopic</span></div></div>

@@ -12,6 +12,7 @@ first_forum_topic:
   closed: false
   sticky: false
   state: 2
+  unique_content_id: 13
 
 second_forum_topic:
   id: 2
@@ -27,6 +28,7 @@ second_forum_topic:
   closed: false
   sticky: false
   state: 1
+  unique_content_id: 1013
   
 third_forum_topic:
   id: 3
@@ -42,6 +44,7 @@ third_forum_topic:
   closed: false
   sticky: false
   state: 3
+  unique_content_id: 2013
 
 fourth_forum_topic:
   id: 9734
@@ -57,6 +60,7 @@ fourth_forum_topic:
   closed: false
   sticky: false
   state: 3
+  unique_content_id: 1106
 
 fifth_forum_topic:
   id: 7761
@@ -72,6 +76,7 @@ fifth_forum_topic:
   closed: false
   sticky: false
   state: 3
+  unique_content_id: 1107
 
 sixth_forum_topic:
   id: 3417
@@ -87,6 +92,7 @@ sixth_forum_topic:
   closed: false
   sticky: false
   state: 3
+  unique_content_id: 1108
 
 seventh_forum_topic:
   id: 1265
@@ -102,3 +108,4 @@ seventh_forum_topic:
   closed: false
   sticky: false
   state: 3
+  unique_content_id: 1109

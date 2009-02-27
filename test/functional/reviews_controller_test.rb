@@ -6,7 +6,7 @@ require 'reviews_controller'
 class ReviewsController; def rescue_action(e) raise e end; end
 
 class ReviewsControllerTest < Test::Unit::TestCase
-  test_common_content_crud :name => 'Review', :form_vars => {:title => 'footapang', :description => 'bartapang', :main => 'oooo', :reviews_category_id => 1}
+  test_common_content_crud :name => 'Review', :form_vars => {:title => 'footapang', :description => 'bartapang', :main => 'oooo', :terms => 1}
 
   def setup
     @controller = ReviewsController.new

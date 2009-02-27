@@ -42,7 +42,7 @@ module CategoryActing
         if slnc_changed?(:parent_id) then
           return false if self.parent_id == self.id # para evitar bucles infinitos
           self.root_id = parent_id.nil? ? self.id : self.class.find(parent_id).root_id
-          self.class.find(:all, :conditions => "id IN (#{self.get_all_children.join(',')})").each do |child|
+          self.class.find(:all, :conditions => "id IN (#{self.all_children_ids.join(',')})").each do |child|
             child.root_id = self.root_id
             child.save
           end
@@ -68,12 +68,13 @@ module CategoryActing
     end
     
     # acepta keys: treemode (true: incluye categorías de hijos)
+    #              content_type_id: restringir a contenidos del tipo dado
     def _add_cats_ids_cond(*args)
       options = {:treemode => true}.merge(args.last.is_a?(Hash) ? args.pop : {}) # copypasted de extract_options_from_args!(args)
       @siblings ||= []
       if options[:treemode]
-        @_cache_cats_ids ||= (get_all_children + [self.id])
-        @siblings.each { |s| @_cache_cats_ids += s.get_all_children }
+        @_cache_cats_ids ||= (all_children_ids + [self.id])
+        @siblings.each { |s| @_cache_cats_ids += s.all_children_ids }
         # options[:conditions] = (options[:conditions]) ? ' AND ' : ''
         
         new_cond = "#{Inflector::underscore(self.class.name)}_id IN (#{@_cache_cats_ids.join(',')})"
@@ -399,7 +400,7 @@ module CategoryActing
     
     def get_last_updated_item
       if self.last_updated_item_id.nil? then
-        cat_ids = self.get_all_children
+        cat_ids = self.all_children_ids
         
         if self.class.items_class.name == 'Topic' then
           obj = self.class.items_class.find(:first, :conditions => "state = #{Cms::PUBLISHED} and sticky is false and closed is false and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'updated_on DESC')
@@ -414,12 +415,14 @@ module CategoryActing
           obj
         end
       else
-        last_updated_item_id
+        self.last_updated_item_id
       end
     end
     
     def get_related_portals
       portals = [GmPortal.new]
+      return portals # shortcut due to new taxonomies system
+      
       f = Organizations.find_by_content(self.class.items_class.new("#{Inflector::singularize(Inflector::tableize(self.class.name))}_id".to_sym => self.id))
       if f.nil? then # No es un contenido de facción o es de categoría gm/otros TODO PERF esto no usarlo con caches, madre del amor hermoso
         portals += Portal.find(:all, :conditions => 'type <> \'ClansPortal\'')
@@ -433,37 +436,12 @@ module CategoryActing
     end
     
     def last_updated_items(limit = 5)
-      cat_ids = self.get_all_children
+      cat_ids = self.all_children_ids
       self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'updated_on DESC', :limit => limit)
     end
     
-    #    def get_all_children(obj = nil)
-    #      obj = self if obj == nil
-    #      cats = [obj.id]
-    #      
-    #      if obj.id == obj.root_id then # shortcut
-    #        db_cats = self.db_query("select id from #{Inflector.tableize(self.class.name)} where root_id = #{self.id} and id <> #{self.id}")
-    #        for c in db_cats
-    #          cats<< c['id'].to_i
-    #        end
-    #      else
-    #        db_cats = obj.db_query("select id from #{Inflector.tableize(self.class.name)} where parent_id = #{self.id}")
-    #        
-    #        for c in db_cats
-    #          cats<< c['id'].to_i
-    #        end
-    #        
-    #        for i in obj.children
-    #          cats<< get_all_children(i)
-    #        end
-    #      end
-    #      
-    #      cats.uniq
-    #    end
-    
-    
     # Devuelve los ids de los hijos de la categoría actual o de la categoría obj de forma recursiva incluido el id de obj
-    def get_all_children(obj = nil)
+    def all_children_ids(obj = nil)
       obj = self if obj.nil?
       cats = [obj.id]
       
@@ -472,33 +450,33 @@ module CategoryActing
         db_query("select id from #{Inflector.tableize(self.class.name)} where root_id = #{obj.id} and id <> #{obj.id}").each { |dbc| cats<< dbc['id'].to_i }
       else # hay que ir preguntando categoría por categoría
         #        db_cats = db_query("select id from #{Inflector.tableize(self.class.name)} where parent_id = #{self.id}")
-        obj.children.each { |i| cats.concat(get_all_children(i)) }
+        obj.children.each { |i| cats.concat(all_children_ids(i)) }
       end
       cats.uniq
     end
     
     def random(limit=3)
-      cat_ids = self.get_all_children
+      cat_ids = self.all_children_ids
       self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'RANDOM()', :limit => limit)
     end
     
     def most_rated_items(limit=3)
-      cat_ids = self.get_all_children
+      cat_ids = self.all_children_ids
       self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and cache_rated_times > 1 and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'coalesce(cache_weighted_rank, 0) DESC', :limit => limit)
     end
     
     def most_popular_items(limit=3)
-      cat_ids = self.get_all_children
+      cat_ids = self.all_children_ids
       self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and cache_rated_times > 1 and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => '(coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0)) DESC', :limit => limit)
     end
     
     def last_created_items(limit = 3) # TODO esta ya sobra me parece, mirar en tutoriales
-      cat_ids = self.get_all_children
+      cat_ids = self.all_children_ids
       self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'created_on DESC', :limit => limit)
     end
     
     def random_item
-      cat_ids = self.get_all_children
+      cat_ids = self.all_children_ids
       self.class.items_class.find(:first, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'random()')
     end
   end

@@ -11,11 +11,11 @@ class Potd < ActiveRecord::Base
     #    los últimos 7 días (se ordenan por número de visitas desc)
     #
     # 3º una imagen aleatoria cualquiera
-    gm_cat = Term.toplevel_single(:slug => 'bazar')
+    gm_cat = Term.single_toplevel(:slug => 'bazar')
     invalid_categories = [0]
     
     if gm_cat then
-      invalid_categories<< gm_cat.get_all_children
+      invalid_categories<< gm_cat.all_children_ids
     end
     is_general_portal = portal.kind_of?(GmPortal) || portal.kind_of?(BazarPortal) || portal.kind_of?(ArenaPortal) 
     q_portal1 = is_general_portal ? "AND clan_id IS NULL" : "AND images_category_id IN (#{portal.get_categories(ImagesCategory).join(',')})" 
@@ -27,7 +27,7 @@ class Potd < ActiveRecord::Base
     
     
       for p in Potd.find(:all, :conditions => "date > now() - \'5 days\'::interval and portal_id #{q_7days}")
-        for c in p.image.images_category.root.get_all_children
+        for c in p.image.images_category.root.all_children_ids
           invalid_categories2<< c
         end
       end

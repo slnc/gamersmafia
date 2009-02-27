@@ -7,17 +7,17 @@ class PollTest < Test::Unit::TestCase
   end
 
   def test_should_not_allow_to_create_poll_with_end_date_sooner_than_start_date
-    poll = Poll.new({:polls_category_id => 1, :user_id => 1, :state => Cms::PENDING, :title => 'olaaaaaaaa', :starts_on => 7.day.since, :ends_on => 1.day.since})
+    poll = Poll.new({:terms => 1, :user_id => 1, :state => Cms::PENDING, :title => 'olaaaaaaaa', :starts_on => 7.day.since, :ends_on => 1.day.since})
     assert_equal false, poll.save
   end
 
   def test_should_not_allow_to_create_poll_with_starts_on_sooner_than_now
-    poll = Poll.new({:polls_category_id => 1, :user_id => 1, :state => Cms::PENDING, :title => 'olaaaaaaaa', :starts_on => 1.day.ago, :ends_on => 1.day.since})
+    poll = Poll.new({:terms => 1, :user_id => 1, :state => Cms::PENDING, :title => 'olaaaaaaaa', :starts_on => 1.day.ago, :ends_on => 1.day.since})
     assert_equal false, poll.save
   end
 
   def test_should_allow_to_create_poll_if_everything_ok
-    poll = Poll.new({:polls_category_id => 1, :user_id => 1, :state => Cms::PENDING, :title => 'olaaaaaaaa', :starts_on => 1.day.since, :ends_on => 7.day.since})
+    poll = Poll.new({:terms => 1, :user_id => 1, :state => Cms::PENDING, :title => 'olaaaaaaaa', :starts_on => 1.day.since, :ends_on => 7.day.since})
     assert_equal true, poll.save
   end
 

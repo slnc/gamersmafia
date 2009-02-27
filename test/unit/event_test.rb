@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class EventTest < Test::Unit::TestCase
-  COMMON = { :user_id => 1, :approved_by_user_id => 1, :events_category_id => 1, :state => Cms::PUBLISHED}
+  COMMON = { :user_id => 1, :approved_by_user_id => 1, :terms => 1, :state => Cms::PUBLISHED}
 
   def test_should_give_correct_hotmap1
     assert_not_nil Event.create(COMMON.merge({:title => 'fooe1', :starts_on => Time.local(2006, 01, 01, 00,00,00), :ends_on => Time.local(2006, 02, 06, 00,00,00)}))

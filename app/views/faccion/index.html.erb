@@ -31,7 +31,7 @@
 <% cache("/common/descargas/index/essential3_#{@category.nil? ? '' : @category.root_id}") do %>
 <% mftext('Descargas esenciales') do %>
 <ul class="content-hid">
-<% for d in Download.find(:all, :conditions => "state = #{Cms::PUBLISHED} and essential is true and downloads_category_id in (#{@category.root.get_all_children.join(',')})", :order => 'created_on DESC', :limit => 12) %>
+<% for d in Download.find(:all, :conditions => "state = #{Cms::PUBLISHED} and essential is true and downloads_category_id in (#{@category.root.all_children_ids.join(',')})", :order => 'created_on DESC', :limit => 12) %>
   <li style="clear: left;" class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%></li>
   <% end -%>
 <% end -%>

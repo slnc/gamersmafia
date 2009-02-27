@@ -102,7 +102,7 @@
       name: Gamersmafia
       slug: gm
       root_id: 15
-      
+
 - utdownloadsmutators:
       id: 16
       name: Mutators
@@ -147,3 +147,36 @@
       parent_id: 1
       game_id: 1
       taxonomy: QuestionsCategory
+
+- bazar:
+      id: 21
+      name: Bazar
+      slug: bazar
+      root_id: 21
+
+- otros:
+      id: 22
+      name: Otros
+      slug: otros
+      root_id: 22
+      parent_id: 22
+
+- babes:
+      id: 23
+      name: Babes
+      slug: babes
+      root_id: 21
+      parent_id: 21
+
+- dudes:
+      id: 24
+      name: Dudes
+      slug: dudes
+      root_id: 21
+      parent_id: 21
+
+- arena:
+      id: 25
+      name: Arena
+      slug: arena
+      root_id: 25

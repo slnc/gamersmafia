@@ -52,18 +52,18 @@ class QuestionTest < ActiveSupport::TestCase
   end
   
   def test_should_be_able_to_create_question_with_0_ammount
-    @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => 0, :questions_category_id => 1})
+    @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => 0, :terms => 1})
     assert_equal false, @bt.new_record?, @bt.errors.full_messages_html
   end
   
   def test_should_be_able_to_create_question_with_min_ammount
-    @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => Question::MIN_AMMOUNT, :questions_category_id => 1})
+    @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => Question::MIN_AMMOUNT, :terms => 1})
     assert_equal false, @bt.new_record?
     assert_equal Question::MIN_AMMOUNT.to_i, @bt.ammount.to_i 
   end
   
   def test_shouldnt_be_able_to_create_question_with_less_than_min_ammount
-    @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => Question::MIN_AMMOUNT - 1, :questions_category_id => 1})
+    @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => Question::MIN_AMMOUNT - 1, :terms => 1})
     assert_equal true, @bt.new_record?
   end
   
@@ -92,10 +92,10 @@ class QuestionTest < ActiveSupport::TestCase
     
     Question.max_open(u1).times do |t|
       assert_count_increases(Question) do
-        @bt = Question.create({:user_id => u1.id, :title => "fooafoasofd osadka#{t}", :ammount => 0, :questions_category_id => 1})
+        @bt = Question.create({:user_id => u1.id, :title => "fooafoasofd osadka#{t}", :ammount => 0, :terms => 1})
       end
     end
-    @bt = Question.new({:user_id => u1.id, :title => "fooafoasofd osadka#{Question.max_open(u1) + 1}", :ammount => 0, :questions_category_id => 1})
+    @bt = Question.new({:user_id => u1.id, :title => "fooafoasofd osadka#{Question.max_open(u1) + 1}", :ammount => 0, :terms => 1})
     assert !@bt.save
   end
   

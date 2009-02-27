@@ -4,12 +4,20 @@ require File.dirname(__FILE__) + '/../../../test/test_helper'
 class ActsAsContentTest < Test::Unit::TestCase
   
   def test_no_null_title_in_content
-    n = News.new({:title => '', :news_category_id => 1, :user_id => 1, :description => 'foojahaha'})
+    n = News.new({:title => '', :terms => 1, :user_id => 1, :description => 'foojahaha'})
     assert !n.save
   end
   
+  def test_should_link_if_terms_given_as_param
+    n = News.create({:title => 'foo title ibernews', :terms => 1, :user_id => 1, :description => 'foojahaha', :terms => 1})
+    assert_not_nil n
+    assert_not_nil n.log
+    assert_equal 1, n.terms.size
+    assert_equal 1, n.terms[0].id
+  end
+  
   def test_should_add_log_entry_on_creation
-    n = News.create({:title => 'foo title ibernews', :news_category_id => 1, :user_id => 1, :description => 'foojahaha'})
+    n = News.create({:title => 'foo title ibernews', :terms => 1, :user_id => 1, :description => 'foojahaha'})
     assert_not_nil n
     assert_not_nil n.log
     last_entry = n.log.pop
@@ -86,7 +94,7 @@ class ActsAsContentTest < Test::Unit::TestCase
   
   def test_shouldnt_touch_karma_when_changing_state_from_pending_to_deleted
     @u = User.find(1)
-    @n = News.create({:news_category_id => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::PENDING})
+    @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::PENDING})
     assert_not_nil @n
     k = @u.karma_points
     Cms::deny_content(@n, @u, 'ffff')
@@ -96,7 +104,7 @@ class ActsAsContentTest < Test::Unit::TestCase
   
   def test_shouldnt_touch_karma_when_changing_state_from_draft_to_deleted
     @u = User.find(1)
-    @n = News.create({:news_category_id => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::DRAFT})
+    @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::DRAFT})
     assert_not_nil @n
     k = @u.karma_points
     Cms::deny_content(@n, @u, 'ffff')
@@ -112,7 +120,7 @@ class ActsAsContentTest < Test::Unit::TestCase
   
   def test_should_give_karma_when_changing_state_from_draft_to_published
     @u = User.find(1)
-    @n = News.create({:news_category_id => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::DRAFT})
+    @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::DRAFT})
     assert_not_nil @n
     k = @u.karma_points
     Cms::publish_content(@n, @u)
@@ -122,7 +130,7 @@ class ActsAsContentTest < Test::Unit::TestCase
   
   def test_should_give_karma_when_changing_state_from_pending_to_published
     @u = User.find(1)
-    @n = News.create({:news_category_id => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::PENDING})
+    @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::PENDING})
     assert_not_nil @n
     k = @u.karma_points
     Cms::publish_content(@n, @u)
@@ -141,7 +149,7 @@ class ActsAsContentTest < Test::Unit::TestCase
   def test_should_add_to_tracker_of_creator
     # TODO y si cambiamos la autoría qué pasa con el tracker?
     @u = User.find(1)
-    @n = News.create({:news_category_id => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::PENDING})
+    @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::PENDING})
     assert_not_nil @n
     assert_equal true, @u.tracker_has?(@n.unique_content.id)
   end
@@ -176,7 +184,7 @@ class ActsAsContentTest < Test::Unit::TestCase
   def test_related_portals_of_district_proper_district
     n = News.new(:title => 'Noticia 1', :description => 'sumario', :user_id => 1)
     assert n.save
-    Term.single_toplevel(:slug => 'anime').link(n)
+    Term.single_toplevel(:slug => 'anime').link(n.unique_content)
     relportals = n.get_related_portals
     assert_equal 4, relportals.size
     assert_equal 'anime', relportals[3].code

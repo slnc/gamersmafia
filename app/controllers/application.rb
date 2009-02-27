@@ -254,7 +254,12 @@ Request information:
       elsif cls_name == 'Coverage'
         dom = get_domain_of_root_term(object.event.main_category.root)
       elsif Cms::CONTENTS_WITH_CATEGORIES.include?(cls_name)
-        dom = get_domain_of_root_term(object.main_category.root)
+        maincat = object.main_category
+        if maincat
+          dom = get_domain_of_root_term(maincat.root)
+        else
+          dom = App.domain  
+        end
       else
         raise "url_for_content_onlyurl() #{cls_name} not understood}"
       end

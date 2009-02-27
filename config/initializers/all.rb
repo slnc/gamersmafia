@@ -28,6 +28,7 @@ require 'vendor/plugins/rails_mixings/lib/stats.rb'
 require 'lib/stats.rb'
 
 ActiveRecord::Base.send :include, HasHid
+ActiveRecord::Base.send :include, HasSlug
 User.db_query("SELECT now()")
 
 # NOTA: los observers DEBEN ser los últimos para que se puedan cargar los contenidos de lib/ y plugins

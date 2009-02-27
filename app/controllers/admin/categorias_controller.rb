@@ -62,7 +62,7 @@ class Admin::CategoriasController < ApplicationController
     @category = self.get_cls(params[:type_name]).find(params[:id])
     @tld = portal.send("#{Inflector::tableize(params[:type_name])}_categories")
     dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @tld.id})
-    valid_categories = @tld[0].get_all_children(@tld[0])
+    valid_categories = @tld[0].all_children_ids(@tld[0])
     if @portal.respond_to?(:clan_id) && !valid_categories.include?(params[:category][:parent_id].to_i)
       flash[:error] = 'La categoría padre elegida no es válida.'
       render :action => 'categorias_edit'
@@ -82,7 +82,7 @@ class Admin::CategoriasController < ApplicationController
     @category.clan_id = @portal.clan_id if @portal.respond_to? :clan_id
     dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @tld.id})
     
-    valid_categories = @tld[0].get_all_children(@tld[0])
+    valid_categories = @tld[0].all_children_ids(@tld[0])
     if @portal.respond_to?(:clan_id) && !valid_categories.include?(params[:category][:parent_id].to_i)
       flash[:error] = 'La categoría padre elegida no es válida.'
       render :action => 'categorias_new'

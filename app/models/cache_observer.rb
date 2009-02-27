@@ -757,7 +757,13 @@ class CacheObserver < ActiveRecord::Observer
       
       when 'News':
       # TODO borrar de forma más selectiva
-      expire_fragment("/bazar/home/categories/#{object.news_category.code}")
+      object.terms.find(:all).each do |t| 
+        expire_fragment("/bazar/home/categories/#{t.slug}") 
+        expire_fragment("/common/noticias/_latest_by_cat2_#{t.root.code}")
+        # borramos el listado de últimas noticias de categoría X
+        # TODO solo deberíamos borrar si es la última      
+        expire_fragment("/common/noticias/show/_latest_by_cat_#{t.id}")
+      end
       expire_fragment("/bazar/home/categories/#{Term.find(object.slnc_changed_old_values['news_category_id']).slug}") if object.slnc_changed?(:news_category_id) && object.slnc_changed_old_values[:news_category_id]
       expire_fragment("/common/home/index/news_inet")
       object.get_related_portals.each do |p|
@@ -777,16 +783,9 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/noticias/index/page_")
       end
       
-      expire_fragment("/bazar/home/categories/#{object.news_category.root.code}")
-      
       expire_fragment('/rss/noticias/all')
       
-      # borramos el listado de últimas noticias de categoría X
-      # TODO solo deberíamos borrar si es la última
       
-      expire_fragment("/common/noticias/_latest_by_cat2_#{object.news_category.root.code}")
-      
-      expire_fragment("/common/noticias/show/_latest_by_cat_#{object.news_category_id}")
       
       when 'Bet':
       object.get_related_portals.each do |p| 

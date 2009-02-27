@@ -1,7 +1,7 @@
 TODO keys: 
 - acts_as_content (una instancia o una clase de tipo acts_as_content)
 - only_games (mostrar solo juegos)
-
+<% if nil then %>
 <% #= render_tree_select ColumnsCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc'), 'name', 'column[columns_category_id]', @column.columns_category_id %>
 
 <% cats = @download.new_record? ? @portal.downloads_categories : DownloadsCategory.toplevel %>
@@ -18,3 +18,4 @@ TODO keys:
 </optgroup>
 <% end -%>
 </select>
+<% end -%>

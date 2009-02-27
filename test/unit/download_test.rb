@@ -8,7 +8,7 @@ class DownloadTest < Test::Unit::TestCase
   
   # TODO esto va a a plugin de file_column!
   def test_should_update_md5_hash_after_creating_with_file
-    @d = Download.create({:user_id => 1, :downloads_category_id => 1, :title => 'mi archivito', :file => fixture_file_upload('/files/images.zip', 'application/zip')})
+    @d = Download.create({:user_id => 1, :terms => 1, :title => 'mi archivito', :file => fixture_file_upload('/files/images.zip', 'application/zip')})
     assert_equal false, @d.new_record?
     assert /images\.zip/ =~ @d.file
     assert_equal file_hash("#{RAILS_ROOT}/test/fixtures/files/images.zip"), @d.file_hash_md5
@@ -24,7 +24,7 @@ class DownloadTest < Test::Unit::TestCase
   # TODO this should be done by silencecore_filecolumn
   def test_shouldnt_allow_to_create_an_image_with_existing_md5hash
     test_should_update_md5_hash_after_creating_with_file
-    d2 = Download.create({:user_id => 1, :downloads_category_id => 1, :title => 'mi archivito2', :file => fixture_file_upload('/files/images.zip', 'application/zip')})
+    d2 = Download.create({:user_id => 1, :terms => 1, :title => 'mi archivito2', :file => fixture_file_upload('/files/images.zip', 'application/zip')})
     assert_equal true, d2.new_record?
     assert_not_nil d2.errors[:file]
   end

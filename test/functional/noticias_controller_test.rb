@@ -5,7 +5,7 @@ require 'noticias_controller'
 class NoticiasController; def rescue_action(e) raise e end; end
 
 class NoticiasControllerTest < Test::Unit::TestCase
-  test_common_content_crud :name => 'News', :form_vars => {:title => 'footapang', :description => 'bartapang', :news_category_id => 1} # :authed_user_id => 11, :non_authed_user_id => 1000
+  test_common_content_crud :name => 'News', :form_vars => {:title => 'footapang', :description => 'bartapang', :terms => 1} # :authed_user_id => 11, :non_authed_user_id => 1000
   
   def setup
     @controller = NoticiasController.new
@@ -57,7 +57,7 @@ class NoticiasControllerTest < Test::Unit::TestCase
   def test_create_without_subcat_should_work
     sym_login 1
     assert_count_increases(News) do 
-      post :create, { :news => {:title => 'footapang', :description => 'bartapang', :news_category_id => 1}, :secondlevel_news_category_id => '', :new_subcategory_name => '' }
+      post :create, { :news => {:title => 'footapang', :description => 'bartapang', :terms => 1}, :secondlevel_news_category_id => '', :new_subcategory_name => '' }
     end
     assert_equal 1, News.find(:first, :order => 'id desc').news_category_id
   end
@@ -67,7 +67,7 @@ class NoticiasControllerTest < Test::Unit::TestCase
     nc = NewsCategory.find(1).children.create({:name => 'soy de second level'})
     assert_not_nil nc.id
     assert_count_increases(News) do 
-      post :create, { :news => {:title => 'footapang', :description => 'bartapang', :news_category_id => 1}, :second_level_news_category_id => nc.id, :new_subcategory_name => '' }
+      post :create, { :news => {:title => 'footapang', :description => 'bartapang', :terms => 1}, :second_level_news_category_id => nc.id, :new_subcategory_name => '' }
     end
     assert_equal nc.id, News.find(:first, :order => 'id desc').news_category_id
   end
@@ -76,7 +76,7 @@ class NoticiasControllerTest < Test::Unit::TestCase
     sym_login 1
     assert_count_increases(NewsCategory) do
       assert_count_increases(News) do 
-        post :create, { :news => {:title => 'footapang', :description => 'bartapang', :news_category_id => 1}, :new_subcategory_name => 'blah' }
+        post :create, { :news => {:title => 'footapang', :description => 'bartapang', :terms => 1}, :new_subcategory_name => 'blah' }
       end
     end
     n = News.find(:first, :order => 'id desc')
@@ -90,7 +90,7 @@ class NoticiasControllerTest < Test::Unit::TestCase
     sym_login 1
     assert_count_increases(NewsCategory) do
       assert_count_increases(News) do 
-        post :create, { :news => {:title => 'footapang', :description => 'bartapang', :news_category_id => 1}, :new_subcategory_name => 'blah', :new_subcategory_file => fixture_file_upload('/files/buddha.jpg', 'image/jpeg') }
+        post :create, { :news => {:title => 'footapang', :description => 'bartapang', :terms => 1}, :new_subcategory_name => 'blah', :new_subcategory_file => fixture_file_upload('/files/buddha.jpg', 'image/jpeg') }
       end
     end
     n = News.find(:first, :order => 'id desc')

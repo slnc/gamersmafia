@@ -75,7 +75,7 @@ results = User.find(1).comments.find(:all, :order => 'created_on DESC', :limit =
 
 require 'clusterer'
 cat = 845.to_s
-cat_ids = TopicsCategory.find(845).get_all_children
+cat_ids = TopicsCategory.find(845).all_children_ids
 results = Topic.find(:all, :conditions => 'topics_category_id IN (' << cat_ids.join(',') < ')', :order => 'created_on desc', :limit => 2000).collect { |c| Foo.new(proc_for_clustering(c.title), proc_for_clustering(c.main)) }  and nil
 topics_ids = Topic.find(:all, :conditions => 'topics_category_id IN (' << cat_ids.join(',') < ')', :order => 'created_on DESC', :limit => 2000).collect { |c| c.id }  and nil
 results2 = Comment.find(:all, :conditions => "content_id in (select id from contents where content_type_id = 6 AND external_id IN (" << topics_ids.join(',') << "))").collect { |c| Foo.new(proc_for_clustering(c.comment)) }  and nil 
