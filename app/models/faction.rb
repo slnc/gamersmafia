@@ -341,34 +341,40 @@ class Faction < ActiveRecord::Base
     end
   end
   
+  def referenced_thing_field
+    "#{rthing.class.name.downcase}_id".to_sym
+  end
+  
   def karma_points
     total = 0
     
     # para cada contenido calculamos el total de elementos que salgan de
     # nuestra categoría base y a la vez calculamos los puntos por comentarios
     # (requiere que cache_karma_points != NULL)
+    rthing = self.referenced_thing
+    root_term = Term.single_toplevel(self.referenced_thing_field => rthing.id)
     
-    for c_cls in Cms.categories_classes
-      c = c_cls.find(:first, :conditions => ['code = ? and root_id = id', self.code])
-      cat_ids = c.get_all_children
+    Cms::CONTENTS_WITH_CATEGORIES.each do |cls_name|
+      cat_ids = root_term.all_children_ids(:taxonomy => "#{Inflector::pluralize(cls_name)}Category")
+      # c = c_cls.find(:first, :conditions => ['code = ? and root_id = id', self.code])
+      # cat_ids = c.get_all_children
       
-      if c_cls.name == 'TopicsCategory':
+      if cls_name == 'Topic':
         stats = self.class.db_query("SELECT COUNT(id) * #{Karma::KPS_CREATE['Topic']} as total_1, 
                                                          SUM(COALESCE(cache_comments_count, 0)) * #{Karma::KPS_CREATE['Comment']} as total_2
-                                                    FROM #{Inflector.tableize(c.class.items_class.name)} 
-                                                   WHERE #{Inflector.underscore(c.class.name)}_id in (#{cat_ids.join(',')}) 
+                                                    FROM #{Inflector.tableize(cls_name)} 
+                                                   WHERE #{Inflector::underscore(Inflector::pluralize(cls_name))}_category_id in (#{cat_ids.join(',')}) 
                                                      AND state = #{Cms::PUBLISHED}")
       else
         kps_per_content = Karma::KPS_CREATE[c.class.items_class.name] + Karma::KPS_SAVE[c.class.items_class.name]
         stats = self.class.db_query("SELECT COUNT(id) * #{kps_per_content} as total_1, 
                                                          SUM(COALESCE(cache_comments_count, 0)) * #{Karma::KPS_CREATE['Comment']} as total_2
-                                                    FROM #{Inflector.tableize(c.class.items_class.name)} 
-                                                   WHERE #{Inflector.underscore(c.class.name)}_id in (#{cat_ids.join(',')}) 
+                                                    FROM #{Inflector.tableize(cls_name)} 
+                                                   WHERE #{Inflector::underscore(Inflector::pluralize(cls_name))}_category_id in (#{cat_ids.join(',')}) 
                                                      AND state = #{Cms::PUBLISHED}")
       end
       
       total += stats[0]['total_1'].to_i + stats[0]['total_2'].to_i
-      # raise "#{stats[0]['total_1']} #{stats[0]['total_2']}"
     end
     
     total

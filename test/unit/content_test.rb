@@ -24,4 +24,27 @@ class ContentTest < Test::Unit::TestCase
     c = Content.find(1)
     assert !c.locked_for_user?(User.find(2))
   end
+  
+  def test_linked_terms
+    c = Content.find(1)
+    assert_equal 'News', c.content_type.name
+    lterms = c.linked_terms
+    assert_equal 1, lterms.size
+    assert_nil lterms[0].taxonomy
+    assert_equal 1, lterms[0].id
+  end
+  
+  def test_linked_terms_taxonomy
+    c = Content.find(5)
+    lterms = c.linked_terms('DownloadsCategory')
+    assert_equal 1, lterms.size
+    assert_equal 16, lterms[0].id
+  end
+  
+  def test_linked_terms_null
+    c = Content.find(1)
+    lterms = c.linked_terms('NULL')
+    assert_equal 1, lterms.size
+    assert_equal 1, lterms[0].id
+  end
 end

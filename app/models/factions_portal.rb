@@ -53,6 +53,8 @@ class FactionsPortal < Portal
   # Devuelve todas las categorías de primer nivel visibles en la clase dada
   def categories(content_class)
     cats = []
+    # slugs = self.factions.collect { |f| "'#{f.code}'" }
+    # Term.find(:all, :conditions => "id = root_id AND code IN (#{slugs.join(',')})")
     for f in self.factions
       catz = content_class.category_class.toplevel(:conditions => "code = \'#{f.code}\'")
       cats<< catz[0] if catz.size > 0

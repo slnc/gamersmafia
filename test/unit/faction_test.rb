@@ -92,4 +92,8 @@ class FactionTest < Test::Unit::TestCase
     f1.reload
     assert_equal 59, f1.boss.id
   end
+  
+  def test_karma_points_should_work_correctly
+    flunk
+  end
 end

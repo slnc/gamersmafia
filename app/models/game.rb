@@ -37,29 +37,21 @@ class Game < ActiveRecord::Base
   end
   
   def create_contents_categories
-    Term.create(:game_id => self.id, :name => self.name, :slug => self.code)
-    content_types = Cms.categories_classes
-    
-    # crea las categorías raíz y general para cada contenido
-    for ctype in content_types
-      new_category = ctype.new({:name => self.name, :code => self.code})
-      new_category.save
-      raise ActiveRecord::RecordNotFound unless new_category
-      new_category = ctype.find(:first, :conditions => ['name = ? and code = ?', self.name, self.code])
-    end
-    
+    root_term = Term.create(:game_id => self.id, :name => self.name, :slug => self.code)
     
     # crea los foros iniciales para dicho juego
     cforum = TopicsCategory.find(:first, :conditions => ['id = root_id and code = ? and name = ?', self.code, self.name])
-    for defname in ['General', 'Ayuda']
-      new_forum = cforum.children.create({:name => defname})
+    ['General', 'Ayuda'].each do |defname|
+      root_term.children.create(:name => defname, :taxonomy => 'TopicsCategory')
     end
     
     # creamos galería inicial
     cgal = ImagesCategory.find(:first, :conditions => ['id = root_id and code = ? and name = ?', self.code, self.name])
-    ['General'].each { |defname| cgal.children.create({:name => defname}) }
+    ['General'].each do |defname| 
+      root_term.children.create(:name => defname, :taxonomy => 'ImagesCategory') 
+    end
     
-    if not Faction.find_by_name(self.name) then
+    if Faction.find_by_name(self.name).nil? then
       f = Faction.new({:name => self.name, :code => self.code})
       f.save
     end
@@ -72,7 +64,6 @@ class Game < ActiveRecord::Base
   after_save :update_code_in_other_places_if_changed
   
   def file=(incoming_file)
-    
     @temp_file = incoming_file
     @filename = incoming_file.original_filename if incoming_file.to_s != ''
     @content_type = incoming_file.content_type if incoming_file.to_s != ''

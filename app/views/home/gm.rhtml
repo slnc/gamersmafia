@@ -281,7 +281,7 @@ if @daily_img then %>
 <% end -%>
 
 <% cache("/common/home/index/news_inet") do 
-nc = NewsCategory.find(:first, :conditions => 'code = \'inet\' AND id = root_id')
+nc = Term.single_toplevel(:bazar_district_id => BazarDistrict.find_by_code('inet'))
 %>
     <div class="homebox">
         <div id="home-offtopics" class="subheader first"><div><span>Offtopic</span></div></div>

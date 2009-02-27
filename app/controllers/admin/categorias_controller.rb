@@ -119,6 +119,7 @@ class Admin::CategoriasController < ApplicationController
   end
   
   def get_cls(type_name)
+    raise "DEPRECATED"
     Cms.category_class_from_content_name(type_name)
   end
 end

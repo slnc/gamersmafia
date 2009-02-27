@@ -7,7 +7,8 @@ class Content < ActiveRecord::Base
   has_many :tracker_items, :dependent => :destroy
   has_many :contents_locks, :dependent => :destroy
   has_many :publishing_decisions
-  has_many :terms, :through => :content_terms
+  has_many :terms, :through => :contents_terms
+  has_many :contents_terms
   
   after_save do |m| 
     m.contents_locks.clear if m.contents_locks
@@ -92,6 +93,16 @@ class Content < ActiveRecord::Base
       raise "lock  couldnt be created: #{cl.errors.full_messages_html}" unless cl
       # raise "lock created #{}"
       cl
+    end
+  end
+  
+  def linked_terms(taxonomy=nil)
+    if taxonomy.nil?
+      self.terms.find(:all)
+    elsif taxonomy == 'NULL'
+      self.terms.find(:all, :conditions => 'taxonomy IS NULL')
+    else
+      self.terms.find(:all, :conditions => ["taxonomy = ?", taxonomy])
     end
   end
 end

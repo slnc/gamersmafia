@@ -281,13 +281,12 @@ module ActsAsContent
     end
     
     def has_category?
-      Cms::category_class_from_content_name(self.class.name) ? true : false
+      Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name)
     end
     
-    # TODO this shouldn't go here
+    # Devuelve la categoría de este contenido
     def main_category
-      cls = Cms::category_class_from_content_name(self.class.name)
-      cls.find(self.attributes["#{Inflector::underscore(cls.name)}_id"])
+      self.unique_content.linked_categories("#{Inflector::pluralize(self.class.name)}Category")
     end
     
     # TODO refactor this

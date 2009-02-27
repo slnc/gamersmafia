@@ -58,12 +58,9 @@ class GameTest < Test::Unit::TestCase
 
   def test_should_create_contents_categories_if_everything_ok
     test_should_create_if_everything_ok
-    for cls_name in Cms::CONTENTS_WITH_CATEGORIES
-      assert_not_nil Cms.category_class_from_content_name(cls_name).find(:first, :conditions => ['id = root_id and code = ? and name = ?', @g.code, @g.name]), cls_name
-    end
-    forum_tld = TopicsCategory.find(:first, :conditions => ['name = ? and code = ?', @g.name, @g.code])
-    assert_not_nil forum_tld.children.find_by_name('General')
-    assert_not_nil forum_tld.children.find_by_name('Ayuda')
+    root_term = Term.single_toplevel(:game_id => @g.id)
+    assert_not_nil root_term.children.find(:first, :conditions => ['taxonomy = ? AND_name = ?', 'TopicsCategory', 'General'])
+    assert_not_nil root_term.children.find(:first, :conditions => ['taxonomy = ? AND_name = ?', 'TopicsCategory', 'Ayuda'])
   end
 
   def test_should_create_portal_if_everything_ok

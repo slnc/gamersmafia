@@ -16,7 +16,7 @@ class FactionsPortalTest < Test::Unit::TestCase
   
   def test_should_not_return_duplicated_urls
     test_should_return_factions_links_if_any
-        @fp.reload
+    @fp.reload
     f2 = Faction.create({:name => 'fooo2', :code => 'fooo2'})
     assert_equal false, f2.new_record?
     flc2 = f2.factions_links.create({:name => 'nombre del link2', :url => 'http://google.com/', :image => fixture_file_upload('/files/babe.jpg', 'image/jpeg')})
@@ -33,5 +33,11 @@ class FactionsPortalTest < Test::Unit::TestCase
   
   def test_contents_type_categories_should_return_proper_categories_if_faction_of_platform
     assert_equal 1, Portal.find_by_code('wii').tutorials_categories.size
+  end
+  
+  def test_categories_should_work
+    portal_ut = Portal.find_by_code('ut')
+    assert_equal 1, ut.categories(Tutorial)
+    assert_equal 'ut', ut.categories(Tutorial)[0].code
   end
 end

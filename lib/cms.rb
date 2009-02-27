@@ -88,23 +88,7 @@ module Cms
                         'Review' => ['description', 'main'],
   }
   
-  def self.categories_classes
-    [NewsCategory, 
-    DownloadsCategory, 
-    DemosCategory, 
-    ImagesCategory, 
-    EventsCategory, 
-    TutorialsCategory, 
-    ColumnsCategory,
-    InterviewsCategory,
-    QuestionsCategory,
-    ReviewsCategory,
-    PollsCategory,
-    TopicsCategory,
-    BetsCategory]
-  end
-  
-  CONTENTS_WITH_CATEGORIES = ['Column', 'Download', 'Demo', 'Topic', 'Image', 'Interview', 'News', 'Tutorial', 'Poll', 'Bet', 'Review', 'Event', 'Question'] # 'Funthing', 'Review',
+  CONTENTS_WITH_CATEGORIES = %w(Column Download Demo Topic Image Interview News Tutorial Poll Bet Review Event Question)
   BAZAR_DISTRICTS_VALID = %w(Column Interview Tutorial News Topic Image Poll Bet Review Event Question Download)
   BAZAR_DISTRICTS_REQUIRED = %w(News Topic Poll Question)
   CLANS_CONTENTS = %w(News Topic Download Image Event Poll)

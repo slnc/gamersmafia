@@ -758,7 +758,7 @@ class CacheObserver < ActiveRecord::Observer
       when 'News':
       # TODO borrar de forma más selectiva
       expire_fragment("/bazar/home/categories/#{object.news_category.code}")
-      expire_fragment("/bazar/home/categories/#{NewsCategory.find(object.slnc_changed_old_values['news_category_id']).code}") if object.slnc_changed?(:news_category_id) && object.slnc_changed_old_values[:news_category_id]
+      expire_fragment("/bazar/home/categories/#{Term.find(object.slnc_changed_old_values['news_category_id']).slug}") if object.slnc_changed?(:news_category_id) && object.slnc_changed_old_values[:news_category_id]
       expire_fragment("/common/home/index/news_inet")
       object.get_related_portals.each do |p|
         expire_fragment("/#{p.code}/home/index/news")

@@ -18,7 +18,7 @@ module Comments
     game_id = object.unique_content.game_id
     if game_id
       contents_faction = Faction.find_by_game_id(game_id)
-      raise 'Estás baneado de esta facción.' if contents_faction.user_is_banned?(user)
+      raise 'Estás baneado de esta facción.' if contents_faction && contents_faction.user_is_banned?(user)
     end
   end
   

@@ -1,4 +1,4 @@
-<% cats = @news.new_record? ? @portal.news_categories : NewsCategory.toplevel%>
+<% cats = @news.new_record? ? @portal.news_categories : Term.toplevel(:clan_id => 'NULL') %>
 <strong>Categoría</strong><br/>
 <table class="compact">
 	<tr style="vertical-align: top;">
@@ -41,7 +41,7 @@
 	<strong>Secundaria: <select name="second_level_news_category_id" id="secondary-cat-existing">
 		<option value=""></option>
 		<% if @news.news_category_id then 
-		tld = NewsCategory.find(@news.news_category.root_id) 
+		tld = Term.find(@news.news_category.root_id) 
 tld.children.each do |ch| %>
 		<option <%='selected="selected"' if @news.news_category_id == ch.id %> value="<%=ch.id%>"><%=ch.name%></option>
 <% end %>

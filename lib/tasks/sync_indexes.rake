@@ -6,31 +6,11 @@ namespace :gm do
     fix_categories_count
   end
   
-  namespace :sync_indexes do
-    desc "Se asegura de que todas las facciones tengan las categorías de contenidos necesarias"
-    task :fix_categories => :environment do
-      contents_categories = Cms.categories_classes
-      msgs = ''
-      
-      for f in Faction.find(:all)
-        g = Game.find_by_name(f.name)
-        g = Platform.find_by_name(f.name) if g.nil?
-        puts f.name
-        for ctype in contents_categories
-          if not ctype.find(:first, :conditions => ['parent_id is null and id = root_id and code = ?', f.code]) then
-            ctype.new({:name => f.name, :code => g.code}).save
-            msgs = "#{msgs}<br />Creada categoría en #{ctype.name} para #{f.name}"
-          end
-          
-          # guardamos para asegurarnos que root_id se ponga
-          ctype.find(:first, :conditions => ['parent_id is null and id = root_id and code = ?', f.code]).save
-        end
-      end
-      # TODO foros
-    end
-    
+  namespace :sync_indexes do    
     desc "Recalcula el campo items_count de cada categoría"
     task :fix_categories_count => :environment do
+      raise "TODO: DEPRECATED"
+      Term.find(:all).each { |t| t.recalculate_count }
       contents_categories = [DemosCategory, DownloadsCategory, TutorialsCategory, TopicsCategory, ImagesCategory]
       msg = ''
       

@@ -96,6 +96,8 @@ fixtures = [
 :questions_categories,
 :questions,
 :friendships,
+:terms,
+:contents_terms
  ]
 
 ENV['FIXTURES'] = fixtures.join(',')
