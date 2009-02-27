@@ -24,8 +24,9 @@ class DescargasController < InformacionController
   end
   
   def download
-    @download = portal.download.find(params[:id])
+    @download = Download.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @download.is_public?
+      
     @title = @download.title
     @download_mirrors = @download.download_mirrors
     Download.increment_counter('downloaded_times', @download.id)

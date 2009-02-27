@@ -19,6 +19,7 @@ class DescargasControllerTest < Test::Unit::TestCase
     d = Download.find(1)
     orig = d.downloaded_times
     @request.host = "ut.#{App.domain}"
+
     assert_count_increases(DownloadedDownload) do
       get :download, :id => d.id, :h => 0
       assert_response :success

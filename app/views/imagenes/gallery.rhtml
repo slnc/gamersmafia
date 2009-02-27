@@ -1,7 +1,5 @@
-<% content_support do %>
-  	
-		<% #= render :partial => '/imagenes/random', :locals => {:category => @category} %>
-	
+<% content_support do %>  	
+	<% #= render :partial => '/imagenes/random', :locals => {:category => @category} %>
 
 	<%= render :partial => '/imagenes/best_rated', :locals => {:category => @category} %>
   
@@ -20,7 +18,7 @@
   <% mftext('Otras galerías') do %>
   <ul class="content-hid">
     <strong><%=@category.parent.name%></strong>
-  <% for gallery in @category.parent.children %>
+  <% for gallery in @category.parent.children.find(:all, :conditions => 'taxonomy = \'ImagesCategory\'') %>
   <% if @category.id == gallery.id then %>
   <li class="current"><%=link_to gallery.name, gmurl(gallery)%></li>
   <% else %>
@@ -36,11 +34,12 @@
   <% mftext("#{@category.parent.name} &raquo; #{@category.name}") do %>
 <div class="imagesgallery">
 <%
-@image_pages = ActionController::Pagination::Paginator.new self, Image.count(:conditions => ['images_category_id = ? and state = 2', @category.id]), 16, params['page']
+@image_pages = ActionController::Pagination::Paginator.new self, @category.count(:published, :content_type => 'Image'), 16, params['page']
 %>
 <%= render :partial => 'shared/pager', :object => @image_pages, :locals => {:pos => 'top'} %>
 <% cache("/common/imagenes/gallery/#{@category.id}/page_#{params[:page]}") do
-@images = Image.find(:published, :conditions => ['images_category_id = ?', @category.id], :order => 'id asc', :limit => @image_pages.current.to_sql[0], :offset => @image_pages.current.to_sql[1])
+
+@images = @category.image.find(:published, :order => 'id asc', :limit => @image_pages.current.to_sql[0], :offset => @image_pages.current.to_sql[1])
 
 for image in @images %>
   <span class="screenshot"><%=link_to fc_thumbnail(image.file, 'f', '153x115', false), gmurl(image)%></span>

@@ -66,12 +66,14 @@ class ReclutamientoControllerTest < ActionController::TestCase
   end
   
   def test_buscar
-    ra =RecruitmentAd.new(:user_id => 1, :game_id => 1, :title => 'booooh') 
+    ra = RecruitmentAd.new(:user_id => 1, :game_id => 1, :title => 'booooh') 
     assert_count_increases(RecruitmentAd) do
       assert ra.save
     end
+    
+    Cms::modify_content_state(ra, User.find(1), Cms::PUBLISHED)
     get :index, :search => 1, :game_id => 1, :type => 'searching_clan'
     assert_response :success
-    assert @response.body.index("#{User.find(1).login} busca clan"), @response.body
+    assert @response.body.index("#{User.find(1).login}"), @response.body
   end
 end
