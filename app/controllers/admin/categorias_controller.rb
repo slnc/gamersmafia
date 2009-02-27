@@ -51,7 +51,7 @@ class Admin::CategoriasController < ApplicationController
     #names = (@portal.respond_to?(:clan_id) && @portal.clan_id) ? Cms::CLANS_CONTENTS : Cms::CONTENTS_WITH_CATEGORIES
     #names = names.collect { |name| "'#{name}'" }
     #@editable_content_types = ContentType.find(:all, :conditions => "name in (#{names.join(',')})", :order => 'lower(name) ASC')
-    render :action => "#{categorias_skip_path}admin/categorias/index.rhtml"
+    render :template => "/admin/categorias/index.rhtml"
   end
   
   def categorias_skip_path
@@ -62,7 +62,7 @@ class Admin::CategoriasController < ApplicationController
     @root_term = Term.single_toplevel(:id => params[:id])
     raise ActiveRecord::RecordNotFound unless @root_term
     @content_types = Term.content_types_from_root(@root_term)
-    render :action => "#{categorias_skip_path}admin/categorias/root.rhtml", :layout => false
+    render :template => "/admin/categorias/root.rhtml", :layout => false
   end
   
   
@@ -70,14 +70,14 @@ class Admin::CategoriasController < ApplicationController
     # TODO permisos
     @term = Term.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @term
-    render :action => "#{categorias_skip_path}admin/categorias/hijos.rhtml"
+    render :template => "/admin/categorias/hijos.rhtml"
   end
   
   def contenidos
     # TODO permisos
     @term = Term.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @term
-    render :action => "#{categorias_skip_path}admin/categorias/contenidos.rhtml"
+    render :template => "/admin/categorias/contenidos.rhtml"
   end
   
   def update
