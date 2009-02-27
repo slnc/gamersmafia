@@ -10925,7 +10925,8 @@ CREATE TABLE polls (
     clan_id integer,
     cache_weighted_rank numeric(10,2),
     closed boolean DEFAULT false NOT NULL,
-    unique_content_id integer
+    unique_content_id integer,
+    polls_votes_count integer DEFAULT 0 NOT NULL
 );
 
 
@@ -15881,6 +15882,13 @@ CREATE UNIQUE INDEX contents_recommendations_seen_on_content_id_receiver_user_id
 --
 
 CREATE INDEX contents_recommendations_sender_user_id ON contents_recommendations USING btree (sender_user_id);
+
+
+--
+-- Name: contents_recommendations_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX contents_recommendations_uniq ON contents_recommendations USING btree (content_id, sender_user_id, receiver_user_id);
 
 
 --

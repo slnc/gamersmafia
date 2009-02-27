@@ -268,11 +268,12 @@ class CacheObserver < ActiveRecord::Observer
       start_page = prev_count / 50 # TODO especificar esto en un único sitio
       end_page = start_page + next_count / 50 + 1
       
-      for i in (start_page..end_page)
-        expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_#{i}")
-      end
+      #for i in (start_page..end_page)
+      #  expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_#{i}")
+      #end
       
       expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_")
+      expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_*")
       
       when 'CommentsValoration':
       expire_fragment("/comments/#{Time.now.to_i/(86400*7)}/#{object.comment.content_id%100}/#{object.comment.content_id}_*") # cacheamos solo una semana para q se actualicen barras    
@@ -640,14 +641,16 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/home/index/articles2")
         next unless p.interview
         # borramos las páginas de listado de entrevistas posteriores a la actual
-        prev_count = p.interview.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        next_count = p.interview.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        start_page = prev_count / EntrevistasController::INTERVIEWS_PER_PAGE
-        end_page = start_page + next_count / EntrevistasController::INTERVIEWS_PER_PAGE + 1
+        # TODO PERF
+        #prev_count = p.interview.count(:published, :conditions => ["created_on <= ?", object.created_on])
+        #next_count = p.interview.count(:published, :conditions => ["created_on >= ?", object.created_on])
+        #start_page = prev_count / EntrevistasController::INTERVIEWS_PER_PAGE
+        #end_page = start_page + next_count / EntrevistasController::INTERVIEWS_PER_PAGE + 1
         
-         (start_page..end_page).each { |i| expire_fragment("/#{p.code}/entrevistas/index/page_#{i}") }
+        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/entrevistas/index/page_#{i}") }
         
         expire_fragment("/#{p.code}/entrevistas/index/page_")
+        expire_fragment("/#{p.code}/entrevistas/index/page_*")
         expire_fragment("/#{p.code}/entrevistas/show/latest_by_author_#{object.user_id}")
       end
       
@@ -658,14 +661,15 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/home/index/articles2")
         next unless p.column
         # borramos las páginas de listado de columnas posteriores a la actual
-        prev_count = p.column.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        next_count = p.column.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        start_page = prev_count / ColumnasController::COLUMNS_PER_PAGE
-        end_page = start_page + next_count / ColumnasController::COLUMNS_PER_PAGE + 1
+        #prev_count = p.column.count(:published, :conditions => ["created_on <= ?", object.created_on])
+        #next_count = p.column.count(:published, :conditions => ["created_on >= ?", object.created_on])
+        #start_page = prev_count / ColumnasController::COLUMNS_PER_PAGE
+        #end_page = start_page + next_count / ColumnasController::COLUMNS_PER_PAGE + 1
         
-         (start_page..end_page).each { |i| expire_fragment("/#{p.code}/columnas/index/page_#{i}") }
+        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/columnas/index/page_#{i}") }
         
         expire_fragment("/#{p.code}/columnas/index/page_")
+        expire_fragment("/#{p.code}/columnas/index/page_*")
         expire_fragment("/#{p.code}/columnas/show/latest_by_author_#{object.user_id}")
         expire_fragment("/#{p.code}/columnas/index/most_popular_authors_#{Time.now.to_i/(86400)}") if object.slnc_changed?(:user_id)
       end
@@ -689,13 +693,14 @@ class CacheObserver < ActiveRecord::Observer
         
         expire_fragment("/#{p.code}/home/index/news_developed")
         # borramos las páginas de listado de noticias posteriores a la actual
-        prev_count = p.news.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        next_count = p.news.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        start_page = prev_count / NoticiasController::NEWS_PER_PAGE
-        end_page = start_page + next_count / NoticiasController::NEWS_PER_PAGE + 1
+        #prev_count = p.news.count(:published, :content_type => 'News', :conditions => "contents.created_on <= '#{object.created_on.strftime('%Y-%m-%d %H:%M:%s')}'")
+        #next_count = p.news.count(:published, :content_type => 'News', :conditions => "contents.created_on >= '#{object.created_on.strftime('%Y-%m-%d %H:%M:%s')}'")
+        #start_page = prev_count / NoticiasController::NEWS_PER_PAGE
+        #end_page = start_page + next_count / NoticiasController::NEWS_PER_PAGE + 1
+        # TODO PERF
+        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/noticias/index/page_#{i}") }
         
-         (start_page..end_page).each { |i| expire_fragment("/#{p.code}/noticias/index/page_#{i}") }
-        
+        expire_fragment("/#{p.code}/noticias/index/page_*")
         expire_fragment("/#{p.code}/noticias/index/page_")
       end
       
@@ -719,16 +724,18 @@ class CacheObserver < ActiveRecord::Observer
       object.get_related_portals.each do |p| 
         expire_fragment("/#{p.code}/home/index/eventos/#{Time.now.strftime('%Y%m%d')}") 
         expire_fragment("/#{p.code}/home/index/eventos2/#{Time.now.strftime('%Y%m%d')}")
-        next if p.event.nil?
+        #next if p.event.nil?
         # borramos las páginas de listado de noticias posteriores a la actual
-        prev_count = p.event.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        next_count = p.event.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        start_page = prev_count / EventosController::PER_PAGE
-        end_page = start_page + next_count / EventosController::PER_PAGE + 1
+        # TODO PERF
+        #prev_count = p.event.count(:published, :conditions => ["created_on <= ?", object.created_on])
+        #next_count = p.event.count(:published, :conditions => ["created_on >= ?", object.created_on])
+        #start_page = prev_count / EventosController::PER_PAGE
+        #end_page = start_page + next_count / EventosController::PER_PAGE + 1
         
-         (start_page..end_page).each { |i| expire_fragment("/#{p.code}/eventos/index/page_#{i}") }
+        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/eventos/index/page_#{i}") }
         
         expire_fragment("/#{p.code}/eventos/index/page_")
+        expire_fragment("/#{p.code}/eventos/index/page_*")
       end
       
       

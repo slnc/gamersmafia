@@ -73,7 +73,7 @@ end %>
   if subcategories.size > 0 then %>
     Subcategorías: <ul class="tutorialscategories">
       <% for subcategory in subcategories %>
-    <li><%=link_to subcategory.name, gmurl(subcategory)%> (<%=subcategory.items_count(nil, true)%>)</li>
+    <li><%=link_to subcategory.name, gmurl(subcategory)%> (<%=subcategory.contents_count(:cls_name => 'Tutorial')%>)</li>
     <% end -%>
   </ul><% end -%></li>
 <% end -%>

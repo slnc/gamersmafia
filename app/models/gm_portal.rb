@@ -48,10 +48,11 @@ class GmPortal
       else
         cls_name = Inflector::camelize(Inflector::singularize(method_id))
         cls = Object.const_get(cls_name)
+        
         if Cms::CLANS_CONTENTS.include?(cls_name)  # es una clase cuya tabla tiene clan_id, añadimos constraint
           GenericContentProxy.new(cls)
         else
-          cls
+          GenericContentProxy.new(cls, false)
         end
       end
     elsif /_categories/ =~ method_id.to_s then
@@ -88,38 +89,5 @@ class GmPortalPollProxy
   
   def self.method_missing(method_id, *args)
     GenericContentProxy.new(Poll).send(method_id, *args)
-  end
-end
-
-class GenericContentProxy
-  def initialize(cls)
-    @cls = cls
-  end
-  
-  def method_missing(method_id, *args)
-    begin
-      super
-    rescue NoMethodError
-      args = _add_restriction_to_cond(*args)
-      begin
-        @cls.send(method_id, *args)
-      rescue ArgumentError
-        @cls.send(method_id)
-      end
-    end
-  end
-  
-  private
-  def _add_restriction_to_cond(*args)
-    options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
-    new_cond = 'clan_id IS NULL'
-    if options[:conditions].kind_of?(Array)
-      options[:conditions][0]<< "AND #{new_cond}"
-    elsif options[:conditions] then
-      options[:conditions]<< " AND #{new_cond}"
-    else
-      options[:conditions] = new_cond
-    end
-    args.push(options)
   end
 end

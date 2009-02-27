@@ -3,19 +3,21 @@ first_faction:
   name: Unreal Tournament
   code: ut
   cash: 0
+  created_on: 2006-01-01 00:00:00
 
 second_faction:
   id: 2
   name: rejects faction
   code: rj
   cash: 0
+  created_on: 2006-01-01 00:00:00
   
-
 third_faction:
   id: 3
   name: third faction
   code: th
   cash: 0
+  created_on: 2006-01-01 00:00:00
   
 platform:
   id: 4
@@ -23,3 +25,4 @@ platform:
   code: wii
   cash: 0
   is_platform: t
+  created_on: 2006-01-01 00:00:00

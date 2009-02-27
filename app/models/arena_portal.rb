@@ -77,7 +77,7 @@ class ArenaPortal
   
   # Devuelve todas las categorías de primer nivel visibles en la clase dada
   def categories(content_class)
-    Term.single_toplevel(:slug => 'arena')
+    Term.toplevel(:slug => 'arena')
   end
 end
 
@@ -92,42 +92,5 @@ class ArenaPortalPollProxy
   
   def self.respond_to?(method_id)
     GenericContentProxy.new(Poll).respond_to?(method_id)
-  end
-end
-
-class GenericContentProxy
-  def initialize(cls)
-    @cls = cls
-  end
-  
-  def respond_to?(method_id, include_priv = false)
-    true
-  end
-  
-  def method_missing(method_id, *args)
-    begin
-      super
-    rescue NoMethodError
-      args = _add_restriction_to_cond(*args)
-      begin
-        @cls.send(method_id, *args)
-        rescue ArgumentError
-        @cls.send(method_id)
-      end
-    end
-  end
-  
-  private
-  def _add_restriction_to_cond(*args)
-    options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
-    new_cond = 'clan_id IS NULL'
-    if options[:conditions].kind_of?(Array)
-      options[:conditions][0]<< "AND #{new_cond}"
-    elsif options[:conditions] then
-      options[:conditions]<< " AND #{new_cond}"
-    else
-      options[:conditions] = new_cond
-    end
-    args.push(options)
   end
 end

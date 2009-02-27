@@ -917,4 +917,79 @@ module Cms
   def self.user_can_create_content(user)
     User::STATES_CAN_LOGIN.include?(user.state) && user.antiflood_level < 5
   end
+  
+  def self.can_edit_term?(u, term, taxonomy)
+    self.can_admin_term?(u, term, taxonomy) && term.id != term.root_id
+  end
+  
+  def self.can_admin_term?(u, term, taxonomy)
+    return true if u.has_admin_permission?(:capo)
+    
+    if term.game_id
+      f = Faction.find_by_code(term.game.code)
+      f.is_bigboss?(u) || f.user_is_editor_of_content_type?(u, ContentType.find_by_name(taxonomy))
+    elsif term.platform_id
+      f = Faction.find_by_code(term.platform.code)
+      f.is_bigboss?(u) || f.user_is_editor_of_content_type?(u, ContentType.find_by_name(taxonomy))
+    elsif term.bazar_district_id
+      f = term.bazar_district
+      f.is_bigboss?(u) || f.is_sicario?(u)
+    elsif term.clan_id
+      c = term.clan
+      c.user_is_clanleader(u)
+    end
+  end
+  
+  def self.get_editable_terms_by_group(u)
+    terms = {:games => [], :platforms => [], :clans => [], :bazar_districts => [], :special => []}
+    
+    if u.has_admin_permission?(:capo)
+      Term.toplevel(:clan_id => nil).each do |t|
+        if t.game_id
+          terms[:games] << t
+        elsif t.platform_id
+          terms[:platforms] << t
+        elsif t.clan_id.nil? && t.bazar_district_id.nil?
+          terms[:special] << t
+        end
+      end
+    end
+    
+    if u.has_admin_permission?(:bazar_manager)
+      Term.find(:all, :conditions => 'id = root_id AND bazar_district_id IS NOT NULL').each do |t|
+        terms[:bazar_districts] << t
+      end
+    end
+    
+    u.users_roles.find(:all, :conditions => "role IN ('Boss', 'Underboss')").each do |ur|
+      f = Faction.find(ur.role_data.to_i)
+      t = f.single_toplevel_term
+      if t.game_id
+        terms[:games] << t
+      else
+        terms[:platforms] << t
+      end
+    end
+    
+    u.users_roles.find(:all, :conditions => "role = 'Editor'").each do |ur|
+      f = Faction.find(ur.role_data_yaml[:faction_id])
+      t = f.single_toplevel_term
+      if t.game_id
+        terms[:games] << t
+      else
+        terms[:platforms] << t
+      end
+    end
+    
+    u.users_roles.find(:all, :conditions => "role IN ('Don', 'ManoDerecha', 'Sicario')").each do |ur|
+      terms[:bazar_districts] << BazarDistrict.find(ur.role_data.to_i).top_level_category
+    end
+    
+    [:games, :platforms, :special, :bazar_districts].each do |sym|
+      terms[sym].uniq!
+      # terms[sym].sort {|a,b| a.name.downcase <=> b.code.name.downcase }
+    end
+    
+    terms
+  end
 end

@@ -2,7 +2,7 @@
 <% cache ("/#{controller.portal_code}/noticias/index/best_rated#{Time.now.strftime('%Y%m%d')}") do %>
 <%mftext('Mejor valoradas') do %>
 <ul class="sidelist">
-<% controller.portal.news.best_rated(:limit => 5).each do |c| %>
+<% controller.portal.news.most_rated_items(:content_type => 'News', :limit => 5).each do |c| %>
   <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></div></li>
   <% end -%>
   </ul>

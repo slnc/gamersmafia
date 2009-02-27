@@ -378,7 +378,7 @@ Request information:
       items<< ['Users', '/admin/usuarios']
     end
     
-    if user.is_superadmin? or user.has_admin_permission?(:capo)
+    if user.is_superadmin? || user.has_admin_permission?(:capo)
       items<< ['Avatares', '/avatares']
       items<< ['Clanes', '/admin/clanes']
       items<< ['IP Bans', '/admin/ip_bans']
@@ -389,12 +389,12 @@ Request information:
       items<< ['Cat Contenidos', '/admin/categorias']
     end
     
-    if user.is_superadmin? or user.has_admin_permission?(:faq)
+    if user.is_superadmin? || user.has_admin_permission?(:faq)
       items<< ['Entradas FAQ', '/admin/entradasfaq']
       items<< ['Cat FAQ', '/admin/categoriasfaq']
     end
     
-    if user.is_superadmin? or user.has_admin_permission?(:bazar_manager)
+    if user.is_superadmin? || user.has_admin_permission?(:bazar_manager)
       items<< ['Distritos bazar', '/admin/bazar_districts']
     end
     

@@ -18,15 +18,15 @@ class ImagenesController < BazarController
   
   def index
     @categories = portal.categories(Image)
-    if @categories.size == 1 && @categories[0].slug != 'gm'
+    #if @categories.size == 1 && @categories[0].slug != 'gm'
       @navpath = [['Imágenes', '/imagenes'], ]
       @category = @categories[0]
       render :action => 'toplevel'
-    else
-      @title = "Imágenes"
-      @navpath = [['Imágenes', '/imagenes'], ]
-      render :action => 'index'
-    end
+    #else
+    #  @title = "Imágenes"
+    #  @navpath = [['Imágenes', '/imagenes'], ]
+    #  render :action => 'index'
+    #end
   end
   
   def toplevel

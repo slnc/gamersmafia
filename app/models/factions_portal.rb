@@ -89,8 +89,12 @@ class FactionsPortal < Portal
       elsif method_id == :coverage
         FactionsPortalCoverageProxy.new(self) 
       else
+        # TODO TAXONOMIES BUG, portales con mas de un root term no funcionan ya
         obj = Object.const_get(Inflector::camelize(Inflector::singularize(method_id)))
         if obj.respond_to?(:is_categorizable?)
+          t = Term.find(:first, :conditions => "id = root_id AND slug IN (#{toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC')
+          t.add_content_type_mask(Inflector::camelize(Inflector::singularize(method_id)))
+          return t
           # ahora reemplazamos obj por la categoría de primer nivel si es facción o plataforma
           g = self.games
           if g.size > 1

@@ -14,10 +14,10 @@ forumz.each do |fcontainer|
 	<ul id="col-forums-<%=i0%>" class="widget">
 <% 
 	fcontainer.each do |forum_id|
-forum = TopicsCategory.find(forum_id) %>
+forum = Term.find(forum_id) %>
 <li class="widget" id="forum_<%=forum[:id]%>">
 		<%=mfcontents_basic("#{faction_favicon(forum)} #{truncate(forum.name, 23, '..')}", 
-					Proc.new { forum.last_updated_items(7) }, 
+					Proc.new { forum.last_updated_items(:content_type => 'Topic', :limit => 7) }, 
 					[],
 					:faction_favicon => true, :blast => true,
 					:truncate_at => 26, :cache => "/common/home/foros/topics_#{forum.id}")%>

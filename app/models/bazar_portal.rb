@@ -69,12 +69,7 @@ class BazarPortal
       elsif method_id == :question
         Term.single_toplevel(:slug => 'bazar')
       else
-        cls_name = Inflector::camelize(Inflector::singularize(method_id))
-        cls = Object.const_get(cls_name)
-        if Cms::CONTENTS_WITH_CATEGORIES.include?(cls_name)
-          cls = cls.category_class.find_by_code('bazar')
-        end
-        cls
+        Term.single_toplevel(:slug => 'bazar')
       end
     elsif /_categories/ =~ method_id.to_s then
       Term.single_toplevel(:slug => 'bazar')
@@ -99,7 +94,7 @@ class BazarPortal
   
   # Devuelve todas las categorías de primer nivel visibles en la clase dada
   def categories(content_class)
-    Term.single_toplevel(:slug => 'bazar')
+    Term.toplevel(:slug => 'bazar')
   end
 end
 
@@ -114,42 +109,5 @@ class BazarPortalPollProxy
   
   def self.respond_to?(method_id, include_priv = false)
     GenericContentProxy.new(Poll).respond_to?(method_id)
-  end
-end
-
-class GenericContentProxy
-  def initialize(cls)
-    @cls = cls
-  end
-  
-  def method_missing(method_id, *args)
-    begin
-      super
-    rescue NoMethodError
-      args = _add_restriction_to_cond(*args)
-      begin
-        @cls.send(method_id, *args)
-      rescue ArgumentError
-        @cls.send(method_id)
-      end
-    end
-  end
-  
-  def respond_to?(method_id)
-    true
-  end
-  
-  private
-  def _add_restriction_to_cond(*args)
-    options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
-    new_cond = 'clan_id IS NULL'
-    if options[:conditions].kind_of?(Array)
-      options[:conditions][0]<< "AND #{new_cond}"
-    elsif options[:conditions] then
-      options[:conditions]<< " AND #{new_cond}"
-    else
-      options[:conditions] = new_cond
-    end
-    args.push(options)
   end
 end

@@ -13,6 +13,7 @@ published:
   approved_by_user_id: 1
   state: 2
   unique_content_id: 6
+  polls_votes_count: 1
 
 unpublished:
   id: 2

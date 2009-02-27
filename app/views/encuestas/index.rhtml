@@ -6,8 +6,8 @@
 cat_ids = controller.portal.categories(Poll).collect { |cat| cat.id }
 %>
 
-<%
-Poll.find_by_sql("select a.id from polls a join polls_options b on a.id = b.poll_id WHERE polls_category_id IN (#{cat_ids.join(',')}) group by (a.id) order by sum(b.polls_votes_count) desc limit 3").each do |p|
+<% 
+controller.portal.poll.find(:published, :order => 'polls_votes_count DESC', :limit => 3).each do |p|
   p.reload %>
   <li class="<%=oddclass%>"><%=controller.url_for_content(p, p.title)%><br /><div class="infoinline"><%=p.votes%> votos | <span class="comments-count"><a style="display: inline;" href="<%=gmurl(p)%>#comments"><%=p.cache_comments_count%></a></span></div></li>
   <% end -%>

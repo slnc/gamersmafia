@@ -4,7 +4,7 @@
 <%mftext('Noticias', :has_submodules => true, :blast => true) do %>
 
 		<%=mfcontents_basic("Generales", 
-					Proc.new { cat.top_level_category(News).find(:published, :order => 'created_on desc', :limit => 10) }, 
+					Proc.new { cat.top_level_category.find(:published, :content_type => 'News', :order => 'created_on desc', :limit => 10) }, 
 					[],
 					:truncate_at => 36, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/news2")%>
 
@@ -19,17 +19,17 @@
 	
 	<div class="grid-6">
 	<%=mfcontents_basic("Tópics activos", 
-					Proc.new { cat.top_level_category(Topic).find(:published, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 10) }, 
+					Proc.new { cat.top_level_category.find(:published, :content_type => 'Topic', :conditions => 'topics.closed is false', :order => 'updated_on desc', :limit => 10) }, 
 					[],
 					:truncate_at => 44, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	</div>
 	
 	<%mftext('Foros', :grid => 4, :glast => true, :blast => true) do 
-	gencat = cat.top_level_category(Topic)
+	gencat = cat.top_level_category
 gencat.name = 'General' %>
 	<ul class="content-hid">
-		<%controller.portal.categories(Topic)[0].last_updated_children(:limit => 5).each do |tc| %>
-		<li><a href="<%=gmurl(tc)%>"><%=truncate(tc.name, 20, '..')%></a></li>
+		<% cat.top_level_category.find(:published, :content_type => 'Topic', :order => 'updated_on DESC', :limit => 5).each do |tc| %>
+		<li><a href="<%=gmurl(tc)%>"><%=truncate(tc.title, 20, '..')%></a></li>
 		<% end -%>
 		</ul>
 	<% end -%>
@@ -41,7 +41,7 @@ gencat.name = 'General' %>
 
 <div class="grid-12">
 	<div class="grid-8">
-		<% imcat = cat.top_level_category(Image)
+		<% imcat = cat.top_level_category
 	
 	mflist("Imágenes", Proc.new { imcat.find(:published, :content_type => 'Image', :order => 'created_on desc', :limit => 6) }, :class_container => 'mflist-row-images' ) do |im| %>
 		<%=link_to fc_thumbnail(im.file, 'i', Cms::IMG_SIZE_GRIDB1, false), gmurl(im)%>				
@@ -71,7 +71,7 @@ next if controller.portal.send(it.downcase).nil?
 %>
 <% dafirst = true
 mfcontents_list(Cms::translate_content_name(it),  
-					Proc.new { controller.portal.send(it.downcase).find(:published, :order => 'created_on desc', :limit => 3) }, 					
+					Proc.new { cat.top_level_category.find(:published, :content_type => it, :order => 'created_on desc', :limit => 3) }, 					
 					:truncate_at => 28, :grid => grid_size, :glast => (it == classes.last)) do |o| %>
 					
 <%=draw_content_favicon(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
@@ -91,7 +91,7 @@ category = controller.portal.categories(Download)[0]
 if category then
 %>
 	<%=mfcontents_basic('Últimas', 
-					Proc.new { category.root.find(:published, :order => 'created_on DESC', :limit => 12) },
+					Proc.new { category.root.find(:published, :content_type => 'Download', :order => 'created_on DESC', :limit => 12) },
 					[],
 					:truncat_at => 28, :faction_favicon => true)%>
 

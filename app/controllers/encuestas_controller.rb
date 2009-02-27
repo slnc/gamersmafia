@@ -24,7 +24,9 @@ class EncuestasController < ComunidadController
   end
   
   def vote
+    p params
     @poll = Poll.find(params[:id])
+    
     @polls_option = @poll.polls_options.find(params[:poll_option])
     if user_is_authed:
       @poll.vote(@polls_option, self.request.remote_ip, @user.id)

@@ -7,9 +7,9 @@
 	</tr>
 	<%@content_types.each do |ct| %>
 	<tr class="<%=oddclass%>">
-		<td><a href="/admin/categorias/term/<%=@root_term.id%>/hijos/<%=ct.name%>"><%=Inflector::titleize(Cms::translate_content_name(ct.name))%></a></td>
+		<td><a href="/<%=controller.cats_path%>/term/<%=@root_term.id%>/hijos/<%=ct.name%>"><%=Inflector::titleize(Cms::translate_content_name(ct.name))%></a></td>
 		<td><%=Term.count(:conditions => "root_id = #{@root_term.id} AND taxonomy = '#{Term.taxonomy_from_class_name(ct.name)}'")%></td>
-		<td><a href="/admin/categorias/term/<%=@root_term.id%>/contenidos/<%=ct.name%>"><%=@root_term.contents_count(:cls_name => ct.name)%></a></td>
+		<td><a href="/<%=controller.cats_path%>/term/<%=@root_term.id%>/contenidos/<%=ct.name%>"><%=@root_term.contents_count(:cls_name => ct.name)%></a></td>
 	</tr>
 	<% end -%>
 </table>

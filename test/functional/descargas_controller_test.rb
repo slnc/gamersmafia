@@ -6,7 +6,7 @@ require 'descargas_controller'
 class DescargasController; def rescue_action(e) raise e end; end
 
 class DescargasControllerTest < Test::Unit::TestCase
-  test_common_content_crud :name => 'Download', :form_vars => {:title => 'footapang', :download_mirrors => "http://google.com/foo.zip\nhttp://kamasutra.com/porn.zip"}, :categories_terms => 16
+  test_common_content_crud :name => 'Download', :form_vars => {:title => 'footapang', :download_mirrors => "http://google.com/foo.zip\nhttp://kamasutra.com/porn.zip"}, :categories_terms => ['16']
   
   def setup
     @controller = DescargasController.new

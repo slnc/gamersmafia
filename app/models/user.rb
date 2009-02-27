@@ -155,15 +155,13 @@ class User < ActiveRecord::Base
     if /pref_([a-z0-9_]+)$/ =~ smethod_id
       pref_name = smethod_id.gsub('pref_', '')
       pref = self.preferences.find_by_name(pref_name)
-if pref.nil?
-final = UsersPreference::DEFAULTS[pref_name.to_sym]
-final = final.clone if final.kind_of?(Hash)
-else
-final = pref.value
-end
-final
-final
-final
+      if pref.nil?
+        final = UsersPreference::DEFAULTS[pref_name.to_sym]
+        final = final.clone if final.kind_of?(Hash)
+      else
+        final = pref.value
+      end
+      final
     elsif /pref_([a-z0-9_]+)=$/ =~ smethod_id
       # saving preference
       pref_name = smethod_id.gsub('pref_', '').gsub('=', '')
@@ -410,7 +408,7 @@ final
   end
   
   def is_bigboss?
-    (self.users_roles.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha')") > 0) || self.has_admin_permission?(:bazar_manager) || self.has_admin_permission?(:capo) || self.is_superadmin 
+   (self.users_roles.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha')") > 0) || self.has_admin_permission?(:bazar_manager) || self.has_admin_permission?(:capo) || self.is_superadmin 
   end
   
   def is_faction_editor?

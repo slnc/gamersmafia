@@ -432,6 +432,13 @@ class CmsTest < Test::Unit::TestCase
     assert Cms.user_can_edit_content?(u10, Image.new(:terms => 1))
   end
   
+  def test_capo_can_edit_blogentry
+    u10 = User.find(10)
+    u10.give_admin_permission(:capo)
+    be = Blogentry.find(:first)
+    assert Cms.user_can_edit_content?(u10, be)
+  end
+  
   def test_sicario_can_edit_contents_of_own_district
     u59 = User.find(59)
     bd = BazarDistrict.find(1)

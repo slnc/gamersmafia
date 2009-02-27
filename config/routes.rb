@@ -13,7 +13,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'resumenes/:date', :controller => 'resumenes', :action => 'date', :requirements => { :date => /[0-9]{8}/ }
 
   map.connect 'admin/categorias/', :controller => 'admin/categorias', :action => 'index'
-  map.connect 'admin/categorias/categorias_create', :controller => 'admin/categorias', :action => 'categorias_create'
+  
   map.connect 'admin/categorias/create', :controller => 'admin/categorias', :action => 'create'
   map.connect 'admin/categorias/term/:id', :controller => 'admin/categorias', :action => 'root'
   map.connect 'admin/categorias/term/:id/update', :controller => 'admin/categorias', :action => 'update'
@@ -21,10 +21,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'admin/categorias/term/:id/hijos/:content_type', :controller => 'admin/categorias', :action => 'hijos'
   map.connect 'admin/categorias/term/:id/contenidos/:content_type', :controller => 'admin/categorias', :action => 'contenidos'
   map.connect 'admin/categorias/term/:id/contenidos/:content_type/mass_move', :controller => 'admin/categorias', :action => 'mass_move'
-  map.connect 'admin/categorias/:type_name', :controller => 'admin/categorias', :action => 'index'
-  map.connect 'admin/categorias/:type_name/new', :controller => 'admin/categorias', :action => 'categorias_new'
-  map.connect 'admin/categorias/:type_name/edit/:id', :controller => 'admin/categorias', :action => 'categorias_edit', :requirements => { :id => /\d+/ }
-  map.connect 'admin/categorias/:type_name/destroy/:id', :controller => 'admin/categorias', :action => 'categorias_destroy', :requirements => { :id => /\d+/ }
 
   map.connect 'site/banners/duke', :controller => 'site', :action => 'banners_duke'
   map.connect 'site/banners/misc', :controller => 'site', :action => 'banners_misc'
@@ -45,10 +41,16 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'cuenta/configuracion', :controller => 'cuenta/cuenta', :action => 'configuracion'
   map.connect 'cuenta/perfil', :controller => 'cuenta/cuenta', :action => 'perfil'
   map.connect 'cuenta/distrito', :controller => 'cuenta/distrito', :action => 'index'
-  map.connect 'cuenta/distrito/categorias/:type_name', :controller => 'cuenta/distrito', :action => 'categorias'
-  map.connect 'cuenta/distrito/categorias/:type_name/new', :controller => 'cuenta/distrito', :action => 'categorias_new'
-  map.connect 'cuenta/distrito/categorias/:type_name/edit/:id', :controller => 'cuenta/distrito', :action => 'categorias_edit', :requirements => { :id => /\d+/ }
-  map.connect 'cuenta/distrito/categorias/:type_name/destroy/:id', :controller => 'cuenta/distrito', :action => 'categorias_destroy', :requirements => { :id => /\d+/ }
+
+  map.connect 'cuenta/distrito/categorias', :controller => 'cuenta/distrito/categorias', :action => 'index'
+  map.connect 'cuenta/distrito/categorias/create', :controller => 'cuenta/distrito/categorias', :action => 'create'
+  map.connect 'cuenta/distrito/categorias/term/:id', :controller => 'cuenta/distrito/categorias', :action => 'root'
+  map.connect 'cuenta/distrito/categorias/term/:id/update', :controller => 'cuenta/distrito/categorias', :action => 'update'
+  map.connect 'cuenta/distrito/categorias/term/:id/destroy', :controller => 'cuenta/distrito/categorias', :action => 'destroy'
+  map.connect 'cuenta/distrito/categorias/term/:id/hijos/:content_type', :controller => 'cuenta/distrito/categorias', :action => 'hijos'
+  map.connect 'cuenta/distrito/categorias/term/:id/contenidos/:content_type', :controller => 'cuenta/distrito/categorias', :action => 'contenidos'
+  map.connect 'cuenta/distrito/categorias/term/:id/contenidos/:content_type/mass_move', :controller => 'cuenta/distrito/categorias', :action => 'mass_move'
+
   map.connect 'cuenta/mis_compras', :controller => 'cuenta/tienda', :action => 'mis_compras'
   map.connect 'cuenta/mis_compras/:id', :controller => 'cuenta/tienda', :action => 'configurar_compra'
   map.connect 'cuenta/mis_compras/:id/:action', :controller => 'cuenta/tienda'
@@ -93,13 +95,16 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'cuenta/faccion/mapas_juegos', :controller => 'cuenta/faccion', :action => 'mapas_juegos'
   map.connect 'cuenta/faccion/mapas_juegos/:action/:id', :controller => 'cuenta/faccion'
   map.connect 'cuenta/faccion/informacion', :controller => 'cuenta/faccion', :action => 'informacion'
-  map.connect 'cuenta/faccion/categorias/:type_name', :controller => 'cuenta/faccion', :action => 'categorias'
-  map.connect 'cuenta/faccion/categorias/:type_name/new', :controller => 'cuenta/faccion', :action => 'categorias_new'
-  map.connect 'cuenta/faccion/categorias/:type_name/edit/:id', :controller => 'cuenta/faccion', :action => 'categorias_edit', :requirements => { :id => /\d+/ }
-  map.connect 'cuenta/faccion/categorias/:type_name/destroy/:id', :controller => 'cuenta/faccion', :action => 'categorias_destroy', :requirements => { :id => /\d+/ }
-  map.connect 'cuenta/faccion/foros/new', :controller => 'cuenta/faccion', :action => 'forum_new'
-  map.connect 'cuenta/faccion/foros/edit/:id', :controller => 'cuenta/faccion', :action => 'forum_edit', :requirements => { :id => /\d+/ }
-  map.connect 'cuenta/faccion/foros/destroy/:id', :controller => 'cuenta/faccion', :action => 'forum_destroy', :requirements => { :id => /\d+/ }
+  
+  map.connect 'cuenta/faccion/categorias', :controller => 'cuenta/faccion/categorias', :action => 'index'
+  map.connect 'cuenta/faccion/categorias/create', :controller => 'cuenta/faccion/categorias', :action => 'create'
+  map.connect 'cuenta/faccion/categorias/term/:id', :controller => 'cuenta/faccion/categorias', :action => 'root'
+  map.connect 'cuenta/faccion/categorias/term/:id/update', :controller => 'cuenta/faccion/categorias', :action => 'update'
+  map.connect 'cuenta/faccion/categorias/term/:id/destroy', :controller => 'cuenta/faccion/categorias', :action => 'destroy'
+  map.connect 'cuenta/faccion/categorias/term/:id/hijos/:content_type', :controller => 'cuenta/faccion/categorias', :action => 'hijos'
+  map.connect 'cuenta/faccion/categorias/term/:id/contenidos/:content_type', :controller => 'cuenta/faccion/categorias', :action => 'contenidos'
+  map.connect 'cuenta/faccion/categorias/term/:id/contenidos/:content_type/mass_move', :controller => 'cuenta/faccion/categorias', :action => 'mass_move'
+  
   map.connect 'cuenta/faccion/cabeceras/new', :controller => 'cuenta/faccion', :action => 'cabeceras_new'
   map.connect 'cuenta/faccion/cabeceras/create', :controller => 'cuenta/faccion', :action => 'cabeceras_create'
   map.connect 'cuenta/faccion/cabeceras/update/:id', :controller => 'cuenta/faccion', :action => 'cabeceras_update'

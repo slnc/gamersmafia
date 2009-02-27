@@ -26,7 +26,7 @@
 	
 	<div class="grid-4">
 	<%=mfcontents_basic("Tópics activos", 
-					Proc.new { controller.portal.topic.find(:published, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 10) }, 
+					Proc.new { controller.portal.topic.find(:published, :conditions => 'topics.closed is false', :order => 'contents.updated_on desc', :limit => 10) }, 
 					[],
 					:truncate_at => 28, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	</div>
@@ -53,7 +53,7 @@
 
 <% cache("/#{controller.portal_code}/home/index/demos2") do %>
 <%mfcontents_list('Demos', 
-					Proc.new { controller.portal.demo.find(:published, :order => 'demos.created_on desc', :limit => 5, :include => :event) }, 					
+					Proc.new { controller.portal.demo.find(:published, :content_type => 'Demo', :order => 'demos.created_on desc', :limit => 5) }, 					
 					{:faction_favicon => true, :grid => 4, :glast => true}) do |o| %>
 <%=draw_content_favicon(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a><br />
 <div style="float: right;" class="downloads-count"><%=o.downloaded_times%></div><div class="infoinline"><% if o.event_id then %><a href="<%=gmurl(o.event)%>"><%=truncate(o.event.title, 24, '..')%></a><% else %>&nbsp;<% end -%></div>
@@ -81,7 +81,7 @@
 <% classes.each do |it| %>
 <% dafirst = true
 mfcontents_list(Cms::translate_content_name(it),  
-					Proc.new { controller.portal.send(it.downcase).find(:published, :order => 'created_on desc', :limit => 3) }, 					
+					Proc.new { controller.portal.send(it.downcase).find(:published, :content_type => it, :order => 'created_on desc', :limit => 3) }, 					
 					{:truncate_at => 28, :grid => grid_size, :glast => (it == classes.last)}) do |o| %>
 					
 <%=draw_content_favicon(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
@@ -127,10 +127,9 @@ category = controller.portal.categories(Download)[0]
 <%= render :partial => '/home/outstanding_entity', :locals => { :outstanding_entity_cls => OutstandingClan } %>
 <% end -%>
 
-
 <% cache("/#{controller.portal_code}/home/index/questions") do %>
 <% mfcontents_list("Preguntas", 
-				   Proc.new { controller.portal.question.find(:published, :conditions => 'answered_on IS NULL AND created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, created_on DESC', :limit => 5)}
+				   Proc.new { controller.portal.question.find(:published, :content_type => 'Question', :conditions => 'answered_on IS NULL AND questions.created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, questions.created_on DESC', :limit => 5)}
 				   ) do |o| %>
 <a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a>
 <% end -%>
@@ -147,13 +146,12 @@ if @daily_img then %>
    	<%=render :partial => '/imagenes/image_thumbnail', :locals => {:image => @daily_img, :size => Cms::IMG_SIZE_GRID3}%>
     <div class="more"><a href="/imagenes/potds">Ver anteriores..</a></div>
 <% end -%>
-<% end 
--%>
+<% end -%>
 <% end -%>
 
 <% cache("/#{controller.portal_code}/home/index/eventos2/#{Time.now.strftime('%Y%m%d')}") do %>
 <% mfcontents_table('Eventos', 
-				   Proc.new { controller.portal.event.current }
+				   Proc.new { [] } # controller.portal.event.current 
 				   ) do |e| %>
 	<td style="font-size: 11px;"><%=draw_content_favicon(e)%><a href="<%=get_url(e)%>"><%=e.title%></a></td>
     <td style="font-size: 11px;"><%=member_state('active')%><%=e.users.count%></td>

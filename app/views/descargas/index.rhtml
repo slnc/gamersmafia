@@ -16,7 +16,7 @@
 
 <% mftext('Los que más han aportado') do %>
 <% cache("/common/descargas/index/most_productive_author_by_cat_#{@category.nil? ? '' : @category.id}") do %>
-<%=render :partial => '/shared/most_productive_authors', :locals => {:cls => controller.portal.download.items_class, :category => @category}%>
+<%=render :partial => '/shared/most_productive_authors', :locals => {:cls => Download, :category => @category}%>
 <% end -%>
 <% end if @category-%>
 <% end -%>
@@ -47,7 +47,7 @@ end %>
 <% for subcategory in @categories %>
 <tr class="downloads-folder <%=oddclass%>">
   <td class="first"><%=link_to subcategory.name, gmurl(subcategory, :taxonomy => 'DownloadsCategory')%></td>
-  <td class="infoinline"><%=subcategory.items_count%></td>
+  <td class="infoinline"><%=subcategory.contents_count(:cls_name => 'Download')%></td>
 </tr>
 <% end -%>
 <% end -%>

@@ -10,7 +10,7 @@ class BazarDistrict < ActiveRecord::Base
   observe_attr :icon, :name, :code
   has_many :terms
   
-  def top_level_category(cls)
+  def top_level_category
     Term.single_toplevel(:bazar_district_id => self.id)
   end
   

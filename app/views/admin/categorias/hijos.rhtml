@@ -7,7 +7,7 @@
 	</tr>
 		<tr class="<%=oddclass%>">
 		<td>Contenidos</td>
-		<td><a href="/admin/categorias/term/<%=@term.id%>/contenidos/<%=params[:content_type]%>"><%=@term.contents_count(:cls_name => params[:content_type])%></a></td>
+		<td><a href="/<%=controller.cats_path%>/term/<%=@term.id%>/contenidos/<%=params[:content_type]%>"><%=@term.contents_count(:cls_name => params[:content_type])%></a></td>
 	</tr>
 	<tr class="<%=oddclass%>">
 		<td>Taxonomía</td>
@@ -21,7 +21,7 @@
         path = [@term.parent_id.nil? ? @term.slug.upcase : @term.name, link_to(@term.root.slug.upcase, "/admin/categorias/term/#{@term.root.id}/hijos/#{params[:content_type]}")]
         obj = obj.parent
         while obj != nil and obj.id != obj.parent_id
-          path<< link_to(obj.name, "/admin/categorias/term/#{obj.id}/hijos/#{params[:content_type]}")
+          path<< link_to(obj.name, "/#{controller.cats_path}/term/#{obj.id}/hijos/#{params[:content_type]}")
           obj = obj.parent
         end
 		path.pop
@@ -44,7 +44,7 @@ end
 <% end -%>
 
 <%mftext('Editar esta categoría') do %>
-<form method="post" action="/admin/categorias/term/<%=@term.id%>/update?redirto=<%=controller.request.request_uri%>">
+<form method="post" action="/<%=controller.cats_path%>/term/<%=@term.id%>/update?redirto=<%=controller.request.request_uri%>">
 <p><label for="topics_category_name">Nombre</label><br/>
 <%= text_field 'term', 'name', :class => 'text'  %></p>
 
@@ -57,8 +57,9 @@ end
 <% end -%>
 
 <%content_main do %>
+<% #=render :partial => 'categorias_selector' %>
 <% mftext("Subcategorías de #{@term.name} (#{Inflector::titleize(Cms::translate_content_name(params[:content_type]))})") do %>
-<form method="post" action="/admin/categorias/create?redirto=<%=controller.request.request_uri%>">
+<form method="post" action="/<%=controller.cats_path%>/create?redirto=<%=controller.request.request_uri%>">
 <p><strong>Nueva categoría</strong><br/>
 <% @tterm = @term
 @term = nil %>
@@ -79,7 +80,7 @@ end
     <tr class="<%=oddclass%>">
       <td><%=
         obj = category
-        path = [link_to(category.name, "/admin/categorias/term/#{category.id}/hijos/#{params[:content_type]}")]
+        path = [link_to(category.name, "/#{controller.cats_path}/term/#{category.id}/hijos/#{params[:content_type]}")]
         obj = obj.parent
         while obj != nil and obj.id != obj.parent_id
           path<< obj.name
@@ -90,8 +91,8 @@ end
         path.join(' » ')
         %></td>
 	    <td><%=category.all_children_ids(:taxonomy => Term.taxonomy_from_class_name(params[:content_type])).uniq.size - 1%></td>
-		<td><a href="/admin/categorias/term/<%=category.id%>/contenidos/<%=ct.name%>"><%=category.contents_count(:cls_name => ct.name)%></a></td>
-      <td><a href="/admin/categorias/term/<%=category.id%>/destroy?redirto=<%=controller.request.request_uri%>" onclick="return confirm('¿Estás seguro?');">Eliminar</a></td>
+		<td><a href="/<%=controller.cats_path%>/term/<%=category.id%>/contenidos/<%=ct.name%>"><%=category.contents_count(:cls_name => ct.name)%></a></td>
+      <td><a href="/<%=controller.cats_path%>/term/<%=category.id%>/destroy?redirto=<%=controller.request.request_uri%>" onclick="return confirm('¿Estás seguro?');">Eliminar</a></td>
     </tr>
   <% end %>
   </table>

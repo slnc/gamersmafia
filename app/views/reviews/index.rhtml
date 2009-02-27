@@ -2,7 +2,7 @@
 <%mftext('Mejor valoradas') do %>
 <ul class="sidelist">
 <% cache ("/#{controller.portal_code}/reviews/index/best_rated#{Time.now.strftime('%Y%m%d')}") do %>
-  <% controller.portal.review.best_rated.each do |c| %>
+  <% controller.portal.review.most_rated_items(:content_type => 'Review').each do |c| %>
   <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
   <% end -%>
 <% end -%>
@@ -12,7 +12,7 @@
 <%mftext('Más populares') do %>
 <ul class="sidelist">
 <% cache ("/#{controller.portal_code}/reviews/index/most_popular_#{Time.now.to_i/(86400)}") do %>
-  <% controller.portal.review.most_popular.each do |c| %>
+  <% controller.portal.review.most_popular_items(:content_type => 'Review').each do |c| %>
   <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
   <% end -%>
 <% end -%>
@@ -22,7 +22,7 @@
 <%mftext('Autores más populares') do %>
 <ul class="sidelist">
 <% cache ("/#{controller.portal_code}/reviews/index/most_popular_authors_#{Time.now.to_i/86400}") do %>
-  <% controller.portal.review.most_popular_authors.each do |u| %>
+  <% controller.portal.review.most_popular_authors(:content_type => 'Review').each do |u| %>
   <li class="<%=oddclass%>"><%=draw_user_info(u[0])%><div class="more"><a href="<%=gmurl(u[0])%>/contenidos/reviews">Ver sus reviews (<%=u[0].reviews.count(:conditions => "state = #{Cms::PUBLISHED}")%>)</a></div></li>
   <% end -%>
 <% end -%>

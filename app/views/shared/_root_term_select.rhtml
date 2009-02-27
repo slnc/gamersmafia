@@ -1,0 +1,8 @@
+<select id="categories_terms_root<%=index%>" name="root_terms[]">
+	<option value=""></option>
+	<% Term.toplevel(:clan_id => nil).each do |t| %>
+	<option <%= 'selected="selected"' if selterm && selterm.id == t.id %> value="<%=t.id%>"><%=t.name%></option>
+	<% end -%>
+</select>
+
+<br />

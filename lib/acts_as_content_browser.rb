@@ -121,10 +121,12 @@ module ActsAsContentBrowser
       if Cms::CATEGORIES_TERMS_CONTENTS.include?(content_name) && params[:categories_terms]
         params[:categories_terms] = [params[:categories_terms]] unless params[:categories_terms].kind_of?(Array)
         params[:categories_terms].collect! { |rtid| rtid.to_i }
+        params[:categories_terms] = params[:categories_terms].delete_if { |rtid| rtid < 1 } 
         obj.categories_terms_ids = [params[:categories_terms], "#{Inflector::pluralize(content_name)}Category"]
       elsif Cms::ROOT_TERMS_CONTENTS.include?(content_name) && params[:root_terms]
         params[:root_terms] = [params[:root_terms]] unless params[:root_terms].kind_of?(Array)
         params[:root_terms].collect! { |rtid| rtid.to_i }
+        params[:root_terms] = params[:root_terms].delete_if { |rtid| rtid < 1 }
         obj.root_terms_ids = params[:root_terms]
       end
     end
@@ -160,7 +162,7 @@ module ActsAsContentBrowser
       params[Inflector::underscore(content_name)].delete(:approved_by_user_id) unless obj.respond_to? :approved_by_user_id
       instance_variable_set('@' << Inflector::underscore(content_name), obj)
       if obj.update_attributes(params[Inflector::underscore(content_name)])
-        puts "q"
+        proc_terms(obj)
         # obj.process_wysiwyg_fields
         flash[:notice] = "#{Cms::CLASS_NAMES[cls.name]} actualizado correctamente." unless flash[:error]
         

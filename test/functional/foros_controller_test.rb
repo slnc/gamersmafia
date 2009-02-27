@@ -22,7 +22,6 @@ class ForosControllerTest < Test::Unit::TestCase
   
   def test_faction_banned_user_shouldnt_be_able_to_create_topic
     sym_login 1
-    u1 = User.find(1)
     f = Faction.find(1)
     fbu = FactionsBannedUser.new(:user_id => 1, :faction_id => f.id, :banner_user_id => 2)
     tc = Term.single_toplevel(:slug => 'ut')

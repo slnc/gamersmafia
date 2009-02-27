@@ -25,7 +25,7 @@ class Product < ActiveRecord::Base
   end
   
   def can_be_bought_by_user_sold_faction(u)
-    BanRequest.count(:conditions => ['banned_user_id = ? AND confirmed_on >= now() - \'3 months\'::interval', u.id]) == 0
+    BanRequest.count(:conditions => ['banned_user_id = ? AND confirmed_on >= now() - \'6 months\'::interval', u.id]) == 0
   end
   
   def can_be_bought_by_user_sold_old_faction(u)

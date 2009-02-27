@@ -38,7 +38,7 @@ class CacheObserverForosTest < ActionController::IntegrationTest
     get "/foros/forum/#{@tc.id}"
     assert_response :success, @response.body
     assert_cache_exists "/common/foros/_forums_list/#{@tc.id}"
-    @tc_child = @tc.children.create({:name => 'subfoocat', :code => 'subcodecot'})
+    @tc_child = @tc.children.create({:name => 'subfoocat', :slug => 'subcodecot'})
     assert_cache_dont_exist "/common/foros/_forums_list/#{@tc.id}"
   end
   

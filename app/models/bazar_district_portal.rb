@@ -29,13 +29,15 @@ class BazarDistrictPortal < Portal
     elsif Cms::contents_classes_symbols.include?(method_id) # contents   
       obj = Object.const_get(Inflector::camelize(Inflector::singularize(method_id)))
       if obj.respond_to?(:is_categorizable?)
-        Term.single_toplevel(:slug => self.code)
+        t = Term.single_toplevel(:slug => self.code)
+        t.add_content_type_mask(obj.name)
+        obj = t
       end
       obj
     elsif /(news|downloads|topics|events|tutorials|polls|images|questions)_categories/ =~ method_id.to_s then
       # Devolvemos categorías de primer nivel de esta facción
       # it must have at least one
-      Term.single_toplevel(:slug => self.code)
+      Term.toplevel(:slug => self.code)
     else
       super
     end

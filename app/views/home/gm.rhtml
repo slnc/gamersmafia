@@ -5,7 +5,7 @@
     <div class="homebox" id="hmnt">
         <div id="home-news" class="subheader first"><div><span>Noticias</span></div></div>
         <ul class="content-hid2">
-          <% @last_news = controller.portal.news.find(:published, :conditions => 'news_category_id not in (select id from news_categories where root_id in (select id from news_categories where code in (select code from bazar_districts)) OR root_id = (select id from news_categories where code=\'bazar\' and id = root_id))', :limit => 40, :order => 'created_on DESC')
+          <% @last_news = News.find(:published, :conditions => 'clan_id IS NULL', :limit => 40, :order => 'created_on DESC')
 # @last_news = @portal.news_find(:all, :state => :published, :limit => 15)
 shown_news = []
 accum_portals = {}
@@ -208,7 +208,7 @@ end
 	<% cache("/#{controller.portal_code}/home/index/apuestas_#{Time.now.to_i / 3600}") do %>
 <table>
       <% shown_bets = [] 
-controller.portal.bet.open_bets.each do |o| 
+Bet.open_bets.each do |o| 
 shown_bets<< o.unique_content.id %>
         <tr class="<%=oddclass%> new" id="content<%=o.unique_content.id%>">
 <td class="<%=oddclass%>"><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />

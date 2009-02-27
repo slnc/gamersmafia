@@ -42,7 +42,7 @@
 <form method="post" action="/admin/contenidos/mass_moderate">
   <input type="hidden" id="f1action" name="mass_action" value="" />
 <table>
-<% for name, collection, controller in @contents 
+<% for name, collection, controller_name in @contents 
     if collection.size == 0 then
       next
     end

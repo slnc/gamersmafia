@@ -41,6 +41,10 @@ class Term < ActiveRecord::Base
     slug
   end
   
+  def add_content_type_mask(content_type)
+    @content_type_mask = content_type
+  end
+  
   def set_slug
     if self.slug.nil? || self.slug.to_s == ''
       self.slug = self.name.bare.downcase
@@ -74,13 +78,13 @@ class Term < ActiveRecord::Base
       if Cms::CATEGORIES_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy.nil?
         puts "error: imposible enlazar categories_terms_content con un root_term"
         return false
-      elsif Cms::ROOT_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy && self.taxonomy.include('Category')
+      elsif Cms::ROOT_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy && self.taxonomy.index('Category')
         puts "error: imposible enlazar root_terms_content con un category_term"
         return false
       end
       
       self.contents_terms.create(:content_id => content.id)
-      
+      self.recalculate_last_updated_item_id
       # PERF esto hacerlo en accion secundaria?
       o = self
       while o
@@ -110,6 +114,7 @@ class Term < ActiveRecord::Base
       User.db_query("UPDATE terms SET comments_count = comments_count - #{content.comments_count}")
       o = o.parent
     end
+    self.recalculate_last_updated_item_id
     
     true
   end
@@ -210,12 +215,13 @@ class Term < ActiveRecord::Base
   
   def recalculate_last_updated_item_id(excluding_id=nil)
     opts = {}
-    opts[:conditions] = "id <> #{excluding_id}" if excluding_id
-    last = self.last_published_content(opts)
+    opts[:conditions] = "a.id <> #{excluding_id}" if excluding_id
+    last = self.last_published_content(nil, opts)
     if last
       self.last_updated_item_id = last.id
       self.save
     end
+    self.parent.recalculate_last_updated_item_id(excluding_id) if self.parent
     true
   end
   
@@ -226,8 +232,12 @@ class Term < ActiveRecord::Base
     conds << opts[:conditions] if opts[:conditions] 
     cond = ''
     cond = " AND #{conds.join(' AND ')}" if conds.size > 0
+    if cls_name
+      cat_ids = self.all_children_ids(:taxonomy => Term.taxonomy_from_class_name(cls_name))
+    else
+      cat_ids = self.all_children_ids
+    end
     
-    cat_ids = self.all_children_ids(:taxonomy => taxonomy_from_class_name(cls_name))
     contents = Content.find_by_sql("SELECT a.* FROM contents a JOIN contents_terms b ON a.id = b.content_id WHERE b.term_id IN (#{cat_ids.join(',')}) AND a.state = #{Cms::PUBLISHED} #{cond} ORDER BY a.created_on DESC LIMIT 1")
     contents.size > 0 ? contents[0] : nil 
   end
@@ -244,24 +254,29 @@ class Term < ActiveRecord::Base
   def contents_count(opts={})
     # TODO perf optimizar mas, si el tag tiene el mismo taxonomy que el solicitado
     raise "cls_name not specified" if self.taxonomy.nil? && opts[:cls_name].nil?
+    sql_cond = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
     if opts[:cls_name] != nil
       taxo = self.class.taxonomy_from_class_name(opts[:cls_name])
       User.db_query("SELECT count(*) FROM (SELECT content_id 
                                                               FROM contents_terms a 
-                                                              JOIN terms b on a.term_id = b.id 
-                                                             WHERE ((a.term_id IN (#{all_children_ids(:taxonomy => taxo).join(',')}) 
+                                                              JOIN terms b on a.term_id = b.id
+                                                              JOIN contents on a.content_id = contents.id 
+                                                             WHERE (((a.term_id IN (#{all_children_ids(:taxonomy => taxo).join(',')}) 
                                                                AND b.taxonomy = #{User.connection.quote(taxo)})
                                                                 OR a.term_id = #{self.id})
+                                                                   #{sql_cond})
                                                            GROUP BY content_id
                                                             ) as foo")[0]['count'].to_i
       
     elsif self.taxonomy
       User.db_query("SELECT count(*) FROM (SELECT content_id 
                                                               FROM contents_terms a 
-                                                              JOIN terms b on a.term_id = b.id 
-                                                             WHERE ((a.term_id IN (#{all_children_ids(:taxonomy => self.taxonomy).join(',')}) 
+                                                              JOIN terms b on a.term_id = b.id
+                                                              JOIN contents on a.content_id = contents.id
+                                                             WHERE (((a.term_id IN (#{all_children_ids(:taxonomy => self.taxonomy).join(',')}) 
                                                                AND b.taxonomy = #{User.connection.quote(self.taxonomy)})
                                                                 OR a.term_id = #{self.id})
+                                                                #{sql_cond})
                                                            GROUP BY content_id
                                                             ) as foo")[0]['count'].to_i
     else # shortcut, show everything
@@ -288,7 +303,9 @@ class Term < ActiveRecord::Base
   
   # Busca contenidos asociados a este término o a uno de sus hijos
   def find(*args)
+    
     args = _add_cats_ids_cond(*args)
+    
     self.contents.find(*args).collect { |cont| cont.real_content }
     # self.class.items_class.send(:find, *args)
   end
@@ -297,9 +314,9 @@ class Term < ActiveRecord::Base
     begin
       super
     rescue NoMethodError
-      if Cms::CONTENTS_WITH_CATEGORIES.include?(Inflector::camelize(method_id.to_s))
+      if Cms::CONTENTS_WITH_CATEGORIES.include?(Inflector::camelize(method_id.to_s)) 
         TermContentProxy.new(Inflector::camelize(method_id.to_s), self)
-      elsif Inflector::camelize(Inflector::singularize(method_id.to_s))
+      elsif Cms::CONTENTS_WITH_CATEGORIES.include?(Inflector::camelize(Inflector::singularize(method_id.to_s)))
         TermContentProxy.new(Inflector::camelize(Inflector::singularize(method_id.to_s)), self)
       else
         raise "No se que hacer con metodo #{method_id}"
@@ -348,6 +365,10 @@ class Term < ActiveRecord::Base
     
     if options[:content_type].nil? && options[:content_type_id].nil? && self.taxonomy.to_s.index('Category')
       options[:content_type] = ApplicationController.extract_content_name_from_taxonomy(self.taxonomy)
+    end
+    
+    if options[:content_type].nil? && options[:content_type_id].nil? && @content_type_mask
+      options[:content_type] = @content_type_mask
     end
     
     if options[:content_type]
@@ -426,6 +447,20 @@ class Term < ActiveRecord::Base
     self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'RANDOM()', :limit => limit)
   end
   
+  def most_popular_authors(opts)
+    q_add = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
+    opts[:limit] ||= 5
+    dbitems = User.db_query("SELECT count(id), 
+                                    user_id 
+                              from #{Inflector::tableize(opts[:content_type])} 
+                             WHERE state = #{Cms::PUBLISHED}#{q_add} 
+                          GROUP BY user_id
+                          ORDER BY sum((coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0))) desc 
+                             limit #{opts[:limit]}")
+    dbitems.collect { |dbitem| [User.find(dbitem['user_id']), dbitem['count'].to_i] }
+  end
+  
+  
   def most_rated_items(opts)
     raise "content_type unspecified" unless opts[:content_type]
     opts = {:limit => 5}.merge(opts)
@@ -467,10 +502,9 @@ class Term < ActiveRecord::Base
               :order => 'random()')
   end
   
-  def last_updated_items(limit = 5)
-    self.find(:published,  
-              :order => 'updated_on DESC', 
-    :limit => limit)
+  def last_updated_items(opts={})
+    opts = {:limit => 5, :order => 'updated_on DESC'}.merge(opts)
+    self.find(:published, opts)
   end
   
   
@@ -614,12 +648,6 @@ class Term < ActiveRecord::Base
     end
   end
   
-  # TODO DEPRECATED, desactivar y corregir tests que fallen
-  def active_items(limit=15)
-    last_updated_items(limit)
-  end
-  
-  
   def get_ancestors 
     # devuelve los ascendientes. en [0] el padre directo y en el último el root
     path = []
@@ -648,6 +676,13 @@ class Term < ActiveRecord::Base
     else
       raise "toplevel group code '#{code}' unknown"
     end
+  end
+  
+  
+  # TODO PERF
+  def set_dummy
+    @siblings ||= []
+    Term.toplevel(:clan_id => nil).each do |t| @siblings<< t end
   end
   
   private
@@ -687,6 +722,7 @@ class Term < ActiveRecord::Base
       ContentType.find(:all, :conditions => "name in (#{sql_conds.join(',')})", :order => 'lower(name)')
     end
   end
+  
 end
 
 class TermContentProxy

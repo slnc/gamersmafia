@@ -257,8 +257,8 @@ class TermTest < ActiveSupport::TestCase
     assert_equal Cms::DELETED, @topic.state
     @cat1.reload
     @subcat1.reload
-    assert_equal 0, @subcat1.contents_count(:cls_name => 'Topic')
-    assert_equal 0, @cat1.contents_count(:cls_name => 'Topic')
+    assert_equal 0, @subcat1.contents_count(:cls_name => 'Topic', :conditions => "contents.state = #{Cms::PUBLISHED}")
+    assert_equal 0, @cat1.contents_count(:cls_name => 'Topic', :conditions => "contents.state = #{Cms::PUBLISHED}")
   end
   
 
