@@ -356,6 +356,14 @@ Request information:
     "<a class=\"content\" href=\"#{ApplicationController.url_for_content_onlyurl(object)}\">#{text}</a>"
   end
   
+  
+  
+  
+  
+  
+  
+  
+  
   def admin_menu_items
     return [] unless user_is_authed 
     # TODO hack
@@ -375,7 +383,6 @@ Request information:
       items<< ['Portales', '/admin/portales']
       items<< ['Scripts', '/admin/scripts']
       items<< ['Tienda', '/admin/tienda']
-      items<< ['Users', '/admin/usuarios']
     end
     
     if user.is_superadmin? || user.has_admin_permission?(:capo)
@@ -383,9 +390,10 @@ Request information:
       items<< ['Clanes', '/admin/clanes']
       items<< ['IP Bans', '/admin/ip_bans']
       items<< ['Mapas', '/admin/mapas_juegos']
+      items<< ['Users', '/admin/usuarios']
     end
     
-    if user.is_superadmin? || user.has_admin_permission?(:bazar_manager)
+    if user.is_superadmin? || user.has_admin_permission?(:bazar_manager) || user.has_admin_permission?(:capo) 
       items<< ['Cat Contenidos', '/admin/categorias']
     end
     

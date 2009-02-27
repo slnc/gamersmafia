@@ -45,6 +45,7 @@
     </tr>
   </table>
 
+<% if nil then %>
   <br />
   <br />
   <div class="subheader"><div>Último contenido de líderes de facción</div></div>
@@ -74,6 +75,7 @@
   <div class="warning<%=(last_t.to_f/max_t * 10).to_i%>"><%=draw_pcent_bar(last_t.to_f / max_t) %></div>
   <br />
   <% end -%>
+  <% end -%>
 
 
 <% end -%>
@@ -98,8 +100,7 @@
   <tr>
 		<th>Login</th>
 		<th>Email</th>
-    <th class="timestamp">Última visita</th>
-		<th>Borrar</th>
+    	<th class="timestamp">Última visita</th>
 	</tr>
 <%= render :partial => "user", :collection => @users %>
 </table>

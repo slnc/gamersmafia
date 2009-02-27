@@ -75,6 +75,7 @@
 
 <% content_main do %>
 <%mftext(@edituser) do %>
+<% if @user.is_superadmin? then %>
 <table>
 <tr><td>
 
@@ -202,8 +203,8 @@
 </form>
 <br />
 <br />
+<% end # if user.is_superadmin? -%>
 
-<div class="subheader"><div>Movimientos de dinero</div></div>
 <%= render :partial => '/shared/cash_movements', :locals => { :entity => @edituser } %>
 
 <div class="subheader"><div>Últimos 50 comentarios</div></div>
