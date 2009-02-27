@@ -18,7 +18,6 @@ namespace :gm do
     provocar_golpes_de_estado
     forget_old_tracker_items
     forget_old_autologin_keys
-    forget_old_bj_jobs
     forget_old_treated_visitors
     check_faction_leaders
     generate_daily_ads_stats
@@ -63,10 +62,6 @@ namespace :gm do
   def check_faction_leaders
     # TODO TEMP, esto no debería ser necesario
     User.db_query("update users set cache_is_faction_leader = 't' where id in (select user_id FROM users_roles WHERE role IN ('Boss', 'Underboss'));")
-  end
-  
-  def forget_old_bj_jobs
-    User.db_query("DELETE FROM bj_job_archive WHERE finished_at < now() - '1 month'::interval;")
   end
   
   def forget_old_autologin_keys

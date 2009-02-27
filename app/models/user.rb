@@ -451,17 +451,6 @@ final
     self.cache_unread_messages
   end
   
-  def is_editor_of? faction
-    # devuelve true si el usuario puede editar algún tipo de contenido
-    if self.is_superadmin then
-      true
-    elsif User.db_query("select * from factions_editors where user_id = #{self.id} and faction_id = #{faction.id}")
-      true
-    else
-      false
-    end
-  end
-  
   def is_friend_of?(user)
     # si self está en la lista de amigos de user devuelve true
     f = Friendship.find_between(self, user)
