@@ -933,7 +933,7 @@ CREATE TABLE bets (
     cache_comments_count integer DEFAULT 0 NOT NULL,
     title character varying NOT NULL,
     description character varying,
-    bets_category_id integer NOT NULL,
+    bets_category_id integer,
     closes_on timestamp without time zone NOT NULL,
     total_ammount numeric(14,2) DEFAULT 0 NOT NULL,
     winning_bets_option_id integer,
@@ -943,7 +943,8 @@ CREATE TABLE bets (
     log character varying,
     state smallint DEFAULT 0 NOT NULL,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -1009,7 +1010,8 @@ CREATE TABLE blogentries (
     cache_comments_count integer DEFAULT 0 NOT NULL,
     state smallint DEFAULT 0 NOT NULL,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -1065,7 +1067,9 @@ CREATE TABLE clans (
     deleted boolean DEFAULT false NOT NULL,
     members_count integer DEFAULT 0 NOT NULL,
     website_activated boolean DEFAULT false NOT NULL,
-    creator_user_id integer
+    creator_user_id integer,
+    cache_popularity integer,
+    ranking_popularity_pos integer
 );
 
 
@@ -1181,7 +1185,7 @@ CREATE TABLE columns (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     approved_by_user_id integer,
-    columns_category_id integer NOT NULL,
+    columns_category_id integer,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     hits_registered integer DEFAULT 0 NOT NULL,
     deleted boolean DEFAULT false NOT NULL,
@@ -1192,7 +1196,8 @@ CREATE TABLE columns (
     log character varying,
     state smallint DEFAULT 0 NOT NULL,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -1486,7 +1491,8 @@ CREATE TABLE contents (
     url character varying,
     user_id integer NOT NULL,
     portal_id integer,
-    bazar_district_id integer
+    bazar_district_id integer,
+    closed boolean DEFAULT false NOT NULL
 );
 
 
@@ -1518,6 +1524,18 @@ CREATE TABLE contents_recommendations (
     confidence double precision,
     expected_rating smallint,
     comment character varying
+);
+
+
+--
+-- Name: contents_terms; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE contents_terms (
+    id integer NOT NULL,
+    content_id integer NOT NULL,
+    term_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -1566,7 +1584,8 @@ CREATE TABLE coverages (
     log character varying,
     state smallint DEFAULT 0 NOT NULL,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -1620,7 +1639,7 @@ CREATE TABLE demos (
     state smallint DEFAULT 0 NOT NULL,
     title character varying NOT NULL,
     description character varying,
-    demos_category_id integer NOT NULL,
+    demos_category_id integer,
     entity1_local_id integer,
     entity2_local_id integer,
     entity1_external character varying,
@@ -1638,7 +1657,8 @@ CREATE TABLE demos (
     demotype smallint,
     played_on date,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -1698,7 +1718,7 @@ CREATE TABLE downloads (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     approved_by_user_id integer,
-    downloads_category_id integer NOT NULL,
+    downloads_category_id integer,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     hits_registered integer DEFAULT 0 NOT NULL,
     file character varying,
@@ -1712,7 +1732,8 @@ CREATE TABLE downloads (
     file_hash_md5 character(32),
     clan_id integer,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -1744,7 +1765,7 @@ CREATE TABLE events (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     description text,
-    events_category_id integer NOT NULL,
+    events_category_id integer,
     starts_on timestamp without time zone NOT NULL,
     ends_on timestamp without time zone NOT NULL,
     website character varying,
@@ -1761,7 +1782,8 @@ CREATE TABLE events (
     state smallint DEFAULT 0 NOT NULL,
     clan_id integer,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -1960,7 +1982,8 @@ CREATE TABLE funthings (
     log character varying,
     state smallint DEFAULT 0 NOT NULL,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -2120,7 +2143,7 @@ CREATE TABLE images (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     approved_by_user_id integer,
-    images_category_id integer NOT NULL,
+    images_category_id integer,
     hits_registered integer DEFAULT 0 NOT NULL,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     cache_rating smallint,
@@ -2131,7 +2154,8 @@ CREATE TABLE images (
     file_hash_md5 character(32),
     clan_id integer,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -2166,7 +2190,7 @@ CREATE TABLE interviews (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     approved_by_user_id integer,
-    interviews_category_id integer NOT NULL,
+    interviews_category_id integer,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     hits_registered integer DEFAULT 0 NOT NULL,
     home_image character varying,
@@ -2176,7 +2200,8 @@ CREATE TABLE interviews (
     log character varying,
     state smallint DEFAULT 0 NOT NULL,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -2319,7 +2344,7 @@ CREATE TABLE news (
     description text NOT NULL,
     main text,
     approved_by_user_id integer,
-    news_category_id integer NOT NULL,
+    news_category_id integer,
     hits_registered integer DEFAULT 0 NOT NULL,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     cache_rating smallint,
@@ -2329,7 +2354,8 @@ CREATE TABLE news (
     state smallint DEFAULT 0 NOT NULL,
     clan_id integer,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -2378,6 +2404,18 @@ CREATE TABLE platforms (
 
 
 --
+-- Name: platforms_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE platforms_users (
+    id integer NOT NULL,
+    created_on timestamp without time zone,
+    user_id integer,
+    platform_id integer
+);
+
+
+--
 -- Name: polls; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2395,12 +2433,14 @@ CREATE TABLE polls (
     cache_rating smallint,
     cache_rated_times smallint,
     cache_comments_count integer DEFAULT 0 NOT NULL,
-    polls_category_id integer NOT NULL,
+    polls_category_id integer,
     log character varying,
     state smallint DEFAULT 0 NOT NULL,
     clan_id integer,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer,
+    polls_votes_count integer DEFAULT 0 NOT NULL
 );
 
 
@@ -2580,7 +2620,7 @@ CREATE TABLE publishing_personalities (
 CREATE TABLE questions (
     id integer NOT NULL,
     title character varying NOT NULL,
-    questions_category_id integer NOT NULL,
+    questions_category_id integer,
     description text,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
@@ -2597,7 +2637,9 @@ CREATE TABLE questions (
     approved_by_user_id integer,
     ammount numeric(10,2),
     answered_on timestamp without time zone,
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer,
+    answer_selected_by_user_id integer
 );
 
 
@@ -2637,8 +2679,19 @@ CREATE TABLE recruitment_ads (
     game_id integer NOT NULL,
     levels character varying,
     country_id integer,
-    message character varying,
-    deleted boolean DEFAULT false NOT NULL
+    main text,
+    deleted boolean DEFAULT false NOT NULL,
+    title character varying NOT NULL,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -2668,7 +2721,7 @@ CREATE TABLE reviews (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     approved_by_user_id integer,
-    reviews_category_id integer NOT NULL,
+    reviews_category_id integer,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     hits_registered integer DEFAULT 0 NOT NULL,
     cache_rating smallint,
@@ -2678,7 +2731,8 @@ CREATE TABLE reviews (
     home_image character varying,
     state smallint DEFAULT 0 NOT NULL,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -2836,6 +2890,28 @@ CREATE TABLE sold_products (
 
 
 --
+-- Name: terms; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE terms (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    slug character varying NOT NULL,
+    description character varying,
+    parent_id integer,
+    game_id integer,
+    platform_id integer,
+    bazar_district_id integer,
+    clan_id integer,
+    contents_count integer DEFAULT 0 NOT NULL,
+    last_updated_item_id integer,
+    comments_count integer DEFAULT 0 NOT NULL,
+    root_id integer,
+    taxonomy character varying
+);
+
+
+--
 -- Name: textures; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -2855,7 +2931,7 @@ CREATE TABLE textures (
 CREATE TABLE topics (
     id integer NOT NULL,
     title character varying NOT NULL,
-    topics_category_id integer NOT NULL,
+    topics_category_id integer,
     main text NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
@@ -2871,7 +2947,8 @@ CREATE TABLE topics (
     log character varying,
     state smallint DEFAULT 0 NOT NULL,
     clan_id integer,
-    cache_weighted_rank numeric(10,2)
+    cache_weighted_rank numeric(10,2),
+    unique_content_id integer
 );
 
 
@@ -2935,7 +3012,7 @@ CREATE TABLE tutorials (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     approved_by_user_id integer,
-    tutorials_category_id integer NOT NULL,
+    tutorials_category_id integer,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     hits_registered integer DEFAULT 0 NOT NULL,
     home_image character varying,
@@ -2945,7 +3022,8 @@ CREATE TABLE tutorials (
     log character varying,
     state smallint DEFAULT 0 NOT NULL,
     cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -3071,7 +3149,11 @@ CREATE TABLE users (
     emblems_mask character varying,
     random_id double precision DEFAULT random(),
     is_staff boolean DEFAULT false NOT NULL,
-    pending_slog integer DEFAULT 0 NOT NULL
+    pending_slog integer DEFAULT 0 NOT NULL,
+    ranking_karma_pos integer,
+    ranking_faith_pos integer,
+    ranking_popularity_pos integer,
+    cache_popularity integer
 );
 
 
@@ -3248,6 +3330,18 @@ CREATE TABLE bets_results (
 
 
 --
+-- Name: clans_daily_stats; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE clans_daily_stats (
+    id integer NOT NULL,
+    clan_id integer,
+    created_on date NOT NULL,
+    popularity integer
+);
+
+
+--
 -- Name: dates; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
 --
 
@@ -3300,7 +3394,8 @@ CREATE TABLE general (
     requests integer,
     database_size bigint,
     sent_emails integer,
-    downloaded_downloads_count integer
+    downloaded_downloads_count integer,
+    users_refered_today integer
 );
 
 
@@ -3361,6 +3456,20 @@ CREATE TABLE portals (
     visits integer,
     unique_visitors integer,
     unique_visitors_reg integer
+);
+
+
+--
+-- Name: users_daily_stats; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE users_daily_stats (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on date NOT NULL,
+    karma integer,
+    faith integer,
+    popularity integer
 );
 
 
@@ -10773,6 +10882,24 @@ ALTER SEQUENCE contents_recommendations_id_seq OWNED BY contents_recommendations
 
 
 --
+-- Name: contents_terms_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE contents_terms_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: contents_terms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE contents_terms_id_seq OWNED BY contents_terms.id;
+
+
+--
 -- Name: contents_versions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11579,6 +11706,25 @@ ALTER SEQUENCE platforms_id_seq OWNED BY platforms.id;
 
 
 --
+-- Name: platforms_users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE platforms_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: platforms_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE platforms_users_id_seq OWNED BY platforms_users.id;
+
+
+--
 -- Name: polls_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -12012,6 +12158,24 @@ ALTER SEQUENCE sold_products_id_seq OWNED BY sold_products.id;
 
 
 --
+-- Name: terms_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE terms_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: terms_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE terms_id_seq OWNED BY terms.id;
+
+
+--
 -- Name: textures_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -12088,7 +12252,6 @@ ALTER SEQUENCE user_login_changes_id_seq OWNED BY user_login_changes.id;
 --
 
 CREATE SEQUENCE users_actions_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12306,6 +12469,25 @@ ALTER SEQUENCE bets_results_id_seq OWNED BY bets_results.id;
 
 
 --
+-- Name: clans_daily_stats_id_seq; Type: SEQUENCE; Schema: stats; Owner: -
+--
+
+CREATE SEQUENCE clans_daily_stats_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: clans_daily_stats_id_seq; Type: SEQUENCE OWNED BY; Schema: stats; Owner: -
+--
+
+ALTER SEQUENCE clans_daily_stats_id_seq OWNED BY clans_daily_stats.id;
+
+
+--
 -- Name: pageloadtime_id_seq; Type: SEQUENCE; Schema: stats; Owner: -
 --
 
@@ -12358,6 +12540,25 @@ CREATE SEQUENCE portals_stats_id_seq
 --
 
 ALTER SEQUENCE portals_stats_id_seq OWNED BY portals.id;
+
+
+--
+-- Name: users_daily_stats_id_seq; Type: SEQUENCE; Schema: stats; Owner: -
+--
+
+CREATE SEQUENCE users_daily_stats_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: users_daily_stats_id_seq; Type: SEQUENCE OWNED BY; Schema: stats; Owner: -
+--
+
+ALTER SEQUENCE users_daily_stats_id_seq OWNED BY users_daily_stats.id;
 
 
 --
@@ -12708,6 +12909,13 @@ ALTER TABLE contents_recommendations ALTER COLUMN id SET DEFAULT nextval('conten
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE contents_terms ALTER COLUMN id SET DEFAULT nextval('contents_terms_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE contents_versions ALTER COLUMN id SET DEFAULT nextval('contents_versions_id_seq'::regclass);
 
 
@@ -13002,6 +13210,13 @@ ALTER TABLE platforms ALTER COLUMN id SET DEFAULT nextval('platforms_id_seq'::re
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE platforms_users ALTER COLUMN id SET DEFAULT nextval('platforms_users_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE polls ALTER COLUMN id SET DEFAULT nextval('polls_id_seq'::regclass);
 
 
@@ -13170,6 +13385,13 @@ ALTER TABLE sold_products ALTER COLUMN id SET DEFAULT nextval('sold_products_id_
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE terms ALTER COLUMN id SET DEFAULT nextval('terms_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE textures ALTER COLUMN id SET DEFAULT nextval('textures_id_seq'::regclass);
 
 
@@ -13305,6 +13527,13 @@ ALTER TABLE bets_results ALTER COLUMN id SET DEFAULT nextval('bets_results_id_se
 -- Name: id; Type: DEFAULT; Schema: stats; Owner: -
 --
 
+ALTER TABLE clans_daily_stats ALTER COLUMN id SET DEFAULT nextval('clans_daily_stats_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: stats; Owner: -
+--
+
 ALTER TABLE pageloadtime ALTER COLUMN id SET DEFAULT nextval('pageloadtime_id_seq'::regclass);
 
 
@@ -13320,6 +13549,13 @@ ALTER TABLE pageviews ALTER COLUMN id SET DEFAULT nextval('pageviews_id_seq'::re
 --
 
 ALTER TABLE portals ALTER COLUMN id SET DEFAULT nextval('portals_stats_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: stats; Owner: -
+--
+
+ALTER TABLE users_daily_stats ALTER COLUMN id SET DEFAULT nextval('users_daily_stats_id_seq'::regclass);
 
 
 --
@@ -13968,6 +14204,14 @@ ALTER TABLE ONLY contents_recommendations
 
 
 --
+-- Name: contents_terms_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY contents_terms
+    ADD CONSTRAINT contents_terms_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: contents_url_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -14488,6 +14732,14 @@ ALTER TABLE ONLY platforms
 
 
 --
+-- Name: platforms_users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY platforms_users
+    ADD CONSTRAINT platforms_users_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: polls_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -14776,6 +15028,14 @@ ALTER TABLE ONLY sold_products
 
 
 --
+-- Name: terms_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY terms
+    ADD CONSTRAINT terms_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: textures_name_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -14938,6 +15198,14 @@ ALTER TABLE ONLY bets_results
 
 
 --
+-- Name: clans_daily_stats_pkey; Type: CONSTRAINT; Schema: stats; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY clans_daily_stats
+    ADD CONSTRAINT clans_daily_stats_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: general_pkey; Type: CONSTRAINT; Schema: stats; Owner: -; Tablespace: 
 --
 
@@ -14967,6 +15235,14 @@ ALTER TABLE ONLY pageviews
 
 ALTER TABLE ONLY portals
     ADD CONSTRAINT portals_stats_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_daily_stats_pkey; Type: CONSTRAINT; Schema: stats; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY users_daily_stats
+    ADD CONSTRAINT users_daily_stats_pkey PRIMARY KEY (id);
 
 
 --
@@ -15374,6 +15650,27 @@ CREATE INDEX contents_state ON contents USING btree (state);
 
 
 --
+-- Name: contents_terms_content_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX contents_terms_content_id ON contents_terms USING btree (content_id);
+
+
+--
+-- Name: contents_terms_term_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX contents_terms_term_id ON contents_terms USING btree (term_id);
+
+
+--
+-- Name: contents_terms_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX contents_terms_uniq ON contents_terms USING btree (content_id, term_id);
+
+
+--
 -- Name: contents_user_id_state; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -15752,6 +16049,27 @@ CREATE UNIQUE INDEX outstanding_entities_uniq ON outstanding_entities USING btre
 
 
 --
+-- Name: platforms_users_platform_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX platforms_users_platform_id ON platforms_users USING btree (platform_id);
+
+
+--
+-- Name: platforms_users_platform_id_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX platforms_users_platform_id_user_id ON platforms_users USING btree (user_id, platform_id);
+
+
+--
+-- Name: platforms_users_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX platforms_users_user_id ON platforms_users USING btree (user_id);
+
+
+--
 -- Name: polls_approved_by_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -15857,6 +16175,13 @@ CREATE INDEX questions_user_id ON questions USING btree (user_id);
 
 
 --
+-- Name: refered_hits_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX refered_hits_user_id ON refered_hits USING btree (user_id);
+
+
+--
 -- Name: reviews_approved_by_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -15910,6 +16235,34 @@ CREATE INDEX silenced_emails_lower ON silenced_emails USING btree (lower((email)
 --
 
 CREATE INDEX slog_type_id ON slog_entries USING btree (type_id);
+
+
+--
+-- Name: terms_name_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX terms_name_uniq ON terms USING btree (game_id, bazar_district_id, platform_id, clan_id, taxonomy, parent_id, name);
+
+
+--
+-- Name: terms_parent_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX terms_parent_id ON terms USING btree (parent_id);
+
+
+--
+-- Name: terms_root_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX terms_root_id ON terms USING btree (root_id);
+
+
+--
+-- Name: terms_slug_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX terms_slug_uniq ON terms USING btree (game_id, bazar_district_id, platform_id, clan_id, taxonomy, parent_id, slug);
 
 
 --
@@ -16146,6 +16499,13 @@ CREATE UNIQUE INDEX bandit_treatments_abtest_treatment ON bandit_treatments USIN
 
 
 --
+-- Name: clans_daily_stats_clan_id_created_on; Type: INDEX; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE INDEX clans_daily_stats_clan_id_created_on ON clans_daily_stats USING btree (clan_id, created_on);
+
+
+--
 -- Name: dates_date; Type: INDEX; Schema: stats; Owner: -; Tablespace: 
 --
 
@@ -16220,6 +16580,13 @@ CREATE INDEX portals_stats_portal_id ON portals USING btree (portal_id);
 --
 
 CREATE UNIQUE INDEX portals_stats_uniq ON portals USING btree (created_on, portal_id);
+
+
+--
+-- Name: users_daily_stats_user_id_created_on; Type: INDEX; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE INDEX users_daily_stats_user_id_created_on ON users_daily_stats USING btree (user_id, created_on);
 
 
 --
@@ -16498,6 +16865,14 @@ ALTER TABLE ONLY bets_tickets
 
 
 --
+-- Name: bets_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY bets
+    ADD CONSTRAINT bets_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
+
+
+--
 -- Name: bets_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -16511,6 +16886,14 @@ ALTER TABLE ONLY bets
 
 ALTER TABLE ONLY bets
     ADD CONSTRAINT bets_winning_bets_option_id_fkey FOREIGN KEY (winning_bets_option_id) REFERENCES bets_options(id) MATCH FULL ON DELETE SET NULL;
+
+
+--
+-- Name: blogentries_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY blogentries
+    ADD CONSTRAINT blogentries_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 
 
 --
@@ -16631,6 +17014,14 @@ ALTER TABLE ONLY columns_categories
 
 ALTER TABLE ONLY columns
     ADD CONSTRAINT columns_columns_category_id_fkey FOREIGN KEY (columns_category_id) REFERENCES columns_categories(id) MATCH FULL;
+
+
+--
+-- Name: columns_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY columns
+    ADD CONSTRAINT columns_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 
 
 --
@@ -16930,6 +17321,22 @@ ALTER TABLE ONLY contents_recommendations
 
 
 --
+-- Name: contents_terms_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY contents_terms
+    ADD CONSTRAINT contents_terms_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id) MATCH FULL;
+
+
+--
+-- Name: contents_terms_term_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY contents_terms
+    ADD CONSTRAINT contents_terms_term_id_fkey FOREIGN KEY (term_id) REFERENCES terms(id) MATCH FULL;
+
+
+--
 -- Name: contents_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -16943,6 +17350,14 @@ ALTER TABLE ONLY contents
 
 ALTER TABLE ONLY contents_versions
     ADD CONSTRAINT contents_versions_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id) MATCH FULL;
+
+
+--
+-- Name: coverages_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY coverages
+    ADD CONSTRAINT coverages_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 
 
 --
@@ -17026,6 +17441,14 @@ ALTER TABLE ONLY demos
 
 
 --
+-- Name: demos_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY demos
+    ADD CONSTRAINT demos_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
+
+
+--
 -- Name: demos_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -17103,6 +17526,14 @@ ALTER TABLE ONLY downloads
 
 ALTER TABLE ONLY downloads
     ADD CONSTRAINT downloads_downloads_category_id_fkey FOREIGN KEY (downloads_category_id) REFERENCES downloads_categories(id) MATCH FULL;
+
+
+--
+-- Name: downloads_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY downloads
+    ADD CONSTRAINT downloads_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 
 
 --
@@ -17191,6 +17622,14 @@ ALTER TABLE ONLY coverages
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES events(id) MATCH FULL;
+
+
+--
+-- Name: events_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY events
+    ADD CONSTRAINT events_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 
 
 --
@@ -17394,6 +17833,14 @@ ALTER TABLE ONLY funthings
 
 
 --
+-- Name: funthings_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY funthings
+    ADD CONSTRAINT funthings_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
+
+
+--
 -- Name: funthings_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -17538,6 +17985,14 @@ ALTER TABLE ONLY images
 
 
 --
+-- Name: images_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY images
+    ADD CONSTRAINT images_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
+
+
+--
 -- Name: interviews_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -17567,6 +18022,14 @@ ALTER TABLE ONLY interviews_categories
 
 ALTER TABLE ONLY interviews
     ADD CONSTRAINT interviews_interviews_category_id_fkey FOREIGN KEY (interviews_category_id) REFERENCES interviews_categories(id) MATCH FULL;
+
+
+--
+-- Name: interviews_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY interviews
+    ADD CONSTRAINT interviews_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 
 
 --
@@ -17658,6 +18121,30 @@ ALTER TABLE ONLY news
 
 
 --
+-- Name: news_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY news
+    ADD CONSTRAINT news_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
+
+
+--
+-- Name: platforms_users_platform_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY platforms_users
+    ADD CONSTRAINT platforms_users_platform_id_fkey FOREIGN KEY (platform_id) REFERENCES platforms(id) MATCH FULL ON DELETE CASCADE;
+
+
+--
+-- Name: platforms_users_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY platforms_users
+    ADD CONSTRAINT platforms_users_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
+
+
+--
 -- Name: polls_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -17727,6 +18214,14 @@ ALTER TABLE ONLY polls_votes
 
 ALTER TABLE ONLY polls
     ADD CONSTRAINT polls_polls_category_id_fkey FOREIGN KEY (polls_category_id) REFERENCES polls_categories(id) MATCH FULL;
+
+
+--
+-- Name: polls_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY polls
+    ADD CONSTRAINT polls_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 
 
 --
@@ -17858,6 +18353,14 @@ ALTER TABLE ONLY questions
 
 
 --
+-- Name: questions_answer_selected_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY questions
+    ADD CONSTRAINT questions_answer_selected_by_user_id_fkey FOREIGN KEY (answer_selected_by_user_id) REFERENCES users(id) MATCH FULL;
+
+
+--
 -- Name: questions_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -17898,6 +18401,14 @@ ALTER TABLE ONLY questions
 
 
 --
+-- Name: questions_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY questions
+    ADD CONSTRAINT questions_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
+
+
+--
 -- Name: questions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -17930,11 +18441,27 @@ ALTER TABLE ONLY recruitment_ads
 
 
 --
+-- Name: recruitment_ads_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY recruitment_ads
+    ADD CONSTRAINT recruitment_ads_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id) MATCH FULL;
+
+
+--
 -- Name: recruitment_ads_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY recruitment_ads
     ADD CONSTRAINT recruitment_ads_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
+
+
+--
+-- Name: refered_hits_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY refered_hits
+    ADD CONSTRAINT refered_hits_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 
 
 --
@@ -17967,6 +18494,14 @@ ALTER TABLE ONLY reviews_categories
 
 ALTER TABLE ONLY reviews
     ADD CONSTRAINT reviews_reviews_category_id_fkey FOREIGN KEY (reviews_category_id) REFERENCES reviews_categories(id) MATCH FULL;
+
+
+--
+-- Name: reviews_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY reviews
+    ADD CONSTRAINT reviews_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 
 
 --
@@ -18042,6 +18577,62 @@ ALTER TABLE ONLY sold_products
 
 
 --
+-- Name: terms_bazar_district_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY terms
+    ADD CONSTRAINT terms_bazar_district_id_fkey FOREIGN KEY (bazar_district_id) REFERENCES bazar_districts(id) MATCH FULL;
+
+
+--
+-- Name: terms_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY terms
+    ADD CONSTRAINT terms_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
+
+
+--
+-- Name: terms_game_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY terms
+    ADD CONSTRAINT terms_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id) MATCH FULL;
+
+
+--
+-- Name: terms_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY terms
+    ADD CONSTRAINT terms_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES contents(id);
+
+
+--
+-- Name: terms_parent_term_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY terms
+    ADD CONSTRAINT terms_parent_term_id_fkey FOREIGN KEY (parent_id) REFERENCES terms(id) MATCH FULL;
+
+
+--
+-- Name: terms_platform_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY terms
+    ADD CONSTRAINT terms_platform_id_fkey FOREIGN KEY (platform_id) REFERENCES platforms(id) MATCH FULL;
+
+
+--
+-- Name: terms_root_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY terms
+    ADD CONSTRAINT terms_root_id_fkey FOREIGN KEY (root_id) REFERENCES terms(id) MATCH FULL;
+
+
+--
 -- Name: topics_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -18055,6 +18646,14 @@ ALTER TABLE ONLY topics_categories
 
 ALTER TABLE ONLY topics
     ADD CONSTRAINT topics_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
+
+
+--
+-- Name: topics_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY topics
+    ADD CONSTRAINT topics_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 
 
 --
@@ -18111,6 +18710,14 @@ ALTER TABLE ONLY tutorials_categories
 
 ALTER TABLE ONLY tutorials
     ADD CONSTRAINT tutorials_tutorials_category_id_fkey FOREIGN KEY (tutorials_category_id) REFERENCES tutorials_categories(id) MATCH FULL;
+
+
+--
+-- Name: tutorials_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY tutorials
+    ADD CONSTRAINT tutorials_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 
 
 --
@@ -18308,11 +18915,27 @@ ALTER TABLE ONLY bets_results
 
 
 --
+-- Name: clans_daily_stats_clan_id_fkey; Type: FK CONSTRAINT; Schema: stats; Owner: -
+--
+
+ALTER TABLE ONLY clans_daily_stats
+    ADD CONSTRAINT clans_daily_stats_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES public.clans(id) MATCH FULL;
+
+
+--
 -- Name: portals_stats_portal_id_fkey; Type: FK CONSTRAINT; Schema: stats; Owner: -
 --
 
 ALTER TABLE ONLY portals
     ADD CONSTRAINT portals_stats_portal_id_fkey FOREIGN KEY (portal_id) REFERENCES public.portals(id) MATCH FULL;
+
+
+--
+-- Name: users_daily_stats_user_id_fkey; Type: FK CONSTRAINT; Schema: stats; Owner: -
+--
+
+ALTER TABLE ONLY users_daily_stats
+    ADD CONSTRAINT users_daily_stats_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) MATCH FULL;
 
 
 --
@@ -18326,3 +18949,4 @@ ALTER TABLE ONLY users_karma_daily_by_portal
 --
 -- PostgreSQL database dump complete
 --
+
