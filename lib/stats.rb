@@ -532,4 +532,121 @@ group by date_trunc('day', created_on) order by s asc
       User.db_query("INSERT INTO stats.ads_daily(ads_slots_instance_id, pageviews, hits, ctr, created_on) VALUES(#{adsi.id}, #{pageviews}, #{hits}, #{hits.to_f/pageviews_div}, '#{tstart.strftime('%Y-%m-%d')}')")
     end    
   end
+  
+  def self.user_contents_by_type(u)
+    #total_karma = 0.0
+    result = {}
+    
+    sum_karma_comments = u.comments.count(:conditions => 'deleted = \'f\'')
+    total_karma = sum_karma_comments.to_f
+    result.add_if_val_in_topn('Comments', sum_karma_comments, 5)
+    ContentType.find(:all).each do |ct|
+      sum_karma_ct = Object.const_get(ct.name).count(:conditions => "user_id = #{u.id} AND state = #{Cms::PUBLISHED}")
+      total_karma += sum_karma_ct
+      result.add_if_val_in_topn(ct.name, sum_karma_ct, 5)
+    end
+    result['Otros'] = total_karma - result.values.sum
+    fresult = {}
+    result.keys.each do |k|
+      fresult[k] = ((result[k] / total_karma) * 100)
+    end
+    fresult
+  end
+  
+  def self.user_contents_by_portal(u)
+    statz = {}
+    User.db_query("SELECT count(*),
+                          portal_id
+                     FROM comments
+                    WHERE user_id = #{u.id}
+                      AND deleted = 'f'
+                 GROUP BY portal_id").each do |dbr|
+      statz[dbr['portal_id'].to_i] = dbr['count'].to_i * Karma::KPS_CREATE['Comment']     
+    end
+    
+    User.db_query("SELECT count(*),
+                          portal_id,
+                          content_type_id
+                     FROM contents
+                    WHERE user_id = #{u.id}
+                      AND state = #{Cms::PUBLISHED}
+                 GROUP BY portal_id,
+                          content_type_id").each do |dbr|
+      statz[dbr['portal_id'].to_i]  ||= 0
+      statz[dbr['portal_id'].to_i] += dbr['count'].to_i * Karma::KPS_CREATE[ContentType.find(dbr['content_type_id'].to_i).name]
+    end
+    statz2 = {}
+    total= statz.values.sum.to_f
+    statz.each do |k, v|
+      statz2.add_if_val_in_topn(k, (v/total) * 100, 5)
+    end
+    statz2['Otros'] = ((total - statz2.values.sum) / total) * 100 
+    statz2
+  end
+  
+  def self.user_contents_by_rating(u)
+    res = {}
+    User.db_query("SELECT count(*),
+                          rating
+                     FROM content_ratings
+                     JOIN contents on content_ratings.content_id = contents.id
+                    WHERE contents.user_id = #{u.id}
+                GROUP BY rating").each do |dbr|
+            res[dbr['rating'].to_i] = dbr['count'].to_i
+    end
+    tot = res.values.sum.to_f
+    puts tot
+    res2 = {}
+    10.times do |i|
+      i = i + 1
+    
+      if res[i]
+        res2[i] = (res[i]/tot) * 100
+        puts "res2[i] = (#{res[i]}/#{tot}) * 100"
+      else
+        res2[i] = 0
+      end
+    end
+    
+    #res.keys.each do |k|
+     # res2[k] = (res[k]/tot) * 100
+    #end
+    res2
+  end
+  
+  def self.user_comments_by_rating(u)
+    res = {}
+    User.db_query("SELECT count(*)*sum(weight) as count,
+                          comments_valorations_type_id
+                     FROM comments_valorations
+                     JOIN comments on comments_valorations.comment_id = comments.id
+                    WHERE comments.user_id = #{u.id}
+                GROUP BY comments_valorations_type_id").each do |dbr|
+            res[dbr['comments_valorations_type_id'].to_i] = dbr['count'].to_i
+    end
+    tot = res.values.sum.to_f
+    res2 = {}
+    res.keys.each do |k|
+      res2[k] = (res[k]/tot) * 100
+    end
+    res2
+  end
+end
+
+class Hash
+  # añade el par newk, newv al hash si el valor newv es mayor que cualquiera de los valores existentes
+  # sirve para mantener un top 
+  def add_if_val_in_topn(newk, newv, n)
+    if self.size <= n
+      self[newk] = newv
+    else
+      self.keys.each do |k|
+       if self[k] < newv
+         self.delete(k)
+         self[newk] = newv
+         return
+       end
+      end  
+    end
+  end
 end

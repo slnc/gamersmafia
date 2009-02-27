@@ -17,6 +17,8 @@ namespace :gm do
     reset_remaining_rating_slots
     Karma.update_ranking
     Faith.update_ranking
+    update_users_karma_stats
+    update_users_daily_stats
   end
   
   def reset_remaining_rating_slots

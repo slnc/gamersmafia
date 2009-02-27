@@ -3,28 +3,26 @@ namespace :gm do
   task :daily => :environment do
     require 'app/controllers/application'
     
-    #Rake::Task['log:clear'].invoke
-    #clear_anonymous_users
-    #clear_faith_points_of_referers_and_resurrectors
-    #pay_faith_prices
-    #send_happy_birthday
-    #switch_inactive_users_to_zombies
-    #clear_file_caches
-    #send_reports_to_publisher_if_on_due_date
-    #new_accounts_cleanup
-    #check_ladder_matches
-    #update_portals_hits_stats
-    update_users_karma_stats
-    update_users_daily_stats
-    #provocar_golpes_de_estado
-    #forget_old_tracker_items
-    #forget_old_autologin_keys
-    #forget_old_bj_jobs
-    #forget_old_treated_visitors
-    #check_faction_leaders
-    #generate_daily_ads_stats
-    #kill_zombified_staff
-    #GmSys.job('Notification.check_global_notifications')
+    Rake::Task['log:clear'].invoke
+    clear_anonymous_users
+    clear_faith_points_of_referers_and_resurrectors
+    pay_faith_prices
+    send_happy_birthday
+    switch_inactive_users_to_zombies
+    clear_file_caches
+    send_reports_to_publisher_if_on_due_date
+    new_accounts_cleanup
+    check_ladder_matches
+    update_portals_hits_stats
+    provocar_golpes_de_estado
+    forget_old_tracker_items
+    forget_old_autologin_keys
+    forget_old_bj_jobs
+    forget_old_treated_visitors
+    check_faction_leaders
+    generate_daily_ads_stats
+    kill_zombified_staff
+    GmSys.job('Notification.check_global_notifications')
   end
   
   def kill_zombified_staff

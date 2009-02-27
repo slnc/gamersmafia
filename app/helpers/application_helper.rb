@@ -45,6 +45,62 @@ type: 'ls'}))
     out
   end
   
+    def pie(opts)
+    # req: data size
+    out = ''
+    require 'md5'
+    spid = MD5.hexdigest((Time.now.to_i + Kernel.rand).to_s)
+    # load_javascript_lib('web.shared/jgcharts-0.9')
+    out << "<div id=\"line#{spid}\"></div>
+<script type=\"text/javascript\">
+$j(document).ready(function() {
+var api = new jGCharts.Api(); 
+jQuery('<img>') 
+.attr('src', api.make({ 
+data: [#{opts[:data].join(',')}],
+size: '#{opts[:size]}',"
+if opts[:axis_labels]
+  opts[:axis_labels].collect! { |opt| "'#{opt}'" }
+  out << " axis_labels: [#{opts[:axis_labels].join(',')}],"
+end
+    out << "
+type: 'p'})) 
+.appendTo(\"#line#{spid}\");
+});
+</script>
+"
+    
+    out
+  end
+  
+      def horizontal_stacked_bar(opts)
+    # req: data size
+    out = ''
+    require 'md5'
+    spid = MD5.hexdigest((Time.now.to_i + Kernel.rand).to_s)
+    # load_javascript_lib('web.shared/jgcharts-0.9')
+    out << "<div id=\"line#{spid}\"></div>
+<script type=\"text/javascript\">
+$j(document).ready(function() {
+var api = new jGCharts.Api(); 
+jQuery('<img>') 
+.attr('src', api.make({ 
+data: [#{opts[:data].join(',')}],
+size: '#{opts[:size]}',"
+if opts[:axis_labels]
+  opts[:axis_labels].collect! { |opt| "'#{opt}'" }
+  out << " axis_labels: [#{opts[:axis_labels].join(',')}],"
+end
+    out << "
+type: 'bhs'})) 
+.appendTo(\"#line#{spid}\");
+});
+</script>
+"
+    
+    out
+  end
+  
   def header(title, opts={})
     # {:mode => opts
   end
