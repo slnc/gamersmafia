@@ -3,6 +3,9 @@ class Group < ActiveRecord::Base
   belongs_to :owner, :class_name => 'User', :foreign_key => 'owner_user_id'
   validates_presence_of :name
   
+  has_users_role 'GroupAdministrator'
+  has_users_role 'GroupMember'
+  
   def members_count
     UsersRole.count(:conditions => ["role IN ('GroupMember', 'GroupAdministrator') AND role_data = ?", self.id.to_s])
   end

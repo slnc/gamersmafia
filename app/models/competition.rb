@@ -59,6 +59,9 @@ class Competition < ActiveRecord::Base
   
   file_column :header_image
   
+  has_users_role 'CompetitionAdmin'
+  has_users_role 'CompetitionSupervisor'
+  
   has_bank_account
   
   def get_related_portals

@@ -9,6 +9,9 @@ class BazarDistrict < ActiveRecord::Base
   file_column :icon
   observe_attr :icon, :name, :code
   has_many :terms
+  has_users_role 'Don'
+  has_users_role 'ManoDerecha'
+  has_users_role 'Sicario'
   
   def top_level_category
     Term.single_toplevel(:bazar_district_id => self.id)

@@ -13,6 +13,17 @@ class Faction < ActiveRecord::Base
   before_destroy :set_users_faction_id_to_nil
   after_create :notify_capos_on_create # TODO mover a otro sitio
   
+  has_users_role 'Moderator'
+  has_users_role 'Boss'
+  has_users_role 'Underboss'
+  
+  before_destroy :destroy_editors_too
+  
+  def destroy_editors_too
+    self.editors.each { |ed| ed.destroy }
+    true
+  end
+  
   def moderators
     UsersRole.find(:all, :conditions => ["role = 'Moderator' AND role_data = ?", self.id.to_s], :include => :user, :order => 'lower(users.login)').collect { |ur| ur.user }
   end
