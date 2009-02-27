@@ -167,6 +167,7 @@
       slug: babes
       root_id: 21
       parent_id: 21
+      taxonomy: ImagesCategory
 
 - dudes:
       id: 24
@@ -174,9 +175,24 @@
       slug: dudes
       root_id: 21
       parent_id: 21
+      taxonomy: ImagesCategory
 
 - arena:
       id: 25
       name: Arena
       slug: arena
       root_id: 25
+      
+- indios:
+      id: 26
+      name: Indios Mataharis
+      slug: indios
+      root_id: 26
+      clan_id: 1
+      
+- indios:
+      id: 27
+      name: Mapaches
+      slug: mapaches
+      root_id: 27
+      clan_id: 2

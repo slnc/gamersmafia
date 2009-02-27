@@ -43,11 +43,12 @@ end # forumz each -%>
 		}
 	</script>
 	<% cache('/common/home/foros/topics_list') do %>
-<% TopicsCategory.toplevel_groups.each do |name, code| %>
+<% ForosController::TOPLEVEL_GROUPS.each do |name, code| %>
 	<li class="<%=oddclass%> infoinline"><div><strong><a href="#" onclick="return show_tcnav('tcn<%=code%>');"><%=faction_favicon(code)%> <%=name%></a></strong></div>
 	<ul id="tcn<%=code%>" class="tcnav hidden">
-	<%TopicsCategory.find_by_toplevel_group_code(code).each do |tc| %>
-		<li><a href="<%=gmurl(tc)%>"><%=truncate(tc.name, 19, '..')%></a></li>
+	<%Term.find_by_toplevel_group_code(code).each do |tc| 
+		%>
+		<li><a href="<%=gmurl(tc, :taxonomy => 'TopicsCategory')%>"><%=truncate(tc.name, 19, '..')%></a></li>
 	<% end -%>
 	
 	</ul>

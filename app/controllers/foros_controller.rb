@@ -1,6 +1,14 @@
 class ForosController < ComunidadController
   allowed_portals [:gm, :faction, :clan, :bazar, :arena, :bazar_district]
   acts_as_content_browser :topic
+  
+  TOPLEVEL_GROUPS = [['Gamersmafia', 'gm'], 
+      ['Juegos', 'juegos'],
+      ['Plataformas', 'plataformas'],
+      ['Arena', 'arena'],
+      ['Bazar', 'bazar'],
+      ]
+    
   def wmenu_pos
     'foros'
   end

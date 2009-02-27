@@ -81,9 +81,8 @@ type: 'ls'}))
     concat("</div>", block.binding)
   end
   
-  
-  def gmurl(object)
-    ApplicationController.gmurl(object)
+  def gmurl(object, opts={})
+    ApplicationController.gmurl(object, opts)
   end
   
   def member_state(state)
@@ -917,7 +916,7 @@ END
             previous_day = Date.new(item.created_on.year, item.created_on.month, item.created_on.day)
             out2 << "<div class=\"day-separator\">#{print_tstamp(cur_day, 'date')}</div>"
           end
-          
+         
           out2<< <<-END
         <div class=\"mfcontents-summaries-item #{oddclass}\">
         <h2><a class=\"content\" href=\"#{get_url(item)}\">#{item.title}</a></h2>

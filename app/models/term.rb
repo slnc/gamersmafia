@@ -247,6 +247,7 @@ class Term < ActiveRecord::Base
       #options[:include] << :contents
     end
     
+    
     options.delete :treemode
     options.delete :content_type
     options.delete :content_type_id
@@ -258,6 +259,25 @@ class Term < ActiveRecord::Base
     else
       options[:conditions] = new_cond
     end
+    
+    agfirst = args.first
+    if agfirst.is_a?(Symbol) && [:drafts, :published, :deleted, :pending].include?(agfirst) then
+      options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
+      new_cond = "contents.state = #{Cms.const_get(agfirst.to_s.upcase)}"
+      
+      if options[:conditions].kind_of?(Array)
+        options[:conditions][0]<< " AND #{new_cond} "
+      elsif options[:conditions].to_s != '' then
+        options[:conditions]<< " AND #{new_cond} "
+      else
+        options[:conditions] = new_cond
+      end
+      
+      options[:order] = "contents.created_on DESC" unless options[:order]
+      args[0] = :all
+      args.push(options)
+    end
+    
     args.push(options)
   end
   
@@ -266,7 +286,7 @@ class Term < ActiveRecord::Base
     if self.last_updated_item_id.nil? then
       cat_ids = self.all_children_ids
       obj = self.contents.find(:first, :order => 'updated_on DESC')
-
+      
       if obj then
         # no usamos save para no tocar updated_on, created_on porque record_timestamps falla
         self.class.db_query("UPDATE terms SET last_updated_item_id = #{obj.id} WHERE id = #{self.id}")
@@ -279,17 +299,34 @@ class Term < ActiveRecord::Base
   end
   
   def get_ancestors 
-      # devuelve los ascendientes. en [0] el padre directo y en el último el root
-      path = []
-      parent = self.parent
-      
-      while parent do
-        path<< parent
-        parent = parent.parent
-      end
-      
-      path
+    # devuelve los ascendientes. en [0] el padre directo y en el último el root
+    path = []
+    parent = self.parent
+    
+    while parent do
+      path<< parent
+      parent = parent.parent
     end
+    
+    path
+  end
+  
+  def self.find_by_toplevel_group_code(code)
+    case code
+      when 'gm':
+      Term.single_toplevel(:slug => 'gm').children.find(:all, :order => 'lower(name)')
+      when 'juegos':
+      Term.find(:all, :conditions => 'id = root_id AND game_id IS NOT NULL', :order => 'lower(name)')
+      when 'plataformas':
+      Term.find(:all, :conditions => 'id = root_id AND platform_id IS NOT NULL', :order => 'lower(name)')
+      when 'arena':
+      Term.single_toplevel(:slug => 'arena').children.find(:all, :order => 'lower(name)')
+      when 'bazar':
+      Term.find(:all, :conditions => 'id = root_id AND bazar_district_id IS NOT NULL', :order => 'lower(name)')
+    else
+      raise "toplevel group code '#{code}' unknown"
+    end
+  end
   
   private
   def check_references_to_ancestors

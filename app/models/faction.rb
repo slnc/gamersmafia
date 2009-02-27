@@ -368,7 +368,7 @@ class Faction < ActiveRecord::Base
                                                    WHERE #{Inflector::underscore(Inflector::pluralize(cls_name))}_category_id in (#{cat_ids.join(',')}) 
                                                      AND state = #{Cms::PUBLISHED}")
       else
-        kps_per_content = Karma::KPS_CREATE[c.class.items_class.name] + Karma::KPS_SAVE[c.class.items_class.name]
+        kps_per_content = Karma::KPS_CREATE[cls_name] + Karma::KPS_SAVE[cls_name]
         stats = self.class.db_query("SELECT COUNT(id) * #{kps_per_content} as total_1, 
                                                          SUM(COALESCE(cache_comments_count, 0)) * #{Karma::KPS_CREATE['Comment']} as total_2
                                                     FROM #{Inflector.tableize(cls_name)} 

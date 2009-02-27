@@ -199,13 +199,14 @@ Request information:
     self.class.url_for_content_onlyurl(object)
   end
   
-  def gmurl(object)
-    self.class.gmurl(object)
+  def gmurl(object, opts={})
+    self.class.gmurl(object, opts)
   end
   
-  def self.gmurl(object)
+  def self.gmurl(object, opts={})
     cls_name = object.class.name
     if cls_name.index('Category')
+      # DEPRECATED taxonomies
       href = Cms::translate_content_name(Inflector::singularize(cls_name.gsub('Category', '')))
       href = href.normalize
       case href
@@ -216,7 +217,27 @@ Request information:
       end
       dom = get_domain_of_root_term(object.root)
       "http://#{dom}/#{href}/#{object.id}"
-    elsif cls_name == 'Faction'      
+    elsif cls_name == 'Term'
+      if object.taxonomy.nil? && opts[:taxonomy].nil?
+        raise "gmurl for term without taxonomy specified"
+      else
+        opts[:taxonomy] = object.taxonomy unless opts[:taxonomy]
+        if opts[:taxonomy].index('Category')
+          href = Cms::translate_content_name(Inflector::singularize(opts[:taxonomy].gsub('Category', '')))
+          href = href.normalize
+          case href
+            when 'topics':
+            href = "foros/forum"
+            when 'preguntas':
+            href = "respuestas/categoria"
+          end
+          dom = get_domain_of_root_term(object.root)
+          "http://#{dom}/#{href}/#{object.id}"
+        else
+          raise "gmurl for term with unrecognized taxonomy '#{opts[:taxonomy]}'"
+        end
+      end
+    elsif cls_name == 'Faction'
       "http://#{object.code}.#{App.domain}/"
     elsif cls_name == 'Clan'      
       "http://#{App.domain}/clanes/clan/#{object.id}"

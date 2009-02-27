@@ -177,7 +177,7 @@ module ActsAsContent
     end
     
     def do_after_create
-      create_unique_content
+      create_my_unique_content
       # Lo añadimos al tracker del usuario
       Users.add_to_tracker(self.user, self.unique_content)
     end
@@ -394,7 +394,8 @@ module ActsAsContent
       @_cache_unique_content_type ||= ContentType.find_by_name(self.class.name)
     end
     
-    def create_unique_content
+    # no llamarlo create_unique_content pq rails es demasiado listo
+    def create_my_unique_content
       myctype = ContentType.find(:first, :conditions => "name = '#{self.class.name}'")
       base_opts = {:content_type_id => myctype.id, :external_id => self.id, :name => self.resolve_hid, :updated_on => self.created_on, :state => self.state}
       base_opts.merge!({:clan_id => clan_id}) if self.respond_to? :clan_id

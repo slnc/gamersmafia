@@ -202,3 +202,13 @@ news65:
     id: 41
     content_id: 1113
     term_id: 5
+    
+newsclan:
+    id: 42
+    content_id: 1100
+    term_id: 27
+    
+news64:
+    id: 43
+    content_id: 1104
+    term_id: 1

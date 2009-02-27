@@ -63,6 +63,8 @@ class Content < ActiveRecord::Base
   def real_content
     # devuelve el objeto real al que referencia
     @_cache_real_content ||= begin 
+      p self
+      
       ctype = Object.const_get(self.content_type.name)
       ctype.find(self.external_id)
     end
