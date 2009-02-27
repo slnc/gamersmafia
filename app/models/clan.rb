@@ -133,6 +133,15 @@ class Clan < ActiveRecord::Base
     :order => 'lower(name) ASC')
   end
   
+  def self.related_with_user(user_id)
+    Clan.find(:all, 
+              :conditions => "id in (SELECT clan_id 
+                                       FROM clans_groups a 
+                                       JOIN clans_groups_users b on a.id = b.clans_group_id 
+                                      WHERE b.user_id = #{user_id.to_i})", 
+              :order => 'lower(name) ASC')
+  end
+  
   
   def friends
     Clan.find_by_sql("SELECT * 

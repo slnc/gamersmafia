@@ -70,15 +70,12 @@ class Competition < ActiveRecord::Base
   # Busca competiciones relacionadas con el usuario, ya sean competiciones de
   # usuarios o de clanes. Si el usuario es admin también devolverá la competición
   # aunque no sea participante
-  def self.find_related_with_user(user_id, limit= :all)
+  def self.find_related_with_user(user_id, opts={})
+    opts = {:order => 'lower(name) ASC', :limit => :all}.merge(opts)
     user_id = user_id.to_i
-    
-    if user_id == 1 then
-      Competition.find(:all, :order => 'lower(name) ASC', :limit => limit)
-    else
-      ids = [0]
-      Clan.leaded_by(user_id).each { |c| ids<< c.id }
-      Competition.find(:all, :conditions => "id IN (SELECT competition_id FROM competitions_admins WHERE user_id = #{user_id})
+    ids = [0]
+    Clan.related_with_user(user_id).each { |c| ids<< c.id }
+    conds = "id IN (SELECT competition_id FROM competitions_admins WHERE user_id = #{user_id})
                                            or id IN (SELECT competition_id FROM competitions_supervisors WHERE user_id = #{user_id})
                                            or id IN (SELECT a.id 
                                                        FROM competitions a 
@@ -89,10 +86,9 @@ class Competition < ActiveRecord::Base
                                                        FROM competitions a 
                                                        JOIN competitions_participants b on a.id = b.competition_id 
                                                       WHERE a.competitions_participants_type_id = 2 
-                                                        AND b.participant_id IN (#{ids.join(',')}))", 
-      :order => 'lower(name) ASC',
-      :limit => limit)
-    end
+                                                        AND b.participant_id IN (#{ids.join(',')}))"
+    opts[:conditions] = (opts[:conditions] ? "#{opts[:conditions]} AND #{conds}" : conds)                                                    
+    Competition.find(:all, opts)
   end
   
   def can_recreate_matches?

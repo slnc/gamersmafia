@@ -43,11 +43,9 @@ namespace :gm do
   def generate_minicolumns_factions_activity
     days = 23
     Faction.find(:all).each do |f|
-      dbi = User.db_query("select karma from stats.portals where portal_id = (select id from portals where code = '#{f.code}') order by created_on desc limit #{days}")
-      dst_file = "#{RAILS_ROOT}/public/storage/minicolumns/factions_activity/#{f.id}.png"
-      
-      FileUtils.mkdir_p(File.dirname(dst_file)) unless File.exists?(File.dirname(dst_file))
-      `/usr/local/hosting/bin/python2.4 script/spark.py faction_activity #{dbi.collect {|dbr| dbr['karma'] }.concat([0] * (days - dbi.size)).reverse.join(',')} "#{dst_file}"`
+      dbi = User.db_query("select karma from stats.portals where portal_id = (select id from portals where code = '#{f.code}') order by created_on desc limit #{days}") 
+      data = dbi.collect {|dbr| dbr['karma'] }.concat([0] * (days - dbi.size)).reverse
+      Cms.gen_minicolumns('faction_activity', data, "#{RAILS_ROOT}/public/storage/minicolumns/factions_activity/#{f.id}.png")
     end
   end
   
@@ -61,12 +59,13 @@ namespace :gm do
       k = "#{i}_#{dbt[0].id}" # usamos i para que al cargar luego el dict se cargue luego en el orden correcto
       data[k] = {:sum => dbt[1].to_i}
       u = dbt[0]
-      dst_file = "#{RAILS_ROOT}/public/storage/minicolumns/bets_top_last30/#{u.id}.png"
+      dst_file = 
       FileUtils.mkdir_p(File.dirname(dst_file)) unless File.exists?(File.dirname(dst_file))
       netw = Bet.net_wins(u, bets, "#{days} days")
       data[k][:individual] = netw
       i += 1
-      `/usr/local/hosting/bin/python2.4 script/spark.py bet_rate #{netw.concat([0] * (bets - netw.size)).reverse.join(',')} "#{dst_file}"`
+      data = netw.concat([0] * (bets - netw.size)).reverse.join(',')
+      Cms.gen_minicolumns('bet_rate', data, "#{RAILS_ROOT}/public/storage/minicolumns/bets_top_last30/#{u.id}.png")
     end
     # TODO hacer esto para CADA portal LOL
     dst = Bet::TOP_BET_WINNERS

@@ -72,8 +72,7 @@ class ForosController < ComunidadController
     
     @navpath<<[@forum.name, "/foros/forum/#{@forum.id}"]
     @navpath<<[@topic.title, gmurl(@topic)]
-    
-    # track_item(@topic)
+    track_item(@topic)
   end
   
   

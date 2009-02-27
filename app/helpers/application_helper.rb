@@ -47,7 +47,7 @@ type: 'ls'}))
     out
   end
   
-    def pie(opts)
+  def pie(opts)
     # req: data size
     out = ''
     require 'md5'
@@ -61,10 +61,10 @@ jQuery('<img>')
 .attr('src', api.make({ 
 data: [#{opts[:data].join(',')}],
 size: '#{opts[:size]}',"
-if opts[:axis_labels]
-  opts[:axis_labels].collect! { |opt| "'#{opt}'" }
-  out << " axis_labels: [#{opts[:axis_labels].join(',')}],"
-end
+    if opts[:axis_labels]
+      opts[:axis_labels].collect! { |opt| "'#{opt}'" }
+      out << " axis_labels: [#{opts[:axis_labels].join(',')}],"
+    end
     out << "
 type: 'p'})) 
 .appendTo(\"#line#{spid}\");
@@ -75,7 +75,7 @@ type: 'p'}))
     out
   end
   
-      def horizontal_stacked_bar(opts)
+  def horizontal_stacked_bar(opts)
     # req: data size
     out = ''
     require 'md5'
@@ -89,10 +89,10 @@ jQuery('<img>')
 .attr('src', api.make({ 
 data: [#{opts[:data].join(',')}],
 size: '#{opts[:size]}',"
-if opts[:axis_labels]
-  opts[:axis_labels].collect! { |opt| "'#{opt}'" }
-  out << " axis_labels: [#{opts[:axis_labels].join(',')}],"
-end
+    if opts[:axis_labels]
+      opts[:axis_labels].collect! { |opt| "'#{opt}'" }
+      out << " axis_labels: [#{opts[:axis_labels].join(',')}],"
+    end
     out << "
 type: 'bhs'})) 
 .appendTo(\"#line#{spid}\");
@@ -901,7 +901,7 @@ END
     @oddclass = old_oddclass 
   end
   
-  def mflist(title, collection, options={}, &block)
+  def mflistOLD(title, collection, options={}, &block)
     old_oddclass = @oddclass
     collection = collection.call if collection.respond_to? :call
     oddclass_reset
@@ -919,6 +919,39 @@ END
       concat("</li>", block.binding)
     end
     concat("</ul>", block.binding)
+    concat(options[:bottom], block.binding) if options[:bottom]
+    concat("</div></div>", block.binding)
+    @oddclass = old_oddclass
+  end
+  
+  def mftable(title, collection, options={}, &block)
+    mfcontainer_list('table', title, collection, options, &block)
+  end
+  
+    
+  def mflist(title, collection, options={}, &block)
+    mfcontainer_list('list', title, collection, options, &block)
+  end
+  
+  def mfcontainer_list(mode, title, collection, options={}, &block)
+    old_oddclass = @oddclass
+    collection = collection.call if collection.respond_to? :call
+    oddclass_reset
+    grid_cls = options[:grid] ? "grid-#{options[:grid]}" : '' 
+    glast_cls = 'glast' if options[:glast]
+    blast_cls = 'blast' if options[:blast]
+    class_cls = options[:class_container] if options[:class_container]
+    return '' if collection.size == 0 && !options[:show_even_if_empty]
+    out = "<div class=\"module mf#{mode} #{grid_cls} #{glast_cls} #{blast_cls} #{class_cls} \""
+    out << " id=\"#{options[:id]}\"" if options[:id]
+    concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\">", block.binding)
+    concat(((mode == 'list') ? '<ul>' : '<table>'), block.binding)
+    collection.each do |o|
+      concat("<#{(mode == 'list') ? 'li' : 'tr'} class=\"#{oddclass} #{options[:class] if options[:class]} \">", block.binding)
+      yield o
+      concat("</#{(mode == 'list') ? 'li' : 'tr'}>", block.binding)
+    end
+    concat(((mode == 'list') ? '</ul>' : '</table>'), block.binding)
     concat(options[:bottom], block.binding) if options[:bottom]
     concat("</div></div>", block.binding)
     @oddclass = old_oddclass
@@ -1222,6 +1255,17 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
   def faction_activity_minicolumns(faction)
     # TODO esto no lo cachearan algunos browsers, usar .1.png
     "<img title=\"Karma generado durante el último mes en #{faction.code} (1 día una columna)\" class=\"minicolumns\" src=\"/storage/minicolumns/factions_activity/#{faction.id}.png?d=#{Time.now.strftime('%Y-%m-%d')}\" />"
+  end
+  
+  def minicolumns(mode, data)
+    mc_id = "minicols_{mode}#{data.join(',')}"
+    f = "#{RAILS_ROOT}/public/storage/minicolumns/#{mc_id}.png"
+    Cms.gen_minicolumns(mode, data, f) unless File.exists?(f)
+    "<img src=\"/storage/minicolumns/#{mc_id}.png\" />"
+  end
+  
+  def winner_cup(winner)
+    "<img src=\"/images/blank.gif\" class=\"competition-cup cup#{winner}\" />"
   end
   
   def faction_cohesion(faction=@faction)

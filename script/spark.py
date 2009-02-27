@@ -222,6 +222,18 @@ if __name__ == '__main__':
                 'above-color': '#06bc01',
                 'zero-color': '#aaaaaa', 
                 'below-color': '#f6001d'}
+    elif sys.argv[1] == 'winlose':
+        # Estos datos necesitan ser normalizados ya que vamos a comparar unos con otros
+        type = 'impulse'
+        
+        args = {'width': 4,
+                'height': 22, 
+                'limits': '%i,%i' % (min(data), max(data)), 
+                'upper': 0, 
+                'bgcolor': (0,0,0,0),
+                'above-color': '#06bc01',
+                'zero-color': '#000000', 
+                'below-color': '#f6001d'}
     elif sys.argv[1] == 'metric':
         # Estos datos necesitan ser normalizados ya que vamos a comparar unos con otros
         type = 'smooth'

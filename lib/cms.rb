@@ -51,6 +51,12 @@ module Cms
     @@comments_per_page = num
   end
   
+  def self.gen_minicolumns(mode, data, dst_file)
+    FileUtils.mkdir_p(File.dirname(dst_file)) unless File.exists?(File.dirname(dst_file))
+    `#{App.python} script/spark.py #{mode} #{data.join(',')} "#{dst_file}"`
+  end
+  
+  
   def self.min_hits_before_reaching_max_publishing_power(contents_type_name)
     case contents_type_name
       when 'Image':
