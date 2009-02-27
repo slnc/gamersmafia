@@ -70,6 +70,8 @@ test: &test
     
 # specific machines or profiles
 blackwings:
+  domain: gamersmafia.dev
+  asset_domain: gamersmafia.dev
   compress_skins?: false
   compress_js?: false
   enable_dbstats?: true

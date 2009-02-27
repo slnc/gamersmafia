@@ -473,7 +473,7 @@ Request information:
     end
   end
   
-  VERSIONING_EREG = /^\/(.*\.)[0-9.]+\.(css|js|gif|png|jpg)$/
+  VERSIONING_EREG = /^\/(.*\.)[a-z0-9.]+\.(css|js|gif|png|jpg)$/
   def http_404
     if App.windows? # solo lo hacemos en windows para mongrel
       res = request.request_uri.match(VERSIONING_EREG)
