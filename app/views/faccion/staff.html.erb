@@ -37,13 +37,15 @@ if @faction.underboss then %>
 
 
 <div class="grid-6">
-<%mftext('Editores', :has_submodules => true) do 
+	<% ordered = {}  %>
+<%mftext('Editores', :has_submodules => true) do
+
 editors = @faction.editors
 %>
 <%
 if editors then
 prev_ctype = nil
-ordered = {}
+
 ctypes = []
 editors.each do |content_type, user|
   ordered[content_type.name] ||= []
@@ -75,10 +77,11 @@ end #ctypes.each -%>
 <div class="grid-3">
 <%mftext('Vacantes') do 
 cat_names = (Cms::CONTENTS_WITH_CATEGORIES - %w(Topic)).collect { |cn| "'#{cn}'" }
-missing_ctypes = ContentType.find(:all, :conditions => "name IN (#{cat_names.join(',')}) AND id NOT IN (SELECT content_type_id FROM factions_editors WHERE faction_id = #{@faction.id})") %>
+missing_ctypes = ContentType.find(:all, :conditions => "name IN (#{cat_names.join(',')})") 
+%>
 <table>
 <% missing_ctypes.each do |ct|
-next unless UsersRole 
+next unless ordered[ct.name] && ordered[ct.name].size > 0
 %>
 <tr class="<%=oddclass%>"><td><%=Cms.translate_content_name(ct.name).titleize%></td></tr>
 <% end #each -%>
