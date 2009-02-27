@@ -535,6 +535,7 @@ class CacheObserver < ActiveRecord::Observer
       when 'Question':
       for p in object.get_related_portals 
         expire_fragment("/#{p.code}/home/index/questions")
+        expire_fragment("/#{p.code}/respuestas/show/latest_by_author_#{object.user_id}")
       end
       
       when 'Download':

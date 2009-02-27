@@ -1,6 +1,10 @@
 require 'app/controllers/application.rb'
 
 module Cache
+  def self.user_base(uid)
+    "/_users/#{u.id % 1000}/#{u.id}"
+  end
+  
   module Common
     def expire_fragment(fragment)
       CacheObserver.expire_fragment(fragment)

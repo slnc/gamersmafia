@@ -367,7 +367,12 @@ module ActsAsContent
         return nil if @_terms_to_add.nil? || (@_terms_to_add.kind_of?(Array) && @_terms_to_add.size == 0)
         cats = @_terms_to_add.collect { |tid| Term.find(tid) }
       else
-        cats = uniq.linked_terms("#{Inflector::pluralize(self.class.name)}Category")
+        if Cms::ROOT_TERMS_CONTENTS.include?(self.class.name)
+          cats = uniq.linked_terms('NULL')
+          puts "ROOT_TERM_CONTENTS #{cats.size}"
+        else
+          cats = uniq.linked_terms("#{Inflector::pluralize(self.class.name)}Category")
+        end
       end
       
       if cats.size > 0
@@ -447,7 +452,7 @@ module ActsAsContent
       base_opts = {:content_type_id => myctype.id, :external_id => self.id, :name => self.resolve_hid, :updated_on => self.created_on, :state => self.state}
       base_opts.merge!({:clan_id => clan_id}) if self.respond_to? :clan_id
       c = Content.create(base_opts)
-     
+      
       raise "error creating content!" if c.new_record?
       
       self.unique_content_id = c.id
