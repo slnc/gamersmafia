@@ -13,7 +13,8 @@
   </tr>
 <%
 cache("/#{@controller.portal_code}/foros/index/index") do
-controller.portal.topics_categories.each do |category|
+controller.portal.categories('Topic').each do |toplevelt|
+toplevelt.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'], :order => 'lower(name)').each do |category|
   %>
   <tr class="subheader <%= 'forum-category' if controller.portal_code and controller.portal.id > -1%>">
     <td style="width: 20px;"><%=faction_favicon(category)%></td>
@@ -30,6 +31,7 @@ controller.portal.topics_categories.each do |category|
     <td class="spacer" style="height: 10px;"></td>
   </tr>
   <% end %>
+<% end %>
 <% end %>
 </table>
 <% end -%>

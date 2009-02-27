@@ -367,7 +367,7 @@ class Term < ActiveRecord::Base
     args.push(opts)
     if opts[:joins]
       opts[:joins] << " join contents_terms on contents.id = contents_terms.content_id " unless opts[:joins].include?('contents_terms')
-      Content.count_by_sql("SELECT count(contents.id) FROM contents #{opts[:joins]} WHERE #{opts[:conditions]} GROUP BY contents.id")
+      Content.count_by_sql("SELECT count(*) FROM (SELECT contents.id FROM contents #{opts[:joins]} WHERE #{opts[:conditions]} GROUP BY contents.id) AS foo")
     else
       self.contents.count(*args)
     end

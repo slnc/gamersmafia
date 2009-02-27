@@ -39,7 +39,7 @@ end
 cache(cache_path) do
 
 if params[:category] then
-  @categories = @category.children.find(:all, :conditions => ['parent_id = ?', params[:category]], :order => 'lower(name) ASC')
+  @categories = @category.children.find(:all, :conditions => ['taxonomy = \'DownloadsCategory\' AND parent_id = ?', params[:category]], :order => 'lower(name) ASC')
 else
   @categories = controller.portal.downloads_categories
 end %>
@@ -57,7 +57,7 @@ end %>
 <% if @category then %>
 <%mftext('Archivos en esta carpeta') do %>
 <%
-@download_pages = ActionController::Pagination::Paginator.new self, @category.count(:published, :treemode => false), 30, params['page']
+@download_pages = ActionController::Pagination::Paginator.new self, @category.count(:published, :content_type => 'Download', :treemode => false), 30, params['page']
 @download_pages.current_page = @download_pages.first if params['page'].nil?
 %>
 <%= render :partial => 'shared/pager', :object => @download_pages, :locals => {:pos => 'top'} %>

@@ -60,10 +60,9 @@ end
 
 cache(cache_path) do 
 if params[:category] then
-  # @categories = @category.tutorial.find(:published, :treemode => false, :order => 'lower(name) ASC')
-  @categories = controller.portal.tutorials_categories[0].children.find(:all)
+  @categories = @category.children.find(:all, :conditions => 'taxonomy = \'TutorialsCategory\'')
 else
-  @categories = controller.portal.tutorials_categories
+  @categories = controller.portal.tutorials_categories[0].children.find(:all, :conditions => 'taxonomy = \'TutorialsCategory\'')
 end %>
 <ul class="skeletal">
 <% for category in @categories %>
