@@ -717,7 +717,7 @@ END
       when 'Clan':
       "Mis Clanes"
     else
-      ActiveSupport::Inflector::humanize(ActiveSupport::Inflector::tableize(controller.submenu))
+      Inflector::humanize(Inflector::tableize(controller.submenu))
     end
   end
   

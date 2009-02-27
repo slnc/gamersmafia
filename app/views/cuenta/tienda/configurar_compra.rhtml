@@ -6,7 +6,7 @@
   <% mftext(@sold_product.product.name) do %>
   <div style="float: right;"><%=product_img(@sold_product.product, false)%></div>
   <form method="post" action="/cuenta/mis_compras/<%=@sold_product.id%>/use" enctype="multipart/form-data">
-  <%= render :partial => ActiveSupport::Inflector::underscore(@sold_product.product.cls) %>
+  <%= render :partial => Inflector::underscore(@sold_product.product.cls) %>
   <div style="clear: left;" class="centered-link">
   <input type="submit" class="button" name="submit" value="Usar" />
   </div>

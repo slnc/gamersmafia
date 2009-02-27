@@ -1,8 +1,8 @@
 <% if category.nil? then
-  dbusers = User.db_query("SELECT a.id, count(b.id) from users a join #{ActiveSupport::Inflector::tableize(cls.name)} b on a.id = b.user_id where b.state = #{Cms::PUBLISHED} GROUP BY a.id order by count(b.id) DESC LIMIT 5")
+  dbusers = User.db_query("SELECT a.id, count(b.id) from users a join #{Inflector::tableize(cls.name)} b on a.id = b.user_id where b.state = #{Cms::PUBLISHED} GROUP BY a.id order by count(b.id) DESC LIMIT 5")
   total = cls.count(:conditions => "state = #{Cms::PUBLISHED}")
 else
-  dbusers = User.db_query("SELECT a.id, count(b.id) from users a join #{ActiveSupport::Inflector::tableize(cls.name)} b on a.id = b.user_id where b.state = #{Cms::PUBLISHED}  and #{ActiveSupport::Inflector::underscore(category.class.name)}_id in (#{category.get_all_children.join(',')}) GROUP BY a.id order by count(b.id) DESC LIMIT 5")
+  dbusers = User.db_query("SELECT a.id, count(b.id) from users a join #{Inflector::tableize(cls.name)} b on a.id = b.user_id where b.state = #{Cms::PUBLISHED}  and #{Inflector::underscore(category.class.name)}_id in (#{category.get_all_children.join(',')}) GROUP BY a.id order by count(b.id) DESC LIMIT 5")
   total = category.items_count
 end
 

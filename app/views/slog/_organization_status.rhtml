@@ -29,7 +29,7 @@ bds.each do |bd| %>
 	<td style="height: 29px; padding-left: 1px;"><%=sparkline(:size => '145x25', :data => stats_pageviews[bd.id], :max => max_pageviews)%></td>
 	<td class="centered">n/a</td>
 	<td class="centered">n/a</td>
-	<td class="centered"><a href="/slog/<%=ActiveSupport::Inflector::singularize(ActiveSupport::Inflector::tableize(cls.name))%>_bigboss?scope_id=<%=bd.id%>"><%=SlogEntry.recursive_ccount(:open, { :domain => "#{ActiveSupport::Inflector::singularize(ActiveSupport::Inflector::tableize(cls.name))}_bigboss".to_sym, :scope => bd.id})%></a></td>
+	<td class="centered"><a href="/slog/<%=Inflector::singularize(Inflector::tableize(cls.name))%>_bigboss?scope_id=<%=bd.id%>"><%=SlogEntry.recursive_ccount(:open, { :domain => "#{Inflector::singularize(Inflector::tableize(cls.name))}_bigboss".to_sym, :scope => bd.id})%></a></td>
 </tr>
 <% end -%>
 </table>

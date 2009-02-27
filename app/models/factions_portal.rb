@@ -67,7 +67,7 @@ class FactionsPortal < Portal
     cats_full = [0]
     
     for f in self.factions
-      for category in cls.find(:all, :conditions => ["root_id = (SELECT id FROM #{ActiveSupport::Inflector::tableize(cls.name)} where root_id = id and code = ?)", f.code])
+      for category in cls.find(:all, :conditions => ["root_id = (SELECT id FROM #{Inflector::tableize(cls.name)} where root_id = id and code = ?)", f.code])
         cats_full<< category.id
       end
     end
@@ -101,7 +101,7 @@ class FactionsPortal < Portal
       elsif method_id == :coverage
         FactionsPortalCoverageProxy.new(self) 
       else
-        obj = Object.const_get(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id)))
+        obj = Object.const_get(Inflector::camelize(Inflector::singularize(method_id)))
         if obj.respond_to?(:is_categorizable?)
           # ahora reemplazamos obj por la categoría de primer nivel si es facción o plataforma
           g = self.games
@@ -126,7 +126,7 @@ class FactionsPortal < Portal
     elsif /(news|downloads|topics|events|tutorials|polls|images|questions)_categories/ =~ method_id.to_s then
       # Devolvemos categorías de primer nivel de esta facción
       # it must have at least one
-      cls = Object.const_get("#{ActiveSupport::Inflector::singularize(ActiveSupport::Inflector::camelize(method_id))}")
+      cls = Object.const_get("#{Inflector::singularize(Inflector::camelize(method_id))}")
       cls.find(:all, :conditions => "parent_id is null and id = root_id AND code IN (#{toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC')
     else
       super

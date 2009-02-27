@@ -11,7 +11,7 @@ module Skins
     # transformamos las opciones en sus wrappers correspondientes
     attributes.each do |k,v|
       if options_f[k] && !options_f[k].kind_of?(v.class)
-        options_f[k] = options_f[k].to_i if %w(Percent Hue).include?(ActiveSupport::Inflector::demodulize(v.class.name))
+        options_f[k] = options_f[k].to_i if %w(Percent Hue).include?(Inflector::demodulize(v.class.name))
         options_f[k] = v.class.new(options_f[k])
       end
     end

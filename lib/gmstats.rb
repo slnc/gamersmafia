@@ -44,7 +44,7 @@ module Gmstats
         next
       end
       cat_ids = tld.get_all_children
-      k += c.items_class.count(:conditions => "state = #{Cms::PUBLISHED} AND #{ActiveSupport::Inflector.underscore(c.name)}_id in (#{cat_ids.join(',')}) AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'") * Karma::KPS_CREATE[c.items_class.name]
+      k += c.items_class.count(:conditions => "state = #{Cms::PUBLISHED} AND #{Inflector.underscore(c.name)}_id in (#{cat_ids.join(',')}) AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'") * Karma::KPS_CREATE[c.items_class.name]
     end
     k
   end

@@ -34,7 +34,7 @@
 	</select></td>
   </tr>
   <tr>
-    <td><label for="post_lastname"><%=ActiveSupport::Inflector::sexualize('Interesado', @user.sex)%> en</label></td>
+    <td><label for="post_lastname"><%=Inflector::sexualize('Interesado', @user.sex)%> en</label></td>
     <td><select name="interested_in">
     	<option <%=@user.pref_interested_in == 'men' ? 'selected="selected"' : ''%> value="0">Hombres</option>
 		<option <%=@user.pref_interested_in == 'women' ? 'selected="selected"' : ''%> value="1">Mujeres</option>

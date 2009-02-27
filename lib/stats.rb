@@ -333,7 +333,7 @@ group by date_trunc('day', created_on) order by s asc
                                          WHERE #{from_where_sql}")[0]['count'].to_f
       
       out[:conversions] = Dbs.db_query("SELECT count(id) 
-                                          FROM #{opts[:content_type] ? ActiveSupport::Inflector::tableize(opts[:content_type]) : 'contents'}
+                                          FROM #{opts[:content_type] ? Inflector::tableize(opts[:content_type]) : 'contents'}
                                          WHERE #{date_constraints(opts)} 
                                            AND state = #{Cms::PUBLISHED} 
                                                #{user_id_constraint(opts)}")[0]['count'].to_f

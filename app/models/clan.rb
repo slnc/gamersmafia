@@ -169,7 +169,7 @@ class Clan < ActiveRecord::Base
   private
   def create_contents_categories
     Cms::CLANS_CONTENTS.each do |ccn|
-      Object.const_get("#{ActiveSupport::Inflector::pluralize(ccn)}Category").create({:name => self.name, :code => self.tag, :clan_id => self.id})
+      Object.const_get("#{Inflector::pluralize(ccn)}Category").create({:name => self.name, :code => self.tag, :clan_id => self.id})
     end
     tcp = TopicsCategory.find_by_clan_id(self.id)
     tcp.children.create({:name => 'General', :code => 'general', :clan_id => self.id})

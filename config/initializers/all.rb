@@ -42,7 +42,7 @@ ActiveRecord::Base.partial_updates = false if ActiveRecord::Base.respond_to?(:pa
 
 raise "libtidy not found" unless File.exists?(App.tidy_path)
 
-module ActiveSupport::Inflector
+module Inflector
   def self.sexualize(word, sex)
     if sex == User::FEMALE
       word.gsub(/(o)$/, 'a')

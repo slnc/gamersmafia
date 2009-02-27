@@ -20,27 +20,27 @@ module ActsAsContentBrowser
   
   module InstanceMethods
     define_method 'content_name' do
-      @_content_name ||= Cms.content_from_controller(ActiveSupport::Inflector::demodulize(self.class.name).gsub('Controller', ''))
+      @_content_name ||= Cms.content_from_controller(Inflector::demodulize(self.class.name).gsub('Controller', ''))
     end
     
     define_method 'index' do
       if @portal.id != -1 && @portal.kind_of?(FactionsPortal)
-        @title = "#{ActiveSupport::Inflector::demodulize(self.class.name).gsub('Controller', '')} de #{@portal.name}"
+        @title = "#{Inflector::demodulize(self.class.name).gsub('Controller', '')} de #{@portal.name}"
       end
       
     end
     
     define_method 'new' do
       @title = "Crear #{Cms::CLASS_NAMES[content_name].downcase}"
-      cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
-      instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), cls.new(params[ActiveSupport::Inflector::underscore(content_name)]))
+      cls = Inflector::constantize(Inflector::camelize(content_name))
+      instance_variable_set('@' << Inflector::underscore(content_name), cls.new(params[Inflector::underscore(content_name)]))
     end
     
     define_method 'show' do
       _before_show if respond_to?(:_before_show)
       # TODO temp hasta que google reindexe bien
-      cls = Object.const_get(content_name) # ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
-      #cls = portal.send ActiveSupport::Inflector::underscore(content_name).to_sym # ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
+      cls = Object.const_get(content_name) # Inflector::constantize(Inflector::camelize(content_name))
+      #cls = portal.send Inflector::underscore(content_name).to_sym # Inflector::constantize(Inflector::camelize(content_name))
       obj = cls.find(params[:id])
       raise ActiveRecord::RecordNotFound unless obj.is_public? or (user_is_authed and Cms::user_can_edit_content?(@user, obj))
       # puts "http://#{request.host}#{request.request_uri} #{obj.unique_content.url}"
@@ -52,14 +52,14 @@ module ActsAsContentBrowser
       @title = obj.resolve_hid
       # TODO si tiene categoría se la añadimos al navpath
       track_item(obj)
-      instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
+      instance_variable_set('@' << Inflector::underscore(content_name), obj)
       _after_show if respond_to?(:_after_show)
     end
     
     define_method 'create' do
       _before_create if respond_to?(:_before_create)
-      cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
-      obj = cls.new(params[ActiveSupport::Inflector::underscore(content_name)])
+      cls = Inflector::constantize(Inflector::camelize(content_name))
+      obj = cls.new(params[Inflector::underscore(content_name)])
       
       obj.user_id = @user.id
       if portal.respond_to?(:clan_id) && portal.clan_id
@@ -72,7 +72,7 @@ module ActsAsContentBrowser
         else Cms::PENDING
         end
       end
-      instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
+      instance_variable_set('@' << Inflector::underscore(content_name), obj)
       if Cms.user_can_create_content(@user)
         if obj.save
           obj.process_wysiwyg_fields # TODO lo estamos haciendo en _dos sitios_ ???
@@ -94,13 +94,13 @@ module ActsAsContentBrowser
     end
     
     define_method 'edit' do
-      cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
+      cls = Inflector::constantize(Inflector::camelize(content_name))
       obj = cls.find(params[:id])
       # require_user_can_edit(obj)
       raise ContentLocked if obj.is_locked_for_user?(@user)
       @title = "Editando #{obj.resolve_hid}"
       navpath2<< [obj.resolve_hid, request.request_uri.gsub('edit', 'show')]
-      instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
+      instance_variable_set('@' << Inflector::underscore(content_name), obj)
       if Cms::user_can_edit_content?(@user, obj) then
         obj.lock(@user)
         render :action => 'edit'
@@ -110,7 +110,7 @@ module ActsAsContentBrowser
     end
     
     define_method 'deny' do
-      cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
+      cls = Inflector::constantize(Inflector::camelize(content_name))
       obj = cls.find(:first, :conditions => ['id = ? and state = ?', params[:id], Cms::PENDING])
       require_user_can_edit(obj)
       obj.deny(params[:reason], @user)
@@ -119,7 +119,7 @@ module ActsAsContentBrowser
     end
     
     define_method 'destroy' do
-      cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
+      cls = Inflector::constantize(Inflector::camelize(content_name))
       obj = cls.find(params[:id])
       require_user_can_edit(obj) # TODO duplicado
       Cms::modify_content_state(obj, @user, Cms::DELETED, "Preguntar a #{@user.login}")
@@ -129,16 +129,16 @@ module ActsAsContentBrowser
     
     define_method 'update' do
       _before_update if respond_to?(:_before_update)
-      cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
+      cls = Inflector::constantize(Inflector::camelize(content_name))
       obj = cls.find(params[:id])
       obj.cur_editor = @user
       require_user_can_edit(obj)
       raise ContentLocked if obj.is_locked_for_user?(@user)
       
       obj.state = Cms::PENDING if obj.state == Cms::DRAFT and not params[:draft].to_s == '1'
-      params[ActiveSupport::Inflector::underscore(content_name)].delete(:approved_by_user_id) unless obj.respond_to? :approved_by_user_id
-      instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
-      if obj.update_attributes(params[ActiveSupport::Inflector::underscore(content_name)])
+      params[Inflector::underscore(content_name)].delete(:approved_by_user_id) unless obj.respond_to? :approved_by_user_id
+      instance_variable_set('@' << Inflector::underscore(content_name), obj)
+      if obj.update_attributes(params[Inflector::underscore(content_name)])
         # obj.process_wysiwyg_fields
         flash[:notice] = "#{Cms::CLASS_NAMES[cls.name]} actualizado correctamente." unless flash[:error]
         
@@ -160,7 +160,7 @@ module ActsAsContentBrowser
     end
     
     define_method 'close' do
-      cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
+      cls = Inflector::constantize(Inflector::camelize(content_name))
       obj = cls.find(params[:id])
       require_user_can_edit(obj)
       
@@ -171,7 +171,7 @@ module ActsAsContentBrowser
     end
     
     define_method 'reopen' do
-      cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
+      cls = Inflector::constantize(Inflector::camelize(content_name))
       obj = cls.find(params[:id])
       require_user_can_edit(obj)
       

@@ -89,13 +89,13 @@ class Cuenta::DistritoController < ApplicationController
     @title = "Editando categoría #{params[:type_name]}: #{@category.name}"
     @navpath = [['Cuenta', '/cuenta'], ['Distrito', '/cuenta/distrito'], ['Categorias', '/cuenta/distrito/categorias'], [params[:type_name], "/cuenta/distrito/categorias/#{params[:type_name]}"], [@category.name, "/cuenta/distrito/categorias/#{params[:type_name]}/edit/#{@category.id}"]]
     
-    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @category.id})
+    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @category.id})
     raise AccessDenied unless Cms::user_can_edit_content?(@user, dummy)
   end
   
   def categorias_destroy
     @category = self.get_cls(params[:type_name]).find(params[:id])
-    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @category.id})
+    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @category.id})
     raise AccessDenied unless Cms::user_can_edit_content?(@user, dummy)
   end
   
@@ -104,14 +104,14 @@ class Cuenta::DistritoController < ApplicationController
     @category = self.get_cls(params[:type_name]).new
     @category = @tld.children.new
     @category.root_id = @tld.id
-    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @tld.id})
+    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @tld.id})
     raise AccessDenied unless Cms::user_can_edit_content?(@user, dummy)
   end
   
   def categorias_update
     @category = self.get_cls(params[:type_name]).find(params[:id])
     @tld = @cur_district.top_level_category(Object.const_get(params[:type_name]))
-    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @tld.id})
+    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @tld.id})
     raise AccessDenied unless Cms::user_can_edit_content?(@user, dummy)
     
     if params[:category][:parent_id].empty? then
@@ -132,7 +132,7 @@ class Cuenta::DistritoController < ApplicationController
     @tld = @cur_district.top_level_category(Object.const_get(params[:type_name]))
     @category = self.get_cls(params[:type_name]).new(params[:category])
     @category.root_id = @tld.id
-    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @tld.id})
+    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @tld.id})
     raise AccessDenied unless Cms::user_can_edit_content?(@user, dummy)
     
     if params[:category][:parent_id].empty? then
@@ -150,7 +150,7 @@ class Cuenta::DistritoController < ApplicationController
     @tld = @cur_district.top_level_category(Object.const_get(params[:type_name]))
     # TODO validation
     @category = self.get_cls(params[:type_name]).find(params[:id])
-    dummy = @category.class.items_class.new({"#{ActiveSupport::Inflector::underscore(@category.class.name)}_id" => @tld.id})
+    dummy = @category.class.items_class.new({"#{Inflector::underscore(@category.class.name)}_id" => @tld.id})
     raise AccessDenied unless Cms::user_can_edit_content?(@user, dummy)
     
     # TODO

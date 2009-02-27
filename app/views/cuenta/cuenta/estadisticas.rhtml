@@ -13,16 +13,16 @@
     <% contents_stats = @user.contents_stats
     # buscamos el máximo
     for key in contents_stats.sort
-      points = Karma::KPS_CREATE[ActiveSupport::Inflector::singularize(Cms::translate_content_name(key[0], 0))]
+      points = Karma::KPS_CREATE[Inflector::singularize(Cms::translate_content_name(key[0], 0))]
       if points.nil? then
-        raise "#{key[0]} #{ActiveSupport::Inflector::singularize(Cms::translate_content_name(key[0], 0))}"
+        raise "#{key[0]} #{Inflector::singularize(Cms::translate_content_name(key[0], 0))}"
       end
     %>
         <tr class="<%=oddclass%>">
             <td style="width: 120px;"><%=key[0]%></td>
             <td><%=draw_pcent_bar(key[1].to_f * points / ((@user.karma_points > 0) ? @user.karma_points : 1))%><br />
               <% if nil %>
-              <%=key[1]%> * <%=Karma::KPS_CREATE[ActiveSupport::Inflector::singularize(Cms::translate_content_name(key[0], 0))]%> = <%=key[1] * Karma::KPS_CREATE[ActiveSupport::Inflector::singularize(Cms::translate_content_name(key[0], 0))]%>
+              <%=key[1]%> * <%=Karma::KPS_CREATE[Inflector::singularize(Cms::translate_content_name(key[0], 0))]%> = <%=key[1] * Karma::KPS_CREATE[Inflector::singularize(Cms::translate_content_name(key[0], 0))]%>
             <% end -%></td>
         </tr>
     <% end -%>
