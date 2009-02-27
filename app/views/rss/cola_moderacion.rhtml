@@ -30,9 +30,8 @@
 %>
 <% 
 for @item in collection: 
-  if not Cms::user_can_edit_content?(@user, @item) then
-    next
-  end
+  next unless Cms::user_can_edit_content?(@user, @item)
+  next if Cms::CONTENTS_WITH_CATEGORIES.include?(@item.class.name) && @item.main_category.nil?
 %>
   <item>
     <title><%= Cms::CONTENTS_WITH_CATEGORIES.include?(@item.class.name) ? @item.main_category.code.to_s.gsub(/&/, '&amp;') : ''%> | <%=@item.class.name%> | <%=@item.resolve_hid.to_s.gsub(/&/, '&amp;')%></title> 

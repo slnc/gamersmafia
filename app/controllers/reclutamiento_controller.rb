@@ -25,6 +25,7 @@ class ReclutamientoController < ApplicationController
       
       # sql << "game_id = #{params[:game_id].to_i} AND "
       sql << " AND #{levels_sql}" if levels_sql
+      
       @results = RecruitmentAd.find(:all, :conditions => sql, :order => 'created_on DESC', :limit => 50)
     end
   end
