@@ -3,27 +3,28 @@ namespace :gm do
   task :daily => :environment do
     require 'app/controllers/application'
     
-    Rake::Task['log:clear'].invoke
-    clear_anonymous_users
-    clear_faith_points_of_referers_and_resurrectors
-    pay_faith_prices
-    send_happy_birthday
-    switch_inactive_users_to_zombies
-    clear_file_caches
-    send_reports_to_publisher_if_on_due_date
-    new_accounts_cleanup
-    check_ladder_matches
-    update_portals_hits_stats
+    #Rake::Task['log:clear'].invoke
+    #clear_anonymous_users
+    #clear_faith_points_of_referers_and_resurrectors
+    #pay_faith_prices
+    #send_happy_birthday
+    #switch_inactive_users_to_zombies
+    #clear_file_caches
+    #send_reports_to_publisher_if_on_due_date
+    #new_accounts_cleanup
+    #check_ladder_matches
+    #update_portals_hits_stats
     update_users_karma_stats
-    provocar_golpes_de_estado
-    forget_old_tracker_items
-    forget_old_autologin_keys
-    forget_old_bj_jobs
-    forget_old_treated_visitors
-    check_faction_leaders
-    generate_daily_ads_stats
-    kill_zombified_staff
-    GmSys.job('Notification.check_global_notifications')
+    update_users_daily_stats
+    #provocar_golpes_de_estado
+    #forget_old_tracker_items
+    #forget_old_autologin_keys
+    #forget_old_bj_jobs
+    #forget_old_treated_visitors
+    #check_faction_leaders
+    #generate_daily_ads_stats
+    #kill_zombified_staff
+    #GmSys.job('Notification.check_global_notifications')
   end
   
   def kill_zombified_staff
@@ -156,6 +157,63 @@ namespace :gm do
       end
       cur_day = cur_day.advance(:days => 1)
     end
+    # TODO TESTS!!!!
+  end
+  
+    def update_users_daily_stats
+      # AFTER update_users_karma_stats
+    max_day = 1.day.ago
+    start_day = User.db_query("SELECT created_on 
+                                 FROM stats.users_daily_stats 
+                             ORDER BY created_on DESC LIMIT 1")
+    if start_day.size > 0
+      start_day = start_day[0]['created_on'].to_time.advance(:days => 1)
+      if start_day < max_day
+        cur_day = start_day
+      else
+        cur_day = max_day
+      end
+    else # no hay records, cogemos el m:as viejo
+      cur_day = User.db_query("SELECT created_on from contents order by created_on asc limit 1")[0]['created_on'].to_time
+    end
+    
+    cur_day = 1.day.ago.beginning_of_day if RAILS_ENV == 'test'
+    
+    while cur_day <= max_day
+      # puts cur_day
+      # iteramos a través de todos los users que han creado contenidos o comentarios hoy
+        pointz = {}
+        
+      User.find(:all, :conditions => "id IN (select user_id 
+                                               from contents 
+                                              where state = #{Cms::PUBLISHED} 
+                                                AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00' UNION
+                                                select user_id 
+                                               from comments 
+                                              where deleted = 'f' AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00')").each do |u|
+        # TODO here
+        
+        Karma.karma_points_of_user_at_date(u, cur_day).each do |portal_id, points|
+          pointz[u.id] ||= {:karma => 0, :faith => 0}
+          pointz[u.id][:karma] += points
+          # puts "#{u.login} #{portal_id} #{points}"
+         # User.db_query("INSERT INTO stats.users_karma_daily_by_portal(user_id, portal_id, karma, created_on) VALUES(#{u.id}, #{portal_id}, #{points}, '#{cur_day.strftime('%Y-%m-%d')}')")      
+        end
+      end
+      
+      # ahora calculamos stats de fe
+      faithres = Faith.faith_points_of_users_at_date_range(cur_day.beginning_of_day, cur_day.end_of_day)
+      faithres.keys.each do |uid|
+        pointz[uid] ||= {:karma => 0, :faith => 0}
+        pointz[uid][:faith] += faithres[uid]
+      end
+      pointz.keys.each do |uid|
+        v = pointz[uid]
+        User.db_query("INSERT INTO stats.users_daily_stats(user_id, karma, faith, created_on) VALUES(#{uid}, #{v[:karma]}, #{v[:faith]}, '#{cur_day.strftime('%Y-%m-%d')}')")   
+      end
+      
+      cur_day = cur_day.advance(:days => 1)
+    end    
     # TODO TESTS!!!!
   end
   

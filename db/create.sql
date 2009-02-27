@@ -12120,7 +12120,10 @@ CREATE TABLE users (
     emblems_mask character varying,
     random_id double precision DEFAULT random(),
     is_staff boolean DEFAULT false NOT NULL,
-    pending_slog integer DEFAULT 0 NOT NULL
+    pending_slog integer DEFAULT 0 NOT NULL,
+    ranking_karma_pos integer,
+    ranking_faith_pos integer,
+    ranking_popularity_pos integer
 );
 
 
@@ -12682,6 +12685,37 @@ CREATE SEQUENCE portals_stats_id_seq
 --
 
 ALTER SEQUENCE portals_stats_id_seq OWNED BY portals.id;
+
+
+--
+-- Name: users_daily_stats; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE users_daily_stats (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on date NOT NULL,
+    karma integer,
+    faith integer
+);
+
+
+--
+-- Name: users_daily_stats_id_seq; Type: SEQUENCE; Schema: stats; Owner: -
+--
+
+CREATE SEQUENCE users_daily_stats_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: users_daily_stats_id_seq; Type: SEQUENCE OWNED BY; Schema: stats; Owner: -
+--
+
+ALTER SEQUENCE users_daily_stats_id_seq OWNED BY users_daily_stats.id;
 
 
 --
@@ -13720,6 +13754,13 @@ ALTER TABLE pageviews ALTER COLUMN id SET DEFAULT nextval('pageviews_id_seq'::re
 --
 
 ALTER TABLE portals ALTER COLUMN id SET DEFAULT nextval('portals_stats_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: stats; Owner: -
+--
+
+ALTER TABLE users_daily_stats ALTER COLUMN id SET DEFAULT nextval('users_daily_stats_id_seq'::regclass);
 
 
 --
@@ -15471,6 +15512,14 @@ ALTER TABLE ONLY pageviews
 
 ALTER TABLE ONLY portals
     ADD CONSTRAINT portals_stats_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users_daily_stats_pkey; Type: CONSTRAINT; Schema: stats; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY users_daily_stats
+    ADD CONSTRAINT users_daily_stats_pkey PRIMARY KEY (id);
 
 
 --
@@ -19214,6 +19263,14 @@ ALTER TABLE ONLY bets_results
 
 ALTER TABLE ONLY portals
     ADD CONSTRAINT portals_stats_portal_id_fkey FOREIGN KEY (portal_id) REFERENCES public.portals(id) MATCH FULL;
+
+
+--
+-- Name: users_daily_stats_user_id_fkey; Type: FK CONSTRAINT; Schema: stats; Owner: -
+--
+
+ALTER TABLE ONLY users_daily_stats
+    ADD CONSTRAINT users_daily_stats_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) MATCH FULL;
 
 
 --

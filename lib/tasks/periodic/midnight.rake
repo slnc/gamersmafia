@@ -15,6 +15,8 @@ namespace :gm do
     generate_minicolumns_factions_activity
     update_factions_cohesion
     reset_remaining_rating_slots
+    Karma.update_ranking
+    Faith.update_ranking
   end
   
   def reset_remaining_rating_slots

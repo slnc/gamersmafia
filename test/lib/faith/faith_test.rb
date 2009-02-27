@@ -115,4 +115,12 @@ class FaithTest < Test::Unit::TestCase
     assert_equal 50, Faith::pc_done_for_next_level(Faith::POINTS_PER_LEVEL[1] / 2)
     assert_equal 99, Faith::pc_done_for_next_level(Faith::POINTS_PER_LEVEL[1] -1)
   end
+  
+    def test_update_ranking
+    User.db_query("UPDATE users SET cache_faith_points = id")
+    Faith.update_ranking
+    assert_equal 1, User.find(1).ranking_faith_pos
+    assert_equal 2, User.find(2).ranking_faith_pos
+    assert_equal 3, User.find(3).ranking_faith_pos
+  end
 end

@@ -33,4 +33,12 @@ class KarmaTest < Test::Unit::TestCase
     assert_equal kp_initial + 2, u_a.karma_points
     assert_equal kp_initial + 2, u_b.karma_points
   end
+  
+  def test_update_ranking
+    User.db_query("UPDATE users SET cache_karma_points = id")
+    Karma.update_ranking
+    assert_equal 1, User.find(1).ranking_karma_pos
+    assert_equal 2, User.find(2).ranking_karma_pos
+    assert_equal 3, User.find(3).ranking_karma_pos
+  end
 end
