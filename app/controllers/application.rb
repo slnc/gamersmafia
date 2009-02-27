@@ -242,6 +242,8 @@ Request information:
         href = "foros/forum"
         when 'preguntas':
         href = "respuestas/categoria"
+        when 'anuncios-de-reclutamiento':
+        href = 'reclutamiento'
       end
       dom = get_domain_of_root_term(object.root)
       "http://#{dom}/#{href}/#{object.id}"
@@ -258,6 +260,8 @@ Request information:
             href = "foros/forum"
             when 'preguntas':
             href = "respuestas/categoria"
+            when 'anuncios-de-reclutamiento':
+            href = 'reclutamiento'
           end
           dom = get_domain_of_root_term(object.root)
           "http://#{dom}/#{href}/#{object.id}"
@@ -330,6 +334,8 @@ Request information:
         out = "/foros/topic/#{object.id}"
       elsif href == 'preguntas' then
         out = "/respuestas/show/#{object.id}"
+      elsif href == 'anuncios-de-reclutamiento' then
+        out = "/reclutamiento/anuncio/#{object.id}"
       elsif object.class.name == 'Blogentry' then
         out = "/blogs/#{object.user.login}/#{object.id}"
       elsif object.class.name == 'Event'

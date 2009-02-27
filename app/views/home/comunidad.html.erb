@@ -35,13 +35,13 @@ end
 	<div class="grid-6">
 	<% cache('/home/comunidad/recruitment_ads_clans') do %>
 	<% mflist("Buscan jugadores", Proc.new { RecruitmentAd.find(:all, :conditions => 'clan_id IS NOT NULL AND deleted = \'f\'', :order => 'created_on desc', :limit => 4) }, :class => 'lh16', :grid => 3) do |ra| %>
-		<%=faction_favicon(ra.game)%> <a href="/reclutamiento/anuncio/<%=ra.id%>"><%=ra.title%></a>
+		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title%></a>
 	<% end # mflist-%>
 	<% end # cache-%>
 	
 	<% cache('/home/comunidad/recruitment_ads_users') do %>
 	<% mflist("Buscan clan", Proc.new { RecruitmentAd.find(:all, :conditions => 'clan_id IS NULL AND deleted = \'f\'', :order => 'created_on desc', :limit => 4) }, :class => 'lh16', :grid => 3, :glast => true) do |ra| %>
-		<%=faction_favicon(ra.game)%> <a href="/reclutamiento/anuncio/<%=ra.id%>"><%=ra.title%></a>
+		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title%></a>
 	<% end # mflist-%>
 	<% end # cache -%>
 	

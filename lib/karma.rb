@@ -16,7 +16,8 @@ module Karma
                 'Review'=> 200,
                 'Funthing'=> 20,
                 'Blogentry'=> 20,
-                'Question'=> 5,
+                'Question'=> 20,
+                'RecruitmentAd'=> 20,
                 'Comment'=> 5,
   }
   

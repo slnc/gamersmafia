@@ -38,4 +38,39 @@ class DownloadTest < Test::Unit::TestCase
     assert File.exists?(cookiedir)
     assert File.exists?("#{cookiedir}/#{File.basename(@d.file)}")
   end
+  
+  def test_check_invalid_downloads_with_valid_download
+    d1 = Download.find(1)
+    d1.file = fixture_file_upload('/files/images.zip', 'application/zip')
+    assert d1.save
+    slogentries = SlogEntry.count
+    User.db_query("DELETE FROM downloads WHERE id <> 1")
+    Download.check_invalid_downloads
+    d1.reload
+    assert d1.file.index('images.zip')
+    assert_equal slogentries, SlogEntry.count
+  end
+  
+  def test_check_invalid_downloads_with_valid_download_with_mirrors
+    d1 = Download.find(1)
+    assert_equal 1, d1.download_mirrors.size
+    slogentries = SlogEntry.count
+    User.db_query("DELETE FROM downloads WHERE id <> 1")
+    Download.check_invalid_downloads
+    d1.reload
+    assert_equal slogentries, SlogEntry.count
+  end
+  
+  def test_check_invalid_downloads_with_invalid_download_without_mirrors
+    d1 = Download.find(1)
+    d1.download_mirrors.clear
+    assert d1.update_attributes({:file => nil})
+    
+    assert_nil d1.file
+    slogentries = SlogEntry.count
+    User.db_query("DELETE FROM downloads WHERE id <> 1")
+    Download.check_invalid_downloads
+    d1.reload
+    assert_equal slogentries + 1, SlogEntry.count
+  end
 end

@@ -149,7 +149,7 @@ module ActsAsContent
     def process_wysiwyg_fields
       attrs = {}
       
-      if not %w(topic blogentry).include?(self.class.name.downcase) then
+      if !Cms::DONT_PARSE_IMAGES_OF_CONTENTS.include?(self.class.name) then
         for d in Cms::WYSIWYG_ATTRIBUTES[self.class.name]
           attrs[d] = Cms::parse_images(self.attributes[d], "#{self.class.name.downcase}/#{self.id % 1000}/#{self.id}")
         end
@@ -237,7 +237,7 @@ module ActsAsContent
     def do_before_save      
       attrs = {}
       # TODO llamar específicamente a esta función para actualizar las imágenes
-      if not %w(Topic Question Blogentry).include?(self.class.name) and self.record_timestamps then
+      if !Cms::DONT_PARSE_IMAGES_OF_CONTENTS.include?(self.class.name) and self.record_timestamps then
         tmpid = id
         tmpid = 0 if self.id.nil?
         for d in Cms::WYSIWYG_ATTRIBUTES[self.class.name]
@@ -464,7 +464,7 @@ module ActsAsContent
       User.db_query("UPDATE #{Inflector::tableize(self.class.name)} SET unique_content_id = #{c.id} WHERE id = #{self.id}")
       
       # añadimos karma si es un contenido que no necesita ser moderado
-      add_karma if %w(topic blogentry question).include?(self.class.name.downcase)
+      add_karma if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(self.class.name)
     end
     
     def delete_unique_content
@@ -550,13 +550,21 @@ module ActsAsContent
         # cogemos el numero de votos como el valor del 1er cuartil ordenando la lista de contenidos por votos asc
         # calculamos "m"
         if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-          cat_ids = self.main_category.root.all_children_ids
-          q = "AND #{Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})"
+          total = self.main_category.root.count(:content_type => self.class.name)
+          # TODO esto debería ir en term
+          contents_ids = User.db_query("SELECT content_id 
+                                          FROM contents 
+                                          JOIN contents_terms ON contents.id = contents_terms.content_id 
+                                         WHERE contents.state = #{Cms::PUBLISHED} 
+                                           AND term_id IN (#{self.main_category.root.all_children_ids(:content_type => self.class.name).join(',')})").collect { |dbr| dbr['content_id'] }
+          q = "AND unique_content_id IN (#{contents_ids.join(',')})"
+          #cat_ids = self.main_category.root.all_children_ids
+          #q = "AND #{Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})"
         else
           q = ''
+          total = self.class.count(:conditions => "state = #{Cms::PUBLISHED} #{q}")
         end
         
-        total = self.class.count(:conditions => "state = #{Cms::PUBLISHED} #{q}")
         dbm = User.db_query("SELECT cache_rated_times 
                          FROM #{Inflector::tableize(self.class.name)}
                         WHERE state = #{Cms::PUBLISHED} #{q}
@@ -590,12 +598,20 @@ module ActsAsContent
       # calcula el voto medio para un contenido dependiendo de si tiene categoría o no
       # asumo que cada contenido y cada facción tiene su propia media
       if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-        cat_ids = self.main_category.root.all_children_ids
+        # cat_ids = self.main_category.root.all_children_ids
+        # TODO esto deberia ir en Term
+        
+        contents_ids = User.db_query("SELECT content_id 
+                                          FROM contents 
+                                          JOIN contents_terms ON contents.id = contents_terms.content_id 
+                                         WHERE contents.state = #{Cms::PUBLISHED} 
+                                           AND term_id IN (#{self.main_category.root.all_children_ids(:content_type => self.class.name).join(',')})").collect { |dbr| dbr['content_id'] }
+        
         mean = User.db_query("SELECT avg(cache_rating) 
                                 FROM #{Inflector::tableize(self.class.name)} 
                                WHERE cache_rating is not null 
                                  AND cache_rated_times >= #{m} 
-                                 AND #{Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})")[0]['avg'].to_f
+                                 AND unique_content_id IN (#{contents_ids.join(',')})")[0]['avg'].to_f
       else
         mean = User.db_query("SELECT avg(cache_rating) 
                                 FROM #{Inflector::tableize(self.class.name)} 
@@ -683,7 +699,7 @@ module ActsAsContent
     def prepare_destruction
       self.unique_content.destroy
       
-      if %w(Topic Question Blogentry).include?(self.class.name.downcase) or (self.state == Cms::PUBLISHED) then # el elemento estaba publicado o era un tópic, quitamos karma
+      if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(self.class.name) or (self.state == Cms::PUBLISHED) then # el elemento estaba publicado o era un tópic, quitamos karma
         del_karma
       end
     end
@@ -707,7 +723,7 @@ module ActsAsContent
     # Devuelve los portales en los que este contenido se muestra.
     # TODO esto no es correcto
     def get_related_portals
-      if self.respond_to?(:clan_id) && self.clan_id
+      if self.respond_to?(:clan_id) && self.clan_id && self.class.name != 'RecruitmentAd'
         [ClansPortal.find_by_clan_id(self.clan_id)]
       else
         portals = [GmPortal.new, ArenaPortal.new, BazarPortal.new]

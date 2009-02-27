@@ -11821,8 +11821,19 @@ CREATE TABLE recruitment_ads (
     game_id integer NOT NULL,
     levels character varying,
     country_id integer,
-    message character varying,
-    deleted boolean DEFAULT false NOT NULL
+    main text,
+    deleted boolean DEFAULT false NOT NULL,
+    title character varying NOT NULL,
+    hits_anonymous integer DEFAULT 0,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    hits_registered integer DEFAULT 0,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
 );
 
 
@@ -19286,6 +19297,14 @@ ALTER TABLE ONLY recruitment_ads
 
 ALTER TABLE ONLY recruitment_ads
     ADD CONSTRAINT recruitment_ads_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id);
+
+
+--
+-- Name: recruitment_ads_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY recruitment_ads
+    ADD CONSTRAINT recruitment_ads_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id) MATCH FULL;
 
 
 --

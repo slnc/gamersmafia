@@ -46,3 +46,6 @@ demos:
 questions:
   id: 24
   name: Question
+recruitment_ads:
+  id: 25
+  name: RecruitmentAd

@@ -9,6 +9,7 @@ namespace :gm do
     send_weekly_page_render_report_and_truncate
     Emblems.give_emblems
     Reports.send_mrachmed_dominical
+    Download.check_invalid_downloads
   end
   
   def pay_organizations_wages

@@ -1,3 +1,6 @@
+<% content_main do %>
+    <%mftext('Editar anuncio de reclutamiento') do %>
+
 <script type="text/javascript">
 	function update_reclutamiento_nuevo(mode) {
 		if (mode == 'users') {
@@ -9,9 +12,11 @@
 	}
 </script>
 
-<form method="post" action="/reclutamiento/anuncio_update">
+<form method="post" action="/reclutamiento/update">
 	<input type="hidden" name="id" value="<%=@recruitment_ad.id%>" />
 <%= render :partial => 'form' %>
 
 <input type="submit" value="Guardar" />
 </form>
+<% end -%>
+<% end -%>

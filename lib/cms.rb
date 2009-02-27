@@ -37,10 +37,165 @@ module Cms
   IMGWG2 = 88
   IMGWG1 = 33
   
-  ROOT_TERMS_CONTENTS = %w(News Bet Poll Event Coverage Interview Column Review Demo)
-  CATEGORIES_TERMS_CONTENTS = %w(Image Download Topic Tutorial Question)
-  
   IMAGE_FORMAT = /\.(jpg|gif|png|jpeg|bmp)$/i
+  
+  ROOT_TERMS_CONTENTS = %w(News Bet Poll Event Coverage Interview Column Review Demo RecruitmentAd)
+  CATEGORIES_TERMS_CONTENTS = %w(Image Download Topic Tutorial Question)
+  NO_MODERATION_NEEDED_CONTENTS = %w(Topic Blogentry Question RecruitmentAd)
+  DONT_PARSE_IMAGES_OF_CONTENTS = %w(Topic Blogentry RecruitmentAd)
+  AUTHOR_CAN_EDIT_CONTENTS = %w(Blogentry RecruitmentAd)
+  
+  CONTENTS_WITH_CATEGORIES = %w(Column Download Demo Topic Image Interview News Tutorial Poll Bet Review Event Question RecruitmentAd)
+  BAZAR_DISTRICTS_VALID = %w(Column Interview Tutorial News Topic Image Poll Bet Review Event Question Download)
+  BAZAR_DISTRICTS_REQUIRED = %w(News Topic Poll Question)
+  CLANS_CONTENTS = %w(News Topic Download Image Event Poll)
+  
+  SAFE_PUBLICATION_THRESHOLDS = {'News' => 86400 * 14,
+                                'Image' => 86400 * 14,
+                                'Event' => 86400 * 14,
+                                'Coverage' => 86400 * 14,
+                                'Download' => 86400 * 14,
+                                'Demo' => 86400 * 14,
+                                'Question' => 86400 * 14,
+                                'RecruitmentAd' => 86400 * 14,
+                                'Tutorial' => 86400 * 30,
+                                'Column' => 86400 * 30,
+                                'Interview' => 86400 * 60,
+                                'Poll' => 86400 * 14,
+                                'Bet' => 86400 * 7,
+                                'Review' => 86400 * 30 }
+  
+  WYSIWYG_ATTRIBUTES = {'News' => ['description', 'main'],
+                        'Image' => ['description'],
+                        'Event' => ['description'],
+                        'Coverage' => ['description', 'main'],
+                        'Download' => ['description'],
+                        'Demo' => ['description'],
+                        'Tutorial' => ['description', 'main'],
+                        'Poll' => [],
+                        'Question' => ['description'],
+                        'Bet' => ['description'],
+                        'Funthing' => ['description'],
+                        'Interview' => ['description', 'main'],
+                        'Column' => ['description', 'main'],
+                        'Review' => ['description', 'main'],
+  }
+  
+  CLASS_NAMES = {'News' => 'noticia',
+                'Image' => 'imagen',
+                'Download' => 'descarga',
+                'Demo' => 'demo',
+                'Topic' => 'tópic',
+                'Blogentry' => 'entrada de blog',
+                'Question' => 'pregunta',
+                'Poll' => 'encuesta',
+                'Bet' => 'apuesta',
+                'Event' => 'evento',
+                'Tutorial' => 'tutorial',
+                'Column' => 'columna',
+                'Interview' => 'entrevista',
+                'RecruitmentAd' => 'anuncio de reclutamiento',
+                'Review' => 'review',
+                'Funthing' => 'curiosidad',
+                'Coverage' => 'coverage',
+                'Comments' => 'comentario',
+  }
+  
+  def self.contents_classes
+    [News,
+    Image,
+    Event,
+    Download,
+    Demo,
+    Tutorial,
+    Interview,
+    Poll,
+    Bet,
+    Question,
+    Column,
+    Coverage,
+    Review,
+    Funthing,
+    RecruitmentAd,
+    Topic]
+  end
+  
+  def self.contents_classes_symbols
+    [:news,
+    :image,
+    :event,
+    :download,
+    :demo,
+    :tutorial,
+    :interview,
+    :poll,
+    :recruitment_ad,
+    :bet,
+    :column,
+    :coverage,
+    :question,
+    :review,
+    :funthing,
+    :topic]
+  end
+  
+  def self.contents_classes_publishable
+    self.contents_classes - [Topic, Blogentry, Question, RecruitmentAd]
+  end
+  
+  CONTENTS_CONTROLLERS = {
+    'News' => 'noticias',
+    'Image' => 'imagenes',
+    'Download' => 'descargas',
+    'Demo' => 'demos',
+    'Topic' => 'foros',
+    'Blogentry' => 'entradas-de-blogs',
+    'Poll' => 'encuestas',
+    'Question' => 'respuestas',
+    'Bet' => 'apuestas',
+    'Event' => 'eventos',
+    'Tutorial' => 'tutoriales',
+    'Column' => 'columnas',
+    'Interview' => 'entrevistas',
+    'Review' => 'reviews',
+    'Funthing' => 'curiosidades',
+    'Coverage' => 'coverages',
+    'Comments' => 'comentarios',
+    'RecruitmentAd' => 'reclutamiento',
+  }
+  
+  def self.translate_content_name(name, en2es = 1)
+    name = name.downcase.normalize if en2es != 1
+    translates = {'News' => 'noticias',
+                  'Image' => 'imagenes',
+                  'Download' => 'descargas',
+                  'Demo' => 'demos',
+                  'Topic' => 'topics',
+                  'Blogentry' => 'entradas-de-blogs',
+                  'Question' => 'preguntas',
+                  'Poll' => 'encuestas',
+                  'Bet' => 'apuestas',
+                  'Event' => 'eventos',
+                  'Tutorial' => 'tutoriales',
+                  'Column' => 'columnas',
+                  'RecruitmentAd' => 'anuncios-de-reclutamiento',
+                  'Interview' => 'entrevistas',
+                  'Review' => 'reviews',
+                  'Funthing' => 'curiosidades',
+                  'Coverage' => 'coverages',
+                  'Comments' => 'comentarios',
+    }
+    
+    if en2es == 1 then
+      raise "#{name} not found" unless translates[name]
+      translates.fetch(name) { |k| raise "IndexError (#{k} not found)" }
+    else
+      translates2 = {}
+      translates.each { |k,v| translates2[v] = k }
+      translates2.fetch(name) { |k| raise "IndexError (#{k} not found)" }
+      
+    end
+  end
   
   @@comments_per_page = 30
   def self.comments_per_page
@@ -66,63 +221,11 @@ module Cms
     end
   end
   
-  SAFE_PUBLICATION_THRESHOLDS = {'News' => 86400 * 14,
-                                'Image' => 86400 * 14,
-                                'Event' => 86400 * 14,
-                                'Coverage' => 86400 * 14,
-                                'Download' => 86400 * 14,
-                                'Demo' => 86400 * 14,
-                                'Question' => 86400 * 14,
-                                'Tutorial' => 86400 * 30,
-                                'Column' => 86400 * 30,
-                                'Interview' => 86400 * 60,
-                                'Poll' => 86400 * 14,
-                                'Bet' => 86400 * 7,
-                                'Review' => 86400 * 30 }
-  
-  WYSIWYG_ATTRIBUTES = {'News' => ['description', 'main'],
-                        'Image' => ['description'],
-                        'Event' => ['description'],
-                        'Coverage' => ['description', 'main'],
-                        'Download' => ['description'],
-                        'Demo' => ['description'],
-                        'Tutorial' => ['description', 'main'],
-                        'Poll' => [],
-                        'Question' => ['description'],
-                        'Bet' => ['description'],
-                        'Funthing' => ['description'],
-                        'Interview' => ['description', 'main'],
-                        'Column' => ['description', 'main'],
-                        'Review' => ['description', 'main'],
-  }
-  
-  CONTENTS_WITH_CATEGORIES = %w(Column Download Demo Topic Image Interview News Tutorial Poll Bet Review Event Question)
-  BAZAR_DISTRICTS_VALID = %w(Column Interview Tutorial News Topic Image Poll Bet Review Event Question Download)
-  BAZAR_DISTRICTS_REQUIRED = %w(News Topic Poll Question)
-  CLANS_CONTENTS = %w(News Topic Download Image Event Poll)
-  
   def self.clans_contents_symbols
     @_cache_ccs ||= CLANS_CONTENTS.collect { |c| c.downcase.to_sym }    
   end
   
-  CLASS_NAMES = {'News' => 'noticia',
-                'Image' => 'imagen',
-                'Download' => 'descarga',
-                'Demo' => 'demo',
-                'Topic' => 'tópic',
-                'Blogentry' => 'entrada de blog',
-                'Question' => 'pregunta',
-                'Poll' => 'encuesta',
-                'Bet' => 'apuesta',
-                'Event' => 'evento',
-                'Tutorial' => 'tutorial',
-                'Column' => 'columna',
-                'Interview' => 'entrevista',
-                'Review' => 'review',
-                'Funthing' => 'curiosidad',
-                'Coverage' => 'coverage',
-                'Comments' => 'comentario',
-  }
+  
   
   VALID_TITLE_REGEXP = /^([a-zA-ZáéíóúÁÉÍÓÚüëÜËñÑ0-9¿\?[:space:]\(\):;\.,_¡!\/&%"\+\-]+)$/i
   DNS_REGEXP = /^((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/i # no es perfecto
@@ -131,106 +234,12 @@ module Cms
   EMAIL_REGEXP = /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/
   IP_REGEXP = /\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/
   
-  def self.contents_classes
-    [News,
-    Image,
-    Event,
-    Download,
-    Demo,
-    Tutorial,
-    Interview,
-    Poll,
-    Bet,
-    Question,
-    Column,
-    Coverage,
-    Review,
-    Funthing,
-    Topic]
-  end
-  
-  def self.contents_classes_symbols
-    [:news,
-    :image,
-    :event,
-    :download,
-    :demo,
-    :tutorial,
-    :interview,
-    :poll,
-    :bet,
-    :column,
-    :coverage,
-    :question,
-    :review,
-    :funthing,
-    :topic]
-  end
-  
-  def self.contents_classes_publishable
-    self.contents_classes - [Topic, Blogentry, Question]
-  end
-  
-  
-  
-  CONTENTS_CONTROLLERS = {
-    'News' => 'noticias',
-    'Image' => 'imagenes',
-    'Download' => 'descargas',
-    'Demo' => 'demos',
-    'Topic' => 'foros',
-    'Blogentry' => 'entradas-de-blogs',
-    'Poll' => 'encuestas',
-    'Question' => 'respuestas',
-    'Bet' => 'apuestas',
-    'Event' => 'eventos',
-    'Tutorial' => 'tutoriales',
-    'Column' => 'columnas',
-    'Interview' => 'entrevistas',
-    'Review' => 'reviews',
-    'Funthing' => 'curiosidades',
-    'Coverage' => 'coverages',
-    'Comments' => 'comentarios',
-  }
   
   def self.content_from_controller(name)
     t = {}
     CONTENTS_CONTROLLERS.each { |k,v| t[v] = k unless /Clans/ =~ k}
     t.fetch(name.downcase) { |k| raise "#{k} not found" }
   end
-  
-  def self.translate_content_name(name, en2es = 1)
-    name = name.downcase.normalize if en2es != 1
-    translates = {'News' => 'noticias',
-                  'Image' => 'imagenes',
-                  'Download' => 'descargas',
-                  'Demo' => 'demos',
-                  'Topic' => 'topics',
-                  'Blogentry' => 'entradas-de-blogs',
-                  'Question' => 'preguntas',
-                  'Poll' => 'encuestas',
-                  'Bet' => 'apuestas',
-                  'Event' => 'eventos',
-                  'Tutorial' => 'tutoriales',
-                  'Column' => 'columnas',
-                  'Interview' => 'entrevistas',
-                  'Review' => 'reviews',
-                  'Funthing' => 'curiosidades',
-                  'Coverage' => 'coverages',
-                  'Comments' => 'comentarios',
-    }
-    
-    if en2es == 1 then
-      raise "#{name} not found" unless translates[name]
-      translates.fetch(name) { |k| raise "IndexError (#{k} not found)" }
-    else
-      translates2 = {}
-      translates.each { |k,v| translates2[v] = k }
-      translates2.fetch(name) { |k| raise "IndexError (#{k} not found)" }
-      
-    end
-  end
-  
   
   # relative_savedir is relative to #{RAILS_ROOT}/public/storage/
   # Devuelve la ruta guardada o nil si no la ha podido guardar
@@ -368,9 +377,6 @@ module Cms
       i += 1
       i = html_fragment.index(/<img([^>]+)src="([^"]+)"([^>]*)>/i, i)
     end
-    
-    
-    
     
     # 1. buscamos los imgs con tags <a alrededor suyo y los guardamos
     img_with_signatures_with_links= []
@@ -652,9 +658,11 @@ module Cms
       true
     elsif (content.respond_to?(:state) and content.user_id == user.id and content.state == Cms::DRAFT) then
       true
-    elsif %w(Question).include?(content.class.name) && content.user_id == user.id && (content.created_on > 15.minutes.ago || content.unique_content.comments_count == 0) 
+    elsif content.class.name == 'Question' && content.user_id == user.id && (content.created_on > 15.minutes.ago || content.unique_content.comments_count == 0) 
       true
-    elsif %w(Blogentry).include?(content.class.name) and content.user_id == user.id
+    elsif content.class.name == 'RecruitmentAd' && (user.has_admin_permission?(:capo) || user.id == content.user_id || (content.clan_id && content.clan.user_is_clanleader(user.id)))
+      true
+    elsif Cms::AUTHOR_CAN_EDIT_CONTENTS.include?(content.class.name) && content.user_id == user.id
       true
     elsif content.kind_of?(Coverage) && (c = content.event.competition) then
       c.user_is_admin(user.id) ? true : false

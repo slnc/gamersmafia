@@ -1,12 +1,12 @@
 <%content_support do %>
 <% if user_is_authed then %>
 	<%mftext do %>
-		<div class="centered"><a href="/reclutamiento/nuevo"><img class="icon" alt="Nuevo anuncio" src="/skins/default/images/btn_nuevo_anuncio.png" /></a></div>
+		<div class="centered"><a href="/reclutamiento/new"><img class="icon" alt="Nuevo anuncio" src="/skins/default/images/btn_nuevo_anuncio.png" /></a></div>
 	<% end -%>
 <% end -%>
 
 <% mflist("Últimos anuncios", Proc.new { RecruitmentAd.find(:all, :conditions => 'deleted = \'f\'', :order => 'created_on desc', :limit => 10) }, :class => 'lh16') do |ra| %>
-		<%=faction_favicon(ra.game)%> <a href="/reclutamiento/anuncio/<%=ra.id%>"><%=ra.title%></a>
+		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title%></a>
 		<div class="infoinline right"><%=print_tstamp(ra.created_on, 'intelligent')%></div>
 	<% end # mflist-%>
 
@@ -34,8 +34,8 @@
 		<tr class="<%=oddclass%>">
 			<td>Tipo</td>
 			<td><select name="type">
-					<option <%='selected="selected" ' if params[:type] == 'searching_clan' %> value="searching_clan">Clanes reclutando</option>
-					<option <%='selected="selected" ' if params[:type] == 'searching_users' %> value="searching_users">Gamers buscando clan</option>ion>
+					<option <%='selected="selected" ' if params[:type] == 'searching_clan' %> value="searching_clan">Gamers buscando clan</option>
+					<option <%='selected="selected" ' if params[:type] == 'searching_users' %> value="searching_users">Clanes reclutando</option>ion>
 				</select></td>
 		</tr>
 		<tr class="<%=oddclass%>">
@@ -59,7 +59,7 @@
 	</tr>
 <%@results.each do |res| %>
 <tr class="<%=oddclass%>">
-	<td><%=faction_favicon(res.game)%> <a href="/reclutamiento/anuncio/<%=res.id%>"><%=truncate(res.message, 100, '..')%></a></td>
+	<td><%=faction_favicon(res.game)%> <a href="<%=gmurl(res)%>"><%=truncate(res.main, 100, '..')%></a></td>
 	<td class="w125"><%=res.clan_id ? clan_link(res.clan) : user_link(res.user)%></td>
 	<td class="infoinline timestamp"><%=print_tstamp(res.created_on)%></td>
 </tr>

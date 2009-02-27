@@ -1,3 +1,8 @@
+<%content_support do %>
+<% end -%>
+
+<%content_main do %>
+<%mftext('Nuevo anuncio de reclutamiento') do %>
 <script type="text/javascript">
 	function update_reclutamiento_nuevo(mode) {
 		if (mode == 'users') {
@@ -9,8 +14,10 @@
 	}
 </script>
 
-<form method="post" action="/reclutamiento/anuncio_create">
+<form method="post" action="/reclutamiento/create">
 <%= render :partial => 'form' %>
 
 <input type="submit" value="Crear" />
 </form>
+<% end -%>
+<% end -%>
