@@ -1,5 +1,15 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 first_polls_option:
   id: 1
   name: foo
   poll_id: 1
+
+second_polls_option:
+  id: 2
+  name: foobar
+  poll_id: 4
+
+  
+third_polls_option:
+  id: 3
+  name: foobars
+  poll_id: 5

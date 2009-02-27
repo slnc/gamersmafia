@@ -45,3 +45,36 @@ deleted:
   approved_by_user_id: 1
   state: 3
   unique_content_id: 2006
+  
+publishedgm:
+  id: 4
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  starts_on: <%=1.month.since%>
+  ends_on: <%=2.months.since%>
+  title: foo de gm
+  approved_by_user_id: 1
+  state: 2
+  unique_content_id: 1115
+  polls_votes_count: 0
+  
+pendinggm:
+  id: 5
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  starts_on: <%=1.month.since%>
+  ends_on: <%=2.months.since%>
+  title: foo de gms
+  approved_by_user_id: 1
+  state: 1
+  unique_content_id: 1116
+  polls_votes_count: 0
+  

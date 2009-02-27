@@ -10,8 +10,10 @@ class CacheObserverEncuestasTest < ActionController::IntegrationTest
   # MAIN
   def test_should_clear_cache_on_main_after_publishing_poll
     n = portal.poll.find(:pending)[0]
+    # Term.single_toplevel(:slug => 'gm').poll.find(:pending).each { |poll| puts poll.title }
     assert_not_nil n
     go_to '/encuestas', 'encuestas/index'
+    assert_response :success, @response.body
     assert_cache_exists "#{portal.code}/encuestas/index/page_"
     publish_content n
     assert_cache_dont_exist "#{portal.code}/encuestas/index/page_"

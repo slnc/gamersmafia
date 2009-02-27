@@ -56,7 +56,7 @@ class TermTest < ActiveSupport::TestCase
   def test_all_children_ids
     test_mirror_category
     expected = Term.find(:all, :conditions => ['root_id = ? ', @t.id]).collect { |t| t.id }.sort
-    assert_equal expected, @t.all_children_ids
+    assert_equal expected, @t.all_children_ids.sort
     
     expected2 = Term.find(:all, :conditions => ['parent_id = ? ', @ndcss1.id]).collect { |t| t.id }.sort
     assert_equal (expected2 + [@ndcss1.id]).sort, @ndcss1.all_children_ids
@@ -67,7 +67,7 @@ class TermTest < ActiveSupport::TestCase
     t2 = @t.children.create(:name => "oniris", :taxonomy => "fulanito")
     assert !t2.new_record?
     expected = Term.find(:all, :conditions => "root_id = #{@t.id} AND id <> #{t2.id}").collect { |t| t.id }.sort
-    assert_equal expected, @t.all_children_ids(:taxonomy => 'DownloadsCategory')
+    assert_equal expected, @t.all_children_ids(:taxonomy => 'DownloadsCategory').sort
   end
   
   def test_last_published_content

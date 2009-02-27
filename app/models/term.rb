@@ -86,6 +86,7 @@ class Term < ActiveRecord::Base
     
     if Cms::CATEGORIES_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy.nil?
       puts "error: imposible enlazar categories_terms_content con un root_term, enlazando con un hijo"
+      return false if normal_op
       taxo = "#{Inflector::pluralize(content.content_type.name)}Category"
       t = self.children.find(:first, :conditions => "taxonomy = '#{taxo}'")
       t = self.children.create(:name => 'General', :taxonomy => taxo) if t.nil?
@@ -93,6 +94,7 @@ class Term < ActiveRecord::Base
       #return false
     elsif Cms::ROOT_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy && self.taxonomy.index('Category')
       puts "error: imposible enlazar root_terms_content con un category_term, enlazando con root"
+      return false if normal_op
       self.root.link(content, normal_op)
       #return false
     end
@@ -322,11 +324,13 @@ class Term < ActiveRecord::Base
   
   # Busca contenidos asociados a este término o a uno de sus hijos
   def find(*args)
-    
     args = _add_cats_ids_cond(*args)
-    
-    self.contents.find(*args).collect { |cont| cont.real_content }
-    # self.class.items_class.send(:find, *args)
+    res = Content.find(*args)
+    if res.kind_of?(Array) 
+      res.collect { |cont| cont.real_content }
+    elsif res
+      res
+    end
   end
   
   def method_missing(method_id, *args)
@@ -361,7 +365,8 @@ class Term < ActiveRecord::Base
     opts.delete(:order) if opts[:order]
     args.push(opts)
     if opts[:joins]
-      Content.count_by_sql("SELECT count(contents.id) FROM contents join contents_terms on contents.id = contents_terms.content_id #{opts[:joins]} WHERE #{opts[:conditions]} GROUP BY contents.id")
+      opts[:joins] << " join contents_terms on contents.id = contents_terms.content_id " unless opts[:joins].include?('contents_terms')
+      Content.count_by_sql("SELECT count(contents.id) FROM contents #{opts[:joins]} WHERE #{opts[:conditions]} GROUP BY contents.id")
     else
       self.contents.count(*args)
     end
@@ -370,6 +375,7 @@ class Term < ActiveRecord::Base
   
   # acepta keys: treemode (true: incluye categorías de hijos)
   def _add_cats_ids_cond(*args)
+    @_add_cats_ids_done = true
     options = {:treemode => true}.merge(args.last.is_a?(Hash) ? args.pop : {}) # copypasted de extract_options_from_args!(args)
     @siblings ||= []
     if options[:treemode]
@@ -404,6 +410,8 @@ class Term < ActiveRecord::Base
       #options[:include] << :contents
     end
     
+    options[:joins] ||= ''
+    options[:joins] <<= " JOIN contents_terms on contents.id = contents_terms.content_id " 
     
     options.delete :treemode
     options.delete :content_type
@@ -434,7 +442,6 @@ class Term < ActiveRecord::Base
       
       options[:order] = "contents.created_on DESC" unless options[:order]
       args[0] = :all
-      
       args.push(options)
     end
     args
@@ -469,11 +476,12 @@ class Term < ActiveRecord::Base
   def most_popular_authors(opts)
     q_add = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
     opts[:limit] ||= 5
-    dbitems = User.db_query("SELECT count(id), 
-                                    user_id 
-                              from #{Inflector::tableize(opts[:content_type])} 
-                             WHERE state = #{Cms::PUBLISHED}#{q_add} 
-                          GROUP BY user_id
+    dbitems = User.db_query("SELECT count(contents.id), 
+                                    contents.user_id 
+                              from #{Inflector::tableize(opts[:content_type])}
+                              JOIN contents on  #{Inflector::tableize(opts[:content_type])}.unique_content_id = contents.id 
+                             WHERE contents.state = #{Cms::PUBLISHED}#{q_add} 
+                          GROUP BY contents.user_id
                           ORDER BY sum((coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0))) desc 
                              limit #{opts[:limit]}")
     dbitems.collect { |dbitem| [User.find(dbitem['user_id']), dbitem['count'].to_i] }
@@ -481,7 +489,7 @@ class Term < ActiveRecord::Base
   
   
   def most_rated_items(opts)
-    raise "content_type unspecified" unless opts[:content_type]
+    raise "content_type unspecified" unless opts[:content_type] || opts[:joins]
     opts = {:limit => 5}.merge(opts)
     self.find(:published, 
               :content_type => opts[:content_type],
@@ -756,21 +764,20 @@ class TermContentProxy
     rescue NoMethodError
       opts = args.last.is_a?(Hash) ? args.pop : {}
       opts[:content_type] = @cls_name
-      args.push(opts)
-      args = @term._add_cats_ids_cond(*args)
+      #args.push(opts)
+      # args = @term._add_cats_ids_cond(*args)
       
-      opts = args.last.is_a?(Hash) ? args.pop : {}
+      # opts = args.last.is_a?(Hash) ? args.pop : {}
       if method_id == :count # && opts[:joins]
         opts.delete :joins
         opts.delete :order
       end
       args.push(opts)
-      
       begin
-        res = @term.contents.send(method_id, *args)
-        res.kind_of?(Array) ? res.collect { |cont| cont.real_content } : res
+        res = @term.send(method_id, *args)
+        res
       rescue ArgumentError
-        @term.contents.send(method_id)
+        @term.send(method_id)
       end
     end
   end

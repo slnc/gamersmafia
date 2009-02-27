@@ -81,13 +81,7 @@ mfcontents_list(Cms::translate_content_name(it),
 <%= render :partial => '/home/outstanding_entity', :locals => { :outstanding_entity_cls => OutstandingClan } %>
 <% end -%>		
 
-<% cache("/#{controller.portal_code}/home/index/questions") do %>
-<% mfcontents_list("Preguntas", 
-				   Proc.new { controller.portal.question.find(:published, :conditions => 'answered_on IS NULL AND created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, created_on DESC', :limit => 5)}
-				   ) do |o| %>
-<a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a>
-<% end -%>
-<% end -%>
+<%=render :partial => '/home/questions' %>
 
 <%mftext('Imagen del día') do %>
 <% d = Date.today

@@ -58,12 +58,12 @@ class EncuestasControllerTest < Test::Unit::TestCase
   def test_vote
     poll = Poll.find(:published)[0]
     assert poll.update_attributes(:starts_on => 1.day.ago, :ends_on => 7.days.since)
-    assert_equal 0, poll.polls_votes_count
+    orig = poll.polls_votes_count
     assert_count_increases(PollsVote) do
       post :vote, { :id => poll.id, :poll_option => poll.polls_options.find(:first).id }
     end
     assert_response :redirect
     poll.reload
-    assert_equal 1, poll.polls_votes_count
+    assert_equal orig + 1, poll.polls_votes_count
   end
 end

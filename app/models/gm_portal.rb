@@ -84,10 +84,10 @@ end
 
 class GmPortalPollProxy
   def self.current
-    Term.single_toplevel(:slug => 'gm').poll.find(:all, :joins => 'join polls on contents.id = polls.unique_content_id', :conditions => "polls.starts_on <= now() and polls.ends_on >= now() and polls.state = #{Cms::PUBLISHED}", :order => 'polls.created_on DESC', :limit => 1)
+    Term.single_toplevel(:slug => 'gm').poll.find(:all, :conditions => "polls.starts_on <= now() and polls.ends_on >= now() and polls.state = #{Cms::PUBLISHED}", :order => 'polls.created_on DESC', :limit => 1)
   end
   
   def self.method_missing(method_id, *args)
-    GenericContentProxy.new(Poll).send(method_id, *args)
+    Term.single_toplevel(:slug => 'gm').poll.send(method_id, *args)
   end
 end

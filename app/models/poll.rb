@@ -5,6 +5,8 @@ class Poll < ActiveRecord::Base
   after_save :process_polls_options
   has_many :polls_options, :dependent => :destroy
   
+  CURRENT_SQL = 'starts_on <= now() and ends_on >= now()'
+  
   validates_uniqueness_of :title, :message => 'Ya hay otra encuesta con el mismo título'
   
   def recalculate_polls_votes_count

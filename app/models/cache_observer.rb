@@ -667,7 +667,6 @@ class CacheObserver < ActiveRecord::Observer
         #end_page = start_page + next_count / ColumnasController::COLUMNS_PER_PAGE + 1
         
         # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/columnas/index/page_#{i}") }
-        
         expire_fragment("/#{p.code}/columnas/index/page_")
         expire_fragment("/#{p.code}/columnas/index/page_*")
         expire_fragment("/#{p.code}/columnas/show/latest_by_author_#{object.user_id}")

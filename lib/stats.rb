@@ -595,14 +595,13 @@ group by date_trunc('day', created_on) order by s asc
             res[dbr['rating'].to_i] = dbr['count'].to_i
     end
     tot = res.values.sum.to_f
-    puts tot
+    
     res2 = {}
     10.times do |i|
       i = i + 1
     
       if res[i]
         res2[i] = (res[i]/tot) * 100
-        puts "res2[i] = (#{res[i]}/#{tot}) * 100"
       else
         res2[i] = 0
       end

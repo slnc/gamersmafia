@@ -213,3 +213,30 @@
       parent_id: 1
       game_id: 1
       taxonomy: DemosCategory
+
+- rjtopicsgeneral:
+      id: 30
+      name: General
+      slug: general
+      root_id: 2
+      parent_id: 2
+      game_id: 2
+      taxonomy: TopicsCategory
+
+- rjtopicsgeneral:
+      id: 31
+      name: General
+      slug: general
+      root_id: 3
+      parent_id: 3
+      game_id: 3
+      taxonomy: TopicsCategory
+
+- wiitopicsgeneral:
+      id: 32
+      name: General
+      slug: general
+      root_id: 4
+      parent_id: 4
+      game_id: 4
+      taxonomy: TopicsCategory

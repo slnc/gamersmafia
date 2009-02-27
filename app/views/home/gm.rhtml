@@ -110,7 +110,7 @@ for topicid in @last_topics
 <%
     p = PollsCategory.find(:first, :conditions => ['id = root_id and name = ?', @user.faction.name])
 if p then
-    @cur_polls = p.polls.find(:all, :conditions => 'starts_on <= now() and ends_on >= now() and state = 2', :order => 'created_on DESC')
+    @cur_polls = p.polls.find(:published, :conditions => Poll::CURRENT_SQL, :order => 'created_on DESC')
 else 
 @cur_polls = []
 end

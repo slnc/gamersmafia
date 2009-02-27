@@ -102,14 +102,14 @@ category = controller.portal.categories(Download)[0]
 %>
 	<div class="grid-4">
 	<%=mfcontents_basic('Últimas', 
-					Proc.new { category.root.find(:published, :order => 'created_on DESC', :limit => 12) },
+					Proc.new { category.root.download.find(:published, :order => 'created_on DESC', :limit => 12) },
 					[],
 					:truncate_at => 28, :faction_favicon => true)%>
 	</div>
 	
 	<div class="grid-4 glast">
 	<%=mfcontents_basic('Esenciales', 
-					Proc.new { category.root.find(:published, :content_type => 'Download', :conditions => "essential is true", :order => 'created_on DESC', :limit => 12) },
+					Proc.new { category.root.download.find(:published, :content_type => 'Download', :conditions => "essential is true", :order => 'created_on DESC', :limit => 12) },
 					[],
 					:truncate_at => 28, :faction_favicon => true)%>
 	</div>
@@ -127,13 +127,7 @@ category = controller.portal.categories(Download)[0]
 <%= render :partial => '/home/outstanding_entity', :locals => { :outstanding_entity_cls => OutstandingClan } %>
 <% end -%>
 
-<% cache("/#{controller.portal_code}/home/index/questions") do %>
-<% mfcontents_list("Preguntas", 
-				   Proc.new { controller.portal.question.find(:published, :content_type => 'Question', :conditions => 'answered_on IS NULL AND questions.created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, questions.created_on DESC', :limit => 5)}
-				   ) do |o| %>
-<a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a>
-<% end -%>
-<% end #cache -%>
+<%=render :partial => '/home/questions' %>
 
 <%mftext('Imagen del día') do %>
 <% d = Date.today
@@ -149,12 +143,5 @@ if @daily_img then %>
 <% end -%>
 <% end -%>
 
-<% cache("/#{controller.portal_code}/home/index/eventos2/#{Time.now.strftime('%Y%m%d')}") do %>
-<% mfcontents_table('Eventos', 
-				   Proc.new { [] } # controller.portal.event.current 
-				   ) do |e| %>
-	<td style="font-size: 11px;"><%=draw_content_favicon(e)%><a href="<%=get_url(e)%>"><%=e.title%></a></td>
-    <td style="font-size: 11px;"><%=member_state('active')%><%=e.users.count%></td>
-<% end -%>
-<% end # cache -%>
+<%=render :partial => '/home/eventos2' %>
 </div>

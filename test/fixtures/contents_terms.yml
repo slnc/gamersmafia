@@ -245,3 +245,14 @@ compevent<%=competitions_type%><%=i%>:
     <% end %>
   <% end %>
 <% end %>
+
+gmpollpublished:
+    id: 46
+    content_id: 1115
+    term_id: 15
+    
+gmpollpending:
+    id: 47
+    content_id: 1116
+    term_id: 15
+    

@@ -18,12 +18,15 @@ class Event < ActiveRecord::Base
     end
   end
   
+  
+  CURRENT_SQL = "events.starts_on < now() + '2 months'::interval
+                     AND events.parent_id is null
+                     AND events.ends_on > now() 
+                     AND events.id not in (SELECT event_id from competitions)"
+                     
   def self.current(opts={})
     opts = {:order => 'starts_on', :limit => 7}.merge(opts)
-    conds = "starts_on < now() + '2 months'::interval
-                     AND parent_id is null
-                     AND ends_on > now() 
-                     AND id not in (SELECT event_id from competitions)"
+    conds = CURRENT_SQL
                      
     if opts[:conditions]
       opts[:conditions] << " AND #{conds}"

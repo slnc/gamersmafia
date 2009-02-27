@@ -7,7 +7,7 @@ cat_ids = controller.portal.categories(Poll).collect { |cat| cat.id }
 %>
 
 <% 
-controller.portal.poll.find(:published, :order => 'polls_votes_count DESC', :limit => 3).each do |p|
+controller.portal.poll.find(:published, :content_type => 'Poll', :order => 'polls_votes_count DESC', :limit => 3).each do |p|
   p.reload %>
   <li class="<%=oddclass%>"><%=controller.url_for_content(p, p.title)%><br /><div class="infoinline"><%=p.votes%> votos | <span class="comments-count"><a style="display: inline;" href="<%=gmurl(p)%>#comments"><%=p.cache_comments_count%></a></span></div></li>
   <% end -%>
@@ -24,7 +24,7 @@ controller.portal.poll.find(:published, :order => 'polls_votes_count DESC', :lim
 %>
     <%= render :partial => 'shared/pager', :object => @poll_pages, :locals => {:pos => 'top'} %>
 
-    <table>
+    <table> 	
 <% cache("/#{@controller.portal_code}/encuestas/index/page_#{params[:page]}") do %>
 <% 
 # TODO it doesn't work for portals

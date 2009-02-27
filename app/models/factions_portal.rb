@@ -28,13 +28,13 @@ class FactionsPortal < Portal
   end
   
   def home
-      if self.juego_title == 'Plataforma' 
+    if self.juego_title == 'Plataforma' 
         'facciones_platform'
-      elsif self.factions_portal_home.to_s != ''
+    elsif self.factions_portal_home.to_s != ''
         "facciones_#{self.factions_portal_home}"
-      else
+    else
         'facciones_fps'
-      end
+    end
   end
   
   def layout
@@ -95,6 +95,7 @@ class FactionsPortal < Portal
           t = Term.find(:first, :conditions => "id = root_id AND slug IN (#{toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC')
           t.add_content_type_mask(Inflector::camelize(Inflector::singularize(method_id)))
           return t
+          # TODO
           # ahora reemplazamos obj por la categoría de primer nivel si es facción o plataforma
           g = self.games
           if g.size > 1
@@ -144,7 +145,7 @@ class FactionsPortal < Portal
     banners
   end
   
-  private
+  public
   def toplevel_categories_codes
     factions.collect {|f| "'#{f.code}'" }
   end
@@ -156,7 +157,8 @@ class FactionsPortalPollProxy
   end
   
   def current
-    Poll.find(:published, :conditions => "polls_category_id IN (#{@portal.get_categories(Poll.category_class).join(',')}) and starts_on <= now() and ends_on >= now()", :order => 'created_on DESC', :limit => 1)
+    t = Term.find(:first, :conditions => "id = root_id AND slug IN (#{@portal.toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC').poll.find(:first, :conditions => Poll::CURRENT_SQL)
+    # Poll.find(:published, :conditions => "polls_category_id IN (#{@portal.get_categories(Poll.category_class).join(',')}) and starts_on <= now() and ends_on >= now()", :order => 'created_on DESC', :limit => 1)
   end
   
   def respond_to?(method_id, include_priv = false)
@@ -164,6 +166,9 @@ class FactionsPortalPollProxy
   end
   
   def method_missing(method_id, *args)
+    t = Term.find(:first, :conditions => "id = root_id AND slug IN (#{@portal.toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC').poll
+    return t.send(method_id, *args)
+    
     obj = Poll
     g = @portal.games
     if g.size > 1
