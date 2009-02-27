@@ -79,8 +79,8 @@ class Competition < ActiveRecord::Base
     else
       ids = [0]
       Clan.leaded_by(user_id).each { |c| ids<< c.id }
-      Competition.find(:all, :conditions => "id IN (SELECT competition_id FROM competitions_admins WHERE user_id = #{user_id})
-                                           or id IN (SELECT competition_id FROM competitions_supervisors WHERE user_id = #{user_id})
+      User.db_query("").collect { |dbr| dbr['role_data']}
+      Competition.find(:all, :conditions => "id IN (SELECT role_data::int4 FROM users_roles WHERE user_id = #{user_id} AND role IN ('CompetitionAdmin', 'CompetitionSupervisor'))
                                            or id IN (SELECT a.id 
                                                        FROM competitions a 
                                                        JOIN competitions_participants b on a.id = b.competition_id 

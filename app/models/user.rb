@@ -421,7 +421,7 @@ final
     # devuelve true si el usuario puede editar algún tipo de contenido
     if self.is_bigboss?
       true
-    elsif User.db_query("select * from competitions_admins where user_id = #{self.id}").size > 0
+    elsif Users.count(:conditions => 'role IN (\'CompetitionAdmin\', \'CompetitionSupervisor\'') > 0
       true
     elsif self.users_roles.count(:conditions => "role = 'Editor'") > 0
       true
