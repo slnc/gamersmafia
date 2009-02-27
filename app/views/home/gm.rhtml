@@ -106,9 +106,11 @@ for topicid in @last_topics
     <% 
     cats = controller.portal.categories(Poll).collect { |cat| cat.id }
 
-    if user_is_authed and not @user.faction_id.nil? and not cats.include?(PollsCategory.find(:first, :conditions => ['id = root_id and code = ?', @user.faction.code]).id) then %>
+    if user_is_authed and not @user.faction_id.nil?
+		user_faction_tl = Term.single_toplevel(:slug => @user.faction.code) 
+		if !cats.include?(user_faction_tl.id) then %>
 <%
-    p = PollsCategory.find(:first, :conditions => ['id = root_id and name = ?', @user.faction.name])
+    
 if p then
     @cur_polls = p.polls.find(:published, :conditions => Poll::CURRENT_SQL, :order => 'created_on DESC')
 else 
@@ -119,7 +121,9 @@ end
       <%=render :partial => '/encuestas/encuesta', :locals => {:poll => @cur_poll, :user => (user_is_authed ? @user : nil)} %>
       <script type="text/javascript">contents = contents.concat(<%=@cur_poll.unique_content.id%>);</script>
     <% end %>
-<% end -%>
+<% end -%>	
+<% end # if user_is_authed -%>
+
     <div class="more"><a title="Ver más encuestas" href="/encuestas/">Más encuestas &raquo;</a></div>
   </div>
 

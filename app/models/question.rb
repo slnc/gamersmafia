@@ -15,11 +15,13 @@ class Question < ActiveRecord::Base
   before_save :check_state
   before_save :check_switching_from_published
   
-  observe_attr :ammount
+  observe_attr :ammount, :answered_on
   has_bank_ammount_from_user
   
   validates_presence_of :title, :message => 'El campo pregunta no puede estar en blanco'
-  validates_length_of :title, :maximum => 100 
+  validates_length_of :title, :maximum => 100
+  
+  belongs_to :answer_selected_by_user, :foreign_key => :answer_selected_by_user_id, :class_name => 'User'
   
   # attr_protected :ammount
   
@@ -60,6 +62,7 @@ class Question < ActiveRecord::Base
         Bank.revert_transfer(t)
         self.log_action('unset_respuesta', modifying_user.login)
         self.accepted_answer_comment_id = nil
+        self.answer_selected_by_user_id = nil
         self.answered_on = nil
         self.save
       else
@@ -70,6 +73,7 @@ class Question < ActiveRecord::Base
   
   def set_no_best_answer(modifying_user)
     self.answered_on = Time.now
+    self.answer_selected_by_user_id = modifying_user.id
     if self.save
       self.log_action('set_sin_respuesta', modifying_user.login)
       Message.create(:user_id_from => User.find_by_login('nagato').id, :user_id_to => self.user_id, :title => "Tu pregunta \"#{self.title}\" ha sido cerrada sin una respuesta", :message => "Lo sentimos pero nadie ha dado con una respuesta a tu pregunta o se ha cancelado por otra razón.")
@@ -90,6 +94,7 @@ class Question < ActiveRecord::Base
     else
       self.accepted_answer_comment_id = comment_id
       self.answered_on = Time.now
+      self.answer_selected_by_user_id = modifying_user.id
       if self.save
         comment = Comment.find(comment_id)
         self.log_action('set_respuesta', modifying_user.login)

@@ -237,7 +237,7 @@ module Comments
                       AND a.comments_valorations_type_id = #{cvt.id}
                  GROUP BY b.user_id
                  ORDER BY m1 DESC LIMIT #{limit}").collect do |dbr|
-      [dbr['sum'], User.find(dbr['user_id'].to_i)]
+      [dbr['m1'].to_i, User.find(dbr['user_id'].to_i)]
     end
   end
   

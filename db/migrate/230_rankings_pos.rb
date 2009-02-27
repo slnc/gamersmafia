@@ -9,6 +9,7 @@ class RankingsPos < ActiveRecord::Migration
     slonik_execute "create index refered_hits_user_id on refered_hits(user_id); analyze refered_hits;"
     execute "delete from refered_hits where user_id not in (select id from users);"
     slonik_execute "alter table refered_hits add foreign key (user_id) references users match full;"
+    slonik_execute "alter table stats.general add column users_refered_today int;"
   end
 
   def self.down

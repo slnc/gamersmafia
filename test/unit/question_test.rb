@@ -25,6 +25,8 @@ class QuestionTest < ActiveSupport::TestCase
     assert_equal baid, @q.accepted_answer_comment_id
     assert_not_nil @q.best_answer
     assert_not_nil @q.answered_on
+    assert_equal @q.user.id, @q.answer_selected_by_user_id
+    assert_equal @q.user.id, @q.answer_selected_by_user.id
     @c.user.reload
     # puts "#{u_cash} + #{@q.prize}, #{c.user.cash}"
     assert_equal ("%.2f" % (@u_cash + @q.prize)), ("%.2f" % @c.user.cash)
@@ -43,6 +45,7 @@ class QuestionTest < ActiveSupport::TestCase
     assert @q.revert_set_best_answer(User.find(1))
     assert_nil @q.best_answer
     assert_nil @q.answered_on
+    assert_nil @q.answer_selected_by_user_id
     @c.user.reload
     assert_equal ("%.2f" % (init_cash - @q.prize)), ("%.2f" % @c.user.cash)
   end

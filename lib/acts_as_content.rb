@@ -13,7 +13,9 @@ module ActsAsContent
       
       after_destroy :do_after_destroy
       
-      belongs_to :unique_content, :class_name => 'Content'
+      #belongs_to :unique_content, :class_name => 'Content'
+      
+      
       
       validates_presence_of :user
       before_create { |m| m.log = nil; m.log_action('creado', m.user.login) }
@@ -198,6 +200,10 @@ module ActsAsContent
       @_terms_to_add += new_terms 
     end
     
+    def unique_content
+      @_cache_unique_content ||= Content.find(self.unique_content_id) if self.unique_content_id
+    end
+    
     def root_terms
       self.unique_content.root_terms
     end
@@ -369,7 +375,6 @@ module ActsAsContent
       else
         if Cms::ROOT_TERMS_CONTENTS.include?(self.class.name)
           cats = uniq.linked_terms('NULL')
-          puts "ROOT_TERM_CONTENTS #{cats.size}"
         else
           cats = uniq.linked_terms("#{Inflector::pluralize(self.class.name)}Category")
         end

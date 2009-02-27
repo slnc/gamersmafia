@@ -900,4 +900,12 @@ class User < ActiveRecord::Base
                        LIMIT #{limit}"
     User.find_by_sql(q)
   end
+  
+  def self.refered_users_in_time_period(t1, t2)
+    t2, t1 = t1, t2 if t1 > t2
+    User.db_query("SELECT count(*) 
+                     FROM users 
+                    WHERE referer_user_id is not null 
+                      AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")[0]['count'].to_i
+  end
 end

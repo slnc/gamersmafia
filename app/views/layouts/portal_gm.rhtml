@@ -19,7 +19,7 @@
 	<div id="mgmenu2" class="module">
 		
 		<div class="mcontent">
-		   <a id="logo2" <% if !(controller.controller_name == 'home' && controller.action_name == 'index') then %>onmouseover="this.className = 'hover';" onmouseout="this.className=''"<%end -%> href="http://<%=App.domain%>/"><img src="/images/blank.gif" /></a>
+		   <a id="logo2" <% if !(controller.controller_name == 'home' && controller.action_name == 'index' && controller.portal.id == '-1') then %>onmouseover="this.className = 'hover';" onmouseout="this.className=''"<%end -%> href="http://<%=App.domain%>/"><img src="/images/blank.gif" /></a>
 		   <div id="thesaw">
 		   	<% if user_is_authed then
 if @user.is_superadmin?

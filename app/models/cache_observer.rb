@@ -536,7 +536,16 @@ class CacheObserver < ActiveRecord::Observer
       for p in object.get_related_portals 
         expire_fragment("/#{p.code}/home/index/questions")
         expire_fragment("/#{p.code}/respuestas/show/latest_by_author_#{object.user_id}")
+        expire_fragment("/#{p.code}/home/index/questions")
+        expire_fragment("/#{p.code}/respuestas/top_sabios/") # if object.slnc_changed?(:answered_on)
       end
+      #if object.slnc_changed?(:answered_on)
+      if object.unique_content
+        object.unique_content.linked_terms('QuestionsCategory').each do |t|
+          expire_fragment("/common/respuestas/top_sabios/#{t.root_id}")
+        end
+      end
+      # end
       
       when 'Download':
       expire_fragment('/home/index/downloads')

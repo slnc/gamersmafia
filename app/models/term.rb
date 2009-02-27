@@ -326,8 +326,9 @@ class Term < ActiveRecord::Base
   def find(*args)
     args = _add_cats_ids_cond(*args)
     res = Content.find(*args)
+    
     if res.kind_of?(Array) 
-      res.collect { |cont| cont.real_content }
+      res.uniq.collect { |cont| cont.real_content }
     elsif res
       res.real_content
     end

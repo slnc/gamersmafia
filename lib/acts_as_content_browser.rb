@@ -58,7 +58,7 @@ module ActsAsContentBrowser
     
     define_method 'create' do
       _before_create if respond_to?(:_before_create)
-      
+
       cls = Inflector::constantize(Inflector::camelize(content_name))
       obj = cls.new(params[Inflector::underscore(content_name)])
       
@@ -177,7 +177,6 @@ module ActsAsContentBrowser
           redirect_to :action => 'edit', :id => obj.id
         end
       else
-        puts obj.errors.full_messages_html
         flash.now[:error] = "Error al actualizar #{Cms::CLASS_NAMES[cls.name]}: #{obj.errors.full_messages_html}"
         redirect_to :action => 'edit', :id => obj.id
       end

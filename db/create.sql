@@ -11712,7 +11712,8 @@ CREATE TABLE questions (
     ammount numeric(10,2),
     answered_on timestamp without time zone,
     closed boolean DEFAULT false NOT NULL,
-    unique_content_id integer
+    unique_content_id integer,
+    answer_selected_by_user_id integer
 );
 
 
@@ -12906,7 +12907,8 @@ CREATE TABLE general (
     requests integer,
     database_size bigint,
     sent_emails integer,
-    downloaded_downloads_count integer
+    downloaded_downloads_count integer,
+    users_refered_today integer
 );
 
 
@@ -19030,6 +19032,14 @@ ALTER TABLE ONLY publishing_personalities
 
 ALTER TABLE ONLY questions
     ADD CONSTRAINT questions_accepted_answer_comment_id_fkey FOREIGN KEY (accepted_answer_comment_id) REFERENCES comments(id);
+
+
+--
+-- Name: questions_answer_selected_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY questions
+    ADD CONSTRAINT questions_answer_selected_by_user_id_fkey FOREIGN KEY (answer_selected_by_user_id) REFERENCES users(id) MATCH FULL;
 
 
 --

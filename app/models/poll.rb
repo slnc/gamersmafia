@@ -10,8 +10,12 @@ class Poll < ActiveRecord::Base
   validates_uniqueness_of :title, :message => 'Ya hay otra encuesta con el mismo título'
   
   def recalculate_polls_votes_count
-    new_polls_votes_count = User.db_query("SELECT count(*) FROM polls_votes where polls_option_id in (select id from polls_options where poll_id = #{self.id})")[0]['count'].to_i 
-    User.db_query("UPDATE polls SET polls_votes_count = #{new_polls_votes_count}")
+    new_polls_votes_count = User.db_query("SELECT count(*) 
+    FROM polls_votes 
+    WHERE polls_option_id in (SELECT id 
+                                FROM polls_options 
+                               WHERE poll_id = #{self.id})")[0]['count'].to_i                               
+    User.db_query("UPDATE polls SET polls_votes_count = #{new_polls_votes_count} WHERE id = #{self.id}")
   end
   
   def process_polls_options

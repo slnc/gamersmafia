@@ -45,6 +45,8 @@ class CreateNewTermsTopography < ActiveRecord::Migration
         o.find(:all, :conditions => "#{Inflector::underscore(o.class.name)}_id = #{o.id}", :order => 'id').each { |item| new_term.link(item.unique_content, false) }
       end
     end
+    
+    
   end
 
   def self.down

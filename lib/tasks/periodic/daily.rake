@@ -23,6 +23,7 @@ namespace :gm do
     generate_daily_ads_stats
     kill_zombified_staff
     GmSys.job('Notification.check_global_notifications')
+    close_old_open_questions
   end
   
   def kill_zombified_staff
@@ -35,6 +36,20 @@ namespace :gm do
         ur.destroy
         SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :headline => "Quitando permiso de <strong>#{ur.role}</strong> a <strong>#{ur.user.login}</strong> por volverse zombie", :reviewer_user_id => mrcheater.id, :completed_on => now)
       end
+    end
+  end
+  
+  def close_old_open_questions
+    mrman = User.find_by_login('mrman')
+    Question.find(:published, :conditions => 'answered_on IS NULL AND created_on <= now() - \'1 month\'::interval', :order => 'id').each do |q|
+      c_text = 'Esta pregunta lleva pendiente de respuesta demasiado tiempo y está empezando a salir musgo verde así que tengo que cerrarla.'
+      if q.unique_content.comments.count(:conditions => ['user_id <> ?', q.user_id]) > 0
+        c_text << 'Si alguna de las respuestas es válida por favor avisad al staff.'
+      end
+      
+      c = Comment.create(:user_id => mrman.id, :comment => c_text, :host => '127.0.0.1', :content_id => q.unique_content_id)
+      
+      q.set_no_best_answer(mrman)
     end
   end
   

@@ -274,6 +274,7 @@ namespace :gm do
                         users_banned = '#{Gmstats.users(:banned, next_stat)}',
                         users_disabled = '#{Gmstats.users(:disabled, next_stat)}',
                         users_generating_karma = '#{users_generating_karma}',
+                        users_refered_today = '#{User.refered_users_in_time_period(first_stat, next_stat)}',
                         new_clans = '#{created_clans}',
                         database_size = '#{dbsize}',
                         sent_emails = '#{sent_emails}',
@@ -297,6 +298,7 @@ namespace :gm do
                         http_404 = '#{http_404}',
                         completed_competitions_matches = #{completed_competitions_matches},
                         refered_hits = '#{Gmstats.refered_hits_in_time_period(first_stat, next_stat)}'
+                        
                   WHERE created_on = '#{cur_str}'")
       first_stat = next_stat
     end

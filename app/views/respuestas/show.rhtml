@@ -35,11 +35,13 @@
 			<div class="author" style="padding-left: 15px;"><a class="nav" href="<%=gmurl(comment.user)%>"><%=comment.user.login%></a> <%=faction_favicon(comment.user)%></div>
 			<%=comment.comment%>
 			<div style="clear: left;"></div>
+			<% if @question.answer_selected_by_user_id then%><div class="infoinline right">Elegida por <strong><%=user_link(@question.answer_selected_by_user)%></strong></div><%end -%>
 			<% end -%>
 			</div>
 	<% elsif @question.answered_on then %>
 			<%mftext('Pregunta cancelada') do %>
 				Esta pregunta ha sido cancelada o ha sido resuelta por su autor.
+				<% if @question.answer_selected_by_user_id then%><div class="infoinline right">Elegida por <strong><%=user_link(@question.answer_selected_by_user)%></strong></div><%end-%>
 			<% end -%>
 	<% else %>
 	<% if user_is_authed && @question.user_can_set_no_question?(@user) then %>
