@@ -51,7 +51,6 @@ class Competition < ActiveRecord::Base
   belongs_to :game
   belongs_to :competitions_participants_type
   belongs_to :event
-  belongs_to :topics_category
   
   validates_uniqueness_of :name
   plain_text :name
@@ -59,6 +58,9 @@ class Competition < ActiveRecord::Base
   before_destroy :return_fee
   
   file_column :header_image
+  
+  has_users_role 'CompetitionAdmin'
+  has_users_role 'CompetitionSupervisor'
   
   has_bank_account
   
@@ -71,16 +73,12 @@ class Competition < ActiveRecord::Base
   # Busca competiciones relacionadas con el usuario, ya sean competiciones de
   # usuarios o de clanes. Si el usuario es admin también devolverá la competición
   # aunque no sea participante
-  def self.find_related_with_user(user_id, limit= :all)
+  def self.find_related_with_user(user_id, opts={})
+    opts = {:order => 'lower(name) ASC', :limit => :all}.merge(opts)
     user_id = user_id.to_i
-    
-    if user_id == 1 then
-      Competition.find(:all, :order => 'lower(name) ASC', :limit => limit)
-    else
-      ids = [0]
-      Clan.leaded_by(user_id).each { |c| ids<< c.id }
-      User.db_query("").collect { |dbr| dbr['role_data']}
-      Competition.find(:all, :conditions => "id IN (SELECT role_data::int4 FROM users_roles WHERE user_id = #{user_id} AND role IN ('CompetitionAdmin', 'CompetitionSupervisor'))
+    ids = [0]
+    Clan.related_with_user(user_id).each { |c| ids<< c.id }
+    conds = "id IN (SELECT role_data::int4 FROM users_roles WHERE user_id = #{user_id} AND role IN ('CompetitionAdmin', 'CompetitionSupervisor'))
                                            or id IN (SELECT a.id 
                                                        FROM competitions a 
                                                        JOIN competitions_participants b on a.id = b.competition_id 
@@ -90,10 +88,9 @@ class Competition < ActiveRecord::Base
                                                        FROM competitions a 
                                                        JOIN competitions_participants b on a.id = b.competition_id 
                                                       WHERE a.competitions_participants_type_id = 2 
-                                                        AND b.participant_id IN (#{ids.join(',')}))", 
-      :order => 'lower(name) ASC',
-      :limit => limit)
-    end
+                                                        AND b.participant_id IN (#{ids.join(',')}))"
+    opts[:conditions] = (opts[:conditions] ? "#{opts[:conditions]} AND #{conds}" : conds)                                                    
+    Competition.find(:all, opts)
   end
   
   def can_recreate_matches?
@@ -280,33 +277,32 @@ class Competition < ActiveRecord::Base
     mrman = User.find_by_login('mrman')
     raise ActiveRecord::RecordNotFound unless mrman
     
-    ec = EventsCategory.find(:first, :conditions => ['id = root_id and code = ?', self.game.code])
+    
     e = Event.create({:title => self.name, 
       :description => self.description, 
-      :events_category_id => ec.id, 
       :starts_on => self.created_on, 
       :ends_on => self.ends_on, 
       :user_id => mrman.id, 
       :website => "http://#{App.domain_arena}/competiciones/show/#{self.id}"})
     e.change_state(Cms::PUBLISHED, mrman)
+    Term.single_toplevel(:game_id => self.game_id).link(e.unique_content)
     self.event_id = e.id
     
-    #if self.pro? then
-    arena_tld = TopicsCategory.find(:first, :conditions => 'id = root_id and code = \'arena\'')
-    game_tld = TopicsCategory.find(:first, :conditions => ['parent_id = ? and name = ?', arena_tld.id, self.game.name])
-    if game_tld.nil?
-      game_tld = TopicsCategory.create(:parent_id => arena_tld.id, :name => self.game.name)
-    end
-    competitions_forum = game_tld
-    newforum = competitions_forum.children.create({:name => self.name})
-    self.topics_category_id = newforum.id
-    
-    # TODO crear portal
-    #end
-    
+    arena_tld = Term.single_toplevel(:slug => 'arena')
+    # TODO reordenar esto
+    game_term = arena_tld.children.find(:first, :conditions => ['name = ? AND taxonomy = \'TopicsCategory\'', self.game.name])     
+    game_term = arena_tld.children.create(:name => self.game.name, :taxonomy => 'TopicsCategory') if game_term.nil?
+    newforum = game_term.children.create(:name => self.name, :taxonomy => 'TopicsCategory')
+    #self.terms= game_term.id # TODO bug
     self.save
   end
   
+  def myforum
+    arena_tld = Term.single_toplevel(:slug => 'arena')
+    game_term = arena_tld.children.find(:first, :conditions => ['name = ? AND taxonomy = \'TopicsCategory\'', self.game.name])
+    return nil unless game_term
+    game_term.children.find(:first, :conditions => ["name = ? AND taxonomy = 'TopicsCategory'", self.name])
+  end
   
   
   public

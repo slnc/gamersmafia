@@ -52,7 +52,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
     assert_not_nil n
     go_to "/columnas/show/#{n.id}", 'columnas/show'
     assert_cache_exists "#{pp.code}/columnas/show/latest_by_author_#{n.user_id}"
-    n2 = pp.column.find(:pending, :conditions => ['user_id = ?', n.user_id])[0]
+    n2 = pp.column.find(:pending, :conditions => ['contents.user_id = ?', n.user_id])[0]
     publish_content n2
     assert_cache_dont_exist "#{pp.code}/columnas/show/latest_by_author_#{n.user_id}"
   end

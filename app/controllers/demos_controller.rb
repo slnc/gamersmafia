@@ -4,13 +4,6 @@ class DemosController < ArenaController
   
   def index
     @title = 'Demos'
-    
-    #    parent_id = params[:category]
-    #    if parent_id then
-    #      @category = portal.demo.category_class.find(parent_id)
-    #      paths, navpath = @category.get_category_address
-    #      @title = paths.join(' &raquo; ')
-    #    end
   end
   
   def buscar
@@ -53,7 +46,7 @@ class DemosController < ArenaController
   
   def _after_show
     if @demo
-      @navpath = [['Demos', '/demos'], [@demo.demos_category.name, "/demos/buscar?demo[demos_category_id]=#{@demo.demos_category_id}"], [@demo.title, "/demos/#{@demo.demos_category.id}/#{@demo.id}"],]
+      @navpath = [['Demos', '/demos'], [@demo.main_category.name, "/demos/buscar?demo[demos_category_id]=#{@demo.demos_category_id}"], [@demo.title, "/demos/#{@demo.main_category.id}/#{@demo.id}"],]
       @title = @demo.title
     end
   end
@@ -65,8 +58,8 @@ class DemosController < ArenaController
     @demo_mirrors = @demo.demo_mirrors
     Demo.increment_counter('downloaded_times', @demo.id)
     CacheObserver.expire_fragment("/common/demos/index/demos_#{@demo.demos_category_id}/page_*") # TODO MUY HEAVY, no podemos hacer que cada demo suponga borrar todas las caches de índices
-    CacheObserver.expire_fragment("/common/demos/index/most_demoed_#{@demo.demos_category.root_id}")
-    # CacheObserver.expire_fragment("/common/demos/most_demoed_#{@demo.demos_category.root_id}")
+    CacheObserver.expire_fragment("/common/demos/index/most_demoed_#{@demo.main_category.root_id}")
+    # CacheObserver.expire_fragment("/common/demos/most_demoed_#{@demo.main_category.root_id}")
     
     render :layout => 'popup'
   end
@@ -110,8 +103,8 @@ class DemosController < ArenaController
     # require_user_can_edit(@demo)
     raise ContentLocked if @demo.is_locked_for_user?(@user)
     @title = "Editar #{@demo.title}"
-    paths, navpath = @demo.demos_category.get_category_address
-    @navpath = navpath + [[@demo.title, "/demos/#{@demo.demos_category.id}/#{@demo.id}"], ['Editar', "/demos/edit/#{@demo.id}"]]
+    paths, navpath = get_category_address(@demo.main_category, 'DemosCategory')
+    @navpath = navpath + [[@demo.title, "/demos/#{@demo.main_category.id}/#{@demo.id}"], ['Editar', "/demos/edit/#{@demo.id}"]]
     if Cms::user_can_edit_content?(@user, @demo) then
       @demo.lock(@user)
       render :action => 'edit'
@@ -161,22 +154,22 @@ class DemosController < ArenaController
   end
   
   def get_games_maps
-    raise ActiveRecord::RecordNotFound unless params[:demos_category_id].to_s != ''
-    @g = User.db_query("SELECT id FROM games WHERE code = (SELECT code FROM demos_categories WHERE id = #{params[:demos_category_id].to_i})")
+    raise ActiveRecord::RecordNotFound unless params[:game_id].to_s != ''
+    @g = Game.find(params[:game_id])
     raise ActiveRecord::RecordNotFound unless @g        
     render :layout => false
   end
   
   def get_games_modes
-    raise ActiveRecord::RecordNotFound unless params[:demos_category_id].to_s != ''
-    @g = User.db_query("SELECT id FROM games WHERE code = (SELECT code FROM demos_categories WHERE id = #{params[:demos_category_id].to_i})")
+    raise ActiveRecord::RecordNotFound unless params[:game_id].to_s != ''
+    @g = Game.find(params[:game_id])
     raise ActiveRecord::RecordNotFound unless @g
     render :layout => false
   end  
   
   def get_games_versions
-    raise ActiveRecord::RecordNotFound unless params[:demos_category_id].to_s != ''
-    @g = User.db_query("SELECT id FROM games WHERE code = (SELECT code FROM demos_categories WHERE id = #{params[:demos_category_id].to_i})")
+    raise ActiveRecord::RecordNotFound unless params[:game_id].to_s != ''
+    @g = Game.find(params[:game_id])
     raise ActiveRecord::RecordNotFound unless @g
     render :layout => false
   end

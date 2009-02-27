@@ -1,17 +1,15 @@
-<% 
-cache("/common/foros/_forums_list/#{parent_id}") do
+<%
+cache("/common/foros/_forums_list/#{parent.id}") do
 p = nil
-for forum in TopicsCategory.find(:all, :conditions => ['parent_id = ?', parent_id], :order => 'lower(name) asc')
-  if p.nil? then
-    p = forum.root
-  end %>
+parent.children.find(:all, :order => 'lower(name)').each do |forum|
+  p = forum.root if p.nil? %>
 <tr class="<%=oddclass%>">
   <td style="width: 20px;"><img src="<%=ASSET_URL%>/storage/games/<%=p.code%>.gif" /></td>
   <td><%=render(:partial => 'forumdescription', :object => @object = forum)%></td>
-  <td class="w50 infoinline right"><%=forum.items_count%></td>
+  <td class="w50 infoinline right"><%=forum.contents_count%></td>
   <td class="w50 infoinline right"><%=forum.comments_count%></td>
   <td class="timestamp infoinline"><%last = forum.get_last_updated_item
-    if last then %><%=print_tstamp(forum.updated_on)%> <a class="content" href="<%=gmurl(Topic.find(last))%>"><img class="go-to-topic" src="/images/blank.gif" /></a><% end -%></td>
+    if last then %><%=print_tstamp(last.updated_on)%> <a class="content" href="<%=gmurl(last)%>"><img class="go-to-topic" src="/images/blank.gif" /></a><% end -%></td>
 </tr>
 <% end -%>
 <% end -%>

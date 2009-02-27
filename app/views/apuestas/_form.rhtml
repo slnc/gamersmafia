@@ -1,6 +1,3 @@
-<p><label >Categoría</label><br/>
-<%= render_tree_select BetsCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc'), 'name', 'bet[bets_category_id]', @bet.bets_category_id %>
-
 <p><label for="bet_title">Nombre de la partida (ejemplo: "EUROCUP UTCTF: oG vs P")</label><br/>
 <%= text_field 'bet', 'title'  %></p>
 
@@ -16,18 +13,20 @@
 
 <strong>Opciones</strong><br />
 <% @bet.bets_options.each do |option| %>
-<input type="text" class="text" name="options[<%=option.id.to_s%>]" value="<%=option.name%>" /> &nbsp; <label><input type="checkbox" name="options_delete[]" value="<%=option.id.to_s%>" /> Borrar</label><br />
+<input type="text" class="text" name="bet[options][<%=option.id.to_s%>]" value="<%=option.name%>" /> &nbsp; <label><input type="checkbox" name="bet[options_delete][]" value="<%=option.id.to_s%>" /> Borrar</label><br />
 <% end %>
 
 <br /><strong>Nuevas opciones:</strong><br />
 <span id="newoptions">
-  <input type="text" class="text" name="options_new[]" value="" /><br />
-  <% if @bet.new_record? then %><input type="text" class="text" name="options_new[]" value="" /><% end -%>
+  <input type="text" class="text" name="bet[options_new][]" value="" /><br />
+  <% if @bet.new_record? then %><input type="text" class="text" name="bet[options_new][]" value="" /><% end -%>
 </span>
 
-<input type="button" class="button" value="Añadir más" onclick="create_new_option('options_new[]');" />
+<input type="button" class="button" value="Añadir más" onclick="create_new_option('bet[options_new][]');" />
 <br />
 <br />
 <% end -%>
+
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @bet } %>
 
 <%=draft_check_box(@bet)%>

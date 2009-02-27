@@ -3,7 +3,9 @@ class ImagenesController < BazarController
   allowed_portals [:gm, :faction, :clan, :bazar, :bazar_district]
   
   def category
-    @category = ImagesCategory.find(params[:category])
+    @category = Term.find_taxonomy(params[:category].to_i, 'ImagesCategory')
+    @category = Term.find_taxonomy(params[:category].to_i, nil) if @category.nil? 
+    raise ActiveRecord::RecordNotFound unless @category
     @title = @category.name
     if not @category.parent_id then
       @navpath = [['Imágenes', '/imagenes'], [@category.name, "/imagenes/#{@category.id}"]]
@@ -16,15 +18,15 @@ class ImagenesController < BazarController
   
   def index
     @categories = portal.categories(Image)
-    if @categories.size == 1
+    #if @categories.size == 1 && @categories[0].slug != 'gm'
       @navpath = [['Imágenes', '/imagenes'], ]
       @category = @categories[0]
       render :action => 'toplevel'
-    else
-      @title = "Imágenes"
-      @navpath = [['Imágenes', '/imagenes'], ]
-      render :action => 'index'
-    end
+    #else
+    #  @title = "Imágenes"
+    #  @navpath = [['Imágenes', '/imagenes'], ]
+    #  render :action => 'index'
+    #end
   end
   
   def toplevel
@@ -39,20 +41,28 @@ class ImagenesController < BazarController
   
   def _after_show
     if @image # podemos estar haciendo 301
-      if @image.images_category.parent then
-        @title = "#{@image.images_category.parent.name} &raquo; #{@image.images_category.name} &raquo; Imagen #{File.basename(@image.file) if @image.file}"
-        @navpath = [['Imágenes', '/imagenes'], [@image.images_category.parent.name, "/imagenes/#{@image.images_category.parent.id}"], [@image.images_category.name, "/imagenes/#{@image.images_category.id}"], [File.basename(@image.file), gmurl(@image)]]
+      if @image.main_category.parent then
+        @title = "#{@image.main_category.parent.name} &raquo; #{@image.main_category.name} &raquo; Imagen #{File.basename(@image.file) if @image.file}"
+        @navpath = [['Imágenes', '/imagenes'], [@image.main_category.parent.name, "/imagenes/#{@image.main_category.parent.id}"], [@image.main_category.name, "/imagenes/#{@image.main_category.id}"], [File.basename(@image.file), gmurl(@image)]]
       else
-        @title = "#{@image.images_category.name} &raquo; Imagen #{@image.file ? File.basename(@image.file) : ''}"
-        @navpath = [['Imágenes', '/imagenes'], [@image.images_category.name, "/imagenes/#{@image.images_category.id}"], [@image.file ? File.basename(@image.file) : 'Imagen', gmurl(@image)]]
+        @title = "#{@image.main_category.name} &raquo; Imagen #{@image.file ? File.basename(@image.file) : ''}"
+        @navpath = [['Imágenes', '/imagenes'], [@image.main_category.name, "/imagenes/#{@image.main_category.id}"], [@image.file ? File.basename(@image.file) : 'Imagen', gmurl(@image)]]
       end
+    end
+  end
+  
+  def _after_create
+    # @image.reload
+    if @image.file.nil? || @image.file == ''
+      flash[:error] = "Error al crear la imagen"
+      Cms::modify_content_state(@image, User.find_by_login('MrMan'), Cms::DELETED, "Sin imagen")
     end
   end
   
   def create_from_zip
     require_auth_users
     raise ActiveRecord::RecordNotFound unless Cms::user_can_mass_upload(@user)
-    @category = ImagesCategory.find(params[:image][:images_category_id])
+    @category = Term.find_taxonomy(params[:category_term], 'ImagesCategory')
     
     if @category.parent_id.nil? then
       flash[:error] = 'Debes elegir una subcategoría, no una categoría'
@@ -87,8 +97,10 @@ class ImagenesController < BazarController
             im.clan_id = @portal.clan_id
             im.state = Cms::PUBLISHED
           end
-          im.images_category_id = params[:image][:images_category_id] # TODO permissions
-          i += 1 if im.save
+          if im.save
+            @category.link(im.unique_content)
+            i += 1
+          end
         end
       end
       
@@ -96,41 +108,6 @@ class ImagenesController < BazarController
       system("rm -r #{tmp_dir}")
       flash[:notice] = "#{i} imágenes subidas correctamente. Tendrán que ser moderadas antes de aparecer publicada."
       redirect_to '/imagenes'
-    end
-  end
-  
-  def create
-    require_auth_users
-    @image = Image.new(params[:image])
-    @image.user_id = @user.id
-    
-    if @portal.respond_to?(:clan_id) && @portal.clan_id
-      @image.clan_id = @portal.clan_id
-      @image.state = Cms::PUBLISHED
-    else
-      @image.state = Cms::PENDING unless (params[:draft] == '1')
-    end
-    
-    if !Cms.user_can_create_content(@user)
-      flash[:error] = "Error al crear imagen: No puedes crear contenidos."
-      render :action => 'new'
-    elsif @image.images_category.nil? or @image.images_category.parent_id.nil? then
-      flash[:error] = 'Debes elegir una subcategoría, no una categoría'
-      render :action => 'new'
-    else
-      if @image.save
-        @image.process_wysiwyg_fields
-        flash[:notice] = 'Imagen subida correctamente. Tendrá que ser moderada antes de aparecer publicada.'
-        if @image.state == Cms::DRAFT then
-          redirect_to :action => 'edit', :id => @image.id
-        else
-          redirect_to :action => 'index'
-        end
-      else
-        flash[:error] = "Error al subir la imagen:<br /> #{@image.errors.full_messages_html}"
-        @pending = Image.pending
-        render :action => 'new'
-      end
     end
   end
 end

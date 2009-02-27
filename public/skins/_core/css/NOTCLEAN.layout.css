@@ -565,7 +565,7 @@ textarea {
 }
 
 .pcent-bar {
-    height: 4px;
+    height: 7px;
     border: 1px solid;
     margin: 2px;
 }
@@ -575,7 +575,7 @@ textarea {
 }
 
 .pcent-bar .bar {
-    height: 4px;
+    height: 7px;
 }
 
 th.timestamp, td.timestamp {

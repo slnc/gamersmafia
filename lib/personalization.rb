@@ -17,7 +17,7 @@ module Personalization
   end
   
   def self.load_quicklinks(u)
-    u.pref_quicklinks || []
+    u.pref_quicklinks || Array.new
   end
   
   def self.del_quicklink(u, code)

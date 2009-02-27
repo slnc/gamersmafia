@@ -1,18 +1,20 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ClanTest < Test::Unit::TestCase
-  
-  # Replace this with your real tests.
-  def test_truth
-    assert true
-  end
-  
   def test_validations_minimal_data
     # valid minimal data
-    c = Clan.new({:tag => 'tagvali', :name => 'Super valid clan'})
-    assert_equal true, c.save, c.errors.to_yaml
-    assert_equal 'tagvali', c.tag
-    assert_equal 'Super valid clan', c.name
+    @clan = Clan.new({:tag => 'tagvali', :name => 'Super valid clan'})
+    assert_equal true, @clan.save, @clan.errors.to_yaml
+    assert_equal 'tagvali', @clan.tag
+    assert_equal 'Super valid clan', @clan.name
+  end
+  
+  def test_create_term
+    test_validations_minimal_data
+    t = Term.find(:first, :conditions => ['clan_id = ? AND parent_id IS NULL', @clan.id])
+    assert t
+    assert_equal @clan.name, t.name
+    assert_equal @clan.tag, t.slug
   end
   
   def test_invalid_minimal_data
@@ -57,11 +59,9 @@ class ClanTest < Test::Unit::TestCase
   
   def test_activate_website_should_create_contents_categories
     @c = Clan.find(1)
-    prev_counts = {}
-    Cms::CLANS_CONTENTS.each { |ccn| prev_counts[ccn] = Object.const_get("#{ActiveSupport::Inflector::pluralize(ccn)}Category").count }
     test_activate_website_should_create_clans_portal
-    Cms::CLANS_CONTENTS.each do |ccn| 
-      assert_equal true, Object.const_get("#{ActiveSupport::Inflector::pluralize(ccn)}Category").count > prev_counts[ccn]
-    end 
+    root_term = Term.single_toplevel(:clan_id => @c.id)
+    assert root_term
+    assert_equal 1, root_term.children.count
   end
 end

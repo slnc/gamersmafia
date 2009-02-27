@@ -5,12 +5,12 @@ cg = @sk.texture
 Skins::TexturesGenerators.const_get(@sk.texture.generator)::USER_OPTIONS.each do |attr,v|
 v_orig = v
 # aquí elegimos entre valor guardado o valor por defecto
-# v2 =  @sk.user_attributes[attr] ? @sk.user_attributes[attr] : v # @skin.config[:intelliskin][ActiveSupport::Inflector::demodulize(cg.name)][:color_gen_params][attr] if @skin.config[:intelliskin][ActiveSupport::Inflector::demodulize(cg.name)] && @skin.config[:intelliskin][ActiveSupport::Inflector::demodulize(cg.name)][:color_gen_params] && @skin.config[:intelliskin][ActiveSupport::Inflector::demodulize(cg.name)][:color_gen_params][attr]
+# v2 =  @sk.user_attributes[attr] ? @sk.user_attributes[attr] : v # @skin.config[:intelliskin][Inflector::demodulize(cg.name)][:color_gen_params][attr] if @skin.config[:intelliskin][Inflector::demodulize(cg.name)] && @skin.config[:intelliskin][Inflector::demodulize(cg.name)][:color_gen_params] && @skin.config[:intelliskin][Inflector::demodulize(cg.name)][:color_gen_params][attr]
 v = @sk.user_config[attr.to_sym] ? @sk.user_config[attr.to_sym] : v.to_s
 %>
 <tr class="<%=oddclass%>">
 	<td class="w200"><%= attr%></td>
-	<td><%= send("#{ActiveSupport::Inflector::demodulize(v_orig.class.name).downcase}_selector", cg.name, "skin_texture[user_config][#{attr}]", v)%></td>
+	<td><%= send("#{Inflector::demodulize(v_orig.class.name).downcase}_selector", cg.name, "skin_texture[user_config][#{attr}]", v)%></td>
 </tr>
 <% end -%>
 </table>

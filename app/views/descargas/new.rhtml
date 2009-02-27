@@ -26,7 +26,7 @@
 <%mftext('Añadir archivos en masa') do %>
 <%= form_tag({:action => 'create_from_zip'}, :multipart => true) %>
   <p><label >Categoría</label><br/>
-  <%= render_tree_select DownloadsCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc'), 'name', 'download[downloads_category_id]', @download.downloads_category_id %>
+  <%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => Download } %>
   <p>El archivo .zip debe contener dentro un único archivo por cada descarga que quieras añadir. Las descargas se crearán con el nombre del archivo en la categoría elegida en el campo anterior y sin descripción.</p>
   <p><label for="image_file">Archivo</label><br/>
   <%= file_field 'download', 'file' %></p>

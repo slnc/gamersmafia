@@ -60,6 +60,22 @@ module Competitions
     end
   end
   
+  def self.trophies_for_user(u)
+    # coger todas las competiciones donde ha participado que esten cerradas y ver los winners
+    trophies = [] 
+    Competition.find_related_with_user(u.id, :conditions => "(state = #{Competition::CLOSED}) OR (type = 'Ladder' AND state = #{Competition::STARTED})").each do |c|
+      #p c 
+      participant = c.get_active_participant_for_user(u)
+      next if participant.nil?
+      # p c.winners(e)
+      idx = c.winners(3).collect {|cwn| cwn.id }.index(participant.id)
+      if idx
+        trophies << [idx, c]
+      end
+    end
+    trophies
+  end
+  
   def self.find_all_matches_from_user(user, conditions=nil, limit=:all)
     participant_ids = [0]
     Competition.find_related_with_user(user.id).each do |c|

@@ -1,5 +1,10 @@
 <table>
-	<tr>
+	<tr class="<%=oddclass%>">
+		<td>Título del anuncio</td>
+		<td><%= text_field 'recruitment_ad', 'title', :class => 'text', :size => 80 %></p>
+		</td>
+	</tr>
+	<tr class="<%=oddclass%>">
 		<td>¿Qué buscas?</td>
 		<td><label><input <%='checked="checked"' if @recruitment_ad.clan_id.nil? %> onclick="update_reclutamiento_nuevo('clan');" type="radio" name="reclutsearching" value="clan" /> Un clan al que unirme</label><br />
 			<label><input <%='checked="checked"' unless @recruitment_ad.clan_id.nil? %> onclick="update_reclutamiento_nuevo('users');" type="radio" name="reclutsearching" value="users" /> Miembros para mi clan</label><br />
@@ -18,7 +23,7 @@
 		<% end -%>
 		</td>
 	</tr>
-	<tr>
+	<tr class="<%=oddclass%>">
 		<td>Juego</td>
 		<td><select name="recruitment_ad[game_id]">
 				<option value=""></option>
@@ -28,15 +33,26 @@
 				</select>
 		</td>		
 	</tr>
-	<tr>
+	<tr class="<%=oddclass%>">
 		<td>Skills</td>
 		<% skillz = (@recruitment_ad.levels || []) %>
 		<td><label><input type="checkbox" name="recruitment_ad[levels][]" <%='checked="checked"' if skillz.include?('low') %> value="low" > low</label> 
 			<label><input type="checkbox" name="recruitment_ad[levels][]" <%='checked="checked"' if skillz.include?('med') %> value="med" > med</label> 
 			<label><input type="checkbox" name="recruitment_ad[levels][]" <%='checked="checked"' if skillz.include?('high') %> value="high" > high</label></td>
 	</tr>
-	<tr>
+	<tr style="vertical-align: top;">
 		<td>Mensaje del anuncio</td>
-		<td><textarea name="recruitment_ad[message]"><%=@recruitment_ad.message%></textarea></td>
+		<td>
+			<input type="button" class="button" value="http://" name="URL" onclick="tag_url()" />
+<input type="button" class="button" value="IMG" name="IMG" onclick="tag_image()" />
+<input type="button" class="button" name="QUOTE" value="QUOTE" onclick="simpletag('QUOTE')" />
+<input type="button" class="button" name="CODE" value="CODE" onclick="simpletag('CODE')" />
+<input type="button" class="button" value="B" name="B" onclick="simpletag('B')" />
+<input type="button" class="button" value="I" name="I" onclick="simpletag('I')" />
+<input type="hidden" name="tagcount" value="" /><br />
+    <% # TODO comment_comment necesario por el js de los botones %>
+    <textarea style="width: 400px; background: #fcfcfc; border: 1px solid #aaa;" id="comment_comment" name="recruitment_ad[main]" rows="20"><%=@recruitment_ad.main%></textarea> 
+<%= render :partial => '/shared/smileys', :locals => { :dom_id => 'comment_comment' } %>
+			</td>
 	</tr>
 </table>

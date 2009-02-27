@@ -81,7 +81,6 @@ class Admin::AdsSlotsControllerTest < ActionController::TestCase
     test_create
     @as = AdsSlot.find(:first)
     post :copy, { :id => @as.id, :ads_slot => { :name => 'laskjalkdsad' } }
-    puts @response.flash[:error]
     assert_response :redirect
     @as2 = AdsSlot.find(:first, :order => 'id desc')
     assert_equal @as.behaviour_class, @as2.behaviour_class

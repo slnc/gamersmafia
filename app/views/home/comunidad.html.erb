@@ -35,13 +35,13 @@ end
 	<div class="grid-6">
 	<% cache('/home/comunidad/recruitment_ads_clans') do %>
 	<% mflist("Buscan jugadores", Proc.new { RecruitmentAd.find(:all, :conditions => 'clan_id IS NOT NULL AND deleted = \'f\'', :order => 'created_on desc', :limit => 4) }, :class => 'lh16', :grid => 3) do |ra| %>
-		<%=faction_favicon(ra.game)%> <a href="/reclutamiento/anuncio/<%=ra.id%>"><%=ra.title%></a>
+		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title%></a>
 	<% end # mflist-%>
 	<% end # cache-%>
 	
 	<% cache('/home/comunidad/recruitment_ads_users') do %>
 	<% mflist("Buscan clan", Proc.new { RecruitmentAd.find(:all, :conditions => 'clan_id IS NULL AND deleted = \'f\'', :order => 'created_on desc', :limit => 4) }, :class => 'lh16', :grid => 3, :glast => true) do |ra| %>
-		<%=faction_favicon(ra.game)%> <a href="/reclutamiento/anuncio/<%=ra.id%>"><%=ra.title%></a>
+		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title%></a>
 	<% end # mflist-%>
 	<% end # cache -%>
 	
@@ -156,13 +156,13 @@ end
 
 <%mftext('Los + hot de la semana', :grid => 4, :has_submodules => true) do %>
 	<%mftext('Mafios@s', :grid => 4, :glast => true) do %>
-	<%cache("/common/home/comunidad/hot_users#{Time.now.strftime('%Y-%m-%d')}") do %>
+	<%cache("/common/home/comunidad/hot_users#{30.minutes.since.strftime('%Y-%m-%d')}") do %>
 	<table>
-		<% User.hot(3).each do |user, hotness| %>
+		<% User.find(:all, :order => 'ranking_popularity_pos', :limit => 3).each do |user| %>
 			<tr class="<%=oddclass%>" style="vertical-align: top; height: 36px">
 				<td style="width: 37px;"><div class="photo"><a href="<%=gmurl(user)%>"><img src="/cache/thumbnails/i/32x32/<%=user.show_photo%>" /></a></div></td>
 				<td><strong><a href="<%=gmurl(user)%>"><%=user.login%></a></strong><br />
-				<span class="infoinline"><strong><%=hotness%></strong> visitas</span></td>
+				<span class="infoinline"><strong><%=user.cache_popularity%></strong> visitas</span></td>
 			</tr>
 		<% end -%>
 	</table>
@@ -172,11 +172,11 @@ end
 	<%mftext('Clanes', :grid => 4, :glast => true, :blast => true) do %>
 	<%cache("/common/home/comunidad/hot_clans#{Time.now.strftime('%Y-%m-%d')}") do %>
 	<table>
-		<% Clan.hot(3).each do |clan, hotness| %>
+		<% Clan.find(:all, :order => 'ranking_popularity_pos', :limit => 3).each do |clan| %>
 			<tr class="<%=oddclass%>" style="vertical-align: top; height: 36px">
 				<td style="width: 37px;"><div class="photo"><a href="<%=gmurl(clan)%>"><img src="/cache/thumbnails/i/32x32/<%=clan.show_logo%>" /></a></div></td>
 				<td><strong><a href="<%=gmurl(clan)%>"><%=clan.name%></a></strong><br />
-				<span class="infoinline"><strong><%=hotness%></strong> visitas</span></td>
+				<span class="infoinline"><strong><%=clan.cache_popularity%></strong> visitas</span></td>
 			</tr>
 		<% end -%>
 	</table>
@@ -195,7 +195,7 @@ end
 <%mftext('Cumplen años hoy', :grid => 3) do %>
   <table>
 <%  cache("/common/miembros/_rightside/birthdays_#{Time.now.strftime('%Y%m%d')}") do %>
-      <% User.find(:all, :conditions => "state IN (#{(User::STATES_CAN_LOGIN - [User::ST_ZOMBIE]).join(',')}) and date_part('day', birthday)::text || date_part('month', birthday)::text = date_part('day', now())::text || date_part('month', now())::text", :order => 'created_on ASC').each do |u| 
+      <% User.find(:all, :conditions => "state IN (#{(User::STATES_CAN_LOGIN - [User::ST_ZOMBIE]).join(',')}) and date_part('day', birthday)::text || date_part('month', birthday)::text = date_part('day', now())::text || date_part('month', now())::text", :order => 'lower(login)').each do |u| 
 		 next if u.age < 5 || u.age > 100 %>
       <tr class="<%=oddclass%>">
         <td><%=user_link(u)%><br /> <span class="infoinline"><strong><%=u.age%></strong> años</span></td>

@@ -271,4 +271,97 @@ module Faith
     User.db_query("UPDATE users SET cache_faith_points = null WHERE id = #{user.id}")
     user.cache_faith_points = nil
   end
+  
+  def self.ranking_user(u)
+    # contamos incluso los que tienen 0
+    ucount = User.db_query("SELECT count(*) FROM users WHERE state IN (#{User::STATES_CAN_LOGIN.join(',')})")[0]['count'].to_i
+    pos = u.ranking_faith_pos ? u.ranking_faith_pos : ucount 
+    {:pos => pos, :total => ucount }
+  end
+  
+  def self.update_ranking
+    lista = {} 
+    User.db_query("SELECT id, cache_faith_points FROM users WHERE state IN (#{User::STATES_CAN_LOGIN.join(',')})").each do |dbr|
+      lista[dbr['cache_faith_points'].to_i] ||= []
+      lista[dbr['cache_faith_points'].to_i] << dbr['id'].to_i
+    end
+    
+    pos = 1
+    lista.keys.sort.reverse.each do |k|
+      # en caso de empate los ids menores (mas antiguos) tienen preferencia
+      lista[k].sort.each do |uid|
+        User.db_query("UPDATE users SET ranking_faith_pos = #{pos} WHERE id = #{uid}")
+        pos += 1
+      end
+    end
+  end
+  
+  def self.faith_points_of_users_at_date_range(date_start, date_end)
+    date_start, date_end = date_end, date_start if date_start > date_end
+    points = {}
+
+    # BUG es imposible contabilizar las resurrecciones pasadas correctamente
+    # BUG para las resurrecciones activas ademas si no han visitado la web el dia de contabilizar stats no dan fe, aqui caducan antes de 3 meses
+    [['refered_hits', 'hit'], 
+     ['publishing_decisions', 'publishing_decision'], 
+     ['content_ratings', 'rating'], 
+     ['comments_valorations', 'rating'],
+     ['users', 'registration', 'referer_user_id IS NOT NULL AND lastseen_on >= now() - \'3 months\'::interval ', 'referer_user_id'],
+     ['users', 'resurrection', 'resurrected_by_user_id IS NOT NULL AND refered_user_id <> resurrected_by_user_id', 'resurrected_by_user_id', 'lastseen_on'],
+     ['users', 'resurrection_own', 'resurrected_by_user_id IS NOT NULL AND refered_user_id = resurrected_by_user_id', 'resurrected_by_user_id', 'lastseen_on'],
+     ].each do |tinfo|
+      tbl_name = tinfo[0]
+      attr_info = tinfo[1]
+      additional_and = (tinfo.size >= 3) ? " AND #{tinfo[2]}" : ''
+      group_by = (tinfo.size >= 4) ? tinfo[3] : 'user_id'
+      date_field = (tinfo.size >= 5) ? tinfo[4] : 'created_on'
+      User.db_query("SELECT count(*), 
+                            #{group_by}
+                     FROM #{tbl_name} 
+                    WHERE #{date_field} BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'  AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
+                 GROUP BY #{group_by}").each do |dbc|
+        next if dbc[group_by].to_i == 0 # anonimos
+        points[dbc[group_by].to_i] ||= 0
+        points[dbc[group_by].to_i] += dbc['count'].to_i * Faith::FPS_ACTIONS[attr_info]
+      end
+    end
+    
+    # competitions_matches
+    CompetitionsMatch.find(:all, :conditions => "#{Competition::COMPLETED_ON_SQL} AND completed_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'  AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'").each do |cm|
+      us = []
+      us += cm.participant1.users if cm.participant1
+      us += cm.participant2.users if cm.participant2
+      us.each do |u|
+        points[u.id] ||= 0
+        points[u.id] += Faith::FPS_ACTIONS['competitions_match']
+      end
+    end
+    #puts "\n#{date_start}"
+    #p points
+    
+    points
+  end
+  
+  
+  def self.user_daily_faith(u, date_start, date_end)
+    res = {}
+    User.db_query("SELECT faith,
+                        created_on
+                   FROM stats.users_daily_stats
+                  WHERE user_id = #{u.id}
+                    AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'  AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
+                 ORDER BY created_on").each do |dbr|
+      res[dbr['created_on'][0..10]] = dbr['faith'].to_i            
+    end
+    curdate = date_start
+    curstr = curdate.strftime('%Y-%m-%d')
+    endd = date_end.strftime('%Y-%m-%d')
+    
+    while curstr <= endd
+      res[curstr] ||= 0
+      curdate = curdate.advance(:days => 1)
+      curstr = curdate.strftime('%Y-%m-%d')
+    end
+    res
+  end
 end

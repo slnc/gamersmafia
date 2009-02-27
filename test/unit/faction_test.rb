@@ -1,10 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class FactionTest < Test::Unit::TestCase  
-  def setup
-    
-  end
-  
+class FactionTest < Test::Unit::TestCase
   def test_find_by_bigboss
     f1 = Faction.find(1)
     u1 = User.find(1)
@@ -41,18 +37,17 @@ class FactionTest < Test::Unit::TestCase
   def test_golpe_de_estado_should_work
     f1 = Faction.find(1)
     f1.members.clear
-    assert f1.update_boss(User.find(1))
+    assert f1.update_boss(User.find(2))
     f1.update_underboss(nil)
-    Factions.user_joins_faction(User.find(2), f1.id)
+    Factions.user_joins_faction(User.find(3), f1.id)
     
-    tc = TopicsCategory.find_by_code(f1.code)
-    assert_not_nil tc
-    assert_count_increases(TopicsCategory) { tc.children.create(:code => 'general', :name => 'General') }
     m = Message.count
-    
+    tgen = Term.single_toplevel(:slug => f1.code).children.find(:first, :conditions => ['taxonomy = \'TopicsCategory\' AND name = \'General\''])
+    topics_count = tgen.contents_count(:cls_name => 'Topic')
     assert_count_increases(Topic) do
       f1.golpe_de_estado
     end
+    assert_equal topics_count + 1, tgen.contents_count(:cls_name => 'Topic')
     assert_equal m + 3, Message.count # un mensaje al boss y otro al miembro
     
     f1.reload
@@ -91,5 +86,10 @@ class FactionTest < Test::Unit::TestCase
     assert f1.update_boss(u59)
     f1.reload
     assert_equal 59, f1.boss.id
+  end
+  
+  def test_karma_points_should_work_correctly
+    f1 = Faction.find(1)
+    assert_equal 1645, f1.karma_points
   end
 end

@@ -127,11 +127,12 @@ class CompetitionsMatch < ActiveRecord::Base
       raise ActiveRecord::RecordNotFound unless mrman
       my_event = Event.create({:title => event_name, 
         :parent_id => parent_event.id, 
-        :events_category_id => parent_event.events_category.id, 
         :starts_on => self.play_on ? self.play_on : self.created_on,
         :ends_on => self.play_on ? self.play_on : self.created_on,
         :website => "/competiciones/partida/#{self.id}",
         :user_id => mrman.id})
+      
+      self.competition.event.main_category.link(my_event.unique_content)
       Cms::publish_content(my_event, mrman)
       self.event_id = my_event.id
       self.save

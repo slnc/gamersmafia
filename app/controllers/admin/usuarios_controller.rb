@@ -1,6 +1,6 @@
 class Admin::UsuariosController < ApplicationController
-  before_filter :require_auth_admins, :except => [ :clear_photo, :clear_description, :report, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request, :confirmar_ban_request , :set_antiflood_level]
-  before_filter :only => [ :clear_photo, :clear_description, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request ] do |c|
+  before_filter :require_auth_admins, :except => [ :edit, :index, :clear_photo, :clear_description, :report, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request, :confirmar_ban_request , :set_antiflood_level]
+  before_filter :only => [ :index, :clear_photo, :clear_description, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request ] do |c|
     raise AccessDenied unless c.user && c.user.has_admin_permission?(:capo)
   end
   before_filter :only => [ :confirmar_ban_request ] do |c|

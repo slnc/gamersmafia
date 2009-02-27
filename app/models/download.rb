@@ -35,10 +35,11 @@ class Download < ActiveRecord::Base
   
   # select id, (select name from downloads_categories where id = a.root_id), downloads_count from downloads_categories a where lower(name) like  '%demos%' and downloads_count > 0;
   def mute_to_demo
+    raise "DEPRECATED"
     opts = self.attributes
     
-    opts['demos_category_id'] = DemosCategory.find_by_code(self.downloads_category.root.code).id
-    opts['games_mode_id'] = Game.find_by_code(self.downloads_category.root.code).games_modes.find(:first).id
+    # TODO la categoría
+    opts['games_mode_id'] = Game.find_by_code(self.main_category.root.code).games_modes.find(:first).id
     
     %w(downloads_category_id clan_id essential).each do |attr|
       opts.delete attr  
@@ -96,18 +97,16 @@ class Download < ActiveRecord::Base
   end
   
   def self.check_invalid_downloads
-    Download.find(:all, :conditions => ['state = ? AND file is NOT NULL and file <> \'\'', Cms::PUBLISHED], :order => 'id DESC').each do |d|
-      if !File.exists?("#{RAILS_ROOT}/public/#{d.file}") && d.download_mirrors.count == 0
-        puts "#{d.id.to_s.ljust(6, ' ')} #{d.file}"
-        # TODO deshabilitado por precaución User.db_query("UPDATE downloads SET file = NULL WHERE id = #{d.id}")
+    u = User.find_by_login('MrAchmed')
+    Download.find(:all, :conditions => ['state = ?', Cms::PUBLISHED], :order => 'id DESC').each do |d|
+      if d.file.to_s != '' && !File.exists?("#{RAILS_ROOT}/public/#{d.file}") && d.download_mirrors.count == 0
+        d.update_attributes(:file => nil)
       end
-    end and nil
-  end
-  
-  def self.check_orphaned_downloads
-    
-    Download.find(:all, :conditions => ['state = ? AND (file is NULL OR file = \'\') AND (select count(*) from download_mirrors where download_id = downloads.id) = 0', Cms::PUBLISHED], :order => '(select root_id FROM downloads_categories where id = downloads.downloads_category_id), id DESC').each do |d|
-      puts "#{ApplicationController.gmurl(d).ljust(55, ' ')} #{d.title}"
+      
+      if d.file.nil? && d.download_mirrors.count == 0
+        ttype, scope = SlogEntry.fill_ttype_and_scope_for_content_report(d.unique_content)
+        sl = SlogEntry.create({:scope => scope, :type_id => ttype, :reporter_user_id => u.id, :headline => "#{Cms.faction_favicon(d)}<strong><a href=\"#{ApplicationController.url_for_content_onlyurl(d)}\">#{d.unique_content_id}</a></strong> reportado (Ni descarga directa ni mirrors) por <a href=\"#{ApplicationController.gmurl(u)}\">#{u}</a>"})  
+      end
     end and nil
   end
 end # Download.find(1442).mute_to_demo ||||||| REACTIVAR file_column a demo después

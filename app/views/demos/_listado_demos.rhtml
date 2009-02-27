@@ -1,0 +1,13 @@
+<%mflist('Demos', demos, :bottom => more_link) do |demo| %>
+<table>
+<tr>
+	<td style="width: 50%"><a href="<%=gmurl(demo)%>"><%=demo.title%></a><br />
+	<% if demo.event then %><div class="infoinline"><a href="<%=gmurl(demo.event)%>"><%=demo.event.title%></a></div><% end -%></td>
+	<td style="width: 50%" class="infoinline">
+		<%=fc_thumbnail(demo.games_map.screenshot, 'i', '93x47', false) if demo.games_map%>
+		<br />		
+		<%=faction_favicon(demo)%> <%=demo.games_map.name%></td>
+</tr>
+</table>
+<div class="right infoinline"><span class="downloads-count"><%=demo.downloaded_times%></span> | <%=draw_rating(demo.rating[0])%></div>
+<% end -%>

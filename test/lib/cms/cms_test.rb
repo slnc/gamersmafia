@@ -357,12 +357,12 @@ class CmsTest < Test::Unit::TestCase
     
     @n1 = News.find(1)
     prev_content_url = @n1.unique_content.url
-    @on = Cms.transform_content(@n1, Tutorial, {:tutorials_category_id => 1})
+    @on = Cms.transform_content(@n1, Tutorial, {:terms => 1})
     assert_equal false, @on.new_record?
     assert_equal 'Tutorial', @on.class.name
     # Verificamos que los atributos únicos de offtopic se han completado con la info de noticia
     @on.unique_attributes.each do |k,v|
-      assert_equal v, @n1.send(k) if @n1.respond_to?(k)
+      assert_equal(v, @n1.send(k)) if @n1.respond_to?(k)
     end
     assert_not_equal @on.unique_content.url, prev_content_url 
   end
@@ -408,7 +408,7 @@ class CmsTest < Test::Unit::TestCase
     old_values = {}
     Cms::COMMON_CLASS_ATTRIBUTES.each { |attr| old_values[attr] = @n1.send(attr) }
     test_transform_content_should_work_if_requirements_match
-     (Cms::COMMON_CLASS_ATTRIBUTES - [:id, :state, :log]).each do |attr|
+     (Cms::COMMON_CLASS_ATTRIBUTES - [:id, :state, :log, :terms, :unique_content_id]).each do |attr|
       assert_equal old_values[attr], @on.send(attr), "#{attr} is '#{@on.send(attr)}' but should be '#{old_values[attr]}'" 
     end
   end
@@ -429,7 +429,14 @@ class CmsTest < Test::Unit::TestCase
     assert ut.update_boss(u10)
     u10.faction_id = ut.id
     assert u10.save
-    assert Cms.user_can_edit_content?(u10, Image.new(:images_category_id => 1))
+    assert Cms.user_can_edit_content?(u10, Image.new(:terms => 1))
+  end
+  
+  def test_capo_can_edit_blogentry
+    u10 = User.find(10)
+    u10.give_admin_permission(:capo)
+    be = Blogentry.find(:first)
+    assert Cms.user_can_edit_content?(u10, be)
   end
   
   def test_sicario_can_edit_contents_of_own_district
@@ -492,9 +499,11 @@ class CmsTest < Test::Unit::TestCase
     bd = BazarDistrict.find(1)
     u59 = User.find(59)
     bd.update_don(u59)
-    tc = TopicsCategory.find_by_code('anime')
-    tcc = tc.children.create({:name => 'General'})
-    t1 = Topic.create(:user_id => 1, :topics_category_id => tcc.id, :title => 'hola anime', :main => 'soy un topic de anime')
+    tc = Term.single_toplevel(:slug => 'anime')
+    tcc = tc.children.create({:name => 'General', :taxonomy => 'TopicsCategory'})
+    t1 = Topic.create(:user_id => 1, :terms => tcc.id, :title => 'hola anime', :main => 'soy un topic de anime')
+    assert !t1.new_record?, t1.errors.full_messages_html
+    p t1.terms
     assert Cms.user_can_edit_content?(u59, t1)
   end
   
@@ -522,8 +531,9 @@ class CmsTest < Test::Unit::TestCase
     assert ut.update_boss(u10)
     u10.faction_id = ut.id
     assert u10.save
-    e = Event.new(:starts_on => 1.year.ago, :ends_on => 11.months.ago, :user_id => 1, :title => 'foo', :events_category_id => EventsCategory.find_by_code('ut').id)
+    e = Event.new(:starts_on => 1.year.ago, :ends_on => 11.months.ago, :user_id => 1, :title => 'foo')
     assert e.save, e.errors.full_messages_html
+    Term.single_toplevel(:slug => 'ut').link(e.unique_content)
     Cms::publish_content(e, User.find(1))
     e.reload
     assert_equal Cms::PUBLISHED, e.state

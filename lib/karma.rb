@@ -16,7 +16,8 @@ module Karma
                 'Review'=> 200,
                 'Funthing'=> 20,
                 'Blogentry'=> 20,
-                'Question'=> 5,
+                'Question'=> 20,
+                'RecruitmentAd'=> 20,
                 'Comment'=> 5,
   }
   
@@ -69,6 +70,28 @@ module Karma
   
   def self.max_user_points
     User.db_query("SELECT max(cache_karma_points) FROM users")[0]['max'].to_i
+  end
+  
+  def self.user_daily_karma(u, date_start, date_end)
+    res = {}
+    User.db_query("SELECT karma,
+                        created_on
+                   FROM stats.users_daily_stats
+                  WHERE user_id = #{u.id}
+                    AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'  AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
+                 ORDER BY created_on").each do |dbr|
+      res[dbr['created_on'][0..10]] = dbr['karma'].to_i            
+    end
+    curdate = date_start
+    curstr = curdate.strftime('%Y-%m-%d')
+    endd = date_end.strftime('%Y-%m-%d')
+    
+    while curstr <= endd
+      res[curstr] ||= 0
+      curdate = curdate.advance(:days => 1)
+      curstr = curdate.strftime('%Y-%m-%d')
+    end
+    res
   end
   
   def self.karma_points_of_users_at_date_range(date_start, date_end)
@@ -173,5 +196,29 @@ module Karma
     raise ValueError unless points > 0
     user.karma_points # forzamos el cálculo desde 0, esto sí que puede incurrir en race condition
     user.cache_karma_points = User.db_query("UPDATE users SET cache_karma_points = cache_karma_points - #{points} WHERE id = #{user.id}; SELECT cache_karma_points FROM users WHERE id = #{user.id}")[0]['cache_karma_points']
+  end
+  
+  def self.ranking_user(u)
+    # contamos incluso los que tienen 0
+    ucount = User.db_query("SELECT count(*) FROM users WHERE state IN (#{User::STATES_CAN_LOGIN.join(',')})")[0]['count'].to_i
+    pos = u.ranking_karma_pos ? u.ranking_karma_pos : ucount 
+    {:pos => pos, :total => ucount }
+  end
+  
+  def self.update_ranking
+    lista = {} 
+    User.db_query("SELECT id, cache_karma_points FROM users WHERE state IN (#{User::STATES_CAN_LOGIN.join(',')})").each do |dbr|
+      lista[dbr['cache_karma_points'].to_i] ||= []
+      lista[dbr['cache_karma_points'].to_i] << dbr['id'].to_i
+    end
+    
+    pos = 1
+    lista.keys.sort.reverse.each do |k|
+      # en caso de empate los ids menores (mas antiguos) tienen preferencia
+      lista[k].sort.each do |uid|
+        User.db_query("UPDATE users SET ranking_karma_pos = #{pos} WHERE id = #{uid}")
+        pos += 1
+      end
+    end
   end
 end

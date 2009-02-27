@@ -14,10 +14,10 @@ forumz.each do |fcontainer|
 	<ul id="col-forums-<%=i0%>" class="widget">
 <% 
 	fcontainer.each do |forum_id|
-forum = TopicsCategory.find(forum_id) %>
+forum = Term.find(forum_id) %>
 <li class="widget" id="forum_<%=forum[:id]%>">
 		<%=mfcontents_basic("#{faction_favicon(forum)} #{truncate(forum.name, 23, '..')}", 
-					Proc.new { forum.last_updated_items(7) }, 
+					Proc.new { forum.last_updated_items(:content_type => 'Topic', :limit => 7) }, 
 					[],
 					:faction_favicon => true, :blast => true,
 					:truncate_at => 26, :cache => "/common/home/foros/topics_#{forum.id}")%>
@@ -43,11 +43,12 @@ end # forumz each -%>
 		}
 	</script>
 	<% cache('/common/home/foros/topics_list') do %>
-<% TopicsCategory.toplevel_groups.each do |name, code| %>
+<% ForosController::TOPLEVEL_GROUPS.each do |name, code| %>
 	<li class="<%=oddclass%> infoinline"><div><strong><a href="#" onclick="return show_tcnav('tcn<%=code%>');"><%=faction_favicon(code)%> <%=name%></a></strong></div>
 	<ul id="tcn<%=code%>" class="tcnav hidden">
-	<%TopicsCategory.find_by_toplevel_group_code(code).each do |tc| %>
-		<li><a href="<%=gmurl(tc)%>"><%=truncate(tc.name, 19, '..')%></a></li>
+	<%Term.find_by_toplevel_group_code(code).each do |tc| 
+		%>
+		<li><a href="<%=gmurl(tc, :taxonomy => 'TopicsCategory')%>"><%=truncate(tc.name, 19, '..')%></a></li>
 	<% end -%>
 	
 	</ul>

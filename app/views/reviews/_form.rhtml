@@ -1,6 +1,3 @@
-<p><label >Categoría</label><br/>
-<%= render_tree_select ReviewsCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc'), 'name', 'review[reviews_category_id]', @review.reviews_category_id %>
-
 <p><label for="review_title">Título</label><br/>
 <%= text_field 'review', 'title', :class => 'text'  %></p>
 
@@ -13,5 +10,7 @@
 <p><label for="image_file">Imagen para portada (.JPG que se mostrará a 105x54)</label><br/>
 <%=fc_thumbnail(@review.home_image, 'f', '105x54')%>
 <%= file_field 'review', 'home_image' %></p>
+
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @review } %>
 
 <%=draft_check_box(@review)%>

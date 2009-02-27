@@ -5,7 +5,7 @@
 <% mftext('Los más descargados') do %>
 <ul class="content-hid">
 <% cache("/common/descargas/index/most_downloaded_#{@category.root_id}") do %>
-  <% @category.root.find(:published, :order => 'downloaded_times DESC', :limit => 5).each do |d| %>
+  <% @category.root.find(:published, :content_type => 'Download', :order => 'downloads.downloaded_times DESC', :limit => 5).each do |d| %>
   <li class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%>
   <div class="infoinline"><span class="downloads-count"><%=d.downloaded_times%></span> | <%=draw_rating(d.rating[0])%></div></li>
   <% end -%>
@@ -16,9 +16,9 @@
 
 <% mftext('Los que más han aportado') do %>
 <% cache("/common/descargas/index/most_productive_author_by_cat_#{@category.nil? ? '' : @category.id}") do %>
-<%=render :partial => '/shared/most_productive_authors', :locals => {:cls => controller.portal.download.items_class, :category => @category}%>
+<%=render :partial => '/shared/most_productive_authors', :locals => {:cls => Download, :category => @category}%>
 <% end -%>
-<% end -%>
+<% end if @category-%>
 <% end -%>
 
 <% content_main do %>
@@ -39,15 +39,15 @@ end
 cache(cache_path) do
 
 if params[:category] then
-  @categories = controller.portal.download.category_class.find(:all, :conditions => ['parent_id = ?', params[:category]], :order => 'lower(name) ASC')
+  @categories = @category.children.find(:all, :conditions => ['parent_id = ?', params[:category]], :order => 'lower(name) ASC')
 else
   @categories = controller.portal.downloads_categories
 end %>
 
 <% for subcategory in @categories %>
 <tr class="downloads-folder <%=oddclass%>">
-  <td class="first"><%=link_to subcategory.name, gmurl(subcategory)%></td>
-  <td class="infoinline"><%=subcategory.items_count%></td>
+  <td class="first"><%=link_to subcategory.name, gmurl(subcategory, :taxonomy => 'DownloadsCategory')%></td>
+  <td class="infoinline"><%=subcategory.contents_count(:cls_name => 'Download')%></td>
 </tr>
 <% end -%>
 <% end -%>
@@ -69,7 +69,7 @@ end %>
   <th class="timestamp">Tamaño</th>
 </tr>
 <% cache("/common/descargas/index/downloads_#{@category.id}/page_#{params[:page]}") do %>
-<% @category.find(:published, :treemode => false, :order => 'lower(title) asc', :limit => @download_pages.current.to_sql[0], :offset => @download_pages.current.to_sql[1]).each do |download| %>
+<% @category.find(:published, :content_type => 'Download', :treemode => false, :order => 'lower(title) asc', :limit => @download_pages.current.to_sql[0], :offset => @download_pages.current.to_sql[1]).each do |download| %>
 <tr class="downloads-download <%=oddclass%>">
   <td class="first"><%=link_to download.title, gmurl(download)%></td>
   <td class="infoinline timestamp centered"><%=print_tstamp download.created_on%></td>

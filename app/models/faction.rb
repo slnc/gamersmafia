@@ -13,6 +13,17 @@ class Faction < ActiveRecord::Base
   before_destroy :set_users_faction_id_to_nil
   after_create :notify_capos_on_create # TODO mover a otro sitio
   
+  has_users_role 'Moderator'
+  has_users_role 'Boss'
+  has_users_role 'Underboss'
+  
+  before_destroy :destroy_editors_too
+  
+  def destroy_editors_too
+    self.editors.each { |ed| ed.destroy }
+    true
+  end
+  
   def moderators
     UsersRole.find(:all, :conditions => ["role = 'Moderator' AND role_data = ?", self.id.to_s], :include => :user, :order => 'lower(users.login)').collect { |ur| ur.user }
   end
@@ -341,36 +352,31 @@ class Faction < ActiveRecord::Base
     end
   end
   
+  def referenced_thing_field
+    "#{self.referenced_thing.class.name.downcase}_id".to_sym
+  end
+  
+  def single_toplevel_term
+    Term.single_toplevel(self.referenced_thing_field => self.referenced_thing.id)
+  end
+  
   def karma_points
     total = 0
     
     # para cada contenido calculamos el total de elementos que salgan de
     # nuestra categoría base y a la vez calculamos los puntos por comentarios
     # (requiere que cache_karma_points != NULL)
-    
-    for c_cls in Cms.categories_classes
-      c = c_cls.find(:first, :conditions => ['code = ? and root_id = id', self.code])
-      cat_ids = c.get_all_children
-      
-      if c_cls.name == 'TopicsCategory':
-        stats = self.class.db_query("SELECT COUNT(id) * #{Karma::KPS_CREATE['Topic']} as total_1, 
-                                                         SUM(COALESCE(cache_comments_count, 0)) * #{Karma::KPS_CREATE['Comment']} as total_2
-                                                    FROM #{ActiveSupport::Inflector.tableize(c.class.items_class.name)} 
-                                                   WHERE #{ActiveSupport::Inflector.underscore(c.class.name)}_id in (#{cat_ids.join(',')}) 
-                                                     AND state = #{Cms::PUBLISHED}")
-      else
-        kps_per_content = Karma::KPS_CREATE[c.class.items_class.name] + Karma::KPS_SAVE[c.class.items_class.name]
-        stats = self.class.db_query("SELECT COUNT(id) * #{kps_per_content} as total_1, 
-                                                         SUM(COALESCE(cache_comments_count, 0)) * #{Karma::KPS_CREATE['Comment']} as total_2
-                                                    FROM #{ActiveSupport::Inflector.tableize(c.class.items_class.name)} 
-                                                   WHERE #{ActiveSupport::Inflector.underscore(c.class.name)}_id in (#{cat_ids.join(',')}) 
-                                                     AND state = #{Cms::PUBLISHED}")
-      end
-      
-      total += stats[0]['total_1'].to_i + stats[0]['total_2'].to_i
-      # raise "#{stats[0]['total_1']} #{stats[0]['total_2']}"
+    rthing = self.referenced_thing
+    root_term = Term.single_toplevel(self.referenced_thing_field => rthing.id)
+    cat_ids = root_term.all_children_ids
+    dbrs = User.db_query("SELECT count(a.*) as count_contents, (SELECT name FROM content_types where id = a.content_type_id) as content_type_name, sum(a.comments_count) as sum_comments FROM contents a JOIN contents_terms b ON a.id = b.content_id AND b.term_id IN (#{cat_ids.join(',')}) WHERE a.state = #{Cms::PUBLISHED} GROUP BY content_type_name")
+    total = 0
+    ct_topics_id = ContentType.find_by_name('Topic').id
+    dbrs.each do |dbr|
+      total += dbr['count_contents'].to_i * Karma::KPS_CREATE[dbr['content_type_name']] 
+      total += dbr['sum_comments'].to_i * Karma::KPS_CREATE['Comment']
     end
-    
+    # TODO no se tienen en cuenta los approved_by_user_id
     total
   end
   
@@ -423,16 +429,16 @@ class Faction < ActiveRecord::Base
   def golpe_de_estado
     mrcheater = User.find_by_login('mrcheater')
     
-    cat = TopicsCategory.find(:first, :conditions => "root_id = (select id from topics_categories where id = root_id and code = '#{self.code}') and code = 'general'")
-    if cat.nil?
-      # si no encontramos categoría general simplemente buscamos una categoría que no sea root 
-      cat = TopicsCategory.find(:first, :conditions => "root_id = (select id from topics_categories where id = root_id and code = '#{self.code}') and id <> root_id")
+    root_term = Term.single_toplevel(self.referenced_thing_field => self.referenced_thing.id)
+    cat = root_term.children.find_by_name('General')
+    if cat.nil? # si no hay General buscamos cualquier otra 
+      cat = root_term.children.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'')
     end
     
     who = self.boss ? self.boss.login : self.underboss.login
     t = Topic.create(:user_id => mrcheater.id, 
                      :title => "¡Golpe de estado! ¡Abajo #{who}!", 
-    :topics_category_id => cat.id, 
+    :terms => cat.id, 
     :main => Comments::formatize("[IMG]http://gamersmafia.com/images/golpe_de_estado.jpg[/IMG]\n[~#{who}] no es un buen líder, no presta atención a la facción y los usuarios han hablado. ¡Quieren un cambio!\n¡Por esta razón y con el poder que el poder en la sombra me ha otorgado declaro esta facción libre de boss y underboss!\n\nCualquiera que desee hacerse cargo de esta facción puede comprarla en la tienda."))
     
     # les enviamos un mensaje privado para notificarselo (desde MrCheater)

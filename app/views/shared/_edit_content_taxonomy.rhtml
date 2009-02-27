@@ -1,0 +1,35 @@
+<%mftext('Publicar en ') do %>
+<% if Cms::ROOT_TERMS_CONTENTS.include?(acts_as_content.class.name) then %>
+Publicar en (root terms contents): <br />
+<br />
+<% created_selects = 0 %>
+<% if !acts_as_content.new_record? then %>
+<% acts_as_content.terms.find(:all, :conditions => 'taxonomy IS NULL and terms.id = terms.root_id').each do |tt| %>
+	<%=render :partial => '/shared/root_term_select', :locals => { :index => created_selects + 1, :content_type => acts_as_content.class.name, :selterm => tt} %>
+	<% created_selects += 1
+end %>
+<% end -%>
+
+<%(3-created_selects).times do |time| %>
+	<%=render :partial => '/shared/root_term_select', :locals => { :index => created_selects + 1, :selterm => nil } %>
+<% end -%>
+ 
+<% end -%>
+
+<% if Cms::CATEGORIES_TERMS_CONTENTS.include?(acts_as_content.class.name) then %>
+Publicar en:<br />
+<% created_selects = 0 %>
+<% if !acts_as_content.new_record? then %>
+<% acts_as_content.terms.find(:all, :conditions => 'taxonomy LIKE \'%Category\'').each do |tt| %>
+	<%=render :partial => '/shared/category_term_select', :locals => { :index => created_selects + 1, :content_type => acts_as_content.class.name, :selterm => tt} %>
+	<% created_selects += 1
+end %>
+<% end -%>
+
+<%(3-created_selects).times do |time| %>
+	<%=render :partial => '/shared/category_term_select', :locals => { :index => created_selects + 1, :content_type => acts_as_content.class.name, :selterm => nil} %>
+<% 
+created_selects += 1
+end -%>
+<% end -%>
+<% end -%>

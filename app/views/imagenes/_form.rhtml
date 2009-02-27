@@ -1,3 +1,4 @@
+<<<<<<< HEAD:app/views/imagenes/_form.rhtml
 <p><label >Categoría</label><br/>
 <select name="image[images_category_id]">
 <% cats = @image.new_record? ? @portal.images_categories : ImagesCategory.toplevel %>
@@ -18,5 +19,7 @@
 
 <p><label for="image_description">Descripción</label><br/>
 <%=wysiwyg('image[description]', :value => @image.description, :height => '100px')%></p>
+
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @image } %>
 
 <%=draft_check_box(@image)%>

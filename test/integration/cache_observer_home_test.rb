@@ -30,7 +30,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
   #end
   
   def test_should_clear_events_box_when_someone_joins_an_event
-    e = Event.new({:user_id => 1, :title => 'evento tal cual', :events_category_id => 1, :starts_on => 2.days.ago, :ends_on => 3.days.since})
+    e = Event.new({:user_id => 1, :title => 'evento tal cual', :terms => 1, :starts_on => 2.days.ago, :ends_on => 3.days.since})
     assert_equal true, e.save
     e.change_state(Cms::PUBLISHED, User.find(1))
     assert_equal true, e.is_public?
@@ -64,7 +64,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
   #  end
   
   def test_should_clear_funthings_cache_after_publishing_funthing
-    n = portal.funthing.find(:pending)[0]
+    n = Funthing.find(:pending)[0]
     assert_not_nil n
     go_to_index
     assert_cache_exists "common/home/index/curiosidades"
@@ -73,7 +73,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
   end
   
   def test_should_clear_funthings_cache_after_unpublishing_funthing
-    n = portal.funthing.find(:published)[0]
+    n = Funthing.find(:published)[0]
     assert_not_nil n
     go_to_index
     assert_cache_exists "common/home/index/curiosidades"
@@ -82,9 +82,9 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
   end
   
   def test_should_clear_funthings_cache_after_commenting_funthing
-    n = portal.funthing.find(:published)[0]
-    sym_login 'superadmin', 'lalala'
+    n = Funthing.find(:published)[0]
     assert_not_nil n
+    sym_login 'superadmin', 'lalala'
     go_to_index
     assert_cache_exists "common/home/index/curiosidades"
     post_comment_on n
@@ -140,11 +140,12 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
   end
   
   def test_should_clear_last_news_of_district
-    n = News.new(:title => 'Noticia 1', :description => 'sumario', :user_id => 1, :news_category_id => NewsCategory.find_by_code('anime').id)
+    n = News.new(:title => 'Noticia 1', :description => 'sumario', :user_id => 1)
     assert n.save
+    assert Term.single_toplevel(:slug => 'anime').link(n.unique_content)
     host! "anime.#{App.domain}"
     get '/'
-    assert_response :success
+    assert_response :success, @response.body
     assert_cache_exists "/anime/home/index/news2"
     publish_content n
     assert_cache_dont_exist "/anime/home/index/news2"

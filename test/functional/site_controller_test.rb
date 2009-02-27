@@ -481,4 +481,15 @@ res.content = unescape('#{content}');]]></result>
       post :do_recommend_to_friend, :content_id => 1, :friends => [panzer.id.to_s]
     end    
   end
+  
+  def test_root_term_children_if_not_authed
+    assert_raises(AccessDenied) { get :root_term_children, :id => 1, :content_type => 'Tutorial' }
+  end
+  
+  def test_root_term_children_if_not_authed
+    sym_login 1
+    
+    get :root_term_children, :id => 1, :content_type => 'Tutorial'
+    assert_response :success
+  end
 end

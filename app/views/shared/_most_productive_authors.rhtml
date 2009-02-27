@@ -1,19 +1,11 @@
-<% if category.nil? then
-  dbusers = User.db_query("SELECT a.id, count(b.id) from users a join #{ActiveSupport::Inflector::tableize(cls.name)} b on a.id = b.user_id where b.state = #{Cms::PUBLISHED} GROUP BY a.id order by count(b.id) DESC LIMIT 5")
-  total = cls.count(:conditions => "state = #{Cms::PUBLISHED}")
-else
-  dbusers = User.db_query("SELECT a.id, count(b.id) from users a join #{ActiveSupport::Inflector::tableize(cls.name)} b on a.id = b.user_id where b.state = #{Cms::PUBLISHED}  and #{ActiveSupport::Inflector::underscore(category.class.name)}_id in (#{category.get_all_children.join(',')}) GROUP BY a.id order by count(b.id) DESC LIMIT 5")
-  total = category.items_count
-end
-
-total = 1 if total == 0
-
-dbusers.each do |dbu|
-  u = User.find(dbu['id'].to_i) %>
-  <%= draw_user_info(u) %>
+<% 
+uzers = category.top_contributors(:taxonomy => "#{Inflector::pluralize(cls.name)}Categories", :limit => 5)
+uzers.each do |info|
+  %>
+  <%= draw_user_info(info[:user]) %>
   <br />
-  <%= draw_pcent_bar(dbu['count'].to_f / total) %>
-  <div class="infoinline" style="text-align: right;"><a href="<%=gmurl(u)%>/contenidos/<%=Cms::translate_content_name(cls.name)%>">Más <%=Cms::translate_content_name(cls.name)%> de <%=u.login%></a></div>
+  <%= draw_pcent_bar(info[:pcent]) %>
+  <div class="infoinline" style="text-align: right;"><a href="<%=gmurl(info[:user])%>/contenidos/<%=Cms::translate_content_name(cls.name)%>">Más <%=Cms::translate_content_name(cls.name)%> de <%=info[:user].login%></a></div>
   <br />
   <br />
 <% end %>

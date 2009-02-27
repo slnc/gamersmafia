@@ -1,8 +1,10 @@
 <% content_support do %>
   <% mftext('¿Para qué sirve?') do %>
-  <p>Si configuras los juegos en los que participas habitualmente saldrás en
-  las búsquedas de jugadores de dichos juegos. Además, es necesario que lo
-  configures para recibir dinero y fe en las competiciones.</p>
+  <p><ul>
+  	<li>Para que otros jugadores te localicen más fácilmente.</li>
+	<li>Para poder inscribirte en competiciones.</li>
+	</ul>
+	</p>
   <% end -%>
 
   <% mftext('Aviso sobre GUIDS') do %>
@@ -20,17 +22,15 @@
   <% end -%>
 <% end -%>
 
-<% content_main do %>
-  <% mftext('Juegos y GUIDs') do %>
+<% content_main do %> 
   <p>Marca los juegos en los que participas habitualmente.</p>
-  <%
-  g_ids = []
+  <% 
+	g_ids = @user.game_ids
+	platforms_ids = @user.platform_ids
 
-  for g in @user.games
-    g_ids<< g.id
-  end
-  %>
+%>
   <form method="post" action="/cuenta/guids/guardar">
+ 	<%mftext('Juegos') do %>
   <table>
     <tr>
       <th class="w20"></th>
@@ -58,7 +58,20 @@
     </tr>
     <% end -%>
   </table>
+  <% end -%>
+  
+  <%mftext('Plataformas') do %>
+  <table>
+    <% for g in Platform.find(:all, :order => 'lower(name) ASC') %>
+    <tr class="<%=oddclass%>">
+      <td class="w20"><input type="checkbox" name="platforms[]" value="<%=g.id%>" <%=platforms_ids.include?(g.id) ? 'checked="checked"' : ''%> /></td>
+      <td class="w20"><%=faction_favicon(g)%></td>
+      <td><%=g.name%></td>
+    </tr>
+    <% end -%>
+  </table>
+  <% end -%>
+  
   <input type="submit" class="button" value="Guardar" />
 </form>
-<% end -%>
 <% end -%>

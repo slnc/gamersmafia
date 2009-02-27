@@ -9,18 +9,19 @@ class Question < ActiveRecord::Base
   acts_as_categorizable
   
   has_one :last_updated_item, :class_name => 'Question'
-  after_create :update_avg_popularity
+  # after_create :update_avg_popularity
   before_create :check_ammount
   before_create :check_max_open
   before_save :check_state
   before_save :check_switching_from_published
   
-  observe_attr :ammount
+  observe_attr :ammount, :answered_on
   has_bank_ammount_from_user
   
-  validates_presence_of :questions_category, :message => 'El campo categoría no puede estar en blanco'
   validates_presence_of :title, :message => 'El campo pregunta no puede estar en blanco'
-  validates_length_of :title, :maximum => 100 
+  validates_length_of :title, :maximum => 100
+  
+  belongs_to :answer_selected_by_user, :foreign_key => :answer_selected_by_user_id, :class_name => 'User'
   
   # attr_protected :ammount
   
@@ -61,6 +62,7 @@ class Question < ActiveRecord::Base
         Bank.revert_transfer(t)
         self.log_action('unset_respuesta', modifying_user.login)
         self.accepted_answer_comment_id = nil
+        self.answer_selected_by_user_id = nil
         self.answered_on = nil
         self.save
       else
@@ -71,6 +73,7 @@ class Question < ActiveRecord::Base
   
   def set_no_best_answer(modifying_user)
     self.answered_on = Time.now
+    self.answer_selected_by_user_id = modifying_user.id
     if self.save
       self.log_action('set_sin_respuesta', modifying_user.login)
       Message.create(:user_id_from => User.find_by_login('nagato').id, :user_id_to => self.user_id, :title => "Tu pregunta \"#{self.title}\" ha sido cerrada sin una respuesta", :message => "Lo sentimos pero nadie ha dado con una respuesta a tu pregunta o se ha cancelado por otra razón.")
@@ -91,6 +94,7 @@ class Question < ActiveRecord::Base
     else
       self.accepted_answer_comment_id = comment_id
       self.answered_on = Time.now
+      self.answer_selected_by_user_id = modifying_user.id
       if self.save
         comment = Comment.find(comment_id)
         self.log_action('set_respuesta', modifying_user.login)
@@ -160,7 +164,7 @@ class Question < ActiveRecord::Base
   end
   
   def self.top_sages(category=nil, limit=10)
-    sql_incat = category ? " AND questions_category_id IN (#{category.root.get_all_children.join(',')})" : ''
+    sql_incat = category ? " AND questions_category_id IN (#{category.root.all_children_ids.join(',')})" : ''
     res = []
     User.db_query("SELECT count(*) as points, a.id, a.avatar_id, a.login, a.cache_karma_points, a.cache_faith_points FROM users a join comments b on a.id = b.user_id WHERE b.id IN (SELECT accepted_answer_comment_id FROM questions WHERE state = #{Cms::PUBLISHED} #{sql_incat} AND accepted_answer_comment_id IS NOT NULL) GROUP BY a.id, a.login, a.avatar_id, a.cache_karma_points, a.cache_faith_points ORDER BY count(*) DESC, lower(a.login) LIMIT #{limit}").each do |dbu|
       res<< {:user => User.new(dbu.block_sym(:points)), :points => dbu['points'].to_i}

@@ -6,7 +6,7 @@ require 'eventos_controller'
 class EventosController; def rescue_action(e) raise e end; end
 
 class EventosControllerTest < Test::Unit::TestCase
-  test_common_content_crud :name => 'Event', :form_vars => {:title => 'footapang', :starts_on => Time.now, :ends_on => 7.days.since, :events_category_id => 2} # 2 pq es de facción
+  test_common_content_crud :name => 'Event', :form_vars => {:title => 'footapang', :starts_on => Time.now, :ends_on => 7.days.since}, :root_terms => 1 
   test_min_acl_level :user, [ :member_join, :member_leave ], :post
 
   def setup

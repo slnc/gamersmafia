@@ -18326,4 +18326,3 @@ ALTER TABLE ONLY users_karma_daily_by_portal
 --
 -- PostgreSQL database dump complete
 --
-

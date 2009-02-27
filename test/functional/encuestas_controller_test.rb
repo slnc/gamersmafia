@@ -6,7 +6,7 @@ require 'encuestas_controller'
 class EncuestasController; def rescue_action(e) raise e end; end
 
 class EncuestasControllerTest < Test::Unit::TestCase
-  test_common_content_crud :name => 'Poll', :form_vars => {:title => 'footapang', :polls_category_id => 1, :starts_on => 2.days.since, :ends_on => 9.days.since}
+  test_common_content_crud :name => 'Poll', :form_vars => {:title => 'footapang', :starts_on => 2.days.since, :ends_on => 9.days.since}, :root_terms => 1
 
   def setup
     @controller = EncuestasController.new
@@ -15,10 +15,8 @@ class EncuestasControllerTest < Test::Unit::TestCase
   end
 
   def test_should_create_with_options
-    post :create, {:poll => {:title => 'footapang', :polls_category_id => 1, :starts_on => 2.days.since, :ends_on => 9.days.since},
-                   :options_new => ['opcion1', 'opcion2'], 
-                  },
-                  { :user => 1 }
+    post :create, {:poll => {:title => 'footapang', :terms => 1, :starts_on => 2.days.since, :ends_on => 9.days.since, :options_new => ['opcion1', 'opcion2']}, 
+                  }, { :user => 1 }
     assert_response :redirect
     b = Poll.find_by_title('footapang')
     assert_not_nil b
@@ -55,5 +53,17 @@ class EncuestasControllerTest < Test::Unit::TestCase
     assert_nil b.polls_options.find_by_name('opcion2')
     assert_not_nil b.polls_options.find_by_name('opcion3')
     assert_not_nil b.polls_options.find_by_name('opcion4')
+  end
+  
+  def test_vote
+    poll = Poll.find(:published)[0]
+    assert poll.update_attributes(:starts_on => 1.day.ago, :ends_on => 7.days.since)
+    orig = poll.polls_votes_count
+    assert_count_increases(PollsVote) do
+      post :vote, { :id => poll.id, :poll_option => poll.polls_options.find(:first).id }
+    end
+    assert_response :redirect
+    poll.reload
+    assert_equal orig + 1, poll.polls_votes_count
   end
 end

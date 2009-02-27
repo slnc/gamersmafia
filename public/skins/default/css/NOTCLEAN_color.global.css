@@ -498,8 +498,12 @@ textarea {
     background: #AD0011;
 }
 
-.warning10 .pcent-bar .bar {
+.warning10 .pcent-bar .bar{
     background: #ff172f;
+}
+
+.negative .pcent-bar .bar  {
+	background: #860000;
 }
 
 .warning9 .pcent-bar .bar {
@@ -534,7 +538,8 @@ textarea {
     background: #00E624;
 }
 
-.warning1 .pcent-bar .bar {
+.warning1 .pcent-bar .bar,
+.positive .pcent-bar .bar {
     background: green;
 }
 
@@ -576,7 +581,7 @@ textarea {
 
 .warning1 .pcent-bar {
     border-color: green;
-}
+}	
 
 #userbox-action-link-competition.activated a.buttonic {
     background: #FFA500;
@@ -1100,3 +1105,11 @@ tr.value-is-low td.value { color: #AD0011;
     background: #fce0e0; }
 tr.value-is-high td.value { background: #ddfddd;
     color: Green;}
+
+.bar-quality {
+width: 143px;
+height: 9px;
+margin-left: 2px;
+margin-top: 2px;
+background: url(../images/bar_quality.png) 0 0 no-repeat;
+}

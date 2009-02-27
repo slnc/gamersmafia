@@ -8,8 +8,15 @@ module ActsAsContent
   module AddActsAsContent
     def acts_as_content # necesario para registrar los distintos callbacks
       after_create :do_after_create
+      after_save :do_after_save
       after_update :do_after_update
+      
       after_destroy :do_after_destroy
+      
+      #belongs_to :unique_content, :class_name => 'Content'
+      
+      
+      
       validates_presence_of :user
       before_create { |m| m.log = nil; m.log_action('creado', m.user.login) }
       before_save :do_before_save
@@ -28,6 +35,13 @@ module ActsAsContent
             m.log_action('modificado', m.cur_editor) 
           end
         end
+        
+        if m.attributes[:terms]
+          m.attributes[:terms] = [m.attributes[:terms]] unless m.attributes[:terms].kind_of(Array)
+          @_terms_to_add = m.attributes[:terms]
+          m.attributes.delete :terms
+        end
+        true
       end
       
       class_eval <<-END
@@ -47,7 +61,7 @@ module ActsAsContent
       def most_popular_authors(opts={})
         q_add = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
         opts[:limit] ||= 5
-        dbitems = User.db_query("SELECT count(id), user_id from #{ActiveSupport::Inflector::tableize(self.name)} WHERE state = #{Cms::PUBLISHED}#{q_add} GROUP BY (user_id) ORDER BY sum((coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0))) desc limit #{opts[:limit]}")
+        dbitems = User.db_query("SELECT count(id), user_id from #{Inflector::tableize(self.name)} WHERE state = #{Cms::PUBLISHED}#{q_add} GROUP BY (user_id) ORDER BY sum((coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0))) desc limit #{opts[:limit]}")
         dbitems.collect { |dbitem| [User.find(dbitem['user_id']), dbitem['count'].to_i] }
       end
       
@@ -86,7 +100,7 @@ module ActsAsContent
       
       # Soporte para find(:published) find(:drafts) find(:deleted), etc
       def find(*args)
-        t_name = ActiveSupport::Inflector::tableize(table_name)
+        t_name = Inflector::tableize(table_name)
         agfirst = args.first
         if agfirst.is_a?(Symbol) && [:drafts, :published, :deleted, :pending].include?(agfirst) then
           options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
@@ -135,7 +149,7 @@ module ActsAsContent
     def process_wysiwyg_fields
       attrs = {}
       
-      if not %w(topic blogentry).include?(self.class.name.downcase) then
+      if !Cms::DONT_PARSE_IMAGES_OF_CONTENTS.include?(self.class.name) then
         for d in Cms::WYSIWYG_ATTRIBUTES[self.class.name]
           attrs[d] = Cms::parse_images(self.attributes[d], "#{self.class.name.downcase}/#{self.id % 1000}/#{self.id}")
         end
@@ -158,16 +172,72 @@ module ActsAsContent
       self.add_karma if is_public?
     end
     
+    def do_after_save
+      return false if self.unique_content_id.nil?
+      if @_terms_to_add
+        @_terms_to_add.each do |tid|
+          Term.find(tid).link(self.unique_content)
+        end
+        @_terms_to_add = []
+        if self.unique_content_id
+          uniq = self.unique_content
+          uniq.url = nil
+          ApplicationController.gmurl(uniq)
+        end
+      end
+      true
+    end
+    
     def do_after_create
-      create_unique_content
+      create_my_unique_content
       # Lo añadimos al tracker del usuario
       Users.add_to_tracker(self.user, self.unique_content)
+    end
+    
+    def terms=(new_terms)
+      @_terms_to_add ||= []
+      new_terms = [new_terms] unless new_terms.kind_of?(Array)
+      @_terms_to_add += new_terms 
+    end
+    
+    def unique_content
+      @_cache_unique_content ||= Content.find(self.unique_content_id) if self.unique_content_id
+    end
+    
+    def root_terms
+      self.unique_content.root_terms
+    end
+    
+    def root_terms_ids=(arg)
+      self.unique_content.root_terms_ids=(arg)
+      self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
+    end
+    
+    # arg[0] arg
+    # arg[1] taxonomy
+    def categories_terms_ids=(arg)
+      self.unique_content.categories_terms_ids=(arg)
+      self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
+    end
+    
+    def root_terms_add_ids(arg)
+      self.unique_content.root_terms_add_ids(arg)
+      self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
+    end
+    
+    def categories_terms
+      self.unique_content.categories_terms
+    end
+    
+    def categories_terms_add_ids(arg, taxonomy)
+      self.unique_content.categories_terms_add_ids(arg, taxonomy)
+      self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
     end
     
     def do_before_save      
       attrs = {}
       # TODO llamar específicamente a esta función para actualizar las imágenes
-      if not %w(Topic Question Blogentry).include?(self.class.name) and self.record_timestamps then
+      if !Cms::DONT_PARSE_IMAGES_OF_CONTENTS.include?(self.class.name) and self.record_timestamps then
         tmpid = id
         tmpid = 0 if self.id.nil?
         for d in Cms::WYSIWYG_ATTRIBUTES[self.class.name]
@@ -221,9 +291,15 @@ module ActsAsContent
     end
     
     
+    def terms(*args)
+      self.unique_content.send(:terms, *args)
+    end
+    
     def get_game_id
       if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-        tld_code = self.main_category.root.code
+        maincat = self.main_category
+        return unless maincat
+        tld_code = maincat.root.code
         g = Game.find_by_code(tld_code)
         g.id if g
       end
@@ -231,7 +307,9 @@ module ActsAsContent
     
     def get_my_platform_id
       if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-        tld_code = self.main_category.root.code
+        maincat = self.main_category
+        return unless maincat
+        tld_code = maincat.root.code
         p = Platform.find_by_code(tld_code)
         p.id if p
       end
@@ -239,7 +317,9 @@ module ActsAsContent
     
     def get_my_bazar_district_id
       if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-        tld_code = self.main_category.root.code
+        maincat = self.main_category
+        return unless maincat
+        tld_code = maincat.root.code
         p = BazarDistrict.find_by_code(tld_code)
         p.id if p
       end
@@ -256,7 +336,7 @@ module ActsAsContent
       self.del_karma if is_public?
       
       # TODO ya no :p hacemos esto para no triggerear record_timestamps
-      # self.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} SET user_id = #{new_user.id} WHERE id = #{self.id}")
+      # self.class.db_query("UPDATE #{Inflector::tableize(self.class.name)} SET user_id = #{new_user.id} WHERE id = #{self.id}")
       # self.reload
       self.user_id = new_user.id
       self.user = new_user # necesario hacer ambos cambios por si ya se ha cargado self.user antes
@@ -270,7 +350,7 @@ module ActsAsContent
     def unique_attributes
       out = {}
       self.attributes.each do |k,v|
-        next if k.to_sym == :id 
+        next if [:id, :unique_content_id, :terms].include?(k.to_sym) 
         out[k.to_sym] = v unless Cms::COMMON_CLASS_ATTRIBUTES.include?(k.to_sym)
       end
       out
@@ -281,13 +361,30 @@ module ActsAsContent
     end
     
     def has_category?
-      Cms::category_class_from_content_name(self.class.name) ? true : false
+      Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name)
     end
     
-    # TODO this shouldn't go here
+    # Devuelve la primera categoría asociada a este contenido
     def main_category
-      cls = Cms::category_class_from_content_name(self.class.name)
-      cls.find(self.attributes["#{ActiveSupport::Inflector::underscore(cls.name)}_id"])
+      # DEPRECATED
+      uniq = self.unique_content
+      # para que haya un main_category a la hora de guardar el contenido
+      if uniq.nil? # no linked_terms yet, perhaps given?
+        return nil if @_terms_to_add.nil? || (@_terms_to_add.kind_of?(Array) && @_terms_to_add.size == 0)
+        cats = @_terms_to_add.collect { |tid| Term.find(tid) }
+      else
+        if Cms::ROOT_TERMS_CONTENTS.include?(self.class.name)
+          cats = uniq.linked_terms('NULL')
+        else
+          cats = uniq.linked_terms("#{Inflector::pluralize(self.class.name)}Category")
+        end
+      end
+      
+      if cats.size > 0
+        cats[0]
+      else
+        self.unique_content.linked_terms('NULL')[0]
+      end
     end
     
     # TODO refactor this
@@ -304,7 +401,7 @@ module ActsAsContent
           # actualizamos la categoría actual
           p = self.main_category
           while p
-            p.last_updated_item_id = self.id
+            p.last_updated_item_id = self.unique_content.id
             p.save
             p = p.parent
           end
@@ -313,7 +410,7 @@ module ActsAsContent
             p = self.class.category_class.find(self.slnc_changed_old_values[self.class.category_attrib_name])
             while p
               last = p.last_updated_items(1) # tenemos que chequear el último de cada una de las categorías superiores
-              p.last_updated_item_id = (last.size > 0) ? last[0].id : nil
+              p.last_updated_item_id = (last.size > 0) ? last[0].unique_content.id : nil
               p.save
               p = p.parent
             end
@@ -332,6 +429,7 @@ module ActsAsContent
         
         if uniq then
           uniq.state = self.state
+          uniq.closed = self.closed
           uniq.save # refresh updated_on
         end
       end
@@ -344,7 +442,7 @@ module ActsAsContent
     end
     
     # funciones para crear contenido único
-    def unique_content
+    def OLD_unique_content
       @_cache_unique_content ||= self.unique_content_type.contents.find(:first, :conditions => "external_id = #{self.id}")
     end
     
@@ -353,14 +451,20 @@ module ActsAsContent
       @_cache_unique_content_type ||= ContentType.find_by_name(self.class.name)
     end
     
-    def create_unique_content
+    # no llamarlo create_unique_content pq rails es demasiado listo
+    def create_my_unique_content
       myctype = ContentType.find(:first, :conditions => "name = '#{self.class.name}'")
       base_opts = {:content_type_id => myctype.id, :external_id => self.id, :name => self.resolve_hid, :updated_on => self.created_on, :state => self.state}
       base_opts.merge!({:clan_id => clan_id}) if self.respond_to? :clan_id
-      Content.create(base_opts)
+      c = Content.create(base_opts)
+      
+      raise "error creating content!" if c.new_record?
+      
+      self.unique_content_id = c.id
+      User.db_query("UPDATE #{Inflector::tableize(self.class.name)} SET unique_content_id = #{c.id} WHERE id = #{self.id}")
       
       # añadimos karma si es un contenido que no necesita ser moderado
-      add_karma if %w(topic blogentry question).include?(self.class.name.downcase)
+      add_karma if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(self.class.name)
     end
     
     def delete_unique_content
@@ -446,15 +550,23 @@ module ActsAsContent
         # cogemos el numero de votos como el valor del 1er cuartil ordenando la lista de contenidos por votos asc
         # calculamos "m"
         if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-          cat_ids = self.main_category.root.get_all_children
-          q = "AND #{ActiveSupport::Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})"
+          total = self.main_category.root.count(:content_type => self.class.name)
+          # TODO esto debería ir en term
+          contents_ids = User.db_query("SELECT content_id 
+                                          FROM contents 
+                                          JOIN contents_terms ON contents.id = contents_terms.content_id 
+                                         WHERE contents.state = #{Cms::PUBLISHED} 
+                                           AND term_id IN (#{self.main_category.root.all_children_ids(:content_type => self.class.name).join(',')})").collect { |dbr| dbr['content_id'] }
+          q = "AND unique_content_id IN (#{contents_ids.join(',')})"
+          #cat_ids = self.main_category.root.all_children_ids
+          #q = "AND #{Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})"
         else
           q = ''
+          total = self.class.count(:conditions => "state = #{Cms::PUBLISHED} #{q}")
         end
         
-        total = self.class.count(:conditions => "state = #{Cms::PUBLISHED} #{q}")
         dbm = User.db_query("SELECT cache_rated_times 
-                         FROM #{ActiveSupport::Inflector::tableize(self.class.name)}
+                         FROM #{Inflector::tableize(self.class.name)}
                         WHERE state = #{Cms::PUBLISHED} #{q}
                           AND cache_rated_times > 0
                      ORDER BY cache_rated_times LIMIT 1 OFFSET #{(total/100*25 + 0.5).to_i}")
@@ -467,7 +579,7 @@ module ActsAsContent
         c = get_mean_vote(m) 
         self.cache_weighted_rank = (v / (v+m)) * r + (m / (v+m)) * c
         
-        self.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} 
+        self.class.db_query("UPDATE #{Inflector::tableize(self.class.name)} 
                                 SET cache_rating = #{self.cache_rating}, 
                                     cache_rated_times = #{self.cache_rated_times},
                                     cache_weighted_rank = #{self.cache_weighted_rank}
@@ -486,22 +598,30 @@ module ActsAsContent
       # calcula el voto medio para un contenido dependiendo de si tiene categoría o no
       # asumo que cada contenido y cada facción tiene su propia media
       if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-        cat_ids = self.main_category.root.get_all_children
+        # cat_ids = self.main_category.root.all_children_ids
+        # TODO esto deberia ir en Term
+        
+        contents_ids = User.db_query("SELECT content_id 
+                                          FROM contents 
+                                          JOIN contents_terms ON contents.id = contents_terms.content_id 
+                                         WHERE contents.state = #{Cms::PUBLISHED} 
+                                           AND term_id IN (#{self.main_category.root.all_children_ids(:content_type => self.class.name).join(',')})").collect { |dbr| dbr['content_id'] }
+        
         mean = User.db_query("SELECT avg(cache_rating) 
-                                FROM #{ActiveSupport::Inflector::tableize(self.class.name)} 
+                                FROM #{Inflector::tableize(self.class.name)} 
                                WHERE cache_rating is not null 
                                  AND cache_rated_times >= #{m} 
-                                 AND #{ActiveSupport::Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})")[0]['avg'].to_f
+                                 AND unique_content_id IN (#{contents_ids.join(',')})")[0]['avg'].to_f
       else
         mean = User.db_query("SELECT avg(cache_rating) 
-                                FROM #{ActiveSupport::Inflector::tableize(self.class.name)} 
+                                FROM #{Inflector::tableize(self.class.name)} 
                                WHERE cache_rating is not null 
                                  AND cache_rated_times >= #{m}")[0]['avg'].to_f
       end
     end
     
     def clear_rating_cache
-      self.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} 
+      self.class.db_query("UPDATE #{Inflector::tableize(self.class.name)} 
                               SET cache_rating = NULL, 
                                   cache_rated_times = NULL, 
                                   cache_weighted_rank = NULL WHERE id = #{self.id}")
@@ -579,7 +699,7 @@ module ActsAsContent
     def prepare_destruction
       self.unique_content.destroy
       
-      if %w(Topic Question Blogentry).include?(self.class.name.downcase) or (self.state == Cms::PUBLISHED) then # el elemento estaba publicado o era un tópic, quitamos karma
+      if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(self.class.name) or (self.state == Cms::PUBLISHED) then # el elemento estaba publicado o era un tópic, quitamos karma
         del_karma
       end
     end
@@ -603,7 +723,7 @@ module ActsAsContent
     # Devuelve los portales en los que este contenido se muestra.
     # TODO esto no es correcto
     def get_related_portals
-      if self.respond_to?(:clan_id) && self.clan_id
+      if self.respond_to?(:clan_id) && self.clan_id && self.class.name != 'RecruitmentAd'
         [ClansPortal.find_by_clan_id(self.clan_id)]
       else
         portals = [GmPortal.new, ArenaPortal.new, BazarPortal.new]

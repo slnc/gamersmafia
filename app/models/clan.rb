@@ -6,6 +6,7 @@ class Clan < ActiveRecord::Base
   has_many :clans_portals, :dependent => :destroy
   has_many :clans_sponsors, :dependent => :destroy
   has_many :recruitment_ads
+  has_many :terms
   
   has_and_belongs_to_many :games
   file_column :logo, :format => :jpg
@@ -132,6 +133,15 @@ class Clan < ActiveRecord::Base
     :order => 'lower(name) ASC')
   end
   
+  def self.related_with_user(user_id)
+    Clan.find(:all, 
+              :conditions => "id in (SELECT clan_id 
+                                       FROM clans_groups a 
+                                       JOIN clans_groups_users b on a.id = b.clans_group_id 
+                                      WHERE b.user_id = #{user_id.to_i})", 
+              :order => 'lower(name) ASC')
+  end
+  
   
   def friends
     Clan.find_by_sql("SELECT * 
@@ -167,11 +177,8 @@ class Clan < ActiveRecord::Base
   
   private
   def create_contents_categories
-    Cms::CLANS_CONTENTS.each do |ccn|
-      Object.const_get("#{ActiveSupport::Inflector::pluralize(ccn)}Category").create({:name => self.name, :code => self.tag, :clan_id => self.id})
-    end
-    tcp = TopicsCategory.find_by_clan_id(self.id)
-    tcp.children.create({:name => 'General', :code => 'general', :clan_id => self.id})
+    root_term = Term.single_toplevel(:clan_id => self.id)
+    root_term.children.create(:name => 'General', :taxonomy => 'TopicsCategory')
   end
   
   public
@@ -284,6 +291,7 @@ class Clan < ActiveRecord::Base
     # creamos grupos
     cleaders = ClansGroup.create({:name => 'Clanleaders', :clans_groups_type_id => ClansGroupsType.find_by_name('clanleaders').id, :clan_id => self.id})
     members = ClansGroup.create({:name => 'Miembros', :clans_groups_type_id => ClansGroupsType.find_by_name('members').id, :clan_id => self.id})
+    Term.create(:clan_id => self.id, :name => self.name, :slug => self.tag)
     self.log("Clan creado")
   end
   
@@ -316,28 +324,28 @@ class Clan < ActiveRecord::Base
     self.find_by_sql("SELECT a.* FROM clans a JOIN clans_games b ON a.id = b.clan_id WHERE b.game_id IN (#{games_ids.join(',')}) #{sqladd} ORDER BY #{opts[:order]} LIMIT #{opts[:limit]}")
   end
   
-  def self.hot(limit)
-    # TODO incluir visitas a webs de clanes
-    # TODO incluir visitas a sus webs
+  def self.hot(limit, t1, t2)
+    t1, t2 = t2, t1 if t1 > t2
     # TODO PERF no podemos hacer esto, dios, hay que calcular esta info en segundo plano y solo leerla
     dbi = Dbs.db_query("select count(*), 
                                 model_id 
                            from stats.pageviews 
                           where controller = 'clanes' 
                             and action = 'clan' 
-                            and created_on >= now() - '1 week'::interval 
+                            and created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}' 
                             and model_id not in (select id::varchar 
                                                    from clans 
-                                                  where deleted = 't') 
+                                                  where deleted = 't')  
                        group by model_id 
                        order by count(*) desc 
                           limit #{limit}")
     results = []
     dbi.each do |dbu|
-      results<< [Clan.find(dbu['model_id']), dbu['count']]
+      results<< [Clan.find(dbu['model_id'].to_i), dbu['count'].to_i]
     end
     results
   end
+  
   
   validates_format_of :tag, :with => /^[a-z0-9<>¿\?[:space:]|\]\[\(\):;^\.,_¡!\/&%"\+\-]{1,7}$/i, :message => 'El tag tiene más de 7 caracteres o bien tiene caracteres ilegales'
   # validates_format_of :name, :with => /^[a-z0-9<>¿\?[:space:]\(\):;\.,_¡!\/&%"\+\-]{1,40}$/i

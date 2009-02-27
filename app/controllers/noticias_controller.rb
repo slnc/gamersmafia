@@ -5,23 +5,24 @@ class NoticiasController < InformacionController
   
   def second_level_categories
     headers['content-type'] = 'text/javascript'
-    @categories = NewsCategory.find(params[:id]).children.find(:all, :order => 'lower(name)')
+    @categories = Term.find(params[:id]).children.find(:all, :conditions => 'taxonomy = \'NewsCategory\'', :order => 'lower(name)')
     render :layout => false
   end
   
   def _before_create
-    parse_subcat_thing('new')
+    #parse_subcat_thing('new')
   end
   
   def _before_update
-    parse_subcat_thing('new')
+    #parse_subcat_thing('new')
   end
   
   
   def parse_subcat_thing(orig_action)
+    raise "TODO: taxonomies"
     if params[:new_subcategory_name].to_s != '' then
       # TODO search existing subcategory
-      nc = NewsCategory.find(params[:news][:news_category_id])
+      nc = Term.find(params[:news][:news_category_id])
       new_child = nc.children.create({:name => params[:new_subcategory_name], :file => params[:new_subcategory_file]})
       if new_child.new_record?
         flash[:error] = "Error al crear la nueva categoría secundaria:<br />#{new_child.errors.full_messages_html}"

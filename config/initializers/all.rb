@@ -28,6 +28,7 @@ require 'vendor/plugins/rails_mixings/lib/stats.rb'
 require 'lib/stats.rb'
 
 ActiveRecord::Base.send :include, HasHid
+ActiveRecord::Base.send :include, HasSlug
 User.db_query("SELECT now()")
 
 # NOTA: los observers DEBEN ser los últimos para que se puedan cargar los contenidos de lib/ y plugins
@@ -42,7 +43,7 @@ ActiveRecord::Base.partial_updates = false if ActiveRecord::Base.respond_to?(:pa
 
 raise "libtidy not found" unless File.exists?(App.tidy_path)
 
-module ActiveSupport::Inflector
+module Inflector
   def self.sexualize(word, sex)
     if sex == User::FEMALE
       word.gsub(/(o)$/, 'a')

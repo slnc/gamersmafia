@@ -1,14 +1,3 @@
-<% 
-cats = EventsCategory.toplevel 
-p cats
-if cats.size > 1 then %>
-<p><label >Categoría</label><br/>
-<%= render_tree_select cats, 'name', 'event[events_category_id]', @event.events_category_id %></p>
-<% else 
-@event.events_category_id = cats[0].id%>
-<%= hidden_field 'event', 'events_category_id' %></p>
-<% end -%>
-
 <p><label for="event_title">Nombre</label><br/>
 <%= text_field 'event', 'title', :class => 'text'  %></p>
 
@@ -24,5 +13,7 @@ if cats.size > 1 then %>
 
 <p><label for="event_ends_on">Termina</label><br/>
 <%= datetime_select 'event', 'ends_on'  %></p>
+
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @event } %>
 
 <%=draft_check_box(@event)%>

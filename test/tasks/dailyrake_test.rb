@@ -8,6 +8,27 @@ class DailyRakeTest < Test::Unit::TestCase
     overload_rake_for_tests
   end
   
+  def test_should_properly_close_old_open_questions
+    q = Question.find(1)
+    assert_nil q.answered_on
+    c = Comment.count
+    Rake::Task['gm:daily'].send :close_old_open_questions
+    q.reload
+    assert_not_nil q.answered_on
+    assert_equal c + 1, Comment.count
+  end
+  
+  def test_should_properly_close_old_open_questions_recent_question
+    User.db_query("UPDATE questions SET created_on = now() - '1 day'::interval WHERE id = 1")
+    q = Question.find(1)
+    assert_nil q.answered_on
+    c = Comment.count
+    Rake::Task['gm:daily'].send :close_old_open_questions
+    q.reload
+    assert_nil q.answered_on
+    assert_equal c, Comment.count
+  end
+  
   def test_should_properly_set_daily_ads_stats
     adslot = AdsSlot.new(:name => 'foo', :behaviour_class => 'Random', :location => 'bottom')
     assert adslot.save
@@ -20,7 +41,7 @@ class DailyRakeTest < Test::Unit::TestCase
     
     pc_init = User.db_query("SELECT count(*) FROM stats.pageviews")[0]['count'].to_i
     
-    p [adsi.id.to_s].to_yaml
+    # p [adsi.id.to_s].to_yaml
     sym_pageview :url => 'fooo', :ads_shown => [adsi.id.to_s].to_yaml
     sym_pageview :url => 'f2ooo', :ads_shown => [adsi.id.to_s].to_yaml
     sym_pageview :url => 'f2ooo', :ads_shown => [adsi.id.to_s].to_yaml

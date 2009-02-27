@@ -84,7 +84,7 @@ module Comments
     
     # TODO copypasted de cms.rb, refactorizar
     real = content
-    if real.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(real.topics_category.id)) && c.user_is_admin(user.id)
+    if real.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(real.main_category.id)) && c.user_is_admin(user.id)
       true
     elsif real.class.name == 'Event' && (cm = CompetitionsMatch.find_by_event_id(real.id)) && cm.competition.user_is_admin(user.id)
       true
@@ -237,7 +237,7 @@ module Comments
                       AND a.comments_valorations_type_id = #{cvt.id}
                  GROUP BY b.user_id
                  ORDER BY m1 DESC LIMIT #{limit}").collect do |dbr|
-      [dbr['sum'], User.find(dbr['user_id'].to_i)]
+      [dbr['m1'].to_i, User.find(dbr['user_id'].to_i)]
     end
   end
   
@@ -371,29 +371,29 @@ module Comments
     stack = []
     new.gsub!(/(\[.*?\])/m) do |element|
       clean_el = element.gsub(/([\[\]\/]+)/, '')
-      puts "#{element} #{clean_el}"
+      #puts "#{element} #{clean_el}"
       if element.index('[/') == nil # abriendo
-        puts "abriendo"
+        #puts "abriendo"
         stack.push(clean_el) # TODO meter solo b, i, url, etc
         element
       else # cerrando
-        puts "cerrando"
+        #puts "cerrando"
         out = ''
         # cur = stack.pop
-        puts "#{stack.last} != #{clean_el}"
+        #puts "#{stack.last} != #{clean_el}"
         while stack.size > 0 && stack.last != clean_el
-          puts "cerrando tag mal cerrado #{stack.last}"
+          #puts "cerrando tag mal cerrado #{stack.last}"
           out << "[/#{stack.pop}]"
         end
         if stack.size  == 0 # el elemento que se esta cerrando no existia, lo descartamos
-          puts "out #{out}"
+          #puts "out #{out}"
           out
         else
           if out == ''
             stack.pop
             element
           else
-            puts "#{out}[/#{clean_el}]"
+            #puts "#{out}[/#{clean_el}]"
             "#{out}[/#{clean_el}]"
           end
         end

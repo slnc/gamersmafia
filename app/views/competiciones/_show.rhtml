@@ -1,4 +1,4 @@
-<% content_support do %>
+]<% content_support do %>
   <%mftext('Estado de la competición') do %>
   <div class="centered"><strong><%=Competition::STATES_ES[competition.state]%></strong></div>
   <% end -%>
@@ -149,16 +149,17 @@
   </ul>
   <% end -%>
 
-  <% if @competition.topics_category then %>
+  <% tc_cat = @competition.myforum 
+	if tc_cat then %>
   <%mftext('Foro') do %>
   <ul class="skeletal">
-    <% for topic in @competition.topics_category.topics.find(:all, :order => 'updated_on DESC', :limit => 10) %>
+    <% for topic in @competition.myforum.topics.find(:all, :order => 'updated_on DESC', :limit => 10) %>
     <li class="<%=oddclass%>"><a href="<%=get_url(topic)%>"><%=topic.title%></a>
     <div class="timestamp infoinline right"><%=print_tstamp(topic.updated_on)%></div>
     </li>
     <% end -%>
   </ul>
-  <div style="margin-bottom: 20px;" class="more nav"><a href="/foros/forum/<%=@competition.topics_category_id%>">Ir al foro &raquo;</a>
+  <div style="margin-bottom: 20px;" class="more nav"><a href="<%=gmurl(tc_cat)%>">Ir al foro &raquo;</a>
   </div>
   <% end -%>
   <% end -%>

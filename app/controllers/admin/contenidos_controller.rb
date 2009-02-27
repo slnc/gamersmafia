@@ -41,7 +41,7 @@ class Admin::ContenidosController < ApplicationController
     @title = 'Contenidos en la papelera'
     @contents = []
     for c in Cms::contents_classes_publishable + [Topic]
-      @contents<< [Cms::translate_content_name(c.name).capitalize, b.send(ActiveSupport::Inflector::underscore(c.name)).find(:deleted, :conditions => 'updated_on > now() - \'1 month\'::interval'), Cms::translate_content_name(c.name)]
+      @contents<< [Cms::translate_content_name(c.name).capitalize, b.send(Inflector::underscore(c.name)).find(:deleted, :conditions => 'contents.updated_on > now() - \'1 month\'::interval'), Cms::translate_content_name(c.name)]
     end
   end
   

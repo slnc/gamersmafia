@@ -7,6 +7,8 @@ class Game < ActiveRecord::Base
   has_many :users_guids, :dependent => :destroy
   has_many :competitions, :dependent => :destroy
   
+  has_many :terms, :dependent => :destroy
+  
   after_create :create_contents_categories
   after_save :update_faction_code
   before_save :check_code_doesnt_belong_to_portal
@@ -35,41 +37,25 @@ class Game < ActiveRecord::Base
   end
   
   def create_contents_categories
-    content_types = Cms.categories_classes + [TopicsCategory]
-    
-    # crea las categorías raíz y general para cada contenido
-    for ctype in content_types
-      new_category = ctype.new({:name => self.name, :code => self.code})
-      new_category.save
-      raise ActiveRecord::RecordNotFound unless new_category
-      new_category = ctype.find(:first, :conditions => ['name = ? and code = ?', self.name, self.code])
-    end
-    
-    
-    # crea los foros iniciales para dicho juego
-    cforum = TopicsCategory.find(:first, :conditions => ['id = root_id and code = ? and name = ?', self.code, self.name])
-    for defname in ['General', 'Ayuda']
-      new_forum = cforum.children.create({:name => defname})
-    end
-    
-    # creamos galería inicial
-    cgal = ImagesCategory.find(:first, :conditions => ['id = root_id and code = ? and name = ?', self.code, self.name])
-    ['General'].each { |defname| cgal.children.create({:name => defname}) }
-    
-    if not Faction.find_by_name(self.name) then
+    if Faction.find_by_name(self.name).nil? then
       f = Faction.new({:name => self.name, :code => self.code})
       f.save
     end
     
     p = Portal.create({:name => self.name, :code => self.code})
     p.factions<< f
+    
+    # El orden es importante
+    root_term = Term.create(:game_id => self.id, :name => self.name, :slug => self.code) 
+    Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
+      root_term.children.create(:name => c[1], :taxonomy => c[0])
+    end
   end
   
   after_save :update_img_file
   after_save :update_code_in_other_places_if_changed
   
   def file=(incoming_file)
-    
     @temp_file = incoming_file
     @filename = incoming_file.original_filename if incoming_file.to_s != ''
     @content_type = incoming_file.content_type if incoming_file.to_s != ''

@@ -12,6 +12,7 @@ published:
   downloaded_times: 0
   approved_by_user_id: 1
   state: 2
+  unique_content_id: 5
 
 unpublished:
   id: 2
@@ -26,6 +27,7 @@ unpublished:
   essential: false
   downloaded_times: 0
   state: 1
+  unique_content_id: 1005 
 
 deleted:
   id: 3
@@ -41,3 +43,4 @@ deleted:
   downloaded_times: 0
   approved_by_user_id: 1
   state: 3
+  unique_content_id: 2005

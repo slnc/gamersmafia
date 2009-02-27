@@ -12,15 +12,15 @@
 <%mftext('En los foros', :has_submodules => true, :grid => 10, :glast => true, :blast => true) do %>	
 	<div class="grid-6 blast">
 	<%=mfcontents_basic("Tópics activos", 
-					Proc.new { controller.portal.topic.find(:published, :conditions => 'closed is false and sticky is false AND topics_category_id not in (select id from topics_categories where nohome = \'t\')', :order => 'updated_on desc', :limit => 10) }, 
+					Proc.new { controller.portal.topic.find(:published, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 10) }, 
 					[],
 					:truncate_at => 44, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	</div>
 	
 	<%mftext('Foros', :grid => 4, :glast => true, :blast => true) do %>
 	<ul class="content-hid">
-		<%controller.portal.categories(Topic)[0].children.find(:all, :conditions => 'parent_id = root_id', :order => 'updated_on DESC', :limit => 5).sort_by { |e| e.name.downcase }.each do |tc| %>
-		<li><a href="<%=gmurl(tc)%>"><%=truncate(tc.name, 20, '..')%></a></li>
+		<%controller.portal.categories(Topic)[0].last_updated_children(:limit => 5).sort_by { |e| e.name.downcase }.each do |tc| %>
+		<li><a href="<%=gmurl(tc, :taxonomy => 'TopicsCategory')%>"><%=truncate(tc.name, 20, '..')%></a></li>
 		<% end -%>
 		</ul>
 	<% end -%>
@@ -81,13 +81,7 @@ mfcontents_list(Cms::translate_content_name(it),
 <%= render :partial => '/home/outstanding_entity', :locals => { :outstanding_entity_cls => OutstandingClan } %>
 <% end -%>		
 
-<% cache("/#{controller.portal_code}/home/index/questions") do %>
-<% mfcontents_list("Preguntas", 
-				   Proc.new { controller.portal.question.find(:published, :conditions => 'answered_on IS NULL AND created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, created_on DESC', :limit => 5)}
-				   ) do |o| %>
-<a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a>
-<% end -%>
-<% end -%>
+<%=render :partial => '/home/questions' %>
 
 <%mftext('Imagen del día') do %>
 <% d = Date.today
@@ -106,7 +100,7 @@ if @daily_img then %>
 
 <% cache("/#{controller.portal_code}/home/index/eventos2/#{Time.now.strftime('%Y%m%d')}") do %>
 <% mfcontents_table('Eventos', 
-				   Proc.new { Event.current(EventsCategory.find(:all, :conditions => "root_id IN (#{(controller.portal.categories(Event).collect { |c| c.id} + [0]).join(',')})"))}
+				   Proc.new { controller.portal.event.current }
 				   ) do |e| %>
 	<td style="font-size: 11px;"><%=draw_content_favicon(e)%><a href="<%=get_url(e)%>"><%=e.title%></a></td>
     <td style="font-size: 11px;"><%=member_state('active')%><%=e.users.count%></td>

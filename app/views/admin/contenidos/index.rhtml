@@ -39,7 +39,7 @@
 <form method="post" action="/admin/contenidos/mass_moderate">
   <input type="hidden" id="f1action" name="mass_action" value="" />
 <table>
-<% for name, collection, controller in @contents 
+<% for name, collection, controller_name in @contents 
     if collection.size == 0 then
       next
     end
@@ -79,11 +79,11 @@ for @item in collection:
             img = nil
             %><td><a href="/imagenes/edit/<%=@item.id%>">Imagen inválida</a></td><%
           else
-            if cache_category_paths.keys.include?(@item.images_category.id)
-              paths = cache_category_paths[@item.images_category.id]
+            if cache_category_paths.keys.include?(@item.main_category.id)
+              paths = cache_category_paths[@item.main_category.id]
             else
-              paths, navpath = @item.images_category.get_category_address
-              cache_category_paths[@item.images_category.id] = paths
+              paths, navpath = controller.get_category_address(@item.main_category, 'ImagesCategory')
+              cache_category_paths[@item.main_category.id] = paths
             end
           %>
           <td><table class="compact">

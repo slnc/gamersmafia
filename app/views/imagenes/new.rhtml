@@ -23,16 +23,7 @@
 <% if Cms.user_can_mass_upload(@user) then %>
 <%mftext('Añadir imágenes en masa') do %>
 <%= form_tag({:action => 'create_from_zip'}, :multipart => true) %>
-  <p><label >Categoría</label><br/>
-<select name="image[images_category_id]">
-<% for ic in ImagesCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc') %>
-<optgroup label="<%=ic.name%>">
-<% for gallery in ic.children %>
-<option <%= (gallery.id == @image.images_category_id) ? 'selected="selected"' : ''%> value="<%=gallery.id%>"><%=gallery.name%></option>
-<% end -%>
-</optgroup>
-<% end -%>
-</select>
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => Image } %>
   <p><label for="image_file">Archivo</label><br/>
   <%= file_field 'image', 'file' %></p>
   <%= submit_tag 'Crear' %>

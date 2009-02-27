@@ -14,6 +14,7 @@ published:
   state: 2
   entity1_external: fulanito
   entity2_external: menganito
+  unique_content_id: 17
 
 unpublished:
   id: 2
@@ -30,6 +31,7 @@ unpublished:
   state: 1
   entity1_external: fulanito
   entity2_external: menganito
+  unique_content_id: 1015
   
 deleted:
   id: 3
@@ -47,3 +49,4 @@ deleted:
   state: 3
   entity1_external: fulanito
   entity2_external: menganito
+  unique_content_id: 2015

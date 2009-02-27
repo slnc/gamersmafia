@@ -24,7 +24,7 @@ module Cms
   # Este módulo contiene toda la información de todos los tipos de contenidos
   # específicos
   # Atributos comunes a todas las clases de contenidos
-  COMMON_CLASS_ATTRIBUTES = [:created_on, :updated_on, :user_id, :approved_by_user_id, :hits_registered, :hits_anonymous, :cache_rating, :cache_rated_times, :cache_weighted_rank, :cache_comments_count, :log, :state, :closed]
+  COMMON_CLASS_ATTRIBUTES = [:created_on, :updated_on, :user_id, :approved_by_user_id, :hits_registered, :hits_anonymous, :cache_rating, :cache_rated_times, :cache_weighted_rank, :cache_comments_count, :log, :state, :closed, :terms]
   DRAFT = 0
   PENDING = 1
   PUBLISHED = 2
@@ -41,26 +41,18 @@ module Cms
   IMGWG2 = 88
   IMGWG1 = 33
   
-  
   IMAGE_FORMAT = /\.(jpg|gif|png|jpeg|bmp)$/i
   
-  @@comments_per_page = 30
-  def self.comments_per_page
-    @@comments_per_page
-  end
+  ROOT_TERMS_CONTENTS = %w(News Bet Poll Event Coverage Interview Column Review Demo RecruitmentAd)
+  CATEGORIES_TERMS_CONTENTS = %w(Image Download Topic Tutorial Question)
+  NO_MODERATION_NEEDED_CONTENTS = %w(Topic Blogentry Question RecruitmentAd)
+  DONT_PARSE_IMAGES_OF_CONTENTS = %w(Topic Blogentry RecruitmentAd)
+  AUTHOR_CAN_EDIT_CONTENTS = %w(Blogentry RecruitmentAd)
   
-  def self.comments_per_page= num
-    @@comments_per_page = num
-  end
-  
-  def self.min_hits_before_reaching_max_publishing_power(contents_type_name)
-    case contents_type_name
-      when 'Image':
-      60
-    else
-      30
-    end
-  end
+  CONTENTS_WITH_CATEGORIES = %w(Column Download Demo Topic Image Interview News Tutorial Poll Bet Review Event Question RecruitmentAd)
+  BAZAR_DISTRICTS_VALID = %w(Column Interview Tutorial News Topic Image Poll Bet Review Event Question Download)
+  BAZAR_DISTRICTS_REQUIRED = %w(News Topic Poll Question)
+  CLANS_CONTENTS = %w(News Topic Download Image Event Poll)
   
   SAFE_PUBLICATION_THRESHOLDS = {'News' => 86400 * 14,
                                 'Image' => 86400 * 14,
@@ -69,6 +61,7 @@ module Cms
                                 'Download' => 86400 * 14,
                                 'Demo' => 86400 * 14,
                                 'Question' => 86400 * 14,
+                                'RecruitmentAd' => 86400 * 14,
                                 'Tutorial' => 86400 * 30,
                                 'Column' => 86400 * 30,
                                 'Interview' => 86400 * 60,
@@ -92,30 +85,6 @@ module Cms
                         'Review' => ['description', 'main'],
   }
   
-  def self.categories_classes
-    [NewsCategory, 
-    DownloadsCategory, 
-    DemosCategory, 
-    ImagesCategory, 
-    EventsCategory, 
-    TutorialsCategory, 
-    ColumnsCategory,
-    InterviewsCategory,
-    QuestionsCategory,
-    ReviewsCategory,
-    PollsCategory,
-    BetsCategory]
-  end
-  
-  CONTENTS_WITH_CATEGORIES = ['Column', 'Download', 'Demo', 'Topic', 'Image', 'Interview', 'News', 'Tutorial', 'Poll', 'Bet', 'Review', 'Event', 'Question'] # 'Funthing', 'Review',
-  BAZAR_DISTRICTS_VALID = %w(Column Interview Tutorial News Topic Image Poll Bet Review Event Question Download)
-  BAZAR_DISTRICTS_REQUIRED = %w(News Topic Poll Question)
-  CLANS_CONTENTS = %w(News Topic Download Image Event Poll)
-  
-  def self.clans_contents_symbols
-    @_cache_ccs ||= CLANS_CONTENTS.collect { |c| c.downcase.to_sym }    
-  end
-  
   CLASS_NAMES = {'News' => 'noticia',
                 'Image' => 'imagen',
                 'Download' => 'descarga',
@@ -129,42 +98,12 @@ module Cms
                 'Tutorial' => 'tutorial',
                 'Column' => 'columna',
                 'Interview' => 'entrevista',
+                'RecruitmentAd' => 'anuncio de reclutamiento',
                 'Review' => 'review',
                 'Funthing' => 'curiosidad',
                 'Coverage' => 'coverage',
                 'Comments' => 'comentario',
   }
-  
-  VALID_TITLE_REGEXP = /^([a-zA-ZáéíóúÁÉÍÓÚüëÜËñÑ0-9¿\?[:space:]\(\):;\.,_¡!\/&%"\+\-]+)$/i
-  DNS_REGEXP = /^((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/i # no es perfecto
-  URL_REGEXP = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
-  URL_REGEXP_FULL = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/
-  EMAIL_REGEXP = /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/
-  IP_REGEXP = /\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/
-  
-  # Devuelve la clase en caso de que exista. Si un contenido no tiene clase
-  # devolverá nil, no lanzará excepción
-  def self.category_class_from_content_name(content_name)
-    # TODO Refactor
-    case content_name
-      when 'News': NewsCategory
-      when 'Image': ImagesCategory
-      when 'Event': EventsCategory
-      when 'Download': DownloadsCategory
-      when 'Demo': DemosCategory
-      when 'Tutorial': TutorialsCategory
-      when 'Interview': InterviewsCategory
-      when 'Poll': PollsCategory
-      when 'Bet': BetsCategory
-      when 'Column': ColumnsCategory
-      when 'Review': ReviewsCategory
-      when 'Topic': TopicsCategory
-      when 'Question': QuestionsCategory
-    end
-    # NOTA: No meterlo en una constante porque petan
-    # this breaks with ruby. mantiene el id del objeto en dev en el hash mientras q así en dev no peta
-    #self::CATEGORIES_BY_CONTENT[content_name]
-  end
   
   def self.contents_classes
     [News,
@@ -181,6 +120,7 @@ module Cms
     Coverage,
     Review,
     Funthing,
+    RecruitmentAd,
     Topic]
   end
   
@@ -193,6 +133,7 @@ module Cms
     :tutorial,
     :interview,
     :poll,
+    :recruitment_ad,
     :bet,
     :column,
     :coverage,
@@ -203,10 +144,8 @@ module Cms
   end
   
   def self.contents_classes_publishable
-    self.contents_classes - [Topic, Blogentry, Question]
+    self.contents_classes - [Topic, Blogentry, Question, RecruitmentAd]
   end
-  
-  
   
   CONTENTS_CONTROLLERS = {
     'News' => 'noticias',
@@ -226,13 +165,8 @@ module Cms
     'Funthing' => 'curiosidades',
     'Coverage' => 'coverages',
     'Comments' => 'comentarios',
+    'RecruitmentAd' => 'reclutamiento',
   }
-  
-  def self.content_from_controller(name)
-    t = {}
-    CONTENTS_CONTROLLERS.each { |k,v| t[v] = k unless /Clans/ =~ k}
-    t.fetch(name.downcase) { |k| raise "#{k} not found" }
-  end
   
   def self.translate_content_name(name, en2es = 1)
     name = name.downcase.normalize if en2es != 1
@@ -248,6 +182,7 @@ module Cms
                   'Event' => 'eventos',
                   'Tutorial' => 'tutoriales',
                   'Column' => 'columnas',
+                  'RecruitmentAd' => 'anuncios-de-reclutamiento',
                   'Interview' => 'entrevistas',
                   'Review' => 'reviews',
                   'Funthing' => 'curiosidades',
@@ -266,6 +201,49 @@ module Cms
     end
   end
   
+  @@comments_per_page = 30
+  def self.comments_per_page
+    @@comments_per_page
+  end
+  
+  def self.comments_per_page= num
+    @@comments_per_page = num
+  end
+  
+  def self.gen_minicolumns(mode, data, dst_file)
+    FileUtils.mkdir_p(File.dirname(dst_file)) unless File.exists?(File.dirname(dst_file))
+    `#{App.python} script/spark.py #{mode} #{data.join(',')} "#{dst_file}"`
+  end
+  
+  
+  def self.min_hits_before_reaching_max_publishing_power(contents_type_name)
+    case contents_type_name
+      when 'Image':
+      60
+    else
+      30
+    end
+  end
+  
+  def self.clans_contents_symbols
+    @_cache_ccs ||= CLANS_CONTENTS.collect { |c| c.downcase.to_sym }    
+  end
+  
+  
+  
+  VALID_TITLE_REGEXP = /^([a-zA-ZáéíóúÁÉÍÓÚüëÜËñÑ0-9¿\?[:space:]\(\):;\.,_¡!\/&%"\+\-]+)$/i
+  DNS_REGEXP = /^((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/i # no es perfecto
+  URL_REGEXP = /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
+  URL_REGEXP_FULL = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/
+  EMAIL_REGEXP = /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/
+  IP_REGEXP = /\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/
+  
+  
+  def self.content_from_controller(name)
+    t = {}
+    CONTENTS_CONTROLLERS.each { |k,v| t[v] = k unless /Clans/ =~ k}
+    t.fetch(name.downcase) { |k| raise "#{k} not found" }
+  end
   
   # relative_savedir is relative to #{RAILS_ROOT}/public/storage/
   # Devuelve la ruta guardada o nil si no la ha podido guardar
@@ -403,9 +381,6 @@ module Cms
       i += 1
       i = html_fragment.index(/<img([^>]+)src="([^"]+)"([^>]*)>/i, i)
     end
-    
-    
-    
     
     # 1. buscamos los imgs con tags <a alrededor suyo y los guardamos
     img_with_signatures_with_links= []
@@ -687,9 +662,11 @@ module Cms
       true
     elsif (content.respond_to?(:state) and content.user_id == user.id and content.state == Cms::DRAFT) then
       true
-    elsif %w(Question).include?(content.class.name) && content.user_id == user.id && (content.created_on > 15.minutes.ago || content.unique_content.comments_count == 0) 
+    elsif content.class.name == 'Question' && content.user_id == user.id && (content.created_on > 15.minutes.ago || content.unique_content.comments_count == 0) 
       true
-    elsif %w(Blogentry).include?(content.class.name) and content.user_id == user.id
+    elsif content.class.name == 'RecruitmentAd' && (user.has_admin_permission?(:capo) || user.id == content.user_id || (content.clan_id && content.clan.user_is_clanleader(user.id)))
+      true
+    elsif Cms::AUTHOR_CAN_EDIT_CONTENTS.include?(content.class.name) && content.user_id == user.id
       true
     elsif content.kind_of?(Coverage) && (c = content.event.competition) then
       c.user_is_admin(user.id) ? true : false
@@ -705,11 +682,11 @@ module Cms
       elsif org        
         if org.user_is_moderator(user)
           true
-        elsif content.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(content.topics_category.id)) && c.user_is_admin(user.id)
+        elsif content.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(content.main_category.id)) && c.user_is_admin(user.id)
           true
         elsif content.class.name == 'Comment'
           real = content.content.real_content
-          if real.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(real.topics_category.id)) && c.user_is_admin(user.id)
+          if real.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(real.main_category.id)) && c.user_is_admin(user.id)
             true
           elsif real.class.name == 'Event' && (cm = CompetitionsMatch.find_by_event_id(real.id)) && cm.competition.user_is_admin(user.id)
             true
@@ -780,6 +757,9 @@ module Cms
     
     attrs_new_obj.delete(:approved_by_user_id) unless dst_class.new.respond_to?(:approved_by_user_id)
     newinst = dst_class.new(attrs_new_obj)
+    
+    # newinst.terms = rpl_attributes[:terms] if rpl_attributes[:terms]
+    
     raise newinst.errors.full_messages_html unless newinst.save
     newinst.log = original.log
     newinst.save # this will create additional log entry
@@ -802,6 +782,7 @@ module Cms
     original.reload
     # original = original.class.find(original.id)
     Cms.delete_content(original)
+    User.db_query("UPDATE #{Inflector::tableize(original.class.name)} SET unique_content_id = NULL WHERE id = #{original.id}")
     original.destroy
     
     # si el contenido viejo estaba en estado publicado publicamos el contenido nuevo
@@ -809,7 +790,7 @@ module Cms
     if orig_state == Cms::PUBLISHED then
       newinst.change_state(Cms::PUBLISHED, User.find_by_login('mrman'))      
     end
-    User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(newinst.class.name)} set updated_on = '#{original_updated_on}' WHERE id = #{newinst.id}")
+    User.db_query("UPDATE #{Inflector::tableize(newinst.class.name)} set updated_on = '#{original_updated_on}' WHERE id = #{newinst.id}")
     newinst.updated_on = original_updated_on
     newinst.unique_content.updated_on = original_updated_on
     User.db_query("UPDATE contents set updated_on = '#{original_updated_on}' WHERE id = #{newinst.unique_content.id}")
@@ -829,6 +810,9 @@ module Cms
       code = thing.code
       name = thing.name
     elsif thing.class.name == 'Game' then
+      code = thing.code
+      name = thing.name
+    elsif thing.class.name == 'Platform' then
       code = thing.code
       name = thing.name
     elsif thing.class.name == 'User' then
@@ -953,5 +937,80 @@ module Cms
   
   def self.user_can_create_content(user)
     User::STATES_CAN_LOGIN.include?(user.state) && user.antiflood_level < 5
+  end
+  
+  def self.can_edit_term?(u, term, taxonomy)
+    self.can_admin_term?(u, term, taxonomy) && term.id != term.root_id
+  end
+  
+  def self.can_admin_term?(u, term, taxonomy)
+    return true if u.has_admin_permission?(:capo)
+    
+    if term.game_id
+      f = Faction.find_by_code(term.game.code)
+      f.is_bigboss?(u) || f.user_is_editor_of_content_type?(u, ContentType.find_by_name(taxonomy))
+    elsif term.platform_id
+      f = Faction.find_by_code(term.platform.code)
+      f.is_bigboss?(u) || f.user_is_editor_of_content_type?(u, ContentType.find_by_name(taxonomy))
+    elsif term.bazar_district_id
+      f = term.bazar_district
+      f.is_bigboss?(u) || f.is_sicario?(u)
+    elsif term.clan_id
+      c = term.clan
+      c.user_is_clanleader(u)
+    end
+  end
+  
+  def self.get_editable_terms_by_group(u)
+    terms = {:games => [], :platforms => [], :clans => [], :bazar_districts => [], :special => []}
+    
+    if u.has_admin_permission?(:capo)
+      Term.toplevel(:clan_id => nil).each do |t|
+        if t.game_id
+          terms[:games] << t
+        elsif t.platform_id
+          terms[:platforms] << t
+        elsif t.clan_id.nil? && t.bazar_district_id.nil?
+          terms[:special] << t
+        end
+      end
+    end
+    
+    if u.has_admin_permission?(:bazar_manager)
+      Term.find(:all, :conditions => 'id = root_id AND bazar_district_id IS NOT NULL').each do |t|
+        terms[:bazar_districts] << t
+      end
+    end
+    
+    u.users_roles.find(:all, :conditions => "role IN ('Boss', 'Underboss')").each do |ur|
+      f = Faction.find(ur.role_data.to_i)
+      t = f.single_toplevel_term
+      if t.game_id
+        terms[:games] << t
+      else
+        terms[:platforms] << t
+      end
+    end
+    
+    u.users_roles.find(:all, :conditions => "role = 'Editor'").each do |ur|
+      f = Faction.find(ur.role_data_yaml[:faction_id])
+      t = f.single_toplevel_term
+      if t.game_id
+        terms[:games] << t
+      else
+        terms[:platforms] << t
+      end
+    end
+    
+    u.users_roles.find(:all, :conditions => "role IN ('Don', 'ManoDerecha', 'Sicario')").each do |ur|
+      terms[:bazar_districts] << BazarDistrict.find(ur.role_data.to_i).top_level_category
+    end
+    
+    [:games, :platforms, :special, :bazar_districts].each do |sym|
+      terms[sym].uniq!
+      # terms[sym].sort {|a,b| a.name.downcase <=> b.code.name.downcase }
+    end
+    
+    terms
   end
 end

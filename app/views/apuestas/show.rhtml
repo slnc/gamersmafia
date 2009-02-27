@@ -21,7 +21,7 @@ La partida está en curso o finalizada, ya no se permiten las apuestas.
 <% # TODO esto está mal , revisar todas, no podemos poner and id <> ?
 %>
 <% cache("/common/apuestas/show/latest_by_cat_#{@bet.bets_category_id}") do %>
-<% other_bets = Bet.find(:all, :conditions => ["bets_category_id IN (#{(@bet.bets_category.get_all_children.<<(@bet.bets_category.id)).join(',')}) and state = #{Cms::PUBLISHED} AND created_on <= now()", @bet.id], :order => 'created_on desc', :limit => 5)
+<% other_bets = Bet.find(:all, :conditions => ["bets_category_id IN (#{(@bet.main_category.all_children_ids.<<(@bet.main_category.id)).join(',')}) and state = #{Cms::PUBLISHED} AND created_on <= now()", @bet.id], :order => 'created_on desc', :limit => 5)
 if other_bets.size > 0 then %>
 <%mfcontents_list('Más apuestas', other_bets, :faction_favicon => true) do |item| %>
 <%=content_category(item)%><%=controller.url_for_content(item, item.title)%><div class="infoinline"><%=draw_rating(item.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(item)%>#comments"><%=item.cache_comments_count%></a></span></div>

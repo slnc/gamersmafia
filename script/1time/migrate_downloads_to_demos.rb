@@ -5,6 +5,6 @@ puts "DESACTIVAR file_column :file de DEMO"
 next if [1366, 1289].include?(dc.id)
 
 dc = DownloadsCategory.find(1314)
-dc.get_all_children.each do |dcc_id|
+dc.all_children_ids.each do |dcc_id|
   DownloadsCategory.find(dcc_id).find(:all).each { |download| download.mute_to_demo }
 end

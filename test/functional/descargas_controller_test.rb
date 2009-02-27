@@ -6,7 +6,7 @@ require 'descargas_controller'
 class DescargasController; def rescue_action(e) raise e end; end
 
 class DescargasControllerTest < Test::Unit::TestCase
-  test_common_content_crud :name => 'Download', :form_vars => {:title => 'footapang', :downloads_category_id => 1, :download_mirrors => "http://google.com/foo.zip\nhttp://kamasutra.com/porn.zip"}
+  test_common_content_crud :name => 'Download', :form_vars => {:title => 'footapang', :download_mirrors => "http://google.com/foo.zip\nhttp://kamasutra.com/porn.zip"}, :categories_terms => ['16']
   
   def setup
     @controller = DescargasController.new
@@ -31,7 +31,7 @@ class DescargasControllerTest < Test::Unit::TestCase
   def test_create_from_zip_should_work_if_good_guy
     sym_login 1
     d_count = Download.count
-    post :create_from_zip, { :download => { :file => fixture_file_upload('/files/images.zip', 'application/zip'), :downloads_category_id => 1 } } 
+    post :create_from_zip, { :download => { :file => fixture_file_upload('/files/images.zip', 'application/zip'), :terms => 1 } } 
     assert_response :redirect
     assert_equal d_count + 2, Download.count
   end

@@ -1,4 +1,4 @@
-# puts ActiveSupport::ActiveSupport::Inflector.pluralize('hola')
+# puts ActiveSupport::Inflector.pluralize('hola')
 # Este módulo se encarga de añadir funcionalidad de categoría a los objetos que
 # se puedan clasificar
 module ActsAsCategorizable
@@ -26,13 +26,13 @@ module ActsAsCategorizable
       end
       
       # nota: el orden IMPORTA
-      Object.const_set("#{ActiveSupport::Inflector::pluralize(self.name)}Category", klass)
-      klass.set_table_name("#{ActiveSupport::Inflector::tableize(self.name)}_categories")
+      Object.const_set("#{Inflector::pluralize(self.name)}Category", klass)
+      klass.set_table_name("#{Inflector::tableize(self.name)}_categories")
       klass.act_as_category
-      # raise "#{ActiveSupport::Inflector::tableize(self.name)}_category"
-      belongs_to "#{ActiveSupport::Inflector::tableize(self.name)}_category".to_sym
-      observe_attr "#{ActiveSupport::Inflector::tableize(self.name)}_category_id".to_sym
-      validates_presence_of "#{ActiveSupport::Inflector::tableize(self.name)}_category", :message => "El campo categoría no puede estar en blanco"
+      # raise "#{Inflector::tableize(self.name)}_category"
+      belongs_to "#{Inflector::tableize(self.name)}_category".to_sym
+      observe_attr "#{Inflector::tableize(self.name)}_category_id".to_sym
+      # validates_presence_of "#{Inflector::tableize(self.name)}_category", :message => "El campo categoría no puede estar en blanco"
       
       class_eval <<-END
         include ActsAsCategorizable::InstanceMethods
@@ -57,33 +57,16 @@ module ActsAsCategorizable
       end
       
       def category_class # helper class to get access to this content's category
-        Object.const_get("#{ActiveSupport::Inflector::pluralize(self.name)}Category")
+        Object.const_get("#{Inflector::pluralize(self.name)}Category")
       end
       
       def category_attrib_name
-        "#{ActiveSupport::Inflector::tableize(self.name)}_category_id".to_sym
+        "#{Inflector::tableize(self.name)}_category_id".to_sym
       end
     end
     
     def update_category_totals
-      if self.slnc_changed?(self.class.category_attrib_name) && self.state == Cms::PUBLISHED
-        prev = self.slnc_changed_old_values[self.class.category_attrib_name]
-        if prev then
-          prev = self.class.category_class.find(prev)
-           (prev.get_ancestors + [prev]).each do |anc|
-            anc.class.decrement_counter("#{ActiveSupport::Inflector::tableize(self.class.name)}_count", anc.id)
-          end
-        end
-        
-        
-         (self.main_category.get_ancestors + [self.main_category]).each do |anc|
-          anc.class.increment_counter("#{ActiveSupport::Inflector::tableize(self.class.name)}_count", anc.id)
-        end
-      elsif self.slnc_changed?(:state) && self.state == Cms::DELETED
-       (self.main_category.get_ancestors + [self.main_category]).each do |anc|
-          anc.class.decrement_counter("#{ActiveSupport::Inflector::tableize(self.class.name)}_count", anc.id)
-        end
-      end
+      self.main_category.recalculate_counters if self.main_category
     end
     
     def is_categorizable?

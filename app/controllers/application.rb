@@ -77,7 +77,35 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  def self.taxonomy_from_content_name(content_name)
+    "#{Inflector::pluralize(content_name)}Categories"
+  end
   
+  def self.extract_content_name_from_taxonomy(taxonomy)
+    Inflector::singularize(taxonomy.gsub('Category', ''))
+  end
+  
+  def get_category_address(category, taxonomy)
+    paths = []
+    navpath = []
+    paths << category.name
+    
+    href = Cms::translate_content_name(ApplicationController.extract_content_name_from_taxonomy(taxonomy))
+    href2 = href.normalize
+    
+    navpath << [category.name, "/#{href2}/#{category.id}"]
+    
+    while category.parent 
+      category = category.parent
+      paths << category.name
+      navpath << [category.name, "/#{href2}/#{category.id}"]
+    end
+    
+    paths = paths.reverse
+    navpath = [[Inflector::titleize(href), "/#{href2}"], ] + navpath.reverse
+    
+    return paths, navpath
+  end
   
   def parse_params_page
     params[:page] = params[:page].to_i if params[:page]
@@ -95,15 +123,17 @@ class ApplicationController < ActionController::Base
     controller_name == 'home' && current_default_portal != action_name
   end
   
-  def self.get_domain_of_category(cat)
-    portal = Portal.find_by_code(cat.code)
-    if portal
-      "#{portal.code}.#{App.domain}"
-    elsif cat.code == 'gm'
+  # devuelve el dominio para el término raíz dado
+  def self.get_domain_of_root_term(term)
+    raise "term is not root term" unless term.id == term.root_id
+    theportal = Portal.find_by_code(term.slug)
+    if theportal
+      "#{theportal.code}.#{App.domain}"
+    elsif term.slug == 'gm'
       App.domain
-    elsif %w(bazar otros).include?(cat.code)
+    elsif %w(bazar otros).include?(term.slug)
       App.domain_bazar
-    elsif %w(arena).include?(cat.code)
+    elsif %w(arena).include?(term.slug)
       App.domain_arena
     else
       App.domain
@@ -197,24 +227,49 @@ Request information:
     self.class.url_for_content_onlyurl(object)
   end
   
-  def gmurl(object)
-    self.class.gmurl(object)
+  def gmurl(object, opts={})
+    self.class.gmurl(object, opts)
   end
   
-  def self.gmurl(object)
+  def self.gmurl(object, opts={})
     cls_name = object.class.name
     if cls_name.index('Category')
-      href = Cms::translate_content_name(ActiveSupport::Inflector::singularize(cls_name.gsub('Category', '')))
+      # DEPRECATED taxonomies
+      href = Cms::translate_content_name(Inflector::singularize(cls_name.gsub('Category', '')))
       href = href.normalize
       case href
         when 'topics':
         href = "foros/forum"
         when 'preguntas':
         href = "respuestas/categoria"
+        when 'anuncios-de-reclutamiento':
+        href = 'reclutamiento'
       end
-      dom = get_domain_of_category(object.root)
+      dom = get_domain_of_root_term(object.root)
       "http://#{dom}/#{href}/#{object.id}"
-    elsif cls_name == 'Faction'      
+    elsif cls_name == 'Term'
+      if object.taxonomy.nil? && opts[:taxonomy].nil?
+        raise "gmurl for term without taxonomy specified"
+      else
+        opts[:taxonomy] = object.taxonomy unless opts[:taxonomy]
+        if opts[:taxonomy].index('Category')
+          href = Cms::translate_content_name(Inflector::singularize(opts[:taxonomy].gsub('Category', '')))
+          href = href.normalize
+          case href
+            when 'topics':
+            href = "foros/forum"
+            when 'preguntas':
+            href = "respuestas/categoria"
+            when 'anuncios-de-reclutamiento':
+            href = 'reclutamiento'
+          end
+          dom = get_domain_of_root_term(object.root)
+          "http://#{dom}/#{href}/#{object.id}"
+        else
+          raise "gmurl for term with unrecognized taxonomy '#{opts[:taxonomy]}'"
+        end
+      end
+    elsif cls_name == 'Faction'
       "http://#{object.code}.#{App.domain}/"
     elsif cls_name == 'Clan'      
       "http://#{App.domain}/clanes/clan/#{object.id}"
@@ -250,9 +305,15 @@ Request information:
         dom = App.domain
         portal_id = GmPortal.new.id
       elsif cls_name == 'Coverage'
-        dom = get_domain_of_category(object.event.main_category.root)
+        dom = get_domain_of_root_term(object.event.main_category.root)
       elsif Cms::CONTENTS_WITH_CATEGORIES.include?(cls_name)
-        dom = get_domain_of_category(object.main_category.root)
+        
+        maincat = object.main_category
+        if maincat
+          dom = get_domain_of_root_term(maincat.root)
+        else
+          dom = App.domain  
+        end
       else
         raise "url_for_content_onlyurl() #{cls_name} not understood}"
       end
@@ -273,6 +334,8 @@ Request information:
         out = "/foros/topic/#{object.id}"
       elsif href == 'preguntas' then
         out = "/respuestas/show/#{object.id}"
+      elsif href == 'anuncios-de-reclutamiento' then
+        out = "/reclutamiento/anuncio/#{object.id}"
       elsif object.class.name == 'Blogentry' then
         out = "/blogs/#{object.user.login}/#{object.id}"
       elsif object.class.name == 'Event'
@@ -299,6 +362,14 @@ Request information:
     "<a class=\"content\" href=\"#{ApplicationController.url_for_content_onlyurl(object)}\">#{text}</a>"
   end
   
+  
+  
+  
+  
+  
+  
+  
+  
   def admin_menu_items
     return [] unless user_is_authed 
     # TODO hack
@@ -318,26 +389,26 @@ Request information:
       items<< ['Portales', '/admin/portales']
       items<< ['Scripts', '/admin/scripts']
       items<< ['Tienda', '/admin/tienda']
-      items<< ['Users', '/admin/usuarios']
     end
     
-    if user.is_superadmin? or user.has_admin_permission?(:capo)
+    if user.is_superadmin? || user.has_admin_permission?(:capo)
       items<< ['Avatares', '/avatares']
       items<< ['Clanes', '/admin/clanes']
       items<< ['IP Bans', '/admin/ip_bans']
       items<< ['Mapas', '/admin/mapas_juegos']
+      items<< ['Users', '/admin/usuarios']
     end
     
     if user.is_superadmin? || user.has_admin_permission?(:bazar_manager) || user.has_admin_permission?(:capo) 
       items<< ['Cat Contenidos', '/admin/categorias']
     end
     
-    if user.is_superadmin? or user.has_admin_permission?(:faq)
+    if user.is_superadmin? || user.has_admin_permission?(:faq)
       items<< ['Entradas FAQ', '/admin/entradasfaq']
       items<< ['Cat FAQ', '/admin/categoriasfaq']
     end
     
-    if user.is_superadmin? or user.has_admin_permission?(:bazar_manager)
+    if user.is_superadmin? || user.has_admin_permission?(:bazar_manager)
       items<< ['Distritos bazar', '/admin/bazar_districts']
     end
     
@@ -450,7 +521,7 @@ Request information:
   end
   
   def check_portal_access_mode(allowed_portals)
-    if defined?(allowed_portals) and not allowed_portals.include?(ActiveSupport::Inflector::singularize(ActiveSupport::Inflector::underscore(@portal.class.name.gsub('Portal', ''))).to_sym)
+    if defined?(allowed_portals) and not allowed_portals.include?(Inflector::singularize(Inflector::underscore(@portal.class.name.gsub('Portal', ''))).to_sym)
       raise ActiveRecord::RecordNotFound 
     end
   end
@@ -721,7 +792,7 @@ Request information:
     @name_action_infinitive = model.id.nil? ? 'crear' : 'actualizar'
     if model.save
       flash[:notice] = "#{model.class.name} #{@name_action_participe} correctamente."
-      redirect_to (success_dst.kind_of?(String) ? success_dst.gsub("@#{ActiveSupport::Inflector::underscore(model.class.name)}.id", model.id.to_s) : success_dst)
+      redirect_to (success_dst.kind_of?(String) ? success_dst.gsub("@#{Inflector::underscore(model.class.name)}.id", model.id.to_s) : success_dst)
     else
       flash[:error] = "Error al #{@name_action_infinitive} el #{model.class.name}: #{model.errors.full_messages_html}"
       render :action => error_render_action
@@ -729,9 +800,9 @@ Request information:
   end
   
   def update_attributes_or_error(model, success_dst, error_render_action)
-    if model.update_attributes(params[ActiveSupport::Inflector::underscore(model.class.name)])
+    if model.update_attributes(params[Inflector::underscore(model.class.name)])
       flash[:notice] = "#{model.class.name} actualizado correctamente."
-      redirect_to success_dst.kind_of?(String) ? success_dst.gsub("@#{ActiveSupport::Inflector::underscore(model.class.name)}.id", model.id.to_s) : success_dst
+      redirect_to success_dst.kind_of?(String) ? success_dst.gsub("@#{Inflector::underscore(model.class.name)}.id", model.id.to_s) : success_dst
     else
       flash[:error] = "Error al actualizar el #{model.class.name}: #{model.errors.full_messages_html}"
       render :action => error_render_action

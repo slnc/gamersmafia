@@ -1,9 +1,0 @@
-<% mftext('Nueva categoría') do %>
-
-<%= form_tag ({:action => 'categorias_create', :id => @category}, :multipart => true )%>
-  <%= render :partial => 'categorias_edit' %>
-  <%= submit_tag "Crear" %>
-</form>
-
-<%= link_to 'Volver', "/cuenta/faccion/categorias/#{params[:type_name]}" %>
-<% end -%>

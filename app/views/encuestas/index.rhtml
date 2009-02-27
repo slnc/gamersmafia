@@ -1,19 +1,31 @@
 <% content_support do %>
-<% mftext('Más populares') do %>
-<ul class="sidelist">
-<% cache ("/#{controller.portal_code}/encuestas/index/most_votes") do %>
-<% 
-cat_ids = controller.portal.categories(Poll).collect { |cat| cat.id }
-%>
-
+<% cache ("/#{controller.portal_code}/encuestas/index/most_votes/#{Time.now.strftime('%Y%m%d')}") do %>
 <%
-Poll.find_by_sql("select a.id from polls a join polls_options b on a.id = b.poll_id WHERE polls_category_id IN (#{cat_ids.join(',')}) group by (a.id) order by sum(b.polls_votes_count) desc limit 3").each do |p|
-  p.reload %>
-  <li class="<%=oddclass%>"><%=controller.url_for_content(p, p.title)%><br /><div class="infoinline"><%=p.votes%> votos | <span class="comments-count"><a style="display: inline;" href="<%=gmurl(p)%>#comments"><%=p.cache_comments_count%></a></span></div></li>
-  <% end -%>
+mfcontents_list('Más votadas', 
+				   Proc.new { controller.portal.poll.find(:published, :order => 'polls_votes_count DESC', :limit => 5) }) do |o| %>
+<a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a><br />
+<div class="infoinline right"><%=o.votes%> votos</div>
+<% end %>
 <% end -%>
-</ul>
+
+<% cache ("/#{controller.portal_code}/encuestas/index/most_commented/#{Time.now.strftime('%Y%m%d')}") do %>
+<%
+mfcontents_list('Más leídas', 
+				   Proc.new { controller.portal.poll.find(:published, :order => 'hits_anonymous + hits_registered DESC', :limit => 5) }) do |o| %>
+<a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a><br />
+<div class="infoinline right"><%=(o.hits_anonymous + o.hits_registered)%></span> lecturas</div>
+<% end %>
 <% end -%>
+
+<% cache ("/#{controller.portal_code}/encuestas/index/most_read/#{Time.now.strftime('%Y%m%d')}") do %>
+<%
+mfcontents_list('Más comentadas', 
+				   Proc.new { controller.portal.poll.find(:published, :order => 'cache_comments_count DESC', :limit => 5) }) do |o| %>
+<a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a><br />
+<div class="infoinline right"><span class="comments-count"><a style="display: inline;" href="<%=gmurl(o)%>#comments"><%=o.cache_comments_count%></a></span></div>
+<% end %>
+<% end -%>
+
 <% end -%>
 
 <% content_main do %>
@@ -24,7 +36,7 @@ Poll.find_by_sql("select a.id from polls a join polls_options b on a.id = b.poll
 %>
     <%= render :partial => 'shared/pager', :object => @poll_pages, :locals => {:pos => 'top'} %>
 
-    <table>
+    <table> 	
 <% cache("/#{@controller.portal_code}/encuestas/index/page_#{params[:page]}") do %>
 <% 
 # TODO it doesn't work for portals

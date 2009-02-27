@@ -59,6 +59,7 @@ class Cuenta::CuentaControllerTest < Test::Unit::TestCase
     test_add_quicklink
     post :del_quicklink, :code => 'ut'
     assert_response :success
+    u2.reload
     qlinks = u2.pref_quicklinks
     assert_equal 0, qlinks.size
   end
@@ -422,7 +423,7 @@ class Cuenta::CuentaControllerTest < Test::Unit::TestCase
     assert_equal true, u.save
     test_should_autologin_if_client_cookie_is_set_and_exists_in_db
     u.reload
-    assert u.lastseen_on.to_i  > 5.seconds.ago.to_i # hacemos esto porque suele
+    assert u.lastseen_on.to_i > 5.seconds.ago.to_i # hacemos esto porque suele
     # haber discrepancias de algunos segundos entre tiempo postgres y tiempo ruby
     # (probablemente por redondeos)
     # nota: pasamos a i porque hay discrepancia de milisegundos entre los tiempos de postgresql y los tiempos de ruby
