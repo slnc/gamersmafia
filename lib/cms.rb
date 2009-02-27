@@ -100,6 +100,7 @@ module Cms
     QuestionsCategory,
     ReviewsCategory,
     PollsCategory,
+    TopicsCategory,
     BetsCategory]
   end
   

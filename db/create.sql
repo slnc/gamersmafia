@@ -11782,7 +11782,8 @@ CREATE TABLE terms (
     platform_id integer,
     bazar_district_id integer,
     clan_id integer,
-    root_id integer
+    root_id integer,
+    taxonomy character varying
 );
 
 

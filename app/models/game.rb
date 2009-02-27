@@ -38,7 +38,7 @@ class Game < ActiveRecord::Base
   
   def create_contents_categories
     Term.create(:game_id => self.id, :name => self.name, :slug => self.code)
-    content_types = Cms.categories_classes + [TopicsCategory]
+    content_types = Cms.categories_classes
     
     # crea las categorías raíz y general para cada contenido
     for ctype in content_types
