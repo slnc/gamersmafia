@@ -9,6 +9,7 @@ class MigrarCategoriasExistentesATerms < ActiveRecord::Migration
       end
       puts "#{i} procesados"
     end
+    # Term.create(:slug => 'gm', :name)
   end
   
   def self.down

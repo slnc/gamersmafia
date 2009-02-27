@@ -72,20 +72,39 @@ class Term < ActiveRecord::Base
     the_parent
   end
   
-  def link(content)
+  def import_mode
+    @_import_mode || false
+  end
+  
+  def set_import_mode
+    @_import_mode = true
+  end
+  
+  def link(content, normal_op=true)
     raise "TypeError, arg is #{content.class.name}" unless content.class.name == 'Content'
-    if self.contents.find(:first, :conditions => ['contents.id = ?', content.id]).nil? # dupcheck
-      if Cms::CATEGORIES_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy.nil?
-        puts "error: imposible enlazar categories_terms_content con un root_term"
-        return false
-      elsif Cms::ROOT_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy && self.taxonomy.index('Category')
-        puts "error: imposible enlazar root_terms_content con un category_term"
-        return false
-      end
-      
-      self.contents_terms.create(:content_id => content.id)
+    return true unless self.contents.find(:first, :conditions => ['contents.id = ?', content.id]).nil? # dupcheck
+    
+    if Cms::CATEGORIES_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy.nil?
+      puts "error: imposible enlazar categories_terms_content con un root_term, enlazando con un hijo"
+      taxo = "#{Inflector::pluralize(content.content_type.name)}Category"
+      t = self.children.find(:first, :conditions => "taxonomy = '#{taxo}'")
+      t = self.children.create(:name => 'General', :taxonomy => taxo) if t.nil?
+      t.link(content, normal_op)
+      #return false
+    elsif Cms::ROOT_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy && self.taxonomy.index('Category')
+      puts "error: imposible enlazar root_terms_content con un category_term, enlazando con root"
+      self.root.link(content, normal_op)
+      #return false
+    end
+    
+    ct = self.contents_terms.new(:content_id => content.id)
+    ct.set_import_mode
+    ct.save
+    
+    if normal_op # TODO quitar esto despues de 2009.1
       self.recalculate_last_updated_item_id
       # PERF esto hacerlo en accion secundaria?
+      
       o = self
       while o
         Term.increment_counter(:contents_count, o.id)

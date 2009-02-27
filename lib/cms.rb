@@ -37,8 +37,8 @@ module Cms
   IMGWG2 = 88
   IMGWG1 = 33
   
-  ROOT_TERMS_CONTENTS = %w(News Bet Poll Event Coverage Interview Column Review)
-  CATEGORIES_TERMS_CONTENTS = %w(Image Download Topic Tutorial Demo Question)
+  ROOT_TERMS_CONTENTS = %w(News Bet Poll Event Coverage Interview Column Review Demo)
+  CATEGORIES_TERMS_CONTENTS = %w(Image Download Topic Tutorial Question)
   
   IMAGE_FORMAT = /\.(jpg|gif|png|jpeg|bmp)$/i
   

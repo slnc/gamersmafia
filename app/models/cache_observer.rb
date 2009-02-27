@@ -293,9 +293,9 @@ class CacheObserver < ActiveRecord::Observer
   def before_destroy(object)
     case object.class.name
       when 'Term':
-      Cache::Terms.before_destroy(object)
+      Cache::Terms.before_destroy(object) unless object.import_mode
       when 'ContentsTerm':
-      Cache::Terms.before_destroy(object.term)
+      Cache::Terms.before_destroy(object.term) unless object.import_mode
       when 'League':
       do_competitions(object)
       when 'Tournament':
@@ -339,9 +339,9 @@ class CacheObserver < ActiveRecord::Observer
     
     case object.class.name
       when 'Term' then
-      Cache::Terms.after_save(object)
+      Cache::Terms.after_save(object) unless object.import_mode
       when 'ContentsTerm' then
-      Cache::Terms.after_save(object.term)
+      Cache::Terms.after_save(object.term) unless object.import_mode
       
       when 'RecruitmentAd':
       expire_fragment "/home/comunidad/recruitment_ads_#{object.clan_id ? 'clans' : 'users'}"
