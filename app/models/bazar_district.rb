@@ -11,7 +11,7 @@ class BazarDistrict < ActiveRecord::Base
   has_many :terms
   
   def top_level_category(cls)
-    cls.category_class.toplevel(:conditions => "code = '#{self.code}'")[0]
+    Term.single_toplevel(:bazar_district_id => self.id)
   end
   
   def rename_everything_if_name_or_code_changed

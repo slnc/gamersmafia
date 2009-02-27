@@ -26,7 +26,7 @@ class ForosControllerTest < Test::Unit::TestCase
     f = Faction.find(1)
     fbu = FactionsBannedUser.new(:user_id => 1, :faction_id => f.id, :banner_user_id => 2)
     tc = Term.single_toplevel(:slug => 'ut')
-    tcc = tc.children.create(:name => 'General', :taxonomy => 'TopicsCategory')
+    tcc = tc.children.find(:first, :conditions => "name = 'General' AND taxonomy = 'TopicsCategory'")
     assert fbu.save 
      
     post :create_topic, {:topic => {:terms => tcc.id, :title => 'footopic', :main => 'textio'}}
@@ -41,7 +41,7 @@ class ForosControllerTest < Test::Unit::TestCase
     fbu = FactionsBannedUser.new(:user_id => 4, :faction_id => f.id, :banner_user_id => 2)
     assert fbu.save 
     tc = Term.single_toplevel(:slug => 'ut')
-    tcc = tc.children.create(:name => 'General', :taxonomy => 'TopicsCategory')
+    tcc = tc.children.find(:first, :conditions => "name = 'General' AND taxonomy = 'TopicsCategory'")
     t = Topic.find(:first, :order => 'id desc')
     assert t.update_attributes(:user_id => 4)
     sym_login 4
@@ -55,7 +55,7 @@ class ForosControllerTest < Test::Unit::TestCase
     u1 = User.find(1)
     kp = u1.karma_points
     topics = Topic.count
-    post :create_topic, {:topic => {:terms => TopicsCategory.find(:first, :conditions => 'parent_id is not null').id, :title => 'footopic', :main => 'textio'}}
+    post :create_topic, {:topic => {:terms => Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id, :title => 'footopic', :main => 'textio'}}
     assert_response :redirect
     assert_equal topics + 1, Topic.count
     u1.reload
@@ -93,7 +93,7 @@ class ForosControllerTest < Test::Unit::TestCase
   end
   
   def test_should_show_forum_category
-    get :forum, :id => Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id
+    get :forum, :id => Term.single_toplevel(:slug => 'ut').id
     assert_response :success
     assert_template 'category'
   end
@@ -106,8 +106,9 @@ class ForosControllerTest < Test::Unit::TestCase
   
   def test_should_show_topic
     sym_login 1
-    get :topic, :id => Topic.find(:first).id
-    assert_response :success
+    @request.host = 'ut.gamersmafia.dev'
+    get :topic, :id => 1
+    assert_response :success, @response.body
   end
   
   def test_should_show_nuevo_topic
@@ -118,7 +119,7 @@ class ForosControllerTest < Test::Unit::TestCase
   
   def test_should_show_edit
     sym_login 1
-    get :edit, :id => Topic.find(:first).id
+    get :edit, :id => Topic.find(1).id
     assert_response :success
   end
   

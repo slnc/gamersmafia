@@ -3,7 +3,9 @@ class ImagenesController < BazarController
   allowed_portals [:gm, :faction, :clan, :bazar, :bazar_district]
   
   def category
-    @category = Term.find_taxonomy(params[:category], 'ImagesCategory')
+    @category = Term.find_taxonomy(params[:category].to_i, 'ImagesCategory')
+    @category = Term.find_taxonomy(params[:category].to_i, nil) if @category.nil? 
+    raise ActiveRecord::RecordNotFound unless @category
     @title = @category.name
     if not @category.parent_id then
       @navpath = [['Imágenes', '/imagenes'], [@category.name, "/imagenes/#{@category.id}"]]
@@ -16,7 +18,7 @@ class ImagenesController < BazarController
   
   def index
     @categories = portal.categories(Image)
-    if @categories.size == 1
+    if @categories.size == 1 && @categories[0].slug != 'gm'
       @navpath = [['Imágenes', '/imagenes'], ]
       @category = @categories[0]
       render :action => 'toplevel'

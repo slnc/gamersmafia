@@ -58,6 +58,7 @@ module ActsAsContentBrowser
     
     define_method 'create' do
       _before_create if respond_to?(:_before_create)
+      
       cls = Inflector::constantize(Inflector::camelize(content_name))
       obj = cls.new(params[Inflector::underscore(content_name)])
       
@@ -75,6 +76,8 @@ module ActsAsContentBrowser
       instance_variable_set('@' << Inflector::underscore(content_name), obj)
       if Cms.user_can_create_content(@user)
         if obj.save
+          # enlazamos
+          proc_terms(obj)
           obj.process_wysiwyg_fields # TODO lo estamos haciendo en _dos sitios_ ???
           flash[:notice] = "Contenido de tipo <strong>#{Cms::CLASS_NAMES[cls.name]}</strong> creado correctamente."
           if obj.state == Cms::DRAFT
@@ -106,6 +109,18 @@ module ActsAsContentBrowser
         render :action => 'edit'
       else
         render :action => 'show'
+      end
+    end
+    
+    define_method 'proc_terms' do |obj|
+      if Cms::CATEGORIES_TERMS_CONTENTS.include?(content_name) && params[:categories_terms]
+        params[:categories_terms] = [params[:categories_terms]] unless params[:categories_terms].kind_of?(Array)
+        params[:categories_terms].collect! { |rtid| rtid.to_i }
+        obj.categories_terms_ids = [params[:categories_terms], "#{Inflector::pluralize(content_name)}Category"]
+      elsif Cms::ROOT_TERMS_CONTENTS.include?(content_name) && params[:root_terms]
+        params[:root_terms] = [params[:root_terms]] unless params[:root_terms].kind_of?(Array)
+        params[:root_terms].collect! { |rtid| rtid.to_i }
+        obj.root_terms_ids = params[:root_terms]
       end
     end
     

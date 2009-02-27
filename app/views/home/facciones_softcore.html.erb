@@ -12,7 +12,7 @@
 <%mftext('En los foros', :has_submodules => true, :grid => 10, :glast => true, :blast => true) do %>	
 	<div class="grid-6 blast">
 	<%=mfcontents_basic("Tópics activos", 
-					Proc.new { controller.portal.topic.find(:published, :conditions => 'closed is false and sticky is false', :order => 'updated_on desc', :limit => 10) }, 
+					Proc.new { controller.portal.topic.find(:published, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 10) }, 
 					[],
 					:truncate_at => 44, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	</div>

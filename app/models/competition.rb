@@ -287,15 +287,15 @@ class Competition < ActiveRecord::Base
       :user_id => mrman.id, 
       :website => "http://#{App.domain_arena}/competiciones/show/#{self.id}"})
     e.change_state(Cms::PUBLISHED, mrman)
-    Term.single_toplevel(:game_id => self.game_id).link(e)
+    Term.single_toplevel(:game_id => self.game_id).link(e.unique_content)
     self.event_id = e.id
     
     arena_tld = Term.single_toplevel(:slug => 'arena')
     # TODO reordenar esto
-    game_term = arena_tld.children.find(:first, :conditions => ['name = ? AND taxonomy = \'TopicsCategory\'', self.game.name]).nil?     
-    game_term = arena_tld.children.create(:name => self.game.name) if game_term.nil?
-    newforum = game_term.children.create({:name => self.name})
-    self.terms= game_term.id
+    game_term = arena_tld.children.find(:first, :conditions => ['name = ? AND taxonomy = \'TopicsCategory\'', self.game.name])     
+    game_term = arena_tld.children.create(:name => self.game.name, :taxonomy => 'TopicsCategory') if game_term.nil?
+    newforum = game_term.children.create(:name => self.name, :taxonomy => 'TopicsCategory')
+    #self.terms= game_term.id # TODO bug
     self.save
   end
   

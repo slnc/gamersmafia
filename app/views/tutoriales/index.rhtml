@@ -5,7 +5,7 @@
 <% cache("/common/tutoriales/index/best_rated#{Time.now.strftime('%Y%m%d')}/#{@category.id}") do %>
 <% mftext('Mejor valoradas') do %>
 <ul class="sidelist">
-  <% @category.most_rated_items.each do |c| %>
+  <% @category.most_rated_items(:content_type => 'Tutorial').each do |c| %>
   <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
   <% end -%>
 </ul>
@@ -16,7 +16,7 @@
 <% mftext('Más populares') do %>
 <% cache("/common/tutoriales/index/most_popular/#{@category.id}_#{Time.now.to_i/(86400)}") do %>
 <ul class="sidelist">
-  <% @category.most_popular_items.each do |c| %>
+  <% @category.most_popular_items(:content_type => 'Tutorial').each do |c| %>
   <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
   <% end -%>
 </ul>
@@ -42,7 +42,7 @@ cache("/common/tutoriales/_latest_by_cat/#{@category.id}") do %>
 
 <% cache("/common/tutoriales/_most_productive_author_by_cat/#{@category.id}") do %>
 <% mftext('Autores más productivos') do %>
-<%=render :partial => '/shared/most_productive_authors', :locals => { :cls => Tutorial, :category => @category}%>
+<%=render :partial => '/shared/most_productive_authors', :locals => { :cls => Tutorial, :category => @category, :taxonomy => 'TutorialsCategory'}%>
 <% end -%>
 <% end -%>
 <% end # if 
@@ -60,15 +60,16 @@ end
 
 cache(cache_path) do 
 if params[:category] then
-  @categories = controller.portal.tutorial.category_class.find(:all, :conditions => ['parent_id = ?', params[:category]], :order => 'lower(name) ASC')
+  # @categories = @category.tutorial.find(:published, :treemode => false, :order => 'lower(name) ASC')
+  @categories = controller.portal.tutorials_categories[0].children.find(:all)
 else
   @categories = controller.portal.tutorials_categories
 end %>
 <ul class="skeletal">
 <% for category in @categories %>
-<li class="<%=oddclass%>"><strong><%=link_to category.name, gmurl(category)%></strong> (<%=category.items_count%>)
+<li class="<%=oddclass%>"><strong><%=link_to category.name, gmurl(category, :taxonomy => 'TutorialsCategory')%></strong> (<%=category.contents_count(:cls_name => 'Tutorial')%>)
   <div class="infoinline"><%=category.description%></div><br />
-  <% subcategories = category.children.find(:all)
+  <% subcategories = category.children.find(:all, :conditions => 'taxonomy = \'TutorialsCategory\'', :order => 'lower(name)')
   if subcategories.size > 0 then %>
     Subcategorías: <ul class="tutorialscategories">
       <% for subcategory in subcategories %>
@@ -84,7 +85,7 @@ end %>
 
 
 <%
-tuts_count = @category.count(:published, :treemode => false)
+tuts_count = @category.count(:published, :content_type => 'Tutorial', :treemode => false)
 @tutorial_pages = ActionController::Pagination::Paginator.new self, tuts_count, 30, params['page']
 @tutorial_pages.current_page = @tutorial_pages.first if params['page'].nil?
 
@@ -95,7 +96,7 @@ if tuts_count > 0 then
 <% cache("/common/tutoriales/index/tutorials_#{@category.id}/page_#{params[:page]}") do %>
 <% 
 
-@category.find(:published, :treemode => false, :order => 'lower(title) asc', :limit => @tutorial_pages.current.to_sql[0], :offset => @tutorial_pages.current.to_sql[1]).each do |tutorial| %>
+@category.find(:published, :content_type => 'Tutorial', :treemode => false, :order => 'lower(title) asc', :limit => @tutorial_pages.current.to_sql[0], :offset => @tutorial_pages.current.to_sql[1]).each do |tutorial| %>
 <div class="<%=oddclass%>">
       <h2><%= link_to tutorial.title, gmurl(tutorial) %></h2>
       <%=draw_contentheadline(tutorial)%>

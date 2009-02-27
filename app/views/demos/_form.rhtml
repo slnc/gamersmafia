@@ -1,10 +1,17 @@
-<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @demo, :only_games => true } %>
+<p><label>Juego</label><br/>
+<select id="demo_game_id" name="demo_game_id">
+	<option></option>
+<% Game.find(:all, :order => 'lower(name)').each do |g| %>
+    <option <%='selected="selected"' if g.id == @demo.games_mode_id && @demo.games_mode.game_id%>value="<%= g.id %>"><%= g.name %></option>
+<% end -%>
+</select>
+</p>
 
 <p><label>Modo de juego</label><br/>
 <select id="games_mode_id" name="demo[games_mode_id]">
-<% if @demo.demos_category_id then %>
+<% if @demo.games_mode_id then %>
 <% 
-g_id = User.db_query("SELECT id FROM games WHERE code = (SELECT code FROM demos_categories WHERE id = #{@demo.demos_category_id})")[0]['id'].to_i
+g_id = User.db_query("SELECT id FROM games WHERE name = '#{@demo.games_mode.game.name}'")[0]['id'].to_i
 GamesMode.find(:all, :conditions => ['game_id = ?', g_id]).each do |gm| %>
     <option <%='selected="selected"' if gm.id == @demo.games_mode_id%>value="<%= gm.id %>"><%= gm.name %></option>
 <% end %>
@@ -43,9 +50,8 @@ real_path = "#{RAILS_ROOT}/public/" + @demo.file
 
 <p><label>Mapa</label><br/>
 <select id="games_map_id" name="demo[games_map_id]">
-<% if @demo.demos_category_id then %>
+<% if @demo.games_mode_id then %>
 <% 
-g_id = User.db_query("SELECT id FROM games WHERE code = (SELECT code FROM demos_categories WHERE id = #{@demo.demos_category_id})")[0]['id'].to_i
 GamesMap.find(:all, :conditions => ['game_id = ?', g_id], :order => 'lower(name) asc').each do |gm| %>
     <option <%='selected="selected"' if gm.id == @demo.games_map_id%>value="<%= gm.id %>"><%= gm.name %></option>
 <% end %>
@@ -55,9 +61,8 @@ GamesMap.find(:all, :conditions => ['game_id = ?', g_id], :order => 'lower(name)
 
 <p><label>Versión</label><br/>
 <select id="games_version_id" name="demo[games_version_id]">
-<% if @demo.demos_category_id then %>
+<% if @demo.games_mode_id then %>
 <% 
-g_id = User.db_query("SELECT id FROM games WHERE code = (SELECT code FROM demos_categories WHERE id = #{@demo.demos_category_id})")[0]['id'].to_i
 GamesVersion.find(:all, :conditions => ['game_id = ?', g_id]).each do |gm| %>
     <option <%='selected="selected"' if gm.id == @demo.games_version_id%>value="<%= gm.id %>"><%= gm.version %></option>
 <% end %>
@@ -69,14 +74,27 @@ GamesVersion.find(:all, :conditions => ['game_id = ?', g_id]).each do |gm| %>
 <%= select("demo", "event_id", Event.find(:published, :conditions => 'parent_id is null', :order => 'lower(title) ASC').collect {|p| [ p.title, p.id ] }, { :include_blank => true })%></p>
 </p>
 
-<%= observe_field "demo_demos_category_id", :update => "games_map_id", :with => "demos_category_id", :url => '/demos/get_games_maps' %>
-<%= observe_field "demo_demos_category_id", :update => "games_mode_id", :with => "demos_category_id", :url => '/demos/get_games_modes' %>
-<%= observe_field "demo_demos_category_id", :update => "games_version_id", :with => "demos_category_id", :url => '/demos/get_games_versions' %>
+<script type="text/javascript">
+//<![CDATA[
+$j('#demo_game_id').delayedObserver(0, function(element, value) {
+	$j.ajax({data:'game_id=' + value, success:function(request){ $j('#games_mode_id').html(request);}, type:'post', url:'/demos/get_games_modes'});
+	$j.ajax({data:'game_id=' + value, success:function(request){ $j('#games_version_id').html(request);}, type:'post', url:'/demos/get_games_versions'});
+	$j.ajax({data:'game_id=' + value, success:function(request){ $j('#games_map_id').html(request);}, type:'post', url:'/demos/get_games_maps'});
+	})
+//]]>
+</script>
+
+
+<%# = observe_field "demo_game_id", :update => "games_mode_id", :with => "game_id", :url => '/demos/get_games_modes' %>
+<%#= observe_field "demo_game_id", :update => "games_map_id", :with => "game_id", :url => '/demos/get_games_maps' %>
+<%#= observe_field "demo_game_id", :update => "games_version_id", :with => "game_id", :url => '/demos/get_games_versions' %>
 
 <!--<p><label for="demo_name">Nombre</label><br/>
 <%= text_field 'Demo', 'name'  %></p> -->
 
 <p><label for="demo_description">Descripción</label><br/>
 <%=wysiwyg('demo[description]', :value => @demo.description, :height => '200px')%></p>
+
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @demo, :only_games => true } %>
 
 <%=draft_check_box(@demo)%>

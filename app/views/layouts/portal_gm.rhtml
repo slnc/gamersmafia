@@ -257,7 +257,7 @@ if u_clans.size == 0 then %>
 			<% end -%>
 			
 			<% if user_is_authed && controller.controller_name == 'foros' && @forum then %>
-				<li id="add-to-user-forums" class="<%='hidden' unless controller.can_add_as_user_forum?%>"><a href="" title="Añadir a mis foros" onclick="return GM.personalization.add_user_forum('<%=@forum.id%>', '<%=gmurl(@forum)%>');">Añadir a mis foros</a></li>
+				<li id="add-to-user-forums" class="<%='hidden' unless controller.can_add_as_user_forum?%>"><a href="" title="Añadir a mis foros" onclick="return GM.personalization.add_user_forum('<%=@forum.id%>', '<%=gmurl(@forum, :taxonomy => 'TopicsCategory')%>');">Añadir a mis foros</a></li>
 			<% end -%>
 			
 			<% if user_is_authed && controller.controller_name == 'foros' && @forum then %>

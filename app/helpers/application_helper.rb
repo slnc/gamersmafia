@@ -11,10 +11,6 @@ module ApplicationHelper
     :Spam => '108',
   }
   
-  def extract_content_name_from_taxonomy(taxonomy)
-    Inflector::singularize(taxonomy.gsub('Category', ''))
-  end
-  
   def draw_emblem(emblema)
     "<img class=\"emblema emblema-#{emblema}\" src=\"/images/blank.gif\" />"  
   end

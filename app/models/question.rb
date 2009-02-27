@@ -9,7 +9,7 @@ class Question < ActiveRecord::Base
   acts_as_categorizable
   
   has_one :last_updated_item, :class_name => 'Question'
-  after_create :update_avg_popularity
+  # after_create :update_avg_popularity
   before_create :check_ammount
   before_create :check_max_open
   before_save :check_state
@@ -18,7 +18,6 @@ class Question < ActiveRecord::Base
   observe_attr :ammount
   has_bank_ammount_from_user
   
-  validates_presence_of :questions_category, :message => 'El campo categoría no puede estar en blanco'
   validates_presence_of :title, :message => 'El campo pregunta no puede estar en blanco'
   validates_length_of :title, :maximum => 100 
   

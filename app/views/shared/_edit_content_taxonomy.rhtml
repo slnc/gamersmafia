@@ -1,7 +1,24 @@
+<% if Cms::ROOT_TERMS_CONTENTS.include?(acts_as_content.class.name) then %>
+Publicar en (root terms contents): <br />
+<br />
+<input type="text" name="root_terms[]" />
+<input type="text" name="root_terms[]" /> 
+<input type="text" name="root_terms[]" /> 
+<input type="text" name="root_terms[]" /> 
+<% end -%>
+
+<% if Cms::CATEGORIES_TERMS_CONTENTS.include?(acts_as_content.class.name) then %>
+Publicar en (categories terms contents):<br />
+<input type="text" name="categories_terms[]" />
+<input type="text" name="categories_terms[]" /> 
+<input type="text" name="categories_terms[]" /> 
+<input type="text" name="categories_terms[]" />  
+<% end -%>
+
+<% if nil then %>
 TODO keys: 
 - acts_as_content (una instancia o una clase de tipo acts_as_content)
 - only_games (mostrar solo juegos)
-<% if nil then %>
 <% #= render_tree_select ColumnsCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc'), 'name', 'column[columns_category_id]', @column.columns_category_id %>
 
 <% cats = @download.new_record? ? @portal.downloads_categories : DownloadsCategory.toplevel %>

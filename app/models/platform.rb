@@ -7,10 +7,14 @@ class Platform < ActiveRecord::Base
   validates_uniqueness_of :name
   has_many :terms
   before_save :check_code_doesnt_belong_to_portal
-  after_create :create_term
+  after_create :create_term_and_categories
   
-  def create_term
-    Term.create(:platform_id => self.id, :name => self.name, :slug => self.code)
+  def create_term_and_categories
+    root_term = Term.create(:platform_id => self.id, :name => self.name, :slug => self.code)
+    
+    Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
+      root_term.children.create(:name => c[1], :taxonomy => c[0])
+    end
   end
   
   def faction

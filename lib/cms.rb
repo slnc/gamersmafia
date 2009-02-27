@@ -20,7 +20,7 @@ module Cms
   # Este módulo contiene toda la información de todos los tipos de contenidos
   # específicos
   # Atributos comunes a todas las clases de contenidos
-  COMMON_CLASS_ATTRIBUTES = [:created_on, :updated_on, :user_id, :approved_by_user_id, :hits_registered, :hits_anonymous, :cache_rating, :cache_rated_times, :cache_weighted_rank, :cache_comments_count, :log, :state, :closed]
+  COMMON_CLASS_ATTRIBUTES = [:created_on, :updated_on, :user_id, :approved_by_user_id, :hits_registered, :hits_anonymous, :cache_rating, :cache_rated_times, :cache_weighted_rank, :cache_comments_count, :log, :state, :closed, :terms]
   DRAFT = 0
   PENDING = 1
   PUBLISHED = 2
@@ -37,6 +37,8 @@ module Cms
   IMGWG2 = 88
   IMGWG1 = 33
   
+  ROOT_TERMS_CONTENTS = %w(News Bet Poll Event Coverage Interview Column Review)
+  CATEGORIES_TERMS_CONTENTS = %w(Image Download Topic Tutorial Demo Question)
   
   IMAGE_FORMAT = /\.(jpg|gif|png|jpeg|bmp)$/i
   
@@ -737,6 +739,9 @@ module Cms
     
     attrs_new_obj.delete(:approved_by_user_id) unless dst_class.new.respond_to?(:approved_by_user_id)
     newinst = dst_class.new(attrs_new_obj)
+    
+    # newinst.terms = rpl_attributes[:terms] if rpl_attributes[:terms]
+    
     raise newinst.errors.full_messages_html unless newinst.save
     newinst.log = original.log
     newinst.save # this will create additional log entry
@@ -759,6 +764,7 @@ module Cms
     original.reload
     # original = original.class.find(original.id)
     Cms.delete_content(original)
+    User.db_query("UPDATE #{Inflector::tableize(original.class.name)} SET unique_content_id = NULL WHERE id = #{original.id}")
     original.destroy
     
     # si el contenido viejo estaba en estado publicado publicamos el contenido nuevo

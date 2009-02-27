@@ -46,7 +46,7 @@ end %>
 
 <% for subcategory in @categories %>
 <tr class="downloads-folder <%=oddclass%>">
-  <td class="first"><%=link_to subcategory.name, gmurl(subcategory)%></td>
+  <td class="first"><%=link_to subcategory.name, gmurl(subcategory, :taxonomy => 'DownloadsCategory')%></td>
   <td class="infoinline"><%=subcategory.items_count%></td>
 </tr>
 <% end -%>

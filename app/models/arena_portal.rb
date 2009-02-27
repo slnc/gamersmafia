@@ -65,13 +65,7 @@ class ArenaPortal
         end
       end
     elsif /_categories/ =~ method_id.to_s then
-      # it must have at least one
-      cls_name = Inflector::camelize(Inflector::singularize(method_id))
-      single_name = Inflector::camelize(Inflector::singularize(method_id.to_s.gsub('_categories', '')))
-      cls = Object.const_get(cls_name)
-      raise "FUCK"
-      cond = Cms::CLANS_CONTENTS.include?(single_name) ? "AND clan_id IS NULL " : ''
-      cls.find(:all, :conditions => "parent_id is null and id = root_id AND code = 'arena'", :order => 'UPPER(name) ASC')
+      Term.single_toplevel(:arena)
     else
       super
     end

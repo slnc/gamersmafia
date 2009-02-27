@@ -142,7 +142,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
   def test_should_clear_last_news_of_district
     n = News.new(:title => 'Noticia 1', :description => 'sumario', :user_id => 1)
     assert n.save
-    assert Term.single_toplevel(:slug => 'anime').link(n)
+    assert Term.single_toplevel(:slug => 'anime').link(n.unique_content)
     host! "anime.#{App.domain}"
     get '/'
     assert_response :success

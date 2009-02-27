@@ -7,7 +7,7 @@
 <%content_main do %>
 <%mftext(@title) do %>
 <% 
-@question_pages = ActionController::Pagination::Paginator.new self, obj.count(:published, :conditions => 'answered_on is null'), 30, params['page']
+@question_pages = ActionController::Pagination::Paginator.new self, obj.count(:published, :content_type => 'Question', :conditions => 'answered_on is null'), 30, params['page']
 @question_pages.current_page = @question_pages.last if params['page'].nil?
 %>
 <% # cache("/#{controller.portal.code}/respuestas/index/page_#{params[:page]}") do

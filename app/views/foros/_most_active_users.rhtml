@@ -1,7 +1,7 @@
 <% cache("/common/foros/_most_active_users/#{@object.class.name}/#{@object.id}_#{Time.now.to_i/86400}") do %>
 <% mftext("Los más activos en #{object.name}") do %>
 <table id="most_active_users">
-  <% @object.most_active_users.each do |u,data|%>
+  <% @object.most_active_users('TopicsCategory').each do |u,data|%>
   <tr class="<%=oddclass%>">
   <td style="padding-left: 3px;><%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span></td>
   <td style="padding-left: 3px; width: 100px;" class="infoinline">

@@ -26,14 +26,14 @@
 	
 	<div class="grid-4">
 	<%=mfcontents_basic("Tópics activos", 
-					Proc.new { controller.portal.topic.find(:published, :conditions => 'closed is false and sticky is false', :order => 'updated_on desc', :limit => 10) }, 
+					Proc.new { controller.portal.topic.find(:published, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 10) }, 
 					[],
 					:truncate_at => 28, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	</div>
 	
 	<%mftext('Foros', :grid => 3, :glast => true, :blast => true) do %>
 	<ul class="content-hid">
-		<%controller.portal.categories(Topic)[0].children.find(:all, :conditions => 'parent_id = root_id', :order => 'updated_on DESC', :limit => 5).sort_by { |e| e.name.downcase }.each do |tc| %>
+		<%controller.portal.categories(Topic)[0].last_updated_children(:limit => 5).each do |tc| %>
 		<li><a href="<%=gmurl(tc)%>"><%=truncate(tc.name, 20, '..')%></a></li>
 		<% end -%>
 		</ul>
@@ -109,7 +109,7 @@ category = controller.portal.categories(Download)[0]
 	
 	<div class="grid-4 glast">
 	<%=mfcontents_basic('Esenciales', 
-					Proc.new { category.root.find(:published, :conditions => "essential is true", :order => 'created_on DESC', :limit => 12) },
+					Proc.new { category.root.find(:published, :content_type => 'Download', :conditions => "essential is true", :order => 'created_on DESC', :limit => 12) },
 					[],
 					:truncate_at => 28, :faction_favicon => true)%>
 	</div>

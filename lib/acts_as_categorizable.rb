@@ -71,13 +71,13 @@ module ActsAsCategorizable
         if prev then
           prev = self.class.category_class.find(prev)
            (prev.get_ancestors + [prev]).each do |anc|
-            anc.class.decrement_counter("#{Inflector::tableize(self.class.name)}_count", anc.id)
+            anc.class.decrement_counter("contents_count", anc.id)
           end
         end
         
         
          (self.main_category.get_ancestors + [self.main_category]).each do |anc|
-          anc.class.increment_counter("#{Inflector::tableize(self.class.name)}_count", anc.id)
+          anc.class.increment_counter("contents_count", anc.id)
         end
       elsif self.slnc_changed?(:state) && self.state == Cms::DELETED
        (self.main_category.get_ancestors + [self.main_category]).each do |anc|

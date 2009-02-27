@@ -10,11 +10,11 @@ class NoticiasController < InformacionController
   end
   
   def _before_create
-    parse_subcat_thing('new')
+    #parse_subcat_thing('new')
   end
   
   def _before_update
-    parse_subcat_thing('new')
+    #parse_subcat_thing('new')
   end
   
   

@@ -30,7 +30,7 @@ class DescargasController < InformacionController
     Download.increment_counter('downloaded_times', @download.id)
     dd = @download.downloaded_downloads.create(:user_id => (user_is_authed ? @user.id : nil), :session_id => session[:session_id], :ip => request.remote_ip, :referer => request.env['HTTP_REFERER'].to_s)
     # TODO PERF no borrar las caches con tanta gracia, ¿no?
-    CacheObserver.expire_fragment("/common/descargas/index/downloads_#{@download.main_category_id}/page_*") # TODO MUY HEAVY, no podemos hacer que cada descarga suponga borrar todas las caches de índices
+    CacheObserver.expire_fragment("/common/descargas/index/downloads_#{@download.main_category.id}/page_*") # TODO MUY HEAVY, no podemos hacer que cada descarga suponga borrar todas las caches de índices
     CacheObserver.expire_fragment("/common/descargas/index/most_downloaded_#{@download.main_category.root_id}")
     if params[:r]
       @download_link = params[:r]
@@ -83,7 +83,7 @@ class DescargasController < InformacionController
         end
         
         download.title = f.bare
-        download.main_category_id = params[:download][:downloads_category_id] # TODO permissions
+        download.terms = params[:download][:terms] # TODO permissions
         i += 1 if download.save
       end
     end

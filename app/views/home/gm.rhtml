@@ -69,7 +69,7 @@ for download in @last_downloads
 shown_topics = []
 if controller.portal.id != -1 then # portal distinto de GmPortal
 # TODO la subquery de nohome la estamos haciendo sobre todas las categorías hidden que hay, habría que restringirlo a las categorías nohome solo accesibles desde este portal
-@last_topics = controller.portal.topic.find(:published, :conditions => 'closed is false and sticky is false AND topics_category_id not in (select id from topics_categories where root_id in (select id from topics_categories where code in (select code from bazar_districts)) OR root_id = (select id from topics_categories where code=\'bazar\' and id = root_id))', :order => 'updated_on desc', :limit => 20)
+@last_topics = controller.portal.topic.find(:published, :conditions => 'closed is false AND topics_category_id not in (select id from topics_categories where root_id in (select id from topics_categories where code in (select code from bazar_districts)) OR root_id = (select id from topics_categories where code=\'bazar\' and id = root_id))', :order => 'updated_on desc', :limit => 20)
 
 for topic in @last_topics
   shown_topics << topic.unique_content.id %>

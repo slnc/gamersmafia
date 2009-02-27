@@ -212,3 +212,36 @@ news64:
     id: 43
     content_id: 1104
     term_id: 1
+
+babe:
+    id: 44
+    content_id: 15
+    term_id: 23
+
+dude:
+    id: 45
+    content_id: 16
+    term_id: 24
+    
+<% i = 100 %>
+<% ii = 100 %>
+<% [0,1,2,3,4].each do |state| %>
+  <% %w(League Tournament Ladder).each do |competitions_type| %>
+    <% [1,2].each do |competitions_participants_type| %>
+      <% [true, false].each do |fee| %>
+        <% [true, false].each do |invitational| %>
+          <% [0,1,2].each do |scoring_mode| %>
+
+compevent<%=competitions_type%><%=i%>:
+  id: <%=i%>
+  content_id: <%=ii%>
+  term_id: 25 
+
+            <% i += 1 %>
+            <% ii += 1 %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

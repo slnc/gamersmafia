@@ -12,6 +12,7 @@ class RespuestasController < ApplicationController
   
   def categoria
     @category = Term.find_taxonomy(params[:id], 'QuestionsCategory') unless @category
+    @category = Term.single_toplevel(:id => params[:id]) unless @category
     raise ActiveRecord::RecordNotFound unless @category
     params[:category] = @category
     # TODO que no sea de una categoria que no deberia

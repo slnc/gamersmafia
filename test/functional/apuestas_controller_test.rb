@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../test_functional_content_helper'
 require 'apuestas_controller'
 
 class ApuestasControllerTest < ActionController::TestCase
-  test_common_content_crud :name => 'Bet', :form_vars => {:title => 'footapang', :terms => 1, :closes_on => Time.now}
+  test_common_content_crud :name => 'Bet', :form_vars => {:title => 'footapang', :closes_on => Time.now}, :root_terms => 1
   
   # TODO más tests
   #

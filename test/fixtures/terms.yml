@@ -159,7 +159,6 @@
       name: Otros
       slug: otros
       root_id: 22
-      parent_id: 22
 
 - babes:
       id: 23
@@ -196,3 +195,21 @@
       slug: mapaches
       root_id: 27
       clan_id: 2
+      
+- bd8_categories_root:
+      id: 28
+      name: General
+      slug: general
+      root_id: 12
+      parent_id: 12
+      bazar_district_id: 8
+      taxonomy: TutorialsCategory
+      
+- utdemosgeneral:
+      id: 29
+      name: General
+      slug: general
+      root_id: 1
+      parent_id: 1
+      game_id: 1
+      taxonomy: DemosCategory

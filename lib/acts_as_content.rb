@@ -8,8 +8,9 @@ module ActsAsContent
   module AddActsAsContent
     def acts_as_content # necesario para registrar los distintos callbacks
       after_create :do_after_create
-      after_update :do_after_update
       after_save :do_after_save
+      after_update :do_after_update
+      
       after_destroy :do_after_destroy
       
       belongs_to :unique_content, :class_name => 'Content'
@@ -34,6 +35,7 @@ module ActsAsContent
         end
         
         if m.attributes[:terms]
+          m.attributes[:terms] = [m.attributes[:terms]] unless m.attributes[:terms].kind_of(Array)
           @_terms_to_add = m.attributes[:terms]
           m.attributes.delete :terms
         end
@@ -169,11 +171,17 @@ module ActsAsContent
     end
     
     def do_after_save
+      return false if self.unique_content_id.nil?
       if @_terms_to_add
         @_terms_to_add.each do |tid|
           Term.find(tid).link(self.unique_content)
         end
         @_terms_to_add = []
+        if self.unique_content_id
+          uniq = self.unique_content
+          uniq.url = nil
+          ApplicationController.gmurl(uniq)
+        end
       end
       true
     end
@@ -188,6 +196,36 @@ module ActsAsContent
       @_terms_to_add ||= []
       new_terms = [new_terms] unless new_terms.kind_of?(Array)
       @_terms_to_add += new_terms 
+    end
+    
+    def root_terms
+      self.unique_content.root_terms
+    end
+    
+    def root_terms_ids=(arg)
+      self.unique_content.root_terms_ids=(arg)
+      self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
+    end
+    
+    # arg[0] arg
+    # arg[1] taxonomy
+    def categories_terms_ids=(arg)
+      self.unique_content.categories_terms_ids=(arg)
+      self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
+    end
+    
+    def root_terms_add_ids(arg)
+      self.unique_content.root_terms_add_ids(arg)
+      self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
+    end
+    
+    def categories_terms
+      self.unique_content.categories_terms
+    end
+    
+    def categories_terms_add_ids(arg, taxonomy)
+      self.unique_content.categories_terms_add_ids(arg, taxonomy)
+      self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
     end
     
     def do_before_save      
@@ -306,7 +344,7 @@ module ActsAsContent
     def unique_attributes
       out = {}
       self.attributes.each do |k,v|
-        next if k.to_sym == :id 
+        next if [:id, :unique_content_id, :terms].include?(k.to_sym) 
         out[k.to_sym] = v unless Cms::COMMON_CLASS_ATTRIBUTES.include?(k.to_sym)
       end
       out
@@ -381,6 +419,7 @@ module ActsAsContent
         
         if uniq then
           uniq.state = self.state
+          uniq.closed = self.closed
           uniq.save # refresh updated_on
         end
       end
@@ -408,6 +447,10 @@ module ActsAsContent
       base_opts = {:content_type_id => myctype.id, :external_id => self.id, :name => self.resolve_hid, :updated_on => self.created_on, :state => self.state}
       base_opts.merge!({:clan_id => clan_id}) if self.respond_to? :clan_id
       c = Content.create(base_opts)
+      if c.new_record?
+      raise "error creating content!"
+      puts c.errors.full_messages_html
+      end
       self.unique_content_id = c.id
       User.db_query("UPDATE #{Inflector::tableize(self.class.name)} SET unique_content_id = #{c.id} WHERE id = #{self.id}")
       

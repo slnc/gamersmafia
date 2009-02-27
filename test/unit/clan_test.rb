@@ -13,8 +13,8 @@ class ClanTest < Test::Unit::TestCase
     test_validations_minimal_data
     t = Term.find(:first, :conditions => ['clan_id = ? AND parent_id IS NULL', @clan.id])
     assert t
-    assert_equal @g.name, t.name
-    assert_equal @g.code, t.slug
+    assert_equal @clan.name, t.name
+    assert_equal @clan.tag, t.slug
   end
   
   def test_invalid_minimal_data

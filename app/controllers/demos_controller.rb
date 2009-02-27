@@ -154,22 +154,22 @@ class DemosController < ArenaController
   end
   
   def get_games_maps
-    raise ActiveRecord::RecordNotFound unless params[:demos_category_id].to_s != ''
-    @g = User.db_query("SELECT id FROM games WHERE code = (SELECT code FROM demos_categories WHERE id = #{params[:demos_category_id].to_i})")
+    raise ActiveRecord::RecordNotFound unless params[:game_id].to_s != ''
+    @g = Game.find(params[:game_id])
     raise ActiveRecord::RecordNotFound unless @g        
     render :layout => false
   end
   
   def get_games_modes
-    raise ActiveRecord::RecordNotFound unless params[:demos_category_id].to_s != ''
-    @g = User.db_query("SELECT id FROM games WHERE code = (SELECT code FROM demos_categories WHERE id = #{params[:demos_category_id].to_i})")
+    raise ActiveRecord::RecordNotFound unless params[:game_id].to_s != ''
+    @g = Game.find(params[:game_id])
     raise ActiveRecord::RecordNotFound unless @g
     render :layout => false
   end  
   
   def get_games_versions
-    raise ActiveRecord::RecordNotFound unless params[:demos_category_id].to_s != ''
-    @g = User.db_query("SELECT id FROM games WHERE code = (SELECT code FROM demos_categories WHERE id = #{params[:demos_category_id].to_i})")
+    raise ActiveRecord::RecordNotFound unless params[:game_id].to_s != ''
+    @g = Game.find(params[:game_id])
     raise ActiveRecord::RecordNotFound unless @g
     render :layout => false
   end

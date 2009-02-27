@@ -8,24 +8,28 @@ class CacheObserverForosTest < ActionController::IntegrationTest
   
   def test_should_clear_foros_index_index_after_creating_a_new_category
     get '/foros'
+    assert_response :success
     assert_cache_exists '/gm/foros/index/index'
-    @tc = TopicsCategory.create({:name => 'foocat', :code => 'codecot'})
+    @rt = Term.single_toplevel(:slug => 'gm')
+    @tc = @rt.children.create({:name => 'foocat', :taxonomy => 'TopicsCategory'})
     assert_cache_dont_exist '/gm/foros/index/index'
   end
   
   def test_should_clear_foros_index_index_after_updating_a_category
     test_should_clear_foros_index_index_after_creating_a_new_category
     get '/foros'
+    assert_response :success, @response.body
     assert_cache_exists '/gm/foros/index/index'
-    TopicsCategory.find_by_code('codecot').save
+    @tc.save
     assert_cache_dont_exist '/gm/foros/index/index'
   end
   
   def test_should_clear_foros_index_index_after_deleting_a_category
     test_should_clear_foros_index_index_after_creating_a_new_category
     get '/foros'
+    assert_response :success, @response.body
     assert_cache_exists '/gm/foros/index/index'
-    TopicsCategory.find_by_code('codecot').destroy
+    @tc.destroy
     assert_cache_dont_exist '/gm/foros/index/index'
   end
   

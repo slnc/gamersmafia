@@ -5,9 +5,9 @@
   <% cache("/common/imagenes/show/g#{@image.images_category_id}/#{@image.id}") do %>
   <% 
   # cogemos la imagen anterior y la posterior
-  im_prev = @image.main_category.images.find(:first, :conditions => ['state = ? and id < ?', Cms::PUBLISHED, @image.id], :order => 'id DESC')
+  im_prev = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id < ?', Cms::PUBLISHED, @image.unique_content_id], :order => 'contents.id DESC')
 
-  im_next = @image.main_category.images.find(:first, :conditions => ['state = ? and id > ?', Cms::PUBLISHED, @image.id], :order => 'id ASC')
+  im_next = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id > ?', Cms::PUBLISHED, @image.unique_content_id], :order => 'contents.id ASC')
   %>
   <% if im_prev %>
     <li><div class="image"><a class="new" href="/imagenes/show/<%=im_prev.id%>"><%=fc_thumbnail(im_prev.file, 'i', '85x85', false)%></a></div></li>
@@ -22,9 +22,6 @@
 </ul>
 <% end -%>
 
-	
-  
-	
 		<% #= render :partial => '/imagenes/random', :locals => {:category => @image.images_category} %>
 	
 <%= render :partial => '/imagenes/best_rated', :locals => {:category => @image.images_category} %>

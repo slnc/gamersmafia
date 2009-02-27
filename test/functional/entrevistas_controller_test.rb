@@ -6,7 +6,7 @@ require 'entrevistas_controller'
 class EntrevistasController; def rescue_action(e) raise e end; end
 
 class EntrevistasControllerTest < Test::Unit::TestCase
-  test_common_content_crud :name => 'Interview', :form_vars => {:title => 'footapang', :description => 'bartapang', :main => 'aaa', :terms => 1}
+  test_common_content_crud :name => 'Interview', :form_vars => {:title => 'footapang', :description => 'bartapang', :main => 'aaa'}, :root_terms => 1
 
   def setup
     @controller = EntrevistasController.new

@@ -17,7 +17,7 @@ class Gm2334 < ActiveRecord::Migration
     slonik_execute "alter table topics alter column topics_category_id drop not null;"
     slonik_execute "alter table images alter column images_category_id drop not null;"
     slonik_execute "alter table interviews alter column interviews_category_id drop not null;"
-    slonik_execute "alter table tutorials alter column tutorials_category_id drop not null;"
+    slonik_exGoGecute "alter table tutorials alter column tutorials_category_id drop not null;"
     slonik_execute "alter table polls alter column polls_category_id drop not null;"
     slonik_execute "alter table bets alter column bets_category_id drop not null;"
     slonik_execute "alter table reviews alter column reviews_category_id drop not null;"
@@ -41,6 +41,9 @@ class Gm2334 < ActiveRecord::Migration
     slonik_execute "alter table funthings add column unique_content_id int references contents;"
     slonik_execute "alter table topics add column unique_content_id int references contents;"
     slonik_execute "alter table blogentries add column unique_content_id int references contents;"
+    slonik_execute "alter table contents add column closed bool not null default 'f';"
+    
+    # slonik_execute "alter table terms add column updated_on timestamp not null default now();"
   end
   
   def self.down

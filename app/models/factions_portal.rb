@@ -52,14 +52,9 @@ class FactionsPortal < Portal
   
   # Devuelve todas las categorías de primer nivel visibles en la clase dada
   def categories(content_class)
-    cats = []
-    # slugs = self.factions.collect { |f| "'#{f.code}'" }
-    # Term.find(:all, :conditions => "id = root_id AND code IN (#{slugs.join(',')})")
-    for f in self.factions
-      catz = content_class.category_class.toplevel(:conditions => "code = \'#{f.code}\'")
-      cats<< catz[0] if catz.size > 0
+    self.factions.collect do |f| 
+      Term.single_toplevel(f.referenced_thing_field => f.referenced_thing.id) 
     end
-    cats
   end
   
   # devuelve array de ints con las ids de las categorías visibles del tipo dado
@@ -67,16 +62,11 @@ class FactionsPortal < Portal
     # buscamos los nombres de todas las categorías de los juegos que tenemos
     # asociados
     cats_full = [0]
-    
-    for f in self.factions
-      for category in cls.find(:all, :conditions => ["root_id = (SELECT id FROM #{Inflector::tableize(cls.name)} where root_id = id and code = ?)", f.code])
-        cats_full<< category.id
-      end
+    taxonomy = ApplicationController.taxonomy_from_content_name(cls.name)
+    self.categories(cls).each do |t|
+      cats_full += t.all_children_ids(:taxonomy => taxonomy)
     end
-    
-    @categories = cats_full
-    
-    @categories
+    cats_full
   end
   
   def games
@@ -120,8 +110,7 @@ class FactionsPortal < Portal
     elsif /(news|downloads|topics|events|tutorials|polls|images|questions)_categories/ =~ method_id.to_s then
       # Devolvemos categorías de primer nivel de esta facción
       # it must have at least one
-      cls = Object.const_get("#{Inflector::singularize(Inflector::camelize(method_id))}")
-      cls.find(:all, :conditions => "parent_id is null and id = root_id AND code IN (#{toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC')
+      Term.find(:all, :conditions => "id = root_id AND slug IN (#{toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC')
     else
       super
     end

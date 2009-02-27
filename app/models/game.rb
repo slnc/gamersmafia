@@ -7,7 +7,7 @@ class Game < ActiveRecord::Base
   has_many :users_guids, :dependent => :destroy
   has_many :competitions, :dependent => :destroy
   
-  has_many :terms
+  has_many :terms, :dependent => :destroy
   
   after_create :create_contents_categories
   after_save :update_faction_code
@@ -37,18 +37,6 @@ class Game < ActiveRecord::Base
   end
   
   def create_contents_categories
-    root_term = Term.create(:game_id => self.id, :name => self.name, :slug => self.code)
-    
-    # crea los foros iniciales para dicho juego
-    ['General', 'Ayuda'].each do |defname|
-      root_term.children.create(:name => defname, :taxonomy => 'TopicsCategory')
-    end
-    
-    # creamos galería inicial
-    ['General'].each do |defname| 
-      root_term.children.create(:name => defname, :taxonomy => 'ImagesCategory') 
-    end
-    
     if Faction.find_by_name(self.name).nil? then
       f = Faction.new({:name => self.name, :code => self.code})
       f.save
@@ -56,6 +44,12 @@ class Game < ActiveRecord::Base
     
     p = Portal.create({:name => self.name, :code => self.code})
     p.factions<< f
+    
+    # El orden es importante
+    root_term = Term.create(:game_id => self.id, :name => self.name, :slug => self.code) 
+    Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
+      root_term.children.create(:name => c[1], :taxonomy => c[0])
+    end
   end
   
   after_save :update_img_file

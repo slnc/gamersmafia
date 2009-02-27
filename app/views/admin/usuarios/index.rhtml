@@ -53,15 +53,7 @@
   for user in User.find_by_sql('SELECT * from users where id IN (select id from users_roles where role in (\'Boss\', \'Underboss\')) ORDER BY lower(login) ASC')
   
   # buscamos contenido
-  last_most_recent = nil
-
-  for c in Cms.categories_classes
-    last = c.items_class.find(:first, :conditions => "state = #{Cms::PUBLISHED} and user_id = #{user.id} ", :order => 'created_on DESC')
-
-    if last_most_recent.nil? or (last and last.created_on > last_most_recent.created_on) then
-      last_most_recent = last
-    end
-  end
+  last_most_recent = user.contents.find(:first, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC')
   %>
   <strong><a href="/admin/usuarios/edit/<%=user.id%>"><%=user.login%></a></strong><br /><div class="infoinline">
   <%

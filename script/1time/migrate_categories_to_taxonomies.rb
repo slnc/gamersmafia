@@ -1,3 +1,5 @@
+# DESACTIVAR caching, vamos a borrar todos los fragments de todas formas
+
 # creamos terms de primer nivel de todo
     [Game, Platform, BazarDistrict].each do |cls|
       cls.find(:all).each do |thing|
@@ -39,3 +41,5 @@
         o.find(:all, :conditions => "#{Inflector::underscore(o.class.name)}_id = #{o.id}", :order => 'id').each { |item| new_term.link(item.unique_content) }
       end
     end
+    
+    # TODO ejecutar un script para actualizar campo updated_on

@@ -17,14 +17,15 @@ cache("/common/imagenes/toplevel/#{@category.id}/page_#{params[:page]}") do
   for subcategory in  @subcategories%>
 <dt style="clear: left;"><h2><%= link_to subcategory.name, gmurl(subcategory)%></h2></dt>
 <dd>
-  <div class="gallery-info infoinline">Imágenes: <strong><%=subcategory.images.length%></strong><br />Actualizada: <%=subcategory.updated_on.strftime("%d/%m/%Y")%><br />
-  <% topcontrib = subcategory.top_contributor
+	<% lastit = subcategory.last_published_content('Image')%>
+  <div class="gallery-info infoinline">Imágenes: <strong><%=subcategory.contents_count%></strong><% if lastit then %><br />Actualizada: <%=lastit.created_on.strftime("%d/%m/%Y")%><% end -%><br />
+  <% topcontrib = subcategory.top_contributors(:taxonomy => 'ImagesCategory', :limit => 1)[0]
   if topcontrib then %>
-  Contribuidor principal: <%=topcontrib[0].login%> (<%=topcontrib[1].to_i*100/subcategory.images.length%>%)
+  Contribuidor principal: <%=topcontrib[:login]%> (<%=(topcontrib[:pcent]*100).to_i%>%)
   <% end -%>
   </div>
   <div class="gallery-preview">
-  <% for image in subcategory.images.find(:all, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 3) %>
+  <% for image in subcategory.images.find(:all, :conditions => "contents.state = #{Cms::PUBLISHED}", :order => 'contents.created_on DESC', :limit => 3) %>
       <span class="screenshot"><%=link_to fc_thumbnail(image.file, 'f', '85x60', false), gmurl(image)%></span>
   <% end -%>
   </div>

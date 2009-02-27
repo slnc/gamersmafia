@@ -26,13 +26,13 @@ for im in Image.find_by_sql('SELECT a.* FROM images a JOIN potds b on a.id = b.i
 <% @categories.each do |category|
     if category.children.size > 0 then %>
   <tr class="<%=oddclass%>">
-    <td><%=link_to category.name, gmurl(category)%></td>
-    <td><% im_last = category.last_created_items(1)[0]
+    <td><%=link_to category.name, gmurl(category, :taxonomy => 'ImagesCategory')%></td>
+    <td><% im_last = category.find(:published, :content_type => 'Image', :order => 'created_on DESC', :limit => 1)[0]
       if im_last then
       %>
       <span class="screenshot"><%=link_to fc_thumbnail(im_last.file, 'f', '85x60', false), gmurl(im_last)%></span>
      <% end %></td>
-    <td><% cats = category.last_updated(3)
+    <td><% cats = category.children.find(:all, :conditions => 'taxonomy = \'ImagesCategory\'', :order => 'last_updated_item_id DESC', :limit => 3)
 		cats.each do |subcategory| %>
       <%=link_to subcategory.name, gmurl(subcategory)%> <span class="infoinline">(<%=subcategory.items_count%>)</span> <%=',' unless subcategory.id == cats.last.id%> 
     <% end -%>

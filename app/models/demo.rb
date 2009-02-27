@@ -44,7 +44,7 @@ class Demo < ActiveRecord::Base
   end
   
   def check_model
-    if games_mode.game.code != demos_category.root.code then
+    if self.main_category && self.games_mode.game.code != self.main_category.root.code then
       self.errors.add('games_mode', 'El modo de juego especificado no se corresponde con el juego elegido.')
       return false
     end

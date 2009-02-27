@@ -106,7 +106,7 @@ root_term = Term.single_toplevel(faction.referenced_thing_field => faction.refer
     last = root_term.last_published_content(cls_name)
     max_t = Time.now.to_i - (Time.now.to_i - 86400 * 14)
     %><tr class="<%=oddclass%>">
-      <td class="w100"><strong><%=Cms::translate_content_name(c.items_class.name).capitalize%></strong></td>
+      <td class="w100"><strong><%=Cms::translate_content_name(cls_name).capitalize%></strong></td>
       <td class="w125"><div class="infoinline"><%if last then
       last_t = (Time.now - last.created_on).to_i
       %>

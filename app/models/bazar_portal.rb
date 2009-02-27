@@ -77,12 +77,7 @@ class BazarPortal
         cls
       end
     elsif /_categories/ =~ method_id.to_s then
-      # it must have at least one
-      cls_name = Inflector::camelize(Inflector::singularize(method_id))
-      single_name = Inflector::camelize(Inflector::singularize(method_id.to_s.gsub('_categories', '')))
-      cls = Object.const_get(cls_name)
-      cond = Cms::CLANS_CONTENTS.include?(single_name) ? "AND clan_id IS NULL " : ''
-      cls.find(:first, :conditions => "parent_id is null and id = root_id AND code = 'bazar' #{cond}", :order => 'UPPER(name) ASC').children.find(:all, :order => 'UPPER(name) ASC')
+      Term.single_toplevel(:slug => 'bazar')
     else
       super
     end

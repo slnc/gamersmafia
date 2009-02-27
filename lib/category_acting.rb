@@ -178,22 +178,7 @@ module CategoryActing
       # probabilidades de que esto ocurra son mínimas
       time_interval = '1 month'
       tbl = {}
-      
-      cat_ids = [self.id]
-      for c in self.children
-        cat_ids<< c.id
-        if c.children.size > 0 then
-          for cc in c.children
-            cat_ids<< cc.id
-            if cc.children.size > 0 then
-              for ccc in cc.children
-                cat_ids<< ccc.id
-              end
-            end
-          end
-        end
-      end
-      
+            
       # cogemos el top 3 de topics
       # aunque el tópic tenga más de 3 meses el poster sigue contando si sigue activo
       for t in Topic.db_query("SELECT count(id), 
@@ -201,7 +186,7 @@ module CategoryActing
                                  FROM topics 
                                 WHERE updated_on > (now() -  '#{time_interval}'::interval)
                                   AND state = #{Cms::PUBLISHED} 
-                                  AND topics_category_id IN (#{cat_ids.join(',')}) 
+                                  AND topics_category_id IN (#{all_children_ids.join(',')}) 
                              GROUP BY user_id 
                              ORDER BY count(id) DESC LIMIT 10")
         
@@ -273,40 +258,12 @@ module CategoryActing
     
     
     def active_items(limit=15)
-      cat_ids = [self.id]
-      for c in self.children
-        cat_ids<< c.id
-        if c.children.size > 0 then
-          for cc in c.children
-            cat_ids<< cc.id
-            if cc.children.size > 0 then
-              for ccc in cc.children
-                cat_ids<< ccc.id
-              end
-            end
-          end
-        end
-      end
-      
-      self.class.items_class.find(:published, :conditions => "#{Inflector::underscore(self.class.name)}_id IN (#{cat_ids.join(',')})", :order => 'updated_on DESC', :limit => limit)
+      self.class.items_class.find(:published, :conditions => "#{Inflector::underscore(self.class.name)}_id IN (#{all_children_ids.join(',')})", :order => 'updated_on DESC', :limit => limit)
     end
     
     def most_active_items
-      cat_ids = [self.id]
-      for c in self.children
-        cat_ids<< c.id
-        if c.children.size > 0 then
-          for cc in c.children
-            cat_ids<< cc.id
-            if cc.children.size > 0 then
-              for ccc in cc.children
-                cat_ids<< ccc.id
-              end
-            end
-          end
-        end
-      end
-      
+      cat_ids = all_children_ids
+
       # TODO per hit
       # TODO no filtramos
       if self.class.name == 'TopicsCategory' then # eliminamos las categorías ocultas
@@ -359,11 +316,7 @@ module CategoryActing
     def top_contributor
       # devuelve el usuario que más contenidos ha aportado a la categoría
       us_info = User.db_query("select user_id, count(id) from #{Inflector.tableize(self.class.items_class.name)} where #{Inflector.underscore(self.class.name)}_id = #{self.id} and state = #{Cms::PUBLISHED} group by user_id order by count(id) desc limit 1")[0]
-      
-      if not us_info then
-        return 
-      end
-      
+      return unless us_info
       top_contributor = User.find(us_info['user_id'])
       return top_contributor, us_info['count']
     end
@@ -411,11 +364,6 @@ module CategoryActing
       portals
     end
     
-    def last_updated_items(limit = 5)
-      cat_ids = self.all_children_ids
-      self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'updated_on DESC', :limit => limit)
-    end
-    
     # Devuelve los ids de los hijos de la categoría actual o de la categoría obj de forma recursiva incluido el id de obj
     def all_children_ids(obj = nil)
       obj = self if obj.nil?
@@ -454,6 +402,11 @@ module CategoryActing
     def random_item
       cat_ids = self.all_children_ids
       self.class.items_class.find(:first, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'random()')
+    end
+     
+    def last_updated_items(limit = 5)
+      cat_ids = self.all_children_ids
+      self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'updated_on DESC', :limit => limit)
     end
   end
   

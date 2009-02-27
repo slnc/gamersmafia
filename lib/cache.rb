@@ -76,4 +76,82 @@ module Cache
       end
     end
   end
+  
+  module Terms
+    extend Cache::Common 
+    def self.before_destroy(object)
+      case object.taxonomy
+        when 'ImagesCategory':
+        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/imagenes/index/galleries") }
+        
+        when 'TopicsCategory':
+        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/foros/index/index") } # tenemos que borrarla entera porque se guardan totales
+        expire_fragment("/common/foros/subforos/#{object.parent_id}")
+        expire_fragment '/common/home/foros/topics_list'
+        p = object
+        while p
+          expire_fragment("/common/foros/_forums_list/#{p.id}")
+          expire_fragment("/common/home/foros/topics_#{p.id}")
+          p = p.parent
+        end
+        
+        when 'DownloadsCategory':
+        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/descargas/index/folders") }
+        p = object
+        while p
+          expire_fragment("/common/descargas/index/folders_#{p.id}")
+          p = p.parent
+        end
+        
+        when 'TutorialsCategory':
+        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/tutoriales/index/folders") }
+        p = object
+        while p
+          expire_fragment("/common/tutoriales/index/folders_#{p.id}")
+          expire_fragment("/common/tutoriales/index/tutorials_#{p.id}/page_*")
+          p = p.parent
+        end
+      end
+    end
+    
+    def self.after_save(object)
+      case object.taxonomy
+        when 'ImagesCategory' then
+        object.get_related_portals.each do |p|
+          expire_fragment("/#{p.code}/imagenes/index/galleries")
+        end
+        expire_fragment("/common/imagenes/toplevel/#{object.root_id}/page_*")       
+        expire_fragment("/common/imagenes/toplevel/#{object.slnc_changed_old_values[:parent_id]}/page_*") if object.slnc_changed?(:parent_id) # no buscamos el root pq con la config de la sección actualmente no hay más de 2 niveles en la jerarquía
+        
+        when 'TopicsCategory' then
+        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/foros/index/index")  }
+        expire_fragment '/common/home/foros/topics_list'
+        expire_fragment("/common/foros/subforos/#{object.parent_id}")
+        p = object
+        while p
+          expire_fragment("/common/foros/_forums_list/#{p.id}")
+          expire_fragment("/common/home/foros/topics_#{p.id}")
+          p = p.parent
+        end
+        
+        when 'DownloadsCategory' then
+        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/descargas/index/folders") }
+        p = object
+        while p
+          expire_fragment("/common/descargas/index/folders_#{p.id}")
+          p = p.parent
+        end
+        
+        when 'TutorialsCategory' then
+        object.get_related_portals.each { |p|
+        expire_fragment("/#{p.code}/tutoriales/index/folders") 
+        }
+        p = object
+        while p
+          expire_fragment("/common/tutoriales/index/folders_#{p.id}")
+          p = p.parent
+        end  
+      end
+    end
+  end
 end

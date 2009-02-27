@@ -362,7 +362,7 @@ class CmsTest < Test::Unit::TestCase
     assert_equal 'Tutorial', @on.class.name
     # Verificamos que los atributos únicos de offtopic se han completado con la info de noticia
     @on.unique_attributes.each do |k,v|
-      assert_equal v, @n1.send(k) if @n1.respond_to?(k)
+      assert_equal(v, @n1.send(k)) if @n1.respond_to?(k)
     end
     assert_not_equal @on.unique_content.url, prev_content_url 
   end
@@ -408,7 +408,7 @@ class CmsTest < Test::Unit::TestCase
     old_values = {}
     Cms::COMMON_CLASS_ATTRIBUTES.each { |attr| old_values[attr] = @n1.send(attr) }
     test_transform_content_should_work_if_requirements_match
-     (Cms::COMMON_CLASS_ATTRIBUTES - [:id, :state, :log]).each do |attr|
+     (Cms::COMMON_CLASS_ATTRIBUTES - [:id, :state, :log, :terms, :unique_content_id]).each do |attr|
       assert_equal old_values[attr], @on.send(attr), "#{attr} is '#{@on.send(attr)}' but should be '#{old_values[attr]}'" 
     end
   end
@@ -526,7 +526,7 @@ class CmsTest < Test::Unit::TestCase
     assert u10.save
     e = Event.new(:starts_on => 1.year.ago, :ends_on => 11.months.ago, :user_id => 1, :title => 'foo')
     assert e.save, e.errors.full_messages_html
-    Term.single_toplevel(:slug => 'ut').link(e)
+    Term.single_toplevel(:slug => 'ut').link(e.unique_content)
     Cms::publish_content(e, User.find(1))
     e.reload
     assert_equal Cms::PUBLISHED, e.state

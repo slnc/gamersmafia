@@ -6,7 +6,7 @@ require 'encuestas_controller'
 class EncuestasController; def rescue_action(e) raise e end; end
 
 class EncuestasControllerTest < Test::Unit::TestCase
-  test_common_content_crud :name => 'Poll', :form_vars => {:title => 'footapang', :terms => 1, :starts_on => 2.days.since, :ends_on => 9.days.since}
+  test_common_content_crud :name => 'Poll', :form_vars => {:title => 'footapang', :starts_on => 2.days.since, :ends_on => 9.days.since}, :root_terms => 1
 
   def setup
     @controller = EncuestasController.new

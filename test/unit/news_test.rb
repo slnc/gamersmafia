@@ -2,11 +2,10 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class NewsTest < Test::Unit::TestCase
   def test_should_properly_change_url
-    @news = News.new(:title => 'foo flash-hack', :user_id => 1, :description => 'bar flash', :terms => 1)
+    @news = News.new(:title => 'foo flash-hack', :user_id => 1, :description => 'bar flash', :terms => Term.single_toplevel(:slug => 'ut').id)
     assert @news.save
-    assert Term.single_toplevel(:slug => 'ut').link(@news.unique_content)
-    assert @news.unique_content.url.include?('http://ut.gamersmafia.dev/')
-    assert Term.single_toplevel(:slug => 'ut').unlink(@news)
+    assert @news.unique_content.url.include?('http://ut.gamersmafia.dev/'), @news.unique_content.url
+    assert Term.single_toplevel(:slug => 'ut').unlink(@news.unique_content)
     assert Term.single_toplevel(:slug => 'gm').link(@news.unique_content)
     assert @news.unique_content.url.include?('http://gamersmafia.dev/'), @news.unique_content.url
   end

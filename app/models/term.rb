@@ -4,9 +4,10 @@ class Term < ActiveRecord::Base
   belongs_to :platform
   belongs_to :clan
   
-  has_many :contents_terms
+  has_many :contents_terms #, :dependent => :destroy
   has_many :contents, :through => :contents_terms
   
+  belongs_to :last_updated_item, :class_name => 'Content', :foreign_key => 'last_updated_item_id'
   # before_save :set_slug
   
   
@@ -31,6 +32,7 @@ class Term < ActiveRecord::Base
     self.bazar_district_id = par.bazar_district_id
     self.platform_id = par.platform_id
     self.clan_id = par.clan_id
+    self.taxonomy = par.taxonomy if par.taxonomy
     true
   end
   
@@ -67,25 +69,34 @@ class Term < ActiveRecord::Base
   end
   
   def link(content)
-    raise "TypeError" unless content.class.name == 'Content'
+    raise "TypeError, arg is #{content.class.name}" unless content.class.name == 'Content'
     if self.contents.find(:first, :conditions => ['contents.id = ?', content.id]).nil? # dupcheck
+      if Cms::CATEGORIES_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy.nil?
+        puts "error: imposible enlazar categories_terms_content con un root_term"
+        return false
+      elsif Cms::ROOT_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy && self.taxonomy.include('Category')
+        puts "error: imposible enlazar root_terms_content con un category_term"
+        return false
+      end
+      
       self.contents_terms.create(:content_id => content.id)
+      if self.id == self.root_id || self.taxonomy.include?('Category')
+        content.url = nil
+        ApplicationController.gmurl(content)
+      end
     end
     true
   end
   
   def unlink(content)
-    term = self.contents_terms.find(:all, :conditions => ['content_id = ?', content.id])
-    if term
-      term.destroy
-      true
-    else
-      false
-    end
+    raise "TypeError" unless content.class.name == 'Content'
+    self.contents_terms.find(:all, :conditions => ['content_id = ?', content.id]).each do |t| t.destroy end
+    true
   end
   
   def self.find_taxonomy(id, taxonomy)
-    Term.find(:first, :conditions => ['id = ? AND taxonomy = ?', id, taxonomy])
+    sql_tax = taxonomy.nil? ? 'IS NULL' : "= #{User.connection.quote(taxonomy)}"
+    Term.find(:first, :conditions => ["id = ? AND taxonomy #{sql_tax}", id])
   end
   
   def self.find_taxonomy_by_code(code, taxonomy)
@@ -100,9 +111,8 @@ class Term < ActiveRecord::Base
       conditions << (options[:clan_id].nil? ? 'IS NULL' : " = #{options[:clan_id].to_i}")
     end
     
-    if options[:slug]
-      conditions << " AND slug = #{User.connection.quote(options[:slug])}"
-    end
+    conditions << " AND slug = #{User.connection.quote(options[:slug])}" if options[:slug]
+    conditions << " AND id = #{options[:id].to_i}" if options[:id]
     
     conditions << " AND game_id = #{options[:game_id].to_i}" if options[:game_id]
     conditions << " AND platform_id = #{options[:platform_id].to_i}" if options[:platform_id]
@@ -143,11 +153,16 @@ class Term < ActiveRecord::Base
   def get_related_portals
     portals = [GmPortal.new]
     if self.game_id || self.platform_id
-      portals += Portal.find(:all, :conditions => ['id in (SELECT portal_id from factions_portals where faction_id = ?)', Faction.find_by_code(self.slug).id])
+      f = Faction.find_by_code(self.root.slug)
+      if f
+        portals += Portal.find(:all, :conditions => ['id in (SELECT portal_id from factions_portals where faction_id = ?)', f.id])  
+      else
+        puts "warning, term #{self.id} #{self.name} #{self.code} has no related_portals"
+      end
     elsif self.bazar_district_id
-      portals << BazarDistrictsPortal.find_by_code(self.slug)
+      portals << BazarDistrictPortal.find_by_code(self.root.slug)
     elsif self.clan_id
-      portals << ClansPortal.find_by_clan_id(self.clan_id)
+      portals << ClansPortal.find_by_clan_id(self.root.clan_id)
     else # PERF devolvemos todos por contents como funthings 
       portals += Portal.find(:all, :conditions => 'type <> \'ClansPortal\'')
     end
@@ -155,13 +170,23 @@ class Term < ActiveRecord::Base
   end
   
   def recalculate_contents_count
-    self.update_attributes(:contents_count => ContentsTerm.count(:conditions => "term_id IN (#{self.all_children_ids(self)})"))
+    newc = ContentsTerm.count(:conditions => "term_id IN (#{self.all_children_ids(self)})")
+    self.contents_count = newc
+    self.save
+  end
+  
+  def recalculate_last_updated_item_id(excluding_id=nil)
+    opts = {}
+    opts[:conditions] = "id <> #{excluding_id}" if excluding_id
+    self.last_updated_item_id = self.last_published_content(opts)
+    self.save
   end
   
   def last_published_content(cls_name, opts={})
     # opts: user_id
     conds = []
     conds << "a.user_id = #{opts[:user_id].to_i}" if opts[:user_id]
+    conds << opts[:conditions] if opts[:conditions] 
     cond = ''
     cond = " AND #{conds.join(' AND ')}" if conds.size > 0
     
@@ -170,8 +195,27 @@ class Term < ActiveRecord::Base
     contents.size > 0 ? contents[0] : nil 
   end
   
-  def contents_count(cls_name, opts)
-    raise "TODO"
+  # valid opts keys: cls_name
+  def contents_count(opts={})
+    # TODO perf optimizar mas, si el tag tiene el mismo taxonomy que el solicitado
+    raise "cls_name not specified" if self.taxonomy.nil? && opts[:cls_name].nil?
+    if opts[:cls_name] != nil
+      taxonomy = "#{Inflector::pluralize(opts[:cls_name])}Categories"
+      self.count(:conditions => "contents_terms.term_id IN (SELECT content_id 
+                                                              FROM contents_terms a 
+                                                              JOIN terms b on a.term_id = b.id 
+                                                             WHERE a.term_id IN (#{all_children_ids(:taxonomy => taxonomy)}) 
+                                                               AND b.taxonomy = #{User.connection.quote(taxonomy)})")
+      
+    elsif self.taxonomy
+      taxonomy = "#{Inflector::pluralize(self.taxonomy)}Categories"
+      self.count(:conditions => "contents_terms.term_id IN (SELECT content_id FROM contents_terms a JOIN terms b on a.term_id = b.id WHERE a.term_id IN (#{all_children_ids(:taxonomy => taxonomy)}) AND b.taxonomy = #{User.connection.quote(taxonomy)})")
+    else # shortcut, show everything
+      if self.attributes['contents_count'].nil?
+        self.recalculate_contents_count 
+      end
+      self.attributes['contents_count']  
+    end
   end
   
   
@@ -199,6 +243,8 @@ class Term < ActiveRecord::Base
     rescue NoMethodError
       if Cms::CONTENTS_WITH_CATEGORIES.include?(Inflector::camelize(method_id.to_s))
         TermContentProxy.new(Inflector::camelize(method_id.to_s), self)
+      elsif Inflector::camelize(Inflector::singularize(method_id.to_s))
+        TermContentProxy.new(Inflector::camelize(Inflector::singularize(method_id.to_s)), self)
       else
         raise "No se que hacer con metodo #{method_id}"
         #args = _add_cats_ids_cond(*args)
@@ -219,6 +265,12 @@ class Term < ActiveRecord::Base
   # TODO se puede optimizar usando caches en categorías para images
   def count(*args)
     args = _add_cats_ids_cond(*args)
+    opts = args.pop
+    if opts.kind_of?(Hash)
+      opts.delete(:joins)
+      opts.delete(:order)
+    end
+    args.push(opts)
     self.contents.count(*args)
   end
   
@@ -237,12 +289,20 @@ class Term < ActiveRecord::Base
       new_cond = "term_id IN (#{([self.id] + @siblings.collect { |s| s.id }).join(',')})"
     end
     
+    if options[:content_type].nil? && options[:content_type_id].nil? && self.taxonomy.to_s.index('Category')
+      options[:content_type] = ApplicationController.extract_content_name_from_taxonomy(self.taxonomy)
+    end
+    
     if options[:content_type]
       new_cond << " AND contents.content_type_id = #{ContentType.find_by_name(options[:content_type]).id}"
+      options[:joins] = "JOIN #{Inflector::tableize(options[:content_type])} ON #{Inflector::tableize(options[:content_type])}.unique_content_id = contents.id"
     end
+    
     
     if options[:content_type_id]
       new_cond << " AND contents.content_type_id = #{options[:content_type_id]}"
+      ct = ContentType.find(options[:content_type_id])
+      options[:joins] = "JOIN #{Inflector::tableize(ct.name)} ON #{Inflector::tableize(ct.name)}.unique_content_id = contents.id"
       #options[:include] ||= []
       #options[:include] << :contents
     end
@@ -260,6 +320,8 @@ class Term < ActiveRecord::Base
       options[:conditions] = new_cond
     end
     
+    args.push(options)
+    
     agfirst = args.first
     if agfirst.is_a?(Symbol) && [:drafts, :published, :deleted, :pending].include?(agfirst) then
       options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
@@ -275,10 +337,10 @@ class Term < ActiveRecord::Base
       
       options[:order] = "contents.created_on DESC" unless options[:order]
       args[0] = :all
+      
       args.push(options)
     end
-    
-    args.push(options)
+    args
   end
   
   # devuelve el ultimo Content actualizado
@@ -294,9 +356,208 @@ class Term < ActiveRecord::Base
         obj
       end
     else
-      self.last_updated_item_id
+      self.last_updated_item
     end
   end
+  
+  def random(limit=3)
+    cat_ids = self.all_children_ids
+    self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'RANDOM()', :limit => limit)
+  end
+  
+  def most_rated_items(opts)
+    raise "content_type unspecified" unless opts[:content_type]
+    opts = {:limit => 5}.merge(opts)
+    self.find(:published, 
+              :content_type => opts[:content_type],
+              :conditions => "cache_rated_times > 1", 
+    :order => 'coalesce(cache_weighted_rank, 0) DESC', 
+    :limit => opts[:limit])
+  end
+  
+  def most_popular_items(opts)
+    opts = {:limit => 3}.merge(opts)
+    raise "content_type unspecified" unless opts[:content_type]
+    self.find(:published, 
+              :content_type => opts[:content_type],
+              :conditions => "cache_rated_times > 1", 
+    :order => '(coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0)) DESC', 
+    :limit => opts[:limit])
+  end
+  
+  def comments_count
+    # TODO perf
+    User.db_query("SELECT SUM(A.comments_count) 
+                     FROM contents A
+                     JOIN contents_terms B ON A.id = B.content_id
+                    WHERE B.term_id IN (#{all_children_ids})
+                      AND A.state = #{Cms::PUBLISHED}")[0]['sum'].to_i
+  end
+  
+  def last_created_items(limit = 3) # TODO esta ya sobra me parece, mirar en tutoriales
+    self.find(:published,  
+              :order => 'created_on DESC', 
+    :limit => limit)
+  end
+  
+  def random_item
+    # TODO PERF usar campo random_id
+    self.find(:published,  
+              :order => 'random()')
+  end
+  
+  def last_updated_items(limit = 5)
+    self.find(:published,  
+              :order => 'updated_on DESC', 
+    :limit => limit)
+  end
+  
+  
+  def last_updated_children(opts={})
+    opts = {:limit => 5}.merge(opts)
+    Content.find_by_sql("SELECT * 
+                           FROM contents 
+                          WHERE id IN (SELECT last_updated_item_id 
+                           FROM terms WHERE id IN (SELECT id FROM terms WHERE parent_id = #{self.id}))
+                       ORDER BY updated_on DESC
+                          LIMIT #{opts[:limit]}").collect { |c| c.terms[0] }.sort_by { |e| e.name.downcase }
+  end
+  
+  
+  # TODO tests
+  def most_active_users(taxonomy)
+    # los usuarios más activos son los que más karma han contribuido al foro en
+    # el último mes
+    # el máximo de usuarios a mostrar es 3 por lo tanto el algoritmo lo que hace es buscar el top 10 de usuarios que han contribuído tópics más el top 10 de usuarios que han contribuído comentarios
+    # sumamos el karma generado por ambos tops y cogemos el top 3. El único problema que podría haber es que un 
+    # usuario que haya contribuído menos que el top 10 de ambas cosas en total sumen más que el top 3 de 
+    # comentarios y el top 3 de usuarios pero estimo que con el margen de top 10 para un top 3 las 
+    # probabilidades de que esto ocurra son mínimas
+    time_interval = '1 month'
+    tbl = {}
+    raise "unsupported" unless taxonomy == 'TopicsCategory'
+    sql_taxo = taxonomy ? "= #{User.connection.quote(ApplicationController.extract_content_name_from_taxonomy(taxonomy))}" : 'IS NULL'
+    # cogemos el top 3 de topics
+    # aunque el tópic tenga más de 3 meses el poster sigue contando si sigue activo
+    for t in User.db_query("SELECT count(A.id), 
+                                      A.user_id 
+                                 FROM contents A
+                                 JOIN contents_terms B on A.id = B.content_id  
+                                WHERE A.updated_on > (now() -  '#{time_interval}'::interval)
+                                  AND state = #{Cms::PUBLISHED} 
+                                  AND B.term_id IN (#{all_children_ids(:taxonomy => taxonomy).join(',')})
+                             GROUP BY user_id, content_type_id
+                             ORDER BY count(A.id) DESC LIMIT 10")
+      
+      tbl[t['user_id'].to_i] = {:karma_sum => Karma::KPS_CREATE['Topic'] * t['count'].to_i, 
+        :topics => t['count'].to_i,
+        :count => t['count'].to_i,
+        :comments => 0} 
+    end
+    
+    # buscamos todos los topics actualizados en el ultimo intervalo y cogemos el top 3 de 
+    # users que hayan comentado
+    # cogemos el top 3 de comentarios
+    
+    Content.find_by_sql("SELECT contents.*
+                             FROM contents 
+                             JOIN contents_terms on contents.id = contents_terms.content_id
+                            WHERE term_id IN (#{all_children_ids})
+                              AND state = #{Cms::PUBLISHED}
+                              AND updated_on > (now() -  '#{time_interval}'::interval)").each do |content|
+      t = content.real_content
+      for c in Comment.db_query("SELECT count(id), 
+                                          user_id 
+                                     from comments 
+                                    where deleted = 'f' 
+                                      AND content_id = #{t.unique_content.id} 
+                                      AND created_on >= (now() -  '#{time_interval}'::interval)
+                                 group by user_id 
+                                 order by count(id) DESC")
+        
+        tbl[c['user_id'].to_i] = {:karma_sum => 0, :topics => 0, :comments => 0} unless tbl[c['user_id'].to_i]
+        tbl[c['user_id'].to_i][:karma_sum] += Karma::KPS_CREATE['Comment'] * c['count'].to_i
+        tbl[c['user_id'].to_i][:comments] += c['count'].to_i
+      end
+    end
+    
+    # cogemos el top 3
+    # sumamos los puntos de todos y elegimos
+    first = nil
+    second = nil
+    third = nil
+    
+    tbl.keys.each do |u|
+      if first.nil? or tbl[u][:karma_sum] > tbl[first[0]][:karma_sum] then
+        first = u, tbl[u]
+      elsif second.nil? or tbl[u][:karma_sum] > tbl[second[0]][:karma_sum] then
+        second = u, tbl[u]
+      elsif third.nil? or tbl[u][:karma_sum] > tbl[third[0]][:karma_sum] then
+        third = u, tbl[u]
+      end
+    end
+    
+    # NOTA: tb contamos comentarios de hace más de 3 meses en el top 3 de comentarios
+    # buscamos el total de karma generado por este topic
+    # dbtotal = Topic.db_query("SELECT count(id) as topics, COALESCE(sum(cache_comments_count), 0) as comments from topics where updated_on > (now() -  '3 months'::interval) and topics_category_id IN (#{cat_ids.join(',')})")[0]
+    max = first ? first[1][:karma_sum] : 1 # no es 0 para no dividir por 0
+    
+    result = []
+    if first
+      first[1][:relative_pcent] = 1.0
+      result<< [User.find(first[0]), first[1]]
+    end
+    
+    if second
+      second[1][:relative_pcent] = second[1][:karma_sum].to_f / max
+      result<< [User.find(second[0]), second[1]]
+    end
+    
+    if third
+      third[1][:relative_pcent] = third[1][:karma_sum].to_f / max
+      result<< [User.find(third[0]), third[1]]  
+    end
+    
+    result
+  end
+  
+  def most_active_items(content_type)
+    # TODO per hit
+    # TODO no filtramos
+    self.find(:published, 
+              :conditions => "contents.updated_on > now() - '3 months'::interval",
+    :content_type => content_type,
+    :order => '(contents.comments_count / extract (epoch from (now() - contents.created_on))) desc',
+    :limit => 5)
+  end
+  
+  
+  def top_contributors(opts)
+    total = User.db_query("SELECT count(DISTINCT(A.id)) 
+                                 FROM contents A
+                                 JOIN contents_terms B ON A.id = B.content_id
+                                  AND B.term_id IN (#{all_children_ids(opts.pass_sym(:taxonomy)).join(',')}) 
+                                WHERE state = #{Cms::PUBLISHED}")[0]['count'].to_f
+
+    # TODO tests
+    # devuelve el usuario que más contenidos ha aportado a la categoría
+    User.db_query("SELECT user_id, count(DISTINCT(A.id)) 
+                                 FROM contents A
+                                 JOIN contents_terms B ON A.id = B.content_id
+                                  AND B.term_id IN (#{all_children_ids(opts.pass_sym(:taxonomy)).join(',')}) 
+                                WHERE state = #{Cms::PUBLISHED} 
+                             GROUP BY user_id 
+                             ORDER BY count(A.id) DESC 
+                                LIMIT #{opts[:limit]}").collect do |dbr|
+      {:user => User.find(dbr['user_id'].to_i), :count => dbr['count'].to_i, :pcent => dbr['count'].to_i / total}  
+    end
+  end
+  
+  # TODO DEPRECATED, desactivar y corregir tests que fallen
+  def active_items(limit=15)
+    last_updated_items(limit)
+  end
+  
   
   def get_ancestors 
     # devuelve los ascendientes. en [0] el padre directo y en el último el root
@@ -361,11 +622,20 @@ class TermContentProxy
       super
     rescue NoMethodError
       opts = args.last.is_a?(Hash) ? args.pop : {}
-      opts[:content_type] = @cls_name        
+      opts[:content_type] = @cls_name
       args.push(opts)
       args = @term._add_cats_ids_cond(*args)
+      
+      opts = args.last.is_a?(Hash) ? args.pop : {}
+      if method_id == :count # && opts[:joins]
+        opts.delete :joins
+        opts.delete :order
+      end
+      args.push(opts)
+      
       begin
-        @term.contents.send(method_id, *args).collect { |cont| cont.real_content }
+        res = @term.contents.send(method_id, *args)
+        res.kind_of?(Array) ? res.collect { |cont| cont.real_content } : res
       rescue ArgumentError
         @term.contents.send(method_id)
       end

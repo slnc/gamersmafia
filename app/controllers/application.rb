@@ -77,12 +77,20 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  def self.taxonomy_from_content_name(content_name)
+    "#{Inflector::pluralize(content_name)}Categories"
+  end
+  
+  def self.extract_content_name_from_taxonomy(taxonomy)
+    Inflector::singularize(taxonomy.gsub('Category', ''))
+  end
+  
   def get_category_address(category, taxonomy)
     paths = []
     navpath = []
     paths << category.name
     
-    href = Cms::translate_content_name(extract_content_name_from_taxonomy(taxonomy))
+    href = Cms::translate_content_name(ApplicationController.extract_content_name_from_taxonomy(taxonomy))
     href2 = href.normalize
     
     navpath << [category.name, "/#{href2}/#{category.id}"]
@@ -295,6 +303,7 @@ Request information:
       elsif cls_name == 'Coverage'
         dom = get_domain_of_root_term(object.event.main_category.root)
       elsif Cms::CONTENTS_WITH_CATEGORIES.include?(cls_name)
+        
         maincat = object.main_category
         if maincat
           dom = get_domain_of_root_term(maincat.root)

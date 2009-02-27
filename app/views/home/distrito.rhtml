@@ -19,7 +19,7 @@
 	
 	<div class="grid-6">
 	<%=mfcontents_basic("Tópics activos", 
-					Proc.new { cat.top_level_category(Topic).find(:published, :conditions => 'closed is false and sticky is false', :order => 'updated_on desc', :limit => 10) }, 
+					Proc.new { cat.top_level_category(Topic).find(:published, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 10) }, 
 					[],
 					:truncate_at => 44, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	</div>
@@ -28,7 +28,7 @@
 	gencat = cat.top_level_category(Topic)
 gencat.name = 'General' %>
 	<ul class="content-hid">
-		<%([gencat] + gencat.children.find(:all, :order => 'updated_on DESC', :limit => 5).sort_by { |e| e.name.downcase } ).each do |tc| %>
+		<%controller.portal.categories(Topic)[0].last_updated_children(:limit => 5).each do |tc| %>
 		<li><a href="<%=gmurl(tc)%>"><%=truncate(tc.name, 20, '..')%></a></li>
 		<% end -%>
 		</ul>
@@ -43,7 +43,7 @@ gencat.name = 'General' %>
 	<div class="grid-8">
 		<% imcat = cat.top_level_category(Image)
 	
-	mflist("Imágenes", Proc.new { imcat.find(:published, :order => 'created_on desc', :limit => 6) }, :class_container => 'mflist-row-images' ) do |im| %>
+	mflist("Imágenes", Proc.new { imcat.find(:published, :content_type => 'Image', :order => 'created_on desc', :limit => 6) }, :class_container => 'mflist-row-images' ) do |im| %>
 		<%=link_to fc_thumbnail(im.file, 'i', Cms::IMG_SIZE_GRIDB1, false), gmurl(im)%>				
 	<% end if imcat -%>
 	</div>
