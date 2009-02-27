@@ -181,9 +181,9 @@ class Term < ActiveRecord::Base
         puts "warning, term #{self.id} #{self.name} #{self.code} has no related_portals"
       end
     elsif self.bazar_district_id
-      portals << BazarDistrictPortal.find_by_code(self.root.slug)
+      portals << self.bazar_district
     elsif self.clan_id
-      portals << ClansPortal.find_by_clan_id(self.root.clan_id)
+      portals << ClansPortal.find_by_clan_id(self.clan_id)
     else # PERF devolvemos todos por contents como funthings 
       portals += Portal.find(:all, :conditions => 'type <> \'ClansPortal\'')
     end

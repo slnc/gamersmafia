@@ -32,7 +32,7 @@ class CacheObserverSiteWideTest < ActionController::IntegrationTest
   
   def test_should_clear_lasttopics_box_when_deleting_a_topic
     sym_login 'superadmin', 'lalala'
-    create_content(:topic, { :title => 'topico titulado 2', :main => 'contenido del topicotitulado 2', :topics_category_id => 3 })
+    create_content(:topic, { :title => 'topico titulado 2', :main => 'contenido del topicotitulado 2', :terms => Term.find(:first, :conditions => "taxonomy = 'TopicsCategory'").id})
     topic = Topic.find(:first, :order => 'id DESC')
     post_comment_on topic
     go_to '/'
@@ -47,7 +47,7 @@ class CacheObserverSiteWideTest < ActionController::IntegrationTest
 
   def test_should_clear_lasttopics_box_when_deleting_a_content
     sym_login 'superadmin', 'lalala'
-    create_content(:news, { :title => 'topico titulado 2', :description => 'contenido del topicotitulado 2', :news_category_id => 3, :state => Cms::PUBLISHED })
+    create_content(:news, { :title => 'topico titulado 2', :description => 'contenido del topicotitulado 2', :state => Cms::PUBLISHED, :terms => 1 })
     news = News.find(:first, :order => 'id DESC')
     news.state = Cms::PUBLISHED
     news.save

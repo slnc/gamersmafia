@@ -59,11 +59,10 @@ class ClanTest < Test::Unit::TestCase
   
   def test_activate_website_should_create_contents_categories
     @c = Clan.find(1)
-    prev_counts = {}
-    Cms::CLANS_CONTENTS.each { |ccn| prev_counts[ccn] = Object.const_get("#{Inflector::pluralize(ccn)}Category").count }
+    assert Term.single_toplevel(:clan_id => @c.id).nil?
     test_activate_website_should_create_clans_portal
-    Cms::CLANS_CONTENTS.each do |ccn| 
-      assert_equal true, Object.const_get("#{Inflector::pluralize(ccn)}Category").count > prev_counts[ccn]
-    end 
+    root_term = Term.single_toplevel(:clan_id => @c.id)
+    assert root_term
+    assert_equal 1, root_term.children.count
   end
 end

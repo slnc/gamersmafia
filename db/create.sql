@@ -11801,7 +11801,8 @@ CREATE TABLE terms (
     taxonomy character varying,
     count integer DEFAULT 0 NOT NULL,
     contents_count integer DEFAULT 0 NOT NULL,
-    last_updated_item_id integer
+    last_updated_item_id integer,
+    comments_count integer DEFAULT 0 NOT NULL
 );
 
 

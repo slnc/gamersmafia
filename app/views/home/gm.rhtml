@@ -80,8 +80,9 @@ else #GmPortal
 # TODO bug
 @last_topics = Topic.latest_by_category(20)
 
-for topic in @last_topics
-  shown_topics << topic.unique_content.id
+for topicid in @last_topics
+  topic = Topic.find(topicid)
+  shown_topics << topic.unique_content_id
   root = topic.main_category.root
   active_topics = TopicsCategory.db_query("SELECT (count(id) - 1) as count FROM topics WHERE topics_category_id IN (#{root.all_children_ids.join(',')}) AND updated_on > now() - '1 week'::interval")[0]['count']
 %>

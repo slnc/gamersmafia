@@ -25,20 +25,20 @@ class TermTest < ActiveSupport::TestCase
   def test_mirror_category
     dc1 = DownloadsCategory.find(1)
     dcs1 = dc1.children.create(:name => 'subhijo1')
-    dcss1 = dcs1.children.create(:name => 'subhijo11')
-    dcsss1 = dcss1.children.create(:name => 'subhijo111')
+    @dcss1 = dcs1.children.create(:name => 'subhijo11')
+    dcsss1 = @dcss1.children.create(:name => 'subhijo111')
     assert !dcsss1.new_record?
     @t = Term.new(:name => 'foo', :slug => 'bar')
     assert @t.save
     
     @t.mirror_category_tree(dcsss1, 'DownloadsCategory')
     
-    ndcs1 = @t.children.find(:first, :conditions => 'name = \'subhijo1\' AND taxonomy = \'DownloadsCategory\'')
-    assert ndcs1
-    ndcss1 = ndcs1.children.find(:first, :conditions => 'name = \'subhijo11\' AND taxonomy = \'DownloadsCategory\'')
-    assert ndcss1
-    ndcsss1 = ndcss1.children.find(:first, :conditions => 'name = \'subhijo111\' AND taxonomy = \'DownloadsCategory\'')
-    assert ndcsss1
+    @ndcs1 = @t.children.find(:first, :conditions => 'name = \'subhijo1\' AND taxonomy = \'DownloadsCategory\'')
+    assert @ndcs1
+    @ndcss1 = @ndcs1.children.find(:first, :conditions => 'name = \'subhijo11\' AND taxonomy = \'DownloadsCategory\'')
+    assert @ndcss1
+    @ndcsss1 = @ndcss1.children.find(:first, :conditions => 'name = \'subhijo111\' AND taxonomy = \'DownloadsCategory\'')
+    assert @ndcsss1
   end
   
   def test_link
@@ -57,6 +57,9 @@ class TermTest < ActiveSupport::TestCase
     test_mirror_category
     expected = Term.find(:all, :conditions => ['root_id = ? ', @t.id]).collect { |t| t.id }.sort
     assert_equal expected, @t.all_children_ids
+    
+    expected2 = Term.find(:all, :conditions => ['parent_id = ? ', @ndcss1.id]).collect { |t| t.id }.sort
+    assert_equal expected, @ndcss1.all_children_ids
   end
   
   def test_all_children_ids_taxonomy

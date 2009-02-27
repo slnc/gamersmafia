@@ -132,14 +132,12 @@ class BazarDistrict < ActiveRecord::Base
   
   protected
   def after_create
-    Cms::BAZAR_DISTRICTS_REQUIRED.each do |cname|
-      cls = Object.const_get(cname).category_class
-      inst = cls.find(:first, :conditions => ['id = root_id AND code = ?', self.code])
-      cls.create(:name => self.name, :code => self.code) if inst.nil? 
-      # TODO asociar categoria a distrito por si hay colisiones
-    end
+    root_term = Term.create(:bazar_district_id => self.id, :name => self.name, :slug => self.code)
     
-    Term.create(:bazar_district_id => self.id, :name => self.name, :slug => self.code)
+    puts root_term.errors.full_messages_html
+    Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
+      root_term.children.create(:name => c[1], :taxonomy => c[0])
+    end
     
     BazarDistrictPortal.create({:code => self.code, :name => self.name}) unless BazarDistrictPortal.find_by_code(self.code)
   end

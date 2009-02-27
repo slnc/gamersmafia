@@ -43,6 +43,7 @@ class SharedViewsTest < ActionController::IntegrationTest
   def test_should_show_first_page_to_anonymous_users
     Cms.comments_per_page = 1
     n = create_news
+    Term.single_toplevel(:slug => 'gm').link(n.unique_content)
     create_comments n, 2
     get "/noticias/show/#{n.id}"
     assert_response :success
@@ -54,6 +55,7 @@ class SharedViewsTest < ActionController::IntegrationTest
     sym_login('superadmin', 'lalala')
     Cms.comments_per_page = 1
     n = create_news
+    Term.single_toplevel(:slug => 'gm').link(n.unique_content)
     create_comments n, 3
     get "/noticias/show/#{n.id}"
     assert_response :success
@@ -66,6 +68,7 @@ class SharedViewsTest < ActionController::IntegrationTest
     Cms.comments_per_page = 2
     n = create_news
     create_comments n, 1
+    Term.single_toplevel(:slug => 'gm').link(n.unique_content)
     # User.db_query("UPDATE comments set created_on = created_on - '5 minutes'::interval where id = (SELECT max(id) FROM comments)")
     
     get "/noticias/show/#{n.id}"

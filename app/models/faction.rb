@@ -357,28 +357,15 @@ class Faction < ActiveRecord::Base
     # (requiere que cache_karma_points != NULL)
     rthing = self.referenced_thing
     root_term = Term.single_toplevel(self.referenced_thing_field => rthing.id)
-    
-    Cms::CONTENTS_WITH_CATEGORIES.each do |cls_name|
-      cat_ids = root_term.all_children_ids(:taxonomy => "#{Inflector::pluralize(cls_name)}Category")
-      
-      if cls_name == 'Topic':
-        stats = self.class.db_query("SELECT COUNT(id) * #{Karma::KPS_CREATE['Topic']} as total_1, 
-                                                         SUM(COALESCE(cache_comments_count, 0)) * #{Karma::KPS_CREATE['Comment']} as total_2
-                                                    FROM #{Inflector.tableize(cls_name)} 
-                                                   WHERE #{Inflector::underscore(Inflector::pluralize(cls_name))}_category_id in (#{cat_ids.join(',')}) 
-                                                     AND state = #{Cms::PUBLISHED}")
-      else
-        kps_per_content = Karma::KPS_CREATE[cls_name] + Karma::KPS_SAVE[cls_name]
-        stats = self.class.db_query("SELECT COUNT(id) * #{kps_per_content} as total_1, 
-                                                         SUM(COALESCE(cache_comments_count, 0)) * #{Karma::KPS_CREATE['Comment']} as total_2
-                                                    FROM #{Inflector.tableize(cls_name)} 
-                                                   WHERE #{Inflector::underscore(Inflector::pluralize(cls_name))}_category_id in (#{cat_ids.join(',')}) 
-                                                     AND state = #{Cms::PUBLISHED}")
-      end
-      
-      total += stats[0]['total_1'].to_i + stats[0]['total_2'].to_i
+    cat_ids = root_term.all_children_ids
+    dbrs = User.db_query("SELECT count(a.*) as count_contents, (SELECT name FROM content_types where id = a.content_type_id) as content_type_name, sum(a.comments_count) as sum_comments FROM contents a JOIN contents_terms b ON a.id = b.content_id AND b.term_id IN (#{cat_ids.join(',')}) WHERE a.state = #{Cms::PUBLISHED} GROUP BY content_type_name")
+    total = 0
+    ct_topics_id = ContentType.find_by_name('Topic').id
+    dbrs.each do |dbr|
+      total += dbr['count_contents'].to_i * Karma::KPS_CREATE[dbr['content_type_name']] 
+      total += dbr['sum_comments'].to_i * Karma::KPS_CREATE['Comment']
     end
-    
+    # TODO no se tienen en cuenta los approved_by_user_id
     total
   end
   
@@ -430,10 +417,11 @@ class Faction < ActiveRecord::Base
   
   def golpe_de_estado
     mrcheater = User.find_by_login('mrcheater')
-    root_term = Term.single_toplevel(self.referenced_thing_field => self[self.referenced_thing_field])
+    
+    root_term = Term.single_toplevel(self.referenced_thing_field => self.referenced_thing.id)
     cat = root_term.children.find_by_name('General')
     if cat.nil? # si no hay General buscamos cualquier otra 
-      cat = root_term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'')
+      cat = root_term.children.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'')
     end
     
     who = self.boss ? self.boss.login : self.underboss.login

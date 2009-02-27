@@ -1,8 +1,8 @@
 <% content_support do %>
 <% if @news.is_public? then %>
 <%=mfcontents_basic("Últimas noticias", 
-	@news.news_category, [:published, {:order => 'created_on desc', :limit => 10}],
-	:cache => "/common/noticias/show/_latest_by_cat_#{@news.news_category_id}",
+	@news.main_category, [:published, {:order => 'created_on desc', :limit => 10}],
+	:cache => "/common/noticias/show/_latest_by_cat_#{@news.main_category.id}",
 	:faction_favicon => true)%>
 <% else %>
 <%= render :partial => '/shared/content_publishing_state', :locals => { :object => @news } %>
