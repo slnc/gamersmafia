@@ -933,6 +933,10 @@ END
     mfcontainer_list('list', title, collection, options, &block)
   end
   
+  def new_ads(opts={})
+    # TODO
+  end
+  
   def mfcontainer_list(mode, title, collection, options={}, &block)
     old_oddclass = @oddclass
     collection = collection.call if collection.respond_to? :call

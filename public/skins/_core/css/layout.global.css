@@ -244,3 +244,7 @@ ul#sawbody-bazar { padding-top: 4px; line-height: 17px;}
 
 #sawbody-hq-jira { background: url(/images/jira.png) 0 0 no-repeat; padding-left: 18px; }
 #sawbody-hq-wiki { background: url(/images/confluence.png) 0 0 no-repeat; padding-left: 18px; }
+
+#content .mftable table {
+/* width: 100%; */
+}

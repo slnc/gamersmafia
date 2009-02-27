@@ -1,7 +1,6 @@
 class Demo < ActiveRecord::Base
   POVS = {:freeflight => 0, :chase => 1, :in_eyes => 2, :server => 3}
   DEMOTYPES = {:official => 0, :friendly => 1, :tutorial => 2 }
-  
 
   before_save :check_model # order is important
   before_save :set_name
@@ -18,8 +17,6 @@ class Demo < ActiveRecord::Base
   has_many :demo_mirrors, :dependent => :destroy
 
   validates_presence_of :games_mode_id
-  
-  
   
   attr_accessor :entity1_is_local, :entity2_is_local
   
@@ -156,5 +153,19 @@ class Demo < ActiveRecord::Base
       self.errors.add('entity2', "No ha especificado un #{the_what}.")
       return false
     end
+  end
+  
+  def self.find_from_user(u, opts={})
+    opts = {:limit => 5}.merge(opts)
+    
+    # buscamos clanes a los que pertenezca
+    conds = []
+    conds << opts[:conditions] if opts[:conditions]
+    clans_ids = [0] + u.clans_ids
+    conds <<  "((games_mode_id IN (SELECT id FROM games_modes WHERE entity_type = #{Game::ENTITY_USER}) AND (entity1_local_id = #{u.id} OR entity2_local_id = #{u.id})) OR 
+    (games_mode_id IN (SELECT id FROM games_modes WHERE entity_type = #{Game::ENTITY_CLAN}) AND (entity1_local_id IN (#{clans_ids.join(',')}) OR entity2_local_id IN (#{clans_ids.join(',')}))))
+    "
+    opts[:conditions] = conds.join(' AND ')
+    self.find(:published, opts)
   end
 end
