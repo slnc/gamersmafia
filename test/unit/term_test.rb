@@ -201,7 +201,12 @@ class TermTest < ActiveSupport::TestCase
   end
   
   def test_reset_contents_urls
-    flunk
+    topic = Topic.find(1)
+    User.db_query("UPDATE contents SET url = 'fuuck yu' WHERE id = #{topic.unique_content_id}")
+    topic.reload
+    topic.main_category.reset_contents_urls
+    topic.reload
+    assert_equal 'http://ut.gamersmafia.dev/foros/topic/1', topic.unique_content.url 
   end
   
   def test_get_last_updated_item_id
@@ -210,5 +215,83 @@ class TermTest < ActiveSupport::TestCase
   
   def test_get_ancestors
     
+  end
+  
+  def test_should_update_parent_categories_counter
+    @cat1 = Term.new(:name => 'pelopincho')
+    assert @cat1.save
+    @subcat1 = @cat1.children.create(:name => 'catsubfather', :taxonomy => 'TopicsCategory')
+    assert @subcat1.save
+    @topic = Topic.new(:user_id => 1, :title => 'topic 1', :main => 'topic1')
+    assert @topic.save, @topic.errors
+    @subcat1.link(@topic.unique_content)
+    rtoutside = Term.find(17)
+    rtoutside.link(@topic.unique_content)
+    @cat1.reload
+    @subcat1.reload
+    assert_equal 1, @subcat1.contents_count(:cls_name => 'Topic')
+    assert_equal 1, @cat1.contents_count(:cls_name => 'Topic')
+  end
+  
+  def test_should_update_parent_categories_counter_after_marking_as_deleted_topic
+    test_should_update_parent_categories_counter  
+    Cms::modify_content_state(@topic, User.find(1), Cms::DELETED)
+    @topic.reload
+    assert_equal Cms::DELETED, @topic.state
+    @cat1.reload
+    @subcat1.reload
+    assert_equal 0, @subcat1.contents_count(:cls_name => 'Topic')
+    assert_equal 0, @cat1.contents_count(:cls_name => 'Topic')
+  end
+  
+
+  def test_should_update_parent_categories_counter_after_moving_to_new_category
+    test_should_update_parent_categories_counter
+    
+    @cat2 = Term.new(:name => 'eunuco')
+    assert @cat2.save
+    @subcat2 = @cat2.children.create(:name => 'catsubfather', :taxonomy => 'TopicsCategory')
+    assert @subcat2.save
+    
+    @subcat1.unlink(@topic.unique_content)
+    @subcat2.link(@topic.unique_content)
+    
+    @cat1.reload
+    @subcat1.reload
+    @cat2.reload
+    @subcat2.reload
+    assert_equal 0, @cat1.contents_count(:cls_name => 'Topic')
+    assert_equal 0, @subcat1.contents_count(:cls_name => 'Topic')
+    assert_equal 1, @cat2.contents_count(:cls_name => 'Topic')
+    assert_equal 1, @subcat2.contents_count(:cls_name => 'Topic')
+  end
+
+  def test_should_update_categories_comments_count_after_commenting
+    test_should_update_parent_categories_counter
+    @comment = Comment.new({:content_id => @topic.unique_content.id, 
+      :user_id => 1, 
+      :host => '0.0.0.0', 
+      :comment => 'holitas vecinito'})
+    assert @comment.save
+    @topic.reload
+    assert_equal 1, @topic.cache_comments_count
+    @cat1.reload
+    @subcat1.reload
+    assert_equal 1, @cat1.comments_count
+    assert_equal 1, @subcat1.comments_count
+  end
+  
+  def test_should_update_categories_comments_count_after_deleting_commenting
+    test_should_update_categories_comments_count_after_commenting
+    init_ccount = @subcat1.comments_count
+    
+    @comment.mark_as_deleted
+    @topic.reload
+    assert_equal 0, @topic.cache_comments_count
+    @cat1.reload
+    @subcat1.reload
+    
+    assert_equal 0, @cat1.comments_count
+    assert_equal 1, @subcat1.comments_count, @subcat1.comments_count
   end
 end

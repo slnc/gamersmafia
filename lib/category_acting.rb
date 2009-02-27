@@ -57,6 +57,7 @@ module CategoryActing
     end
     
     def reset_contents_urls
+      raise "fuck the world!"
       # TODO PERF más inteligencia
       self.find(:all).each do |rc|
         uniq = rc.unique_content

@@ -293,7 +293,7 @@ class CacheObserver < ActiveRecord::Observer
     case object.class.name
       when 'Term':
       Cache::Terms.before_destroy(object)
-    when 'ContentsTerm':
+      when 'ContentsTerm':
       Cache::Terms.before_destroy(object.term)
       when 'League':
       do_competitions(object)
@@ -543,6 +543,7 @@ class CacheObserver < ActiveRecord::Observer
       # borramos las páginas de listados por si es un nuevo comment
       expire_fragment("/common/descargas/index/downloads_#{object.main_category.id}/page_*")
       
+      # TODO optimizar, no?
       p = object.main_category
       expire_fragment("/common/descargas/index/most_downloaded_#{p.root_id}")
       expire_fragment("/common/descargas/index/essential_#{p.root_id}")
@@ -550,23 +551,6 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment("/common/descargas/index/essential3_#{p.root_id}")
       object.get_related_portals.each do |pp|
         expire_fragment("/#{pp.code}/descargas/index/folders")
-      end
-      
-      # TODO taxonomías
-      flunk('hay que cambiar quién limpia esto')
-      if object.slnc_changed && object.slnc_changed_old_values['downloads_category_id'] then
-        prev_cat = DownloadsCategory.find(object.slnc_changed_old_values['downloads_category_id'])
-        expire_fragment("/common/descargas/index/most_downloaded_#{prev_cat.root_id}")
-        expire_fragment("/common/descargas/index/essential_#{prev_cat.root_id}")
-        expire_fragment("/common/descargas/index/essential2_#{prev_cat.root_id}")
-        expire_fragment("/common/descargas/index/essential3_#{prev_cat.root_id}")
-        
-        while prev_cat do
-          expire_fragment("/common/descargas/index/most_productive_author_by_cat_#{prev_cat.id}")
-          expire_fragment("/common/descargas/index/folders_#{prev_cat.id}")
-          expire_fragment("/common/descargas/index/downloads_#{prev_cat.id}/page_*")
-          prev_cat = prev_cat.parent
-        end
       end
       
       while p do
@@ -771,9 +755,11 @@ class CacheObserver < ActiveRecord::Observer
         when 'Topic':
         expire_fragment("/bazar/home/categories/#{real.main_category.code}")
         expire_fragment("/gm/home/index/topics")# :controller => '/home', :action => 'index', :part => 'topics')
-        f = real.topics_category
-        f.save
-        expire_fragment("/foros/active_items/#{f.root_id}")
+        f = real.main_category
+        if f
+          f.save
+          expire_fragment("/foros/active_items/#{f.root_id}")
+        end
         
         when 'Column':
         expire_fragment(:controller => '/home', :action => 'index', :part => 'articles')

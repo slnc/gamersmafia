@@ -57,7 +57,8 @@ class QuestionTest < ActiveSupport::TestCase
   end
   
   def test_should_be_able_to_create_question_with_min_ammount
-    @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => Question::MIN_AMMOUNT, :terms => 1})
+    @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => Question::MIN_AMMOUNT})
+    Term.find(20).link(@bt.unique_content)
     assert_equal false, @bt.new_record?
     assert_equal Question::MIN_AMMOUNT.to_i, @bt.ammount.to_i 
   end

@@ -1,8 +1,11 @@
 class Bet < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable
+  
+  #before_save :check_options_new
   TOP_BET_WINNERS = "#{RAILS_ROOT}/public/storage/apuestas/top_bets_winners_minicolumns_data"
   
+  after_save :process_bets_options
   has_many :bets_options, :dependent => :destroy
   
   validates_uniqueness_of :title, :message => 'Ya hay otra apuesta con el mismo título'
@@ -12,6 +15,45 @@ class Bet < ActiveRecord::Base
   #def total_ammount
   #  ammount = self.class.db_query("SELECT COALESCE(sum(ammount), 0) as ammount from bets_options where bet_id = #{self.id}")[0]['ammount'].to_f
   #end
+  
+  def options_new=(opts_new)
+    @_tmp_options_new = opts_new
+    self.attributes.delete :options_new 
+  end
+  
+  def options_delete=(opts_new)
+    @_tmp_options_delete = opts_new
+    self.attributes.delete :options_delete 
+  end
+  
+  def options=(opts_new)
+    @_tmp_options = opts_new
+    self.attributes.delete :options 
+  end
+  
+  def process_bets_options
+    if @_tmp_options_new
+      @_tmp_options_new.each { |s| self.bets_options.create({:name => s.strip}) unless s.strip == '' }
+      @_tmp_options_new = nil
+    end
+    
+    if @_tmp_options_delete
+      @_tmp_options_delete.each { |id| self.bets_options.find(id).destroy if self.bets_options.find_by_id(id) }
+      @_tmp_options_delete = nil
+    end
+    
+    if @_tmp_options
+      @_tmp_options.keys.each do |id| 
+        option = self.bets_options.find_by_id(id.to_i)
+        if option && option.name != @_tmp_options[id]
+          option.name = @_tmp_options[id].strip
+          option.save
+        end
+      end 
+      @_tmp_options = nil
+    end
+    true
+  end
   
   def self.top_winners(time_limit_sql_interval='')    
     where_sql = time_limit_sql_interval != '' ? " AND closes_on >= now() - '#{time_limit_sql_interval}'::interval" : ''

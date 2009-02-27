@@ -51,10 +51,18 @@ class ImagenesController < BazarController
     end
   end
   
+  def _after_create
+    # @image.reload
+    if @image.file.nil? || @image.file == ''
+      flash[:error] = "Error al crear la imagen"
+      Cms::modify_content_state(@image, User.find_by_login('MrMan'), Cms::DELETED, "Sin imagen")
+    end
+  end
+  
   def create_from_zip
     require_auth_users
     raise ActiveRecord::RecordNotFound unless Cms::user_can_mass_upload(@user)
-    @category = Term.find_taxonomy(params[:image][:images_category_id], 'ImagesCategory')
+    @category = Term.find_taxonomy(params[:category_term], 'ImagesCategory')
     
     if @category.parent_id.nil? then
       flash[:error] = 'Debes elegir una subcategoría, no una categoría'
@@ -89,8 +97,10 @@ class ImagenesController < BazarController
             im.clan_id = @portal.clan_id
             im.state = Cms::PUBLISHED
           end
-          im.images_category_id = params[:image][:images_category_id] # TODO permissions
-          i += 1 if im.save
+          if im.save
+            @category.link(im.unique_content)
+            i += 1
+          end
         end
       end
       
@@ -98,41 +108,6 @@ class ImagenesController < BazarController
       system("rm -r #{tmp_dir}")
       flash[:notice] = "#{i} imágenes subidas correctamente. Tendrán que ser moderadas antes de aparecer publicada."
       redirect_to '/imagenes'
-    end
-  end
-  
-  def create
-    require_auth_users
-    @image = Image.new(params[:image])
-    @image.user_id = @user.id
-    
-    if @portal.respond_to?(:clan_id) && @portal.clan_id
-      @image.clan_id = @portal.clan_id
-      @image.state = Cms::PUBLISHED
-    else
-      @image.state = Cms::PENDING unless (params[:draft] == '1')
-    end
-    
-    if !Cms.user_can_create_content(@user)
-      flash[:error] = "Error al crear imagen: No puedes crear contenidos."
-      render :action => 'new'
-    elsif @image.main_category.nil? or @image.main_category.parent_id.nil? then
-      flash[:error] = 'Debes elegir una subcategoría, no una categoría'
-      render :action => 'new'
-    else
-      if @image.save
-        @image.process_wysiwyg_fields
-        flash[:notice] = 'Imagen subida correctamente. Tendrá que ser moderada antes de aparecer publicada.'
-        if @image.state == Cms::DRAFT then
-          redirect_to :action => 'edit', :id => @image.id
-        else
-          redirect_to :action => 'index'
-        end
-      else
-        flash[:error] = "Error al subir la imagen:<br /> #{@image.errors.full_messages_html}"
-        @pending = Image.pending
-        render :action => 'new'
-      end
     end
   end
 end

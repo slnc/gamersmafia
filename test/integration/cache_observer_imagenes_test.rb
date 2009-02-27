@@ -53,7 +53,7 @@ class CacheObserverImagenesTest < ActionController::IntegrationTest
     assert_cache_exists "/common/imagenes/toplevel/#{@ic2.id}/page_"
 
     ic_child.parent_id = @ic2.id
-    assert_equal true, ic_child.save
+    assert ic_child.save
     assert_cache_dont_exist "/common/imagenes/toplevel/#{@ic.id}/page_"
     assert_cache_dont_exist "/common/imagenes/toplevel/#{@ic2.id}/page_"
     ic_child.destroy

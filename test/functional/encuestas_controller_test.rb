@@ -15,10 +15,8 @@ class EncuestasControllerTest < Test::Unit::TestCase
   end
 
   def test_should_create_with_options
-    post :create, {:poll => {:title => 'footapang', :terms => 1, :starts_on => 2.days.since, :ends_on => 9.days.since},
-                   :options_new => ['opcion1', 'opcion2'], 
-                  },
-                  { :user => 1 }
+    post :create, {:poll => {:title => 'footapang', :terms => 1, :starts_on => 2.days.since, :ends_on => 9.days.since, :options_new => ['opcion1', 'opcion2']}, 
+                  }, { :user => 1 }
     assert_response :redirect
     b = Poll.find_by_title('footapang')
     assert_not_nil b

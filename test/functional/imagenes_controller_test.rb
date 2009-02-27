@@ -6,7 +6,7 @@ require 'imagenes_controller'
 class ImagenesController; def rescue_action(e) raise e end; end
 
 class ImagenesControllerTest < Test::Unit::TestCase
-  test_common_content_crud :name => 'Image', :form_vars => {:description => 'footapang', :file => ''}, :categories_terms => 18
+  test_common_content_crud :name => 'Image', :form_vars => {:description => 'footapang', :file => ActionController::TestUploadedFile.new("#{RAILS_ROOT}/test/fixtures/files/buddha.jpg", nil, nil)}, :categories_terms => 18
 
   def setup
     @controller = ImagenesController.new
@@ -58,7 +58,7 @@ class ImagenesControllerTest < Test::Unit::TestCase
     sld = tld.children.create({:name => 'gallery', :taxonomy => 'ImagesCategory'})
     assert_not_nil sld
     images_count_before = Image.count
-    post :create_from_zip, {:image => {:images_category_id => sld.id, :file => fixture_file_upload('/files/images.zip', 'application/zip')}}, {:user => 1}
+    post :create_from_zip, {:category_term => sld.id, :image => {:file => fixture_file_upload('/files/images.zip', 'application/zip')}}, {:user => 1}
     assert_redirected_to '/imagenes'
     assert_equal images_count_before + 2, Image.count # el zip tiene 2 archivos
     im = Image.find(:first, :order => 'id DESC')

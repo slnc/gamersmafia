@@ -66,24 +66,7 @@ module ActsAsCategorizable
     end
     
     def update_category_totals
-      if self.slnc_changed?(self.class.category_attrib_name) && self.state == Cms::PUBLISHED
-        prev = self.slnc_changed_old_values[self.class.category_attrib_name]
-        if prev then
-          prev = self.class.category_class.find(prev)
-           (prev.get_ancestors + [prev]).each do |anc|
-            anc.class.decrement_counter("contents_count", anc.id)
-          end
-        end
-        
-        
-         (self.main_category.get_ancestors + [self.main_category]).each do |anc|
-          anc.class.increment_counter("contents_count", anc.id)
-        end
-      elsif self.slnc_changed?(:state) && self.state == Cms::DELETED
-       (self.main_category.get_ancestors + [self.main_category]).each do |anc|
-          anc.class.decrement_counter("contents_count", anc.id)
-        end
-      end
+      self.main_category.recalculate_counters if self.main_category
     end
     
     def is_categorizable?

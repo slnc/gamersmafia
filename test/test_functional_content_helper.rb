@@ -126,7 +126,7 @@ module TestFunctionalContentHelperMethods
   def test_should_allow_to_create_if_registered
     num_news = content_class.count
     post :create, post_vars, { :user => opt[:authed_user_id] }
-    
+    puts flash[:error]
     assert_response :redirect, @response.body
     assert_redirected_to :action => 'index'
     
@@ -148,7 +148,7 @@ module TestFunctionalContentHelperMethods
   def test_should_change_from_draft_to_pending_if_unselected_draft_checkbox
     return unless Cms::contents_classes_publishable.include?(Object.const_get(Inflector::camelize(content_sym.to_s)))
     num_news = content_class.count
-
+    
     post :create, post_vars.merge({:draft => 1}), { :user => opt[:authed_user_id] }
     
     assert_response :redirect

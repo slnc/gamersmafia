@@ -9,7 +9,7 @@
 
 <strong>Opciones</strong><br />
 <% @poll.polls_options.find(:all, :order => 'id ASC').each do |option| %>
-<input type="text" class="text" name="options[<%=option.id.to_s%>]" value="<%=option.name%>" /> &nbsp; <label><input type="checkbox" name="options_delete[]" value="<%=option.id.to_s%>" /> Borrar</label><br />
+<input type="text" class="text" name="poll[options][<%=option.id.to_s%>]" value="<%=option.name%>" /> &nbsp; <label><input type="checkbox" name="poll[options_delete][]" value="<%=option.id.to_s%>" /> Borrar</label><br />
 <% end %>
 
 <br /><strong>Nuevas opciones:</strong><br />
@@ -18,10 +18,10 @@
 </style>
 <span id="newoptions">
   <input type="text" class="text" name="options_new[]" value="" /><br />
-  <% if @poll.new_record? then %><input type="text" class="text" name="options_new[]" value="" /><br /><% end -%>
+  <% if @poll.new_record? then %><input type="text" class="text" name="poll[options_new][]" value="" /><br /><% end -%>
 </span>
 
-<input type="button" class="button" value="Añadir más opciones" onclick="create_new_option('options_new[]');" />
+<input type="button" class="button" value="Añadir más opciones" onclick="create_new_option('poll[options_new][]');" />
 <br />
 <br />
 

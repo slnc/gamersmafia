@@ -80,6 +80,16 @@ class Term < ActiveRecord::Base
       end
       
       self.contents_terms.create(:content_id => content.id)
+      
+      # PERF esto hacerlo en accion secundaria?
+      o = self
+      while o
+        Term.increment_counter(:contents_count, o.id)
+        User.db_query("UPDATE terms SET comments_count = comments_count + #{content.comments_count}")
+        o = o.parent
+      end
+      
+      
       if self.id == self.root_id || self.taxonomy.include?('Category')
         content.url = nil
         ApplicationController.gmurl(content)
@@ -90,7 +100,18 @@ class Term < ActiveRecord::Base
   
   def unlink(content)
     raise "TypeError" unless content.class.name == 'Content'
-    self.contents_terms.find(:all, :conditions => ['content_id = ?', content.id]).each do |t| t.destroy end
+    self.contents_terms.find(:all, :conditions => ['content_id = ?', content.id]).each do |ct| 
+      ct.destroy 
+    end
+    
+    # PERF esto hacerlo en accion secundaria?
+    o = self
+    while o
+      Term.decrement_counter(:contents_count, o.id)
+      User.db_query("UPDATE terms SET comments_count = comments_count - #{content.comments_count}")
+      o = o.parent
+    end
+    
     true
   end
   
@@ -169,7 +190,16 @@ class Term < ActiveRecord::Base
     portals
   end
   
+  def recalculate_counters
+    # TODO 
+  end
+  
   def recalculate_contents_count
+    #([self] + self.children.find(:all)).each do |t|
+    #  newc = ContentsTerm.count(:conditions => "term_id IN (#{t.all_children_ids(t)})")
+    #  t.contents_count = newc
+    #  t.save
+    #end
     newc = ContentsTerm.count(:conditions => "term_id IN (#{self.all_children_ids(self)})")
     self.contents_count = newc
     self.save
@@ -200,16 +230,19 @@ class Term < ActiveRecord::Base
     # TODO perf optimizar mas, si el tag tiene el mismo taxonomy que el solicitado
     raise "cls_name not specified" if self.taxonomy.nil? && opts[:cls_name].nil?
     if opts[:cls_name] != nil
-      taxonomy = "#{Inflector::pluralize(opts[:cls_name])}Categories"
-      self.count(:conditions => "contents_terms.term_id IN (SELECT content_id 
+      taxonomy = "#{Inflector::pluralize(opts[:cls_name])}Category"
+      
+      User.db_query("SELECT count(*) FROM contents WHERE id IN (SELECT content_id 
                                                               FROM contents_terms a 
                                                               JOIN terms b on a.term_id = b.id 
-                                                             WHERE a.term_id IN (#{all_children_ids(:taxonomy => taxonomy)}) 
-                                                               AND b.taxonomy = #{User.connection.quote(taxonomy)})")
+                                                             WHERE (a.term_id IN (#{all_children_ids(:taxonomy => taxonomy).join(',')}) 
+                                                               AND b.taxonomy = #{User.connection.quote(taxonomy)})
+                                                                OR a.term_id = #{self.id}
+                                                            )")[0]['count'].to_i
       
     elsif self.taxonomy
-      taxonomy = "#{Inflector::pluralize(self.taxonomy)}Categories"
-      self.count(:conditions => "contents_terms.term_id IN (SELECT content_id FROM contents_terms a JOIN terms b on a.term_id = b.id WHERE a.term_id IN (#{all_children_ids(:taxonomy => taxonomy)}) AND b.taxonomy = #{User.connection.quote(taxonomy)})")
+      taxonomy = "#{Inflector::pluralize(self.taxonomy)}Category"
+      self.count(:conditions => "contents_terms.term_id IN (SELECT term_id FROM contents_terms a JOIN terms b on a.term_id = b.id WHERE a.term_id IN (#{all_children_ids(:taxonomy => taxonomy)}) AND b.taxonomy = #{User.connection.quote(taxonomy)})")
     else # shortcut, show everything
       if self.attributes['contents_count'].nil?
         self.recalculate_contents_count 
@@ -221,7 +254,7 @@ class Term < ActiveRecord::Base
   
   def reset_contents_urls
     # TODO PERF más inteligencia
-    self.find(:all).each do |rc|
+    self.find(:published, :treemode => true).each do |rc|
       uniq = rc.unique_content
       User.db_query("UPDATE contents SET url = NULL, portal_id = NULL WHERE id = #{uniq.id}")
       uniq.reload
@@ -538,7 +571,7 @@ class Term < ActiveRecord::Base
                                  JOIN contents_terms B ON A.id = B.content_id
                                   AND B.term_id IN (#{all_children_ids(opts.pass_sym(:taxonomy)).join(',')}) 
                                 WHERE state = #{Cms::PUBLISHED}")[0]['count'].to_f
-
+    
     # TODO tests
     # devuelve el usuario que más contenidos ha aportado a la categoría
     User.db_query("SELECT user_id, count(DISTINCT(A.id)) 

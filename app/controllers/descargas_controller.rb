@@ -8,7 +8,8 @@ class DescargasController < InformacionController
     parent_id = params[:category]
     if parent_id then
       # TODO BUG no estamos chequeando que la categoría se pueda ver desde aquí 
-      @category = portal.download.category_class.find(parent_id)
+      @category = Term.find_taxonomy(parent_id, 'DownloadsCategory')
+      @category = Term.find_taxonomy(parent_id, nil) if @category.nil?
       paths, @navpath = get_category_address(@category, 'DownloadsCategory')
       @title = paths.join(' &raquo; ')
     end

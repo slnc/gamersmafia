@@ -3,17 +3,13 @@ require File.dirname(__FILE__) + '/../test_functional_content_helper'
 require 'apuestas_controller'
 
 class ApuestasControllerTest < ActionController::TestCase
-  test_common_content_crud :name => 'Bet', :form_vars => {:title => 'footapang', :closes_on => Time.now}, :root_terms => 1
+  test_common_content_crud :name => 'Bet', :form_vars => {:title => 'footapang', :closes_on => 1.week.since, :options_new => ['opcion1', 'opcion2']}, :root_terms => 1
   
   # TODO más tests
   #
   def test_should_create_with_options
     sym_login 1
-    post :create, {:bet => {:title => 'footapang', 
-        :terms => 1, 
-        :closes_on => 1.week.since},
-      :options_new => ['opcion1', 'opcion2'], 
-    }
+    post :create, :bet => {:title => 'footapang', :closes_on => 1.week.since, :options_new => ['opcion1', 'opcion2']}, :root_terms => 1
     assert_response :redirect
     @b = Bet.find_by_title('footapang')
     assert_not_nil @b
@@ -40,10 +36,10 @@ class ApuestasControllerTest < ActionController::TestCase
     test_should_create_with_options
     b = Bet.find_by_title('footapang')
     post :update, {:id => b.id,
-      :options => {b.bets_options.find_by_name('opcion1').id => 'opcion1_mod',
+      :bet => { :options => {b.bets_options.find_by_name('opcion1').id => 'opcion1_mod',
         b.bets_options.find_by_name('opcion2').id => 'opcion2_mod'}, # lo hacemos a propósito porque primero se borra y luego se actualiza, para comprobar que no se intenta actualizar una opción borrada
       :options_delete => [b.bets_options.find_by_name('opcion2').id],
-      :options_new => ['opcion3', 'opcion4']
+      :options_new => ['opcion3', 'opcion4'] }
     }
     b.reload
     assert_equal 3, b.bets_options.count

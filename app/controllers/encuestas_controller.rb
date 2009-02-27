@@ -42,38 +42,6 @@ class EncuestasController < ComunidadController
     redirect_to gmurl(@poll)
   end
   
-  def create
-    require_auth_users
-    @poll = Poll.new(params[:poll])
-    @poll.user_id = @user.id
-    
-    if @portal.respond_to?(:clan_id) && @portal.clan_id
-      @poll.clan_id = @portal.clan_id
-      @poll.state = Cms::PUBLISHED
-    else
-      @poll.state = Cms::PENDING unless (params[:draft] == '1')
-    end
-    
-    if Cms.user_can_create_content(@user)
-      if @poll.save
-        @poll.process_wysiwyg_fields
-        params[:options_new].each { |s| @poll.polls_options.create({:name => s}) unless s.strip == '' } if params[:options_new]
-        flash[:notice] = 'Encuesta creada correctamente.'
-        if @poll.state == Cms::DRAFT then
-          redirect_to :action => 'edit', :id => @poll.id
-        else
-          redirect_to :action => 'index'
-        end
-      else
-        flash[:error] = "Error al crear la encuesta: #{@poll.errors.full_messages_html}"
-        render :action => 'new'
-      end
-    else
-      flash[:error] = "Error al crear la encuesta: no puedes crear contenidos"
-      render :action => 'new'
-    end
-  end
-  
   def update
     # TODO hay que usar el update común, esto está buscando bugs a gritos
     @poll = Poll.find(params[:id])

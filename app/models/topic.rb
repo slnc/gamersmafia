@@ -50,11 +50,7 @@ class Topic < ActiveRecord::Base
   end
 
   def move_to_forum(new_forum)
-    raise "DEPRECATED"
-    # TODO DEPRECATED taxonomías
-    # TODO bug actualizar contadores de topics de foros afectados
-    self.terms= new_forum.id
-    self.save
+    self.categories_terms_ids= [new_forum.id, 'TopicsCategory']
   end
   
   def hot?

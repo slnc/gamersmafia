@@ -96,12 +96,7 @@ module Cache
         end
         
         when 'DownloadsCategory':
-        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/descargas/index/folders") }
-        p = object
-        while p
-          expire_fragment("/common/descargas/index/folders_#{p.id}")
-          p = p.parent
-        end
+        Cache::Terms.after_save(object)
         
         when 'TutorialsCategory':
         object.get_related_portals.each { |p| expire_fragment("/#{p.code}/tutoriales/index/folders") }
@@ -134,17 +129,25 @@ module Cache
           p = p.parent
         end
         
-        when 'DownloadsCategory' then
+      when 'DownloadsCategory' then
+        expire_fragment("/common/descargas/index/most_downloaded_#{object.root_id}")
+        expire_fragment("/common/descargas/index/essential_#{object.root_id}")
+        expire_fragment("/common/descargas/index/essential2_#{object.root_id}")
+        expire_fragment("/common/descargas/index/essential3_#{object.root_id}")
+        
         object.get_related_portals.each { |p| expire_fragment("/#{p.code}/descargas/index/folders") }
         p = object
+        
         while p
+          expire_fragment("/common/descargas/index/most_productive_author_by_cat_#{p.id}")
           expire_fragment("/common/descargas/index/folders_#{p.id}")
+          expire_fragment("/common/descargas/index/downloads_#{p.id}/page_*")
           p = p.parent
         end
         
         when 'TutorialsCategory' then
         object.get_related_portals.each { |p|
-        expire_fragment("/#{p.code}/tutoriales/index/folders") 
+          expire_fragment("/#{p.code}/tutoriales/index/folders") 
         }
         p = object
         while p

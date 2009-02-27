@@ -24,7 +24,7 @@
 
 		<% #= render :partial => '/imagenes/random', :locals => {:category => @image.images_category} %>
 	
-<%= render :partial => '/imagenes/best_rated', :locals => {:category => @image.images_category} %>
+<%= render :partial => '/imagenes/best_rated', :locals => {:category => @image.main_category} %>
 
 <% cache("/#{controller.portal_code}/imagenes/show/_other_images_by_user/#{@image.user_id % 1000}/#{@image.user_id}") do %>
 <% mftext("Más imágenes de #{@image.user.login}") do %>

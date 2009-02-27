@@ -1,6 +1,5 @@
 <% 
 uzers = category.top_contributors(:taxonomy => "#{Inflector::pluralize(cls.name)}Categories", :limit => 5)
-p uzers
 uzers.each do |info|
   %>
   <%= draw_user_info(info[:user]) %>

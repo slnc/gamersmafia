@@ -299,6 +299,12 @@ class Competition < ActiveRecord::Base
     self.save
   end
   
+  def myforum
+    arena_tld = Term.single_toplevel(:slug => 'arena')
+    game_term = arena_tld.children.find(:first, :conditions => ['name = ? AND taxonomy = \'TopicsCategory\'', self.game.name])
+    return nil unless game_term
+    game_term.children.find(:first, :conditions => ["name = ? AND taxonomy = 'TopicsCategory'", self.name])
+  end
   
   
   public

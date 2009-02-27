@@ -1,4 +1,4 @@
-<% content_support do %>
+]<% content_support do %>
   <%mftext('Estado de la competición') do %>
   <div class="centered"><strong><%=Competition::STATES_ES[competition.state]%></strong></div>
   <% end -%>
@@ -149,11 +149,11 @@
   </ul>
   <% end -%>
 
-  <% tc_cat = @competition.terms.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'' 
+  <% tc_cat = @competition.myforum 
 	if tc_cat then %>
   <%mftext('Foro') do %>
   <ul class="skeletal">
-    <% for topic in tc_cat.topics.find(:all, :order => 'updated_on DESC', :limit => 10) %>
+    <% for topic in myforum.topics.find(:all, :order => 'updated_on DESC', :limit => 10) %>
     <li class="<%=oddclass%>"><a href="<%=get_url(topic)%>"><%=topic.title%></a>
     <div class="timestamp infoinline right"><%=print_tstamp(topic.updated_on)%></div>
     </li>

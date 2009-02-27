@@ -59,32 +59,6 @@ class ApuestasController < ArenaController
     @bet.closes_on = Time.at(Time.now().to_i + 86400 * 2)
   end
   
-  def create
-    require_auth_users
-    @bet = Bet.new(params[:bet])
-    @bet.user_id = @user.id
-    @bet.approved_by_user_id = nil
-    @bet.state = Cms::PENDING unless (params[:draft] == '1')
-    if Cms.user_can_create_content(@user)
-      if @bet.save
-        @bet.process_wysiwyg_fields
-        params[:options_new].each { |s| @bet.bets_options.create({:name => s}) unless s.strip == '' } if params[:options_new]
-        flash[:notice] = 'Apuesta creada correctamente.'
-        if @bet.state == Cms::DRAFT then
-          redirect_to :action => 'edit', :id => @bet.id
-        else
-          redirect_to :action => 'index'
-        end
-      else
-        flash[:error] = "Error al crear la apuesta: #{@bet.errors.full_messages_html}"
-        render :action => 'new'
-      end
-    else
-      flash[:error] = "Error al crear la apuesta: no puedes crear contenidos"
-      render :action => 'new'
-    end
-  end
-  
   def resolve
     @bet = Bet.find(params[:id])
     require_user_can_edit(@bet)
@@ -94,7 +68,8 @@ class ApuestasController < ArenaController
     @pending = Bet.pending
   end
   
-  def update
+  def aupdate
+    raise "TODO"
     @bet = Bet.find(params[:id])
     require_user_can_edit(@bet)
     
@@ -104,7 +79,7 @@ class ApuestasController < ArenaController
       @bet.process_wysiwyg_fields
       # TODO chequeos para no guardar después de cierto tiempo
       params[:options_new].each { |s| @bet.bets_options.create({:name => s}) unless s.strip == '' } if params[:options_new]
-      params[:options_delete].each { |id| @bet.bets_options.find(id).destroy if @bet.bets_options.find_by_id(id) } if params[:options_delete]
+      params[:options_delete] if params[:options_delete]
       params[:options].keys.each do |id| 
         option = @bet.bets_options.find_by_id(id.to_i)
         if option && option.name != params[:options][id]
