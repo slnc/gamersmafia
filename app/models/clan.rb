@@ -168,7 +168,7 @@ class Clan < ActiveRecord::Base
   
   private
   def create_contents_categories
-    root_term = Term.create(:clan_id => self.id, :name => self.name)
+    root_term = Term.single_toplevel(:clan_id => self.id)
     root_term.children.create(:name => 'General', :taxonomy => 'TopicsCategory')
   end
   
