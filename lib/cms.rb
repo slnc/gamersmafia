@@ -794,6 +794,9 @@ module Cms
     elsif thing.class.name == 'Game' then
       code = thing.code
       name = thing.name
+    elsif thing.class.name == 'Platform' then
+      code = thing.code
+      name = thing.name
     elsif thing.class.name == 'User' then
       if thing.faction then
         code = thing.faction.code

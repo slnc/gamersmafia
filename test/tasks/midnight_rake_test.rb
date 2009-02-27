@@ -13,7 +13,7 @@ class MidnightRakeTest < Test::Unit::TestCase
   end
   
   def test_should_reset_faith_to_everybody
-    User.db_query("UPDATE users SET cache_remaining_rating_slots = 0 where id = 1")
+    User.db_query("UPDATE users SET cache_remaining_rating_slots = 0, lastseen_on = now() where id = 1")
     u1 = User.find(1)
     assert_equal 0, u1.remaining_rating_slots
     Rake::Task['gm:weekly'].send :reset_remaining_rating_slots
@@ -22,13 +22,13 @@ class MidnightRakeTest < Test::Unit::TestCase
     
     
     u1 = User.find(1)
-    User.db_query("UPDATE users SET cache_remaining_rating_slots = NULL where id = 1")
+    User.db_query("UPDATE users SET cache_remaining_rating_slots = NULL, lastseen_on = now() where id = 1")
     Rake::Task['gm:weekly'].send :reset_remaining_rating_slots
     u1.reload
     assert u1.remaining_rating_slots > 0
     
     u1 = User.find(1)
-    User.db_query("UPDATE users SET cache_remaining_rating_slots = -1 where id = 1")
+    User.db_query("UPDATE users SET cache_remaining_rating_slots = -1, lastseen_on = now() where id = 1")
     Rake::Task['gm:weekly'].send :reset_remaining_rating_slots
     u1.reload
     assert u1.remaining_rating_slots > 0

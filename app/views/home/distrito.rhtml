@@ -28,8 +28,8 @@
 	gencat = cat.top_level_category
 gencat.name = 'General' %>
 	<ul class="content-hid">
-		<% cat.top_level_category.find(:published, :content_type => 'Topic', :order => 'updated_on DESC', :limit => 5).each do |tc| %>
-		<li><a href="<%=gmurl(tc)%>"><%=truncate(tc.title, 20, '..')%></a></li>
+		<% cat.top_level_category.last_updated_children(:limit => 5).sort_by { |e| e.name.downcase }.each do |tc| %>
+		<li><a href="<%=gmurl(tc, :taxonomy => 'TopicsCategory')%>"><%=truncate(tc.name, 20, '..')%></a></li>
 		<% end -%>
 		</ul>
 	<% end -%>

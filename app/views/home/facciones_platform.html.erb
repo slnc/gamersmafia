@@ -19,8 +19,8 @@
 	
 	<%mftext('Foros', :grid => 4, :glast => true, :blast => true) do %>
 	<ul class="content-hid">
-		<%controller.portal.categories(Topic)[0].children.find(:all, :conditions => 'parent_id = root_id', :order => 'updated_on DESC', :limit => 5).sort_by { |e| e.name.downcase }.each do |tc| %>
-		<li><a href="<%=gmurl(tc)%>"><%=truncate(tc.name, 20, '..')%></a></li>
+		<%controller.portal.categories(Topic)[0].last_updated_children(:limit => 5).sort_by { |e| e.name.downcase }.each do |tc| %>
+		<li><a href="<%=gmurl(tc, :taxonomy => 'TopicsCategory')%>"><%=truncate(tc.name, 20, '..')%></a></li>
 		<% end -%>
 		</ul>
 	<% end -%>
@@ -80,7 +80,7 @@ category = controller.portal.categories(Download)[0]
 	
 	<div class="grid-4 glast">
 	<%=mfcontents_basic('Esenciales', 
-					Proc.new { category.root.find(:published, :conditions => "essential is true", :order => 'created_on DESC', :limit => 12) },
+					Proc.new { category.root.download.find(:published, :conditions => "essential is true", :order => 'created_on DESC', :limit => 12) },
 					[],
 					:truncate_at => 28, :faction_favicon => true)%>
 	</div>

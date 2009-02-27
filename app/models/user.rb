@@ -88,6 +88,7 @@ class User < ActiveRecord::Base
   has_many :questions
   
   has_and_belongs_to_many :games
+  has_and_belongs_to_many :platforms
   
   has_many :users_guids
   
@@ -567,6 +568,10 @@ class User < ActiveRecord::Base
     self.cache_karma_points
   end
   
+  def popularity_points
+    self.cache_popularity
+  end
+  
   def karma_points_editor
     # devuelve el numero de puntos de karma acumulados por editar contenidos
     total = 0
@@ -759,14 +764,15 @@ class User < ActiveRecord::Base
     
   end
   
-  def self.hot(limit)
+  def self.hot(limit, t1, t2)
+    t1, t2 = t2, t1 if t1 > t2
     # TODO PERF no podemos hacer esto, dios, hay que calcular esta info en segundo plano y solo leerla
     dbi = Dbs.db_query("select count(*), 
                                 model_id 
                            from stats.pageviews 
                           where controller = 'miembros' 
                             and action = 'member' 
-                            and created_on >= now() - '1 week'::interval 
+                            and created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}' 
                             and model_id not in (select id::varchar 
                                                    from users 
                                                   where state in (#{STATES_CANNOT_LOGIN.join(',')})) 
@@ -775,7 +781,7 @@ class User < ActiveRecord::Base
                           limit #{limit}")
     results = []
     dbi.each do |dbu|
-      results<< [User.find(dbu['model_id']), dbu['count']]
+      results<< [User.find(dbu['model_id'].to_i), dbu['count'].to_i]
     end
     results
   end

@@ -9,22 +9,27 @@ namespace :gm do
     #dbi = Stats::Metrics::mdata('NewUsers', s, e)
     #`python script/spark.py metric #{dbi.collect {|dbr| dbr['count'] }.concat([0] * (days - dbi.size)).reverse.join(',')} "#{dst_file}"`
     #return
-    #if nil then
+#    if nil then
       generate_top_bets_winners_minicolumns
       update_factions_stats # Order is important
       update_general_stats
       generate_minicolumns_factions_activity
       update_factions_cohesion
       reset_remaining_rating_slots
-      Karma.update_ranking
-      Faith.update_ranking
+
+
 #    end
     update_users_karma_stats
     update_users_daily_stats
+    Karma.update_ranking
+    Faith.update_ranking
+    Popularity.update_rankings # order is important
   end
   
   def reset_remaining_rating_slots
-    User.db_query('UPDATE users SET cache_remaining_rating_slots = NULL WHERE lastseen_on > now() - \'1 day\'::interval')
+    User.db_query("SELECT id FROM users where lastseen_on >= now() - '14 days'::interval").each do |dbr|
+       User.db_query("UPDATE users SET cache_remaining_rating_slots = NULL WHERE id = #{dbr['id']}")
+    end
   end
   
   def update_factions_cohesion
@@ -378,7 +383,7 @@ namespace :gm do
         # TODO here
         
         Karma.karma_points_of_user_at_date(u, cur_day).each do |portal_id, points|
-          pointz[u.id] ||= {:karma => 0, :faith => 0}
+          pointz[u.id] ||= {:karma => 0, :faith => 0, :popularity => 0}
           pointz[u.id][:karma] += points
           # puts "#{u.login} #{portal_id} #{points}"
           # User.db_query("INSERT INTO stats.users_karma_daily_by_portal(user_id, portal_id, karma, created_on) VALUES(#{u.id}, #{portal_id}, #{points}, '#{cur_day.strftime('%Y-%m-%d')}')")      
@@ -388,12 +393,32 @@ namespace :gm do
       # ahora calculamos stats de fe
       faithres = Faith.faith_points_of_users_at_date_range(cur_day.beginning_of_day, cur_day.end_of_day)
       faithres.keys.each do |uid|
-        pointz[uid] ||= {:karma => 0, :faith => 0}
+        pointz[u.id] ||= {:karma => 0, :faith => 0, :popularity => 0}
         pointz[uid][:faith] += faithres[uid]
       end
+      
+      # popularidad
+      User.hot('all', cur_day.beginning_of_day, cur_day.end_of_day).each do |hinfo|
+        pointz[hinfo[0].id] ||= {:karma => 0, :faith => 0, :popularity => 0}
+        pointz[hinfo[0].id][:popularity] = hinfo[1] 
+      end
+      
       pointz.keys.each do |uid|
         v = pointz[uid]
-        User.db_query("INSERT INTO stats.users_daily_stats(user_id, karma, faith, created_on) VALUES(#{uid}, #{v[:karma]}, #{v[:faith]}, '#{cur_day.strftime('%Y-%m-%d')}')")   
+        User.db_query("INSERT INTO stats.users_daily_stats(user_id, karma, faith, popularity, created_on) VALUES(#{uid}, #{v[:karma]}, #{v[:faith]}, #{v[:popularity]}, '#{cur_day.strftime('%Y-%m-%d')}')")   
+      end
+      
+      
+      # clans
+      # popularidad
+      Clan.hot('all', cur_day.beginning_of_day, cur_day.end_of_day).each do |hinfo|
+        pointz[hinfo[0].id] ||= {:popularity => 0}
+        pointz[hinfo[0].id][:popularity] = hinfo[1] 
+      end
+      
+      pointz.keys.each do |uid|
+        v = pointz[uid]
+        User.db_query("INSERT INTO stats.clans_daily_stats(user_id, popularity, created_on) VALUES(#{uid}, #{v[:popularity]}, '#{cur_day.strftime('%Y-%m-%d')}')")   
       end
       
       cur_day = cur_day.advance(:days => 1)

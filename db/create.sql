@@ -8508,7 +8508,9 @@ CREATE TABLE clans (
     deleted boolean DEFAULT false NOT NULL,
     members_count integer DEFAULT 0 NOT NULL,
     website_activated boolean DEFAULT false NOT NULL,
-    creator_user_id integer
+    creator_user_id integer,
+    cache_popularity integer,
+    ranking_popularity_pos integer
 );
 
 
@@ -10371,7 +10373,6 @@ CREATE TABLE friends_recommendations (
 --
 
 CREATE SEQUENCE friends_recommendations_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -11270,6 +11271,37 @@ CREATE SEQUENCE platforms_id_seq
 --
 
 ALTER SEQUENCE platforms_id_seq OWNED BY platforms.id;
+
+
+--
+-- Name: platforms_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE platforms_users (
+    id integer NOT NULL,
+    created_on timestamp without time zone,
+    user_id integer,
+    platform_id integer
+);
+
+
+--
+-- Name: platforms_users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE platforms_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: platforms_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE platforms_users_id_seq OWNED BY platforms_users.id;
 
 
 --
@@ -12458,7 +12490,8 @@ CREATE TABLE users (
     pending_slog integer DEFAULT 0 NOT NULL,
     ranking_karma_pos integer,
     ranking_faith_pos integer,
-    ranking_popularity_pos integer
+    ranking_popularity_pos integer,
+    cache_popularity integer
 );
 
 
@@ -12481,7 +12514,6 @@ CREATE TABLE users_actions (
 --
 
 CREATE SEQUENCE users_actions_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12855,6 +12887,37 @@ ALTER SEQUENCE bets_results_id_seq OWNED BY bets_results.id;
 
 
 --
+-- Name: clans_daily_stats; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE TABLE clans_daily_stats (
+    id integer NOT NULL,
+    clan_id integer,
+    created_on date NOT NULL,
+    popularity integer
+);
+
+
+--
+-- Name: clans_daily_stats_id_seq; Type: SEQUENCE; Schema: stats; Owner: -
+--
+
+CREATE SEQUENCE clans_daily_stats_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: clans_daily_stats_id_seq; Type: SEQUENCE OWNED BY; Schema: stats; Owner: -
+--
+
+ALTER SEQUENCE clans_daily_stats_id_seq OWNED BY clans_daily_stats.id;
+
+
+--
 -- Name: dates; Type: TABLE; Schema: stats; Owner: -; Tablespace: 
 --
 
@@ -13036,7 +13099,8 @@ CREATE TABLE users_daily_stats (
     user_id integer NOT NULL,
     created_on date NOT NULL,
     karma integer,
-    faith integer
+    faith integer,
+    popularity integer
 );
 
 
@@ -13762,6 +13826,13 @@ ALTER TABLE platforms ALTER COLUMN id SET DEFAULT nextval('platforms_id_seq'::re
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE platforms_users ALTER COLUMN id SET DEFAULT nextval('platforms_users_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE polls ALTER COLUMN id SET DEFAULT nextval('polls_id_seq'::regclass);
 
 
@@ -14066,6 +14137,13 @@ ALTER TABLE bandit_treatments ALTER COLUMN id SET DEFAULT nextval('bandit_treatm
 --
 
 ALTER TABLE bets_results ALTER COLUMN id SET DEFAULT nextval('bets_results_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: stats; Owner: -
+--
+
+ALTER TABLE clans_daily_stats ALTER COLUMN id SET DEFAULT nextval('clans_daily_stats_id_seq'::regclass);
 
 
 --
@@ -15350,6 +15428,14 @@ ALTER TABLE ONLY platforms
 
 
 --
+-- Name: platforms_users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY platforms_users
+    ADD CONSTRAINT platforms_users_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: polls_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -15813,6 +15899,14 @@ ALTER TABLE ONLY bandit_treatments
 
 ALTER TABLE ONLY bets_results
     ADD CONSTRAINT bets_results_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: clans_daily_stats_pkey; Type: CONSTRAINT; Schema: stats; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY clans_daily_stats
+    ADD CONSTRAINT clans_daily_stats_pkey PRIMARY KEY (id);
 
 
 --
@@ -16687,6 +16781,27 @@ CREATE UNIQUE INDEX outstanding_entities_uniq ON outstanding_entities USING btre
 
 
 --
+-- Name: platforms_users_platform_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX platforms_users_platform_id ON platforms_users USING btree (platform_id);
+
+
+--
+-- Name: platforms_users_platform_id_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX platforms_users_platform_id_user_id ON platforms_users USING btree (user_id, platform_id);
+
+
+--
+-- Name: platforms_users_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX platforms_users_user_id ON platforms_users USING btree (user_id);
+
+
+--
 -- Name: polls_approved_by_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -16953,6 +17068,13 @@ CREATE INDEX users_actions_created_on ON users_actions USING btree (created_on);
 
 
 --
+-- Name: users_actions_created_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX users_actions_created_on_user_id ON users_actions USING btree (created_on, user_id);
+
+
+--
 -- Name: users_cache_remaning; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -17027,6 +17149,27 @@ CREATE INDEX users_lower_login ON users USING btree (lower(("login")::text));
 --
 
 CREATE INDEX users_newsfeeds_created_on ON users_newsfeeds USING btree (created_on);
+
+
+--
+-- Name: users_newsfeeds_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX users_newsfeeds_user_id ON users_newsfeeds USING btree (user_id);
+
+
+--
+-- Name: users_newsfeeds_user_id_created_on; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX users_newsfeeds_user_id_created_on ON users_newsfeeds USING btree (user_id, created_on);
+
+
+--
+-- Name: users_newsfeeds_users_action_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX users_newsfeeds_users_action_id ON users_newsfeeds USING btree (users_action_id);
 
 
 --
@@ -17113,6 +17256,13 @@ SET search_path = stats, pg_catalog;
 --
 
 CREATE UNIQUE INDEX bandit_treatments_abtest_treatment ON bandit_treatments USING btree (abtest_treatment);
+
+
+--
+-- Name: clans_daily_stats_clan_id_created_on; Type: INDEX; Schema: stats; Owner: -; Tablespace: 
+--
+
+CREATE INDEX clans_daily_stats_clan_id_created_on ON clans_daily_stats USING btree (clan_id, created_on);
 
 
 --
@@ -18827,6 +18977,22 @@ ALTER TABLE ONLY news
 
 
 --
+-- Name: platforms_users_platform_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY platforms_users
+    ADD CONSTRAINT platforms_users_platform_id_fkey FOREIGN KEY (platform_id) REFERENCES platforms(id) MATCH FULL ON DELETE CASCADE;
+
+
+--
+-- Name: platforms_users_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY platforms_users
+    ADD CONSTRAINT platforms_users_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
+
+
+--
 -- Name: polls_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -19594,6 +19760,14 @@ ALTER TABLE ONLY bets_results
 
 ALTER TABLE ONLY bets_results
     ADD CONSTRAINT bets_results_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) MATCH FULL;
+
+
+--
+-- Name: clans_daily_stats_clan_id_fkey; Type: FK CONSTRAINT; Schema: stats; Owner: -
+--
+
+ALTER TABLE ONLY clans_daily_stats
+    ADD CONSTRAINT clans_daily_stats_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES public.clans(id) MATCH FULL;
 
 
 --

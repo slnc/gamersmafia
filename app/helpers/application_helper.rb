@@ -17,6 +17,7 @@ module ApplicationHelper
   
   def sparkline(opts)
     # req: data size
+    opts = {:colors => ['0077cc'], :fillcolors => ['E6F2FA']}.merge(opts)
     out = ''
     require 'md5'
     spid = MD5.hexdigest((Time.now.to_i + Kernel.rand).to_s)
@@ -34,7 +35,8 @@ size: '#{opts[:size]}',"
     
     out << " max: #{opts[:max]}," if opts[:max]
     out << "linestyle: '1,0,0',
-colors: ['0077CC', 'E6F2FA'],
+colors: ['#{opts[:colors][0]}'],
+fillcolors: ['#{opts[:fillcolors][0]}'],
 min: 0, 
 type: 'ls'})) 
 .appendTo(\"#line#{spid}\");

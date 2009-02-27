@@ -33,7 +33,7 @@
 	
 	<%mftext('Foros', :grid => 3, :glast => true, :blast => true) do %>
 	<ul class="content-hid">
-		<%controller.portal.categories(Topic)[0].last_updated_children(:limit => 5).each do |tc| %>
+		<%controller.portal.categories(Topic)[0].last_updated_children(:limit => 5).sort_by { |e| e.name.downcase }.each do |tc| %>
 		<li><a href="<%=gmurl(tc, :taxonomy => 'TopicsCategory')%>"><%=truncate(tc.name, 20, '..')%></a></li>
 		<% end -%>
 		</ul>
