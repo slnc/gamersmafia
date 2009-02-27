@@ -4,3 +4,4 @@ wget -O /dev/null --header="HOST: gamersmafia.com" http://127.0.0.1:8002/site/sy
 mongrel_rails cluster::stop 
 rm tmp/pids/*.pid 
 mongrel_rails cluster::start 
+# dummy
