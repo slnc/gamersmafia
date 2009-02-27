@@ -8,7 +8,7 @@ cache(basename) do
   ids = []
   get_last_commented_contents.each do |content| 
     uniq = content.unique_content %>
-  <li id="content-side-topic<%=uniq.id%>" class="<%=oddclass%>"><a class="content" href="<%=get_url(content)%>" title="<%= content.has_category? ? "#{content.main_category.root.code} | " : ''%><%=tohtmlattribute(content.resolve_hid)%>"><%=truncate(content.resolve_hid, 26, '..')%></a></li><% 
+  <li id="content-side-topic<%=uniq.id%>" class="<%=oddclass%>"><a class="content" href="<%=get_url(content)%>" title="<%= content.has_category? ? "#{content.main_category.root.slug} | " : ''%><%=tohtmlattribute(content.resolve_hid)%>"><%=truncate(content.resolve_hid, 26, '..')%></a></li><% 
     ids<< uniq.id
   end 
 

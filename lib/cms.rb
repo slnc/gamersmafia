@@ -123,30 +123,6 @@ module Cms
   EMAIL_REGEXP = /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/
   IP_REGEXP = /\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/
   
-  # Devuelve la clase en caso de que exista. Si un contenido no tiene clase
-  # devolverá nil, no lanzará excepción
-  def self.category_class_from_content_name(content_name)
-    # TODO Refactor
-    case content_name
-      when 'News': NewsCategory
-      when 'Image': ImagesCategory
-      when 'Event': EventsCategory
-      when 'Download': DownloadsCategory
-      when 'Demo': DemosCategory
-      when 'Tutorial': TutorialsCategory
-      when 'Interview': InterviewsCategory
-      when 'Poll': PollsCategory
-      when 'Bet': BetsCategory
-      when 'Column': ColumnsCategory
-      when 'Review': ReviewsCategory
-      when 'Topic': TopicsCategory
-      when 'Question': QuestionsCategory
-    end
-    # NOTA: No meterlo en una constante porque petan
-    # this breaks with ruby. mantiene el id del objeto en dev en el hash mientras q así en dev no peta
-    #self::CATEGORIES_BY_CONTENT[content_name]
-  end
-  
   def self.contents_classes
     [News,
     Image,

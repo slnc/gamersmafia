@@ -65,9 +65,9 @@ class BazarPortal
   def method_missing(method_id, *args)
     if Cms::contents_classes_symbols.include?(method_id) # contents
       if method_id == :poll
-        GmPortalPollProxy
+        BazarPortalPollProxy
       elsif method_id == :question
-        QuestionsCategory.find_by_code('bazar')
+        Term.single_toplevel(:slug => 'bazar')
       else
         cls_name = Inflector::camelize(Inflector::singularize(method_id))
         cls = Object.const_get(cls_name)
@@ -104,22 +104,13 @@ class BazarPortal
   
   # Devuelve todas las categorías de primer nivel visibles en la clase dada
   def categories(content_class)
-    if content_class.name == 'Poll'
-      PollsCategory.find(:all, :conditions => 'id = root_id AND code = \'gm\'')
-    else
-      content_class.category_class.toplevel(:conditions => 'clan_id is null and code = \'bazar\'')
-    end
-  end
-  
-  def topics_categories
-    TopicsCategory.find(:all, :conditions => 'parent_id is null AND clan_id IS NULL and code = \'bazar\'', :order => 'UPPER(name) ASC')
+    Term.single_toplevel(:slug => 'bazar')
   end
 end
 
-class GmPortalPollProxy
+class BazarPortalPollProxy
   def self.current
-    cat_id = PollsCategory.find(:first, :conditions => ['id = root_id and code = ?', 'gm']).id
-    Poll.find(:all, :conditions => "polls_category_id = #{cat_id} and starts_on <= now() and ends_on >= now() and state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 1)
+    Term.single_toplevel(:slug => 'bazar').poll.find(:all, :conditions => "starts_on <= now() and ends_on >= now() and state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 1)
   end
   
   def self.method_missing(method_id, *args)

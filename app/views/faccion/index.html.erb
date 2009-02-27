@@ -27,7 +27,7 @@
 <%= render :partial => '/facciones/faction_stats', :locals => {:faction => @faction} %>
 <% end -%>
 
-<% @category = DownloadsCategory.find(:first, :conditions => ['root_id = id and code = ?', @faction.code]) %>
+<% @category = @faction.single_toplevel_term %>
 <% cache("/common/descargas/index/essential3_#{@category.nil? ? '' : @category.root_id}") do %>
 <% mftext('Descargas esenciales') do %>
 <ul class="content-hid">

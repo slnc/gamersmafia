@@ -1,6 +1,3 @@
-<p><label >Categoría</label><br/>
-<%= render_tree_select BetsCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc'), 'name', 'bet[bets_category_id]', @bet.bets_category_id %>
-
 <p><label for="bet_title">Nombre de la partida (ejemplo: "EUROCUP UTCTF: oG vs P")</label><br/>
 <%= text_field 'bet', 'title'  %></p>
 
@@ -29,5 +26,7 @@
 <br />
 <br />
 <% end -%>
+
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @bet } %>
 
 <%=draft_check_box(@bet)%>

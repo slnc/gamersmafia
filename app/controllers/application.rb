@@ -95,15 +95,17 @@ class ApplicationController < ActionController::Base
     controller_name == 'home' && current_default_portal != action_name
   end
   
-  def self.get_domain_of_category(cat)
-    portal = Portal.find_by_code(cat.code)
-    if portal
-      "#{portal.code}.#{App.domain}"
-    elsif cat.code == 'gm'
+  # devuelve el dominio para el término raíz dado
+  def self.get_domain_of_root_term(term)
+    raise "term is not root term" unless term.id == term.root_id
+    theportal = Portal.find_by_code(term.slug)
+    if theportal
+      "#{theportal.code}.#{App.domain}"
+    elsif term.slug == 'gm'
       App.domain
-    elsif %w(bazar otros).include?(cat.code)
+    elsif %w(bazar otros).include?(term.slug)
       App.domain_bazar
-    elsif %w(arena).include?(cat.code)
+    elsif %w(arena).include?(term.slug)
       App.domain_arena
     else
       App.domain
@@ -212,7 +214,7 @@ Request information:
         when 'preguntas':
         href = "respuestas/categoria"
       end
-      dom = get_domain_of_category(object.root)
+      dom = get_domain_of_root_term(object.root)
       "http://#{dom}/#{href}/#{object.id}"
     elsif cls_name == 'Faction'      
       "http://#{object.code}.#{App.domain}/"
@@ -250,9 +252,9 @@ Request information:
         dom = App.domain
         portal_id = GmPortal.new.id
       elsif cls_name == 'Coverage'
-        dom = get_domain_of_category(object.event.main_category.root)
+        dom = get_domain_of_root_term(object.event.main_category.root)
       elsif Cms::CONTENTS_WITH_CATEGORIES.include?(cls_name)
-        dom = get_domain_of_category(object.main_category.root)
+        dom = get_domain_of_root_term(object.main_category.root)
       else
         raise "url_for_content_onlyurl() #{cls_name} not understood}"
       end

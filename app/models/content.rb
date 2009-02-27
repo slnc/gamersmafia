@@ -100,9 +100,9 @@ class Content < ActiveRecord::Base
     if taxonomy.nil?
       self.terms.find(:all)
     elsif taxonomy == 'NULL'
-      self.terms.find(:all, :conditions => 'taxonomy IS NULL')
+      self.terms.find(:all, :conditions => 'taxonomy IS NULL', :order => 'created_on')
     else
-      self.terms.find(:all, :conditions => ["taxonomy = ?", taxonomy])
+      self.terms.find(:all, :conditions => ["taxonomy = ?", taxonomy], :order => 'created_on')
     end
   end
 end

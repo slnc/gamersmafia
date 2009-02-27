@@ -28,11 +28,7 @@ class BazarDistrictPortal < Portal
     cats << [0] # just in case
     cats
   end
-  
-  def topics_categories
-    TopicsCategory.find(:all, :conditions => "parent_id is null and root_id in (#{get_categories(TopicsCategory).join(',')})", :order => 'UPPER(name) ASC')
-  end
-  
+    
   def method_missing(method_id, *args)
     if method_id == :poll
       BazarDistrictPortalPollProxy.new(self)

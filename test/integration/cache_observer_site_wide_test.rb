@@ -24,8 +24,6 @@ class CacheObserverSiteWideTest < ActionController::IntegrationTest
     go_to '/'
     assert_cache_exists "#{g1.code}/site/last_commented_objects"
     assert_cache_exists "#{g1.code}/site/last_commented_objects_ids"
-    #newscat = NewsCategory.create({:name => 'ut', :code => 'ut'})
-    #assert_not_nil newscat
     
     post_comment_on Blogentry.find(:first, :conditions => "state = #{Cms::PUBLISHED}")
     assert_cache_dont_exist "#{g1.code}/site/last_commented_objects"

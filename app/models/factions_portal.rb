@@ -92,10 +92,6 @@ class FactionsPortal < Portal
     FactionsPortalCompetitionProxy.new(self)
   end
   
-  def topics_categories
-    TopicsCategory.find(:all, :conditions => "parent_id is null and root_id in (#{get_categories(TopicsCategory).join(',')})", :order => 'UPPER(name) ASC')
-  end
-  
   def method_missing(method_id, *args)
     if Cms::contents_classes_symbols.include?(method_id) # contents
       if method_id == :poll
@@ -113,10 +109,6 @@ class FactionsPortal < Portal
             obj = obj.category_class.find_by_code(self.factions[0].code)
           end
           
-          #if obj.class.name == 'ImagesCategory'
-            # newc = obj.category_class.find(:first, :conditions => 'id = root_id and code = \'bazar\'')
-            #obj.add_sibling(newc) if newc
-          #end
           if g.size > 1
             g.delete_at(0)
             g.each { |gg| obj.add_sibling(obj.class.find_by_code(gg.code)) }

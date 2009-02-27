@@ -15,7 +15,7 @@
     <table>
       <% 
       
-      for e in Event.current(EventsCategory.find(:all, :conditions => "root_id IN (#{(controller.portal.categories(Event).collect { |c| c.id} + [0]).join(',')})")) %>
+      for e in controller.portal.event.current %>
       <tr class="<%=oddclass%>">
         <td style="font-size: 11px;"><a href="<%=get_url(e)%>"><%=e.title%></a></td>
         <td style="font-size: 11px;"><%=member_state('active')%><%=e.users.count%></td>

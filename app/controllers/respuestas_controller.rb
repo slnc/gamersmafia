@@ -11,7 +11,7 @@ class RespuestasController < ApplicationController
   end
   
   def categoria
-    @category = QuestionsCategory.find(:first, :conditions => ['id = ?', params[:id]]) unless @category
+    @category = Term.find_taxonomy(params[:id], 'QuestionsCategory') unless @category
     raise ActiveRecord::RecordNotFound unless @category
     params[:category] = @category
     # TODO que no sea de una categoria que no deberia
@@ -23,7 +23,7 @@ class RespuestasController < ApplicationController
   
   def abiertas
     if params[:id]
-      @category = QuestionsCategory.find(:first, :conditions => ['id = ?', params[:id]]) unless @category
+      @category = Term.find_taxonomy(params[:id], 'QuestionsCategory') unless @category
       raise ActiveRecord::RecordNotFound unless @category
       params[:category] = @category
       # TODO que no sea de una categoria que no deberia
@@ -37,7 +37,7 @@ class RespuestasController < ApplicationController
   
   def cerradas
     if params[:id]
-      @category = QuestionsCategory.find(:first, :conditions => ['id = ?', params[:id]]) unless @category
+      @category = Term.find_taxonomy(params[:id], 'QuestionsCategory') unless @category
       raise ActiveRecord::RecordNotFound unless @category
       params[:category] = @category
       # TODO que no sea de una categoria que no deberia

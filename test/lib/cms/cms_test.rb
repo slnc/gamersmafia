@@ -522,8 +522,9 @@ class CmsTest < Test::Unit::TestCase
     assert ut.update_boss(u10)
     u10.faction_id = ut.id
     assert u10.save
-    e = Event.new(:starts_on => 1.year.ago, :ends_on => 11.months.ago, :user_id => 1, :title => 'foo', :events_category_id => EventsCategory.find_by_code('ut').id)
+    e = Event.new(:starts_on => 1.year.ago, :ends_on => 11.months.ago, :user_id => 1, :title => 'foo')
     assert e.save, e.errors.full_messages_html
+    Term.single_toplevel(:slug => 'ut').link(e)
     Cms::publish_content(e, User.find(1))
     e.reload
     assert_equal Cms::PUBLISHED, e.state

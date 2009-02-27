@@ -1,0 +1,20 @@
+TODO keys: 
+- acts_as_content (una instancia o una clase de tipo acts_as_content)
+- only_games (mostrar solo juegos)
+
+<% #= render_tree_select ColumnsCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc'), 'name', 'column[columns_category_id]', @column.columns_category_id %>
+
+<% cats = @download.new_record? ? @portal.downloads_categories : DownloadsCategory.toplevel %>
+<%= render_tree_select cats, 'name', 'download[downloads_category_id]', @download.downloads_category_id %></p>
+
+<p><label >Categoría</label><br/>
+<select name="image[images_category_id]">
+<% cats = @image.new_record? ? @portal.images_categories : ImagesCategory.toplevel %>
+<% for ic in controller.portal.images_categories %>
+<optgroup label="<%=ic.name%>">
+<% for gallery in ic.children %>
+<option <%= (gallery.id == @image.images_category_id) ? 'selected="selected"' : ''%> value="<%=gallery.id%>"><%=gallery.name%></option>
+<% end -%>
+</optgroup>
+<% end -%>
+</select>

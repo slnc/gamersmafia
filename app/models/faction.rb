@@ -345,6 +345,10 @@ class Faction < ActiveRecord::Base
     "#{rthing.class.name.downcase}_id".to_sym
   end
   
+  def single_toplevel_term
+    Term.single_toplevel(self.referenced_thing_field => self.referenced_thing.id)
+  end
+  
   def karma_points
     total = 0
     

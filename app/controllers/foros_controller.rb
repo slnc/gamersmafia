@@ -18,8 +18,8 @@ class ForosController < ComunidadController
   end
   
   def forum
-    # TODO no chequeamos que sea un foro correcto para este portal y además suponemos que topic es un topics_category
-    @forum = TopicsCategory.find(params[:id])
+    # TODO no chequeamos que sea un foro correcto para este portal y además suponemos que topic es un topics_category    
+    @forum = Term.find_taxonomy(params[:id], 'TopicsCategory')
     
     forum_for_title = @forum
     @title = ''
@@ -117,18 +117,7 @@ class ForosController < ComunidadController
     params[:topic][:clan_id] = portal.clan_id if portal.kind_of?(ClansPortal) && portal.clan_id
     params[:topic][:main] = Comments::formatize(params[:topic][:main])
     
-    forum = TopicsCategory.find_by_id(params[:topic][:topics_category_id]) if params[:topic][:topics_category_id].to_s != '' 
-    
-    if forum && forum.id == forum.root_id then 
-      # buscamos el foro de nombre general de esta categoría o uno cualquiera
-      f = forum.children.find(:first, :conditions => 'name = \'General\'')
-      
-      if f.nil? then
-        f = forum.children.find(:first)
-      end
-      
-      forum = f
-    end
+    forum = Term.find_taxonomy(params[:topic][:topics_category_id], 'TopicsCategory') 
     
     @topic = Topic.new(params[:topic])
     

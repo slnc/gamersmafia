@@ -24,7 +24,7 @@ class ImagenesControllerTest < Test::Unit::TestCase
   end
 
   def test_toplevel_through_category
-    tld = ImagesCategory.create({:name => 'tld', :code => 'tld'})
+    tld = Term.single_toplevel(:slug => 'ut')
     assert_not_nil tld
     get :category, :category => tld.id
     assert_response :success

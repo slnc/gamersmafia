@@ -40,13 +40,11 @@ class Game < ActiveRecord::Base
     root_term = Term.create(:game_id => self.id, :name => self.name, :slug => self.code)
     
     # crea los foros iniciales para dicho juego
-    cforum = TopicsCategory.find(:first, :conditions => ['id = root_id and code = ? and name = ?', self.code, self.name])
     ['General', 'Ayuda'].each do |defname|
       root_term.children.create(:name => defname, :taxonomy => 'TopicsCategory')
     end
     
     # creamos galería inicial
-    cgal = ImagesCategory.find(:first, :conditions => ['id = root_id and code = ? and name = ?', self.code, self.name])
     ['General'].each do |defname| 
       root_term.children.create(:name => defname, :taxonomy => 'ImagesCategory') 
     end

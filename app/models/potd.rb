@@ -11,7 +11,7 @@ class Potd < ActiveRecord::Base
     #    los últimos 7 días (se ordenan por número de visitas desc)
     #
     # 3º una imagen aleatoria cualquiera
-    gm_cat = ImagesCategory.find(:first, :conditions => 'code = \'bazar\' and id = root_id')
+    gm_cat = Term.toplevel_single(:slug => 'bazar')
     invalid_categories = [0]
     
     if gm_cat then

@@ -280,30 +280,23 @@ class Competition < ActiveRecord::Base
     mrman = User.find_by_login('mrman')
     raise ActiveRecord::RecordNotFound unless mrman
     
-    ec = EventsCategory.find(:first, :conditions => ['id = root_id and code = ?', self.game.code])
+    
     e = Event.create({:title => self.name, 
       :description => self.description, 
-      :events_category_id => ec.id, 
       :starts_on => self.created_on, 
       :ends_on => self.ends_on, 
       :user_id => mrman.id, 
       :website => "http://#{App.domain_arena}/competiciones/show/#{self.id}"})
     e.change_state(Cms::PUBLISHED, mrman)
+    Term.single_toplevel(:game_id => self.game_id).link(e)
     self.event_id = e.id
     
-    #if self.pro? then
-    arena_tld = TopicsCategory.find(:first, :conditions => 'id = root_id and code = \'arena\'')
-    game_tld = TopicsCategory.find(:first, :conditions => ['parent_id = ? and name = ?', arena_tld.id, self.game.name])
-    if game_tld.nil?
-      game_tld = TopicsCategory.create(:parent_id => arena_tld.id, :name => self.game.name)
-    end
-    competitions_forum = game_tld
-    newforum = competitions_forum.children.create({:name => self.name})
-    self.topics_category_id = newforum.id
-    
-    # TODO crear portal
-    #end
-    
+    arena_tld = Term.single_toplevel(:slug => 'arena')
+    # TODO reordenar esto
+    game_term = arena_tld.children.find(:first, :conditions => ['name = ? AND taxonomy = \'TopicsCategory\'', self.game.name]).nil?     
+    game_term = arena_tld.children.create(:name => self.game.name) if game_term.nil?
+    newforum = game_term.children.create({:name => self.name})
+    self.topics_category_id = game_term.id # TODO usar nueva taxonomía
     self.save
   end
   

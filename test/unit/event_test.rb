@@ -1,16 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class EventTest < Test::Unit::TestCase
-
-  def setup
-    @event = Event.find(1)
-  end
-
-  # Replace this with your real tests.
-  def test_truth
-    assert_kind_of Event,  @event
-  end
-
   COMMON = { :user_id => 1, :approved_by_user_id => 1, :events_category_id => 1, :state => Cms::PUBLISHED}
 
   def test_should_give_correct_hotmap1

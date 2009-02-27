@@ -5,7 +5,7 @@ class TutorialesController < InformacionController
   def index
     parent_id = params[:category]
     if parent_id then
-      @category = TutorialsCategory.find(parent_id)
+      @category = Term.find_taxonomy(parent_id, 'TutorialsCategory')
       paths, navpath = @category.get_category_address
       @category.get_ancestors.reverse.each { |p| navpath2<< [p.name, "/tutoriales/#{p.id}"] }
       @title = "Tutoriales de #{@category.name}"

@@ -1,6 +1,4 @@
-<p><label >Juego</label><br/>
-<% games = controller.portal.respond_to?(:factions) ? controller.portal.factions.find(:all).collect { |f| "'#{f.code}'" } : Game.find(:all).collect { |g| "'#{g.code}'" } %>
-<%= select("demo", "demos_category_id", DemosCategory.find(:all, :conditions => "parent_id is null AND code IN (#{games.join(',')})", :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%></p>
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @demo, :only_games => true } %>
 
 <p><label>Modo de juego</label><br/>
 <select id="games_mode_id" name="demo[games_mode_id]">

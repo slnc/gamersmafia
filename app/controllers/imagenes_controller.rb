@@ -3,7 +3,7 @@ class ImagenesController < BazarController
   allowed_portals [:gm, :faction, :clan, :bazar, :bazar_district]
   
   def category
-    @category = ImagesCategory.find(params[:category])
+    @category = Term.find_taxonomy(params[:category], 'ImagesCategory')
     @title = @category.name
     if not @category.parent_id then
       @navpath = [['Imágenes', '/imagenes'], [@category.name, "/imagenes/#{@category.id}"]]
@@ -52,7 +52,7 @@ class ImagenesController < BazarController
   def create_from_zip
     require_auth_users
     raise ActiveRecord::RecordNotFound unless Cms::user_can_mass_upload(@user)
-    @category = ImagesCategory.find(params[:image][:images_category_id])
+    @category = Term.find_taxonomy(params[:image][:images_category_id], 'ImagesCategory')
     
     if @category.parent_id.nil? then
       flash[:error] = 'Debes elegir una subcategoría, no una categoría'

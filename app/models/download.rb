@@ -35,6 +35,7 @@ class Download < ActiveRecord::Base
   
   # select id, (select name from downloads_categories where id = a.root_id), downloads_count from downloads_categories a where lower(name) like  '%demos%' and downloads_count > 0;
   def mute_to_demo
+    raise "DEPRECATED"
     opts = self.attributes
     
     opts['demos_category_id'] = DemosCategory.find_by_code(self.downloads_category.root.code).id

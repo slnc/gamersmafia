@@ -192,3 +192,13 @@ question_deleted:
     id: 39
     content_id: 1112
     term_id: 20
+        
+news66:
+    id: 40
+    content_id: 1114
+    term_id: 15
+
+news65:
+    id: 41
+    content_id: 1113
+    term_id: 5

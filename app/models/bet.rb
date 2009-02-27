@@ -324,9 +324,7 @@ class Bet < ActiveRecord::Base
   end
   
   def self.open_bets_by_toplevel_code(code)
-    tlc = BetsCategory.find(:first, :conditions => ['id = root_id AND code = ?', code])
-    cat_ids = tlc.get_all_children
-    self.open_bets(:conditions => "bets_category_id IN (#{cat_ids.join(',')})")
+    Term.single_toplevel(:slug => code).bet.open_bets
   end
   
   validates_uniqueness_of :title, :message => 'Nombre de la partida duplicado. Ejemplo de un nombre irrepetible: "Eurocup06 Quarters: oG vs P"'

@@ -284,9 +284,15 @@ module ActsAsContent
       Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name)
     end
     
-    # Devuelve la categoría de este contenido
+    # Devuelve la primera categoría asociada a este contenido
     def main_category
-      self.unique_content.linked_categories("#{Inflector::pluralize(self.class.name)}Category")
+      # DEPRECATED
+      cats = self.unique_content.linked_terms("#{Inflector::pluralize(self.class.name)}Category")
+      if cats.size > 0
+        cats[0]
+      else
+        self.unique_content.linked_terms('NULL')[0]
+      end
     end
     
     # TODO refactor this

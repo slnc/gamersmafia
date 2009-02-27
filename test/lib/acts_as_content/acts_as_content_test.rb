@@ -174,8 +174,9 @@ class ActsAsContentTest < Test::Unit::TestCase
   end
   
   def test_related_portals_of_district_proper_district
-    n = News.new(:title => 'Noticia 1', :description => 'sumario', :user_id => 1, :news_category_id => NewsCategory.find_by_code('anime').id)
+    n = News.new(:title => 'Noticia 1', :description => 'sumario', :user_id => 1)
     assert n.save
+    Term.single_toplevel(:slug => 'anime').link(n)
     relportals = n.get_related_portals
     assert_equal 4, relportals.size
     assert_equal 'anime', relportals[3].code

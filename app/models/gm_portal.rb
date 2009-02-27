@@ -82,22 +82,13 @@ class GmPortal
   
   # Devuelve todas las categorías de primer nivel visibles en la clase dada
   def categories(content_class)
-    if content_class.name == 'Poll'
-      PollsCategory.find(:all, :conditions => 'id = root_id AND code = \'gm\'')
-    else
-      content_class.category_class.toplevel(:conditions => 'clan_id is null')
-    end
-  end
-  
-  def topics_categories
-    TopicsCategory.find(:all, :conditions => 'parent_id is null AND clan_id IS NULL', :order => 'UPPER(name) ASC')
+    Term.single_toplevel(:slug => 'gm')
   end
 end
 
 class GmPortalPollProxy
   def self.current
-    cat_id = PollsCategory.find(:first, :conditions => ['id = root_id and code = ?', 'gm']).id
-    Poll.find(:all, :conditions => "polls_category_id = #{cat_id} and starts_on <= now() and ends_on >= now() and state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 1)
+    Term.single_toplevel(:slug => 'gm').poll.find(:all, :conditions => "starts_on <= now() and ends_on >= now() and state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 1)
   end
   
   def self.method_missing(method_id, *args)

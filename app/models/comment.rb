@@ -85,14 +85,6 @@ class Comment < ActiveRecord::Base
     
     ctype = Object.const_get(content.content_type.name)
     obj = ctype.find(content.external_id)
-    # TODO hacky
-    if ctype.name == 'Topic'
-      
-     (self.content.real_content.main_category.get_ancestors + [self.content.real_content.main_category]).each do |anc|
-       # puts "decrementing comments_count for #{anc.name} #{anc.comments_count} #{anc.id}"
-        anc.class.decrement_counter("comments_count", anc.id)
-      end
-    end
   end
   
   def rate(user, rating)

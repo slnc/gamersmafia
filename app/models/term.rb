@@ -30,6 +30,11 @@ class Term < ActiveRecord::Base
     true
   end
   
+  def code
+    # TODO temp
+    slug
+  end
+  
   def set_slug
     if self.slug.nil? || self.slug.to_s == ''
       self.slug = self.name.bare.downcase
@@ -65,6 +70,17 @@ class Term < ActiveRecord::Base
     raise "TypeError" unless content.class.name == 'Content'
     if self.contents.find(:first, :conditions => ['contents.id = ?', content.id]).nil? # dupcheck
       self.contents_terms.create(:content_id => content.id)
+    end
+    true
+  end
+  
+  def unlink(content)
+    term = self.contents_terms.find(:all, :conditions => ['content_id = ?', content.id])
+    if term
+      term.destroy
+      true
+    else
+      false
     end
   end
   
