@@ -59,7 +59,7 @@ class TermTest < ActiveSupport::TestCase
     assert_equal expected, @t.all_children_ids
     
     expected2 = Term.find(:all, :conditions => ['parent_id = ? ', @ndcss1.id]).collect { |t| t.id }.sort
-    assert_equal expected, @ndcss1.all_children_ids
+    assert_equal (expected2 + [@ndcss1.id]).sort, @ndcss1.all_children_ids
   end
   
   def test_all_children_ids_taxonomy

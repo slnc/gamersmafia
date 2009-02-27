@@ -20,6 +20,7 @@ class Content < ActiveRecord::Base
   end
   before_save :check_changed_attributes
   observe_attr :state
+  observe_attr :comments_count
   belongs_to :clan
   belongs_to :game
   belongs_to :platform

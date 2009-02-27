@@ -138,8 +138,6 @@ class Term < ActiveRecord::Base
     conditions << " AND game_id = #{options[:game_id].to_i}" if options[:game_id]
     conditions << " AND platform_id = #{options[:platform_id].to_i}" if options[:platform_id]
     conditions << " AND bazar_district_id = #{options[:bazar_district_id].to_i}" if options[:bazar_district_id]
-    conditions << " AND clan_id = #{options[:clan_id].to_i}" if options[:clan_id]
-    
     Term.find(:all, :conditions => conditions, :order => 'lower(name)')
   end
   
@@ -245,7 +243,9 @@ class Term < ActiveRecord::Base
       self.count(:conditions => "contents_terms.term_id IN (SELECT term_id FROM contents_terms a JOIN terms b on a.term_id = b.id WHERE a.term_id IN (#{all_children_ids(:taxonomy => taxonomy)}) AND b.taxonomy = #{User.connection.quote(taxonomy)})")
     else # shortcut, show everything
       if self.attributes['contents_count'].nil?
-        self.recalculate_contents_count 
+        self.recalculate_counters
+        self.reload
+        self.attributes['contents_count']
       end
       self.attributes['contents_count']  
     end

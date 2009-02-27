@@ -363,6 +363,11 @@ class CacheObserver < ActiveRecord::Observer
       
       when 'Content':
       CacheObserver.update_pending_contents if object.slnc_changed?(:state)
+      if (object.slnc_changed?(:state) && object.state == Cms::DELETED) || object.slnc_changed?(:comments_count)
+        object.terms.each do |t|
+          t.recalculate_counters
+        end
+      end
       
       when 'User':
       if object.slnc_changed? :state
