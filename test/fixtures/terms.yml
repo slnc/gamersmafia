@@ -238,5 +238,5 @@
       slug: general
       root_id: 4
       parent_id: 4
-      game_id: 4
+      platform_id: 1
       taxonomy: TopicsCategory

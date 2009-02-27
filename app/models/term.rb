@@ -78,7 +78,7 @@ class Term < ActiveRecord::Base
   
   def set_import_mode
     @_import_mode = true
-  end
+  end 
   
   def link(content, normal_op=true)
     raise "TypeError, arg is #{content.class.name}" unless content.class.name == 'Content'
@@ -329,7 +329,7 @@ class Term < ActiveRecord::Base
     if res.kind_of?(Array) 
       res.collect { |cont| cont.real_content }
     elsif res
-      res
+      res.real_content
     end
   end
   
@@ -378,6 +378,7 @@ class Term < ActiveRecord::Base
     @_add_cats_ids_done = true
     options = {:treemode => true}.merge(args.last.is_a?(Hash) ? args.pop : {}) # copypasted de extract_options_from_args!(args)
     @siblings ||= []
+    
     if options[:treemode]
       @_cache_cats_ids ||= (self.all_children_ids + [self.id])
       @siblings.each { |s| @_cache_cats_ids += s.all_children_ids }
@@ -386,6 +387,16 @@ class Term < ActiveRecord::Base
       new_cond = "term_id IN (#{@_cache_cats_ids.join(',')})"
     else
       new_cond = "term_id IN (#{([self.id] + @siblings.collect { |s| s.id }).join(',')})"
+    end
+    
+    # si el primer arg es un id caso especial!
+    if args.reverse.first.kind_of?(Fixnum)
+      nargs = args.reverse
+      theid = nargs.pop
+      nargs.push(:first)
+      raise "find(id) a traves de term sin haber especificado content_type" unless options[:content_type]
+      new_cond << " AND #{Inflector::tableize(options[:content_type])}.id = #{theid}"
+      args = nargs
     end
     
     if options[:content_type].nil? && options[:content_type_id].nil? && self.taxonomy.to_s.index('Category')

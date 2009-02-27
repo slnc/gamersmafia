@@ -22,6 +22,15 @@ class TermTest < ActiveSupport::TestCase
     assert t.save    
   end
   
+  
+  def test_find_by_id
+    n = News.find(1)
+    t = n.terms[0]
+    res = t.news.find(1)
+    assert_equal 'News', res.class.name
+    assert_equal 1, res.id
+  end
+
   def test_mirror_category
     dc1 = DownloadsCategory.find(1)
     dcs1 = dc1.children.create(:name => 'subhijo1')
