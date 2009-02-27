@@ -208,7 +208,7 @@ Request information:
     end
   end
   
-  # TODO PERF bj_job
+  # TODO PERF GmSys.job
   def check_referer
     if params[:rusid] && request.remote_ip != 'unknown'
       Stats.register_referer(params[:rusid].to_i, request.remote_ip, request.env['HTTP_REFERER'])
@@ -377,7 +377,6 @@ Request information:
     if user.is_superadmin?
       items<< ['Ads', '/admin/ads']
       items<< ['Ads Slots', '/admin/ads_slots']
-      items<< ['Bj Jobs', '/admin/bj_jobs']
       items<< ['Canales GMTV', '/admin/canales']
       items<< ['Competiciones', '/admin/competiciones']
       items<< ['Facciones', '/admin/facciones']
@@ -544,7 +543,7 @@ Request information:
     end
   end
   
-  VERSIONING_EREG = /^\/(.*\.)[0-9.]+\.(css|js|gif|png|jpg)$/
+  VERSIONING_EREG = /^\/(.*\.)[a-z0-9.]+\.(css|js|gif|png|jpg)$/
   def http_404
     if App.windows? # solo lo hacemos en windows para mongrel
       res = request.request_uri.match(VERSIONING_EREG)

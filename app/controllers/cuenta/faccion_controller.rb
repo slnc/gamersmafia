@@ -11,7 +11,7 @@ class Cuenta::FaccionController < ApplicationController
   end
   
   def submenu
-    if @faction and (user_is_boss(@user, @faction) or @user.is_editor_of?(@faction)) then
+    if @faction and (user_is_boss(@user, @faction) or @faction.is_editor?(@user)) then
       return 'Facción'
     else
       return nil
@@ -30,7 +30,7 @@ class Cuenta::FaccionController < ApplicationController
       l<<['Juego', '/cuenta/faccion/juego'] if @faction.game # TODO save this on the model
     end
     
-    if @faction and @user.is_editor_of?(@faction) then
+    if @faction and @faction.is_editor?(@user) then
       l<<['Categorías', '/cuenta/faccion/categorias']
     end
     

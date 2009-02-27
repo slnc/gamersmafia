@@ -40,6 +40,17 @@ class Faction < ActiveRecord::Base
     user_is_editor_of_content_type?(u, content_type)
   end
   
+  def is_editor?(user)
+    return true if user.is_superadmin || user.has_admin_permission?(:capo)
+    if self.is_bigboss?(user)
+      true
+    elsif UsersRole.count(:conditions => ["role = 'Editor' AND user_id = ? AND role_data LIKE E'%%faction_id: #{self.id}\\n%%'", user.id]) != 0
+      true
+    else
+      false
+    end
+  end
+  
   def has_boss?
     _role('Boss').size > 0
   end
