@@ -126,7 +126,6 @@ module TestFunctionalContentHelperMethods
   def test_should_allow_to_create_if_registered
     num_news = content_class.count
     post :create, post_vars, { :user => opt[:authed_user_id] }
-    puts flash[:error]
     assert_response :redirect, @response.body
     assert_redirected_to :action => 'index'
     

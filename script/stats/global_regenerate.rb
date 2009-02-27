@@ -12,7 +12,7 @@ twodaysago = 2.days.ago
 while d < twodaysago
   sum_for_day = 0
   d_str = d.strftime('%Y-%m-%d 00:00:00')
-  puts d_str
+  #puts d_str
   Content.find(:all, :conditions => "state = 2 AND date_trunc('day', created_on) = '#{d_str}'").each do |c| # contenidos publicados en ese día
     rc = c.real_content
     sum_for_day += Karma::KPS_CREATE[rc.class.name]

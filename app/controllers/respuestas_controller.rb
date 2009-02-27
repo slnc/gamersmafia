@@ -64,7 +64,6 @@ class RespuestasController < ApplicationController
     else
       
       flash[:error] = "Ocurrió un error al guardar la mejor respuesta: #{@question.errors.full_messages_html}"
-      puts flash[:error]
     end
     redirect_to gmurl(@question)
   end

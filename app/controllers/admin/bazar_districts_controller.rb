@@ -8,7 +8,6 @@ class Admin::BazarDistrictsController < ApplicationController
   def create
     bd = BazarDistrict.new(params[:bazar_district])
     save_or_error(bd, "/admin/bazar_districts", :index)
-    puts flash[:error]
   end
   
   def edit

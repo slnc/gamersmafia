@@ -99,14 +99,13 @@ class Download < ActiveRecord::Base
   def self.check_invalid_downloads
     Download.find(:all, :conditions => ['state = ? AND file is NOT NULL and file <> \'\'', Cms::PUBLISHED], :order => 'id DESC').each do |d|
       if !File.exists?("#{RAILS_ROOT}/public/#{d.file}") && d.download_mirrors.count == 0
-        puts "#{d.id.to_s.ljust(6, ' ')} #{d.file}"
+        # puts "#{d.id.to_s.ljust(6, ' ')} #{d.file}"
         # TODO deshabilitado por precaución User.db_query("UPDATE downloads SET file = NULL WHERE id = #{d.id}")
       end
     end and nil
   end
   
   def self.check_orphaned_downloads
-    
     Download.find(:all, :conditions => ['state = ? AND (file is NULL OR file = \'\') AND (select count(*) from download_mirrors where download_id = downloads.id) = 0', Cms::PUBLISHED], :order => '(select root_id FROM downloads_categories where id = downloads.downloads_category_id), id DESC').each do |d|
       puts "#{ApplicationController.gmurl(d).ljust(55, ' ')} #{d.title}"
     end and nil

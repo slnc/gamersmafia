@@ -134,7 +134,6 @@ class BazarDistrict < ActiveRecord::Base
   def after_create
     root_term = Term.create(:bazar_district_id => self.id, :name => self.name, :slug => self.code)
     
-    puts root_term.errors.full_messages_html
     Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
       root_term.children.create(:name => c[1], :taxonomy => c[0])
     end

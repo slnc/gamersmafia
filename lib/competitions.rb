@@ -66,6 +66,7 @@ module Competitions
     Competition.find_related_with_user(u.id, :conditions => "(state = #{Competition::CLOSED}) OR (type = 'Ladder' AND state = #{Competition::STARTED})").each do |c|
       #p c 
       participant = c.get_active_participant_for_user(u)
+      next if participant.nil?
       # p c.winners(e)
       idx = c.winners(3).collect {|cwn| cwn.id }.index(participant.id)
       if idx

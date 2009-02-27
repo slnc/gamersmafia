@@ -371,29 +371,29 @@ module Comments
     stack = []
     new.gsub!(/(\[.*?\])/m) do |element|
       clean_el = element.gsub(/([\[\]\/]+)/, '')
-      puts "#{element} #{clean_el}"
+      #puts "#{element} #{clean_el}"
       if element.index('[/') == nil # abriendo
-        puts "abriendo"
+        #puts "abriendo"
         stack.push(clean_el) # TODO meter solo b, i, url, etc
         element
       else # cerrando
-        puts "cerrando"
+        #puts "cerrando"
         out = ''
         # cur = stack.pop
-        puts "#{stack.last} != #{clean_el}"
+        #puts "#{stack.last} != #{clean_el}"
         while stack.size > 0 && stack.last != clean_el
-          puts "cerrando tag mal cerrado #{stack.last}"
+          #puts "cerrando tag mal cerrado #{stack.last}"
           out << "[/#{stack.pop}]"
         end
         if stack.size  == 0 # el elemento que se esta cerrando no existia, lo descartamos
-          puts "out #{out}"
+          #puts "out #{out}"
           out
         else
           if out == ''
             stack.pop
             element
           else
-            puts "#{out}[/#{clean_el}]"
+            #puts "#{out}[/#{clean_el}]"
             "#{out}[/#{clean_el}]"
           end
         end
