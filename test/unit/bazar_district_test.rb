@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class BazarDistrictTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
+  
   def test_should_create_basic_content_categories
     one_of_em = Cms::BAZAR_DISTRICTS_REQUIRED[0]
     assert Object.const_get(one_of_em).category_class.find(:first, :conditions => 'id = root_id AND code = \'yoga\'').nil?
@@ -9,6 +9,11 @@ class BazarDistrictTest < ActiveSupport::TestCase
     assert newbd.save
     assert Object.const_get(one_of_em).category_class.find(:first, :conditions => 'id = root_id AND code = \'yoga\'')
     assert_not_nil BazarDistrictPortal.find_by_code('yoga')
+    
+    t = Term.find(:first, :conditions => ['bazar_district_id = ? AND parent_id IS NULL', newbd.id])
+    assert t
+    assert_equal newbd.name, t.name
+    assert_equal newbd.code, t.slug
   end
   
   def test_single_person_staff

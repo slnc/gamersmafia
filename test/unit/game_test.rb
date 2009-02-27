@@ -6,6 +6,14 @@ class GameTest < Test::Unit::TestCase
     @game = Game.find(1)
   end
   
+  def test_create_term
+    test_should_create_if_everything_ok
+    t = Term.find(:first, :conditions => ['game_id = ? AND parent_id IS NULL', @g.id])
+    assert t
+    assert_equal @g.name, t.name
+    assert_equal @g.code, t.slug
+  end
+  
   def test_should_not_create_if_missing_fields
     c = Game.count
     g = Game.new({:name => 'foo'})

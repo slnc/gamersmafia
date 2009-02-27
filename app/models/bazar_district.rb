@@ -8,6 +8,7 @@ class BazarDistrict < ActiveRecord::Base
   after_save :rename_everything_if_name_or_code_changed
   file_column :icon
   observe_attr :icon, :name, :code
+  has_many :terms
   
   def top_level_category(cls)
     cls.category_class.toplevel(:conditions => "code = '#{self.code}'")[0]
@@ -137,6 +138,8 @@ class BazarDistrict < ActiveRecord::Base
       cls.create(:name => self.name, :code => self.code) if inst.nil? 
       # TODO asociar categoria a distrito por si hay colisiones
     end
+    
+    Term.create(:bazar_district_id => self.id, :name => self.name, :slug => self.code)
     
     BazarDistrictPortal.create({:code => self.code, :name => self.name}) unless BazarDistrictPortal.find_by_code(self.code)
   end

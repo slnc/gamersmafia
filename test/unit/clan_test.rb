@@ -1,18 +1,20 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ClanTest < Test::Unit::TestCase
-  
-  # Replace this with your real tests.
-  def test_truth
-    assert true
-  end
-  
   def test_validations_minimal_data
     # valid minimal data
-    c = Clan.new({:tag => 'tagvali', :name => 'Super valid clan'})
-    assert_equal true, c.save, c.errors.to_yaml
-    assert_equal 'tagvali', c.tag
-    assert_equal 'Super valid clan', c.name
+    @clan = Clan.new({:tag => 'tagvali', :name => 'Super valid clan'})
+    assert_equal true, @clan.save, @clan.errors.to_yaml
+    assert_equal 'tagvali', @clan.tag
+    assert_equal 'Super valid clan', @clan.name
+  end
+  
+  def test_create_term
+    test_validations_minimal_data
+    t = Term.find(:first, :conditions => ['clan_id = ? AND parent_id IS NULL', @clan.id])
+    assert t
+    assert_equal @g.name, t.name
+    assert_equal @g.code, t.slug
   end
   
   def test_invalid_minimal_data

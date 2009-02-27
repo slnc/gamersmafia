@@ -7,6 +7,8 @@ class Content < ActiveRecord::Base
   has_many :tracker_items, :dependent => :destroy
   has_many :contents_locks, :dependent => :destroy
   has_many :publishing_decisions
+  has_many :terms, :through => :content_terms
+  
   after_save do |m| 
     m.contents_locks.clear if m.contents_locks
     old_url = m.url 

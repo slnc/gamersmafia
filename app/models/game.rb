@@ -7,6 +7,8 @@ class Game < ActiveRecord::Base
   has_many :users_guids, :dependent => :destroy
   has_many :competitions, :dependent => :destroy
   
+  has_many :terms
+  
   after_create :create_contents_categories
   after_save :update_faction_code
   before_save :check_code_doesnt_belong_to_portal
@@ -35,6 +37,7 @@ class Game < ActiveRecord::Base
   end
   
   def create_contents_categories
+    Term.create(:game_id => self.id, :name => self.name, :slug => self.code)
     content_types = Cms.categories_classes + [TopicsCategory]
     
     # crea las categorías raíz y general para cada contenido

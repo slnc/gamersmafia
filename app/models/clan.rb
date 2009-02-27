@@ -6,6 +6,7 @@ class Clan < ActiveRecord::Base
   has_many :clans_portals, :dependent => :destroy
   has_many :clans_sponsors, :dependent => :destroy
   has_many :recruitment_ads
+  has_many :terms
   
   has_and_belongs_to_many :games
   file_column :logo, :format => :jpg
@@ -284,6 +285,7 @@ class Clan < ActiveRecord::Base
     # creamos grupos
     cleaders = ClansGroup.create({:name => 'Clanleaders', :clans_groups_type_id => ClansGroupsType.find_by_name('clanleaders').id, :clan_id => self.id})
     members = ClansGroup.create({:name => 'Miembros', :clans_groups_type_id => ClansGroupsType.find_by_name('members').id, :clan_id => self.id})
+    Term.create(:clan_id => self.id, :name => self.name, :slug => self.tag)
     self.log("Clan creado")
   end
   
