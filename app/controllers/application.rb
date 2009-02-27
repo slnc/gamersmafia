@@ -404,17 +404,15 @@ Request information:
       request.env['HTTP_CLIENT_IP'] = request.env['REMOTE_ADDR']
     end
 
-    khost = request.host.gsub('kenpachi.', '')
-
-    if [App.domain, 'kotoko'].include?(khost) 
+    if [App.domain, 'kotoko'].include?(request.host) 
       @portal = GmPortal.new
-    elsif khost == "bazar.#{App.domain}"
+    elsif request.host == "bazar.#{App.domain}"
       @portal = BazarPortal.new
-    elsif khost == "arena.#{App.domain}"
+    elsif request.host == "arena.#{App.domain}"
       @portal = ArenaPortal.new
     else
       # buscamos un portal para el host dado
-      host = khost.gsub(/\.$/, '') # hay gente q pone los dominios con punto al final
+      host = request.host.gsub(/\.$/, '') # hay gente q pone los dominios con punto al final
       km = host.match(/([^.]+\.[^.]+)$/)
       raise DomainNotFound if km.nil? # blank host or invalid name
       k = km[1]
