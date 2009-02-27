@@ -1,6 +1,6 @@
 <%mftext('Encuesta', :id => 'small-poll', :grid => 4, :glast => true) do
 @cur_polls = controller.portal.poll.current
-[@cur_polls].compact.each do |@cur_poll| %>
+@cur_polls.each do |@cur_poll| %>
       <%=render :partial => '/encuestas/encuesta', :locals => {:poll => @cur_poll, :user => (user_is_authed ? @user : nil)} %>
       <script type="text/javascript">contents = contents.concat(<%=@cur_poll.unique_content.id%>);</script>
     <% end %>

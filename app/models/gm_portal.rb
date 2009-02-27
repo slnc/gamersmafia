@@ -84,7 +84,7 @@ end
 
 class GmPortalPollProxy
   def self.current
-    Term.single_toplevel(:slug => 'gm').poll.find(:all, :conditions => "polls.starts_on <= now() and polls.ends_on >= now() and polls.state = #{Cms::PUBLISHED}", :order => 'polls.created_on DESC', :limit => 1)
+    Term.single_toplevel(:slug => 'gm').poll.find(:published, :conditions => Poll::CURRENT_SQL, :order => 'polls.created_on DESC', :limit => 1)
   end
   
   def self.method_missing(method_id, *args)
