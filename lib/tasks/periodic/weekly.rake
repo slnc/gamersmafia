@@ -79,20 +79,20 @@ having portal_id in (select id
       rc = cr.content.real_content
       if Cms::CONTENTS_WITH_CATEGORIES.include?(rc.class.name) then
         root_cat = rc.main_category.root
-        proc_root_cat_id = "#{Inflector::tableize(rc.class.name)}#{root_cat.id}"
+        proc_root_cat_id = "#{ActiveSupport::Inflector::tableize(rc.class.name)}#{root_cat.id}"
         next if processed_root_cats.include?(proc_root_cat_id)
         cat_ids = root_cat.all_children_ids
-        q = "WHERE #{Inflector::tableize(rc.class.name)}_category_id IN (#{cat_ids.join(',')})"
+        q = "WHERE #{ActiveSupport::Inflector::tableize(rc.class.name)}_category_id IN (#{cat_ids.join(',')})"
         processed_root_cats<< proc_root_cat_id
       else
         next if processed_ctypes.include?(rc.class.name)
         q = ''
       end
-      User.db_query("UPDATE #{Inflector::tableize(rc.class.name)} SET cache_weighted_rank = null #{q}")
+      User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(rc.class.name)} SET cache_weighted_rank = null #{q}")
     end
     
     ContentType.find(:all).each do |ctype|
-      #  slonik_execute "alter table #{Inflector::tableize(ctype.name)} add column cache_weighted_rank numeric(10, 2);"
+      #  slonik_execute "alter table #{ActiveSupport::Inflector::tableize(ctype.name)} add column cache_weighted_rank numeric(10, 2);"
       # puts ctype.name
       Object.const_get(ctype.name).find(:all, :conditions => "cache_weighted_rank is null and state = #{Cms::PUBLISHED}").each do |content|
         content.clear_rating_cache

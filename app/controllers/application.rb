@@ -78,11 +78,11 @@ class ApplicationController < ActionController::Base
   end
   
   def self.taxonomy_from_content_name(content_name)
-    "#{Inflector::pluralize(content_name)}Categories"
+    "#{ActiveSupport::Inflector::pluralize(content_name)}Categories"
   end
   
   def self.extract_content_name_from_taxonomy(taxonomy)
-    Inflector::singularize(taxonomy.gsub('Category', ''))
+    ActiveSupport::Inflector::singularize(taxonomy.gsub('Category', ''))
   end
   
   def get_category_address(category, taxonomy)
@@ -102,7 +102,7 @@ class ApplicationController < ActionController::Base
     end
     
     paths = paths.reverse
-    navpath = [[Inflector::titleize(href), "/#{href2}"], ] + navpath.reverse
+    navpath = [[ActiveSupport::Inflector::titleize(href), "/#{href2}"], ] + navpath.reverse
     
     return paths, navpath
   end
@@ -235,7 +235,7 @@ Request information:
     cls_name = object.class.name
     if cls_name.index('Category')
       # DEPRECATED taxonomies
-      href = Cms::translate_content_name(Inflector::singularize(cls_name.gsub('Category', '')))
+      href = Cms::translate_content_name(ActiveSupport::Inflector::singularize(cls_name.gsub('Category', '')))
       href = href.normalize
       case href
         when 'topics':
@@ -253,7 +253,7 @@ Request information:
       else
         opts[:taxonomy] = object.taxonomy unless opts[:taxonomy]
         if opts[:taxonomy].index('Category')
-          href = Cms::translate_content_name(Inflector::singularize(opts[:taxonomy].gsub('Category', '')))
+          href = Cms::translate_content_name(ActiveSupport::Inflector::singularize(opts[:taxonomy].gsub('Category', '')))
           href = href.normalize
           case href
             when 'topics':
@@ -521,7 +521,7 @@ Request information:
   end
   
   def check_portal_access_mode(allowed_portals)
-    if defined?(allowed_portals) and not allowed_portals.include?(Inflector::singularize(Inflector::underscore(@portal.class.name.gsub('Portal', ''))).to_sym)
+    if defined?(allowed_portals) and not allowed_portals.include?(ActiveSupport::Inflector::singularize(ActiveSupport::Inflector::underscore(@portal.class.name.gsub('Portal', ''))).to_sym)
       raise ActiveRecord::RecordNotFound 
     end
   end
@@ -792,7 +792,7 @@ Request information:
     @name_action_infinitive = model.id.nil? ? 'crear' : 'actualizar'
     if model.save
       flash[:notice] = "#{model.class.name} #{@name_action_participe} correctamente."
-      redirect_to (success_dst.kind_of?(String) ? success_dst.gsub("@#{Inflector::underscore(model.class.name)}.id", model.id.to_s) : success_dst)
+      redirect_to (success_dst.kind_of?(String) ? success_dst.gsub("@#{ActiveSupport::Inflector::underscore(model.class.name)}.id", model.id.to_s) : success_dst)
     else
       flash[:error] = "Error al #{@name_action_infinitive} el #{model.class.name}: #{model.errors.full_messages_html}"
       render :action => error_render_action
@@ -800,9 +800,9 @@ Request information:
   end
   
   def update_attributes_or_error(model, success_dst, error_render_action)
-    if model.update_attributes(params[Inflector::underscore(model.class.name)])
+    if model.update_attributes(params[ActiveSupport::Inflector::underscore(model.class.name)])
       flash[:notice] = "#{model.class.name} actualizado correctamente."
-      redirect_to success_dst.kind_of?(String) ? success_dst.gsub("@#{Inflector::underscore(model.class.name)}.id", model.id.to_s) : success_dst
+      redirect_to success_dst.kind_of?(String) ? success_dst.gsub("@#{ActiveSupport::Inflector::underscore(model.class.name)}.id", model.id.to_s) : success_dst
     else
       flash[:error] = "Error al actualizar el #{model.class.name}: #{model.errors.full_messages_html}"
       render :action => error_render_action

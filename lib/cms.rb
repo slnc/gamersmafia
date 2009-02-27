@@ -782,7 +782,7 @@ module Cms
     original.reload
     # original = original.class.find(original.id)
     Cms.delete_content(original)
-    User.db_query("UPDATE #{Inflector::tableize(original.class.name)} SET unique_content_id = NULL WHERE id = #{original.id}")
+    User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(original.class.name)} SET unique_content_id = NULL WHERE id = #{original.id}")
     original.destroy
     
     # si el contenido viejo estaba en estado publicado publicamos el contenido nuevo
@@ -790,7 +790,7 @@ module Cms
     if orig_state == Cms::PUBLISHED then
       newinst.change_state(Cms::PUBLISHED, User.find_by_login('mrman'))      
     end
-    User.db_query("UPDATE #{Inflector::tableize(newinst.class.name)} set updated_on = '#{original_updated_on}' WHERE id = #{newinst.id}")
+    User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(newinst.class.name)} set updated_on = '#{original_updated_on}' WHERE id = #{newinst.id}")
     newinst.updated_on = original_updated_on
     newinst.unique_content.updated_on = original_updated_on
     User.db_query("UPDATE contents set updated_on = '#{original_updated_on}' WHERE id = #{newinst.unique_content.id}")

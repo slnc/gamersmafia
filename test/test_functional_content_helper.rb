@@ -4,7 +4,7 @@ class Test::Unit::TestCase
     self.opt = {:authed_user_id => 1, :non_authed_user_id => 2}.merge(opt)
 
     self.content_name = opt[:name]
-    self.content_sym = Inflector::underscore(opt[:name]).to_sym
+    self.content_sym = ActiveSupport::Inflector::underscore(opt[:name]).to_sym
     self.content_class = Object.const_get(opt[:name])
     
     self.post_vars = {self.content_sym => opt[:form_vars]}
@@ -133,7 +133,7 @@ module TestFunctionalContentHelperMethods
   end
   
   def test_should_redirect_to_draft_if_created_as_draft
-        return unless Cms::contents_classes_publishable.include?(Object.const_get(Inflector::camelize(content_sym.to_s)))
+        return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
     num_news = content_class.count
     
     post :create, post_vars.merge({:draft => 1}), { :user => opt[:authed_user_id] }
@@ -145,7 +145,7 @@ module TestFunctionalContentHelperMethods
   end
   
   def test_should_change_from_draft_to_pending_if_unselected_draft_checkbox
-    return unless Cms::contents_classes_publishable.include?(Object.const_get(Inflector::camelize(content_sym.to_s)))
+    return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
     num_news = content_class.count
     
     post :create, post_vars.merge({:draft => 1}), { :user => opt[:authed_user_id] }
@@ -199,12 +199,12 @@ module TestFunctionalContentHelperMethods
     post_vars[content_sym] = post_vars[content_sym].merge(:approved_by_user_id => 1)
     post :update, post_vars.merge({:id => 1}), {:user => opt[:authed_user_id]}
     assert_response :redirect
-    obj = Object.const_get(Inflector::camelize(content_sym.to_s)).find(1)
+    obj = Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)).find(1)
     assert_redirected_to ApplicationController.gmurl(obj)
   end
   
   def test_should_allow_update_published_if_authed_faction_leader
-    obj = Object.const_get(Inflector::camelize(content_sym.to_s)).find(2)
+    obj = Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)).find(2)
     obj.created_on = 1.week.ago
     obj.save
     return unless obj.respond_to? :is_categorizable?
@@ -234,7 +234,7 @@ module TestFunctionalContentHelperMethods
   end
   
   def test_should_allow_update_unpublished_if_authed_superadmin
-    return unless Cms::contents_classes_publishable.include?(Object.const_get(Inflector::camelize(content_sym.to_s)))
+    return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
     post_vars[content_sym] = post_vars[content_sym].merge(:approved_by_user_id => nil)
     post :update, post_vars.merge({:id => 2}), {:user => opt[:authed_user_id]}
     assert_response :redirect

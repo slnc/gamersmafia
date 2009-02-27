@@ -1,5 +1,6 @@
 class Gm2378 < ActiveRecord::Migration
   def self.up
+     
     execute "insert into content_types(name) VALUES('RecruitmentAd');"
     
     slonik_execute "alter table recruitment_ads add column title varchar;"
@@ -15,6 +16,7 @@ class Gm2378 < ActiveRecord::Migration
     slonik_execute "alter table recruitment_ads add column state smallint not null default 0;"
     
     execute "update recruitment_ads set state = 2;"
+    
     
     slonik_execute "alter table recruitment_ads add column cache_weighted_rank numeric(10, 2);"
     slonik_execute "alter table recruitment_ads add column closed bool not null default 'f';"

@@ -1,4 +1,4 @@
-# puts ActiveSupport::Inflector.pluralize('hola')
+# puts ActiveSupport::ActiveSupport::Inflector.pluralize('hola')
 # Este módulo se encarga de añadir funcionalidad de categoría a los objetos que
 # se puedan clasificar
 module ActsAsCategorizable
@@ -26,13 +26,13 @@ module ActsAsCategorizable
       end
       
       # nota: el orden IMPORTA
-      Object.const_set("#{Inflector::pluralize(self.name)}Category", klass)
-      klass.set_table_name("#{Inflector::tableize(self.name)}_categories")
+      Object.const_set("#{ActiveSupport::Inflector::pluralize(self.name)}Category", klass)
+      klass.set_table_name("#{ActiveSupport::Inflector::tableize(self.name)}_categories")
       klass.act_as_category
-      # raise "#{Inflector::tableize(self.name)}_category"
-      belongs_to "#{Inflector::tableize(self.name)}_category".to_sym
-      observe_attr "#{Inflector::tableize(self.name)}_category_id".to_sym
-      # validates_presence_of "#{Inflector::tableize(self.name)}_category", :message => "El campo categoría no puede estar en blanco"
+      # raise "#{ActiveSupport::Inflector::tableize(self.name)}_category"
+      belongs_to "#{ActiveSupport::Inflector::tableize(self.name)}_category".to_sym
+      observe_attr "#{ActiveSupport::Inflector::tableize(self.name)}_category_id".to_sym
+      # validates_presence_of "#{ActiveSupport::Inflector::tableize(self.name)}_category", :message => "El campo categoría no puede estar en blanco"
       
       class_eval <<-END
         include ActsAsCategorizable::InstanceMethods
@@ -57,11 +57,11 @@ module ActsAsCategorizable
       end
       
       def category_class # helper class to get access to this content's category
-        Object.const_get("#{Inflector::pluralize(self.name)}Category")
+        Object.const_get("#{ActiveSupport::Inflector::pluralize(self.name)}Category")
       end
       
       def category_attrib_name
-        "#{Inflector::tableize(self.name)}_category_id".to_sym
+        "#{ActiveSupport::Inflector::tableize(self.name)}_category_id".to_sym
       end
     end
     

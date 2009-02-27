@@ -87,7 +87,7 @@ class Term < ActiveRecord::Base
     if Cms::CATEGORIES_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy.nil?
       puts "error: imposible enlazar categories_terms_content con un root_term, enlazando con un hijo"
       return false if normal_op
-      taxo = "#{Inflector::pluralize(content.content_type.name)}Category"
+      taxo = "#{ActiveSupport::Inflector::pluralize(content.content_type.name)}Category"
       t = self.children.find(:first, :conditions => "taxonomy = '#{taxo}'")
       t = self.children.create(:name => 'General', :taxonomy => taxo) if t.nil?
       t.link(content, normal_op)
@@ -268,7 +268,7 @@ class Term < ActiveRecord::Base
   end
   
   def self.taxonomy_from_class_name(cls_name)
-    "#{Inflector::pluralize(cls_name)}Category"
+    "#{ActiveSupport::Inflector::pluralize(cls_name)}Category"
   end
   
   # valid opts keys: cls_name
@@ -338,10 +338,10 @@ class Term < ActiveRecord::Base
     begin
       super
     rescue NoMethodError
-      if Cms::CONTENTS_WITH_CATEGORIES.include?(Inflector::camelize(method_id.to_s)) 
-        TermContentProxy.new(Inflector::camelize(method_id.to_s), self)
-      elsif Cms::CONTENTS_WITH_CATEGORIES.include?(Inflector::camelize(Inflector::singularize(method_id.to_s)))
-        TermContentProxy.new(Inflector::camelize(Inflector::singularize(method_id.to_s)), self)
+      if Cms::CONTENTS_WITH_CATEGORIES.include?(ActiveSupport::Inflector::camelize(method_id.to_s)) 
+        TermContentProxy.new(ActiveSupport::Inflector::camelize(method_id.to_s), self)
+      elsif Cms::CONTENTS_WITH_CATEGORIES.include?(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id.to_s)))
+        TermContentProxy.new(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id.to_s)), self)
       else
         raise "No se que hacer con metodo #{method_id}"
         #args = _add_cats_ids_cond(*args)
@@ -396,7 +396,7 @@ class Term < ActiveRecord::Base
       theid = nargs.pop
       nargs.push(:first)
       raise "find(id) a traves de term sin haber especificado content_type" unless options[:content_type]
-      new_cond << " AND #{Inflector::tableize(options[:content_type])}.id = #{theid}"
+      new_cond << " AND #{ActiveSupport::Inflector::tableize(options[:content_type])}.id = #{theid}"
       args = nargs
     end
     
@@ -410,14 +410,14 @@ class Term < ActiveRecord::Base
     
     if options[:content_type]
       new_cond << " AND contents.content_type_id = #{ContentType.find_by_name(options[:content_type]).id}"
-      options[:joins] = "JOIN #{Inflector::tableize(options[:content_type])} ON #{Inflector::tableize(options[:content_type])}.unique_content_id = contents.id"
+      options[:joins] = "JOIN #{ActiveSupport::Inflector::tableize(options[:content_type])} ON #{ActiveSupport::Inflector::tableize(options[:content_type])}.unique_content_id = contents.id"
     end
     
     
     if options[:content_type_id]
       new_cond << " AND contents.content_type_id = #{options[:content_type_id]}"
       ct = ContentType.find(options[:content_type_id])
-      options[:joins] = "JOIN #{Inflector::tableize(ct.name)} ON #{Inflector::tableize(ct.name)}.unique_content_id = contents.id"
+      options[:joins] = "JOIN #{ActiveSupport::Inflector::tableize(ct.name)} ON #{ActiveSupport::Inflector::tableize(ct.name)}.unique_content_id = contents.id"
       #options[:include] ||= []
       #options[:include] << :contents
     end
@@ -482,7 +482,7 @@ class Term < ActiveRecord::Base
   
   def random(limit=3)
     cat_ids = self.all_children_ids
-    self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'RANDOM()', :limit => limit)
+    self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{ActiveSupport::Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'RANDOM()', :limit => limit)
   end
   
   def most_popular_authors(opts)
@@ -490,8 +490,8 @@ class Term < ActiveRecord::Base
     opts[:limit] ||= 5
     dbitems = User.db_query("SELECT count(contents.id), 
                                     contents.user_id 
-                              from #{Inflector::tableize(opts[:content_type])}
-                              JOIN contents on  #{Inflector::tableize(opts[:content_type])}.unique_content_id = contents.id 
+                              from #{ActiveSupport::Inflector::tableize(opts[:content_type])}
+                              JOIN contents on  #{ActiveSupport::Inflector::tableize(opts[:content_type])}.unique_content_id = contents.id 
                              WHERE contents.state = #{Cms::PUBLISHED}#{q_add} 
                           GROUP BY contents.user_id
                           ORDER BY sum((coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0))) desc 

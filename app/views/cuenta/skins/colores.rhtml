@@ -4,7 +4,7 @@
 	<input type="hidden" name="id" value="<%=params[:id]%>" />
 <script type="text/javascript">
 function show_active_generator_attrs(val) {
-    var gens = <%=Skins::ColorGenerators.generators.collect { |cg| Inflector::demodulize(cg.name) }.to_json%>;
+    var gens = <%=Skins::ColorGenerators.generators.collect { |cg| ActiveSupport::Inflector::demodulize(cg.name) }.to_json%>;
     var el;
     for (var i = 0; i < gens.length; i ++) 
     {
@@ -18,23 +18,23 @@ function show_active_generator_attrs(val) {
 Generador de colores:
 <select name="skin[intelliskin][color_gen]" onclick="show_active_generator_attrs(this.value);">
 <%Skins::ColorGenerators.generators.each do |cg| %>
-<option value="<%=Inflector::demodulize(cg.name)%>" <%='selected="selected"' if @skin.config[:intelliskin][:color_gen] == Inflector::demodulize(cg.name)%>><%=Inflector::demodulize(cg.name)%></option>
+<option value="<%=ActiveSupport::Inflector::demodulize(cg.name)%>" <%='selected="selected"' if @skin.config[:intelliskin][:color_gen] == ActiveSupport::Inflector::demodulize(cg.name)%>><%=ActiveSupport::Inflector::demodulize(cg.name)%></option>
 <% end -%>
 </select>
 
 <p style="clear: left;"></p>
 <%Skins::ColorGenerators.generators.each do |cg| %>
-<div id="attrs-<%=Inflector::demodulize(cg.name)%>" <%='class="hidden"' unless @skin.config[:intelliskin][:color_gen] == Inflector::demodulize(cg.name)%>>
+<div id="attrs-<%=ActiveSupport::Inflector::demodulize(cg.name)%>" <%='class="hidden"' unless @skin.config[:intelliskin][:color_gen] == ActiveSupport::Inflector::demodulize(cg.name)%>>
 <table>
 <%cg.attributes.each do |attr,v|
 v_orig = v
 # aquí elegimos entre valor guardado o valor por defecto
 
-v2 = @skin.config[:intelliskin][Inflector::demodulize(cg.name)][:color_gen_params][attr] if @skin.config[:intelliskin][Inflector::demodulize(cg.name)] && @skin.config[:intelliskin][Inflector::demodulize(cg.name)][:color_gen_params] && @skin.config[:intelliskin][Inflector::demodulize(cg.name)][:color_gen_params][attr]
+v2 = @skin.config[:intelliskin][ActiveSupport::Inflector::demodulize(cg.name)][:color_gen_params][attr] if @skin.config[:intelliskin][ActiveSupport::Inflector::demodulize(cg.name)] && @skin.config[:intelliskin][ActiveSupport::Inflector::demodulize(cg.name)][:color_gen_params] && @skin.config[:intelliskin][ActiveSupport::Inflector::demodulize(cg.name)][:color_gen_params][attr]
 v = v2 ? v2 : v.to_s
 %>
 <tr class="<%=oddclass%>"><td class="w200"><%= attr%></td><td>
-<%= send("#{Inflector::demodulize(v_orig.class.name).downcase}_selector", "#{Inflector::demodulize(cg.name)}-#{attr.to_s.normalize}", "skin[intelliskin][#{Inflector::demodulize(cg.name)}][color_gen_params][#{attr}]", v)%>
+<%= send("#{ActiveSupport::Inflector::demodulize(v_orig.class.name).downcase}_selector", "#{ActiveSupport::Inflector::demodulize(cg.name)}-#{attr.to_s.normalize}", "skin[intelliskin][#{ActiveSupport::Inflector::demodulize(cg.name)}][color_gen_params][#{attr}]", v)%>
 </td>
 </tr>
 <% end -%>

@@ -58,7 +58,7 @@ end
 
 <%content_main do %>
 <% #=render :partial => 'categorias_selector' %>
-<% mftext("Subcategorías de #{@term.name} (#{Inflector::titleize(Cms::translate_content_name(params[:content_type]))})") do %>
+<% mftext("Subcategorías de #{@term.name} (#{ActiveSupport::Inflector::titleize(Cms::translate_content_name(params[:content_type]))})") do %>
 <form method="post" action="/<%=controller.cats_path%>/create?redirto=<%=controller.request.request_uri%>">
 <p><strong>Nueva categoría</strong><br/>
 <% @tterm = @term

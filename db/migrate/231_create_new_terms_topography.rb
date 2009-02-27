@@ -2,12 +2,12 @@ class CreateNewTermsTopography < ActiveRecord::Migration
   def self.up
     [Game, Platform, BazarDistrict].each do |cls|
       cls.find(:all).each do |thing|
-        Term.create(:name => thing.name, :slug => thing.code.bare, "#{Inflector::underscore(cls.name)}_id".to_sym => thing.id)
+        Term.create(:name => thing.name, :slug => thing.code.bare, "#{ActiveSupport::Inflector::underscore(cls.name)}_id".to_sym => thing.id)
       end
     end
     #[Clan].each do |cls|
     #  cls.find(:all).each do |thing|
-    #    Term.create(:name => thing.name, :slug => thing.tag.bare, "#{Inflector::underscore(cls.name)}_id".to_sym => thing.id)
+    #    Term.create(:name => thing.name, :slug => thing.tag.bare, "#{ActiveSupport::Inflector::underscore(cls.name)}_id".to_sym => thing.id)
     #  end
     #end
     Term.create(:name => 'Gamersmafia', :slug => 'gm') unless Term.single_toplevel(:slug => 'gm')
@@ -15,9 +15,9 @@ class CreateNewTermsTopography < ActiveRecord::Migration
     Term.create(:name => 'Bazar', :slug => 'bazar')  unless Term.single_toplevel(:slug => 'bazar') # TODO
     Term.create(:name => 'Partys', :slug => 'partys')  unless Term.single_toplevel(:slug => 'partys') # TODO
     Term.create(:name => 'Especiales', :slug => 'especiales')  unless Term.single_toplevel(:slug => 'especiales') # TODO
-    contentsclasses = Cms::CONTENTS_WITH_CATEGORIES
+    contentsclasses = Cms::CONTENTS_WITH_CATEGORIES - %w(RecruitmentAd)
     contentsclasses.each do |contentclsname|
-      cls = Object.const_get("#{Inflector::pluralize(contentclsname)}Category")
+      cls = Object.const_get("#{ActiveSupport::Inflector::pluralize(contentclsname)}Category")
       puts cls.name
       cls.find(:all, :order => 'id').each do |o|
         puts "(#{o.root.name}) #{o.name} #{o.code}"
@@ -42,7 +42,7 @@ class CreateNewTermsTopography < ActiveRecord::Migration
         # buscamos el ultimo content de esta categoria tagueado
         # lastct = new_term.contents.find(:first, :order => 'id DESC') ContentTerm.find(:first, )
         # guardamos asociación de todos los items de esta categoría con el term
-        o.find(:all, :conditions => "#{Inflector::underscore(o.class.name)}_id = #{o.id}", :order => 'id').each { |item| new_term.link(item.unique_content, false) }
+        o.find(:all, :conditions => "#{ActiveSupport::Inflector::underscore(o.class.name)}_id = #{o.id}", :order => 'id').each { |item| new_term.link(item.unique_content, false) }
       end
     end
     

@@ -398,7 +398,7 @@ class Cuenta::CompeticionesController < ApplicationController
     raise ActiveRecord::RecordNotFound unless (%w(Ladder Tournament League).include?(params[:competition][:type]))
     params[:competition][:competitions_types_options] = HashWithIndifferentAccess.new
     params[:competition][:timetable_options] = HashWithIndifferentAccess.new
-    cls = Inflector::constantize(params[:competition][:type])
+    cls = ActiveSupport::Inflector::constantize(params[:competition][:type])
     @competition = cls.new(params[:competition].pass_sym(:name, :pro, :game_id, :competitions_participants_type_id, :competitions_types_options, :timetable_options))
     if @competition.save
       @user.last_competition_id = @competition.id

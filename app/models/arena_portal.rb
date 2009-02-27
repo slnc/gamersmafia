@@ -56,7 +56,7 @@ class ArenaPortal
       if method_id == :poll
         ArenaPortalPollProxy
       else
-        cls_name = Inflector::camelize(Inflector::singularize(method_id))
+        cls_name = ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id))
         cls = Object.const_get(cls_name)
         if Cms::CLANS_CONTENTS.include?(cls_name)  # es una clase cuya tabla tiene clan_id, añadimos constraint
           GenericContentProxy.new(cls)

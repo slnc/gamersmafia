@@ -188,9 +188,9 @@ class Test::Unit::TestCase
   end
   
   #  def create_content(type, params)
-  #    cls = Object.const_get(Inflector::camelize(type))
+  #    cls = Object.const_get(ActiveSupport::Inflector::camelize(type))
   #    if cls.respond_to?(:is_categorizable?)
-  #      cat_attrib = "#{Inflector::tableize(type)}_category_id".to_sym
+  #      cat_attrib = "#{ActiveSupport::Inflector::tableize(type)}_category_id".to_sym
   #      params[cat_attrib] = 1 unless params.has_key?(cat_attrib)
   #    end
   #    cls_count = cls.count
@@ -272,7 +272,7 @@ class ActionController::IntegrationTest
   end
   
   def create_content(type, content_vals, other_vals={})
-    cls_name = Inflector::camelize(type.to_s)
+    cls_name = ActiveSupport::Inflector::camelize(type.to_s)
     action = (cls_name == 'Topic') ? 'create_topic' : 'create'
     ocount = Object.const_get(cls_name).count
     post "/#{Cms::CONTENTS_CONTROLLERS.fetch(cls_name)}/#{action}", other_vals.merge({ type.to_sym => content_vals })

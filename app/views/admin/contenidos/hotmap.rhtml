@@ -3,7 +3,7 @@
   <tr>
     <td style="width: 20px;"></td>
     <% Cms::CONTENTS_WITH_CATEGORIES.each do |cls_name|
-		c = "#{Inflector::pluralize(cls_name)}Category" 
+		c = "#{ActiveSupport::Inflector::pluralize(cls_name)}Category" 
         next if %w(TopicsCategory ReviewsCategory EventsCategory).include?(c)
      %>
     <td class="centered" style="width: 125px;"><%=Cms::translate_content_name(cls_name).capitalize%></td>
@@ -17,7 +17,7 @@ Faction.find(:all, :order => 'lower(name) asc').each do |f|
 <%
 
   Cms::CONTENTS_WITH_CATEGORIES.each do |cls_name|
-  c = "#{Inflector::pluralize(cls_name)}Category" 
+  c = "#{ActiveSupport::Inflector::pluralize(cls_name)}Category" 
     next if %w(TopicsCategory ReviewsCategory EventsCategory).include?(c)
     max_t = Cms::SAFE_PUBLICATION_THRESHOLDS[cls_name]
 	root_t = Term.single_toplevel(:slug => f.code)

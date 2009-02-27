@@ -40,7 +40,7 @@ class Content < ActiveRecord::Base
       t.recalculate_last_updated_item_id(self.id)
     end
     cls_name = Object.const_get(self.content_type.name)
-    User.db_query("UPDATE #{Inflector::tableize(cls_name)} SET unique_content_id = NULL WHERE id = #{self.external_id}")
+    User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(cls_name)} SET unique_content_id = NULL WHERE id = #{self.external_id}")
     true
   end
   

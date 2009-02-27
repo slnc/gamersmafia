@@ -39,7 +39,7 @@ module Gmstats
     k = 0
     root_term = Term.single_toplevel(faction.referenced_thing_field => faction.referenced_thing.id)
     Cms::CONTENTS_WITH_CATEGORIES.each do |cls_name|
-      k += root_term.contents_count(cls_name, :conditions => "state = #{Cms::PUBLISHED} AND #{Inflector.underscore(c.name)}_id in (#{cat_ids.join(',')}) AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'") * Karma::KPS_CREATE[c.items_class.name]
+      k += root_term.contents_count(cls_name, :conditions => "state = #{Cms::PUBLISHED} AND #{ActiveSupport::Inflector.underscore(c.name)}_id in (#{cat_ids.join(',')}) AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'") * Karma::KPS_CREATE[c.items_class.name]
     end
     k
   end

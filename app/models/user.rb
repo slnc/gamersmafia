@@ -647,7 +647,7 @@ class User < ActiveRecord::Base
   def contents_stats
     res = {}
      (Cms.contents_classes + [Blogentry]).each do |cls|
-      res[Cms.translate_content_name(cls.name).titleize] = self.send(Inflector::tableize(cls.name)).count(:conditions => "state = #{Cms::PUBLISHED}")
+      res[Cms.translate_content_name(cls.name).titleize] = self.send(ActiveSupport::Inflector::tableize(cls.name)).count(:conditions => "state = #{Cms::PUBLISHED}")
     end
     res['Comentarios'] = self.comments_count
     res

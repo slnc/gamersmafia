@@ -27,7 +27,7 @@ class BazarDistrictPortal < Portal
     if method_id == :poll
       BazarDistrictPortalPollProxy.new(self)
     elsif Cms::contents_classes_symbols.include?(method_id) # contents   
-      obj = Object.const_get(Inflector::camelize(Inflector::singularize(method_id)))
+      obj = Object.const_get(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id)))
       if obj.respond_to?(:is_categorizable?)
         t = Term.single_toplevel(:slug => self.code)
         t.add_content_type_mask(obj.name)

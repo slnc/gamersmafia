@@ -61,7 +61,7 @@ module ActsAsContent
       def most_popular_authors(opts={})
         q_add = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
         opts[:limit] ||= 5
-        dbitems = User.db_query("SELECT count(id), user_id from #{Inflector::tableize(self.name)} WHERE state = #{Cms::PUBLISHED}#{q_add} GROUP BY (user_id) ORDER BY sum((coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0))) desc limit #{opts[:limit]}")
+        dbitems = User.db_query("SELECT count(id), user_id from #{ActiveSupport::Inflector::tableize(self.name)} WHERE state = #{Cms::PUBLISHED}#{q_add} GROUP BY (user_id) ORDER BY sum((coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0))) desc limit #{opts[:limit]}")
         dbitems.collect { |dbitem| [User.find(dbitem['user_id']), dbitem['count'].to_i] }
       end
       
@@ -100,7 +100,7 @@ module ActsAsContent
       
       # Soporte para find(:published) find(:drafts) find(:deleted), etc
       def find(*args)
-        t_name = Inflector::tableize(table_name)
+        t_name = ActiveSupport::Inflector::tableize(table_name)
         agfirst = args.first
         if agfirst.is_a?(Symbol) && [:drafts, :published, :deleted, :pending].include?(agfirst) then
           options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
@@ -336,7 +336,7 @@ module ActsAsContent
       self.del_karma if is_public?
       
       # TODO ya no :p hacemos esto para no triggerear record_timestamps
-      # self.class.db_query("UPDATE #{Inflector::tableize(self.class.name)} SET user_id = #{new_user.id} WHERE id = #{self.id}")
+      # self.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} SET user_id = #{new_user.id} WHERE id = #{self.id}")
       # self.reload
       self.user_id = new_user.id
       self.user = new_user # necesario hacer ambos cambios por si ya se ha cargado self.user antes
@@ -376,7 +376,7 @@ module ActsAsContent
         if Cms::ROOT_TERMS_CONTENTS.include?(self.class.name)
           cats = uniq.linked_terms('NULL')
         else
-          cats = uniq.linked_terms("#{Inflector::pluralize(self.class.name)}Category")
+          cats = uniq.linked_terms("#{ActiveSupport::Inflector::pluralize(self.class.name)}Category")
         end
       end
       
@@ -461,7 +461,7 @@ module ActsAsContent
       raise "error creating content!" if c.new_record?
       
       self.unique_content_id = c.id
-      User.db_query("UPDATE #{Inflector::tableize(self.class.name)} SET unique_content_id = #{c.id} WHERE id = #{self.id}")
+      User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} SET unique_content_id = #{c.id} WHERE id = #{self.id}")
       
       # añadimos karma si es un contenido que no necesita ser moderado
       add_karma if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(self.class.name)
@@ -506,7 +506,7 @@ module ActsAsContent
         raise 'impossible' unless self.state == Cms::DRAFT
         self.log_action('enviado a cola de moderación', editor)
         when Cms::PUBLISHED:
-        raise 'impossible' unless [Cms::PENDING, Cms::DELETED, Cms::ONHOLD, Cms::DRAFT].include?(self.state)
+        raise "impossible, current_state #{self.id} = #{self.state}" unless [Cms::PENDING, Cms::DELETED, Cms::ONHOLD, Cms::DRAFT].include?(self.state)
         self.created_on = Time.now if self.state == Cms::PENDING # solo le cambiamos la hora si el estado anterior era cola de moderación
         self.log_action('publicado', editor)
         add_karma
@@ -559,14 +559,14 @@ module ActsAsContent
                                            AND term_id IN (#{self.main_category.root.all_children_ids(:content_type => self.class.name).join(',')})").collect { |dbr| dbr['content_id'] }
           q = "AND unique_content_id IN (#{contents_ids.join(',')})"
           #cat_ids = self.main_category.root.all_children_ids
-          #q = "AND #{Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})"
+          #q = "AND #{ActiveSupport::Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})"
         else
           q = ''
           total = self.class.count(:conditions => "state = #{Cms::PUBLISHED} #{q}")
         end
         
         dbm = User.db_query("SELECT cache_rated_times 
-                         FROM #{Inflector::tableize(self.class.name)}
+                         FROM #{ActiveSupport::Inflector::tableize(self.class.name)}
                         WHERE state = #{Cms::PUBLISHED} #{q}
                           AND cache_rated_times > 0
                      ORDER BY cache_rated_times LIMIT 1 OFFSET #{(total/100*25 + 0.5).to_i}")
@@ -579,7 +579,7 @@ module ActsAsContent
         c = get_mean_vote(m) 
         self.cache_weighted_rank = (v / (v+m)) * r + (m / (v+m)) * c
         
-        self.class.db_query("UPDATE #{Inflector::tableize(self.class.name)} 
+        self.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} 
                                 SET cache_rating = #{self.cache_rating}, 
                                     cache_rated_times = #{self.cache_rated_times},
                                     cache_weighted_rank = #{self.cache_weighted_rank}
@@ -608,20 +608,20 @@ module ActsAsContent
                                            AND term_id IN (#{self.main_category.root.all_children_ids(:content_type => self.class.name).join(',')})").collect { |dbr| dbr['content_id'] }
         
         mean = User.db_query("SELECT avg(cache_rating) 
-                                FROM #{Inflector::tableize(self.class.name)} 
+                                FROM #{ActiveSupport::Inflector::tableize(self.class.name)} 
                                WHERE cache_rating is not null 
                                  AND cache_rated_times >= #{m} 
                                  AND unique_content_id IN (#{contents_ids.join(',')})")[0]['avg'].to_f
       else
         mean = User.db_query("SELECT avg(cache_rating) 
-                                FROM #{Inflector::tableize(self.class.name)} 
+                                FROM #{ActiveSupport::Inflector::tableize(self.class.name)} 
                                WHERE cache_rating is not null 
                                  AND cache_rated_times >= #{m}")[0]['avg'].to_f
       end
     end
     
     def clear_rating_cache
-      self.class.db_query("UPDATE #{Inflector::tableize(self.class.name)} 
+      self.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} 
                               SET cache_rating = NULL, 
                                   cache_rated_times = NULL, 
                                   cache_weighted_rank = NULL WHERE id = #{self.id}")
