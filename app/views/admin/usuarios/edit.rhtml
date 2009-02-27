@@ -30,24 +30,24 @@
     </tr>
     <tr>
       <td class="infoinline">Karma:</td>
-      <td class="infoinline"><div id="check_karma"><%=draw_karma_bar_sm(@edituser)%><%=link_to_remote('check', :update => 'check_karma', :url => "/admin/usuarios/check_karma/#{@edituser.id}")%></div></td>
+      <td class="infoinline"><div id="check_karma"><%=draw_karma_bar_sm(@edituser)%><% if @user.is_superadmin? then %><%=link_to_remote('check', :update => 'check_karma', :url => "/admin/usuarios/check_karma/#{@edituser.id}")%><% end -%></div></td>
     </tr>
     <tr>
       <td class="infoinline">Fe:</td>
-      <td class="infoinline"><div id="check_faith"><%=draw_faith_bar_sm(@edituser)%><%=link_to_remote('check', :update => 'check_faith', :url => "/admin/usuarios/check_faith/#{@edituser.id}")%></div></td>
+      <td class="infoinline"><div id="check_faith"><%=draw_faith_bar_sm(@edituser)%><% if @user.is_superadmin? then %><%=link_to_remote('check', :update => 'check_faith', :url => "/admin/usuarios/check_faith/#{@edituser.id}")%><% end -%></div></td>
     </tr>
     <tr>
       <td class="infoinline"><%=gmd12%></td>
-      <td class="infoinline"><div id="check_gmf"><%=@edituser.cash%> <%=gmd10%> <%=link_to_remote('check', :update => 'check_gmf', :url => "/admin/usuarios/check_gmf/#{@edituser.id}")%></div></td>
+      <td class="infoinline"><div id="check_gmf"><%=@edituser.cash%> <%=gmd10%> <% if @user.is_superadmin? then %><%=link_to_remote('check', :update => 'check_gmf', :url => "/admin/usuarios/check_gmf/#{@edituser.id}")%><% end -%></div></td>
     </tr>
   </table>
-
+<% if @user.is_superadmin? then %>
   Avatar: <img class="avatar" src="<%=ASSET_URL%><%=@edituser.show_avatar%>" /><br />
 
   <div class="centered-link"><form method="post" action="/admin/usuarios/reset_avatar"><input type="hidden" name="id" value="<%=@edituser.id%>" /><input type="submit" class="button" value="Resetear" onclick="return confirm('¿Estás seguro?');" /></form></div>
     <br />
   <br />
-
+<% end -%>
   <div class="subheader"><div>Comentarios al día</div></div>
   <table>
     <% for dbc in User.db_query("select count(id), date_trunc('day', created_on) from comments where deleted = \'f\' AND user_id = #{@edituser.id} group by  date_trunc('day', created_on) order by date_trunc('day', created_on) desc LIMIT 14") 
