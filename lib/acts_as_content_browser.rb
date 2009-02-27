@@ -81,9 +81,9 @@ module ActsAsContentBrowser
           obj.process_wysiwyg_fields # TODO lo estamos haciendo en _dos sitios_ ???
           flash[:notice] = "Contenido de tipo <strong>#{Cms::CLASS_NAMES[cls.name]}</strong> creado correctamente."
           if obj.state == Cms::DRAFT
-            redirect_to :action => 'edit', :id => obj.id
+            rediring = Proc.new { redirect_to :action => 'edit', :id => obj.id }
           else
-            redirect_to :action => 'index'
+            rediring = Proc.new { redirect_to :action => 'index' }
           end
         else
           flash[:error] = "Error al crear #{Cms::CLASS_NAMES[cls.name]}: #{obj.errors.full_messages_html}"
@@ -94,6 +94,11 @@ module ActsAsContentBrowser
         render :action => 'new'
       end
       _after_create if respond_to?(:_after_create)
+      if flash[:error] 
+        render :action => 'new' unless performed?
+      else
+        rediring.call
+      end
     end
     
     define_method 'edit' do
@@ -150,10 +155,12 @@ module ActsAsContentBrowser
       require_user_can_edit(obj)
       raise ContentLocked if obj.is_locked_for_user?(@user)
       
-      obj.state = Cms::PENDING if obj.state == Cms::DRAFT and not params[:draft].to_s == '1'
+      obj.state = Cms::PENDING if obj.state == Cms::DRAFT and params[:draft].to_s != '1'
+      params[Inflector::underscore(content_name)][:state] = obj.state
       params[Inflector::underscore(content_name)].delete(:approved_by_user_id) unless obj.respond_to? :approved_by_user_id
       instance_variable_set('@' << Inflector::underscore(content_name), obj)
       if obj.update_attributes(params[Inflector::underscore(content_name)])
+        puts "q"
         # obj.process_wysiwyg_fields
         flash[:notice] = "#{Cms::CLASS_NAMES[cls.name]} actualizado correctamente." unless flash[:error]
         
@@ -168,8 +175,9 @@ module ActsAsContentBrowser
           redirect_to :action => 'edit', :id => obj.id
         end
       else
+        puts obj.errors.full_messages_html
         flash.now[:error] = "Error al actualizar #{Cms::CLASS_NAMES[cls.name]}: #{obj.errors.full_messages_html}"
-        render :action => 'edit'
+        redirect_to :action => 'edit', :id => obj.id
       end
       _after_update if respond_to?(:_after_update)
     end

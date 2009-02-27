@@ -14,6 +14,13 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect 'admin/categorias/', :controller => 'admin/categorias', :action => 'index'
   map.connect 'admin/categorias/categorias_create', :controller => 'admin/categorias', :action => 'categorias_create'
+  map.connect 'admin/categorias/create', :controller => 'admin/categorias', :action => 'create'
+  map.connect 'admin/categorias/term/:id', :controller => 'admin/categorias', :action => 'root'
+  map.connect 'admin/categorias/term/:id/update', :controller => 'admin/categorias', :action => 'update'
+  map.connect 'admin/categorias/term/:id/destroy', :controller => 'admin/categorias', :action => 'destroy'
+  map.connect 'admin/categorias/term/:id/hijos/:content_type', :controller => 'admin/categorias', :action => 'hijos'
+  map.connect 'admin/categorias/term/:id/contenidos/:content_type', :controller => 'admin/categorias', :action => 'contenidos'
+  map.connect 'admin/categorias/term/:id/contenidos/:content_type/mass_move', :controller => 'admin/categorias', :action => 'mass_move'
   map.connect 'admin/categorias/:type_name', :controller => 'admin/categorias', :action => 'index'
   map.connect 'admin/categorias/:type_name/new', :controller => 'admin/categorias', :action => 'categorias_new'
   map.connect 'admin/categorias/:type_name/edit/:id', :controller => 'admin/categorias', :action => 'categorias_edit', :requirements => { :id => /\d+/ }

@@ -91,10 +91,10 @@ class TermTest < ActiveSupport::TestCase
     @lasttc = Term.find(:first, :order => 'id DESC')
     @content = Content.find(:first, :conditions => "state = #{Cms::PUBLISHED}", :order => 'id DESC')
     @lasttc.link(@content)
-    assert_equal 1, @lasttc.count
+    assert_equal 1, @lasttc.contents_count
     @lasttc.update_attributes(:contents_count => 0)
     @lasttc.recalculate_contents_count
-    assert_equal 1, @lasttc.count
+    assert_equal 1, @lasttc.contents_count
   end
   
   def test_should_automatically_create_slug
@@ -213,7 +213,19 @@ class TermTest < ActiveSupport::TestCase
   end
   
   def test_get_last_updated_item_id
-    flunk
+    t = Term.single_toplevel(:slug => 'ut')
+    it = t.get_last_updated_item
+    
+    assert_equal 1, it.id
+    Cms::modify_content_state(it, User.find(1), Cms::DELETED)
+    t.reload
+    it.reload
+    assert_equal Cms::DELETED, it.state
+    assert_equal Cms::DELETED, it.unique_content.state
+    
+    newit = t.get_last_updated_item
+    
+    assert it != newit
   end
   
   def test_get_ancestors
@@ -227,6 +239,8 @@ class TermTest < ActiveSupport::TestCase
     assert @subcat1.save
     @topic = Topic.new(:user_id => 1, :title => 'topic 1', :main => 'topic1')
     assert @topic.save, @topic.errors
+    assert_equal Cms::PUBLISHED, @topic.state
+    assert_equal Cms::PUBLISHED, @topic.unique_content.state
     @subcat1.link(@topic.unique_content)
     rtoutside = Term.find(17)
     rtoutside.link(@topic.unique_content)
@@ -278,10 +292,11 @@ class TermTest < ActiveSupport::TestCase
     assert @comment.save
     @topic.reload
     assert_equal 1, @topic.cache_comments_count
+    assert_equal 1, @topic.unique_content.comments_count
     @cat1.reload
     @subcat1.reload
-    assert_equal 1, @cat1.comments_count
     assert_equal 1, @subcat1.comments_count
+    assert_equal 1, @cat1.comments_count
   end
   
   def test_should_update_categories_comments_count_after_deleting_commenting
@@ -295,6 +310,6 @@ class TermTest < ActiveSupport::TestCase
     @subcat1.reload
     
     assert_equal 0, @cat1.comments_count
-    assert_equal 1, @subcat1.comments_count, @subcat1.comments_count
+    assert_equal 0, @subcat1.comments_count, @subcat1.comments_count
   end
 end

@@ -59,7 +59,6 @@ class ClanTest < Test::Unit::TestCase
   
   def test_activate_website_should_create_contents_categories
     @c = Clan.find(1)
-    assert Term.single_toplevel(:clan_id => @c.id).nil?
     test_activate_website_should_create_clans_portal
     root_term = Term.single_toplevel(:clan_id => @c.id)
     assert root_term

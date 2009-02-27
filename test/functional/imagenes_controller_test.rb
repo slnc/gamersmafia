@@ -62,7 +62,7 @@ class ImagenesControllerTest < Test::Unit::TestCase
     assert_redirected_to '/imagenes'
     assert_equal images_count_before + 2, Image.count # el zip tiene 2 archivos
     im = Image.find(:first, :order => 'id DESC')
-    assert_equal sld.id, im.images_category_id
+    assert_equal sld.id, im.terms[0].id
   end
   
   def test_babes_gallery_visible_from_factions_portal

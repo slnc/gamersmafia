@@ -1,6 +1,10 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
 class Admin::CategoriasControllerTest < ActionController::TestCase
+  def test_overview
+    
+  end
+  
   
   def atest_index_in_gm
     get :index, {}, {:user => 1}

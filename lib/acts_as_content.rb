@@ -447,10 +447,9 @@ module ActsAsContent
       base_opts = {:content_type_id => myctype.id, :external_id => self.id, :name => self.resolve_hid, :updated_on => self.created_on, :state => self.state}
       base_opts.merge!({:clan_id => clan_id}) if self.respond_to? :clan_id
       c = Content.create(base_opts)
-      if c.new_record?
-      raise "error creating content!"
-      puts c.errors.full_messages_html
-      end
+     
+      raise "error creating content!" if c.new_record?
+      
       self.unique_content_id = c.id
       User.db_query("UPDATE #{Inflector::tableize(self.class.name)} SET unique_content_id = #{c.id} WHERE id = #{self.id}")
       

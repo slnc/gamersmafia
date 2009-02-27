@@ -81,6 +81,9 @@ class Comment < ActiveRecord::Base
     
     User.decrement_counter('comments_count', self.user_id)
     Content.decrement_counter('comments_count', self.content_id)
+    self.content.terms.each do |t| 
+      t.recalculate_counters
+      end
     self.content.real_content.class.decrement_counter('cache_comments_count', self.content.real_content.id)
     
     ctype = Object.const_get(content.content_type.name)

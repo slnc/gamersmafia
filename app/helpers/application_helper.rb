@@ -227,11 +227,13 @@ google_color_text = "' + options[:colors][:google_color_text]+'";
   # TODO cachear
   def render_tree_select(pages, name, select_name, value = nil, noparent_id=false)
     ret = ''
-    ret += "<select id=\"#{select_name}\" name=\"#{select_name}\"><option value=\"\"></option>"
+    
+    found = false
     for page in pages 
       if page.parent_id == nil || noparent_id
         if page.id == value then
-          ret += "<option selected=\"selected\" value=\"#{page.id}\">" 
+          ret += "<option selected=\"selected\" value=\"#{page.id}\">"
+          found = true
         else
           ret += "<option value=\"#{page.id}\">" 
         end
@@ -239,7 +241,15 @@ google_color_text = "' + options[:colors][:google_color_text]+'";
         ret += recurse_tree(page, 0, name, value) if page.children and page.children.size>0 
       end
     end 
-    ret += "</select>" 
+    ret += "</select>"
+    
+    if (!found) && noparent_id
+      ret = "<select id=\"#{select_name}\" name=\"#{select_name}\"><option value=\"#{value unless value.nil?}\"></option>#{ret}"
+    else
+      ret = "<select id=\"#{select_name}\" name=\"#{select_name}\"><option value=\"\"></option>#{ret}"
+    end
+    
+    ret
   end
   
   def recurse_tree(page, depth, name, value)
@@ -477,8 +487,8 @@ google_color_text = "' + options[:colors][:google_color_text]+'";
         oFCKeditor.Create();
       </script>
 END
-      else
-       load_javascript_lib('wseditor')
+    else
+      load_javascript_lib('wseditor')
       <<-END
         #{switch1}
         <textarea name="#{field_name}">#{opts[:value]}</textarea><br />
@@ -691,12 +701,12 @@ END
     
     if @_additional_js_libs
       @_additional_js_libs.uniq.each do |lib|
-      if lib == 'fckeditor'
-        out << "<script src=\"#{ASSET_URL}/fckeditor/fckeditor.js\" type=\"text/javascript\"></script>"
-      elsif lib.include?('http://')
-        out << "<script src=\"#{lib}\" type=\"text/javascript\"></script>"
-      else      
-        out << <<-END
+        if lib == 'fckeditor'
+          out << "<script src=\"#{ASSET_URL}/fckeditor/fckeditor.js\" type=\"text/javascript\"></script>"
+        elsif lib.include?('http://')
+          out << "<script src=\"#{lib}\" type=\"text/javascript\"></script>"
+        else      
+          out << <<-END
 <script src="#{ASSET_URL}/javascripts/#{lib}.#{'pack.' if App.compress_js?}#{SVNVERSION}.js" type="text/javascript"></script>
         END
         end
@@ -916,7 +926,7 @@ END
             previous_day = Date.new(item.created_on.year, item.created_on.month, item.created_on.day)
             out2 << "<div class=\"day-separator\">#{print_tstamp(cur_day, 'date')}</div>"
           end
-         
+          
           out2<< <<-END
         <div class=\"mfcontents-summaries-item #{oddclass}\">
         <h2><a class=\"content\" href=\"#{get_url(item)}\">#{item.title}</a></h2>

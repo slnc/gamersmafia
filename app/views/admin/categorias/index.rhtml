@@ -3,11 +3,48 @@
 
 <% content_main do %>
   <%mftext('Categorías') do %>
+  <script type="text/javascript">
+  	function change_root(v) {
+		$j.get('/admin/categorias/term/' + v, function(data) {
+			$j('#categorias_content').html(data);
+	})
+	}
+  </script>
+  <select onchange="change_root(this.value);">
+  	<optgroup label="Distritos"></optgroup>
+	<%Term.find(:all, :conditions => 'id = root_id AND bazar_district_id IS NOT NULL', :order => 'lower(name)').each do |t|%>
+	<option value="<%=t.id%>"><%=t.name%></option>
+	<% end -%>
+	<optgroup label="Especiales"></optgroup>
+	<%Term.find(:all, :conditions => 'id = root_id AND bazar_district_id IS NULL AND clan_id IS NULL and platform_id IS NULL and game_id IS NULL', :order => 'lower(name)').each do |t|%>
+	<option value="<%=t.id%>"><%=t.name%></option>
+	<% end -%>
+	<optgroup label="Juegos"></optgroup>
+		<%Term.find(:all, :conditions => 'id = root_id AND game_id IS NOT NULL', :order => 'lower(name)').each do |t|%>
+	<option value="<%=t.id%>"><%=t.name%></option>
+	<% end -%>
+	<optgroup label="Plataformas"></optgroup>
+		<%Term.find(:all, :conditions => 'id = root_id AND platform_id IS NOT NULL', :order => 'lower(name)').each do |t|%>
+	<option value="<%=t.id%>"><%=t.name%></option>
+	<% end -%>
+  </select>
+  
+  
+  <% if nil then %>
+<%=collection_select(:content_type, :name, Term.toplevel(:clan_id => nil), :name, :name, :include_blank => true)%>
+
+
+
 <%=collection_select(:content_type, :name, @editable_content_types, :name, :name, :include_blank => true)%>
+<% end -%>
 <script type="text/javascript">
 	$j('#content_type_name').val('<%=params[:type_name]%>').change(function() { document.location = '/admin/categorias/' + this.value });
 </script>
 
+
+<div id="categorias_content">
+</div>
+<% if nil then %>
 <% if @categories then %>
 <br />
 <br />
@@ -42,6 +79,7 @@
   </table>
 
   <%= render :partial => 'shared/pager', :object => @category_pages, :locals => {:pos => 'bottom', :options => { :preserve_keys => [:type_name], :params => {:type_name => params[:type_name]} }} %>
+<% end -%>
 <% end -%>
 <% end -%>
 <% end -%>

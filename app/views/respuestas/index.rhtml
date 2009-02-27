@@ -63,7 +63,7 @@ else
 end %>
 <ul class="skeletal">
 <% for category in @categories %>
-<li class="<%=oddclass%>"><div style="float: left; margin-right: 5px;"><%=faction_favicon(category)%></div> <strong><%=link_to category.name, gmurl(category, 'QuestionsCategory')%></strong> (<%=category.contents_count(:cls_name => 'Question')%>)</li>
+<li class="<%=oddclass%>"><div style="float: left; margin-right: 5px;"><%=faction_favicon(category)%></div> <strong><%=link_to category.name, gmurl(category, :taxonomy => 'QuestionsCategory')%></strong> (<%=category.contents_count(:cls_name => 'Question')%>)</li>
 <% end -%>
 </ul>
 <% # end -%>

@@ -21,24 +21,90 @@ class Admin::CategoriasController < ApplicationController
   end
   
   def index
-    if params[:type_name] then
-      @title = "Categorías de #{params[:type_name]}"
-      @navpath = [['Admin', '/admin'], ['Categorías de Contenidos', '/admin/categorias'], [params[:type_name], "/admin/categorias/#{params[:type_name]}"]]
-    else
+    #if params[:type_name] then
+    #  @title = "Categorías de #{params[:type_name]}"
+    #  @navpath = [['Admin', '/admin'], ['Categorías de Contenidos', '/admin/categorias'], [params[:type_name], "/admin/categorias/#{params[:type_name]}"]]
+    #else
       @title = "Categorías"
       @navpath = [['Admin', '/admin'], ['Categorías de Contenidos', '/admin/categorias']]
-    end
-    @editable_content_types = []
-    if params[:type_name] then
-      @category_pages, @categories = paginate self.get_cls(params[:type_name]), { :conditions => @cond, :order => 'root_id asc, parent_id desc, lower(name) asc', :per_page => 50}
-    else
+    #end
+    #@editable_content_types = []
+    #if params[:type_name] then
+    #  @category_pages, @categories = paginate self.get_cls(params[:type_name]), { :conditions => @cond, :order => 'root_id asc, parent_id desc, lower(name) asc', :per_page => 50}
+    #else
       @categories = nil
-    end
+    #end
     
-    names = (@portal.respond_to?(:clan_id) && @portal.clan_id) ? Cms::CLANS_CONTENTS : Cms::CONTENTS_WITH_CATEGORIES
-    names = names.collect { |name| "'#{name}'" }
-    @editable_content_types = ContentType.find(:all, :conditions => "name in (#{names.join(',')})", :order => 'lower(name) ASC')
+    #names = (@portal.respond_to?(:clan_id) && @portal.clan_id) ? Cms::CLANS_CONTENTS : Cms::CONTENTS_WITH_CATEGORIES
+    #names = names.collect { |name| "'#{name}'" }
+    #@editable_content_types = ContentType.find(:all, :conditions => "name in (#{names.join(',')})", :order => 'lower(name) ASC')
   end
+  
+  def root
+    @root_term = Term.single_toplevel(:id => params[:id])
+    raise ActiveRecord::RecordNotFound unless @root_term
+    @content_types = Term.content_types_from_root(@root_term)
+    render :layout => false
+  end
+  
+  
+  def hijos
+    # TODO permisos
+    @term = Term.find(params[:id])
+    raise ActiveRecord::RecordNotFound unless @term
+  end
+  
+  def contenidos
+    # TODO permisos
+    @term = Term.find(params[:id])
+    raise ActiveRecord::RecordNotFound unless @term
+  end
+  
+    def update
+    # TODO permisos
+    @term = Term.find(params[:id])
+    raise ActiveRecord::RecordNotFound unless @term
+    @term.update_attributes(params[:term])
+    redirect_to params[:redirto] ? params[:redirto] : '/admin/categorias' 
+  end
+  
+  def mass_move
+    # TODO permisos
+    @term = Term.find(params[:id])
+    raise ActiveRecord::RecordNotFound unless @term
+    dst = Term.find(params[:destination_term_id])
+    raise ActiveRecord::RecordNotFound unless dst
+    @term.find(:all, :content_type => params[:content_type], :conditions => "contents.id in (#{params[:contents].join(', ')})").each do |c|
+      @term.unlink(c.unique_content)
+      dst.link(c.unique_content)
+    end
+    @term.update_attributes(params[:term])
+    redirect_to params[:redirto] ? params[:redirto] : '/admin/categorias' 
+  end
+  
+  def destroy
+    # TODO permisos
+    @term = Term.find(params[:id])
+    raise ActiveRecord::RecordNotFound unless @term
+    if @term.can_be_destroyed?
+    @term.destroy
+    flash[:notice] = "Categoría <strong>#{@term.name}(#{@term.taxonomy})</strong> destruída correctamente. Khali se complace."
+  else
+    flash[:error] = "No se puede eliminar la categoría. Asegúrate de que no tiene subcategorías ni contenidos."
+    end
+    redirect_to params[:redirto] ? params[:redirto] : '/admin/categorias' 
+  end
+  
+  def create
+    @term = Term.new(params[:term])
+    if @term.save
+      flash[:notice] = 'Categoría creada correctamente.'
+    else
+      flash[:error] = "Error al crear la categoría: #{@term.errors.full_messages_html}"
+    end
+    redirect_to params[:redirto] ? params[:redirto] : '/admin/categorias'
+  end
+  
   
   def categorias_edit
     @category = self.get_cls(params[:type_name]).find(params[:id])

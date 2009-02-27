@@ -11,7 +11,7 @@
 @question_pages.current_page = @question_pages.last if params['page'].nil?
 %>
 <% # cache("/#{controller.portal.code}/respuestas/index/page_#{params[:page]}") do
-@questions = obj.find(:published, :conditions => 'answered_on is null', :order => 'COALESCE(ammount, 0) desc, created_on', :limit => @question_pages.current.to_sql[0], :offset => @question_pages.current.to_sql[1])
+@questions = obj.find(:published, :content_type => 'Question', :conditions => 'answered_on is null', :order => 'COALESCE(ammount, 0) desc, created_on', :limit => @question_pages.current.to_sql[0], :offset => @question_pages.current.to_sql[1])
 @questions.each do |question| %>
     <div class="<%=oddclass%>">
 			<div><img class="avatar" style="float: left; margin-right: 10px;" src="/cache/thumbnails/f/38x38<%=question.user.show_avatar%>" /> <%=faction_favicon(question)%> <strong><%= link_to question.title, gmurl(question) %></strong></div>

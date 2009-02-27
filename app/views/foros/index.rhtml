@@ -21,7 +21,7 @@ controller.portal.topics_categories.each do |category|
     <td style="" class="infoinline timestamp"><%=category.contents_count(:cls_name => 'Topic')%></td>
     <td style="" class="infoinline timestamp"><%=category.comments_count%></td>
     <td class="timestamp infoinline" style="font-weight: normal;"><%last = category.get_last_updated_item
-    if last then %><%=print_tstamp(last.updated_on)%> <a class="nav" href="<%=gmurl(last.real_content)%>"><img class="go-to-topic" src="/images/blank.gif" /></a><% end -%></td>
+    if last then %><%=print_tstamp(last.updated_on)%> <a class="nav" href="<%=gmurl(last)%>"><img class="go-to-topic" src="/images/blank.gif" /></a><% end -%></td>
   </tr>
   <% if controller.portal_code and controller.portal.id > -1 then %>
   <%= render(:partial => 'forums_list', :locals => {:parent => category}) %>

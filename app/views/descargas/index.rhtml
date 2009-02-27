@@ -39,7 +39,7 @@ end
 cache(cache_path) do
 
 if params[:category] then
-  @categories = controller.portal.download.category_class.find(:all, :conditions => ['parent_id = ?', params[:category]], :order => 'lower(name) ASC')
+  @categories = @category.children.find(:all, :conditions => ['parent_id = ?', params[:category]], :order => 'lower(name) ASC')
 else
   @categories = controller.portal.downloads_categories
 end %>

@@ -1,7 +1,8 @@
 module Organizations
   # Organizaciones son facciones y distritos
   # organizaciones tienen que responder a user_is_editor_of_content_type?
-  DEFAULT_CONTENTS_CATEGORIES = [['DownloadsCategory', 'General'],
+  DEFAULT_CONTENTS_CATEGORIES = [
+     ['DownloadsCategory', 'General'],
      ['TopicsCategory', 'General'],
      ['TopicsCategory', 'Ayuda'],
      ['ImagesCategory', 'General'],

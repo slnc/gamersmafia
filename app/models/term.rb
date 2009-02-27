@@ -89,7 +89,6 @@ class Term < ActiveRecord::Base
         o = o.parent
       end
       
-      
       if self.id == self.root_id || self.taxonomy.include?('Category')
         content.url = nil
         ApplicationController.gmurl(content)
@@ -189,7 +188,13 @@ class Term < ActiveRecord::Base
   end
   
   def recalculate_counters
-    # TODO 
+    recalculate_contents_count
+    last = self.get_last_updated_item
+    if last && last.state == Cms::DELETED
+      self.last_updated_item_id = nil
+      # self.save
+      self.get_last_updated_item
+    end
   end
   
   def recalculate_contents_count
@@ -206,8 +211,12 @@ class Term < ActiveRecord::Base
   def recalculate_last_updated_item_id(excluding_id=nil)
     opts = {}
     opts[:conditions] = "id <> #{excluding_id}" if excluding_id
-    self.last_updated_item_id = self.last_published_content(opts)
-    self.save
+    last = self.last_published_content(opts)
+    if last
+      self.last_updated_item_id = last.id
+      self.save
+    end
+    true
   end
   
   def last_published_content(cls_name, opts={})
@@ -218,9 +227,17 @@ class Term < ActiveRecord::Base
     cond = ''
     cond = " AND #{conds.join(' AND ')}" if conds.size > 0
     
-    cat_ids = self.all_children_ids(:taxonomy => "#{Inflector::pluralize(cls_name)}Category")
+    cat_ids = self.all_children_ids(:taxonomy => taxonomy_from_class_name(cls_name))
     contents = Content.find_by_sql("SELECT a.* FROM contents a JOIN contents_terms b ON a.id = b.content_id WHERE b.term_id IN (#{cat_ids.join(',')}) AND a.state = #{Cms::PUBLISHED} #{cond} ORDER BY a.created_on DESC LIMIT 1")
     contents.size > 0 ? contents[0] : nil 
+  end
+  
+  def can_be_destroyed?
+    self.children.count == 0 && self.contents_count == 0
+  end
+  
+  def self.taxonomy_from_class_name(cls_name)
+    "#{Inflector::pluralize(cls_name)}Category"
   end
   
   # valid opts keys: cls_name
@@ -228,19 +245,25 @@ class Term < ActiveRecord::Base
     # TODO perf optimizar mas, si el tag tiene el mismo taxonomy que el solicitado
     raise "cls_name not specified" if self.taxonomy.nil? && opts[:cls_name].nil?
     if opts[:cls_name] != nil
-      taxonomy = "#{Inflector::pluralize(opts[:cls_name])}Category"
-      
-      User.db_query("SELECT count(*) FROM contents WHERE id IN (SELECT content_id 
+      taxo = self.class.taxonomy_from_class_name(opts[:cls_name])
+      User.db_query("SELECT count(*) FROM (SELECT content_id 
                                                               FROM contents_terms a 
                                                               JOIN terms b on a.term_id = b.id 
-                                                             WHERE (a.term_id IN (#{all_children_ids(:taxonomy => taxonomy).join(',')}) 
-                                                               AND b.taxonomy = #{User.connection.quote(taxonomy)})
-                                                                OR a.term_id = #{self.id}
-                                                            )")[0]['count'].to_i
+                                                             WHERE ((a.term_id IN (#{all_children_ids(:taxonomy => taxo).join(',')}) 
+                                                               AND b.taxonomy = #{User.connection.quote(taxo)})
+                                                                OR a.term_id = #{self.id})
+                                                           GROUP BY content_id
+                                                            ) as foo")[0]['count'].to_i
       
     elsif self.taxonomy
-      taxonomy = "#{Inflector::pluralize(self.taxonomy)}Category"
-      self.count(:conditions => "contents_terms.term_id IN (SELECT term_id FROM contents_terms a JOIN terms b on a.term_id = b.id WHERE a.term_id IN (#{all_children_ids(:taxonomy => taxonomy)}) AND b.taxonomy = #{User.connection.quote(taxonomy)})")
+      User.db_query("SELECT count(*) FROM (SELECT content_id 
+                                                              FROM contents_terms a 
+                                                              JOIN terms b on a.term_id = b.id 
+                                                             WHERE ((a.term_id IN (#{all_children_ids(:taxonomy => self.taxonomy).join(',')}) 
+                                                               AND b.taxonomy = #{User.connection.quote(self.taxonomy)})
+                                                                OR a.term_id = #{self.id})
+                                                           GROUP BY content_id
+                                                            ) as foo")[0]['count'].to_i
     else # shortcut, show everything
       if self.attributes['contents_count'].nil?
         self.recalculate_counters
@@ -299,12 +322,13 @@ class Term < ActiveRecord::Base
   def count(*args)
     args = _add_cats_ids_cond(*args)
     opts = args.pop
-    if opts.kind_of?(Hash)
-      opts.delete(:joins)
-      opts.delete(:order)
-    end
+    opts.delete(:order) if opts[:order]
     args.push(opts)
-    self.contents.count(*args)
+    if opts[:joins]
+      Content.count_by_sql("SELECT count(contents.id) FROM contents join contents_terms on contents.id = contents_terms.content_id #{opts[:joins]} WHERE #{opts[:conditions]} GROUP BY contents.id")
+    else
+      self.contents.count(*args)
+    end
   end
   
   
@@ -379,17 +403,21 @@ class Term < ActiveRecord::Base
   # devuelve el ultimo Content actualizado
   def get_last_updated_item
     if self.last_updated_item_id.nil? then
-      cat_ids = self.all_children_ids
-      obj = self.contents.find(:first, :order => 'updated_on DESC')
+      obj = self.find(:published, :order => 'updated_on DESC', :limit => 1)
       
-      if obj then
+      if obj.size > 0 then
+        obj = obj[0]
         # no usamos save para no tocar updated_on, created_on porque record_timestamps falla
-        self.class.db_query("UPDATE terms SET last_updated_item_id = #{obj.id} WHERE id = #{self.id}")
+        self.class.db_query("UPDATE terms SET last_updated_item_id = #{obj.unique_content_id} WHERE id = #{self.id}")
         self.reload
         obj
+      else
+        self.class.db_query("UPDATE terms SET last_updated_item_id = NULL WHERE id = #{self.id}")
+        self.reload
+        nil
       end
     else
-      self.last_updated_item
+      self.last_updated_item.real_content
     end
   end
   
@@ -423,7 +451,7 @@ class Term < ActiveRecord::Base
     User.db_query("SELECT SUM(A.comments_count) 
                      FROM contents A
                      JOIN contents_terms B ON A.id = B.content_id
-                    WHERE B.term_id IN (#{all_children_ids})
+                    WHERE B.term_id IN (#{all_children_ids.join(',')})
                       AND A.state = #{Cms::PUBLISHED}")[0]['sum'].to_i
   end
   
@@ -641,6 +669,23 @@ class Term < ActiveRecord::Base
       end
     end
     true
+  end
+  
+  def self.content_types_from_root(root_term)
+    raise "Root term isn't really root, bastard!" unless root_term.id == root_term.root_id
+    sql_conds = Cms::CATEGORIES_TERMS_CONTENTS.collect { |s| "'#{s}'"}
+    if root_term.game_id
+      ContentType.find(:all, :conditions => "name in (#{sql_conds.join(',')})", :order => 'lower(name)')
+    elsif root_term.platform_id
+      ContentType.find(:all, :conditions => "name in (#{sql_conds.join(',')})", :order => 'lower(name)')
+    elsif root_term.clan_id
+      ContentType.find(:all, :conditions => "name in (#{sql_conds.join(',')})", :order => 'lower(name)')
+    elsif root_term.bazar_district_id
+      ContentType.find(:all, :conditions => "name in (#{sql_conds.join(',')})", :order => 'lower(name)')
+    elsif root_term.clan_id
+    else # especial
+      ContentType.find(:all, :conditions => "name in (#{sql_conds.join(',')})", :order => 'lower(name)')
+    end
   end
 end
 
