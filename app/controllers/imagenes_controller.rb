@@ -39,12 +39,12 @@ class ImagenesController < BazarController
   
   def _after_show
     if @image # podemos estar haciendo 301
-      if @image.images_category.parent then
-        @title = "#{@image.images_category.parent.name} &raquo; #{@image.images_category.name} &raquo; Imagen #{File.basename(@image.file) if @image.file}"
-        @navpath = [['Imágenes', '/imagenes'], [@image.images_category.parent.name, "/imagenes/#{@image.images_category.parent.id}"], [@image.images_category.name, "/imagenes/#{@image.images_category.id}"], [File.basename(@image.file), gmurl(@image)]]
+      if @image.main_category.parent then
+        @title = "#{@image.main_category.parent.name} &raquo; #{@image.main_category.name} &raquo; Imagen #{File.basename(@image.file) if @image.file}"
+        @navpath = [['Imágenes', '/imagenes'], [@image.main_category.parent.name, "/imagenes/#{@image.main_category.parent.id}"], [@image.main_category.name, "/imagenes/#{@image.main_category.id}"], [File.basename(@image.file), gmurl(@image)]]
       else
-        @title = "#{@image.images_category.name} &raquo; Imagen #{@image.file ? File.basename(@image.file) : ''}"
-        @navpath = [['Imágenes', '/imagenes'], [@image.images_category.name, "/imagenes/#{@image.images_category.id}"], [@image.file ? File.basename(@image.file) : 'Imagen', gmurl(@image)]]
+        @title = "#{@image.main_category.name} &raquo; Imagen #{@image.file ? File.basename(@image.file) : ''}"
+        @navpath = [['Imágenes', '/imagenes'], [@image.main_category.name, "/imagenes/#{@image.main_category.id}"], [@image.file ? File.basename(@image.file) : 'Imagen', gmurl(@image)]]
       end
     end
   end
@@ -114,7 +114,7 @@ class ImagenesController < BazarController
     if !Cms.user_can_create_content(@user)
       flash[:error] = "Error al crear imagen: No puedes crear contenidos."
       render :action => 'new'
-    elsif @image.images_category.nil? or @image.images_category.parent_id.nil? then
+    elsif @image.main_category.nil? or @image.main_category.parent_id.nil? then
       flash[:error] = 'Debes elegir una subcategoría, no una categoría'
       render :action => 'new'
     else

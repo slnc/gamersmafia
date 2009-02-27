@@ -430,17 +430,16 @@ class Faction < ActiveRecord::Base
   
   def golpe_de_estado
     mrcheater = User.find_by_login('mrcheater')
-    
-    cat = TopicsCategory.find(:first, :conditions => "root_id = (select id from topics_categories where id = root_id and code = '#{self.code}') and code = 'general'")
-    if cat.nil?
-      # si no encontramos categoría general simplemente buscamos una categoría que no sea root 
-      cat = TopicsCategory.find(:first, :conditions => "root_id = (select id from topics_categories where id = root_id and code = '#{self.code}') and id <> root_id")
+    root_term = Term.single_toplevel(self.referenced_thing_field => self[self.referenced_thing_field])
+    cat = root_term.children.find_by_name('General')
+    if cat.nil? # si no hay General buscamos cualquier otra 
+      cat = root_term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'')
     end
     
     who = self.boss ? self.boss.login : self.underboss.login
     t = Topic.create(:user_id => mrcheater.id, 
                      :title => "¡Golpe de estado! ¡Abajo #{who}!", 
-    :topics_category_id => cat.id, 
+    :terms => cat.id, 
     :main => Comments::formatize("[IMG]http://gamersmafia.com/images/golpe_de_estado.jpg[/IMG]\n[~#{who}] no es un buen líder, no presta atención a la facción y los usuarios han hablado. ¡Quieren un cambio!\n¡Por esta razón y con el poder que el poder en la sombra me ha otorgado declaro esta facción libre de boss y underboss!\n\nCualquiera que desee hacerse cargo de esta facción puede comprarla en la tienda."))
     
     # les enviamos un mensaje privado para notificarselo (desde MrCheater)

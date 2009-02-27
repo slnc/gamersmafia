@@ -19,7 +19,7 @@
 	
 	<div class="grid-6">
 	<%=mfcontents_basic("Tópics activos", 
-					Proc.new { cat.top_level_category(Topic).find(:published, :conditions => 'closed is false and sticky is false AND topics_category_id not in (select id from topics_categories where nohome = \'t\')', :order => 'updated_on desc', :limit => 10) }, 
+					Proc.new { cat.top_level_category(Topic).find(:published, :conditions => 'closed is false and sticky is false', :order => 'updated_on desc', :limit => 10) }, 
 					[],
 					:truncate_at => 44, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	</div>

@@ -80,9 +80,9 @@ class NoticiasControllerTest < Test::Unit::TestCase
       end
     end
     n = News.find(:first, :order => 'id desc')
-    assert_equal 'blah', n.news_category.name
-    assert_equal 1, n.news_category.parent_id
-    assert_equal 1, n.news_category.root_id
+    assert_equal 'blah', n.main_category.name
+    assert_equal 1, n.main_category.parent_id
+    assert_equal 1, n.main_category.root_id
     assert_response :redirect
   end
   
@@ -95,10 +95,10 @@ class NoticiasControllerTest < Test::Unit::TestCase
     end
     n = News.find(:first, :order => 'id desc')
     assert_nil flash[:error], flash[:error]
-    assert_equal 'blah', n.news_category.name
-    assert_equal 1, n.news_category.parent_id
-    assert_equal 1, n.news_category.root_id
-    assert n.news_category.file.include?('buddha.jpg')
+    assert_equal 'blah', n.main_category.name
+    assert_equal 1, n.main_category.parent_id
+    assert_equal 1, n.main_category.root_id
+    assert n.main_category.file.include?('buddha.jpg')
     assert_response :redirect
   end
 end

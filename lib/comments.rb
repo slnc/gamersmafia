@@ -84,7 +84,7 @@ module Comments
     
     # TODO copypasted de cms.rb, refactorizar
     real = content
-    if real.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(real.topics_category.id)) && c.user_is_admin(user.id)
+    if real.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(real.main_category.id)) && c.user_is_admin(user.id)
       true
     elsif real.class.name == 'Event' && (cm = CompetitionsMatch.find_by_event_id(real.id)) && cm.competition.user_is_admin(user.id)
       true

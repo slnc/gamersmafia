@@ -492,9 +492,11 @@ class CmsTest < Test::Unit::TestCase
     bd = BazarDistrict.find(1)
     u59 = User.find(59)
     bd.update_don(u59)
-    tc = TopicsCategory.find_by_code('anime')
-    tcc = tc.children.create({:name => 'General'})
-    t1 = Topic.create(:user_id => 1, :topics_category_id => tcc.id, :title => 'hola anime', :main => 'soy un topic de anime')
+    tc = Term.single_toplevel(:slug => 'anime')
+    tcc = tc.children.create({:name => 'General', :taxonomy => 'TopicsCategory'})
+    t1 = Topic.create(:user_id => 1, :terms => tcc.id, :title => 'hola anime', :main => 'soy un topic de anime')
+    assert !t1.new_record?, t1.errors.full_messages_html
+    p t1.terms
     assert Cms.user_can_edit_content?(u59, t1)
   end
   

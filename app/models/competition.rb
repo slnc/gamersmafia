@@ -51,7 +51,6 @@ class Competition < ActiveRecord::Base
   belongs_to :game
   belongs_to :competitions_participants_type
   belongs_to :event
-  belongs_to :topics_category
   
   validates_uniqueness_of :name
   plain_text :name
@@ -296,7 +295,7 @@ class Competition < ActiveRecord::Base
     game_term = arena_tld.children.find(:first, :conditions => ['name = ? AND taxonomy = \'TopicsCategory\'', self.game.name]).nil?     
     game_term = arena_tld.children.create(:name => self.game.name) if game_term.nil?
     newforum = game_term.children.create({:name => self.name})
-    self.topics_category_id = game_term.id # TODO usar nueva taxonomía
+    self.terms= game_term.id
     self.save
   end
   

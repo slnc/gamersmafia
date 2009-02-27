@@ -38,8 +38,8 @@ class Download < ActiveRecord::Base
     raise "DEPRECATED"
     opts = self.attributes
     
-    opts['demos_category_id'] = DemosCategory.find_by_code(self.downloads_category.root.code).id
-    opts['games_mode_id'] = Game.find_by_code(self.downloads_category.root.code).games_modes.find(:first).id
+    opts['demos_category_id'] = DemosCategory.find_by_code(self.main_category.root.code).id
+    opts['games_mode_id'] = Game.find_by_code(self.main_category.root.code).games_modes.find(:first).id
     
     %w(downloads_category_id clan_id essential).each do |attr|
       opts.delete attr  

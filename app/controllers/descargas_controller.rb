@@ -9,15 +9,15 @@ class DescargasController < InformacionController
     if parent_id then
       # TODO BUG no estamos chequeando que la categoría se pueda ver desde aquí 
       @category = portal.download.category_class.find(parent_id)
-      paths, @navpath = @category.get_category_address
+      paths, @navpath = get_category_address(@category, 'DownloadsCategory')
       @title = paths.join(' &raquo; ')
     end
   end
   
   def _after_show
     if @download
-      paths, navpath = @download.downloads_category.get_category_address
-      @navpath = navpath + [[@download.title, "/descargas/#{@download.downloads_category.id}/#{@download.id}"],]
+      paths, navpath = get_category_address(@download.main_category, 'DownloadsCategory')
+      @navpath = navpath + [[@download.title, "/descargas/#{@download.main_category.id}/#{@download.id}"],]
       @title = @download.title
     end
   end
@@ -30,12 +30,12 @@ class DescargasController < InformacionController
     Download.increment_counter('downloaded_times', @download.id)
     dd = @download.downloaded_downloads.create(:user_id => (user_is_authed ? @user.id : nil), :session_id => session[:session_id], :ip => request.remote_ip, :referer => request.env['HTTP_REFERER'].to_s)
     # TODO PERF no borrar las caches con tanta gracia, ¿no?
-    CacheObserver.expire_fragment("/common/descargas/index/downloads_#{@download.downloads_category_id}/page_*") # TODO MUY HEAVY, no podemos hacer que cada descarga suponga borrar todas las caches de índices
-    CacheObserver.expire_fragment("/common/descargas/index/most_downloaded_#{@download.downloads_category.root_id}")
+    CacheObserver.expire_fragment("/common/descargas/index/downloads_#{@download.main_category_id}/page_*") # TODO MUY HEAVY, no podemos hacer que cada descarga suponga borrar todas las caches de índices
+    CacheObserver.expire_fragment("/common/descargas/index/most_downloaded_#{@download.main_category.root_id}")
     if params[:r]
       @download_link = params[:r]
     else
-      # CacheObserver.expire_fragment("/common/descargas/most_downloaded_#{@download.downloads_category.root_id}")
+      # CacheObserver.expire_fragment("/common/descargas/most_downloaded_#{@download.main_category.root_id}")
 	gm_link = @download.created_on > 1.day.ago ? 0 : 1
 # TODO temp
 #gm_link = nil
@@ -83,7 +83,7 @@ class DescargasController < InformacionController
         end
         
         download.title = f.bare
-        download.downloads_category_id = params[:download][:downloads_category_id] # TODO permissions
+        download.main_category_id = params[:download][:downloads_category_id] # TODO permissions
         i += 1 if download.save
       end
     end
@@ -139,8 +139,8 @@ class DescargasController < InformacionController
     # require_user_can_edit(@download)
     raise ContentLocked if @download.is_locked_for_user?(@user)
     @title = "Editar #{@download.title}"
-    paths, navpath = @download.downloads_category.get_category_address
-    @navpath = navpath + [[@download.title, "/descargas/#{@download.downloads_category.id}/#{@download.id}"], ['Editar', "/descargas/edit/#{@download.id}"]]
+    paths, navpath = get_category_address(@download.main_category, 'DownloadsCategory')
+    @navpath = navpath + [[@download.title, "/descargas/#{@download.main_category.id}/#{@download.id}"], ['Editar', "/descargas/edit/#{@download.id}"]]
     if Cms::user_can_edit_content?(@user, @download) then
       @download.lock(@user)
       render :action => 'edit'

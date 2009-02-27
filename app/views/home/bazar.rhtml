@@ -25,7 +25,7 @@ end
 	
 	<% cache("/common/topics/_latest_by_cat2#{cat.code}") do %>
 	<%=mfcontents_basic("Tópics activos", 
-					Proc.new { cat.topic.find(:published, :conditions => 'closed is false and sticky is false AND topics_category_id not in (select id from topics_categories where nohome = \'t\')', :order => 'updated_on desc', :limit => 5) }, 
+					Proc.new { cat.topic.find(:published, :conditions => 'closed is false and sticky is false', :order => 'updated_on desc', :limit => 5) }, 
 					[],
 					:faction_favicon => true, :blast => true)%>
 	<% end # cache -%>

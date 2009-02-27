@@ -1,9 +1,9 @@
 <div class="<%=oddclass%>" style="padding: 5px;">
 
 <h2 id="news<%=@object.id%>"><a class="content" href="<%=gmurl(@object)%>"><%=@object.title%></a></h2>
-<div class="infoinline" style="line-height: 16px;">por <%=link_to @object.user.login, gmurl(@object.user) %> | <%=@object.news_category.root.name%> | <%=print_tstamp(@object.created_on, 'time')%> | <span class="comments-count"><a title="Leer los comentarios de esta noticia" href="/noticias/show/<%=@object.id%>#comments"><%=@object.cache_comments_count%></a></span></div>
+<div class="infoinline" style="line-height: 16px;">por <%=link_to @object.user.login, gmurl(@object.user) %> | <%=@object.main_category.root.name%> | <%=print_tstamp(@object.created_on, 'time')%> | <span class="comments-count"><a title="Leer los comentarios de esta noticia" href="/noticias/show/<%=@object.id%>#comments"><%=@object.cache_comments_count%></a></span></div>
 <div style="float: right; width: 190px; margin-top: -25px;">
-<% if @object.news_category.file then %><%=show_news_category_file(@object.news_category.file)%><% end %>
+<% if @object.main_category.file then %><%=show_news_category_file(@object.main_category.file)%><% end %>
 </div>
 <div class="summary"><%=@object.description%></div>
 <% if @object.main and not strip_tags(@object.main.strip).to_s.empty? then %>

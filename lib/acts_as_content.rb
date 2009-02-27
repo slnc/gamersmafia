@@ -37,6 +37,7 @@ module ActsAsContent
           @_terms_to_add = m.attributes[:terms]
           m.attributes.delete :terms
         end
+        true
       end
       
       class_eval <<-END
@@ -172,6 +173,7 @@ module ActsAsContent
         @_terms_to_add.each do |tid|
           Term.find(tid).link(self.unique_content)
         end
+        @_terms_to_add = []
       end
       true
     end
@@ -322,8 +324,14 @@ module ActsAsContent
     def main_category
       # DEPRECATED
       uniq = self.unique_content
-      return nil if uniq.nil? # no linked_terms yet
-      cats = uniq.linked_terms("#{Inflector::pluralize(self.class.name)}Category")
+      # para que haya un main_category a la hora de guardar el contenido
+      if uniq.nil? # no linked_terms yet, perhaps given?
+        return nil if @_terms_to_add.nil? || (@_terms_to_add.kind_of?(Array) && @_terms_to_add.size == 0)
+        cats = @_terms_to_add.collect { |tid| Term.find(tid) }
+      else
+        cats = uniq.linked_terms("#{Inflector::pluralize(self.class.name)}Category")
+      end
+      
       if cats.size > 0
         cats[0]
       else

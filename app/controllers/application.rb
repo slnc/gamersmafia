@@ -77,7 +77,27 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  
+  def get_category_address(category, taxonomy)
+    paths = []
+    navpath = []
+    paths << category.name
+    
+    href = Cms::translate_content_name(extract_content_name_from_taxonomy(taxonomy))
+    href2 = href.normalize
+    
+    navpath << [category.name, "/#{href2}/#{category.id}"]
+    
+    while category.parent 
+      category = category.parent
+      paths << category.name
+      navpath << [category.name, "/#{href2}/#{category.id}"]
+    end
+    
+    paths = paths.reverse
+    navpath = [[Inflector::titleize(href), "/#{href2}"], ] + navpath.reverse
+    
+    return paths, navpath
+  end
   
   def parse_params_page
     params[:page] = params[:page].to_i if params[:page]

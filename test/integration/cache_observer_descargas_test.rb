@@ -10,13 +10,13 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
   # GLOBAL NAVIGATOR
   def test_should_delete_subcategories_cache_after_creating_download
     # creation
-    c1 = DownloadsCategory.create({:code => 'c1', :name => 'foo1'})
+    c1 = Term.create({:code => 'c1', :name => 'foo1'})
     c1.reload
     assert_not_nil c1
-    c2 = c1.children.create({:code => 'c2', :name => 'foo1', :root_id => c1.id})
+    c2 = c1.children.create({:taxonomy => 'DownloadsCategory', :slug => 'c2', :name => 'foo1'})
     c2.reload
     assert_not_nil c2
-    d = c2.downloads.create({:user_id => 1, :title => 'xxxfootapang', :downloads_category_id => c2.id})
+    d = Download.create(:user_id => 1, :title => 'xxxfootapang', :terms => c2.id)
     assert_not_nil d
 
     go_to_downloads_category(c1)
@@ -118,16 +118,17 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
   def test_should_clear_descargas_essential_after_saving_a_download_with_its_essential_field_changed
     d = Download.find(:published, :limit => 1)[0]
     assert_not_nil d
-    get "/descargas/#{d.downloads_category_id}"
+    get "/descargas/#{d.main_category.id}"
     assert_response :success
-    assert_cache_exists "/common/descargas/index/essential2_#{d.downloads_category.root_id}"
+    assert_cache_exists "/common/descargas/index/essential2_#{d.main_category.root_id}"
     d.essential = true
     d.save
-    assert_cache_dont_exist "/common/descargas/index/essential2_#{d.downloads_category.root_id}"
+    assert_cache_dont_exist "/common/descargas/index/essential2_#{d.main_category.root_id}"
   end
 
   
   def test_should_clear_tutoriales_index_of_previous_category_when_moving_to_new_category
+    # TODO taxonomies
     get "/descargas/1"
     assert_response :success
     assert_cache_exists "/common/descargas/index/downloads_1/page_"

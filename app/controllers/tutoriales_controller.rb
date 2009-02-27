@@ -6,7 +6,7 @@ class TutorialesController < InformacionController
     parent_id = params[:category]
     if parent_id then
       @category = Term.find_taxonomy(parent_id, 'TutorialsCategory')
-      paths, navpath = @category.get_category_address
+      paths, navpath = get_category_address(@category, 'TutorialsCategory')
       @category.get_ancestors.reverse.each { |p| navpath2<< [p.name, "/tutoriales/#{p.id}"] }
       @title = "Tutoriales de #{@category.name}"
     end
@@ -15,8 +15,8 @@ class TutorialesController < InformacionController
   def _after_show
     if @tutorial
       @title = @tutorial.title
-      @tutorial.tutorials_category.get_ancestors.reverse.each { |p| navpath2<< [p.name, "/tutoriales/#{p.id}"] }
-      navpath2<< [@tutorial.tutorials_category.name, "/tutoriales/#{@tutorial.tutorials_category.id}"]
+      @tutorial.main_category.get_ancestors.reverse.each { |p| navpath2<< [p.name, "/tutoriales/#{p.id}"] }
+      navpath2<< [@tutorial.main_category.name, "/tutoriales/#{@tutorial.main_category.id}"]
     end
   end
 end

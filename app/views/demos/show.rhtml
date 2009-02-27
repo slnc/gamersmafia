@@ -8,15 +8,15 @@ function open_demo_win(demo_id)
 
 <% content_support do %>
 	<% if @demo.is_public? then %>
-	<%=mfcontents_basic("Más demos de #{@demo.demos_category.name}", 
+	<%=mfcontents_basic("Más demos de #{@demo.main_category.name}", 
 	controller.portal.demo,
 	[:published, { :conditions => ['demos_category_id = ?', @demo.demos_category_id], :order => 'created_on DESC', :limit => 5}],
  	:rating => true,
-	:cache => "/common/demos/show/_latest_cat#{@demo.demos_category_id}",
+	:cache => "/common/demos/show/_latest_cat#{@demo.main_category.id}",
 	:skip_id => @demo.id,
 	:downloads_count => true,
 	:comments_count => true,
-	:more_link => "<a href=\"/demos/buscar?demo[demos_category_id]=#{@demo.demos_category_id}\">Ver todas</a>")%>	
+	:more_link => "<a href=\"/demos/buscar?demo[demos_category_id]=#{@demo.main_category.id}\">Ver todas</a>")%>	
 	<% else %>
 <%= render :partial => '/shared/content_publishing_state', :locals => { :object => @demo } %>
 	<% end -%>

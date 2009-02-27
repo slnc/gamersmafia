@@ -12,9 +12,9 @@ accum_portals = {}
 max = 20
 i = 0
 for news in @last_news
-	accum_portals[news.news_category.root_id] ||= 0
-	accum_portals[news.news_category.root_id] += 1
-	next if accum_portals[news.news_category.root_id] > 6
+	accum_portals[news.main_category.root_id] ||= 0
+	accum_portals[news.main_category.root_id] += 1
+	next if accum_portals[news.main_category.root_id] > 6
 	break if i > max
     shown_news << news.unique_content.id
 %>
@@ -42,7 +42,7 @@ shown_downloads = []
 for download in @last_downloads
     shown_downloads << download.unique_content.id
 %>
-    <li id="content<%=download.unique_content.id%>" class="new <%=oddclass%>"><%=link_to "<div class=\"content-category\">#{faction_favicon(download.downloads_category)}</div>#{download.title}", gmurl(download)%></li>
+    <li id="content<%=download.unique_content.id%>" class="new <%=oddclass%>"><%=link_to "<div class=\"content-category\">#{faction_favicon(download.main_category)}</div>#{download.title}", gmurl(download)%></li>
 <% end %>
 </ul>
 <script type="text/javascript">contents = contents.concat(<%=shown_downloads.join(',')%>);</script>
@@ -82,7 +82,7 @@ else #GmPortal
 
 for topic in @last_topics
   shown_topics << topic.unique_content.id
-  root = topic.topics_category.root
+  root = topic.main_category.root
   active_topics = TopicsCategory.db_query("SELECT (count(id) - 1) as count FROM topics WHERE topics_category_id IN (#{root.all_children_ids.join(',')}) AND updated_on > now() - '1 week'::interval")[0]['count']
 %>
 <li id="content<%=topic.unique_content.id%>" class="new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "<div class=\"content-category\">#{faction_favicon(topic.topics_category)}</div>#{truncate(topic.title.gsub('<', ''), 28)}", gmurl(topic)%></li>
@@ -247,7 +247,7 @@ shown_demos = []
 for demo in @last_demos
     shown_demos << demo.unique_content.id
 %>
-    <li id="content<%=demo.unique_content.id%>" class="new <%=oddclass%>"><%=link_to "<div class=\"content-category\">#{faction_favicon(demo.demos_category)}</div>#{demo.title}", gmurl(demo)%></li>
+    <li id="content<%=demo.unique_content.id%>" class="new <%=oddclass%>"><%=link_to "<div class=\"content-category\">#{faction_favicon(demo.main_category)}</div>#{demo.title}", gmurl(demo)%></li>
 <% end -%>
 
 </ul>

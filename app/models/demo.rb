@@ -16,8 +16,7 @@ class Demo < ActiveRecord::Base
   
   file_column :file
   has_many :demo_mirrors, :dependent => :destroy
-#  validates_presence_of :name
-  validates_presence_of :demos_category_id
+
   validates_presence_of :games_mode_id
   
   

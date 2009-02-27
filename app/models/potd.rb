@@ -27,7 +27,7 @@ class Potd < ActiveRecord::Base
     
     
       for p in Potd.find(:all, :conditions => "date > now() - \'5 days\'::interval and portal_id #{q_7days}")
-        for c in p.image.images_category.root.all_children_ids
+        for c in p.image.main_category.root.all_children_ids
           invalid_categories2<< c
         end
       end

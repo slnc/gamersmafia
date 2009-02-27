@@ -150,30 +150,6 @@ module CategoryActing
       self.class.items_class.send(:count, *args)
     end
     
-    # devuelve un array con la ruta en categorías hasta la categoría actual
-    def get_category_address
-      category = self
-      paths = []
-      navpath = []
-      paths << category.name
-      
-      href = Cms::translate_content_name(category.class.items_class.name)
-      href2 = href.normalize
-      
-      navpath << [category.name, "/#{href2}/#{category.id}"]
-      
-      while category.parent 
-        category = category.parent
-        paths << category.name
-        navpath << [category.name, "/#{href2}/#{category.id}"]
-      end
-      
-      paths = paths.reverse
-      navpath = [[Inflector::titleize(href), "/#{href2}"], ] + navpath.reverse
-      
-      return paths, navpath
-    end
-    
     def get_ancestors 
       # devuelve los ascendientes. en [0] el padre directo y en el último el root
       path = []

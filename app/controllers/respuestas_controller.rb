@@ -15,7 +15,7 @@ class RespuestasController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @category
     params[:category] = @category
     # TODO que no sea de una categoria que no deberia
-    paths, navpath = @category.get_category_address
+    paths, navpath = get_category_address(@category, 'QuestionsCategory')
     @category.get_ancestors.reverse.each { |p| navpath2<< [p.name, "/respuestas/categoria/#{p.id}"] }
     @title = "Preguntas y respuestas de #{@category.name}"
     render :action => 'index'
@@ -27,7 +27,7 @@ class RespuestasController < ApplicationController
       raise ActiveRecord::RecordNotFound unless @category
       params[:category] = @category
       # TODO que no sea de una categoria que no deberia
-      paths, navpath = @category.get_category_address
+      paths, navpath = get_category_address(@category, 'QuestionsCategory')
       @category.get_ancestors.reverse.each { |p| navpath2<< [p.name, "/respuestas/categoria/#{p.id}"] }
       @title = "Preguntas abiertas de #{@category.name}"
     else
@@ -41,7 +41,7 @@ class RespuestasController < ApplicationController
       raise ActiveRecord::RecordNotFound unless @category
       params[:category] = @category
       # TODO que no sea de una categoria que no deberia
-      paths, navpath = @category.get_category_address
+      paths, navpath = get_category_address(@category, 'QuestionsCategory')
       @category.get_ancestors.reverse.each { |p| navpath2<< [p.name, "/respuestas/categoria/#{p.id}"] }
       @title = "Preguntas cerradas de #{@category.name}"
     else
