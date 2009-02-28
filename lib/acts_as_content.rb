@@ -557,6 +557,7 @@ module ActsAsContent
                                           JOIN contents_terms ON contents.id = contents_terms.content_id 
                                          WHERE contents.state = #{Cms::PUBLISHED} 
                                            AND term_id IN (#{self.main_category.root.all_children_ids(:content_type => self.class.name).join(',')})").collect { |dbr| dbr['content_id'] }
+                                           
           q = "AND unique_content_id IN (#{contents_ids.join(',')})"
           #cat_ids = self.main_category.root.all_children_ids
           #q = "AND #{ActiveSupport::Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})"
