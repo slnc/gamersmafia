@@ -2,7 +2,7 @@ require 'app/controllers/application.rb'
 
 module Cache
   def self.user_base(uid)
-    "/_users/#{u.id % 1000}/#{u.id}"
+    "/_users/#{uid % 1000}/#{uid}"
   end
   
   module Common

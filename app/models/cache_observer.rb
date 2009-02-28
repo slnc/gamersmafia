@@ -41,6 +41,7 @@ class CacheObserver < ActiveRecord::Observer
       
       when 'ProfileSignature':
       expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/firmas"
+      expire_fragment "#{Cache.user_base(object.user_id)}/profile/last_profile_signatures"
       
       when 'Content':
       CacheObserver.update_pending_contents
@@ -50,16 +51,16 @@ class CacheObserver < ActiveRecord::Observer
       if object.participant1_id
         expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/retos_esperando_respuesta") 
         expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/retos_pendientes_de_jugar")
+        object.participant1.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
       end
       if object.participant2_id
         expire_fragment("/common/competiciones/participante/#{object.participant2_id % 1000}/#{object.participant2_id}/retos_esperando_respuesta")
         expire_fragment("/common/competiciones/participante/#{object.participant2_id % 1000}/#{object.participant2_id}/retos_pendientes_de_jugar")
+        object.participant2.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
       end
       
       when 'CompetitionsParticipant':
-      object.users.each do |u|
-        Cache::Competition.expire_competitions_lists(u)
-      end
+       object.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
       
       if object.competition.kind_of?(Ladder)
         expire_fragment "/arena/home/open_ladders"
@@ -175,6 +176,7 @@ class CacheObserver < ActiveRecord::Observer
     case object.class.name
       when 'ClansMovement':
       expire_fragment "/home/comunidad/clans_movements"
+      expire_fragment "#{Cache.user_base(object.user_id)}/profile/clanes"
       when 'RecruitmentAd':
       expire_fragment "/home/comunidad/recruitment_ads_#{object.clan_id ? 'clans' : 'users'}"
       when 'UsersRole':
@@ -199,10 +201,12 @@ class CacheObserver < ActiveRecord::Observer
       
       when 'CompetitionsMatch':
       if object.participant1_id
-        expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/retos_esperando_respuesta") 
+        expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/retos_esperando_respuesta")
+        object.participant1.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
       end
       if object.participant2_id
         expire_fragment("/common/competiciones/participante/#{object.participant2_id % 1000}/#{object.participant2_id}/retos_esperando_respuesta")
+        object.participant2.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
       end
       
       if object.accepted && object.completed_on.nil? && object.competition.kind_of?(Ladder) then
@@ -211,6 +215,8 @@ class CacheObserver < ActiveRecord::Observer
       
       when 'ProfileSignature':
       expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/firmas"
+      expire_fragment "#{Cache.user_base(object.user_id)}/profile/last_profile_signatures"
+      
       when 'Game':
       expire_fragment('/common/miembros/buscar_por_guid')
       
@@ -329,6 +335,8 @@ class CacheObserver < ActiveRecord::Observer
     # para evitar repetir hacemos una cosa, si el contenido tiene un atributo
     # user_id borramos las caches de contenidos de dicho usuario
     if object.respond_to?('user_id') and object.respond_to?(:state) then # TODO no correcto del todo
+      expire_fragment("#{Cache.user_base(object.user_id)}/sus_contenidos_son")
+      expire_fragment("#{Cache.user_base(object.user_id)}/aportaciones")
       expire_fragment("/common/miembros/#{object.user_id % 1000}/#{object.user_id}/contents_stats")
       expire_fragment("/common/miembros/#{object.user_id % 1000}/#{object.user_id}/contenidos/#{object.class.name.downcase}/*")
       if object.slnc_changed?(:state) and object.state == Cms::DELETED
@@ -364,6 +372,7 @@ class CacheObserver < ActiveRecord::Observer
       
       when 'ProfileSignature':
       expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/firmas"
+      expire_fragment "#{Cache.user_base(object.user_id)}/profile/last_profile_signatures"
       
       when 'Content':
       CacheObserver.update_pending_contents if object.slnc_changed?(:state)
@@ -408,12 +417,14 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/retos_esperando_respuesta") 
         expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/retos_pendientes_de_jugar")
         expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/ultimas_partidas")
+        object.participant1.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
         # TODO expire_fragment("/miembros/#{object.participant1.participant_id % 1000}/#{object.participant1.participant_id}/competition_matches")
       end
       if object.participant2_id
         expire_fragment("/common/competiciones/participante/#{object.participant2_id % 1000}/#{object.participant2_id}/retos_esperando_respuesta")
         expire_fragment("/common/competiciones/participante/#{object.participant2_id % 1000}/#{object.participant2_id}/retos_pendientes_de_jugar")
         expire_fragment("/common/competiciones/participante/#{object.participant2_id % 1000}/#{object.participant2_id}/ultimas_partidas")
+        object.participant2.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
       end
       
       object.competition.get_related_portals.each do |portal|

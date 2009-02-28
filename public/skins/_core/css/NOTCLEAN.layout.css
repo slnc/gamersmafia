@@ -565,18 +565,28 @@ textarea {
 }
 
 .pcent-bar {
-    height: 7px;
+    height: 4px;
     border: 1px solid;
     margin: 2px;
 }
+
 
 .pcent-bar.compact {
     border: 0;
 }
 
 .pcent-bar .bar {
-    height: 7px;
+    height: 4px;
 }
+
+.vmember #ccontent .pcent-bar {
+	height: 7px;
+}
+
+
+.vmember #ccontent .pcent-bar .bar {
+	    height: 7px; 
+} 
 
 th.timestamp, td.timestamp {
     width: 120px;
