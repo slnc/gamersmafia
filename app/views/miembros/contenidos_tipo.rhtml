@@ -4,7 +4,11 @@
 <% content_main do %>
 <% mftext("#{params[:content_name].capitalize}") do %>
 <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/contenidos/#{@c.name.downcase}/page_#{params['page']}") do
-   @contents_pages, @contents = controller.paginate @c, :conditions => ['state = ? and user_id = ?', Cms::PUBLISHED, @curuser.id], :order => 'created_on ASC', :per_page => 30
+if @c.new.respond_to?(:clan_id)
+   @contents_pages, @contents = controller.paginate @c, :conditions => ['state = ? and user_id = ? and clan_id IS NULL', Cms::PUBLISHED, @curuser.id], :order => 'created_on ASC', :per_page => 30
+else
+	@contents_pages, @contents = controller.paginate @c, :conditions => ['state = ? and user_id = ?', Cms::PUBLISHED, @curuser.id], :order => 'created_on ASC', :per_page => 30
+end
 %>
 <%= render :partial => 'shared/pager', :object => @contents_pages, :locals => {:pos => 'top'} %>
 <table>
