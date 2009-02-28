@@ -20,7 +20,9 @@ class Faction < ActiveRecord::Base
   before_destroy :destroy_editors_too
   
   def destroy_editors_too
-    self.editors.each { |ed| ed.destroy }
+    UsersRole.find(:all, :conditions => ["role = 'Editor' AND role_data LIKE E'%%faction_id: #{self.id}\\n%%'"]).each do |ur| 
+      ur.destroy 
+    end
     true
   end
   
