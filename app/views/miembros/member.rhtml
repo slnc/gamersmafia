@@ -25,6 +25,8 @@
 <% end -%>
 
 <% if @curuser.enable_profile_signatures? then %>
+<%cache("#{Cache.user_base(@curuser.id)}/profile/last_profile_signatures") do %>
+
 <%mftext('Últimas firmas', :grid => 6, :glast => true) do %>
 <% @curuser.profile_signatures.find(:all, :order => 'updated_on DESC', :include => :signer, :limit => 4).each do |ps| %>
   <div id="ps<%=ps.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 5px; font-size: 11px; font-family: tahoma; line-height: 15px; padding: 3px;">
@@ -36,11 +38,13 @@
 <div class="more right nav"><a href="<%=gmurl(@curuser)%>/firmas">Ver todas &raquo;</a></div>
 <% end -%>
 <% end -%>
+<% end -%>
 
 <%mftext('Estadísticas', :has_submodules => true, :grid => 6) do %>
 <div class="grid-3">
     
 
+<%cache("#{Cache.user_base(@curuser.id)}/profile/rankings/#{Time.now.strftime('%Y%m%d')}") do %>
 <%mftext('Karma') do %>
 <%karma_rk_info = Karma.ranking_user(@curuser)%>
 <div class="infoinline right" style="margin-bottom: 3px;">
@@ -69,10 +73,12 @@
 <div class="clearb"><%=sparkline(:size => '145x25', :data => Popularity.user_daily_popularity(@curuser, 30.days.ago, 1.day.ago).collect { |k,v| v }, :colors => ['616c01'], :fillcolors => ['f0f2de'])%></div>
 <div class="infoinline right"><strong><%=@curuser.popularity_points%></strong> ptos (<strong><%#=Popularity::NAMES[Popularity.level(@curuser.popularity_points)]%></strong>)</div>
 <% end -%>
+<% end -%>
 
 </div>
 
 <div class="grid-3 glast">
+<%cache("#{Cache.user_base(@curuser.id)}/profile/sus_comments_son/#{Time.now.strftime('%Y%m%d')}") do %>
 <%mftext('Sus comentarios son') do
 dat = Stats.user_comments_by_rating(@curuser)
 positive_valorations_types = CommentsValorationsType.find_positive
@@ -119,6 +125,7 @@ dat[cvt.id] = 0 unless dat[cvt.id] %>
 <% #=horizontal_stacked_bar(:size => '94x80', :data => dat.values, :axis_labels => dat.keys.collect { |pid| Portal.find_by_id(pid).code }) %>
 <% end -%>
 
+<%cache("#{Cache.user_base(@curuser.id)}/profile/sus_contenidos_son") do %>
 <%mftext('Sus contenidos son') do 
 dat = Stats.user_contents_by_rating(@curuser)
 vals = []
@@ -134,6 +141,8 @@ max = vals.max
 	</tr>
 </table>
 <% end -%>
+<% end -%>
+<% end -%>
 
 </div>
 
@@ -142,6 +151,7 @@ max = vals.max
 
 <%mftext('Gamer', :has_submodules => true, :grid => 5, :glast => true) do %>
 
+<%cache("#{Cache.user_base(@curuser.id)}/profile/clanes") do %>
 <% clans = @curuser.clans %>
 <% 
 if clans.size > 0 then %>
@@ -149,6 +159,7 @@ if clans.size > 0 then %>
       <td><a href="/clanes/clan/<%=c.id%>"><%=h c.tag%></a></td>
 	  <td class="infoinline right"><%=c.user_is_clanleader(@curuser.id) ? 'Clanleader' : 'Miembro' %></td>
 	<% end -%>
+<% end -%>
 <% end -%>
 
 <%if @curuser.faction_id %>
@@ -178,6 +189,7 @@ if clans.size > 0 then %>
   <%=@curuser.description%>
 <% end -%>
 <div class="grid-5 glast">
+<%cache("#{Cache.user_base(@curuser.id)}/profile/aportaciones") do %>
 <%mftext('Aportaciones', :has_submodules => true) do %>
 <%mftext('Por tipo') do 
 dat = Stats.user_contents_by_type(@curuser)
@@ -189,6 +201,7 @@ dat = Stats.user_contents_by_type(@curuser)
 dat = Stats.user_contents_by_portal(@curuser)
 %>
 <%=pie(:size => '250x110', :data => dat.values, :axis_labels => dat.keys.collect { |pid| pid != 'Otros' ? Portal.find_by_id(pid).code : pid}) %>
+<% end -%>
 <% end -%>
 <% end -%>
 
@@ -273,9 +286,14 @@ dat = Stats.user_contents_by_portal(@curuser)
 <div class="grid-4 glast">
 <%=new_ads(:grid => 4) %>
 
+<%cache("#{Cache.user_base(@curuser.id)}/profile/competicion") do %>
+<%
+last_matches = Competitions.find_all_matches_from_user(@curuser, Competition::COMPLETED_ON_SQL, 3)
+if last_matches.size > 0 then
+%>
 <%mftext('Competición', :has_submodules => true) do %>
 	<%
-	last_matches = Competitions.find_all_matches_from_user(@curuser, Competition::COMPLETED_ON_SQL, 3)
+	
 	mftext('Últimos resultados') do %>
 	<%= render :partial => '/competiciones/matches_results', :locals =>  { :matches => last_matches } %>
 	<% end -%>
@@ -310,6 +328,8 @@ dat = Stats.user_contents_by_portal(@curuser)
 	<div style="margin-bottom: 4px; height: 22px;"><%=minicolumns('winlose', data)%></div>
 	<% end -%>
 	<% end -%>
+<% end -%>
+<% end -%>
 <% end -%>
 
 <%mftext('Últimos comentarios') do %>
