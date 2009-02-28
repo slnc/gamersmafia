@@ -526,6 +526,7 @@ image_babe:
   url: http://gamersmafia.dev/imagenes/show/4
   is_public: true
   user_id: 1
+  state: 2
   portal_id: 1
 
 image_dude:
@@ -538,6 +539,7 @@ image_dude:
   url: http://gamersmafia.dev/imagenes/show/5
   is_public: true
   user_id: 1
+  state: 2
   portal_id: 1
   
 demo_published:
@@ -551,6 +553,7 @@ demo_published:
   is_public: true
   user_id: 1
   portal_id: 1
+  state: 2
 
 
 

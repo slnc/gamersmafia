@@ -1,5 +1,5 @@
 <% content_support do %>
-<% cache ("/#{controller.portal_code}/encuestas/index/most_votes/#{Time.now.strftime('%Y%m%d')}") do %>
+<% cache ("/#{controller.portal_code}/encuestas/index/most_votes") do %>
 <%
 mfcontents_list('Más votadas', 
 				   Proc.new { controller.portal.poll.find(:published, :order => 'polls_votes_count DESC', :limit => 5) }) do |o| %>

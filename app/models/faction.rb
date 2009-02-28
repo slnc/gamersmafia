@@ -443,6 +443,7 @@ class Faction < ActiveRecord::Base
     mrcheater = User.find_by_login('mrcheater')
     
     root_term = Term.single_toplevel(self.referenced_thing_field => self.referenced_thing.id)
+    
     cat = root_term.children.find_by_name('General')
     if cat.nil? # si no hay General buscamos cualquier otra 
       cat = root_term.children.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'')

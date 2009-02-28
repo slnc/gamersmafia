@@ -223,7 +223,7 @@
       game_id: 2
       taxonomy: TopicsCategory
 
-- rjtopicsgeneral:
+- thtopicsgeneral:
       id: 31
       name: General
       slug: general

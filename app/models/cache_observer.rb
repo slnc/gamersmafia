@@ -103,8 +103,11 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment("/common/facciones/#{object.faction_id}/webs_aliadas")
       object.faction.portals.each { |p| expire_fragment("/#{p.code}/webs_aliadas") }
       
-      when 'PollsVote':
-      expire_fragment("/encuestas/most_votes")
+    when 'PollsVote':
+      object.polls_option.poll.get_related_portals.each do |portal|
+        expire_fragment("/#{portal.code}/encuestas/index/most_votes")  
+     end
+      
       
       when 'CommentsValoration':
       expire_fragment("/comments/#{Time.now.to_i/(86400*7)}/#{object.comment.content_id%100}/#{object.comment.content_id}_*") # cacheamos solo una semana para q se actualicen barras    

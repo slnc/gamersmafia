@@ -552,11 +552,13 @@ module ActsAsContent
         if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
           total = self.main_category.root.count(:content_type => self.class.name)
           # TODO esto debería ir en term
-          contents_ids = User.db_query("SELECT content_id 
+          q = "SELECT content_id 
                                           FROM contents 
                                           JOIN contents_terms ON contents.id = contents_terms.content_id 
                                          WHERE contents.state = #{Cms::PUBLISHED} 
-                                           AND term_id IN (#{self.main_category.root.all_children_ids(:content_type => self.class.name).join(',')})").collect { |dbr| dbr['content_id'] }
+                                           AND term_id IN (#{self.main_category.root.all_children_ids(:content_type => self.class.name).join(',')})"
+          #puts q
+          contents_ids = User.db_query(q).collect { |dbr| dbr['content_id'] }
                                            
           q = "AND unique_content_id IN (#{contents_ids.join(',')})"
           #cat_ids = self.main_category.root.all_children_ids

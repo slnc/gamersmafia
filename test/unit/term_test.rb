@@ -294,7 +294,9 @@ class TermTest < ActiveSupport::TestCase
   
   def test_last_updated_children_should_work
     test_should_update_parent_categories_counter
-    assert @cat1.last_updated_children(:limit => 5).collect { |luc| luc.name }.include?(@subcat1.name)
+    @subcat1.link(@topic.unique_content)
+    catz = @cat1.last_updated_children(:limit => 5)
+    assert catz.collect { |luc| luc.name }.include?(@subcat1.name)
   end
 
   def test_should_update_categories_comments_count_after_commenting

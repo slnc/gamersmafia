@@ -95,6 +95,7 @@ having portal_id in (select id
       #  slonik_execute "alter table #{ActiveSupport::Inflector::tableize(ctype.name)} add column cache_weighted_rank numeric(10, 2);"
       # puts ctype.name
       Object.const_get(ctype.name).find(:all, :conditions => "cache_weighted_rank is null and state = #{Cms::PUBLISHED}").each do |content|
+        next if content.respond_to?(:clan_id) && content.clan_id
         content.clear_rating_cache
         nil
       end
