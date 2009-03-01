@@ -81,10 +81,11 @@
 <%cache("#{Cache.user_base(@curuser.id)}/profile/sus_comments_son/#{Time.now.strftime('%Y%m%d')}") do %>
 <%mftext('Sus comentarios son') do
 dat = Stats.user_comments_by_rating(@curuser)
+max = dat.values.max.to_f / 100
+
 positive_valorations_types = CommentsValorationsType.find_positive
 neutral_valorations_types = CommentsValorationsType.find_neutral
 negative_valorations_types = CommentsValorationsType.find_negative
-max = dat.values.max.to_f / 100
 %>
 
 <table class="positive">

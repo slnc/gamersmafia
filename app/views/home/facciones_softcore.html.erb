@@ -12,7 +12,7 @@
 <%mftext('En los foros', :has_submodules => true, :grid => 10, :glast => true, :blast => true) do %>	
 	<div class="grid-6 blast">
 	<%=mfcontents_basic("Tópics activos", 
-					Proc.new { controller.portal.topic.find(:published, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 10) }, 
+					Proc.new { controller.portal.topic.find(:published, :conditions => 'topics.closed is false', :order => 'updated_on desc', :limit => 10) }, 
 					[],
 					:truncate_at => 44, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	</div>
@@ -24,7 +24,7 @@
 
 <div class="grid-12">
 	<%=mfcontents_basic('Descargas', 
-					Proc.new { controller.portal.categories(Download)[0].root.find(:published, :order => 'created_on DESC', :limit => 5) },
+					Proc.new { controller.portal.categories(Download)[0].root.download.find(:published, :order => 'created_on DESC', :limit => 5) },
 					[],
 					:truncate_at => 28, :faction_favicon => true, :grid => 4, :cache => "/#{controller.portal_code}/home/index/downloads2")%>
 
@@ -94,12 +94,5 @@ if @daily_img then %>
 -%>
 <% end -%>
 
-<% cache("/#{controller.portal_code}/home/index/eventos2/#{Time.now.strftime('%Y%m%d')}") do %>
-<% mfcontents_table('Eventos', 
-				   Proc.new { controller.portal.event.current }
-				   ) do |e| %>
-	<td style="font-size: 11px;"><%=draw_content_favicon(e)%><a href="<%=get_url(e)%>"><%=e.title%></a></td>
-    <td style="font-size: 11px;"><%=member_state('active')%><%=e.users.count%></td>
-<% end -%>
-<% end #cache -%>
+<%=render :partial => '/home/eventos2' %>
 </div>

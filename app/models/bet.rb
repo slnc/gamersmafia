@@ -4,6 +4,9 @@ class Bet < ActiveRecord::Base
   
   #before_save :check_options_new
   TOP_BET_WINNERS = "#{RAILS_ROOT}/public/storage/apuestas/top_bets_winners_minicolumns_data"
+  OPEN_BETS_SQL = "closes_on > now() AND winning_bets_option_id IS NULL AND tie is false AND cancelled is false AND forfeit is false"
+  AWAITING_RESULT_SQL = "closes_on < now() and winning_bets_option_id is null and tie is false and cancelled is false and forfeit is false"
+  CLOSED_BETS_SQL = "closes_on < now() and (winning_bets_option_id is not null or tie is true or cancelled is true or forfeit is true)"
   
   after_save :process_bets_options
   has_many :bets_options, :dependent => :destroy
@@ -346,14 +349,14 @@ class Bet < ActiveRecord::Base
     qcond = opts[:conditions] ?  " AND #{opts[:conditions]}" : ''
     #qcond = "code = #{opts[:code]} #{qcond}" if opts[:code]
     find(:published, 
-         :conditions => "closes_on > now() AND winning_bets_option_id IS NULL AND tie is false AND cancelled is false AND forfeit is false #{qcond}", 
+         :conditions => "#{Bet::OPEN_BETS_SQL} #{qcond}", 
     :order => 'closes_on ASC, id ASC')
   end
   
   def self.awaiting_result(opts={})
     qcond = opts[:conditions] ?  " AND #{opts[:conditions]}" : ''
     find(:published, 
-         :conditions => "closes_on < now() and winning_bets_option_id is null and tie is false and cancelled is false and forfeit is false #{qcond}", 
+         :conditions => "#{Bet::AWAITING_RESULT_SQL} #{qcond}", 
     :order => 'closes_on DESC, id DESC')
   end
   
@@ -361,7 +364,7 @@ class Bet < ActiveRecord::Base
     {:limit => :all}.merge(opts)
     qcond = opts[:conditions] ?  " AND #{opts[:conditions]}" : ''
     find(:published, 
-         :conditions => "closes_on < now() and (winning_bets_option_id is not null or tie is true or cancelled is true or forfeit is true) #{qcond}", 
+         :conditions => "#{Bet::CLOSED_BETS_SQL} #{qcond}", 
     :order => 'closes_on DESC, id DESC', :limit => opts[:limit])
   end
   

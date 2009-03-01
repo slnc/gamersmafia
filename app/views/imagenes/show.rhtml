@@ -29,7 +29,7 @@
 <% cache("/#{controller.portal_code}/imagenes/show/_other_images_by_user/#{@image.user_id % 1000}/#{@image.user_id}") do %>
 <% mftext("Más imágenes de #{@image.user.login}") do %>
 <ul class="sidelist images">
-  <% controller.portal.image.find(:published, :conditions => ['contents.user_id = ?', @image.user_id], :order => 'created_on DESC', :limit => 2).each do |image| %>
+	<% controller.portal.image.find(:published, :content_type => 'Image', :conditions => ['contents.user_id = ?', @image.user_id], :order => 'created_on DESC', :limit => 2).each do |image| %>
   <li><div class="image"><a class="new" href="/imagenes/show/<%=image.id%>"><%=fc_thumbnail(image.file, 'i', '85x85', false)%></a></div></li>
   <% end -%>
   </ul>

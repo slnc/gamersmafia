@@ -770,7 +770,9 @@ class User < ActiveRecord::Base
                           limit #{limit}")
     results = []
     dbi.each do |dbu|
-      results<< [User.find(dbu['model_id'].to_i), dbu['count'].to_i]
+	    u = User.find_by_id(dbu['model_id'].to_i)
+	    next unless u
+      results<< [u, dbu['count'].to_i]
     end
     results
   end

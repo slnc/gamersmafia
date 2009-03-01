@@ -29,6 +29,7 @@ class ForosController < ComunidadController
     # TODO no chequeamos que sea un foro correcto para este portal y además suponemos que topic es un topics_category
     @forum = Term.find_taxonomy(params[:id], 'TopicsCategory')
     @forum = Term.single_toplevel(:id => params[:id]) if @forum.nil?
+    raise ActiveRecord::RecordNotFound if @forum.nil?
     
     forum_for_title = @forum
     @title = ''

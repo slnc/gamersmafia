@@ -107,10 +107,6 @@ module GmSys
     # performs or schedules a lengthy job depending on the current configuration 
     if App.enable_bgjobs?
       Delayed::Job.enqueue DjJobWrapper.new(task)
-      #Bj.submit('./script/runner /dev/stdin', 
-      #          :rails_env => 'production',
-      #          :stdin => task,
-      #          :tag => task)
     else
       eval(task)
     end
@@ -119,8 +115,7 @@ module GmSys
   def self.command(task)
     # performs or schedules a direct bash command 
     if App.enable_bgjobs?
-      Bj.submit(task,
-                :tag => task)
+      job("`#{task}`")
     else
       IO.popen(task) {|pipe| puts pipe.gets }
     end

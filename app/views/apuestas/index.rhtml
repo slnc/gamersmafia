@@ -68,7 +68,7 @@ v[:individual].each {|s| sum += s }
     <th style="width: 125px;"><%=gmd11%> apostados</th>
     <th class="timestamp">Termina en</th>
   </tr>
-  <% controller.portal.bet.open_bets.each do |bet| %>
+  <% controller.portal.bet.find(:published, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC').each do |bet| %>
   <tr class="<%=oddclass%>">
     <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
     <td class="right"><%=bet.total_ammount.to_i%></td>
@@ -84,7 +84,7 @@ v[:individual].each {|s| sum += s }
     <th>Apuesta</th>
     <th style="width: 125px;"><%=gmd11%> apostados</th>
   </tr>
-  <% controller.portal.bet.awaiting_result.each do |bet| %>
+  <% controller.portal.bet.find(:published, :conditions => Bet::AWAITING_RESULT_SQL, :order => 'closes_on DESC, id DESC').each do |bet| %>
   <tr class="<%=oddclass%>">
     <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
     <td class="right"><%=bet.total_ammount%></td>
@@ -101,7 +101,7 @@ v[:individual].each {|s| sum += s }
     <th class="timestamp">Terminó hace</th>
   </tr>
   <% cache("/#{@controller.portal_code}/apuestas/index/closed_#{Time.now.to_i/3600}") do %>
-    <% controller.portal.bet.closed_bets(:limit => 20).each do |bet| %>
+  <% controller.portal.bet.find(:published, :conditions => Bet::CLOSED_BETS_SQL, :order => 'closes_on DESC, id DESC', :limit => 20).each do |bet| %>
     <tr class="<%=oddclass%>">
       <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
       <td class="right"><%=bet.total_ammount.to_i%></td>

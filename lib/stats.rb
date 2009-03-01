@@ -624,9 +624,10 @@ group by date_trunc('day', created_on) order by s asc
             res[dbr['comments_valorations_type_id'].to_i] = dbr['count'].to_i
     end
     tot = res.values.sum.to_f
+    tot = 1 if tot == 0.0
     res2 = {}
     res.keys.each do |k|
-      res2[k] = (res[k]/tot) * 100
+      res2[k] = (res[k]/tot) * 100.0
     end
     res2
   end

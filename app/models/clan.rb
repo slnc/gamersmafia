@@ -341,7 +341,9 @@ class Clan < ActiveRecord::Base
                           limit #{limit}")
     results = []
     dbi.each do |dbu|
-      results<< [Clan.find(dbu['model_id'].to_i), dbu['count'].to_i]
+      clan = Clan.find_by_id(dbu['model_id'].to_i)
+      next unless clan
+      results<< [clan, dbu['count'].to_i]
     end
     results
   end

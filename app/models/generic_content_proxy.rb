@@ -26,12 +26,12 @@ class GenericContentProxy
     new_conds = []
     
     # new_conds << "content_type_id = #{ContentType.find_by_name(options[:content_type]).id}" if options[:content_type]
-    new_conds << "contents.clan_id IS NULL" if @clans_clause
+    new_conds << "contents.clan_id IS NULL " if @clans_clause
     
     # options.delete(:content_type) if options[:content_type]
     if new_conds.size > 0
       if options[:conditions].kind_of?(Array)
-        options[:conditions][0]<< "AND #{new_conds.join(' AND ')}"
+        options[:conditions][0]<< " AND #{new_conds.join(' AND ')}"
       elsif options[:conditions] then
         options[:conditions]<< " AND #{new_conds.join(' AND ')}"
       else
