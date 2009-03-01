@@ -23,7 +23,7 @@
 <% if Cms.user_can_mass_upload(@user) then %>
 <%mftext('Añadir imágenes en masa') do %>
 <%= form_tag({:action => 'create_from_zip'}, :multipart => true) %>
-<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => Image } %>
+<%=render :partial => '/shared/category_term_select', :locals => { :index => 100, :content_type => 'Image' } %>
   <p><label for="image_file">Archivo</label><br/>
   <%= file_field 'image', 'file' %></p>
   <%= submit_tag 'Crear' %>

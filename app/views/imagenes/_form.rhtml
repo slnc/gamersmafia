@@ -1,16 +1,4 @@
-<<<<<<< HEAD:app/views/imagenes/_form.rhtml
 <p><label >Categoría</label><br/>
-<select name="image[images_category_id]">
-<% cats = @image.new_record? ? @portal.images_categories : ImagesCategory.toplevel %>
-<% for ic in controller.portal.images_categories %>
-<optgroup label="<%=ic.name%>">
-<% for gallery in ic.children %>
-<option <%= (gallery.id == @image.images_category_id) ? 'selected="selected"' : ''%> value="<%=gallery.id%>"><%=gallery.name%></option>
-<% end -%>
-</optgroup>
-<% end -%>
-</select>
-
 <p><label for="image_file">Archivo <span class="infoinline">(Formatos válidos: <strong>JPG</strong>, <strong>GIF</strong> o <strong>PNG</strong>)</span></label><br/>
 <% if @image.file then %>
 <%=fc_thumbnail(@image.file, 'k', '153x115')%> 

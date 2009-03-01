@@ -11265,7 +11265,6 @@ ALTER SEQUENCE forum_topics_id_seq OWNED BY topics.id;
 --
 
 CREATE SEQUENCE friends_recommendations_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -17974,14 +17973,6 @@ ALTER TABLE ONLY images_categories
 
 ALTER TABLE ONLY images
     ADD CONSTRAINT images_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: images_images_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY images
-    ADD CONSTRAINT images_images_category_id_fkey FOREIGN KEY (images_category_id) REFERENCES images_categories(id) MATCH FULL;
 
 
 --
