@@ -8,7 +8,10 @@ class UserTest < Test::Unit::TestCase
     ActionMailer::Base.deliveries = []
   end
   
-  
+  def test_is_editor
+    u2 = User.find(2)
+    assert u2.is_editor?
+  end
   
   
   def test_should_send_email_to_add_user_to_hq
