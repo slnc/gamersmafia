@@ -2408,7 +2408,6 @@ CREATE TABLE platforms (
 --
 
 CREATE TABLE platforms_users (
-    id integer NOT NULL,
     created_on timestamp without time zone,
     user_id integer,
     platform_id integer
@@ -11705,25 +11704,6 @@ ALTER SEQUENCE platforms_id_seq OWNED BY platforms.id;
 
 
 --
--- Name: platforms_users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE platforms_users_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: platforms_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE platforms_users_id_seq OWNED BY platforms_users.id;
-
-
---
 -- Name: polls_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -13203,13 +13183,6 @@ ALTER TABLE outstanding_entities ALTER COLUMN id SET DEFAULT nextval('outstandin
 --
 
 ALTER TABLE platforms ALTER COLUMN id SET DEFAULT nextval('platforms_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE platforms_users ALTER COLUMN id SET DEFAULT nextval('platforms_users_id_seq'::regclass);
 
 
 --
@@ -14728,14 +14701,6 @@ ALTER TABLE ONLY platforms
 
 ALTER TABLE ONLY platforms
     ADD CONSTRAINT platforms_pkey PRIMARY KEY (id);
-
-
---
--- Name: platforms_users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY platforms_users
-    ADD CONSTRAINT platforms_users_pkey PRIMARY KEY (id);
 
 
 --
