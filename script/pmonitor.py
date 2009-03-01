@@ -74,7 +74,7 @@ def get_running_mongrels():
     for l in d.split('\n'):
         if l.find('grep') != -1:
             continue
-        m = re.search('httpd[\W]+([0-9]+)[\W]+[0-9.]+[\W]+[0-9.]+[\W]+([0-9]+)', l)
+        m = re.search('httpd[\W]+([0-9]+)[\W]+[0-9.]+[\W]+[0-9.]+[\W]+[0-9]+[\W]+([0-9]+)', l)
         if m:
             mport = re.search('dispatch.([0-9]+).pid', l)
             if mport == None:

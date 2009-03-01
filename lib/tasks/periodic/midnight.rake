@@ -40,7 +40,7 @@ namespace :gm do
       dst_file = "#{RAILS_ROOT}/public/storage/minicolumns/factions_activity/#{f.id}.png"
       
       FileUtils.mkdir_p(File.dirname(dst_file)) unless File.exists?(File.dirname(dst_file))
-      `/usr/local/hosting/bin/python2.4 script/spark.py faction_activity #{dbi.collect {|dbr| dbr['karma'] }.concat([0] * (days - dbi.size)).reverse.join(',')} "#{dst_file}"`
+      `/usr/bin/python script/spark.py faction_activity #{dbi.collect {|dbr| dbr['karma'] }.concat([0] * (days - dbi.size)).reverse.join(',')} "#{dst_file}"`
     end
   end
   
@@ -59,7 +59,7 @@ namespace :gm do
       netw = Bet.net_wins(u, bets, "#{days} days")
       data[k][:individual] = netw
       i += 1
-      `/usr/local/hosting/bin/python2.4 script/spark.py bet_rate #{netw.concat([0] * (bets - netw.size)).reverse.join(',')} "#{dst_file}"`
+      `/usr/bin/python script/spark.py bet_rate #{netw.concat([0] * (bets - netw.size)).reverse.join(',')} "#{dst_file}"`
     end
     # TODO hacer esto para CADA portal LOL
     dst = Bet::TOP_BET_WINNERS
