@@ -26,10 +26,13 @@ class Admin::FaccionesControllerTest < ActionController::TestCase
   
   def test_delete_works
     sym_login 1
-    f = Faction.new(:name => 'faccionita', :code => 'code')
-    assert f.save, f.errors.full_messages_html
+    g = Game.new(:name => 'faccionita', :code => 'code')
+    assert g.save, g.errors.full_messages_html
+    f = Faction.find_by_code(g.code)
+    assert Portal.find_by_code(f.code)
     post :destroy, :id => f.id
     assert_response :redirect
     assert Faction.find_by_id(f.id).nil?
+    assert Portal.find_by_code(f.code).nil?
   end
 end

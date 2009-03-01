@@ -21,6 +21,14 @@ class Faction < ActiveRecord::Base
   
   before_destroy :set_users_faction_id_to_nil
   before_destroy :destroy_editors_too
+  before_destroy :destroy_related_portals
+  
+  def destroy_related_portals
+    User.db_query("DELETE FROM factions_portals WHERE faction_id = #{self.id}")
+    portal = Portal.find_by_code(self.code)
+    portal.destroy if portal.factions.size == 0
+    true
+  end
   
   def destroy_editors_too
     UsersRole.find(:all, :conditions => ["role = 'Editor' AND role_data LIKE E'%%faction_id: #{self.id}\\n%%'"]).each do |ur| 
