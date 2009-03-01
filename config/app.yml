@@ -50,7 +50,7 @@ production: &production
   enable_support_db?: false
   enable_global_notifications?: true
   enable_google_analytics?: true
-  enable_slonik?: true
+  enable_slonik?: false
   system_mail_user: nagato@gamersmafia.com
   <<: *common
 

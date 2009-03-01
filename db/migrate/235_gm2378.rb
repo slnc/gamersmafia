@@ -1,6 +1,7 @@
 class Gm2378 < ActiveRecord::Migration
   def self.up
      
+	  if nil then
     execute "insert into content_types(name) VALUES('RecruitmentAd');"
     
     slonik_execute "alter table recruitment_ads add column title varchar;"
@@ -21,13 +22,14 @@ class Gm2378 < ActiveRecord::Migration
     slonik_execute "alter table recruitment_ads add column cache_weighted_rank numeric(10, 2);"
     slonik_execute "alter table recruitment_ads add column closed bool not null default 'f';"
     slonik_execute "alter table recruitment_ads add column unique_content_id int references contents(id) match full;"
+		  end
     
     # PENDIENTE EN BLACKWINGS
     # ---- script
     RecruitmentAd.find(:all).each do |rad|
       User.db_query("UPDATE recruitment_ads SET title = #{User.connection.quote(rad.OLDtitle)} WHERE id = #{rad.id}")
       rad.title = rad.OLDtitle
-      rad.create_my_unique_content
+      rad.create_my_unique_content unless rad.unique_content_id
       rad.link_to_root_term
     end
     
