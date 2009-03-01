@@ -157,4 +157,10 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     end
     assert_response :success
   end
+  
+  def test_orphaned
+    sym_login 1
+    get :huerfanos
+    assert_response :success
+  end
 end

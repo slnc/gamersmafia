@@ -169,4 +169,19 @@ class Content < ActiveRecord::Base
       t.link(self) 
     end
   end
+  
+  def self.orphaned
+    q_cts = Cms::CONTENTS_WITH_CATEGORIES.collect { |ctn| "'#{ctn}'"}
+    Content.find_by_sql("SELECT *
+                          FROM contents
+                         WHERE id IN (select a.id 
+                                        from contents a 
+                                   left join contents_terms b on a.id = b.content_id 
+                                       where a.clan_id IS NULL 
+                                         and b.content_id is null 
+                                         and content_type_id in (select id 
+                                                                   from content_types 
+                                                                  where name in (#{q_cts.join(',')})))
+                      ORDER BY created_on")
+  end
 end

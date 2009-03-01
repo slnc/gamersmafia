@@ -1,0 +1,16 @@
+<%mftext('Contenidos huérfanos') do %>
+<table>
+<%Content.orphaned.each do |uniq|
+  item = uniq.real_content 
+  url = get_url(item).gsub('show', 'edit')
+%>
+  <tr id="content<%=uniq.id%>" class="<%=oddclass%>">
+    <td><a href="<%=url%>"><%=item.resolve_hid == '' ? '(Sin nombre)' : item.resolve_hid%></a></td>
+    <td class="infoinline" style="width: 200px;"><%=print_tstamp(item.updated_on, 'compact')%></td>
+    <td style="width: 125px;"><%=link_to item.user.login, :controller => '/miembros', :action => item.user.login%></td>
+    <td class="infoinline"><%=item.cache_comments_count%></td>
+    <td class="infoinline"><%=(item.hits_anonymous + item.hits_registered)%></td>
+    </tr>
+<% end -%>
+</table>
+<% end -%>

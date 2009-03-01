@@ -11,9 +11,9 @@ class Admin::ContenidosController < ApplicationController
   
   def submenu_items
     if @user.is_bigboss? then
-      return [['Hotmap', '/admin/contenidos/hotmap'], ['Pendientes', '/admin/contenidos'], ['Últimas decisiones', '/admin/contenidos/ultimas_decisiones'], ['Papelera', '/admin/contenidos/papelera'], ]
+      return [['Hotmap', '/admin/contenidos/hotmap'], ['Pendientes', '/admin/contenidos'], ['Huérfanos', '/admin/contenidos/huerfanos'], ['Últimas decisiones', '/admin/contenidos/ultimas_decisiones'], ['Papelera', '/admin/contenidos/papelera'], ]
     elsif @user.is_editor? then
-      return [['Pendientes', '/admin/contenidos'], ['Papelera', '/admin/contenidos/papelera'], ]
+      return [['Pendientes', '/admin/contenidos'], ['Huérfanos', '/admin/contenidos/huerfanos'], ['Papelera', '/admin/contenidos/papelera'], ]
     else
       return [['Pendientes', '/admin/contenidos'], ]
     end
@@ -27,6 +27,10 @@ class Admin::ContenidosController < ApplicationController
       controller = Cms::translate_content_name(c.name)
       @contents<< [Cms::translate_content_name(c.name).capitalize, c.pending, controller]
     end
+  end
+  
+  def huerfanos
+    require_user_is_staff
   end
   
   def papelera
