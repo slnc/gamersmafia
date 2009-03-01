@@ -94,21 +94,15 @@ class FactionsPortal < Portal
         if obj.respond_to?(:is_categorizable?)
           t = Term.find(:first, :conditions => "id = root_id AND slug IN (#{toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC')
           t.add_content_type_mask(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id)))
-          return t
+          #return t
           # TODO
           # ahora reemplazamos obj por la categoría de primer nivel si es facción o plataforma
           g = self.games
-          if g.size > 1
-            obj = obj.category_class.find_by_code(g[0].code) # cargamos la categoría como proxy para hacer consultas y que incluya la constraint de category_id
-          elsif self.factions.size > 0 # platform
-            obj = obj.category_class.find_by_code(self.factions[0].code)
-          end
-          
-          if g.size > 1
+         if g.size > 1
             g.delete_at(0)
-            g.each { |gg| obj.add_sibling(obj.class.find_by_code(gg.code)) }
-          end
-          obj
+            g.each do |gg| t.add_sibling(Term.single_toplevel(:game_id => gg.id)) end
+         end
+         return t
         end
         obj
       end

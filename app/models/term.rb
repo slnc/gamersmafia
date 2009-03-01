@@ -733,6 +733,12 @@ class Term < ActiveRecord::Base
     Term.toplevel(:clan_id => nil).each do |t| @siblings<< t end
   end
   
+  def add_sibling(sibling_term)
+    raise "sibling_term must be a term but is a #{sibling_term.class.name}" unless sibling_term.class.name == 'Term'
+    @siblings ||= []
+    @siblings<< sibling_term
+  end
+  
   private
   def check_references_to_ancestors
     if !self.new_record?
