@@ -8,7 +8,7 @@
 		<th>Lecturas</th>
 		<th>Comentarios</th>
 	</tr>
-<%@term.find(:published, :treemode => (params[:treemode] == 't'), :content_type => params[:content_type], :order => 'lower(contents.name)', :limit => 100).each do |c| %>
+<%@term.find(:all, :treemode => (params[:treemode] == 't'), :content_type => params[:content_type], :order => 'lower(contents.name)', :limit => 100).each do |c| %>
 <tr class="<%=oddclass%>">
 	<td class="checkbox"><input type="checkbox" name="contents[]" value="<%=c.unique_content_id%>" onclick="slnc.hilit_row(this, 'selrow');" /></td>
 	<td><a href="<%=gmurl(c)%>"><%=c.title%></a></td>

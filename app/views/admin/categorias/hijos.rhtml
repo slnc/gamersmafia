@@ -47,10 +47,11 @@ end
 <form method="post" action="/<%=controller.cats_path%>/term/<%=@term.id%>/update?redirto=<%=controller.request.request_uri%>">
 <p><label for="topics_category_name">Nombre</label><br/>
 <%= text_field 'term', 'name', :class => 'text'  %></p>
-
+<% if @term.root_id != @term.id then %>
 <p><label for="topics_category_parent">Categoría de la que depende:</label><br />
 <%= render_tree_select(@term.root.children.find(:all, :conditions => ["taxonomy = ?", Term.taxonomy_from_class_name(params[:content_type])]), 'name', 'term[parent_id]', @term.parent_id, true)%></p>
 <br />
+<% end %>
 <input type="submit" value="Guardar" />
 </form>
 <% end -%>
@@ -97,4 +98,13 @@ end
   <% end %>
   </table>
 <% end -%>
+
+<% if @user.has_admin_permission?(:capo) && @term.can_be_destroyed? then %>
+	<%mftext('Borrar categoría de primer nivel') do %>
+	<form method="post" action="/admin/categorias/destroy/<%=@term.id%>">
+		<input type="submit" value="Borrar" onclick="return confirm('¿Estás seguro?');" />
+	</form>
+	<% end -%>
+<% end -%>
+
 <% end -%>

@@ -170,6 +170,18 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
     assert_nil Term.find_by_id(@t.id)
   end
   
+  def test_destroy_if_perm_and_root
+    g = Game.new(:name => 'baaaa', :code => 'b2')
+    assert g.save
+    @t1 = Term.single_toplevel(:slug => g.code)
+    assert_not_nil @t1
+    Faction.find_by_code(g.code).destroy
+    sym_login 1
+    post :destroy, :id => @t1.id
+    assert_response :redirect
+    assert_nil Term.find_by_id(@t1.id)
+  end
+  
   def test_destroy_if_no_perm
     test_create_if_perm
     sym_login 3

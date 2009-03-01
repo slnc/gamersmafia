@@ -7,20 +7,6 @@
   </script>
   <% edterms = Cms.get_editable_terms_by_group(@user) %>
   <select onchange="change_root(this.value);">
-  	<% if edterms[:bazar_districts].size > 0 then %>
-  	<optgroup label="Distritos"></optgroup>
-	<%edterms[:bazar_districts].each do |t|%>
-	<option <%='selected="selected"' if @term && @term.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
-	<% end -%>
-	<% end -%>
-	
-	<% if edterms[:special].size > 0 then %>
-	<optgroup label="Especiales"></optgroup>
-	<%edterms[:special].each do |t|%>
-	<option <%='selected="selected"' if @term && @term.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
-	<% end -%>
-	<% end -%>
-	
 	<% if edterms[:games].size > 0 then %>
 	<optgroup label="Juegos"></optgroup>
 	<%edterms[:games].each do |t|%>
@@ -34,4 +20,19 @@
 	<option <%='selected="selected"' if @term && @term.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
 	<% end -%>
 	<% end -%>
+	
+	<% if edterms[:bazar_districts].size > 0 then %>
+  	<optgroup label="Distritos"></optgroup>
+	<%edterms[:bazar_districts].each do |t|%>
+	<option <%='selected="selected"' if @term && @term.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
+	<% end -%>
+	<% end -%>
+	
+	<% if edterms[:special].size > 0 then %>
+	<optgroup label="Especiales"></optgroup>
+	<%edterms[:special].each do |t|%>
+	<option <%='selected="selected"' if @term && @term.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
+	<% end -%>
+	<% end -%>
+	
   </select>

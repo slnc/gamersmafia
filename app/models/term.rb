@@ -4,7 +4,7 @@ class Term < ActiveRecord::Base
   belongs_to :platform
   belongs_to :clan
   
-  has_many :contents_terms #, :dependent => :destroy
+  has_many :contents_terms, :dependent => :destroy
   has_many :contents, :through => :contents_terms
   
   belongs_to :last_updated_item, :class_name => 'Content', :foreign_key => 'last_updated_item_id'
@@ -23,6 +23,12 @@ class Term < ActiveRecord::Base
   validates_format_of :name, :with => /^.{1,100}$/
   validates_uniqueness_of :name, :scope => [:game_id, :bazar_district_id, :platform_id, :clan_id, :taxonomy, :parent_id]
   validates_uniqueness_of :slug, :scope => [:game_id, :bazar_district_id, :platform_id, :clan_id, :taxonomy, :parent_id]
+  
+  before_destroy :sanity_check
+  
+  def sanity_check
+    return false if self.contents_count > 25
+  end
   
   def copy_parent_attrs
     return true if self.id == self.root_id
@@ -264,7 +270,10 @@ class Term < ActiveRecord::Base
   end
   
   def can_be_destroyed?
-    self.children.count == 0 && self.contents_count == 0
+    # primera linea es para categorias no de primer nivel
+    # segunda es para categorias de primer nivel
+    ((self.root_id != self.id && self.contents_count == 0) || \
+     self.root_id == self.id && (self.game_id || self.platform_id) && Faction.find_by_code(self.code).nil?)
   end
   
   def self.taxonomy_from_class_name(cls_name)
