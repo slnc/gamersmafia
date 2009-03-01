@@ -18,7 +18,7 @@ for news in @last_news
 	break if i > max
     shown_news << news.unique_content.id
 %>
-<li id="content<%=news.unique_content.id%>" class="new <%=oddclass%>"><%= link_to "<div class=\"content-category\">#{faction_favicon(news.news_category)}</div>#{truncate(news.title, 30)}", gmurl(news) %></li>
+<li id="content<%=news.unique_content.id%>" class="new <%=oddclass%>"><%= link_to "<div class=\"content-category\">#{faction_favicon(news.main_category)}</div>#{truncate(news.title, 30)}", gmurl(news) %></li>
 <%  
 	i += 1
 end 

@@ -831,6 +831,20 @@ module Cms
     elsif thing.class.name == 'Funthing'
       code = 'bazar'
       name = 'bazar'
+    elsif thing.class.name == 'Term'
+      g = nil
+      %w(game platform bazar_district clan).each do |posattr|
+        if thing.send("#{posattr}_id".to_sym)
+          g = thing.send(posattr.to_sym)
+          code = g.code
+          name = g.name
+          break
+        end
+      end
+      if g.nil?
+        code = 'gm'
+        name = 'gm'
+      end
     else # es categoría o contenido
       if thing.class.name == 'Content' then
         thing = thing.real_content
