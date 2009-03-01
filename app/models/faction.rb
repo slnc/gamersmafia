@@ -10,13 +10,16 @@ class Faction < ActiveRecord::Base
   has_and_belongs_to_many :portals
   
   after_save :update_img_files
-  before_destroy :set_users_faction_id_to_nil
+  
   after_create :notify_capos_on_create # TODO mover a otro sitio
   
   has_users_role 'Moderator'
   has_users_role 'Boss'
   has_users_role 'Underboss'
   
+  GRACE_DAYS = 7
+  
+  before_destroy :set_users_faction_id_to_nil
   before_destroy :destroy_editors_too
   
   def destroy_editors_too
@@ -32,6 +35,9 @@ class Faction < ActiveRecord::Base
   
   def set_users_faction_id_to_nil
     self.users.each { |u| Factions.user_joins_faction(u, nil) }
+    [:boss_user_id, :underboss_user_id].each do |s|
+      User.db_query("UPDATE users SET cache_is_faction_leader = NULL WHERE id = #{self.send(s)}") if self.send(s)
+    end
   end
   
   def is_moderator?(u)

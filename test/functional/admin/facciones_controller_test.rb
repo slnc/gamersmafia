@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
 class Admin::FaccionesControllerTest < ActionController::TestCase
-
   def test_index_should_work
     sym_login 1
     get :index
@@ -23,5 +22,14 @@ class Admin::FaccionesControllerTest < ActionController::TestCase
     assert_response :redirect
     f.reload
     assert_equal "#{n} a", f.name
+  end
+  
+  def test_delete_works
+    sym_login 1
+    f = Faction.new(:name => 'faccionita', :code => 'code')
+    assert f.save, f.errors.full_messages_html
+    post :destroy, :id => f.id
+    assert_response :redirect
+    assert Faction.find_by_id(f.id).nil?
   end
 end

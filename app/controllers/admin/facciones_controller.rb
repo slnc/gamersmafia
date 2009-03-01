@@ -1,6 +1,13 @@
-class Admin::FaccionesController < AdministrationController
+class Admin::FaccionesController < ApplicationController
   helper :miembros
+  audit :destroy
+  
+  require_admin_permission :capo
 
+  def wmenu_pos
+    'hq'
+  end
+  
   def index
     @title = 'Facciones'
     @navpath = [['Admin', '/admin'], ['Facciones', '/admin/facciones'], ]
@@ -42,5 +49,13 @@ class Admin::FaccionesController < AdministrationController
     else
       render :action => 'edit'
     end
+  end
+  
+  def destroy
+    faction = Faction.find(params[:id])
+    raise AccessDenied unless faction.created_on >= Faction::GRACE_DAYS.days.ago
+    faction.destroy
+    flash[:notice] = "Facción <strong>#{faction.name}(#{faction.code})</strong> borrada correctamente"
+    redirect_to '/admin/facciones'
   end
 end

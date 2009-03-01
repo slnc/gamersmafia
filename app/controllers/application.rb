@@ -379,7 +379,6 @@ Request information:
       items<< ['Ads Slots', '/admin/ads_slots']
       items<< ['Canales GMTV', '/admin/canales']
       items<< ['Competiciones', '/admin/competiciones']
-      items<< ['Facciones', '/admin/facciones']
       items<< ['Grupos', '/admin/grupos']
       items<< ['Hipótesis', '/admin/hipotesis']
       items<< ['Juegos', '/admin/juegos']
@@ -396,6 +395,7 @@ Request information:
       items<< ['IP Bans', '/admin/ip_bans']
       items<< ['Mapas', '/admin/mapas_juegos']
       items<< ['Users', '/admin/usuarios']
+      items<< ['Facciones', '/admin/facciones']
     end
     
     if user.is_superadmin? || user.has_admin_permission?(:bazar_manager) || user.has_admin_permission?(:capo) 
