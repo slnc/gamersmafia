@@ -22,6 +22,58 @@
 	  	</tr>
 		
 	  	</table>
+	  	
+	  	<a href="">Enviarle un mensaje</a>
+	
+	<% if user_is_authed and @curuser.id != @user.id then 
+@curmessage = Message.new %>
+<% if Friendship.find_between(@curuser, @user).nil? then %>
+<% mftext('Invitar a mi lista de amigos') do %>
+<p><%=@curuser.login%> no está en tu lista de amigos. Si lo deseas puedes añadirle a tu lista desde aquí.<br />
+<form method="post" action="/cuenta/amigos/iniciar_amistad/<%=@curuser.login%>">
+  <input type="hidden" name="redirto" value="<%=controller.request.request_uri%>" />
+  <input type="submit" class="button" value="Añadir a mi lista de amigos" />
+</form>
+<% end -%>
+<% end -%>  	
+	  	<% if @curuser.hstate == 'zombie' then %>
+	  	<br />
+	  	<br />
+<% mftext('Resucitar') do %>
+<% if (@curuser.resurrected_by_user_id == @user.id and @curuser.resurrection_started_on.to_i > Time.now.to_i - 86400 * 7) %>
+<p>Este usuario todavía está en proceso de resurrección.</p>
+<% elsif (@curuser.resurrected_by_user_id and @curuser.resurrection_started_on.to_i > Time.now.to_i - 86400 * 7) %>
+<p><%=@user.login%> está en un proceso de resurrección iniciado por otro usuario.</p>
+<% elsif Faith.resurrections_incomplete(@user) >= Faith.max_incomplete_resurrections(@user)%>
+<p>Has alcanzado tu límite de resurrecciones incompletas. Debes esperar a que alguna se complete o se desactive o bien subas de nivel de fe.</p>
+<% else %>
+<p><%=@curuser.login%> lleva más de 3 meses sin aparecer por la web. Si sabes cómo hacer que vuelva a iniciar sesión en la web y consigues que lo haga tu nivel de fe aumentará.<br />
+<form method="post" action="/cuenta/cuenta/resurrect">
+  <input type="hidden" name="redirto" value="<%=controller.request.request_uri%>" />
+  <input type="hidden" name="login" value="<%=@curuser.login%>" />
+  <input type="submit" class="button" value="Iniciar resurrección" />
+</form>
+<% end -%>
+<% end #mftext -%>
+<% end -%>
+<% end -%>
+
+<%= form_tag :controller => '/cuenta/mensajes', :action => 'create_message' %>
+<%= hidden_field_tag 'redirto', request.path %>
+<input type="hidden" name="message[message_type]" value="<%=Message::R_USER%>" />
+<input type="hidden" name="message[recipient_user_login]" value="<%=@curuser.login%>" />
+<br />
+<br />
+<% mftext('Enviarle un mensaje') do %>
+<p><label for="message_title">Asunto</label><br/>
+<%= text_field 'message', 'title', :class => 'text'%></p>
+
+<p><label for="message_message">Contenido</label><br/>
+<%= text_area 'message', 'message', :rows => 5, :cols => 70%></p>
+<br />
+  <%= submit_tag 'Enviar' %>
+</form>
+<% end #mftext -%>
 <% end -%>
 
 <% if @curuser.enable_profile_signatures? then %>
@@ -268,7 +320,7 @@ dat = Stats.user_contents_by_portal(@curuser)
 @curmessage = Message.new %>
 <% if Friendship.find_between(@curuser, @user).nil? then %>
 <% mftext('Invitar a mi lista de amigos') do %>
-<p><%=@curuser.login%> no está en tu lista de amigos. Si lo deseas puedes añadirle a tu lista desde aquí.<br />
+<p><%=@curuser.login%> no está en tu lista de amigos. Si lo deseas puedes añadirle a tu lista desde aquí.<br /></p>
 <form method="post" action="/cuenta/amigos/iniciar_amistad/<%=@curuser.login%>">
   <input type="hidden" name="redirto" value="<%=controller.request.request_uri%>" />
   <input type="submit" class="button" value="Añadir a mi lista de amigos" />
@@ -377,7 +429,7 @@ User.find(:all, :conditions => "id IN (#{@curuser.friends_ids_sql}) AND photo IS
 
 	<% i += 1 
 end -%>
-<% if i % 3 < 2 %></div><% end -%>
+<% if i % 3 != 3 %></div><% end -%>
 	
 	<div class="clearl right"><a href="/miembros/<%=@curuser.login%>/amigos">Ver todos &raquo;</a></div>
 
