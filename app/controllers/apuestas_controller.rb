@@ -7,7 +7,7 @@ class ApuestasController < ArenaController
     @bet = Bet.find(params[:id])
     require_user_can_edit(@bet)
     raise ActiveRecord::RecordNotFound if (not @bet.is_public? or @bet.closes_on > Time.now or @bet.completed?)
-    GmSys.job("Bet.find(#{params[:id]}).complete(#{params[:winner]})")
+    GmSys.job("Bet.find(#{params[:id]}).complete('#{params[:winner]}')")
     flash[:notice] = "Apuesta completada correctamente. En cuanto finalice el reparto de gamersmafios (unos segundos) aparecerá como completada."
     redirect_to gmurl(@bet)
   end
