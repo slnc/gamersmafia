@@ -88,6 +88,11 @@ function report_comment(comment_id){
     return false;
 }
 
+function new_message(user_id){
+	jQuery.facebox({ ajax: '/cuenta/mensajes/new?id='+user_id });
+    return false;
+}
+
 function report_user(user_id){
 	jQuery.facebox({ ajax: '/site/report_user_form/'+user_id });
     return false;

@@ -23,6 +23,12 @@ class Cuenta::MensajesControllerTest < Test::Unit::TestCase
     assert_response :success
   end
   
+  def test_new
+    sym_login 1
+    get :new
+    assert_response :success
+  end
+  
   def test_del_messages_should_work
     sym_login 1
     m = Message.find(1)

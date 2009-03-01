@@ -1,0 +1,23 @@
+<div class="facebox-title">Mensaje privado a <%=@curuser.login%></div>
+
+<div class="facebox-content">
+<div id="aaa"></div>
+<%=form_remote_tag({:update => 'aaa', :url => "/cuenta/mensajes/create_message", :evalScripts => true})%>
+<input type="hidden" name="message[message_type]" value="<%=Message::R_USER%>" />
+<input type="hidden" name="message[recipient_user_login]" value="<%=@curuser.login%>" />
+<input type="hidden" name="ajax" value="1" />
+<p><label for="message_title">Asunto</label><br/>
+<%= text_field 'message', 'title', :id => 'mpthetitle', :class => 'text w100pc'%></p>
+
+<p><label for="message_message">Contenido</label><br/>
+<%= text_area 'message', 'message', :rows => 5, :cols => 50 %></p>
+<br />
+<div style="text-align: right;">
+<input type="button" value="Cancelar" onclick="closeFacebox();" /> &nbsp; &nbsp; &nbsp;   
+<input type="submit" value="Enviar" />
+</div>
+</form>
+<script type="text/javascript">
+	setTimeout("$j('#mpthetitle').focus();", 300);
+</script>
+</div>

@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), '../app_config')
 
 # Include your application configuration below
-if App.windows?
+if App.windows? || App.mode != 'production'
   ActionMailer::Base.delivery_method = :test # smtp
   ActionMailer::Base.smtp_settings[:address] = 'dharana.net'
 else

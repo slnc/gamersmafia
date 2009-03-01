@@ -29,6 +29,11 @@ class Cuenta::MensajesController < ApplicationController
     render :action => 'mensajes'
   end
   
+  def new
+    @curuser = User.find(params[:id])
+    render :layout => false
+  end
+  
   
   def create_message
     @title = 'Mensajes'
@@ -43,43 +48,43 @@ class Cuenta::MensajesController < ApplicationController
     # Check recipient
     case params[:message][:message_type].to_i
       when Message::R_USER:
-        u = User.find_by_login(params[:message][:recipient_user_login])
-        if u.nil?
-          flash[:error] = "El usuario especificado no existe."
-          redirect_to params[:redirto] and return false
-        elsif !User::STATES_CAN_LOGIN.include?(u.state)
-          flash[:error] = "El usuario especificado existe pero su cuenta no está disponible."
-          redirect_to params[:redirto] and return false
-        end
-        recipients = [u.id]
-        # no check
+      u = User.find_by_login(params[:message][:recipient_user_login])
+      if u.nil?
+        flash[:error] = "El usuario especificado no existe."
+        redirect_to params[:redirto] and return false
+      elsif !User::STATES_CAN_LOGIN.include?(u.state)
+        flash[:error] = "El usuario especificado existe pero su cuenta no está disponible."
+        redirect_to params[:redirto] and return false
+      end
+      recipients = [u.id]
+      # no check
       when Message::R_CLAN:
-        if params[:message][:recipient_clan_id].nil?
-          params[:message][:recipient_clan_id] = @user.last_clan_id
-        end
-        
-        if params[:message][:recipient_clan_id].nil?
-          flash[:error] = "No se ha encontrado el clan especificado."
-          redirect_to params[:redirto] and return false
-        end
-        
-        c = Clan.find(params[:message][:recipient_clan_id])
-        raise ActiveRecord::RecordNotFound unless c && c.user_is_member(@user.id)
-        recipients = c.all_users_of_this_clan.collect { |u| u.id }
+      if params[:message][:recipient_clan_id].nil?
+        params[:message][:recipient_clan_id] = @user.last_clan_id
+      end
+      
+      if params[:message][:recipient_clan_id].nil?
+        flash[:error] = "No se ha encontrado el clan especificado."
+        redirect_to params[:redirto] and return false
+      end
+      
+      c = Clan.find(params[:message][:recipient_clan_id])
+      raise ActiveRecord::RecordNotFound unless c && c.user_is_member(@user.id)
+      recipients = c.all_users_of_this_clan.collect { |u| u.id }
       when Message::R_FACTION:
-        f = @user.faction
-        raise ActiveRecord::RecordNotFound unless f.is_bigboss?(@user)
-        recipients = f.members.collect { |u| u.id }
+      f = @user.faction
+      raise ActiveRecord::RecordNotFound unless f.is_bigboss?(@user)
+      recipients = f.members.collect { |u| u.id }
       when Message::R_FACTION_STAFF:
-        f = @user.faction
-        raise ActiveRecord::RecordNotFound unless f.is_bigboss?(@user)
-        recipients = []
-        recipients += f.moderators.collect { |u| u.id}
-        recipients += f.editors.collect { |content_type, u| u.id }
-        recipients<< f.boss.id if f.has_boss? && f.boss.id != @user.id
-        recipients<< f.underboss.id if f.has_underboss? && f.underboss.id != @user.id
+      f = @user.faction
+      raise ActiveRecord::RecordNotFound unless f.is_bigboss?(@user)
+      recipients = []
+      recipients += f.moderators.collect { |u| u.id}
+      recipients += f.editors.collect { |content_type, u| u.id }
+      recipients<< f.boss.id if f.has_boss? && f.boss.id != @user.id
+      recipients<< f.underboss.id if f.has_underboss? && f.underboss.id != @user.id
       when Message::R_FRIENDS:
-        recipients = @user.friends.collect { |u| u.id }
+      recipients = @user.friends.collect { |u| u.id }
     end
     params[:message][:user_id_from] = @user.id
     params[:message].delete(:recipient_clan_id)
@@ -91,7 +96,11 @@ class Cuenta::MensajesController < ApplicationController
     end
     
     flash[:notice] = 'Mensaje enviado correctamente.'
-    redirect_to params[:redirto]
+    if params[:ajax]
+      render :partial => '/shared/ajax_facebox_feedback', :layout => false
+    else
+      redirect_to params[:redirto]
+    end
   end
   
   def mensaje

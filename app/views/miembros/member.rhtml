@@ -20,22 +20,23 @@
 	  		<td class="infoinline" style="width: 50%"><strong><%=print_tstamp(@curuser.created_on, 'date')%></strong></td>
 			<td class="infoinline" style="width: 50%"><strong><%=print_tstamp(@curuser.lastseen_on)%></strong></td>
 	  	</tr>
-		
-	  	</table>
-	  	
-	  	<a href="">Enviarle un mensaje</a>
+	</table>
 	
-	<% if user_is_authed and @curuser.id != @user.id then 
-@curmessage = Message.new %>
+	<% if user_is_authed and @curuser.id != @user.id then %>
+	  	
+	  	<div style="margin: 10px 0;">
+	  		<a href="" onclick="return new_message(<%=@curuser.id%>);">Enviar un mensaje</a><br />
+	  	</div>
+	  	
+	  		<div style="margin: 10px 0;">
 <% if Friendship.find_between(@curuser, @user).nil? then %>
-<% mftext('Invitar a mi lista de amigos') do %>
-<p><%=@curuser.login%> no está en tu lista de amigos. Si lo deseas puedes añadirle a tu lista desde aquí.<br />
 <form method="post" action="/cuenta/amigos/iniciar_amistad/<%=@curuser.login%>">
   <input type="hidden" name="redirto" value="<%=controller.request.request_uri%>" />
   <input type="submit" class="button" value="Añadir a mi lista de amigos" />
 </form>
-<% end -%>
-<% end -%>  	
+<% end -%>	  		
+	  	</div>
+  	
 	  	<% if @curuser.hstate == 'zombie' then %>
 	  	<br />
 	  	<br />
@@ -58,22 +59,6 @@
 <% end -%>
 <% end -%>
 
-<%= form_tag :controller => '/cuenta/mensajes', :action => 'create_message' %>
-<%= hidden_field_tag 'redirto', request.path %>
-<input type="hidden" name="message[message_type]" value="<%=Message::R_USER%>" />
-<input type="hidden" name="message[recipient_user_login]" value="<%=@curuser.login%>" />
-<br />
-<br />
-<% mftext('Enviarle un mensaje') do %>
-<p><label for="message_title">Asunto</label><br/>
-<%= text_field 'message', 'title', :class => 'text'%></p>
-
-<p><label for="message_message">Contenido</label><br/>
-<%= text_area 'message', 'message', :rows => 5, :cols => 70%></p>
-<br />
-  <%= submit_tag 'Enviar' %>
-</form>
-<% end #mftext -%>
 <% end -%>
 
 <% if @curuser.enable_profile_signatures? then %>
@@ -316,18 +301,6 @@ dat = Stats.user_contents_by_portal(@curuser)
 <% end -%>
   </table>
 
-<% if user_is_authed and @curuser.id != @user.id then 
-@curmessage = Message.new %>
-<% if Friendship.find_between(@curuser, @user).nil? then %>
-<% mftext('Invitar a mi lista de amigos') do %>
-<p><%=@curuser.login%> no está en tu lista de amigos. Si lo deseas puedes añadirle a tu lista desde aquí.<br /></p>
-<form method="post" action="/cuenta/amigos/iniciar_amistad/<%=@curuser.login%>">
-  <input type="hidden" name="redirto" value="<%=controller.request.request_uri%>" />
-  <input type="submit" class="button" value="Añadir a mi lista de amigos" />
-</form>
-<% end #mftext -%>
-<% end #if friendsh -%>
-<% end # if user -%>
 <% end -%>
 
 </div>
