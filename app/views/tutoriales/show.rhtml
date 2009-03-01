@@ -1,8 +1,8 @@
 <% content_support do %>
 <% if @tutorial.is_public? then %>
-<%=mfcontents_basic("Más tutoriales de #{@tutorial.tutorials_category.name}", 
+<%=mfcontents_basic("Más tutoriales de #{@tutorial.main_category.name}", 
 	Tutorial,
-	[:published, {:conditions => "tutorials_category_id IN (#{(@tutorial.tutorials_category.get_all_children.<<(@tutorial.tutorials_category.id)).join(',')})", :order => 'created_on desc', :limit => 5}],
+	[:published, {:conditions => "tutorials_category_id IN (#{(@tutorial.main_category.all_children_ids.<<(@tutorial.main_category.id)).join(',')})", :order => 'created_on desc', :limit => 5}],
     :cache => "/tutoriales/latest_by_cat_#{@tutorial.tutorials_category_id}",
  	:rating => true,
 	:faction_favicon => true,

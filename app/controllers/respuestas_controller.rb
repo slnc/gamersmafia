@@ -1,4 +1,4 @@
-class RespuestasController < ApplicationController
+class RespuestasController < InformacionController
   acts_as_content_browser :questions
   allowed_portals [:gm, :faction, :bazar, :bazar_district]
   
@@ -11,11 +11,12 @@ class RespuestasController < ApplicationController
   end
   
   def categoria
-    @category = QuestionsCategory.find(:first, :conditions => ['id = ?', params[:id]]) unless @category
+    @category = Term.find_taxonomy(params[:id], 'QuestionsCategory') unless @category
+    @category = Term.single_toplevel(:id => params[:id]) unless @category
     raise ActiveRecord::RecordNotFound unless @category
     params[:category] = @category
     # TODO que no sea de una categoria que no deberia
-    paths, navpath = @category.get_category_address
+    paths, navpath = get_category_address(@category, 'QuestionsCategory')
     @category.get_ancestors.reverse.each { |p| navpath2<< [p.name, "/respuestas/categoria/#{p.id}"] }
     @title = "Preguntas y respuestas de #{@category.name}"
     render :action => 'index'
@@ -23,11 +24,11 @@ class RespuestasController < ApplicationController
   
   def abiertas
     if params[:id]
-      @category = QuestionsCategory.find(:first, :conditions => ['id = ?', params[:id]]) unless @category
+      @category = Term.find_taxonomy(params[:id], 'QuestionsCategory') unless @category
       raise ActiveRecord::RecordNotFound unless @category
       params[:category] = @category
       # TODO que no sea de una categoria que no deberia
-      paths, navpath = @category.get_category_address
+      paths, navpath = get_category_address(@category, 'QuestionsCategory')
       @category.get_ancestors.reverse.each { |p| navpath2<< [p.name, "/respuestas/categoria/#{p.id}"] }
       @title = "Preguntas abiertas de #{@category.name}"
     else
@@ -37,11 +38,11 @@ class RespuestasController < ApplicationController
   
   def cerradas
     if params[:id]
-      @category = QuestionsCategory.find(:first, :conditions => ['id = ?', params[:id]]) unless @category
+      @category = Term.find_taxonomy(params[:id], 'QuestionsCategory') unless @category
       raise ActiveRecord::RecordNotFound unless @category
       params[:category] = @category
       # TODO que no sea de una categoria que no deberia
-      paths, navpath = @category.get_category_address
+      paths, navpath = get_category_address(@category, 'QuestionsCategory')
       @category.get_ancestors.reverse.each { |p| navpath2<< [p.name, "/respuestas/categoria/#{p.id}"] }
       @title = "Preguntas cerradas de #{@category.name}"
     else
@@ -61,6 +62,7 @@ class RespuestasController < ApplicationController
     if @question.set_best_answer(@comment.id, @user)
       flash[:notice] = "Mejor respuesta guardada correctamente."
     else
+      
       flash[:error] = "Ocurrió un error al guardar la mejor respuesta: #{@question.errors.full_messages_html}"
     end
     redirect_to gmurl(@question)

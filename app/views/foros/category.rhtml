@@ -1,6 +1,6 @@
 <% content_support do %>
   <%=render :partial => '/foros/nuevo_topic'%>
-  <%=render :partial => '/shared/last_commented_items_in_category', :object => @object = @forum%>
+  <%=render :partial => '/shared/last_commented_items_in_category', :locals => { :category => @forum, :content_type => 'Topic' } %>
   <%=render :partial => 'most_active_users', :object => @object = @forum%>
   <%=render :partial => 'most_active_topics', :object => @object = @forum%>
 <% end -%>
@@ -14,7 +14,7 @@
     <th style="text-align: center; width: 50px;">Comentarios</td>
     <th style="text-align: right; width: 150px;">Último</td>
   </tr>
-  <%=render(:partial => 'forums_list', :locals => {:parent_id => @forum.id}) %>
+  <%=render(:partial => 'forums_list', :locals => {:parent => @forum}) %>
 </table>
 <% end -%>
 <% end -%>

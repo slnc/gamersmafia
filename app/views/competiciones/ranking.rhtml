@@ -19,8 +19,7 @@
   for p in @competition.winners(100) %>
   <tr class="<%=oddclass%>">
     <td class="w20"><%=i%></td>
-    <td><a href="/competiciones/participante/<%=p.id%>"><%=notags(p.name)%></a> <%=w.include?(p.id) ? "<img src=\"/images/blank.gif\" class=\"competition-cup cup#{winner}\" />" : ''%></td>
-
+    <td><a href="/competiciones/participante/<%=p.id%>"><%=notags(p.name)%></a> <%=winner_cup(winner) if w.include?(p.id) %></td>
     <td class="centered"><%=p.points%></td>
     <td class="centered"><%=p.wins%></td>
     <td class="centered"><%=p.ties%></td>

@@ -18,19 +18,23 @@ class Event < ActiveRecord::Base
     end
   end
   
-  def self.current(categories=[0])
-    if categories.size > 0 && categories[0].kind_of?(EventsCategory) then
-      categories = categories.collect { |c| c.id }
+  
+  CURRENT_SQL = "events.starts_on < now() + '2 months'::interval
+                     AND events.parent_id is null
+                     AND events.ends_on > now() 
+                     AND events.id not in (SELECT event_id from competitions)"
+                     
+  def self.current(opts={})
+    opts = {:order => 'starts_on', :limit => 7}.merge(opts)
+    conds = CURRENT_SQL
+                     
+    if opts[:conditions]
+      opts[:conditions] << " AND #{conds}"
+    else
+      opts[:conditions] = conds
     end
-    categories = [0] if categories.size == 0
-    find(:published, 
-         :conditions => " events_category_id IN (#{categories.join(',')})
-                     AND starts_on < now() + '2 months'::interval
-                     AND parent_id is null
-                     AND ends_on > now() 
-                     AND id not in (SELECT event_id from competitions)", 
-    :order => 'starts_on ASC', 
-    :limit => 7)
+    
+    self.find(:published, opts)
   end
   
   # TODO esto falla ahora mismo para portales distintos de gm_portal

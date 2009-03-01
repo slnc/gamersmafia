@@ -12,6 +12,7 @@ published:
   event_id: 1
   approved_by_user_id: 1
   state: 2
+  unique_content_id: 11
 
 unpublished:
   id: 2
@@ -26,6 +27,7 @@ unpublished:
   main: foo2
   event_id: 1
   state: 1
+  unique_content_id: 1011
 
 deleted:
   id: 3
@@ -41,3 +43,4 @@ deleted:
   event_id: 1
   approved_by_user_id: 1
   state: 3
+  unique_content_id: 2011

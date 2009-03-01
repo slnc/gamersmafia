@@ -23,7 +23,7 @@
 <tr>
     <td>Juego</td>
     <% games = controller.portal.respond_to?(:factions) ? controller.portal.factions.find(:all).collect { |f| "'#{f.code}'" } : Game.find(:all).collect { |g| "'#{g.code}'" } %>
-    <td><%= select("demo", "demos_category_id", DemosCategory.find(:all, :conditions => "parent_id is null AND code IN (#{games.join(',')})", :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%></p></td>
+    <td><%= select("demo", "demos_category_id", Game.find(:all, :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%></p></td>
 </tr>
 <tr>
     <td>Modo de juego</td>

@@ -154,7 +154,6 @@ class EmblemsTest < Test::Unit::TestCase
   end
   
   def test_give_emblems_editor
-    User.db_query("DELETE from factions_editors")
     assert_gives_emblem('editor') do
       assert_count_increases(UsersRole) do
         Faction.find(1).add_editor(@u, ContentType.find(:first))
@@ -163,7 +162,6 @@ class EmblemsTest < Test::Unit::TestCase
   end
   
   def test_give_emblems_editor_if_not_already_boss
-    User.db_query("DELETE from factions_editors")
     test_give_emblems_boss
     ue_count = UsersEmblem.count
     assert_count_increases(UsersRole) { UsersRole.create(:user_id => @u.id, :role => 'Editor', :role_data => {:faction_id => 1, :content_type_id => 1}.to_yaml) }

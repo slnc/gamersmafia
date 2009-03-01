@@ -54,6 +54,7 @@ class User < ActiveRecord::Base
   has_many :gmtv_channels
   has_many :chatlines
   has_many :content_ratings
+  has_many :contents
   has_many :publishing_personalities
   has_many :publishing_decisions
   has_many :tracker_items
@@ -87,6 +88,7 @@ class User < ActiveRecord::Base
   has_many :questions
   
   has_and_belongs_to_many :games
+  has_and_belongs_to_many :platforms
   
   has_many :users_guids
   
@@ -154,15 +156,13 @@ class User < ActiveRecord::Base
     if /pref_([a-z0-9_]+)$/ =~ smethod_id
       pref_name = smethod_id.gsub('pref_', '')
       pref = self.preferences.find_by_name(pref_name)
-if pref.nil?
-final = UsersPreference::DEFAULTS[pref_name.to_sym]
-final = final.clone if final.kind_of?(Hash)
-else
-final = pref.value
-end
-final
-final
-final
+      if pref.nil?
+        final = UsersPreference::DEFAULTS[pref_name.to_sym]
+        final = final.clone if final.kind_of?(Hash)
+      else
+        final = pref.value
+      end
+      final
     elsif /pref_([a-z0-9_]+)=$/ =~ smethod_id
       # saving preference
       pref_name = smethod_id.gsub('pref_', '').gsub('=', '')
@@ -409,7 +409,7 @@ final
   end
   
   def is_bigboss?
-    (self.users_roles.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha')") > 0) || self.has_admin_permission?(:bazar_manager) || self.has_admin_permission?(:capo) || self.is_superadmin 
+   (self.users_roles.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha')") > 0) || self.has_admin_permission?(:bazar_manager) || self.has_admin_permission?(:capo) || self.is_superadmin 
   end
   
   def is_faction_editor?
@@ -421,7 +421,7 @@ final
     # devuelve true si el usuario puede editar algún tipo de contenido
     if self.is_bigboss?
       true
-    elsif User.db_query("select * from competitions_admins where user_id = #{self.id}").size > 0
+    elsif Users.count(:conditions => 'role IN (\'CompetitionAdmin\', \'CompetitionSupervisor\'') > 0
       true
     elsif self.users_roles.count(:conditions => "role = 'Editor'") > 0
       true
@@ -449,17 +449,6 @@ final
   def unread_messages
     self.cache_unread_messages = Message.update_unread_count(self) if self.cache_unread_messages.nil?    
     self.cache_unread_messages
-  end
-  
-  def is_editor_of? faction
-    # devuelve true si el usuario puede editar algún tipo de contenido
-    if self.is_superadmin then
-      true
-    elsif User.db_query("select * from factions_editors where user_id = #{self.id} and faction_id = #{faction.id}")
-      true
-    else
-      false
-    end
   end
   
   def is_friend_of?(user)
@@ -566,6 +555,10 @@ final
     end
     
     self.cache_karma_points
+  end
+  
+  def popularity_points
+    self.cache_popularity
   end
   
   def karma_points_editor
@@ -760,14 +753,15 @@ final
     
   end
   
-  def self.hot(limit)
+  def self.hot(limit, t1, t2)
+    t1, t2 = t2, t1 if t1 > t2
     # TODO PERF no podemos hacer esto, dios, hay que calcular esta info en segundo plano y solo leerla
     dbi = Dbs.db_query("select count(*), 
                                 model_id 
                            from stats.pageviews 
                           where controller = 'miembros' 
                             and action = 'member' 
-                            and created_on >= now() - '1 week'::interval 
+                            and created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}' 
                             and model_id not in (select id::varchar 
                                                    from users 
                                                   where state in (#{STATES_CANNOT_LOGIN.join(',')})) 
@@ -776,7 +770,7 @@ final
                           limit #{limit}")
     results = []
     dbi.each do |dbu|
-      results<< [User.find(dbu['model_id']), dbu['count']]
+      results<< [User.find(dbu['model_id'].to_i), dbu['count'].to_i]
     end
     results
   end
@@ -900,5 +894,13 @@ final
                          AND #{sex_sql} GROUP BY a.id, a.login, a.avatar_id, a.photo
                        LIMIT #{limit}"
     User.find_by_sql(q)
+  end
+  
+  def self.refered_users_in_time_period(t1, t2)
+    t2, t1 = t1, t2 if t1 > t2
+    User.db_query("SELECT count(*) 
+                     FROM users 
+                    WHERE referer_user_id is not null 
+                      AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")[0]['count'].to_i
   end
 end

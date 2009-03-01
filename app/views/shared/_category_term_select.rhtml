@@ -1,0 +1,22 @@
+<select id="categories_terms_root<%=index%>">
+	<option value=""></option>
+	<% Term.toplevel(:clan_id => nil).each do |t| %>
+	<option value="<%=t.id%>"><%=t.name%></option>
+	<% end -%>
+</select>
+
+<div id="categories_terms<%=index%>">
+<% if selterm then %>
+<%=render_tree_select selterm.root.children.find(:all, :conditions => ['taxonomy = ?', Term.taxonomy_from_class_name(content_type)], :order => 'lower(name)'), 'name', 'categories_terms[]', selterm.id, true %>
+<% end -%>
+</div>
+
+<script type="text/javascript">
+	$j('#categories_terms_root<%=index%>').bind('change', function (e) {
+		$j.get('/site/root_term_children?id=' + $j('#categories_terms_root<%=index%>').val() + '&name=categories_terms[]&content_type=<%=content_type%>', function(data) {
+			$j('#categories_terms<%=index%>').html(data);
+		});
+	})
+</script>
+
+<br />

@@ -5,14 +5,14 @@
 # Esta clase se encarga de gestionar los fragmentos de vista cacheados
 # TODO TODO TODO optimizar todo esto para no limpiar con tanta facilidad
 class CacheObserver < ActiveRecord::Observer
-  observe News, Topic, Demo, Download, Interview, Tutorial, Column, Image, Comment, PollsVote, Poll, Faction, Bet, Potd, Portal, Event, FactionsLink, Clan, Game, Competition, CompetitionsMatch, CompetitionsParticipant, Review, Funthing, Blogentry, User, Content, ProfileSignature, ImagesCategory, TopicsCategory, DownloadsCategory, TutorialsCategory, CommentsValoration, Coverage, GmtvChannel, SlogEntry, Question, Friendship, UsersEmblem, BazarDistrict, ContentsRecommendation, UsersRole, RecruitmentAd, ClansMovement
+  observe News, Topic, Demo, Download, Interview, Tutorial, Column, Image, Comment, PollsVote, Poll, Faction, Bet, Potd, Portal, Event, FactionsLink, Clan, Game, Competition, CompetitionsMatch, CompetitionsParticipant, Review, Funthing, Blogentry, User, Content, ProfileSignature, CommentsValoration, Coverage, GmtvChannel, SlogEntry, Question, Friendship, UsersEmblem, BazarDistrict, ContentsRecommendation, UsersRole, RecruitmentAd, ClansMovement, Term, ContentsTerm
   
   def self.bazar_root_tc_id
-    @@bazar_root_tc_id ||= TopicsCategory.find(:first, :conditions => ['id = root_id AND code = \'bazar\'']).id
+    @@bazar_root_tc_id ||= Term.single_toplevel(:slug => 'bazar')
   end
   
   def self.arena_root_tc_id
-    @@arena_root_tc_id ||= TopicsCategory.find(:first, :conditions => ['id = root_id AND code = \'arena\'']).id
+    @@arena_root_tc_id ||= Term.single_toplevel(:slug => 'arena')
   end
   
   def after_create(object)
@@ -41,6 +41,7 @@ class CacheObserver < ActiveRecord::Observer
       
       when 'ProfileSignature':
       expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/firmas"
+      expire_fragment "#{Cache.user_base(object.user_id)}/profile/last_profile_signatures"
       
       when 'Content':
       CacheObserver.update_pending_contents
@@ -50,16 +51,16 @@ class CacheObserver < ActiveRecord::Observer
       if object.participant1_id
         expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/retos_esperando_respuesta") 
         expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/retos_pendientes_de_jugar")
+        object.participant1.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
       end
       if object.participant2_id
         expire_fragment("/common/competiciones/participante/#{object.participant2_id % 1000}/#{object.participant2_id}/retos_esperando_respuesta")
         expire_fragment("/common/competiciones/participante/#{object.participant2_id % 1000}/#{object.participant2_id}/retos_pendientes_de_jugar")
+        object.participant2.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
       end
       
       when 'CompetitionsParticipant':
-      object.users.each do |u|
-        Cache::Competition.expire_competitions_lists(u)
-      end
+       object.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
       
       if object.competition.kind_of?(Ladder)
         expire_fragment "/arena/home/open_ladders"
@@ -97,40 +98,17 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment "/common/blogs/#{object.user_id % 1000}/#{object.user_id}"
       object.user.faction.portals.each { |p| expire_fragment("/#{p.code}/home/index/blogentries") }  if object.user.faction_id
       
-      when 'Topic':
-      expire_fragment("/bazar/home/categories/#{object.topics_category.code}") if object.topics_category.root_id == CacheObserver.bazar_root_tc_id
-      expire_fragment("/arena/home/last_topics") if object.topics_category.root_id == CacheObserver.arena_root_tc_id
-      expire_fragment('/gm/home/index/topics')
-      expire_fragment('/gm/home/index/topics2')
-      for p in object.get_related_portals; 
-        expire_fragment("/#{p.code}/home/index/topics")
-        expire_fragment("/#{p.code}/home/index/topics2")
-        expire_fragment("/site/lasttopics_left#{p.code}")
-        expire_fragment("/#{p.code}/foros/index/index")
-      end
       
-      
-      expire_fragment("/common/foros/by_root/#{object.topics_category.root_id}")
-      expire_fragment('/site/lasttopics_left')
-      
-      p = object.topics_category
-      expire_fragment("/foros/active_items/#{p.root_id}")
-      expire_fragment "/common/topics/_latest_by_cat2#{p.root.code}"
-      while p
-        expire_fragment("/common/foros/_forums_list/#{p.id}")
-        expire_fragment("/common/home/foros/topics_#{p.id}")
-        
-        p = p.parent
-      end
-      
-      expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_")
       
       when 'FactionsLink':
       expire_fragment("/common/facciones/#{object.faction_id}/webs_aliadas")
       object.faction.portals.each { |p| expire_fragment("/#{p.code}/webs_aliadas") }
       
-      when 'PollsVote':
-      expire_fragment("/encuestas/most_votes")
+    when 'PollsVote':
+      object.polls_option.poll.get_related_portals.each do |portal|
+        expire_fragment("/#{portal.code}/encuestas/index/most_votes")  
+     end
+      
       
       when 'CommentsValoration':
       expire_fragment("/comments/#{Time.now.to_i/(86400*7)}/#{object.comment.content_id%100}/#{object.comment.content_id}_*") # cacheamos solo una semana para q se actualicen barras    
@@ -198,6 +176,7 @@ class CacheObserver < ActiveRecord::Observer
     case object.class.name
       when 'ClansMovement':
       expire_fragment "/home/comunidad/clans_movements"
+      expire_fragment "#{Cache.user_base(object.user_id)}/profile/clanes"
       when 'RecruitmentAd':
       expire_fragment "/home/comunidad/recruitment_ads_#{object.clan_id ? 'clans' : 'users'}"
       when 'UsersRole':
@@ -222,10 +201,12 @@ class CacheObserver < ActiveRecord::Observer
       
       when 'CompetitionsMatch':
       if object.participant1_id
-        expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/retos_esperando_respuesta") 
+        expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/retos_esperando_respuesta")
+        object.participant1.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
       end
       if object.participant2_id
         expire_fragment("/common/competiciones/participante/#{object.participant2_id % 1000}/#{object.participant2_id}/retos_esperando_respuesta")
+        object.participant2.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
       end
       
       if object.accepted && object.completed_on.nil? && object.competition.kind_of?(Ladder) then
@@ -234,6 +215,8 @@ class CacheObserver < ActiveRecord::Observer
       
       when 'ProfileSignature':
       expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/firmas"
+      expire_fragment "#{Cache.user_base(object.user_id)}/profile/last_profile_signatures"
+      
       when 'Game':
       expire_fragment('/common/miembros/buscar_por_guid')
       
@@ -273,12 +256,12 @@ class CacheObserver < ActiveRecord::Observer
           expire_fragment("/#{p.code}/site/last_commented_objects_ids")
         end
       end
-      expire_fragment "/common/topics/_latest_by_cat2#{object.topics_category.root.code}"
+      expire_fragment "/common/topics/_latest_by_cat2#{object.main_category.root.code}"
       
-      expire_fragment("/common/foros/by_root/#{object.topics_category.root_id}")
+      expire_fragment("/common/foros/by_root/#{object.main_category.root_id}")
       expire_fragment('/home/index/topics')
-      expire_fragment("/bazar/home/categories/#{object.topics_category.code}") if object.topics_category.root_id == CacheObserver.bazar_root_tc_id
-      expire_fragment("/arena/home/last_topics") if object.topics_category.root_id == CacheObserver.arena_root_tc_id
+      expire_fragment("/bazar/home/categories/#{object.main_category.code}") if object.main_category.root_id == CacheObserver.bazar_root_tc_id
+      expire_fragment("/arena/home/last_topics") if object.main_category.root_id == CacheObserver.arena_root_tc_id
       expire_fragment('/site/lasttopics_left')
       p = object.topics_category
       while p
@@ -294,12 +277,12 @@ class CacheObserver < ActiveRecord::Observer
       start_page = prev_count / 50 # TODO especificar esto en un único sitio
       end_page = start_page + next_count / 50 + 1
       
-      for i in (start_page..end_page)
-        expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_#{i}")
-      end
+      #for i in (start_page..end_page)
+      #  expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_#{i}")
+      #end
       
       expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_")
-      
+      expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_*")
       
       when 'CommentsValoration':
       expire_fragment("/comments/#{Time.now.to_i/(86400*7)}/#{object.comment.content_id%100}/#{object.comment.content_id}_*") # cacheamos solo una semana para q se actualicen barras    
@@ -318,32 +301,10 @@ class CacheObserver < ActiveRecord::Observer
   
   def before_destroy(object)
     case object.class.name
-      when 'ImagesCategory':
-      object.get_related_portals.each { |p| expire_fragment("/#{p.code}/imagenes/index/galleries") }
-      when 'TopicsCategory':
-      object.get_related_portals.each { |p| expire_fragment("/#{p.code}/foros/index/index") } # tenemos que borrarla entera porque se guardan totales
-      expire_fragment("/common/foros/subforos/#{object.parent_id}")
-      expire_fragment '/common/home/foros/topics_list'
-      p = object
-      while p
-        expire_fragment("/common/foros/_forums_list/#{p.id}")
-        expire_fragment("/common/home/foros/topics_#{p.id}")
-        p = p.parent
-      end
-      when 'DownloadsCategory':
-      object.get_related_portals.each { |p| expire_fragment("/#{p.code}/descargas/index/folders") }
-      p = object
-      while p
-        expire_fragment("/common/descargas/index/folders_#{p.id}")
-        p = p.parent
-      end
-      when 'TutorialsCategory':
-      object.get_related_portals.each { |p| expire_fragment("/#{p.code}/tutoriales/index/folders") }
-      p = object
-      while p
-        expire_fragment("/common/tutoriales/index/folders_#{p.id}")
-        p = p.parent
-      end
+      when 'Term':
+      Cache::Terms.before_destroy(object) unless object.import_mode
+      when 'ContentsTerm':
+      Cache::Terms.before_destroy(object.term) unless object.import_mode
       when 'League':
       do_competitions(object)
       when 'Tournament':
@@ -374,18 +335,28 @@ class CacheObserver < ActiveRecord::Observer
     # para evitar repetir hacemos una cosa, si el contenido tiene un atributo
     # user_id borramos las caches de contenidos de dicho usuario
     if object.respond_to?('user_id') and object.respond_to?(:state) then # TODO no correcto del todo
+      expire_fragment("#{Cache.user_base(object.user_id)}/sus_contenidos_son")
+      expire_fragment("#{Cache.user_base(object.user_id)}/aportaciones")
       expire_fragment("/common/miembros/#{object.user_id % 1000}/#{object.user_id}/contents_stats")
       expire_fragment("/common/miembros/#{object.user_id % 1000}/#{object.user_id}/contenidos/#{object.class.name.downcase}/*")
       if object.slnc_changed?(:state) and object.state == Cms::DELETED
         expire_fragment('/gm/site/last_commented_objects') # borramos caches de últimos comentarios
         expire_fragment('/gm/site/last_commented_objects_ids')
       end
+      
+      return if Cms::CONTENTS_WITH_CATEGORIES.include?(object.class.name) && object.main_category.nil? 
     end
     
     
     case object.class.name
+      when 'Term' then
+      Cache::Terms.after_save(object) unless object.import_mode
+      when 'ContentsTerm' then
+      Cache::Terms.after_save(object.term) unless object.import_mode
+      
       when 'RecruitmentAd':
       expire_fragment "/home/comunidad/recruitment_ads_#{object.clan_id ? 'clans' : 'users'}"
+      
       when 'ContentsRecommendation':
       expire_fragment "/_users/#{object.receiver_user_id % 1000}/#{object.receiver_user_id}/layouts/recommendations"
       
@@ -399,40 +370,18 @@ class CacheObserver < ActiveRecord::Observer
       object.get_related_portals.each { |p| expire_fragment("/#{p.code}/channels") }
       User.db_query("UPDATE global_vars SET gmtv_channels_updated_on = now()")
       
-      when 'ImagesCategory':
-      object.get_related_portals.each do |p|
-        expire_fragment("/#{p.code}/imagenes/index/galleries")
-      end
-      expire_fragment("/common/imagenes/toplevel/#{object.root_id}/page_*")       
-      expire_fragment("/common/imagenes/toplevel/#{object.slnc_changed_old_values[:parent_id]}/page_*") if object.slnc_changed?(:parent_id) # no buscamos el root pq con la config de la sección actualmente no hay más de 2 niveles en la jerarquía
-      when 'TopicsCategory':
-      object.get_related_portals.each { |p| expire_fragment("/#{p.code}/foros/index/index")  }
-      expire_fragment '/common/home/foros/topics_list'
-      expire_fragment("/common/foros/subforos/#{object.parent_id}")
-      p = object
-      while p
-        expire_fragment("/common/foros/_forums_list/#{p.id}")
-        expire_fragment("/common/home/foros/topics_#{p.id}")
-        p = p.parent
-      end
-      when 'DownloadsCategory':
-      object.get_related_portals.each { |p| expire_fragment("/#{p.code}/descargas/index/folders") }
-      p = object
-      while p
-        expire_fragment("/common/descargas/index/folders_#{p.id}")
-        p = p.parent
-      end
-      when 'TutorialsCategory':
-      object.get_related_portals.each { |p| expire_fragment("/#{p.code}/tutoriales/index/folders") }
-      p = object
-      while p
-        expire_fragment("/common/tutoriales/index/folders_#{p.id}")
-        p = p.parent
-      end
       when 'ProfileSignature':
       expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/firmas"
+      expire_fragment "#{Cache.user_base(object.user_id)}/profile/last_profile_signatures"
+      
       when 'Content':
-      CacheObserver.update_pending_contents if object.slnc_changed? :state
+      CacheObserver.update_pending_contents if object.slnc_changed?(:state)
+      if (object.slnc_changed?(:state) && object.state == Cms::DELETED) || object.slnc_changed?(:comments_count)
+        object.terms.each do |t|
+          t.recalculate_counters
+        end
+      end
+      
       when 'User':
       if object.slnc_changed? :state
         expire_fragment("/common/carcel")
@@ -447,6 +396,7 @@ class CacheObserver < ActiveRecord::Observer
       object.users.each do |u|
         Cache::Competition.expire_competitions_lists(u)
       end
+      
       when 'CompetitionsMatch':
       expire_fragment "/arena/home/matches_results"
       if object.completed_on then
@@ -467,12 +417,14 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/retos_esperando_respuesta") 
         expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/retos_pendientes_de_jugar")
         expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/ultimas_partidas")
+        object.participant1.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
         # TODO expire_fragment("/miembros/#{object.participant1.participant_id % 1000}/#{object.participant1.participant_id}/competition_matches")
       end
       if object.participant2_id
         expire_fragment("/common/competiciones/participante/#{object.participant2_id % 1000}/#{object.participant2_id}/retos_esperando_respuesta")
         expire_fragment("/common/competiciones/participante/#{object.participant2_id % 1000}/#{object.participant2_id}/retos_pendientes_de_jugar")
         expire_fragment("/common/competiciones/participante/#{object.participant2_id % 1000}/#{object.participant2_id}/ultimas_partidas")
+        object.participant2.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
       end
       
       object.competition.get_related_portals.each do |portal|
@@ -525,7 +477,7 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/home/index/demos2")
       end
       
-      expire_fragment "/common/demos/show/_latest_cat#{object.demos_category_id}"
+      expire_fragment "/common/demos/show/_latest_cat#{object.main_category.id}"
       expire_fragment "/common/demos/show/_latest_cat#{object.slnc_changed_old_values[:demos_category_id]}" if object.slnc_changed?(:demos_category_id) 
       
       when 'Funthing':
@@ -547,22 +499,33 @@ class CacheObserver < ActiveRecord::Observer
       
       # TODO duplicado
       when 'Topic':
+      return if object.main_category.nil?
+      expire_fragment("/bazar/home/categories/#{object.main_category.code}") if object.main_category.root_id == CacheObserver.bazar_root_tc_id
+      expire_fragment("/arena/home/last_topics") if object.main_category.root_id == CacheObserver.arena_root_tc_id
+      expire_fragment("/common/foros/by_root/#{object.main_category.root_id}")
+      expire_fragment('/site/lasttopics_left')
+      expire_fragment("/common/foros/_topics_list/#{object.main_category}/page_")
+      expire_fragment('/gm/home/index/topics')
+      expire_fragment('/gm/home/index/topics2')
       expire_fragment('/home/index/topics')
       for p in object.get_related_portals
         expire_fragment("/#{p.code}/home/index/topics")
         expire_fragment("/#{p.code}/home/index/topics2")
         expire_fragment("/site/lasttopics_left#{p.code}")
+        expire_fragment("/#{p.code}/foros/index/index")
         if object.slnc_changed?(:state)
           expire_fragment("/#{p.code}/site/last_commented_objects")
           expire_fragment("/#{p.code}/site/last_commented_objects_ids")
         end
       end
-      expire_fragment("/common/foros/by_root/#{object.topics_category.root_id}")
-      expire_fragment("/bazar/home/categories/#{object.topics_category.code}") if object.topics_category.root_id == CacheObserver.bazar_root_tc_id
-      expire_fragment("/arena/home/last_topics") if object.topics_category.root_id == CacheObserver.arena_root_tc_id
-      expire_fragment "/common/topics/_latest_by_cat2#{object.topics_category.root.code}"
+      expire_fragment("/common/foros/by_root/#{object.main_category.root_id}")
+      expire_fragment("/bazar/home/categories/#{object.main_category.code}") if object.main_category.root_id == CacheObserver.bazar_root_tc_id
+      expire_fragment("/arena/home/last_topics") if object.main_category.root_id == CacheObserver.arena_root_tc_id
+      expire_fragment "/common/topics/_latest_by_cat2#{object.main_category.root.code}"
       expire_fragment('/site/lasttopics_left')
-      p = object.topics_category
+      p = object.main_category
+      expire_fragment("/foros/active_items/#{p.root_id}")
+      expire_fragment "/common/topics/_latest_by_cat2#{p.root.code}"
       while p
         expire_fragment("/common/foros/_forums_list/#{p.id}")
         expire_fragment("/common/home/foros/topics_#{p.id}")
@@ -570,23 +533,33 @@ class CacheObserver < ActiveRecord::Observer
       end
       
       # borramos las páginas de listado de noticias posteriores a la actual
-      stickies = Topic.count(:conditions => "sticky is true and state = #{Cms::PUBLISHED} and topics_category_id = #{object.topics_category_id}")
-      prev_count = Topic.count(:conditions => ["sticky is false and state = #{Cms::PUBLISHED} and updated_on <= ? and topics_category_id = #{object.topics_category_id}", object.created_on]) + stickies
-      next_count = Topic.count(:conditions => ["sticky is false and state = #{Cms::PUBLISHED} and updated_on >= ? and topics_category_id = #{object.topics_category_id}", object.created_on])
+      stickies = Topic.count(:conditions => "sticky is true and state = #{Cms::PUBLISHED} and topics_category_id = #{object.main_category.id}")
+      prev_count = Topic.count(:conditions => ["sticky is false and state = #{Cms::PUBLISHED} and updated_on <= ? and topics_category_id = #{object.main_category.id}", object.created_on]) + stickies
+      next_count = Topic.count(:conditions => ["sticky is false and state = #{Cms::PUBLISHED} and updated_on >= ? and topics_category_id = #{object.main_category.id}", object.created_on])
       start_page = prev_count / 50 # TODO especificar esto en un único sitio
       end_page = start_page + next_count / 50 + 1
       
       for i in (start_page..end_page)
-        expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_#{i}")
+        expire_fragment("/common/foros/_topics_list/#{object.main_category.id}/page_#{i}")
       end
       
-      expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_")
+      expire_fragment("/common/foros/_topics_list/#{object.main_category.id}/page_")
       
       
       when 'Question':
       for p in object.get_related_portals 
         expire_fragment("/#{p.code}/home/index/questions")
+        expire_fragment("/#{p.code}/respuestas/show/latest_by_author_#{object.user_id}")
+        expire_fragment("/#{p.code}/home/index/questions")
+        expire_fragment("/#{p.code}/respuestas/top_sabios/") # if object.slnc_changed?(:answered_on)
       end
+      #if object.slnc_changed?(:answered_on)
+      if object.unique_content
+        object.unique_content.linked_terms('QuestionsCategory').each do |t|
+          expire_fragment("/common/respuestas/top_sabios/#{t.root_id}")
+        end
+      end
+      # end
       
       when 'Download':
       expire_fragment('/home/index/downloads')
@@ -595,33 +568,19 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/home/index/downloads2")
         
       end
-      expire_fragment "/common/home/index/downloads3#{object.downloads_category.root.code}"
+      expire_fragment "/common/home/index/downloads3#{object.main_category.root.code}"
       
       # borramos las páginas de listados por si es un nuevo comment
-      expire_fragment("/common/descargas/index/downloads_#{object.downloads_category.id}/page_*")
+      expire_fragment("/common/descargas/index/downloads_#{object.main_category.id}/page_*")
       
-      p = object.downloads_category
+      # TODO optimizar, no?
+      p = object.main_category
       expire_fragment("/common/descargas/index/most_downloaded_#{p.root_id}")
       expire_fragment("/common/descargas/index/essential_#{p.root_id}")
       expire_fragment("/common/descargas/index/essential2_#{p.root_id}")
       expire_fragment("/common/descargas/index/essential3_#{p.root_id}")
       object.get_related_portals.each do |pp|
         expire_fragment("/#{pp.code}/descargas/index/folders")
-      end
-      
-      if object.slnc_changed && object.slnc_changed_old_values['downloads_category_id'] then
-        prev_cat = DownloadsCategory.find(object.slnc_changed_old_values['downloads_category_id'])
-        expire_fragment("/common/descargas/index/most_downloaded_#{prev_cat.root_id}")
-        expire_fragment("/common/descargas/index/essential_#{prev_cat.root_id}")
-        expire_fragment("/common/descargas/index/essential2_#{prev_cat.root_id}")
-        expire_fragment("/common/descargas/index/essential3_#{prev_cat.root_id}")
-        
-        while prev_cat do
-          expire_fragment("/common/descargas/index/most_productive_author_by_cat_#{prev_cat.id}")
-          expire_fragment("/common/descargas/index/folders_#{prev_cat.id}")
-          expire_fragment("/common/descargas/index/downloads_#{prev_cat.id}/page_*")
-          prev_cat = prev_cat.parent
-        end
       end
       
       while p do
@@ -644,26 +603,8 @@ class CacheObserver < ActiveRecord::Observer
       
       
       # borramos las páginas de listados por si es un nuevo comment
-      expire_fragment("/reviews/page_*")
-      # expire_fragment("/reviews/latest_by_author_#{object.user_id}")
-      # expire_fragment("/reviews/cat_#{object.reviews_category.id}/page_*")
-      # expire_fragment("/reviews/list/subcategories_")
-      
-      #if object["reviews_category_id_previous"] then
-      #  prev_cat = ReviewsCategory.find(object["reviews_category_id_previous"])
-      #  expire_fragment("/reviews/most_downloaded_#{prev_cat.root_id}")
-      #  expire_fragment("/reviews/essential_#{prev_cat.root_id}")
-      
-      #  while prev_cat do
-      #    expire_fragment("/reviews/latest_by_cat_#{prev_cat.id}")
-      #    expire_fragment("/reviews/most_productive_author_by_cat_#{prev_cat.id}")
-      #    expire_fragment("/reviews/list/subcategories_#{prev_cat.id}")
-      #    expire_fragment("/reviews/cat_#{prev_cat.id}/page_*")
-      #    prev_cat = prev_cat.parent
-      #  end
-      #end
-      # expire_fragment("/noticias/list/page_")
-      p = object.reviews_category
+      expire_fragment("/reviews/page_*") # TODO un poco basto, no?
+      p = object.main_category
       
       while p do
         expire_fragment("/reviews/latest_by_cat_#{p.id}")
@@ -688,7 +629,7 @@ class CacheObserver < ActiveRecord::Observer
       end
       
       # borramos las páginas de listados por si es un nuevo comment
-      expire_fragment("/common/tutoriales/index/tutorials_#{object.tutorials_category.id}/page_*")
+      expire_fragment("/common/tutoriales/index/tutorials_#{object.main_category.id}/page_*")
       
       if object.slnc_changed && object.slnc_changed_old_values["tutorials_category_id"] then
         prev_cat = TutorialsCategory.find(object.slnc_changed_old_values["tutorials_category_id"])
@@ -724,14 +665,16 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/home/index/articles2")
         next unless p.interview
         # borramos las páginas de listado de entrevistas posteriores a la actual
-        prev_count = p.interview.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        next_count = p.interview.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        start_page = prev_count / EntrevistasController::INTERVIEWS_PER_PAGE
-        end_page = start_page + next_count / EntrevistasController::INTERVIEWS_PER_PAGE + 1
+        # TODO PERF
+        #prev_count = p.interview.count(:published, :conditions => ["created_on <= ?", object.created_on])
+        #next_count = p.interview.count(:published, :conditions => ["created_on >= ?", object.created_on])
+        #start_page = prev_count / EntrevistasController::INTERVIEWS_PER_PAGE
+        #end_page = start_page + next_count / EntrevistasController::INTERVIEWS_PER_PAGE + 1
         
-         (start_page..end_page).each { |i| expire_fragment("/#{p.code}/entrevistas/index/page_#{i}") }
+        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/entrevistas/index/page_#{i}") }
         
         expire_fragment("/#{p.code}/entrevistas/index/page_")
+        expire_fragment("/#{p.code}/entrevistas/index/page_*")
         expire_fragment("/#{p.code}/entrevistas/show/latest_by_author_#{object.user_id}")
       end
       
@@ -742,14 +685,14 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/home/index/articles2")
         next unless p.column
         # borramos las páginas de listado de columnas posteriores a la actual
-        prev_count = p.column.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        next_count = p.column.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        start_page = prev_count / ColumnasController::COLUMNS_PER_PAGE
-        end_page = start_page + next_count / ColumnasController::COLUMNS_PER_PAGE + 1
+        #prev_count = p.column.count(:published, :conditions => ["created_on <= ?", object.created_on])
+        #next_count = p.column.count(:published, :conditions => ["created_on >= ?", object.created_on])
+        #start_page = prev_count / ColumnasController::COLUMNS_PER_PAGE
+        #end_page = start_page + next_count / ColumnasController::COLUMNS_PER_PAGE + 1
         
-         (start_page..end_page).each { |i| expire_fragment("/#{p.code}/columnas/index/page_#{i}") }
-        
+        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/columnas/index/page_#{i}") }
         expire_fragment("/#{p.code}/columnas/index/page_")
+        expire_fragment("/#{p.code}/columnas/index/page_*")
         expire_fragment("/#{p.code}/columnas/show/latest_by_author_#{object.user_id}")
         expire_fragment("/#{p.code}/columnas/index/most_popular_authors_#{Time.now.to_i/(86400)}") if object.slnc_changed?(:user_id)
       end
@@ -757,8 +700,14 @@ class CacheObserver < ActiveRecord::Observer
       
       when 'News':
       # TODO borrar de forma más selectiva
-      expire_fragment("/bazar/home/categories/#{object.news_category.code}")
-      expire_fragment("/bazar/home/categories/#{NewsCategory.find(object.slnc_changed_old_values['news_category_id']).code}") if object.slnc_changed?(:news_category_id) && object.slnc_changed_old_values[:news_category_id]
+      object.terms.find(:all).each do |t| 
+        expire_fragment("/bazar/home/categories/#{t.slug}") 
+        expire_fragment("/common/noticias/_latest_by_cat2_#{t.root.code}")
+        # borramos el listado de últimas noticias de categoría X
+        # TODO solo deberíamos borrar si es la última      
+        expire_fragment("/common/noticias/show/_latest_by_cat_#{t.id}")
+      end
+      expire_fragment("/bazar/home/categories/#{Term.find(object.slnc_changed_old_values['news_category_id']).slug}") if object.slnc_changed?(:news_category_id) && object.slnc_changed_old_values[:news_category_id]
       expire_fragment("/common/home/index/news_inet")
       object.get_related_portals.each do |p|
         expire_fragment("/#{p.code}/home/index/news")
@@ -767,26 +716,20 @@ class CacheObserver < ActiveRecord::Observer
         
         expire_fragment("/#{p.code}/home/index/news_developed")
         # borramos las páginas de listado de noticias posteriores a la actual
-        prev_count = p.news.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        next_count = p.news.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        start_page = prev_count / NoticiasController::NEWS_PER_PAGE
-        end_page = start_page + next_count / NoticiasController::NEWS_PER_PAGE + 1
+        #prev_count = p.news.count(:published, :content_type => 'News', :conditions => "contents.created_on <= '#{object.created_on.strftime('%Y-%m-%d %H:%M:%s')}'")
+        #next_count = p.news.count(:published, :content_type => 'News', :conditions => "contents.created_on >= '#{object.created_on.strftime('%Y-%m-%d %H:%M:%s')}'")
+        #start_page = prev_count / NoticiasController::NEWS_PER_PAGE
+        #end_page = start_page + next_count / NoticiasController::NEWS_PER_PAGE + 1
+        # TODO PERF
+        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/noticias/index/page_#{i}") }
         
-         (start_page..end_page).each { |i| expire_fragment("/#{p.code}/noticias/index/page_#{i}") }
-        
+        expire_fragment("/#{p.code}/noticias/index/page_*")
         expire_fragment("/#{p.code}/noticias/index/page_")
       end
       
-      expire_fragment("/bazar/home/categories/#{object.news_category.root.code}")
-      
       expire_fragment('/rss/noticias/all')
       
-      # borramos el listado de últimas noticias de categoría X
-      # TODO solo deberíamos borrar si es la última
       
-      expire_fragment("/common/noticias/_latest_by_cat2_#{object.news_category.root.code}")
-      
-      expire_fragment("/common/noticias/show/_latest_by_cat_#{object.news_category_id}")
       
       when 'Bet':
       object.get_related_portals.each do |p| 
@@ -804,16 +747,18 @@ class CacheObserver < ActiveRecord::Observer
       object.get_related_portals.each do |p| 
         expire_fragment("/#{p.code}/home/index/eventos/#{Time.now.strftime('%Y%m%d')}") 
         expire_fragment("/#{p.code}/home/index/eventos2/#{Time.now.strftime('%Y%m%d')}")
-        next if p.event.nil?
+        #next if p.event.nil?
         # borramos las páginas de listado de noticias posteriores a la actual
-        prev_count = p.event.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        next_count = p.event.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        start_page = prev_count / EventosController::PER_PAGE
-        end_page = start_page + next_count / EventosController::PER_PAGE + 1
+        # TODO PERF
+        #prev_count = p.event.count(:published, :conditions => ["created_on <= ?", object.created_on])
+        #next_count = p.event.count(:published, :conditions => ["created_on >= ?", object.created_on])
+        #start_page = prev_count / EventosController::PER_PAGE
+        #end_page = start_page + next_count / EventosController::PER_PAGE + 1
         
-         (start_page..end_page).each { |i| expire_fragment("/#{p.code}/eventos/index/page_#{i}") }
+        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/eventos/index/page_#{i}") }
         
         expire_fragment("/#{p.code}/eventos/index/page_")
+        expire_fragment("/#{p.code}/eventos/index/page_*")
       end
       
       
@@ -821,16 +766,16 @@ class CacheObserver < ActiveRecord::Observer
       d = Date.today 
       # TODO un poco de porfavor
       expire_fragment("/gm/home/index/potd_#{d.strftime('%Y%m%d')}")
-      expire_fragment "/common/home/index/imagenes_#{object.images_category.root.code}"
+      expire_fragment "/common/home/index/imagenes_#{object.main_category.root.code}"
       object.get_related_portals.each do |p|
         expire_fragment("/#{p.code}/home/index/daily_image#{d.strftime('%Y%m%d')}") 
         expire_fragment("/#{p.code}/imagenes/index/galleries")
         expire_fragment("/#{p.code}/imagenes/show/_other_images_by_user/#{object.user_id % 1000}/#{object.user_id}")
       end
-      expire_fragment("/common/imagenes/toplevel/#{object.images_category.root_id}/page_*}")
-      expire_fragment("/common/imagenes/gallery/#{object.images_category.id}/page_*")
-      expire_fragment("/common/imagenes/gallery/#{object.images_category.id}/aportaciones")
-      expire_fragment("/common/imagenes/show/g#{object.images_category_id}/*") # muy heavy
+      expire_fragment("/common/imagenes/toplevel/#{object.main_category.root_id}/page_*}")
+      expire_fragment("/common/imagenes/gallery/#{object.main_category.id}/page_*")
+      expire_fragment("/common/imagenes/gallery/#{object.main_category.id}/aportaciones")
+      expire_fragment("/common/imagenes/show/g#{object.main_category.id}/*") # muy heavy
       
       when 'CommentsValoration':
       expire_fragment("/comments/#{Time.now.to_i/(86400*7)}/#{object.comment.content_id%100}/#{object.comment.content_id}_*") # cacheamos solo una semana para q se actualicen barras    
@@ -843,11 +788,13 @@ class CacheObserver < ActiveRecord::Observer
       # TODO ESTO se sigue usando?
       case real.class.name
         when 'Topic':
-        expire_fragment("/bazar/home/categories/#{real.topics_category.code}")
+        expire_fragment("/bazar/home/categories/#{real.main_category.code}")
         expire_fragment("/gm/home/index/topics")# :controller => '/home', :action => 'index', :part => 'topics')
-        f = real.topics_category
-        f.save
-        expire_fragment("/foros/active_items/#{f.root_id}")
+        f = real.main_category
+        if f
+          f.save
+          expire_fragment("/foros/active_items/#{f.root_id}")
+        end
         
         when 'Column':
         expire_fragment(:controller => '/home', :action => 'index', :part => 'articles')

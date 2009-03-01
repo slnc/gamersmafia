@@ -1,0 +1,100 @@
+<% content_support(:show_ads => false) do %>
+<%mftext('Información de esta categoría') do %>
+<table>
+	<tr class="<%=oddclass%>">
+		<td>Subcategorías</td>
+		<td><%=@term.all_children_ids(:taxonomy => Term.taxonomy_from_class_name(params[:content_type])).uniq.size - 1%></td>
+	</tr>
+		<tr class="<%=oddclass%>">
+		<td>Contenidos</td>
+		<td><a href="/<%=controller.cats_path%>/term/<%=@term.id%>/contenidos/<%=params[:content_type]%>"><%=@term.contents_count(:cls_name => params[:content_type])%></a></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<td>Taxonomía</td>
+		<td><%=@term.taxonomy%></td>
+	</tr>
+	<tr class="<%=oddclass%>" style="vertical-align: top;">
+		<td>Localización</td>
+		<td>
+			<%
+		obj = @term
+        path = [@term.parent_id.nil? ? @term.slug.upcase : @term.name, link_to(@term.root.slug.upcase, "/admin/categorias/term/#{@term.root.id}/hijos/#{params[:content_type]}")]
+        obj = obj.parent
+        while obj != nil and obj.id != obj.parent_id
+          path<< link_to(obj.name, "/#{controller.cats_path}/term/#{obj.id}/hijos/#{params[:content_type]}")
+          obj = obj.parent
+        end
+		path.pop
+        path = path.reverse
+
+%>
+<div class="infoinline">
+<%
+i = 0
+path.each do |thep| %>
+<%='&nbsp;' * i*3%><%=thep%><br />
+<%
+i += 1
+end
+%></div>
+			
+		</td>
+		</tr>
+</table>
+<% end -%>
+
+<%mftext('Editar esta categoría') do %>
+<form method="post" action="/<%=controller.cats_path%>/term/<%=@term.id%>/update?redirto=<%=controller.request.request_uri%>">
+<p><label for="topics_category_name">Nombre</label><br/>
+<%= text_field 'term', 'name', :class => 'text'  %></p>
+
+<p><label for="topics_category_parent">Categoría de la que depende:</label><br />
+<%= render_tree_select(@term.root.children.find(:all, :conditions => ["taxonomy = ?", Term.taxonomy_from_class_name(params[:content_type])]), 'name', 'term[parent_id]', @term.parent_id, true)%></p>
+<br />
+<input type="submit" value="Guardar" />
+</form>
+<% end -%>
+<% end -%>
+
+<%content_main do %>
+<% #=render :partial => 'categorias_selector' %>
+<% mftext("Subcategorías de #{@term.name} (#{ActiveSupport::Inflector::titleize(Cms::translate_content_name(params[:content_type]))})") do %>
+<form method="post" action="/<%=controller.cats_path%>/create?redirto=<%=controller.request.request_uri%>">
+<p><strong>Nueva categoría</strong><br/>
+<% @tterm = @term
+@term = nil %>
+<%= text_field 'term', 'name', :class => 'text'  %>
+<% @term = @tterm%>
+<input type="hidden" name="term[taxonomy]" value="<%=Term.taxonomy_from_class_name(params[:content_type])%>" />
+<input type="hidden" name="term[parent_id]" value="<%=@term.id%>" /> <input type="submit" value="Crear" /></p>
+</form>
+  <table>
+    <tr>
+      <th>Categoría</th>
+      <th>Subcategorías</th>
+      <th>Contenidos</th>
+    </tr>
+    
+	<% ct = ContentType.find_by_name(params[:content_type])%>
+  <% @term.children.find(:all, :conditions => ["taxonomy = ?", Term.taxonomy_from_class_name(params[:content_type])]).each do |category| %>
+    <tr class="<%=oddclass%>">
+      <td><%=
+        obj = category
+        path = [link_to(category.name, "/#{controller.cats_path}/term/#{category.id}/hijos/#{params[:content_type]}")]
+        obj = obj.parent
+        while obj != nil and obj.id != obj.parent_id
+          path<< obj.name
+          obj = obj.parent
+        end
+		path.pop
+        path = path.reverse
+        path.join(' » ')
+        %></td>
+	    <td><%=category.all_children_ids(:taxonomy => Term.taxonomy_from_class_name(params[:content_type])).uniq.size - 1%></td>
+		<td><a href="/<%=controller.cats_path%>/term/<%=category.id%>/contenidos/<%=ct.name%>"><%=category.contents_count(:cls_name => ct.name)%></a></td>
+      <td><a href="/<%=controller.cats_path%>/term/<%=category.id%>/destroy?redirto=<%=controller.request.request_uri%>" onclick="return confirm('¿Estás seguro?');">Eliminar</a></td>
+    </tr>
+  <% end %>
+  </table>
+<% end -%>
+<% end -%>

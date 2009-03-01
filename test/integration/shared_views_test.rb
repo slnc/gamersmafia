@@ -11,7 +11,7 @@ class SharedViewsTest < ActionController::IntegrationTest
     get '/site' # para cargar request
     already_logged_in = (not request.session.nil? and not request.session[:user].nil?)
     sym_login('superadmin', 'lalala') unless already_logged_in
-    post "/noticias/create", { :news => { :title => 'titulito', :news_category_id => 1, :description => 'fo' } }, { :user => User.find(1) }
+    post "/noticias/create", { :news => { :title => 'titulito', :terms => 1, :description => 'fo' } }, { :user => User.find(1) }
     assert_response :redirect, @response.body
     n = News.find(:first, :order => 'id DESC')
     post "/admin/contenidos/publish_content", { :id => n.unique_content.id }, { :user => User.find(1) }
@@ -43,6 +43,7 @@ class SharedViewsTest < ActionController::IntegrationTest
   def test_should_show_first_page_to_anonymous_users
     Cms.comments_per_page = 1
     n = create_news
+    Term.single_toplevel(:slug => 'gm').link(n.unique_content)
     create_comments n, 2
     get "/noticias/show/#{n.id}"
     assert_response :success
@@ -54,6 +55,7 @@ class SharedViewsTest < ActionController::IntegrationTest
     sym_login('superadmin', 'lalala')
     Cms.comments_per_page = 1
     n = create_news
+    Term.single_toplevel(:slug => 'gm').link(n.unique_content)
     create_comments n, 3
     get "/noticias/show/#{n.id}"
     assert_response :success
@@ -66,6 +68,7 @@ class SharedViewsTest < ActionController::IntegrationTest
     Cms.comments_per_page = 2
     n = create_news
     create_comments n, 1
+    Term.single_toplevel(:slug => 'gm').link(n.unique_content)
     # User.db_query("UPDATE comments set created_on = created_on - '5 minutes'::interval where id = (SELECT max(id) FROM comments)")
     
     get "/noticias/show/#{n.id}"

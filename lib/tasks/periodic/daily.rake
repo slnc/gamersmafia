@@ -14,16 +14,15 @@ namespace :gm do
     new_accounts_cleanup
     check_ladder_matches
     update_portals_hits_stats
-    update_users_karma_stats
     provocar_golpes_de_estado
     forget_old_tracker_items
     forget_old_autologin_keys
-    forget_old_bj_jobs
     forget_old_treated_visitors
     check_faction_leaders
     generate_daily_ads_stats
     kill_zombified_staff
     GmSys.job('Notification.check_global_notifications')
+    close_old_open_questions
   end
   
   def kill_zombified_staff
@@ -36,6 +35,20 @@ namespace :gm do
         ur.destroy
         SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :headline => "Quitando permiso de <strong>#{ur.role}</strong> a <strong>#{ur.user.login}</strong> por volverse zombie", :reviewer_user_id => mrcheater.id, :completed_on => now)
       end
+    end
+  end
+  
+  def close_old_open_questions
+    mrman = User.find_by_login('mrman')
+    Question.find(:published, :conditions => 'answered_on IS NULL AND created_on <= now() - \'1 month\'::interval', :order => 'id').each do |q|
+      c_text = 'Esta pregunta lleva pendiente de respuesta demasiado tiempo y está empezando a salir musgo verde así que tengo que cerrarla.'
+      if q.unique_content.comments.count(:conditions => ['user_id <> ?', q.user_id]) > 0
+        c_text << 'Si alguna de las respuestas es válida por favor avisad al staff.'
+      end
+      
+      c = Comment.create(:user_id => mrman.id, :comment => c_text, :host => '127.0.0.1', :content_id => q.unique_content_id)
+      
+      q.set_no_best_answer(mrman)
     end
   end
   
@@ -63,10 +76,6 @@ namespace :gm do
   def check_faction_leaders
     # TODO TEMP, esto no debería ser necesario
     User.db_query("update users set cache_is_faction_leader = 't' where id in (select user_id FROM users_roles WHERE role IN ('Boss', 'Underboss'));")
-  end
-  
-  def forget_old_bj_jobs
-    User.db_query("DELETE FROM bj_job_archive WHERE finished_at < now() - '1 month'::interval;")
   end
   
   def forget_old_autologin_keys
@@ -120,44 +129,7 @@ namespace :gm do
     CacheObserver.expire_fragment("/common/gnav/#{Time.now.strftime('%Y-%m-%d')}")
   end
   
-  def update_users_karma_stats
-    max_day = 1.day.ago
-    start_day = User.db_query("SELECT created_on 
-                                 FROM stats.users_karma_daily_by_portal 
-                             ORDER BY created_on DESC LIMIT 1")
-    if start_day.size > 0
-      start_day = start_day[0]['created_on'].to_time.advance(:days => 1)
-      if start_day < max_day
-        cur_day = start_day
-      else
-        cur_day = max_day
-      end
-    else # no hay records, cogemos el m:as viejo
-      cur_day = User.db_query("SELECT created_on from contents order by created_on asc limit 1")[0]['created_on'].to_time
-    end
-    
-    cur_day = 1.day.ago.beginning_of_day if RAILS_ENV == 'test'
-    
-    while cur_day <= max_day
-      # puts cur_day
-      # iteramos a través de todos los users que han creado contenidos o comentarios hoy
-      User.find(:all, :conditions => "id IN (select user_id 
-                                               from contents 
-                                              where state = #{Cms::PUBLISHED} 
-                                                AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00' UNION
-                                                select user_id 
-                                               from comments 
-                                              where deleted = 'f' AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00')").each do |u|
-        # TODO here
-        Karma.karma_points_of_user_at_date(u, cur_day).each do |portal_id, points|
-          # puts "#{u.login} #{portal_id} #{points}"
-          User.db_query("INSERT INTO stats.users_karma_daily_by_portal(user_id, portal_id, karma, created_on) VALUES(#{u.id}, #{portal_id}, #{points}, '#{cur_day.strftime('%Y-%m-%d')}')")      
-        end
-      end
-      cur_day = cur_day.advance(:days => 1)
-    end
-    # TODO TESTS!!!!
-  end
+  
   
   def provocar_golpes_de_estado
     require "#{RAILS_ROOT}/app/controllers/application" # necesario por llamada a ApplicationController

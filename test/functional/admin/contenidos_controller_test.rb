@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../../test_helper'
 class Admin::ContenidosControllerTest < ActionController::TestCase
   
   def test_should_allow_to_publish_content_if_user_is_not_the_author
-    n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :news_category_id => 1, :user_id => User.find_by_login('panzer') })
+    n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
     assert_not_nil n
     assert_equal 'mi noticiaaaa', n.title
     sym_login :mralariko
@@ -14,7 +14,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
   end
   
   def test_mass_moderate_should_work_if_mass_approve
-    n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :news_category_id => 1, :user_id => User.find_by_login('panzer') })
+    n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
     assert_not_nil n
     Cms.modify_content_state(n, User.find(1), Cms::PENDING)
     n.reload
@@ -26,7 +26,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
   end
   
   def test_mass_moderate_should_work_if_mass_deny
-    n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :news_category_id => 1, :user_id => User.find_by_login('panzer') })
+    n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
     assert_not_nil n
     Cms.modify_content_state(n, User.find(1), Cms::PENDING)
     n.reload
@@ -61,7 +61,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
   end
   
   def test_should_not_allow_to_deny_content_if_user_is_not_the_author_but_no_deny_reason
-    n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :news_category_id => 1, :user_id => User.find_by_login('panzer') })
+    n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
     assert_not_nil n
     assert_equal 'mi noticiaaaa', n.title
     sym_login :mralariko
@@ -72,7 +72,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
   end
   
   def test_should_allow_to_deny_content_if_user_is_not_the_author_and_deny_reason
-    @n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :news_category_id => 1, :user_id => User.find_by_login('panzer') })
+    @n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
     assert_not_nil @n
     assert_equal 'mi noticiaaaa', @n.title
     sym_login :mralariko

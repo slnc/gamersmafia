@@ -526,6 +526,7 @@ image_babe:
   url: http://gamersmafia.dev/imagenes/show/4
   is_public: true
   user_id: 1
+  state: 2
   portal_id: 1
 
 image_dude:
@@ -538,6 +539,7 @@ image_dude:
   url: http://gamersmafia.dev/imagenes/show/5
   is_public: true
   user_id: 1
+  state: 2
   portal_id: 1
   
 demo_published:
@@ -551,6 +553,7 @@ demo_published:
   is_public: true
   user_id: 1
   portal_id: 1
+  state: 2
 
 
 
@@ -783,4 +786,29 @@ news_published_gm:
   state: 2
   user_id: 1
   portal_id: -1
-
+  
+polls_published_gm:
+  id: 1115
+  content_type_id: 7
+  external_id: 4
+  updated_on: 2006-01-01 00:00:00
+  name: encuesta de gm 1
+  comments_count: 0
+  is_public: true
+  url: http://gamersmafia.dev/encuestas/show/4
+  state: 2
+  user_id: 1
+  portal_id: -1
+  
+polls_pending_gm:
+  id: 1116
+  content_type_id: 7
+  external_id: 5
+  updated_on: 2006-01-01 00:00:00
+  name: encuesta de gm 1s
+  comments_count: 0
+  is_public: true
+  url: http://gamersmafia.dev/encuestas/show/5
+  state: 1
+  user_id: 1
+  portal_id: -1

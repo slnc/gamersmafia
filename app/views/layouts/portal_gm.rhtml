@@ -19,7 +19,7 @@
 	<div id="mgmenu2" class="module">
 		
 		<div class="mcontent">
-		   <a id="logo2" <% if !(controller.controller_name == 'home' && controller.action_name == 'index') then %>onmouseover="this.className = 'hover';" onmouseout="this.className=''"<%end -%> href="http://<%=App.domain%>/"><img src="/images/blank.gif" /></a>
+		   <a id="logo2" <% if !(controller.controller_name == 'home' && controller.action_name == 'index' && controller.portal.id == '-1') then %>onmouseover="this.className = 'hover';" onmouseout="this.className=''"<%end -%> href="http://<%=App.domain%>/"><img src="/images/blank.gif" /></a>
 		   <div id="thesaw">
 		   	<% if user_is_authed then
 if @user.is_superadmin?
@@ -91,7 +91,7 @@ if u_clans.size == 0 then %>
 					<li><a href="/respuestas">Respuestas</a></li>
 					<li><a href="/imagenes">Imágenes</a></li>
 					<li><a href="/descargas">Descargas</a></li>
-					<li><a href="http://<%=App.domain%>/encuestas">Encuestas</a></li>
+					<li><a href="/encuestas">Encuestas</a></li>
 					<% if controller.portal.kind_of?(FactionsPortal) then %>
 					<li id="sawbody-facciones-information"><a href="/faccion">Información</a></li>
 					<li id="sawbody-facciones-staff"><a href="/faccion/staff">Staff</a></li>
@@ -131,7 +131,7 @@ if u_clans.size == 0 then %>
 					<li style="padding-right: 10px;"><div id="mggnav-arena-mycompetitions"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-arena-mycompetitions-list');" href=""><%=@user.last_competition_id ? truncate(Competition.find(@user.last_competition_id).name, 15, '..') : 'Mis competiciones'%></a></div></div></div></div>
 						<div id="mggnav-arena-mycompetitions-list" class="saw-dropdownlist hidden">
 							<ul>
-				<%Competition.find_related_with_user(@user.id, 25).each do |c| %>
+				<%Competition.find_related_with_user(@user.id, :limit => 25).each do |c| %>
 								<li class="sawbody-arena-competition"><a href="<%=gmurl(c)%>"><%=c.name%></a></li>
 					<% end -%>
 					<% end #cache -%>
@@ -257,7 +257,7 @@ if u_clans.size == 0 then %>
 			<% end -%>
 			
 			<% if user_is_authed && controller.controller_name == 'foros' && @forum then %>
-				<li id="add-to-user-forums" class="<%='hidden' unless controller.can_add_as_user_forum?%>"><a href="" title="Añadir a mis foros" onclick="return GM.personalization.add_user_forum('<%=@forum.id%>', '<%=gmurl(@forum)%>');">Añadir a mis foros</a></li>
+				<li id="add-to-user-forums" class="<%='hidden' unless controller.can_add_as_user_forum?%>"><a href="" title="Añadir a mis foros" onclick="return GM.personalization.add_user_forum('<%=@forum.id%>', '<%=gmurl(@forum, :taxonomy => 'TopicsCategory')%>');">Añadir a mis foros</a></li>
 			<% end -%>
 			
 			<% if user_is_authed && controller.controller_name == 'foros' && @forum then %>

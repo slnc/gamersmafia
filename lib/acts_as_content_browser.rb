@@ -58,6 +58,7 @@ module ActsAsContentBrowser
     
     define_method 'create' do
       _before_create if respond_to?(:_before_create)
+
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.new(params[ActiveSupport::Inflector::underscore(content_name)])
       
@@ -75,12 +76,14 @@ module ActsAsContentBrowser
       instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
       if Cms.user_can_create_content(@user)
         if obj.save
+          # enlazamos
+          proc_terms(obj)
           obj.process_wysiwyg_fields # TODO lo estamos haciendo en _dos sitios_ ???
           flash[:notice] = "Contenido de tipo <strong>#{Cms::CLASS_NAMES[cls.name]}</strong> creado correctamente."
           if obj.state == Cms::DRAFT
-            redirect_to :action => 'edit', :id => obj.id
+            rediring = Proc.new { redirect_to :action => 'edit', :id => obj.id }
           else
-            redirect_to :action => 'index'
+            rediring = Proc.new { redirect_to :action => 'index' }
           end
         else
           flash[:error] = "Error al crear #{Cms::CLASS_NAMES[cls.name]}: #{obj.errors.full_messages_html}"
@@ -91,6 +94,11 @@ module ActsAsContentBrowser
         render :action => 'new'
       end
       _after_create if respond_to?(:_after_create)
+      if flash[:error] 
+        render :action => 'new' unless performed?
+      else
+        rediring.call
+      end
     end
     
     define_method 'edit' do
@@ -106,6 +114,20 @@ module ActsAsContentBrowser
         render :action => 'edit'
       else
         render :action => 'show'
+      end
+    end
+    
+    define_method 'proc_terms' do |obj|
+      if Cms::CATEGORIES_TERMS_CONTENTS.include?(content_name) && params[:categories_terms]
+        params[:categories_terms] = [params[:categories_terms]] unless params[:categories_terms].kind_of?(Array)
+        params[:categories_terms].collect! { |rtid| rtid.to_i }
+        params[:categories_terms] = params[:categories_terms].delete_if { |rtid| rtid < 1 } 
+        obj.categories_terms_ids = [params[:categories_terms], "#{ActiveSupport::Inflector::pluralize(content_name)}Category"]
+      elsif Cms::ROOT_TERMS_CONTENTS.include?(content_name) && params[:root_terms]
+        params[:root_terms] = [params[:root_terms]] unless params[:root_terms].kind_of?(Array)
+        params[:root_terms].collect! { |rtid| rtid.to_i }
+        params[:root_terms] = params[:root_terms].delete_if { |rtid| rtid < 1 }
+        obj.root_terms_ids = params[:root_terms]
       end
     end
     
@@ -135,10 +157,12 @@ module ActsAsContentBrowser
       require_user_can_edit(obj)
       raise ContentLocked if obj.is_locked_for_user?(@user)
       
-      obj.state = Cms::PENDING if obj.state == Cms::DRAFT and not params[:draft].to_s == '1'
+      obj.state = Cms::PENDING if obj.state == Cms::DRAFT and params[:draft].to_s != '1'
+      params[ActiveSupport::Inflector::underscore(content_name)][:state] = obj.state
       params[ActiveSupport::Inflector::underscore(content_name)].delete(:approved_by_user_id) unless obj.respond_to? :approved_by_user_id
       instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
       if obj.update_attributes(params[ActiveSupport::Inflector::underscore(content_name)])
+        proc_terms(obj)
         # obj.process_wysiwyg_fields
         flash[:notice] = "#{Cms::CLASS_NAMES[cls.name]} actualizado correctamente." unless flash[:error]
         
@@ -154,7 +178,7 @@ module ActsAsContentBrowser
         end
       else
         flash.now[:error] = "Error al actualizar #{Cms::CLASS_NAMES[cls.name]}: #{obj.errors.full_messages_html}"
-        render :action => 'edit'
+        redirect_to :action => 'edit', :id => obj.id
       end
       _after_update if respond_to?(:_after_update)
     end

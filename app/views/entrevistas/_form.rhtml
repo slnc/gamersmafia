@@ -1,6 +1,3 @@
-<p><label >Categoría</label><br/>
-<%= render_tree_select InterviewsCategory.find(:all, :conditions => 'parent_id is null', :order => 'lower(name) asc'), 'name', 'interview[interviews_category_id]', @interview.interviews_category_id %>
-
 <p><label for="interview_title">Título</label><br/>
 <%= text_field 'interview', 'title', :class => 'text'  %></p>
 
@@ -13,5 +10,7 @@
 <p><label for="image_file">Imagen para portada (.JPG que se mostrará a 105x54)</label><br/>
 <%=fc_thumbnail(@interview.home_image, 'f', '105x54')%>
 <%= file_field 'interview', 'home_image' %></p>
+
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @interview } %>
 
 <%=draft_check_box(@interview)%>

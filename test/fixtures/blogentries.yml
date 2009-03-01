@@ -6,6 +6,7 @@ first_blogentry:
   title: foo
   main: bar
   state: <%=Cms::PUBLISHED%>
+  unique_content_id: 1001
 
 second_blogentry:
   id: 2
@@ -15,3 +16,4 @@ second_blogentry:
   title: foo2
   main: bar2
   state: <%=Cms::PUBLISHED%>
+  unique_content_id: 1200

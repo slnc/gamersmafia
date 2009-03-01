@@ -39,6 +39,7 @@ class Cuenta::GuidsController < ApplicationController
     end # for
 
     @user.game_ids = params[:games] ? params[:games].uniq : []
+    @user.platform_ids = params[:platforms] ? params[:platforms].uniq : []
 
     flash[:error] = nil if flash[:error] == ''
     flash[:notice] = nil if flash[:notice] == ''

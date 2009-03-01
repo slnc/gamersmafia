@@ -176,15 +176,11 @@ module Emblems
     # wealthiest living
     max = nil
     max_u = nil
-    Comments.top_commenter_of_type_in_time_period(cvt, Time.now, 1.week.ago).each do |h|
-      sum, u = h[0], h[1]
-      sum = sum.to_f
-      if max.nil? || sum > max
-        max = sum 
-        max_u = u
-      end
+    h = Comments.top_commenter_of_type_in_time_period(cvt, Time.now, 1.week.ago, 1)
+    if h.size > 0
+      sum, u = h[0][0], h[0][1]
+      u.users_emblems.create(:emblem => r_emblems[cvt.name], :details => "<strong>#{sum}</strong> valoraciones ponderadas")
     end
-    max_u.users_emblems.create(:emblem => r_emblems[cvt.name]) unless max_u.nil?
   end
   
   # bets_master

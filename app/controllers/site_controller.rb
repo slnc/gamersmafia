@@ -374,11 +374,13 @@ class SiteController < ApplicationController
   def stats_hipotesis
     require_auth_hq
     @title = "Hipótesis activas"
+    @active_sawmode = 'hq'
   end
   
   def stats_hipotesis_archivo
     require_auth_hq
     @title = "Hipótesis completadas"
+    @active_sawmode = 'hq'
   end
   
   def x
@@ -536,5 +538,11 @@ class SiteController < ApplicationController
   
   def self.do_contactar_key
     MD5.hexdigest((CONTACT_MAGIC + (Time.now.to_i / 3600)).to_s)
+  end
+  
+  def root_term_children
+    raise AccessDenied unless user_is_authed
+    @term = Term.find(params[:id])
+    render :layout => false
   end
 end

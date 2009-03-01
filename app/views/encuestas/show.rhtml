@@ -1,6 +1,17 @@
 <% content_support do %>
 <% if !@poll.is_public? then %>
 <%= render :partial => '/shared/content_publishing_state', :locals => { :object => @poll } %>
+<% else %>
+
+<%cache("/#{controller.portal.code}/encuestas/daily_random/#{Time.now.strftime('%Y%m%d')}") do %>
+<%
+mfcontents_list('Aleatorias de hoy', 
+				   Proc.new { controller.portal.poll.find(:published, :order => 'random()', :limit => 5) }) do |o| %>
+<a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a><br />
+<div class="infoinline right"><%=o.votes%> votos | <span class="comments-count"><a style="display: inline;" href="<%=gmurl(o)%>#comments"><%=o.cache_comments_count%></a></span></div>
+<% end %>
+<% end %>
+
 <% end -%>
 <% end -%>
 

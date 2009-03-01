@@ -1,3 +1,10 @@
+<%
+if @category
+	cache_url = "/common/respuestas/top_sabios/#{@category.root_id}" 
+else
+	cache_url = "/#{controller.portal.code}/respuestas/top_sabios/"
+end
+cache(cache_url) do %>
 <%mftext(params[:category] ? "Top sabios de #{@category.root.name}" : 'Top sabios') do %>
 <table>
 <%
@@ -13,4 +20,5 @@ Question.top_sages(params[:category] ? @category : nil).each do |dbu| %>
 <% end -%>
 </table>
 <div class="right infoinline">Un punto = una mejor respuesta</div>
+<% end -%>
 <% end -%>

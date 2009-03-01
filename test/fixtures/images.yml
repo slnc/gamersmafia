@@ -10,6 +10,7 @@ published:
   approved_by_user_id: 1
   file: storage/images/foo.jpg
   state: 2
+  unique_content_id: 14
 
 unpublished:
   id: 2
@@ -22,6 +23,7 @@ unpublished:
   images_category_id: 1
   file: storage/images/foo2.jpg
   state: 1
+  unique_content_id: 1014
 
 deleted:
   id: 3
@@ -34,6 +36,7 @@ deleted:
   images_category_id: 1
   approved_by_user_id: 1
   file: storage/images/foo3.jpg
+  unique_content_id: 2014
 
 babe:
   id: 4
@@ -47,6 +50,7 @@ babe:
   approved_by_user_id: 1
   file: storage/images/babe.jpg
   state: 2
+  unique_content_id: 15
 
 dude:
   id: 5
@@ -60,4 +64,4 @@ dude:
   approved_by_user_id: 1
   file: storage/images/dude.jpg
   state: 3
-
+  unique_content_id: 16

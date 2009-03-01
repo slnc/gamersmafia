@@ -17,6 +17,7 @@ module ApplicationHelper
   
   def sparkline(opts)
     # req: data size
+    opts = {:colors => ['0077cc'], :fillcolors => ['E6F2FA']}.merge(opts)
     out = ''
     require 'md5'
     spid = MD5.hexdigest((Time.now.to_i + Kernel.rand).to_s)
@@ -34,9 +35,66 @@ size: '#{opts[:size]}',"
     
     out << " max: #{opts[:max]}," if opts[:max]
     out << "linestyle: '1,0,0',
-colors: ['0077CC', 'E6F2FA'],
+colors: ['#{opts[:colors][0]}'],
+fillcolors: ['#{opts[:fillcolors][0]}'],
 min: 0, 
 type: 'ls'})) 
+.appendTo(\"#line#{spid}\");
+});
+</script>
+"
+    
+    out
+  end
+  
+  def pie(opts)
+    # req: data size
+    out = ''
+    require 'md5'
+    spid = MD5.hexdigest((Time.now.to_i + Kernel.rand).to_s)
+    # load_javascript_lib('web.shared/jgcharts-0.9')
+    out << "<div id=\"line#{spid}\"></div>
+<script type=\"text/javascript\">
+$j(document).ready(function() {
+var api = new jGCharts.Api(); 
+jQuery('<img>') 
+.attr('src', api.make({ 
+data: [#{opts[:data].join(',')}],
+size: '#{opts[:size]}',"
+    if opts[:axis_labels]
+      opts[:axis_labels].collect! { |opt| "'#{opt}'" }
+      out << " axis_labels: [#{opts[:axis_labels].join(',')}],"
+    end
+    out << "
+type: 'p'})) 
+.appendTo(\"#line#{spid}\");
+});
+</script>
+"
+    
+    out
+  end
+  
+  def horizontal_stacked_bar(opts)
+    # req: data size
+    out = ''
+    require 'md5'
+    spid = MD5.hexdigest((Time.now.to_i + Kernel.rand).to_s)
+    # load_javascript_lib('web.shared/jgcharts-0.9')
+    out << "<div id=\"line#{spid}\"></div>
+<script type=\"text/javascript\">
+$j(document).ready(function() {
+var api = new jGCharts.Api(); 
+jQuery('<img>') 
+.attr('src', api.make({ 
+data: [#{opts[:data].join(',')}],
+size: '#{opts[:size]}',"
+    if opts[:axis_labels]
+      opts[:axis_labels].collect! { |opt| "'#{opt}'" }
+      out << " axis_labels: [#{opts[:axis_labels].join(',')}],"
+    end
+    out << "
+type: 'bhs'})) 
 .appendTo(\"#line#{spid}\");
 });
 </script>
@@ -81,9 +139,8 @@ type: 'ls'}))
     concat("</div>", block.binding)
   end
   
-  
-  def gmurl(object)
-    ApplicationController.gmurl(object)
+  def gmurl(object, opts={})
+    ApplicationController.gmurl(object, opts)
   end
   
   def member_state(state)
@@ -228,11 +285,13 @@ google_color_text = "' + options[:colors][:google_color_text]+'";
   # TODO cachear
   def render_tree_select(pages, name, select_name, value = nil, noparent_id=false)
     ret = ''
-    ret += "<select id=\"#{select_name}\" name=\"#{select_name}\"><option value=\"\"></option>"
+    
+    found = false
     for page in pages 
       if page.parent_id == nil || noparent_id
         if page.id == value then
-          ret += "<option selected=\"selected\" value=\"#{page.id}\">" 
+          ret += "<option selected=\"selected\" value=\"#{page.id}\">"
+          found = true
         else
           ret += "<option value=\"#{page.id}\">" 
         end
@@ -240,7 +299,15 @@ google_color_text = "' + options[:colors][:google_color_text]+'";
         ret += recurse_tree(page, 0, name, value) if page.children and page.children.size>0 
       end
     end 
-    ret += "</select>" 
+    ret += "</select>"
+    
+    if (!found) && noparent_id
+      ret = "<select id=\"#{select_name}\" name=\"#{select_name}\"><option value=\"#{value unless value.nil?}\"></option>#{ret}"
+    else
+      ret = "<select id=\"#{select_name}\" name=\"#{select_name}\"><option value=\"\"></option>#{ret}"
+    end
+    
+    ret
   end
   
   def recurse_tree(page, depth, name, value)
@@ -480,8 +547,8 @@ google_color_text = "' + options[:colors][:google_color_text]+'";
         oFCKeditor.Create();
       </script>
 END
-      else
-       load_javascript_lib('wseditor')
+    else
+      load_javascript_lib('wseditor')
       <<-END
         #{switch1}
         <textarea name="#{field_name}">#{opts[:value]}</textarea><br />
@@ -694,12 +761,12 @@ END
     
     if @_additional_js_libs
       @_additional_js_libs.uniq.each do |lib|
-      if lib == 'fckeditor'
-        out << "<script src=\"#{ASSET_URL}/fckeditor/fckeditor.js\" type=\"text/javascript\"></script>"
-      elsif lib.include?('http://')
-        out << "<script src=\"#{lib}\" type=\"text/javascript\"></script>"
-      else      
-        out << <<-END
+        if lib == 'fckeditor'
+          out << "<script src=\"#{ASSET_URL}/fckeditor/fckeditor.js\" type=\"text/javascript\"></script>"
+        elsif lib.include?('http://')
+          out << "<script src=\"#{lib}\" type=\"text/javascript\"></script>"
+        else      
+          out << <<-END
 <script src="#{ASSET_URL}/javascripts/#{lib}.#{'pack.' if App.compress_js?}#{SVNVERSION}.js" type="text/javascript"></script>
         END
         end
@@ -743,7 +810,7 @@ END
   
   def navpathgm20085
     out = '<ul>'
-    firstlevelname = controller.active_sawmode ? controller.active_sawmode.titleize : 'Portada'
+    firstlevelname = "Portada #{controller.portal.code}" # controller.active_sawmode ? controller.active_sawmode.titleize : 'Portada'
     out<< "<li class=\"home\"><a title=\"Ir a portada\" class=\"nav\" href=\"/\"><span>#{firstlevelname}</span></a></li>" 
     if @navpath # TODO oldschool navpath, remove all of 'em
       #return '' if @navpath.size == 1
@@ -836,7 +903,7 @@ END
     @oddclass = old_oddclass 
   end
   
-  def mflist(title, collection, options={}, &block)
+  def mflistOLD(title, collection, options={}, &block)
     old_oddclass = @oddclass
     collection = collection.call if collection.respond_to? :call
     oddclass_reset
@@ -859,12 +926,49 @@ END
     @oddclass = old_oddclass
   end
   
+  def mftable(title, collection, options={}, &block)
+    mfcontainer_list('table', title, collection, options, &block)
+  end
+  
+    
+  def mflist(title, collection, options={}, &block)
+    mfcontainer_list('list', title, collection, options, &block)
+  end
+  
+  def new_ads(opts={})
+    # TODO
+  end
+  
+  def mfcontainer_list(mode, title, collection, options={}, &block)
+    old_oddclass = @oddclass
+    collection = collection.call if collection.respond_to? :call
+    oddclass_reset
+    grid_cls = options[:grid] ? "grid-#{options[:grid]}" : '' 
+    glast_cls = 'glast' if options[:glast]
+    blast_cls = 'blast' if options[:blast]
+    class_cls = options[:class_container] if options[:class_container]
+    return '' if collection.size == 0 && !options[:show_even_if_empty]
+    out = "<div class=\"module mf#{mode} #{grid_cls} #{glast_cls} #{blast_cls} #{class_cls} \""
+    out << " id=\"#{options[:id]}\"" if options[:id]
+    concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\">", block.binding)
+    concat(((mode == 'list') ? '<ul>' : '<table>'), block.binding)
+    collection.each do |o|
+      concat("<#{(mode == 'list') ? 'li' : 'tr'} class=\"#{oddclass} #{options[:class] if options[:class]} \">", block.binding)
+      yield o
+      concat("</#{(mode == 'list') ? 'li' : 'tr'}>", block.binding)
+    end
+    concat(((mode == 'list') ? '</ul>' : '</table>'), block.binding)
+    concat(options[:bottom], block.binding) if options[:bottom]
+    concat("</div></div>", block.binding)
+    @oddclass = old_oddclass
+  end
+  
   def clan_link(clan)
     "<a href=\"#{gmurl(clan)}\">#{clan.name}</a>"
   end
   
   def mfcontent(content, &block)
-    # TODO <% if @news.news_category.file then %><%=show_news_category_file(@news.news_category.file)%><% end %>
+    # TODO <% if @news.main_category.file then %><%=show_news_category_file(@news.main_category.file)%><% end %>
     out = <<-END
      <div class="module mfcontent"><div class="mtitle mcontent-title"><div class=\"iset iset#{content.class.name.downcase}\"></div> <span>#{show_rating_title(content)} #{content.resolve_hid}</span></div>
      <div class="mcontent">
@@ -1157,6 +1261,17 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
   def faction_activity_minicolumns(faction)
     # TODO esto no lo cachearan algunos browsers, usar .1.png
     "<img title=\"Karma generado durante el último mes en #{faction.code} (1 día una columna)\" class=\"minicolumns\" src=\"/storage/minicolumns/factions_activity/#{faction.id}.png?d=#{Time.now.strftime('%Y-%m-%d')}\" />"
+  end
+  
+  def minicolumns(mode, data)
+    mc_id = "minicols_{mode}#{data.join(',')}"
+    f = "#{RAILS_ROOT}/public/storage/minicolumns/#{mc_id}.png"
+    Cms.gen_minicolumns(mode, data, f) unless File.exists?(f)
+    "<img src=\"/storage/minicolumns/#{mc_id}.png\" />"
+  end
+  
+  def winner_cup(winner)
+    "<img src=\"/images/blank.gif\" class=\"competition-cup cup#{winner}\" />"
   end
   
   def faction_cohesion(faction=@faction)

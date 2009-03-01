@@ -1,6 +1,10 @@
 require 'app/controllers/application.rb'
 
 module Cache
+  def self.user_base(uid)
+    "/_users/#{uid % 1000}/#{uid}"
+  end
+  
   module Common
     def expire_fragment(fragment)
       CacheObserver.expire_fragment(fragment)
@@ -45,7 +49,7 @@ module Cache
         expire_fragment("/#{p.code}/miembros/#{object.user_id % 1000}/#{object.user_id}/last_comments")
         if object.content.real_content.class.name == 'Topic'
           expire_fragment("/#{p.code}/foros/index/index") 
-          expire_fragment("/bazar/home/categories/#{object.content.real_content.topics_category.root.code}")
+          expire_fragment("/bazar/home/categories/#{object.content.real_content.main_category.root.code}")
         end
         expire_fragment("/#{p.code}/site/last_commented_objects")
         expire_fragment("/#{p.code}/site/last_commented_objects_ids")
@@ -73,6 +77,87 @@ module Cache
       object = Content.find(content_id)
       object.real_content.get_related_portals.each do |p|
         expire_fragment("/#{p.code}/miembros/#{comment_user_id % 1000}/#{comment_user_id}/last_comments")
+      end
+    end
+  end
+  
+  module Terms
+    extend Cache::Common 
+    def self.before_destroy(object)
+      case object.taxonomy
+        when 'ImagesCategory':
+        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/imagenes/index/galleries") }
+        
+        when 'TopicsCategory':
+        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/foros/index/index") } # tenemos que borrarla entera porque se guardan totales
+        expire_fragment("/common/foros/subforos/#{object.parent_id}")
+        expire_fragment '/common/home/foros/topics_list'
+        p = object
+        while p
+          expire_fragment("/common/foros/_forums_list/#{p.id}")
+          expire_fragment("/common/home/foros/topics_#{p.id}")
+          p = p.parent
+        end
+        
+        when 'DownloadsCategory':
+        Cache::Terms.after_save(object)
+        
+        when 'TutorialsCategory':
+        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/tutoriales/index/folders") }
+        p = object
+        while p
+          expire_fragment("/common/tutoriales/index/folders_#{p.id}")
+          expire_fragment("/common/tutoriales/index/tutorials_#{p.id}/page_*")
+          p = p.parent
+        end
+      end
+    end
+    
+    def self.after_save(object)
+      case object.taxonomy
+        when 'ImagesCategory' then
+        object.get_related_portals.each do |p|
+          expire_fragment("/#{p.code}/imagenes/index/galleries")
+        end
+        expire_fragment("/common/imagenes/toplevel/#{object.root_id}/page_*")       
+        expire_fragment("/common/imagenes/toplevel/#{object.slnc_changed_old_values[:parent_id]}/page_*") if object.slnc_changed?(:parent_id) # no buscamos el root pq con la config de la sección actualmente no hay más de 2 niveles en la jerarquía
+        
+        when 'TopicsCategory' then
+        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/foros/index/index")  }
+        expire_fragment '/common/home/foros/topics_list'
+        expire_fragment("/common/foros/subforos/#{object.parent_id}")
+        p = object
+        while p
+          expire_fragment("/common/foros/_forums_list/#{p.id}")
+          expire_fragment("/common/home/foros/topics_#{p.id}")
+          p = p.parent
+        end
+        
+      when 'DownloadsCategory' then
+        expire_fragment("/common/descargas/index/most_downloaded_#{object.root_id}")
+        expire_fragment("/common/descargas/index/essential_#{object.root_id}")
+        expire_fragment("/common/descargas/index/essential2_#{object.root_id}")
+        expire_fragment("/common/descargas/index/essential3_#{object.root_id}")
+        
+        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/descargas/index/folders") }
+        p = object
+        
+        while p
+          expire_fragment("/common/descargas/index/most_productive_author_by_cat_#{p.id}")
+          expire_fragment("/common/descargas/index/folders_#{p.id}")
+          expire_fragment("/common/descargas/index/downloads_#{p.id}/page_*")
+          p = p.parent
+        end
+        
+        when 'TutorialsCategory' then
+        object.get_related_portals.each { |p|
+          expire_fragment("/#{p.code}/tutoriales/index/folders") 
+        }
+        p = object
+        while p
+          expire_fragment("/common/tutoriales/index/folders_#{p.id}")
+          p = p.parent
+        end  
       end
     end
   end

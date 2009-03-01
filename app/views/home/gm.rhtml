@@ -5,16 +5,16 @@
     <div class="homebox" id="hmnt">
         <div id="home-news" class="subheader first"><div><span>Noticias</span></div></div>
         <ul class="content-hid2">
-          <% @last_news = controller.portal.news.find(:published, :conditions => 'news_category_id not in (select id from news_categories where root_id in (select id from news_categories where code in (select code from bazar_districts)) OR root_id = (select id from news_categories where code=\'bazar\' and id = root_id))', :limit => 40, :order => 'created_on DESC')
+          <% @last_news = News.find(:published, :conditions => 'clan_id IS NULL', :limit => 40, :order => 'created_on DESC')
 # @last_news = @portal.news_find(:all, :state => :published, :limit => 15)
 shown_news = []
 accum_portals = {}
 max = 20
 i = 0
 for news in @last_news
-	accum_portals[news.news_category.root_id] ||= 0
-	accum_portals[news.news_category.root_id] += 1
-	next if accum_portals[news.news_category.root_id] > 6
+	accum_portals[news.main_category.root_id] ||= 0
+	accum_portals[news.main_category.root_id] += 1
+	next if accum_portals[news.main_category.root_id] > 6
 	break if i > max
     shown_news << news.unique_content.id
 %>
@@ -42,7 +42,7 @@ shown_downloads = []
 for download in @last_downloads
     shown_downloads << download.unique_content.id
 %>
-    <li id="content<%=download.unique_content.id%>" class="new <%=oddclass%>"><%=link_to "<div class=\"content-category\">#{faction_favicon(download.downloads_category)}</div>#{download.title}", gmurl(download)%></li>
+    <li id="content<%=download.unique_content.id%>" class="new <%=oddclass%>"><%=link_to "<div class=\"content-category\">#{faction_favicon(download.main_category)}</div>#{download.title}", gmurl(download)%></li>
 <% end %>
 </ul>
 <script type="text/javascript">contents = contents.concat(<%=shown_downloads.join(',')%>);</script>
@@ -69,7 +69,7 @@ for download in @last_downloads
 shown_topics = []
 if controller.portal.id != -1 then # portal distinto de GmPortal
 # TODO la subquery de nohome la estamos haciendo sobre todas las categorías hidden que hay, habría que restringirlo a las categorías nohome solo accesibles desde este portal
-@last_topics = controller.portal.topic.find(:published, :conditions => 'closed is false and sticky is false AND topics_category_id not in (select id from topics_categories where root_id in (select id from topics_categories where code in (select code from bazar_districts)) OR root_id = (select id from topics_categories where code=\'bazar\' and id = root_id))', :order => 'updated_on desc', :limit => 20)
+@last_topics = controller.portal.topic.find(:published, :conditions => 'closed is false AND topics_category_id not in (select id from topics_categories where root_id in (select id from topics_categories where code in (select code from bazar_districts)) OR root_id = (select id from topics_categories where code=\'bazar\' and id = root_id))', :order => 'updated_on desc', :limit => 20)
 
 for topic in @last_topics
   shown_topics << topic.unique_content.id %>
@@ -78,12 +78,13 @@ for topic in @last_topics
 <%
 else #GmPortal
 # TODO bug
-@last_topics = Topic.find_by_sql("select * from topics where clan_id IS NULL AND id in (SELECT last_updated_item_id from topics_categories where id = root_id and updated_on >= now() - '1 week'::interval) and state = #{Cms::PUBLISHED} AND topics_category_id not in (select id from topics_categories where nohome = \'t\') order by updated_on desc limit 20")
+@last_topics = Topic.latest_by_category(20)
 
-for topic in @last_topics
-  shown_topics << topic.unique_content.id
-  root = topic.topics_category.root
-  active_topics = TopicsCategory.db_query("SELECT (count(id) - 1) as count FROM topics WHERE topics_category_id IN (#{root.get_all_children.join(',')}) AND updated_on > now() - '1 week'::interval")[0]['count']
+for topicid in @last_topics
+  topic = Topic.find(topicid)
+  shown_topics << topic.unique_content_id
+  root = topic.main_category.root
+  active_topics = TopicsCategory.db_query("SELECT (count(id) - 1) as count FROM topics WHERE topics_category_id IN (#{root.all_children_ids.join(',')}) AND updated_on > now() - '1 week'::interval")[0]['count']
 %>
 <li id="content<%=topic.unique_content.id%>" class="new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "<div class=\"content-category\">#{faction_favicon(topic.topics_category)}</div>#{truncate(topic.title.gsub('<', ''), 28)}", gmurl(topic)%></li>
     <% end # for %>
@@ -105,11 +106,13 @@ for topic in @last_topics
     <% 
     cats = controller.portal.categories(Poll).collect { |cat| cat.id }
 
-    if user_is_authed and not @user.faction_id.nil? and not cats.include?(PollsCategory.find(:first, :conditions => ['id = root_id and code = ?', @user.faction.code]).id) then %>
+    if user_is_authed and not @user.faction_id.nil?
+		user_faction_tl = Term.single_toplevel(:slug => @user.faction.code) 
+		if !cats.include?(user_faction_tl.id) then %>
 <%
-    p = PollsCategory.find(:first, :conditions => ['id = root_id and name = ?', @user.faction.name])
+    
 if p then
-    @cur_polls = p.polls.find(:all, :conditions => 'starts_on <= now() and ends_on >= now() and state = 2', :order => 'created_on DESC')
+    @cur_polls = p.polls.find(:published, :conditions => Poll::CURRENT_SQL, :order => 'created_on DESC')
 else 
 @cur_polls = []
 end
@@ -118,7 +121,9 @@ end
       <%=render :partial => '/encuestas/encuesta', :locals => {:poll => @cur_poll, :user => (user_is_authed ? @user : nil)} %>
       <script type="text/javascript">contents = contents.concat(<%=@cur_poll.unique_content.id%>);</script>
     <% end %>
-<% end -%>
+<% end -%>	
+<% end # if user_is_authed -%>
+
     <div class="more"><a title="Ver más encuestas" href="/encuestas/">Más encuestas &raquo;</a></div>
   </div>
 
@@ -207,7 +212,7 @@ end
 	<% cache("/#{controller.portal_code}/home/index/apuestas_#{Time.now.to_i / 3600}") do %>
 <table>
       <% shown_bets = [] 
-controller.portal.bet.open_bets.each do |o| 
+Bet.open_bets.each do |o| 
 shown_bets<< o.unique_content.id %>
         <tr class="<%=oddclass%> new" id="content<%=o.unique_content.id%>">
 <td class="<%=oddclass%>"><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
@@ -247,7 +252,7 @@ shown_demos = []
 for demo in @last_demos
     shown_demos << demo.unique_content.id
 %>
-    <li id="content<%=demo.unique_content.id%>" class="new <%=oddclass%>"><%=link_to "<div class=\"content-category\">#{faction_favicon(demo.demos_category)}</div>#{demo.title}", gmurl(demo)%></li>
+    <li id="content<%=demo.unique_content.id%>" class="new <%=oddclass%>"><%=link_to "<div class=\"content-category\">#{faction_favicon(demo.main_category)}</div>#{demo.title}", gmurl(demo)%></li>
 <% end -%>
 
 </ul>
@@ -279,8 +284,53 @@ if @daily_img then %>
     </div>
 <% end -%>
 <% end -%>
+
+<% cache("/common/home/index/news_inet") do 
+nc = Term.single_toplevel(:bazar_district_id => BazarDistrict.find_by_code('inet').id)
+%>
+    <div class="homebox">
+        <div id="home-offtopics" class="subheader first"><div><span>Offtopic</span></div></div>
+        <ul class="content-hid">
+<% 
+shown_offtopics = []
+@last_offtopics = nc.news.find(:published, :limit => 5, :order => 'created_on DESC')
+for offtopic in @last_offtopics
+  shown_offtopics << offtopic.unique_content.id 
+%>
+    <li id="content<%=offtopic.unique_content.id%>" class="new <%=oddclass%>"><%=link_to truncate(offtopic.title, 30), gmurl(offtopic)%></li>
+<% end %>
+</ul>
+<script type="text/javascript">contents = contents.concat(<%=shown_offtopics.join(',')%>);</script>
+    <div class="more"><a title="Ver más noticias offtopic" href="http://bazar.<%=App.domain%>/noticias">Más noticias de Internet &raquo;</a></div>
+    </div>
+<% end -%>
+
+
+
+      <div class="homebox">
+        <%=render :partial => 'daily_joy' %>
+      </div>
+
+<% cache('/common/home/index/curiosidades') do %>
+    <div class="homebox">
+        <div id="home-funthings" class="subheader first"><div><span>Curiosidades</span></div></div>
+        <ul class="content-hid">
+<% 
+shown_funthings = []
+@last_funthings = Funthing.find(:published, :order => 'created_on DESC LIMIT 5')
+for funthing in @last_funthings
+  shown_funthings << funthing.unique_content.id 
+%>
+    <li id="content<%=funthing.unique_content.id%>" class="new <%=oddclass%>"><%=link_to truncate(funthing.title, 30), gmurl(funthing)%></li>
+<% end %>
+</ul>
+<script type="text/javascript">contents = contents.concat(<%=shown_funthings.join(',')%>);</script>
+    <div class="more"><a title="Ver más curiosidades" href="/curiosidades">Más curiosidades &raquo;</a></div>
+    </div>
+<% end -%>
 	</div>
 <!-- end homebazar -->
+
 
     </div>
   </div>

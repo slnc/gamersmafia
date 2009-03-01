@@ -1,0 +1,8 @@
+<% cache("/#{controller.portal_code}/home/index/eventos2/#{Time.now.strftime('%Y%m%d')}") do %>
+<% mfcontents_table('Eventos', 
+				   Proc.new { controller.portal.event.find(:published, :conditions => Event::CURRENT_SQL, :order => 'starts_on') } 
+				   ) do |e| %>
+	<td style="font-size: 11px;"><%=draw_content_favicon(e)%><a href="<%=get_url(e)%>"><%=e.title%></a></td>
+    <td style="font-size: 11px;"><%=member_state('active')%><%=e.users.count%></td>
+<% end -%>
+<% end # cache -%>

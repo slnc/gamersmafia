@@ -216,7 +216,6 @@ class Skin < ActiveRecord::Base
       sk.skin = self # para evitar llamar a la skin cada vez, a lo mejor lo hace ruby autom
       clean_style_file(*sk.texture.markers)
       css, files = sk.process
-      p css
       # las imagenes van a ir uripath/images/#{sk.id}/
       files.each do |fname|
         bname = File.basename(fname)

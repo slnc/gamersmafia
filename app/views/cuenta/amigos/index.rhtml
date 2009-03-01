@@ -16,7 +16,8 @@ if pending_users.size > 0 then %>
 			<% else %>
 			<td><%=f.receiver_email%></td>
 			<% end %>
-			<td style="text-align: right;"><%=link_to_remote 'Cancelar', :url => "/cuenta/amigos/cancelar_amistad/?eid=#{f.external_invitation_key}&aj=1", :confirm => '¿Estás seguro de que deseas cancelar esta invitación?', :complete => "$j('#friendship#{f.id}').fadeOut('normal');"%></td>
+			<% cancel_params = f.external_invitation_key ? "eid=#{f.external_invitation_key}" : "login=#{f.receiver.login}"%>
+			<td style="text-align: right;"><%=link_to_remote 'Cancelar', :url => "/cuenta/amigos/cancelar_amistad/?#{cancel_params}&aj=1", :confirm => '¿Estás seguro de que deseas cancelar esta invitación?', :complete => "$j('#friendship#{f.id}').fadeOut('normal');"%></td>
 		</tr>
 	<% end -%>
 	</table>

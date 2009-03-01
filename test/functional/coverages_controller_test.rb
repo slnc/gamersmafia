@@ -6,7 +6,7 @@ require 'coverages_controller'
 class CoveragesController; def rescue_action(e) raise e end; end
 
 class CoveragesControllerTest < Test::Unit::TestCase
-  test_common_content_crud :name => 'Coverage', :form_vars => {:title => 'footapang', :description => 'bartapang', :event_id => 1}
+  test_common_content_crud :name => 'Coverage', :form_vars => {:title => 'footapang', :description => 'bartapang', :event_id => 1}, :root_terms => 1
 
   def setup
     @controller = CoveragesController.new

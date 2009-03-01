@@ -1,6 +1,14 @@
 class ForosController < ComunidadController
   allowed_portals [:gm, :faction, :clan, :bazar, :arena, :bazar_district]
   acts_as_content_browser :topic
+  
+  TOPLEVEL_GROUPS = [['Gamersmafia', 'gm'], 
+      ['Juegos', 'juegos'],
+      ['Plataformas', 'plataformas'],
+      ['Arena', 'arena'],
+      ['Bazar', 'bazar'],
+      ]
+    
   def wmenu_pos
     'foros'
   end
@@ -19,7 +27,8 @@ class ForosController < ComunidadController
   
   def forum
     # TODO no chequeamos que sea un foro correcto para este portal y además suponemos que topic es un topics_category
-    @forum = TopicsCategory.find(params[:id])
+    @forum = Term.find_taxonomy(params[:id], 'TopicsCategory')
+    @forum = Term.single_toplevel(:id => params[:id]) if @forum.nil?
     
     forum_for_title = @forum
     @title = ''
@@ -56,14 +65,13 @@ class ForosController < ComunidadController
       redirect_to(obj.unique_content.url, :status => 301) and return
     end
     
-    @forum = @topic.send(ActiveSupport::Inflector::underscore(@topic.class.category_class.name))
+    @forum = @topic.terms[0] # send(ActiveSupport::Inflector::underscore(@topic.class.category_class.name))
     @title = @topic.title
     @navpath = [['Foros', '/foros']]
     @forum.get_ancestors.reverse.each { |p| @navpath<< [p.name, "/foros/forum/#{p.id}"] }
     
     @navpath<<[@forum.name, "/foros/forum/#{@forum.id}"]
     @navpath<<[@topic.title, gmurl(@topic)]
-    
     track_item(@topic)
   end
   
@@ -71,7 +79,7 @@ class ForosController < ComunidadController
   def edit
     @topic = Topic.find(params[:id])
     require_user_can_edit(@topic)
-    @forum = @topic.topics_category
+    @forum = @topic.main_category
     @title = "Editar #{@topic.title}"
     @navpath = [['Foros', '/foros'], [@forum.parent.name, "/foros/forum/#{@forum.parent.id}"], [@forum.name, "/foros/forum/#{@forum.id}"], [@topic.title, gmurl(@topic)], ['Editar', "/foros/edit/#{@topic.id}"]]
     @topic = @topic
@@ -117,18 +125,8 @@ class ForosController < ComunidadController
     params[:topic][:clan_id] = portal.clan_id if portal.kind_of?(ClansPortal) && portal.clan_id
     params[:topic][:main] = Comments::formatize(params[:topic][:main])
     
-    forum = TopicsCategory.find_by_id(params[:topic][:topics_category_id]) if params[:topic][:topics_category_id].to_s != '' 
-    
-    if forum && forum.id == forum.root_id then 
-      # buscamos el foro de nombre general de esta categoría o uno cualquiera
-      f = forum.children.find(:first, :conditions => 'name = \'General\'')
-      
-      if f.nil? then
-        f = forum.children.find(:first)
-      end
-      
-      forum = f
-    end
+    raise "terms must be single forum" unless params[:topic][:terms].to_i > 0
+    forum = Term.find_taxonomy(params[:topic][:terms].to_i, 'TopicsCategory') 
     
     @topic = Topic.new(params[:topic])
     
@@ -145,10 +143,12 @@ class ForosController < ComunidadController
       elsif @user.topics.count(:conditions => "created_on >= now() - '5 days'::interval AND sticky is false AND state = #{Cms::PUBLISHED} AND cache_comments_count = 0") > 3 then
         flash[:error] = "Tienes demasiados tópics abiertos sin que otros usuarios hayan respondido, debes esperar un poco antes de publicar un nuevo tópic."
         render :action => 'nuevo_topic'
-#        elsif !FactionsBannedUser.find(:first, :conditions => ['user_id = ? AND faction_id = ?', @user.id, ]).nil?
       else
-        @topic = forum.topics.create(params[:topic])
-        if @topic then
+        fac = Faction.find_by_code(forum.root.code)
+        if fac && !FactionsBannedUser.find(:first, :conditions => ['user_id = ? AND faction_id = ?', @user.id, fac.id]).nil?
+          flash[:error] = "Permiso denegado: Estás baneado de la facción #{fac.name}."
+          redirect_to '/foros'
+        elsif @topic.save
           begin
             Comments.require_user_can_comment_on_content(@user, @topic)
           rescue Exception => e

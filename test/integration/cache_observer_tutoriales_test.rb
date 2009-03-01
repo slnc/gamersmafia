@@ -10,7 +10,9 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
   def test_should_clear_tutoriales_index_index_after_creating_a_new_category
     get '/tutoriales'
     assert_cache_exists '/gm/tutoriales/index/folders'
-    @tc = TutorialsCategory.create({:name => 'foocat', :code => 'codecot'})
+    @tc = Term.create({:name => 'foocat', :slug => 'codecot'})
+    assert_cache_exists '/gm/tutoriales/index/folders'
+    @tcc = @tc.children.create(:name => 'tutoriales del fin der mundo', :taxonomy => 'TutorialsCategory')
     assert_cache_dont_exist '/gm/tutoriales/index/folders'
   end
   
@@ -18,7 +20,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     test_should_clear_tutoriales_index_index_after_creating_a_new_category
     get '/tutoriales'
     assert_cache_exists '/gm/tutoriales/index/folders'
-    TutorialsCategory.find_by_code('codecot').save
+    @tcc.save
     assert_cache_dont_exist '/gm/tutoriales/index/folders'
   end
   
@@ -26,7 +28,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     test_should_clear_tutoriales_index_index_after_creating_a_new_category
     get '/tutoriales'
     assert_cache_exists '/gm/tutoriales/index/folders'
-    TutorialsCategory.find_by_code('codecot').destroy
+    @tcc.destroy
     assert_cache_dont_exist '/gm/tutoriales/index/folders'
   end
   
@@ -35,7 +37,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     get "/tutoriales/#{@tc.id}"
     assert_response :success
     assert_cache_exists "/common/tutoriales/index/folders_#{@tc.id}"
-    @tc_child = @tc.children.create({:name => 'subfoocat', :code => 'subcodecot'})
+    @tc_child = @tc.children.create({:name => 'subfoocat', :slug => 'subcodecot', :taxonomy => 'TutorialsCategory'})
     assert_cache_dont_exist "/common/tutoriales/index/folders_#{@tc.id}"
   end
   
@@ -66,12 +68,16 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
   end
   
   def test_should_clear_tutoriales_index_of_previous_category_when_moving_to_new_category
-    get "/tutoriales/1"
+    tut = Tutorial.find(:published, :limit => 1).first
+    fcat = tut.main_category
+    assert !fcat.nil?
+    get "/tutoriales/#{fcat.id}"
     assert_response :success
-    assert_cache_exists "/common/tutoriales/index/tutorials_1/page_"
-    tut = Tutorial.find(1)
-    assert_equal true, tut.update_attributes({:tutorials_category_id => 5})
-    assert_cache_dont_exist "/common/tutoriales/index/tutorials_1/page_"
+    assert_cache_exists "/common/tutoriales/index/tutorials_#{fcat.id}/page_"
+    tcat2 = Term.find(:first, :conditions => ["root_id <> ? AND taxonomy = 'TutorialsCategory'", fcat.root.id])
+    tut.categories_terms_ids = [tcat2.id, 'TutorialsCategory']
+    assert_equal tcat2.id, tut.main_category.id
+    assert_cache_dont_exist "/common/tutoriales/index/tutorials_#{fcat.id}/page_"
   end
 
   def teardown

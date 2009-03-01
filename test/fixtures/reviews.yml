@@ -12,6 +12,7 @@ published:
   main: foo
   approved_by_user_id: 1
   state: 2
+  unique_content_id: 12
 
 unpublished:
   id: 2
@@ -26,6 +27,7 @@ unpublished:
   description: foo2
   main: foo2
   state: 1
+  unique_content_id: 1012
 
 deleted:
   id: 3
@@ -41,5 +43,4 @@ deleted:
   main: foo3
   approved_by_user_id: 1
   state: 3
-
-
+  unique_content_id: 2012

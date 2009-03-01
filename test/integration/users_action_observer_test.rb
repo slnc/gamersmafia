@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class UsersActionObserverTest < ActionController::IntegrationTest
   
   def test_should_properly_work_with_recruitment_ads
-    @ra = RecruitmentAd.new(:user_id => 1, :game_id => 1, :message => 'hola')
+    @ra = RecruitmentAd.new(:user_id => 1, :game_id => 1, :title => 'busco cosas', :main => 'hola')
     assert_count_increases(UsersAction) do
       assert @ra.save
     end
@@ -29,7 +29,7 @@ class UsersActionObserverTest < ActionController::IntegrationTest
   end
   
   def test_should_properly_reflect_content
-    n = News.create(:news_category_id => 1, :user_id => 1, :title => "titulin", :description => "fooo")
+    n = News.create(:terms => 1, :user_id => 1, :title => "titulin", :description => "fooo")
     assert_count_increases(UsersAction) do
       Cms.publish_content(n, User.find(1))
     end

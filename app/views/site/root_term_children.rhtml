@@ -1,0 +1,1 @@
+<%=render_tree_select @term.children.find(:all, :conditions => ['taxonomy = ?', Term.taxonomy_from_class_name(params[:content_type])], :order => 'lower(name)'), 'name', params[:name], nil, true %></p>

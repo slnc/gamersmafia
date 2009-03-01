@@ -1,33 +1,19 @@
 require 'lib/redefine_task'
 
-desc 'Test all units, functionals, plugins, scripts, libs, integration'
+desc 'Batería de tests por defecto'
 redefine_task :test do
-  Rake::Task["test:units"].invoke rescue got_error = true
-  Rake::Task["test:functionals"].invoke rescue got_error = true
-  Rake::Task["test:helpers"].invoke rescue got_error = true
-  Rake::Task["test:plugins"].invoke rescue got_error = true
-  Rake::Task["test:integration"].invoke rescue got_error = true
-  Rake::Task["test:libs"].invoke rescue got_error = true
-  Rake::Task["test:scripts"].invoke rescue got_error = true
-  Rake::Task["test:tasks"].invoke rescue got_error = true
+  got_error = false
+  %w(functionals helpers integration libs plugins scripts tasks units).each do |tpack|
+    Rake::Task["test:#{tpack}"].invoke rescue got_error = true
+  end
   
   raise "Test failures" if got_error
 end
 
-namespace :test do
-  desc "Lanza las tasks necesarias para ejecutar todos los tests en bamboo"
-  task :bamboo_launch do
-    #`exec rm -r #{RAILS_ROOT}/public/storage/*` if `hostname`.strip == 'white'
-    #`find /home/slnc/bamboo/xml-data/build-dir/GM-TRUNK/public/storage/ -type f -exec rm {} \\;`
-    `git branch --track staging origin/staging`
-    `git checkout staging`
-    `git submodule init`
-    `git submodule update`
-    `git pull origin`
-    Rake::Task['db:test:real_prepare'].invoke
-    Rake::Task['gm:update_default_skin_styles'].invoke
-    Rake::Task['ci:setup:testunit'].invoke
-    Rake::Task['test'].invoke
+namespace :test do  
+  desc 'Batería por defecto con rcov'
+  redefine_task :rcov do
+    Rake::Task["test:all_single_go:rcov"].invoke
   end
   
   desc "Sincroniza la base de datos de testing con el entorno actual de desarrollo"
@@ -50,7 +36,7 @@ namespace :test do
     t.pattern = 'test/scripts/*_test.rb'
     t.verbose = true
   end
-
+  
   desc 'Test helpers tests'
   Rake::TestTask.new(:helpers) do |t|
     t.libs << 'test'
@@ -64,4 +50,60 @@ namespace :test do
     t.pattern = 'test/tasks/*_test.rb'
     t.verbose = true
   end
+  
+  desc 'Test all in a single go'
+  Rake::TestTask.new(:all_single_go) do |t|
+    t.libs << 'test'
+    
+    t.test_files = FileList['test/functional/*_test.rb',
+                            'test/functional/*/*_test.rb',
+                            'test/helpers/*_test.rb',
+                            'test/helpers/**/*_test.rb',
+                            'test/lib/**/*_test.rb',
+                            'test/integration/*_test.rb',
+                            'vendor/plugins/*/**/test/**/*_test.rb',
+                            'test/scripts/*_test.rb',
+                            'test/tasks/*_test.rb',
+                            'test/unit/*_test.rb']
+    t.verbose = true
+  end
+  
+  # Lanza las tasks necesarias para ejecutar todos los tests en bamboo
+  task :bamboo do
+    Rake::Task['test:bamboo:init'].invoke
+    Rake::Task['test'].invoke
+  end
+  
+  namespace :bamboo do
+    task :init do
+      raise "NO" unless `hostname`.strip == 'balrog'
+      `rm -r #{RAILS_ROOT}/coverage/*` if File.exists?("#{RAILS_ROOT}/coverage")
+      `rm -r #{RAILS_ROOT}/public/storage/*` if File.exists?("#{RAILS_ROOT}/public/storage")
+      `git submodule init`
+      `git submodule update`
+      Rake::Task['db:test:real_prepare'].invoke
+      Rake::Task['gm:update_default_skin_styles'].invoke
+      Rake::Task['ci:setup:testunit'].invoke
+    end
+    
+    namespace :plan do
+      desc "Batería de tests ampliada (rcov, validación html/css/js, tamaño de html/css/js)"
+      task :qa do
+        Rake::Task['test:bamboo:init'].invoke
+        Rake::Task['test:rcov'].invoke
+      end
+      
+      desc "Batería de tests por defecto"
+      task :default do
+        Rake::Task['test:bamboo'].invoke
+      end
+      
+      desc "Batería de tests de rendimiento"
+      task :performance do
+        Rake::Task['test:bamboo:init'].invoke
+        raise "TODO"
+      end
+    end
+  end
+  
 end

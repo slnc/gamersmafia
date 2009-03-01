@@ -48,8 +48,6 @@ Rails::Initializer.run do |config|
     :secret => "2595bb97b561a0311a2766ec174265f48ec10a58ef4091c4d621b74b92247b02aff39f9c67146b003ff2ea6a963ac69b758af0d6942e3c36cbf771775e6a2d85" 
   }
   
-  config.action_controller.cache_store = :file_store, FRAGMENT_CACHE_PATH
-  
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
   # config.active_record.observers = :cache_observer, :faith_observer # comment_observer, :cache_observer

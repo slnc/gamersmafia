@@ -28,13 +28,13 @@ class FactionsPortal < Portal
   end
   
   def home
-      if self.juego_title == 'Plataforma' 
+    if self.juego_title == 'Plataforma' 
         'facciones_platform'
-      elsif self.factions_portal_home.to_s != ''
+    elsif self.factions_portal_home.to_s != ''
         "facciones_#{self.factions_portal_home}"
-      else
+    else
         'facciones_fps'
-      end
+    end
   end
   
   def layout
@@ -52,12 +52,9 @@ class FactionsPortal < Portal
   
   # Devuelve todas las categorías de primer nivel visibles en la clase dada
   def categories(content_class)
-    cats = []
-    for f in self.factions
-      catz = content_class.category_class.toplevel(:conditions => "code = \'#{f.code}\'")
-      cats<< catz[0] if catz.size > 0
+    self.factions.collect do |f| 
+      Term.single_toplevel(f.referenced_thing_field => f.referenced_thing.id) 
     end
-    cats
   end
   
   # devuelve array de ints con las ids de las categorías visibles del tipo dado
@@ -65,16 +62,11 @@ class FactionsPortal < Portal
     # buscamos los nombres de todas las categorías de los juegos que tenemos
     # asociados
     cats_full = [0]
-    
-    for f in self.factions
-      for category in cls.find(:all, :conditions => ["root_id = (SELECT id FROM #{ActiveSupport::Inflector::tableize(cls.name)} where root_id = id and code = ?)", f.code])
-        cats_full<< category.id
-      end
+    taxonomy = ApplicationController.taxonomy_from_content_name(cls.name)
+    self.categories(cls).each do |t|
+      cats_full += t.all_children_ids(:taxonomy => taxonomy)
     end
-    
-    @categories = cats_full
-    
-    @categories
+    cats_full
   end
   
   def games
@@ -90,10 +82,6 @@ class FactionsPortal < Portal
     FactionsPortalCompetitionProxy.new(self)
   end
   
-  def topics_categories
-    TopicsCategory.find(:all, :conditions => "parent_id is null and root_id in (#{get_categories(TopicsCategory).join(',')})", :order => 'UPPER(name) ASC')
-  end
-  
   def method_missing(method_id, *args)
     if Cms::contents_classes_symbols.include?(method_id) # contents
       if method_id == :poll
@@ -101,8 +89,13 @@ class FactionsPortal < Portal
       elsif method_id == :coverage
         FactionsPortalCoverageProxy.new(self) 
       else
+        # TODO TAXONOMIES BUG, portales con mas de un root term no funcionan ya
         obj = Object.const_get(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id)))
         if obj.respond_to?(:is_categorizable?)
+          t = Term.find(:first, :conditions => "id = root_id AND slug IN (#{toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC')
+          t.add_content_type_mask(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id)))
+          return t
+          # TODO
           # ahora reemplazamos obj por la categoría de primer nivel si es facción o plataforma
           g = self.games
           if g.size > 1
@@ -111,10 +104,6 @@ class FactionsPortal < Portal
             obj = obj.category_class.find_by_code(self.factions[0].code)
           end
           
-          #if obj.class.name == 'ImagesCategory'
-            # newc = obj.category_class.find(:first, :conditions => 'id = root_id and code = \'bazar\'')
-            #obj.add_sibling(newc) if newc
-          #end
           if g.size > 1
             g.delete_at(0)
             g.each { |gg| obj.add_sibling(obj.class.find_by_code(gg.code)) }
@@ -126,8 +115,7 @@ class FactionsPortal < Portal
     elsif /(news|downloads|topics|events|tutorials|polls|images|questions)_categories/ =~ method_id.to_s then
       # Devolvemos categorías de primer nivel de esta facción
       # it must have at least one
-      cls = Object.const_get("#{ActiveSupport::Inflector::singularize(ActiveSupport::Inflector::camelize(method_id))}")
-      cls.find(:all, :conditions => "parent_id is null and id = root_id AND code IN (#{toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC')
+      Term.find(:all, :conditions => "id = root_id AND slug IN (#{toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC')
     else
       super
     end
@@ -157,7 +145,7 @@ class FactionsPortal < Portal
     banners
   end
   
-  private
+  public
   def toplevel_categories_codes
     factions.collect {|f| "'#{f.code}'" }
   end
@@ -169,7 +157,8 @@ class FactionsPortalPollProxy
   end
   
   def current
-    Poll.find(:published, :conditions => "polls_category_id IN (#{@portal.get_categories(Poll.category_class).join(',')}) and starts_on <= now() and ends_on >= now()", :order => 'created_on DESC', :limit => 1)
+    t = Term.find(:first, :conditions => "id = root_id AND slug IN (#{@portal.toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC').poll.find(:published, :conditions => Poll::CURRENT_SQL, :order => 'created_on DESC', :limit => 1)
+    # Poll.find(:published, :conditions => "polls_category_id IN (#{@portal.get_categories(Poll.category_class).join(',')}) and starts_on <= now() and ends_on >= now()", :order => 'created_on DESC', :limit => 1)
   end
   
   def respond_to?(method_id, include_priv = false)
@@ -177,6 +166,9 @@ class FactionsPortalPollProxy
   end
   
   def method_missing(method_id, *args)
+    t = Term.find(:first, :conditions => "id = root_id AND slug IN (#{@portal.toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC').poll
+    return t.send(method_id, *args)
+    
     obj = Poll
     g = @portal.games
     if g.size > 1

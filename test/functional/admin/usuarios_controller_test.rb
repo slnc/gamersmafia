@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
 class Admin::UsuariosControllerTest < ActionController::TestCase
-  test_min_acl_level :superadmin, [ :index, :edit, :update, :destroy, :check_registered_on, :check_karma, :check_faith ]
+  test_min_acl_level :superadmin, [ :index, :update, :destroy, :check_registered_on, :check_karma, :check_faith ]
   
   def test_index
     sym_login :superadmin

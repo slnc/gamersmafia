@@ -28,14 +28,6 @@ class UsersActionObserver < ActiveRecord::Observer
         data = "#{user_link(object.creator)} ha creado un nuevo clan: <a href=\"#{gmurl(object)}\">#{object.name}</a>"      
         UsersAction.create(:user_id => object.creator_user_id, :type_id => UsersAction::NEW_CLAN, :object_id => object.id, :data => data)
       end
-      
-      when 'RecruitmentAd'
-      if object.clan_id.nil?
-        data = "#{user_link(object.user)} de #{object.title}"
-      else
-        data = object.title
-      end
-      UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_RECRUITMENT_AD, :object_id => object.id, :data => data)
     end
   end
   
@@ -79,7 +71,7 @@ class UsersActionObserver < ActiveRecord::Observer
       
       when 'RecruitmentAd':
       if object.slnc_changed?(:deleted)
-        UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_RECRUITMENT_AD, object.id]).each { |ra| ra.destroy }
+        UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_CONTENT, object.unique_content_id]).each { |ra| ra.destroy }
       end
       
       when 'Friendship':

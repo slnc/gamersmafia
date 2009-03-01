@@ -1,9 +1,0 @@
-<h1>Editando categoría</h1>
-
-<%= form_tag( {:action => 'categorias_update', :id => @category}, {:multipart => true})%>
-  <%= render :partial => 'categorias_edit' %>
-  <%= submit_tag 'Guardar' %>
-</form>
-
-<%= link_to 'Volver', "/admin/categorias/#{params[:type_name]}" %>
-

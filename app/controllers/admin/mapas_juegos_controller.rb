@@ -1,5 +1,9 @@
 class Admin::MapasJuegosController < ApplicationController
   require_admin_permission :capo
+  
+  def wmenu_pos
+    'hq'
+  end
 
   def index
     @title = 'Mapas de juegos'

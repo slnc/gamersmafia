@@ -92,15 +92,7 @@ class Cuenta::FaccionControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_not_nil flash[:error]
   end
-  
-  
-  
-  def test_foros_should_work
-    test_staff_should_work_if_faction_leader
-    get :foros
-    assert_response :success
-  end
-  
+
   def test_links_should_work
     test_staff_should_work_if_faction_leader
     get :links
@@ -142,13 +134,6 @@ class Cuenta::FaccionControllerTest < Test::Unit::TestCase
     assert_count_decreases(FactionsLink) do
       post :links_destroy, :id => @fl.id
     end
-  end
-  
-  
-  def test_categorias_should_work
-    test_staff_should_work_if_faction_leader
-    get :categorias
-    assert_response :success
   end
   
   def test_cabeceras_should_work
@@ -235,63 +220,6 @@ class Cuenta::FaccionControllerTest < Test::Unit::TestCase
     end
   end
   
-  def test_forum_new_should_work
-    test_staff_should_work_if_faction_leader
-    get :forum_new
-    assert_response :success
-  end
-  
-  def test_forum_create_should_work
-    test_staff_should_work_if_faction_leader
-    assert_count_increases(TopicsCategory) do
-      post :forum_create, {:topics_category => {:name => 'un topiquito', :code => 'cd', :parent_id => 1}}
-    end
-    assert_response :redirect
-  end
-  
-  def test_forum_edit_should_work
-    test_forum_create_should_work
-    get :forum_edit, {:id => TopicsCategory.find(:first, :order => 'id desc').id }
-    assert_response :success
-  end
-  
-  def test_forum_update_should_work
-    test_forum_create_should_work
-    t = TopicsCategory.find(:first, :order => 'id desc')
-    assert_not_equal 'un nuevo titulo emerge', t.name
-    post :forum_update, {:id => t.id, :topics_category => { :name => 'un nuevo titulo emerge'}}
-    assert_response :redirect
-    t.reload
-    assert_equal 'un nuevo titulo emerge', t.name
-  end
-  
-  def test_forum_destroy_should_work
-    test_forum_create_should_work
-    get :forum_destroy, {:id => TopicsCategory.find(:first, :order => 'id desc').id }
-    assert_response :success
-  end
-  
-  def test_forum_destroy_confirm_should_work_if_not_giving_forum_destination_id_and_no_topics
-    test_forum_create_should_work
-    t = TopicsCategory.find(:first, :order => 'id desc')
-    post :forum_destroy_confirm, :id => t.id
-    assert_response :redirect
-    assert_nil TopicsCategory.find_by_id(t.id)
-  end
-  
-  def test_forum_destroy_confirm_should_work_if_giving_forum_destination_id_and_topics
-    test_forum_create_should_work
-    tc = TopicsCategory.find(:first, :order => 'id desc')
-    User.db_query("UPDATE topics set topics_category_id = #{tc.id}")
-    t = Topic.find(:first)
-    assert_not_equal 1, t.topics_category_id
-    post :forum_destroy_confirm, :id => tc.id, :destination_forum_id => 1
-    assert_response :redirect
-    assert_nil TopicsCategory.find_by_id(tc.id)
-    t.reload
-    assert_equal 1, t.topics_category_id
-  end
-  
   def test_del_moderator_should_work
     test_add_moderator_should_work
     assert_count_decreases(UsersRole) do
@@ -372,7 +300,7 @@ class Cuenta::FaccionControllerTest < Test::Unit::TestCase
     assert_response :redirect
   end
   
-  def test_new_in_gm
+  def atest_new_in_gm
     test_staff_should_work_if_faction_leader
     get :categorias_new, {:type_name => 'Topic' }
     
@@ -382,7 +310,7 @@ class Cuenta::FaccionControllerTest < Test::Unit::TestCase
     assert_not_nil assigns(:category)
   end
   
-  def test_create_in_gm
+  def atest_create_in_gm
     test_staff_should_work_if_faction_leader
     num_topics_category = TopicsCategory.count
     
@@ -393,7 +321,7 @@ class Cuenta::FaccionControllerTest < Test::Unit::TestCase
     assert_equal num_topics_category + 1, TopicsCategory.count
   end
   
-  def test_edit_in_gm
+  def atest_edit_in_gm
     test_staff_should_work_if_faction_leader
     get :categorias_edit, {:type_name => 'Topic', :id => 1}
     
@@ -401,14 +329,14 @@ class Cuenta::FaccionControllerTest < Test::Unit::TestCase
     assert_template 'categorias_edit'
   end
   
-  def test_update_in_gm
+  def atest_update_in_gm
     test_create_in_gm
     tc = TopicsCategory.find(:first, :order => 'id desc')
     post :categorias_update, {:type_name => 'Topic', :id => tc.id, :category => {:parent_id => tc.parent_id.to_s}}
     assert_response :redirect, flash[:error]
   end
   
-  def test_destroy_confirm_in_gm
+  def atest_destroy_confirm_in_gm
     test_staff_should_work_if_faction_leader
     assert_not_nil TopicsCategory.find(1)
     

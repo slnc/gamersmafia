@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
 import os
 import psycopg2
 import re
@@ -19,7 +21,6 @@ OWNER='dharana' # The bot owner's nick
 CHANNEL='#gamersmafia' # The default channel for the bot
 readbuffer=''
 BOT_USER_ID=23323 # alariko
-POOLDIR = '/home/httpd/websites/gamersmafia.com/current/tmp/ircmsgs'
 # END CONFIGURATION
 
 
@@ -28,7 +29,7 @@ def log(msg):
     global dbconn, dbcurs
 
     if not dbconn:
-        conn = psycopg2.connect('dbname=gamersmafia user=postgres')
+        conn = psycopg2.connect('dbname=gamersmafia user=postgres host=/tmp')
         conn.set_isolation_level(0)
 
         curs = conn.cursor()
@@ -154,7 +155,7 @@ class TalkerThread(threading.Thread):
         while 1:
             time.sleep(3) # antiflood
             if authed or None:
-                # mandamos los mensajes que tengamos pendientes en POOLDIR
+                # mandamos los mensajes que tengamos pendientes
                 for m in pool_messages():
                     for msg in m.split('\n'):
                         time.sleep(3) # antiflood

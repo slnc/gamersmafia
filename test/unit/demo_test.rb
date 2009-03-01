@@ -1,8 +1,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class DemoTest < Test::Unit::TestCase
-  DEFS = {:demos_category_id => 1, :title => '', :games_mode_id => 1, :demotype => Demo::DEMOTYPES[:official], :user_id => 1}
-  DEFS_CLAN = {:demos_category_id => 1, :title=> '', :games_mode_id => 2, :demotype => Demo::DEMOTYPES[:official], :user_id => 1}
+  DEFS = {:terms => 1, :title => '', :games_mode_id => 1, :demotype => Demo::DEMOTYPES[:official], :user_id => 1}
+  DEFS_CLAN = {:terms => 1, :title=> '', :games_mode_id => 2, :demotype => Demo::DEMOTYPES[:official], :user_id => 1}
   
   def test_should_not_be_able_to_save_if_missing_not_null_fields
     assert_equal true, Demo.create({}).new_record?

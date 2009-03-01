@@ -1,8 +1,11 @@
 class Bet < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable
+  
+  #before_save :check_options_new
   TOP_BET_WINNERS = "#{RAILS_ROOT}/public/storage/apuestas/top_bets_winners_minicolumns_data"
   
+  after_save :process_bets_options
   has_many :bets_options, :dependent => :destroy
   
   validates_uniqueness_of :title, :message => 'Ya hay otra apuesta con el mismo título'
@@ -12,6 +15,45 @@ class Bet < ActiveRecord::Base
   #def total_ammount
   #  ammount = self.class.db_query("SELECT COALESCE(sum(ammount), 0) as ammount from bets_options where bet_id = #{self.id}")[0]['ammount'].to_f
   #end
+  
+  def options_new=(opts_new)
+    @_tmp_options_new = opts_new
+    self.attributes.delete :options_new 
+  end
+  
+  def options_delete=(opts_new)
+    @_tmp_options_delete = opts_new
+    self.attributes.delete :options_delete 
+  end
+  
+  def options=(opts_new)
+    @_tmp_options = opts_new
+    self.attributes.delete :options 
+  end
+  
+  def process_bets_options
+    if @_tmp_options_new
+      @_tmp_options_new.each { |s| self.bets_options.create({:name => s.strip}) unless s.strip == '' }
+      @_tmp_options_new = nil
+    end
+    
+    if @_tmp_options_delete
+      @_tmp_options_delete.each { |id| self.bets_options.find(id).destroy if self.bets_options.find_by_id(id) }
+      @_tmp_options_delete = nil
+    end
+    
+    if @_tmp_options
+      @_tmp_options.keys.each do |id| 
+        option = self.bets_options.find_by_id(id.to_i)
+        if option && option.name != @_tmp_options[id]
+          option.name = @_tmp_options[id].strip
+          option.save
+        end
+      end 
+      @_tmp_options = nil
+    end
+    true
+  end
   
   def self.top_winners(time_limit_sql_interval='')    
     where_sql = time_limit_sql_interval != '' ? " AND closes_on >= now() - '#{time_limit_sql_interval}'::interval" : ''
@@ -259,23 +301,23 @@ class Bet < ActiveRecord::Base
         end
       else
         # No usamos total_ammount porque lo que queremos es repartir el dinero de la opción que NO ha ganado
-        sum = db_query("SELECT COALESCE(sum(ammount), 0) as ammount from bets_options where bet_id = #{self.id} and id <> #{self.winning_bets_option_id}")[0]['ammount'].to_f
-        if sum > 0 then
-          # calculamos porcentajes de la gente que ha apostado por la opción
-          # ganadora
-          bopt = BetsOption.find(winning_bets_option_id)
-          self.winning_bets_option_id = winning_bets_option_id
-          total = bopt.ammount
+        self.winning_bets_option_id = winning_bets_option_id
+        
+        # Calculamos total a repartir por la opción NO ganadora
+        sum = db_query("SELECT COALESCE(sum(ammount), 0) as ammount 
+			  FROM bets_options where bet_id = #{self.id} 
+                           AND id <> #{self.winning_bets_option_id}")[0]['ammount'].to_f
+        # calculamos porcentajes de la gente que ha apostado por la opción
+        # ganadora
+        bopt = BetsOption.find(winning_bets_option_id)
+        totalw = bopt.ammount # calculamos total de dinero apostado por opción ganadora
           
-          for ticket in bopt.bets_tickets # un ticket por persona
-            new_cash = (ticket.ammount / total) * sum + ticket.ammount # le devolvemos lo que apostó por esta opción además del porcentaje del resto de opciones
-            if new_cash > 0 then
-              u = ticket.user
-              Bank.transfer(:bank, u, new_cash, "Ganancias por tu apuesta por \"#{self.resolve_hid}\"")
-            end
-          end
+        for ticket in bopt.bets_tickets # para cada persona que haya votado por opción ganadora
+          new_cash = ticket.ammount     # le devolvemos lo que apostó
+          new_cash += (ticket.ammount / totalw) * sum  # más una parte del dinero apostado por todos a la opción perdedora correspondiente al dinero apostado
+          Bank.transfer(:bank, ticket.user, new_cash, "Ganancias por tu apuesta por \"#{self.resolve_hid}\"")
         end
-      end # if users.length < 2
+      end # if
     end
     
     # Guardamos las stats de los users que han participado
@@ -324,9 +366,7 @@ class Bet < ActiveRecord::Base
   end
   
   def self.open_bets_by_toplevel_code(code)
-    tlc = BetsCategory.find(:first, :conditions => ['id = root_id AND code = ?', code])
-    cat_ids = tlc.get_all_children
-    self.open_bets(:conditions => "bets_category_id IN (#{cat_ids.join(',')})")
+    Term.single_toplevel(:slug => code).bet.open_bets
   end
   
   validates_uniqueness_of :title, :message => 'Nombre de la partida duplicado. Ejemplo de un nombre irrepetible: "Eurocup06 Quarters: oG vs P"'

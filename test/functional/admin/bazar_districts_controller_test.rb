@@ -11,7 +11,7 @@ class Admin::BazarDistrictsControllerTest < ActionController::TestCase
   def test_create
     sym_login 1
     assert_count_increases(BazarDistrict) do
-      post :create, {:bazar_district => {:name => 'el nombrecico', :code => 'el codecico'}}
+      post :create, {:bazar_district => {:name => 'el nombrecico', :code => 'codecico'}}
       assert_redirected_to "/admin/bazar_districts"
     end
   end

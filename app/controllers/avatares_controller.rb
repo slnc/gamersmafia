@@ -1,6 +1,10 @@
 class AvataresController < ApplicationController
   require_admin_permission :capo
   
+  def wmenu_pos
+    'hq'
+  end
+  
   def index
 
   end

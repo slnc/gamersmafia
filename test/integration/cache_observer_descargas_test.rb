@@ -10,13 +10,13 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
   # GLOBAL NAVIGATOR
   def test_should_delete_subcategories_cache_after_creating_download
     # creation
-    c1 = DownloadsCategory.create({:code => 'c1', :name => 'foo1'})
+    c1 = Term.create({:slug => 'c1', :name => 'foo1'})
     c1.reload
     assert_not_nil c1
-    c2 = c1.children.create({:code => 'c2', :name => 'foo1', :root_id => c1.id})
+    c2 = c1.children.create({:taxonomy => 'DownloadsCategory', :slug => 'c2', :name => 'foo1'})
     c2.reload
     assert_not_nil c2
-    d = c2.downloads.create({:user_id => 1, :title => 'xxxfootapang', :downloads_category_id => c2.id})
+    d = Download.create(:user_id => 1, :title => 'xxxfootapang', :terms => c2.id)
     assert_not_nil d
 
     go_to_downloads_category(c1)
@@ -52,49 +52,53 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
 
   def go_to_downloads_category(c)
     get "/descargas/#{c.id}"
-    assert_response :success
+    assert_response :success, response.body
     assert_template 'descargas/index'
   end
 
 
   def test_should_clear_descargas_index_index_after_creating_a_new_category
     get '/descargas'
+    assert_response :success, response.body
     assert_cache_exists '/gm/descargas/index/folders'
-    @tc = DownloadsCategory.create({:name => 'foocat', :code => 'codecot'})
+    rt = Term.single_toplevel(:slug => 'gm')
+    @tc = rt.children.create({:name => 'foocat', :taxonomy => 'DownloadsCategory'})
     assert_cache_dont_exist '/gm/descargas/index/folders'
   end
   
   def test_should_clear_descargas_index_index_after_updating_a_category
     test_should_clear_descargas_index_index_after_creating_a_new_category
     get '/descargas'
+    assert_response :success
     assert_cache_exists '/gm/descargas/index/folders'
-    DownloadsCategory.find_by_code('codecot').save
+    @tc.save
     assert_cache_dont_exist '/gm/descargas/index/folders'
   end
   
   def test_should_clear_descargas_index_index_after_deleting_a_category
     test_should_clear_descargas_index_index_after_creating_a_new_category
     get '/descargas'
+    assert_response :success
     assert_cache_exists '/gm/descargas/index/folders'
-    DownloadsCategory.find_by_code('codecot').destroy
+    @tc.destroy
     assert_cache_dont_exist '/gm/descargas/index/folders'
   end
   
   def test_should_clear_descargas_forums_list_after_creating_a_subcategory
     test_should_clear_descargas_index_index_after_creating_a_new_category
     get "/descargas/#{@tc.id}"
-    assert_response :success
+    assert_response :success, response.body
     assert_cache_exists "/common/descargas/index/folders_#{@tc.id}"
-    @tc_child = @tc.children.create({:name => 'subfoocat', :code => 'subcodecot'})
+    @tc_child = @tc.children.create(:name => 'subfoocat')
     assert_cache_dont_exist "/common/descargas/index/folders_#{@tc.id}"
   end
   
   def test_should_clear_descargas_forums_list_after_updating_a_subcategory
     test_should_clear_descargas_forums_list_after_creating_a_subcategory
     get "/descargas/#{@tc_child.id}"
-    assert_response :success
+    assert_response :success, response.body
     get "/descargas/#{@tc.id}"
-    assert_response :success
+    assert_response :success, response.body
     assert_cache_exists "/common/descargas/index/folders_#{@tc.id}"
     assert_cache_exists "/common/descargas/index/folders_#{@tc_child.id}"
     @tc_child.save
@@ -118,22 +122,23 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
   def test_should_clear_descargas_essential_after_saving_a_download_with_its_essential_field_changed
     d = Download.find(:published, :limit => 1)[0]
     assert_not_nil d
-    get "/descargas/#{d.downloads_category_id}"
+    get "/descargas/#{d.main_category.id}"
     assert_response :success
-    assert_cache_exists "/common/descargas/index/essential2_#{d.downloads_category.root_id}"
+    assert_cache_exists "/common/descargas/index/essential2_#{d.main_category.root_id}"
     d.essential = true
     d.save
-    assert_cache_dont_exist "/common/descargas/index/essential2_#{d.downloads_category.root_id}"
+    assert_cache_dont_exist "/common/descargas/index/essential2_#{d.main_category.root_id}"
   end
 
   
   def test_should_clear_tutoriales_index_of_previous_category_when_moving_to_new_category
-    get "/descargas/1"
-    assert_response :success
-    assert_cache_exists "/common/descargas/index/downloads_1/page_"
     tut = Download.find(1)
-    assert_equal true, tut.update_attributes({:downloads_category_id => 5})
-    assert_cache_dont_exist "/common/descargas/index/downloads_1/page_"
+    mc = tut.main_category
+    get "/descargas/#{mc.id}"
+    assert_response :success, response.body
+    assert_cache_exists "/common/descargas/index/downloads_#{mc.id}/page_"
+    mc.unlink(tut.unique_content)
+    assert_cache_dont_exist "/common/descargas/index/downloads_#{mc.id}/page_"
   end
 
   def teardown

@@ -1,6 +1,10 @@
 class Admin::IpBansController < ApplicationController  
   require_admin_permission :capo
   
+  def wmenu_pos
+    'hq'
+  end
+  
   def index
     @ip_ban = IpBan.new({:expires_on => 7.days.since})
   end

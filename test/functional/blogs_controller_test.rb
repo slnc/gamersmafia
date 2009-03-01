@@ -50,4 +50,13 @@ class BlogsControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'ranking'
   end
+  
+  def test_close_blogentry
+    be = Blogentry.find(1)
+    sym_login be.user_id
+    post :close, :id => be.id
+    assert_response :redirect
+    be.reload
+    assert be.closed?
+  end
 end

@@ -11,6 +11,8 @@ common: &common
   enable_google_analytics?: false
   enable_bgjobs?: false
   enable_support_db?: false
+  enable_slonik?: false
+  python: /usr/local/hosting/bin/python2.4
   ia_auto_abtests: MrAchmed
   mirror_auth_key: 4ffff4e235041687dd31b55a9867f385
   webmaster_user_id: 1
@@ -45,9 +47,10 @@ common: &common
 # basic roles (usable)
 production: &production
   enable_bgjobs?: true
-  enable_support_db?: true
+  enable_support_db?: false
   enable_global_notifications?: true
   enable_google_analytics?: true
+  enable_slonik?: true
   system_mail_user: nagato@gamersmafia.com
   <<: *common
 
@@ -70,11 +73,15 @@ test: &test
     
 # specific machines or profiles
 blackwings:
+  domain: gamersmafia.dev
+  asset_domain: gamersmafia.dev
   compress_skins?: false
   compress_js?: false
   enable_dbstats?: true
   enable_bgjobs?: true
   enable_support_db?: false
+  enable_slonik?: false
+  python: python
   <<: *development
   
 doll2:

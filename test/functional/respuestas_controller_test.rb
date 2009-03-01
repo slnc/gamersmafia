@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 require File.dirname(__FILE__) + '/../test_functional_content_helper'
 
 class RespuestasControllerTest < ActionController::TestCase
-  test_common_content_crud :name => 'Question', :form_vars => {:title => 'footapang', :description => "abracadabra", :questions_category_id => 2, }
+  test_common_content_crud :name => 'Question', :form_vars => {:title => 'footapang', :description => "abracadabra"}, :categories_terms => 20
 
   def setup
     @controller = RespuestasController.new

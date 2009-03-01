@@ -6,7 +6,7 @@ topics_pages.current_page = topics_pages.last if params[:page].nil?
 <%= render :partial => 'shared/pager', :object => topics_pages, :locals => {:pos => 'top'} %>
 <%
 cache("/common/foros/_topics_list/#{forum.id}/page_#{params[:page]}") do
-topics = forum.find(:published, :order => "sticky asc, #{ActiveSupport::Inflector::pluralize(ActiveSupport::Inflector::underscore(forum.class.items_class.name))}.updated_on asc", :limit => 50, :offset => ((topics_pages.current_page.to_i - 1) * 50), :include => ActiveSupport::Inflector::underscore(forum.class.name).to_sym)
+topics = forum.find(:published, :order => "sticky asc, contents.updated_on asc", :limit => 50, :offset => ((topics_pages.current_page.to_i - 1) * 50))
         %>
 <table>
   <tr>

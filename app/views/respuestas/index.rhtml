@@ -20,7 +20,7 @@
 		<td style="width: 50%;">
     <% mftext('Preguntas abiertas') do %>
 <% # cache("/#{controller.portal.code}/respuestas/index/page_#{params[:page]}") do
-@questions = obj.find(:published, :conditions => "created_on >= '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'COALESCE(ammount, 0) desc, created_on', :limit => "15")
+@questions = obj.find(:published, :content_type => 'Question', :conditions => "contents.created_on >= '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'COALESCE(ammount, 0) desc, contents.created_on', :limit => "15")
 @questions.each do |question| %>
     <div class="<%=oddclass%>">
 			<div><img class="avatar" style="float: left; margin-right: 10px;" src="/cache/thumbnails/f/38x38<%=question.user.show_avatar%>" /> <%=faction_favicon(question)%> <strong><%= link_to question.title, gmurl(question) %></strong></div>
@@ -37,7 +37,7 @@
 <td>
 <% mftext('Últimas preguntas cerradas') do %>
 <% # cache("/#{controller.portal.code}/respuestas/index/page_#{params[:page]}") do
-@questions = obj.find(:published, :conditions => 'accepted_answer_comment_id is NOT null', :order => 'answered_on desc', :limit => "15")
+@questions = obj.find(:published, :content_type => 'Question', :conditions => 'accepted_answer_comment_id is NOT null', :order => 'answered_on desc', :limit => "15")
 @questions.each do |question| %>
     <div class="<%=oddclass%>">
 			<div><img class="avatar" style="float: left; margin-right: 10px;" src="/cache/thumbnails/f/38x38<%=question.user.show_avatar%>" /> <%=faction_favicon(question)%> <strong><%= link_to question.title, gmurl(question) %></strong></div>
@@ -55,15 +55,14 @@
 
 <%mftext(params[:category] ? "Categorías de #{@category.name}" : 'Categorías') do %>
 <%
-# cache(cache_path) do 
 if params[:category] then
-  @categories = controller.portal.question.category_class.find(:all, :conditions => ['parent_id = ?', params[:category]], :order => 'lower(name) ASC')
+  @categories = @category.children.find(:all, :conditions => 'taxonomy = \'QuestionsCategory\'')
 else
-  @categories = controller.portal.questions_categories
+  @categories = controller.portal.tutorials_categories[0].children.find(:all, :conditions => 'taxonomy = \'QuestionsCategory\'')
 end %>
 <ul class="skeletal">
 <% for category in @categories %>
-<li class="<%=oddclass%>"><div style="float: left; margin-right: 5px;"><%=faction_favicon(category)%></div> <strong><%=link_to category.name, gmurl(category)%></strong> (<%=category.items_count%>)</li>
+<li class="<%=oddclass%>"><div style="float: left; margin-right: 5px;"><%=faction_favicon(category)%></div> <strong><%=link_to category.name, gmurl(category, :taxonomy => 'QuestionsCategory')%></strong> (<%=category.contents_count(:cls_name => 'Question')%>)</li>
 <% end -%>
 </ul>
 <% # end -%>

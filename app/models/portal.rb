@@ -33,6 +33,9 @@ class Portal < ActiveRecord::Base
     end
   end
   
+  def self.find_by_root_term(term)
+    
+  end
   
   def latest_articles
     articles = []

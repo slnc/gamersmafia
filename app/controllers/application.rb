@@ -77,7 +77,35 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  def self.taxonomy_from_content_name(content_name)
+    "#{ActiveSupport::Inflector::pluralize(content_name)}Categories"
+  end
   
+  def self.extract_content_name_from_taxonomy(taxonomy)
+    ActiveSupport::Inflector::singularize(taxonomy.gsub('Category', ''))
+  end
+  
+  def get_category_address(category, taxonomy)
+    paths = []
+    navpath = []
+    paths << category.name
+    
+    href = Cms::translate_content_name(ApplicationController.extract_content_name_from_taxonomy(taxonomy))
+    href2 = href.normalize
+    
+    navpath << [category.name, "/#{href2}/#{category.id}"]
+    
+    while category.parent 
+      category = category.parent
+      paths << category.name
+      navpath << [category.name, "/#{href2}/#{category.id}"]
+    end
+    
+    paths = paths.reverse
+    navpath = [[ActiveSupport::Inflector::titleize(href), "/#{href2}"], ] + navpath.reverse
+    
+    return paths, navpath
+  end
   
   def parse_params_page
     params[:page] = params[:page].to_i if params[:page]
@@ -95,15 +123,17 @@ class ApplicationController < ActionController::Base
     controller_name == 'home' && current_default_portal != action_name
   end
   
-  def self.get_domain_of_category(cat)
-    portal = Portal.find_by_code(cat.code)
-    if portal
-      "#{portal.code}.#{App.domain}"
-    elsif cat.code == 'gm'
+  # devuelve el dominio para el término raíz dado
+  def self.get_domain_of_root_term(term)
+    raise "term is not root term" unless term.id == term.root_id
+    theportal = Portal.find_by_code(term.slug)
+    if theportal
+      "#{theportal.code}.#{App.domain}"
+    elsif term.slug == 'gm'
       App.domain
-    elsif %w(bazar otros).include?(cat.code)
+    elsif %w(bazar otros).include?(term.slug)
       App.domain_bazar
-    elsif %w(arena).include?(cat.code)
+    elsif %w(arena).include?(term.slug)
       App.domain_arena
     else
       App.domain
@@ -178,7 +208,7 @@ Request information:
     end
   end
   
-  # TODO PERF bj_job
+  # TODO PERF GmSys.job
   def check_referer
     if params[:rusid] && request.remote_ip != 'unknown'
       Stats.register_referer(params[:rusid].to_i, request.remote_ip, request.env['HTTP_REFERER'])
@@ -197,13 +227,14 @@ Request information:
     self.class.url_for_content_onlyurl(object)
   end
   
-  def gmurl(object)
-    self.class.gmurl(object)
+  def gmurl(object, opts={})
+    self.class.gmurl(object, opts)
   end
   
-  def self.gmurl(object)
+  def self.gmurl(object, opts={})
     cls_name = object.class.name
     if cls_name.index('Category')
+      # DEPRECATED taxonomies
       href = Cms::translate_content_name(ActiveSupport::Inflector::singularize(cls_name.gsub('Category', '')))
       href = href.normalize
       case href
@@ -211,10 +242,34 @@ Request information:
         href = "foros/forum"
         when 'preguntas':
         href = "respuestas/categoria"
+        when 'anuncios-de-reclutamiento':
+        href = 'reclutamiento'
       end
-      dom = get_domain_of_category(object.root)
+      dom = get_domain_of_root_term(object.root)
       "http://#{dom}/#{href}/#{object.id}"
-    elsif cls_name == 'Faction'      
+    elsif cls_name == 'Term'
+      if object.taxonomy.nil? && opts[:taxonomy].nil?
+        raise "gmurl for term without taxonomy specified"
+      else
+        opts[:taxonomy] = object.taxonomy unless opts[:taxonomy]
+        if opts[:taxonomy].index('Category')
+          href = Cms::translate_content_name(ActiveSupport::Inflector::singularize(opts[:taxonomy].gsub('Category', '')))
+          href = href.normalize
+          case href
+            when 'topics':
+            href = "foros/forum"
+            when 'preguntas':
+            href = "respuestas/categoria"
+            when 'anuncios-de-reclutamiento':
+            href = 'reclutamiento'
+          end
+          dom = get_domain_of_root_term(object.root)
+          "http://#{dom}/#{href}/#{object.id}"
+        else
+          raise "gmurl for term with unrecognized taxonomy '#{opts[:taxonomy]}'"
+        end
+      end
+    elsif cls_name == 'Faction'
       "http://#{object.code}.#{App.domain}/"
     elsif cls_name == 'Clan'      
       "http://#{App.domain}/clanes/clan/#{object.id}"
@@ -250,9 +305,15 @@ Request information:
         dom = App.domain
         portal_id = GmPortal.new.id
       elsif cls_name == 'Coverage'
-        dom = get_domain_of_category(object.event.main_category.root)
+        dom = get_domain_of_root_term(object.event.main_category.root)
       elsif Cms::CONTENTS_WITH_CATEGORIES.include?(cls_name)
-        dom = get_domain_of_category(object.main_category.root)
+        
+        maincat = object.main_category
+        if maincat
+          dom = get_domain_of_root_term(maincat.root)
+        else
+          dom = App.domain  
+        end
       else
         raise "url_for_content_onlyurl() #{cls_name} not understood}"
       end
@@ -273,6 +334,8 @@ Request information:
         out = "/foros/topic/#{object.id}"
       elsif href == 'preguntas' then
         out = "/respuestas/show/#{object.id}"
+      elsif href == 'anuncios-de-reclutamiento' then
+        out = "/reclutamiento/anuncio/#{object.id}"
       elsif object.class.name == 'Blogentry' then
         out = "/blogs/#{object.user.login}/#{object.id}"
       elsif object.class.name == 'Event'
@@ -299,6 +362,14 @@ Request information:
     "<a class=\"content\" href=\"#{ApplicationController.url_for_content_onlyurl(object)}\">#{text}</a>"
   end
   
+  
+  
+  
+  
+  
+  
+  
+  
   def admin_menu_items
     return [] unless user_is_authed 
     # TODO hack
@@ -306,7 +377,6 @@ Request information:
     if user.is_superadmin?
       items<< ['Ads', '/admin/ads']
       items<< ['Ads Slots', '/admin/ads_slots']
-      items<< ['Bj Jobs', '/admin/bj_jobs']
       items<< ['Canales GMTV', '/admin/canales']
       items<< ['Competiciones', '/admin/competiciones']
       items<< ['Facciones', '/admin/facciones']
@@ -318,26 +388,26 @@ Request information:
       items<< ['Portales', '/admin/portales']
       items<< ['Scripts', '/admin/scripts']
       items<< ['Tienda', '/admin/tienda']
-      items<< ['Users', '/admin/usuarios']
     end
     
-    if user.is_superadmin? or user.has_admin_permission?(:capo)
+    if user.is_superadmin? || user.has_admin_permission?(:capo)
       items<< ['Avatares', '/avatares']
       items<< ['Clanes', '/admin/clanes']
       items<< ['IP Bans', '/admin/ip_bans']
       items<< ['Mapas', '/admin/mapas_juegos']
+      items<< ['Users', '/admin/usuarios']
     end
     
-    if user.is_superadmin? || user.has_admin_permission?(:bazar_manager)
+    if user.is_superadmin? || user.has_admin_permission?(:bazar_manager) || user.has_admin_permission?(:capo) 
       items<< ['Cat Contenidos', '/admin/categorias']
     end
     
-    if user.is_superadmin? or user.has_admin_permission?(:faq)
+    if user.is_superadmin? || user.has_admin_permission?(:faq)
       items<< ['Entradas FAQ', '/admin/entradasfaq']
       items<< ['Cat FAQ', '/admin/categoriasfaq']
     end
     
-    if user.is_superadmin? or user.has_admin_permission?(:bazar_manager)
+    if user.is_superadmin? || user.has_admin_permission?(:bazar_manager)
       items<< ['Distritos bazar', '/admin/bazar_districts']
     end
     
@@ -473,7 +543,7 @@ Request information:
     end
   end
   
-  VERSIONING_EREG = /^\/(.*\.)[0-9.]+\.(css|js|gif|png|jpg)$/
+  VERSIONING_EREG = /^\/(.*\.)[a-z0-9.]+\.(css|js|gif|png|jpg)$/
   def http_404
     if App.windows? # solo lo hacemos en windows para mongrel
       res = request.request_uri.match(VERSIONING_EREG)
@@ -523,7 +593,7 @@ Request information:
       redirect_to("http://#{App.domain}", :status => 301)
       
       when ContentLocked
-      render(:layout => 'gm_default', :file => "#{RAILS_ROOT}/app/views/site/content_locked.rhtml", :status => '403 Forbidden')
+      render(:layout => 'portal_gm', :file => "#{RAILS_ROOT}/app/views/site/content_locked.rhtml", :status => '403 Forbidden')
       
       when AccessDenied
       http_401

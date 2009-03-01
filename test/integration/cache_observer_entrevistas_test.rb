@@ -41,7 +41,7 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
     assert_not_nil n
     go_to "/entrevistas/show/#{n.id}", 'entrevistas/show'
     assert_cache_exists "#{portal.code}/entrevistas/show/latest_by_author_#{n.user_id}"
-    n2 = portal.interview.find(:pending, :conditions => ['user_id = ?', n.user_id])[0]
+    n2 = portal.interview.find(:pending, :conditions => ['contents.user_id = ?', n.user_id])[0]
     publish_content n2
     assert_cache_dont_exist "#{portal.code}/entrevistas/show/latest_by_author_#{n.user_id}"
   end

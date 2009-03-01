@@ -474,7 +474,7 @@ body #cpageout.gm20085 #cmain.maximized { margin-right: 0; width: 960px; }
 
 .question-prize { float: right; text-align: right; border: 1px solid #ccc; background: #fafafa; padding: 5px 10px; }
 .question-prize .ammount { font-family: georgia; font-size: 18px; font-weight: bold; }
-
+.clearl { clear: left; }
 #cmain .question-best-answer-comment .mcontent { border: 1px solid #fafafa; background: #fcfcfc; }
 
 .delprofilesignature { float: right; }

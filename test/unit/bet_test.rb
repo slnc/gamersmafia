@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class BetTest < Test::Unit::TestCase
 
   def setup
-    @bet = Bet.create({:user_id => 1, :title => 'foo1 vs bar1', :bets_category_id => 1, :closes_on => 1.day.since})
+    @bet = Bet.create({:user_id => 1, :title => 'foo1 vs bar1', :terms => 1, :closes_on => 1.day.since})
     @bet.change_state(Cms::PUBLISHED, User.find(1))
     @bets_option_foo = @bet.bets_options.create({:name => 'foo'})
     @bets_option_bar = @bet.bets_options.create({:name => 'bar'})

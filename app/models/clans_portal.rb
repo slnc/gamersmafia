@@ -27,10 +27,8 @@ class ClansPortal < Portal
       obj = objs[0]
       objs.each { |ob| obj.add_sibling(ob) }
       obj
-    elsif /(news|downloads|topics|events|images|polls)_categories/ =~ method_id.to_s then # asking for topics_categories 
-      Object.const_get("#{ActiveSupport::Inflector::singularize(ActiveSupport::Inflector::camelize(method_id.to_s.gsub('_categories', '')))}") # necesario para que cree la clase Category
-      cls = Object.const_get("#{ActiveSupport::Inflector::singularize(ActiveSupport::Inflector::camelize(method_id))}")
-      cls.find(:all, :conditions => "parent_id is null and id = root_id AND clan_id = #{self.clan_id}", :order => 'UPPER(name) ASC')
+    elsif /(news|downloads|topics|events|images|polls)_categories/ =~ method_id.to_s then 
+      Term.single_toplevel(:clan_id => self.clan_id)
     else
       super
     end
@@ -40,7 +38,7 @@ class ClansPortal < Portal
     cs_method = ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id))
     if Cms::CLANS_CONTENTS.include?(cs_method)
       true
-    elsif /(news|downloads|topics|events|images|polls)_categories/ =~ method_id.to_s then # asking for topics_categories 
+    elsif /(news|downloads|topics|events|images|polls)_categories/ =~ method_id.to_s then 
       true
     else
       super

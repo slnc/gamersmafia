@@ -1,10 +1,15 @@
 class Test::Unit::TestCase
   def self.test_common_content_crud(opt={})
-    cattr_accessor :opt, :content_name, :content_sym, :content_class
+    cattr_accessor :opt, :content_name, :content_sym, :content_class, :post_vars
     self.opt = {:authed_user_id => 1, :non_authed_user_id => 2}.merge(opt)
+
     self.content_name = opt[:name]
     self.content_sym = ActiveSupport::Inflector::underscore(opt[:name]).to_sym
     self.content_class = Object.const_get(opt[:name])
+    
+    self.post_vars = {self.content_sym => opt[:form_vars]}
+    self.post_vars[:categories_terms] = opt[:categories_terms] if opt[:categories_terms]
+    self.post_vars[:root_terms] = opt[:root_terms] if opt[:root_terms]
     
     class_eval <<-END
     include TestFunctionalContentHelperMethods
@@ -102,7 +107,7 @@ module TestFunctionalContentHelperMethods
     num_news = content_class.count
     
     assert_raises(AccessDenied) do
-      post :create, content_sym => opt[:form_vars]
+      post :create, post_vars
     end
   end
 
@@ -111,7 +116,7 @@ module TestFunctionalContentHelperMethods
     assert User.find(4).update_attributes(:antiflood_level => 5)
     
     num_news = content_class.count
-    post :create, content_sym => opt[:form_vars]
+    post :create, post_vars
     assert_response :success
     assert_not_nil flash[:error]
     assert_equal num_news, content_class.count
@@ -120,9 +125,7 @@ module TestFunctionalContentHelperMethods
 
   def test_should_allow_to_create_if_registered
     num_news = content_class.count
-    
-    post :create, {content_sym => opt[:form_vars]}, { :user => opt[:authed_user_id] }
-    
+    post :create, post_vars, { :user => opt[:authed_user_id] }
     assert_response :redirect, @response.body
     assert_redirected_to :action => 'index'
     
@@ -133,7 +136,7 @@ module TestFunctionalContentHelperMethods
         return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
     num_news = content_class.count
     
-    post :create, {content_sym => opt[:form_vars], :draft => 1}, { :user => opt[:authed_user_id] }
+    post :create, post_vars.merge({:draft => 1}), { :user => opt[:authed_user_id] }
     
     assert_response :redirect
     assert_redirected_to :action => 'edit', :id => content_class.find(:first, :order => 'id DESC').id
@@ -142,10 +145,10 @@ module TestFunctionalContentHelperMethods
   end
   
   def test_should_change_from_draft_to_pending_if_unselected_draft_checkbox
-        return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
+    return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
     num_news = content_class.count
     
-    post :create, {content_sym => opt[:form_vars], :draft => '1'}, { :user => opt[:authed_user_id] }
+    post :create, post_vars.merge({:draft => 1}), { :user => opt[:authed_user_id] }
     
     assert_response :redirect
     assert_redirected_to :action => 'edit', :id => content_class.find(:first, :order => 'id DESC').id
@@ -153,7 +156,7 @@ module TestFunctionalContentHelperMethods
     assert_equal num_news + 1, content_class.count
     o = content_class.find(:first, :order => 'id DESC')
     assert_equal Cms::DRAFT, o.state
-    post :update, {:id => o.id, content_sym => opt[:form_vars]}, { :user => opt[:authed_user_id] }
+    post :update, post_vars.merge({:id => o.id}), { :user => opt[:authed_user_id] }
     assert_response :redirect
     assert_equal Cms::PENDING, content_class.find(:first, :order => 'id DESC').state
   end
@@ -189,11 +192,12 @@ module TestFunctionalContentHelperMethods
   end
   
   def test_should_not_allow_update_if_authed_and_no_perms
-    assert_raises(AccessDenied) { post :update, {:id => 1, content_sym => opt[:form_vars]}, {:user => opt[:non_authed_user_id]} }
+    assert_raises(AccessDenied) { post :update, post_vars.merge({:id => 1}), {:user => opt[:non_authed_user_id]} }
   end
   
   def test_should_allow_update_published_if_authed_superadmin
-    post :update, {:id => 1, content_sym => opt[:form_vars].merge({:approved_by_user_id => 1})}, {:user => opt[:authed_user_id]}
+    post_vars[content_sym] = post_vars[content_sym].merge(:approved_by_user_id => 1)
+    post :update, post_vars.merge({:id => 1}), {:user => opt[:authed_user_id]}
     assert_response :redirect
     obj = Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)).find(1)
     assert_redirected_to ApplicationController.gmurl(obj)
@@ -214,7 +218,7 @@ module TestFunctionalContentHelperMethods
         assert f.update_boss(panzer)
       end
       
-      post :update, {:id => 2, content_sym => opt[:form_vars]}, {:user => panzer.id}
+      post :update, post_vars.merge({:id => 2}), {:user => panzer.id}
       assert_response :redirect
     end
   end
@@ -231,7 +235,8 @@ module TestFunctionalContentHelperMethods
   
   def test_should_allow_update_unpublished_if_authed_superadmin
     return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
-    post :update, {:id => 2, content_sym => opt[:form_vars].merge({:approved_by_user_id => nil})}, {:user => opt[:authed_user_id]}
+    post_vars[content_sym] = post_vars[content_sym].merge(:approved_by_user_id => nil)
+    post :update, post_vars.merge({:id => 2}), {:user => opt[:authed_user_id]}
     assert_response :redirect
     assert_redirected_to :action => 'edit', :id => 2 # ya que el contenido 2 está pendiente de publicar
   end

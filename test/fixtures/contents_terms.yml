@@ -1,0 +1,258 @@
+column_published:
+    id: 1 
+    content_id: 3 
+    term_id: 1
+
+column_unpublished:
+    id: 2
+    content_id: 1003
+    term_id: 1
+
+column_deleted:
+    id: 3
+    content_id: 2003
+    term_id: 1
+
+download_published:
+    id: 4
+    content_id: 5 
+    term_id: 16
+
+download_unpublished:
+    id: 5
+    content_id: 1005
+    term_id: 16
+
+download_deleted:
+    id: 6
+    content_id: 2005
+    term_id: 16
+
+demo_published:
+    id: 7
+    content_id: 17
+    term_id: 1
+
+demo_unpublished:
+    id: 8
+    content_id: 1015
+    term_id: 1
+
+demo_deleted:
+    id: 9
+    content_id: 2015 
+    term_id: 1
+
+topic_published:
+    id: 10
+    content_id: 13
+    term_id: 17
+
+topic_unpublished:
+    id: 11
+    content_id:  1013
+    term_id: 17
+
+topic_deleted:
+    id: 12
+    content_id: 2013
+    term_id: 17
+
+image_published:
+    id: 13
+    content_id: 14
+    term_id: 18
+
+image_unpublished:
+    id: 14
+    content_id: 1014
+    term_id: 18
+
+image_deleted:
+    id: 15
+    content_id: 2014
+    term_id: 18
+
+interview_published:
+    id: 16
+    content_id: 8
+    term_id: 1
+
+interview_unpublished:
+    id: 17
+    content_id: 1008
+    term_id: 1
+
+interview_deleted:
+    id: 18
+    content_id: 2008
+    term_id: 1
+
+news_published:
+    id: 19
+    content_id: 1 
+    term_id: 1
+
+news_unpublished:
+    id: 20
+    content_id: 1000
+    term_id: 1 
+
+news_deleted:
+    id: 21
+    content_id: 2000
+    term_id: 1
+
+tutorial_published:
+    id: 22
+    content_id: 7
+    term_id: 19
+
+tutorial_unpublished:
+    id: 23
+    content_id: 1007 
+    term_id: 19
+
+tutorial_deleted:
+    id: 24
+    content_id: 2007 
+    term_id: 19
+
+poll_published:
+    id: 25
+    content_id: 6
+    term_id: 1
+
+poll_unpublished:
+    id: 26
+    content_id: 1006
+    term_id: 1
+
+poll_deleted:
+    id: 27
+    content_id: 2006
+    term_id: 1
+
+bet_published:
+    id: 28
+    content_id: 2
+    term_id: 1
+
+bet_unpublished:
+    id: 29 
+    content_id: 1002
+    term_id: 1
+
+bet_deleted:
+    id: 30
+    content_id: 2002
+    term_id: 1
+
+review_published:
+    id: 31
+    content_id: 12
+    term_id: 1
+
+review_unpublished:
+    id: 32
+    content_id: 1012
+    term_id: 1
+
+review_deleted:
+    id: 33
+    content_id: 2012
+    term_id: 1
+
+event_published:
+    id: 34
+    content_id: 10
+    term_id: 1
+
+event_unpublished:
+    id: 35
+    content_id: 1010
+    term_id: 1
+
+event_deleted:
+    id: 36
+    content_id: 2010
+    term_id: 1
+
+question_published:
+    id: 37
+    content_id: 1110
+    term_id: 20
+
+question_unpublished:
+    id: 38
+    content_id: 1111
+    term_id: 20
+
+question_deleted:
+    id: 39
+    content_id: 1112
+    term_id: 20
+        
+news66:
+    id: 40
+    content_id: 1114
+    term_id: 15
+
+news65:
+    id: 41
+    content_id: 1113
+    term_id: 5
+    
+newsclan:
+    id: 42
+    content_id: 1100
+    term_id: 27
+    
+news64:
+    id: 43
+    content_id: 1104
+    term_id: 1
+
+babe:
+    id: 44
+    content_id: 15
+    term_id: 23
+
+dude:
+    id: 45
+    content_id: 16
+    term_id: 24
+    
+<% i = 100 %>
+<% ii = 100 %>
+<% [0,1,2,3,4].each do |state| %>
+  <% %w(League Tournament Ladder).each do |competitions_type| %>
+    <% [1,2].each do |competitions_participants_type| %>
+      <% [true, false].each do |fee| %>
+        <% [true, false].each do |invitational| %>
+          <% [0,1,2].each do |scoring_mode| %>
+
+compevent<%=competitions_type%><%=i%>:
+  id: <%=i%>
+  content_id: <%=ii%>
+  term_id: 25 
+
+            <% i += 1 %>
+            <% ii += 1 %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+
+gmpollpublished:
+    id: 46
+    content_id: 1115
+    term_id: 15
+    
+gmpollpending:
+    id: 47
+    content_id: 1116
+    term_id: 15
+    

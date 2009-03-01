@@ -13,8 +13,8 @@ class DemosControllerTest < Test::Unit::TestCase
     @request.host = "arena.#{App.domain}"
   end
   
-  DEF_VALS = {:entity1_external => 'foo', :games_mode_id => 1, :entity2_external => 'bar', :demos_category_id => 1, :demotype => Demo::DEMOTYPES[:official], :demo_mirrors => "http://google.com/foo.zip\nhttp://kamasutra.com/porn.zip"}
-  test_common_content_crud :name => 'Demo', :form_vars => DEF_VALS 
+  DEF_VALS = {:entity1_external => 'foo', :games_mode_id => 1, :entity2_external => 'bar', :demotype => Demo::DEMOTYPES[:official], :demo_mirrors => "http://google.com/foo.zip\nhttp://kamasutra.com/porn.zip"} 
+  test_common_content_crud :name => 'Demo', :form_vars => DEF_VALS, :categories_terms => 1 
     
   def test_should_show_demo_page
     post :show, :id => Demo.find(:published, :limit => 1)[0].id
@@ -41,7 +41,7 @@ class DemosControllerTest < Test::Unit::TestCase
   end
   
   def test_buscar_should_work_if_conditions_given
-    post :buscar, { :demo => { :demos_category_id => 1 }}
+    post :buscar, { :demo => { :terms => 1 }}
     assert_response :success
   end
   
@@ -74,7 +74,7 @@ class DemosControllerTest < Test::Unit::TestCase
   end
   
   def test_get_games_versions_should_work
-    get :get_games_versions, :demos_category_id => 1
+    get :get_games_versions, :game_id => 1
     assert_response :success
   end
   
@@ -83,7 +83,7 @@ class DemosControllerTest < Test::Unit::TestCase
   end
   
   def test_get_games_modes_should_work
-    get :get_games_modes, :demos_category_id => 1
+    get :get_games_modes, :game_id => 1
     assert_response :success
   end
   
@@ -92,7 +92,7 @@ class DemosControllerTest < Test::Unit::TestCase
   end
   
   def test_get_games_maps_should_work
-    get :get_games_maps, :demos_category_id => 1
+    get :get_games_maps, :game_id => 1
     assert_response :success
   end
   

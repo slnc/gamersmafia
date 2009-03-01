@@ -1,0 +1,26 @@
+<% mftext("Contenidos de #{@term.name} (#{ActiveSupport::Inflector::titleize(Cms::translate_content_name(params[:content_type]))})") do %>
+<div class="right infoinline">Los contenidos de subcategorías de la categoría actual no se muestran en este listado.</div>
+<form method="post" action="/<%=controller.cats_path%>/term/<%=@term.id%>/contenidos/<%=params[:content_type]%>/mass_move?redirto=<%=controller.request.request_uri%>">
+<table>
+	<tr>
+		<th class="w25"><input type="checkbox" onclick="slnc.checkboxSwitchGroup(this);" /></th>
+		<th>Título</th>
+		<th>Lecturas</th>
+		<th>Comentarios</th>
+	</tr>
+<%@term.find(:published, :treemode => (params[:treemode] == 't'), :content_type => params[:content_type], :order => 'lower(contents.name)', :limit => 100).each do |c| %>
+<tr class="<%=oddclass%>">
+	<td class="checkbox"><input type="checkbox" name="contents[]" value="<%=c.unique_content_id%>" onclick="slnc.hilit_row(this, 'selrow');" /></td>
+	<td><a href="<%=gmurl(c)%>"><%=c.title%></a></td>
+	<td class="infoinline"><%=c.hits_anonymous + c.hits_registered%></td>
+	<td class="infoinline"><%=c.cache_comments_count%></td>
+</tr>
+<% end -%>
+</table>
+
+<br />
+
+Mover a la categoría: <%= render_tree_select(@term.root.children.find(:all, :conditions => ["taxonomy = ?", Term.taxonomy_from_class_name(params[:content_type])]), 'name', 'destination_term_id', @term.id, true)%><input type="submit" value="Mover" onclick="return confirm('¿Estás seguro? Este paso no se puede deshacer.');" />
+</form>
+</p>
+<% end -%>

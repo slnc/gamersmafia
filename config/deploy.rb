@@ -11,9 +11,9 @@ set :scm_command, '/usr/local/hosting/bin/git'
 set :git_enable_submodules, 1
 set :branch, 'production'
 
-role :app, "httpd@gamersmafia.com:62331"
-role :web, "httpd@gamersmafia.com:62331"
-role :db,  "httpd@gamersmafia.com:62331", :primary => true
+role :app, "httpd@kenpachi.gamersmafia.com:62331"
+role :web, "httpd@kenpachi.gamersmafia.com:62331"
+role :db,  "httpd@kenpachi.gamersmafia.com:62331", :primary => true
 
 default_environment['PATH'] = '/bin:/usr/bin:/usr/local/bin:/usr/local/hosting/bin'
 default_environment['SVN_SSH'] = 'ssh -p 62331 -l slnc'
@@ -62,9 +62,10 @@ namespace(:customs) do
 end
 
 before "deploy:update","customs:check_clean_wc"
+after "deploy:update","customs:updated_app"
 after "deploy:setup","customs:setup"
 after "deploy:symlink","customs:symlink"
-after "deploy","customs:updated_app"
+#after "deploy:migrations","customs:updated_app"
 # Hasta que no esté seguro de que funciona bien el nuevo sistema de 
 # comprobación de wc antes de updatear no activo esto:
 #after "deploy", "deploy:cleanup"

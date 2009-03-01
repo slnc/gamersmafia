@@ -1,9 +1,0 @@
-<% mftext('Nuevo foro') do %>
-
-<%= form_tag :action => 'forum_create' %>
-  <%= render :partial => 'forum_edit' %>
-  <%= submit_tag "Crear" %>
-</form>
-
-<%= link_to 'Volver', :action => 'list' %>
-<% end -%>

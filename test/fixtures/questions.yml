@@ -10,6 +10,7 @@ published:
   title: foo
   description: foo
   state: 2
+  unique_content_id: 1110
 
 unpublished:
   id: 2
@@ -23,6 +24,7 @@ unpublished:
   title: foo2
   description: foo2
   state: 1
+  unique_content_id: 1111
 
 deleted:
   id: 3
@@ -36,5 +38,4 @@ deleted:
   title: foo3
   description: foo3
   state: 3
-
-
+  unique_content_id: 1112

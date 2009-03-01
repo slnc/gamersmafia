@@ -1,12 +1,3 @@
-<% cats = @poll.new_record? ? @portal.polls_categories : PollsCategory.toplevel 
-if cats.size > 1 then %>
-<p><label >Categoría</label><br/>
-<%= render_tree_select cats, 'name', 'poll[polls_category_id]', @poll.polls_category_id %></p>
-<% else 
-@poll.polls_category_id = cats[0].id%>
-<%= hidden_field 'poll', 'polls_category_id' %></p>
-<% end -%>
-
 <p><label for="poll_title">Título</label><br/>
 <%= text_field 'poll', 'title', :class => 'text'  %></p>
 
@@ -18,7 +9,7 @@ if cats.size > 1 then %>
 
 <strong>Opciones</strong><br />
 <% @poll.polls_options.find(:all, :order => 'id ASC').each do |option| %>
-<input type="text" class="text" name="options[<%=option.id.to_s%>]" value="<%=option.name%>" /> &nbsp; <label><input type="checkbox" name="options_delete[]" value="<%=option.id.to_s%>" /> Borrar</label><br />
+<input type="text" class="text" name="poll[options][<%=option.id.to_s%>]" value="<%=option.name%>" /> &nbsp; <label><input type="checkbox" name="poll[options_delete][]" value="<%=option.id.to_s%>" /> Borrar</label><br />
 <% end %>
 
 <br /><strong>Nuevas opciones:</strong><br />
@@ -27,11 +18,13 @@ if cats.size > 1 then %>
 </style>
 <span id="newoptions">
   <input type="text" class="text" name="options_new[]" value="" /><br />
-  <% if @poll.new_record? then %><input type="text" class="text" name="options_new[]" value="" /><br /><% end -%>
+  <% if @poll.new_record? then %><input type="text" class="text" name="poll[options_new][]" value="" /><br /><% end -%>
 </span>
 
-<input type="button" class="button" value="Añadir más opciones" onclick="create_new_option('options_new[]');" />
+<input type="button" class="button" value="Añadir más opciones" onclick="create_new_option('poll[options_new][]');" />
 <br />
 <br />
+
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @poll } %>
 
 <%=draft_check_box(@poll)%>

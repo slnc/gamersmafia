@@ -28,6 +28,7 @@ require 'vendor/plugins/rails_mixings/lib/stats.rb'
 require 'lib/stats.rb'
 
 ActiveRecord::Base.send :include, HasHid
+ActiveRecord::Base.send :include, HasSlug
 User.db_query("SELECT now()")
 
 # NOTA: los observers DEBEN ser los últimos para que se puedan cargar los contenidos de lib/ y plugins
@@ -37,10 +38,11 @@ UsersActionObserver.instance
 
 TIMEZONE = '+0100'
 
-FileUtils.mkdir("#{RAILS_ROOT}/public/storage/skins") unless File.exists?("#{RAILS_ROOT}/public/storage/skins")
+FileUtils.mkdir_p("#{RAILS_ROOT}/public/storage/skins") unless File.exists?("#{RAILS_ROOT}/public/storage/skins")
 ActiveRecord::Base.partial_updates = false if ActiveRecord::Base.respond_to?(:partial_updates) 
 
 raise "libtidy not found" unless File.exists?(App.tidy_path)
+ActionView::Base.cache_template_loading = false if App.mode != 'production'
 
 module ActiveSupport::Inflector
   def self.sexualize(word, sex)

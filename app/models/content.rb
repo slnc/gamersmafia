@@ -7,6 +7,10 @@ class Content < ActiveRecord::Base
   has_many :tracker_items, :dependent => :destroy
   has_many :contents_locks, :dependent => :destroy
   has_many :publishing_decisions
+  has_many :contents_recommendations, :dependent => :destroy
+  has_many :terms, :through => :contents_terms
+  has_many :contents_terms, :dependent => :destroy
+  
   after_save do |m| 
     m.contents_locks.clear if m.contents_locks
     old_url = m.url 
@@ -17,15 +21,27 @@ class Content < ActiveRecord::Base
   end
   before_save :check_changed_attributes
   observe_attr :state
+  observe_attr :comments_count
   belongs_to :clan
   belongs_to :game
   belongs_to :platform
   belongs_to :bazar_district
   belongs_to :user
   
+  before_destroy :unlink_real_content
+  
   def resolve_portal_id
     # primero los fáciles
-    
+  end
+  
+  def unlink_real_content
+    # nos quitamos de last_updated_item_id si lo hay
+    Term.find(:all, :conditions => ['last_updated_item_id = ?', self.id]).each do |t|
+      t.recalculate_last_updated_item_id(self.id)
+    end
+    cls_name = Object.const_get(self.content_type.name)
+    User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(cls_name)} SET unique_content_id = NULL WHERE id = #{self.external_id}")
+    true
   end
   
   def comments_ids
@@ -47,6 +63,9 @@ class Content < ActiveRecord::Base
       end
     end
     
+    if self.slnc_changed?(:state) && self.state != Cms::PUBLISHED
+      self.contents_recommendations.each { |cr| cr.destroy }
+    end
     self.name = rc.resolve_hid if self.name != rc.resolve_hid
     self.is_public = rc.is_public?
     self.user_id = rc.user_id
@@ -59,7 +78,7 @@ class Content < ActiveRecord::Base
   
   def real_content
     # devuelve el objeto real al que referencia
-    @_cache_real_content ||= begin 
+    @_cache_real_content ||= begin       
       ctype = Object.const_get(self.content_type.name)
       ctype.find(self.external_id)
     end
@@ -90,6 +109,64 @@ class Content < ActiveRecord::Base
       raise "lock  couldnt be created: #{cl.errors.full_messages_html}" unless cl
       # raise "lock created #{}"
       cl
+    end
+  end
+  
+  def linked_terms(taxonomy=nil)
+    if taxonomy.nil?
+      self.terms.find(:all)
+    elsif taxonomy == 'NULL'
+      self.terms.find(:all, :conditions => 'taxonomy IS NULL', :order => 'created_on')
+    else
+      self.terms.find(:all, :conditions => ["taxonomy = ?", taxonomy], :order => 'created_on')
+    end
+  end
+  
+  def root_terms
+    self.linked_terms('NULL')
+  end
+  
+  def categories_terms(taxonomy)
+    self.linked_terms(taxonomy)
+  end
+  
+  def root_terms_ids=(newt)
+    puts "#{self.content_type.name} no permite enlazar a root_terms" unless Cms::ROOT_TERMS_CONTENTS.include?(self.content_type.name)
+    newt = [newt] unless newt.kind_of?(Array)
+    existing = self.root_terms.collect { |t| t.id }
+    to_del = existing - newt
+    to_add = newt - existing
+    root_terms_add_ids(to_add)
+    to_del.each { |tid| self.contents_terms.find(:first, :conditions => ['term_id = ?', tid]).destroy }
+  end
+  
+  def categories_terms_ids=(arg)
+    puts "#{self.content_type.name} no permite enlazar a categories_terms" unless Cms::CATEGORIES_TERMS_CONTENTS.include?(self.content_type.name)
+    newt = arg[0]
+    taxonomy = arg[1]
+    newt = [newt] unless newt.kind_of?(Array)
+    existing = self.categories_terms(taxonomy).collect { |t| t.id }
+    to_del = existing - newt
+    to_add = newt - existing
+    categories_terms_add_ids(to_add, taxonomy)
+    to_del.each { |tid| self.contents_terms.find(:first, :conditions => ['term_id = ?', tid]).destroy }
+  end
+  
+  def root_terms_add_ids(terms)
+    puts "#{self.content_type.name} no permite enlazar a root_terms" unless Cms::ROOT_TERMS_CONTENTS.include?(self.content_type.name)
+    terms = [terms] unless terms.kind_of?(Array)
+    terms.each do |tid|
+      t = Term.find_taxonomy(tid, nil)
+      t.link(self) 
+    end
+  end
+  
+  def categories_terms_add_ids(terms, taxonomy)
+    puts "#{self.content_type.name} no permite enlazar a categories_terms" unless Cms::CATEGORIES_TERMS_CONTENTS.include?(self.content_type.name)
+    terms = [terms] unless terms.kind_of?(Array)
+    terms.each do |tid|
+      t = Term.find_taxonomy(tid, taxonomy)
+      t.link(self) 
     end
   end
 end

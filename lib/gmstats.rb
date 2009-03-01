@@ -37,14 +37,9 @@ module Gmstats
   
   def self.faction_karma_in_time_period(faction, t1, t2)
     k = 0
-    
-    for c in Cms.categories_classes
-      tld = c.find(:first, :conditions => ["name = ? and root_id = id and parent_id is null", faction.name])
-      if not tld then
-        next
-      end
-      cat_ids = tld.get_all_children
-      k += c.items_class.count(:conditions => "state = #{Cms::PUBLISHED} AND #{ActiveSupport::Inflector.underscore(c.name)}_id in (#{cat_ids.join(',')}) AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'") * Karma::KPS_CREATE[c.items_class.name]
+    root_term = Term.single_toplevel(faction.referenced_thing_field => faction.referenced_thing.id)
+    Cms::CONTENTS_WITH_CATEGORIES.each do |cls_name|
+      k += root_term.contents_count(cls_name, :conditions => "state = #{Cms::PUBLISHED} AND #{ActiveSupport::Inflector.underscore(c.name)}_id in (#{cat_ids.join(',')}) AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'") * Karma::KPS_CREATE[c.items_class.name]
     end
     k
   end
