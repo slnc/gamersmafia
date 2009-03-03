@@ -1,3 +1,4 @@
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @download } %>
 
 
 <p><label for="download_title">Nombre</label><br/>
@@ -15,7 +16,5 @@ real_path = "#{RAILS_ROOT}/public/" + @download.file
 <%= file_field 'download', 'file' %></p>
 
 <p><%=check_box'download', 'essential' %> <label for="download_essential">Es esencial para jugar</label></p>
-
-<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @download } %>
 
 <%=draft_check_box(@download)%>

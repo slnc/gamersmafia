@@ -12,6 +12,7 @@ accum_portals = {}
 max = 20
 i = 0
 for news in @last_news
+	next unless news.main_category
 	accum_portals[news.main_category.root_id] ||= 0
 	accum_portals[news.main_category.root_id] += 1
 	next if accum_portals[news.main_category.root_id] > 6
@@ -73,7 +74,7 @@ if controller.portal.id != -1 then # portal distinto de GmPortal
 
 for topic in @last_topics
   shown_topics << topic.unique_content.id %>
-  <li id="content<%=topic.unique_content.id%>" class="new <%=oddclass%>"><%=link_to "<div class=\"content-category\">#{faction_favicon(topic.topics_category)}</div>#{truncate(topic.title, 30)}", gmurl(topic)%></li>
+  <li id="content<%=topic.unique_content.id%>" class="new <%=oddclass%>"><%=link_to "<div class=\"content-category\">#{faction_favicon(topic.main_category)}</div>#{truncate(topic.title, 30)}", gmurl(topic)%></li>
 <% end %>
 <%
 else #GmPortal
@@ -86,7 +87,7 @@ for topicid in @last_topics
   root = topic.main_category.root
   active_topics = TopicsCategory.db_query("SELECT (count(id) - 1) as count FROM topics WHERE topics_category_id IN (#{root.all_children_ids.join(',')}) AND updated_on > now() - '1 week'::interval")[0]['count']
 %>
-<li id="content<%=topic.unique_content.id%>" class="new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "<div class=\"content-category\">#{faction_favicon(topic.topics_category)}</div>#{truncate(topic.title.gsub('<', ''), 28)}", gmurl(topic)%></li>
+<li id="content<%=topic.unique_content.id%>" class="new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "<div class=\"content-category\">#{faction_favicon(topic.main_category)}</div>#{truncate(topic.title.gsub('<', ''), 28)}", gmurl(topic)%></li>
     <% end # for %>
 <% end # if %>
         </ul>

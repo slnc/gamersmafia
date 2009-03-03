@@ -1,3 +1,5 @@
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @demo, :only_games => true } %>
+
 <p><label>Juego</label><br/>
 <select id="demo_game_id" name="demo_game_id">
 	<option></option>
@@ -94,7 +96,5 @@ $j('#demo_game_id').delayedObserver(0, function(element, value) {
 
 <p><label for="demo_description">Descripción</label><br/>
 <%=wysiwyg('demo[description]', :value => @demo.description, :height => '200px')%></p>
-
-<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @demo, :only_games => true } %>
 
 <%=draft_check_box(@demo)%>

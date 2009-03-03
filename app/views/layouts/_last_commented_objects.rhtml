@@ -7,8 +7,9 @@ basename = "/#{@controller.portal_code}/site/last_commented_objects"
 cache(basename) do
   ids = []
   get_last_commented_contents.each do |content| 
-    uniq = content.unique_content %>
-  <li id="content-side-topic<%=uniq.id%>" class="<%=oddclass%>"><a class="content" href="<%=get_url(content)%>" title="<%= "#{content.main_category.root.slug} | " if content.has_category?%><%=tohtmlattribute(content.resolve_hid)%>"><%=truncate(content.resolve_hid, 26, '..')%></a></li><% 
+	  uniq = content.unique_content 
+  %>
+  <li id="content-side-topic<%=uniq.id%>" class="<%=oddclass%>"><a class="content" href="<%=get_url(content)%>" title="<%= "#{content.main_category.root.slug} | " if content.has_category? && content.main_category%><%=tohtmlattribute(content.resolve_hid)%>"><%=truncate(content.resolve_hid, 26, '..')%></a></li><% 
     ids<< uniq.id
   end 
 

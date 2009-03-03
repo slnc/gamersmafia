@@ -355,8 +355,8 @@ class Bet < ActiveRecord::Base
   
   def self.awaiting_result(opts={})
     qcond = opts[:conditions] ?  " AND #{opts[:conditions]}" : ''
-    find(:published, 
-         :conditions => "#{Bet::AWAITING_RESULT_SQL} #{qcond}", 
+    self.find(:published, 
+              :conditions => "#{Bet::AWAITING_RESULT_SQL} #{qcond}", 
     :order => 'closes_on DESC, id DESC')
   end
   

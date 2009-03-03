@@ -2,7 +2,7 @@
 [%w(Column Interview), %w(Tutorial Review)].each do |par| %>
 <div class="grid-6 <%='glast' unless first%>">
 	<%par.each do |it| 
-collection = controller.portal.send(it.downcase).find(:published, :order => 'created_on desc', :limit => 5) 
+		collection = controller.portal.send(it.downcase).find(:published, :content_type => it, :order => 'created_on desc', :limit => 5) 
 next if collection.size == 0 %>	
 		<% dafirst = true
 mfcontents_list(Cms::translate_content_name(it).titleize,  

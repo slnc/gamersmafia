@@ -1,3 +1,5 @@
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @poll } %>
+
 <p><label for="poll_title">Título</label><br/>
 <%= text_field 'poll', 'title', :class => 'text'  %></p>
 
@@ -24,7 +26,5 @@
 <input type="button" class="button" value="Añadir más opciones" onclick="create_new_option('poll[options_new][]');" />
 <br />
 <br />
-
-<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @poll } %>
 
 <%=draft_check_box(@poll)%>

@@ -31,9 +31,9 @@ class GenericContentProxy
     # options.delete(:content_type) if options[:content_type]
     if new_conds.size > 0
       if options[:conditions].kind_of?(Array)
-        options[:conditions][0]<< " AND #{new_conds.join(' AND ')}"
+        options[:conditions][0] = "#{options[:conditions][0]} AND #{new_conds.join(' AND ')}"
       elsif options[:conditions] then
-        options[:conditions]<< " AND #{new_conds.join(' AND ')}"
+        options[:conditions] = "#{options[:conditions]} AND #{new_conds.join(' AND ')}"
       else
         options[:conditions] = new_conds.join(' AND ')
       end

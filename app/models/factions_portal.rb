@@ -233,11 +233,11 @@ class FactionsPortalCompetitionProxy
     new_cond = "game_id IN (#{g_ids.join(',')})"
     
     if options[:conditions].kind_of?(Array)
-      options[:conditions][0]<< "AND #{new_cond}"
+      options[:conditions][0] = "#{options[:conditions][0]} AND #{new_cond}"
     elsif options[:conditions] then
-      options[:conditions]<< " AND #{new_cond}"
+      options[:conditions] = "#{options[:conditions]} AND #{new_cond}"
     else
-      options[:conditions] = new_cond
+      options[:conditions] = "#{new_cond}"
     end
     args.push(options)
   end

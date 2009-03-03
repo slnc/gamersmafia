@@ -1,4 +1,7 @@
 <%mftext('Publicar en ') do %>
+<% if (Cms::CATEGORIES_TERMS_CONTENTS + Cms::ROOT_TERMS_CONTENTS).include?(acts_as_content.class.name) then %>
+<div id="categories_terms_root_more" class="infoinline" style="float: right;"><a href="" style="" class="nav" onclick="return show_all_categories_terms_contents();">Asociar a más de una categoría</a></div>
+<% end -%>
 <% if Cms::ROOT_TERMS_CONTENTS.include?(acts_as_content.class.name) then %>
 <% created_selects = 0 %>
 <% if !acts_as_content.new_record? then %>
@@ -33,7 +36,6 @@ end -%>
 <% end -%>
 
 <% if (Cms::CATEGORIES_TERMS_CONTENTS + Cms::ROOT_TERMS_CONTENTS).include?(acts_as_content.class.name) then %>
-<div id="categories_terms_root_more"><a href="" style="" class="nav" onclick="return show_all_categories_terms_contents();">Mostrar más categorías</a></div>
 <script type="text/javascript">
 	hidden = 0;
 	if ($j('#categories_terms_root2').val() == '') {

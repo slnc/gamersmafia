@@ -20,7 +20,9 @@
       <height>31</height> 
     </image>
     <% end -%>
-    <% for news in News.find(:all, :conditions => "state = #{Cms::PUBLISHED} and clan_id is null", :order => 'created_on desc', :limit => 10) %>
+    <% for news in News.find(:all, :conditions => "state = #{Cms::PUBLISHED} and clan_id is null", :order => 'created_on desc', :limit => 10) 
+    next unless news.main_category
+%>
   <item>
     <title><%=news.title.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;')%></title> 
     <link><%=gmurl(news)%>?from=rss</link> 

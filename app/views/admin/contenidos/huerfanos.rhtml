@@ -2,7 +2,11 @@
 <table>
 <%Content.orphaned.each do |uniq|
   item = uniq.real_content 
+  begin
   url = get_url(item).gsub('show', 'edit')
+  rescue
+	  url = ''
+  end
 %>
   <tr id="content<%=uniq.id%>" class="<%=oddclass%>">
     <td><a href="<%=url%>"><%=item.resolve_hid == '' ? '(Sin nombre)' : item.resolve_hid%></a></td>

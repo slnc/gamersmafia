@@ -1,4 +1,5 @@
-<p><label >Categoría</label><br/>
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @image } %>
+
 <p><label for="image_file">Archivo <span class="infoinline">(Formatos válidos: <strong>JPG</strong>, <strong>GIF</strong> o <strong>PNG</strong>)</span></label><br/>
 <% if @image.file then %>
 <%=fc_thumbnail(@image.file, 'k', '153x115')%> 
@@ -7,7 +8,5 @@
 
 <p><label for="image_description">Descripción</label><br/>
 <%=wysiwyg('image[description]', :value => @image.description, :height => '100px')%></p>
-
-<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @image } %>
 
 <%=draft_check_box(@image)%>

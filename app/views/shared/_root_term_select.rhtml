@@ -1,4 +1,4 @@
-<select id="categories_terms_root<%=index%>" name="root_terms[]">
+<select id="categories_terms_root<%=index%>" name="root_terms[]" style="margin-bottom: 15px;">
   	<option></option>
 	<optgroup label="Juegos"></optgroup>
 	<%Term.find(:all, :conditions => 'id = root_id AND game_id IS NOT NULL', :order => 'lower(name)').each do |t|%>
@@ -20,5 +20,3 @@
 	<option <%='selected="selected"' if selterm && selterm.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
 	<% end -%>
   </select>
-<br />
-<br />

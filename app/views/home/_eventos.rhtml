@@ -4,7 +4,7 @@
         cache("/#{@controller.portal.code}/home/index/eventos/#{Time.now.strftime('%Y%m%d')}") do %>
 <%mfcontents_table(nil, controller.portal.poll.current) do |e| %>
         <td style="font-size: 11px;"><a href="<%=get_url(e)%>"><%=content_category(e)%><%=e.title%></a></td>
-        <td style="font-size: 11px;"><%=member_state('active')%><%=e.users.count%></td>
+        <td style="font-size: 11px;"><%=member_state('active')%><%=e.users.count if e.respond_to?(:users)%></td>
       <% end # for -%>
 <% end # cache-%>
 </div>

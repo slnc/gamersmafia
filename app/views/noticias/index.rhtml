@@ -13,8 +13,8 @@
 <% content_main do %>  
 <%= mfcontents_summaries('Noticias', 
 						controller.portal.news,
-						[:published, {:order => 'created_on asc'}],
+						[:published, {:content_type => 'News', :order => 'created_on asc'}],
 						{:cache => "/#{controller.portal_code}/noticias/index/page_#{params['page']}",
-						:pager => ActionController::Pagination::Paginator.new(self, controller.portal.news.count(:published), controller.class::NEWS_PER_PAGE, params[:page]),
+							:pager => ActionController::Pagination::Paginator.new(self, controller.portal.news.count(:published, :content_type => 'News'), controller.class::NEWS_PER_PAGE, params[:page]),
 						:show_day_separator => true})%>
 <% end -%>

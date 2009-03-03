@@ -27,7 +27,7 @@ class Term < ActiveRecord::Base
   before_destroy :sanity_check
   
   def sanity_check
-    return false if self.contents_count > 25
+    true # return false if self.contents_count > 25
   end
   
   def copy_parent_attrs
@@ -439,11 +439,11 @@ class Term < ActiveRecord::Base
     options.delete :content_type_id
     
     if options[:conditions].kind_of?(Array)
-      options[:conditions][0]<< "AND #{new_cond}"
+      options[:conditions][0] = "#{options[:conditions][0]} AND #{new_cond}"
     elsif options[:conditions] then
-      options[:conditions]<< " AND #{new_cond}"
+      options[:conditions] = "#{options[:conditions]} AND #{new_cond}"
     else
-      options[:conditions] = new_cond
+      options[:conditions] = "#{new_cond}"
     end
     
     args.push(options)
@@ -454,9 +454,9 @@ class Term < ActiveRecord::Base
       new_cond = "contents.state = #{Cms.const_get(agfirst.to_s.upcase)}"
       
       if options[:conditions].kind_of?(Array)
-        options[:conditions][0]<< " AND #{new_cond} "
+        options[:conditions][0] = "#{options[:conditions][0]} AND #{new_cond} "
       elsif options[:conditions].to_s != '' then
-        options[:conditions]<< " AND #{new_cond} "
+        options[:conditions] = "#{options[:conditions]} AND #{new_cond} "
       else
         options[:conditions] = new_cond
       end

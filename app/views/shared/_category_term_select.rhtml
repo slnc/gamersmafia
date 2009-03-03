@@ -1,4 +1,4 @@
-<select id="categories_terms_root<%=index%>">
+<select id="categories_terms_root<%=index%>" style="margin-top: 15px;">
 	<option value=""></option>
 	<% Term.toplevel(:clan_id => nil).each do |t| %>
 	<option value="<%=t.id%>"><%=t.name%></option>
@@ -18,5 +18,3 @@
 		});
 	})
 </script>
-
-<br />

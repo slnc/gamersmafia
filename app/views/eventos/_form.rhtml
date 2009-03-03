@@ -1,3 +1,5 @@
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @event } %>
+
 <p><label for="event_title">Nombre</label><br/>
 <%= text_field 'event', 'title', :class => 'text'  %></p>
 
@@ -13,7 +15,5 @@
 
 <p><label for="event_ends_on">Termina</label><br/>
 <%= datetime_select 'event', 'ends_on'  %></p>
-
-<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @event } %>
 
 <%=draft_check_box(@event)%>

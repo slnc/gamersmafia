@@ -1,3 +1,4 @@
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @news } %>
 <p><label for="news_title">Título</label><br/>
 <%= text_field 'news', 'title', :class => 'text' %></p>
 
@@ -8,6 +9,5 @@
 <%=wysiwyg('news[main]', :value => @news.main)%>
 </p>
 
-<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @news } %>
 
 <%=draft_check_box(@news)%>
