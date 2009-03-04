@@ -14,7 +14,7 @@ namespace :gm do
     new_accounts_cleanup
     check_ladder_matches
     update_portals_hits_stats
-    provocar_golpes_de_estado
+    # provocar_golpes_de_estado
     forget_old_tracker_items
     forget_old_autologin_keys
     forget_old_treated_visitors
@@ -122,9 +122,13 @@ namespace :gm do
                     where portal_id > 0
                       AND created_on >= now() - '1 month'::interval 
                  group by portal_id").each do |dbr|
-      portal = Portal.find(dbr['portal_id'])
-      portal.cache_recent_hits_count = dbr['count'].to_i
-      portal.save
+      portal = Portal.find_by_id(dbr['portal_id'])
+      if portal.nil?
+	      puts "daily.update_portals_hits_stats(). Warning, portal id #{dbr['portal_id']} (#{dbr['count']} pageviews) not found"
+      else
+        portal.cache_recent_hits_count = dbr['count'].to_i
+        portal.save
+      end
     end
     CacheObserver.expire_fragment("/common/gnav/#{Time.now.strftime('%Y-%m-%d')}")
   end
