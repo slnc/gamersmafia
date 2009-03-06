@@ -362,6 +362,9 @@ class Term < ActiveRecord::Base
     opts.delete(:order) if opts[:order]
     args.push(opts)
     if opts[:joins]
+      if opts[:conditions] && opts[:conditions].kind_of?(Array)
+        opts[:conditions] = ActiveRecord::Base.send( "sanitize_sql_array", opts[:conditions])
+      end
       opts[:joins] << " join contents_terms on contents.id = contents_terms.content_id " unless opts[:joins].include?('contents_terms')
       Content.count_by_sql("SELECT count(*) FROM (SELECT contents.id FROM contents #{opts[:joins]} WHERE #{opts[:conditions]} GROUP BY contents.id) AS foo")
     else

@@ -60,7 +60,7 @@ class CacheObserver < ActiveRecord::Observer
       end
       
       when 'CompetitionsParticipant':
-       object.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
+      object.users.each { |u| Cache::Competition.expire_competitions_lists(u) }
       
       if object.competition.kind_of?(Ladder)
         expire_fragment "/arena/home/open_ladders"
@@ -104,10 +104,10 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment("/common/facciones/#{object.faction_id}/webs_aliadas")
       object.faction.portals.each { |p| expire_fragment("/#{p.code}/webs_aliadas") }
       
-    when 'PollsVote':
+      when 'PollsVote':
       object.polls_option.poll.get_related_portals.each do |portal|
         expire_fragment("/#{portal.code}/encuestas/index/most_votes")  
-     end
+      end
       
       
       when 'CommentsValoration':
@@ -473,8 +473,7 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/home/index/demos2")
       end
       
-      expire_fragment "/common/demos/show/_latest_cat#{object.main_category.id}"
-      # expire_fragment "/common/demos/show/_latest_cat#{object.slnc_changed_old_values[:demos_category_id]}" if object.slnc_changed?(:demos_category_id) 
+      expire_fragment "/common/demos/show/_latest_cat#{object.main_category.id}" 
       
       when 'Funthing':
       expire_fragment('/common/home/index/curiosidades')
@@ -529,9 +528,9 @@ class CacheObserver < ActiveRecord::Observer
       end
       
       # borramos las páginas de listado de noticias posteriores a la actual
-      stickies = object.main_category.count(:content_type => 'Topic', :conditions => "sticky is true and state = #{Cms::PUBLISHED}")
-      prev_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and state = #{Cms::PUBLISHED} and updated_on <= ?", object.created_on]) + stickies
-      next_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and state = #{Cms::PUBLISHED} and updated_on >= ?", object.created_on])
+      stickies = object.main_category.count(:content_type => 'Topic', :conditions => "sticky is true and contents.state = #{Cms::PUBLISHED}")
+      prev_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and contents.state = #{Cms::PUBLISHED} and contents.updated_on <= ?", object.created_on]) + stickies
+      next_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and contents.state = #{Cms::PUBLISHED} and contents.updated_on >= ?", object.created_on])
       start_page = prev_count / 50 # TODO especificar esto en un único sitio
       end_page = start_page + next_count / 50 + 1
       
@@ -627,21 +626,7 @@ class CacheObserver < ActiveRecord::Observer
       # borramos las páginas de listados por si es un nuevo comment
       expire_fragment("/common/tutoriales/index/tutorials_#{object.main_category.id}/page_*")
       
-      if object.slnc_changed && object.slnc_changed_old_values["tutorials_category_id"] then
-        prev_cat = TutorialsCategory.find(object.slnc_changed_old_values["tutorials_category_id"])
-        expire_fragment("/tutoriales/most_downloaded_#{prev_cat.root_id}")
-        
-        while prev_cat do
-          expire_fragment("/common/tutoriales/_latest_by_cat/#{prev_cat.id}")
-          expire_fragment("/common/tutoriales/_most_productive_author_by_cat/#{prev_cat.id}")
-          expire_fragment("/common/tutoriales/index/folders_#{prev_cat.id}")
-          expire_fragment("/common/tutoriales/index/tutorials_#{prev_cat.id}/page_*")
-          prev_cat = prev_cat.parent
-        end
-      end
-      
-      p = object.tutorials_category
-      
+       p = object.main_category
       while p do
         expire_fragment("/common/tutoriales/_latest_by_cat/#{p.id}")
         expire_fragment("/common/tutoriales/_most_productive_author_by_cat/#{p.id}")

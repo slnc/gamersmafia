@@ -51,11 +51,11 @@ class Poll < ActiveRecord::Base
       false
     else
       # automatically change publish date if it solaps with existing poll
-      solapping = Poll.find(:first, :conditions => ["state = #{Cms::PUBLISHED} AND polls_category_id = ? AND starts_on <= ? AND ends_on >= ? ", self.polls_category_id, self.starts_on, self.starts_on])
+      solapping = self.main_category.poll.find(:first, :conditions => ["state = #{Cms::PUBLISHED} AND starts_on <= ? AND ends_on >= ? ", self.starts_on, self.starts_on])
       while solapping && solapping.id != self.id
         self.starts_on = Time.at(solapping.ends_on.to_i + 1)
         self.ends_on = self.starts_on.advance(:days => 7)
-        solapping = Poll.find(:first, :conditions => ["state = #{Cms::PUBLISHED} AND polls_category_id = ? AND starts_on <= ? AND ends_on >= ? ", self.polls_category_id, self.starts_on, self.starts_on])
+        solapping = self.main_category.poll.find(:first, :conditions => ["state = #{Cms::PUBLISHED} AND starts_on <= ? AND ends_on >= ? ", self.starts_on, self.starts_on])
       end
       true
     end

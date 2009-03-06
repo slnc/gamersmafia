@@ -28,7 +28,7 @@ class ForosControllerTest < Test::Unit::TestCase
     tcc = tc.children.find(:first, :conditions => "name = 'General' AND taxonomy = 'TopicsCategory'")
     assert fbu.save 
      
-    post :create_topic, {:topic => {:terms => tcc.id, :title => 'footopic', :main => 'textio'}}
+    post :create_topic, {:topic => {:title => 'footopic', :main => 'textio'}, :categories_terms => [tcc.id]}
     assert_response :redirect
     assert_not_nil flash[:error]
     assert_equal Cms::DELETED, Topic.find(:first, :order => 'id desc').state 
@@ -45,7 +45,7 @@ class ForosControllerTest < Test::Unit::TestCase
     assert t.update_attributes(:user_id => 4)
     sym_login 4
     assert_raises(AccessDenied) do 
-      post :move_topic, :topic => {:id => t.id, :terms => tcc.id}
+      post :move_topic, :topic => {:id => t.id, :categories_terms => tcc.id}
     end
   end
   
@@ -54,7 +54,7 @@ class ForosControllerTest < Test::Unit::TestCase
     u1 = User.find(1)
     kp = u1.karma_points
     topics = Topic.count
-    post :create_topic, {:topic => {:terms => Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id, :title => 'footopic', :main => 'textio'}}
+    post :create_topic, {:topic => {:title => 'footopic', :main => 'textio'}, :categories_terms => [Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id]}
     assert_response :redirect
     assert_equal topics + 1, Topic.count
     u1.reload
@@ -64,7 +64,7 @@ class ForosControllerTest < Test::Unit::TestCase
   def test_shouldnt_add_to_tracker_if_unselected
     sym_login 1
     assert_count_increases(Topic) do
-      post :create_topic, {:topic => {:terms => Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id, :title => 'footopic', :main => 'textio'}}
+      post :create_topic, {:topic => {:title => 'footopic', :main => 'textio'}, :categories_terms => [Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id]}
     end
     lt = TrackerItem.find(:first, :order => 'id desc')
     assert !lt.is_tracked?
@@ -134,19 +134,19 @@ class ForosControllerTest < Test::Unit::TestCase
   
   def test_move_topic_should_work
     sym_login 1
-    t = Topic.find(:first)
-    tc2 = t.main_category.root.children.create({:name => 'nombre nueva category'})
+    t = Topic.find(1)
+    tc2 = t.main_category.root.children.create({:name => 'nombre nueva category', :taxonomy => 'TopicsCategory'})
     assert !tc2.new_record?
     post :move_topic, { :topic => { :id => t.id }, :categories_terms => [tc2.id]}
     assert_response :redirect
     t.reload
-    assert_equal tc2.id, t.topics_category_id
+    assert_equal tc2.id, t.terms[0].id
   end
   
   def test_create_topic_should_work
     sym_login 1
     assert_count_increases(Topic) do
-      post :create_topic, { :topic => { :main => 'tezto del topic', :title => 'title del topiz', :terms => Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id}}
+      post :create_topic, { :topic => { :main => 'tezto del topic', :title => 'title del topiz'} , :categories_terms => [Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id] }
     end
     assert_response :redirect
   end

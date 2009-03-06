@@ -164,10 +164,56 @@ class Question < ActiveRecord::Base
   end
   
   def self.top_sages(category=nil, limit=10)
-    sql_incat = category ? " AND questions_category_id IN (#{category.root.all_children_ids.join(',')})" : ''
     res = []
-    User.db_query("SELECT count(*) as points, a.id, a.avatar_id, a.login, a.cache_karma_points, a.cache_faith_points FROM users a join comments b on a.id = b.user_id WHERE b.id IN (SELECT accepted_answer_comment_id FROM questions WHERE state = #{Cms::PUBLISHED} #{sql_incat} AND accepted_answer_comment_id IS NOT NULL) GROUP BY a.id, a.login, a.avatar_id, a.cache_karma_points, a.cache_faith_points ORDER BY count(*) DESC, lower(a.login) LIMIT #{limit}").each do |dbu|
-      res<< {:user => User.new(dbu.block_sym(:points)), :points => dbu['points'].to_i}
+    if category.nil?
+      User.db_query("SELECT count(*) as points, 
+                          a.id, 
+                          a.avatar_id, 
+                          a.login, 
+                          a.cache_karma_points, 
+                          a.cache_faith_points 
+                     FROM users a 
+                     join comments b on a.id = b.user_id 
+                    WHERE b.id IN (SELECT accepted_answer_comment_id
+                                     FROM questions A
+                                    WHERE state = #{Cms::PUBLISHED} #{sql_incat} 
+                                      AND accepted_answer_comment_id IS NOT NULL) 
+                 GROUP BY a.id, 
+                          a.login, 
+                          a.avatar_id, 
+                          a.cache_karma_points, 
+                          a.cache_faith_points 
+                 ORDER BY count(*) DESC, 
+                          lower(a.login) 
+                    LIMIT #{limit}").each do |dbu|
+        res<< {:user => User.new(dbu.block_sym(:points)), :points => dbu['points'].to_i}
+      end
+    else
+      User.db_query("SELECT count(*) as points, 
+                          a.id, 
+                          a.avatar_id, 
+                          a.login, 
+                          a.cache_karma_points, 
+                          a.cache_faith_points 
+                     FROM users a 
+                     join comments b on a.id = b.user_id 
+                    WHERE b.id IN (SELECT accepted_answer_comment_id
+                                     FROM questions a
+                                     JOIN contents b on a.unique_content_id = b.id
+                                     JOIN contents_terms c on b.id = c.content_id
+                                    WHERE a.state = #{Cms::PUBLISHED} 
+                                      AND a.accepted_answer_comment_id IS NOT NULL
+                                      AND c.term_id IN (#{category.root.all_children_ids(:taxonomy => 'QuestionsCategory').join(',')}))
+                 GROUP BY a.id, 
+                          a.login, 
+                          a.avatar_id, 
+                          a.cache_karma_points, 
+                          a.cache_faith_points 
+                 ORDER BY count(distinct(a.id)) DESC,
+                          lower(a.login) 
+                    LIMIT #{limit}").each do |dbu|
+        res<< {:user => User.new(dbu.block_sym(:points)), :points => dbu['points'].to_i}
+      end
     end
     res
   end

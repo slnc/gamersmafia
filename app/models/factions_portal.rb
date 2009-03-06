@@ -152,7 +152,6 @@ class FactionsPortalPollProxy
   
   def current
     t = Term.find(:first, :conditions => "id = root_id AND slug IN (#{@portal.toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC').poll.find(:published, :conditions => Poll::CURRENT_SQL, :order => 'created_on DESC', :limit => 1)
-    # Poll.find(:published, :conditions => "polls_category_id IN (#{@portal.get_categories(Poll.category_class).join(',')}) and starts_on <= now() and ends_on >= now()", :order => 'created_on DESC', :limit => 1)
   end
   
   def respond_to?(method_id, include_priv = false)
