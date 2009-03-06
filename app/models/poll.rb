@@ -48,18 +48,23 @@ class Poll < ActiveRecord::Base
   end
   
   def process_polls_options
+    puts "tmp_options_new: "
+    p @_tmp_options_new
     if @_tmp_options_new
       @_tmp_options_new.each { |s| self.polls_options.create({:name => s.strip}) unless s.strip == ''  }
       @_tmp_options_new = nil
     end
     
+    puts "tmp_options_delete: "
+    p @_tmp_options_delete
     if @_tmp_options_delete
       @_tmp_options_delete.each { |id| self.polls_options.find(id).destroy if self.polls_options.find_by_id(id) }
       @_tmp_options_delete = nil
     end
     
     if @_tmp_options
-      @_tmp_options.keys.each do |id| 
+      @_tmp_options.keys.each do |id|
+        puts "checking #{id} #{@_tmp_options[id]}"
         option = self.polls_options.find_by_id(id.to_i)
         if option && option.name != @_tmp_options[id]
           option.name = @_tmp_options[id].strip

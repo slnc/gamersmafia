@@ -47,7 +47,7 @@ class CacheObserverSiteWideTest < ActionController::IntegrationTest
 
   def test_should_clear_lasttopics_box_when_deleting_a_content
     sym_login 'superadmin', 'lalala'
-    create_content(:news, { :title => 'topico titulado 2', :description => 'contenido del topicotitulado 2', :state => Cms::PUBLISHED, :terms => 1 })
+    create_content(:news, { :title => 'topico titulado 2', :description => 'contenido del topicotitulado 2', :state => Cms::PUBLISHED }, :root_terms => 1)
     news = News.find(:first, :order => 'id DESC')
     news.state = Cms::PUBLISHED
     news.save

@@ -52,7 +52,7 @@ class NoticiasControllerTest < Test::Unit::TestCase
   def test_create_without_subcat_should_work
     sym_login 1
     assert_count_increases(News) do 
-      post :create, { :news => {:title => 'footapang', :description => 'bartapang', :terms => 1}, :new_subcategory_name => '' }
+      post :create, { :news => {:title => 'footapang', :description => 'bartapang'}, :root_terms => 1, :new_subcategory_name => '' }
     end
     assert_equal 1, News.find(:first, :order => 'id desc').terms[0].id
   end
