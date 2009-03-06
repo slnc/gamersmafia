@@ -16,8 +16,6 @@
 
 <%= form_tag({:action => 'create'}, :multipart => true) %>
   <%= render :partial => 'form' %>
-  <p><label for="download_mirrors">Mirrors (1 url por línea)</label><br />
-  <%= text_area("download", "download_mirrors", "columns" => 40, "rows" => 5) %></p>
   <%= submit_tag 'Crear' %>
 </form>
 <% end -%>

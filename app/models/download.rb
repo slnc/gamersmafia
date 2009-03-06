@@ -12,25 +12,48 @@ class Download < ActiveRecord::Base
   has_many :download_mirrors, :dependent => :destroy
   belongs_to :image_category
   
-  # TODO arreglar este lío y hacerlo en todos los contents con categoría
-  file_column :file
-  #  before_save :check_uploaded_file
+  after_save :process_download_mirrors
   
-  # TODO esto debería hacerlo silencecore_file_column
-  #  def check_uploaded_file
-  #    if @tmp_files['file']
-  #      tmp_file = @tmp_files['file']
-  #      if tmp_file.respond_to?('path') and tmp_file.path.to_s != '' then
-  #        new_hash = file_hash(tmp_file.path)
-  #      else # file size < 19Kb (es un StringIO)
-  #        new_hash = Digest::MD5.hexdigest(tmp_file.read)
-  #        tmp_file.rewind
-  #      end
-  #
-  #      self.errors.add('file', 'El archivo especificado ya existe')
-  #      Download.count(:conditions => ['file_hash_md5 = ?', new_hash]) == 0      
-  #    end
-  #  end
+  file_column :file
+  
+  def mirrors_new=(opts_new)
+    @_tmp_mirrors_new = opts_new
+    self.attributes.delete :mirrors_new 
+  end
+  
+  def mirrors_delete=(opts_new)
+    @_tmp_mirrors_delete = opts_new
+    self.attributes.delete :mirrors_delete 
+  end
+  
+  def mirrors=(opts_new)
+    @_tmp_mirrors = opts_new
+    self.attributes.delete :mirrors 
+  end
+  
+  def process_download_mirrors
+    if @_tmp_mirrors_new
+      @_tmp_mirrors_new.each { |s| self.download_mirrors.create({:url => s.strip}) unless s.strip == ''  }
+      @_tmp_mirrors_new = nil
+    end
+    
+    if @_tmp_mirrors_delete
+      @_tmp_mirrors_delete.each { |id| self.download_mirrors.find(id).destroy if self.download_mirrors.find_by_id(id) }
+      @_tmp_mirrors_delete = nil
+    end
+    
+    if @_tmp_mirrors
+      @_tmp_mirrors.keys.each do |id| 
+        mirror = self.download_mirrors.find_by_id(id.to_i)
+        if mirror && mirror.url != @_tmp_mirrors[id]
+          mirror.url = @_tmp_mirrors[id].strip
+          mirror.save
+        end
+      end 
+      @_tmp_mirrors = nil
+    end
+    true
+  end
   
   
   # select id, (select name from downloads_categories where id = a.root_id), downloads_count from downloads_categories a where lower(name) like  '%demos%' and downloads_count > 0;
