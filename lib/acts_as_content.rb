@@ -550,6 +550,7 @@ module ActsAsContent
         # cogemos el numero de votos como el valor del 1er cuartil ordenando la lista de contenidos por votos asc
         # calculamos "m"
         if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
+		return 0 if self.main_category.nil?# TODO hack temporal
           total = self.main_category.root.count(:content_type => self.class.name)
           # TODO esto debería ir en term
           q = "SELECT content_id 
@@ -601,6 +602,7 @@ module ActsAsContent
       # calcula el voto medio para un contenido dependiendo de si tiene categoría o no
       # asumo que cada contenido y cada facción tiene su propia media
       if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
+		return 0 if self.main_category.nil?# TODO hack temporal
         # cat_ids = self.main_category.root.all_children_ids
         # TODO esto deberia ir en Term
         

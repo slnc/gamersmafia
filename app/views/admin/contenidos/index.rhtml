@@ -82,7 +82,12 @@ for @item in collection:
             if cache_category_paths.keys.include?(@item.main_category.id)
               paths = cache_category_paths[@item.main_category.id]
             else
+		    begin
               paths, navpath = controller.get_category_address(@item.main_category, 'ImagesCategory')
+		    rescue
+			    paths = []
+			    navpath = []
+		    end
               cache_category_paths[@item.main_category.id] = paths
             end
           %>
