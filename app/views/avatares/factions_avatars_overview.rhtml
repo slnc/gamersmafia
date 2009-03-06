@@ -1,4 +1,5 @@
 <%mftext("Avatares (total: #{Avatar.count})") do %>
+<div style="overflow: scroll">
 <% 
   # TODO optimizar 
   @factions = Faction.find(:all, :order => 'lower(name) ASC') 
@@ -58,4 +59,5 @@ end %>
 <br />
 <a href="/avatares">Volver</a>
 <%= link_to 'Nuevo avatar', :action => 'new' %>
+</div>
 <% end -%>
