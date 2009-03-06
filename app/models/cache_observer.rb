@@ -78,6 +78,7 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/imagenes/potds/#{p.code}/page_") # solo tenemos que borrar la última página y nos sirve tb para index
         last_page = Potd.count(:conditions => "portal_id = #{p.id}") / 16 + 1
         expire_fragment("/imagenes/potds/#{p.code}/page_#{last_page}") # solo tenemos que borrar la última página y nos sirve tb para index
+        # puts "borrando potds"
         expire_fragment("/#{p.code}/home/index/potd_*") # solo tenemos que borrar la última página y nos sirve tb para index
       else
         last_page = Potd.count(:conditions => "portal_id is null") / 16 + 1

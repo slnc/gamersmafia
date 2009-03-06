@@ -25,7 +25,7 @@ class Cuenta::MensajesControllerTest < Test::Unit::TestCase
   
   def test_new
     sym_login 1
-    get :new
+    get :new, :id => 2
     assert_response :success
   end
   

@@ -32,7 +32,7 @@ class CacheObserverSiteWideTest < ActionController::IntegrationTest
   
   def test_should_clear_lasttopics_box_when_deleting_a_topic
     sym_login 'superadmin', 'lalala'
-    create_content(:topic, { :title => 'topico titulado 2', :main => 'contenido del topicotitulado 2', :terms => Term.find(:first, :conditions => "taxonomy = 'TopicsCategory'").id})
+    create_content(:topic, { :title => 'topico titulado 2', :main => 'contenido del topicotitulado 2'}, :categories_terms => [Term.find(:first, :conditions => "taxonomy = 'TopicsCategory'").id])
     topic = Topic.find(:first, :order => 'id DESC')
     post_comment_on topic
     go_to '/'

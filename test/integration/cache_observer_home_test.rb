@@ -94,6 +94,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
   
   def test_should_clear_daily_image_if_current_potd_becomes_unavailable
     go_to_index
+    go_to_index # dos veces por si no hay potd elegida
     d = Time.now
     assert_cache_exists "gm/home/index/potd_#{d.strftime('%Y%m%d')}"
     
