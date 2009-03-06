@@ -612,11 +612,12 @@ module Cms
     if user.is_superadmin or user.has_admin_permission?(:capo) or (!content.nil? and Cms::user_can_edit_content?(user, content))
       Infinity
     else
-      aciertos = User.db_query("SELECT count(a.id) FROM publishing_decisions A JOIN contents b ON a.content_id = b.id WHERE a.is_right = 't' AND b.content_type_id = #{content_type.id} AND a.user_id = #{user.id}")[0]['count'].to_i
-      fallos = User.db_query("SELECT count(a.id) * 2 as count FROM publishing_decisions A JOIN contents b ON a.content_id = b.id WHERE a.is_right = 'f' AND b.content_type_id = #{content_type.id} AND a.user_id = #{user.id}")[0]['count'].to_i
+      aciertos = User.db_query("SELECT count(a.id) FROM publishing_decisions A JOIN contents b ON a.content_id = b.id WHERE a.is_right = 't' AND b.content_type_id = #{content_type.id} AND a.user_id = #{user.id} AND A.created_on >= now() - '1 year'::interval")[0]['count'].to_i
+      fallos = User.db_query("SELECT count(a.id) * 8 as count FROM publishing_decisions A JOIN contents b ON a.content_id = b.id WHERE a.is_right = 'f' AND b.content_type_id = #{content_type.id} AND a.user_id = #{user.id} AND A.created_on >= now() - '1 year'::interval")[0]['count'].to_i
       if fallos > aciertos
-        res = ((aciertos - fallos).abs.to_f / Cms::min_hits_before_reaching_max_publishing_power(content_type.name)) ** Math::E
-        res *= -1
+        #res = ((aciertos - fallos).abs.to_f / Cms::min_hits_before_reaching_max_publishing_power(content_type.name)) ** Math::E
+        #res *= -1
+        res = 0
       else
         res = ((aciertos - fallos).to_f / Cms::min_hits_before_reaching_max_publishing_power(content_type.name)) ** Math::E
         res = 0.99 if res >= 1.0
