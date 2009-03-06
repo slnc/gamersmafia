@@ -119,7 +119,7 @@ module Comments
       #      puts "user: #{user.karma_points} #{user.faith_points} #{user.friends_count}  ||| max: #{max_karma} #{max_faith} #{max_friends}"
       w = ((l10(ukp)/l10(max_karma)) + l10(ufp)/l10(max_faith) + (user.friends_count)/(max_friends) ) / 3.0
       # Aproximación: si el usuario está comentado en su facción multiplicamos por 2. Si usásemos los puntos de karma y de fe para esta facción no sería necesario
-      if content.respond_to?(:my_faction) && content.has_category? && content.my_faction && content.my_faction.id == user.faction_id
+      if content.respond_to?(:my_faction) && content.has_category? && content.main_category && content.my_faction && content.my_faction.id == user.faction_id
         w *= 2
         # no limitamos a 1 para no perjudicar a los peces gordos
       end
