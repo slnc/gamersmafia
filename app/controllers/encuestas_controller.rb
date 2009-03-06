@@ -1,4 +1,4 @@
-class EncuestasController < ComunidadController
+class EncuestasController < InformacionController
   acts_as_content_browser :poll
   allowed_portals [:gm, :faction, :clan, :bazar_district, :bazar]
   

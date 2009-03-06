@@ -74,8 +74,6 @@ class BazarDistrictPortalPollProxy
   end
   
   def method_missing(method_id, *args)
-    obj = Poll
-    obj = obj.category_class.find_by_code(@portal.code)    
-    obj.send(method_id, *args)
+    @portal.categories(nil)[0].poll.send(method_id, *args)
   end
 end
