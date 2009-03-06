@@ -13,8 +13,8 @@ class DemosControllerTest < Test::Unit::TestCase
     @request.host = "arena.#{App.domain}"
   end
   
-  DEF_VALS = {:entity1_external => 'foo', :games_mode_id => 1, :entity2_external => 'bar', :demotype => Demo::DEMOTYPES[:official], :demo_mirrors => "http://google.com/foo.zip\nhttp://kamasutra.com/porn.zip"} 
-  test_common_content_crud :name => 'Demo', :form_vars => DEF_VALS, :categories_terms => 1 
+  DEF_VALS = {:entity1_external => 'foo', :games_mode_id => 1, :entity2_external => 'bar', :demotype => Demo::DEMOTYPES[:official], :mirrors_new => ["http://google.com/foo.zip", "http://kamasutra.com/porn.zip"] } 
+  test_common_content_crud :name => 'Demo', :form_vars => DEF_VALS, :root_terms => [1] 
     
   def test_should_show_demo_page
     post :show, :id => Demo.find(:published, :limit => 1)[0].id
@@ -51,7 +51,7 @@ class DemosControllerTest < Test::Unit::TestCase
     # opts.delete :entity1_external
     
     assert_count_increases(Demo) do
-      post :create, :demo => opts
+      post :create, :demo => opts, :root_terms => [1]
     end
     
     d = Demo.find(:first, :order => 'id desc')
@@ -65,7 +65,7 @@ class DemosControllerTest < Test::Unit::TestCase
     #    opts.delete :entity2_external
     
     assert_count_increases(Demo) do
-      post :create, :demo => opts
+      post :create, :demo => opts, :root_terms => [1]
     end
     
     d = Demo.find(:first, :order => 'id desc')

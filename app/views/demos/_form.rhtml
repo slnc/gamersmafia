@@ -97,4 +97,18 @@ $j('#demo_game_id').delayedObserver(0, function(element, value) {
 <p><label for="demo_description">Descripción</label><br/>
 <%=wysiwyg('demo[description]', :value => @demo.description, :height => '200px')%></p>
 
+<strong>Mirrors</strong><br />
+<% @demo.demo_mirrors.find(:all, :order => 'id ASC').each do |mirror| %>
+<input type="text" class="text" name="demo[mirrors][<%=mirror.id.to_s%>]" value="<%=mirror.url%>" /> &nbsp; <label><input type="checkbox" name="demo[mirrors_delete][]" value="<%=mirror.id.to_s%>" /> Borrar</label><br />
+<% end %>
+
+<br /><strong>Añadir mirrors:</strong><br />
+<style type="text/css">
+	#newmirrors input.text { width: 175px; margin-bottom: 5px; }
+</style>
+<span id="newmirrors">
+  <input type="text" class="text" name="demo[mirrors_new][]" value="" /><br />
+  <% if @demo.new_record? then %><input type="text" class="text" name="demo[mirrors_new][]" value="" /><br /><% end -%>
+</span>
+
 <%=draft_check_box(@demo)%>

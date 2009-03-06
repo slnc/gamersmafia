@@ -20,6 +20,47 @@ class Demo < ActiveRecord::Base
   
   attr_accessor :entity1_is_local, :entity2_is_local
   
+  after_save :process_demo_mirrors
+  
+  def mirrors_new=(opts_new)
+    @_tmp_mirrors_new = opts_new
+    self.attributes.delete :mirrors_new 
+  end
+  
+  def mirrors_delete=(opts_new)
+    @_tmp_mirrors_delete = opts_new
+    self.attributes.delete :mirrors_delete 
+  end
+  
+  def mirrors=(opts_new)
+    @_tmp_mirrors = opts_new
+    self.attributes.delete :mirrors 
+  end
+  
+  def process_demo_mirrors
+    if @_tmp_mirrors_new
+      @_tmp_mirrors_new.each { |s| self.demo_mirrors.create({:url => s.strip}) unless s.strip == ''  }
+      @_tmp_mirrors_new = nil
+    end
+    
+    if @_tmp_mirrors_delete
+      @_tmp_mirrors_delete.each { |id| self.demo_mirrors.find(id).destroy if self.demo_mirrors.find_by_id(id) }
+      @_tmp_mirrors_delete = nil
+    end
+    
+    if @_tmp_mirrors
+      @_tmp_mirrors.keys.each do |id| 
+        mirror = self.demo_mirrors.find_by_id(id.to_i)
+        if mirror && mirror.url != @_tmp_mirrors[id]
+          mirror.url = @_tmp_mirrors[id].strip
+          mirror.save
+        end
+      end 
+      @_tmp_mirrors = nil
+    end
+    true
+  end
+  
   public
   def entity1
     # PERF esto puede ralentizar, a lo mejor es más rápido con 4 columnas (user1_id, user2_id, clan1_id, clan2_id)

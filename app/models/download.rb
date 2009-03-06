@@ -11,10 +11,10 @@ class Download < ActiveRecord::Base
   
   has_many :download_mirrors, :dependent => :destroy
   belongs_to :image_category
+    
+  file_column :file
   
   after_save :process_download_mirrors
-  
-  file_column :file
   
   def mirrors_new=(opts_new)
     @_tmp_mirrors_new = opts_new

@@ -78,7 +78,7 @@ module ActsAsContentBrowser
         # chequeamos que se haya especificado categoría
         if (Cms::CATEGORIES_TERMS_CONTENTS.include?(content_name) && (!params[:categories_terms] || params[:categories_terms].size == 0 || params[:categories_terms][0].to_i == 0)) ||
          (Cms::ROOT_TERMS_CONTENTS.include?(content_name)  && (!params[:root_terms] || params[:root_terms].size == 0 || params[:root_terms][0].to_i == 0))
-          flash[:error] = "Debes elegir una categoría al menos una categoría para este contenido."
+          flash[:error] = "Debes elegir al menos una categoría para este contenido."
           render :action => 'new' and return
         end
         

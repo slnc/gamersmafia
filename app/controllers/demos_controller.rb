@@ -64,40 +64,6 @@ class DemosController < ArenaController
     render :layout => 'popup'
   end
   
-  def create
-    require_auth_users
-    mirrors = params[:demo][:demo_mirrors].to_s.gsub("\r", "\n").gsub("\n\n", "\n")
-    params[:demo][:demo_mirrors] = []
-    
-    @demo = Demo.new(params[:demo])
-    @demo.user_id = @user.id
-    @demo.state = Cms::PENDING unless (params[:draft] == '1')
-    if Cms.user_can_create_content(@user)
-      if @demo.save
-        @demo.process_wysiwyg_fields
-        result = mirrors.split("\n").each { |s|
-          if s.strip != '' then
-            opt = DemoMirror.new({:demo_id => @demo.id, :url => s})
-            opt.save
-          end
-        }
-        
-        flash[:notice] = 'Demo creada correctamente. Tendrá que ser moderada antes de aparecer publicada.'
-        if @demo.state == Cms::DRAFT then
-          redirect_to :action => 'edit', :id => @demo.id
-        else
-          redirect_to :action => 'index'
-        end
-      else
-        flash[:error] = "Error al subir el archivo:<br /> #{@demo.errors.full_messages_html}"
-        render :action => 'new'
-      end
-    else
-      flash[:error] = "Error al crear la demo: no puedes crear contenidos"
-      render :action => 'new'
-    end
-  end
-  
   def edit
     @demo = Demo.find(params[:id])
     # require_user_can_edit(@demo)
@@ -110,46 +76,6 @@ class DemosController < ArenaController
       render :action => 'edit'
     else
       render :action => 'show'
-    end
-  end
-  
-  def update
-    @demo = Demo.find(params[:id])
-    require_user_can_edit(@demo)
-    
-    mirrors = params[:demo][:demo_mirrors].to_s.gsub("\r", "\n").gsub("\n\n", "\n")
-    params[:demo][:demo_mirrors] = []
-    
-    @demo.cur_editor = @user
-    @demo.state = Cms::PENDING if @demo.state == Cms::DRAFT and not params[:draft].to_s == '1'
-    params[:demo][:entity1_local_id] ||= nil
-    params[:demo][:entity2_local_id] ||= nil
-    
-    if @demo.update_attributes(params[:demo])
-      @demo.process_wysiwyg_fields
-      # actualizamos mirrors
-      @demo.demo_mirrors.clear
-      
-      result = mirrors.split("\n").each { |s|
-        s = s.strip
-        if s != '' then
-          opt = DemoMirror.new({:demo_id => @demo.id, :url => s})
-          opt.save
-        end
-      }
-      flash[:notice] = 'Demo actualizada correctamente.'
-      if @demo.state == Cms::PENDING && params[:publish_content] == '1'
-        Cms::publish_content(@demo, @user)
-        flash[:notice] += "\nContenido publicado correctamente. Gracias."
-      end
-      if @demo.is_public? then
-        redirect_to gmurl(@demo)
-      else
-        redirect_to :action => 'edit', :id => @demo
-      end
-    else
-      flash[:error] = "Error al actualizar la demo: #{@demo.errors.full_messages_html}"
-      render :action => 'edit'
     end
   end
   
