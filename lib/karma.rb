@@ -2,7 +2,7 @@ module Karma
   POINTS_FIRST_LEVEL = 500
   INCREMENT_PER_LEVEL = 0.05
   KPS_CREATE = {'News'=> 60,  
-                'Image'=> 20, 
+                'Image'=> 5, 
                 'Download'=> 30,
                 'Demo'=> 40,
                 'Topic'=> 20, 
