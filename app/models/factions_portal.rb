@@ -191,19 +191,14 @@ class FactionsPortalCoverageProxy
     # if codes.size == 0
     #  codes = @portal.platforms.collect { |g| "'#{g.code}'" }
     #end
-    new_cond = "event_id IN (SELECT id 
-                               FROM events 
-                              WHERE events_category_id IN (select id 
-                                                             from events_categories 
-                                                            where id = root_id 
-                                                              and code in (#{codes.join(',')})))"
+    new_cond = ''
     
     if options[:conditions].kind_of?(Array)
-      options[:conditions][0]<< "AND #{new_cond}"
+      options[:conditions][0] = "#{options[:conditions][0]} AND #{new_cond}"
     elsif options[:conditions] then
-      options[:conditions]<< " AND #{new_cond}"
+      options[:conditions] = "#{options[:conditions]} AND #{new_cond}"
     else
-      options[:conditions] = new_cond
+      options[:conditions] = "#{new_cond}"
     end
     args.push(options)
   end

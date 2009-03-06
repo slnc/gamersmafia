@@ -6,7 +6,6 @@ published_news:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  news_category_id: 1
   title: foo & war
   description: foo & war
   main: foo & war
@@ -22,7 +21,6 @@ unpublished_news:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  news_category_id: 1
   title: foo2
   description: foo2
   main: foo2
@@ -37,7 +35,6 @@ deleted_news:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  news_category_id: 1
   title: foo3
   description: foo3
   main: foo3
@@ -54,7 +51,6 @@ published_clans_news:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  news_category_id: 6
   title: foo & war2
   description: foo & war2
   main: foo & war2
@@ -71,7 +67,6 @@ unpublished_clans_news:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  news_category_id: 6
   title: foo & war24
   description: foo & war24
   main: foo & war24
@@ -86,7 +81,6 @@ published_news2:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  news_category_id: 1
   title: foo & war 64
   description: foo & war 64
   main: foo & war
@@ -102,7 +96,6 @@ published_anime1:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  news_category_id: 10
   title: noticia de anime 1
   description: noticiad e anime 1 description
   main: 
@@ -118,7 +111,6 @@ published_gm1:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  news_category_id: 4
   title: noticia de gm 1
   description: noticia de gm description
   main: 

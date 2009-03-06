@@ -478,7 +478,7 @@ class CacheObserver < ActiveRecord::Observer
       end
       
       expire_fragment "/common/demos/show/_latest_cat#{object.main_category.id}"
-      expire_fragment "/common/demos/show/_latest_cat#{object.slnc_changed_old_values[:demos_category_id]}" if object.slnc_changed?(:demos_category_id) 
+      # expire_fragment "/common/demos/show/_latest_cat#{object.slnc_changed_old_values[:demos_category_id]}" if object.slnc_changed?(:demos_category_id) 
       
       when 'Funthing':
       expire_fragment('/common/home/index/curiosidades')
@@ -707,7 +707,7 @@ class CacheObserver < ActiveRecord::Observer
         # TODO solo deberíamos borrar si es la última      
         expire_fragment("/common/noticias/show/_latest_by_cat_#{t.id}")
       end
-      expire_fragment("/bazar/home/categories/#{Term.find(object.slnc_changed_old_values['news_category_id']).slug}") if object.slnc_changed?(:news_category_id) && object.slnc_changed_old_values[:news_category_id]
+      # expire_fragment("/bazar/home/categories/#{Term.find(object.slnc_changed_old_values['news_category_id']).slug}") if object.slnc_changed?(:news_category_id) && object.slnc_changed_old_values[:news_category_id]
       expire_fragment("/common/home/index/news_inet")
       object.get_related_portals.each do |p|
         expire_fragment("/#{p.code}/home/index/news")

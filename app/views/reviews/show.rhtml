@@ -1,15 +1,15 @@
 <% content_support do %>
 <% if @review.is_public? then %>
 <%=mfcontents_basic("Más reviews de #{@review.main_category.name}", 
-	Review,
+	controller.portal.review,
 	[:published, 
-	{:conditions => ["reviews_category_id IN (#{(@review.main_category.all_children_ids.<<(@review.main_category.id)).join(',')})", @review.id], :order => 'created_on desc', :limit => 5}],
-    :cache => "/common/reviews/_latest_by_cat/#{@review.reviews_category_id}",
+	{:content_type => 'Review', :order => 'created_on desc', :limit => 5}],
+    :cache => "/common/reviews/_latest_by_cat/#{@review.main_category.id}",
  	:rating => true,
 	:skip_id => @review.id,
 	:comments_count => true)%>	
 
-<%=render :partial => 'other_categories', :locals => {:category => @review.reviews_category} %>
+<%=render :partial => 'other_categories', :locals => {:category => @review.main_category} %>
 <% else %>
 <%= render :partial => '/shared/content_publishing_state', :locals => { :object => @review } %>
 <% end -%>

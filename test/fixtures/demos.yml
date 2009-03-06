@@ -6,7 +6,6 @@ published:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  demos_category_id: 1
   title: foo
   downloaded_times: 0
   approved_by_user_id: 1
@@ -24,7 +23,6 @@ unpublished:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  demos_category_id: 1
   games_mode_id: 1
   title: foo2
   downloaded_times: 0
@@ -42,7 +40,6 @@ deleted:
   hits_registered: 0
   games_mode_id: 1
   cache_comments_count: 0
-  demos_category_id: 1
   title: foo3
   downloaded_times: 0
   approved_by_user_id: 1

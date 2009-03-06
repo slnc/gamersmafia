@@ -57,7 +57,7 @@ class DemosController < ArenaController
     @title = @demo.title
     @demo_mirrors = @demo.demo_mirrors
     Demo.increment_counter('downloaded_times', @demo.id)
-    CacheObserver.expire_fragment("/common/demos/index/demos_#{@demo.demos_category_id}/page_*") # TODO MUY HEAVY, no podemos hacer que cada demo suponga borrar todas las caches de índices
+    CacheObserver.expire_fragment("/common/demos/index/demos_#{@demo.main_category.id}/page_*") # TODO MUY HEAVY, no podemos hacer que cada demo suponga borrar todas las caches de índices
     CacheObserver.expire_fragment("/common/demos/index/most_demoed_#{@demo.main_category.root_id}")
     # CacheObserver.expire_fragment("/common/demos/most_demoed_#{@demo.main_category.root_id}")
     

@@ -9,7 +9,8 @@ class EncuestasController < ComunidadController
     @poll = Poll.new #({:starts_on => 1.hour.since, :ends_on => 7.days.since})
     one_hour_since = 2.hours.since
     if @user.faction_id then
-      last = Poll.find(:first, :conditions => "polls_category_id = (SELECT id FROM polls_categories WHERE root_id = id and code = '#{@user.faction.code}')", :order => 'ends_on DESC')
+      last = Term.single_toplevel(:slug => @user.faction.code).find(:published, :content_type => 'Poll', :order => 'created_on DESC', :limit => 1)
+      last = last.size > 0 ? last[0] : nil
     else
       last = nil
     end

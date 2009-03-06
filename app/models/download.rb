@@ -41,7 +41,7 @@ class Download < ActiveRecord::Base
     # TODO la categoría
     opts['games_mode_id'] = Game.find_by_code(self.main_category.root.code).games_modes.find(:first).id
     
-    %w(downloads_category_id clan_id essential).each do |attr|
+    %w(clan_id essential).each do |attr|
       opts.delete attr  
     end
     

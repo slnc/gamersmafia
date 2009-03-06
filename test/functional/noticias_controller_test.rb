@@ -49,56 +49,11 @@ class NoticiasControllerTest < Test::Unit::TestCase
     assert_response :success
   end
   
-  def test_second_level_categories_should_work
-    get :second_level_categories, {:id => Term.find(1)}
-    assert_response :success
-  end
-  
   def test_create_without_subcat_should_work
     sym_login 1
     assert_count_increases(News) do 
-      post :create, { :news => {:title => 'footapang', :description => 'bartapang', :terms => 1}, :secondlevel_news_category_id => '', :new_subcategory_name => '' }
+      post :create, { :news => {:title => 'footapang', :description => 'bartapang', :terms => 1}, :new_subcategory_name => '' }
     end
     assert_equal 1, News.find(:first, :order => 'id desc').terms[0].id
-  end
-  
-  def atest_create_with_existing_subcategory_should_work
-    sym_login 1
-    nc = NewsCategory.find(1).children.create({:name => 'soy de second level'})
-    assert_not_nil nc.id
-    assert_count_increases(News) do 
-      post :create, { :news => {:title => 'footapang', :description => 'bartapang', :terms => 1}, :second_level_news_category_id => nc.id, :new_subcategory_name => '' }
-    end
-    assert_equal nc.id, News.find(:first, :order => 'id desc').news_category_id
-  end
-  
-  def atest_create_with_new_subcategory_without_image_should_create_subcategory
-    sym_login 1
-    assert_count_increases(NewsCategory) do
-      assert_count_increases(News) do 
-        post :create, { :news => {:title => 'footapang', :description => 'bartapang', :terms => 1}, :new_subcategory_name => 'blah' }
-      end
-    end
-    n = News.find(:first, :order => 'id desc')
-    assert_equal 'blah', n.main_category.name
-    assert_equal 1, n.main_category.parent_id
-    assert_equal 1, n.main_category.root_id
-    assert_response :redirect
-  end
-  
-  def atest_create_with_new_subcategory_with_image_should_create_subcategory_and_image
-    sym_login 1
-    assert_count_increases(NewsCategory) do
-      assert_count_increases(News) do 
-        post :create, { :news => {:title => 'footapang', :description => 'bartapang', :terms => 1}, :new_subcategory_name => 'blah', :new_subcategory_file => fixture_file_upload('/files/buddha.jpg', 'image/jpeg') }
-      end
-    end
-    n = News.find(:first, :order => 'id desc')
-    assert_nil flash[:error], flash[:error]
-    assert_equal 'blah', n.main_category.name
-    assert_equal 1, n.main_category.parent_id
-    assert_equal 1, n.main_category.root_id
-    assert n.main_category.file.include?('buddha.jpg')
-    assert_response :redirect
   end
 end

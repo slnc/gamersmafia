@@ -59,25 +59,6 @@ class Term < ActiveRecord::Base
     true
   end
   
-  def mirror_category_tree(category, taxonomy)
-    # DEPRECATED: Usado para migrar del sistema viejo de categorías al nuevo sistema de taxonomías
-    raise "term is not root term" unless self.id == self.root_id && self.parent_id.nil?    
-    
-    # Cogemos todos los ancestros de la categoría dada y los vamos creando según sea conveniente
-    the_parent = self
-    taxonomy_name = category.class.name
-    anc = category.get_ancestors
-    anc.pop # quitamos toplevel
-     ([category] + anc).reverse.each do |ancestor|
-      newp = the_parent.children.find(:first, :conditions => ['taxonomy = ? AND name = ?', taxonomy_name, ancestor.name])
-      if newp.nil?
-        newp = the_parent.children.create(:root_id => the_parent.id, :name => ancestor.name, :taxonomy => taxonomy_name)
-      end
-      the_parent = newp
-    end
-    the_parent
-  end
-  
   def import_mode
     @_import_mode || false
   end
@@ -272,8 +253,8 @@ class Term < ActiveRecord::Base
   def can_be_destroyed?
     # primera linea es para categorias no de primer nivel
     # segunda es para categorias de primer nivel
-    ((self.root_id != self.id && self.contents_count == 0) || \
-     self.root_id == self.id && (self.game_id || self.platform_id) && Faction.find_by_code(self.code).nil?)
+     ((self.root_id != self.id && self.contents_count == 0) || \
+    self.root_id == self.id && (self.game_id || self.platform_id) && Faction.find_by_code(self.code).nil?)
   end
   
   def self.taxonomy_from_class_name(cls_name)
@@ -364,7 +345,13 @@ class Term < ActiveRecord::Base
   end
   
   def respond_to?(method_id, include_priv = false)
-    self.class.items_class.respond_to?(method_id) || super
+    if Cms::CONTENTS_WITH_CATEGORIES.include?(ActiveSupport::Inflector::camelize(method_id.to_s)) 
+      true
+    elsif Cms::CONTENTS_WITH_CATEGORIES.include?(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id.to_s)))
+      true
+    else
+      super
+    end
   end
   
   # Cuenta imágenes asociadas a esta categoría o a una de sus hijas

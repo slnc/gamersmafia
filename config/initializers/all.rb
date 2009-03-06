@@ -12,7 +12,7 @@ ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS.update(:prefix => 'gm.')
 SVNVERSION = AppR.ondisk_git_version
 
 # NOTA: el orden importa
-require 'category_acting'
+#require 'category_acting'
 require 'acts_as_categorizable'
 require 'acts_as_content'
 require 'acts_as_content_browser'

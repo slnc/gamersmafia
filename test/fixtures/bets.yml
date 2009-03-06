@@ -8,7 +8,6 @@ published:
   hits_registered: 0
   cache_comments_count: 0
   title: foo vs bar
-  bets_category_id: 1
   total_ammount: 0
   cancelled: false
   forfeit: false
@@ -26,7 +25,6 @@ unpublished:
   hits_registered: 0
   cache_comments_count: 0
   title: foo2 vs bar2
-  bets_category_id: 1
   total_ammount: 0
   cancelled: false
   forfeit: false
@@ -43,7 +41,6 @@ deleted:
   hits_registered: 0
   cache_comments_count: 0
   title: foo3 vs bar3
-  bets_category_id: 1
   total_ammount: 0
   cancelled: false
   forfeit: false

@@ -14,7 +14,7 @@
   <% end -%>
   
 <%=mfcontents_basic("Preguntas en el limbo", 
-					Proc.new { Question.find(:published, :conditions => "created_on < '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'questions_category_id, created_on ASC') }, 
+					Proc.new { Question.find(:published, :conditions => "created_on < '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'created_on ASC') }, 
 					[],
 					:truncate_at => 28, :faction_favicon => true, :blast => true)%>
 

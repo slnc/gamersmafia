@@ -64,7 +64,7 @@ end
 	<% 
 if cat.bet then
 mfcontents_table('Apuestas', 
-				   Proc.new { Bet.open_bets(:conditions => "bets_category_id = (SELECT id FROM bets_categories WHERE code = '#{cat.code}')") },
+				   Proc.new { cat.bet.find(:published, :conditions => "#{Bet::OPEN_BETS_SQL}") },
 				   :grid => 4) do |o| %>
 <td class="<%=oddclass%>"><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline" style="float: left;"><%=format_interval(o.closes_on.to_i - Time.now.to_i, 'horas', true)%></div>

@@ -12,9 +12,9 @@ class CacheObserverApuestasTest < ActionController::IntegrationTest
     n = portal.bet.find(:published)[0]
     assert_not_nil n
     go_to "/apuestas/show/#{n.id}", 'apuestas/show'
-    assert_cache_exists "/common/apuestas/show/latest_by_cat_#{n.bets_category_id}"
+    assert_cache_exists "/common/apuestas/show/latest_by_cat_#{n.main_category.id}"
     delete_content n
-    assert_cache_dont_exist "/common/apuestas/show/latest_by_cat_#{n.bets_category_id}"
+    assert_cache_dont_exist "/common/apuestas/show/latest_by_cat_#{n.main_category.id}"
   end
 
   def teardown
