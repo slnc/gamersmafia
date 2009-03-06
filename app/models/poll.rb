@@ -3,7 +3,20 @@ class Poll < ActiveRecord::Base
   acts_as_categorizable
   
   after_save :process_polls_options
+  after_save :fix_solapping_polls
   has_many :polls_options, :dependent => :destroy
+  
+  
+  def fix_solapping_polls
+    return if self.main_category.nil?
+    # automatically change publish date if it solaps with existing poll
+    solapping = self.main_category.poll.find(:first, :conditions => ["contents.state = #{Cms::PUBLISHED} AND starts_on <= ? AND ends_on >= ? ", self.starts_on, self.starts_on])
+    while solapping && solapping.id != self.id
+      self.starts_on = Time.at(solapping.ends_on.to_i + 1)
+      self.ends_on = self.starts_on.advance(:days => 7)
+      solapping = self.main_category.poll.find(:first, :conditions => ["contents.state = #{Cms::PUBLISHED} AND starts_on <= ? AND ends_on >= ? ", self.starts_on, self.starts_on])
+    end
+  end
   
   CURRENT_SQL = 'starts_on <= now() and ends_on >= now()'
   
@@ -50,13 +63,6 @@ class Poll < ActiveRecord::Base
       self.errors.add('starts_on', "La fecha de comienzo debe ser posterior a la fecha y hora actuales #{starts_on}")
       false
     else
-      # automatically change publish date if it solaps with existing poll
-      solapping = self.main_category.poll.find(:first, :conditions => ["state = #{Cms::PUBLISHED} AND starts_on <= ? AND ends_on >= ? ", self.starts_on, self.starts_on])
-      while solapping && solapping.id != self.id
-        self.starts_on = Time.at(solapping.ends_on.to_i + 1)
-        self.ends_on = self.starts_on.advance(:days => 7)
-        solapping = self.main_category.poll.find(:first, :conditions => ["state = #{Cms::PUBLISHED} AND starts_on <= ? AND ends_on >= ? ", self.starts_on, self.starts_on])
-      end
       true
     end
   end
