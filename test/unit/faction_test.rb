@@ -90,6 +90,6 @@ class FactionTest < Test::Unit::TestCase
   
   def test_karma_points_should_work_correctly
     f1 = Faction.find(1)
-    assert_equal 1700, f1.karma_points
+    assert_equal 1685, f1.karma_points
   end
 end
