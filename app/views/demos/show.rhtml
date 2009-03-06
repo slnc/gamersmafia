@@ -10,7 +10,7 @@ function open_demo_win(demo_id)
 	<% if @demo.is_public? then %>
 	<%=mfcontents_basic("Más demos de #{@demo.main_category.name}", 
 	controller.portal.demo,
-	[:published, { :content_type => 'Demo', :order => 'created_on DESC', :limit => 5}],
+	[:published, { :order => 'created_on DESC', :limit => 5}],
  	:rating => true,
 	:cache => "/common/demos/show/_latest_cat#{@demo.main_category.id}",
 	:skip_id => @demo.id,
