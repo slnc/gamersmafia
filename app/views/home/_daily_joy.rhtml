@@ -6,11 +6,11 @@
 		<div style="clear: right;"></div>
 		<%
 if cookies.keys.include?('sexpref') and cookies['sexpref'] == 'dude'
-	images_cat = Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'slug = \'babes\' And taxonomy = \'ImagesCategory\'').id
+	images_cat = Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'slug = \'dude\' And taxonomy = \'ImagesCategory\'').id
 elsif cookies.keys.include?('sexpref') and cookies['sexpref'] == 'void'
 	images_cat = nil
 else
-	images_cat = Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'slug = \'dudes\' And taxonomy = \'ImagesCategory\'').id
+	images_cat = Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'slug = \'babes\' And taxonomy = \'ImagesCategory\'').id
 end
 
 if images_cat then
