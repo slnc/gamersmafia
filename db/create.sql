@@ -1598,7 +1598,7 @@ CREATE TABLE delayed_jobs (
     priority integer DEFAULT 0,
     attempts integer DEFAULT 0,
     handler text,
-    last_error character varying(255),
+    last_error text,
     run_at timestamp without time zone,
     locked_at timestamp without time zone,
     failed_at timestamp without time zone,
@@ -2550,7 +2550,8 @@ CREATE TABLE potds (
     date date NOT NULL,
     image_id integer NOT NULL,
     portal_id integer,
-    images_category_id integer
+    images_category_id integer,
+    term_id integer
 );
 
 
@@ -10921,7 +10922,6 @@ ALTER SEQUENCE contents_versions_id_seq OWNED BY contents_versions.id;
 --
 
 CREATE SEQUENCE delayed_jobs_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -18250,6 +18250,14 @@ ALTER TABLE ONLY potds
 
 ALTER TABLE ONLY potds
     ADD CONSTRAINT potds_images_category_id_fkey FOREIGN KEY (images_category_id) REFERENCES images_categories(id) MATCH FULL;
+
+
+--
+-- Name: potds_term_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY potds
+    ADD CONSTRAINT potds_term_id_fkey FOREIGN KEY (term_id) REFERENCES terms(id) MATCH FULL ON DELETE CASCADE;
 
 
 --

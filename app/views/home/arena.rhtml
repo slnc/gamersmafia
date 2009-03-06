@@ -23,7 +23,7 @@ matches = CompetitionsMatch.find(:all, :conditions => "(#{Competition::COMPLETED
 <div class="clearb"></div>
 
 <%=mfcontents_basic("Tópics", 
-					Proc.new { TopicsCategory.find_by_code('arena').find(:published, :order => 'updated_on desc', :limit => 10) }, 
+					Proc.new { Term.single_toplevel(:slug => 'arena').find(:published, :order => 'updated_on desc', :limit => 10) }, 
 					[],
 					:grid => 4, :faction_favicon => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 

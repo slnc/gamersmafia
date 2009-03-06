@@ -83,12 +83,12 @@ end -%>
 	<%=render :partial => 'daily_joy' %>
 	
 	<%mftext('xD') do %>
-		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => 953}%>
+		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'xD\' And taxonomy = \'ImagesCategory\'').id}%>
 	<% end -%>
 	
 	
 	<%mftext('Wallpapers') do %>
-		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => 894}%>
+		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'Wallpapers\' And taxonomy = \'ImagesCategory\'').id}%>
 	<% end -%>
 <% end -%>
 

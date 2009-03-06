@@ -176,7 +176,7 @@ class Question < ActiveRecord::Base
                      join comments b on a.id = b.user_id 
                     WHERE b.id IN (SELECT accepted_answer_comment_id
                                      FROM questions A
-                                    WHERE state = #{Cms::PUBLISHED} #{sql_incat} 
+                                    WHERE state = #{Cms::PUBLISHED} 
                                       AND accepted_answer_comment_id IS NOT NULL) 
                  GROUP BY a.id, 
                           a.login, 

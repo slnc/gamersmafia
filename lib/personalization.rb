@@ -54,9 +54,9 @@ module Personalization
   end
   
   def self.default_user_forums
-    # TopicsCategory
     # TODO aqui se podria aplicar inteligencia en base al historial de navegación del usuario
-    TopicsCategory.find(:all, :conditions => 'id = root_id', :order => 'updated_on DESC', :limit => 12).collect {|tc| tc.id }.chunk(3)
+    # TODO no tenemos updated_on en terms asi que usamos el id del ultimo el actualizado para elegir los foros por defecto
+    Term.find(:all, :conditions => 'id = root_id', :order => 'last_updated_item_id DESC', :limit => 12).collect {|tc| tc.id }.chunk(3)
   end
   
   def self.get_user_forums(u)
@@ -67,7 +67,6 @@ module Personalization
   
   def self.populate_user_forums(u)
     # raise "fail"
-    # TopicsCategory.find(:all, :order => 'updated_on DESC LIMIT 6')
     [[], [], []]
   end
   
