@@ -219,7 +219,6 @@ class ActsAsContentTest < Test::Unit::TestCase
     o1 = News.find(1)
     uattrs = [:title, :description, :main, :clan_id]
     uattrs_received = o1.unique_attributes
-    
     assert_equal uattrs.size, uattrs_received.size
     uattrs.each do |uattr|
       assert_equal o1[uattr], uattrs_received[uattr]

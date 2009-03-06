@@ -21,12 +21,7 @@ class ClansPortal < Portal
   def method_missing(method_id, *args)
     cs_method = ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id))
     if Cms::CLANS_CONTENTS.include?(cs_method)
-      cls = Object.const_get(cs_method)
-      Object.const_get("#{ActiveSupport::Inflector::singularize(ActiveSupport::Inflector::camelize(method_id.to_s.gsub('_categories', '')))}") # necesario para que cree la clase Category
-      objs = cls.category_class.find(:all, :conditions => ['id = root_id AND clan_id = ?', clan_id])
-      obj = objs[0]
-      objs.each { |ob| obj.add_sibling(ob) }
-      obj
+      t = Term.single_toplevel(:clan_id => self.clan_id)
     elsif /(news|downloads|topics|events|images|polls)_categories/ =~ method_id.to_s then 
       Term.single_toplevel(:clan_id => self.clan_id)
     else

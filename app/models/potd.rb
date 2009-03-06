@@ -18,7 +18,7 @@ class Potd < ActiveRecord::Base
     term = terms[0]
     terms.each { |t| term.add_sibling(t) } if terms.size > 1
     
-    im = select_from_term(term, "images.id NOT IN (select distinct(image_id) from potds WHERE portal_id = #{portal.id})")
+    im = select_from_term(term, "images.clan_id IS NULL AND images.id NOT IN (select distinct(image_id) from potds WHERE portal_id = #{portal.id})")
     
     if im
       begin
@@ -30,7 +30,7 @@ class Potd < ActiveRecord::Base
   
   def Potd.choose_one_category(category_id, d=Date.today)
     term = Term.find(category_id)
-    im = select_from_term(term, "images.id NOT IN (select distinct(image_id) from potds WHERE term_id = #{category_id})")
+    im = select_from_term(term, "images.clan_id IS NULL AND images.id NOT IN (select distinct(image_id) from potds WHERE term_id = #{category_id})")
     if im
       begin
         Potd.create({:date => d, :image_id => im.id, :term_id => category_id})
@@ -57,7 +57,7 @@ class Potd < ActiveRecord::Base
     if im.nil? then
       # averiguar categorías de las imgs de los últimos 7 días
       im = term.image.find(:first, 
-                           :conditions => "contents.state = #{Cms::PUBLISHED}", 
+                           :conditions => "#{conditions} AND contents.state = #{Cms::PUBLISHED}", 
       :order => 'random()')
     end
     im

@@ -69,6 +69,7 @@ class SlogControllerTest < ActionController::TestCase
     sym_login 2
     @u2 = User.find(2)
     @u2.take_admin_permission(:capo)
+    @u2.users_roles.clear
     
     assert_raises(AccessDenied) { get :editor }
     

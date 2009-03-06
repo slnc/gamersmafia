@@ -349,7 +349,8 @@ module ActsAsContent
     def unique_attributes
       out = {}
       self.attributes.each do |k,v|
-        next if [:id, :unique_content_id, :terms].include?(k.to_sym) 
+        next if [:id, :unique_content_id, :terms].include?(k.to_sym)
+        next if k == "#{ActiveSupport::Inflector::tableize(self.class.name)}_category_id"
         out[k.to_sym] = v unless Cms::COMMON_CLASS_ATTRIBUTES.include?(k.to_sym)
       end
       out

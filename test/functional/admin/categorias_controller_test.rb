@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../../test_helper'
 class Admin::CategoriasControllerTest < ActionController::TestCase
   
   def test_index_no_perm
-    sym_login 2
+    sym_login 3
     assert_raises(AccessDenied) { get :index }
   end
   

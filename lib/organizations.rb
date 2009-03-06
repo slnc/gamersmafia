@@ -36,6 +36,9 @@ module Organizations
     portal = Portal.find_by_code(obj.code)
     
     User.db_query("UPDATE portals SET type = 'BazarDistrictPortal' WHERE id = #{portal.id}")
+    p portal
+    portal.reload
+    p portal
     bd = BazarDistrict.create(:name => obj.name, :code => obj.code)
     refthing = obj.referenced_thing
     User.db_query("UPDATE contents SET bazar_district_id = #{bd.id}, game_id = NULL WHERE #{refthing.class.name.downcase}_id = #{refthing.id}")
