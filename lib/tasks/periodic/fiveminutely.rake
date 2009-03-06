@@ -8,7 +8,7 @@ namespace :gm do
     if last_in_prod.to_i - last_in_dbs.to_i > 600 # más de 10 minutos de diferencia
       Notification.deliver_support_db_oos(:prod => last_in_prod, :support => last_in_dbs)
     end
-    GmSys.command("find #{RAILS_ROOT}/public/storage/d -mindepth 1 -maxdepth 1  -type d -mmin +60 -exec rm -r {} \\\;")
+    GmSys.command("find #{RAILS_ROOT}/public/storage/d -mindepth 1 -maxdepth 1  -type d -mmin +60 -exec rm -r {} \\\\\;")
     GmSys.check_workers_pids
   end
 end
