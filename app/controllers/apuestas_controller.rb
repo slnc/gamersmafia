@@ -68,42 +68,4 @@ class ApuestasController < ArenaController
     navpath2<< [@bet.title, gmurl(@bet)]
     @pending = Bet.pending
   end
-  
-  def aupdate
-    raise "TODO"
-    @bet = Bet.find(params[:id])
-    require_user_can_edit(@bet)
-    
-    @bet.cur_editor = @user
-    @bet.state = Cms::PENDING if @bet.state == Cms::DRAFT and not params[:draft].to_s == '1'
-    if @bet.update_attributes(params[:bet])
-      @bet.process_wysiwyg_fields
-      # TODO chequeos para no guardar después de cierto tiempo
-      params[:options_new].each { |s| @bet.bets_options.create({:name => s}) unless s.strip == '' } if params[:options_new]
-      params[:options_delete] if params[:options_delete]
-      params[:options].keys.each do |id| 
-        option = @bet.bets_options.find_by_id(id.to_i)
-        if option && option.name != params[:options][id]
-          option.name = params[:options][id]
-          option.save
-        end
-      end if params[:options]
-      
-      expire_fragment(:controller => 'home', :action => 'index', :part => 'bets')
-      expire_fragment(:controller => 'home', :action => 'index', :part => "bets_#{@bet.my_faction.id}") if @bet.my_faction
-      flash[:notice] = 'Encuesta actualizada correctamente.'
-      if @bet.state == Cms::PENDING && params[:publish_content] == '1'
-        Cms::publish_content(@bet, @user)
-        flash[:notice] += "\nContenido publicado correctamente. Gracias."
-      end
-      if @bet.approved_by_user_id then
-        redirect_to gmurl(@bet)
-      else
-        redirect_to :action => 'edit', :id => @bet
-      end
-    else
-      flash[:error] = "Error al actualizar la apuesta: #{@bet.errors.full_messages_html}"
-      render :action => 'edit'
-    end
-  end
 end

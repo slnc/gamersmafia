@@ -9,7 +9,6 @@ published:
   title: tut
   description: sum
   main: foo
-  tutorials_category_id: 1
   approved_by_user_id: 1
   state: 2
   unique_content_id: 7
@@ -25,7 +24,6 @@ unpublished:
   title: tut2
   description: sum2
   main: foo2
-  tutorials_category_id: 1
   state: 1
   unique_content_id: 1007
 
@@ -40,7 +38,6 @@ deleted:
   title: tut3
   description: sum3
   main: foo3
-  tutorials_category_id: 1
   approved_by_user_id: 1
   state: 3
   unique_content_id: 2007 

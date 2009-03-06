@@ -26,7 +26,7 @@ class ForosController < ComunidadController
   end
   
   def forum
-    # TODO no chequeamos que sea un foro correcto para este portal y además suponemos que topic es un topics_category
+    # TODO no chequeamos que sea un foro correcto para este portal
     @forum = Term.find_taxonomy(params[:id], 'TopicsCategory')
     @forum = Term.single_toplevel(:id => params[:id]) if @forum.nil?
     raise ActiveRecord::RecordNotFound if @forum.nil?
@@ -104,9 +104,12 @@ class ForosController < ComunidadController
   def move_topic
     require_auth_users
     @topic = Topic.find(params[:topic]['id'])
-    # chequear que no lo esté intentando mover a una categoría prohibida
-    @topic.topics_category_id = params[:topic][:topics_category_id]
     require_user_can_edit(@topic)
+    # chequear que no lo esté intentando mover a una categoría prohibida
+    newt = Term.find(:first, :conditions => ['id = ? AND taxonomy = \'TopicsCategory\'', params[:categories_terms][0]])
+    raise ActiveRecord::RecordNotFound unless newt
+    @topic.terms.each { |t| t.unlink(@topic.unique_content) }
+    newt.link(@topic.unique_content)
     params[:topic][:moved_on] = Time.now
     @topic.cur_editor = @user 
     if @topic.update_attributes(params[:topic])
@@ -126,8 +129,8 @@ class ForosController < ComunidadController
     params[:topic][:clan_id] = portal.clan_id if portal.kind_of?(ClansPortal) && portal.clan_id
     params[:topic][:main] = Comments::formatize(params[:topic][:main])
     
-    raise "terms must be single forum" unless params[:topic][:terms].to_i > 0
-    forum = Term.find_taxonomy(params[:topic][:terms].to_i, 'TopicsCategory') 
+    raise "terms must be single forum" unless params[:categories_terms].size == 1
+    forum = Term.find_taxonomy(params[:categories_terms][0].to_i, 'TopicsCategory') 
     
     @topic = Topic.new(params[:topic])
     
@@ -150,6 +153,7 @@ class ForosController < ComunidadController
           flash[:error] = "Permiso denegado: Estás baneado de la facción #{fac.name}."
           redirect_to '/foros'
         elsif @topic.save
+          forum.link(@topic.unique_content)
           begin
             Comments.require_user_can_comment_on_content(@user, @topic)
           rescue Exception => e

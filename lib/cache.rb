@@ -110,6 +110,17 @@ module Cache
           expire_fragment("/common/tutoriales/index/tutorials_#{p.id}/page_*")
           p = p.parent
         end
+        
+        prev_cat = object
+        expire_fragment("/tutoriales/most_downloaded_#{prev_cat.root_id}")
+        
+        while prev_cat do
+          expire_fragment("/common/tutoriales/_latest_by_cat/#{prev_cat.id}")
+          expire_fragment("/common/tutoriales/_most_productive_author_by_cat/#{prev_cat.id}")
+          expire_fragment("/common/tutoriales/index/folders_#{prev_cat.id}")
+          expire_fragment("/common/tutoriales/index/tutorials_#{prev_cat.id}/page_*")
+          prev_cat = prev_cat.parent
+        end
       end
     end
     
@@ -133,7 +144,7 @@ module Cache
           p = p.parent
         end
         
-      when 'DownloadsCategory' then
+        when 'DownloadsCategory' then
         expire_fragment("/common/descargas/index/most_downloaded_#{object.root_id}")
         expire_fragment("/common/descargas/index/essential_#{object.root_id}")
         expire_fragment("/common/descargas/index/essential2_#{object.root_id}")

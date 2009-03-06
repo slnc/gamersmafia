@@ -279,7 +279,6 @@ module ActsAsContent
     
     def do_after_update
       update_content
-      update_parent_categories
     end
     
     def do_after_destroy
@@ -350,7 +349,8 @@ module ActsAsContent
     def unique_attributes
       out = {}
       self.attributes.each do |k,v|
-        next if [:id, :unique_content_id, :terms].include?(k.to_sym) 
+        next if [:id, :unique_content_id, :terms].include?(k.to_sym)
+        next if k == "#{ActiveSupport::Inflector::tableize(self.class.name)}_category_id"
         out[k.to_sym] = v unless Cms::COMMON_CLASS_ATTRIBUTES.include?(k.to_sym)
       end
       out
@@ -384,38 +384,6 @@ module ActsAsContent
         cats[0]
       else
         self.unique_content.linked_terms('NULL')[0]
-      end
-    end
-    
-    # TODO refactor this
-    def update_parent_categories
-      if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-        if slnc_changed?(self.class.category_attrib_name)
-          uniq = self.unique_content
-          uniq.url = nil
-          uniq.portal_id = nil
-          ApplicationController.gmurl(uniq)
-        end
-        
-        if (self.class.name == 'Topic' and not (self.closed or self.state == Cms::DELETED)) or (self.class.name != 'Topic' and is_public?)
-          # actualizamos la categoría actual
-          p = self.main_category
-          while p
-            p.last_updated_item_id = self.unique_content.id
-            p.save
-            p = p.parent
-          end
-          
-          if slnc_changed?(self.class.category_attrib_name) && !self.slnc_changed_old_values[self.class.category_attrib_name].nil?
-            p = self.class.category_class.find(self.slnc_changed_old_values[self.class.category_attrib_name])
-            while p
-              last = p.last_updated_items(1) # tenemos que chequear el último de cada una de las categorías superiores
-              p.last_updated_item_id = (last.size > 0) ? last[0].unique_content.id : nil
-              p.save
-              p = p.parent
-            end
-          end
-        end
       end
     end
     

@@ -1,9 +1,26 @@
 <select id="categories_terms_root<%=index%>" style="margin-top: 15px;">
-	<option value=""></option>
-	<% Term.toplevel(:clan_id => nil).each do |t| %>
-	<option value="<%=t.id%>"><%=t.name%></option>
+  	<option></option>
+	<optgroup label="Juegos"></optgroup>
+	<%Term.find(:all, :conditions => 'id = root_id AND game_id IS NOT NULL', :order => 'lower(name)').each do |t|%>
+	<option <%='selected="selected"' if selterm && selterm.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
+	<% end -%>
+	
+	<optgroup label="Plataformas"></optgroup>
+	<%Term.find(:all, :conditions => 'id = root_id AND platform_id IS NOT NULL', :order => 'lower(name)').each do |t|%>
+	<option <%='selected="selected"' if selterm && selterm.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
+	<% end -%>
+	
+  	<optgroup label="Distritos"></optgroup>
+	<%Term.find(:all, :conditions => 'id = root_id AND bazar_district_id IS NOT NULL', :order => 'lower(name)').each do |t|%>
+	<option <%='selected="selected"' if selterm && selterm.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
+	<% end -%>
+	
+	<optgroup label="Especiales"></optgroup>
+	<%Term.find(:all, :conditions => 'id = root_id AND bazar_district_id IS NULL AND clan_id IS NULL and platform_id IS NULL and game_id IS NULL', :order => 'lower(name)').each do |t|%>
+	<option <%='selected="selected"' if selterm && selterm.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
 	<% end -%>
 </select>
+
 
 <div id="categories_terms<%=index%>">
 <% if selterm then %>

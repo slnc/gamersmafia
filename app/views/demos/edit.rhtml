@@ -16,11 +16,6 @@
 <%= form_tag({:action => 'update', :id => @demo}, {:multipart => true, :name => 'editing_content' }) %>
   <%= render :partial => 'form' %>
   <br />
-  <p><label for="demo_mirrors">Mirrors (1 url por línea)</label><br />
-    <textarea name="demo[demo_mirrors]" rows="10" cols="60"><% for mirror in @demo.demo_mirrors %><%=mirror.url%>
-<% end -%></textarea>
-  </label>
-  <br />
   <%= submit_tag 'Guardar' %>
 </form>
 <%=render :partial => '/shared/accept_or_deny', :locals => {:object => @demo}%>

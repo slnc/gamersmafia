@@ -1,5 +1,5 @@
-require 'RMagick'
 require File.dirname(__FILE__) + '/../../../test/test_helper'
+require 'RMagick'
 
 class ActsAsCategorizableTest < Test::Unit::TestCase
   def setup

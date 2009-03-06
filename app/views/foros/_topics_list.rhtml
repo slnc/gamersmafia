@@ -29,7 +29,7 @@ for topic in topics.reverse
     <td class="content-hid"><%=link_to topic.title, {:action => 'topic', :id =>topic.id}, {:class => 'content'} %><br />
       <div class="infoinline">por <%=link_to author.login, :controller => 'miembros', :action => author.login%></div></td>
     <% if defined?(show_forum_name) %>
-      <td class="infoinline"><%=print_forum_path(topic.topics_category)%></td>
+      <td class="infoinline"><%=print_forum_path(topic.main_category)%></td>
     <% end -%>
     <td class="infoinline" style="text-align: right; padding-right: 4px;"><%=topic.cache_comments_count.to_s%></td>
     <td class="infoinline" style="text-align: right; padding-right: 4px;"><%=(topic.hits_anonymous + topic.hits_registered)%></td>

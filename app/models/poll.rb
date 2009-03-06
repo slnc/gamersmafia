@@ -3,7 +3,20 @@ class Poll < ActiveRecord::Base
   acts_as_categorizable
   
   after_save :process_polls_options
+  after_save :fix_solapping_polls
   has_many :polls_options, :dependent => :destroy
+  
+  
+  def fix_solapping_polls
+    return if self.main_category.nil?
+    # automatically change publish date if it solaps with existing poll
+    solapping = self.main_category.poll.find(:first, :conditions => ["contents.state = #{Cms::PUBLISHED} AND starts_on <= ? AND ends_on >= ? ", self.starts_on, self.starts_on])
+    while solapping && solapping.id != self.id
+      self.starts_on = Time.at(solapping.ends_on.to_i + 1)
+      self.ends_on = self.starts_on.advance(:days => 7)
+      solapping = self.main_category.poll.find(:first, :conditions => ["contents.state = #{Cms::PUBLISHED} AND starts_on <= ? AND ends_on >= ? ", self.starts_on, self.starts_on])
+    end
+  end
   
   CURRENT_SQL = 'starts_on <= now() and ends_on >= now()'
   
@@ -18,19 +31,40 @@ class Poll < ActiveRecord::Base
     User.db_query("UPDATE polls SET polls_votes_count = #{new_polls_votes_count} WHERE id = #{self.id}")
   end
   
+    
+  def options_new=(opts_new)
+    @_tmp_options_new = opts_new
+    self.attributes.delete :options_new 
+  end
+  
+  def options_delete=(opts_new)
+    @_tmp_options_delete = opts_new
+    self.attributes.delete :options_delete 
+  end
+  
+  def options=(opts_new)
+    @_tmp_options = opts_new
+    self.attributes.delete :options 
+  end
+  
   def process_polls_options
+    puts "tmp_options_new: "
+    p @_tmp_options_new
     if @_tmp_options_new
       @_tmp_options_new.each { |s| self.polls_options.create({:name => s.strip}) unless s.strip == ''  }
       @_tmp_options_new = nil
     end
     
+    puts "tmp_options_delete: "
+    p @_tmp_options_delete
     if @_tmp_options_delete
       @_tmp_options_delete.each { |id| self.polls_options.find(id).destroy if self.polls_options.find_by_id(id) }
       @_tmp_options_delete = nil
     end
     
     if @_tmp_options
-      @_tmp_options.keys.each do |id| 
+      @_tmp_options.keys.each do |id|
+        puts "checking #{id} #{@_tmp_options[id]}"
         option = self.polls_options.find_by_id(id.to_i)
         if option && option.name != @_tmp_options[id]
           option.name = @_tmp_options[id].strip
@@ -50,31 +84,10 @@ class Poll < ActiveRecord::Base
       self.errors.add('starts_on', "La fecha de comienzo debe ser posterior a la fecha y hora actuales #{starts_on}")
       false
     else
-      # automatically change publish date if it solaps with existing poll
-      solapping = Poll.find(:first, :conditions => ["state = #{Cms::PUBLISHED} AND polls_category_id = ? AND starts_on <= ? AND ends_on >= ? ", self.polls_category_id, self.starts_on, self.starts_on])
-      while solapping && solapping.id != self.id
-        self.starts_on = Time.at(solapping.ends_on.to_i + 1)
-        self.ends_on = self.starts_on.advance(:days => 7)
-        solapping = Poll.find(:first, :conditions => ["state = #{Cms::PUBLISHED} AND polls_category_id = ? AND starts_on <= ? AND ends_on >= ? ", self.polls_category_id, self.starts_on, self.starts_on])
-      end
       true
     end
   end
-  
-  def options_new=(opts_new)
-    @_tmp_options_new = opts_new
-    self.attributes.delete :options_new 
-  end
-  
-  def options_delete=(opts_new)
-    @_tmp_options_delete = opts_new
-    self.attributes.delete :options_delete 
-  end
-  
-  def options=(opts_new)
-    @_tmp_options = opts_new
-    self.attributes.delete :options 
-  end
+
   
   def votes
     self.db_query("select sum(b.polls_votes_count) from polls a join polls_options b on a.id = b.poll_id where a.id = #{self.id} group by (a.id)")[0]['sum'].to_i

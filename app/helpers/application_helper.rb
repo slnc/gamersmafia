@@ -968,7 +968,6 @@ END
   end
   
   def mfcontent(content, &block)
-    # TODO <% if @news.main_category.file then %><%=show_news_category_file(@news.main_category.file)%><% end %>
     out = <<-END
      <div class="module mfcontent"><div class="mtitle mcontent-title"><div class=\"iset iset#{content.class.name.downcase}\"></div> <span>#{show_rating_title(content)} #{content.resolve_hid}</span></div>
      <div class="mcontent">

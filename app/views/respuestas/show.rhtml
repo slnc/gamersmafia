@@ -1,6 +1,6 @@
 <% content_support do %>
 <%= render :partial => '/respuestas/preguntar' if user_is_authed %>
-<%= render :partial => '/respuestas/top_sabios', :locals => { :category => @question.questions_category } %>
+<%= render :partial => '/respuestas/top_sabios', :locals => { :category => @question.main_category } %>
 <% if @question.is_public? then %>
 <%=mfcontents_basic("Más preguntas de #{@question.user.login}", 
 	controller.portal.question,

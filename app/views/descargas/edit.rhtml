@@ -15,11 +15,6 @@
 
 <%= form_tag({:action => 'update', :id => @download}, {:multipart => true, :name => 'editing_content' }) %>
   <%= render :partial => 'form' %>
-  <br />
-  <p><label for="download_mirrors">Mirrors (1 url por línea)</label><br />
-    <textarea name="download[download_mirrors]" rows="10" cols="60"><% for mirror in @download.download_mirrors %><%=mirror.url%>
-<% end -%></textarea>
-  </label>
   <%= submit_tag 'Guardar' %>
 </form>
 <%=render :partial => '/shared/accept_or_deny', :locals => {:object => @download}%>

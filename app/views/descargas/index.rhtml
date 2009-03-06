@@ -41,7 +41,7 @@ cache(cache_path) do
 if params[:category] then
   @categories = @category.children.find(:all, :conditions => ['taxonomy = \'DownloadsCategory\' AND parent_id = ?', params[:category]], :order => 'lower(name) ASC')
 else
-  @categories = controller.portal.downloads_categories
+  @categories = controller.portal.downloads_categories[0].children.find(:all, :conditions => 'taxonomy = \'DownloadsCategory\'')
 end %>
 
 <% for subcategory in @categories %>

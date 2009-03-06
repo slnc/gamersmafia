@@ -70,7 +70,7 @@ for download in @last_downloads
 shown_topics = []
 if controller.portal.id != -1 then # portal distinto de GmPortal
 # TODO la subquery de nohome la estamos haciendo sobre todas las categorías hidden que hay, habría que restringirlo a las categorías nohome solo accesibles desde este portal
-@last_topics = controller.portal.topic.find(:published, :conditions => 'closed is false AND topics_category_id not in (select id from topics_categories where root_id in (select id from topics_categories where code in (select code from bazar_districts)) OR root_id = (select id from topics_categories where code=\'bazar\' and id = root_id))', :order => 'updated_on desc', :limit => 20)
+@last_topics = controller.portal.topic.find(:published, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 20)
 
 for topic in @last_topics
   shown_topics << topic.unique_content.id %>
@@ -85,7 +85,7 @@ for topicid in @last_topics
   topic = Topic.find(topicid)
   shown_topics << topic.unique_content_id
   root = topic.main_category.root
-  active_topics = TopicsCategory.db_query("SELECT (count(id) - 1) as count FROM topics WHERE topics_category_id IN (#{root.all_children_ids.join(',')}) AND updated_on > now() - '1 week'::interval")[0]['count']
+  active_topics = root.count(:content_type => 'Topic', :conditions => 'contents.updated_on > now() - \'1 week\'::interval') - 1
 %>
 <li id="content<%=topic.unique_content.id%>" class="new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "<div class=\"content-category\">#{faction_favicon(topic.main_category)}</div>#{truncate(topic.title.gsub('<', ''), 28)}", gmurl(topic)%></li>
     <% end # for %>

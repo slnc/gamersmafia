@@ -58,7 +58,7 @@
 if params[:category] then
   @categories = @category.children.find(:all, :conditions => 'taxonomy = \'QuestionsCategory\'')
 else
-  @categories = controller.portal.tutorials_categories[0].children.find(:all, :conditions => 'taxonomy = \'QuestionsCategory\'')
+  @categories = controller.portal.questions_categories[0].children.find(:all, :conditions => 'taxonomy = \'QuestionsCategory\'')
 end %>
 <ul class="skeletal">
 <% for category in @categories %>

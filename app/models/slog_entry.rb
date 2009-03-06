@@ -398,7 +398,7 @@ class EditorScope
   end
   
   def id
-    SlogEntry.encode_editor_scope(@faction_id, @content_type_id)
+    SlogEntry.encode_editor_scope(@faction_id.to_i, @content_type_id.to_i)
   end
   
   def name

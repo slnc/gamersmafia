@@ -12,9 +12,9 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
     n = portal.news.find(:published)[0]
     assert_not_nil n
     go_to "/noticias/show/#{n.id}", 'noticias/show'
-    assert_cache_exists "/common/noticias/show/_latest_by_cat_#{n.news_category_id}"
+    assert_cache_exists "/common/noticias/show/_latest_by_cat_#{n.main_category.id}"
     delete_content n
-    assert_cache_dont_exist "/common/noticias/show/_latest_by_cat_#{n.news_category_id}"
+    assert_cache_dont_exist "/common/noticias/show/_latest_by_cat_#{n.main_category.id}"
   end
   
   # MAIN

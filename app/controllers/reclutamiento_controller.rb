@@ -35,33 +35,6 @@ class ReclutamientoController < ApplicationController
     render :action => 'show' unless performed?
   end
   
-  #def nuevo
-  #  require_auth_users
-  #  @recruitment_ad = RecruitmentAd.new
-  #end
-  
-  #def anuncio
-  #  @recruitment_ad = RecruitmentAd.find(:first, :conditions => ['deleted = \'f\' AND id = ?', params[:id]])
-  #  raise ActiveRecord::RecordNotFound unless @recruitment_ad
-  #  @title = @recruitment_ad.title
-  #end
-  
-  #def anuncio_editar
-  #  @recruitment_ad = RecruitmentAd.find(:first, :conditions => ['deleted = \'f\' AND id = ?', params[:id]])
-  #  raise ActiveRecord::RecordNotFound unless @recruitment_ad
-  #  @title = "Editar #{@recruitment_ad.title}"
-  #end
-  
-  
-  #def anuncio_destroy
-  #  require_auth_users
-  #  @recruitment = RecruitmentAd.find(:first, :conditions => ['deleted = \'f\' AND id = ?', params[:id]])
-  #  raise AccessDenied unless @recruitment.can_be_edited_by?(@user)
-  #  @recruitment.mark_as_deleted 
-  #  flash[:notice] = "Anuncio borrado correctamente"
-  #  redirect_to '/reclutamiento'
-  #end
-  
   def _before_create
     require_auth_users
     
@@ -76,10 +49,4 @@ class ReclutamientoController < ApplicationController
     #save_or_error(@recruitment, "/reclutamiento/anuncio/@recruitment_ad.id", 'create')
     true
   end
-  
-  #def anuncio_update
-  #  require_auth_users
-  #  @recruitment = RecruitmentAd.find(:first, :conditions => ['deleted = \'f\' AND id = ?', params[:id]])
-  #  update_attributes_or_error(@recruitment,"/reclutamiento/anuncio/@recruitment_ad.id", 'editar')
-  #end
 end

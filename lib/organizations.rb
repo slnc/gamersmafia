@@ -52,6 +52,7 @@ module Organizations
     obj.avatars.each do |av|
       av.destroy(true)
     end
+    obj.reload
     obj.destroy
     bd
   end

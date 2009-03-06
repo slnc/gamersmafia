@@ -1,5 +1,5 @@
-#require 'RMagick'
 require File.dirname(__FILE__) + '/../../../test/test_helper'
+require 'RMagick'
 
 class ActsAsContentTest < Test::Unit::TestCase
   
@@ -217,9 +217,8 @@ class ActsAsContentTest < Test::Unit::TestCase
   
   def test_unique_attributes_should_work
     o1 = News.find(1)
-    uattrs = [:title, :description, :main, :clan_id, :news_category_id]
+    uattrs = [:title, :description, :main, :clan_id]
     uattrs_received = o1.unique_attributes
-    
     assert_equal uattrs.size, uattrs_received.size
     uattrs.each do |uattr|
       assert_equal o1[uattr], uattrs_received[uattr]

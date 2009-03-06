@@ -97,46 +97,6 @@ class DescargasController < InformacionController
     redirect_to :action => ''
   end
   
-  
-  def create
-    require_auth_users
-    mirrors = params[:download]['download_mirrors'].to_s.gsub("\r", "\n").gsub("\n\n", "\n")
-    params[:download]['download_mirrors'] = []
-    @download = Download.new(params[:download])
-    @download.user_id = @user.id
-    
-    if @portal.respond_to?(:clan_id) && @portal.clan_id
-      @download.clan_id = @portal.clan_id
-      @download.state = Cms::PUBLISHED
-    else
-      @download.state = Cms::PENDING unless (params[:draft] == '1')
-    end
-    if Cms.user_can_create_content(@user)
-      if @download.save
-        @download.process_wysiwyg_fields
-        result = mirrors.split("\n").each { |s|
-          if s.strip != '' then
-            opt = DownloadMirror.new({:download_id => @download.id, :url => s})
-            opt.save
-          end
-        }
-        
-        flash[:notice] = 'Descarga creada correctamente. Tendrá que ser moderada antes de aparecer publicada.'
-        if @download.state == Cms::DRAFT then
-          redirect_to :action => 'edit', :id => @download.id
-        else
-          redirect_to :action => 'index'
-        end
-      else
-        flash[:error] = "Error al subir el archivo:<br /> #{@download.errors.full_messages_html}"
-        render :action => 'new'
-      end
-    else
-      flash[:error] = "Error al crear la descarga: no puedes crear contenidos"
-      render :action => 'new'
-    end
-  end
-  
   def edit
     @download = Download.find(params[:id])
     # require_user_can_edit(@download)
@@ -151,43 +111,6 @@ class DescargasController < InformacionController
       render :action => 'edit'
     else
       render :action => 'show'
-    end
-  end
-  
-  def update
-    @download = Download.find(params[:id])
-    require_user_can_edit(@download)
-    params[:download][:download_mirrors] = [] unless params[:download][:download_mirrors]
-    mirrors = params[:download][:download_mirrors].to_s.gsub("\r", "\n").gsub("\n\n", "\n")
-    params[:download][:download_mirrors] = []
-    
-    @download.cur_editor = @user
-    @download.state = Cms::PENDING if @download.state == Cms::DRAFT and not params[:draft].to_s == '1'
-    @download.file = params[:download][:file] if params[:download][:file] 
-    if @download.update_attributes(params[:download])
-      @download.process_wysiwyg_fields
-      # actualizamos mirrors
-      @download.download_mirrors.each { |m| m.destroy }
-      
-      result = mirrors.split("\n").each { |s|
-        s = s.strip
-        if s != '' then
-          opt = DownloadMirror.new({:download_id => @download.id, :url => s})
-          opt.save
-        end
-      }
-      flash[:notice] = 'Descarga actualizada correctamente.'
-      if @download.state == Cms::PENDING && params[:publish_content] == '1'
-        Cms::publish_content(@download, @user)
-        flash[:notice] += "\nContenido publicado correctamente. Gracias."
-      end
-      if @download.is_public? then
-        redirect_to gmurl(@download)
-      else
-        redirect_to :action => 'edit', :id => @download
-      end
-    else
-      render :action => 'edit'
     end
   end
 end

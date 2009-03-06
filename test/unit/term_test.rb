@@ -32,21 +32,14 @@ class TermTest < ActiveSupport::TestCase
   end
 
   def test_mirror_category
-    dc1 = DownloadsCategory.find(1)
-    dcs1 = dc1.children.create(:name => 'subhijo1')
-    @dcss1 = dcs1.children.create(:name => 'subhijo11')
-    dcsss1 = @dcss1.children.create(:name => 'subhijo111')
-    assert !dcsss1.new_record?
     @t = Term.new(:name => 'foo', :slug => 'bar')
     assert @t.save
     
-    @t.mirror_category_tree(dcsss1, 'DownloadsCategory')
-    
-    @ndcs1 = @t.children.find(:first, :conditions => 'name = \'subhijo1\' AND taxonomy = \'DownloadsCategory\'')
+    @ndcs1 = @t.children.create(:name => 'subhijo1', :taxonomy => 'DownloadsCategory')
     assert @ndcs1
-    @ndcss1 = @ndcs1.children.find(:first, :conditions => 'name = \'subhijo11\' AND taxonomy = \'DownloadsCategory\'')
+    @ndcss1 = @ndcs1.children.create(:name => 'subhijo11')
     assert @ndcss1
-    @ndcsss1 = @ndcss1.children.find(:first, :conditions => 'name = \'subhijo111\' AND taxonomy = \'DownloadsCategory\'')
+    @ndcsss1 = @ndcss1.children.create(:name => 'subhijo111')
     assert @ndcsss1
   end
   
@@ -296,6 +289,8 @@ class TermTest < ActiveSupport::TestCase
     test_should_update_parent_categories_counter
     @subcat1.link(@topic.unique_content)
     catz = @cat1.last_updated_children(:limit => 5)
+    # p catz.collect { |luc| luc.name }
+    # puts @subcat1.name
     assert catz.collect { |luc| luc.name }.include?(@subcat1.name)
   end
 

@@ -6,7 +6,6 @@ published:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  questions_category_id: 2
   title: foo
   description: foo
   state: 2
@@ -20,7 +19,6 @@ unpublished:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  questions_category_id: 2
   title: foo2
   description: foo2
   state: 1
@@ -34,7 +32,6 @@ deleted:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  questions_category_id: 2
   title: foo3
   description: foo3
   state: 3

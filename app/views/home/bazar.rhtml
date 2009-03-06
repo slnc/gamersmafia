@@ -64,7 +64,7 @@ end
 	<% 
 if cat.bet then
 mfcontents_table('Apuestas', 
-				   Proc.new { Bet.open_bets(:conditions => "bets_category_id = (SELECT id FROM bets_categories WHERE code = '#{cat.code}')") },
+				   Proc.new { cat.bet.find(:published, :conditions => "#{Bet::OPEN_BETS_SQL}") },
 				   :grid => 4) do |o| %>
 <td class="<%=oddclass%>"><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline" style="float: left;"><%=format_interval(o.closes_on.to_i - Time.now.to_i, 'horas', true)%></div>
@@ -83,12 +83,12 @@ end -%>
 	<%=render :partial => 'daily_joy' %>
 	
 	<%mftext('xD') do %>
-		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => 953}%>
+		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'xD\' And taxonomy = \'ImagesCategory\'').id}%>
 	<% end -%>
 	
 	
 	<%mftext('Wallpapers') do %>
-		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => 894}%>
+		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'Wallpapers\' And taxonomy = \'ImagesCategory\'').id}%>
 	<% end -%>
 <% end -%>
 

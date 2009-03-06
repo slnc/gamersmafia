@@ -7,7 +7,7 @@ shown_news = []
 for news in @last_news
     shown_news << news.unique_content.id
 %>
-<li id="content<%=news.unique_content.id%>" style="clear:left;" class="new <%=oddclass%>"><%= link_to truncate(news.title, 35), gmurl(news) %><br /><div class="infoinline"><%="<div class=\"content-category read\">#{faction_favicon(news.event.events_category)}</div>"%><a style="background: none; padding-left: 0;" href="<%=gmurl(news.event)%>"><%=news.event.title%></a></div></li>
+<li id="content<%=news.unique_content.id%>" style="clear:left;" class="new <%=oddclass%>"><%= link_to truncate(news.title, 35), gmurl(news) %><br /><div class="infoinline"><%="<div class=\"content-category read\">#{faction_favicon(news.event.main_category.id)}</div>"%><a style="background: none; padding-left: 0;" href="<%=gmurl(news.event)%>"><%=news.event.title%></a></div></li>
 <% end %>
 </ul>
 	<script type="text/javascript">contents = contents.concat(<%=shown_news.join(',')%>);</script>

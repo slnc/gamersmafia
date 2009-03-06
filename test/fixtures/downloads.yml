@@ -6,7 +6,6 @@ published:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  downloads_category_id: 1
   title: foo
   essential: true
   downloaded_times: 0
@@ -22,7 +21,6 @@ unpublished:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  downloads_category_id: 1
   title: foo2
   essential: false
   downloaded_times: 0
@@ -37,7 +35,6 @@ deleted:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  downloads_category_id: 1
   title: foo3
   essential: false
   downloaded_times: 0

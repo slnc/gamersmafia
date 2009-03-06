@@ -6,7 +6,6 @@ published:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  polls_category_id: 1
   starts_on: <%=1.month.since%>
   ends_on: <%=2.months.since%>
   title: foo
@@ -23,7 +22,6 @@ unpublished:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  polls_category_id: 1
   starts_on: <%=1.month.since%>
   ends_on: <%=2.months.since%>
   title: foo2
@@ -38,7 +36,6 @@ deleted:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  polls_category_id: 1
   starts_on: <%=1.month.since%>
   ends_on: <%=2.months.since%>
   title: foo3

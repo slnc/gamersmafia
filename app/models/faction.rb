@@ -25,8 +25,8 @@ class Faction < ActiveRecord::Base
   
   def destroy_related_portals
     User.db_query("DELETE FROM factions_portals WHERE faction_id = #{self.id}")
-    portal = Portal.find_by_code(self.code)
-    portal.destroy if portal.factions.size == 0
+    portal = FactionsPortal.find_by_code(self.code)
+    portal.destroy if portal && portal.factions.size == 0
     true
   end
   

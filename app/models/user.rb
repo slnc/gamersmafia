@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   
   has_many :groups_messages
   
-  has_many :users_roles
+  has_many :users_roles, :dependent => :destroy
   has_many :friends_recommendations
   has_many :clans_movements
   has_many :recruitment_ads

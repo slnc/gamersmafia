@@ -6,7 +6,6 @@ published:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  interviews_category_id: 1
   title: foo
   description: foo
   main: foo
@@ -22,7 +21,6 @@ unpublished:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  interviews_category_id: 1
   title: foo2
   description: foo2
   main: foo2
@@ -37,7 +35,6 @@ deleted:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  interviews_category_id: 1
   title: foo3
   description: foo3
   main: foo3

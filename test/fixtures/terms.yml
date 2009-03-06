@@ -240,3 +240,19 @@
       parent_id: 4
       platform_id: 1
       taxonomy: TopicsCategory
+
+- xdbazar:
+      id: 33
+      name: xD
+      slug: xd
+      root_id: 21
+      parent_id: 21
+      taxonomy: ImagesCategory
+
+- wallpapersbazar:
+      id: 34
+      name: Wallpapers
+      slug: wallpapers
+      root_id: 21
+      parent_id: 21
+      taxonomy: ImagesCategory

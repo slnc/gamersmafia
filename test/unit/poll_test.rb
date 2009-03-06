@@ -44,7 +44,8 @@ class PollTest < Test::Unit::TestCase
   
   def test_should_properly_set_solapping_poll
     p1 = Poll.find(1)
-    pn = Poll.new({:polls_category_id => p1.polls_category_id, :title => "holitas carambolitas", :user_id => 1, :starts_on => p1.starts_on, :ends_on => p1.ends_on})
+    pn = Poll.new(:title => "holitas carambolitas", :user_id => 1, :starts_on => p1.starts_on, :ends_on => p1.ends_on, :terms => p1.terms[0].id)
+    
     assert_equal true, pn.save, pn.errors.full_messages_html
     assert_equal Time.at(p1.ends_on.to_i + 1), pn.starts_on
     assert_equal pn.starts_on.advance({:days => 7}), pn.ends_on
@@ -52,7 +53,7 @@ class PollTest < Test::Unit::TestCase
   
   def test_shouldnt_touch_non_solapping_poll
     p1 = Poll.find(1)
-    pn = Poll.new({:polls_category_id => p1.polls_category_id, :title => "holitas carambolitas", :user_id => 1, :starts_on => p1.ends_on.advance({:days => 1}), :ends_on => p1.ends_on.advance({:days => 9})})
+    pn = Poll.new(:terms => p1.terms[0].id, :title => "holitas carambolitas", :user_id => 1, :starts_on => p1.ends_on.advance({:days => 1}), :ends_on => p1.ends_on.advance({:days => 9}))
     assert_equal true, pn.save, pn.errors.full_messages_html
     assert_equal p1.ends_on.advance({:days => 1}), pn.starts_on
     assert_equal p1.ends_on.advance({:days => 9}), pn.ends_on

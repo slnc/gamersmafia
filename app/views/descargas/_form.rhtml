@@ -1,6 +1,5 @@
 <%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @download } %>
 
-
 <p><label for="download_title">Nombre</label><br/>
 <%= text_field 'download', 'title', :class => 'text'  %></p>
 
@@ -16,5 +15,19 @@ real_path = "#{RAILS_ROOT}/public/" + @download.file
 <%= file_field 'download', 'file' %></p>
 
 <p><%=check_box'download', 'essential' %> <label for="download_essential">Es esencial para jugar</label></p>
+
+<strong>Mirrors</strong><br />
+<% @download.download_mirrors.find(:all, :order => 'id ASC').each do |mirror| %>
+<input type="text" class="text" name="download[mirrors][<%=mirror.id.to_s%>]" value="<%=mirror.url%>" /> &nbsp; <label><input type="checkbox" name="download[mirrors_delete][]" value="<%=mirror.id.to_s%>" /> Borrar</label><br />
+<% end %>
+
+<br /><strong>Añadir mirrors:</strong><br />
+<style type="text/css">
+	#newmirrors input.text { width: 175px; margin-bottom: 5px; }
+</style>
+<span id="newmirrors">
+  <input type="text" class="text" name="download[mirrors_new][]" value="" /><br />
+  <% if @download.new_record? then %><input type="text" class="text" name="download[mirrors_new][]" value="" /><br /><% end -%>
+</span>
 
 <%=draft_check_box(@download)%>

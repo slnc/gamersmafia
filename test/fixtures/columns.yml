@@ -9,7 +9,6 @@ published:
   title: foo
   description: foo
   main: foo
-  columns_category_id: 1
   approved_by_user_id: 1
   state: 2
   unique_content_id: 3
@@ -25,7 +24,6 @@ unpublished:
   title: foo2
   description: foo2
   main: foo2
-  columns_category_id: 1
   state: 1
   unique_content_id: 1003
 
@@ -40,7 +38,6 @@ deleted:
   title: foo3
   description: foo3
   main: foo3
-  columns_category_id: 1
   approved_by_user_id: 1
   state: 3
   unique_content_id: 2003
