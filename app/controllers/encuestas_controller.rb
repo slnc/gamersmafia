@@ -25,7 +25,6 @@ class EncuestasController < ComunidadController
   end
   
   def vote
-    p params
     @poll = Poll.find(params[:id])
     
     @polls_option = @poll.polls_options.find(params[:poll_option])
@@ -40,8 +39,7 @@ class EncuestasController < ComunidadController
       CacheObserver.expire_fragment("/#{p.code}/encuestas/index/most_votes")
       CacheObserver.expire_fragment("/#{p.code}/home/index/polls") # TODO
     end
-    #expire_fragment(:controller => 'home', :action => 'index', :part => 'polls')
-    #expire_fragment(:controller => 'home', :action => 'index', :part => "polls_#{@poll.my_faction.id}") if @poll.my_faction
+    
     redirect_to gmurl(@poll)
   end
   

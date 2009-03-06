@@ -19,7 +19,7 @@
 	#newoptions input.text { width: 175px; margin-bottom: 5px; }
 </style>
 <span id="newoptions">
-  <input type="text" class="text" name="options_new[]" value="" /><br />
+  <input type="text" class="text" name="poll[options_new][]" value="" /><br />
   <% if @poll.new_record? then %><input type="text" class="text" name="poll[options_new][]" value="" /><br /><% end -%>
 </span>
 

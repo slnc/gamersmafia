@@ -31,6 +31,22 @@ class Poll < ActiveRecord::Base
     User.db_query("UPDATE polls SET polls_votes_count = #{new_polls_votes_count} WHERE id = #{self.id}")
   end
   
+    
+  def options_new=(opts_new)
+    @_tmp_options_new = opts_new
+    self.attributes.delete :options_new 
+  end
+  
+  def options_delete=(opts_new)
+    @_tmp_options_delete = opts_new
+    self.attributes.delete :options_delete 
+  end
+  
+  def options=(opts_new)
+    @_tmp_options = opts_new
+    self.attributes.delete :options 
+  end
+  
   def process_polls_options
     if @_tmp_options_new
       @_tmp_options_new.each { |s| self.polls_options.create({:name => s.strip}) unless s.strip == ''  }
@@ -66,21 +82,7 @@ class Poll < ActiveRecord::Base
       true
     end
   end
-  
-  def options_new=(opts_new)
-    @_tmp_options_new = opts_new
-    self.attributes.delete :options_new 
-  end
-  
-  def options_delete=(opts_new)
-    @_tmp_options_delete = opts_new
-    self.attributes.delete :options_delete 
-  end
-  
-  def options=(opts_new)
-    @_tmp_options = opts_new
-    self.attributes.delete :options 
-  end
+
   
   def votes
     self.db_query("select sum(b.polls_votes_count) from polls a join polls_options b on a.id = b.poll_id where a.id = #{self.id} group by (a.id)")[0]['sum'].to_i

@@ -58,7 +58,7 @@ module ActsAsContentBrowser
     
     define_method 'create' do
       _before_create if respond_to?(:_before_create)
-
+      
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.new(params[ActiveSupport::Inflector::underscore(content_name)])
       
@@ -75,6 +75,13 @@ module ActsAsContentBrowser
       end
       instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
       if Cms.user_can_create_content(@user)
+        # chequeamos que se haya especificado categoría
+        if (Cms::CATEGORIES_TERMS_CONTENTS.include?(content_name) && (!params[:categories_terms] || params[:categories_terms].size == 0 || params[:categories_terms][0].to_i == 0)) ||
+         (Cms::ROOT_TERMS_CONTENTS.include?(content_name)  && (!params[:root_terms] || params[:root_terms].size == 0 || params[:root_terms][0].to_i == 0))
+          flash[:error] = "Debes elegir una categoría al menos una categoría para este contenido."
+          render :action => 'new' and return
+        end
+        
         if obj.save
           # enlazamos
           proc_terms(obj)

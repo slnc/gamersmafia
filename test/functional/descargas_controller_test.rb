@@ -6,7 +6,7 @@ require 'descargas_controller'
 class DescargasController; def rescue_action(e) raise e end; end
 
 class DescargasControllerTest < Test::Unit::TestCase
-  test_common_content_crud :name => 'Download', :form_vars => {:title => 'footapang', :download_mirrors => "http://google.com/foo.zip\nhttp://kamasutra.com/porn.zip"}, :categories_terms => ['16']
+  test_common_content_crud :name => 'Download', :form_vars => {:title => 'footapang', :mirrors_new => ["http://google.com/foo.zip\nhttp://kamasutra.com/porn.zip"]}, :categories_terms => ['16']
   
   def setup
     @controller = DescargasController.new
@@ -19,7 +19,7 @@ class DescargasControllerTest < Test::Unit::TestCase
     d = Download.find(1)
     orig = d.downloaded_times
     @request.host = "ut.#{App.domain}"
-
+    
     assert_count_increases(DownloadedDownload) do
       get :download, :id => d.id, :h => 0
       assert_response :success
@@ -27,6 +27,17 @@ class DescargasControllerTest < Test::Unit::TestCase
       d.reload
       assert_equal orig + 1, d.downloaded_times
     end
+  end
+  
+  def test_create_with_mirrors_should_work
+    sym_login 1
+    assert_count_increases(Download) do
+      post :create, { :download => { :title => 'titulin', :file => fixture_file_upload('/files/images.zip', 'application/zip'), :mirrors_new => ['http://unmirror.com'] }, :categories_terms => [Term.find(:first, :conditions => 'taxonomy = \'DownloadsCategory\'').id] } 
+      assert_response :redirect
+    end
+   d = Download.find(:first, :order => 'id DESC')
+   assert_equal 1, d.download_mirrors.count
+   assert_equal 'http://unmirror.com', d.download_mirrors[0].url
   end
   
   def test_create_from_zip_should_work_if_good_guy
