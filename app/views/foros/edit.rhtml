@@ -4,7 +4,6 @@
 <% content_main do %>
     <%mftext('Editar tópic') do %>
 <form method="post" action="/foros/update_topic/<%=@topic.id%>" name="REPLIER">
-<%= hidden_field_tag('topic[topics_category_id]', @forum.id) %>
 <%= hidden_field_tag('topic[id]', @topic.id) %>
 <table>
 <tr>
@@ -49,16 +48,7 @@
 <%mftext('Mover tópic') do %>
 <%= form_tag(:action => "move_topic", :id => @topic.id) %>
 <%= hidden_field_tag('topic[id]', @topic.id) %>
-<select name="topic[topics_category_id]">
-<% cats = @topic.new_record? ? @portal.topics_categories : ImagesCategory.toplevel %>
-<% for ic in TopicsCategory.find(:all, :conditions => 'clan_id is null and parent_id is null', :order => 'lower(name) asc') %>
-<optgroup label="<%=ic.name%>">
-<% for gallery in ic.children %>
-<option <%= (gallery.id == @topic.topics_category_id) ? 'selected="selected"' : ''%> value="<%=gallery.id%>"><%=gallery.name%></option>
-<% end -%>
-</optgroup>
-<% end -%>
-</select>
+<%=render :partial => '/shared/category_term_select', :locals => { :content_type => 'Topic', :index => 0, :selterm => @topic.terms[0] } %>
 <table>
   <tr>
 <td></td>

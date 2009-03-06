@@ -20,17 +20,13 @@
     <%mftext('Nuevo tópic') do %>
 <form method="post" action="/foros/create_topic" name="REPLIER" style="width: 100%;">
 <%
-@topic = Topic.new unless defined?(@topic)
-@topic.topics_category_id = params[:forum_id] 
+@topic = Topic.new unless defined?(@topic) 
 %>
-<% # TODO semi copypasted de forum.rhtml
-%>
+
 <table>
   <tr class="<%=oddclass%>">
     <td style="padding: 5px 0;" class="w100">Foro</td>
-    <td style="padding: 5px 0;">
-      <%=render_tree_select controller.portal.topics_categories, 'name', 'topic[terms]', @topic.topics_category_id%>
-    </td>
+    <td style="padding: 5px 0;"><%=render :partial => '/shared/category_term_select', :locals => { :content_type => 'Topic', :index => 0, :selterm => nil } %></td>
   </tr>
   <tr class="<%=oddclass%>">
     <td style="padding: 5px 0;">Título</td>

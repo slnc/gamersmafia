@@ -629,7 +629,6 @@ class Term < ActiveRecord::Base
     
     # NOTA: tb contamos comentarios de hace más de 3 meses en el top 3 de comentarios
     # buscamos el total de karma generado por este topic
-    # dbtotal = Topic.db_query("SELECT count(id) as topics, COALESCE(sum(cache_comments_count), 0) as comments from topics where updated_on > (now() -  '3 months'::interval) and topics_category_id IN (#{cat_ids.join(',')})")[0]
     max = first ? first[1][:karma_sum] : 1 # no es 0 para no dividir por 0
     
     result = []

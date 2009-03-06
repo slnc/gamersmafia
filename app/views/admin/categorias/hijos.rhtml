@@ -45,10 +45,10 @@ end
 
 <%mftext('Editar esta categoría') do %>
 <form method="post" action="/<%=controller.cats_path%>/term/<%=@term.id%>/update?redirto=<%=controller.request.request_uri%>">
-<p><label for="topics_category_name">Nombre</label><br/>
+<p><label for="term_name">Nombre</label><br/>
 <%= text_field 'term', 'name', :class => 'text'  %></p>
 <% if @term.root_id != @term.id then %>
-<p><label for="topics_category_parent">Categoría de la que depende:</label><br />
+<p><label for="term_parent_id">Categoría de la que depende:</label><br />
 <%= render_tree_select(@term.root.children.find(:all, :conditions => ["taxonomy = ?", Term.taxonomy_from_class_name(params[:content_type])]), 'name', 'term[parent_id]', @term.parent_id, true)%></p>
 <br />
 <% end %>

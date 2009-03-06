@@ -263,26 +263,22 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment("/bazar/home/categories/#{object.main_category.code}") if object.main_category.root_id == CacheObserver.bazar_root_tc_id
       expire_fragment("/arena/home/last_topics") if object.main_category.root_id == CacheObserver.arena_root_tc_id
       expire_fragment('/site/lasttopics_left')
-      p = object.topics_category
-      while p
-        expire_fragment("/common/foros/_forums_list/#{p.id}")
-        expire_fragment("/common/home/foros/topics_#{p.id}")
-        p = p.parent
+      par = object.main_category
+      while par
+        expire_fragment("/common/foros/_forums_list/#{par.id}")
+        expire_fragment("/common/home/foros/topics_#{par.id}")
+        par = par.parent
       end
       
       # borramos las páginas de listado de noticias posteriores a la actual
-      stickies = Topic.count(:conditions => "sticky is true and state = #{Cms::PUBLISHED} and topics_category_id = #{object.topics_category_id}")
-      prev_count = Topic.count(:conditions => ["sticky is false and state = #{Cms::PUBLISHED} and created_on <= ? and topics_category_id = #{object.topics_category_id}", object.created_on]) + stickies
-      next_count = Topic.count(:conditions => ["sticky is false and state = #{Cms::PUBLISHED} and created_on >= ? and topics_category_id = #{object.topics_category_id}", object.created_on])
+      stickies = object.main_category.count(:content_type => 'Topic', :conditions => "sticky is true and state = #{Cms::PUBLISHED}")
+      prev_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and state = #{Cms::PUBLISHED} and created_on <= ?", object.created_on]) + stickies
+      next_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and state = #{Cms::PUBLISHED} and created_on >= ?", object.created_on])
       start_page = prev_count / 50 # TODO especificar esto en un único sitio
       end_page = start_page + next_count / 50 + 1
       
-      #for i in (start_page..end_page)
-      #  expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_#{i}")
-      #end
-      
-      expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_")
-      expire_fragment("/common/foros/_topics_list/#{object.topics_category_id}/page_*")
+      expire_fragment("/common/foros/_topics_list/#{object.main_category.id}/page_")
+      expire_fragment("/common/foros/_topics_list/#{object.main_category.id}/page_*")
       
       when 'CommentsValoration':
       expire_fragment("/comments/#{Time.now.to_i/(86400*7)}/#{object.comment.content_id%100}/#{object.comment.content_id}_*") # cacheamos solo una semana para q se actualicen barras    
@@ -533,9 +529,9 @@ class CacheObserver < ActiveRecord::Observer
       end
       
       # borramos las páginas de listado de noticias posteriores a la actual
-      stickies = Topic.count(:conditions => "sticky is true and state = #{Cms::PUBLISHED} and topics_category_id = #{object.main_category.id}")
-      prev_count = Topic.count(:conditions => ["sticky is false and state = #{Cms::PUBLISHED} and updated_on <= ? and topics_category_id = #{object.main_category.id}", object.created_on]) + stickies
-      next_count = Topic.count(:conditions => ["sticky is false and state = #{Cms::PUBLISHED} and updated_on >= ? and topics_category_id = #{object.main_category.id}", object.created_on])
+      stickies = object.main_category.count(:content_type => 'Topic', :conditions => "sticky is true and state = #{Cms::PUBLISHED}")
+      prev_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and state = #{Cms::PUBLISHED} and updated_on <= ?", object.created_on]) + stickies
+      next_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and state = #{Cms::PUBLISHED} and updated_on >= ?", object.created_on])
       start_page = prev_count / 50 # TODO especificar esto en un único sitio
       end_page = start_page + next_count / 50 + 1
       

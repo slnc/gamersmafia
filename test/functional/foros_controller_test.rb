@@ -132,13 +132,12 @@ class ForosControllerTest < Test::Unit::TestCase
     assert_equal 'title del topiz', t.title
   end
   
-  def atest_move_topic_should_work
-    raise "DEPRECATED"
+  def test_move_topic_should_work
     sym_login 1
     t = Topic.find(:first)
     tc2 = t.main_category.root.children.create({:name => 'nombre nueva category'})
     assert !tc2.new_record?
-    post :move_topic, { :topic => { :id => t.id, :topics_category_id => tc2.id }}
+    post :move_topic, { :topic => { :id => t.id }, :categories_terms => [tc2.id]}
     assert_response :redirect
     t.reload
     assert_equal tc2.id, t.topics_category_id
