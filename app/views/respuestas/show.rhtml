@@ -4,7 +4,7 @@
 <% if @question.is_public? then %>
 <%=mfcontents_basic("Más preguntas de #{@question.user.login}", 
 	controller.portal.question,
- 	[:published, {:conditions => ['contents.user_id = ?', @question.user_id], :order => 'created_on DESC', :limit => 5}],
+	[:published, {:content_type => 'Question', :conditions => ['contents.user_id = ?', @question.user_id], :order => 'created_on DESC', :limit => 5}],
     :cache => "/#{controller.portal_code}/respuestas/show/latest_by_author_#{@question.user_id}",
  	:rating => true,
 	:comments_count => true,
