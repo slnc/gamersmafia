@@ -34,4 +34,8 @@
 			$j('#categories_terms<%=index%>').html(data);
 		});
 	})
+	
+<% if selterm && selterm.parent_id then %>
+	$j('#categories_terms_root<%=index%>').val(<%=selterm.root_id%>);
+<% end %>
 </script>
