@@ -109,12 +109,17 @@ class User < ActiveRecord::Base
   after_save :update_competition_name
   after_save :check_is_hq
   after_save :check_login_changed
+  after_save :check_permissions
   observe_attr :competition_roster, :login, :state, :is_hq, :faction_id, :lastcommented_on, :avatar_id, :photo
   
   before_create :generate_validkey
   after_create :change_avatar
   attr_accessor :ident, :expire_at
   attr_protected :cache_karma_points, :is_superadmin, :admin_permissions, :faction_id
+  
+  def check_permissions
+    self.users_roles.clear if slnc_changed?(:state) && self.state == User::ST_BANNED
+  end
   
   def check_login_changed
     GmSys.job("Blogentry.reset_urls_of_user_id(#{self.id})") if slnc_changed?(:login)

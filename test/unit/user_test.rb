@@ -159,4 +159,12 @@ class UserTest < Test::Unit::TestCase
     assert ulw.size > 0
     assert_equal 1, ulw[0].id
   end
+  
+  def test_banning_user_should_remove_all_his_permissions
+    u1 = User.find(1)
+    ur1 = u1.users_roles.create(:role => 'Don', :role_data => '1')
+    assert !ur1.new_record?
+    u1.change_internal_state('banned')
+    assert_equal 0, u1.users_roles.count
+  end
 end
