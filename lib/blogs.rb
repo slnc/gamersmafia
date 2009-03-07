@@ -34,7 +34,7 @@ module Blogs
     date_start, date_end = date_end, date_start if date_start > date_end
     
     # devuelve los usuarios cuyas entradas han sido más leídas en la última semana
-    User.db_query("SELECT count(*), 
+    User.db_query("SELECT count(distinct(visitor_id)), 
                           COALESCE((select user_id from blogentries where id = stats.pageviews.model_id::int4), NULL) as blogger_user_id 
                      FROM stats.pageviews 
                     WHERE created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'  AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
