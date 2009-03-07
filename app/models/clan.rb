@@ -29,6 +29,10 @@ class Clan < ActiveRecord::Base
     self.update_attributes(:name => "_deleted#{self.name}", :deleted => true)
   end
   
+  def code
+	  self.tag.bare
+  end
+  
   def show_logo
     if self.logo
       "/#{self.logo}"
