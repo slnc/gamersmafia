@@ -68,16 +68,6 @@ for download in @last_downloads
     <ul class="content-hid2">
 <%
 shown_topics = []
-if controller.portal.id != -1 then # portal distinto de GmPortal
-# TODO la subquery de nohome la estamos haciendo sobre todas las categorías hidden que hay, habría que restringirlo a las categorías nohome solo accesibles desde este portal
-@last_topics = controller.portal.topic.find(:published, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 20)
-
-for topic in @last_topics
-  shown_topics << topic.unique_content.id %>
-  <li id="content<%=topic.unique_content.id%>" class="new <%=oddclass%>"><%=link_to "<div class=\"content-category\">#{faction_favicon(topic.main_category)}</div>#{truncate(topic.title, 30)}", gmurl(topic)%></li>
-<% end %>
-<%
-else #GmPortal
 # TODO bug
 @last_topics = Topic.latest_by_category(20)
 
@@ -89,7 +79,7 @@ for topicid in @last_topics
 %>
 <li id="content<%=topic.unique_content.id%>" class="new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "<div class=\"content-category\">#{faction_favicon(topic.main_category)}</div>#{truncate(topic.title.gsub('<', ''), 28)}", gmurl(topic)%></li>
     <% end # for %>
-<% end # if %>
+
         </ul>
 <script type="text/javascript">contents = contents.concat(<%=shown_topics.join(',')%>);</script>
       <div class="more"><a title="Ir a los foros" href="/foros/">Ir a los foros &raquo;</a></div>

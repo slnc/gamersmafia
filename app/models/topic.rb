@@ -81,7 +81,8 @@ class Topic < ActiveRecord::Base
                        ORDER BY updated_on DESC").each do |content|
       break if i >= limit
       next if contents_r_root_id.values.include?(content.real_content.id)
-      root_term = content.terms.find(:all, :conditions => 'taxonomy = \'TopicsCategory\'')[0]
+      root_term = content.terms.find(:all, :conditions => 'taxonomy = \'TopicsCategory\'')[0].root
+      next if contents_r_root_id.keys.include?(root_term.id)
       contents_r_root_id[root_term.id] ||= content.real_content.id
       i += 1
     end
