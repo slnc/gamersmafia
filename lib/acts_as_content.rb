@@ -86,7 +86,7 @@ module ActsAsContent
       end
       
       def pending
-        self.find(:all, :conditions => "state = #{Cms::PENDING}", :order => 'created_on ASC')
+        self.find(:all, :conditions => "#{'clan_id IS NULL AND' if respond_to?(:clan_id)} state = #{Cms::PENDING}", :order => 'created_on ASC')
       end
       
       def published_between(d1, d2)

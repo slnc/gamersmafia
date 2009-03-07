@@ -12,8 +12,7 @@
 <% mftext('Eventos en curso') do %>
 <ul class="sidelist">
 <% cache("/#{controller.portal.code}/eventos/index/cur_events_#{Time.now.strftime('%Y%m%d')}") do %>
-<% p controller.portal %>
-<% controller.portal.event.find(:all, :conditions => "parent_id is null and starts_on <= now() and ends_on >= now()", :order => 'starts_on ASC', :limit => 5).each do |c| %>
+	<% controller.portal.event.find(:all, :content_type => 'Event', :conditions => "events.parent_id is null and starts_on <= now() and ends_on >= now()", :order => 'starts_on ASC', :limit => 5).each do |c| %>
   <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
   <% end -%>
 </ul>
@@ -21,7 +20,7 @@
 
 <% mftext('Próximos eventos') do %>
 <ul class="sidelist">
-  <% controller.portal.event.find(:all, :conditions => "parent_id is null and starts_on >= now()", :order => 'starts_on ASC', :limit => 5).each do |c| %>
+  <% controller.portal.event.find(:all, :content_type => 'Event', :conditions => "events.parent_id is null and starts_on >= now()", :order => 'starts_on ASC', :limit => 5).each do |c| %>
   <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
   <% end -%>
 </ul>
@@ -33,7 +32,7 @@
 <% mftext('Eventos') do %>
 
 <% # TODO cachear %>
-<% @events_pages = ActionController::Pagination::Paginator.new self, controller.portal.event.count(:published, :conditions => "parent_id is null"), controller.class::PER_PAGE, params['page']
+<% @events_pages = ActionController::Pagination::Paginator.new self, controller.portal.event.count(:published, :content_type => 'Events', :conditions => "events.parent_id is null"), controller.class::PER_PAGE, params['page']
 @events_pages.current_page = @events_pages.last if params[:page].nil? 
 %>
 
@@ -50,7 +49,7 @@
 </tr>
 
 <% cache("/#{controller.portal.code}/eventos/index/page_#{params['page']}") do %>
-<% controller.portal.event.find(:published, :conditions => "parent_id is null", :order => 'starts_on ASC', :limit => @events_pages.current.to_sql[0], :offset => @events_pages.current.to_sql[1]).reverse.each do |event| 
+	<% controller.portal.event.find(:published, :content_type => 'Event', :conditions => "events.parent_id is null", :order => 'starts_on ASC', :limit => @events_pages.current.to_sql[0], :offset => @events_pages.current.to_sql[1]).reverse.each do |event| 
 event.description = (event.description.to_s == '') ? '&nbsp;' : event.description
 %>
 <tr class="<%=oddclass%>">

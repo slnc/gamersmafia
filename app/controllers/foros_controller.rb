@@ -129,7 +129,7 @@ class ForosController < ComunidadController
     params[:topic][:clan_id] = portal.clan_id if portal.kind_of?(ClansPortal) && portal.clan_id
     params[:topic][:main] = Comments::formatize(params[:topic][:main])
     
-    raise "terms must be single forum" unless params[:categories_terms].size == 1
+    raise "terms must be single forum" unless params[:categories_terms] && params[:categories_terms].size == 1
     forum = Term.find_taxonomy(params[:categories_terms][0].to_i, 'TopicsCategory') 
     
     @topic = Topic.new(params[:topic])

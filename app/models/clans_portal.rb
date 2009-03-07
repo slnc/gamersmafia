@@ -21,9 +21,9 @@ class ClansPortal < Portal
   def method_missing(method_id, *args)
     cs_method = ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id))
     if Cms::CLANS_CONTENTS.include?(cs_method)
-      t = Term.single_toplevel(:clan_id => self.clan_id)
+      t = Term.toplevel(:clan_id => self.clan_id)
     elsif /(news|downloads|topics|events|images|polls)_categories/ =~ method_id.to_s then 
-      Term.single_toplevel(:clan_id => self.clan_id)
+      Term.toplevel(:clan_id => self.clan_id)
     else
       super
     end
@@ -41,6 +41,6 @@ class ClansPortal < Portal
   end
   
   def categories(content_class)
-    content_class.category_class.find(:all, :conditions => "parent_id is null and id = root_id AND clan_id = #{self.clan_id}", :order => 'UPPER(name) ASC')
+    Term.toplevel(:clan_id => self.clan_id)
   end
 end
