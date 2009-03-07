@@ -82,5 +82,29 @@ class RespuestasControllerTest < ActionController::TestCase
     assert_equal init + cash, @q.ammount 
   end
   
+  def test_abiertas_root
+    get :abiertas, :id => 1
+    assert_response :success
+  end
+  
+  def test_abiertas_non_root
+    t1 = Term.find(1)
+    t1c = t1.children.create(:name => 'Especificas', :taxonomy => 'QuestionsCategory')
+    get :abiertas, :id => t1c.id
+    assert_response :success
+  end
+  
+  def test_cerradas_root
+    get :cerradas, :id => 1
+    assert_response :success
+  end
+  
+    def test_cerradas_non_root
+    t1 = Term.find(1)
+    t1c = t1.children.create(:name => 'Especificas', :taxonomy => 'QuestionsCategory')
+    get :cerradas, :id => t1c.id
+    assert_response :success
+  end
+  
   basic_test :index, :abiertas, :cerradas
 end

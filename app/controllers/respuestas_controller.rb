@@ -15,6 +15,7 @@ class RespuestasController < InformacionController
     @category = Term.single_toplevel(:id => params[:id]) unless @category
     raise ActiveRecord::RecordNotFound unless @category
     params[:category] = @category
+    
     # TODO que no sea de una categoria que no deberia
     paths, navpath = get_category_address(@category, 'QuestionsCategory')
     @category.get_ancestors.reverse.each { |p| navpath2<< [p.name, "/respuestas/categoria/#{p.id}"] }
@@ -25,6 +26,7 @@ class RespuestasController < InformacionController
   def abiertas
     if params[:id]
       @category = Term.find_taxonomy(params[:id], 'QuestionsCategory') unless @category
+      @category = Term.single_toplevel(:id => params[:id]) unless @category
       raise ActiveRecord::RecordNotFound unless @category
       params[:category] = @category
       # TODO que no sea de una categoria que no deberia
@@ -39,6 +41,7 @@ class RespuestasController < InformacionController
   def cerradas
     if params[:id]
       @category = Term.find_taxonomy(params[:id], 'QuestionsCategory') unless @category
+      @category = Term.single_toplevel(:id => params[:id]) unless @category
       raise ActiveRecord::RecordNotFound unless @category
       params[:category] = @category
       # TODO que no sea de una categoria que no deberia
