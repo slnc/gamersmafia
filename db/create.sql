@@ -139,6 +139,154 @@ COMMENT ON COLUMN sl_confirm.con_timestamp IS 'When this event was confirmed';
 
 
 --
+-- Name: sl_event; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_event (
+    ev_origin integer NOT NULL,
+    ev_seqno bigint NOT NULL,
+    ev_timestamp timestamp without time zone,
+    ev_snapshot txid_snapshot,
+    ev_type text,
+    ev_data1 text,
+    ev_data2 text,
+    ev_data3 text,
+    ev_data4 text,
+    ev_data5 text,
+    ev_data6 text,
+    ev_data7 text,
+    ev_data8 text
+);
+
+
+--
+-- Name: TABLE sl_event; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_event IS 'Holds information about replication events.  After a period of time, Slony removes old confirmed events from both this table and the sl_confirm table.';
+
+
+--
+-- Name: COLUMN sl_event.ev_origin; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_event.ev_origin IS 'The ID # (from sl_node.no_id) of the source node for this event';
+
+
+--
+-- Name: COLUMN sl_event.ev_seqno; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_event.ev_seqno IS 'The ID # for the event';
+
+
+--
+-- Name: COLUMN sl_event.ev_timestamp; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_event.ev_timestamp IS 'When this event record was created';
+
+
+--
+-- Name: COLUMN sl_event.ev_snapshot; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_event.ev_snapshot IS 'TXID snapshot on provider node for this event';
+
+
+--
+-- Name: COLUMN sl_event.ev_type; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_event.ev_type IS 'The type of event this record is for.  
+				SYNC				= Synchronise
+				STORE_NODE			=
+				ENABLE_NODE			=
+				DROP_NODE			=
+				STORE_PATH			=
+				DROP_PATH			=
+				STORE_LISTEN		=
+				DROP_LISTEN			=
+				STORE_SET			=
+				DROP_SET			=
+				MERGE_SET			=
+				SET_ADD_TABLE		=
+				SET_ADD_SEQUENCE	=
+				STORE_TRIGGER		=
+				DROP_TRIGGER		=
+				MOVE_SET			=
+				ACCEPT_SET			=
+				SET_DROP_TABLE			=
+				SET_DROP_SEQUENCE		=
+				SET_MOVE_TABLE			=
+				SET_MOVE_SEQUENCE		=
+				FAILOVER_SET		=
+				SUBSCRIBE_SET		=
+				ENABLE_SUBSCRIPTION	=
+				UNSUBSCRIBE_SET		=
+				DDL_SCRIPT			=
+				ADJUST_SEQ			=
+				RESET_CONFIG		=
+';
+
+
+--
+-- Name: COLUMN sl_event.ev_data1; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_event.ev_data1 IS 'Data field containing an argument needed to process the event';
+
+
+--
+-- Name: COLUMN sl_event.ev_data2; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_event.ev_data2 IS 'Data field containing an argument needed to process the event';
+
+
+--
+-- Name: COLUMN sl_event.ev_data3; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_event.ev_data3 IS 'Data field containing an argument needed to process the event';
+
+
+--
+-- Name: COLUMN sl_event.ev_data4; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_event.ev_data4 IS 'Data field containing an argument needed to process the event';
+
+
+--
+-- Name: COLUMN sl_event.ev_data5; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_event.ev_data5 IS 'Data field containing an argument needed to process the event';
+
+
+--
+-- Name: COLUMN sl_event.ev_data6; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_event.ev_data6 IS 'Data field containing an argument needed to process the event';
+
+
+--
+-- Name: COLUMN sl_event.ev_data7; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_event.ev_data7 IS 'Data field containing an argument needed to process the event';
+
+
+--
+-- Name: COLUMN sl_event.ev_data8; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_event.ev_data8 IS 'Data field containing an argument needed to process the event';
+
+
+--
 -- Name: sl_listen; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
 --
 
@@ -178,14 +326,125 @@ COMMENT ON COLUMN sl_listen.li_receiver IS 'The ID # (from sl_node.no_id) of the
 
 
 --
+-- Name: sl_log_1; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_log_1 (
+    log_origin integer,
+    log_txid bigint,
+    log_tableid integer,
+    log_actionseq bigint,
+    log_cmdtype character(1),
+    log_cmddata text
+);
+
+
+--
+-- Name: TABLE sl_log_1; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_log_1 IS 'Stores each change to be propagated to subscriber nodes';
+
+
+--
+-- Name: COLUMN sl_log_1.log_origin; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_log_1.log_origin IS 'Origin node from which the change came';
+
+
+--
+-- Name: COLUMN sl_log_1.log_txid; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_log_1.log_txid IS 'Transaction ID on the origin node';
+
+
+--
+-- Name: COLUMN sl_log_1.log_tableid; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_log_1.log_tableid IS 'The table ID (from sl_table.tab_id) that this log entry is to affect';
+
+
+--
+-- Name: COLUMN sl_log_1.log_cmdtype; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_log_1.log_cmdtype IS 'Replication action to take. U = Update, I = Insert, D = DELETE';
+
+
+--
+-- Name: COLUMN sl_log_1.log_cmddata; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_log_1.log_cmddata IS 'The data needed to perform the log action';
+
+
+--
+-- Name: sl_log_2; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_log_2 (
+    log_origin integer,
+    log_txid bigint,
+    log_tableid integer,
+    log_actionseq bigint,
+    log_cmdtype character(1),
+    log_cmddata text
+);
+
+
+--
+-- Name: TABLE sl_log_2; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_log_2 IS 'Stores each change to be propagated to subscriber nodes';
+
+
+--
+-- Name: COLUMN sl_log_2.log_origin; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_log_2.log_origin IS 'Origin node from which the change came';
+
+
+--
+-- Name: COLUMN sl_log_2.log_txid; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_log_2.log_txid IS 'Transaction ID on the origin node';
+
+
+--
+-- Name: COLUMN sl_log_2.log_tableid; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_log_2.log_tableid IS 'The table ID (from sl_table.tab_id) that this log entry is to affect';
+
+
+--
+-- Name: COLUMN sl_log_2.log_cmdtype; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_log_2.log_cmdtype IS 'Replication action to take. U = Update, I = Insert, D = DELETE';
+
+
+--
+-- Name: COLUMN sl_log_2.log_cmddata; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_log_2.log_cmddata IS 'The data needed to perform the log action';
+
+
+--
 -- Name: sl_node; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
 --
 
 CREATE TABLE sl_node (
     no_id integer NOT NULL,
     no_active boolean,
-    no_comment text,
-    no_spool boolean
+    no_comment text
 );
 
 
@@ -215,13 +474,6 @@ COMMENT ON COLUMN sl_node.no_active IS 'Is the node active in replication yet?';
 --
 
 COMMENT ON COLUMN sl_node.no_comment IS 'A human-oriented description of the node';
-
-
---
--- Name: COLUMN sl_node.no_spool; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_node.no_spool IS 'Is the node being used for log shipping?';
 
 
 --
@@ -358,6 +610,155 @@ COMMENT ON COLUMN sl_registry.reg_timestamp IS 'Option value if type timestamp';
 
 
 --
+-- Name: sequencelastvalue(text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION sequencelastvalue(text) RETURNS bigint
+    AS $_$
+declare
+	p_seqname	alias for $1;
+	v_seq_row	record;
+begin
+	for v_seq_row in execute 'select last_value from ' || "_gamersmafia".slon_quote_input(p_seqname)
+	loop
+		return v_seq_row.last_value;
+	end loop;
+
+	-- not reached
+end;
+$_$
+    LANGUAGE plpgsql;
+
+
+--
+-- Name: FUNCTION sequencelastvalue(text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION sequencelastvalue(text) IS 'sequenceLastValue(p_seqname)
+
+Utility function used in sl_seqlastvalue view to compactly get the
+last value from the requested sequence.';
+
+
+--
+-- Name: sl_sequence; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_sequence (
+    seq_id integer NOT NULL,
+    seq_reloid oid NOT NULL,
+    seq_relname name NOT NULL,
+    seq_nspname name NOT NULL,
+    seq_set integer,
+    seq_comment text
+);
+
+
+--
+-- Name: TABLE sl_sequence; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_sequence IS 'Similar to sl_table, each entry identifies a sequence being replicated.';
+
+
+--
+-- Name: COLUMN sl_sequence.seq_id; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_sequence.seq_id IS 'An internally-used ID for Slony-I to use in its sequencing of updates';
+
+
+--
+-- Name: COLUMN sl_sequence.seq_reloid; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_sequence.seq_reloid IS 'The OID of the sequence object';
+
+
+--
+-- Name: COLUMN sl_sequence.seq_relname; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_sequence.seq_relname IS 'The name of the sequence in pg_catalog.pg_class.relname used to recover from a dump/restore cycle';
+
+
+--
+-- Name: COLUMN sl_sequence.seq_nspname; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_sequence.seq_nspname IS 'The name of the schema in pg_catalog.pg_namespace.nspname used to recover from a dump/restore cycle';
+
+
+--
+-- Name: COLUMN sl_sequence.seq_set; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_sequence.seq_set IS 'Indicates which replication set the object is in';
+
+
+--
+-- Name: COLUMN sl_sequence.seq_comment; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_sequence.seq_comment IS 'A human-oriented comment';
+
+
+--
+-- Name: sl_set; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE TABLE sl_set (
+    set_id integer NOT NULL,
+    set_origin integer,
+    set_locked bigint,
+    set_comment text
+);
+
+
+--
+-- Name: TABLE sl_set; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON TABLE sl_set IS 'Holds definitions of replication sets.';
+
+
+--
+-- Name: COLUMN sl_set.set_id; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_set.set_id IS 'A unique ID number for the set.';
+
+
+--
+-- Name: COLUMN sl_set.set_origin; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_set.set_origin IS 'The ID number of the source node for the replication set.';
+
+
+--
+-- Name: COLUMN sl_set.set_locked; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_set.set_locked IS 'Transaction ID where the set was locked.';
+
+
+--
+-- Name: COLUMN sl_set.set_comment; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_set.set_comment IS 'A human-oriented description of the set.';
+
+
+--
+-- Name: sl_seqlastvalue; Type: VIEW; Schema: _gamersmafia; Owner: -
+--
+
+CREATE VIEW sl_seqlastvalue AS
+    SELECT sq.seq_id, sq.seq_set, sq.seq_reloid, s.set_origin AS seq_origin, sequencelastvalue(((quote_ident((pgn.nspname)::text) || '.'::text) || quote_ident((pgc.relname)::text))) AS seq_last_value FROM sl_sequence sq, sl_set s, pg_class pgc, pg_namespace pgn WHERE (((s.set_id = sq.seq_set) AND (pgc.oid = sq.seq_reloid)) AND (pgn.oid = pgc.relnamespace));
+
+
+--
 -- Name: sl_seqlog; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
 --
 
@@ -405,66 +806,89 @@ COMMENT ON COLUMN sl_seqlog.seql_last_value IS 'Last value published for this se
 
 
 --
--- Name: sl_sequence; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+-- Name: sl_setsync; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
 --
 
-CREATE TABLE sl_sequence (
-    seq_id integer NOT NULL,
-    seq_reloid oid NOT NULL,
-    seq_relname name NOT NULL,
-    seq_nspname name NOT NULL,
-    seq_set integer,
-    seq_comment text
+CREATE TABLE sl_setsync (
+    ssy_setid integer NOT NULL,
+    ssy_origin integer,
+    ssy_seqno bigint,
+    ssy_snapshot txid_snapshot,
+    ssy_action_list text
 );
 
 
 --
--- Name: TABLE sl_sequence; Type: COMMENT; Schema: _gamersmafia; Owner: -
+-- Name: TABLE sl_setsync; Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON TABLE sl_sequence IS 'Similar to sl_table, each entry identifies a sequence being replicated.';
-
-
---
--- Name: COLUMN sl_sequence.seq_id; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_sequence.seq_id IS 'An internally-used ID for Slony-I to use in its sequencing of updates';
+COMMENT ON TABLE sl_setsync IS 'SYNC information';
 
 
 --
--- Name: COLUMN sl_sequence.seq_reloid; Type: COMMENT; Schema: _gamersmafia; Owner: -
+-- Name: COLUMN sl_setsync.ssy_setid; Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON COLUMN sl_sequence.seq_reloid IS 'The OID of the sequence object';
-
-
---
--- Name: COLUMN sl_sequence.seq_relname; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_sequence.seq_relname IS 'The name of the sdequence in pg_catalog.pg_class.relname used to recover from a dump/restore cycle';
+COMMENT ON COLUMN sl_setsync.ssy_setid IS 'ID number of the replication set';
 
 
 --
--- Name: COLUMN sl_sequence.seq_nspname; Type: COMMENT; Schema: _gamersmafia; Owner: -
+-- Name: COLUMN sl_setsync.ssy_origin; Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON COLUMN sl_sequence.seq_nspname IS 'The name of the schema in pg_catalog.pg_namespace.nspname used to recover from a dump/restore cycle';
-
-
---
--- Name: COLUMN sl_sequence.seq_set; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_sequence.seq_set IS 'Indicates which replication set the object is in';
+COMMENT ON COLUMN sl_setsync.ssy_origin IS 'ID number of the node';
 
 
 --
--- Name: COLUMN sl_sequence.seq_comment; Type: COMMENT; Schema: _gamersmafia; Owner: -
+-- Name: COLUMN sl_setsync.ssy_seqno; Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON COLUMN sl_sequence.seq_comment IS 'A human-oriented comment';
+COMMENT ON COLUMN sl_setsync.ssy_seqno IS 'Slony-I sequence number';
+
+
+--
+-- Name: COLUMN sl_setsync.ssy_snapshot; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_setsync.ssy_snapshot IS 'TXID in provider system seen by the event';
+
+
+--
+-- Name: COLUMN sl_setsync.ssy_action_list; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON COLUMN sl_setsync.ssy_action_list IS 'action list used during the subscription process. At the time a subscriber copies over data from the origin, it sees all tables in a state somewhere between two SYNC events. Therefore this list must contains all log_actionseqs that are visible at that time, whose operations have therefore already been included in the data copied at the time the initial data copy is done.  Those actions may therefore be filtered out of the first SYNC done after subscribing.';
+
+
+--
+-- Name: getlocalnodeid(name); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION getlocalnodeid(name) RETURNS integer
+    AS '$libdir/slony1_funcs', '_Slony_I_getLocalNodeId'
+    LANGUAGE c SECURITY DEFINER;
+
+
+--
+-- Name: FUNCTION getlocalnodeid(name); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION getlocalnodeid(name) IS 'Returns the node ID of the node being serviced on the local database';
+
+
+--
+-- Name: sl_status; Type: VIEW; Schema: _gamersmafia; Owner: -
+--
+
+CREATE VIEW sl_status AS
+    SELECT e.ev_origin AS st_origin, c.con_received AS st_received, e.ev_seqno AS st_last_event, e.ev_timestamp AS st_last_event_ts, c.con_seqno AS st_last_received, c.con_timestamp AS st_last_received_ts, ce.ev_timestamp AS st_last_received_event_ts, (e.ev_seqno - c.con_seqno) AS st_lag_num_events, (now() - (ce.ev_timestamp)::timestamp with time zone) AS st_lag_time FROM sl_event e, sl_confirm c, sl_event ce WHERE (((((e.ev_origin = c.con_origin) AND (ce.ev_origin = e.ev_origin)) AND (ce.ev_seqno = c.con_seqno)) AND ((e.ev_origin, e.ev_seqno) IN (SELECT sl_event.ev_origin, max(sl_event.ev_seqno) AS max FROM sl_event WHERE (sl_event.ev_origin = getlocalnodeid('_gamersmafia'::name)) GROUP BY sl_event.ev_origin))) AND ((c.con_origin, c.con_received, c.con_seqno) IN (SELECT sl_confirm.con_origin, sl_confirm.con_received, max(sl_confirm.con_seqno) AS max FROM sl_confirm WHERE (sl_confirm.con_origin = getlocalnodeid('_gamersmafia'::name)) GROUP BY sl_confirm.con_origin, sl_confirm.con_received)));
+
+
+--
+-- Name: VIEW sl_status; Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON VIEW sl_status IS 'View showing how far behind remote nodes are.';
 
 
 --
@@ -602,34 +1026,20 @@ COMMENT ON COLUMN sl_table.tab_comment IS 'Human-oriented description of the tab
 
 
 --
--- Name: sl_trigger; Type: TABLE; Schema: _gamersmafia; Owner: -; Tablespace: 
+-- Name: vactables; Type: TYPE; Schema: _gamersmafia; Owner: -
 --
 
-CREATE TABLE sl_trigger (
-    trig_tabid integer NOT NULL,
-    trig_tgname name NOT NULL
+CREATE TYPE vactables AS (
+	nspname name,
+	relname name
 );
 
 
 --
--- Name: TABLE sl_trigger; Type: COMMENT; Schema: _gamersmafia; Owner: -
+-- Name: TYPE vactables; Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON TABLE sl_trigger IS 'Holds information about triggers on tables managed using Slony-I';
-
-
---
--- Name: COLUMN sl_trigger.trig_tabid; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_trigger.trig_tabid IS 'Slony-I ID number of table the trigger is on';
-
-
---
--- Name: COLUMN sl_trigger.trig_tgname; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON COLUMN sl_trigger.trig_tgname IS 'Indicates the name of a trigger';
+COMMENT ON TYPE vactables IS 'used as return type for SRF function TablesToVacuum';
 
 
 SET search_path = archive, pg_catalog;
@@ -661,59 +1071,19 @@ CREATE TABLE pageviews (
 );
 
 
-SET search_path = public, pg_catalog;
-
-SET default_with_oids = true;
-
 --
--- Name: tracker_items; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: tracker_items; Type: TABLE; Schema: archive; Owner: -; Tablespace: 
 --
 
 CREATE TABLE tracker_items (
     id integer NOT NULL,
     content_id integer NOT NULL,
     user_id integer NOT NULL,
-    lastseen_on timestamp without time zone DEFAULT now() NOT NULL,
-    is_tracked boolean DEFAULT false NOT NULL,
+    lastseen_on timestamp without time zone NOT NULL,
+    is_tracked boolean NOT NULL,
     notification_sent_on timestamp without time zone
 );
 
-
---
--- Name: tracker_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE tracker_items_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: tracker_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE tracker_items_id_seq OWNED BY tracker_items.id;
-
-
-SET search_path = archive, pg_catalog;
-
---
--- Name: tracker_items; Type: TABLE; Schema: archive; Owner: -; Tablespace: 
---
-
-CREATE TABLE tracker_items (
-    id integer DEFAULT nextval('public.tracker_items_id_seq'::regclass) NOT NULL,
-    content_id integer NOT NULL,
-    user_id integer NOT NULL,
-    lastseen_on timestamp without time zone DEFAULT now() NOT NULL,
-    is_tracked boolean DEFAULT false NOT NULL,
-    notification_sent_on timestamp without time zone
-);
-
-
-SET default_with_oids = false;
 
 --
 -- Name: treated_visitors; Type: TABLE; Schema: archive; Owner: -; Tablespace: 
@@ -881,6 +1251,17 @@ CREATE TABLE avatars (
     clan_id integer,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     submitter_user_id integer NOT NULL
+);
+
+
+--
+-- Name: babes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE babes (
+    id integer NOT NULL,
+    date date NOT NULL,
+    image_id integer NOT NULL
 );
 
 
@@ -1300,6 +1681,16 @@ CREATE TABLE competitions (
 
 
 --
+-- Name: competitions_admins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_admins (
+    competition_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+--
 -- Name: competitions_games_maps; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1444,6 +1835,16 @@ CREATE TABLE competitions_sponsors (
     competition_id integer NOT NULL,
     url character varying,
     image character varying
+);
+
+
+--
+-- Name: competitions_supervisors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_supervisors (
+    competition_id integer NOT NULL,
+    user_id integer NOT NULL
 );
 
 
@@ -1756,6 +2157,17 @@ CREATE TABLE downloads_categories (
 
 
 --
+-- Name: dudes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE dudes (
+    id integer NOT NULL,
+    date date NOT NULL,
+    image_id integer NOT NULL
+);
+
+
+--
 -- Name: events; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1857,6 +2269,29 @@ CREATE TABLE factions_banned_users (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     reason character varying,
     banner_user_id integer NOT NULL
+);
+
+
+--
+-- Name: factions_capos; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE factions_capos (
+    id integer NOT NULL,
+    faction_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+--
+-- Name: factions_editors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE factions_editors (
+    id integer NOT NULL,
+    faction_id integer NOT NULL,
+    user_id integer NOT NULL,
+    content_type_id integer NOT NULL
 );
 
 
@@ -2086,8 +2521,7 @@ CREATE TABLE global_vars (
     svn_revision character varying,
     ads_slots_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     gmtv_channels_updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    pending_contents integer DEFAULT 0 NOT NULL,
-    git_prev_revision character varying
+    pending_contents integer DEFAULT 0 NOT NULL
 );
 
 
@@ -2128,6 +2562,21 @@ CREATE TABLE groups (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     description character varying,
     owner_user_id integer
+);
+
+
+--
+-- Name: groups_messages; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE groups_messages (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    title character varying,
+    main character varying,
+    parent_id integer,
+    root_id integer,
+    user_id integer
 );
 
 
@@ -2256,7 +2705,8 @@ CREATE TABLE macropolls (
     answers text,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     ipaddr inet DEFAULT '0.0.0.0'::inet NOT NULL,
-    host character varying
+    host character varying,
+    id integer NOT NULL
 );
 
 
@@ -2408,9 +2858,8 @@ CREATE TABLE platforms (
 --
 
 CREATE TABLE platforms_users (
-    created_on timestamp without time zone,
-    user_id integer,
-    platform_id integer
+    user_id integer NOT NULL,
+    platform_id integer NOT NULL
 );
 
 
@@ -2752,35 +3201,13 @@ CREATE TABLE reviews_categories (
 );
 
 
-SET search_path = _gamersmafia, pg_catalog;
-
---
--- Name: sl_rowid_seq; Type: SEQUENCE; Schema: _gamersmafia; Owner: -
---
-
-CREATE SEQUENCE sl_rowid_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: SEQUENCE sl_rowid_seq; Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON SEQUENCE sl_rowid_seq IS 'Application tables that do not have a natural primary key must be modified and an int8 column added that serves as a rowid for us.  The values are assigned with a default from this sequence.';
-
-
-SET search_path = public, pg_catalog;
-
 --
 -- Name: schema_info; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
 CREATE TABLE schema_info (
     version integer NOT NULL,
-    "_Slony-I_gamersmafia_rowID" bigint DEFAULT nextval('_gamersmafia.sl_rowid_seq'::regclass) NOT NULL
+    "_Slony-I_gamersmafia_rowID" bigint NOT NULL
 );
 
 
@@ -2789,7 +3216,7 @@ CREATE TABLE schema_info (
 --
 
 CREATE TABLE schema_migrations (
-    version character varying
+    version character varying NOT NULL
 );
 
 
@@ -2867,10 +3294,20 @@ CREATE TABLE slog_entries (
     request text,
     reporter_user_id integer,
     reviewer_user_id integer,
-    short_version character varying,
     long_version character varying,
+    short_version character varying,
     completed_on timestamp without time zone,
     scope integer
+);
+
+
+--
+-- Name: slog_visits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE slog_visits (
+    user_id integer NOT NULL,
+    lastvisit_on timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -2975,6 +3412,22 @@ CREATE TABLE topics_categories (
 );
 
 
+SET default_with_oids = true;
+
+--
+-- Name: tracker_items; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE tracker_items (
+    id integer NOT NULL,
+    content_id integer NOT NULL,
+    user_id integer NOT NULL,
+    lastseen_on timestamp without time zone DEFAULT now() NOT NULL,
+    is_tracked boolean DEFAULT false NOT NULL,
+    notification_sent_on timestamp without time zone
+);
+
+
 --
 -- Name: treated_visitors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
@@ -2985,6 +3438,8 @@ CREATE SEQUENCE treated_visitors_id_seq
     NO MINVALUE
     CACHE 1;
 
+
+SET default_with_oids = false;
 
 --
 -- Name: treated_visitors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
@@ -3551,8 +4006,7 @@ begin
    else
 	v_idxname := p_idxname;
    end if;
-   perform "_gamersmafia".setAddTable_int(p_set_id, p_tab_id, v_fqname, v_idxname, p_comment);
-   return "_gamersmafia".alterTableRestore(p_tab_id);
+   return "_gamersmafia".setAddTable_int(p_set_id, p_tab_id, v_fqname, v_idxname, p_comment);
 end
 $_$
     LANGUAGE plpgsql;
@@ -3620,6 +4074,8 @@ DECLARE
 	idef 		text;
 	v_count		int4;
         v_iname         text;
+	v_ilen int4;
+	v_maxlen int4;
 BEGIN
 	v_count := 0;
 	select last_value into v_current_status from "_gamersmafia".sl_log_status;
@@ -3638,13 +4094,20 @@ BEGIN
 	-- Add missing indices...
 	for v_dummy in select distinct set_origin from "_gamersmafia".sl_set loop
             v_iname := 'PartInd_gamersmafia_sl_log_' || v_log || '-node-' || v_dummy.set_origin;
-	    -- raise notice 'Consider adding partial index % on sl_log_%', v_iname, v_log;
-	    -- raise notice 'schema: [_gamersmafia] tablename:[sl_log_%]', v_log;
+	   -- raise notice 'Consider adding partial index % on sl_log_%', v_iname, v_log;
+	   -- raise notice 'schema: [_gamersmafia] tablename:[sl_log_%]', v_log;
             select * into v_dummy2 from pg_catalog.pg_indexes where tablename = 'sl_log_' || v_log and  indexname = v_iname;
             if not found then
 		-- raise notice 'index was not found - add it!';
-		idef := 'create index "PartInd_gamersmafia_sl_log_' || v_log || '-node-' || v_dummy.set_origin ||
-                        '" on "_gamersmafia".sl_log_' || v_log || ' USING btree(log_xid "_gamersmafia".xxid_ops) where (log_origin = ' || v_dummy.set_origin || ');';
+        v_iname := 'PartInd_gamersmafia_sl_log_' || v_log || '-node-' || v_dummy.set_origin;
+		v_ilen := pg_catalog.length(v_iname);
+		v_maxlen := pg_catalog.current_setting('max_identifier_length'::text)::int4;
+                if v_ilen > v_maxlen then
+		   raise exception 'Length of proposed index name [%] > max_identifier_length [%] - cluster name probably too long', v_ilen, v_maxlen;
+		end if;
+
+		idef := 'create index "' || v_iname || 
+                        '" on "_gamersmafia".sl_log_' || v_log || ' USING btree(log_txid) where (log_origin = ' || v_dummy.set_origin || ');';
 		execute idef;
 		v_count := v_count + 1;
             else
@@ -3682,10 +4145,10 @@ system switches between sl_log_1 and sl_log_2.';
 
 
 --
--- Name: altertableforreplication(integer); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+-- Name: altertableaddtriggers(integer); Type: FUNCTION; Schema: _gamersmafia; Owner: -
 --
 
-CREATE FUNCTION altertableforreplication(integer) RETURNS integer
+CREATE FUNCTION altertableaddtriggers(integer) RETURNS integer
     AS $_$
 declare
 	p_tab_id			alias for $1;
@@ -3709,9 +4172,8 @@ begin
 
 	-- ----
 	-- Get the sl_table row and the current origin of the table. 
-	-- Verify that the table currently is NOT in altered state.
 	-- ----
-	select T.tab_reloid, T.tab_set, T.tab_idxname, T.tab_altered,
+	select T.tab_reloid, T.tab_set, T.tab_idxname, 
 			S.set_origin, PGX.indexrelid,
 			"_gamersmafia".slon_quote_brute(PGN.nspname) || '.' ||
 			"_gamersmafia".slon_quote_brute(PGC.relname) as tab_fqname
@@ -3728,13 +4190,9 @@ begin
 				and PGXC.relname = T.tab_idxname
 				for update;
 	if not found then
-		raise exception 'Slony-I: alterTableForReplication(): Table with id % not found', p_tab_id;
+		raise exception 'Slony-I: alterTableAddTriggers(): Table with id % not found', p_tab_id;
 	end if;
 	v_tab_fqname = v_tab_row.tab_fqname;
-	if v_tab_row.tab_altered then
-		raise exception 'Slony-I: alterTableForReplication(): Table % is already in altered state',
-				v_tab_fqname;
-	end if;
 
 	v_tab_attkind := "_gamersmafia".determineAttKindUnique(v_tab_row.tab_fqname, 
 						v_tab_row.tab_idxname);
@@ -3742,98 +4200,106 @@ begin
 	execute 'lock table ' || v_tab_fqname || ' in access exclusive mode';
 
 	-- ----
-	-- Procedures are different on origin and subscriber
+	-- Create the log and the deny access triggers
 	-- ----
-	if v_no_id = v_tab_row.set_origin then
+	execute 'create trigger "_gamersmafia_logtrigger"' || 
+			' after insert or update or delete on ' ||
+			v_tab_fqname || ' for each row execute procedure "_gamersmafia".logTrigger (' ||
+                               pg_catalog.quote_literal('_gamersmafia') || ',' || 
+				pg_catalog.quote_literal(p_tab_id) || ',' || 
+				pg_catalog.quote_literal(v_tab_attkind) || ');';
+
+	execute 'create trigger "_gamersmafia_denyaccess" ' || 
+			'before insert or update or delete on ' ||
+			v_tab_fqname || ' for each row execute procedure ' ||
+			'"_gamersmafia".denyAccess (' || pg_catalog.quote_literal('_gamersmafia') || ');';
+
+	perform "_gamersmafia".alterTableConfigureTriggers (p_tab_id);
+	return p_tab_id;
+end;
+$_$
+    LANGUAGE plpgsql;
+
+
+--
+-- Name: FUNCTION altertableaddtriggers(integer); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION altertableaddtriggers(integer) IS 'alterTableAddTriggers(tab_id)
+
+Adds the log and deny access triggers to a replicated table.';
+
+
+--
+-- Name: altertableconfiguretriggers(integer); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION altertableconfiguretriggers(integer) RETURNS integer
+    AS $_$
+declare
+	p_tab_id			alias for $1;
+	v_no_id				int4;
+	v_tab_row			record;
+	v_tab_fqname		text;
+	v_n					int4;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table "_gamersmafia".sl_config_lock;
+
+	-- ----
+	-- Get our local node ID
+	-- ----
+	v_no_id := "_gamersmafia".getLocalNodeId('_gamersmafia');
+
+	-- ----
+	-- Get the sl_table row and the current tables origin.
+	-- ----
+	select T.tab_reloid, T.tab_set,
+			S.set_origin, PGX.indexrelid,
+			"_gamersmafia".slon_quote_brute(PGN.nspname) || '.' ||
+			"_gamersmafia".slon_quote_brute(PGC.relname) as tab_fqname
+			into v_tab_row
+			from "_gamersmafia".sl_table T, "_gamersmafia".sl_set S,
+				"pg_catalog".pg_class PGC, "pg_catalog".pg_namespace PGN,
+				"pg_catalog".pg_index PGX, "pg_catalog".pg_class PGXC
+			where T.tab_id = p_tab_id
+				and T.tab_set = S.set_id
+				and T.tab_reloid = PGC.oid
+				and PGC.relnamespace = PGN.oid
+				and PGX.indrelid = T.tab_reloid
+				and PGX.indexrelid = PGXC.oid
+				and PGXC.relname = T.tab_idxname
+				for update;
+	if not found then
+		raise exception 'Slony-I: alterTableConfigureTriggers(): Table with id % not found', p_tab_id;
+	end if;
+	v_tab_fqname = v_tab_row.tab_fqname;
+
+	-- ----
+	-- Configuration depends on the origin of the table
+	-- ----
+	if v_tab_row.set_origin = v_no_id then
 		-- ----
-		-- On the Origin we add the log trigger to the table and done
+		-- On the origin the log trigger is configured like a default
+		-- user trigger and the deny access trigger is disabled.
 		-- ----
-		execute 'create trigger "_gamersmafia_logtrigger_' || 
-				p_tab_id || '" after insert or update or delete on ' ||
-				v_tab_fqname || ' for each row execute procedure
-				"_gamersmafia".logTrigger (''_gamersmafia'', ''' || 
-					p_tab_id || ''', ''' || 
-					v_tab_attkind || ''');';
+		execute 'alter table ' || v_tab_fqname ||
+				' enable trigger "_gamersmafia_logtrigger"';
+		execute 'alter table ' || v_tab_fqname ||
+				' disable trigger "_gamersmafia_denyaccess"';
 	else
 		-- ----
-		-- On the subscriber the thing is a bit more difficult. We want
-		-- to disable all user- and foreign key triggers and rules.
+		-- On a replica the log trigger is disabled and the
+		-- deny access trigger fires in origin session role.
 		-- ----
+		execute 'alter table ' || v_tab_fqname ||
+				' disable trigger "_gamersmafia_logtrigger"';
+		execute 'alter table ' || v_tab_fqname ||
+				' enable trigger "_gamersmafia_denyaccess"';
 
-
-		-- ----
-		-- Check to see if there are any trigger conflicts...
-		-- ----
-		v_tgbad := 'false';
-		for v_trec in 
-			select pc.relname, tg1.tgname from
-			"pg_catalog".pg_trigger tg1, 
-			"pg_catalog".pg_trigger tg2,
-			"pg_catalog".pg_class pc,
-			"pg_catalog".pg_index pi,
-			"_gamersmafia".sl_table tab
-			where 
-			 tg1.tgname = tg2.tgname and        -- Trigger names match
-			 tg1.tgrelid = tab.tab_reloid and   -- trigger 1 is on the table
-			 pi.indexrelid = tg2.tgrelid and    -- trigger 2 is on the index
-			 pi.indrelid = tab.tab_reloid and   -- indexes table is this table
-			 pc.oid = tab.tab_reloid
-                loop
-			raise notice 'Slony-I: alterTableForReplication(): multiple instances of trigger % on table %',
-				v_trec.tgname, v_trec.relname;
-			v_tgbad := 'true';
-		end loop;
-		if v_tgbad then
-			raise exception 'Slony-I: Unable to disable triggers';
-		end if;  		
-
-		-- ----
-		-- Disable all existing triggers
-		-- ----
-		update "pg_catalog".pg_trigger
-				set tgrelid = v_tab_row.indexrelid
-				where tgrelid = v_tab_row.tab_reloid
-				and not exists (
-						select true from "_gamersmafia".sl_table TAB,
-								"_gamersmafia".sl_trigger TRIG
-								where TAB.tab_reloid = tgrelid
-								and TAB.tab_id = TRIG.trig_tabid
-								and TRIG.trig_tgname = tgname
-					);
-		get diagnostics v_n = row_count;
-		if v_n > 0 then
-			update "pg_catalog".pg_class
-					set reltriggers = reltriggers - v_n
-					where oid = v_tab_row.tab_reloid;
-		end if;
-
-		-- ----
-		-- Disable all existing rules
-		-- ----
-		update "pg_catalog".pg_rewrite
-				set ev_class = v_tab_row.indexrelid
-				where ev_class = v_tab_row.tab_reloid;
-		get diagnostics v_n = row_count;
-		if v_n > 0 then
-			update "pg_catalog".pg_class
-					set relhasrules = false
-					where oid = v_tab_row.tab_reloid;
-		end if;
-
-		-- ----
-		-- Add the trigger that denies write access to replicated tables
-		-- ----
-		execute 'create trigger "_gamersmafia_denyaccess_' || 
-				p_tab_id || '" before insert or update or delete on ' ||
-				v_tab_fqname || ' for each row execute procedure
-				"_gamersmafia".denyAccess (''_gamersmafia'');';
 	end if;
-
-	-- ----
-	-- Mark the table altered in our configuration
-	-- ----
-	update "_gamersmafia".sl_table
-			set tab_altered = true where tab_id = p_tab_id;
 
 	return p_tab_id;
 end;
@@ -3842,17 +4308,86 @@ $_$
 
 
 --
--- Name: FUNCTION altertableforreplication(integer); Type: COMMENT; Schema: _gamersmafia; Owner: -
+-- Name: FUNCTION altertableconfiguretriggers(integer); Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON FUNCTION altertableforreplication(integer) IS 'alterTableForReplication(tab_id)
+COMMENT ON FUNCTION altertableconfiguretriggers(integer) IS 'alterTableConfigureTriggers (tab_id)
 
-Sets up a table for replication.
-On the origin, this involves adding the "logTrigger()" trigger to the
-table.
+Set the enable/disable configuration for the replication triggers
+according to the origin of the set.';
 
-On a subscriber node, this involves disabling triggers and rules, and
-adding in the trigger that denies write access to replicated tables.';
+
+--
+-- Name: altertabledroptriggers(integer); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION altertabledroptriggers(integer) RETURNS integer
+    AS $_$
+declare
+	p_tab_id			alias for $1;
+	v_no_id				int4;
+	v_tab_row			record;
+	v_tab_fqname		text;
+	v_n					int4;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table "_gamersmafia".sl_config_lock;
+
+	-- ----
+	-- Get our local node ID
+	-- ----
+	v_no_id := "_gamersmafia".getLocalNodeId('_gamersmafia');
+
+	-- ----
+	-- Get the sl_table row and the current tables origin.
+	-- ----
+	select T.tab_reloid, T.tab_set,
+			S.set_origin, PGX.indexrelid,
+			"_gamersmafia".slon_quote_brute(PGN.nspname) || '.' ||
+			"_gamersmafia".slon_quote_brute(PGC.relname) as tab_fqname
+			into v_tab_row
+			from "_gamersmafia".sl_table T, "_gamersmafia".sl_set S,
+				"pg_catalog".pg_class PGC, "pg_catalog".pg_namespace PGN,
+				"pg_catalog".pg_index PGX, "pg_catalog".pg_class PGXC
+			where T.tab_id = p_tab_id
+				and T.tab_set = S.set_id
+				and T.tab_reloid = PGC.oid
+				and PGC.relnamespace = PGN.oid
+				and PGX.indrelid = T.tab_reloid
+				and PGX.indexrelid = PGXC.oid
+				and PGXC.relname = T.tab_idxname
+				for update;
+	if not found then
+		raise exception 'Slony-I: alterTableDropTriggers(): Table with id % not found', p_tab_id;
+	end if;
+	v_tab_fqname = v_tab_row.tab_fqname;
+
+	execute 'lock table ' || v_tab_fqname || ' in access exclusive mode';
+
+	-- ----
+	-- Drop both triggers
+	-- ----
+	execute 'drop trigger "_gamersmafia_logtrigger" on ' || 
+			v_tab_fqname;
+
+	execute 'drop trigger "_gamersmafia_denyaccess" on ' || 
+			v_tab_fqname;
+				
+	return p_tab_id;
+end;
+$_$
+    LANGUAGE plpgsql;
+
+
+--
+-- Name: FUNCTION altertabledroptriggers(integer); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION altertabledroptriggers(integer) IS 'alterTableDropTriggers (tab_id)
+
+Remove the log and deny access triggers from a table.';
 
 
 --
@@ -3971,6 +4506,13 @@ $_$
 
 COMMENT ON FUNCTION altertablerestore(integer) IS 'alterTableRestore (tab_id)
 
+Note: This function only functions properly when used on pre-2.0
+systems being converted into 2.0 form.  In Slony-I 2.0, the trigger
+handling has changed substantially, such that:
+
+- There are *two* triggers on each table, created at "creation time", and
+- There is no need to run "restore" as part of the DDL/EXECUTE SCRIPT process.
+
 Restores table tab_id from being replicated.
 
 On the origin, this simply involves dropping the "logtrigger" trigger.
@@ -3989,8 +4531,8 @@ declare
   moduleversion	text;
 begin
   select into moduleversion "_gamersmafia".getModuleVersion();
-  if moduleversion <> '1.2.13' then
-      raise exception 'Slonik version: 1.2.13 != Slony-I version in PG build %',
+  if moduleversion <> '2.0.1' then
+      raise exception 'Slonik version: 2.0.1 != Slony-I version in PG build %',
              moduleversion;
   end if;
   return null;
@@ -4008,18 +4550,24 @@ schema/functions.';
 
 
 --
--- Name: cleanupevent(); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+-- Name: cleanupevent(interval, boolean); Type: FUNCTION; Schema: _gamersmafia; Owner: -
 --
 
-CREATE FUNCTION cleanupevent() RETURNS integer
-    AS $$
+CREATE FUNCTION cleanupevent(interval, boolean) RETURNS integer
+    AS $_$
 declare
+	p_interval alias for $1;
+	p_deletelogs alias for $2;
 	v_max_row	record;
 	v_min_row	record;
 	v_max_sync	int8;
+	v_origin	int8;
+	v_seqno		int8;
+	v_xmin		bigint;
+	v_rc            int8;
 begin
 	-- ----
-	-- First remove all but the oldest confirm row per origin,receiver pair
+	-- First remove all confirmations where origin/receiver no longer exist
 	-- ----
 	delete from "_gamersmafia".sl_confirm
 				where con_origin not in (select no_id from "_gamersmafia".sl_node);
@@ -4034,7 +4582,7 @@ begin
 	-- ----
 	for v_max_row in select con_origin, con_received, max(con_seqno) as con_seqno
 				from "_gamersmafia".sl_confirm
-				where con_timestamp < (CURRENT_TIMESTAMP - '10 min'::interval)
+				where con_timestamp < (CURRENT_TIMESTAMP - p_interval)
 				group by con_origin, con_received
 	loop
 		delete from "_gamersmafia".sl_confirm
@@ -4091,20 +4639,39 @@ begin
 	-- ----
 	perform "_gamersmafia".cleanupNodelock();
 
+	-- ----
+	-- Find the eldest event left, for each origin
+	-- ----
+        for v_origin, v_seqno, v_xmin in
+	  select ev_origin, ev_seqno, "pg_catalog".txid_snapshot_xmin(ev_snapshot) from "_gamersmafia".sl_event
+          where (ev_origin, ev_seqno) in (select ev_origin, min(ev_seqno) from "_gamersmafia".sl_event where ev_type = 'SYNC' group by ev_origin)
+	loop
+		if p_deletelogs then
+			delete from "_gamersmafia".sl_log_1 where log_origin = v_origin and log_txid < v_xmin;		
+			delete from "_gamersmafia".sl_log_2 where log_origin = v_origin and log_txid < v_xmin;		
+		end if;
+		delete from "_gamersmafia".sl_seqlog where seql_origin = v_origin and seql_ev_seqno < v_seqno;
+        end loop;
+	
+	v_rc := "_gamersmafia".logswitch_finish();
+	if v_rc = 0 then   -- no switch in progress
+		perform "_gamersmafia".logswitch_start();
+	end if;
+
 	return 0;
 end;
-$$
+$_$
     LANGUAGE plpgsql;
 
 
 --
--- Name: FUNCTION cleanupevent(); Type: COMMENT; Schema: _gamersmafia; Owner: -
+-- Name: FUNCTION cleanupevent(interval, boolean); Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON FUNCTION cleanupevent() IS 'cleaning old data out of sl_confirm, sl_event.  Removes all but the
+COMMENT ON FUNCTION cleanupevent(interval, boolean) IS 'cleaning old data out of sl_confirm, sl_event.  Removes all but the
 last sl_confirm row per (origin,receiver), and then removes all events
 that are confirmed by all nodes in the whole cluster up to the last
-SYNC.  ';
+SYNC.  Deletes now-orphaned entries from sl_log_* if delete_logs parameter is set';
 
 
 --
@@ -4140,6 +4707,140 @@ $$
 --
 
 COMMENT ON FUNCTION cleanupnodelock() IS 'Clean up stale entries when restarting slon';
+
+
+--
+-- Name: clonenodefinish(integer, integer); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION clonenodefinish(integer, integer) RETURNS integer
+    AS $_$
+declare
+	p_no_id			alias for $1;
+	p_no_provider	alias for $2;
+	v_row			record;
+begin
+	perform "pg_catalog".setval('"_gamersmafia".sl_local_node_id', p_no_id);
+
+	for v_row in select sub_set from "_gamersmafia".sl_subscribe
+			where sub_receiver = p_no_id
+	loop
+		perform "_gamersmafia".updateReloid(v_row.sub_set, p_no_id);
+	end loop;
+
+	perform "_gamersmafia".RebuildListenEntries();
+
+	delete from "_gamersmafia".sl_confirm
+		where con_received = p_no_id;
+	insert into "_gamersmafia".sl_confirm
+		(con_origin, con_received, con_seqno, con_timestamp)
+		select con_origin, p_no_id, con_seqno, con_timestamp
+		from "_gamersmafia".sl_confirm
+		where con_received = p_no_provider;
+	insert into "_gamersmafia".sl_confirm
+		(con_origin, con_received, con_seqno, con_timestamp)
+		select p_no_provider, p_no_id, 
+				(select max(ev_seqno) from "_gamersmafia".sl_event
+					where ev_origin = p_no_provider), current_timestamp;
+
+	return 0;
+end;
+$_$
+    LANGUAGE plpgsql;
+
+
+--
+-- Name: FUNCTION clonenodefinish(integer, integer); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION clonenodefinish(integer, integer) IS 'Internal part of cloneNodePrepare().';
+
+
+--
+-- Name: clonenodeprepare(integer, integer, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION clonenodeprepare(integer, integer, text) RETURNS integer
+    AS $_$
+declare
+	p_no_id			alias for $1;
+	p_no_provider	alias for $2;
+	p_no_comment	alias for $3;
+begin
+	-- ----
+	-- Grab the central configuration lock
+	-- ----
+	lock table "_gamersmafia".sl_config_lock;
+
+	perform "_gamersmafia".cloneNodePrepare_int (p_no_id, p_no_provider, p_no_comment);
+	return  "_gamersmafia".createEvent('_gamersmafia', 'CLONE_NODE',
+									p_no_id::text, p_no_provider::text,
+									p_no_comment::text);
+end;
+$_$
+    LANGUAGE plpgsql;
+
+
+--
+-- Name: FUNCTION clonenodeprepare(integer, integer, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION clonenodeprepare(integer, integer, text) IS 'Prepare for cloning a node.';
+
+
+--
+-- Name: clonenodeprepare_int(integer, integer, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION clonenodeprepare_int(integer, integer, text) RETURNS integer
+    AS $_$
+declare
+	p_no_id			alias for $1;
+	p_no_provider	alias for $2;
+	p_no_comment	alias for $3;
+begin
+	insert into "_gamersmafia".sl_node
+		(no_id, no_active, no_comment)
+		select p_no_id, no_active, p_no_comment
+		from "_gamersmafia".sl_node
+		where no_id = p_no_provider;
+
+	insert into "_gamersmafia".sl_path
+		(pa_server, pa_client, pa_conninfo, pa_connretry)
+		select pa_server, p_no_id, 'Event pending', pa_connretry
+		from "_gamersmafia".sl_path
+		where pa_client = p_no_provider;
+	insert into "_gamersmafia".sl_path
+		(pa_server, pa_client, pa_conninfo, pa_connretry)
+		select p_no_id, pa_client, 'Event pending', pa_connretry
+		from "_gamersmafia".sl_path
+		where pa_server = p_no_provider;
+
+	insert into "_gamersmafia".sl_subscribe
+		(sub_set, sub_provider, sub_receiver, sub_forward, sub_active)
+		select sub_set, sub_provider, p_no_id, sub_forward, sub_active
+		from "_gamersmafia".sl_subscribe
+		where sub_receiver = p_no_provider;
+
+	insert into "_gamersmafia".sl_confirm
+		(con_origin, con_received, con_seqno, con_timestamp)
+		select con_origin, p_no_id, con_seqno, con_timestamp
+		from "_gamersmafia".sl_confirm
+		where con_received = p_no_provider;
+
+	perform "_gamersmafia".RebuildListenEntries();
+
+	return 0;
+end;
+$_$
+    LANGUAGE plpgsql;
+
+
+--
+-- Name: FUNCTION clonenodeprepare_int(integer, integer, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION clonenodeprepare_int(integer, integer, text) IS 'Internal part of cloneNodePrepare().';
 
 
 --
@@ -4179,6 +4880,168 @@ In PG versions > 7.3, this looks like (field1,field2,...fieldn)';
 
 
 --
+-- Name: createevent(name, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION createevent(name, text) RETURNS bigint
+    AS '$libdir/slony1_funcs', '_Slony_I_createEvent'
+    LANGUAGE c;
+
+
+--
+-- Name: FUNCTION createevent(name, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION createevent(name, text) IS 'FUNCTION createEvent (cluster_name, ev_type [, ev_data [...]])
+
+Create an sl_event entry';
+
+
+--
+-- Name: createevent(name, text, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION createevent(name, text, text) RETURNS bigint
+    AS '$libdir/slony1_funcs', '_Slony_I_createEvent'
+    LANGUAGE c;
+
+
+--
+-- Name: FUNCTION createevent(name, text, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION createevent(name, text, text) IS 'FUNCTION createEvent (cluster_name, ev_type [, ev_data [...]])
+
+Create an sl_event entry';
+
+
+--
+-- Name: createevent(name, text, text, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION createevent(name, text, text, text) RETURNS bigint
+    AS '$libdir/slony1_funcs', '_Slony_I_createEvent'
+    LANGUAGE c;
+
+
+--
+-- Name: FUNCTION createevent(name, text, text, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION createevent(name, text, text, text) IS 'FUNCTION createEvent (cluster_name, ev_type [, ev_data [...]])
+
+Create an sl_event entry';
+
+
+--
+-- Name: createevent(name, text, text, text, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION createevent(name, text, text, text, text) RETURNS bigint
+    AS '$libdir/slony1_funcs', '_Slony_I_createEvent'
+    LANGUAGE c;
+
+
+--
+-- Name: FUNCTION createevent(name, text, text, text, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION createevent(name, text, text, text, text) IS 'FUNCTION createEvent (cluster_name, ev_type [, ev_data [...]])
+
+Create an sl_event entry';
+
+
+--
+-- Name: createevent(name, text, text, text, text, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION createevent(name, text, text, text, text, text) RETURNS bigint
+    AS '$libdir/slony1_funcs', '_Slony_I_createEvent'
+    LANGUAGE c;
+
+
+--
+-- Name: FUNCTION createevent(name, text, text, text, text, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION createevent(name, text, text, text, text, text) IS 'FUNCTION createEvent (cluster_name, ev_type [, ev_data [...]])
+
+Create an sl_event entry';
+
+
+--
+-- Name: createevent(name, text, text, text, text, text, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION createevent(name, text, text, text, text, text, text) RETURNS bigint
+    AS '$libdir/slony1_funcs', '_Slony_I_createEvent'
+    LANGUAGE c;
+
+
+--
+-- Name: FUNCTION createevent(name, text, text, text, text, text, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION createevent(name, text, text, text, text, text, text) IS 'FUNCTION createEvent (cluster_name, ev_type [, ev_data [...]])
+
+Create an sl_event entry';
+
+
+--
+-- Name: createevent(name, text, text, text, text, text, text, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION createevent(name, text, text, text, text, text, text, text) RETURNS bigint
+    AS '$libdir/slony1_funcs', '_Slony_I_createEvent'
+    LANGUAGE c;
+
+
+--
+-- Name: FUNCTION createevent(name, text, text, text, text, text, text, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION createevent(name, text, text, text, text, text, text, text) IS 'FUNCTION createEvent (cluster_name, ev_type [, ev_data [...]])
+
+Create an sl_event entry';
+
+
+--
+-- Name: createevent(name, text, text, text, text, text, text, text, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION createevent(name, text, text, text, text, text, text, text, text) RETURNS bigint
+    AS '$libdir/slony1_funcs', '_Slony_I_createEvent'
+    LANGUAGE c;
+
+
+--
+-- Name: FUNCTION createevent(name, text, text, text, text, text, text, text, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION createevent(name, text, text, text, text, text, text, text, text) IS 'FUNCTION createEvent (cluster_name, ev_type [, ev_data [...]])
+
+Create an sl_event entry';
+
+
+--
+-- Name: createevent(name, text, text, text, text, text, text, text, text, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION createevent(name, text, text, text, text, text, text, text, text, text) RETURNS bigint
+    AS '$libdir/slony1_funcs', '_Slony_I_createEvent'
+    LANGUAGE c;
+
+
+--
+-- Name: FUNCTION createevent(name, text, text, text, text, text, text, text, text, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION createevent(name, text, text, text, text, text, text, text, text, text) IS 'FUNCTION createEvent (cluster_name, ev_type [, ev_data [...]])
+
+Create an sl_event entry';
+
+
+--
 -- Name: ddlscript_complete(integer, text, integer); Type: FUNCTION; Schema: _gamersmafia; Owner: -
 --
 
@@ -4192,12 +5055,8 @@ declare
 begin
 	perform "_gamersmafia".updateRelname(p_set_id, p_only_on_node);
 	if p_only_on_node = -1 then
-		perform "_gamersmafia".alterTableForReplication(tab_id) from "_gamersmafia".sl_table where tab_set in (select set_id from "_gamersmafia".sl_set where set_origin = "_gamersmafia".getLocalNodeId('_gamersmafia'));
-
 		return  "_gamersmafia".createEvent('_gamersmafia', 'DDL_SCRIPT', 
 			p_set_id::text, p_script::text, p_only_on_node::text);
-	else
-		perform "_gamersmafia".alterTableForReplication(tab_id) from "_gamersmafia".sl_table;
 	end if;
 	return NULL;
 end;
@@ -4227,14 +5086,6 @@ declare
 	p_only_on_node		alias for $2;
 	v_row				record;
 begin
-	-- ----
-	-- Put all tables back into replicated mode
-	-- ----
-	for v_row in select * from "_gamersmafia".sl_table
-	loop
-		perform "_gamersmafia".alterTableForReplication(v_row.tab_id);
-	end loop;
-
 	return p_set_id;
 end;
 $_$
@@ -4267,11 +5118,8 @@ begin
 	-- ----
 	lock table "_gamersmafia".sl_config_lock;
 
-	
 	-- ----
 	-- Check that the set exists and originates here
-	-- unless only_on_node was specified (then it can be applied to
-	-- that node because that is what the user wanted)
 	-- ----
 	select set_origin into v_set_origin
 			from "_gamersmafia".sl_set
@@ -4280,22 +5128,22 @@ begin
 	if not found then
 		raise exception 'Slony-I: set % not found', p_set_id;
 	end if;
-
 	if p_only_on_node = -1 then
 		if v_set_origin <> "_gamersmafia".getLocalNodeId('_gamersmafia') then
 			raise exception 'Slony-I: set % does not originate on local node',
 				p_set_id;
 		end if;
 		-- ----
-		-- Create a SYNC event, run the script and generate the DDL_SCRIPT event
+		-- Create a SYNC event
 		-- ----
 		perform "_gamersmafia".createEvent('_gamersmafia', 'SYNC', NULL);
-		perform "_gamersmafia".alterTableRestore(tab_id) from "_gamersmafia".sl_table where tab_set in (select set_id from "_gamersmafia".sl_set where set_origin = "_gamersmafia".getLocalNodeId('_gamersmafia'));
 	else
-		-- ----
-		-- If doing "only on one node" - restore ALL tables irrespective of set
-		-- ----
-		perform "_gamersmafia".alterTableRestore(tab_id) from "_gamersmafia".sl_table;
+		-- If running "ONLY ON NODE", there are two possibilities:
+		-- 1.  Running on origin, where denyaccess() triggers are already shut off
+		-- 2.  Running on replica, where we need the LOCAL role to suppress denyaccess() triggers
+		if (v_set_origin <> "_gamersmafia".getLocalNodeId('_gamersmafia')) then
+			execute 'set session_replication_role to local;';
+		end if;
 	end if;
 	return 1;
 end;
@@ -4356,13 +5204,6 @@ begin
 		return 0;
 	end if;
 
-	-- ----
-	-- Restore all original triggers and rules of all sets
-	-- ----
-	for v_row in select * from "_gamersmafia".sl_table
-	loop
-		perform "_gamersmafia".alterTableRestore(v_row.tab_id);
-	end loop;
 	return p_set_id;
 end;
 $_$
@@ -4380,89 +5221,19 @@ triggers/rules to original state.';
 
 
 --
--- Name: determineattkindserial(text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+-- Name: denyaccess(); Type: FUNCTION; Schema: _gamersmafia; Owner: -
 --
 
-CREATE FUNCTION determineattkindserial(text) RETURNS text
-    AS $_$
-declare
-	p_tab_fqname	alias for $1;
-	v_tab_fqname_quoted	text default '';
-	v_attkind		text default '';
-	v_attrow		record;
-	v_have_serial	bool default 'f';
-begin
-	v_tab_fqname_quoted := "_gamersmafia".slon_quote_input(p_tab_fqname);
-	--
-	-- Loop over the attributes of this relation
-	-- and add a "v" for every user column, and a "k"
-	-- if we find the Slony-I special serial column.
-	--
-	for v_attrow in select PGA.attnum, PGA.attname
-			from "pg_catalog".pg_class PGC,
-			    "pg_catalog".pg_namespace PGN,
-				"pg_catalog".pg_attribute PGA
-			where "_gamersmafia".slon_quote_brute(PGN.nspname) || '.' ||
-			    "_gamersmafia".slon_quote_brute(PGC.relname) = v_tab_fqname_quoted
-				and PGN.oid = PGC.relnamespace
-				and PGA.attrelid = PGC.oid
-				and not PGA.attisdropped
-				and PGA.attnum > 0
-			order by attnum
-	loop
-		if v_attrow.attname = '_Slony-I_gamersmafia_rowID' then
-		    v_attkind := v_attkind || 'k';
-			v_have_serial := 't';
-		else
-			v_attkind := v_attkind || 'v';
-		end if;
-	end loop;
-	
-	--
-	-- A table must have at least one attribute, so not finding
-	-- anything means the table does not exist.
-	--
-	if not found then
-		raise exception 'Slony-I: table % not found', v_tab_fqname_quoted;
-	end if;
-
-	--
-	-- If it does not have the special serial column, we
-	-- should not have been called in the first place.
-	--
-	if not v_have_serial then
-		raise exception 'Slony-I: table % does not have the serial key',
-				v_tab_fqname_quoted;
-	end if;
-
-	execute 'update ' || v_tab_fqname_quoted ||
-		' set "_Slony-I_gamersmafia_rowID" =' ||
-		' "pg_catalog".nextval(''"_gamersmafia".sl_rowid_seq'');';
-	execute 'alter table only ' || v_tab_fqname_quoted ||
-		' add unique ("_Slony-I_gamersmafia_rowID");';
-	execute 'alter table only ' || v_tab_fqname_quoted ||
-		' alter column "_Slony-I_gamersmafia_rowID" ' ||
-		' set not null;';
-
-	--
-	-- Return the resulting Slony-I attkind
-	--
-	return v_attkind;
-end;
-$_$
-    LANGUAGE plpgsql;
+CREATE FUNCTION denyaccess() RETURNS trigger
+    AS '$libdir/slony1_funcs', '_Slony_I_denyAccess'
+    LANGUAGE c SECURITY DEFINER;
 
 
 --
--- Name: FUNCTION determineattkindserial(text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+-- Name: FUNCTION denyaccess(); Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON FUNCTION determineattkindserial(text) IS 'determineAttKindSerial (tab_fqname)
-
-A table was that was specified without a primary key is added to the
-replication. Assume that tableAddKey() was called before and finish
-the creation of the serial column. The return an attkind according to
-that.';
+COMMENT ON FUNCTION denyaccess() IS 'Trigger function to prevent modifications to a table on a subscriber';
 
 
 --
@@ -4562,6 +5333,9 @@ begin
 		end if;
 	end loop;
 
+	-- Strip off trailing v characters as they are not needed by the logtrigger
+	v_attkind := pg_catalog.rtrim(v_attkind, 'v');
+
 	--
 	-- Return the resulting attkind
 	--
@@ -4580,51 +5354,6 @@ COMMENT ON FUNCTION determineattkindunique(text, name) IS 'determineAttKindUniqu
 Given a tablename, return the Slony-I specific attkind (used for the
 log trigger) of the table. Use the specified unique index or the
 primary key (if indexname is NULL).';
-
-
---
--- Name: determineidxnameserial(text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
---
-
-CREATE FUNCTION determineidxnameserial(text) RETURNS name
-    AS $_$
-declare
-	p_tab_fqname	alias for $1;
-	v_tab_fqname_quoted	text default '';
-	v_row			record;
-begin
-	v_tab_fqname_quoted := "_gamersmafia".slon_quote_input(p_tab_fqname);
-	--
-	-- Lookup the table name alone
-	--
-	select PGC.relname
-			into v_row
-			from "pg_catalog".pg_class PGC,
-				"pg_catalog".pg_namespace PGN
-			where "_gamersmafia".slon_quote_brute(PGN.nspname) || '.' ||
-				"_gamersmafia".slon_quote_brute(PGC.relname) = v_tab_fqname_quoted
-				and PGN.oid = PGC.relnamespace;
-	if not found then
-		raise exception 'Slony-I: table % not found',
-				v_tab_fqname_quoted;
-	end if;
-
-	--
-	-- Return the found index name
-	--
-	return v_row.relname || '__Slony-I_gamersmafia_rowID_key';
-end;
-$_$
-    LANGUAGE plpgsql;
-
-
---
--- Name: FUNCTION determineidxnameserial(text); Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON FUNCTION determineidxnameserial(text) IS 'determineIdxnameSerial (tab_fqname)
-
-Given a tablename, construct the index name of the serial column.';
 
 
 --
@@ -5113,7 +5842,7 @@ $_$
 --
 
 COMMENT ON FUNCTION dropset(integer) IS 'Process DROP_SET event to drop replication of set set_id.  This involves:
-- Restoring original triggers and rules
+- Removing log and deny access triggers
 - Removing all traces of the set configuration, including sequences, tables, subscribers, syncs, and the set itself';
 
 
@@ -5140,8 +5869,7 @@ begin
 			where tab_set = p_set_id
 			order by tab_id
 	loop
-		perform "_gamersmafia".alterTableRestore(v_tab_row.tab_id);
-		perform "_gamersmafia".tableDropKey(v_tab_row.tab_id);
+		perform "_gamersmafia".alterTableDropTriggers(v_tab_row.tab_id);
 	end loop;
 
 	-- ----
@@ -5168,100 +5896,6 @@ begin
 end;
 $_$
     LANGUAGE plpgsql;
-
-
---
--- Name: droptrigger(integer, name); Type: FUNCTION; Schema: _gamersmafia; Owner: -
---
-
-CREATE FUNCTION droptrigger(integer, name) RETURNS bigint
-    AS $_$
-declare
-	p_trig_tabid		alias for $1;
-	p_trig_tgname		alias for $2;
-begin
-	perform "_gamersmafia".dropTrigger_int(p_trig_tabid, p_trig_tgname);
-	return  "_gamersmafia".createEvent('_gamersmafia', 'DROP_TRIGGER',
-			p_trig_tabid::text, p_trig_tgname::text);
-end;
-$_$
-    LANGUAGE plpgsql;
-
-
---
--- Name: FUNCTION droptrigger(integer, name); Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON FUNCTION droptrigger(integer, name) IS 'dropTrigger (trig_tabid, trig_tgname)
-
-Submits DROP_TRIGGER event to indicate that trigger trig_tgname on
-replicated table trig_tabid WILL be disabled.';
-
-
---
--- Name: droptrigger_int(integer, name); Type: FUNCTION; Schema: _gamersmafia; Owner: -
---
-
-CREATE FUNCTION droptrigger_int(integer, name) RETURNS integer
-    AS $_$
-declare
-	p_trig_tabid		alias for $1;
-	p_trig_tgname		alias for $2;
-	v_tab_altered		boolean;
-begin
-	-- ----
-	-- Grab the central configuration lock
-	-- ----
-	lock table "_gamersmafia".sl_config_lock;
-
-	-- ----
-	-- Get the current table status (altered or not)
-	-- ----
-	select tab_altered into v_tab_altered
-			from "_gamersmafia".sl_table where tab_id = p_trig_tabid;
-	if not found then
-		-- ----
-		-- Not found is no hard error here, because that might
-		-- mean that we are not subscribed to that set
-		-- ----
-		return 0;
-	end if;
-
-	-- ----
-	-- If the table is modified for replication, restore the original state
-	-- ----
-	if v_tab_altered then
-		perform "_gamersmafia".alterTableRestore(p_trig_tabid);
-	end if;
-
-	-- ----
-	-- Remove the entry from sl_trigger
-	-- ----
-	delete from "_gamersmafia".sl_trigger
-			where trig_tabid = p_trig_tabid
-			  and trig_tgname = p_trig_tgname;
-
-	-- ----
-	-- Put the table back into replicated state if it was
-	-- ----
-	if v_tab_altered then
-		perform "_gamersmafia".alterTableForReplication(p_trig_tabid);
-	end if;
-
-	return p_trig_tabid;
-end;
-$_$
-    LANGUAGE plpgsql;
-
-
---
--- Name: FUNCTION droptrigger_int(integer, name); Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON FUNCTION droptrigger_int(integer, name) IS 'dropTrigger_int (trig_tabid, trig_tgname)
-
-Processes DROP_TRIGGER event to make sure that trigger trig_tgname on
-replicated table trig_tabid IS disabled.';
 
 
 --
@@ -5606,12 +6240,6 @@ begin
 			-- obsolete setsync status.
 			-- ----
 			if p_backup_node = "_gamersmafia".getLocalNodeId('_gamersmafia') then
-				for v_row2 in select * from "_gamersmafia".sl_table
-						where tab_set = v_row.set_id
-				loop
-					perform "_gamersmafia".alterTableRestore(v_row2.tab_id);
-				end loop;
-
 				update "_gamersmafia".sl_set set set_origin = p_backup_node
 						where set_id = v_row.set_id;
 
@@ -5620,8 +6248,9 @@ begin
 
 				for v_row2 in select * from "_gamersmafia".sl_table
 						where tab_set = v_row.set_id
+						order by tab_id
 				loop
-					perform "_gamersmafia".alterTableForReplication(v_row2.tab_id);
+					perform "_gamersmafia".alterTableConfigureTriggers(v_row2.tab_id);
 				end loop;
 			end if;
 
@@ -5715,11 +6344,11 @@ begin
 
 	insert into "_gamersmafia".sl_event
 			(ev_origin, ev_seqno, ev_timestamp,
-			ev_minxid, ev_maxxid, ev_xip,
+			ev_snapshot, 
 			ev_type, ev_data1, ev_data2, ev_data3)
 			values 
 			(p_failed_node, p_ev_seqfake, CURRENT_TIMESTAMP,
-			v_row.ev_minxid, v_row.ev_maxxid, v_row.ev_xip,
+			v_row.ev_snapshot, 
 			'FAILOVER_SET', p_failed_node::text, p_backup_node::text,
 			p_set_id::text);
 	insert into "_gamersmafia".sl_confirm
@@ -5727,8 +6356,6 @@ begin
 			values
 			(p_failed_node, "_gamersmafia".getLocalNodeId('_gamersmafia'),
 			p_ev_seqfake, CURRENT_TIMESTAMP);
-	notify "_gamersmafia_Event";
-	notify "_gamersmafia_Confirm";
 	notify "_gamersmafia_Restart";
 
 	perform "_gamersmafia".failoverSet_int(p_failed_node,
@@ -5775,12 +6402,6 @@ begin
 	-- trigger and protection stuff
 	-- ----
 	if p_backup_node = "_gamersmafia".getLocalNodeId('_gamersmafia') then
-		for v_row in select * from "_gamersmafia".sl_table
-				where tab_set = p_set_id
-		loop
-			perform "_gamersmafia".alterTableRestore(v_row.tab_id);
-		end loop;
-
 		delete from "_gamersmafia".sl_setsync
 				where ssy_setid = p_set_id;
 		delete from "_gamersmafia".sl_subscribe
@@ -5792,16 +6413,17 @@ begin
 
 		for v_row in select * from "_gamersmafia".sl_table
 				where tab_set = p_set_id
+				order by tab_id
 		loop
-			perform "_gamersmafia".alterTableForReplication(v_row.tab_id);
+			perform "_gamersmafia".alterTableConfigureTriggers(v_row.tab_id);
 		end loop;
 		insert into "_gamersmafia".sl_event
 				(ev_origin, ev_seqno, ev_timestamp,
-				ev_minxid, ev_maxxid, ev_xip,
+				ev_snapshot, 
 				ev_type, ev_data1, ev_data2, ev_data3, ev_data4)
 				values
 				(p_backup_node, "pg_catalog".nextval('"_gamersmafia".sl_event_seq'), CURRENT_TIMESTAMP,
-				'0', '0', '',
+				pg_catalog.txid_current_snapshot(),
 				'ACCEPT_SET', p_set_id::text,
 				p_failed_node::text, p_backup_node::text,
 				p_wait_seqno::text);
@@ -5836,18 +6458,18 @@ begin
 		if v_last_sync > 0 then
 			insert into "_gamersmafia".sl_setsync
 					(ssy_setid, ssy_origin, ssy_seqno,
-					ssy_minxid, ssy_maxxid, ssy_xip, ssy_action_list)
+					ssy_snapshot, ssy_action_list)
 					select p_set_id, p_backup_node, v_last_sync,
-					ev_minxid, ev_maxxid, ev_xip, NULL
+					ev_snapshot, NULL
 					from "_gamersmafia".sl_event
 					where ev_origin = p_backup_node
 						and ev_seqno = v_last_sync;
 		else
 			insert into "_gamersmafia".sl_setsync
 					(ssy_setid, ssy_origin, ssy_seqno,
-					ssy_minxid, ssy_maxxid, ssy_xip, ssy_action_list)
+					ssy_snapshot, ssy_action_list)
 					values (p_set_id, p_backup_node, '0',
-					'0', '0', '', NULL);
+					'0', '0', '0:0:', NULL);
 		end if;
 				
 	end if;
@@ -5935,7 +6557,6 @@ begin
 				(con_origin, con_received, con_seqno, con_timestamp)
 				values (p_con_origin, p_con_received, p_con_seqno,
 					p_con_timestamp);
-		notify "_gamersmafia_Confirm";
 		v_max_seqno = p_con_seqno;
 	end if;
 
@@ -5972,7 +6593,9 @@ BEGIN
           and ev_timestamp > now() - p_interval limit 1;
 	if not found then
 		-- If there has been no SYNC in the last interval, then push one
-		perform "_gamersmafia".createEvent('_gamersmafia', 'SYNC', NULL);
+		perform "_gamersmafia".createEvent('_gamersmafia', 'SYNC', NULL) 
+                                         from "_gamersmafia".sl_node n where no_id = "_gamersmafia".getLocalNodeId('_gamersmafia') 
+			and exists (select 1 from "_gamersmafia".sl_set where set_origin = no_id);
 		return 1;
 	else
 		return 0;
@@ -5986,7 +6609,23 @@ $_$
 -- Name: FUNCTION generate_sync_event(interval); Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON FUNCTION generate_sync_event(interval) IS 'Generate a sync event if there has not been one in the requested interval.';
+COMMENT ON FUNCTION generate_sync_event(interval) IS 'Generate a sync event if there has not been one in the requested interval, and this is a provider node.';
+
+
+--
+-- Name: getmoduleversion(); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION getmoduleversion() RETURNS text
+    AS '$libdir/slony1_funcs', '_Slony_I_getModuleVersion'
+    LANGUAGE c SECURITY DEFINER;
+
+
+--
+-- Name: FUNCTION getmoduleversion(); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION getmoduleversion() IS 'Returns the compiled-in version number of the Slony-I shared object';
 
 
 --
@@ -6020,9 +6659,13 @@ begin
 	-- own system to sl_node.
 	-- ----
 	perform setval('"_gamersmafia".sl_local_node_id', p_local_node_id);
-	perform setval('"_gamersmafia".sl_rowid_seq', 
-			p_local_node_id::int8 * '1000000000000000'::int8);
-	perform "_gamersmafia".storeNode_int (p_local_node_id, p_comment, false);
+	perform "_gamersmafia".storeNode_int (p_local_node_id, p_comment);
+
+	if (pg_catalog.current_setting('max_identifier_length')::integer - pg_catalog.length('"_gamersmafia"')) < 5 then
+		raise notice 'Slony-I: Cluster name length [%] versus system max_identifier_length [%] ', pg_catalog.length('"_gamersmafia"'), pg_catalog.current_setting('max_identifier_length');
+		raise notice 'leaves narrow/no room for some Slony-I-generated objects (such as indexes).';
+		raise notice 'You may run into problems later!';
+	end if;
 	
 	return p_local_node_id;
 end;
@@ -6038,6 +6681,38 @@ COMMENT ON FUNCTION initializelocalnode(integer, text) IS 'no_id - Node ID #
 no_comment - Human-oriented comment
 
 Initializes the new node, no_id';
+
+
+--
+-- Name: killbackend(integer, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION killbackend(integer, text) RETURNS integer
+    AS '$libdir/slony1_funcs', '_Slony_I_killBackend'
+    LANGUAGE c;
+
+
+--
+-- Name: FUNCTION killbackend(integer, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION killbackend(integer, text) IS 'Send a signal to a postgres process. Requires superuser rights';
+
+
+--
+-- Name: lockedset(); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION lockedset() RETURNS trigger
+    AS '$libdir/slony1_funcs', '_Slony_I_lockedSet'
+    LANGUAGE c;
+
+
+--
+-- Name: FUNCTION lockedset(); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION lockedset() IS 'Trigger function to prevent modifications to a table before and after a moveSet()';
 
 
 --
@@ -6089,9 +6764,8 @@ begin
 				and PGC.relnamespace = PGN.oid
 			order by tab_id
 	loop
-		execute 'create trigger "_gamersmafia_lockedset_' || 
-				v_tab_row.tab_id || 
-				'" before insert or update or delete on ' ||
+		execute 'create trigger "_gamersmafia_lockedset" ' || 
+				'before insert or update or delete on ' ||
 				v_tab_row.tab_fqname || ' for each row execute procedure
 				"_gamersmafia".lockedSet (''_gamersmafia'');';
 	end loop;
@@ -6100,7 +6774,7 @@ begin
 	-- Remember our snapshots xmax as for the set locking
 	-- ----
 	update "_gamersmafia".sl_set
-			set set_locked = "_gamersmafia".getMaxXid()
+			set set_locked = "pg_catalog".txid_snapshot_xmax("pg_catalog".txid_current_snapshot())
 			where set_id = p_set_id;
 
 	return p_set_id;
@@ -6128,6 +6802,10 @@ CREATE FUNCTION logswitch_finish() RETURNS integer
 DECLARE
 	v_current_status	int4;
 	v_dummy				record;
+	v_origin	int8;
+	v_seqno		int8;
+	v_xmin		bigint;
+	v_purgeable boolean;
 BEGIN
 	-- ----
 	-- Grab the central configuration lock to prevent race conditions
@@ -6151,18 +6829,28 @@ BEGIN
 	-- status = 2: sl_log_1 active, cleanup sl_log_2
 	-- ----
 	if v_current_status = 2 then
+		v_purgeable := 'true';
 		-- ----
 		-- The cleanup thread calls us after it did the delete and
 		-- vacuum of both log tables. If sl_log_2 is empty now, we
 		-- can truncate it and the log switch is done.
 		-- ----
-		for v_dummy in select 1 from "_gamersmafia".sl_log_2 loop
+		
+	        for v_origin, v_seqno, v_xmin in
+		  select ev_origin, ev_seqno, "pg_catalog".txid_snapshot_xmin(ev_snapshot) from "_gamersmafia".sl_event
+	          where (ev_origin, ev_seqno) in (select ev_origin, min(ev_seqno) from "_gamersmafia".sl_event where ev_type = 'SYNC' group by ev_origin)
+		loop
+			if exists (select 1 from "_gamersmafia".sl_log_2 where log_origin = v_origin and log_txid >= v_xmin limit 1) then
+				v_purgeable := 'false';
+			end if;
+	        end loop;
+		if not v_purgeable then
 			-- ----
 			-- Found a row ... log switch is still in progress.
 			-- ----
 			raise notice 'Slony-I: log switch to sl_log_1 still in progress - sl_log_2 not truncated';
 			return -1;
-		end loop;
+		end if;
 
 		raise notice 'Slony-I: log switch to sl_log_1 complete - truncate sl_log_2';
 		truncate "_gamersmafia".sl_log_2;
@@ -6180,18 +6868,27 @@ BEGIN
 	-- status = 3: sl_log_2 active, cleanup sl_log_1
 	-- ----
 	if v_current_status = 3 then
+		v_purgeable := 'true';
 		-- ----
 		-- The cleanup thread calls us after it did the delete and
 		-- vacuum of both log tables. If sl_log_2 is empty now, we
 		-- can truncate it and the log switch is done.
 		-- ----
-		for v_dummy in select 1 from "_gamersmafia".sl_log_1 loop
+	        for v_origin, v_seqno, v_xmin in
+		  select ev_origin, ev_seqno, "pg_catalog".txid_snapshot_xmin(ev_snapshot) from "_gamersmafia".sl_event
+	          where (ev_origin, ev_seqno) in (select ev_origin, min(ev_seqno) from "_gamersmafia".sl_event where ev_type = 'SYNC' group by ev_origin)
+		loop
+			if (exists (select 1 from "_gamersmafia".sl_log_1 where log_origin = v_origin and log_txid >= v_xmin limit 1)) then
+				v_purgeable := 'false';
+			end if;
+	        end loop;
+		if not v_purgeable then
 			-- ----
 			-- Found a row ... log switch is still in progress.
 			-- ----
 			raise notice 'Slony-I: log switch to sl_log_2 still in progress - sl_log_1 not truncated';
 			return -1;
-		end loop;
+		end if;
 
 		raise notice 'Slony-I: log switch to sl_log_2 complete - truncate sl_log_1';
 		truncate "_gamersmafia".sl_log_1;
@@ -6214,7 +6911,13 @@ $$
 
 COMMENT ON FUNCTION logswitch_finish() IS 'logswitch_finish()
 
-Attempt to finalize a log table switch in progress';
+Attempt to finalize a log table switch in progress
+return values:
+  -1 if switch in progress, but not complete
+   0 if no switch in progress
+   1 if performed truncate on sl_log_2
+   2 if performed truncate on sl_log_1
+';
 
 
 --
@@ -6277,107 +6980,20 @@ Initiate a log table switch if none is in progress';
 
 
 --
--- Name: logswitch_weekly(); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+-- Name: logtrigger(); Type: FUNCTION; Schema: _gamersmafia; Owner: -
 --
 
-CREATE FUNCTION logswitch_weekly() RETURNS integer
-    AS $$
-DECLARE
-	v_now			timestamp;
-	v_now_dow		int4;
-	v_auto_dow		int4;
-	v_auto_time		time;
-	v_auto_ts		timestamp;
-	v_lastrun		timestamp;
-	v_laststart		timestamp;
-	v_days_since	int4;
-BEGIN
-	-- ----
-	-- Check that today is the day to run at all
-	-- ----
-	v_auto_dow := "_gamersmafia".registry_get_int4(
-			'logswitch_weekly.dow', 0);
-	v_now := "pg_catalog".now();
-	v_now_dow := extract (DOW from v_now);
-	if v_now_dow <> v_auto_dow then
-		perform "_gamersmafia".registry_set_timestamp(
-				'logswitch_weekly.lastrun', v_now);
-		return 0;
-	end if;
-
-	-- ----
-	-- Check that the last run of this procedure was before and now is
-	-- after the time we should automatically switch logs.
-	-- ----
-	v_auto_time := "_gamersmafia".registry_get_text(
-			'logswitch_weekly.time', '02:00');
-	v_auto_ts := current_date + v_auto_time;
-	v_lastrun := "_gamersmafia".registry_get_timestamp(
-			'logswitch_weekly.lastrun', 'epoch');
-	if v_lastrun >= v_auto_ts or v_now < v_auto_ts then
-		perform "_gamersmafia".registry_set_timestamp(
-				'logswitch_weekly.lastrun', v_now);
-		return 0;
-	end if;
-
-	-- ----
-	-- This is the moment configured in dow+time. Check that the
-	-- last logswitch was done more than 2 days ago.
-	-- ----
-	v_laststart := "_gamersmafia".registry_get_timestamp(
-			'logswitch.laststart', 'epoch');
-	v_days_since := extract (days from (v_now - v_laststart));
-	if v_days_since < 2 then
-		perform "_gamersmafia".registry_set_timestamp(
-				'logswitch_weekly.lastrun', v_now);
-		return 0;
-	end if;
-
-	-- ----
-	-- Fire off an automatic logswitch
-	-- ----
-	perform "_gamersmafia".logswitch_start();
-	perform "_gamersmafia".registry_set_timestamp(
-			'logswitch_weekly.lastrun', v_now);
-	return 1;
-END;
-$$
-    LANGUAGE plpgsql;
+CREATE FUNCTION logtrigger() RETURNS trigger
+    AS '$libdir/slony1_funcs', '_Slony_I_logTrigger'
+    LANGUAGE c SECURITY DEFINER;
 
 
 --
--- Name: FUNCTION logswitch_weekly(); Type: COMMENT; Schema: _gamersmafia; Owner: -
+-- Name: FUNCTION logtrigger(); Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON FUNCTION logswitch_weekly() IS 'logswitch_weekly()
-
-Ensure a logswitch is done at least weekly';
-
-
---
--- Name: make_function_strict(text, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
---
-
-CREATE FUNCTION make_function_strict(text, text) RETURNS void
-    AS $_$
-declare
-   fun alias for $1;
-   parms alias for $2;
-   stmt text;
-begin
-   stmt := 'ALTER FUNCTION "_gamersmafia".' || fun || ' ' || parms || ' STRICT;';
-   execute stmt;
-   return;
-end
-$_$
-    LANGUAGE plpgsql;
-
-
---
--- Name: FUNCTION make_function_strict(text, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON FUNCTION make_function_strict(text, text) IS 'Equivalent to 8.1+ ALTER FUNCTION ... STRICT';
+COMMENT ON FUNCTION logtrigger() IS 'This is the trigger that is executed on the origin node that causes
+updates to be recorded in sl_log_1/sl_log_2.';
 
 
 --
@@ -6458,7 +7074,6 @@ begin
 		raise exception 'Slony-I: set % has subscriptions in progress - cannot merge',
 				p_add_id;
 	end if;
-			  
 
 	-- ----
 	-- Create a SYNC event, merge the sets, create a MERGE_SET event
@@ -6562,7 +7177,7 @@ begin
 	if v_set_row.set_locked isnull then
 		raise exception 'Slony-I: set % is not locked', p_set_id;
 	end if;
-	if v_set_row.set_locked > "_gamersmafia".getMinXid() then
+	if v_set_row.set_locked > "pg_catalog".txid_snapshot_xmin("pg_catalog".txid_current_snapshot()) then
 		raise exception 'Slony-I: cannot move set % yet, transactions < % are still in progress',
 				p_set_id, v_set_row.set_locked;
 	end if;
@@ -6655,19 +7270,6 @@ begin
 	-- ----
 	v_local_node_id := "_gamersmafia".getLocalNodeId('_gamersmafia');
 
-	-- ----
-	-- If we are the old or new origin of the set, we need to
-	-- remove the log trigger from all tables first.
-	-- ----
-	if v_local_node_id = p_old_origin or v_local_node_id = p_new_origin then
-		for v_tab_row in select tab_id from "_gamersmafia".sl_table
-				where tab_set = p_set_id
-				order by tab_id
-		loop
-			perform "_gamersmafia".alterTableRestore(v_tab_row.tab_id);
-		end loop;
-	end if;
-
 	-- On the new origin, raise an event - ACCEPT_SET
 	if v_local_node_id = p_new_origin then
 		-- Create a SYNC event as well so that the ACCEPT_SET has
@@ -6734,18 +7336,18 @@ begin
 		if v_last_sync > 0 then
 			insert into "_gamersmafia".sl_setsync
 					(ssy_setid, ssy_origin, ssy_seqno,
-					ssy_minxid, ssy_maxxid, ssy_xip, ssy_action_list)
+					ssy_snapshot, ssy_action_list)
 					select p_set_id, p_new_origin, v_last_sync,
-					ev_minxid, ev_maxxid, ev_xip, NULL
+					ev_snapshot, NULL
 					from "_gamersmafia".sl_event
 					where ev_origin = p_new_origin
 						and ev_seqno = v_last_sync;
 		else
 			insert into "_gamersmafia".sl_setsync
 					(ssy_setid, ssy_origin, ssy_seqno,
-					ssy_minxid, ssy_maxxid, ssy_xip, ssy_action_list)
+					ssy_snapshot, ssy_action_list)
 					values (p_set_id, p_new_origin, '0',
-					'0', '0', '', NULL);
+					'0', '0', '0:0:', NULL);
 		end if;
 	end if;
 
@@ -6778,18 +7380,18 @@ begin
 			if v_last_sync > 0 then
 				insert into "_gamersmafia".sl_setsync
 						(ssy_setid, ssy_origin, ssy_seqno,
-						ssy_minxid, ssy_maxxid, ssy_xip, ssy_action_list)
+						ssy_snapshot, ssy_action_list)
 						select p_set_id, p_new_origin, v_last_sync,
-						ev_minxid, ev_maxxid, ev_xip, NULL
+						ev_snapshot, NULL
 						from "_gamersmafia".sl_event
 						where ev_origin = p_new_origin
 							and ev_seqno = v_last_sync;
 			else
 				insert into "_gamersmafia".sl_setsync
 						(ssy_setid, ssy_origin, ssy_seqno,
-						ssy_minxid, ssy_maxxid, ssy_xip, ssy_action_list)
+						ssy_snapshot, ssy_action_list)
 						values (p_set_id, p_new_origin, '0',
-						'0', '0', '', NULL);
+						'0', '0', '0:0:', NULL);
 			end if;
 		end if;
 	end if;
@@ -6805,14 +7407,14 @@ begin
 
 	-- ----
 	-- If we are the new or old origin, we have to
-	-- put all the tables into altered state again.
+	-- adjust the log and deny access trigger configuration.
 	-- ----
 	if v_local_node_id = p_old_origin or v_local_node_id = p_new_origin then
 		for v_tab_row in select tab_id from "_gamersmafia".sl_table
 				where tab_set = p_set_id
 				order by tab_id
 		loop
-			perform "_gamersmafia".alterTableForReplication(v_tab_row.tab_id);
+			perform "_gamersmafia".alterTableConfigureTriggers(v_tab_row.tab_id);
 		end loop;
 	end if;
 
@@ -6830,23 +7432,6 @@ COMMENT ON FUNCTION moveset_int(integer, integer, integer, bigint) IS 'moveSet(s
 
 Process MOVE_SET event to request that the origin for set set_id be
 moved from old_origin to node new_origin';
-
-
---
--- Name: pre74(); Type: FUNCTION; Schema: _gamersmafia; Owner: -
---
-
-CREATE FUNCTION pre74() RETURNS integer
-    AS $$select 0$$
-    LANGUAGE sql;
-
-
---
--- Name: FUNCTION pre74(); Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON FUNCTION pre74() IS 'Returns 1/0 based on whether or not the DB is running a
-version earlier than 7.4';
 
 
 --
@@ -6882,7 +7467,6 @@ begin
 	-- ----
 	execute 'truncate ' || "_gamersmafia".slon_quote_input(v_tab_fqname);
 	raise notice 'truncate of % succeeded', v_tab_fqname;
-
 	-- ----
 	-- Setting pg_class.relhasindex to false will cause copy not to
 	-- maintain any indexes. At the end of the copy we will reenable
@@ -6910,53 +7494,6 @@ COMMENT ON FUNCTION preparetableforcopy(integer) IS 'Delete all data and suppres
 
 
 --
--- Name: reachablefromnode(integer, integer[]); Type: FUNCTION; Schema: _gamersmafia; Owner: -
---
-
-CREATE FUNCTION reachablefromnode(integer, integer[]) RETURNS SETOF integer
-    AS $_$
-declare
-	v_node alias for $1 ;
-	v_blacklist alias for $2 ;
-	v_ignore int4[] ;
-	v_reachable_edge_last int4[] ;
-	v_reachable_edge_new int4[] default '{}' ;
-	v_server record ;
-begin
-	v_reachable_edge_last := array[v_node] ;
-	v_ignore := v_blacklist || array[v_node] ;
-	return next v_node ;
-	while v_reachable_edge_last != '{}' loop
-		v_reachable_edge_new := '{}' ;
-		for v_server in select pa_server as no_id
-			from "_gamersmafia".sl_path
-			where pa_client = ANY(v_reachable_edge_last) and pa_server != ALL(v_ignore)
-		loop
-			if v_server.no_id != ALL(v_ignore) then
-				v_ignore := v_ignore || array[v_server.no_id] ;
-				v_reachable_edge_new := v_reachable_edge_new || array[v_server.no_id] ;
-				return next v_server.no_id ;
-			end if ;
-		end loop ;
-		v_reachable_edge_last := v_reachable_edge_new ;
-	end loop ;
-	return ;
-end ;
-$_$
-    LANGUAGE plpgsql;
-
-
---
--- Name: FUNCTION reachablefromnode(integer, integer[]); Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON FUNCTION reachablefromnode(integer, integer[]) IS 'ReachableFromNode(receiver, blacklist)
-
-Find all nodes that <receiver> can receive events from without
-using nodes in <blacklist> as a relay.';
-
-
---
 -- Name: rebuildlistenentries(); Type: FUNCTION; Schema: _gamersmafia; Owner: -
 --
 
@@ -6964,7 +7501,6 @@ CREATE FUNCTION rebuildlistenentries() RETURNS integer
     AS $$
 declare
 	v_row	record;
-	skip    boolean;
 begin
 	-- First remove the entire configuration
 	delete from "_gamersmafia".sl_listen;
@@ -6999,7 +7535,6 @@ begin
 			from "_gamersmafia".sl_node as N1, "_gamersmafia".sl_node as N2
 			where N1.no_id <> N2.no_id
 	loop
-		skip := 'f';
 		-- 1st choice:
 		-- If we use the event origin as a data provider for any
 		-- set that originates on that very node, we are a direct
@@ -7016,34 +7551,31 @@ begin
 				  and li_receiver = v_row.receiver;
 			insert into "_gamersmafia".sl_listen (li_origin, li_provider, li_receiver)
 				values (v_row.origin, v_row.origin, v_row.receiver);
-			skip := 't';
+			continue;
 		end if;
 
-		if skip then
-			skip := 'f';
-		else
 		-- 2nd choice:
 		-- If we are subscribed to any set originating on this
 		-- event origin, we want to listen on all data providers
 		-- we use for this origin. We are a cascaded subscriber
 		-- for sets from this node.
-			if exists (select true from "_gamersmafia".sl_set, "_gamersmafia".sl_subscribe
+		if exists (select true from "_gamersmafia".sl_set, "_gamersmafia".sl_subscribe
 						where set_origin = v_row.origin
 						  and sub_set = set_id
 						  and sub_receiver = v_row.receiver
 						  and sub_active)
-			then
-				delete from "_gamersmafia".sl_listen
+		then
+			delete from "_gamersmafia".sl_listen
 					where li_origin = v_row.origin
 					  and li_receiver = v_row.receiver;
-				insert into "_gamersmafia".sl_listen (li_origin, li_provider, li_receiver)
+			insert into "_gamersmafia".sl_listen (li_origin, li_provider, li_receiver)
 					select distinct set_origin, sub_provider, v_row.receiver
 						from "_gamersmafia".sl_set, "_gamersmafia".sl_subscribe
 						where set_origin = v_row.origin
 						  and sub_set = set_id
 						  and sub_receiver = v_row.receiver
 						  and sub_active;
-			end if;
+			continue;
 		end if;
 
 	end loop ;
@@ -7372,34 +7904,19 @@ This function looks up replication configuration via the parent table.';
 
 
 --
--- Name: sequencelastvalue(text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+-- Name: seqtrack(integer, bigint); Type: FUNCTION; Schema: _gamersmafia; Owner: -
 --
 
-CREATE FUNCTION sequencelastvalue(text) RETURNS bigint
-    AS $_$
-declare
-	p_seqname	alias for $1;
-	v_seq_row	record;
-begin
-	for v_seq_row in execute 'select last_value from ' || "_gamersmafia".slon_quote_input(p_seqname)
-	loop
-		return v_seq_row.last_value;
-	end loop;
-
-	-- not reached
-end;
-$_$
-    LANGUAGE plpgsql;
+CREATE FUNCTION seqtrack(integer, bigint) RETURNS bigint
+    AS '$libdir/slony1_funcs', '_Slony_I_seqtrack'
+    LANGUAGE c STRICT;
 
 
 --
--- Name: FUNCTION sequencelastvalue(text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+-- Name: FUNCTION seqtrack(integer, bigint); Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON FUNCTION sequencelastvalue(text) IS 'sequenceLastValue(p_seqname)
-
-Utility function used in sl_seqlastvalue view to compactly get the
-last value from the requested sequence.';
+COMMENT ON FUNCTION seqtrack(integer, bigint) IS 'Returns NULL if seqval has not changed since the last call for seqid';
 
 
 --
@@ -7433,7 +7950,7 @@ begin
 	-- Update it to the new value
 	-- ----
 	execute 'select setval(''' || v_fqname ||
-			''', ''' || p_last_value || ''')';
+			''', ' || p_last_value || ')';
 
 	insert into "_gamersmafia".sl_seqlog
 			(seql_seqid, seql_origin, seql_ev_seqno, seql_last_value)
@@ -7665,7 +8182,7 @@ begin
 	if exists (select true from "_gamersmafia".sl_subscribe
 			where sub_set = p_set_id)
 	then
-		raise exception 'Slony-I: cannot add table to currently subscribed set %',
+		raise exception 'Slony-I: cannot add table to currently subscribed set % - must attach to an unsubscribed set',
 				p_set_id;
 	end if;
 
@@ -7808,7 +8325,7 @@ begin
 			values
 			(p_tab_id, v_tab_reloid, v_tab_relname, v_tab_nspname,
 			p_set_id, p_tab_idxname, false, p_tab_comment);
-	perform "_gamersmafia".alterTableForReplication(p_tab_id);
+	perform "_gamersmafia".alterTableAddTriggers(p_tab_id);
 
 	return p_tab_id;
 end;
@@ -8089,8 +8606,7 @@ begin
 	-- ----
 	-- Drop the table from sl_table and drop trigger from it.
 	-- ----
-	perform "_gamersmafia".alterTableRestore(p_tab_id);
-	perform "_gamersmafia".tableDropKey(p_tab_id);
+	perform "_gamersmafia".alterTableDropTriggers(p_tab_id);
 	delete from "_gamersmafia".sl_table where tab_id = p_tab_id;
 	return p_tab_id;
 end;
@@ -8365,6 +8881,58 @@ $_$
 
 
 --
+-- Name: shouldslonyvacuumtable(name, name); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+--
+
+CREATE FUNCTION shouldslonyvacuumtable(name, name) RETURNS boolean
+    AS $_$
+declare
+	i_nspname alias for $1;
+	i_tblname alias for $2;
+	c_table oid;
+	c_namespace oid;
+	c_enabled boolean;
+	v_dummy int4;
+begin
+	select 1 into v_dummy from "pg_catalog".pg_settings where name = 'autovacuum' and setting = 'on';
+	if not found then
+		return 't'::boolean;       -- If autovac is turned off, then we gotta vacuum
+	end if;
+	
+	select into c_namespace oid from "pg_catalog".pg_namespace where nspname = i_nspname;
+	if not found then
+		raise exception 'Slony-I: namespace % does not exist', i_nspname;
+	end if;
+	select into c_table oid from "pg_catalog".pg_class where relname = i_tblname and relnamespace = c_namespace;
+	if not found then
+		raise warning 'Slony-I: table % does not exist in namespace %/%', tblname, c_namespace, i_nspname;
+		return 'f'::boolean;
+	end if;
+	
+	-- So, the table is legit; try to look it up for autovacuum policy
+	select enabled into c_enabled from "pg_catalog".pg_autovacuum where vacrelid = c_table;
+
+	if not found then
+		return 'f'::boolean;   -- Autovac is turned on, and this table has no overriding handling
+	end if;
+
+	if c_enabled then
+		return 'f'::boolean;   -- Autovac is expressly turned on for this table
+	end if;
+
+	return 't'::boolean;
+end;$_$
+    LANGUAGE plpgsql;
+
+
+--
+-- Name: FUNCTION shouldslonyvacuumtable(name, name); Type: COMMENT; Schema: _gamersmafia; Owner: -
+--
+
+COMMENT ON FUNCTION shouldslonyvacuumtable(name, name) IS 'returns false if autovacuum handles vacuuming of the table, or if the table does not exist; returns true if Slony-I should manage it';
+
+
+--
 -- Name: slon_quote_brute(text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
 --
 
@@ -8475,9 +9043,9 @@ COMMENT ON FUNCTION slon_quote_input(text) IS 'quote all words that aren''t quot
 CREATE FUNCTION slonyversion() RETURNS text
     AS $$
 begin
-	return ''	|| "_gamersmafia".slonyVersionMajor() || '.'
-				|| "_gamersmafia".slonyVersionMinor() || '.'
-				|| "_gamersmafia".slonyVersionPatchlevel();
+	return "_gamersmafia".slonyVersionMajor() || '.' || 
+	       "_gamersmafia".slonyVersionMinor() || '.' || 
+	       "_gamersmafia".slonyVersionPatchlevel();
 end;
 $$
     LANGUAGE plpgsql;
@@ -8497,7 +9065,7 @@ COMMENT ON FUNCTION slonyversion() IS 'Returns the version number of the slony s
 CREATE FUNCTION slonyversionmajor() RETURNS integer
     AS $$
 begin
-	return 1;
+	return 2;
 end;
 $$
     LANGUAGE plpgsql;
@@ -8517,7 +9085,7 @@ COMMENT ON FUNCTION slonyversionmajor() IS 'Returns the major version number of 
 CREATE FUNCTION slonyversionminor() RETURNS integer
     AS $$
 begin
-	return 2;
+	return 0;
 end;
 $$
     LANGUAGE plpgsql;
@@ -8537,7 +9105,7 @@ COMMENT ON FUNCTION slonyversionminor() IS 'Returns the minor version number of 
 CREATE FUNCTION slonyversionpatchlevel() RETURNS integer
     AS $$
 begin
-	return 13;
+	return 1;
 end;
 $$
     LANGUAGE plpgsql;
@@ -8610,15 +9178,15 @@ begin
 		-- ----
 		if not exists (select 1 from "_gamersmafia".sl_node
 						where no_id = p_li_origin) then
-			perform "_gamersmafia".storeNode_int (p_li_origin, '<event pending>', 'f');
+			perform "_gamersmafia".storeNode_int (p_li_origin, '<event pending>');
 		end if;
 		if not exists (select 1 from "_gamersmafia".sl_node
 						where no_id = p_li_provider) then
-			perform "_gamersmafia".storeNode_int (p_li_provider, '<event pending>', 'f');
+			perform "_gamersmafia".storeNode_int (p_li_provider, '<event pending>');
 		end if;
 		if not exists (select 1 from "_gamersmafia".sl_node
 						where no_id = p_li_receiver) then
-			perform "_gamersmafia".storeNode_int (p_li_receiver, '<event pending>', 'f');
+			perform "_gamersmafia".storeNode_int (p_li_receiver, '<event pending>');
 		end if;
 
 		insert into "_gamersmafia".sl_listen
@@ -8644,52 +9212,42 @@ li_origin.';
 
 
 --
--- Name: storenode(integer, text, boolean); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+-- Name: storenode(integer, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
 --
 
-CREATE FUNCTION storenode(integer, text, boolean) RETURNS bigint
+CREATE FUNCTION storenode(integer, text) RETURNS bigint
     AS $_$
 declare
 	p_no_id			alias for $1;
 	p_no_comment	alias for $2;
-	p_no_spool		alias for $3;
-	v_no_spool_txt	text;
 begin
-	if p_no_spool then
-		v_no_spool_txt = 't';
-	else
-		v_no_spool_txt = 'f';
-	end if;
-	perform "_gamersmafia".storeNode_int (p_no_id, p_no_comment, p_no_spool);
+	perform "_gamersmafia".storeNode_int (p_no_id, p_no_comment);
 	return  "_gamersmafia".createEvent('_gamersmafia', 'STORE_NODE',
-									p_no_id::text, p_no_comment::text, 
-									v_no_spool_txt::text);
+									p_no_id::text, p_no_comment::text);
 end;
 $_$
     LANGUAGE plpgsql;
 
 
 --
--- Name: FUNCTION storenode(integer, text, boolean); Type: COMMENT; Schema: _gamersmafia; Owner: -
+-- Name: FUNCTION storenode(integer, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON FUNCTION storenode(integer, text, boolean) IS 'no_id - Node ID #
+COMMENT ON FUNCTION storenode(integer, text) IS 'no_id - Node ID #
 no_comment - Human-oriented comment
-no_spool - Flag for virtual spool nodes
 
 Generate the STORE_NODE event for node no_id';
 
 
 --
--- Name: storenode_int(integer, text, boolean); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+-- Name: storenode_int(integer, text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
 --
 
-CREATE FUNCTION storenode_int(integer, text, boolean) RETURNS integer
+CREATE FUNCTION storenode_int(integer, text) RETURNS integer
     AS $_$
 declare
 	p_no_id			alias for $1;
 	p_no_comment	alias for $2;
-	p_no_spool		alias for $3;
 	v_old_row		record;
 begin
 	-- ----
@@ -8709,16 +9267,15 @@ begin
 		-- Node exists, update the existing row.
 		-- ----
 		update "_gamersmafia".sl_node
-				set no_comment = p_no_comment,
-				no_spool = p_no_spool
+				set no_comment = p_no_comment
 				where no_id = p_no_id;
 	else
 		-- ----
 		-- New node, insert the sl_node row
 		-- ----
 		insert into "_gamersmafia".sl_node
-				(no_id, no_active, no_comment, no_spool) values
-				(p_no_id, 'f', p_no_comment, p_no_spool);
+				(no_id, no_active, no_comment) values
+				(p_no_id, 'f', p_no_comment);
 	end if;
 
 	return p_no_id;
@@ -8728,12 +9285,11 @@ $_$
 
 
 --
--- Name: FUNCTION storenode_int(integer, text, boolean); Type: COMMENT; Schema: _gamersmafia; Owner: -
+-- Name: FUNCTION storenode_int(integer, text); Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON FUNCTION storenode_int(integer, text, boolean) IS 'no_id - Node ID #
+COMMENT ON FUNCTION storenode_int(integer, text) IS 'no_id - Node ID #
 no_comment - Human-oriented comment
-no_spool - Flag for virtual spool nodes
 
 Internal function to process the STORE_NODE event for node no_id';
 
@@ -8815,11 +9371,11 @@ begin
 		-- ----
 		if not exists (select 1 from "_gamersmafia".sl_node
 						where no_id = p_pa_server) then
-			perform "_gamersmafia".storeNode_int (p_pa_server, '<event pending>', 'f');
+			perform "_gamersmafia".storeNode_int (p_pa_server, '<event pending>');
 		end if;
 		if not exists (select 1 from "_gamersmafia".sl_node
 						where no_id = p_pa_client) then
-			perform "_gamersmafia".storeNode_int (p_pa_client, '<event pending>', 'f');
+			perform "_gamersmafia".storeNode_int (p_pa_client, '<event pending>');
 		end if;
 		insert into "_gamersmafia".sl_path
 				(pa_server, pa_client, pa_conninfo, pa_connretry) values
@@ -8909,7 +9465,7 @@ begin
 	else
 		if not exists (select 1 from "_gamersmafia".sl_node
 						where no_id = p_set_origin) then
-			perform "_gamersmafia".storeNode_int (p_set_origin, '<event pending>', 'f');
+			perform "_gamersmafia".storeNode_int (p_set_origin, '<event pending>');
 		end if;
 		insert into "_gamersmafia".sl_set
 				(set_id, set_origin, set_comment) values
@@ -8933,105 +9489,6 @@ COMMENT ON FUNCTION storeset_int(integer, integer, text) IS 'storeSet_int (set_i
 
 Process the STORE_SET event, indicating the new set with given ID,
 origin node, and human readable comment.';
-
-
---
--- Name: storetrigger(integer, name); Type: FUNCTION; Schema: _gamersmafia; Owner: -
---
-
-CREATE FUNCTION storetrigger(integer, name) RETURNS bigint
-    AS $_$
-declare
-	p_trig_tabid		alias for $1;
-	p_trig_tgname		alias for $2;
-begin
-	perform "_gamersmafia".storeTrigger_int(p_trig_tabid, p_trig_tgname);
-	return  "_gamersmafia".createEvent('_gamersmafia', 'STORE_TRIGGER',
-			p_trig_tabid::text, p_trig_tgname::text);
-end;
-$_$
-    LANGUAGE plpgsql;
-
-
---
--- Name: FUNCTION storetrigger(integer, name); Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON FUNCTION storetrigger(integer, name) IS 'storeTrigger (trig_tabid, trig_tgname)
-
-Submits STORE_TRIGGER event to indicate that trigger trig_tgname on
-replicated table trig_tabid will NOT be disabled.';
-
-
---
--- Name: storetrigger_int(integer, name); Type: FUNCTION; Schema: _gamersmafia; Owner: -
---
-
-CREATE FUNCTION storetrigger_int(integer, name) RETURNS integer
-    AS $_$
-declare
-	p_trig_tabid		alias for $1;
-	p_trig_tgname		alias for $2;
-	v_tab_altered		boolean;
-begin
-	-- ----
-	-- Grab the central configuration lock
-	-- ----
-	lock table "_gamersmafia".sl_config_lock;
-
-	-- ----
-	-- Get the current table status (altered or not)
-	-- ----
-	select tab_altered into v_tab_altered
-			from "_gamersmafia".sl_table where tab_id = p_trig_tabid;
-	if not found then
-		-- ----
-		-- Not found is no hard error here, because that might
-		-- mean that we are not subscribed to that set
-		-- ----
-		return 0;
-	end if;
-
-	-- ----
-	-- If the table is modified for replication, restore the original state
-	-- ----
-	if v_tab_altered then
-		perform "_gamersmafia".alterTableRestore(p_trig_tabid);
-	end if;
-
-	-- ----
-	-- Make sure that an entry for this trigger exists
-	-- ----
-	delete from "_gamersmafia".sl_trigger
-			where trig_tabid = p_trig_tabid
-			  and trig_tgname = p_trig_tgname;
-	insert into "_gamersmafia".sl_trigger (
-				trig_tabid, trig_tgname
-			) values (
-				p_trig_tabid, p_trig_tgname
-			);
-
-	-- ----
-	-- Put the table back into replicated state if it was
-	-- ----
-	if v_tab_altered then
-		perform "_gamersmafia".alterTableForReplication(p_trig_tabid);
-	end if;
-
-	return p_trig_tabid;
-end;
-$_$
-    LANGUAGE plpgsql;
-
-
---
--- Name: FUNCTION storetrigger_int(integer, name); Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON FUNCTION storetrigger_int(integer, name) IS 'storeTrigger_int (trig_tabid, trig_tgname)
-
-Processes STORE_TRIGGER event to make sure that trigger trig_tgname on
-replicated table trig_tabid is NOT disabled.';
 
 
 --
@@ -9230,186 +9687,72 @@ set sub_set.';
 
 
 --
--- Name: tableaddkey(text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
+-- Name: tablestovacuum(); Type: FUNCTION; Schema: _gamersmafia; Owner: -
 --
 
-CREATE FUNCTION tableaddkey(text) RETURNS text
-    AS $_$
+CREATE FUNCTION tablestovacuum() RETURNS SETOF vactables
+    AS $$
 declare
-	p_tab_fqname	alias for $1;
-	v_tab_fqname_quoted	text default '';
-	v_attkind		text default '';
-	v_attrow		record;
-	v_have_serial	bool default 'f';
+	prec "_gamersmafia".vactables%rowtype;
 begin
-	v_tab_fqname_quoted := "_gamersmafia".slon_quote_input(p_tab_fqname);
-	--
-	-- Loop over the attributes of this relation
-	-- and add a "v" for every user column, and a "k"
-	-- if we find the Slony-I special serial column.
-	--
-	for v_attrow in select PGA.attnum, PGA.attname
-			from "pg_catalog".pg_class PGC,
-			    "pg_catalog".pg_namespace PGN,
-				"pg_catalog".pg_attribute PGA
-			where "_gamersmafia".slon_quote_brute(PGN.nspname) || '.' ||
-			    "_gamersmafia".slon_quote_brute(PGC.relname) = v_tab_fqname_quoted
-				and PGN.oid = PGC.relnamespace
-				and PGA.attrelid = PGC.oid
-				and not PGA.attisdropped
-				and PGA.attnum > 0
-			order by attnum
-	loop
-		if v_attrow.attname = '_Slony-I_gamersmafia_rowID' then
-		    v_attkind := v_attkind || 'k';
-			v_have_serial := 't';
-		else
-			v_attkind := v_attkind || 'v';
-		end if;
-	end loop;
-	
-	--
-	-- A table must have at least one attribute, so not finding
-	-- anything means the table does not exist.
-	--
-	if not found then
-		raise exception 'Slony-I: tableAddKey(): table % not found', v_tab_fqname_quoted;
+	prec.nspname := '_gamersmafia';
+	prec.relname := 'sl_event';
+	if "_gamersmafia".ShouldSlonyVacuumTable(prec.nspname, prec.relname) then
+		return next prec;
+	end if;
+	prec.nspname := '_gamersmafia';
+	prec.relname := 'sl_confirm';
+	if "_gamersmafia".ShouldSlonyVacuumTable(prec.nspname, prec.relname) then
+		return next prec;
+	end if;
+	prec.nspname := '_gamersmafia';
+	prec.relname := 'sl_setsync';
+	if "_gamersmafia".ShouldSlonyVacuumTable(prec.nspname, prec.relname) then
+		return next prec;
+	end if;
+	prec.nspname := '_gamersmafia';
+	prec.relname := 'sl_log_1';
+	if "_gamersmafia".ShouldSlonyVacuumTable(prec.nspname, prec.relname) then
+		return next prec;
+	end if;
+	prec.nspname := '_gamersmafia';
+	prec.relname := 'sl_log_2';
+	if "_gamersmafia".ShouldSlonyVacuumTable(prec.nspname, prec.relname) then
+		return next prec;
+	end if;
+	prec.nspname := '_gamersmafia';
+	prec.relname := 'sl_seqlog';
+	if "_gamersmafia".ShouldSlonyVacuumTable(prec.nspname, prec.relname) then
+		return next prec;
+	end if;
+	prec.nspname := '_gamersmafia';
+	prec.relname := 'sl_archive_counter';
+	if "_gamersmafia".ShouldSlonyVacuumTable(prec.nspname, prec.relname) then
+		return next prec;
+	end if;
+	prec.nspname := 'pg_catalog';
+	prec.relname := 'pg_listener';
+	if "_gamersmafia".ShouldSlonyVacuumTable(prec.nspname, prec.relname) then
+		return next prec;
+	end if;
+	prec.nspname := 'pg_catalog';
+	prec.relname := 'pg_statistic';
+	if "_gamersmafia".ShouldSlonyVacuumTable(prec.nspname, prec.relname) then
+		return next prec;
 	end if;
 
-	--
-	-- If it does not have the special serial column, we
-	-- have to add it. This will be only half way done.
-	-- The function to add the table to the set must finish
-	-- these definitions with NOT NULL and UNIQUE after
-	-- updating all existing rows.
-	--
-	if not v_have_serial then
-		execute 'lock table ' || v_tab_fqname_quoted ||
-			' in access exclusive mode';
-		execute 'alter table only ' || v_tab_fqname_quoted ||
-			' add column "_Slony-I_gamersmafia_rowID" bigint;';
-		execute 'alter table only ' || v_tab_fqname_quoted ||
-			' alter column "_Slony-I_gamersmafia_rowID" ' ||
-			' set default "pg_catalog".nextval(''"_gamersmafia".sl_rowid_seq'');';
-
-		v_attkind := v_attkind || 'k';
-	end if;
-
-	--
-	-- Return the resulting Slony-I attkind
-	--
-	return v_attkind;
-end;
-$_$
+   return;
+end
+$$
     LANGUAGE plpgsql;
 
 
 --
--- Name: FUNCTION tableaddkey(text); Type: COMMENT; Schema: _gamersmafia; Owner: -
+-- Name: FUNCTION tablestovacuum(); Type: COMMENT; Schema: _gamersmafia; Owner: -
 --
 
-COMMENT ON FUNCTION tableaddkey(text) IS 'tableAddKey (tab_fqname) - if the table has not got a column of the
-form _Slony-I_<clustername>_rowID, then add it as a bigint, defaulted
-to nextval() for a sequence created for the cluster.';
-
-
---
--- Name: tabledropkey(integer); Type: FUNCTION; Schema: _gamersmafia; Owner: -
---
-
-CREATE FUNCTION tabledropkey(integer) RETURNS integer
-    AS $_$
-declare
-	p_tab_id		alias for $1;
-	v_tab_fqname	text;
-	v_tab_oid		oid;
-begin
-	-- ----
-	-- Grab the central configuration lock
-	-- ----
-	lock table "_gamersmafia".sl_config_lock;
-
-	-- ----
-	-- Construct the tables fully qualified name and get its oid
-	-- ----
-	select "_gamersmafia".slon_quote_brute(PGN.nspname) || '.' ||
-				"_gamersmafia".slon_quote_brute(PGC.relname),
-				PGC.oid into v_tab_fqname, v_tab_oid
-			from "_gamersmafia".sl_table T,
-				"pg_catalog".pg_class PGC,
-				"pg_catalog".pg_namespace PGN
-			where T.tab_id = p_tab_id
-				and T.tab_reloid = PGC.oid
-				and PGC.relnamespace = PGN.oid;
-	if not found then
-		raise exception 'Slony-I: tableDropKey(): table with ID % not found', p_tab_id;
-	end if;
-
-	-- ----
-	-- Drop the special serial ID column if the table has it
-	-- ----
-	if exists (select true from "pg_catalog".pg_attribute
-			where attrelid = v_tab_oid
-				and attname = '_Slony-I_gamersmafia_rowID')
-	then
-		execute 'lock table ' || v_tab_fqname ||
-				' in access exclusive mode';
-		execute 'alter table ' || v_tab_fqname ||
-				' drop column "_Slony-I_gamersmafia_rowID"';
-	end if;
-
-	return p_tab_id;
-end;
-$_$
-    LANGUAGE plpgsql;
-
-
---
--- Name: FUNCTION tabledropkey(integer); Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON FUNCTION tabledropkey(integer) IS 'tableDropKey (tab_id)
-
-If the specified table has a column "_Slony-I_<clustername>_rowID",
-then drop it.';
-
-
---
--- Name: tablehasserialkey(text); Type: FUNCTION; Schema: _gamersmafia; Owner: -
---
-
-CREATE FUNCTION tablehasserialkey(text) RETURNS boolean
-    AS $_$
-declare
-	p_tab_fqname	alias for $1;
-	v_tab_fqname_quoted	text default '';
-	v_attnum		int2;
-begin
-	v_tab_fqname_quoted := "_gamersmafia".slon_quote_input(p_tab_fqname);
-	select PGA.attnum into v_attnum
-			from "pg_catalog".pg_class PGC,
-				"pg_catalog".pg_namespace PGN,
-				"pg_catalog".pg_attribute PGA
-			where "_gamersmafia".slon_quote_brute(PGN.nspname) || '.' ||
-				"_gamersmafia".slon_quote_brute(PGC.relname) = v_tab_fqname_quoted
-				and PGC.relnamespace = PGN.oid
-				and PGA.attrelid = PGC.oid
-				and PGA.attname = '_Slony-I_gamersmafia_rowID'
-				and not PGA.attisdropped;
-	return found;
-end;
-$_$
-    LANGUAGE plpgsql;
-
-
---
--- Name: FUNCTION tablehasserialkey(text); Type: COMMENT; Schema: _gamersmafia; Owner: -
---
-
-COMMENT ON FUNCTION tablehasserialkey(text) IS 'tableHasSerialKey (tab_fqname)
-
-Checks if a table has our special serial key column that is used if
-the table has no natural unique constraint.';
+COMMENT ON FUNCTION tablestovacuum() IS 'Return a list of tables that require frequent vacuuming.  The
+function is used so that the list is not hardcoded into C code.';
 
 
 --
@@ -9458,15 +9801,6 @@ begin
 	-- Grab the central configuration lock
 	-- ----
 	lock table "_gamersmafia".sl_config_lock;
-
-	-- ----
-	-- This is us ... time for suicide! Restore all tables to
-	-- their original status.
-	-- ----
-	for v_tab_row in select * from "_gamersmafia".sl_table loop
-		perform "_gamersmafia".alterTableRestore(v_tab_row.tab_id);
-		perform "_gamersmafia".tableDropKey(v_tab_row.tab_id);
-	end loop;
 
 	raise notice 'Slony-I: Please drop schema "_gamersmafia"';
 	return 0;
@@ -9532,8 +9866,8 @@ begin
 				and PGC.relnamespace = PGN.oid
 			order by tab_id
 	loop
-		execute 'drop trigger "_gamersmafia_lockedset_' || 
-				v_tab_row.tab_id || '" on ' || v_tab_row.tab_fqname;
+		execute 'drop trigger "_gamersmafia_lockedset" ' || 
+				'on ' || v_tab_row.tab_fqname;
 	end loop;
 
 	-- ----
@@ -9591,15 +9925,13 @@ begin
 	end if;
 
 	-- ----
-	-- Restore all tables original triggers and rules and remove
-	-- our replication stuff.
+	-- Remove the replication triggers.
 	-- ----
 	for v_tab_row in select tab_id from "_gamersmafia".sl_table
 			where tab_set = p_sub_set
 			order by tab_id
 	loop
-		perform "_gamersmafia".alterTableRestore(v_tab_row.tab_id);
-		perform "_gamersmafia".tableDropKey(v_tab_row.tab_id);
+		perform "_gamersmafia".alterTableDropTriggers(v_tab_row.tab_id);
 	end loop;
 
 	-- ----
@@ -9820,8 +10152,7 @@ begin
                 	and PGC.relnamespace = PGN.oid
 			and "_gamersmafia".slon_quote_brute(PGN.nspname) = "_gamersmafia".slon_quote_brute("_gamersmafia".sl_sequence.seq_nspname);
 
-        return  "_gamersmafia".createEvent('_gamersmafia', 'RESET_CONFIG',
-                        p_set_id::text, p_only_on_node::text);
+	return 1;
 end;
 $_$
     LANGUAGE plpgsql;
@@ -9845,114 +10176,14 @@ CREATE FUNCTION upgradeschema(text) RETURNS text
     AS $_$
 
 declare
-        p_old   alias for $1;
+        p_old   	alias for $1;
+		v_tab_row	record;
 begin
-	-- upgrade sl_table
-	if p_old IN ('1.0.2', '1.0.5', '1.0.6') then
-		-- Add new column(s) sl_table.tab_relname, sl_table.tab_nspname
-		execute 'alter table "_gamersmafia".sl_table add column tab_relname name';
-		execute 'alter table "_gamersmafia".sl_table add column tab_nspname name';
-
-		-- populate the colums with data
-		update "_gamersmafia".sl_table set
-			tab_relname = PGC.relname, tab_nspname = PGN.nspname
-			from pg_catalog.pg_class PGC, pg_catalog.pg_namespace PGN
-			where "_gamersmafia".sl_table.tab_reloid = PGC.oid
-			and PGC.relnamespace = PGN.oid;
-
-		-- constrain the colums
-		execute 'alter table "_gamersmafia".sl_table alter column tab_relname set NOT NULL';
-		execute 'alter table "_gamersmafia".sl_table alter column tab_nspname set NOT NULL';
-
+	-- If old version is pre-2.0, then we require a special upgrade process
+	if p_old like '1.%' then
+		raise exception 'Upgrading to Slony-I 2.x requires running slony_upgrade_20';
 	end if;
 
-	-- upgrade sl_sequence
-	if p_old IN ('1.0.2', '1.0.5', '1.0.6') then
-		-- Add new column(s) sl_sequence.seq_relname, sl_sequence.seq_nspname
-		execute 'alter table "_gamersmafia".sl_sequence add column seq_relname name';
-		execute 'alter table "_gamersmafia".sl_sequence add column seq_nspname name';
-
-		-- populate the columns with data
-		update "_gamersmafia".sl_sequence set
-			seq_relname = PGC.relname, seq_nspname = PGN.nspname
-			from pg_catalog.pg_class PGC, pg_catalog.pg_namespace PGN
-			where "_gamersmafia".sl_sequence.seq_reloid = PGC.oid
-			and PGC.relnamespace = PGN.oid;
-
-		-- constrain the data
-		execute 'alter table "_gamersmafia".sl_sequence alter column seq_relname set NOT NULL';
-		execute 'alter table "_gamersmafia".sl_sequence alter column seq_nspname set NOT NULL';
-	end if;
-
-	-- ----
-	-- Changes from 1.0.x to 1.1.0
-	-- ----
-	if p_old IN ('1.0.2', '1.0.5', '1.0.6') then
-		-- Add new column sl_node.no_spool for virtual spool nodes
-		execute 'alter table "_gamersmafia".sl_node add column no_spool boolean';
-		update "_gamersmafia".sl_node set no_spool = false;
-	end if;
-
-	-- ----
-	-- Changes for 1.1.3
-	-- ----
-	if p_old IN ('1.0.2', '1.0.5', '1.0.6', '1.1.0', '1.1.1', '1.1.2') then
-		-- Add new table sl_nodelock
-		execute 'create table "_gamersmafia".sl_nodelock (
-						nl_nodeid		int4,
-						nl_conncnt		serial,
-						nl_backendpid	int4,
-
-						CONSTRAINT "sl_nodelock-pkey"
-						PRIMARY KEY (nl_nodeid, nl_conncnt)
-					)';
-		-- Drop obsolete functions
-		execute 'drop function "_gamersmafia".terminateNodeConnections(name)';
-		execute 'drop function "_gamersmafia".cleanupListener()';
-		execute 'drop function "_gamersmafia".truncateTable(text)';
-	end if;
-
-	-- ----
-	-- Changes for 1.2
-	-- ----
-	if p_old IN ('1.0.2', '1.0.5', '1.0.6', '1.1.0', '1.1.1', '1.1.2', '1.1.3','1.1.5', '1.1.6', '1.1.7', '1.1.8', '1.1.9') then
-		-- Add new table sl_registry
-		execute 'create table "_gamersmafia".sl_registry (
-						reg_key			text primary key,
-						reg_int4		int4,
-						reg_text		text,
-						reg_timestamp	timestamp
-					) without oids';
-                execute 'alter table "_gamersmafia".sl_config_lock set without oids;';
-                execute 'alter table "_gamersmafia".sl_confirm set without oids;';
-                execute 'alter table "_gamersmafia".sl_event set without oids;';
-                execute 'alter table "_gamersmafia".sl_listen set without oids;';
-                execute 'alter table "_gamersmafia".sl_node set without oids;';
-                execute 'alter table "_gamersmafia".sl_nodelock set without oids;';
-                execute 'alter table "_gamersmafia".sl_path set without oids;';
-                execute 'alter table "_gamersmafia".sl_sequence set without oids;';
-                execute 'alter table "_gamersmafia".sl_set set without oids;';
-                execute 'alter table "_gamersmafia".sl_setsync set without oids;';
-                execute 'alter table "_gamersmafia".sl_subscribe set without oids;';
-                execute 'alter table "_gamersmafia".sl_table set without oids;';
-                execute 'alter table "_gamersmafia".sl_trigger set without oids;';
-	end if;
-
-	-- ----
-	-- Changes for 1.2.11
-	-- ----
-	if p_old IN ('1.0.2', '1.0.5', '1.0.6', '1.1.0', '1.1.1', '1.1.2', '1.1.3','1.1.5', '1.1.6', '1.1.7', '1.1.8', '1.1.9', '1.2.0', '1.2.1', '1.2.2', '1.2.3', '1.2.4', '1.2.5', '1.2.6', '1.2.7', '1.2.8', '1.2.9', '1.2.10') then
-		-- Add new table sl_archive_counter
-		execute 'create table "_gamersmafia".sl_archive_counter (
-						ac_num			bigint,
-						ac_timestamp	timestamp
-					) without oids';
-		execute 'insert into "_gamersmafia".sl_archive_counter
-					(ac_num, ac_timestamp) values (0, ''epoch''::timestamp)';
-	end if;
-
-	-- In any version, make sure that the xxidin() functions are defined STRICT
-	perform "_gamersmafia".make_function_strict ('xxidin', '(cstring)');
 	return p_old;
 end;
 $_$
@@ -9971,7 +10202,6 @@ COMMENT ON FUNCTION upgradeschema(text) IS 'Called during "update functions" by 
 --
 
 CREATE SEQUENCE sl_action_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -10231,6 +10461,24 @@ CREATE SEQUENCE avatars_id_seq
 --
 
 ALTER SEQUENCE avatars_id_seq OWNED BY avatars.id;
+
+
+--
+-- Name: babes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE babes_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: babes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE babes_id_seq OWNED BY babes.id;
 
 
 --
@@ -11062,6 +11310,24 @@ ALTER SEQUENCE downloads_id_seq OWNED BY downloads.id;
 
 
 --
+-- Name: dudes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE dudes_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: dudes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE dudes_id_seq OWNED BY dudes.id;
+
+
+--
 -- Name: events_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11131,6 +11397,42 @@ CREATE SEQUENCE factions_banned_users_id_seq
 --
 
 ALTER SEQUENCE factions_banned_users_id_seq OWNED BY factions_banned_users.id;
+
+
+--
+-- Name: factions_capos_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE factions_capos_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: factions_capos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE factions_capos_id_seq OWNED BY factions_capos.id;
+
+
+--
+-- Name: factions_editors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE factions_editors_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: factions_editors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE factions_editors_id_seq OWNED BY factions_editors.id;
 
 
 --
@@ -11487,6 +11789,25 @@ ALTER SEQUENCE groups_id_seq OWNED BY groups.id;
 
 
 --
+-- Name: groups_messages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE groups_messages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: groups_messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE groups_messages_id_seq OWNED BY groups_messages.id;
+
+
+--
 -- Name: images_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -11611,6 +11932,25 @@ CREATE SEQUENCE macropolls_2007_1_id_seq
 --
 
 ALTER SEQUENCE macropolls_2007_1_id_seq OWNED BY macropolls_2007_1.id;
+
+
+--
+-- Name: macropolls_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE macropolls_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: macropolls_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE macropolls_id_seq OWNED BY macropolls.id;
 
 
 --
@@ -12173,6 +12513,24 @@ ALTER SEQUENCE textures_id_seq OWNED BY textures.id;
 
 
 --
+-- Name: tracker_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE tracker_items_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: tracker_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE tracker_items_id_seq OWNED BY tracker_items.id;
+
+
+--
 -- Name: tutorials_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -12321,7 +12679,6 @@ ALTER SEQUENCE users_lastseen_ips_id_seq OWNED BY users_lastseen_ips.id;
 --
 
 CREATE SEQUENCE users_newsfeeds_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12396,7 +12753,6 @@ ALTER SEQUENCE ads_daily_id_seq OWNED BY ads_daily.id;
 --
 
 CREATE SEQUENCE ads_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12452,7 +12808,6 @@ ALTER SEQUENCE bets_results_id_seq OWNED BY bets_results.id;
 --
 
 CREATE SEQUENCE clans_daily_stats_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12507,7 +12862,6 @@ ALTER SEQUENCE pageviews_id_seq OWNED BY pageviews.id;
 --
 
 CREATE SEQUENCE portals_stats_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12526,7 +12880,6 @@ ALTER SEQUENCE portals_stats_id_seq OWNED BY portals.id;
 --
 
 CREATE SEQUENCE users_daily_stats_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12630,6 +12983,13 @@ ALTER TABLE autologin_keys ALTER COLUMN id SET DEFAULT nextval('autologin_keys_i
 --
 
 ALTER TABLE avatars ALTER COLUMN id SET DEFAULT nextval('avatars_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE babes ALTER COLUMN id SET DEFAULT nextval('babes_id_seq'::regclass);
 
 
 --
@@ -12965,6 +13325,13 @@ ALTER TABLE downloads_categories ALTER COLUMN id SET DEFAULT nextval('downloads_
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE dudes ALTER COLUMN id SET DEFAULT nextval('dudes_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
 
 
@@ -12987,6 +13354,20 @@ ALTER TABLE factions ALTER COLUMN id SET DEFAULT nextval('factions_id_seq'::regc
 --
 
 ALTER TABLE factions_banned_users ALTER COLUMN id SET DEFAULT nextval('factions_banned_users_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE factions_capos ALTER COLUMN id SET DEFAULT nextval('factions_capos_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE factions_editors ALTER COLUMN id SET DEFAULT nextval('factions_editors_id_seq'::regclass);
 
 
 --
@@ -13105,6 +13486,13 @@ ALTER TABLE groups ALTER COLUMN id SET DEFAULT nextval('groups_id_seq'::regclass
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE groups_messages ALTER COLUMN id SET DEFAULT nextval('groups_messages_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE images ALTER COLUMN id SET DEFAULT nextval('images_id_seq'::regclass);
 
 
@@ -13141,6 +13529,13 @@ ALTER TABLE ip_bans ALTER COLUMN id SET DEFAULT nextval('ip_bans_id_seq'::regcla
 --
 
 ALTER TABLE ip_passwords_resets_requests ALTER COLUMN id SET DEFAULT nextval('ip_passwords_resets_requests_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE macropolls ALTER COLUMN id SET DEFAULT nextval('macropolls_id_seq'::regclass);
 
 
 --
@@ -13540,6 +13935,14 @@ ALTER TABLE users_karma_daily_by_portal ALTER COLUMN id SET DEFAULT nextval('use
 SET search_path = _gamersmafia, pg_catalog;
 
 --
+-- Name: sl_event-pkey; Type: CONSTRAINT; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY sl_event
+    ADD CONSTRAINT "sl_event-pkey" PRIMARY KEY (ev_origin, ev_seqno);
+
+
+--
 -- Name: sl_listen-pkey; Type: CONSTRAINT; Schema: _gamersmafia; Owner: -; Tablespace: 
 --
 
@@ -13596,6 +13999,22 @@ ALTER TABLE ONLY sl_sequence
 
 
 --
+-- Name: sl_set-pkey; Type: CONSTRAINT; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY sl_set
+    ADD CONSTRAINT "sl_set-pkey" PRIMARY KEY (set_id);
+
+
+--
+-- Name: sl_setsync-pkey; Type: CONSTRAINT; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY sl_setsync
+    ADD CONSTRAINT "sl_setsync-pkey" PRIMARY KEY (ssy_setid);
+
+
+--
 -- Name: sl_subscribe-pkey; Type: CONSTRAINT; Schema: _gamersmafia; Owner: -; Tablespace: 
 --
 
@@ -13619,14 +14038,6 @@ ALTER TABLE ONLY sl_table
     ADD CONSTRAINT sl_table_tab_reloid_key UNIQUE (tab_reloid);
 
 
---
--- Name: sl_trigger-pkey; Type: CONSTRAINT; Schema: _gamersmafia; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY sl_trigger
-    ADD CONSTRAINT "sl_trigger-pkey" PRIMARY KEY (trig_tabid, trig_tgname);
-
-
 SET search_path = archive, pg_catalog;
 
 --
@@ -13642,7 +14053,7 @@ ALTER TABLE ONLY pageviews
 --
 
 ALTER TABLE ONLY tracker_items
-    ADD CONSTRAINT tracker_items_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT tracker_items_pkey UNIQUE (id);
 
 
 --
@@ -13781,6 +14192,22 @@ ALTER TABLE ONLY autologin_keys
 
 ALTER TABLE ONLY avatars
     ADD CONSTRAINT avatars_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: babes_date_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY babes
+    ADD CONSTRAINT babes_date_key UNIQUE (date);
+
+
+--
+-- Name: babes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY babes
+    ADD CONSTRAINT babes_pkey PRIMARY KEY (id);
 
 
 --
@@ -14016,6 +14443,14 @@ ALTER TABLE ONLY comments_valorations_types
 
 
 --
+-- Name: competitions_admins_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY competitions_admins
+    ADD CONSTRAINT competitions_admins_pkey PRIMARY KEY (competition_id, user_id);
+
+
+--
 -- Name: competitions_games_maps_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -14117,6 +14552,14 @@ ALTER TABLE ONLY competitions
 
 ALTER TABLE ONLY competitions_sponsors
     ADD CONSTRAINT competitions_sponsors_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: competitions_supervisors_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY competitions_supervisors
+    ADD CONSTRAINT competitions_supervisors_pkey PRIMARY KEY (competition_id, user_id);
 
 
 --
@@ -14280,6 +14723,22 @@ ALTER TABLE ONLY downloads
 
 
 --
+-- Name: dudes_date_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY dudes
+    ADD CONSTRAINT dudes_date_key UNIQUE (date);
+
+
+--
+-- Name: dudes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY dudes
+    ADD CONSTRAINT dudes_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: events_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -14344,11 +14803,27 @@ ALTER TABLE ONLY factions
 
 
 --
+-- Name: factions_capos_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY factions_capos
+    ADD CONSTRAINT factions_capos_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: factions_code_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY factions
     ADD CONSTRAINT factions_code_key UNIQUE (code);
+
+
+--
+-- Name: factions_editors_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY factions_editors
+    ADD CONSTRAINT factions_editors_pkey PRIMARY KEY (id);
 
 
 --
@@ -14568,6 +15043,14 @@ ALTER TABLE ONLY gmtv_channels
 
 
 --
+-- Name: groups_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY groups_messages
+    ADD CONSTRAINT groups_messages_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: groups_name_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -14645,6 +15128,14 @@ ALTER TABLE ONLY ip_passwords_resets_requests
 
 ALTER TABLE ONLY macropolls_2007_1
     ADD CONSTRAINT macropolls_2007_1_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: macropolls_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY macropolls
+    ADD CONSTRAINT macropolls_pkey PRIMARY KEY (id);
 
 
 --
@@ -14984,6 +15475,14 @@ ALTER TABLE ONLY slog_entries
 
 
 --
+-- Name: slog_visits_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY slog_visits
+    ADD CONSTRAINT slog_visits_pkey PRIMARY KEY (user_id);
+
+
+--
 -- Name: sold_products_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -15220,6 +15719,20 @@ ALTER TABLE ONLY users_karma_daily_by_portal
 SET search_path = _gamersmafia, pg_catalog;
 
 --
+-- Name: PartInd_gamersmafia_sl_log_1-node-1; Type: INDEX; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE INDEX "PartInd_gamersmafia_sl_log_1-node-1" ON sl_log_1 USING btree (log_txid) WHERE (log_origin = 1);
+
+
+--
+-- Name: PartInd_gamersmafia_sl_log_2-node-1; Type: INDEX; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE INDEX "PartInd_gamersmafia_sl_log_2-node-1" ON sl_log_2 USING btree (log_txid) WHERE (log_origin = 1);
+
+
+--
 -- Name: sl_confirm_idx1; Type: INDEX; Schema: _gamersmafia; Owner: -; Tablespace: 
 --
 
@@ -15231,6 +15744,20 @@ CREATE INDEX sl_confirm_idx1 ON sl_confirm USING btree (con_origin, con_received
 --
 
 CREATE INDEX sl_confirm_idx2 ON sl_confirm USING btree (con_received, con_seqno);
+
+
+--
+-- Name: sl_log_1_idx1; Type: INDEX; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE INDEX sl_log_1_idx1 ON sl_log_1 USING btree (log_origin, log_txid, log_actionseq);
+
+
+--
+-- Name: sl_log_2_idx1; Type: INDEX; Schema: _gamersmafia; Owner: -; Tablespace: 
+--
+
+CREATE INDEX sl_log_2_idx1 ON sl_log_2 USING btree (log_origin, log_txid, log_actionseq);
 
 
 --
@@ -15544,6 +16071,13 @@ CREATE UNIQUE INDEX competitions_participants_uniq ON competitions_participants 
 
 
 --
+-- Name: competitions_supervisors_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX competitions_supervisors_uniq ON competitions_supervisors USING btree (competition_id, user_id);
+
+
+--
 -- Name: content_ratings_comb; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -15586,6 +16120,20 @@ CREATE UNIQUE INDEX contents_locks_uniq ON contents_locks USING btree (content_i
 
 
 --
+-- Name: contents_recommendations_content_id_sender_user_id_receiver_use; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX contents_recommendations_content_id_sender_user_id_receiver_use ON contents_recommendations USING btree (content_id, sender_user_id, receiver_user_id);
+
+
+--
+-- Name: contents_recommendations_receiver_user_id_marked_as_bad; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX contents_recommendations_receiver_user_id_marked_as_bad ON contents_recommendations USING btree (receiver_user_id, marked_as_bad);
+
+
+--
 -- Name: contents_recommendations_seen_on_content_id_receiver_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -15597,13 +16145,6 @@ CREATE INDEX contents_recommendations_seen_on_content_id_receiver_user_id ON con
 --
 
 CREATE INDEX contents_recommendations_sender_user_id ON contents_recommendations USING btree (sender_user_id);
-
-
---
--- Name: contents_recommendations_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX contents_recommendations_uniq ON contents_recommendations USING btree (content_id, sender_user_id, receiver_user_id);
 
 
 --
@@ -15786,6 +16327,20 @@ CREATE INDEX events_user_id ON events USING btree (user_id);
 --
 
 CREATE UNIQUE INDEX factions_banned_users_fu ON factions_banned_users USING btree (faction_id, user_id);
+
+
+--
+-- Name: factions_capos_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX factions_capos_uniq ON factions_capos USING btree (faction_id, user_id);
+
+
+--
+-- Name: factions_editors_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX factions_editors_uniq ON factions_editors USING btree (faction_id, user_id, content_type_id);
 
 
 --
@@ -16223,6 +16778,13 @@ CREATE INDEX terms_root_id ON terms USING btree (root_id);
 
 
 --
+-- Name: terms_slug_toplevel; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX terms_slug_toplevel ON terms USING btree (slug) WHERE (parent_id IS NULL);
+
+
+--
 -- Name: terms_slug_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -16560,6 +17122,3070 @@ CREATE INDEX users_daily_stats_user_id_created_on ON users_daily_stats USING btr
 CREATE UNIQUE INDEX users_karma_daily_by_portal_uniq ON users_karma_daily_by_portal USING btree (user_id, portal_id, created_on);
 
 
+SET search_path = archive, pg_catalog;
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: archive; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON pageviews
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE pageviews DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: archive; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON treated_visitors
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE treated_visitors DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: archive; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON tracker_items
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE tracker_items DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: archive; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON pageviews
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '124', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: archive; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON treated_visitors
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '125', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: archive; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON tracker_items
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '138', 'k');
+
+
+SET search_path = public, pg_catalog;
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON ab_tests
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE ab_tests DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON ads
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE ads DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON ads_slots
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE ads_slots DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON ads_slots_instances
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE ads_slots_instances DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON ads_slots_portals
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE ads_slots_portals DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON advertisers
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE advertisers DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON allowed_competitions_participants
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE allowed_competitions_participants DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON anonymous_users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE anonymous_users DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON autologin_keys
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE autologin_keys DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON avatars
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE avatars DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON ban_requests
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE ban_requests DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON bazar_districts
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE bazar_districts DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON bets
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE bets DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON bets_options
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE bets_options DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON bets_tickets
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE bets_tickets DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON blogentries
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE blogentries DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON cash_movements
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE cash_movements DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON chatlines
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE chatlines DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON clans
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE clans DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON clans_friends
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE clans_friends DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON clans_games
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE clans_games DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON clans_groups
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE clans_groups DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON clans_groups_types
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE clans_groups_types DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON clans_logs_entries
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE clans_logs_entries DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON clans_movements
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE clans_movements DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON clans_sponsors
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE clans_sponsors DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON columns
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE columns DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON comments
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE comments DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON comments_valorations
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE comments_valorations DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON comments_valorations_types
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE comments_valorations_types DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON competitions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE competitions DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON competitions_games_maps
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE competitions_games_maps DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON competitions_logs_entries
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE competitions_logs_entries DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON competitions_matches
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE competitions_matches DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON competitions_matches_clans_players
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE competitions_matches_clans_players DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON competitions_matches_games_maps
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE competitions_matches_games_maps DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON competitions_matches_reports
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE competitions_matches_reports DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON competitions_matches_uploads
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE competitions_matches_uploads DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON competitions_participants
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE competitions_participants DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON competitions_participants_types
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE competitions_participants_types DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON competitions_sponsors
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE competitions_sponsors DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON content_ratings
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE content_ratings DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON content_types
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE content_types DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON contents
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE contents DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON contents_locks
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE contents_locks DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON contents_recommendations
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE contents_recommendations DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON contents_versions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE contents_versions DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON countries
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE countries DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON coverages
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE coverages DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON delayed_jobs
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE delayed_jobs DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON demo_mirrors
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE demo_mirrors DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON demos
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE demos DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON download_mirrors
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE download_mirrors DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON downloaded_downloads
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE downloaded_downloads DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON downloads
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE downloads DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON events
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE events DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON events_users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE events_users DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON factions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE factions DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON factions_banned_users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE factions_banned_users DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON factions_headers
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE factions_headers DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON factions_links
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE factions_links DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON factions_portals
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE factions_portals DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON faq_categories
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE faq_categories DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON faq_entries
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE faq_entries DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON friends_recommendations
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE friends_recommendations DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON friendships
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE friendships DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON funthings
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE funthings DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON games
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE games DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON games_maps
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE games_maps DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON games_modes
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE games_modes DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON games_platforms
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE games_platforms DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON games_versions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE games_versions DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON global_notifications
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE global_notifications DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON global_vars
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE global_vars DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON gmtv_broadcast_messages
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE gmtv_broadcast_messages DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON gmtv_channels
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE gmtv_channels DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON groups
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE groups DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON images
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE images DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON interviews
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE interviews DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON ip_bans
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE ip_bans DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON ip_passwords_resets_requests
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE ip_passwords_resets_requests DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON macropolls
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE macropolls DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON macropolls_2007_1
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE macropolls_2007_1 DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON messages
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE messages DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON news
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE news DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON outstanding_entities
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE outstanding_entities DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON platforms
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE platforms DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON polls
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE polls DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON polls_options
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE polls_options DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON polls_votes
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE polls_votes DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON portal_headers
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE portal_headers DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON portal_hits
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE portal_hits DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON portals
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE portals DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON portals_skins
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE portals_skins DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON potds
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE potds DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON products
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE products DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON profile_signatures
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE profile_signatures DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON publishing_decisions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE publishing_decisions DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON publishing_personalities
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE publishing_personalities DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON questions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE questions DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON recruitment_ads
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE recruitment_ads DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON refered_hits
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE refered_hits DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON reviews
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE reviews DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON sent_emails
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE sent_emails DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON silenced_emails
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE silenced_emails DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON skin_textures
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE skin_textures DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON skins
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE skins DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON slog_entries
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE slog_entries DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON sold_products
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE sold_products DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON textures
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE textures DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON topics
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE topics DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON tracker_items
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE tracker_items DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON treated_visitors
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE treated_visitors DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON tutorials
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE tutorials DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON user_login_changes
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE user_login_changes DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE users DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON users_actions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE users_actions DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON users_emblems
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE users_emblems DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON users_guids
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE users_guids DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON users_lastseen_ips
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE users_lastseen_ips DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON users_newsfeeds
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE users_newsfeeds DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON users_preferences
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE users_preferences DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON users_roles
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE users_roles DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON platforms_users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE platforms_users DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON clans_groups_users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE clans_groups_users DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON games_users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE games_users DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON schema_migrations
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE schema_migrations DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON ab_tests
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '1', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON ads
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '2', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON ads_slots
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '3', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON ads_slots_instances
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '4', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON ads_slots_portals
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '5', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON advertisers
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '6', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON allowed_competitions_participants
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '7', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON anonymous_users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '8', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON autologin_keys
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '9', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON avatars
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '10', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON ban_requests
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '11', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON bazar_districts
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '12', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON bets
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '13', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON bets_options
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '14', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON bets_tickets
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '15', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON blogentries
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '16', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON cash_movements
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '17', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON chatlines
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '18', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON clans
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '19', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON clans_friends
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '20', 'vvvvk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON clans_games
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '21', 'kk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON clans_groups
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '22', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON clans_groups_types
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '23', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON clans_logs_entries
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '24', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON clans_movements
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '25', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON clans_sponsors
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '26', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON columns
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '27', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON comments
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '28', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON comments_valorations
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '29', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON comments_valorations_types
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '30', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON competitions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '31', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON competitions_games_maps
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '32', 'kk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON competitions_logs_entries
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '33', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON competitions_matches
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '34', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON competitions_matches_clans_players
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '35', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON competitions_matches_games_maps
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '36', 'vvvvk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON competitions_matches_reports
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '37', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON competitions_matches_uploads
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '38', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON competitions_participants
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '39', 'vvvk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON competitions_participants_types
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '40', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON competitions_sponsors
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '41', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON content_ratings
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '42', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON content_types
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '43', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON contents
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '44', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON contents_locks
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '45', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON contents_recommendations
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '46', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON contents_versions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '47', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON countries
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '48', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON coverages
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '49', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON delayed_jobs
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '50', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON demo_mirrors
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '51', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON demos
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '52', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON download_mirrors
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '53', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON downloaded_downloads
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '54', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON downloads
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '55', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON events
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '56', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON events_users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '57', 'kk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON factions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '58', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON factions_banned_users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '59', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON factions_headers
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '60', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON factions_links
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '61', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON factions_portals
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '62', 'kk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON faq_categories
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '63', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON faq_entries
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '64', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON friends_recommendations
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '65', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON friendships
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '66', 'vvk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON funthings
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '67', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON games
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '68', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON games_maps
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '69', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON games_modes
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '70', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON games_platforms
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '71', 'kk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON games_versions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '72', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON global_notifications
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '73', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON global_vars
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '74', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON gmtv_broadcast_messages
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '75', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON gmtv_channels
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '76', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON groups
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '77', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON images
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '78', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON interviews
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '79', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON ip_bans
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '80', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON ip_passwords_resets_requests
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '81', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON macropolls
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '82', 'vvvvvvk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON macropolls_2007_1
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '83', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON messages
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '84', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON news
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '85', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON outstanding_entities
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '86', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON platforms
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '87', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON polls
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '88', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON polls_options
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '89', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON polls_votes
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '90', 'vvk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON portal_headers
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '91', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON portal_hits
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '92', 'vvvk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON portals
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '93', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON portals_skins
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '94', 'kk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON potds
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '95', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON products
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '96', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON profile_signatures
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '97', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON publishing_decisions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '98', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON publishing_personalities
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '99', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON questions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '100', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON recruitment_ads
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '101', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON refered_hits
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '102', 'vvvvk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON reviews
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '103', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON sent_emails
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '104', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON silenced_emails
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '105', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON skin_textures
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '106', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON skins
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '107', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON slog_entries
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '108', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON sold_products
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '109', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON textures
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '110', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON topics
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '111', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON tracker_items
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '112', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON treated_visitors
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '113', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON tutorials
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '114', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON user_login_changes
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '115', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '116', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON users_actions
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '117', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON users_emblems
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '118', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON users_guids
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '119', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON users_lastseen_ips
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '120', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON users_newsfeeds
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '121', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON users_preferences
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '122', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON users_roles
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '123', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON platforms_users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '135', 'kk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON clans_groups_users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '136', 'kk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON games_users
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '137', 'kk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON schema_migrations
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '139', 'k');
+
+
+SET search_path = stats, pg_catalog;
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON ads
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE ads DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON ads_daily
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE ads_daily DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON bandit_treatments
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE bandit_treatments DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON bets_results
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE bets_results DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON general
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE general DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON pageloadtime
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE pageloadtime DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON pageviews
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE pageviews DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON portals
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE portals DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_denyaccess; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_denyaccess
+    BEFORE INSERT OR DELETE OR UPDATE ON users_karma_daily_by_portal
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.denyaccess('_gamersmafia');
+
+ALTER TABLE users_karma_daily_by_portal DISABLE TRIGGER _gamersmafia_denyaccess;
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON ads
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '126', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON ads_daily
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '127', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON bandit_treatments
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '128', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON bets_results
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '129', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON general
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '130', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON pageloadtime
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '131', 'vvvvk');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON pageviews
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '132', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON portals
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '133', 'k');
+
+
+--
+-- Name: _gamersmafia_logtrigger; Type: TRIGGER; Schema: stats; Owner: -
+--
+
+CREATE TRIGGER _gamersmafia_logtrigger
+    AFTER INSERT OR DELETE OR UPDATE ON users_karma_daily_by_portal
+    FOR EACH ROW
+    EXECUTE PROCEDURE _gamersmafia.logtrigger('_gamersmafia', '134', 'k');
+
+
 SET search_path = _gamersmafia, pg_catalog;
 
 --
@@ -16587,6 +20213,22 @@ ALTER TABLE ONLY sl_path
 
 
 --
+-- Name: seq_set-set_id-ref; Type: FK CONSTRAINT; Schema: _gamersmafia; Owner: -
+--
+
+ALTER TABLE ONLY sl_sequence
+    ADD CONSTRAINT "seq_set-set_id-ref" FOREIGN KEY (seq_set) REFERENCES sl_set(set_id);
+
+
+--
+-- Name: set_origin-no_id-ref; Type: FK CONSTRAINT; Schema: _gamersmafia; Owner: -
+--
+
+ALTER TABLE ONLY sl_set
+    ADD CONSTRAINT "set_origin-no_id-ref" FOREIGN KEY (set_origin) REFERENCES sl_node(no_id);
+
+
+--
 -- Name: sl_listen-sl_path-ref; Type: FK CONSTRAINT; Schema: _gamersmafia; Owner: -
 --
 
@@ -16603,11 +20245,35 @@ ALTER TABLE ONLY sl_subscribe
 
 
 --
--- Name: trig_tabid-tab_id-ref; Type: FK CONSTRAINT; Schema: _gamersmafia; Owner: -
+-- Name: ssy_origin-no_id-ref; Type: FK CONSTRAINT; Schema: _gamersmafia; Owner: -
 --
 
-ALTER TABLE ONLY sl_trigger
-    ADD CONSTRAINT "trig_tabid-tab_id-ref" FOREIGN KEY (trig_tabid) REFERENCES sl_table(tab_id) ON DELETE CASCADE;
+ALTER TABLE ONLY sl_setsync
+    ADD CONSTRAINT "ssy_origin-no_id-ref" FOREIGN KEY (ssy_origin) REFERENCES sl_node(no_id);
+
+
+--
+-- Name: ssy_setid-set_id-ref; Type: FK CONSTRAINT; Schema: _gamersmafia; Owner: -
+--
+
+ALTER TABLE ONLY sl_setsync
+    ADD CONSTRAINT "ssy_setid-set_id-ref" FOREIGN KEY (ssy_setid) REFERENCES sl_set(set_id);
+
+
+--
+-- Name: sub_set-set_id-ref; Type: FK CONSTRAINT; Schema: _gamersmafia; Owner: -
+--
+
+ALTER TABLE ONLY sl_subscribe
+    ADD CONSTRAINT "sub_set-set_id-ref" FOREIGN KEY (sub_set) REFERENCES sl_set(set_id);
+
+
+--
+-- Name: tab_set-set_id-ref; Type: FK CONSTRAINT; Schema: _gamersmafia; Owner: -
+--
+
+ALTER TABLE ONLY sl_table
+    ADD CONSTRAINT "tab_set-set_id-ref" FOREIGN KEY (tab_set) REFERENCES sl_set(set_id);
 
 
 SET search_path = public, pg_catalog;
@@ -16781,30 +20447,6 @@ ALTER TABLE ONLY bets
 
 
 --
--- Name: bets_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY bets_categories
-    ADD CONSTRAINT bets_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES bets(id);
-
-
---
--- Name: bets_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY bets_categories
-    ADD CONSTRAINT bets_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES bets_categories(id);
-
-
---
--- Name: bets_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY bets_categories
-    ADD CONSTRAINT bets_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES bets_categories(id);
-
-
---
 -- Name: bets_options_bet_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -16946,30 +20588,6 @@ ALTER TABLE ONLY clans_movements
 
 ALTER TABLE ONLY clans_movements
     ADD CONSTRAINT clans_movements_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: columns_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY columns_categories
-    ADD CONSTRAINT columns_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES columns(id) ON DELETE SET NULL;
-
-
---
--- Name: columns_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY columns_categories
-    ADD CONSTRAINT columns_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES columns_categories(id) MATCH FULL;
-
-
---
--- Name: columns_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY columns_categories
-    ADD CONSTRAINT columns_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES columns_categories(id) MATCH FULL;
 
 
 --
@@ -17341,30 +20959,6 @@ ALTER TABLE ONLY demos
 
 
 --
--- Name: demos_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY demos_categories
-    ADD CONSTRAINT demos_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES demos(id);
-
-
---
--- Name: demos_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY demos_categories
-    ADD CONSTRAINT demos_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES demos_categories(id);
-
-
---
--- Name: demos_categories_root_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY demos_categories
-    ADD CONSTRAINT demos_categories_root_id_fkey FOREIGN KEY (root_id) REFERENCES demos_categories(id);
-
-
---
 -- Name: demos_demos_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -17445,38 +21039,6 @@ ALTER TABLE ONLY download_mirrors
 
 
 --
--- Name: downloads_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY downloads_categories
-    ADD CONSTRAINT downloads_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: downloads_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY downloads_categories
-    ADD CONSTRAINT downloads_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES downloads(id) ON DELETE SET NULL;
-
-
---
--- Name: downloads_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY downloads_categories
-    ADD CONSTRAINT downloads_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES downloads_categories(id) MATCH FULL;
-
-
---
--- Name: downloads_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY downloads_categories
-    ADD CONSTRAINT downloads_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES downloads_categories(id) MATCH FULL;
-
-
---
 -- Name: downloads_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -17506,38 +21068,6 @@ ALTER TABLE ONLY downloads
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: events_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY events_categories
-    ADD CONSTRAINT events_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: events_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY events_categories
-    ADD CONSTRAINT events_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES events(id) ON DELETE SET NULL;
-
-
---
--- Name: events_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY events_categories
-    ADD CONSTRAINT events_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES events_categories(id) MATCH FULL;
-
-
---
--- Name: events_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY events_categories
-    ADD CONSTRAINT events_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES events_categories(id) MATCH FULL;
 
 
 --
@@ -17717,30 +21247,6 @@ ALTER TABLE ONLY faq_entries
 
 
 --
--- Name: forum_forums_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY topics_categories
-    ADD CONSTRAINT forum_forums_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES topics(id) ON DELETE SET NULL;
-
-
---
--- Name: forum_forums_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY topics_categories
-    ADD CONSTRAINT forum_forums_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES topics_categories(id) MATCH FULL;
-
-
---
--- Name: forum_forums_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY topics_categories
-    ADD CONSTRAINT forum_forums_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES topics_categories(id) MATCH FULL;
-
-
---
 -- Name: forum_topics_forum_forum_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -17893,43 +21399,35 @@ ALTER TABLE ONLY gmtv_channels
 
 
 --
+-- Name: groups_messages_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY groups_messages
+    ADD CONSTRAINT groups_messages_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES groups_messages(id) MATCH FULL;
+
+
+--
+-- Name: groups_messages_root_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY groups_messages
+    ADD CONSTRAINT groups_messages_root_id_fkey FOREIGN KEY (root_id) REFERENCES groups_messages(id) MATCH FULL;
+
+
+--
+-- Name: groups_messages_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY groups_messages
+    ADD CONSTRAINT groups_messages_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
+
+
+--
 -- Name: groups_owner_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY groups
     ADD CONSTRAINT groups_owner_user_id_fkey FOREIGN KEY (owner_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: images_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY images_categories
-    ADD CONSTRAINT images_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: images_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY images_categories
-    ADD CONSTRAINT images_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES images(id) ON DELETE SET NULL;
-
-
---
--- Name: images_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY images_categories
-    ADD CONSTRAINT images_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES images_categories(id) MATCH FULL;
-
-
---
--- Name: images_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY images_categories
-    ADD CONSTRAINT images_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES images_categories(id) MATCH FULL;
 
 
 --
@@ -17941,35 +21439,19 @@ ALTER TABLE ONLY images
 
 
 --
+-- Name: images_images_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY images
+    ADD CONSTRAINT images_images_category_id_fkey FOREIGN KEY (images_category_id) REFERENCES images_categories(id) MATCH FULL;
+
+
+--
 -- Name: images_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY images
     ADD CONSTRAINT images_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-
-
---
--- Name: interviews_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY interviews_categories
-    ADD CONSTRAINT interviews_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES interviews(id) ON DELETE SET NULL;
-
-
---
--- Name: interviews_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY interviews_categories
-    ADD CONSTRAINT interviews_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES interviews_categories(id) MATCH FULL;
-
-
---
--- Name: interviews_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY interviews_categories
-    ADD CONSTRAINT interviews_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES interviews_categories(id) MATCH FULL;
 
 
 --
@@ -18029,38 +21511,6 @@ ALTER TABLE ONLY messages
 
 
 --
--- Name: news_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY news_categories
-    ADD CONSTRAINT news_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: news_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY news_categories
-    ADD CONSTRAINT news_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES news(id) ON DELETE SET NULL;
-
-
---
--- Name: news_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY news_categories
-    ADD CONSTRAINT news_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES news_categories(id) MATCH FULL;
-
-
---
--- Name: news_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY news_categories
-    ADD CONSTRAINT news_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES news_categories(id) MATCH FULL;
-
-
---
 -- Name: news_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -18098,38 +21548,6 @@ ALTER TABLE ONLY platforms_users
 
 ALTER TABLE ONLY platforms_users
     ADD CONSTRAINT platforms_users_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: polls_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY polls_categories
-    ADD CONSTRAINT polls_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: polls_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY polls_categories
-    ADD CONSTRAINT polls_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES polls(id) MATCH FULL ON DELETE SET NULL;
-
-
---
--- Name: polls_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY polls_categories
-    ADD CONSTRAINT polls_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES polls_categories(id) MATCH FULL;
-
-
---
--- Name: polls_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY polls_categories
-    ADD CONSTRAINT polls_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES polls_categories(id) MATCH FULL;
 
 
 --
@@ -18325,38 +21743,6 @@ ALTER TABLE ONLY questions
 
 
 --
--- Name: questions_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY questions_categories
-    ADD CONSTRAINT questions_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: questions_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY questions_categories
-    ADD CONSTRAINT questions_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES questions(id) ON DELETE SET NULL;
-
-
---
--- Name: questions_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY questions_categories
-    ADD CONSTRAINT questions_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES questions_categories(id) MATCH FULL;
-
-
---
--- Name: questions_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY questions_categories
-    ADD CONSTRAINT questions_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES questions_categories(id) MATCH FULL;
-
-
---
 -- Name: questions_questions_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -18426,30 +21812,6 @@ ALTER TABLE ONLY recruitment_ads
 
 ALTER TABLE ONLY refered_hits
     ADD CONSTRAINT refered_hits_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: reviews_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY reviews_categories
-    ADD CONSTRAINT reviews_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES reviews(id) ON DELETE SET NULL;
-
-
---
--- Name: reviews_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY reviews_categories
-    ADD CONSTRAINT reviews_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES reviews_categories(id) MATCH FULL;
-
-
---
--- Name: reviews_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY reviews_categories
-    ADD CONSTRAINT reviews_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES reviews_categories(id) MATCH FULL;
 
 
 --
@@ -18597,14 +21959,6 @@ ALTER TABLE ONLY terms
 
 
 --
--- Name: topics_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY topics_categories
-    ADD CONSTRAINT topics_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
 -- Name: topics_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -18642,30 +21996,6 @@ ALTER TABLE ONLY tracker_items
 
 ALTER TABLE ONLY treated_visitors
     ADD CONSTRAINT treated_visitors_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: tutorials_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tutorials_categories
-    ADD CONSTRAINT tutorials_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES tutorials(id) ON DELETE SET NULL;
-
-
---
--- Name: tutorials_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tutorials_categories
-    ADD CONSTRAINT tutorials_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES tutorials_categories(id) MATCH FULL;
-
-
---
--- Name: tutorials_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tutorials_categories
-    ADD CONSTRAINT tutorials_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES tutorials_categories(id) MATCH FULL;
 
 
 --
