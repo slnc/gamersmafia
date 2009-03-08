@@ -1,4 +1,4 @@
-<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @question, :selterm => params[:questions_category_id] ? Term.find(params[:questions_category_id]) : nil } %>
+<%=render :partial => '/shared/edit_content_taxonomy', :locals => { :acts_as_content => @question } %>
 
 <p><label for="question_title">Pregunta</label><br/>
 <%= text_field 'question', 'title', :class => 'text', :size => 90, :maxlength => 200  %></p>

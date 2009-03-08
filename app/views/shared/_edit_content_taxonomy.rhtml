@@ -11,6 +11,11 @@
 end %>
 <% end -%>
 
+<% if params[:presel_term_id] then %>
+	<%=render :partial => '/shared/root_term_select', :locals => { :index => created_selects + 1, :content_type => acts_as_content.class.name, :selterm => Term.find(params[:presel_term_id]) } %>
+	<% created_selects += 1
+ end -%>
+
 <%(3-created_selects).times do |time| %>
 	<%=render :partial => '/shared/root_term_select', :locals => { :index => created_selects + 1, :selterm => nil } %>
 <% 
@@ -25,8 +30,19 @@ end -%>
 	<%=render :partial => '/shared/category_term_select', :locals => { :index => created_selects + 1, :content_type => acts_as_content.class.name, :selterm => tt} %>
 	<% created_selects += 1
 end %>
-
 <% end -%>
+
+<% if params[:presel_term_id] then 
+tt = Term.find(params[:presel_term_id])
+if tt.parent_id.nil?
+tt = tt.children.find(:first, :conditions => "taxonomy = \'#{ActiveSupport::Inflector.pluralize(acts_as_content.class.name)}Category\'")
+end
+%>
+	<%=render :partial => '/shared/category_term_select', :locals => { :index => created_selects + 1, :content_type => acts_as_content.class.name, :selterm => tt } %>
+	<% created_selects += 1
+ end -%>
+
+
 
 <%(3-created_selects).times do |time| %>
 	<%=render :partial => '/shared/category_term_select', :locals => { :index => created_selects + 1, :content_type => acts_as_content.class.name, :selterm => nil} %>
