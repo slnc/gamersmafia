@@ -42,7 +42,7 @@ module Blogs
                       AND action = 'blogentry' 
                       AND model_id <> '' 
                  GROUP BY blogger_user_id 
-                 ORDER BY count(*) desc limit 10").collect do |dbr|
+                 ORDER BY count(distinct(visitor_id)) desc limit 10").collect do |dbr|
       if dbr['blogger_user_id'].to_i > 0
         [User.find(dbr['blogger_user_id'].to_i), dbr['count'].to_i]
       else

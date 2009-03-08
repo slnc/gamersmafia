@@ -771,7 +771,7 @@ class User < ActiveRecord::Base
                                                    from users 
                                                   where state in (#{STATES_CANNOT_LOGIN.join(',')})) 
                        group by model_id 
-                       order by count(*) desc 
+                       order by count(distinct(visitor_id)) desc 
                           limit #{limit}")
     results = []
     dbi.each do |dbu|
