@@ -33,7 +33,6 @@ end
 
 class ActionController::Caching::Fragments::UnthreadedFileStore
   def write(name, value, options = nil) #:nodoc:
-    puts "writing to #{name}"
     ensure_cache_path(File.dirname(real_file_path(name)))
     f = File.open(real_file_path(name), "wb+")
     f.write(value)
@@ -77,10 +76,10 @@ module GmSys
       m = /\.([0-9]+)\.pid$/.match(fname)
       begin
         Process.kill('TERM', m[1].to_i)
-        puts "killing delayed_job #{m[1]}"
+        puts "killing delayed_job #{m[1]}" if App.debug
         File.unlink("#{RAILS_ROOT}/tmp/pids/#{fname}")
       rescue
-        puts "the bastard didn't want to die"
+        puts "the bastard didn't want to die" if App.debug
       end
     end
     
