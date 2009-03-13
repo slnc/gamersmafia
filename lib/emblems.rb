@@ -179,7 +179,7 @@ module Emblems
     h = Comments.top_commenter_of_type_in_time_period(cvt, Time.now, 1.week.ago, 1)
     if h.size > 0
       sum, u = h[0][0], h[0][1]
-      u.users_emblems.create(:emblem => r_emblems[cvt.name], :details => "<strong>#{sum}</strong> valoraciones ponderadas")
+      u.users_emblems.create(:emblem => r_emblems[cvt.name], :details => "<strong>#{sum}</strong> puntos")
     end
   end
   
