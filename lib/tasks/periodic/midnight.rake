@@ -24,7 +24,7 @@ namespace :gm do
   
   def reset_remaining_rating_slots
 # lo hacemos de uno en uno porque si no incurreimos en deadlocks
-    User.db_query("SELECT id FROM users where lastseen_on >= now() - '5 days'::interval").each do |dbr| 
+    User.db_query("SELECT id FROM users where lastseen_on >= now() - '15 days'::interval").each do |dbr| 
        User.db_query("UPDATE users SET cache_remaining_rating_slots = NULL WHERE id = #{dbr['id']}")
     end
   end
@@ -102,7 +102,7 @@ namespace :gm do
       # Comments
       # TODO esto cuenta comentarios contenidos borrados
       Comment.find(:all, :conditions => "deleted = 'f' AND comments.created_on BETWEEN date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS'))  AND date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS')) + '1 day'::interval - '1 second'::interval", :include => [ :content]).each do |comment|
-        if comment.content.game_id # Contenido de facción
+        if comment.content.game # Contenido de facción
           # Warning: un juego puede aparecer en más de un portal
           portal = Portal.find(:first, :conditions => ['code = ?', comment.content.game.code])
           if portal.nil?
@@ -115,17 +115,17 @@ namespace :gm do
           else
             puts "game #{comment.content.game.name} has no portal"
           end
-        elsif comment.content.platform_id # Contenido de facción
+        elsif comment.content.platform # Contenido de facción
           platforms_r_portals[comment.content.platform_id] ||= Portal.find(:first, :conditions => ['code = ?', comment.content.platform.code]).id
           portals_stats[platforms_r_portals[comment.content.platform_id]] ||= 0
           portals_stats[platforms_r_portals[comment.content.platform_id]] += Karma::KPS_CREATE['Comment']
-        elsif comment.content.bazar_district_id # Contenido de distrito
+        elsif comment.content.bazar_district # Contenido de distrito
 #puts "comment de bazar district #{comment.content.bazar_district_id}"
           bazar_districts_r_portals[comment.content.bazar_district_id] ||= Portal.find(:first, :conditions => ['code = ?', comment.content.bazar_district.code]).id
           portals_stats[bazar_districts_r_portals[comment.content.bazar_district_id]] ||= 0
           portals_stats[bazar_districts_r_portals[comment.content.bazar_district_id]] += Karma::KPS_CREATE['Comment']
 #p portals_stats
-        elsif comment.content.clan_id # Contenido de clan
+        elsif comment.content.clan # Contenido de clan
           portal = Portal.find(:first, :conditions => ['clan_id = ?', comment.content.clan_id])
           if portal then
             clans_r_portals[comment.content.clan_id] ||= Portal.find(:first, :conditions => ['clan_id = ?', comment.content.clan_id]).id
@@ -141,7 +141,7 @@ namespace :gm do
       
       # Contents
       Content.find(:all, :conditions => "state = #{Cms::PUBLISHED} AND created_on BETWEEN date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS'))  AND date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS')) + '1 day'::interval - '1 second'::interval", :include => [:content_type]).each do |content|
-        if content.game_id # Contenido de facción
+        if content.game # Contenido de facción
           # Warning: un juego puede aparecer en más de un portal
           portal = Portal.find(:first, :conditions => ['code = ?', content.game.code])
           if portal.nil?
@@ -154,15 +154,15 @@ namespace :gm do
           else
             puts "game #{comment.content.game.name} has no portal"
           end
-        elsif content.platform_id # Contenido de facción
+        elsif content.platform # Contenido de facción
           platforms_r_portals[content.platform_id] ||= Portal.find(:first, :conditions => ['code = ?', content.platform.code]).id
           portals_stats[platforms_r_portals[content.platform_id]] ||= 0
           portals_stats[platforms_r_portals[content.platform_id]] += Karma::KPS_CREATE[content.content_type.name]
-        elsif content.bazar_district_id # Contenido de facción
+        elsif content.bazar_district # Contenido de facción
           bazar_districts_r_portals[content.bazar_district_id] ||= Portal.find(:first, :conditions => ['code = ?', content.bazar_district.code]).id
           portals_stats[bazar_districts_r_portals[content.bazar_district_id]] ||= 0
           portals_stats[bazar_districts_r_portals[content.bazar_district_id]] += Karma::KPS_CREATE[content.content_type.name]
-        elsif content.clan_id # Contenido de clan
+        elsif content.clan # Contenido de clan
           portal = Portal.find(:first, :conditions => ['clan_id = ?', content.clan_id])
           if portal
             clans_r_portals[content.clan_id] ||= portal.id
