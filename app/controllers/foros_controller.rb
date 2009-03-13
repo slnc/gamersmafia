@@ -19,6 +19,10 @@ class ForosController < ComunidadController
   def nuevo_topic
     require_auth_users
     @title = 'Nuevo tópic'
+    if params[:forum_id]
+      @forum = Term.find_taxonomy(params[:forum_id], 'TopicsCategory')
+      @forum = Term.single_toplevel(:id => params[:forum_id]) if @forum.nil?
+    end
   end
   
   def mis_foros

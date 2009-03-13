@@ -116,6 +116,12 @@ class ForosControllerTest < Test::Unit::TestCase
     assert_response :success
   end
   
+  def test_should_show_nuevo_topic_null_forum_id
+    sym_login 1
+    get :nuevo_topic, :forum_id => nil
+    assert_response :success
+  end
+  
   def test_should_show_edit
     sym_login 1
     get :edit, :id => Topic.find(1).id
