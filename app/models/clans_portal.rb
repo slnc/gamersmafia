@@ -21,7 +21,7 @@ class ClansPortal < Portal
   def method_missing(method_id, *args)
     cs_method = ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id))
     if Cms::CLANS_CONTENTS.include?(cs_method)
-      t = Term.toplevel(:clan_id => self.clan_id)
+      t = Term.single_toplevel(:clan_id => self.clan_id)
     elsif /(news|downloads|topics|events|images|polls)_categories/ =~ method_id.to_s then 
       Term.toplevel(:clan_id => self.clan_id)
     else
