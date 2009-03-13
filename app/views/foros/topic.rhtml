@@ -13,7 +13,7 @@
   <%mftext('Subforos') do %>
 <ul class="content-hid">
 <strong><%=@forum.parent.name%></strong>
-<% for subforum in @forum.parent.children %>
+<% for subforum in @forum.parent.children.find(:all, :conditions => 'taxonomy = \'TopicsCategory\'', :order => 'lower(name)') %>
 <li><%=link_to subforum.name, :action => 'forum', :id => subforum.id%></li>
 <% end -%>
 </ul>
