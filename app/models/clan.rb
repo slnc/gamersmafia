@@ -341,7 +341,7 @@ class Clan < ActiveRecord::Base
                                                    from clans 
                                                   where deleted = 't')  
                        group by model_id 
-                       order by coun(distinct(visitor_id)) desc 
+                       order by count(distinct(visitor_id)) desc 
                           limit #{limit}")
     results = []
     dbi.each do |dbu|

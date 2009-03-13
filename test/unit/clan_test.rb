@@ -64,4 +64,8 @@ class ClanTest < Test::Unit::TestCase
     assert root_term
     assert_equal 1, root_term.children.count
   end
+  
+  def test_hot
+    Clan.hot(1, 1.day.ago, Time.now)
+  end
 end
