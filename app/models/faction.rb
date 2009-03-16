@@ -22,6 +22,15 @@ class Faction < ActiveRecord::Base
   before_destroy :set_users_faction_id_to_nil
   before_destroy :destroy_editors_too
   before_destroy :destroy_related_portals
+
+  def self.update_factions_cohesion
+    Faction.find(:all, :order => 'id').each do |f|
+      f.cache_member_cohesion = nil
+      f.member_cohesion
+      f.save
+    end
+  end
+
   
   def destroy_related_portals
     User.db_query("DELETE FROM factions_portals WHERE faction_id = #{self.id}")
