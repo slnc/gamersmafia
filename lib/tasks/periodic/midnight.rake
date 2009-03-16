@@ -10,31 +10,16 @@ namespace :gm do
     #`python script/spark.py metric #{dbi.collect {|dbr| dbr['count'] }.concat([0] * (days - dbi.size)).reverse.join(',')} "#{dst_file}"`
     #return
 
+    GmSys.job('Faith.reset_remaining_rating_slots')
+    GmSys.job('Faction.update_factions_cohesion')
     generate_top_bets_winners_minicolumns
     update_factions_stats # Order is important
     update_general_stats
     generate_minicolumns_factions_activity
-    update_factions_cohesion
-    reset_remaining_rating_slots
     update_users_karma_stats
     update_users_daily_stats
     Karma.update_ranking
     Faith.update_ranking
-  end
-  
-  def reset_remaining_rating_slots
-# lo hacemos de uno en uno porque si no incurreimos en deadlocks
-    User.db_query("SELECT id FROM users where lastseen_on >= now() - '15 days'::interval").each do |dbr| 
-       User.db_query("UPDATE users SET cache_remaining_rating_slots = NULL WHERE id = #{dbr['id']}")
-    end
-  end
-  
-  def update_factions_cohesion
-    Faction.find(:all, :order => 'id').each do |f|
-      f.cache_member_cohesion = nil
-      f.member_cohesion
-      f.save
-    end
   end
   
   def generate_minicolumns_factions_activity
@@ -152,7 +137,7 @@ namespace :gm do
             portals_stats[games_r_portals[content.game_id]] ||= 0
             portals_stats[games_r_portals[content.game_id]] += Karma::KPS_CREATE[content.content_type.name]
           else
-            puts "game #{comment.content.game.name} has no portal"
+            puts "game #{content.game_id ? content.game.name : content.name} has no portal"
           end
         elsif content.platform # Contenido de facción
           platforms_r_portals[content.platform_id] ||= Portal.find(:first, :conditions => ['code = ?', content.platform.code]).id
