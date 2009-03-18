@@ -18,6 +18,13 @@ class ImagenesControllerTest < Test::Unit::TestCase
     assert_raises(ActiveRecord::RecordNotFound) { get :category, :id => 'foo' }
   end
   
+  
+  def test_image_nil_file
+    User.db_query("UPDATE images SET file = NULL WHERE id = 1")
+    @request.host = "ut.#{App.domain}"
+    get :show, :id => 1
+    assert_response :success
+  end
     
   def test_category_404_if_unexistant
     assert_raises(ActiveRecord::RecordNotFound) { get :category }

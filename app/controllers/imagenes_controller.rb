@@ -43,7 +43,7 @@ class ImagenesController < BazarController
     if @image # podemos estar haciendo 301
       if @image.main_category && @image.main_category.parent then
         @title = "#{@image.main_category.parent.name} &raquo; #{@image.main_category.name} &raquo; Imagen #{File.basename(@image.file) if @image.file}"
-        @navpath = [['Imágenes', '/imagenes'], [@image.main_category.parent.name, "/imagenes/#{@image.main_category.parent.id}"], [@image.main_category.name, "/imagenes/#{@image.main_category.id}"], [File.basename(@image.file), gmurl(@image)]]
+        @navpath = [['Imágenes', '/imagenes'], [@image.main_category.parent.name, "/imagenes/#{@image.main_category.parent.id}"], [@image.main_category.name, "/imagenes/#{@image.main_category.id}"], [@image.resolve_hid, gmurl(@image)]]
       elsif @image.main_category
         @title = "#{@image.main_category.name} &raquo; Imagen #{@image.file ? File.basename(@image.file) : ''}"
         @navpath = [['Imágenes', '/imagenes'], [@image.main_category.name, "/imagenes/#{@image.main_category.id}"], [@image.file ? File.basename(@image.file) : 'Imagen', gmurl(@image)]]
