@@ -2,7 +2,7 @@
 <div id="home-events" class="subheader"><div><span>Eventos</span></div></div>
 <% # TODO hacer algo con esto, no se usa
         cache("/#{@controller.portal.code}/home/index/eventos/#{Time.now.strftime('%Y%m%d')}") do %>
-<%mfcontents_table(nil, controller.portal.event.find(:all, :content_type => 'Event', :conditions => "AND #{Event::CURRENT_SQL}", :order => 'created_on ASC')) do |e| %>
+<%mfcontents_table(nil, controller.portal.event.find(:all, :content_type => 'Event', :conditions => "#{Event::CURRENT_SQL}", :order => 'created_on ASC')) do |e| %>
         <td style="font-size: 11px;"><a href="<%=get_url(e)%>"><%=content_category(e)%><%=e.title%></a></td>
         <td style="font-size: 11px;"><%=member_state('active')%><%=e.users.count if e.respond_to?(:users)%></td>
       <% end # for -%>
