@@ -11,10 +11,10 @@
 	</td>
 	
 	<% if sle.reviewer_user_id.nil? then %>
-	<td class="w25"><%=link_to_remote "<img title=\"Asignarme este evento\" class=\"icon\" src=\"/skins/default/images/icons/status_assigned.gif\" \>", :url => "/slog/slog_entry_assigntome/#{sle.id}", :confirm => '¿Estás seguro?', :complete => "$j('#sle#{sle.id}').fadeOut('normal');" %></td>
+	<td class="w25"><%=link_to_remote "<img title=\"Asignarme este evento\" class=\"icon\" src=\"/skins/default/images/icons/status_assigned.gif\" \>", :url => "/slog/slog_entry_assigntome/#{sle.id}", :complete => "$j('#sle#{sle.id}').fadeOut('normal');" %></td>
 	<% end -%>
 	<% if sle.completed_on.nil? then %>
-	<td class="w25"><%=link_to_remote "<img title=\"Marcar como resuelto\" class=\"icon\" src=\"/skins/default/images/icons/confirm_16.png\" \>", :url => "/slog/slog_entry_reviewed/#{sle.id}", :confirm => '¿Estás seguro?', :complete => "$j('#sle#{sle.id}').fadeOut('normal');" %></td>
+	<td class="w25"><%=link_to_remote "<img title=\"Marcar como resuelto\" class=\"icon\" src=\"/skins/default/images/icons/confirm_16.png\" \>", :url => "/slog/slog_entry_reviewed/#{sle.id}", :complete => "$j('#sle#{sle.id}').fadeOut('normal');" %></td>
 	<% end -%>	
 </tr>
 <% end # each %>
@@ -30,7 +30,7 @@
 	<div class="infoinline">Creada: <%=print_tstamp(sle.created_on)%></div>
 	</td>
 	
-	<td class="w25"><%=link_to_remote "<img title=\"Marcar como resuelto\" class=\"icon\" src=\"/skins/default/images/icons/confirm_16.png\" \>", :url => "/slog/slog_entry_reviewed/#{sle.id}", :confirm => '¿Estás seguro?', :complete => "$j('#sle#{sle.id}').fadeOut('normal');" %></td>	
+	<td class="w25"><%=link_to_remote "<img title=\"Marcar como resuelto\" class=\"icon\" src=\"/skins/default/images/icons/confirm_16.png\" \>", :url => "/slog/slog_entry_reviewed/#{sle.id}", :complete => "$j('#sle#{sle.id}').fadeOut('normal');" %></td>	
 </tr>
 <% end # each %>
 </table>
