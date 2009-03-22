@@ -52,9 +52,11 @@ class Avatar < ActiveRecord::Base
         Cms.image_thumbnail(f, f, 50, 50, 'f', true)
       end
     end
+    additional_text = ''
+    additional_text << "#{Cms::faction_favicon(self.faction)}" if self.faction_id
     SlogEntry.create(:type_id => SlogEntry::TYPES[:new_avatar], 
                      :reporter_user_id => User.find_by_login('MrAchmed').id, 
-    :headline => "Nuevo avatar de #{mode}: <a href=\"http://#{App.domain}/avatares/edit/#{self.id}\"><img src=\"/cache/thumbnails/f/50x50/#{self.path}\" /></a></strong>")
+    :headline => "#{additional_text} Nuevo avatar de #{mode}: <a href=\"http://#{App.domain}/avatares/edit/#{self.id}\"><img src=\"/cache/thumbnails/f/50x50/#{self.path}\" /></a></strong>")
     true
   end
   
