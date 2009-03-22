@@ -518,7 +518,7 @@ module ActsAsContent
         # cogemos el numero de votos como el valor del 1er cuartil ordenando la lista de contenidos por votos asc
         # calculamos "m"
         if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-		return 0 if self.main_category.nil?# TODO hack temporal
+          return 0 if self.main_category.nil?# TODO hack temporal
           total = self.main_category.root.count(:content_type => self.class.name)
           # TODO esto debería ir en term
           q = "SELECT content_id 
@@ -528,7 +528,7 @@ module ActsAsContent
                                            AND term_id IN (#{self.main_category.root.all_children_ids(:content_type => self.class.name).join(',')})"
           #puts q
           contents_ids = User.db_query(q).collect { |dbr| dbr['content_id'] }
-                                           
+          
           q = "AND unique_content_id IN (#{contents_ids.join(',')})"
           #cat_ids = self.main_category.root.all_children_ids
           #q = "AND #{ActiveSupport::Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})"
@@ -570,7 +570,7 @@ module ActsAsContent
       # calcula el voto medio para un contenido dependiendo de si tiene categoría o no
       # asumo que cada contenido y cada facción tiene su propia media
       if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
-		return 0 if self.main_category.nil?# TODO hack temporal
+        return 0 if self.main_category.nil?# TODO hack temporal
         # cat_ids = self.main_category.root.all_children_ids
         # TODO esto deberia ir en Term
         
@@ -614,6 +614,18 @@ module ActsAsContent
       end
       
       return title
+    end
+    
+    def resolve_html_hid
+      if (self.respond_to? 'title') then
+        self.title
+      elsif self.respond_to? 'name' then
+        self.name
+      elsif self.class.name == 'Image' and self.file
+        "<img src=\"/cache/thumbnails/f/85x60/#{self.file}\" />"
+      else
+        self.id.to_s
+      end
     end
     
     def hit_anon

@@ -553,7 +553,7 @@ module Cms
       pd = PublishingDecision.create(base)
     end
     prev_state = content.state    
-    if u_weight == Infinity # está votando un moderador, actualizamos campo 'is_right' de todos los publishing_decisions
+    if u_weight == Infinity # está votando un moderador, actualizamos campo 'is_right' de todos los publishing_decisions      
       content.change_state(new_state, user)
       if new_state == Cms::DELETED && prev_state == PENDING then
         msg = "Lo lamentamos pero tu contenido ha sido denegado por las siguientes razones:\n\n"
@@ -568,7 +568,7 @@ module Cms
       content.change_state(Cms::PUBLISHED, User.find_by_login('MrMan'))
       ttype, scope = SlogEntry.fill_ttype_and_scope_for_content_report(uniq)
       mrman = User.find_by_login('mrman')
-      SlogEntry.create(:type_id => ttype, :scope => scope, :reporter_user_id => mrman.id, :headline => "#{Cms.faction_favicon(content)}<strong><a href=\"#{ApplicationController.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.id}</a></strong> publicado por votación") if prev_state == Cms::PENDING
+      SlogEntry.create(:type_id => ttype, :scope => scope, :reporter_user_id => mrman.id, :headline => "#{Cms.faction_favicon(content)}<strong><a href=\"#{ApplicationController.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.real_content.resolve_html_hid}</a></strong> publicado") if prev_state == Cms::PENDING
     elsif PublishingDecision.find_sum_for_content(content) <= -1.0
       content.change_state(Cms::DELETED, User.find_by_login('MrMan'))
       msg = "Lo lamentamos pero tu contenido ha sido denegado por las siguientes razones:\n\n"
@@ -578,7 +578,7 @@ module Cms
       
       ttype, scope = SlogEntry.fill_ttype_and_scope_for_content_report(uniq)
       mrman = User.find_by_login('mrman')
-      SlogEntry.create(:type_id => ttype, :scope => scope, :reporter_user_id => mrman.id, :headline => "#{Cms.faction_favicon(content)}<strong><a href=\"#{ApplicationController.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.id}</a></strong> denegado por votación") if prev_state == Cms::PENDING
+      SlogEntry.create(:type_id => ttype, :scope => scope, :reporter_user_id => mrman.id, :headline => "#{Cms.faction_favicon(content)}<strong><a href=\"#{ApplicationController.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.real_content.resolve_html_hid}</a></strong> denegado") if prev_state == Cms::PENDING
       
       m = Message.new({ :message => msg, :sender => User.find_by_login('nagato'), :recipient => content.user, :title => "Contenido \"#{content.resolve_hid}\" denegado"})
       m.save
