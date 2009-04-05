@@ -1,7 +1,7 @@
 <%
 cache("/common/foros/_forums_list/#{parent.id}") do
 p = nil
-parent.children.find(:all, :order => 'lower(name)').each do |forum|
+parent.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'], :order => 'lower(name)').each do |forum|
   p = forum.root if p.nil? %>
 <tr class="<%=oddclass%>">
   <td style="width: 20px;"><img src="<%=ASSET_URL%>/storage/games/<%=p.code%>.gif" /></td>
