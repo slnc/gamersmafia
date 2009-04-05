@@ -492,38 +492,13 @@ class User < ActiveRecord::Base
   end
   
   def change_avatar(new_avatar_id=nil)
+    if new_avatar_id
+      av = Avatar.find(new_avatar_id)
+      raise AccessDenied unless av.is_available_for_user(self)  
+    end
+    
     self.avatar_id = new_avatar_id
     self.save
-    return
-    
-    r_path = Pathname.new(RAILS_ROOT).realpath # NO USAR RAILS_ROOT DIRECTAMENTE EGGS
-    if not new_avatar_id then
-      src = "#{r_path}/public/images/default_avatar.jpg"
-    else
-      avatar = Avatar.find(new_avatar_id)
-      src = "#{r_path}/public/#{avatar.path}"
-    end
-    
-    dst = "#{r_path}/public/storage/users_avatars/#{self.id%100}/#{self.id}.jpg"
-    
-    if not File.exists?(File.dirname(dst)) then
-      FileUtils.mkdir_p File.dirname(dst)
-    end
-    
-    if App.windows?
-      File.unlink(dst) if File.exists?(dst)
-      FileUtils.cp(src, dst)
-    else
-      File.unlink(dst) if File.symlink?(dst)
-      File.symlink(src, dst)
-    end
-    
-    ## TODO HACK ATTACK, esto no va aquí pero si usamos cache_observer con User podemos cargar bastante el tema
-    #expire_fragment("*")
-    # TODO megahakc
-    # es la imagen del bigchat
-    avatar_cache = "#{RAILS_ROOT}/public/cache/thumbnails/f/32x32#{self.show_avatar}"
-    File.unlink(avatar_cache) if File.exists?(avatar_cache)
   end
   
   def show_avatar

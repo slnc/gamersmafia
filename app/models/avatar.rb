@@ -73,4 +73,19 @@ class Avatar < ActiveRecord::Base
   def set_users_avatar_to_nil
     self.users.find(:all).each { |u| u.change_avatar }
   end
+  
+  def is_available_for_user(u)
+    if self.clan_id && u.clans_ids.include?(self.clan_id)
+      true
+    elsif self.user_id && self.user_id == u.id
+      true
+    elsif u.faction_id && self.faction_id == u.faction_id && Karma.level(u) >= self.level
+      true
+    else
+      false
+    end
+    # sql_clans = clans_ids.size > 0 ? "clan_id IN (#{clans_ids.join(',')})" : ''
+    # sql_custom = "user_id = #{u.id} AND path is NOT NULL"
+    # sql_factions = u.faction_id ? "faction_id = #{u.faction_id} AND path is NOT NULL" : ''
+  end
 end

@@ -167,4 +167,57 @@ class UserTest < Test::Unit::TestCase
     u1.change_internal_state('banned')
     assert_equal 0, u1.users_roles.count
   end
+  
+  def test_avatar_change_not_allowed_if_custom_from_other
+    u1 = User.find(1)
+    av1 = Avatar.find(1)
+    assert av1.update_attributes(:faction_id => nil, :user_id => 2)
+    assert_raises(AccessDenied) do
+      u1.change_avatar(av1.id)
+    end
+  end
+  
+  def test_avatar_change_not_allowed_if_clan_id_from_other
+    u1 = User.find(1)
+    av1 = Avatar.find(1)
+    assert av1.update_attributes(:faction_id => nil, :clan_id => 2)
+    assert_raises(AccessDenied) do
+      u1.change_avatar(av1.id)
+    end
+  end
+  
+  def test_avatar_change_not_allowed_if_faction_from_other
+    u1 = User.find(1)
+    av1 = Avatar.find(1)
+    assert av1.update_attributes(:faction_id => 2)
+    assert_raises(AccessDenied) do
+      u1.change_avatar(av1.id)
+    end
+  end
+  
+  def test_avatar_change_allowed_if_custom_from_self
+    u1 = User.find(1)
+    av1 = Avatar.find(1)
+    assert av1.update_attributes(:faction_id => nil, :user_id => 1)
+    assert u1.change_avatar(av1.id)
+    assert_equal av1.id, u1.avatar_id
+  end
+  
+  def test_avatar_change_allowed_if_faction_from_self
+    u1 = User.find(1)
+    Factions.user_joins_faction(u1, 1)
+    av1 = Avatar.find(1)
+    assert_not_nil u1.faction_id
+    assert av1.update_attributes(:faction_id => u1.faction_id)
+    assert u1.change_avatar(av1.id)
+    assert_equal av1.id, u1.avatar_id
+  end
+  
+  def test_avatar_change_allowed_if_clan_from_self
+    u1 = User.find(1)
+    av1 = Avatar.find(1)
+    assert av1.update_attributes(:faction_id => nil, :clan_id => u1.clans_ids.first)
+    assert u1.change_avatar(av1.id)
+    assert_equal av1.id, u1.avatar_id
+  end
 end

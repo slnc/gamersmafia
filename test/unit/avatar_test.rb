@@ -47,4 +47,8 @@ class AvatarTest < Test::Unit::TestCase
       end
     end
   end
+  
+  def test_available_avatar_should_work
+    # TODO
+  end
 end
