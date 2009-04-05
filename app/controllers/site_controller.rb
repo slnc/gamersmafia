@@ -219,6 +219,8 @@ class SiteController < ApplicationController
           raise AccessDenied  unless @sender.user_is_admin(@user.id)
           when 'Faction'
           raise AccessDenied unless @sender.is_boss?(@user)
+	  when 'User'
+	  raise AccessDenied unless @user.id == @sender.id
         end
       end
       
