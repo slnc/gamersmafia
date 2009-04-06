@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
+import logging
 import os
 import psycopg2
 import re
@@ -22,6 +23,7 @@ OWNER='slnc' # The bot owner's nick
 CHANNEL='#gamersmafia' # The default channel for the bot
 readbuffer=''
 BOT_USER_ID=23323 # alariko
+logging.basicConfig(filename="%s/../log/alariko.log" % os.path.dirname(__file__), level=logging.DEBUG, )
 # END CONFIGURATION
 
 
@@ -97,21 +99,26 @@ class ListenerThread(threading.Thread):
                         s.send('PONG '+l[1]+'\n')
 
                     if authed == False and line.find('PING') != -1: # This is Crap(I wasn't sure about it but it works)
-                        s.send('JOIN '+CHANNEL+'\n') #Join a channel
                         s.send('PRIVMSG Q@CServe.quakenet.org :AUTH MrAlariko YLlyXdy!2G\n')
                         s.send('MODE MrAlariko +x\n')
                         authed = True
+
+                    if line.find(':Register first') != -1:
+                        s.send('PRIVMSG Q@CServe.quakenet.org :AUTH MrAlariko YLlyXdy!2G\n')
+
+                    if line.find('You are connected to the QuakeNet IRC Network') != -1 or line.find('You are now logged in as MrAlariko') != -1: # This is Crap(I wasn't sure about it but it works)
+                        s.send('JOIN '+CHANNEL+'\n') #Join a channel
+
 
                     line = regexp.sub('', line) # eliminamos caracteres de control
                     if line.find('PRIVMSG')!=-1 and line.find('PRIVMSG #gamersmafia :ACTION') == -1: #Call a parsing function
                         parsemsg(line)
             else:
                 time.sleep(5)
-                # print "conectando.."
                 try:
                     connect()
                 except Exception, inst:
-                    print inst
+                    logging.error(inst)
                 else:
                     connected = True
                 # TODO añadir listado de usuarios online a la web, necesitamos parsear varios buffers hasta que digan que ha acabado if line.
@@ -131,7 +138,7 @@ class TalkerThread(threading.Thread):
                 for m in pool_messages():
                     for msg in m.split('\n'):
                         time.sleep(3) # antiflood
-                        print 'PRIVMSG %s :%s\n' % (CHANNEL, msg.decode('utf8').encode('latin1', 'replace'))
+                        logging.debug('PRIVMSG %s :%s\n' % (CHANNEL, msg.decode('utf8').encode('latin1', 'replace')))
                         s.send('PRIVMSG %s :%s\n' % (CHANNEL, msg.decode('utf8').encode('latin1', 'replace')))
 
 
@@ -160,14 +167,13 @@ def connect():
 def run():
     os.chdir(os.path.dirname(__file__))
     pidfile = '../tmp/pids/alariko.pid'
-    print pidfile
     if os.path.exists(pidfile):
-	print "Erasing old instance because pid was found"
+	logging.debug("Erasing old instance because pid was found")
     	oldpid = open(pidfile, "r").read()
 	try:
 		os.kill(oldpid, SIGTERM)
 	except Exception:
-		print "Could not kill oldpid %s" % oldpid
+		logging.error("Could not kill oldpid %s" % oldpid)
 
 	os.unlink(pidfile)
 
@@ -188,7 +194,7 @@ if __name__ == '__main__':
 		if pid > 0:
 			sys.exit(0)
 	except OSError, e:
-		print >>sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror)
+		logging.error("fork #1 failed: %d (%s)" % (e.errno, e.strerror))
 		sys.exit(1)
 
 	# os.chdir('/')
@@ -202,7 +208,7 @@ if __name__ == '__main__':
 			sys.exit(0)
 	
 	except OSError, e:
-		print >>sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
+		logging.error("fork #2 failed: %d (%s)" % (e.errno, e.strerror))
 		sys.exit(1)
 
 	run()
