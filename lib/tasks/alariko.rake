@@ -2,7 +2,8 @@ RAILS_ENV='production' unless defined?(RAILS_ENV)
 namespace :gm do
   desc "Launch iRC bot"
   task :alariko do
-    `#{RAILS_ROOT}/script/alariko.py`
+    Rake::Task['gm:alariko:stop']
+    system("#{RAILS_ROOT}/script/alariko.py")
   end
 
   namespace :alariko do
@@ -13,7 +14,7 @@ namespace :gm do
       	`kill -9 #{pid}`
       	File.unlink(pidfile)
       else
-        `pkill -f alariko.py` # just in case
+        `pkill -9 -f "python alariko.py"` # just in case
       end
     end
   end
