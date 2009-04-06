@@ -8,6 +8,7 @@ import string
 import sys
 import threading
 import time
+from signal import SIGTERM
 
 
 # CONFIGURATION
@@ -186,11 +187,21 @@ def connect():
     s.send('NICK '+NICK+'\n') #Send the nick to server
 
 def run():
-    #pidfile = 'tmp/pids/alariko.pid'
-    #if os.path.exists?(pidfile)
-    #f = open(pidfile, "w")
-    #f.write("%d" % os.getpid())
-    #f.close()
+    os.chdir(os.path.dirname(__file__))
+    pidfile = '../tmp/pids/alariko.pid'
+    print pidfile
+    if os.path.exists(pidfile):
+	print "Erasing old instance because pid was found"
+    	oldpid = open(pidfile, "r").read()
+	try:
+		os.kill(oldpid, SIGTERM)
+	except Exception:
+		print "Could not kill oldpid %s" % oldpid
+
+	os.unlink(pidfile)
+
+
+    open(pidfile, "w+").write("%d" % os.getpid())
 
     try:
         ListenerThread().start()
@@ -201,4 +212,26 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+	try:
+		pid = os.fork()
+		if pid > 0:
+			sys.exit(0)
+	except OSError, e:
+		print >>sys.stderr, "fork #1 failed: %d (%s)" % (e.errno, e.strerror)
+		sys.exit(1)
+
+	# os.chdir('/')
+	os.setsid()
+	os.umask(0)
+
+	# second fork
+	try:
+		pid = os.fork()
+		if pid > 0:
+			sys.exit(0)
+	
+	except OSError, e:
+		print >>sys.stderr, "fork #2 failed: %d (%s)" % (e.errno, e.strerror)
+		sys.exit(1)
+
+	run()
