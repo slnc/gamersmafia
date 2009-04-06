@@ -18,7 +18,7 @@ NICK='MrAlariko' #The bot's nickname
 LOCALHOST='ice'
 #IDENT='alariko'
 REALNAME='GM Irc Spy'
-OWNER='dharana' # The bot owner's nick
+OWNER='slnc' # The bot owner's nick
 CHANNEL='#gamersmafia' # The default channel for the bot
 readbuffer=''
 BOT_USER_ID=23323 # alariko
@@ -53,35 +53,6 @@ def parsemsg(msg):
         msgpart = msgpart.strip().replace('\003', '')
         log(('<%s>: %s' % (sender[0], msgpart)))
 
-    #if msgpart[0]=='`' and sender[0]==OWNER: #Treat all messages starting with '`' as command
-    #    cmd=msgpart[1:].split(' ')
-    #    if cmd[0]=='op':
-    #        s.send('MODE '+info[2]+' +o '+cmd[1]+'\n')
-    #    if cmd[0]=='deop':
-    #        s.send('MODE '+info[2]+' -o '+cmd[1]+'\n')
-    #    if cmd[0]=='voice':
-    #        s.send('MODE '+info[2]+' +v '+cmd[1]+'\n')
-    #    if cmd[0]=='devoice':
-    #        s.send('MODE '+info[2]+' -v '+cmd[1]+'\n')
-    #    if cmd[0]=='sys':
-    #        syscmd(msgpart[1:],info[2])
-    #    
-    #if msgpart[0]=='-' and sender[0]==OWNER : #Treat msgs with - as explicit command to send to server
-    #    cmd=msgpart[1:]
-    #    s.send(cmd+'\n')
-    #    print 'cmd='+cmd
-
-
-#def syscmd(commandline,channel):
-#    cmd=commandline.replace('sys ','')
-##    cmd=cmd.rstrip()
-#    os.system(cmd+' >temp.txt')
-#    a=open('temp.txt')
-#    ot=a.read()
-#    ot.replace('\n','|')
-#    a.close()
-#    s.send('PRIVMSG '+channel+' :'+ot+'\n')
-#    return 0 
 
 from Db import Db
 
@@ -118,7 +89,7 @@ class ListenerThread(threading.Thread):
                     connected = False
                     authed = False
 
-                print lines #server message is output
+                logging.debug(lines) #server message is output
 
                 for line in lines.split('\n'):
                     if(line.find('PING') != -1): #If server pings then pong  TODO esto pillará cualquier PING
