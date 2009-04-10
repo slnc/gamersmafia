@@ -4,6 +4,7 @@ namespace :gm do
     require 'app/controllers/application'
     
     Rake::Task['log:clear'].invoke
+    Rake::Task['gm:alariko'].invoke
     clear_anonymous_users
     clear_faith_points_of_referers_and_resurrectors
     pay_faith_prices
