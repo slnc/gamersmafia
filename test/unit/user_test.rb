@@ -60,13 +60,6 @@ class UserTest < Test::Unit::TestCase
     assert_nil User.find_by_login('AAAAAAAAAAAAAAAAAAA')
   end
   
-  # this will break on 31 dec, 1 jan
-  def test_age_ok_if_birthday_is_earlier_this_year
-    #u = User.find(:first)
-    #now_d = DateTime.now
-    #u.birthday = DateTime.new(now_d.year, self.birthday.month, self.birthday.day
-  end
-  
   def test_age_ok_if_moon
     d = DateTime.new(1978, 2, 4)
     today = DateTime.now
