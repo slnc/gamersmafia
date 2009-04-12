@@ -60,6 +60,12 @@ class UserTest < Test::Unit::TestCase
     assert_nil User.find_by_login('AAAAAAAAAAAAAAAAAAA')
   end
   
+  def test_age_should_return_nil_if_no_birthday_set
+    u = User.create({:login => 'moon', :email => 'moon@moon.moon'})
+    assert_nil u.birthday
+    assert_nil u.age
+  end
+  
   def test_age_ok_if_moon
     d = DateTime.new(1978, 2, 4)
     today = DateTime.now
