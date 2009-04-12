@@ -23,13 +23,13 @@ class BanRequest < ActiveRecord::Base
   
   def confirm(confirming_user_id)
     raise AccessDenied unless self.confirming_user_id.nil?
-    self.confirming_user_id = confirming_user_id
-    self.confirmed_on = Time.now
-    self.save
-    bu = self.banned_user
-    bu.change_internal_state('banned')
-    bu.save
-    Notification.deliver_yourebanned(self.banned_user, {:reason => self.reason })
+    ActiveRecord::Base.transaction do
+      self.confirming_user_id = confirming_user_id
+      self.confirmed_on = Time.now
+      self.save
+      self.banned_user.change_internal_state('banned')
+      Notification.deliver_yourebanned(self.banned_user, {:reason => self.reason })
+    end
     true
   end
   
