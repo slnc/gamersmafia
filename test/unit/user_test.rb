@@ -60,11 +60,10 @@ class UserTest < Test::Unit::TestCase
     assert_nil User.find_by_login('AAAAAAAAAAAAAAAAAAA')
   end
   
-  # this will break on 31 dec, 1 jan
-  def test_age_ok_if_birthday_is_earlier_this_year
-    #u = User.find(:first)
-    #now_d = DateTime.now
-    #u.birthday = DateTime.new(now_d.year, self.birthday.month, self.birthday.day
+  def test_age_should_return_nil_if_no_birthday_set
+    u = User.create({:login => 'moon', :email => 'moon@moon.moon'})
+    assert_nil u.birthday
+    assert_nil u.age
   end
   
   
