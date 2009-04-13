@@ -56,13 +56,12 @@ class Cuenta::CuentaControllerTest < Test::Unit::TestCase
   def test_del_quicklink
     sym_login 2
     u2 = User.find(2)
+    orig_qlinks = u2.pref_quicklinks.size
     test_add_quicklink
     post :del_quicklink, :code => 'ut'
     assert_response :success
     u2.reload
-    qlinks = u2.pref_quicklinks
-    p qlinks
-    assert_equal 0, qlinks.size
+    assert_equal orig_qlinks - 1, u2.pref_quicklinks.size
   end
   
   def test_add_user_forum
