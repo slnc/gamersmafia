@@ -1,7 +1,7 @@
 <% content_main do %>
   <% mftext('Nuevo link') do %>
   <form method="post" action="/cuenta/faccion/links/create" enctype="multipart/form-data">
-  <%= form_tag ({:action => 'create'}, :multipart => true )%>
+  <%= form_tag({:action => 'create'}, :multipart => true )%>
     <%= render :partial => 'factions_link' %>
     <%= submit_tag 'Crear' %>
   </form>

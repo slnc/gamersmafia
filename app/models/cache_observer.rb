@@ -24,7 +24,7 @@ class CacheObserver < ActiveRecord::Observer
       when 'ContentsRecommendation':
       expire_fragment "/_users/#{object.receiver_user_id % 1000}/#{object.receiver_user_id}/layouts/recommendations"
       when 'UsersRole':
-      Cache::Personalization.expire_quicklinks(object.user_id) if %w(Don ManoDerecha Sicario).include?(object.role)
+      Cache::Personalization.expire_quicklinks(object.user) if %w(Don ManoDerecha Sicario).include?(object.role)
       if %w(Editor Moderator).include?(object.role)
         faction_id =object.role == 'Moderator' ? object.role_data : object.role_data_yaml[:faction_id]
         expire_fragment("/common/facciones/#{faction_id}/staff") 
@@ -181,7 +181,7 @@ class CacheObserver < ActiveRecord::Observer
       when 'RecruitmentAd':
       expire_fragment "/home/comunidad/recruitment_ads_#{object.clan_id ? 'clans' : 'users'}"
       when 'UsersRole':
-      Cache::Personalization.expire_quicklinks(object.user_id) if %w(Don ManoDerecha Sicario).include?(object.role)
+      Cache::Personalization.expire_quicklinks(object.user) if %w(Don ManoDerecha Sicario).include?(object.role)
       if %w(Editor Moderator).include?(object.role)
         faction_id =object.role == 'Moderator' ? object.role_data : object.role_data_yaml[:faction_id]
         expire_fragment("/common/facciones/#{faction_id}/staff") 
@@ -384,7 +384,7 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/common/carcel")
         expire_fragment("/common/carcel_full")
       end
-      Cache::Personalization.expire_quicklinks(object.id) if object.slnc_changed? :faction_id
+      Cache::Personalization.expire_quicklinks(object) if object.slnc_changed? :faction_id
       expire_fragment("/common/miembros/_rightside/ultimos_registros") if object.slnc_changed? :state
       expire_fragment("/common/globalnavbar/#{object.id % 1000}/#{object.id}_avatar") if object.slnc_changed? :avatar_id
       when 'CompetitionsParticipant':
