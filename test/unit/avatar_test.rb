@@ -16,10 +16,10 @@ class AvatarTest < Test::Unit::TestCase
   end
   
   def test_should_set_users_owning_avatar_to_nil_after_destroy
-    @av = Avatar.create({:name => 'fulanito de tal', :submitter_user_id => 1, :path => fixture_file_upload('files/buddha.jpg')})
+    @av = Avatar.create({:name => 'fulanito de tal', :user_id => 1, :submitter_user_id => 1, :path => fixture_file_upload('files/buddha.jpg')})
     assert_equal false, @av.new_record?
     u1 = User.find(1)
-    u1.change_avatar @av.id
+    u1.change_avatar(@av.id)
     assert_equal @av.id, u1.avatar_id
     @av.destroy
     u1.reload

@@ -125,16 +125,8 @@ class Cuenta::MensajesControllerTest < Test::Unit::TestCase
   
   def test_create_message_should_work_if_friends
     u1 = User.find(1)
-    u2 = User.find(2)
-    u3 = User.find(3)
-    f1 = Friend.find(1)
-    f2 = Friend.find(2)
-    f3 = Friend.find(3)
-    u1.friends<<f2 
-    u1.friends<<f3
-    u2.friends<<f1 
-    u3.friends<<f1
-    
+    assert u1.friends.size > 0
+
     sym_login 1
     msgs = Message.count
     post :create_message, { :message=> {:message_type => Message::R_FRIENDS, :title => "foo litio", :message => "soy litio teodorakis" }}

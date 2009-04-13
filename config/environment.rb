@@ -51,18 +51,16 @@ Rails::Initializer.run do |config|
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
   # config.active_record.observers = :cache_observer, :faith_observer # comment_observer, :cache_observer
+  config.active_record.observers = :cache_observer, :faith_observer, :users_action_observer
   
   # Make Active Record use UTC-base instead of local time
   # config.active_record.default_timezone = :utc
   # config.plugins = [:file_column, :all]
 end
+
 ActionController::Base.cache_store = :file_store, FRAGMENT_CACHE_PATH
 #ActionController::Base.session_store = :p_store
 require File.join(File.dirname(__FILE__), 'app_config')
-require 'vendor/plugins/rails_mixings/lib/action_controller.rb'
-require 'vendor/plugins/rails_mixings/lib/action_mailer.rb'
-require 'vendor/plugins/rails_mixings/lib/notification.rb'
-# require 'vendor/plugins/rails_mixings/lib/friendship.rb'
 
 ASSET_URL = "http://#{App.asset_domain}"
 COOKIEDOMAIN = ".#{App.domain}"
@@ -179,6 +177,6 @@ end
 end
 #end
 
-require 'app/controllers/application.rb'
-User
-require 'vendor/plugins/rails_mixings/lib/user.rb'
+#require 'app/controllers/application.rb'
+# User
+#require 'vendor/plugins/rails_mixings/lib/user.rb'

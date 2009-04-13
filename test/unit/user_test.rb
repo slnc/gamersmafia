@@ -60,32 +60,20 @@ class UserTest < Test::Unit::TestCase
     assert_nil User.find_by_login('AAAAAAAAAAAAAAAAAAA')
   end
   
-  # this will break on 31 dec, 1 jan
-  def test_age_ok_if_birthday_is_earlier_this_year
-    #u = User.find(:first)
-    #now_d = DateTime.now
-    #u.birthday = DateTime.new(now_d.year, self.birthday.month, self.birthday.day
+  def test_age_should_return_nil_if_no_birthday_set
+    u = User.create({:login => 'moon', :email => 'moon@moon.moon'})
+    assert_nil u.birthday
+    assert_nil u.age
   end
   
-  def test_age_ok_if_moon
-    d = DateTime.new(1978, 2, 4)
-    today = DateTime.now
-    u = User.create({:login => 'moon', :email => 'moon@moon.moon', :birthday => d})
-    assert_not_nil u
-    assert_equal d, u.birthday
-    if today.month > u.birthday.month or (today.month == u.birthday.month and today.day == u.birthday.day) then # ya ha sido su cumpleaños
-      assert_equal today.year - u.birthday.year, u.age
-    else # ya ha sido su cumpleaños o es hoy
-      assert_equal today.year - u.birthday.year - 1, u.age
-    end
-  end
   
-  def test_age_ok_if_birthday_is_today
-    today = DateTime.now
-    u = User.create({:login => 'moon', :email => 'moon@moon.moon', :birthday => 20.years.ago})
-    assert_not_nil u
-    assert_equal 20, u.age
+  def test_flash_age
+    u = User.create({:login => 'Flashky', :email => 'moon@moon.moon', :birthday => DateTime.new(1988, 9, 26)})
+    assert_equal 20, u.age(DateTime.new(2009, 9, 25))
+    assert_equal 21, u.age(DateTime.new(2009, 9, 26))
+    assert_equal 21, u.age(DateTime.new(2009, 9, 27))
   end
+
   
   def test_should_allow_youtube_videos_on_profile
     u = User.find(1)

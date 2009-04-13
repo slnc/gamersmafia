@@ -56,12 +56,12 @@ class Cuenta::CuentaControllerTest < Test::Unit::TestCase
   def test_del_quicklink
     sym_login 2
     u2 = User.find(2)
+    orig_qlinks = u2.pref_quicklinks.size
     test_add_quicklink
     post :del_quicklink, :code => 'ut'
     assert_response :success
     u2.reload
-    qlinks = u2.pref_quicklinks
-    assert_equal 0, qlinks.size
+    assert_equal orig_qlinks - 1, u2.pref_quicklinks.size
   end
   
   def test_add_user_forum
@@ -698,10 +698,12 @@ class Cuenta::CuentaControllerTest < Test::Unit::TestCase
   end
   
   def test_save_avatar_should_work
-    sym_login 1
+    
     @u1 = User.find(1)
     @u1.change_avatar
     assert_nil @u1.avatar_id
+    Factions.user_joins_faction(@u1, 1)
+    sym_login 1
     post :save_avatar, { :new_avatar_id => 1 }
     assert_response :redirect
     @u1.reload
