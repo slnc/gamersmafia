@@ -1,12 +1,12 @@
 set :application, "Gamersmafia"
-set :repository,  "ssh://slnc@balrog.slnc.net:62331/home/slnc/git/gamersmafia.git"
+set :repository,  "ssh://git@balrog.slnc.net:62331/gamersmafia"
 set :user, 'slnc'
 set :use_sudo, false
 
 set :deploy_to, "/home/httpd/websites/gamersmafia"
 set :deploy_via, :remote_cache
 set :scm, :git
-set :scm_username, 'slnc'
+set :scm_username, 'git'
 set :scm_command, '/usr/local/hosting/bin/git'
 set :git_enable_submodules, 1
 set :branch, 'production'
@@ -16,7 +16,6 @@ role :web, "httpd@kenpachi.gamersmafia.com:62331"
 role :db,  "httpd@kenpachi.gamersmafia.com:62331", :primary => true
 
 default_environment['PATH'] = '/bin:/usr/bin:/usr/local/bin:/usr/local/hosting/bin'
-default_environment['SVN_SSH'] = 'ssh -p 62331 -l slnc'
 default_environment['RAILS_ENV'] = 'production'
 
 SHARED_DIRS = [
@@ -37,8 +36,7 @@ namespace(:customs) do
   end
   
   task :updated_app, :roles => :app do
-    run "cd #{release_path} && echo 'production' > config/mode && ../script/update.py"
-    run "cd #{release_path} && rake gm:alariko"
+    run "cd #{release_path} && echo 'production' > config/mode && ./script/update.py"
   end
   
   task :setup, :roles => :app do
