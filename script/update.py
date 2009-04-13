@@ -34,6 +34,7 @@ def compress_js():
 
 def send_changelog_email():
     try:
+       os.popen('mv REVISION config/REVISION')
        cur = open('config/REVISION').read().strip()
     except IOError:
        cur = '48c68e77cc002df52451a3f49924866c6024a32a' # último commit anunciado en la lista
