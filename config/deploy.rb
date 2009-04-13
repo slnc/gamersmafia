@@ -37,7 +37,7 @@ namespace(:customs) do
   end
   
   task :updated_app, :roles => :app do
-    run "cd #{release_path} && echo 'production' > mode && ./update.py"
+    run "cd #{release_path} && echo 'production' > mode && ../script/update.py"
     run "cd #{release_path} && rake gm:alariko"
   end
   
@@ -53,7 +53,7 @@ namespace(:customs) do
     rescue # first deployment
     else
       begin
-        run "if [ -d #{current_path} ]; then cd #{current_path} && ./check_clean_wc; fi"
+        run "if [ -d #{current_path} ]; then cd #{current_path} && ./script/check_clean_wc.sh; fi"
       rescue
         puts "\n\tERROR: production has dirty wc!\n\n"
         raise

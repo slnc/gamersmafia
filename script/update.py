@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import xml.dom.minidom
+# Este script está pensado para ejecutarse desde RAILS_ROOT.
+# TODO: convertir a una rake task
 import os
 import re
 import sys
 import smtplib
 
 # START CONFIG
-wc_path = '/home/httpd/websites/gamersmafia/current/update.py'
 wc_path_clean = '/home/httpd/websites/gamersmafia/current'
 # END CONFIG
 
