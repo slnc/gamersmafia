@@ -60,8 +60,8 @@ class User < ActiveRecord::Base
   has_many :tracker_items
   has_many :user_login_changes
   has_many :users_newsfeeds
-  has_many :friends, :through => :friendships  
-  has_and_belongs_to_many :friends
+#  has_many :friends, :through => :friendships  
+  # has_and_belongs_to_many :friends
   file_column :photo
   file_column :competition_roster
   belongs_to :last_clan, :class_name => 'Clan', :foreign_key => 'last_clan_id'
