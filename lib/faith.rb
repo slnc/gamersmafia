@@ -336,8 +336,6 @@ module Faith
         points[u.id] += Faith::FPS_ACTIONS['competitions_match']
       end
     end
-    #puts "\n#{date_start}"
-    #p points
     
     points
   end
@@ -368,7 +366,6 @@ module Faith
   def self.reset_remaining_rating_slots
 	  # lo hacemos de uno en uno porque si no incurreimos en deadlocks
 	  User.db_query("SELECT id FROM users where lastseen_on >= now() - '15 days'::interval").each do |dbr|
-     puts "updating #{dbr['id']}" 
 		  User.db_query("UPDATE users SET cache_remaining_rating_slots = NULL WHERE id = #{dbr['id']}")
 	  end
   end

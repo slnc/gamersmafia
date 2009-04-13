@@ -329,7 +329,6 @@ having portal_id in (select id
       faith_level = Faith.level(u)
       new_cash = Bank::convert(faith_level, 'faith_level')
       if new_cash > 0 then
-        # puts "updating #{u.login} with +#{new_cash}"
         Bank.transfer(:bank, u, new_cash, "Nivel de fe (#{Faith::NAMES[faith_level]}) correspondiente a #{Time.new.ago(86400).strftime('%d %b %Y')}")
       end
     end
