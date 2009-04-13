@@ -8,6 +8,7 @@ class PeriodicTest < Test::Unit::TestCase
   def test_periodic
     [:midnight, :hourly, :daily, :weekly, :weekly_report, :monthly].each do |task_name|
       assert get_task_names.include?("gm:#{task_name}")
+      p task_name
       assert Rake::Task["gm:#{task_name}"].invoke
     end
   end
