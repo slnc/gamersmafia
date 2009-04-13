@@ -1,8 +1,6 @@
-puts "prePlugins"
 module PrePlugins
   @_prePluginsRun ||= false
   if !@_prePluginsRun
-    puts "running pre_plugins"
     require "#{RAILS_ROOT}/lib/bank.rb"
     ActiveRecord::Base.send(:include, Bank::Has::BankAccount)
     ActiveRecord::Base.send(:include, Bank::Has::BankAmmountFromUser)
