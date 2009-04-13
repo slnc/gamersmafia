@@ -1,10 +1,10 @@
 FRAGMENT_CACHE_PATH = "#{RAILS_ROOT}/tmp/fragment_cache"
 ActionController::Base.cache_store = :file_store, FRAGMENT_CACHE_PATH
 #ActionController::Base.session_store = :p_store
-require File.join(File.dirname(__FILE__), 'app_config')
-require 'vendor/plugins/rails_mixings/lib/action_controller.rb'
-require 'vendor/plugins/rails_mixings/lib/action_mailer.rb'
-require 'vendor/plugins/rails_mixings/lib/notification.rb'
+# require File.join(File.dirname(__FILE__), 'app_config')
+#require 'vendor/plugins/rails_mixings/lib/action_controller.rb'
+#require 'vendor/plugins/rails_mixings/lib/action_mailer.rb'
+#require 'vendor/plugins/rails_mixings/lib/notification.rb'
 # require 'vendor/plugins/rails_mixings/lib/friendship.rb'
 
 ASSET_URL = "http://#{App.asset_domain}"
@@ -122,7 +122,7 @@ end
 end
 #end
 
-require File.join(File.dirname(__FILE__), '../app_config')
+# require File.join(File.dirname(__FILE__), '../app_config')
 
 ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS.update(:prefix => 'gm.')
 SVNVERSION = AppR.ondisk_git_version

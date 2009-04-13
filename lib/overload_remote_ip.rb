@@ -1,4 +1,4 @@
-class ActionController::AbstractRequest
+class ActionController::Base
   def remote_ip
     # necesario por el setup que usamos con mongrel y apache
     remote_ips = env.include?('HTTP_X_FORWARDED_FOR') ? env['HTTP_X_FORWARDED_FOR'] : env['REMOTE_ADDR']
