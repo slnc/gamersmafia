@@ -60,8 +60,8 @@ class User < ActiveRecord::Base
   has_many :tracker_items
   has_many :user_login_changes
   has_many :users_newsfeeds
-  has_many :friends, :through => :friendships  
-  has_and_belongs_to_many :friends
+#  has_many :friends, :through => :friendships  
+  # has_and_belongs_to_many :friends
   file_column :photo
   file_column :competition_roster
   belongs_to :last_clan, :class_name => 'Clan', :foreign_key => 'last_clan_id'
@@ -422,6 +422,7 @@ class User < ActiveRecord::Base
   end
   
   def is_editor?
+
     # TODO cachear
     # devuelve true si el usuario puede editar algún tipo de contenido
     if self.is_bigboss?
@@ -627,16 +628,17 @@ class User < ActiveRecord::Base
   end
   
   # Devuelve la edad del usuario o nil si no ha especificado
-  def age
-    if self.birthday
-      today = DateTime.now
-      if today.month > self.birthday.month or (today.month == self.birthday.month and today.day == self.birthday.day) then # ya ha sido su cumpleaños
-        today.year - self.birthday.year
-      else # ya ha sido su cumpleaños o es hoy
-        today.year - self.birthday.year - 1
-      end
+  def age(today=DateTime.new)
+    return if self.birthday.nil?
+    
+    if today.month > self.birthday.month || \
+     (today.month == self.birthday.month && today.day >= self.birthday.day) then # ya ha sido tu cumpleaños o es hoy
+      today.year - self.birthday.year
+    else # todavía no ha pasado el cumpleaños
+      today.year - self.birthday.year - 1
     end
   end
+  
   
   # Before creating, we generate a validkey.
   # This is used for confirmation

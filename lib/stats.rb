@@ -287,18 +287,20 @@ group by date_trunc('day', created_on) order by s asc
   end
   
   class Goals
-    self.available_goals << :partial_user_registrations
-    self.available_goals << :ads_clicks
-    self.available_goals << :topics_created
-    self.available_goals << :questions_created
-    self.available_goals << :comments_created
-    self.available_goals << :contents_created
-    self.available_goals_abbrv[:partial_user_registrations] = :pur
-    self.available_goals_abbrv[:ads_clicks] = :adc
-    self.available_goals_abbrv[:topics_created] = :tc
-    self.available_goals_abbrv[:questions_created] = :qc
-    self.available_goals_abbrv[:comments_created] = :cc
-    self.available_goals_abbrv[:contents_created] = :conc
+    def self.after_init
+      self.available_goals << :partial_user_registrations
+      self.available_goals << :ads_clicks
+      self.available_goals << :topics_created
+      self.available_goals << :questions_created
+      self.available_goals << :comments_created
+      self.available_goals << :contents_created
+      self.available_goals_abbrv[:partial_user_registrations] = :pur
+      self.available_goals_abbrv[:ads_clicks] = :adc
+      self.available_goals_abbrv[:topics_created] = :tc
+      self.available_goals_abbrv[:questions_created] = :qc
+      self.available_goals_abbrv[:comments_created] = :cc
+      self.available_goals_abbrv[:contents_created] = :conc
+    end
     
     def self.questions_created(opts)
       contents_created({:content_type => 'Question'}.merge(opts))
@@ -592,14 +594,14 @@ group by date_trunc('day', created_on) order by s asc
                      JOIN contents on content_ratings.content_id = contents.id
                     WHERE contents.user_id = #{u.id}
                 GROUP BY rating").each do |dbr|
-            res[dbr['rating'].to_i] = dbr['count'].to_i
+      res[dbr['rating'].to_i] = dbr['count'].to_i
     end
     tot = res.values.sum.to_f
     
     res2 = {}
     10.times do |i|
       i = i + 1
-    
+      
       if res[i]
         res2[i] = (res[i]/tot) * 100
       else
@@ -608,7 +610,7 @@ group by date_trunc('day', created_on) order by s asc
     end
     
     #res.keys.each do |k|
-     # res2[k] = (res[k]/tot) * 100
+    # res2[k] = (res[k]/tot) * 100
     #end
     res2
   end
@@ -621,7 +623,7 @@ group by date_trunc('day', created_on) order by s asc
                      JOIN comments on comments_valorations.comment_id = comments.id
                     WHERE comments.user_id = #{u.id}
                 GROUP BY comments_valorations_type_id").each do |dbr|
-            res[dbr['comments_valorations_type_id'].to_i] = dbr['count'].to_i
+      res[dbr['comments_valorations_type_id'].to_i] = dbr['count'].to_i
     end
     tot = res.values.sum.to_f
     tot = 1 if tot == 0.0
@@ -641,11 +643,11 @@ class Hash
       self[newk] = newv
     else
       self.keys.each do |k|
-       if self[k] < newv
-         self.delete(k)
-         self[newk] = newv
-         return
-       end
+        if self[k] < newv
+          self.delete(k)
+          self[newk] = newv
+          return
+        end
       end  
     end
   end

@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-import xml.dom.minidom
+# Este script está pensado para ejecutarse desde RAILS_ROOT.
+# TODO: convertir a una rake task
 import os
 import re
 import sys
 import smtplib
 
 # START CONFIG
-wc_path = '/home/httpd/websites/gamersmafia/current/update.py'
 wc_path_clean = '/home/httpd/websites/gamersmafia/current'
 # END CONFIG
 
@@ -33,10 +33,10 @@ def compress_js():
     
 
 def send_changelog_email():
-    cur = open('REVISION').read().strip()
+    cur = open('config/REVISION').read().strip()
     
-    if os.path.exists('PREV_REVISION'):
-        prev = open('PREV_REVISION').read().strip()
+    if os.path.exists('config/PREV_REVISION'):
+        prev = open('config/PREV_REVISION').read().strip()
         interval = '%s..%s' % (prev, cur)
     else:
         prev = 'N/A'
@@ -55,8 +55,8 @@ def send_changelog_email():
     server.sendmail(fromaddr, toaddrs, msg)
     server.quit()
     
-    open('%s/PREV_REVISION' % wc_path_clean, 'w').write('%s' % cur)
-    os.popen('git add PREV_REVISION')
+    open('%s/config/PREV_REVISION' % wc_path_clean, 'w').write('%s' % cur)
+    os.popen('git add config/PREV_REVISION')
     os.popen('git commit -m "new deployment: %s"' % cur)
     os.popen('git push origin production')
 

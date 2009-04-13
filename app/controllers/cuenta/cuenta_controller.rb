@@ -364,8 +364,8 @@ class Cuenta::CuentaController < ApplicationController
       params[:new_avatar_id] = nil
       flash[:error] = 'Debes elegir un avatar'
     else
-      flash[:notice] = "Avatar cambiado correctamente"
-      @user.change_avatar()
+      @user.change_avatar(params[:new_avatar_id])
+       flash[:notice] = "Avatar cambiado correctamente"
     end
     
     redirect_to :action => 'avatar'

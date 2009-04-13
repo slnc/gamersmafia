@@ -43,7 +43,6 @@ class MiembrosController < ComunidadController
     @title = @curuser.login
     @navpath = [['Miembros', '/miembros'], [@curuser.login, gmurl(@curuser)]]
   end
-  
   def estadisticas
     @title = "Estadísticas de #{@curuser.login}"
     navpath2<< [@curuser.login, gmurl(@curuser)]
