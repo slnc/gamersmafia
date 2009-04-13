@@ -79,6 +79,7 @@ namespace :test do
       raise "NO" unless `hostname`.strip == 'balrog'
       `rm -r #{RAILS_ROOT}/coverage/*` if File.exists?("#{RAILS_ROOT}/coverage")
       `rm -r #{RAILS_ROOT}/public/storage/*` if File.exists?("#{RAILS_ROOT}/public/storage")
+      `rm -r #{RAILS_ROOT}/test/reports/*` if File.exists?("#{RAILS_ROOT}/test/reports")
       `git submodule init`
       `git submodule update`
       Rake::Task['db:test:real_prepare'].invoke
