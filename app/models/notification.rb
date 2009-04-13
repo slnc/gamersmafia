@@ -1,4 +1,3 @@
-puts "notification.rb"
 require 'net/imap'
 
 class Notification < ActionMailer::Base
