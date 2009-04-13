@@ -2,6 +2,7 @@ require 'lib/redefine_task'
 
 desc 'Batería de tests por defecto'
 redefine_task :test do
+  RAILS_ENV = 'test'
   got_error = false
   %w(functionals helpers integration libs plugins scripts tasks units).each do |tpack|
     Rake::Task["test:#{tpack}"].invoke rescue got_error = true
@@ -76,6 +77,7 @@ namespace :test do
   
   namespace :bamboo do
     task :init do
+      RAILS_ENV = 'test'
       raise "NO" unless `hostname`.strip == 'balrog'
       `rm -r #{RAILS_ROOT}/coverage/*` if File.exists?("#{RAILS_ROOT}/coverage")
       `rm -r #{RAILS_ROOT}/public/storage/*` if File.exists?("#{RAILS_ROOT}/public/storage")
