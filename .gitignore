@@ -6,6 +6,7 @@ public/storage
 *.swp
 REVISION
 mode
+config/mode
 public/fckeditor/
 public/gm.js
 public/javascripts/wseditor.pack.js

@@ -289,6 +289,7 @@ class TermTest < ActiveSupport::TestCase
     test_should_update_parent_categories_counter
     @subcat1.link(@topic.unique_content)
     catz = @cat1.last_updated_children(:limit => 5)
+    p catz
     p catz.collect { |luc| luc.name }
     puts @subcat1.name
     assert catz.collect { |luc| luc.name }.include?(@subcat1.name)
