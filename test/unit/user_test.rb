@@ -8,6 +8,14 @@ class UserTest < Test::Unit::TestCase
     ActionMailer::Base.deliveries = []
   end
   
+  def test_faith_ok
+    u = User.find(1)
+    
+    assert u.faith_points == 5
+  end
+  
+
+  
   def test_is_editor
     u2 = User.find(2)
     assert u2.is_editor?
@@ -68,10 +76,17 @@ class UserTest < Test::Unit::TestCase
   
   
   def test_flash_age
-    u = User.create({:login => 'Flashky', :email => 'moon@moon.moon', :birthday => DateTime.new(1988, 9, 26)})
-    assert_equal 20, u.age(DateTime.new(2009, 9, 25))
-    assert_equal 21, u.age(DateTime.new(2009, 9, 26))
-    assert_equal 21, u.age(DateTime.new(2009, 9, 27))
+    u = User.create({:login => 'Flashky', :email => 'moon@moon.moon', :birthday => DateTime.new(1988, 3, 26)})
+    assert_equal 20, u.age(DateTime.new(2009, 3, 25))
+    assert_equal 21, u.age(DateTime.new(2009, 3, 26))
+    assert_equal 21, u.age(DateTime.new(2009, 3, 27))
+  end
+  
+  # Nuevo test para GM-2531
+  def test_flash_age_hoy
+    u = User.create({:login => 'Flashky', :email => 'moon@moon.moon', :birthday => DateTime.new(1988, 3, 26)})
+    assert_equal 21, u.age(DateTime.new(2009, 4, 13)) # en un día concreto
+    assert_equal 21, u.age                            # en el mismo día que se ejecute el test
   end
 
   
@@ -208,4 +223,7 @@ class UserTest < Test::Unit::TestCase
     assert u1.change_avatar(av1.id)
     assert_equal av1.id, u1.avatar_id
   end
+  
 end
+
+

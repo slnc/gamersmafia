@@ -628,7 +628,7 @@ class User < ActiveRecord::Base
   end
   
   # Devuelve la edad del usuario o nil si no ha especificado
-  def age(today=DateTime.new)
+  def age(today=DateTime.now)
     return if self.birthday.nil?
     
     if today.month > self.birthday.month || \
@@ -770,7 +770,6 @@ class User < ActiveRecord::Base
     self.save
     Message.create(:sender => User.find_by_login('nagato'), :recipient => self, :title => 'Notificaciones desactivadas', :message => "Hola, he desactivado el envío de todas las notificaciones por email a tu cuenta ya que estamos recibiendo errores de tu servidor de correo. Si crees que esto es un error por favor mandale un mensaje a [~slnc].\n\nPuedes reactivar las notificaciones en la sección [url=http://gamersmafia.com/cuenta]Mi cuenta[/url]")
   end
-  
   # TODO no contabilizar usuarios baneados en amistades
   # TODO pensar este algoritmo
   def self.most_popular(limit=10)
