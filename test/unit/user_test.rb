@@ -82,11 +82,11 @@ class UserTest < Test::Unit::TestCase
     assert_equal 21, u.age(DateTime.new(2009, 3, 27))
   end
   
-  # Nuevo test para GM-2531
+  # GM-2531
   def test_flash_age_hoy
     u = User.create({:login => 'Flashky', :email => 'moon@moon.moon', :birthday => DateTime.new(1988, 3, 26)})
-    assert_equal 21, u.age(DateTime.new(2009, 4, 13)) # en un día concreto
-    assert_equal 21, u.age                            # en el mismo día que se ejecute el test
+    years = DateTime.now.year - u.birthday.year
+    assert([(years - 1), years].include?(u.age), u.age)
   end
 
   
