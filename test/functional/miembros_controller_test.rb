@@ -81,6 +81,18 @@ class MiembrosControllerTest < Test::Unit::TestCase
     assert_equal countsigs + 1, @u1.profile_signatures_count
   end
   
+  def test_should_not_leave_new_signature_if_same_person
+    sym_login 1
+    @u1 = User.find(1)
+    countsigs = @u1.profile_signatures_count
+    assert_raises(AccessDenied) do
+      post :update_signature, { :login => @u1.login, :profile_signature => { :signature => 'vaka' }}
+    end
+    @u1.reload
+    assert_equal countsigs, @u1.profile_signatures_count
+  end
+  
+  
   def test_no_tengo_amigos
     sym_login 1
     u1 = User.find_by_login('mrcheater')

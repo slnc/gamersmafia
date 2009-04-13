@@ -80,6 +80,7 @@ class MiembrosController < ComunidadController
   
   def update_signature
     raise ActiveRecord::RecordNotFound unless @curuser.enable_profile_signatures?
+    raise AccessDenied if @curuser.id == @user.id
     my_ps = @curuser.profile_signatures.find_by_signer_user_id(@user.id)
     my_ps = @curuser.profile_signatures.new({:signer_user_id => @user.id, :user_id => @curuser.id}) if my_ps.nil?
     my_ps.signature = params[:profile_signature][:signature][0..500]
