@@ -61,6 +61,7 @@ class Cuenta::CuentaControllerTest < Test::Unit::TestCase
     assert_response :success
     u2.reload
     qlinks = u2.pref_quicklinks
+    p qlinks
     assert_equal 0, qlinks.size
   end
   
@@ -698,10 +699,12 @@ class Cuenta::CuentaControllerTest < Test::Unit::TestCase
   end
   
   def test_save_avatar_should_work
-    sym_login 1
+    
     @u1 = User.find(1)
     @u1.change_avatar
     assert_nil @u1.avatar_id
+    Factions.user_joins_faction(@u1, 1)
+    sym_login 1
     post :save_avatar, { :new_avatar_id => 1 }
     assert_response :redirect
     @u1.reload
