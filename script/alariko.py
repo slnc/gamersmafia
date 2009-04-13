@@ -32,7 +32,7 @@ def log(msg):
     global dbconn, dbcurs
 
     if not dbconn:
-        conn = psycopg2.connect('dbname=gamersmafia user=postgres host=/tmp')
+        conn = psycopg2.connect('dbname=gamersmafia user=postgres')
         conn.set_isolation_level(0)
 
         curs = conn.cursor()
