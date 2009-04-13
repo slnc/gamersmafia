@@ -62,7 +62,7 @@ ActionController::Base.cache_store = :file_store, FRAGMENT_CACHE_PATH
 #ActionController::Base.session_store = :p_store
 require File.join(File.dirname(__FILE__), 'app_config')
 
-ASSET_URL = "http://#{App.asset_domain}"
+ASSET_URL = "http://#{App.asset_domain}#{':' << App.port.to_s if App.port != 80}"
 COOKIEDOMAIN = ".#{App.domain}"
 
 REPLICATION_CLUSTER = 'gamersmafia'
