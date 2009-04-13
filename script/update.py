@@ -71,3 +71,4 @@ if __name__ == '__main__':
     compress_js()
     send_changelog_email()
     app_update()
+    os.popen('nohup rake gm:alariko &')

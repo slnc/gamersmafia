@@ -37,7 +37,6 @@ namespace(:customs) do
   
   task :updated_app, :roles => :app do
     run "cd #{release_path} && echo 'production' > config/mode && ./script/update.py"
-    run "cd #{release_path} && nohup rake gm:alariko & "
   end
   
   task :setup, :roles => :app do
