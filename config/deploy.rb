@@ -56,6 +56,7 @@ namespace(:customs) do
         puts "\n\tERROR: production has dirty wc!\n\n"
         raise
       end
+      run "if [ -d #{current_path} ]; then cd #{current_path} && rake gm:alariko:stop; fi"
     end    
   end
 end
