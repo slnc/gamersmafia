@@ -56,6 +56,7 @@ class ActsAsContentTest < Test::Unit::TestCase
   def test_should_allow_two_categories_terms_if_categorizable
     test_should_not_allow_to_link_to_child_term_if_content_is_categorizable_and_root_term_given
     @tut.categories_terms_ids = [[19, 28], 'TutorialsCategory']
+    p @tut.terms
     assert_equal 2, @tut.terms.size
     assert_equal 19, @tut.terms[0].id
     assert_equal 28, @tut.terms[1].id
