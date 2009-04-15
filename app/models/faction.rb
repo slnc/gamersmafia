@@ -5,9 +5,9 @@ class Faction < ActiveRecord::Base
   has_and_belongs_to_many :portals
   has_many :avatars
   has_many :users
+  has_many :gmtv_channels, :dependent => :destroy
   has_many :factions_links, :dependent => :destroy
   has_many :factions_headers, :dependent => :destroy
-  has_and_belongs_to_many :portals
   
   after_save :update_img_files
   
@@ -33,7 +33,7 @@ class Faction < ActiveRecord::Base
 
   
   def destroy_related_portals
-    User.db_query("DELETE FROM factions_portals WHERE faction_id = #{self.id}")
+    self.portals.clear
     portal = FactionsPortal.find_by_code(self.code)
     portal.destroy if portal && portal.factions.size == 0
     true

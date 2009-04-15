@@ -11,6 +11,15 @@ class FactionTest < Test::Unit::TestCase
     assert_equal 1, Faction.find_by_bigboss(u1).id
   end
   
+  def test_destroy_faction_should_destroy_related_factions_portals
+    f1 = Faction.find(1)
+    faction_portal = f1.portals.find(1)
+    assert_not_nil faction_portal
+    f1.destroy
+    assert Faction.find_by_id(f1.id).nil?
+    assert FactionsPortal.find_by_id(faction_portal.id).nil?
+  end
+
   def test_faction_editors
     f1 = Faction.find(1)
     assert_equal [], f1.editors
