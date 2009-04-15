@@ -644,7 +644,9 @@ class User < ActiveRecord::Base
   end
   
   def check_age
-    return if self.birthday.nil?
+    if self.birthday == nil
+      return true
+    end
     
     if DateTime.now.year - self.birthday.year >= 3 && DateTime.now.year - self.birthday.year <= 130 then
       true

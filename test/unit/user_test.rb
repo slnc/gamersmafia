@@ -100,16 +100,20 @@ class UserTest < Test::Unit::TestCase
   def test_check_age    
     u = User.find(1) 
     
-    u.birthday = DateTime.new(1800, 3, 26) 
+    u.birthday = DateTime.new(1800, 3, 26)
+    #assert !u.check_age # Niego, ya que es correcto que check_age de false en este caso    
     assert !u.save # No salvará bien, edad incorrecta (> 130 años)
     
     u.birthday = DateTime.now
+    #assert !u.check_age # Idem para este
     assert !u.save # No salvará bien, edad incorrecta (< 3 años)
     
     u.birthday = DateTime.new(DateTime.now.year - 3, DateTime.now.month, DateTime.now.day)
+    #assert u.check_age  #Una edad correcta.
     assert u.save # Deberá salvar bien (3 >= edad <= 130)
     
     u.birthday = nil
+    #assert u.check_age # Usuario que no tiene la edad fijada. Es una edad válida para el chequeo (pe: si el usuario no ha fijado todavia su edad)
     assert_nil u.birthday # Comprobamos que efectivamente hay nil
     assert u.save         # Deberá salvar bien aun con birthday a nil
   end
