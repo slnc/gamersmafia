@@ -4,7 +4,7 @@ require 'cuenta/cuenta_controller'
 # Re-raise errors caught by the controller.
 class Cuenta::CuentaController; def rescue_action(e) raise e end; end
 
-class Cuenta::CuentaControllerTest < Test::Unit::TestCase
+class Cuenta::CuentaControllerTest < ActiveSupport::TestCase
   
   def setup
     @controller = Cuenta::CuentaController.new

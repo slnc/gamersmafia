@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class FactionsHeaderTest < Test::Unit::TestCase
+class FactionsHeaderTest < ActiveSupport::TestCase
 
   # Replace this with your real tests.
   def test_truth

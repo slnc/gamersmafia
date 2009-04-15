@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class NewsTest < Test::Unit::TestCase
+class NewsTest < ActiveSupport::TestCase
   def test_should_properly_change_url
     @news = News.new(:title => 'foo flash-hack', :user_id => 1, :description => 'bar flash', :terms => Term.single_toplevel(:slug => 'ut').id)
     assert @news.save

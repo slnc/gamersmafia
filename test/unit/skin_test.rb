@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class SkinTest < Test::Unit::TestCase
+class SkinTest < ActiveSupport::TestCase
   
   # Skin default should return an special skin
   def test_default_skin_is_special

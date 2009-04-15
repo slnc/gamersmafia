@@ -4,7 +4,7 @@ require 'arena_controller'
 # Re-raise errors caught by the controller.
 class ArenaController; def rescue_action(e) raise e end; end
 
-class ArenaControllerTest < Test::Unit::TestCase
+class ArenaControllerTest < ActiveSupport::TestCase
   def setup
     @controller = ArenaController.new
     @request    = ActionController::TestRequest.new

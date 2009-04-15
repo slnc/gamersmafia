@@ -4,7 +4,7 @@ require 'comunidad_controller'
 # Re-raise errors caught by the controller.
 class ComunidadController; def rescue_action(e) raise e end; end
 
-class ComunidadControllerTest < Test::Unit::TestCase
+class ComunidadControllerTest < ActiveSupport::TestCase
   def setup
     @controller = ComunidadController.new
     @request    = ActionController::TestRequest.new

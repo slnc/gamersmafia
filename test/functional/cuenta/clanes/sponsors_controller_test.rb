@@ -4,7 +4,7 @@ require 'cuenta/clanes/sponsors_controller'
 # Re-raise errors caught by the controller.
 class Cuenta::Clanes::SponsorsController; def rescue_action(e) raise e end; end
 
-class Cuenta::Clanes::SponsorsControllerTest < Test::Unit::TestCase
+class Cuenta::Clanes::SponsorsControllerTest < ActiveSupport::TestCase
   
   def setup
     @controller = Cuenta::Clanes::SponsorsController.new

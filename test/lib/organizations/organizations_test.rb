@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 
-class OrganizationsTest < Test::Unit::TestCase
+class OrganizationsTest < ActiveSupport::TestCase
   def test_find_organization_by_content_should_work_with_factions_content
     n1 = News.find(1)
     org = Organizations.find_by_content(n1)

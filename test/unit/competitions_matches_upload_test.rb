@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CompetitionsMatchesUploadTest < Test::Unit::TestCase
+class CompetitionsMatchesUploadTest < ActiveSupport::TestCase
 
   def test_create
     FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/competitions_matches_uploads/0000/002_*")

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class SoldProductTest < Test::Unit::TestCase
+class SoldProductTest < ActiveSupport::TestCase
   def test_should_remove_money_when_buying_a_product
     u = User.find(1)
     p = Product.find(1)

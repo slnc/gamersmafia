@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class BanRequestTest < Test::Unit::TestCase
+class BanRequestTest < ActiveSupport::TestCase
   
   def test_should_send_email_to_banned_user_after_confirmation
     u2 = User.find(2)

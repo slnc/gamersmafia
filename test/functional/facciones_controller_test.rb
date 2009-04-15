@@ -4,7 +4,7 @@ require 'facciones_controller'
 # Re-raise errors caught by the controller.
 class FaccionesController; def rescue_action(e) raise e end; end
 
-class FaccionesControllerTest < Test::Unit::TestCase
+class FaccionesControllerTest < ActiveSupport::TestCase
   
   def setup
     @controller = FaccionesController.new

@@ -5,7 +5,7 @@ require 'columnas_controller'
 # Re-raise errors caught by the controller.
 class ColumnasController; def rescue_action(e) raise e end; end
 
-class ColumnasControllerTest < Test::Unit::TestCase
+class ColumnasControllerTest < ActiveSupport::TestCase
   test_common_content_crud :name => 'Column', :form_vars => {:title => 'footapang', :description => "abracadabra", :main => 'hellouu'}, :root_terms => 1
 
   def setup

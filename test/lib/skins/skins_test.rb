@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 
-class SkinsTest < Test::Unit::TestCase
+class SkinsTest < ActiveSupport::TestCase
   def test_all_color_generators_should_run_with_default_parameters
    (Skins::ColorGenerators.constants - ["AbstractGenerator"]).each do |cg|
       assert_equal true, Skins::ColorGenerators.const_get(cg).process({}) != ''

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 load RAILS_ROOT + '/Rakefile'
 
-class WeeklyRakeTest < Test::Unit::TestCase
+class WeeklyRakeTest < ActiveSupport::TestCase
   include Rake
   
   def setup

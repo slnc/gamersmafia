@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class SlogEntryTest < Test::Unit::TestCase
+class SlogEntryTest < ActiveSupport::TestCase
 
   # Replace this with your real tests.
   def test_decode_editor_scope

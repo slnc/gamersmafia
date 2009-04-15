@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class SoldProfileSignaturesTest < Test::Unit::TestCase
+class SoldProfileSignaturesTest < ActiveSupport::TestCase
   def test_should_enable_profile_signatures_after_being_created
     @u = User.find(2)
     @p = Product.find_by_cls('SoldProfileSignatures')

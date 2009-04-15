@@ -21,7 +21,7 @@ ActionMailer::Base.delivery_method = :test
 ActionMailer::Base.perform_deliveries = true
 ActionMailer::Base.deliveries = []
 
-class Test::Unit::TestCase
+class ActiveSupport::TestCase
   # Turn off transactional fixtures if you're working with MyISAM tables in MySQL
   self.use_transactional_fixtures = true
   
@@ -281,7 +281,7 @@ class ActionController::IntegrationTest
   end
 end
 
-class Test::Unit::TestCase
+class ActiveSupport::TestCase
   def self.basic_test(*views)
     cattr_accessor :basic_views_test
     self.basic_views_test = views

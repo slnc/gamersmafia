@@ -33,7 +33,7 @@ class UsersTestController < ActionController::Base
   end
 end
 
-class UsersTest < Test::Unit::TestCase
+class UsersTest < ActiveSupport::TestCase
   def setup
     @inst = UsersTestController.new
   end

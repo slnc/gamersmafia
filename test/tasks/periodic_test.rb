@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 load RAILS_ROOT + '/Rakefile'
 #load RAILS_ROOT + '/lib/tasks/periodic/daily.rake'
 
-class PeriodicTest < Test::Unit::TestCase
+class PeriodicTest < ActiveSupport::TestCase
   include Rake
   
   def test_periodic

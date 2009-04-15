@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 require File.dirname(__FILE__) + '/test_helper'
 
-class BankTest < Test::Unit::TestCase
+class BankTest < ActiveSupport::TestCase
   def setup
     ActiveRecord::Base.db_query('CREATE TABLE has_bank_account_records (id serial primary key not null unique, name varchar, cash numeric(14,2) not null default 0)')
     @r1 = HasBankAccountRecord.create({:name => 'foo'})

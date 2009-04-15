@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PollsOptionTest < Test::Unit::TestCase
+class PollsOptionTest < ActiveSupport::TestCase
   def setup
     @polls_option = PollsOption.find(1)
   end

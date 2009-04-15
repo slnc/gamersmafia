@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class AdvertiserTest < Test::Unit::TestCase
+class AdvertiserTest < ActiveSupport::TestCase
 
   # Replace this with your real tests.
   def test_del_roles

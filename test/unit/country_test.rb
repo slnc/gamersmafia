@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CountryTest < Test::Unit::TestCase
+class CountryTest < ActiveSupport::TestCase
 
   def setup
     @country = Country.find(1)

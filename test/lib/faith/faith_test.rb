@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 
-class FaithTest < Test::Unit::TestCase
+class FaithTest < ActiveSupport::TestCase
   
   def setup
     @u1 = User.find(1)

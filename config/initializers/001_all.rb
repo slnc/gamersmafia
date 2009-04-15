@@ -40,6 +40,7 @@ ActionMailer::Base.smtp_settings = {
 
 # if App.enable_dbstats? then
 #if nil 
+# TODO copypaste de environment de GM
 module ActiveRecord
   module ConnectionAdapters
     class AbstractAdapter
@@ -109,16 +110,15 @@ end
 ActionController::Base.module_eval do
   def perform_action_with_reset
     ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::reset_stats
-    #ActiveRecord::ConnectionAdapters::QueryCache::reset_stats
     perform_action_without_reset
   end
   
   alias_method_chain :perform_action, :reset
   
-  def active_record_runtime(runtime)
+  def active_record_runtime
     stats = ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::get_stats
       "#{super} #{sprintf("%.1fk", stats[:bytes].to_f / 1024)} queries: #{stats[:queries]}"
-end
+  end
 end
 #end
 

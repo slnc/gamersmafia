@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class EventTest < Test::Unit::TestCase
+class EventTest < ActiveSupport::TestCase
   COMMON = { :user_id => 1, :approved_by_user_id => 1, :terms => 1, :state => Cms::PUBLISHED}
 
   def test_should_give_correct_hotmap1

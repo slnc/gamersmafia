@@ -4,7 +4,7 @@ require 'cuenta/guids_controller'
 # Re-raise errors caught by the controller.
 class Cuenta::GuidsController; def rescue_action(e) raise e end; end
 
-class Cuenta::GuidsControllerTest < Test::Unit::TestCase
+class Cuenta::GuidsControllerTest < ActiveSupport::TestCase
   test_min_acl_level :user, [ :index, :guardar ]
 
   def setup

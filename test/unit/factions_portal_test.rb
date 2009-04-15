@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class FactionsPortalTest < Test::Unit::TestCase
+class FactionsPortalTest < ActiveSupport::TestCase
   
   def test_should_return_factions_links_if_any
     @fp = FactionsPortal.create({:name => 'fooo', :code => 'fooo'})

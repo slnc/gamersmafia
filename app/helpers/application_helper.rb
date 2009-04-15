@@ -116,25 +116,25 @@ type: 'bhs'}))
   end
   
   def content_2colx(&block)
-    concat("<div class=\"container c2colx\">", block.binding)
+    concat("<div class=\"container c2colx\">")
     yield
     concat("</div>", block.binding)
   end
   
   def content_3col(&block)
-    concat("<div class=\"container c3col\">", block.binding)
+    concat("<div class=\"container c3col\">")
     yield
     concat("</div>", block.binding)
   end
   
   def content_3colx(&block)
-    concat("<div class=\"container c3colx\">", block.binding)
+    concat("<div class=\"container c3colx\">")
     yield
     concat("</div>", block.binding)
   end
   
   def content_3coly(&block)
-    concat("<div class=\"container c3coly\">", block.binding)
+    concat("<div class=\"container c3coly\">")
     yield
     concat("</div>", block.binding)
   end
@@ -895,9 +895,9 @@ END
     blast_cls = 'blast' if opts[:blast]
     out = "<div class=\"module mftext #{grid_cls} #{glast_cls} #{blast_cls} #{'sub-modules' if opts[:has_submodules]}\""
     out << " id=\"#{opts[:id]}\"" if opts[:id]
-    concat(out << ">", block.binding)
-    concat("<div class=\"mtitle#{opts[:additional_class]}\"><span>#{title}</span></div>", block.binding) if title
-    concat("<div class=\"mcontent\">", block.binding)
+    concat(out << ">")
+    concat("<div class=\"mtitle#{opts[:additional_class]}\"><span>#{title}</span></div>") if title
+    concat("<div class=\"mcontent\">")
     yield
     concat("</div></div>", block.binding)
     @oddclass = old_oddclass 

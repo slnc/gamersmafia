@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 require 'RMagick'
 
-class ActsAsCategorizableTest < Test::Unit::TestCase
+class ActsAsCategorizableTest < ActiveSupport::TestCase
   def setup
     ActiveRecord::Base.db_query('CREATE TABLE acts_as_categorizable_test_classes(id serial primary key not null unique, name varchar)')
   end

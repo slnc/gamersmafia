@@ -4,7 +4,7 @@ require 'cuenta/mis_canales_controller'
 # Re-raise errors caught by the controller.
 class Cuenta::MisCanalesController; def rescue_action(e) raise e end; end
 
-class Cuenta::MisCanalesControllerTest < Test::Unit::TestCase
+class Cuenta::MisCanalesControllerTest < ActiveSupport::TestCase
   def setup
     @controller = Cuenta::MisCanalesController.new
     @request    = ActionController::TestRequest.new

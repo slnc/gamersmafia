@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class SoldUserAvatarTest < Test::Unit::TestCase
+class SoldUserAvatarTest < ActiveSupport::TestCase
   def test_should_create_custom_avatar_after_being_created
     u = User.find(1)
     p = Product.find(1)

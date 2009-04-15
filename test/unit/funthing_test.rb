@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class FunthingTest < Test::Unit::TestCase
+class FunthingTest < ActiveSupport::TestCase
   def test_should_create_funthing
     ft = Funthing.new({:title => 'foo funthing', :main => 'somecode', :user_id => 1})
     assert_equal true, ft.save

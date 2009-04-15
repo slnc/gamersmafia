@@ -4,7 +4,7 @@ require 'cuenta/skins_controller'
 # Re-raise errors caught by the controller.
 class Cuenta::SkinsController; def rescue_action(e) raise e end; end
 
-class Cuenta::SkinsControllerTest < Test::Unit::TestCase
+class Cuenta::SkinsControllerTest < ActiveSupport::TestCase
   def setup
     @controller = Cuenta::SkinsController.new
     @request    = ActionController::TestRequest.new

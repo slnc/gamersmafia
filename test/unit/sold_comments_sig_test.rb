@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class SoldCommentsSigTest < Test::Unit::TestCase
+class SoldCommentsSigTest < ActiveSupport::TestCase
   def test_should_enable_comments_sig_after_being_created
     @u = User.find(2)
     @p = Product.find_by_cls('SoldCommentsSig')

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CompetitionsLogsEntryTest < Test::Unit::TestCase
+class CompetitionsLogsEntryTest < ActiveSupport::TestCase
 
   # TODO copypasted de competitions_logs_entry
   def test_should_not_allow_empty_message

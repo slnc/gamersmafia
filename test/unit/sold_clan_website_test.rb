@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class SoldClanWebsiteTest < Test::Unit::TestCase
+class SoldClanWebsiteTest < ActiveSupport::TestCase
   def test_assert_truth
     # assert_
   end

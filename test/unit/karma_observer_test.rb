@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class KarmaObserverTest < Test::Unit::TestCase
+class KarmaObserverTest < ActiveSupport::TestCase
   # COMMENTS
   def test_should_give_karma_from_author_when_comment_is_created
     u = User.find(1)
