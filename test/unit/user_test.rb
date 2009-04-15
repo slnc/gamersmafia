@@ -88,6 +88,35 @@ class UserTest < Test::Unit::TestCase
     years = DateTime.now.year - u.birthday.year
     assert([(years - 1), years].include?(u.age), u.age)
   end
+  /
+   Nota, he dejado comentado unos asserts antiguos que hice
+   en el primer boceto. El caso es que me di cuenta de que si el check_age
+   se ejecuta antes de hacer save, no tengo porque usar el método directamente,
+   sino que puedo hacer u.save veo y ver si efectivamente está guardando o no tras pasar el check o no.
+  
+   Si me das el ok a como he dejado el test, ya me encargo yo de borrar todo el código
+   comentado que hay, para que quede más limpio.
+  /
+  def test_check_age    
+    u = User.find(1) 
+    
+    u.birthday = DateTime.new(1800, 3, 26)
+    #assert !u.check_age # Niego, ya que es correcto que check_age de false en este caso    
+    assert !u.save # No salvará bien, edad incorrecta (> 130 años)
+    
+    u.birthday = DateTime.now
+    #assert !u.check_age # Idem para este
+    assert !u.save # No salvará bien, edad incorrecta (< 3 años)
+    
+    u.birthday = DateTime.new(DateTime.now.year - 3, DateTime.now.month, DateTime.now.day)
+    #assert u.check_age  #Una edad correcta.
+    assert u.save # Deberá salvar bien (3 >= edad <= 130)
+    
+    u.birthday = nil
+    #assert u.check_age # Usuario que no tiene la edad fijada. Es una edad válida para el chequeo (pe: si el usuario no ha fijado todavia su edad)
+    assert_nil u.birthday # Comprobamos que efectivamente hay nil
+    assert u.save         # Deberá salvar bien aun con birthday a nil
+  end
 
   
   def test_should_allow_youtube_videos_on_profile
