@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class LadderTest < Test::Unit::TestCase
+class LadderTest < ActiveSupport::TestCase
   
   def test_shouldnt_have_options
     l = Ladder.find(:first)

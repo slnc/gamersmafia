@@ -4,7 +4,7 @@ require 'cuenta/apuestas_controller'
 # Re-raise errors caught by the controller.
 class Cuenta::ApuestasController; def rescue_action(e) raise e end; end
 
-class Cuenta::ApuestasControllerTest < Test::Unit::TestCase
+class Cuenta::ApuestasControllerTest < ActionController::TestCase
   def setup
     @controller = Cuenta::ApuestasController.new
     @request    = ActionController::TestRequest.new

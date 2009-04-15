@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CompetitionsMatchTest < Test::Unit::TestCase
+class CompetitionsMatchTest < ActiveSupport::TestCase
   
   # Replace this with your real tests.
   def test_should_complete_match_with_simple_scoring

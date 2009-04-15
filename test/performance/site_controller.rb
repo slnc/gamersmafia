@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'site_controller'
 
-class SiteTest < Test::Unit::TestCase
+class SiteTest < ActiveSupport::TestCase
   HOW_MANY = 100
   def setup
     @controller = SiteController.new

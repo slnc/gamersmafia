@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ClansLogsEntryTest < Test::Unit::TestCase
+class ClansLogsEntryTest < ActiveSupport::TestCase
 
   def test_should_not_allow_empty_message
     log_entry = ClansLogsEntry.new({:message => nil, :clan_id => 1})

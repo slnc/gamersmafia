@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class TutorialTest < Test::Unit::TestCase
+class TutorialTest < ActiveSupport::TestCase
   def setup
     @tutorial = Tutorial.find(1)
   end

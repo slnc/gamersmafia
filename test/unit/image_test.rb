@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ImageTest < Test::Unit::TestCase
+class ImageTest < ActiveSupport::TestCase
 
   def setup
     @image = Image.find(1)

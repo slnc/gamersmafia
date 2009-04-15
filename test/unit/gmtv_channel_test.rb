@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class GmtvChannelTest < Test::Unit::TestCase
+class GmtvChannelTest < ActiveSupport::TestCase
   def test_truth
     assert true
   end

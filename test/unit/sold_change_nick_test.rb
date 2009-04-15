@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class SoldChangeNickTest < Test::Unit::TestCase
+class SoldChangeNickTest < ActiveSupport::TestCase
   def test_should_create_nick_change_entry_on_usage
     u = User.find(1)
     p = Product.find_by_name('Cambio de nick')

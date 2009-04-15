@@ -4,7 +4,7 @@ require 'cuenta/blog_controller'
 # Re-raise errors caught by the controller.
 class Cuenta::BlogController; def rescue_action(e) raise e end; end
 
-class Cuenta::BlogControllerTest < Test::Unit::TestCase
+class Cuenta::BlogControllerTest < ActionController::TestCase
   def setup
     @controller = Cuenta::BlogController.new
     @request    = ActionController::TestRequest.new

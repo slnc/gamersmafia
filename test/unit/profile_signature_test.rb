@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ProfileSignatureTest < Test::Unit::TestCase
+class ProfileSignatureTest < ActiveSupport::TestCase
   
   def test_should_send_email_notification_of_new_profile_signature
     prev = ActionMailer::Base.deliveries.size

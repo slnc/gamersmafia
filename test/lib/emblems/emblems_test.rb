@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 
-class EmblemsTest < Test::Unit::TestCase
+class EmblemsTest < ActiveSupport::TestCase
   def assert_gives_emblem(emblem, &block)
     @u = User.find(1) if @u.nil?
     assert_equal 0, @u.users_emblems.count(:conditions => "emblem = '#{emblem}'")

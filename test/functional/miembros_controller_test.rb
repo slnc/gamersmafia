@@ -4,7 +4,7 @@ require 'miembros_controller'
 # Re-raise errors caught by the controller.
 class MiembrosController; def rescue_action(e) raise e end; end
 
-class MiembrosControllerTest < Test::Unit::TestCase
+class MiembrosControllerTest < ActionController::TestCase
   def setup
     @controller = MiembrosController.new
     @request    = ActionController::TestRequest.new

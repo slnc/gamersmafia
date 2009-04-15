@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class FaithObserverTest < Test::Unit::TestCase
+class FaithObserverTest < ActiveSupport::TestCase
   
   def test_should_give_faith_after_creating_content_rating
     initial_cr = ContentRating.count

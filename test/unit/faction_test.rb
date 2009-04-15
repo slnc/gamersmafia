@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class FactionTest < Test::Unit::TestCase
+class FactionTest < ActiveSupport::TestCase
   def test_find_by_bigboss
     f1 = Faction.find(1)
     u1 = User.find(1)

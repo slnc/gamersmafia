@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PublishingDecisionTest < Test::Unit::TestCase
+class PublishingDecisionTest < ActiveSupport::TestCase
   FIRST_CONTENT_EXP = 0.00009655
   
   def setup

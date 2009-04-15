@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 
-class PersonalizationTest < Test::Unit::TestCase
+class PersonalizationTest < ActiveSupport::TestCase
   # TODO estos tests fallan y no se por que, parece que no se borre la bd despues de ejecutarlos
   def test_quicklinks_empty
     u2 = User.find(2)

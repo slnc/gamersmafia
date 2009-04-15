@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class GmtvBroadcastMessageTest < Test::Unit::TestCase
+class GmtvBroadcastMessageTest < ActiveSupport::TestCase
 
   # Replace this with your real tests.
   def test_truth

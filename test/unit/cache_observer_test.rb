@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CacheObserverTest < Test::Unit::TestCase
+class CacheObserverTest < ActiveSupport::TestCase
   def test_expire_fragment_should_delete_given_cache_id_if_existing
     f = "#{FRAGMENT_CACHE_PATH}/cache_observer_test.file.cache"
     cache_id = '/cache_observer_test.file'

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 require 'RMagick'
 
-class CmsTest < Test::Unit::TestCase
+class CmsTest < ActiveSupport::TestCase
   # tests para image_thumbnail
   THUMB_FILE = "/tmp/thumb.jpg"
   SQUARE_FILE = "#{RAILS_ROOT}/test/fixtures/files/square.jpg"

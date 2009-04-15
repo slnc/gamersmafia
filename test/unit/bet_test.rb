@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class BetTest < Test::Unit::TestCase
+class BetTest < ActiveSupport::TestCase
 
   def setup
     @bet = Bet.create({:user_id => 1, :title => 'foo1 vs bar1', :terms => 1, :closes_on => 1.day.since})

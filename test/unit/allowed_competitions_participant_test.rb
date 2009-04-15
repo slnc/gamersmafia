@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class AllowedCompetitionsParticipantTest < Test::Unit::TestCase
+class AllowedCompetitionsParticipantTest < ActiveSupport::TestCase
   
   def test_should_send_notification_after_being_invited_if_competition_is_invitational_and_in_state_gt_0_and_users
     u = User.find(1)

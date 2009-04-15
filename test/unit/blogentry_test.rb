@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class BlogentryTest < Test::Unit::TestCase
+class BlogentryTest < ActiveSupport::TestCase
   # TODO model checks
   def setup
     

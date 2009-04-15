@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 require 'notification'
 load RAILS_ROOT + '/Rakefile'
 
-class NotificationTest < Test::Unit::TestCase
+class NotificationTest < ActiveSupport::TestCase
   include Rake
   
   FIXTURES_PATH = File.dirname(__FILE__) + '/../fixtures'

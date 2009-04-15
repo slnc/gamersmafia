@@ -1,4 +1,4 @@
-class Test::Unit::TestCase
+class ActiveSupport::TestCase
   def self.test_common_content_crud(opt={})
     cattr_accessor :opt, :content_name, :content_sym, :content_class, :post_vars
     self.opt = {:authed_user_id => 1, :non_authed_user_id => 2}.merge(opt)

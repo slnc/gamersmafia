@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class OutstandingUserTest < Test::Unit::TestCase  
+class OutstandingUserTest < ActiveSupport::TestCase  
   def test_current_should_return_correct_user_case_a
     User.db_query("INSERT INTO stats.users_karma_daily_by_portal(user_id, portal_id, karma, created_on) VALUES(1, -1, 100, now())")
     bu = OutstandingUser.current(-1)

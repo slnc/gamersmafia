@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class DemoTest < Test::Unit::TestCase
+class DemoTest < ActiveSupport::TestCase
   DEFS = {:terms => 1, :title => '', :games_mode_id => 1, :demotype => Demo::DEMOTYPES[:official], :user_id => 1}
   DEFS_CLAN = {:terms => 1, :title=> '', :games_mode_id => 2, :demotype => Demo::DEMOTYPES[:official], :user_id => 1}
   

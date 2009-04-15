@@ -8,7 +8,7 @@ class ActionController::TestRequest
   attr_accessor :user_agent
 end
 
-class CacheControllerTest < Test::Unit::TestCase
+class CacheControllerTest < ActionController::TestCase
   def setup
     @controller = CacheController.new
     @request    = ActionController::TestRequest.new

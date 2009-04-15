@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ClanTest < Test::Unit::TestCase
+class ClanTest < ActiveSupport::TestCase
   def test_validations_minimal_data
     # valid minimal data
     @clan = Clan.new({:tag => 'tagvali', :name => 'Super valid clan'})

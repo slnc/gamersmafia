@@ -5,7 +5,7 @@ require 'coverages_controller'
 # Re-raise errors caught by the controller.
 class CoveragesController; def rescue_action(e) raise e end; end
 
-class CoveragesControllerTest < Test::Unit::TestCase
+class CoveragesControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Coverage', :form_vars => {:title => 'footapang', :description => 'bartapang', :event_id => 1}, :root_terms => 1
 
   def setup

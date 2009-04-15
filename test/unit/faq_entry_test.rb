@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class FaqEntryTest < Test::Unit::TestCase
+class FaqEntryTest < ActiveSupport::TestCase
 
   def setup
     @faq_entry = FaqEntry.find(1)

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 require 'RMagick'
 
-class ActsAsContentTest < Test::Unit::TestCase
+class ActsAsContentTest < ActiveSupport::TestCase
   
   def test_no_null_title_in_content
     n = News.new({:title => '', :terms => 1, :user_id => 1, :description => 'foojahaha'})

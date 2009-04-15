@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PublishingPersonalityTest < Test::Unit::TestCase
+class PublishingPersonalityTest < ActiveSupport::TestCase
   #def test_by_default_user_has_0_weight
   #  panzer = User.find_by_login(:panzer)
   #  assert_in_delta 0.00, Cms.get_user_exp_with('News', panzer), 0.001

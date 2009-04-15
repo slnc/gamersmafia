@@ -5,7 +5,7 @@ require 'imagenes_controller'
 # Re-raise errors caught by the controller.
 class ImagenesController; def rescue_action(e) raise e end; end
 
-class ImagenesControllerTest < Test::Unit::TestCase
+class ImagenesControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Image', :form_vars => {:description => 'footapang', :file => ActionController::TestUploadedFile.new("#{RAILS_ROOT}/test/fixtures/files/buddha.jpg", nil, nil)}, :categories_terms => 18
 
   def setup

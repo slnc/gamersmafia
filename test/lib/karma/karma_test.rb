@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 
-class KarmaTest < Test::Unit::TestCase
+class KarmaTest < ActiveSupport::TestCase
   def test_should_give_karma_points_if_valid
     u = User.find(1)
     kp_initial = u.karma_points

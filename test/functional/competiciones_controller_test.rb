@@ -4,7 +4,7 @@ require 'competiciones_controller'
 # Re-raise errors caught by the controller.
 class CompeticionesController; def rescue_action(e) raise e end; end
 
-class CompeticionesControllerTest < Test::Unit::TestCase
+class CompeticionesControllerTest < ActionController::TestCase
   def setup
     @controller = CompeticionesController.new
     @request    = ActionController::TestRequest.new

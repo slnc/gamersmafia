@@ -5,7 +5,7 @@ require 'encuestas_controller'
 # Re-raise errors caught by the controller.
 class EncuestasController; def rescue_action(e) raise e end; end
 
-class EncuestasControllerTest < Test::Unit::TestCase
+class EncuestasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Poll', :form_vars => {:title => 'footapang', :starts_on => 2.days.since, :ends_on => 9.days.since}, :root_terms => 1
 
   def setup

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require File.dirname(__FILE__) + '/../test_script_helper'
 
-class ScriptAlarikoBroadcastTest < Test::Unit::TestCase
+class ScriptAlarikoBroadcastTest < ActiveSupport::TestCase
   def test_sanity
     l = Chatline.count
     assert true

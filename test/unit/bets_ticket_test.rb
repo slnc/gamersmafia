@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class BetsTicketTest < Test::Unit::TestCase
+class BetsTicketTest < ActiveSupport::TestCase
   def setup
     Bank::transfer(:bank, User.find(2), 100, 'test')
   end

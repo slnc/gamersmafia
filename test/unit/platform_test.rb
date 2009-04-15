@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PlatformTest < Test::Unit::TestCase
+class PlatformTest < ActiveSupport::TestCase
   def test_create_term
     @platform = Platform.new(:name => 'foo', :code => 'bar')
     assert @platform.save 

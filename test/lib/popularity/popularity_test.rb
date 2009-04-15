@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 
-class PopularityTest < Test::Unit::TestCase   
+class PopularityTest < ActiveSupport::TestCase   
   def test_update_ranking_users_users
     User.db_query("INSERT INTO stats.users_daily_stats (created_on, user_id, popularity) VALUES(now() - '1 day'::interval, 1, 1)")
     Popularity.update_ranking_users

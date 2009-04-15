@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CashMovementTest < Test::Unit::TestCase
+class CashMovementTest < ActiveSupport::TestCase
 
   # Replace this with your real tests.
   def test_truth

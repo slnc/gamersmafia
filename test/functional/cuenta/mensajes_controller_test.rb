@@ -4,7 +4,7 @@ require 'cuenta/mensajes_controller'
 # Re-raise errors caught by the controller.
 class Cuenta::MensajesController; def rescue_action(e) raise e end; end
 
-class Cuenta::MensajesControllerTest < Test::Unit::TestCase
+class Cuenta::MensajesControllerTest < ActionController::TestCase
   def setup
     @controller = Cuenta::MensajesController.new
     @request    = ActionController::TestRequest.new

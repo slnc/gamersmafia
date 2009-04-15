@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PortalTest < Test::Unit::TestCase
+class PortalTest < ActiveSupport::TestCase
 
   def test_should_work_if_good_data
     portal = Portal.new(:code => "#{Portal::UNALLOWED_CODES[0]}00", :name => 'Fulanito de tal')

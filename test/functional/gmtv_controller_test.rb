@@ -4,7 +4,7 @@ require 'gmtv_controller'
 # Re-raise errors caught by the controller.
 class GmtvController; def rescue_action(e) raise e end; end
 
-class GmtvControllerTest < Test::Unit::TestCase
+class GmtvControllerTest < ActionController::TestCase
   def setup
     @controller = GmtvController.new
     @request    = ActionController::TestRequest.new

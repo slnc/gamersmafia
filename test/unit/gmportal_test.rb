@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class GmPortalTest < Test::Unit::TestCase
+class GmPortalTest < ActiveSupport::TestCase
 
   def test_has_name
     assert_not_nil GmPortal.new.name

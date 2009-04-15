@@ -4,7 +4,7 @@ require 'foros_controller'
 # Re-raise errors caught by the controller.
 class ForosController; def rescue_action(e) raise e end; end
 
-class ForosControllerTest < Test::Unit::TestCase
+class ForosControllerTest < ActionController::TestCase
   def setup
     @controller = ForosController.new
     @request    = ActionController::TestRequest.new

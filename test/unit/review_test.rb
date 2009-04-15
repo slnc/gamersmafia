@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ReviewTest < Test::Unit::TestCase
+class ReviewTest < ActiveSupport::TestCase
 
   def setup
     @review = Review.find(1)

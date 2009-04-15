@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ClansPortalTest < Test::Unit::TestCase
+class ClansPortalTest < ActiveSupport::TestCase
 
   # Replace this with your real tests.
   def test_truth

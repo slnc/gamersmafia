@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class DownloadMirrorTest < Test::Unit::TestCase
+class DownloadMirrorTest < ActiveSupport::TestCase
 
   def setup
     @download_mirror = DownloadMirror.find(1)

@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PotdTest < Test::Unit::TestCase
+class PotdTest < ActiveSupport::TestCase
   def test_should_select_another_potd_if_current_potd_becomes_unpublished
     im = Image.find(:first, :conditions => "state = #{Cms::PUBLISHED}")
     assert_not_nil im

@@ -5,7 +5,7 @@ require 'reviews_controller'
 # Re-raise errors caught by the controller.
 class ReviewsController; def rescue_action(e) raise e end; end
 
-class ReviewsControllerTest < Test::Unit::TestCase
+class ReviewsControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Review', :form_vars => {:title => 'footapang', :description => 'bartapang', :main => 'oooo'}, :root_terms => 1
 
   def setup

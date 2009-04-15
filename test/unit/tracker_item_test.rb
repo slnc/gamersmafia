@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class TrackerItemTest < Test::Unit::TestCase
+class TrackerItemTest < ActiveSupport::TestCase
 
   def setup
     @tracker_item = TrackerItem.find(1)

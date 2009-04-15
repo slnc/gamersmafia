@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 
-class HasSlugTest < Test::Unit::TestCase
+class HasSlugTest < ActiveSupport::TestCase
   def setup
     ActiveRecord::Base.db_query('CREATE TABLE has_slug_test_records(id serial primary key not null unique, name varchar, slug varchar)')
   end

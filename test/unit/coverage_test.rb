@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CoverageTest < Test::Unit::TestCase
+class CoverageTest < ActiveSupport::TestCase
   def test_shouldnt_work_if_missing_event
     en = Coverage.new({:state => Cms::PUBLISHED, :title => 'fooo events news'})
     assert_equal false, en.save

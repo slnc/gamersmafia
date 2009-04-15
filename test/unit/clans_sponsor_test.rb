@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ClansSponsorTest < Test::Unit::TestCase
+class ClansSponsorTest < ActiveSupport::TestCase
 
   def test_should_fail_if_empty_clan
     c = ClansSponsor.new({:name => 'Mermelada Ocarina'})

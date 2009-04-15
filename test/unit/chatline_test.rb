@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ChatlineTest < Test::Unit::TestCase
+class ChatlineTest < ActiveSupport::TestCase
 
   def setup
     @chatline = Chatline.find(1)

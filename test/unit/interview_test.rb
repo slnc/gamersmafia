@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
-class InterviewTest < Test::Unit::TestCase
+class InterviewTest < ActiveSupport::TestCase
 
   def setup
     @interview = Interview.find(1)
