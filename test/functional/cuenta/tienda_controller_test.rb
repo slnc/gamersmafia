@@ -4,7 +4,7 @@ require 'cuenta/tienda_controller'
 # Re-raise errors caught by the controller.
 class Cuenta::TiendaController; def rescue_action(e) raise e end; end
 
-class Cuenta::TiendaControllerTest < ActiveSupport::TestCase
+class Cuenta::TiendaControllerTest < ActionController::TestCase
   def setup
     @controller = Cuenta::TiendaController.new
     @request    = ActionController::TestRequest.new

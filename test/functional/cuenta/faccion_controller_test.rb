@@ -4,7 +4,7 @@ require 'cuenta/faccion_controller'
 # Re-raise errors caught by the controller.
 class Cuenta::FaccionController; def rescue_action(e) raise e end; end
 
-class Cuenta::FaccionControllerTest < ActiveSupport::TestCase
+class Cuenta::FaccionControllerTest < ActionController::TestCase
   def setup
     @controller = Cuenta::FaccionController.new
     @request    = ActionController::TestRequest.new

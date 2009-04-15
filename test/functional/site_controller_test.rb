@@ -4,7 +4,7 @@ require 'site_controller'
 # Re-raise errors caught by the controller.
 class SiteController; def rescue_action(e) raise e end; end
 
-class SiteControllerTest < ActiveSupport::TestCase
+class SiteControllerTest < ActionController::TestCase
   def setup
     @controller = SiteController.new
     @request    = ActionController::TestRequest.new

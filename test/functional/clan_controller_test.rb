@@ -4,7 +4,7 @@ require 'clan_controller'
 # Re-raise errors caught by the controller.
 class ClanController; def rescue_action(e) raise e end; end
 
-class ClanControllerTest < ActiveSupport::TestCase
+class ClanControllerTest < ActionController::TestCase
   def setup
     @controller = ClanController.new
     @request    = ActionController::TestRequest.new

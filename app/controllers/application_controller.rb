@@ -444,28 +444,25 @@ Request information:
     l
   end
   
+  around_filter :gm_process
   # Used to be able to leave out the action
-  def process(request, response)
+  def gm_process
+    @_track_done = false
     seconds = Benchmark.realtime do
       catch(:abort) do
-        super(request, response)
+        yield
       end
     end
     
-    if portal then
-      begin
-        Stats.pageloadtime(self, seconds, response, controller_name, action_name, portal)
-      rescue
-        raise unless RAILS_ENV == 'test'
-      end
+    begin
+      Stats.pageloadtime(self, seconds, response, controller_name, action_name, portal)
+    rescue 
+      raise unless RAILS_ENV == 'test'
     end
-    response
   end
+
   
   def resolve_portal_mode
-    
-    
-    
     @global_vars = User.db_query("SELECT * FROM global_vars")[0]
     # esto no hay que hacerlo aquí
     # hay clientes que mandan un HTTP_CLIENT_IP incorrecto TODO esto peta
@@ -543,6 +540,7 @@ Request information:
   end
   
   VERSIONING_EREG = /^\/(.*\.)[a-z0-9.]+\.(css|js|gif|png|jpg)$/
+  
   def http_404
     if App.windows? # solo lo hacemos en windows para mongrel
       res = request.request_uri.match(VERSIONING_EREG)

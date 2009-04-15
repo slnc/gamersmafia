@@ -4,7 +4,7 @@ require 'noticias_controller'
 
 class NoticiasController; def rescue_action(e) raise e end; end
 
-class NoticiasControllerTest < ActiveSupport::TestCase
+class NoticiasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'News', :form_vars => {:title => 'footapang', :description => 'bartapang'}, :root_terms => 1
   
   def setup
