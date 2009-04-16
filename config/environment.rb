@@ -19,6 +19,8 @@ Rails::Initializer.run do |config|
   config.gem 'postgres'
 
   config.action_view.cache_template_loading = false if `hostname`.strip == 'blackwings'
+ASSET_URL = "http://#{App.asset_domain}#{':' << App.port.to_s if App.port != 80}"
+COOKIEDOMAIN = ".#{App.domain}"
 
   # config.gem "bj"
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"

@@ -1,3 +1,4 @@
+doc/applib
 log
 *.pyc
 public/skins/_core/css/games_sprites.css

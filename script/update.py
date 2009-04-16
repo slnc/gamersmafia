@@ -34,6 +34,7 @@ def compress_js():
 
 def send_changelog_email():
     try:
+       os.popen('mv REVISION config/REVISION')
        cur = open('config/REVISION').read().strip()
     except IOError:
        cur = '48c68e77cc002df52451a3f49924866c6024a32a' # último commit anunciado en la lista
@@ -58,10 +59,18 @@ def send_changelog_email():
     server.sendmail(fromaddr, toaddrs, msg)
     server.quit()
     
+    # Hacemos todo esto simplemente para guardar cuándo hacemos una nueva release
+    # TODO deberíamos generar tags para no enviar emails de cambios con el id de hash sino con algo como
+    # 2009.<num_de_actualizacion_anual>
+    # estamos en deploy
+    os.popen('git checkout production')
+    os.popen('git merge origin/production')
     open('%s/config/PREV_REVISION' % wc_path_clean, 'w').write('%s' % cur)
     os.popen('git add config/PREV_REVISION')
     os.popen('git commit -m "new deployment: %s"' % cur)
     os.popen('git push origin production')
+    os.popen('git checkout deploy')
+    os.popen('git merge production')
 
 def app_update():
 	output_dep = os.popen('rake gm:after_deploy').read()

@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 require 'test/helper_testcase'
 require 'feed_validator/assertions'
+require 'vendor/plugins/rails_mixings/lib/test_unit_mixings.rb'
 
 # lo metemos aquí porque test_helper parece que se incluye varias veces
 class ActionController::TestRequest

@@ -287,11 +287,17 @@ class TermTest < ActiveSupport::TestCase
   
   def test_last_updated_children_should_work
     test_should_update_parent_categories_counter
+    @topic.terms.each { |t| t.unlink(@topic.unique_content) }
     @subcat1.link(@topic.unique_content)
+    #puts "\n@topic1.terms: "
+    #p @topic.terms
+    @cat1.reload
     catz = @cat1.last_updated_children(:limit => 5)
-    p catz
-    p catz.collect { |luc| luc.name }
-    puts @subcat1.name
+    #puts "\ncatz: "
+    #p catz
+    #p catz.collect { |luc| luc.name }
+    #puts "@subcat1.name:"
+    #puts @subcat1.name
     assert catz.collect { |luc| luc.name }.include?(@subcat1.name)
   end
 

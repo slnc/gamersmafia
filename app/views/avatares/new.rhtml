@@ -1,6 +1,6 @@
 <h1>Nuevo avatar</h1>
 
-<%= form_tag ({:action => 'create'}, :multipart => true )%>
+<%= form_tag({:action => 'create'}, :multipart => true )%>
 <% @avatar.faction_id = Faction.find(:first, :order => 'id DESC').id %>
   <%= render :partial => 'form' %>
   <%= submit_tag "Create" %>
@@ -9,7 +9,7 @@
 <br />
 <br />
 <h1>Importar avatares</h1>
-<%= form_tag ({:action => 'create_from_zip'}, :multipart => true )%>
+<%= form_tag({:action => 'create_from_zip'}, :multipart => true )%>
 <p><label for="avatar_file">File</label><br/>
 <%= file_field_tag 'avatar' %></p>
   <%= submit_tag 'Importar' %>

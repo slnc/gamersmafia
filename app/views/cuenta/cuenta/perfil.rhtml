@@ -52,7 +52,7 @@
   </tr>
   <tr>
     <td><label for="post_lastname">Fecha de nacimiento</label></td>
-    <td><%= date_select "post", "birthday", :class=>"text", :start_year => 1900, :end_year => Time.now.year%></td>
+    <td><%= date_select "post", "birthday", :class=>"text", :start_year => Time.now.year - 130, :end_year => Time.now.year - 3 %></td>
   </tr>
 
   <tr>

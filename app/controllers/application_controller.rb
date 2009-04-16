@@ -542,7 +542,7 @@ Request information:
   VERSIONING_EREG = /^\/(.*\.)[a-z0-9.]+\.(css|js|gif|png|jpg)$/
   
   def http_404
-    if App.windows? # solo lo hacemos en windows para mongrel
+    if App.port != 80 # solo capturamos estas URLs cuando ejecutamos en desarrollo
       res = request.request_uri.match(VERSIONING_EREG)
       if res
         if %w(gif png jpg).include?(res[2])

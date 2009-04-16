@@ -8,6 +8,14 @@ class UserTest < ActiveSupport::TestCase
     ActionMailer::Base.deliveries = []
   end
   
+  def test_faith_ok
+    u = User.find(1)
+    
+    assert u.faith_points == 5
+  end
+  
+
+  
   def test_is_editor
     u2 = User.find(2)
     assert u2.is_editor?
@@ -68,10 +76,36 @@ class UserTest < ActiveSupport::TestCase
   
   
   def test_flash_age
-    u = User.create({:login => 'Flashky', :email => 'moon@moon.moon', :birthday => DateTime.new(1988, 9, 26)})
-    assert_equal 20, u.age(DateTime.new(2009, 9, 25))
-    assert_equal 21, u.age(DateTime.new(2009, 9, 26))
-    assert_equal 21, u.age(DateTime.new(2009, 9, 27))
+    u = User.create({:login => 'Flashky', :email => 'moon@moon.moon', :birthday => DateTime.new(1988, 3, 26)})
+    assert_equal 20, u.age(DateTime.new(2009, 3, 25))
+    assert_equal 21, u.age(DateTime.new(2009, 3, 26))
+    assert_equal 21, u.age(DateTime.new(2009, 3, 27))
+  end
+  
+  # GM-2531
+  def test_flash_age_hoy
+    u = User.create({:login => 'Flashky', :email => 'moon@moon.moon', :birthday => DateTime.new(1988, 3, 26)})
+    years = DateTime.now.year - u.birthday.year
+    assert([(years - 1), years].include?(u.age), u.age)
+  end
+
+  def test_check_age    
+    u = User.find(1) 
+    
+    u.birthday = DateTime.new(1800, 3, 26)    
+    assert !u.save # No salvará bien, edad incorrecta (> 130 años)
+    
+    u.birthday = DateTime.now
+    assert !u.save # No salvará bien, edad incorrecta (< 3 años)
+    
+    u.birthday = DateTime.new(DateTime.now.year - 3, DateTime.now.month, DateTime.now.day)
+    assert u.save # Deberá salvar bien (3 >= edad <= 130)
+    
+    u.birthday = nil
+    # Usuario que no tiene la edad fijada. Es una edad válida para el chequeo (pe: si el 
+    # usuario no ha fijado todavia su edad)
+    assert_nil u.birthday # Comprobamos que efectivamente hay nil
+    assert u.save         # Deberá salvar bien aun con birthday a nil
   end
 
   
@@ -208,4 +242,7 @@ class UserTest < ActiveSupport::TestCase
     assert u1.change_avatar(av1.id)
     assert_equal av1.id, u1.avatar_id
   end
+  
 end
+
+
