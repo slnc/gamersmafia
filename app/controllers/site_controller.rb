@@ -400,9 +400,7 @@ class SiteController < ApplicationController
           @user.resurrect
         end
         
-        @user.lastseen_on = Time.now
-        @user.ipaddr = request.remote_ip
-        User.db_query("UPDATE users SET lastseen_on = now(), ipaddr = '#{request.remote_ip}' WHERE id = #{@user.id}") # para no llamar a todos los validate, etc
+	@user.update_attributes(:lastseen_on => Time.now, :ipaddr => request.remote_ip)
       end
     end
     render :layout => false
