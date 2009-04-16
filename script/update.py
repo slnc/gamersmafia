@@ -63,6 +63,7 @@ def send_changelog_email():
     # Hacemos todo esto simplemente para guardar cuándo hacemos una nueva release
     # TODO deberíamos generar tags para no enviar emails de cambios con el id de hash sino con algo como
     # 2009.<num_de_actualizacion_anual>
+    os.popen('git pull')
     os.popen('git add config/PREV_REVISION')
     os.popen('git commit -m "new deployment: %s"' % cur)
     os.popen('git checkout production')
