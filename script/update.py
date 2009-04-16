@@ -64,6 +64,7 @@ def send_changelog_email():
     # 2009.<num_de_actualizacion_anual>
     # estamos en deploy
     os.popen('git checkout production')
+    os.popen('git merge origin/production')
     open('%s/config/PREV_REVISION' % wc_path_clean, 'w').write('%s' % cur)
     os.popen('git add config/PREV_REVISION')
     os.popen('git commit -m "new deployment: %s"' % cur)
