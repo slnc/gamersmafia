@@ -68,7 +68,7 @@ def send_changelog_email():
     open('%s/config/PREV_REVISION' % wc_path_clean, 'w').write('%s' % cur)
     os.popen('git add config/PREV_REVISION')
     os.popen('git commit -m "new deployment: %s"' % cur)
-    os.popen('git push')
+    os.popen('git push origin production')
     os.popen('git checkout deploy')
     os.popen('git merge production')
 
