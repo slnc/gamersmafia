@@ -118,25 +118,25 @@ type: 'bhs'}))
   def content_2colx(&block)
     concat("<div class=\"container c2colx\">")
     yield
-    concat("</div>", block.binding)
+    concat("</div>")
   end
   
   def content_3col(&block)
     concat("<div class=\"container c3col\">")
     yield
-    concat("</div>", block.binding)
+    concat("</div>")
   end
   
   def content_3colx(&block)
     concat("<div class=\"container c3colx\">")
     yield
-    concat("</div>", block.binding)
+    concat("</div>")
   end
   
   def content_3coly(&block)
     concat("<div class=\"container c3coly\">")
     yield
-    concat("</div>", block.binding)
+    concat("</div>")
   end
   
   def gmurl(object, opts={})
@@ -870,18 +870,18 @@ END
     #ab_test('sideright NLS-bandits', 5, :add_xab_to_links => true, :returnmode => :out) { out = ads_slots('sideright-leasttaken', '2-5') }
     #ab_test('sideright NLS-bandits', 6, :add_xab_to_links => true, :returnmode => :out) { out = ads_slots('sideright-poker', '2-6') }
     
-    concat("<div class=\"container\" id=\"csupport\"><div class=\"ads-slots\"><div class=\"ads-slots1\">#{out if opts[:show_ads]}", block.binding)
-    concat("#{ads_slots('sideright') if opts[:show_ads]}</div></div>", block.binding)
+    concat("<div class=\"container\" id=\"csupport\"><div class=\"ads-slots\"><div class=\"ads-slots1\">#{out if opts[:show_ads]}")
+    concat("#{ads_slots('sideright') if opts[:show_ads]}</div></div>")
     yield
-    concat("</div>", block.binding)
+    concat("</div>")
   end
   
   def content_main(opts={}, &block)
     # opts = {:show_ads => true}.merge(opts)
     # @show_ads = opts[:show_ads]
-    concat("<div class=\"container\" id=\"cmain\">", block.binding)
+    concat("<div class=\"container\" id=\"cmain\">")
     yield
-    concat("</div>", block.binding)
+    concat("</div>")
   end
   
   
@@ -899,7 +899,7 @@ END
     concat("<div class=\"mtitle#{opts[:additional_class]}\"><span>#{title}</span></div>") if title
     concat("<div class=\"mcontent\">")
     yield
-    concat("</div></div>", block.binding)
+    concat("</div></div>")
     @oddclass = old_oddclass 
   end
   
@@ -914,15 +914,15 @@ END
     return '' if collection.size == 0 && !options[:show_even_if_empty]
     out = "<div class=\"module mflist #{grid_cls} #{glast_cls} #{blast_cls} #{class_cls} \""
     out << " id=\"#{options[:id]}\"" if options[:id]
-    concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\"><ul>", block.binding)
+    concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\"><ul>")
     collection.each do |o|
-      concat("<li class=\"#{oddclass} #{options[:class] if options[:class]} \">", block.binding)
+      concat("<li class=\"#{oddclass} #{options[:class] if options[:class]} \">")
       yield o
-      concat("</li>", block.binding)
+      concat("</li>")
     end
-    concat("</ul>", block.binding)
-    concat(options[:bottom], block.binding) if options[:bottom]
-    concat("</div></div>", block.binding)
+    concat("</ul>")
+    concat(options[:bottom]) if options[:bottom]
+    concat("</div></div>")
     @oddclass = old_oddclass
   end
   
@@ -950,16 +950,16 @@ END
     return '' if collection.size == 0 && !options[:show_even_if_empty]
     out = "<div class=\"module mf#{mode} #{grid_cls} #{glast_cls} #{blast_cls} #{class_cls} \""
     out << " id=\"#{options[:id]}\"" if options[:id]
-    concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\">", block.binding)
-    concat(((mode == 'list') ? '<ul>' : '<table>'), block.binding)
+    concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\">")
+    concat(((mode == 'list') ? '<ul>' : '<table>'))
     collection.each do |o|
-      concat("<#{(mode == 'list') ? 'li' : 'tr'} class=\"#{oddclass} #{options[:class] if options[:class]} \">", block.binding)
+      concat("<#{(mode == 'list') ? 'li' : 'tr'} class=\"#{oddclass} #{options[:class] if options[:class]} \">")
       yield o
-      concat("</#{(mode == 'list') ? 'li' : 'tr'}>", block.binding)
+      concat("</#{(mode == 'list') ? 'li' : 'tr'}>")
     end
-    concat(((mode == 'list') ? '</ul>' : '</table>'), block.binding)
-    concat(options[:bottom], block.binding) if options[:bottom]
-    concat("</div></div>", block.binding)
+    concat(((mode == 'list') ? '</ul>' : '</table>'))
+    concat(options[:bottom]) if options[:bottom]
+    concat("</div></div>")
     @oddclass = old_oddclass
   end
   
@@ -973,7 +973,7 @@ END
      <div class="mcontent">
     END
     if block
-      concat(out, block.binding)
+      concat(out)
       out = ''
       yield
     else
@@ -986,7 +986,7 @@ END
       
     end
     if block
-      concat("#{content_bottom(content)}</div></div>", block.binding)
+      concat("#{content_bottom(content)}</div></div>")
     else
       out<< "#{content_bottom(content)}</div></div>"
     end
@@ -1089,17 +1089,17 @@ END
     ids = []
     out = "<div class=\"module mfcontents-list #{grid_cls} #{glast_cls} #{blast_cls}\""
     out << " id=\"#{options[:id]}\"" if options[:id]
-    concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\"><ul>", block.binding)
+    concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\"><ul>")
     collection.each do |o|
-      concat("<li #{'class="'<< options[:class] << '"' if options[:class]}>", block.binding)
+      concat("<li #{'class="'<< options[:class] << '"' if options[:class]}>")
       yield o
-      concat("</li>", block.binding)
+      concat("</li>")
       ids<< o.unique_content.id
     end
-    concat("</ul>", block.binding)
-    concat('<script type="text/javascript">contents = contents.concat('<< ids.join(',') <<');</script>', block.binding)
-    concat(options[:bottom], block.binding) if options[:bottom]
-    concat("</div></div>", block.binding)
+    concat("</ul>")
+    concat('<script type="text/javascript">contents = contents.concat('<< ids.join(',') <<');</script>')
+    concat(options[:bottom]) if options[:bottom]
+    concat("</div></div>")
     @oddclass = old_oddclass 
   end
   
@@ -1130,17 +1130,17 @@ END
     ids = []
     out = "<div class=\"module mfcontents-#{container_tag} #{grid_cls} #{blast_cls} #{glast_cls}\""
     out << " id=\"#{options[:id]}\"" if options[:id]
-    concat(out << "><div class=\"mtitle\"><span>#{title}</span></div><div class=\"mcontent\"><#{container_tag}>", block.binding)
+    concat(out << "><div class=\"mtitle\"><span>#{title}</span></div><div class=\"mcontent\"><#{container_tag}>")
     collection.each do |o|
-      concat("<#{row_tag} id=\"content#{o.unique_content.id}\" class=\"new #{oddclass} #{options[:class] if options[:class]}\">", block.binding)
+      concat("<#{row_tag} id=\"content#{o.unique_content.id}\" class=\"new #{oddclass} #{options[:class] if options[:class]}\">")
       yield o
-      concat("</#{row_tag}>", block.binding)
+      concat("</#{row_tag}>")
       ids<< o.unique_content.id
     end
-    concat("</#{container_tag}>", block.binding)
-    concat('<script type="text/javascript">contents = contents.concat('<< ids.join(',') <<');</script>', block.binding)
-    concat(options[:bottom], block.binding) if options[:bottom]
-    concat("</div></div>", block.binding)
+    concat("</#{container_tag}>")
+    concat('<script type="text/javascript">contents = contents.concat('<< ids.join(',') <<');</script>')
+    concat(options[:bottom]) if options[:bottom]
+    concat("</div></div>")
     @oddclass = old_oddclass 
   end
   
