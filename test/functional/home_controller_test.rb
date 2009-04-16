@@ -141,4 +141,29 @@ class HomeControllerTest < Test::Unit::TestCase
     assert_response :success
     assert_template 'facciones_unknown'
   end
+
+  def test_home_bazar_district_shouldnt_show_bets_from_other_places
+    b1 = Bet.find(1)
+    assert b1.update_attributes(:closes_on => 1.day.since)
+    @request.host = 'anime.gamersmafia.dev'
+    get :index
+    assert @response.body.index(b1.title).nil?
+  end
+
+  def test_home_bazar_district_shouldnt_show_closed_bets_from_self
+    b1 = Bet.find(1)
+    assert b1.update_attributes(:closes_on => 1.day.ago)
+    @request.host = 'anime.gamersmafia.dev'
+    get :index
+    assert @response.body.index(b1.title).nil?
+  end
+
+  def test_home_bazar_district_should_show_closed_bets_from_self
+    b1 = Bet.find(1)
+    assert b1.update_attributes(:closes_on => 1.day.since)
+    Term.single_toplevel(:slug => 'anime').link(b1.unique_content)
+    @request.host = 'anime.gamersmafia.dev'
+    get :index
+    assert_not_nil @response.body.index(b1.title)
+  end
 end
