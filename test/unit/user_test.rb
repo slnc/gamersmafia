@@ -242,7 +242,14 @@ class UserTest < Test::Unit::TestCase
     assert u1.change_avatar(av1.id)
     assert_equal av1.id, u1.avatar_id
   end
-  
+
+  def test_user_should_not_be_zombie_if_logged_in
+    u1 = User.find(1)
+    assert u1.update_attributes(:state => User::ST_ZOMBIE)
+    u1.comments.each do |c|
+	    assert c.update_attributes(:created_on => 4.months.ago)
+    end
+    u1.update_attributes(:lastseen_on => Time.now)
+    assert_equal User::ST_SHADOW, u1.state
+  end
 end
-
-
