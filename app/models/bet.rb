@@ -344,7 +344,7 @@ class Bet < ActiveRecord::Base
     end
   end
   
-  # TODO BIG MESS
+  # TODO BIG MESS, refactor
   def self.open_bets(opts={})
     qcond = opts[:conditions] ?  " AND #{opts[:conditions]}" : ''
     #qcond = "code = #{opts[:code]} #{qcond}" if opts[:code]
@@ -366,10 +366,6 @@ class Bet < ActiveRecord::Base
     find(:published, 
          :conditions => "#{Bet::CLOSED_BETS_SQL} #{qcond}", 
     :order => 'closes_on DESC, id DESC', :limit => opts[:limit])
-  end
-  
-  def self.open_bets_by_toplevel_code(code)
-    Term.single_toplevel(:slug => code).bet.open_bets
   end
   
   validates_uniqueness_of :title, :message => 'Nombre de la partida duplicado. Ejemplo de un nombre irrepetible: "Eurocup06 Quarters: oG vs P"'
