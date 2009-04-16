@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require 'test_helper'
 
 class Admin::UsuariosControllerTest < ActionController::TestCase
   test_min_acl_level :superadmin, [ :index, :update, :destroy, :check_registered_on, :check_karma, :check_faith ]

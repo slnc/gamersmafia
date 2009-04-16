@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 require File.dirname(__FILE__) + '/../test_functional_content_helper'
 require 'imagenes_controller'
 

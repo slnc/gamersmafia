@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require 'test_helper'
 
 class Admin::MotorControllerTest < ActionController::TestCase
   def test_should_show_index

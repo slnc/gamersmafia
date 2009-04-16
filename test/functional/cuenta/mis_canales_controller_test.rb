@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require 'test_helper'
 require 'cuenta/mis_canales_controller'
 
 # Re-raise errors caught by the controller.
