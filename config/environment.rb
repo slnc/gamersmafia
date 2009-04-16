@@ -19,6 +19,10 @@ Rails::Initializer.run do |config|
   config.gem 'postgres'
 
   config.action_view.cache_template_loading = false if `hostname`.strip == 'blackwings'
+
+  require 'erb'
+  require 'config/initializers/000_app_config.rb'
+
 ASSET_URL = "http://#{App.asset_domain}#{':' << App.port.to_s if App.port != 80}"
 COOKIEDOMAIN = ".#{App.domain}"
 
@@ -47,7 +51,5 @@ COOKIEDOMAIN = ".#{App.domain}"
   # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
   # config.i18n.default_locale = :de
-  require 'erb'
-  require 'config/initializers/000_app_config.rb'
 end
 
