@@ -63,14 +63,13 @@ def send_changelog_email():
     # Hacemos todo esto simplemente para guardar cuándo hacemos una nueva release
     # TODO deberíamos generar tags para no enviar emails de cambios con el id de hash sino con algo como
     # 2009.<num_de_actualizacion_anual>
-    os.popen('git pull')
+    # estamos en deploy
+    os.popen('git checkout production')
     os.popen('git add config/PREV_REVISION')
     os.popen('git commit -m "new deployment: %s"' % cur)
-    os.popen('git checkout production')
-    os.popen('git pull')
-    os.popen('git merge deploy')
-    os.popen('git push origin')
+    os.popen('git push')
     os.popen('git checkout deploy')
+    os.popen('git merge production')
 
 def app_update():
 	output_dep = os.popen('rake gm:after_deploy').read()
