@@ -71,18 +71,14 @@ class Event < ActiveRecord::Base
       
       start_d = month_start if e.starts_on.to_i < month_start.to_i # usamos .to_i por las diff de ms entre pg y ruby
       end_d = month_end if e.ends_on.to_i > month_end.to_i
-      p e
-      puts "#{start_d} #{end_d}"
       
       cur_day = start_d.day
       
        (((end_d - start_d).to_i + 1) / 86400).times do |t|
-         puts "añadiendo #{cur_day}.."
         hotmap[cur_day] ||= 0
         hotmap[cur_day] += 1  # añadimos un evento al día en curso
         cur_day += 1
       end
-      puts "\n"
     end
     
     # limito los outliers a 2 desviaciones standard

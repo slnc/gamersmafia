@@ -482,7 +482,7 @@ res.content = unescape('#{content}');]]></result>
     assert_raises(AccessDenied) { get :root_term_children, :id => 1, :content_type => 'Tutorial' }
   end
   
-  test "root_term_children_if_not_authed" do
+  test "root_term_children_if_authed" do
     sym_login 1
     
     get :root_term_children, :id => 1, :content_type => 'Tutorial'

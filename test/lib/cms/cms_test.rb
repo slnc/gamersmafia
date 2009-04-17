@@ -439,22 +439,6 @@ class CmsTest < ActiveSupport::TestCase
     assert Cms.user_can_edit_content?(u10, be)
   end
   
-  test "sicario_can_edit_contents_of_own_district" do
-    u59 = User.find(59)
-    bd = BazarDistrict.find(1)
-    bd.add_sicario(u59)
-    n65 = News.find(65)
-    assert Cms.user_can_edit_content?(u59, n65)
-  end
-  
-  test "don_can_edit_contents_of_own_district" do
-    u59 = User.find(59)
-    bd = BazarDistrict.find(1)
-    bd.update_don(u59)
-    n65 = News.find(65)
-    assert Cms.user_can_edit_content?(u59, n65)
-  end
-  
   test "mano_derecha_can_edit_contents_of_own_district" do
     bd = BazarDistrict.find(1)
     u59 = User.find(59)

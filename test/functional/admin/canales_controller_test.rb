@@ -36,7 +36,7 @@ class Admin::CanalesControllerTest < ActionController::TestCase
     assert_nil gmtv.file
   end
   
-  test "reset_should_work_without_reason" do
+  test "reset_should_work_without_reason for non superadmin" do
     sym_login 56
     gmtv = GmtvChannel.find(1)
     gmtv.file = fixture_file_upload('files/buddha.jpg')

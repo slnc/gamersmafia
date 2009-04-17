@@ -26,11 +26,6 @@ class DemosControllerTest < ActionController::TestCase
     assert_equal orig + 1, d.downloaded_times
   end
   
-  test "should_show_index" do
-    post :index
-    assert_response :success    
-  end
-  
   test "buscar_should_redirect_if_nothing_given" do
     post :buscar
     assert_redirected_to '/demos'

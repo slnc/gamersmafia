@@ -13,25 +13,7 @@ class ActiveSupport::TestCase
     
     class_eval <<-END
     include TestFunctionalContentHelperMethods
-    END
-    # Solo diferenciamos entre usuarios anónimos, registrados y autorizados
-    # para modificaciones. No es el propósito de estos tests comprobar que
-    # is_editor? y compañía funcionan
-  end
-end
-
-module TestFunctionalContentHelperMethods
-  def setup_functional_content_hbr
-    if %w(Funthing).include?(content_class.name)
-      @request.host =  "bazar.#{App.domain}"
-    elsif %w(Demo Bet).include?(content_class.name)
-      @request.host =  "arena.#{App.domain}"
-    else
-      @request.host = "ut.#{App.domain}"
-    end
-  end
-  
-  test "should_show_index" do
+    test "should_show_index" do
     setup_functional_content_hbr
     get :index
     assert_response :success
@@ -210,7 +192,7 @@ module TestFunctionalContentHelperMethods
     return unless obj.respond_to? :is_categorizable?
     assert_not_nil obj
     f = Organizations.find_by_content(obj)
-    assert_not_nil f, "class: #{obj.class.name} | id: #{obj.id} | hid: #{obj.resolve_hid}"
+    assert_not_nil f
     
     panzer = User.find_by_login('panzer')
     if f then
@@ -258,4 +240,24 @@ module TestFunctionalContentHelperMethods
     assert_redirected_to :action => 'index'
     assert_equal Cms::DELETED, content_class.find(1).state
   end
+    END
+    # Solo diferenciamos entre usuarios anónimos, registrados y autorizados
+    # para modificaciones. No es el propósito de estos tests comprobar que
+    # is_editor? y compañía funcionan
+  end
+end
+
+module TestFunctionalContentHelperMethods
+  def setup_functional_content_hbr
+    if %w(Funthing).include?(content_class.name)
+      @request.host =  "bazar.#{App.domain}"
+    elsif %w(Demo Bet).include?(content_class.name)
+      @request.host =  "arena.#{App.domain}"
+    else
+      @request.host = "ut.#{App.domain}"
+    end
+  end
+  class_eval <<-END
+  
+  END
 end
