@@ -13,5 +13,6 @@ namespace :gm do
     CacheObserver.update_pending_contents # Just in case
     GmSys.job('AbTest.update_ab_tests')
     GmSys.job('UsersNewsfeed.process')
+    `find /tmp -maxdepth 1 -mmin +1440  -type d -name "0.*" -exec rm -r {} \\\;` # TODO test para esto
   end
 end
