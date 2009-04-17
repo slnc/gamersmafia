@@ -18,7 +18,8 @@ Rails::Initializer.run do |config|
   config.gem 'rmagick', :lib => 'RMagick'
   config.gem 'postgres'
 
-config.time_zone = 'Madrid'
+  #config.time_zone = 'Madrid'
+  #config.active_record.default_timezone = 'Madrid' 
 
   config.action_view.cache_template_loading = false if `hostname`.strip == 'blackwings'
 
@@ -48,7 +49,7 @@ config.time_zone = 'Madrid'
 
   # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
   # Run "rake -D time" for a list of tasks for finding time zone names.
-  config.time_zone = 'UTC'
+  # config.time_zone = 'UTC'
 
   # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
   # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
