@@ -1,7 +1,7 @@
 namespace :gm do
   desc "Daily operations"
   task :daily => :environment do
-    require 'app/controllers/application'
+    require 'app/controllers/application_controller'
     
     Rake::Task['log:clear'].invoke
     Rake::Task['gm:alariko'].invoke
@@ -137,7 +137,7 @@ namespace :gm do
   
   
   def provocar_golpes_de_estado
-    require "#{RAILS_ROOT}/app/controllers/application" # necesario por llamada a ApplicationController
+    require "#{RAILS_ROOT}/app/controllers/application_controller" # necesario por llamada a ApplicationController
     mrcheater = User.find_by_login('MrCheater')
     Faction.find(:all, :conditions => "code IN (
 select (select code from portals where id = stats.portals.portal_id)
