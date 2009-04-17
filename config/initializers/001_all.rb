@@ -7,9 +7,6 @@ ActionController::Base.cache_store = :file_store, FRAGMENT_CACHE_PATH
 #require 'vendor/plugins/rails_mixings/lib/notification.rb'
 # require 'vendor/plugins/rails_mixings/lib/friendship.rb'
 
-ASSET_URL = "http://#{App.asset_domain}"
-COOKIEDOMAIN = ".#{App.domain}"
-
 REPLICATION_CLUSTER = 'gamersmafia'
 ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS[:session_domain] = ".#{App.domain}" # unless ENV['RAILS_ENV'] == 'test'
 ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS[:session_key] = "adn2" # unless ENV['RAILS_ENV'] == 'test'

@@ -23,8 +23,8 @@ Rails::Initializer.run do |config|
   require 'erb'
   require 'config/initializers/000_app_config.rb'
 
-ASSET_URL = "http://#{App.asset_domain}#{':' << App.port.to_s if App.port != 80}"
-COOKIEDOMAIN = ".#{App.domain}"
+  ASSET_URL = "http://#{App.asset_domain}#{':' << App.port.to_s if App.port != 80}"
+  COOKIEDOMAIN = ".#{App.domain}"
 
   # config.gem "bj"
   # config.gem "hpricot", :version => '0.6', :source => "http://code.whytheluckystiff.net"
