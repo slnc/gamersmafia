@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class CacheObserverTest < ActiveSupport::TestCase
   def test_expire_fragment_should_delete_given_cache_id_if_existing

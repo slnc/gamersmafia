@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class PublishingPersonalityTest < ActiveSupport::TestCase
   #def test_by_default_user_has_0_weight

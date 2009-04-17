@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class PublishingDecisionTest < ActiveSupport::TestCase
   FIRST_CONTENT_EXP = 0.00009655

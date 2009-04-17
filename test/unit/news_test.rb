@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class NewsTest < ActiveSupport::TestCase
   def test_should_properly_change_url

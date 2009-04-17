@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class SoldCommentsSigTest < ActiveSupport::TestCase
   def test_should_enable_comments_sig_after_being_created

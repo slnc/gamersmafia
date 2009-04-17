@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class OutstandingUserTest < ActiveSupport::TestCase  
   def test_current_should_return_correct_user_case_a

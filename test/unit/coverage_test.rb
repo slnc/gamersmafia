@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class CoverageTest < ActiveSupport::TestCase
   def test_shouldnt_work_if_missing_event

@@ -18,6 +18,8 @@ Rails::Initializer.run do |config|
   config.gem 'rmagick', :lib => 'RMagick'
   config.gem 'postgres'
 
+config.time_zone = 'Madrid'
+
   config.action_view.cache_template_loading = false if `hostname`.strip == 'blackwings'
 
   require 'erb'

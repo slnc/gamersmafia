@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class SoldChangeNickTest < ActiveSupport::TestCase
   def test_should_create_nick_change_entry_on_usage

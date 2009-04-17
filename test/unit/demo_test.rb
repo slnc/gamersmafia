@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class DemoTest < ActiveSupport::TestCase
   DEFS = {:terms => 1, :title => '', :games_mode_id => 1, :demotype => Demo::DEMOTYPES[:official], :user_id => 1}

@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class SoldProductTest < ActiveSupport::TestCase
   def test_should_remove_money_when_buying_a_product

@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class SoldUserAvatarTest < ActiveSupport::TestCase
   def test_should_create_custom_avatar_after_being_created
