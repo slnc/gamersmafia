@@ -28,7 +28,7 @@ module TestCaseMixings
       
       test "should_show_published_to_everybody" do
         setup_functional_content_hbr
-        get :show, {:id => 1}, {}
+        get :show, {:id => 1}
         assert_response :success
         assert_template 'show'
         
@@ -136,19 +136,28 @@ module TestCaseMixings
       
       test "should_change_from_draft_to_pending_if_unselected_draft_checkbox" do
         return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
+        puts @request.host
+        sym_login opt[:authed_user_id] 
         num_news = content_class.count
-        
-        post :create, post_vars.merge({:draft => 1}), { :user => opt[:authed_user_id] }
-        
+        origpvars = post_vars.clone # TODO PERF 
+        p post_vars
+        puts @request.host
+        post :create, post_vars.clone.merge({:draft => 1})
+        p post_vars
+        puts "----"
         assert_response :redirect
         assert_redirected_to :action => 'edit', :id => content_class.find(:first, :order => 'id DESC').id
         
         assert_equal num_news + 1, content_class.count
         o = content_class.find(:first, :order => 'id DESC')
         assert_equal Cms::DRAFT, o.state
-        post :update, post_vars.merge({:id => o.id}), { :user => opt[:authed_user_id] }
+
+        post :update, post_vars.merge({:id => o.id})
         assert_response :redirect
-        assert_equal Cms::PENDING, content_class.find(:first, :order => 'id DESC').state
+        puts "after post :update"
+        p post_vars
+        o.reload
+        assert_equal Cms::PENDING, o.state
       end
       
       test "should_redirect_to_new_page_if_missing_fields" do

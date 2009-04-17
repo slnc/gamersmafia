@@ -97,7 +97,7 @@ class ForosControllerTest < ActionController::TestCase
   
   test "should_show_topic" do
     sym_login 1
-    @request.host = 'ut.gamersmafia.dev'
+    @request.host = "ut.#{App.domain}"
     get :topic, :id => 1
     assert_response :success, @response.body
   end

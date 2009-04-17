@@ -7,7 +7,7 @@ module ActsAsContentBrowser
   
   module AddActsAsContentBrowser
     def acts_as_content_browser(*args)
-      before_filter :require_auth_users, :only => [ :new, :create, :edit ]
+      before_filter :require_auth_users, :only => [ :new, :create, :edit, :update, :destroy ]
       
       class_eval <<-END
         include ActsAsContentBrowser::InstanceMethods
@@ -56,6 +56,8 @@ module ActsAsContentBrowser
     end
     
     define_method 'create' do
+      puts "create #{params.object_id}"
+      p params
       _before_create if respond_to?(:_before_create)
       
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
@@ -160,17 +162,21 @@ module ActsAsContentBrowser
     end
     
     define_method 'update' do
+      puts "update #{params.object_id}"
+      p params
       _before_update if respond_to?(:_before_update)
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.find(params[:id])
       obj.cur_editor = @user
       require_user_can_edit(obj)
       raise ContentLocked if obj.is_locked_for_user?(@user)
-      
+      puts "before p params"
+      p params
       obj.state = Cms::PENDING if obj.state == Cms::DRAFT and params[:draft].to_s != '1'
       params[ActiveSupport::Inflector::underscore(content_name)][:state] = obj.state
       params[ActiveSupport::Inflector::underscore(content_name)].delete(:approved_by_user_id) unless obj.respond_to? :approved_by_user_id
       instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
+      p params[ActiveSupport::Inflector::underscore(content_name)] 
       if obj.update_attributes(params[ActiveSupport::Inflector::underscore(content_name)])
         proc_terms(obj)
         # obj.process_wysiwyg_fields

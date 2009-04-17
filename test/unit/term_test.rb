@@ -211,7 +211,7 @@ class TermTest < ActiveSupport::TestCase
     topic.reload
     topic.main_category.reset_contents_urls
     topic.reload
-    assert_equal 'http://ut.gamersmafia.dev/foros/topic/1', topic.unique_content.url 
+    assert_equal "http://ut.#{App.domain}/foros/topic/1", topic.unique_content.url 
   end
   
   test "get_last_updated_item_id" do

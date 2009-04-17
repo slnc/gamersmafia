@@ -307,3 +307,5 @@ class ActiveSupport::TestCase
     END
   end
 end
+
+require 'vendor/plugins/rails_mixings/lib/test_process.rb'

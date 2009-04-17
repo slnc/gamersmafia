@@ -84,7 +84,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
     # TODO hack temporal hasta que las referencias desde inet se hayan reducido
     Column.find(:published).each do |c|
       uniq = c.unique_content
-      uniq.url = uniq.url.gsub('http://gamersmafia.dev', 'http://ut.gamersmafia.dev')
+      uniq.url = uniq.url.gsub("http://#{App.domain}", "http://ut.#{App.domain}")
       uniq.save
     end
     test_should_clear_cache_others_by_author_on_main_after_publishing_a_new_column
