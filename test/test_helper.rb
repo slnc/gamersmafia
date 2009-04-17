@@ -297,16 +297,12 @@ class ActiveSupport::TestCase
     self.basic_views_test = views
     
     class_eval <<-END
-      include TestFunctionalBasicTest
+      test "basic_views" do
+        self.basic_views_test.each do |view|
+          get view
+          assert_response :success
+        end
+      end
     END
-  end
-end
-
-module TestFunctionalBasicTest
-  test "basic_views" do
-    self.basic_views_test.each do |view|
-      get view
-      assert_response :success
-    end
   end
 end
