@@ -5,11 +5,7 @@ require 'clanes_controller'
 class ClanesController; def rescue_action(e) raise e end; end
 
 class ClanesControllerTest < ActionController::TestCase
-  def setup
-    @controller = ClanesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   def test_index
     get :index

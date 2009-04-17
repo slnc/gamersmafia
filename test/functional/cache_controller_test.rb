@@ -9,11 +9,7 @@ class ActionController::TestRequest
 end
 
 class CacheControllerTest < ActionController::TestCase
-  def setup
-    @controller = CacheController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
 
   # Replace this with your real tests.
   def test_thumbnails_with_valid_image

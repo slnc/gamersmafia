@@ -5,11 +5,7 @@ require 'foros_controller'
 class ForosController; def rescue_action(e) raise e end; end
 
 class ForosControllerTest < ActionController::TestCase
-  def setup
-    @controller = ForosController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   def test_mis_foros
     get :mis_foros

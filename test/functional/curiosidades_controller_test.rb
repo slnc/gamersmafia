@@ -8,9 +8,5 @@ class CuriosidadesController; def rescue_action(e) raise e end; end
 class CuriosidadesControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Funthing', :form_vars => {:title => 'footapang', :description => 'bartapang', :main => 'http://batracios.com/'}
 
-  def setup
-    @controller = CuriosidadesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
 end

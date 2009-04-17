@@ -8,11 +8,7 @@ class ImagenesController; def rescue_action(e) raise e end; end
 class ImagenesControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Image', :form_vars => {:description => 'footapang', :file => ActionController::TestUploadedFile.new("#{RAILS_ROOT}/test/fixtures/files/buddha.jpg", nil, nil)}, :categories_terms => 18
 
-  def setup
-    @controller = ImagenesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   def test_category_404_if_invalid
     assert_raises(ActiveRecord::RecordNotFound) { get :category, :id => 'foo' }

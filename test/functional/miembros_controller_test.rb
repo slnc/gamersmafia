@@ -5,11 +5,7 @@ require 'miembros_controller'
 class MiembrosController; def rescue_action(e) raise e end; end
 
 class MiembrosControllerTest < ActionController::TestCase
-  def setup
-    @controller = MiembrosController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   basic_test :index
   

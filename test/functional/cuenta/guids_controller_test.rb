@@ -7,11 +7,7 @@ class Cuenta::GuidsController; def rescue_action(e) raise e end; end
 class Cuenta::GuidsControllerTest < ActionController::TestCase
   test_min_acl_level :user, [ :index, :guardar ]
 
-  def setup
-    @controller = Cuenta::GuidsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   def test_index_should_work
     sym_login 1

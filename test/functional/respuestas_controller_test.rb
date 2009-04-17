@@ -4,11 +4,7 @@ require File.dirname(__FILE__) + '/../test_functional_content_helper'
 class RespuestasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Question', :form_vars => {:title => 'footapang', :description => "abracadabra"}, :categories_terms => 20
 
-  def setup
-    @controller = RespuestasController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   def test_categoria_should_work
     get :categoria, :id => 1

@@ -5,11 +5,7 @@ require 'cuenta/faccion_controller'
 class Cuenta::FaccionController; def rescue_action(e) raise e end; end
 
 class Cuenta::FaccionControllerTest < ActionController::TestCase
-  def setup
-    @controller = Cuenta::FaccionController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   def test_should_be_able_to_join_a_faction
     u = User.find_by_login('panzer')

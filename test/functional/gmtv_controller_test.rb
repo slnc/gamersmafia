@@ -5,11 +5,7 @@ require 'gmtv_controller'
 class GmtvController; def rescue_action(e) raise e end; end
 
 class GmtvControllerTest < ActionController::TestCase
-  def setup
-    @controller = GmtvController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   # Replace this with your real tests.
   def test_should_return_channels_if_gm

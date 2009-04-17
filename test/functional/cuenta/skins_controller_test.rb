@@ -5,11 +5,7 @@ require 'cuenta/skins_controller'
 class Cuenta::SkinsController; def rescue_action(e) raise e end; end
 
 class Cuenta::SkinsControllerTest < ActionController::TestCase
-  def setup
-    @controller = Cuenta::SkinsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   # Replace this with your real tests.
   def test_index_should_work

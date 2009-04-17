@@ -5,11 +5,7 @@ require 'competiciones_controller'
 class CompeticionesController; def rescue_action(e) raise e end; end
 
 class CompeticionesControllerTest < ActionController::TestCase
-  def setup
-    @controller = CompeticionesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   def test_should_not_be_able_to_join_if_state_not_1
     [0, 2, 3, 4].each do |state|

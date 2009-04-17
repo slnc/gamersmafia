@@ -9,11 +9,7 @@ class EventosControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Event', :form_vars => {:title => 'footapang', :starts_on => Time.now, :ends_on => 7.days.since}, :root_terms => 1 
   test_min_acl_level :user, [ :member_join, :member_leave ], :post
 
-  def setup
-    @controller = EventosController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
 
   def test_join
     e = Event.find(:first, :order => 'id DESC')

@@ -8,11 +8,7 @@ class DescargasController; def rescue_action(e) raise e end; end
 class DescargasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Download', :form_vars => {:title => 'footapang', :mirrors_new => ["http://google.com/foo.zip\nhttp://kamasutra.com/porn.zip"]}, :categories_terms => ['16']
   
-  def setup
-    @controller = DescargasController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   def test_download_counter_should_increment_when_viewing_download
     add_file_to_d1

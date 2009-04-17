@@ -6,11 +6,7 @@ class Cuenta::CompeticionesController; def rescue_action(e) raise e end; end
 
 class Cuenta::CompeticionesControllerTest < ActionController::TestCase
   
-  def setup
-    @controller = Cuenta::CompeticionesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   def test_should_see_configuration_page_of_every_competition
     u = User.find(1)

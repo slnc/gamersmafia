@@ -5,11 +5,7 @@ require 'cuenta/mis_canales_controller'
 class Cuenta::MisCanalesController; def rescue_action(e) raise e end; end
 
 class Cuenta::MisCanalesControllerTest < ActionController::TestCase
-  def setup
-    @controller = Cuenta::MisCanalesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   def test_index_should_work
     sym_login 1

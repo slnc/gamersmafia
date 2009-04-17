@@ -5,12 +5,6 @@ require 'cuenta/apuestas_controller'
 class Cuenta::ApuestasController; def rescue_action(e) raise e end; end
 
 class Cuenta::ApuestasControllerTest < ActionController::TestCase
-  def setup
-    @controller = Cuenta::ApuestasController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
-
   def test_index
     sym_login 1
     get :index

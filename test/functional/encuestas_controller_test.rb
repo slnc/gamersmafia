@@ -8,11 +8,7 @@ class EncuestasController; def rescue_action(e) raise e end; end
 class EncuestasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Poll', :form_vars => {:title => 'footapang', :starts_on => 2.days.since, :ends_on => 9.days.since}, :root_terms => 1
 
-  def setup
-    @controller = EncuestasController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
 
   def test_should_create_with_options
     post :create, {:poll => {:title => 'footapang', :starts_on => 2.days.since, :ends_on => 9.days.since, :options_new => ['opcion1', 'opcion2']}, :root_terms => [1] }, { :user => 1}

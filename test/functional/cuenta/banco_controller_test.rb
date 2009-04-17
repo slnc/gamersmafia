@@ -5,11 +5,7 @@ require 'cuenta/banco_controller'
 class Cuenta::BancoController; def rescue_action(e) raise e end; end
 
 class Cuenta::BancoControllerTest < ActionController::TestCase
-  def setup
-    @controller = Cuenta::BancoController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
 
   def test_index
     sym_login 1

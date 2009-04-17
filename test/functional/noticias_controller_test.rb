@@ -7,11 +7,7 @@ class NoticiasController; def rescue_action(e) raise e end; end
 class NoticiasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'News', :form_vars => {:title => 'footapang', :description => 'bartapang'}, :root_terms => 1
   
-  def setup
-    @controller = NoticiasController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   def test_update_should_save_contents_version
     sym_login 1

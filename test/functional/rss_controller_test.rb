@@ -6,11 +6,7 @@ require 'feed_tools'
 class RssController; def rescue_action(e) raise e end; end
 
 class RssControllerTest < ActionController::TestCase
-  def setup
-    @controller = RssController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
 
   #assert_valid_feed [ :noticias ]
 

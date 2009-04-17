@@ -5,11 +5,7 @@ require 'cuenta/blog_controller'
 class Cuenta::BlogController; def rescue_action(e) raise e end; end
 
 class Cuenta::BlogControllerTest < ActionController::TestCase
-  def setup
-    @controller = Cuenta::BlogController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   def test_index_should_work
     sym_login 1

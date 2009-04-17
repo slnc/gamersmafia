@@ -8,9 +8,5 @@ class ReviewsController; def rescue_action(e) raise e end; end
 class ReviewsControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Review', :form_vars => {:title => 'footapang', :description => 'bartapang', :main => 'oooo'}, :root_terms => 1
 
-  def setup
-    @controller = ReviewsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
 end

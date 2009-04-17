@@ -6,11 +6,7 @@ class FaccionesController; def rescue_action(e) raise e end; end
 
 class FaccionesControllerTest < ActionController::TestCase
   
-  def setup
-    @controller = FaccionesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
   
   def test_index
     get :index

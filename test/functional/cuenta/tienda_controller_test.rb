@@ -5,11 +5,7 @@ require 'cuenta/tienda_controller'
 class Cuenta::TiendaController; def rescue_action(e) raise e end; end
 
 class Cuenta::TiendaControllerTest < ActionController::TestCase
-  def setup
-    @controller = Cuenta::TiendaController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
 
   test_min_acl_level :user, [ :index, :show, :buy ]
   # TODO probar con todos los productos

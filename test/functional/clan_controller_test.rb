@@ -5,11 +5,7 @@ require 'clan_controller'
 class ClanController; def rescue_action(e) raise e end; end
 
 class ClanControllerTest < ActionController::TestCase
-  def setup
-    @controller = ClanController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
+
 
   def test_miembros_should_work
     @request.host = "#{ClansPortal.find(:first).code}.#{App.domain}"
