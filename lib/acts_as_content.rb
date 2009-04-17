@@ -551,12 +551,7 @@ module ActsAsContent
         c = get_mean_vote(m) 
         self.cache_weighted_rank = (v / (v+m)) * r + (m / (v+m)) * c
         
-        self.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} 
-                                SET cache_rating = #{self.cache_rating}, 
-                                    cache_rated_times = #{self.cache_rated_times},
-                                    cache_weighted_rank = #{self.cache_weighted_rank}
-                              WHERE id = #{self.id}")
-        self.reload
+	self.update_without_timestamping
       end
       
       if self.cache_rated_times < 2 then
