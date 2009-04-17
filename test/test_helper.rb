@@ -26,6 +26,15 @@ class ActiveSupport::TestCase
   # Turn off transactional fixtures if you're working with MyISAM tables in MySQL
   self.use_transactional_fixtures = true
   
+  # TODO Rails no incluye fixture_file_upload en esta clase. Quizás haya que reescribir los
+  # tests para que no hagan uso de ello? No estoy seguro de que sea incoherente de esta forma.
+  # https://rails.lighthouseapp.com/projects/8994/tickets/1985-fixture_file_upload-no-longer-available-in-tests-by-default
+  def fixture_file_upload(path, mime_type = nil, binary = false)
+    fixture_path = ActionController::TestCase.send(:fixture_path) if ActionController::TestCase.respond_to?(:fixture_path)
+    ActionController::TestUploadedFile.new("#{fixture_path}#{path}", mime_type, binary)
+  end
+  
+  
   # Instantiated fixtures are slow, but give you @david where you otherwise would need people(:david)
   self.use_instantiated_fixtures  = false
   self.pre_loaded_fixtures = true

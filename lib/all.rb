@@ -26,7 +26,7 @@ class Date
   GM_DAYNAMES = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 
       'Viernes', 'Sábado']
   
-  GM_ABBR_DAYSNAMES = ['D', 'L', 'M', 'X', 'J', 'V', 'S']
+  GM_ABBR_DAYNAMES = ['D', 'L', 'M', 'X', 'J', 'V', 'S']
 end
 
 
