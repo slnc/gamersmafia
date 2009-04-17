@@ -14,7 +14,7 @@ class SessionsActivationTest < ActionController::IntegrationTest
   end
 
   test "should_start_session_if_autologin_cookie_present" do
-    cookies['ak'] = CGI::Cookie.new('autologin', 'foobar')    
+    cookies['ak'] = 'foobar'    
     get '/'
     assert_response :success
     assert_not_nil cookies['adn2']
@@ -22,7 +22,6 @@ class SessionsActivationTest < ActionController::IntegrationTest
   end
 
   test "should_start_session_if_session_cookie_present" do
-    # cookies['adn2'] = CGI::Cookie.new('adn2', 'foobar')
     sym_login 'superadmin', 'lalala'
     
     get '/'
@@ -31,8 +30,7 @@ class SessionsActivationTest < ActionController::IntegrationTest
     assert !session.kind_of?(Hash)
   end
 
-  test "should_start_session_if_accessing_x" do
-    #cookies['adn2'] = CGI::Cookie.new('adn2', 'foobar')    
+  test "should_start_session_if_accessing_x" do    
     get '/site/x'
     assert_response :success
     assert_not_nil cookies['adn2']

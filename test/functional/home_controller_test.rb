@@ -128,7 +128,7 @@ class HomeControllerTest < ActionController::TestCase
   end
   
   test "should_redir_to_proper_home_if_defset_and_anonymous" do
-    @request.cookies['defportalpref'] = CGI::Cookie.new('defportalpref', 'facciones')
+    @request.cookies['defportalpref'] = 'facciones'
     get :index
     assert_response :success
     assert_template 'facciones_unknown'

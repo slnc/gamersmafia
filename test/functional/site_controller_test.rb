@@ -90,7 +90,7 @@ class SiteControllerTest < ActionController::TestCase
   
   test "x_with_another_visitor_id_should_update_cookie_visitor_id_when_login_in" do
     sym_login 1
-    @request.cookies['__stma'] = CGI::Cookie.new('__stma', '77524682.953150376.1212331927.1212773764.1212777897.14')
+    @request.cookies['__stma'] = '77524682.953150376.1212331927.1212773764.1212777897.14'
     treated_visitors = User.db_query("SELECT COUNT(*) FROM treated_visitors")[0]['count'].to_i
     get :x, '_xab' => {1 => 2}, '_xvi' => '77524682'
     assert_response :success
@@ -101,7 +101,7 @@ class SiteControllerTest < ActionController::TestCase
     
     @controller = SiteController.new # to reset
     # Simulamos que conecta desde otro pc
-    @request.cookies['__stma'] = CGI::Cookie.new('__stma', '23131.953150376.1212331927.1212773764.1212777897.14')
+    @request.cookies['__stma'] = '23131.953150376.1212331927.1212773764.1212777897.14'
     sym_login 1
     get :x, '_xab' => {1 => 1}, '_xvi' => '23131'
     assert_response :success
@@ -109,7 +109,7 @@ class SiteControllerTest < ActionController::TestCase
   end
   
   test "x_with_changed_treatment" do
-    @request.cookies['__stma'] = CGI::Cookie.new('__stma', '77524682.953150376.1212331927.1212773764.1212777897.14')
+    @request.cookies['__stma'] = '77524682.953150376.1212331927.1212773764.1212777897.14'
     treated_visitors = User.db_query("SELECT COUNT(*) FROM treated_visitors")[0]['count'].to_i
     get :x, '_xab' => {1 => 2}, '_xvi' => '77524682'
     assert_response :success
@@ -170,7 +170,7 @@ class SiteControllerTest < ActionController::TestCase
   
   test "online_should_work_with_big" do
     User.db_query("UPDATE users set lastseen_on = now()")
-    @request.cookies['chatpref'] = CGI::Cookie.new('chatpref', 'big')
+    @request.cookies['chatpref'] = 'big'
     get :online
     assert_response :success
   end
@@ -183,7 +183,7 @@ class SiteControllerTest < ActionController::TestCase
   
   test "update_chatlines_should_work_with_big" do
     User.db_query("UPDATE chatlines set created_on = now()")
-    @request.cookies['chatpref'] = CGI::Cookie.new('chatpref', 'big')
+    @request.cookies['chatpref'] = 'big'
     get :update_chatlines
     assert_response :success
   end

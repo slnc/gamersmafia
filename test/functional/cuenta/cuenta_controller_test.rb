@@ -330,7 +330,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   
   # TODO test método GET 
   test "should_not_autologin_if_invalid_client_cookie" do
-    @request.cookies['ak'] = CGI::Cookie.new('autologin', 'foobar')    
+    @request.cookies['ak'] = 'foobar'    
     get :login
     assert_response :success
     assert_nil session[:user]
@@ -339,7 +339,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   test "should_not_autologin_if_client_cookie_non_existant_in_db" do
     akey = AutologinKey.find_by_key('05e3ab2d90b022d7bf1b3782dc0fd2e2aa7cc926')
     akey.destroy if akey
-    @request.cookies['ak'] = CGI::Cookie.new('autologin', '05e3ab2d90b022d7bf1b3782dc0fd2e2aa7cc926')
+    @request.cookies['ak'] = '05e3ab2d90b022d7bf1b3782dc0fd2e2aa7cc926'
     get :login
     assert_response :success
     assert_nil session[:user]
@@ -366,7 +366,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     k = '05e3ab2d90b022d7bf1b3782dc0fd2e2aa7cc926'
     akey = AutologinKey.find_by_key(k)
     akey = AutologinKey.create({:key => k, :user_id => 1, :lastused_on => Time.now}) if akey.nil?
-    @request.cookies['ak'] = CGI::Cookie.new('autologin', k)
+    @request.cookies['ak'] = k
     get :login
     assert_response :redirect
     assert_not_nil session[:user]
