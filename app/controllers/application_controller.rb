@@ -1,14 +1,7 @@
 class AccessDenied < StandardError; end
 class DomainNotFound < StandardError; end
 
-class ActionController::Base
-  def enable_sessions?
-    cookies['ak'].to_s != '' || cookies['adn2'].to_s != '' || path.match('login') || path.match('x')
-  end
-end
-
-class ApplicationController < ActionController::Base
-  
+class ApplicationController < ActionController::Base  
   include Clans::Authentication
   include Users::Authentication
   
