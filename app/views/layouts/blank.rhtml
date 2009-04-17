@@ -6,7 +6,7 @@
 	<%#=css_includes %>
 	<%=javascript_includes %>
 </head>
-<body class="lyblank <%="wp#{controller.wmenu_pos} "%><%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=send('first_render'.to_sym).to_s.split('/').last%>">
+<body class="lyblank <%="wp#{controller.wmenu_pos} "%><%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=params[:action].to_s.split('/').last%>">
 
 <%= @content_for_layout %>
 <script type="text/javascript">cfgPage(<%=user_is_authed%>, [], '<%=controller.controller_name%>', '<%=controller.action_name%>', '<%=params[:id]%>'<%= params['_xnvi'] ? ", '#{params['_xnvi']}'" : ', undefined'%><%= params['_xab'].size > 0 ? ", '#{CGI::escape(params['_xab'].to_json)}'" : ', undefined'%><%= params['_xad'].size > 0 ? ", '#{CGI::escape(params['_xad'].to_json)}'" : ', undefined'%>);</script>

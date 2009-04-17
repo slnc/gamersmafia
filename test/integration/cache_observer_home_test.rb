@@ -131,7 +131,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
     assert_cache_dont_exist 'common/home/index/blogentries'
   end
   
-  test "should_clear_last_blogs_when_new_blogentry_is_deleted" do
+  test "should_clear_last_blogs_when_new_blogentry_is_updated" do
     test_should_clear_last_blogs_when_new_blogentry_is_created
     go_to_index
     assert_cache_exists 'common/home/index/blogentries'

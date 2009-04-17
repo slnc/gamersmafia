@@ -48,27 +48,27 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
 
 
   # PORTAL
-  test "should_clear_cache_on_portal_after_publishing_interview" do
+  test "should_clear_cache_on_portal_after_publishing_ faction interview" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_publishing_interview
   end
 
-  test "should_clear_cache_on_portal_after_unpublishing_interview" do
+  test "should_clear_cache_on_portal_after_unpublishing_faction interview" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_unpublishing_interview
   end
 
-  test "should_clear_cache_on_portal_after_updating_interview" do
+  test "should_clear_cache_on_portal_after_updating_faction interview" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_updating_interview
   end
 
-  test "should_clear_cache_on_portal_after_rating_interview" do
+  test "should_clear_cache_on_portal_after_rating_faction interview" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_rating_interview
   end
 
-  test "should_clear_cache_on_portal_after_rating_interview" do
+  test "should_clear_cache_on_portal_after_rating_faction interview 2" do
     faction_host FactionsPortal.find_by_code('ut')
     # TODO hack temporal
     Interview.find(:published).each do |c|

@@ -17,15 +17,6 @@ class CacheObservercuriosidadesTest < ActionController::IntegrationTest
     assert_cache_dont_exist "curiosidades/curiosidades/index/page_"
   end
 
-  test "should_clear_cache_on_main_after_publishing_funthing" do
-    n = Funthing.find(:pending)[0]
-    assert_not_nil n
-    go_to '/curiosidades', 'curiosidades/index'
-    assert_cache_exists "common/curiosidades/index/page_"
-    publish_content n
-    assert_cache_dont_exist "curiosidades/curiosidades/index/page_"
-  end
-
   test "should_clear_cache_on_main_after_unpublishing_funthing" do
     n = Funthing.find(:published)[0]
     assert_not_nil n

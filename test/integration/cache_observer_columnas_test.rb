@@ -59,27 +59,27 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
 
 
   # PORTAL
-  test "should_clear_cache_on_portal_after_publishing_column" do
+  test "should_clear_cache_on_portal_after_publishing_ faction column" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_publishing_column
   end
 
-  test "should_clear_cache_on_portal_after_unpublishing_column" do
+  test "should_clear_cache_on_portal_after_unpublishing_faction column" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_unpublishing_column
   end
 
-  test "should_clear_cache_on_portal_after_updating_column" do
+  test "should_clear_cache_on_portal_after_updating_columnfaction " do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_updating_column
   end
 
-  test "should_clear_cache_on_portal_after_rating_column" do
+  test "should_clear_cache_on_portal_after_rating_columnfaction " do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_rating_column
   end
 
-  test "should_clear_cache_on_portal_after_rating_column" do
+  test "should_clear_cache_on_portal_after_rating_columnfaction 2" do
     faction_host FactionsPortal.find_by_code('ut')
     # TODO hack temporal hasta que las referencias desde inet se hayan reducido
     Column.find(:published).each do |c|
