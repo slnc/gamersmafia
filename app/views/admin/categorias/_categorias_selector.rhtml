@@ -1,12 +1,14 @@
 <script type="text/javascript">
   	function change_root(v) {
-		$j.get('/<%=controller.cats_path%>/term/' + v, function(data) {
-			$j('#categorias_content').html(data);
+  		if (v != '')
+			$j.get('/<%=controller.cats_path%>/term/' + v, function(data) {
+				$j('#categorias_content').html(data);
 	})
 	}
   </script>
   <% edterms = Cms.get_editable_terms_by_group(@user) %>
   <select onchange="change_root(this.value);">
+  	<option value=""></option>
 	<% if edterms[:games].size > 0 then %>
 	<optgroup label="Juegos"></optgroup>
 	<%edterms[:games].each do |t|%>
