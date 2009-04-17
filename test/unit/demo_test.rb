@@ -44,7 +44,7 @@ class DemoTest < ActiveSupport::TestCase
     assert_equal "Fulanito - superadmin", @d.title
   end  
   
-  test "should_set_name_based_on_entities_updating_existing_demo" do
+  test "should_set_name_based_on_entities_updating_existing_demo2" do
     test_should_set_name_based_on_entities_before_saving_with_clans
     @d.entity1_external = 'Pocholito'
     @d.entity2_external = 'Manolito'
