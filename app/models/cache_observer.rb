@@ -326,6 +326,7 @@ class CacheObserver < ActiveRecord::Observer
   end
   
   def after_save(object)
+    return unless object.record_timestamps
     # un objeto es guardado justo después de ser publicado y es guardado justo
     # después de ser borrado
     
