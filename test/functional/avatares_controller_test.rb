@@ -2,38 +2,38 @@ require 'test_helper'
 
 class AvataresControllerTest < ActionController::TestCase
   
-  def test_should_show_index
+  test "should_show_index" do
     assert_raises(AccessDenied) { get :index }
     sym_login 1
     get :index
     assert_response :success
   end
   
-  def test_should_show_factions_avatars_overview
+  test "should_show_factions_avatars_overview" do
     sym_login 1
     get :factions_avatars_overview
     assert_response :success
   end
   
-  def test_should_show_list
+  test "should_show_list" do
     sym_login 1
     get :list, { :mode => 'clan'}
     assert_response :success
   end
   
-  def test_faction_should_work
+  test "faction_should_work" do
     sym_login 1
     get :faction, { :id => 1}
     assert_response :success
   end
   
-  def test_new_should_work
+  test "new_should_work" do
     sym_login 1
     get :new
     assert_response :success
   end
   
-  def test_create_from_zip_should_work
+  test "create_from_zip_should_work" do
     sym_login 1
     a_count = Avatar.count
     post :create_from_zip, { :avatar => fixture_file_upload('files/5avatars_from.zip', 'application/zip')}
@@ -41,7 +41,7 @@ class AvataresControllerTest < ActionController::TestCase
     assert_equal a_count + 5, Avatar.count
   end
   
-  def test_create_should_work
+  test "create_should_work" do
     sym_login 1
     assert_count_increases(Avatar) do
       post :create, { :avatar => { :name => 'buddha', :submitter_user_id => 1, :path => fixture_file_upload('files/buddha.jpg', 'image/jpeg')}}
@@ -49,20 +49,20 @@ class AvataresControllerTest < ActionController::TestCase
     assert_response :redirect
   end
   
-  def test_edit_should_work
+  test "edit_should_work" do
     sym_login 1
     get :edit, { :id => 1}
     assert_response :success
   end
   
-  def test_update_should_work
+  test "update_should_work" do
     sym_login 1
     post :update, { :id => 1, :avatar => { :path => fixture_file_upload('files/buddha.jpg', 'image/jpeg')}}
     assert_response :redirect
     assert Avatar.find(1).path.include?('buddha.jpg')
   end
   
-  def test_destroy_should_work
+  test "destroy_should_work" do
     sym_login 1
     assert_count_decreases(Avatar) do
       post :destroy, { :id => 1}
@@ -70,7 +70,7 @@ class AvataresControllerTest < ActionController::TestCase
     assert_response :redirect
   end
   
-  def test_destroy_returning_should_work
+  test "destroy_returning_should_work" do
     sym_login 1
     %w(SoldUserAvatar SoldFactionAvatar SoldClanAvatar).each do |cls|
       Avatar.create(:name => 'pincho', :submitter_user_id => 1, :faction_id => 1, :level => 0) if Avatar.find_by_id(1).nil?

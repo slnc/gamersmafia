@@ -2,14 +2,14 @@ require 'test_helper'
 
 class SkinTextureTest < ActiveSupport::TestCase
   
-  def test_create_should_work
+  test "create_should_work" do
     t = Texture.find_by_name('GrayscalePatternChecker')
     assert_not_nil t
     @sk = SkinTexture.new({:skin_id => 1, :texture_id => t.id, :element => 'body'})
     assert @sk.save, @sk.errors.full_messages_html
   end
   
-  def test_process_should_work_with_grayscale_pattern_checker
+  test "process_should_work_with_grayscale_pattern_checker" do
     test_create_should_work
     css, files = @sk.process
     assert_equal File.open("#{@sk.texture.dir}/style.css").read.gsub('${element_selector}', 'body'), css

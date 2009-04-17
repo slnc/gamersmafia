@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class SoldProductTest < ActiveSupport::TestCase
-  def test_should_remove_money_when_buying_a_product
+  test "should_remove_money_when_buying_a_product" do
     u = User.find(1)
     p = Product.find(1)
     assert_not_nil u

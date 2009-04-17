@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class SoldChangeNickTest < ActiveSupport::TestCase
-  def test_should_create_nick_change_entry_on_usage
+  test "should_create_nick_change_entry_on_usage" do
     u = User.find(1)
     p = Product.find_by_name('Cambio de nick')
     assert_not_nil u

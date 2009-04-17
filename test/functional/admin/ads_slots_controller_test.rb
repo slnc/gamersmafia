@@ -3,19 +3,19 @@ require 'test_helper'
 class Admin::AdsSlotsControllerTest < ActionController::TestCase
   test_min_acl_level :superadmin, [ :index, :new, :edit, :update, :destroy ]
   
-  def test_index
+  test "index" do
     sym_login 1
     get :index
     assert_response :success
   end
   
-  def test_new
+  test "new" do
     sym_login 1
     get :index
     assert_response :success
   end
   
-  def test_create
+  test "create" do
     sym_login 1
     assert_count_increases(AdsSlot) do
       post :create, { :ads_slot => { :name => 'fourling', :location => 'bottom', :behaviour_class => 'Random'}}
@@ -23,13 +23,13 @@ class Admin::AdsSlotsControllerTest < ActionController::TestCase
     assert_response :redirect
   end
   
-  def test_edit
+  test "edit" do
     test_create
     get :edit, :id => AdsSlot.find(:first).id
     assert_response :success
   end
   
-  def test_update
+  test "update" do
     test_create
     
     post :update, { :id => AdsSlot.find(:first, :order => 'id DESC').id, :ads_slot => { :name => 'fourling2'}}
@@ -38,7 +38,7 @@ class Admin::AdsSlotsControllerTest < ActionController::TestCase
     assert_equal 'fourling2', AdsSlot.find(:first, :order => 'id desc').name
   end
   
-  def test_update_slots_instances
+  test "update_slots_instances" do
     test_create
     a_a = Ad.create(:name => 'foo', :html => 'flick')
     a_b = Ad.create(:name => 'bar', :html => 'flock')
@@ -49,7 +49,7 @@ class Admin::AdsSlotsControllerTest < ActionController::TestCase
     assert_equal ainst + 2, AdsSlotsInstance.count    
   end
   
-  def test_add_to_portal
+  test "add_to_portal" do
     test_create
     @as = AdsSlot.find(:first)
     p_size = @as.portals.size
@@ -58,7 +58,7 @@ class Admin::AdsSlotsControllerTest < ActionController::TestCase
     assert_response :redirect
   end
   
-  def test_add_to_portal2
+  test "add_to_portal2" do
     test_create
     @as = AdsSlot.find(:first)
     p_size = @as.portals.size
@@ -69,7 +69,7 @@ class Admin::AdsSlotsControllerTest < ActionController::TestCase
     assert_response :redirect
   end
   
-  def test_remove_from_portal
+  test "remove_from_portal" do
     test_add_to_portal
     p_size = @as.portals.size
     post :remove_from_portal, :id => @as.id, :portal_id => -1
@@ -77,7 +77,7 @@ class Admin::AdsSlotsControllerTest < ActionController::TestCase
     assert_response :redirect
   end
   
-  def test_copy
+  test "copy" do
     test_create
     @as = AdsSlot.find(:first)
     post :copy, { :id => @as.id, :ads_slot => { :name => 'laskjalkdsad' } }

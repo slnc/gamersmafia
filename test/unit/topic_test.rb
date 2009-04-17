@@ -5,7 +5,7 @@ class TopicTest < ActiveSupport::TestCase
     @forum_topic = Topic.find(1)
   end
   
-  def test_latest_by_category
+  test "latest_by_category" do
     rt = Term.single_toplevel(:slug => 'ut')
     topics1 = rt.children.create(:name => 'topics1', :taxonomy => 'TopicsCategory')
     topics2 = rt.children.create(:name => 'topics2', :taxonomy => 'TopicsCategory')

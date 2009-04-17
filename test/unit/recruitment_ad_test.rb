@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RecruitmentAdTest < ActiveSupport::TestCase
   
-  def test_truth
+  test "truth" do
     assert true
   end
 end

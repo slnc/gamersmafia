@@ -8,7 +8,7 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
   end
   
   # COMMON
-  def test_should_clear_cache_latest_by_cat_after_publishing_news
+  test "should_clear_cache_latest_by_cat_after_publishing_news" do
     n = portal.news.find(:published)[0]
     assert_not_nil n
     go_to "/noticias/show/#{n.id}", 'noticias/show'
@@ -18,7 +18,7 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
   end
   
   # MAIN
-  def test_should_clear_cache_on_main_after_publishing_news
+  test "should_clear_cache_on_main_after_publishing_news" do
     n = portal.news.find(:pending)[0]
     assert_not_nil n
     go_to '/noticias', 'noticias/index'
@@ -27,7 +27,7 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "#{portal.code}/noticias/index/page_"
   end
   
-  def test_should_clear_cache_on_main_after_unpublishing_news
+  test "should_clear_cache_on_main_after_unpublishing_news" do
     n = portal.news.find(:published)[0]
     assert_not_nil n
     go_to '/noticias', 'noticias/index'
@@ -36,7 +36,7 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "#{portal.code}/noticias/index/page_"
   end
   
-  def test_should_clear_cache_on_main_after_updating_news
+  test "should_clear_cache_on_main_after_updating_news" do
     n = portal.news.find(:published)[0]
     assert_not_nil n
     go_to '/noticias', 'noticias/index'
@@ -46,17 +46,17 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
   end
   
   # PORTAL
-  def test_should_clear_cache_on_portal_after_publishing_news
+  test "should_clear_cache_on_portal_after_publishing_news" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_publishing_news
   end
   
-  def test_should_clear_cache_on_portal_after_unpublishing_news
+  test "should_clear_cache_on_portal_after_unpublishing_news" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_unpublishing_news
   end
   
-  def test_should_clear_cache_on_portal_after_updating_news
+  test "should_clear_cache_on_portal_after_updating_news" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_updating_news
   end
@@ -82,7 +82,7 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
     test_should_clear_cache_on_main_after_updating_news
   end
   
-  #def test_should_clear_cache_on_clans_portal_after_rating_news
+  #test "should_clear_cache_on_clans_portal_after_rating_news" do
   #  setup_clan_skin
   #  faction_host ClansPortal.find_by_code('mapaches')
   #  test_should_clear_cache_on_main_after_rating_news

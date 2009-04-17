@@ -1,13 +1,13 @@
 require 'test_helper'
 
 class Admin::IpBansControllerTest < ActionController::TestCase
-  def test_index
+  test "index" do
     sym_login 1
     get :index
     assert_response :success
   end
   
-  def test_create
+  test "create" do
     sym_login 1
     assert_count_increases(IpBan) do
       post :create, {:ip_ban => {:ip => '192.168.0.10'}}
@@ -16,7 +16,7 @@ class Admin::IpBansControllerTest < ActionController::TestCase
     
   end
   
-  def test_destroy
+  test "destroy" do
     test_create
     assert_count_decreases(IpBan) do
       post :destroy, {:id => IpBan.find(:first)}
@@ -24,7 +24,7 @@ class Admin::IpBansControllerTest < ActionController::TestCase
     end
   end
   
-  def test_user_with_admin_permission_should_allow_if_registered
+  test "user_with_admin_permission_should_allow_if_registered" do
     assert_raises(AccessDenied) { get :index }
     u2 = User.find(2)
     sym_login u2

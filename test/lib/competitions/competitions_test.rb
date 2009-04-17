@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 
 class CompetitionsTest < ActiveSupport::TestCase
-  def test_recalculate_points_should_properly_account_for_double_forfeit_games
+  test "recalculate_points_should_properly_account_for_double_forfeit_games" do
     lad = Ladder.find(:first, :conditions => "state = 3 and invitational is false and fee is null and competitions_participants_type_id = #{Competition::USERS} and scoring_mode = #{Competition::SCORING_SIMPLE}")
     u1 = User.find(1)
     lad.add_admin(u1)

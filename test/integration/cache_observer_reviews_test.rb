@@ -7,7 +7,7 @@ class CacheObserverReviewsTest < ActionController::IntegrationTest
     host! App.domain
   end
 
-  def test_should_clear_most_popular_authors_cache_on_main_after_changing_column_authorship
+  test "should_clear_most_popular_authors_cache_on_main_after_changing_column_authorship" do
     go_to '/reviews', 'reviews/index'
     assert_cache_exists "gm/reviews/index/most_popular_authors_#{Time.now.to_i/(86400)}"
     n = Review.find(:published)[0]

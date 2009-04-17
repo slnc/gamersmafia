@@ -6,7 +6,7 @@ class DescargasControllerTest < ActionController::TestCase
   
 
   
-  def test_download_counter_should_increment_when_viewing_download
+  test "download_counter_should_increment_when_viewing_download" do
     add_file_to_d1
     d = Download.find(1)
     orig = d.downloaded_times
@@ -21,7 +21,7 @@ class DescargasControllerTest < ActionController::TestCase
     end
   end
   
-  def test_create_with_mirrors_should_work
+  test "create_with_mirrors_should_work" do
     sym_login 1
     assert_count_increases(Download) do
       post :create, { :download => { :title => 'titulin', :file => fixture_file_upload('/files/images.zip', 'application/zip'), :mirrors_new => ['http://unmirror.com'] }, :categories_terms => [Term.find(:first, :conditions => 'taxonomy = \'DownloadsCategory\'').id] } 
@@ -32,7 +32,7 @@ class DescargasControllerTest < ActionController::TestCase
    assert_equal 'http://unmirror.com', d.download_mirrors[0].url
   end
   
-  def test_create_from_zip_should_work_if_good_guy
+  test "create_from_zip_should_work_if_good_guy" do
     sym_login 1
     d_count = Download.count
     post :create_from_zip, { :download => { :file => fixture_file_upload('/files/images.zip', 'application/zip'), :terms => 1 } } 
@@ -40,7 +40,7 @@ class DescargasControllerTest < ActionController::TestCase
     assert_equal d_count + 2, Download.count
   end
   
-  def test_download_should_create_cookie_symlink
+  test "download_should_create_cookie_symlink" do
     # TODO chequear cuando no es local
     add_file_to_d1
     @request.host = "ut.#{App.domain}"
@@ -53,7 +53,7 @@ class DescargasControllerTest < ActionController::TestCase
     assert_equal "http://#{App.domain}/d/#{dd.download_cookie}/#{end_file}", @controller.instance_variable_get(:@download_link)
   end
   
-  def test_dauth
+  test "dauth" do
     test_create_from_zip_should_work_if_good_guy
     User.db_query("UPDATE downloads SET state = #{Cms::PUBLISHED}")
     d = Download.find(:first, :order => 'id desc')

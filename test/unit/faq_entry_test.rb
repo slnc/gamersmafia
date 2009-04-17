@@ -7,7 +7,7 @@ class FaqEntryTest < ActiveSupport::TestCase
   end
 
   # Replace this with your real tests.
-  def test_truth
+  test "truth" do
     assert_kind_of FaqEntry,  @faq_entry
   end
 end

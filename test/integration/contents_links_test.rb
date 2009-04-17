@@ -6,7 +6,7 @@ class ContentsLinksTest < ActionController::IntegrationTest
     host! App.domain
   end
 
-  def test_should_show_reportar_if_hq
+  test "should_show_reportar_if_hq" do
     post '/cuenta/do_login', { :login => :panzer, :password => :lelele }
     host! "ut.#{App.domain}"
     

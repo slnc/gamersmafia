@@ -3,13 +3,13 @@ require 'test_helper'
 class Admin::EntradasfaqControllerTest < ActionController::TestCase
   test_min_acl_level :superadmin, [ :index, :new, :show, :create, :edit, :update, :destroy ]
   
-  def test_index
+  test "index" do
     get :index, {}, {:user => 1}
     assert_response :success
     assert_template 'index'
   end
   
-  def test_new
+  test "new" do
     get :new, {}, {:user => 1}
     
     assert_response :success
@@ -18,7 +18,7 @@ class Admin::EntradasfaqControllerTest < ActionController::TestCase
     assert_not_nil assigns(:faq_entry)
   end
   
-  def test_create
+  test "create" do
     num_faq_entries = FaqEntry.count
     
     post :create, {:faq_entry => {:question => 'foo?', :answer => 'bar', :faq_category_id => 1}}, {:user => 1}
@@ -29,7 +29,7 @@ class Admin::EntradasfaqControllerTest < ActionController::TestCase
     assert_equal num_faq_entries + 1, FaqEntry.count
   end
   
-  def test_edit
+  test "edit" do
     get :edit, {:id => 1}, {:user => 1}
     
     assert_response :success
@@ -39,13 +39,13 @@ class Admin::EntradasfaqControllerTest < ActionController::TestCase
     assert assigns(:faq_entry).valid?
   end
   
-  def test_update
+  test "update" do
     post :update, {:id => 1}, {:user => 1}
     assert_response :redirect
     assert_redirected_to :action => 'edit', :id => 1
   end
   
-  def test_destroy
+  test "destroy" do
     assert_not_nil FaqEntry.find(1)
     
     post :destroy, {:id => 1}, {:user => 1}
@@ -57,7 +57,7 @@ class Admin::EntradasfaqControllerTest < ActionController::TestCase
     }
   end
   
-  def test_user_with_admin_permission_should_allow_if_registered
+  test "user_with_admin_permission_should_allow_if_registered" do
     assert_raises(AccessDenied) { get :index }
     u2 = User.find(2)
     sym_login u2
@@ -70,7 +70,7 @@ class Admin::EntradasfaqControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_should_moveup_faq_Entry
+  test "should_moveup_faq_Entry" do
     test_create
     assert_count_increases(FaqEntry) do post :create, {:faq_entry => {:faq_category_id => 1, :question => 'barrrr', :answer => 'bubaluu'}} end
     fc = FaqEntry.find(:first, :order => 'id desc')
@@ -81,7 +81,7 @@ class Admin::EntradasfaqControllerTest < ActionController::TestCase
     assert fc.position < orig_pos
   end
   
-  def test_should_movedown_faq_Entry
+  test "should_movedown_faq_Entry" do
     test_create
     assert_count_increases(FaqEntry) do post :create, {:faq_entry => {:faq_category_id => 1, :question => 'barrrr', :answer => 'bubaluu'}} end
     fc = FaqEntry.find(:first, :order => 'id asc')

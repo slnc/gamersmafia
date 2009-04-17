@@ -3,7 +3,7 @@ require 'test_helper'
 class Cuenta::FaccionControllerTest < ActionController::TestCase
 
   
-  def test_should_be_able_to_join_a_faction
+  test "should_be_able_to_join_a_faction" do
     u = User.find_by_login('panzer')
      (u.faction_id = nil && u.save) if u.faction_id
     sym_login :panzer
@@ -13,7 +13,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     assert_equal 1, u.faction_id
   end
   
-  def test_should_be_able_to_join_null_faction
+  test "should_be_able_to_join_null_faction" do
     u = User.find_by_login('panzer')
      (u.faction_id = nil && u.save) if u.faction_id
     sym_login :panzer
@@ -23,7 +23,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     assert_nil u.faction_id
   end
   
-  def test_staff_should_work_if_faction_leader
+  test "staff_should_work_if_faction_leader" do
     f1 = Faction.find(1)
     assert f1.update_boss(User.find(1))
     u1 = User.find(1)
@@ -34,7 +34,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_add_editor_should_work
+  test "add_editor_should_work" do
     test_staff_should_work_if_faction_leader
     @panzer = User.find_by_login('panzer')
     @ctype = ContentType.find_by_name('News')
@@ -44,7 +44,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     assert_response :redirect, @response.body
   end
   
-  def test_add_editor_shouldnt_break_if_existing
+  test "add_editor_shouldnt_break_if_existing" do
     test_add_editor_should_work
     post :add_editor, :content_type_id => @ctype.id, :login => @panzer.login
     
@@ -52,7 +52,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     assert_not_nil flash[:error]
   end
   
-  def test_del_editor_should_work
+  test "del_editor_should_work" do
     test_add_editor_should_work
     assert_count_decreases(UsersRole) do
       post :del_editor, {:id =>  @panzer.id, :content_type_id => @ctype.id }
@@ -60,7 +60,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     assert_response :redirect
   end
   
-  def test_add_moderator_should_work
+  test "add_moderator_should_work" do
     test_staff_should_work_if_faction_leader
     assert_count_increases(UsersRole) do
       post :add_moderator, {:login => 'panzer'}
@@ -68,7 +68,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     assert_response :redirect
   end
   
-  def test_add_moderator_should_warn_if_null_user_id
+  test "add_moderator_should_warn_if_null_user_id" do
     test_staff_should_work_if_faction_leader
     
     post :add_moderator, {:login => ''}
@@ -78,26 +78,26 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
   end
   
   
-  def test_add_moderator_shouldnt_break_if_already_existing
+  test "add_moderator_shouldnt_break_if_already_existing" do
     test_add_moderator_should_work
     post :add_moderator, {:login => 'panzer'}
     assert_response :success
     assert_not_nil flash[:error]
   end
 
-  def test_links_should_work
+  test "links_should_work" do
     test_staff_should_work_if_faction_leader
     get :links
     assert_response :success
   end
   
-  def test_links_new_should_work
+  test "links_new_should_work" do
     test_staff_should_work_if_faction_leader
     get :links_new
     assert_response :success
   end
   
-  def test_links_create_should_work
+  test "links_create_should_work" do
     test_staff_should_work_if_faction_leader
     assert_count_increases(FactionsLink) do
       post :links_create, { :factions_link => { :name => 'foo linky', :url => 'http://bar.com', :image => fixture_file_upload('files/buddha.jpg', 'image/jpeg')}}
@@ -106,13 +106,13 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     @fl = FactionsLink.find(:first, :order => 'id desc')
   end
   
-  def test_links_edit_should_work
+  test "links_edit_should_work" do
     test_links_create_should_work
     get :links_edit, :id => FactionsLink.find(:first, :order => 'id desc').id
     assert_response :success
   end
   
-  def test_links_update_should_work
+  test "links_update_should_work" do
     test_links_create_should_work
     assert_not_equal 'succubus', @fl.name
     post :links_update, :id => @fl.id, :factions_link => {:name => 'succubus'}
@@ -121,26 +121,26 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     assert_equal 'succubus', @fl.name
   end
   
-  def test_links_destroy
+  test "links_destroy" do
     test_links_create_should_work
     assert_count_decreases(FactionsLink) do
       post :links_destroy, :id => @fl.id
     end
   end
   
-  def test_cabeceras_should_work
+  test "cabeceras_should_work" do
     test_staff_should_work_if_faction_leader
     get :cabeceras
     assert_response :success
   end
   
-  def test_cabeceras_new_should_work
+  test "cabeceras_new_should_work" do
     test_staff_should_work_if_faction_leader
     get :cabeceras_new
     assert_response :success
   end
   
-  def test_cabeceras_create_should_work
+  test "cabeceras_create_should_work" do
     test_staff_should_work_if_faction_leader
     assert_count_increases(FactionsHeader) do
       post :cabeceras_create, { :factions_header => { :name => 'el nombre', :file => fixture_file_upload('files/buddha.jpg', 'image/jpeg')}}
@@ -149,39 +149,39 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     @fl = FactionsHeader.find(:first, :order => 'id desc')
   end
   
-  def test_cabeceras_edit_should_work
+  test "cabeceras_edit_should_work" do
     test_cabeceras_create_should_work
     get :cabeceras_edit, :id => FactionsHeader.find(:first, :order => 'id desc').id
     assert_response :success
   end
   
-  def test_cabeceras_update_should_work
+  test "cabeceras_update_should_work" do
     test_cabeceras_create_should_work
     assert_not_equal 'succubus', @fl.name
     post :cabeceras_update, :id => @fl.id, :factions_header => {:file => fixture_file_upload('files/babe.jpg', 'image/jpeg')}
     assert_response :redirect
   end
   
-  def test_cabeceras_destroy
+  test "cabeceras_destroy" do
     test_cabeceras_create_should_work
     assert_count_decreases(FactionsHeader) do
       post :cabeceras_destroy, :id => @fl.id
     end
   end
   
-  def test_mapas_juegos_should_work
+  test "mapas_juegos_should_work" do
     test_staff_should_work_if_faction_leader
     get :mapas_juegos
     assert_response :success
   end
   
-  def test_mapas_juegos_new_should_work
+  test "mapas_juegos_new_should_work" do
     test_staff_should_work_if_faction_leader
     get :mapas_juegos_new
     assert_response :success
   end
   
-  def test_mapas_juegos_create_should_work
+  test "mapas_juegos_create_should_work" do
     test_staff_should_work_if_faction_leader
     assert_count_increases(GamesMap) do
       post :mapas_juegos_create, { :games_map => { :name => 'el nombre', :screenshot => fixture_file_upload('files/buddha.jpg', 'image/jpeg')}}
@@ -190,13 +190,13 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     @fl = GamesMap.find(:first, :order => 'id desc')
   end
   
-  def test_mapas_juegos_edit_should_work
+  test "mapas_juegos_edit_should_work" do
     test_mapas_juegos_create_should_work
     get :mapas_juegos_edit, :id => GamesMap.find(:first, :order => 'id desc').id
     assert_response :success
   end
   
-  def test_mapas_juegos_update_should_work
+  test "mapas_juegos_update_should_work" do
     test_mapas_juegos_create_should_work
     assert_not_equal 'succubus', @fl.name
     post :mapas_juegos_update, :id => @fl.id, :games_map => {:name => 'dm-tower', :screenshot => fixture_file_upload('files/babe.jpg', 'image/jpeg')}
@@ -205,14 +205,14 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     assert_equal 'dm-tower', @fl.name
   end
   
-  def test_mapas_juegos_destroy
+  test "mapas_juegos_destroy" do
     test_mapas_juegos_create_should_work
     assert_count_decreases(GamesMap) do
       post :mapas_juegos_destroy, :id => @fl.id
     end
   end
   
-  def test_del_moderator_should_work
+  test "del_moderator_should_work" do
     test_add_moderator_should_work
     assert_count_decreases(UsersRole) do
       post :del_moderator, {:id => UsersRole.find(:first, :order => 'id desc').user_id }
@@ -220,21 +220,21 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     assert_response :redirect
   end
   
-  def test_should_show_index_without_entering_a_faction
+  test "should_show_index_without_entering_a_faction" do
     sym_login :panzer
     get :index
     assert_response :success
     assert_template 'index'
   end
   
-  def test_should_show_index_after_entering_a_faction
+  test "should_show_index_after_entering_a_faction" do
     test_should_be_able_to_join_a_faction
     get :index
     assert_response :success
     assert_template 'index'
   end
   
-  def test_should_be_able_to_ban_user
+  test "should_be_able_to_ban_user" do
     @f1 = Faction.find(1)
     u1 = User.find(1)
     u1.faction_id = 1   
@@ -245,19 +245,19 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     assert_equal true, @f1.user_is_banned?(User.find_by_login(:panzer))
   end
   
-  def test_unban_should_work
+  test "unban_should_work" do
     test_should_be_able_to_ban_user
     post :unban_user, { :login => 'panzer' }
     assert !@f1.user_is_banned?(User.find_by_login(:panzer))
   end
   
-  def test_bans_should_work
+  test "bans_should_work" do
     test_staff_should_work_if_faction_leader
     get :bans
     assert_response :success
   end
   
-  def test_should_be_able_to_ban_user_with_spaces
+  test "should_be_able_to_ban_user_with_spaces" do
     f1 = Faction.find(1)
     u1 = User.find(1)
     u1.faction_id = 1   
@@ -268,7 +268,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     assert_equal true, f1.user_is_banned?(User.find_by_login(:panzer))
   end
   
-  def test_juego_should_work
+  test "juego_should_work" do
     f1 = Faction.find(1)
     u1 = User.find(1)
     u1.faction_id = 1
@@ -279,13 +279,13 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_informacion
+  test "informacion" do
     test_staff_should_work_if_faction_leader
     get :informacion
     assert_response :success
   end
   
-  def test_informacion_update_should_work
+  test "informacion_update_should_work" do
     test_staff_should_work_if_faction_leader
     post :informacion_update, {:faction => {:description => 'soy la descripcion de una faccion'}}
     assert_equal 'soy la descripcion de una faccion', Faction.find(1).description
@@ -341,7 +341,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
   end
   
   
-  def test_create_games_mode
+  test "create_games_mode" do
     test_staff_should_work_if_faction_leader
     assert_count_increases(GamesMode) do
       post :create_games_mode, {:games_mode => { :game_id => 1, :entity_type => Game::ENTITY_USER, :name => 'CTF2'}}, { :user => 1 }
@@ -349,7 +349,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     end
   end
   
-  def test_create_games_version
+  test "create_games_version" do
     test_staff_should_work_if_faction_leader
     assert_count_increases(GamesVersion) do
       post :create_games_version, {:games_version => { :game_id => 1, :version => '0.99'}}, { :user => 1 }
@@ -357,7 +357,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     end
   end
   
-  def test_destroy_games_mode
+  test "destroy_games_mode" do
     test_create_games_mode
     assert_count_decreases(GamesMode) do
       post :destroy_games_mode, { :id => GamesMode.find(:first, :order => 'id DESC').id }, { :user => 1 }
@@ -365,7 +365,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     end
   end
   
-  def test_destroy_games_version
+  test "destroy_games_version" do
     test_create_games_version
     assert_count_decreases(GamesVersion) do
       post :destroy_games_version, { :id => GamesVersion.find(:first, :order => 'id DESC').id }, { :user => 1 }
@@ -373,7 +373,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     end
   end
   
-  def test_update_underboss_should_work
+  test "update_underboss_should_work" do
     f1 = Faction.find(1)
     assert f1.update_boss(User.find(1))
     u1 = User.find(1)

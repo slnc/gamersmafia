@@ -13,7 +13,7 @@ class Cuenta::Clanes::SponsorsControllerTest < ActionController::TestCase
   end
   
   
-  def test_index
+  test "index" do
     sym_login 1
     assert @c.user_is_clanleader(@u1.id)
     get :index
@@ -21,7 +21,7 @@ class Cuenta::Clanes::SponsorsControllerTest < ActionController::TestCase
     assert_template 'list'
   end
   
-  def test_new
+  test "new" do
     sym_login 1
     get :new
     
@@ -29,7 +29,7 @@ class Cuenta::Clanes::SponsorsControllerTest < ActionController::TestCase
     assert_template 'new'
   end
   
-  def test_create
+  test "create" do
     sym_login 1
     assert_count_increases(ClansSponsor) do 
       post :create, :clans_sponsor => {:name => 'foo', :url => 'http://www.foo.com/', :image => fixture_file_upload('files/buddha.jpg', 'file/jpeg')}
@@ -38,14 +38,14 @@ class Cuenta::Clanes::SponsorsControllerTest < ActionController::TestCase
     @cs = ClansSponsor.find(:first, :order => 'id desc')
   end
   
-  def test_edit
+  test "edit" do
     test_create
     get :edit, :id => @cs.id
     assert_response :success
     assert_template 'edit'
   end
   
-  def test_update
+  test "update" do
     test_create
     assert_not_equal 'foo2', @cs.name
     post :update, :id => @cs.id, :clans_sponsor => {:name => 'foo2', :url => 'http://www.foo2.com/', :image => fixture_file_upload('files/buddha.jpg', 'file/jpeg')}
@@ -55,7 +55,7 @@ class Cuenta::Clanes::SponsorsControllerTest < ActionController::TestCase
     assert_equal 'foo2', @cs.name
   end
   
-  def test_destroy
+  test "destroy" do
     test_create
     assert_count_decreases(ClansSponsor) do
       post :destroy, :id => @cs.id

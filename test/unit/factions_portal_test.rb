@@ -2,7 +2,7 @@ require 'test_helper'
 
 class FactionsPortalTest < ActiveSupport::TestCase
   
-  def test_should_return_factions_links_if_any
+  test "should_return_factions_links_if_any" do
     @fp = FactionsPortal.create({:name => 'fooo', :code => 'fooo'})
     assert_equal false, @fp.new_record?
     f = Faction.create({:name => 'fooo', :code => 'fooo'})
@@ -14,7 +14,7 @@ class FactionsPortalTest < ActiveSupport::TestCase
     assert_equal flc.id, @fp.factions_links[0].id
   end
   
-  def test_should_not_return_duplicated_urls
+  test "should_not_return_duplicated_urls" do
     test_should_return_factions_links_if_any
     @fp.reload
     f2 = Faction.create({:name => 'fooo2', :code => 'fooo2'})
@@ -27,22 +27,22 @@ class FactionsPortalTest < ActiveSupport::TestCase
     assert_equal flc2.url, @fp.factions_links[0].url
   end
   
-  def test_contents_type_categories_should_return_proper_categories_if_faction_of_game
+  test "contents_type_categories_should_return_proper_categories_if_faction_of_game" do
     assert_equal 1, Portal.find_by_code('ut').tutorials_categories.size
   end
   
-  def test_contents_type_categories_should_return_proper_categories_if_faction_of_platform
+  test "contents_type_categories_should_return_proper_categories_if_faction_of_platform" do
     assert_equal 1, Portal.find_by_code('wii').tutorials_categories.size
   end
   
-  def test_categories_should_work
+  test "categories_should_work" do
     portal_ut = Portal.find_by_code('ut')
     assert_equal 1, portal_ut.categories(Tutorial).size
     assert_equal 'ut', portal_ut.categories(Tutorial)[0].slug
     assert_equal Faction.find_by_code('ut').id, portal_ut.categories(Tutorial)[0].game_id
   end
   
-  def test_get_categories_should_work
+  test "get_categories_should_work" do
     portal_ut = Portal.find_by_code('ut')
     cats = portal_ut.get_categories(Tutorial)
     assert_equal 2, cats.size

@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class SoldClanWebsiteTest < ActiveSupport::TestCase
-  def test_assert_truth
+  test "assert_truth" do
     # assert_
   end
 end

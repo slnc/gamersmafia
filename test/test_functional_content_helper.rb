@@ -31,13 +31,13 @@ module TestFunctionalContentHelperMethods
     end
   end
   
-  def test_should_show_index
+  test "should_show_index" do
     setup_functional_content_hbr
     get :index
     assert_response :success
   end
   
-  def test_should_show_published_to_everybody
+  test "should_show_published_to_everybody" do
     setup_functional_content_hbr
     get :show, {:id => 1}, {}
     assert_response :success
@@ -54,35 +54,35 @@ module TestFunctionalContentHelperMethods
     assert_template 'show'
   end
   
-  def test_should_not_show_unpublished
+  test "should_not_show_unpublished" do
     setup_functional_content_hbr
     assert_raises(ActiveRecord::RecordNotFound) do
       get :show, {:id => 2}
     end
   end
   
-  def test_should_show_unpublished_to_ppl_with_edit_permissions
+  test "should_show_unpublished_to_ppl_with_edit_permissions" do
     setup_functional_content_hbr
     sym_login 'superadmin'
     get :show, {:id => 2}
     assert_response :success
   end
   
-  def test_should_show_deleted_to_ppl_with_edit_permissions
+  test "should_show_deleted_to_ppl_with_edit_permissions" do
     setup_functional_content_hbr
     sym_login 'superadmin'
     get :show, {:id => 3}
     assert_response :success
   end
   
-  def test_should_not_show_deleted
+  test "should_not_show_deleted" do
     setup_functional_content_hbr
     assert_raises(ActiveRecord::RecordNotFound) do
       get :show, {:id => 3}
     end
   end
   
-  def test_should_allow_new_only_to_registered
+  test "should_allow_new_only_to_registered" do
     setup_functional_content_hbr
     assert_raises(AccessDenied) do
       get :new
@@ -97,13 +97,13 @@ module TestFunctionalContentHelperMethods
     assert_template 'new'
   end
   
-  def test_should_allow_new_in_portals
+  test "should_allow_new_in_portals" do
     # @request.host = %w(Funthing).include?(content_class.name) ? "bazar.#{App.domain}" : App.domain
     setup_functional_content_hbr
     test_should_allow_new_only_to_registered
   end
   
-  def test_should_not_allow_to_create_if_not_authed
+  test "should_not_allow_to_create_if_not_authed" do
     num_news = content_class.count
     
     assert_raises(AccessDenied) do
@@ -111,7 +111,7 @@ module TestFunctionalContentHelperMethods
     end
   end
 
-  def test_should_not_allow_to_create_if_authed_but_antiflood_total
+  test "should_not_allow_to_create_if_authed_but_antiflood_total" do
     sym_login 4
     assert User.find(4).update_attributes(:antiflood_level => 5)
     
@@ -123,7 +123,7 @@ module TestFunctionalContentHelperMethods
   end
   
 
-  def test_should_allow_to_create_if_registered
+  test "should_allow_to_create_if_registered" do
     num_news = content_class.count
     post :create, post_vars, { :user => opt[:authed_user_id] }
     assert_response :redirect, @response.body
@@ -132,7 +132,7 @@ module TestFunctionalContentHelperMethods
     assert_equal num_news + 1, content_class.count
   end
   
-  def test_should_redirect_to_draft_if_created_as_draft
+  test "should_redirect_to_draft_if_created_as_draft" do
         return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
     num_news = content_class.count
     
@@ -144,7 +144,7 @@ module TestFunctionalContentHelperMethods
     assert_equal num_news + 1, content_class.count
   end
   
-  def test_should_change_from_draft_to_pending_if_unselected_draft_checkbox
+  test "should_change_from_draft_to_pending_if_unselected_draft_checkbox" do
     return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
     num_news = content_class.count
     
@@ -161,22 +161,22 @@ module TestFunctionalContentHelperMethods
     assert_equal Cms::PENDING, content_class.find(:first, :order => 'id DESC').state
   end
   
-  def test_should_redirect_to_new_page_if_missing_fields
+  test "should_redirect_to_new_page_if_missing_fields" do
     post :create, {content_sym => {}}, { :user => opt[:authed_user_id] }
     assert_response :success
     assert_template 'new'
   end
   
-  def test_should_not_allow_to_edit_if_not_authed
+  test "should_not_allow_to_edit_if_not_authed" do
     assert_raises(AccessDenied) { get :edit, :id => 1 }
   end
   
   # Con nuevo sistema de permisos no es necesario este check
-  #def test_should_not_allow_to_edit_if_authed_but_no_perms
+  #test "should_not_allow_to_edit_if_authed_but_no_perms" do
   #  assert_raises(AccessDenied) { get :edit, {:id => 1}, {:user => opt[:non_authed_user_id]} }
   #end
   
-  def test_should_allow_to_edit_if_authed
+  test "should_allow_to_edit_if_authed" do
     get :edit, {:id => 1}, {:user => opt[:authed_user_id]}
     assert_response :success
     assert_template 'edit'
@@ -185,17 +185,17 @@ module TestFunctionalContentHelperMethods
     assert assigns(content_sym).valid?
   end
   
-  def test_should_not_allow_update_if_not_authed
+  test "should_not_allow_update_if_not_authed" do
     assert_raises(AccessDenied) do
       post :update, {:id => 1}
     end
   end
   
-  def test_should_not_allow_update_if_authed_and_no_perms
+  test "should_not_allow_update_if_authed_and_no_perms" do
     assert_raises(AccessDenied) { post :update, post_vars.merge({:id => 1}), {:user => opt[:non_authed_user_id]} }
   end
   
-  def test_should_allow_update_published_if_authed_superadmin
+  test "should_allow_update_published_if_authed_superadmin" do
     post_vars[content_sym] = post_vars[content_sym].merge(:approved_by_user_id => 1)
     post :update, post_vars.merge({:id => 1}), {:user => opt[:authed_user_id]}
     assert_response :redirect
@@ -203,7 +203,7 @@ module TestFunctionalContentHelperMethods
     assert_redirected_to ApplicationController.gmurl(obj)
   end
   
-  def test_should_allow_update_published_if_authed_faction_leader
+  test "should_allow_update_published_if_authed_faction_leader" do
     obj = Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)).find(2)
     obj.created_on = 1.week.ago
     obj.save
@@ -223,17 +223,17 @@ module TestFunctionalContentHelperMethods
     end
   end
   
-  def test_should_allow_edit_published_if_authed_faction_leader
+  test "should_allow_edit_published_if_authed_faction_leader" do
     get :edit, {:id => 2}, {:user => opt[:authed_user_id]}
     assert_response :success
   end
   
-  def test_should_allow_edit_published_if_authed_superadmin
+  test "should_allow_edit_published_if_authed_superadmin" do
     get :edit, {:id => 2}, {:user => opt[:authed_user_id]}
     assert_response :success
   end
   
-  def test_should_allow_update_unpublished_if_authed_superadmin
+  test "should_allow_update_unpublished_if_authed_superadmin" do
     return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
     post_vars[content_sym] = post_vars[content_sym].merge(:approved_by_user_id => nil)
     post :update, post_vars.merge({:id => 2}), {:user => opt[:authed_user_id]}
@@ -241,17 +241,17 @@ module TestFunctionalContentHelperMethods
     assert_redirected_to :action => 'edit', :id => 2 # ya que el contenido 2 está pendiente de publicar
   end
   
-  def test_should_not_allow_destroy_if_not_authed
+  test "should_not_allow_destroy_if_not_authed" do
     assert_not_nil content_class.find(1)
     assert_raises(AccessDenied) { post :destroy, {:id => 1} }
   end
   
-  def test_should_not_allow_to_destroy_if_authed_but_no_perms
+  test "should_not_allow_to_destroy_if_authed_but_no_perms" do
     assert_not_nil content_class.find(1)
     assert_raises(AccessDenied) { post :destroy, {:id => 1}, {:user => opt[:non_authed_user_id]} }
   end
   
-  def test_should_allow_to_destroy_if_authed_and_superadmin
+  test "should_allow_to_destroy_if_authed_and_superadmin" do
     assert_not_nil content_class.find(1)
     post :destroy, {:id => 1}, {:user => opt[:authed_user_id]}
     assert_response :redirect

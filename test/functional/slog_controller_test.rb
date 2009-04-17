@@ -3,14 +3,14 @@ require 'test_helper'
 class SlogControllerTest < ActionController::TestCase
   
   # Replace this with your real tests.
-  def test_index_should_work
+  test "index_should_work" do
     assert_raises(AccessDenied) { get :index }
     sym_login 1
     get :index
     assert_response :success
   end
   
-  def test_bazar_manager
+  test "bazar_manager" do
     sym_login 2
     assert_raises(AccessDenied) { get :bazar_manager }
     @u2 = User.find(2)
@@ -19,7 +19,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_capo
+  test "capo" do
     sym_login 2
     assert_raises(AccessDenied) { get :capo }
     @u2 = User.find(2)
@@ -28,7 +28,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_gladiador
+  test "gladiador" do
     sym_login 2
     assert_raises(AccessDenied) { get :gladiador }
     @u2 = User.find(2)
@@ -37,7 +37,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_webmaster
+  test "webmaster" do
     sym_login 2
     assert_raises(AccessDenied) { get :webmaster }
     sym_login 1
@@ -45,7 +45,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_boss
+  test "boss" do
     sym_login 2
     assert_raises(AccessDenied) { get :faction_bigboss }
     @u2 = User.find(2)
@@ -55,7 +55,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_underboss
+  test "underboss" do
     sym_login 2
     assert_raises(AccessDenied) { get :faction_bigboss }
     @u2 = User.find(2)
@@ -65,7 +65,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_editor
+  test "editor" do
     sym_login 2
     @u2 = User.find(2)
     @u2.take_admin_permission(:capo)
@@ -79,7 +79,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_moderator
+  test "moderator" do
     sym_login 2
     assert_raises(AccessDenied) { get :moderator }
     @u2 = User.find(2)
@@ -92,7 +92,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_don
+  test "don" do
     sym_login 2
     assert_raises(AccessDenied) { get :bazar_district_bigboss }
     @u2 = User.find(2)
@@ -102,7 +102,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_mano_derecha
+  test "mano_derecha" do
     sym_login 2
     assert_raises(AccessDenied) { get :bazar_district_bigboss }
     @u2 = User.find(2)
@@ -112,7 +112,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_sicario
+  test "sicario" do
     sym_login 2
     assert_raises(AccessDenied) { get :sicario }
     @u2 = User.find(2)
@@ -122,7 +122,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_competition_admin
+  test "competition_admin" do
     sym_login 2
     assert_raises(AccessDenied) { get :competition_admin }
     @u2 = User.find(2)
@@ -132,7 +132,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_competition_supervisor
+  test "competition_supervisor" do
     sym_login 2
     assert_raises(AccessDenied) { get :competition_supervisor }
     @u2 = User.find(2)
@@ -153,7 +153,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_sle_assigntome_all_combinations
+  test "sle_assigntome_all_combinations" do
     # TODO faltan tests
     @f = Faction.find(1)
     @bd = BazarDistrict.find(1)

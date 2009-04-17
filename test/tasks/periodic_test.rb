@@ -5,7 +5,7 @@ load RAILS_ROOT + '/Rakefile'
 class PeriodicTest < ActiveSupport::TestCase
   include Rake
   
-  def test_periodic
+  test "periodic" do
     [:midnight, :hourly, :daily, :weekly, :weekly_report, :monthly].each do |task_name|
       assert get_task_names.include?("gm:#{task_name}")
 	  # NOTA: Si ya hemos invocado a la task anteriormente lo siguiente devolverá nil

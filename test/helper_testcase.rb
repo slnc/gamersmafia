@@ -32,7 +32,7 @@ class HelperTestCase < ActiveSupport::TestCase
     ActionView::Helpers::AssetTagHelper::reset_javascript_include_default
   end
 
-  def test_dummy
+  test "dummy" do
     # do nothing - required by test/unit
   end
 end

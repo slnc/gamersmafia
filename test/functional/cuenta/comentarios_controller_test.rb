@@ -2,13 +2,13 @@ require 'test_helper'
 
 class Cuenta::ComentariosControllerTest < ActionController::TestCase
   
-  def test_index
+  test "index" do
     sym_login 1
     get :index
     assert_response :success
   end
   
-  def test_save
+  test "save" do
     User.db_query("UPDATE users SET enable_comments_sig = 't' WHERE id = 1")
     sym_login 1
     assert_count_increases(UsersPreference) do

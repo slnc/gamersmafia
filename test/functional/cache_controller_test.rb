@@ -8,7 +8,7 @@ class CacheControllerTest < ActionController::TestCase
 
 
   # Replace this with your real tests.
-  def test_thumbnails_with_valid_image
+  test "thumbnails_with_valid_image" do
     full_file = "#{RAILS_ROOT}/public/cache/thumbnails/f/125x125/images/headers/tu_gustar_ficha_miembros.jpg"
     File.unlink(full_file) if File.exists?(full_file)
     get :thumbnails, { :mode => 'f', :dim => '125x125', :path => 'images/headers/tu_gustar_ficha_miembros.jpg' }
@@ -16,7 +16,7 @@ class CacheControllerTest < ActionController::TestCase
     assert File.exists?(full_file)
   end
 
-  def test_thumbnails_with_valid_image_if_msie
+  test "thumbnails_with_valid_image_if_msie" do
     full_file = "#{RAILS_ROOT}/public/cache/thumbnails/f/125x125/images/headers/tu_gustar_ficha_miembros.jpg"
     File.unlink(full_file) if File.exists?(full_file)
     @request.user_agent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)'
@@ -26,19 +26,19 @@ class CacheControllerTest < ActionController::TestCase
     assert File.exists?(full_file)
   end
 
-  def test_raises_404_if_invalid_image
+  test "raises_404_if_invalid_image" do
     assert_raises(ActiveRecord::RecordNotFound) { 
       get :thumbnails, { :mode => 'f', :dim => '125x125', :path => 'abdulkabarahjmed.jpg' }
     }
   end
   
-  def test_raises_404_if_invalid_image2
+  test "raises_404_if_invalid_image2" do
     assert_raises(ActiveRecord::RecordNotFound) { 
       get :thumbnails, { :mode => 'f', :dim => '125x125', :path => '' }
     }
   end
   
-  def test_faction_users_ratios_should_work
+  test "faction_users_ratios_should_work" do
     Faction.find(1).users<< User.find(1)
     get :faction_users_ratios, { :date => Time.now.strftime('%Y%m%d'), :faction_id => ['1.png'] }
     assert_response :redirect

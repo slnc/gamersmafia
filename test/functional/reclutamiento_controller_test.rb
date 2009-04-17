@@ -5,7 +5,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
   basic_test :index
   # test_common_content_crud :name => 'RecruitmentAd', :form_vars => { :title => 'buscamos miembros', :main => 'fulanitos del copon', :game_id => 1, :levels => ['low', 'med', 'high'], :clan_id => '1'}
   
-  def test_create_type_1
+  test "create_type_1" do
     sym_login 1
     assert_count_increases(RecruitmentAd) do
       post :create, :reclutsearching => 'clan', :recruitment_ad => { :title => 'buscamos miembros', :main => 'fulanitos del copon', :game_id => 1, :levels => ['low', 'med', 'high'], :clan_id => '1'}
@@ -15,7 +15,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
     assert_nil @ra.clan_id
   end
   
-  def test_create_type_2
+  test "create_type_2" do
     sym_login 1
     assert_count_increases(RecruitmentAd) do
       post :create, :reclutsearching => 'users', :recruitment_ad => { :title => 'buscamos miembros', :main => 'fulanitos del copon', :game_id => 1, :clan_id => 1}
@@ -24,7 +24,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
     assert_equal 'fulanitos del copon', @ra.main
   end
   
-  def test_anuncio
+  test "anuncio" do
     test_create_type_1
     #get :anuncio, :id => @ra.id
     #puts ApplicationController.gmurl(@ra)
@@ -32,14 +32,14 @@ class ReclutamientoControllerTest < ActionController::TestCase
     #assert_redirected_to "reclutamiento/show/13"
   end
   
-  def test_del_by_owner
+  test "del_by_owner" do
     test_create_type_1
     post :destroy, :id => @ra.id
     @ra.reload
     assert_equal Cms::DELETED, @ra.state
   end
   
-  def test_del_by_foreigner
+  test "del_by_foreigner" do
     test_create_type_1
     sym_login 3
     assert_raises(AccessDenied) do
@@ -47,7 +47,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
     end
   end
   
-  def test_del_by_capo
+  test "del_by_capo" do
     test_create_type_1
     u2 = User.find(2)
     u2.give_admin_permission(:capo)
@@ -57,7 +57,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
     assert_equal Cms::DELETED, @ra.state
   end
   
-  def test_update
+  test "update" do
     test_create_type_1
     post :update, :id => @ra.id, :recruitment_ad => { :game_id => 2 }
     @ra.reload
@@ -65,7 +65,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
     assert_redirected_to "/reclutamiento/anuncio/#{@ra.id}"
   end
   
-  def test_buscar
+  test "buscar" do
     ra = RecruitmentAd.new(:user_id => 1, :game_id => 1, :title => 'booooh') 
     assert_count_increases(RecruitmentAd) do
       assert ra.save

@@ -6,13 +6,13 @@ class Cuenta::TiendaControllerTest < ActionController::TestCase
   test_min_acl_level :user, [ :index, :show, :buy ]
   # TODO probar con todos los productos
 
-  def test_should_show_index
+  test "should_show_index" do
     sym_login 1
     get :index
     assert_response :success
   end
 
-  def test_should_show_producto
+  test "should_show_producto" do
     sym_login 2 # un usuario sin profile signatures
     prod = Product.find_by_cls('SoldProfileSignatures')
     assert_not_nil prod
@@ -20,7 +20,7 @@ class Cuenta::TiendaControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  def test_should_buy_product_if_enough_money
+  test "should_buy_product_if_enough_money" do
     sym_login 2
     prod = Product.find(:first, :conditions => 'cls = \'SoldChangeNick\' AND price > 0')
     assert_not_nil prod
@@ -33,7 +33,7 @@ class Cuenta::TiendaControllerTest < ActionController::TestCase
     assert @bp.created_on.to_i > Time.now.to_i - 5
   end
   
-  def test_use_should_work
+  test "use_should_work" do
     test_should_buy_product_if_enough_money
     assert !@bp.used?
     post :use, {:id => @bp.id, :nuevo_login => 'fulanitodetal' }
@@ -44,7 +44,7 @@ class Cuenta::TiendaControllerTest < ActionController::TestCase
     assert_raises(ActiveRecord::RecordNotFound) { post :use, {:id => @bp.id, :nuevo_login => 'fulanitodetal' } }
   end
 
-  def test_should_not_buy_product_if_insufficient_money
+  test "should_not_buy_product_if_insufficient_money" do
     sym_login 1
     prod = Product.find(:first, :conditions => 'price > 0')
     assert_not_nil prod
@@ -55,13 +55,13 @@ class Cuenta::TiendaControllerTest < ActionController::TestCase
     assert_nil bp
   end
 
-  def test_should_show_mis_compras
+  test "should_show_mis_compras" do
     test_should_buy_product_if_enough_money
     get :mis_compras
     assert_response :success
   end
 
-  def test_should_show_configure_page_of_mis_compras
+  test "should_show_configure_page_of_mis_compras" do
     test_should_buy_product_if_enough_money
     get :configurar_compra, { :id => @bp.id }
     assert_response :success

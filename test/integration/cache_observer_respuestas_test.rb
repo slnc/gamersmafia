@@ -7,7 +7,7 @@ class CacheObserverRespuestasTest < ActionController::IntegrationTest
     host! "ut.#{App.domain}"
   end
   
-  def test_should_clear_cache_latest_by_author_on_create
+  test "should_clear_cache_latest_by_author_on_create" do
     @t = Term.find(1).children.find_by_taxonomy('QuestionsCategory')
     sym_login 'superadmin', 'lalala'
     create_content :question, {:title => 'hola mundillo', :description => 'iole'}, :categories_terms => @t.id
@@ -16,13 +16,13 @@ class CacheObserverRespuestasTest < ActionController::IntegrationTest
     assert_cache_exists "/#{@t.root.slug}/respuestas/show/latest_by_author_#{@q.user_id}"    
   end
   
-  def test_should_clear_cache_latest_by_author_on_delete  
+  test "should_clear_cache_latest_by_author_on_delete" do  
     test_should_clear_cache_latest_by_author_on_create
     delete_content @q
     assert_cache_dont_exist "/#{@t.root.slug}/respuestas/show/latest_by_author_#{@q.user_id}"
   end
   
-  def test_should_clear_top_sabios_on_answer
+  test "should_clear_top_sabios_on_answer" do
     test_should_clear_cache_latest_by_author_on_create
     assert_cache_exists "/ut/respuestas/top_sabios/"
     sym_login 'panzer', 'lelele'
@@ -33,7 +33,7 @@ class CacheObserverRespuestasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/ut/respuestas/top_sabios/"
   end
   
-  def test_should_clear_top_sabios_on_answer_category
+  test "should_clear_top_sabios_on_answer_category" do
     test_should_clear_cache_latest_by_author_on_create
     cat_id = @q.unique_content.linked_terms('QuestionsCategory')[0].root_id
     go_to "respuestas/categoria/#{cat_id}", 'respuestas/index'

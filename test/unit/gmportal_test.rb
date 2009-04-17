@@ -2,11 +2,11 @@ require 'test_helper'
 
 class GmPortalTest < ActiveSupport::TestCase
 
-  def test_has_name
+  test "has_name" do
     assert_not_nil GmPortal.new.name
   end
 
-  def test_should_respond_to_all_content_classes
+  test "should_respond_to_all_content_classes" do
     p = GmPortal.new
     Cms::contents_classes_symbols.each do |s|
       assert_not_nil p.send(s)

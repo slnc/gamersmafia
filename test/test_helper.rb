@@ -303,7 +303,7 @@ class ActiveSupport::TestCase
 end
 
 module TestFunctionalBasicTest
-  def test_basic_views
+  test "basic_views" do
     self.basic_views_test.each do |view|
       get view
       assert_response :success

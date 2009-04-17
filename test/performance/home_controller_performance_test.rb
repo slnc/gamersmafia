@@ -5,7 +5,7 @@ class AbstractPerformanceTest < ActionController::IntegrationTest
 end
 
 class HomeControllerPerformanceTest < AbstractPerformanceTest
-  def test_index
+  test "index" do
     puts "index:"
     benchmark_time :get, '/'
     benchmark_memory :get, '/'

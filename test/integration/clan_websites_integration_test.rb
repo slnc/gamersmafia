@@ -8,7 +8,7 @@ class ClanWebsitesIntegrationTest < ActionController::IntegrationTest
   end
 
   # COMMON
-  def test_clan_website_should_work_right_after_buying_the_product
+  test "clan_website_should_work_right_after_buying_the_product" do
     
   end
 

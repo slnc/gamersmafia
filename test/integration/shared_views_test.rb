@@ -40,7 +40,7 @@ class SharedViewsTest < ActionController::IntegrationTest
     logout unless already_logged_in
   end
 
-  def test_should_show_first_page_to_anonymous_users
+  test "should_show_first_page_to_anonymous_users" do
     Cms.comments_per_page = 1
     n = create_news
     Term.single_toplevel(:slug => 'gm').link(n.unique_content)
@@ -51,7 +51,7 @@ class SharedViewsTest < ActionController::IntegrationTest
     Cms.comments_per_page = 30
   end
 
-  def test_should_show_first_page_of_unread_comments_for_registered_user_when_user_hasnt_read_the_content
+  test "should_show_first_page_of_unread_comments_for_registered_user_when_user_hasnt_read_the_content" do
     sym_login('superadmin', 'lalala')
     Cms.comments_per_page = 1
     n = create_news
@@ -63,7 +63,7 @@ class SharedViewsTest < ActionController::IntegrationTest
     Cms.comments_per_page = 30
   end
   
-  def test_should_show_first_page_of_unread_comments_for_registered_user_when_user_has_read_the_content_but_only_the_first_comment
+  test "should_show_first_page_of_unread_comments_for_registered_user_when_user_has_read_the_content_but_only_the_first_comment" do
     sym_login('superadmin', 'lalala')
     Cms.comments_per_page = 2
     n = create_news

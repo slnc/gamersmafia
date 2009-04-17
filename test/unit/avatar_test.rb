@@ -7,7 +7,7 @@ class AvatarTest < ActiveSupport::TestCase
   end
   
   # Replace this with your real tests.
-  def test_should_delete_file_after_destroying
+  test "should_delete_file_after_destroying" do
     @av = Avatar.create({:name => 'fulanito de tal', :submitter_user_id => 1, :path => fixture_file_upload('files/buddha.jpg')})
     assert_equal false, @av.new_record?
     assert_equal true, File.exists?("#{RAILS_ROOT}/public/#{@av.path}")
@@ -15,7 +15,7 @@ class AvatarTest < ActiveSupport::TestCase
     assert_equal false, File.exists?("#{RAILS_ROOT}/public/#{@av.path}")
   end
   
-  def test_should_set_users_owning_avatar_to_nil_after_destroy
+  test "should_set_users_owning_avatar_to_nil_after_destroy" do
     @av = Avatar.create({:name => 'fulanito de tal', :user_id => 1, :submitter_user_id => 1, :path => fixture_file_upload('files/buddha.jpg')})
     assert_equal false, @av.new_record?
     u1 = User.find(1)
@@ -26,21 +26,21 @@ class AvatarTest < ActiveSupport::TestCase
     assert_nil u1.avatar_id
   end
   
-  def test_shouldnt_allow_to_upload_a_non_jpg_file
+  test "shouldnt_allow_to_upload_a_non_jpg_file" do
     %w(images.zip lines.gif lines.bmp header.swf).each do |f|
       @av = Avatar.create({:name => 'fulanito de tal', :submitter_user_id => 1, :path => fixture_file_upload("files/#{f}")})
       assert_nil @av.path
     end
   end
   
-  def test_shouldnt_allow_to_upload_an_invalid_jpg_file
+  test "shouldnt_allow_to_upload_an_invalid_jpg_file" do
     %w(zip_as_jpg.jpg bmp_as_jpg.jpg).each do |f|
       @av = Avatar.create({:name => 'fulanito de tal', :submitter_user_id => 1, :path => fixture_file_upload("files/#{f}")})
       assert_nil @av.path
     end
   end
   
-  def test_should_create_logentry_after_create
+  test "should_create_logentry_after_create" do
     assert_count_increases(SlogEntry) do
       assert_count_increases(Avatar) do
         @av = Avatar.create({:name => 'fulanito de tal', :submitter_user_id => 1, :path => fixture_file_upload("files/buddha.jpg")})
@@ -48,7 +48,7 @@ class AvatarTest < ActiveSupport::TestCase
     end
   end
   
-  def test_available_avatar_should_work
+  test "available_avatar_should_work" do
     # TODO
   end
 end

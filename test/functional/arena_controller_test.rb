@@ -3,7 +3,7 @@ require 'test_helper'
 class ArenaControllerTest < ActionController::TestCase
 
 
-  def test_truth
+  test "truth" do
     assert true
   end
 end

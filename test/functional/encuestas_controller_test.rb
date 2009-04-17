@@ -6,7 +6,7 @@ class EncuestasControllerTest < ActionController::TestCase
 
 
 
-  def test_should_create_with_options
+  test "should_create_with_options" do
     post :create, {:poll => {:title => 'footapang', :starts_on => 2.days.since, :ends_on => 9.days.since, :options_new => ['opcion1', 'opcion2']}, :root_terms => [1] }, { :user => 1}
     assert_response :redirect
     b = Poll.find_by_title('footapang')
@@ -16,7 +16,7 @@ class EncuestasControllerTest < ActionController::TestCase
     assert_not_nil b.polls_options.find_by_name('opcion2')
   end
 
-  def test_should_publish_as_is
+  test "should_publish_as_is" do
     test_should_create_with_options
     b = Poll.find_by_title('footapang')
     post :update, {:id => b.id,
@@ -28,7 +28,7 @@ class EncuestasControllerTest < ActionController::TestCase
     assert_not_nil b.polls_options.find_by_name('opcion2')
   end
 
-  def test_should_allow_to_change_options_if_not_published
+  test "should_allow_to_change_options_if_not_published" do
     test_should_create_with_options
     b = Poll.find_by_title('footapang')
     
@@ -48,7 +48,7 @@ class EncuestasControllerTest < ActionController::TestCase
     assert_not_nil b.polls_options.find_by_name('opcion4')
   end
   
-  def test_vote
+  test "vote" do
     poll = Poll.find(:published)[0]
     assert poll.update_attributes(:starts_on => 1.day.ago, :ends_on => 7.days.since)
     orig = poll.polls_votes_count

@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class Admin::MotorControllerTest < ActionController::TestCase
-  def test_should_show_index
+  test "should_show_index" do
     sym_login 1
     get :index
     assert_response :success

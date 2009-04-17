@@ -3,7 +3,7 @@ require 'test_helper'
 class EventTest < ActiveSupport::TestCase
   COMMON = { :user_id => 1, :approved_by_user_id => 1, :terms => 1, :state => Cms::PUBLISHED}
   
-  def test_should_give_correct_hotmap1
+  test "should_give_correct_hotmap1" do
     assert_not_nil Event.create(COMMON.merge({:title => 'fooe1', :starts_on => Time.local(2006, 01, 01, 00,00,00), :ends_on => Time.local(2006, 02, 06, 00,00,00)}))
     assert_not_nil Event.create(COMMON.merge({:title => 'fooe2', :starts_on => Time.local(2006, 02, 05, 00,00,00), :ends_on => Time.local(2006, 02, 10, 15,00,00)}))
     assert_not_nil Event.create(COMMON.merge({:title => 'fooe3', :starts_on => Time.local(2006, 02, 28, 00,00,00), :ends_on => Time.local(2006, 03, 05, 00,00,00)}))
@@ -17,7 +17,7 @@ class EventTest < ActiveSupport::TestCase
     end
   end
   
-  def test_should_give_correct_hotmap2
+  test "should_give_correct_hotmap2" do
     test_should_give_correct_hotmap1
     
     assert_not_nil Event.create(COMMON.merge({:title => 'fooe4', :starts_on => Time.local(2006, 02, 01, 00,00,00), :ends_on => Time.local(2006, 02, 06, 00,00,00)}))

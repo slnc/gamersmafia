@@ -3,7 +3,7 @@ require 'test_helper'
 class Cuenta::BancoControllerTest < ActionController::TestCase
 
 
-  def test_index
+  test "index" do
     sym_login 1
     get :index
     assert_response :success

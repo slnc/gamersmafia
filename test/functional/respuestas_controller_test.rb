@@ -6,7 +6,7 @@ class RespuestasControllerTest < ActionController::TestCase
 
 
   
-  def test_categoria_should_work
+  test "categoria_should_work" do
     get :categoria, :id => 1
     assert_response :success
   end
@@ -17,11 +17,11 @@ class RespuestasControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_mejor_respuesta_anon
+  test "mejor_respuesta_anon" do
     assert_raises(AccessDenied) { post :mejor_respuesta, :id => 1}
   end
   
-  def test_mejor_respuesta_bogus_comment
+  test "mejor_respuesta_bogus_comment" do
     sym_login 1
     assert_raises(AccessDenied) { post :mejor_respuesta, :id => 1 } 
     #  assert_response :redirect
@@ -29,7 +29,7 @@ class RespuestasControllerTest < ActionController::TestCase
     assert_nil @q.answered_on
   end
   
-  def test_sin_respuesta_ok
+  test "sin_respuesta_ok" do
     sym_login 1
     @q = Question.find(1)
     post :sin_respuesta, :id => @q.id
@@ -39,7 +39,7 @@ class RespuestasControllerTest < ActionController::TestCase
     assert_not_nil @q.answered_on
   end
   
-  def test_mejor_respuesta_ok
+  test "mejor_respuesta_ok" do
     sym_login 1
     @q = Question.find(1)
     assert @q.unique_content.comments(:conditions => 'deleted = \'f\'').count > 0
@@ -51,7 +51,7 @@ class RespuestasControllerTest < ActionController::TestCase
     assert_equal baid, @q.accepted_answer_comment_id
   end
   
-  def test_revert_mejor_respuesta_ok
+  test "revert_mejor_respuesta_ok" do
     test_mejor_respuesta_ok
     assert_not_nil @q.accepted_answer_comment_id
     post :revert_mejor_respuesta, :id => 1
@@ -60,12 +60,12 @@ class RespuestasControllerTest < ActionController::TestCase
     assert_nil @q.accepted_answer_comment_id
   end
   
-  def test_update_should_work_if_changing_ammount_and_owner
+  test "update_should_work_if_changing_ammount_and_owner" do
     @q = Question.find(1)
     
   end
   
-  def test_update_ammount_should_work
+  test "update_ammount_should_work" do
     @q = Question.find(1)
     Bank.transfer(:bank, @q.user, Question::MIN_AMMOUNT + 1, "ff")
     sym_login @q.user_id
@@ -78,24 +78,24 @@ class RespuestasControllerTest < ActionController::TestCase
     assert_equal init + cash, @q.ammount 
   end
   
-  def test_abiertas_root
+  test "abiertas_root" do
     get :abiertas, :id => 1
     assert_response :success
   end
   
-  def test_abiertas_non_root
+  test "abiertas_non_root" do
     t1 = Term.find(1)
     t1c = t1.children.create(:name => 'Especificas', :taxonomy => 'QuestionsCategory')
     get :abiertas, :id => t1c.id
     assert_response :success
   end
   
-  def test_cerradas_root
+  test "cerradas_root" do
     get :cerradas, :id => 1
     assert_response :success
   end
   
-    def test_cerradas_non_root
+    test "cerradas_non_root" do
     t1 = Term.find(1)
     t1c = t1.children.create(:name => 'Especificas', :taxonomy => 'QuestionsCategory')
     get :cerradas, :id => t1c.id

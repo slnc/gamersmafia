@@ -1,7 +1,7 @@
 require "#{File.dirname(__FILE__)}/../test_helper"
 
 class ControllersAccessTest < ActionController::IntegrationTest
-  def test_should_not_allow_access_to_restricted_pages_from_clans_portal
+  test "should_not_allow_access_to_restricted_pages_from_clans_portal" do
     c = Clan.find_by_tag('mapaches')
     c.activate_website if not c.website_activated?
     ['competiciones', 'curiosidades', 'coverages', 'tutoriales', 'reviews', 'apuestas', 'clanes', 'entrevistas'].each do |url|
@@ -13,7 +13,7 @@ class ControllersAccessTest < ActionController::IntegrationTest
     end
   end
   
-  def test_test_app_config
+  test "test_app_config" do
     assert_not_nil App.domain
   end
 end

@@ -1,19 +1,19 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 
 class CommentsTest < ActiveSupport::TestCase
-  def test_formatize_should_correctly_translate_known_tags
+  test "formatize_should_correctly_translate_known_tags" do
     t = "Hola Mundo![b]me siento negrita[/b] y ahora..[i]CURSIVA!!![/i]\nAdemás tengo saltos de línea, [~dharana], [flag=es], [img]http://domain.test[/img] y [url=http://otherdomain.test]enlaces!![/url]>>>Ownage!<<<[quote]mwahwahwa[/quote]"
     t_formatized = "Hola Mundo!<b>me siento negrita</b> y ahora..<i>CURSIVA!!!</i><br />Además tengo saltos de línea, <a href=\"/miembros/dharana\">dharana</a>, <img class=\"icon\" src=\"/images/flags/es.gif\" />, <img src=\"http://domain.test\" /> y <a href=\"http://otherdomain.test\">enlaces!!</a>&gt;&gt;&gt;Ownage!&lt;&lt;&lt;<blockquote>mwahwahwa</blockquote>"
     assert_equal t_formatized, Comments.formatize(t)
   end
 
-  def test_unformatize_should_correctly_translate_known_tags
+  test "unformatize_should_correctly_translate_known_tags" do
     t_unformatized = "Hola Mundo![b]me siento negrita[/b] y ahora..[i]CURSIVA!!![/i]\nAdemás tengo saltos de línea, [~dharana], [flag=es], [img]http://domain.test[/img] y [url=http://otherdomain.test]enlaces!![/url]>>>Ownage!<<<[quote]mwahwahwa[/quote]"
     t = "Hola Mundo!<b>me siento negrita</b> y ahora..<i>CURSIVA!!!</i><br />Además tengo saltos de línea, <a href=\"/miembros/dharana\">dharana</a>, <img class=\"icon\" src=\"/images/flags/es.gif\" />, <img src=\"http://domain.test\" /> y <a href=\"http://otherdomain.test\">enlaces!!</a>&gt;&gt;&gt;Ownage!&lt;&lt;&lt;<blockquote>mwahwahwa</blockquote>"
     assert_equal t_unformatized, Comments.unformatize(t)
   end
 
-  #def test_formatize_should_close_unclosed_tags
+  #test "formatize_should_close_unclosed_tags" do
   #  t_unclosed = '[b]hola'
   #  assert_equal '[b]hola[/b]'
   #end
@@ -32,7 +32,7 @@ class CommentsTest < ActiveSupport::TestCase
     assert_equal '[i][b]hola[/b] [b]adios[\b][/i]', Comments.fix_malformed_comment('[i][b]hola[/b] [b]adios[\b][/i]')    
   end
     
-  def test_sicario_can_edit_comments_of_own_district
+  test "sicario_can_edit_comments_of_own_district" do
     u59 = User.find(59)
     bd = BazarDistrict.find(1)
     bd.add_sicario(u59)

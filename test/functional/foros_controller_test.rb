@@ -3,7 +3,7 @@ require 'test_helper'
 class ForosControllerTest < ActionController::TestCase
 
   
-  def test_mis_foros
+  test "mis_foros" do
     get :mis_foros
     assert_response :success
     
@@ -12,7 +12,7 @@ class ForosControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_faction_banned_user_shouldnt_be_able_to_create_topic
+  test "faction_banned_user_shouldnt_be_able_to_create_topic" do
     sym_login 1
     f = Faction.find(1)
     fbu = FactionsBannedUser.new(:user_id => 1, :faction_id => f.id, :banner_user_id => 2)
@@ -26,7 +26,7 @@ class ForosControllerTest < ActionController::TestCase
     assert_equal Cms::DELETED, Topic.find(:first, :order => 'id desc').state 
   end
   
-  def test_shouldnt_be_able_to_move_it_to_banned_faction
+  test "shouldnt_be_able_to_move_it_to_banned_faction" do
     test_should_give_karma_after_creating_topic
     f = Faction.find(1)
     fbu = FactionsBannedUser.new(:user_id => 4, :faction_id => f.id, :banner_user_id => 2)
@@ -41,7 +41,7 @@ class ForosControllerTest < ActionController::TestCase
     end
   end
   
-  def test_should_give_karma_after_creating_topic
+  test "should_give_karma_after_creating_topic" do
     sym_login 1
     u1 = User.find(1)
     kp = u1.karma_points
@@ -53,7 +53,7 @@ class ForosControllerTest < ActionController::TestCase
     assert_equal kp + Karma::KPS_CREATE['Topic'], u1.karma_points
   end
   
-  def test_shouldnt_add_to_tracker_if_unselected
+  test "shouldnt_add_to_tracker_if_unselected" do
     sym_login 1
     assert_count_increases(Topic) do
       post :create_topic, {:topic => {:title => 'footopic', :main => 'textio'}, :categories_terms => [Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id]}
@@ -62,14 +62,14 @@ class ForosControllerTest < ActionController::TestCase
     assert !lt.is_tracked?
   end
   
-  def test_should_not_show_clans_categories_in_mover_page_from_gm
+  test "should_not_show_clans_categories_in_mover_page_from_gm" do
     sym_login 1
     get :edit, :id => 1
     assert_response :success
     assert_nil(@response.body.index('>mapaches<'))
   end
   
-  def test_should_not_show_clans_categories_in_mover_page_from_factions_portal
+  test "should_not_show_clans_categories_in_mover_page_from_factions_portal" do
     @request.host = 'ut.gamersmafia.com'
     sym_login 1
     get :edit, :id => 1
@@ -78,49 +78,49 @@ class ForosControllerTest < ActionController::TestCase
   end
   
   # TODO
-  def test_should_show_index
+  test "should_show_index" do
     get :index
     assert_response :success
   end
   
-  def test_should_show_forum_category
+  test "should_show_forum_category" do
     get :forum, :id => Term.single_toplevel(:slug => 'ut').id
     assert_response :success
     assert_template 'category'
   end
   
-  def test_should_show_forum
+  test "should_show_forum" do
     get :forum, :id => Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id
     assert_response :success
     assert_template 'forum'
   end
   
-  def test_should_show_topic
+  test "should_show_topic" do
     sym_login 1
     @request.host = 'ut.gamersmafia.dev'
     get :topic, :id => 1
     assert_response :success, @response.body
   end
   
-  def test_should_show_nuevo_topic
+  test "should_show_nuevo_topic" do
     sym_login 1
     get :nuevo_topic
     assert_response :success
   end
   
-  def test_should_show_nuevo_topic_null_forum_id
+  test "should_show_nuevo_topic_null_forum_id" do
     sym_login 1
     get :nuevo_topic, :forum_id => nil
     assert_response :success
   end
   
-  def test_should_show_edit
+  test "should_show_edit" do
     sym_login 1
     get :edit, :id => Topic.find(1).id
     assert_response :success
   end
   
-  def test_update_topic_should_work
+  test "update_topic_should_work" do
     sym_login 1
     t = Topic.find(:first)
     assert_not_equal 'title del topiz', t.title
@@ -130,7 +130,7 @@ class ForosControllerTest < ActionController::TestCase
     assert_equal 'title del topiz', t.title
   end
   
-  def test_move_topic_should_work
+  test "move_topic_should_work" do
     sym_login 1
     t = Topic.find(1)
     tc2 = t.main_category.root.children.create({:name => 'nombre nueva category', :taxonomy => 'TopicsCategory'})
@@ -141,7 +141,7 @@ class ForosControllerTest < ActionController::TestCase
     assert_equal tc2.id, t.terms[0].id
   end
   
-  def test_create_topic_should_work
+  test "create_topic_should_work" do
     sym_login 1
     assert_count_increases(Topic) do
       post :create_topic, { :topic => { :main => 'tezto del topic', :title => 'title del topiz'} , :categories_terms => [Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id] }
@@ -149,7 +149,7 @@ class ForosControllerTest < ActionController::TestCase
     assert_response :redirect
   end
   
-  def test_destroy_topic_should_work
+  test "destroy_topic_should_work" do
     sym_login 1
     t1 = Topic.find(1)
     assert_equal Cms::PUBLISHED, t1.state
@@ -159,7 +159,7 @@ class ForosControllerTest < ActionController::TestCase
     assert_equal Cms::DELETED, t1.state
   end
   
-  def test_close_should_work
+  test "close_should_work" do
     sym_login 1
     @t1 = Topic.find(1)
     assert !@t1.closed?
@@ -169,7 +169,7 @@ class ForosControllerTest < ActionController::TestCase
     assert @t1.closed?
   end
   
-  def test_reopen_topic_should_work
+  test "reopen_topic_should_work" do
     test_close_should_work
     post :reopen, { :id => @t1.id }
     assert_response :redirect

@@ -4,13 +4,13 @@ class FaccionesControllerTest < ActionController::TestCase
   
 
   
-  def test_index
+  test "index" do
     get :index
     assert_response :success
     assert_template 'list'
   end
   
-  def test_borrar_should_work
+  test "borrar_should_work" do
     sym_login 2
     g = Game.new({:code => 'fooli', :name => "Foo ling pun"})
     assert g.save, g.errors.full_messages_html

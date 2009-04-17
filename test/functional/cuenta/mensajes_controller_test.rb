@@ -3,25 +3,25 @@ require 'test_helper'
 class Cuenta::MensajesControllerTest < ActionController::TestCase
 
   
-  def test_mensajes_should_work
+  test "mensajes_should_work" do
     sym_login 1
     get :mensajes
     assert_response :success
   end
   
-  def test_mensajes_enviados_should_work
+  test "mensajes_enviados_should_work" do
     sym_login 1
     get :mensajes_enviados
     assert_response :success
   end
   
-  def test_new
+  test "new" do
     sym_login 1
     get :new, :id => 2
     assert_response :success
   end
   
-  def test_del_messages_should_work
+  test "del_messages_should_work" do
     sym_login 1
     m = Message.find(1)
     assert !m.sender_deleted
@@ -31,7 +31,7 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
     assert_response :redirect
   end
   
-  def test_mensaje_should_work
+  test "mensaje_should_work" do
     m1 = Message.find(1)
     sym_login m1.user_id_to
     get :mensaje, {:id => m1.id}
@@ -39,7 +39,7 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
     assert_equal true, @response.body.include?(m1.title)
   end
   
-  def test_create_message_should_work_if_user
+  test "create_message_should_work_if_user" do
     sym_login 1
     assert_count_increases(Message) do
       post :create_message, { :message=> {:message_type => Message::R_USER, :recipient_user_login => User.find(2).login, :title => "foo litio", :message => "soy litio teodorakis" }}
@@ -47,7 +47,7 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
     end
   end
   
-  def test_create_message_should_work_if_clan_not_given
+  test "create_message_should_work_if_clan_not_given" do
     u1 = User.find(1)
     c1 = Clan.find(1)
     
@@ -68,7 +68,7 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
     assert_equal true, m_ids.include?(3)
   end
   
-  def test_create_message_should_work_if_clan_given_and_different_than_last_clan_id
+  test "create_message_should_work_if_clan_given_and_different_than_last_clan_id" do
     u1 = User.find(1)
     c1 = Clan.find(1)
     
@@ -89,7 +89,7 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
     assert_equal true, m_ids.include?(3)
   end
   
-  def test_create_message_should_work_if_faction
+  test "create_message_should_work_if_faction" do
     Factions::user_joins_faction(User.find(1), 1)
     Factions::user_joins_faction(User.find(2), 1)
     Factions::user_joins_faction(User.find(3), 1)
@@ -101,7 +101,7 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
     assert_equal (msgs + Faction.find(1).users.count - 1), Message.count
   end
   
-  def test_create_message_should_work_if_faction_staff
+  test "create_message_should_work_if_faction_staff" do
     Factions::user_joins_faction(User.find(1), 1)
     f1 = Faction.find(1)
     f1.add_editor(User.find(2), ContentType.find_by_name('Column'))
@@ -115,7 +115,7 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
     assert_equal (msgs + 3), Message.count
   end
   
-  def test_create_message_should_work_if_friends
+  test "create_message_should_work_if_friends" do
     u1 = User.find(1)
     assert u1.friends.size > 0
 
@@ -127,7 +127,7 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
     assert_equal (msgs + u1.friends_count), Message.count
   end
   
-  def test_sending_message_to_unexisting_user_should_say_what_happened
+  test "sending_message_to_unexisting_user_should_say_what_happened" do
     sym_login 1
     post :create_message, { :message=> {:message_type => Message::R_USER, :recipient_user_login => "akjsdKQ!Kdk", :title => "foo litio", :message => "soy litio teodorakis" }}
     assert_equal true, flash[:error].to_s != ''

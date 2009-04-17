@@ -2,7 +2,7 @@ require 'test_helper'
 
 class GlobalNotificationTest < ActiveSupport::TestCase
   # Replace this with your real tests.
-  def test_no_flood
+  test "no_flood" do
     gn = GlobalNotification.new(:title => "foo", :main => "bar", :recipient_type => GlobalNotification::VALID_RECIPIENT_TYPES.first)
     assert gn.save
     gn.confirmed = true

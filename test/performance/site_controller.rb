@@ -8,7 +8,7 @@ class SiteTest < ActiveSupport::TestCase
     @response = ActionController::TestResponse.new
     get :staff
   end
-#  def test_truth
+#  test "truth" do
     #elapsedSeconds = Benchmark::realtime do
       #Fixtures.create_fixtures(File.dirname(__FILE__) + '/../fixtures/performance', 'anonymous_users')
       

@@ -7,7 +7,7 @@ class ContentTypeTest < ActiveSupport::TestCase
   end
 
   # Replace this with your real tests.
-  def test_truth
+  test "truth" do
     assert_kind_of ContentType,  @content_type
   end
 end

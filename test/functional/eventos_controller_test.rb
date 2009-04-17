@@ -7,7 +7,7 @@ class EventosControllerTest < ActionController::TestCase
 
 
 
-  def test_join
+  test "join" do
     e = Event.find(:first, :order => 'id DESC')
     assert_nil e.users.find_by_id(1)
     sym_login 1
@@ -15,20 +15,20 @@ class EventosControllerTest < ActionController::TestCase
     assert_not_nil e.users.find_by_id(1)
   end
 
-  def test_leave
+  test "leave" do
     test_join
     e = Event.find(:first, :order => 'id DESC')
     post :member_leave, { :id => e.id }
     assert_nil e.users.find_by_id(1)
   end
 
-  def test_dia
+  test "dia" do
     get :dia, { :id => '20060101' }
     assert_response :success
     assert_template 'dia'
   end
   
-  def test_dia_null
+  test "dia_null" do
     assert_raises(ActiveRecord::RecordNotFound) { get :dia }
   end
 end

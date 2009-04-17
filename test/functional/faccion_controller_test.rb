@@ -2,25 +2,25 @@ require 'test_helper'
 
 class FaccionControllerTest < ActionController::TestCase
   
-  def test_index
+  test "index" do
     @request.host = "#{FactionsPortal.find(:first).code}.#{App.domain}"
     get :index
     assert_response :success
   end
   
-  def test_miembros
+  test "miembros" do
     @request.host = "#{FactionsPortal.find(:first).code}.#{App.domain}"
     get :miembros
     assert_response :success
   end
   
-  def test_clanes
+  test "clanes" do
     @request.host = "#{FactionsPortal.find(:first).code}.#{App.domain}"
     get :clanes
     assert_response :success
   end
   
-  def test_staff
+  test "staff" do
     @request.host = "#{FactionsPortal.find(:first).code}.#{App.domain}"
     get :staff
     assert_response :success

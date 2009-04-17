@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class SoldNickChangeTest < ActiveSupport::TestCase
-  def test_truth
+  test "truth" do
     assert true
   end
 end

@@ -8,7 +8,7 @@ class UserTest < ActiveSupport::TestCase
     ActionMailer::Base.deliveries = []
   end
   
-  def test_faith_ok
+  test "faith_ok" do
     u = User.find(1)
     
     assert u.faith_points == 5
@@ -16,13 +16,13 @@ class UserTest < ActiveSupport::TestCase
   
 
   
-  def test_is_editor
+  test "is_editor" do
     u2 = User.find(2)
     assert u2.is_editor?
   end
   
   
-  def test_should_send_email_to_add_user_to_hq
+  test "should_send_email_to_add_user_to_hq" do
     prev = ActionMailer::Base.deliveries.size
     @p = User.find_by_login(:panzer)
     @p.is_hq = true
@@ -30,7 +30,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal prev + 2, ActionMailer::Base.deliveries.size
   end
   
-  def test_find_with_permissions
+  test "find_with_permissions" do
     u1 = User.find(1)
     assert u1.update_attributes(:admin_permissions => nil)
     assert u1.give_admin_permission(:capo)
@@ -42,7 +42,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal 1, capos[0].id
   end
   
-  def test_del_user_from_hq_should_work
+  test "del_user_from_hq_should_work" do
     test_should_send_email_to_add_user_to_hq
     #prev = ActionMailer::Base.deliveries.size
     @p.is_hq = false
@@ -50,7 +50,7 @@ class UserTest < ActiveSupport::TestCase
     #assert_equal prev + 1, ActionMailer::Base.deliveries.size
   end
   
-  def test_create
+  test "create" do
     # TODO granuralize this
     params = {:login => 'dharana', :password => 'limitedconsistency', :email => 'dharana@dharana.net', :ipaddr => '127.0.0.1', :lastseen_on => Time.now}
     u = User.new(params)
@@ -60,7 +60,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal Digest::MD5.hexdigest('limitedconsistency'), u.password
   end
   
-  def test_find_by_login_should_behave_correctly
+  test "find_by_login_should_behave_correctly" do
     u = User.find(1)
     assert_equal u.id, User.find_by_login(u.login).id
     assert_equal u.id, User.find_by_login(u.login.upcase).id
@@ -68,14 +68,14 @@ class UserTest < ActiveSupport::TestCase
     assert_nil User.find_by_login('AAAAAAAAAAAAAAAAAAA')
   end
   
-  def test_age_should_return_nil_if_no_birthday_set
+  test "age_should_return_nil_if_no_birthday_set" do
     u = User.create({:login => 'moon', :email => 'moon@moon.moon'})
     assert_nil u.birthday
     assert_nil u.age
   end
   
   
-  def test_flash_age
+  test "flash_age" do
     u = User.create({:login => 'Flashky', :email => 'moon@moon.moon', :birthday => DateTime.new(1988, 3, 26)})
     assert_equal 20, u.age(DateTime.new(2009, 3, 25))
     assert_equal 21, u.age(DateTime.new(2009, 3, 26))
@@ -83,13 +83,13 @@ class UserTest < ActiveSupport::TestCase
   end
   
   # GM-2531
-  def test_flash_age_hoy
+  test "flash_age_hoy" do
     u = User.create({:login => 'Flashky', :email => 'moon@moon.moon', :birthday => DateTime.new(1988, 3, 26)})
     years = DateTime.now.year - u.birthday.year
     assert([(years - 1), years].include?(u.age), u.age)
   end
 
-  def test_check_age    
+  test "check_age" do    
     u = User.find(1) 
     
     u.birthday = DateTime.new(1800, 3, 26)    
@@ -109,7 +109,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   
-  def test_should_allow_youtube_videos_on_profile
+  test "should_allow_youtube_videos_on_profile" do
     u = User.find(1)
     youtube_embed = '<object width="425" height="350"><param name="movie" value="http://www.youtube.com/v/2Iw1uEVaQpA"></param><param name="wmode" value="transparent"></param><embed src="http://www.youtube.com/v/2Iw1uEVaQpA" type="application/x-shockwave-flash" wmode="transparent" width="425" height="350"></embed></object>'
     u.description = youtube_embed
@@ -118,7 +118,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal youtube_embed, u.description
   end
   
-  def test_changing_last_commented_on_should_change_state_from_shadow
+  test "changing_last_commented_on_should_change_state_from_shadow" do
     [User::ST_SHADOW, User::ST_ZOMBIE].each do |st|
       u1 = User.find(1)
       u1.state = st
@@ -131,7 +131,7 @@ class UserTest < ActiveSupport::TestCase
     end
   end
   
-  def test_user_shouldnt_go_into_negative_remaining_ratings
+  test "user_shouldnt_go_into_negative_remaining_ratings" do
     u1 = User.find(1)
     u1.cache_remaining_rating_slots = -1
     assert_equal true, u1.save
@@ -141,7 +141,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal true, u1.remaining_rating_slots >= 0
   end
   
-  def test_disable_all_email_notifications_should_work
+  test "disable_all_email_notifications_should_work" do
     u1 = User.find(1)
     u1.notifications_global = true
     assert u1.save
@@ -152,7 +152,7 @@ class UserTest < ActiveSupport::TestCase
     assert !u1.notifications_global
   end
   
-  def test_ligoteo
+  test "ligoteo" do
     u1 = User.find(1)
     u2 = User.find(2)
     assert u1.update_attributes(:sex => User::MALE)
@@ -182,7 +182,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal 1, ulw[0].id
   end
   
-  def test_banning_user_should_remove_all_his_permissions
+  test "banning_user_should_remove_all_his_permissions" do
     u1 = User.find(1)
     ur1 = u1.users_roles.create(:role => 'Don', :role_data => '1')
     assert !ur1.new_record?
@@ -190,7 +190,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal 0, u1.users_roles.count
   end
   
-  def test_avatar_change_not_allowed_if_custom_from_other
+  test "avatar_change_not_allowed_if_custom_from_other" do
     u1 = User.find(1)
     av1 = Avatar.find(1)
     assert av1.update_attributes(:faction_id => nil, :user_id => 2)
@@ -199,7 +199,7 @@ class UserTest < ActiveSupport::TestCase
     end
   end
   
-  def test_avatar_change_not_allowed_if_clan_id_from_other
+  test "avatar_change_not_allowed_if_clan_id_from_other" do
     u1 = User.find(1)
     av1 = Avatar.find(1)
     assert av1.update_attributes(:faction_id => nil, :clan_id => 2)
@@ -208,7 +208,7 @@ class UserTest < ActiveSupport::TestCase
     end
   end
   
-  def test_avatar_change_not_allowed_if_faction_from_other
+  test "avatar_change_not_allowed_if_faction_from_other" do
     u1 = User.find(1)
     av1 = Avatar.find(1)
     assert av1.update_attributes(:faction_id => 2)
@@ -217,7 +217,7 @@ class UserTest < ActiveSupport::TestCase
     end
   end
   
-  def test_avatar_change_allowed_if_custom_from_self
+  test "avatar_change_allowed_if_custom_from_self" do
     u1 = User.find(1)
     av1 = Avatar.find(1)
     assert av1.update_attributes(:faction_id => nil, :user_id => 1)
@@ -225,7 +225,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal av1.id, u1.avatar_id
   end
   
-  def test_avatar_change_allowed_if_faction_from_self
+  test "avatar_change_allowed_if_faction_from_self" do
     u1 = User.find(1)
     Factions.user_joins_faction(u1, 1)
     av1 = Avatar.find(1)
@@ -235,7 +235,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal av1.id, u1.avatar_id
   end
   
-  def test_avatar_change_allowed_if_clan_from_self
+  test "avatar_change_allowed_if_clan_from_self" do
     u1 = User.find(1)
     av1 = Avatar.find(1)
     assert av1.update_attributes(:faction_id => nil, :clan_id => u1.clans_ids.first)

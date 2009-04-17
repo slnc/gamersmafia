@@ -6,7 +6,7 @@ class ApuestasControllerTest < ActionController::TestCase
   
   # TODO más tests
   #
-  def test_should_create_with_options
+  test "should_create_with_options" do
     sym_login 1
     post :create, :bet => {:title => 'footapang', :closes_on => 1.week.since, :options_new => ['opcion1', 'opcion2']}, :root_terms => 1
     assert_response :redirect
@@ -17,7 +17,7 @@ class ApuestasControllerTest < ActionController::TestCase
     assert_not_nil @b.bets_options.find_by_name('opcion2')
   end
   
-  #  def test_should_publish_as_is
+  #  test "should_publish_as_is" do
   #    test_should_create_with_options
   #    
   #    @b = Bet.find_by_title('footapang')
@@ -31,7 +31,7 @@ class ApuestasControllerTest < ActionController::TestCase
   #    assert_not_nil @b.bets_options.find_by_name('opcion2')
   #  end
   
-  def test_should_allow_to_change_options_if_not_published
+  test "should_allow_to_change_options_if_not_published" do
     test_should_create_with_options
     b = Bet.find_by_title('footapang')
     post :update, {:id => b.id,
@@ -50,7 +50,7 @@ class ApuestasControllerTest < ActionController::TestCase
   end
   
   # TODO faltan tests
-  def test_shouldnt_allow_to_reduce_bet_for_option_after_15min
+  test "shouldnt_allow_to_reduce_bet_for_option_after_15min" do
     test_should_create_with_options
     sym_login 1
     Bank.transfer(:bank, User.find(1), 100, "Asuntos sucios")
@@ -80,7 +80,7 @@ class ApuestasControllerTest < ActionController::TestCase
     assert_equal 9, bt.ammount.to_i 
   end
   
-  def test_complete_should_work
+  test "complete_should_work" do
     test_should_create_with_options
     Cms::modify_content_state(@b, User.find(1), Cms::PUBLISHED)
     @b.reload
@@ -93,7 +93,7 @@ class ApuestasControllerTest < ActionController::TestCase
     assert @b.completed?
   end
   
-  def test_resolve_should_work
+  test "resolve_should_work" do
     test_should_create_with_options
     Cms::modify_content_state(@b, User.find(1), Cms::PUBLISHED)
     @b.reload
@@ -103,7 +103,7 @@ class ApuestasControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_cambiar_resultado_should_work
+  test "cambiar_resultado_should_work" do
     test_complete_should_work
     post :cambiar_resultado, :id => @b.id
     assert_redirected_to "/apuestas/resolve/#{@b.id}"

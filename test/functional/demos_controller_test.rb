@@ -12,12 +12,12 @@ class DemosControllerTest < ActionController::TestCase
   DEF_VALS = {:entity1_external => 'foo', :games_mode_id => 1, :entity2_external => 'bar', :demotype => Demo::DEMOTYPES[:official], :mirrors_new => ["http://google.com/foo.zip", "http://kamasutra.com/porn.zip"] } 
   test_common_content_crud :name => 'Demo', :form_vars => DEF_VALS, :root_terms => [1] 
     
-  def test_should_show_demo_page
+  test "should_show_demo_page" do
     post :show, :id => Demo.find(:published, :limit => 1)[0].id
     assert_response :success    
   end
   
-  def test_should_show_download_page
+  test "should_show_download_page" do
     d = Demo.find(:published, :limit => 1)[0]
     orig = d.downloaded_times
     post :download, :id => d.id
@@ -26,22 +26,22 @@ class DemosControllerTest < ActionController::TestCase
     assert_equal orig + 1, d.downloaded_times
   end
   
-  def test_should_show_index
+  test "should_show_index" do
     post :index
     assert_response :success    
   end
   
-  def test_buscar_should_redirect_if_nothing_given
+  test "buscar_should_redirect_if_nothing_given" do
     post :buscar
     assert_redirected_to '/demos'
   end
   
-  def test_buscar_should_work_if_conditions_given
+  test "buscar_should_work_if_conditions_given" do
     post :buscar, { :demo => { :terms => 1 }}
     assert_response :success
   end
   
-  def test_should_create_demo_with_references_to_local_if_checkbox_checked_and_user_entity_type
+  test "should_create_demo_with_references_to_local_if_checkbox_checked_and_user_entity_type" do
     sym_login 1
     opts = DEF_VALS.merge({:entity1_external => User.find(1).login, :entity1_is_local => '1'})
     # opts.delete :entity1_external
@@ -55,7 +55,7 @@ class DemosControllerTest < ActionController::TestCase
     assert_equal User.find(1).login, d.entity1.login
   end
   
-  def test_should_create_demo_with_references_to_local_if_checkbox_checked_and_clan_entity_type
+  test "should_create_demo_with_references_to_local_if_checkbox_checked_and_clan_entity_type" do
     sym_login 1
     opts = DEF_VALS.merge({:entity2_external => Clan.find(1).name, :entity2_is_local => '1', :games_mode_id => 2})
     #    opts.delete :entity2_external
@@ -69,30 +69,30 @@ class DemosControllerTest < ActionController::TestCase
     assert_equal Clan.find(1).name, d.entity2.name
   end
   
-  def test_get_games_versions_should_work
+  test "get_games_versions_should_work" do
     get :get_games_versions, :game_id => 1
     assert_response :success
   end
   
-  def test_get_games_versions_shouldnt_crash_if_undefined_demos_category_id
+  test "get_games_versions_shouldnt_crash_if_undefined_demos_category_id" do
     assert_raises(ActiveRecord::RecordNotFound) { get :get_games_versions }
   end
   
-  def test_get_games_modes_should_work
+  test "get_games_modes_should_work" do
     get :get_games_modes, :game_id => 1
     assert_response :success
   end
   
-  def test_get_games_modes_shouldnt_crash_if_undefined_demos_category_id
+  test "get_games_modes_shouldnt_crash_if_undefined_demos_category_id" do
     assert_raises(ActiveRecord::RecordNotFound) { get :get_games_modes }
   end
   
-  def test_get_games_maps_should_work
+  test "get_games_maps_should_work" do
     get :get_games_maps, :game_id => 1
     assert_response :success
   end
   
-  def test_get_games_maps_shouldnt_crash_if_undefined_demos_category_id
+  test "get_games_maps_shouldnt_crash_if_undefined_demos_category_id" do
     assert_raises(ActiveRecord::RecordNotFound) { get :get_games_maps }
   end
 end

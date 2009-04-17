@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class NewsTest < ActiveSupport::TestCase
-  def test_should_properly_change_url
+  test "should_properly_change_url" do
     @news = News.new(:title => 'foo flash-hack', :user_id => 1, :description => 'bar flash', :terms => Term.single_toplevel(:slug => 'ut').id)
     assert @news.save
     assert @news.unique_content.url.include?('http://ut.gamersmafia.dev/'), @news.unique_content.url

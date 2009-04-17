@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class PotdTest < ActiveSupport::TestCase
-  def test_should_select_another_potd_if_current_potd_becomes_unpublished
+  test "should_select_another_potd_if_current_potd_becomes_unpublished" do
     im = Image.find(:first, :conditions => "state = #{Cms::PUBLISHED}")
     assert_not_nil im
     potd = Potd.new({:date => Time.now, :image_id => im.id})
@@ -12,7 +12,7 @@ class PotdTest < ActiveSupport::TestCase
     assert_equal false, im.is_public?
   end
   
-  def test_shouldnt_select_potd_from_clans_categories
+  test "shouldnt_select_potd_from_clans_categories" do
     User.db_query("UPDATE images SET clan_id = 1")
     assert_nil Potd.choose_one_portal(GmPortal.new)
   end
