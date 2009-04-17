@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'blogs_controller'
-
-# Re-raise errors caught by the controller.
-class BlogsController; def rescue_action(e) raise e end; end
 
 class BlogsControllerTest < ActionController::TestCase
 

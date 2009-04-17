@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'miembros_controller'
-
-# Re-raise errors caught by the controller.
-class MiembrosController; def rescue_action(e) raise e end; end
 
 class MiembrosControllerTest < ActionController::TestCase
 

@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'clanes_controller'
-
-# Re-raise errors caught by the controller.
-class ClanesController; def rescue_action(e) raise e end; end
 
 class ClanesControllerTest < ActionController::TestCase
 

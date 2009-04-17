@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'foros_controller'
-
-# Re-raise errors caught by the controller.
-class ForosController; def rescue_action(e) raise e end; end
 
 class ForosControllerTest < ActionController::TestCase
 

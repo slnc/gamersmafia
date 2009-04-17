@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'cuenta/guids_controller'
-
-# Re-raise errors caught by the controller.
-class Cuenta::GuidsController; def rescue_action(e) raise e end; end
 
 class Cuenta::GuidsControllerTest < ActionController::TestCase
   test_min_acl_level :user, [ :index, :guardar ]

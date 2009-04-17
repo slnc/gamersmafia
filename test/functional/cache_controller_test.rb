@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'cache_controller'
-
-# Re-raise errors caught by the controller.
-class CacheController; def rescue_action(e) raise e end; end
 
 class ActionController::TestRequest
   attr_accessor :user_agent

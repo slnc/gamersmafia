@@ -1,9 +1,5 @@
 require 'test_helper'
-require 'rss_controller'
 require 'feed_tools'
-
-# Re-raise errors caught by the controller.
-class RssController; def rescue_action(e) raise e end; end
 
 class RssControllerTest < ActionController::TestCase
 

@@ -1,14 +1,9 @@
 require 'test_helper'
 require File.dirname(__FILE__) + '/../test_functional_content_helper'
-require 'noticias_controller'
-
-class NoticiasController; def rescue_action(e) raise e end; end
 
 class NoticiasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'News', :form_vars => {:title => 'footapang', :description => 'bartapang'}, :root_terms => 1
-  
 
-  
   def test_update_should_save_contents_version
     sym_login 1
     n = News.find(1)

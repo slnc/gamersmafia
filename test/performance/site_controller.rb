@@ -1,5 +1,4 @@
 require 'test_helper'
-require 'site_controller'
 
 class SiteTest < ActiveSupport::TestCase
   HOW_MANY = 100

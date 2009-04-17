@@ -1,9 +1,5 @@
 require 'test_helper'
 require File.dirname(__FILE__) + '/../test_functional_content_helper'
-require 'demos_controller'
-
-# Re-raise errors caught by the controller.
-class DemosController; def rescue_action(e) raise e end; end
 
 class DemosControllerTest < ActionController::TestCase
   def setup

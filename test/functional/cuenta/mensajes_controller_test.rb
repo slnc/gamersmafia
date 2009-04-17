@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'cuenta/mensajes_controller'
-
-# Re-raise errors caught by the controller.
-class Cuenta::MensajesController; def rescue_action(e) raise e end; end
 
 class Cuenta::MensajesControllerTest < ActionController::TestCase
 

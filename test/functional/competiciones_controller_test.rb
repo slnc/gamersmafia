@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'competiciones_controller'
-
-# Re-raise errors caught by the controller.
-class CompeticionesController; def rescue_action(e) raise e end; end
 
 class CompeticionesControllerTest < ActionController::TestCase
 

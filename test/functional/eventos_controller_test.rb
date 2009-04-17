@@ -1,9 +1,5 @@
 require 'test_helper'
 require File.dirname(__FILE__) + '/../test_functional_content_helper'
-require 'eventos_controller'
-
-# Re-raise errors caught by the controller.
-class EventosController; def rescue_action(e) raise e end; end
 
 class EventosControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Event', :form_vars => {:title => 'footapang', :starts_on => Time.now, :ends_on => 7.days.since}, :root_terms => 1 

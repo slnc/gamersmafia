@@ -1,6 +1,5 @@
 require 'test_helper'
 require File.dirname(__FILE__) + '/../test_functional_content_helper'
-require 'apuestas_controller'
 
 class ApuestasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Bet', :form_vars => {:title => 'footapang', :closes_on => 1.week.since, :options_new => ['opcion1', 'opcion2']}, :root_terms => 1

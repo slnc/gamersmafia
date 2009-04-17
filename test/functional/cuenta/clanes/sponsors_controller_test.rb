@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'cuenta/clanes/sponsors_controller'
-
-# Re-raise errors caught by the controller.
-class Cuenta::Clanes::SponsorsController; def rescue_action(e) raise e end; end
 
 class Cuenta::Clanes::SponsorsControllerTest < ActionController::TestCase
   

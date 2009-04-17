@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'cuenta/cuenta_controller'
-
-# Re-raise errors caught by the controller.
-class Cuenta::CuentaController; def rescue_action(e) raise e end; end
 
 class Cuenta::CuentaControllerTest < ActionController::TestCase
   

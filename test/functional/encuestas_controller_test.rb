@@ -1,9 +1,5 @@
 require 'test_helper'
 require File.dirname(__FILE__) + '/../test_functional_content_helper'
-require 'encuestas_controller'
-
-# Re-raise errors caught by the controller.
-class EncuestasController; def rescue_action(e) raise e end; end
 
 class EncuestasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Poll', :form_vars => {:title => 'footapang', :starts_on => 2.days.since, :ends_on => 9.days.since}, :root_terms => 1

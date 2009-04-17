@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'site_controller'
-
-# Re-raise errors caught by the controller.
-class SiteController; def rescue_action(e) raise e end; end
 
 class SiteControllerTest < ActionController::TestCase
   def setup

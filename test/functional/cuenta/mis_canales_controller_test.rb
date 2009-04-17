@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'cuenta/mis_canales_controller'
-
-# Re-raise errors caught by the controller.
-class Cuenta::MisCanalesController; def rescue_action(e) raise e end; end
 
 class Cuenta::MisCanalesControllerTest < ActionController::TestCase
 

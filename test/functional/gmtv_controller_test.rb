@@ -1,8 +1,4 @@
 require 'test_helper'
-require 'gmtv_controller'
-
-# Re-raise errors caught by the controller.
-class GmtvController; def rescue_action(e) raise e end; end
 
 class GmtvControllerTest < ActionController::TestCase
 
