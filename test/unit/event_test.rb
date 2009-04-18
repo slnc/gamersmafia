@@ -10,9 +10,7 @@ class EventTest < ActiveSupport::TestCase
     
     expected_hotmap = {1 => 1, 2 => 1, 3 => 1, 4 => 1, 5 => 2, 6 => 2, 7 => 1, 8 => 1, 9 => 1, 10 => 1, 28 => 1}
     res_hotmap = Event.hotmap(Time.local(2006, 02, 15, 00,00,00))
-    p res_hotmap
     res_hotmap.each do |k,v|
-      puts k, v
       assert_equal v, expected_hotmap[k]
     end
   end
