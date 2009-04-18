@@ -1,4 +1,15 @@
 <% content_support do %>
+	<%mftext('Tutoriales de CSS') do %>
+	<ul>
+		<li><a href="http://www.webestilo.com/css/">Webestilo</a></li>
+		<li><a href="http://www.cristalab.com/tutoriales/tutorial-basico-de-css-c94l/">Cristalab</a></li>
+	</ul>
+<% end -%>
+	<%mftext('Herramientas') do %>
+	<ul>
+		<li><a href="http://getfirebug.com/">Firebug</a></li>
+	</ul>
+<% end -%>
 <% end -%>
 
 <% content_main do %>
@@ -24,7 +35,7 @@ Tipo: <select name="skin[type]">
     <td><a href="/cuenta/skins/edit/<%=skin.id%>"><%=skin.name%></a></td>
     <td><%=skin.type%></td>
     <td><%=skin.is_public?%></td>
-    <td><a href="/cuenta/skins/activate?skin_id=<%=skin.id%>">Activar</a></td>
+    <td><a href="/cuenta/skins/activate?skin=<%=skin.id%>">Activar</a></td>
     <td><a href="/<%=skin.file%>">Descargar</a></td>
     <td><a href="/cuenta/skins/destroy/<%=skin.id%>" onclick="return confirm('¿Estás seguro?');">Borrar</a></td>
 </tr>

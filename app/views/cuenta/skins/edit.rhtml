@@ -1,4 +1,12 @@
+<a href="/<%=@skin.file%>">Descargar zip</a>
+<br />
+<br />
+<div class="infoinline">La descomprimes en tu pc, modificas el style.css, generas un nuevo .zip y...</div>
+<br />
+<br />
+<%mftext('Actualizar skin') do %>
 <form method="post" action="/cuenta/skins/update/<%=@skin.id%>" enctype="multipart/form-data">
 Archivo .zip con la skin: <input type="file" name="skin[file]" /><br />
 <input type="submit" class="button" value="Guardar" />
 </form>
+<% end -%>

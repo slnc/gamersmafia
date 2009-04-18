@@ -78,6 +78,7 @@ module Users
       clean_url.gsub!(/(\?vk=([a-z0-9]{32}))/, '?fromvk=1') if /\?vk=([a-z0-9]{32})/ =~ clean_url
       
       session[:skin] = cookies[:skin] if cookies[:skin] # TODO TODO permisos 
+      session[:skin] = params[:skin] if params[:skin] # TODO TODO permisos 
       
       if session[:user]
         @user =	User.find(session[:user])

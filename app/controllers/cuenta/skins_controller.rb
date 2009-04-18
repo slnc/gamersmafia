@@ -224,7 +224,7 @@ class Cuenta::SkinsController < ApplicationController
 
 
   def activate
-    @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
+    @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:skin], @user.id])
     cookies[:skin] = @skin.id
     flash[:notice] = "Skin #{@skin.name} activada correctamente"
     redirect_to "/cuenta/skins"

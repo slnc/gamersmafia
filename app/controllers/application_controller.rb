@@ -497,8 +497,10 @@ Request information:
   
   public
   def skin
-    if session[:skin]
+    if session[:skin] && 1 == 2
       Skin.find_by_hid(session[:skin]) || Skin.find_by_hid('default')
+    elsif params['skin']
+      Skin.find(params['skin'].to_i) || Skin.find_by_hid('default')
     elsif portal.skin_id != nil
       Skin.find(portal.skin_id) || Skin.find_by_hid('default')
     else
