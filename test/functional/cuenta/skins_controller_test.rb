@@ -2,6 +2,12 @@ require 'test_helper'
 
 class Cuenta::SkinsControllerTest < ActionController::TestCase
 
+  test "activate my own skin should work" do
+      test_should_create_factions_skin_if_everything_ok
+      post :activate, :id => @skin.id
+      assert_response :redirect
+      assert_equal @skin.id.to_s, cookies["skin"]
+  end
   
   # Replace this with your real tests.
   test "index_should_work" do

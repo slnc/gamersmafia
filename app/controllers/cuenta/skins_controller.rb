@@ -6,7 +6,7 @@ class Cuenta::SkinsController < ApplicationController
   end
   
   def submenu_items
-    if @skin && @portal.clan_id
+    if @skin && @portal.respond_to?(:clan_id) && @portal.clan_id
       [['Cabecera', "/cuenta/skins/cabecera/#{@skin.id}"],
       ['Organización', "/cuenta/skins/organizacion/#{@skin.id}"],
       ['Módulos', "/cuenta/skins/modulos/#{@skin.id}"],
@@ -14,6 +14,8 @@ class Cuenta::SkinsController < ApplicationController
       ['Texturas', "/cuenta/skins/texturas/#{@skin.id}"],
       ['Otras opciones', "/cuenta/skins/otras_opciones/#{@skin.id}"],
       ]
+    else
+	    []
     end
   end
   
@@ -218,5 +220,13 @@ class Cuenta::SkinsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless skin
     skin.remove_skin_texture(sk)
     redirect_to "/cuenta/skins/texturas/#{skin.id}"
+  end
+
+
+  def activate
+    @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
+    cookies[:skin] = @skin.id
+    flash[:notice] = "Skin #{@skin.name} activada correctamente"
+    redirect_to "/cuenta/skins"
   end
 end
