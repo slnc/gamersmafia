@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/../../../test_helper'
+require 'test_helper'
 
 class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase  
-  def test_should_not_create_invalid_clan
+  test "should_not_create_invalid_clan" do
     sym_login 1
     c = Clan.count
     post :create, { :newclan => { :name => 'fooooooooooooooooooooooooooooooooooooooo', :tag => 'baaaaaaaaaaaaaaaaaaaaar'}}
@@ -12,19 +12,19 @@ class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase
     assert_not_nil flash[:error]
   end
   
-  def test_index_should_work
+  test "index_should_work" do
     sym_login 1
     get :index
     assert_response :success
   end
   
-  def test_menu_should_work
+  test "menu_should_work" do
     sym_login 1
     get :menu
     assert_response :success
   end
   
-  def test_create_should_work
+  test "create_should_work" do
     sym_login 1
     assert_count_increases(Clan) do
       post :create, { :newclan => { :name => "hola", :tag => 'tag', :logo => fixture_file_upload('/files/buddha.jpg', 'image/jpeg')}}
@@ -39,7 +39,7 @@ class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase
     assert_equal @c.id, @u1.last_clan_id 
   end
   
-  def test_borrar_should_work_if_last_clanleader
+  test "borrar_should_work_if_last_clanleader" do
     test_create_should_work
     assert !@c.deleted
     post :borrar, {:clan_id => @c.id}
@@ -49,20 +49,20 @@ class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase
     assert @c.deleted
   end
   
-  def test_borrar_shouldnt_work_if_more_than_1_clanleaders
+  test "borrar_shouldnt_work_if_more_than_1_clanleaders" do
     test_create_should_work
     @c.admins<< User.find(2)
     assert_raises(AccessDenied) { post :borrar, {:clan_id => @c.id} }
   end
   
-  def test_abandonar_should_work_if_not_last_member
+  test "abandonar_should_work_if_not_last_member" do
     test_create_should_work
     @c.admins<< User.find(2)
     get :abandonar, {:clan_id => @c.id}
     assert_response :redirect
   end
   
-  def test_abandonar_shouldnt_work_if_last_member
+  test "abandonar_shouldnt_work_if_last_member" do
     test_create_should_work
     c = @c.all_users_of_this_clan.size
     assert_equal 1, c
@@ -73,7 +73,7 @@ class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase
     assert_equal c, @c.all_users_of_this_clan.size
   end
   
-  def test_update_should_work
+  test "update_should_work" do
     test_create_should_work
     assert_equal @c.id, @u1.last_clan_id
     post :update, { :clan => { :irc_channel => '#los_manolitos', :name => 'namae', :tag => 'taggae', :logo => fixture_file_upload('/files/buddha.jpg', 'image/jpeg'), :competition_roster => fixture_file_upload('/files/buddha.jpg', 'image/jpeg'), :irc_server => 'irc.quakenet.org', :website_external => 'http://www.fulanitos.com'}}
@@ -83,7 +83,7 @@ class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase
     assert_equal 'los_manolitos', @c.irc_channel
   end
   
-  def test_add_member_to_group_should_work
+  test "add_member_to_group_should_work" do
     test_create_should_work
     @cg = Clan.find(@u1.last_clan_id).clans_groups.find(:first)
     assert !@cg.has_user(2)
@@ -93,7 +93,7 @@ class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase
     assert @cg.has_user(2)
   end
   
-  def test_remove_member_from_group_should_work
+  test "remove_member_from_group_should_work" do
     test_add_member_to_group_should_work
     post :remove_member_from_group, { :user_id => 2, :clans_group_id => @cg.id }
     assert_response :redirect
@@ -101,25 +101,25 @@ class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase
     assert !@cg.has_user(2)
   end
   
-  def test_configuracion_should_work
+  test "configuracion_should_work" do
     test_create_should_work
     get :configuracion
     assert_response :success
   end
   
-  def test_miembros_should_work
+  test "miembros_should_work" do
     test_create_should_work
     get :miembros
     assert_response :success
   end
   
-  def test_amigos_should_work
+  test "amigos_should_work" do
     test_create_should_work
     get :amigos
     assert_response :success
   end
   
-  def test_add_friend_should_work_if_giving_id
+  test "add_friend_should_work_if_giving_id" do
     test_create_should_work
     c_friends = @c.friends.size
     post :add_friend, { :id => 1 }
@@ -128,7 +128,7 @@ class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase
     assert_equal c_friends + 1, @c.friends.size
   end
   
-  def test_add_friend_should_work_if_giving_name
+  test "add_friend_should_work_if_giving_name" do
     test_create_should_work
     c_friends = @c.friends.size
     post :add_friend, { :name => Clan.find(1).name }
@@ -137,7 +137,7 @@ class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase
     assert_equal c_friends + 1, @c.friends.size
   end
   
-  def test_del_friends_should_work
+  test "del_friends_should_work" do
     test_add_friend_should_work_if_giving_id
     c_friends = @c.friends.size
     post :del_friends, { :clans => [1] }
@@ -146,13 +146,13 @@ class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase
     assert_equal c_friends - 1, @c.friends.size
   end
   
-  def test_banco_should_work
+  test "banco_should_work" do
     test_create_should_work
     get :banco
     assert_response :success
   end
   
-  def test_switch_active_clan_should_work_if_switching_to_nil
+  test "switch_active_clan_should_work_if_switching_to_nil" do
     test_create_should_work
     get :switch_active_clan, { :id => ''}
     assert_response :redirect
@@ -160,7 +160,7 @@ class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase
     assert_nil @u1.last_clan_id
   end
   
-  def test_switch_active_clan_should_work_if_switching_to_clan
+  test "switch_active_clan_should_work_if_switching_to_clan" do
     test_create_should_work
     assert_not_equal @u1.last_clan_id, 1
     get :switch_active_clan, { :id => 1}
@@ -169,7 +169,7 @@ class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase
     assert_equal @u1.last_clan_id, 1
   end
   
-  def test_activate_website_should_work_if_product
+  test "activate_website_should_work_if_product" do
     test_create_should_work
     assert_count_increases(SoldProduct) do
       @u1.sold_products.create({:price_paid => 1.0, :product_id => Product.find_by_cls('SoldClanWebsite').id})

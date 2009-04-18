@@ -1,7 +1,7 @@
 require 'lib/redefine_task'
 
 desc 'Batería de tests por defecto'
-redefine_task :test do
+redefine_task :test => :environment do
   RAILS_ENV = 'test'
   got_error = false
   %w(functionals helpers integration libs plugins scripts tasks units).each do |tpack|
@@ -38,13 +38,6 @@ namespace :test do
     t.verbose = true
   end
   
-  desc 'Test helpers tests'
-  Rake::TestTask.new(:helpers) do |t|
-    t.libs << 'test'
-    t.pattern = 'test/helpers/**/*_test.rb'
-    t.verbose = true
-  end
-  
   desc 'Test tasks tests'
   Rake::TestTask.new(:tasks) do |t|
     t.libs << 'test'
@@ -58,8 +51,10 @@ namespace :test do
     
     t.test_files = FileList['test/functional/*_test.rb',
                             'test/functional/*/*_test.rb',
-                            'test/helpers/*_test.rb',
-                            'test/helpers/**/*_test.rb',
+                            'test/functional/*/*/*_test.rb',
+                            'test/unit/helpers/*_test.rb',
+                            'test/unit/helpers/*/*_test.rb',
+                            'test/unit/helpers/*/*/*_test.rb',
                             'test/lib/**/*_test.rb',
                             'test/integration/*_test.rb',
                             'vendor/plugins/*/**/test/**/*_test.rb',

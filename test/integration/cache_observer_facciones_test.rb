@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class CacheObserverFaccionesTest < ActionController::IntegrationTest
   def setup
@@ -6,7 +6,7 @@ class CacheObserverFaccionesTest < ActionController::IntegrationTest
     host! App.domain
   end
   
-  def test_should_clear_faction_user_ratios_graph_after_new_member_joining
+  test "should_clear_faction_user_ratios_graph_after_new_member_joining" do
     Factions::user_joins_faction(User.find(2), 1) # necesario por gruff que falla si intentamos dibujar pie con 0, 0
     link = "/cache/graphs/faction_users_ratios/#{Time.now.strftime('%Y%m%d')}/1.png"
     graph_file = "#{RAILS_ROOT}/public#{link}"
@@ -26,7 +26,7 @@ class CacheObserverFaccionesTest < ActionController::IntegrationTest
     assert_equal false, File.exists?(graph_file)
   end
   
-  def test_should_clear_list_cache_index_on_user_joining_a_faction
+  test "should_clear_list_cache_index_on_user_joining_a_faction" do
     @u = User.find(1)
     go_to '/facciones', 'facciones/list'
     assert_cache_exists 'common/facciones/list_'
@@ -34,7 +34,7 @@ class CacheObserverFaccionesTest < ActionController::IntegrationTest
     assert_cache_dont_exist 'common/facciones/list_'
   end
   
-  def test_should_clear_list_cache_index_on_user_leaving_a_faction
+  test "should_clear_list_cache_index_on_user_leaving_a_faction" do
     test_should_clear_list_cache_index_on_user_joining_a_faction
     go_to '/facciones', 'facciones/list'
     assert_cache_exists 'common/facciones/list_'
@@ -42,7 +42,7 @@ class CacheObserverFaccionesTest < ActionController::IntegrationTest
     assert_cache_dont_exist 'common/facciones/list_'
   end
   
-  def test_should_clear_show_cache_stats_of_new_faction_on_user_joining_a_faction
+  test "should_clear_show_cache_stats_of_new_faction_on_user_joining_a_faction" do
     @u = User.find(1)
     assert_nil @u.faction_id
     host! "#{FactionsPortal.find(1).code}.#{App.domain}"
@@ -52,13 +52,13 @@ class CacheObserverFaccionesTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/facciones/#{Time.now.strftime('%Y%m%d')}/stats/1"
   end
   
-  def test_should_clear_show_cache_stats_of_old_faction_on_user_joining_a_faction
+  test "should_clear_show_cache_stats_of_old_faction_on_user_joining_a_faction" do
     test_should_clear_show_cache_stats_of_new_faction_on_user_joining_a_faction
     Factions::user_joins_faction(@u, nil)
     assert_cache_dont_exist "/common/facciones/#{Time.now.strftime('%Y%m%d')}/stats/1"
   end
   
-  def test_should_clear_show_cache_last_joined_of_new_faction_on_user_joining_a_faction
+  test "should_clear_show_cache_last_joined_of_new_faction_on_user_joining_a_faction" do
     @u = User.find(1)
     assert_nil @u.faction_id
     host! "#{FactionsPortal.find(1).code}.#{App.domain}"
@@ -69,7 +69,7 @@ class CacheObserverFaccionesTest < ActionController::IntegrationTest
   end
   
   
-  def test_should_clear_miembros_cache_members_of_new_faction_on_user_joining_a_faction
+  test "should_clear_miembros_cache_members_of_new_faction_on_user_joining_a_faction" do
     @u = User.find(1)
     assert_nil @u.faction_id
     host! "#{FactionsPortal.find(1).code}.#{App.domain}"
@@ -79,7 +79,7 @@ class CacheObserverFaccionesTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/facciones/miembros/1/page_"
   end
   
-  def test_should_clear_miembros_cache_members_of_old_faction_on_user_joining_a_faction
+  test "should_clear_miembros_cache_members_of_old_faction_on_user_joining_a_faction" do
     test_should_clear_show_cache_stats_of_new_faction_on_user_joining_a_faction
     host! "#{FactionsPortal.find(1).code}.#{App.domain}"
     go_to '/faccion/miembros', 'faccion/miembros'

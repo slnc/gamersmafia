@@ -1,13 +1,13 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 
-class FaithTest < Test::Unit::TestCase
+class FaithTest < ActiveSupport::TestCase
   
   def setup
     @u1 = User.find(1)
     @initial_fp = @u1.faith_points
   end
   
-  def test_calculate_faith_points_should_consider_competitions_matches
+  test "calculate_faith_points_should_consider_competitions_matches" do
     initial_matches = CompetitionsMatch.count
     c = Ladder.find(:first, :conditions => "competitions_participants_type_id = #{Competition::USERS} AND state = 3")
     assert_not_nil c
@@ -26,23 +26,23 @@ class FaithTest < Test::Unit::TestCase
     assert_equal @initial_fp + Faith::FPS_ACTIONS['competitions_match'], @u1.faith_points
   end
   
-  #  def test_calculate_faith_points_should_consider_registrations_active
+  #  test "calculate_faith_points_should_consider_registrations_active" do
   #    flunk
   #  end
   #  
-  #  def test_calculate_faith_points_should_consider_resurrections_active
+  #  test "calculate_faith_points_should_consider_resurrections_active" do
   #    flunk
   #  end
   #  
-  #  def test_calculate_faith_points_should_consider_own_resurrections_active
+  #  test "calculate_faith_points_should_consider_own_resurrections_active" do
   #    flunk
   #  end
   #  
-  #  def test_calculate_faith_points_should_consider_referred_hits
+  #  test "calculate_faith_points_should_consider_referred_hits" do
   #    flunk # TODO
   #  end
   
-  def test_calculate_faith_points_should_consider_content_ratings
+  test "calculate_faith_points_should_consider_content_ratings" do
     initial_cr = ContentRating.count
     @u1.content_ratings.create({:ip => '0.0.0.0', :content_id => Content.find(:first, :conditions => 'id NOT IN (SELECT content_id from content_ratings where user_id = 1)').id, :rating => 1})
     assert_equal initial_cr + 1, ContentRating.count
@@ -52,7 +52,7 @@ class FaithTest < Test::Unit::TestCase
     assert_equal @initial_fp + Faith::FPS_ACTIONS['rating'], @u1.faith_points
   end
   
-  #  def test_calculate_faith_points_should_consider_publishing_decisions
+  #  test "calculate_faith_points_should_consider_publishing_decisions" do
   #    flunk # TODO
   #  end
   
@@ -60,7 +60,7 @@ class FaithTest < Test::Unit::TestCase
   
   
   
-  def test_should_give_faith_points_if_valid
+  test "should_give_faith_points_if_valid" do
     u = User.find(1)
     kp_initial = u.faith_points
     Faith.give(u, 1)
@@ -69,7 +69,7 @@ class FaithTest < Test::Unit::TestCase
     assert_equal kp_initial + 1, u.faith_points
   end
   
-  def test_should_take_faith_points_if_valid
+  test "should_take_faith_points_if_valid" do
     test_should_give_faith_points_if_valid
     u = User.find(1)
     kp_initial = u.faith_points
@@ -79,7 +79,7 @@ class FaithTest < Test::Unit::TestCase
     assert_equal kp_initial - 1, u.faith_points
   end
   
-  def test_should_not_corrupt_faith_points_cache_due_to_concurrency
+  test "should_not_corrupt_faith_points_cache_due_to_concurrency" do
     u_a = User.find(1)
     u_b = User.find(1)
     kp_initial = u_a.faith_points
@@ -93,7 +93,7 @@ class FaithTest < Test::Unit::TestCase
     assert_equal kp_initial + 2, u_b.faith_points
   end
   
-  def test_level_should_work_correctly
+  test "level_should_work_correctly" do
     i = 0
     Faith::POINTS_PER_LEVEL.each do |kp|
       assert_equal i, Faith::level(kp)
@@ -102,7 +102,7 @@ class FaithTest < Test::Unit::TestCase
     end
   end
   
-  def test_kp_for_level_should_work_correctly
+  test "kp_for_level_should_work_correctly" do
     i = 0
     Faith::POINTS_PER_LEVEL.each do |kp|
       assert_equal kp, Faith::kp_for_level(i)
@@ -110,13 +110,13 @@ class FaithTest < Test::Unit::TestCase
     end
   end
   
-  def test_pc_done_should_work
+  test "pc_done_should_work" do
     assert_equal 0, Faith::pc_done_for_next_level(0)
     assert_equal 50, Faith::pc_done_for_next_level(Faith::POINTS_PER_LEVEL[1] / 2)
     assert_equal 99, Faith::pc_done_for_next_level(Faith::POINTS_PER_LEVEL[1] -1)
   end
   
-  def test_update_ranking
+  test "update_ranking" do
     User.db_query("UPDATE users SET cache_faith_points = id")
     Faith.update_ranking
     assert_equal 17, User.find(1).ranking_faith_pos

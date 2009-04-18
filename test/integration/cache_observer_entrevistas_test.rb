@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 
 class CacheObserverEntrevistasTest < ActionController::IntegrationTest
@@ -9,7 +9,7 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
   end
 
   # MAIN
-  def test_should_clear_cache_on_main_after_publishing_interview
+  test "should_clear_cache_on_main_after_publishing_interview" do
     n = portal.interview.find(:pending)[0]
     assert_not_nil n
     go_to '/entrevistas', 'entrevistas/index'
@@ -18,7 +18,7 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "#{portal.code}/entrevistas/index/page_"
   end
 
-  def test_should_clear_cache_on_main_after_unpublishing_interview
+  test "should_clear_cache_on_main_after_unpublishing_interview" do
     n = portal.interview.find(:published)[0]
     assert_not_nil n
     go_to '/entrevistas', 'entrevistas/index'
@@ -27,7 +27,7 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "#{portal.code}/entrevistas/index/page_"
   end
 
-  def test_should_clear_cache_on_main_after_updating_interview
+  test "should_clear_cache_on_main_after_updating_interview" do
     n = portal.interview.find(:published)[0]
     assert_not_nil n
     go_to '/entrevistas', 'entrevistas/index'
@@ -36,7 +36,7 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "#{portal.code}/entrevistas/index/page_"
   end
 
-  def test_should_clear_cache_others_by_author_on_main_after_publishing_a_new_interview
+  test "should_clear_cache_others_by_author_on_main_after_publishing_a_new_interview" do
     n = portal.interview.find(:published)[0]
     assert_not_nil n
     go_to "/entrevistas/show/#{n.id}", 'entrevistas/show'
@@ -48,32 +48,27 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
 
 
   # PORTAL
-  def test_should_clear_cache_on_portal_after_publishing_interview
+  test "should_clear_cache_on_portal_after_publishing_ faction interview" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_publishing_interview
   end
 
-  def test_should_clear_cache_on_portal_after_unpublishing_interview
+  test "should_clear_cache_on_portal_after_unpublishing_faction interview" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_unpublishing_interview
   end
 
-  def test_should_clear_cache_on_portal_after_updating_interview
+  test "should_clear_cache_on_portal_after_updating_faction interview" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_updating_interview
   end
 
-  def test_should_clear_cache_on_portal_after_rating_interview
-    faction_host FactionsPortal.find_by_code('ut')
-    test_should_clear_cache_on_main_after_rating_interview
-  end
-
-  def test_should_clear_cache_on_portal_after_rating_interview
+  test "should_clear_cache_on_portal_after_rating_faction interview 2" do
     faction_host FactionsPortal.find_by_code('ut')
     # TODO hack temporal
     Interview.find(:published).each do |c|
       uniq = c.unique_content
-      uniq.url = uniq.url.gsub('http://gamersmafia.dev', 'http://ut.gamersmafia.dev')
+      uniq.url = uniq.url.gsub("http://#{App.domain}", "http://ut.#{App.domain}")
       uniq.save
     end
     test_should_clear_cache_others_by_author_on_main_after_publishing_a_new_interview

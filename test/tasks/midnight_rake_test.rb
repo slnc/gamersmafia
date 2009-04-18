@@ -1,18 +1,18 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 load RAILS_ROOT + '/Rakefile'
 
-class MidnightRakeTest < Test::Unit::TestCase
+class MidnightRakeTest < ActiveSupport::TestCase
   include Rake
   
   def setup
     overload_rake_for_tests
   end
   
-  def test_all
+  test "all" do
     Rake::Task['gm:midnight']
   end
   
-  def test_should_reset_faith_to_everybody
+  test "should_reset_faith_to_everybody" do
     User.db_query("UPDATE users SET cache_remaining_rating_slots = 0, lastseen_on = now() where id = 1")
     u1 = User.find(1)
     assert_equal 0, u1.remaining_rating_slots

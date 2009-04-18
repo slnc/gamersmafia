@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class FactionTest < Test::Unit::TestCase
-  def test_find_by_bigboss
+class FactionTest < ActiveSupport::TestCase
+  test "find_by_bigboss" do
     f1 = Faction.find(1)
     u1 = User.find(1)
     f1.update_boss(u1)
@@ -11,7 +11,7 @@ class FactionTest < Test::Unit::TestCase
     assert_equal 1, Faction.find_by_bigboss(u1).id
   end
   
-  def test_destroy_faction_should_destroy_related_factions_portals
+  test "destroy_faction_should_destroy_related_factions_portals" do
     f1 = Faction.find(1)
     faction_portal = f1.portals.find(1)
     assert_not_nil faction_portal
@@ -20,19 +20,19 @@ class FactionTest < Test::Unit::TestCase
     assert FactionsPortal.find_by_id(faction_portal.id).nil?
   end
 
-  def test_faction_editors
+  test "faction_editors" do
     f1 = Faction.find(1)
     assert_equal [], f1.editors
   end
   
-  def test_create_should_create_slog_entry
+  test "create_should_create_slog_entry" do
     assert_count_increases(SlogEntry) do 
       f = Faction.new({:code => 'oo', :name => "Oinoiroko"})
       assert f.save, f.errors.full_messages_html
     end
   end
   
-  def test_update_boss_shouldnt_touch_faction_last_changed_on_if_already_member
+  test "update_boss_shouldnt_touch_faction_last_changed_on_if_already_member" do
     f1 = Faction.find(1)
     f1.members.clear
     u2 = User.find(2)
@@ -43,7 +43,7 @@ class FactionTest < Test::Unit::TestCase
     assert u2.faction_last_changed_on < 1.day.ago
   end
   
-  def test_golpe_de_estado_should_work
+  test "golpe_de_estado_should_work" do
     f1 = Faction.find(1)
     f1.members.clear
     assert f1.update_boss(User.find(2))
@@ -63,7 +63,7 @@ class FactionTest < Test::Unit::TestCase
     assert_nil f1.boss
   end
   
-  def test_user_is_editor_if_editor
+  test "user_is_editor_if_editor" do
     f1 = Faction.find(1)
     ctype = ContentType.find(:first)
     u59 = User.find(59)
@@ -72,7 +72,7 @@ class FactionTest < Test::Unit::TestCase
     assert f1.user_is_editor_of_content_type?(u59, ctype)
   end
   
-  def test_user_is_editor_if_boss
+  test "user_is_editor_if_boss" do
     f1 = Faction.find(1)
     ctype = ContentType.find(:first)
     assert !f1.user_is_editor_of_content_type?(User.find(59), ctype)
@@ -80,7 +80,7 @@ class FactionTest < Test::Unit::TestCase
     assert f1.user_is_editor_of_content_type?(User.find(59), ctype)
   end
   
-  def test_user_is_editor_if_underboss
+  test "user_is_editor_if_underboss" do
     f1 = Faction.find(1)
     ctype = ContentType.find(:first)
     u59 = User.find(59)
@@ -89,7 +89,7 @@ class FactionTest < Test::Unit::TestCase
     assert f1.user_is_editor_of_content_type?(u59, ctype)
   end
   
-  def test_proper_boss
+  test "proper_boss" do
     f1 = Faction.find(1)
     u59 = User.find(59)
     assert f1.update_boss(u59)
@@ -97,7 +97,7 @@ class FactionTest < Test::Unit::TestCase
     assert_equal 59, f1.boss.id
   end
   
-  def test_karma_points_should_work_correctly
+  test "karma_points_should_work_correctly" do
     f1 = Faction.find(1)
     assert_equal 1745, f1.karma_points
   end

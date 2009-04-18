@@ -1,18 +1,10 @@
-require File.dirname(__FILE__) + '/../../test_helper'
-require 'cuenta/competiciones_controller'
+require 'test_helper'
 
-# Re-raise errors caught by the controller.
-class Cuenta::CompeticionesController; def rescue_action(e) raise e end; end
+class Cuenta::CompeticionesControllerTest < ActionController::TestCase
+  
 
-class Cuenta::CompeticionesControllerTest < Test::Unit::TestCase
   
-  def setup
-    @controller = Cuenta::CompeticionesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
-  
-  def test_should_see_configuration_page_of_every_competition
+  test "should_see_configuration_page_of_every_competition" do
     u = User.find(1)
     sym_login 1
     competitions = []
@@ -32,154 +24,154 @@ class Cuenta::CompeticionesControllerTest < Test::Unit::TestCase
     end
   end
   
-  def test_update_tourney_groups
+  test "update_tourney_groups" do
     # TODO
   end
   
-  def test_update_tourney_seeds
+  test "update_tourney_seeds" do
     # TODO
   end
   
-  def test_add_participants
+  test "add_participants" do
     test_switch_active_competition
     # deshabilitamos esto porque a veces se añaden usuarios repetidos y casca
     # post :add_participants, { :participants_count => 1}
     assert_response :redirect
   end
   
-  def test_recreate_matches
+  test "recreate_matches" do
     # TODO 
 #    test_switch_active_competition
 #    get :recreate_matches
 #    assert_response :redirect
   end
   
-  def test_index_with_enable_competition_indicator
+  test "index_with_enable_competition_indicator" do
     test_switch_active_competition
     assert User.find(1).update_attributes(:enable_competition_indicator => true)
     get :index
     assert_response :success
   end
   
-  def test_remove_all_participants
+  test "remove_all_participants" do
     test_switch_active_competition
     get :remove_all_participants
     assert_response :redirect
   end
   
-  def test_reselect_maps
+  test "reselect_maps" do
     test_switch_active_competition
     get :reselect_maps
     assert_response :redirect
   end
   
-  def test_update_maches_games_maps
+  test "update_maches_games_maps" do
     # TODO
   end
   
-  def test_update_matches_play_on
+  test "update_matches_play_on" do
     # TODO
   end
   
-  def test_previous_stage
+  test "previous_stage" do
     test_switch_active_competition
     get :previous_stage
     assert_response :redirect
   end
   
-  def test_general
+  test "general" do
     test_switch_active_competition
     get :general
     assert_response :success
   end
   
-  def test_avanzada
+  test "avanzada" do
     # TODO
   end
   
-  def test_add_allowed_participant
+  test "add_allowed_participant" do
     # TODO
   end
   
-  def test_configuracion
+  test "configuracion" do
     test_switch_active_competition
     get :configuracion
     assert_response :success
   end
   
-  def test_admins
+  test "admins" do
     test_switch_active_competition
     get :admins
     assert_response :success
   end
   
-  def test_partidas
+  test "partidas" do
     test_switch_active_competition
     get :partidas
     assert_response :success
   end
   
-  def test_participantes
+  test "participantes" do
     test_switch_active_competition
     get :participantes
     assert_response :success
   end
   
-  def test_eliminar_participante
+  test "eliminar_participante" do
     # TODO
   end
   
-  def test_crear_admin
+  test "crear_admin" do
     test_switch_active_competition
     post :crear_admin, :login => 'panzer'
     assert_response :redirect
     assert @c.user_is_admin(User.find_by_login('panzer').id)
   end
   
-  def test_eliminar_admin
+  test "eliminar_admin" do
     test_crear_admin
     post :eliminar_admin, :user_id => User.find_by_login('panzer').id
     assert_response :redirect
     assert !@c.user_is_admin(User.find_by_login('panzer').id)
   end
   
-  def test_crear_supervisor
+  test "crear_supervisor" do
     test_switch_active_competition
     post :crear_supervisor, :login => 'panzer'
     assert_response :redirect
     assert @c.user_is_supervisor(User.find_by_login('panzer').id)
   end
   
-  def test_eliminar_supervisor
+  test "eliminar_supervisor" do
     test_crear_supervisor
     post :eliminar_supervisor, :user_id => User.find_by_login('panzer').id
     assert_response :redirect
     assert !@c.user_is_supervisor(User.find_by_login('panzer').id)
   end
   
-  def test_cambiar
+  test "cambiar" do
     sym_login 1
     get :cambiar
     assert_response :success
   end
   
-  def test_mis_partidas
+  test "mis_partidas" do
     # TODO
   end
   
-  def test_list
+  test "list" do
     sym_login 1
     get :list
     assert_response :success
   end
   
-  def test_new
+  test "new" do
     sym_login 1
     get :new
     assert_response :success
   end
   
-  def test_create
+  test "create" do
     sym_login 1
     assert_count_increases(Competition) do
       post :create, :competition => { :type => 'Ladder', :name => 'mi ladder', :pro => false, :game_id => 1, :competitions_participants_type_id => 1, :competitions_types_options => {}, :timetable_options => {}}
@@ -188,7 +180,7 @@ class Cuenta::CompeticionesControllerTest < Test::Unit::TestCase
     assert_equal @c.id, User.find(1).last_competition_id
   end
   
-  def test_update
+  test "update" do
     test_create
     post :update, { :id => @c.id, :competition => {:description => 'test_update'} }
     assert_response :redirect
@@ -196,7 +188,7 @@ class Cuenta::CompeticionesControllerTest < Test::Unit::TestCase
     assert_equal 'test_update', @c.description
   end
   
-  def test_destroy
+  test "destroy" do
     test_switch_active_competition
     post :destroy
     assert_response :redirect
@@ -204,11 +196,11 @@ class Cuenta::CompeticionesControllerTest < Test::Unit::TestCase
     assert_nil Competition.find_by_id(@c.id)
   end
   
-  def test_change_state
+  test "change_state" do
     # TODO
   end
   
-  def test_switch_active_competition
+  test "switch_active_competition" do
     @c = Competition.find(1)
     @c.add_admin(User.find(1))
     @c.pro = true
@@ -219,19 +211,19 @@ class Cuenta::CompeticionesControllerTest < Test::Unit::TestCase
     assert_equal 1, User.find(1).last_competition_id
   end
   
-  def test_sponsors_should_work
+  test "sponsors_should_work" do
     test_switch_active_competition
     get :sponsors
     assert_response :success
   end
   
-  def test_sponsors_new_should_work
+  test "sponsors_new_should_work" do
     test_switch_active_competition
     get :sponsors_new
     assert_response :success
   end
   
-  def test_sponsors_create_should_work
+  test "sponsors_create_should_work" do
     test_switch_active_competition
     assert_count_increases(CompetitionsSponsor) do
       post :sponsors_create, { :competitions_sponsor => { :name => 'el nombre', :image => fixture_file_upload('files/buddha.jpg', 'image/jpeg')}}
@@ -240,13 +232,13 @@ class Cuenta::CompeticionesControllerTest < Test::Unit::TestCase
     @fl = CompetitionsSponsor.find(:first, :order => 'id desc')
   end
   
-  def test_sponsors_edit_should_work
+  test "sponsors_edit_should_work" do
     test_sponsors_create_should_work
     get :sponsors_edit, :id => CompetitionsSponsor.find(:first, :order => 'id desc').id
     assert_response :success
   end
   
-  def test_sponsors_update_should_work
+  test "sponsors_update_should_work" do
     test_sponsors_create_should_work
     assert_not_equal 'succubus', @fl.name
     post :sponsors_update, :id => @fl.id, :competitions_sponsor => {:name => 'dm-tower', :image => fixture_file_upload('files/babe.jpg', 'image/jpeg')}
@@ -255,7 +247,7 @@ class Cuenta::CompeticionesControllerTest < Test::Unit::TestCase
     assert_equal 'dm-tower', @fl.name
   end
   
-  def test_sponsors_destroy
+  test "sponsors_destroy" do
     test_sponsors_create_should_work
     assert_count_decreases(CompetitionsSponsor) do
       post :sponsors_destroy, :id => @fl.id

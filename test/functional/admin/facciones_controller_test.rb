@@ -1,19 +1,19 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require 'test_helper'
 
 class Admin::FaccionesControllerTest < ActionController::TestCase
-  def test_index_should_work
+  test "index_should_work" do
     sym_login 1
     get :index
     assert_response :success
   end
   
-  def test_edit_should_work
+  test "edit_should_work" do
     sym_login 1
     get :edit, { :id => 1}
     assert_response :success
   end
   
-  def test_update_works
+  test "update_works" do
     sym_login 1
     f = Faction.find(:first)
     n = f.name
@@ -24,7 +24,7 @@ class Admin::FaccionesControllerTest < ActionController::TestCase
     assert_equal "#{n} a", f.name
   end
   
-  def test_delete_works
+  test "delete_works" do
     sym_login 1
     g = Game.new(:name => 'faccionita', :code => 'code')
     assert g.save, g.errors.full_messages_html

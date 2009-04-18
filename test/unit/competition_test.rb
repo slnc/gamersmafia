@@ -1,10 +1,10 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class CompetitionTest < Test::Unit::TestCase
+class CompetitionTest < ActiveSupport::TestCase
 
   # TODO test user_indicator
   
-  #  def test_update_user_indicator
+  #  test "update_user_indicator" do
   #    superadmin = new_session_as(:superadmin)
   #    panzer = new_session_as(:panzer)
   #    assert_equal false, superadmin.enable_competition_indicator
@@ -39,7 +39,7 @@ class CompetitionTest < Test::Unit::TestCase
   #    end
   #  end
   
-  def test_should_send_notifications_to_allowed_participants_if_invitational_and_switching_to_state_1_and_users
+  test "should_send_notifications_to_allowed_participants_if_invitational_and_switching_to_state_1_and_users" do
     c = Competition.find(:first, :conditions => "state = 0 AND invitational is true and competitions_participants_type_id = #{Competition::USERS}")
     prev = ActionMailer::Base.deliveries.size
     c.allowed_competitions_participants.create({:participant_id => 1})
@@ -50,7 +50,7 @@ class CompetitionTest < Test::Unit::TestCase
     assert_equal prev + 1, ActionMailer::Base.deliveries.size
   end
   
-  def test_should_send_notifications_to_allowed_participants_if_invitational_and_switching_to_state_1_and_clans
+  test "should_send_notifications_to_allowed_participants_if_invitational_and_switching_to_state_1_and_clans" do
     c = Competition.find(:first, :conditions => "state = 0 AND invitational is true and competitions_participants_type_id = #{Competition::CLANS}")
     prev = ActionMailer::Base.deliveries.size
     c.allowed_competitions_participants.create({:participant_id => 1})
@@ -62,7 +62,7 @@ class CompetitionTest < Test::Unit::TestCase
     assert_equal prev + 1, ActionMailer::Base.deliveries.size
   end
   
-  def test_should_be_able_to_join_competition_if_user_and_everything_ok
+  test "should_be_able_to_join_competition_if_user_and_everything_ok" do
     ladder = Ladder.find(:first, :conditions => "invitational is false and fee is null and state = 3 and competitions_participants_type_id = #{Competition::USERS}")
     u1 = User.find(1)
     p1 = ladder.join(u1)
@@ -70,7 +70,7 @@ class CompetitionTest < Test::Unit::TestCase
   end
   
   
-  def test_should_set_closed_on_when_closed
+  test "should_set_closed_on_when_closed" do
     [Tournament.find(:first, :conditions => 'state = 3'), League.find(:first, :conditions => 'state = 3')].each do |c|
       assert_equal true, c.switch_to_state(4)
       assert_not_nil c.closed_on

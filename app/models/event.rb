@@ -50,7 +50,7 @@ class Event < ActiveRecord::Base
   # Devueve un diccionario de días como claves del mes dado. Cada día tiene un
   # valor entre 0 y 3 que representa la actividad de dicho día en cuestión de
   # eventos.
-  def self.hotmap(t)
+  def self.hotmap(t, opts={})
     month_start = Time.local(t.year, t.month, 1, 0, 0, 0)
     if t.month + 1 > 12
       month_end = Time.at(Time.local(t.year + 1, 1, 1, 0, 0, 0).to_i - 1)
@@ -60,9 +60,9 @@ class Event < ActiveRecord::Base
     
     hotmap = {}
     
-    find(:all, 
-         :conditions => "state = #{Cms::PUBLISHED}
-                     AND id not in (SELECT event_id from competitions where event_id is not null) 
+    # buscamos todos los eventos en la intersección
+    self.find(:published, 
+             :conditions => "id not in (SELECT event_id from competitions where event_id is not null) 
                      AND parent_id is null
                      AND date_trunc('month', to_timestamp('#{t.strftime('%Y%m%d%H%M%S')}', 'YYYYMMDDHH24MISS')) BETWEEN date_trunc('month', starts_on) AND date_trunc('month', ends_on)").each do |e|
       

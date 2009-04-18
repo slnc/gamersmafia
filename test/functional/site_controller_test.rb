@@ -1,10 +1,6 @@
-require File.dirname(__FILE__) + '/../test_helper'
-require 'site_controller'
+require 'test_helper'
 
-# Re-raise errors caught by the controller.
-class SiteController; def rescue_action(e) raise e end; end
-
-class SiteControllerTest < Test::Unit::TestCase
+class SiteControllerTest < ActionController::TestCase
   def setup
     @controller = SiteController.new
     @request    = ActionController::TestRequest.new
@@ -17,7 +13,7 @@ class SiteControllerTest < Test::Unit::TestCase
   
   basic_test :carcel, :smileys, :tu_web_de_clan_gratis, :rss, :contactar, :privacidad, :album, :fusiones, :webs_de_clanes, :logo
   
-  def test_maintain_lock
+  test "maintain_lock" do
     l = ContentsLock.create({:content_id => 1, :user_id => 1})
     ContentsLock.db_query("UPDATE contents_locks set updated_on = now() - '30 seconds'::interval WHERE id = #{l.id}")
     sym_login(1)
@@ -27,25 +23,25 @@ class SiteControllerTest < Test::Unit::TestCase
     assert l.updated_on > 10.seconds.ago, l.updated_on
   end
   
-  def test_get_banners_of_gallery
+  test "get_banners_of_gallery" do
     assert_raises(ActiveRecord::RecordNotFound) { get :get_banners_of_gallery }
     
     get :get_banners_of_gallery, :gallery => 'simples'
     assert_response :success
   end
   
-  def test_new_chatline_should_require_user
+  test "new_chatline_should_require_user" do
     assert_raises(AccessDenied) { post :new_chatline, {:line => 'foo'} }
   end
   
-  def test_new_chatline_should_work
+  test "new_chatline_should_work" do
     sym_login 1
     assert_count_increases(Chatline) do
       post :new_chatline, {:line => 'foo'}
     end
   end
   
-  def test_rate_content_should_work_if_not_authed
+  test "rate_content_should_work_if_not_authed" do
     #User.connection.query_cache_enabled = false
     assert_count_increases(ContentRating) do
       post :rate_content, { :content_rating => { :rating => '1', :content_id => 1}}
@@ -53,17 +49,17 @@ class SiteControllerTest < Test::Unit::TestCase
     assert_response :success
   end
   
-  def test_unserviceable_domain
+  test "unserviceable_domain" do
     get :unserviceable_domain
     assert_response :success
   end
   
-  def test_te_buscamos
+  test "te_buscamos" do
     get :te_buscamos
     assert_response :success
   end
   
-  def test_rate_content_should_work_if_authed
+  test "rate_content_should_work_if_authed" do
     sym_login 2
     assert_count_increases(ContentRating) do
       post :rate_content, { :content_rating => { :rating => '1', :content_id => 1}}
@@ -71,14 +67,14 @@ class SiteControllerTest < Test::Unit::TestCase
     assert_response :success
   end
   
-  def test_acercade
+  test "acercade" do
     get :index
     assert_response :success
     assert_template 'site/index'
     # assert_valid_markup
   end
   
-  def test_add_to_tracker_should_work
+  test "add_to_tracker_should_work" do
     sym_login 1
     assert_count_increases(TrackerItem) do
       post :add_to_tracker, {:id => 2, :redirto => '/'}
@@ -86,15 +82,15 @@ class SiteControllerTest < Test::Unit::TestCase
     end
   end
   
-  def test_get_non_updated_tracker_items
+  test "get_non_updated_tracker_items" do
     sym_login 1
     get :x, {:ids => '1,2,3'}
     assert_response :success
   end
   
-  def test_x_with_another_visitor_id_should_update_cookie_visitor_id_when_login_in
+  test "x_with_another_visitor_id_should_update_cookie_visitor_id_when_login_in" do
     sym_login 1
-    @request.cookies['__stma'] = CGI::Cookie.new('__stma', '77524682.953150376.1212331927.1212773764.1212777897.14')
+    @request.cookies['__stma'] = '77524682.953150376.1212331927.1212773764.1212777897.14'
     treated_visitors = User.db_query("SELECT COUNT(*) FROM treated_visitors")[0]['count'].to_i
     get :x, '_xab' => {1 => 2}, '_xvi' => '77524682'
     assert_response :success
@@ -105,15 +101,15 @@ class SiteControllerTest < Test::Unit::TestCase
     
     @controller = SiteController.new # to reset
     # Simulamos que conecta desde otro pc
-    @request.cookies['__stma'] = CGI::Cookie.new('__stma', '23131.953150376.1212331927.1212773764.1212777897.14')
+    @request.cookies['__stma'] = '23131.953150376.1212331927.1212773764.1212777897.14'
     sym_login 1
     get :x, '_xab' => {1 => 1}, '_xvi' => '23131'
     assert_response :success
     assert @response.cookies['__stma'].to_s.include?('77524682')
   end
   
-  def test_x_with_changed_treatment
-    @request.cookies['__stma'] = CGI::Cookie.new('__stma', '77524682.953150376.1212331927.1212773764.1212777897.14')
+  test "x_with_changed_treatment" do
+    @request.cookies['__stma'] = '77524682.953150376.1212331927.1212773764.1212777897.14'
     treated_visitors = User.db_query("SELECT COUNT(*) FROM treated_visitors")[0]['count'].to_i
     get :x, '_xab' => {1 => 2}, '_xvi' => '77524682'
     assert_response :success
@@ -135,13 +131,13 @@ class SiteControllerTest < Test::Unit::TestCase
     assert_equal treated_visitors + 2, User.db_query("SELECT COUNT(*) FROM treated_visitors")[0]['count'].to_i
   end
   
-  def test_trastornos
+  test "trastornos" do
     get :trastornos
     assert_response :success
   end
   
   
-  def test_del_from_tracker_should_work
+  test "del_from_tracker_should_work" do
     test_add_to_tracker_should_work
     ti = TrackerItem.find(:first, :order => 'id desc')
     assert ti.is_tracked?
@@ -151,125 +147,125 @@ class SiteControllerTest < Test::Unit::TestCase
     assert !ti.is_tracked?
   end
   
-  def test_should_redir_old_acercade_url
+  test "should_redir_old_acercade_url" do
     get :acercade
     assert_redirected_to '/site'
   end
   
-  def test_banners
+  test "banners" do
     get :banners
     assert_response :success
   end
   
-  def test_netiquette
+  test "netiquette" do
     get :netiquette
     assert_response :success
   end
   
-  def test_online_should_work_with_mini
+  test "online_should_work_with_mini" do
     User.db_query("UPDATE users set lastseen_on = now()")
     get :online
     assert_response :success
   end
   
-  def test_online_should_work_with_big
+  test "online_should_work_with_big" do
     User.db_query("UPDATE users set lastseen_on = now()")
-    @request.cookies['chatpref'] = CGI::Cookie.new('chatpref', 'big')
+    @request.cookies['chatpref'] = 'big'
     get :online
     assert_response :success
   end
   
-  def test_update_chatlines_should_work_with_mini
+  test "update_chatlines_should_work_with_mini" do
     User.db_query("UPDATE chatlines set created_on = now()")
     get :update_chatlines
     assert_response :success
   end
   
-  def test_update_chatlines_should_work_with_big
+  test "update_chatlines_should_work_with_big" do
     User.db_query("UPDATE chatlines set created_on = now()")
-    @request.cookies['chatpref'] = CGI::Cookie.new('chatpref', 'big')
+    @request.cookies['chatpref'] = 'big'
     get :update_chatlines
     assert_response :success
   end
   
-  def test_faq
+  test "faq" do
     get :faq
     assert_response :success
   end
   
-  def test_banners_bottom
+  test "banners_bottom" do
     get :banners_bottom
     assert_response :success
   end
   
-  def test_banners_duke
+  test "banners_duke" do
     get :banners_duke
     assert_response :success
   end
   
-  def test_banners_misc
+  test "banners_misc" do
     get :banners_misc
     assert_response :success
   end  
   
-  def test_staff
+  test "staff" do
     get :staff
     assert_response :success
   end  
   
-  def test_ejemplos_guids
+  test "ejemplos_guids" do
     get :ejemplos_guids
     assert_response :success
   end
   
-  def test_colabora
+  test "colabora" do
     get :colabora
     assert_response :success
   end
   
-  def test_transfer_should_redirect_if_all_missing
+  test "transfer_should_redirect_if_all_missing" do
     Bank.transfer(:bank, User.find(1), 10, 'f')
     sym_login(1)
     post :confirmar_transferencia, {}
     assert_redirected_to '/'
   end
   
-  def test_transfer_should_redirect_if_recipient_class_empty
+  test "transfer_should_redirect_if_recipient_class_empty" do
     Bank.transfer(:bank, User.find(1), 10, 'f')
     sym_login(1)
     post :confirmar_transferencia, {:recipient_class => ''}
     assert_redirected_to '/'
   end
   
-  def test_transfer_should_redirect_if_not_found_recipient
+  test "transfer_should_redirect_if_not_found_recipient" do
     Bank.transfer(:bank, User.find(1), 10, 'f')
     sym_login(1)
     post :confirmar_transferencia, {:sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_user_login => 'bananito', :description => 'foo', :ammount => '500'}
     assert_redirected_to '/'
   end
   
-  def test_transfer_should_redirect_if_no_description
+  test "transfer_should_redirect_if_no_description" do
     Bank.transfer(:bank, User.find(1), 10, 'f')
     sym_login(1)
     post :confirmar_transferencia, {:sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_user_login => 'panzer', :description => '', :ammount => '500'}
     assert_redirected_to '/'
   end
   
-  def test_transfer_should_redirect_if_no_ammount
+  test "transfer_should_redirect_if_no_ammount" do
     Bank.transfer(:bank, User.find(1), 10, 'f')
     sym_login(1)
     post :confirmar_transferencia, {:sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_user_login => 'panzer', :description => 'foobar', :ammount => ''}
     assert_redirected_to '/'
   end
   
-  def test_transfer_should_redirect_if_same_sender_and_recipient
+  test "transfer_should_redirect_if_same_sender_and_recipient" do
     Bank.transfer(:bank, User.find(1), 10, 'f')
     sym_login(1)
     post :confirmar_transferencia, {:sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_user_login => 'superadmin', :description => 'foobar', :ammount => '500'}
     assert_redirected_to '/'
   end
   
-  def test_transfer_should_show_confirm_dialog_if_all_existing
+  test "transfer_should_show_confirm_dialog_if_all_existing" do
     Bank.transfer(:bank, User.find(1), 10, 'f')
     sym_login(1)
     post :confirmar_transferencia, {:sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_user_login => 'panzer', :description => 'foobar', :ammount => '1'}
@@ -278,7 +274,7 @@ class SiteControllerTest < Test::Unit::TestCase
   end
   
   
-  def test_transferencia_confirmada
+  test "transferencia_confirmada" do
     test_transfer_should_show_confirm_dialog_if_all_existing
     assert_count_increases(CashMovement) do
       post :transferencia_confirmada, {:redirto => '/', :sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_id => User.find_by_login('panzer').id, :description => 'foobar', :ammount => '1'}
@@ -287,7 +283,7 @@ class SiteControllerTest < Test::Unit::TestCase
   end
   
   
-  def test_should_update_online_state_if_x
+  test "should_update_online_state_if_x" do
     sym_login(1)
     u = User.find(1)
     u.lastseen_on = 1.day.ago
@@ -299,7 +295,7 @@ class SiteControllerTest < Test::Unit::TestCase
     assert u.lastseen_on.to_i > Time.now.to_i - 2
   end
   
-  def test_del_chatline_should_work
+  test "del_chatline_should_work" do
     test_new_chatline_should_work
     assert_count_decreases(Chatline) do
       post :del_chatline, {:id => Chatline.find(:first).id}
@@ -308,12 +304,12 @@ class SiteControllerTest < Test::Unit::TestCase
   end
   
   
-  def test_should_do_nothing_if_x_with_anonymous
+  test "should_do_nothing_if_x_with_anonymous" do
     get :x
     assert_response :success
   end
   
-  def test_should_properly_acknowledge_resurrection
+  test "should_properly_acknowledge_resurrection" do
     u1 = User.find(1)
     fp = u1.faith_points
     u2 = User.find(2)
@@ -333,7 +329,7 @@ class SiteControllerTest < Test::Unit::TestCase
     assert_equal u1.email, ActionMailer::Base.deliveries.at(-1).to[0]
   end
   
-  def test_should_clean_html
+  test "should_clean_html" do
     content = URI::escape('hello world') # usamos URI::escape en lugar de CGI::escape porque CGI::escape es incompatible con unescape de javascript
     sym_login 1
     post :clean_html, { :editorId => 'fuubar', :content => content }
@@ -350,21 +346,21 @@ res.content = unescape('#{content}');]]></result>
     assert_equal expected_response, @response.body
   end
   
-  #  def test_should_count_hits_for_ads
+  #  test "should_count_hits_for_ads" do
   #    initial = User.db_query("SELECT count(*) from stats.ads_shown")[0]['count'].to_i
   #    get :colabora
   #    assert_response :success
   #    assert_equal initial + 1, User.db_query("SELECT count(*) from stats.ads_shown")[0]['count'].to_i
   #  end
   
-  def test_cnta_should_properly_account_for_hits
+  test "cnta_should_properly_account_for_hits" do
     initial_count = User.db_query("SELECT count(*) FROM stats.ads")[0]['count'].to_i
     get :cnta, :url => 'http://google.com/\'' # para testear tb q  no se produzca sql injection
     assert_response :created
     assert_equal initial_count + 1, User.db_query("SELECT count(*) FROM stats.ads")[0]['count'].to_i
   end 
   
-  def test_cnta_should_properly_account_for_hits_with_user_id
+  test "cnta_should_properly_account_for_hits_with_user_id" do
     sym_login 1
     initial_count = User.db_query("SELECT count(*) FROM stats.ads")[0]['count'].to_i
     get :cnta, :url => 'http://google.com/', :element_id => 'wiii'
@@ -374,7 +370,7 @@ res.content = unescape('#{content}');]]></result>
     assert_equal 'wiii', User.db_query("SELECT element_id FROM stats.ads ORDER BY id desc limit 1")[0]['element_id']
   end
   
-  def test_slog_should_work_if_hq
+  test "slog_should_work_if_hq" do
     u2 = User.find(2)
     u2.is_hq = true
     u2.save
@@ -384,7 +380,7 @@ res.content = unescape('#{content}');]]></result>
     assert_template 'slog_html'
   end
   
-  def test_should_track_email_read_on
+  test "should_track_email_read_on" do
     message_key = Kernel.rand.to_s
     se = SentEmail.new(:title => 'foo', :sender => 'fulanito', :recipient => 'menganito', :message_key => message_key)
     start = Time.now
@@ -395,7 +391,7 @@ res.content = unescape('#{content}');]]></result>
     assert se.first_read_on.to_i >= start.to_i 
   end
   
-  def test_do_contactar_should_send_email
+  test "do_contactar_should_send_email" do
     m_count = Message.count
     post :do_contactar, :subject => 'Otros', :message => 'hola tio', :email => 'fulanito de tal'
     assert_response :redirect
@@ -415,7 +411,7 @@ res.content = unescape('#{content}');]]></result>
     end    
   end
   
-  def test_stats_hipotesis
+  test "stats_hipotesis" do
     #abn = AbTest.new(:name => 'foo', :active => true, :metrics => ['comments'], :treatments => 2)
     #assert abn.save
     assert_raises(AccessDenied) { get :stats_hipotesis }
@@ -424,36 +420,36 @@ res.content = unescape('#{content}');]]></result>
     assert_response :success
   end
   
-  def test_stats_hipotesis_archivo
+  test "stats_hipotesis_archivo" do
     assert_raises(AccessDenied) { get :stats_hipotesis_archivo }
     sym_login 1
     get :stats_hipotesis_archivo
     assert_response :success
   end
   
-  def test_x_should_work_with_funky_params
+  test "x_should_work_with_funky_params" do
     # @eng['USER_AGENT'] = ''
   end
   
-  def test_slog_options_switch
+  test "slog_options_switch" do
     
   end
   
-  def test_report_content_form
+  test "report_content_form" do
     assert_raises(AccessDenied) { get :report_content_form }
     sym_login 1
     get :report_content_form
     assert_response :success
   end
   
-  def test_recommend_to_friend
+  test "recommend_to_friend" do
     assert_raises(AccessDenied) { get :recommend_to_friend, :content_id => Content.find(:first).id }
     sym_login 1
     get :report_content_form, :content_id => Content.find(:first).id
     assert_response :success
   end
   
-  def test_do_recommend_to_friend_not_friend
+  test "do_recommend_to_friend_not_friend" do
     sym_login 1
     rcount = ContentsRecommendation.count
     raulinho = User.find_by_login('raulinho')
@@ -461,7 +457,7 @@ res.content = unescape('#{content}');]]></result>
     assert_equal rcount, ContentsRecommendation.count
   end
   
-  def test_do_recommend_to_friend_ok
+  test "do_recommend_to_friend_ok" do
     sym_login 1
     panzer = User.find_by_login('panzer')
     
@@ -470,7 +466,7 @@ res.content = unescape('#{content}');]]></result>
     end
   end
   
-  def test_do_recommend_to_friend_but_friend_already_visited
+  test "do_recommend_to_friend_but_friend_already_visited" do
     sym_login 1
     panzer = User.find_by_login('panzer')
     assert_count_increases(TrackerItem) do
@@ -482,11 +478,11 @@ res.content = unescape('#{content}');]]></result>
     end    
   end
   
-  def test_root_term_children_if_not_authed
+  test "root_term_children_if_not_authed" do
     assert_raises(AccessDenied) { get :root_term_children, :id => 1, :content_type => 'Tutorial' }
   end
   
-  def test_root_term_children_if_not_authed
+  test "root_term_children_if_authed" do
     sym_login 1
     
     get :root_term_children, :id => 1, :content_type => 'Tutorial'

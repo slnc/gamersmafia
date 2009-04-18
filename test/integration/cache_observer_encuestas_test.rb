@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 
 class CacheObserverEncuestasTest < ActionController::IntegrationTest
@@ -8,7 +8,7 @@ class CacheObserverEncuestasTest < ActionController::IntegrationTest
   end
 
   # MAIN
-  def test_should_clear_cache_on_main_after_publishing_poll
+  test "should_clear_cache_on_main_after_publishing_poll" do
     n = portal.poll.find(:pending)[0]
     # Term.single_toplevel(:slug => 'gm').poll.find(:pending).each { |poll| puts poll.title }
     assert_not_nil n
@@ -19,7 +19,7 @@ class CacheObserverEncuestasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "#{portal.code}/encuestas/index/page_"
   end
 
-  def test_should_clear_cache_on_main_after_unpublishing_poll
+  test "should_clear_cache_on_main_after_unpublishing_poll" do
     n = portal.poll.find(:published)[0]
     assert_not_nil n
     go_to '/encuestas', 'encuestas/index'
@@ -28,7 +28,7 @@ class CacheObserverEncuestasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "#{portal.code}/encuestas/index/page_"
   end
 
-  def test_should_clear_cache_on_main_after_updating_poll
+  test "should_clear_cache_on_main_after_updating_poll" do
     n = portal.poll.find(:published)[0]
     assert_not_nil n
     go_to '/encuestas', 'encuestas/index'
@@ -37,7 +37,7 @@ class CacheObserverEncuestasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "#{portal.code}/encuestas/index/page_"
   end
 
-  def test_should_clear_cache_most_votes_on_main_after_voting
+  test "should_clear_cache_most_votes_on_main_after_voting" do
     n = portal.poll.find(:published)[0]
     assert_not_nil n
     go_to '/encuestas', 'encuestas/index'
@@ -49,22 +49,22 @@ class CacheObserverEncuestasTest < ActionController::IntegrationTest
 
 
   # PORTAL
-  def test_should_clear_cache_on_portal_after_publishing_poll
+  test "should_clear_cache_on_portal_after_publishing_poll" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_publishing_poll
   end
 
-  def test_should_clear_cache_on_portal_after_unpublishing_poll
+  test "should_clear_cache_on_portal_after_unpublishing_poll" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_unpublishing_poll
   end
 
-  def test_should_clear_cache_on_portal_after_updating_poll
+  test "should_clear_cache_on_portal_after_updating_poll" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_updating_poll
   end
 
-  def test_should_clear_cache_on_portal_after_voting_poll
+  test "should_clear_cache_on_portal_after_voting_poll" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_most_votes_on_main_after_voting
   end

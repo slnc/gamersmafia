@@ -1,50 +1,41 @@
-require File.dirname(__FILE__) + '/../test_helper'
-require 'miembros_controller'
+require 'test_helper'
 
-# Re-raise errors caught by the controller.
-class MiembrosController; def rescue_action(e) raise e end; end
+class MiembrosControllerTest < ActionController::TestCase
 
-class MiembrosControllerTest < Test::Unit::TestCase
-  def setup
-    @controller = MiembrosController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
   
   basic_test :index
   
-  def test_should_raise_404_if_user_not_found
+  test "should_raise_404_if_user_not_found" do
     assert_raises(ActiveRecord::RecordNotFound) { get :member, :login => 'aaaaaaaaaaaaaabecedario_canónico' }
   end
   
-  def test_member
+  test "member" do
     get :member, :login => User.find(1).login
     assert_response :success
     assert_template 'member'
   end
   
-  def test_member_antiflood
+  test "member_antiflood" do
     User.find(1).update_attributes(:antiflood_level => 1)
     test_member
   end
   
-  def test_member_should_redir_if_wrong_case
+  test "member_should_redir_if_wrong_case" do
     get :member, :login => User.find(1).login.upcase
-    assert_response :redirect
-    assert @response.headers['Status'].starts_with?('301 ')
+    assert_response 301
   end
   
-  def test_member_in_faction
+  test "member_in_faction" do
     @request.host = 'ut.gamersmafia.com'
     test_member
   end
   
-  def test_member_in_platform
+  test "member_in_platform" do
     @request.host = 'wii.gamersmafia.com'
     test_member
   end
   
-  def test_del_firma
+  test "del_firma" do
     sym_login 1
     ps = ProfileSignature.new(:user_id => 1, :signer_user_id => 2, :signature => "hgolaaaa")
     assert ps.save, ps.errors.full_messages_html
@@ -54,7 +45,7 @@ class MiembrosControllerTest < Test::Unit::TestCase
     end
   end
   
-  def test_member_with_dot
+  test "member_with_dot" do
     u = User.new({:login => 'dil.', :email => 'foo@goo.com', :state => User::ST_ACTIVE, :ipaddr => '0.0.0.0', :lastseen_on => Time.now})
     assert_equal true, u.save, u.errors.full_messages
     get :member, :login => 'dil.'
@@ -62,16 +53,16 @@ class MiembrosControllerTest < Test::Unit::TestCase
     assert_template 'member'
   end
   
-  def test_should_not_show_profile_signatures_page_if_user_has_no_profiles_signature_product
+  test "should_not_show_profile_signatures_page_if_user_has_no_profiles_signature_product" do
     assert_raises(ActiveRecord::RecordNotFound) { get :firmas, { :login => User.find(2).login } } # panzer no tiene
   end
   
-  def test_should_show_profile_signatures_page_if_user_has_profiles_signature_product
+  test "should_show_profile_signatures_page_if_user_has_profiles_signature_product" do
     get :firmas, { :login => User.find(1).login }
     assert_response :success
   end
   
-  def test_should_leave_new_signature
+  test "should_leave_new_signature" do
     sym_login 2
     @u1 = User.find(1)
     countsigs = @u1.profile_signatures_count
@@ -81,7 +72,7 @@ class MiembrosControllerTest < Test::Unit::TestCase
     assert_equal countsigs + 1, @u1.profile_signatures_count
   end
   
-  def test_should_not_leave_new_signature_if_same_person
+  test "should_not_leave_new_signature_if_same_person" do
     sym_login 1
     @u1 = User.find(1)
     countsigs = @u1.profile_signatures_count
@@ -93,7 +84,7 @@ class MiembrosControllerTest < Test::Unit::TestCase
   end
   
   
-  def test_no_tengo_amigos
+  test "no_tengo_amigos" do
     sym_login 1
     u1 = User.find_by_login('mrcheater')
     friends_count = u1.friends_count
@@ -108,7 +99,7 @@ class MiembrosControllerTest < Test::Unit::TestCase
     assert_equal deliv + 1, ActionMailer::Base.deliveries.size
   end
   
-  def test_should_update_existing_signature
+  test "should_update_existing_signature" do
     test_should_leave_new_signature
     countsigs = @u1.profile_signatures_count
     post :update_signature, { :login => @u1.login, :profile_signature => { :signature => 'vakaput' }}
@@ -118,7 +109,7 @@ class MiembrosControllerTest < Test::Unit::TestCase
     assert_equal 'vakaput', @u1.profile_signatures.find(:first, :order => 'updated_on DESC').signature
   end
   
-  def test_contenidos_tipo
+  test "contenidos_tipo" do
    (Cms::contents_classes + [Blogentry]).each do |ctype|
       get :contenidos_tipo, { :login => User.find(1).login, :content_name => Cms.translate_content_name(ctype.name).titleize }
       assert_response :success
@@ -126,72 +117,72 @@ class MiembrosControllerTest < Test::Unit::TestCase
     end
   end
   
-  def test_contenidos_should_work
+  test "contenidos_should_work" do
     post :contenidos, :login => User.find(1).login
     assert_response :success
   end
   
-  def test_contenidos_tipo_incorrect_should_raise_404
+  test "contenidos_tipo_incorrect_should_raise_404" do
     assert_raises(ActiveRecord::RecordNotFound) { get :contenidos_tipo, { :login => User.find(1).login, :content_name => 'noexiste' } }
   end
   
-  def test_buscar_should_redirect_if_no_search
+  test "buscar_should_redirect_if_no_search" do
     post :buscar
     assert_redirected_to '/miembros'
   end
   
-  def test_buscar_should_do_nothing_if_nonexistent_login_given
+  test "buscar_should_do_nothing_if_nonexistent_login_given" do
     post :buscar, :s => 'panzerzzzzzzzzzzzzz'
     assert_response :success
     assert_template 'buscar'
   end
   
-  def test_buscar_should_find_if_given_name
+  test "buscar_should_find_if_given_name" do
     post :buscar, :s => 'panzer'
     assert_response :success
     assert_template 'buscar'
     assert_not_nil @response.body =~ /"\/miembros\/panzer"/
   end
   
-  def test_buscar_por_guid_should_do_nothing_if_nonexistent_login_given
+  test "buscar_por_guid_should_do_nothing_if_nonexistent_login_given" do
     post :buscar_por_guid, { :game_id => 1, :guid => 'panzerzzzzzzzzzzzzz' }
     assert_response :success
     assert_template 'buscar'
   end
   
-  def test_buscar_por_guid_should_find_if_given_guid
+  test "buscar_por_guid_should_find_if_given_guid" do
     post :buscar_por_guid, { :game_id => 1, :guid => '1234567890' }
     assert_response :success
     assert_template 'buscar'
     assert_not_nil @response.body =~ /"\/miembros\/superadmin"/
   end
   
-  def test_should_show_competicion
+  test "should_show_competicion" do
     get :competicion, :login => 'superadmin'
     assert_response :success
     assert_template 'competicion'
   end
   
-  def test_should_show_hardware
+  test "should_show_hardware" do
     get :hardware, :login => 'superadmin'
     assert_response :success
     assert_template 'hardware'
   end
   
-  def test_should_show_estadisticas
+  test "should_show_estadisticas" do
     get :estadisticas, :login => 'superadmin'
     assert_response :success
     assert_template 'estadisticas'
   end
   
-  def test_should_show_estadisticas_with_recent_user
+  test "should_show_estadisticas_with_recent_user" do
     User.db_query("UPDATE users set created_on = now() where login = 'panzer'")
     get :estadisticas, :login => 'panzer'
     assert_response :success
     assert_template 'estadisticas'
   end
   
-  def test_should_show_amigos
+  test "should_show_amigos" do
     assert User.find_by_login('superadmin').friends_count > 0
     get :amigos, :login => 'superadmin'
     assert_response :success

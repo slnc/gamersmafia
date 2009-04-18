@@ -1,8 +1,8 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class AllowedCompetitionsParticipantTest < Test::Unit::TestCase
+class AllowedCompetitionsParticipantTest < ActiveSupport::TestCase
   
-  def test_should_send_notification_after_being_invited_if_competition_is_invitational_and_in_state_gt_0_and_users
+  test "should_send_notification_after_being_invited_if_competition_is_invitational_and_in_state_gt_0_and_users" do
     u = User.find(1)
     c = Competition.find(:first, :conditions => "invitational is true and fee is null and state BETWEEN 1 AND 3 and competitions_participants_type_id = #{Competition::USERS}")
     assert_not_nil c
@@ -11,7 +11,7 @@ class AllowedCompetitionsParticipantTest < Test::Unit::TestCase
     assert_equal prev + 1, ActionMailer::Base.deliveries.size
   end
   
-  def test_should_send_notification_after_being_invited_if_competition_is_invitational_and_in_state_gt_0_and_clans
+  test "should_send_notification_after_being_invited_if_competition_is_invitational_and_in_state_gt_0_and_clans" do
     u = User.find(1)
     c = Competition.find(:first, :conditions => "invitational is true and fee is null and state BETWEEN 1 AND 3 and competitions_participants_type_id = #{Competition::CLANS}")
     clan = Clan.find(1)
@@ -22,7 +22,7 @@ class AllowedCompetitionsParticipantTest < Test::Unit::TestCase
     assert_equal prev + 1, ActionMailer::Base.deliveries.size
   end
   
-  def test_should_not_send_notification_after_being_invited_if_competition_is_invitational_but_in_state_0
+  test "should_not_send_notification_after_being_invited_if_competition_is_invitational_but_in_state_0" do
     u = User.find(1)
     c = Competition.find(:first, :conditions => "invitational is true and fee is null and state = 0 and competitions_participants_type_id = #{Competition::USERS}")
     assert_not_nil c

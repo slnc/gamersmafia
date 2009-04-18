@@ -33,12 +33,12 @@ class UsersTestController < ActionController::Base
   end
 end
 
-class UsersTest < Test::Unit::TestCase
+class UsersTest < ActiveSupport::TestCase
   def setup
     @inst = UsersTestController.new
   end
   
-  def test_user_is_authed
+  test "user_is_authed" do
     assert_equal false, @inst.action_user_is_authed
     @inst.user = User.find(1)
     assert_equal true, @inst.action_user_is_authed
@@ -46,7 +46,7 @@ class UsersTest < Test::Unit::TestCase
   
   # TODO faltan tests
   #
-  def test_should_add_to_tracker_if_existing_user_id_and_content_id
+  test "should_add_to_tracker_if_existing_user_id_and_content_id" do
     TrackerItem.db_query("DELETE FROM tracker_items")
     u = User.find(1)
     c = Content.find(1)
@@ -57,7 +57,7 @@ class UsersTest < Test::Unit::TestCase
     assert_equal true, ti.is_tracked?
   end
   
-  def test_should_remove_from_tracker_if_existing_user_id_and_content_id
+  test "should_remove_from_tracker_if_existing_user_id_and_content_id" do
     test_should_add_to_tracker_if_existing_user_id_and_content_id
     u = User.find(1)
     c = Content.find(1)

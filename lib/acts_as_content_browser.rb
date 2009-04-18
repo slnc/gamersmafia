@@ -7,7 +7,7 @@ module ActsAsContentBrowser
   
   module AddActsAsContentBrowser
     def acts_as_content_browser(*args)
-      before_filter :require_auth_users, :only => [ :new, :create, :edit ]
+      before_filter :require_auth_users, :only => [ :new, :create, :edit, :update, :destroy ]
       
       class_eval <<-END
         include ActsAsContentBrowser::InstanceMethods
@@ -166,7 +166,6 @@ module ActsAsContentBrowser
       obj.cur_editor = @user
       require_user_can_edit(obj)
       raise ContentLocked if obj.is_locked_for_user?(@user)
-      
       obj.state = Cms::PENDING if obj.state == Cms::DRAFT and params[:draft].to_s != '1'
       params[ActiveSupport::Inflector::underscore(content_name)][:state] = obj.state
       params[ActiveSupport::Inflector::underscore(content_name)].delete(:approved_by_user_id) unless obj.respond_to? :approved_by_user_id

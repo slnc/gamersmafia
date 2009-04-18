@@ -9,7 +9,7 @@
   <%=javascript_includes %>
 </head>
 
-<body class="lydefault lycolumns<%=controller.skin.config[:intelliskin][:lycolumns] if controller.skin.config[:intelliskin] %><%= "-#{controller.skin.config[:intelliskin][:lyside]}" if controller.skin.config[:intelliskin] && controller.skin.config[:intelliskin][:lycolumns] == '2'%> <%=' has-submenu ' if controller.submenu %><%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=send('first_render'.to_sym).to_s.split('/').last%>">
+<body class="lydefault lycolumns<%=controller.skin.config[:intelliskin][:lycolumns] if controller.skin.config[:intelliskin] %><%= "-#{controller.skin.config[:intelliskin][:lyside]}" if controller.skin.config[:intelliskin] && controller.skin.config[:intelliskin][:lycolumns] == '2'%> <%=' has-submenu ' if controller.submenu %><%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=params[:action].split('/').last%>">
   <div id="cpageout" class="container">
 	<div id="cpagein" class="container <%="w#{controller.skin.config[:intelliskin][:page_width]}" if controller.skin.is_intelliskin?%>">
 <%= render :partial => '/layouts/userbox' %>

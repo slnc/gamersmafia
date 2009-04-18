@@ -24,3 +24,4 @@ config.action_controller.allow_forgery_protection    = false
 # config.transactional_fixtures = true
 # config.instantiated_fixtures = false
 # config.pre_loaded_fixtures = true
+config.active_record.schema_format = :sql

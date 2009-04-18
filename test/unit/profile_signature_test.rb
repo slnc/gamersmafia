@@ -1,8 +1,8 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class ProfileSignatureTest < Test::Unit::TestCase
+class ProfileSignatureTest < ActiveSupport::TestCase
   
-  def test_should_send_email_notification_of_new_profile_signature
+  test "should_send_email_notification_of_new_profile_signature" do
     prev = ActionMailer::Base.deliveries.size
     @p = User.find_by_login(:panzer)
     ps = ProfileSignature.new({:user => @p, :signer => User.find(1), :signature => 'foocaca'})
@@ -10,7 +10,7 @@ class ProfileSignatureTest < Test::Unit::TestCase
     assert_equal prev + 1, ActionMailer::Base.deliveries.size
   end
   
-  def test_should_sanitize
+  test "should_sanitize" do
     @p = User.find_by_login(:panzer)
     ps = ProfileSignature.new({:user => @p, :signer => User.find(1), :signature => "foocaca\n\n\na"})
     assert ps.save

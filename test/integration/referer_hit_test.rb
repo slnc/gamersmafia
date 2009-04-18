@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 
 class RefererHitTest < ActionController::IntegrationTest
@@ -6,7 +6,7 @@ class RefererHitTest < ActionController::IntegrationTest
     host! App.domain
   end
 
-  def test_should_give_faith_points_if_refered_link
+  test "should_give_faith_points_if_refered_link" do
     u1 = User.find(1)
     p = u1.faith_points
     get '/?rusid=1'

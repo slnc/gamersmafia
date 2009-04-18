@@ -1,8 +1,8 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require 'test_helper'
 
 class Admin::ContenidosControllerTest < ActionController::TestCase
   
-  def test_should_allow_to_publish_content_if_user_is_not_the_author
+  test "should_allow_to_publish_content_if_user_is_not_the_author" do
     n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
     assert_not_nil n
     assert_equal 'mi noticiaaaa', n.title
@@ -13,7 +13,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_equal publishing_decisions_count + 1, PublishingDecision.count
   end
   
-  def test_mass_moderate_should_work_if_mass_approve
+  test "mass_moderate_should_work_if_mass_approve" do
     n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
     assert_not_nil n
     Cms.modify_content_state(n, User.find(1), Cms::PENDING)
@@ -25,7 +25,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_equal Cms::PUBLISHED, n.state
   end
   
-  def test_mass_moderate_should_work_if_mass_deny
+  test "mass_moderate_should_work_if_mass_deny" do
     n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
     assert_not_nil n
     Cms.modify_content_state(n, User.find(1), Cms::PENDING)
@@ -37,7 +37,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_equal Cms::DELETED, n.state
   end
   
-  def test_switch_decision_should_work
+  test "switch_decision_should_work" do
     test_should_allow_to_deny_content_if_user_is_not_the_author_and_deny_reason
     sym_login 1
     pd = PublishingDecision.find(:first, :order => 'id desc')
@@ -48,7 +48,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert pd.publish
   end
   
-  def test_recover_should_work
+  test "recover_should_work" do
     sym_login 1
     n = News.find(1)
     Cms.modify_content_state(n, User.find(1), Cms::DELETED, "feooote")
@@ -60,7 +60,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_equal Cms::PUBLISHED, n.state
   end
   
-  def test_should_not_allow_to_deny_content_if_user_is_not_the_author_but_no_deny_reason
+  test "should_not_allow_to_deny_content_if_user_is_not_the_author_but_no_deny_reason" do
     n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
     assert_not_nil n
     assert_equal 'mi noticiaaaa', n.title
@@ -71,7 +71,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_equal publishing_decisions_count, PublishingDecision.count
   end
   
-  def test_should_allow_to_deny_content_if_user_is_not_the_author_and_deny_reason
+  test "should_allow_to_deny_content_if_user_is_not_the_author_and_deny_reason" do
     @n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
     assert_not_nil @n
     assert_equal 'mi noticiaaaa', @n.title
@@ -82,7 +82,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_equal publishing_decisions_count + 1, PublishingDecision.count
   end
   
-  def test_change_authorship_should_work
+  test "change_authorship_should_work" do
     n = News.find(1)
     assert_equal 1, n.user_id
     sym_login 1
@@ -93,56 +93,56 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_equal 2, n.user_id
   end
   
-  def test_content_must_be_at_0_00_when_sent_to_state1
+  test "content_must_be_at_0_00_when_sent_to_state1" do
   end
   
-  #  def test_content_must_be_published_if_editor_votes_that
+  #  test "content_must_be_published_if_editor_votes_that" do
   #  end
   
-  #  def test_content_must_be_denied_if_editor_votes_that
+  #  test "content_must_be_denied_if_editor_votes_that" do
   #  end
   
-  #  def test_content_must_increment
+  #  test "content_must_increment" do
   
-  def test_should_see_index_if_admin
+  test "should_see_index_if_admin" do
     sym_login 1
     get :index
     assert_response :success
   end
   
-  def test_should_see_papelera_if_admin
+  test "should_see_papelera_if_admin" do
     sym_login 1
     get :papelera
     assert_response :success
   end
   
-  def test_should_see_hotmap_if_admin
+  test "should_see_hotmap_if_admin" do
     sym_login 1
     get :hotmap
     assert_response :success
   end
   
-  def test_should_see_ultimas_decisiones_if_admin_and_gm
+  test "should_see_ultimas_decisiones_if_admin_and_gm" do
     sym_login 1
     get :ultimas_decisiones
     assert_response :success
   end
   
-  def test_should_see_ultimas_decisiones_if_admin_and_factions_portal
+  test "should_see_ultimas_decisiones_if_admin_and_factions_portal" do
     @request.host = 'ut.gamersmafia.com'
     sym_login 1
     get :ultimas_decisiones
     assert_response :success
   end
   
-  def test_should_see_ultimas_decisiones_if_admin_and_gm_and_platforms_portal
+  test "should_see_ultimas_decisiones_if_admin_and_gm_and_platforms_portal" do
     @request.host = 'wii.gamersmafia.com'
     sym_login 1
     get :ultimas_decisiones
     assert_response :success
   end
   
-  def test_report
+  test "report" do
     sym_login 1
     assert_count_increases(SlogEntry) do
       post :report, :id => Content.find(:first).id
@@ -150,7 +150,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_report_with_bazar_district_content
+  test "report_with_bazar_district_content" do
     sym_login 1
     assert_count_increases(SlogEntry) do
       post :report, :id => 1113
@@ -158,7 +158,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_orphaned
+  test "orphaned" do
     sym_login 1
     get :huerfanos
     assert_response :success

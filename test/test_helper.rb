@@ -1,7 +1,6 @@
 ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
-require 'test/helper_testcase'
 require 'feed_validator/assertions'
 require 'vendor/plugins/rails_mixings/lib/test_unit_mixings.rb'
 
@@ -22,9 +21,18 @@ ActionMailer::Base.delivery_method = :test
 ActionMailer::Base.perform_deliveries = true
 ActionMailer::Base.deliveries = []
 
-class Test::Unit::TestCase
+class ActiveSupport::TestCase
   # Turn off transactional fixtures if you're working with MyISAM tables in MySQL
   self.use_transactional_fixtures = true
+  
+  # TODO Rails no incluye fixture_file_upload en esta clase. Quizás haya que reescribir los
+  # tests para que no hagan uso de ello? No estoy seguro de que sea incoherente de esta forma.
+  # https://rails.lighthouseapp.com/projects/8994/tickets/1985-fixture_file_upload-no-longer-available-in-tests-by-default
+  def fixture_file_upload(path, mime_type = nil, binary = false)
+    fixture_path = ActionController::TestCase.send(:fixture_path) if ActionController::TestCase.respond_to?(:fixture_path)
+    ActionController::TestUploadedFile.new("#{fixture_path}#{path}", mime_type, binary)
+  end
+  
   
   # Instantiated fixtures are slow, but give you @david where you otherwise would need people(:david)
   self.use_instantiated_fixtures  = false
@@ -160,8 +168,9 @@ class Test::Unit::TestCase
       when 'Symbol':
       @request.session[:user] = User.find_by_login(user_ident.to_s).id
     else
-      raise 'unimplemented'
+      raise "#{user_ident.class.name} as user_ident unimplemented"
     end
+    assert_not_nil session[:user]
   end
   
   def post_comment_on content
@@ -282,22 +291,20 @@ class ActionController::IntegrationTest
   end
 end
 
-class Test::Unit::TestCase
+class ActiveSupport::TestCase
   def self.basic_test(*views)
     cattr_accessor :basic_views_test
     self.basic_views_test = views
     
     class_eval <<-END
-      include TestFunctionalBasicTest
+      test "basic_views" do
+        self.basic_views_test.each do |view|
+          get view
+          assert_response :success
+        end
+      end
     END
   end
 end
 
-module TestFunctionalBasicTest
-  def test_basic_views
-    self.basic_views_test.each do |view|
-      get view
-      assert_response :success
-    end
-  end
-end
+require 'vendor/plugins/rails_mixings/lib/test_process.rb'

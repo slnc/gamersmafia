@@ -1,8 +1,8 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 require File.dirname(__FILE__) + '/../test_script_helper'
 
-class ScriptAlarikoBroadcastTest < Test::Unit::TestCase
-  def test_sanity
+class ScriptAlarikoBroadcastTest < ActiveSupport::TestCase
+  test "sanity" do
     l = Chatline.count
     assert true
     # TODO

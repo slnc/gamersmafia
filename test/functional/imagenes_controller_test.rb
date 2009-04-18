@@ -1,36 +1,25 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 require File.dirname(__FILE__) + '/../test_functional_content_helper'
-require 'imagenes_controller'
 
-# Re-raise errors caught by the controller.
-class ImagenesController; def rescue_action(e) raise e end; end
-
-class ImagenesControllerTest < Test::Unit::TestCase
+class ImagenesControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Image', :form_vars => {:description => 'footapang', :file => ActionController::TestUploadedFile.new("#{RAILS_ROOT}/test/fixtures/files/buddha.jpg", nil, nil)}, :categories_terms => 18
 
-  def setup
-    @controller = ImagenesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
-  
-  def test_category_404_if_invalid
+  test "category_404_if_invalid" do
     assert_raises(ActiveRecord::RecordNotFound) { get :category, :id => 'foo' }
   end
-  
-  
-  def test_image_nil_file
+    
+  test "image_nil_file" do
     User.db_query("UPDATE images SET file = NULL WHERE id = 1")
     @request.host = "ut.#{App.domain}"
     get :show, :id => 1
     assert_response :success
   end
     
-  def test_category_404_if_unexistant
+  test "category_404_if_unexistant" do
     assert_raises(ActiveRecord::RecordNotFound) { get :category }
   end
 
-  def test_toplevel_through_category
+  test "toplevel_through_category" do
     tld = Term.single_toplevel(:slug => 'ut')
     assert_not_nil tld
     get :category, :category => tld.id
@@ -38,7 +27,7 @@ class ImagenesControllerTest < Test::Unit::TestCase
     assert_template 'imagenes/toplevel'
   end
 
-  def test_gallery_through_category
+  test "gallery_through_category" do
     tld = Term.single_toplevel(:slug => 'ut')
     assert_not_nil tld
     sld = tld.children.create({:name => 'gallery', :taxonomy => 'ImagesCategory'})
@@ -53,13 +42,13 @@ class ImagenesControllerTest < Test::Unit::TestCase
     assert_template 'imagenes/gallery'
   end
 
-  def test_potds
+  test "potds" do
     get :potds
     assert_response :success
     assert_template 'imagenes/potds'
   end
 
-  def test_should_add_multiple_images_from_zip # TEMP disabled
+  test "should_add_multiple_images_from_zip" do # TEMP disabled
     tld = Term.single_toplevel(:slug => 'ut')
     assert_not_nil tld
     sld = tld.children.create({:name => 'gallery', :taxonomy => 'ImagesCategory'})
@@ -72,13 +61,13 @@ class ImagenesControllerTest < Test::Unit::TestCase
     assert_equal sld.id, im.terms[0].id
   end
   
-  def test_babes_gallery_visible_from_factions_portal
+  test "babes_gallery_visible_from_factions_portal" do
     @request.host = 'ut.gamersmafia.com'
     get :category, { :category => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => "slug = 'babes' AND taxonomy = 'ImagesCategory'").id }
     assert_response :success
   end
   
-  def test_babes_image_visible_from_factions_portal
+  test "babes_image_visible_from_factions_portal" do
     User.db_query("UPDATE images_categories SET root_id = (select id from images_categories WHERE code = 'bazar'), parent_id = (select id from images_categories WHERE code = 'bazar') WHERE code = 'babes'") 
     User.db_query("UPDATE images_categories SET root_id = (select id from images_categories WHERE code = 'bazar'), parent_id = (select id from images_categories WHERE code = 'bazar') WHERE code = 'dudes'")
     User.db_query("UPDATE images SET state = #{Cms::PUBLISHED} WHERE images_category_id = (select id from images_categories where code = 'babes')")
@@ -87,7 +76,7 @@ class ImagenesControllerTest < Test::Unit::TestCase
     assert_response :redirect
   end
   
-  def test_imagenes_bazar_should_work
+  test "imagenes_bazar_should_work" do
     @request.host = "bazar.#{App.domain}"
     get :index
     assert_response :success, @response.body

@@ -7,7 +7,7 @@
 <%=javascript_includes %>
 <link rel="alternate" type="application/xml" title="RSS" href="/rss/noticias" />
 </head>
-<body class="lydefault <%=' has-submenu ' if controller.submenu %><%="wp#{controller.wmenu_pos} "%><%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=send('first_render'.to_sym).to_s.split('/').last%>">
+<body class="lydefault <%=' has-submenu ' if controller.submenu %><%="wp#{controller.wmenu_pos} "%><%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=params[:action].to_s.split('/').last%>">
   <div id="cpageout" class="container gm20085">
 	<div id="cpagein" class="container">
 		<div id="mgsearch">

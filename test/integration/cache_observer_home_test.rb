@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class CacheObserverHomeTest < ActionController::IntegrationTest
   def setup
@@ -6,14 +6,14 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
     host! App.domain
   end
   
-  #def test_should_clear_top_factions_when_someone_joins_a_faction
+  #test "should_clear_top_factions_when_someone_joins_a_faction" do
   # go_to_index
   #assert_cache_exists '/common/home/index/factions_stats'
   #Factions::user_joins_faction(User.find(1), 1)
   #assert_cache_dont_exist '/common/home/index/factions_stats'
   #end
   
-  #  def test_should_clear_competitions_box_when_new_match_is_completed
+  #  test "should_clear_competitions_box_when_new_match_is_completed" do
   #  flunk 'todo'
   #    go_to_index
   #    assert_cache_exists '/common/home/index/factions_stats'
@@ -21,7 +21,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
   #    assert_cache_dont_exist '/common/home/index/factions_stats'
   #  end
   
-  #  def test_should_clear_top_factions_when_someone_leaves_a_faction
+  #  test "should_clear_top_factions_when_someone_leaves_a_faction" do
   #    test_should_clear_top_factions_when_someone_joins_a_faction
   #go_to_index
   #assert_cache_exists '/common/home/index/factions_stats'
@@ -29,7 +29,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
   #assert_cache_dont_exist '/common/home/index/factions_stats'
   #end
   
-  def test_should_clear_events_box_when_someone_joins_an_event
+  test "should_clear_events_box_when_someone_joins_an_event" do
     e = Event.new({:user_id => 1, :title => 'evento tal cual', :terms => 1, :starts_on => 2.days.ago, :ends_on => 3.days.since})
     assert_equal true, e.save
     e.change_state(Cms::PUBLISHED, User.find(1))
@@ -40,7 +40,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
     assert_cache_dont_exist "gm/home/index/eventos/#{Time.now.strftime('%Y%m%d')}"
   end
   
-  def test_should_clear_events_box_when_someone_leaves_an_event
+  test "should_clear_events_box_when_someone_leaves_an_event" do
     test_should_clear_events_box_when_someone_joins_an_event
     go_to_index
     assert_cache_exists "gm/home/index/eventos/#{Time.now.strftime('%Y%m%d')}"
@@ -57,13 +57,13 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
     assert_template 'home/gm'
   end
   
-  #  def test_should_clear_competitions_box_on_main_when_competitions_match_is_confirmed
+  #  test "should_clear_competitions_box_on_main_when_competitions_match_is_confirmed" do
   #  end
   
-  #  def test_should_clear_competitions_box_on_portal_when_competitions_match_is_confirmed
+  #  test "should_clear_competitions_box_on_portal_when_competitions_match_is_confirmed" do
   #  end
   
-  def test_should_clear_funthings_cache_after_publishing_funthing
+  test "should_clear_funthings_cache_after_publishing_funthing" do
     n = Funthing.find(:pending)[0]
     assert_not_nil n
     go_to_index
@@ -72,7 +72,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
     assert_cache_dont_exist "common/home/index/curiosidades"
   end
   
-  def test_should_clear_funthings_cache_after_unpublishing_funthing
+  test "should_clear_funthings_cache_after_unpublishing_funthing" do
     n = Funthing.find(:published)[0]
     assert_not_nil n
     go_to_index
@@ -81,7 +81,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
     assert_cache_dont_exist "common/home/index/curiosidades"
   end
   
-  def test_should_clear_funthings_cache_after_commenting_funthing
+  test "should_clear_funthings_cache_after_commenting_funthing" do
     n = Funthing.find(:published)[0]
     assert_not_nil n
     sym_login 'superadmin', 'lalala'
@@ -92,7 +92,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
   end
   
   
-  def test_should_clear_daily_image_if_current_potd_becomes_unavailable
+  test "should_clear_daily_image_if_current_potd_becomes_unavailable" do
     go_to_index
     go_to_index # dos veces por si no hay potd elegida
     d = Time.now
@@ -112,7 +112,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
     assert_cache_dont_exist "gm/home/index/potd_#{d.strftime('%Y%m%d')}"
   end
   
-  def test_should_clear_last_blogs_when_new_blogentry_is_created
+  test "should_clear_last_blogs_when_new_blogentry_is_created" do
     go_to_index
     assert_cache_exists 'common/home/index/blogentries'
     be_count = Blogentry.count
@@ -121,7 +121,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
     assert_cache_dont_exist 'common/home/index/blogentries'
   end
   
-  def test_should_clear_last_blogs_when_new_blogentry_is_deleted
+  test "should_clear_last_blogs_when_new_blogentry_is_deleted" do
     test_should_clear_last_blogs_when_new_blogentry_is_created
     go_to_index
     assert_cache_exists 'common/home/index/blogentries'
@@ -131,7 +131,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
     assert_cache_dont_exist 'common/home/index/blogentries'
   end
   
-  def test_should_clear_last_blogs_when_new_blogentry_is_deleted
+  test "should_clear_last_blogs_when_new_blogentry_is_updated" do
     test_should_clear_last_blogs_when_new_blogentry_is_created
     go_to_index
     assert_cache_exists 'common/home/index/blogentries'
@@ -140,7 +140,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
     assert_cache_dont_exist 'common/home/index/blogentries'
   end
   
-  def test_should_clear_last_news_of_district
+  test "should_clear_last_news_of_district" do
     n = News.new(:title => 'Noticia 1', :description => 'sumario', :user_id => 1)
     assert n.save
     assert Term.single_toplevel(:slug => 'anime').link(n.unique_content)

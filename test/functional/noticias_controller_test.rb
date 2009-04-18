@@ -1,19 +1,10 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 require File.dirname(__FILE__) + '/../test_functional_content_helper'
-require 'noticias_controller'
 
-class NoticiasController; def rescue_action(e) raise e end; end
-
-class NoticiasControllerTest < Test::Unit::TestCase
+class NoticiasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'News', :form_vars => {:title => 'footapang', :description => 'bartapang'}, :root_terms => 1
-  
-  def setup
-    @controller = NoticiasController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
-  
-  def test_update_should_save_contents_version
+
+  test "update_should_save_contents_version" do
     sym_login 1
     n = News.find(1)
     prev_attrs = n.attributes
@@ -49,7 +40,7 @@ class NoticiasControllerTest < Test::Unit::TestCase
     assert_response :success
   end
   
-  def test_create_without_subcat_should_work
+  test "create_without_subcat_should_work" do
     sym_login 1
     assert_count_increases(News) do 
       post :create, { :news => {:title => 'footapang', :description => 'bartapang'}, :root_terms => 1, :new_subcategory_name => '' }

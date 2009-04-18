@@ -1,9 +1,9 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class DemoMirrorTest < Test::Unit::TestCase
+class DemoMirrorTest < ActiveSupport::TestCase
 
   # Replace this with your real tests.
-  def test_truth
+  test "truth" do
     assert true
   end
 end

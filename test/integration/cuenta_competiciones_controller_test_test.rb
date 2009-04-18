@@ -7,7 +7,7 @@ class CuentaCompeticionesControllerTestTest < ActionController::IntegrationTest
   end
 
 
-  def test_should_create_working_tournament
+  test "should_create_working_tournament" do
     sym_login :superadmin, :lalala
     create_competition :type => 'Tournament', :name => 'FooTournament'
     go_to '/cuenta/competiciones/general'
@@ -17,7 +17,7 @@ class CuentaCompeticionesControllerTestTest < ActionController::IntegrationTest
     go_to '/cuenta/competiciones/admins'
   end
 
-  def test_should_create_working_ladder
+  test "should_create_working_ladder" do
     sym_login :superadmin, :lalala
     create_competition :type => 'Ladder', :name => 'FooLadder'
     go_to '/cuenta/competiciones/general'
@@ -27,7 +27,7 @@ class CuentaCompeticionesControllerTestTest < ActionController::IntegrationTest
     go_to '/cuenta/competiciones/admins'
   end
 
-  def test_should_create_working_league
+  test "should_create_working_league" do
     sym_login :superadmin, :lalala
     create_competition :type => 'League', :name => 'FooLeague'
     go_to '/cuenta/competiciones/general'

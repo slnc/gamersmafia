@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 
 class CacheObserverTutorialesTest < ActionController::IntegrationTest
@@ -7,7 +7,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     host! App.domain
   end
 
-  def test_should_clear_tutoriales_index_index_after_creating_a_new_category
+  test "should_clear_tutoriales_index_index_after_creating_a_new_category" do
     get '/tutoriales'
     assert_cache_exists '/gm/tutoriales/index/folders'
     @tc = Term.create({:name => 'foocat', :slug => 'codecot'})
@@ -16,7 +16,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     assert_cache_dont_exist '/gm/tutoriales/index/folders'
   end
   
-  def test_should_clear_tutoriales_index_index_after_updating_a_category
+  test "should_clear_tutoriales_index_index_after_updating_a_category" do
     test_should_clear_tutoriales_index_index_after_creating_a_new_category
     get '/tutoriales'
     assert_cache_exists '/gm/tutoriales/index/folders'
@@ -24,7 +24,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     assert_cache_dont_exist '/gm/tutoriales/index/folders'
   end
   
-  def test_should_clear_tutoriales_index_index_after_deleting_a_category
+  test "should_clear_tutoriales_index_index_after_deleting_a_category" do
     test_should_clear_tutoriales_index_index_after_creating_a_new_category
     get '/tutoriales'
     assert_cache_exists '/gm/tutoriales/index/folders'
@@ -32,7 +32,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     assert_cache_dont_exist '/gm/tutoriales/index/folders'
   end
   
-  def test_should_clear_tutoriales_forums_list_after_creating_a_subcategory
+  test "should_clear_tutoriales_forums_list_after_creating_a_subcategory" do
     test_should_clear_tutoriales_index_index_after_creating_a_new_category
     get "/tutoriales/#{@tc.id}"
     assert_response :success
@@ -41,7 +41,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/tutoriales/index/folders_#{@tc.id}"
   end
   
-  def test_should_clear_tutoriales_forums_list_after_updating_a_subcategory
+  test "should_clear_tutoriales_forums_list_after_updating_a_subcategory" do
     test_should_clear_tutoriales_forums_list_after_creating_a_subcategory
     get "/tutoriales/#{@tc_child.id}"
     assert_response :success
@@ -54,7 +54,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/tutoriales/index/folders_#{@tc_child.id}"
   end
   
-  def test_should_clear_tutoriales_forums_list_after_destroying_a_subcategory
+  test "should_clear_tutoriales_forums_list_after_destroying_a_subcategory" do
     test_should_clear_tutoriales_forums_list_after_creating_a_subcategory
     get "/tutoriales/#{@tc_child.id}"
     assert_response :success
@@ -67,7 +67,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/tutoriales/index/folders_#{@tc_child.id}"
   end
   
-  def test_should_clear_tutoriales_index_of_previous_category_when_moving_to_new_category
+  test "should_clear_tutoriales_index_of_previous_category_when_moving_to_new_category" do
     tut = Tutorial.find(:published, :limit => 1).first
     fcat = tut.main_category
     assert !fcat.nil?

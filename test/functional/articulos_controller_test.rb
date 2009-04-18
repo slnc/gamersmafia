@@ -1,17 +1,17 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class ArticulosControllerTest < ActionController::TestCase
   # Replace this with your real tests.
-  def test_index
+  test "index" do
     get :index
     assert true
   end
   
-  def test_index_in_factions
+  test "index_in_factions" do
     
   end
   
-  def test_index_in_bazar_district
+  test "index_in_bazar_district" do
     
   end
 end

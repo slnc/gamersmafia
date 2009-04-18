@@ -1,8 +1,8 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class QuestionTest < ActiveSupport::TestCase
   
-  def test_should_return_money_to_owner_if_no_best_answer
+  test "should_return_money_to_owner_if_no_best_answer" do
     @q = Question.find(1)
     @q.ammount = Question::MIN_AMMOUNT
     assert @q.save, @q.errors.full_messages_html
@@ -14,7 +14,7 @@ class QuestionTest < ActiveSupport::TestCase
     assert_equal sprintf("%.2f", @q.user.cash), sprintf("%.2f", (@u_cash + Question::MIN_AMMOUNT))
   end
   
-  def test_set_set_best_answer
+  test "set_set_best_answer" do
     @q = Question.find(1)
     @c = @q.unique_content.comments.find(:first, :conditions => 'deleted = \'f\'')
     baid = @c.id
@@ -32,14 +32,14 @@ class QuestionTest < ActiveSupport::TestCase
     assert_equal ("%.2f" % (@u_cash + @q.prize)), ("%.2f" % @c.user.cash)
   end
   
-  def test_should_send_message_when_best_answer_is_selected
+  test "should_send_message_when_best_answer_is_selected" do
     assert_count_increases(Message) do
       test_set_set_best_answer
     end
     assert_equal @c.id, Message.find(:first, :order => 'id DESC').user_id_to
   end
   
-  def test_should_be_able_to_revert
+  test "should_be_able_to_revert" do
     test_set_set_best_answer
     init_cash = @c.user.cash
     assert @q.revert_set_best_answer(User.find(1))
@@ -54,44 +54,44 @@ class QuestionTest < ActiveSupport::TestCase
     Bank::transfer(:bank, User.find(2), 100, 'test')
   end
   
-  def test_should_be_able_to_create_question_with_0_ammount
+  test "should_be_able_to_create_question_with_0_ammount" do
     @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => 0, :terms => 1})
     assert_equal false, @bt.new_record?, @bt.errors.full_messages_html
   end
   
-  def test_should_be_able_to_create_question_with_min_ammount
+  test "should_be_able_to_create_question_with_min_ammount" do
     @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => Question::MIN_AMMOUNT})
     Term.find(20).link(@bt.unique_content)
     assert_equal false, @bt.new_record?
     assert_equal Question::MIN_AMMOUNT.to_i, @bt.ammount.to_i 
   end
   
-  def test_shouldnt_be_able_to_create_question_with_less_than_min_ammount
+  test "shouldnt_be_able_to_create_question_with_less_than_min_ammount" do
     @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => Question::MIN_AMMOUNT - 1, :terms => 1})
     assert_equal true, @bt.new_record?
   end
   
-  def test_should_be_able_to_increase_ammount_of_question_if_prev_was_0_and_new_ammount_min_or_more
+  test "should_be_able_to_increase_ammount_of_question_if_prev_was_0_and_new_ammount_min_or_more" do
     test_should_be_able_to_create_question_with_0_ammount
     assert_equal true, @bt.update_ammount(Question::MIN_AMMOUNT), @bt.errors.full_messages_html
   end
   
-  def test_shouldnt_be_able_to_increase_ammount_of_question_if_prev_was_0_and_new_ammount_less_than_min
+  test "shouldnt_be_able_to_increase_ammount_of_question_if_prev_was_0_and_new_ammount_less_than_min" do
     test_should_be_able_to_create_question_with_0_ammount
     assert_raises(TooLateToLower) { @bt.update_ammount(Question::MIN_AMMOUNT - 1) }
   end
   
-  def test_should_be_able_to_increase_ammount_of_question_if_prev_was_min
+  test "should_be_able_to_increase_ammount_of_question_if_prev_was_min" do
     test_should_be_able_to_create_question_with_min_ammount
     assert_equal true, @bt.update_ammount(@bt.ammount + 1.0)
   end
   
-  def test_shouldnt_be_able_to_decrease_ammount
+  test "shouldnt_be_able_to_decrease_ammount" do
     test_should_be_able_to_create_question_with_min_ammount
     assert_raises(TooLateToLower) { @bt.update_ammount(@bt.ammount - 1.0) } 
   end
   
-  def test_shouldnt_be_able_to_create_if_too_many_open_questions
+  test "shouldnt_be_able_to_create_if_too_many_open_questions" do
     u1 = User.find(3)
     
     Question.max_open(u1).times do |t|
@@ -103,7 +103,7 @@ class QuestionTest < ActiveSupport::TestCase
     assert !@bt.save
   end
   
-  def test_should_get_back_the_money_if_changed_from_published
+  test "should_get_back_the_money_if_changed_from_published" do
     test_should_be_able_to_create_question_with_min_ammount
     # @u2.reload
     Cms::deny_content(@bt, User.find(1), "fuck you")
@@ -111,7 +111,7 @@ class QuestionTest < ActiveSupport::TestCase
     assert_equal 0.0, @bt.ammount
   end
   
-  def test_should_get_back_the_money_if_deleted
+  test "should_get_back_the_money_if_deleted" do
     @u2 = User.find(2)
     initial_cash = @u2.cash
     test_should_get_back_the_money_if_changed_from_published

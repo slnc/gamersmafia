@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 
 class CacheObserverApuestasTest < ActionController::IntegrationTest
@@ -8,7 +8,7 @@ class CacheObserverApuestasTest < ActionController::IntegrationTest
   end
 
   # COMMON
-  def test_should_clear_cache_latest_by_cat_after_publishing_news
+  test "should_clear_cache_latest_by_cat_after_publishing_news" do
     n = portal.bet.find(:published)[0]
     assert_not_nil n
     go_to "/apuestas/show/#{n.id}", 'apuestas/show'

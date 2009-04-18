@@ -1,7 +1,3 @@
-# TODO Por alguna razón :environment no carga App
-require 'erb'
-require "#{RAILS_ROOT}/config/app_config.rb"
-
 desc "Update the free GeoLiteCity database"
 task :update_geoip_db => :environment do
   dst_dir = "#{RAILS_ROOT}/public/storage"
