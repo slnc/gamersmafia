@@ -5,10 +5,13 @@
 <%mftext('Crear tu skin') do %>
 <form method="post" action="/cuenta/skins/create">
 Nombre: <input type="text" class="text" name="skin[name]" /><br />
+<input type="hidden" name="skin[type]" value="FactionsSkin" />
+<% if nil then %>
 Tipo: <select name="skin[type]">
 <option value="FactionsSkin">Skin de Facción</option>
 <option value="ClansSkin">Skin de Clan</option>
 </select>
+<% end -%>
 <br />
 <input type="submit" class="button" value="Crear" />
 </form>
@@ -21,6 +24,7 @@ Tipo: <select name="skin[type]">
     <td><a href="/cuenta/skins/edit/<%=skin.id%>"><%=skin.name%></a></td>
     <td><%=skin.type%></td>
     <td><%=skin.is_public?%></td>
+    <td><a href="/cuenta/skins/activate?skin_id=<%=skin.id%>">Activar</a></td>
     <td><a href="/<%=skin.file%>">Descargar</a></td>
     <td><a href="/cuenta/skins/destroy/<%=skin.id%>" onclick="return confirm('¿Estás seguro?');">Borrar</a></td>
 </tr>
