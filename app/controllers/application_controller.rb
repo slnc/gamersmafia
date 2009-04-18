@@ -498,7 +498,12 @@ Request information:
   public
   def skin
     if user_is_authed && @user.pref_skin
-      Skin.find(@user.pref_skin.to_i) || Skin.find_by_hid('default')
+      begin 
+	      Skin.find(@user.pref_skin.to_i)
+      rescue ActiveRecord::RecordNotFound
+	      @user.preferences.find_by_name('skin').destroy
+	      Skin.find_by_hid('default')
+      end
     elsif params['skin']
       Skin.find(params['skin'].to_i) || Skin.find_by_hid('default')
     elsif portal.skin_id != nil

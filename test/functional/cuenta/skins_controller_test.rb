@@ -2,6 +2,19 @@ require 'test_helper'
 
 class Cuenta::SkinsControllerTest < ActionController::TestCase
 
+
+  test "trying to use a deleted skin should work properly" do
+      test_activate_my_own_skin_should_work
+      post :destroy, :id => @skin.id
+      assert_response :redirect
+
+      assert Skin.find_by_id(@skin.id).nil?
+
+      get :index
+      assert_response :success
+      assert @response.body.index("skins/default/")
+  end
+
   test "activate my own skin should work" do
       test_should_create_factions_skin_if_everything_ok
       post :activate, :skin => @skin.id

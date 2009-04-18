@@ -1,4 +1,5 @@
 class Skin < ActiveRecord::Base
+  has_hid
   has_and_belongs_to_many :portals
   has_many :skin_textures
   
@@ -13,7 +14,10 @@ class Skin < ActiveRecord::Base
 
   validates_uniqueness_of :name
 
-  has_hid
+
+  def resolve_hid
+	  self.name
+  end
   
   CGEN_CSS_START = '/* COLOR GEN START - DO NOT REMOVE */'
   CGEN_CSS_END = '/* COLOR GEN END - DO NOT REMOVE */'
