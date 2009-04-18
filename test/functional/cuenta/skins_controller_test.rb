@@ -4,11 +4,21 @@ class Cuenta::SkinsControllerTest < ActionController::TestCase
 
   test "activate my own skin should work" do
       test_should_create_factions_skin_if_everything_ok
-      post :activate, :id => @skin.id
+      post :activate, :skin => @skin.id
       assert_response :redirect
-      assert_equal @skin.id.to_s, cookies["skin"]
+      get :index
+      assert_response :success
+      assert @response.body.index("storage/skins/#{@skin.hid}/")
   end
   
+  test "reset skin should work" do
+      test_activate_my_own_skin_should_work
+      post :activate, :skin => '-1'
+      assert_response :redirect
+      get :index
+      assert_response :success
+      assert @response.body.index("skins/default/")
+  end
   # Replace this with your real tests.
   test "index_should_work" do
     sym_login 1

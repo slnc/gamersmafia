@@ -1,5 +1,4 @@
 class Skin < ActiveRecord::Base
-  has_hid
   has_and_belongs_to_many :portals
   has_many :skin_textures
   
@@ -11,7 +10,10 @@ class Skin < ActiveRecord::Base
   before_save :update_version_if_file_changed
   after_save :check_file_changed
   after_create :setup_initial_zip
-  
+
+  validate_uniqueness_of :name
+
+  has_hid
   
   CGEN_CSS_START = '/* COLOR GEN START - DO NOT REMOVE */'
   CGEN_CSS_END = '/* COLOR GEN END - DO NOT REMOVE */'
@@ -95,10 +97,6 @@ class Skin < ActiveRecord::Base
     data.gsub!('url(/', "url(#{ASSET_URL}/")
     File.open(compressed, 'w') { |f| f.write(data) }
     `java -jar script/yuicompressor-2.3.6.jar "#{compressed}" -o "#{compressed}" --line-break 500`
-  end
-  
-  def resolve_hid
-    name.bare
   end
   
   #  def update_intelliskin(new_params)
