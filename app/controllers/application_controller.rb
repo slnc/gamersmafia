@@ -573,6 +573,10 @@ Request information:
   #  rescue_action_in_public(exception)
   #end
   
+  include ExceptionNotifiable
+  ExceptionNotifier.exception_recipients = %w(rails-gm@slnc.net)
+  ExceptionNotifier.sender_address = %("GM Error Notifier" <httpd@gamersmafia.com>)
+
   def rescue_action_in_public(exception)
     case exception
       when ActiveRecord::RecordNotFound
@@ -596,7 +600,17 @@ Request information:
         http_404
       end
     else
-      SystemNotifier.deliver_exception_notification(self, request, exception)
+deliverer = self.class.exception_data
+          data = case deliverer
+            when nil then {}
+            when Symbol then send(deliverer)
+            when Proc then deliverer.call(self)
+          end
+ 
+          ExceptionNotifier.deliver_exception_notification(exception, self,
+            request, data)
+
+      # SystemNotifier.deliver_exception_notification(self, request, exception)
       begin
         render :template => 'application/http_500', :status => 500
       rescue
