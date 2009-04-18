@@ -1,5 +1,3 @@
-require 'app/controllers/application_controller.rb'
-
 module Cache
   def self.user_base(uid)
     "/_users/#{uid % 1000}/#{uid}"
