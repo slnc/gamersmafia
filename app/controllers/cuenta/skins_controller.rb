@@ -6,7 +6,7 @@ class Cuenta::SkinsController < ApplicationController
   end
   
   def submenu_items
-    if @skin
+    if @skin && @portal.clan_id
       [['Cabecera', "/cuenta/skins/cabecera/#{@skin.id}"],
       ['Organización', "/cuenta/skins/organizacion/#{@skin.id}"],
       ['Módulos', "/cuenta/skins/modulos/#{@skin.id}"],
