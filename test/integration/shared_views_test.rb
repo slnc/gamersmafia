@@ -14,7 +14,7 @@ class SharedViewsTest < ActionController::IntegrationTest
     post "/noticias/create", { :news => { :title => 'titulito', :description => 'fo' }, :root_terms => [1] }
     assert_response :redirect, @response.body
     n = News.find(:first, :order => 'id DESC')
-    post "/admin/contenidos/publish_content", { :id => n.unique_content.id }, { :user => User.find(1) }
+    post "/admin/contenidos/publish_content", { :id => n.unique_content.id }
     assert_response :redirect
     n.reload
     assert_equal Cms::PUBLISHED, n.state

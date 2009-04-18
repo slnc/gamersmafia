@@ -18,7 +18,7 @@
 <% cache("/common/descargas/index/most_productive_author_by_cat_#{@category.nil? ? '' : @category.id}") do %>
 <%=render :partial => '/shared/most_productive_authors', :locals => {:cls => Download, :category => @category}%>
 <% end -%>
-<% end # if @category-%>
+<% end if @category-%>
 <% end -%>
 
 <% content_main do %>
