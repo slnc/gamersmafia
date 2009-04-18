@@ -11,7 +11,7 @@ class Skin < ActiveRecord::Base
   after_save :check_file_changed
   after_create :setup_initial_zip
 
-  validate_uniqueness_of :name
+  validates_uniqueness_of :name
 
   has_hid
   
