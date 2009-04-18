@@ -1,3 +1,5 @@
+prev_verbose = $VERBOSE
+$VERBOSE = nil
 begin
 class Tidybuf
 
@@ -13,6 +15,7 @@ class Tidybuf
 end
 rescue
 end
+$VERBOSE = prev_verbose
 
 
 
