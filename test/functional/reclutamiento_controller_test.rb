@@ -62,7 +62,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
     post :update, :id => @ra.id, :recruitment_ad => { :game_id => 2 }
     @ra.reload
     assert_equal 2, @ra.game_id
-    assert_redirected_to "/reclutamiento/anuncio/#{@ra.id}"
+    assert_redirected_to ApplicationController.gmurl(@ra)
   end
   
   test "buscar" do

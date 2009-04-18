@@ -17,7 +17,7 @@ class Cuenta::ComentariosControllerTest < ActionController::TestCase
     
     assert_response :redirect
     u1 = User.find(1)
-    assert_equal 0, u1.pref_comments_autoscroll
+    assert_equal '0', u1.pref_comments_autoscroll
     assert_equal 'Foo', u1.comments_sig
     assert u1.comment_show_sigs
     assert_response :redirect

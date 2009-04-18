@@ -136,15 +136,10 @@ module TestCaseMixings
       
       test "should_change_from_draft_to_pending_if_unselected_draft_checkbox" do
         return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
-        puts @request.host
         sym_login opt[:authed_user_id] 
         num_news = content_class.count
         origpvars = post_vars.clone # TODO PERF 
-        p post_vars
-        puts @request.host
         post :create, post_vars.clone.merge({:draft => 1})
-        p post_vars
-        puts "----"
         assert_response :redirect
         assert_redirected_to :action => 'edit', :id => content_class.find(:first, :order => 'id DESC').id
         
@@ -154,8 +149,6 @@ module TestCaseMixings
 
         post :update, post_vars.merge({:id => o.id})
         assert_response :redirect
-        puts "after post :update"
-        p post_vars
         o.reload
         assert_equal Cms::PENDING, o.state
       end

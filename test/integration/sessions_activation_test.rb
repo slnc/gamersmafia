@@ -6,19 +6,11 @@ class SessionsActivationTest < ActionController::IntegrationTest
     host! App.domain
   end
 
-  test "should_not_start_session_by_default" do
-    get '/'
-    assert_response :success
-    assert_nil cookies['adn2']
-    assert session.kind_of?(Hash)
-  end
-
   test "should_start_session_if_autologin_cookie_present" do
     cookies['ak'] = 'foobar'    
     get '/'
     assert_response :success
     assert_not_nil cookies['adn2']
-    assert !session.kind_of?(Hash)
   end
 
   test "should_start_session_if_session_cookie_present" do
@@ -27,13 +19,11 @@ class SessionsActivationTest < ActionController::IntegrationTest
     get '/'
     assert_response :success
     assert_not_nil cookies['adn2']
-    assert !session.kind_of?(Hash)
   end
 
   test "should_start_session_if_accessing_x" do    
     get '/site/x'
     assert_response :success
     assert_not_nil cookies['adn2']
-    assert !session.kind_of?(Hash)
   end
 end

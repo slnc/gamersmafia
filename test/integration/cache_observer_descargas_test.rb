@@ -123,6 +123,7 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
     d = Download.find(:published, :limit => 1)[0]
     assert_not_nil d
     get "/descargas/#{d.main_category.id}"
+    get "/descargas/#{d.main_category.id}"
     assert_response :success
     assert_cache_exists "/common/descargas/index/essential2_#{d.main_category.root_id}"
     d.essential = true

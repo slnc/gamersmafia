@@ -22,8 +22,7 @@ class MiembrosControllerTest < ActionController::TestCase
   
   test "member_should_redir_if_wrong_case" do
     get :member, :login => User.find(1).login.upcase
-    assert_response :redirect
-    assert @response.headers['Status'].starts_with?('301 ')
+    assert_response 301
   end
   
   test "member_in_faction" do

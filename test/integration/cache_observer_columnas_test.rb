@@ -50,7 +50,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
     faction_host pp
     n = pp.column.find(:published)[0]
     assert_not_nil n
-    go_to "/columnas/show/#{n.id}", 'columnas/show'
+    go_to ApplicationController.gmurl(n), 'columnas/show'
     assert_cache_exists "#{pp.code}/columnas/show/latest_by_author_#{n.user_id}"
     n2 = pp.column.find(:pending, :conditions => ['contents.user_id = ?', n.user_id])[0]
     publish_content n2
@@ -72,11 +72,6 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
   test "should_clear_cache_on_portal_after_updating_columnfaction " do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_updating_column
-  end
-
-  test "should_clear_cache_on_portal_after_rating_columnfaction " do
-    faction_host FactionsPortal.find_by_code('ut')
-    test_should_clear_cache_on_main_after_rating_column
   end
 
   test "should_clear_cache_on_portal_after_rating_columnfaction 2" do

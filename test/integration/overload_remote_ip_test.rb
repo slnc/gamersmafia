@@ -58,7 +58,7 @@ class OverloadRemoteIpTest < ActionController::IntegrationTest
   
   test "should_return_correct_ip_if_forwarded_for_known_known" do
     get '/', {}, { :REMOTE_ADDR => '127.0.0.1', :HTTP_X_FORWARDED_FOR => '88.20.248.67, 80.58.205.47' }
-    assert_equal '88.20.248.67', @request.remote_ip
+    assert_equal '80.58.205.47', @request.remote_ip
   end
   
   test "should_return_correct_ip_if_forwarded_for_known" do
