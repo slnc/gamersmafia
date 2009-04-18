@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 
 class CacheObserverDescargasTest < ActionController::IntegrationTest
@@ -8,7 +8,7 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
   end
 
   # GLOBAL NAVIGATOR
-  def test_should_delete_subcategories_cache_after_creating_download
+  test "should_delete_subcategories_cache_after_creating_download" do
     # creation
     c1 = Term.create({:slug => 'c1', :name => 'foo1'})
     c1.reload
@@ -34,7 +34,7 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
     @c2 = c2
   end
 
-  def test_should_delete_subcategories_cache_after_downloading_download
+  test "should_delete_subcategories_cache_after_downloading_download" do
     test_should_delete_subcategories_cache_after_creating_download
 
     go_to_downloads_category(@c1)
@@ -57,7 +57,7 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
   end
 
 
-  def test_should_clear_descargas_index_index_after_creating_a_new_category
+  test "should_clear_descargas_index_index_after_creating_a_new_category" do
     get '/descargas'
     assert_response :success, response.body
     assert_cache_exists '/gm/descargas/index/folders'
@@ -66,7 +66,7 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
     assert_cache_dont_exist '/gm/descargas/index/folders'
   end
   
-  def test_should_clear_descargas_index_index_after_updating_a_category
+  test "should_clear_descargas_index_index_after_updating_a_category" do
     test_should_clear_descargas_index_index_after_creating_a_new_category
     get '/descargas'
     assert_response :success
@@ -75,7 +75,7 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
     assert_cache_dont_exist '/gm/descargas/index/folders'
   end
   
-  def test_should_clear_descargas_index_index_after_deleting_a_category
+  test "should_clear_descargas_index_index_after_deleting_a_category" do
     test_should_clear_descargas_index_index_after_creating_a_new_category
     get '/descargas'
     assert_response :success
@@ -84,7 +84,7 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
     assert_cache_dont_exist '/gm/descargas/index/folders'
   end
   
-  def test_should_clear_descargas_forums_list_after_creating_a_subcategory
+  test "should_clear_descargas_forums_list_after_creating_a_subcategory" do
     test_should_clear_descargas_index_index_after_creating_a_new_category
     get "/descargas/#{@tc.id}"
     assert_response :success, response.body
@@ -93,7 +93,7 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/descargas/index/folders_#{@tc.id}"
   end
   
-  def test_should_clear_descargas_forums_list_after_updating_a_subcategory
+  test "should_clear_descargas_forums_list_after_updating_a_subcategory" do
     test_should_clear_descargas_forums_list_after_creating_a_subcategory
     get "/descargas/#{@tc_child.id}"
     assert_response :success, response.body
@@ -106,7 +106,7 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/descargas/index/folders_#{@tc_child.id}"
   end
   
-  def test_should_clear_descargas_forums_list_after_destroying_a_subcategory
+  test "should_clear_descargas_forums_list_after_destroying_a_subcategory" do
     test_should_clear_descargas_forums_list_after_creating_a_subcategory
     get "/descargas/#{@tc_child.id}"
     assert_response :success
@@ -119,9 +119,10 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/descargas/index/folders_#{@tc_child.id}"
   end
 
-  def test_should_clear_descargas_essential_after_saving_a_download_with_its_essential_field_changed
+  test "should_clear_descargas_essential_after_saving_a_download_with_its_essential_field_changed" do
     d = Download.find(:published, :limit => 1)[0]
     assert_not_nil d
+    get "/descargas/#{d.main_category.id}"
     get "/descargas/#{d.main_category.id}"
     assert_response :success
     assert_cache_exists "/common/descargas/index/essential2_#{d.main_category.root_id}"
@@ -131,7 +132,7 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
   end
 
   
-  def test_should_clear_tutoriales_index_of_previous_category_when_moving_to_new_category
+  test "should_clear_tutoriales_index_of_previous_category_when_moving_to_new_category" do
     tut = Download.find(1)
     mc = tut.main_category
     get "/descargas/#{mc.id}"

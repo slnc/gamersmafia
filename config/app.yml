@@ -66,10 +66,10 @@ development: &development
   <<: *common
   
 test: &test
-  domain: gamersmafia.dev
-  domain_bazar: bazar.gamersmafia.dev
-  domain_arena: arena.gamersmafia.dev
-  asset_domain: gamersmafia.dev
+  domain: test.host
+  domain_bazar: bazar.test.host
+  domain_arena: arena.test.host
+  asset_domain: test.host
   <<: *common
 
     

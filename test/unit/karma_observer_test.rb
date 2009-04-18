@@ -1,8 +1,8 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class KarmaObserverTest < Test::Unit::TestCase
+class KarmaObserverTest < ActiveSupport::TestCase
   # COMMENTS
-  def test_should_give_karma_from_author_when_comment_is_created
+  test "should_give_karma_from_author_when_comment_is_created" do
     u = User.find(1)
     kp_initial = u.karma_points
     c = Comment.new({:content_id => 1, :user_id => 1, :host => '127.0.0.1', :comment => 'comentario de prueba'})
@@ -11,7 +11,7 @@ class KarmaObserverTest < Test::Unit::TestCase
     assert_equal kp_initial + Karma::KPS_CREATE['Comment'], u.karma_points
   end
 
-  def test_should_take_karma_from_author_when_comment_deleted
+  test "should_take_karma_from_author_when_comment_deleted" do
     test_should_give_karma_from_author_when_comment_is_created
     u = User.find(1)
     kp_initial = u.karma_points
@@ -21,7 +21,7 @@ class KarmaObserverTest < Test::Unit::TestCase
   end
 
   # CONTENTS
-  def test_should_give_karma_when_content_is_published
+  test "should_give_karma_when_content_is_published" do
     u2 = User.find(2)
     u2_kp_initial = u2.karma_points
     n = News.new({:title => 'noticia foo', :description => 'sumario de noticia guay', :terms => 1, :user_id => 2})
@@ -37,7 +37,7 @@ class KarmaObserverTest < Test::Unit::TestCase
     assert_equal u2_kp_initial + Karma::KPS_CREATE['News'], u2.karma_points
   end
 
-  def test_should_take_karma_when_content_is_unpublished
+  test "should_take_karma_when_content_is_unpublished" do
     test_should_give_karma_when_content_is_published
     u2 = User.find(2)
     u2_kp_initial = u2.karma_points
@@ -48,7 +48,7 @@ class KarmaObserverTest < Test::Unit::TestCase
     assert_equal u2_kp_initial - Karma::KPS_CREATE['News'], u2.karma_points
   end
 
-  def test_should_delete_karma_to_owner_when_content_is_marked_as_deleted
+  test "should_delete_karma_to_owner_when_content_is_marked_as_deleted" do
     test_should_give_karma_when_content_is_published
     u2 = User.find(2)
     u2_kp_initial = u2.karma_points
@@ -59,7 +59,7 @@ class KarmaObserverTest < Test::Unit::TestCase
     assert_equal u2_kp_initial - Karma::KPS_CREATE['News'], u2.karma_points
   end
 
-  def test_should_take_karma_from_owner_when_content_is_directly_deleted_and_was_published
+  test "should_take_karma_from_owner_when_content_is_directly_deleted_and_was_published" do
     test_should_give_karma_when_content_is_published
     u2 = User.find(2)
     u2_kp_initial = u2.karma_points
@@ -70,7 +70,7 @@ class KarmaObserverTest < Test::Unit::TestCase
     assert_equal u2_kp_initial - Karma::KPS_CREATE['News'], u2.karma_points
   end
 
-  def test_should_do_nothing_to_karma_if_content_is_deleted_and_was_previously_marked_as_deleted
+  test "should_do_nothing_to_karma_if_content_is_deleted_and_was_previously_marked_as_deleted" do
     test_should_delete_karma_to_owner_when_content_is_marked_as_deleted
     u2 = User.find(2)
     u2_kp_initial = u2.karma_points
@@ -81,7 +81,7 @@ class KarmaObserverTest < Test::Unit::TestCase
     assert_equal u2_kp_initial, u2.karma_points
   end
 
-  def test_should_do_nothing_to_karma_if_content_is_deleted_and_is_not_public
+  test "should_do_nothing_to_karma_if_content_is_deleted_and_is_not_public" do
     u2 = User.find(2)
     u2_kp_initial = u2.karma_points
     n = News.new({:title => 'noticia foo', :description => 'sumario de noticia guay', :terms => 1, :user_id => 2})
@@ -91,7 +91,7 @@ class KarmaObserverTest < Test::Unit::TestCase
     assert_equal u2_kp_initial, u2.karma_points
   end
 
-  def test_should_do_nothing_to_karma_if_content_has_its_authorship_changed_and_is_not_published
+  test "should_do_nothing_to_karma_if_content_has_its_authorship_changed_and_is_not_published" do
     u = User.find(2)
     kp_initial = u.karma_points
     n = News.new({:title => 'noticia foo', :description => 'sumario de noticia guay', :terms => 1, :user_id => 2})
@@ -102,7 +102,7 @@ class KarmaObserverTest < Test::Unit::TestCase
     assert_equal kp_initial, u.karma_points
   end
 
-  def test_should_properly_update_karma_when_changing_authorship_and_is_published
+  test "should_properly_update_karma_when_changing_authorship_and_is_published" do
     test_should_give_karma_when_content_is_published
     n = News.find(:first, :order => 'id DESC')
     assert_equal true, n.is_public?

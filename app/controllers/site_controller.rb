@@ -217,6 +217,8 @@ class SiteController < ApplicationController
           raise AccessDenied unless @sender.user_is_clanleader(@user.id)
           when 'Competition'
           raise AccessDenied  unless @sender.user_is_admin(@user.id)
+          when 'User'
+          raise AccessDenied unless @user.id == @sender.id
           when 'Faction'
           raise AccessDenied unless @sender.is_boss?(@user)
 	  when 'User'

@@ -1,14 +1,14 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require 'test_helper'
 
 class Admin::BazarDistrictsControllerTest < ActionController::TestCase
   
-  def test_index
+  test "index" do
     sym_login 1
     get :index
     assert_response :success
   end
   
-  def test_create
+  test "create" do
     sym_login 1
     assert_count_increases(BazarDistrict) do
       post :create, {:bazar_district => {:name => 'el nombrecico', :code => 'codecico'}}
@@ -16,13 +16,13 @@ class Admin::BazarDistrictsControllerTest < ActionController::TestCase
     end
   end
   
-  def test_edit
+  test "edit" do
     sym_login 1
     get :edit, :id => 1
     assert_response :success
   end
   
-  def test_user_with_admin_permission_should_allow_if_registered
+  test "user_with_admin_permission_should_allow_if_registered" do
     assert_raises(AccessDenied) { get :index }
     u2 = User.find(2)
     sym_login u2
@@ -35,7 +35,7 @@ class Admin::BazarDistrictsControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  def test_update
+  test "update" do
     sym_login 1
     u1 = User.find(1)
     u2 = User.find(2)

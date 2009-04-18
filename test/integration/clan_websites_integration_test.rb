@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 
 class ClanWebsitesIntegrationTest < ActionController::IntegrationTest
@@ -8,7 +8,7 @@ class ClanWebsitesIntegrationTest < ActionController::IntegrationTest
   end
 
   # COMMON
-  def test_clan_website_should_work_right_after_buying_the_product
+  test "clan_website_should_work_right_after_buying_the_product" do
     
   end
 

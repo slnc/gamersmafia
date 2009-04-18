@@ -1,33 +1,25 @@
-require File.dirname(__FILE__) + '/../test_helper'
-require 'gmtv_controller'
+require 'test_helper'
 
-# Re-raise errors caught by the controller.
-class GmtvController; def rescue_action(e) raise e end; end
+class GmtvControllerTest < ActionController::TestCase
 
-class GmtvControllerTest < Test::Unit::TestCase
-  def setup
-    @controller = GmtvController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
   
   # Replace this with your real tests.
-  def test_should_return_channels_if_gm
+  test "should_return_channels_if_gm" do
     get :channels
     assert_response :success
   end
   
-  def test_should_return_channels_if_factions_portal
+  test "should_return_channels_if_factions_portal" do
     @request.host = "ut.gamersmafia.com"
     test_should_return_channels_if_gm
   end
   
-  def test_should_return_channels_if_platforms_portal
+  test "should_return_channels_if_platforms_portal" do
     @request.host = "wii.gamersmafia.com"
     test_should_return_channels_if_gm
   end
   
-  def test_should_return_channels_if_clans_portal
+  test "should_return_channels_if_clans_portal" do
     @request.host = "#{ClansPortal.find(:first).code}.gamersmafia.com"
     test_should_return_channels_if_gm
   end

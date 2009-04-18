@@ -1,6 +1,6 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class BetTest < Test::Unit::TestCase
+class BetTest < ActiveSupport::TestCase
 
   def setup
     @bet = Bet.create({:user_id => 1, :title => 'foo1 vs bar1', :terms => 1, :closes_on => 1.day.since})
@@ -28,7 +28,7 @@ class BetTest < Test::Unit::TestCase
   end
 
 
-  def test_should_return_money_if_cancelled
+  test "should_return_money_if_cancelled" do
     u1 = User.find(1)
     u2 = User.find(2)
     Bank.transfer(:bank, u1, 100 , 't1')
@@ -56,7 +56,7 @@ class BetTest < Test::Unit::TestCase
   end
 
 
-  def test_should_return_money_if_forfeit
+  test "should_return_money_if_forfeit" do
     u1 = User.find(1)
     u2 = User.find(2)
     Bank.transfer(:bank, u1, 100 , 't1')
@@ -84,7 +84,7 @@ class BetTest < Test::Unit::TestCase
   end
 
 
-  def test_should_properly_distribute_money_if_single_winner
+  test "should_properly_distribute_money_if_single_winner" do
     prepare_first_three_users
     
     @bets_option_foo.bets_tickets.create({:user_id => 1, :ammount => BetsTicket::MIN_BET})
@@ -108,7 +108,7 @@ class BetTest < Test::Unit::TestCase
   # opcion1 | opcion2
   #     100 |       0       (u1)
   #       0 |     100       (u2)
-  def test_should_properly_distribute_money_if_tie_all_100pc_and_same_ammount
+  test "should_properly_distribute_money_if_tie_all_100pc_and_same_ammount" do
     prepare_first_three_users
 
     @bets_option_foo.bets_tickets.create({:user_id => 1, :ammount => 100})
@@ -128,7 +128,7 @@ class BetTest < Test::Unit::TestCase
   # opcion1 | opcion2
   #      50 |       0       (u1)
   #       0 |     100       (u2)
-  def test_should_properly_distribute_money_if_tie_all_100pc_and_different_ammount
+  test "should_properly_distribute_money_if_tie_all_100pc_and_different_ammount" do
     prepare_first_three_users
 
     @bets_option_foo.bets_tickets.create({:user_id => 1, :ammount => 50})
@@ -148,7 +148,7 @@ class BetTest < Test::Unit::TestCase
   # opcion1 | opcion2
   #      50 |      50       (u1)
   #      50 |      50       (u2)
-  def test_should_properly_distribute_money_if_tie_all_0pc_and_same_ammount
+  test "should_properly_distribute_money_if_tie_all_0pc_and_same_ammount" do
     prepare_first_three_users
 
     @bets_option_foo.bets_tickets.create({:user_id => 1, :ammount => 50})
@@ -171,7 +171,7 @@ class BetTest < Test::Unit::TestCase
   # opcion1 | opcion2
   #      50 |      50       (u1)
   #      50 |      50       (u2)
-  def test_should_properly_distribute_money_if_tie_all_0pc_and_mixed_ammounts
+  test "should_properly_distribute_money_if_tie_all_0pc_and_mixed_ammounts" do
     prepare_first_three_users
 
     @bets_option_foo.bets_tickets.create({:user_id => 1, :ammount => 25})
@@ -194,7 +194,7 @@ class BetTest < Test::Unit::TestCase
   #     100 |       0       (u1)
   #      50 |      50       (u2)
   #      25 |      75       (u3)
-  def test_should_properly_distribute_money_if_tie_mixed
+  test "should_properly_distribute_money_if_tie_mixed" do
     prepare_first_three_users
 
     @bets_option_foo.bets_tickets.create({:user_id => 1, :ammount => 100})

@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 
-class KarmaTest < Test::Unit::TestCase
-  def test_should_give_karma_points_if_valid
+class KarmaTest < ActiveSupport::TestCase
+  test "should_give_karma_points_if_valid" do
     u = User.find(1)
     kp_initial = u.karma_points
     Karma.give(u, 1)
@@ -10,7 +10,7 @@ class KarmaTest < Test::Unit::TestCase
     assert_equal kp_initial + 1, u.karma_points
   end
 
-  def test_should_take_karma_points_if_valid
+  test "should_take_karma_points_if_valid" do
     test_should_give_karma_points_if_valid
     u = User.find(1)
     kp_initial = u.karma_points
@@ -20,7 +20,7 @@ class KarmaTest < Test::Unit::TestCase
     assert_equal kp_initial - 1, u.karma_points
   end
 
-  def test_should_not_corrupt_karma_points_cache_due_to_concurrency
+  test "should_not_corrupt_karma_points_cache_due_to_concurrency" do
     u_a = User.find(1)
     u_b = User.find(1)
     kp_initial = u_a.karma_points
@@ -34,7 +34,7 @@ class KarmaTest < Test::Unit::TestCase
     assert_equal kp_initial + 2, u_b.karma_points
   end
   
-  def test_update_ranking
+  test "update_ranking" do
     User.db_query("UPDATE users SET cache_karma_points = id")
     Karma.update_ranking
     assert_equal 17, User.find(1).ranking_karma_pos

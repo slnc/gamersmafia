@@ -1,21 +1,21 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require 'test_helper'
 
 class Admin::CanalesControllerTest < ActionController::TestCase
   test_min_acl_level :superadmin, [ :index, :ino, :del, :reset ]
   
-  def test_index_should_work
+  test "index_should_work" do
     sym_login 1
     get :index
     assert_response :success
   end
   
-  def test_info_should_work
+  test "info_should_work" do
     sym_login 1
     get :info, :id => 1
     assert_response :success
   end
   
-  def test_del_should_work
+  test "del_should_work" do
     sym_login 1
     assert_count_increases(SlogEntry) do
       assert_count_decreases(GmtvChannel) do
@@ -25,7 +25,7 @@ class Admin::CanalesControllerTest < ActionController::TestCase
     end
   end
   
-  def test_reset_should_work_without_reason
+  test "reset_should_work_without_reason" do
     sym_login 1
     gmtv = GmtvChannel.find(1)
     gmtv.file = fixture_file_upload('files/buddha.jpg')
@@ -36,7 +36,7 @@ class Admin::CanalesControllerTest < ActionController::TestCase
     assert_nil gmtv.file
   end
   
-  def test_reset_should_work_without_reason
+  test "reset_should_work_without_reason for non superadmin" do
     sym_login 56
     gmtv = GmtvChannel.find(1)
     gmtv.file = fixture_file_upload('files/buddha.jpg')

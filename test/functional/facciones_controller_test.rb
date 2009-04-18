@@ -1,24 +1,16 @@
-require File.dirname(__FILE__) + '/../test_helper'
-require 'facciones_controller'
+require 'test_helper'
 
-# Re-raise errors caught by the controller.
-class FaccionesController; def rescue_action(e) raise e end; end
+class FaccionesControllerTest < ActionController::TestCase
+  
 
-class FaccionesControllerTest < Test::Unit::TestCase
   
-  def setup
-    @controller = FaccionesController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
-  
-  def test_index
+  test "index" do
     get :index
     assert_response :success
     assert_template 'list'
   end
   
-  def test_borrar_should_work
+  test "borrar_should_work" do
     sym_login 2
     g = Game.new({:code => 'fooli', :name => "Foo ling pun"})
     assert g.save, g.errors.full_messages_html

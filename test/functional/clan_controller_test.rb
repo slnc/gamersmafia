@@ -1,17 +1,9 @@
-require File.dirname(__FILE__) + '/../test_helper'
-require 'clan_controller'
+require 'test_helper'
 
-# Re-raise errors caught by the controller.
-class ClanController; def rescue_action(e) raise e end; end
+class ClanControllerTest < ActionController::TestCase
 
-class ClanControllerTest < Test::Unit::TestCase
-  def setup
-    @controller = ClanController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-  end
 
-  def test_miembros_should_work
+  test "miembros_should_work" do
     @request.host = "#{ClansPortal.find(:first).code}.#{App.domain}"
     setup_clan_skin
     get :miembros

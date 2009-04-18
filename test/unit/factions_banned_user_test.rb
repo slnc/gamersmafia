@@ -1,9 +1,9 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class FactionsBannedUserTest < Test::Unit::TestCase
+class FactionsBannedUserTest < ActiveSupport::TestCase
 
   # Replace this with your real tests.
-  def test_truth
+  test "truth" do
     assert true
   end
 end

@@ -8,3 +8,13 @@
 #   inflect.irregular 'person', 'people'
 #   inflect.uncountable %w( fish sheep )
 # end
+
+module ActiveSupport::Inflector
+  def self.sexualize(word, sex)
+    if sex == User::FEMALE
+      word.gsub(/(o)$/, 'a')
+    else
+      word
+    end
+  end
+end

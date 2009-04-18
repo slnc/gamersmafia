@@ -1,13 +1,13 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class CountryTest < Test::Unit::TestCase
+class CountryTest < ActiveSupport::TestCase
 
   def setup
     @country = Country.find(1)
   end
 
   # Replace this with your real tests.
-  def test_truth
+  test "truth" do
     assert_kind_of Country,  @country
   end
 end

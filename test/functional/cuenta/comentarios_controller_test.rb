@@ -1,14 +1,14 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require 'test_helper'
 
 class Cuenta::ComentariosControllerTest < ActionController::TestCase
   
-  def test_index
+  test "index" do
     sym_login 1
     get :index
     assert_response :success
   end
   
-  def test_save
+  test "save" do
     User.db_query("UPDATE users SET enable_comments_sig = 't' WHERE id = 1")
     sym_login 1
     assert_count_increases(UsersPreference) do
@@ -17,7 +17,7 @@ class Cuenta::ComentariosControllerTest < ActionController::TestCase
     
     assert_response :redirect
     u1 = User.find(1)
-    assert_equal 0, u1.pref_comments_autoscroll
+    assert_equal '0', u1.pref_comments_autoscroll
     assert_equal 'Foo', u1.comments_sig
     assert u1.comment_show_sigs
     assert_response :redirect

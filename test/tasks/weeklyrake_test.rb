@@ -1,14 +1,14 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 load RAILS_ROOT + '/Rakefile'
 
-class WeeklyRakeTest < Test::Unit::TestCase
+class WeeklyRakeTest < ActiveSupport::TestCase
   include Rake
   
   def setup
     overload_rake_for_tests
   end
   
-  def test_should_properly_pay_faction_wages_only_boss
+  test "should_properly_pay_faction_wages_only_boss" do
     u1 = User.find(1)
     f1 = Faction.find(1)
     f1.update_boss(u1)
@@ -19,7 +19,7 @@ class WeeklyRakeTest < Test::Unit::TestCase
     assert_equal (orig + 5).to_i, u1.cash.to_i
   end
   
-  def test_should_properly_pay_faction_wages_boss_and_underboss
+  test "should_properly_pay_faction_wages_boss_and_underboss" do
     u1 = User.find(1)
     u2 = User.find(2)
     f1 = Faction.find(1)
@@ -35,7 +35,7 @@ class WeeklyRakeTest < Test::Unit::TestCase
     assert_equal (orig2 + 20).to_i, u2.cash.to_i
   end
   
-    def test_should_properly_pay_bazar_district_wages_only_don
+    test "should_properly_pay_bazar_district_wages_only_don" do
     u1 = User.find(1)
     f1 = BazarDistrict.find(1)
     f1.update_don(u1)
@@ -46,7 +46,7 @@ class WeeklyRakeTest < Test::Unit::TestCase
     assert_equal (orig + 5).to_i, u1.cash.to_i
   end
   
-  def test_should_properly_pay_bazar_district_wages_don_and_mano_derecha
+  test "should_properly_pay_bazar_district_wages_don_and_mano_derecha" do
     u1 = User.find(1)
     u2 = User.find(2)
     f1 = BazarDistrict.find(1)

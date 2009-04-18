@@ -1,7 +1,6 @@
-require File.dirname(__FILE__) + '/../test_helper'
-require 'site_controller'
+require 'test_helper'
 
-class SiteTest < Test::Unit::TestCase
+class SiteTest < ActiveSupport::TestCase
   HOW_MANY = 100
   def setup
     @controller = SiteController.new
@@ -9,7 +8,7 @@ class SiteTest < Test::Unit::TestCase
     @response = ActionController::TestResponse.new
     get :staff
   end
-#  def test_truth
+#  test "truth" do
     #elapsedSeconds = Benchmark::realtime do
       #Fixtures.create_fixtures(File.dirname(__FILE__) + '/../fixtures/performance', 'anonymous_users')
       

@@ -1,21 +1,13 @@
 class AccessDenied < StandardError; end
 class DomainNotFound < StandardError; end
 
-class ActionController::AbstractRequest
-  def enable_sessions?
-    cookies['ak'].to_s != '' || cookies['adn2'].to_s != '' || path.match('login') || path.match('x')
-  end
-end
-
-class ApplicationController < ActionController::Base
-  
+class ApplicationController < ActionController::Base  
   include Clans::Authentication
   include Users::Authentication
   
   helper :account, :miembros, :competiciones, :calendar
   before_filter :ident, :resolve_portal_mode, :check_referer, :populate_navpath2, :parse_params_page
   # before_filter :init_xab # TODO necesario por rails 2.2
-  session :off, :if => Proc.new { |req| not req.enable_sessions? }
   
   attr_accessor :competition, :portal, :third_menu, :global_vars
   cattr_accessor :navpath2
@@ -445,28 +437,25 @@ Request information:
     l
   end
   
+  around_filter :gm_process
   # Used to be able to leave out the action
-  def process(request, response)
+  def gm_process
+    @_track_done = false
     seconds = Benchmark.realtime do
       catch(:abort) do
-        super(request, response)
+        yield
       end
     end
     
-    if portal then
-      begin
-        Stats.pageloadtime(self, seconds, response, controller_name, action_name, portal)
-      rescue
-        raise unless RAILS_ENV == 'test'
-      end
+    begin
+      Stats.pageloadtime(self, seconds, response, controller_name, action_name, portal)
+    rescue 
+      raise unless RAILS_ENV == 'test'
     end
-    response
   end
+
   
   def resolve_portal_mode
-    
-    
-    
     @global_vars = User.db_query("SELECT * FROM global_vars")[0]
     # esto no hay que hacerlo aquí
     # hay clientes que mandan un HTTP_CLIENT_IP incorrecto TODO esto peta
@@ -544,6 +533,7 @@ Request information:
   end
   
   VERSIONING_EREG = /^\/(.*\.)[a-z0-9.]+\.(css|js|gif|png|jpg)$/
+  
   def http_404
     if App.port != 80 # solo capturamos estas URLs cuando ejecutamos en desarrollo
       res = request.request_uri.match(VERSIONING_EREG)

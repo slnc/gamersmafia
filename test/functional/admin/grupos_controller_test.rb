@@ -1,21 +1,21 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require 'test_helper'
 
 class Admin::GruposControllerTest < ActionController::TestCase
   test_min_acl_level :superadmin, [ :index ]
   
-  def test_index
+  test "index" do
     sym_login 1
     get :index
     assert_response :success
   end
   
-  def test_edit
+  test "edit" do
     sym_login 1
     get :edit, :id => 1
     assert_response :success
   end
   
-  def test_create
+  test "create" do
     sym_login 1
     assert_count_increases(Group) do
       post :create, :group => { :name => 'mechanikos', :owner_user_id => 1, :description => "foliiini" }
@@ -23,7 +23,7 @@ class Admin::GruposControllerTest < ActionController::TestCase
     end
   end
   
-  def test_update
+  test "update" do
     sym_login 1
     post :update, :id => 1, :group => { :name => 'mechanikos', :owner_user_id => 2 }
     assert_response :redirect
@@ -32,7 +32,7 @@ class Admin::GruposControllerTest < ActionController::TestCase
     assert_equal 2, g.owner_user_id
   end
   
-  def test_add_user_to_group
+  test "add_user_to_group" do
     sym_login 1
     assert_count_increases(UsersRole) do
       post :add_user_to_group, :id => 1, :login => 'panzer'
@@ -40,7 +40,7 @@ class Admin::GruposControllerTest < ActionController::TestCase
     end
   end
   
-  def test_remove_user_from_group
+  test "remove_user_from_group" do
     test_add_user_to_group
     assert_count_decreases(UsersRole) do
       post :remove_user_from_group, :id => 1, :user_id => 2

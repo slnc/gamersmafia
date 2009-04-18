@@ -1,14 +1,14 @@
 require "#{File.dirname(__FILE__)}/../test_helper"
 
 class PortalsResolutionTest < ActionController::IntegrationTest  
-  def test_should_resolve_main
+  test "should_resolve_main" do
     host! App.domain
     get '/'
     assert @controller.portal.kind_of?(GmPortal), @response.body
     assert_response :success, @response.body
   end
 
-  def test_should_resolve_subdomain_as_faction_portal
+  test "should_resolve_subdomain_as_faction_portal" do
     p = FactionsPortal.find_by_code('ut')
     host! "#{p.code}.#{App.domain}"
     get '/'
@@ -18,7 +18,7 @@ class PortalsResolutionTest < ActionController::IntegrationTest
   end
 
 
-  def test_should_resolve_subdomain_as_clan_portal
+  test "should_resolve_subdomain_as_clan_portal" do
     
     c = Clan.find_by_tag('mapaches')
     c.activate_website if not c.website_activated?

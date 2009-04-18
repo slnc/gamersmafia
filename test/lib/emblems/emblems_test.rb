@@ -1,6 +1,6 @@
 require File.dirname(__FILE__) + '/../../../test/test_helper'
 
-class EmblemsTest < Test::Unit::TestCase
+class EmblemsTest < ActiveSupport::TestCase
   def assert_gives_emblem(emblem, &block)
     @u = User.find(1) if @u.nil?
     assert_equal 0, @u.users_emblems.count(:conditions => "emblem = '#{emblem}'")
@@ -12,14 +12,14 @@ class EmblemsTest < Test::Unit::TestCase
     assert_equal '1', @u.emblems_mask[Emblems::EMBLEMS[emblem.to_sym][:index]..Emblems::EMBLEMS[emblem.to_sym][:index]]
   end
   
-  def test_give_emblems_doesnt_repeat_if_too_soon
+  test "give_emblems_doesnt_repeat_if_too_soon" do
     test_give_emblems_hq
     ue_count = UsersEmblem.count
     Emblems.give_emblems
     assert_equal ue_count, UsersEmblem.count
   end
   
-  def test_should_reset_emblems_mask_of_older
+  test "should_reset_emblems_mask_of_older" do
     test_give_emblems_hq
     User.db_query("UPDATE users_emblems SET created_on = now() - '1 week 1 day'::interval")
     assert @u.update_attributes(:is_hq => false)
@@ -31,25 +31,25 @@ class EmblemsTest < Test::Unit::TestCase
     assert_equal '0', @u.emblems_mask[Emblems::EMBLEMS[:hq][:index]..Emblems::EMBLEMS[:hq][:index]]
   end
   
-  def test_give_emblems_hq
+  test "give_emblems_hq" do
     assert_gives_emblem('hq') do
       assert @u.update_attributes(:is_hq => true)
     end
   end
   
-  def test_give_emblems_capo
+  test "give_emblems_capo" do
     assert_gives_emblem('capo') do
       assert @u.give_admin_permission(:capo)
     end
   end
   
-  def test_give_emblems_baby
+  test "give_emblems_baby" do
     assert_gives_emblem('baby') do
       assert @u.update_attributes(:created_on => Time.now)
     end
   end
   
-  def test_give_emblems_okupa
+  test "give_emblems_okupa" do
     assert_gives_emblem('okupa') do
       sym_pageview({:user_id => @u.id, :url => '/dadadd/adsdasd/1', :portal_id => nil})
       sym_pageview({:user_id => @u.id, :url => '/dadadd/adsdasd/2', :portal_id => nil})
@@ -57,15 +57,15 @@ class EmblemsTest < Test::Unit::TestCase
     end
   end
   
-  def test_give_emblems_bets_master
+  test "give_emblems_bets_master" do
     # TODO test
   end
   
-  def test_give_emblems_most_knowledgeable
+  test "give_emblems_most_knowledgeable" do
     # TODO test
   end
   
-  def test_give_emblems_living_legend
+  test "give_emblems_living_legend" do
     assert_gives_emblem('living_legend') do
       @u2 = User.find(2)
       @u3 = User.find(3)
@@ -74,7 +74,7 @@ class EmblemsTest < Test::Unit::TestCase
     end
   end
   
-  def test_give_emblems_funniest
+  test "give_emblems_funniest" do
     assert_gives_emblem('funniest') do
       cv = CommentsValoration.new(:weight => 1.0, :comment_id => 1, :user_id => 2, :comments_valorations_type_id => CommentsValorationsType.find_by_name('Divertido').id)
       assert cv.save, cv.errors.full_messages_html
@@ -82,7 +82,7 @@ class EmblemsTest < Test::Unit::TestCase
     end
   end
   
-  def test_give_emblems_profoundest
+  test "give_emblems_profoundest" do
     assert_gives_emblem('profoundest') do
       cv = CommentsValoration.new(:weight => 1.0, :comment_id => 1, :user_id => 2, :comments_valorations_type_id => CommentsValorationsType.find_by_name('Profundo').id)
       assert cv.save, cv.errors.full_messages_html
@@ -90,7 +90,7 @@ class EmblemsTest < Test::Unit::TestCase
     end
   end
   
-  def test_give_emblems_most_informational
+  test "give_emblems_most_informational" do
     assert_gives_emblem('most_informational') do
       cv = CommentsValoration.new(:weight => 1.0, :comment_id => 1, :user_id => 2, :comments_valorations_type_id => CommentsValorationsType.find_by_name('Informativo').id)
       assert cv.save, cv.errors.full_messages_html
@@ -98,7 +98,7 @@ class EmblemsTest < Test::Unit::TestCase
     end
   end
   
-  def test_give_emblems_most_interesting
+  test "give_emblems_most_interesting" do
     assert_gives_emblem('most_interesting') do
       cv = CommentsValoration.new(:weight => 1.0, :comment_id => 1, :user_id => 2, :comments_valorations_type_id => CommentsValorationsType.find_by_name('Interesante').id)
       assert cv.save, cv.errors.full_messages_html
@@ -106,46 +106,46 @@ class EmblemsTest < Test::Unit::TestCase
     end
   end
   
-  def test_give_emblems_wealthiest
+  test "give_emblems_wealthiest" do
     assert_gives_emblem('wealthiest') do
       User.db_query("UPDATE users SET cash = (SELECT max(cash) + 1 FROM users) WHERE id = #{@u.id}")
     end
   end
   
-  def test_give_emblems_webmaster
+  test "give_emblems_webmaster" do
     assert_gives_emblem('webmaster') do
       assert @u.update_attributes(:is_superadmin => true)
     end
   end
   
-  def test_give_emblems_boss
+  test "give_emblems_boss" do
     assert_gives_emblem('boss') do
       f1 = Faction.find(1)
       assert f1.update_boss(@u)
     end
   end
   
-  def test_give_emblems_underboss
+  test "give_emblems_underboss" do
     assert_gives_emblem('underboss') do
       assert Faction.find(1).update_underboss(User.find(1))
     end
   end
   
-  def test_give_emblems_don
+  test "give_emblems_don" do
     assert_gives_emblem('don') do
       d1 = BazarDistrict.find(1)
       assert d1.update_don(@u)
     end
   end
   
-  def test_give_emblems_mano_derecha
+  test "give_emblems_mano_derecha" do
     assert_gives_emblem('mano_derecha') do
       d1 = BazarDistrict.find(1)
       assert d1.update_mano_derecha(@u)
     end
   end
   
-  def test_give_emblems_sicario
+  test "give_emblems_sicario" do
     User.db_query("DELETE from users_roles WHERE role = 'Sicario'")
     assert_gives_emblem('sicario') do
       d1 = BazarDistrict.find(1)
@@ -153,7 +153,7 @@ class EmblemsTest < Test::Unit::TestCase
     end
   end
   
-  def test_give_emblems_editor
+  test "give_emblems_editor" do
     assert_gives_emblem('editor') do
       assert_count_increases(UsersRole) do
         Faction.find(1).add_editor(@u, ContentType.find(:first))
@@ -161,21 +161,21 @@ class EmblemsTest < Test::Unit::TestCase
     end
   end
   
-  def test_give_emblems_editor_if_not_already_boss
+  test "give_emblems_editor_if_not_already_boss" do
     test_give_emblems_boss
     ue_count = UsersEmblem.count
     assert_count_increases(UsersRole) { UsersRole.create(:user_id => @u.id, :role => 'Editor', :role_data => {:faction_id => 1, :content_type_id => 1}.to_yaml) }
     assert_equal ue_count, UsersEmblem.count
   end
   
-  def test_give_emblems_moderator
+  test "give_emblems_moderator" do
     User.db_query("DELETE FROM users_roles WHERE role = 'Moderator'")
     assert_gives_emblem('moderator') do
       assert_count_increases(UsersRole) { UsersRole.create(:user_id => @u.id, :role => 'Moderator', :role_data => '1') }
     end
   end
   
-  def test_give_emblems_karma_fury
+  test "give_emblems_karma_fury" do
     assert_gives_emblem('karma_fury') do
       c_count = Comment.count
       Comment.create(:user_id => @u.id, :comment => 'holaaa', :content_id => 1, :host => '127.0.0.1')
@@ -187,7 +187,7 @@ class EmblemsTest < Test::Unit::TestCase
     end
   end
   
-  def test_give_emblems_faith_avalanche
+  test "give_emblems_faith_avalanche" do
     assert_gives_emblem('faith_avalanche') do
       cv = CommentsValoration.new(:weight => 1.0, :comment_id => 2, :user_id => 1, :comments_valorations_type_id => CommentsValorationsType.find_by_name('Divertido').id)
       assert cv.save, cv.errors.full_messages_html
@@ -195,7 +195,7 @@ class EmblemsTest < Test::Unit::TestCase
     end
   end
   
-  def test_give_emblems_oldest_faction_member
+  test "give_emblems_oldest_faction_member" do
     assert_gives_emblem('oldest_faction_member') do
       Factions.user_joins_faction(@u, 1)
       Factions.user_joins_faction(User.find(@u.id + 1), 1)
@@ -205,7 +205,7 @@ class EmblemsTest < Test::Unit::TestCase
     end
   end
   
-  def test_give_emblems_talker
+  test "give_emblems_talker" do
     assert_gives_emblem('talker') do
       c_count = Chatline.count
       Chatline.create(:user_id => @u.id, :line => 'holaaa')
@@ -215,7 +215,7 @@ class EmblemsTest < Test::Unit::TestCase
     end
   end
   
-  def test_give_emblems_best_blogger
+  test "give_emblems_best_blogger" do
     assert_gives_emblem('best_blogger') do
       sym_pageview({:user_id => @u.id, :url => '/dadadd/adsdasd/1', :controller => 'blogs', :action => 'blogentry', :model_id => '1', :portal_id => nil})
       sym_pageview({:user_id => @u.id, :url => '/dadadd/adsdasd/1', :controller => 'blogs', :action => 'blogentry', :model_id => '1', :portal_id => nil})
@@ -224,6 +224,6 @@ class EmblemsTest < Test::Unit::TestCase
     end
   end
   
-  def test_give_emblems_best_overall
+  test "give_emblems_best_overall" do
   end  
 end

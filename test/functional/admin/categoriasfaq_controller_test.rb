@@ -1,15 +1,15 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require 'test_helper'
 
 class Admin::CategoriasfaqControllerTest < ActionController::TestCase
   test_min_acl_level :superadmin, [ :index, :new, :create, :edit, :update, :destroy ]
   
-  def test_index
+  test "index" do
     get :index, {}, {:user => 1}
     assert_response :success
     assert_template 'index'
   end
   
-  def test_new
+  test "new" do
     get :new, {}, {:user => 1}
     
     assert_response :success
@@ -18,7 +18,7 @@ class Admin::CategoriasfaqControllerTest < ActionController::TestCase
     assert_not_nil assigns(:faq_category)
   end
   
-  def test_create
+  test "create" do
     sym_login 1
     num_faq_categories = FaqCategory.count
     
@@ -30,7 +30,7 @@ class Admin::CategoriasfaqControllerTest < ActionController::TestCase
     assert_equal num_faq_categories + 1, FaqCategory.count
   end
   
-  def test_edit
+  test "edit" do
     get :edit, {:id => 1}, {:user => 1}
     
     assert_response :success
@@ -40,13 +40,13 @@ class Admin::CategoriasfaqControllerTest < ActionController::TestCase
     assert assigns(:faq_category).valid?
   end
   
-  def test_update
+  test "update" do
     post :update, {:id => 1}, {:user => 1}
     assert_response :redirect
     assert_redirected_to :action => 'edit', :id => 1
   end
   
-  def test_destroy
+  test "destroy" do
     assert_not_nil FaqCategory.find(1)
     
     post :destroy, {:id => 1}, {:user => 1}
@@ -58,7 +58,7 @@ class Admin::CategoriasfaqControllerTest < ActionController::TestCase
     }
   end
   
-  def test_should_moveup_faq_category
+  test "should_moveup_faq_category" do
     test_create
     assert_count_increases(FaqCategory) do post :create, {:faq_category => {:name => 'barrrr'}} end
     fc = FaqCategory.find(:first, :order => 'id desc')
@@ -69,7 +69,7 @@ class Admin::CategoriasfaqControllerTest < ActionController::TestCase
     assert fc.position < orig_pos
   end
   
-  def test_should_movedown_faq_category
+  test "should_movedown_faq_category" do
     test_create
     assert_count_increases(FaqCategory) do post :create, {:faq_category => {:name => 'barrrr'}} end
     fc = FaqCategory.find(:first, :order => 'id asc')
@@ -80,7 +80,7 @@ class Admin::CategoriasfaqControllerTest < ActionController::TestCase
     assert fc.position > orig_pos
   end
   
-  def test_user_with_admin_permission_should_allow_if_registered
+  test "user_with_admin_permission_should_allow_if_registered" do
     assert_raises(AccessDenied) { get :index }
     u2 = User.find(2)
     sym_login u2

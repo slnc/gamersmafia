@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class SoldUserAvatarTest < Test::Unit::TestCase
-  def test_should_create_custom_avatar_after_being_created
+class SoldUserAvatarTest < ActiveSupport::TestCase
+  test "should_create_custom_avatar_after_being_created" do
     u = User.find(1)
     p = Product.find(1)
     assert_not_nil u

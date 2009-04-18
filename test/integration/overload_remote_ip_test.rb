@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 
 class OverloadRemoteIpTest < ActionController::IntegrationTest
@@ -56,12 +56,12 @@ class OverloadRemoteIpTest < ActionController::IntegrationTest
     assert_equal '192.168.0.1', @request.remote_ip    
   end
   
-  def test_should_return_correct_ip_if_forwarded_for_known_known
+  test "should_return_correct_ip_if_forwarded_for_known_known" do
     get '/', {}, { :REMOTE_ADDR => '127.0.0.1', :HTTP_X_FORWARDED_FOR => '88.20.248.67, 80.58.205.47' }
-    assert_equal '88.20.248.67', @request.remote_ip
+    assert_equal '80.58.205.47', @request.remote_ip
   end
   
-  def test_should_return_correct_ip_if_forwarded_for_known
+  test "should_return_correct_ip_if_forwarded_for_known" do
     get '/', {}, { :REMOTE_ADDR => '127.0.0.1', :HTTP_X_FORWARDED_FOR => '88.20.248.67' }
     assert_equal '88.20.248.67', @request.remote_ip
   end

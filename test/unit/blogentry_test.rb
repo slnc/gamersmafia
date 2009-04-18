@@ -1,12 +1,12 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class BlogentryTest < Test::Unit::TestCase
+class BlogentryTest < ActiveSupport::TestCase
   # TODO model checks
   def setup
     
   end
 
-  def test_url_should_be_reset_when_user_changes_login
+  test "url_should_be_reset_when_user_changes_login" do
     be = Blogentry.find(:first, :include => :user)
     assert be.unique_content.url.include?(be.user.login)
     new_login = be.user.login.reverse

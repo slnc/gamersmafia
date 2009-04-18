@@ -79,7 +79,6 @@ module Users
       
       session[:skin] = cookies[:skin] if cookies[:skin] # TODO TODO permisos 
       
-      require_dependency 'user'
       if session[:user]
         @user =	User.find(session[:user])
         

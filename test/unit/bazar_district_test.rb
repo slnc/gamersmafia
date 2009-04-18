@@ -1,8 +1,8 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class BazarDistrictTest < ActiveSupport::TestCase
   
-  def test_should_create_basic_content_categories
+  test "should_create_basic_content_categories" do
     newbd = BazarDistrict.new(:name => 'Yoga', :code => 'yoga')
     assert newbd.save
     assert_not_nil BazarDistrictPortal.find_by_code('yoga')
@@ -14,7 +14,7 @@ class BazarDistrictTest < ActiveSupport::TestCase
     assert t.children.count > 0 
   end
   
-  def test_single_person_staff
+  test "single_person_staff" do
     bd = BazarDistrict.find(:first)
     assert !bd.has_don?
     assert !bd.has_mano_derecha?
@@ -37,7 +37,7 @@ class BazarDistrictTest < ActiveSupport::TestCase
     assert !bd2.has_don?
   end
   
-  def test_user_is_editor_if_boss
+  test "user_is_editor_if_boss" do
     bd = BazarDistrict.find(1)
     ctype = ContentType.find(:first)
     u59 = User.find(59)
@@ -46,7 +46,7 @@ class BazarDistrictTest < ActiveSupport::TestCase
     assert bd.user_is_editor_of_content_type?(u59, ctype)
   end
   
-  def test_user_is_editor_if_underboss
+  test "user_is_editor_if_underboss" do
     bd = BazarDistrict.find(1)
     ctype = ContentType.find(:first)
     u59 = User.find(59)
@@ -55,7 +55,7 @@ class BazarDistrictTest < ActiveSupport::TestCase
     assert bd.user_is_editor_of_content_type?(u59, ctype)
   end
   
-  def test_user_is_editor_if_sicario
+  test "user_is_editor_if_sicario" do
     bd = BazarDistrict.find(1)
     ctype = ContentType.find(:first)
     u59 = User.find(59)

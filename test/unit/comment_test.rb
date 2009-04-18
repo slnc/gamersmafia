@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class CommentTest < Test::Unit::TestCase
-  def test_should_create_comment_if_valid
+class CommentTest < ActiveSupport::TestCase
+  test "should_create_comment_if_valid" do
     content = Content.find(1)
     content.url = nil
     content.portal_id = nil
@@ -16,7 +16,7 @@ class CommentTest < Test::Unit::TestCase
     assert_equal u.lastcommented_on.to_i, c.created_on.to_i
   end
 
-  def test_should_properly_save_copy_when_being_moderated
+  test "should_properly_save_copy_when_being_moderated" do
     c = Comment.new({:user_id => 1, :comment => 'u1', :content_id => 1, :host => '127.0.0.1'})
     assert_equal true, c.save
     assert_nil c.lastowner_version
@@ -41,14 +41,14 @@ class CommentTest < Test::Unit::TestCase
     assert_equal 1, c.lastedited_by_user_id
   end
   
-  def test_should_not_create_comment_if_duplicated
+  test "should_not_create_comment_if_duplicated" do
   end
 
-  def test_should_not_create_comment_if_last_comment_is_from_the_same_user_and_is_too_soon
+  test "should_not_create_comment_if_last_comment_is_from_the_same_user_and_is_too_soon" do
     # TODO
   end
 
-  def test_should_properly_update_lastcommented_on_from_author_when_destroying_comments
+  test "should_properly_update_lastcommented_on_from_author_when_destroying_comments" do
     # caso 1: existen comentarios anteriormente
     test_should_create_comment_if_valid
     c2 = Comment.new({:user_id => 1, :comment => 'hola mundo2!', :content_id => 1, :host => '127.0.0.1'})

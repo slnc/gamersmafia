@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 
 class UsersLastseenOnTest < ActionController::IntegrationTest
@@ -6,7 +6,7 @@ class UsersLastseenOnTest < ActionController::IntegrationTest
     host! App.domain
   end
 
-  def test_should_set_lastseen_on_user_hit
+  test "should_set_lastseen_on_user_hit" do
     User.db_query('UPDATE users SET lastseen_on = now() - \'1 hour\'::interval WHERE id = 1')
     before = Time.now.to_f.floor
     sym_login :superadmin, :lalala

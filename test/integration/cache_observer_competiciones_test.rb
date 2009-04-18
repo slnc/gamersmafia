@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 
 class CacheObserverCompeticionesTest < ActionController::IntegrationTest
@@ -8,7 +8,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
   end
   
   # index#competiciones_en_curso
-  def test_should_clear_cache_when_competition_advances_to_phase_3
+  test "should_clear_cache_when_competition_advances_to_phase_3" do
     [Ladder, Tournament, League].each do |cls|
       l = cls.find(:first, :conditions => 'state = 2')
       assert_not_nil l
@@ -19,7 +19,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
     end
   end
   
-  def test_should_clear_cache_when_competition_advances_to_phase_5
+  test "should_clear_cache_when_competition_advances_to_phase_5" do
     [Ladder, Tournament, League].each do |cls|
       l = cls.find(:first, :conditions => 'state = 4')
       assert_not_nil l
@@ -30,7 +30,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
     end
   end
   
-  def test_should_clear_cache_when_competition_in_phase_3_is_updated
+  test "should_clear_cache_when_competition_in_phase_3_is_updated" do
     [Ladder, Tournament, League].each do |cls|
       l = cls.find(:first, :conditions => 'state = 3')
       assert_not_nil l
@@ -41,7 +41,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
     end
   end
   
-  def test_should_clear_cache_competiciones_en_curso_when_competitions_match_is_completed
+  test "should_clear_cache_competiciones_en_curso_when_competitions_match_is_completed" do
     #    l = Ladder.find(:first, :conditions => "state = 3 and competitions_participants_type_id = #{Competition::USERS}")
     #    u1 = User.find(1)
     #    u2 = User.find(2)
@@ -55,7 +55,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
     #    assert_cache_dont_exist "#{controller.portal.code}/competiciones/index/competiciones_en_curso"
   end
   
-  def test_should_clear_cache_when_ladder_in_phase_3_receives_a_new_inscription
+  test "should_clear_cache_when_ladder_in_phase_3_receives_a_new_inscription" do
     sym_login 'superadmin', 'lalala'
     l = Ladder.find(:first, :conditions => 'state = 3 AND fee is null AND competitions_participants_type_id = 1 AND invitational is false')
     assert_not_nil l
@@ -68,7 +68,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
   end
   
   # index#competiciones_abiertas
-  def test_should_clear_competiciones_abiertas_on_new_competition_enters_phase1
+  test "should_clear_competiciones_abiertas_on_new_competition_enters_phase1" do
     [Ladder, Tournament, League].each do |cls|
       l = cls.find(:first, :conditions => 'state = 0')
       assert_not_nil l
@@ -80,7 +80,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
     end
   end
   
-  def test_should_clear_competiciones_abiertas_on_new_competition_leaves_phase1
+  test "should_clear_competiciones_abiertas_on_new_competition_leaves_phase1" do
     [Ladder, Tournament, League].each do |cls|
       l = cls.find(:first, :conditions => 'state = 1 and invitational is false and fee is null and competitions_participants_type_id = 1')
       assert_not_nil l
@@ -109,7 +109,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
     end
   end
   
-  def test_should_clear_competiciones_abiertas_on_competition_on_phase1_is_deleted
+  test "should_clear_competiciones_abiertas_on_competition_on_phase1_is_deleted" do
     [Ladder, Tournament, League].each do |cls|
       l = cls.find(:first, :conditions => 'state = 1')
       assert_not_nil l
@@ -121,7 +121,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
     end
   end
   
-  def test_should_clear_competiciones_abiertas_on_competition_on_phase1_is_modified
+  test "should_clear_competiciones_abiertas_on_competition_on_phase1_is_modified" do
     [Ladder, Tournament, League].each do |cls|
       l = cls.find(:first, :conditions => 'state = 1')
       assert_not_nil l
@@ -133,7 +133,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
   end
   
   # index#competiciones_finalizadas
-  def test_should_clear_competiciones_finalizadas_on_new_competition_enters_phase4
+  test "should_clear_competiciones_finalizadas_on_new_competition_enters_phase4" do
     [Ladder, Tournament, League].each do |cls|
       l = cls.find(:first, :conditions => 'state = 3')
       assert_not_nil l
@@ -154,7 +154,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
   end
   
   
-  def test_should_clear_competiciones_show_proximas_partidas_after_new_match_is_created
+  test "should_clear_competiciones_show_proximas_partidas_after_new_match_is_created" do
     @l = Ladder.find(:first, :conditions => "scoring_mode = #{Competition::SCORING_SIMPLE} and invitational is false and fee is null and state = 3 and competitions_participants_type_id = #{Competition::USERS}")
     add_participants_to_l
     cm = @l.challenge(@p1, @p2)
@@ -166,7 +166,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/competiciones/_show/#{@l.id}/proximas_partidas"
   end
   
-  def test_should_clear_competiciones_show_ultimos_resultados_after_new_completed_match
+  test "should_clear_competiciones_show_ultimos_resultados_after_new_completed_match" do
     test_should_clear_competiciones_show_proximas_partidas_after_new_match_is_created
     @u1 = User.find(1)
     @l.add_admin(@u1)
@@ -177,7 +177,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/competiciones/_show/#{@l.id}/partidas_mas_recientes"
   end
   
-  def test_should_clear_participante_retos_esperando_respuesta
+  test "should_clear_participante_retos_esperando_respuesta" do
     @l = Ladder.find(:first, :conditions => "scoring_mode = #{Competition::SCORING_SIMPLE} and invitational is false and fee is null and state = 3 and competitions_participants_type_id = #{Competition::USERS}")
     add_participants_to_l
     p2_cache_file = "/common/competiciones/participante/#{@p2.id % 1000}/#{@p2.id}/retos_esperando_respuesta"
@@ -206,7 +206,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
     assert_cache_dont_exist p2_cache_file 
   end
   
-  def test_should_clear_participante_retos_pendientes_de_jugar
+  test "should_clear_participante_retos_pendientes_de_jugar" do
     @l = Ladder.find(:first, :conditions => "scoring_mode = #{Competition::SCORING_SIMPLE} and invitational is false and fee is null and state = 3 and competitions_participants_type_id = #{Competition::USERS}")
     add_participants_to_l
     cm = @l.challenge(@p1, @p2)
@@ -233,7 +233,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
   end
   
   # TODO faltan muchos más tests
-  def test_should_clear_participants_last_maches_cache_after_completing_match
+  test "should_clear_participants_last_maches_cache_after_completing_match" do
   end
   
   

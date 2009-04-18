@@ -1,14 +1,14 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 load RAILS_ROOT + '/Rakefile'
 
-class DailyRakeTest < Test::Unit::TestCase
+class DailyRakeTest < ActiveSupport::TestCase
   include Rake
   
   def setup
     overload_rake_for_tests
   end
   
-  def test_should_properly_close_old_open_questions
+  test "should_properly_close_old_open_questions" do
     q = Question.find(1)
     assert_nil q.answered_on
     c = Comment.count
@@ -18,7 +18,7 @@ class DailyRakeTest < Test::Unit::TestCase
     assert_equal c + 1, Comment.count
   end
   
-  def test_should_properly_close_old_open_questions_recent_question
+  test "should_properly_close_old_open_questions_recent_question" do
     User.db_query("UPDATE questions SET created_on = now() - '1 day'::interval WHERE id = 1")
     q = Question.find(1)
     assert_nil q.answered_on
@@ -29,7 +29,7 @@ class DailyRakeTest < Test::Unit::TestCase
     assert_equal c, Comment.count
   end
   
-  def test_should_properly_set_daily_ads_stats
+  test "should_properly_set_daily_ads_stats" do
     adslot = AdsSlot.new(:name => 'foo', :behaviour_class => 'Random', :location => 'bottom')
     assert adslot.save
     
@@ -60,7 +60,7 @@ class DailyRakeTest < Test::Unit::TestCase
     assert_equal 3, dbl[0]['pageviews'].to_i
   end
   
-  def test_should_send_report_if_on_due_day
+  test "should_send_report_if_on_due_day" do
     User.db_query("UPDATE advertisers SET due_on_day = extract('day' from now() - '2 days'::interval)")
     adv = Advertiser.find(:first)
     adv.due_on_day = Time.now.day
@@ -71,7 +71,7 @@ class DailyRakeTest < Test::Unit::TestCase
     assert /Informe/ =~ ActionMailer::Base.deliveries.last.subject
   end
   
-  def test_should_send_birthday_email_to_users
+  test "should_send_birthday_email_to_users" do
     u = User.find_by_login(:panzer)
     assert_not_nil u
     # el año - 4 en caso de que sea bisiesto
@@ -84,7 +84,7 @@ class DailyRakeTest < Test::Unit::TestCase
     assert /Feliz cumplea/ =~ ActionMailer::Base.deliveries.last.subject
   end
   
-  def test_should_update_faith_of_users_with_zombie_refered
+  test "should_update_faith_of_users_with_zombie_refered" do
     u2 = User.find(2)
     u2.state = User::ST_ACTIVE
     u2.referer_user_id = 1
@@ -99,7 +99,7 @@ class DailyRakeTest < Test::Unit::TestCase
     assert_equal fp - Faith::FPS_ACTIONS['registration'], u1.faith_points    
   end
   
-  def test_should_update_faith_of_users_with_zombie_resurrected
+  test "should_update_faith_of_users_with_zombie_resurrected" do
     u2 = User.find(2)
     u2.state = User::ST_ACTIVE
     u2.resurrected_by_user_id = 1
@@ -114,28 +114,28 @@ class DailyRakeTest < Test::Unit::TestCase
     assert_equal fp - Faith::FPS_ACTIONS['resurrection'], u1.faith_points    
   end
   
-  def test_should_send_1w_confirmation_email
+  test "should_send_1w_confirmation_email" do
     User.db_query("UPDATE users SET updated_at = now() - '4 days'::interval, state=#{User::ST_UNCONFIRMED} WHERE id = 1")
     Rake::Task['gm:daily'].send :new_accounts_cleanup
     u1 = User.find(1)
     assert_equal User::ST_UNCONFIRMED_1W, u1.state
   end
   
-  def test_should_send_2w_confirmation_email
+  test "should_send_2w_confirmation_email" do
     User.db_query("UPDATE users SET updated_at = now() - '4 days'::interval, state=#{User::ST_UNCONFIRMED_1W} WHERE id = 1")
     Rake::Task['gm:daily'].send :new_accounts_cleanup
     u1 = User.find(1)
     assert_equal User::ST_UNCONFIRMED_2W, u1.state
   end
   
-  def test_should_set_accounts_as_deleted
+  test "should_set_accounts_as_deleted" do
     User.db_query("UPDATE users SET updated_at = now() - '4 days'::interval, state=#{User::ST_UNCONFIRMED_2W} WHERE id = 1")
     Rake::Task['gm:daily'].send :new_accounts_cleanup
     u1 = User.find(1)
     assert_equal User::ST_DELETED, u1.state
   end
   
-  def test_should_automatically_send_unanswered_challenge_email_first_time
+  test "should_automatically_send_unanswered_challenge_email_first_time" do
     l = Ladder.find(:first, :conditions => ['competitions_participants_type_id = ? and pro is false and state = ? and fee is null and invitational is false', Competition::USERS, Competition::STARTED])
     assert_not_nil l
     u1 = User.find(1)
@@ -149,7 +149,7 @@ class DailyRakeTest < Test::Unit::TestCase
     end
   end
   
-  def test_should_automatically_send_unanswered_challenge_email_second_time
+  test "should_automatically_send_unanswered_challenge_email_second_time" do
     l = Ladder.find(:first, :conditions => ['competitions_participants_type_id = ? and pro is false and state = ? and fee is null and invitational is false', Competition::USERS, Competition::STARTED])
     assert_not_nil l
     u1 = User.find(1)
@@ -163,7 +163,7 @@ class DailyRakeTest < Test::Unit::TestCase
     end
   end
   
-  def test_should_automatically_cancel_unanswered_challenges_after_enough_time
+  test "should_automatically_cancel_unanswered_challenges_after_enough_time" do
     l = Ladder.find(:first, :conditions => ['competitions_participants_type_id = ? and pro is false and state = ? and fee is null and invitational is false', Competition::USERS, Competition::STARTED])
     assert_not_nil l
     u1 = User.find(1)
@@ -179,7 +179,7 @@ class DailyRakeTest < Test::Unit::TestCase
     end
   end
   
-  def test_should_automatically_accept_unconfirmed_result_after_1_month
+  test "should_automatically_accept_unconfirmed_result_after_1_month" do
     l = Ladder.find(:first, :conditions => ['competitions_participants_type_id = ? and pro is false and state = ? and fee is null and invitational is false', Competition::USERS, Competition::STARTED])
     assert_not_nil l
     u1 = User.find(1)
@@ -200,7 +200,7 @@ class DailyRakeTest < Test::Unit::TestCase
     assert_not_nil cm.completed_on
   end
   
-  def test_should_automatically_forfeit_unset_result_after_1_month
+  test "should_automatically_forfeit_unset_result_after_1_month" do
     [Competition::SCORING_SIMPLE, Competition::SCORING_PARTIAL, Competition::SCORING_SIMPLE_PER_MAP].each do |scoring_mode|
       l = Ladder.find(:first, :conditions => ["scoring_mode = ? AND competitions_participants_type_id = ? and pro is false and state = ? and fee is null and invitational is false", scoring_mode, Competition::USERS, Competition::STARTED])
       assert_not_nil l

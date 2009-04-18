@@ -19,7 +19,7 @@ class CacheObserverMiembrosTest < ActionController::IntegrationTest
     #assert @response.body.find(u.login) != -1
   end
   
-  def test_should_clear_firmas_on_new_signature
+  test "should_clear_firmas_on_new_signature" do
     @u1 = User.find(1)
     get "/miembros/#{@u1.login}/firmas"
     assert_response :success, @response.body
@@ -30,7 +30,7 @@ class CacheObserverMiembrosTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/miembros/#{@u1.id % 1000}/#{@u1.id}/firmas"
   end
   
-  def test_should_clear_firmas_on_updating_signature
+  test "should_clear_firmas_on_updating_signature" do
     test_should_clear_firmas_on_new_signature
     get "/miembros/#{@u1.login}/firmas"
     assert_response :success
@@ -40,7 +40,7 @@ class CacheObserverMiembrosTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/miembros/#{@u1.id % 1000}/#{@u1.id}/firmas"
   end
   
-  def test_should_clear_content_stats_on_new_comment
+  test "should_clear_content_stats_on_new_comment" do
     sym_login 'superadmin', 'lalala'
     @u1 = User.find(1)
     n = News.find(:published, :limit => 1)[0]
@@ -51,7 +51,7 @@ class CacheObserverMiembrosTest < ActionController::IntegrationTest
   end
   
   # TODO esta sobra aquí
-  def test_member_should_work_with_url_with_dot
+  test "member_should_work_with_url_with_dot" do
     u = User.create({:login => 'dil.', :email => 'dil@dil.com', :ipaddr => '0.0.0.0', :lastseen_on => Time.now})
     assert_not_nil User.find_by_login('dil.') # true, u.save, u.errors.full_messages
     get "/miembros/dil."
@@ -59,7 +59,7 @@ class CacheObserverMiembrosTest < ActionController::IntegrationTest
     assert_template 'miembros/member'
   end
   
-  def test_member_should_work_with_url_with_comilla
+  test "member_should_work_with_url_with_comilla" do
     u = User.create({:login => '~(DMT)~Rooney', :email => 'dil@dil.com', :ipaddr => '0.0.0.0', :lastseen_on => Time.now})
     assert_not_nil User.find_by_login('~(DMT)~Rooney') # true, u.save, u.errors.full_messages
     get "/miembros/~(DMT)~Rooney"
@@ -67,7 +67,7 @@ class CacheObserverMiembrosTest < ActionController::IntegrationTest
     assert_template 'miembros/member'
   end
   
-  def test_member_should_work_with_url_with_exclamation
+  test "member_should_work_with_url_with_exclamation" do
     u = User.create({:login => '3lr0hr', :email => 'dil@dil.com', :ipaddr => '0.0.0.0', :lastseen_on => Time.now})
     u.reload
     u.login = '3lr0h!r'
@@ -78,7 +78,7 @@ class CacheObserverMiembrosTest < ActionController::IntegrationTest
     assert_template 'miembros/member'
   end
   
-  def test_should_clear_miembros_cache_after_friend_accepts_friendship
+  test "should_clear_miembros_cache_after_friend_accepts_friendship" do
     
     @u1 = User.find_by_login('superadmin')
     ff = Friendship.find_between(@u1, User.find_by_login('panzer'))
@@ -104,7 +104,7 @@ class CacheObserverMiembrosTest < ActionController::IntegrationTest
     assert_cache_dont_exist @cache_path
   end
   
-  def test_should_clear_miembros_cache_after_deleting_a_friend
+  test "should_clear_miembros_cache_after_deleting_a_friend" do
     test_should_clear_miembros_cache_after_friend_accepts_friendship
     get '/miembros/superadmin/amigos'
     assert_response :success, @response.body

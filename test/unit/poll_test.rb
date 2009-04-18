@@ -1,24 +1,24 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class PollTest < Test::Unit::TestCase
+class PollTest < ActiveSupport::TestCase
   
   def setup
     @poll = Poll.find(1)
   end
   
-  def test_should_not_allow_to_create_poll_with_end_date_sooner_than_start_date
+  test "should_not_allow_to_create_poll_with_end_date_sooner_than_start_date" do
     @poll = Poll.new({:terms => 1, :user_id => 1, :state => Cms::PENDING, :title => 'olaaaaaaaa', :starts_on => 7.day.since, :ends_on => 1.day.since, :options_new => "opcion1\nopcion2"})
     assert_equal false, @poll.save
   end
   
   
   
-  def test_should_not_allow_to_create_poll_with_starts_on_sooner_than_now
+  test "should_not_allow_to_create_poll_with_starts_on_sooner_than_now" do
     poll = Poll.new({:terms => 1, :user_id => 1, :state => Cms::PENDING, :title => 'olaaaaaaaa', :starts_on => 1.day.ago, :ends_on => 1.day.since})
     assert_equal false, poll.save
   end
   
-  def test_should_allow_to_create_poll_if_everything_ok
+  test "should_allow_to_create_poll_if_everything_ok" do
     @poll = Poll.new({:terms => 1, :user_id => 1, :state => Cms::PENDING, :title => 'olaaaaaaaa', :starts_on => 1.day.since, :ends_on => 7.day.since, :options_new => "opcion1\nopcion2"})
     assert_equal true, @poll.save
     assert_equal 2, @poll.polls_options.count
@@ -26,7 +26,7 @@ class PollTest < Test::Unit::TestCase
     assert_not_nil @poll.polls_options.find_by_name('opcion2')
   end
   
-  def test_should_properly_update
+  test "should_properly_update" do
     test_should_allow_to_create_poll_if_everything_ok
     @poll.update_attributes(:options_new => 'opcion3')
     assert_equal 3, @poll.polls_options.count
@@ -42,7 +42,7 @@ class PollTest < Test::Unit::TestCase
     assert_nil @poll.polls_options.find_by_name('opcion1')
   end
   
-  def test_should_properly_set_solapping_poll
+  test "should_properly_set_solapping_poll" do
     p1 = Poll.find(1)
     pn = Poll.new(:title => "holitas carambolitas", :user_id => 1, :starts_on => p1.starts_on, :ends_on => p1.ends_on, :terms => p1.terms[0].id)
     
@@ -51,7 +51,7 @@ class PollTest < Test::Unit::TestCase
     assert_equal pn.starts_on.advance({:days => 7}), pn.ends_on
   end
   
-  def test_shouldnt_touch_non_solapping_poll
+  test "shouldnt_touch_non_solapping_poll" do
     p1 = Poll.find(1)
     pn = Poll.new(:terms => p1.terms[0].id, :title => "holitas carambolitas", :user_id => 1, :starts_on => p1.ends_on.advance({:days => 1}), :ends_on => p1.ends_on.advance({:days => 9}))
     assert_equal true, pn.save, pn.errors.full_messages_html

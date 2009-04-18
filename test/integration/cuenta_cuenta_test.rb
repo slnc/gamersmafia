@@ -6,13 +6,13 @@ class UserLoginTest < ActionController::IntegrationTest
     host! App.domain
   end
 
-  def test_should_login_if_valid_data
+  test "should_login_if_valid_data" do
     post '/cuenta/do_login', { :login => :superadmin, :password => :lalala }
     assert_response :redirect
     assert_not_nil request.session[:user]
   end
 
-  def test_should_logout
+  test "should_logout" do
     test_should_login_if_valid_data
     post '/cuenta/logout'
     assert_response :redirect

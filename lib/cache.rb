@@ -1,4 +1,4 @@
-require 'app/controllers/application.rb'
+require 'app/controllers/application_controller.rb'
 
 module Cache
   def self.user_base(uid)

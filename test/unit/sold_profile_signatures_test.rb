@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class SoldProfileSignaturesTest < Test::Unit::TestCase
-  def test_should_enable_profile_signatures_after_being_created
+class SoldProfileSignaturesTest < ActiveSupport::TestCase
+  test "should_enable_profile_signatures_after_being_created" do
     @u = User.find(2)
     @p = Product.find_by_cls('SoldProfileSignatures')
     assert_not_nil @u
@@ -19,7 +19,7 @@ class SoldProfileSignaturesTest < Test::Unit::TestCase
     assert receipt.used?
   end
 
-  def test_should_not_allow_to_buy_profile_signatures_twice
+  test "should_not_allow_to_buy_profile_signatures_twice" do
     test_should_enable_profile_signatures_after_being_created
     @u.add_money(@p.price)
     orig_cash = @u.cash

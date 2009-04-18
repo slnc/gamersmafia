@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class CacheObserverSiteWideTest < ActionController::IntegrationTest
   def setup
@@ -6,7 +6,7 @@ class CacheObserverSiteWideTest < ActionController::IntegrationTest
     host! App.domain
   end
 
-  def test_should_clear_last_commented_objects_cache_on_main_after_commenting
+  test "should_clear_last_commented_objects_cache_on_main_after_commenting" do
     sym_login 'superadmin', 'lalala'
     go_to '/'
     assert_cache_exists 'gm/site/last_commented_objects'
@@ -16,7 +16,7 @@ class CacheObserverSiteWideTest < ActionController::IntegrationTest
     assert_cache_dont_exist 'gm/site/last_commented_objects_ids'
   end
 
-  def test_should_clear_last_commented_objects_cache_on_portal_after_commenting
+  test "should_clear_last_commented_objects_cache_on_portal_after_commenting" do
     g1 = Game.find(1)
     # host! "#{g1.code}.#{App.domain}"
     faction_host Portal.find_by_code(g1.code)
@@ -30,7 +30,7 @@ class CacheObserverSiteWideTest < ActionController::IntegrationTest
     assert_cache_dont_exist "#{g1.code}/site/last_commented_objects_ids"
   end  
   
-  def test_should_clear_lasttopics_box_when_deleting_a_topic
+  test "should_clear_lasttopics_box_when_deleting_a_topic" do
     sym_login 'superadmin', 'lalala'
     create_content(:topic, { :title => 'topico titulado 2', :main => 'contenido del topicotitulado 2'}, :categories_terms => [Term.find(:first, :conditions => "taxonomy = 'TopicsCategory'").id])
     topic = Topic.find(:first, :order => 'id DESC')
@@ -45,7 +45,7 @@ class CacheObserverSiteWideTest < ActionController::IntegrationTest
     assert_cache_dont_exist 'gm/home/index/topics'
   end
 
-  def test_should_clear_lasttopics_box_when_deleting_a_content
+  test "should_clear_lasttopics_box_when_deleting_a_content" do
     sym_login 'superadmin', 'lalala'
     create_content(:news, { :title => 'topico titulado 2', :description => 'contenido del topicotitulado 2', :state => Cms::PUBLISHED }, :root_terms => 1)
     news = News.find(:first, :order => 'id DESC')

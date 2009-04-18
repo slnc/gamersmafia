@@ -1,8 +1,8 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 class UsersActionObserverTest < ActionController::IntegrationTest
   
-  def test_should_properly_work_with_recruitment_ads
+  test "should_properly_work_with_recruitment_ads" do
     @ra = RecruitmentAd.new(:user_id => 1, :game_id => 1, :title => 'busco cosas', :main => 'hola')
     assert_count_increases(UsersAction) do
       assert @ra.save
@@ -13,7 +13,7 @@ class UsersActionObserverTest < ActionController::IntegrationTest
     end
   end
   
-  def test_should_properly_work_with_photos_updated_in_profiles
+  test "should_properly_work_with_photos_updated_in_profiles" do
     u1 = User.find(1)
     u1.photo = fixture_file_upload('files/buddha.jpg')
     assert_count_increases(UsersAction) do
@@ -21,14 +21,14 @@ class UsersActionObserverTest < ActionController::IntegrationTest
     end
   end
   
-  def test_should_properly_reflect_user_change_faction
+  test "should_properly_reflect_user_change_faction" do
     u1 = User.find(1)
     assert_count_increases(UsersAction) do
       Factions.user_joins_faction(u1, Faction.find(2))
     end
   end
   
-  def test_should_properly_reflect_content
+  test "should_properly_reflect_content" do
     n = News.create(:terms => 1, :user_id => 1, :title => "titulin", :description => "fooo")
     assert_count_increases(UsersAction) do
       Cms.publish_content(n, User.find(1))
@@ -40,7 +40,7 @@ class UsersActionObserverTest < ActionController::IntegrationTest
     end
   end
   
-  def test_should_properly_work_with_clans_movements
+  test "should_properly_work_with_clans_movements" do
     @cm = ClansMovement.new(:user_id => 1, :clan_id => 1, :direction => ClansMovement::IN)
     assert_count_increases(UsersAction) do
       assert @cm.save
@@ -51,7 +51,7 @@ class UsersActionObserverTest < ActionController::IntegrationTest
     end
   end
   
-  def test_should_properly_work_with_emblems
+  test "should_properly_work_with_emblems" do
     @ue = UsersEmblem.new(:user_id => 1, :emblem => Emblems::EMBLEMS_TO_REPORT[0])
     assert_count_increases(UsersAction) do
       assert @ue.save
@@ -62,7 +62,7 @@ class UsersActionObserverTest < ActionController::IntegrationTest
     end
   end
   
-  def test_should_properly_work_with_profile_signatures
+  test "should_properly_work_with_profile_signatures" do
     @ps = ProfileSignature.new(:user_id => 1, :signer_user_id => 2, :signature => 'fada')
     uai = UsersAction.count
     assert @ps.save
@@ -72,7 +72,7 @@ class UsersActionObserverTest < ActionController::IntegrationTest
     assert_equal uai, UsersAction.count
   end
   
-  def test_should_properly_work_with_friendships
+  test "should_properly_work_with_friendships" do
     @ps = Friendship.new(:sender_user_id => 58, :receiver_user_id => 59)
     assert @ps.save
     
@@ -84,7 +84,7 @@ class UsersActionObserverTest < ActionController::IntegrationTest
     assert_equal uai, UsersAction.count
   end
   
-  def test_should_properly_work_with_clans
+  test "should_properly_work_with_clans" do
     @cl = Clan.new(:name => 'jolinchos', :tag => 'jols', :creator_user_id => 1)
     assert_count_increases(UsersAction) do
       assert @cl.save

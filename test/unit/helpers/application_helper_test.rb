@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../test_helper'
+require 'test_helper'
 
 class ApplicationHelperTest < HelperTestCase
 
@@ -8,7 +8,7 @@ class ApplicationHelperTest < HelperTestCase
     super
   end
   
-  def test_faction_favicon_should_show_bla
+  test "faction_favicon_should_show_bla" do
     assert_not_nil faction_favicon(Faction.find(:first))
   end
 end

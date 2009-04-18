@@ -1,7 +1,7 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class SoldChangeNickTest < Test::Unit::TestCase
-  def test_should_create_nick_change_entry_on_usage
+class SoldChangeNickTest < ActiveSupport::TestCase
+  test "should_create_nick_change_entry_on_usage" do
     u = User.find(1)
     p = Product.find_by_name('Cambio de nick')
     assert_not_nil u

@@ -1,5 +1,5 @@
 <% content_support do %>
-<% if defined? @category and not @category.nil? then %>
+<% if @category && !@category.nil? then %>
 <%=render :partial => '/descargas/esenciales2', :locals => { :category => @category }%>
 
 <% mftext('Los más descargados') do %>

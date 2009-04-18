@@ -1,9 +1,9 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class BetsOptionTest < Test::Unit::TestCase
+class BetsOptionTest < ActiveSupport::TestCase
 
   # Replace this with your real tests.
-  def test_truth
+  test "truth" do
     assert true
   end
 end

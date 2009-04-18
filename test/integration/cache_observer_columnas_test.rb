@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
 
 class CacheObserverColumnasTest < ActionController::IntegrationTest
@@ -8,7 +8,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
   end
 
   # MAIN
-  def test_should_clear_cache_on_main_after_publishing_column
+  test "should_clear_cache_on_main_after_publishing_column" do
     n = portal.column.find(:pending)[0]
     assert_not_nil n
     go_to '/columnas', 'columnas/index'
@@ -17,7 +17,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "#{portal.code}/columnas/index/page_"
   end
 
-  def test_should_clear_most_popular_authors_cache_on_main_after_changing_column_authorship
+  test "should_clear_most_popular_authors_cache_on_main_after_changing_column_authorship" do
     go_to '/columnas', 'columnas/index'
     assert_cache_exists "gm/columnas/index/most_popular_authors_#{Time.now.to_i/(86400)}"
     n = Column.find(:published)[0]
@@ -27,7 +27,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "gm/columnas/index/most_popular_authors_#{Time.now.to_i/(86400)}"
   end
 
-  def test_should_clear_cache_on_main_after_unpublishing_column
+  test "should_clear_cache_on_main_after_unpublishing_column" do
     n = portal.column.find(:published)[0]
     assert_not_nil n
     go_to '/columnas', 'columnas/index'
@@ -36,7 +36,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "#{portal.code}/columnas/index/page_"
   end
 
-  def test_should_clear_cache_on_main_after_updating_column
+  test "should_clear_cache_on_main_after_updating_column" do
     n = portal.column.find(:published)[0]
     assert_not_nil n
     go_to '/columnas', 'columnas/index'
@@ -45,12 +45,12 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "#{portal.code}/columnas/index/page_"
   end
 
-  def test_should_clear_cache_others_by_author_on_main_after_publishing_a_new_column
+  test "should_clear_cache_others_by_author_on_main_after_publishing_a_new_column" do
     pp = Portal.find_by_code('ut')
     faction_host pp
     n = pp.column.find(:published)[0]
     assert_not_nil n
-    go_to "/columnas/show/#{n.id}", 'columnas/show'
+    go_to ApplicationController.gmurl(n), 'columnas/show'
     assert_cache_exists "#{pp.code}/columnas/show/latest_by_author_#{n.user_id}"
     n2 = pp.column.find(:pending, :conditions => ['contents.user_id = ?', n.user_id])[0]
     publish_content n2
@@ -59,32 +59,27 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
 
 
   # PORTAL
-  def test_should_clear_cache_on_portal_after_publishing_column
+  test "should_clear_cache_on_portal_after_publishing_ faction column" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_publishing_column
   end
 
-  def test_should_clear_cache_on_portal_after_unpublishing_column
+  test "should_clear_cache_on_portal_after_unpublishing_faction column" do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_unpublishing_column
   end
 
-  def test_should_clear_cache_on_portal_after_updating_column
+  test "should_clear_cache_on_portal_after_updating_columnfaction " do
     faction_host FactionsPortal.find_by_code('ut')
     test_should_clear_cache_on_main_after_updating_column
   end
 
-  def test_should_clear_cache_on_portal_after_rating_column
-    faction_host FactionsPortal.find_by_code('ut')
-    test_should_clear_cache_on_main_after_rating_column
-  end
-
-  def test_should_clear_cache_on_portal_after_rating_column
+  test "should_clear_cache_on_portal_after_rating_columnfaction 2" do
     faction_host FactionsPortal.find_by_code('ut')
     # TODO hack temporal hasta que las referencias desde inet se hayan reducido
     Column.find(:published).each do |c|
       uniq = c.unique_content
-      uniq.url = uniq.url.gsub('http://gamersmafia.dev', 'http://ut.gamersmafia.dev')
+      uniq.url = uniq.url.gsub("http://#{App.domain}", "http://ut.#{App.domain}")
       uniq.save
     end
     test_should_clear_cache_others_by_author_on_main_after_publishing_a_new_column

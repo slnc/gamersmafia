@@ -6,7 +6,7 @@ class CommentsPerformanceTest < ActionController::IntegrationTest
     host! "#{App.domain}"
   end
   
-  def test_speed
+  test "speed" do
     old = Comment.count
     sym_login :superadmin, :lalala
     10.times do |i|

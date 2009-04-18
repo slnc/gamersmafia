@@ -1,20 +1,20 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class CompetitionsMatchTest < Test::Unit::TestCase
+class CompetitionsMatchTest < ActiveSupport::TestCase
   
   # Replace this with your real tests.
-  def test_should_complete_match_with_simple_scoring
+  test "should_complete_match_with_simple_scoring" do
     #    @l = Ladder.find(:first, :conditions => 'invitational is false and competitions_participants_type_id = 1
   end
   
-  def test_should_save_with_empty_servers
+  test "should_save_with_empty_servers" do
     cm = CompetitionsMatch.find(:first)
     assert_equal true, cm.save
     cm.servers = ''
     assert_equal true, cm.save
   end
   
-  def test_should_save_with_correct_servers
+  test "should_save_with_correct_servers" do
     cm = CompetitionsMatch.find(:first)
     [' 212.0.107.81', 
      '212.0.107.80, 212.0.107.81 ', 
@@ -29,25 +29,25 @@ class CompetitionsMatchTest < Test::Unit::TestCase
     end
   end
   
-  def test_should_save_with_correct_servers_but_duplicated
+  test "should_save_with_correct_servers_but_duplicated" do
     cm = CompetitionsMatch.find(:first)
     cm.servers = '212.0.107.82 212.0.107.82'
     assert_equal true, cm.save
     assert_equal '212.0.107.82', cm.servers
   end
   
-  def test_should_not_save_with_invalid_servers_string
+  test "should_not_save_with_invalid_servers_string" do
     cm = CompetitionsMatch.find(:first)
     cm.servers = ' fuck OYU 127.0.0.1AOMSDOAMDOm 212.107.82'
     assert_equal false, cm.save
   end
   
-  def test_should_not_allow_to_set_play_on_to_previous_time
+  test "should_not_allow_to_set_play_on_to_previous_time" do
     cm = CompetitionsMatch.new({:competition_id => 1, :play_on => 1.second.ago, :event_id => 5000})
     assert_equal false, cm.save
   end
   
-  def test_should_send_notification_after_rechallenge
+  test "should_send_notification_after_rechallenge" do
     assert_count_increases(ActionMailer::Base.deliveries) do 
       cm = CompetitionsMatch.find(:first)
       cm.participant1_id = CompetitionsParticipant.find(:first, :order => 'id ASC').id
@@ -58,7 +58,7 @@ class CompetitionsMatchTest < Test::Unit::TestCase
   end
   
   
-  def test_should_allow_supervisor_to_set_result
+  test "should_allow_supervisor_to_set_result" do
     panzer = User.find(2)
     cm = CompetitionsMatch.find(:first)
     cm.accepted = true
@@ -75,14 +75,14 @@ class CompetitionsMatchTest < Test::Unit::TestCase
     assert_equal true, cm.can_set_result?(panzer)
   end
   
-  def test_shouldnt_play_against_himself
+  test "shouldnt_play_against_himself" do
     cm = CompetitionsMatch.find(:first)
     cm.participant1_id = 1
     cm.participant2_id = 1
     assert_equal false, cm.save
   end
   
-  def test_should_properly_update_related_content_after_changing_participant
+  test "should_properly_update_related_content_after_changing_participant" do
       cm = CompetitionsMatch.find(:first)
       e = cm.event
       uq = cm.event.unique_content
