@@ -584,7 +584,12 @@ Request information:
   ExceptionNotifier.exception_recipients = %w(rails-gm@slnc.net)
   ExceptionNotifier.sender_address = %("GM Error Notifier" <httpd@gamersmafia.com>)
 
+  def rescuiing
+    @rescuiing || false
+  end
+
   def rescue_action_in_public(exception)
+    @rescuiing = true
     case exception
       when ActiveRecord::RecordNotFound
       check404
@@ -607,7 +612,7 @@ Request information:
         http_404
       end
     else
-deliverer = self.class.exception_data
+	deliverer = self.class.exception_data
           data = case deliverer
             when nil then {}
             when Symbol then send(deliverer)
@@ -626,6 +631,7 @@ deliverer = self.class.exception_data
         render(:file => "#{RAILS_ROOT}/public/500.html", :status => '500 Error')
       end
     end
+    @rescuiing = false # para tests
   end
   
   public

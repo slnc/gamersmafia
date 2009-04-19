@@ -2,6 +2,21 @@ require 'test_helper'
 
 class SlogControllerTest < ActionController::TestCase
   
+  test "submenu shouldnt crash if 401 error" do
+    assert_raises(AccessDenied) { get :index }
+    exception = AccessDenied.new
+    @request.remote_addr = '0.0.0.0'
+    @controller.send :rescue_action_in_public, exception
+    assert_response 401
+    assert_template 'application/http_401'
+
+    sym_login 1
+    get :index
+    assert_response :success
+    assert_template 'slog/webmaster'
+    assert_not_nil @response.body.index('Gladiador')
+  end
+
   # Replace this with your real tests.
   test "index_should_work" do
     assert_raises(AccessDenied) { get :index }
