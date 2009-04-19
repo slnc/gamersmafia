@@ -249,7 +249,7 @@ class UserTest < ActiveSupport::TestCase
     u1.comments.each do |c|
 	    assert c.update_attributes(:created_on => 4.months.ago)
     end
-    u1.update_attributes(:lastseen_on => Time.now)
+    assert u1.update_attributes(:lastseen_on => Time.now)
     assert_equal User::ST_SHADOW, u1.state
   end
 end
