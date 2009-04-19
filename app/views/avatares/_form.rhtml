@@ -14,7 +14,7 @@ when 'faction': %>
 <%= collection_select :avatar, :faction_id, Faction.find(:all, :order => 'lower(name) ASC'), :id, :name%>
 <% when 'clan': %>
 <p><label for="avatar_level">Clan</label><br/>
-<a href="/clanes/show/<%=@avatar.clan_id%>"><%=@avatar.clan.name%></a>
+<a href="/clanes/clan/<%=@avatar.clan_id%>"><%=@avatar.clan.name%></a>
 <% when 'user':%>
 <p><label for="avatar_level">Usuario</label><br/>
 <%=user_link(@avatar.user)%>
