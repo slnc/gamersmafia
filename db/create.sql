@@ -62,59 +62,19 @@ CREATE TABLE pageviews (
 );
 
 
-SET search_path = public, pg_catalog;
-
-SET default_with_oids = true;
-
 --
--- Name: tracker_items; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: tracker_items; Type: TABLE; Schema: archive; Owner: -; Tablespace: 
 --
 
 CREATE TABLE tracker_items (
     id integer NOT NULL,
     content_id integer NOT NULL,
     user_id integer NOT NULL,
-    lastseen_on timestamp without time zone DEFAULT now() NOT NULL,
-    is_tracked boolean DEFAULT false NOT NULL,
+    lastseen_on timestamp without time zone NOT NULL,
+    is_tracked boolean NOT NULL,
     notification_sent_on timestamp without time zone
 );
 
-
---
--- Name: tracker_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE tracker_items_id_seq
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: tracker_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE tracker_items_id_seq OWNED BY tracker_items.id;
-
-
-SET search_path = archive, pg_catalog;
-
---
--- Name: tracker_items; Type: TABLE; Schema: archive; Owner: -; Tablespace: 
---
-
-CREATE TABLE tracker_items (
-    id integer DEFAULT nextval('public.tracker_items_id_seq'::regclass) NOT NULL,
-    content_id integer NOT NULL,
-    user_id integer NOT NULL,
-    lastseen_on timestamp without time zone DEFAULT now() NOT NULL,
-    is_tracked boolean DEFAULT false NOT NULL,
-    notification_sent_on timestamp without time zone
-);
-
-
-SET default_with_oids = false;
 
 --
 -- Name: treated_visitors; Type: TABLE; Schema: archive; Owner: -; Tablespace: 
@@ -282,6 +242,17 @@ CREATE TABLE avatars (
     clan_id integer,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     submitter_user_id integer NOT NULL
+);
+
+
+--
+-- Name: babes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE babes (
+    id integer NOT NULL,
+    date date NOT NULL,
+    image_id integer NOT NULL
 );
 
 
@@ -701,6 +672,16 @@ CREATE TABLE competitions (
 
 
 --
+-- Name: competitions_admins; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_admins (
+    competition_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+--
 -- Name: competitions_games_maps; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -845,6 +826,16 @@ CREATE TABLE competitions_sponsors (
     competition_id integer NOT NULL,
     url character varying,
     image character varying
+);
+
+
+--
+-- Name: competitions_supervisors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE competitions_supervisors (
+    competition_id integer NOT NULL,
+    user_id integer NOT NULL
 );
 
 
@@ -1157,6 +1148,17 @@ CREATE TABLE downloads_categories (
 
 
 --
+-- Name: dudes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE dudes (
+    id integer NOT NULL,
+    date date NOT NULL,
+    image_id integer NOT NULL
+);
+
+
+--
 -- Name: events; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1258,6 +1260,29 @@ CREATE TABLE factions_banned_users (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     reason character varying,
     banner_user_id integer NOT NULL
+);
+
+
+--
+-- Name: factions_capos; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE factions_capos (
+    id integer NOT NULL,
+    faction_id integer NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+--
+-- Name: factions_editors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE factions_editors (
+    id integer NOT NULL,
+    faction_id integer NOT NULL,
+    user_id integer NOT NULL,
+    content_type_id integer NOT NULL
 );
 
 
@@ -1487,8 +1512,7 @@ CREATE TABLE global_vars (
     svn_revision character varying,
     ads_slots_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     gmtv_channels_updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    pending_contents integer DEFAULT 0 NOT NULL,
-    git_prev_revision character varying
+    pending_contents integer DEFAULT 0 NOT NULL
 );
 
 
@@ -1529,6 +1553,21 @@ CREATE TABLE groups (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     description character varying,
     owner_user_id integer
+);
+
+
+--
+-- Name: groups_messages; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE groups_messages (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    title character varying,
+    main character varying,
+    parent_id integer,
+    root_id integer,
+    user_id integer
 );
 
 
@@ -1657,7 +1696,8 @@ CREATE TABLE macropolls (
     answers text,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     ipaddr inet DEFAULT '0.0.0.0'::inet NOT NULL,
-    host character varying
+    host character varying,
+    id integer NOT NULL
 );
 
 
@@ -1809,9 +1849,8 @@ CREATE TABLE platforms (
 --
 
 CREATE TABLE platforms_users (
-    created_on timestamp without time zone,
-    user_id integer,
-    platform_id integer
+    user_id integer NOT NULL,
+    platform_id integer NOT NULL
 );
 
 
@@ -2168,7 +2207,7 @@ CREATE TABLE schema_info (
 --
 
 CREATE TABLE schema_migrations (
-    version character varying
+    version character varying NOT NULL
 );
 
 
@@ -2246,10 +2285,20 @@ CREATE TABLE slog_entries (
     request text,
     reporter_user_id integer,
     reviewer_user_id integer,
-    short_version character varying,
     long_version character varying,
+    short_version character varying,
     completed_on timestamp without time zone,
     scope integer
+);
+
+
+--
+-- Name: slog_visits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE slog_visits (
+    user_id integer NOT NULL,
+    lastvisit_on timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -2354,6 +2403,22 @@ CREATE TABLE topics_categories (
 );
 
 
+SET default_with_oids = true;
+
+--
+-- Name: tracker_items; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE tracker_items (
+    id integer NOT NULL,
+    content_id integer NOT NULL,
+    user_id integer NOT NULL,
+    lastseen_on timestamp without time zone DEFAULT now() NOT NULL,
+    is_tracked boolean DEFAULT false NOT NULL,
+    notification_sent_on timestamp without time zone
+);
+
+
 --
 -- Name: treated_visitors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
@@ -2364,6 +2429,8 @@ CREATE SEQUENCE treated_visitors_id_seq
     NO MINVALUE
     CACHE 1;
 
+
+SET default_with_oids = false;
 
 --
 -- Name: treated_visitors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
@@ -3027,6 +3094,24 @@ CREATE SEQUENCE avatars_id_seq
 --
 
 ALTER SEQUENCE avatars_id_seq OWNED BY avatars.id;
+
+
+--
+-- Name: babes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE babes_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: babes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE babes_id_seq OWNED BY babes.id;
 
 
 --
@@ -3858,6 +3943,24 @@ ALTER SEQUENCE downloads_id_seq OWNED BY downloads.id;
 
 
 --
+-- Name: dudes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE dudes_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: dudes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE dudes_id_seq OWNED BY dudes.id;
+
+
+--
 -- Name: events_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -3927,6 +4030,42 @@ CREATE SEQUENCE factions_banned_users_id_seq
 --
 
 ALTER SEQUENCE factions_banned_users_id_seq OWNED BY factions_banned_users.id;
+
+
+--
+-- Name: factions_capos_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE factions_capos_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: factions_capos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE factions_capos_id_seq OWNED BY factions_capos.id;
+
+
+--
+-- Name: factions_editors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE factions_editors_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: factions_editors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE factions_editors_id_seq OWNED BY factions_editors.id;
 
 
 --
@@ -4283,6 +4422,25 @@ ALTER SEQUENCE groups_id_seq OWNED BY groups.id;
 
 
 --
+-- Name: groups_messages_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE groups_messages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: groups_messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE groups_messages_id_seq OWNED BY groups_messages.id;
+
+
+--
 -- Name: images_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -4407,6 +4565,25 @@ CREATE SEQUENCE macropolls_2007_1_id_seq
 --
 
 ALTER SEQUENCE macropolls_2007_1_id_seq OWNED BY macropolls_2007_1.id;
+
+
+--
+-- Name: macropolls_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE macropolls_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: macropolls_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE macropolls_id_seq OWNED BY macropolls.id;
 
 
 --
@@ -4969,6 +5146,24 @@ ALTER SEQUENCE textures_id_seq OWNED BY textures.id;
 
 
 --
+-- Name: tracker_items_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE tracker_items_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: tracker_items_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE tracker_items_id_seq OWNED BY tracker_items.id;
+
+
+--
 -- Name: tutorials_categories_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -5117,7 +5312,6 @@ ALTER SEQUENCE users_lastseen_ips_id_seq OWNED BY users_lastseen_ips.id;
 --
 
 CREATE SEQUENCE users_newsfeeds_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -5192,7 +5386,6 @@ ALTER SEQUENCE ads_daily_id_seq OWNED BY ads_daily.id;
 --
 
 CREATE SEQUENCE ads_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -5248,7 +5441,6 @@ ALTER SEQUENCE bets_results_id_seq OWNED BY bets_results.id;
 --
 
 CREATE SEQUENCE clans_daily_stats_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -5303,7 +5495,6 @@ ALTER SEQUENCE pageviews_id_seq OWNED BY pageviews.id;
 --
 
 CREATE SEQUENCE portals_stats_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -5322,7 +5513,6 @@ ALTER SEQUENCE portals_stats_id_seq OWNED BY portals.id;
 --
 
 CREATE SEQUENCE users_daily_stats_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -5417,6 +5607,13 @@ ALTER TABLE autologin_keys ALTER COLUMN id SET DEFAULT nextval('autologin_keys_i
 --
 
 ALTER TABLE avatars ALTER COLUMN id SET DEFAULT nextval('avatars_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE babes ALTER COLUMN id SET DEFAULT nextval('babes_id_seq'::regclass);
 
 
 --
@@ -5752,6 +5949,13 @@ ALTER TABLE downloads_categories ALTER COLUMN id SET DEFAULT nextval('downloads_
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE dudes ALTER COLUMN id SET DEFAULT nextval('dudes_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
 
 
@@ -5774,6 +5978,20 @@ ALTER TABLE factions ALTER COLUMN id SET DEFAULT nextval('factions_id_seq'::regc
 --
 
 ALTER TABLE factions_banned_users ALTER COLUMN id SET DEFAULT nextval('factions_banned_users_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE factions_capos ALTER COLUMN id SET DEFAULT nextval('factions_capos_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE factions_editors ALTER COLUMN id SET DEFAULT nextval('factions_editors_id_seq'::regclass);
 
 
 --
@@ -5892,6 +6110,13 @@ ALTER TABLE groups ALTER COLUMN id SET DEFAULT nextval('groups_id_seq'::regclass
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE groups_messages ALTER COLUMN id SET DEFAULT nextval('groups_messages_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE images ALTER COLUMN id SET DEFAULT nextval('images_id_seq'::regclass);
 
 
@@ -5928,6 +6153,13 @@ ALTER TABLE ip_bans ALTER COLUMN id SET DEFAULT nextval('ip_bans_id_seq'::regcla
 --
 
 ALTER TABLE ip_passwords_resets_requests ALTER COLUMN id SET DEFAULT nextval('ip_passwords_resets_requests_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE macropolls ALTER COLUMN id SET DEFAULT nextval('macropolls_id_seq'::regclass);
 
 
 --
@@ -6327,19 +6559,11 @@ ALTER TABLE users_karma_daily_by_portal ALTER COLUMN id SET DEFAULT nextval('use
 SET search_path = archive, pg_catalog;
 
 --
--- Name: pageviewspkey; Type: CONSTRAINT; Schema: archive; Owner: -; Tablespace: 
+-- Name: pageviews_pkey; Type: CONSTRAINT; Schema: archive; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY pageviews
-    ADD CONSTRAINT pageviewspkey PRIMARY KEY (id);
-
-
---
--- Name: tracker_items_pkey; Type: CONSTRAINT; Schema: archive; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY tracker_items
-    ADD CONSTRAINT tracker_items_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT pageviews_pkey PRIMARY KEY (id);
 
 
 --
@@ -6478,6 +6702,22 @@ ALTER TABLE ONLY autologin_keys
 
 ALTER TABLE ONLY avatars
     ADD CONSTRAINT avatars_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: babes_date_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY babes
+    ADD CONSTRAINT babes_date_key UNIQUE (date);
+
+
+--
+-- Name: babes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY babes
+    ADD CONSTRAINT babes_pkey PRIMARY KEY (id);
 
 
 --
@@ -6713,6 +6953,14 @@ ALTER TABLE ONLY comments_valorations_types
 
 
 --
+-- Name: competitions_admins_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY competitions_admins
+    ADD CONSTRAINT competitions_admins_pkey PRIMARY KEY (competition_id, user_id);
+
+
+--
 -- Name: competitions_games_maps_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -6814,6 +7062,14 @@ ALTER TABLE ONLY competitions
 
 ALTER TABLE ONLY competitions_sponsors
     ADD CONSTRAINT competitions_sponsors_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: competitions_supervisors_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY competitions_supervisors
+    ADD CONSTRAINT competitions_supervisors_pkey PRIMARY KEY (competition_id, user_id);
 
 
 --
@@ -6977,6 +7233,22 @@ ALTER TABLE ONLY downloads
 
 
 --
+-- Name: dudes_date_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY dudes
+    ADD CONSTRAINT dudes_date_key UNIQUE (date);
+
+
+--
+-- Name: dudes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY dudes
+    ADD CONSTRAINT dudes_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: events_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -7041,11 +7313,27 @@ ALTER TABLE ONLY factions
 
 
 --
+-- Name: factions_capos_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY factions_capos
+    ADD CONSTRAINT factions_capos_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: factions_code_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY factions
     ADD CONSTRAINT factions_code_key UNIQUE (code);
+
+
+--
+-- Name: factions_editors_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY factions_editors
+    ADD CONSTRAINT factions_editors_pkey PRIMARY KEY (id);
 
 
 --
@@ -7265,6 +7553,14 @@ ALTER TABLE ONLY gmtv_channels
 
 
 --
+-- Name: groups_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY groups_messages
+    ADD CONSTRAINT groups_messages_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: groups_name_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -7342,6 +7638,14 @@ ALTER TABLE ONLY ip_passwords_resets_requests
 
 ALTER TABLE ONLY macropolls_2007_1
     ADD CONSTRAINT macropolls_2007_1_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: macropolls_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY macropolls
+    ADD CONSTRAINT macropolls_pkey PRIMARY KEY (id);
 
 
 --
@@ -7681,6 +7985,14 @@ ALTER TABLE ONLY slog_entries
 
 
 --
+-- Name: slog_visits_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY slog_visits
+    ADD CONSTRAINT slog_visits_pkey PRIMARY KEY (user_id);
+
+
+--
 -- Name: sold_products_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -7717,7 +8029,15 @@ ALTER TABLE ONLY textures
 --
 
 ALTER TABLE ONLY tracker_items
-    ADD CONSTRAINT tracker_items_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT tracker_items_pkey UNIQUE (id);
+
+
+--
+-- Name: tracker_items_pkey1; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY tracker_items
+    ADD CONSTRAINT tracker_items_pkey1 PRIMARY KEY (id);
 
 
 --
@@ -7912,6 +8232,15 @@ ALTER TABLE ONLY users_daily_stats
 
 ALTER TABLE ONLY users_karma_daily_by_portal
     ADD CONSTRAINT users_karma_daily_by_portal_pkey PRIMARY KEY (id);
+
+
+SET search_path = archive, pg_catalog;
+
+--
+-- Name: tracker_items_pkey; Type: INDEX; Schema: archive; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX tracker_items_pkey ON tracker_items USING btree (id);
 
 
 SET search_path = public, pg_catalog;
@@ -8218,6 +8547,13 @@ CREATE UNIQUE INDEX competitions_participants_uniq ON competitions_participants 
 
 
 --
+-- Name: competitions_supervisors_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX competitions_supervisors_uniq ON competitions_supervisors USING btree (competition_id, user_id);
+
+
+--
 -- Name: content_ratings_comb; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -8260,6 +8596,20 @@ CREATE UNIQUE INDEX contents_locks_uniq ON contents_locks USING btree (content_i
 
 
 --
+-- Name: contents_recommendations_content_id_sender_user_id_receiver_use; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX contents_recommendations_content_id_sender_user_id_receiver_use ON contents_recommendations USING btree (content_id, sender_user_id, receiver_user_id);
+
+
+--
+-- Name: contents_recommendations_receiver_user_id_marked_as_bad; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX contents_recommendations_receiver_user_id_marked_as_bad ON contents_recommendations USING btree (receiver_user_id, marked_as_bad);
+
+
+--
 -- Name: contents_recommendations_seen_on_content_id_receiver_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -8271,13 +8621,6 @@ CREATE INDEX contents_recommendations_seen_on_content_id_receiver_user_id ON con
 --
 
 CREATE INDEX contents_recommendations_sender_user_id ON contents_recommendations USING btree (sender_user_id);
-
-
---
--- Name: contents_recommendations_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX contents_recommendations_uniq ON contents_recommendations USING btree (content_id, sender_user_id, receiver_user_id);
 
 
 --
@@ -8460,6 +8803,20 @@ CREATE INDEX events_user_id ON events USING btree (user_id);
 --
 
 CREATE UNIQUE INDEX factions_banned_users_fu ON factions_banned_users USING btree (faction_id, user_id);
+
+
+--
+-- Name: factions_capos_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX factions_capos_uniq ON factions_capos USING btree (faction_id, user_id);
+
+
+--
+-- Name: factions_editors_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX factions_editors_uniq ON factions_editors USING btree (faction_id, user_id, content_type_id);
 
 
 --
@@ -8897,6 +9254,13 @@ CREATE INDEX terms_root_id ON terms USING btree (root_id);
 
 
 --
+-- Name: terms_slug_toplevel; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX terms_slug_toplevel ON terms USING btree (slug) WHERE (parent_id IS NULL);
+
+
+--
 -- Name: terms_slug_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -9237,158 +9601,6 @@ CREATE UNIQUE INDEX users_karma_daily_by_portal_uniq ON users_karma_daily_by_por
 SET search_path = public, pg_catalog;
 
 --
--- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY messages
-    ADD CONSTRAINT "$1" FOREIGN KEY (user_id_from) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY clans_groups
-    ADD CONSTRAINT "$1" FOREIGN KEY (clans_groups_type_id) REFERENCES clans_groups_types(id) MATCH FULL;
-
-
---
--- Name: $1; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY clans_sponsors
-    ADD CONSTRAINT "$1" FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: $2; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY messages
-    ADD CONSTRAINT "$2" FOREIGN KEY (user_id_to) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: ads_advertiser_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY ads
-    ADD CONSTRAINT ads_advertiser_id_fkey FOREIGN KEY (advertiser_id) REFERENCES advertisers(id);
-
-
---
--- Name: ads_slots_advertiser_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY ads_slots
-    ADD CONSTRAINT ads_slots_advertiser_id_fkey FOREIGN KEY (advertiser_id) REFERENCES advertisers(id) MATCH FULL;
-
-
---
--- Name: ads_slots_instances_ad_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY ads_slots_instances
-    ADD CONSTRAINT ads_slots_instances_ad_id_fkey FOREIGN KEY (ad_id) REFERENCES ads(id) MATCH FULL;
-
-
---
--- Name: ads_slots_instances_ads_slot_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY ads_slots_instances
-    ADD CONSTRAINT ads_slots_instances_ads_slot_id_fkey FOREIGN KEY (ads_slot_id) REFERENCES ads_slots(id) MATCH FULL;
-
-
---
--- Name: ads_slots_portals_ads_slot_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY ads_slots_portals
-    ADD CONSTRAINT ads_slots_portals_ads_slot_id_fkey FOREIGN KEY (ads_slot_id) REFERENCES ads_slots(id) MATCH FULL;
-
-
---
--- Name: allowed_competitions_participants_competition_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY allowed_competitions_participants
-    ADD CONSTRAINT allowed_competitions_participants_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: autologin_keys_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY autologin_keys
-    ADD CONSTRAINT autologin_keys_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: avatars_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY avatars
-    ADD CONSTRAINT avatars_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: avatars_faction_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY avatars
-    ADD CONSTRAINT avatars_faction_id_fkey FOREIGN KEY (faction_id) REFERENCES factions(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: avatars_submitter_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY avatars
-    ADD CONSTRAINT avatars_submitter_user_id_fkey FOREIGN KEY (submitter_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: ban_requests_banned_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY ban_requests
-    ADD CONSTRAINT ban_requests_banned_user_id_fkey FOREIGN KEY (banned_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: ban_requests_confirming_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY ban_requests
-    ADD CONSTRAINT ban_requests_confirming_user_id_fkey FOREIGN KEY (confirming_user_id) REFERENCES users(id);
-
-
---
--- Name: ban_requests_unban_confirming_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY ban_requests
-    ADD CONSTRAINT ban_requests_unban_confirming_user_id_fkey FOREIGN KEY (unban_confirming_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: ban_requests_unban_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY ban_requests
-    ADD CONSTRAINT ban_requests_unban_user_id_fkey FOREIGN KEY (unban_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: ban_requests_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY ban_requests
-    ADD CONSTRAINT ban_requests_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
 -- Name: bets_approved_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -9402,54 +9614,6 @@ ALTER TABLE ONLY bets
 
 ALTER TABLE ONLY bets
     ADD CONSTRAINT bets_bets_category_id_fkey FOREIGN KEY (bets_category_id) REFERENCES bets_categories(id);
-
-
---
--- Name: bets_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY bets_categories
-    ADD CONSTRAINT bets_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES bets(id);
-
-
---
--- Name: bets_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY bets_categories
-    ADD CONSTRAINT bets_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES bets_categories(id);
-
-
---
--- Name: bets_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY bets_categories
-    ADD CONSTRAINT bets_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES bets_categories(id);
-
-
---
--- Name: bets_options_bet_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY bets_options
-    ADD CONSTRAINT bets_options_bet_id_fkey FOREIGN KEY (bet_id) REFERENCES bets(id) MATCH FULL;
-
-
---
--- Name: bets_tickets_bets_option_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY bets_tickets
-    ADD CONSTRAINT bets_tickets_bets_option_id_fkey FOREIGN KEY (bets_option_id) REFERENCES bets_options(id) MATCH FULL;
-
-
---
--- Name: bets_tickets_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY bets_tickets
-    ADD CONSTRAINT bets_tickets_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 
 
 --
@@ -9493,107 +9657,11 @@ ALTER TABLE ONLY blogentries
 
 
 --
--- Name: chatlines_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY chatlines
-    ADD CONSTRAINT chatlines_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
 -- Name: clans_creator_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY clans
     ADD CONSTRAINT clans_creator_user_id_fkey FOREIGN KEY (creator_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: clans_friends_from_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY clans_friends
-    ADD CONSTRAINT clans_friends_from_clan_id_fkey FOREIGN KEY (from_clan_id) REFERENCES clans(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: clans_friends_to_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY clans_friends
-    ADD CONSTRAINT clans_friends_to_clan_id_fkey FOREIGN KEY (to_clan_id) REFERENCES clans(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: clans_groups_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY clans_groups
-    ADD CONSTRAINT clans_groups_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: clans_groups_clans_groups_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY clans_groups
-    ADD CONSTRAINT clans_groups_clans_groups_type_id_fkey FOREIGN KEY (clans_groups_type_id) REFERENCES clans_groups_types(id);
-
-
---
--- Name: clans_groups_r_users_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY clans_groups_users
-    ADD CONSTRAINT clans_groups_r_users_group_id_fkey FOREIGN KEY (clans_group_id) REFERENCES clans_groups(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: clans_logs_entries_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY clans_logs_entries
-    ADD CONSTRAINT clans_logs_entries_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: clans_movements_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY clans_movements
-    ADD CONSTRAINT clans_movements_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: clans_movements_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY clans_movements
-    ADD CONSTRAINT clans_movements_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: columns_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY columns_categories
-    ADD CONSTRAINT columns_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES columns(id) ON DELETE SET NULL;
-
-
---
--- Name: columns_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY columns_categories
-    ADD CONSTRAINT columns_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES columns_categories(id) MATCH FULL;
-
-
---
--- Name: columns_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY columns_categories
-    ADD CONSTRAINT columns_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES columns_categories(id) MATCH FULL;
 
 
 --
@@ -9610,230 +9678,6 @@ ALTER TABLE ONLY columns
 
 ALTER TABLE ONLY columns
     ADD CONSTRAINT columns_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-
-
---
--- Name: comments_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY comments
-    ADD CONSTRAINT comments_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: comments_lastedited_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY comments
-    ADD CONSTRAINT comments_lastedited_by_user_id_fkey FOREIGN KEY (lastedited_by_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: comments_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY comments
-    ADD CONSTRAINT comments_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: comments_valorations_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY comments_valorations
-    ADD CONSTRAINT comments_valorations_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES comments(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: comments_valorations_comments_valorations_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY comments_valorations
-    ADD CONSTRAINT comments_valorations_comments_valorations_type_id_fkey FOREIGN KEY (comments_valorations_type_id) REFERENCES comments_valorations_types(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: comments_valorations_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY comments_valorations
-    ADD CONSTRAINT comments_valorations_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: competitions_competitions_participants_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions
-    ADD CONSTRAINT competitions_competitions_participants_type_id_fkey FOREIGN KEY (competitions_participants_type_id) REFERENCES competitions_participants_types(id) MATCH FULL;
-
-
---
--- Name: competitions_event_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions
-    ADD CONSTRAINT competitions_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) MATCH FULL;
-
-
---
--- Name: competitions_forum_forum_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions
-    ADD CONSTRAINT competitions_forum_forum_id_fkey FOREIGN KEY (topics_category_id) REFERENCES topics_categories(id) MATCH FULL ON DELETE SET NULL;
-
-
---
--- Name: competitions_game_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions
-    ADD CONSTRAINT competitions_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id);
-
-
---
--- Name: competitions_games_maps_competition_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_games_maps
-    ADD CONSTRAINT competitions_games_maps_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) MATCH FULL;
-
-
---
--- Name: competitions_games_maps_games_map_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_games_maps
-    ADD CONSTRAINT competitions_games_maps_games_map_id_fkey FOREIGN KEY (games_map_id) REFERENCES games_maps(id) MATCH FULL;
-
-
---
--- Name: competitions_logs_entries_competition_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_logs_entries
-    ADD CONSTRAINT competitions_logs_entries_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: competitions_matches_competition_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_matches
-    ADD CONSTRAINT competitions_matches_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id);
-
-
---
--- Name: competitions_matches_event_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_matches
-    ADD CONSTRAINT competitions_matches_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) MATCH FULL ON DELETE SET NULL;
-
-
---
--- Name: competitions_matches_games_maps_competitions_match_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_matches_games_maps
-    ADD CONSTRAINT competitions_matches_games_maps_competitions_match_id_fkey FOREIGN KEY (competitions_match_id) REFERENCES competitions_matches(id) MATCH FULL;
-
-
---
--- Name: competitions_matches_games_maps_games_map_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_matches_games_maps
-    ADD CONSTRAINT competitions_matches_games_maps_games_map_id_fkey FOREIGN KEY (games_map_id) REFERENCES games_maps(id) MATCH FULL;
-
-
---
--- Name: competitions_matches_participant1_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_matches
-    ADD CONSTRAINT competitions_matches_participant1_id_fkey FOREIGN KEY (participant1_id) REFERENCES competitions_participants(id) ON DELETE SET NULL;
-
-
---
--- Name: competitions_matches_participant2_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_matches
-    ADD CONSTRAINT competitions_matches_participant2_id_fkey FOREIGN KEY (participant2_id) REFERENCES competitions_participants(id) ON DELETE SET NULL;
-
-
---
--- Name: competitions_matches_reports_competitions_match_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_matches_reports
-    ADD CONSTRAINT competitions_matches_reports_competitions_match_id_fkey FOREIGN KEY (competitions_match_id) REFERENCES competitions_matches(id);
-
-
---
--- Name: competitions_matches_reports_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_matches_reports
-    ADD CONSTRAINT competitions_matches_reports_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
-
-
---
--- Name: competitions_matches_uploads_competitions_match_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_matches_uploads
-    ADD CONSTRAINT competitions_matches_uploads_competitions_match_id_fkey FOREIGN KEY (competitions_match_id) REFERENCES competitions_matches(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: competitions_matches_uploads_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_matches_uploads
-    ADD CONSTRAINT competitions_matches_uploads_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: competitions_participants_competition_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_participants
-    ADD CONSTRAINT competitions_participants_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: competitions_participants_competitions_participants_type_i_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_participants
-    ADD CONSTRAINT competitions_participants_competitions_participants_type_i_fkey FOREIGN KEY (competitions_participants_type_id) REFERENCES competitions_participants_types(id) MATCH FULL;
-
-
---
--- Name: competitions_sponsors_competition_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY competitions_sponsors
-    ADD CONSTRAINT competitions_sponsors_competition_id_fkey FOREIGN KEY (competition_id) REFERENCES competitions(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: content_ratings_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY content_ratings
-    ADD CONSTRAINT content_ratings_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
-
-
---
--- Name: content_ratings_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY content_ratings
-    ADD CONSTRAINT content_ratings_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 
 
 --
@@ -9861,51 +9705,11 @@ ALTER TABLE ONLY contents
 
 
 --
--- Name: contents_locks_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY contents_locks
-    ADD CONSTRAINT contents_locks_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: contents_locks_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY contents_locks
-    ADD CONSTRAINT contents_locks_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
-
-
---
 -- Name: contents_platform_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_platform_id_fkey FOREIGN KEY (platform_id) REFERENCES platforms(id) MATCH FULL;
-
-
---
--- Name: contents_recommendations_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY contents_recommendations
-    ADD CONSTRAINT contents_recommendations_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id) MATCH FULL;
-
-
---
--- Name: contents_recommendations_receiver_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY contents_recommendations
-    ADD CONSTRAINT contents_recommendations_receiver_user_id_fkey FOREIGN KEY (receiver_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: contents_recommendations_sender_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY contents_recommendations
-    ADD CONSTRAINT contents_recommendations_sender_user_id_fkey FOREIGN KEY (sender_user_id) REFERENCES users(id);
 
 
 --
@@ -9933,14 +9737,6 @@ ALTER TABLE ONLY contents
 
 
 --
--- Name: contents_versions_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY contents_versions
-    ADD CONSTRAINT contents_versions_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id) MATCH FULL;
-
-
---
 -- Name: coverages_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -9949,43 +9745,11 @@ ALTER TABLE ONLY coverages
 
 
 --
--- Name: demo_mirrors_demo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY demo_mirrors
-    ADD CONSTRAINT demo_mirrors_demo_id_fkey FOREIGN KEY (demo_id) REFERENCES demos(id) MATCH FULL ON DELETE CASCADE;
-
-
---
 -- Name: demos_approved_by_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY demos
     ADD CONSTRAINT demos_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id);
-
-
---
--- Name: demos_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY demos_categories
-    ADD CONSTRAINT demos_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES demos(id);
-
-
---
--- Name: demos_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY demos_categories
-    ADD CONSTRAINT demos_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES demos_categories(id);
-
-
---
--- Name: demos_categories_root_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY demos_categories
-    ADD CONSTRAINT demos_categories_root_id_fkey FOREIGN KEY (root_id) REFERENCES demos_categories(id);
 
 
 --
@@ -10045,62 +9809,6 @@ ALTER TABLE ONLY demos
 
 
 --
--- Name: downloaded_downloads_download_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY downloaded_downloads
-    ADD CONSTRAINT downloaded_downloads_download_id_fkey FOREIGN KEY (download_id) REFERENCES downloads(id) MATCH FULL;
-
-
---
--- Name: downloaded_downloads_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY downloaded_downloads
-    ADD CONSTRAINT downloaded_downloads_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
-
-
---
--- Name: downloadmirrors_download_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY download_mirrors
-    ADD CONSTRAINT downloadmirrors_download_id_fkey FOREIGN KEY (download_id) REFERENCES downloads(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: downloads_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY downloads_categories
-    ADD CONSTRAINT downloads_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: downloads_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY downloads_categories
-    ADD CONSTRAINT downloads_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES downloads(id) ON DELETE SET NULL;
-
-
---
--- Name: downloads_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY downloads_categories
-    ADD CONSTRAINT downloads_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES downloads_categories(id) MATCH FULL;
-
-
---
--- Name: downloads_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY downloads_categories
-    ADD CONSTRAINT downloads_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES downloads_categories(id) MATCH FULL;
-
-
---
 -- Name: downloads_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -10130,38 +9838,6 @@ ALTER TABLE ONLY downloads
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: events_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY events_categories
-    ADD CONSTRAINT events_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: events_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY events_categories
-    ADD CONSTRAINT events_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES events(id) ON DELETE SET NULL;
-
-
---
--- Name: events_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY events_categories
-    ADD CONSTRAINT events_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES events_categories(id) MATCH FULL;
-
-
---
--- Name: events_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY events_categories
-    ADD CONSTRAINT events_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES events_categories(id) MATCH FULL;
 
 
 --
@@ -10229,142 +9905,6 @@ ALTER TABLE ONLY events
 
 
 --
--- Name: events_users_event_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY events_users
-    ADD CONSTRAINT events_users_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) MATCH FULL;
-
-
---
--- Name: events_users_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY events_users
-    ADD CONSTRAINT events_users_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: factions_banned_users_banner_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions_banned_users
-    ADD CONSTRAINT factions_banned_users_banner_user_id_fkey FOREIGN KEY (banner_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: factions_banned_users_faction_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions_banned_users
-    ADD CONSTRAINT factions_banned_users_faction_id_fkey FOREIGN KEY (faction_id) REFERENCES factions(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: factions_banned_users_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions_banned_users
-    ADD CONSTRAINT factions_banned_users_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
-
---
--- Name: factions_boss_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions
-    ADD CONSTRAINT factions_boss_user_id_fkey FOREIGN KEY (boss_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: factions_headers_faction_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions_headers
-    ADD CONSTRAINT factions_headers_faction_id_fkey FOREIGN KEY (faction_id) REFERENCES factions(id) MATCH FULL;
-
-
---
--- Name: factions_links_faction_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions_links
-    ADD CONSTRAINT factions_links_faction_id_fkey FOREIGN KEY (faction_id) REFERENCES factions(id) MATCH FULL;
-
-
---
--- Name: factions_portals_faction_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions_portals
-    ADD CONSTRAINT factions_portals_faction_id_fkey FOREIGN KEY (faction_id) REFERENCES factions(id) MATCH FULL;
-
-
---
--- Name: factions_portals_portal_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions_portals
-    ADD CONSTRAINT factions_portals_portal_id_fkey FOREIGN KEY (portal_id) REFERENCES portals(id) MATCH FULL;
-
-
---
--- Name: factions_underboss_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY factions
-    ADD CONSTRAINT factions_underboss_user_id_fkey FOREIGN KEY (underboss_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: faq_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY faq_categories
-    ADD CONSTRAINT faq_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES faq_categories(id);
-
-
---
--- Name: faq_categories_root_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY faq_categories
-    ADD CONSTRAINT faq_categories_root_id_fkey FOREIGN KEY (root_id) REFERENCES faq_categories(id);
-
-
---
--- Name: faq_entries_faq_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY faq_entries
-    ADD CONSTRAINT faq_entries_faq_category_id_fkey FOREIGN KEY (faq_category_id) REFERENCES faq_categories(id) MATCH FULL;
-
-
---
--- Name: forum_forums_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY topics_categories
-    ADD CONSTRAINT forum_forums_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES topics(id) ON DELETE SET NULL;
-
-
---
--- Name: forum_forums_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY topics_categories
-    ADD CONSTRAINT forum_forums_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES topics_categories(id) MATCH FULL;
-
-
---
--- Name: forum_forums_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY topics_categories
-    ADD CONSTRAINT forum_forums_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES topics_categories(id) MATCH FULL;
-
-
---
 -- Name: forum_topics_forum_forum_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -10378,38 +9918,6 @@ ALTER TABLE ONLY topics
 
 ALTER TABLE ONLY topics
     ADD CONSTRAINT forum_topics_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: friends_recommendations_recommended_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY friends_recommendations
-    ADD CONSTRAINT friends_recommendations_recommended_user_id_fkey FOREIGN KEY (recommended_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: friends_recommendations_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY friends_recommendations
-    ADD CONSTRAINT friends_recommendations_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: friends_users_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY friendships
-    ADD CONSTRAINT friends_users_user_id_fkey FOREIGN KEY (sender_user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: friendships_receiver_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY friendships
-    ADD CONSTRAINT friendships_receiver_user_id_fkey FOREIGN KEY (receiver_user_id) REFERENCES users(id) MATCH FULL;
 
 
 --
@@ -10437,123 +9945,27 @@ ALTER TABLE ONLY funthings
 
 
 --
--- Name: games_maps_download_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: groups_messages_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY games_maps
-    ADD CONSTRAINT games_maps_download_id_fkey FOREIGN KEY (download_id) REFERENCES downloads(id) MATCH FULL ON DELETE SET NULL;
-
-
---
--- Name: games_maps_game_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY games_maps
-    ADD CONSTRAINT games_maps_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id) MATCH FULL;
+ALTER TABLE ONLY groups_messages
+    ADD CONSTRAINT groups_messages_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES groups_messages(id) MATCH FULL;
 
 
 --
--- Name: games_modes_game_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: groups_messages_root_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY games_modes
-    ADD CONSTRAINT games_modes_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id) MATCH FULL;
-
-
---
--- Name: games_platforms_game_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY games_platforms
-    ADD CONSTRAINT games_platforms_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id) MATCH FULL ON DELETE CASCADE;
+ALTER TABLE ONLY groups_messages
+    ADD CONSTRAINT groups_messages_root_id_fkey FOREIGN KEY (root_id) REFERENCES groups_messages(id) MATCH FULL;
 
 
 --
--- Name: games_platforms_platform_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+-- Name: groups_messages_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY games_platforms
-    ADD CONSTRAINT games_platforms_platform_id_fkey FOREIGN KEY (platform_id) REFERENCES platforms(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: games_users_game_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY games_users
-    ADD CONSTRAINT games_users_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: games_users_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY games_users
-    ADD CONSTRAINT games_users_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: games_versions_game_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY games_versions
-    ADD CONSTRAINT games_versions_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id) MATCH FULL;
-
-
---
--- Name: gmtv_channels_faction_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY gmtv_channels
-    ADD CONSTRAINT gmtv_channels_faction_id_fkey FOREIGN KEY (faction_id) REFERENCES factions(id) MATCH FULL;
-
-
---
--- Name: gmtv_channels_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY gmtv_channels
-    ADD CONSTRAINT gmtv_channels_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: groups_owner_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY groups
-    ADD CONSTRAINT groups_owner_user_id_fkey FOREIGN KEY (owner_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: images_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY images_categories
-    ADD CONSTRAINT images_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: images_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY images_categories
-    ADD CONSTRAINT images_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES images(id) ON DELETE SET NULL;
-
-
---
--- Name: images_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY images_categories
-    ADD CONSTRAINT images_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES images_categories(id) MATCH FULL;
-
-
---
--- Name: images_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY images_categories
-    ADD CONSTRAINT images_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES images_categories(id) MATCH FULL;
+ALTER TABLE ONLY groups_messages
+    ADD CONSTRAINT groups_messages_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 
 
 --
@@ -10565,35 +9977,19 @@ ALTER TABLE ONLY images
 
 
 --
+-- Name: images_images_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY images
+    ADD CONSTRAINT images_images_category_id_fkey FOREIGN KEY (images_category_id) REFERENCES images_categories(id) MATCH FULL;
+
+
+--
 -- Name: images_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY images
     ADD CONSTRAINT images_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-
-
---
--- Name: interviews_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY interviews_categories
-    ADD CONSTRAINT interviews_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES interviews(id) ON DELETE SET NULL;
-
-
---
--- Name: interviews_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY interviews_categories
-    ADD CONSTRAINT interviews_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES interviews_categories(id) MATCH FULL;
-
-
---
--- Name: interviews_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY interviews_categories
-    ADD CONSTRAINT interviews_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES interviews_categories(id) MATCH FULL;
 
 
 --
@@ -10613,14 +10009,6 @@ ALTER TABLE ONLY interviews
 
 
 --
--- Name: ip_bans_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY ip_bans
-    ADD CONSTRAINT ip_bans_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
 -- Name: macropolls_2007_1_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -10634,54 +10022,6 @@ ALTER TABLE ONLY macropolls_2007_1
 
 ALTER TABLE ONLY macropolls
     ADD CONSTRAINT macropolls_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: messages_in_reply_to_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY messages
-    ADD CONSTRAINT messages_in_reply_to_fkey FOREIGN KEY (in_reply_to) REFERENCES messages(id) ON DELETE SET NULL;
-
-
---
--- Name: messages_thread_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY messages
-    ADD CONSTRAINT messages_thread_id_fkey FOREIGN KEY (thread_id) REFERENCES messages(id) MATCH FULL;
-
-
---
--- Name: news_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY news_categories
-    ADD CONSTRAINT news_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: news_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY news_categories
-    ADD CONSTRAINT news_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES news(id) ON DELETE SET NULL;
-
-
---
--- Name: news_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY news_categories
-    ADD CONSTRAINT news_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES news_categories(id) MATCH FULL;
-
-
---
--- Name: news_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY news_categories
-    ADD CONSTRAINT news_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES news_categories(id) MATCH FULL;
 
 
 --
@@ -10725,67 +10065,11 @@ ALTER TABLE ONLY platforms_users
 
 
 --
--- Name: polls_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY polls_categories
-    ADD CONSTRAINT polls_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: polls_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY polls_categories
-    ADD CONSTRAINT polls_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES polls(id) MATCH FULL ON DELETE SET NULL;
-
-
---
--- Name: polls_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY polls_categories
-    ADD CONSTRAINT polls_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES polls_categories(id) MATCH FULL;
-
-
---
--- Name: polls_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY polls_categories
-    ADD CONSTRAINT polls_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES polls_categories(id) MATCH FULL;
-
-
---
 -- Name: polls_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY polls
     ADD CONSTRAINT polls_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: polls_options_poll_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY polls_options
-    ADD CONSTRAINT polls_options_poll_id_fkey FOREIGN KEY (poll_id) REFERENCES polls(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: polls_options_users_polls_option_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY polls_votes
-    ADD CONSTRAINT polls_options_users_polls_option_id_fkey FOREIGN KEY (polls_option_id) REFERENCES polls_options(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: polls_options_users_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY polls_votes
-    ADD CONSTRAINT polls_options_users_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 
 
 --
@@ -10802,62 +10086,6 @@ ALTER TABLE ONLY polls
 
 ALTER TABLE ONLY polls
     ADD CONSTRAINT polls_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-
-
---
--- Name: portal_headers_faction_header_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY portal_headers
-    ADD CONSTRAINT portal_headers_faction_header_id_fkey FOREIGN KEY (factions_header_id) REFERENCES factions_headers(id) MATCH FULL;
-
-
---
--- Name: portal_headers_portal_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY portal_headers
-    ADD CONSTRAINT portal_headers_portal_id_fkey FOREIGN KEY (portal_id) REFERENCES portals(id) MATCH FULL;
-
-
---
--- Name: portals_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY portals
-    ADD CONSTRAINT portals_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: portals_default_gmtv_channel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY portals
-    ADD CONSTRAINT portals_default_gmtv_channel_id_fkey FOREIGN KEY (default_gmtv_channel_id) REFERENCES gmtv_channels(id) MATCH FULL ON DELETE SET NULL;
-
-
---
--- Name: portals_skin_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY portals
-    ADD CONSTRAINT portals_skin_id_fkey FOREIGN KEY (skin_id) REFERENCES skins(id) MATCH FULL ON DELETE SET NULL;
-
-
---
--- Name: portals_skins_portal_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY portals_skins
-    ADD CONSTRAINT portals_skins_portal_id_fkey FOREIGN KEY (portal_id) REFERENCES portals(id) MATCH FULL;
-
-
---
--- Name: portals_skins_skin_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY portals_skins
-    ADD CONSTRAINT portals_skins_skin_id_fkey FOREIGN KEY (skin_id) REFERENCES skins(id) MATCH FULL;
 
 
 --
@@ -10885,54 +10113,6 @@ ALTER TABLE ONLY potds
 
 
 --
--- Name: profile_signatures_signer_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY profile_signatures
-    ADD CONSTRAINT profile_signatures_signer_user_id_fkey FOREIGN KEY (signer_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: profile_signatures_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY profile_signatures
-    ADD CONSTRAINT profile_signatures_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: publishing_decisions_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY publishing_decisions
-    ADD CONSTRAINT publishing_decisions_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: publishing_decisions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY publishing_decisions
-    ADD CONSTRAINT publishing_decisions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: publishing_personalities_content_type_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY publishing_personalities
-    ADD CONSTRAINT publishing_personalities_content_type_id_fkey FOREIGN KEY (content_type_id) REFERENCES content_types(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: publishing_personalities_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY publishing_personalities
-    ADD CONSTRAINT publishing_personalities_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
 -- Name: questions_accepted_answer_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -10946,38 +10126,6 @@ ALTER TABLE ONLY questions
 
 ALTER TABLE ONLY questions
     ADD CONSTRAINT questions_answer_selected_by_user_id_fkey FOREIGN KEY (answer_selected_by_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: questions_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY questions_categories
-    ADD CONSTRAINT questions_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
--- Name: questions_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY questions_categories
-    ADD CONSTRAINT questions_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES questions(id) ON DELETE SET NULL;
-
-
---
--- Name: questions_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY questions_categories
-    ADD CONSTRAINT questions_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES questions_categories(id) MATCH FULL;
-
-
---
--- Name: questions_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY questions_categories
-    ADD CONSTRAINT questions_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES questions_categories(id) MATCH FULL;
 
 
 --
@@ -11053,30 +10201,6 @@ ALTER TABLE ONLY refered_hits
 
 
 --
--- Name: reviews_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY reviews_categories
-    ADD CONSTRAINT reviews_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES reviews(id) ON DELETE SET NULL;
-
-
---
--- Name: reviews_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY reviews_categories
-    ADD CONSTRAINT reviews_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES reviews_categories(id) MATCH FULL;
-
-
---
--- Name: reviews_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY reviews_categories
-    ADD CONSTRAINT reviews_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES reviews_categories(id) MATCH FULL;
-
-
---
 -- Name: reviews_reviews_category_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -11090,78 +10214,6 @@ ALTER TABLE ONLY reviews
 
 ALTER TABLE ONLY reviews
     ADD CONSTRAINT reviews_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-
-
---
--- Name: sent_emails_global_notification_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY sent_emails
-    ADD CONSTRAINT sent_emails_global_notification_id_fkey FOREIGN KEY (global_notification_id) REFERENCES global_notifications(id);
-
-
---
--- Name: sent_emails_recipient_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY sent_emails
-    ADD CONSTRAINT sent_emails_recipient_user_id_fkey FOREIGN KEY (recipient_user_id) REFERENCES users(id);
-
-
---
--- Name: skin_textures_skin_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY skin_textures
-    ADD CONSTRAINT skin_textures_skin_id_fkey FOREIGN KEY (skin_id) REFERENCES skins(id) MATCH FULL;
-
-
---
--- Name: skin_textures_texture_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY skin_textures
-    ADD CONSTRAINT skin_textures_texture_id_fkey FOREIGN KEY (texture_id) REFERENCES textures(id) MATCH FULL;
-
-
---
--- Name: skins_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY skins
-    ADD CONSTRAINT skins_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: slog_entries_reporter_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY slog_entries
-    ADD CONSTRAINT slog_entries_reporter_user_id_fkey FOREIGN KEY (reporter_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: slog_entries_reviewer_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY slog_entries
-    ADD CONSTRAINT slog_entries_reviewer_user_id_fkey FOREIGN KEY (reviewer_user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: sold_products_product_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY sold_products
-    ADD CONSTRAINT sold_products_product_id_fkey FOREIGN KEY (product_id) REFERENCES products(id) MATCH FULL;
-
-
---
--- Name: sold_products_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY sold_products
-    ADD CONSTRAINT sold_products_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
 
 
 --
@@ -11221,14 +10273,6 @@ ALTER TABLE ONLY terms
 
 
 --
--- Name: topics_categories_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY topics_categories
-    ADD CONSTRAINT topics_categories_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-
-
---
 -- Name: topics_clan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -11242,54 +10286,6 @@ ALTER TABLE ONLY topics
 
 ALTER TABLE ONLY topics
     ADD CONSTRAINT topics_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-
-
---
--- Name: tracker_items_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tracker_items
-    ADD CONSTRAINT tracker_items_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: tracker_items_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tracker_items
-    ADD CONSTRAINT tracker_items_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: treated_visitors_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY treated_visitors
-    ADD CONSTRAINT treated_visitors_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: tutorials_categories_last_updated_item_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tutorials_categories
-    ADD CONSTRAINT tutorials_categories_last_updated_item_id_fkey FOREIGN KEY (last_updated_item_id) REFERENCES tutorials(id) ON DELETE SET NULL;
-
-
---
--- Name: tutorials_categories_parent_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tutorials_categories
-    ADD CONSTRAINT tutorials_categories_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES tutorials_categories(id) MATCH FULL;
-
-
---
--- Name: tutorials_categories_toplevel_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tutorials_categories
-    ADD CONSTRAINT tutorials_categories_toplevel_id_fkey FOREIGN KEY (root_id) REFERENCES tutorials_categories(id) MATCH FULL;
 
 
 --
@@ -11309,22 +10305,6 @@ ALTER TABLE ONLY tutorials
 
 
 --
--- Name: user_login_changes_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY user_login_changes
-    ADD CONSTRAINT user_login_changes_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: users_actions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY users_actions
-    ADD CONSTRAINT users_actions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
 -- Name: users_avatar_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -11341,35 +10321,11 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: users_emblems_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY users_emblems
-    ADD CONSTRAINT users_emblems_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
 -- Name: users_faction_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_faction_id_fkey FOREIGN KEY (faction_id) REFERENCES factions(id) MATCH FULL ON DELETE SET NULL;
-
-
---
--- Name: users_guids_game_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY users_guids
-    ADD CONSTRAINT users_guids_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: users_guids_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY users_guids
-    ADD CONSTRAINT users_guids_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
 
 
 --
@@ -11421,38 +10377,6 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: users_lastseen_ips_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY users_lastseen_ips
-    ADD CONSTRAINT users_lastseen_ips_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
-
-
---
--- Name: users_newsfeeds_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY users_newsfeeds
-    ADD CONSTRAINT users_newsfeeds_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: users_newsfeeds_users_action_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY users_newsfeeds
-    ADD CONSTRAINT users_newsfeeds_users_action_id_fkey FOREIGN KEY (users_action_id) REFERENCES users_actions(id) MATCH FULL;
-
-
---
--- Name: users_preferences_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY users_preferences
-    ADD CONSTRAINT users_preferences_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
 -- Name: users_referer_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -11460,47 +10384,7 @@ ALTER TABLE ONLY users
     ADD CONSTRAINT users_referer_user_id_fkey FOREIGN KEY (referer_user_id) REFERENCES users(id) MATCH FULL;
 
 
---
--- Name: users_roles_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY users_roles
-    ADD CONSTRAINT users_roles_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
 SET search_path = stats, pg_catalog;
-
---
--- Name: ads_daily_ads_slots_instance_id_fkey; Type: FK CONSTRAINT; Schema: stats; Owner: -
---
-
-ALTER TABLE ONLY ads_daily
-    ADD CONSTRAINT ads_daily_ads_slots_instance_id_fkey FOREIGN KEY (ads_slots_instance_id) REFERENCES public.ads_slots_instances(id) MATCH FULL;
-
-
---
--- Name: ads_user_id_fkey; Type: FK CONSTRAINT; Schema: stats; Owner: -
---
-
-ALTER TABLE ONLY ads
-    ADD CONSTRAINT ads_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) MATCH FULL;
-
-
---
--- Name: bets_results_bet_id_fkey; Type: FK CONSTRAINT; Schema: stats; Owner: -
---
-
-ALTER TABLE ONLY bets_results
-    ADD CONSTRAINT bets_results_bet_id_fkey FOREIGN KEY (bet_id) REFERENCES public.bets(id) MATCH FULL;
-
-
---
--- Name: bets_results_user_id_fkey; Type: FK CONSTRAINT; Schema: stats; Owner: -
---
-
-ALTER TABLE ONLY bets_results
-    ADD CONSTRAINT bets_results_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) MATCH FULL;
-
 
 --
 -- Name: clans_daily_stats_clan_id_fkey; Type: FK CONSTRAINT; Schema: stats; Owner: -
@@ -11511,27 +10395,11 @@ ALTER TABLE ONLY clans_daily_stats
 
 
 --
--- Name: portals_stats_portal_id_fkey; Type: FK CONSTRAINT; Schema: stats; Owner: -
---
-
-ALTER TABLE ONLY portals
-    ADD CONSTRAINT portals_stats_portal_id_fkey FOREIGN KEY (portal_id) REFERENCES public.portals(id) MATCH FULL;
-
-
---
 -- Name: users_daily_stats_user_id_fkey; Type: FK CONSTRAINT; Schema: stats; Owner: -
 --
 
 ALTER TABLE ONLY users_daily_stats
     ADD CONSTRAINT users_daily_stats_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) MATCH FULL;
-
-
---
--- Name: users_karma_daily_by_portal_user_id_fkey; Type: FK CONSTRAINT; Schema: stats; Owner: -
---
-
-ALTER TABLE ONLY users_karma_daily_by_portal
-    ADD CONSTRAINT users_karma_daily_by_portal_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) MATCH FULL;
 
 
 --

@@ -49,13 +49,14 @@ class EmblemsTest < ActiveSupport::TestCase
     end
   end
   
-  test "give_emblems_okupa" do
-    assert_gives_emblem('okupa') do
-      sym_pageview({:user_id => @u.id, :url => '/dadadd/adsdasd/1', :portal_id => nil})
-      sym_pageview({:user_id => @u.id, :url => '/dadadd/adsdasd/2', :portal_id => nil})
-      sym_pageview({:user_id => @u.id + 1, :url => '/dadadd/adsdasd/1', :portal_id => nil})
-    end
-  end
+  # Ya no damos emblema al okupa porque siempre levanta ampoyas
+  #test "give_emblems_okupa" do
+  #  assert_gives_emblem('okupa') do
+  #    sym_pageview({:user_id => @u.id, :url => '/dadadd/adsdasd/1', :portal_id => nil})
+  #    sym_pageview({:user_id => @u.id, :url => '/dadadd/adsdasd/2', :portal_id => nil})
+  #    sym_pageview({:user_id => @u.id + 1, :url => '/dadadd/adsdasd/1', :portal_id => nil})
+  #  end
+  #end
   
   test "give_emblems_bets_master" do
     # TODO test
