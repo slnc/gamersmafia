@@ -1,8 +1,6 @@
 require 'test_helper'
 
 class Cuenta::SkinsControllerTest < ActionController::TestCase
-
-
   test "trying to use a deleted skin should work properly" do
       test_activate_my_own_skin_should_work
       post :destroy, :id => @skin.id
@@ -24,6 +22,23 @@ class Cuenta::SkinsControllerTest < ActionController::TestCase
       assert @response.body.index("storage/skins/#{@skin.hid}/")
   end
   
+  test "activate private skin from other shouldn't work" do
+      test_should_create_factions_skin_if_everything_ok
+      sym_login 2
+      assert_raises(ActiveRecord::RecordNotFound) { post :activate, :skin => @skin.id }
+  end
+  
+  test "activate public skin from other should work" do
+      test_should_create_factions_skin_if_everything_ok
+      assert @skin.update_attributes(:is_public => true)
+      sym_login 2
+      post :activate, :skin => @skin.id
+      assert_response :redirect
+      get :index
+      assert_response :success
+      assert @response.body.index("storage/skins/#{@skin.hid}/")
+  end
+  
   test "reset skin should work" do
       test_activate_my_own_skin_should_work
       post :activate, :skin => '-1'
@@ -32,7 +47,7 @@ class Cuenta::SkinsControllerTest < ActionController::TestCase
       assert_response :success
       assert @response.body.index("skins/default/")
   end
-  # Replace this with your real tests.
+  
   test "index_should_work" do
     sym_login 1
     get :index

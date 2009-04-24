@@ -222,14 +222,15 @@ class Cuenta::SkinsController < ApplicationController
     redirect_to "/cuenta/skins/texturas/#{skin.id}"
   end
 
-
   def activate
 	  if params[:skin] == '-1'
 		  pref = @user.preferences.find(:first, :conditions => ['name = \'skin\''])
 		  pref.destroy if pref
     flash[:notice] = "Vuelves a tener configurada la skin por defecto blanca y pura como la nieve"
 	  else
-    @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:skin], @user.id])
+    @skin = Skin.find(params[:skin]) #_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:skin], @user.id])
+    raise ActiveRecord::RecordNotFound unless @skin.is_public? || @skin.user_id == @user.id
+
     @user.pref_skin = @skin.id
     flash[:notice] = "Skin #{@skin.name} activada correctamente"
 	  end
