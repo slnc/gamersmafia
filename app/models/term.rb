@@ -575,7 +575,7 @@ class Term < ActiveRecord::Base
                           WHERE id IN (SELECT last_updated_item_id 
                            FROM terms WHERE id IN (SELECT id FROM terms WHERE parent_id = #{self.id}))
                        ORDER BY updated_on DESC
-                          LIMIT #{opts[:limit]}").collect { |c| c.terms[0] }.sort_by { |e| e.name.downcase }
+                          LIMIT #{opts[:limit]}").collect { |c| c.terms[0] }.compact.sort_by { |e| e.name.downcase }
   end
   
   
