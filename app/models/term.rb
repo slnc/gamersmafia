@@ -23,7 +23,29 @@ class Term < ActiveRecord::Base
   validates_format_of :name, :with => /^.{1,100}$/
   validates_uniqueness_of :name, :scope => [:game_id, :bazar_district_id, :platform_id, :clan_id, :taxonomy, :parent_id]
   validates_uniqueness_of :slug, :scope => [:game_id, :bazar_district_id, :platform_id, :clan_id, :taxonomy, :parent_id]
+  before_save :check_scope_if_toplevel
   
+
+  def check_scope_if_toplevel
+    if self.new_record? && self.parent_id.nil?
+       if Term.count(:conditions => ['parent_id IS NULL AND slug = ?', self.slug]) > 0
+	       self.errors.add('slug', 'Slug is already taken')
+	       false
+       else
+	       true
+       end
+    elsif (!self.new_record?) && self.parent_id.nil?
+       if Term.count(:conditions => ['id <> ? AND parent_id IS NULL AND slug = ?', self.id, self.slug]) > 0
+	       self.errors.add('slug', 'Slug is already taken')
+	       false
+       else
+	       true
+       end
+    else
+       true
+    end
+  end
+
   before_destroy :sanity_check
   
   def sanity_check

@@ -67,7 +67,7 @@ class User < ActiveRecord::Base
   belongs_to :last_clan, :class_name => 'Clan', :foreign_key => 'last_clan_id'
   has_and_belongs_to_many :events
   has_many :avatars
-  
+
   # contents
   has_many :news
   has_many :topics
@@ -117,6 +117,14 @@ class User < ActiveRecord::Base
   after_create :change_avatar
   attr_accessor :ident, :expire_at
   attr_protected :cache_karma_points, :is_superadmin, :admin_permissions, :faction_id
+
+  before_save :check_if_shadow
+
+  def check_if_shadow
+     self.state = ST_SHADOW if self.state == ST_ZOMBIE && self.lastseen_on > 1.minute.ago
+     true
+  end
+  
   
   def check_permissions
     self.users_roles.clear if slnc_changed?(:state) && self.state == User::ST_BANNED

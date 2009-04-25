@@ -135,7 +135,8 @@ class BazarDistrict < ActiveRecord::Base
   
   protected
   def after_create
-    root_term = Term.create(:bazar_district_id => self.id, :name => self.name, :slug => self.code)
+    root_term = Term.single_toplevel(:slug => self.code)
+    root_term = Term.create(:bazar_district_id => self.id, :name => self.name, :slug => self.code) unless root_term
     
     Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
       root_term.children.create(:name => c[1], :taxonomy => c[0])
