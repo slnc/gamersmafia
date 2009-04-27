@@ -1,8 +1,6 @@
 require 'test_helper'
 
 class HomeControllerTest < ActionController::TestCase
-
-  
   test "comunidad" do
     get :comunidad
     assert_response :success

@@ -12,7 +12,7 @@ class CacheController < ApplicationController
     sp = URI::unescape(sp.gsub(/\.\./, '').gsub('+', '%20'))
     raise ActiveRecord::RecordNotFound if not sp =~ /\./ or sp.match(/\/$/) # no es una url válida
     
-    match_dim = params[:dim].match(/([0-9]+)x([0-9]+)/)
+    match_dim = params[:dim].match(/([1-9]{1}[0-9]{0,4})x([1-9]{1}[0-9]{0,4})/)
     raise ActiveRecord::RecordNotFound if not match_dim
     
     thumbpath = "#{RAILS_ROOT}/public/cache/thumbnails/#{params[:mode]}/#{match_dim[1]}x#{match_dim[2]}/#{sp}"
