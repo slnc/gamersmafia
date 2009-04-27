@@ -2,9 +2,6 @@
 
 LOGIN_REGEXP = /[^\/]+/
 ActionController::Routing::Routes.draw do |map|
-  map.connect 'temas/:code', :controller => 'temas', :action => 'tema'
-  map.connect 'temas/', :controller => 'temas', :action => 'index'
-  
 #  map.resources :plataformas, :controller => 'admin/plataformas', :path_prefix => '/admin'
 
   map.connect 'admin/', :controller => 'admin/menu', :action => 'index'

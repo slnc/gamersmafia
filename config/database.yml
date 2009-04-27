@@ -1,6 +1,6 @@
 development:
   adapter: postgresql
-  database: gamersmafia_test
+  database: gamersmafia
   host: localhost
   username: postgres
   password:
