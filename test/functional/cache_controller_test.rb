@@ -7,7 +7,16 @@ end
 class CacheControllerTest < ActionController::TestCase
 
 
-  # Replace this with your real tests.
+  test "thumbnails with invalid size" do
+    full_file = "#{RAILS_ROOT}/public/cache/thumbnails/f/125x125/images/headers/tu_gustar_ficha_miembros.jpg"
+    File.unlink(full_file) if File.exists?(full_file)
+    %w(0x0 ax0 -1x-5 100000x50).each do |wrongdim|
+      assert_raises(ActiveRecord::RecordNotFound) do
+        get :thumbnails, { :mode => 'f', :dim => wrongdim, :path => 'images/headers/tu_gustar_ficha_miembros.jpg' }
+      end
+    end
+  end
+
   test "thumbnails_with_valid_image" do
     full_file = "#{RAILS_ROOT}/public/cache/thumbnails/f/125x125/images/headers/tu_gustar_ficha_miembros.jpg"
     File.unlink(full_file) if File.exists?(full_file)
