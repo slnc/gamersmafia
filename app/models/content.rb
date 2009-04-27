@@ -172,16 +172,21 @@ class Content < ActiveRecord::Base
   
   def self.orphaned
     q_cts = Cms::CONTENTS_WITH_CATEGORIES.collect { |ctn| "'#{ctn}'"}
-    Content.find_by_sql("SELECT *
-                          FROM contents
-                         WHERE id IN (select a.id 
-                                        from contents a 
-                                   left join contents_terms b on a.id = b.content_id 
-                                       where a.clan_id IS NULL 
-                                         and b.content_id is null 
-                                         and content_type_id in (select id 
-                                                                   from content_types 
-                                                                  where name in (#{q_cts.join(',')})))
-                      ORDER BY created_on")
+    #Content.find_by_sql("SELECT *
+    #                      FROM contents
+    #                     WHERE id IN (select a.id 
+    #                                    from contents a 
+    #                               left join contents_terms b on a.id = b.content_id 
+    #                                   where a.clan_id IS NULL 
+    #                                     and b.content_id is null 
+    #                                     and content_type_id in (select id 
+    #                                                               from content_types 
+    #                                                              where name in (#{q_cts.join(',')})))
+    #                  ORDER BY created_on")
+    Content.find_by_sql("SELECT * 
+                           FROM contents 
+                          WHERE content_type_id in (select id from content_types where name in (#{q_cts.join(',')})) 
+                            AND id not in (select id from contents_terms) 
+                       ORDER BY id")
   end
 end
