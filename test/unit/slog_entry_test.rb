@@ -14,4 +14,14 @@ class SlogEntryTest < ActiveSupport::TestCase
   test "can_create_entries_of_each_type" do
      
   end
+
+  # TODO falta testear todas las scopes
+  test "competition supervisor scope must inherit competition_admin scope" do
+    u2 = User.find(2)
+    c = Ladder.find(:first, :conditions => ['state > ?', Competition::STARTED])
+    assert c
+    u2.users_roles.create(:role => 'CompetitionAdmin', :role_data => "#{c.id}")
+    assert_equal c.id, SlogEntry.scopes(:competition_admin, u2)[0].id
+    assert_equal c.id, SlogEntry.scopes(:competition_supervisor, u2)[0].id
+  end
 end

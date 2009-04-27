@@ -351,7 +351,7 @@ class SlogEntry < ActiveRecord::Base
       if u.has_admin_permission?(:gladiador)
         Competition.find(:all, :conditions => 'deleted = \'f\'', :order => 'lower(name)')
       else
-        Competition.find_by_supervisor(u)
+        Competition.find_by_admin(u) + Competition.find_by_supervisor(u)
       end
     else
       raise "unknown domain #{domain}"
