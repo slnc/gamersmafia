@@ -594,6 +594,9 @@ Request information:
       when ActiveRecord::RecordNotFound
       check404
       http_404
+
+      when ActionController::UnknownHttpMethod
+      http_401
       
       when DomainNotFound
       redirect_to("http://#{App.domain}", :status => 301)
