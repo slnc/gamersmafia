@@ -92,6 +92,13 @@ class Bet < ActiveRecord::Base
      results
   end
   
+  def net_win(user)
+    db_query("SELECT net_ammount 
+                FROM stats.bets_results 
+               WHERE user_id = #{user.id}
+                 AND bet_id = #{self.id}")[0]['net_ammount'].to_i * (-1)
+  end
+
   def return_money_to_users
     return if self.completed? 
     
@@ -235,6 +242,18 @@ class Bet < ActiveRecord::Base
         Bank.transfer(:bank, User.find(k), money_to_give[k], "Ganancias por tu apuesta por \"#{self.resolve_hid}\"") if money_to_give[k] > 0 
       end
     end # end if stddev == 1.0
+  end
+
+  def awards_breakdown
+    dbusers = self.class.db_query("SELECT distinct(user_id) as user_id from bets_tickets where bets_option_id IN (SELECT id from bets_options where bet_id = #{self.id})")
+    bdw = []
+    ba = self.bets_options.find(:first, :order => 'id')
+    bb = self.bets_options.find(:first, :order => 'id DESC')
+    dbusers.each do |dbu|
+      u = User.find(dbu['user_id'].to_i)
+      bdw[u] = {ba.id => self.ammount_bet_by_user_in_option(u, ba), bb.id => self.ammount_bet_by_user_in_option(u, ba), :net => self.net_win(u) }
+    end
+    dbusers
   end
   
   def ammount_bet_by_user_in_option(user, bets_option)
