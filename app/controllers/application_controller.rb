@@ -740,7 +740,7 @@ Request information:
     campaign = params['_xca'] ? params['_xca'] : '-'
     ip = request.remote_ip
     # TODO PERF guardar informacion del visitante en tabla aparte
-    user_agent = user_agent.normalize unless user_agent.to_s.index('Aulas de Inform').nil?
+    user_agent = user_agent.bare if user_agent
     # flash_error = #{User.connection.quote(params['_xe'])}
     User.db_query("INSERT INTO stats.pageviews(referer, 
                                                user_id, 
