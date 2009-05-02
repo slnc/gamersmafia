@@ -21,6 +21,25 @@ class NoticiasControllerTest < ActionController::TestCase
     assert_not_nil @response.body.index('me caía mal')
   end
   
+  test "reopen should work" do
+    sym_login 1
+    n = News.find(1)
+    assert !n.closed?
+    n.close(User.find(1), 'me caía mal')
+    assert n.closed?
+    assert_equal 1, n.closed_by_user.id 
+    assert 'me caía mal', n.reason_to_close
+    
+    @request = ActionController::TestRequest.new
+    @request.host = "ut.test.host"
+    sym_login 1
+    get :reopen, :id => 1
+    assert_response :redirect
+    
+    n.reload
+    assert !n.closed?
+  end
+  
   test "update_should_save_contents_version" do
     sym_login 1
     n = News.find(1)
