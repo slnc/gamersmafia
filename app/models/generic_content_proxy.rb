@@ -11,7 +11,7 @@ class GenericContentProxy
       args = _add_restriction_to_cond(*args)
       t = Term.single_toplevel(:code => 'gm')
       if %w(gm arena).include? @mode
-        Term.find(:all, :conditions => 'parent_id IS NULL AND (game_id IS NOT NULL OR platform_id IS NOT NULL)').each { |t| t.add_sibling(t) }
+        Term.find(:all, :conditions => 'parent_id IS NULL AND (game_id IS NOT NULL OR platform_id IS NOT NULL)').each { |t2| t.add_sibling(t2) }
       else
         raise "mode #{@mode} not understood"
         # TODO portal arena
