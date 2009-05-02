@@ -211,8 +211,16 @@ class BetTest < ActiveSupport::TestCase
     @u2.reload
     @u3.reload
     
-    assert_equal @cash_u1 - 100 + 29.54, @u1.cash
-    assert_equal @cash_u2 - 100 + 186.55, @u2.cash
-    assert_equal @cash_u3 - 100 + 83.90, @u3.cash
+    assert_equal 10.23, @u1.cash
+    assert_equal 223.33, @u2.cash
+    assert_equal 74.44, @u3.cash
   end
+
+   test "should properly return net_win" do
+     test_should_properly_distribute_money_if_tie_mixed
+ 
+     assert_equal (-97).to_i, @bet.net_win(@u1)
+     assert_equal (123).to_i, @bet.net_win(@u2)
+     assert_equal (-25).to_i, @bet.net_win(@u3)
+   end
 end
