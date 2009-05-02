@@ -6,8 +6,8 @@ names = {'Interview' => 'Entrevista', 'Column' => 'Columna', 'Tutorial' => 'Tuto
 namess = {'Interview' => 'entrevistas', 'Column' => 'columnas', 'Tutorial' => 'tutoriales', 'Review' => 'reviews'}
 %>
 <%
-mfcontents_list('Artículos',  
-					Proc.new { bazar_district_portal.latest_articles },				
+mfcontents_list("<a style=\"color: #969696;\" href=\"http://#{bazar_district.code}.#{App.domain}/articulos\">Artículos</a>",  
+					Proc.new { bazar_district_portal.latest_articles(3) },				
 					:blast => true) do |o| %>
 					
 <%=draw_content_favicon(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
