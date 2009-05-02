@@ -8,7 +8,7 @@
     <copyright>Copyright 2005, Gamersmafia</copyright> 
     <managingEditor>webmaster@gamersmafia.com</managingEditor> 
     <webMaster>webmaster@gamersmafia.com</webMaster> 
-    <lastBuildDate><%=Time.now.strftime_nolocale("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></lastBuildDate> 
+    <lastBuildDate><%=Time.now.strftime("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></lastBuildDate> 
     <category>Videojuegos</category> 
     <docs>http://blogs.law.harvard.edu/tech/rss</docs> 
     <ttl>10</ttl> 
@@ -38,7 +38,7 @@ for @item in collection:
     <link>http://gamersmafia.com/<%=controller%>/edit/<%=@item.id%></link> 
     <description><%=@item.class.name%> | <%=Cms::CONTENTS_WITH_CATEGORIES.include?(@item.class.name) ? @item.main_category.code.to_s.gsub(/&/, '&amp;') : ''%> | autor: <%=@item.user.login%></description> 
     <category><%=Cms::CONTENTS_WITH_CATEGORIES.include?(@item.class.name) ? @item.main_category.code.to_s.gsub(/&/, '&amp;') : ''%></category> 
-    <pubDate><%=@item.created_on.strftime_nolocale("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></pubDate> 
+    <pubDate><%=@item.created_on.strftime("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></pubDate> 
   </item>
     <% end -%>
 <% end -%>

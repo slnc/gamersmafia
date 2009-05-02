@@ -185,7 +185,7 @@ module ActsAsContent
           ApplicationController.gmurl(uniq)
         end
       end
-      self.update_content
+      
       true
     end
     
@@ -292,7 +292,7 @@ module ActsAsContent
     end
     
     def do_after_update
-      # update_content
+      update_content
     end
     
     def do_after_destroy
@@ -437,8 +437,14 @@ module ActsAsContent
     # no llamarlo create_unique_content pq rails es demasiado listo
     def create_my_unique_content
       myctype = ContentType.find(:first, :conditions => "name = '#{self.class.name}'")
-      base_opts = {:content_type_id => myctype.id, :external_id => self.id, :name => self.resolve_hid, :updated_on => self.created_on, :state => self.state}
-      base_opts.merge!({:clan_id => clan_id}) if self.respond_to? :clan_id
+      base_opts = { :content_type_id => myctype.id, 
+                  :external_id => self.id, 
+                  :name => self.resolve_hid, 
+                  :updated_on => self.created_on, 
+                  :state => self.state
+                  }
+      base_opts.merge!({:clan_id => self.clan_id}) if self.respond_to? :clan_id
+      base_opts.merge!({:source => self.source}) if self.respond_to? :source
       c = Content.create(base_opts)
       
       raise "error creating content!" if c.new_record?

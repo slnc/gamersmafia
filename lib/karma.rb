@@ -337,8 +337,8 @@ module Karma
     for c in Cms::contents_classes_publishable
       # author of
       if c.new.respond_to?(:source)
-        points += c.count("#{cond_content} AND source IS NOT NULL") * Karma::KPS_CREATE['Copypaste']
-        points += c.count("#{cond_content} AND source IS NULL") * Karma::KPS_CREATE[c.name]
+        points += c.count("#{cond_content[:conditions]} AND source IS NOT NULL") * Karma::KPS_CREATE['Copypaste']
+        points += c.count("#{cond_content[:conditions]} AND source IS NULL") * Karma::KPS_CREATE[c.name]
       else
         points += c.count(cond_content) * Karma::KPS_CREATE[c.name]
       end
