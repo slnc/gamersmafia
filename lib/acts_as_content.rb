@@ -185,6 +185,7 @@ module ActsAsContent
           ApplicationController.gmurl(uniq)
         end
       end
+      self.update_content
       true
     end
     
@@ -234,7 +235,14 @@ module ActsAsContent
       self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
     end
     
-    def do_before_save      
+    def do_before_save
+      if self.respond_to?(:source) && self.source
+        if !(Cms::URL_REGEXP =~ self.source)
+          self.errors.add('source', 'URL incorrecta')
+          return false
+        end
+      end
+      
       attrs = {}
       # TODO llamar específicamente a esta función para actualizar las imágenes
       if !Cms::DONT_PARSE_IMAGES_OF_CONTENTS.include?(self.class.name) and self.record_timestamps then
@@ -275,10 +283,12 @@ module ActsAsContent
           true
         end
       end
+      
+      true
     end
     
     def do_after_update
-      update_content
+      # update_content
     end
     
     def do_after_destroy
@@ -397,6 +407,7 @@ module ActsAsContent
         
         if uniq then
           uniq.state = self.state
+          uniq.source = self.source
           uniq.closed = self.closed
           uniq.save # refresh updated_on
         end
@@ -439,29 +450,17 @@ module ActsAsContent
       self.unique_content.destroy
     end
     
+    # this content's contributed karma
     def karma
-      # el karma de un contenido es el karma del propio contenido más el karma
-      # de los comentarios
-      Karma::KPS_CREATE[self.class.name] + (self.unique_content.comments_count * Karma::KPS_CREATE['Comment'])
+      Karma.contents_karma(self)
     end
     
     def add_karma
-      u = self.user
-      Karma.give(u, Karma::KPS_CREATE[self.class.name])
-      Bank.transfer(:bank, 
-                    u, 
-                    Bank::convert(Karma::KPS_CREATE[self.class.name], 'karma_points'), 
-                      "Karma por resultar aceptado \"#{self.resolve_hid}\" (#{Cms::CLASS_NAMES[self.class.name]})")
+      Karma.add_karma_after_content_is_published(self)
     end
     
     def del_karma
-      u = self.user
-      Karma.take(u, Karma::KPS_CREATE[self.class.name])
-      Bank.transfer(u, 
-                    :bank, 
-                    Bank::convert(Karma::KPS_CREATE[self.class.name], 'karma_points'), 
-                      "Devolución de karma por contenido despublicado: #{self.resolve_hid} (#{Cms::CLASS_NAMES[self.class.name]})")
-      # TODO karma/gmf leak quitar karma a los comentadores, no? o se lo quitamos cuando se borre definitivamente de la papelera?
+      Karma.del_karma_after_content_is_unpublished(self)
     end
     
     def change_state(new_state, editor)

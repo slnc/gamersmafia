@@ -208,12 +208,28 @@ module Karma
       end
       
       points
-    elsif thing.class.kind_of?(ActsAsContent::AddActsAsContent)
-      if thing.is_public?
-        Karma::KPS_CREATE[thing.class.name] + Karma::KPS_SAVE[thing.class.name] + thing.cache_comments_count * Karma::KPS_CREATE['Comment']
-      else 
-        0
+      
+    elsif thing.kind_of?(Faction)
+      total = 0
+      
+      # para cada contenido calculamos el total de elementos que salgan de
+      # nuestra categoría base y a la vez calculamos los puntos por comentarios
+      # (requiere que cache_karma_points != NULL)
+      rthing = thing.referenced_thing
+      root_term = Term.single_toplevel(thing.referenced_thing_field => rthing.id)
+      cat_ids = root_term.all_children_ids
+      dbrs = User.db_query("SELECT count(a.*) as count_contents, (SELECT name FROM content_types where id = a.content_type_id) as content_type_name, sum(a.comments_count) as sum_comments FROM contents a JOIN contents_terms b ON a.id = b.content_id AND b.term_id IN (#{cat_ids.join(',')}) WHERE a.state = #{Cms::PUBLISHED} GROUP BY content_type_name")
+      total = 0
+      ct_topics_id = ContentType.find_by_name('Topic').id
+      dbrs.each do |dbr|
+        total += dbr['count_contents'].to_i * Karma::KPS_CREATE[dbr['content_type_name']] 
+        total += dbr['sum_comments'].to_i * Karma::KPS_CREATE['Comment']
       end
+      # TODO no se tienen en cuenta los approved_by_user_id
+      total
+      
+    elsif thing.class.kind_of?(ActsAsContent::AddActsAsContent)
+      Karma.contents_karma(thing)
     end
   end
   
@@ -254,5 +270,98 @@ module Karma
         pos += 1
       end
     end
+  end
+  
+  def self.contents_karma(content, include_comments=false, public_check=true)
+    content = content.real_content if content.kind_of?(Content)
+    
+    unless public_check && !content.is_public?
+      comments_karma = include_comments ? (content.unique_content.comments_count * Karma::KPS_CREATE['Comment']) : 0
+      if content.respond_to?(:source) && content.source
+        Karma::KPS_CREATE['Copypaste'] + comments_karma
+      else
+        Karma::KPS_CREATE[content.class.name] + comments_karma
+      end
+    else
+      0
+    end
+  end
+  
+  def self.add_karma_after_content_is_published(content)
+    u = content.user
+    points = Karma.contents_karma(content, false, false)
+    Karma.give(u, points)
+    # puts Karma.contents_karma(content, false, false)
+    Bank.transfer(:bank, 
+                  u, 
+                  Bank::convert(points, 'karma_points'), 
+                  "Karma por resultar aceptado \"#{content.resolve_hid}\" (#{Cms::CLASS_NAMES[content.class.name]})")
+  end
+  
+  def self.del_karma_after_content_is_unpublished(content)
+    u = content.user
+    points = Karma.contents_karma(content, false, false)
+    Karma.take(u, points)
+    Bank.transfer(u, 
+                  :bank, 
+                  Bank::convert(points, 'karma_points'), 
+                  "Devolución de karma por contenido despublicado: #{content.resolve_hid} (#{Cms::CLASS_NAMES[content.class.name]})")
+    # TODO karma/gmf leak quitar karma a los comentadores, no? o se lo quitamos cuando se borre definitivamente de la papelera?
+  end
+  
+  def self.add_karma_after_comment_is_created(comment)
+    u = comment.user
+    Karma.give(u, Karma::KPS_CREATE['Comment'])
+    Bank.transfer(:bank, 
+                  u, 
+                  Bank::convert(Karma::KPS_CREATE['Comment'], 'karma_points'), 
+                    "Karma por comentario a #{comment.content.real_content.resolve_hid} (#{Cms::CLASS_NAMES[comment.content.real_content.class.name]})")
+  end
+  
+  def self.del_karma_after_comment_is_deleted(comment)
+    u = comment.user
+    Karma.take(u, Karma::KPS_CREATE['Comment'])
+    new_cash = Bank::convert(Karma::KPS_CREATE['Comment'], 'karma_points')
+    Bank.transfer(u, :bank, new_cash, "Devolución de Karma por comentario borrado a #{comment.content.real_content.resolve_hid} (#{Cms::CLASS_NAMES[comment.content.real_content.class.name]})")
+  end
+  
+  def self.karma_in_time_period(t1, t2)
+    points = 0
+    cond = { :conditions => "deleted = 'f' AND created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'" }
+    cond_content = { :conditions => "state = #{Cms::PUBLISHED} AND created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'" }    
+    points += Comment.count(cond) * Karma::KPS_CREATE['Comment']
+    points += Blogentry.count(cond_content) * Karma::KPS_CREATE['Blogentry']
+    points += Topic.count(cond_content) * Karma::KPS_CREATE['Topic']
+    points += Question.count(cond_content) * Karma::KPS_CREATE['Question']
+    
+    for c in Cms::contents_classes_publishable
+      # author of
+      if c.new.respond_to?(:source)
+        points += c.count("#{cond_content} AND source IS NOT NULL") * Karma::KPS_CREATE['Copypaste']
+        points += c.count("#{cond_content} AND source IS NULL") * Karma::KPS_CREATE[c.name]
+      else
+        points += c.count(cond_content) * Karma::KPS_CREATE[c.name]
+      end
+      
+      points += c.count(:conditions => "state = #{Cms::PUBLISHED} AND created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}' and approved_by_user_id is not null") * Karma::KPS_SAVE[c.name] # legacy
+    end
+    
+    points
+  end
+  
+  def self.faction_karma_in_time_period(faction, t1, t2)
+    # TODO falta karma por comentarios
+    # TODO esto no usa terms correctamente
+    k = 0
+    root_term = Term.single_toplevel(faction.referenced_thing_field => faction.referenced_thing.id)
+    Cms::CONTENTS_WITH_CATEGORIES.each do |cls_name|
+      if Object.const_get(cls_name).respond_to?(:source)
+        k += root_term.contents_count(cls_name, :conditions => "state = #{Cms::PUBLISHED} AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}' AND source IS NOT NULL") * Karma::KPS_CREATE['Copypaste']
+        k += root_term.contents_count(cls_name, :conditions => "state = #{Cms::PUBLISHED} AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}' AND source IS NULL") * Karma::KPS_CREATE[c.items_class.name]
+      else
+        k += root_term.contents_count(cls_name, :conditions => "state = #{Cms::PUBLISHED} AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'") * Karma::KPS_CREATE[c.items_class.name]
+      end      
+    end
+    k
   end
 end

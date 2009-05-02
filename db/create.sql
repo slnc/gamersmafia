@@ -885,7 +885,8 @@ CREATE TABLE contents (
     user_id integer NOT NULL,
     portal_id integer,
     bazar_district_id integer,
-    closed boolean DEFAULT false NOT NULL
+    closed boolean DEFAULT false NOT NULL,
+    source varchar
 );
 
 
