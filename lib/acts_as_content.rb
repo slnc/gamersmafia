@@ -158,12 +158,45 @@ module ActsAsContent
       self.update_attributes(attrs)
     end
     
-    def log_action(action_name, author=nil)
+    def log_action(action_name, author=nil, reason=nil)
       self.log ||= []
       if !(self.log.size > 0 && self.log[-1][0] == action_name && self.log[-1][2] > 5.seconds.ago) # no meter entradas repetidas
-        self.log<< [action_name, author.to_s, Time.now]
+        self.log<< [action_name, author.to_s, Time.now, reason]
       end
     end
+    
+    def closed_by_user
+      return nil unless self.closed?
+      self.log.reverse.each do |lentry|
+        if lentry[0] == 'cerrado'
+          return User.find_by_login(lentry[1])
+        end
+      end
+    end
+    
+    def reason_to_close
+      return nil unless self.closed?
+      self.log.reverse.each do |lentry|
+        if lentry[0] == 'cerrado'
+          return lentry[3]
+        end
+      end
+    end
+    
+    def close(user, reason)
+      return if self.closed?
+      self.closed = true
+      self.log_action('cerrado', user, reason)
+      self.save
+    end
+    
+    def reopen(user)
+      return unless self.closed?
+      self.closed = false
+      self.log_action('reabierto', user)
+      self.save
+    end
+    
     
     def recover(user)
       self.state = Cms::PUBLISHED

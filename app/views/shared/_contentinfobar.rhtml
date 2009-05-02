@@ -64,7 +64,7 @@ can_delete = Cms::user_can_delete_content?(@user, object) %>
         <% if object.closed then %>
           <li class="actions"><%= link_to 'Reabrir', {:action => 'reopen', :id => object}, {:confirm => '¿Estás seguro de que quieres reabrir este contenido a comentarios?', :class => 'action'} %></li>
         <% else %>
-        <li class="actions"><%= link_to 'Cerrar', {:action => 'close', :id => object}, {:confirm => '¿Estás seguro de que quieres cerrar este contenido a comentarios?', :class => 'action'} %></li>
+        <li class="actions"><a href="" title="Cerrar este contenido" onclick="return close_content(<%=object.unique_content_id%>);">Cerrar</a></li>
         <% end -%>
 	  <% end -%>
 	  <% if user_is_authed && @user.is_hq? then %>

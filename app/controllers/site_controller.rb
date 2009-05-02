@@ -501,6 +501,11 @@ class SiteController < ApplicationController
     render :layout => false
   end
   
+  def close_content_form
+    require_auth_users
+    render :layout => false
+  end
+  
   def report_content_form
     require_auth_users
     render :layout => false

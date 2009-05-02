@@ -3,7 +3,24 @@ require File.dirname(__FILE__) + '/../test_functional_content_helper'
 
 class NoticiasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'News', :form_vars => {:title => 'footapang', :description => 'bartapang'}, :root_terms => 1
-
+  
+  test "close should work with valid reason" do
+    sym_login 1
+    n = News.find(1)
+    assert !n.closed?
+    n.close(User.find(1), 'me caía mal')
+    assert n.closed?
+    assert_equal 1, n.closed_by_user.id 
+    assert 'me caía mal', n.reason_to_close
+    
+    @request = ActionController::TestRequest.new
+    @request.host = "ut.test.host"
+    sym_login 1
+    get :show, :id => 1
+    assert_response :success
+    assert_not_nil @response.body.index('me caía mal')
+  end
+  
   test "update_should_save_contents_version" do
     sym_login 1
     n = News.find(1)

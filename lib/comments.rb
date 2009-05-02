@@ -4,7 +4,15 @@ module Comments
     time_3_months_ago = time1 - 86400 * 90
     time_15_mins_ago = 60 * 15
     raise 'El contenido no está publicado. No se permiten nuevos comentarios.' if object.state == Cms::DELETED
-    raise 'El contenido ha sido cerrado. No se permiten nuevos comentarios.' if object.closed
+    if object.closed
+      if object.reason_to_close
+        msg = "El contenido ha sido cerrado por <a href=\"#{ApplicationController.gmurl(object.closed_by_user)}\">#{object.closed_by_user.login}</a> (Razón: #{object.reason_to_close}).<br />No se permiten nuevos comentarios."
+      else
+        msg = 'El contenido ha sido cerrado. No se permiten nuevos comentarios.'
+      end
+      raise msg
+    end
+    
     raise 'El topic tiene más de 3 meses de antigüedad y ha sido archivado. No se permiten nuevos comentarios.' if object.class == Topic and object.created_on < time_3_months_ago and not object.sticky
     
     if user.antiflood_level > -1 then
