@@ -21,8 +21,6 @@ Rails::Initializer.run do |config|
   #config.time_zone = 'Madrid'
   #config.active_record.default_timezone = 'Madrid' 
 
-  config.action_view.cache_template_loading = false if `hostname`.strip == 'blackwings'
-
   require 'erb'
   require 'config/initializers/000_app_config.rb'
 
