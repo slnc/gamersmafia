@@ -192,23 +192,12 @@ module ActsAsContentBrowser
       _after_update if respond_to?(:_after_update)
     end
     
-    define_method 'close' do
-      cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
-      obj = cls.find(params[:id])
-      require_user_can_edit(obj)
-      
-      obj.update_attributes(:closed => true) unless obj.closed
-      
-      flash[:notice] = "#{Cms::CLASS_NAMES[cls.name]} cerrado a comentarios."
-      redirect_to gmurl(obj)
-    end
-    
     define_method 'reopen' do
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.find(params[:id])
       require_user_can_edit(obj)
       
-      obj.update_attributes(:closed => false) if obj.closed
+      obj.reopen(@user) if obj.closed?
       
       flash[:notice] = "#{Cms::CLASS_NAMES[cls.name]} reabierto a comentarios."
       redirect_to gmurl(obj)

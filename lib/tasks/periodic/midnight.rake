@@ -136,29 +136,29 @@ namespace :gm do
           if portal 
             games_r_portals[content.game_id] ||= portal.id
             portals_stats[games_r_portals[content.game_id]] ||= 0
-            portals_stats[games_r_portals[content.game_id]] += Karma::KPS_CREATE[content.content_type.name]
+            portals_stats[games_r_portals[content.game_id]] += Karma.contents_karma(content, false)
           else
             puts "game #{content.game_id ? content.game.name : content.name} has no portal"
           end
         elsif content.platform # Contenido de facción
           platforms_r_portals[content.platform_id] ||= Portal.find(:first, :conditions => ['code = ?', content.platform.code]).id
           portals_stats[platforms_r_portals[content.platform_id]] ||= 0
-          portals_stats[platforms_r_portals[content.platform_id]] += Karma::KPS_CREATE[content.content_type.name]
+          portals_stats[platforms_r_portals[content.platform_id]] += Karma.contents_karma(content, false)
         elsif content.bazar_district # Contenido de facción
           bazar_districts_r_portals[content.bazar_district_id] ||= Portal.find(:first, :conditions => ['code = ?', content.bazar_district.code]).id
           portals_stats[bazar_districts_r_portals[content.bazar_district_id]] ||= 0
-          portals_stats[bazar_districts_r_portals[content.bazar_district_id]] += Karma::KPS_CREATE[content.content_type.name]
+          portals_stats[bazar_districts_r_portals[content.bazar_district_id]] += Karma.contents_karma(content, false)
         elsif content.clan # Contenido de clan
           portal = Portal.find(:first, :conditions => ['clan_id = ?', content.clan_id])
           if portal
             clans_r_portals[content.clan_id] ||= portal.id
             portals_stats[clans_r_portals[content.clan_id]] ||= 0
-            portals_stats[clans_r_portals[content.clan_id]] += Karma::KPS_CREATE[content.content_type.name]
+            portals_stats[clans_r_portals[content.clan_id]] += Karma.contents_karma(content, false)
           else
             puts "clan_id: #{content.clan_id} has no portal"
           end
         else
-          general += Karma::KPS_CREATE[content.content_type.name]
+          general += Karma.contents_karma(content, false)
         end
       end
       

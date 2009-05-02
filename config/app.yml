@@ -13,6 +13,7 @@ common: &common
   enable_bgjobs?: false
   enable_support_db?: false
   enable_slonik?: false
+  cache_templates_in_production: true
   port: 80
   python: /usr/local/hosting/bin/python2.4
   ia_auto_abtests: MrAchmed
@@ -63,6 +64,7 @@ development: &development
   asset_domain: gamersmafia.dev
   enable_dbstats?: true
   compress_skins?: false
+  cache_templates_in_production: false
   <<: *common
   
 test: &test

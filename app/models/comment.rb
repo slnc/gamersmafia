@@ -26,6 +26,21 @@ class Comment < ActiveRecord::Base
   
   def mark_as_deleted
     del_karma
+    
+    # update last_commented_on
+    u = self.user
+    last_comment = Comment.find_by_user_id(u.id, :conditions => 'deleted = \'f\'', :order => 'created_on DESC')
+    u.lastcommented_on = last_comment ? last_comment.created_on : nil
+    u.save
+    
+    # update counters
+    User.decrement_counter('comments_count', self.user_id)
+    Content.decrement_counter('comments_count', self.content_id)
+    self.content.terms.each do |t| 
+      t.recalculate_counters
+      end
+    self.content.real_content.class.decrement_counter('cache_comments_count', self.content.real_content.id)
+    
     self.deleted = true
     self.save
   end
@@ -41,6 +56,7 @@ class Comment < ActiveRecord::Base
   
   def do_after_create
     add_karma
+    self.user.update_attributes(:lastcommented_on => self.created_on)
     # TODO bj lightweight needed GmSys.job("Comment.find(#{self.id}).notify_trackers")
     notify_trackers
   end
@@ -57,37 +73,11 @@ class Comment < ActiveRecord::Base
   end
   
   def add_karma
-    u = self.user
-    u.lastcommented_on = self.created_on
-    u.save
-    Karma.give(u, Karma::KPS_CREATE['Comment'])
-    Bank.transfer(:bank, 
-                  u, 
-                  Bank::convert(Karma::KPS_CREATE['Comment'], 'karma_points'), 
-                    "Karma por comentario a #{self.content.real_content.resolve_hid} (#{Cms::CLASS_NAMES[self.content.real_content.class.name]})")
+    Karma.add_karma_after_comment_is_created(self)
   end
   
-  
   def del_karma
-    u = self.user
-    last_comment = Comment.find_by_user_id(u.id, :conditions => 'deleted = \'f\'', :order => 'created_on DESC')
-    u.lastcommented_on = last_comment ? last_comment.created_on : nil
-    u.save
-    Karma.take(u, Karma::KPS_CREATE['Comment'])
-    # TODO actualizar fecha de comentado por última vez
-    
-    new_cash = Bank::convert(Karma::KPS_CREATE['Comment'], 'karma_points')
-    Bank.transfer(u, :bank, new_cash, "Devolución de Karma por comentario borrado a #{self.content.real_content.resolve_hid} (#{Cms::CLASS_NAMES[self.content.real_content.class.name]})")
-    
-    User.decrement_counter('comments_count', self.user_id)
-    Content.decrement_counter('comments_count', self.content_id)
-    self.content.terms.each do |t| 
-      t.recalculate_counters
-      end
-    self.content.real_content.class.decrement_counter('cache_comments_count', self.content.real_content.id)
-    
-    ctype = Object.const_get(content.content_type.name)
-    obj = ctype.find(content.external_id)
+    Karma.del_karma_after_comment_is_deleted(self)  
   end
   
   def rate(user, rating)

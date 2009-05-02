@@ -8,7 +8,7 @@
     <copyright>Copyright 2005, Gamersmafia</copyright> 
     <managingEditor>webmaster@gamersmafia.com</managingEditor> 
     <webMaster>webmaster@gamersmafia.com</webMaster> 
-    <lastBuildDate><%=Time.now.strftime_nolocale("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></lastBuildDate> 
+    <lastBuildDate><%=Time.now.strftime("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></lastBuildDate> 
     <category>Videojuegos</category> 
     <docs>http://blogs.law.harvard.edu/tech/rss</docs> 
     <ttl>10</ttl> 
@@ -29,7 +29,7 @@
     <description><%=strip_tags(news.description.gsub(']', '')).gsub('&', '&amp;')%></description> 
     <category><%=news.main_category.name%></category> 
     <comments>http://gamersmafia.com/noticias/show/<%=news.id%>?from=rss#comments</comments> 
-    <pubDate><%=news.created_on.strftime_nolocale("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></pubDate> 
+    <pubDate><%=news.created_on.strftime("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></pubDate> 
   </item>
 <% end -%>
   </channel>

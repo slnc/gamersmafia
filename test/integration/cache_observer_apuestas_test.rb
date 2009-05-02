@@ -9,7 +9,7 @@ class CacheObserverApuestasTest < ActionController::IntegrationTest
 
   # COMMON
   test "should_clear_cache_latest_by_cat_after_publishing_news" do
-    n = portal.bet.find(:published)[0]
+    n = Bet.find(1)
     assert_not_nil n
     go_to "/apuestas/show/#{n.id}", 'apuestas/show'
     assert_cache_exists "/common/apuestas/show/latest_by_cat_#{n.main_category.id}"

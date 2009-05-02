@@ -572,11 +572,24 @@ group by date_trunc('day', created_on) order by s asc
                      FROM contents
                     WHERE user_id = #{u.id}
                       AND state = #{Cms::PUBLISHED}
+                      AND source IS NULL
                  GROUP BY portal_id,
                           content_type_id").each do |dbr|
       statz[dbr['portal_id'].to_i]  ||= 0
       statz[dbr['portal_id'].to_i] += dbr['count'].to_i * Karma::KPS_CREATE[ContentType.find(dbr['content_type_id'].to_i).name]
     end
+    
+    User.db_query("SELECT count(*),
+                          portal_id
+                     FROM contents
+                    WHERE user_id = #{u.id}
+                      AND source IS NOT NULL
+                      AND state = #{Cms::PUBLISHED}
+                 GROUP BY portal_id").each do |dbr|
+      statz[dbr['portal_id'].to_i]  ||= 0
+      statz[dbr['portal_id'].to_i] += dbr['count'].to_i * Karma::KPS_CREATE['Copypaste']
+    end
+    
     statz2 = {}
     total= statz.values.sum.to_f
     statz.each do |k, v|

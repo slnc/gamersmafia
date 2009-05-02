@@ -157,24 +157,5 @@ class ForosControllerTest < ActionController::TestCase
     assert_response :redirect
     t1.reload
     assert_equal Cms::DELETED, t1.state
-  end
-  
-  test "close_should_work" do
-    sym_login 1
-    @t1 = Topic.find(1)
-    assert !@t1.closed?
-    post :close, { :id => @t1.id }
-    assert_response :redirect
-    @t1.reload
-    assert @t1.closed?
-  end
-  
-  test "reopen_topic_should_work" do
-    test_close_should_work
-    post :reopen, { :id => @t1.id }
-    assert_response :redirect
-    @t1.reload
-    assert !@t1.closed?
-  end
-  
+  end  
 end

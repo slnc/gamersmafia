@@ -397,27 +397,11 @@ class Faction < ActiveRecord::Base
   end
   
   def karma_points
-    total = 0
-    
-    # para cada contenido calculamos el total de elementos que salgan de
-    # nuestra categoría base y a la vez calculamos los puntos por comentarios
-    # (requiere que cache_karma_points != NULL)
-    rthing = self.referenced_thing
-    root_term = Term.single_toplevel(self.referenced_thing_field => rthing.id)
-    cat_ids = root_term.all_children_ids
-    dbrs = User.db_query("SELECT count(a.*) as count_contents, (SELECT name FROM content_types where id = a.content_type_id) as content_type_name, sum(a.comments_count) as sum_comments FROM contents a JOIN contents_terms b ON a.id = b.content_id AND b.term_id IN (#{cat_ids.join(',')}) WHERE a.state = #{Cms::PUBLISHED} GROUP BY content_type_name")
-    total = 0
-    ct_topics_id = ContentType.find_by_name('Topic').id
-    dbrs.each do |dbr|
-      total += dbr['count_contents'].to_i * Karma::KPS_CREATE[dbr['content_type_name']] 
-      total += dbr['sum_comments'].to_i * Karma::KPS_CREATE['Comment']
-    end
-    # TODO no se tienen en cuenta los approved_by_user_id
-    total
+    Karma.calculate_karma_points(self)
   end
   
   def faith_points
-    stats = self.class.db_query("SELECT SUM(COALESCE(cache_faith_points, 0)) FROM users WHERE faction_id = #{self.id}")[0]['sum'].to_i
+    Faith.faction_faith_points(self)
   end
   
   def rank_members

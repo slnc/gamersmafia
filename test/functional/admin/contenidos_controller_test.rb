@@ -163,4 +163,27 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     get :huerfanos
     assert_response :success
   end
+  
+  test "close should work with valid reason" do
+    sym_login 1
+    n = News.find(1)
+    assert !n.closed?
+    post :close, :id => n.unique_content_id, :reason => 'me caía mal'
+    assert_response :redirect
+    n.reload
+    assert n.closed?
+    assert_equal 1, n.closed_by_user.id 
+    assert 'me caía mal', n.reason_to_close
+  end
+  
+  
+  test "close shouldn't work with invalid reason" do
+    sym_login 1
+    n = News.find(1)
+    assert !n.closed?
+    post :close, :id => n.unique_content_id, :reason => ''
+    assert_response :redirect
+    n.reload
+    assert !n.closed?
+  end
 end

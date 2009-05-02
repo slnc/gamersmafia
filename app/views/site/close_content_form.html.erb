@@ -1,0 +1,16 @@
+<div class="facebox-title">Cerrar contenido</div>
+
+<div class="facebox-content">
+<div id="aaa"></div>
+<form method="post" action="/admin/contenidos/close/<%=params[:id]%>">
+<input type="text" class="w100pc text virgin" id="report-content-reason" name="reason" value="Razón..." /><br />
+<br />
+<input type="submit" value="Cerrar" />
+<input type="button" value="Cancelar" onclick="closeFacebox();" />
+</form>
+<script type="text/javascript">
+  $j('#report-content-reason').val("Razón..").one('click', function(){
+    $j(this).val("").removeClass('virgin');
+  });
+</script>
+</div>
