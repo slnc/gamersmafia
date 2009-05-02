@@ -237,9 +237,13 @@ module ActsAsContent
     
     def do_before_save
       if self.respond_to?(:source) && self.source
-        if !(Cms::URL_REGEXP =~ self.source)
-          self.errors.add('source', 'URL incorrecta')
-          return false
+        if self.source.strip == ''
+          self.source = nil
+        else
+          if !(Cms::URL_REGEXP =~ self.source)
+            self.errors.add('source', 'URL incorrecta')
+            return false
+          end
         end
       end
       
@@ -550,7 +554,7 @@ module ActsAsContent
         c = get_mean_vote(m) 
         self.cache_weighted_rank = (v / (v+m)) * r + (m / (v+m)) * c
         
-	self.update_without_timestamping
+        self.update_without_timestamping
       end
       
       if self.cache_rated_times < 2 then

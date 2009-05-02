@@ -28,6 +28,16 @@ class NewsTest < ActiveSupport::TestCase
     assert_equal @news.source, @news.unique_content.source
   end
   
+  test "should_properly_change_set source if empty string" do
+    @news = News.new(:title => 'foo flash-hack', :user_id => 1, :description => 'bar flash', :terms => Term.single_toplevel(:slug => 'ut').id, :source => '')
+    assert @news.save
+    assert_nil @news.source
+    
+    @news = News.new(:title => 'foo flash-hack', :user_id => 1, :description => 'bar flash', :terms => Term.single_toplevel(:slug => 'ut').id, :source => ' ')
+    assert @news.save
+    assert_nil @news.source
+  end
+  
   test "should_properly_change_set source if valid source first and then nil" do
     test_should_properly_change_set_source_if_valid_source
     assert @news.update_attributes(:source => nil)
