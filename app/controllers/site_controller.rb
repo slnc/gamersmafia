@@ -8,6 +8,10 @@ class SiteController < ApplicationController
     @title = 'Banners de Gamersmafia'
   end
   
+  def responsabilidades
+    
+  end
+  
   def colabora
   end
   
