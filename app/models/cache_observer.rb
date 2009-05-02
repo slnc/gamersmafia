@@ -630,7 +630,7 @@ class CacheObserver < ActiveRecord::Observer
       # borramos las páginas de listados por si es un nuevo comment
       expire_fragment("/common/tutoriales/index/tutorials_#{object.main_category.id}/page_*")
       
-       p = object.main_category
+      p = object.main_category
       while p do
         expire_fragment("/common/tutoriales/_latest_by_cat/#{p.id}")
         expire_fragment("/common/tutoriales/_most_productive_author_by_cat/#{p.id}")
@@ -691,9 +691,16 @@ class CacheObserver < ActiveRecord::Observer
         # borramos el listado de últimas noticias de categoría X
         # TODO solo deberíamos borrar si es la última      
         expire_fragment("/common/noticias/show/_latest_by_cat_#{t.id}")
+        
+        if t.slug == 'gm'
+          expire_fragment("/common/novedades/page_*")
+          expire_fragment("/common/novedades/page_")
+        end
       end
       # expire_fragment("/bazar/home/categories/#{Term.find(object.slnc_changed_old_values['news_category_id']).slug}") if object.slnc_changed?(:news_category_id) && object.slnc_changed_old_values[:news_category_id]
       expire_fragment("/common/home/index/news_inet")
+      
+      
       object.get_related_portals.each do |p|
         expire_fragment("/#{p.code}/home/index/news")
         expire_fragment("/#{p.code}/home/index/news2")

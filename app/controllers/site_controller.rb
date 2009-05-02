@@ -15,6 +15,10 @@ class SiteController < ApplicationController
   def colabora
   end
   
+  def novedades
+    @title = 'Novedades sobre la web'    
+  end
+  
   def portales
     
   end
