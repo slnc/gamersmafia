@@ -52,7 +52,7 @@ class GmPortal
         if Cms::CLANS_CONTENTS.include?(cls_name)  # es una clase cuya tabla tiene clan_id, añadimos constraint
           GenericContentProxy.new(cls)
         else
-          GenericContentProxy.new(cls, false)
+          GenericContentProxy.new(cls, 'gm')
         end
       end
     elsif /_categories/ =~ method_id.to_s then

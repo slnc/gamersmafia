@@ -75,7 +75,8 @@ class Topic < ActiveRecord::Base
                             AND clan_id IS NULL
                             AND id IN (SELECT last_updated_item_id 
                                          FROM terms 
-                                        WHERE root_id = parent_id 
+                                        WHERE root_id = parent_id
+                                          AND bazar_district_id IS NULL 
                                           AND taxonomy = 'TopicsCategory' 
                                           AND updated_on >= now() - '1 week'::interval)
                        ORDER BY updated_on DESC").each do |content|
