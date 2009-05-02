@@ -480,6 +480,7 @@ class CacheObserver < ActiveRecord::Observer
       when 'Funthing':
       expire_fragment('/common/home/index/curiosidades')
       expire_fragment('/common/home/index/curiosidades2')
+      expire_fragment('/common/curiosidades/show/_latest')
       # TODO es un copypaste de news
       
       # borramos las páginas de listado de noticias posteriores a la actual
