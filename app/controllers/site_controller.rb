@@ -15,6 +15,10 @@ class SiteController < ApplicationController
   def colabora
   end
   
+  def portales
+    
+  end
+  
   def banners_bottom
     render :layout => false
   end
@@ -225,8 +229,8 @@ class SiteController < ApplicationController
           raise AccessDenied unless @user.id == @sender.id
           when 'Faction'
           raise AccessDenied unless @sender.is_boss?(@user)
-	  when 'User'
-	  raise AccessDenied unless @user.id == @sender.id
+          when 'User'
+          raise AccessDenied unless @user.id == @sender.id
         end
       end
       
@@ -406,7 +410,7 @@ class SiteController < ApplicationController
           @user.resurrect
         end
         
-	@user.update_attributes(:lastseen_on => Time.now, :ipaddr => request.remote_ip)
+        @user.update_attributes(:lastseen_on => Time.now, :ipaddr => request.remote_ip)
       end
     end
     render :layout => false

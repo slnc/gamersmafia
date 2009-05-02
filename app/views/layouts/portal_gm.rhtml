@@ -81,6 +81,10 @@ if u_clans.size == 0 then %>
 					<% end # if user_is_authed  -%>
 			  	</ul>
 
+				<ul id="sawbody-gm" class="hidden">
+					<li class="first"><a href="/site/portales">Portales</a></li>
+				</ul>
+				
 				<ul id="sawbody-facciones" class="hidden">
 			  		<li id="sawbody-facciones-faccion">
 			  			<div class="sawbottom-arrow hidden"></div>
@@ -211,9 +215,9 @@ if u_clans.size == 0 then %>
 			<div style="width: 650px; float: left; padding-bottom: 10px; padding-top: 4px; margin: 10px 0 0 10px; border-top: 1px solid #880000;"><% if user_is_authed then %><a href="/cuenta/tienda/9" style="font-size: 11px; font-weight: bold;">Crear nueva facción</a><% end -%></div>
 		   	
 		   </div>
-	<% if controller.active_sawmode != '' then %>
-	  <script type="text/javascript">GM.menu.sawbottom_real('<%=controller.active_sawmode%>', 1);</script>
-	<% end -%>
+	
+	  <script type="text/javascript">GM.menu.sawbottom_real('<%=controller.active_sawmode != '' ? controller.active_sawmode : 'gm' %>', 1);</script>
+	
       </div>
     </div>
 	

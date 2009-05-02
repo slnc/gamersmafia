@@ -163,6 +163,7 @@ class CacheObserver < ActiveRecord::Observer
   
   def do_portal_expire(object)
     expire_fragment('/portales')
+    expire_fragment('/common/portales2')
     expire_fragment("/#{object.code}/portales")
   end
   

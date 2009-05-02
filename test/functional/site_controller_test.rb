@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class SiteControllerTest < ActionController::TestCase  
-  basic_test :carcel, :smileys, :tu_web_de_clan_gratis, :rss, :contactar, :privacidad, :album, :fusiones, :webs_de_clanes, :logo, :responsabilidades
+  basic_test :carcel, :smileys, :tu_web_de_clan_gratis, :rss, :contactar, :privacidad, :album, :fusiones, :webs_de_clanes, :logo, :responsabilidades, :portales
   
   test "maintain_lock" do
     l = ContentsLock.create({:content_id => 1, :user_id => 1})
