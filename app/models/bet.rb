@@ -125,7 +125,7 @@ class Bet < ActiveRecord::Base
   # TODO limitar apuestas a 2 opciones para que este algoritmo funcione.
   # En caso de empate hacemos una primera vuelta en la que:
   # - calculamos el porcentaje entre lo apostado por una opción y lo apostado
-  #   por otra
+  #   por otra. Porcentajes altos se penalizan
   #
   # - devolvemos a cada jugador: apostado * [ op1/op2 ó op2/op1 ]. De esta
   #   forma los que más equilibradas hayan hecho sus apuestas más recuperan.
@@ -146,6 +146,10 @@ class Bet < ActiveRecord::Base
     opt1 = self.bets_options[0]
     opt2 = self.bets_options[1]
     
+    # Inicialmente devolvemos a cada usuario una cantidad de dinero
+    # proporcional a su acierto. Alguien que haya apostado por el empate
+    # tendrá un multiplicador 1.0, alguien que haya apostado todo por uno
+    # tendrá un multiplicador 0.0 y no se llevará nada de dinero de esta etapa.
     for u in self.users
       op1 = ammount_bet_by_user_in_option(u, opt1)
       op2 = ammount_bet_by_user_in_option(u, opt2)
@@ -157,14 +161,13 @@ class Bet < ActiveRecord::Base
       elsif op2 == 0
         pcent = 0.0
       else
+        # Cogemos siempre la división que sea < 1
         if op1/op2 > op2/op1
           pcent = op2/op1
         else
           pcent = op1/op2
         end
       end
-      
-      # Nos aseguramos de que cogemos el porcentaje menor siempre
       
       percentages[u.id] = pcent
       money_to_give[u.id] = pcent * (op1 + op2)
@@ -177,6 +180,9 @@ class Bet < ActiveRecord::Base
     pcents = []
     percentages.each_value { |b| pcents<< b } # pasamos porcentajes a array
     stddev = Math.standard_deviation(pcents)
+    # un stddev alto significa que hay mucha diferencia entre las opciones
+    # elegidas por lo que las diferencias entre ganadores y perdedores serán
+    # mayores.
     if stddev == 0 # no ha habido desviación, nadie ganará nada
       for u in self.users
         op1 = ammount_bet_by_user_in_option(u, opt1)
@@ -227,21 +233,10 @@ class Bet < ActiveRecord::Base
         end
       end
       
-      #while total_money > 0
-      #  u_left = sorted_users_in_this_bet_by_percentages.clone # el último es el de mayor porcentaje
-      #  while total_money > 0 && u_left.size > 0
-      #    u = User.find(u_left.pop[0])
-      #    money_to_give[u.id] += total_money * stddev
-      #    total_money -= money_to_give[u.id]
-      #  end
-      #end
-      
-      # puts "MONEY TO GIVE"
       for k in money_to_give.keys
-        # puts "#{k}: #{money_to_give[k]}"
         Bank.transfer(:bank, User.find(k), money_to_give[k], "Ganancias por tu apuesta por \"#{self.resolve_hid}\"") if money_to_give[k] > 0 
       end
-    end # end if stddev == 1.0
+    end # end if stddev != 0.0
   end
 
   def awards_breakdown
