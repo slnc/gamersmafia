@@ -121,6 +121,78 @@ class Bet < ActiveRecord::Base
   def completed?
     self.winning_bets_option_id != nil || self.cancelled || self.forfeit || self.tie
   end
+
+  def resolve_tie
+    money_to_give = {}
+    percentages = {}
+    total_money = self.total_ammount
+    
+    opt1 = self.bets_options[0]
+    opt2 = self.bets_options[1]
+    sphase_points = {}
+    money_bet = {}
+    
+    for u in self.users
+      op1 = ammount_bet_by_user_in_option(u, opt1)
+      op2 = ammount_bet_by_user_in_option(u, opt2)
+      money_bet[u.id] = op1 + op2
+
+      
+      if op1 == 0 and op2 == 0
+        next
+      elsif op1 == 0
+        pcent = 0.01
+      elsif op2 == 0
+        pcent = 0.01
+      else
+        if op1/op2 > op2/op1
+          pcent = op2/op1
+        else
+          pcent = op1/op2
+        end
+      end
+      
+      percentages[u.id] = pcent
+      money_to_give[u.id] = pcent * (op1 + op2)
+      total_money -= money_to_give[u.id]
+
+      sphase_points[u.id] = money_to_give[u.id]
+      #puts "#{u.id} pcent: #{pcent} op1: #{op1} op2: #{op2} money_to_give: #{money_to_give[u.id]} total_money: #{total_money}"
+    end
+    
+    # ya tenemos los porcentajes y el dinero a repartir
+    pcents = []
+    percentages.each_value { |b| pcents<< b } # pasamos porcentajes a array
+    stddev = Math.standard_deviation(pcents)
+    if stddev == 0 # no ha habido desviación, nadie ganará nada
+      for u in self.users
+        op1 = ammount_bet_by_user_in_option(u, opt1)
+        op2 = ammount_bet_by_user_in_option(u, opt2)
+        
+        if op1 + op2 > 0
+          Bank.transfer(:bank, u, op1 + op2, "Ganancias por tu apuesta por \"#{self.resolve_hid}\"")
+        end
+      end
+    else
+
+      # del bote restante (gmfs de fallos) cada uno se lleva una parte
+      # correspondiente a sus puntos calculados en primera fase
+	    losers_money = total_money
+	    total_points = money_to_give.values.sum.to_f
+
+	    self.users.each do |u|
+		    next if sphase_points[u.id].to_i == 0
+		    money_to_give[u.id] +=  money_to_give[u.id] / total_points * losers_money
+	    end
+      
+      money_to_give.keys.each do |k|
+#       puts "#{k}\t#{(percentages[k] * 100).to_i.to_f / 100}\t #{(money_to_give[k] * 100).to_i.to_f / 100}\t #{(sphase_points[k] * 100).to_i.to_f / 100}"
+# puts "Resolución por tu apuesta en\"#{self.resolve_hid}\": \"#{((money_to_give[k] - money_bet[k])* 100).to_i.to_f / 100}\""
+        Bank.transfer(:bank, User.find(k), money_to_give[k], "Ganancias por tu apuesta por \"#{self.resolve_hid}\"") if money_to_give[k] > 0 
+        # Bank.transfer(:bank, User.find(k), money_to_give[k], "Ganancias por tu apuesta por \"#{self.resolve_hid}\": \"#{((money_to_give[k] - money_bet[k])* 100).to_i.to_f / 100}\"") if money_to_give[k] > 0 
+      end
+    end # end if stddev == 1.0
+  end
   
   # TODO limitar apuestas a 2 opciones para que este algoritmo funcione.
   # En caso de empate hacemos una primera vuelta en la que:
@@ -138,7 +210,7 @@ class Bet < ActiveRecord::Base
   # acabando por el menos equilibrado desviación_std_de_porcentajes * cantidad
   # que queda por repartir. Cuando se acabe el dinero por repartir hemos
   # acabado de dar el dinero. Hacemos las transferencias y listo.
-  def resolve_tie
+  def resolve_tieOLD
     money_to_give = {}
     percentages = {}
     total_money = self.total_ammount
@@ -175,7 +247,6 @@ class Bet < ActiveRecord::Base
       #puts "#{u.id} pcent: #{pcent} op1: #{op1} op2: #{op2} money_to_give: #{money_to_give[u.id]} total_money: #{total_money}"
     end
     
-    
     # ya tenemos los porcentajes y el dinero a repartir
     pcents = []
     percentages.each_value { |b| pcents<< b } # pasamos porcentajes a array
@@ -193,9 +264,6 @@ class Bet < ActiveRecord::Base
         end
       end
     else
-      #puts "stddev[#{pcents.join(',')}]: #{stddev}"
-      # sorted_users_in_this_bet_by_percentages = percentages.sort { |a, b| a[1] <=> b[1]} # 
-      
       # Agrupamos por porcentajes como claves y users en array para repartir lo
       # mismo a todos los usuarios con un mismo porcentaje:
       u_grouped_by_pcent = {}
@@ -203,8 +271,6 @@ class Bet < ActiveRecord::Base
         u_grouped_by_pcent[v] ||= []
         u_grouped_by_pcent[v]<< k
       end
-      
-      #u_grouped_by_pcent.each { |k, v| puts "#{k}: #{v.join(',')}" }
       
       # Bucle de repartor dle dinero sobrante
       while total_money > 0.01 # usamos 0.01 para evitar entrar en un bucle infinito
@@ -246,9 +312,9 @@ class Bet < ActiveRecord::Base
     bb = self.bets_options.find(:first, :order => 'id DESC')
     dbusers.each do |dbu|
       u = User.find(dbu['user_id'].to_i)
-      bdw[u] = {ba.id => self.ammount_bet_by_user_in_option(u, ba), bb.id => self.ammount_bet_by_user_in_option(u, ba), :net => self.net_win(u) }
+	      bdw <<  {:user => u, :team1 => self.ammount_bet_by_user_in_option(u, ba), :team2 => self.ammount_bet_by_user_in_option(u, bb), :net => self.net_win(u) }
     end
-    dbusers
+    bdw 
   end
   
   def ammount_bet_by_user_in_option(user, bets_option)
@@ -278,7 +344,7 @@ class Bet < ActiveRecord::Base
   end
   
   def can_be_reopened?
-    self.completed? && self.state == Cms::PUBLISHED && self.closes_on > 2.weeks.ago
+    self.completed? && self.state == Cms::PUBLISHED # && self.closes_on > 2.weeks.ago
   end
   
   def complete(winning_bets_option_id)
