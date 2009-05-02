@@ -411,7 +411,7 @@ module ActsAsContent
         
         if uniq then
           uniq.state = self.state
-          uniq.source = self.source
+          uniq.source = self.source if self.respond_to?(:source)
           uniq.closed = self.closed
           uniq.save # refresh updated_on
         end
