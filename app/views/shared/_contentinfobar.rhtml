@@ -1,3 +1,6 @@
+<% if object.respond_to?(:source) && object.source then %>
+<div class="infoinline">Fuente: <a href="<%=object.source%>"><%=object.source.hostname_from_url%></a></div>
+<% end -%>
 <div style="position: absolute; float: left; margin-top: 43px; margin-left: 4px;" class="infoinline">
 <span class="pageviews-count" style="line-height: 18px;" title="Leído <%=object.hits_anonymous + object.hits_registered%> veces"><%=object.hits_anonymous + object.hits_registered%></span>
 <% if %w(Download Demo).include?(object.class.name) then%> &nbsp; <span class="downloads-count" style="line-height: 18px;" title="Descargado <%=object.downloaded_times%> veces"><%=object.downloaded_times%></span><% end -%>
