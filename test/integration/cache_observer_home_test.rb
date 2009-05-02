@@ -64,31 +64,40 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
   #  end
   
   test "should_clear_funthings_cache_after_publishing_funthing" do
+    host! App.domain_bazar
     n = Funthing.find(:pending)[0]
     assert_not_nil n
-    go_to_index
-    assert_cache_exists "common/home/index/curiosidades"
+    get '/'
+    assert_response :success, response.body
+    assert_template 'home/bazar'
+    assert_cache_exists "common/home/index/curiosidades2"
     publish_content n
-    assert_cache_dont_exist "common/home/index/curiosidades"
+    assert_cache_dont_exist "common/home/index/curiosidades2"
   end
   
   test "should_clear_funthings_cache_after_unpublishing_funthing" do
+    host! App.domain_bazar
     n = Funthing.find(:published)[0]
     assert_not_nil n
-    go_to_index
-    assert_cache_exists "common/home/index/curiosidades"
+    get '/'
+    assert_response :success, response.body
+    assert_template 'home/bazar'
+    assert_cache_exists "common/home/index/curiosidades2"
     delete_content n
-    assert_cache_dont_exist "common/home/index/curiosidades"
+    assert_cache_dont_exist "common/home/index/curiosidades2"
   end
   
   test "should_clear_funthings_cache_after_commenting_funthing" do
+    host! App.domain_bazar
     n = Funthing.find(:published)[0]
     assert_not_nil n
     sym_login 'superadmin', 'lalala'
-    go_to_index
-    assert_cache_exists "common/home/index/curiosidades"
+    get '/'
+    assert_response :success, response.body
+    assert_template 'home/bazar'
+    assert_cache_exists "common/home/index/curiosidades2"
     post_comment_on n
-    assert_cache_dont_exist "common/home/index/curiosidades"
+    assert_cache_dont_exist "common/home/index/curiosidades2"
   end
   
   

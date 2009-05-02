@@ -20,10 +20,7 @@
     %>
         <tr class="<%=oddclass%>">
             <td style="width: 120px;"><%=key[0]%></td>
-            <td><%=draw_pcent_bar(key[1].to_f * points / ((@user.karma_points > 0) ? @user.karma_points : 1))%><br />
-              <% if nil %>
-              <%=key[1]%> * <%=Karma::KPS_CREATE[ActiveSupport::Inflector::singularize(Cms::translate_content_name(key[0], 0))]%> = <%=key[1] * Karma::KPS_CREATE[ActiveSupport::Inflector::singularize(Cms::translate_content_name(key[0], 0))]%>
-            <% end -%></td>
+            <td><%=draw_pcent_bar(key[1].to_f * points / ((@user.karma_points > 0) ? @user.karma_points : 1))%><br /></td>
         </tr>
     <% end -%>
     <tr class="<%=oddclass%>">

@@ -103,6 +103,12 @@ function report_content(content_id){
     return false;
 }
 
+function close_content(content_id){
+	jQuery.facebox({ ajax: '/site/close_content_form/'+content_id });
+    return false;
+}
+
+
 function recommend_to_friend(content_id){
 	jQuery.facebox({ ajax: '/site/recommend_to_friend?content_id='+content_id});
     return false;

@@ -8,7 +8,19 @@ class SiteController < ApplicationController
     @title = 'Banners de Gamersmafia'
   end
   
+  def responsabilidades
+    
+  end
+  
   def colabora
+  end
+  
+  def novedades
+    @title = 'Novedades sobre la web'    
+  end
+  
+  def portales
+    
   end
   
   def banners_bottom
@@ -221,8 +233,8 @@ class SiteController < ApplicationController
           raise AccessDenied unless @user.id == @sender.id
           when 'Faction'
           raise AccessDenied unless @sender.is_boss?(@user)
-	  when 'User'
-	  raise AccessDenied unless @user.id == @sender.id
+          when 'User'
+          raise AccessDenied unless @user.id == @sender.id
         end
       end
       
@@ -402,7 +414,7 @@ class SiteController < ApplicationController
           @user.resurrect
         end
         
-	@user.update_attributes(:lastseen_on => Time.now, :ipaddr => request.remote_ip)
+        @user.update_attributes(:lastseen_on => Time.now, :ipaddr => request.remote_ip)
       end
     end
     render :layout => false
@@ -494,6 +506,11 @@ class SiteController < ApplicationController
     require_auth_users
     raise AccessDenied unless @user.is_hq?
     @ipinfo = Geolocation.ip_info(params[:ip])
+    render :layout => false
+  end
+  
+  def close_content_form
+    require_auth_users
     render :layout => false
   end
   

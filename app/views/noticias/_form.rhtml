@@ -9,5 +9,7 @@
 <%=wysiwyg('news[main]', :value => @news.main)%>
 </p>
 
+<p><label for="news_title">Fuente</label> <span class="infoinline">Si no has escrito tú la noticia pon la dirección original (ej: <strong>http://webtalcual.com/noticias?id=1213</strong>)</span><br/>
+<%= text_field 'news', 'source', :class => 'text' %></p>
 
 <%=draft_check_box(@news)%>

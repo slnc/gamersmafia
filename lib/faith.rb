@@ -299,17 +299,17 @@ module Faith
   def self.faith_points_of_users_at_date_range(date_start, date_end)
     date_start, date_end = date_end, date_start if date_start > date_end
     points = {}
-
+    
     # BUG es imposible contabilizar las resurrecciones pasadas correctamente
     # BUG para las resurrecciones activas ademas si no han visitado la web el dia de contabilizar stats no dan fe, aqui caducan antes de 3 meses
     [['refered_hits', 'hit'], 
-     ['publishing_decisions', 'publishing_decision'], 
-     ['content_ratings', 'rating'], 
-     ['comments_valorations', 'rating'],
-     ['users', 'registration', 'referer_user_id IS NOT NULL AND lastseen_on >= now() - \'3 months\'::interval ', 'referer_user_id'],
-     ['users', 'resurrection', 'resurrected_by_user_id IS NOT NULL AND refered_user_id <> resurrected_by_user_id', 'resurrected_by_user_id', 'lastseen_on'],
-     ['users', 'resurrection_own', 'resurrected_by_user_id IS NOT NULL AND refered_user_id = resurrected_by_user_id', 'resurrected_by_user_id', 'lastseen_on'],
-     ].each do |tinfo|
+    ['publishing_decisions', 'publishing_decision'], 
+    ['content_ratings', 'rating'], 
+    ['comments_valorations', 'rating'],
+    ['users', 'registration', 'referer_user_id IS NOT NULL AND lastseen_on >= now() - \'3 months\'::interval ', 'referer_user_id'],
+    ['users', 'resurrection', 'resurrected_by_user_id IS NOT NULL AND refered_user_id <> resurrected_by_user_id', 'resurrected_by_user_id', 'lastseen_on'],
+    ['users', 'resurrection_own', 'resurrected_by_user_id IS NOT NULL AND refered_user_id = resurrected_by_user_id', 'resurrected_by_user_id', 'lastseen_on'],
+    ].each do |tinfo|
       tbl_name = tinfo[0]
       attr_info = tinfo[1]
       additional_and = (tinfo.size >= 3) ? " AND #{tinfo[2]}" : ''
@@ -362,11 +362,27 @@ module Faith
     end
     res
   end
-
+  
   def self.reset_remaining_rating_slots
-	  # lo hacemos de uno en uno porque si no incurreimos en deadlocks
-	  User.db_query("SELECT id FROM users where lastseen_on >= now() - '15 days'::interval").each do |dbr|
-		  User.db_query("UPDATE users SET cache_remaining_rating_slots = NULL WHERE id = #{dbr['id']}")
-	  end
+    # lo hacemos de uno en uno porque si no incurreimos en deadlocks
+    User.db_query("SELECT id FROM users where lastseen_on >= now() - '15 days'::interval").each do |dbr|
+      User.db_query("UPDATE users SET cache_remaining_rating_slots = NULL WHERE id = #{dbr['id']}")
+    end
+  end
+  
+  def self.faction_faith_points(faction)
+    User.db_query("SELECT SUM(COALESCE(cache_faith_points, 0)) FROM users WHERE faction_id = #{faction.id}")[0]['sum'].to_i
+  end
+  
+  def self.faith_in_time_period(t1, t2)
+    total = 0
+    total += Faith::FPS_ACTIONS['registration'] * User.count(:conditions => "state <> #{User::ST_UNCONFIRMED} AND referer_user_id is not null AND created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")
+    total += Faith::FPS_ACTIONS['resurrection'] * User.count(:conditions => "state <> #{User::ST_UNCONFIRMED} AND coalesce(referer_user_id, 0) <> resurrected_by_user_id and resurrected_by_user_id is not null AND created_on < '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND lastseen_on > '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND resurrection_started_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")
+    total += Faith::FPS_ACTIONS['resurrection_own'] * User.count(:conditions => "state <> #{User::ST_UNCONFIRMED} AND coalesce(referer_user_id, 0) = resurrected_by_user_id and resurrected_by_user_id is not null AND created_on < '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND lastseen_on > '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND resurrection_started_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")
+    total += Faith::FPS_ACTIONS['rating'] * ContentRating.count(:conditions => "created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")
+    total += Faith::FPS_ACTIONS['publishing_decision'] * PublishingDecision.count(:conditions => "created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")
+    total += Faith::FPS_ACTIONS['competitions_match'] * CompetitionsMatch.count(:conditions => "#{Competition::COMPLETED_ON_SQL} and completed_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")
+    total += Faith::FPS_ACTIONS['hit'] * User.db_query("SELECT count(*) FROM refered_hits WHERE created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")[0]['count'].to_i
+    total
   end
 end

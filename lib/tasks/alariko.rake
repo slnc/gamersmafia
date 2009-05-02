@@ -3,7 +3,7 @@ namespace :gm do
   desc "Launch iRC bot"
   task :alariko do
     Rake::Task['gm:alariko:stop']
-    system("#{RAILS_ROOT}/script/alariko.py")
+    # system("#{RAILS_ROOT}/script/alariko.py")
   end
 
   namespace :alariko do

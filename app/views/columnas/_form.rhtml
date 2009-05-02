@@ -13,4 +13,7 @@
 <%=fc_thumbnail(@column.home_image, 'f', '105x54')%>
 <%= file_field 'column', 'home_image' %></p>
 
+<p><label for="column_title">Fuente</label> <span class="infoinline">Si no has escrito tú la columna pon la dirección original (ej: <strong>http://webtalcual.com/articulos?id=1213</strong>)</span><br/>
+<%= text_field 'column', 'source', :class => 'text' %></p>
+
 <%=draft_check_box(@column)%>

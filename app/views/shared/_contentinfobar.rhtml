@@ -1,3 +1,6 @@
+<% if object.respond_to?(:source) && object.source then %>
+<div class="infoinline">Fuente: <a href="<%=object.source%>"><%=object.source.hostname_from_url%></a></div>
+<% end -%>
 <div style="position: absolute; float: left; margin-top: 43px; margin-left: 4px;" class="infoinline">
 <span class="pageviews-count" style="line-height: 18px;" title="Leído <%=object.hits_anonymous + object.hits_registered%> veces"><%=object.hits_anonymous + object.hits_registered%></span>
 <% if %w(Download Demo).include?(object.class.name) then%> &nbsp; <span class="downloads-count" style="line-height: 18px;" title="Descargado <%=object.downloaded_times%> veces"><%=object.downloaded_times%></span><% end -%>
@@ -61,7 +64,7 @@ can_delete = Cms::user_can_delete_content?(@user, object) %>
         <% if object.closed then %>
           <li class="actions"><%= link_to 'Reabrir', {:action => 'reopen', :id => object}, {:confirm => '¿Estás seguro de que quieres reabrir este contenido a comentarios?', :class => 'action'} %></li>
         <% else %>
-        <li class="actions"><%= link_to 'Cerrar', {:action => 'close', :id => object}, {:confirm => '¿Estás seguro de que quieres cerrar este contenido a comentarios?', :class => 'action'} %></li>
+        <li class="actions"><a href="" title="Cerrar este contenido" onclick="return close_content(<%=object.unique_content_id%>);">Cerrar</a></li>
         <% end -%>
 	  <% end -%>
 	  <% if user_is_authed && @user.is_hq? then %>

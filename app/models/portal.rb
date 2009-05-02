@@ -37,12 +37,12 @@ class Portal < ActiveRecord::Base
     
   end
   
-  def latest_articles
+  def latest_articles(limit=8)
     articles = []
-    articles += self.interview.find(:published, :limit => 8, :order => 'created_on DESC') if self.interview
-    articles += self.column.find(:published, :limit => 8, :order => 'created_on DESC') if  self.column
-    articles += self.tutorial.find(:published, :limit => 8, :order => 'created_on DESC') if self.tutorial
-    articles += self.review.find(:published, :limit => 8, :order => 'created_on DESC') if self.review
+    articles += self.interview.find(:published, :limit => limit, :order => 'created_on DESC') if self.interview
+    articles += self.column.find(:published, :limit => limit, :order => 'created_on DESC') if  self.column
+    articles += self.tutorial.find(:published, :limit => limit, :order => 'created_on DESC') if self.tutorial
+    articles += self.review.find(:published, :limit => limit, :order => 'created_on DESC') if self.review
     
     ordered = {}
     for a in articles
@@ -52,7 +52,7 @@ class Portal < ActiveRecord::Base
     articles = ordered.sort.reverse
     afinal = []
     i = 0
-    while i < 8 and i < articles.length do
+    while i < limit and i < articles.length do
       afinal << articles[i][1]
       i += 1
     end

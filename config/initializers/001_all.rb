@@ -145,3 +145,4 @@ raise "libtidy not found" unless File.exists?(App.tidy_path)
     end
   end
 
+ActionController::Base.ip_spoofing_check = false

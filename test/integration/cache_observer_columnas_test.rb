@@ -9,7 +9,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
 
   # MAIN
   test "should_clear_cache_on_main_after_publishing_column" do
-    n = portal.column.find(:pending)[0]
+    n = Column.find(:pending)[0]
     assert_not_nil n
     go_to '/columnas', 'columnas/index'
     assert_cache_exists "#{portal.code}/columnas/index/page_"
@@ -28,7 +28,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_unpublishing_column" do
-    n = portal.column.find(:published)[0]
+    n = Column.find(:published)[0]
     assert_not_nil n
     go_to '/columnas', 'columnas/index'
     assert_cache_exists "#{portal.code}/columnas/index/page_"
@@ -37,7 +37,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_updating_column" do
-    n = portal.column.find(:published)[0]
+    n = Column.find(:published)[0]
     assert_not_nil n
     go_to '/columnas', 'columnas/index'
     assert_cache_exists "#{portal.code}/columnas/index/page_"

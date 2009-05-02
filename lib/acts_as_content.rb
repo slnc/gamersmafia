@@ -158,12 +158,45 @@ module ActsAsContent
       self.update_attributes(attrs)
     end
     
-    def log_action(action_name, author=nil)
+    def log_action(action_name, author=nil, reason=nil)
       self.log ||= []
       if !(self.log.size > 0 && self.log[-1][0] == action_name && self.log[-1][2] > 5.seconds.ago) # no meter entradas repetidas
-        self.log<< [action_name, author.to_s, Time.now]
+        self.log<< [action_name, author.to_s, Time.now, reason]
       end
     end
+    
+    def closed_by_user
+      return nil unless self.closed?
+      self.log.reverse.each do |lentry|
+        if lentry[0] == 'cerrado'
+          return User.find_by_login(lentry[1])
+        end
+      end
+    end
+    
+    def reason_to_close
+      return nil unless self.closed?
+      self.log.reverse.each do |lentry|
+        if lentry[0] == 'cerrado'
+          return lentry[3]
+        end
+      end
+    end
+    
+    def close(user, reason)
+      return if self.closed?
+      self.closed = true
+      self.log_action('cerrado', user, reason)
+      self.save
+    end
+    
+    def reopen(user)
+      return unless self.closed?
+      self.closed = false
+      self.log_action('reabierto', user)
+      self.save
+    end
+    
     
     def recover(user)
       self.state = Cms::PUBLISHED
@@ -185,6 +218,7 @@ module ActsAsContent
           ApplicationController.gmurl(uniq)
         end
       end
+      
       true
     end
     
@@ -234,7 +268,18 @@ module ActsAsContent
       self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
     end
     
-    def do_before_save      
+    def do_before_save
+      if self.respond_to?(:source) && self.source
+        if self.source.strip == ''
+          self.source = nil
+        else
+          if !(Cms::URL_REGEXP =~ self.source)
+            self.errors.add('source', 'URL incorrecta')
+            return false
+          end
+        end
+      end
+      
       attrs = {}
       # TODO llamar específicamente a esta función para actualizar las imágenes
       if !Cms::DONT_PARSE_IMAGES_OF_CONTENTS.include?(self.class.name) and self.record_timestamps then
@@ -275,6 +320,8 @@ module ActsAsContent
           true
         end
       end
+      
+      true
     end
     
     def do_after_update
@@ -397,6 +444,7 @@ module ActsAsContent
         
         if uniq then
           uniq.state = self.state
+          uniq.source = self.source if self.respond_to?(:source)
           uniq.closed = self.closed
           uniq.save # refresh updated_on
         end
@@ -422,8 +470,14 @@ module ActsAsContent
     # no llamarlo create_unique_content pq rails es demasiado listo
     def create_my_unique_content
       myctype = ContentType.find(:first, :conditions => "name = '#{self.class.name}'")
-      base_opts = {:content_type_id => myctype.id, :external_id => self.id, :name => self.resolve_hid, :updated_on => self.created_on, :state => self.state}
-      base_opts.merge!({:clan_id => clan_id}) if self.respond_to? :clan_id
+      base_opts = { :content_type_id => myctype.id, 
+                  :external_id => self.id, 
+                  :name => self.resolve_hid, 
+                  :updated_on => self.created_on, 
+                  :state => self.state
+                  }
+      base_opts.merge!({:clan_id => self.clan_id}) if self.respond_to? :clan_id
+      base_opts.merge!({:source => self.source}) if self.respond_to? :source
       c = Content.create(base_opts)
       
       raise "error creating content!" if c.new_record?
@@ -439,29 +493,17 @@ module ActsAsContent
       self.unique_content.destroy
     end
     
+    # this content's contributed karma
     def karma
-      # el karma de un contenido es el karma del propio contenido más el karma
-      # de los comentarios
-      Karma::KPS_CREATE[self.class.name] + (self.unique_content.comments_count * Karma::KPS_CREATE['Comment'])
+      Karma.contents_karma(self)
     end
     
     def add_karma
-      u = self.user
-      Karma.give(u, Karma::KPS_CREATE[self.class.name])
-      Bank.transfer(:bank, 
-                    u, 
-                    Bank::convert(Karma::KPS_CREATE[self.class.name], 'karma_points'), 
-                      "Karma por resultar aceptado \"#{self.resolve_hid}\" (#{Cms::CLASS_NAMES[self.class.name]})")
+      Karma.add_karma_after_content_is_published(self)
     end
     
     def del_karma
-      u = self.user
-      Karma.take(u, Karma::KPS_CREATE[self.class.name])
-      Bank.transfer(u, 
-                    :bank, 
-                    Bank::convert(Karma::KPS_CREATE[self.class.name], 'karma_points'), 
-                      "Devolución de karma por contenido despublicado: #{self.resolve_hid} (#{Cms::CLASS_NAMES[self.class.name]})")
-      # TODO karma/gmf leak quitar karma a los comentadores, no? o se lo quitamos cuando se borre definitivamente de la papelera?
+      Karma.del_karma_after_content_is_unpublished(self)
     end
     
     def change_state(new_state, editor)
@@ -551,7 +593,7 @@ module ActsAsContent
         c = get_mean_vote(m) 
         self.cache_weighted_rank = (v / (v+m)) * r + (m / (v+m)) * c
         
-	self.update_without_timestamping
+        self.update_without_timestamping
       end
       
       if self.cache_rated_times < 2 then
