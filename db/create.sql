@@ -569,7 +569,8 @@ CREATE TABLE columns (
     state smallint DEFAULT 0 NOT NULL,
     cache_weighted_rank numeric(10,2),
     closed boolean DEFAULT false NOT NULL,
-    unique_content_id integer
+    unique_content_id integer,
+    source varchar
 );
 
 
@@ -1641,7 +1642,8 @@ CREATE TABLE interviews (
     state smallint DEFAULT 0 NOT NULL,
     cache_weighted_rank numeric(10,2),
     closed boolean DEFAULT false NOT NULL,
-    unique_content_id integer
+    unique_content_id integer,
+    source varchar
 );
 
 
@@ -1796,7 +1798,8 @@ CREATE TABLE news (
     clan_id integer,
     cache_weighted_rank numeric(10,2),
     closed boolean DEFAULT false NOT NULL,
-    unique_content_id integer
+    unique_content_id integer,
+    source varchar
 );
 
 
@@ -2172,7 +2175,8 @@ CREATE TABLE reviews (
     state smallint DEFAULT 0 NOT NULL,
     cache_weighted_rank numeric(10,2),
     closed boolean DEFAULT false NOT NULL,
-    unique_content_id integer
+    unique_content_id integer,
+    source varchar
 );
 
 
@@ -2469,7 +2473,8 @@ CREATE TABLE tutorials (
     state smallint DEFAULT 0 NOT NULL,
     cache_weighted_rank numeric(10,2),
     closed boolean DEFAULT false NOT NULL,
-    unique_content_id integer
+    unique_content_id integer,
+    source varchar
 );
 
 

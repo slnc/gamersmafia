@@ -18,6 +18,7 @@ module Karma
                 'Blogentry'=> 20,
                 'Question'=> 20,
                 'RecruitmentAd'=> 20,
+                'Copypaste'=> 20,
                 'Comment'=> 5,
   }
   
@@ -113,12 +114,26 @@ module Karma
                           content_type_id
                      FROM contents 
                     WHERE state = #{Cms::PUBLISHED}
+                      AND source IS NULL
                       AND (select is_bot FROM users WHERE id = user_id) = 'f' 
                       AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'  AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}' 
                  GROUP BY user_id, content_type_id").each do |dbc|
       points[dbc['user_id']] ||= 0
       points[dbc['user_id']] += dbc['count'].to_i * Karma::KPS_CREATE[ContentType.find(dbc['content_type_id'].to_i).name]
     end
+    
+    User.db_query("SELECT count(*), 
+                          user_id
+                     FROM contents 
+                    WHERE state = #{Cms::PUBLISHED}
+                      AND source IS NOT NULL
+                      AND (select is_bot FROM users WHERE id = user_id) = 'f' 
+                      AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'  AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}' 
+                 GROUP BY user_id").each do |dbc|
+      points[dbc['user_id']] ||= 0
+      points[dbc['user_id']] += dbc['count'].to_i * Karma::KPS_CREATE['Copypaste']
+    end
+    
     points
   end
   
@@ -142,11 +157,24 @@ module Karma
                           content_type_id
                      FROM contents 
                     WHERE user_id = #{user.id}
+                      AND source IS NULL
                       AND state = #{Cms::PUBLISHED} 
                       AND date_trunc('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00' 
                  GROUP BY portal_id, content_type_id").each do |dbc|
       points[dbc['portal_id']] ||= 0
       points[dbc['portal_id']] += dbc['count'].to_i * Karma::KPS_CREATE[ContentType.find(dbc['content_type_id'].to_i).name]
+    end
+    
+    User.db_query("SELECT count(*), 
+                          portal_id
+                     FROM contents 
+                    WHERE user_id = #{user.id}
+                      AND source IS NOT NULL
+                      AND state = #{Cms::PUBLISHED} 
+                      AND date_trunc('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00' 
+                 GROUP BY portal_id").each do |dbc|
+      points[dbc['portal_id']] ||= 0
+      points[dbc['portal_id']] += dbc['count'].to_i * Karma::KPS_CREATE['Copypaste']
     end
     
     # TODO contenidos approved_by_user_id no se contabilizan
@@ -169,8 +197,14 @@ module Karma
       
       for c in Cms::contents_classes_publishable
         # author of
-        points += c.count(:conditions => "user_id = #{thing.id} and state = #{Cms::PUBLISHED}") * Karma::KPS_CREATE[c.name]
-        points += c.count(:conditions => "approved_by_user_id = #{thing.id} and state = #{Cms::PUBLISHED}") * Karma::KPS_SAVE[c.name] # legacy
+        if c.new.respond_to?(:source)
+          points += c.count(:conditions => "user_id = #{thing.id} and state = #{Cms::PUBLISHED} AND source IS NULL") * Karma::KPS_CREATE[c.name]
+          points += c.count(:conditions => "user_id = #{thing.id} and state = #{Cms::PUBLISHED} AND source IS NOT NULL") * Karma::KPS_CREATE['Copypaste']
+          points += c.count(:conditions => "approved_by_user_id = #{thing.id} and state = #{Cms::PUBLISHED}") * Karma::KPS_SAVE[c.name] # legacy
+        else
+          points += c.count(:conditions => "user_id = #{thing.id} and state = #{Cms::PUBLISHED}") * Karma::KPS_CREATE[c.name]
+          points += c.count(:conditions => "approved_by_user_id = #{thing.id} and state = #{Cms::PUBLISHED}") * Karma::KPS_SAVE[c.name] # legacy          
+        end
       end
       
       points
