@@ -190,7 +190,7 @@ class FactionsPortalCoverageProxy
     # if codes.size == 0
     #  codes = @portal.platforms.collect { |g| "'#{g.code}'" }
     #end
-    new_cond = ''
+    new_cond = "event_id IN (SELECT external_id FROM contents_terms a join contents b on a.content_id = b.id AND b.content_type_id = (select id from content_types where name = 'Event') AND a.term_id = (select id from terms where parent_id IS NULL and slug = '#{@portal.code}'))"
     
     if options[:conditions].kind_of?(Array)
       options[:conditions][0] = "#{options[:conditions][0]} AND #{new_cond}"
