@@ -203,7 +203,7 @@ end
 	<% cache("/#{controller.portal_code}/home/index/apuestas_#{Time.now.to_i / 3600}") do %>
 <table>
       <% shown_bets = [] 
-Bet.open_bets.each do |o| 
+      controller.portal.bet.find(:published, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC').each do |o| 
 shown_bets<< o.unique_content.id %>
         <tr class="<%=oddclass%> new" id="content<%=o.unique_content.id%>">
 <td class="<%=oddclass%>"><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
