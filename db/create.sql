@@ -570,7 +570,7 @@ CREATE TABLE columns (
     cache_weighted_rank numeric(10,2),
     closed boolean DEFAULT false NOT NULL,
     unique_content_id integer,
-    source varchar
+    source character varying
 );
 
 
@@ -886,7 +886,7 @@ CREATE TABLE contents (
     portal_id integer,
     bazar_district_id integer,
     closed boolean DEFAULT false NOT NULL,
-    source varchar
+    source character varying
 );
 
 
@@ -1644,7 +1644,7 @@ CREATE TABLE interviews (
     cache_weighted_rank numeric(10,2),
     closed boolean DEFAULT false NOT NULL,
     unique_content_id integer,
-    source varchar
+    source character varying
 );
 
 
@@ -1800,7 +1800,7 @@ CREATE TABLE news (
     cache_weighted_rank numeric(10,2),
     closed boolean DEFAULT false NOT NULL,
     unique_content_id integer,
-    source varchar
+    source character varying
 );
 
 
@@ -2177,7 +2177,7 @@ CREATE TABLE reviews (
     cache_weighted_rank numeric(10,2),
     closed boolean DEFAULT false NOT NULL,
     unique_content_id integer,
-    source varchar
+    source character varying
 );
 
 
@@ -2475,7 +2475,7 @@ CREATE TABLE tutorials (
     cache_weighted_rank numeric(10,2),
     closed boolean DEFAULT false NOT NULL,
     unique_content_id integer,
-    source varchar
+    source character varying
 );
 
 
@@ -7447,14 +7447,6 @@ ALTER TABLE ONLY friendships
 
 
 --
--- Name: funthings_name_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY funthings
-    ADD CONSTRAINT funthings_name_key UNIQUE (title);
-
-
---
 -- Name: funthings_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -8896,6 +8888,13 @@ CREATE INDEX funthings_state ON funthings USING btree (state);
 
 
 --
+-- Name: funthings_title_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX funthings_title_uniq ON funthings USING btree (title);
+
+
+--
 -- Name: games_maps_name_game_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -9684,6 +9683,22 @@ ALTER TABLE ONLY columns
 
 ALTER TABLE ONLY columns
     ADD CONSTRAINT columns_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
+
+
+--
+-- Name: competitions_matches_participant1_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY competitions_matches
+    ADD CONSTRAINT competitions_matches_participant1_id_fkey FOREIGN KEY (participant1_id) REFERENCES competitions_participants(id);
+
+
+--
+-- Name: competitions_matches_participant2_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY competitions_matches
+    ADD CONSTRAINT competitions_matches_participant2_id_fkey FOREIGN KEY (participant2_id) REFERENCES competitions_participants(id);
 
 
 --
