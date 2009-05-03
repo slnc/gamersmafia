@@ -17,6 +17,7 @@ namespace :gm do
     update_portals_hits_stats
     # provocar_golpes_de_estado
     forget_old_tracker_items
+    forget_old_pageviews
     forget_old_autologin_keys
     forget_old_treated_visitors
     check_faction_leaders
@@ -26,6 +27,10 @@ namespace :gm do
     close_old_open_questions
   end
   
+  def forget_old_pageviews
+    User.db_query("delete from stats.pageviews where created_on <= now() - '3 months'::interval")
+  end
+
   def kill_zombified_staff
     # bigbosses, editors, moderators and sicarios
     limit = 3.months.ago
