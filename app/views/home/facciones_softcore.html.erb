@@ -18,7 +18,7 @@
 	</div>
 	
 	<%mftext('Foros', :grid => 4, :glast => true, :blast => true) do %>
-	<%= render :partial => '/home/foros_list' %>
+	<%= render :partial => '/home/foros_list', :locals => { :topterm => controller.portal.categories(Topic)[0] } %>
 	<% end -%>
 <% end -%>
 

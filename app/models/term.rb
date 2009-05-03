@@ -570,10 +570,11 @@ class Term < ActiveRecord::Base
   
   def last_updated_children(opts={})
     opts = {:limit => 5}.merge(opts)
+    sql_cond = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
     Content.find_by_sql("SELECT * 
                            FROM contents 
                           WHERE id IN (SELECT last_updated_item_id 
-                           FROM terms WHERE id IN (SELECT id FROM terms WHERE parent_id = #{self.id}))
+                           FROM terms WHERE id IN (SELECT id FROM terms WHERE parent_id = #{self.id})#{sql_cond}) 
                        ORDER BY updated_on DESC
                           LIMIT #{opts[:limit]}").collect { |c| c.terms[0] }.compact.sort_by { |e| e.name.downcase }
   end
