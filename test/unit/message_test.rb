@@ -5,6 +5,14 @@ class MessageTest < ActiveSupport::TestCase
   def setup
     @message = Message.find(1)
   end
+
+  test "should properly escape javascript" do
+    bad_txt = '</strong><img src="http://tbn3.google.com/images?q=tbn:tijzzbMzPpPJRM:http://galerie.antonindanek.cz/obrazky/owned.gif"><script>alert(\'jefe dentro tambien puedo hacer que salte,la vez anterior lo hice fuera,esta vez debería saltar dentro y fuera.\')</script>'
+
+    @m = Message.create({:user_id_to => 1, :user_id_from => 2, :title => bad_txt, :message => bad_txt})
+    assert @m.title.index('<').nil?
+    assert @m.message.index('script').nil?
+  end
   
   test "should_properly_set_the_has_replies_of_replied_message" do
     @m1 = Message.find(1)
