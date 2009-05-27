@@ -17,7 +17,7 @@ class AdsSlot < ActiveRecord::Base
     User.db_query("SELECT * FROM ads_slots_portals WHERE ads_slot_id = #{self.id}").collect { |dbr| Portal.find_by_id(dbr['portal_id'].to_i)}
   end
   
-  VALID_LOCATIONS = %w(bottom sideleft sideright sideright-random sideleft-epsilongreedy sideleft-epsilonfirst sideleft-epsilondecreasing sideleft-leasttaken sideleft-softmax sideleft-poker sideright-epsilongreedy sideright-epsilonfirst sideright-epsilondecreasing sideright-leasttaken sideright-softmax sideright-poker download-page download-page-nls)
+  VALID_LOCATIONS = %w(bottom sideleft sideright sideright-random sideleft-epsilongreedy sideleft-epsilonfirst sideleft-epsilondecreasing sideleft-leasttaken sideleft-softmax sideleft-poker sideright-epsilongreedy sideright-epsilonfirst sideright-epsilondecreasing sideright-leasttaken sideright-softmax sideright-poker download-page download-page-nls download-page-second)
   before_save :check_location
   before_save :set_position
   
