@@ -152,7 +152,8 @@ def check_full_stack():
           print "No urchinTracker found, raising URLError"
           raise urllib2.URLError
     except urllib2.URLError, e:
-        print "Error al comprobar el stack completo Apache + Mongrel: %s" % e
+	if DEBUG:
+        	print "Error al comprobar el stack completo Apache + Mongrel: %s" % e
         mainloop()
 
 
@@ -166,7 +167,8 @@ def mainloop():
         try:
             pid_lucky = get_lucky()
         except NoSaneMongrelFound:
-            print "No sane mongrel found, retrying.."
+  	    if DEBUG:
+                print "No sane mongrel found, retrying.."
             spin()
             time.sleep(5)
             pid_lucky = get_lucky()
