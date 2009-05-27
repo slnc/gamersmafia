@@ -23,6 +23,11 @@ class Message < ActiveRecord::Base
   observe_attr :receiver_deleted
   
   plain_text :title
+  before_save :sanitize_message
+
+  def sanitize_message
+    self.message = Comments::formatize(self.message)
+  end
   
   # TODO borrando muchos mensajes de golpe no es eficiente
   def self.update_unread_count(user)
