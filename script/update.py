@@ -50,7 +50,7 @@ def send_changelog_email():
 
     # send the email
     fromaddr = 'webmaster@gamersmafia.com'
-    toaddrs = 'dharana@gamersmafia.com'
+    toaddrs = 'slnc@gamersmafia.com'
 
     msg = ("Content-Type: text/plain; charset=UTF-8\r\nSubject: GM actualizada a la versión %s\r\nFrom: %s\r\nTo: %s\r\n\r\n%s" % (cur, fromaddr, toaddrs, log))
     server = smtplib.SMTP('mail.gamersmafia.com')
