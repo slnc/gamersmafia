@@ -26,7 +26,7 @@ class Message < ActiveRecord::Base
   before_save :sanitize_message
 
   def sanitize_message
-    self.message = Comments::formatize(self.message)
+    self.message = self.message
   end
   
   # TODO borrando muchos mensajes de golpe no es eficiente

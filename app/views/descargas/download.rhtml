@@ -31,7 +31,9 @@ border: 0;
 <% else %>
 	<%=ads_slots('download-page')%>
 <% end -%>
+<div style="margin-top: 20px;">
 	<%=ads_slots('download-page-second')%>
+</div>
 </div>
 <script type="text/javascript">
 	window.setTimeout(function() { document.location = '<%=@download_link%>'}, 2000); 

@@ -88,7 +88,7 @@ end -%>
 	
 	
 	<%mftext('Wallpapers') do %>
-		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'Wallpapers\' And taxonomy = \'ImagesCategory\'').id}%>
+		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'Fondos de Escritorio - Wallpapers\' And taxonomy = \'ImagesCategory\'').id}%>
 	<% end -%>
 <% end -%>
 

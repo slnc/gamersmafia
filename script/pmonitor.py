@@ -14,7 +14,7 @@ import urllib2
 # START config
 webapp = 'gamersmafia'
 homeurl = 'gamersmafia.com'
-max_mem = 200000 # size in KiB (1024)
+max_mem = 250000 # size in KiB (1024)
 base_dir = "/home/httpd/websites/%s/current" % webapp
 pids_dir = "%s/tmp/pids/" % base_dir
 DEBUG = False
