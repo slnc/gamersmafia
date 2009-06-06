@@ -34,7 +34,7 @@ end
 
 %>
 </div>
-  <div class="message-body"><%=auto_link(smilelize(Comments::formatize(message_quotize(@curmessage.message))))%></div>
+<div class="message-body"><%=@curmessage.message.index('<br />') ? @curmessage.message : auto_link(smilelize(Comments::formatize(message_quotize(@curmessage.message))))%></div>
   
 <div class="subheader"><div>Conversación</div></div>
 <%=print_thread_tree(Message.find(@curmessage.thread_id), @curmessage)%>
