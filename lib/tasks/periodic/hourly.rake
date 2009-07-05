@@ -5,7 +5,6 @@ namespace :gm do
     GmSys.kill_workers # just in case they leak, a refresh is not bad at all
     GmSys.job('Competitions.update_user_competitions_indicators')
     GmSys.command("find #{FRAGMENT_CACHE_PATH}/site/_online_state -type f -mmin +2 -exec rm {} \\\\\;")
-    `find #{RAILS_ROOT}/tmp/sessions/ -type f -mmin +30 -name gm.\\\* -exec rm {} \\\;`
     User.db_query("DELETE FROM anonymous_users WHERE lastseen_on < now() - '1 hour'::interval")
     # TODO alariko se muere y no le resucitamos
     # exec("#{RAILS_ROOT}/script/check_alariko.sh") no funciona, hay que pensar otra idea
