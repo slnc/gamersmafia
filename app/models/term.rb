@@ -119,7 +119,7 @@ class Term < ActiveRecord::Base
       o = self
       while o
         Term.increment_counter(:contents_count, o.id)
-        User.db_query("UPDATE terms SET comments_count = comments_count + #{content.comments_count}")
+        User.db_query("UPDATE terms SET comments_count = comments_count + #{content.comments_count} WHERE id = #{o.id}")
         o = o.parent
       end
       
