@@ -77,8 +77,8 @@ class Topic < ActiveRecord::Base
                                          FROM terms 
                                         WHERE root_id = parent_id
                                           AND bazar_district_id IS NULL 
-                                          AND taxonomy = 'TopicsCategory' 
-                                          AND updated_on >= now() - '1 week'::interval)
+                                          AND taxonomy = 'TopicsCategory' )
+                                AND updated_on >= now() - '1 week'::interval
                        ORDER BY updated_on DESC").each do |content|
       break if i >= limit
       next if contents_r_root_id.values.include?(content.real_content.id)
