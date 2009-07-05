@@ -1,3 +1,6 @@
+<% if object.respond_to?(:source) && object.source then %>
+	<div class="infoinline">Fuente: <a href="<%=object.source%>"><%=object.source.hostname_from_url%></a></div>
+<% end -%>
 <% if object.state == Cms::PENDING || (object.state == Cms::DELETED && Cms.user_can_edit_content?(@user, object))
       object = object.unique_content %>
       <hr />
