@@ -36,7 +36,7 @@ Líderes:<br />
 
 <% content_main do %>
 
-<% if @user.is_faction_leader? then %>
+<% if @user.is_faction_leader? && @user.faction_id then %>
 <%mftext('Estadísticas') do %>
 <div id="line1"></div>
 <script type="text/javascript">

@@ -332,7 +332,7 @@ if u_clans.size == 0 then %>
 	
 	<%= render :partial => '/layouts/userbox2' %>
 <%
-if user_is_authed && @user.is_faction_leader? then %>
+if user_is_authed && @user.is_faction_leader? && @user.faction_id then %>
 <%mftext('Monitor de Facción', :id => 'mgfaction-monitor') do %><%=faction_favicon(@user.faction)%><%=faction_activity_minicolumns(@user.faction)%><% end -%>
 <% end %>
 <% if nil then %>
