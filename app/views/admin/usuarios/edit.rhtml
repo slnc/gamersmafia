@@ -75,7 +75,7 @@
 
 <% content_main do %>
 <%mftext(@edituser) do %>
-<% if @user.is_superadmin? then %>
+<% if @user.has_admin_permission?(:capo) then %>
 <table>
 <tr><td>
 
@@ -149,6 +149,9 @@
 <hr width="200"/>
 </td></tr>
 
+<% if @edituser.enable_comments_sig? then %>Mi firma<br />
+	<tr><td>Firma</td><td><input class="text" type="text" style="width: 100%;" maxlength="70" name="edituser[comments_sig]" value="<%=h @edituser.comments_sig%>" /></td></tr>
+<% end -%>
 <tr><td>&nbsp;</td>
 <td>
   <input type="submit" class="button primary" value="Guardar" />

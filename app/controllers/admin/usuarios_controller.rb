@@ -74,7 +74,7 @@ class Admin::UsuariosController < ApplicationController
     end
     
     u.update_admin_permissions(params[:edituser][:admin_permissions]) if params[:edituser][:admin_permissions].to_s != '' 
-    if u.update_attributes(params[:edituser].pass_sym(:firstname, :lastname, :login, :antiflood_level, :state, :password, :password_confirmation, :email, :is_hq))
+    if u.update_attributes(params[:edituser].pass_sym(:firstname, :lastname, :login, :antiflood_level, :state, :password, :password_confirmation, :email, :is_hq, :comments_sig))
       flash[:notice] = 'Cambios guardados correctamente.'
       redirect_to :action => 'edit', :id => u.id
     else
