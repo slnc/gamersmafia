@@ -382,6 +382,7 @@ class CacheObserver < ActiveRecord::Observer
       end
       
       when 'User':
+      expire_fragment "/common/globalnavbar/#{1 % 1000}/1_avatar.cache" if object.slnc_changed? :login
       if object.slnc_changed? :state
         expire_fragment("/common/carcel")
         expire_fragment("/common/carcel_full")

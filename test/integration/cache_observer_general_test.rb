@@ -13,6 +13,16 @@ class CacheObserverGeneralTest < ActionController::IntegrationTest
   end
 
 
+  test "should clear users avatar cache after changing nick" do
+      sym_login :superadmin, 'lalala'
+      get '/'
+      assert_response :success
+      assert_cache_exists "/common/globalnavbar/#{1 % 1000}/1_avatar"
+      assert User.find(1).update_attributes(:login => 'foobarbaz')
+      assert_cache_dont_exist "/common/globalnavbar/#{1 % 1000}/1_avatar"
+
+  end
+
   def teardown
     ActionController::Base.perform_caching             = false
   end
