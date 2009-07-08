@@ -10,7 +10,6 @@ class Term < ActiveRecord::Base
   belongs_to :last_updated_item, :class_name => 'Content', :foreign_key => 'last_updated_item_id'
   # before_save :set_slug
   
-  
   acts_as_rootable
   acts_as_tree :order => 'name'
   
@@ -21,6 +20,7 @@ class Term < ActiveRecord::Base
   # VALIDATES siempre los últimos
   validates_format_of :slug, :with => /^[a-z0-9_.-]{0,50}$/
   validates_format_of :name, :with => /^.{1,100}$/
+  plain_text :name, :description
   validates_uniqueness_of :name, :scope => [:game_id, :bazar_district_id, :platform_id, :clan_id, :taxonomy, :parent_id]
   validates_uniqueness_of :slug, :scope => [:game_id, :bazar_district_id, :platform_id, :clan_id, :taxonomy, :parent_id]
   before_save :check_scope_if_toplevel

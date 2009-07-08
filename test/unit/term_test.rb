@@ -329,4 +329,23 @@ class TermTest < ActiveSupport::TestCase
     assert_equal 0, @cat1.comments_count
     assert_equal 0, @subcat1.comments_count, @subcat1.comments_count
   end
+
+  test "no xss names" do
+      t = Term.new(:name => '<script type="text/javascript">alert(\'hola\');</script>')
+      assert t.save
+
+      t = Term.new(:name => 'General<script type="text/javascript">alert(\'hola\');</script>')
+      assert t.save
+      assert_equal "General&lt;script type=\"text/javascript\"&gt;alert('hola');&lt;/script&gt;", t.name
+  end
+
+  test "no xss descriptions" do
+      t = Term.new(:name => 'alksjdlajd', :description  => '<script type="text/javascript">alert(\'hola\');</script>')
+      assert t.save
+      assert_equal "&lt;script type=\"text/javascript\"&gt;alert('hola');&lt;/script&gt;", t.description
+
+      t = Term.new(:name => 'alksjdlajd2', :description  => 'hola<script type="text/javascript">alert(\'hola\');</script>')
+      assert t.save
+      assert_equal 'hola&lt;script type="text/javascript"&gt;alert(\'hola\');&lt;/script&gt;', t.description
+  end
 end
