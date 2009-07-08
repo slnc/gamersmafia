@@ -72,7 +72,7 @@ class BazarPortal
         Term.single_toplevel(:slug => 'bazar')
       end
     elsif /_categories/ =~ method_id.to_s then
-      Term.single_toplevel(:slug => 'bazar')
+      Term.toplevel(:slug => 'bazar')
     else
       super
     end
