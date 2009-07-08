@@ -57,8 +57,10 @@ class ActsAsContentTest < ActiveSupport::TestCase
     test_should_not_allow_to_link_to_child_term_if_content_is_categorizable_and_root_term_given
     @tut.categories_terms_ids = [[19, 28], 'TutorialsCategory']
     assert_equal 2, @tut.terms.size
-    assert_equal 19, @tut.terms[0].id
-    assert_equal 28, @tut.terms[1].id
+    termz = [19, 28]
+    @tut.terms.each do |t|
+        assert termz.include?(t.id)
+    end
   end
   
   test "should_add_log_entry_on_creation" do
