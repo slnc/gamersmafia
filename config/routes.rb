@@ -7,8 +7,6 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'admin/', :controller => 'admin/menu', :action => 'index'
   map.connect 'admin/contenidos/recover/:id', :controller => 'admin/contenidos', :action => 'recover'
 
-  map.connect 'resumenes/:date', :controller => 'resumenes', :action => 'date', :requirements => { :date => /[0-9]{8}/ }
-
   map.connect 'admin/categorias/', :controller => 'admin/categorias', :action => 'index'
   
   map.connect 'admin/categorias/create', :controller => 'admin/categorias', :action => 'create'
