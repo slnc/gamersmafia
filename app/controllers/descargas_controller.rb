@@ -35,8 +35,13 @@ class DescargasController < InformacionController
     # TODO PERF no borrar las caches con tanta gracia, ¿no?
     CacheObserver.expire_fragment("/common/descargas/index/downloads_#{@download.main_category.id}/page_*") # TODO MUY HEAVY, no podemos hacer que cada descarga suponga borrar todas las caches de índices
     CacheObserver.expire_fragment("/common/descargas/index/most_downloaded_#{@download.main_category.root_id}")
-    if params[:r]
-      @download_link = params[:r]
+    if params[:r] 
+        if DownloadMirror.find_by_url(params[:r])
+          @download_link = params[:r]
+        else
+          flash[:error] = "URL de descarga inválida"
+          redirect_to "/descargas/show/#{@download.id}"
+        end
     else
       # CacheObserver.expire_fragment("/common/descargas/most_downloaded_#{@download.main_category.root_id}")
 	gm_link = @download.created_on > 1.day.ago ? 0 : 1

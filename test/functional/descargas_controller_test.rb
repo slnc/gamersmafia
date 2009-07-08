@@ -68,4 +68,12 @@ class DescargasControllerTest < ActionController::TestCase
     FileUtils.mkdir(dstdir) unless File.exists?(dstdir)
     FileUtils.copy("#{RAILS_ROOT}/test/fixtures/files/tall.jpg", dstdir)
   end
+
+  test "descargas with invalid r should show error" do
+      dm = DownloadMirror.find(:first)
+      assert dm
+      get :download, :id => dm.download_id, :r => dm.url
+      assert_response :success
+      assert flash[:error].nil?
+  end
 end
