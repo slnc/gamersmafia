@@ -82,10 +82,15 @@ class Cuenta::CuentaController < ApplicationController
   end
   
   def create2
-    params[:user][:email_confirmation] = params[:user][:email]
-    params[:user][:password_confirmation] = params[:user][:password]
-    @mmode = :new
-    create
+    if params[:user].nil?
+        flash[:error] = 'Datos de usuario no encontrados'
+        redirect_to '/cuenta/alta'
+    else
+        params[:user][:email_confirmation] = params[:user][:email]
+        params[:user][:password_confirmation] = params[:user][:password]
+        @mmode = :new
+        create
+    end
   end
   
   def create
