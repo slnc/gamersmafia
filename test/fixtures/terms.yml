@@ -256,3 +256,12 @@
       root_id: 21
       parent_id: 21
       taxonomy: ImagesCategory
+
+- bazar_tutorials_root:
+      id: 35
+      name: General
+      slug: general
+      root_id: 21
+      parent_id: 21
+      taxonomy: TutorialsCategory
+
