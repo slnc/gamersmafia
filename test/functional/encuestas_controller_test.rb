@@ -4,8 +4,6 @@ require File.dirname(__FILE__) + '/../test_functional_content_helper'
 class EncuestasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Poll', :form_vars => {:title => 'footapang', :starts_on => 2.days.since, :ends_on => 9.days.since}, :root_terms => 1
 
-
-
   test "should_create_with_options" do
     post :create, {:poll => {:title => 'footapang', :starts_on => 2.days.since, :ends_on => 9.days.since, :options_new => ['opcion1', 'opcion2']}, :root_terms => [1] }, { :user => 1}
     assert_response :redirect
@@ -14,6 +12,12 @@ class EncuestasControllerTest < ActionController::TestCase
     assert_equal 2, b.polls_options.count
     assert_not_nil b.polls_options.find_by_name('opcion1')
     assert_not_nil b.polls_options.find_by_name('opcion2')
+  end
+
+  test "should work on bazar" do
+    @request.host = App.domain_bazar
+    get :index
+    assert_response :success
   end
 
   test "should_publish_as_is" do
