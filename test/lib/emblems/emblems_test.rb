@@ -217,6 +217,7 @@ class EmblemsTest < ActiveSupport::TestCase
   end
   
   test "give_emblems_best_blogger" do
+      assert Blogentry.find(1).update_attributes(:created_on => Time.now)
     assert_gives_emblem('best_blogger') do
       sym_pageview({:user_id => @u.id, :url => '/dadadd/adsdasd/1', :controller => 'blogs', :action => 'blogentry', :model_id => '1', :portal_id => nil})
       sym_pageview({:user_id => @u.id, :url => '/dadadd/adsdasd/1', :controller => 'blogs', :action => 'blogentry', :model_id => '1', :portal_id => nil})
