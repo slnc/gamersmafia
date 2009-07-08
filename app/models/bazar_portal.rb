@@ -72,7 +72,7 @@ class BazarPortal
         Term.single_toplevel(:slug => 'bazar')
       end
     elsif /_categories/ =~ method_id.to_s then
-      Term.single_toplevel(:slug => 'bazar')
+      Term.toplevel(:slug => 'bazar')
     else
       super
     end
@@ -104,7 +104,7 @@ class BazarPortalPollProxy
   end
   
   def self.method_missing(method_id, *args)
-    GenericContentProxy.new(Poll).send(method_id, *args)
+    Term.single_toplevel(:slug => 'bazar').poll.send(method_id, *args)
   end
   
   def self.respond_to?(method_id, include_priv = false)
