@@ -96,6 +96,12 @@ class Faction < ActiveRecord::Base
     self.underboss && self.underboss.id == u.id
   end
   
+  def reload(options=nil)
+    super
+    @_cache_boss = nil
+    @_cache_underboss = nil
+  end
+  
   def boss
     @_cache_boss ||= begin
       urs = _role('Boss')

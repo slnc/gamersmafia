@@ -50,6 +50,16 @@ class UsersRole < ActiveRecord::Base
   def check_is_staff
     nagato = User.find_by_login('nagato')
     if self.frozen? # quitando permiso
+      if self.role == 'Don'
+        bd = BazarDistrict.find(self.role_data.to_i)
+        bd.update_don(bd.mano_derecha) if bd.mano_derecha
+      end
+      
+      if self.role == 'Boss'
+        bd = Faction.find(self.role_data.to_i)
+        bd.update_boss(bd.underboss) if bd.underboss        
+      end
+      
       Message.create(:title => "Permiso de #{format_scope} eliminado", :message => "Ya no tienes permisos de #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id)
     else
       Message.create(:title => "Recibido permiso de #{format_scope}", :message => "Acabas de recibir permisos de #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id)
