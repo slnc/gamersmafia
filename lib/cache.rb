@@ -23,6 +23,18 @@ module Cache
     end
   end
   
+  module Faction
+    extend Cache::Common
+    def self.common(o)
+      expire_fragment("/common/facciones/#{o.id}/staff")
+      expire_fragment('/home/index/factions')
+      expire_fragment('/common/facciones/list*')
+      expire_fragment("/common/facciones/index/newest_#{Time.now.strftime('%Y%m%d')}")
+      expire_fragment("/common/shared/_cash_transfer_factions")
+      expire_fragment("/common/gnav/factions_list")
+    end
+  end
+  
   module Friendship
     extend Cache::Common
     def self.common(o)

@@ -88,11 +88,7 @@ class CacheObserver < ActiveRecord::Observer
       end
       
       when 'Faction':
-      expire_fragment("/common/facciones/#{object.id}/staff")
-      expire_fragment('/home/index/factions')
-      expire_fragment('/common/facciones/list_*')
-      expire_fragment("/common/facciones/index/newest_#{Time.now.strftime('%Y%m%d')}")
-      expire_fragment("/common/shared/_cash_transfer_factions")
+        Cache::Faction.common(object)
       
       when 'Blogentry':
       expire_fragment '/common/home/index/blogentries'
@@ -444,12 +440,9 @@ class CacheObserver < ActiveRecord::Observer
       
       when 'Game':
       expire_fragment('/common/miembros/buscar_por_guid')
-      when 'Faction':
-      expire_fragment("/common/facciones/#{object.id}/staff")
-      expire_fragment('/home/index/factions')
-      expire_fragment('/common/facciones/list_*')
-      expire_fragment("/common/facciones/index/newest_#{Time.now.strftime('%Y%m%d')}")
-      expire_fragment("/common/shared/_cash_transfer_factions")
+    when 'Faction':
+      Cache::Faction.common(object)
+      
       when 'FactionsLink':
       expire_fragment("/common/facciones/#{object.faction_id}/webs_aliadas")
       object.faction.portals.each { |p| expire_fragment("/#{p.code}/webs_aliadas") }
