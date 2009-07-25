@@ -120,6 +120,8 @@ class User < ActiveRecord::Base
 
   before_save :check_if_shadow
 
+  named_scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})", :order => 'lower(login)'
+  
   def check_if_shadow
      self.state = ST_SHADOW if self.state == ST_ZOMBIE && self.lastseen_on > 1.minute.ago
      true
@@ -134,9 +136,6 @@ class User < ActiveRecord::Base
     GmSys.job("Blogentry.reset_urls_of_user_id(#{self.id})") if slnc_changed?(:login)
     true
   end
-  
-
-  
   
   def get_comments_valorations_type
     check_comments_values

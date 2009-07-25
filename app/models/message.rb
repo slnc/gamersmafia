@@ -24,7 +24,7 @@ class Message < ActiveRecord::Base
   
   plain_text :title
   before_save :sanitize_message
-
+  
   def sanitize_message
     self.message = self.message
   end
@@ -43,6 +43,13 @@ class Message < ActiveRecord::Base
   end
   
   public
+  def read(u=nil)
+    return if self.is_read?
+    
+    self.update_attributes(:is_read => true)
+    Message.update_unread_count(u) if u
+  end
+  
   def preview
     new_lines = message.split("\n").collect { |ln| (ln.strip == '' || ln[0..0] == '>') ? '' : ln }.join(' ')
     new_lines.strip
