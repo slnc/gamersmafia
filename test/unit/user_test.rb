@@ -1,20 +1,25 @@
 require 'test_helper'
 
-class UserTest < ActiveSupport::TestCase
-  
+class UserTest < ActiveSupport::TestCase  
   def setup
     ActionMailer::Base.delivery_method = :test
     ActionMailer::Base.perform_deliveries = true
     ActionMailer::Base.deliveries = []
   end
   
-  test "faith_ok" do
+  test "banning someone should remove all permissions" do
     u = User.find(1)
-    
-    assert u.faith_points == 5
+    u.users_roles.create(:role => 'Don', :role_data => '1')
+    u.reload
+    assert u.users_roles.count > 0
+    assert u.update_attributes(:state => User::ST_BANNED)
+    assert u.users_roles.count == 0
   end
   
-
+  test "faith_ok" do
+    u = User.find(1)
+    assert u.faith_points == 5
+  end
   
   test "is_editor" do
     u2 = User.find(2)
@@ -25,8 +30,7 @@ class UserTest < ActiveSupport::TestCase
   test "should_send_email_to_add_user_to_hq" do
     prev = ActionMailer::Base.deliveries.size
     @p = User.find_by_login(:panzer)
-    @p.is_hq = true
-    @p.save
+    assert @p.update_attributes(:is_hq => true)
     assert_equal prev + 2, ActionMailer::Base.deliveries.size
   end
   
@@ -44,10 +48,8 @@ class UserTest < ActiveSupport::TestCase
   
   test "del_user_from_hq_should_work" do
     test_should_send_email_to_add_user_to_hq
-    #prev = ActionMailer::Base.deliveries.size
     @p.is_hq = false
     assert @p.save
-    #assert_equal prev + 1, ActionMailer::Base.deliveries.size
   end
   
   test "create" do

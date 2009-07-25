@@ -129,7 +129,7 @@ class User < ActiveRecord::Base
   
   
   def check_permissions
-    self.users_roles.clear if slnc_changed?(:state) && self.state == User::ST_BANNED
+    self.users_roles.clear if slnc_changed?(:state) && STATES_CANNOT_LOGIN.include?(self.state)
   end
   
   def check_login_changed
