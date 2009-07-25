@@ -42,6 +42,7 @@ class User < ActiveRecord::Base
   belongs_to :resurrector, :class_name => 'User', :foreign_key => 'resurrected_by_user_id'
   belongs_to :comments_valorations_type  
   has_many :comments_valorations
+  has_many :users_contents_tags
   
   has_many :profile_signatures
   has_one :filter

@@ -10,6 +10,7 @@ class Content < ActiveRecord::Base
   has_many :contents_recommendations, :dependent => :destroy
   has_many :terms, :through => :contents_terms
   has_many :contents_terms, :dependent => :destroy
+  has_many :users_contents_tags, :dependent => :destroy
   
   after_save do |m| 
     m.contents_locks.clear if m.contents_locks

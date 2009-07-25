@@ -4,8 +4,11 @@ class Term < ActiveRecord::Base
   belongs_to :platform
   belongs_to :clan
   
+  named_scope :contents_tags, :conditions => 'taxonomy = \'ContentsTag\''
+  
   has_many :contents_terms, :dependent => :destroy
   has_many :contents, :through => :contents_terms
+  has_many :users_contents_tags
   
   belongs_to :last_updated_item, :class_name => 'Content', :foreign_key => 'last_updated_item_id'
   # before_save :set_slug
