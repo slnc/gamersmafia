@@ -229,8 +229,9 @@ li#sawbody-comunidad-nuevoclan a {  font-size: 10px; } */
 .mggnav-clans-new-clan { padding: 5px 0 0 0; }
 .mggnav-clans-all-my-clans { padding: 0 0 5px 0; }
 li#sawbody-facciones-staff { position: absolute; left: 554px; top: 21px; }
-li#sawbody-facciones-information { position: absolute; left: 485px; top: 21px; }
-li#sawbody-distrito-staff a, li#sawbody-facciones-staff a, li#sawbody-facciones-information a { font-size: 11px;}
+li#sawbody-facciones-information { position: absolute; left: 406px; top: 21px; }
+li#sawbody-facciones-miembros { position: absolute; left: 485px; top: 21px; }
+li#sawbody-distrito-staff a, li#sawbody-facciones-staff a, li#sawbody-facciones-information a , li#sawbody-facciones-miembros a { font-size: 11px;}
 
 li#sawbody-distrito-staff { position: absolute; left: 554px; top: 20px; } 
 

@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class FaccionControllerTest < ActionController::TestCase
-  
   test "index" do
     @request.host = "#{FactionsPortal.find(:first).code}.#{App.domain}"
     get :index
