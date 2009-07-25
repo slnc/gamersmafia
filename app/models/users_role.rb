@@ -50,9 +50,9 @@ class UsersRole < ActiveRecord::Base
   def check_is_staff
     nagato = User.find_by_login('nagato')
     if self.frozen? # quitando permiso
-      Message.create(:title => "Permiso de #{format_scope} eliminado", :message => "Ya no tienes permisos de #{self.role} en #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id)
+      Message.create(:title => "Permiso de #{format_scope} eliminado", :message => "Ya no tienes permisos de #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id)
     else
-      Message.create(:title => "Recibido permiso de #{format_scope}", :message => "Acabas de recibir permisos como #{self.role} en #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id)
+      Message.create(:title => "Recibido permiso de #{format_scope}", :message => "Acabas de recibir permisos de #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id)
     end
     
     self.user.check_is_staff
