@@ -30,7 +30,8 @@ class BazarDistrictTest < ActiveSupport::TestCase
     bd2.update_don(User.find(1))
     assert_equal 1, bd2.don.id
     bd.reload
-    assert !bd.has_don?
+    assert bd.has_don?
+    assert_equal 2, bd.don.id
     
     # test update a nil
     bd2.update_don(nil)
