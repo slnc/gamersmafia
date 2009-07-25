@@ -134,5 +134,5 @@ class Event < ActiveRecord::Base
     self.save
   end
   
-  validates_format_of :website, :with => Cms::URL_REGEXP, :if => Proc.new{ |c| c.website.to_s != '' }
+  validates_format_of :website, :with => Cms::URL_REGEXP_FULL, :if => Proc.new{ |c| c.website.to_s != '' }
 end

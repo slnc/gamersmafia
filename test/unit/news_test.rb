@@ -17,6 +17,13 @@ class NewsTest < ActiveSupport::TestCase
     assert_nil @news.unique_content.source
   end
   
+  test "should_only_allow_urls_as_source" do
+    @news = News.new(:title => 'foo flash-hack', :user_id => 1, :description => 'bar flash', :terms => Term.single_toplevel(:slug => 'ut').id, :source => 'http://www.obmsource.com/" style="color:#ffffff"><iframe src="javascript:alert(\'foo\');" width=0 height=0 scrollbars="no" frameborder="0">www.obmsource.com</iframe><div style="color:#999999">http://www.obmsource.com/</div>')
+    @news.save
+    print @news.source
+    assert !@news.save
+  end
+  
   test "should_properly_change_set source if invalid source" do
     @news = News.new(:title => 'foo flash-hack', :user_id => 1, :description => 'bar flash', :terms => Term.single_toplevel(:slug => 'ut').id, :source => 'source not nil')
     assert !@news.save
@@ -34,8 +41,7 @@ class NewsTest < ActiveSupport::TestCase
     assert_nil @news.source
     
     @news = News.new(:title => 'foo flash-hack', :user_id => 1, :description => 'bar flash', :terms => Term.single_toplevel(:slug => 'ut').id, :source => ' ')
-    assert @news.save
-    assert_nil @news.source
+    assert !@news.save
   end
   
   test "should_properly_change_set source if valid source first and then nil" do

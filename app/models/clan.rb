@@ -357,7 +357,7 @@ class Clan < ActiveRecord::Base
   # validates_format_of :name, :with => /^[a-z0-9<>¿\?[:space:]\(\):;\.,_¡!\/&%"\+\-]{1,40}$/i
   validates_format_of :irc_server, :with => Cms::DNS_REGEXP, :if => Proc.new{ |c| c.irc_server.to_s != '' }
   validates_format_of :irc_channel, :with => /^[a-z0-9_¡!¿\?.-]{1,30}$/i, :if => Proc.new{ |c| c.irc_channel.to_s != '' }
-  validates_format_of :website_external, :with => Cms::URL_REGEXP, :if => Proc.new{ |c| c.website_external.to_s != '' }
+  validates_format_of :website_external, :with => Cms::URL_REGEXP_FULL, :if => Proc.new{ |c| c.website_external.to_s != '' }
   
   # validates_format_of :description, :with => Cms::NO_JS TODO necesitamos una regexp para quitar el javascript
   validates_uniqueness_of :tag
