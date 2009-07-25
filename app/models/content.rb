@@ -35,6 +35,10 @@ class Content < ActiveRecord::Base
     # primero los fáciles
   end
   
+  def top_tags
+    self.terms.contents_tags.find(:all, :order => 'lower(name)')
+  end
+  
   def unlink_real_content
     # nos quitamos de last_updated_item_id si lo hay
     Term.find(:all, :conditions => ['last_updated_item_id = ?', self.id]).each do |t|

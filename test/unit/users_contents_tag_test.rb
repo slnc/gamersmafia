@@ -10,6 +10,23 @@ class UsersContentsTagTest < ActiveSupport::TestCase
     end
   end
   
+  test "official tags should be just the top popular tags" do
+    @c1 = Content.find(1)
+    @u1 = User.find(1)
+    @u2 = User.find(2)
+    @u3 = User.find(3)
+    t_count = Term.contents_tags.count
+    UsersContentsTag.tag_content(@c1, @u1, 'anime foo bar baz')
+    UsersContentsTag.tag_content(@c1, @u2, 'foo bar  gorvachob baz')
+    UsersContentsTag.tag_content(@c1, @u3, 'foo bar baz kapoing')
+    assert_equal t_count + 6, Term.contents_tags.count
+    tofind = %w(foo bar baz)
+    @c1.top_tags.each do |t|
+      tofind.delete(t.name)
+    end
+    assert_equal [], tofind
+  end
+  
   test "should only allow valid tag characters" do
     @uct = UsersContentsTag.new(:user_id => 1, :content_id => 1, :original_name => '~)!"U(#~)')
     assert !@uct.save
@@ -42,5 +59,15 @@ class UsersContentsTagTest < ActiveSupport::TestCase
     UsersContentsTag.tag_content(@c1, @u1, 'lel')
     assert_equal 1, @c1.users_contents_tags.count
     assert @c1.users_contents_tags.find_by_original_name('lel') 
+  end
+  
+  test "delete_tag should recalculate contents_terms" do
+    @c1 = Content.find(1)
+    @u1 = User.find(1)
+    UsersContentsTag.tag_content(@c1, @u1, 'fumanchu')
+    assert_count_decreases(ContentsTerm) do
+      UsersContentsTag.find(:first, :order => 'id DESC').destroy
+    end
+    assert_equal [], @c1.top_tags
   end
 end

@@ -155,5 +155,19 @@ class Admin::ContenidosController < ApplicationController
     end
     
     redirect_to gmurl(@content)
-  end  
+  end
+  
+  def tag_content
+    @content = Content.find(params[:id])
+    raise ActiveRecord::RecordNotFound unless @content
+    UsersContentsTag.tag_content(@content, @user, params[:tags], delete_missing=false)
+    render :layout => false
+  end
+  
+  def remove_user_tag
+    @uct = UsersContentsTag.find(:first, :conditions => ['user_id = ? AND id = ?', @user.id, params[:id]])
+    raise ActiveRecord::RecordNotFound unless @uct
+    @uct.destroy
+    render :nothing => true
+  end
 end

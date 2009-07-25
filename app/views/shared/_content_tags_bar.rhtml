@@ -1,0 +1,43 @@
+<% if user_is_authed then %>
+<div id="tag-this-content">taguéa</div>
+<div id="new-tag-input" style="display: none;"><% form_remote_tag(:url => '/admin/contenidos/tag_content', :update => 'content-tags') do %>
+<input type="hidden" name="id" value="<%=object.id%>" />
+<input id="new-tag-input-text" type="text" name="tags" />
+<% end -%>
+</div>
+
+
+<div id="my-content-tags"><% if user_is_authed then %><%object.users_contents_tags.find(:all, :conditions => ['user_id = ?', @user.id], :order => 'lower(original_name)').each do |uct| %> 	
+	<div class="tag one-of-my-tags" id="one-of-my-tags<%=uct.id%>">
+	<div style="display: none;" class="one-of-my-tags-ops" id="one-of-my-tags-ops<%=uct.id%>"><%=link_to_remote('X', :url => "/admin/contenidos/remove_user_tag/?id=#{uct.id}", :complete => "$j('#one-of-my-tags#{uct.id}').fadeOut('normal');")%></div>
+	<%=uct.original_name%></div><% end -%>
+<% end -%></div>
+
+<% end # if user_is_authed -%>
+
+<div id="top-content-tags"><%object.terms.contents_tags.find(:all, :order => 'lower(name)').each do |t| %> 
+<div class="tag"><%=t.name%></div>
+<% end -%>
+</div>
+<script type="text/javascript">
+$j('#tag-this-content').toggle(function () { $j('#new-tag-input-text').val(''); $j('#new-tag-input').toggle(); $j('#new-tag-input-text').focus(); },
+	function () { $j('#new-tag-input').toggle(); });
+	
+$j('.one-of-my-tags').mouseover(function () { $j(this).children('.one-of-my-tags-ops').show(); } );
+$j('.one-of-my-tags').mouseout(function () { $j(this).children('.one-of-my-tags-ops').hide(); } );
+</script>
+
+<style type="text/css">
+#new-tag-input-text { width: 100px; margin-left: 3px; }
+.one-of-my-tags { }
+.one-of-my-tags-ops { position: absolute; margin-top: -15px; }
+#my-content-tags .tag,
+#top-content-tags .tag { float: left; margin-right: 10px; padding-top: 15px; font-family: verdana; font-size: 10px; color: #888; }
+#tag-this-content, #new-tag-input, #my-content-tags, #top-content-tags { float: left; }
+#tag-this-content, #new-tag-input { padding-top: 15px; }
+#tag-this-content, #new-tag-input { margin-right: 5px; }
+#top-content-tags { padding-left: 10px; }
+#content-tags { clear: left; }
+</style>
+
+<div style="clear:left;"></div>

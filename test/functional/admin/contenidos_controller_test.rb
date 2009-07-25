@@ -186,4 +186,29 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     n.reload
     assert !n.closed?
   end
+  
+  test "tag_content should work" do
+    sym_login 1
+    t_count = Term.contents_tags.count
+    post :tag_content, :id => 1, :tags => 'fumanchu se fue a la guerra'
+    assert_response :success
+    assert_equal t_count + 6, Term.contents_tags.count 
+  end
+  
+  test "remove_user_tag should work" do
+    test_tag_content_should_work
+    sym_login 2
+    uct = UsersContentsTag.find(:first, :conditions => ['user_id = 1'])
+    assert_raises(ActiveRecord::RecordNotFound) do 
+      post :remove_user_tag, :id => uct.id
+    end
+    
+    sym_login 1
+    assert_count_decreases(ContentsTerm) do
+      assert_count_decreases(UsersContentsTag) do
+        post :remove_user_tag, :id => uct.id
+        assert_response :success
+      end
+    end
+  end
 end

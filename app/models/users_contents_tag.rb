@@ -4,6 +4,8 @@ class UsersContentsTag < ActiveRecord::Base
   belongs_to :content
   
   before_create :resolve_term
+  after_destroy Proc.new {|c| UsersContentsTag.recalculate_content_top_tags(c.content) }
+  
   validates_format_of :original_name, :with => /^[a-z0-9.]{1,30}$/i, :message => 'El tag tiene más de 30 caracteres o bien contiene caracteres ilegales (solo se permiten letras, numeros y puntos)'
   validates_uniqueness_of :term_id, :scope => [:content_id, :user_id]
   
@@ -20,7 +22,7 @@ class UsersContentsTag < ActiveRecord::Base
   end
   
   public
-  def self.tag_content(content, user, tag_str)
+  def self.tag_content(content, user, tag_str, delete_missing=true)
     return if tag_str.length > 300 or tag_str.count(' ') > 7
     tags_to_delete = content.users_contents_tags.find(:all, :conditions => ['user_id = ?', user.id])
     tags_to_delete ||= []
@@ -28,8 +30,22 @@ class UsersContentsTag < ActiveRecord::Base
       uct = UsersContentsTag.create(:user_id => user.id, :content_id => content.id, :original_name => tag)
       tags_to_delete = tags_to_delete.delete_if { |item| item.original_name == uct.original_name }
     end
-    tags_to_delete.each do |item| item.destroy end
-    
-    # TODO recalcular terms reales
+    tags_to_delete.each do |item| item.destroy end if delete_missing
+    self.recalculate_content_top_tags(content)
+  end
+  
+  def self.recalculate_content_top_tags(content)
+    del_top_tags = content.top_tags
+    Term.find_by_sql("SELECT * FROM terms
+                       WHERE id IN (SELECT term_id 
+                                      FROM users_contents_tags 
+                                     WHERE content_id = #{content.id} 
+                                  GROUP BY term_id 
+                                  ORDER BY count(id) DESC 
+                                     LIMIT 7)").each do |t|
+      t.link(content)
+      del_top_tags = del_top_tags.delete_if { |item| item.id == t.id }
+    end
+    del_top_tags.each do |oldtt| oldtt.destroy end
   end
 end
