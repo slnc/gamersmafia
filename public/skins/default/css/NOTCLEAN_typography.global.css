@@ -149,10 +149,10 @@ tr, td {
 }
 
 #csupport .current a {
-    font-family: verdana;
+    /* font-family: verdana;
     font-weight: bold;
     font-size: 11px;
-    text-decoration: underline;
+    text-decoration: underline; */
 }
 
 h2 {

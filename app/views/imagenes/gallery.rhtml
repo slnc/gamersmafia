@@ -15,10 +15,10 @@
   </ul>
   <% end -%>
   
-  <% mftext('Otras galerías') do %>
+  <% mftext("Otras galerías de #{@category.parent.name}") do %>
   <ul class="content-hid">
-    <strong><%=@category.parent.name%></strong>
-  <% for gallery in @category.parent.children.find(:all, :conditions => 'taxonomy = \'ImagesCategory\'') %>
+    <strong></strong>
+  <% for gallery in @category.parent.children.find(:all, :conditions => ['taxonomy = \'ImagesCategory\' and id <> ?', @category.id]) %>
   <% if @category.id == gallery.id then %>
   <li class="current"><%=link_to gallery.name, gmurl(gallery)%></li>
   <% else %>

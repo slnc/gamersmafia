@@ -233,8 +233,8 @@ body.gamer .pager-top .currentpage, body.gamer .pager-bottom .currentpage {
 }
 
 #csupport .current a {
-    color: #fff;
-    background: #9c2505;
+	font-weight: bold;
+	text-decoration: none;
 }
 
 .contenttitle {
