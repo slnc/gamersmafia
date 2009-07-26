@@ -28,6 +28,10 @@ class Term < ActiveRecord::Base
   validates_uniqueness_of :slug, :scope => [:game_id, :bazar_district_id, :platform_id, :clan_id, :taxonomy, :parent_id]
   before_save :check_scope_if_toplevel
   
+  def contents_tagged_count
+    raise "Invalid taxonomy" unless self.taxonomy == 'ContentsTag'
+    User.db_query("SELECT count(distinct(content_id)) FROM users_contents_tags WHERE term_id = #{self.id}")[0]['count'].to_i
+  end
 
   def check_scope_if_toplevel
     if self.new_record? && self.parent_id.nil?
