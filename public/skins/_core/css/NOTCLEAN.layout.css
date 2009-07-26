@@ -75,19 +75,9 @@ th.checkbox, td.checkbox {
 
 #ccontent { margin-bottom: 80px; }
 
-#mgfooter-copy {
-    float: left;
-    width: 124px;
-	height: 34px;
-	line-height: 50px;
-    border-right: 1px solid #dfdfdf;
-    font-family: tahoma;
-    font-size: 11px;
-}
-
 #mgfooter ul {
     padding: 0;
-    margin: 0 0 0 134px;
+    margin: 0 0 0 0;
 }
 
 #mgfooter li {
@@ -100,22 +90,9 @@ th.checkbox, td.checkbox {
 
 #mgfooter li.last { border-right: 0; }
 
-#mgfooter ul.first {
-	margin-bottom: 4px;
-}
 
 #mgfooter li a { padding-left: 0;}
 
-#mgfooter .leftbar {
-    float: left;
-    line-height: 32px;
-    padding-left: 8px;
-    margin-left: 128px;
-}
-
-#mgfooter .footer-separator {
-    margin: 0 3px;
-}
 
 #ccontent .linkads {
     margin-bottom: 6px;
