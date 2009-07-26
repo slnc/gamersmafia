@@ -1,6 +1,6 @@
 <% 
 participant = @competition.get_active_participant_for_user(@user)
-content_support do %>
+generic_support do %>
   <%  
   raise ActiveRecord::RecordNotFound if participant.nil?
   %>

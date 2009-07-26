@@ -1,4 +1,4 @@
-<%content_support(:show_ads => false) do %>
+<%generic_support(:show_ads => false) do %>
 	<% if @ab_test.completed_on.nil? then %>
 <%mftext('Finalizar experimento') do %>
   <%= form_tag :action => 'end_experiment', :id => @ab_test %>

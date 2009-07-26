@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
 <%= render :partial => '/shared/drafts', :locals => { :cls => Event } if user_is_authed %>
 <%= render :partial => 'shared/pending', :object => Event.pending %>
 <% end -%>

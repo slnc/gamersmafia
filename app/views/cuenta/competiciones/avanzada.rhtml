@@ -2,7 +2,7 @@
 opts = HashWithIndifferentAccess.new({ :tourney_groups => 8, :tourney_winners_per_group => 2, :tourney_rounds => 4 })
 opts.merge!(@competition.competitions_types_options)
 -%>
-<% content_support do %>
+<% generic_support do %>
   <% mftext('Jugadores disponibles') do %>
   <select id="player_to_situate" size="10" onchange="document.getElementById('player_to_situate_send').disabled = '';">
     <% @competition.competitions_participants.find(:all, :order => 'position ASC').each do |cp| %>

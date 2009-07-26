@@ -6,7 +6,7 @@ function open_download_win(download_id)
 }
 </script>
 
-<% content_support do %>
+<% generic_support do %>
 	<% if !@download.is_public? then %>
 	<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @download } %>
 	<% end -%>

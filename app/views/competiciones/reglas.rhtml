@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
   <% mftext('Mapas para esta competición') do %>
   <ul class="skeletal centered">
     <% for m in @competition.games_maps.find(:all, :order => 'lower(name) ASC') %>

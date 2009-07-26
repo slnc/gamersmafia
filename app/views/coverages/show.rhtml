@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
 <% if @coverage.is_public? then %>
 <%=render :partial => 'shared/content_stats', :locals => {:object => @coverage} %>
 <% # TODO ctivar cache cuando esté arreglada
@@ -26,7 +26,7 @@ if c then %>
 <% else %>
 <%= render :partial => '/shared/content_publishing_state', :locals => { :object => @coverage} %>
 <% end # is_public-%>
-<% end # content_support -%>
+<% end # generic_support -%>
 
 <% content_main do %>
 <%= mfcontent(@coverage)%>

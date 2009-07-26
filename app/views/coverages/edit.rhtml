@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
 <%= render :partial => '/shared/drafts', :locals => { :cls => Coverage } if user_is_authed %>
 <%=render :partial => 'shared/content_details', :locals => { :object => @coverage} %>
 <%= render :partial => '/shared/content_publishing_state', :locals => { :object => @coverage} %>

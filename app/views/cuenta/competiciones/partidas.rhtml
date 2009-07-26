@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
   <% if @competition.kind_of?(Ladder) then %>
   <% mftext('Retos sin aprobar') do %>
   <%=matches_list(@competition.matches(:unapproved))%>

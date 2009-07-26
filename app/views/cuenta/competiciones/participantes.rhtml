@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
 <%= render :partial => 'add_participant' if @competition.can_add_participants? %>
 <%= render :partial => 'add_allowed_participant' if @competition.can_modify_allowed_participants? %>
 <% end -%>

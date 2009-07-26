@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
   <% if @clan.irc_channel.to_s != '' and @clan.irc_server.to_s != '' then %>
   <div class="subheader first"><div>IRC</div></div>
     <a href="irc://<%=@clan.irc_server%>#<%=@clan.irc_channel%>"><%=@clan.irc_server%>#<%=@clan.irc_channel%></a>

@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
   <% if user_is_authed and @user.id != @curuser.id then 
   my_ps = @curuser.profile_signatures.find_by_signer_user_id(@user.id)
   my_ps = @curuser.profile_signatures.new if my_ps.nil?

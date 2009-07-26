@@ -6,7 +6,7 @@ function open_demo_win(demo_id)
 }
 </script>
 
-<% content_support do %>
+<% generic_support do %>
 	<% if @demo.is_public? then %>
 	<%=mfcontents_basic("Más demos de #{@demo.main_category.name}", 
 	controller.portal.demo,

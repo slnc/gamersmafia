@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
 <%= render :partial => '/respuestas/preguntar' if user_is_authed %>
 <%= render :partial => '/respuestas/top_sabios', :locals => { :category => @question.main_category } %>
 <% if @question.is_public? then %>

@@ -1,4 +1,4 @@
-<% content_support(:show_ads => false) do %>
+<% generic_support(:show_ads => false) do %>
     <%mftext('Bans/unbans a confirmar') do %>
 	<ul class="skeletal">
 	<%BanRequest.find(:all, :conditions => 'confirming_user_id is null or (unban_user_id is not null and unban_confirming_user_id is null)', :order => 'ban_requests.id desc', :include => :banned_user).each do |b|%>
