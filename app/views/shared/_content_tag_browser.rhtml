@@ -1,4 +1,4 @@
 <%mftable('Tags', content.users_contents_tags.find(:all, :order => 'lower(terms.name)', :include => :term)) do |uct| %>
-<td><a href="/tags/<%=uct.term.name%>"><%=uct.term.name%></a></td>
+<td><a href="<%=tag_url(uct.term)%>"><%=uct.term.name%></a></td>
 <td><%=uct.term.users_contents_tags.count%></td>
 <% end -%>
