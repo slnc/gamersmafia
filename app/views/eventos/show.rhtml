@@ -14,7 +14,7 @@
   }
 }
 </script>
-<% generic_support do %>
+<% content_support(:content => @event.unique_content) do %>
 <% if @event.is_public? then %>
 <% if @event.respond_to?(:coverages) then %>
 <% mftext('Noticias relacionadas') do %>

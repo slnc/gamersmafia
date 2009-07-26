@@ -1,4 +1,4 @@
-<% generic_support do %>
+<% content_support(:content => @topic.unique_content) do %>
   <%=render :partial => '/foros/nuevo_topic'%>
   
   <%=render :partial => '/shared/last_commented_items_in_category', :locals => { :category => @forum, :content_type => 'Topic' }%>

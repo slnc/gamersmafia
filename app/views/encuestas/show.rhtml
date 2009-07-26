@@ -1,4 +1,4 @@
-<% generic_support do %>
+<% content_support(:content => @poll.unique_content) do %>
 <% if !@poll.is_public? then %>
 <%= render :partial => '/shared/content_publishing_state', :locals => { :object => @poll } %>
 <% else %>

@@ -1,4 +1,4 @@
-<% generic_support do %>
+<% content_support(:content => @coverage.unique_content) do %>
 <% if @coverage.is_public? then %>
 <%=render :partial => 'shared/content_stats', :locals => {:object => @coverage} %>
 <% # TODO ctivar cache cuando esté arreglada
