@@ -1,4 +1,8 @@
-<%mftable('Tags', content.users_contents_tags.find(:all, :order => 'lower(terms.name)', :include => :term)) do |uct| %>
+<%
+parsed = []
+mftable('Tags', content.users_contents_tags.find(:all, :order => 'lower(terms.name)', :include => :term)) do |uct|
+next if parsed.include?(uct.term_id)
+parsed<< uct.term_id %>
 <td><a href="<%=tag_url(uct.term)%>"><%=uct.term.name%></a></td>
 <td><%=uct.term.users_contents_tags.count%></td>
 <% end -%>
