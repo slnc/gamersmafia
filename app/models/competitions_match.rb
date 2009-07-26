@@ -129,7 +129,7 @@ class CompetitionsMatch < ActiveRecord::Base
         :parent_id => parent_event.id, 
         :starts_on => self.play_on ? self.play_on : self.created_on,
         :ends_on => self.play_on ? self.play_on : self.created_on,
-        :website => "/competiciones/partida/#{self.id}",
+        :website => "#{App.domain_arena}/competiciones/partida/#{self.id}",
         :user_id => mrman.id})
       
       self.competition.event.main_category.link(my_event.unique_content)
