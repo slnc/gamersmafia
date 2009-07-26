@@ -23,8 +23,9 @@ class UsersContentsTag < ActiveRecord::Base
   
   public
   def self.tag_content(content, user, tag_str, delete_missing=true)
-    return if tag_str.length > 300 or tag_str.count(' ') > 7
+    return if tag_str.length > 300 or tag_str.count(' ') > 10
     tags_to_delete = content.users_contents_tags.find(:all, :conditions => ['user_id = ?', user.id])
+    return if tags_to_delete.size > 11
     tags_to_delete ||= []
     tag_str.split(' ').each do |tag|
       uct = UsersContentsTag.create(:user_id => user.id, :content_id => content.id, :original_name => tag)
