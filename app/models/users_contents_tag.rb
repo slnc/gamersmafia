@@ -35,7 +35,7 @@ class UsersContentsTag < ActiveRecord::Base
     self.recalculate_content_top_tags(content)
   end
   
-  def self.recalculate_content_top_tags(content)
+  def self.recalculate_content_top_tags(content, max_content_tags=7)
     del_top_tags = content.top_tags
     Term.find_by_sql("SELECT * FROM terms
                        WHERE id IN (SELECT term_id 
@@ -43,10 +43,10 @@ class UsersContentsTag < ActiveRecord::Base
                                      WHERE content_id = #{content.id} 
                                   GROUP BY term_id 
                                   ORDER BY count(id) DESC 
-                                     LIMIT 7)").each do |t|
+                                     LIMIT #{max_content_tags})").each do |t|
       t.link(content)
       del_top_tags = del_top_tags.delete_if { |item| item.id == t.id }
     end
-    del_top_tags.each do |oldtt| oldtt.destroy end
+    del_top_tags.each do |oldtt| oldtt.contents_terms.clear end
   end
 end

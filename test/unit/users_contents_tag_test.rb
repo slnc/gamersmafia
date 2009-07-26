@@ -70,4 +70,11 @@ class UsersContentsTagTest < ActiveSupport::TestCase
     end
     assert_equal [], @c1.top_tags
   end
+  
+  test "deleting because too many top tags should work" do
+    ct_old = ContentsTerm.count
+    test_official_tags_should_be_just_the_top_popular_tags
+    UsersContentsTag.recalculate_content_top_tags(@c1, 1)
+    assert_equal ct_old + 1, ContentsTerm.count
+  end
 end
