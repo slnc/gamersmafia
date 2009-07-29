@@ -9,6 +9,11 @@ class UsersContentsTagTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "eñe should work" do
+    @uct = UsersContentsTag.new(:user_id => 1, :content_id => 1, :original_name => 'ñ')
+    assert @uct.save
+  end
   
   test "official tags should be just the top popular tags" do
     @c1 = Content.find(1)
