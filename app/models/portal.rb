@@ -7,6 +7,7 @@ class Portal < ActiveRecord::Base
   belongs_to :clan # necesitamos aquí
   belongs_to :default_gmtv_channel
   belongs_to :skin
+  file_column :small_header
   
   before_save :check_code
   

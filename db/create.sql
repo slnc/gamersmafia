@@ -1932,7 +1932,8 @@ CREATE TABLE portals (
     skin_id integer,
     default_gmtv_channel_id integer,
     cache_recent_hits_count integer,
-    factions_portal_home character varying
+    factions_portal_home character varying,
+    small_header character varying
 );
 
 
@@ -5065,7 +5066,6 @@ ALTER SEQUENCE users_actions_id_seq OWNED BY users_actions.id;
 --
 
 CREATE SEQUENCE users_contents_tags_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -9038,6 +9038,27 @@ CREATE INDEX users_cache_remaning ON users USING btree (cache_remaining_rating_s
 --
 
 CREATE UNIQUE INDEX users_comments_sig ON users USING btree (comments_sig);
+
+
+--
+-- Name: users_contents_tags_content_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX users_contents_tags_content_id ON users_contents_tags USING btree (content_id);
+
+
+--
+-- Name: users_contents_tags_term_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX users_contents_tags_term_id ON users_contents_tags USING btree (term_id);
+
+
+--
+-- Name: users_contents_tags_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX users_contents_tags_user_id ON users_contents_tags USING btree (user_id);
 
 
 --
