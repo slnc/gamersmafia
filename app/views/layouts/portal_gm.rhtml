@@ -20,6 +20,11 @@
 		
 		<div class="mcontent">
 		   <a id="logo2" <% if !(controller.controller_name == 'home' && controller.action_name == 'index' && controller.portal.id == '-1') then %>onmouseover="this.className = 'hover';" onmouseout="this.className=''"<%end -%> href="http://<%=App.domain%>/"><img src="/images/blank.gif" /></a>
+			   <% if controller.portal_code == 'musica' then %>
+				   <style type="text/css">
+				   #logo2 img { background: url(/images/header_musica.png) 0 0 no-repeat; }
+				   </style>
+			   <% end -%>
 		   <div id="thesaw">
 		   	<% if user_is_authed then
 if @user.is_superadmin?
