@@ -22,6 +22,8 @@ class Faction < ActiveRecord::Base
   before_destroy :set_users_faction_id_to_nil
   before_destroy :destroy_editors_too
   before_destroy :destroy_related_portals
+  observe_attr :code, :name
+  after_save :update_related_portal
 
   def self.update_factions_cohesion
     Faction.find(:all, :order => 'id').each do |f|
@@ -32,6 +34,20 @@ class Faction < ActiveRecord::Base
   end
 
   
+  def update_related_portal
+    if self.slnc_changed?(:code) && self.slnc_changed_old_values[:code].to_s != ''
+        portal = FactionsPortal.find_by_code(self.slnc_changed_old_values[:code])
+        portal.update_attributes(:code => self.code) if portal
+    end
+
+    if self.slnc_changed?(:name) && self.slnc_changed_old_values[:name].to_s != ''
+        portal = FactionsPortal.find_by_code(self.code)
+        portal.update_attributes(:name => self.name) if portal
+    end
+
+    true
+  end
+
   def destroy_related_portals
     self.portals.clear
     portal = FactionsPortal.find_by_code(self.code)

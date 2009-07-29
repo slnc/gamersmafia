@@ -18,7 +18,7 @@ class Game < ActiveRecord::Base
   validates_uniqueness_of :code
   validates_uniqueness_of :name
   
-  observe_attr :code
+  observe_attr :code, :name
   
   ENTITY_USER = 0
   ENTITY_CLAN = 1
@@ -77,17 +77,18 @@ class Game < ActiveRecord::Base
   
   # TODO tb a plataformas
   def update_code_in_other_places_if_changed
+    [:code, :name].each do |thing|
     if slnc_changed?(:code)
-      return if slnc_changed_old_values[:code].nil?
-      f = Faction.find_by_code(slnc_changed_old_values[:code].strip)
-      
-      f.code = self.code
+      return if slnc_changed_old_values[thing].nil?
+      f = Faction.send("find_by_#{thing}", slnc_changed_old_values[thing].strip)
+      f.send(thing, self.send(thing))
       f.save
       Cms::CONTENTS_WITH_CATEGORIES.each do |content_name|
-        root_cat = Object.const_get(content_name).category_class.find(:first, :conditions =>['code = ? and id = root_id', slnc_changed_old_values[:code]])
-        root_cat.code = self.code
+        root_cat = Object.const_get(content_name).category_class.find(:first, :conditions =>["thing = #{thing} and id = root_id", slnc_changed_old_values[thing]])
+        root_cat.send(thing, self.send(thing))
         root_cat.save
       end
+    end
     end
     true
   end
