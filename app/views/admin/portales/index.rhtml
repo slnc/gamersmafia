@@ -22,5 +22,21 @@
 </tr>
 <% end -%>
 </table>
+
+<br />
+<br />
+<div class="subheader first"><div>Distritos (<%=BazarDistrictPortal.count%>)</div></div>
+<table>
+<%BazarDistrictPortal.find(:all, :order => 'lower(name)').each do |portal| %>
+<tr class="<%=oddclass%>">
+<td><strong><a href="/admin/portales/editar/<%=portal.id%>"><%=portal.name%></a></strong><br /><span class="infoinline"><a href="http://<%=portal.code%>.<%=App.domain%>"><%=portal.code%>.<%=App.domain%></a><br />
+<%portal.factions.each do |pf| %><%=pf.code%>, <%end%></span></td>
+<td class="w100"><%=portal.name%></td>
+<td class="w25 <%="flhdr" if portal.default_gmtv_channel_id%>"></td>
+</tr>
+<% end -%>
+</table>
+
+
 </div>
 <% end -%>
