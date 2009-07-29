@@ -9,6 +9,7 @@ class Term < ActiveRecord::Base
   has_many :contents_terms, :dependent => :destroy
   has_many :contents, :through => :contents_terms
   has_many :users_contents_tags
+  has_many :tagged_contents, :through => :users_contents_tags, :source => :content
   
   belongs_to :last_updated_item, :class_name => 'Content', :foreign_key => 'last_updated_item_id'
   # before_save :set_slug
