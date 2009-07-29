@@ -8,6 +8,7 @@ class Platform < ActiveRecord::Base
   has_many :terms
   before_save :check_code_doesnt_belong_to_portal
   after_create :create_term_and_categories
+  observe_attr :code, :name
   
   def create_term_and_categories
     root_term = Term.create(:platform_id => self.id, :name => self.name, :slug => self.code)
@@ -23,17 +24,18 @@ class Platform < ActiveRecord::Base
   
   # TODO copypaste de game
   def update_code_in_other_places_if_changed
+    [:code, :name].each do |thing|
     if slnc_changed?(:code)
-      return if slnc_changed_old_values[:code].nil?
-      f = Faction.find_by_code(slnc_changed_old_values[:code].strip)
-      
-      f.code = self.code
+      return if slnc_changed_old_values[thing].nil?
+      f = Faction.send("find_by_#{thing}", slnc_changed_old_values[thing].strip)
+      f.send(thing, self.send(thing))
       f.save
       Cms::CONTENTS_WITH_CATEGORIES.each do |content_name|
-        root_cat = Object.const_get(content_name).category_class.find(:first, :conditions =>['code = ? and id = root_id', slnc_changed_old_values[:code]])
-        root_cat.code = self.code
+        root_cat = Object.const_get(content_name).category_class.find(:first, :conditions =>["thing = #{thing} and id = root_id", slnc_changed_old_values[thing]])
+        root_cat.send(thing, self.send(thing))
         root_cat.save
       end
+    end
     end
     true
   end

@@ -1,6 +1,18 @@
 require 'test_helper'
 
 class FactionTest < ActiveSupport::TestCase
+  test "should update related portal" do
+    f1 = Faction.find(1)
+    fp1 = FactionsPortal.find_by_code(f1.code)
+    assert f1.update_attributes(:code => 'lolii')
+    fp1.reload
+    assert_equal 'lolii', fp1.code
+
+    assert f1.update_attributes(:name => 'macguire')
+    fp1.reload
+    assert_equal 'macguire', fp1.name
+  end
+
   test "find_by_bigboss" do
     f1 = Faction.find(1)
     u1 = User.find(1)
