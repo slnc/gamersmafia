@@ -6,6 +6,10 @@ class ArenaPortal
   def default_gmtv_channel_id
     1
   end
+
+  def small_header
+	  nil
+  end
   
   def channels
     GmtvChannel.find(:all, :conditions => "gmtv_channels.file is not null AND (gmtv_channels.faction_id IS NULL)", :order => 'gmtv_channels.id ASC', :include => :user)
