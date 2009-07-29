@@ -99,7 +99,11 @@ class Cuenta::MensajesController < ApplicationController
     if params[:ajax]
       render :partial => '/shared/ajax_facebox_feedback', :layout => false
     else
-      redirect_to params[:redirto]
+      if flash[:error]
+        render :action => :new
+      else
+        redirect_to params[:redirto]
+      end
     end
   end
   
