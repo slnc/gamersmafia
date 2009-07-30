@@ -55,7 +55,7 @@ end %>
 		   	  	</ul>
 		   	  </div>
 		   	  
-		   	  <div id="faction-building" style="position: absolute; margin-left: 900px; top: 0px; height: 68px; overflow: hidden; z-index: 5;">
+              <div id="faction-building" style="position: absolute; margin-left: 900px; top: -12px; height: 80px; overflow: hidden; z-index: 5;">
 		   	  	<% if controller.portal.class.name == 'FactionsPortal' then %>
 		   	  		<%=draw_faction_building(controller.portal.factions[0].id, 0)%>
 		   	  	<% end -%>
