@@ -4,7 +4,10 @@ class UsersContentsTag < ActiveRecord::Base
   belongs_to :content
   
   before_create :resolve_term
-  after_destroy Proc.new {|c| UsersContentsTag.recalculate_content_top_tags(c.content) }
+  after_destroy Proc.new { |c| 
+    UsersContentsTag.recalculate_content_top_tags(c.content) 
+    c.term.destroy if c.term.orphan?
+  }
   
   validates_format_of :original_name, :with => /^[a-zñ0-9.]{1,30}$/i, :message => 'El tag tiene más de 30 caracteres o bien contiene caracteres ilegales (solo se permiten letras, numeros y puntos)'
   validates_uniqueness_of :term_id, :scope => [:content_id, :user_id]

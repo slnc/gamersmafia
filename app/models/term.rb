@@ -8,7 +8,7 @@ class Term < ActiveRecord::Base
   
   has_many :contents_terms, :dependent => :destroy
   has_many :contents, :through => :contents_terms
-  has_many :users_contents_tags
+  has_many :users_contents_tags, :dependent => :destroy
   has_many :tagged_contents, :through => :users_contents_tags, :source => :content
   
   belongs_to :last_updated_item, :class_name => 'Content', :foreign_key => 'last_updated_item_id'
@@ -28,6 +28,10 @@ class Term < ActiveRecord::Base
   validates_uniqueness_of :name, :scope => [:game_id, :bazar_district_id, :platform_id, :clan_id, :taxonomy, :parent_id]
   validates_uniqueness_of :slug, :scope => [:game_id, :bazar_district_id, :platform_id, :clan_id, :taxonomy, :parent_id]
   before_save :check_scope_if_toplevel
+
+  def orphan?
+    self.contents.count == 0
+  end
   
   def contents_tagged_count
     raise "Invalid taxonomy" unless self.taxonomy == 'ContentsTag'

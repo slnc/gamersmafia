@@ -1,0 +1,23 @@
+<%content_main do 
+    @tags = UsersContentsTag.paginate(:page => params[:page], :order => 'created_on', :per_page => 150, :include => [:user, :term]) %>
+    <table>
+<tr>
+<th>Tag</th>
+<th>Referencias</th>
+<th>Creado</th>
+<th>Autor</th>
+<th></th>
+</tr>
+<%    @tags.each do |tag| %>
+<tr class="<%=oddclass%>" id="tag<%=tag.id%>">
+<td><%=tag.original_name%></td>
+<td><%=link_to tag.term.contents_terms.count, tag_url(tag)%></td>
+<td class="infoinline"><%=print_tstamp(tag.created_on)%></td>
+<td><%=user_link(tag.user)%></td>
+<td><%=link_to_remote 'Borrar', :url => "/admin/tags/#{tag.id}", :confirm => '¿Estás seguro?', :complete => "$j('#tag#{tag.id}').fadeOut('normal');", :method => :delete%></td>
+</tr>
+<% end -%>
+    </table>
+
+<%= will_paginate @tags, :class => 'digg_pagination'%>
+<% end -%>
