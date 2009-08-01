@@ -16,7 +16,7 @@ def compress_file(src, dst):
     p = os.popen('java -jar script/yuicompressor-2.3.6.jar %s -o %s --line-break 500' % (src, dst))
 
 def compress_js():
-    cfg = ['web.shared/jquery-1.2.6', 'web.shared/jquery.scrollTo-1.4.0', 'jquery-ui-personalized-1.6rc2', 'jrails', 'jquery.facebox', 'web.shared/jgcharts-0.9', 'web.shared/slnc', 'app', 'tracking', 'app.bbeditor']
+    cfg = ['web.shared/jquery-1.3.2', 'web.shared/jquery.scrollTo-1.4.0', 'jquery-ui-1.7.2.custom.min', 'jrails', 'jquery.facebox', 'web.shared/jgcharts-0.9', 'web.shared/slnc', 'app', 'tracking', 'app.bbeditor']
     additional_libs = ['wseditor']
 
     dst = 'public/gm.js'
