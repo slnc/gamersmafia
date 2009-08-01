@@ -13,7 +13,7 @@ for u in clans_that_consider_my_their_friend
 end
 
 %>
-<% content_support do %>
+<% generic_support do %>
 
 <% mflist('Os consideran sus amigos', clans_that_consider_my_their_friend) do |o|
  	if not h_clans_i_consider_my_friends.include?(u.id) then %>

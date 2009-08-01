@@ -1,0 +1,11 @@
+<%generic_support do%>
+<% end -%>
+
+<%content_main do %>
+<%mfcontents_table("Contenidos tagueados con #{@tag.name}", @tag.tagged_contents.find(:all, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 100).uniq.collect { |c| c.real_content} ) do |c| %>
+	<td><a href="<%=gmurl(c)%>"><%=faction_favicon(c)%></a> <a href="<%=gmurl(c)%>"><%=c.resolve_hid%></a></td>
+    <td style="width: 75px;"><%=draw_rating(c.rating[0])%></td>
+    <td style="width: 35px;"><span class="infoinline comments-count"><a href="<%=controller.url_for_content_onlyurl(c)%>"><%=c.cache_comments_count%></a></span></td>
+<td class="infoinline timestamp"><%=print_tstamp(c.created_on, 'intelligent')%></td>
+<% end -%>
+<% end -%>

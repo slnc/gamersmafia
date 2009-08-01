@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
 <%= render :partial => '/shared/drafts', :locals => { :cls => Poll } if user_is_authed %>
 <%=render :partial => 'shared/content_details', :locals => { :object => @poll} %>
 <% mftext('Consejos') do %>

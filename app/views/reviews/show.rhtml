@@ -1,4 +1,4 @@
-<% content_support do %>
+<% content_support(:content => @review.unique_content) do %>
 <% if @review.is_public? then %>
 <%=mfcontents_basic("Más reviews de #{@review.main_category.name}", 
 	controller.portal.review,

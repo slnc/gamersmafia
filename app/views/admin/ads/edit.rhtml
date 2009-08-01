@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
 	<%mftext('Slots asociados') do %>
 		<ul>
 		<% @ad.ads_slots.find(:all, :conditions => 'ads_slots_instances.deleted is false', :order => 'id ASC').each do |asl| %>

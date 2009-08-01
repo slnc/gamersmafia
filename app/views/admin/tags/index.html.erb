@@ -1,0 +1,31 @@
+<%generic_support(:show_ads => false) do %>
+	<ul>
+		<li>Borrar solo tags que violen el codigo de conducta (es decir, no borrar tags solo porque no creais que sea la categoria incorrecta</li>
+		<li>información privada (creo q sobra decirlo pero esta info no es publica en la web por lo que no mencionar nunca publicamente: "fulanito taguea bien, mal o regular", etc</li>
+		<li>borrar tags es rapido pero hay que tratar tags que violen el codigo como si fueran comentarios o topics que lo violen (aviso, ban si reincide, etc)</li>
+	</ul>
+<% end -%>
+
+<%content_main do 
+    @tags = UsersContentsTag.paginate(:page => params[:page], :order => 'created_on DESC', :per_page => 150, :include => [:user, :term]) %>
+    <table>
+<tr>
+<th>Tag</th>
+<th>Referencias</th>
+<th>Creado</th>
+<th>Autor</th>
+<th></th>
+</tr>
+<%    @tags.each do |tag| %>
+<tr class="<%=oddclass%>" id="tag<%=tag.id%>">
+<td><%=tag.original_name%></td>
+<td><%=link_to tag.term.contents_terms.count, tag_url(tag.term)%></td>
+<td class="infoinline"><%=print_tstamp(tag.created_on)%></td>
+<td><%=user_link(tag.user)%></td>
+<td><%=link_to_remote 'Borrar', :url => "/admin/tags/#{tag.id}", :confirm => '¿Estás seguro?', :complete => "$j('#tag#{tag.id}').fadeOut('normal');", :method => :delete%></td>
+</tr>
+<% end -%>
+    </table>
+
+<%= will_paginate @tags, :class => 'digg_pagination'%>
+<% end -%>

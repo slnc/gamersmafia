@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
 <% mftext('Últimas imágenes del día') do %>
 <ul class="sidelist images">
 <% cache("/#{@controller.portal_code}/imagenes/index/last_potds_#{Time.now.to_i/86400}") do %>

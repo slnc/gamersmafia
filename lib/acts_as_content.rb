@@ -315,7 +315,7 @@ module ActsAsContent
           return false
         else
           
-          self.title = self.title.downcase.titleize if self.title.upcase == self.title && self.title.size > 4
+          self.title = self.title.downcase.titleize if self.title.upcase == self.title && self.title.size > 10
           self.title = self.title[0..-2] if self.title[-1..-1] == '.'
           true
         end

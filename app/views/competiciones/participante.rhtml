@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
 <%  if user_is_authed && @competition.user_can_challenge(@user) then 
       p = @competition.get_active_participant_for_user(@user) 
       if p.id != @competitions_participant.id then %>

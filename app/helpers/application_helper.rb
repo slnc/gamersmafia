@@ -859,6 +859,15 @@ END
   end
   
   def content_support(opts={}, &block)
+    raise "opts[:content] not given!" unless opts[:content]
+    generic_support(opts) do
+      block.call
+      #raise controller.render_to_string(:partial => '/shared/content_tag_browser', :locals => { :content => opts[:content] })
+      concat(controller.send(:render_to_string, :partial => '/shared/content_tag_browser', :locals => { :content => opts[:content] }))
+    end
+  end
+  
+  def generic_support(opts={}, &block)
     opts = {:show_ads => true}.merge(opts)
     return '' if controller.portal.kind_of?(ClansPortal)
     out = ''

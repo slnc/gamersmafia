@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
 <% cache_file = Bet::TOP_BET_WINNERS 
 if File.exists?(cache_file) then %>
 <% cache("common/apuestas/los_que_mas_ganan_#{Time.now.strftime('%Y-%m-%d')}") do %>

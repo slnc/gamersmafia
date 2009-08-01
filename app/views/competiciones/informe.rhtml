@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
   <% mftext('Informes de la partida') do %>
   <ul class="skeletal">
     <% for r in @competitions_match.competitions_matches_reports.find(:all, :order => 'competitions_matches_reports.created_on ASC', :include => :user) %>

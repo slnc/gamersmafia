@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
 <% mftext('Últimas demos subidas') do %>
 <%=generic_contents_list(controller.portal.demo.find(:published, :order => 'created_on DESC', :limit => 5))%>
 <% end -%>

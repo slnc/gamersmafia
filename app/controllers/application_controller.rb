@@ -378,6 +378,7 @@ Request information:
       items<< ['Plataformas', '/admin/plataformas'] 
       items<< ['Portales', '/admin/portales']
       items<< ['Scripts', '/admin/scripts']
+      items<< ['Tags', '/admin/tags']
       items<< ['Tienda', '/admin/tienda']
     end
     

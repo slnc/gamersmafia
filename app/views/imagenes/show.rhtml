@@ -1,4 +1,4 @@
-<% content_support do %>
+<% content_support(:content => @image.unique_content) do %>
 <% if @image.is_public? then %>
 <% mftext('Navegador de galería') do %>
 <ul class="sidelist images">

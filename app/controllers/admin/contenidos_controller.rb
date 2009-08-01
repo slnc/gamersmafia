@@ -166,8 +166,8 @@ class Admin::ContenidosController < ApplicationController
   
   def remove_user_tag
     @uct = UsersContentsTag.find(:first, :conditions => ['user_id = ? AND id = ?', @user.id, params[:id]])
-    @content = @uct.content
     raise ActiveRecord::RecordNotFound unless @uct
+    @content = @uct.content
     @uct.destroy
     render :layout => false
   end

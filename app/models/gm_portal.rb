@@ -3,6 +3,9 @@ class GmPortal
   def layout
     'gm'
   end
+  def small_header
+	  nil
+  end
   
   def id
     -1

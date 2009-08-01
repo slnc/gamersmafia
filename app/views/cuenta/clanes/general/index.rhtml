@@ -1,4 +1,4 @@
-<% content_support do %>
+<% generic_support do %>
   <% if @clan && @clan.user_is_clanleader(@user.id) then %>
   <% if (not @clan.website_activated?) then %>
         <%mftext('Activar página web') do %>

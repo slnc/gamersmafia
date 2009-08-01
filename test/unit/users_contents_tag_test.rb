@@ -9,6 +9,11 @@ class UsersContentsTagTest < ActiveSupport::TestCase
       end
     end
   end
+
+  test "eñe should work" do
+    @uct = UsersContentsTag.new(:user_id => 1, :content_id => 1, :original_name => 'ñ')
+    assert @uct.save
+  end
   
   test "official tags should be just the top popular tags" do
     @c1 = Content.find(1)
@@ -69,5 +74,12 @@ class UsersContentsTagTest < ActiveSupport::TestCase
       UsersContentsTag.find(:first, :order => 'id DESC').destroy
     end
     assert_equal [], @c1.top_tags
+  end
+  
+  test "deleting because too many top tags should work" do
+    ct_old = ContentsTerm.count
+    test_official_tags_should_be_just_the_top_popular_tags
+    UsersContentsTag.recalculate_content_top_tags(@c1, 1)
+    assert_equal ct_old + 1, ContentsTerm.count
   end
 end

@@ -1,8 +1,6 @@
 require 'test_helper'
 
 class Cuenta::MensajesControllerTest < ActionController::TestCase
-
-  
   test "mensajes_should_work" do
     sym_login 1
     get :mensajes
@@ -45,6 +43,13 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
       post :create_message, { :message=> {:message_type => Message::R_USER, :recipient_user_login => User.find(2).login, :title => "foo litio", :message => "soy litio teodorakis" }}
       assert_response :redirect
     end
+  end
+  
+  test "create_message_should_not_burp_if_nonexisting_user" do
+    sym_login 1
+    post :create_message, { :message=> {:message_type => Message::R_USER, :recipient_user_login => '()A>C!', :title => "foo litio", :message => "soy litio teodorakis" }}
+    assert_response :redirect
+    assert_not_nil flash[:error]
   end
   
   test "create_message_should_work_if_clan_not_given" do
@@ -118,7 +123,7 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
   test "create_message_should_work_if_friends" do
     u1 = User.find(1)
     assert u1.friends.size > 0
-
+    
     sym_login 1
     msgs = Message.count
     post :create_message, { :message=> {:message_type => Message::R_FRIENDS, :title => "foo litio", :message => "soy litio teodorakis" }}

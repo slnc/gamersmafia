@@ -4,9 +4,12 @@ class UsersContentsTag < ActiveRecord::Base
   belongs_to :content
   
   before_create :resolve_term
-  after_destroy Proc.new {|c| UsersContentsTag.recalculate_content_top_tags(c.content) }
+  after_destroy Proc.new { |c| 
+    UsersContentsTag.recalculate_content_top_tags(c.content) 
+    c.term.destroy if c.term && c.term.orphan?
+  }
   
-  validates_format_of :original_name, :with => /^[a-z0-9.]{1,30}$/i, :message => 'El tag tiene más de 30 caracteres o bien contiene caracteres ilegales (solo se permiten letras, numeros y puntos)'
+  validates_format_of :original_name, :with => /^[a-zñ0-9.]{1,30}$/i, :message => 'El tag tiene más de 30 caracteres o bien contiene caracteres ilegales (solo se permiten letras, numeros y puntos)'
   validates_uniqueness_of :term_id, :scope => [:content_id, :user_id]
   
   private
@@ -35,7 +38,7 @@ class UsersContentsTag < ActiveRecord::Base
     self.recalculate_content_top_tags(content)
   end
   
-  def self.recalculate_content_top_tags(content)
+  def self.recalculate_content_top_tags(content, max_content_tags=6)
     del_top_tags = content.top_tags
     Term.find_by_sql("SELECT * FROM terms
                        WHERE id IN (SELECT term_id 
@@ -43,10 +46,10 @@ class UsersContentsTag < ActiveRecord::Base
                                      WHERE content_id = #{content.id} 
                                   GROUP BY term_id 
                                   ORDER BY count(id) DESC 
-                                     LIMIT 7)").each do |t|
+                                     LIMIT #{max_content_tags})").each do |t|
       t.link(content)
       del_top_tags = del_top_tags.delete_if { |item| item.id == t.id }
     end
-    del_top_tags.each do |oldtt| oldtt.destroy end
+    del_top_tags.each do |oldtt| oldtt.contents_terms.clear end
   end
 end

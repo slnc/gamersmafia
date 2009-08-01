@@ -20,6 +20,11 @@
 		
 		<div class="mcontent">
 		   <a id="logo2" <% if !(controller.controller_name == 'home' && controller.action_name == 'index' && controller.portal.id == '-1') then %>onmouseover="this.className = 'hover';" onmouseout="this.className=''"<%end -%> href="http://<%=App.domain%>/"><img src="/images/blank.gif" /></a>
+			   <% if controller.portal.small_header then %>
+				   <style type="text/css">
+				   #logo2 img { background: url(/<%=controller.portal.small_header%>) 0 0 no-repeat; }
+				   </style>
+			   <% end -%>
 		   <div id="thesaw">
 		   	<% if user_is_authed then
 if @user.is_superadmin?
@@ -48,6 +53,12 @@ end %>
 					<li id="sawli-anunciante"><div class="f"><a href="http://<%=App.domain%>/home/anunciante"><span>Anunciante</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('anunciante');"></div></li>
 					<% end -%>
 		   	  	</ul>
+		   	  </div>
+		   	  
+              <div id="faction-building" style="position: absolute; margin-left: 900px; top: -12px; height: 80px; overflow: hidden; z-index: 5;">
+		   	  	<% if controller.portal.class.name == 'FactionsPortal' then %>
+		   	  		<%=draw_faction_building(controller.portal.factions[0].id, 0)%>
+		   	  	<% end -%>
 		   	  </div>
 			  
 			  <div id="sawbottom">
@@ -83,7 +94,8 @@ if u_clans.size == 0 then %>
 
 				<ul id="sawbody-gm" class="hidden">
 					<li class="first"><a href="/site/portales">Portales</a></li>
-					<li class="first"><a href="http://<%=App.domain%>/site/novedades">Novedades sobre la web</a></li>
+					<li><a href="http://<%=App.domain%>/site/novedades">Novedades sobre la web</a></li>
+					<li><a href="http://<%=App.domain%>/site/rss">RSS</a></li>
 				</ul>
 				
 				<ul id="sawbody-facciones" class="hidden">
@@ -334,7 +346,8 @@ if u_clans.size == 0 then %>
 	<%= render :partial => '/layouts/userbox2' %>
 <%
 if user_is_authed && @user.is_faction_leader? && @user.faction_id then %>
-<%mftext('Monitor de Facción', :id => 'mgfaction-monitor') do %><%=faction_favicon(@user.faction)%><%=faction_activity_minicolumns(@user.faction)%><% end -%>
+<%mftext('Monitor de Facción', :id => 'mgfaction-monitor') do %><%=faction_favicon(@user.faction)%><%=faction_activity_minicolumns(@user.faction)%>
+<div style="text-align: right"><a href="/cuenta/faccion">mi facción</a></div><% end -%>
 <% end %>
 <% if nil then %>
 <%=sparkline(:data => [150, 175, 22, 19, 7, 5,6,9,11], :max => 300, :size => '80x16') %>

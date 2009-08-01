@@ -1,4 +1,4 @@
-<% content_support do %>
+<% content_support(:content => @blogentry.unique_content) do %>
 	<% if @blogentry.is_public? then %>
 <%=mfcontents_basic("Archivo", 
 	Proc.new { @curuser.blogentries.find(:published, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC') },

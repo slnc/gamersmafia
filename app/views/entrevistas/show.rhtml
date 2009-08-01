@@ -1,4 +1,4 @@
-<% content_support do %>
+<% content_support(:content => @interview.unique_content) do %>
 <% if @interview.is_public? then %>
 <%=mfcontents_basic("Más entrevistas de #{@interview.user.login}", 
 	controller.portal.interview, 
