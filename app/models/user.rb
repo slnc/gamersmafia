@@ -144,9 +144,9 @@ class User < ActiveRecord::Base
     
     # TODO This should go into an observer
     if impositor.has_admin_permission?(:capo)
-      SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], :reporter_user_id => impositor.id, :headline => "Antiflood #{User::ANTIFLOOD_LEVELS[self.antiflood_level]} impuesto a <strong><a href=\"#{gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{gmurl(impositor)}\">#{impositor.login}</a>")
+      SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], :reporter_user_id => impositor.id, :headline => "Antiflood #{User::ANTIFLOOD_LEVELS[self.antiflood_level]} impuesto a <strong><a href=\"#{ApplicationController.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{ApplicationController.gmurl(impositor)}\">#{impositor.login}</a>")
     else
-      SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], :reporter_user_id => impositor.id, :headline => "Antiflood de emergencia impuesto a <strong><a href=\"#{gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{gmurl(impositor)}\">#{impositor.login}</a>")
+      SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], :reporter_user_id => impositor.id, :headline => "Antiflood de emergencia impuesto a <strong><a href=\"#{ApplicationController.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{ApplicationController.gmurl(impositor)}\">#{impositor.login}</a>")
     end
   end
   

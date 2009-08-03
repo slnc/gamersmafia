@@ -94,7 +94,7 @@ class Admin::UsuariosController < ApplicationController
     @edituser = User.find(params[:id])
     
     if @edituser.first_activity < @edituser.created_on then
-      @edituser.update_attributes(:created_on => first_activity)
+      @edituser.update_attributes(:created_on => @edituser.first_activity)
       render :layout => false, :action => 'check_registered_on_fixed'
     else
       render :layout => false, :action => 'check_registered_on_ok'
