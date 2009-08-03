@@ -57,11 +57,8 @@ class Admin::ClanesController < ApplicationController
   
   def add_user_to_clans_group
     cg = ClansGroup.find(params[:clans_group_id])
-    u = User.find_by_login(params[:login])
-    raise ActiveRecord::RecordNotFound unless u
-    cg.users<< u
+    cg.users<< User.find_by_login!(params[:login])
     redirect_to "/admin/clanes/edit/#{cg.clan.id}"
-    
   end
   
   def remove_user_from_clans_group

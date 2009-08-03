@@ -1,6 +1,5 @@
 class Admin::AdsSlotsController < AdministrationController
-  def index
-    
+  def index    
   end
   
   def new

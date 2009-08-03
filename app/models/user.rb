@@ -328,6 +328,10 @@ class User < ActiveRecord::Base
     self.find(:first, :conditions => ['lower(login) = lower(?)', login.to_s])
   end
   
+  def self.find_by_login!(login)
+    self.find_by_login(login) || (raise ActiveRecord::RecorNotFound)
+  end
+  
   def self.find_by_email(email)
     self.find(:first, :conditions => ['lower(email) = lower(?)', email])
   end
