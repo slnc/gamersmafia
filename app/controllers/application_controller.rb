@@ -582,7 +582,7 @@ Request information:
   #end
   
   include ExceptionNotifiable
-  ExceptionNotifier.exception_recipients = %w(s@slnc.net)
+  ExceptionNotifier.exception_recipients = %w(s@slnc.me)
   ExceptionNotifier.sender_address = %("GM Error Notifier" <httpd@gamersmafia.com>)
 
   def rescuiing
