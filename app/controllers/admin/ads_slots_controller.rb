@@ -67,8 +67,9 @@ class Admin::AdsSlotsController < AdministrationController
     
     def add_to_portal
       as = AdsSlot.find(params[:id])
-      
-      if as.link_to_portal(Portal.find(params[:portal_id]))
+      portal = Portal.find_by_id(params[:portal_id])
+      raise ActiveRecord::RecordNotFound unless portal
+      if as.link_to_portal(portal)
         flash[:error] = "La asociación ya existe."
       else
         flash[:notice] = "Asociación creada correctamente."
@@ -79,8 +80,9 @@ class Admin::AdsSlotsController < AdministrationController
     
     def remove_from_portal
       as = AdsSlot.find(params[:id])
-      
-      if as.unlink_from_portal(Portal.find(params[:portal_id]))
+      portal = Portal.find_by_id(params[:portal_id])
+      raise ActiveRecord::RecordNotFound unless portal
+      if as.unlink_from_portal(portal)
         flash[:notice] = "Asociación eliminada correctamente."
       else
         flash[:error] = "La asociación no existe."

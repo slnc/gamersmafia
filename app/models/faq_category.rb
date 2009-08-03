@@ -8,16 +8,18 @@ class FaqCategory < ActiveRecord::Base
   def moveup
     @prev = FaqCategory.find(:first, :conditions => ['position < ?', self.position], :order => 'position DESC', :limit => 1)
     if @prev
+      newpos = @prev.position
       @prev.update_attributes(:position => self.position)
-      self.update_attributes(:position => @prev.position)
+      self.update_attributes(:position => newpos)
     end
   end
   
   def movedown
     @prev = FaqCategory.find(:first, :conditions => ['position > ?', self.position], :order => 'position ASC', :limit => 1)
     if @prev
+      newpos = @prev.position
       @prev.update_attributes(:position => self.position)
-      self.update_attributes(:position => @prev.position)
+      self.update_attributes(:position => newpos)
     end
   end
   

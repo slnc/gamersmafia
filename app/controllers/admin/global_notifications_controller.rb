@@ -7,7 +7,6 @@ class Admin::GlobalNotificationsController < AdministrationController
     @global_notification = GlobalNotification.new 
   end
   
-  
   def edit
     @global_notification = GlobalNotification.find(params[:id])
   end

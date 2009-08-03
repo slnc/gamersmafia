@@ -1,4 +1,5 @@
 class UsersContentsTag < ActiveRecord::Base
+  MAX_TAGS_REFERENCES_BEFORE_DELETE = 25
   belongs_to :user
   belongs_to :term
   belongs_to :content

@@ -61,14 +61,14 @@ class User < ActiveRecord::Base
   has_many :tracker_items
   has_many :user_login_changes
   has_many :users_newsfeeds
-#  has_many :friends, :through => :friendships  
+  #  has_many :friends, :through => :friendships  
   # has_and_belongs_to_many :friends
   file_column :photo
   file_column :competition_roster
   belongs_to :last_clan, :class_name => 'Clan', :foreign_key => 'last_clan_id'
   has_and_belongs_to_many :events
   has_many :avatars
-
+  
   # contents
   has_many :news
   has_many :topics
@@ -118,14 +118,14 @@ class User < ActiveRecord::Base
   after_create :change_avatar
   attr_accessor :ident, :expire_at
   attr_protected :cache_karma_points, :is_superadmin, :admin_permissions, :faction_id
-
+  
   before_save :check_if_shadow
-
+  
   named_scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})", :order => 'lower(login)'
   
   def check_if_shadow
-     self.state = ST_SHADOW if self.state == ST_ZOMBIE && self.lastseen_on > 1.minute.ago
-     true
+    self.state = ST_SHADOW if self.state == ST_ZOMBIE && self.lastseen_on > 1.minute.ago
+    true
   end
   
   
@@ -136,6 +136,18 @@ class User < ActiveRecord::Base
   def check_login_changed
     GmSys.job("Blogentry.reset_urls_of_user_id(#{self.id})") if slnc_changed?(:login)
     true
+  end
+  
+  def impose_antiflood(level, impositor)
+    level = 0 if level < -1 || level > 5
+    self.update_attributes(:antiflood_level => level)
+    
+    # TODO This should go into an observer
+    if impositor.has_admin_permission?(:capo)
+      SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], :reporter_user_id => impositor.id, :headline => "Antiflood #{User::ANTIFLOOD_LEVELS[self.antiflood_level]} impuesto a <strong><a href=\"#{gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{gmurl(impositor)}\">#{impositor.login}</a>")
+    else
+      SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], :reporter_user_id => impositor.id, :headline => "Antiflood de emergencia impuesto a <strong><a href=\"#{gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{gmurl(impositor)}\">#{impositor.login}</a>")
+    end
   end
   
   def get_comments_valorations_type
@@ -438,7 +450,7 @@ class User < ActiveRecord::Base
   end
   
   def is_editor?
-
+    
     # TODO cachear
     # devuelve true si el usuario puede editar algún tipo de contenido
     if self.is_bigboss?
@@ -666,9 +678,9 @@ class User < ActiveRecord::Base
       self.errors.add('birthday','Error: Fecha de cumpleaños no válida. Se debe introducir una edad entre 4 y 130 años.')
       false  
     end
-     
+    
   end
-
+  
   # Before creating, we generate a validkey.
   # This is used for confirmation
   def generate_validkey
@@ -781,8 +793,8 @@ class User < ActiveRecord::Base
                           limit #{limit}")
     results = []
     dbi.each do |dbu|
-	    u = User.find_by_id(dbu['model_id'].to_i)
-	    next unless u
+      u = User.find_by_id(dbu['model_id'].to_i)
+      next unless u
       results<< [u, dbu['count'].to_i]
     end
     results

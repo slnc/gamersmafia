@@ -52,10 +52,9 @@ class AdsSlot < ActiveRecord::Base
   end
   
   def populate_copy(basep)
-    basep.merge({:location => self.location, 
-                 :behaviour_class => self.behaviour_class, 
-                 :position => User.db_query("SELECT max(position) + 1 as max FROM ads_slots WHERE location = '#{self.location}'")[0]['max'].to_i})
-    AdsSlot.new(basep)
+    AdsSlot.new(basep.merge({:location => self.location, 
+                             :behaviour_class => self.behaviour_class, 
+                             :position => User.db_query("SELECT max(position) + 1 as max FROM ads_slots WHERE location = '#{self.location}'")[0]['max'].to_i}))
   end
   
   def update_slots_instances(new_ads_ids)

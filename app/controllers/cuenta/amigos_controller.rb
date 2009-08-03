@@ -59,10 +59,7 @@ class Cuenta::AmigosController < ApplicationController
         flash[:notice] = 'Cuenta creada y confirmada correctamente. Bienvenid@ a Gamersmafia.'
         redirect_to '/cuenta'
         # TODO send email to referrer
-        freq.receiver_email = nil
-        freq.receiver_user_id = @u.id
-        freq.accepted_on = Time.now # TODO this should be done by the model
-        freq.save
+        freq.accept_external(@u)
       else
         flash[:error] = 'Error al crear la cuenta<br />' << @u.errors.full_messages.join('<br />')
         render :action => :external_user_aceptar_amistad
