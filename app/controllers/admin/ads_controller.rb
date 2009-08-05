@@ -1,6 +1,5 @@
 class Admin::AdsController < AdministrationController
-  def index
-    
+  def index    
   end
   
   def new

@@ -34,23 +34,9 @@ class Admin::CategoriasController < ApplicationController
   end
   
   def index
-    #if params[:type_name] then
-    #  @title = "Categorías de #{params[:type_name]}"
-    #  @navpath = [['Admin', '/admin'], ['Categorías de Contenidos', '/admin/categorias'], [params[:type_name], "/admin/categorias/#{params[:type_name]}"]]
-    #else
     @title = "Categorías"
     @navpath = [['Admin', '/admin'], ['Categorías de Contenidos', '/admin/categorias']]
-    #end
-    #@editable_content_types = []
-    #if params[:type_name] then
-    #  @category_pages, @categories = paginate self.get_cls(params[:type_name]), { :conditions => @cond, :order => 'root_id asc, parent_id desc, lower(name) asc', :per_page => 50}
-    #else
     @categories = nil
-    #end
-    
-    #names = (@portal.respond_to?(:clan_id) && @portal.clan_id) ? Cms::CLANS_CONTENTS : Cms::CONTENTS_WITH_CATEGORIES
-    #names = names.collect { |name| "'#{name}'" }
-    #@editable_content_types = ContentType.find(:all, :conditions => "name in (#{names.join(',')})", :order => 'lower(name) ASC')
     render :template => "/admin/categorias/index.rhtml"
   end
   
@@ -91,21 +77,19 @@ class Admin::CategoriasController < ApplicationController
   def mass_move
     # TODO permisos
     @term = Term.find(params[:id])
-    raise ActiveRecord::RecordNotFound unless @term
     dst = Term.find(params[:destination_term_id])
-    raise ActiveRecord::RecordNotFound unless dst
     @term.find(:all, :content_type => params[:content_type], :conditions => "contents.id in (#{params[:contents].join(', ')})").each do |c|
       @term.unlink(c.unique_content)
       dst.link(c.unique_content)
     end
-    @term.update_attributes(params[:term])
+    @term.update_attributes(params[:term]) # TODO why?
     redirect_to params[:redirto] ? params[:redirto] : '/admin/categorias' 
   end
   
   def destroy
     # TODO permisos
     @term = Term.find(params[:id])
-    raise ActiveRecord::RecordNotFound unless @term
+    
     if @term.can_be_destroyed?
       @term.destroy
       flash[:notice] = "Categoría <strong>#{@term.name}(#{@term.taxonomy})</strong> destruída correctamente. Khali se complace."

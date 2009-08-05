@@ -15,7 +15,11 @@ module ActsAsContent
       
       #belongs_to :unique_content, :class_name => 'Content'
       
-      
+      named_scope :draft, :conditions => "state = #{Cms::DRAFT}"
+      named_scope :pending, :conditions => "state = #{Cms::PENDING}"
+      named_scope :published, :conditions => "state = #{Cms::PUBLISHED}"
+      named_scope :deleted, :conditions => "state = #{Cms::DELETED}"
+      named_scope :onhold, :conditions => "state = #{Cms::ONHOLD}"
       
       validates_presence_of :user
       before_create { |m| m.log = nil; m.log_action('creado', m.user.login) }

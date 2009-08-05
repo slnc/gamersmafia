@@ -42,7 +42,7 @@ class Admin::CanalesControllerTest < ActionController::TestCase
     gmtv.file = fixture_file_upload('files/buddha.jpg')
     assert_equal true, gmtv.save
     assert_count_increases(Message) do 
-      post :reset, :id => 1, :notify => 1, :reset_reason => 'foo'
+      post :reset, :id => 1, :notify => '1', :reset_reason => 'foo'
       assert_response :redirect
     end      
     gmtv.reload

@@ -1,6 +1,5 @@
 class Admin::AdsSlotsController < AdministrationController
-  def index
-    
+  def index    
   end
   
   def new
@@ -19,18 +18,14 @@ class Admin::AdsSlotsController < AdministrationController
   
   def copy
     @ads_slot_orig = AdsSlot.find(params[:id])
-    @ads_slot = AdsSlot.new(params[:ads_slot])
-    @ads_slot.location = @ads_slot_orig.location
-    @ads_slot.behaviour_class = @ads_slot_orig.behaviour_class
-    @ads_slot.position = User.db_query("SELECT max(position) + 1 as max FROM ads_slots WHERE location = '#{@ads_slot_orig.location}'")[0]['max'].to_i
-    if @ads_slot.save
+    @as = @ads_slot_orig.populate_copy(params[:ads_slot])
+    if @as.save
       params[:ads] = @ads_slot_orig.ads.collect { |ad| ad.id }
-      @as = @ads_slot
       _update_slots_instances
       flash[:notice] = 'AdsSlot copiado correctamente.'
       redirect_to :action => 'index'
     else
-      flash[:error] = "Error al crear el AdsSlot: #{@ads_slot.errors.full_messages_html}"
+      flash[:error] = "Error al crear el AdsSlot: #{@as.errors.full_messages_html}"
       render :action => 'new'
     end
   end
@@ -60,64 +55,43 @@ class Admin::AdsSlotsController < AdministrationController
   end
   
   def _update_slots_instances
-    
     params[:ads] ||= []
-    # primero chequeamos los viejos que tuviera y si no están en el array los marcamos como borrados
-    parsed_ads_ids = []
-    @as.ads_slots_instances.find(:all, :conditions => 'deleted is false').each do |asi|
-      if !params[:ads].include?(asi.ad_id.to_s)
-        asi.mark_as_deleted
-      end
-      parsed_ads_ids<< asi.ad_id.to_s
+    @as.update_slots_instances(params[:ads].each do |ad| ad.to_i end)
     end
     
-     (params[:ads] - parsed_ads_ids).each do |ad_id|
-      prev = @as.ads_slots_instances.find_by_ad_id(ad_id)
-      if prev && prev.deleted
-        prev.deleted = false
-        prev.save
+    def update_slots_instances
+      @as = AdsSlot.find(params[:id])
+      _update_slots_instances
+      redirect_to "/admin/ads_slots/edit/#{@as.id}"
+    end
+    
+    def add_to_portal
+      as = AdsSlot.find(params[:id])
+      portal = Portal.find_by_id(params[:portal_id])
+      raise ActiveRecord::RecordNotFound unless portal
+      if as.link_to_portal(portal)
+        flash[:error] = "La asociación ya existe."
       else
-        @as.ads_slots_instances.create(:ad_id => ad_id)  
+        flash[:notice] = "Asociación creada correctamente."
       end
-    end
-  end
-  
-  def update_slots_instances
-    @as = AdsSlot.find(params[:id])
-    _update_slots_instances
-    redirect_to "/admin/ads_slots/edit/#{@as.id}"
-  end
-  
-  def add_to_portal
-    as = AdsSlot.find(params[:id])
-    portal = Portal.find_by_id(params[:portal_id])
-    raise ActiveRecord::RecordNotFound unless portal
-    if User.db_query("SELECT count(*) FROM ads_slots_portals WHERE ads_slot_id = #{as.id} AND portal_id = #{portal.id}")[0]['count'].to_i > 0
-      flash[:error] = "La asociación ya existe."
-    else
-      User.db_query("INSERT INTO ads_slots_portals(portal_id, ads_slot_id) VALUES(#{portal.id}, #{as.id})")
-      flash[:notice] = "Asociación creada correctamente."
+      
+      redirect_to "/admin/ads_slots/edit/#{as.id}"
     end
     
-    redirect_to "/admin/ads_slots/edit/#{as.id}"
-  end
-  
-  def remove_from_portal
-    as = AdsSlot.find(params[:id])
-    portal = Portal.find_by_id(params[:portal_id])
-    raise ActiveRecord::RecordNotFound unless portal
-    if User.db_query("SELECT count(*) FROM ads_slots_portals WHERE ads_slot_id = #{as.id} AND portal_id = #{portal.id}")[0]['count'].to_i > 0
-      User.db_query("DELETE FROM ads_slots_portals WHERE portal_id = #{portal.id} AND ads_slot_id = #{as.id}")
-      # as.portals.delete(Portal.find_by_id(params[:portal_id]))
-      flash[:notice] = "Asociación eliminada correctamente."
-    else
-      flash[:error] = "La asociación no existe."
+    def remove_from_portal
+      as = AdsSlot.find(params[:id])
+      portal = Portal.find_by_id(params[:portal_id])
+      raise ActiveRecord::RecordNotFound unless portal
+      if as.unlink_from_portal(portal)
+        flash[:notice] = "Asociación eliminada correctamente."
+      else
+        flash[:error] = "La asociación no existe."
+      end
+      
+      redirect_to "/admin/ads_slots/edit/#{as.id}"
     end
     
-    redirect_to "/admin/ads_slots/edit/#{as.id}"
+    def require_user_can_owns_ads_slot(ads_slot_id)
+      @user.is_superadmin? || !@user.users_roles.find(:first, :conditions => 'role = \'Advertiser\' AND role_data = \'#{ads_slot_id}\'').nil?
+    end
   end
-  
-  def require_user_can_owns_ads_slot(ads_slot_id)
-    @user.is_superadmin? || !@user.users_roles.find(:first, :conditions => 'role = \'Advertiser\' AND role_data = \'#{ads_slot_id}\'').nil?
-  end
-end

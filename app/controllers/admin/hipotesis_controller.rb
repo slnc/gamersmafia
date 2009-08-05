@@ -9,7 +9,7 @@ class Admin::HipotesisController < AdministrationController
     if @ab_test.end_experiment 
       flash[:notice] = "Experimento finalizado correctamente."
     end
-     redirect_to :action => 'editar', :id => @ab_test
+    redirect_to :action => 'editar', :id => @ab_test
   end
   
   def nueva
@@ -41,7 +41,6 @@ class Admin::HipotesisController < AdministrationController
       flash[:notice] = 'Hipótesis actualizado correctamente.'
       redirect_to :action => 'editar', :id => @ab_test
     else
-      raise @ab_test.errors.full_messages_html
       flash[:error] = "Error al actualizar la hipótesis: #{@ab_test.errors.full_messages_html}"
       render :action => 'editar'
     end

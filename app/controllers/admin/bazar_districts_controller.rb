@@ -18,7 +18,7 @@ class Admin::BazarDistrictsController < ApplicationController
   def update
     @bd = BazarDistrict.find(params[:id])
     @bd.update_attributes(params[:bd])
-    # if @bd.has_don? && (params[:don] == '' ||
+    
     if params[:don] != ''
       newdon = User.find_by_login(params[:don])
       if newdon.nil?
@@ -37,13 +37,13 @@ class Admin::BazarDistrictsController < ApplicationController
     else
       newmano_derecha = nil
     end    
-    
-    
+        
     if flash[:error].to_s == ''
       @bd.update_don(newdon)
       @bd.update_mano_derecha(newmano_derecha)
       flash[:notice] = "Datos actualizados correctamente."
     end
+    
     redirect_to "/admin/bazar_districts/edit/#{@bd.id}"
   end
 end

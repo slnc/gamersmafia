@@ -35,7 +35,7 @@ namespace :gm do
     # bigbosses, editors, moderators and sicarios
     limit = 3.months.ago
     now = Time.now
-    mrcheater = User.find_by_login('mrcheater')
+    mrcheater = User.find_by_login!('mrcheater')
     UsersRole.find(:all, :conditions => "role IN ('Don', 'ManoDerecha', 'Boss', 'Underboss', 'Editor', 'Moderator', 'Sicario')", :include => :user).each do |ur|
       if ur.user.lastseen_on < limit
         ur.destroy
@@ -45,7 +45,7 @@ namespace :gm do
   end
   
   def close_old_open_questions
-    mrman = User.find_by_login('mrman')
+    mrman = User.find_by_login!('mrman')
     Question.find(:published, :conditions => 'answered_on IS NULL AND created_on <= now() - \'1 month\'::interval', :order => 'id').each do |q|
       c_text = 'Esta pregunta lleva pendiente de respuesta demasiado tiempo y está empezando a salir musgo verde así que tengo que cerrarla.'
       if q.unique_content.comments.count(:conditions => ['user_id <> ?', q.user_id]) > 0
@@ -143,7 +143,7 @@ namespace :gm do
   
   def provocar_golpes_de_estado
     require "#{RAILS_ROOT}/app/controllers/application_controller" # necesario por llamada a ApplicationController
-    mrcheater = User.find_by_login('MrCheater')
+    mrcheater = User.find_by_login!('MrCheater')
     Faction.find(:all, :conditions => "code IN (
 select (select code from portals where id = stats.portals.portal_id)
   from stats.portals
@@ -242,7 +242,7 @@ having portal_id in (select id
       # automatically accept unconfirmed results if older than a month
       l.matches(:result_pending, :conditions => 'updated_on < now() - \'1 month\'::interval').each do |m|
         if !(m.participant1_confirmed_result && m.participant2_confirmed_result) then # double forfeit
-          m.complete_match(User.find_by_login('MrMan'), {}, true)
+          m.complete_match(User.find_by_login!('MrMan'), {}, true)
         else # accept result
           rt = m.participant2.the_real_thing
           if rt.class.name == 'User'
@@ -254,7 +254,7 @@ having portal_id in (select id
           recipients.each do |u|
             #Notification.deliver_reto_cancelado_sin_respuesta(u, {:match => m, :participant => m.participant2})
           end
-          m.complete_match(User.find_by_login('MrMan'), {}, true)
+          m.complete_match(User.find_by_login!('MrMan'), {}, true)
         end
         
       end
@@ -296,7 +296,7 @@ having portal_id in (select id
   
   def send_happy_birthday
     # enviamos un mensaje de felicitación
-    nagato = User.find_by_login('nagato')
+    nagato = User.find_by_login!('nagato')
     today = Date.today
     User.find(:all, :conditions => "birthday::text LIKE '%-#{today.strftime('%m-%d')}' AND state in (#{User::STATES_CAN_LOGIN.join(',')}) ").each do |u|
       m = Message.new({ :sender => nagato, 

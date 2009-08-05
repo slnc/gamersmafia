@@ -1,10 +1,6 @@
 class Admin::ContenidosController < ApplicationController
   before_filter :require_auth_users
   
-  #def wmenu_pos
-  #  'admin'
-  #end
-  
   def submenu
     return 'Contenidos'
   end
@@ -22,7 +18,7 @@ class Admin::ContenidosController < ApplicationController
   def index
     @title = 'Contenidos pendientes de moderar'
     @contents = []
-    # Content.find(:all, :conditions => "state = #{Cms::PENDING} AND content_type_id IN (
+    
     for c in Cms::contents_classes_publishable
       controller = Cms::translate_content_name(c.name)
       @contents<< [Cms::translate_content_name(c.name).capitalize, c.pending, controller]
@@ -60,16 +56,14 @@ class Admin::ContenidosController < ApplicationController
   end
   
   def recover
-    content = Content.find(params[:id])
-    obj = content.real_content
+    obj = Content.find(params[:id]).real_content
     require_user_can_edit(obj)
     obj.recover(@user)
     render :nothing => true
   end
   
   def change_authorship
-    obj = Content.find(params[:content_id])
-    obj = obj.real_content
+    obj = Content.find(params[:content_id]).real_content
     require_user_can_edit(obj)
     new_author = User.find_by_login(params[:login])
     if new_author
@@ -128,19 +122,16 @@ class Admin::ContenidosController < ApplicationController
   
   def report
     @content = Content.find(params[:id])
-    if @user.is_hq?
-      ttype, scope = SlogEntry.fill_ttype_and_scope_for_content_report(@content)
-      sl = SlogEntry.create({:scope => scope, :type_id => ttype, :reporter_user_id => @user.id, :headline => "#{Cms.faction_favicon(@content.real_content)}<strong><a href=\"#{url_for_content_onlyurl(@content.real_content)}\">#{@content.id}</a></strong> reportado (#{params[:reason]}) por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"})
-      if sl.new_record?
-        flash[:error] = "Error al reportar el contenido:<br />#{sl.errors.full_messages_html}"
-      else
-        flash[:notice] = "Contenido reportado correctamente"
-      end
-      render :partial => '/shared/ajax_facebox_feedback', :layout => false
-      # render :partial => '/shared/ajax_feedback', :layout => false
+    raise AccessDenied unless @user.is_hq?
+    
+    ttype, scope = SlogEntry.fill_ttype_and_scope_for_content_report(@content)
+    sl = SlogEntry.create({:scope => scope, :type_id => ttype, :reporter_user_id => @user.id, :headline => "#{Cms.faction_favicon(@content.real_content)}<strong><a href=\"#{url_for_content_onlyurl(@content.real_content)}\">#{@content.id}</a></strong> reportado (#{params[:reason]}) por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"})
+    if sl.new_record?
+      flash[:error] = "Error al reportar el contenido:<br />#{sl.errors.full_messages_html}"
     else
-      raise AccessDenied
+      flash[:notice] = "Contenido reportado correctamente"
     end
+    render :partial => '/shared/ajax_facebox_feedback', :layout => false
   end
   
   def close

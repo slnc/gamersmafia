@@ -9,8 +9,7 @@ class Cuenta::Clanes::GeneralController < ApplicationController
     if c.user.last_clan_id then
       c.clan = Clan.find_by_id(c.user.last_clan_id)
       if c.clan.nil? or c.clan.deleted?
-        c.user.last_clan_id = nil
-        c.user.save
+        c.user.update_attributes(:last_clan_id => nil)
       end
     end
   }
@@ -46,8 +45,7 @@ class Cuenta::Clanes::GeneralController < ApplicationController
     @newclan = Clan.new(params[:newclan].merge({:creator_user_id => @user.id}))
     if @newclan.save then
       @newclan.add_user_to_group(@user, 'clanleaders')
-      @user.last_clan_id = @newclan.id
-      @user.save
+      @user.update_attributes(:last_clan_id => @newclan.id)
       flash[:notice] = 'Clan creado correctamente.'
       redirect_to :action => 'index'
     else
@@ -179,8 +177,7 @@ class Cuenta::Clanes::GeneralController < ApplicationController
   end
   
   def switch_active_clan
-    @user.last_clan_id = params[:id]
-    @user.save
+    @user.update_attributes(:last_clan_id => params[:id])
     redirect_to '/cuenta/clanes'
   end
   
@@ -194,8 +191,7 @@ class Cuenta::Clanes::GeneralController < ApplicationController
         flash[:error] = 'Debes comprar una "Web de Clan" en la <a href="/cuenta/tienda">tienda</a>.'
       else
         @clan.activate_website
-        sp.used = true
-        sp.save
+        sp.update_attributes(:used => true)
         flash[:notice] = 'Página web activada correctamente'
       end
     end

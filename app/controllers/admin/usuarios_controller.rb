@@ -91,13 +91,10 @@ class Admin::UsuariosController < ApplicationController
   def check_registered_on
     # trata de buscar la fecha de registro más cercana a la que el usuario
     # empezó a participar
-    u = User.find(params[:id])
-    first_activity = u.first_activity
+    @edituser = User.find(params[:id])
     
-    if first_activity < u.created_on then
-      u.created_on = first_activity
-      u.save
-      @edituser = u
+    if @edituser.first_activity < @edituser.created_on then
+      @edituser.update_attributes(:created_on => @edituser.first_activity)
       render :layout => false, :action => 'check_registered_on_fixed'
     else
       render :layout => false, :action => 'check_registered_on_ok'
@@ -105,16 +102,12 @@ class Admin::UsuariosController < ApplicationController
   end
   
   def check_karma
-    u = User.find(params[:id])
-    kp = u.karma_points
-    u.cache_karma_points = nil
-    u.save
-    kp2 = u.karma_points
-    @edituser = u
+    @edituser = User.find(params[:id])
+    @kp_previous = @edituser.karma_points
+    @edituser.update_attributes(:cache_karma_points => nil)
+    @kp_correct = @edituser.karma_points
     
-    if kp != kp2 then
-      @kp_previous = kp
-      @kp_correct = kp2
+    if @kp_previous != @kp_correct then
       render :layout => false, :action => 'check_karma_fixed'
     else
       render :layout => false, :action => 'check_karma_ok'
@@ -122,16 +115,12 @@ class Admin::UsuariosController < ApplicationController
   end
   
   def check_faith
-    u = User.find(params[:id])
-    fp = u.faith_points
-    u.cache_faith_points = nil
-    u.save
-    fp2 = u.faith_points
-    @edituser = u
+    @edituser = User.find(params[:id])
+    @fp_previous = @edituser.faith_points
+    @edituser.update_attributes(:cache_faith_points => nil)
+    @fp_correct = @edituser.faith_points
     
-    if fp != fp2 then
-      @fp_previous = fp
-      @fp_correct = fp2
+    if @fp_previous != @fp_correct then
       render :layout => false, :action => 'check_faith_fixed'
     else
       render :layout => false, :action => 'check_faith_ok'
@@ -169,21 +158,18 @@ class Admin::UsuariosController < ApplicationController
   
   
   def ban_request
-    u = User.find_by_login(params[:login])
-    raise ActiveRecord::RecordNotFound unless u
+    u = User.find_by_login!(params[:login])
     @title = "Banear a #{u.login}"
   end
   
   def confirmar_ban_request
-    # raise AccessDenied unless @user && @user.has_admin_permission?(:capo)
     @br = BanRequest.find(params[:id])
-    raise ActiveRecord::RecordNotFound unless @br
     @title = "Ban #{@br.id}"
   end
   
   def create_ban_request
-    u = User.find_by_login(params[:login])
-    raise ActiveRecord::RecordNotFound unless u && @user.has_admin_permission?(:capo) && params[:login]
+    require_admin_permission(:capo)
+    u = User.find_by_login!(params[:login])
     b = BanRequest.new({:user_id => @user.id, :banned_user_id => u.id, :reason => params[:reason]})
     if b.save
       flash[:notice] = "Ban creado correctamente."
@@ -194,10 +180,10 @@ class Admin::UsuariosController < ApplicationController
   end
   
   def create_unban_request
-    u = User.find_by_login(params[:login])
-    raise ActiveRecord::RecordNotFound unless u && @user.has_admin_permission?(:capo) && params[:login]
+    require_admin_permission(:capo)
+    u = User.find_by_login!(params[:login])
     b = BanRequest.find(:first, :conditions => ['banned_user_id = ? and confirmed_on is not null', u.id], :order => 'confirmed_on DESC')
-    
+    raise ActiveRecord::RecordNotFound unless b
     if b.update_attributes({:unban_user_id => @user.id, :reason_unban => params[:reason_unban]})
       flash[:notice] = "Unban iniciado correctamente."
     else
@@ -260,27 +246,18 @@ Quedo a la espera de tu respuesta :)")
   end
   
   def set_antiflood_level
-    # raise AccessDenied unless user_is_authed && @user.has_admin_permission?(:capo)
     u = User.find(params[:user_id])
-    # TODO user.rb debería decir si el valor está bien o no
-    if params[:antiflood_level].to_i < -1 or params[:antiflood_level].to_i > 5 then
-      params[:antiflood_level] = '0'
-    end
-    if @user.has_admin_permission?(:capo)
-      SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], :reporter_user_id => @user.id, :headline => "Antiflood #{User::ANTIFLOOD_LEVELS[u.antiflood_level]} impuesto a <strong><a href=\"#{gmurl(u)}\">#{u.login}</a></strong> por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>")
-    else
-      SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], :reporter_user_id => @user.id, :headline => "Antiflood de emergencia impuesto a <strong><a href=\"#{gmurl(u)}\">#{u.login}</a></strong> por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>")
-    end
-    u.antiflood_level = params[:antiflood_level]
-    u.save
+    u.impose_antiflood(params[:antiflood_level].to_i, @user)
     redirect_to gmurl(u)
   end
   
   def clear_description
     u = User.find(params[:id])
-    u.description = nil
-    flash[:notice] = "Descripción borrada correctamente."    
-    u.save
+    if u.update_attributes(:description => nil)
+      flash[:notice] = "Descripción borrada correctamente."
+    else
+      flash[:error] = "Error: #{u.errors.full_messages_html}"
+    end
     redirect_to gmurl(u)
   end
   
@@ -288,8 +265,6 @@ Quedo a la espera de tu respuesta :)")
     u = User.find(params[:id])
     User.db_query("UPDATE users SET photo = null where id = #{u.id}")
     flash[:notice] = "Foto borrada correctamente."
-    #u.photo = nil
-    #u.save
     redirect_to gmurl(u)
   end
   
@@ -297,7 +272,7 @@ Quedo a la espera de tu respuesta :)")
     @curuser = User.find(params[:id])
     if @user.is_hq?
       reason_str = (params[:reason] && params[:reason].to_s != '' && params[:reason].to_s != 'Razón..') ? " (#{params[:reason]})" : '' 
-
+      
       sl = SlogEntry.create({:type_id => SlogEntry::TYPES[:user_report], :reporter_user_id => @user.id, :headline => "Perfil de <strong><a href=\"#{gmurl(@curuser)}\">#{@curuser.login}</a></strong> reportado #{reason_str} por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"})
       if sl.new_record?
         flash[:error] = "Error al reportar al usuario:<br />#{sl.errors.full_messages_html}"

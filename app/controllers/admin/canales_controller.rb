@@ -11,7 +11,7 @@ class Admin::CanalesController < AdministrationController
   def del
     @gmtv_channel = GmtvChannel.find(params[:id])
     @gmtv_channel.destroy
-    # act_and_flash @gmtv_channel, :destroy, 'cabecera', 'borrada', 'borrar'
+    
     if @gmtv_channel.frozen?
       flash[:notice] = "Cabecera borrada correctamente"
     else
@@ -22,10 +22,10 @@ class Admin::CanalesController < AdministrationController
   
   def reset
     @gmtv_channel = GmtvChannel.find(params[:id])
-    @gmtv_channel.file = nil
-    if @gmtv_channel.save
+    
+    if @gmtv_channel.update_attributes(:file => nil)
       flash[:notice] = "Cabecera reseteada correctamente"
-      if params[:notify] && params[:notify].to_i == 1 
+      if params[:notify] == '1' 
         Message.create({:user_id_from => @user.id, :user_id_to => @gmtv_channel.user_id, :title => 'Cabecera reseteada', :message => "Tu cabecera con Id <strong>#{@gmtv_channel.id}</strong> ha sido reseteada por la siguiente razón: \"<strong>#{params[:reset_reason]}\"</strong>"})
       end
     else

@@ -36,34 +36,14 @@ class Admin::CategoriasfaqController < ApplicationController
   end
   
   def moveup
-    @faq_category = FaqCategory.find(params[:id])
-    @prev = FaqCategory.find(:first, :conditions => ['position < ?', @faq_category.position], :order => 'position DESC', :limit => 1)
-    if @prev
-      tmp = @prev.position
-      @prev.position = @faq_category.position
-      @faq_category.position = tmp
-      @prev.save
-      @faq_category.save
-      flash[:notice] = 'Categoría FAQ actualizada correctamente.'
-    else
-      flash[:error] = 'Error al mover la categoría'
-    end
+    FaqCategory.find(params[:id]).moveup
+    flash[:notice] = 'Categoría FAQ actualizada correctamente.'
     redirect_to :action => 'index'
   end
   
   def movedown
-    @faq_category = FaqCategory.find(params[:id])
-    @prev = FaqCategory.find(:first, :conditions => ['position > ?', @faq_category.position], :order => 'position ASC', :limit => 1)
-    if @prev
-      tmp = @prev.position
-      @prev.position = @faq_category.position
-      @faq_category.position = tmp
-      @prev.save
-      @faq_category.save
-      flash[:notice] = 'Categoría FAQ actualizada correctamente.'
-    else
-      flash[:error] = 'Error al mover la categoría'
-    end
+    FaqCategory.find(params[:id]).movedown
+    flash[:notice] = 'Categoría FAQ actualizada correctamente.'
     redirect_to :action => 'index'
   end
   

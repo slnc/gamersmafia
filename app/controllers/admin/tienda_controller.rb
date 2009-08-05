@@ -6,7 +6,6 @@ class Admin::TiendaController < ApplicationController
   end
   
   def producto
-    # @navbar<< [[@product.name], ["/admin/tienda/producto"]]
     @product = Product.find(params[:id])
     @title = "Editar #{@product.name}"
   end
