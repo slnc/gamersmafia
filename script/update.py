@@ -59,7 +59,7 @@ def send_changelog_email():
     server.sendmail(fromaddr, toaddrs, msg)
     
     server.quit()
-    file("public/storage/gitlog.%s" % cur[0:8], "w").write(log)
+    file("public/storage/gitlog", "w").write(log)
     
     # Hacemos todo esto simplemente para guardar cuándo hacemos una nueva release
     # TODO deberíamos generar tags para no enviar emails de cambios con el id de hash sino con algo como
