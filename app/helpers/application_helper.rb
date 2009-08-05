@@ -747,7 +747,7 @@ END
       out = <<-END 
 <script src="#{ASSET_URL}/javascripts/web.shared/jquery-1.3.2.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/web.shared/jquery.scrollTo-1.4.0.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/jquery-ui-personalized-1.6rc2.#{SVNVERSION}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/jquery-ui-1.7.2.custom.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/web.shared/jgcharts-0.9.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/jrails.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/jquery.facebox.#{SVNVERSION}.js" type="text/javascript"></script>
