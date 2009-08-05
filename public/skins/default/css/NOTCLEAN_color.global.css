@@ -369,11 +369,18 @@ tr.downloads-download td.first {
     /* background: #FAFAFA; */
 }
 
-#mgfooter a {
+#mgfooter a,
+#gmversion a {
     color: #636363;
 }
 
-#mgfooter a:hover {
+
+#gmversion a:visited {
+    color: #aaa;
+}
+
+#mgfooter a:hover,
+#gmversion a:hover {
     color: #000000;
 }
 
@@ -1032,6 +1039,19 @@ body.cocuenta-cuenta .choose-avatar img.selected {
 	position: absolute;
 	right: 10px;
 	margin-top: -56px;
+}
+
+#gmversion {
+	width: 100px;
+	height: 24px;
+	position: absolute;
+	float: right;
+	z-index: 5;
+	right: 6px;
+	margin-top: 10px;
+	font-family: verdana;
+	font-size: 11px;
+	color: #aaa;
 }
 
 .btn-comentar {

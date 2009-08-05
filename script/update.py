@@ -57,6 +57,7 @@ def send_changelog_email():
     #server.set_debuglevel(1)
     server.login('nagato.gamersmafia.com', 'megustanlasgalletas')
     server.sendmail(fromaddr, toaddrs, msg)
+    
     server.quit()
     file("public/storage/gitlog.%s" % cur[0:8], "w").write(log)
     

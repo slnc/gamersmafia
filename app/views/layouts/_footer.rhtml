@@ -1,4 +1,11 @@
 <div id="footer-spirit"></div>
+<% if user_is_authed then %>
+<% cache('/common/gmversion') do %>
+<%n = News.published.find(:first, :conditions => "title = 'Gamersmafia actualizada a la versión #{SVNVERSION}'", :order => 'created_on DESC')
+url = n ? gmurl(n) : '/noticias' %>
+<div id="gmversion"><a href="<%=url%>"><%=SVNVERSION%></a></div>
+<% end -%>
+<% end -%>
 <div id="mgfooter" class="module">  
   <div class="mcontent">	
 	<ul class="second">
