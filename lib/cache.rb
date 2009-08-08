@@ -32,6 +32,7 @@ module Cache
       expire_fragment("/common/facciones/index/newest_#{Time.now.strftime('%Y%m%d')}")
       expire_fragment("/common/shared/_cash_transfer_factions")
       expire_fragment("/common/gnav/factions_list")
+      expire_fragment "/common/facciones/#{Time.now.strftime('%Y%m%d')}/stats/2_#{o.id}"
     end
   end
   

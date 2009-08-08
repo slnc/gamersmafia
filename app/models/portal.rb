@@ -9,6 +9,8 @@ class Portal < ActiveRecord::Base
   belongs_to :skin
   file_column :small_header
   
+  named_scope :factions, :conditions => ['type = \'FactionsPortal\'']
+  
   before_save :check_code
   
   def skin
