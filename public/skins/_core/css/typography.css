@@ -29,6 +29,6 @@ p {
 a { text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-#mggnav-member-totals { font-family: tahoma; font-size: 11px; color: #777; }
+#mggnav-member-totals { font-family: tahoma, arial; font-size: 11px; color: #777; }
 
 .sm { font-size: 10px; }

@@ -20,7 +20,7 @@
     </div>
 	<% end -%>
   </div>
-  <ul style="font-family:tahoma; font-size:11px;">
+  <ul style="font-family:tahoma, arial; font-size:11px;">
   <% if user_is_authed then 
 can_edit = Cms::user_can_edit_content?(@user, object) 
 can_delete = Cms::user_can_delete_content?(@user, object) %>

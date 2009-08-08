@@ -17,11 +17,11 @@ v[:individual].each {|s| sum += s }
 %>
 
 <tr class="<%=oddclass%>">
-	<td style="padding: 0 0 0 2px; font-size: 11px; font-family: tahoma;"><strong><%=member_state(u.hstate)%> <a href="<%=gmurl(u)%>"><%=u.login%></a></strong></td>
+	<td style="padding: 0 0 0 2px; font-size: 11px; font-family: tahoma, arial;"><strong><%=member_state(u.hstate)%> <a href="<%=gmurl(u)%>"><%=u.login%></a></strong></td>
 	<td style="padding: 2px 0 2px 0; text-align: right; line-height: 20px;">
 	<img title="<%=sum%> gmf en sus últimas <%=trimmed.size%> apuestas" src="<%=ASSET_URL%>/storage/minicolumns/bets_top_last30/<%=u.id%>.png?<%=Time.now.strftime('%Y-%m-%d')%>" style="margin-right: 2px; " />
 	</td>
-	<td style="margin-right: 2px;"><div class="infoinline" style="line-height: 10px; font-weight: bold; float: right; text-align: right; font-family: tahoma; font-size: 8px;">
+	<td style="margin-right: 2px;"><div class="infoinline" style="line-height: 10px; font-weight: bold; float: right; text-align: right; font-family: tahoma, arial; font-size: 8px;">
 	<span class="supermini good" style="color: #00790b;"><%=v[:individual].max%></span><br />
 	<span class="supermini bad" style="color: #a90014;"><%=v[:individual].min*(-1)%></span></div></td>
 	

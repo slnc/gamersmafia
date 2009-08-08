@@ -246,3 +246,5 @@ ul#sawbody-bazar { padding-top: 4px; line-height: 17px;}
 #sawbody-hq-jira { background: url(/images/jira.png) 0 0 no-repeat; padding-left: 18px; padding-bottom: 2px; }
 #sawbody-hq-wiki { background: url(/images/confluence.png) 0 0 no-repeat; padding-left: 18px; padding-bottom: 2px; }
 #sawbody-hq-experimentos { background: url(/images/experimentos.png) 0 0 no-repeat; padding-left: 18px; line-height: 18px; padding-bottom: 2px; }
+
+.notification-header { background-color: #000; padding-left: 15px; color: #fff; line-height: 33px; font-weight: bold; font-family: tahoma, arial; font-size: 16px; }

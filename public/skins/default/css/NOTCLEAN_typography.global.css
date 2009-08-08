@@ -1,5 +1,5 @@
 body, body td {
-    font-family: Tahoma;
+    font-family: tahoma, arial;
     font-size: 12px;
 }
 
@@ -17,13 +17,13 @@ h2 {
 }
 
 #navigator select {
-    font-family: tahoma;
+    font-family: tahoma, arial;
     font-size: 10px;
 }
 
 #cleft {
     font-size: 10px;
-    font-family: tahoma;
+    font-family: tahoma, arial;
 }
 
 #cleft li {
@@ -47,7 +47,7 @@ a {
 }
 
 #mgbreadcrumb {
-    font-family: tahoma;
+    font-family: tahoma, arial;
     font-size: 11px;
     font-weight: bold;
 }
@@ -72,7 +72,7 @@ a {
 /* really dirty down here */
 /* TEMP NOTCLEAN typography * /
 /* :=TYPOGRAPHY */ body {
-    font-family: Tahoma;
+    font-family: tahoma, arial;
     font-size: 12px;
 }
 
@@ -161,7 +161,7 @@ h2 {
 
 .contenttitle h1 {
     line-height: 27px;
-    font-family: tahoma;
+    font-family: tahoma, arial;
     font-size: 15px;
     font-weight: bold;
 }
@@ -169,7 +169,7 @@ h2 {
 body.lypopup h1 {
     font-size: 15px;
     font-weight: bold;
-    font-family: tahoma;
+    font-family: tahoma, arial;
     padding: 10px 10px;
     margin: 0 0 10px 0;
 }
@@ -213,7 +213,7 @@ body.lypopup h1 {
 }
 
 .comments-area .userinfo .attributes, .userinfobox .attributes {
-    font-family: tahoma;
+    font-family: tahoma, arial;
     font-size: 10px;
 }
 
@@ -236,7 +236,7 @@ body.lypopup h1 {
 
 .subheader {
     /* line-height: 23px; */
-    font-family: Tahoma;
+    font-family: tahoma, arial;
     font-size: 13px;
     font-weight: bold;
 }
@@ -264,7 +264,7 @@ body.lypopup h1 {
 }
 
 #online td, #online {
-    font-family: tahoma;
+    font-family: tahoma, arial;
     font-size: 10px;
 }
 
@@ -303,7 +303,7 @@ body.lypopup h1 {
 
 .homebox table.factions td, .homebox table.factions th {
     font-size: 11px;
-    font-family: tahoma;
+    font-family: tahoma, arial;
 }
 
 .homebox table.factions th {
@@ -311,13 +311,13 @@ body.lypopup h1 {
 }
 /* downloads  */
 tr.downloads-folder td.first {
-    font-family: tahoma;
+    font-family: tahoma, arial;
     font-size: 11px;
     line-height: 15px;
 }
 
 tr.downloads-download td.first {
-    font-family: tahoma;
+    font-family: tahoma, arial;
     font-size: 11px;
     line-height: 15px;
 }
@@ -327,7 +327,7 @@ tr.downloads-folder a, tr.downloads-download a {
 }
 
 .content-category {
-    font-family: tahoma;
+    font-family: tahoma, arial;
     font-size: 10px;
     text-transform: uppercase;
     font-weight: normal;
@@ -383,7 +383,7 @@ img.none {
 }
 
 input, textarea {
-    font-family: tahoma;
+    font-family: tahoma, arial;
     font-size: 11px;
 }
 
@@ -399,7 +399,7 @@ input, textarea {
 #minichat {
     overflow: auto;
     font-size: 11px;
-    font-family: tahoma;
+    font-family: tahoma, arial;
 }
 
 #minichat .nick {
@@ -423,7 +423,7 @@ input, textarea {
 }
 
 #mgbreadcrumb a, #mgsubmenu a, #mgsubmenu2 a {
-    font-family: tahoma;
+    font-family: tahoma, arial;
     text-decoration: none;
     font-size: 11px;
     font-weight: bold;
@@ -470,7 +470,7 @@ input, textarea {
 }
 
 textarea {
-    font-family: tahoma;
+    font-family: tahoma, arial;
     font-size: 12px;
 }
 

@@ -706,7 +706,7 @@ ul.slog-entries-browser-filter li { list-style: none; float: left; margin-right:
 	#mgfriends-online-table { width: 100%; }
 	#mgfriends-online-table table { width: 100%; }
 	#mgfriends-online-table td { margin: 0; padding: 0; text-align: left; line-height: 16px;}
-	#mgfriends-online-table a { display: block; width: 100%; font-size: 10px; font-family: tahoma; }
+	#mgfriends-online-table a { display: block; width: 100%; font-size: 10px; font-family: tahoma, arial; }
 
 	
 	#tracker-bg-text { height: 16px; width: 100%; background: url(../images/txts_sidebar.png) right -30px no-repeat; }
@@ -715,7 +715,7 @@ ul.slog-entries-browser-filter li { list-style: none; float: left; margin-right:
 	
 	.sidecontent-list {}
 	.sidecontent-list li { padding: 2px 1px; line-height: 14px; margin-bottom: 1px;}
-	.sidecontent-list li a { display: block; width: 100%; padding: 0 2px; font-size: 10px; font-family: tahoma; }
+	.sidecontent-list li a { display: block; width: 100%; padding: 0 2px; font-size: 10px; font-family: tahoma, arial; }
 	
 .gm20085 #tracker { margin-bottom: 20px; }
 .gm20085 #recommendations4u { margin-bottom: 20px; }

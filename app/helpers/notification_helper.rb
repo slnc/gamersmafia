@@ -1,6 +1,6 @@
 module NotificationHelper
   def notification_header(s)
-    "<div style=\"background-color: #000; padding-left: 15px; color: #fff; line-height: 33px; font-weight: bold; font-family: tahoma; font-size: 16px;\">#{s}</div>"
+    "<div class=\"notification-header\">#{s}</div>"
   end
   
   def sparklines(o)
