@@ -1490,7 +1490,8 @@ CREATE TABLE global_vars (
     ads_slots_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     gmtv_channels_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     pending_contents integer DEFAULT 0 NOT NULL,
-    git_prev_revision character varying
+    git_prev_revision character varying,
+    portals_updated_on timestamp without time zone DEFAULT now() NOT NULL
 );
 
 

@@ -8,10 +8,15 @@ class Portal < ActiveRecord::Base
   belongs_to :default_gmtv_channel
   belongs_to :skin
   file_column :small_header
+  after_save :update_global_vars
   
   named_scope :factions, :conditions => ['type = \'FactionsPortal\'']
   
   before_save :check_code
+  
+  def update_global_vars
+    User.db_query("UPDATE global_vars SET portals_updated_on = now()")
+  end
   
   def skin
     self.skin_id ? Skin.find(self.skin_id) : Skin.find_by_hid('default')

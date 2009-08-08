@@ -458,6 +458,9 @@ Request information:
   
   def resolve_portal_mode
     @global_vars = User.db_query("SELECT * FROM global_vars")[0]
+    
+    @@portals = {} if @global_vars['portals_updated_on'].to_time > Time.now
+    
     # esto no hay que hacerlo aquí
     # hay clientes que mandan un HTTP_CLIENT_IP incorrecto TODO esto peta
     if request.env.include?('HTTP_CLIENT_IP') and (request.env['HTTP_CLIENT_IP'] =~ /^unknown$|^(10|172\.(1[6-9]|2[0-9]|30|31)|192\.168)\./i).nil? then
