@@ -1,12 +1,22 @@
 class Funthing < ActiveRecord::Base
   YOUTUBE_EMBED = /^http:\/\/([a-z.]*)youtube.com\/watch\?v=([a-zA-Z0-9]+)/
-                     # http://       www.youtube.com/v/6-ecf9_X_Dk&hl=es&fs=1
+  # http://       www.youtube.com/v/6-ecf9_X_Dk&hl=es&fs=1
   YOUTUBE_EMBED2 = /http:\/\/([a-z.]*)youtube.com\/v\/([a-zA-Z0-9_-]+)/
   
   acts_as_content
   before_save :check_youtube_embed
   validates_presence_of [ :title, :main ], :message => 'no pueden estar vacíos con este campo'
   validates_uniqueness_of [ :title, :main ], :message => 'ya existe otra curiosidad con este campo'
+  before_save :filter_main
+  
+  def filter_main
+    if self.main.downcase.include?('<iframe') || self.main.downcase.include?('<script')
+      self.errors.add('main', 'No se pueden enviar curiosidades que contengan iframes o código JavaScript.')
+      false
+    else
+      true
+    end
+  end
   
   def content
     main =~ Cms::URL_REGEXP_FULL ? "<a href=\"#{main}\">#{main.gsub(/http:\/\//, '')}</a>"  : main

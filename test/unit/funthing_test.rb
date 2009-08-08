@@ -6,7 +6,7 @@ class FunthingTest < ActiveSupport::TestCase
     assert_equal true, ft.save
     assert_not_nil Funthing.find_by_title('foo funthing')
   end
-
+  
   test "should_not_create_funthing_if_duplicated_name" do
     test_should_create_funthing
     ft = Funthing.new({:title => 'foo funthing', :main => 'somecode2', :user_id => 1})
@@ -40,5 +40,15 @@ class FunthingTest < ActiveSupport::TestCase
     ft = Funthing.new({:title => 'wikitapang', :main => embed, :user_id => 1})
     assert_equal true, ft.save
     assert_equal embed, ft.main
+  end
+  
+  test "dont allow iframe or javascript" do
+    ft = Funthing.new({:title => 'foo funthing2', :main => '<iframe', :user_id => 1})
+    assert_equal false, ft.save
+    assert_not_nil ft.errors[:main]
+    
+    ft = Funthing.new({:title => 'foo funthing2', :main => '<script', :user_id => 1})
+    assert_equal false, ft.save
+    assert_not_nil ft.errors[:main]
   end
 end
