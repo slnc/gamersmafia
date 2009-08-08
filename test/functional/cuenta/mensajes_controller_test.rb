@@ -52,6 +52,16 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
     assert_not_nil flash[:error]
   end
   
+  test "create_message_should_not_burp_if_replying_to_nonexistant_message" do
+    sym_login 1
+    assert_count_increases(Message) do
+      post :create_message, { :message=> {:message_type => Message::R_USER, :recipient_user_login => User.find(2).login, :title => "foo litio", :message => "soy litio teodorakis", :in_reply_to => -1 }}
+      assert_response :redirect
+      assert_nil flash[:error]
+    end
+    assert_equal "foo litio", Message.last.title
+  end
+  
   test "create_message_should_work_if_clan_not_given" do
     u1 = User.find(1)
     c1 = Clan.find(1)

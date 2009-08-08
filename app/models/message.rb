@@ -15,7 +15,8 @@ class Message < ActiveRecord::Base
   
   before_save :check_not_self
   after_create :notify_recipient
-  after_create :check_in_reply_to
+  after_create :set_thread_id_if_nil
+  before_create :check_in_reply_to
   
   after_save :update_recipient_unread 
   after_destroy :update_recipient_unread 
@@ -79,18 +80,23 @@ class Message < ActiveRecord::Base
   end
   
   def check_in_reply_to
-    return if thread_id
-    if in_reply_to
-      m = Message.find(in_reply_to)
-      raise AccessDenied unless [m.user_id_to, m.user_id_from].include?(self.user_id_from)
-      m.has_replies = true
-      m.save 
-      self.thread_id = m.thread_id
-      self.save
-    else
-      self.thread_id = self.id
-      self.save
+    return if self.thread_id
+    if self.in_reply_to
+      m = Message.find_by_id(self.in_reply_to)
+      if m.nil? || ![m.user_id_to, m.user_id_from].include?(self.user_id_from)
+        # message refered to is nonexistant, we silently ignore in_reply_to 
+        # as the original message can have been deleted
+        self.in_reply_to = nil
+      else
+        m.has_replies = true
+        m.save 
+        self.thread_id = m.thread_id
+      end
     end
+  end
+  
+  def set_thread_id_if_nil
+    self.update_attributes(:thread_id => self.id) if self.thread_id.nil?
   end
   
   def check_not_self
