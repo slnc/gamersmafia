@@ -456,11 +456,11 @@ google_color_text = "' + options[:colors][:google_color_text]+'";
       base_path = '/images'
     end
     
-      out = "<div style=\"margin: 2px;\"><img src=\"#{base_path}/building_top.png\" /><br />"
-      stories.times do
-        out << "<img src=\"#{base_path}/building_middle.png\" /><br />"
-      end
-      out << "<img src=\"#{base_path}/building_bottom.png\" /></div>"
+    out = "<div style=\"margin: 2px;\"><img src=\"#{base_path}/building_top.png\" /><br />"
+    stories.times do
+      out << "<img src=\"#{base_path}/building_middle.png\" /><br />"
+    end
+    out << "<img src=\"#{base_path}/building_bottom.png\" /></div>"
   end
   
   def gmd10
@@ -782,7 +782,11 @@ END
   def submenu_name
     case controller.submenu
       when 'Facción':
-      "Mi Facción"
+      if controller.class.name.include?('Cuenta')
+        "Mi Facción"
+      else
+        'Facción'
+      end
       when 'Clan':
       "Mis Clanes"
     else
@@ -939,7 +943,7 @@ END
     mfcontainer_list('table', title, collection, options, &block)
   end
   
-    
+  
   def mflist(title, collection, options={}, &block)
     mfcontainer_list('list', title, collection, options, &block)
   end

@@ -44,7 +44,7 @@
   <% for user in User.find(:all, :conditions => ['faction_id = ?', @faction.id], :order => 'faction_last_changed_on desc', :limit => 10)%>
   <tr class="<%=oddclass%>">
     <td><%=link_to user.login, gmurl(user)%></td>
-    <td class="infoinline"><%=print_tstamp(user.faction_last_changed_on, 'date')%></td>
+    <td class="infoinline timestamp"><%=print_tstamp(user.faction_last_changed_on, 'date')%></td>
   </tr>
   <% end -%>
 <% end -%>
@@ -77,44 +77,5 @@
 <div style="clear: left;">&nbsp;</div>
 <div class="subheader"><div>¿Por qué deberías unirte a nuestra facción?</div></div>
 <%=@faction.why_join%>
-
-<div class="subheader"><div>Staff</div></div>
-<%
-cache("/common/facciones/#{@faction.id}/staff") do
-
-  parsed_users = []
-  boss = @faction.boss
-  underboss = @faction.underboss
-
-  if boss then 
-    parsed_users<< boss.id
-    %><%=draw_faction_portrait(boss, @faction)%><%
-  end
-
-  if underboss then 
-    parsed_users<< underboss.id
-    %><%=draw_faction_portrait(underboss, @faction)%><%
-  end
-
-  @faction.editors.each do |content_type, user|
-    if not parsed_users.include?(user.id)
-      parsed_users<< user.id
-      %><%=draw_faction_portrait(user, @faction)%><%
-    end
-  end
-
-  @faction.moderators.each do |moderator|
-    if not parsed_users.include?(moderator.id)
-      parsed_users<< moderator.id
-      %><%=draw_faction_portrait(moderator, @faction)%><%
-    end
-  end
-
-end
-
-%>
-<div style="clear: left;">&nbsp;</div>
-<strong>Todos los miembros</strong><br />
-<a href="/faccion/miembros">Ver todos los miembros (<%=@faction.members_count%>)</a>
 <% end -%>
 <% end -%>
