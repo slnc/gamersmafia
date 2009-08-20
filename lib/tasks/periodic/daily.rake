@@ -15,7 +15,7 @@ namespace :gm do
     new_accounts_cleanup
     check_ladder_matches
     update_portals_hits_stats
-    # provocar_golpes_de_estado
+    provocar_golpes_de_estado
     forget_old_tracker_items
     forget_old_pageviews
     forget_old_autologin_keys
@@ -144,6 +144,12 @@ namespace :gm do
   def provocar_golpes_de_estado
     require "#{RAILS_ROOT}/app/controllers/application_controller" # necesario por llamada a ApplicationController
     mrcheater = User.find_by_login!('MrCheater')
+    if [7, 8].include?(Time.now.month)
+      days = 12
+    else
+      days = 6
+    end
+
     Faction.find(:all, :conditions => "code IN (
 select (select code from portals where id = stats.portals.portal_id)
   from stats.portals
@@ -152,13 +158,13 @@ select (select code from portals where id = stats.portals.portal_id)
                       where code in (select code
                                        from games UNION
                                      select code from platforms))
-   and created_on >= now() - '7 days'::interval
+   and created_on >= now() - '#{days+1} days'::interval
  group by portal_id
 having portal_id in (select id
                        from portals
                       where code in (select code
                                        from factions
-                                      where created_on < now() - '6 days'::interval
+                                      where created_on < now() - '14 days'::interval
                                         and id IN #{Faction.factions_ids_with_bigbosses}))
              AND sum(karma) = 0)").each do |f|
       # avisamos de que mañana se provocará golpe de estado si no hacen nada
@@ -176,17 +182,17 @@ select (select code from portals where id = stats.portals.portal_id)
                       where code in (select code
                                        from games UNION
                                      select code from platforms))
-   and created_on >= now() - '9 days'::interval
+   and created_on >= now() - '#{days+3} days'::interval
  group by portal_id
 having portal_id in (select id
                        from portals
                       where code in (select code
                                        from factions
-                                      where created_on < now() - '8 days'::interval
+                                      where created_on < now() - '15 days'::interval
                                        and id IN #{Faction.factions_ids_with_bigbosses}))
              AND sum(karma) = 0)").each do |f|
       # mrCheater provoca golpe de estado publicando un tópic al respecto
-      # puts "golpe de estado a #{f.name}"
+      puts "golpe de estado a #{f.name}"
       f.golpe_de_estado
     end
   end

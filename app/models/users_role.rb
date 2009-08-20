@@ -56,11 +56,12 @@ class UsersRole < ActiveRecord::Base
       end
       
       if self.role == 'Boss'
-        bd = Faction.find(self.role_data.to_i)
-        bd.update_boss(bd.underboss) if bd.underboss        
+        bd = Faction.find_by_id(self.role_data.to_i)
+	# al borrar algunas facciones viejas no se borraban los roles
+        bd.update_boss(bd.underboss) if bd && bd.underboss
       end
       
-      Message.create(:title => "Permiso de #{format_scope} eliminado", :message => "Ya no tienes permisos de #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id)
+      Message.create(:title => "Permiso de #{format_scope} eliminado", :message => "Ya no tienes permisos de #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id) if bd
     else
       Message.create(:title => "Recibido permiso de #{format_scope}", :message => "Acabas de recibir permisos de #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id)
     end
