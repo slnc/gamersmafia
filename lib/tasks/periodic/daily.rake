@@ -15,7 +15,7 @@ namespace :gm do
     new_accounts_cleanup
     check_ladder_matches
     update_portals_hits_stats
-    provocar_golpes_de_estado
+    # provocar_golpes_de_estado
     forget_old_tracker_items
     forget_old_pageviews
     forget_old_autologin_keys
