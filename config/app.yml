@@ -2,7 +2,7 @@
 common: &common
   platform: <%=(RUBY_PLATFORM =~ /(win|w)32$/) ? WINDOWS : LINUX%>
   windows?: <%=(RUBY_PLATFORM =~ /(win|w)32$/) ? true : false %>
-  tidy_path: <%= (RUBY_PLATFORM =~ /(win|w)32$/) ? 'c:\tidy.dll' : '/usr/lib/libtidy.so' %>
+  tidy_path: <% if RUBY_PLATFORM =~ /darwin/ then %> '/usr/lib/libtidy.dylib' <% elsif RUBY_PLATFORM =~ /(win|w)32$/ then %> 'c:\tidy.dll' <% else %> '/usr/lib/libtidy.so' <% end %>
   domain: gamersmafia.com
   domain_bazar: bazar.gamersmafia.com
   domain_arena: arena.gamersmafia.com
@@ -76,7 +76,7 @@ test: &test
 
     
 # specific machines or profiles
-blackwings:
+blackwings: &blackwings
   domain: gamersmafia.dev
   asset_domain: gamersmafia.dev
   compress_skins?: false
@@ -88,6 +88,11 @@ blackwings:
   python: python
 # port: 3000
   <<: *development
+
+mac:
+  tidy_path: /usr/lib/libtidy.dylib
+  <<: *blackwings
+
   
 doll2:
   domain: gamersmafia.dev2
