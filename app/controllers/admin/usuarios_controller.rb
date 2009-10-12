@@ -234,7 +234,7 @@ class Admin::UsuariosController < ApplicationController
 
 Lo único que es necesario para formar parte del HQ son ganas de mejorar la comunidad y la web y un mínimo de participación en al menos una de las áreas como la lista de correo.
 
-¿Qué me dices? Si te interesa respóndeme con un email en el que quieras recibir los correos de la lista interna. Es importante que la dirección no sea hotmail porque con hotmail es imposible seguir una lista de correo. Cuentas como @gmail o cuentas que no sean webmail sí que sirven. Si quieres tener una cuenta tunick@gamersmafia.com también te la puedo crear.
+¿Qué me dices? Si te interesa respóndeme con un email en el que quieras recibir los correos de la lista interna. Es importante que la dirección no sea hotmail porque con hotmail es imposible seguir una lista de correo. Cuentas como @gmail o cuentas que no sean webmail sí que sirven.
 
 Quedo a la espera de tu respuesta :)")
     if m.save
