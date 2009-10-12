@@ -148,7 +148,7 @@ class Faction < ActiveRecord::Base
     if newuser # le quitamos los roles viejos como don/mano_derecha
       UsersRole.find(:all, :conditions => ["role IN ('Boss', 'Underboss') AND user_id = ?", newuser.id]).each do |ur|
         ur.destroy        
-        SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :reviewer_user_id => User.find_by_login('MrAchmed').id, :headline => "Eliminado permiso <strong>#{ur.role}</strong> de #{Faction.find(ur.role_data.to_i).name} a #{newuser.login}")
+        SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :reviewer_user_id => User.find_by_login('MrAchmed').id, :headline => "Eliminado permiso <strong>#{ur.role}</strong> de #{Faction.find(ur.role_data.to_i).name} a #{newuser.login} por hacerse boss en <strong>#{self.code}</strong>", :completed_on => Time.now)
       end
       
       ur = UsersRole.create(:role => role, :role_data => self.id.to_s, :user_id => newuser.id)
