@@ -175,6 +175,7 @@ function close_new_content_selector(){
 }
 
 function mark_new(item_id, base){
+	console.debug('marking as updated ' + item_id + ' ' + base);
     var d = $j("#"+ base + item_id);
     if (d) 
 		d.addClass('updated');
@@ -184,6 +185,11 @@ function mark_visited(item_id){
     var _mvi = $j('#content' + item_id);
     if (_mvi)
         _mvi.removeClass('new');
+		
+	var _mvi2 = $j('#contentd' + item_id);
+	    if (_mvi2)
+        _mvi2.removeClass('new');
+
 }
 
 function mailto(p1){

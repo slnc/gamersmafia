@@ -3,7 +3,8 @@
 <% cache('/common/gmversion') do %>
 <%n = News.published.find(:first, :conditions => "title = 'Gamersmafia actualizada a la versión #{SVNVERSION}'", :order => 'created_on DESC')
 url = n ? gmurl(n) : '/noticias' %>
-<div id="gmversion"><a href="<%=url%>"><%=SVNVERSION%></a></div>
+<div id="gmversion"><span id="contentd<%=n.unique_content_id%>" class="new"><a href="<%=url%>"><%=SVNVERSION%></a></span></div>
+<script type="text/javascript">contents = contents.concat(<%=n.unique_content_id%>);</script>
 <% end -%>
 <% end -%>
 <div id="mgfooter" class="module">  

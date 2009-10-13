@@ -371,6 +371,9 @@ tr.downloads-download td.first {
 
 #mgfooter a,
 #gmversion a {
+	font-family: tahoma;
+	font-size: 11px;
+	padding: 3px;
     color: #636363;
 }
 
@@ -384,6 +387,8 @@ tr.downloads-download td.first {
     color: #000000;
 }
 
+#gmversion .new a { color: #fff; }
+#gmversion .new { background: #002e64; }
 #mgsubmenu li span,
 #mgsubmenu2 li span {
     color: #bbb;
