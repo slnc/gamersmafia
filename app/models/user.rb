@@ -112,7 +112,7 @@ class User < ActiveRecord::Base
   after_save :check_is_hq
   after_save :check_login_changed
   after_save :check_permissions
-  observe_attr :competition_roster, :login, :state, :is_hq, :faction_id, :lastcommented_on, :avatar_id, :photo
+  observe_attr :competition_roster, :login, :state, :is_hq, :faction_id, :lastcommented_on, :avatar_id, :photo, :homepage
   
   before_create :generate_validkey
   after_create :change_avatar
@@ -120,6 +120,7 @@ class User < ActiveRecord::Base
   attr_protected :cache_karma_points, :is_superadmin, :admin_permissions, :faction_id
   
   before_save :check_if_shadow
+  before_save :check_if_website
   
   named_scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})", :order => 'lower(login)'
   
@@ -128,6 +129,20 @@ class User < ActiveRecord::Base
     true
   end
   
+  def check_if_website
+    return unless self.slnc_changed?(:homepage)
+    
+    if self.homepage.to_s != '' 
+      if !(Cms::URL_REGEXP_FULL =~ self.homepage)
+        self.homepage  = "http://#{self.homepage}"
+        Cms::URL_REGEXP_FULL =~ self.homepage
+      else
+        true
+      end
+    else
+      true
+    end
+  end
   
   def check_permissions
     self.users_roles.clear if slnc_changed?(:state) && STATES_CANNOT_LOGIN.include?(self.state)

@@ -21,6 +21,22 @@ class UserTest < ActiveSupport::TestCase
     assert u.faith_points == 5
   end
   
+  test "website should do nothing if nothing" do
+    u = User.find(1)
+    assert u.update_attributes(:homepage => nil)
+    assert u.update_attributes(:homepage => '')
+    
+    assert u.update_attributes(:homepage => 'http://serginho.com.ar')
+    assert_equal 'http://serginho.com.ar', u.homepage
+  end
+  
+  test "homepage should automatically add http if missing" do
+    u = User.find(1)
+    
+    assert u.update_attributes(:homepage => 'serginho.com.ar')
+    assert_equal 'http://serginho.com.ar', u.homepage
+  end
+  
   test "is_editor" do
     u2 = User.find(2)
     assert u2.is_editor?
@@ -90,7 +106,7 @@ class UserTest < ActiveSupport::TestCase
     years = DateTime.now.year - u.birthday.year
     assert([(years - 1), years].include?(u.age), u.age)
   end
-
+  
   test "check_age" do    
     u = User.find(1) 
     
@@ -109,7 +125,7 @@ class UserTest < ActiveSupport::TestCase
     assert_nil u.birthday # Comprobamos que efectivamente hay nil
     assert u.save         # Deberá salvar bien aun con birthday a nil
   end
-
+  
   
   test "should_allow_youtube_videos_on_profile" do
     u = User.find(1)
@@ -244,12 +260,12 @@ class UserTest < ActiveSupport::TestCase
     assert u1.change_avatar(av1.id)
     assert_equal av1.id, u1.avatar_id
   end
-
+  
   def test_user_should_not_be_zombie_if_logged_in
     u1 = User.find(1)
     assert u1.update_attributes(:state => User::ST_ZOMBIE)
     u1.comments.each do |c|
-	    assert c.update_attributes(:created_on => 4.months.ago)
+      assert c.update_attributes(:created_on => 4.months.ago)
     end
     assert u1.update_attributes(:lastseen_on => Time.now)
     assert_equal User::ST_SHADOW, u1.state
