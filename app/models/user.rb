@@ -179,11 +179,8 @@ class User < ActiveRecord::Base
   
   def check_is_staff
     # actualiza la variable is_staff
-    if self.users_roles.count(:conditions => "role IN ('Don', 'ManoDerecha', 'Sicario', 'Moderator', 'Editor', 'Boss', 'Underboss')") > 0 || has_admin_permissions? || is_competition_admin? || is_competition_supervisor?
-      self.update_attributes(:is_staff => true)
-    else
-      self.update_attributes(:is_staff => false)
-    end
+    is_staff = self.users_roles.count(:conditions => "role IN ('Don', 'ManoDerecha', 'Sicario', 'Moderator', 'Editor', 'Boss', 'Underboss')") > 0 || has_admin_permissions? || is_competition_admin? || is_competition_supervisor?
+    self.update_attributes(:is_staff => is_staff, :cache_is_faction_leader => self._no_cache_is_faction_leader?)
   end
   
   def check_comments_values
@@ -262,11 +259,11 @@ class User < ActiveRecord::Base
     end
   end
   
+  def _no_cache_is_faction_leader?
+    (!self.faction_id.nil?) && (self.has_admin_permission?(:capo) || self.users_roles.count(:conditions => "role IN ('Boss', 'Underboss')") > 0)
+  end
+  
   def is_faction_leader?
-    if self.cache_is_faction_leader.nil?
-      self.cache_is_faction_leader = (self.faction_id && (self.has_admin_permission?(:capo) || self.users_roles.count(:conditions => "role IN ('Boss', 'Underboss')") > 0))
-      self.save
-    end
     self.cache_is_faction_leader
   end
   

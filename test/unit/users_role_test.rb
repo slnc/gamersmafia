@@ -26,4 +26,60 @@ class UsersRoleTest < ActiveSupport::TestCase
     assert_equal 2, bd.don.id
     assert !bd.has_mano_derecha?
   end
+  
+  test "should update users is_faction_leader when losing faction boss" do
+    f = Faction.find(:first)
+    u1 = User.find(2)
+    f.update_boss(u1)
+    u1.reload
+    assert u1.is_faction_leader?
+    u1.users_roles.each do |ur|
+      ur.destroy
+    end
+    
+    u1.reload
+    assert !u1.is_faction_leader?
+  end
+  
+  test "should update users is_faction_leader when losing faction underboss" do
+    f = Faction.find(:first)
+    u1 = User.find(2)
+    f.update_underboss(u1)
+    u1.reload
+    assert u1.is_faction_leader?
+    u1.users_roles.each do |ur|
+      ur.destroy
+    end
+    
+    u1.reload
+    assert !u1.is_faction_leader?
+  end
+  
+  test "should update users is_faction_leader when losing district don" do
+    f = BazarDistrict.find(:first)
+    u1 = User.find(2)
+    f.update_don(u1)
+    u1.reload
+    assert u1.is_district_leader?
+    u1.users_roles.each do |ur|
+      ur.destroy
+    end
+    
+    u1.reload
+    assert !u1.is_district_leader?
+  end
+  
+  test "should update users is_faction_leader when losing district mano_derecha" do
+    f = BazarDistrict.find(:first)
+    u1 = User.find(2)
+    f.update_mano_derecha(u1)
+    u1.reload
+    assert u1.is_district_leader?
+    u1.users_roles.each do |ur|
+      ur.destroy
+    end
+    
+    u1.reload
+    assert !u1.is_district_leader?
+  end
 end
