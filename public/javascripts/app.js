@@ -175,7 +175,6 @@ function close_new_content_selector(){
 }
 
 function mark_new(item_id, base){
-	console.debug('marking as updated ' + item_id + ' ' + base);
     var d = $j("#"+ base + item_id);
     if (d) 
 		d.addClass('updated');
