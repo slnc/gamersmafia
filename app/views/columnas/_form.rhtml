@@ -9,8 +9,8 @@
 <p><label for="column_content">Contenido</label><br/>
 <%=wysiwyg('column[main]', :value => @column.main)%></p>
 
-<p><label for="image_file">Imagen para portada (.JPG que se mostrará a 105x54)</label><br/>
-<%=fc_thumbnail(@column.home_image, 'f', '105x54')%>
+<p><label for="image_file">Imagen para portada (.JPG que se mostrará a <%=Cms::IMG_ARTICLE_THUMB%>)</label><br/>
+<%=fc_thumbnail(@column.home_image, 'f', Cms::IMG_ARTICLE_THUMB)%>
 <%= file_field 'column', 'home_image' %></p>
 
 <p><label for="column_title">Fuente</label> <span class="infoinline">Si no has escrito tú la columna pon la dirección original (ej: <strong>http://webtalcual.com/articulos?id=1213</strong>)</span><br/>

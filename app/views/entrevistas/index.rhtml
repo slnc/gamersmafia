@@ -31,7 +31,7 @@ controller.portal.interview.find(:published, :order => 'created_on', :limit => @
     <div class="<%=oddclass%>">
    	  <h2><%= link_to interview.title, gmurl(interview) %></h2>
       <%=draw_contentheadline(interview)%>
-      <% if interview.home_image then %><div style="float: left;  margin-top: 5px;margin-right: 10px;"><%=fc_thumbnail(interview.home_image, 'f', '105x54', false)%></div><% end -%>
+      <% if interview.home_image then %><div style="float: left;  margin-top: 5px;margin-right: 10px;"><%=fc_thumbnail(interview.home_image, 'f', Cms::IMG_ARTICLE_THUMB, false)%></div><% end -%>
       <div style="margin-left: 110px;" class="summary"><%=interview.description%></div>
     </div>
     <br />

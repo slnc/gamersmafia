@@ -44,6 +44,8 @@ module Cms
   IMGWG2 = 88
   IMGWG1 = 33
   
+  IMG_ARTICLE_THUMB = "#{IMGWG4}x54"
+  
   IMAGE_FORMAT = /\.(jpg|gif|png|jpeg|bmp)$/i
   
   ROOT_TERMS_CONTENTS = %w(News Bet Poll Event Coverage Interview Column Review Demo RecruitmentAd)

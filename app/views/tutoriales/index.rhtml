@@ -99,7 +99,7 @@ if tuts_count > 0 then
 <div class="<%=oddclass%>">
       <h2><%= link_to tutorial.title, gmurl(tutorial) %></h2>
       <%=draw_contentheadline(tutorial)%>
-      <% if tutorial.home_image then %><div style="float: left;  margin-top: 5px;margin-right: 10px;"><%=fc_thumbnail(tutorial.home_image, 'f', '105x54', false)%></div><% end -%>
+      <% if tutorial.home_image then %><div style="float: left;  margin-top: 5px;margin-right: 10px;"><%=fc_thumbnail(tutorial.home_image, 'f', Cms::IMG_ARTICLE_THUMB, false)%></div><% end -%>
       <div style="margin-left: 110px;" class="summary"><%=tutorial.description%></div>
 </div>
 <% end -%>

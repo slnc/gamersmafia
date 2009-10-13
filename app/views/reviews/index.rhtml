@@ -42,7 +42,7 @@
     <div class="<%=oddclass%>">
       <h2><%= link_to review.title, gmurl(review) %></h2>
       <%=draw_contentheadline(review)%>
-      <% if review.home_image then %><div style="float: left;  margin-top: 5px;margin-right: 10px;"><%=fc_thumbnail(review.home_image, 'f', '105x54', false)%></div><% end -%>
+      <% if review.home_image then %><div style="float: left;  margin-top: 5px;margin-right: 10px;"><%=fc_thumbnail(review.home_image, 'f', Cms::IMG_ARTICLE_THUMB, false)%></div><% end -%>
       <div style="margin-left: 110px;" class="summary"><%=review.description%></div>
     </div>
     <br />

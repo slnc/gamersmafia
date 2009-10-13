@@ -9,8 +9,8 @@
 <p><label for="review_text">Contenido</label><br/>
 <%=wysiwyg('review[main]', :value => @review.main)%></p>
 
-<p><label for="image_file">Imagen para portada (.JPG que se mostrará a 105x54)</label><br/>
-<%=fc_thumbnail(@review.home_image, 'f', '105x54')%>
+<p><label for="image_file">Imagen para portada (.JPG que se mostrará a <%=Cms::IMG_ARTICLE_THUMB%>)</label><br/>
+<%=fc_thumbnail(@review.home_image, 'f', Cms::IMG_ARTICLE_THUMB)%>
 <%= file_field 'review', 'home_image' %></p>
 
 <p><label for="review_title">Fuente</label> <span class="infoinline">Si no has escrito tú la review pon la dirección original (ej: <strong>http://webtalcual.com/articulos?id=1213</strong>)</span><br/>
