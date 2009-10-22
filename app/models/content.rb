@@ -143,6 +143,11 @@ class Content < ActiveRecord::Base
     to_add = newt - existing
     root_terms_add_ids(to_add)
     to_del.each { |tid| self.contents_terms.find(:first, :conditions => ['term_id = ?', tid]).destroy }
+    # We force an update of the url
+    self.url = nil
+    ApplicationController.url_for_content_onlyurl(self)
+    self.save
+    true
   end
   
   def categories_terms_ids=(arg)
@@ -155,6 +160,11 @@ class Content < ActiveRecord::Base
     to_add = newt - existing
     categories_terms_add_ids(to_add, taxonomy)
     to_del.each { |tid| self.contents_terms.find(:first, :conditions => ['term_id = ?', tid]).destroy }
+    # We force an update of the url
+    self.url = nil
+    ApplicationController.url_for_content_onlyurl(self)
+    self.save
+    true
   end
   
   def root_terms_add_ids(terms)
@@ -164,6 +174,10 @@ class Content < ActiveRecord::Base
       t = Term.find_taxonomy(tid, nil)
       t.link(self) 
     end
+    self.url = nil
+    ApplicationController.url_for_content_onlyurl(self)
+    self.save
+    true
   end
   
   def categories_terms_add_ids(terms, taxonomy)
@@ -173,6 +187,10 @@ class Content < ActiveRecord::Base
       t = Term.find_taxonomy(tid, taxonomy)
       t.link(self) 
     end
+    self.url = nil
+    ApplicationController.url_for_content_onlyurl(self)
+    self.save
+    true
   end
   
   def self.orphaned

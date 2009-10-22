@@ -188,6 +188,7 @@ class Term < ActiveRecord::Base
   end
   
   def self.single_toplevel(opts={})
+    raise "Invalid single_toplevel, opts must be Hash!" if opts.class.name != 'Hash'
     self.toplevel(opts)[0]
   end
   
