@@ -11,6 +11,12 @@ if !defined?(::App)
   # load custom config
   mode = File.exists?("#{RAILS_ROOT}/config/mode") ? File.open("#{RAILS_ROOT}/config/mode").read.strip : 'doll2'
   mode = 'test' if RAILS_ENV == 'test'
+  require 'action_mailer'
+#  puts ActionMailer::Base.perform_deliveries
+  if mode != 'production'
+    ActionMailer::Base.perform_deliveries = false
+  end
+#  puts ActionMailer::Base.perform_deliveries
   nconfig = OpenStruct.new(YAML::load(ERB.new((IO.read("#{RAILS_ROOT}/config/app.yml"))).result))
   env_config = nconfig.send(mode)
   ::App = OpenStruct.new(env_config)

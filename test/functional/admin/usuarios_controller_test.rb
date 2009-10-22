@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class Admin::UsuariosControllerTest < ActionController::TestCase
-  test_min_acl_level :superadmin, [ :index, :update, :destroy, :check_registered_on, :check_karma, :check_faith ]
+  test_min_acl_level :superadmin, [ :index, :destroy, :check_registered_on, :check_karma, :check_faith ]
   
   test "index" do
     sym_login :superadmin
@@ -320,5 +320,32 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
       post :report, :id => User.find(:first)
     end
     assert_response :success
+  end
+
+  test "capos should be able to delete underboss roles" do 
+    u2 = User.find(2)
+    u3 = User.find(3)
+    u2.give_admin_permission(:capo)
+    u2.reload
+    assert u2.has_admin_permission?(:capo)
+
+    f1 = Faction.find(1)
+    f1.update_underboss(u3)
+
+    last_id = UsersRole.last.id
+    post :users_role_destroy, :id => last_id
+    assert_response :success
+    assert_nil UsersRole.find_by_id(last_id)
+  end
+
+  test "capos should be able to update users data" do 
+    u2 = User.find(2)
+    u3 = User.find(3)
+    u2.give_admin_permission(:capo)
+    u2.reload
+    post :update, :id => u3.id, :edituser => { :email => 'foo@barbaz.com' }
+    u3.reload
+    assert_response :redirect
+    assert_equal 'foo@barbaz.com', u3.email
   end
 end

@@ -132,7 +132,7 @@ class SlogEntry < ActiveRecord::Base
     
     u.users_roles.find(:all, :conditions => "role IN (#{valid_roles.join(',')})").each do |ur|
       if ur.role == 'Editor'
-        total += ccount(:open, :domain => :editor, :scope => SlogEntry.encode_editor_scope(ur.role_data_yaml[:faction_id].to_i, ur.role_data_yaml[:content_type_id]))
+        total += ccount(:open, :domain => :editor, :scope => SlogEntry.encode_editor_scope(ur.role_data_yaml[:faction_id].to_i, ur.role_data_yaml[:content_type_id].to_i))
       elsif ur.role_data.to_s != ''
         total += ccount(:open, :domain => USERS_ROLES_2_DOMAINS.fetch(ur.role), :scope => ur.role_data.to_i)
       else
