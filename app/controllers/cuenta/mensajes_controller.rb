@@ -111,7 +111,7 @@ class Cuenta::MensajesController < ApplicationController
     @curmessage = Message.find(:first, :conditions => ['id = ? and (user_id_to = ? or user_id_from = ?)', params[:id], @user.id, @user.id])
     raise ActiveRecord::RecordNotFound unless @curmessage
     @message = Message.new
-    @curmessage.read(@user)
+    @curmessage.read(@user) if @user.id == @curmessage.user_id_to
     @navpath = [['Cuenta', '/cuenta'], ['Mensajes', '/cuenta/mensajes'], [@curmessage.title, "/cuenta/mensajes/mensaje/#{@curmessage.id}"]]
     @title = @curmessage.title
   end

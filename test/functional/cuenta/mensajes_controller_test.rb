@@ -149,5 +149,19 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
     assert_response :redirect
   end
   
+  test "leer un mensaje enviado no debe marcarlo como leido para el remitente, capullo!" do
+    test_create_message_should_work_if_user
+    m = Message.last
+    get :mensaje, :id => m.id
+    m.reload
+    assert_response :success
+    assert !m.is_read?
+    sym_login 2 
+    get :mensaje, :id => m.id 
+    assert_response :success
+    m.reload
+    assert m.is_read?
+  end
+  
   # TODO test del_messages
 end
