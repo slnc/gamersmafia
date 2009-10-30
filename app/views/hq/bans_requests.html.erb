@@ -1,4 +1,4 @@
-<% @ban_requests_pages, @ban_requests = controller.paginate :ban_request, :conditions => 'confirming_user_id is not null or unban_confirming_user_id is not null', :order => 'coalesce(ban_requests.unban_confirmed_on, ban_requests.confirmed_on) desc', :include => :banned_user, :per_page => 50 %>
+<% @ban_requests_pages, @ban_requests = controller.paginate :ban_request, :conditions => 'confirming_user_id is not null or unban_confirming_user_id is not null', :order => 'coalesce(ban_requests.unban_confirmed_on, ban_requests.confirmed_on) desc', :include => :banned_user, :per_page => 300 %>
 <%= render :partial => 'shared/pager', :object => @ban_requests_pages, :locals => {'pos' => 'top'} %>
 <table>
 	<tr>

@@ -27,10 +27,13 @@
 		<td><%=print_tstamp @br.confirmed_on%></td>
 	</tr>
 <% end -%>
+</table>
 
 <% if @br.unban_user_id then %>
+<hr />
+<table>
 	<tr class="<%=oddclass%>">
-		<td colspan="2">Proceso de unban</td>
+		<th colspan="2">Proceso de unban</th>
 	</tr>
 	<tr class="<%=oddclass%>">
 		<td>Razón</td>
