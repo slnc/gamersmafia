@@ -209,6 +209,15 @@ class CmsTest < ActiveSupport::TestCase
     assert_equal 'hola', Cms::to_fqdn('[-=)!(HO-_lA$·"!].')
   end
   
+  test "comments_parse_images_should_do_nothing_on_empty_string" do
+    assert_equal '', Cms::download_and_rewrite_bb_imgs('', PARSE_IMAGES_BASEDIR)
+  end
+  
+  test "comments_parse_images_should_work_if_remote" do
+    assert_equal "foo [IMG]/storage/test/cms/dark_castle0.jpg[/IMG] bar", Cms::download_and_rewrite_bb_imgs('foo [IMG]http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg[/IMG] bar', 'test/cms')
+  end
+
+  
   test "parse_images_should_do_nothing_on_empty_string" do
     assert_equal '', Cms::parse_images('', PARSE_IMAGES_BASEDIR)
   end
