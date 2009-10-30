@@ -189,7 +189,7 @@ max = vals.max
 
 <%mftext('Gamer', :has_submodules => true, :grid => 5, :glast => true) do %>
 
-<%cache("#{Cache.user_base(@curuser.id)}/profile/clanes") do %>
+<% # cache("#{Cache.user_base(@curuser.id)}/profile/clanes") do %>
 <% clans = @curuser.clans %>
 <% 
 if clans.size > 0 then %>
@@ -198,7 +198,7 @@ if clans.size > 0 then %>
 	  <td class="infoinline right"><%=c.user_is_clanleader(@curuser.id) ? 'Clanleader' : 'Miembro' %></td>
 	<% end -%>
 <% end -%>
-<% end -%>
+<% # end -%>
 
 <%if @curuser.faction_id %>
 <%mftext('Facción') do %>
