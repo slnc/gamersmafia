@@ -180,7 +180,7 @@ class Faction < ActiveRecord::Base
   
   def editors(content_type=nil)
     if content_type.nil?
-      UsersRole.find(:all, :conditions => "role = 'Editor' AND role_data LIKE E'%faction_id: #{self.id}%\\n'", :include => :user, :order => 'lower(users.login)').collect do |ur| 
+      UsersRole.find(:all, :conditions => "role = 'Editor' AND role_data LIKE E'%faction_id: #{self.id}\\n%'", :include => :user, :order => 'lower(users.login)').collect do |ur| 
         [ContentType.find(ur.role_data_yaml[:content_type_id].to_i), ur.user] 
       end
     else

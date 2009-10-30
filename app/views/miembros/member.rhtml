@@ -108,7 +108,7 @@
 </div>
 
 <div class="clearb"><%=sparkline(:size => '145x25', :data => Popularity.user_daily_popularity(@curuser, 30.days.ago, 1.day.ago).collect { |k,v| v }, :colors => ['616c01'], :fillcolors => ['f0f2de'])%></div>
-<div class="infoinline right"><strong><%=@curuser.popularity_points%></strong> ptos (<strong><%#=Popularity::NAMES[Popularity.level(@curuser.popularity_points)]%></strong>)</div>
+<div class="infoinline right"><strong><%=@curuser.popularity_points%></strong> ptos</div>
 <% end -%>
 <% end -%>
 
