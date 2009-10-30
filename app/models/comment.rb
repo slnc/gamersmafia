@@ -2,6 +2,7 @@ class Comment < ActiveRecord::Base
   belongs_to :content
   belongs_to :user
   after_create :do_after_create
+  after_create :schedule_image_parsing
   
   has_many :comments_valorations
   
@@ -13,6 +14,14 @@ class Comment < ActiveRecord::Base
   observe_attr :lastedited_by_user_id
   observe_attr :comment
   
+  def schedule_image_parsing
+    GmSys.job("Comment.find(#{self.id}).download_remotes")
+  end
+  
+  def download_remotes
+    new_t = Cms.download_and_rewrite_bb_imgs(self.comment)
+    self.update_attributes(:comment => new_t) if new_t != self.comment
+  end
   
   def check_copy_if_changing_lastedited_by_user_id
     if slnc_changed?(:lastedited_by_user_id) && self.lastedited_by_user_id != self.user_id && (slnc_changed_old_values[:lastedited_by_user_id].nil? || slnc_changed_old_values[:lastedited_by_user_id] == self.user_id)
@@ -38,7 +47,7 @@ class Comment < ActiveRecord::Base
     Content.decrement_counter('comments_count', self.content_id)
     self.content.terms.each do |t| 
       t.recalculate_counters
-      end
+    end
     self.content.real_content.class.decrement_counter('cache_comments_count', self.content.real_content.id)
     
     self.deleted = true

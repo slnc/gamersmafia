@@ -20,7 +20,7 @@
 </form>
 <% end -%>
 
-<% if Cms.user_can_mass_upload(@user) then %>
+<% if false && Cms.user_can_mass_upload(@user) then %>
 <%mftext('Añadir archivos en masa') do %>
 <%= form_tag({:action => 'create_from_zip'}, :multipart => true) %>
   <p><label >Categoría</label><br/>

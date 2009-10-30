@@ -1,18 +1,18 @@
 prev_verbose = $VERBOSE
 $VERBOSE = nil
 begin
-class Tidybuf
-
-  # Mimic TidyBuffer.
-  #
-  TidyBuffer = struct [
+  class Tidybuf
+    
+    # Mimic TidyBuffer.
+    #
+    TidyBuffer = struct [
     "int* allocator",
     "byte* bp",
     "uint size",
     "uint allocated",
     "uint next"
-  ]
-end
+    ]
+  end
 rescue
 end
 $VERBOSE = prev_verbose
@@ -250,6 +250,26 @@ module Cms
     t.fetch(name.downcase) { |k| raise "#{k} not found" }
   end
   
+  def self.download_and_rewrite_bb_imgs(corpus, relative_savedir)
+    known_domains = App.domain_aliases + [App.domain]
+    corpus.gsub(/\[IMG\]([^\[]+)\[\/IMG\]/i).each do |rs|
+      md = /http:\/\/([^\/]+)\/([^\[]+)/i.match(rs)
+
+      if md and not known_domains.include?(md[1].gsub('www.', '')) # remote download
+        new_file = self.copy_image_to_dir(md[0], relative_savedir) # "#{self.class.name.downcase}/#{self.id % 1000}/#{self.id % 100}"
+        
+        if new_file.nil?
+          rs
+        else
+          new_local = self.unique_file_move_to_relative_savedir(md[0], relative_savedir)
+          rs.gsub(md[0], new_local.gsub("#{RAILS_ROOT}/public", ''))
+        end
+      else
+        rs
+      end
+    end
+  end
+  
   # relative_savedir is relative to #{RAILS_ROOT}/public/storage/
   # Devuelve la ruta guardada o nil si no la ha podido guardar
   def self.copy_image_to_dir(imgurl, relative_savedir)
@@ -285,8 +305,11 @@ module Cms
     
     return nil unless (!imgurl.nil?) and File.exists?(imgurl)
     
-    preppend = ''
-    filename = File.basename(imgurl).bare
+    self.unique_file_move_to_relative_savedir(imgurl, relative_savedir)
+  end
+  
+  def self.unique_file_move_to_relative_savedir(src, relative_savedir) 
+    filename = File.basename(src).bare
     
     if File.exists?("#{RAILS_ROOT}/public/storage/#{relative_savedir}/#{filename}")
       incrementor = 1
@@ -299,8 +322,7 @@ module Cms
     end
     
     FileUtils.mkdir_p(File.dirname(dst)) if not File.directory?(File.dirname(dst))
-    # puts "COPIANDO DEFINITIVAMENTE #{imgurl} a #{dst}"
-    FileUtils.cp(imgurl, dst) if File.exists?(imgurl)
+    FileUtils.cp(imgurl, dst) if File.exists?(src)
     return dst
   end
   
@@ -334,15 +356,11 @@ module Cms
         # puts "#{imgurl} #{savedir} #{new_file}"
       end
       
-      if !new_file.nil?
-        # puts "(1)replacing #{frag} with " + frag.gsub(orig_imgurl, new_file.gsub("#{RAILS_ROOT}/public", ''))
-        frag.gsub(orig_imgurl, new_file.gsub("#{RAILS_ROOT}/public", ''))
-      else
-        # puts "(2)replacing #{frag} with " + frag
+      if new_file.nil?
         frag
-      end
-      
-      #html_fragment.gsub!("src=\"#{orig_imgurl}\"", 'src="' << new_file.gsub("#{RAILS_ROOT}/public", '') << '"') 
+      else
+        frag.gsub(orig_imgurl, new_file.gsub("#{RAILS_ROOT}/public", ''))
+      end 
     end
     
     
