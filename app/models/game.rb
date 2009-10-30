@@ -81,12 +81,11 @@ class Game < ActiveRecord::Base
     if slnc_changed?(:code)
       return if slnc_changed_old_values[thing].nil?
       f = Faction.send("find_by_#{thing}", slnc_changed_old_values[thing].strip)
-      f.send(thing, self.send(thing))
+      f.send("#{thing}=", self.send(thing))
       f.save
-      Cms::CONTENTS_WITH_CATEGORIES.each do |content_name|
-        root_cat = Object.const_get(content_name).category_class.find(:first, :conditions =>["thing = #{thing} and id = root_id", slnc_changed_old_values[thing]])
-        root_cat.send(thing, self.send(thing))
-        root_cat.save
+      Term.find(:first, :conditions => ['id = root_id AND slug = ?', slnc_changed_old_values[:code].strip]).update_attributes(:slug => self.code)
+      Content.find(:all, :conditions => ['id = ?', self.id]).each do |c| 
+        User.db_query("UPDATE contents SET url = nil WHERE id = #{c.id}")
       end
     end
     end
