@@ -36,7 +36,7 @@ class Comment < ActiveRecord::Base
   end
   
   def download_remotes
-    new_t = Cms.download_and_rewrite_bb_imgs(self.comment)
+    new_t = Cms.download_and_rewrite_bb_imgs(self.comment, "comments/#{self.id % 1000}/#{self.id % 100}")
     self.update_attributes(:comment => new_t) if new_t != self.comment
   end
   
