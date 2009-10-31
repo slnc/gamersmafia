@@ -1,3 +1,20 @@
+
+#i = 0.0
+#count = Comment.count
+#prev = nil
+#Comment.find_each do |comment|
+#  begin
+#    comment.download_remotes
+#  rescue
+#    puts "ERROR DOWNLOADING imgs para #{comment.id}"
+#  end
+#  i += 1
+#  if prev != (i / count * 100).to_i && ((i / count) * 100).to_i * 10 == ((i / count) * 1000).to_i
+#    puts (i / count * 100).to_i
+#    prev = (i / count * 100).to_i
+#  end
+#end
+
 class Comment < ActiveRecord::Base
   belongs_to :content
   belongs_to :user

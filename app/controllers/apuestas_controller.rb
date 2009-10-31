@@ -24,6 +24,9 @@ class ApuestasController < ArenaController
   def update_cash_for_bet
     require_auth_users
     @bet = Bet.find(params[:id])
+
+    redirect_to gmurl(@bet) if params[:bet_options].nil?
+
     raise ActiveRecord::RecordNotFound if (not @bet.is_public? or @bet.closes_on < Time.now)
     err = 0
     
