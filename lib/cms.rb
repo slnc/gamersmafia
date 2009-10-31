@@ -22,6 +22,7 @@ $VERBOSE = prev_verbose
 require 'RMagick'
 require 'net/http'
 require 'open-uri'
+require 'timeout'
 
 module Cms
   # Este módulo contiene toda la información de todos los tipos de contenidos
@@ -252,8 +253,8 @@ module Cms
   
   def self.download_and_rewrite_bb_imgs(corpus, relative_savedir)
     known_domains = App.domain_aliases + [App.domain]
-    corpus.gsub(/\[IMG\]([^\[]+)\[\/IMG\]/i).each do |rs|
-      md = /http:\/\/([^\/]+)\/([^\[]+)/i.match(rs)
+    corpus.gsub(/<img[^>]+src="([^"]+)"/i) do |rs|
+      md = /http:\/\/([^\/]+)\/([^"]+)/i.match(rs)
 
       if md and not known_domains.include?(md[1].gsub('www.', '')) # remote download
         new_file = self.copy_image_to_dir(md[0], relative_savedir) # "#{self.class.name.downcase}/#{self.id % 1000}/#{self.id % 100}"
@@ -261,8 +262,7 @@ module Cms
         if new_file.nil?
           rs
         else
-          new_local = self.unique_file_move_to_relative_savedir(md[0], relative_savedir)
-          rs.gsub(md[0], new_local.gsub("#{RAILS_ROOT}/public", ''))
+          rs.gsub(md[0], new_file.gsub("#{RAILS_ROOT}/public", "http://#{App.domain}"))
         end
       else
         rs
@@ -282,8 +282,15 @@ module Cms
       File.open(tmpfile, 'w') do |f|
         f.binmode
         begin
-          open(imgurl) {|str| f.write(str.read) }
-        rescue:
+          begin
+           status = Timeout::timeout(5) {
+              open(imgurl) { |str| f.write(str.read) }
+           }
+            rescue Exception => errdesc
+              return nil
+           rescue
+             return nil
+           end
         end
       end
       
@@ -322,7 +329,7 @@ module Cms
     end
     
     FileUtils.mkdir_p(File.dirname(dst)) if not File.directory?(File.dirname(dst))
-    FileUtils.cp(imgurl, dst) if File.exists?(src)
+    FileUtils.cp(src, dst) if File.exists?(src)
     return dst
   end
   
