@@ -70,5 +70,18 @@ end
   <td class="centered"><strong style="color: #d95e5e"><%=total_votes_reg%></strong> / <strong style="color: #A09090"><%=total_votes_anon%></strong> </td>
 </tr>
 </table>
+
+
+<br />
+<table>
+       <tr>
+               <td class="infoinline" style="text-align: right;">Inicio de la encuesta:&nbsp;</td>
+               <td class="infoinline"><%=print_tstamp(@poll.starts_on)%></td>
+       </tr>
+       <tr>
+               <td class="infoinline" style="text-align: right;">Fin de la encuesta:&nbsp;</td>
+               <td class="infoinline"><%=print_tstamp(@poll.ends_on)%></td>
+       </tr>
+</table>
 <% end -%>
 <% end -%>
