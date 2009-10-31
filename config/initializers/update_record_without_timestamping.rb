@@ -5,7 +5,9 @@ module ActiveRecord
         def record_timestamps; false; end
       end
 
-      save!
+      if !save
+       raise "Error al guardar #{self.class.name}(#{self.id}): #{self.errors.full_messages_html}"
+      end
 
       class << self
         def record_timestamps; super ; end
