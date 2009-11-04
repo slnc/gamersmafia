@@ -151,4 +151,16 @@ class CommentsController < ApplicationController
       raise AccessDenied
     end
   end
+
+  def no_violation
+    @comment = Comment.find(params[:id])
+    raise AccessDenied unless @user && @user.has_admin_permission?(:capo)
+    require_user_can_edit(@comment)
+    @comment.update_attributes(:netiquette_violation => false, :lastedited_by_user_id => @user.id)
+    render :nothing => true
+  end
+
+  def violaciones_netiqueta
+	  raise AccessDenied unless @user.has_admin_permission?(:capo)
+  end
 end
