@@ -35,7 +35,7 @@
     </tr>
     <tr class="<%=oddclass%>">
       <td>Popularidad</td>
-      <td><%=Popularity.ranking_user(@curuser)%></td>
+      <td><%=Popularity.ranking_user(@curuser)[:pos]%> de <%=Popularity.ranking_user(@curuser)[:total]%></td>
     </tr>
     <tr class="<%=oddclass%>">
       <td>Fe</td>
