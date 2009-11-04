@@ -28,7 +28,7 @@ module Achmed
   end
 
   def self.clean_comment(comment_text)
-    comment_text.downcase.gsub(Cms::URL_REGEXP, '').gsub('<br />', '.').gsub('...', ' ... ').gsub(/\s{2,}/, ' ').gsub(/<\/?[^>]*>/, "").gsub(',', ' , ').gsub('.', ' . ').gsub('!', ' ! ').gsub('¡', ' ¡ ').gsub(/:[a-z]+:/, '')
+    comment_text.downcase.gsub(Cms::URL_REGEXP, '').gsub('<br />', '.').gsub('...', ' ... ').gsub(/\s{2,}/, ' ').gsub(/<\/?[^>]*>/, "").gsub(',', ' , ').gsub('.', ' . ').gsub('!', ' ! ').gsub('¡', ' ¡ ').gsub(/:[a-z]+:/, '').gsub('[IMAGEN]', '')
   end
 
   def self.split_corpus_in_sentences(corpus)
@@ -46,8 +46,32 @@ module Achmed
 
         index = Achmed::build_index(corpus)
 
+        iv = {}
+        max = 0
+        mazzz = index['<s>'].size
+        puts mazzz
         index.each do |word, occur|
-            if occur.size < 3
+            iv[occur.size] ||= 0
+            iv[occur.size] += 1
+            if occur.size > max && occur.size != mazzz
+                max = occur.size 
+        #        puts "new max: #{word}"
+            end
+        end
+
+        max.times do |i|
+            iv[i] ||= 0
+        end
+
+        (iv.keys - [mazzz]).sort.each do |k|
+            puts "#{k} #{iv[k]}"
+        end
+        puts "\n\n"
+        #raise "bar"
+
+        
+        index.each do |word, occur|
+            if occur.size < 100
                 occur.each do |i, j|
                     #puts "replacing #{i} #{j} word: #{word} occur.size: #{occur.size}"
                     #puts "replacing #{i} #{j} #{corpus[i].size}"
@@ -81,10 +105,10 @@ module Achmed
               bigram[word1] = {} unless bigram.include?(word1)
               bigram[word1][word] = 0 unless bigram[word1].include?(word)
               bigram[word1][word] += 1
-              bigram[word1][UNK_TAG] ||= 0.000000000000001 unless bigram[word1].include?(UNK_TAG)
+              bigram[word1][UNK_TAG] ||= 0 unless bigram[word1].include?(UNK_TAG)
             end
         end
-        bigram[UNK_TAG][UNK_TAG] ||= 0.000000000000001  unless bigram[UNK_TAG].include?(UNK_TAG)
+        bigram[UNK_TAG][UNK_TAG] ||= 0 unless bigram[UNK_TAG].include?(UNK_TAG)
 
         # we convert frequencies to probabilities
         bigram_p = {}
@@ -131,6 +155,7 @@ module Achmed
         sentences = Achmed::split_corpus_in_sentences(comment)
         i = 0 # on purpose, not 1, it will refer to the previous word
         total_prob = 0.0
+        total_probs = [0.0]
         sentences.each do |sentence|
             sentence_prob = 0.0
             sentence[1..-1].each do |w|
@@ -150,9 +175,11 @@ module Achmed
                 i += 1
             end
             total_prob += Math.exp(sentence_prob)
+            total_probs << Math.exp(sentence_prob)
             # puts "total_prob for sentence: #{total_prob} (sentence_prob: #{sentence_prob}) (#{sentence[1..-1]})"
         end
         total_prob / sentences.size
+        total_probs.max
     end
   end
 
@@ -232,7 +259,7 @@ module Achmed
     end
 
     def self.likelihood(punigram, text)
-      text = text.downcase.gsub('<br />', ' ').gsub('...', ' ... ').gsub(/\s{2,}/, ' ').gsub(/<\/?[^>]*>/, "").gsub(',', ' , ').gsub('.', ' . ').gsub('!', ' ! ').gsub('¡', ' ¡ ').gsub(/:[a-z]+:/, '')
+      text = text.downcase.gsub('<br />', ' ').gsub('...', ' ... ').gsub(/\s{2,}/, ' ').gsub(/<\/?[^>]*>/, "").gsub(',', ' , ').gsub('.', ' . ').gsub('!', ' ! ').gsub('¡', ' ¡ ').gsub(/:[a-z]+:/, '').gsub('[IMAGEN]', '')
       p = 0
       text.split(' ').each do |w|
           if punigram.include?(w)
@@ -259,26 +286,30 @@ module Achmed
     count_good = 0
     total_bad  = 0.0
     count_bad = 0
+    false_positives = 0
+    false_negatives = 0
 
-    Comment.find(:all, :conditions => 'deleted = \'f\' AND id > (select id from comments order by id desc offset 10000 limit 1)').each do |c|
+    Comment.find(:all, :conditions => 'deleted = \'f\' and not (netiquette_violation=\'t\' and lastedited_by_user_id not in (22776, 10818, 29957, 22776)) AND id > (select id from comments order by id desc offset 10000 limit 1)').each do |c|
       if c.netiquette_violation
           count_bad += 1
       else
           count_good += 1
       end
 
-      tag_as_spam = model.most_likely_spam?(c.comment)
+      tag_as_spam = model.most_likely_spam?(c.netiquette_violation ? c.lastowner_version : c.comment)
       
       err += 1.0 if (c.netiquette_violation && !tag_as_spam) || (!c.netiquette_violation && tag_as_spam)
 
       if (c.netiquette_violation && !tag_as_spam) 
           puts "bad mouth but didn't detect"
+          false_negatives += 1
       elsif (!c.netiquette_violation && tag_as_spam)
           puts "good mouth but suspected from him #{self.clean_comment(c.comment)[0..150]}"
+          false_positives += 1
       end
     end
 
     puts "count_bad: #{count_bad} | count_good: #{count_good}"
-    puts "\nError: #{err / (count_bad + count_good)} (failed with #{err} comments out of #{count_bad + count_good})"
+    puts "\nError: #{err / (count_bad + count_good)} (failed with #{err} comments out of #{count_bad + count_good}) | false pos: #{false_positives}  false neg:#{false_negatives}"
   end
 end
