@@ -5,7 +5,7 @@ module Achmed
   UNK_TAG = '---unk---'
   COMMENTS_P_UNIGRAM_FILE_GOOD = "#{RAILS_ROOT}/public/storage/achmed/comments_good"
   COMMENTS_MODELS_BASE = "#{RAILS_ROOT}/public/storage/achmed/comments"
-  COMMENTS_JOB_MAX_CREATED_ON = '2008-01-01 00:00:00'
+  COMMENTS_JOB_MAX_CREATED_ON = '2008-09-01 00:00:00'
 
   STOP_WORDS = ['.', ',', ':', '...', '?', '¿', '¡', '!', '$', '&', '/', '=', 'este', 'esta', 'xd', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'hasta', 'me', 'mi', ')', '(']
   SENTENCE_BOUNDARIES = ['.', '...', '?', '!']
@@ -13,20 +13,20 @@ module Achmed
 
   def self.get_comment_to_classify_for_user(user)
     # User.db_query("SELECT id from comment_violation_opinions where user_id <> #{user.id} group by user_id having count(*)
-    cross_pending = Comment.find(:first, :conditions => "deleted = 'f' 
-                                                     AND id in (SELECT comment_id 
+    cross_pending = Comment.find(:first, :conditions => " id in (SELECT comment_id 
                                                                   FROM comment_violation_opinions 
                                                                  WHERE user_id <> #{user.id} 
                                                               GROUP BY comment_id 
                                                                 HAVING count(*) = 1)
-                                                     AND created_on <= '#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
+				 		     AND id not in (select comment_id from comment_violation_opinions where user_id = #{user.id})
+                                                     AND created_on <= '#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp", :order => 'random_v')
     
     return cross_pending if cross_pending
 
     # else return a random comment
-    c = Comment.find(:first, :conditions => "deleted = 'f' AND id not in (select comment_id from comment_violation_opinions where user_id = #{user.id}) and random_v > random() AND created_on <='#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
+    c = Comment.find(:first, :conditions => "id not in (select comment_id from comment_violation_opinions where user_id = #{user.id}) and random_v > random() AND created_on <='#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
     while c.nil?
-      c = Comment.find(:first, :conditions => "deleted = 'f' AND id not in (select comment_id from comment_violation_opinions where user_id = #{user.id}) and random_v > random() AND created_on <='#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
+      c = Comment.find(:first, :conditions => "id not in (select comment_id from comment_violation_opinions where user_id = #{user.id}) and random_v > random() AND created_on <='#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
     end
     c
   end
@@ -310,7 +310,7 @@ module Achmed
     false_positives = 0
     false_negatives = 0
 
-    Comment.find(:all, :conditions => 'deleted = \'f\' and not (netiquette_violation=\'t\' and lastedited_by_user_id not in (22776, 10818, 29957, 22776)) AND id > (select id from comments order by id desc offset 10000 limit 1)').each do |c|
+    Comment.find(:all, :conditions => 'not (netiquette_violation=\'t\' and lastedited_by_user_id not in (22776, 10818, 29957, 22776)) AND id > (select id from comments order by id desc offset 10000 limit 1)').each do |c|
       if c.netiquette_violation
           count_bad += 1
       else

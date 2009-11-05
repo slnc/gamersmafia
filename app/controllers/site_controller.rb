@@ -32,7 +32,7 @@ class SiteController < ApplicationController
       cvo.update_attributes(:cls => CommentViolationOpinion::NO_VIOLATION)
     end
 
-    if cvo.id.nil?
+    if cvo.id.nil? || cvo.errors.size > 0
         flash[:error] = "Error al guardar opinión: #{cvo.errors.full_messages_html}"
     else
         flash[:notice] = "MrAchmed: #{MRACHMED_RAND_SENTENCES.rand}"
@@ -50,7 +50,7 @@ class SiteController < ApplicationController
     else
       cvo.update_attributes(:cls => CommentViolationOpinion::VIOLATION)
     end
-    if cvo.id.nil?
+    if cvo.id.nil? || cvo.errors.size > 0
         flash[:error] = "Error al guardar opinión: #{cvo.errors.full_messages_html}"
     else
         flash[:notice] = "MrAchmed: #{MRACHMED_RAND_SENTENCES.rand}"
@@ -64,7 +64,7 @@ class SiteController < ApplicationController
     raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval') > 15
 
     cvo = @user.comment_violation_opinions.find_by_comment_id(params[:comment_id])
-    if cvo.nil?
+    if cvo.nil? || cvo.errors.size > 0
       cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::I_DONT_KNOW)
     else
       cvo.update_attributes(:cls => CommentViolationOpinion::I_DONT_KNOW)

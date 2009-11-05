@@ -9,7 +9,7 @@ muchos ejemplos.</p>
 
 <% 
 cache("/common/el_callejon/achmed_comentarios_#{Time.now.strftime("%Y%m%d%H")}") do
-pcent = CommentViolationOpinion.count / (Comment.count(:conditions => "deleted = 'f' AND created_on <= '#{Achmed::COMMENTS_JOB_MAX_CREATED_ON}'::timestamp") * 2.0)
+pcent = CommentViolationOpinion.count / (Comment.count(:conditions => "created_on <= '#{Achmed::COMMENTS_JOB_MAX_CREATED_ON}'::timestamp") * 2.0)
 %>
 <style type="text/css">
 .achmed .pcent-bar { height: 25px; }
@@ -75,6 +75,8 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => "deleted =
 
     <div style="text-align: center; margin-top: 40px;" class="infoinline">
         <strong>Resumen del código y notas para sacar el máximo partido al estudio de MrAchmed</strong><br />
+	
+	<div style="border: 1px solid #ccc; margin: 10px 5px 10px 5px; padding: 5px;"><a style="text-decoration: underline;" href="http://gamersmafia.com/blogs/MrAchmed/2097">Preguntas y comentarios sobre este trabajillo</a></div>
         <div style="border: 1px solid #ccc; margin: 10px 5px 10px 5px; padding: 5px;">La mayoría de los comentarios no violan el código de conducta, es normal.</div>
         <div style="border: 1px solid #ccc; margin: 10px 5px 10px 5px; padding: 5px;">Por favor, no intentes confundir o engañar a MrAchmed, se dará cuenta y avisará a los capos.</div>
         <table style="text-align: left;">
@@ -101,6 +103,18 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => "deleted =
         <tr>
             <td>Enlaces o imágenes de pornografía, descargas ilegales, cheats (a un click de distancia)</td>
             <td>Sí</td>
+        </tr>
+        <tr>
+            <td>DEMASIADAS MAYÚSCULAS PARA TU GUSTO</td>
+            <td>Sí</td>
+        </tr>
+        <tr>
+            <td>Tiene asteriscos (ha sido moderado y no queda nada flagrante)</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>Leído tal cual el comentario no es ofensivo</td>
+            <td>No</td>
         </tr>
         <tr>
             <td>Contiene insultos del tipo: teta, tonto, feo</td>
