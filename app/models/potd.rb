@@ -16,7 +16,7 @@ class Potd < ActiveRecord::Base
   def Potd.choose_one_portal(portal)
     terms = portal.images_categories
     term = terms[0]
-    terms.each { |t| term.add_sibling(t) } if terms.size > 1
+    terms.each { |t| term.add_sibling(t) unless portal.code == 'gm' && t.root_id == 97 } if terms.size > 1
     
     im = select_from_term(term, "images.clan_id IS NULL AND images.id NOT IN (select distinct(image_id) from potds WHERE portal_id = #{portal.id})")
     

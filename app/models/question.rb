@@ -58,15 +58,20 @@ class Question < ActiveRecord::Base
     if self.state == Cms::PUBLISHED && self.answered_on
       t = CashMovement.find(:first, :conditions => ['description = ?', "Recompensa por mejor respuesta a la pregunta \"#{self.title}\""])
       
-      if t
-        Bank.revert_transfer(t)
+      if t or self.accepted_answer_comment_id.nil?
+        Bank.revert_transfer(t) if t
         self.log_action('unset_respuesta', modifying_user.login)
         self.accepted_answer_comment_id = nil
         self.answer_selected_by_user_id = nil
         self.answered_on = nil
-        self.save
+        if self.save
+	true
+	else
+		false
+	end
       else
         self.errors.add_to_base("No se puede revertir. No se ha encontrado la transferencia correspondiente.")
+	false
       end
     end
   end
