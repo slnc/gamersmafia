@@ -8236,7 +8236,7 @@ CREATE TABLE comments (
     lastowner_version character varying,
     lastedited_by_user_id integer,
     deleted boolean DEFAULT false NOT NULL,
-    random_v numeric DEFAULT random() NOT NULL
+    random_v numeric DEFAULT random()
 );
 
 
@@ -15835,6 +15835,13 @@ CREATE INDEX comments_created_on_date_trunc ON comments USING btree (date_trunc(
 --
 
 CREATE INDEX comments_has_comments_valorations_user_id ON comments USING btree (has_comments_valorations, user_id);
+
+
+--
+-- Name: comments_netiquette_violation; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX comments_netiquette_violation ON comments USING btree (netiquette_violation);
 
 
 --
