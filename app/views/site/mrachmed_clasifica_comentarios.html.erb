@@ -4,6 +4,7 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted =
 %>
 <%mftext('% del trabajo realizado') do %>
 <div style="height: 20px; width: 100%;"><%=draw_pcent_bar(pcent, nil, false)%></div>
+<div class="infoinline" style="text-align: center;"><%=(pcent * 10000).to_i.to_f / 100%>%</div>
 <% end -%>
 
 <%mftext('Los que más están ayudando') do %>
@@ -14,11 +15,12 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted =
     <td style="text-align: right;"><%=dbr['count']%></td>
 </tr>
 <% end %>
-<table>
+</table>
 <% end -%>
 <% end -%>
 
 <%content_main do %>
+  <% mftext('Ayuda a MrAchmed') do %>
     <% if @comment.nil? then %>
         MrAchmed: lo siento, <%=@user%>, estoy estudiando con los ejemplos que me has dado, ahora mismo no necesito que tú me valores más comentarios. Vuelve dentro de un par de días...<br />
         <br />
@@ -41,7 +43,7 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted =
     <td style="width: 33%; text-align: center;">
     <form method="post" action="/site/mrachmed_clasifica_comentarios_idontknow">
         <input type="hidden" name="comment_id" value="<%=@comment.id%>" />
-        <input type="submit" value="No estoy seguro" />
+        <input type="submit" value="No sé" />
     </form>
     </td>
 
@@ -56,4 +58,5 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted =
 
     </table>
     <% end -%>
+  <% end -%>
 <% end -%>
