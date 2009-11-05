@@ -42,7 +42,7 @@
 @images = @category.image.find(:published, :order => 'id asc', :limit => @image_pages.current.to_sql[0], :offset => @image_pages.current.to_sql[1])
 
 for image in @images %>
-  <span class="screenshot"><%=link_to fc_thumbnail(image.file, 'f', '153x115', false), gmurl(image)%></span>
+  <span class="screenshot"><%=link_to fc_thumbnail(image.file, 'i', '153x115', false), gmurl(image)%></span>
 <% end %>
 <% end %>
 <div style="clear: both;">&nbsp;</div>
