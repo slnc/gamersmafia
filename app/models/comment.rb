@@ -21,6 +21,7 @@ class Comment < ActiveRecord::Base
   after_create :do_after_create
   after_create :schedule_image_parsing
   
+  belongs_to :lastedited_by, :class_name => 'User', :foreign_key => 'lastedited_by_user_id'
   has_many :comments_valorations
   
   before_save :truncate_long_comments

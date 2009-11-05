@@ -385,6 +385,7 @@ Request information:
     if user.is_superadmin? || user.has_admin_permission?(:capo)
       items<< ['Avatares', '/avatares']
       items<< ['Clanes', '/admin/clanes']
+      items<< ['Violaciones Netiqueta', '/comments/violaciones_netiqueta']
       items<< ['IP Bans', '/admin/ip_bans']
       items<< ['Mapas', '/admin/mapas_juegos']
       items<< ['Users', '/admin/usuarios']
