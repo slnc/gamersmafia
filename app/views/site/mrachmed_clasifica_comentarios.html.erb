@@ -1,22 +1,23 @@
 <%generic_support(:show_ads => false) do %>
 <%mftext('Acerca') do %>
 <div style="text-align: center;"><img src="/images/achmed_estudia.jpg" /></div>
-<p>MrAchmed quiere aprender a distinguir entre comentarios positivos y
-negativos. Achmed no sabe mucho del mundo y necesita ver una cantidad de
-comentarios X (muy grande para escribirla aquí) correctamente clasificados para
-poder estudiar.</p>
+<p>MrAchmed quiere aprender a moderar comentarios pero para eso necesita ver 
+muchos ejemplos.</p>
 
-<p>Los capos y moderadores ya tienen la posibilidad de enseñarle a MrAchmed pero la inmensa mayoría de comentarios de GM se han publicado en una época en la que no había esa posibilidad.</p>
-
-<p>Pagará 0.25GMF por cada comentario que le indiques.</p>
+<p>Por cada comentario pagará 0.25GMF y os garantizará una vírgen (o un vírgen) en el más allá.</p>
 <% end -%>
 
 <% 
-pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted = \'f\' AND created_on <= now() - \'1 month\'::interval') * 2.0)
+cache("/common/el_callejon/achmed_comentarios_#{Time.now.strftime("%Y%m%d%H")}") do
+pcent = CommentViolationOpinion.count / (Comment.count(:conditions => "deleted = 'f' AND created_on <= '#{Achmed::COMMENTS_JOB_MAX_CREATED_ON}'::timestamp") * 2.0)
 %>
-<%mftext('% del trabajo realizado') do %>
-<div style="height: 20px; width: 100%;"><%=draw_pcent_bar(pcent, nil, false)%></div>
-<div class="infoinline" style="text-align: center;"><%=(pcent * 10000).to_i.to_f / 100%>%</div>
+<style type="text/css">
+.achmed .pcent-bar { height: 25px; }
+.achmed .pcent-bar .bar { background: #1e2dc0; height: 25px; }
+</style>
+<%mftext('% del trabajillo realizado') do %>
+<div class="achmed" style="height: 25px; width: 100%;"><%=draw_pcent_bar(pcent, nil, false)%></div>
+<div class="infoinline" style="text-align: center;"><%=(pcent * 1000000).to_i.to_f / 10000.0%>%</div>
 <% end -%>
 
 <%mftext('Los que más están ayudando') do %>
@@ -30,6 +31,8 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted =
 </table>
 <% end -%>
 <% end -%>
+<div class="infoinline">Próxima actualización de las estadísticas en:<br /> <strong><%=60 - Time.now.min%></strong> mins</div>
+<% end -%>
 
 <%content_main do %>
   <% mftext('Ayuda a MrAchmed') do %>
@@ -39,7 +42,7 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted =
         ¡Ah, y gracias! :D
     <% else -%>
 
-    <div style=""><%=@comment.lastowner_version.to_s != '' ? @comment.lastowner_version : @comment.comment %></div>
+    <div><%=smilelize(@comment.lastowner_version.to_s != '' ? @comment.lastowner_version : @comment.comment) %></div>
 
     <div style="font-weight: bold; margin-top: 50px; margin-bottom: 20px; text-align: center;">¿Viola este comentario el <a href="/site/netiquette">código de conducta</a>?</div>
     <table>
@@ -70,10 +73,11 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted =
 
     </table>
 
-    <div style="text-align: center;">
+    <div style="text-align: center; margin-top: 40px;" class="infoinline">
         <strong>Resumen del código y notas para sacar el máximo partido al estudio de MrAchmed</strong><br />
-        <div style="border: 1px solid #ccc; margin: 5px; padding: 5px;">La mayoría de los comentarios no violan el código de conducta, es normal.</div>
-        <table>
+        <div style="border: 1px solid #ccc; margin: 10px 5px 10px 5px; padding: 5px;">La mayoría de los comentarios no violan el código de conducta, es normal.</div>
+        <div style="border: 1px solid #ccc; margin: 10px 5px 10px 5px; padding: 5px;">Por favor, no intentes confundir o engañar a MrAchmed, se dará cuenta y avisará a los capos.</div>
+        <table style="text-align: left;">
         <tr>
             <th>Característica</th>
             <th>¿Viola?</th>
@@ -84,19 +88,23 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted =
         </tr>
         <tr>
             <td>Habla de política</td>
-            <td>No</td>
+            <td>Sí</td>
         </tr>
         <tr>
             <td>Contiene insultos del tipo: hijo de puta, maricón</td>
             <td>Sí</td>
         </tr>
         <tr>
-            <td>Contiene insultos del tipo: teta, tonto, feo</td>
-            <td>No</td>
-        </tr>
-        <tr>
             <td>Atacar a alguien por su raza, color de piel orientación sexual: No me gustan los negros, gays, sudakas, yoguis</td>
             <td>Sí</td>
+        </tr>
+        <tr>
+            <td>Enlaces o imágenes de pornografía, descargas ilegales, cheats (a un click de distancia)</td>
+            <td>Sí</td>
+        </tr>
+        <tr>
+            <td>Contiene insultos del tipo: teta, tonto, feo</td>
+            <td>No</td>
         </tr>
         <tr>
             <td>Hablar de forma inofensiva usando algún término que puede ser usado ofensivamente: el color negro le va a mi portátil, el congreso de gays y lesbianas</td>
@@ -105,10 +113,6 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted =
         <tr>
             <td>Hablar sobre pornografía, descargas ilegales, cheats sin ofrecer acceso directo a ellos</td>
             <td>No</td>
-        </tr>
-        <tr>
-            <td>Enlaces o imágenes de pornografía, descargas ilegales, cheats (a un click de distancia)</td>
-            <td>Sí</td>
         </tr>
         </table>
     </div>

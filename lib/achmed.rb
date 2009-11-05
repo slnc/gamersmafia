@@ -5,6 +5,7 @@ module Achmed
   UNK_TAG = '---unk---'
   COMMENTS_P_UNIGRAM_FILE_GOOD = "#{RAILS_ROOT}/public/storage/achmed/comments_good"
   COMMENTS_MODELS_BASE = "#{RAILS_ROOT}/public/storage/achmed/comments"
+  COMMENTS_JOB_MAX_CREATED_ON = '2008-01-01 00:00:00'
 
   STOP_WORDS = ['.', ',', ':', '...', '?', '¿', '¡', '!', '$', '&', '/', '=', 'este', 'esta', 'xd', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'hasta', 'me', 'mi', ')', '(']
   SENTENCE_BOUNDARIES = ['.', '...', '?', '!']
@@ -18,14 +19,14 @@ module Achmed
                                                                  WHERE user_id <> #{user.id} 
                                                               GROUP BY comment_id 
                                                                 HAVING count(*) = 1)
-                                                     AND created_on >= now() - '1 month'::interval")
+                                                     AND created_on <= '#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
     
     return cross_pending if cross_pending
 
     # else return a random comment
-    c = Comment.find(:first, :conditions => "deleted = 'f' AND id not in (select comment_id from comment_violation_opinions where user_id = #{user.id}) and random_v > random() AND created_on >= now() - '1 month'::interval")
+    c = Comment.find(:first, :conditions => "deleted = 'f' AND id not in (select comment_id from comment_violation_opinions where user_id = #{user.id}) and random_v > random() AND created_on <='#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
     while c.nil?
-      c = Comment.find(:first, :conditions => "deleted = 'f' AND id not in (select comment_id from comment_violation_opinions where user_id = #{user.id}) and random_v > random() AND created_on >= now() - '1 month'::interval")
+      c = Comment.find(:first, :conditions => "deleted = 'f' AND id not in (select comment_id from comment_violation_opinions where user_id = #{user.id}) and random_v > random() AND created_on <='#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
     end
     c
   end

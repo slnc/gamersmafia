@@ -24,7 +24,14 @@ class SiteController < ApplicationController
 
   def mrachmed_clasifica_comentarios_good
     raise AccessDenied unless user_is_authed
-    cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::NO_VIOLATION)
+    raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval' > 15)
+    cvo = @user.comment_violation_opinions.find_by_comment_id(params[:comment_id])
+    if cvo.nil?
+      cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::NO_VIOLATION)
+    else
+      cvo.update_attributes(:cls => CommentViolationOpinion::NO_VIOLATION)
+    end
+
     if cvo.id.nil?
         flash[:error] = "Error al guardar opinión: #{cvo.errors.full_messages_html}"
     else
@@ -36,7 +43,13 @@ class SiteController < ApplicationController
 
   def mrachmed_clasifica_comentarios_bad
     raise AccessDenied unless user_is_authed
-    cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::VIOLATION)
+    raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval' > 15)
+    cvo = @user.comment_violation_opinions.find_by_comment_id(params[:comment_id])
+    if cvo.nil?
+      cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::VIOLATION)
+    else
+      cvo.update_attributes(:cls => CommentViolationOpinion::VIOLATION)
+    end
     if cvo.id.nil?
         flash[:error] = "Error al guardar opinión: #{cvo.errors.full_messages_html}"
     else
@@ -48,7 +61,14 @@ class SiteController < ApplicationController
   
   def mrachmed_clasifica_comentarios_idontknow
     raise AccessDenied unless user_is_authed
-    cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::I_DONT_KNOW)
+    raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval' > 15)
+
+    cvo = @user.comment_violation_opinions.find_by_comment_id(params[:comment_id])
+    if cvo.nil?
+      cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::I_DONT_KNOW)
+    else
+      cvo.update_attributes(:cls => CommentViolationOpinion::I_DONT_KNOW)
+    end
     if cvo.id.nil?
         flash[:error] = "Error al guardar opinión: #{cvo.errors.full_messages_html}"
     else
