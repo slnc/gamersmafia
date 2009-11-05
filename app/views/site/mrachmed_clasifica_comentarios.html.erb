@@ -1,4 +1,16 @@
-<%generic_support do %>
+<%generic_support(:show_ads => false) do %>
+<%mftext('Acerca') do %>
+<div style="text-align: center;"><img src="/images/achmed_estudia.jpg" /></div>
+<p>MrAchmed quiere aprender a distinguir entre comentarios positivos y
+negativos. Achmed no sabe mucho del mundo y necesita ver una cantidad de
+comentarios X (muy grande para escribirla aquí) correctamente clasificados para
+poder estudiar.</p>
+
+<p>Los capos y moderadores ya tienen la posibilidad de enseñarle a MrAchmed pero la inmensa mayoría de comentarios de GM se han publicado en una época en la que no había esa posibilidad.</p>
+
+<p>Pagará 0.25GMF por cada comentario que le indiques.</p>
+<% end -%>
+
 <% 
 pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted = \'f\' AND created_on <= now() - \'1 month\'::interval') * 2.0)
 %>
@@ -14,7 +26,7 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted =
     <td style="text-align: right;"><%=dbr['count']%></td>
 </tr>
 <% end %>
-<table>
+</table>
 <% end -%>
 <% end -%>
 
@@ -55,5 +67,48 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted =
     </tr>
 
     </table>
+
+    <div style="text-align: center;">
+        <strong>Resumen del código y notas para sacar el máximo partido al estudio de MrAchmed</strong><br />
+        <div style="border: 1px solid #ccc; margin: 5px; padding: 5px;">La mayoría de los comentarios no violan el código de conducta, es normal.</div>
+        <table>
+        <tr>
+            <th>Característica</th>
+            <th>¿Viola?</th>
+        </tr>
+        <tr>
+            <td>Enlaces a webs de descargas ilegales</td>
+            <td>Sí</td>
+        </tr>
+        <tr>
+            <td>Habla de política</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>Contiene insultos del tipo: hijo de puta, maricón</td>
+            <td>Sí</td>
+        </tr>
+        <tr>
+            <td>Contiene insultos del tipo: teta, tonto, feo</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>Atacar a alguien por su raza, color de piel orientación sexual: No me gustan los negros, gays, sudakas, yoguis</td>
+            <td>Sí</td>
+        </tr>
+        <tr>
+            <td>Hablar de forma inofensiva usando algún término que puede ser usado ofensivamente: el color negro le va a mi portátil, el congreso de gays y lesbianas</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>Hablar sobre pornografía, descargas ilegales, cheats sin ofrecer acceso directo a ellos</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>Enlaces o imágenes de pornografía, descargas ilegales, cheats (a un click de distancia)</td>
+            <td>Sí</td>
+        </tr>
+        </table>
+    </div>
     <% end -%>
 <% end -%>
