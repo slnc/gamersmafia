@@ -24,7 +24,7 @@ class SiteController < ApplicationController
 
   def mrachmed_clasifica_comentarios_good
     raise AccessDenied unless user_is_authed
-    raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval' > 15)
+    raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval') > 15
     cvo = @user.comment_violation_opinions.find_by_comment_id(params[:comment_id])
     if cvo.nil?
       cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::NO_VIOLATION)
@@ -43,7 +43,7 @@ class SiteController < ApplicationController
 
   def mrachmed_clasifica_comentarios_bad
     raise AccessDenied unless user_is_authed
-    raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval' > 15)
+    raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval') > 15
     cvo = @user.comment_violation_opinions.find_by_comment_id(params[:comment_id])
     if cvo.nil?
       cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::VIOLATION)
@@ -61,7 +61,7 @@ class SiteController < ApplicationController
   
   def mrachmed_clasifica_comentarios_idontknow
     raise AccessDenied unless user_is_authed
-    raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval' > 15)
+    raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval') > 15
 
     cvo = @user.comment_violation_opinions.find_by_comment_id(params[:comment_id])
     if cvo.nil?
