@@ -1,0 +1,59 @@
+<%generic_support do %>
+<% 
+pcent = CommentViolationOpinion.count / (Comment.count(:conditions => 'deleted = \'f\' AND created_on <= now() - \'1 month\'::interval') * 2.0)
+%>
+<%mftext('% del trabajo realizado') do %>
+<div style="height: 20px; width: 100%;"><%=draw_pcent_bar(pcent, nil, false)%></div>
+<% end -%>
+
+<%mftext('Los que más están ayudando') do %>
+<table>
+<%User.db_query("SELECT user_id, count(*) from comment_violation_opinions group by user_id order by count(*) desc limit 10").each do |dbr| %>
+<tr class="<%=oddclass%>">
+    <td><%=user_link(User.find(dbr['user_id'].to_i))%></td>
+    <td style="text-align: right;"><%=dbr['count']%></td>
+</tr>
+<% end %>
+<table>
+<% end -%>
+<% end -%>
+
+<%content_main do %>
+    <% if @comment.nil? then %>
+        MrAchmed: lo siento, <%=@user%>, estoy estudiando con los ejemplos que me has dado, ahora mismo no necesito que tú me valores más comentarios. Vuelve dentro de un par de días...<br />
+        <br />
+        ¡Ah, y gracias! :D
+    <% else -%>
+
+    <div style=""><%=@comment.lastowner_version.to_s != '' ? @comment.lastowner_version : @comment.comment %></div>
+
+    <div style="font-weight: bold; margin-top: 50px; margin-bottom: 20px; text-align: center;">¿Viola este comentario el <a href="/site/netiquette">código de conducta</a>?</div>
+    <table>
+    <tr>
+    <td style="width: 33%; text-align: right;">
+
+    <form method="post" action="/site/mrachmed_clasifica_comentarios_bad" style="margin-right: 30px;">
+        <input type="hidden" name="comment_id" value="<%=@comment.id%>" />
+        <input type="submit" value="Sí" />
+    </form>
+    </td>
+
+    <td style="width: 33%; text-align: center;">
+    <form method="post" action="/site/mrachmed_clasifica_comentarios_idontknow">
+        <input type="hidden" name="comment_id" value="<%=@comment.id%>" />
+        <input type="submit" value="No estoy seguro" />
+    </form>
+    </td>
+
+    <td style="width: 33%;">
+    <form method="post" action="/site/mrachmed_clasifica_comentarios_good" style="margin-left: 30px;">
+        <input type="hidden" name="comment_id" value="<%=@comment.id%>" />
+        <input type="submit" value="No" />
+    </form>
+    </td>
+
+    </tr>
+
+    </table>
+    <% end -%>
+<% end -%>

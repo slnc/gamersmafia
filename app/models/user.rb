@@ -34,6 +34,7 @@ class User < ActiveRecord::Base
   has_many :recruitment_ads
   has_many :users_emblems
   has_many :factions_banned_users
+  has_many :comment_violation_opinions
   has_many :preferences, :class_name => 'UsersPreference'
   belongs_to :country
   belongs_to :faction

@@ -23,6 +23,13 @@ class SiteControllerTest < ActionController::TestCase
   test "new_chatline_should_require_user" do
     assert_raises(AccessDenied) { post :new_chatline, {:line => 'foo'} }
   end
+
+  test "mobjobs only registered" do
+    assert_raises(AccessDenied) { get :el_callejon }
+    sym_login 1
+    get :el_callejon
+    assert_response :success
+  end
   
   test "new_chatline_should_work" do
     sym_login 1

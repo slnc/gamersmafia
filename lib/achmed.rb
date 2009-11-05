@@ -10,6 +10,26 @@ module Achmed
   SENTENCE_BOUNDARIES = ['.', '...', '?', '!']
   SENTENCE_BOUNDARIES_REGEXP = /(\.\.\.)|(\.)|(!)(\?)/
 
+  def self.get_comment_to_classify_for_user(user)
+    # User.db_query("SELECT id from comment_violation_opinions where user_id <> #{user.id} group by user_id having count(*)
+    cross_pending = Comment.find(:first, :conditions => "deleted = 'f' 
+                                                     AND id in (SELECT comment_id 
+                                                                  FROM comment_violation_opinions 
+                                                                 WHERE user_id <> #{user.id} 
+                                                              GROUP BY comment_id 
+                                                                HAVING count(*) = 1)
+                                                     AND created_on >= now() - '1 month'::interval")
+    
+    return cross_pending if cross_pending
+
+    # else return a random comment
+    c = Comment.find(:first, :conditions => "deleted = 'f' AND id not in (select comment_id from comment_violation_opinions where user_id = #{user.id}) and random_v > random() AND created_on >= now() - '1 month'::interval")
+    while c.nil?
+      c = Comment.find(:first, :conditions => "deleted = 'f' AND id not in (select comment_id from comment_violation_opinions where user_id = #{user.id}) and random_v > random() AND created_on >= now() - '1 month'::interval")
+    end
+    c
+  end
+
   def self.build_index(corpus)
     index = {}
     i = 0
@@ -265,7 +285,7 @@ module Achmed
           if punigram.include?(w)
               p += Math.log(punigram[w]) 
           else
-              p += Math.log(punigram[UNK_TAG]) 
+              # p += Math.log(punigram[UNK_TAG]) 
           end
       end
 

@@ -14,9 +14,57 @@ class SiteController < ApplicationController
   
   def colabora
   end
+
+  def mrachmed_clasifica_comentarios
+    raise AccessDenied unless user_is_authed
+    @comment = Achmed.get_comment_to_classify_for_user(@user)
+  end
+
+  MRACHMED_RAND_SENTENCES = ['Ajá', 'Tomo nota', 'Hmmm...', 'Entiendo', 'Ajá', 'Entiendo', 'Hmmm...', 'Ya veo', 'Con este está claro', 'Con profesores como tú da gusto', 'Esto es un poco complicado', '¿Te van los huesos?', 'Este ejemplo lo tengo que discutir en mi harén: Vanessa y Jenna seguro que tienen algo que decir']
+
+  def mrachmed_clasifica_comentarios_good
+    raise AccessDenied unless user_is_authed
+    cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::NO_VIOLATION)
+    if cvo.id.nil?
+        flash[:error] = "Error al guardar opinión: #{cvo.errors.full_messages_html}"
+    else
+        flash[:notice] = "MrAchmed: #{MRACHMED_RAND_SENTENCES.rand}"
+        Bank.transfer(:bank, @user, 0.25, 'Enseñar a MrAchmed')
+    end
+    redirect_to '/site/mrachmed_clasifica_comentarios'
+  end
+
+  def mrachmed_clasifica_comentarios_bad
+    raise AccessDenied unless user_is_authed
+    cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::VIOLATION)
+    if cvo.id.nil?
+        flash[:error] = "Error al guardar opinión: #{cvo.errors.full_messages_html}"
+    else
+        flash[:notice] = "MrAchmed: #{MRACHMED_RAND_SENTENCES.rand}"
+        Bank.transfer(:bank, @user, 0.25, 'Enseñar a MrAchmed')
+    end
+    redirect_to '/site/mrachmed_clasifica_comentarios'
+  end
   
+  def mrachmed_clasifica_comentarios_idontknow
+    raise AccessDenied unless user_is_authed
+    cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::I_DONT_KNOW)
+    if cvo.id.nil?
+        flash[:error] = "Error al guardar opinión: #{cvo.errors.full_messages_html}"
+    else
+        flash[:notice] = "MrAchmed: #{MRACHMED_RAND_SENTENCES.rand}"
+        Bank.transfer(:bank, @user, 0.25, 'Enseñar a MrAchmed')
+    end
+    redirect_to '/site/mrachmed_clasifica_comentarios'
+  end
+
   def novedades
     @title = 'Novedades sobre la web'    
+  end
+  
+  def el_callejon
+    raise AccessDenied unless user_is_authed
+    @title = 'El callejón'    
   end
   
   def portales
