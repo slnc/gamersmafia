@@ -17,7 +17,13 @@ class SiteController < ApplicationController
 
   def mrachmed_clasifica_comentarios
     raise AccessDenied unless user_is_authed
-    @comment = Achmed.get_comment_to_classify_for_user(@user)
+    @prev_comment_id = params[:prev_comment_id] if params[:prev_comment_id]
+    if params[:comment_id]
+      raise AccessDenied unless @user.comment_violation_opinions.find_by_comment_id(params[:comment_id].to_i)
+      @comment = Comment.find(params[:comment_id].to_i)
+    else
+      @comment = Achmed.get_comment_to_classify_for_user(@user)
+    end
   end
 
   MRACHMED_RAND_SENTENCES = ['Ajá', 'Tomo nota', 'Hmmm...', 'Entiendo', 'Ajá', 'Entiendo', 'Hmmm...', 'Ya veo', 'Con este está claro', 'Con profesores como tú da gusto', 'Esto es un poco complicado', '¿Te van los huesos?', 'Este ejemplo lo tengo que discutir en mi harén: Vanessa y Jenna seguro que tienen algo que decir']
@@ -38,7 +44,7 @@ class SiteController < ApplicationController
         flash[:notice] = "MrAchmed: #{MRACHMED_RAND_SENTENCES.rand}"
         Bank.transfer(:bank, @user, 0.25, 'Enseñar a MrAchmed')
     end
-    redirect_to '/site/mrachmed_clasifica_comentarios'
+    redirect_to "/site/mrachmed_clasifica_comentarios?prev_comment_id=#{params[:comment_id]}"
   end
 
   def mrachmed_clasifica_comentarios_bad
@@ -56,7 +62,7 @@ class SiteController < ApplicationController
         flash[:notice] = "MrAchmed: #{MRACHMED_RAND_SENTENCES.rand}"
         Bank.transfer(:bank, @user, 0.25, 'Enseñar a MrAchmed')
     end
-    redirect_to '/site/mrachmed_clasifica_comentarios'
+    redirect_to "/site/mrachmed_clasifica_comentarios?prev_comment_id=#{params[:comment_id]}"
   end
   
   def mrachmed_clasifica_comentarios_idontknow
@@ -75,7 +81,7 @@ class SiteController < ApplicationController
         flash[:notice] = "MrAchmed: #{MRACHMED_RAND_SENTENCES.rand}"
         Bank.transfer(:bank, @user, 0.25, 'Enseñar a MrAchmed')
     end
-    redirect_to '/site/mrachmed_clasifica_comentarios'
+    redirect_to "/site/mrachmed_clasifica_comentarios?prev_comment_id=#{params[:comment_id]}"
   end
 
   def novedades

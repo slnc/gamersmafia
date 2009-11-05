@@ -21,12 +21,17 @@ module Achmed
 				 		     AND id not in (select comment_id from comment_violation_opinions where user_id = #{user.id})
                                                      AND created_on <= '#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp", :order => 'random_v')
     
-    return cross_pending if cross_pending
+    return cross_pending if cross_pending && Kernel.rand < 0.3
 
     # else return a random comment
-    c = Comment.find(:first, :conditions => "id not in (select comment_id from comment_violation_opinions where user_id = #{user.id}) and random_v > random() AND created_on <='#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
+    bad_words_cond = " and (comment like '% puta %' or comment like '%malote%' or comment like '%gilipollas%' or comment like '%gay%' or comment like '% foll%')"
+
+    base_cond = "id not in (select comment_id from comment_violation_opinions where user_id = #{user.id}) and random_v > random() AND created_on <='#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp"
+    base_cond << bad_words_cond if Kernel.rand < 0.35
+
+    c = Comment.find(:first, :conditions => base_cond)
     while c.nil?
-      c = Comment.find(:first, :conditions => "id not in (select comment_id from comment_violation_opinions where user_id = #{user.id}) and random_v > random() AND created_on <='#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
+      c = Comment.find(:first, :conditions => base_cond)
     end
     c
   end

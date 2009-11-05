@@ -73,6 +73,10 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => "created_o
 
     </table>
 
+    <% if @prev_comment_id then %>
+    <div style="margin-top: 20px; margin-bottom: 10px; text-align: center;"><a href="/site/mrachmed_clasifica_comentarios?comment_id=<%=@prev_comment_id%>">Cambiar valoración anterior</a></div>
+    <% end -%>
+
     <div style="text-align: center; margin-top: 40px;" class="infoinline">
         <strong>Resumen del código y notas para sacar el máximo partido al estudio de MrAchmed</strong><br />
 	
