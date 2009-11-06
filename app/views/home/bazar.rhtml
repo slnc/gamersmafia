@@ -20,7 +20,7 @@ end
 					Proc.new { cat.news.find(:published, :order => 'created_on desc', :limit => 5) }, 
 					[],
 					:faction_favicon => true, :blast => true)%>
-	<% end # cache -%>
+	<% end %><%# cache -%>
 					
 	
 	<% cache("/common/topics/_latest_by_cat2#{cat.code}") do %>
@@ -28,7 +28,7 @@ end
 					Proc.new { cat.topic.find(:published, :conditions => 'topics.closed is false', :order => 'updated_on desc', :limit => 5) }, 
 					[],
 					:faction_favicon => true, :blast => true)%>
-	<% end # cache -%>
+	<% end %><%# cache -%>
 	
 	<% 
 	if cat.image then
@@ -38,21 +38,21 @@ end
 	<% end %>
 	<div class="clearl"></div>
 	<%
-	end # cache 
+	end %><%# cache 
 	end -%>
 	
 	
 	<%=render :partial => '/home/bazar_articles2', :locals => { :bazar_district => cat } %>
 	
 <% if cat.question then %>				
-<% # cache("/#{controller.portal_code}/home/index/questions") do %>
+<%# cache("/#{controller.portal_code}/home/index/questions") do %>
 <% mfcontents_list("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.domain}/preguntas\">Preguntas</a>", 
 				   Proc.new { cat.question.find(:published, :conditions => 'answered_on IS NULL AND contents.created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, contents.created_on DESC', :limit => 5)}
 				   ) do |o| %>
 <a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a>
 <% end -%>
-<% # end #cache -%>
-<% end #if -%>
+<%# end %><%# cache -%>
+<% end %><%# if -%>
 					
 	<% if cat.download then %>
 	<%=mfcontents_basic("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.domain}/noticias\">Descargas</a>", 
@@ -72,8 +72,8 @@ mfcontents_table("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.d
 </td>
 <% end 
 end -%>
-<% end #mftext -%>
-<% end #catz -%>
+<% end %><%# mftext -%>
+<% end %><%# catz -%>
 </div>
 <% end -%>
 

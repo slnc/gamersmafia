@@ -40,10 +40,10 @@
   <%mftext('Todas sus partidas') do %>
 
   <table>
-<% 
-# TODO cache
-# cache("/miembros/#{@curuser.id % 1000}/#{@curuser.id}/competition_matches") do
-  Competitions.find_all_matches_from_user(@curuser).each do |cm|
+<%# TODO cache
+# cache("/miembros/#{@curuser.id % 1000}/#{@curuser.id}/competition_matches") do %>
+<%
+Competitions.find_all_matches_from_user(@curuser).each do |cm|
   p = cm.competition.get_active_participant_for_user(@curuser)
   if cm.completed_on.nil?
     p1_class = ''
@@ -67,7 +67,7 @@
       <td class="timestamp infoinline"><%=cm.completed_on ? print_tstamp(cm.completed_on) : print_tstamp(cm.play_on)%></td>
     </tr>
   <% end %>
-  <% # end 
+  <%# end 
   %>
 </table>
 <% end -%>

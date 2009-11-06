@@ -18,7 +18,7 @@ La partida está en curso o finalizada, ya no se permiten las apuestas.
 <% end -%>
 
 
-<% # TODO esto está mal , revisar todas, no podemos poner and id <> ?
+<%# TODO esto está mal , revisar todas, no podemos poner and id <> ?
 %>
 <% cache("/common/apuestas/show/latest_by_cat_#{@bet.main_category.id}") do %>
 <% other_bets = @bet.main_category.find(:published, :content_type => 'Bet', :order => 'created_on desc', :limit => 5)
@@ -28,7 +28,7 @@ if other_bets.size > 0 then %>
 <% end -%>
 
 <% end -%>
-<% end # cache
+<% end %><%# cache
 -%>
 <% else %>
 <%= render :partial => '/shared/content_publishing_state', :locals => { :object => @bet } %>

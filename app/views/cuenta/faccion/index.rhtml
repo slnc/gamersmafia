@@ -10,8 +10,8 @@
       </form>
   <% else %>
     <p>No puedes cambiar de facción hasta el <strong><%=print_tstamp @user.can_change_faction_after%></strong>.</p>
-  <% end # if -%>
-  <% end #mftext -%>
+  <% end %><%# if -%>
+  <% end %><%# mftext -%>
 
 
 <% mftext('Staff') do %>
@@ -26,13 +26,13 @@ Líderes:<br />
 <% if @faction.boss.nil? and @faction.underboss.nil? then %>
 <p>Esta facción no tiene líderes.</p>
 <% end -%>
-<% end #mftext -%>
+<% end %><%# mftext -%>
 
 <% mftext('Estadísticas') do %>
 <%= render :partial => 'content_stats', :locals => { :faction => @faction } %>
-<% end #if faction -%>
-<% end #mftext -%>
-<% end # content support-%>
+<% end %><%# if faction -%>
+<% end %><%# mftext -%>
+<% end %><%# content support-%>
 
 <% content_main do %>
 
@@ -68,7 +68,7 @@ title: 'Karma en los últimos 3 meses',
 type: 'lc'})) 
 .appendTo("#line1");
 </script>
-<% end # cache -%>
+<% end %><%# cache -%>
 <% end -%>
 <% end -%>
 
@@ -84,6 +84,6 @@ type: 'lc'}))
   <div class="system-message">Si quieres saber más sobre facciones puedes visitar la <a href="/site/faq">sección de ayuda</a>.</div>
 <% elsif not @faction and @user.faction_last_changed_on >= 1.month.ago %>
    <p>No puedes elegir una nueva facción hasta <strong><%=print_tstamp @user.can_change_faction_after%></strong>.</p>
-<% end # if -%>
-<% end # mftext -%>
-<% end # content-%>
+<% end %><%# if -%>
+<% end %><%# mftext -%>
+<% end %><%# content-%>

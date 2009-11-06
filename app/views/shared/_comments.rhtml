@@ -61,10 +61,10 @@ negative_valorations_types = CommentsValorationsType.find_negative
 			  if char == '1' then
 			 %>
 		 	<img class="emblema emblema-<%=Emblems::EMBLEMS_BY_INDEX[emi]%>" src="/images/blank.gif" title="<%=Emblems::EMBLEMS[Emblems::EMBLEMS_BY_INDEX[emi]][:title]%>" />
-			<% end # if -%>
+			<% end %><%# if -%>
 		<% emi+=1 
-end # each -%>
-		<% end # if -%>
+end %><%# each -%>
+		<% end %><%# if -%>
 		</div>
   </div></div>
 
@@ -141,7 +141,7 @@ end # each -%>
 <%= render :partial => 'shared/pager', :object => @comments_pages, :locals => {:pos => 'bottom'} %>
 
 <% 
-end # cache
+end %><%# cache
 %>
 
 <% if questions_mode && user_is_authed && object.answered_on.nil? && (@_cache_can_select ||= Cms.user_can_select_best_answer(@user, object)) then %>
@@ -152,7 +152,7 @@ end # cache
 <script type="text/javascript">$j('div.comments-sig').removeClass('hidden');</script>
 <% end -%>
 
-<% # TODO moderadores de facción no pueden moderar ahora mismo
+<%# TODO moderadores de facción no pueden moderar ahora mismo
 if user_is_authed and not (defined?(nohighlight) and nohighlight == true) then %>
 <script type="text/javascript">
 function load_comments()
@@ -207,9 +207,9 @@ if user_is_authed then
       <div class="right"><input type="image" src="/images/blank.gif" class="btn-<%= (questions_mode && @user.id != object.user_id) ? 'responder' : 'comentar'%>" /></div>
     </form>
 	
-    <% end # begin..rescue
+    <% end %><%# begin..rescue
     %>
-    <% end #if user_is_authed
+    <% end %><%# if user_is_authed
     %>
 
 

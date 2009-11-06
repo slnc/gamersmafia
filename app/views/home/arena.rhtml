@@ -68,13 +68,13 @@ next unless winners.size == 1 %>
 		<% end -%>
 	</table>
 	<% end -%>
-<% end #ard -%>
+<% end %><%# ard -%>
 <% end -%>
-<% end # cache -%>
+<% end %><%# cache -%>
 
 <% cache("/#{controller.portal.code}/competiciones/index/inscripciones_abiertas2") do %>
 <%mflist('Inscripciones abiertas', controller.portal.competitions.find(:all, :conditions => 'type <> \'Ladder\' and state = 1')) do |competition| %>
-<% # TODO mostrar solo las que se deberían ver aquí %>
+<%# TODO mostrar solo las que se deberían ver aquí %>
       <li><%=competition.pro? ? '<div style="float: right; margin: 3px 3px 0 0;"><img class="competition-pro" src="/images/blank.gif" /></div>' : ''%><div style="float: right;" class="infoinline"><%=competition.kind_of?(League) ? 'liga' : 'torneo'%></div><%=faction_favicon(competition.game)%> <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a></li>
   <% end -%>
 <% end -%>

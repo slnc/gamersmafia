@@ -1,7 +1,6 @@
 <% mftext('Estadísticas de los banners asociados a este slot') do %>
+<%# TODO funcionalidad duplicada %>
 <%
-
-# TODO funcionalidad duplicada 
 instances = @ads_slot.ads_slots_instances.find(:all, :conditions => 'deleted = \'f\'')
 adsis = instances.collect { |i| i.id }
 adsis = [0] if adsis.size == 0
@@ -17,7 +16,7 @@ db_ctrs.each do |dbr|
   avg_ctrs << (dbr['avg'].to_f * 100) 
 avgs_ctr[dbr['ads_slots_instance_id'].to_i] = (dbr['avg'].to_f * 100)
 %>
-  <% #=dbr['ads_slots_instance_id']%> <%= (dbr['avg'].to_f * 100)%><br />
+  <%#=dbr['ads_slots_instance_id']%> <%= (dbr['avg'].to_f * 100)%><br />
 <%
 end
 %>
@@ -25,14 +24,8 @@ end
 low_ctr_threshold = avg_ctrs.percentile(0.15)
 high_ctr_threshold = avg_ctrs.percentile(0.85)
 max_ctr = max_group_ctr.to_f * 100
-# [0]['max'].to_f * 100
 %>
 
-
-
-<% #=low_ctr_threshold%><br />
-<% #=high_ctr_threshold%><br />
-<% #=avg_ctrs.mean%>
 <table>
 	<tr>
 		<th>Anuncio</th>

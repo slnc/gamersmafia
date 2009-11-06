@@ -1,6 +1,6 @@
 <%mftext('Inscripciones abiertas') do %>
   <ul class="sidelist">
-<% # TODO mostrar solo las que se deberían ver aquí
+<%# TODO mostrar solo las que se deberían ver aquí
 %>
 <% cache("/#{controller.portal.code}/competiciones/index/inscripciones_abiertas") do %>
     <% controller.portal.competitions.find(:all, :conditions => 'type <> \'Ladder\' and state = 1').each do |competition| %>

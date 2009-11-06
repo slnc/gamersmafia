@@ -4,7 +4,7 @@
 <div style="float: right;"><a href="/cuenta">mi cuenta</a></div>
 <div class="ratings" style="float: right; margin-right: 25px;"><% rem = @user.remaining_rating_slots%><img src="/images/blank.gif" class="left-ratings <%='none-remaining' if rem == 0%>" /><%=rem%></div>
 <div id="messages-indicator"><div style="float: left;" class="messages<%= ' has-unread' if @user.unread_messages > 0%>"><a class="nav" title="Leer mis mensajes" href="/cuenta/mensajes"><%=@user.unread_messages%></a></div></div>
-<% # TODO clear cache%>
+<%# TODO clear cache%>
 
 <% cache("/common/globalnavbar/#{@user.id % 1000}/#{@user.id}_avatar") do %>
 <div style="clear: left; padding-top: 5px; height: 40px; width: 100%;">
@@ -17,11 +17,9 @@
 			  <li style="text-align: left; line-height: 16px;">
 			  <div style="float:right;" class="competition<%= ' activated' if @user.enable_competition_indicator?%>"><a class="nav" title="Ver novedades de competición" class="buttonic" href="/cuenta/competiciones"><img class="icon" src="/images/blank.gif" /></a></div>
 			  
-<% if @user.is_staff? then 
-# cache("/common/slog/#{@user.id}") do  %>
+<% if @user.is_staff? then %>
 	<div class="slog <%='activated2' if @user.pending_slog > 0 %>" style="float: right; margin-right: 5px;"><a class="nav" title="Ver log del sistema" class="buttonic" href="/slog"><img class="icon" src="/images/blank.gif" /></a></div>
-<% # end -%>
-<% end # if @user.is_staff? -%>
+<% end -%><%# if @user.is_staff?%>
 			  <div class="usercash" style="float: left;"><a class="nav" title="Ir al banco" href="/cuenta/banco"><%=@user.cash.to_i%></a><img class="gmd10" src="/images/blank.gif" /></div></li>
             </ul>
 

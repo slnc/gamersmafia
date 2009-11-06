@@ -19,7 +19,7 @@ cache(basename) do
     FileUtils.mkdir_p(base)
     File.open("#{FRAGMENT_CACHE_PATH}#{basename}_ids.cache", 'w+') { |f| f.write(ids.join(',')) }
   end
-end #cache
+end %><%# cache
 %>
 </ul>
 <script type="text/javascript">slnc.marklinks('lastcomments', '_xs=lcm')</script>

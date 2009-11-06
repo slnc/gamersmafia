@@ -1,4 +1,4 @@
-<% # TODO cache this
+<%# TODO cache this
 %>
 <% Dir.foreach("#{RAILS_ROOT}/public/images/smileys") do |smiley| 
 	next unless (/\.gif$/ =~ smiley and not /^zz\./ =~ smiley and not /^rolf\./ =~ smiley ) %>

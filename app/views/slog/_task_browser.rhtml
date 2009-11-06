@@ -17,7 +17,7 @@
 	<td class="w25"><%=link_to_remote "<img title=\"Marcar como resuelto\" class=\"icon\" src=\"/skins/default/images/icons/confirm_16.png\" \>", :url => "/slog/slog_entry_reviewed/#{sle.id}", :complete => "$j('#sle#{sle.id}').fadeOut('normal');" %></td>
 	<% end -%>	
 </tr>
-<% end # each %>
+<% end %><%# each %>
 </table>
 <% end -%>
 
@@ -32,7 +32,7 @@
 	
 	<td class="w25"><%=link_to_remote "<img title=\"Marcar como resuelto\" class=\"icon\" src=\"/skins/default/images/icons/confirm_16.png\" \>", :url => "/slog/slog_entry_reviewed/#{sle.id}", :complete => "$j('#sle#{sle.id}').fadeOut('normal');" %></td>	
 </tr>
-<% end # each %>
+<% end %><%# each %>
 </table>
 <% end -%>
 
@@ -46,7 +46,7 @@
 	</td>
 	<td class="infoinline"><%=user_link(sle.reviewer)%></td>
 </tr>
-<% end # each %>
+<% end %><%# each %>
 </table>
 <% end -%>
 
@@ -59,7 +59,7 @@
 	<div class="right infoinline">Resuelto por <%=user_link(sle.reviewer)%> (<%=print_tstamp(sle.completed_on)%>)</div>
 	</td>
 </tr>
-<% end # each %>
+<% end %><%# each %>
 </table>
 <div class="right infoinline"><a href="/slog/historial?domain=<%=slog_entries_filter[:domain]%>&scope=<%=slog_entries_filter[:scope]%>">Ver historial</a></div>
 <% end -%>

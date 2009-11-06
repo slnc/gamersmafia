@@ -13,8 +13,9 @@
   <th>Fecha</th>
 </tr>
 <% 
-odd = 0
-# TODO broken
+odd = 0 %>
+<%# TODO broken%>
+<%
 for cash_movement in @cash_movements
   if cash_movement.object_id_from == entity.id then
     sense = '<img class="cash-out" src="/images/blank.gif" />'

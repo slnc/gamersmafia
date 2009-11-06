@@ -1,6 +1,6 @@
-<% #generic_support do %>
+<%#generic_support do %>
 <%# = render :partial => 'rightside'%>
-<% #end -%>
+<%#end -%>
 
 <%content_3col do %>
 <%mftext('Top Karma') do%>
@@ -37,7 +37,7 @@
               <%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span><br /> <div class="infoinline" style="width: 67px;"><%=draw_pcent_bar(dbu[:friends].to_f / max, "#{dbu[:friends]} usuarios activos le consideran su amigo")%></div></td>
           </tr>
           <% end -%>
-          <% end # cache de 6h 
+          <% end %><%# cache de 6h 
           %>
         </table>
 		<% end -%>
@@ -76,7 +76,7 @@
               <%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span><br /> <div class="infoinline" style="width: 67px;"><%=draw_pcent_bar(u.cash / max, "#{(Math.log10(u.cash) + 1).to_i} dígitos")%></div></td>
           </tr>
           <% end -%>
-          <% end # cache de 6h 
+          <% end %><%# cache de 6h 
           %>
         </table>
 		<% end -%>
@@ -103,7 +103,7 @@
               <%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span><br /> <div class="infoinline" style="width: 67px;"><%=draw_pcent_bar(dbu['count'].to_i / max, "#{dbu['count']} usuarios referidos activos")%></div></td>
           </tr>
           <% end -%>
-          <% end # cache de 6h 
+          <% end %><%# cache de 6h 
           %>
         </table>
 		<% end -%>
@@ -127,7 +127,7 @@
               <%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span><br /> <div class="infoinline" style="width: 67px;"><%=draw_pcent_bar(dbu['count'].to_i / max, "#{dbu['count']} visitas referidas")%></div></td>
           </tr>
           <% end -%>
-          <% end # cache de 6h 
+          <% end %><%# cache de 6h 
           %>
         </table>
 		<% end -%>

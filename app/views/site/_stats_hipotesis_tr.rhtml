@@ -23,7 +23,7 @@ css_cls = oddclass
 		<% end -%>
 		 
 		<%= '|' unless metric == t.metrics.last%>  
-	<% end #each metric -%>
+	<% end %><%# each metric -%>
 	<% end -%>
 	</td>
 	<td class="w75 infoinline"><%=format_interval_single_unit(t.running_time, 'días')%></td>
@@ -70,9 +70,9 @@ mclass = 'default-treatment' if relmetric.abs < t.min_difference
 <td><strong><span class="<%=mclass%>"><%='%.2f' % (crates[metric][treatment][:rate]*100)%>%</span></strong><br />
                 <span class="sm"><%=crates[metric][treatment][:impressions].to_i%> / <%=crates[metric][treatment][:conversions].to_i%> / <span class="<%=mclass%>"><%='%.2f%%' % ((relmetric > 1.0 ? (relmetric-1.0) : -1.0 +relmetric)*100) unless treatment == 0%></span></span>
                 </td>
-                <% end # t.metrics -%>
+                <% end %><%# t.metrics -%>
             </tr>
-        <% end #t.treatments -%>
+        <% end %><%# t.treatments -%>
         </table>
         </td>
     <% elsif (!t.dirty?) && crates && crates[t.metrics[0].to_sym][0][:stddev] then # asumimos que es una métrica de un solo valor %>
@@ -99,15 +99,15 @@ mclass = 'default-treatment' if treatment == 0
                 <td><strong><span class="<%=mclass%>"><%='%.2f' % (crates[metric][treatment][:rate])%></span></strong><br />
                 <span class="<%=mclass%>"><%='%.2f%%' % ((relmetric > 1.0 ? (relmetric-1.0) : -1.0 +relmetric)*100) unless treatment == 0%></span></span>
                 </td>
-                <% end # tmetrics -%>
+                <% end %><%# tmetrics -%>
 
             </tr>
-        <% end # t.treatments-%>
+        <% end %><%# t.treatments-%>
 		</table>
 		</td>
         <% else %>
 		<td class="infoinline">(Datos recalculándose en estos momentos)</td>
-        <% end #crates -%>
+        <% end %><%# crates -%>
 		</tr>
 		</table>
 			</div>

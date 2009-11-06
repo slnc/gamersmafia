@@ -1,11 +1,11 @@
 <% content_support(:content => @recruitment_ad.unique_content) do %>
 	<% mflist("Buscan jugadores", Proc.new { RecruitmentAd.find(:all, :conditions => ['game_id = ? AND clan_id IS NOT NULL AND deleted = \'f\'', @recruitment_ad.game_id], :order => 'created_on desc', :limit => 10) }) do |ra| %>
 		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title_entity%></a>
-	<% end # mflist-%>
+	<% end %><%# mflist-%>
 	
 	<% mflist("Buscan clanes", Proc.new { RecruitmentAd.find(:all, :conditions => ['game_id = ? AND clan_id IS NULL AND deleted = \'f\'', @recruitment_ad.game_id], :order => 'created_on desc', :limit => 10) }) do |ra| %>
 		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title_entity%></a>
-	<% end # mflist-%>
+	<% end %><%# mflist-%>
 <% end -%>
 
 <%content_main do %>

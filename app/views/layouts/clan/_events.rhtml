@@ -1,6 +1,6 @@
 <% mftext('Próximos eventos') do %>
-<% # TODO duplicado en gran parte en home %>
-<% # TODO hacer algo con esto, no se usa
+<%# TODO duplicado en gran parte en home %>
+<%# TODO hacer algo con esto, no se usa
         cache("/#{@controller.portal.code}/home/index/eventos/#{Time.now.strftime('%Y%m%d')}") do %>
   <%
   hotmap = Event.hotmap(Time.now)

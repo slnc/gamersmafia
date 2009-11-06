@@ -64,7 +64,7 @@
     <% else %>
     <p>Necesitas <a href="/cuenta/alta">estar registrado</a> para poder inscribirte en esta competición.</p>
     <% end %>
-	<% end #mftext -%>
+	<% end %><%# mftext -%>
   <% end %>
   <style type="text/css">
   #ccontent.competition-calendar th {text-align: center; font-size: 11px;}
@@ -99,7 +99,7 @@
   <% end -%>
 
   <%mftext('Últimos resultados') do %>
-  <% # TODO esto está cuasiduplicado en list.rhtml 
+  <%# TODO esto está cuasiduplicado en list.rhtml 
   %>
   <%
   cache("/common/competiciones/_show/#{@competition.id}/partidas_mas_recientes") do %>
@@ -126,7 +126,7 @@
   <%mftext('Próximas partidas') do %>
   <% cache("/common/competiciones/_show/#{@competition.id}/proximas_partidas") do %>
   <table>
-    <% # TODO usamos completed_on para saber si una partida está completada o usamos la tricombinación?
+    <%# TODO usamos completed_on para saber si una partida está completada o usamos la tricombinación?
     %>
     <% for cm in @competition.matches(:result_pending, :order => 'play_on DESC, created_on DESC')
     %>

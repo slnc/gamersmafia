@@ -51,7 +51,7 @@ if nil then
   #    #(matches < 1 ? 1 : matches).to_i.times do |j|
   #    #  tables_rows[stage] ||= ''
   #    #  tables_rows[stage]<< "<td>stage#{stage}</td>"
-  #    #end # end matches.times
+  #    #end %><%# end matches.times
   #
   #    ## copiamos al otro lado de la cadena si no es la final
   #    if stage < (rounds / 2).ceil then
@@ -89,10 +89,10 @@ if nil then
         else
           %><td style="border: 1px solid #ccc;">-</td><%
         end
-      end # stage
+      end %><%# stage
     %></tr><%
-    end # row
+    end %><%# row
   end
 end
-# FORMA 3, usando templates y fuera historias
 %>
+<%# FORMA 3, usando templates y fuera historias %>

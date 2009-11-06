@@ -8,11 +8,11 @@
 <% mflist("Últimos anuncios", Proc.new { RecruitmentAd.find(:all, :conditions => 'deleted = \'f\'', :order => 'created_on desc', :limit => 10) }, :class => 'lh16') do |ra| %>
 		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title%></a>
 		<div class="infoinline right"><%=print_tstamp(ra.created_on, 'intelligent')%></div>
-	<% end # mflist-%>
+	<% end %><%# mflist-%>
 
 <% mflist("Movimientos", Proc.new { ClansMovement.find(:all, :conditions => 'clan_id NOT IN (SELECT id FROM clans where deleted = \'t\')', :order => 'created_on DESC', :limit => 10)}) do |cm| %>
 		<%=user_link(cm.user)%> <%=ClansMovement.translate_direction(cm.direction)%> <%=clan_link(cm.clan)%>
-	<% end # mflist-%>	
+	<% end %><%# mflist-%>	
 <% end -%>
 
 <% content_main do %>

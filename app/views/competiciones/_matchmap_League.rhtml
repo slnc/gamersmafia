@@ -28,8 +28,8 @@ size = all1.size
   end %>
 </table>
 
+<%# TODO refactor%>
 <% 
-# TODO refactor
 max = @competition.competitions_matches.find(:first, :order => 'stage DESC').stage
 (max+1).times do |time| %>
 <div class="subheader"><div>Jornada <%=time+1%></div></div>

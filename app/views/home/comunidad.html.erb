@@ -36,14 +36,14 @@ end
 	<% cache('/home/comunidad/recruitment_ads_clans') do %>
 	<% mflist("Buscan jugadores", Proc.new { RecruitmentAd.find(:all, :conditions => 'clan_id IS NOT NULL AND deleted = \'f\'', :order => 'created_on desc', :limit => 4) }, :class => 'lh16', :grid => 3) do |ra| %>
 		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title%></a>
-	<% end # mflist-%>
-	<% end # cache-%>
+	<% end %><%# mflist-%>
+	<% end %><%# cache-%>
 	
 	<% cache('/home/comunidad/recruitment_ads_users') do %>
 	<% mflist("Buscan clan", Proc.new { RecruitmentAd.find(:all, :conditions => 'clan_id IS NULL AND deleted = \'f\'', :order => 'created_on desc', :limit => 4) }, :class => 'lh16', :grid => 3, :glast => true) do |ra| %>
 		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title%></a>
-	<% end # mflist-%>
-	<% end # cache -%>
+	<% end %><%# mflist-%>
+	<% end %><%# cache -%>
 	
 	<div class="clearb"></div>
 	
@@ -82,8 +82,8 @@ end
 	<% cache("/home/comunidad/clans_movements") do %>
 	<% mflist("Movimientos", Proc.new { ClansMovement.find(:all, :order => 'created_on DESC', :limit => 8)}, :grid => 3, :glast => true, :blast => true) do |cm| %>
 		<%=user_link(cm.user)%> <%=ClansMovement.translate_direction(cm.direction)%> <a href="<%=gmurl(cm.clan)%>"><%=cm.clan.tag%></a>
-	<% end # mflist-%>
-	<% end # cache -%>
+	<% end %><%# mflist-%>
+	<% end %><%# cache -%>
 	<% end -%>
 	
 <%mftext('Hacer amigos', :grid => 9, :has_submodules => true, :glast => true) do %>
@@ -99,10 +99,10 @@ end
 		us = User.random_same_city(@user, :limit => 1)
 		if us.size > 0 then %>
 		  <%mftext('De tu ciudad', :grid => 2) do %><%=comunidad_user_with_photo(us[0]) %><% end -%>
-	 <% end # if us -%>
+	 <% end %><%# if us -%>
 	 <% else%>
 	 <p><strong><a href="/cuenta/alta">Regístrate</a></strong> para recibir recomendaciones de amigos.</p>
-	<% end # user_is_authed -%>
+	<% end %><%# user_is_authed -%>
 	<% if nil then %>	
 	<%mftext('Ligoteo', :grid => 2) do %>
 	<% if user_is_authed && !@user.sex.nil? && @user.pref_interested_in != '' then 
@@ -145,8 +145,8 @@ end
 		<% end -%>
 	</table>
 	
-	<% end # mftext -%>
-	<% end # if -%>
+	<% end %><%# mftext -%>
+	<% end %><%# if -%>
 	<% end -%>
 <% end -%>
 
@@ -166,7 +166,7 @@ end
 			</tr>
 		<% end -%>
 	</table>
-	<% end #cache -%>
+	<% end %><%# cache -%>
 	<% end -%>
 	
 	<%mftext('Clanes', :grid => 4, :glast => true, :blast => true) do %>
@@ -208,14 +208,14 @@ end
 
 <%mftext('Perfiles actualizados', :grid => 3) do %>
   <table>
-<% # cache("/common/miembros/_rightside/birthdays_#{Time.now.strftime('%Y%m%d')}") do %>
+<%# cache("/common/miembros/_rightside/birthdays_#{Time.now.strftime('%Y%m%d')}") do %>
       <% User.find(:all, :conditions => "profile_last_updated_on is not null and state IN (#{User::STATES_CAN_LOGIN.join(',')})", :order => 'profile_last_updated_on DESC', :limit => 5).each do |u| %>
       <tr class="<%=oddclass%>">
         <td><strong><%=user_link(u)%></strong><br /> <span class="infoinline"><%=print_tstamp(u.profile_last_updated_on, 'intelligent')%></span></td>
 		<td class="right"><img src="/cache/thumbnails/f/32x32/<%=u.show_photo%>" /></td>
       </tr>
       <% end -%>
-    <% # end -%>
+    <%# end -%>
   </table>
 <% end -%>
 
@@ -242,6 +242,6 @@ emblems = Emblems.get_latest_emblems.chunk(2)
 </div>
 	<% end -%>
 <% end -%>
-<% end # cache-%>
+<% end %><%# cache-%>
 
 <div class="clearb"></div>

@@ -49,7 +49,7 @@
   <br />
   <br />
   <div class="subheader"><div>Último contenido de líderes de facción</div></div>
-  <% # TODO copypasted de mi facción/staff y a su vez de mi facción/index
+  <%# TODO copypasted de mi facción/staff y a su vez de mi facción/index
 
   for user in User.find_by_sql('SELECT * from users where id IN (select id from users_roles where role in (\'Boss\', \'Underboss\')) ORDER BY lower(login) ASC')
   

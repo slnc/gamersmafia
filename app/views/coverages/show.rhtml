@@ -1,9 +1,9 @@
 <% content_support(:content => @coverage.unique_content) do %>
 <% if @coverage.is_public? then %>
 <%=render :partial => 'shared/content_stats', :locals => {:object => @coverage} %>
-<% # TODO ctivar cache cuando esté arreglada
+<%# TODO ctivar cache cuando esté arreglada
 %>
-<% # cache("/coverages/latest_by_event_#{@coverage.event_id}") do %>
+<%# cache("/coverages/latest_by_event_#{@coverage.event_id}") do %>
 <% other_news = @coverage.event.coverages.find(:all, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 5)
 if other_news.size > 0 then %>
 <% mftext("Más noticias de #{@coverage.event.title}") do %>
@@ -14,7 +14,7 @@ if other_news.size > 0 then %>
 </ul>
 <% end -%>
 <% end -%>
-<% # end -%>
+<%# end -%>
 
 <% 
 c = @coverage.event.competition
@@ -25,8 +25,8 @@ if c then %>
 <% end -%>
 <% else %>
 <%= render :partial => '/shared/content_publishing_state', :locals => { :object => @coverage} %>
-<% end # is_public-%>
-<% end # generic_support -%>
+<% end %><%# is_public-%>
+<% end %><%# generic_support -%>
 
 <% content_main do %>
 <%= mfcontent(@coverage)%>

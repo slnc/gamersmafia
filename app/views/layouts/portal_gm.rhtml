@@ -5,7 +5,7 @@
 <title><%=controller.title%></title>
 <%=css_includes %>
 <%=javascript_includes %>
-<link rel="alternate" type="application/xml" title="RSS" href="/rss/noticias" />
+<link rel="alternate" type="application/rss+xml" title="Feed RSS de Gamersmafia" href="/rss/noticias" />
 </head>
 <body class="lydefault <%=' has-submenu ' if controller.submenu %><%="wp#{controller.wmenu_pos} "%><%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=params[:action].to_s.split('/').last%>">
   <div id="cpageout" class="container gm20085">
@@ -87,9 +87,9 @@ if u_clans.size == 0 then %>
 							</ul>
 							</div>
 						</li>
-						<% end # if u_clans -%>
-						<% end # cache %>
-					<% end # if user_is_authed  -%>
+						<% end %><%# if u_clans %>
+						<% end %><%# cache %>
+					<% end %><%# if user_is_authed  %>
 			  	</ul>
 
 				<ul id="sawbody-gm" class="hidden">
@@ -125,7 +125,7 @@ if u_clans.size == 0 then %>
 				<%BazarDistrict.find(:all, :order => 'lower(name)').each do |c| %>
 					<li class="sawbody-bazar-tema"><a href="http://<%=c.code%>.<%=App.domain%>/"><%=faction_favicon(c)%> <%=c.name%></a></li>
 				<% end -%>
-				<% end # bazar_district -%>
+				<% end %><%# bazar_district %>
 							</ul>
 							</div>
 					</li>
@@ -164,7 +164,7 @@ if u_clans.size == 0 then %>
 				<%Competition.find_related_with_user(@user.id, :limit => 25).each do |c| %>
 								<li class="sawbody-arena-competition"><a href="<%=gmurl(c)%>"><%=c.name%></a></li>
 					<% end -%>
-					<% end #cache -%>
+					<% end %><%# cache %>
 							</ul>
 							</div>
 					</li>
@@ -193,7 +193,7 @@ if u_clans.size == 0 then %>
 					<li><a id="sawbody-hq-jira" target="_blank" href="http://hq.gamersmafia.com/">JIRA</a></li>
 					<li><a id="sawbody-hq-wiki" target="_blank" href="http://hq.gamersmafia.com/confluence">Wiki</a></li>
 			  	</ul>
-				<% end # if user_is_authed %>
+				<% end %><%# if user_is_authed %>
 				<ul id="sawbody-anunciante" class="hidden">
 			  		
 			  	</ul>
@@ -236,7 +236,7 @@ if u_clans.size == 0 then %>
 					<td style="text-align: right;"><a href="http://<%=App.domain%>/facciones">Todas las plataformas &raquo;</a></td>
 				</tr>
 		   	</table>
-			<% end # cache -%>
+			<% end %><%# cache -%>
 			
 			<div style="width: 650px; float: left; padding-bottom: 10px; padding-top: 4px; margin: 10px 0 0 10px; border-top: 1px solid #880000;"><% if user_is_authed then %><a href="/cuenta/tienda/9" style="font-size: 11px; font-weight: bold;">Crear nueva facción</a><% end -%></div>
 		   	
@@ -267,8 +267,8 @@ if u_clans.size == 0 then %>
 		</div>
 	</div>
 	<% end -%>
-	<% end # cache -%>
-	<% end # if user_is_authed -%>
+	<% end %><%# cache %>
+	<% end %><%# if user_is_authed %>
 		
 		
 		<div id="mgintellibar-switcher" class="hidden"><a href="">NAV</a> | <a href="">GMTV</a></div>
@@ -376,8 +376,8 @@ if user_is_authed && @user.is_faction_leader? && @user.faction_id then %>
 </table>
 </div>
 <br />
-<% end # cache
-end -%>
+<% end %><%# cache %>
+<% end -%>
 <script type="text/javascript">
 	function open_online_friends(){
 		$j('#mgfriends-online-table').toggleClass('hidden');
@@ -399,9 +399,9 @@ if crecs.size > 0 then %>
 	<li class="<%=oddclass%> updated"><a href="<%=gmurl(crec.content)%>" title="de <%=crec.sender.login%> <%=": #{crec.comment}" if crec.comment.to_s != ''%>"><%=truncate(crec.content.name, 26, '..')%></a></li>
 	<% end -%>
 </ul>
-<% end #mftext -%>
-<% end #if crecs -%>
-<% end #cache -%>
+<% end %><%# mftext -%>
+<% end %><%# if crecs -%>
+<% end %><%# cache -%>
 <% end -%>
 
 <%= render :partial => '/layouts/last_commented_objects' %>
