@@ -125,7 +125,8 @@ opts = @competition.competitions_types_options %>
 <div id="maps">
 <p>Mapas disponibles para esta competición<br/>
 
-<%# TODO  copypasteado de configuración de clanes
+<%# TODO  copypasteado de configuración de clanes %>
+<%
 total_games_maps = @competition.game.games_maps.count
 
 g = @competition.game

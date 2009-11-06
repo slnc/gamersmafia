@@ -38,20 +38,18 @@ end
 	<% end %>
 	<div class="clearl"></div>
 	<%
-	end %><%# cache 
-	end -%>
+	end %><%# cache %>
+	<% end -%>
 	
 	
 	<%=render :partial => '/home/bazar_articles2', :locals => { :bazar_district => cat } %>
 	
 <% if cat.question then %>				
-<%# cache("/#{controller.portal_code}/home/index/questions") do %>
 <% mfcontents_list("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.domain}/preguntas\">Preguntas</a>", 
 				   Proc.new { cat.question.find(:published, :conditions => 'answered_on IS NULL AND contents.created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, contents.created_on DESC', :limit => 5)}
 				   ) do |o| %>
 <a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a>
 <% end -%>
-<%# end %><%# cache -%>
 <% end %><%# if -%>
 					
 	<% if cat.download then %>

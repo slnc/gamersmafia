@@ -67,7 +67,8 @@ function select_new_avatar(imgNode, realId)
 <br />
 <% end -%>
 
-<%# avatares de clan
+<%# avatares de clan %>
+<%
 clans_ids = @user.clans_ids
 if clans_ids.size > 0 then
   clans_avatars = Avatar.find(:all, :conditions => "clan_id IN (#{clans_ids.join(',')})")
