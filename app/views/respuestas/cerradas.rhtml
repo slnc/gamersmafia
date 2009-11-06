@@ -9,8 +9,6 @@
 <% 
 @question_pages = ActionController::Pagination::Paginator.new self, obj.count(:published, :content_type => 'Question', :conditions => 'answered_on is NOT null'), 30, params['page']
 @question_pages.current_page = @question_pages.last if params['page'].nil?
-%>
-<%# cache("/#{controller.portal.code}/respuestas/index/page_#{params[:page]}") do
 @questions = obj.find(:published, :content_type => 'Question', :conditions => 'answered_on is NOT null', :order => 'answered_on DESC', :limit => @question_pages.current.to_sql[0], :offset => @question_pages.current.to_sql[1])
 @questions.each do |question| %>
     <div class="<%=oddclass%>">
@@ -18,7 +16,6 @@
 			<div class="infoinline"><% if question.prize > Question::MIN_AMMOUNT then %><strong><%=question.prize.to_i%></strong> <%=gmd11%> | <% end-%><%=draw_rating(question.rating[0])%> | <%=user_link(question.user)%></div>
     </div>
     <br />
-    <%#end %>
 <% end %>
 <%= render :partial => 'shared/pager', :object => @question_pages, :locals => {:pos => 'bottom'} %>
 <% end -%>
