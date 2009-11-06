@@ -101,9 +101,9 @@ end
 user_is_faction_boss = @user.faction.is_bigboss?(@user)  
 for avatar in @avatars 
     if avatar.level > previous_level then
-        previous_level = avatar.level
-        # TODO no estructurado r_r
-        if previous_level > Karma.level(@user) && !user_is_faction_boss then
+        previous_level = avatar.level %>
+        <%# TODO no estructurado r_r %>
+        <% if previous_level > Karma.level(@user) && !user_is_faction_boss then
             break
         end
 %>

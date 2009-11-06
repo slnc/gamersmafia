@@ -6,7 +6,8 @@ if File.exists?(cache_file) then %>
  <table class="compact">
 <%
 data = YAML::load(File.open(cache_file).read)
-if data != false then # no sé pq a veces se queda a 0, deberíamos guardarlo en bd para evitar problemas
+if data != false then %><%# no sé pq a veces se queda a 0, deberíamos guardarlo en bd para evitar problemas%>
+<%
 data.keys.sort.each do |k|
 v = data[k]
 u = User.find(k.split('_')[1].to_i) # el indice 0 es para poder ordenar el dict

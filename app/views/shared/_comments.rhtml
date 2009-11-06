@@ -175,7 +175,6 @@ function load_comments()
 <%
 if user_is_authed then
   begin
-    # TODO
 	Comments.require_user_can_comment_on_content(@user, object)
   rescue Exception => e
     %><p class="centered"><%=e.to_s%></p><%

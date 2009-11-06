@@ -18,7 +18,7 @@
 <%mftext('Boss') do
 if @faction.boss then %>
 <%=user_link(@faction.boss, :avatar => true)%>
-<% else # no boss -%>
+<% else -%>
 <p>Esta facción no tiene boss. Tú puedes ser su boss comprándola desde la <a href="/cuenta/tienda">tienda</a>.</p>
 <% end -%>
 <% end -%>
@@ -28,7 +28,7 @@ if @faction.boss then %>
 <%mftext('Underboss') do
 if @faction.underboss then %>
 <%=user_link(@faction.underboss, :avatar => true)%>
-<% else # no boss -%>
+<% else -%>
 <p>Esta facción no tiene underboss.</p>
 <% end -%>
 <% end -%>

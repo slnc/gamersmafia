@@ -5,7 +5,7 @@
 <%content_3col do %>
 <%mftext('Top Karma') do%>
       <table>
-        <% cache("/common/miembros/index/top_karma_#{Time.now.to_i/21600}") do # 6 horas 
+        <% cache("/common/miembros/index/top_karma_#{Time.now.to_i/21600}") do  
         %>
         <% i=0
         for u in User.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED} and cache_karma_points is not null and cache_karma_points > 0 and is_bot is false", :order => 'cache_karma_points DESC', :limit => 10) %>
@@ -21,7 +21,7 @@
 	  
 	  <%mftext('Top amigos') do %>
 	  <table>
-          <% cache("/common/miembros/index/top_popularity_#{Time.now.to_i/21600}") do # 6 horas  
+          <% cache("/common/miembros/index/top_popularity_#{Time.now.to_i/21600}") do   
           %>
           <% 
           i=0
@@ -46,7 +46,7 @@
 <%content_3col do %>
 <%mftext('Top Fe') do%>
 <table>
-        <% cache("/common/miembros/index/top_faith_#{Time.now.to_i/21600}") do # 6 horas  
+        <% cache("/common/miembros/index/top_faith_#{Time.now.to_i/21600}") do   
         %>
         <% i=0
         for u in User.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED} and cache_faith_points is not null and cache_faith_points > 0 and is_bot is false", :order => 'cache_faith_points DESC', :limit => 10) %>
@@ -62,7 +62,7 @@
 
 <%mftext('Top ricos') do %>
 <table>
-          <% cache("/common/miembros/index/top_richest_#{Time.now.to_i/21600}") do # 6 horas  
+          <% cache("/common/miembros/index/top_richest_#{Time.now.to_i/21600}") do   
           %>
           <% 
           i = 0
@@ -85,7 +85,7 @@
 <%content_3col do %>
 <%mftext('Top personas referidas') do%>
 		<table>
-          <% cache("/common/miembros/index/top_referrals_logins_#{Time.now.to_i/21600}") do # 6 horas  
+          <% cache("/common/miembros/index/top_referrals_logins_#{Time.now.to_i/21600}") do   
           %>
           <% 
           i = 0
@@ -110,7 +110,7 @@
 		
 		<%mftext('Top visitas referidas') do %>
 		<table>
-          <% cache("/common/miembros/index/top_referrals_#{Time.now.to_i/21600}") do # 6 horas  
+          <% cache("/common/miembros/index/top_referrals_#{Time.now.to_i/21600}") do   
           %>
           <% 
           i = 0

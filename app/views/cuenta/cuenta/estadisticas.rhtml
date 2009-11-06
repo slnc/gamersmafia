@@ -10,9 +10,9 @@
       <th>Contenido</th>
       <th>Puntos</th>
     </tr>
-    <% contents_stats = @user.contents_stats
-    # buscamos el máximo
-    for key in contents_stats.sort
+    <% contents_stats = @user.contents_stats %>
+    <%# buscamos el máximo %>
+    <% for key in contents_stats.sort
       points = Karma::KPS_CREATE[ActiveSupport::Inflector::singularize(Cms::translate_content_name(key[0], 0))]
       if points.nil? then
         raise "#{key[0]} #{ActiveSupport::Inflector::singularize(Cms::translate_content_name(key[0], 0))}"

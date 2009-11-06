@@ -75,7 +75,7 @@ mclass = 'default-treatment' if relmetric.abs < t.min_difference
         <% end %><%# t.treatments -%>
         </table>
         </td>
-    <% elsif (!t.dirty?) && crates && crates[t.metrics[0].to_sym][0][:stddev] then # asumimos que es una métrica de un solo valor %>
+    <% elsif (!t.dirty?) && crates && crates[t.metrics[0].to_sym][0][:stddev] then %><%# asumimos que es una métrica de un solo valor %>
         <td>
             <table>
             <tr>

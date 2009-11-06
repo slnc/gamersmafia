@@ -2,8 +2,7 @@
 <h2 id="news<%=@object.id%>"><%= link_to @object.title, gmurl(news) %></h2>
 <div class="infoinline" style="line-height: 16px;">por <%=link_to @object.user.login, gmurl(@object.user) %> | <%=@object.event.title%> | <%=print_tstamp(@object.created_on, 'time')%> | <span class="comments-count"><a title="Leer los comentarios de esta noticia" href="<%=gmurl(@object)%>#comments"><%=@object.cache_comments_count%></a></span></div>
 <div class="summary"><%=@object.description%></div>
-<%# TODO el .to_s es necesario por el bug #6702
-%>
+<%# TODO el .to_s es necesario por el bug #6702 %>
 <% if @object.main and not strip_tags(@object.main.strip).to_s.blank? then %>
 <div class="more"><%= link_to 'Seguir leyendo..', gmurl(news) %></div>
 <% end -%>

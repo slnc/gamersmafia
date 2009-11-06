@@ -40,8 +40,6 @@
   <%mftext('Todas sus partidas') do %>
 
   <table>
-<%# TODO cache
-# cache("/miembros/#{@curuser.id % 1000}/#{@curuser.id}/competition_matches") do %>
 <%
 Competitions.find_all_matches_from_user(@curuser).each do |cm|
   p = cm.competition.get_active_participant_for_user(@curuser)
@@ -49,12 +47,10 @@ Competitions.find_all_matches_from_user(@curuser).each do |cm|
     p1_class = ''
   elsif cm.result == 1 
     p1_class = p2_class = 'match-tie'
-  else
-    # nuestro participant va a estar siempre a la izquierda en la lista
+  else %>
+    <%# nuestro participant va a estar siempre a la izquierda en la lista %>
     p1_class = ((cm.result == 0 && p.id == cm.participant1_id) or (cm.result == 2 && p.id == cm.participant2_id)) ? 'match-won' : 'match-lost'
-    # p2_class = (p1_class == 'match-lost') ? 'match-won' : 'match-lost'
-  end
-
+<%end
   c = cm.competition
   %>
     <tr class="<%=oddclass%>">
@@ -67,8 +63,6 @@ Competitions.find_all_matches_from_user(@curuser).each do |cm|
       <td class="timestamp infoinline"><%=cm.completed_on ? print_tstamp(cm.completed_on) : print_tstamp(cm.play_on)%></td>
     </tr>
   <% end %>
-  <%# end 
-  %>
 </table>
 <% end -%>
 <% end -%>

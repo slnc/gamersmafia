@@ -7,7 +7,7 @@
   <% if can_modify_participance then %>
   <%mftext('Inscríbete en esta competición') do %>
   <% if user_is_authed then %>
-    <% if competition.competitions_participants_type_id == 1 then  # TODO horrible hack, kill me 
+    <% if competition.competitions_participants_type_id == 1 then %><%# TODO horrible hack, kill me %> 
     %>
       <% if (competition.competitions_participants_type_id == 1 && competition.user_is_participant(@user.id)) then %>
       <p>Inscripción en la competición correcta.</p>

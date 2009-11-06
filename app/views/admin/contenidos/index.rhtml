@@ -22,9 +22,8 @@
   <%= render :partial => '/miembros/publishing_experience', :locals => { :curuser => @user } %>
   <% end -%>
   
-  <% if nil then 
-  # esto no funciona pq no sabemos cuándo se ha modificado el estado de un contenido por última vez
-  %>
+  <% if nil then %> 
+  <%# esto no funciona pq no sabemos cuándo se ha modificado el estado de un contenido por última vez %>
   <div class="subheader"><div>Últimos contenidos resueltos</div></div>
   <ul class="content-hid">
     <% Content.find(:all, :conditions => "state IN (#{Cms::PUBLISHED}, #{Cms::DELETED})", :order => 'updated_on DESC', :limit => 20).each do |obj| %>

@@ -15,7 +15,7 @@
 <%mftext('Don') do
 if @cur_district.has_don? then %>
 <%=user_link(@cur_district.don, :avatar => true)%>
-<% else # no don -%>
+<% else %>
 <p>Este distrito no tiene don.</p>
 <% end -%>
 <% end -%>
@@ -25,7 +25,7 @@ if @cur_district.has_don? then %>
 <%mftext('Mano derecha') do
 if @cur_district.has_mano_derecha? then %>
 <%=user_link(@cur_district.mano_derecha, :avatar => true)%>
-<% else # no don -%>
+<% else %>
 <p>Este distrito no tiene mano derecha.</p>
 <% end -%>
 <% end -%>

@@ -72,9 +72,8 @@ setTimeout(updatecounter, 1000);
 <% elsif @download.download_mirrors.size > 0 then %>
   <p>El archivo que has elegido solo está disponible a través de mirrors externos. Por favor, elige uno:</p>
 <%=render :partial => 'download_mirrors'%>
-<% else 
-  # TODO generar aviso
-  %>
+<% else %>
+<%# TODO generar aviso %>
   <p>El archivo elegido no está disponible. Se ha generado un aviso al encargado y se arreglará lo antes posible. Disculpa las molestias.</p>
 <% end %>
 </div>

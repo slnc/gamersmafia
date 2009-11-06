@@ -95,7 +95,7 @@
       text
       end %><br /><% end %>
       <span class="infoinline">Último acceso: <%=print_tstamp(real_thing.lastseen_on)%></span><br />
-    <% else #clan %>
+    <% else %><%#clan %>
     <%=real_thing.name%><br />
       <% if not real_thing.irc_channel.to_s.empty? then %><img class="competition-irc" src="/images/blank.gif" /> <%=real_thing.irc_server%>#<%=real_thing.irc_channel%><br /><% end %>
       <% if real_thing.website_external then %><%=auto_link(real_thing.website_external, :all, :target => '_blank') do |text| 
