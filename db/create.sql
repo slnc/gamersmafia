@@ -8195,7 +8195,8 @@ CREATE TABLE comment_violation_opinions (
     id integer NOT NULL,
     user_id integer NOT NULL,
     comment_id integer NOT NULL,
-    cls smallint
+    cls smallint,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
