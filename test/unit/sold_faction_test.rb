@@ -31,7 +31,7 @@ class SoldFactionTest < ActiveSupport::TestCase
     br.confirm(2)
     assert br.update_attributes(:unban_user_id => 1, :reason_unban => 'feo')
     br.confirm_unban(2)
-    assert br.update_attributes(:confirmed_on => 4.months.ago, :unban_confirmed_on => 4.months.ago)
+    assert br.update_attributes(:confirmed_on => 7.months.ago, :unban_confirmed_on => 7.months.ago)
     u = User.find(2) # ban_request 1 is for user_id 2
     p = Product.find_by_name('Facción')
     u.add_money(p.price)
