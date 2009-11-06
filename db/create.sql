@@ -10631,6 +10631,40 @@ ALTER SEQUENCE messages_id_seq OWNED BY messages.id;
 SET default_with_oids = false;
 
 --
+-- Name: ne_references; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ne_references (
+    id integer NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    referenced_on timestamp without time zone NOT NULL,
+    entity_class character varying NOT NULL,
+    entity_id integer NOT NULL,
+    referencer_class character varying NOT NULL,
+    referencer_id integer NOT NULL
+);
+
+
+--
+-- Name: ne_references_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE ne_references_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: ne_references_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE ne_references_id_seq OWNED BY ne_references.id;
+
+
+--
 -- Name: news; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -13363,6 +13397,13 @@ ALTER TABLE messages ALTER COLUMN id SET DEFAULT nextval('messages_id_seq'::regc
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ne_references ALTER COLUMN id SET DEFAULT nextval('ne_references_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE news ALTER COLUMN id SET DEFAULT nextval('news_id_seq'::regclass);
 
 
@@ -14943,6 +14984,14 @@ ALTER TABLE ONLY macropolls
 
 ALTER TABLE ONLY messages
     ADD CONSTRAINT messages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: ne_references_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY ne_references
+    ADD CONSTRAINT ne_references_pkey PRIMARY KEY (id);
 
 
 --

@@ -130,6 +130,10 @@ class User < ActiveRecord::Base
     true
   end
   
+  def ne_references
+    NeReference.find(:all, :conditions => ['(entity_class = \'User\' AND entity_id = ?)', self.id])  
+  end
+  
   def check_if_website
     return unless self.slnc_changed?(:homepage)
     

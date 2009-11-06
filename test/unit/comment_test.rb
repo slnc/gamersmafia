@@ -1,6 +1,21 @@
 require 'test_helper'
 
 class CommentTest < ActiveSupport::TestCase
+  
+  test "refered_people_should_work" do
+    c = Comment.new({:user_id => 1, :comment => "hola #{User.find(2).login}", :content_id => 1, :host => '127.0.0.1'})
+    assert c.save
+    references = c.ne_references
+    assert_equal 'User', references[0].entity_class
+    assert_equal 'Comment', references[0].referencer_class
+    assert_equal 2, references[0].entity_id
+    assert_equal c.id, references[0].referencer_id
+    
+    assert_equal references[0].id, c.content.ne_references[0].id
+    assert_equal references[0].id, User.find(2).ne_references[0].id
+  end
+  
+  
   test "should_create_comment_if_valid" do
     content = Content.find(1)
     content.url = nil
@@ -8,7 +23,7 @@ class CommentTest < ActiveSupport::TestCase
     ApplicationController.gmurl(content) # TODO temp make sure the fixture has portal_id set
     assert_not_nil content.portal_id
     c = Comment.new({:user_id => 1, :comment => 'hola mundo!', :content_id => 1, :host => '127.0.0.1'})
-    assert_equal true, c.save
+    assert c.save
     c.reload
     assert_not_nil c.portal_id
     c.reload

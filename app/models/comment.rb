@@ -32,6 +32,16 @@ class Comment < ActiveRecord::Base
   observe_attr :lastedited_by_user_id
   observe_attr :comment
   
+  def ne_references
+    users = User.db_query("SELECT login FROM users").collect { |dbu| dbu['login'].downcase }
+    references = self.comment.slnc_tokenize & users
+    ne_refs = []
+    references.each do |ref|
+      ne_refs<< NeReference.create(:entity_class => 'User', :entity_id => User.find_by_login(ref).id, :referencer_class => 'Comment', :referencer_id => self.id, :referenced_on => self.created_on)
+    end
+    ne_refs
+  end
+  
   def schedule_image_parsing
     GmSys.job("Comment.find(#{self.id}).download_remotes")
   end
