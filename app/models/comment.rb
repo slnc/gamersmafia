@@ -20,7 +20,7 @@ class Comment < ActiveRecord::Base
   belongs_to :user
   after_create :do_after_create
   after_create :schedule_image_parsing
-  after_create :schedule_ne_references_calculation
+  after_save :schedule_ne_references_calculation
   
   belongs_to :lastedited_by, :class_name => 'User', :foreign_key => 'lastedited_by_user_id'
   has_many :comments_valorations
@@ -33,7 +33,9 @@ class Comment < ActiveRecord::Base
   observe_attr :lastedited_by_user_id
   observe_attr :comment
   
-  def ne_references(users=[])
+  def regenerate_ne_references(users=[])
+    NeReference.find(:all, :conditions => ['referencer_class = \'Comment\' AND referencer_id = ?', self.id]).each { |ne| ne.destroy }
+    
     if users == []
       users = {}
       User.db_query("SELECT id, lower(login) FROM users where login_is_ne_unfriendly = 'f'").each do |dbu|
@@ -69,7 +71,7 @@ class Comment < ActiveRecord::Base
   end
   
   def schedule_ne_references_calculation
-    GmSys.job("Comment.find(#{self.id}).ne_references")
+    GmSys.job("Comment.find(#{self.id}).regenerate_ne_references")
   end
   
   def download_remotes
