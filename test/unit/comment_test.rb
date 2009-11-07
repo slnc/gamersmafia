@@ -5,7 +5,7 @@ class CommentTest < ActiveSupport::TestCase
   test "refered_people_should_work" do
     c = Comment.new({:user_id => 1, :comment => "hola #{User.find(2).login}", :content_id => 1, :host => '127.0.0.1'})
     assert c.save
-    references = c.ne_references
+    references = c.regenerate_ne_references
     assert_equal 'User', references[0].entity_class
     assert_equal 'Comment', references[0].referencer_class
     assert_equal 2, references[0].entity_id
