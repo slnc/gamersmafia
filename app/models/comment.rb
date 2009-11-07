@@ -36,7 +36,7 @@ class Comment < ActiveRecord::Base
   def ne_references(users=[])
     if users == []
       users = {}
-      User.db_query("SELECT id, login FROM users").each do |dbu|
+      User.db_query("SELECT id, login FROM users where login_is_ne_unfriendly = 'f'").each do |dbu|
         users[dbu['login']] ||= []
         users[dbu['login']]<< ['User', dbu['id'].to_i]
       end

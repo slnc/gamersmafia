@@ -1,5 +1,5 @@
 uzers = {}
-User.db_query("SELECT id, login FROM users").each do |dbu|
+User.db_query("SELECT id, login FROM users where login_is_ne_unfriendly = 'f'").each do |dbu|
     uzers[dbu['login']] ||= []
     uzers[dbu['login']]<< ['User', dbu['id'].to_i]
 end
