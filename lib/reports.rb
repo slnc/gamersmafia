@@ -19,6 +19,16 @@ module Reports
     end
     base<< "</table>\n"
     
+    # comentario de la semana
+    positive_types_ids = CommentsValorationsType.find_positive.collect { |cvt| cvt.id }
+    dbmax = User.db_query("select count(*) as count, comment_id from comments_valorations where created_on >= now() - '1 week'::interval and comments_valorations_type_id in (#{positive_types_ids.join(',')}) group by comment_id order by count(*) desc limit 1")
+    
+    if dbmax.size > 0
+      c = Comment.find(dbmax[0]['comment'], :include => [:user, :content])
+      base<< "<br /><br />El comentario con más valoraciones positivas (<strong>#{dbmax['count']}</strong>) de la semana ha sido:<br /><blockquote>#{Cms::smilelize(c.comment)}</blockquote><br /><br /> enviado por <strong><a href=\"/miembros/#{c.user.login}\">#{c.user.login}</a></strong> en '<a href=\"#{ApplicationController.gmurl(c.content)}\">#{c.content.name}</a>'."
+    end
+    
+    
     virgins = ["Oh, sigo buscando novia. Si alguna mujer joven está interesada por favor que me mande un mensaje privado.", 
                'Soy una persona muy sensible, no me gustaría leer críticas negativas.',
                '¿Está todo bien?',
