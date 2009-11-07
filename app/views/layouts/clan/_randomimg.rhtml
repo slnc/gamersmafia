@@ -1,7 +1,6 @@
-<%
-# TODO cuando no haya imágenes y el usuario añada una imagen tenemos que borrar esta cache
-# cache("/#{controller.portal.code}/layout/randomimg/#{Time.now.strftime('%Y%m%d')}") do 
-im = controller.portal.image.find(:published, :order => 'random()', :limit => 1)
+<%# TODO cuando no haya imágenes y el usuario añada una imagen tenemos que borrar esta cache
+# cache("/#{controller.portal.code}/layout/randomimg/#{Time.now.strftime('%Y%m%d')}") do %> 
+<%im = controller.portal.image.find(:published, :order => 'random()', :limit => 1)
 if im.size > 0 then
   im = im[0]
   mftext('Imagen aleatoria') do %>
@@ -9,6 +8,6 @@ if im.size > 0 then
 		<div class="panel-title"><div class="title">Imagen aleatoria</div></div>
 	<a href="<%=get_url(im)%>"><img src="<%=ASSET_URL%>/cache/thumbnails/f/153x115/<%=im.file%>" /></a>
 	</div></div>
-	<% end # mftext -%>
-<% end # if -%>
-<% # end -%>
+	<% end -%>
+<% end -%>
+<%# end -%>

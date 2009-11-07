@@ -60,7 +60,7 @@ stats_by_portals.each { |s| sum += s['count'].to_i } %>
   <td><%=dbi['count']%></td>
   <td><%="%.2f" % ((dbi['count'].to_i / sum)*100)%>%</td>
   <td><div style="width: <%=(dbi['count'].to_i / sum)*100.to_i%>%; background: #333; height: 20px;"></div></td>
-  <td><% #= sparklines(dbi['daily_hits'])%></td>
+  <td><%#= sparklines(dbi['daily_hits'])%></td>
 </tr>
 <% end -%>
 </table>

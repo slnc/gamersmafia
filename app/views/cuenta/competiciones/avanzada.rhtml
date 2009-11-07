@@ -13,7 +13,7 @@ opts.merge!(@competition.competitions_types_options)
 
   <br />
   <select id="dst_group">
-    <% # TODO aquí lo hacemos con ruby y abajo con jscript, solo una forma please
+    <%# TODO aquí lo hacemos con ruby y abajo con jscript, solo una forma please
     %>
     <% opts[:tourney_groups].to_i.times do |i| %>
     <option value="<%=i+1%>">Grupo <%=i+1%></option>
@@ -27,7 +27,7 @@ opts.merge!(@competition.competitions_types_options)
 <% content_main do %>
 <% mftext('1er PASO: Configuración de grupos') do %>
   <form method="post" action="/cuenta/competiciones/update_tourney_groups/<%=@competition.id%>" enctype="multipart/form-data">
-    <% # TODO temp, solo para torneos ahora mismo
+    <%# TODO temp, solo para torneos ahora mismo
     %>
     <script type="text/javascript">
 

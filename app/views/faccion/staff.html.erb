@@ -18,7 +18,7 @@
 <%mftext('Boss') do
 if @faction.boss then %>
 <%=user_link(@faction.boss, :avatar => true)%>
-<% else # no boss -%>
+<% else -%>
 <p>Esta facción no tiene boss. Tú puedes ser su boss comprándola desde la <a href="/cuenta/tienda">tienda</a>.</p>
 <% end -%>
 <% end -%>
@@ -28,7 +28,7 @@ if @faction.boss then %>
 <%mftext('Underboss') do
 if @faction.underboss then %>
 <%=user_link(@faction.underboss, :avatar => true)%>
-<% else # no boss -%>
+<% else -%>
 <p>Esta facción no tiene underboss.</p>
 <% end -%>
 <% end -%>
@@ -63,14 +63,14 @@ ctypes.each do |ctype|
 	<tr class="<%=oddclass%>">
 		<td><%=user_link(u)%></td>
 	</tr>
-<% end # ordered -%>
+<% end %><%# ordered -%>
 </table>
-<%end #mftext -%>
+<%end %><%# mftext -%>
 </div>
 <% if ctypes_i % 3 == 0 then %><div class="clearb"></div><% end -%>
 <% ctypes_i += 1 
-end #ctypes.each -%>
-<% end #if -%>
+end %><%# ctypes.each -%>
+<% end %><%# if -%>
 <% end -%>
 </div>
 
@@ -84,7 +84,7 @@ missing_ctypes = ContentType.find(:all, :conditions => "name IN (#{cat_names.joi
 next unless ordered[ct.name] && ordered[ct.name].size > 0
 %>
 <tr class="<%=oddclass%>"><td><%=Cms.translate_content_name(ct.name).titleize%></td></tr>
-<% end #each -%>
+<% end %><%# each -%>
 </table>
 <% end -%>	
 

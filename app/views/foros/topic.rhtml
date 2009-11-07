@@ -7,7 +7,7 @@
   <%= render :partial => 'go_to_competition', :object => @object = @forum%>
 
   
-  <% # TODO cachear esto %>
+  <%# TODO cachear esto %>
   <% cache("/common/foros/subforos/#{@forum.parent_id}") do %>
 <% if (not @forum.respond_to? :competition or not @forum.competition) and @forum.parent then %>
   <%mftext('Subforos') do %>

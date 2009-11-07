@@ -1,7 +1,8 @@
 <% cache("/common/home/index/articles2b#{bazar_district.code}") do %>
 <%
-bazar_district_portal = BazarDistrictPortal.find_by_code(bazar_district.code)
-# TODO :'(((
+bazar_district_portal = BazarDistrictPortal.find_by_code(bazar_district.code) %>
+<%# TODO :'((( %>
+<%%>
 names = {'Interview' => 'Entrevista', 'Column' => 'Columna', 'Tutorial' => 'Tutorial', 'Review' => 'Review'}
 namess = {'Interview' => 'entrevistas', 'Column' => 'columnas', 'Tutorial' => 'tutoriales', 'Review' => 'reviews'}
 %>

@@ -19,7 +19,7 @@
 	<tr style="vertical-align: top;">
 		<td style="width: 50%;">
     <% mftext('Preguntas abiertas') do %>
-<% # cache("/#{controller.portal.code}/respuestas/index/page_#{params[:page]}") do
+<%
 @questions = obj.find(:published, :content_type => 'Question', :conditions => "contents.created_on >= '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'COALESCE(ammount, 0) desc, contents.created_on', :limit => "15")
 @questions.each do |question| %>
     <div class="<%=oddclass%>">
@@ -27,16 +27,13 @@
 			<div class="infoinline"><% if question.prize > Question::MIN_AMMOUNT then %><strong><%=question.prize.to_i%></strong> <%=gmd11%> | <% end-%><%=draw_rating(question.rating[0])%> | <%=user_link(question.user)%></div>
     </div>
     <br />
-	
-    <% #end %>
 <% end %>
 <div class="right"><a href="/respuestas/abiertas<%= "/#{@category.id}" if @category%>">Ver todas</a></div>
     
 	<% end -%>
 </td>
 <td>
-<% mftext('Últimas preguntas cerradas') do %>
-<% # cache("/#{controller.portal.code}/respuestas/index/page_#{params[:page]}") do
+<% mftext('Últimas preguntas cerradas') do
 @questions = obj.find(:published, :content_type => 'Question', :conditions => 'accepted_answer_comment_id is NOT null', :order => 'answered_on desc', :limit => "15")
 @questions.each do |question| %>
     <div class="<%=oddclass%>">
@@ -44,7 +41,6 @@
 			<div class="infoinline"><%=draw_rating(question.rating[0])%> | <%=user_link(question.user)%></div>
     </div>
     <br />
-    <% #end %>
 <% end %>
 <div class="right"><a href="/respuestas/cerradas<%= "/#{@category.id}" if @category%>">Ver todas</a></div>
     
@@ -65,9 +61,5 @@ end %>
 <li class="<%=oddclass%>"><div style="float: left; margin-right: 5px;"><%=faction_favicon(category)%></div> <strong><%=link_to category.name, gmurl(category, :taxonomy => 'QuestionsCategory')%></strong> (<%=category.contents_count(:cls_name => 'Question')%>)</li>
 <% end -%>
 </ul>
-<% # end -%>
-<% # end -%>
-<% # end -%>
-
 <% end -%>
-<%end #content_main%>
+<%end %><%# content_main%>

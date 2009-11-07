@@ -49,10 +49,8 @@
 <%
 	games = (@controller.portal_code != 'gm' && @controller.portal.respond_to?(:games))? @controller.portal.games : [] 
 if games.size > 0 
-  #clans = Clan.find_by_games(:games => @controller.portal.games, :conditions => 'deleted is false', :order => 'created_on DESC', :limit => 5)
   @clans_pages = ActionController::Pagination::Paginator.new self, Clan.count_by_games(:games => games, :conditions => 'deleted is false'), 40, params['page']
 else
-  #clans = Clan.find(:all, :conditions => 'deleted is false', :order => 'created_on DESC', :limit => 5)
   @clans_pages = ActionController::Pagination::Paginator.new self, Clan.count(:conditions => 'deleted is false'), 40, params['page']
 end
 %>

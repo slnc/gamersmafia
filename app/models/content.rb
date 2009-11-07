@@ -49,6 +49,10 @@ class Content < ActiveRecord::Base
     true
   end
   
+  def ne_references
+    NeReference.find(:all, :conditions => ['(referencer_class = \'Content\' AND referencer_id = ?) OR (referencer_class = \'Comment\' AND referencer_id IN (?))', self.id, comment_ids])
+  end
+  
   def comments_ids
     self.db_query("SELECT id FROM comments WHERE content_id = #{self.id} AND deleted = 'f'").collect { |dbr| dbr['id'].to_is }
   end

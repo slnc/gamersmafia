@@ -56,8 +56,8 @@ v = SlogEntry::TYPES[k.to_sym] %>
 		<th>Reportero</th>
 	
 </tr>
-<%
-# sql_cond = (params[:type_id].to_s != '') ? ['type_id = ?', params[:type_id]] : nil   
+<%# sql_cond = (params[:type_id].to_s != '') ? ['type_id = ?', params[:type_id]] : nil %>
+<%   
 SlogEntry.find(:all, :order => 'slog_entries.created_on DESC', :limit => 100, :include => 'reporter').each do |sle| %>
 <tr class="<%=oddclass%>">
 	<td style="width: 16px;"><img class="slog-type<%=sle.type_id%>" src="/images/blank.gif" /></td>

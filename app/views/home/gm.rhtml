@@ -6,7 +6,9 @@
         <div id="home-news" class="subheader first"><div><span>Noticias</span></div></div>
         <ul class="content-hid2">
           <% @last_news = News.find(:published, :conditions => 'clan_id IS NULL and title not LIKE \'Gamersmafia actualizada a%\'', :limit => 40, :order => 'created_on DESC')
-# @last_news = @portal.news_find(:all, :state => :published, :limit => 15)
+%>
+<%# @last_news = @portal.news_find(:all, :state => :published, :limit => 15) %>
+<%
 shown_news = []
 accum_portals = {}
 max = 20
@@ -68,7 +70,6 @@ for download in @last_downloads
     <ul class="content-hid2">
 <%
 shown_topics = []
-# TODO bug
 @last_topics = Topic.latest_by_category(20)
 
 for topicid in @last_topics
@@ -77,14 +78,14 @@ for topicid in @last_topics
   root = topic.main_category.root
   active_topics = root.count(:content_type => 'Topic', :conditions => 'contents.updated_on > now() - \'1 week\'::interval') - 1
 %>
-<li id="content<%=topic.unique_content.id%>" class="new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "<div class=\"content-category\">#{faction_favicon(topic.main_category)}</div>#{truncate(topic.title.gsub('<', ''), 28)}", gmurl(topic)%></li>
-    <% end # for %>
+  <li id="content<%=topic.unique_content.id%>" class="new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "<div class=\"content-category\">#{faction_favicon(topic.main_category)}</div>#{truncate(topic.title.gsub('<', ''), 28)}", gmurl(topic)%></li>
+<% end %>
 
         </ul>
 <script type="text/javascript">contents = contents.concat(<%=shown_topics.join(',')%>);</script>
       <div class="more"><a title="Ir a los foros" href="/foros/">Ir a los foros &raquo;</a></div>
     </div>
-<% end # cache -%>
+<% end %><%# cache -%>
 
     <div class="homebox poll">
         <div id="home-polls" class="subheader first"><div><span>Encuestas</span></div></div>
@@ -113,7 +114,7 @@ end
       <script type="text/javascript">contents = contents.concat(<%=@cur_poll.unique_content.id%>);</script>
     <% end %>
 <% end -%>	
-<% end # if user_is_authed -%>
+<% end %><%# if user_is_authed -%>
 
     <div class="more"><a title="Ver más encuestas" href="/encuestas/">Más encuestas &raquo;</a></div>
   </div>

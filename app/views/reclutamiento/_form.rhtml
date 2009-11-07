@@ -50,7 +50,7 @@
 <input type="button" class="button" value="B" name="B" onclick="simpletag('B')" />
 <input type="button" class="button" value="I" name="I" onclick="simpletag('I')" />
 <input type="hidden" name="tagcount" value="" /><br />
-    <% # TODO comment_comment necesario por el js de los botones %>
+    <%# TODO comment_comment necesario por el js de los botones %>
     <textarea style="width: 400px; background: #fcfcfc; border: 1px solid #aaa;" id="comment_comment" name="recruitment_ad[main]" rows="20"><%=@recruitment_ad.main%></textarea> 
 <%= render :partial => '/shared/smileys', :locals => { :dom_id => 'comment_comment' } %>
 			</td>

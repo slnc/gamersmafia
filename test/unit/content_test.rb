@@ -6,6 +6,23 @@ class ContentTest < ActiveSupport::TestCase
     @content = Content.find(1)
   end
   
+  test "refered_people_should_work_with_content_title" do
+    
+  end
+  
+  test "refered_people_should_work_with_content_description" do
+    
+  end
+  
+  test "refered_people_should_work_with_content_main" do
+    
+  end
+  
+  test "refered_people_should_work_with_content_comments" do
+    
+  end
+  
+  
   test "locked_for_user_when_unlocked" do
     c = Content.find(1)
     assert !c.locked_for_user?(User.find(1))

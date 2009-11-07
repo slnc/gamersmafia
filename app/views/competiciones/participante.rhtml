@@ -7,7 +7,7 @@
          <p>Tienes partidas no finalizadas contra este participante.</p>
      <% else %>
       <% if @competition.kind_of?(Tournament) then %> <input type="hidden" name="owner_clan_id" value="<%=@user.last_clan_id%>"> <% end %>
-      <% # no quito el form porque esta línea de arriba del  kind_of?(Tournament) no sé qué hace aquí
+      <%# no quito el form porque esta línea de arriba del  kind_of?(Tournament) no sé qué hace aquí
       %>
         <form method="post" action="/competiciones/retar/<%=@competitions_participant.id%>">
         <div class="centered"><%=participant_roster(@competition.get_active_participant_for_user(@user))%> <img class="competition-vs" src="/images/blank.gif" /> <%=participant_roster(@competitions_participant)%></div>
@@ -95,7 +95,7 @@
       text
       end %><br /><% end %>
       <span class="infoinline">Último acceso: <%=print_tstamp(real_thing.lastseen_on)%></span><br />
-    <% else #clan %>
+    <% else %><%#clan %>
     <%=real_thing.name%><br />
       <% if not real_thing.irc_channel.to_s.empty? then %><img class="competition-irc" src="/images/blank.gif" /> <%=real_thing.irc_server%>#<%=real_thing.irc_channel%><br /><% end %>
       <% if real_thing.website_external then %><%=auto_link(real_thing.website_external, :all, :target => '_blank') do |text| 

@@ -1,13 +1,14 @@
 <% mftext('Usuarios online', :id => 'mgonline') do %>
         <div id="online-info"><div id="online-detail"></div>
+<%# cacheamos la info de users online durante 60 secs %>
 <%
-# cacheamos la info de users online durante 60 secs
 cache("/site/_online_state/stats/#{Time.now.to_i/60}") do
 online_stats = Stats::online_users 
 @anon = online_stats['anonymous'].to_i
 @reg = online_stats['registered'].to_i
-total = @anon + @reg
-# necesario porque actualizamos user online _después_ de pintar la página para evitar contar webcrawlers ya que se pide por jscript
+total = @anon + @reg %>
+<%# necesario porque actualizamos user online _después_ de pintar la página para evitar contar webcrawlers ya que se pide por jscript %>
+<%
 if total == 0 then
   total = 1
   user_is_authed ?  @reg = 1 : @anon = 1
@@ -36,7 +37,7 @@ end
   <% if friends.size == 0 then %>
 
   <% end -%>
-  <% end # cache
+  <% end %><%# cache
 end -%>
 
 <% cache("/site/_online_state/stats_registered/#{Time.now.to_i/1440}") do %>

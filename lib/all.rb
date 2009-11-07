@@ -11,4 +11,10 @@ class ActionController::Caching::Fragments::UnthreadedFileStore
   end
 end
 
+class String
+  def slnc_tokenize
+    Achmed.clean_comment(self).split(' ')
+  end
+end
+
 Infinity = 1.0/0

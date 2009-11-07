@@ -2,8 +2,8 @@
 
 titems = TrackerItem.updated_for_user(@user, true, 25) %>
 <div id="tracker-bg-text"></div>
+<%# NOTA Mostrar siempre el tracker, aunque no haya elementos. Hay gente que usa el "Ver tracker" aunque no haya items nuevos. %>
 <%
-# NOTA Mostrar siempre el tracker, aunque no haya elementos. Hay gente que usa el "Ver tracker" aunque no haya items nuevos.
 	mflist('Tracker',
 		   titems,
 		   :id => 'tracker',

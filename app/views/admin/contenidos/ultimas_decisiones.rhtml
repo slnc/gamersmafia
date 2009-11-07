@@ -7,13 +7,16 @@ elsif controller.portal.kind_of?(ClansPortal) then
 	cond<< " AND clan_id = #{controller.portal.clan_id}"
 elsif controller.portal.kind_of?(BazarDistrictPortal) then
 	cond<< " AND clan_id IS NULL"
-else # Facción, cargamos los platform_ids y game_ids válidos más los que sean null
-# TODO inconsistencia, la lista d eelementos a moderar muestra _todo_
+else %>
+
+<%# Facción, cargamos los platform_ids y game_ids válidos más los que sean null %>
+<%# TODO inconsistencia, la lista d eelementos a moderar muestra _todo_ %>
+<%
 	g = controller.portal.games
 	g = g.collect { |x| x.id } if g.size > 0
 	if g.size > 0
     	cond<< " AND game_id IN (#{g.join(',')})"
-	else # si no tiene games tiene platforms 
+	else %><%# si no tiene games tiene platforms%><% 
 		plat_codes = controller.portal.factions.find(:all, :conditions => 'is_platform = \'t\'').collect { |x| "'#{x.code}'" }
 		plats_ids = Platform.find(:all, :conditions => "code IN (#{plat_codes.join(',')})").collect { |x| x.id }
 		cond<< " AND platform_id IN (#{plats_ids.join(',')})" if plats_ids.size > 0

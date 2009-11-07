@@ -15,7 +15,7 @@
 		<% @amigos.each do |friend|
 friend[:email] = friend['Windows Live ID'.to_sym] if friend['Windows Live ID'.to_sym]  
 %>
-		<% # TODO si el usuario ya tiene invitación pendiente no mostrar aquí %>
+		<%# TODO si el usuario ya tiene invitación pendiente no mostrar aquí %>
 		<tr class="<%=oddclass%>">
 			<td class="checkbox"><input type="checkbox" name="contacts_emails[]" value="<%=friend[:email]%>" checked="checked" /><input type="hidden" name="contacts_names[]" values="<%=friend[:name]%>" /></td>
 			<td><%=(friend[:name].to_s == "" || friend[:email] == friend[:name]) ? friend[:email] : "#{friend[:name]} <span class=\"sm\">(#{friend[:email]})</span>" %></td>

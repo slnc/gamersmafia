@@ -130,6 +130,10 @@ class User < ActiveRecord::Base
     true
   end
   
+  def ne_references
+    NeReference.find(:all, :conditions => ['(entity_class = \'User\' AND entity_id = ?)', self.id])  
+  end
+  
   def check_if_website
     return unless self.slnc_changed?(:homepage)
     
@@ -235,13 +239,14 @@ class User < ActiveRecord::Base
       require 'open-uri'
       valid_username = self.login.bare
       q_auth = "&os_username=#{App.jira_username}&os_password=#{App.jira_password}"
-      contents = open("http://hq.gamersmafia.com/secure/admin/user/ViewUser.jspa?name=#{valid_username}#{q_auth}").read
+      
+      contents = open("http://hq.gamersmafia.com/secure/admin/user/ViewUser.jspa?name=#{valid_username}#{q_auth}", OPENURI_HEADERS).read
       
       if contents.include?('User does not exist') # let's go!
         #puts "creating account at jira"
-        open("http://hq.gamersmafia.com/secure/admin/user/AddUser.jspa?username=#{valid_username}&fullname=#{valid_username}&email=#{self.email}&sendEmail=true&Crear=Crear#{q_auth}").read
+        open("http://hq.gamersmafia.com/secure/admin/user/AddUser.jspa?username=#{valid_username}&fullname=#{valid_username}&email=#{self.email}&sendEmail=true&Crear=Crear#{q_auth}", OPENURI_HEADERS).read
         ['GM+HQ', 'confluence-users'].each do |g|
-          open("http://hq.gamersmafia.com/secure/admin/user/EditUserGroups.jspa?join=Join+%3E%3E&groupsToJoin=#{g}&name=#{valid_username}#{q_auth}")
+          open("http://hq.gamersmafia.com/secure/admin/user/EditUserGroups.jspa?join=Join+%3E%3E&groupsToJoin=#{g}&name=#{valid_username}#{q_auth}", OPENURI_HEADERS)
         end
       end
       # TODO enviar mp con info y bienvenida
@@ -255,7 +260,7 @@ class User < ActiveRecord::Base
     elsif slnc_changed?(:is_hq) # dando de baja del hq
       # TODO dar de baja del hq
       ['jira-users', 'GM+HQ', 'confluence-users'].each do |g|
-        contents = open("http://hq.gamersmafia.com/secure/admin/user/EditUserGroups.jspa?leave=%3C%3C+Leave&groupsToLeave=#{g}&name=#{valid_username}&returnUrl=UserBrowser.jspa#{q_auth}")
+        contents = open("http://hq.gamersmafia.com/secure/admin/user/EditUserGroups.jspa?leave=%3C%3C+Leave&groupsToLeave=#{g}&name=#{valid_username}&returnUrl=UserBrowser.jspa#{q_auth}", OPENURI_HEADERS)
       end
     end
   end

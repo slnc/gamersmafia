@@ -10,7 +10,7 @@
   <% end -%>
 </ul>
 <% end -%>
-<% end # cache
+<% end %><%# cache
 -%>
 
 <% mftext('Más populares') do %>
@@ -22,7 +22,7 @@
 </ul>
 <% end -%>
 <% end -%>
-<% end # cache 
+<% end %><%# cache 
 -%>
 
 
@@ -36,7 +36,7 @@ cache("/common/tutoriales/_latest_by_cat/#{@category.id}") do %>
   <% end -%>
 </ul>
 <% end -%>
-<% end # cache
+<% end %><%# cache
 -%>
 
 
@@ -45,7 +45,7 @@ cache("/common/tutoriales/_latest_by_cat/#{@category.id}") do %>
 <%=render :partial => '/shared/most_productive_authors', :locals => { :cls => Tutorial, :category => @category, :taxonomy => 'TutorialsCategory'}%>
 <% end -%>
 <% end -%>
-<% end # if 
+<% end %><%# if 
 %>
 <% end -%>
 
@@ -104,7 +104,7 @@ if tuts_count > 0 then
 </div>
 <% end -%>
 <% end -%>
-<% end # cache -%> 
+<% end %><%# cache -%> 
 
 <%= render :partial => 'shared/pager', :object => @tutorial_pages, :locals => {:pos => 'bottom'} %>
 <% end -%>

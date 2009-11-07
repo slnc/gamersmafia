@@ -2,13 +2,11 @@
 <div class="centered-link"><strong>100%</strong> en todos los contenidos</div>
 <% else %>
 <table>
-<% # TODO cache # cache("/common/miembros/_publishing_experience/#{curuser.id % 1000}/#{curuser.id}") do %>
 <% curuser.publishing_personalities.find(:all, :order => 'content_type_id ASC').each do |pp| %>
   <tr class="<%=oddclass%>">
     <td><%=Cms.translate_content_name(pp.content_type.name).capitalize%></td>
     <td class="w100"><%=draw_pcent_bar(pp.experience)%><% if defined?(detailed) && detailed == true then%><br /><span class="infoinline"><%=pp.successes%> aciertos<br /><%=pp.failures%> fallos</span><% end -%></td>
   </tr>
 <% end -%>
-<% # end -%>
 </table>
 <% end -%>

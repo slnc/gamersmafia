@@ -4,6 +4,8 @@ class SiteController < ApplicationController
   helper :miembros
   CONTACT_MAGIC = 982579815691299191
   
+  before_filter :require_auth_users, :only => [ :mrachmed_clasifica_comentarios, :mrachmed_clasifica_comentarios_good, :mrachmed_clasifica_comentarios_bad ]  
+  
   def banners
     @title = 'Banners de Gamersmafia'
   end
@@ -15,8 +17,8 @@ class SiteController < ApplicationController
   def colabora
   end
 
+  
   def mrachmed_clasifica_comentarios
-    raise AccessDenied unless user_is_authed
     @prev_comment_id = params[:prev_comment_id] if params[:prev_comment_id]
     if params[:comment_id]
       raise AccessDenied unless @user.comment_violation_opinions.find_by_comment_id(params[:comment_id].to_i)
@@ -28,8 +30,12 @@ class SiteController < ApplicationController
 
   MRACHMED_RAND_SENTENCES = ['Ajá', 'Tomo nota', 'Hmmm...', 'Entiendo', 'Ajá', 'Entiendo', 'Hmmm...', 'Ya veo', 'Con este está claro', 'Con profesores como tú da gusto', 'Esto es un poco complicado', '¿Te van los huesos?', 'Este ejemplo lo tengo que discutir en mi harén: Vanessa y Jenna seguro que tienen algo que decir']
 
+  verify :params => [:comment_id],  
+         :render => {:action => 'mrachmed_clasifica_comentarios'},  
+         :add_flash => {  :error => "No has especificado ningún comentario"  }, 
+         :only => [:mrachmed_clasifica_comentarios_good, :mrachmed_clasifica_comentarios_bad]
+  
   def mrachmed_clasifica_comentarios_good
-    raise AccessDenied unless user_is_authed
     raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval') > 15
     cvo = @user.comment_violation_opinions.find_by_comment_id(params[:comment_id])
     if cvo.nil?
@@ -48,7 +54,6 @@ class SiteController < ApplicationController
   end
 
   def mrachmed_clasifica_comentarios_bad
-    raise AccessDenied unless user_is_authed
     raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval') > 15
     cvo = @user.comment_violation_opinions.find_by_comment_id(params[:comment_id])
     if cvo.nil?

@@ -35,12 +35,8 @@ end
 low_ctr_threshold = avg_ctrs.percentile(0.25)
 high_ctr_threshold = avg_ctrs.percentile(0.75)
 max_ctr = max_group_ctr.to_f * 1000
-# [0]['max'].to_f * 1000
 %>
 
-<% #=low_ctr_threshold%><br />
-<% #=high_ctr_threshold%><br />
-<% #=avg_ctrs.mean%>
 <table>
 	<tr>
 		<th>Anuncio</th>

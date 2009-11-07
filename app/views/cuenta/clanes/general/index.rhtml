@@ -7,7 +7,7 @@
         <% else %>
         <p>Si quieres activar la página web para tu clan debes comprar una "Web de clan" en la <a href="/cuenta/tienda">tienda</a>.</p>
       <% end -%>
-	  <% end #mftext -%>
+	  <% end %><%# mftext -%>
 	<% else %>
 	<%mftext('Página web') do %>
 		<div class="centered-link"><a href="http://<%="#{@clan.clans_portals.find(:first).code}.#{App.domain}"%>">Visitar</a></div>

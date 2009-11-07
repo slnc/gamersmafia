@@ -31,7 +31,7 @@
 <% content_main do %>
 <% mftext('Eventos') do %>
 
-<% # TODO cachear %>
+<%# TODO cachear %>
 <% @events_pages = ActionController::Pagination::Paginator.new self, controller.portal.event.count(:published, :content_type => 'Event', :conditions => "events.parent_id is null"), controller.class::PER_PAGE, params['page']
 @events_pages.current_page = @events_pages.last if params[:page].nil? 
 %>

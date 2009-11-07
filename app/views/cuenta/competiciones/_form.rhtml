@@ -125,7 +125,8 @@ opts = @competition.competitions_types_options %>
 <div id="maps">
 <p>Mapas disponibles para esta competición<br/>
 
-<% # TODO  copypasteado de configuración de clanes
+<%# TODO  copypasteado de configuración de clanes %>
+<%
 total_games_maps = @competition.game.games_maps.count
 
 g = @competition.game
@@ -150,8 +151,9 @@ for g in @competition.game.games_maps.find(:all, :order => 'lower(name) ASC')
   else
     dst = col3
   end
-
-  # TODO too heavy?
+%>
+  <%# TODO too heavy? %>
+  <%
   selected = @competition.games_maps.find(:first, :conditions => "games_map_id = #{g.id}") ? "checked=\"checked\"" : ''
   dst<< "<label><input type=\"checkbox\" name=\"competition[games_map_ids][]\" #{selected} value=\"#{g.id}\" /> #{popup(g.name, '/competiciones/mapa/' << g.id.to_s, 350, 225)}</label><br />"
   i += 1

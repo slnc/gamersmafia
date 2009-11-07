@@ -18,8 +18,7 @@ La partida está en curso o finalizada, ya no se permiten las apuestas.
 <% end -%>
 
 
-<% # TODO esto está mal , revisar todas, no podemos poner and id <> ?
-%>
+<%# TODO esto está mal , revisar todas, no podemos poner and id <> ? %>
 <% cache("/common/apuestas/show/latest_by_cat_#{@bet.main_category.id}") do %>
 <% other_bets = @bet.main_category.find(:published, :content_type => 'Bet', :order => 'created_on desc', :limit => 5)
 if other_bets.size > 0 then %>
@@ -28,8 +27,7 @@ if other_bets.size > 0 then %>
 <% end -%>
 
 <% end -%>
-<% end # cache
--%>
+<% end %><%# cache-%>
 <% else %>
 <%= render :partial => '/shared/content_publishing_state', :locals => { :object => @bet } %>
 <% end -%>
@@ -52,8 +50,7 @@ total_ammount = @bet.total_ammount
 opts = @bet.bets_options.find(:all, :order => 'lower(name) asc')
 sum_pc = 0
 i = 0
-for option in opts
-  #votes = option.bets_votes.size
+opts.each do |option|
   if total_ammount > 0 then
     cur_pc = (option.ammount.to_f / total_ammount * 100).to_i
   else
@@ -85,9 +82,7 @@ end
 total_ammount = @bet.total_ammount
 
 for option in @bet.bets_options.find(:all, :order => 'lower(name) asc')
-  # TODO hack
   cash_option = User.db_query("SELECT COALESCE(sum(ammount), 0) as ammount from bets_tickets where bets_option_id = #{option.id} and user_id = #{@user.id}")[0]['ammount'].to_f
-  #votes = option.bets_votes.size
   if total_ammount > 0 then
     cur_pc = (option.ammount.to_f / total_ammount * 100).to_i
   else

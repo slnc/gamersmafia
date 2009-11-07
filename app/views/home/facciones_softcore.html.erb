@@ -31,7 +31,7 @@
 
 <% mflist("Imágenes", Proc.new { controller.portal.image.find(:published, :order => 'created_on desc', :limit => 4) }, :class_container => 'mflist-row-images', :grid => 6, :glast => true) do |im| %>
 		<%=link_to fc_thumbnail(im.file, 'i', Cms::IMG_SIZE_GRID2, false), gmurl(im)%>
-	<% end # mflist-%>
+	<% end %><%# mflist-%>
 
 <div class="clearb"></div>
 

@@ -8195,7 +8195,8 @@ CREATE TABLE comment_violation_opinions (
     id integer NOT NULL,
     user_id integer NOT NULL,
     comment_id integer NOT NULL,
-    cls smallint
+    cls smallint,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -8236,7 +8237,7 @@ CREATE TABLE comments (
     lastowner_version character varying,
     lastedited_by_user_id integer,
     deleted boolean DEFAULT false NOT NULL,
-    random_v numeric DEFAULT random() NOT NULL
+    random_v numeric DEFAULT random()
 );
 
 
@@ -10630,6 +10631,39 @@ ALTER SEQUENCE messages_id_seq OWNED BY messages.id;
 SET default_with_oids = false;
 
 --
+-- Name: ne_references; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE ne_references (
+    id integer NOT NULL,
+    created_on timestamp without time zone NOT NULL,
+    referenced_on timestamp without time zone NOT NULL,
+    entity_class character varying NOT NULL,
+    entity_id integer NOT NULL,
+    referencer_class character varying NOT NULL,
+    referencer_id integer NOT NULL
+);
+
+
+--
+-- Name: ne_references_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE ne_references_id_seq
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: ne_references_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE ne_references_id_seq OWNED BY ne_references.id;
+
+
+--
 -- Name: news; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -12026,7 +12060,8 @@ CREATE TABLE users (
     ranking_karma_pos integer,
     ranking_faith_pos integer,
     ranking_popularity_pos integer,
-    cache_popularity integer
+    cache_popularity integer,
+    login_is_ne_unfriendly boolean DEFAULT false NOT NULL
 );
 
 
@@ -13356,6 +13391,13 @@ ALTER TABLE macropolls_2007_1 ALTER COLUMN id SET DEFAULT nextval('macropolls_20
 --
 
 ALTER TABLE messages ALTER COLUMN id SET DEFAULT nextval('messages_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ne_references ALTER COLUMN id SET DEFAULT nextval('ne_references_id_seq'::regclass);
 
 
 --
@@ -14945,6 +14987,14 @@ ALTER TABLE ONLY messages
 
 
 --
+-- Name: ne_references_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY ne_references
+    ADD CONSTRAINT ne_references_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: news_categories_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -15838,6 +15888,13 @@ CREATE INDEX comments_has_comments_valorations_user_id ON comments USING btree (
 
 
 --
+-- Name: comments_netiquette_violation; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX comments_netiquette_violation ON comments USING btree (netiquette_violation);
+
+
+--
 -- Name: comments_random_v; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -16384,6 +16441,27 @@ CREATE INDEX messages_user_id_is_read ON messages USING btree (user_id_to) WHERE
 
 
 --
+-- Name: ne_references_entity; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX ne_references_entity ON ne_references USING btree (entity_class, entity_id);
+
+
+--
+-- Name: ne_references_referencer; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX ne_references_referencer ON ne_references USING btree (referencer_class, referencer_id);
+
+
+--
+-- Name: ne_references_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX ne_references_uniq ON ne_references USING btree (entity_class, entity_id, referencer_class, referencer_id);
+
+
+--
 -- Name: news_approved_by_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -16794,6 +16872,13 @@ CREATE UNIQUE INDEX users_guids_uniq ON users_guids USING btree (guid, game_id);
 --
 
 CREATE INDEX users_lastseen ON users USING btree (lastseen_on);
+
+
+--
+-- Name: users_login_ne_unfriendly; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX users_login_ne_unfriendly ON users USING btree (login_is_ne_unfriendly);
 
 
 --

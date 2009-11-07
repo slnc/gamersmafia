@@ -35,8 +35,8 @@
           <div class="percent" style="margin-top: 1px;"><img src="/images/blank.gif" style="background-color: #666; width: <%=(stats_anon[i]['count'].to_f / max_anon * 100).round%>%;" /></div></li><% 
           i += 1
         end
-      else # usuario puede votar
-          for option in poll.polls_options.find(:all, :order => 'id asc') %>
+      else %><%# usuario puede votar %>
+          <% for option in poll.polls_options.find(:all, :order => 'id asc') %>
             <li><label><input id="poll_option[<%=option.id%>]" name="poll_option" value="<%=option.id%>" type="radio" /><%=option.name%></label></li>
         <% end %>
     <% end %>

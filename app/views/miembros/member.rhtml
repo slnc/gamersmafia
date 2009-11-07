@@ -55,7 +55,7 @@
   <input type="submit" class="button" value="Iniciar resurrección" />
 </form>
 <% end -%>
-<% end #mftext -%>
+<% end %><%# mftext -%>
 <% end -%>
 <% end -%>
 
@@ -160,7 +160,7 @@ dat[cvt.id] = 0 unless dat[cvt.id] %>
 		<td class="right infoinline"><%=@curuser.comments.count(:conditions => "deleted = 'f'")%></td>
 	</tr>
 </table>
-<% #=horizontal_stacked_bar(:size => '94x80', :data => dat.values, :axis_labels => dat.keys.collect { |pid| Portal.find_by_id(pid).code }) %>
+<%#=horizontal_stacked_bar(:size => '94x80', :data => dat.values, :axis_labels => dat.keys.collect { |pid| Portal.find_by_id(pid).code }) %>
 <% end -%>
 
 <%cache("#{Cache.user_base(@curuser.id)}/profile/sus_contenidos_son") do %>
@@ -189,7 +189,7 @@ max = vals.max
 
 <%mftext('Gamer', :has_submodules => true, :grid => 5, :glast => true) do %>
 
-<% # cache("#{Cache.user_base(@curuser.id)}/profile/clanes") do %>
+<%# cache("#{Cache.user_base(@curuser.id)}/profile/clanes") do %>
 <% clans = @curuser.clans %>
 <% 
 if clans.size > 0 then %>
@@ -198,7 +198,7 @@ if clans.size > 0 then %>
 	  <td class="infoinline right"><%=c.user_is_clanleader(@curuser.id) ? 'Clanleader' : 'Miembro' %></td>
 	<% end -%>
 <% end -%>
-<% # end -%>
+<%# end -%>
 
 <%if @curuser.faction_id %>
 <%mftext('Facción') do %>
@@ -385,9 +385,9 @@ if last_matches.size > 0 then
 	<% end -%>
 	</ul>
 	<br />
-	<% end # if -%>
+	<% end %><%# if -%>
 <% end -%>
-<% end # cache -%>
+<% end %><%# cache -%>
   <div style="clear: left;"></div>
     
 

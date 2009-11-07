@@ -34,7 +34,6 @@ polls.each do |dbr|
     anzwers.each do |k,v|
       next if k == 'controller' or k == 'action'
       if tras[k] != k then
-        # results[tras[k]] = results[k]
         results[tras[k]] ||= {}
         results[tras[k]][v] ||= 0
         results[tras[k]][v] += 1
@@ -45,12 +44,10 @@ polls.each do |dbr|
         results[k][v] ||= 0
         results[k][v] += 1
       end
-#dbquery<< "'#{v}', "
     end
 dbquery << "'#{anzwers['lacantidaddecontenidosquesepublicanenlawebteparece']}' , '#{anzwers['__sabesquepuedesenviarcontenidos_']}' , '#{anzwers['__sabesquepuedesdecidirsiuncontenidosepublicaono_']}' , '#{anzwers['__echasenfaltafuncionesimportantesenlaweb_']}' , '#{anzwers['__estassuscritoafeedsrss_']}' , '#{anzwers['participasencompeticiones_clanbase']}' , '#{anzwers['__tegustaelmanga_anime_']}' , '#{anzwers['larapidezdecargadelaspaginasteparece']}' , '#{anzwers['lasecciondeforosteparece']}' , '#{anzwers['tesientesidentificadoconlaweb']}' , '#{anzwers['prefeririasnovermasqueloscontenidosdetujuego']}' , '#{anzwers['__quecreesquedeberiamosmejorardeformamasurgenteenlaweb_']}' , '#{anzwers['ellogodelawebtegusta']}' , '#{anzwers['__estasenalgunclan_']}' , '#{anzwers['eldisenodelawebteparece']}' , '#{anzwers['elnumerodefuncionesdelawebteparece_bis_']}' , '#{anzwers['laactituddelosadministradores_bossesymoderadoresdelawebteparece']}' , '#{anzwers['__tienesalgunavideoconsola_']}' , '#{anzwers['siofreciesemosdenuevoelsistemadewebsparaclanes___creesquetuclan']}' , '#{anzwers['sipudiesesleregalariasalwebmasterunbilletea']}' , '#{anzwers['elambienteenloscomentarioses']}' , '#{anzwers['elnumerodefuncionesdelawebteparece']}' , '#{anzwers['seguneltiempoquelededicasalosjuegosteconsiderasunjugador']}' , '#{anzwers['lacantidaddepublicidadqueapareceenlawebteparece']}' , '#{anzwers['lalabordelosadministradores_bossesymoderadoresdelawebteparece']}' , '#{anzwers['__sabesquepuedescreartuspropiascompeticionesoparticiparencompet']}' , '#{anzwers['lascabecerasteparecen']}' , '#{anzwers['tuopiniongeneralsobrelawebes']}' , '#{anzwers['razonprincipalporlaquevisitaslaweb']}' , '#{anzwers['lacalidaddeloscontenidosteparece']}' , '#{anzwers['lasecciondebabes_dudestegusta']}' , '#{anzwers['__quetendriaquetenerlawebparaquefueseperfectaparati_']}' , '#{anzwers['__deentrelaswebsdejuegosquevisitasfrecuentementedondenossituari']}', "
     dbquery<< (dbr['user_id'].to_s != '' ?  dbr['user_id'] : 'NULL')
 dbquery<< ", '#{dbr['created_on']}', '#{dbr['ipaddr']}', '#{dbr['host']}')"
-#User.db_query(dbquery)
   end
 end
 %>

@@ -3,10 +3,8 @@
   %>
   <%=render :partial => 'shared/pager', :object => @matches_pages, :locals => {:pos => 'top'} %>
   <table>
-<% 
-# TODO refactor
-# TODO paginar
- %>
+<%# TODO refactor %>
+<%# TODO paginar %>
   <% for cm in @competition.matches(:completed, :order => 'play_on DESC, completed_on DESC') %>
   <tr class="<%=oddclass%>">
     <td class="infoinline w100"><% if cm.completed? then %><%=print_tstamp(cm.completed_on, 'date')%><% end %></td>

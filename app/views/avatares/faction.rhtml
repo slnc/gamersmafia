@@ -7,9 +7,8 @@
 <% previous_level = 0
 for avatar in @faction.avatars.find(:all, :order => 'level ASC')
     if avatar.level > previous_level then
-        previous_level = avatar.level
-        # TODO no estructurado r_r
-%>
+        previous_level = avatar.level %>
+        <%# TODO no estructurado r_r%>
 </td>
 </tr>
 <tr>

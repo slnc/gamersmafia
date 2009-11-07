@@ -52,7 +52,7 @@ generic_support do %>
   <% mftext('Mis partidas en esta competición') do %>
   <ul>
   <% for match in @competition.matches(:approved, :participant => participant) %>
-    <% if @competition.state == Competition::STARTED then #@competition.current_match_stage == match.stage then %>
+    <% if @competition.state == Competition::STARTED then %><%#@competition.current_match_stage == match.stage then %>
       <li><a href="/competiciones/partida/<%=match.id%>"><%=match_vs_name(match)%></a></li>
     <% else %>
       <li><%=match_vs_name(match)%></li>

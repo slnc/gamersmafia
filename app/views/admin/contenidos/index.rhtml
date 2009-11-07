@@ -1,7 +1,7 @@
 <% generic_support do %>
 	<%mftext('Apuestas pendientes de completar') do %>
   <ul class="content-hid">
-  	<% # TODO perf cache("/common/admin/contenidos/index/pending_bets") do %>
+  	<%# TODO perf cache("/common/admin/contenidos/index/pending_bets") do %>
   <% for bet in Bet.awaiting_result %>
     <% if Cms::user_can_edit_content?(@user, bet) then %>
     <li><%=link_to bet.resolve_hid, "/apuestas/resolve/#{bet.id}"%></li>
@@ -9,7 +9,7 @@
     <li><%=bet.resolve_hid%></li>
     <% end -%>
   <% end -%>
-  <% # end -%>
+  <%# end -%>
   </ul>
   <% end -%>
   
@@ -22,9 +22,8 @@
   <%= render :partial => '/miembros/publishing_experience', :locals => { :curuser => @user } %>
   <% end -%>
   
-  <% if nil then 
-  # esto no funciona pq no sabemos cuándo se ha modificado el estado de un contenido por última vez
-  %>
+  <% if nil then %> 
+  <%# esto no funciona pq no sabemos cuándo se ha modificado el estado de un contenido por última vez %>
   <div class="subheader"><div>Últimos contenidos resueltos</div></div>
   <ul class="content-hid">
     <% Content.find(:all, :conditions => "state IN (#{Cms::PUBLISHED}, #{Cms::DELETED})", :order => 'updated_on DESC', :limit => 20).each do |obj| %>
@@ -112,7 +111,7 @@ for @item in collection:
   <% end -%>
 </ul>
 <% 
-end # for
+end %><%# for
 
 GC.start
 

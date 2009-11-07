@@ -214,7 +214,7 @@ class CmsTest < ActiveSupport::TestCase
   end
   
   test "comments_parse_images_should_work_if_remote" do
-    assert_equal "foo [IMG]/storage/test/cms/dark_castle0.jpg[/IMG] bar", Cms::download_and_rewrite_bb_imgs('foo [IMG]http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg[/IMG] bar', 'test/cms')
+    assert_equal "foo <img src=\"http://test.host/storage/test/cms/dark_castle0.jpg\" /> bar", Cms::download_and_rewrite_bb_imgs('foo <img src="http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg" /> bar', 'test/cms')
   end
 
   

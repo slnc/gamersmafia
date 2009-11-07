@@ -18,7 +18,7 @@
 <% if @event.is_public? then %>
 <% if @event.respond_to?(:coverages) then %>
 <% mftext('Noticias relacionadas') do %>
-<% # TODO cache this %>
+<%# TODO cache this %>
 <%=generic_contents_list(@event.coverages.find(:published, :order => 'created_on DESC'))%>
 <% end -%>
 <% end -%>

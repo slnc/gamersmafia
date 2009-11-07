@@ -85,7 +85,7 @@ Razón unban:<br />
 <br />
 <input type="submit" class="button" value="Desbanear" onclick="return confirm('¿Estás seguro?')"/>
 </form>
-<% end # end if @br.confirming_user_id-%>
+<% end %><%# end if @br.confirming_user_id-%>
 
 <% elsif @br.unban_confirming_user_id.nil? && @user.id != @br.unban_user_id then %>
 <br />
@@ -120,7 +120,7 @@ if brs.size == 0 then %>
 	<% end -%>
 	</table>
 	<% end -%>
-<% end # if -%>
+<% end %><%# if -%>
 	
 	<%mftext('Bans de facción') do 
 		fbus = FactionsBannedUser.find(:all, :conditions => ['user_id = ?', @br.banned_user_id], :order => 'created_on DESC')
@@ -141,10 +141,10 @@ if fbus.size == 0 then %>
 	<% end -%>
 	</table>
 	<% end -%>
-	<% end # if -%>
+	<% end %><%# if -%>
 	
 	
 	
-	<% end #mftext historial -%>
+	<% end %><%# mftext historial -%>
 </div>
 
