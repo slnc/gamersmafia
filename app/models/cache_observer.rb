@@ -692,12 +692,9 @@ class CacheObserver < ActiveRecord::Observer
         end
       end
       # expire_fragment("/bazar/home/categories/#{Term.find(object.slnc_changed_old_values['news_category_id']).slug}") if object.slnc_changed?(:news_category_id) && object.slnc_changed_old_values[:news_category_id]
-      expire_fragment("/common/home/index/news_inet")
-              
+      expire_fragment("/common/home/index/news_inet")  
+      expire_fragment("/common/gmversion") if object.title.index('Gamersmafia actualizada a la')
         
-          expire_fragment("/common/gmversion") if object.title.index('Gamersmafia actualizada a la')
-        
-      
       object.get_related_portals.each do |p|
         expire_fragment("/#{p.code}/home/index/news")
         expire_fragment("/#{p.code}/home/index/news2")

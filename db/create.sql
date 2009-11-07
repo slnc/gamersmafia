@@ -16441,6 +16441,27 @@ CREATE INDEX messages_user_id_is_read ON messages USING btree (user_id_to) WHERE
 
 
 --
+-- Name: ne_references_entity; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX ne_references_entity ON ne_references USING btree (entity_class, entity_id);
+
+
+--
+-- Name: ne_references_referencer; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX ne_references_referencer ON ne_references USING btree (referencer_class, referencer_id);
+
+
+--
+-- Name: ne_references_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX ne_references_uniq ON ne_references USING btree (entity_class, entity_id, referencer_class, referencer_id);
+
+
+--
 -- Name: news_approved_by_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 

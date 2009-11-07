@@ -20,6 +20,7 @@ class Comment < ActiveRecord::Base
   belongs_to :user
   after_create :do_after_create
   after_create :schedule_image_parsing
+  after_create :schedule_ne_references_calculation
   
   belongs_to :lastedited_by, :class_name => 'User', :foreign_key => 'lastedited_by_user_id'
   has_many :comments_valorations
@@ -32,18 +33,38 @@ class Comment < ActiveRecord::Base
   observe_attr :lastedited_by_user_id
   observe_attr :comment
   
-  def ne_references
-    users = User.db_query("SELECT login FROM users").collect { |dbu| dbu['login'].downcase }
-    references = self.comment.slnc_tokenize & users
+  def ne_references(users=[])
+    if users == []
+      users = {}
+      User.db_query("SELECT id, login FROM users").each do |dbu|
+        users[dbu['login']] ||= []
+        users[dbu['login']]<< ['User', dbu['id'].to_i]
+      end
+      
+      UserLoginChange.db_query("SELECT user_id, old_login FROM user_login_changes").each do |dbu| 
+        users[dbu['old_login']] ||= []
+        users[dbu['old_login']]<< ['User', dbu['user_id'].to_i]
+      end
+    end
+    
+    # users = User.db_query("SELECT login FROM users").collect { |dbu| dbu['login'].downcase } if users == []
+    references = self.comment.slnc_tokenize & users.keys
     ne_refs = []
-    references.each do |ref|
-      ne_refs<< NeReference.create(:entity_class => 'User', :entity_id => User.find_by_login(ref).id, :referencer_class => 'Comment', :referencer_id => self.id, :referenced_on => self.created_on)
+    references.uniq.each do |ref|
+      # puts "-- ref: #{ref}"
+      # puts ref, users[ref], users[ref][1]
+      
+      ne_refs<< NeReference.create(:entity_class => 'User', :entity_id => users[ref][0][1], :referencer_class => 'Comment', :referencer_id => self.id, :referenced_on => self.created_on)
     end
     ne_refs
   end
   
   def schedule_image_parsing
     GmSys.job("Comment.find(#{self.id}).download_remotes")
+  end
+  
+  def schedule_ne_references_calculation
+    GmSys.job("Comment.find(#{self.id}).ne_references")
   end
   
   def download_remotes
