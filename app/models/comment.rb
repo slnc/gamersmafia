@@ -38,17 +38,17 @@ class Comment < ActiveRecord::Base
     
     if users == []
       users = {}
-      User.db_query("SELECT id, lower(login) FROM users where login_is_ne_unfriendly = 'f'").each do |dbu|
+      User.db_query("SELECT id, lower(login) as login FROM users where login_is_ne_unfriendly = 'f'").each do |dbu|
         users[dbu['login']] ||= []
         users[dbu['login']]<< ['User', dbu['id'].to_i]
       end
       
-      User.db_query("SELECT user_id, lower(old_login) FROM user_login_changes").each do |dbu| 
+      User.db_query("SELECT user_id, lower(old_login) as old_login FROM user_login_changes").each do |dbu| 
         users[dbu['old_login']] ||= []
         users[dbu['old_login']]<< ['User', dbu['user_id'].to_i]
       end
       
-      User.db_query("SELECT id, lower(tag) FROM clans").each do |dbu| 
+      User.db_query("SELECT id, lower(tag) as tag FROM clans").each do |dbu| 
         users[dbu['tag']] ||= []
         users[dbu['tag']]<< ['Clan', dbu['id'].to_i]
       end

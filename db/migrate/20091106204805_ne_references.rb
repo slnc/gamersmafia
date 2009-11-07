@@ -8,7 +8,7 @@ class NeReferences < ActiveRecord::Migration
     slonik_execute "create index users_login_ne_unfriendly on users(login_is_ne_unfriendly);"
     #%w(pero como este mejor mola sea mal uno joder tan mierda alguien final nadie fin puta post contra tema jajaja hombre cara www culo jejeje demos cabeza ale feo entrar and malo foro mala gay mano serio interesante jaja internet nose sois madrid amigo ut2004 logo jur admin tonto -_- asin you hola ronda tres fake matar deck ordenador mmmm alto super windows minimo peta redentor poca papa noob megas luz chaval palabra counter cuesta valencia face torre negro curioso nah osp nano bugs raton guay suda masa cualquiera map perro map hijo amor viejo cabo bola fiesta manda padre amd ejem vicio pavo prueba papel pega 1000 good battlefield directo puerta love spam shot cacho tag jas).each do |l|
     %w(pero como este mejor mola sea mal uno joder tan mierda alguien final nadie fin puta post contra tema jajaja hombre cara www culo jejeje demos cabeza ale feo entrar and malo foro mala gay mano serio interesante jaja internet nose sois madrid amigo ut2004 logo jur admin tonto -_- asin you hola ronda tres fake matar deck ordenador mmmm alto super windows minimo peta redentor poca papa noob megas luz chaval palabra counter cuesta valencia face torre negro curioso nah osp nano bugs raton guay suda masa cualquiera map perro map hijo amor viejo cabo bola fiesta manda padre amd ejem vicio pavo prueba papel pega 1000 good battlefield directo puerta love spam shot cacho tag jas).each do |l|
-      execute "update users set login_is_ne_unfriendly where login='#{l}'"
+      execute "update users set login_is_ne_unfriendly ='f' where login='#{l}'"
     end
   end
 
