@@ -36,14 +36,19 @@ class Comment < ActiveRecord::Base
   def ne_references(users=[])
     if users == []
       users = {}
-      User.db_query("SELECT id, login FROM users where login_is_ne_unfriendly = 'f'").each do |dbu|
+      User.db_query("SELECT id, lower(login) FROM users where login_is_ne_unfriendly = 'f'").each do |dbu|
         users[dbu['login']] ||= []
         users[dbu['login']]<< ['User', dbu['id'].to_i]
       end
       
-      UserLoginChange.db_query("SELECT user_id, old_login FROM user_login_changes").each do |dbu| 
+      User.db_query("SELECT user_id, lower(old_login) FROM user_login_changes").each do |dbu| 
         users[dbu['old_login']] ||= []
         users[dbu['old_login']]<< ['User', dbu['user_id'].to_i]
+      end
+      
+      User.db_query("SELECT id, lower(tag) FROM clans").each do |dbu| 
+        users[dbu['tag']] ||= []
+        users[dbu['tag']]<< ['Clan', dbu['id'].to_i]
       end
     end
     
@@ -54,7 +59,7 @@ class Comment < ActiveRecord::Base
       # puts "-- ref: #{ref}"
       # puts ref, users[ref], users[ref][1]
       
-      ne_refs<< NeReference.create(:entity_class => 'User', :entity_id => users[ref][0][1], :referencer_class => 'Comment', :referencer_id => self.id, :referenced_on => self.created_on)
+      ne_refs<< NeReference.create(:entity_class => users[ref][0][0], :entity_id => users[ref][0][1], :referencer_class => 'Comment', :referencer_id => self.id, :referenced_on => self.created_on)
     end
     ne_refs
   end
