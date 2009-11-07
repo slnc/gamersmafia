@@ -58,8 +58,12 @@ can_delete = Cms::user_can_delete_content?(@user, object) %>
       <li class="actions"><a href="/cuenta/blog/edit/<%=object.id%>">Editar</a></li>
 	      <% if object.state != Cms::DELETED then %><li class="actions"><%= link_to 'Borrar', "/cuenta/blog/destroy/#{object.id}", {:method => :post, :confirm => '¿Estás seguro de que quieres borrar esta entrada?', :class => 'action'} %></li><% end -%>
       <% else %>
-	  <% if can_edit && can_delete && object.state != Cms::DELETED then %>
-	  	<li class="actions"><%= link_to 'Borrar', {:action => 'destroy', :id => object}, {:method => :post, :confirm => '¿Estás seguro de que quieres borrar este contenido?', :class => 'action'} %></li>
+	      <% if can_edit && can_delete then %>
+		      <% if object.state == Cms::DELETED then %>
+		<li class="actions"><%= link_to 'Recuperar', {:action => 'recover', :id => object}, {:method => :post, :confirm => '¿Estás seguro de que quieres volver a publicar este contenido y sacarlo de la papelera?', :class => 'action'} %></li>
+	  <% else %>
+		<li class="actions"><%= link_to 'Borrar', {:action => 'destroy', :id => object}, {:method => :post, :confirm => '¿Estás seguro de que quieres borrar este contenido?', :class => 'action'} %></li>
+		<% end -%>
 		<% end -%>
 		
       <li class="actions"><%= link_to 'Editar', {:action => 'edit', :id => object}, :class => 'action' %></li>

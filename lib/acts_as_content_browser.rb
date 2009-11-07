@@ -159,6 +159,15 @@ module ActsAsContentBrowser
       redirect_to :action => 'index'
     end
     
+    define_method 'recover' do
+      cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
+      obj = cls.find(params[:id])
+      require_user_can_edit(obj) # TODO duplicado
+      Cms::modify_content_state(obj, @user, Cms::PUBLISHED)
+      flash[:notice] = 'Contenido recuperado de la papelera correctamente'
+      redirect_to :action => 'show', :id => obj.id
+    end
+    
     define_method 'update' do
       _before_update if respond_to?(:_before_update)
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
