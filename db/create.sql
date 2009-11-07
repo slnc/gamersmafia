@@ -10650,7 +10650,6 @@ CREATE TABLE ne_references (
 --
 
 CREATE SEQUENCE ne_references_id_seq
-    START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
@@ -12061,7 +12060,8 @@ CREATE TABLE users (
     ranking_karma_pos integer,
     ranking_faith_pos integer,
     ranking_popularity_pos integer,
-    cache_popularity integer
+    cache_popularity integer,
+    login_is_ne_unfriendly boolean DEFAULT false NOT NULL
 );
 
 
@@ -16444,14 +16444,14 @@ CREATE INDEX messages_user_id_is_read ON messages USING btree (user_id_to) WHERE
 -- Name: ne_references_entity; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX ne_references_entity ON ne_references USING btree (entity_class, entity_id);
+CREATE INDEX ne_references_entity ON ne_references USING btree (entity_class, entity_id);
 
 
 --
 -- Name: ne_references_referencer; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX ne_references_referencer ON ne_references USING btree (referencer_class, referencer_id);
+CREATE INDEX ne_references_referencer ON ne_references USING btree (referencer_class, referencer_id);
 
 
 --
@@ -16872,6 +16872,13 @@ CREATE UNIQUE INDEX users_guids_uniq ON users_guids USING btree (guid, game_id);
 --
 
 CREATE INDEX users_lastseen ON users USING btree (lastseen_on);
+
+
+--
+-- Name: users_login_ne_unfriendly; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX users_login_ne_unfriendly ON users USING btree (login_is_ne_unfriendly);
 
 
 --
