@@ -2,6 +2,7 @@ module Reports
   extend ActionViewMixings
   def self.send_mrachmed_dominical
     include ActionView
+    ActionView::Base.send :include, ApplicationHelper
     # envía una noticia semanal con información varia
     
     # emblemas
@@ -24,8 +25,8 @@ module Reports
     dbmax = User.db_query("select count(*) as count, comment_id from comments_valorations where created_on >= now() - '1 week'::interval and comments_valorations_type_id in (#{positive_types_ids.join(',')}) group by comment_id order by count(*) desc limit 1")
     
     if dbmax.size > 0
-      c = Comment.find(dbmax[0]['comment'], :include => [:user, :content])
-      base<< "<br /><br />El comentario con más valoraciones positivas (<strong>#{dbmax['count']}</strong>) de la semana ha sido:<br /><blockquote>#{Cms::smilelize(c.comment)}</blockquote><br /><br /> enviado por <strong><a href=\"/miembros/#{c.user.login}\">#{c.user.login}</a></strong> en '<a href=\"#{ApplicationController.gmurl(c.content)}\">#{c.content.name}</a>'."
+      c = Comment.find(dbmax[0]['comment_id'].to_i)
+      base<< "<br /><br />El comentario con más valoraciones positivas (<strong>#{dbmax[0]['count']}</strong>) de la semana ha sido:<br /><blockquote>#{ActionView::Base.new.smilelize(c.comment)}</blockquote><br /><br /> enviado por <strong><a href=\"/miembros/#{c.user.login}\">#{c.user.login}</a></strong> en '<a href=\"#{ApplicationController.gmurl(c.content)}\">#{c.content.name}</a>'."
     end
     
     

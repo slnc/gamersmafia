@@ -18,9 +18,6 @@ namespace :gm do
     generate_minicolumns_factions_activity
     update_users_karma_stats
     update_users_daily_stats
-    Popularity.update_rankings
-    Karma.update_ranking
-    Faith.update_ranking
   end
   
   def generate_minicolumns_factions_activity

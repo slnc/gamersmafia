@@ -17,21 +17,24 @@ module Achmed
                                                                   FROM comment_violation_opinions 
                                                                  WHERE user_id <> #{user.id} 
                                                               GROUP BY comment_id 
-                                                                HAVING count(*) = 1)
+                                                                HAVING count(*) < 3)
 				 		     AND id not in (select comment_id from comment_violation_opinions where user_id = #{user.id})
                                                      AND created_on <= '#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp AND id >= random() * (select max(id) from comments)")
     
     return cross_pending if cross_pending && Kernel.rand < 0.3
 
     # else return a random comment
-    bad_words_cond = " and (comment like '% puta %' or comment like '%malote%' or comment like '%gilipollas%' or comment like '%gay%' or comment like '% foll%')"
+    bad_words_cond = " and (comment like '%puta%' or comment like '%polla%' or comment like '%puto%' or comment like '%tacuna%' or comment like '%cancer%' or comment like '%cáncer%' or comment like '%cabrón%' or comment like '% cabron%' or comment like '%marica%' or comment like '%aborto%' or comment like '%mierda%' or comment like '%lesbiana%' or comment like '%negro%')"
 
     base_cond = "id not in (select comment_id from comment_violation_opinions) AND id >= random() * (select max(id) from comments) AND created_on <='#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp"
-    base_cond << bad_words_cond if Kernel.rand < 0.40
+    base_cond << bad_words_cond if Kernel.rand < 0.1
 
+    limit = 10
     c = Comment.find(:first, :conditions => base_cond)
-    while c.nil?
+    i = 0
+    while c.nil? && i < limit
       c = Comment.find(:first, :conditions => base_cond)
+      i += 1
     end
     c
   end

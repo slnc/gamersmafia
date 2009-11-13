@@ -25,6 +25,9 @@ namespace :gm do
     kill_zombified_staff
     GmSys.job('Notification.check_global_notifications')
     close_old_open_questions
+    Popularity.update_rankings
+    Karma.update_ranking
+    Faith.update_ranking
   end
   
   def forget_old_pageviews

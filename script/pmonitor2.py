@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import os
 import re
 import time
 import urllib2
@@ -19,7 +20,7 @@ if __name__ == '__main__':
     try:
         check_full_stack()
     except Exception, e:
-        system('/etc/init.d/apachectl stop')
+        os.system('/etc/init.d/apachectl stop')
         time.sleep(5)
-        system('/etc/init.d/apachectl start')
+        os.system('/etc/init.d/apachectl start')
 
