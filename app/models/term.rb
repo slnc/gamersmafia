@@ -594,77 +594,76 @@ class Term < ActiveRecord::Base
   
   
   # TODO tests
-  def most_active_users(taxonomy)
-    # los usuarios más activos son los que más karma han contribuido al foro en
-    # el último mes
-    # el máximo de usuarios a mostrar es 3 por lo tanto el algoritmo lo que hace es buscar el top 10 de usuarios que han contribuído tópics más el top 10 de usuarios que han contribuído comentarios
-    # sumamos el karma generado por ambos tops y cogemos el top 3. El único problema que podría haber es que un 
-    # usuario que haya contribuído menos que el top 10 de ambas cosas en total sumen más que el top 3 de 
-    # comentarios y el top 3 de usuarios pero estimo que con el margen de top 10 para un top 3 las 
-    # probabilidades de que esto ocurra son mínimas
-    time_interval = '1 month'
-    tbl = {}
+  def most_active_users(taxonomy, time_interval='1 month')
+	 return all_time_users(taxonomy, time_interval)
+  end
+
+  def all_time_users(taxonomy, time_interval='1 month')
     raise "unsupported" unless taxonomy == 'TopicsCategory'
-    sql_taxo = taxonomy ? "= #{User.connection.quote(ApplicationController.extract_content_name_from_taxonomy(taxonomy))}" : 'IS NULL'
-    # cogemos el top 3 de topics
-    # aunque el tópic tenga más de 3 meses el poster sigue contando si sigue activo
-    for t in User.db_query("SELECT count(A.id), 
-                                      A.user_id 
-                                 FROM contents A
-                                 JOIN contents_terms B on A.id = B.content_id  
-                                WHERE A.updated_on > (now() -  '#{time_interval}'::interval)
-                                  AND state = #{Cms::PUBLISHED} 
-                                  AND B.term_id IN (#{all_children_ids(:taxonomy => taxonomy).join(',')})
-                             GROUP BY user_id, content_type_id
-                             ORDER BY count(A.id) DESC LIMIT 10")
-      
+
+    q_time = time_interval ? " AND created_on > (now() -  '#{time_interval}'::interval)" : ''
+
+	tbl = {}
+    User.db_query("SELECT count(*), user_id 
+		         FROM contents
+		        WHERE contents.id in (SELECT content_id 
+		      					FROM contents_terms 
+		      				       WHERE term_id IN (#{all_children_ids(:taxonomy => taxonomy).join(',')})) 
+		  	    #{q_time}
+		     GROUP BY user_id HAVING count(*) > 2
+		     ORDER BY count(*) DESC").each do |t|
       tbl[t['user_id'].to_i] = {:karma_sum => Karma::KPS_CREATE['Topic'] * t['count'].to_i, 
         :topics => t['count'].to_i,
-        :count => t['count'].to_i,
         :comments => 0} 
     end
-    
-    # buscamos todos los topics actualizados en el ultimo intervalo y cogemos el top 3 de 
-    # users que hayan comentado
-    # cogemos el top 3 de comentarios
-    
-    Content.find_by_sql("SELECT contents.*
-                             FROM contents 
-                             JOIN contents_terms on contents.id = contents_terms.content_id
-                            WHERE term_id IN (#{all_children_ids})
-                              AND state = #{Cms::PUBLISHED}
-                              AND updated_on > (now() -  '#{time_interval}'::interval)").each do |content|
-      t = content.real_content
-      for c in Comment.db_query("SELECT count(id), 
-                                          user_id 
-                                     from comments 
-                                    where deleted = 'f' 
-                                      AND content_id = #{t.unique_content.id} 
-                                      AND created_on >= (now() -  '#{time_interval}'::interval)
-                                 group by user_id 
-                                 order by count(id) DESC")
-        
-        tbl[c['user_id'].to_i] = {:karma_sum => 0, :topics => 0, :comments => 0} unless tbl[c['user_id'].to_i]
-        tbl[c['user_id'].to_i][:karma_sum] += Karma::KPS_CREATE['Comment'] * c['count'].to_i
-        tbl[c['user_id'].to_i][:comments] += c['count'].to_i
-      end
+
+    User.db_query("SELECT count(*), user_id 
+		         FROM comments 
+		        WHERE comments.content_id in (SELECT content_id 
+		      					FROM contents_terms 
+		      				       WHERE term_id IN (#{all_children_ids(:taxonomy => taxonomy).join(',')})) 
+		  	    #{q_time}
+		     GROUP BY user_id HAVING count(*) > 2
+		     ORDER BY count(*) DESC").each do |c|
+		puts c
+		tbl[c['user_id'].to_i] = {:karma_sum => 0, :topics => 0, :comments => 0} unless tbl[c['user_id'].to_i]
+		tbl[c['user_id'].to_i][:karma_sum] += Karma::KPS_CREATE['Comment'] * c['count'].to_i
+		tbl[c['user_id'].to_i][:comments] += c['count'].to_i
     end
-    
-    # cogemos el top 3
-    # sumamos los puntos de todos y elegimos
+
     first = nil
     second = nil
     third = nil
-    
+    fourth = nil
+    fifth = nil
+
+    inverted = {}
     tbl.keys.each do |u|
-      if first.nil? or tbl[u][:karma_sum] > tbl[first[0]][:karma_sum] then
-        first = u, tbl[u]
-      elsif second.nil? or tbl[u][:karma_sum] > tbl[second[0]][:karma_sum] then
-        second = u, tbl[u]
-      elsif third.nil? or tbl[u][:karma_sum] > tbl[third[0]][:karma_sum] then
-        third = u, tbl[u]
-      end
+	inverted[tbl[u][:karma_sum]] ||= []
+	inverted[tbl[u][:karma_sum]] << [u, tbl[u]]
     end
+
+
+    inverted.keys.sort.reverse.each do |kps|
+        break if fifth
+
+	inverted[kps].each do |row|
+            break if fifth
+
+	    if first.nil?
+		    first = row
+	    elsif second.nil?
+		    second = row
+	    elsif third.nil?
+		    third = row
+	    elsif fourth.nil?
+		    fourth = row
+	    else
+		    fifth = row
+	    end
+	end
+    end
+    
     
     # NOTA: tb contamos comentarios de hace más de 3 meses en el top 3 de comentarios
     # buscamos el total de karma generado por este topic
@@ -684,6 +683,16 @@ class Term < ActiveRecord::Base
     if third
       third[1][:relative_pcent] = third[1][:karma_sum].to_f / max
       result<< [User.find(third[0]), third[1]]  
+    end
+
+    if fourth
+      fourth[1][:relative_pcent] = fourth[1][:karma_sum].to_f / max
+      result<< [User.find(fourth[0]), fourth[1]]  
+    end
+
+    if fifth
+      fifth[1][:relative_pcent] = fifth[1][:karma_sum].to_f / max
+      result<< [User.find(fifth[0]), fifth[1]]  
     end
     
     result

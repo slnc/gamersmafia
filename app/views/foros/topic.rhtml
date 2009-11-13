@@ -4,7 +4,8 @@
   <%=render :partial => '/shared/last_commented_items_in_category', :locals => { :category => @forum, :content_type => 'Topic' }%>
   <%=render :partial => 'most_active_users', :object => @object = @forum%>
   <%=render :partial => 'most_active_topics', :object => @object = @forum%>
-  <%= render :partial => 'go_to_competition', :object => @object = @forum%>
+  <%=render :partial => 'go_to_competition', :object => @object = @forum%>
+  <%=render :partial => 'all_time_users', :object => @object = @forum%>
 
   
   <%# TODO cachear esto %>
