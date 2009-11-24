@@ -7,6 +7,12 @@
 <%mftext('Actualizar skin') do %>
 <form method="post" action="/cuenta/skins/update/<%=@skin.id%>" enctype="multipart/form-data">
 Archivo .zip con la skin: <input type="file" name="skin[file]" /><br />
+<br />
+<%= radio_button("skin", "is_public", true) %> Pública &nbsp; &nbsp; &nbsp;
+<%= radio_button("skin", "is_public", false) %> Privada
+<br />
+<br />
+
 <input type="submit" class="button" value="Guardar" />
 </form>
 <% end -%>

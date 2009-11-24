@@ -1,5 +1,11 @@
 <% generic_support do %>
-	<div class="sidething-spaced"><a href="/cuenta/skins/activate?skin=-1">Activar skin por defecto</a></div>
+	<%mftext('Información') do %>
+		<div class="sidething-spaced"><a href="http://gamersmafia.com/blogs/slnc/1733">Información sobre las skins de Gamersmafia</a></div>
+
+		<p>Todas las skins son "hijas" de <strong>Skin por defecto</strong> por lo que no tienes que volver a crear todos los estilos e imágenes que ya tiene dicha skin, solo tienes que poner los nuevos selectores (o redefinir los existentes si quieres cambiarlos).</p>
+
+		<p>Si quieres ver qué significa todo esto bájate alguna de las skins de mafiosos y mira los cambios que han hecho ellos.</p>
+        <% end -%>
 
 	<%mftext('Tutoriales de CSS') do %>
 	<ul>
@@ -12,12 +18,7 @@
 		<li><a href="http://getfirebug.com/">Firebug</a></li>
 	</ul>
 <% end -%>
-<%mftext('Skins de ejemplo') do %>
-	<ul>
-		<li><a href="/skins/default.zip">Default</a>: la skin por defecto de Gamersmafia</li>
-	</ul>
-	<p>Todas las skins son "hijas" de la skin por defecto por lo que no tienes que volver a crear todos los estilos e imágenes que ya tiene Default, solo tienes que poner los nuevos selectores (o redefinir los existentes si quieres cambiarlos).</p>
-<% end -%>
+
 <% end -%>
 
 <% content_main do %>
@@ -41,7 +42,6 @@ Tipo: <select name="skin[type]">
 <%@user.skins.each do |skin| %>
 <tr class="<%=oddclass%>">
     <td><a href="/cuenta/skins/edit/<%=skin.id%>"><%=skin.name%></a></td>
-    <td><%=skin.type%></td>
     <td><%=skin.is_public?%></td>
     <td><a href="/cuenta/skins/activate?skin=<%=skin.id%>">Activar</a></td>
     <td><a href="/<%=skin.file%>">Descargar</a></td>
@@ -50,4 +50,35 @@ Tipo: <select name="skin[type]">
 <% end -%>
 </table>
 <% end -%>
+
+<%mftext('Skins de otros mafiosos') do %>
+<table>
+<tr>
+    <th>Skin</th>
+    <th>Autor</th>
+    <th></th>
+    <th></th>
+    <th></th>
+</tr>
+<tr class="<%=oddclass%>">
+    <td><em>Skin por defecto</em></td>
+    <td class="infoinline"><%=user_link(User.find(1))%></td>
+    <td><a href="/cuenta/skins/activate?skin=-1">Activar</a></td>
+    <td class="infoinline"><a href="/skins/default.zip">Descargar</a></td>
+</tr>
+	<%Skin.find(:all, :conditions => 'type = \'FactionsSkin\' and is_public = \'t\'', :order => 'lower(name)').each do |skin| %>
+<tr class="<%=oddclass%>">
+    <td><%=skin.name%></td>
+    <td class="infoinline"><%=user_link(skin.user)%></td>
+    <td><a href="/cuenta/skins/activate?skin=<%=skin.id%>">Activar</a></td>
+    <td class="infoinline"><a href="/<%=skin.file%>">Descargar</a></td>
+    <td class="w50 infoinline"><div title="Usuarios que usan esta skin" class="members-count"><%=skin.used_by_users_count%></div></td>
+</tr>
+<% end -%>
+</table>
+<% end -%>
+
+<%mftext('Skins de otros mafiosos') do %>
+<% end -%>
+
 <% end -%>
