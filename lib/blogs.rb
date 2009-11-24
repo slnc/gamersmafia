@@ -35,14 +35,14 @@ module Blogs
     
     # devuelve los usuarios cuyas entradas han sido más leídas en la última semana
     User.db_query("SELECT count(distinct(visitor_id)), 
-		  COALESCE((select user_id from blogentries where created_on >= now() - '1 week'::interval AND id = stats.pageviews.model_id::int4), NULL) as blogger_user_id
+		  COALESCE((select user_id from blogentries where created_on >= now() - '1 week'::interval AND id::int8 = stats.pageviews.model_id::int8), NULL) as blogger_user_id
                      FROM stats.pageviews 
                     WHERE created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'  AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
                       AND controller = 'blogs' 
                       AND action = 'blogentry' 
                       AND model_id <> '' 
                  GROUP BY blogger_user_id 
-    	           HAVING COALESCE((select user_id from blogentries where created_on >= now() - '1 week'::interval AND id = stats.pageviews.model_id::int4), NULL) IS NOT NULL
+    	           HAVING COALESCE((select user_id from blogentries where created_on >= now() - '1 week'::interval AND id::int8 = stats.pageviews.model_id::int8), NULL) IS NOT NULL
                  ORDER BY count(distinct(visitor_id)) desc limit 10").collect do |dbr|
       if dbr['blogger_user_id'].to_i > 0
         [User.find(dbr['blogger_user_id'].to_i), dbr['count'].to_i]

@@ -13,6 +13,7 @@ class Skin < ActiveRecord::Base
   after_create :setup_initial_zip
 
   validates_uniqueness_of :name
+  belongs_to :user
 
 
   def resolve_hid
@@ -22,6 +23,10 @@ class Skin < ActiveRecord::Base
   CGEN_CSS_START = '/* COLOR GEN START - DO NOT REMOVE */'
   CGEN_CSS_END = '/* COLOR GEN END - DO NOT REMOVE */'
   
+  def used_by_users_count
+    UsersPreference.count(:conditions => ['name = \'skin\' AND value::int4 = ?', self.id])
+  end
+
   def self.extract_css_imports(s)
     out = []
     while s.length > 0

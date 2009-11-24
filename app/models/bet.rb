@@ -23,6 +23,11 @@ class Bet < ActiveRecord::Base
     @_tmp_options_new = opts_new
     self.attributes.delete :options_new 
   end
+
+
+  def closed?
+    self.closes_on < Time.now && (!self.winning_bets_option_id.nil? || self.tie == true || self.cancelled == true || self.forfeit == true)
+  end
   
   def options_delete=(opts_new)
     @_tmp_options_delete = opts_new
