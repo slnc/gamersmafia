@@ -265,7 +265,7 @@ class Cuenta::CuentaController < ApplicationController
     @newuser.city = strip_tags(params[:post][:city])
     @newuser.ipaddr = request.remote_ip
     @newuser.country_id = params[:user][:country_id] # TODO hackk
-    @newuser.photo = params[:user][:photo]
+    @newuser.photo = params[:user][:photo] if params[:user][:photo]
     @newuser.competition_roster = params[:user][:competition_roster]
     @newuser.profile_last_updated_on = Time.now
     
