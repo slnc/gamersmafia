@@ -81,7 +81,7 @@ missing_ctypes = ContentType.find(:all, :conditions => "name IN (#{cat_names.joi
 %>
 <table>
 <% missing_ctypes.each do |ct|
-next unless ordered[ct.name] && ordered[ct.name].size > 0
+next if ordered[ct.name] && ordered[ct.name].size > 0
 %>
 <tr class="<%=oddclass%>"><td><%=Cms.translate_content_name(ct.name).titleize%></td></tr>
 <% end %><%# each -%>
