@@ -36,7 +36,7 @@ class SiteController < ApplicationController
          :only => [:mrachmed_clasifica_comentarios_good, :mrachmed_clasifica_comentarios_bad]
   
   def mrachmed_clasifica_comentarios_good
-    raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval') > 15
+    raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'15 seconds\'::interval') > 8
     cvo = @user.comment_violation_opinions.find_by_comment_id(params[:comment_id])
     if cvo.nil?
       cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::NO_VIOLATION)
@@ -48,13 +48,12 @@ class SiteController < ApplicationController
         flash[:error] = "Error al guardar opinión: #{cvo.errors.full_messages_html}"
     else
         flash[:notice] = "MrAchmed: #{MRACHMED_RAND_SENTENCES.rand}"
-        Bank.transfer(:bank, @user, 0.25, 'Enseñar a MrAchmed')
     end
     redirect_to "/site/mrachmed_clasifica_comentarios?prev_comment_id=#{params[:comment_id]}"
   end
 
   def mrachmed_clasifica_comentarios_bad
-    raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'5 seconds\'::interval') > 15
+    raise AccessDenied if @user.comment_violation_opinions.count(:conditions => 'created_on >= now() - \'15 seconds\'::interval') > 8
     cvo = @user.comment_violation_opinions.find_by_comment_id(params[:comment_id])
     if cvo.nil?
       cvo = @user.comment_violation_opinions.create(:comment_id => params[:comment_id], :cls => CommentViolationOpinion::VIOLATION)
@@ -65,7 +64,6 @@ class SiteController < ApplicationController
         flash[:error] = "Error al guardar opinión: #{cvo.errors.full_messages_html}"
     else
         flash[:notice] = "MrAchmed: #{MRACHMED_RAND_SENTENCES.rand}"
-        Bank.transfer(:bank, @user, 0.25, 'Enseñar a MrAchmed')
     end
     redirect_to "/site/mrachmed_clasifica_comentarios?prev_comment_id=#{params[:comment_id]}"
   end
