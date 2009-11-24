@@ -37,7 +37,9 @@ pcent = CommentViolationOpinion.count / (Comment.count(:conditions => "created_o
 
 <%content_main do %>
   <% mftext('MrAchmed quiere aprender a moderar') do %>
-    <% if @comment.nil? then %>
+  <% if @user.created_on.to_i > 1.month.ago then %>
+        MrAchmed: lo siento, <%=@user%>, llevas muy poco tiempo registrado en Gamersmafia, no me fío de ti...<br />
+    <% elsif @comment.nil? then %>
         MrAchmed: lo siento, <%=@user%>, estoy estudiando con los ejemplos que me has dado, ahora mismo no necesito que tú me valores más comentarios. Vuelve dentro de un par de días...<br />
         <br />
         ¡Ah, y gracias! :D
