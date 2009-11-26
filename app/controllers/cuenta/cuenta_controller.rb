@@ -82,6 +82,7 @@ class Cuenta::CuentaController < ApplicationController
   end
   
   def create2
+    (redirect_to '/cuenta' and return) if cookies[:adn3]
     if params[:user].nil?
         flash[:error] = 'Datos de usuario no encontrados'
         redirect_to '/cuenta/alta'
@@ -94,9 +95,15 @@ class Cuenta::CuentaController < ApplicationController
   end
   
   def create
+   (redirect_to '/' and return) if cookies[:adn3]
    (redirect_to '/cuenta' and return) if user_is_authed && @user.state != User::ST_UNCONFIRMED
    (redirect_to '/cuenta/alta' and return) unless params.has_key?(:user) and not(params[:user][:email] =~ /trash-mail.de/)
     
+   (redirect_to '/' and return) if cookies[:adn3]
+   (redirect_to '/' and return) if User.count(:conditions => ['lastseen_on >= now() - \'1 day\'::interval AND ipaddr = ? AND state = ?', request.remote_ip, User::ST_BANNED]) >= 1
+
+    (redirect_to '/' and return) if User.count(:conditions => ['lastseen_on >= now() - \'1 day\'::interval AND ipaddr = ?', request.remote_ip]) > 5
+
     params[:user] = params[:user].pass_sym(:login, :email, :email_confirmation, :image, :firstname, :lastname, :faction_id, :password, :password_confirmation, :email, :email_confirmation)
     params[:user][:state] = User::ST_UNCONFIRMED
     params[:user][:ipaddr] = request.remote_ip
@@ -136,11 +143,16 @@ class Cuenta::CuentaController < ApplicationController
         nagato = User.find_by_login('nagato')
         SlogEntry.create({:type_id => SlogEntry::TYPES[:security], 
           :headline => "Registro desde IP existente <strong><a href=\"#{gmurl(@newuser)}\">#{@newuser.login}</a></strong> (#{request.remote_ip}): "<< (User.find(:all, :conditions => ['ipaddr = ? and id <> ?', request.remote_ip, @newuser.id]).collect {|u| "<img class=\"member-state #{u.hstate}\" src=\"/images/blank.gif\" /><a href=\"#{gmurl(u)}\">#{u.login}</a>"}).join(', ')})
+
+        Notification.deliver_signup(@newuser, :mode => @mmode)
+        flash[:notice] = "Te hemos enviado un mensaje a #{@newuser.email} con la clave de confirmación."
+        redirect_to "/cuenta/confirmar?em=#{@newuser.email}" and return
+      else # no parece un usuario sospechoso
+	confirmar_nueva_cuenta(@newuser)
+        flash[:notice] = "Cuenta confirmada correctamente. Te hemos enviado un email de bienvenida a <strong>#{u.email}</strong> con instrucciones."
+        redirect_to '/cuenta'
       end
       cookies[:email] = {:value => @newuser.email, :expires => 7.days.since, :domain => COOKIEDOMAIN}
-      Notification.deliver_signup(@newuser, :mode => @mmode)
-      flash[:notice] = "Te hemos enviado un mensaje a #{@newuser.email} con la clave de confirmación."
-      redirect_to "/cuenta/confirmar?em=#{@newuser.email}" and return
     else
       flash[:error] ||= ''
       flash[:error] << '<br />' << @newuser.errors.full_messages.join('<br />')
@@ -153,7 +165,7 @@ class Cuenta::CuentaController < ApplicationController
   end
   
   def do_login
-   (redirect_to '/cuenta/login' and return) unless (params[:login] && params[:password])
+   (redirect_to '/cuenta/login' and return) unless (params[:login] && params[:password] && cookies[:adn3].nil?)
     cookies[:login] = {:value => params[:login], :expires => 10.years.since, :domain => COOKIEDOMAIN}
     u = User.login(params[:login], params[:password])
     if u then
@@ -164,6 +176,7 @@ class Cuenta::CuentaController < ApplicationController
         flash[:error] = "La cuenta \"#{u.login}\" está deshabilitada."
         render :action => 'login'
       elsif u.state == User::ST_BANNED
+        cookies[:adn3] = {:value => u.id.to_s, :expires => 7.days.since, :domain => COOKIEDOMAIN}
         flash[:error] = "La cuenta \"#{u.login}\" está baneada."
         render :action => 'login'
       else # todo bien
@@ -227,6 +240,7 @@ class Cuenta::CuentaController < ApplicationController
   end
   
   def resendnewemail
+    (redirect_to '/cuenta' and return) if cookies[:adn3]
     Notification.deliver_emailchange(@user)
     flash[:notice] = "Te hemos enviado un email a #{@user.newemail} para confirmar el cambio."
     redirect_to '/cuenta'

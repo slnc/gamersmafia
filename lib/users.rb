@@ -81,6 +81,7 @@ module Users
         @user =	User.find(session[:user])
         
         if not user_can_login(@user)
+          cookies[:adn3] = {:value => @user.id, :expires => 7.days.since, :domain => COOKIEDOMAIN} if @user.state == User::ST_BANNED
           session[:user] = nil
           cookies[:ak] = {:value => '', :expires => 1.second.ago, :domain => COOKIEDOMAIN}
           redirect_to '/cuenta/login' and return false
