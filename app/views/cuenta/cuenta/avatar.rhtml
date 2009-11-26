@@ -15,6 +15,7 @@
 
   <% if @user.avatars.count(:conditions => 'path is null or path = \'\'') > 0 then %>
   <% mftext('Avatares personalizados') do %>
+    <div class="infoinline">Sólo <strong>JPG</strong>s a 50x50.</div>
     <form method="post" action="/cuenta/cuenta/custom_avatars_set" enctype="multipart/form-data"> 
       <table>
     <% @user.avatars.find(:all, :conditions => 'path is null or path = \'\'', :order => 'id ASC').each do |a| %>
