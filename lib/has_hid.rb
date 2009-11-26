@@ -25,9 +25,9 @@ module HasHid
         base_hid.gsub!(/(-)$/, '')
         base_hid.gsub!(/^(-)/, '')
         # chequeamos que el hid sea único
-        if self.class.find(:first, :conditions => "hid = \'#{base_hid}\'") then
+        if self.class.base_class.count(:conditions => "hid = \'#{base_hid}\'") > 0 then
           incrementor = 1
-          while self.class.find(:first, :conditions => "hid = \'#{base_hid}_#{incrementor}\'")
+          while self.class.base_class.count(:conditions => "hid = \'#{base_hid}_#{incrementor}\'") > 0
             incrementor += 1
           end
           self.hid = "#{base_hid}_#{incrementor}"
