@@ -1,7 +1,7 @@
 <% generic_support do %>
 <% cache_file = Bet::TOP_BET_WINNERS 
 if File.exists?(cache_file) then %>
-<% cache("common/apuestas/los_que_mas_ganan_#{Time.now.strftime('%Y-%m-%d')}") do %>
+<% cache("common/apuestas/los_que_mas_ganan_#{1.hour.ago.strftime('%Y-%m-%d')}") do %>
 <% mftext('Top 10 mensual') do %>
  <table class="compact">
 <%
@@ -14,17 +14,27 @@ u = User.find(k.split('_')[1].to_i) # el indice 0 es para poder ordenar el dict
 stop_deleting = false
 trimmed = Array.new(v[:individual].reverse).delete_if { |c| stop_deleting = true if c != 0 && !stop_deleting; !stop_deleting }
 sum = 0
-v[:individual].each {|s| sum += s }
+won = 0
+lost = 0
+v[:individual].each do |s| 
+  sum += s 
+  if s < 0
+	  lost += -s
+  else
+	  won += s
+  end
+  won += -data[k][:sum] - (won - lost)
+end
 %>
 
 <tr class="<%=oddclass%>">
 	<td style="padding: 0 0 0 2px; font-size: 11px; font-family: tahoma, arial;"><strong><%=member_state(u.hstate)%> <a href="<%=gmurl(u)%>"><%=u.login%></a></strong></td>
 	<td style="padding: 2px 0 2px 0; text-align: right; line-height: 20px;">
-	<img title="<%=sum%> gmf en sus últimas <%=trimmed.size%> apuestas" src="<%=ASSET_URL%>/storage/minicolumns/bets_top_last30/<%=u.id%>.png?<%=Time.now.strftime('%Y-%m-%d')%>" style="margin-right: 2px; " />
+	<img title="<%=-data[k][:sum]%> gmf en el último mes (se muestran últimas 30 apuestas)" src="<%=ASSET_URL%>/storage/minicolumns/bets_top_last30/<%=u.id%>.png?<%=Time.now.strftime('%Y-%m-%d')%>" style="margin-right: 2px; " />
 	</td>
 	<td style="margin-right: 2px;"><div class="infoinline" style="line-height: 10px; font-weight: bold; float: right; text-align: right; font-family: tahoma, arial; font-size: 8px;">
-	<span class="supermini good" style="color: #00790b;"><%=v[:individual].max%></span><br />
-	<span class="supermini bad" style="color: #a90014;"><%=v[:individual].min*(-1)%></span></div></td>
+	<span class="supermini good" style="color: #00790b;"><%=won%></span><br />
+	<span class="supermini bad" style="color: #a90014;"><%=lost%></span></div></td>
 	
 </tr>
 <% end -%>
@@ -66,14 +76,14 @@ v[:individual].each {|s| sum += s }
   <table>
   <tr>
     <th>Apuesta</th>
-    <th style="width: 125px;"><%=gmd11%> apostados</th>
-    <th class="timestamp">Termina en</th>
+    <th class="right w100"><%=gmd11%> apostados</th>
+    <th class="right timestamp" style="width: 150px;">Termina en</th>
   </tr>
   <% controller.portal.bet.find(:published, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC').each do |bet| %>
   <tr class="<%=oddclass%>">
     <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
     <td class="right"><%=bet.total_ammount.to_i%></td>
-    <td class="infoinline"><%=format_interval(bet.closes_on.to_i - Time.now.to_i)%></td>
+    <td class="right infoinline"><%=format_interval(bet.closes_on.to_i - Time.now.to_i)%></td>
   </tr>
   <% end -%>
 </table>
