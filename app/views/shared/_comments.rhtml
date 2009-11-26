@@ -213,7 +213,7 @@ if user_is_authed then
       <% h_imgs = ['009d48', '14826d', '2d3058', '73ec88', 'e5cbc8', '068b5b', '21db24', '2e7ded', '74254', 'ff0d19', '1108b2', '2bc937', '334d5e', '7984ec'] %>
 
       <div class="register-now"><a href="/cuenta/alta"><img src="/images/hentai/<%=h_imgs[Kernel.rand(13)]%>.jpg" /></a></div>
-      <p><a href="/cuenta/alta">Regístrate</a> para poder comentar.<br /><br />Si ya estás registrado solo tienes que <%=link_to 'iniciar sesión', :controller => 'cuenta', :action => 'login'%>.</p>
+      <p style="text-align: center;"><a href="/cuenta/alta"><img style="border: 0;" src="/skins/default/images/btn_register.png" /></a> <br />y comenta.</p>
     </div>
 <% end -%>
   </div>
