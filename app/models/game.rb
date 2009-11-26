@@ -71,7 +71,7 @@ class Game < ActiveRecord::Base
         f.write(@temp_file.read)
       end
       @temp_file = nil
-      Bj.submit 'rake gm:update_default_skin_styles', :tag => 'rake gm:update_default_skin_styles'
+      GmSys.command('rake gm:update_default_skin_styles')
     end
   end
   
