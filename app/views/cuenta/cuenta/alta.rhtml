@@ -102,29 +102,29 @@
 	<style type="text/css">
 		.signup input.text { padding: 2px; font-size: 12px;}
 	</style>
-	<div style="width: 100%;" style="margin-left: 75px; margin-top: 50px;">
+	<div style="margin-left: 75px; margin-top: 50px;">
 <table class="signup">
-<tr><td style="width: 100px;">Usuario</td><td>
+<tr><td style="width: 100px; height: 30px;">Usuario</td><td>
   <%= text_field 'user', "login", :size => 20, :id => 'signup_user_login', :class=>"text username", :onblur => 'username_checks()' %><span class="sm" id="username_msg" style="display:none;"></span>
 </td>
 </tr>
 
 <tr>
-  <td>Contraseña</td>
+  <td style="height: 30px;">Contraseña</td>
   <td><%= password_field 'user', "password", :size => 20, :class=>"text password", :id => 'signup_user_password', :onblur => 'password_checks()'%> <span class="sm" id="password_msg" style="display:none;"></span></td>
 </tr>
 
 <tr>
-  <td>Email</td>
-  <td><%= text_field 'user', 'email', :id => 'signup_user_email', :size => 30, :class=>"text form", :onblur => 'email_checks()' %><span class="sm" id="email_msg" style="display:none;"></span></td>
+  <td style="height: 30px;">Email</td>
+  <td><%= text_field 'user', 'email', :id => 'signup_user_email', :size => 20, :class=>"text form", :onblur => 'email_checks()' %><span class="sm" id="email_msg" style="display:none;"></span></td>
 </tr>
 
 <tr>
-  <td colspan="2"  style="padding-bottom: 20px;"><a href="#" onclick="$j('#optionalfields').removeClass('hidden'); return false;">Campos opcionales</a>
+  <td colspan="2"  class="infoinline" style="padding-top: 10px; padding-bottom: 20px;"><a href="#" onclick="$j('#optionalfields').removeClass('hidden'); return false;">Campos opcionales</a>
     <table class="<%='hidden' unless params[:referer]%>" id="optionalfields">
       <tr>
     	<td>Referido por el usuario</td>
-    	<td><input type="text" class="text" name="referer" value="<%=params[:referer]%>" /> <span class="infoinline">Si algún usuario te ha recomendado nuestra web introduce su nick aquí.</span></td>
+    	<td><input type="text" class="text" name="referer" value="<%=params[:referer]%>" /> <br /><span class="infoinline">Si algún usuario te ha recomendado nuestra web introduce su nick aquí y recibirá gloria y prestigio.</span></td>
 	  </tr>
 	</table>
   </td>
@@ -145,6 +145,7 @@
 </div>
 </form>
 <% end -%>
+
 <br />
 <br />
 <br />
@@ -162,3 +163,12 @@
 </table>
 <% end -%>
 <% end -%>
+
+<script type="text/javascript">
+$j(document).ready(function () {
+                $j('#csupport').addClass('hidden');
+                $j('#cleft').addClass('hidden');
+                //$j('#ccontent').addClass('maximized');
+                //$j('#cmain').addClass('maximized');
+});
+</script>
