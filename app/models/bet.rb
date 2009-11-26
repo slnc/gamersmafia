@@ -15,9 +15,9 @@ class Bet < ActiveRecord::Base
   
   observe_attr :winning_bets_option_id, :cancelled, :forfeit, :tie
   
-  #def total_ammount
-  #  ammount = self.class.db_query("SELECT COALESCE(sum(ammount), 0) as ammount from bets_options where bet_id = #{self.id}")[0]['ammount'].to_f
-  #end
+  def _total_ammount
+    ammount = self.class.db_query("SELECT COALESCE(sum(ammount), 0) as ammount from bets_options where bet_id = #{self.id}")[0]['ammount'].to_f
+  end
   
   def options_new=(opts_new)
     @_tmp_options_new = opts_new
@@ -360,6 +360,8 @@ class Bet < ActiveRecord::Base
   def complete(winning_bets_option_id)
     self.reload
     return if self.completed? 
+    self.update_attributes(:total_ammount => self._total_ammount)
+    self.total_ammount = self._total_ammount
     
     if winning_bets_option_id == 'cancelled' then
       self.return_money_to_users
