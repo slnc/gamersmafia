@@ -57,7 +57,7 @@ ctypes_i = 1
 ctypes.each do |ctype| 
 %>
 <div class="grid-2 <%='glast' if ctypes_i % 3 == 0%>">
-<% mftext(Cms.translate_content_name(ctype)) do %>
+<% mftext(Cms.translate_content_name(ctype).gsub('-', ' ').split(' ')[0][0..11]) do %>
 <table>
 <% ordered[ctype].each do |u| %>
 	<tr class="<%=oddclass%>">
