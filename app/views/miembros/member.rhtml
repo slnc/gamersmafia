@@ -44,7 +44,7 @@
 <% if (@curuser.resurrected_by_user_id == @user.id and @curuser.resurrection_started_on.to_i > Time.now.to_i - 86400 * 7) %>
 <p>Este usuario todavía está en proceso de resurrección.</p>
 <% elsif (@curuser.resurrected_by_user_id and @curuser.resurrection_started_on.to_i > Time.now.to_i - 86400 * 7) %>
-<p><%=@user.login%> está en un proceso de resurrección iniciado por otro usuario.</p>
+<p><%=@curuser.login%> está en un proceso de resurrección iniciado por otro usuario.</p>
 <% elsif Faith.resurrections_incomplete(@user) >= Faith.max_incomplete_resurrections(@user)%>
 <p>Has alcanzado tu límite de resurrecciones incompletas. Debes esperar a que alguna se complete o se desactive o bien subas de nivel de fe.</p>
 <% else %>
