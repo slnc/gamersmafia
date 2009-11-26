@@ -200,7 +200,7 @@ class Admin::UsuariosController < ApplicationController
     else
       flash[:error] = "Error al confirmar el ban: #{br.errors.full_messages_html}."
     end
-    redirect_to "/site/slog"
+    redirect_to "/slog/capo"
   end
   
   def confirm_unban_request
@@ -211,7 +211,7 @@ class Admin::UsuariosController < ApplicationController
     else
       flash[:error] = "Error al confirmar el desbaneo: #{br.errors.full_messages_html}."
     end
-    redirect_to "/site/slog"
+    redirect_to "/slog/capo"
   end
   
   def cancel_ban_request    
