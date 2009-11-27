@@ -11,6 +11,12 @@ class Skin < ActiveRecord::Base
   before_save :update_version_if_file_changed
   after_save :check_file_changed
   after_create :setup_initial_zip
+  before_create :check_names
+
+
+  def check_names
+    return !%w(arena bazar default).include?(self.hid)
+  end
 
   validates_uniqueness_of :name
   belongs_to :user
@@ -71,7 +77,7 @@ class Skin < ActiveRecord::Base
   
   def self.find_by_hid(hid)
     if %w(arena default bazar).include?(hid)
-      Skin.new({:name => hid, :hid => hid, :version => SVNVERSION})
+      Skin.new({:name => hid, :hid => hid, :version => SVNVERSION.to_i(16)})
     else
       super(hid)
     end
