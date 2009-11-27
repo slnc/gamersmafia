@@ -65,41 +65,61 @@ class DescargasController < InformacionController
   def create_from_zip
     require_auth_users
     raise ActiveRecord::RecordNotFound unless Cms::user_can_mass_upload(@user)
-    newfile = params[:download][:file]
-    tmp_dir = "#{Dir.tmpdir}/#{Kernel.rand.to_s}"
-    # descomprimimos
-    if not newfile.path then
-      File.open("#{tmp_dir}.zip", 'w+') do |f|
-        f.write(newfile.read())
-      end
-      path = "#{tmp_dir}.zip"
+    if params[:categories_terms].size == 0
+      flash[:error] = "Debes elegir una categoría donde subir las descargas."
+      new
+      render :action => 'new'
     else
-      path = newfile.path
-    end
-    
-    system ("unzip -q -j #{path} -d #{tmp_dir}")
-    # añadimos imgs al dir del usuario
-    i = 0
-    for f in (Dir.entries(tmp_dir) - %w(.. .))
-      download = Download.new
-      File.open("#{tmp_dir}/#{f}") do |ff|
-        download.file = ff
-        download.user_id = @user.id
-        if @portal.respond_to?(:clan_id) && @portal.clan_id
-          download.clan_id = @portal.clan_id
-          download.state = Cms::PUBLISHED
+      
+      @category = Term.find_taxonomy(params[:categories_terms][0], 'DownloadsCategory')
+      
+      if @category.parent_id.nil? then
+        flash[:error] = 'Debes elegir una subcategoría, no una categoría'
+        new
+        render :action => 'new'
+      elsif !params[:download][:file].respond_to?(:path)
+        flash[:error] = 'Debes elegir un archivo zip que contenga descargas'
+        new
+        render :action => 'new'
+      else
+        newfile = params[:download][:file]
+        tmp_dir = "#{Dir.tmpdir}/#{Kernel.rand.to_s}"
+        # descomprimimos
+        if not newfile.path then # TODO comprobar que StringIO tiene path y no se mete en el elsif anterior
+          File.open("#{tmp_dir}.zip", 'w+') { |f| f.write(newfile.read()) }
+          path = "#{tmp_dir}.zip"
+        else
+          path = newfile.path
         end
         
-        download.title = f.bare
-        download.terms = params[:download][:terms] # TODO permissions
-        i += 1 if download.save
+        system("unzip -q -j #{path} -d #{tmp_dir}")
+        # añadimos imgs al dir del usuario
+        i = 0
+        for f in (Dir.entries(tmp_dir) - %w(.. .))
+          im = Download.new
+          File.open("#{tmp_dir}/#{f}") do |ff|
+            im.file = ff
+            im.state = Cms::PENDING
+	    im.title = f.gsub('(\.+)$', '')
+            im.description = ''
+            im.user_id = @user.id
+            if @portal.respond_to?(:clan_id) && @portal.clan_id
+              im.clan_id = @portal.clan_id
+              im.state = Cms::PUBLISHED
+            end
+            if im.save
+              @category.link(im.unique_content)
+              i += 1
+            end
+          end
+        end
+        
+        # limpiamos
+        system("rm -r #{tmp_dir}")
+        flash[:notice] = "#{i} descargas subidas correctamente. Tendrán que ser moderadas antes de aparecer publicada."
+        redirect_to '/descargas'
       end
     end
-    
-    # limpiamos
-    system("rm -r #{tmp_dir}")
-    flash[:notice] = "#{i} descargas subidas correctamente. Tendrán que ser moderadas antes de aparecer publicada."
-    redirect_to :action => ''
   end
   
   def edit

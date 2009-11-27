@@ -149,7 +149,7 @@ class Cuenta::CuentaController < ApplicationController
         redirect_to "/cuenta/confirmar?em=#{@newuser.email}" and return
       else # no parece un usuario sospechoso
 	confirmar_nueva_cuenta(@newuser)
-        flash[:notice] = "Cuenta confirmada correctamente. Te hemos enviado un email de bienvenida a <strong>#{u.email}</strong> con instrucciones."
+        flash[:notice] = "Cuenta confirmada correctamente. Te hemos enviado un email de bienvenida a <strong>#{@newuser.email}</strong> con instrucciones."
         redirect_to '/cuenta'
       end
       cookies[:email] = {:value => @newuser.email, :expires => 7.days.since, :domain => COOKIEDOMAIN}

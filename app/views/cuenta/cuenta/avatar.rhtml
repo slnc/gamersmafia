@@ -54,7 +54,7 @@ function select_new_avatar(imgNode, realId)
 
 <% if @user.avatars.count(:conditions => 'path is not null AND path <> \'\'') > 0 then %>
 <strong>Avatares personalizados</strong>
-<table>
+<table style="width: 100%;">
   <tr>
     <td>
 <% @user.avatars.find(:all, :conditions => 'path is NOT NULL AND path <> \'\'', :order => 'id ASC').each do |avatar| %>
