@@ -213,7 +213,7 @@
 				fix_scroll(scroll_fix);
 			}
 		}
-		else if(e.keyCode == 9)
+		else if(e.keyCode == 999) // antes era 9
 		{			
 			e.preventDefault();
 			
