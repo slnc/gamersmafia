@@ -36,8 +36,7 @@ function set_recipients_dropdown(v) {
 <%= text_field 'message', 'title', :size => 32, :class => 'text' %></p>
 
 <p><label for="message_message">Contenido</label><br/>
-<textarea name="message[message]" style="width: 210px; height: 300px;" id="message_message"><%=@message.message%></textarea></p>
+<%= bbeditor :name => 'message[message]', :id => 'message_message', :style => 'width: 210px; height: 300px;', :value => @message.message %>
 
-<%= render :partial => '/shared/smileys', :locals => { :dom_id => 'message_message' } %>
 <!--[eoform:message]-->
 
