@@ -185,22 +185,10 @@ if user_is_authed then
 %>
 
     <form action="/comments/create" method="post" name="REPLIER" style="padding-top: 25px;">
-    <%= hidden_field_tag 'comment[content_id]', uniq_id %>
-    <%= hidden_field_tag 'redirto', request.path %>
-      <input type="button" class="button" value="http://" name="URL" onclick="tag_url()" />
-      <input type="button" class="button" value="IMG" name="IMG" onclick="tag_image()" />
-      <input type="button" class="button" name="QUOTE" value="QUOTE" onclick="simpletag('QUOTE')" />
-      <input type="button" class="button" name="CODE" value="CODE" onclick="simpletag('CODE')" />
-      <input type="button" class="button" value="B" name="B" onclick="simpletag('B')" />
-      <input type="button" class="button" value="I" name="I" onclick="simpletag('I')" />
-      <input type="hidden" name="tagcount" value="" />
-      <br />
-      <textarea id="comment_comment" name="comment[comment]" rows="10" style="width: 98%; background: #fcfcfc; border: 1px solid #aaa;"></textarea>
-      <%= render :partial => '/shared/smileys', :locals => { :dom_id => 'comment_comment' } %>
-      <script type="text/javascript">
-      if (is_ie)
-        $j('#comment_comment').css('width', '100%');
-      </script>
+      <%= hidden_field_tag 'comment[content_id]', uniq_id %>
+      <%= hidden_field_tag 'redirto', request.path %>
+	  <%= bbeditor :name => 'comment[comment]', :id => 'comment_comment', :rows => 10 %>
+
 	  <% if @user.comment_adds_to_tracker_enabled? then %><input type="hidden" value="1" name="add_to_tracker"  /><% end -%>
       <div class="right"><input type="image" src="/images/blank.gif" class="btn-<%= (questions_mode && @user.id != object.user_id) ? 'responder' : 'comentar'%>" /></div>
     </form>

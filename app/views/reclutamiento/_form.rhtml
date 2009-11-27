@@ -42,17 +42,6 @@
 	</tr>
 	<tr style="vertical-align: top;">
 		<td>Mensaje del anuncio</td>
-		<td>
-			<input type="button" class="button" value="http://" name="URL" onclick="tag_url()" />
-<input type="button" class="button" value="IMG" name="IMG" onclick="tag_image()" />
-<input type="button" class="button" name="QUOTE" value="QUOTE" onclick="simpletag('QUOTE')" />
-<input type="button" class="button" name="CODE" value="CODE" onclick="simpletag('CODE')" />
-<input type="button" class="button" value="B" name="B" onclick="simpletag('B')" />
-<input type="button" class="button" value="I" name="I" onclick="simpletag('I')" />
-<input type="hidden" name="tagcount" value="" /><br />
-    <%# TODO comment_comment necesario por el js de los botones %>
-    <textarea style="width: 400px; background: #fcfcfc; border: 1px solid #aaa;" id="comment_comment" name="recruitment_ad[main]" rows="20"><%=@recruitment_ad.main%></textarea> 
-<%= render :partial => '/shared/smileys', :locals => { :dom_id => 'comment_comment' } %>
-			</td>
+		<td><%= bbeditor :name => 'recruitment_ad[main]', :id => 'comment_comment', :rows => 20, :value => Comments::unformatize(@recruitment_ad.main), :style => 'width: 400px;' %></td>
 	</tr>
 </table>
