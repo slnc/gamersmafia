@@ -18,12 +18,10 @@ module ApplicationHelper
     <<-EOS
     <div title="Negrita" class="btn bold"></div>
     <div title="Cursiva" class="btn italic"></div>
-    <div title="Insertar enlace" class="btn link"></div>
+    <div title="Enlace" class="btn link"></div>
     <div title="Quote" class="btn quote"></div>
     <div title="Código" class="btn code"></div>
     <div title="Imagen" class="btn image"></div>
-    <div title="Lista numerada" class="btn nlist"></div>
-    <div title="Lista no numerada" class="btn blist"></div>
     <div title="Deshacer" class="btn back"></div>
     <div title="Rehacer" class="btn forward"></div>
     <div><textarea id="#{opts[:id]}" class="bbeditor" name="#{opts[:name]}" rows="#{opts[:rows]}" style="#{opts[:style]}">#{opts[:value]}</textarea></div>
