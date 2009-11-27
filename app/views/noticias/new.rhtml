@@ -15,7 +15,7 @@
 <% content_main do %>
 <% mftext('Nueva noticia') do %>
 
-<% form_tag({:action => 'create'}, { :name => 'editing_content', :multipart => true }) do %>
+<% form_tag({:action => 'create'}, { :class => 'editing-content', :multipart => true }) do %>
   <%= render :partial => 'form' %>
   <br />
   <%= submit_tag 'Crear' %>

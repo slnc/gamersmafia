@@ -2,7 +2,6 @@
 <%= render :partial => '/shared/drafts', :locals => { :cls => Bet } if user_is_authed %>
 <%mftext('Consejos') do %>
 <ul class="content-hid">
-<li>Mínimo 2 opciones</li>
 <li>Solo apuestas de partidas oficiales y verificables</li>
 <li>Indica la URL del torneo o partida correspondiente en el campo información adicional</li>
 </ul>
@@ -19,6 +18,5 @@
   <%= submit_tag 'Crear' %>
 </form>
 
-<%= link_to 'Volver', :action => 'list' %>
 <% end -%>
 <% end -%>

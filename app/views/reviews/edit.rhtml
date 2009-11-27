@@ -16,7 +16,7 @@
 <% content_main do %>
 <%mftext('Editando review') do %>
 
-<%= form_tag({:action => 'update', :id => @review}, {:multipart => true, :name => 'editing_content' }) %>
+<%= form_tag({:action => 'update', :id => @review}, {:multipart => true, :class => 'editing-content' }) %>
   <%= render :partial => 'form' %>
   <%=submit_tag 'Guardar' %>
 </form>

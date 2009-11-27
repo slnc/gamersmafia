@@ -14,7 +14,7 @@
 
 <% content_main do %>
 <% mftext('Editar encuesta') do %>
-<%= form_tag({:action => 'update', :id => @poll}, { :name => 'editing_content' }) %>
+<%= form_tag({:action => 'update', :id => @poll}, { :class => 'editing-content' }) %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Guardar' %>
 </form>

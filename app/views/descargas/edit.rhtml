@@ -13,7 +13,7 @@
 <% content_main do %>
 <% mftext('Editar descarga') do %>
 
-<%= form_tag({:action => 'update', :id => @download}, {:multipart => true, :name => 'editing_content' }) %>
+<%= form_tag({:action => 'update', :id => @download}, {:multipart => true, :class => 'editing-content' }) %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Guardar' %>
 </form>
