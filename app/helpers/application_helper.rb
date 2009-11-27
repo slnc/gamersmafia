@@ -11,6 +11,38 @@ module ApplicationHelper
     :Spam => '108',
   }
   
+  def bbeditor(opts={})
+    raise "id not given for bbeditor" unless opts[:id]
+    raise "name not given for bbeditor" unless opts[:name]
+    
+    <<-EOS
+    <div title="Negrita" class="btn bold"></div>
+    <div title="Cursiva" class="btn italic"></div>
+    <div title="Insertar enlace" class="btn link"></div>
+    <div title="Quote" class="btn quote"></div>
+    <div title="Código" class="btn code"></div>
+    <div title="Imagen" class="btn image"></div>
+    <div title="Lista numerada" class="btn nlist"></div>
+    <div title="Lista no numerada" class="btn blist"></div>
+    <div title="Deshacer" class="btn back"></div>
+    <div title="Rehacer" class="btn forward"></div>
+    <div><textarea id="#{opts[:id]}" class="bbeditor" name="#{opts[:name]}" rows="#{opts[:rows]}" style="#{opts[:style]}">#{opts[:value]}</textarea></div>
+    
+    <script type="text/javascript">
+    $j('textarea[name=#{opts[:name]}]').bbcodeeditor(
+        {
+          bold:$j('.bold'), italic:$j('.italic'), link:$j('.link'), quote:$j('.quote'), code:$j('.code'), image:$j('.image'),
+          usize:$j('.usize'), dsize:$j('.dsize'), nlist:$j('.nlist'), blist:$j('.blist'),
+          back:$j('.back'), forward:$j('.forward'), back_disable:'btn back_disable', forward_disable:'btn forward_disable'
+        });
+        if (is_ie)
+    $j('textarea[name=#{opts[:name]}]').css('width', '100%');
+    </script>
+    
+    #{controller.send(:render_to_string, :partial => '/shared/smileys', :locals => { :dom_id => opts[:id] })}
+    EOS
+  end
+  
   def draw_emblem(emblema)
     "<img class=\"emblema emblema-#{emblema}\" src=\"/images/blank.gif\" />"  
   end

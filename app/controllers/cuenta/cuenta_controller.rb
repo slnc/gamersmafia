@@ -392,7 +392,6 @@ class Cuenta::CuentaController < ApplicationController
   
   def custom_avatars_set
     @user.avatars.find(:all, :conditions => 'path is null or path = \'\'', :order => 'id ASC').each do |a|
-      # raise params[:custom_avatars][a.id.to_s].to_s
       a.update_attributes({:path => params[:custom_avatars][a.id.to_s]}) if params[:custom_avatars][a.id.to_s].to_s != ''
     end
     redirect_to :action => 'avatar'

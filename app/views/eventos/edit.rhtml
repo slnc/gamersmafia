@@ -7,7 +7,7 @@
 
 <% content_main do %>
 <% mftext('Editar evento') do %>
-<%= form_tag({:action => 'update', :id => @event}, { :name => 'editing_content' }) %>
+<%= form_tag({:action => 'update', :id => @event}, { :class => 'editing-content' }) %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Guardar' %>
 </form>

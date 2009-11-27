@@ -12,20 +12,8 @@
 <p><label for="comment_comment">Comentario</label><br/>
 <%= error_messages_for 'comment' %>
 <%= hidden_field_tag 'redirto', params[:redirto] %>
-
-    <input type="button" class="button" value="http://" name="URL" onclick="tag_url()" />
-    <input type="button" class="button" value="IMG" name="IMG" onclick="tag_image()" />
-    <input type="button" class="button" name="QUOTE" value="QUOTE" onclick="simpletag('QUOTE')" />
-    <input type="button" class="button" name="CODE" value="CODE" onclick="simpletag('CODE')" />
-    <input type="button" class="button" value="B" name="B" onclick="simpletag('B')" />
-    <input type="button" class="button" value="I" name="I" onclick="simpletag('I')" />
-    <input type="hidden" name="tagcount" value="" /><br />
-                <textarea id="comment_comment" name="comment[comment]" rows="10" style="width: 98%;"><%=Comments::unformatize(@comment.comment)%></textarea>
-                <%= render :partial => '/shared/smileys', :locals => { :dom_id => 'comment_comment' } %>
-  <script type="text/javascript">
-  if (is_ie)
-    $j('#comment_comment').css('width', '100%');
-  </script>
+    <%= bbeditor :name => 'comment[comment]', :id => 'comment_comment', :rows => 10, :value => Comments::unformatize(@comment.comment) %>
+	
   <p style="clear: right;"><% if not Cms::user_can_edit_content?(@user, @comment) then %>Nota: Dispones de 15 minutos (hasta <strong><%=print_tstamp (Time.now + 60 * 15)%></strong>) para modificar el comentario. No se guardarán los cambios después de ese momento.<% end -%></p>
   <% if @user.id != @comment.user_id then %>
   <% if @comment.lastedited_by_user_id then %>

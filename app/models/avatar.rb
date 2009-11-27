@@ -4,7 +4,7 @@ class Avatar < ActiveRecord::Base
   belongs_to :user
   belongs_to :submitter, :class_name => 'User', :foreign_key => 'submitter_user_id'
   has_many :users
-  file_column :path
+  file_column :path, :format => :jpg
   
   observe_attr :path
   
@@ -42,6 +42,7 @@ class Avatar < ActiveRecord::Base
         raise Exception if img.format != 'JPEG'
       rescue Exception
         self.path = nil
+        self.errors.add('file', 'La imagen no tiene un formato válido.')
         self.save
         return
       end

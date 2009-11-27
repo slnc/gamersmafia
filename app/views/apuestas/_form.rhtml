@@ -13,18 +13,18 @@
 <p><label for="bet_closes_on">Fecha y hora a la que se juega la partida</label><br/>
 <%= datetime_select 'bet', 'closes_on'  %></p>
 
-<strong>Opciones</strong><br />
+<strong>Equipos/jugadores</strong><br />
 <% @bet.bets_options.each do |option| %>
 <input type="text" class="text" name="bet[options][<%=option.id.to_s%>]" value="<%=option.name%>" /> &nbsp; <label><input type="checkbox" name="bet[options_delete][]" value="<%=option.id.to_s%>" /> Borrar</label><br />
 <% end %>
 
-<br /><strong>Nuevas opciones:</strong><br />
+<% if @bet.new_record? then %>
 <span id="newoptions">
-  <input type="text" class="text" name="bet[options_new][]" value="" /><br />
-  <% if @bet.new_record? then %><input type="text" class="text" name="bet[options_new][]" value="" /><% end -%>
+  <input type="text" class="text" name="bet[options_new][]" value="" /><br /><br />
+  <input type="text" class="text" name="bet[options_new][]" value="" />
 </span>
+<% end -%>
 
-<input type="button" class="button" value="Añadir más" onclick="create_new_option('bet[options_new][]');" />
 <br />
 <br />
 <% end -%>

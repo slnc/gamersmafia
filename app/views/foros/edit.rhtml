@@ -7,35 +7,16 @@
 <%= hidden_field_tag('topic[id]', @topic.id) %>
 <table>
 <tr>
-  <td>Título:</td>
+  <td>Título</td>
   <td><%= text_field(:topic, "title", :class => 'text') %></td>
 </tr>
 <tr>
-  <td>Sticky:</td>
+  <td>Sticky</td>
   <td><%=check_box(:topic, "sticky") %></td>
 </tr>
-<tr>
-<td>Texto:</td>
-<td>
-  <div id="smileystable" style="float: right; width: 180px; height: 325px; overflow: auto;">
-  <%= link_to_remote("Mostrar smileys disponibles",
-                    :update => 'smileystable',
-                    :url => { :controller => 'site', :action => :show_smileys}) %></div>
-
-<input type="button" class="button" value="http://" name="URL" onclick="tag_url()" />
-<input type="button" class="button" value="IMG" name="IMG" onclick="tag_image()" />
-<input type="button" class="button" name="QUOTE" value="QUOTE" onclick="simpletag('QUOTE')" />
-<input type="button" class="button" name="CODE" value="CODE" onclick="simpletag('CODE')" />
-<input type="button" class="button" value="B" name="B" onclick="simpletag('B')" />
-<input type="button" class="button" value="I" name="I" onclick="simpletag('I')" />
-<input type="hidden" name="tagcount" value="" /><br />
-    <%# TODO comment_comment necesario por el js de los botones %>
-    <textarea style="width: 50%;" id="comment_comment" name="topic[main]" rows="20"><%=Comments::unformatize(@topic.main)%></textarea> 
-<script type="text/javascript" language="JavaScript">
-  if (is_ie)
-    $j('#comment_comment').css('width', '100%');
-</script>
-</td>
+<tr style="vertical-align: top;">
+  <td>Texto</td>
+  <td><%= bbeditor :name => 'topic[main]', :id => 'comment_comment', :rows => 20, :value => Comments::unformatize(@topic.main) %></td>
 </tr>
 <tr>
 <td></td>

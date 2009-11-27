@@ -17,7 +17,7 @@
 <% content_main do %>
 <% mftext('Editando questiona') do %>
 
-<%= form_tag({:action => 'update', :id => @question}, { :multipart => true, :name => 'editing_content' }) %>
+<%= form_tag({:action => 'update', :id => @question}, { :multipart => true, :class => 'editing-content' }) %>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Guardar' %>
 </form>

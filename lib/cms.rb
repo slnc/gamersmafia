@@ -872,7 +872,7 @@ module Cms
           break
         end
       end
-      if g.nil?
+      if g.nil? || g.code == 'gmversion'
         code = 'gm'
         name = 'gm'
       end
