@@ -7,7 +7,7 @@ namespace :gm do
     pay_organizations_wages
     Emblems.give_emblems
     Reports.send_mrachmed_dominical
-    Download.check_invalid_downloads
+    #Download.check_invalid_downloads
     send_weekly_page_render_report_and_truncate
     update_content_ranks
   end

@@ -750,7 +750,7 @@ ul.slog-entries-browser-filter li { list-style: none; float: left; margin-right:
 }
 
 .btn {
-	background: transparent url('../images/bbeditor.gif') no-repeat scroll 0 0;
+	background: transparent url(../images/bbeditor.gif) no-repeat scroll 0 0;
 	width:20px;
 	height:20px;
 	margin-right:5px;
