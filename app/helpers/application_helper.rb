@@ -29,7 +29,7 @@ module ApplicationHelper
     <script type="text/javascript">
     $j('textarea[name=#{opts[:name]}]').bbcodeeditor(
         {
-          bold:$j('.bold'), italic:$j('.italic'), link:$j('.link'), quote:$j('.quote'), code:$j('.code'), image:$j('.image'),
+          bold:$j('.bold'), italic:$j('.italic'), link:$j('.link'), quote:$j('.quote'), code:$j('.code'), image:$j('.btn.image'),
           usize:$j('.usize'), dsize:$j('.dsize'), nlist:$j('.nlist'), blist:$j('.blist'),
           back:$j('.back'), forward:$j('.forward'), back_disable:'btn back_disable', forward_disable:'btn forward_disable'
         });
@@ -420,11 +420,16 @@ google_color_text = "' + options[:colors][:google_color_text]+'";
     
     if text.index('SALTOLINEA333').to_s != '' then
       text.gsub!("SALTOLINEA333\n", '</p><p>')
+      text.gsub!("SALTOLINEA333", '')
       text = "#{text}</p>"
       text = text.gsub('<p></p>', '')
       text = text.gsub('<p><p>', '<p>')
       text = text.gsub('</p></p>', '</p>')
     end
+      text = text.gsub('<blockquote></p><p>', '<blockquote>')
+      text = text.gsub('</p><p></blockquote>', '</blockquote>')
+      text = text.gsub('<code></p><p>', '<code>')
+      text = text.gsub('</p><p></code>', '</code>')
     
     text.strip!
     

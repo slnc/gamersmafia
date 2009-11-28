@@ -497,6 +497,11 @@ textarea {
     border-color: #CFCEAF;
 }
 
+#ccontent code {
+border-color: #aaa; 
+background: #f4f4f4;
+}
+
 .pcent-bar {
     background: #fafafa;
     border-color: #ddd;

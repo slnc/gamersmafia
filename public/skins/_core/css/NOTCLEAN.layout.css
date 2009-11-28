@@ -532,9 +532,12 @@ textarea {
     border: 1px solid;
 }
 
-#ccontent blockquote {
-    padding: 6px;
+#ccontent blockquote,
+#ccontent code {
     border: 1px solid;
+    margin: 0px 20px; 
+    padding: 5px 10px; 
+    display: block; 
 }
 
 #ccontent .message-body blockquote {

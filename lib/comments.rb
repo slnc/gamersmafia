@@ -75,6 +75,7 @@ module Comments
     str.gsub!(/\n/, '<br />')
     str.gsub!(/(\[(\/*)(b|i|code|quote)\])/i, '<\\2\\3>')
     str.gsub!(/(<(\/*)(quote)>)/i, '<\\2blockquote>')
+    str.gsub!(/(<(\/*)(code)>)/i, '<\\2code>')
     str.gsub!(/(\[~([^\]]+)\])/, '<a href="/miembros/\\2">\\2</a>') # ~dharana >> <a href="/miembros/dharana">dharana</a>
     str.gsub!(/\[flag=([^\]]+)\]/i, '<img class="icon" src="/images/flags/\\1.gif" />')
     str.gsub!(/\[img\]([^\[]+)\[\/img\]/i, '<img src="\\1" />')
