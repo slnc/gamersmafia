@@ -134,10 +134,12 @@ class Skin < ActiveRecord::Base
   
   # Solo la vamos a llamar cuando la skin es intelliskin
   def save_config
+    cfg_path = "#{realpath}/config.yml"
+    return false unless File.exists?(cfg_path)
     config # necesario ponerlo aquí
     self.version += 1
     self.save
-    File.open("#{realpath}/config.yml", 'w') { |f| f.write(YAML::dump(config)) }
+    File.open(cfg_path, 'w') { |f| f.write(YAML::dump(config)) }
     build_skin
     # inject_into_css("#mggmtv { height: #{config[:intelliskin][:header_height]}px};", APPEND) if config[:intelliskin][:header_height]
     true
