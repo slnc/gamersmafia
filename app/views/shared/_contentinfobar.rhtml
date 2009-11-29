@@ -82,8 +82,14 @@ can_delete = Cms::user_can_delete_content?(@user, object) %>
       <% end -%>
       	
 	    
+      <% if object.class.name != 'Topic' then %>
+      <li>
+	      <a title="Enviar a Meneame" href="http://meneame.net/submit" onclick="window.open('http://meneame.net/submit.php?url='+encodeURIComponent('<%=gmurl(object)%>'), 'meneame','toolbar=yes,width=850,height=800'); return false;"><img style="border: 0;" src="/images/meneame.gif" /></a>
+	      <a title="Enviar a Fresqui" href="http://tec.fresqui.com/post" onclick="window.open('http://tec.fresqui.com/post?url='+encodeURIComponent('<%=gmurl(object)%>')+'&title='+encodeURIComponent(document.title)+'&edit[body]='+encodeURIComponent('<%=strip_tags(object.respond_to?(:description) ? object.description : '').gsub("'", "").gsub("\n", ' ').gsub("\r", '')%>'), 'fresqui','toolbar=no,resizable=yes, scrollbars=yes,width=700,height=500'); return false;"><img style="border: 0;" src="/images/fresqui.gif" /></a>
+	      <a title="Enviar a Enchílame" href="http://www.enchilame.com/post" onclick="window.open('http://www.enchilame.com/submit.php?url='+encodeURIComponent('<%=gmurl(object)%>'), 'enchilame','toolbar=yes,width=850,height=800'); return false;"><img style="border: 0;" src="/images/enchilame.gif" /></a>
 
-  
+      </li> 
+      <% end -%>
   
   </ul>
   
