@@ -3,7 +3,7 @@
 <select id="scope-selector">
 	<option></option>
 	<%collection.each do |item| %>
-	<option <%='selected="selected"' if active_scope == item.id %> value="<%=item.id%>"><%=item.name%></option>
+	<option <%='selected="selected"' if active_scope && active_scope.to_i == item.id %> value="<%=item.id%>"><%=item.name%></option>
 	<% end -%>	
 </select>
 </div>
