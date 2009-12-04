@@ -11117,7 +11117,8 @@ CREATE TABLE products (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     description character varying,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    cls character varying NOT NULL
+    cls character varying NOT NULL,
+    enabled boolean DEFAULT true NOT NULL
 );
 
 
@@ -16676,6 +16677,27 @@ CREATE INDEX sent_emails_gnotif ON sent_emails USING btree (global_notification_
 --
 
 CREATE INDEX silenced_emails_lower ON silenced_emails USING btree (lower((email)::text));
+
+
+--
+-- Name: slog_entries_completed_on; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX slog_entries_completed_on ON slog_entries USING btree (completed_on);
+
+
+--
+-- Name: slog_entries_headline; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX slog_entries_headline ON slog_entries USING btree (headline);
+
+
+--
+-- Name: slog_entries_scope; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX slog_entries_scope ON slog_entries USING btree (scope);
 
 
 --
