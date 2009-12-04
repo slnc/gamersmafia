@@ -785,16 +785,13 @@ END
 <script src="#{ASSET_URL}/javascripts/web.shared/slnc.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/app.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/tracking.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/wseditor.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/app.bbeditor.#{SVNVERSION}.js" type="text/javascript"></script>
       END
     end
     
     if @_additional_js_libs
       @_additional_js_libs.uniq.each do |lib|
-        if lib == 'fckeditor'
-          out << "<script src=\"#{ASSET_URL}/fckeditor/fckeditor.js\" type=\"text/javascript\"></script>"
-        elsif lib == 'ckeditor'
+        sif lib == 'ckeditor'
           out << "<script src=\"#{ASSET_URL}/ckeditor/ckeditor.js\" type=\"text/javascript\"></script>"
         elsif lib.include?('http://')
           out << "<script src=\"#{lib}\" type=\"text/javascript\"></script>"
