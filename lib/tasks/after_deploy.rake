@@ -7,7 +7,7 @@ namespace :gm do
     Chatline.create({:line => "slnc ha actualizado el motor de la web a la versión #{AppR.ondisk_git_version}", :user_id => mralariko_id})
     #system("unzip -o -q \"#{RAILS_ROOT}/public/FCKeditor_2.6.3.zip\" -d \"#{RAILS_ROOT}/public\"") if !File.exists?("#{RAILS_ROOT}/public/fckeditor")
     if !File.exists?("#{RAILS_ROOT}/public/ckeditor")
-    system("tar xfz \"#{RAILS_ROOT}/public/ckeditor_3.0.1.tar.gz\"") 
+    system("tar xfz \"#{RAILS_ROOT}/public/ckeditor_3.0.1.tar.gz\" -C public") 
     system("cat \"#{RAILS_ROOT}/public/ckeditor/lang/es.js\" >> \"#{RAILS_ROOT}/public/ckeditor/ckeditor.js\"")
     system("cat \"#{RAILS_ROOT}/public/ckeditor_custom.js\" >> \"#{RAILS_ROOT}/public/ckeditor/ckeditor.js\"")
     end
