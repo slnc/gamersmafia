@@ -566,8 +566,6 @@ google_color_text = "' + options[:colors][:google_color_text]+'";
     opts[:value] ||= ''
     opts[:height] ||= '400px'
     opts[:width] ||= '550px'
-    switch1 = "<a class=\"infoinline\" href=\"#\" onclick=\"wysiwyg_mode('fckeditor');\">Prueba el nuevo editor BETA (<strong>¡Se perderán los cambios no guardados!</strong>)</a>"
-    switch2 = "<a class=\"infoinline\" href=\"#\" onclick=\"wysiwyg_mode('default');\">Volver al editor de siempre (<strong>¡Se perderán los cambios no guardados!</strong>)</a>"
     
 
       load_javascript_lib('ckeditor')
@@ -578,7 +576,7 @@ google_color_text = "' + options[:colors][:google_color_text]+'";
 					CKEDITOR.replace( '#{field_name}', {
 height: '#{opts[:height]}',
 width: '#{opts[:width]}',
-skin: 'v2',
+skin: 'v2'
 }
  );
 
