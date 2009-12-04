@@ -16,7 +16,11 @@
 
     if (img_src == '')
       return;
+
+      window.opener.CKEDITOR.tools.callFunction(1, 'http://gamersmafia.com/' + img_src);
 	  
+      window.close();
+      return;
 	if (window.opener.SetUrl) 
 		window.opener.SetUrl(img_src);
 	else {

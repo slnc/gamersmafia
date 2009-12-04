@@ -565,31 +565,27 @@ google_color_text = "' + options[:colors][:google_color_text]+'";
   def wysiwyg(field_name, opts={})
     opts[:value] ||= ''
     opts[:height] ||= '400px'
+    opts[:width] ||= '550px'
     switch1 = "<a class=\"infoinline\" href=\"#\" onclick=\"wysiwyg_mode('fckeditor');\">Prueba el nuevo editor BETA (<strong>¡Se perderán los cambios no guardados!</strong>)</a>"
     switch2 = "<a class=\"infoinline\" href=\"#\" onclick=\"wysiwyg_mode('default');\">Volver al editor de siempre (<strong>¡Se perderán los cambios no guardados!</strong>)</a>"
     
-    if params[:fckeditor] || cookies['wysiwygpref'] == 'fckeditor' then
-      load_javascript_lib('fckeditor')
-      opts[:value] = escape_javascript(opts[:value])
+
+      load_javascript_lib('ckeditor')
       <<-END
-      #{switch2}
-      <script type="text/javascript">
-        var oFCKeditor = new FCKeditor('#{field_name}');
-        oFCKeditor.Config["CustomConfigurationsPath"] = "/fckeditor_cfg.js"  ;
-        oFCKeditor.BasePath = "/fckeditor/";
-        oFCKeditor.Height = '#{opts[:height]}';
-        oFCKeditor.Value = '#{opts[:value]}';
-        oFCKeditor.Create();
-      </script>
-END
-    else
-      load_javascript_lib('wseditor')
-      <<-END
-        #{switch1}
         <textarea name="#{field_name}">#{opts[:value]}</textarea><br />
-        <script language="JavaScript">new wsEditor('#{field_name}', '99%', '#{opts[:height]}', 'wsEditor.css');</script>
-    END
-    end
+				<script type="text/javascript">
+				//<![CDATA[
+					CKEDITOR.replace( '#{field_name}', {
+height: '#{opts[:height]}',
+width: '#{opts[:width]}',
+skin: 'v2',
+}
+ );
+
+				//]]>
+				</script>
+
+      END
   end
   
   def load_javascript_lib(lib)
@@ -798,6 +794,8 @@ END
       @_additional_js_libs.uniq.each do |lib|
         if lib == 'fckeditor'
           out << "<script src=\"#{ASSET_URL}/fckeditor/fckeditor.js\" type=\"text/javascript\"></script>"
+        elsif lib == 'ckeditor'
+          out << "<script src=\"#{ASSET_URL}/ckeditor/ckeditor.js\" type=\"text/javascript\"></script>"
         elsif lib.include?('http://')
           out << "<script src=\"#{lib}\" type=\"text/javascript\"></script>"
         else      
