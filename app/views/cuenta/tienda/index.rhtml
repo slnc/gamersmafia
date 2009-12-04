@@ -3,7 +3,7 @@
 <% end -%>
 <% content_main do %>
 <% mftext('Tienda') do %>
-<% Product.find(:all, :order => 'LOWER(name) ASC').each do |product| %>
+<% Product.find(:all, :conditions => 'enabled = \'t\'', :order => 'LOWER(name) ASC').each do |product| %>
 <div class="product-info <%=oddclass%>" style="width: 86px; padding: 0 10px; margin: 10px 20px; float: left; height: 160px; text-align: center;">
   <%=product_img(product)%>
   <div style="height: 40px;"><strong><a href="/cuenta/tienda/<%=product.id%>"><%=product.name%></strong></a></div>

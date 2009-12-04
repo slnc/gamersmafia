@@ -90,6 +90,7 @@ module ActsAsContentBrowser
           proc_terms(obj)
           obj.process_wysiwyg_fields # TODO lo estamos haciendo en _dos sitios_ ???
           flash[:notice] = "Contenido de tipo <strong>#{Cms::CLASS_NAMES[cls.name]}</strong> creado correctamente."
+	  UsersContentsTag.tag_content(obj.unique_content, @user, params[:tags], delete_missing=false) if params[:tags]
           if obj.state == Cms::DRAFT
             rediring = Proc.new { redirect_to :action => 'edit', :id => obj.id }
           else
