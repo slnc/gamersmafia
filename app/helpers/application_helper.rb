@@ -791,7 +791,7 @@ END
     
     if @_additional_js_libs
       @_additional_js_libs.uniq.each do |lib|
-        sif lib == 'ckeditor'
+        if lib == 'ckeditor'
           out << "<script src=\"#{ASSET_URL}/ckeditor/ckeditor.js\" type=\"text/javascript\"></script>"
         elsif lib.include?('http://')
           out << "<script src=\"#{lib}\" type=\"text/javascript\"></script>"
