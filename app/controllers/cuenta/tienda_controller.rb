@@ -14,7 +14,7 @@ class Cuenta::TiendaController < ApplicationController
   end
 
   def buy
-    @product = Product.find(params[:id])
+    @product = Product.find(:first, :conditions => ['id = ? and enabled=\'t\'', params[:id]])
     sp = Shop.buy(@product, @user)
     flash[:notice] = sp.used? ? 'Producto comprado y consumido correctamente' : 'Producto comprado correctamente. Debes configurarlo para poder consumirlo.' 
     redirect_to sp.used? ? '/cuenta/tienda' : "/cuenta/mis_compras/#{sp.id}" 
