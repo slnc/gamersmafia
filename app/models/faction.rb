@@ -301,7 +301,7 @@ class Faction < ActiveRecord::Base
   def self.fastest_karma_growing
     # devuelve el top de facciones cuyo karma está creciendo más rápidamente
     stats = []
-    db_query("select COALESCE(sum(karma), 0)::decimal / (select COALESCE(sum(karma),0)+1 
+    db_query("select COALESCE(sum(karma), 0)::decimal / (select COALESCE(sum(karma),0)+50
                                                   from stats.portals 
                                                  where portal_id = parent.portal_id 
                                                    and created_on between now() - '2 weeks'::interval and now() - '1 week'::interval) as susum, 

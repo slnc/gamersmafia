@@ -487,7 +487,7 @@ Request information:
           raise DomainNotFound # ya no soportamos los dominios viejos
         else
           ptal = Portal.find_by_code(host.match('^([^.]+)[.]+')[1])
-	  ptal = nil if ptal.clan_id
+	  ptal = nil if ptal && ptal.clan_id
           ptal = Portal.find_by_fqdn(k) if ptal.nil?
           @@portals[host] = ptal
         end
