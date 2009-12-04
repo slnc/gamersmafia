@@ -269,9 +269,9 @@ class Faction < ActiveRecord::Base
   end
   
   def new_members_per_day
-    self.db_query("SELECT (COUNT(id) / EXTRACT(epoch from '3 months'::interval) * 86400) AS op 
+    self.db_query("SELECT COUNT(id)AS op 
                                           FROM users 
-                                         WHERE faction_last_changed_on > now() - '3 months'::interval 
+                                         WHERE faction_last_changed_on > now() - '1 week'::interval 
                                            AND faction_id = #{self.id}")[0]['op']
   end
   
@@ -281,13 +281,13 @@ class Faction < ActiveRecord::Base
   
   
   def self.fastest_growing(limit = 3)
-    stats = self.db_query("SELECT (COUNT(id) / EXTRACT(epoch from '3 months'::interval) * 86400) AS op, 
+    stats = self.db_query("SELECT COUNT(id) AS op, 
                                                faction_id 
                                           FROM users 
-                                         WHERE faction_last_changed_on > now() - '3 months'::interval 
+                                         WHERE faction_last_changed_on > now() - '1 week'::interval 
                                            AND faction_id is not null
                                       GROUP BY faction_id 
-                                      ORDER BY count(id) / extract(epoch from '3 months'::interval) desc 
+                                      ORDER BY count(id) DESC
                                          LIMIT #{limit}")
     stats2 = []
     
