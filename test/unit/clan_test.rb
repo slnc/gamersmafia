@@ -38,33 +38,6 @@ class ClanTest < ActiveSupport::TestCase
     assert_equal false, c.save, c.errors.to_yaml
   end
   
-  test "activate_website_should_create_clans_portal" do
-    @c = Clan.find(1)
-    assert_equal false, @c.website_activated?
-    assert_nil @c.clans_portals[0]
-    @c.activate_website
-    assert_equal true, @c.website_activated?
-    @c.reload
-    assert_not_nil @c.clans_portals[0]
-    assert_equal Cms::to_fqdn(@c.tag), @c.clans_portals[0].code
-  end
-  
-  test "activate_website_should_create_clans_skin_and_assign_it_to_the_clans_portal" do
-    assert_count_increases(ClansSkin) do
-      test_activate_website_should_create_clans_portal
-    end
-    assert_equal true, (@c.clans_portals[0].skins.count > 0)
-    assert_equal @c.clans_portals[0].skins[0].id, @c.clans_portals[0].skin_id
-  end
-  
-  test "activate_website_should_create_contents_categories" do
-    @c = Clan.find(1)
-    test_activate_website_should_create_clans_portal
-    root_term = Term.single_toplevel(:clan_id => @c.id)
-    assert root_term
-    assert_equal 1, root_term.children.count
-  end
-  
   test "hot" do
     Clan.hot(1, 1.day.ago, Time.now)
   end

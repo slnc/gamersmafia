@@ -81,12 +81,12 @@ class ActiveSupport::TestCase
                                             )")
   end
   
-  def setup_clan_skin
-    @s = ClansSkin.create({:user_id => 1, :name => 'labeling'})
+  def setup_faction_skin
+    @s = FactionsSkin.create({:user_id => 1, :name => 'labeling'})
     assert !@s.new_record?
     assert @s.config[:general][:intelliskin]
     assert_not_nil @s.config[:intelliskin]
-    cp = ClansPortal.find(:first)
+    cp = FactionsPortal.find(:first)
     cp.skin_id = @s.id
     assert cp.save
   end

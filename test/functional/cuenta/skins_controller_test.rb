@@ -57,7 +57,7 @@ class Cuenta::SkinsControllerTest < ActionController::TestCase
   test "should_create_factions_skin_if_everything_ok" do
     sym_login 1
     assert_count_increases(Skin) do 
-      post :create, {:skin => {:name => 'foooskin', :type => 'ClansSkin', :intelliskin_header => fixture_file_upload('/files/buddha.jpg', 'image/jpeg')}}
+      post :create, {:skin => {:name => 'foooskin', :type => 'FactionsSkin', :intelliskin_header => fixture_file_upload('/files/buddha.jpg', 'image/jpeg')}}
       assert_response :redirect
     end
     @skin = Skin.find(:first, :order => 'id DESC')
@@ -98,7 +98,7 @@ class Cuenta::SkinsControllerTest < ActionController::TestCase
 
   
   def setup_clan_config_screens
-    setup_clan_skin
+    setup_faction_skin
     cp = ClansPortal.find(:first)
     @request.host = "#{cp.code}.#{App.domain}"
     sym_login 1

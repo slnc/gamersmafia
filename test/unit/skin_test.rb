@@ -26,7 +26,7 @@ class SkinTest < ActiveSupport::TestCase
   end
   
   test "create_skin_should_create_default_file_with_clans_skin" do
-    @s = ClansSkin.create({:user_id => 1, :name => 'miwanna'})
+    @s = FactionsSkin.create({:user_id => 1, :name => 'miwanna'})
     assert_equal false, @s.new_record?
     assert_equal true, File.exists?("#{RAILS_ROOT}/public/#{@s.file}")
   end

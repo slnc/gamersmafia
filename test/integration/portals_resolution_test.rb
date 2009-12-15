@@ -1,8 +1,6 @@
 require "#{File.dirname(__FILE__)}/../test_helper"
 
-class PortalsResolutionTest < ActionController::IntegrationTest
-  
-  
+class PortalsResolutionTest < ActionController::IntegrationTest  
   test "urls of contents should be correct" do
     host! App.domain
     g = Game.new(:name => 'Diablo 3', :code => 'diablo')
@@ -39,19 +37,5 @@ class PortalsResolutionTest < ActionController::IntegrationTest
     assert_response :success, @response.body
     
     assert_equal p.code, @controller.portal_code
-  end
-  
-  
-  test "should_resolve_subdomain_as_clan_portal" do
-    
-    c = Clan.find_by_tag('mapaches')
-    c.activate_website if not c.website_activated?
-    setup_clan_skin
-    host! "#{Cms::to_fqdn(c.tag)}.#{App.domain}"
-    get '/'
-    assert_response :success, @response.body
-    
-    assert @controller.portal.kind_of?(ClansPortal)
-    assert_equal Cms::to_fqdn(c.tag), @controller.portal_code
   end
 end
