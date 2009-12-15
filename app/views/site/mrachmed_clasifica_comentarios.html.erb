@@ -9,7 +9,7 @@ muchos ejemplos.</p>
 
 <% 
 cache("/common/el_callejon/achmed_comentarios_#{Time.now.strftime("%Y%m%d%H")}") do
-pcent = CommentViolationOpinion.count / (Comment.count(:conditions => "created_on <= '#{Achmed::COMMENTS_JOB_MAX_CREATED_ON}'::timestamp") * 2.0)
+pcent = Achmed.cross_pending_done
 %>
 <style type="text/css">
 .achmed .pcent-bar { height: 25px; }
