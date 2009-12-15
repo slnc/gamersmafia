@@ -108,15 +108,6 @@ class HomeControllerTest < ActionController::TestCase
     assert @controller.portal.kind_of?(ArenaPortal)
   end
   
-  test "should_show_clans_page_if_clans_portal" do
-    @request.host = "#{ClansPortal.find(:first).code}.#{App.domain}"
-    setup_clan_skin
-    get :index
-    assert_response :success
-    assert_template 'clan'
-    assert @controller.portal.kind_of?(ClansPortal)
-  end
-  
   test "should_show_normal_page_if_faction_portal" do
     @request.host = "#{FactionsPortal.find_by_code('ut').code}.#{App.domain}"
     get :index

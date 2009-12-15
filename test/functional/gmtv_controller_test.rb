@@ -19,8 +19,5 @@ class GmtvControllerTest < ActionController::TestCase
     test_should_return_channels_if_gm
   end
   
-  test "should_return_channels_if_clans_portal" do
-    @request.host = "#{ClansPortal.find(:first).code}.gamersmafia.com"
-    test_should_return_channels_if_gm
-  end
+  
 end
