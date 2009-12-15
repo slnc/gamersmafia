@@ -73,9 +73,9 @@ class ForosController < ComunidadController
     @forum = @topic.terms[0] # send(ActiveSupport::Inflector::underscore(@topic.class.category_class.name))
     @title = @topic.title
     @navpath = [['Foros', '/foros']]
-    @forum.get_ancestors.reverse.each { |p| @navpath<< [p.name, "/foros/forum/#{p.id}"] }
+    @forum.get_ancestors.reverse.each { |p| @navpath<< [p.name, "/foros/forum/#{p.id}"] } if @forum
     
-    @navpath<<[@forum.name, "/foros/forum/#{@forum.id}"]
+    @navpath<<[@forum.name, "/foros/forum/#{@forum.id}"] if @forum
     @navpath<<[@topic.title, gmurl(@topic)]
     track_item(@topic)
   end

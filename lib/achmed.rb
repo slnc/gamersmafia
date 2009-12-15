@@ -10,6 +10,20 @@ module Achmed
   STOP_WORDS = ['.', ',', ':', '...', '?', '¿', '¡', '!', '$', '&', '/', '=', 'este', 'esta', 'xd', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'hasta', 'me', 'mi', ')', '(']
   SENTENCE_BOUNDARIES = ['.', '...', '?', '!']
   SENTENCE_BOUNDARIES_REGEXP = /(\.\.\.)|(\.)|(!)(\?)/
+  def self.cross_pending_done
+	  total = Comment.count(:conditions => " id in (SELECT comment_id 
+                                                                  FROM comment_violation_opinions 
+                                                              GROUP BY comment_id )
+                                                     AND created_on <= '#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
+	  done = Comment.count(:conditions => " id in (SELECT comment_id 
+                                                                  FROM comment_violation_opinions 
+                                                              GROUP BY comment_id 
+                                                                HAVING count(*) = 3)
+                                                     AND created_on <= '#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
+						     puts "total: #{total} | done: #{done}"
+						     return done / total.to_f
+
+  end
 
   def self.get_comment_to_classify_for_user(user)
     # User.db_query("SELECT id from comment_violation_opinions where user_id <> #{user.id} group by user_id having count(*)
@@ -21,7 +35,7 @@ module Achmed
 				 		     AND id not in (select comment_id from comment_violation_opinions where user_id = #{user.id})
                                                      AND created_on <= '#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp AND id >= random() * (select max(id) from comments)")
     
-    return cross_pending if cross_pending && Kernel.rand < 0.3
+    return cross_pending # if cross_pending # && Kernel.rand < 0.3
 
     # else return a random comment
     bad_words_cond = " and (comment like '%puta%' or comment like '%polla%' or comment like '%puto%' or comment like '%tacuna%' or comment like '%cancer%' or comment like '%cáncer%' or comment like '%cabrón%' or comment like '% cabron%' or comment like '%marica%' or comment like '%aborto%' or comment like '%mierda%' or comment like '%lesbiana%' or comment like '%negro%')"
@@ -215,12 +229,13 @@ module Achmed
   def self.ngram_train(model, bad_comments_cond, good_comments_cond)
     # spam class
     bad_comments_count = Comment.count(:conditions => bad_comments_cond)
-    ngram_bad = model.train(Comment.find(:all, :conditions => bad_comments_cond).collect { |c| Achmed.clean_comment(c.lastowner_version) } )
+    ngram_bad = model.train(Comment.find(:all, :conditions => bad_comments_cond).collect { |c| Achmed.clean_comment(c.comment) } )
 
     # nospam class
     ngram_good = model.train(Comment.find(:all, :conditions => good_comments_cond, :order => 'id', :limit => bad_comments_count).collect { |c| Achmed.clean_comment(c.comment) } )
 
     FileUtils.mkdir_p(COMMENTS_MODELS_BASE) unless File.exists?(COMMENTS_MODELS_BASE)
+    puts "writing to #{COMMENTS_MODELS_BASE}/#{model.to_s.gsub('::', '_')}_bad"
     File.open("#{COMMENTS_MODELS_BASE}/#{model.to_s.gsub('::', '_')}_bad", 'w' ) { |out| YAML.dump(ngram_bad, out ) }
     File.open("#{COMMENTS_MODELS_BASE}/#{model.to_s.gsub('::', '_')}_good", 'w' ) { |out| YAML.dump(ngram_good, out ) }
   end
@@ -274,12 +289,12 @@ module Achmed
     end
 
     def self.unigrams
-      @@unigrams ||= [File.open(COMMENTS_P_UNIGRAM_FILE_BAD) { |yf| YAML::load(yf) }, File.open(COMMENTS_P_UNIGRAM_FILE_GOOD) { |yf| YAML::load(yf) } ]
+      @@unigrams ||= [File.open("#{COMMENTS_MODELS_BASE}/Achmed_Unigram_bad") { |yf| YAML::load(yf) }, File.open("#{COMMENTS_MODELS_BASE}/Achmed_Unigram_good") { |yf| YAML::load(yf) } ]
     end
 
     def self.most_likely_spam?(comment)
-      bad = self.unigrams[0]
-      good = self.unigrams[1]
+      bad = self.bigrams[0]
+      good = self.bigrams[1]
       l_bad = self.likelihood(bad, comment)
       l_good = self.likelihood(good, comment)
       
@@ -304,9 +319,12 @@ module Achmed
 
 
   def self.test
-    bad_comments_cond = 'netiquette_violation = \'t\' and lastedited_by_user_id in (22776, 10818, 29957, 22776) and id < (select id from comments order by id desc offset 10000 limit 1)'
-    good_comments_cond = 'netiquette_violation = \'f\' and id > (select id from comments where netiquette_violation = \'t\' order by id limit 1) and id < (select id from comments order by id desc offset 10000 limit 1)'
-    model = Achmed::Unigram
+    #bad_comments_cond = 'netiquette_violation = \'t\' and lastedited_by_user_id in (22776, 10818, 29957, 22776) and id < (select id from comments order by id desc offset 10000 limit 1)'
+    #good_comments_cond = 'netiquette_violation = \'f\' and id > (select id from comments where netiquette_violation = \'t\' order by id limit 1) and id < (select id from comments order by id desc offset 10000 limit 1)'
+    bad_comments_cond = 'id IN (SELECT distinct(comment_id) FROM comment_violation_opinions WHERE cls=0 group by comment_id,cls having count(*) > 1) and comment is not null'
+    good_comments_cond = 'id IN (SELECT distinct(comment_id) FROM comment_violation_opinions WHERE cls=1 group by comment_id,cls having count(*) > 1) and comment is not null'
+    all_comments = 'id IN (SELECT distinct(comment_id) FROM comment_violation_opinions WHERE cls<>2 group by comment_id,cls having count(*) > 1) and comment is not null'
+    model = Achmed::Bigram
 
     self.ngram_train(model, bad_comments_cond, good_comments_cond)
 
@@ -318,24 +336,37 @@ module Achmed
     false_positives = 0
     false_negatives = 0
 
-    Comment.find(:all, :conditions => 'not (netiquette_violation=\'t\' and lastedited_by_user_id not in (22776, 10818, 29957, 22776)) AND id > (select id from comments order by id desc offset 10000 limit 1)').each do |c|
-      if c.netiquette_violation
+    #Comment.find(:all, :conditions => 'not (netiquette_violation=\'t\' and lastedited_by_user_id not in (22776, 10818, 29957, 22776)) AND id > (select id from comments order by id desc offset 10000 limit 1)').each do |c|
+    Comment.find(:all, :conditions => all_comments).each do |c|
+      bad_comment = CommentViolationOpinion.count(:conditions => ['comment_id = ?', c.id]) > 2
+      if bad_comment
           count_bad += 1
       else
           count_good += 1
       end
 
-      tag_as_spam = model.most_likely_spam?(c.netiquette_violation ? c.lastowner_version : c.comment)
-      
-      err += 1.0 if (c.netiquette_violation && !tag_as_spam) || (!c.netiquette_violation && tag_as_spam)
+      tag_as_spam = model.most_likely_spam?(c.comment)
+      err += 1.0 if (bad_comment && !tag_as_spam) || (!bad_comment && tag_as_spam)
 
-      if (c.netiquette_violation && !tag_as_spam) 
+      if (bad_comment && !tag_as_spam) 
           puts "bad mouth but didn't detect"
           false_negatives += 1
-      elsif (!c.netiquette_violation && tag_as_spam)
+      elsif (!bad_comment && tag_as_spam)
           puts "good mouth but suspected from him #{self.clean_comment(c.comment)[0..150]}"
           false_positives += 1
       end
+      #
+      #tag_as_spam = model.most_likely_spam?(c.netiquette_violation ? c.lastowner_version : c.comment)
+      
+      #err += 1.0 if (c.netiquette_violation && !tag_as_spam) || (!c.netiquette_violation && tag_as_spam)
+
+      #if (c.netiquette_violation && !tag_as_spam) 
+      #    puts "bad mouth but didn't detect"
+      #    false_negatives += 1
+      #elsif (!c.netiquette_violation && tag_as_spam)
+      #    puts "good mouth but suspected from him #{self.clean_comment(c.comment)[0..150]}"
+      #    false_positives += 1
+      #end
     end
 
     puts "count_bad: #{count_bad} | count_good: #{count_good}"

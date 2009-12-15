@@ -1,4 +1,4 @@
-<div style="background: #fff;">
+<div style="background: #fff; text-align: left; padding: 10px;">
   <script language="JavaScript">
   function select_image(img_src)
   {
@@ -30,17 +30,19 @@
 	window.close();
   }
   </script>
-  <div style="float: right; width: 180px;">
+  <div style="float: right; width: 200px; margin-right: 30px; ">
   <h2>Insertar</h2>
-  <div id="must-select"> <p>No has seleccionado ninguna imagen.</p> </div>
+  <div class="infoinline" id="must-select"> <p>No has elegido ninguna imagen.</p> </div>
   <div id="insertit" class="hidden">
-    <img id="selectedImg" width="80" height="80" src="bl.gif" style="border: 1px solid #ccc;" />
-    <input type="button" class="button" onclick="insert_image();" value="Insertar Imagen" />
+	  <div style="text-align: center;">
+	  <img id="selectedImg" width="160" height="160" src="bl.gif" style="border: 1px solid #ccc;" /><br />
+    <input type="button" style=" margin-top: 5px;" class="button" onclick="insert_image();" value="Insertar Imagen" />
+	  </div>
   </div>
   <br />
   <br />
   <h2>Subir al servidor</h2>
-  <p>Formatos admitidos: JPG, GIF y PNG. Si subes un archivo ZIP que contenga
+  <p class="infoinline">Formatos admitidos: JPG, GIF y PNG. Si subes un archivo ZIP que contenga
   imágenes éstas serán descomprimidas.</p>
   <form method="post" action="/cuenta/cuenta/subir_imagen/?sEditorId=<%=params[:sEditorId]%>" enctype="multipart/form-data">
   <input type="file" name="file" style="font-size: 10px;" /><br />
@@ -49,15 +51,15 @@
   </div>
 
   <h2>Elegir</h2>
-  <div style="width: 250px; clear: left;">
-  <table>
+  <div style="width: 325px; height: 360px; clear: left; overflow: scroll;">
+  <table style="width: 308px;">
 <% 
 fid = 0
 for f in @user.get_my_files 
   if f.match(/\.(jpg|gif|png|jpeg)$/i) %>
   <tr class="<%=oddclass%>" id="fid<%=fid%>">
   	<td><a href="#" onclick="select_image('<%="#{@user.get_tmp_basedir}#{f}"%>');"><%=f%></a></td>
-	<td><%=link_to_remote('Borrar', :url => "/cuenta/imagenes/borrar?filename=#{File.basename(f)}&sEditorId=#{params[:sEditorId]}", :complete => "$j('#fid#{fid}').fadeOut('normal');")%></td></tr>
+	<td class="infoinline"><%=link_to_remote('Borrar', :url => "/cuenta/imagenes/borrar?filename=#{File.basename(f)}&sEditorId=#{params[:sEditorId]}", :complete => "$j('#fid#{fid}').fadeOut('normal');")%></td></tr>
 <%
  
   end
