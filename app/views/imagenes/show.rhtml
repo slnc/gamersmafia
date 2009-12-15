@@ -57,7 +57,8 @@
 		
 		var previm = a_im.childNodes[0].src;
 		prev_w = a_im.childNodes[0].width;
-		a_im.childNodes[0].src = '/images/spinner.gif';
+		// TODO show spinner temporarily
+		// a_im.childNodes[0].src = '/images/spinner.gif';
 		a_im.childNodes[0].src = previm.replace('/cache/thumbnails/k/460x345', '/cache/thumbnails/k/930x700');
 		a_im.childNodes[0].style.width = '';
 		document.location = '#ccontent';

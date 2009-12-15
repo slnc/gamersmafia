@@ -11,7 +11,7 @@ ActionController::Routing::Routes.draw do |map|
 
 #  map.resources :plataformas, :controller => 'admin/plataformas', :path_prefix => '/admin'
 
-  map.connect 'admin/', :controller => 'admin/menu', :action => 'index'
+  # map.connect 'admin/', :controller => 'admin/menu', :action => 'index'
   map.connect 'admin/contenidos/recover/:id', :controller => 'admin/contenidos', :action => 'recover'
 
   map.connect 'admin/categorias/', :controller => 'admin/categorias', :action => 'index'

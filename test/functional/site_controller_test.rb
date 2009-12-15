@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class SiteControllerTest < ActionController::TestCase  
-  basic_test :carcel, :smileys, :tu_web_de_clan_gratis, :rss, :contactar, :privacidad, :album, :fusiones, :webs_de_clanes, :logo, :responsabilidades, :portales, :novedades
+  basic_test :carcel, :smileys, :rss, :contactar, :privacidad, :album, :fusiones, :webs_de_clanes, :logo, :responsabilidades, :portales, :novedades
   
   test "maintain_lock" do
     l = ContentsLock.create({:content_id => 1, :user_id => 1})
@@ -241,11 +241,6 @@ class SiteControllerTest < ActionController::TestCase
   
   test "ejemplos_guids" do
     get :ejemplos_guids
-    assert_response :success
-  end
-  
-  test "colabora" do
-    get :colabora
     assert_response :success
   end
   

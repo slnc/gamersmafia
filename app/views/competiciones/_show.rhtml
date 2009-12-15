@@ -1,4 +1,4 @@
-]<% generic_support do %>
+<% generic_support do %>
   <%mftext('Estado de la competición') do %>
   <div class="centered"><strong><%=Competition::STATES_ES[competition.state]%></strong></div>
   <% end -%>
@@ -8,7 +8,6 @@
   <%mftext('Inscríbete en esta competición') do %>
   <% if user_is_authed then %>
     <% if competition.competitions_participants_type_id == 1 then %><%# TODO horrible hack, kill me %> 
-    %>
       <% if (competition.competitions_participants_type_id == 1 && competition.user_is_participant(@user.id)) then %>
       <p>Inscripción en la competición correcta.</p>
       <% if competition.state == 1 then %><div class="centered-link"><form method="post" action="/competiciones/leave/<%=@competition.id%>"><input type="submit" class="button" value="Desinscribirme" onclick="return confirm('¿Estás seguro?');" /></form></div><% end -%>

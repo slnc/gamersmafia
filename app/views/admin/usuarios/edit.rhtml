@@ -79,7 +79,7 @@
 <table>
 <tr><td>
 
- <%= form_tag({:action=> "update" }, :multipart => true, :onSubmit => "Toggle.display('edituser_spinner')") %>
+ <%= form_tag({:action=> "update" }, :multipart => true) %>
  <input type="hidden" name="id" value="<%=@edituser.id%>" />
 
   <% if flash['notice'] %>
@@ -155,7 +155,6 @@
 <tr><td>&nbsp;</td>
 <td>
   <input type="submit" class="button primary" value="Guardar" />
-<%= image_tag("spinner.gif", :align => 'absmiddle', :border=> 0, :id=>"edituser_spinner", :style=>"display: none;" ) %>
 </td></tr>
 
 </table>

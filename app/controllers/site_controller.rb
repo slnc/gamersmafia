@@ -14,10 +14,6 @@ class SiteController < ApplicationController
     
   end
   
-  def colabora
-  end
-
-  
   def mrachmed_clasifica_comentarios
     @prev_comment_id = params[:prev_comment_id] if params[:prev_comment_id]
     if params[:comment_id]
@@ -510,10 +506,6 @@ class SiteController < ApplicationController
   def search
     params[:id] = params[:searchq]
     redirect_to "http://google.com/search?num=100&filter=0&safe=off&q=site%3Agamersmafia.com #{params[:searchq]}"
-  end
-  
-  def tu_web_de_clan_gratis
-    @title = "Tu web de clan gratis"
   end
   
   def webmasters

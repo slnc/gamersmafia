@@ -1,8 +1,0 @@
-<% content_main do %>
-  <%mftext('Scripts') do %>
-  <ul>
-    <li><%= link_to 'Corregir categorías de primer nivel', {:action => 'fix_categories'}, :confirm => '¿Seguro?'%><br /><div class="infoinline">Revisa que existan categorías de primer nivel en todos los contenidos para cada una de las facciones actuales.</div></li>
-    <li><%= link_to 'Corregir totales de elementos en categorías', {:action => 'fix_categories_count'}, :confirm => '¿Seguro?'%><br /><div class="infoinline">Calcula de nuevo el total de elementos en cada categoría de Descargas, Tutoriales y Foros.</div></li>
-  </ul>
-  <% end -%>
-<% end -%>

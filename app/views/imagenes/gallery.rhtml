@@ -34,7 +34,7 @@
   <% mftext("#{@category.parent.name} &raquo; #{@category.name}") do %>
 <div class="imagesgallery">
 <%
-@image_pages = ActionController::Pagination::Paginator.new self, @category.count(:published, :content_type => 'Image'), 16, params['page']
+@image_pages = ActionController::Pagination::Paginator.new self, @category.count(:published, :content_type => 'Image'), 15, params['page']
 %>
 <%= render :partial => 'shared/pager', :object => @image_pages, :locals => {:pos => 'top'} %>
 <% cache("/common/imagenes/gallery/#{@category.id}/page_#{params[:page]}") do
