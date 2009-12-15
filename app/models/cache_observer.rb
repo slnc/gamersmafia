@@ -188,7 +188,7 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment "/_users/#{object.receiver_user_id % 1000}/#{object.receiver_user_id}/layouts/recommendations"
       
       when 'BazarDistrict':
-      expire_fragment "/layouts/portal_gm20085/districts"
+      expire_fragment "/layouts/default/districts"
       
       when 'Friendship':
       Cache::Friendship.common(object)
@@ -356,7 +356,7 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment "/_users/#{object.receiver_user_id % 1000}/#{object.receiver_user_id}/layouts/recommendations"
       
       when 'BazarDistrict':
-      expire_fragment "/layouts/portal_gm20085/districts" if object.slnc_changed?(:name) || object.slnc_changed?(:code) 
+      expire_fragment "/layouts/default/districts" if object.slnc_changed?(:name) || object.slnc_changed?(:code) 
       
       when 'Friendship':
       Cache::Friendship.common(object)

@@ -122,7 +122,7 @@ if u_clans.size == 0 then %>
 					<li style="padding-right: 10px;"><div id="mggnav-bazar-themes"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-bazar-themes-list');" href=""><%=controller.portal.kind_of?(BazarDistrictPortal) ? controller.portal.name : 'Distritos'%></a></div></div></div></div>
 						<div id="mggnav-bazar-themes-list" class="saw-dropdownlist hidden">
 							<ul>
-				<% cache("/layouts/portal_gm20085/districts") do %>
+				<% cache("/layouts/default/districts") do %>
 				<%BazarDistrict.find(:all, :order => 'lower(name)').each do |c| %>
 					<li class="sawbody-bazar-tema"><a href="http://<%=c.code%>.<%=App.domain%>/"><%=faction_favicon(c)%> <%=c.name%></a></li>
 				<% end -%>
