@@ -20,7 +20,7 @@ class ArenaPortal
   end
   
   def layout
-    'arena'
+    'default'
   end
   
   def code

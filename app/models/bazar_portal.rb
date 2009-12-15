@@ -20,7 +20,7 @@ class BazarPortal
   end
   
   def layout
-    'bazar'
+    'default'
   end
   
   def code

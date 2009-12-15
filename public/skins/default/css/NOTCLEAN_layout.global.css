@@ -96,7 +96,7 @@
 #mgsubmenu,
 #mgsubmenu2
  {
-    background: #891801 /* url(/skins/default/images/layout/wmenu_grad_3rd.gif) left bottom repeat-x*/;
+    background: #891801;
     height: 23px;
     line-height: 23px;
 }
