@@ -1,6 +1,10 @@
 general:
   parentskin: default
+  intelliskin: true
 
+intelliskin:
+  color_gen: Custom
+    
 google_ads:
   google_color_border: ffffff
   google_color_bg: fafafa
@@ -16,3 +20,10 @@ google_ads_bottom:
   google_color_link: AD0011
   google_color_text: DDDDDD
   google_color_url: 008000
+  
+css_properties:
+  page_background_color: ffffff
+  page_background_pos: 0 0
+  page_background_repeat: no-repeat
+    
+    

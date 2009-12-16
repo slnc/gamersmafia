@@ -326,7 +326,7 @@ module Skins
         if File.exists?(f_custom)
           css_tpl2 = File.open(f_custom).read
           get_colors(options_f).each do |k,v|
-            css_tpl.gsub!("${#{k}}", v)
+            css_tpl2.gsub!("${#{k}}", v)
           end
           css_tpl = css_tpl<< css_tpl2
         end
@@ -1034,6 +1034,7 @@ module Skins
     
     class Custom < AbstractGenerator
       DEF_OPTIONS  = {
+        :page_background_color => RgbColor.new('#ffffff'),
         :body_background_color => RgbColor.new('#ffffff'),
         :body_color => RgbColor.new('#000000'),
         :cpagein_background_color => RgbColor.new('#ffffff'),
@@ -1094,7 +1095,7 @@ module Skins
       def self.get_colors(options=nil)
         options = options.nil? ? DEF_OPTIONS : DEF_OPTIONS.merge(options)
         colors_generated = {}
-        options.each do |k,v| 
+        options.each do |k,v|
           v = RgbColor.new(v) unless v.kind_of?(RgbColor)
           colors_generated[k] = v.to_s 
         end

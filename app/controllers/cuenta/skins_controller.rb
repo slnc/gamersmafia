@@ -1,23 +1,19 @@
 class Cuenta::SkinsController < ApplicationController
   before_filter :require_auth_users
   
-  def submenu
-    'skin' if @skin
-  end
+  #def submenu
+  #  'skin' if @skin
+  #end
   
-  def submenu_items
-    if @skin && @portal.respond_to?(:clan_id) && @portal.clan_id
-      [['Cabecera', "/cuenta/skins/cabecera/#{@skin.id}"],
-      ['Organización', "/cuenta/skins/organizacion/#{@skin.id}"],
-      ['Módulos', "/cuenta/skins/modulos/#{@skin.id}"],
-      ['Colores', "/cuenta/skins/colores/#{@skin.id}"],
-      ['Texturas', "/cuenta/skins/texturas/#{@skin.id}"],
-      ['Otras opciones', "/cuenta/skins/otras_opciones/#{@skin.id}"],
-      ]
-    else
-	    []
-    end
-  end
+  #def submenu_items
+    #if @skin && @skin.is_intelliskin?
+    #  [['General', "/cuenta/skins/edit/#{@skin.id}"],
+    #  ['Avanzadas', "/cuenta/skins/avanzadas/#{@skin.id}"],
+    #  ]
+    #else
+	  #  []
+    #end
+  #end
   
   def index
     @title = "Mis skins"
@@ -27,7 +23,7 @@ class Cuenta::SkinsController < ApplicationController
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
     @title = "Editar skin #{@skin.name}"
     if @skin.config[:general][:intelliskin] then
-      render :action => 'edit_intelliskin'
+      render :action => 'otras_opciones'
     else
       render :action => 'edit'
     end    
@@ -147,13 +143,17 @@ class Cuenta::SkinsController < ApplicationController
   
   def do_otras_opciones
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
-    if @skin.update_attributes(params[:skin].pass_sym(:intelliskin_favicon))
+    @skin.config[:intelliskin] ||= {}
+
+    @skin.config[:css_properties].merge!(params[:skin][:css_properties])
+    @skin.save_config
+    #if @skin.update_attributes(params[:skin].pass_sym(:intelliskin_favicon))
       flash[:notice] = "Skin #{@skin.name} actualizada correctamente"
-    else
-      flash[:error] = "Error al actualizar la página"
-    end
+    #else
+    #  flash[:error] = "Error al actualizar la página"
+    #end
     
-    redirect_to "/cuenta/skins/otras_opciones/#{@skin.id}"
+    redirect_to "/cuenta/skins/edit/#{@skin.id}"
   end
   
   def texturas_por_tipo

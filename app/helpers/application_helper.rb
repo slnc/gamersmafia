@@ -11,6 +11,36 @@ module ApplicationHelper
     :Spam => '108',
   }
   
+  def color_selector(field_name, field_value)
+    field_id = "colorSelectorField#{field_name.gsub('[', '').gsub(']', '')}"
+    div_sel_id = "colorSelector#{field_name.gsub('[', '').gsub(']', '')}"
+  <<-END
+  <div id="#{div_sel_id}" style="width: 20px; height: 20px; float: left; border: 1px solid black; margin-right: 5px;"><div style="width: 100%; height: 100%;"></div></div> <input name="#{field_name}" id="#{field_id}" value="#{field_value}" /> 
+
+<script type="text/javascript">
+$j('##{field_id}').ColorPicker({
+  color: '#0000ff',
+  onShow: function (colpkr) {
+    $j(colpkr).fadeIn(100);
+    return false;
+  },
+  onHide: function (colpkr) {
+    $j(colpkr).fadeOut(100);
+    return false;
+  },
+  onBeforeShow: function () {
+    $j(this).ColorPickerSetColor(this.value);
+  },
+  onChange: function (hsb, hex, rgb) {
+    $j('##{div_sel_id} div').css('backgroundColor', '#' + hex);
+    $j('##{field_id}').val('#' + hex);
+  }
+});
+$j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val());
+</script>
+    END
+  end
+  
   def bbeditor(opts={})
     raise "id not given for bbeditor" unless opts[:id]
     raise "name not given for bbeditor" unless opts[:name]
@@ -36,7 +66,6 @@ module ApplicationHelper
         if (is_ie)
     $j('textarea[name=#{opts[:name]}]').css('width', '100%');
     </script>
-    
     #{controller.send(:render_to_string, :partial => '/shared/smileys', :locals => { :dom_id => opts[:id] })}
     EOS
   end
@@ -696,6 +725,8 @@ google_color_text = "' + options[:colors][:google_color_text]+'";
 END
   end
   
+  
+  
   def javascript_includes
     if App.compress_js?
       out = "<script type=\"text/javascript\" src=\"#{ASSET_URL}/gm.#{SVNVERSION}.js\"></script>\n"
@@ -711,6 +742,7 @@ END
 <script src="#{ASSET_URL}/javascripts/app.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/tracking.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/app.bbeditor.#{SVNVERSION}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/colorpicker.#{SVNVERSION}.js" type="text/javascript"></script>
       END
     end
     

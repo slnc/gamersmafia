@@ -1,4 +1,5 @@
 /* clean */
+/*
 body {
 	background-color: #${body_background_color};
 	color: #${body_color};
@@ -23,7 +24,7 @@ a.action:visited {
 }
 
 a.nav:hover {
-	color: #${a_nav_hover_color}; /* optional */
+	color: #${a_nav_hover_color}; /* optional * /
 }
 
 a.content {
@@ -133,4 +134,4 @@ textarea {
 	border-color: #${good_border_color};
 	background-color: #${good_background_color};
 	color: #${good_color};
-}
+} */

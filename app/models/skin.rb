@@ -92,7 +92,7 @@ class Skin < ActiveRecord::Base
   end
   
   def is_intelliskin?
-    config[:intelliskin]
+    config[:general][:intelliskin]
   end
   
   # Devuelve los includes a usar para esta skin
@@ -218,8 +218,12 @@ class Skin < ActiveRecord::Base
   
   def add_intelliskin_colors
     clean_style_file(CGEN_CSS_START, CGEN_CSS_END)
-    inject_into_css(CGEN_CSS_START + "\n" + Skins::ColorGenerators.const_get(config[:intelliskin][:color_gen]).process(config[:intelliskin][config[:intelliskin][:color_gen]][:color_gen_params]) + "\n" + CGEN_CSS_END)
+    # inject_into_css(CGEN_CSS_START + "\n" + Skins::ColorGenerators.const_get(config[:intelliskin][:color_gen]).process(config[:intelliskin][config[:intelliskin][:color_gen]][:color_gen_params]) + "\n" + CGEN_CSS_END)
+    
+    inject_into_css(CGEN_CSS_START + "\n" + Skins::ColorGenerators::Custom.process(config[:css_properties]) + "\n" + CGEN_CSS_END)
   end
+  
+  
   
   def build_skin
     add_intelliskin_colors if config[:intelliskin]
