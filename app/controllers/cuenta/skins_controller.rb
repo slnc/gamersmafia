@@ -213,6 +213,29 @@ class Cuenta::SkinsController < ApplicationController
     redirect_to "/cuenta/skins/texturas/#{skin.id}"
   end
   
+  def create_skins_file
+    @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:skin_id], @user.id])
+    sfn = @skin.skins_files.create(params[:skins_file])
+    if sfn.new_record?
+      flash[:error] = "Error al guardar el archivo: #{sfn.errors.full_messages_html}"
+    else
+      flash[:notice] = "Archivo creado correctamente"
+    end
+    redirect_to "/cuenta/skins/edit/#{skin.id}"
+  end
+  
+  def delete_skins_file
+    @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:skin_id], @user.id])
+    sfn = @skin.skins_files.find(params[:skins_file_id])
+    if sfn.nil?
+      flash[:error] = "No se ha encontrado el archivo"
+    else
+      sfn.destroy
+      flash[:notice] = "Archivo eliminado correctamente"
+    end
+    redirect_to "/cuenta/skins/edit/#{skin.id}"
+  end
+  
   def borrar_skin_textura
     sk = skin.skin_textures.find_by_id(params[:id])
     raise ActiveRecord::RecordNotFound unless sk

@@ -12,7 +12,12 @@ module Skins
     attributes.each do |k,v|
       if options_f[k] && !options_f[k].kind_of?(v.class)
         options_f[k] = options_f[k].to_i if %w(Percent Hue).include?(ActiveSupport::Inflector::demodulize(v.class.name))
-        options_f[k] = v.class.new(options_f[k])
+        if v.class.name == 'RgbColor' && options_f[k] == ''
+          options_f[k] = 'transparent'
+        else
+          options_f[k] = v.class.new(options_f[k])
+        end
+        
       end
     end
     options_f
@@ -1035,6 +1040,7 @@ module Skins
     class Custom < AbstractGenerator
       DEF_OPTIONS  = {
         :page_background_color => RgbColor.new('#ffffff'),
+        :page_background_image => "transparent",
         :body_background_color => RgbColor.new('#ffffff'),
         :body_color => RgbColor.new('#000000'),
         :cpagein_background_color => RgbColor.new('#ffffff'),
@@ -1096,7 +1102,7 @@ module Skins
         options = options.nil? ? DEF_OPTIONS : DEF_OPTIONS.merge(options)
         colors_generated = {}
         options.each do |k,v|
-          v = RgbColor.new(v) unless v.kind_of?(RgbColor)
+          v = RgbColor.new(v) unless v.kind_of?(RgbColor) || DEF_OPTIONS[k].class.name != 'RgbColor'
           colors_generated[k] = v.to_s 
         end
         colors_generated

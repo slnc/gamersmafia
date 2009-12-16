@@ -11,6 +11,32 @@ module ApplicationHelper
     :Spam => '108',
   }
   
+  def css_image_selector(field_name, field_value, skin)
+    out = <<-END
+  <select name="#{field_name}">
+<option value="none">(ninguna)</option>
+    END
+    skin.skins_files.each do |sfn|  
+      val = "url(/#{sfn.file})"
+      out << <<-END
+      <option #{'selected="selected"' if val == field_value } value="#{val}">#{sfn.file}</option>
+    END
+    end 
+    out << '</select>'
+  end
+
+  def css_background_repeat(field_name, field_value, skin)
+    out = <<-END
+  <select name="#{field_name}">
+  <option #{'selected="selected"' if field_value == 'no-repeat' } value="no-repeat">no repetir</option>
+  <option #{'selected="selected"' if field_value == 'repeat-y' } value="repeat-y">repetir en vertical</option>
+  <option #{'selected="selected"' if field_value == 'repeat-x' } value="repeat-x">repetir en horizontal</option>
+  <option #{'selected="selected"' if field_value == 'repeat' } value="repeat">repetir en ambas direcciones</option>
+    END
+     
+    out << '</select>'
+  end
+  
   def color_selector(field_name, field_value)
     field_id = "colorSelectorField#{field_name.gsub('[', '').gsub(']', '')}"
     div_sel_id = "colorSelector#{field_name.gsub('[', '').gsub(']', '')}"

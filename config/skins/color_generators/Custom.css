@@ -1,3 +1,9 @@
 body {
 	background-color: #${page_background_color};
+	background-image: ${page_background_image};
+	background-repeat: ${page_background_repeat};
+}
+
+#cpageout {
+	background-image: ${cpageout_background_image};
 }

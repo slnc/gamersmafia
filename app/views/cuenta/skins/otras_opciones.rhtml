@@ -1,9 +1,41 @@
+<% generic_support do %>
+<%mftable('Archivos relacionados', @skin.skins_files) do |sfn| %>
+<td><%=sfn.file%></td>
+<td><a href="/cuenta/skins/delete_skins_file?skin_id=<%=@skin.id%>&skins_file_id=<%=sfn.id%>">del</a></td>
+<% end -%>
+
+<form method="post" action="/cuenta/skins/create_skins_file" enctype="multipart/form-data">
+	<input type="hidden" name="skin_id" value="<%=@skin.id%>" />
+	<input type="file" name="skins_file[file]" />
+	<input type="submit" value="Crear" />
+</form>
+<% end -%>
+
 <% content_main do %>
 <% mftext('Otras opciones') do %>
 <form method="post" action="/cuenta/skins/do_otras_opciones" enctype="multipart/form-data">
 	<input type="hidden" name="id" value="<%=params[:id]%>" />
 
-<%=color_selector('skin[css_properties][page_background_color]', @skin.config[:css_properties][:page_background_color])%>
+<table>
+	
+	<tr>
+		<td>page_background_color</td>
+		<td><%=color_selector('skin[css_properties][page_background_color]', @skin.config[:css_properties][:page_background_color])%></td>
+	</tr
+	<tr>
+		<td>page_background_image</td>
+		<td><%=css_image_selector('skin[css_properties][page_background_image]', @skin.config[:css_properties][:page_background_image], @skin) %></td>
+	</tr>
+	<tr>
+		<td>page_background_repeat</td>
+		<td><%=css_background_repeat('skin[css_properties][page_background_repeat]', @skin.config[:css_properties][:page_background_repeat], @skin) %></td>
+	</tr>
+	<tr>
+		<td>cpageout</td>
+		<td><%=css_image_selector('skin[css_properties][cpageout_background_image]', @skin.config[:css_properties][:cpageout_background_image], @skin) %></td>
+	</tr>
+</table>
+
 
 <input type="submit" class="button" value="Guardar" />
 </form>

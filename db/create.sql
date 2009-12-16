@@ -11622,6 +11622,36 @@ CREATE TABLE skins (
 
 
 --
+-- Name: skins_files; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE skins_files (
+    id integer NOT NULL,
+    skin_id integer NOT NULL,
+    file character varying NOT NULL
+);
+
+
+--
+-- Name: skins_files_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE skins_files_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: skins_files_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE skins_files_id_seq OWNED BY skins_files.id;
+
+
+--
 -- Name: skins_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
@@ -13587,6 +13617,13 @@ ALTER TABLE skins ALTER COLUMN id SET DEFAULT nextval('skins_id_seq'::regclass);
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE skins_files ALTER COLUMN id SET DEFAULT nextval('skins_files_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE slog_entries ALTER COLUMN id SET DEFAULT nextval('slog_entries_id_seq'::regclass);
 
 
@@ -15297,6 +15334,14 @@ ALTER TABLE ONLY silenced_emails
 
 ALTER TABLE ONLY skin_textures
     ADD CONSTRAINT skin_textures_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: skins_files_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY skins_files
+    ADD CONSTRAINT skins_files_pkey PRIMARY KEY (id);
 
 
 --
@@ -17749,6 +17794,14 @@ ALTER TABLE ONLY refered_hits
 
 ALTER TABLE ONLY reviews
     ADD CONSTRAINT reviews_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
+
+
+--
+-- Name: skins_files_skin_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY skins_files
+    ADD CONSTRAINT skins_files_skin_id_fkey FOREIGN KEY (skin_id) REFERENCES skins(id) MATCH FULL;
 
 
 --
