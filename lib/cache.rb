@@ -60,7 +60,7 @@ module Cache
         expire_fragment("/#{p.code}/miembros/#{object.user_id % 1000}/#{object.user_id}/last_comments")
         if object.content.real_content.class.name == 'Topic'
           expire_fragment("/#{p.code}/foros/index/index") 
-          expire_fragment("/bazar/home/categories/#{object.content.real_content.main_category.root.code}")
+          expire_fragment("/bazar/home/categories/#{object.content.real_content.main_category.root.code}") if object.content.real_content.main_category
         end
         expire_fragment("/#{p.code}/site/last_commented_objects")
         expire_fragment("/#{p.code}/site/last_commented_objects_ids")

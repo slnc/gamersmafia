@@ -65,7 +65,7 @@ class DemosControllerTest < ActionController::TestCase
   end
   
   test "get_games_versions_should_work" do
-    get :get_games_versions, :game_id => 1
+    get :get_games_versions, :demo_term_id => 1
     assert_response :success
   end
   
@@ -74,7 +74,7 @@ class DemosControllerTest < ActionController::TestCase
   end
   
   test "get_games_modes_should_work" do
-    get :get_games_modes, :game_id => 1
+    get :get_games_modes, :demo_term_id => 1
     assert_response :success
   end
   
@@ -83,7 +83,7 @@ class DemosControllerTest < ActionController::TestCase
   end
   
   test "get_games_maps_should_work" do
-    get :get_games_maps, :game_id => 1
+    get :get_games_maps, :demo_term_id => 1
     assert_response :success
   end
   

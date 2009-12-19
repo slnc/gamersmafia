@@ -94,7 +94,6 @@ class DemosController < ArenaController
   end  
   
   def get_games_versions
-    raise params.to_s
     raise ActiveRecord::RecordNotFound unless params[:demo_term_id].to_s != ''
     @g = Game.find(Term.find(params[:demo_term_id]).game_id)
     raise ActiveRecord::RecordNotFound unless @g

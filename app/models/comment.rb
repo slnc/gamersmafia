@@ -123,7 +123,7 @@ class Comment < ActiveRecord::Base
     add_karma
     self.user.update_attributes(:lastcommented_on => self.created_on)
     # TODO bj lightweight needed GmSys.job("Comment.find(#{self.id}).notify_trackers")
-    notify_trackers
+    GmSys.job("Comment.find(#{self.id}).notify_trackers")
   end
   
   def notify_trackers
