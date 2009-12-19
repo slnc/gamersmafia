@@ -63,7 +63,7 @@ class BazarPortal
   end
   
   def skin
-    Skin.find_by_hid('bazar') # TODO esto no se usa
+    Skin.find_by_hid('default')
   end
   
   def method_missing(method_id, *args)

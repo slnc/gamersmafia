@@ -41,7 +41,7 @@ class ArenaPortal
   end
   
   def skin
-    Skin.find_by_hid('arena') # TODO esto no se usa
+    Skin.find_by_hid('default')
   end
   
   def respond_to?(method_id, include_priv = false)

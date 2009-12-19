@@ -7,7 +7,7 @@ class DemosController < ArenaController
   end
   
   def buscar
-    redirect_to :action => 'index' and return false unless params[:demo] #.kind_of? Hash)
+    redirect_to :action => 'index' and return false unless params[:demo_term_id] #.kind_of? Hash)
     @title = 'Resultados de la búsqueda'
     sql_conds = []
     %w(demos_category_id demotype pov_type games_mode_id event_id games_version_id games_map_id entity1_local_id entity2_local_id).each do |attr|

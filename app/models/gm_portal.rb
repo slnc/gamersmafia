@@ -41,7 +41,7 @@ class GmPortal
   end
   
   def skin
-    Skin.find_by_hid('default') # TODO esto no se usa
+    Skin.find_by_hid('default')
   end
   
   def method_missing(method_id, *args)
