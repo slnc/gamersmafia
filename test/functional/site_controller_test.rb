@@ -485,6 +485,7 @@ res.content = unescape('#{content}');]]></result>
     assert_count_increases(ContentsRecommendation) do
       post :do_recommend_to_friend, :content_id => 1, :friends => [panzer.id.to_s], :comment => 'feoo'
     end
+    assert_equal 'feoo', ContentsRecommendation.last.comment
   end
   
   test "do_recommend_to_friend_but_friend_already_visited" do

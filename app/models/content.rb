@@ -31,6 +31,18 @@ class Content < ActiveRecord::Base
   
   before_destroy :unlink_real_content
   
+  def recommend_to_friends(sender, friends, comment)
+    friends.each do |uid|
+      u = User.find_by_id(uid.to_i)
+      next unless u && Friendship.find_between(u, sender)
+      next if u.tracker_has?(self.id)
+      comment = nil if comment.to_s == 'Comentario (opcional)'
+      comment = comment[0..255] if comment && comment.size > 255
+      self.contents_recommendations.create(:sender_user_id => sender.id, :receiver_user_id => u.id, :comment => comment)
+    end    
+  end
+  
+  
   def resolve_portal_id
     # primero los fáciles
   end

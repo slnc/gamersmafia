@@ -605,23 +605,9 @@ class SiteController < ApplicationController
   end
   
   def do_recommend_to_friend
-    require_auth_users  
-    o = Content.find(params[:content_id].to_i)
-    udones = []
-    
-    params[:friends].each do |uid|
-      u = User.find_by_id(uid.to_i)
-      next unless u && Friendship.find_between(u, @user)
-      params[:comment] = nil if params[:comment].to_s == 'Comentario (opcional)'
-      params[:comment] = params[:comment][0..255] if params[:comment] && params[:comment].size > 255
-      if !u.tracker_has?(o.id)
-        ContentsRecommendation.create(:sender_user_id => @user.id, :receiver_user_id => u.id, :content_id => o.id, :comment => params[:comment])
-        udones << "<strong>#{u.login}</strong>"
-      end
-    end
-    
-    flash[:notice] = "Recomendación enviada a #{udones.size > 0 ? udones.join(', ') : 'nadie'}"
-    flash[:notice] << ". Algunas de las personas seleccionadas ya han leído el contenido y no se les ha enviado recomendación." if udones.size < params[:friends].size
+    require_auth_users
+    GmSys.job("Content.find(#{params[:content_id].to_i}).recommend_to_friends(User.find(#{@user.id}), [#{params[:friends].join(',')}], '#{params[:comment]}')")
+    flash[:notice] = "Recomendación enviada"
     render :partial => '/shared/ajax_facebox_feedback', :layout => false
   end
   
