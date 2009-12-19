@@ -510,7 +510,8 @@ class Competition < ActiveRecord::Base
         setup_times_for_matches if self.timetable_for_matches
         setup_maps_for_matches if self.random_map_selection_mode
         
-        when 3:
+      when 3:
+        raise Exception unless self.competitions_participants.count > 1
         if self.send_notifications?
           self.competitions_participants.each do |participant| 
             Notification.deliver_competition_started(participant.the_real_thing, { :competition => self })

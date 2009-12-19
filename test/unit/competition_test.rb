@@ -77,5 +77,14 @@ class CompetitionTest < ActiveSupport::TestCase
     end
   end
   
+  test "should not be able to start competition without players" do
+    [Tournament, League, Ladder].each do |c_class|
+      c = c_class.find(:first, :conditions => 'state = 2')
+      assert_raises(Exception) do
+        c.switch_to_state(Competition::STARTED)
+      end
+    end
+  end
+  
   # TODO resto de tests
 end
