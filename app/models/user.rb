@@ -702,7 +702,7 @@ class User < ActiveRecord::Base
   # Before creating, we generate a validkey.
   # This is used for confirmation
   def generate_validkey
-    write_attribute 'validkey', Digest::MD5.hexdigest(AccountHelper::Utils::random_string(30))
+    write_attribute 'validkey', Digest::MD5.hexdigest(self.login + AccountHelper::Utils::random_string(30))
   end
   
   def hstate
@@ -751,6 +751,7 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :login, :on => :update, :message => ' login duplicado. Debes elegir un login distinto'
   validates_uniqueness_of :email, :on => :create, :message => ' email duplicado. Debes elegir un email distinto'
   validates_uniqueness_of :email, :on => :update, :message => ' email duplicado. Debes elegir un email distinto'
+  validates_uniqueness_of :validkey, :on => :create, :message => ' error interno'
   
   #validates_confirmation_of :password
   validates_length_of :login, :within => 3..31
