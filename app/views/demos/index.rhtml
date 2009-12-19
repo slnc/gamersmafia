@@ -22,8 +22,10 @@
 <table>
 <tr>
     <td>Juego</td>
-    <% games = controller.portal.respond_to?(:factions) ? controller.portal.factions.find(:all).collect { |f| "'#{f.code}'" } : Game.find(:all).collect { |g| "'#{g.code}'" } %>
-    <td><%= select("demo", "demos_category_id", Game.find(:all, :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%></p></td>
+    <% games = controller.portal.respond_to?(:factions) ? controller.portal.factions.find(:all).collect { |f| "#{f.code}" } : Game.find(:all).collect { |g| "#{g.code}" } %>
+    <td>
+    	
+		<%= select_tag("demo_term_id", options_for_select(['',''] + Term.top_level.find(:all, :conditions => ['slug IN (?)', games], :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }), { :include_blank => true })%></p></td>
 </tr>
 <tr>
     <td>Modo de juego</td>
@@ -61,9 +63,18 @@
 </select></td>
 </tr>
 </table>
-<%= observe_field "demo_demos_category_id", :update => "games_map_id", :with => "demos_category_id", :url => '/demos/get_games_maps' %>
-<%= observe_field "demo_demos_category_id", :update => "games_mode_id", :with => "demos_category_id", :url => '/demos/get_games_modes' %>
-<%= observe_field "demo_demos_category_id", :update => "games_version_id", :with => "demos_category_id", :url => '/demos/get_games_versions' %>
+<%= observe_field "demo_term_id", :update => "games_map_id", :with => 'demo_term_id', :url => '/demos/get_games_maps' %>
+<%= observe_field "demo_term_id", :update => "games_mode_id", :with => 'demo_term_id', :url => '/demos/get_games_modes' %>
+<%= observe_field "demo_term_id", :update => "games_version_id", :with => 'demo_term_id', :url => '/demos/get_games_versions' %>
+<script type="text/javascript">
+	value = $j('#demo_term_id').val();
+	if (value != undefined) {
+	jQuery.ajax({data:'demo_term_id=' + value, success:function(request){jQuery('#games_map_id').html(request);}, type:'post', url:'/demos/get_games_maps'});
+	jQuery.ajax({data:'demo_term_id=' + value, success:function(request){jQuery('#games_mode_id').html(request);}, type:'post', url:'/demos/get_games_modes'});
+	jQuery.ajax({data:'demo_term_id=' + value, success:function(request){jQuery('#games_version_id').html(request);}, type:'post', url:'/demos/get_games_versions'});
+	}
+
+	</script>
 <input type="submit" class="button" class="button" value="Buscar" />
 </form>
 <% end -%>
