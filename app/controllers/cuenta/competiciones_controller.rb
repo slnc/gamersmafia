@@ -145,7 +145,7 @@ class Cuenta::CompeticionesController < ApplicationController
     redirect_to :action => 'avanzada'
   end
   
-  # TODO temp temp
+  
   def add_participants
     require_auth_competition_admin
     if @competition.competitions_participants_type_id == 1 then

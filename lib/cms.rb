@@ -686,7 +686,7 @@ module Cms
   end
   
   def self.user_can_edit_content?(user, content)
-    return false unless user.id
+    return false unless user && user.id
     
     #raise "(#{content.respond_to?(:state)} and #{content.user_id} == #{self.id} and #{content.state} == #{Cms::DRAFT})"
     if user.has_admin_permission?(:capo) || user.is_superadmin 

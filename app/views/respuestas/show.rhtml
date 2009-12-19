@@ -9,7 +9,6 @@
  	:rating => true,
 	:comments_count => true,
 	:more_link => "<a href=\"#{gmurl(@question.user)}/contenidos/respuestas\">Ver todas sus preguntas (#{@question.user.questions.count})</a>")%>
-<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @question } %>
 <% else %>
 <% end -%>
 <% end -%>

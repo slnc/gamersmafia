@@ -62,7 +62,13 @@ class RespuestasControllerTest < ActionController::TestCase
   
   test "update_should_work_if_changing_ammount_and_owner" do
     @q = Question.find(1)
-    
+  end
+  
+  test "show should work for anon" do
+    qfirst = Question.published.find(:first)
+    @request.host = host_from_url(ApplicationController.gmurl(qfirst))
+    get :show, :id => qfirst.id
+    assert_response :success
   end
   
   test "update_ammount_should_work" do

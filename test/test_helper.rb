@@ -46,6 +46,10 @@ class ActiveSupport::TestCase
   #    end
   #  end
   
+  def host_from_url(uri)
+    URI::split(uri)[2]
+  end
+  
   def portal
     @portal || GmPortal.new
   end
