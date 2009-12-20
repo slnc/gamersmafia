@@ -1,9 +1,9 @@
 .contentinfobar ul {
-    background: url(../images/layout/contentinfobar_bg.png) left top repeat-x;
+    background: url(../../images/layout/contentinfobar_bg.png) left top repeat-x;
 }
 
 .contentinfobar .last {
-    background: url(../images/layout/contentinfobar_right.png) right top no-repeat;
+    background: url(../../images/layout/contentinfobar_right.png) right top no-repeat;
 }
 
 .contentinfobar .content-details {
@@ -11,5 +11,5 @@
 }
 
 .contentinfobar li.first {
-    background: url(../images/layout/contentinfobar_left.png) left top no-repeat;
+    background: url(../../images/layout/contentinfobar_left.png) left top no-repeat;
 }

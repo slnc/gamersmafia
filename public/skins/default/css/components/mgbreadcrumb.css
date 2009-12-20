@@ -1,16 +1,16 @@
 #mgbreadcrumb li.home a {
-    background: url(../images/s.png) 0px -418px no-repeat;
+    background: url(../../images/s.png) 0px -418px no-repeat;
     width: 67px;
     padding: 0;
     margin-right: 5px;
 }
 
 #mgbreadcrumb li a {
-    background: url(../images/s.png) -65px -48px no-repeat;
+    background: url(../../images/s.png) -65px -48px no-repeat;
 }
 
 #mgbreadcrumb li.current {
-    background: url(../images/s.png) -65px -53px no-repeat;
+    background: url(../../images/s.png) -65px -53px no-repeat;
     color: #666;
 }
 

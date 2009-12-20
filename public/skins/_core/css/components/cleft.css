@@ -37,14 +37,6 @@
     border-bottom: 1px solid #f1f1f1;
 }
 
-#cleft {
-    background: url(../../images/cleft_top.gif) left top no-repeat;
-}
-
-#cleft .det-bottom {
-    background: url(../../images/cleft_bottom.gif) left bottom no-repeat;
-}
-
 #cleft .det-bottom2 {
     background: #fff;
 }
@@ -62,14 +54,6 @@
 
 #cleft ul {
     padding: 0;
-}
-
-#cleft {
-    background: url(../../images/cleft_top20085.gif) left top no-repeat;
-}
-
-#cleft .det-bottom {
-    background: url(../../images/cleft_bottom20085.gif) left bottom no-repeat;
 }
 
 #cleft {

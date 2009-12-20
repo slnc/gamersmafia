@@ -3,12 +3,12 @@
 }
 
 .rating span {
-    background-image: url(../images/s.png);
+    background-image: url(../../images/s.png);
 }
 
 
 #ratebar {
-    background: url(../images/s.png) 0 -274px no-repeat;
+    background: url(../../images/s.png) 0 -274px no-repeat;
 }
 
 #ratebar-container { float: left; z-index: 1000; }
