@@ -7,8 +7,8 @@
 <% mftext('Últimas entradas') do %>
 <%# TODO cachear !!!
 %>
-<% @blogentry_pages, @blogentries = controller.paginate :blogentries, :conditions => "state = #{Cms::PUBLISHED}", :order_by => 'created_on DESC', :per_page => 20 %>
-<%= render :partial => 'shared/pager', :object => @blogentry_pages, :locals => {:pos => 'top'} %>
+<% @blogentries = Blogentry.paginate(:page => params[:page], :per_page => 20, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC') %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @blogentries, :pos => 'top'} %>
 
 <% for blogentry in @blogentries 
 u = blogentry.user
@@ -19,6 +19,6 @@ u = blogentry.user
 <div class="infoinline"><a href="<%=gmurl(u)%>"><%=u.login%></a> | <%=print_tstamp(blogentry.created_on)%></div>
 </div>
 <% end -%>
-<%= render :partial => 'shared/pager', :object => @blogentry_pages, :locals => {:pos => 'top'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @blogentries, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>

@@ -7,7 +7,7 @@
 <% content_main do %>
 <% mftext('Mapas de juegos') do %>
 
-<%= render :partial => 'shared/pager', :object => @games_map_pages, :locals => {:pos => 'top'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @games_maps, :pos => 'top'} %>
 
 <table>
   <tr>
@@ -25,6 +25,6 @@
 <% end %>
 </table>
 
-<%= render :partial => 'shared/pager', :object => @games_map_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @games_maps, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>

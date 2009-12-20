@@ -141,8 +141,7 @@ class Cuenta::FaccionController < ApplicationController
     require_auth_faction_leader
     @title = 'Links de facción'
     @navpath = [['Cuenta', '/cuenta'], ['Facción', '/cuenta/faccion'], ['Links de facción', '/cuenta/faccion/links']]
-    
-    @link_pages, @factions_links = paginate :factions_link, :conditions => "faction_id = #{@user.faction_id}", :order => 'lower(name) asc', :per_page => 30
+    @factions_links = FactionsLink.paginate(:page => params[:page], :per_page => 30, :conditions => "faction_id = #{@user.faction_id}", :order => 'lower(name) asc')
   end
   
   def links_new
@@ -208,7 +207,7 @@ class Cuenta::FaccionController < ApplicationController
     @title = 'Cabeceras de facción'
     @navpath = [['Cuenta', '/cuenta'], ['Facción', '/cuenta/faccion'], ['Cabeceras de facción', '/cuenta/faccion/cabeceras']]
     
-    @header_pages, @factions_headers = paginate :factions_header, :conditions => "faction_id = #{@user.faction_id}", :order => 'lower(name) asc', :per_page => 30
+    @factions_headers = FactionsHeader.paginate(:page => params[:page], :per_page => 30,:conditions => "faction_id = #{@user.faction_id}", :order => 'lower(name) asc')
   end
   
   def cabeceras_new
@@ -293,7 +292,7 @@ class Cuenta::FaccionController < ApplicationController
     @title = 'Mapas de juegos'
     @navpath = [['Cuenta', '/cuenta'], ['Facción', '/cuenta/faccion'], ['Mapas del juego', '/cuenta/faccion/mapas_juegos']]
     # @navpath = [['Mapas de juegos', '/admin/mapas_juegos'],]
-    @games_map_pages, @games_maps = paginate :games_maps, :conditions => "game_id = #{@user.faction.game.id}", :per_page => 50, :order => 'games_maps.game_id ASC, lower(games_maps.name) ASC', :include => :game
+    @games_maps = GamesMap.paginate(:page => params[:page], :per_page => 50, :conditions => "game_id = #{@user.faction.game.id}", :order => 'games_maps.game_id ASC, lower(games_maps.name) ASC', :include => :game)
   end
   
   def mapas_juegos_new

@@ -1,3 +1,4 @@
+<% pager_params = pager_params || {} %>
 <div class="mpager">
   <div class="pager-<%=pos%>">
   	<span class="pages">Páginas: </span>
@@ -5,6 +6,6 @@
 								 :next_label => 'Siguiente &raquo;',
 								 :inner_window => 2,
 								 :outer_window => 1,
-								 :params => {}
+								 :params => pager_params
 								  %></div>
 </div>

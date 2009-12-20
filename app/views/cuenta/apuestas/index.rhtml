@@ -1,10 +1,7 @@
 <% content_main do %>
   <% mftext('Mis apuestas') do %>
-  <%
-  @ticket_pages, @tickets = controller.paginate :bets_ticket, :conditions => ['user_id = ? and bets_tickets.ammount > 0', @user.id], :order => 'bets_option_id DESC', :include => :bets_option, :per_page => 30
-  %>
-
-  <%= render :partial => 'shared/pager', :object => @ticket_pages, :locals => {:pos => 'top'} %>
+  <% @bets_tickets = BetsTicket.paginate(:page => params[:page], :per_page => 30, :conditions => ['user_id = ? and bets_tickets.ammount > 0', @user.id], :order => 'bets_option_id DESC', :include => :bets_option) %>
+  <%= render :partial => 'shared/pager2', :locals => {:collection => @bets_tickets, :pos => 'top'} %>
   <table>
   <tr>
     <th>Partida</th>
@@ -14,8 +11,7 @@
   </tr>
 
   <%
-  # for ticket in BetsTicket.find(:all, :conditions => ['user_id = ?', @user.id], :order => 'bets_option_id DESC', :include => :bets_option)
-  for ticket in @tickets
+  for ticket in @bets_tickets
   bet = ticket.bets_option.bet
   %>
   <tr class="<%=oddclass%>">
@@ -27,6 +23,6 @@
   <% end %>
   </table>
 
-  <%= render :partial => 'shared/pager', :object => @ticket_pages, :locals => {:pos => 'bottom'} %>
+  <%= render :partial => 'shared/pager2', :locals => {:collection => @bets_tickets, :pos => 'bottom'} %>
   <% end -%>
 <% end -%>
