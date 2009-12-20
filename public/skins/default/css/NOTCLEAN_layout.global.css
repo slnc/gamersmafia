@@ -268,17 +268,6 @@
     margin-bottom: 5px;
 }
 
-#mgfooter {
-    margin-bottom: 0;
-    padding-bottom: 10px;
-    background: #fff;
-	width: 100%;
-}
-
-#mgfooter .mcontent {
-    padding-left: 0;
-    margin-bottom: 0;
-}
 
 #cleft ul {
     padding: 0;
@@ -473,7 +462,7 @@ body #cpageout.gm20085 #cmain.maximized { margin-right: 0; width: 960px; }
 .question-best-answer-comment .user-info { margin-right: 20px; }
 
 .question-prize { float: right; text-align: right; border: 1px solid #ccc; background: #fafafa; padding: 5px 10px; }
-.question-prize .ammount { font-family: georgia; font-size: 18px; font-weight: bold; }
+.question-prize .ammount { font-size: 18px; font-weight: bold; }
 .clearl { clear: left; }
 #cmain .question-best-answer-comment .mcontent { border: 1px solid #fafafa; background: #fcfcfc; }
 
@@ -523,19 +512,10 @@ ul.slog-entries-browser-filter li { list-style: none; float: left; margin-right:
 	position: absolute; 
 	top: 23px; left: 450px;
 }
-#mggnav-clans-my-clans-list a { display: block; width: 100%;}
-/* #mggnav-clans-my-clans-list ul { margin: 0; } */
-/* #mggnav-clans-my-clans-list li { margin: 0 0 0 0; } */ 
-
+#mggnav-clans-my-clans-list a { display: block; width: 100%;} 
 
 #ratebar-container { float: left; z-index: 1000; }
 #ratebar img {  height: 13px; margin: 0; }
-
-#cpageout.gm20085 {
-	
-	/* background: #fafafa; */
-	
-	}
 
 #cpageout.gm20085 #cpagein {
 	width: 990px;
@@ -563,9 +543,6 @@ ul.slog-entries-browser-filter li { list-style: none; float: left; margin-right:
 	left: auto;
 	margin-left: 0;
 	
-}
-#cpageout.gm20085 #cleft .det-bottom2 {
-	/* background-color: #fafafa; */
 }
 
 #cpageout.gm20085 #ccontent .mcontent {
@@ -706,8 +683,6 @@ ul.slog-entries-browser-filter li { list-style: none; float: left; margin-right:
 	#mgfriends-online-table { width: 100%; }
 	#mgfriends-online-table table { width: 100%; }
 	#mgfriends-online-table td { margin: 0; padding: 0; text-align: left; line-height: 16px;}
-	#mgfriends-online-table a { display: block; width: 100%; font-size: 10px; font-family: tahoma, arial; }
-
 	
 	#tracker-bg-text { height: 16px; width: 100%; background: url(../images/txts_sidebar.png) right -30px no-repeat; }
 	#lastcommented-bg-text { height: 16px; width: 100%; background: url(../images/txts_sidebar.png) right top no-repeat; }
@@ -715,7 +690,7 @@ ul.slog-entries-browser-filter li { list-style: none; float: left; margin-right:
 	
 	.sidecontent-list {}
 	.sidecontent-list li { padding: 2px 1px; line-height: 14px; margin-bottom: 1px;}
-	.sidecontent-list li a { display: block; width: 100%; padding: 0 2px; font-size: 10px; font-family: tahoma, arial; }
+	.sidecontent-list li a { display: block; width: 100%; padding: 0 2px; font-size: 10px; }
 	
 .gm20085 #tracker { margin-bottom: 20px; }
 .gm20085 #recommendations4u { margin-bottom: 20px; }

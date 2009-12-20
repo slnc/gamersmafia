@@ -75,7 +75,7 @@ end %><%# each -%>
       <%=print_tstamp comment.created_on%> <span class="commentlink"><a title="Enlace a este comentario" href="#comment<%=comment.id%>"><img src="/images/blank.gif" class="icon16" /></a></span>
     </div>
 
-    <div class="comment-number">#<span><%=i-1%></span></div>
+    <div class="comment-number f_number">#<span><%=i-1%></span></div>
     <div class="author" style="padding-left: 15px;"><a class="nav" href="<%=gmurl(comment.user)%>"><%=comment.user.login%></a> <%=faction_favicon(comment.user)%></div>
   </div>
   <% crating = comment.get_rating

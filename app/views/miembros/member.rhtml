@@ -66,7 +66,7 @@
 
 <%mftext('Últimas firmas', :grid => 6, :glast => true) do %>
 <% @curuser.profile_signatures.find(:all, :order => 'updated_on DESC', :include => :signer, :limit => 4).each do |ps| %>
-  <div id="ps<%=ps.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 5px; font-size: 11px; font-family: tahoma, arial; line-height: 15px; padding: 3px;">
+  <div id="ps<%=ps.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 5px; font-size: 11px; line-height: 15px; padding: 3px;">
   <div class="hidden infoinline delprofilesignature"><%=link_to_remote 'Borrar', :url => "/miembros/del_firma/#{ps.id}", :confirm => '¿Estás seguro?', :complete => "$j('#ps#{ps.id}').fadeOut('normal');"%></div>
     <div style="float: left;"><img src="<%=ASSET_URL%>/cache/thumbnails/f/32x32<%=ps.signer.show_avatar%>" /></div>
     <div style="margin-left: 40px;"><strong><a href="<%=gmurl(ps.signer)%>"><%=ps.signer.login%></a></strong>: <%=Comments::formatize(truncate(ps.signature.strip, 80, '..'))%></div>
@@ -397,7 +397,7 @@ if last_matches.size > 0 then
 <div style="clear: left;">
 <%
 User.find(:all, :conditions => "id IN (#{@curuser.friends_ids_sql}) AND photo IS NOT NULL AND photo <> ''", :order => 'random()', :limit => 9).each do |u| %>
-		<div style="font-size: 11px; width: 63px; overflow: hidden; font-family: tahoma, arial; float: left; text-align: center; margin: 5px 0 15px 0px;"><a href="<%=gmurl(u)%>"><img src="/cache/thumbnails/i/50x50/<%=u.show_photo%>" /></a><br /><%=user_link(u)%></div>
+		<div style="font-size: 11px; width: 63px; overflow: hidden; float: left; text-align: center; margin: 5px 0 15px 0px;"><a href="<%=gmurl(u)%>"><img src="/cache/thumbnails/i/50x50/<%=u.show_photo%>" /></a><br /><%=user_link(u)%></div>
 <% if i % 3 == 2 %></div><div style="clear: left;"><% end -%>
 
 	<% i += 1 

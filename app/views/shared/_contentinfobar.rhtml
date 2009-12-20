@@ -11,7 +11,7 @@
 <% if %w(Download Demo).include?(object.class.name) then%> &nbsp; <span class="downloads-count" style="line-height: 18px;" title="Descargado <%=object.downloaded_times%> veces"><%=object.downloaded_times%></span><% end -%>
 </div>
 <div class="contentinfobar">
-  	  <div class="last" style="font-family: verdana; font-size: 10px;">
+  	  <div class="last f_sm">
 	  <%cache("/common/contents/#{object.class.name}/#{object.id % 100}/#{object.id}") do %>
     <div class="author-avatar"><img src="<%=ASSET_URL%><%=object.user.show_avatar%>" /></div>
     <div class="content-details">
@@ -20,7 +20,7 @@
     </div>
 	<% end -%>
   </div>
-  <ul style="font-family:tahoma, arial; font-size:11px;">
+  <ul style="font-size:11px;">
   <% if user_is_authed then 
 can_edit = Cms::user_can_edit_content?(@user, object) 
 can_delete = Cms::user_can_delete_content?(@user, object) %>

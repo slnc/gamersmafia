@@ -4,26 +4,18 @@
     left: 0;
     height: 20px;
     width: 100%;
-    background: #fafafa;
-    color: #ccc;
-	font-family: tahoma, arial;
     padding-left: 0;
 	z-index: 10;
 }
 
-#mggnav td {
-	color: #777;
-	}
-
 #mggnav a {
-    color: #0115d1;
 	font-weight: bold;
     text-decoration: none;
 }
 
 #mggnav-factions-list a,
 #mggnav-clans-list a,
-#mggnav-hq-list a { color: #ccc; font-weight: normal;} 
+#mggnav-hq-list a { font-weight: normal;} 
 
 #mggnav a:hover {
     text-decoration: underline;
@@ -64,11 +56,8 @@ li#mggnav-gm {
     left: 229px;
     width: 670px;
     height: 220px;
-    background: #b82004;
-	border: 1px solid #880000;
+	border: 1px solid;
 }
-
-#mggnav-factions-list a { color: #fff; }
 
 #mggnav-factions-list td,
 #mggnav-clans-list td,
@@ -105,7 +94,7 @@ li#mggnav-gm {
 }
 
 #mggnav-platforms-list {
-	border-left: 1px solid #880000;
+	border-left: 1px solid;
     width: 150px;
     float: left;
     margin-left: 10px;
@@ -129,7 +118,6 @@ li#mggnav-gm {
     left: 312px;
     width: 650px;
     height: 170px;
-    background: #000;
 }
 
 #mggnav-hq-list {
@@ -141,7 +129,7 @@ li#mggnav-gm {
     left: 327px;
     width: 110px;
     height: 75px;
-    background: #000;
+    
 }
 
 

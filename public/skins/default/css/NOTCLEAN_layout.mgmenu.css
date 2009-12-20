@@ -1,11 +1,6 @@
 #cmain .module .mtitle { padding: 1px; }
 #cmain .module .mtitle span { display: block; padding: 7px 5px; }
 
-
-#mgfooter li {
-    
-}
-
 #mgbreadcrumb li a, #mgbreadcrumb li span {
     padding: 0px 12px 0pt 12px;
 }

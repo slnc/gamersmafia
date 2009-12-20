@@ -12,7 +12,7 @@
 
 <% content_main do %>
 <% mftext('Información', :blast => false) do %>
-  	<p>Tu saldo actual: <strong><span class="account-balance"><%=@user.cash.to_i%></span></strong><%=gmd12%></p>
+  	<p>Tu saldo actual: <strong><span class="account-balance f_number"><%=@user.cash.to_i%></span></strong><%=gmd12%></p>
 <% end %>
 <%= render :partial => '/shared/cash_movements', :locals => { :entity => @user } %>
 <% end %>

@@ -48,8 +48,8 @@ body {
 }
 
 #cmain .mftext .mftext .mtitle {
-	margin-top: 20px;
-	margin-left: 0;
+    margin-top: 20px;
+    margin-left: 0;
 }
 
 #cmain .module .mtitle span {
@@ -117,6 +117,7 @@ a:hover {
 #ccontent a:hover.normallink {
     color: #7365DA;
 }
+
 /* TODO: estilos para wpadmin, wpsite y wphome? */
 div.module.top {
     border-top-color: #A7A2A2;
@@ -160,9 +161,7 @@ div.module.bottom {
     background: #fff;
 }
 
-#mgfooter .mcontent {
-    background: #ffffff;
-}
+
 
 .pager-top, .pager-bottom {
     background: url(../images/icons/pager.png) left center no-repeat;
@@ -233,8 +232,8 @@ body.gamer .pager-top .currentpage, body.gamer .pager-bottom .currentpage {
 }
 
 #csupport .current a {
-	font-weight: bold;
-	text-decoration: none;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 .contenttitle {
@@ -319,6 +318,7 @@ body #ccontent .infoinline a:hover {
 #mgonline td, #mgonline {
     color: #636363;
 }
+
 /* downloads  */
 tr.downloads-folder td.first {
     background-image: url(../images/misc/downloads_folder.png);
@@ -369,28 +369,30 @@ tr.downloads-download td.first {
     /* background: #FAFAFA; */
 }
 
-#mgfooter a,
 #gmversion a {
-	font-family: tahoma;
-	font-size: 11px;
-	padding: 3px;
+    padding: 3px;
     color: #636363;
 }
-
-
 #gmversion a:visited {
     color: #aaa;
 }
 
-#mgfooter a:hover,
+
+
 #gmversion a:hover {
     color: #000000;
 }
 
-#gmversion .new a { color: #fff; }
-#gmversion .new { background: #002e64; }
-#mgsubmenu li span,
-#mgsubmenu2 li span {
+
+#gmversion .new a {
+    color: #fff;
+}
+
+#gmversion .new {
+    background: #002e64;
+}
+
+#mgsubmenu li span, #mgsubmenu2 li span {
     color: #bbb;
 }
 
@@ -498,8 +500,8 @@ textarea {
 }
 
 #ccontent code {
-border-color: #aaa; 
-background: #f4f4f4;
+    border-color: #aaa;
+    background: #f4f4f4;
 }
 
 .pcent-bar {
@@ -515,12 +517,12 @@ background: #f4f4f4;
     background: #AD0011;
 }
 
-.warning10 .pcent-bar .bar{
+.warning10 .pcent-bar .bar {
     background: #ff172f;
 }
 
-.negative .pcent-bar .bar  {
-	background: #860000;
+.negative .pcent-bar .bar {
+    background: #860000;
 }
 
 .warning9 .pcent-bar .bar {
@@ -555,8 +557,7 @@ background: #f4f4f4;
     background: #00E624;
 }
 
-.warning1 .pcent-bar .bar,
-.positive .pcent-bar .bar {
+.warning1 .pcent-bar .bar, .positive .pcent-bar .bar {
     background: green;
 }
 
@@ -598,7 +599,7 @@ background: #f4f4f4;
 
 .warning1 .pcent-bar {
     border-color: green;
-}	
+}
 
 #userbox-action-link-competition.activated a.buttonic {
     background: #FFA500;
@@ -739,9 +740,7 @@ background: #f4f4f4;
     color: #a7a2a2;
 }
 
-.comments-area .user-info, 
-.comments-area .comment-header,
-.question-best-answer-comment .user-info {
+.comments-area .user-info, .comments-area .comment-header, .question-best-answer-comment .user-info {
     border-color: #e5e5e5;
     background: #F8F8F8;
 }
@@ -791,17 +790,12 @@ background: #f4f4f4;
     background: url(../images/s.png) 0 -16px no-repeat;
 }
 
-#mgfooter .footer-separator {
-    color: #aaa;
-}
 
-#mgsubmenu li a,
-#mgsubmenu2 li a {
+#mgsubmenu li a, #mgsubmenu2 li a {
     color: #fff;
 }
 
-#mgsubmenu li.active a,
-#mgsubmenu2 li.active a {
+#mgsubmenu li.active a, #mgsubmenu2 li.active a {
     background: #fff;
     color: #000;
 }
@@ -844,6 +838,7 @@ body.cocuenta-cuenta .choose-avatar img.selected {
 #content-stats {
     color: #ccc;
 }
+
 /**
  * Userbox
  */
@@ -1042,104 +1037,222 @@ body.cocuenta-cuenta .choose-avatar img.selected {
     width: 47px;
     height: 67px;
     margin-top: -56px;
-	margin-right: 20px;
+    margin-right: 20px;
     float: right;
     background: url(../images/footer_spirit.png);
-	z-index: 5;
-	position: absolute;
-	right: 10px;
-	margin-top: -56px;
+    z-index: 5;
+    position: absolute;
+    right: 10px;
+    margin-top: -56px;
 }
 
 #gmversion {
-	width: 100px;
-	height: 24px;
-	position: absolute;
-	float: right;
-	z-index: 5;
-	right: 6px;
-	margin-top: 10px;
-	font-family: verdana;
-	font-size: 11px;
-	color: #aaa;
+    width: 100px;
+    height: 24px;
+    position: absolute;
+    float: right;
+    z-index: 5;
+    right: 6px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: #aaa;
 }
 
 .btn-comentar {
-	width: 122px;
-	height: 28px;
-	background: url(../images/btn_comentar.png);
+    width: 122px;
+    height: 28px;
+    background: url(../images/btn_comentar.png);
 }
 
 .btn-responder {
-	width: 122px;
-	height: 28px;
-	background: url(../images/btn_responder.png);
+    width: 122px;
+    height: 28px;
+    background: url(../images/btn_responder.png);
 }
 
 .btn-nuevo-topic {
-	width: 122px;
-	height: 28px;
-	background: url(../images/btn_nuevo_topic.png);
+    width: 122px;
+    height: 28px;
+    background: url(../images/btn_nuevo_topic.png);
 }
 
 .btn-nueva-pregunta {
-	width: 122px;
-	height: 28px;
-	background: url(../images/btn_nueva_pregunta.png);
+    width: 122px;
+    height: 28px;
+    background: url(../images/btn_nueva_pregunta.png);
 }
 
 .btn-crear {
-	width: 122px;
-	height: 28px;
-	background: url(../images/btn_crear.png);
+    width: 122px;
+    height: 28px;
+    background: url(../images/btn_crear.png);
 }
 
 .comments-sig {
-	font-style: italic;
-	color: #AAA;
-	text-align: right;
-	margin-bottom: -14px;
+    font-style: italic;
+    color: #AAA;
+    text-align: right;
+    margin-bottom: -14px;
 }
 
+.emblemas {
+    clear: left;
+    padding-top: 3px;
+}
 
-.emblemas { clear: left; padding-top: 3px; }
-.emblema { border: 0; width: 16px; height: 16px; background-image: url(../images/emblemas.png?2); background-repeat: no-repeat; margin-top: 2px; }
-.emblema-hq { background-position: 0 0; }
-.emblema-capo { background-position: -16px 0; }
-.emblema-baby { background-position: -32px 0; }
-.emblema-webmaster { background-position: -48px 0; }
-.emblema-okupa { background-position: -64px 0; }
-.emblema-bets_master { background-position: -80px 0; }
-.emblema-best_overall { background-position: -96px 0; }
-.emblema-boss { background-position: -112px 0; }
-.emblema-underboss { background-position: -128px 0; }
-.emblema-editor { background-position: -160px 0; }
-.emblema-moderator { background-position: -144px 0; }
-.emblema-funniest { background-position: -176px 0; }
-.emblema-profoundest { background-position: -192px 0; }
-.emblema-most_informational { background-position: -208px 0; }
-.emblema-most_interesting { background-position: -224px 0; }
-.emblema-wealthiest { background-position: -240px 0; }
-.emblema-best_blogger { background-position: -256px 0; }
-.emblema-living_legend { background-position: -288px 0; }
-.emblema-talker { background-position: -272px 0; }
-.emblema-faith_avalanche { background-position: -304px 0; }
-.emblema-oldest_faction_member { background-position: -320px 0; }
-.emblema-karma_fury { background-position: -336px 0; }
-.emblema-most_knowledgeable { background-position: -352px 0; }
-.emblema-sicario { background-position: -402px 0; }
-.emblema-don { background-position: -418px 0; }
-.emblema-mano_derecha { background-position: -436px 0; }
+.emblema {
+    border: 0;
+    width: 16px;
+    height: 16px;
+    background-image: url(../images/emblemas.png?2);
+    background-repeat: no-repeat;
+    margin-top: 2px;
+}
 
-tr.value-is-low td.value { color: #AD0011;
-    background: #fce0e0; }
-tr.value-is-high td.value { background: #ddfddd;
-    color: Green;}
+.emblema-hq {
+    background-position: 0 0;
+}
+
+.emblema-capo {
+    background-position: -16px 0;
+}
+
+.emblema-baby {
+    background-position: -32px 0;
+}
+
+.emblema-webmaster {
+    background-position: -48px 0;
+}
+
+.emblema-okupa {
+    background-position: -64px 0;
+}
+
+.emblema-bets_master {
+    background-position: -80px 0;
+}
+
+.emblema-best_overall {
+    background-position: -96px 0;
+}
+
+.emblema-boss {
+    background-position: -112px 0;
+}
+
+.emblema-underboss {
+    background-position: -128px 0;
+}
+
+.emblema-editor {
+    background-position: -160px 0;
+}
+
+.emblema-moderator {
+    background-position: -144px 0;
+}
+
+.emblema-funniest {
+    background-position: -176px 0;
+}
+
+.emblema-profoundest {
+    background-position: -192px 0;
+}
+
+.emblema-most_informational {
+    background-position: -208px 0;
+}
+
+.emblema-most_interesting {
+    background-position: -224px 0;
+}
+
+.emblema-wealthiest {
+    background-position: -240px 0;
+}
+
+.emblema-best_blogger {
+    background-position: -256px 0;
+}
+
+.emblema-living_legend {
+    background-position: -288px 0;
+}
+
+.emblema-talker {
+    background-position: -272px 0;
+}
+
+.emblema-faith_avalanche {
+    background-position: -304px 0;
+}
+
+.emblema-oldest_faction_member {
+    background-position: -320px 0;
+}
+
+.emblema-karma_fury {
+    background-position: -336px 0;
+}
+
+.emblema-most_knowledgeable {
+    background-position: -352px 0;
+}
+
+.emblema-sicario {
+    background-position: -402px 0;
+}
+
+.emblema-don {
+    background-position: -418px 0;
+}
+
+.emblema-mano_derecha {
+    background-position: -436px 0;
+}
+
+tr.value-is-low td.value {
+    color: #AD0011;
+    background: #fce0e0;
+}
+
+tr.value-is-high td.value {
+    background: #ddfddd;
+    color: Green;
+}
 
 .bar-quality {
-width: 143px;
-height: 9px;
-margin-left: 2px;
-margin-top: 2px;
-background: url(../images/bar_quality.png) 0 0 no-repeat;
+    width: 143px;
+    height: 9px;
+    margin-left: 2px;
+    margin-top: 2px;
+    background: url(../images/bar_quality.png) 0 0 no-repeat;
 }
+
+/* top menu bar */
+.saw-dropdownlist {
+    border-color: #000;
+    background: #b73006;
+    color: #fff;
+}
+
+#sawbottom a {
+    color: #fff;
+}
+
+.notification-header {
+    background-color: #000;
+    color: #fff;
+}
+
+#my-content-tags .tag, #top-content-tags .tag {
+    color: #888;
+}
+
+#tag-this-content {
+    color: #0049A3;
+}
+
+#mggnav-member-totals { color: #777; }

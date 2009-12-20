@@ -68,30 +68,7 @@ th.checkbox, td.checkbox {
     margin: 20px 0 20px 3px;
 }
 
-#mgfooter .mcontent {
-    clear: both;
-    padding: 10px;
-}
-
 #ccontent { margin-bottom: 80px; }
-
-#mgfooter ul {
-    padding: 0;
-    margin: 0 0 0 0;
-}
-
-#mgfooter li {
-    display: inline;
-    margin: 0 8px 0 0;
-	padding-right: 8px;
-	padding-left: 0;
-	border-right: 1px solid #dfdfdf;
-}
-
-#mgfooter li.last { border-right: 0; }
-
-
-#mgfooter li a { padding-left: 0;}
 
 
 #ccontent .linkads {

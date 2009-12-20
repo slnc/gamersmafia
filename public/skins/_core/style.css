@@ -1,3 +1,4 @@
+
 @import url(css/NOTCLEAN.layout.css);
 @import url(css/layout.comments.css);
 @import url(css/layout.contentinfobar.css);
@@ -18,8 +19,6 @@
 @import url(css/page_specific/site.css);
 @import url(css/page_specific/tienda.css);
 
-
-@import url(css/NOTCLEAN.typography.css);
 @import url(css/typography.css);
 @import url(css/games_sprites.css);
 @import url(css/mggnav.css);
@@ -27,3 +26,5 @@
 @import url(css/facebox.css);
 
 @import url(css/grid.css);
+
+@import url(css/components/mgfooter.css);

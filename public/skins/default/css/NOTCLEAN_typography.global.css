@@ -1,8 +1,3 @@
-body, body td {
-    font-family: tahoma, arial;
-    font-size: 12px;
-}
-
 #userbox {
     font-family: arial;
     font-size: 10px;
@@ -17,13 +12,11 @@ h2 {
 }
 
 #navigator select {
-    font-family: tahoma, arial;
     font-size: 10px;
 }
 
 #cleft {
     font-size: 10px;
-    font-family: tahoma, arial;
 }
 
 #cleft li {
@@ -47,7 +40,6 @@ a {
 }
 
 #mgbreadcrumb {
-    font-family: tahoma, arial;
     font-size: 11px;
     font-weight: bold;
 }
@@ -69,13 +61,10 @@ a {
 .contentinfobar ul a {
     line-height: 24px;
 }
+
 /* really dirty down here */
 /* TEMP NOTCLEAN typography * /
-/* :=TYPOGRAPHY */ body {
-    font-family: tahoma, arial;
-    font-size: 12px;
-}
-
+ /* :=TYPOGRAPHY */
 tr, td {
     font-size: 12px;
 }
@@ -105,16 +94,7 @@ tr, td {
     font-size: 11px;
 }
 
-#mgfooter {
-    font-family: arial;
-    font-size: 11px;
-}
-
-#mgfooter a {
-    text-decoration: underline;
-}
-
-#userbox a:hover, #mgfooter a:hover {
+#userbox a:hover {
     text-decoration: underline;
 }
 
@@ -148,20 +128,12 @@ tr, td {
     font-size: 10px;
 }
 
-#csupport .current a {
-    /* font-family: verdana;
-    font-weight: bold;
-    font-size: 11px;
-    text-decoration: underline; */
-}
-
 h2 {
     font-size: 17px;
 }
 
 .contenttitle h1 {
     line-height: 27px;
-    font-family: tahoma, arial;
     font-size: 15px;
     font-weight: bold;
 }
@@ -169,7 +141,6 @@ h2 {
 body.lypopup h1 {
     font-size: 15px;
     font-weight: bold;
-    font-family: tahoma, arial;
     padding: 10px 10px;
     margin: 0 0 10px 0;
 }
@@ -192,6 +163,7 @@ body.lypopup h1 {
 .userinfobox .nick {
     line-height: 52px;
 }
+
 /* comentarios TODO cleanup */
 /* COMMENTS */
 .comments-area .authorship .userinfo {
@@ -205,7 +177,6 @@ body.lypopup h1 {
 .comments-area .comment-number, .number {
     font-weight: bold;
     font-size: 15px;
-    font-family: Georgia;
 }
 
 .comments-area .author {
@@ -213,7 +184,6 @@ body.lypopup h1 {
 }
 
 .comments-area .userinfo .attributes, .userinfobox .attributes {
-    font-family: tahoma, arial;
     font-size: 10px;
 }
 
@@ -236,7 +206,6 @@ body.lypopup h1 {
 
 .subheader {
     /* line-height: 23px; */
-    font-family: tahoma, arial;
     font-size: 13px;
     font-weight: bold;
 }
@@ -264,7 +233,6 @@ body.lypopup h1 {
 }
 
 #online td, #online {
-    font-family: tahoma, arial;
     font-size: 10px;
 }
 
@@ -303,21 +271,19 @@ body.lypopup h1 {
 
 .homebox table.factions td, .homebox table.factions th {
     font-size: 11px;
-    font-family: tahoma, arial;
 }
 
 .homebox table.factions th {
     font-weight: bold;
 }
+
 /* downloads  */
 tr.downloads-folder td.first {
-    font-family: tahoma, arial;
     font-size: 11px;
     line-height: 15px;
 }
 
-tr.downloads-download td.first {
-    font-family: tahoma, arial;
+tr.downloads-download td.first {;
     font-size: 11px;
     line-height: 15px;
 }
@@ -327,7 +293,6 @@ tr.downloads-folder a, tr.downloads-download a {
 }
 
 .content-category {
-    font-family: tahoma, arial;
     font-size: 10px;
     text-transform: uppercase;
     font-weight: normal;
@@ -357,6 +322,7 @@ tr.downloads-folder a, tr.downloads-download a {
 ul.online li, .userinfobox {
     font-weight: bold;
 }
+
 /* wysiwyg */
 .wsEditor {
 }
@@ -383,7 +349,6 @@ img.none {
 }
 
 input, textarea {
-    font-family: tahoma, arial;
     font-size: 11px;
 }
 
@@ -399,7 +364,6 @@ input, textarea {
 #minichat {
     overflow: auto;
     font-size: 11px;
-    font-family: tahoma, arial;
 }
 
 #minichat .nick {
@@ -423,7 +387,6 @@ input, textarea {
 }
 
 #mgbreadcrumb a, #mgsubmenu a, #mgsubmenu2 a {
-    font-family: tahoma, arial;
     text-decoration: none;
     font-size: 11px;
     font-weight: bold;
@@ -470,7 +433,6 @@ input, textarea {
 }
 
 textarea {
-    font-family: tahoma, arial;
     font-size: 12px;
 }
 
@@ -495,13 +457,7 @@ textarea {
     text-align: right;
 }
 
-#ccontent .signup-step {
-    font-family: Georgia;
-    font-size: 30px;
-}
-
 .warning {
-    font-family: Georgia;
     font-size: 13px;
 }
 
@@ -535,10 +491,6 @@ th.sm-icon, td.sm-icon {
 
 .feedback-ok {
     font-weight: bold;
-}
-
-#mgfooter li {
-    
 }
 
 #lastcomments a {
@@ -611,6 +563,7 @@ th.sm-icon, td.sm-icon {
     font-size: 10px;
     font-family: verdana;
 }
+
 /**
  * Userbox
  */
@@ -645,28 +598,27 @@ tr.forum-category td {
     background: #ddd;
 }
 
-#admin-stats .good,
-#admin-stats .goodsoft {
-    font-family: Georgia;
+#admin-stats .good, #admin-stats .goodsoft {
     font-size: 17px;
 }
 
-#admin-stats .bad,
-#admin-stats .badsoft {
-    font-family: Georgia;
+#admin-stats .bad, #admin-stats .badsoft {
     font-size: 17px;
 }
 
 #admin-stats .default-treatment {
-    font-family: Georgia;
     font-size: 17px;
 }
 
 #content .sm {
-	font-size: 10px;
-	font-weight: normal;
+    font-size: 10px;
+    font-weight: normal;
 }
 
-a { text-decoration: none; }
+a {
+    text-decoration: none;
+}
 
-#ccontent .account-balance { font-size: 18px; font-family: georgia, "Courier New", serif}
+#ccontent .account-balance {
+    font-size: 18px;
+}

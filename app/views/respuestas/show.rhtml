@@ -16,7 +16,7 @@
 <% content_main do %> 
   <%mfcontent(@question) do %>
   <%=@question.description%>
-  <div class="question-prize">Recompensa: <span class="ammount"><%=@question.prize.to_i%><%=gmd12%></ammount></span></div>
+  <div class="question-prize">Recompensa: <span class="ammount f_number"><%=@question.prize.to_i%><%=gmd12%></ammount></span></div>
   <div class="clearb"></div>
   	<% if @question.accepted_answer_comment_id then 
 		comment = @question.best_answer %>

@@ -9,6 +9,6 @@
 @import url(css/NOTCLEAN_color.wysiwyg.css);
 
 @import url(css/global/layout.css);
-@import url(css/global/color.css);
 @import url(css/page_specific/home.index.css);
-
+@import url(css/facebox.css);
+@import url(css/mggnav.css);
