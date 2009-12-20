@@ -2,6 +2,8 @@ class Event < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable
   
+  named_scope :top_level, :conditions => 'parent_id IS NULL'
+  
   has_many :coverages
   
   has_and_belongs_to_many :users

@@ -219,11 +219,6 @@ class SiteControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  test "banners_bottom" do
-    get :banners_bottom
-    assert_response :success
-  end
-  
   test "banners_duke" do
     get :banners_duke
     assert_response :success

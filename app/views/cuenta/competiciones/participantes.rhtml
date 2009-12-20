@@ -6,7 +6,7 @@
 <% content_main do %>
   <% mftext('Participantes de esta competición') do %>
   <% @competitions_participants = @competition.competitions_participants.paginate(:page => params[:page], :per_page => 25, :order => 'created_on DESC') %>
-  <%=render :partial => 'shared/pager', :locals => {:collection => @competitions_participants, :pos => 'top'} %>
+  <%=render :partial => 'shared/pager2', :locals => {:collection => @competitions_participants, :pos => 'top'} %>
   <table>
     <tr class="<%=oddclass%>">
       <th class="w125">Participante</th>
@@ -38,6 +38,6 @@
     </tr>
   <% end -%>
   </table>
-  <%=render :partial => 'shared/pager', :locals => {:collection => @competitions_participants, :pos => 'bottom'} %>
+  <%=render :partial => 'shared/pager2', :locals => {:collection => @competitions_participants, :pos => 'bottom'} %>
   <% end -%>
 <% end -%>

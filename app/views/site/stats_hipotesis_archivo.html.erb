@@ -1,14 +1,14 @@
 <% mftext('Experimentos completados') do %>
 <div id="admin-stats">
-<% @ab_tests = AbTest.paginate(:conditions => "completed_on IS NOT NULL AND active = 't'", :order_by => 'completed_on DESC', :page => params[:page], :per_page => 50) %>
-<%= render :partial => 'shared/pager', :locals => {:collection => @ab_tests, 'pos' => 'top'} %>
+<% @ab_tests = AbTest.paginate(:conditions => "completed_on IS NOT NULL AND active = 't'", :order => 'completed_on DESC', :page => params[:page], :per_page => 50) %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @ab_tests, 'pos' => 'top'} %>
 <table>
 <% @ab_tests.each do |t| %>
 <%= render :partial => 'stats_hipotesis_tr', :locals => { :t => t} %>
 <% end -%>
 </table>
 <br />
-<%= render :partial => 'shared/pager', :locals => {:collection => @ab_tests, 'pos' => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @ab_tests, 'pos' => 'bottom'} %>
 <strong><a href="/site/stats_hipotesis">Volver a experimentos activos</a></strong>
 </div>
 <% end -%>
