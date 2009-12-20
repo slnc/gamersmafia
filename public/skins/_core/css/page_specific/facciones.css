@@ -1,7 +1,6 @@
 .faction-role {
     width: 16px;
     height: 16px;
-    background: url(../../images/icons/faction_roles.gif) 0 0;
 }
 
 .faction-role.boss {

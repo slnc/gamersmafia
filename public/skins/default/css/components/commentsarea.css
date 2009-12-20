@@ -1,3 +1,7 @@
+.comment-rating-state {
+    background: url(../../images/icons/comment-rating-state-left.gif) left top no-repeat;
+}
+
 .comment-rating-state.positive-rating {
     color: #228b29;
 }

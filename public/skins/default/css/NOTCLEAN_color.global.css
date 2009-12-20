@@ -7,6 +7,11 @@ body {
     background: transparent;
 }
 
+#lasttopics .lasttopics-icon {
+    background: url(../images/icons/forums.gif) 2px 2px no-repeat;
+
+}
+
 #ccontent .module .mtitle {
     background: #000 url(../images/layout/cabeceras_portada.png) repeat-x scroll left -26px;
     line-height: 26px;

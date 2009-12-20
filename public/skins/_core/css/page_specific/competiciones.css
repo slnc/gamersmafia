@@ -1,14 +1,12 @@
 .competition-pro {
     width: 17px;
     height: 5px;
-    background: url(../../images/icons/pro.gif);
 }
 
 .competition-vs {
     margin: 0 5px 14px 5px;
     width: 20px;
     height: 13px;
-    background: url(../../images/icons/vs.gif);
 }
 
 .competition-msn {
@@ -16,7 +14,6 @@
     margin-top: -2px;
     width: 16px;
     height: 16px;
-    background: url(../../images/icons/msn.gif);
 }
 
 .competition-irc {
@@ -24,13 +21,11 @@
     margin-top: -2px;
     width: 16px;
     height: 16px;
-    background: url(../../images/icons/msn.gif);
 }
 
 .competition-cup {
     width: 16px;
     height: 15px;
-    background: url(../../images/icons/cups.gif) 0 0;
 }
 
 .competition-cup.cup1 {
@@ -41,9 +36,7 @@
     background-position: -32px 0;
 }
 
-
 .competition-progress {
     height: 10px;
     width: 28px;
-    background: url(../../images/icons/competition-progress.gif) 0 0px no-repeat;
 }

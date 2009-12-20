@@ -1,0 +1,138 @@
+.comments-count a, .comments-count span {
+    background: url(../../images/icons/comments_16x16.gif) center left no-repeat;
+}
+
+.pageviews-count {
+    background: url(../../images/icons/pageviews.gif) center left no-repeat;
+}
+
+.downloads-count {
+    background: url(../../images/icons/downloads_count.gif) center left no-repeat;
+}
+
+.members-count {
+    background: url(../../images/icons/comp-users.gif) center left no-repeat;
+}
+
+#ccontent .clans-count {
+    background: url(../../images/icons/clan-soft.gif) center left no-repeat;
+}
+
+img.topic-indicator {
+    background: url(../../images/icons/topic-indicators.gif);
+}
+
+.gmd10 {
+    background: url(../../images/icons/gmd10.png);
+}
+
+.gmd11 {
+    background: url(../../images/icons/gmd11.png);
+}
+
+.gmd12 {
+    background: url(../../images/icons/gmd12.png);
+}
+
+.comments-icon {
+    background: url(../../images/icons/comments.gif) 0 0 no-repeat;
+}
+
+img.pageviews-count {
+    background: url(../../images/icons/pageviews.gif);
+}
+
+img.comments-count {
+    background: url(../../images/icons/comments_16x16.gif);
+}
+
+img.downloads-count {
+    background: url(../../images/icons/downloads_count.gif);
+}
+
+/**
+ * Slog
+ */
+.slog-type0 {
+    background: url(../../images/icons/slog-type0.gif) 0 0 no-repeat;
+}
+
+.slog-type1 {
+    background: url(../../images/icons/slog-type1.gif) 0 0 no-repeat;
+}
+
+.slog-type2 {
+    background: url(../../images/icons/slog-type2.gif) 0 0 no-repeat;
+}
+
+.slog-type3 {
+    background: url(../../images/icons/slog-type3.gif) 0 0 no-repeat;
+}
+
+.slog-type4 {
+    background: url(../../images/icons/slog-type4.gif) 0 0 no-repeat;
+}
+
+.slog-type5 {
+    background: url(../../images/icons/slog-type5.gif) 0 0 no-repeat;
+}
+
+.slog-type6 {
+    background: url(../../images/icons/slog-type6.gif) 0 0 no-repeat;
+}
+
+.slog-type7 {
+    background: url(../../images/icons/slog-type7.gif) 0 0 no-repeat;
+}
+
+.slog-type8 {
+    background: url(../../images/icons/slog-type8.gif) 0 0 no-repeat;
+}
+
+.faction-role {
+    background: url(../../images/icons/faction_roles.gif) 0 0;
+}
+
+.user-sex .male {
+    background: url(../../images/icons/male.png);
+}
+
+.user-sex .female {
+    background: url(../../images/icons/male.png);
+}
+
+.unknown-map {
+    background: url(../../images/misc/mapa_no_especificado.jpg);
+}
+
+img.cash-out {
+    background: url(../../images/icons/cash_out.gif);
+}
+
+img.cash-in {
+    background: url(../../images/icons/cash_in.gif);
+}
+
+.go-to-topic {
+    background: url(../../images/icons/go.gif);
+}
+
+.modbar {
+    background: url(../../images/icons/modbar.gif) left top no-repeat;
+}
+
+.modbar img {
+    background: url(../../images/icons/modbar.gif) no-repeat;
+}
+
+.flhdr {
+    background: url(../../images/icons/flhdr.gif) center center no-repeat;
+}
+
+#ccontent ul.messages-thread li {
+    background: url(../../images/icons/message.gif) left 5px no-repeat;
+}
+
+#ccontent .messages .preview span.replied {
+    background: url(../../images/icons/replied.gif) left center no-repeat;
+}

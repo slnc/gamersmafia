@@ -1,0 +1,23 @@
+.competition-pro {
+    background: url(../../images/icons/pro.gif);
+}
+
+.competition-vs {
+    background: url(../../images/icons/vs.gif);
+}
+
+.competition-msn {
+    background: url(../../images/icons/msn.gif);
+}
+
+.competition-irc {
+    background: url(../../images/icons/msn.gif);
+}
+
+.competition-cup {
+    background: url(../../images/icons/cups.gif) 0 0;
+}
+
+.competition-progress {
+    background: url(../../images/icons/competition-progress.gif) 0 0px no-repeat;
+}

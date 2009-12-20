@@ -332,14 +332,9 @@ a > #sendbutton {
 .left-ratings {
     width: 12px;
     height: 13px;
-    background: url(/images/stars.png) 0 center no-repeat;
     z-index: 10;
     position: absolute;
     margin-left: -14px;
-}
-
-.left-ratings.none-remaining {
-    background: url(/images/stars.png) 0 0 no-repeat;
 }
 
 .remaining-ratings {

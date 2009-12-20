@@ -501,33 +501,29 @@ img.icon, #ccontent a img.icon, #ccontent a img.icon16 {
 
 .comments-count a, .comments-count span {
     padding-left: 18px;
-    background: url(../images/icons/comments_16x16.gif) center left no-repeat;
+   
 }
 
 .pageviews-count {
     padding-left: 18px;
-    background: url(../images/icons/pageviews.gif) center left no-repeat;
+   
 }
 
 .downloads-count {
     padding-left: 18px;
-    background: url(../images/icons/downloads_count.gif) center left no-repeat;
 }
 
 .members-count {
     padding-left: 18px;
-    background: url(../images/icons/comp-users.gif) center left no-repeat;
 }
 
 #ccontent .clans-count {
     padding-left: 18px;
-    background: url(../images/icons/clan-soft.gif) center left no-repeat;
 }
 
 img.topic-indicator {
     width: 24px;
     height: 24px;
-    background: url(../images/icons/topic-indicators.gif);
 }
 
 img.topic-indicator.topic-hot {
@@ -569,7 +565,7 @@ img.topic-indicator.topic-sticky {
 }
 
 #lasttopics .lasttopics-icon {
-    background: url(../images/icons/forums.gif) 2px 2px no-repeat;
+    
     padding-top: 22px;
 }
 
@@ -611,69 +607,7 @@ img.topic-indicator.topic-sticky {
     text-align: right;
 }
 
-.faith .points img {
-    background: url(../images/icons/faith_level.gif) 0 0 no-repeat;
-    width: 8px;
-    height: 8px;
-}
 
-.faith .points img.level0 {
-    background-position: 0 0;
-}
-
-.faith .points img.level1 {
-    background-position: -8px 0;
-}
-
-.faith .points img.level2 {
-    background-position: -16px 0;
-}
-
-.faith .points img.level3 {
-    background-position: -24px 0;
-}
-
-.faith .points img.level4 {
-    background-position: -32px 0;
-}
-
-.faith .points img.level5 {
-    background-position: -40px 0;
-}
-
-img.member-state {
-    background: url(../images/icons/member_state.gif) 0 0 no-repeat;
-    width: 16px;
-    height: 16px;
-}
-
-img.member-state.active {
-    background-position: 0 0;
-}
-
-img.member-state.shadow {
-    background-position: -16px 0;
-}
-
-img.member-state.zombie {
-    background-position: -32px 0;
-}
-
-img.member-state.unconfirmed {
-    background-position: -48px 0;
-}
-
-img.member-state.banned {
-    background-position: -64px 0;
-}
-
-img.member-state.deactivated {
-    background-position: -80px 0;
-}
-
-img.member-state.deleted {
-    background-position: -80px 0;
-}
 
 img.icon16 {
     width: 16px;
@@ -774,23 +708,19 @@ input.sm-text {
     width: 153px;
     height: 115px;
     border: 1px solid #000;
-    background: url(../images/misc/mapa_no_especificado.jpg);
 }
 
 img.cash-out {
-    background: url(../images/icons/cash_out.gif);
     width: 14px;
     height: 12px;
 }
 
 img.cash-in {
-    background: url(../images/icons/cash_in.gif);
     width: 14px;
     height: 12px;
 }
 
 .go-to-topic {
-    background: url(../images/icons/go.gif);
     width: 15px;
     height: 15px;
 }
@@ -801,11 +731,11 @@ img.cash-in {
 
 .modbar {
     width: 102px;
-    background: url(../images/icons/modbar.gif) left top no-repeat;
+ 
 }
 
 .modbar img {
-    background: url(../images/icons/modbar.gif) no-repeat;
+
     height: 7px;
 }
 
@@ -839,7 +769,7 @@ img.cash-in {
 .flhdr {
     width: 16px;
     height: 16px;
-    background: url(../images/icons/flhdr.gif) center center no-repeat;
+ 
 }
 
 #ccontent ul.inline {
@@ -856,7 +786,7 @@ img.cash-in {
 }
 
 #ccontent ul.messages-thread li {
-    background: url(../images/icons/message.gif) left 5px no-repeat;
+ 
     padding-left: 18px;
     list-style: none;
 }
@@ -873,9 +803,6 @@ img.cash-in {
     line-height: 24px;
 }
 
-#ccontent #cmain > ul.messages-thread li {
-    background: url(../images/icons/message.gif) left 5px no-repeat;
-}
 
 #ccontent ul.messages-thread ul {
     margin-left: 0;
