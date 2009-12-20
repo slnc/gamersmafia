@@ -717,9 +717,7 @@ class User < ActiveRecord::Base
   end
   
   def change_internal_state(new_state)
-    # TODO o esto o cambiar el atributo directamente
-    self.state = User.const_get("ST_#{new_state.to_s.normalize.upcase}")
-    self.save
+    self.update_attributes(:state => User.const_get("ST_#{new_state.to_s.normalize.upcase}"))
   end
   
   

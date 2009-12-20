@@ -223,12 +223,14 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   
   test "should_create_user_if_everything_is_valid" do
     post :create, :user => { :login => 'chindasvinto', :password => 'marauja', :password_confirmation => 'marauja', :email => 'tupmuamad@jaja.com' }
-    assert_redirected_to "/cuenta/confirmar?em=tupmuamad@jaja.com"
+    #assert_response :success
+    
+    assert_redirected_to "/cuenta"
     @u = User.find_by_login('chindasvinto')
     assert_not_nil @u
     assert_equal 'chindasvinto', @u.login
     assert_equal Digest::MD5.hexdigest('marauja'), @u.password
-    assert_equal User::ST_UNCONFIRMED, @u.state
+    assert_equal User::ST_SHADOW, @u.state
     # assert session[:user].kind_of?(Fixnum)
   end
   
@@ -427,6 +429,8 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   
   test "should_confirm_new_account_if_valid_confirm_key" do
     test_should_create_user_if_everything_is_valid
+    
+    @u.change_internal_state('unconfirmed')
     post :do_confirmar, {:k => @u.validkey, :email => @u.email}
     assert_redirected_to '/cuenta'
     assert_equal User::ST_SHADOW, User.find_by_validkey(@u.validkey).state

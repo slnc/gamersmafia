@@ -9,6 +9,8 @@ class Avatar < ActiveRecord::Base
   observe_attr :path
   
   before_destroy :set_users_avatar_to_nil
+
+  after_create :create_slog_entry
   
   validates_presence_of :name
   def destroy(returning=false)
@@ -53,12 +55,16 @@ class Avatar < ActiveRecord::Base
         Cms.image_thumbnail(f, f, 50, 50, 'f', true)
       end
     end
+    
+    true
+  end
+  
+  def create_slog_entry
     additional_text = ''
     additional_text << "#{Cms::faction_favicon(self.faction)}" if self.faction_id
     SlogEntry.create(:type_id => SlogEntry::TYPES[:new_avatar], 
                      :reporter_user_id => User.find_by_login('MrAchmed').id, 
     :headline => "#{additional_text} Nuevo avatar de #{mode}: <a href=\"http://#{App.domain}/avatares/edit/#{self.id}\"><img src=\"/cache/thumbnails/f/50x50/#{self.path}\" /></a></strong>")
-    true
   end
   
   def mode
