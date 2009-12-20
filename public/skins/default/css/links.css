@@ -103,7 +103,3 @@ body #ccontent .infoinline a:hover {
 #mggnav a {
     color: #0115d1;
 }
-
-#mggnav-factions-list a, #mggnav-clans-list a, #mggnav-hq-list a {
-    color: #ccc;
-}
