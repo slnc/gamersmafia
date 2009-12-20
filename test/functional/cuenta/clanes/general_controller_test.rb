@@ -168,17 +168,4 @@ class Cuenta::Clanes::GeneralControllerTest < ActionController::TestCase
     @u1.reload
     assert_equal @u1.last_clan_id, 1
   end
-  
-  test "activate_website_should_work_if_product" do
-    test_create_should_work
-    assert_count_increases(SoldProduct) do
-      @u1.sold_products.create({:price_paid => 1.0, :product_id => Product.find_by_cls('SoldClanWebsite').id})
-    end
-    assert_count_increases(ClansPortal) do
-      get :activate_website
-      assert_response :redirect
-    end
-    @clan = Clan.find(@u1.last_clan_id)
-    assert_equal true, @clan.website_activated
-  end
 end

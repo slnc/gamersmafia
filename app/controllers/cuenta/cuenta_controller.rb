@@ -498,6 +498,7 @@ class Cuenta::CuentaController < ApplicationController
   
   
   def do_confirmar
+    puts "en do_confirmar"
     if params[:k] && params[:email]
       u = User.find_by_validkey(params[:k].strip)
       if u && u.email.downcase == params[:email].downcase

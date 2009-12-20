@@ -6,6 +6,7 @@ class Term < ActiveRecord::Base
   
   named_scope :contents_tags, :conditions => 'taxonomy = \'ContentsTag\''
   named_scope :top_level, :conditions => 'id = root_id AND parent_id IS NULL'
+  named_scope :with_taxonomy, lambda { |taxonomy| {:conditions => "taxonomy = '#{taxonomy}'"}}
   
   has_many :contents_terms, :dependent => :destroy
   has_many :contents, :through => :contents_terms

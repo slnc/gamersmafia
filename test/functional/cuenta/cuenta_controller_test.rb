@@ -236,9 +236,11 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   
   test "should_create_second_account_from_same_ip" do
     test_should_create_user_if_everything_is_valid
+    session.delete
     
-    assert_count_increases(SlogEntry) do    
+    assert_count_increases(SlogEntry) do
       post :create, :user => { :login => 'chindasvinto2', :password => 'marauja', :password_confirmation => 'marauja', :email => 'tupmuamad2@jaja.com' }
+      
     end
     
     assert_redirected_to "/cuenta/confirmar?em=tupmuamad2@jaja.com"
@@ -261,22 +263,16 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   
   test "should_properly_acknowledge_referer" do
     panzer = User.find_by_login('panzer')
+    fp = panzer.faith_points
     mails_sent = ActionMailer::Base.deliveries.size
     post :create, :user => { :login => 'chindasvinto', :password => 'marauja', :password_confirmation => 'marauja', :email => 'tupmuamad@jaja.com'},
     :referer => 'panzer'
+    panzer.reload
     u = User.find_by_login('chindasvinto')
     assert_equal panzer.id, u.referer_user_id
-    assert_equal mails_sent + 1, ActionMailer::Base.deliveries.size # el email de confirmación de creación de cuenta
+    assert_equal mails_sent + 2, ActionMailer::Base.deliveries.size # el email de bienvenida y el de referido
     assert_equal u.email, ActionMailer::Base.deliveries.at(-1).to[0]
-    
-    # now we confirm
-    mails_sent = ActionMailer::Base.deliveries.size
-    fp = panzer.faith_points
-    post :do_confirmar, {:k => u.validkey, :email => u.email}
-    panzer = User.find_by_login('panzer')
     assert_equal Faith::FPS_ACTIONS['registration'] + fp, panzer.faith_points
-    assert_equal mails_sent + 2, ActionMailer::Base.deliveries.size # 2 por el email de welcome y el de aviso de referer, si añadimos uno más habrá que hacer una búsqueda para ver cuáles se mandan y cuáles no
-    assert_equal panzer.email, ActionMailer::Base.deliveries.at(-2).to[0] # esto depende del orden en el controller
   end
   
   test "should_send_confirmation_email_after_creating_account" do
@@ -288,7 +284,8 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   test "should_send_welcome_email_after_confirming_account" do
     test_should_create_user_if_everything_is_valid
     num_deliveries = ActionMailer::Base.deliveries.size
-    post :do_confirmar, {:k => @u.validkey, :email => @u.email}
+    @u.update_attributes(:state => User::ST_UNCONFIRMED)
+    post :do_confirmar, {:k => @u.validkey, :email => @u.email}, {}
     assert_redirected_to '/cuenta'
     assert_equal User::ST_SHADOW, User.find_by_validkey(@u.validkey).state
     assert_equal num_deliveries + 1, ActionMailer::Base.deliveries.size
@@ -429,23 +426,25 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   
   test "should_confirm_new_account_if_valid_confirm_key" do
     test_should_create_user_if_everything_is_valid
-    
+
     @u.change_internal_state('unconfirmed')
-    post :do_confirmar, {:k => @u.validkey, :email => @u.email}
+    
+    post :do_confirmar, {:k => @u.validkey, :email => @u.email}, {}
     assert_redirected_to '/cuenta'
     assert_equal User::ST_SHADOW, User.find_by_validkey(@u.validkey).state
   end
   
   test "should_confirm_new_account_if_valid_confirm_key_but_with_extra_spaces" do
     test_should_create_user_if_everything_is_valid
-    post :do_confirmar, {:k => " #{@u.validkey} ", :email => @u.email}
+    post :do_confirmar, {:k => " #{@u.validkey} ", :email => @u.email}, {}
     assert_redirected_to '/cuenta'
     assert_equal User::ST_SHADOW, User.find_by_validkey(@u.validkey).state
   end
   
   test "should_not_confirm_new_account_if_invalid_confirm_key" do
     test_should_create_user_if_everything_is_valid
-    post :do_confirmar, {:k => 'bailar_el_chachacha', :email => @u.email}
+    @u.update_attributes(:state => User::ST_UNCONFIRMED)
+    post :do_confirmar, {:k => 'bailar_el_chachacha', :email => @u.email}, {}
     assert_response :success
     assert_template 'cuenta/cuenta/confirmar'
     u = User.find_by_login('chindasvinto')
