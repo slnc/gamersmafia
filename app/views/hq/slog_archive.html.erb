@@ -1,5 +1,6 @@
-<% @slog_entries_pages, @slog_entries = controller.paginate :slog_entries, :conditions => 'reviewer_user_id is NOT NULL', :order => 'slog_entries.id desc', :include => [:reviewer, :reporter], :per_page => 50 %>
-<%= render :partial => 'shared/pager', :object => @slog_entries_pages, :locals => {'pos' => 'top'} %>
+<% content_main do %>
+<% @slog_entries = SlogEntry.paginate(:conditions => 'reviewer_user_id is NOT NULL', :order => 'slog_entries.id desc', :include => [:reviewer, :reporter], :page => params[:page], :per_page => 50) %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @slog_entries, 'pos' => 'top'} %>
 <table>
 	<tr class="<%=oddclass%>">
 		<th style="width: 16px;"></th>
@@ -18,4 +19,5 @@
 </tr>
 <% end -%>
 </table>
-<%= render :partial => 'shared/pager', :object => @slog_entries_pages, :locals => {'pos' => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @slog_entries, 'pos' => 'bottom'} %>
+<% end -%>

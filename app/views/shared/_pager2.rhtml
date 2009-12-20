@@ -1,11 +1,13 @@
-<% pager_params = pager_params || {} %>
-<div class="mpager">
-  <div class="pager-<%=pos%>">
-  	<span class="pages">Páginas: </span>
-	<%=will_paginate collection, :previous_label => '&laquo; Anterior', 
+<% pager_params = pager_params || {}
+out = will_paginate collection, :previous_label => '&laquo; Anterior', 
 								 :next_label => 'Siguiente &raquo;',
 								 :inner_window => 2,
 								 :outer_window => 1,
 								 :params => pager_params
-								  %></div>
+if out then %>
+<div class="mpager">
+  <div class="pager-<%=pos%>">
+  	<span class="pages">Páginas: </span>
+	</div>
 </div>
+<% end -%>

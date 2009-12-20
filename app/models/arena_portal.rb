@@ -6,9 +6,9 @@ class ArenaPortal
   def default_gmtv_channel_id
     1
   end
-
+  
   def small_header
-	  nil
+    nil
   end
   
   def channels
@@ -42,6 +42,10 @@ class ArenaPortal
   
   def skin
     Skin.find_by_hid('default')
+  end
+  
+  def terms_ids(taxonomy=nil)
+    Term.top_level.find_by_slug('arena').all_children_ids(:taxonomy => taxonomy)
   end
   
   def respond_to?(method_id, include_priv = false)

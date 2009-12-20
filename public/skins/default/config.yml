@@ -1,6 +1,4 @@
 --- !map:HashWithIndifferentAccess 
-gmtv: !map:HashWithIndifferentAccess 
-  default_channel_id: 
 google_ads: !map:HashWithIndifferentAccess 
   google_color_text: a0a0a0
   google_alternate_color: ffffff
@@ -8,6 +6,8 @@ google_ads: !map:HashWithIndifferentAccess
   google_color_border: ffffff
   google_color_link: AD0011
   google_color_bg: fafafa
+gmtv: !map:HashWithIndifferentAccess 
+  default_channel_id: 
 google_ads_bottom: !map:HashWithIndifferentAccess 
   google_color_text: DDDDDD
   google_alternate_color: ffffff

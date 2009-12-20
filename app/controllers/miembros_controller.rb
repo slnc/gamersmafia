@@ -125,13 +125,13 @@ class MiembrosController < ComunidadController
     else
       @navpath = [['Miembros', '/miembros'], ["Buscar #{params[:s]}", "/miembros/buscar?s=#{params[:s]}"]]
       @title = 'Resultados de la búsqueda'
-      @member_pages, @members = paginate :user, :per_page => 50, 
+      @members = User.paginate(:page => params[:page], :per_page => 50, 
       :conditions => ['lower(login) like lower(?) or lower(msn) like lower(?) or lower(firstname) like lower(?) or lower(lastname) like lower(?)', 
         '%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
         '%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
         '%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
         '%' + params[:s].gsub(/[']/) { '\\'+$& } + '%'],
-      :order => 'lower(login) ASC'
+      :order => 'lower(login) ASC')
     end
   end
   

@@ -30,16 +30,12 @@ mfcontents_list('Más comentadas',
 
 <% content_main do %>
     <% mftext('Encuestas') do %>
-<% 
-@poll_pages = ActionController::Pagination::Paginator.new self, controller.portal.poll.count(:published), 20, params['page']
-@poll_pages.current_page = @poll_pages.last if params['page'].nil?
-%>
-    <%= render :partial => 'shared/pager', :object => @poll_pages, :locals => {:pos => 'top'} %>
+	<% @polls = Poll.in_portal(controller.portal).published.paginate(:order => 'created_on', :page => params[:page], :per_page => 20) %>
+    <%= render :partial => 'shared/pager2', :locals => {:collection => @polls, :pos => 'top'} %>
 
     <table> 	
 <% cache("/#{@controller.portal_code}/encuestas/index/page_#{params[:page]}") do %>
-<%# TODO it doesn't work for portals %>
-<% controller.portal.poll.find(:published, :order => 'created_on asc', :limit => @poll_pages.current.to_sql[0], :offset => @poll_pages.current.to_sql[1]).reverse.each do |poll| %>
+<% @polls.each do |poll| %>
     <tr class="<%=oddclass%>">
       <td class="icon"><%=faction_favicon(Organizations.find_by_content(poll))%></td>
       <td><strong><%=link_to poll.title, gmurl(poll) %></strong><br /><br /></td>
@@ -51,6 +47,6 @@ mfcontents_list('Más comentadas',
   <% end %>
 <% end %>
 </table>
-    <%= render :partial => 'shared/pager', :object => @poll_pages, :locals => {:pos => 'bottom'} %>
+    <%= render :partial => 'shared/pager2', :locals => {:collection => @polls, :pos => 'bottom'} %>
 	<% end -%>
 <% end -%>

@@ -82,6 +82,15 @@ class FactionsPortal < Portal
     FactionsPortalCompetitionProxy.new(self)
   end
   
+  def terms_ids(taxonomy=nil)
+    terms = Term.top_level.find(:all, :conditions => "slug IN (#{toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC')
+    res = []
+    terms.each do |t|
+      res += t.all_children_ids(:taxonomy => taxonomy)
+    end
+    res
+  end
+  
   def method_missing(method_id, *args)
     if Cms::contents_classes_symbols.include?(method_id) # contents
       if method_id == :poll
@@ -98,11 +107,11 @@ class FactionsPortal < Portal
           # TODO
           # ahora reemplazamos obj por la categoría de primer nivel si es facción o plataforma
           g = self.games
-         if g.size > 1
+          if g.size > 1
             g.delete_at(0)
             g.each do |gg| t.add_sibling(Term.single_toplevel(:game_id => gg.id)) end
-         end
-         return t
+          end
+          return t
         end
         obj
       end
