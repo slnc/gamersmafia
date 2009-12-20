@@ -14,8 +14,4 @@ body.lypopup .popup-contents {
     margin-left: 10px;
 }
 
-#ccontent table, body.lypopup table {
-/*    width: 100%; */
-}
-
 table.messages { width: 100%;}

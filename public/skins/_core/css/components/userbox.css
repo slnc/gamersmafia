@@ -328,3 +328,25 @@ a > #sendbutton {
 #new-content-selector li {
     line-height: 20px;
 }
+
+.left-ratings {
+    width: 12px;
+    height: 13px;
+    background: url(/images/stars.png) 0 center no-repeat;
+    z-index: 10;
+    position: absolute;
+    margin-left: -14px;
+}
+
+.left-ratings.none-remaining {
+    background: url(/images/stars.png) 0 0 no-repeat;
+}
+
+.remaining-ratings {
+    position: absolute;
+    top: 62px;
+    right: 90px;
+    z-index: 20;
+    line-height: 13px;
+    height: 13px;
+}

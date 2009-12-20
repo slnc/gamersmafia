@@ -28,7 +28,6 @@ class AvatarTest < ActiveSupport::TestCase
   
   test "shouldnt_allow_to_upload_a_non_jpg_file" do
     %w(images.zip lines.gif lines.bmp header.swf).each do |f|
-      puts "\n\nchecking #{f}"
       @av = Avatar.create({:name => 'fulanito de tal', :submitter_user_id => 1, :path => fixture_file_upload("files/#{f}")})
       assert @av.new_record?
     end

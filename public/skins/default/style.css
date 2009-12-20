@@ -1,17 +1,13 @@
 @import url(../_core/style.css);
+
 @import url(css/NOTCLEAN_color.global.css);
-@import url(css/NOTCLEAN_color.mgmenu.css);
-@import url(css/NOTCLEAN_color.wysiwyg.css);
 @import url(css/NOTCLEAN_layout.global.css);
-@import url(css/NOTCLEAN_layout.mgmenu.css);
 @import url(css/NOTCLEAN_typography.global.css);
 
-@import url(css/NOTCLEAN_color.wysiwyg.css);
-
-@import url(css/global/layout.css);
 @import url(css/page_specific/home.index.css);
-@import url(css/facebox.css);
-@import url(css/mggnav.css);
+
+@import url(css/components/facebox.css);
+@import url(css/components/mgglobalmenu.css);
+@import url(css/components/mpager.css);
 
 @import url(css/links.css);
-@import url(css/components/mpager.css);

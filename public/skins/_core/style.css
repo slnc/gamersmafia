@@ -1,13 +1,15 @@
-
 @import url(css/NOTCLEAN.layout.css);
-@import url(css/layout.comments.css);
-@import url(css/layout.contentinfobar.css);
+@import url(css/components/commentsarea.css);
+@import url(css/components/contentinfobar.css);
+@import url(css/components/mgglobalmenu.css);
+@import url(css/components/mgsearch.css);
+@import url(css/layout.util.css);
 @import url(css/layout.global.css);
 @import url(css/layout.misc.css);
+@import url(css/components/contenttags.css);
 @import url(css/layout.popup.css);
-@import url(css/layout.ratings.css);
-@import url(css/layout.userbox.css);
-@import url(css/layout.wysiwyg.css);
+@import url(css/components/contentrating.css);
+@import url(css/components/userbox.css);
 
 @import url(css/page_specific/cms.css);
 @import url(css/page_specific/competiciones.css);
@@ -21,11 +23,14 @@
 
 @import url(css/typography.css);
 @import url(css/games_sprites.css);
-@import url(css/mggnav.css);
 
-@import url(css/facebox.css);
+@import url(css/components/facebox.css);
 
 @import url(css/grid.css);
 
+@import url(css/components/mgbreadcrumb.css);
 @import url(css/components/mgfooter.css);
 @import url(css/components/mpager.css);
+@import url(css/components/mglogo.css);
+@import url(css/components/mgheader.css);
+@import url(css/components/colorpicker.css);
