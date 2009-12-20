@@ -1,0 +1,10 @@
+<div class="mpager">
+  <div class="pager-<%=pos%>">
+  	<span class="pages">Páginas: </span>
+	<%=will_paginate collection, :previous_label => '&laquo; Anterior', 
+								 :next_label => 'Siguiente &raquo;',
+								 :inner_window => 2,
+								 :outer_window => 1,
+								 :params => {}
+								  %></div>
+</div>

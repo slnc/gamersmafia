@@ -1,8 +1,9 @@
-<% 
-options ||= {:params => {}}
+<%  options ||= { :params => {} }
 
 out = pagination_links(pager, options)
 
 if out then %>
+<div class="mpager">
   <div class="pager-<%=pos%>"><span class="pages">Páginas: </span><%=out%></div>
+</div>
 <% end -%>

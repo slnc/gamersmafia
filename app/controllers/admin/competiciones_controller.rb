@@ -7,7 +7,7 @@ class Admin::CompeticionesController < ApplicationController
   
   def index
     navpath2<< ['Admin', '/admin']
-    @competition_pages, @competitions = paginate :competition, :order => 'state ASC, id ASC', :per_page => 50
+    @competitions = Competition.paginate(:page => params[:page], :per_page => 50, :order => 'state ASC, id ASC')
   end
   
   def info

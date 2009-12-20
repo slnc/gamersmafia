@@ -179,8 +179,8 @@
 
 #mgbreadcrumb .home span {
     margin-left: 6px;
-    /* display: none; */
 }
+
 /**
  * Módulo tracker
  */
@@ -605,7 +605,7 @@ ul.slog-entries-browser-filter li { list-style: none; float: left; margin-right:
 
 #cpageout.gm20085 #csupport .ads-slots { background: none; }
 #cpageout.gm20085 #csupport .ads-slots1 { border-left: 0; }
-/* .gm20085 #ccontent .screenshot a img { border: 0; } */
+
 #quickportals { background: url(../images/homesel_l.png) left top no-repeat; height: 22px; line-height: 22px; float: left; margin-top: 4px; margin-right: 4px; width: 100px; }
 #quickportals #div1 { background: url(../images/homesel_r.png) right top no-repeat; padding: 0 4px 0 4px; height: 22px; line-height: 22px; }
 #quickportals #div2 { background: url(../images/homesel_m.png) left top repeat-x; height: 22px; line-height: 22px; }

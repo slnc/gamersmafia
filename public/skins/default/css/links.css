@@ -1,0 +1,118 @@
+a {
+    color: #0049a3;
+}
+
+a.nolink {
+    color: #000;
+}
+
+a:visited {
+    color: #3b0093;
+}
+
+a:hover {
+    color: #000000;
+}
+
+body #ccontent .infoinline a {
+    color: #9D9D9D;
+}
+
+body #ccontent .infoinline a:visited {
+    color: #9D9D9D;
+}
+
+body #ccontent .infoinline a:hover {
+    color: #000000;
+}
+
+#ccontent a.normallink {
+    color: #2E218B;
+}
+
+#ccontent a:visited.normallink {
+    color: #161045;
+}
+
+#ccontent a:hover.normallink {
+    color: #7365DA;
+}
+
+#mgmenugm a {
+    color: #fff;
+    text-decoration: none;
+}
+
+#sawbottom a {
+    color: #fff;
+}
+
+#messages-indicator .messages.has-unread a {
+    color: #6e4b00;
+}
+
+#mgsubmenu li a, #mgsubmenu2 li a {
+    color: #fff;
+}
+
+#mgsubmenu li.active a, #mgsubmenu2 li.active a {
+    background: #fff;
+    color: #000;
+}
+
+#ccontent .comments-area .comment.new .comment-header a {
+    color: #bbb;
+}
+
+#ccontent .comments-area .comment.new .comment-header a:hover {
+    color: #fff;
+}
+
+#homegamer .calendar .day.today a {
+    background: #228B29;
+    color: #ffffff;
+}
+
+#gmversion .new a {
+    color: #fff;
+}
+
+#mgsubmenu a {
+    color: black;
+}
+
+.sidecontent-list li.updated a {
+    color: #fff;
+}
+
+#gmversion a {
+    padding: 3px;
+    color: #636363;
+}
+#gmversion a:visited {
+    color: #aaa;
+}
+
+#gmversion a:hover {
+    color: #000000;
+}
+
+#userbox a {
+    color: #636363;
+}
+
+#userbox a:hover {
+    color: #000;
+}
+
+#mggnav-factions-list a {
+    color: #fff;
+}
+
+#mggnav a {
+    color: #0115d1;
+}
+
+#mggnav-factions-list a, #mggnav-clans-list a, #mggnav-hq-list a {
+    color: #ccc;
+}

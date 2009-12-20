@@ -8,28 +8,12 @@ class Admin::ClanesController < ApplicationController
   def index
     @title = 'Clanes'
     @navpath = [['Admin', '/admin'], ['Clanes', '/admin/clanes']]
-    @clan_pages, @clans = paginate :clans, :conditions => 'deleted is false', :order => 'created_on DESC', :per_page => 50
+    @clans = Clan.paginate(:page => params[:page], :per_page => 50, :conditions => 'deleted is false', :order => 'created_on DESC')
   end
   
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
   verify :method => :post, :only => [ :destroy, :create, :update ],
   :redirect_to => { :action => :index }
-  
-  def new
-    @navpath = [['Admin', '/admin'], ['Clanes', '/admin/clanes'], ['Nuevo', '/admin/clanes/new']]
-    @title = 'Nuevo clan'
-    @clan = Clan.new
-  end
-  
-  def create
-    @clan = Clan.new(params[:clan])
-    if @clan.save
-      flash[:notice] = 'Clan creado correctamente.'
-      redirect_to :action => 'index'
-    else
-      render :action => 'new'
-    end
-  end
   
   def edit
     @clan = Clan.find(params[:id])
@@ -49,9 +33,8 @@ class Admin::ClanesController < ApplicationController
   
   def destroy
     c = Clan.find(params[:id])
-    name = c.name
     c.mark_as_deleted
-    flash[:notice] = "Clan #{name} borrado correctamente."
+    flash[:notice] = "Clan #{c.name} borrado correctamente."
     redirect_to "/admin/clanes?page=#{params[:page]}"
   end
   

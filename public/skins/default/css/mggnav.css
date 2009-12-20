@@ -7,13 +7,7 @@
     color: #777;
 }
 
-#mggnav a {
-    color: #0115d1;
-}
 
-#mggnav-factions-list a, #mggnav-clans-list a, #mggnav-hq-list a {
-    color: #ccc;
-}
 
 #mggnav-factions-list {
     background: #000;
@@ -24,9 +18,7 @@
     border-color: #880000;
 }
 
-#mggnav-factions-list a {
-    color: #fff;
-}
+
 
 #mggnav-platforms-list {
     border-left-color: #880000;

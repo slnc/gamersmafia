@@ -43,10 +43,6 @@
     margin: 2px 0 0 2px; /* necesario por el fucking ie */
 }
 
-.comments-area .pager {
-    margin: 10px 5px;
-}
-
 .comments-area .post-comment {
     margin: 35px 0 0 3px;
 }

@@ -93,9 +93,7 @@
 %>
 <br />
 <br />
-
-<%= render :partial => 'shared/pager', :object => @user_pages, :locals => {:pos => 'top'} %>
-
+<%= render :partial => 'shared/pager2', :locals => {:collection => @users, :pos => 'top'} %>
 <table>
   <tr>
 		<th>Login</th>
@@ -105,5 +103,5 @@
 <%= render :partial => "user", :collection => @users %>
 </table>
 
-<%= render :partial => 'shared/pager', :object => @user_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @users, :pos => 'bottom'} %>
 <% end -%>

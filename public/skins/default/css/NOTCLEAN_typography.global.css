@@ -49,9 +49,6 @@ a {
     font-size: 11px;
 }
 
-.pager-top a, .pager-bottom a {
-    text-decoration: none;
-}
 
 #ccontent .contentinfobar {
     font-family: verdana;
@@ -83,16 +80,6 @@ tr, td {
     text-decoration: none;
 }
 
-.pager-top .currentpage, .pager-bottom .currentpage {
-    font-family: verdana;
-    font-size: 11px;
-}
-
-.pager-top a, .pager-bottom a {
-    text-decoration: none;
-    font-family: verdana;
-    font-size: 11px;
-}
 
 #userbox a:hover {
     text-decoration: underline;

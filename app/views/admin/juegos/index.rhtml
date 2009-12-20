@@ -6,7 +6,7 @@
 <% content_main do %>
   <%mftext('Juegos') do %>
 
-<%= render :partial => 'shared/pager', :object => @game_pages, :locals => {:pos => 'top'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @games, :pos => 'top'} %>
 <table>
   <tr>
     <th>Nombre</th>
@@ -27,6 +27,6 @@
 <% end %>
 </table>
 
-<%= render :partial => 'shared/pager', :object => @game_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @games, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>

@@ -12,3 +12,6 @@
 @import url(css/page_specific/home.index.css);
 @import url(css/facebox.css);
 @import url(css/mggnav.css);
+
+@import url(css/links.css);
+@import url(css/components/mpager.css);

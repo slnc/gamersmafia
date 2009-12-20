@@ -364,7 +364,7 @@
     border-color: #0B0060;
 }
 
-#homecontents .content-hid .alt1 a, body.contents .alt1 {
+#homecontents .content-hid .alt1 a {
     background-color: #F9F9FD;
 }
 
@@ -404,7 +404,7 @@
     color: #ffffff;
 }
 
-#homegamer .content-hid .alt1 a, body.gamer .alt1 {
+#homegamer .content-hid .alt1 a {
     background-color: #F9FDF9;
 }
 
@@ -424,7 +424,7 @@
     color: #ffffff;
 }
 
-#homebazar .content-hid .alt1 a, body.contents .alt1 {
+#homebazar .content-hid .alt1 a {
     background-color: #fcf9fd;
 }
 

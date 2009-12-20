@@ -1,0 +1,28 @@
+.mpager {
+    background: url(../../images/icons/pager.png) left center no-repeat;
+}
+
+.mpager .currentpage {
+    color: #fff;
+    background: #636363;
+    border-color: #ddd;
+}
+
+.mpager a {
+    border-color: #ddd;
+}
+
+.mpager a:hover {
+    background: #fafafa;
+}
+
+.mpager .currentpage {
+    font-family: verdana;
+    font-size: 11px;
+}
+
+.mpager a {
+    text-decoration: none;
+    font-family: verdana;
+    font-size: 11px;
+}

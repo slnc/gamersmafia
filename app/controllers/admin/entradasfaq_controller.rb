@@ -7,7 +7,7 @@ class Admin::EntradasfaqController < ApplicationController
   
   def index
     # TODO habría que reescribir esta query
-    @faq_entry_pages, @faq_entries = paginate :faq_entry, :order => '(select position from faq_categories where id = faq_category_id) ASC, position ASC', :per_page => 50
+    @faq_entries = FaqEntry.paginate(:page => params[:page], :per_page => 50, :order => '(select position from faq_categories where id = faq_category_id) ASC, position ASC')
   end
   
   def new

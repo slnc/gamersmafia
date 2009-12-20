@@ -8,7 +8,7 @@ class Admin::MapasJuegosController < ApplicationController
   def index
     @title = 'Mapas de juegos'
     @navpath = [['Mapas de juegos', '/admin/mapas_juegos'],]
-    @games_map_pages, @games_maps = paginate :games_maps, :per_page => 50, :order => 'games_maps.game_id ASC, lower(games_maps.name) ASC', :include => :game
+    @games_maps = GamesMap.paginate(:page => params[:page], :per_page => 50, :order => 'games_maps.game_id ASC, lower(games_maps.name) ASC', :include => :game)
   end
 
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)

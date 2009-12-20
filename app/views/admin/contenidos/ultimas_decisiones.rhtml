@@ -23,11 +23,9 @@ else %>
 	end
 end
 
-@news_pages = ActionController::Pagination::Paginator.new self, Content.count(:conditions => cond), 50, params['page']
-
-  @news_pages.current_page = @news_pages.first if params['page'].nil?
-  %>
-  <%=render :partial => 'shared/pager', :object => @news_pages, :locals => {:pos => 'top'} %>
+@contents = Content.paginate(:page => params[:page], :per_page => 50, :conditions => cond, :order => 'id DESC')
+%>
+<%=render :partial => 'shared/pager2', :locals => { :collection => @contents, :pos => 'top' } %>
 
 <table>
   <tr>
@@ -39,11 +37,9 @@ end
     <th>Publicado hace</th>
     <th>Autor</th>
   </tr>
-  <% 
-  params[:page] = 1 unless params[:page]
-
+<% 
 cache_category_paths = {}
-  Content.find(:all, :conditions => cond, :order => 'id DESC', :limit => 50, :offset => (params[:page]-1)*50).each do |uniq|
+@contents.each do |uniq|
   content = uniq.real_content
   @item = content
   sums = PublishingDecision.find_sum_for_content(content, true)
@@ -85,5 +81,5 @@ cache_category_paths = {}
     </tr>
 <% end -%>
 </table>
-  <%=render :partial => 'shared/pager', :object => @news_pages, :locals => {:pos => 'top'} %>
+<%=render :partial => 'shared/pager2', :locals => { :collection => @contents, :pos => 'bottom' } %>
 <% end -%>

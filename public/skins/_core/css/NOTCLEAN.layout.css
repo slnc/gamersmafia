@@ -44,29 +44,6 @@ th.checkbox, td.checkbox {
     border: 0;
 }
 
-.pager-top, .pager-bottom {
-    padding-left: 15px;
-}
-
-.pager-top .currentpage, .pager-bottom .currentpage {
-    padding: 1px 5px;
-    border: 1px solid;
-    margin: 0 2px;
-}
-
-.pager-top a, .pager-bottom a {
-    border: 1px solid;
-    padding: 1px 5px;
-    margin: 0 2px;
-}
-
-.pager-top {
-    margin: 20px 3px;
-}
-
-.pager-bottom {
-    margin: 20px 0 20px 3px;
-}
 
 #ccontent { margin-bottom: 80px; }
 

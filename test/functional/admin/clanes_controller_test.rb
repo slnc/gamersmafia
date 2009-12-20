@@ -7,26 +7,6 @@ class Admin::ClanesControllerTest < ActionController::TestCase
     assert_template 'index'
   end
   
-  test "new" do
-    get :new, {}, {:user => 1}
-    
-    assert_response :success
-    assert_template 'new'
-    
-    assert_not_nil assigns(:clan)
-  end
-  
-  test "create" do
-    num_clans = Clan.count
-    
-    post :create, {:clan => {:tag => 'footag', :name => 'fooname'}}, {:user => 1}
-    
-    assert_response :redirect
-    assert_redirected_to :action => 'index'
-    
-    assert_equal num_clans + 1, Clan.count
-  end
-  
   test "edit" do
     get :edit, {:id => 1}, {:user => 1}
     
