@@ -28,13 +28,6 @@
     height: 15px;
 }
 
-.competition-cup.cup1 {
-    background-position: -16px 0;
-}
-
-.competition-cup.cup2 {
-    background-position: -32px 0;
-}
 
 .competition-progress {
     height: 10px;

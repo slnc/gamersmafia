@@ -18,6 +18,14 @@
     background: url(../../images/icons/cups.gif) 0 0;
 }
 
+.competition-cup.cup1 {
+    background-position: -16px 0;
+}
+
+.competition-cup.cup2 {
+    background-position: -32px 0;
+}
+
 .competition-progress {
     background: url(../../images/icons/competition-progress.gif) 0 0px no-repeat;
 }
