@@ -23,7 +23,7 @@ body {
     min-height: auto;
 	line-height: 145%;
     padding: 8px 10px 20px 8px;;
-	margin: 6px 0 80px 180px;
+	margin: 6px 0 80px 165px;
 	background: #fff;
 	border: 0;
 }
@@ -40,8 +40,6 @@ body {
     padding: 0.54em;
     overflow: hidden;
 }
-
-
 
 .c3col {
     width: 32%;
