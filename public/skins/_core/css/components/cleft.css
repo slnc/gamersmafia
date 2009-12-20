@@ -1,0 +1,82 @@
+#cleft {
+    float: left;
+    width: 121px;
+    margin-top: 0px;
+	position: absolute;
+    left: 10px;
+    top: 96px;
+    width: 158px;
+	padding-bottom: 5px;
+	width: 156px;
+	left: auto;
+	margin-left: 0;
+}
+
+#cleft ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 0.27em;
+    line-height: 1.82em;
+}
+
+#cleft .module {
+    margin-bottom: 10px;
+}
+
+#cleft table {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#cleft td {
+    padding: 0;
+}
+
+#cleft div.module .mcontent {
+    border-bottom: 1px solid #f1f1f1;
+}
+
+#cleft {
+    background: url(../../images/cleft_top.gif) left top no-repeat;
+}
+
+#cleft .det-bottom {
+    background: url(../../images/cleft_bottom.gif) left bottom no-repeat;
+}
+
+#cleft .det-bottom2 {
+    background: #fff;
+}
+
+#cleft .det-bottom2 {
+    padding: 5px 10px;
+    margin-top: 5px;
+    border-left: 1px solid #dfdfdf;
+    border-right: 1px solid #dfdfdf;
+}
+
+#cleft .det-bottom {
+    padding-bottom: 8px;
+}
+
+#cleft ul {
+    padding: 0;
+}
+
+#cleft {
+    background: url(../../images/cleft_top20085.gif) left top no-repeat;
+}
+
+#cleft .det-bottom {
+    background: url(../../images/cleft_bottom20085.gif) left bottom no-repeat;
+}
+
+#cleft {
+    font-size: 10px;
+}
+
+#cleft li {
+    line-height: 14px;
+}
+

@@ -1,0 +1,22 @@
+.user-listing {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.user-listing li {
+    clear: left;
+    padding-top: 4px;
+    height: 1%;
+    overflow: hidden;
+}
+
+.user-listing li span.nick {
+    font-weight: bold;
+    font-size: 11px;
+}
+
+.user-listing li .photo {
+    float: left;
+    margin: 2px;
+}

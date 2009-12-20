@@ -1,0 +1,61 @@
+#csupport .ads-slots {
+    margin-top: -8px;
+    margin-right: -10px;
+    background: #fafafa url(../images/csupport_bl.gif) left bottom no-repeat;
+    padding: 0 0 6px 0px;
+    margin-bottom: 12px;
+}
+
+#csupport .ads-slots1 {
+    border-left: 1px solid #dfdfdf;
+    padding: 8px 8px 2px 8px;
+}
+
+#csupport {
+    width: 242px;
+    margin-left: 0;
+}
+
+#csupport .subheader, #csupport .mtitle {
+    padding: 12px 0 0 43px;
+    margin-right: -10px;
+    height: 37px;
+    border: 0;
+    border-right: 0;
+}
+
+#csupport .module .mtitle span {
+    margin: 0;
+}
+
+#csupport .subheader div {
+    padding: 0;
+}
+
+#csupport .ads-slots {
+    margin-right: 0;
+    margin-top: 0;
+    text-align: center;
+}
+
+#csupport .ads-slots1 {
+    padding-left: 3px;
+}
+
+#csupport .subheader, #csupport .mtitle {
+    margin-right: 0;
+}
+
+#csupport .ads-slots {
+    background: none;
+}
+
+#csupport .ads-slots1 {
+    border-left: 0;
+}
+
+#csupport .module .subheader, #csupport .module .mtitle {
+    background: #000;
+    height: 30px;
+    padding: 0;
+}

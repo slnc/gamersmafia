@@ -1,0 +1,15 @@
+#mgads-bottom {
+    margin-top: 20px;
+    margin-left: 25px;
+    margin-bottom: -20px;
+    width: 500px;
+    background: #fafafa url(../../images/mgads_bottom_top.gif) left top no-repeat;
+    padding-top: 8px;
+	margin-bottom: -10px; 
+}
+
+#mgads-bottom .mgads-bottom1 {
+    border-left: 1px solid #dfdfdf;
+    border-right: 1px solid #dfdfdf;
+    padding: 8px 8px 8px 8px;
+}

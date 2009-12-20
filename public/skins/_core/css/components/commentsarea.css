@@ -67,16 +67,6 @@
     margin-top: 20px;
 }
 
-.subheader.comments div {
-    border-top: 1px solid;
-    border-bottom: 1px solid;
-    padding-left: 45px;
-}
-
-.subheader.comments {
-    margin-bottom: 10px;
-}
-
 .comment-rating-state {
     margin-left: 98px;
     padding: 1px 0 2px 5px;
@@ -131,7 +121,7 @@
     clear: left;
 }
 
-#ccontent .moderate-comments a {
+.moderate-comments a {
     padding-left: 3px;
     display: block;
     width: 100%;
@@ -139,7 +129,7 @@
     line-height: 20px;
 }
 
-#ccontent .moderate-comments a img {
+.moderate-comments a img {
     border: 0;
 }
 

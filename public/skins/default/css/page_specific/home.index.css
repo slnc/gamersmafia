@@ -441,3 +441,57 @@
 }
 
 #home-factions td { padding-bottom: 10px; }
+
+.homebox table.calendar, .homebox table.calendar td, #ccontent .homebox table.calendar th {
+    font-family: arial;
+    font-size: 10px;
+    text-align: center;
+}
+
+.homebox .calendar .day.today {
+    font-weight: bold;
+}
+
+.homebox table.calendar .dayName th {
+    text-align: center;
+}
+
+.homebox table tr.monthName td {
+    text-align: left;
+}
+
+.homebox table.factions td, .homebox table.factions th {
+    font-size: 11px;
+}
+
+.homebox table.factions th {
+    font-weight: bold;
+}
+
+.homebox .content-hid a, .homebox .content-hid2 a, .messages .new a {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.homebox .content-hid a:visited, .homebox .content-hid2 a:visited {
+    font-weight: normal;
+}
+
+#homecontents .subheader, #homecommunity .subheader, #homegamer .subheader {
+    font-family: "Arial Black", Arial;
+    font-size: 15px;
+    text-transform: uppercase;
+    font-weight: normal;
+    line-height: 20px;
+}
+
+#homecontents .container a, #homecommunity .container a, #homegamer .container a {
+    text-decoration: none;
+}
+
+
+#homecontents .container { border: 0; margin-right: 10px; }
+#homecommunity .container { border: 0; margin: 0 10px; }
+#homegamer .container { border: 0; margin-left: 10px; }
+
+#hhome-events .mtitle { display: none; visibility: hidden; }

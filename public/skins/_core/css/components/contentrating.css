@@ -1,3 +1,11 @@
+#ratebar {
+    margin-left: 43px;
+    width: 66px;
+    height: 13px;
+    margin-top: 7px;
+    margin-bottom: 4px;
+}
+
 #content-stats {
 	float: right;
 	width: 120px;

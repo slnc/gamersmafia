@@ -15,14 +15,6 @@ h2 {
     font-size: 10px;
 }
 
-#cleft {
-    font-size: 10px;
-}
-
-#cleft li {
-    line-height: 14px;
-}
-
 a {
     text-decoration: underline;
 }
@@ -191,17 +183,6 @@ body.lypopup h1 {
     font-family: verdana;
 }
 
-.subheader {
-    /* line-height: 23px; */
-    font-size: 13px;
-    font-weight: bold;
-}
-
-.smallfont select {
-    font-size: 10px;
-    font-family: arial;
-}
-
 #ccontent th {
     text-align: left;
 }
@@ -238,31 +219,7 @@ body.lypopup h1 {
     text-align: right;
 }
 
-.homebox table.calendar, .homebox table.calendar td, #ccontent .homebox table.calendar th {
-    font-family: arial;
-    font-size: 10px;
-    text-align: center;
-}
 
-.homebox .calendar .day.today {
-    font-weight: bold;
-}
-
-.homebox table.calendar .dayName th {
-    text-align: center;
-}
-
-.homebox table tr.monthName td {
-    text-align: left;
-}
-
-.homebox table.factions td, .homebox table.factions th {
-    font-size: 11px;
-}
-
-.homebox table.factions th {
-    font-weight: bold;
-}
 
 /* downloads  */
 tr.downloads-folder td.first {
@@ -295,15 +252,6 @@ tr.downloads-folder a, tr.downloads-download a {
 
 .more a:hover {
     font-size: 11px;
-}
-
-.homebox .content-hid a, .homebox .content-hid2 a, .messages .new a {
-    font-weight: bold;
-    text-decoration: none;
-}
-
-.homebox .content-hid a:visited, .homebox .content-hid2 a:visited {
-    font-weight: normal;
 }
 
 ul.online li, .userinfobox {
@@ -339,10 +287,6 @@ input, textarea {
     font-size: 11px;
 }
 
-#userbox .unread a {
-    font-weight: bold;
-}
-
 #online th {
     text-align: left;
     font-size: 10px;
@@ -367,52 +311,6 @@ input, textarea {
 
 #ccontent table label {
     font-weight: normal;
-}
-
-#mgbreadcrumb li {
-    line-height: 23px;
-}
-
-#mgbreadcrumb a, #mgsubmenu a, #mgsubmenu2 a {
-    text-decoration: none;
-    font-size: 11px;
-    font-weight: bold;
-}
-
-#mgbreadcrumb a {
-    text-decoration: underline;
-}
-
-#mgsubmenu a:hover, #mgsubmenu2 a:hover, #mgbreadcrumb a:hover {
-    text-decoration: underline;
-}
-
-#mgbreadcrumb a:hover {
-    text-decoration: underline;
-}
-
-#mgsubmenu li.title, #mgsubmenu2 li.title {
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 10px;
-}
-
-#mgsubmenu li span, #mgsubmenu2 li span {
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 11px;
-}
-
-#homecontents .subheader, #homecommunity .subheader, #homegamer .subheader {
-    font-family: "Arial Black", Arial;
-    font-size: 15px;
-    text-transform: uppercase;
-    font-weight: normal;
-    line-height: 20px;
-}
-
-#homecontents .container a, #homecommunity .container a, #homegamer .container a {
-    text-decoration: none;
 }
 
 .more a {
@@ -490,33 +388,8 @@ th.sm-icon, td.sm-icon {
     font-weight: bold;
 }
 
-#ccontent .moderate-comments a {
-    font-family: verdana;
-    font-size: 10px;
-    font-weight: bold;
-}
-
-.moderate-comments-opener {
-    font-family: verdana;
-    font-size: 10px;
-}
-
 #lastcomments li, #tracker li {
     font-size: 10px;
-}
-
-#mgbreadcrumb li.current {
-    font-family: verdana;
-    font-size: 11px;
-    font-weight: normal;
-}
-
-#mgbreadcrumb a {
-    text-decoration: none;
-}
-
-#mgbreadcrumb a:hover {
-    text-decoration: underline;
 }
 
 #navigator select {
@@ -554,28 +427,7 @@ th.sm-icon, td.sm-icon {
 /**
  * Userbox
  */
-#new-content-selector .close {
-    font-size: 12px;
-    font-weight: bold;
-}
 
-#new-content-selector .title {
-    font-size: 11px;
-    font-weight: bold;
-}
-
-#new-content-selector li a {
-    font-weight: bold;
-    font-family: arial;
-}
-
-#new-content-selector li {
-    font-size: 11px;
-}
-
-#online-info a {
-    font-size: 10px;
-}
 
 #ccontent .cmain tr.forum-category td.infoinline {
     font-weight: bold;

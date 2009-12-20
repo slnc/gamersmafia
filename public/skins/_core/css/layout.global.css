@@ -10,27 +10,22 @@ body {
 }
 
 #cpagein {
-    margin-left: auto;
-    margin-right: auto;
     text-align: left;
-}
-
-#cleft {
-    float: left;
-    width: 150px;
-}
-
-#cright {
-    float: right;
-    width: 150px;
+	width: 990px;
+	padding: 0;
+	margin: 0;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #ccontent {
-    padding: 8px 10px 20px 10px;
-    margin-left: 180px;
-    margin-right: 10px;
     height: 1%;
     min-height: auto;
+	line-height: 145%;
+    padding: 8px 10px 20px 8px;;
+	margin: 6px 0 80px 180px;
+	background: #fff;
+	border: 0;
 }
 
 .module {
@@ -46,12 +41,7 @@ body {
     overflow: hidden;
 }
 
-#cleft ul, #cright ul {
-    list-style: none;
-    margin: 0;
-    padding: 0 0.27em;
-    line-height: 1.82em;
-}
+
 
 .c3col {
     width: 32%;
@@ -73,8 +63,4 @@ body {
 .c2colx {
     width: 48%;
     float: left;
-}
-
-#cleft .module {
-    margin-bottom: 10px;
 }

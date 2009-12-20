@@ -1,70 +1,8 @@
-#cpagein {
-    margin: 0 10px;
-}
-
 th.checkbox, td.checkbox {
     width: 25px;
     text-align: center;
 }
 
-#cleft {
-    width: 121px;
-    margin-top: 0px;
-}
-
-#cpagein > #cleft {
-}
-
-#cleft .box {
-    margin-bottom: 20px;
-    padding: 1px 0;
-}
-
-#cleft .boxinside {
-    padding: 1px;
-}
-
-#cleft table {
-    border: 0;
-    margin: 0;
-    padding: 0;
-}
-
-#cleft td {
-    padding: 0;
-}
-
-#mggmtv {
-    padding-right: 218px;
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
-
-#mggmtv .mcontent {
-    border: 0;
-}
-
-
-#ccontent { margin-bottom: 80px; }
-
-
-#ccontent .linkads {
-    margin-bottom: 6px;
-}
-
-#footer-ad {
-    text-align: center;
-    margin: 10px;
-}
-
-body.lydefault #ccontent, body.lyarena #ccontent, body.lybazar #ccontent {
-    min-height: 450px;
-    margin-left: 128px;
-    padding-top: 8px;
-    margin-right: 3px;
-    height: 1%;
-    padding-bottom: 20px;
-}
 
 #ccontent table.compact {
     margin: 0;
@@ -323,6 +261,7 @@ a > .content-category {
 .more {
     margin: 5px 4px 0 0;
 }
+
 /* wysiwyg */
 .wsEditor {
     border: 0;
@@ -443,14 +382,14 @@ textarea {
     padding: 3px 3px 3px 6px;
 }
 
-#ccontent .system-message {
+.system-message {
     padding: 20px;
     border: 1px solid;
     margin-top: 3px;
     margin-bottom: 10px;
 }
 
-#ccontent .system-message .register-now img {
+.system-message .register-now img {
     border: 1px solid;
 }
 
@@ -458,14 +397,6 @@ textarea {
     float: left;
     margin-right: 10px;
     margin-bottom: 10px;
-}
-
-#ccontent .signup-step {
-    margin-top: 40px;
-}
-
-#ccontent .signup-step.first {
-    margin-top: 0;
 }
 
 .warning {
@@ -486,12 +417,11 @@ textarea {
     border: 1px solid;
 }
 
-#ccontent blockquote,
-#ccontent code {
+#ccontent blockquote, #ccontent code {
     border: 1px solid;
-    margin: 0px 20px; 
-    padding: 5px 10px; 
-    display: block; 
+    margin: 0px 20px;
+    padding: 5px 10px;
+    display: block;
 }
 
 #ccontent .message-body blockquote {
@@ -504,7 +434,6 @@ textarea {
     margin: 2px;
 }
 
-
 .pcent-bar.compact {
     border: 0;
 }
@@ -514,13 +443,12 @@ textarea {
 }
 
 .vmember #ccontent .pcent-bar {
-	height: 7px;
+    height: 7px;
 }
 
-
 .vmember #ccontent .pcent-bar .bar {
-	    height: 7px; 
-} 
+    height: 7px;
+}
 
 th.timestamp, td.timestamp {
     width: 120px;
@@ -571,22 +499,22 @@ img.icon, #ccontent a img.icon, #ccontent a img.icon16 {
     border: 0;
 }
 
-#ccontent .comments-count a, #ccontent .comments-count span {
+.comments-count a, .comments-count span {
     padding-left: 18px;
     background: url(../images/icons/comments_16x16.gif) center left no-repeat;
 }
 
-#ccontent .pageviews-count {
+.pageviews-count {
     padding-left: 18px;
     background: url(../images/icons/pageviews.gif) center left no-repeat;
 }
 
-#ccontent .downloads-count {
+.downloads-count {
     padding-left: 18px;
     background: url(../images/icons/downloads_count.gif) center left no-repeat;
 }
 
-#ccontent .members-count {
+.members-count {
     padding-left: 18px;
     background: url(../images/icons/comp-users.gif) center left no-repeat;
 }
@@ -666,10 +594,6 @@ img.topic-indicator.topic-sticky {
     width: 16px;
     height: 16px;
     line-height: 22px;
-}
-
-#ccontent {
-    line-height: 145%;
 }
 
 .user-info {
@@ -756,6 +680,7 @@ img.icon16 {
     height: 16px;
     border: 0;
 }
+
 /* section specific */
 body.cocuenta-cuenta .avatar-level {
     width: 150px;
@@ -832,8 +757,6 @@ input.sm-text {
     display: none;
 }
 
-
-
 #ccontent a img.slncadt {
     border: 0;
 }
@@ -864,13 +787,6 @@ img.cash-in {
     background: url(../images/icons/cash_in.gif);
     width: 14px;
     height: 12px;
-}
-
-#ccontent a .go-top {
-    background: url(../images/icons/top.gif);
-    width: 14px;
-    height: 8px;
-    border: 0;
 }
 
 .go-to-topic {
@@ -904,7 +820,7 @@ img.cash-in {
 }
 
 .moderate-comments-opener {
-    cursor: default;;
+    cursor: default;
 }
 
 #webchat #newline {
@@ -989,18 +905,6 @@ img.cash-in {
     padding: 0;
 }
 
-#ccontent table.calendar td {
-    padding: 0 0 1px 0;
-}
-
-#ratebar {
-    margin-left: 43px;
-    width: 66px;
-    height: 13px;
-    margin-top: 7px;
-    margin-bottom: 4px;
-}
-
 .rss {
     padding-left: 14px;
 }
@@ -1018,6 +922,7 @@ img.cash-in {
     padding: 3px;
 }
 
-
-#ccontent { padding-bottom: 0;}
-#mgads-bottom .adslot { text-align: center; margin: 0 0 10px 0; }
+#mgads-bottom .adslot {
+    text-align: center;
+    margin: 0 0 10px 0;
+}

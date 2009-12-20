@@ -46,11 +46,11 @@ body #ccontent .infoinline a:hover {
     color: #6e4b00;
 }
 
-#mgsubmenu li a, #mgsubmenu2 li a {
+#mgsubmenu li a {
     color: #fff;
 }
 
-#mgsubmenu li.active a, #mgsubmenu2 li.active a {
+#mgsubmenu li.active a {
     background: #fff;
     color: #000;
 }
@@ -70,10 +70,6 @@ body #ccontent .infoinline a:hover {
 
 #gmversion .new a {
     color: #fff;
-}
-
-#mgsubmenu a {
-    color: black;
 }
 
 .sidecontent-list li.updated a {
