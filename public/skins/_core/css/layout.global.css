@@ -24,7 +24,6 @@ body {
 	line-height: 145%;
     padding: 8px 10px 20px 8px;;
 	margin: 6px 0 80px 165px;
-	background: #fff;
 	border: 0;
 }
 
@@ -34,6 +33,10 @@ body {
 
 .module .mtitle {
     padding: 0.27em;
+}
+
+#cpageout .module .mtitle {
+	line-height: 30px;
 }
 
 #ccontent .module .mcontent {

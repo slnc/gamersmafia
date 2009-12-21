@@ -61,13 +61,14 @@ img.downloads-count {
     margin-bottom: 30px;
 }
 
-#cmain .module .mtitle {
-    padding: 1px;
-}
-
 #cmain .module .mtitle span {
     display: block;
     padding: 7px 5px;
+	padding-top: 0;
+}
+
+#csupport .module .mtitle span {
+	padding-left: 10px;
 }
 
 #tracker .mtitle, #lastcomments .mtitle {

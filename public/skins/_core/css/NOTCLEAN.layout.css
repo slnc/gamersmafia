@@ -695,15 +695,6 @@ input.sm-text {
     border: 0;
 }
 
-#mgbreadcrumb {
-    background: none;
-}
-
-#mgbreadcrumb .mcontent {
-    background: none;
-    border: 0;
-}
-
 .unknown-map {
     width: 153px;
     height: 115px;

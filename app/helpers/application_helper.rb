@@ -14,12 +14,13 @@ module ApplicationHelper
   def css_image_selector(field_name, field_value, skin)
     out = <<-END
   <select name="#{field_name}">
-<option value="none">(ninguna)</option>
+<option value="">(por defecto)</option>
+<option #{'selected="selected"' if field_value == 'none' } value="none">(ninguna)</option>
     END
     skin.skins_files.each do |sfn|  
       val = "url(/#{sfn.file})"
       out << <<-END
-      <option #{'selected="selected"' if val == field_value } value="#{val}">#{sfn.file}</option>
+      <option #{'selected="selected"' if val == field_value } value="#{val}">#{File.basename(sfn.file)}</option>
     END
     end 
     out << '</select>'
@@ -32,6 +33,24 @@ module ApplicationHelper
   <option #{'selected="selected"' if field_value == 'repeat-y' } value="repeat-y">repetir en vertical</option>
   <option #{'selected="selected"' if field_value == 'repeat-x' } value="repeat-x">repetir en horizontal</option>
   <option #{'selected="selected"' if field_value == 'repeat' } value="repeat">repetir en ambas direcciones</option>
+    END
+     
+    out << '</select>'
+  end
+  
+  def css_background_position(field_name, field_value, skin)
+    out = <<-END
+  <select name="#{field_name}">
+  <option #{'selected="selected"' if field_value == 'top left' } value="top left">top left</option>
+  <option #{'selected="selected"' if field_value == 'top center' } value="top center">top center</option>
+  <option #{'selected="selected"' if field_value == 'top right' } value="top right">top right</option>
+  <option #{'selected="selected"' if field_value == 'center left' } value="center left">center left</option>
+  <option #{'selected="selected"' if field_value == 'center center' } value="center center">center center</option>
+  <option #{'selected="selected"' if field_value == 'center right' } value="center right">center right</option>
+  <option #{'selected="selected"' if field_value == 'bottom left' } value="bottom left">bottom left</option>
+  <option #{'selected="selected"' if field_value == 'bottom center' } value="bottom center">bottom center</option>
+  <option #{'selected="selected"' if field_value == 'bottom right' } value="bottom right">bottom right</option>
+  
     END
      
     out << '</select>'

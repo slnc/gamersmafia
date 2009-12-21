@@ -1,0 +1,26 @@
+	<% if options[:color] then %>
+	<tr>
+		<th><%=base%>_color</th>
+		<td><%=color_selector("skin[css_properties][#{base}_color]", @skin.config[:css_properties]["#{base}_color".to_sym])%></td>
+	</tr
+	<% end -%>
+	<tr>
+		<th><%=base%>_background_color</th>
+		<td><%=color_selector("skin[css_properties][#{base}_background_color]", @skin.config[:css_properties]["#{base}_background_color".to_sym])%></td>
+	</tr
+	<tr>
+		<th><%=base%>_background_image</th>
+		<td><%=css_image_selector("skin[css_properties][#{base}_background_image]", @skin.config[:css_properties]["#{base}_background_image".to_sym], @skin) %></td>
+	</tr>
+	<tr>
+		<th><%=base%>_background_repeat</th>
+		<td><%=css_background_repeat("skin[css_properties][#{base}_background_repeat]", @skin.config[:css_properties]["#{base}_background_repeat".to_sym], @skin) %></td>
+	</tr>
+	<tr>
+		<th><%=base%>_background_pos</th>
+		<td><%=css_background_position("skin[css_properties][#{base}_background_position]", @skin.config[:css_properties]["#{base}_background_position".to_sym], @skin) %></td>
+	</tr>
+	<tr>
+		<td colspan="2"><hr /></td>
+	</tr>
+	

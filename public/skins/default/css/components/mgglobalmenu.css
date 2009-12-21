@@ -8,24 +8,11 @@
 }
 
 #mggnav-factions-list {
-    background: #000;
-}
-
-#mggnav-factions-list {
-    background: #b82004;
     border-color: #880000;
 }
 
 #mggnav-platforms-list {
     border-left-color: #880000;
-}
-
-#mggnav-clans-list {
-    background: #000;
-}
-
-#mggnav-hq-list {
-    background: #000;
 }
 
 .saw-dropdownlist {

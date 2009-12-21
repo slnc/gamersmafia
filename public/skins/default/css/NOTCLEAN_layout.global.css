@@ -26,10 +26,6 @@ p img {
     max-width: 100%;
 }
 
-#ccontent .module .mtitle {
-    padding-left: 10px;
-}
-
 .container.c3colx .mtitle {
     background: url(../images/layout/cabeceras_portada.png) repeat-x scroll left 0px;
     color: #fff;

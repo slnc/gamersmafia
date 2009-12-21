@@ -68,7 +68,7 @@ body #ccontent .infoinline a:hover {
     color: #ffffff;
 }
 
-#gmversion .new a {
+#mgfooter .new a {
     color: #fff;
 }
 
@@ -78,15 +78,8 @@ body #ccontent .infoinline a:hover {
 
 #gmversion a {
     padding: 3px;
-    color: #636363;
-}
-#gmversion a:visited {
-    color: #aaa;
 }
 
-#gmversion a:hover {
-    color: #000000;
-}
 
 #userbox a {
     color: #636363;

@@ -18,13 +18,18 @@
     position: absolute;
     float: right;
     z-index: 5;
-    right: 6px;
+    right: 4px;
     margin-top: 10px;
     font-size: 11px;
     color: #aaa;
+	text-align: center;
 }
 
-
+#gmversion div {
+	margin-left: auto;
+	margin-right: auto;
+	width: 47px;
+}
 
 #gmversion .new {
     background: #002e64;

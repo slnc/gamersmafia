@@ -59,6 +59,18 @@
     margin-left: 18px;
 }
 
+
+#sawtop li.alter div.f {
+    height: 24px;
+    margin: 0 3px 0 6px
+}
+
+#sawtop li.alter .sawtop-arrow {
+    display: none;
+    visibility: hidden;
+}
+
+
 .sawtop-arrow {
     float: left;
     margin-top: 8px;
@@ -100,16 +112,6 @@
 #sawli-anunciante div.f {
     width: 72px;
     background: url(/skins/default/images/gm20085navmenu.png) 0 -138px no-repeat;
-}
-
-#sawtop li.alter div.f {
-    height: 24px;
-    margin: 0 3px 0 6px
-}
-
-#sawtop li.alter .sawtop-arrow {
-    display: none;
-    visibility: hidden;
 }
 
 #sawli-comunidad.alter div.f {
@@ -355,16 +357,6 @@ ul#sawbody-bazar {
 
 li#mggnav-gm {
 	padding-left: 20px;
-}
-
-#mggnav-factions-list {
-    position: absolute;
-    z-index: 4;
-    top: 20px;
-    left: 125px;
-    width: 660px;
-    height: 190px;
-    background: #000;
 }
 
 #mggnav-factions-list {

@@ -51,7 +51,6 @@
 }
 
 #mgbreadcrumb {
-    border: 0;
     margin-top: 5px;
 }
 
@@ -63,9 +62,10 @@
     line-height: 23px;
 }
 
-.gm20085 #mgbreadcrumb ul {
-    height: 16px;
+#mgbreadcrumb ul {
+    height: 22px;
     line-height: 16px;
+	padding-left: 2px;
 }
 
 #mgbreadcrumb li a, #mgsubmenu li a, #mgsubmenu li span {

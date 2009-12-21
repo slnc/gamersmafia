@@ -1,9 +1,93 @@
 body {
-	background-color: #${page_background_color};
+    background-color: ${page_background_color};
 	background-image: ${page_background_image};
 	background-repeat: ${page_background_repeat};
+	background-position: ${page_background_position};
 }
 
 #cpageout {
+	background-color: ${cpageout_background_color};
 	background-image: ${cpageout_background_image};
+	background-repeat: ${cpageout_background_repeat};
+	background-position: ${cpageout_background_position};
+}
+
+#mgheader {
+	background-color: ${mgheader_background_color};
+	background-image: ${mgheader_background_image};
+	background-repeat: ${mgheader_background_repeat};
+	background-position: ${mgheader_background_position};
+}
+
+#mgfooter {
+	background-color: ${mgfooter_background_color};
+	background-image: ${mgfooter_background_image};
+	background-repeat: ${mgfooter_background_repeat};
+	background-position: ${mgfooter_background_position};
+	border-color: ${mgfooter_border_color};
+}
+
+#mgfooter li {
+	border-right-color:  ${mgfooter_separator_color};
+}
+
+#mgfooter a {
+	color: ${mgfooter_link_color};
+}
+
+#mgfooter a:hover {
+	color: ${mgfooter_link_hover_color};
+}
+
+#gmversion .new {
+	color: ${mgfooter_new_color};
+	background: ${mgfooter_new_background_color};
+}
+
+#footer-spirit {
+	background-image: ${mgfooter_spirit_image};
+}
+
+
+#logo img { background-image: ${logo_background_image}; }
+
+/* header */
+#sawtop {
+	background-color: ${mgglobalmenu_background_color}; 
+	background-image: ${mgglobalmenu_sprites_image};
+	border-color: ${mgglobalmenu_border_color}; 
+}
+
+.sawtop-arrow { background-image: ${mgglobalmenu_sprites_image}; }
+
+#sawli-comunidad div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawli-facciones div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawli-arena div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawli-bazar div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawli-foros div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawli-hq div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawli-anunciante div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawli-comunidad.alter div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawli-facciones.alter div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawli-arena.alter div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawli-bazar.alter div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawli-foros.alter div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawli-hq.alter div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawli-anunciante.alter div.f { background-image: ${mgglobalmenu_sprites_image}; }
+#sawbottom { background-image: ${mgglobalmenu_sprites_image}; }
+.sawbottom-arrow { background-image: ${mgglobalmenu_sprites_image}; }
+.saw-dropdownlist { background-color: ${mgglobalmenu_dropdown_background_color}; } 
+
+
+#mgbreadcrumb ul { 
+  background-color: ${mgbreadcrumb_background_color};
+  color: ${mgbreadcrumb_color}; 
+}
+
+#mgbreadcrumb a {
+	color: ${mgbreadcrumb_link_color};
+}
+
+#mgbreadcrumb a:hover {
+	color: ${mgbreadcrumb_link_hover_color};
 }

@@ -10,7 +10,6 @@
 #mgfooter .mcontent {
     clear: both;
     padding: 10px;
-    background: #ffffff;
     padding-left: 0;
     margin-bottom: 0;
 }
@@ -41,12 +40,5 @@
 
 #mgfooter a:hover {
     text-decoration: underline;
-}
-
-#mgfooter a:hover {
     color: #000000;
-}
-
-#mgfooter .footer-separator {
-    color: #aaa;
 }
