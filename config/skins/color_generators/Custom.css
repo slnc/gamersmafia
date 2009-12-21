@@ -17,6 +17,7 @@ body {
 	background-image: ${mgheader_background_image};
 	background-repeat: ${mgheader_background_repeat};
 	background-position: ${mgheader_background_position};
+	border-color: ${mgheader_border_color};
 }
 
 #mgfooter {

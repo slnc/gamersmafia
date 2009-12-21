@@ -19,6 +19,10 @@
     <h2>Globales</h2>
     <table>
 	<%=css_background_edit('page')%>
+	<tr>
+		<th>mgheader_border_color</th>
+		<td><%=color_selector("skin[css_properties][mgheader_border_color]", @skin.config[:css_properties][:mgheader_border_color])%></td>
+	</tr>
 	<%=css_background_edit('mgheader')%>
 	<tr>
 		<th>mgglobalmenu_sprites_image</th>
