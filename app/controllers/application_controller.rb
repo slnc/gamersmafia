@@ -449,6 +449,17 @@ Request information:
       end
     end
     
+
+    response.headers['X-UserId'] = @user ? @user.id.to_s : '-'
+    response.headers['X-Controller'] = controller_name
+    response.headers['X-Action'] = action_name
+    response.headers['X-ModelId'] = params[:id] ? "#{params[:id]}" : '-'
+    response.headers['X-PortalId'] = portal ? portal.id.to_s : '-'
+    response.headers['X-SessionId'] = session.session_id
+    response.headers['X-VisitorId'] = params['_xnvi'] ? params['_xnvi'] : '-'
+    response.headers['X-AbTreatment'] = params['_xab'] ? params['_xab'] : '-'
+    response.headers['X-AdsShown'] = params['_xad'] ? params['_xad'] : '-'
+
     begin
       Stats.pageloadtime(self, seconds, response, controller_name, action_name, portal)
     rescue 
@@ -782,7 +793,7 @@ Request information:
                                             #{User.connection.quote(params['_xmi'])},
                                             #{User.connection.quote(params['_xc'])},
                                             #{User.connection.quote(params['_xa'])}
-                  )")
+                  )") if nil
   end
   
   def redirect_to(*args)

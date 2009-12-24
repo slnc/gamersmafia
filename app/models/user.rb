@@ -149,6 +149,25 @@ class User < ActiveRecord::Base
     end
   end
   
+def latent_rating(c)
+cr = self.content_ratings.find_by_content_id(c.id)
+if cr
+  cr.rating
+else
+  comments_count = c.comments.count(:conditions => ['user_id = ?', self.id])
+  if comments_count = 0
+          5.5
+  else    
+          comments_count = 5 if comments_count > 5
+          5 + comments_count
+  end     
+end     
+end
+
+  def contents_visited_between(t1, t2)
+    self.tracker_items.find(:all, :conditions => ['lastseen_on BETWEEN ? AND ?', t1, t2], :include => :content).collect { |ti| ti.content } || []
+  end
+
   def check_permissions
     self.users_roles.clear if slnc_changed?(:state) && STATES_CANNOT_LOGIN.include?(self.state)
   end

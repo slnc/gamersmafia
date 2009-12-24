@@ -7,7 +7,7 @@
 <%mftext('Últimos resultados', :has_submodules => true, :blast => true, :grid => 7, :glast => true) do %>
 
 <%mftext('GM', :grid => 4, :blast => true) do 
-matches = CompetitionsMatch.find(:all, :conditions => "(#{Competition::COMPLETED_ON_SQL})", :limit => 7, :order => 'play_on ASC')
+matches = CompetitionsMatch.find(:all, :conditions => "(#{Competition::COMPLETED_ON_SQL})", :limit => 7, :order => 'completed_on DESC')
 %>
 <%= render :partial => '/competiciones/matches_results', :locals =>  { :matches => matches }%>
 <% end -%>
