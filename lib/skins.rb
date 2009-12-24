@@ -87,8 +87,9 @@ module Skins
     end
   end
   
-  COLORS_STRICT =
-  {
+  COLORS_STRICT = {}
+  
+  COLORS_STRICT_OLD = {
     :body_background_color => '',
     :body_color => '',
     :a_nav_color => '',
@@ -1052,8 +1053,8 @@ module Skins
 
         :mgheader_background_color => 'inherit',
         :mgheader_background_image => 'inherit',
-        :mgheader_background_repeat => 'inherit',
-        :mgheader_background_position => 'inherit',
+        :mgheader_background_repeat => 'no-repeat',
+        :mgheader_background_position => 'bottom right',
         
         :mgfooter_background_color => 'inherit',
         :mgfooter_background_image => 'inherit',
@@ -1065,63 +1066,7 @@ module Skins
         :mgfooter_new_color => 'inherit',
         :mgfooter_new_background_color => 'inherit',
         
-        :page_background_repeat => 'inherit',
-        :body_background_color => RgbColor.new('#ffffff'),
-        :body_background_image => RgbColor.new('#ffffff'),
-        :body_color => RgbColor.new('#000000'),
-        :cpagein_background_color => RgbColor.new('#ffffff'),
-        :ccontent_module_content_background_color => RgbColor.new('#ffffff'),
-        :link_color => RgbColor.new('#0000ff'),
-        :link_hover_color => RgbColor.new('#ffffff'),
-        :link_visited_color => RgbColor.new('#ffffff'),
-        :nav_background_color => RgbColor.new('#ffffff'),
-        :nav_color => RgbColor.new('#ffffff'),
-        :a_nav_color => RgbColor.new('#0000ff'),
-        :nav_link_hover_color => RgbColor.new('#ffffff'),
-        :nav_link_visited_color => RgbColor.new('#ffffff'),
-        :info_background_color => RgbColor.new('#ffffff'),
-        :info_color => RgbColor.new('#ffffff'),
-        :box_borders_colors => RgbColor.new('#ffffff'),
-        :module_content_color => RgbColor.new('#ffffff'), 
-        :cpageout_background_color => RgbColor.new('#ffffff'),
-        :info_link_color => RgbColor.new('#0000ff'),
-        :info_link_hover_color => RgbColor.new('#ffffff'),
-        :info_link_visited_color => RgbColor.new('#ffffff'),
-        :module_title_background_color => RgbColor.new('#ffffff'),
-        :comments_background_color => RgbColor.new('#ffffff'),
-        :comments_border_color => RgbColor.new('#ffffff'),
-        :selected_row_background_color => RgbColor.new('#ffffff'),
-        :updated_since_last_visit => RgbColor.new('#ffffff'),
-        :a_action_color => RgbColor.new('#ffffff'),
-        :good_background_color => RgbColor.new('#ffffff'),
-        :icons_actionable => RgbColor.new('#ffffff'),
-        :form_text_and_selects_background_color => RgbColor.new('#ffffff'),
-        :form_text_and_selects_color => RgbColor.new('#ffffff'),
-        :ads_text_color => RgbColor.new('#ffffff'),
-        :module_content_background_color => RgbColor.new('#ffffff'),
-        :comments_header_unread => RgbColor.new('#ffffff'),
-        :icons_non_actionable => RgbColor.new('#ffffff'),
-        :a_content_color => RgbColor.new('#ffffff'),
-        :a_ads_color => RgbColor.new('#ffffff'),
-        :module_content_color => RgbColor.new('#ffffff'),
-        :macro_quote_color => RgbColor.new('#ffffff'),
-        :macro_quote_background_color => RgbColor.new('#ffffff'),
-        :karma => RgbColor.new('#ffffff'),
-        :faith => RgbColor.new('#ffffff'),
-        :bad_color => RgbColor.new('#ffffff'),
-        :container_background_color => RgbColor.new('#ffffff'),
-        :ads_background_color => RgbColor.new('#ffffff'),
-        :progress_bars_background_color => RgbColor.new('#ffffff'),
-        :progress_bars_fill_background_color => RgbColor.new('#ffffff'), # TODO confirm
-        :progress_bars_border_color => RgbColor.new('#ffffff'),
-        :a_content_visited_color => RgbColor.new('#ffffff'),
-        :bad_background_color => RgbColor.new('#ffffff'),
-        :module_title_background_color => RgbColor.new('#ffffff'),
-        :good_color => RgbColor.new('#ffffff'),
-        :a_info_color => RgbColor.new('#ffffff'),
-        :module_title_color => RgbColor.new('#ffffff'),
-        :bad_border_color => RgbColor.new('#ffffff'),
-        :good_border_color => RgbColor.new('#ffffff'),
+
       }
       
       def self.get_colors(options=nil)
