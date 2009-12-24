@@ -23,6 +23,10 @@
 
 <% content_main do %>
 <%mftext('Crear tu skin') do %>
+Estás usando la skin <strong><%=controller.skin.name%></strong>.
+<% end -%>
+
+<%mftext('Crear tu skin') do %>
 <form method="post" action="/cuenta/skins/create">
 Nombre: <input type="text" class="text" name="skin[name]" /><br />
 <input type="hidden" name="skin[type]" value="FactionsSkin" />

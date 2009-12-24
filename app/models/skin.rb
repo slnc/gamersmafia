@@ -111,8 +111,13 @@ class Skin < ActiveRecord::Base
     compressed = "#{realpath}/style_compressed.css"
     data = Skin.rextract_css_imports(fpath)
     data.gsub!('url(/', "url(#{ASSET_URL}/")
+    
     File.open(compressed, 'w') { |f| f.write(data) }
     `java -jar script/yuicompressor-2.4.2.jar "#{compressed}" -o "#{compressed}" --line-break 500`
+  end
+
+  def clear_redundant_rules(str)
+    str.gsub(/([a-z-]+:\sinherit;)/, "").gsub(/([a-z-]+:\s;)/, "")
   end
   
   #  def update_intelliskin(new_params)
@@ -142,7 +147,6 @@ class Skin < ActiveRecord::Base
     self.save
     File.open(cfg_path, 'w') { |f| f.write(YAML::dump(config)) }
     build_skin
-    # inject_into_css("#mggmtv { height: #{config[:intelliskin][:header_height]}px};", APPEND) if config[:intelliskin][:header_height]
     true
   end
   
@@ -221,7 +225,7 @@ class Skin < ActiveRecord::Base
     clean_style_file(CGEN_CSS_START, CGEN_CSS_END)
     # inject_into_css(CGEN_CSS_START + "\n" + Skins::ColorGenerators.const_get(config[:intelliskin][:color_gen]).process(config[:intelliskin][config[:intelliskin][:color_gen]][:color_gen_params]) + "\n" + CGEN_CSS_END)
     
-    inject_into_css(CGEN_CSS_START + "\n" + Skins::ColorGenerators::Custom.process(config[:css_properties]) + "\n" + CGEN_CSS_END)
+    inject_into_css(CGEN_CSS_START + "\n" + clear_redundant_rules(Skins::ColorGenerators::Custom.process(config[:css_properties])) + "\n" + CGEN_CSS_END)
   end
   
   
