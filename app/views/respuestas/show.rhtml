@@ -8,7 +8,7 @@
     :cache => "/#{controller.portal_code}/respuestas/show/latest_by_author_#{@question.user_id}",
  	:rating => true,
 	:comments_count => true,
-	:more_link => "<a href=\"#{gmurl(@question.user)}/contenidos/respuestas\">Ver todas sus preguntas (#{@question.user.questions.count})</a>")%>
+	:more_link => "<a href=\"#{gmurl(@question.user)}/contenidos/Preguntas\">Ver todas sus preguntas (#{@question.user.questions.count})</a>")%>
 <% else %>
 <% end -%>
 <% end -%>
