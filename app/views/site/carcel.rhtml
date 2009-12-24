@@ -6,11 +6,11 @@ Aparte de producir peligrosos criminales Gamersmafia también es conocida por ge
 <%content_main do %>
 	<%mftext('Los reclusos') do %>
 	<div style="float: right;">
-	<img src="/skins/default/images/prison.jpg" /><br /><br />
-	<img src="/skins/default/images/prison2.jpg" /><br /><br />
-	<img src="/skins/default/images/prison3.jpg" /><br /><br />
-	<img src="/skins/default/images/prison4.jpg" /><br /><br />
-	<img src="/skins/default/images/prison5.jpg" /><br /><br />
+	<img src="/images/prison.jpg" /><br /><br />
+	<img src="/images/prison2.jpg" /><br /><br />
+	<img src="/images/prison3.jpg" /><br /><br />
+	<img src="/images/prison4.jpg" /><br /><br />
+	<img src="/images/prison5.jpg" /><br /><br />
 	</div>
 	<ul><%cache("/common/carcel_full") do%>
 	<%User.find(:all, :conditions => ['state = ?', User::ST_BANNED], :order => 'lower(login)').each do |u| %>
