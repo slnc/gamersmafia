@@ -394,16 +394,12 @@ if user_is_authed && @user.is_faction_leader? && @user.faction_id then %>
 <% crecs = ContentsRecommendation.find_for_user(@user)
 if crecs.size > 0 then %>
 <div id="recommended-bg-text"></div>
-<%mftext('', :id => 'recommendations4u') do %>
-<ul class="sidecontent-list">
-	<% crecs.each do |crec| %>
-	<li class="<%=oddclass%> updated"><a href="<%=gmurl(crec.content)%>" title="de <%=crec.sender.login%> <%=": #{crec.comment}" if crec.comment.to_s != ''%>"><%=truncate(crec.content.name, 26, '..')%></a></li>
-	<% end -%>
-</ul>
+<%mflist('Recomendaciones', crecs, :class => 'new', :class_container => 'mfcontents-ul', :id => 'recommendations4u') do |crec| %>
+	<a class="content<%=crec.content.id%>" href="<%=gmurl(crec.content)%>" title="de <%=crec.sender.login%> <%=": #{crec.comment}" if crec.comment.to_s != ''%>"><%=truncate(crec.content.name, 26, '..')%></a>
+<% end -%>
 <% end %><%# mftext -%>
 <% end %><%# if crecs -%>
 <% end %><%# cache -%>
-<% end -%>
 
 <%= render :partial => '/layouts/last_commented_objects' %>
 

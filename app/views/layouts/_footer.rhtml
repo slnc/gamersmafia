@@ -5,7 +5,7 @@
 <% cache('/common/gmversion') do %>
 <%n = News.published.find(:first, :conditions => "title LIKE 'Gamersmafia actualizada a la versión%'", :order => 'created_on DESC')
 url = n ? gmurl(n) : '/noticias' %>
-<div id="gmversion"><div id="contentd<%=n ? n.unique_content_id : 'foooo'%>" class="new"><a href="<%=url%>"><%=n ? n.title.split(' ').last : 'HEAD' %></a></div></div>
+<div id="gmversion"><div class="content<%=n ? n.unique_content_id : 'foooo'%> new"><a href="<%=url%>"><%=n ? n.title.split(' ').last : 'HEAD' %></a></div></div>
 <% if n then %>
 <script type="text/javascript">contents = contents.concat(<%=n.unique_content_id%>);</script>
 <% end -%>

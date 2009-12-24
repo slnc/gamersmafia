@@ -1,5 +1,5 @@
 <div class="<%=oddclass%>">  
-    <div id="content<%=poll.unique_content.id%>" class="new"><a href="<%=gmurl(poll)%>"><%=content_category(poll)%><%=poll.title%></a></div>
+    <div class="content<%=poll.unique_content.id%> new"><a href="<%=gmurl(poll)%>"><%=content_category(poll)%><%=poll.title%></a></div>
 
   <%= form_tag(:action => 'vote', :controller => 'encuestas', :id => poll.id) %>
   <ul style="padding-left: 3px;">

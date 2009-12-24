@@ -13,14 +13,14 @@ raise nc.code unless tc
 nc.news.find(:published, :limit => 12, :order => 'created_on DESC').each do |offtopic|
   shown_offtopics << offtopic.unique_content.id 
 %>
-    <li id="content<%=offtopic.unique_content.id%>" class="new <%=oddclass%>"><%=link_to truncate(offtopic.title, 35), gmurl(offtopic)%></li>
+    <li class="content<%=offtopic.unique_content.id%> new <%=oddclass%>"><%=link_to truncate(offtopic.title, 35), gmurl(offtopic)%></li>
 <% end %>
 </ul>
 <script type="text/javascript">contents = contents.concat(<%=shown_offtopics.join(',')%>);</script>
 		<table>
 			<% tc.topics.find(:all, :conditions => "state = #{Cms::PUBLISHED}", :order => 'updated_on DESC', :limit => 3).each do |topic| %>
 			<tr class="<%=oddclass%>">
-				<td id="content<%=topic.unique_content.id%>" class="new"><a href="<%=gmurl(topic)%>"><%=topic.title%></a></td>
+				<td class="content<%=topic.unique_content.id%> new"><a href="<%=gmurl(topic)%>"><%=topic.title%></a></td>
 				<td class="w50 right"><span class="comments-count"><a href="<%=gmurl(topic)%>#comments"><%=topic.cache_comments_count%></a></span></td>
 			</tr>
 			<% end -%>

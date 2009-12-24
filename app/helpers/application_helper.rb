@@ -600,13 +600,10 @@ skin: 'v2'
       # contents_condition = @controller.portal.contents_condition
       ids = [0] + @controller.portal.games.collect { |g| g.id }
       contents = Content.find(:all, :conditions => "comments_count > 0 and is_public = 't' AND ((game_id is null AND clan_id IS NULL) OR game_id IN (#{ids.join(',')}))", :order => 'updated_on DESC', :limit => 15)
-    elsif @controller.portal_code && @controller.portal.class.name == 'ClansPortal'
-      # TODO falta una condición para restringir al clan concreto
-      contents = Content.find(:all, :conditions => "comments_count > 0 and is_public = 't' AND clan_id = #{@portal_clan.id}", :order => 'updated_on DESC', :limit => 15)
     else
       contents = Content.find(:all, :conditions => "comments_count > 0 and is_public = 't' AND ((game_id is null AND clan_id IS NULL) OR game_id IS NOT NULL)", :order => 'updated_on DESC', :limit => 15)
     end
-    real_objects = contents.collect { |c| c.real_content }
+    contents.collect { |c| c.real_content }
   end
   
   
@@ -1074,7 +1071,8 @@ END
     else
       collection = object.find(*find_args)
     end
-    return '' if collection.size == 0
+    
+    return '' if collection.size == 0 && !options[:show_even_if_empty] 
     old_oddclass = @oddclass
     oddclass_reset
     grid_cls = options[:grid] ? "grid-#{options[:grid]}" : '' 
@@ -1085,7 +1083,7 @@ END
     out << " id=\"#{options[:id]}\"" if options[:id]
     concat(out << "><div class=\"mtitle\"><span>#{title}</span></div><div class=\"mcontent\"><#{container_tag}>")
     collection.each do |o|
-      concat("<#{row_tag} id=\"content#{o.unique_content.id}\" class=\"new #{oddclass} #{options[:class] if options[:class]}\">")
+      concat("<#{row_tag} class=\"content#{o.unique_content.id} new #{oddclass} #{options[:class] if options[:class]}\">")
       yield o
       concat("</#{row_tag}>")
       ids<< o.unique_content.id
@@ -1123,7 +1121,7 @@ END
         END
     collection.each do |item|
       ids<< item.unique_content.id
-      out<< "<li class=\"new #{oddclass}\" id=\"content#{item.unique_content.id}\"><a title=\"#{tohtmlattribute(item.title)}\" href=\"#{get_url(item)}\">"
+      out<< "<li class=\"new #{oddclass} content#{item.unique_content.id}\"><a title=\"#{tohtmlattribute(item.title)}\" href=\"#{get_url(item)}\">"
       out<< draw_content_favicon(item) if opts[:faction_favicon]
       out<< "#{truncate(item.title, opts[:truncate_at], '..')}</a></li>"
     end

@@ -1,45 +1,8 @@
 <div id="lastcommented-bg-text"></div>
-<% mftext('Últimos comentarios', :id => 'lastcomments') do %>
-    <ul class="sidecontent-list">
-<% 
-base = "#{FRAGMENT_CACHE_PATH}/#{@controller.portal_code}/site/"
-basename = "/#{@controller.portal_code}/site/last_commented_objects"
-cache(basename) do
-  ids = []
-  get_last_commented_contents.each do |content| 
-	  uniq = content.unique_content 
-  %>
-  <li id="content-side-topic<%=uniq.id%>" class="<%=oddclass%>"><a class="content" href="<%=get_url(content)%>" title="<%= "#{content.main_category.root.slug} | " if content.has_category? && content.main_category%><%=tohtmlattribute(content.resolve_hid)%>"><%=truncate(content.resolve_hid, 26, '..')%></a></li><% 
-    ids<< uniq.id
-  end 
 
-  begin
-    File.open("#{FRAGMENT_CACHE_PATH}#{basename}_ids.cache", 'w+') { |f| f.write(ids.join(',')) }
-  rescue
-    FileUtils.mkdir_p(base)
-    File.open("#{FRAGMENT_CACHE_PATH}#{basename}_ids.cache", 'w+') { |f| f.write(ids.join(',')) }
-  end
-end %><%# cache
-%>
-</ul>
-<script type="text/javascript">slnc.marklinks('lastcomments', '_xs=lcm')</script>
-
-<% if user_is_authed then
-begin
-  ids_joined = nil
-  File.open("#{FRAGMENT_CACHE_PATH}#{basename}_ids.cache", 'r') { |f| ids_joined = f.read }
-  raise 'u' if ids_joined.to_s == ''
-rescue
-  ids = [0] + get_last_commented_contents.collect { |c| c.unique_content.id }
-  ids_joined = ids.join(',')
-  File.open("#{FRAGMENT_CACHE_PATH}#{basename}_ids.cache", 'w+') { |f| f.write(ids_joined) }
-end
-items = User.db_query("SELECT a.id 
-                         FROM contents a 
-                    LEFT JOIN tracker_items b ON a.id = b.content_id 
-                                             AND b.user_id = #{@user.id} 
-                        WHERE a.id in (#{ids_joined}) AND is_public = 't'
-                          AND COALESCE(b.lastseen_on, a.updated_on - '1 second'::interval) < a.updated_on;") %>
-<script type="text/javascript"><% for item in items %>mark_new(<%=item['id']%>, 'content-side-topic');<% end -%></script>
-<% end -%>
-<% end -%>
+<% mfcontents_list('Últimos comentarios',
+		get_last_commented_contents,
+		:id => 'lastcomments',
+		:cache => "/#{@controller.portal_code}/site/last_commented_objects") do |o| %>
+	<a href="<%=controller.url_for_content_onlyurl(o)%>?_xs=gmlco"><%=truncate(o.resolve_hid, 26, '..')%></a> 
+<% end %>

@@ -7,7 +7,7 @@ User.db_query("select user_id, (select created_on from blogentries where state =
   u = blogentry.user
   shown_blogentries << blogentry.unique_content.id 
 %>
-<li id="content<%=blogentry.unique_content.id%>" class="new <%=oddclass%>">
+<li class="content<%=blogentry.unique_content.id%> new <%=oddclass%>">
 	<div class="avatar" style="float: right; margin-right: 3px;"><img style="border: 1px solid black; width: 32px; height: 32px;" src="<%=ASSET_URL%>/cache/thumbnails/f/32x32<%=blogentry.user.show_avatar%>" /></div>
 	<a href="<%=gmurl(blogentry)%>"><%=truncate(blogentry.title, 32, '..')%></a><br /><span style="margin-left: 12px;" class="infoinline">por <a style="background: none; margin: 0; padding: 0; list-style: none;" href="<%=gmurl(u)%>"><%=u.login%></a></span>
 	</li>

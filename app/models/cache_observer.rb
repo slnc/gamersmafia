@@ -861,6 +861,7 @@ class CacheObserver < ActiveRecord::Observer
   def self.expire_fragment(file)
     # como no podemos traernos un controller aquí nos hacemos una minifunción superhacked
     # TODO cambiar esto eeek usar url_for
+    file = file.gsub('../', '')
     
     fpath = "#{FRAGMENT_CACHE_PATH}/#{file}.cache"
     fmask = "#{FRAGMENT_CACHE_PATH}/#{file}"

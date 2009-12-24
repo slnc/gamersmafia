@@ -45,7 +45,7 @@ cache_category_paths = {}
   sums = PublishingDecision.find_sum_for_content(content, true)
   vcount = PublishingDecision.find_voters_count_for_content(content)
 %>
-  <tr id="content<%=uniq.id%>" class="<%=oddclass%>">
+  <tr class="content<%=uniq.id%> <%=oddclass%>">
   <td class="infoinline" style="font-weight: bold;"><%=Cms::translate_content_name(@item.class.name)[0..2].upcase%></td>
     <% 
         if @item.class.name == 'Image' then %>

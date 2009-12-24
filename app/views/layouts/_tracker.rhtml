@@ -1,18 +1,13 @@
-<% if user_is_authed && @user.using_tracker 
-
-titems = TrackerItem.updated_for_user(@user, true, 25) %>
+<% if user_is_authed && @user.using_tracker %>
 <div id="tracker-bg-text"></div>
 <%# NOTA Mostrar siempre el tracker, aunque no haya elementos. Hay gente que usa el "Ver tracker" aunque no haya items nuevos. %>
-<%
-	mflist('Tracker',
-		   titems,
+<% mflist('Tracker',
+		   TrackerItem.updated_for_user(@user, true, 25).collect {|c| Content.new(c).real_content},
 		   :id => 'tracker',
-		   :class => 'updated',
-		   :class_container => 'sidecontent-list',
+		   :container_class => 'mfcontents-ul',
+	       :class => 'new',
 		   :bottom => '<div style="text-align: right"><a class="nav" title="Ver todos los elementos de mi tracker" href="/cuenta/cuenta/tracker?_xs=trkbx">ver tracker</a></div>',
-		   :show_even_if_empty => true 
-) do |o|
-	it = Content.new(o).real_content %>
-	<% o.delete('updated') %><a href="<%=controller.url_for_content_onlyurl(it)%>?_xs=gmtrc"><%=truncate(o['name'], 26, '..')%></a> 
+		   :show_even_if_empty => true) do |o| %>
+	<a href="<%=controller.url_for_content_onlyurl(o)%>?_xs=gmlco"><%=truncate(o.resolve_hid, 26, '..')%></a> 
 <% end %>
 <% end %>

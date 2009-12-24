@@ -8,7 +8,7 @@
 	  url = ''
   end
 %>
-  <tr id="content<%=uniq.id%>" class="<%=oddclass%>">
+  <tr class="content<%=uniq.id%> <%=oddclass%>">
     <td><a href="<%=url%>"><%=item.resolve_hid == '' ? '(Sin nombre)' : item.resolve_hid%></a></td>
     <td class="infoinline" style="width: 200px;"><%=print_tstamp(item.updated_on, 'compact')%></td>
     <td style="width: 125px;"><%=link_to item.user.login, :controller => '/miembros', :action => item.user.login%></td>

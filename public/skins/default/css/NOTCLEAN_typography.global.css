@@ -11,10 +11,6 @@ h2 {
     font-size: 10px;
 }
 
-#tracker a, #lastcomments a {
-    text-decoration: none;
-}
-
 #cmain .module .mtitle {
     font-size: 15px;
 }
@@ -331,10 +327,6 @@ th.sm-icon, td.sm-icon {
 
 .feedback-ok {
     font-weight: bold;
-}
-
-#lastcomments a {
-    text-decoration: none;
 }
 
 .comment-rating-state {

@@ -22,10 +22,6 @@
     padding: 0px 2px;
 }
 
-#tracker li.updated a {
-    padding-left: 2px;
-}
-
 #tracker { margin-bottom: 20px; }
 
 #tracker li { margin-bottom: 1px; }
