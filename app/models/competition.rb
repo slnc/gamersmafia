@@ -491,7 +491,6 @@ class Competition < ActiveRecord::Base
           end
         end
         when 2:
-        raise 'impossible' unless self.competitions_participants.count > 2
         case self.class.name
           when 'League':
           setup_matches_league
@@ -511,7 +510,7 @@ class Competition < ActiveRecord::Base
         setup_maps_for_matches if self.random_map_selection_mode
         
       when 3:
-        raise Exception unless self.competitions_participants.count > 1
+        raise Exception unless self.class.name == 'Ladder' || self.competitions_participants.count > 1
         if self.send_notifications?
           self.competitions_participants.each do |participant| 
             Notification.deliver_competition_started(participant.the_real_thing, { :competition => self })
