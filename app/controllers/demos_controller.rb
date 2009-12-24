@@ -39,8 +39,6 @@ class DemosController < ArenaController
     sql_conds<< "entity1_external = #{User.connection.quote(params[:demo][:entity_external])} OR entity2_external = #{User.connection.quote(params[:demo][:entity_external])}" if params[:demo][:entity_external]
     end
     
-    end
-    
     @demos = portal.demo.find(:published, :conditions => sql_conds.join(' AND '), :limit => 51, :order => 'created_on')
     @limited = (@demos.size == 51) ? true : false
   end
