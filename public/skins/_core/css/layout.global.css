@@ -252,3 +252,8 @@ ul#sawbody-bazar { padding-top: 4px; line-height: 17px;}
 
 
 .editing-content { margin-bottom: 30px; }
+
+#cpageout.gm20085 #ccontent .xmain td, #cpageout.gm20085 #ccontent .xdescription td {
+	padding-left: 5px;
+	padding-right: 5px;
+}
