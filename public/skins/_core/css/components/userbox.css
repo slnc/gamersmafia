@@ -1,98 +1,5 @@
-#userbox {
-    position: absolute;
-    right: 11px;
-    top: 20px;
-    border: 0;
-    margin: 0;
-    padding: 0;
-}
-
-#userbox .mcontent {
-    width: 220px;
-    padding-top: 0px;
-    padding-left: 9px;
-    height: 65px;
-    border: 0;
-    margin: 0;
-}
-
-#userbox > .mcontent {
-    width: 209px;
-    height: 61px;
-}
-
-#userbox .avatar {
-    float: right;
-    border: 1px solid;
-    margin: 5px 5px 0 0;
-}
-
-#userbox .nick {
-    float: right;
-    padding-right: 3px;
-    padding-top: 3px;
-}
-
-#userbox li.unread {
-    padding-left: 22px;
-}
-
-#userbox input.text {
-    border: 1px solid #555;
-    width: 85px;
-    padding: 0 2px;
-    height: 14px;
-    line-height: 14px;
-}
-
 #userbox-logged {
     padding-top: 4px;
-}
-
-#userbox table {
-    margin-bottom: 3px;
-}
-
-#userbox form {
-    margin: 0 0 0 0;
-}
-
-#userbox ul.anonymous {
-	position: absolute;
-	top: 49px;
-    margin: 0;
-	padding: 0;
-}
-
-#userbox .mcontent > ul.anonymous {
-    
-}
-
-#userbox ul.anonymous li {
-    list-style: none;
-    display: inline;
-}
-
-#userbox ul.anonymous li.alta {
-    padding-right: 18px;
-    line-height: 16px;
-    margin: 0;
-}
-
-#userbox ul.anonymous li.olvide-clave {
-    padding-left: 9px;
-    padding-right: 18px;
-    line-height: 16px;
-    margin: 0;
-}
-
-#userbox table.signup {
-    width: 155px;
-}
-
-#userbox label, #userbox input {
-    margin: 0;
-    padding: 0;
 }
 
 #loginbutton {
@@ -136,14 +43,6 @@ a > #sendbutton {
     background-position: 0 0;
 }
 /* USERBOX */
-#userbox .mcontent {
-    padding-top: 4px;
-}
-
-#userbox ul {
-    list-style: none;
-}
-
 #userbox-bars {
     position: absolute;
     right: 84px;
@@ -271,11 +170,6 @@ a > #sendbutton {
 #userbox-gmf-and-ratings .ratings,
 #userbox2 .ratings {
     margin-left: 16px;
-    height: 16px;
-}
-
-#userbox .left-ratings {
-    line-height: 16px;
     height: 16px;
 }
 

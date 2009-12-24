@@ -80,15 +80,6 @@ body #ccontent .infoinline a:hover {
     padding: 3px;
 }
 
-
-#userbox a {
-    color: #636363;
-}
-
-#userbox a:hover {
-    color: #000;
-}
-
 #mggnav-factions-list a {
     color: #fff;
 }

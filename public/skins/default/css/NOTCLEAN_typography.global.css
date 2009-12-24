@@ -1,7 +1,3 @@
-#userbox {
-    font-family: arial;
-    font-size: 10px;
-}
 
 #ccontent .content-hid li, #csupport ul.sidelist, #csupport .fcontents-basic li {
     line-height: 23px;
@@ -19,7 +15,7 @@ a {
     text-decoration: underline;
 }
 
-#tracker a, #lastcomments a, #userbox a {
+#tracker a, #lastcomments a {
     text-decoration: none;
 }
 
@@ -61,20 +57,6 @@ tr, td {
 #navpath {
     font-family: arial;
     font-size: 11px;
-}
-
-#userbox, #userbox td {
-    font-family: arial;
-    font-size: 10px;
-}
-
-#userbox a {
-    text-decoration: none;
-}
-
-
-#userbox a:hover {
-    text-decoration: underline;
 }
 
 .homebox .title {
@@ -132,11 +114,6 @@ body.lypopup h1 {
 .contenttitle .author {
     font-family: verdana;
     font-size: 11px;
-}
-
-#userbox .nick {
-    font-weight: bold;
-    font-size: larger;
 }
 
 .userinfobox .nick {
@@ -328,10 +305,6 @@ textarea {
 .contentinfobar {
     font-size: 10px;
     font-family: verdana;
-}
-
-#userbox .unread a {
-    font-weight: bold;
 }
 
 #ccontent table.calendar .monthName th {

@@ -1,16 +1,4 @@
 
-#userbox {
-    color: #717378;
-}
-
-#userbox .avatar {
-    border-color: #000000;
-}
-
-#userbox .nick {
-    color: #000;
-}
-
 #messages-indicator .messages a {
     background: url(../../images/s.png) -153px -72px no-repeat;
     line-height: 12px;
@@ -66,7 +54,7 @@
     background: url(../../images/s.png) -153px -214px no-repeat;
 }
 
-#userbox .left-ratings, #userbox2 .left-ratings {
+#userbox2 .left-ratings {
     background: url(../../images/s.png) -63px -17px no-repeat;
 }
 
@@ -127,14 +115,6 @@
 #userbox-action-link-competition.activated a.buttonic {
     background: #FFA500;
     color: black;
-}
-
-#userbox input.text {
-    border-color: #A7A2A2;
-}
-
-#userbox .unread a {
-    font-weight: bold;
 }
 
 #new-content-selector .close {
