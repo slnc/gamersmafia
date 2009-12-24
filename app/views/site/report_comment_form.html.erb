@@ -5,8 +5,9 @@
 <%=form_remote_tag({:update => 'aaa', :url => "/comments/report/#{params[:id]}", :evalScripts => true})%>
 <input type="text" class="w100pc text virgin" id="report-comment-reason" name="reason" value="Razón..." /><br />
 <br />
-<input type="submit" value="Reportar" />
-<input type="button" value="Cancelar" onclick="closeFacebox();" />
+<div class="action-buttons">
+<a href="#" onclick="closeFacebox();">Cancelar</a> &nbsp; &nbsp; &nbsp; <input type="submit" value="Reportar" />
+</div>
 </form>
 <script type="text/javascript">
   $j('#report-comment-reason').val("Razón..").one('click', function(){

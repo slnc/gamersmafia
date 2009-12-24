@@ -14,8 +14,9 @@
 <br />
 <input type="text" class="w100pc text virgin" id="report-user-reason" name="reason" value="Comentario (opcional)" /><br />
 <br />
-<input type="submit" value="Recomendar" />
-<input type="button" value="Cancelar" onclick="closeFacebox();" />
+<div class="action-buttons">
+<a href="#" onclick="closeFacebox();">Cancelar</a> &nbsp; &nbsp; &nbsp; <input type="submit" value="Recomendar" />
+</div>
 </form>
 <script type="text/javascript">
   $j('#report-user-reason').val("Comentario (opcional)").one('click', function(){
