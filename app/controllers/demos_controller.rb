@@ -10,6 +10,7 @@ class DemosController < ArenaController
     redirect_to :action => 'index' and return false unless params[:demo_term_id] #.kind_of? Hash)
     @title = 'Resultados de la búsqueda'
     sql_conds = []
+    if params[:demo]
     %w(demos_category_id demotype pov_type games_mode_id event_id games_version_id games_map_id entity1_local_id entity2_local_id).each do |attr|
       next unless params[:demo][attr.to_sym].to_s != ''
       sql_conds<< "#{attr} = #{params[:demo][attr.to_sym].to_i}"
@@ -38,6 +39,7 @@ class DemosController < ArenaController
     sql_conds<< "entity1_external = #{User.connection.quote(params[:demo][:entity_external])} OR entity2_external = #{User.connection.quote(params[:demo][:entity_external])}" if params[:demo][:entity_external]
     
     
+    end
     
     @demos = portal.demo.find(:published, :conditions => sql_conds.join(' AND '), :limit => 51, :order => 'created_on')
     @limited = (@demos.size == 51) ? true : false
