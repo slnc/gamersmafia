@@ -3,7 +3,14 @@ body {
 	background-image: ${page_background_image};
 	background-repeat: ${page_background_repeat};
 	background-position: ${page_background_position};
+	color: ${page_color};
 }
+
+.infoinline, .infoinline a, .infoinline a:visited {
+    color: ${page_small_info_color};
+}
+
+.infoinline a:hover { color: ${page_color}; }
 
 #cpageout {
 	background-color: ${cpageout_background_color};
@@ -11,6 +18,15 @@ body {
 	background-repeat: ${cpageout_background_repeat};
 	background-position: ${cpageout_background_position};
 }
+
+#ccontent {
+	background-color: ${ccontent_background_color};
+	background-image: ${ccontent_background_image};
+	background-repeat: ${ccontent_background_repeat};
+	background-position: ${ccontent_background_position};	
+}
+
+#ccontent .alt1 { background-color: ${ccontent_alt1_background_color}; }
 
 #mgheader {
 	background-color: ${mgheader_background_color};
@@ -92,3 +108,17 @@ body {
 #mgbreadcrumb a:hover {
 	color: ${mgbreadcrumb_link_hover_color};
 }
+
+#mgsubmenu {
+	background-color: ${mgsubmenu_background_color};
+	background-image: ${mgsubmenu_background_image};
+	background-repeat: ${mgsubmenu_background_repeat};
+	background-position: ${mgsubmenu_background_position};
+	color: ${mgsubmenu_color};
+}
+
+#mgsubmenu a { color: ${mgsubmenu_link_color}; }
+
+
+/* other sprites */
+.btn { background-image: ${bbeditor_sprites}; }

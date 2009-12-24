@@ -18,87 +18,119 @@
 	
     <h2>Globales</h2>
     <table>
+    <tr class="<%=oddclass%>">
+		<th>page_color</th>
+		<td><%=color_selector("skin[css_properties][page_color]", @skin.config[:css_properties][:page_color])%></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<th>page_small_info_color</th>
+		<td><%=color_selector("skin[css_properties][page_small_info_color]", @skin.config[:css_properties][:page_small_info_color])%></td>
+	</tr>
 	<%=css_background_edit('page')%>
-	<tr>
+	<tr class="<%=oddclass%>">
 		<th>mgheader_border_color</th>
 		<td><%=color_selector("skin[css_properties][mgheader_border_color]", @skin.config[:css_properties][:mgheader_border_color])%></td>
 	</tr>
 	<%=css_background_edit('mgheader')%>
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>mgglobalmenu_sprites_image</th>
 		<td><%=css_image_selector("skin[css_properties][mgglobalmenu_sprites_image]", @skin.config[:css_properties][:mgglobalmenu_sprites_image], @skin) %><br />
 		<div class="infoinline f_sm">usar <a target="_blank" href="/skins/default/images/gm20085navmenu.png">plantilla</a></div></td>
 	</tr>
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>mgglobalmenu_background_color</th>
 		<td><%=color_selector("skin[css_properties][mgglobalmenu_background_color]", @skin.config[:css_properties][:mgglobalmenu_background_color])%></td>
 	</tr>
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>mgglobalmenu_dropdown_background_color</th>
 		<td><%=color_selector("skin[css_properties][mgglobalmenu_dropdown_background_color]", @skin.config[:css_properties][:mgglobalmenu_dropdown_background_color])%></td>
 	</tr>
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>mgglobalmenu_border_color</th>
 		<td><%=color_selector("skin[css_properties][mgglobalmenu_border_color]", @skin.config[:css_properties][:mgglobalmenu_border_color])%></td>
 	</tr>
 	<%=css_editor_separator%>
-	<tr>
+	<tr class="<%=oddclass%>"
+		<th>submenu_color</th>
+		<td><%=color_selector("skin[css_properties][mgsubmenu_color]", @skin.config[:css_properties][:mgsubmenu_color])%></td>
+	</tr>
+	<tr class="<%=oddclass%>"
+		<th>mgsubmenu_link_color</th>
+		<td><%=color_selector("skin[css_properties][mgsubmenu_link_color]", @skin.config[:css_properties][:mgsubmenu_link_color])%></td>
+	</tr>
+	<%=css_background_edit('mgsubmenu')%>
+	<%=css_editor_separator%>
+	<tr class="<%=oddclass%>"
 		<th>mgbreadcrumb_background_color</th>
 		<td><%=color_selector("skin[css_properties][mgbreadcrumb_background_color]", @skin.config[:css_properties][:mgbreadcrumb_background_color])%></td>
 	</tr>
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>mgbreadcrumb_color</th>
 		<td><%=color_selector("skin[css_properties][mgbreadcrumb_color]", @skin.config[:css_properties][:mgbreadcrumb_color])%></td>
 	</tr>
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>mgbreadcrumb_link_color</th>
 		<td><%=color_selector("skin[css_properties][mgbreadcrumb_link_color]", @skin.config[:css_properties][:mgbreadcrumb_link_color])%></td>
 	</tr>
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>mgbreadcrumb_link_hover_color</th>
 		<td><%=color_selector("skin[css_properties][mgbreadcrumb_link_hover_color]", @skin.config[:css_properties][:mgbreadcrumb_link_hover_color])%></td>
 	</tr>
 	<%=css_editor_separator%>
 	<%=css_background_edit('cpageout')%>
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>logo_background_image</th>
 		<td><%=css_image_selector("skin[css_properties][logo_background_image]", @skin.config[:css_properties][:logo_background_image], @skin) %><br />
 		<div class="infoinline f_sm">194x54 (2 estados, ver logo por defecto)</div></td>
 	</tr>
 	<%=css_editor_separator%>
-	<tr>
+
+	<tr class="<%=oddclass%>"
+		<th>ccontent_alt1_background_color</th>
+		<td><%=color_selector("skin[css_properties][ccontent_alt1_background_color]", @skin.config[:css_properties][:ccontent_alt1_background_color])%></td>
+	</tr>
+	<%=css_background_edit('ccontent')%>
+	<tr class="<%=oddclass%>"
 		<th>mgfooter_separator_color</th>
 		<td><%=color_selector("skin[css_properties][mgfooter_separator_color]", @skin.config[:css_properties][:mgfooter_separator_color])%></td>
 	</tr>
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>mgfooter_link_color</th>
 		<td><%=color_selector("skin[css_properties][mgfooter_link_color]", @skin.config[:css_properties][:mgfooter_link_color])%></td>
 	</tr>
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>mgfooter_link_hover_color</th>
 		<td><%=color_selector("skin[css_properties][mgfooter_link_hover_color]", @skin.config[:css_properties][:mgfooter_link_hover_color])%></td>
 	</tr>
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>mgfooter_border_color</th>
 		<td><%=color_selector("skin[css_properties][mgfooter_border_color]", @skin.config[:css_properties][:mgfooter_border_color])%></td>
 	</tr>
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>mgfooter_new_version_color</th>
 		<td><%=color_selector("skin[css_properties][mgfooter_new_color]", @skin.config[:css_properties][:mgfooter_new_color])%></td>
 	</tr>
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>mgfooter_new_version_background_color</th>
 		<td><%=color_selector("skin[css_properties][mgfooter_new_background_color]", @skin.config[:css_properties][:mgfooter_new_background_color])%></td>
 	</tr>
 	
-	<tr>
+	<tr class="<%=oddclass%>"
 		<th>mgfooter_spirit_image</th>
 		<td><%=css_image_selector("skin[css_properties][mgfooter_spirit_image]", @skin.config[:css_properties][:mgfooter_spirit_image], @skin) %><br />
 		<div class="infoinline f_sm">67x47</div></td>
 	</tr>
 	<%=css_background_edit('mgfooter')%>
 	</table>
-
+	
+	<h2>Otros sprites</h2>
+	<table>
+		<tr class="<%=oddclass%>"
+		<th>bbeditor_sprites</th>
+		<td><%=css_image_selector("skin[css_properties][bbeditor_sprites]", @skin.config[:css_properties][:bbeditor_sprites], @skin) %><br />
+		<div class="infoinline f_sm">usar <a target="_blank" href="/skins/default/images/bbeditor.gif">plantilla</a></div></td>
+	</tr>
+	</table>
 <input type="submit" class="button" value="Guardar" />
 </form>
 <% end %>

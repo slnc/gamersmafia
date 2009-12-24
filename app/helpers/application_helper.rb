@@ -29,6 +29,7 @@ module ApplicationHelper
   def css_background_repeat(field_name, field_value, skin)
     out = <<-END
   <select name="#{field_name}">
+  <option #{'selected="selected"' if field_value == 'inherit' } value="inherit">(por defecto)</option>
   <option #{'selected="selected"' if field_value == 'no-repeat' } value="no-repeat">no repetir</option>
   <option #{'selected="selected"' if field_value == 'repeat-y' } value="repeat-y">repetir en vertical</option>
   <option #{'selected="selected"' if field_value == 'repeat-x' } value="repeat-x">repetir en horizontal</option>
@@ -41,6 +42,7 @@ module ApplicationHelper
   def css_background_position(field_name, field_value, skin)
     out = <<-END
   <select name="#{field_name}">
+  <option #{'selected="selected"' if field_value == 'inherit' } value="inherit">(por defecto)</option>
   <option #{'selected="selected"' if field_value == 'top left' } value="top left">top left</option>
   <option #{'selected="selected"' if field_value == 'top center' } value="top center">top center</option>
   <option #{'selected="selected"' if field_value == 'top right' } value="top right">top right</option>

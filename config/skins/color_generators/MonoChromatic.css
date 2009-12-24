@@ -63,17 +63,11 @@ a:hover {
 	color: #${content_header_color};
 }
 
-#userbox {
-	background-color: #${page_container_background_color};
-}
-
-#userbox .userboxh1,
 #navpath .nav {
    background-color: #${outside_elements_background_color};
    color: #${outside_elements_color};
 }
 
-#userbox a,
 #navpath a {
    color: #${outside_elements_link_color};
 }

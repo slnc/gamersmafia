@@ -11,10 +11,6 @@ h2 {
     font-size: 10px;
 }
 
-a {
-    text-decoration: underline;
-}
-
 #tracker a, #lastcomments a {
     text-decoration: none;
 }
@@ -414,10 +410,6 @@ tr.forum-category td {
 #content .sm {
     font-size: 10px;
     font-weight: normal;
-}
-
-a {
-    text-decoration: none;
 }
 
 #ccontent .account-balance {

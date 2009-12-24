@@ -17,7 +17,7 @@ end
 
 <% mflist('Os consideran sus amigos', clans_that_consider_my_their_friend) do |o|
  	if not h_clans_i_consider_my_friends.include?(u.id) then %>
-     <li class="<%=oddclass%>"><%=link_to o.name, "/clanes/clan/#{o.id}"%><a class="infoinline normallink"  href="/cuenta/clanes/general/add_friend?id=<%=o.id%>&redirto=/cuenta/clanes/amigos">añadir a tu lista</a></li>
+     <li class="<%=oddclass%>"><%=link_to o.name, "/clanes/clan/#{o.id}"%><a class="infoinline" href="/cuenta/clanes/general/add_friend?id=<%=o.id%>&redirto=/cuenta/clanes/amigos">añadir a tu lista</a></li>
      <% else %>
     <li class="<%=oddclass%>"><%=link_to o.name, "/clanes/clan/#{o.id}"%></li>
     <% end -%>

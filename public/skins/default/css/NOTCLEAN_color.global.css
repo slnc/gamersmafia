@@ -47,12 +47,8 @@ body.lypopup {
     background-color: #FFFFFF;
 }
 
-.alt1, .alt2 .alt1, .alt0 .alt1 {
+.alt1, .alt0 .alt1 {
     background-color: #F2F2F2;
-}
-
-.alt2, .alt1 .alt2 {
-    background-color: #EFF0F1;
 }
 
 .homebox .title {
@@ -104,7 +100,7 @@ body.lypopup h1 {
     background: #a6a6a6;
 }
 
-.infoinline {
+.infoinline, .infoinline a, .infoinline a:visited {
     color: #a6a6a6;
 }
 

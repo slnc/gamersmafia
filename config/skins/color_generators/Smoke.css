@@ -60,11 +60,6 @@ a:hover {
 }
 
 /* TODO copypasted */
-#userbox {
-	background-color: #${page_container_background_color};
-}
-
-#userbox .userboxh1,
 #navpath .nav {
    background-color: #${ccontent_module_background_color};
    color: #${content_header_color};

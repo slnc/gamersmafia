@@ -14,29 +14,7 @@ a:hover {
     color: #000000;
 }
 
-body #ccontent .infoinline a {
-    color: #9D9D9D;
-}
-
-body #ccontent .infoinline a:visited {
-    color: #9D9D9D;
-}
-
-body #ccontent .infoinline a:hover {
-    color: #000000;
-}
-
-#ccontent a.normallink {
-    color: #2E218B;
-}
-
-#ccontent a:visited.normallink {
-    color: #161045;
-}
-
-#ccontent a:hover.normallink {
-    color: #7365DA;
-}
+.infoinline a:hover { color: #000000; }
 
 #sawbottom a {
     color: #fff;
@@ -46,7 +24,7 @@ body #ccontent .infoinline a:hover {
     color: #6e4b00;
 }
 
-#mgsubmenu li a {
+#mgsubmenu a {
     color: #fff;
 }
 
