@@ -1053,8 +1053,8 @@ module Skins
 
         :mgheader_background_color => 'inherit',
         :mgheader_background_image => 'inherit',
-        :mgheader_background_repeat => 'no-repeat',
-        :mgheader_background_position => 'bottom right',
+        :mgheader_background_repeat => 'inherit',
+        :mgheader_background_position => 'inherit',
         
         :mgfooter_background_color => 'inherit',
         :mgfooter_background_image => 'inherit',

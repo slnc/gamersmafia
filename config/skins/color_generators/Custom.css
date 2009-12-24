@@ -15,6 +15,11 @@ a:hover { color: ${page_link_hover_color}; }
 
 .infoinline a:hover { color: ${page_color}; }
 
+#mgsearch {
+	background-color: ${mgsearch_background_color};
+	border-color: ${mgsearch_border_color};
+}
+
 #cpageout {
 	background-color: ${cpageout_background_color};
 	background-image: ${cpageout_background_image};

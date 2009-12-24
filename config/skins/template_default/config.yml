@@ -22,8 +22,6 @@ google_ads_bottom:
   google_color_url: 008000
   
 css_properties:
-  page_background_color: ffffff
-  page_background_pos: 0 0
-  page_background_repeat: no-repeat
+  dumb: ffffff
     
     
