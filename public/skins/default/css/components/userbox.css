@@ -70,14 +70,6 @@
     background: url(../../images/s.png) -63px -17px no-repeat;
 }
 
-#userbox ul.anonymous li.alta {
-    background: url(../../images/icons/login_other.gif) right top no-repeat;
-}
-
-#userbox ul.anonymous li.olvide-clave {
-    background: url(../../images/icons/login_other.gif) right -17px no-repeat;
-}
-
 #loginbutton input {
     background: url(../../images/icons/login.gif) center top no-repeat;
 }
