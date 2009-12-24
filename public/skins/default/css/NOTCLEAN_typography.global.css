@@ -169,9 +169,6 @@ body.lypopup h1 {
     font-family: arial;
 }
 
-#tracker li.updated a {
-    text-decoration: none;
-}
 
 #online td, #online {
     font-size: 10px;

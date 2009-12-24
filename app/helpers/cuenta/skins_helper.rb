@@ -7,8 +7,8 @@ module Cuenta::SkinsHelper
   def css_editor_separator
     <<-END 
     <tr>
-    <td colspan="2"><hr /></td>
-  </tr>
+      <td colspan="2"><hr /></td>
+    </tr>
     END
   end
 end

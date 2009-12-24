@@ -195,11 +195,6 @@ th.checkbox, td.checkbox {
     visibility: hidden;
 }
 
-#lastcomments li {
-    padding: 2px 1px;
-    margin-bottom: 1px;
-}
-
 #ccontent .content-hid li a, #csupport .fcontents-basic li a {
     padding-left: 14px;
 }

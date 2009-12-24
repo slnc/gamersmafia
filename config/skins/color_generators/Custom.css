@@ -28,6 +28,14 @@ body {
 
 #ccontent .alt1 { background-color: ${ccontent_alt1_background_color}; }
 
+#ccontent .module .mtitle {
+	background-color: ${ccontent_header_background_color};
+	background-image: ${ccontent_header_background_image};
+	background-repeat: ${ccontent_header_background_repeat};
+	background-position: ${ccontent_header_background_position};
+	color: ${ccontent_header_color};	
+}
+
 #mgheader {
 	background-color: ${mgheader_background_color};
 	background-image: ${mgheader_background_image};
@@ -35,6 +43,25 @@ body {
 	background-position: ${mgheader_background_position};
 	border-color: ${mgheader_border_color};
 }
+
+#cleft, #cleft .det-bottom, #cleft .det-bottom2 {
+	background-color: ${cleft_background_color};
+	background-image: ${cleft_background_image};
+	background-repeat: ${cleft_background_repeat};
+	background-position: ${cleft_background_position};
+	color: ${cleft_color};	
+}
+
+#cleft a { color: ${cleft_link_color}; }
+
+#cleft .updated a {
+	background-color: ${cleft_link_updated_background_color};
+	color: ${cleft_link_updated_color};
+}
+
+#cleft div.module .mcontent { border-color: ${cleft_lineseparator_color}; }
+
+#tracker-bg-text, #recommended-bg-text, #lastcommented-bg-text { background-image: ${cleft_titles_sprites_image};}
 
 #mgfooter {
 	background-color: ${mgfooter_background_color};

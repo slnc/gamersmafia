@@ -50,7 +50,9 @@ a:hover {
     color: #fff;
 }
 
-.sidecontent-list li.updated a {
+#cleft .sidecontent-list .alt1 { background: transparent; }
+
+#cleft .updated a {
     color: #fff;
 }
 
