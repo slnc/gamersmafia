@@ -173,23 +173,12 @@ body.lypopup h1 {
     font-family: arial;
 }
 
-#tracker li.updated a, #lasttopics li.updated a {
+#tracker li.updated a {
     text-decoration: none;
 }
 
 #online td, #online {
     font-size: 10px;
-}
-
-#lasttopics li {
-    line-height: 15px;
-    font-family: arial;
-    font-size: 10px;
-    padding-left: 2px;
-}
-
-#lasttopics li.new {
-    font-weight: bold;
 }
 
 #online td.userscount {

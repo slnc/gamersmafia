@@ -551,24 +551,6 @@ img.topic-indicator.topic-sticky {
     margin-bottom: 10px;
 }
 
-#lasttopics li {
-    margin-bottom: 1px;
-}
-
-#lasttopics a {
-    display: block;
-    width: 100%;
-}
-
-#lasttopics .mcontent {
-    padding-bottom: 3px;
-}
-
-#lasttopics .lasttopics-icon {
-    
-    padding-top: 22px;
-}
-
 #webs-aliadas .mcontent {
     padding-bottom: 3px;
 }
