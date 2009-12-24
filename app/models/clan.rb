@@ -16,6 +16,8 @@ class Clan < ActiveRecord::Base
   
   observe_attr :competition_roster, :tag, :deleted, :game_ids, :members_count
   
+  named_scope :in_games, lambda { |games| { :conditions => "id IN (SELECT clan_id FROM clans_games WHERE game_id IN (#{[0] + games.collect { |g| g.id } }))" }}
+  
   before_save :update_rosters
   after_update :update_competition_name
   

@@ -1,0 +1,31 @@
+.mpager {
+    padding-left: 15px;
+}
+
+.mpager .currentpage {
+    padding: 1px 5px;
+    border: 1px solid;
+    margin: 0 2px;
+}
+
+.mpager a {
+    border: 1px solid;
+    padding: 1px 5px;
+    margin: 0 2px;
+}
+
+.mpager .prev_page, .mpager .next_page {
+    display: none;
+    visibility: hidden;
+}
+.mpager .pagination {
+    display: inline;
+}
+
+.pager-top {
+    margin: 20px 3px;
+}
+
+.pager-bottom {
+    margin: 20px 0 20px 3px;
+}

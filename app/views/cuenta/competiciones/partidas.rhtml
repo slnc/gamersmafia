@@ -20,11 +20,8 @@
 
 <% content_main do %>
   <% mftext('Todas las partidas de la competición') do %>
-  <% @matches_pages = ActionController::Pagination::Paginator.new self, @competition.competitions_matches.count, 25, params['page'] 
-  @matches_pages.current_page = @matches_pages.last if params['page'].nil? 
-
-  %>
-  <%=render :partial => 'shared/pager', :object => @matches_pages, :locals => {:pos => 'top'} %>
+  <% @mmatches = @competition.competitions_matches.paginate(:page => params[:page], :per_page => 25, :order => 'stage DESC, competitions_matches.id DESC', :include => [:participant1, :participant2]) %>
+  <%=render :partial => 'shared/pager2', :locals => {:collection => @mmatches, :pos => 'top'} %>
   <form id="superform" method="post" action="/cuenta/competiciones/partidas">
   <table>
     <tr class="<%=oddclass%>">
@@ -36,7 +33,7 @@
       <th>Fase</th>
     </tr>
 
-    <% for match in @competition.competitions_matches.find(:all, :order => 'stage DESC, competitions_matches.id DESC', :limit => @matches_pages.current.to_sql[0], :offset => @matches_pages.current.to_sql[1], :include => [:participant1, :participant2]) %>
+    <% for match in @mmatches %>
     <tr class="<%=oddclass%>">
       <td><input type="checkbox" onclick="slnc.hilit_row(this, 'selrow');" name="competitions_matches[]" value="<%=match.id%>" /></td>
       <td><% if match.participant1_id then%><a href="/competiciones/participante/<%=match.participant1_id%>"><%=match.participant1.name%></a><% end -%></td>
@@ -58,7 +55,7 @@
     </tr>
   <% end -%>
   </table>
-  <%=render :partial => 'shared/pager', :object => @matches_pages, :locals => {:pos => 'bottom'} %>
+  <%=render :partial => 'shared/pager2', :locals => {:collection => @mmatches, :pos => 'bottom'} %>
   <% end -%>
 
   

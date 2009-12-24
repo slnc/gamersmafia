@@ -11,7 +11,7 @@
 <% content_main do %>
 <% mftext(@title) do %>
 <%= form_tag(:action=> 'del_messages')%>
-<div style="float: right; margin-top: -20px;"><%= render :partial => 'shared/pager', :object => @message_pages, :locals => {:pos => 'top'} %></div>
+<div style="float: right; margin-top: -20px;"><%= render :partial => 'shared/pager2', :locals => {:collection => @messages, :pos => 'top'} %></div>
 <div style="margin: 10px 0;"><input type="submit" class="button primary" onclick="return confirm('¿Estás seguro de que quieres borrar los mensajes seleccionados?');" value="Borrar" /></div>
 <table class="messages">
 <% if nil then %><tr>
@@ -35,7 +35,7 @@ for message in @messages
 <% end %>
 </table>
 <br />
-<div style="float: right; margin-top: -20px;"><%= render :partial => 'shared/pager', :object => @message_pages, :locals => {:pos => 'bottom'} %></div>
+<div style="float: right; margin-top: -20px;"><%= render :partial => 'shared/pager2', :locals => {:collection => @messages, :pos => 'bottom'} %></div>
 <div style="margin: 10px 0;"><input type="submit" class="button primary" onclick="return confirm('¿Estás seguro de que quieres borrar los mensajes seleccionados?');" value="Borrar" /></div>
 <input type="hidden" name="redirto" value="<%=request.request_uri%>" />
 </form>

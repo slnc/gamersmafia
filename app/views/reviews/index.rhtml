@@ -32,13 +32,11 @@
 
 <% content_main do %>
     <%mftext('Reviews') do %>
-<% 
-@review_pages = ActionController::Pagination::Paginator.new self, controller.portal.review.count(:published), 15, params['page']
-%>
-    <%= render :partial => 'shared/pager', :object => @review_pages, :locals => {:pos => 'top'} %>
+	<% @reviews = Review.in_portal(controller.portal).published.paginate(:order => 'created_on', :page => params[:page], :per_page => 15) %>
+    <%= render :partial => 'shared/pager2', :locals => {:collection => @reviews, :pos => 'top'} %>
 <% cache("/#{controller.portal_code}/reviews/index/page_#{params[:page]}") do %>
-<% 
-  controller.portal.review.find(:published, :order => 'lower(title) asc', :limit => @review_pages.current.to_sql[0], :offset => @review_pages.current.to_sql[1]).each do |review| %>
+
+<% @reviews.each do |review| %>
     <div class="<%=oddclass%>">
       <h2><%= link_to review.title, gmurl(review) %></h2>
       <%=draw_contentheadline(review)%>
@@ -49,6 +47,6 @@
     <% end %>
 <% end %>
 
-    <%= render :partial => 'shared/pager', :object => @review_pages, :locals => {:pos => 'bottom'} %>
+    <%= render :partial => 'shared/pager2', :locals => {:collection => @reviews, :pos => 'bottom'} %>
 	<% end -%>
 <% end -%>

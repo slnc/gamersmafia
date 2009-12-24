@@ -14,20 +14,12 @@
 
 <% content_main do %>
   <%mftext('Noticias') do %>
-<% @coverages_pages = ActionController::Pagination::Paginator.new self, Coverage.count(:conditions => "state = #{Cms::PUBLISHED}"), 20, params['page']
-
-  if params['page'].nil? then
-    @coverages_pages.current_page = @coverages_pages.last
-  end
-  %>
-  <%=render :partial => 'shared/pager', :object => @coverages_pages, :locals => {:pos => 'top'} %>
+  <% @coverages = Coverage.published.paginate(:order => 'created_on DESC', :page => params[:page], :per_page => 20) %>
+  <%=render :partial => 'shared/pager2', :locals => {:collection => @coverages, :pos => 'top'} %>
 
 <% cache ("/coverages/list/page_#{params['page']}") do
   previous_day = nil
-  Coverage.find(:published, 
-				:conditions => "state = #{Cms::PUBLISHED}", 
-				:order => 'created_on asc', 
-				:limit => @coverages_pages.current.to_sql[0], :offset => @coverages_pages.current.to_sql[1]).each do |news|
+  @coverages.each do |news|
     cur_day = Date.new(news.created_on.year, news.created_on.month, news.created_on.day)
 
     if cur_day != previous_day then 
@@ -37,6 +29,6 @@
     <%=render(:partial => 'news', :object => @object = news)%>
   <% end %>
   <% end -%>
-  <%= render :partial => 'shared/pager', :object => @coverages_pages, :locals => {:pos => 'bottom'} %>
+  <%=render :partial => 'shared/pager2', :locals => {:collection => @coverages, :pos => 'bottom'} %>
   <% end -%>
 <% end -%>

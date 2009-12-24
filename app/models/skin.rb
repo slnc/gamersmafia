@@ -112,7 +112,7 @@ class Skin < ActiveRecord::Base
     data = Skin.rextract_css_imports(fpath)
     data.gsub!('url(/', "url(#{ASSET_URL}/")
     File.open(compressed, 'w') { |f| f.write(data) }
-    `java -jar script/yuicompressor-2.3.6.jar "#{compressed}" -o "#{compressed}" --line-break 500`
+    `java -jar script/yuicompressor-2.4.2.jar "#{compressed}" -o "#{compressed}" --line-break 500`
   end
   
   #  def update_intelliskin(new_params)

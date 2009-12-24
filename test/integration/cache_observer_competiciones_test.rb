@@ -10,8 +10,11 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
   # index#competiciones_en_curso
   test "should_clear_cache_when_competition_advances_to_phase_3" do
     [Ladder, Tournament, League].each do |cls|
-      l = cls.find(:first, :conditions => 'state = 2')
+      l = cls.find(:first, :conditions => "invitational = 'f' AND fee IS NULL and state = 2 AND competitions_participants_type_id = #{Competition::USERS}")
+      l.join(User.find(1))
+      l.join(User.find(2))
       assert_not_nil l
+      
       get '/competiciones'
       assert_cache_exists "#{controller.portal.code}/competiciones/index/competiciones_en_curso"
       assert_equal true, l.switch_to_state(3)

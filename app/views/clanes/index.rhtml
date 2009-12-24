@@ -46,15 +46,15 @@
 <% content_main do %>
 <%mftext('Clanes') do %>
 <% cache("/#{@controller.portal_code}/clanes/index/page_#{params[:page]}") do %>
-<%
-	games = (@controller.portal_code != 'gm' && @controller.portal.respond_to?(:games))? @controller.portal.games : [] 
+<% 
+games = (@controller.portal_code != 'gm' && @controller.portal.respond_to?(:games))? @controller.portal.games : [] 
 if games.size > 0 
-  @clans_pages = ActionController::Pagination::Paginator.new self, Clan.count_by_games(:games => games, :conditions => 'deleted is false'), 40, params['page']
+  @clans = Clan.in_games(games).paginate(:page => params[:page], :per_page => 40, :conditions => 'deleted is false', :order => 'lower(name)')
 else
-  @clans_pages = ActionController::Pagination::Paginator.new self, Clan.count(:conditions => 'deleted is false'), 40, params['page']
+  @clans = Clan.paginate(:page => params[:page], :per_page => 40, :conditions => 'deleted is false', :order => 'lower(name)')
 end
 %>
-<%= render :partial => 'shared/pager', :object => @clans_pages, :locals => {:pos => 'top'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @clans, :pos => 'top'} %>
 
   <table>
     <tr class="<%=oddclass%>">
@@ -64,15 +64,7 @@ end
       <th>Miembros</th>
       <th>Web oficial</th>
     </tr>
-
-    <% 
-games = (@controller.portal_code != 'gm' && @controller.portal.respond_to?(:games))? @controller.portal.games : [] 
-    if games.size > 0 
-  clans = Clan.find_by_games(:games => games, :conditions => 'deleted is false', :order => 'lower(name) ASC', :limit => @clans_pages.current.to_sql[0], :offset => @clans_pages.current.to_sql[1])
-else
-  clans = Clan.find(:all, :conditions => 'deleted is false', :order => 'lower(name) ASC', :limit => @clans_pages.current.to_sql[0], :offset => @clans_pages.current.to_sql[1])
-end
-    for clan in clans %>
+<%  for clan in @clans %>
     <tr class="<%=oddclass%>">
       <td><a href="/clanes/clan/<%=clan.id%>"><%=clan.name%></a></td>
       <td><%=notags(clan.tag)%></td>
@@ -83,7 +75,7 @@ end
   <% end -%>
   </table>
 
-<%= render :partial => 'shared/pager', :object => @clans_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @clans, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>
 <% end -%>

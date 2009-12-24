@@ -31,8 +31,13 @@ class DemosControllerTest < ActionController::TestCase
     assert_redirected_to '/demos'
   end
   
+  test "buscar_should_work_if_only_demo_term_id_condition_given" do
+    post :buscar, { :demo_term_id => '1'}
+    assert_response :success
+  end
+  
   test "buscar_should_work_if_conditions_given" do
-    post :buscar, { :terms => ['1'], :demo => { :event_id => '', :entity => '', :pov_type => '', :demotype => ''}}
+    post :buscar, { :demo_term_id => '1', :demo => { :event_id => '', :entity => '', :pov_type => '', :demotype => ''}}
     assert_response :success
   end
   

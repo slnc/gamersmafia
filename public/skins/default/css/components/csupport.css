@@ -1,0 +1,33 @@
+#csupport {
+    width: 242px;
+    margin-left: 0;
+}
+
+#csupport .ads-slots {
+    margin-top: -8px;
+    margin-right: -10px;
+    background: #fafafa url(../../images/csupport_bl.gif) left bottom no-repeat;
+    padding: 0 0 6px 0px;
+    margin-bottom: 12px;
+	
+	margin-right: 0;
+    margin-top: 0;
+    text-align: center;
+	
+	background: none;
+}
+
+#csupport .ads-slots1 {
+    border-left: 1px solid #dfdfdf;
+    padding: 8px 8px 2px 8px;
+	padding-left: 3px;
+	    border-left: 0;
+}
+
+#csupport .subheader, #csupport .mtitle { 
+	padding-top: 4px;
+    height: 30px;
+    text-align: left;
+}
+
+#csupport .module .mtitle.mcontent-title span { margin-left: 0; }

@@ -35,6 +35,10 @@ class BazarPortal
     nil
   end
   
+  def terms_ids(taxonomy=nil)
+    Term.top_level.find_by_slug('bazar').all_children_ids(:taxonomy => taxonomy)
+  end
+  
   def latest_articles
     articles = []
     articles += self.interview.find(:published, :limit => 8, :order => 'created_on DESC') if self.interview

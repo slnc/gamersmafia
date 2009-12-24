@@ -10,7 +10,7 @@
   </form>
 </div>
 
-<%= render :partial => 'shared/pager', :object => @member_pages, :locals => {:pos => 'top', :options => {:params => {:s => params[:s]}}} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @members, :pos => 'top', :pager_params => {:s => params[:s]}} %>
 <table>
   <tr>
     <th class="sm-icon"></th>
@@ -43,6 +43,6 @@ for member in @members
 <% end %>
 </table>
 
-<%= render :partial => 'shared/pager', :object => @member_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @members, :pos => 'bottom', :pager_params => {:s => params[:s]}} %>
 <% end -%>
 <% end -%>

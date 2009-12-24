@@ -1,0 +1,36 @@
+.clearb { clear: both; }
+.clearl { clear: left; }
+
+.w20 { width: 20px; }
+.w25 { width: 25px; }
+.w35 { width: 35px; }
+.w50 { width: 50px; }
+.w75 { width: 75px; }
+.w100 { width: 100px; }
+.w125 { width: 125px; }
+.w150 { width: 150px; }
+.w200 { width: 200px; }
+.w100pc { width: 100%; }
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}
+
+.centered-link {
+    padding: 15px 0;
+    text-align: center;
+}
+
+.centered {
+    text-align: center;
+}
+
+img.icon, a img.icon {
+    border: 0;
+}
+
+.show {
+    display: block;
+    visibility: visible;
+}

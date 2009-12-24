@@ -5,12 +5,12 @@
 <% mftext("#{params[:content_name].capitalize}") do %>
 <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/contenidos/#{@c.name.downcase}/page_#{params['page']}") do
 if @c.new.respond_to?(:clan_id)
-   @contents_pages, @contents = controller.paginate @c, :conditions => ['state = ? and user_id = ? and clan_id IS NULL', Cms::PUBLISHED, @curuser.id], :order => 'created_on ASC', :per_page => 30
+   @contents = @c.published.paginate(:conditions => ['user_id = ? and clan_id IS NULL', @curuser.id], :order => 'created_on ASC', :page => params[:page], :per_page => 30)
 else
-	@contents_pages, @contents = controller.paginate @c, :conditions => ['state = ? and user_id = ?', Cms::PUBLISHED, @curuser.id], :order => 'created_on ASC', :per_page => 30
+	@contents = @c.published.paginate(:conditions => ['user_id = ?', @curuser.id], :order => 'created_on ASC', :page => params[:page], :per_page => 30)
 end
 %>
-<%= render :partial => 'shared/pager', :object => @contents_pages, :locals => {:pos => 'top'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @contents, :pos => 'top'} %>
 <table>
 <% @contents.each do |content| %>
   <tr class="<%=oddclass%>">
@@ -21,7 +21,7 @@ end
   </tr>
 <% end -%>
 </table>
-<%= render :partial => 'shared/pager', :object => @contents_pages, :locals => {:pos => 'top'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @contents, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>
 <% end -%>

@@ -6,16 +6,12 @@
 <% content_main do %>
 <% mftext('Curiosidades') do %>
 <%
-@funthing_pages = ActionController::Pagination::Paginator.new self, Funthing.count(:conditions => "state = #{Cms::PUBLISHED} "), 20, params['page']
-
-@funthing_pages.current_page = @funthing_pages.last if params['page'].nil?
+@funthings = Funthing.published.paginate(:page => params[:page], :per_page => 20, :order => 'created_on')
 %>
-<%= render :partial => 'shared/pager', :object => @funthing_pages, :locals => {:pos => 'top'} %>
-
+<%= render :partial => 'shared/pager2', :locals => {:collection => @funthings, :pos => 'top'} %>
 <table>
 <% cache("/common/curiosidades/index/page_#{params[:page]}") do %>
 <% 
-@funthings = Funthing.find(:published, :order => 'created_on asc', :limit => @funthing_pages.current.to_sql[0], :offset => @funthing_pages.current.to_sql[1])
 for funthing in @funthings.reverse %>
 <tr class="<%=oddclass%>">
   <td><strong><%=link_to funthing.title, gmurl(funthing) %></strong><br /><span class="infoinline"><%=truncate(strip_tags(funthing.description), 150)%></span></td>
@@ -28,6 +24,6 @@ for funthing in @funthings.reverse %>
 <% end %>
 </table>
 
-<%= render :partial => 'shared/pager', :object => @funthing_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @funthings, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>

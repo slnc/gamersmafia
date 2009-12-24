@@ -1,0 +1,93 @@
+.comment-rating-state {
+    background: url(../../images/icons/comment-rating-state-left.gif) left top no-repeat;
+}
+
+.comment-rating-state.positive-rating {
+    color: #228b29;
+}
+
+.comment-rating-state.negative-rating {
+    color: #a60000;
+}
+
+.moderate-comments-opener-detail {
+    border-top-color: #f2f2f2;
+}
+
+.moderate-comments {
+    border-color: #D4D4D4;
+    background: #fafafa;
+}
+
+.moderate-comments .positive a, .moderate-comments .positive a:visited {
+    color: #228b29;
+}
+
+.moderate-comments .negative a, .moderate-comments .negative a:visited {
+    color: #a60000;
+}
+
+.moderate-comments .negative {
+    background: #FFF6F6;
+}
+
+.moderate-comments .positive a:hover {
+    background: #C9EBCE;
+    color: #228b29;
+}
+
+.moderate-comments .negative a:hover {
+    background: #FFDFDF;
+    color: #a60000;
+}
+
+.moderate-comments-opener {
+    color: #a7a2a2;
+}
+
+.comments-area .user-info, .comments-area .comment-header, .question-best-answer-comment .user-info {
+    border-color: #e5e5e5;
+    background: #F8F8F8;
+}
+
+.comments-area .comment.new .comment-header {
+    background: #000;
+}
+
+.comments-area .new .authorship {
+    background: black;
+}
+
+.comments-area .comment-number {
+    color: #717378;
+}
+
+.comments-area .comment-number span {
+    color: #000;
+}
+
+.comments-area .comment.new .comment-number span {
+    color: #bbb;
+}
+
+.comments-detail {
+    background: url(../../images/s.png) 0 -16px no-repeat;
+}
+
+.comments-sig {
+    font-style: italic;
+    color: #AAA;
+    text-align: right;
+    margin-bottom: -14px;
+}
+
+.moderate-comments a {
+    font-family: verdana;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.moderate-comments-opener {
+    font-family: verdana;
+    font-size: 10px;
+}

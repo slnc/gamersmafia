@@ -125,13 +125,13 @@ class MiembrosController < ComunidadController
     else
       @navpath = [['Miembros', '/miembros'], ["Buscar #{params[:s]}", "/miembros/buscar?s=#{params[:s]}"]]
       @title = 'Resultados de la búsqueda'
-      @member_pages, @members = paginate :user, :per_page => 50, 
+      @members = User.paginate(:page => params[:page], :per_page => 50, 
       :conditions => ['lower(login) like lower(?) or lower(msn) like lower(?) or lower(firstname) like lower(?) or lower(lastname) like lower(?)', 
         '%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
         '%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
         '%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
         '%' + params[:s].gsub(/[']/) { '\\'+$& } + '%'],
-      :order => 'lower(login) ASC'
+      :order => 'lower(login) ASC')
     end
   end
   
@@ -144,12 +144,11 @@ class MiembrosController < ComunidadController
       @title = 'Resultados de la búsqueda'
       if not g.valid_guid?(params[:guid]) then
         flash[:error] = "El GUID introducido no es válido para el juego #{g.name}"
-        @member_pages, @members = paginate :user, :per_page => 50, 
-        :conditions => 'id = 0' # TODO necesario para q no pete la búsqueda
+        @members = User.paginate(:page => params[:page], :per_page => 50, :conditions => 'id = 0') # TODO necesario para q no pete la búsqueda
       else
-        @member_pages, @members = paginate :user, :per_page => 50, 
+        @members = User.paginate(:page => params[:page], :per_page => 50, 
         :conditions => "id IN (SELECT user_id FROM users_guids WHERE game_id = #{g.id} AND guid = '#{params[:guid]}')", 
-        :order => 'lower(login) ASC'
+        :order => 'lower(login) ASC')
       end
     end
     render :action => 'buscar'

@@ -14,12 +14,13 @@ module ApplicationHelper
   def css_image_selector(field_name, field_value, skin)
     out = <<-END
   <select name="#{field_name}">
-<option value="none">(ninguna)</option>
+<option value="">(por defecto)</option>
+<option #{'selected="selected"' if field_value == 'none' } value="none">(ninguna)</option>
     END
     skin.skins_files.each do |sfn|  
       val = "url(/#{sfn.file})"
       out << <<-END
-      <option #{'selected="selected"' if val == field_value } value="#{val}">#{sfn.file}</option>
+      <option #{'selected="selected"' if val == field_value } value="#{val}">#{File.basename(sfn.file)}</option>
     END
     end 
     out << '</select>'
@@ -32,6 +33,24 @@ module ApplicationHelper
   <option #{'selected="selected"' if field_value == 'repeat-y' } value="repeat-y">repetir en vertical</option>
   <option #{'selected="selected"' if field_value == 'repeat-x' } value="repeat-x">repetir en horizontal</option>
   <option #{'selected="selected"' if field_value == 'repeat' } value="repeat">repetir en ambas direcciones</option>
+    END
+     
+    out << '</select>'
+  end
+  
+  def css_background_position(field_name, field_value, skin)
+    out = <<-END
+  <select name="#{field_name}">
+  <option #{'selected="selected"' if field_value == 'top left' } value="top left">top left</option>
+  <option #{'selected="selected"' if field_value == 'top center' } value="top center">top center</option>
+  <option #{'selected="selected"' if field_value == 'top right' } value="top right">top right</option>
+  <option #{'selected="selected"' if field_value == 'center left' } value="center left">center left</option>
+  <option #{'selected="selected"' if field_value == 'center center' } value="center center">center center</option>
+  <option #{'selected="selected"' if field_value == 'center right' } value="center right">center right</option>
+  <option #{'selected="selected"' if field_value == 'bottom left' } value="bottom left">bottom left</option>
+  <option #{'selected="selected"' if field_value == 'bottom center' } value="bottom center">bottom center</option>
+  <option #{'selected="selected"' if field_value == 'bottom right' } value="bottom right">bottom right</option>
+  
     END
      
     out << '</select>'
@@ -645,100 +664,6 @@ skin: 'v2'
     if (obj.state.nil? || obj.state == Cms::DRAFT) && !(controller.portal.respond_to?(:clan_id) && controller.portal.clan_id)
       "<p><label><input type=\"checkbox\" name=\"draft\" value=\"1\" #{'checked=\"checked\"' if (obj.state == Cms::DRAFT && !obj.new_record?) }/> Borrador</label></p>"
     end
-  end
-  
-  
-  def ad(which, options={})
-    case which
-      when :nls_big_sample
-      out = "<a class=\"slncadt\" id=\"nls-big-sample\" title=\"Servidores de juegos\" target=\"_blank\" href=\"http://www.nls.es/\"><img class=\"icon\" src=\"/images/ads/nls-side/sample.jpg\" /></a>"
-      
-      when :google_clans_120x600  
-      out = '<script type="text/javascript"><!--
-google_ad_client = "pub-6007823011396728";
-google_ad_width = 120;
-google_ad_height = 600;
-google_ad_format = "120x600_as";
-google_ad_type = "text";
-//2007-07-22: GM ads clanes 120x600
-google_ad_channel = "6412779129";
-google_color_border = "CCCCCC";
-google_color_bg = "F3F2EC";
-google_color_link = "0066CC";
-google_color_text = "333333";
-google_color_url = "32527A";
-google_ui_features = "rc:6";
-//-->
-</script>
-<script type="text/javascript"
-  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>'
-      
-      when :google_skyscraper
-      out = '<script type="text/javascript"><!--
-      google_ad_client = "pub-6007823011396728";
-      google_alternate_color = "FFFFFF";
-      google_ad_width = 120;
-      google_ad_height = 600;
-      google_ad_format = "120x600_as";
-      google_ad_type = "text_image";
-      //2007-09-09: gm skyscraper
-      google_ad_channel = "0318559239";
-      google_color_border = "ffffff";
-      google_color_bg = "F3F2EC";
-      google_color_link = "CC0000";
-      google_color_text = "333333";
-      google_color_url = "800040";
-      google_ui_features = "rc:0";
-      //-->
-      </script>
-      <script type="text/javascript"
-        src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-        </script>'
-      
-      when :fourfrags
-      ads = [
-      ['steelpad_5l_w', 'http://www.4frags.com/catalog/product_info.php?ref=60&amp;products_id=796&amp;affiliate_banner_id=1'],
-      ['custom_pc', 'http://www.4frags.com/catalog/ccc.php?ref=60&amp;affiliate_banner_id=1'],
-      ['custom_pc2', 'http://www.4frags.com/catalog/ccc.php?ref=60&amp;affiliate_banner_id=1'],
-      ['steelsound4h', 'http://www.4frags.com/catalog/product_info.php?ref=60&amp;products_id=1390&amp;affiliate_banner_id=1'],
-      ['zboard_fang', 'http://www.4frags.com/catalog/product_info.php?ref=60&amp;products_id=1246&amp;affiliate_banner_id=1'],
-      ['logitech_g15_2008', 'http://www.4frags.com/catalog/product_info.php?ref=60&amp;products_id=2591&amp;affiliate_banner_id=1'],
-      ['logitech_g9_laser', 'http://www.4frags.com/catalog/product_info.php?ref=60&amp;products_id=2448&amp;affiliate_banner_id=1'],
-      ['zboard_merc_stealth', 'http://www.4frags.com/catalog/product_info.php?ref=60&amp;products_id=3281&amp;affiliate_banner_id=1'],
-      ['senheiser_hd_515_gaming', 'http://www.4frags.com/catalog/product_info.php?ref=60&amp;products_id=3660&amp;affiliate_banner_id=1'],
-      ['razer_lanchesis_banshee_blue', 'http://www.4frags.com/catalog/product_info.php?ref=60&amp;products_id=2923&amp;affiliate_banner_id=1'],
-      ['ocx_dimm_2x2', 'http://www.4frags.com/catalog/product_info.php?ref=60&amp;products_id=3040&amp;affiliate_banner_id=1'],
-      ['zboard_base', 'http://www.4frags.com/catalog/product_info.php?ref=60&amp;products_id=1344&amp;affiliate_banner_id=1'],
-      ['wow_tbc', 'http://www.4frags.com/catalog/product_info.php?ref=60&amp;products_id=3987&amp;affiliate_banner_id=1'],
-      ['evga_gforce9800gx2', 'http://www.4frags.com/catalog/product_info.php?ref=60&amp;products_id=3570&amp;affiliate_banner_id=1'],
-      ['ocz_stealthxstream_500w', 'http://www.4frags.com/catalog/product_info.php?ref=60&amp;products_id=3393&amp;affiliate_banner_id=1'],
-      ]
-      r = Kernel.rand(ads.size)
-      out = "<a class=\"slncadt\" id=\"fourfrags-#{ads[r][0]}\" title=\"Más información sobre este producto\" target=\"_blank\" href=\"#{ads[r][1]}\"><img class=\"icon\" src=\"/images/ads/4frags/#{ads[r][0]}.jpg\" /></a>"
-      element_id = "fourfrags-#{ads[r][0]}"
-      
-      when :google_728x15
-      out = '<script type="text/javascript"><!--
-google_ad_client = "pub-6007823011396728";
-google_ad_width = 728;
-google_ad_height = 15;
-google_ad_format = "728x15_0ads_al";
-google_ad_channel ="' + options[:ad_channel] + '";
-google_alternate_ad_url = "http://gamersmafia.com/site/banners_bottom";
-google_color_border = "' + options[:colors][:google_color_border]+'";
-google_color_bg = "' + options[:colors][:google_color_bg]+'";
-google_alternate_color = "' + options[:colors][:google_alternate_color]+'";
-google_color_link = "' + options[:colors][:google_color_link]+'";
-google_color_url = "' + options[:colors][:google_color_url]+'";
-google_color_text = "' + options[:colors][:google_color_text]+'";
-//--></script>
-<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"> </script>'
-    else
-      raise "unknown ad #{which}"
-    end
-    Stats.account_ad_impression(request, defined?(element_id) ? element_id : which, user_is_authed ? @user.id : nil, @portal.id)
-    out
   end
   
   def prototype_includes

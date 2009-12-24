@@ -73,7 +73,7 @@ class DescargasController < InformacionController
       
       @category = Term.find_taxonomy(params[:categories_terms][0], 'DownloadsCategory')
       
-      if @category.parent_id.nil? then
+      if @category.nil? || @category.parent_id.nil? then
         flash[:error] = 'Debes elegir una subcategoría, no una categoría'
         new
         render :action => 'new'

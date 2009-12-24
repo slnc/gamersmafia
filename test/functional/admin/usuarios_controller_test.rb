@@ -222,7 +222,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     post :confirm_ban_request, {:id => last.id }
     last.reload
     assert_equal @u4.id, last.confirming_user_id
-    assert_redirected_to "/site/slog"
+    assert_redirected_to "/slog/capo"
   end
   
   test "create_unban_request_should_work_for_capo" do

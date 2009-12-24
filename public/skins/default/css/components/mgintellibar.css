@@ -1,0 +1,28 @@
+#mgintellibar {
+    margin-bottom: 0;
+    height: 28px;
+    line-height: 28px;
+    padding: 0;
+}
+
+#mgintellibar-switcher, #mgintellibar-links {
+    float: left;
+    margin-right: 15px;
+    font-size: 11px;
+    margin-left: 123px;
+}
+
+#mgintellibar-links ul {
+    margin: 0;
+    padding: 0;
+}
+
+#mgintellibar-links li {
+    border: 1px solid #d7daff;
+    background: #e8eaff;
+    list-style: none;
+    float: left;
+    margin: 1px 10px 0 0;
+    line-height: 18px;
+    padding: 0 5px;
+}

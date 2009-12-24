@@ -1,0 +1,347 @@
+#userbox {
+    position: absolute;
+    right: 11px;
+    top: 20px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+#userbox .mcontent {
+    width: 220px;
+    padding-top: 0px;
+    padding-left: 9px;
+    height: 65px;
+    border: 0;
+    margin: 0;
+}
+
+#userbox > .mcontent {
+    width: 209px;
+    height: 61px;
+}
+
+#userbox .avatar {
+    float: right;
+    border: 1px solid;
+    margin: 5px 5px 0 0;
+}
+
+#userbox .nick {
+    float: right;
+    padding-right: 3px;
+    padding-top: 3px;
+}
+
+#userbox li.unread {
+    padding-left: 22px;
+}
+
+#userbox input.text {
+    border: 1px solid #555;
+    width: 85px;
+    padding: 0 2px;
+    height: 14px;
+    line-height: 14px;
+}
+
+#userbox-logged {
+    padding-top: 4px;
+}
+
+#userbox table {
+    margin-bottom: 3px;
+}
+
+#userbox form {
+    margin: 0 0 0 0;
+}
+
+#userbox ul.anonymous {
+	position: absolute;
+	top: 49px;
+    margin: 0;
+	padding: 0;
+}
+
+#userbox .mcontent > ul.anonymous {
+    
+}
+
+#userbox ul.anonymous li {
+    list-style: none;
+    display: inline;
+}
+
+#userbox ul.anonymous li.alta {
+    padding-right: 18px;
+    line-height: 16px;
+    margin: 0;
+}
+
+#userbox ul.anonymous li.olvide-clave {
+    padding-left: 9px;
+    padding-right: 18px;
+    line-height: 16px;
+    margin: 0;
+}
+
+#userbox table.signup {
+    width: 155px;
+}
+
+#userbox label, #userbox input {
+    margin: 0;
+    padding: 0;
+}
+
+#loginbutton {
+    float: right;
+    width: 40px;
+    height: 42px;
+    margin: 0 0 0 0;
+    padding: 0 7px 0 0;
+}
+
+#loginbutton input {
+    width: 40px;
+    height: 42px;
+    border: 0;
+    margin: 0;
+}
+
+a > #sendbutton {
+    margin-left: 0;
+    position: relative;
+    top: 0;
+    right: 0;
+}
+
+#sendbutton input {
+    width: 75px;
+    height: 24px;
+    border: 0;
+    margin: 0;
+}
+
+#sendbutton {
+    top: 4px;
+    width: 80px;
+    text-align: center;
+    position: absolute;
+    right: 1px;
+}
+
+#sendbutton input.sendbutton-mouseover {
+    background-position: 0 0;
+}
+/* USERBOX */
+#userbox .mcontent {
+    padding-top: 4px;
+}
+
+#userbox ul {
+    list-style: none;
+}
+
+#userbox-bars {
+    position: absolute;
+    right: 84px;
+    top: 7px;
+    width: 60px;
+    height: 19px;
+    margin: 0;
+    padding: 0;
+}
+
+#userbox-logged > #userbox-bars {
+    right: 92px;
+}
+
+.userbox-karma-bar {
+    width: 93px;
+    line-height: 11px;
+    height: 11px;
+    margin: 0 0 0 0;
+    padding: 0;
+}
+
+.userbox-faith-bar {
+	margin-top: 0px; 
+    width: 93px;
+    height: 13px;
+}
+
+#userbox-logged > #userbox-bars .userbox-faith-bar {
+	margin-top: 0;
+}
+
+#userbox-gmf-and-ratings {
+    position: absolute;
+    right: 82px;
+    top: 31px;
+    width: 70px;
+    margin: 0;
+    padding: 0;
+}
+
+#userbox-gmf-and-ratings li {
+    display: inline;
+}
+
+#userbox-indicators {
+    position: absolute;
+    right: 48px;
+    top: 46px;
+    width: 106px;
+    margin: 0;
+    padding: 0;
+    height: 16px;
+    z-index: 10;
+}
+
+#userbox-indicators li {
+    float: left;
+    line-height: 16px;
+    height: 16px;
+}
+
+#userbox-action-links {
+    position: absolute;
+    right: 3px;
+    top: 33px;
+    width: 63px;
+    margin: 0;
+    padding: 0;
+}
+
+#userbox-action-links li {
+    line-height: 16px;
+    text-align: right;
+}
+
+#userbox-indicators li {
+    margin-left: 4px;
+}
+
+#messages-indicator .messages a {
+    padding-left: 16px;
+    line-height: 16px;
+    height: 16px;
+}
+
+#userbox-indicators .messages > a {
+    padding-left: 16px;
+    line-height: 16px;
+    height: 16px;
+}
+
+#userbox-indicators .messages.has-unread a {
+    padding-left: 16px;
+    line-height: 16px;
+    height: 16px;
+}
+
+#userbox-indicators .messages.has-unread > a {
+    padding-left: 16px;
+    line-height: 16px;
+    height: 16px;
+}
+
+#userbox2 .moderation-queue a {
+    padding-left: 16px;
+    height: 16px;
+}
+
+#userbox2 .moderation-queue.has-pending a {
+    padding-left: 16px;
+    height: 16px;
+}
+
+#userbox2 .competition img {
+    width: 16px;
+    height: 16px;
+}
+
+#userbox2 .slog img {
+    width: 16px;
+    height: 16px;
+}
+
+#userbox-gmf-and-ratings .ratings,
+#userbox2 .ratings {
+    margin-left: 16px;
+    height: 16px;
+}
+
+#userbox .left-ratings {
+    line-height: 16px;
+    height: 16px;
+}
+
+#userbox-logged > .remaining-ratings {
+    top: 58px;
+}
+
+#new-content-selector {
+    position: absolute;
+    right: 13px;
+    top: 12px;
+    width: 120px;
+    border: 1px solid;
+    z-index: 30;
+}
+
+#new-content-selector a {
+    text-decoration: none;
+}
+
+#new-content-selector .close {
+    float: right;
+    margin: 2px;
+}
+
+#new-content-selector ul {
+    text-align: left;
+    margin: 0;
+    padding: 0;
+}
+
+#new-content-selector li {
+    list-style: none;
+}
+
+#new-content-selector li a {
+    line-height: 18px;
+    padding-left: 3px;
+    padding-right: 3px;
+    display: block;
+    width: 100%;
+}
+
+#new-content-selector .title {
+    text-transform: uppercase;
+    margin-bottom: 3px;
+    margin-top: 3px;
+}
+
+#new-content-selector li {
+    line-height: 20px;
+}
+
+.left-ratings {
+    width: 12px;
+    height: 13px;
+    z-index: 10;
+    position: absolute;
+    margin-left: -14px;
+}
+
+.remaining-ratings {
+    position: absolute;
+    top: 62px;
+    right: 90px;
+    z-index: 20;
+    line-height: 13px;
+    height: 13px;
+}

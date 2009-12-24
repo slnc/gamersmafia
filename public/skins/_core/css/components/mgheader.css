@@ -1,0 +1,10 @@
+#mgheader {
+    position: absolute;
+    top: 0;
+    margin-left: -10px;
+    padding-left: 0;
+    height: 67px;
+    margin-bottom: 0;
+    border-bottom: 1px solid;
+    width: 1000px;
+}

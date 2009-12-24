@@ -6,19 +6,15 @@
 
 <%content_main do %>
 <%mftext(@title) do %>
-<% 
-@question_pages = ActionController::Pagination::Paginator.new self, obj.count(:published, :content_type => 'Question', :conditions => 'answered_on is null'), 30, params['page']
-@question_pages.current_page = @question_pages.last if params['page'].nil?
-%>
-<%
-@questions = obj.find(:published, :content_type => 'Question', :conditions => 'answered_on is null', :order => 'COALESCE(ammount, 0) desc, created_on', :limit => @question_pages.current.to_sql[0], :offset => @question_pages.current.to_sql[1])
-@questions.each do |question| %>
+<% @questions = Question.in_portal(controller.portal).published.unanswered.paginate(:order => 'COALESCE(ammount, 0) desc, created_on', :page => params[:page], :per_page => 30) %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @questions, :pos => 'top'} %>
+<% @questions.each do |question| %>
     <div class="<%=oddclass%>">
 			<div><img class="avatar" style="float: left; margin-right: 10px;" src="/cache/thumbnails/f/38x38<%=question.user.show_avatar%>" /> <%=faction_favicon(question)%> <strong><%= link_to question.title, gmurl(question) %></strong></div>
 			<div class="infoinline"><% if question.prize > Question::MIN_AMMOUNT then %><strong><%=question.prize.to_i%></strong> <%=gmd11%> | <% end-%><%=draw_rating(question.rating[0])%> | <%=user_link(question.user)%></div>
     </div>
     <br />
 <% end %>
-<%= render :partial => 'shared/pager', :object => @question_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @questions, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>

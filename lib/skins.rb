@@ -12,7 +12,8 @@ module Skins
     attributes.each do |k,v|
       if options_f[k] && !options_f[k].kind_of?(v.class)
         options_f[k] = options_f[k].to_i if %w(Percent Hue).include?(ActiveSupport::Inflector::demodulize(v.class.name))
-        if v.class.name == 'RgbColor' && options_f[k] == ''
+        
+        if v.class.name == 'Skins::RgbColor' && options_f[k] == ''
           options_f[k] = 'transparent'
         else
           options_f[k] = v.class.new(options_f[k])
@@ -82,7 +83,7 @@ module Skins
     def to_s
       sum = 0
       @value.each { |v| sum += v }
-      sprintf("%02x", sum).rjust(6, '0')
+      sprintf("#%02x", sum).rjust(6, '0')
     end
   end
   
@@ -1039,9 +1040,34 @@ module Skins
     
     class Custom < AbstractGenerator
       DEF_OPTIONS  = {
-        :page_background_color => RgbColor.new('#ffffff'),
-        :page_background_image => "transparent",
+        :page_background_color => 'inherit',
+        :page_background_image => 'inherit',
+        :page_background_repeat => 'inherit',
+        :page_background_position => 'inherit',
+        
+        :cpageout_background_color => 'inherit',
+        :cpageout_background_image => 'inherit',
+        :cpageout_background_repeat => 'inherit',
+        :cpageout_background_position => 'inherit',
+
+        :mgheader_background_color => 'inherit',
+        :mgheader_background_image => 'inherit',
+        :mgheader_background_repeat => 'inherit',
+        :mgheader_background_position => 'inherit',
+        
+        :mgfooter_background_color => 'inherit',
+        :mgfooter_background_image => 'inherit',
+        :mgfooter_background_repeat => 'inherit',
+        :mgfooter_background_position => 'inherit',
+        :mgfooter_separator_color => 'inherit',
+        :mgfooter_link_color => 'inherit',
+        :mgfooter_link_hover_color => 'inherit',
+        :mgfooter_new_color => 'inherit',
+        :mgfooter_new_background_color => 'inherit',
+        
+        :page_background_repeat => 'inherit',
         :body_background_color => RgbColor.new('#ffffff'),
+        :body_background_image => RgbColor.new('#ffffff'),
         :body_color => RgbColor.new('#000000'),
         :cpagein_background_color => RgbColor.new('#ffffff'),
         :ccontent_module_content_background_color => RgbColor.new('#ffffff'),

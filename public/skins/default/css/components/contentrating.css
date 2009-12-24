@@ -1,0 +1,15 @@
+#content-stats {
+    color: #ccc;
+}
+
+.rating span {
+    background-image: url(../../images/s.png);
+}
+
+
+#ratebar {
+    background: url(../../images/s.png) 0 -274px no-repeat;
+}
+
+#ratebar-container { float: left; z-index: 1000; }
+#ratebar img {  height: 13px; margin: 0; }

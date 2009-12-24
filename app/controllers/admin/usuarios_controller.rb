@@ -17,15 +17,18 @@ class Admin::UsuariosController < ApplicationController
   end
   
   def index
+    order_by = 'id DESC'
+    conditions = ''
     if params[:s]
       params[:s].strip!
-      @user_pages, @users = paginate :user, :per_page => 20, :order_by =>'char_length(login) asc, lower(login) asc', 
-      :conditions => ['lower(login) like lower(?) or lower(email) like lower(?) or lower(firstname) like lower(?) or lower(lastname) like lower(?) or ipaddr LIKE ?', 
+      conditions = ['lower(login) like lower(?) or lower(email) like lower(?) or lower(firstname) like lower(?) or lower(lastname) like lower(?) or ipaddr LIKE ?', 
 				'%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
 				'%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
 				'%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
 				'%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
         '%' + params[:s].gsub(/[']/) { '\\'+$& } + '%']
+
+      order_by ='char_length(login) asc, lower(login) asc'
     elsif params[:sm]
       smc = {}
       smc[:confirmed] = "state <> #{User::ST_UNCONFIRMED}"
@@ -36,10 +39,10 @@ class Admin::UsuariosController < ApplicationController
       smc[:zombies] = "state = #{User::ST_ZOMBIE}"
       smc[:antiflood] = "state <> #{User::ST_UNCONFIRMED} and antiflood_level > -1"
       
-      @user_pages, @users = paginate :user, :conditions => smc.fetch(params[:sm].to_sym), :per_page => 20, :order_by =>'id desc'
-    else
-      @user_pages, @users = paginate :user, :per_page => 20, :order_by =>'id desc'
+      conditions = smc.fetch(params[:sm].to_sym)
     end
+    
+    @users = User.paginate(:page => params[:page], :per_page => 20, :conditions => conditions, :order => order_by)
   end
   
   def destroy

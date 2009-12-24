@@ -1,48 +1,14 @@
-/* clean */
-.centered-link {
-    padding: 15px 0;
-    text-align: center;
-}
-
-.centered {
-    text-align: center;
-}
-
-img.icon,
-a img.icon {
-    border: 0;
-}
-
-.show {
-    display: block;
-    visibility: visible;
-}
-
-/* .mcontent { overflow: hidden; } */
-/* .xmain { overflow: hidden; }
-.xdescription { overflow: hidden; } */
-
-
-.hidden {
-    display: none;
-    visibility: hidden;
-}
-
-/* not clean */
 .gmd10 {
-    background: url(../images/icons/gmd10.png);
     width: 7px;
     height: 7px;
 }
 
 .gmd11 {
-    background: url(../images/icons/gmd11.png);
     width: 9px;
     height: 8px;
 }
 
 .gmd12 {
-    background: url(../images/icons/gmd12.png);
     width: 9px;
     height: 9px;
 }
@@ -50,47 +16,70 @@ a img.icon {
 .comments-icon {
     width: 12px;
     height: 12px;
-    background: url(../images/icons/comments.gif) 0 0 no-repeat;
+    
 }
-
 
 img.pageviews-count {
     width: 16px;
     height: 16px;
-    background: url(../images/icons/pageviews.gif);
+    
 }
 
 img.comments-count {
     width: 16px;
     height: 16px;
-    background: url(../images/icons/comments_16x16.gif);
+    
 }
 
 img.downloads-count {
     width: 16px;
     height: 16px;
-    background: url(../images/icons/downloads_count.gif);
+    
 }
 
-
-table.form {
-	/* TODO */
+#notice, #error {
+    margin-bottom: 10px;
 }
 
-table.form td.field { /* TODO */ }
-table.form td.value { /* TODO */ }
+.adslot a img, #ccontent .adslot a img {
+    border: 1px solid #aaa;
+}
 
-/** TAGS **/
-#new-tag-input-text { width: 100px; margin-left: 3px; }
-.one-of-my-tags { }
-.one-of-my-tags-ops { position: absolute; margin-top: -15px; }
-#my-content-tags-title,
-#top-content-tags-title { position: absolute; margin-top: -15px; font-family: verdana; font-size: 10px; font-weight: bold; text-transform: uppercase; }
-#my-content-tags .tag,
-#top-content-tags .tag { float: left; margin-right: 10px; padding-top: 15px; font-family: verdana; font-size: 10px; color: #888; }
-#tag-this-content, #new-tag-input, #my-content-tags, #top-content-tags { float: left; }
-#tag-this-content, #new-tag-input { padding-top: 15px; }
-#tag-this-content, #new-tag-input { margin-right: 5px; }
-#top-content-tags { padding-left: 10px; }
-#content-tags { clear: left; }
-#tag-this-content { font-size: 11px; font-weight: bold; color: #0049A3; cursor: pointer; }
+#csupport .adslot {
+    margin: 0 0 10px 0;
+}
+
+.notification-header {
+    padding-left: 15px;
+    line-height: 33px;
+    font-weight: bold;
+    font-family: tahoma, arial;
+    font-size: 16px;
+}
+
+.editing-content {
+    margin-bottom: 30px;
+}
+
+#cmain .module .mtitle span {
+    display: block;
+    padding: 7px 5px;
+	padding-top: 0;
+}
+
+#csupport .module .mtitle span {
+	padding-left: 10px;
+}
+
+#tracker .mtitle, #lastcomments .mtitle {
+    display: none;
+    visibility: hidden;
+}
+
+.minicolumns {
+    padding: 3px;
+}
+
+.day-separator {
+    margin-bottom: 5px;
+}

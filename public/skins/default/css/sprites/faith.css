@@ -1,0 +1,27 @@
+.faith .points img {
+    background: url(../../images/s.png) -39px 0 no-repeat;
+}
+
+.faith .points img.level0 {
+    background-position: -193px -73px;
+}
+
+.faith .points img.level1 {
+    background-position: -201px -73px;
+}
+
+.faith .points img.level2 {
+    background-position: -209px -73px;
+}
+
+.faith .points img.level3 {
+    background-position: -217px -73px;
+}
+
+.faith .points img.level4 {
+    background-position: -225px -73px;
+}
+
+.faith .points img.level5 {
+    background-position: -233px -73px
+}

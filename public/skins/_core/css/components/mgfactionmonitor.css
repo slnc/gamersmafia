@@ -1,0 +1,13 @@
+#mgfaction-monitor .mtitle {
+    display: none;
+    visibility: hidden;
+}
+
+#mgfaction-monitor {
+    margin-bottom: 5px;
+    line-height: 14px;
+}
+
+#mgfaction-monitor .factionfavicon {
+    margin-right: 3px;
+}

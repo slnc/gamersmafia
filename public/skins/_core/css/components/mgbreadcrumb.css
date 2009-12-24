@@ -1,0 +1,32 @@
+#mgbreadcrumb {
+    line-height: 2em;
+    margin: 0 0 0 33px;
+}
+
+#mgbreadcrumb ul {
+    padding: 0 120px 0 0;
+    margin: 0 14px 0 132px;
+    list-style: none;
+    height: 25px;
+    line-height: 23px;
+}
+
+#mgbreadcrumb li {
+    display: inline;
+}
+
+#mgbreadcrumb li a {
+    display: block;
+    float: left;
+    height: 23px;
+    line-height: 23px;
+    padding: 0px 12px 0 3px;
+}
+
+#mgbreadcrumb li a, #mgbreadcrumb li span {
+    padding: 0px 12px 0pt 12px;
+}
+
+#mgbreadcrumb {
+    margin-left: 0;
+}

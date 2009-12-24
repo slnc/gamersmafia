@@ -9,37 +9,22 @@ body {
     margin-top: 67px;
 }
 
-
 #cpagein {
-    margin-left: auto;
-    margin-right: auto;
     text-align: left;
-}
-
-#cleft {
-    float: left;
-    width: 150px;
-}
-
-#cright {
-    float: right;
-    width: 150px;
+	width: 990px;
+	padding: 0;
+	margin: 0;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #ccontent {
-    padding: 10px;
-}
-
-body.lydefault #ccontent,
-body.lyarena #ccontent,
-body.lybazar #ccontent {
-    
-    margin-left: 180px;
-    padding-top: 8px;
-    margin-right: 10px;
     height: 1%;
-	min-height: auto;
-    padding-bottom: 20px;
+    min-height: auto;
+	line-height: 145%;
+    padding: 8px 10px 20px 8px;;
+	margin: 6px 0 80px 165px;
+	border: 0;
 }
 
 .module {
@@ -50,101 +35,30 @@ body.lybazar #ccontent {
     padding: 0.27em;
 }
 
+#cpageout .module .mtitle {
+	line-height: 30px;
+}
+
 #ccontent .module .mcontent {
     padding: 0.54em;
     overflow: hidden;
 }
 
-#cleft ul, #cright ul {
-    list-style: none;
-    margin: 0;
-    padding: 0 0.27em;
-    line-height: 1.82em;
-}
-/**
- *  Breadcrumb /* unclean *
- */
-#mgbreadcrumb {
-    border: 0;
-    line-height: 2em;
-    margin: 0 0 0 33px;
-}
-
-#mgbreadcrumb ul {
-    padding: 0 120px 0 0;
-    margin: 0 14px 0 132px;
-    list-style: none;
-    height: 23px;
-    line-height: 23px;
-}
-
-#mgbreadcrumb li {
-    display: inline;
-}
-
-#mgbreadcrumb li a {
-    display: block;
+.c3col {
+    width: 32%;
     float: left;
-    height: 23px;
-    line-height: 23px;
-    padding: 0px 12px 0 3px;
-}
-/* GMTV */ /* unclean */
-#mggmtv {
-    padding-right: 0;
-}
-/**
- * Misc /* unclean *
- */
-.w20 {
-    width: 20px;
+    padding-right: 10px;
 }
 
-.w25 {
-    width: 25px;
+.c3colx {
+    width: 39%;
+    float: left;
+    padding-right: 10px;
 }
 
-.w35 {
-    width: 35px;
-}
-
-
-.w50 {
-    width: 50px;
-}
-
-.w75 {
-    width: 75px;
-}
-
-.w100 {
-    width: 100px;
-}
-
-.w125 {
-    width: 125px;
-}
-
-.w150 {
-    width: 150px;
-}
-
-.w200 {
-    width: 200px;
-}
-
-.w100pc {
-    width: 100%;
-}
-
-#notice, #error {
-    margin-bottom: 10px;
-}
-
-#mggnav-member-totals {
-    position: absolute;
-    top: 3px;
-    right: 10px;
+.c3coly {
+    width: 19%;
+    float: left;
 }
 
 .adslot a img,

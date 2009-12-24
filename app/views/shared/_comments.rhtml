@@ -18,7 +18,8 @@ ckey = object.updated_on < 1.month.ago ? 'perm' : Time.now.to_i/(86400*7)
 questions_mode = (object.class.name == 'Question') ? true : false 
 cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{per_page}_#{params['page']}") do 
 
-@comments_pages, @comments = controller.paginate :comment, :conditions => ['deleted = \'f\' AND content_id = ?', object.unique_content.id], :order => 'comments.created_on asc', :per_page => per_page, :include => :user
+@comments = Comment.paginate(:page => params[:page], :per_page => per_page, :conditions => ['deleted = \'f\' AND content_id = ?', object.unique_content.id], :order => 'comments.created_on asc', :include => :user)
+# @comments_pages, @comments = controller.paginate :comment, :conditions => ['deleted = \'f\' AND content_id = ?', object.unique_content.id], :order => 'comments.created_on asc', :per_page => per_page, :include => :user
 %>
 <script type="text/javascript">var comments = new Array();</script> 
 <div class="comments-container"><a name="comments"></a>
@@ -27,7 +28,7 @@ cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{per_page}_#{params['page']}
 %>
   <div style="padding: 15px 5px;"><%=flash_obj(:url => "/flash/comments_count.swf?commentscount=#{Comment.count(:conditions => ['deleted = \'f\' AND content_id = ?', object.unique_content.id])}&pcent=#{(udata[1]*100).to_i}&dir=#{udata[0].direction}", :width => '74px', :height => '34px')%></div>
   <div class="comments-area">
-<%= render :partial => 'shared/pager', :object => @comments_pages, :locals => {:pos => 'top'} %>
+<%= render :partial => 'shared/pager2', :locals => { :collection => @comments, :pos => 'top' } %>
 <%
 if params[:page] then
   i = (params[:page].to_i - 1) * per_page + 1
@@ -75,7 +76,7 @@ end %><%# each -%>
       <%=print_tstamp comment.created_on%> <span class="commentlink"><a title="Enlace a este comentario" href="#comment<%=comment.id%>"><img src="/images/blank.gif" class="icon16" /></a></span>
     </div>
 
-    <div class="comment-number">#<span><%=i-1%></span></div>
+    <div class="comment-number f_number">#<span><%=i-1%></span></div>
     <div class="author" style="padding-left: 15px;"><a class="nav" href="<%=gmurl(comment.user)%>"><%=comment.user.login%></a> <%=faction_favicon(comment.user)%></div>
   </div>
   <% crating = comment.get_rating
@@ -138,7 +139,7 @@ end %><%# each -%>
 </div>
 <div style="clear: left; margin-bottom: 35px;"> </div>
 <% end -%>
-<%= render :partial => 'shared/pager', :object => @comments_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :object => @comments_pages, :locals => { :collection => @comments, :pos => 'bottom' } %>
 
 <% 
 end %><%# cache %>

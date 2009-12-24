@@ -1,0 +1,36 @@
+#footer-spirit {
+    width: 47px;
+    height: 67px;
+    margin-top: -56px;
+    margin-right: 20px;
+    float: right;
+    background: url(../../images/footer_spirit.png);
+    z-index: 5;
+    position: absolute;
+    right: 10px;
+    margin-top: -56px;
+}
+
+
+#gmversion {
+    width: 100px;
+    height: 24px;
+    position: absolute;
+    float: right;
+    z-index: 5;
+    right: 4px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: #aaa;
+	text-align: center;
+}
+
+#gmversion div {
+	margin-left: auto;
+	margin-right: auto;
+	width: 47px;
+}
+
+#gmversion .new {
+    background: #002e64;
+}

@@ -1,6 +1,6 @@
 <h1>Competiciones</h1>
 
-<%= render :partial => 'shared/pager', :object => @competition_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @competitions, :pos => 'top'} %>
 
 <table>
   <tr>
@@ -30,4 +30,4 @@
 <% end %>
 </table>
 
-<%= render :partial => 'shared/pager', :object => @competition_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @competitions, :pos => 'bottom'} %>

@@ -1,7 +1,7 @@
 class Admin::JuegosController < AdministrationController
   
   def index
-    @game_pages, @games = paginate :game, :order => 'lower(name) asc', :per_page => 50
+    @games = Game.paginate(:order => 'lower(name) asc', :per_page => 50, :page => params[:page])
   end
   
   def new

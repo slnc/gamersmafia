@@ -1,8 +1,6 @@
 require 'test_helper'
 
 class MiembrosControllerTest < ActionController::TestCase
-
-  
   basic_test :index
   
   test "should_raise_404_if_user_not_found" do

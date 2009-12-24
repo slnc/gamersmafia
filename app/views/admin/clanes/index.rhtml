@@ -1,6 +1,6 @@
 <% content_main do %>
+<%= render :partial => 'shared/pager2', :locals => { :collection => @clans, :pos => 'top' } %>
 <%mftext('Clanes') do %>
-
 <table>
   <tr>
     <th>Nombre</th>
@@ -10,7 +10,7 @@
     <th style="text-align: right;">Creado</th>
   </tr>
   
-<% for clan in @clans %>
+<% @clans.each do |clan| %>
   <tr class="<%=oddclass%>">
     <td><a href="/admin/clanes/edit/<%=clan.id%>"><%=clan.name.to_s == '' ? "\##{clan.id}" : clan.name%></a></td>
     <td class="w50"><%=notags(clan.tag)%></td>
@@ -22,8 +22,7 @@
 <% end %>
 </table>
 
-<%= render :partial => 'shared/pager', :object => @clan_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => { :collection => @clans, :pos => 'bottom' } %>
 
-<%= link_to 'New clan', :action => 'new' %>
 <% end -%>
 <% end -%>

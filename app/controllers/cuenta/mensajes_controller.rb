@@ -13,7 +13,7 @@ class Cuenta::MensajesController < ApplicationController
   def mensajes
     # TODO debe tener su propio controller
     @navpath = [['Preferencias', '/cuenta'], ['Mensajes', '/cuenta/mensajes']]
-    @message_pages, @messages = paginate :message, :conditions => "user_id_to = #{@user.id} and receiver_deleted is false", :order => 'messages.created_on DESC', :include => [:sender], :per_page => 30
+    @messages = Message.paginate(:conditions => "user_id_to = #{@user.id} and receiver_deleted is false", :order => 'messages.created_on DESC', :include => [:sender], :page => params[:page], :per_page => 30)
     @title = 'Mensajes recibidos'
     @highlighted_user = :sender
     @message = Message.new
@@ -25,7 +25,7 @@ class Cuenta::MensajesController < ApplicationController
     @title = 'Mensajes enviados'
     @message = Message.new
     @highlighted_user = :recipient
-    @message_pages, @messages = paginate :message, :conditions => "user_id_from = #{@user.id} and sender_deleted is false", :order => 'created_on DESC', :per_page => 30
+    @messages = Message.paginate(:conditions => "user_id_from = #{@user.id} and sender_deleted is false", :order => 'created_on DESC', :page => params[:page], :per_page => 30)
     render :action => 'mensajes'
   end
   
@@ -38,7 +38,7 @@ class Cuenta::MensajesController < ApplicationController
   def create_message
     @title = 'Mensajes'
     @message = Message.new
-    @message_pages, @messages = paginate :message, :conditions => "user_id_to = #{@user.id}", :order => 'created_on DESC', :per_page => 30
+    @messages = Message.paginate(:conditions => "user_id_to = #{@user.id} and receiver_deleted is false", :order => 'messages.created_on DESC', :include => [:sender], :page => params[:page], :per_page => 30)
     recipient = User.find_by_login(params[:message][:recipient])
     
     if params[:redirto].to_s == '' then

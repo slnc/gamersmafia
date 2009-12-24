@@ -5,7 +5,7 @@
 
 <% content_main do %>
 <%mftext('Entradas en el FAQ') do %>
-<%= render :partial => 'shared/pager', :object => @faq_entry_pages, :locals => {:pos => 'top'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @faq_entries, :pos => 'top'} %>
 <table>
   <tr>
     <th>Pregunta</th>
@@ -36,6 +36,6 @@ min_pos = User.db_query("SELECT COALESCE(min(position),0) as min FROM faq_entrie
 j += 1
 end %>
 </table>
-<%= render :partial => 'shared/pager', :object => @faq_entry_pages, :locals => {:pos => 'top'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @faq_entries, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>

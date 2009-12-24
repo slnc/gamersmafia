@@ -13,35 +13,35 @@
   <table>
     <tr class="<%=oddclass%>">
       <th>Totales</th>
-      <td class="number"><%=total%></td>
+      <td class="number f_number"><%=total%></td>
     </tr>
     <tr class="<%=oddclass%>">
       <th>Confirmados</th>
-      <td class="number"><a href="?sm=confirmed"><%=confirmed%></a></td>
+      <td class="number f_number"><a href="?sm=confirmed"><%=confirmed%></a></td>
     </tr>
     <tr class="<%=oddclass%>">
       <th>Confirmación pendiente</th>
-      <td class="number"><a href="?sm=unconfirmed"><%=unconfirmed%></a></td>
+      <td class="number f_number"><a href="?sm=unconfirmed"><%=unconfirmed%></a></td>
     </tr>
     <tr class="<%=oddclass%>">
       <th>Activos</th>
-      <td class="number"><a href="?sm=active"><%=active%></a></td>
+      <td class="number f_number"><a href="?sm=active"><%=active%></a></td>
     </tr>
     <tr class="<%=oddclass%>">
       <th>Zombies</th>
-      <td class="number"><a href="?sm=zombies"><%=zombies%></a></td>
+      <td class="number f_number"><a href="?sm=zombies"><%=zombies%></a></td>
     </tr>
     <tr class="<%=oddclass%>">
       <th>Baneados</th>
-      <td class="number"><a href="?sm=banned"><%=banned%></a></td>
+      <td class="number f_number"><a href="?sm=banned"><%=banned%></a></td>
     </tr>
     <tr class="<%=oddclass%>">
       <th>Deshabilitados</th>
-      <td class="number"><a href="?sm=disabled"><%=disabled%></a></td>
+      <td class="number f_number"><a href="?sm=disabled"><%=disabled%></a></td>
     </tr>
     <tr class="<%=oddclass%>">
       <th>Antiflood</th>
-      <td class="number"><a href="?sm=antiflood"><%=antiflood%></a></td>
+      <td class="number f_number"><a href="?sm=antiflood"><%=antiflood%></a></td>
     </tr>
   </table>
 
@@ -93,9 +93,7 @@
 %>
 <br />
 <br />
-
-<%= render :partial => 'shared/pager', :object => @user_pages, :locals => {:pos => 'top'} %>
-
+<%= render :partial => 'shared/pager2', :locals => {:collection => @users, :pos => 'top'} %>
 <table>
   <tr>
 		<th>Login</th>
@@ -105,5 +103,5 @@
 <%= render :partial => "user", :collection => @users %>
 </table>
 
-<%= render :partial => 'shared/pager', :object => @user_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @users, :pos => 'bottom'} %>
 <% end -%>

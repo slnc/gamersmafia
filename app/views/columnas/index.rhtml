@@ -2,7 +2,7 @@
 <% mftext('Mejor valoradas') do %>
 <ul class="sidelist">
 <% cache("/#{controller.portal_code}/columnas/index/best_rated#{Time.now.strftime('%Y%m%d')}") do %>
-<% controller.portal.column.most_rated_items(:content_type => 'Column', :limit => 3).each do |c| %>
+<% Column.in_portal(controller.portal).most_rated.find(:all, :limit => 3).each do |c| %>
   <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
   <% end -%>
 <% end -%>
@@ -12,7 +12,7 @@
 <% mftext('Más populares') do %>
 <ul class="sidelist">
 <% cache ("/#{controller.portal.code}/columnas/index/most_popular_#{Time.now.to_i/(86400)}") do %>
-<% controller.portal.column.most_popular_items(:content_type => 'Column').each do |c| %>
+<% Column.in_portal(controller.portal).most_popular.find(:all, :limit => 3).each do |c| %>
   <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
   <% end -%>
 <% end -%>
@@ -32,13 +32,10 @@
 
 <% content_main do %>
     <% mftext('Columnas') do %>
-<% 
-@column_pages = ActionController::Pagination::Paginator.new self, controller.portal.column.count(:published), controller.class::COLUMNS_PER_PAGE, params['page']
-@column_pages.current_page = @column_pages.last if params['page'].nil?
-%>
-<%= render :partial => 'shared/pager', :object => @column_pages, :locals => {:pos => 'top'} %>
+<% @columns = Column.in_portal(controller.portal).published.paginate(:order => 'created_on', :page => params[:page], :per_page => controller.class::COLUMNS_PER_PAGE) %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @columns, :pos => 'top'} %>
 <% cache("/#{controller.portal.code}/columnas/index/page_#{params[:page]}") do
-@columns = controller.portal.column.find(:published, :content_type => 'Column', :order => 'created_on asc', :limit => @column_pages.current.to_sql[0], :offset => @column_pages.current.to_sql[1])
+
 @columns.reverse.each do |column| %>
     <div class="<%=oddclass%>">
             <h2><%= link_to column.title, gmurl(column) %></h2>
@@ -50,6 +47,6 @@
     <% end %>
 <% end %>
 
-    <%= render :partial => 'shared/pager', :object => @column_pages, :locals => {:pos => 'bottom'} %>
+	<%= render :partial => 'shared/pager2', :locals => {:collection => @columns, :pos => 'bottom'} %>
 	<% end -%>
 <% end -%>

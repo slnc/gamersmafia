@@ -1,8 +1,8 @@
 <%mftext('Movimientos') do %>
 
-<% @cash_movement_pages, @cash_movements = controller.paginate :cash_movement, :conditions => "(object_id_to = #{entity.id} and object_id_to_class = \'#{entity.class.name}\') or (object_id_from = #{entity.id} and object_id_from_class = \'#{entity.class.name}\')", :order => 'created_on DESC', :per_page => 30 %>
+<% @cash_movements = CashMovement.paginate(:conditions => "(object_id_to = #{entity.id} and object_id_to_class = \'#{entity.class.name}\') or (object_id_from = #{entity.id} and object_id_from_class = \'#{entity.class.name}\')", :order => 'created_on DESC', :page => params[:page], :per_page => 30) %>
 
-<%= render :partial => 'shared/pager', :object => @cash_movement_pages, :locals => {:pos => 'top'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @cash_movements, :pos => 'top'} %>
 
 <table class="cash_movements">
 <tr>
@@ -48,6 +48,6 @@ for cash_movement in @cash_movements
 </tr>
 <% end %>
 </table>
-<%= render :partial => 'shared/pager', :object => @cash_movement_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @cash_movements, :pos => 'bottom'} %>
 
 <% end %>

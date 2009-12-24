@@ -1,0 +1,165 @@
+
+#userbox {
+    color: #717378;
+}
+
+#userbox .avatar {
+    border-color: #000000;
+}
+
+#userbox .nick {
+    color: #000;
+}
+
+#messages-indicator .messages a {
+    background: url(../../images/s.png) -153px -72px no-repeat;
+    line-height: 12px;
+    height: 12px;
+}
+
+#messages-indicator .messages > a {
+    background: url(../../images/s.png) -153px -72px no-repeat;
+}
+
+#messages-indicator .messages.has-unread a {
+    background: url(../../images/s.png) -153px -137px no-repeat;
+}
+
+#messages-indicator .messages.has-unread > a {
+    background: url(../../images/s.png) -153px -136px no-repeat;
+}
+
+.moderation-queue a {
+    display: block;
+    float: right;
+    padding-left: 18px;
+    margin-bottom: 3px;
+}
+
+.moderation-queue a {
+    background: url(../../images/s.png) -153px -103px no-repeat;
+    line-height: 16px;
+    height: 16px;
+}
+
+.moderation-queue > a {
+    background: url(../../images/s.png) -153px -103px no-repeat;
+}
+
+.moderation-queue.has-pending a {
+    background: url(../../images/s.png) -153px -167px no-repeat;
+}
+
+#userbox2 .competition {
+    background: url(../../images/s.png) -153px -85px no-repeat;
+}
+
+#userbox2 .competition.activated {
+    background: url(../../images/s.png) -153px -149px no-repeat;
+}
+
+#userbox2 .slog a img {
+    background: url(../../images/s.png) -153px -197px no-repeat;
+}
+
+#userbox2 .slog.activated2 a img {
+    background: url(../../images/s.png) -153px -214px no-repeat;
+}
+
+#userbox .left-ratings, #userbox2 .left-ratings {
+    background: url(../../images/s.png) -63px -17px no-repeat;
+}
+
+#userbox ul.anonymous li.alta {
+    background: url(../../images/icons/login_other.gif) right top no-repeat;
+}
+
+#userbox ul.anonymous li.olvide-clave {
+    background: url(../../images/icons/login_other.gif) right -17px no-repeat;
+}
+
+#loginbutton input {
+    background: url(../../images/icons/login.gif) center top no-repeat;
+}
+
+#loginbutton input.mouseover {
+    background: url(../../images/icons/login.gif) center -41px no-repeat
+}
+
+#sendbutton input {
+    background: url(../../images/s.png) -78px -24px no-repeat;
+}
+
+#sendbutton {
+    background: #F2F2F2;
+}
+
+#sendbutton input.sendbutton-mouseover {
+    background-position: -78px 0;
+}
+
+#userbox-bars {
+    background: #F2F2F2;
+}
+
+#userbox-gmf-and-ratings {
+    background: #F2F2F2;
+}
+
+#userbox-indicators {
+    background: #F2F2F2;
+}
+
+#userbox-action-links {
+    background: #F2F2F2;
+}
+
+#new-content-selector {
+    border-color: #A7A2A2;
+    background: #FaFaFa;
+}
+
+#new-content-selector .drafts {
+    color: #000;
+}
+
+#new-content-selector .title {
+    color: #a7a2a2;
+}
+
+#new-content-selector ul {
+    background: #fff;
+}
+
+
+#userbox-action-link-competition.activated a.buttonic {
+    background: #FFA500;
+    color: black;
+}
+
+#userbox input.text {
+    border-color: #A7A2A2;
+}
+
+#userbox .unread a {
+    font-weight: bold;
+}
+
+#new-content-selector .close {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+#new-content-selector .title {
+    font-size: 11px;
+    font-weight: bold;
+}
+
+#new-content-selector li a {
+    font-weight: bold;
+    font-family: arial;
+}
+
+#new-content-selector li {
+    font-size: 11px;
+}

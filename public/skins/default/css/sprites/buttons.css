@@ -1,0 +1,29 @@
+.btn-comentar {
+    width: 122px;
+    height: 28px;
+    background: url(../../images/btn_comentar.png);
+}
+
+.btn-responder {
+    width: 122px;
+    height: 28px;
+    background: url(../../images/btn_responder.png);
+}
+
+.btn-nuevo-topic {
+    width: 122px;
+    height: 28px;
+    background: url(../../images/btn_nuevo_topic.png);
+}
+
+.btn-nueva-pregunta {
+    width: 122px;
+    height: 28px;
+    background: url(../../images/btn_nueva_pregunta.png);
+}
+
+.btn-crear {
+    width: 122px;
+    height: 28px;
+    background: url(../../images/btn_crear.png);
+}

@@ -7,7 +7,7 @@
 <% content_main do %>
   <% mftext('Links') do %>
 
-<%= render :partial => 'shared/pager', :object => @link_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @factions_links, :pos => 'top'} %>
 
 <table>
   <tr>
@@ -25,6 +25,6 @@
 <% end %>
 </table>
 
-<%= render :partial => 'shared/pager', :object => @link_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @factions_links, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>

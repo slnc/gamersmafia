@@ -1,21 +1,5 @@
 .faction-role {
     width: 16px;
     height: 16px;
-    background: url(../../images/icons/faction_roles.gif) 0 0;
 }
 
-.faction-role.boss {
-    background-position: 0 0;
-}
-
-.faction-role.underboss {
-    background-position: -16px 0;
-}
-
-.faction-role.editor {
-    background-position: -32px 0;
-}
-
-.faction-role.moderator {
-    background-position: -48px 0;
-}

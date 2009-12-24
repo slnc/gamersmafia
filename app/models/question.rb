@@ -23,6 +23,9 @@ class Question < ActiveRecord::Base
   
   belongs_to :answer_selected_by_user, :foreign_key => :answer_selected_by_user_id, :class_name => 'User'
   
+  named_scope :unanswered, :conditions => 'answered_on IS NULL'
+  named_scope :answered, :conditions => 'answered_on IS NOT NULL'
+  
   # attr_protected :ammount
   
   def user_can_set_no_question?(user)

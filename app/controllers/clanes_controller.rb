@@ -35,11 +35,11 @@ class ClanesController < ComunidadController
       redirect_to '/clanes'
     else
       @title = 'Resultados de la búsqueda'
-      @clan_pages, @clans = paginate :clan, :per_page => 50, 
+      @clans = Clan.paginate(:page => params[:page], :per_page => 50, 
       :conditions => ['deleted = \'f\' AND (lower(name) like lower(?) or lower(tag) like lower(?))', 
         '%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
         '%' + params[:s].gsub(/[']/) { '\\'+$& } + '%'],
-      :order => 'lower(name) ASC'
+      :order => 'lower(name) ASC')
     end
   end
   

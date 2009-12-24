@@ -1,5 +1,6 @@
-<% @ban_requests_pages, @ban_requests = controller.paginate :ban_request, :conditions => 'confirming_user_id is not null or unban_confirming_user_id is not null', :order => 'coalesce(ban_requests.unban_confirmed_on, ban_requests.confirmed_on) desc', :include => :banned_user, :per_page => 300 %>
-<%= render :partial => 'shared/pager', :object => @ban_requests_pages, :locals => {'pos' => 'top'} %>
+<%content_main do %>
+<% @ban_requests = BanRequest.paginate(:conditions => 'confirming_user_id is not null or unban_confirming_user_id is not null', :order => 'coalesce(ban_requests.unban_confirmed_on, ban_requests.confirmed_on) desc', :include => :banned_user, :page => params[:page], :per_page => 300) %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @ban_requests, 'pos' => 'top'} %>
 <table>
 	<tr>
 		<th class="w20">Id</th>
@@ -14,4 +15,5 @@
 	</tr>
 	<% end%>
 </table>
-<%= render :partial => 'shared/pager', :object => @ban_requests_pages, :locals => {'pos' => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @ban_requests, 'pos' => 'bottom'} %>
+<% end -%>

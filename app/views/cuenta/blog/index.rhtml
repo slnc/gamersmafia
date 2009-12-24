@@ -6,9 +6,9 @@
 
 <% content_main do %>
 <% mftext('Entradas de blog') do %>
-<%  blogentries_pages, blogentries = controller.paginate :blogentries, :conditions => ['user_id = ? and state = ?', @user.id, Cms::PUBLISHED], :order => 'created_on DESC', :per_page => 20 %>
+<% @blogentries = Blogentry.paginate(:conditions => ['user_id = ? and state = ?', @user.id, Cms::PUBLISHED], :order => 'created_on DESC', :page => params[:page], :per_page => 20) %>
 
-  <%= render :partial => 'shared/pager', :object => blogentries_pages, :locals => {:pos => 'top'} %>
+  <%= render :partial => 'shared/pager2', :locals => {:collection => @blogentries, :pos => 'top'} %>
   <table>
     <tr>
       <th>Título</th>
@@ -17,7 +17,7 @@
       <th>Visitas</th>
     </tr>
 
-    <% for be in blogentries %>
+    <% for be in @blogentries %>
     <tr class="<%=oddclass%>">
       <td><a href="/cuenta/blog/edit/<%=be.id%>"><%=be.title%></a></td>
       <td class="infoinline timestamp"><%=print_tstamp(be.created_on)%></td>
@@ -28,6 +28,6 @@
     <% end -%>
   </table>
 
-  <%= render :partial => 'shared/pager', :object => blogentries_pages, :locals => {:pos => 'bottom'} %>
+  <%= render :partial => 'shared/pager2', :locals => {:collection => @blogentries, :pos => 'bottom'} %>
   <% end -%>
 <% end -%>

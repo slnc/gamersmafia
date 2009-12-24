@@ -1,0 +1,109 @@
+#mgbreadcrumb li.home a {
+    background: url(../../images/s.png) 0px -418px no-repeat;
+    width: 67px;
+    padding: 0;
+    margin-right: 5px;
+}
+
+#mgbreadcrumb li a {
+    background: url(../../images/s.png) -65px -48px no-repeat;
+}
+
+#mgbreadcrumb li.current {
+    background: url(../../images/s.png) -65px -53px no-repeat;
+    color: #666;
+}
+
+#mgbreadcrumb .mcontent {
+    background: none;
+}
+
+#mgbreadcrumb li {
+    line-height: 23px;
+}
+
+#mgbreadcrumb a {
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+#mgbreadcrumb a {
+    text-decoration: underline;
+}
+
+#mgbreadcrumb a:hover {
+    text-decoration: underline;
+}
+
+#mgbreadcrumb li.current {
+    font-family: verdana;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+#mgbreadcrumb a {
+    text-decoration: none;
+}
+
+#mgbreadcrumb a:hover {
+    text-decoration: underline;
+}
+
+#mgbreadcrumb {
+    margin-top: 5px;
+}
+
+#mgbreadcrumb ul {
+    padding: 0 120px 0 0;
+    margin: 0 14px 0 182px;
+    list-style: none;
+    height: 23px;
+    line-height: 23px;
+}
+
+#mgbreadcrumb ul {
+    height: 22px;
+    line-height: 16px;
+	padding-left: 2px;
+}
+
+#mgbreadcrumb li a, #mgsubmenu li a, #mgsubmenu li span {
+    display: block;
+    float: left;
+    height: 23px;
+    line-height: 23px;
+}
+
+#mgbreadcrumb {
+	margin-top: 0;
+}
+#mgbreadcrumb li {
+    display: inline;
+}
+
+#mgbreadcrumb li a, #mgsubmenu li a, #mgsubmenu li span {
+    padding: 0px 12px 0 3px;
+}
+
+#mgbreadcrumb li.home a {
+    padding-right: 0;
+}
+
+#mgbreadcrumb .home a {
+    width: 20px;
+    padding-right: 0;
+}
+
+#mgbreadcrumb .home > a {
+    width: 9px;
+}
+
+#mgbreadcrumb .home span {
+    margin-left: 6px;
+}
+
+#mgbreadcrumb li.home a { width: auto; }
+
+#mgbreadcrumb { z-index: 2; margin-left: 8px;}
+#mgbreadcrumb ul { margin-left: 157px; }

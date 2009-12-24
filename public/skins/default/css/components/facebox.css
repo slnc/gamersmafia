@@ -1,0 +1,48 @@
+#facebox .b {
+    background: url(../../images/facebox/b.png);
+}
+
+#facebox .tl {
+    background: url(../../images/facebox/tl.png);
+}
+
+#facebox .tr {
+    background: url(../../images/facebox/tr.png);
+}
+
+#facebox .bl {
+    background: url(../../images/facebox/bl.png);
+}
+
+#facebox .br {
+    background: url(../../images/facebox/br.png);
+}
+
+#facebox .facebox-title {
+    background: #A31C00;
+    color: #fff;
+}
+
+#facebox input.text, #facebox textarea {
+    border-color: #ccc;
+}
+
+#facebox input.virgin {
+    color: #aaa;
+}
+
+#facebox .body {
+    background: #efefef;
+}
+
+#facebox input.text {
+    background: #fff;
+}
+
+#facebox .footer {
+    border-top-color: 1px solid #DDDDDD;
+}
+
+.facebox_overlayBG {
+    background-color: #000;
+}

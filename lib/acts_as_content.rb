@@ -21,6 +21,21 @@ module ActsAsContent
       named_scope :deleted, :conditions => "state = #{Cms::DELETED}"
       named_scope :onhold, :conditions => "state = #{Cms::ONHOLD}"
       
+      named_scope :in_term # , lambda { |term| { :conditions => "unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (#{games.collect { |g| g.id } }))" }}
+      named_scope :in_term_tree
+      named_scope :in_portal, lambda { |portal|
+        if portal.id == -1
+          {}
+        else
+          taxonomy = "#{self.name}Taxonomy"
+          { :conditions => "unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (#{portal.terms_ids(taxonomy).join(',')}))" }
+        end
+      }
+      
+      named_scope :most_rated, :conditions => 'cache_rated_times > 1', :order => 'coalesce(cache_weighted_rank, 0) DESC'
+      named_scope :most_popular, :conditions => "cache_rated_times > 1", 
+        :order => '(coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0)) DESC'
+      
       validates_presence_of :user
       before_create { |m| m.log = nil; m.log_action('creado', m.user.login) }
       before_save :do_before_save
@@ -479,7 +494,7 @@ module ActsAsContent
                   :name => self.resolve_hid, 
                   :updated_on => self.created_on, 
                   :state => self.state
-                  }
+      }
       base_opts.merge!({:clan_id => self.clan_id}) if self.respond_to? :clan_id
       base_opts.merge!({:source => self.source}) if self.respond_to? :source
       c = Content.create(base_opts)

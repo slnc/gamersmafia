@@ -31,12 +31,9 @@
 <% content_main do %>
 <% mftext('Eventos') do %>
 
-<%# TODO cachear %>
-<% @events_pages = ActionController::Pagination::Paginator.new self, controller.portal.event.count(:published, :content_type => 'Event', :conditions => "events.parent_id is null"), controller.class::PER_PAGE, params['page']
-@events_pages.current_page = @events_pages.last if params[:page].nil? 
-%>
+<% @events = Event.in_portal(controller.portal).published.top_level.paginate(:order => 'starts_on', :page => params[:page], :per_page => 20) %>
 
-<%= render :partial => 'shared/pager', :object => @events_pages, :locals => {:pos => 'top'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @events, :pos => 'top'} %>
 
 <table>
 <tr>
@@ -49,7 +46,7 @@
 </tr>
 
 <% cache("/#{controller.portal.code}/eventos/index/page_#{params['page']}") do %>
-	<% controller.portal.event.find(:published, :content_type => 'Event', :conditions => "events.parent_id is null", :order => 'starts_on ASC', :limit => @events_pages.current.to_sql[0], :offset => @events_pages.current.to_sql[1]).reverse.each do |event| 
+<% @events.each do |event| 
 event.description = (event.description.to_s == '') ? '&nbsp;' : event.description
 %>
 <tr class="<%=oddclass%>">
@@ -64,6 +61,6 @@ event.description = (event.description.to_s == '') ? '&nbsp;' : event.descriptio
 <% end %>
 </table>
 
-<%= render :partial => 'shared/pager', :object => @events_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => @events, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>

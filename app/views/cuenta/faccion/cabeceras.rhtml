@@ -7,7 +7,7 @@
 <% content_main do %>
   <% mftext('Cabeceras') do %>
 
-<%= render :partial => 'shared/pager', :object => @header_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => { :collection => @factions_headers, :pos => 'top'} %>
 
 <table>
   <tr>
@@ -25,6 +25,6 @@
 <% end %>
 </table>
 
-<%= render :partial => 'shared/pager', :object => @header_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => { :collection => @factions_headers, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>
