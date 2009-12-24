@@ -38,6 +38,7 @@
 	width: 200px;
 }
 
+
 #homecontents .homebox .subheader {
     background: #2E228B url(../../images/layout/cabeceras_portada.png) left 0 repeat-x;
 }
@@ -48,11 +49,11 @@
 
 #homegamer .homebox .subheader {
     background: url(../../images/layout/cabeceras_portada.png) left -52px repeat-x;
-}
+} 
 
 #homebazar .homebox .subheader {
     background: url(../../images/layout/cabeceras_portada.png) left -78px repeat-x;
-}
+} 
 
 #home-news div {
     background: url(../../images/layout/cabeceras_portada.png) left -104px no-repeat;

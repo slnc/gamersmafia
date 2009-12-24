@@ -23,6 +23,14 @@
 		<td><%=color_selector("skin[css_properties][page_color]", @skin.config[:css_properties][:page_color])%></td>
 	</tr>
 	<tr class="<%=oddclass%>">
+		<th>page_link_color</th>
+		<td><%=color_selector("skin[css_properties][page_link_color]", @skin.config[:css_properties][:page_link_color])%></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<th>page_link_hover_color</th>
+		<td><%=color_selector("skin[css_properties][page_link_hover_color]", @skin.config[:css_properties][:page_link_hover_color])%></td>
+	</tr>
+	<tr class="<%=oddclass%>">
 		<th>page_small_info_color</th>
 		<td><%=color_selector("skin[css_properties][page_small_info_color]", @skin.config[:css_properties][:page_small_info_color])%></td>
 	</tr>
@@ -94,6 +102,11 @@
 		<th>ccontent_header_color</th>
 		<td><%=color_selector("skin[css_properties][ccontent_header_color]", @skin.config[:css_properties][:ccontent_header_color])%></td>
 	</tr>
+	<tr class="<%=oddclass%>">
+		<th>ccontent_header_titles_sprite</th>
+		<td><%=css_image_selector("skin[css_properties][ccontent_header_titles_sprite]", @skin.config[:css_properties][:ccontent_header_titles_sprite], @skin) %><br />
+		<div class="infoinline f_sm">usar <a target="_blank" href="/skins/default/images/layout/cabeceras_portada.png">plantilla</a></div></td>
+	</tr>
 	<%=css_background_edit('ccontent_header')%>
 	<tr class="<%=oddclass%>">
 		<th>mgfooter_separator_color</th>
@@ -119,7 +132,6 @@
 		<th>mgfooter_new_version_background_color</th>
 		<td><%=color_selector("skin[css_properties][mgfooter_new_background_color]", @skin.config[:css_properties][:mgfooter_new_background_color])%></td>
 	</tr>
-	
 	<%=css_editor_separator%>
 	<tr class="<%=oddclass%>">
 		<th>cleft_lineseparator_color</th>
@@ -152,7 +164,7 @@
 	<tr class="<%=oddclass%>">
 		<th>mgfooter_spirit_image</th>
 		<td><%=css_image_selector("skin[css_properties][mgfooter_spirit_image]", @skin.config[:css_properties][:mgfooter_spirit_image], @skin) %><br />
-		<div class="infoinline f_sm">67x47</div></td>
+		<div class="infoinline f_sm">100x64</div></td>
 	</tr>
 	<%=css_background_edit('mgfooter')%>
 	

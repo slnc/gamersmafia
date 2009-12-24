@@ -207,7 +207,7 @@ end
       controller.portal.bet.find(:published, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC').each do |o| 
 shown_bets<< o.unique_content.id %>
         <tr class="<%=oddclass%> new" id="content<%=o.unique_content.id%>">
-<td class="<%=oddclass%>"><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
+<td><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline" style="float: left;"><%=format_interval(o.closes_on.to_i - Time.now.to_i, 'horas', true)%></div>
 <div class="infoinline" style="float: right;"><%=o.total_ammount.to_i%> <%=gmd11%></div>
 </td>

@@ -1,11 +1,4 @@
 #mgads-bottom {
-	margin: 20px 0 -20px 25px;
-    width: 500px;
-    padding-top: 8px;
-}
+margin-bottom: 80px;
 
-#mgads-bottom .mgads-bottom1 {
-    border-left: 1px solid;
-    border-right: 1px solid;
-    padding: 8px 8px 8px 8px;
 }

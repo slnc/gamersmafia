@@ -6,6 +6,9 @@ body {
 	color: ${page_color};
 }
 
+a, a:visited { color: ${page_link_color}; }
+a:hover { color: ${page_link_hover_color}; }
+
 .infoinline, .infoinline a, .infoinline a:visited {
     color: ${page_small_info_color};
 }
@@ -30,7 +33,7 @@ body {
 
 #ccontent .module .mtitle {
 	background-color: ${ccontent_header_background_color};
-	background-image: ${ccontent_header_background_image};
+	background-image: ${ccontent_header_titles_sprite};
 	background-repeat: ${ccontent_header_background_repeat};
 	background-position: ${ccontent_header_background_position};
 	color: ${ccontent_header_color};	
@@ -149,3 +152,188 @@ body {
 
 /* other sprites */
 .btn { background-image: ${bbeditor_sprites}; }
+
+
+#homecontents .homebox .subheader { background-image: ${ccontent_header_titles_sprite}; }
+#homecommunity .homebox .subheader { background-image: ${ccontent_header_titles_sprite}; }
+
+#homegamer .homebox .subheader {
+    background-image: ${ccontent_header_titles_sprite};
+} 
+
+#homebazar .homebox .subheader {
+    background-image: ${ccontent_header_titles_sprite};
+} 
+
+#home-news div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-articles div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-downloads div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-topics div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-polls div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-topfactions div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-factions div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-thefaction div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-blogs div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-outstanding div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-events div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-competitions div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-bets div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-demos div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-offtopics div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-sex div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-funthings div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-images div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-we-need {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-xd div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-wallpapers div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-anime div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-diseno div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-cine div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-hardware div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-musica div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-estudiante div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-questions div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+
+#home-seriestv div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-informatica div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-hw div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-deportes div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-desarrollo div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-newsgamer div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-results div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-inscribete div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-forosgamer div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-ladders div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-gamesplayednow div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-nextgames div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-outstanding-clan div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-esenciales div {
+    background-image: ${ccontent_header_titles_sprite};
+}
+
+#home-coverages div {
+    background-image: ${ccontent_header_titles_sprite};
+}

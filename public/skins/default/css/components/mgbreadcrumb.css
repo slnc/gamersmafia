@@ -83,7 +83,7 @@
 }
 
 #mgbreadcrumb li a, #mgsubmenu li a, #mgsubmenu li span {
-    padding: 0px 12px 0 3px;
+    padding: 0px 12px 0 12px;
 }
 
 #mgbreadcrumb li.home a {
