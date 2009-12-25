@@ -1,7 +1,3 @@
-#tracker li {
-    padding: 0;
-    margin-bottom: 1px;
-}
 
 #tracker .panel-title {
     display: none;
@@ -12,17 +8,5 @@
     padding-bottom: 3px;
 }
 
-#tracker li {
-    margin-bottom: 2px;
-}
-
-#tracker li a, #lastcomments li a {
-    display: block;
-    width: 100%;
-    padding: 0px 2px;
-}
 
 #tracker { margin-bottom: 20px; }
-
-#tracker li { margin-bottom: 1px; }
-#tracker li a { line-height: 16px; }

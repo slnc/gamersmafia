@@ -4,7 +4,7 @@
 <% mflist('Tracker',
 		   TrackerItem.updated_for_user(@user, true, 25).collect {|c| Content.new(c).real_content},
 		   :id => 'tracker',
-		   :container_class => 'mfcontents-ul',
+		   :class_container => 'mfcontents-ul',
 	       :class => 'new',
 		   :bottom => '<div style="text-align: right"><a class="nav" title="Ver todos los elementos de mi tracker" href="/cuenta/cuenta/tracker?_xs=trkbx">ver tracker</a></div>',
 		   :show_even_if_empty => true) do |o| %>

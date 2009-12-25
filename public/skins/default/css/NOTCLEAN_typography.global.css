@@ -156,22 +156,6 @@ body.lypopup h1 {
     line-height: 18px;
 }
 
-#tracker li {
-    font-size: 10px;
-    font-family: arial;
-}
-
-
-#online td, #online {
-    font-size: 10px;
-}
-
-#online td.userscount {
-    text-align: right;
-}
-
-
-
 /* downloads  */
 tr.downloads-folder td.first {
     font-size: 11px;
