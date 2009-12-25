@@ -416,7 +416,7 @@ if crecs.size > 0 then %>
 <%=render :partial => '/layouts/footer' %>
 </div>
 
-<script type="text/javascript">cfgPage(<%=user_is_authed%>, contents, '<%=controller.controller_name%>', '<%=controller.action_name%>', '<%=params[:id]%>'<%= params['_xnvi'] ? ", '#{params['_xnvi']}'" : ', undefined'%><%= params['_xab'].size > 0 ? ", '#{CGI::escape(params['_xab'].to_json)}'" : ', undefined'%><%= params['_xad'].size > 0 ? ", '#{CGI::escape(params['_xad'].to_json)}'" : ', undefined'%>);</script>
+<script type="text/javascript">cfgPage(<%=user_is_authed%>, contents, '<%=controller.controller_name%>', '<%=controller.action_name%>', '<%=params[:id]%>'<%= params['_xnvi'] ? ", '#{params['_xnvi']}'" : ', undefined'%><%= params['_xab'].size > 0 ? ", '#{CGI::escape(params['_xab'].to_json)}'" : ', undefined'%><%= controller._xad.size > 0 ? ", '#{CGI::escape(controller._xad.to_json)}'" : ', undefined'%>);</script>
 <% if App.enable_google_analytics? then %>
   <script type="text/javascript">
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

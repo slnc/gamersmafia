@@ -488,7 +488,7 @@ group by date_trunc('day', created_on) order by s asc
     dbs = ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.get_stats
     db_queries = dbs[:queries]
     db_rows = dbs[:rows]
-    response_status = response.headers['Status'] ? response.headers['Status'].split(' ')[0]: '500'
+    response_status = response.headers['status'] ? response.headers['Status'].split(' ')[0]: '500'
     User.db_query("INSERT INTO stats.pageloadtime(http_status, 
                                                   controller, 
                                                   action, 

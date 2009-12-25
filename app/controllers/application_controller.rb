@@ -458,7 +458,7 @@ Request information:
     response.headers['X-SessionId'] = request.session_options ? request.session_options[:id] : '-'
     response.headers['X-VisitorId'] = params['_xnvi'] ? params['_xnvi'].to_s : '-'
     response.headers['X-AbTreatment'] = params['_xab'] ? params['_xab'].to_json : '-'
-    response.headers['X-AdsShown'] = params['_xad'] ? params['_xad'].join(',') : '-'
+    response.headers['X-AdsShown'] = self._xad ? self._xad.join(',') : '-'
 
     begin
       Stats.pageloadtime(self, seconds, response, controller_name, action_name, portal)
@@ -662,6 +662,7 @@ Request information:
     cka = cookies['__stma']
     
     return if @_track_done # no entiendo por qué está pasando pero se llama dos veces desde redirect_to
+      
     return if !cka && opts[:cookiereq] # no trackeamos lo que no podemos cookear
     
     if opts[:redirecting]
@@ -783,7 +784,7 @@ Request information:
                                             #{User.connection.quote(campaign)},
                                             '',
                                             #{User.connection.quote(params['_xab'])},
-                                            #{User.connection.quote(params['_xad'])},
+                                            #{User.connection.quote(self._xad)},
                                             #{User.connection.quote(params['_xs'])},
                                             #{User.connection.quote(medium)},
                                             #{User.connection.quote(user_agent)},
@@ -793,7 +794,7 @@ Request information:
                                             #{User.connection.quote(params['_xmi'])},
                                             #{User.connection.quote(params['_xc'])},
                                             #{User.connection.quote(params['_xa'])}
-                  )") if nil
+                  )")
   end
   
   def redirect_to(*args)

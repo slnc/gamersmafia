@@ -2,6 +2,15 @@ require 'test_helper'
 
 class SiteControllerTest < ActionController::TestCase  
   basic_test :carcel, :smileys, :rss, :contactar, :privacidad, :album, :fusiones, :webs_de_clanes, :logo, :responsabilidades, :portales, :novedades
+
+  test "should_create_pageview" do
+    dbr = User.db_query("SELECT count(*) FROM stats.pageviews")
+    @request.cookies['__stma'] = 'aas'
+    get :x
+    assert_response :success
+    dbr1 = User.db_query("SELECT count(*) FROM stats.pageviews")
+    assert_equal dbr[0]['count'].to_i + 1, dbr1[0]['count'].to_i 
+  end
   
   test "maintain_lock" do
     l = ContentsLock.create({:content_id => 1, :user_id => 1})

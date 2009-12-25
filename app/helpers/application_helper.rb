@@ -1252,7 +1252,7 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
     @@_cache_ads_slots[cache_key].each do |asl|
       asi = asl.get_ad(game_id)
       if asi
-        params['_xad'] << asi.id.to_s
+        controller._xad << asi.id.to_s
         out << "<div class=\"adslot\">#{asi.ad.ad_html(asi.id, asl.image_dimensions)}</div>"
       end
     end
