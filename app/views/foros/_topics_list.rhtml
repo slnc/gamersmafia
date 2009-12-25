@@ -26,7 +26,7 @@ for topic in topics.reverse
 %>
   <tr class="<%=oddclass%>">
     <td class="topic-indicators"><%=draw_topic_indicators(topic)%></td>
-    <td class="content-hid"><%=link_to topic.title, {:action => 'topic', :class => "content#{topic.unique_content_id}"}, {:class => 'content'} %><br />
+    <td class="content-hid"><%=link_to topic.title, gmurl(topic), {:class => "content#{topic.unique_content_id}"} %><br />
       <div class="infoinline">por <%=link_to author.login, :controller => 'miembros', :action => author.login%></div></td>
     <% if defined?(show_forum_name) %>
       <td class="infoinline"><%=print_forum_path(topic.main_category)%></td>
