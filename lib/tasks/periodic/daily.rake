@@ -3,7 +3,11 @@ namespace :gm do
   task :daily => :environment do
     require 'app/controllers/application_controller'
     
-    Rake::Task['log:clear'].invoke
+    begin
+      Rake::Task['log:clear'].invoke
+    rescue
+  end
+  
     Rake::Task['gm:alariko'].invoke
     clear_anonymous_users
     clear_faith_points_of_referers_and_resurrectors
@@ -33,7 +37,7 @@ namespace :gm do
   def forget_old_pageviews
     User.db_query("delete from stats.pageviews where created_on <= now() - '3 months'::interval")
   end
-
+  
   def kill_zombified_staff
     # bigbosses, editors, moderators and sicarios
     limit = 3.months.ago
@@ -133,7 +137,7 @@ namespace :gm do
                  group by portal_id").each do |dbr|
       portal = Portal.find_by_id(dbr['portal_id'])
       if portal.nil?
-	      puts "daily.update_portals_hits_stats(). Warning, portal id #{dbr['portal_id']} (#{dbr['count']} pageviews) not found"
+        puts "daily.update_portals_hits_stats(). Warning, portal id #{dbr['portal_id']} (#{dbr['count']} pageviews) not found"
       else
         portal.cache_recent_hits_count = dbr['count'].to_i
         portal.save
@@ -152,7 +156,7 @@ namespace :gm do
     else
       days = 6
     end
-
+    
     Faction.find(:all, :conditions => "code IN (
 select (select code from portals where id = stats.portals.portal_id)
   from stats.portals
