@@ -384,3 +384,5 @@ tr.forum-category td {
 #ccontent .account-balance {
     font-size: 18px;
 }
+
+.pagination .current { font-weight: bold; padding: 0 1px; }
