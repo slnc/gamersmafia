@@ -6,5 +6,5 @@ class News < ActiveRecord::Base
 
   belongs_to :content, :foreign_key => 'external_id'
   
-  validates_format_of :source, :with => Cms::URL_REGEXP_FULL, :if => Proc.new { |c| c.source.to_s != '' }
+  validates_format_of :source, :with => Cms::URL_REGEXP_FULL, :if => Proc.new { |c| c.source.to_s != '' }, :message => 'no es válida. La fuente de la noticia debe ser una url.'
 end
