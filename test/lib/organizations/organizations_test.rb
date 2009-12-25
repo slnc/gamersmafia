@@ -49,7 +49,7 @@ class OrganizationsTest < ActiveSupport::TestCase
     assert bdp
     assert_equal 1, bd.don.id
     assert_equal 2, bd.mano_derecha.id
-    assert_equal [3, 4], bd.sicarios.collect { |u| u.id }.sort
+    assert_equal [1, 3, 4], bd.sicarios.collect { |u| u.id }.sort
     
     # TODO categorías viejas de contenidos tienen que haber cambiado
     # TODO las urls de los contenidos correctas
