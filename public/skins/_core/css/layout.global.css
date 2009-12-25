@@ -40,7 +40,7 @@ body {
 }
 
 #ccontent .module .mcontent {
-    padding: 0.54em;
+	padding-top: 8px;
     overflow: hidden;
 }
 

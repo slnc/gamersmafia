@@ -73,10 +73,7 @@ ul.slog-entries-browser-filter { display:inline; margin: 0; padding: 0; font-fam
 ul.slog-entries-browser-filter li { list-style: none; float: left; margin-right: 15px; }
 
 
-#ccontent .mcontent {
-	padding-left: 0;
-	padding-right: 0;
-}
+
 
 #cmain .module .mtitle.mcontent-title {
 	margin-left: 0;
