@@ -45,7 +45,8 @@ class OrganizationsTest < ActiveSupport::TestCase
     bd = Organizations.change_organization_type(faction, BazarDistrict)
     assert_equal 'BazarDistrict', bd.class.name
     assert_nil Faction.find_by_code(bd.code)
-    assert BazarDistrictPortal.find_by_code(bd.code)
+    bdp  = BazarDistrictPortal.find_by_code(bd.code)
+    assert bdp
     assert_equal 1, bd.don.id
     assert_equal 2, bd.mano_derecha.id
     assert_equal [3, 4], bd.sicarios.collect { |u| u.id }.sort

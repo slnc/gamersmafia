@@ -455,7 +455,7 @@ Request information:
     response.headers['X-Action'] = action_name
     response.headers['X-ModelId'] = params[:id] ? "#{params[:id]}" : '-'
     response.headers['X-PortalId'] = portal ? portal.id.to_s : '-'
-    response.headers['X-SessionId'] = session ? session.session_id : '-'
+    response.headers['X-SessionId'] = session ? request.session_options[:id] : '-'
     response.headers['X-VisitorId'] = params['_xnvi'] ? params['_xnvi'].to_s : '-'
     response.headers['X-AbTreatment'] = params['_xab'] ? params['_xab'].to_json : '-'
     response.headers['X-AdsShown'] = params['_xad'] ? params['_xad'].join(',') : '-'

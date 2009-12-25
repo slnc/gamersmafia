@@ -583,7 +583,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     sym_login 1
     u = User.find(1)
     youtube_embed = '<object width="425" height="350"><param name="movie" value="http://www.youtube.com/v/2Iw1uEVaQpA"></param><param name="wmode" value="transparent"></param><embed src="http://www.youtube.com/v/2Iw1uEVaQpA" type="application/x-shockwave-flash" wmode="transparent" width="425" height="350"></embed></object>'
-    youtube_expec = '<object height="350" width="425"><param name="movie" value="http://www.youtube.com/v/2Iw1uEVaQpA"></param><param name="wmode" value="transparent"></param><embed type="application/x-shockwave-flash" src="http://www.youtube.com/v/2Iw1uEVaQpA" height="350" wmode="transparent" width="425"></embed></object>'
+    youtube_expec = '<object height="350" width="425"><param name="movie" value="http://www.youtube.com/v/2Iw1uEVaQpA"></param><param name="wmode" value="transparent"></param><embed src="http://www.youtube.com/v/2Iw1uEVaQpA" type="application/x-shockwave-flash" wmode="transparent" width="425" height="350"></embed></object>'
     h = HashWithIndifferentAccess.new(u.attributes.merge({:description => youtube_embed}))
     last = u.profile_last_updated_on
     assert_nil last
