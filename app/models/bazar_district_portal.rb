@@ -16,6 +16,15 @@ class BazarDistrictPortal < Portal
     Term.toplevel(:slug => self.code)
   end
   
+  def terms_ids(taxonomy=nil)
+    terms = Term.top_level.find(:all, :conditions => ["slug = ?", self.code], :order => 'UPPER(name) ASC')
+    res = []
+    terms.each do |t|
+      res += t.all_children_ids(:taxonomy => taxonomy)
+    end
+    res
+  end
+  
   # devuelve array de ints con las ids de las categorías visibles del tipo dado
   def get_categories(cls)
     # buscamos los nombres de todas las categorías de los juegos que tenemos
