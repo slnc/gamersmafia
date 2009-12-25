@@ -1,23 +1,4 @@
 <% generic_support do %>
-	<%mftext('Información') do %>
-		<div class="sidething-spaced"><a href="http://gamersmafia.com/blogs/slnc/1733">Información sobre las skins de Gamersmafia</a></div>
-
-		<p>Todas las skins son "hijas" de <strong>Skin por defecto</strong> por lo que no tienes que volver a crear todos los estilos e imágenes que ya tiene dicha skin, solo tienes que poner los nuevos selectores (o redefinir los existentes si quieres cambiarlos).</p>
-
-		<p>Si quieres ver qué significa todo esto bájate alguna de las skins de mafiosos y mira los cambios que han hecho ellos.</p>
-        <% end -%>
-
-	<%mftext('Tutoriales de CSS') do %>
-	<ul>
-		<li><a href="http://www.webestilo.com/css/">Webestilo</a></li>
-		<li><a href="http://www.cristalab.com/tutoriales/tutorial-basico-de-css-c94l/">Cristalab</a></li>
-	</ul>
-<% end -%>
-<%mftext('Herramientas') do %>
-	<ul>
-		<li><a href="http://getfirebug.com/">Firebug</a></li>
-	</ul>
-<% end -%>
 
 <% end -%>
 
@@ -46,7 +27,8 @@ Tipo: <select name="skin[type]">
 <%@user.skins.each do |skin| %>
 <tr class="<%=oddclass%>">
     <td><a href="/cuenta/skins/edit/<%=skin.id%>"><%=skin.name%></a></td>
-    <td><%=skin.is_public?%></td>
+    <td><% if skin.is_public? then %><strong>Pública</strong> (<a href="/cuenta/skins/make_private?id=<%=skin.id%>">Hacer privada</a>) 
+	<% else %><strong>Privada</strong> (<a href="/cuenta/skins/make_public?id=<%=skin.id%>">Hacer pública</a>)<% end -%></td>
     <td><a href="/cuenta/skins/activate?skin=<%=skin.id%>">Activar</a></td>
     <td><a href="/<%=skin.file%>">Descargar</a></td>
     <td><a href="/cuenta/skins/destroy/<%=skin.id%>" onclick="return confirm('¿Estás seguro?');">Borrar</a></td>

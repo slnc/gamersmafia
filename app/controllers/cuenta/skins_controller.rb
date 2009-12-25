@@ -19,8 +19,28 @@ class Cuenta::SkinsController < ApplicationController
     @title = "Mis skins"
   end
   
+  def make_private
+    @skin = @user.skins.find(params[:id])
+    if @skin.update_attributes(:is_public => false)
+      flash[:notice] = "Skin <strong>#{@skin.name}</strong> guardada correctamente"
+    else
+      flash[:error] = "Error al guardar skin: #{@skin.errors.full_messages_html}"
+    end
+    redirect_to "/cuenta/skins"
+  end
+  
+  def make_public
+    @skin = @user.skins.find(params[:id])
+    if @skin.update_attributes(:is_public => true)
+      flash[:notice] = "Skin <strong>#{@skin.name}</strong> guardada correctamente"
+    else
+      flash[:error] = "Error al guardar skin: #{@skin.errors.full_messages_html}"
+    end
+    redirect_to "/cuenta/skins"
+  end
+  
   def edit
-    @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
+    @skin = @user.skins.find(params[:id])
     @title = "Editar skin #{@skin.name}"
     if @skin.config[:general][:intelliskin] then
       render :action => 'otras_opciones'

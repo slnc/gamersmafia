@@ -22,6 +22,25 @@ class Cuenta::SkinsControllerTest < ActionController::TestCase
       assert @response.body.index("storage/skins/#{@skin.hid}/")
   end
   
+  test "make_public_should_make_skin_public" do
+    test_should_create_factions_skin_if_everything_ok
+    assert !@skin.is_public?
+    post :make_public, :id => @skin.id
+    assert_redirected_to "/cuenta/skins"
+    @skin.reload
+    assert @skin.is_public?
+  end
+  
+  test "make_private_should_make_skin_private" do
+    test_should_create_factions_skin_if_everything_ok
+    assert @skin.update_attributes(:is_public => true)
+    assert @skin.is_public?
+    post :make_private, :id => @skin.id
+    assert_redirected_to "/cuenta/skins"
+    @skin.reload
+    assert !@skin.is_public?
+  end
+  
   test "activate private skin from other shouldn't work" do
       test_should_create_factions_skin_if_everything_ok
       sym_login 2
