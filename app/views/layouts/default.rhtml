@@ -320,7 +320,7 @@ if u_clans.size == 0 then %>
 	<% if controller.submenu && !controller.rescuiing then %>
 	<div id="mgsubmenu" class="module"><div clas="mcontent">
 	<ul>
-    <li><span><%=submenu_name%></span></li>
+    <li class="first"><span><%=submenu_name%></span></li>
     <% for item in (controller.submenu_items || [])
     htmlclass= (item[1].gsub("/", "") == controller.controller_name.gsub("/", "")) ? ' class="current"' : ''
     %>
