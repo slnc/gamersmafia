@@ -44,6 +44,16 @@ a:hover { color: ${page_link_hover_color}; }
 	color: ${ccontent_header_color};	
 }
 
+#ccontent blockquote {
+    border-color: ${ccontent_blockquote_border_color};
+    background: ${ccontent_blockquote_background_color};
+}
+
+#ccontent code {
+    border-color: ${ccontent_code_border_color};
+    background: ${ccontent_code_background_color};
+}
+
 #mgheader {
 	background-color: ${mgheader_background_color};
 	background-image: ${mgheader_background_image};
@@ -282,7 +292,6 @@ a:hover { color: ${page_link_hover_color}; }
     background-image: ${ccontent_header_titles_sprite};
 }
 
-
 #home-seriestv div {
     background-image: ${ccontent_header_titles_sprite};
 }
@@ -342,3 +351,4 @@ a:hover { color: ${page_link_hover_color}; }
 #home-coverages div {
     background-image: ${ccontent_header_titles_sprite};
 }
+

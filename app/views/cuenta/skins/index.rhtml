@@ -22,7 +22,7 @@ Tipo: <select name="skin[type]">
 
 <%mftext('Mis skins') do %>
 <table>
-<%@user.skins.each do |skin| %>
+<%@user.skins.find(:all, :order => 'lower(name)').each do |skin| %>
 <tr class="<%=oddclass%>">
     <td><a href="/cuenta/skins/edit/<%=skin.id%>"><%=skin.name%></a></td>
     <td><% if skin.is_public? then %><strong>Pública</strong> (<a href="/cuenta/skins/make_private?id=<%=skin.id%>">Hacer privada</a>) 
