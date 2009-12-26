@@ -41,9 +41,9 @@ class Cuenta::MensajesController < ApplicationController
     @messages = Message.paginate(:conditions => "user_id_to = #{@user.id} and receiver_deleted is false", :order => 'messages.created_on DESC', :include => [:sender], :page => params[:page], :per_page => 30)
     recipient = User.find_by_login(params[:message][:recipient])
     
-    if params[:redirto].to_s == '' then
-      params[:redirto] = '/cuenta/mensajes'
-    end
+     
+    params[:redirto] = '/cuenta/mensajes' if params[:redirto].to_s == ''
+    
     
     # Check recipient
     case params[:message][:message_type].to_i
