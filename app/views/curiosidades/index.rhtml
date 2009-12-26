@@ -6,7 +6,7 @@
 <% content_main do %>
 <% mftext('Curiosidades') do %>
 <%
-@funthings = Funthing.published.paginate(:page => params[:page], :per_page => 20, :order => 'created_on')
+@funthings = Funthing.published.paginate_in_reverse(:page => params[:page], :per_page => 20, :order => 'created_on')
 %>
 <%= render :partial => 'shared/pager2', :locals => {:collection => @funthings, :pos => 'top'} %>
 <table>
