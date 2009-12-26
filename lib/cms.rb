@@ -274,6 +274,7 @@ module Cms
   # Devuelve la ruta guardada o nil si no la ha podido guardar
   def self.copy_image_to_dir(imgurl, relative_savedir)
     if /http:\/\// =~ imgurl # download it first
+      
       FileUtils.rm_rf("/tmp/gm_tmp_files/")
       tmpfile = "/tmp/gm_tmp_files/#{File.basename(imgurl).bare}"
       FileUtils.mkdir_p(File.dirname(tmpfile)) if not File.directory?(File.dirname(tmpfile)) # TODO clean this dir
@@ -286,9 +287,11 @@ module Cms
            status = Timeout::timeout(5) {
               open(imgurl) { |str| f.write(str.read) }
            }
-            rescue Exception => errdesc
+         rescue Exception => errdesc
+              puts errdesc if RAILS_ENV == 'test'
               return nil
-           rescue
+           rescue Exception => errdesc
+             puts errdesc if RAILS_ENV == 'test'
              return nil
            end
         end
@@ -300,7 +303,8 @@ module Cms
         begin
           img = Cms::read_image(tmpfile)
           raise Exception unless img
-        rescue Exception
+        rescue Exception => errdesc
+          puts "no es una imagen valida tronc... #{errdesc}"
           imgurl = nil
         else
           imgurl = tmpfile
