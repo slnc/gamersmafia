@@ -1,6 +1,12 @@
 <% generic_support do %>
-<%mftext('Leyenda') %>
-<div class="sidelink-centered"><a href="/images/leyenda_intelliskin.png">Ver leyenda</a></div>
+<%mftext('Estado de la skin') do %>
+	<div class="centered-link">
+		<% if @skin.is_public? then %><strong>Pública</strong> <br /><span class="f_sm"><a href="/cuenta/skins/make_private?id=<%=@skin.id%>&redirto=/cuenta/skins/edit/<%=@skin.id%>">Hacer privada</a></span> 
+		<% else %><strong>Privada</strong><br /><span class="f_sm"><a href="/cuenta/skins/make_public?id=<%=@skin.id%>&redirto=/cuenta/skins/edit/<%=@skin.id%>">Hacer pública</a></span><% end -%>
+	</div>
+<% end -%>
+<%mftext('Leyenda') do %>
+<div class="centered-link"><a href="/images/leyenda_intelliskin.png">Ver leyenda</a></div>
 <% end -%>
 
 <%mftable('Archivos relacionados', @skin.skins_files) do |sfn| %>

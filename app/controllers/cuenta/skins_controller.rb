@@ -26,7 +26,7 @@ class Cuenta::SkinsController < ApplicationController
     else
       flash[:error] = "Error al guardar skin: #{@skin.errors.full_messages_html}"
     end
-    redirect_to "/cuenta/skins"
+    redirect_to params[:redirto] ? params[:redirto] : "/cuenta/skins"
   end
   
   def make_public
@@ -36,7 +36,7 @@ class Cuenta::SkinsController < ApplicationController
     else
       flash[:error] = "Error al guardar skin: #{@skin.errors.full_messages_html}"
     end
-    redirect_to "/cuenta/skins"
+    redirect_to params[:redirto] ? params[:redirto] : "/cuenta/skins"
   end
   
   def edit
@@ -241,7 +241,7 @@ class Cuenta::SkinsController < ApplicationController
     else
       flash[:notice] = "Archivo creado correctamente"
     end
-    redirect_to "/cuenta/skins/edit/#{skin.id}"
+    redirect_to "/cuenta/skins/edit/#{@skin.id}"
   end
   
   def delete_skins_file
@@ -253,7 +253,7 @@ class Cuenta::SkinsController < ApplicationController
       sfn.destroy
       flash[:notice] = "Archivo eliminado correctamente"
     end
-    redirect_to "/cuenta/skins/edit/#{skin.id}"
+    redirect_to "/cuenta/skins/edit/#{@skin.id}"
   end
   
   def borrar_skin_textura
