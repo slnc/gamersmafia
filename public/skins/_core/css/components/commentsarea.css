@@ -12,6 +12,9 @@
     padding: 0;
 }
 
+.comments-area .user-info-holder .avatar { margin-bottom: 2px; }
+
+.comments-area .user-info-bar { margin-left: 3px; height: 12px; width: 50px; }
 .comments-area .comment-header {
     border: 1px solid;
     height: 22px;

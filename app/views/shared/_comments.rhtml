@@ -10,10 +10,9 @@ params[:page] = Cms::page_to_show(@user, object, @object_lastseen_on) if user_is
 params[:page] = (params[:page].nil? or params[:page].to_i < 1) ? 1 : params[:page].to_i
 ckey = object.updated_on < 1.month.ago ? 'perm' : Time.now.to_i/(86400*7)
 questions_mode = (object.class.name == 'Question') ? true : false 
-cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{per_page}_#{params['page']}") do 
+cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{per_page}_#{params[:page]}") do 
 
 @comments = Comment.paginate(:page => params[:page], :per_page => per_page, :conditions => ['deleted = \'f\' AND content_id = ?', object.unique_content.id], :order => 'comments.created_on asc', :include => :user)
-# @comments_pages, @comments = controller.paginate :comment, :conditions => ['deleted = \'f\' AND content_id = ?', object.unique_content.id], :order => 'comments.created_on asc', :per_page => per_page, :include => :user
 %>
 <script type="text/javascript">var comments = new Array();</script> 
 <div class="comments-container"><a name="comments"></a>
@@ -22,7 +21,7 @@ cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{per_page}_#{params['page']}
 %>
   <div style="padding: 15px 5px;"><%=flash_obj(:url => "/flash/comments_count.swf?commentscount=#{Comment.count(:conditions => ['deleted = \'f\' AND content_id = ?', object.unique_content.id])}&pcent=#{(udata[1]*100).to_i}&dir=#{udata[0].direction}", :width => '74px', :height => '34px')%></div>
   <div class="comments-area">
-<%= render :partial => 'shared/pager2', :locals => { :collection => @comments, :pos => 'top' } %>
+<%= render :partial => 'shared/pager2', :locals => { :collection => @comments, :pos => 'top', :pager_params => { :anchor => 'comments' } } %>
 <%
 if params[:page] then
   i = (params[:page].to_i - 1) * per_page + 1
@@ -44,13 +43,12 @@ negative_valorations_types = CommentsValorationsType.find_negative
  
   <div class="user-info">
   	<div class="user-info-holder">
-     <div class="avatar" style="margin-bottom: 2px;"><img src="<%=ASSET_URL%><%=comment.user.show_avatar%>" /></div> 
-     <div style="margin-left: 3px; height: 12px; width: 50px;"><%=draw_karma_bar_sm(comment.user)%></div>
-     <div style="margin-left: 3px;  width: 50px;"><%=draw_faith_bar_sm(comment.user)%></div>
-     <div style="margin-left: 3px;  width: 50px;"><%=draw_comments_bar_sm(comment.user, comment)%></div>
+     <div class="avatar"><img src="<%=ASSET_URL%><%=comment.user.show_avatar%>" /></div> 
+     <div class="user-info-bar"><%=draw_karma_bar_sm(comment.user)%></div>
+     <div class="user-info-bar"><%=draw_faith_bar_sm(comment.user)%></div>
+     <div class="user-info-bar"><%=draw_comments_bar_sm(comment.user, comment)%></div>
 	 <div class="emblemas">
-	 	<%if ckey != 'perm' && comment.user.emblems_mask.to_s.index('1') then
-			
+	 <% if ckey != 'perm' && comment.user.emblems_mask.to_s.index('1') then
 		    emi = 0 
 			comment.user.emblems_mask.split('').each do |char|
 			  if char == '1' then

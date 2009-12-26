@@ -8,7 +8,7 @@
     border-color: #ddd;
 }
 
-.mpager a {
+.mpager a, .mpager .current {
     border-color: #ddd;
 }
 
