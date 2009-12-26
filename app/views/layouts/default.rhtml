@@ -368,17 +368,12 @@ if user_is_authed && @user.is_faction_leader? && @user.faction_id then %>
   cache("/site/_online_state/stats/friends2_#{@user.id}_#{Time.now.to_i/60}") do
   friends = @user.friends_online %>
   <div id="mgfriends-online"><a href="" onclick="return open_online_friends();"><strong><%=friends.size%></strong> amigos online</a></div>
- <div id="mgfriends-online-table" class="hidden">
-    <table>
-    <tr>
-      <td style=""></td>
-    </tr>
+ <div id="mgfriends-online-table" class="hidden mfcontents-ul">
+    <ul>
 <% for friend in friends %>
-      <tr class="<%=oddclass%>">
-        <td><%=link_to friend.login, gmurl(friend)%></td>
-      </tr>
+        <li><%=link_to friend.login, gmurl(friend)%></li>
     <% end -%>
-</table>
+</ul>
 </div>
 <br />
 <% end %><%# cache %>
