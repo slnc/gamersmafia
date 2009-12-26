@@ -377,7 +377,6 @@ Request information:
       items<< ['Notificaciones globales', '/admin/global_notifications']
       items<< ['Plataformas', '/admin/plataformas'] 
       items<< ['Portales', '/admin/portales']
-      items<< ['Scripts', '/admin/scripts']
       items<< ['Tags', '/admin/tags']
       items<< ['Tienda', '/admin/tienda']
     end

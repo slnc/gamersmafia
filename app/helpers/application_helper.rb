@@ -65,6 +65,7 @@ module ApplicationHelper
   <div id="#{div_sel_id}" style="width: 20px; height: 20px; float: left; border: 1px solid black; margin-right: 5px;"><div style="width: 100%; height: 100%;"></div></div> <input name="#{field_name}" id="#{field_id}" value="#{field_value}" /> 
 
 <script type="text/javascript">
+$j(document).ready(function () {
 $j('##{field_id}').ColorPicker({
   color: '#0000ff',
   onShow: function (colpkr) {
@@ -83,7 +84,7 @@ $j('##{field_id}').ColorPicker({
     $j('##{field_id}').val('#' + hex);
   }
 });
-$j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val());
+$j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
 </script>
     END
   end
