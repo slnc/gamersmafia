@@ -44,7 +44,6 @@ class Cuenta::MensajesController < ApplicationController
      
     params[:redirto] = '/cuenta/mensajes' if params[:redirto].to_s == ''
     
-    
     # Check recipient
     case params[:message][:message_type].to_i
       when Message::R_USER:

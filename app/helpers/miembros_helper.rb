@@ -1,14 +1,14 @@
 module MiembrosHelper
   def draw_user_info(user)
-    out = "
-        <div class=\"avatar\" style=\"float: left; margin-right: 3px;\"><img src=\"#{ASSET_URL}#{user.show_avatar}\" /></div>
-        <div style=\"font-size: 11px;\" class=\"userinfonick\">#{link_to user.login, :controller => '/miembros', :action => user.login} #{faction_favicon(user)}</div>
+    out = "<div class=\"members-user-info\">
+        <div class=\"avatar\"><img src=\"#{ASSET_URL}#{user.show_avatar}\" /></div>
+        <div class=\"userinfonick\">#{link_to user.login, :controller => '/miembros', :action => user.login} #{faction_favicon(user)}</div>
         
-        <ul style=\"margin: 5px 0 0 0; padding: 0; text-align: left; list-style: none;\" class=\"infoinline\">
-          <li style=\"width: 69px; line-height: 10px; margin-bottom: 2px;\">#{draw_karma_bar_sm(user)}</li>
-          <li style=\"width: 69px; line-height: 10px;\">#{draw_faith_bar_sm(user)}</li>
+        <ul class=\"infoinline\">
+          <li>#{draw_karma_bar_sm(user)}</li>
+          <li>#{draw_faith_bar_sm(user)}</li>
         </ul>
-        <div style=\"clear: left;\"></div>"
+        <div class=\"clearl\"></div></div>"
   end
 
   def draw_user_info2(user)

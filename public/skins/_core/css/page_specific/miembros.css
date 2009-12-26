@@ -7,3 +7,6 @@
     width: 16px;
     height: 16px;
 }
+
+/* TODO HACK */
+body.comiembros.vindex #ccontent td { padding-bottom: 4px; }
