@@ -1,4 +1,8 @@
 <% generic_support do %>
+<%mftext('Leyenda') %>
+<div class="sidelink-centered"><a href="/images/leyenda_intelliskin.png">Ver leyenda</a></div>
+<% end -%>
+
 <%mftable('Archivos relacionados', @skin.skins_files) do |sfn| %>
 <td><%=File.basename(sfn.file)%></td>
 <td><a href="/cuenta/skins/delete_skins_file?skin_id=<%=@skin.id%>&skins_file_id=<%=sfn.id%>">del</a></td>
