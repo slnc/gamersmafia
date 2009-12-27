@@ -21,8 +21,7 @@ default_environment['RAILS_ENV'] = 'production'
 SHARED_DIRS = [
 ['public/storage', 'system/storage'],
 ['public/cache', 'system/cache'],
-['tmp/fragment_cache', 'system/fragment_cache'],
-['tmp/sessions', 'sessions'],
+['tmp/fragment_cache', 'system/fragment_cache']
 ]
 
 namespace(:customs) do
