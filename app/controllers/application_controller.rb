@@ -606,8 +606,6 @@ Request information:
   
   
   def rescue_action_in_public(exception)
-    raise exception unless App.domain.include?('.dev')
-    
     @rescuiing = true
     case exception
       when ActiveRecord::RecordNotFound
