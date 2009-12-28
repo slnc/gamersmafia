@@ -333,7 +333,7 @@ if last_matches.size > 0 then
 	<%=render :partial => '/demos/listado_demos', :locals => { :demos => Demo.find_from_user(@curuser, :limit => 1), :more_link => '<div class="more"><a href="/demos">Ver más..</a></div>'} %>
 
 	<%
-	comps = Competition.find_related_with_user(@curuser.id, :conditions => "state = #{Competition::STARTED}")
+	comps = Competition.related_with_user(@curuser).active.find(:all, :conditions => "state = #{Competition::STARTED}", :order => 'lower(name)')
 	if comps	
 	mflist('Está participando en', comps) do |o|
 	    cpart = o.get_active_participant_for_user(@curuser)

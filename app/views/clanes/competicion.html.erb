@@ -1,4 +1,4 @@
-<% competitions = Competition.related_with_clan(@clan).find(:all) %>
+<% competitions = Competition.related_with_clan(@clan).find(:all, :order => 'lower(name)') %>
 <% generic_support do %>
   <% mftext('Trofeos') do %>
   <table>

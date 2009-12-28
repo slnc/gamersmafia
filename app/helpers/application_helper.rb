@@ -534,7 +534,7 @@ type: 'bhs'}))
   <option value=\"\"></option>
   <option value=\"new\" style=\"margin-bottom: 10px;\">Crear nueva competición</option>
   <optgroup label=\"Tus competitiones\">"
-    for competition in Competition.find_related_with_user(@user.id)
+    for competition in Competition.related_with_user(@user)
       out<< "<option #{(@competition and @competition.id == competition.id) ? 'selected=\"selected\"' : ''} value=\"#{competition.id}\">#{competition.name}</option>"
     end
     

@@ -34,7 +34,7 @@
 </tr>
 <tr class="<%=oddclass%>">
 	<td>Competiciones activas</td>
-	<td><ul class="skeletal"><%Competition.active.related_with_clan(@clan).each do |comp| %>
+	<td><ul class="skeletal"><%Competition.active.related_with_clan(@clan, :order => 'lower(name)').each do |comp| %>
 	<li><a href="/competiciones/show/<%=comp.id%>"><%=comp.name%></a></li>
 	<% end -%></ul></td>
 </tr>	

@@ -90,7 +90,7 @@ if last_matches.size > 0 then
 	<%=render :partial => '/demos/listado_demos', :locals => { :demos => Demo.of_clan(@clan).find(:published, :limit => 1), :more_link => '<div class="more"><a href="/demos">Ver más..</a></div>'} %>
 
 	<%
-	comps = Competition.related_with_clan(@clan).find(:all, :conditions => "state = #{Competition::STARTED}")
+	comps = Competition.related_with_clan(@clan).find(:all, :conditions => "state = #{Competition::STARTED}", :order => 'lower(name)')
 	if comps	
 	mflist('Está participando en', comps) do |o|
 	    cpart = o.get_active_participant_for_clan(@clan)

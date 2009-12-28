@@ -70,29 +70,7 @@ class Competition < ActiveRecord::Base
   
   observe_attr :state
   
-  # Busca competiciones relacionadas con el usuario, ya sean competiciones de
-  # usuarios o de clanes. Si el usuario es admin también devolverá la competición
-  # aunque no sea participante
-  def self.find_related_with_user(user_id, opts={})
-    opts = {:order => 'lower(name) ASC', :limit => :all}.merge(opts)
-    user_id = user_id.to_i
-    ids = [0]
-    Clan.related_with_user(user_id).each { |c| ids<< c.id }
-    conds = "id IN (SELECT role_data::int4 FROM users_roles WHERE user_id = #{user_id} AND role IN ('CompetitionAdmin', 'CompetitionSupervisor'))
-                                           or id IN (SELECT a.id 
-                                                       FROM competitions a 
-                                                       JOIN competitions_participants b on a.id = b.competition_id 
-                                                      WHERE a.competitions_participants_type_id = 1 
-                                                        AND b.participant_id = #{user_id})
-                                           or id IN (SELECT a.id 
-                                                       FROM competitions a 
-                                                       JOIN competitions_participants b on a.id = b.competition_id 
-                                                      WHERE a.competitions_participants_type_id = 2 
-                                                        AND b.participant_id IN (#{ids.join(',')}))"
-    opts[:conditions] = (opts[:conditions] ? "#{opts[:conditions]} AND #{conds}" : conds)                                                    
-    Competition.find(:all, opts)
-  end
-  
+    
   def can_recreate_matches?
     self.kind_of?(Tournament) && self.competitions_matches.count(:conditions => 'completed_on is NOT NULL') == 0
   end
@@ -101,6 +79,27 @@ class Competition < ActiveRecord::Base
     self.state < 3 || self.competitions_matches.count(:conditions => 'completed_on is NOT NULL') == 0
   end
   
+  # Busca competiciones relacionadas con el usuario, ya sean competiciones de
+  # usuarios o de clanes. Si el usuario es admin también devolverá la competición
+  # aunque no sea participante
+  named_scope :related_with_user, lambda { |user| 
+    ids = [0]
+    Clan.related_with_user(user.id).each { |c| ids<< c.id }
+    
+    { :conditions => "id IN (SELECT role_data::int4 FROM users_roles WHERE user_id = #{user.id} AND role IN ('CompetitionAdmin', 'CompetitionSupervisor'))
+                                           or id IN (SELECT a.id 
+                                                       FROM competitions a 
+                                                       JOIN competitions_participants b on a.id = b.competition_id 
+                                                      WHERE a.competitions_participants_type_id = 1 
+                                                        AND b.participant_id = #{user.id})
+                                           or id IN (SELECT a.id 
+                                                       FROM competitions a 
+                                                       JOIN competitions_participants b on a.id = b.competition_id 
+                                                      WHERE a.competitions_participants_type_id = 2 
+                                                        AND b.participant_id IN (#{ids.join(',')}))"}
+  }
+  
+  
   named_scope :related_with_clan, lambda { |clan| { :conditions => "id IN (SELECT competition_id 
                                                                              FROM competitions_participants 
                                                                             WHERE participant_id = #{clan.id} 
@@ -108,6 +107,7 @@ class Competition < ActiveRecord::Base
                                                                                                        FROM competitions 
                                                                                                       WHERE competitions_participants_type_id = #{Competition::CLANS}))"}}
   named_scope :active, :conditions => "state < #{CLOSED}"
+  named_scope :started, :conditions => "state = #{Competition::STARTED}"
   
   def self.update_user_indicator(user)
     # TODO copypasted de warning_list.rhtml
@@ -518,7 +518,7 @@ class Competition < ActiveRecord::Base
         setup_times_for_matches if self.timetable_for_matches
         setup_maps_for_matches if self.random_map_selection_mode
         
-      when 3:
+        when 3:
         raise Exception unless self.class.name == 'Ladder' || self.competitions_participants.count > 1
         if self.send_notifications?
           self.competitions_participants.each do |participant| 
