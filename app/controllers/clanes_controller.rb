@@ -1,6 +1,6 @@
 class ClanesController < ComunidadController
   allowed_portals [:gm, :faction]
-    
+  
   before_filter :except => [ :index, :buscar, :clan_selector_list ] do |c|
     c.curclan = Clan.find(:first, :conditions => ['id = ? and deleted is false', c.params[:id].to_i])
     raise ActiveRecord::RecordNotFound unless c.curclan
@@ -15,6 +15,7 @@ class ClanesController < ComunidadController
     
     if curclan then
       l<< ['General', "/clanes/clan/#{@clan.id}"]
+      l<< ['Competición', "/clanes/clan/#{@clan.id}/competicion"]
     end
     
     l
@@ -27,6 +28,10 @@ class ClanesController < ComunidadController
   
   def clan
     @title = curclan.name
+    @clan = curclan
+  end
+  
+  def competicion
     @clan = curclan
   end
   

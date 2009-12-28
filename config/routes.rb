@@ -142,11 +142,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect "miembros/:login/contenidos", :controller => 'miembros', :action => 'contenidos' , :login => LOGIN_REGEXP
   map.connect "miembros/:login/:action", :controller => 'miembros' , :login => LOGIN_REGEXP
 
-  map.connect 'clanes/clan/:id/miembros', :controller => 'clanes', :action => 'clan_miembros'
-  map.connect 'clanes/clan/:id/noticias', :controller => 'clanes', :action => 'clan_noticias'
-  map.connect 'clanes/clan/:id/eventos', :controller => 'clanes', :action => 'clan_eventos'
-  map.connect 'clanes/clan/:id/descargas', :controller => 'clanes', :action => 'clan_descargas'
-  map.connect 'clanes/clan/:id/imagenes', :controller => 'clanes', :action => 'clan_imagenes'
+  map.connect 'clanes/clan/:id/competicion', :controller => 'clanes', :action => 'competicion'
   map.connect 'clanes/:action', :controller => 'clanes'
 
   map.connect "imagenes/new", :controller => 'imagenes', :action => 'new'

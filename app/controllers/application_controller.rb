@@ -603,8 +603,11 @@ Request information:
   def rescuiing
     @rescuiing || false
   end
-
+  
+  
   def rescue_action_in_public(exception)
+    raise exception unless App.domain.include?('.dev')
+    
     @rescuiing = true
     case exception
       when ActiveRecord::RecordNotFound
@@ -652,6 +655,8 @@ Request information:
     end
     @rescuiing = false # para tests
   end
+
+
   
   public
   def track(opts={})

@@ -101,9 +101,13 @@ class Competition < ActiveRecord::Base
     self.state < 3 || self.competitions_matches.count(:conditions => 'completed_on is NOT NULL') == 0
   end
   
-  def self.find_active_and_related_with_clan(clan_id)
-    Competition.find(:all, :conditions => "id IN (SELECT competition_id FROM competitions_participants WHERE participant_id = #{clan_id} AND competition_id IN (SELECT id FROM competitions WHERE competitions_participants_type_id = #{Competition::CLANS}) AND state < 4)")
-  end
+  named_scope :related_with_clan, lambda { |clan| { :conditions => "id IN (SELECT competition_id 
+                                                                             FROM competitions_participants 
+                                                                            WHERE participant_id = #{clan.id} 
+                                                                              AND competition_id IN (SELECT id 
+                                                                                                       FROM competitions 
+                                                                                                      WHERE competitions_participants_type_id = #{Competition::CLANS}))"}}
+  named_scope :active, :conditions => "state < #{CLOSED}"
   
   def self.update_user_indicator(user)
     # TODO copypasted de warning_list.rhtml
@@ -454,6 +458,11 @@ class Competition < ActiveRecord::Base
       raise 'unimplemented'
     end
     p
+  end
+  
+  def get_active_participant_for_clan(clan)
+    raise "Impossible, competition is for users" if self.competitions_participants_type_id == USERS
+    self.competitions_participants.find_by_participant_id(clan.id)
   end
   
   def winners(limit=:all)

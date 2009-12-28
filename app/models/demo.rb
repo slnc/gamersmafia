@@ -196,6 +196,11 @@ class Demo < ActiveRecord::Base
     end
   end
   
+  named_scope :of_clan, lambda { |clan| { :conditions => "games_mode_id IN (SELECT id 
+                                                                             FROM games_modes 
+                                                                             WHERE entity_type = #{Game::ENTITY_CLAN})
+                                                      AND (entity1_local_id = #{clan.id} OR entity2_local_id = #{clan.id})" } }
+  
   def self.find_from_user(u, opts={})
     opts = {:limit => 5}.merge(opts)
     
