@@ -25,7 +25,7 @@ Portal: <select onchange="document.location = '/admin/contenidos/papelera?portal
 <% 
 for @item in collection: 
 uniq = @item.unique_content
-  url = get_url(@item).gsub('show', 'edit')
+  url = gmurl(@item).gsub('show', 'edit')
 %>
   <tr id="content<%=uniq.id%>" class="<%=oddclass%>">
     <td style="width: 16px;" class="content-hid"><%=faction_favicon(@item)%></td>

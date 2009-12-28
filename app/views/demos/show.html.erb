@@ -28,11 +28,11 @@ function open_demo_win(demo_id)
 <table class="skeletal">
 	<tr class="<%=oddclass%>">
 		<th class="w100">Equipo 1</th>
-		<td><% if @demo.entity1.kind_of?(String) then %><%=@demo.entity1.to_s%><% else %><a href="<%=get_url(@demo.entity1)%>"><%=@demo.entity1.to_s%><% end -%></td>
+		<td><% if @demo.entity1.kind_of?(String) then %><%=@demo.entity1.to_s%><% else %><a href="<%=gmurl(@demo.entity1)%>"><%=@demo.entity1.to_s%><% end -%></td>
 	</tr>
 	<tr class="<%=oddclass%>">
 		<th class="w100">Equipo 2</th>
-		<td><% if @demo.entity2.kind_of?(String) then %><%=@demo.entity2.to_s%><% else %><a href="<%=get_url(@demo.entity2)%>"><%=@demo.entity2.to_s%><% end -%></td>
+		<td><% if @demo.entity2.kind_of?(String) then %><%=@demo.entity2.to_s%><% else %><a href="<%=gmurl(@demo.entity2)%>"><%=@demo.entity2.to_s%><% end -%></td>
 	</tr>
 	<tr class="<%=oddclass%>">
 		<th class="w100">Modo de juego</th>
@@ -47,7 +47,7 @@ function open_demo_win(demo_id)
 	<% if @demo.event_id then %>
 	<tr class="<%=oddclass%>">
 		<th class="w100">Evento</th>
-		<td><a href="<%=get_url(@demo.event)%>"><%=@demo.event.title%></a></td>
+		<td><a href="<%=gmurl(@demo.event)%>"><%=@demo.event.title%></a></td>
 	</tr>
 	<% end -%>
 	<% if @demo.pov_type then %>

@@ -16,7 +16,7 @@
 </tr>
 <% @demos.each do |demo| %>
 <tr class="<%=oddclass%>">
-    <td><strong><a href="<%=get_url(demo)%>">#<%=demo.id%></a></strong></td>
+    <td><strong><a href="<%=gmurl(demo)%>">#<%=demo.id%></a></strong></td>
 	<% if demo.entity1_local_id then%>
 	<td class="infoinline"><a href="/demos/buscar?demo%5Bentity1_local_id%5D=<%=demo.entity1_local_id%>"><%=demo.entity1%></a></td>
 	<% else %>

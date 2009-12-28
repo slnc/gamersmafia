@@ -105,7 +105,7 @@
       end %><br /><% end %>
       Admins: 
       <% real_thing.admins.each do |u| %> 
-      <a href="<%=get_url(u)%>"><%=u.login%></a>
+      <a href="<%=gmurl(u)%>"><%=u.login%></a>
         <% if not u.msn.to_s.empty? then %> <span class="infoinline">(<img class="competition-msn" src="/images/blank.gif" /><%=hide_email(u.msn)%>)</span><% end -%>,
       <% end -%>
     <% end %>
@@ -113,7 +113,7 @@
 
 
   </div>
-  <div class="right" style="margin: 10px 5px 10px 0; clear: left;"><a href="<%=get_url(real_thing)%>">Más información &raquo;</a></div>
+  <div class="right" style="margin: 10px 5px 10px 0; clear: left;"><a href="<%=gmurl(real_thing)%>">Más información &raquo;</a></div>
   <% end -%>
   
   <% 

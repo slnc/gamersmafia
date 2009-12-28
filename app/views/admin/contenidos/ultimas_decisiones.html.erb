@@ -59,7 +59,7 @@ cache_category_paths = {}
           %>
           <td><table class="compact">
               <tr>
-                <td class="w100"><%=link_to fc_thumbnail(@item.file, 'f', '85x60', false), get_url(@item).gsub('show', 'edit')%><br /><span class="infoinline"><%=format_interval((Time.now - @item.created_on).to_i)%></span></td>
+                <td class="w100"><%=link_to fc_thumbnail(@item.file, 'f', '85x60', false), gmurl(@item).gsub('show', 'edit')%><br /><span class="infoinline"><%=format_interval((Time.now - @item.created_on).to_i)%></span></td>
                 <td>
                   <span class="infoinline">en <strong><%=paths.join(' &raquo; ')%></strong></span>
                 </td>
@@ -68,7 +68,7 @@ cache_category_paths = {}
         </td>
         <% else %>
         <% if Cms::user_can_edit_content?(@user, @item) then %>
-      <td><a href="<%=get_url(@item).gsub('show', 'edit')%>"><%=@item.resolve_hid%></a></td>
+      <td><a href="<%=gmurl(@item).gsub('show', 'edit')%>"><%=@item.resolve_hid%></a></td>
       <% else %>
       <td><%=@item.resolve_hid%></td>
       <% end %>

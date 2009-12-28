@@ -61,6 +61,6 @@ setInterval(function(){
 </div>
   <% end %>
 
-  <% if object.is_public? then %><div class="centered-link"><a href="<%=get_url(object)%>">Ver contenido publicado</a></div><% end -%>
+  <% if object.is_public? then %><div class="centered-link"><a href="<%=gmurl(object)%>">Ver contenido publicado</a></div><% end -%>
   <br />
 <% end -%>

@@ -143,7 +143,7 @@
   <%mftext('Admins') do %>
   <ul class="skeletal">
     <% competition.admins.each do |admin| %>
-    <li class="<%=oddclass%>"><a href="<%=get_url(admin)%>"><%=admin.login%></a></li>
+    <li class="<%=oddclass%>"><a href="<%=gmurlgmurl(admin)%>"><%=admin.login%></a></li>
     <% end -%>
   </ul>
   <% end -%>
@@ -153,7 +153,7 @@
   <%mftext('Foro') do %>
   <ul class="skeletal">
     <% for topic in @competition.myforum.topics.find(:all, :order => 'updated_on DESC', :limit => 10) %>
-    <li class="<%=oddclass%>"><a href="<%=get_url(topic)%>"><%=topic.title%></a>
+    <li class="<%=oddclass%>"><a href="<%=gmurl(topic)%>"><%=topic.title%></a>
     <div class="timestamp infoinline right"><%=print_tstamp(topic.updated_on)%></div>
     </li>
     <% end -%>

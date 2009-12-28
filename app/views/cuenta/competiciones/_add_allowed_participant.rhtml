@@ -3,9 +3,9 @@
 <% @competition.allowed_participants.each do |cp| %>
   <tr class="<%=oddclass%>">
   <% if @competition.competitions_participants_type_id == Competition::USERS then %>
-    <td><a href="<%=get_url(cp)%>"><%=cp.login%></a><br /><%=@competition.competitions_participants.find_by_participant_id(cp.id) ? 'registrado' : '<span class="infoinline">no registrado</span>' %></td>
+    <td><a href="<%=gmurl(cp)%>"><%=cp.login%></a><br /><%=@competition.competitions_participants.find_by_participant_id(cp.id) ? 'registrado' : '<span class="infoinline">no registrado</span>' %></td>
   <% else %>
-    <td><a href="<%=get_url(cp)%>"><%=cp.name%></a><br /><%=@competition.competitions_participants.find_by_participant_id(cp.id) ? 'registrado' : '<span class="infoinline">no registrado</span>' %></td>
+    <td><a href="<%=gmurl(cp)%>"><%=cp.name%></a><br /><%=@competition.competitions_participants.find_by_participant_id(cp.id) ? 'registrado' : '<span class="infoinline">no registrado</span>' %></td>
   <% end -%>
     <td></td>
 <!--    <td><a href="/cuenta/competiciones/del_allowed_participant?id=<%=cp.id%>">del</a></td> -->

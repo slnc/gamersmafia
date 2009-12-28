@@ -92,7 +92,7 @@ for @item in collection:
           %>
           <td><table class="compact">
               <tr>
-                <td class="w100"><%=link_to fc_thumbnail(@item.file, 'f', '85x60', false), get_url(@item).gsub('show', 'edit')%><br /><span class="infoinline"><%=format_interval((Time.now - @item.created_on).to_i)%></span></td>
+                <td class="w100"><%=link_to fc_thumbnail(@item.file, 'f', '85x60', false), gmurl(@item).gsub('show', 'edit')%><br /><span class="infoinline"><%=format_interval((Time.now - @item.created_on).to_i)%></span></td>
                 <td><%=img.format%> <%=img.columns%>x<%=img.rows%><br />
                   <span class="infoinline">en <strong><%=paths.join(' &raquo; ')%></strong></span>
                 </td>
@@ -102,7 +102,7 @@ for @item in collection:
       img = nil
           end
       else %>
-        <td><strong><%=link_to (@item.resolve_hid.strip == '' ? "##{@item.id}" : @item.resolve_hid), get_url(@item).gsub('show', 'edit')%></strong><br />
+        <td><strong><%=link_to (@item.resolve_hid.strip == '' ? "##{@item.id}" : @item.resolve_hid), gmurlgmurl(@item).gsub('show', 'edit')%></strong><br />
         <span class="infoinline"><%=format_interval((Time.now - @item.created_on).to_i)%> | <%=member_state(@item.user.state)%> <%=link_to @item.user.login, :controller => '/miembros', :action => @item.user.login%></span></td>
       <% end %>
     <% end %>

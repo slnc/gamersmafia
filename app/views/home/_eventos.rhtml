@@ -3,7 +3,7 @@
 <%# TODO hacer algo con esto, no se usa %>
 <%  cache("/#{@controller.portal.code}/home/index/eventos/#{Time.now.strftime('%Y%m%d')}") do %>
 <%mfcontents_table(nil, controller.portal.event.find(:published, :content_type => 'Event', :conditions => "#{Event::CURRENT_SQL}", :order => 'created_on ASC')) do |e| %>
-        <td style="font-size: 11px;"><a href="<%=get_url(e)%>"><%=content_category(e)%><%=e.title%></a></td>
+        <td style="font-size: 11px;"><a href="<%=gmurl(e)%>"><%=content_category(e)%><%=e.title%></a></td>
 	<td class="w25" style="font-size: 11px;"><div class="members-count"><%=e.users.count if e.respond_to?(:users)%></div></td>
       <% end %><%# for -%>
 <% end %><%# cache-%>

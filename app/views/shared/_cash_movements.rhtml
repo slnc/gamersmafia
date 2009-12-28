@@ -42,7 +42,7 @@ for cash_movement in @cash_movements
   <td><%=cash_movement.description%></td>
   <td>
     <% if other_user == 'Banco' then %><%=other_user%>
-    <% elsif other_user then %><%="<a href=\"#{get_url(other_user)}\">#{other_user}</a>"%>
+    <% elsif other_user then %><%="<a href=\"#{gmurl(other_user)}\">#{other_user}</a>"%>
     <% else %>Desconocido<% end -%>
   <td class="timestamp infoinline"><%=print_tstamp cash_movement.created_on%></td>
 </tr>

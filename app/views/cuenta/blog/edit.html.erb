@@ -1,5 +1,5 @@
 <%generic_support do %>
-<% if @blogentry.is_public? then %><div class="centered-link"><a href="<%=get_url(@blogentry)%>">Ver contenido publicado</a></div><% end -%>
+<% if @blogentry.is_public? then %><div class="centered-link"><a href="<%=gmurl(@blogentry)%>">Ver contenido publicado</a></div><% end -%>
 <% end -%>
 
 <% content_main do %>
