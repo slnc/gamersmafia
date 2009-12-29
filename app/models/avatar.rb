@@ -64,7 +64,7 @@ class Avatar < ActiveRecord::Base
     additional_text << "#{Cms::faction_favicon(self.faction)}" if self.faction_id
     SlogEntry.create(:type_id => SlogEntry::TYPES[:new_avatar], 
                      :reporter_user_id => User.find_by_login('MrAchmed').id, 
-    :headline => "#{additional_text} Nuevo avatar de #{mode}: <a href=\"http://#{App.domain}/avatares/edit/#{self.id}\"><img src=\"/cache/thumbnails/f/50x50/#{self.path}\" /></a></strong>")
+    :headline => "#{additional_text} Nuevo avatar de #{mode}: <a href=\"http://#{App.domain}/avatares/edit/#{self.id}\"><img src=\"/cache/thumbnails/f/50x50/#{self.path.to_s}\" /></a></strong>")
   end
   
   def mode
