@@ -1,5 +1,16 @@
 <% generic_support do %>
   <%= render :partial => 'searchbox' %>
+        <% cache("/common/clanes/index/top_real_popularity_#{Cache.after_daily_key}") do %>
+        <% max = nil
+        mflist('Top popularidad', Clan.find(:all, :conditions => 'deleted=\'f\' AND cache_popularity is not null', :order => 'ranking_popularity_pos ASC, lower(name)', :limit => 10)) do |u|
+max ||= u.cache_popularity %>
+            <td class="sm-icon number f_number"><%=u.ranking_popularity_pos%></td>
+            <td>
+                    <span class="nick"><%=link_to u.name, gmurl(u) %></span><br /> <div class="infoinline" style="width: 67px;"><%=draw_pcent_bar(u.cache_popularity.to_f / max, "#{u.cache_popularity} puntos")%></div></td>
+<% end -%>
+<% end -%>
+
+
   <%mftext('Clanes más recientes') do %>
   <table>
     <% 
