@@ -910,9 +910,9 @@ module Cms
     "<img class=\"factionfavicon gs-#{code}\" title=\"#{name}\" src=\"/images/blank.gif\" />"
   end
   
-  VERBOTEN_TAGS = %w(form script plaintext font u applet body style iframe) unless defined?(VERBOTEN_TAGS)
+  VERBOTEN_TAGS = %w(form script plaintext font u applet body iframe) unless defined?(VERBOTEN_TAGS)
   VERBOTEN_ATTRS_REGEXP = /^on/i unless defined?(VERBOTEN_ATTRS_REGEXP)
-  VERBOTEN_ATTRS = %w(style)
+  #VERBOTEN_ATTRS = %w()
   
   def self.rails1_sanitize(html)
     # only do this if absolutely necessary
@@ -928,7 +928,7 @@ module Cms
             node.to_s.gsub(/</, "&lt;")
           else
             if node.closing != :close
-              node.attributes.delete_if { |attr,v| attr =~ VERBOTEN_ATTRS_REGEXP || VERBOTEN_ATTRS.include?(attr) }
+              node.attributes.delete_if { |attr,v| attr =~ VERBOTEN_ATTRS_REGEXP }
               %w(href src).each do |attr|
                 node.attributes.delete attr if node.attributes[attr] =~ /^javascript:/i
               end
