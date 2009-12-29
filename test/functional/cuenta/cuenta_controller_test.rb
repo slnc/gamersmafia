@@ -236,7 +236,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   
   test "should_create_second_account_from_same_ip" do
     test_should_create_user_if_everything_is_valid
-    session.delete
+    session.clear
     
     assert_count_increases(SlogEntry) do
       post :create, :user => { :login => 'chindasvinto2', :password => 'marauja', :password_confirmation => 'marauja', :email => 'tupmuamad2@jaja.com' }

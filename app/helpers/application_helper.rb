@@ -271,25 +271,6 @@ type: 'bhs'}))
     '<img class="comments-icon" src="/images/blank.gif" style="background-position: -' << COMMENTS_DESPL[name] << 'px -' << vdesp << 'px;" />'
   end
   
-  def get_url(obj)
-    case obj.class.name
-      when 'User':
-      gmurl(obj)
-      when 'Clan':
-      "/clanes/clan/#{obj.id}"
-      when 'Faction'
-      gmurl(obj)
-      when 'Tournament'
-      "/competiciones/show/#{obj.id}"
-      when 'Ladder'
-      "/competiciones/show/#{obj.id}"
-      when 'League'
-      "/competiciones/show/#{obj.id}"
-    else
-      controller.url_for_content_onlyurl(obj)
-    end
-  end
-  
   def notags(txt)
     txt.to_s.gsub('<', '&lt;').gsub('>', '&gt;')
   end
@@ -553,7 +534,7 @@ type: 'bhs'}))
   <option value=\"\"></option>
   <option value=\"new\" style=\"margin-bottom: 10px;\">Crear nueva competición</option>
   <optgroup label=\"Tus competitiones\">"
-    for competition in Competition.find_related_with_user(@user.id)
+    for competition in Competition.related_with_user(@user)
       out<< "<option #{(@competition and @competition.id == competition.id) ? 'selected=\"selected\"' : ''} value=\"#{competition.id}\">#{competition.name}</option>"
     end
     
@@ -976,7 +957,7 @@ END
           
           out2<< <<-END
         <div class=\"mfcontents-summaries-item #{oddclass}\">
-        <h2><a class=\"content\" href=\"#{get_url(item)}\">#{item.title}</a></h2>
+        <h2><a class=\"content\" href=\"#{gmurl(item)}\">#{item.title}</a></h2>
         <div class="infoinline" style="line-height: 16px;">por #{link_to item.user.login, "#{gmurl(item.user)}", :class => 'nav' } | #{item.main_category.root.name} | #{print_tstamp(item.created_on, 'time')} | <span class="comments-count"><a title="Leer los comentarios de esta noticia" class="content" href="/noticias/show/#{item.id}#comments">#{item.cache_comments_count}</a></span></div>
           <div class="xdescription">#{auto_link(smilelize(item.description))}</div>
         </div>
@@ -1122,7 +1103,7 @@ END
         END
     collection.each do |item|
       ids<< item.unique_content.id
-      out<< "<li class=\"new #{oddclass} content#{item.unique_content.id}\"><a title=\"#{tohtmlattribute(item.title)}\" href=\"#{get_url(item)}\">"
+      out<< "<li class=\"new #{oddclass} content#{item.unique_content.id}\"><a title=\"#{tohtmlattribute(item.title)}\" href=\"#{gmurl(item)}\">"
       out<< draw_content_favicon(item) if opts[:faction_favicon]
       out<< "#{truncate(item.title, opts[:truncate_at], '..')}</a></li>"
     end

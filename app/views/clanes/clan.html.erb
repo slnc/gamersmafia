@@ -1,0 +1,119 @@
+<% generic_support do %>
+  <% if @clan.irc_channel.to_s != '' and @clan.irc_server.to_s != '' then %>
+  <%mftext('IRC') do %>
+    <div class="side-link centered"><a href="irc://<%=@clan.irc_server%>#<%=@clan.irc_channel%>"><%=@clan.irc_server%>#<%=@clan.irc_channel%></a></div>
+  <% end -%>
+  <% end -%>
+
+<% cache("/common/clanes/#{@clan.id}/sponsors") do %>
+  <% sponsors = @clan.clans_sponsors 
+  if sponsors.size > 0 then %>
+    <%mftext('Sponsors') do %>
+  <ul class="skeletal">
+    <% for sponsor in sponsors %>
+    <li class="<%=oddclass%>"><a href="<%=sponsor.url%>"><img src="<%=sponsor.image%>" alt="<%=tohtmlattribute(sponsor.name)%>" class="icon" /></a></li>
+    <% end -%>
+  </ul>
+  <% end -%>
+  <% end -%>
+<% end -%>
+
+
+<% cache("/common/clanes/#{@clan.id}/amigos") do %>
+  <% friends = @clan.friends
+  if friends.size > 0 then %>
+    <%mftext('Clanes amigos') do %>
+  <ul class="skeletal">
+    <% for clan in friends %>
+    <li class="<%=oddclass%>"><a href="/clanes/clan/<%=clan.id%>"><%=clan.tag%></a></li>
+    <% end -%>
+  </ul>
+  <% end -%>
+  <% end %><%# mftext -%>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+
+<div class="grid-5">
+  <%mftext(@clan.name, :has_submodules => true) do %>
+  <div style="float: right; margin: 5px;"><%=fc_thumbnail(@clan.logo, 'k', '240x300')%></div>
+  <div class="margin: 20px;"><%=@clan.description%></div>
+  <div class="f_sm infoinline">Registrado: <strong><%=print_tstamp(@clan.created_on)%></strong></div>
+  <div style="clear: left;"> </div>
+  <%mftext('Clanleaders') do %>
+  <table>
+    <%# TODO cache
+    %>
+    <% for member in @clan.admins%>
+    <tr class="<%=oddclass%>">
+      <td><%=member_state(member.hstate)%><a href="<%=gmurl(member)%>"><%=member.login%></a></td>
+    </tr>
+    <% end -%>
+  </table>
+  <% end -%>
+
+  <%mftext('Miembros') do %>
+  <table>
+    <% cache("/common/clanes/#{@clan.id}/miembros") do 
+    %>
+    <% for member in @clan.members %>
+    <tr class="<%=oddclass%>">
+      <td><%=member_state(member.hstate)%><a href="<%=gmurl(member)%>"><%=member.login%></a></td>
+    </tr>
+    <% end -%>
+<% end -%>
+  </table>
+  <% end -%>
+  <% end -%>
+  </div>
+  
+  <div class="grid-5">
+	<%#cache("#{Cache.user_base(@clan.id)}/profile/competicion") do %>
+<%
+last_matches = Competitions.find_all_matches_from_clan(@clan, Competition::COMPLETED_ON_SQL, 3)
+if last_matches.size > 0 then
+%>
+<%mftext('Competición', :has_submodules => true) do %>
+	<%
+	
+	mftext('Últimos resultados') do %>
+	<%= render :partial => '/competiciones/matches_results', :locals =>  { :matches => last_matches } %>
+	<% end -%>
+	
+	<%mftable('Trofeos', Competitions.trophies_for_clan(@clan)) do |h| %>
+		<td><a href="<%=gmurl(h[1])%>"><%=faction_favicon(h[1].game)%><%=h[1]%></a></td>
+		<td><%=winner_cup(h[0])%></td>
+	<% end -%>
+	
+
+	<%=render :partial => '/demos/listado_demos', :locals => { :demos => Demo.of_clan(@clan).find(:published, :limit => 1), :more_link => '<div class="more"><a href="/demos">Ver más..</a></div>'} %>
+
+	<%
+	comps = Competition.related_with_clan(@clan).find(:all, :conditions => "state = #{Competition::STARTED}", :order => 'lower(name)')
+	if comps	
+	mflist('Está participando en', comps) do |o|
+	    cpart = o.get_active_participant_for_clan(@clan)
+		lres = o.matches(:completed, :participant => cpart, :limit => 30, :order => 'completed_on DESC')
+		
+		data = lres.collect do |cm|
+			w = cm.winner
+			if w == 'Empate'
+              0
+			elsif w.id == cpart.id
+			  1
+			else
+              -1
+			end
+		end
+%>
+	<a href="<%=gmurl(o)%>"><%=faction_favicon(o.game)%><%=o.name%></a><br />
+	<div style="margin-bottom: 4px; height: 22px;"><%=minicolumns('winlose', data)%></div>
+	<% end -%>
+	<% end -%>
+<% end -%>
+<% end -%>
+<% # end -%>
+	</div>
+  
+<% end -%>

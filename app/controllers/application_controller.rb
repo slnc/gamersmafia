@@ -603,7 +603,8 @@ Request information:
   def rescuiing
     @rescuiing || false
   end
-
+  
+  
   def rescue_action_in_public(exception)
     @rescuiing = true
     case exception
@@ -652,6 +653,8 @@ Request information:
     end
     @rescuiing = false # para tests
   end
+
+
   
   public
   def track(opts={})

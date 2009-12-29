@@ -1,0 +1,48 @@
+<%mftext('Contenidos en la papelera') do %>
+<br />
+Portal: <select onchange="document.location = '/admin/contenidos/papelera?portal='+this.value;">
+          <option value="">Todos</option>
+          <% for portal in Portal.find(:all, :conditions => 'type IN (\'FactionsPortal\')', :order => 'lower(code) asc') 
+              selected = params[:portal] == portal.code ? 'selected="selected"' : ''%>
+              <option <%=selected%> value="<%=portal.code%>"><%=portal.code.upcase%></option>
+          <% end -%>
+        </select>
+<div id="deleted_items">
+<table>
+<% for name, collection, controller in @contents
+    if collection.size == 0 then
+      next
+    end
+%>
+
+<tr>
+  <th colspan="2" style="padding-top: 20px;"><h2><%=name%></h2></th>
+  <th style="padding-top: 20px;">Eliminado</th>
+  <th style="padding-top: 20px;">Autor</th>
+  <th style="padding-top: 20px;"><img class="comments-count" src="/images/blank.gif" /></th>
+  <th style="padding-top: 20px;"><img class="pageviews-count" src="/images/blank.gif" /></th>
+</tr>
+<% 
+for @item in collection: 
+uniq = @item.unique_content
+  url = gmurl(@item).gsub('show', 'edit')
+%>
+  <tr id="content<%=uniq.id%>" class="<%=oddclass%>">
+    <td style="width: 16px;" class="content-hid"><%=faction_favicon(@item)%></td>
+    <% if Cms::user_can_edit_content?(@user, @item) then %>
+      <td><a href="<%=url%>"><%=@item.resolve_hid == '' ? '(Sin nombre)' : @item.resolve_hid%></a></td>
+    <% else %>
+      <td><%=@item.resolve_hid == '' ? '(Sin nombre)' : @item.resolve_hid%></td>
+    <% end %>
+    <td class="infoinline" style="width: 200px;"><%=print_tstamp(@item.updated_on, 'compact')%></td>
+    <td style="width: 125px;"><%=link_to @item.user.login, :controller => '/miembros', :action => @item.user.login%></td>
+    <td class="infoinline"><%=@item.cache_comments_count%></td>
+    <td class="infoinline"><%=(@item.hits_anonymous + @item.hits_registered)%></td>
+    <td><% if Cms::user_can_edit_content?(@user, @item) then %><%=link_to_remote "Recuperar", :url => "/admin/contenidos/recover/#{uniq.id}", :complete => "$j('#content#{uniq.id}').fadeOut('normal');"%><% end -%></td>
+    </tr>
+    <% end -%>
+</ul>
+<% end -%>
+</table>
+</div>
+<% end -%>

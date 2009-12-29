@@ -63,7 +63,7 @@ module Competitions
   def self.trophies_for_user(u)
     # coger todas las competiciones donde ha participado que esten cerradas y ver los winners
     trophies = [] 
-    Competition.find_related_with_user(u.id, :conditions => "(state = #{Competition::CLOSED}) OR (type = 'Ladder' AND state = #{Competition::STARTED})").each do |c|
+    Competition.related_with_user(u).find(:all, :conditions => "(state = #{Competition::CLOSED}) OR (type = 'Ladder' AND state = #{Competition::STARTED})", :order => 'lower(name)').each do |c|
       #p c 
       participant = c.get_active_participant_for_user(u)
       next if participant.nil?
@@ -76,9 +76,25 @@ module Competitions
     trophies
   end
   
+  def self.trophies_for_clan(u)
+    # coger todas las competiciones donde ha participado que esten cerradas y ver los winners
+    trophies = [] 
+    Competition.related_with_clan(u).find(:all, :conditions => "(state = #{Competition::CLOSED}) OR (type = 'Ladder' AND state = #{Competition::STARTED})").each do |c|
+      #p c 
+      participant = c.get_active_participant_for_clan(u)
+      next if participant.nil?
+      # p c.winners(e)
+      idx = c.winners(3).collect {|cwn| cwn.id }.index(participant.id)
+      if idx
+        trophies << [idx, c]
+      end
+    end
+    trophies
+  end
+  
   def self.find_all_matches_from_user(user, conditions=nil, limit=:all)
     participant_ids = [0]
-    Competition.find_related_with_user(user.id).each do |c|
+    Competition.related_with_user(user).find(:all, :order => 'lower(name)').each do |c|
       participant = c.get_active_participant_for_user(user)
       participant_ids<< participant.id if participant # TODO si un usuario pertenece a más de un clan apuntado al mismo torneo esto no será correcto
     end
@@ -99,7 +115,7 @@ module Competitions
   def self.count_all_matches_from_user(user, conditions=nil)
     # TODO refactor with upper
     participant_ids = [0]
-    Competition.find_related_with_user(user.id).each do |c|
+    Competition.related_with_user(user).find(:all, :order => 'lower(name)').each do |c|
       participant = c.get_active_participant_for_user(user)
       participant_ids<< participant.id if participant # TODO si un usuario pertenece a más de un clan apuntado al mismo torneo esto no será correcto
     end

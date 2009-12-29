@@ -1,0 +1,16 @@
+<%generic_support do %>
+<% if @blogentry.is_public? then %><div class="centered-link"><a href="<%=gmurl(@blogentry)%>">Ver contenido publicado</a></div><% end -%>
+<% end -%>
+
+<% content_main do %>
+<% mftext('Editar entrada de blog') do %>
+<%= form_tag :action => 'update', :id => @blogentry.id %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar' %>
+</form>
+
+<br />
+<br />
+<%= link_to 'Volver', :action => 'index' %>
+<% end -%>
+<% end -%>

@@ -1,0 +1,484 @@
+<div class="grid-11">
+<%mftext(@curuser.login, :grid => 5) do %>
+<div style="float: left; text-align: center; margin-right: 7px;"><%=fc_thumbnail(@curuser.show_photo, 'k', '161x161', false)%></div>
+  <div style="margin-left: 60px;">
+  <div class="avatar" style="text-align: right;"><img src="<%=ASSET_URL%><%=@curuser.show_avatar%>" /></div>
+    <strong style="font-size: 14px;"></strong> <% if @curuser.firstname != '' and @curuser.lastname != '' then %><span class="infoinline"><%=@curuser.firstname%> <%=@curuser.lastname%></span><% end -%><br />
+    <div class="right infoinline" style="margin-top: 0px; line-height: 16px; color: #000;"><%=@curuser.age%> años <img style="vertical-align: middle; margin-top: -6px;" class="user-sex <%=(@curuser.sex != 1) ? 'male' : 'female'%>" src="/images/blank.gif" /> <br />
+      <%=@curuser.city%> <%=ip_country_flag(@curuser.ipaddr)%><br /><br />
+      </div>
+	  
+	  
+  </div>
+  <table>
+	  	<tr>
+	  		<td class="infoinline" style="width: 50%">Registrado</td>
+			<td class="infoinline" style="width: 50%">Última visita</td>
+	  	</tr>
+	
+		<tr>
+	  		<td class="infoinline" style="width: 50%"><strong><%=print_tstamp(@curuser.created_on, 'date')%></strong></td>
+			<td class="infoinline" style="width: 50%"><strong><%=print_tstamp(@curuser.lastseen_on)%></strong></td>
+	  	</tr>
+	</table>
+	
+	<% if user_is_authed and @curuser.id != @user.id then %>
+	  	
+	  	<div style="margin: 10px 0;">
+	  		<a href="" onclick="return new_message(<%=@curuser.id%>);">Enviar un mensaje</a><br />
+	  	</div>
+	  	
+	  		<div style="margin: 10px 0;">
+<% if Friendship.find_between(@curuser, @user).nil? then %>
+<form method="post" action="/cuenta/amigos/iniciar_amistad/<%=@curuser.login%>">
+  <input type="hidden" name="redirto" value="<%=controller.request.request_uri%>" />
+  <input type="submit" class="button" value="Añadir a mi lista de amigos" />
+</form>
+<% end -%>	  		
+	  	</div>
+  	
+	  	<% if @curuser.hstate == 'zombie' then %>
+	  	<br />
+	  	<br />
+<% mftext('Resucitar') do %>
+<% if (@curuser.resurrected_by_user_id == @user.id and @curuser.resurrection_started_on.to_i > Time.now.to_i - 86400 * 7) %>
+<p>Este usuario todavía está en proceso de resurrección.</p>
+<% elsif (@curuser.resurrected_by_user_id and @curuser.resurrection_started_on.to_i > Time.now.to_i - 86400 * 7) %>
+<p><%=@curuser.login%> está en un proceso de resurrección iniciado por otro usuario.</p>
+<% elsif Faith.resurrections_incomplete(@user) >= Faith.max_incomplete_resurrections(@user)%>
+<p>Has alcanzado tu límite de resurrecciones incompletas. Debes esperar a que alguna se complete o se desactive o bien subas de nivel de fe.</p>
+<% else %>
+<p><%=@curuser.login%> lleva más de 3 meses sin aparecer por la web. Si sabes cómo hacer que vuelva a iniciar sesión en la web y consigues que lo haga tu nivel de fe aumentará.<br />
+<form method="post" action="/cuenta/cuenta/resurrect">
+  <input type="hidden" name="redirto" value="<%=controller.request.request_uri%>" />
+  <input type="hidden" name="login" value="<%=@curuser.login%>" />
+  <input type="submit" class="button" value="Iniciar resurrección" />
+</form>
+<% end -%>
+<% end %><%# mftext -%>
+<% end -%>
+<% end -%>
+
+<% end -%>
+
+<% if @curuser.enable_profile_signatures? then %>
+<%cache("#{Cache.user_base(@curuser.id)}/profile/last_profile_signatures") do %>
+
+<%mftext('Últimas firmas', :grid => 6, :glast => true) do %>
+<% @curuser.profile_signatures.find(:all, :order => 'updated_on DESC', :include => :signer, :limit => 4).each do |ps| %>
+  <div id="ps<%=ps.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 5px; font-size: 11px; line-height: 15px; padding: 3px;">
+  <div class="hidden infoinline delprofilesignature"><%=link_to_remote 'Borrar', :url => "/miembros/del_firma/#{ps.id}", :confirm => '¿Estás seguro?', :complete => "$j('#ps#{ps.id}').fadeOut('normal');"%></div>
+    <div style="float: left;"><img src="<%=ASSET_URL%>/cache/thumbnails/f/32x32<%=ps.signer.show_avatar%>" /></div>
+    <div style="margin-left: 40px;"><strong><a href="<%=gmurl(ps.signer)%>"><%=ps.signer.login%></a></strong>: <%=Comments::formatize(truncate(ps.signature.strip, 80, '..'))%></div>
+  </div>
+<%  end %>
+<div class="more right nav"><a href="<%=gmurl(@curuser)%>/firmas">Ver todas &raquo;</a></div>
+<% end -%>
+<% end -%>
+<% end -%>
+
+<%mftext('Estadísticas', :has_submodules => true, :grid => 6) do %>
+<div class="grid-3">
+    
+
+<%cache("#{Cache.user_base(@curuser.id)}/profile/rankings/#{Cache.after_daily_key}") do %>
+<%mftext('Karma') do %>
+<%karma_rk_info = Karma.ranking_user(@curuser)%>
+<div class="infoinline right" style="margin-bottom: 3px;">
+	#<strong><%=karma_rk_info[:pos]%></strong> de <%=karma_rk_info[:total]%>
+</div> 
+<div class="clearb"><%=sparkline(:size => '145x25', :data => Karma.user_daily_karma(@curuser, 30.days.ago, 1.day.ago).collect { |k,v| v } )%></div>
+<div class="infoinline right"><strong><%=@curuser.karma_points%></strong> ptos (Nivel <strong><%=Karma.level(@curuser.karma_points)%></strong>)</div>
+<% end -%>
+
+<%mftext('Fe') do %>
+<%faith_rk_info = Faith.ranking_user(@curuser)%>
+<div class="infoinline right" style="margin-bottom: 3px;">
+	#<strong><%=faith_rk_info[:pos]%></strong> de <%=faith_rk_info[:total]%>
+</div>
+
+<div class="clearb"><%=sparkline(:size => '145x25', :data => Faith.user_daily_faith(@curuser, 30.days.ago, 1.day.ago).collect { |k,v| v }, :colors => ['c311dd'], :fillcolors => ['f9e8fc'])%></div>
+<div class="infoinline right"><strong><%=@curuser.faith_points%></strong> ptos (<strong><%=Faith::NAMES[Faith.level(@curuser.faith_points)]%></strong>)</div>
+<% end -%>
+
+<%mftext('Popularidad') do %>
+<%popularity_rk_info = Popularity.ranking_user(@curuser)%>
+<div class="infoinline right" style="margin-bottom: 3px;">
+	#<strong><%=popularity_rk_info[:pos]%></strong> de <%=popularity_rk_info[:total]%>
+</div>
+
+<div class="clearb"><%=sparkline(:size => '145x25', :data => Popularity.user_daily_popularity(@curuser, 30.days.ago, 1.day.ago).collect { |k,v| v }, :colors => ['616c01'], :fillcolors => ['f0f2de'])%></div>
+<div class="infoinline right"><strong><%=@curuser.popularity_points%></strong> ptos</div>
+<% end -%>
+<% end -%>
+
+</div>
+
+<div class="grid-3 glast">
+<%cache("#{Cache.user_base(@curuser.id)}/profile/sus_comments_son/#{Time.now.strftime('%Y%m%d')}") do %>
+<%mftext('Sus comentarios son') do
+dat = Stats.user_comments_by_rating(@curuser)
+max = dat.values.max.to_f / 100
+
+positive_valorations_types = CommentsValorationsType.find_positive
+neutral_valorations_types = CommentsValorationsType.find_neutral
+negative_valorations_types = CommentsValorationsType.find_negative
+%>
+
+<table class="positive">
+    <% positive_valorations_types.each do |cvt| 
+dat[cvt.id] = 0 unless dat[cvt.id] %>
+    <tr>
+    	<td class="w20" style="height: 16px;"><%=comments_icon(cvt.name.to_sym, true)%></td>
+		<td><%=draw_pcent_bar(dat[cvt.id]/(100*max))%></td>
+	</tr>
+    <% end -%>
+    </table>
+	
+	<table class="neutral">
+    <% neutral_valorations_types.each do |cvt|  
+dat[cvt.id] = 0 unless dat[cvt.id] %>
+    <tr>
+    	<td class="w20" style="height: 16px;"><%=comments_icon(cvt.name.to_sym, true)%></td>
+		<td><%=draw_pcent_bar(dat[cvt.id]/(100*max))%></td>
+	</tr>
+    <% end -%>
+    </table>
+	
+    <table class="negative">
+    <% negative_valorations_types.each do |cvt| 
+dat[cvt.id] = 0 unless dat[cvt.id] %>
+    <tr>
+    	<td class="w20" style="height: 16px;"><%=comments_icon(cvt.name.to_sym, true)%></td>
+		<td><%=draw_pcent_bar(dat[cvt.id]/(100*max))%></td>
+	</tr>
+    <% end -%>
+    </table>
+<table>
+	<tr>
+		<td class="infoinline">Total comentarios</td>
+		<td class="right infoinline"><%=@curuser.comments.count(:conditions => "deleted = 'f'")%></td>
+	</tr>
+</table>
+<%#=horizontal_stacked_bar(:size => '94x80', :data => dat.values, :axis_labels => dat.keys.collect { |pid| Portal.find_by_id(pid).code }) %>
+<% end -%>
+
+<%cache("#{Cache.user_base(@curuser.id)}/profile/sus_contenidos_son") do %>
+<%mftext('Sus contenidos son') do 
+dat = Stats.user_contents_by_rating(@curuser)
+vals = []
+dat.keys.sort.each { |k| vals << dat[k] }
+max = vals.max
+ %>
+<%=sparkline(:size => '145x75', :data =>  vals, :max => max)%>
+<div class="bar-quality"></div>
+<table>
+	<tr>
+		<td class="infoinline">Total contenidos</td>
+		<td class="right infoinline"><%=@curuser.contents.count(:conditions => "state = #{Cms::PUBLISHED}")%></td>
+	</tr>
+</table>
+<% end -%>
+<% end -%>
+<% end -%>
+
+</div>
+
+<% end -%>
+
+
+<%mftext('Gamer', :has_submodules => true, :grid => 5, :glast => true) do %>
+
+<%# cache("#{Cache.user_base(@curuser.id)}/profile/clanes") do %>
+<% clans = @curuser.clans %>
+<% 
+if clans.size > 0 then %>
+	<%mftable('Clanes', clans) do |c| %>
+      <td><a href="/clanes/clan/<%=c.id%>"><%=h c.tag%></a></td>
+	  <td class="infoinline right"><%=c.user_is_clanleader(@curuser.id) ? 'Clanleader' : 'Miembro' %></td>
+	<% end -%>
+<% end -%>
+<%# end -%>
+
+<%if @curuser.faction_id %>
+<%mftext('Facción') do %>
+<div class="centered-link">
+<%=faction_favicon(@curuser.faction)%><strong><%=link_to @curuser.faction.name, gmurl(@curuser.faction)%></strong>
+  <div style="margin-top: 4px;" class="infoinline">Miembro desde <strong><%=print_tstamp(@curuser.faction_last_changed_on, 'date')%></strong></div>
+ </div>
+<% end -%>
+<% end -%>
+
+<%mftext('Juegos', :grid => 3) do %>
+<%@curuser.games.find(:all, :order => 'lower(name)').each do |g| %>
+<%=faction_favicon(g.code)%>
+<% end -%>
+<% end -%>
+<%mftext('Plataformas', :grid => 2, :glast => true) do %>
+<%@curuser.platforms.find(:all, :order => 'lower(name)').each do |g| %>
+<%=faction_favicon(g.code)%>
+<% end -%><% end -%>
+  
+<% end -%>
+
+
+
+<%mftext('Sobre mí', :grid => 6) do %>
+  <%=@curuser.description%>
+<% end -%>
+<div class="grid-5 glast">
+<%cache("#{Cache.user_base(@curuser.id)}/profile/aportaciones") do %>
+<%mftext('Aportaciones', :has_submodules => true) do %>
+<%mftext('Por tipo') do 
+dat = Stats.user_contents_by_type(@curuser)
+%>
+<%=pie(:size => '250x110', :data => dat.values, :axis_labels => dat.keys.collect { |en| en != 'Otros' ? Cms::translate_content_name(en) : en}) %>
+<% end -%>
+
+<%mftext('Por portal') do
+dat = Stats.user_contents_by_portal(@curuser)
+%>
+<%=pie(:size => '250x110', :data => dat.values, :axis_labels => dat.keys.collect { |pid| pid != 'Otros' ? Portal.find_by_id(pid).code : pid}) %>
+<% end -%>
+<% end -%>
+<% end -%>
+
+<%mftext('Contacto', :grid => 5, :glast => true) do %>
+  <table>
+<% if @curuser.homepage != '' then %>
+    <tr class="<%=oddclass%>">
+      <td class="w100">Página web</td>
+      <td><% if @curuser.homepage%><%=link_to show_url(@curuser.homepage), @curuser.homepage%><% end -%></td>
+    </tr>
+<% end -%>
+<% if @curuser.email_public? then %>
+    <tr class="<%=oddclass%>">
+      <td class="w100">Email</td>
+      <td><%=hide_email(@curuser.email)%></td>
+    </tr>
+<% end -%>
+<% if @curuser.msn.to_s != '' then %>
+    <tr class="<%=oddclass%>">
+      <td class="w100">MSN</td>
+      <td><%=hide_email(@curuser.msn)%></td>
+    </tr>
+<% end -%>
+<% if @curuser.yahoo_im.to_s != '' then %>
+    <tr class="<%=oddclass%>">
+      <td class="w100">Yahoo IM</td>
+      <td><%=@curuser.yahoo_im%></td>
+    </tr>
+<% end -%>
+<% if @curuser.googletalk.to_s != '' then %>
+    <tr class="<%=oddclass%>">
+      <td class="w100">GoogleTalk</td>
+      <td><%=@curuser.googletalk%></td>
+    </tr>
+<% end -%>
+<% if @curuser.irc.to_s != '' then %>
+    <tr class="<%=oddclass%>">
+      <td class="w100">IRC</td>
+      <td><%=@curuser.irc%></td>
+    </tr>
+<% end -%>
+<% if @curuser.xfire.to_s != '' then %>
+    <tr class="<%=oddclass%>">
+      <td class="w100">Xfire</td>
+      <td><%=@curuser.xfire%></td>
+    </tr>
+<% end -%>
+<% if @curuser.wii_code.to_s.strip != '' then %>
+    <tr class="<%=oddclass%>">
+      <td class="w100">Wii Code</td>
+      <td><%=wii_code(@curuser.wii_code)%></td>
+    </tr>
+<% end -%>
+<% if @curuser.gamertag.to_s != '' then %>
+    <tr class="<%=oddclass%>">
+      <td class="w100">GamerTag</td>
+      <td><%=@curuser.gamertag%></td>
+    </tr>
+<% end -%>
+  </table>
+
+<% end -%>
+
+</div>
+
+
+
+</div>
+
+<div class="grid-4 glast">
+<%=new_ads(:grid => 4) %>
+
+<%cache("#{Cache.user_base(@curuser.id)}/profile/competicion") do %>
+<%
+last_matches = Competitions.find_all_matches_from_user(@curuser, Competition::COMPLETED_ON_SQL, 3)
+if last_matches.size > 0 then
+%>
+<%mftext('Competición', :has_submodules => true) do %>
+	<%
+	
+	mftext('Últimos resultados') do %>
+	<%= render :partial => '/competiciones/matches_results', :locals =>  { :matches => last_matches } %>
+	<% end -%>
+	
+	<%mftable('Trofeos', Competitions.trophies_for_user(@curuser)) do |h| %>
+		<td><a href="<%=gmurl(h[1])%>"><%=faction_favicon(h[1].game)%><%=h[1]%></a></td>
+		<td><%=winner_cup(h[0])%></td>
+	<% end -%>
+	
+
+	<%=render :partial => '/demos/listado_demos', :locals => { :demos => Demo.find_from_user(@curuser, :limit => 1), :more_link => '<div class="more"><a href="/demos">Ver más..</a></div>'} %>
+
+	<%
+	comps = Competition.related_with_user(@curuser).active.find(:all, :conditions => "state = #{Competition::STARTED}", :order => 'lower(name)')
+	if comps	
+	mflist('Está participando en', comps) do |o|
+	    cpart = o.get_active_participant_for_user(@curuser)
+		lres = o.matches(:completed, :participant => cpart, :limit => 30, :order => 'completed_on DESC')
+		
+		data = lres.collect do |cm|
+			w = cm.winner
+			if w == 'Empate'
+              0
+			elsif w.id == cpart.id
+			  1
+			else
+              -1
+			end
+		end
+%>
+	<a href="<%=gmurl(o)%>"><%=faction_favicon(o.game)%><%=o.name%></a><br />
+	<div style="margin-bottom: 4px; height: 22px;"><%=minicolumns('winlose', data)%></div>
+	<% end -%>
+	<% end -%>
+<% end -%>
+<% end -%>
+<% end -%>
+
+<%mftext('Últimos comentarios') do %>
+    <ul class="content-hid sidelist">
+      <% cache("/#{controller.portal.code}/miembros/#{@curuser.id % 1000}/#{@curuser.id}/last_comments") do %>
+<%		@curuser.comments.find(:all, :conditions => 'deleted = \'f\'', :order => 'created_on desc', :limit => 10).each do |comment|
+ %>
+        <li class="<%=oddclass%>"><span class="comments-count"><a href="<%=controller.url_for_content_onlyurl(comment.content.real_content)%>?page=<%=Comments.page_for_comment(comment)%>#comment<%=comment.id%>"><%=truncate(strip_tags(comment.comment))%></a></span></li>
+    	<% end -%>
+	<% end -%>
+    </ul>
+<% end -%>
+
+
+<% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/emblemas") do %>  
+		<% sql_emblems = Emblems::EMBLEMS_TO_REPORT.collect { |e| "'#{e}'" }.join(',')
+		dbe = User.db_query("SELECT count(*), emblem from users_emblems where user_id = #{@curuser.id} AND emblem in (#{sql_emblems}) GROUP BY emblem ORDER BY emblem") 
+
+		if dbe.size > 0 then %>
+		<%mftext('Emblemas') do %>
+		<ul style="margin: 0; padding-left: 0;">
+	<%dbe.each do |db| %>
+	<li class="<%=oddclass%>" style="float: left; padding: 3px; list-style: none;">
+		<img class="emblema emblema-<%=db['emblem']%>" src="/images/blank.gif" title="<%=Emblems::EMBLEMS[db['emblem'].to_sym][:title]%>" />
+		<%=db['count']%>
+	</li>
+	<% end -%>
+	</ul>
+	<br />
+	<% end %><%# if -%>
+<% end -%>
+<% end %><%# cache -%>
+  <div style="clear: left;"></div>
+    
+
+
+<%mftext('Amigos') do %>
+	<% i = 0 %>
+<div style="clear: left;">
+<%
+User.find(:all, :conditions => "id IN (#{@curuser.friends_ids_sql}) AND photo IS NOT NULL AND photo <> ''", :order => 'random()', :limit => 9).each do |u| %>
+		<div style="font-size: 11px; width: 63px; overflow: hidden; float: left; text-align: center; margin: 5px 0 15px 0px;"><a href="<%=gmurl(u)%>"><img src="/cache/thumbnails/i/50x50/<%=u.show_photo%>" /></a><br /><%=user_link(u)%></div>
+<% if i % 3 == 2 %></div><div style="clear: left;"><% end -%>
+
+	<% i += 1 
+end -%>
+<% if i % 3 != 3 %></div><% end -%>
+	
+	<div class="clearl right"><a href="/miembros/<%=@curuser.login%>/amigos">Ver todos &raquo;</a></div>
+
+<% end -%>
+
+<% prev_nicks = @curuser.user_login_changes.find(:all, :order => 'created_on') 
+if prev_nicks.size > 0 then %>
+<% mftext('Nicks antiguos') do %>
+<table class="compact">
+	<tr>
+		<th>Nick</th>
+		<th class="right">Cambiado el</th>
+	</tr>
+	<% prev_nicks.each do |nick| %>
+	<tr class="<%=oddclass%>">
+		<td><%=nick.old_login%></td>
+		<td class="infoinline timestamp"><%=print_tstamp(nick.created_on, 'date')%></td>
+	</tr>
+	<% end %>
+</table>
+<% end -%>
+<% end -%>
+
+
+  	<% if user_is_authed && (@user.is_superadmin || @user.is_hq?) then %>
+	<% mftext('Control') do %>
+	<%
+		users_same_ip = User.find(:all, :conditions => ['login <> ? and state <> ? and ipaddr <> \'0.0.0.0\' and ipaddr = ?', @curuser.login, User::ST_DELETED, @curuser.ipaddr], :order => 'lastseen_on')
+if users_same_ip.size > 0 then %>
+<div class="infoinline"><%=member_state('active')%> <strong><%=users_same_ip.size%></strong> usuario<%='s' if users_same_ip.size > 1%> con la misma ip:</div>
+<ul class="inline infoinline">
+<% users_same_ip.each do |user| %>
+	<li><a href="<%=gmurl(user)%>"><%=user.login%></a></li>
+<% end %>
+</ul>  
+<% else %>
+<%=member_state('zombie')%> <strong>Ningún</strong> usuario con la misma ip.
+<% end %>
+
+<% if @user.has_admin_permission?(:capo) then %>
+<div class="centered-link">
+Antiflood: <select name="antiflood_level" id="antiflood_level" onchange="document.location = '/admin/usuarios/set_antiflood_level?user_id=<%=@curuser.id%>&antiflood_level='+this.value;">
+        <option value="-1">Sin límite</option>
+        <option value="5">0 comentarios al día</option>
+        <option value="4">5 comentarios al día</option>
+        <option value="3">10 comentarios al día</option>
+        <option value="2">15 comentarios al día</option>
+        <option value="1">20 comentarios al día</option>
+    </select><script type="text/javascript">$j('#antiflood_level').val(<%=@curuser.antiflood_level%>);</script>
+</div>
+
+<div class="centered-link"><a href="/admin/usuarios/clear_description/<%=@curuser.id%>" onclick="return confirm('¿Estás seguro? ¡Esta acción no se puede deshacer!');">Borrar Descripción</a></div>
+<div class="centered-link"><a href="/admin/usuarios/clear_photo/<%=@curuser.id%>" onclick="return confirm('¿Estás seguro? ¡Esta acción no se puede deshacer!');">Borrar Foto</a></div>	
+<% elsif @curuser.antiflood_level != 5 then %>
+	<div class="centered-link">
+		<a onclick="return confirm('El usuario no podrá enviar contenidos ni publicar comentarios hasta que un capo lo revise. SOLO PARA EMERGENCIAS. ¿Estás seguro?');" href="/admin/usuarios/set_antiflood_level?user_id=<%=@curuser.id%>&antiflood_level=5"><strong>Poner antiflood de emergencia</strong></a>
+	</div>
+<% end %>
+
+<% if !@user.has_admin_permission?(:capo) then %>
+	<div id="report-users<%=@curuser.id%>" class="centered-link"><a href="" title="Reportar el perfil de este usuario por violación del código de conducta" onclick="return report_user(<%=@curuser.id%>);">Reportar</a></div>
+<% end -%>
+
+<% if @curuser.hstate != User::ST_BANNED && @user.has_admin_permission?(:capo) then
+bp = BanRequest.find(:first, :conditions => ['banned_user_id = ?', @curuser.id], :order => 'created_on DESC') 
+if bp && bp.confirming_user_id.nil? then %>
+<div class="centered-link"><strong><a href="/admin/usuarios/confirmar_ban_request?id=<%=bp.id%>">Proceso de ban en marcha</a></strong></div>
+<% elsif bp && bp.confirming_user_id && bp.unban_user_id.nil? %>
+<div class="centered-link"><strong><a href="/admin/usuarios/confirmar_ban_request?id=<%=bp.id%>">Usuario baneado</a></strong></div>
+<% elsif bp && bp.confirming_user_id && bp.unban_user_id && bp.unban_confirming_user_id.nil? %>
+<div class="centered-link"><strong><a href="/admin/usuarios/confirmar_ban_request?id=<%=bp.id%>">Proceso de unban en marcha</a></strong></div>
+<% else %>
+<div class="centered-link"><strong><a href="/admin/usuarios/ban_request?login=<%=@curuser.login%>">Banear</a></strong></div>
+<% end -%>
+<% end -%>
+<% end -%>
+<% end -%>
+
+</div>

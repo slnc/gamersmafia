@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class ClanesControllerTest < ActionController::TestCase
-
   
   test "index" do
     get :index
@@ -20,6 +19,12 @@ class ClanesControllerTest < ActionController::TestCase
     get :clan, :id => Clan.find(:first).id
     assert_response :success
     assert_template 'clanes/clan'
+  end
+  
+  test "competicion" do
+    get :competicion, :id => Clan.find(:first).id
+    assert_response :success
+    assert_template 'clanes/competicion'
   end
   
   test "clan_selector_list" do

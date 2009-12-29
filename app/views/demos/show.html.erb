@@ -1,0 +1,72 @@
+<script type="text/javascript">
+function open_demo_win(demo_id)
+{
+  window.open('/demos/download/'+demo_id, 'demo_'+demo_id, 'height=300,width=600,menubar=no,resizable=no,scrollbars=yes');
+  return false;
+}
+</script>
+
+<% content_support(:content => @demo.unique_content) do %>
+	<% if @demo.is_public? then %>
+	<%=mfcontents_basic("Más demos de #{@demo.main_category.name}", 
+	controller.portal.demo,
+	[:published, { :order => 'created_on DESC', :limit => 5}],
+ 	:rating => true,
+	:cache => "/common/demos/show/_latest_cat#{@demo.main_category.id}",
+	:skip_id => @demo.id,
+	:downloads_count => true,
+	:comments_count => true,
+	:more_link => "<a href=\"/demos/buscar?demo_term_id=#{@demo.main_category.id}\">Ver todas</a>")%>	
+	<% else %>
+<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @demo } %>
+	<% end -%>
+<% end -%>
+
+<% content_main do %> 
+  <% mfcontent(@demo) do %>
+  <div style="float: right; margin: 5px;"><%=fc_thumbnail(@demo.games_map.screenshot, 'k', '153x115', false) if @demo.games_map%></div>
+<table class="skeletal">
+	<tr class="<%=oddclass%>">
+		<th class="w100">Equipo 1</th>
+		<td><% if @demo.entity1.kind_of?(String) then %><%=@demo.entity1.to_s%><% else %><a href="<%=gmurl(@demo.entity1)%>"><%=@demo.entity1.to_s%><% end -%></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<th class="w100">Equipo 2</th>
+		<td><% if @demo.entity2.kind_of?(String) then %><%=@demo.entity2.to_s%><% else %><a href="<%=gmurl(@demo.entity2)%>"><%=@demo.entity2.to_s%><% end -%></td>
+	</tr>
+	<tr class="<%=oddclass%>">
+		<th class="w100">Modo de juego</th>
+		<td><%=@demo.games_mode.name%></td>
+	</tr>
+	<% if @demo.games_version_id then %>
+	<tr class="<%=oddclass%>">
+		<th class="w100">Versión</th>
+		<td><%=@demo.games_version.version%></td>
+	</tr>
+	<% end -%>
+	<% if @demo.event_id then %>
+	<tr class="<%=oddclass%>">
+		<th class="w100">Evento</th>
+		<td><a href="<%=gmurl(@demo.event)%>"><%=@demo.event.title%></a></td>
+	</tr>
+	<% end -%>
+	<% if @demo.pov_type then %>
+	<tr class="<%=oddclass%>">
+		<th class="w100">POV</th>
+		<td><%=Demo::POVS.index(@demo.pov_type)%></td>
+	</tr>
+	<% end -%>
+	<% if @demo.demotype then %>
+	<tr class="<%=oddclass%>">
+		<th class="w100">Tipo</th>
+		<td><%=Demo::DEMOTYPES.index(@demo.demotype)%></td>
+	</tr>
+	<% end -%>
+</table>
+<div style="clear: left;">
+<%=auto_link(smilelize(@demo.description))%>
+</div>
+
+<div style="margin: 20px; text-align: center;"><a href="" onclick="return open_demo_win(<%=@demo.id%>);"><img class="download-now" src="/images/blank.gif" /></a></div>
+  <% end %>
+<%end -%>

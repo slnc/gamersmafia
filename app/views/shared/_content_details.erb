@@ -1,0 +1,66 @@
+<% 
+author = object.user 
+
+if not object.new_record? and Cms::user_can_edit_content?(@user, object) then %>
+<script type="text/javascript">
+//<![CDATA[
+
+setInterval(function(){
+	$j.get('/site/maintain_lock?id=<%=object.cur_lock.id%>')
+} , 25000);
+//]]>
+</script>
+<% end %>
+  <%mftext('Información') do %>
+  <table class="compact">
+    <tr class="<%=oddclass%>">
+      <td class="infoinline">Autor</td>
+      <td class="infoinline"><a href="<%=gmurl(author)%>"><%=author.login%></a></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td class="infoinline">Creado</td>
+      <td class="infoinline"><%=print_tstamp(object.created_on)%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td class="infoinline">Actualizado</td>
+      <td class="infoinline"><%=print_tstamp(object.updated_on)%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td class="infoinline">Comentarios</td>
+      <td class="infoinline"><%=object.cache_comments_count%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td class="infoinline">Visitas</td>
+      <td class="infoinline"><%=object.hits_anonymous + object.hits_registered%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td class="infoinline">Valoraciones</td>
+      <td class="infoinline"><%=object.cache_rated_times%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td class="infoinline">Karma generado</td>
+      <td class="infoinline"><%=Karma.calculate_karma_points(object)%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td class="infoinline">Estado</td>
+      <td class="infoinline"><%=object.state%></td>
+    </tr>
+    <tr class="<%=oddclass%>">
+      <td class="infoinline">¿Visible?</td>
+      <td class="infoinline"><%=object.is_public?.to_s%></td>
+    </tr>
+  </table>
+  <% if object.log then %>
+  <%# TODO CACHE THIS %>
+    <div class="right infoinline"><a href="" onclick="showblock('content-log'); return false;">Ver log de cambios</a></div>
+    <div class="hidden" id="content-log"><%object.log.reverse.each do |l0, l1, l2|
+		u = User.find_by_login(l1) 
+      %>
+      <div class="infoinline <%=oddclass%>"><strong><%=l0.capitalize%></strong> por <a href="<%=u ? gmurl(u) : 'nonexistant_user'%>"><%=l1%></a><br /> <%=print_tstamp(l2, 'compact')%></div>
+  <% end -%>
+</div>
+  <% end %>
+
+  <% if object.is_public? then %><div class="centered-link"><a href="<%=gmurl(object)%>">Ver contenido publicado</a></div><% end -%>
+  <br />
+<% end -%>

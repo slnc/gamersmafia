@@ -1,0 +1,168 @@
+<% generic_support do %>
+	<%mftext('Apuestas pendientes de completar') do %>
+  <ul class="content-hid">
+  	<%# TODO perf cache("/common/admin/contenidos/index/pending_bets") do %>
+  <% for bet in Bet.awaiting_result %>
+    <% if Cms::user_can_edit_content?(@user, bet) then %>
+    <li><%=link_to bet.resolve_hid, "/apuestas/resolve/#{bet.id}"%></li>
+    <% else %>
+    <li><%=bet.resolve_hid%></li>
+    <% end -%>
+  <% end -%>
+  <%# end -%>
+  </ul>
+  <% end -%>
+  
+<%=mfcontents_basic("Preguntas en el limbo", 
+					Proc.new { Question.find(:published, :conditions => "created_on < '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'created_on ASC') }, 
+					[],
+					:truncate_at => 28, :faction_favicon => true, :blast => true)%>
+
+  <%mftext('Mi nivel de moderación') do %>
+  <%= render :partial => '/miembros/publishing_experience', :locals => { :curuser => @user } %>
+  <% end -%>
+  
+  <% if nil then %> 
+  <%# esto no funciona pq no sabemos cuándo se ha modificado el estado de un contenido por última vez %>
+  <div class="subheader"><div>Últimos contenidos resueltos</div></div>
+  <ul class="content-hid">
+    <% Content.find(:all, :conditions => "state IN (#{Cms::PUBLISHED}, #{Cms::DELETED})", :order => 'updated_on DESC', :limit => 20).each do |obj| %>
+<li class="<%=oddclass%>"><%=obj.name%></li>
+<%  end %>
+</ul>
+<%  end %>
+<% end %>
+
+<% content_main do %>
+  <%mftext('Contenidos pendientes de moderar') do %>
+<form method="post" action="/admin/contenidos/mass_moderate">
+  <input type="hidden" id="f1action" name="mass_action" value="" />
+<table>
+<% for name, collection, controller_name in @contents 
+    if collection.size == 0 then
+      next
+    end
+%>
+
+<tr>
+  <th colspan="5" style="padding-top: 20px;"><h2><%=name%> (<%=collection.size%>)</h2></th>
+</tr>
+<%
+i = 0
+cache_category_paths = {}
+for @item in collection: 
+  lock = @item.cur_lock
+  next if @item.class.name == 'Image' and i >= 50
+%>
+    <tr class="<%=oddclass%>">
+    <% if Cms::user_can_edit_content?(@user, @item) && !lock then %>
+      <td class="checkbox"><input type="checkbox" name="items[]" onclick="slnc.hilit_row(this, 'selrow');" value="<%=@item.unique_content.id%>" /></td>
+    <% else %>
+      <td class="checkbox">&nbsp;</td>
+    <% end -%>
+    <% 
+    if lock && lock.user_id != @user.id then
+    u = lock.user
+    %>
+    <td><%=@item.resolve_hid%><br />
+      <span class="infoinline content-locked"> <a href="<%=gmurl(u)%>"><%=u.login%></a></span>
+    </td>
+    <%
+    else %>
+    <% if @item.class.name == 'Image' then 
+ i += 1
+          begin
+            img = Cms::read_image("#{RAILS_ROOT}/public/#{@item.file}")
+            raise Exception unless img
+          rescue Exception
+            img = nil
+            %><td><a href="/imagenes/edit/<%=@item.id%>">Imagen inválida</a></td><%
+          else
+            if cache_category_paths.keys.include?(@item.main_category.id)
+              paths = cache_category_paths[@item.main_category.id]
+            else
+		    begin
+              paths, navpath = controller.get_category_address(@item.main_category, 'ImagesCategory')
+		    rescue
+			    paths = []
+			    navpath = []
+		    end
+              cache_category_paths[@item.main_category.id] = paths
+            end
+          %>
+          <td><table class="compact">
+              <tr>
+                <td class="w100"><%=link_to fc_thumbnail(@item.file, 'f', '85x60', false), gmurl(@item).gsub('show', 'edit')%><br /><span class="infoinline"><%=format_interval((Time.now - @item.created_on).to_i)%></span></td>
+                <td><%=img.format%> <%=img.columns%>x<%=img.rows%><br />
+                  <span class="infoinline">en <strong><%=paths.join(' &raquo; ')%></strong></span>
+                </td>
+              </tr>
+            </table>
+      </td><%
+      img = nil
+          end
+      else %>
+        <td><strong><%=link_to (@item.resolve_hid.strip == '' ? "##{@item.id}" : @item.resolve_hid), gmurl(@item).gsub('show', 'edit')%></strong><br />
+        <span class="infoinline"><%=format_interval((Time.now - @item.created_on).to_i)%> | <%=member_state(@item.user.state)%> <%=link_to @item.user.login, :controller => '/miembros', :action => @item.user.login%></span></td>
+      <% end %>
+    <% end %>
+    <td style="width: 125px;"><%=draw_content_mod_state(@item)%></td>
+    </tr>
+  <% end -%>
+</ul>
+<% 
+end %><%# for
+
+GC.start
+
+-%>
+</table>
+
+<br />
+<br />
+<script type="text/javascript">
+function mass_publish()
+{
+  if (confirm('¿PUBLICAR todos los contenidos seleccionados?')) 
+  {
+    $j('#f1action').val('publish');
+    return true;
+  }
+  else
+    return false;
+}
+
+function mass_deny()
+{
+  if (confirm('¿DENEGAR todos los contenidos seleccionados?')) 
+  {
+    $j('#f1action').val('deny');
+    return true;
+  }
+  else
+    return false;
+}
+</script>
+<% if @user.is_superadmin || @user.has_admin_permission?(:capo) || @user.is_editor? || @user.is_sicario? then %>
+<hr />
+<table style="width: 100%" class="accept-or-deny">
+  <tr valign="top">
+    <td style="width: 50%; text-align: center;">
+        <input type="image" title="Denegar este contenido" class="content-deny" src="/images/blank.gif" onclick="return mass_deny();" />
+        <div style="margin-left: auto; margin-right: auto; width: 200px; text-align: left;" class="infoinline">
+        <% ['Tipo de contenido incorrecto', 'Categoría incorrecta', 'Duplicado', 'Ilegible', 'Viola el código de conducta', 'Otra'].each do |r| %>
+          <label><input type="radio" name="deny_reason" value="<%=r%>" selected="selected" /> <%=r%></label><br />
+          <% end -%>
+          <input type="text" class="text" name="deny_reason_other" size="20" style="margin-left: 25px;" />
+        </div>
+
+    </td>
+    <td style="width: 50%; text-align: center;">
+        <input type="image" title="Publicar este contenido" class="content-publish" src="/images/blank.gif" onclick="return mass_publish();" />
+    </td>
+  </tr>
+</table>
+<% end -%>
+</form>
+<% end -%>
+<% end -%>
