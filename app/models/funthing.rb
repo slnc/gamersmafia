@@ -10,7 +10,7 @@ class Funthing < ActiveRecord::Base
   before_save :filter_main
   
   def filter_main
-    if self.main.downcase.include?('<iframe') || self.main.downcase.include?('<script')
+    if self.main.downcase.include?('<script')
       self.errors.add('main', 'No se pueden enviar curiosidades que contengan iframes o código JavaScript.')
       false
     else
