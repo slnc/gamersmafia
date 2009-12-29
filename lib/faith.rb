@@ -223,7 +223,7 @@ module Faith
   
   def self.competitions_matches(user)
     total = 0
-    Competition.find_related_with_user(user.id).each { |c|
+    Competition.related_with_user(user.id).each { |c|
       p = c.get_active_participant_for_user(user) # TODO si un usuario pertenece a más de un clan apuntado al mismo torneo esto no será correcto
       total += c.matches(:completed, :participant => p, :forfeit => false, :count => true) if p
     }

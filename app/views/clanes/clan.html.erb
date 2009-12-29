@@ -55,14 +55,14 @@
 
   <%mftext('Miembros') do %>
   <table>
-    <% #cache("/common/clanes/#{@clan.id}/miembros") do 
+    <% cache("/common/clanes/#{@clan.id}/miembros") do 
     %>
     <% for member in @clan.members %>
     <tr class="<%=oddclass%>">
       <td><%=member_state(member.hstate)%><a href="<%=gmurl(member)%>"><%=member.login%></a></td>
     </tr>
     <% end -%>
-<% #end -%>
+<% end -%>
   </table>
   <% end -%>
   <% end -%>

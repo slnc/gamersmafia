@@ -102,7 +102,7 @@ for @item in collection:
       img = nil
           end
       else %>
-        <td><strong><%=link_to (@item.resolve_hid.strip == '' ? "##{@item.id}" : @item.resolve_hid), gmurlgmurl(@item).gsub('show', 'edit')%></strong><br />
+        <td><strong><%=link_to (@item.resolve_hid.strip == '' ? "##{@item.id}" : @item.resolve_hid), gmurl(@item).gsub('show', 'edit')%></strong><br />
         <span class="infoinline"><%=format_interval((Time.now - @item.created_on).to_i)%> | <%=member_state(@item.user.state)%> <%=link_to @item.user.login, :controller => '/miembros', :action => @item.user.login%></span></td>
       <% end %>
     <% end %>
