@@ -304,7 +304,7 @@ module Cms
           img = Cms::read_image(tmpfile)
           raise Exception unless img
         rescue Exception => errdesc
-          puts "no es una imagen valida tronc... #{errdesc}"
+          puts "no es una imagen valida tronc... #{errdesc}" if RAILS_ENV == 'test'
           imgurl = nil
         else
           imgurl = tmpfile
@@ -696,6 +696,8 @@ module Cms
     if user.has_admin_permission?(:capo) || user.is_superadmin 
       true
     elsif (content.respond_to?(:state) and content.user_id == user.id and content.state == Cms::DRAFT) then
+      true
+    elsif (content.respond_to?(:state) and user.is_hq? and content.state == Cms::PENDING) then
       true
     elsif content.class.name == 'Question' && content.user_id == user.id && (content.created_on > 15.minutes.ago || content.unique_content.comments_count == 0) 
       true

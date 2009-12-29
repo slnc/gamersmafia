@@ -16,8 +16,6 @@ namespace :gm do
     update_factions_stats # Order is important
     update_general_stats
     generate_minicolumns_factions_activity
-    update_users_karma_stats
-    update_users_daily_stats
   end
   
   def generate_minicolumns_factions_activity
@@ -83,7 +81,7 @@ namespace :gm do
       general = 0
       
       # Comments
-      # TODO esto cuenta comentarios contenidos borrados
+      # TODO esto cuenta comentarios de contenidos borrados
       Comment.find(:all, :conditions => "deleted = 'f' AND comments.created_on BETWEEN date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS'))  AND date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS')) + '1 day'::interval - '1 second'::interval", :include => [ :content]).each do |comment|
         if comment.content.game # Contenido de facción
           # Warning: un juego puede aparecer en más de un portal
@@ -287,120 +285,4 @@ namespace :gm do
     end
   end
 
-  def update_users_karma_stats
-    max_day = 1.day.ago
-    start_day = User.db_query("SELECT created_on 
-                                 FROM stats.users_karma_daily_by_portal 
-                             ORDER BY created_on DESC LIMIT 1")
-    if start_day.size > 0
-      start_day = start_day[0]['created_on'].to_time.advance(:days => 1)
-      if start_day < max_day
-        cur_day = start_day
-      else
-        cur_day = max_day
-      end
-    else # no hay records, cogemos el m:as viejo
-      cur_day = User.db_query("SELECT created_on from contents order by created_on asc limit 1")[0]['created_on'].to_time
-    end
-    
-    cur_day = 1.day.ago.beginning_of_day if RAILS_ENV == 'test'
-    
-    while cur_day <= max_day
-      # puts cur_day
-      # iteramos a través de todos los users que han creado contenidos o comentarios hoy
-      User.find(:all, :conditions => "id IN (select user_id 
-                                               from contents 
-                                              where state = #{Cms::PUBLISHED} 
-                                                AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00' UNION
-                                                select user_id 
-                                               from comments 
-                                              where deleted = 'f' AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00')").each do |u|
-        # TODO here
-        Karma.karma_points_of_user_at_date(u, cur_day).each do |portal_id, points|
-          # puts "#{u.login} #{portal_id} #{points}"
-          User.db_query("INSERT INTO stats.users_karma_daily_by_portal(user_id, portal_id, karma, created_on) VALUES(#{u.id}, #{portal_id}, #{points}, '#{cur_day.strftime('%Y-%m-%d')}')")      
-        end
-      end
-      cur_day = cur_day.advance(:days => 1)
-    end
-    # TODO TESTS!!!!
-  end
-  
-  def update_users_daily_stats
-    # AFTER update_users_karma_stats
-    max_day = 1.day.ago
-    start_day = User.db_query("SELECT created_on 
-                                 FROM stats.users_daily_stats 
-                             ORDER BY created_on DESC LIMIT 1")
-    if start_day.size > 0
-      start_day = start_day[0]['created_on'].to_time.advance(:days => 1)
-      if start_day < max_day
-        cur_day = start_day
-      else
-        cur_day = max_day
-      end
-    else # no hay records, cogemos el m:as viejo
-      cur_day = User.db_query("SELECT created_on from contents order by created_on asc limit 1")[0]['created_on'].to_time
-    end
-    
-    cur_day = 1.day.ago.beginning_of_day if RAILS_ENV == 'test'
-    
-    while cur_day <= max_day
-      # puts cur_day
-      # iteramos a través de todos los users que han creado contenidos o comentarios hoy
-      pointz = {}
-      
-      User.find(:all, :conditions => "id IN (select user_id 
-                                               from contents 
-                                              where state = #{Cms::PUBLISHED} 
-                                                AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00' UNION
-                                                select user_id 
-                                               from comments 
-                                              where deleted = 'f' AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00')").each do |u|
-        # TODO here
-        
-        Karma.karma_points_of_user_at_date(u, cur_day).each do |portal_id, points|
-          pointz[u.id] ||= {:karma => 0, :faith => 0, :popularity => 0}
-          pointz[u.id][:karma] += points
-          # puts "#{u.login} #{portal_id} #{points}"
-          # User.db_query("INSERT INTO stats.users_karma_daily_by_portal(user_id, portal_id, karma, created_on) VALUES(#{u.id}, #{portal_id}, #{points}, '#{cur_day.strftime('%Y-%m-%d')}')")      
-        end
-      end
-      
-      # ahora calculamos stats de fe
-      faithres = Faith.faith_points_of_users_at_date_range(cur_day.beginning_of_day, cur_day.end_of_day)
-      faithres.keys.each do |uid|
-        pointz[uid] ||= {:karma => 0, :faith => 0, :popularity => 0}
-        pointz[uid][:faith] += faithres[uid]
-      end
-      
-      # popularidad
-      User.hot('all', cur_day.beginning_of_day, cur_day.end_of_day).each do |hinfo|
-        pointz[hinfo[0].id] ||= {:karma => 0, :faith => 0, :popularity => 0}
-        pointz[hinfo[0].id][:popularity] = hinfo[1] 
-      end
-      
-      pointz.keys.each do |uid|
-        v = pointz[uid]
-        User.db_query("INSERT INTO stats.users_daily_stats(user_id, karma, faith, popularity, created_on) VALUES(#{uid}, #{v[:karma]}, #{v[:faith]}, #{v[:popularity]}, '#{cur_day.strftime('%Y-%m-%d')}')")   
-      end
-      
-      
-      # clans
-      # popularidad
-      Clan.hot('all', cur_day.beginning_of_day, cur_day.end_of_day).each do |hinfo|
-        pointz[hinfo[0].id] ||= {:popularity => 0}
-        pointz[hinfo[0].id][:popularity] = hinfo[1] 
-      end
-      
-      pointz.keys.each do |uid|
-        v = pointz[uid]
-	next unless Clan.find_by_id(uid)
-        User.db_query("INSERT INTO stats.clans_daily_stats(clan_id, popularity, created_on) VALUES(#{uid}, #{v[:popularity]}, '#{cur_day.strftime('%Y-%m-%d')}')")   
-      end
-      
-      cur_day = cur_day.advance(:days => 1)
-    end    
-    # TODO TESTS!!!!
-  end
 end

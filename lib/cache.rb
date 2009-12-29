@@ -1,4 +1,9 @@
 module Cache
+
+  def self.after_daily_key
+    6.hours.ago.strftime("%Y%m%d")
+  end
+
   def self.user_base(uid)
     "/_users/#{uid % 1000}/#{uid}"
   end

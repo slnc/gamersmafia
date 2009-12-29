@@ -6,6 +6,10 @@ module Popularity
   
   def self.update_ranking_users
     lista = {} 
+    #User.db_query("CREATE TEMP table tmp_users_ranking_pos AS SELECT id, cache_popularity, rank() over (order by cache_popularity desc) from users where cache_popularity is not null order by rank() over (order by cache_popularity desc) asc limit 10;
+
+#")
+
     User.db_query("SELECT id, 
                           coalesce((select sum(popularity) 
                                       from stats.users_daily_stats 
@@ -18,12 +22,14 @@ module Popularity
     end
     
     pos = 1
+    real_pos = 1
     lista.keys.sort.reverse.each do |k|
       # en caso de empate los ids menores (mas antiguos) tienen preferencia
       lista[k].sort.each do |uid|
         User.db_query("UPDATE users SET cache_popularity = #{k}, ranking_popularity_pos = #{pos} WHERE id = #{uid}")
-        pos += 1
+        real_pos += 1
       end
+      pos = real_pos
     end
   end
   
@@ -41,12 +47,14 @@ module Popularity
     end
     
     pos = 1
+    real_pos = 1
     lista.keys.sort.reverse.each do |k|
       # en caso de empate los ids menores (mas antiguos) tienen preferencia
       lista[k].sort.each do |uid|
         User.db_query("UPDATE clans SET cache_popularity = #{k}, ranking_popularity_pos = #{pos} WHERE id = #{uid}")
-        pos += 1
+        real_pos += 1
       end
+      pos = real_pos
     end
   end
   

@@ -40,7 +40,7 @@ common: &common
     - defuseit.com
     - sc2-esp.net
     - quakereligion.com
-  system_mail_host: mail.gamersmafia.com
+  system_mail_host: imap.gmail.com
   system_mail_domain: gamersmafia.com
   system_mail_user: nagatodev@gamersmafia.com
   system_mail_password: megustanlasgalletas
