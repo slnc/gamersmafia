@@ -63,7 +63,7 @@ class Admin::CategoriasController < ApplicationController
     # TODO permisos
     @term = Term.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @term
-    render :template => "/admin/categorias/contenidos.rhtml"
+    render :template => "/admin/categorias/contenidos.html.erb"
   end
   
   def update
