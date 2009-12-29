@@ -81,7 +81,7 @@
 <div class="grid-3">
     
 
-<%cache("#{Cache.user_base(@curuser.id)}/profile/rankings/#{Time.now.strftime('%Y%m%d')}") do %>
+<%cache("#{Cache.user_base(@curuser.id)}/profile/rankings/#{Cache.after_daily_key}") do %>
 <%mftext('Karma') do %>
 <%karma_rk_info = Karma.ranking_user(@curuser)%>
 <div class="infoinline right" style="margin-bottom: 3px;">
