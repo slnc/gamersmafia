@@ -25,7 +25,7 @@
   <% end -%>
   <% end -%>
 
-  <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/firmas") do %>
+  <% #cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/firmas") do %>
   <% @curuser.profile_signatures.find(:all, :order => 'updated_on DESC', :include => :signer).each do |ps| %>
   <div id="ps<%=ps.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 20px; padding: 3px;">
   <div class="hidden infoinline delprofilesignature"><%=link_to_remote 'Borrar', :url => "/miembros/del_firma/#{ps.id}", :confirm => '¿Estás seguro?', :complete => "$j('#ps#{ps.id}').fadeOut('normal');"%></div>
@@ -35,7 +35,7 @@
     <span class="infoinline"><%=print_tstamp(ps.updated_on)%></span><br /><%=Comments::formatize(ps.signature)%></div>
   </div>
 <%  end %>
-<%  end %>
+<%  #end %>
 <% if user_is_authed && @user.has_admin_permission?(:capo) then %>
 <script type="text/javascript">$j('div.delprofilesignature').removeClass('hidden');</script>
 <% end -%>
