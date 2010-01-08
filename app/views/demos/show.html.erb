@@ -28,11 +28,11 @@ function open_demo_win(demo_id)
 <table class="skeletal">
 	<tr class="<%=oddclass%>">
 		<th class="w100">Equipo 1</th>
-		<td><% if @demo.entity1.kind_of?(String) then %><%=@demo.entity1.to_s%><% else %><a href="<%=gmurl(@demo.entity1)%>"><%=@demo.entity1.to_s%><% end -%></td>
+	<td><% if @demo.entity1.kind_of?(String) then %><%=@demo.entity1.to_s%><% else %><a href="<%=gmurl(@demo.entity1)%>"><%=@demo.entity1.to_s%></a><% end -%></td>
 	</tr>
 	<tr class="<%=oddclass%>">
 		<th class="w100">Equipo 2</th>
-		<td><% if @demo.entity2.kind_of?(String) then %><%=@demo.entity2.to_s%><% else %><a href="<%=gmurl(@demo.entity2)%>"><%=@demo.entity2.to_s%><% end -%></td>
+	<td><% if @demo.entity2.kind_of?(String) then %><%=@demo.entity2.to_s%><% else %><a href="<%=gmurl(@demo.entity2)%>"><%=@demo.entity2.to_s%></a><% end -%></td>
 	</tr>
 	<tr class="<%=oddclass%>">
 		<th class="w100">Modo de juego</th>
@@ -67,6 +67,31 @@ function open_demo_win(demo_id)
 <%=auto_link(smilelize(@demo.description))%>
 </div>
 
-<div style="margin: 20px; text-align: center;"><a href="" onclick="return open_demo_win(<%=@demo.id%>);"><img class="download-now" src="/images/blank.gif" /></a></div>
+	<div style="margin: 20px; text-align: center;">
+<% if @demo.file.to_s != '' then %>
+<a href="/descargas/download/<%=@demo.id%>"><img class="icon" src="/skins/default/images/btn_descargar.png" /></a><br />
+<% end -%>
+
+	<% mirrors = @demo.demo_mirrors.find(:all, :order => 'lower(url)') 
+if mirrors.size > 0 then %>
+	<table style="margin-top: 20px; border: 1px solid #efefef;">
+		<tr>
+			<th colspan="2">Descargas alternativas</th>
+		</tr>
+		<%mirrors.each do |dm| %>
+		<% begin 
+      mirror_name = URI.parse(dm.url).host.gsub(/www./, '') 
+    rescue
+      mirror_name = nil
+    end
+%>	
+		<tr class="<%=oddclass%>">
+			<td style="text-align: left;"><% if mirror_name then %><a target="_blank" href="http://<%=mirror_name%>/"><%=mirror_name%></a><% end -%></td>
+			<td class="right"><a href="/demos/download/<%=@demo.id%>?r=<%=dm.url%>"><img class="icon" src="/skins/default/images/btn_descargar_mirror.png" /></a></td>
+		</tr>
+		<% end -%>
+	</table>
+	<% end -%>
+	</div>
   <% end %>
 <%end -%>

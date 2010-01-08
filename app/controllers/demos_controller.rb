@@ -53,15 +53,33 @@ class DemosController < ArenaController
   
   def download
     @demo = Demo.find(params[:id])
-    raise ActiveRecord::RecordNotFound unless @demo.is_public? 
+    raise ActiveRecord::RecordNotFound unless @demo.is_public?
+      
     @title = @demo.title
     @demo_mirrors = @demo.demo_mirrors
     Demo.increment_counter('downloaded_times', @demo.id)
-    CacheObserver.expire_fragment("/common/demos/index/demos_#{@demo.main_category.id}/page_*") # TODO MUY HEAVY, no podemos hacer que cada demo suponga borrar todas las caches de índices
+    #dd = @demo.downloaded_demos.create(:user_id => (user_is_authed ? @user.id : nil), :session_id => session[:session_id], :ip => request.remote_ip, :referer => request.env['HTTP_REFERER'].to_s)
+    # TODO PERF no borrar las caches con tanta gracia, ¿no?
+    CacheObserver.expire_fragment("/common/demos/index/downloads_#{@demo.main_category.id}/page_*") # TODO MUY HEAVY, no podemos hacer que cada descarga suponga borrar todas las caches de índices
     CacheObserver.expire_fragment("/common/demos/index/most_demoed_#{@demo.main_category.root_id}")
-    # CacheObserver.expire_fragment("/common/demos/most_demoed_#{@demo.main_category.root_id}")
-    
-    render :layout => 'popup'
+    if params[:r] 
+        #if Cms::URL_REGEXP_FULL =~ params[:r] #DemoMirror.find_by_url(URI::unescape(params[:r]))
+          @demo_link = params[:r]
+        #lse
+        # flash[:error] = "URL de descarga inválida"
+        # redirect_to "/descargas/show/#{@demo.id}"
+        #nd
+    else
+      # CacheObserver.expire_fragment("/common/descargas/most_downloaded_#{@demo.main_category.root_id}")
+	gm_link = @demo.created_on > 1.day.ago ? 0 : 1
+# TODO temp
+#gm_link = nil
+      final_mirror = nil # Demo.create_symlink(dd.download_cookie, @demo.file, gm_link)  # 1 = NLS
+      final_mirror = 0 if final_mirror.nil?
+      end_file = @demo.file.gsub("#{RAILS_ROOT}/public/storage", '')
+      @demo_link = @demo.file # "#{Download::MIRRORS_DOWNLOAD[final_mirror]}d/#{dd.download_cookie}/#{File.basename(end_file)}" 
+    end
+    render :layout => 'blank'
   end
   
   def edit

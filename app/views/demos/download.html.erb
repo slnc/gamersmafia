@@ -1,8 +1,52 @@
+<style type="text/css">
+	body { background: #fff; padding: 0; margin: 0; text-align: center; font-family: Arial;
+		font-size: 14px;}
+		
+	body a  {color: #0049a3}
+	.mgdownloadtop {
+		
+		color: #cdcdcd;
+	}
+	.mgdownloadtop a { color: #fff; text-decoration: none; }
+	.mgdownloadtop a:hover { text-decoration: underline; }
+	.mgdownloadtop p { margin-bottom: 5px; }
+	.mgdownloadtop a { font-weight: bold; }
+		.mgdownloadmiddle {
+		
+	}
+		.mgdownloadbottom img {
+		
+border: 0;
+	}
+</style>
+<div class="mgdownloadtop" style="height: 281px; width: 100%; background: #000 url(/images/bg_patdownload.png) 0 0 repeat-x;">
+	<a href="http://<%=App.domain%>/"><img src="/images/logo_patdownload.png" style="margin-top: 58px; border: 0;"/></a>
+	<p>Estás descargando <a href="<%=gmurl(@demo)%>"><strong><%=@demo.title%></strong></a>.</p>
+	<p>Si la descarga no se inicia automáticamente <a href="<%=@demo_link%>"><strong>haz click aquí</strong></a> o <a href="<%=gmurl(@demo)%>"><strong>elige otro mirror</strong>.</p>
+</div>
+<div class="mgdownloadmiddle" style="line-height: 40px; height: 40px; background: #f1f1f1;"><strong><a href="<%=gmurl(@demo)%>">&laquo; Volver a descargas</a></strong></div>
+<div class="mgdownloadbottom" style="margin-top: 30px;">
+<% if @demo_link.include?(Download::MIRRORS_DOWNLOAD[1]) then %>
+	<%=ads_slots('download-page-nls')%>
+<% else %>
+	<%=ads_slots('download-page')%>
+<% end -%>
+<div style="margin-top: 20px;">
+	<%=ads_slots('download-page-second')%>
+</div>
+</div>
+<script type="text/javascript">
+	window.setTimeout(function() { document.location = '<%=@demo_link%>'}, 2000); 
+</script>
+
+
+
+<% if nil then %>
 <h1>Descargando: <%=@demo.title%></h1>
 <div class="popup-contents">
 <% if @demo.file then %>
 <script type="text/javascript">
-function Demoit()
+function downloadit()
 {
   document.location = '<%=fc_path(@demo.file)%>'
 }
@@ -16,20 +60,22 @@ function updatecounter()
     setTimeout(updatecounter, 1000);
   }
 }
-setTimeout(Demoit, 10000);
+setTimeout(downloadit, 10000);
 setTimeout(updatecounter, 1000);
 </script>
-<p>La demo comenzará automáticamente dentro de <strong id="counter">10</strong> segundos.</p><p><a onclick="$j('#counter').html(0);" href="<%=fc_path(@demo.file)%>">Si quieres demor sin esperar pincha aquí.</a></p>
+<p>La descarga comenzará automáticamente dentro de <strong id="counter">10</strong> segundos.</p><p><a onclick="$j('#counter').html(0);" href="<%=fc_path(@demo.file)%>">Si quieres descargar sin esperar pincha aquí.</a></p>
 <% if @demo.demo_mirrors.size > 0 then %>
 <br />
-<p>Si te da problemas nuestro enlace también puedes demorlo desde estos mirrors externos:</p>
-<%=render :partial => 'demo_mirrors'%>
+<p>Si te da problemas nuestro enlace también puedes descargarlo desde estos mirrors externos:</p>
+<%=render :partial => 'download_mirrors'%>
 <% end -%>
 <% elsif @demo.demo_mirrors.size > 0 then %>
   <p>El archivo que has elegido solo está disponible a través de mirrors externos. Por favor, elige uno:</p>
-<%=render :partial => 'demo_mirrors'%>
-<% else %> 
-  <%# TODO generar aviso %>
+<%=render :partial => 'download_mirrors'%>
+<% else %>
+<%# TODO generar aviso %>
   <p>El archivo elegido no está disponible. Se ha generado un aviso al encargado y se arreglará lo antes posible. Disculpa las molestias.</p>
 <% end %>
 </div>
+
+<% end -%>
