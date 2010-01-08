@@ -368,7 +368,7 @@ having portal_id in (select id
     `find #{FRAGMENT_CACHE_PATH}/*/home/index -name apuestas* -type f -mmin +120 -exec rm {} \\\;`
     `find #{FRAGMENT_CACHE_PATH}/common/miembros/_top_bloggers/ -type f -mmin +1450 -exec rm {} \\\;`
     `find #{FRAGMENT_CACHE_PATH}/common/miembros/index/ -type f -mmin +1450 -exec rm {} \\\;`
-    `find #{FRAGMENT_CACHE_PATH}/common/miembros/_rightside/birthdays_200* -type f -mmin +1450 -exec rm {} \\\;`
+    `find #{FRAGMENT_CACHE_PATH}/common/miembros/_rightside/birthdays_20* -type f -mmin +1450 -exec rm {} \\\;`
     `find /tmp -maxdepth 1 -name RackMultipart\\\* -mmin +60 -exec rm {} \\\;`
     `find /tmp -maxdepth 1 -name CGI\\\* -mmin +60 -exec rm {} \\\;`
   end
