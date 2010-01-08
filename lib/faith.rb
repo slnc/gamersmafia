@@ -23,6 +23,7 @@ module Faith
       'rating' => 5,
       'publishing_decision' => 5,
       'competitions_match' => 25,
+      'users_contents_tag' => 5,
       'hit' => 1,
     # TODO no añadir competiciones hasta que diferenciemos entre ganar por forfeit y ganar
   }
@@ -111,6 +112,16 @@ module Faith
       points[dbc['user_id']] += dbc['count'].to_i * Faith::FPS_ACTIONS['hit']
     end
     
+    # hits
+    User.db_query("SELECT count(*), 
+                          user_id 
+                     FROM users_contents_tags 
+                    WHERE #{created_on_sql}
+                 GROUP BY user_id").each do |dbc|
+      points[dbc['user_id']] ||= 0
+      points[dbc['user_id']] += dbc['count'].to_i * Faith::FPS_ACTIONS['users_contents_tag']
+    end
+    
     # publishing_decisions
     User.db_query("SELECT count(*), 
                           user_id 
@@ -167,6 +178,7 @@ module Faith
     points += Faith.publishing_decisions(user) * Faith::FPS_ACTIONS['publishing_decision']
     points += user.content_ratings.count * Faith::FPS_ACTIONS['rating']
     points += user.comments_valorations.count * Faith::FPS_ACTIONS['rating']
+    points += user.users_contents_tags.count * Faith::FPS_ACTIONS['users_contents_tag']
     points += Competitions.count_all_matches_from_user(user, Competition::COMPLETED_ON_SQL) * Faith::FPS_ACTIONS['competitions_match']
     points
   end
@@ -232,6 +244,10 @@ module Faith
   
   def self.hits(user)
     User.db_query("SELECT count(user_id) FROM refered_hits WHERE user_id = #{user.id}")[0]['count'].to_i
+  end
+  
+  def self.users_contents_tags(user)
+    user.users_contents_tags.count
   end
   
   def self.max_incomplete_resurrections(user)
@@ -305,6 +321,7 @@ module Faith
     [['refered_hits', 'hit'], 
     ['publishing_decisions', 'publishing_decision'], 
     ['content_ratings', 'rating'], 
+    ['users_contents_tags', 'users_contents_tag'], 
     ['comments_valorations', 'rating'],
     ['users', 'registration', 'referer_user_id IS NOT NULL AND lastseen_on >= now() - \'3 months\'::interval ', 'referer_user_id'],
     ['users', 'resurrection', 'resurrected_by_user_id IS NOT NULL AND refered_user_id <> resurrected_by_user_id', 'resurrected_by_user_id', 'lastseen_on'],
@@ -381,6 +398,7 @@ module Faith
     total += Faith::FPS_ACTIONS['resurrection_own'] * User.count(:conditions => "state <> #{User::ST_UNCONFIRMED} AND coalesce(referer_user_id, 0) = resurrected_by_user_id and resurrected_by_user_id is not null AND created_on < '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND lastseen_on > '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND resurrection_started_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")
     total += Faith::FPS_ACTIONS['rating'] * ContentRating.count(:conditions => "created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")
     total += Faith::FPS_ACTIONS['publishing_decision'] * PublishingDecision.count(:conditions => "created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")
+    total += Faith::FPS_ACTIONS['users_contents_tag'] * UsersContentsTag.count(:conditions => "created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")
     total += Faith::FPS_ACTIONS['competitions_match'] * CompetitionsMatch.count(:conditions => "#{Competition::COMPLETED_ON_SQL} and completed_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")
     total += Faith::FPS_ACTIONS['hit'] * User.db_query("SELECT count(*) FROM refered_hits WHERE created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")[0]['count'].to_i
     total

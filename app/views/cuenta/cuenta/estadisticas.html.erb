@@ -85,6 +85,12 @@
       <td><%=Faith.publishing_decisions(@user)%></td>
       <td><%=draw_pcent_bar(Faith.publishing_decisions(@user) * Faith::FPS_ACTIONS['publishing_decision'].to_f / ((@user.faith_points > 0) ? @user.faith_points : 1))%></td>
     </tr>
+	
+	<tr class="<%=oddclass%>">
+      <td>Tags creados</td>
+      <td><%=Faith.users_contents_tags(@user)%></td>
+      <td><%=draw_pcent_bar(Faith.publishing_decisions(@user) * Faith::FPS_ACTIONS['users_contents_tag'].to_f / ((@user.faith_points > 0) ? @user.faith_points : 1))%></td>
+    </tr>
   </table>
   <% end -%>
 <% end -%>
