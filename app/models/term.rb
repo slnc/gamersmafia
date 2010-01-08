@@ -122,9 +122,7 @@ class Term < ActiveRecord::Base
       #return false
     end
     
-    ct = self.contents_terms.new(:content_id => content.id)
-    ct.set_import_mode
-    ct.save
+    ct = self.contents_terms.create(:content_id => content.id)
     
     if normal_op # TODO quitar esto despues de 2009.1
       self.recalculate_last_updated_item_id
