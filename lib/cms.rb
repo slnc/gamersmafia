@@ -912,7 +912,7 @@ module Cms
     "<img class=\"factionfavicon gs-#{code}\" title=\"#{name}\" src=\"/images/blank.gif\" />"
   end
   
-  VERBOTEN_TAGS = %w(form script plaintext font u applet body iframe) unless defined?(VERBOTEN_TAGS)
+  VERBOTEN_TAGS = %w(form script plaintext u applet iframe) unless defined?(VERBOTEN_TAGS)
   VERBOTEN_ATTRS_REGEXP = /^on/i unless defined?(VERBOTEN_ATTRS_REGEXP)
   #VERBOTEN_ATTRS = %w()
   
