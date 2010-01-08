@@ -242,6 +242,8 @@ Request information:
     elsif cls_name == 'Term'
       if object.taxonomy.nil? && opts[:taxonomy].nil?
         raise "gmurl for term without taxonomy specified"
+      elsif object.taxonomy == 'ContentsTag'
+        "/tags/#{object.slug}"
       else
         opts[:taxonomy] = object.taxonomy unless opts[:taxonomy]
         if opts[:taxonomy].index('Category')

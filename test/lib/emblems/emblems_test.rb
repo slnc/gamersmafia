@@ -77,7 +77,7 @@ class EmblemsTest < ActiveSupport::TestCase
   
   test "give_emblems_funniest" do
     assert_gives_emblem('funniest') do
-      cv = CommentsValoration.new(:weight => 1.0, :comment_id => 1, :user_id => 2, :comments_valorations_type_id => CommentsValorationsType.find_by_name('Divertido').id)
+      cv = CommentsValoration.new(:weight => 1.0, :comment_id => 1, :user_id => 3, :comments_valorations_type_id => CommentsValorationsType.find_by_name('Divertido').id)
       assert cv.save, cv.errors.full_messages_html
       User.db_query("UPDATE comments_valorations SET created_on = created_on - '1 hour'::interval")
     end
@@ -85,7 +85,7 @@ class EmblemsTest < ActiveSupport::TestCase
   
   test "give_emblems_profoundest" do
     assert_gives_emblem('profoundest') do
-      cv = CommentsValoration.new(:weight => 1.0, :comment_id => 1, :user_id => 2, :comments_valorations_type_id => CommentsValorationsType.find_by_name('Profundo').id)
+      cv = CommentsValoration.new(:weight => 1.0, :comment_id => 1, :user_id => 3, :comments_valorations_type_id => CommentsValorationsType.find_by_name('Profundo').id)
       assert cv.save, cv.errors.full_messages_html
       User.db_query("UPDATE comments_valorations SET created_on = created_on - '1 hour'::interval")
     end
@@ -93,7 +93,7 @@ class EmblemsTest < ActiveSupport::TestCase
   
   test "give_emblems_most_informational" do
     assert_gives_emblem('most_informational') do
-      cv = CommentsValoration.new(:weight => 1.0, :comment_id => 1, :user_id => 2, :comments_valorations_type_id => CommentsValorationsType.find_by_name('Informativo').id)
+      cv = CommentsValoration.new(:weight => 1.0, :comment_id => 1, :user_id => 3, :comments_valorations_type_id => CommentsValorationsType.find_by_name('Informativo').id)
       assert cv.save, cv.errors.full_messages_html
       User.db_query("UPDATE comments_valorations SET created_on = created_on - '1 hour'::interval")
     end
@@ -101,7 +101,7 @@ class EmblemsTest < ActiveSupport::TestCase
   
   test "give_emblems_most_interesting" do
     assert_gives_emblem('most_interesting') do
-      cv = CommentsValoration.new(:weight => 1.0, :comment_id => 1, :user_id => 2, :comments_valorations_type_id => CommentsValorationsType.find_by_name('Interesante').id)
+      cv = CommentsValoration.new(:weight => 1.0, :comment_id => 1, :user_id => 3, :comments_valorations_type_id => CommentsValorationsType.find_by_name('Interesante').id)
       assert cv.save, cv.errors.full_messages_html
       User.db_query("UPDATE comments_valorations SET created_on = created_on - '1 hour'::interval")
     end

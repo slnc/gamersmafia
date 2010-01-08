@@ -7,9 +7,13 @@ class CommentsValoration < ActiveRecord::Base
   after_destroy :reset_users_daily_allocation
   
   before_save :check_not_self
-  
+  after_create :reset_user_cache 
   
   private
+  def reset_user_cache
+    self.comment.user.update_attributes(:cache_valorations_weights_on_self_comments => nil)
+  end
+  
   def check_not_self
     user_id != comment.user_id
   end

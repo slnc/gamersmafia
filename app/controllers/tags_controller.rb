@@ -4,7 +4,7 @@ class TagsController < ApplicationController
   end
   
   def show
-    @tag = Term.find(params[:id])
+    @tag = Term.find_by_slug(params[:id])
     @title = @tag.name
   end
 end
