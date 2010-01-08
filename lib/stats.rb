@@ -630,7 +630,7 @@ group by date_trunc('day', created_on) order by s asc
   
   def self.user_comments_by_rating(u)
     res = {}
-    User.db_query("SELECT count(*)*sum(weight) as count,
+    User.db_query("SELECT sum(weight) as count,
                           comments_valorations_type_id
                      FROM comments_valorations
                      JOIN comments on comments_valorations.comment_id = comments.id

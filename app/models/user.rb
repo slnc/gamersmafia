@@ -215,6 +215,20 @@ end
       self.save
     end
   end
+
+  def valorations_on_self_comments
+    User.db_query("SELECT count(*) as count
+                     FROM comments_valorations                     
+ 	  	     JOIN comments on comments_valorations.comment_id = comments.id
+                    WHERE comments.user_id = #{self.id}")[0]['count'].to_i
+  end
+
+  def valorations_weights_on_self_comments
+    res = User.db_query("SELECT sum(weight) as sum
+                     FROM comments_valorations                     
+ 	  	     JOIN comments on comments_valorations.comment_id = comments.id
+                    WHERE comments.user_id = #{self.id}")[0]['sum'].to_f
+  end
   
   def method_missing(method_id, *args)
     smethod_id = method_id.to_s

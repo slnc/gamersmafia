@@ -156,8 +156,16 @@ dat[cvt.id] = 0 unless dat[cvt.id] %>
     </table>
 <table>
 	<tr>
-		<td class="infoinline">Total comentarios</td>
+		<td class="infoinline">Comentarios</td>
 		<td class="right infoinline"><%=@curuser.comments.count(:conditions => "deleted = 'f'")%></td>
+	</tr>
+	<tr>
+		<td class="infoinline">Valoraciones</td>
+		<td class="right infoinline"><%=@curuser.valorations_on_self_comments%></td>
+	</tr>
+	<tr>
+		<td class="infoinline">Pesos valoraciones</td>
+		<td class="right infoinline"><%=format("%.0f", @curuser.valorations_weights_on_self_comments)%></td>
 	</tr>
 </table>
 <%#=horizontal_stacked_bar(:size => '94x80', :data => dat.values, :axis_labels => dat.keys.collect { |pid| Portal.find_by_id(pid).code }) %>
