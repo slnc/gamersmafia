@@ -11,7 +11,7 @@ class TagsControllerTest < ActionController::TestCase
     
     t = Term.create(:taxonomy => 'ContentsTag', :name => 'foo')
     t.link(Content.find(:first))
-    get :show, :id => t.id
+    get :show, :id => t.slug
     assert_response :success
   end
 end
