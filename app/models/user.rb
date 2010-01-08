@@ -149,25 +149,25 @@ class User < ActiveRecord::Base
     end
   end
   
-def latent_rating(c)
-cr = self.content_ratings.find_by_content_id(c.id)
-if cr
-  cr.rating
-else
-  comments_count = c.comments.count(:conditions => ['user_id = ?', self.id])
-  if comments_count = 0
-          5.5
-  else    
-          comments_count = 5 if comments_count > 5
-          5 + comments_count
-  end     
-end     
-end
-
-  def contents_visited_between(t1, t2)
-    self.tracker_items.find(:all, :conditions => ['lastseen_on BETWEEN ? AND ?', t1, t2], :include => :content).collect { |ti| ti.content } || []
+  def latent_rating(c)
+    cr = self.content_ratings.find_by_content_id(c.id)
+    if cr
+      cr.rating
+    else
+      comments_count = c.comments.count(:conditions => ['user_id = ?', self.id])
+      if comments_count = 0
+        5.5
+      else    
+        comments_count = 5 if comments_count > 5
+        5 + comments_count
+      end     
+    end     
   end
-
+  
+  def contents_visited_between(t1, t2)
+    self.tracker_items.find(:all, :conditions => ['lastseen_on BETWEEN ? AND ?', t1, t2], :include => :content).collect { |ti| ti.content } || []
+  end
+  
   def check_permissions
     self.users_roles.clear if slnc_changed?(:state) && STATES_CANNOT_LOGIN.include?(self.state)
   end
@@ -215,19 +215,22 @@ end
       self.save
     end
   end
-
+  
   def valorations_on_self_comments
     User.db_query("SELECT count(*) as count
                      FROM comments_valorations                     
- 	  	     JOIN comments on comments_valorations.comment_id = comments.id
+           JOIN comments on comments_valorations.comment_id = comments.id
                     WHERE comments.user_id = #{self.id}")[0]['count'].to_i
   end
-
+  
   def valorations_weights_on_self_comments
-    res = User.db_query("SELECT sum(weight) as sum
+    if self.cache_valorations_weights_on_self_comments.nil?
+      self.update_attributes(:cache_valorations_weights_on_self_comments => User.db_query("SELECT sum(weight) as sum
                      FROM comments_valorations                     
- 	  	     JOIN comments on comments_valorations.comment_id = comments.id
-                    WHERE comments.user_id = #{self.id}")[0]['sum'].to_f
+           JOIN comments on comments_valorations.comment_id = comments.id
+                    WHERE comments.user_id = #{self.id}")[0]['sum'].to_f)
+    end
+    self.cache_valorations_weights_on_self_comments
   end
   
   def method_missing(method_id, *args)
@@ -299,7 +302,7 @@ end
   end
   
   def _no_cache_is_faction_leader?
-    (!self.faction_id.nil?) && (self.has_admin_permission?(:capo) || self.users_roles.count(:conditions => "role IN ('Boss', 'Underboss')") > 0)
+   (!self.faction_id.nil?) && (self.has_admin_permission?(:capo) || self.users_roles.count(:conditions => "role IN ('Boss', 'Underboss')") > 0)
   end
   
   def is_faction_leader?

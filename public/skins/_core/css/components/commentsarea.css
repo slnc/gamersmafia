@@ -1,7 +1,7 @@
 /* unclean */
 .comments-area .comment {
-    clear: left;
-    margin-top: 10px;
+	clear: both;
+	margin-top: 45px;
 }
 
 .comments-area .user-info,

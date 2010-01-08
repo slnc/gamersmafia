@@ -1525,7 +1525,8 @@ CREATE TABLE global_vars (
     ads_slots_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     gmtv_channels_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     pending_contents integer DEFAULT 0 NOT NULL,
-    portals_updated_on timestamp without time zone DEFAULT now() NOT NULL
+    portals_updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    max_cache_valorations_weights_on_self_comments numeric
 );
 CREATE SEQUENCE global_vars_id_seq
     START WITH 1
@@ -2605,7 +2606,8 @@ CREATE TABLE users (
     ranking_faith_pos integer,
     ranking_popularity_pos integer,
     cache_popularity integer,
-    login_is_ne_unfriendly boolean DEFAULT false NOT NULL
+    login_is_ne_unfriendly boolean DEFAULT false NOT NULL,
+    cache_valorations_weights_on_self_comments numeric
 );
 CREATE TABLE users_actions (
     id integer NOT NULL,

@@ -268,7 +268,7 @@ type: 'bhs'}))
   
   def comments_icon(name, desp=false)   
     vdesp = desp ? '0' : '12'
-    '<img class="comments-icon" src="/images/blank.gif" style="background-position: -' << COMMENTS_DESPL[name] << 'px -' << vdesp << 'px;" />'
+    '<img alt="' << "#{name}" << '" title="' << "#{name}" << '" class="comments-icon" src="/images/blank.gif" style="background-position: -' << COMMENTS_DESPL[name] << 'px -' << vdesp << 'px;" />'
   end
   
   def notags(txt)
@@ -439,7 +439,7 @@ type: 'bhs'}))
     out
   end
   
-  def draw_pcent_bar(pcent, text = nil, compact=false)
+  def draw_pcent_bar(pcent, text = nil, compact=false, color=nil)
     # 0 <= pcent <= 1
     if (pcent.kind_of?(Float) && pcent.nan? ) || pcent == Infinity
       pcent = 0
@@ -450,7 +450,7 @@ type: 'bhs'}))
     # text = "%.2f" % pcent if text == nil
     text = "#{(pcent*100).to_i}%" if text == nil
     
-    "<div class=\"pcent-bar#{(compact)?' compact':''}\"><img src=\"/images/blank.gif\" title=\"#{text}\" class=\"bar\" style=\"width: #{(pcent*100).to_i}%;\" /></div>"
+    "<div class=\"pcent-bar#{(compact)?' compact':''}\"><img src=\"/images/blank.gif\" title=\"#{text}\" class=\"bar\" style=\"width: #{(pcent*100).to_i}%; #{'background-color: ' + color + ';' if color}\" /></div>"
   end
   
   def draw_rating(rating_h)

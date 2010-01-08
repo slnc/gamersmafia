@@ -270,4 +270,8 @@ class UserTest < ActiveSupport::TestCase
     assert u1.update_attributes(:lastseen_on => Time.now)
     assert_equal User::ST_SHADOW, u1.state
   end
+  
+  test "comments_valorations_weights" do
+    assert_equal 0.5, Comment.find(1).user.valorations_weights_on_self_comments
+  end
 end

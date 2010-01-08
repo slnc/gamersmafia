@@ -6,8 +6,8 @@ namespace :gm do
     begin
       Rake::Task['log:clear'].invoke
     rescue
-  end
-  
+    end
+    
     Rake::Task['gm:alariko'].invoke
     clear_anonymous_users
     clear_faith_points_of_referers_and_resurrectors
@@ -29,12 +29,17 @@ namespace :gm do
     kill_zombified_staff
     GmSys.job('Notification.check_global_notifications')
     close_old_open_questions
-
+    
     update_users_karma_stats
     update_users_daily_stats
     Popularity.update_rankings
     Karma.update_ranking
     Faith.update_ranking
+    update_max_cache_valorations_weights_on_self_comments
+  end
+  
+  def update_max_cache_valorations_weights_on_self_comments
+    execute "update global_vars set max_cache_valorations_weights_on_self_comments = (select max(cache_valorations_weights_on_self_comments) from users where cache_valorations_weights_on_self_comments is not null);"
   end
   
   def forget_old_pageviews
@@ -372,7 +377,7 @@ having portal_id in (select id
     `find /tmp -maxdepth 1 -name RackMultipart\\\* -mmin +60 -exec rm {} \\\;`
     `find /tmp -maxdepth 1 -name CGI\\\* -mmin +60 -exec rm {} \\\;`
   end
-
+  
   def update_users_karma_stats
     max_day = 1.day.ago
     start_day = User.db_query("SELECT created_on 
@@ -481,7 +486,7 @@ having portal_id in (select id
       
       pointz.keys.each do |uid|
         v = pointz[uid]
-	next unless Clan.find_by_id(uid)
+        next unless Clan.find_by_id(uid)
         User.db_query("INSERT INTO stats.clans_daily_stats(clan_id, popularity, created_on) VALUES(#{uid}, #{v[:popularity]}, '#{cur_day.strftime('%Y-%m-%d')}')")   
       end
       
