@@ -247,10 +247,6 @@ if u_clans.size == 0 then %>
 	
       </div>
     </div>
-    <style type="text/css">
-           #logo img { background: url(/images/gm_christmas.jpg); }
-    </style>
-
 
 	<div id="mgintellibar" class="module"><div class="mcontent">
 		<% if user_is_authed then %>
@@ -394,7 +390,7 @@ if user_is_authed && @user.is_faction_leader? && @user.faction_id then %>
 if crecs.size > 0 then %>
 <div id="recommended-bg-text"></div>
 <%mflist('Recomendaciones', crecs, :class => 'new', :class_container => 'mfcontents-ul', :id => 'recommendations4u') do |crec| %>
-	<a class="content<%=crec.content.id%>" href="<%=gmurl(crec.content)%>" title="de <%=crec.sender.login%> <%=": #{crec.comment}" if crec.comment.to_s != ''%>"><%=truncate(crec.content.name, 26, '..')%></a>
+	<a class="content<%=crec.content.id%>" href="<%=gmurl(crec.content)%>" title="<%=o.main_category ? "#{o.main_category.root.code} | " : ''%><%=h o.resolve_hid%> (<%=crec.sender.login%>) <%=": #{crec.comment}" if crec.comment.to_s != ''%>"><%=truncate(crec.content.name, 26, '..')%></a>
 <% end -%>
 <% end %><%# mftext -%>
 <% end %><%# if crecs -%>
