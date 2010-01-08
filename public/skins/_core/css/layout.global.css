@@ -22,9 +22,10 @@ body {
     height: 1%;
     min-height: auto;
 	line-height: 145%;
-    padding: 8px 10px 20px 8px;;
+    padding: 8px 10px 20px 8px;
 	margin: 6px 0 30px 165px;
 	border: 0;
+	clear: left;
 }
 
 .module {
