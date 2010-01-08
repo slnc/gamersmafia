@@ -18,7 +18,7 @@ class FaithObserverTest < ActiveSupport::TestCase
   test "should_take_faith_after_destroying_users_contents_tag" do
     test_should_give_faith_after_creating_users_contents_tag
     @initial_fp = @u1.faith_points
-    UsersContentsTag.tag_content(@content, @u1, '', delete_missing=false)
+    UsersContentsTag.tag_content(@content, @u1, '', delete_missing=true)
     @u1.reload
     assert_equal @initial_fp - Faith::FPS_ACTIONS['users_contents_tag']*2, @u1.faith_points
   end
