@@ -13,7 +13,7 @@
 <ul class="sidelist">
 <% cache("/#{controller.portal.code}/eventos/index/cur_events_#{Time.now.strftime('%Y%m%d')}") do %>
 	<% controller.portal.event.find(:all, :content_type => 'Event', :conditions => "events.parent_id is null and starts_on <= now() and ends_on >= now()", :order => 'starts_on ASC', :limit => 5).each do |c| %>
-  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
+  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
   <% end -%>
 </ul>
 <% end -%>
@@ -21,7 +21,7 @@
 <% mftext('Próximos eventos') do %>
 <ul class="sidelist">
   <% controller.portal.event.find(:all, :content_type => 'Event', :conditions => "events.parent_id is null and starts_on >= now()", :order => 'starts_on ASC', :limit => 5).each do |c| %>
-  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
+  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
   <% end -%>
 </ul>
 <% end -%>

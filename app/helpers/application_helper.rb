@@ -453,7 +453,8 @@ type: 'bhs'}))
     "<div class=\"pcent-bar#{(compact)?' compact':''}\"><img src=\"/images/blank.gif\" title=\"#{text}\" class=\"bar\" style=\"width: #{(pcent*100).to_i}%;\" /></div>"
   end
   
-  def draw_rating(rating_points)
+  def draw_rating(rating_h)
+    rating_points = rating_h[0]
     if rating_points.nil?
       src = 'grey'
       text = 'No hay suficientes valoraciones'
@@ -462,11 +463,11 @@ type: 'bhs'}))
       text = "Valoración: #{src}"
     end
     
-    "<span class=\"rating stars#{src}\"><span><img alt=\"#{text}\" title=\"#{text}\" src=\"/images/blank.gif\" width=\"64\" height=\"13\" /></span></span>"
+    "<span class=\"rating stars#{src}\"><span><img alt=\"#{text}\" title=\"#{text} (#{rating_h[1]} valoraciones)\" src=\"/images/blank.gif\" width=\"64\" height=\"13\" /></span></span>"
   end
   
   def draw_contentheadline(content)
-    "<div class=\"infoinline\">#{print_tstamp(content.created_on)} | #{draw_rating(content.rating[0])} | <span class=\"comments-count\"><a title=\"Ver comentarios\" href=\"#{controller.url_for_content_onlyurl(content)}\#comments\">#{content.unique_content.comments_count}</a></span></div>"
+    "<div class=\"infoinline\">#{print_tstamp(content.created_on)} | #{draw_rating(content.rating)} | <span class=\"comments-count\"><a title=\"Ver comentarios\" href=\"#{controller.url_for_content_onlyurl(content)}\#comments\">#{content.unique_content.comments_count}</a></span></div>"
   end
   
   def draw_faction_building(faction_id, stories=1)
@@ -759,7 +760,7 @@ END
   def show_rating_title(obj)
     if obj.is_public?
       out = "<div id=\"content-stats-title\">"
-      out<< "<div id=\"content-stats2\" class=\"content-rating\" class=\"centered\">#{draw_rating(obj.rating[0])}</div>"
+      out<< "<div id=\"content-stats2\" class=\"content-rating\" class=\"centered\">#{draw_rating(obj.rating)}</div>"
       out<< '</div>'
     end
   end
@@ -767,7 +768,7 @@ END
   def show_rating(obj)
     if obj.is_public?
       out = "<div id=\"content-stats\">"
-      out<< "<div class=\"content-rating\" class=\"centered\">#{draw_rating(obj.rating[0])}<br /><span class=\"infoinline\">(#{obj.rating[1]} valoraciones)</span></div>"
+      out<< "<div class=\"content-rating\" class=\"centered\">#{draw_rating(obj.rating)}<br /><span class=\"infoinline\">(#{obj.rating[1]} valoraciones)</span></div>"
       if obj.respond_to?(:downloaded_times) then
         out<< "<div class=\"pageviews-count\" style=\"line-height: 18px;\" title=\"Leído #{obj.hits_anonymous + obj.hits_registered} veces\"><strong>#{obj.hits_anonymous + obj.hits_registered}</strong> lecturas</div><div class=\"downloads-count\" style=\"line-height: 18px;\" title=\"Descargado #{obj.downloaded_times} veces\"><strong>#{obj.downloaded_times}</strong> descargas</div>"
       else

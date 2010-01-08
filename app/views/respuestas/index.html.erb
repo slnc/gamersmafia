@@ -24,7 +24,7 @@
 @questions.each do |question| %>
     <div class="<%=oddclass%>">
 			<div><img class="avatar" style="float: left; margin-right: 10px;" src="/cache/thumbnails/f/38x38<%=question.user.show_avatar%>" /> <%=faction_favicon(question)%> <strong><%= link_to question.title, gmurl(question) %></strong></div>
-			<div class="infoinline"><% if question.prize > Question::MIN_AMMOUNT then %><strong><%=question.prize.to_i%></strong> <%=gmd11%> | <% end-%><%=draw_rating(question.rating[0])%> | <%=user_link(question.user)%></div>
+			<div class="infoinline"><% if question.prize > Question::MIN_AMMOUNT then %><strong><%=question.prize.to_i%></strong> <%=gmd11%> | <% end-%><%=draw_rating(question.rating)%> | <%=user_link(question.user)%></div>
     </div>
     <br />
 <% end %>
@@ -38,7 +38,7 @@
 @questions.each do |question| %>
     <div class="<%=oddclass%>">
 			<div><img class="avatar" style="float: left; margin-right: 10px;" src="/cache/thumbnails/f/38x38<%=question.user.show_avatar%>" /> <%=faction_favicon(question)%> <strong><%= link_to question.title, gmurl(question) %></strong></div>
-			<div class="infoinline"><%=draw_rating(question.rating[0])%> | <%=user_link(question.user)%></div>
+			<div class="infoinline"><%=draw_rating(question.rating)%> | <%=user_link(question.user)%></div>
     </div>
     <br />
 <% end %>

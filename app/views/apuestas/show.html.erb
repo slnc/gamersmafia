@@ -23,7 +23,7 @@ La partida está en curso o finalizada, ya no se permiten las apuestas.
 <% other_bets = @bet.main_category.find(:published, :content_type => 'Bet', :order => 'created_on desc', :limit => 5)
 if other_bets.size > 0 then %>
 <%mfcontents_list('Más apuestas', other_bets, :faction_favicon => true) do |item| %>
-<%=content_category(item)%><%=controller.url_for_content(item, item.title)%><div class="infoinline"><%=draw_rating(item.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(item)%>#comments"><%=item.cache_comments_count%></a></span></div>
+<%=content_category(item)%><%=controller.url_for_content(item, item.title)%><div class="infoinline"><%=draw_rating(item.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(item)%>#comments"><%=item.cache_comments_count%></a></span></div>
 <% end -%>
 
 <% end -%>

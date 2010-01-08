@@ -6,7 +6,7 @@
 <%  # TODO BUG portal unsafe
   cache("/common/imagenes/potds/best_rated_all#{Time.now.strftime('%Y%m%d')}") do %>
   <% for c in ImagesCategory.most_rated_items(:content_type => 'Image') %>
-  <li class="<%=oddclass%>"><span class="screenshot"><%=link_to fc_thumbnail(c.file, 'f', '85x60', false), gmurl(c)%></span><br /><%=draw_rating(c.rating[0])%></li>
+  <li class="<%=oddclass%>"><span class="screenshot"><%=link_to fc_thumbnail(c.file, 'f', '85x60', false), gmurl(c)%></span><br /><%=draw_rating(c.rating)%></li>
   <% end -%>
 <% end -%>
 </ul>

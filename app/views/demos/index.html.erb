@@ -8,7 +8,7 @@
 <%	# TODO cache %>
 <% controller.portal.demo.find(:published, :order => 'downloaded_times DESC', :limit => 5).each do |d| %>
 <li class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%>
-  <div class="infoinline"><span class="downloads-count"><%=d.downloaded_times%></span> | <%=draw_rating(d.rating[0])%></div></li>
+  <div class="infoinline"><span class="downloads-count"><%=d.downloaded_times%></span> | <%=draw_rating(d.rating)%></div></li>
 <% end -%>
 </ul>
 <% end -%>

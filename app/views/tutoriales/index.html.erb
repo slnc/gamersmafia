@@ -6,7 +6,7 @@
 <% mftext('Mejor valoradas') do %>
 <ul class="sidelist">
   <% @category.most_rated_items(:content_type => 'Tutorial').each do |c| %>
-  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
+  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
   <% end -%>
 </ul>
 <% end -%>
@@ -17,7 +17,7 @@
 <% cache("/common/tutoriales/index/most_popular/#{@category.id}_#{Time.now.to_i/(86400)}") do %>
 <ul class="sidelist">
   <% @category.most_popular_items(:content_type => 'Tutorial').each do |c| %>
-  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
+  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
   <% end -%>
 </ul>
 <% end -%>
@@ -32,7 +32,7 @@ cache("/common/tutoriales/_latest_by_cat/#{@category.id}") do %>
 <% mftext('Más recientes') do %>
 <ul class="sidelist">
 	<% @category.find(:published, :content_type => 'Tutorial', :order => 'created_on DESC', :limit => 5).each do |c| %>
-  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating[0])%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
+  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
   <% end -%>
 </ul>
 <% end -%>
