@@ -1,4 +1,8 @@
 <div class="grid-11">
+<% unless @curuser.can_login? %>
+<div class="warning">Esta cuenta está <strong><%=User::STATES_DESCRIPTIONS[@curuser.state]%></strong></div>
+<% end -%>
+	
 <%mftext(@curuser.login, :grid => 5) do %>
 <div style="float: left; text-align: center; margin-right: 7px;"><%=fc_thumbnail(@curuser.show_photo, 'k', '161x161', false)%></div>
   <div style="margin-left: 60px;">

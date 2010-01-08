@@ -26,6 +26,12 @@ class User < ActiveRecord::Base
   STATES_CAN_LOGIN = [ST_ACTIVE, ST_ZOMBIE, ST_RESURRECTED, ST_SHADOW]
   STATES_CANNOT_LOGIN = [ST_UNCONFIRMED, ST_BANNED, ST_DISABLED, ST_DELETED, ST_UNCONFIRMED_1W, ST_UNCONFIRMED_2W]
   
+  STATES_DESCRIPTIONS = {ST_UNCONFIRMED => 'no confirmada',
+                         ST_BANNED => 'baneada',
+                         ST_DISABLED => 'deshabilitada',
+                         ST_DELETED => 'borrada',
+                         ST_UNCONFIRMED_1W => 'no confirmada',
+                         ST_UNCONFIRMED_2W => 'no confirmada'}
   has_many :groups_messages
   
   has_many :users_roles, :dependent => :destroy
@@ -124,6 +130,10 @@ class User < ActiveRecord::Base
   before_save :check_if_website
   
   named_scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})", :order => 'lower(login)'
+  
+  def can_login?
+    STATES_CAN_LOGIN.include?(self.state)   
+  end
   
   def check_if_shadow
     self.state = ST_SHADOW if self.state == ST_ZOMBIE && self.lastseen_on > 1.minute.ago
