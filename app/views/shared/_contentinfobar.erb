@@ -6,10 +6,6 @@
 <%=render :partial => '/shared/content_tags_bar.erb', :locals => { :object => object.unique_content } %>
 </div>
 
-<div style="position: absolute; float: left; margin-top: 43px; margin-left: 4px;" class="infoinline">
-<span class="pageviews-count" style="line-height: 18px;" title="Leído <%=object.hits_anonymous + object.hits_registered%> veces"><%=object.hits_anonymous + object.hits_registered%></span>
-<% if %w(Download Demo).include?(object.class.name) then%> &nbsp; <span class="downloads-count" style="line-height: 18px;" title="Descargado <%=object.downloaded_times%> veces"><%=object.downloaded_times%></span><% end -%>
-</div>
 <div class="contentinfobar">
   	  <div class="last f_sm">
 	  <%cache("/common/contents/#{object.class.name}/#{object.id % 100}/#{object.id}") do %>
@@ -20,6 +16,7 @@
     </div>
 	<% end -%>
   </div>
+  
   <ul style="font-size:11px;">
   <% if user_is_authed then 
 can_edit = Cms::user_can_edit_content?(@user, object) 
@@ -37,7 +34,7 @@ can_delete = Cms::user_can_delete_content?(@user, object) %>
 	  <%  # TODO hack temporal hasta que funcione siempre lo de no devolver unknown como ip
   ip = (request.remote_ip == 'unknown') ? '127.0.0.1' : request.remote_ip
   if ((not user_is_authed and not ContentRating.find(:first, :conditions => ['user_id is null and ip = ? and created_on > now() - \'1 day\'::interval', @ip])) or (user_is_authed and @user.can_rate?(object))) %>
-  <li class="actions">
+  <li class="actions <%='first' unless user_is_authed%>">
   <div id="ratebar-container">Valorar:</div>
   <div id="ratebar"><%
     d = 1..10
@@ -50,6 +47,12 @@ can_delete = Cms::user_can_delete_content?(@user, object) %>
   </li>
   <% end -%>
 	</ul>
+
+	<div style="float: left; margin-top: 4px; margin-left: 4px;" class="infoinline">
+<span class="pageviews-count" style="line-height: 18px;" title="Leído <%=object.hits_anonymous + object.hits_registered%> veces"><%=object.hits_anonymous + object.hits_registered%></span>
+<% if %w(Download Demo).include?(object.class.name) then%> &nbsp; <span class="downloads-count" style="line-height: 18px;" title="Descargado <%=object.downloaded_times%> veces"><%=object.downloaded_times%></span><% end -%>
+</div>
+
 	<style type="text/css">#admin-controls li { float: right; }
 	.contentinfobar li{ height: 26px; }</style>
 	<ul class="infoinline" id="admin-controls" style="background: transparent; margin-bottom: 0; text-align: right;">

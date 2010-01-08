@@ -11,5 +11,5 @@
     background: url(../../images/s.png) 0 -274px no-repeat;
 }
 
-#ratebar-container { float: left; z-index: 1000; }
+#ratebar-container { float: left; z-index: 1000; width: 47px; }
 #ratebar img {  height: 13px; margin: 0; }
