@@ -38,7 +38,7 @@ module MiembrosHelper
     strength = user.get_comments_valorations_strength # 0.0 # udata[1]
     opacity = user.valorations_weights_on_self_comments / controller.global_vars['max_cache_valorations_weights_on_self_comments'].to_f
     opacity = 1.0 if opacity > 1
-    opacity = 0.15 if opacity < 0.15
+    opacity = 0.15 if opacity < 0.15 || opacity.nan?
     # rgb_color = '#' + [1 - opacity, 1 - opacity, 1 - opacity].collect { |v| sprintf("%02x", (v*255).to_i) }.join
     # rgb_color = '#c0c0c0' if rgb_color > '#c0c0c0'
     
