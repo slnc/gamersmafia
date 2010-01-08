@@ -1,1 +1,26 @@
-index
+<%generic_support do %>
+<% mftext("Los que más taguean") do %>
+<table id="most_active_users">
+  <% UsersContentsTag.biggest_taggers.each do |u, data|%>
+  <tr class="<%=oddclass%>">
+  <td style="padding-left: 3px;><%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span></td>
+  <td style="padding-left: 3px; width: 100px;" class="infoinline">
+        <%="<span class=\"tags-count\" title=\"Tags\"><span>#{data[:count]}</span></span> tags" %>
+      <%=draw_pcent_bar(data[:relative_pcent])%>
+  </td>
+  </tr>
+  <% end -%>
+</table>
+<script type="text/javascript">slnc.marklinks('most_active_users', '_xs=maut');</script>
+<% end -%>
+<% end -%>
+
+<% content_main do %>
+<div class="grid-5">
+<%mftable('Tags más populares', Term.with_taxonomy('ContentsTag').find(:all, :conditions => 'contents_count > 1', :order => 'contents_count DESC'), :no_mcontent_title => true) do |tag| %>
+	<td><a href="<%=gmurl(tag)%>"><%=tag.name%></a></td>
+	<td><%=tag.contents_count%></td>
+<% end -%>
+</div>
+
+<% end -%>

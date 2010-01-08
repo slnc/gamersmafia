@@ -27,6 +27,7 @@ Rails::Initializer.run do |config|
   config.gem 'rubystats'
   config.gem 'nokogiri'
   config.gem 'capistrano'
+  config.gem 'gruff'
   config.gem 'rcov'
 
   #config.time_zone = 'Madrid'

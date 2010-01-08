@@ -883,7 +883,7 @@ END
     return '' if collection.size == 0 && !options[:show_even_if_empty]
     out = "<div class=\"module mf#{mode} #{grid_cls} #{glast_cls} #{blast_cls} #{class_cls} \""
     out << " id=\"#{options[:id]}\"" if options[:id]
-    concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\">")
+    concat(out << "><div class=\"mtitle #{'mcontent-title' unless options[:no_mcontent_title]}\"><span>#{title}</span></div><div class=\"mcontent\">")
     concat(((mode == 'list') ? '<ul>' : '<table>'))
     collection.each do |o|
       concat("<#{(mode == 'list') ? 'li' : 'tr'} class=\"#{oddclass} #{options[:class] if options[:class]} \">")
