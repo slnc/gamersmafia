@@ -39,7 +39,7 @@ namespace :gm do
   end
   
   def update_max_cache_valorations_weights_on_self_comments
-    execute "update global_vars set max_cache_valorations_weights_on_self_comments = (select max(cache_valorations_weights_on_self_comments) from users where cache_valorations_weights_on_self_comments is not null);"
+    User.db_query("update global_vars set max_cache_valorations_weights_on_self_comments = (select max(cache_valorations_weights_on_self_comments) from users where cache_valorations_weights_on_self_comments is not null);")
   end
   
   def forget_old_pageviews

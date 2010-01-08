@@ -85,7 +85,7 @@
 <%content_3col do %>
 
 	<% cache("/common/miembros/index/top_real_popularity_#{Cache.after_daily_key}") do %>
-	<% max = nil
+	<% max = 0.1
 	mflist('Top popularidad', User.can_login.find(:all, :order => 'ranking_popularity_pos ASC, lower(login)', :limit => 10)) do |u| 
 max ||= u.cache_popularity %>
             <td class="sm-icon number f_number"><%=u.ranking_popularity_pos%></td>

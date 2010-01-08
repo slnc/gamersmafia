@@ -1,7 +1,7 @@
 <% generic_support do %>
   <% mftext('Trofeos') do %>
   <table>
-<% Competition.related_with_user(@curuser, :order => 'lower(name)').each do |c|
+<% Competition.related_with_user(@curuser).find(:all, :order => 'lower(name)').each do |c|
     next if (c.kind_of?(Ladder) and c.state < 2) or (!c.kind_of?(Ladder) and c.state != 4)
     winners = c.winners(3)
     p = c.get_active_participant_for_user(@curuser)
