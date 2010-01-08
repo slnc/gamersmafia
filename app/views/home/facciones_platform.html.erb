@@ -1,21 +1,18 @@
 <div class="grid-5">
 <%mftext('Noticias', :has_submodules => true) do %>
-	<div class="grid-5 glast">
 		<%=mfcontents_basic("Generales", 
 					Proc.new { controller.portal.news.find(:published, :order => 'created_on desc', :limit => 10) }, 
 					[],
 					:truncate_at => 36, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/news2")%>
-					</div>
-
 <% end -%>	
 </div>
 
-<%mftext('En los foros', :has_submodules => true, :glast => true) do %>
+<%mftext('En los foros', :has_submodules => true, :grid => 10, :glast => true) do %>
 	
 	<%=mfcontents_basic("Tópics activos", 
 					Proc.new { controller.portal.topic.find(:published, :conditions => 'contents.closed is false', :order => 'contents.updated_on desc', :limit => 10) }, 
 					[],
-					:truncate_at => 44, :faction_favicon => true, :grid => 6, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
+					:truncate_at => 44, :faction_favicon => true, :grid => 6, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	
 	<%mftext('Foros', :grid => 4, :glast => true, :blast => true) do %>
 	<%= render :partial => '/home/foros_list', :locals => { :topterm => controller.portal.categories(Topic)[0] } %>
@@ -60,7 +57,7 @@ mfcontents_list(Cms::translate_content_name(it),
 <% end -%>
 
 
-<div class="clearb"></div>
+<div class="clearl"></div>
 
 
 <%mftext('Descargas', :has_submodules => true, :grid => 8) do

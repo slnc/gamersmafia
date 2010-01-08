@@ -2,6 +2,10 @@ class FactionsPortal < Portal
   VALID_HOMES = %w(fps softcore)
   before_save :check_factions_portal_home
   
+  named_scope :softcore, :conditions => 'factions_portal_home = \'softcore\''
+  named_scope :fps, :conditions => 'factions_portal_home = \'fps\''
+  named_scope :platform, :conditions => 'factions_portal_home = \'platform\''
+  
   def juego_title
     @_cache_mgmenu_juego_title ||= begin
       games = self.games
