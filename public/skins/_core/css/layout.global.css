@@ -80,10 +80,7 @@ body { background: #fff;}
 #logo2.hover img { background-position: 0 -54px; }
 
 #mgmenu2 { position: absolute; top: 0; margin-left: -10px; padding-left: 0; height: 67px; margin-bottom: 0; border-bottom: 1px solid #eaeaea; width: 1000px; background: url(/skins/default/images/header_bg.png) right 25px no-repeat;}
-#sawtop { position: absolute; top: 0; margin-left: 220px; border-bottom: 2px solid #6c0000; height: 23px; width: 560px; border-right: 1px solid #630000; border-left: 1px solid #630000; background: #960000 url(/skins/default/images/gm20085navmenu_bottom.png) left 19px repeat-x; }
-#sawtop.hq { width: 460px; }
-#sawtop.anunciante { width: 514px; }
-#sawtop.full { width: 560px; }
+
 
 #sawtop ul { margin: 0; padding: 0 0px;}
 #sawtop li { list-style: none; margin: 0; padding: 0; display: block; float: left; height: 23px; }

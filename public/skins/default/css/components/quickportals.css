@@ -1,5 +1,5 @@
 #quickportals {
-    background: url(../../images/homesel_l.png) left top no-repeat;
+    background: url(../../images/layout/homesel_l.png) left top no-repeat;
     height: 22px;
     line-height: 22px;
     float: left;
@@ -9,14 +9,14 @@
 }
 
 #quickportals #div1 {
-    background: url(../../images/homesel_r.png) right top no-repeat;
+    background: url(../../images/layout/homesel_r.png) right top no-repeat;
     padding: 0 4px 0 4px;
     height: 22px;
     line-height: 22px;
 }
 
 #quickportals #div2 {
-    background: url(../../images/homesel_m.png) left top repeat-x;
+    background: url(../../images/layout/homesel_m.png) left top repeat-x;
     height: 22px;
     line-height: 22px;
 }

@@ -30,7 +30,7 @@ body {
 }
 
 #cpageout {
-    background: url(../images/bricks.jpg) left 0 repeat;
+    background: url(../images/layout/bricks.jpg) left 0 repeat;
 }
 
 body.lypopup {
@@ -126,13 +126,13 @@ body.lypopup h1 {
 
 /* downloads  */
 tr.downloads-folder td.first {
-    background-image: url(../images/misc/downloads_folder.png);
+    background-image: url(../images/icons/downloads_folder.png);
     background-position: center left;
     background-repeat: no-repeat;
 }
 
 tr.downloads-download td.first {
-    background-image: url(../images/misc/downloads_download.png);
+    background-image: url(../images/icons/downloads_download.png);
     background-position: center left;
     background-repeat: no-repeat;
 }
