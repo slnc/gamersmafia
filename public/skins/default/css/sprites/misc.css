@@ -3,6 +3,7 @@ background-image: url(../../images/s.png);
 background-repeat: no-repeat; 
 }
 
+.ico16 { width: 16px; height: 16px; vertical-align: middle; }
 
 .comments-count a, .comments-count span {
     background: url(../../images/icons/comments_16x16.gif) center left no-repeat;
@@ -98,26 +99,6 @@ img.downloads-count {
 .slog-type8 {
 	margin-right: 2px;
     background-position: -128px -464px;
-}
-
-.faction-role {
-    background: url(../../images/icons/faction_roles.gif) 0 0;
-}
-
-.faction-role.boss {
-    background-position: 0 0;
-}
-
-.faction-role.underboss {
-    background-position: -16px 0;
-}
-
-.faction-role.editor {
-    background-position: -32px 0;
-}
-
-.faction-role.moderator {
-    background-position: -48px 0;
 }
 
 .user-sex .male {

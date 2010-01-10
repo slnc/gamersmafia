@@ -12,10 +12,10 @@
 
 .content-locked {
     padding-left: 20px;
-    line-height: 16px;
-    height: 16px;
-    background: url(../../images/icons/lock.png) left center no-repeat;
+    line-height: 19px;
 }
+
+.lock { background-position: 0px -528px; }
 
 .content-publish {
     width: 162px;
