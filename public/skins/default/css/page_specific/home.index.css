@@ -20,10 +20,6 @@
     height: 26px;
 }
 
-#homecontents .container, #homecommunity .container, #homegamer .container, #homebazar .container {
-    border: 1px solid #dfdfdf;;
-}
-
 #homegamer .calendar a {
     display: block;
     width: 100%;
@@ -435,10 +431,6 @@
 
 #homebazar .content-hid .alt0 a:hover {
     background-color: #fbf4fb;
-}
-
-#homecontents .content-hid li.new a {
-    background: url(../../images/icons/content-hid-new-contents.png) left center no-repeat;
 }
 
 #home-factions td { padding-bottom: 10px; }

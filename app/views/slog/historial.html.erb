@@ -19,7 +19,7 @@ slog_entries_filter[:order] = 'slog_entries.id DESC'
 </tr>
 <% SlogEntry.get(:closed, slog_entries_filter).each do |sle| %>
 <tr class="<%=oddclass%>">
-	<td style="width: 16px;"><img class="slog-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
+	<td style="width: 16px;"><img class="sprite1 slog-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
 	<td class="w125 centered infoinline"><%=print_tstamp(sle.created_on, 'compact')%></td>
 	<td><%=sle.headline%></td>
 	<td class="infoinline"><%=user_link(sle.reporter) if sle.reporter%></td>

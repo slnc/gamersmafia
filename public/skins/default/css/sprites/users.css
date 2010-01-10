@@ -1,33 +1,33 @@
 img.member-state {
-    background: url(../../images/icons/member_state.gif) 0 0 no-repeat;
+    background-position: 0px -438px;
     width: 16px;
     height: 16px;
 }
 
 img.member-state.active {
-    background-position: 0 0;
+    background-position: 0px -438px;
 }
 
 img.member-state.shadow {
-    background-position: -16px 0;
+    background-position: -16px -438px;
 }
 
 img.member-state.zombie {
-    background-position: -32px 0;
+    background-position: -32px -438px;
 }
 
 img.member-state.unconfirmed {
-    background-position: -48px 0;
+    background-position: -48px -438px;
 }
 
 img.member-state.banned {
-    background-position: -64px 0;
+    background-position: -64px -438px;
 }
 
 img.member-state.deactivated {
-    background-position: -80px 0;
+    background-position: -80px -438px;
 }
 
 img.member-state.deleted {
-    background-position: -80px 0;
+    background-position: -80px -438px;
 }

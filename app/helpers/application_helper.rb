@@ -251,7 +251,7 @@ type: 'bhs'}))
   end
   
   def member_state(state)
-    "<img class=\"member-state #{state}\" src=\"/images/blank.gif\" />"
+    "<img class=\"sprite1 member-state #{state}\" src=\"/images/blank.gif\" />"
   end
   
   def user_link(user, opts={})
@@ -280,7 +280,7 @@ type: 'bhs'}))
   end
   
   def content_category(thing)
-    "<div class=\"content-category sprite1\">#{faction_favicon(thing)}</div>"
+    "<div class=\"content-category\">#{faction_favicon(thing)}</div>"
   end
   
   def render_tree_list(objs, options = {})

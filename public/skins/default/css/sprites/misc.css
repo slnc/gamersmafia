@@ -60,39 +60,48 @@ img.downloads-count {
  * Slog
  */
 .slog-type0 {
-    background: url(../../images/icons/slog-type0.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: 0px -464px;
 }
 
 .slog-type1 {
-    background: url(../../images/icons/slog-type1.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -16px -464px;
 }
 
 .slog-type2 {
-    background: url(../../images/icons/slog-type2.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -32px -464px;
 }
 
 .slog-type3 {
-    background: url(../../images/icons/slog-type3.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -48px -464px;
 }
 
 .slog-type4 {
-    background: url(../../images/icons/slog-type4.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -64px -464px;
 }
 
 .slog-type5 {
-    background: url(../../images/icons/slog-type5.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -80px -464px;
 }
 
 .slog-type6 {
-    background: url(../../images/icons/slog-type6.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -96px -464px;
 }
 
 .slog-type7 {
-    background: url(../../images/icons/slog-type7.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -112px -464px;
 }
 
 .slog-type8 {
-    background: url(../../images/icons/slog-type8.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -128px -464px;
 }
 
 .faction-role {
