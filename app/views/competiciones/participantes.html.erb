@@ -29,7 +29,7 @@
     <%# TODO paging %>
     <tr class="<%=oddclass%>">
       <td class="w50"><%=participant_roster(p)%></td>
-      <td><a href="/competiciones/participante/<%=p.id%>"><%=notags(p.name)%></a> <%=w.include?(p.id) ? winner_cup(w.index(.pid) : ''%></td>
+      <td><a href="/competiciones/participante/<%=p.id%>"><%=notags(p.name)%></a> <%=w.include?(p.id) ? winner_cup(w.index(.pid)) : ''%></td>
       <td class="timestamp infoinline"><%=print_tstamp(p.created_on)%></td>
     </tr><%
     winner += 1 if w.include?(p.id) 

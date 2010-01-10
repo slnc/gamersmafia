@@ -395,16 +395,6 @@ res.content = unescape('#{content}');]]></result>
     assert_equal 'wiii', User.db_query("SELECT element_id FROM stats.ads ORDER BY id desc limit 1")[0]['element_id']
   end
   
-  test "slog_should_work_if_hq" do
-    u2 = User.find(2)
-    u2.is_hq = true
-    u2.save
-    sym_login 2
-    get :slog
-    assert_response :success
-    assert_template 'slog_html'
-  end
-  
   test "should_track_email_read_on" do
     message_key = Kernel.rand.to_s
     se = SentEmail.new(:title => 'foo', :sender => 'fulanito', :recipient => 'menganito', :message_key => message_key)

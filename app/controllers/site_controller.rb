@@ -447,19 +447,6 @@ class SiteController < ApplicationController
     head :created, :location => request.request_uri
   end
   
-  def slog
-    require_auth_hq
-    respond_to do |format|
-      format.html do
-        render :template => 'site/slog_html'
-      end
-      format.rss do
-        response.headers["Content-Type"] = 'text/xml'
-        render :template => 'site/slog_rss', :layout => false
-      end
-    end
-  end
-  
   def stats_hipotesis
     require_auth_hq
     @title = "Hipótesis activas"
