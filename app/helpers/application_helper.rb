@@ -267,8 +267,8 @@ type: 'bhs'}))
   end
   
   def comments_icon(name, desp=false)   
-    vdesp = desp ? '0' : '12'
-    '<img alt="' << "#{name}" << '" title="' << "#{name}" << '" class="comments-icon" src="/images/blank.gif" style="background-position: -' << COMMENTS_DESPL[name] << 'px -' << vdesp << 'px;" />'
+    vdesp = desp ? '547' : '559'
+    '<img alt="' << "#{name}" << '" title="' << "#{name}" << '" class="sprite1 comments-icon" src="/images/blank.gif" style="background-position: -' << COMMENTS_DESPL[name] << 'px -' << vdesp << 'px;" />'
   end
   
   def notags(txt)

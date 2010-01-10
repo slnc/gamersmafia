@@ -37,10 +37,6 @@ background-repeat: no-repeat;
     background: url(../../images/icons/gmd12.png);
 }
 
-.comments-icon {
-    background: url(../../images/icons/comments.gif) 0 0 no-repeat;
-}
-
 img.pageviews-count {
     background: url(../../images/icons/pageviews.gif);
 }
