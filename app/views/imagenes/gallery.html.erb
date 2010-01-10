@@ -7,10 +7,8 @@
   <ul class="content-hid">
 <% cache("/common/imagenes/gallery/#{@category.id}/aportaciones") do %>
   <% 
-  dbusers = User.db_query("select user_id, count(id) from images where images_category_id in (#{@category.id}) and state = 2 group by (user_id) order by count(id) desc limit 5")
-  total = @category.images.count(:conditions => "contents.state = #{Cms::PUBLISHED}")
-  for dbuser in dbusers %>
-  <li><%=draw_user_info(User.find(dbuser['user_id'].to_i))%><br /><%=draw_pcent_bar(dbuser['count'].to_f / total)%></li>
+	@category.top_contributors(:limit => 10).each do |h| %>
+  <li><%=draw_user_info(h[:user])%><br /><%=draw_pcent_bar(h[:pcent], "#{h[:count]} imágenes")%></li>
   <% end %>
   </ul>
   <% end -%>
