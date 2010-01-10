@@ -189,7 +189,8 @@ class User < ActiveRecord::Base
   
   def impose_antiflood(level, impositor)
     level = 0 if level < -1 || level > 5
-    self.update_attributes(:antiflood_level => level)
+    self.antiflood_level = level
+    return false unless self.save
     
     # TODO This should go into an observer
     if impositor.has_admin_permission?(:capo)
@@ -197,6 +198,7 @@ class User < ActiveRecord::Base
     else
       SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], :reporter_user_id => impositor.id, :headline => "Antiflood de emergencia impuesto a <strong><a href=\"#{ApplicationController.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{ApplicationController.gmurl(impositor)}\">#{impositor.login}</a>")
     end
+    true
   end
   
   def get_comments_valorations_type

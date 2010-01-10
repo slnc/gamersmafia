@@ -93,5 +93,9 @@ if mirrors.size > 0 then %>
 	</table>
 	<% end -%>
 	</div>
+
+	<% if @demo.file.to_s == '' && mirrors.size == 0 then %>
+		<div class="warning">Esta demo no tiene ni enlaces ni tenemos el archivo para descargar en gamersmafia.</div>
+	<% end -%>
   <% end %>
 <%end -%>

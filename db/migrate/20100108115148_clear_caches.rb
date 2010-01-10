@@ -2,7 +2,7 @@ class ClearCaches < ActiveRecord::Migration
   def self.up
     CacheObserver.expire_fragment("/*/site/last_commented_objects")
     CacheObserver.expire_fragment("/_users/*/*/layouts/recommendations")
-    FactionPortal.platform.find(:all).each do |fp|
+    FactionsPortal.platform.find(:all).each do |fp|
       CacheObserver.expire_fragment("/#{fp.code}/home/*")
     end
     CacheObserver.expire_fragment("/_users/*/*/layouts/recommendations")

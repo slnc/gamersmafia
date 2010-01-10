@@ -26,7 +26,7 @@ Rails::Initializer.run do |config|
   config.gem 'rmagick', :lib => 'RMagick'
   config.gem 'rubystats'
   config.gem 'nokogiri'
-  config.gem 'capistrano'
+  #config.gem 'capistrano'
   config.gem 'gruff'
   config.gem 'rcov'
 
