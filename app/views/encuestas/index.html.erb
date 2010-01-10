@@ -3,7 +3,7 @@
 <%
 mfcontents_list('Más votadas', 
 				   Proc.new { controller.portal.poll.find(:published, :order => 'polls_votes_count DESC', :limit => 5) }) do |o| %>
-<a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a><br />
+<a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline right"><%=o.votes%> votos</div>
 <% end %>
 <% end -%>
@@ -12,7 +12,7 @@ mfcontents_list('Más votadas',
 <%
 mfcontents_list('Más leídas', 
 				   Proc.new { controller.portal.poll.find(:published, :order => 'hits_anonymous + hits_registered DESC', :limit => 5) }) do |o| %>
-<a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a><br />
+<a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline right"><%=(o.hits_anonymous + o.hits_registered)%></span> lecturas</div>
 <% end %>
 <% end -%>
@@ -21,7 +21,7 @@ mfcontents_list('Más leídas',
 <%
 mfcontents_list('Más comentadas', 
 				   Proc.new { controller.portal.poll.find(:published, :order => 'cache_comments_count DESC', :limit => 5) }) do |o| %>
-<a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a><br />
+<a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline right"><span class="comments-count"><a style="display: inline;" href="<%=gmurl(o)%>#comments"><%=o.cache_comments_count%></a></span></div>
 <% end %>
 <% end -%>

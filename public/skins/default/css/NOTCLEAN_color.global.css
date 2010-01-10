@@ -281,7 +281,7 @@ textarea {
 }
 
 .commentlink img {
-    background: url(../images/s.png) left -162px no-repeat;
+    background-position: left -162px;
 }
 
 
@@ -341,11 +341,11 @@ body.cocuenta-cuenta .choose-avatar img.selected {
 }
 
 .new .content-category {
-    background: url(../images/s.png) 0 -45px no-repeat;
+    background-position: 0px -45px;
 }
 
 .alt1.new .content-category {
-    background: url(../images/s.png) -24px -45px no-repeat;
+    background-position: -24px -45px;
 }
 
 #ccontent a .shop-buy {
@@ -360,7 +360,7 @@ body.cocuenta-cuenta .choose-avatar img.selected {
 }
 
 .gmd10 {
-    background: url(../images/s.png) 0 -267px;
+    background-position: 0px -267px;
 }
 
 .information {

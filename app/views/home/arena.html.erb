@@ -33,7 +33,7 @@ matches = CompetitionsMatch.find(:all, :conditions => "(#{Competition::COMPLETED
 <%mfcontents_list('Demos', 
 					Proc.new { controller.portal.demo.find(:published, :order => 'demos.created_on desc', :limit => 5, :include => :event) }, 					
 					{:faction_favicon => true, :grid => 3, :glast => true}) do |o| %>
-<%=draw_content_favicon(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a><br />
+<%=content_category(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a><br />
 <div class="infoinline"><% if o.event_id then %><a href="<%=gmurl(o.event)%>"><%=o.event.title%></a><% else %>&nbsp;<% end -%></div>
 <% end -%>
 <% end -%>

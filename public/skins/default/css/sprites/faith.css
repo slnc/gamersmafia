@@ -1,5 +1,5 @@
 .faith .points img {
-    background: url(../../images/s.png) -193px -73px no-repeat;
+    background-position: -193px -73px;
 }
 
 .faith .points img.level0 {

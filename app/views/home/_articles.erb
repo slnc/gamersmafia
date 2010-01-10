@@ -30,7 +30,7 @@ while i < 8 and i < articles.length do
   shown_articles << article.unique_content.id 
 %>
     <li class="content<%=article.unique_content.id%> new <%=oddclass%>">
-    <div class="content-category"><%=faction_favicon(article.main_category)%></div>
+    <%=content_category(article.main_category)%>
     <%=link_to article.title, gmurl(article)%>
     <% if article.home_image then %><div style="float: right;"><%=fc_thumbnail(article.home_image, 'f', Cms::IMG_ARTICLE_THUMB, false)%></div><% end -%>
     <div class="infoinline" style="text-transform: uppercase;"><%=names[article.class.name]%></div>

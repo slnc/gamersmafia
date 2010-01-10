@@ -1,20 +1,16 @@
 
 #messages-indicator .messages a {
-    background: url(../../images/s.png) -153px -72px no-repeat;
+    background-position: -153px -72px;
     line-height: 12px;
     height: 12px;
 }
 
-#messages-indicator .messages > a {
-    background: url(../../images/s.png) -153px -72px no-repeat;
-}
-
 #messages-indicator .messages.has-unread a {
-    background: url(../../images/s.png) -153px -137px no-repeat;
+    background-position: -153px -137px;
 }
 
 #messages-indicator .messages.has-unread > a {
-    background: url(../../images/s.png) -153px -136px no-repeat;
+    background-position: -153px -136px;
 }
 
 .moderation-queue a {
@@ -25,57 +21,34 @@
 }
 
 .moderation-queue a {
-    background: url(../../images/s.png) -153px -103px no-repeat;
+    background-position: -153px -103px;
     line-height: 16px;
     height: 16px;
 }
 
-.moderation-queue > a {
-    background: url(../../images/s.png) -153px -103px no-repeat;
-}
 
 .moderation-queue.has-pending a {
-    background: url(../../images/s.png) -153px -167px no-repeat;
+    background-position: -153px -167px;
 }
 
 #userbox2 .competition {
-    background: url(../../images/s.png) -153px -85px no-repeat;
+    background-position: -153px -85px;
 }
 
 #userbox2 .competition.activated {
-    background: url(../../images/s.png) -153px -149px no-repeat;
+    background-position: -153px -149px;
 }
 
 #userbox2 .slog a img {
-    background: url(../../images/s.png) -153px -197px no-repeat;
+    background-position: -153px -197px;
 }
 
 #userbox2 .slog.activated2 a img {
-    background: url(../../images/s.png) -153px -214px no-repeat;
+    background-position: -153px -214px;
 }
 
 #userbox2 .left-ratings {
-    background: url(../../images/s.png) -63px -17px no-repeat;
-}
-
-#loginbutton input {
-    background: url(../../images/icons/login.gif) center top no-repeat;
-}
-
-#loginbutton input.mouseover {
-    background: url(../../images/icons/login.gif) center -41px no-repeat
-}
-
-#sendbutton input {
-    background: url(../../images/s.png) -78px -24px no-repeat;
-}
-
-#sendbutton {
-    background: #F2F2F2;
-}
-
-#sendbutton input.sendbutton-mouseover {
-    background-position: -78px 0;
+    background-position: -63px -17px;
 }
 
 #userbox-bars {

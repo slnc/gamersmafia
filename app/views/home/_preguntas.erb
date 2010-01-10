@@ -10,7 +10,7 @@ qs.each do |bet|
 shown_questions<< bet.unique_content.id
  %>
         <tr class="<%=oddclass%>">
-          <td id="content<%=bet.unique_content.id%>" class="new" style="font-size: 11px;"><div class="content-category"><%=faction_favicon(bet.main_category)%></div> <%=link_to truncate(bet.title, 35), gmurl(bet) %></td>
+          <td id="content<%=bet.unique_content.id%>" class="new" style="font-size: 11px;"><%=content_category(bet.main_category)%> <%=link_to truncate(bet.title, 35), gmurl(bet) %></td>
           <td style="font-size: 11px;" class="right"><%= "#{bet.ammount.to_i}#{gmd11}" if bet.prize > Question::MIN_AMMOUNT%></td>
         </tr>
         <% end -%>

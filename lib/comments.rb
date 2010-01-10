@@ -96,7 +96,7 @@ module Comments
     # TODO broken since terms!! (also in cms.rb)
     #if real.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(real.main_category.id)) && c.user_is_admin(user.id)
     #  true
-    sif real.class.name == 'Event' && (cm = CompetitionsMatch.find_by_event_id(real.id)) && cm.competition.user_is_admin(user.id)
+    if real.class.name == 'Event' && (cm = CompetitionsMatch.find_by_event_id(real.id)) && cm.competition.user_is_admin(user.id)
       true
     elsif real.class.name == 'Coverage' && (c = Competition.find_by_event_id(real.event_id)) && c.user_is_admin(user.id)
       true

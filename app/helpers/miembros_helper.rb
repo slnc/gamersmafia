@@ -29,7 +29,7 @@ module MiembrosHelper
 
   def draw_faith_bar_sm(user)
     pcdone = Faith.pc_done_for_next_level(user.faith_points)
-    "<div class=\"faith\"><div class=\"points\"><img title=\"Fe: #{Faith::NAMES[Faith.level(user.faith_points)]}\" class=\"level#{Faith.level(user.faith_points)}\" style=\"margin: 0;\" src=\"/images/blank.gif\" /></div> <div style=\"margin-left: 12px; padding-top: 2px;\"><div class=\"faith\">#{draw_pcent_bar(pcdone.to_f/100, "#{pcdone}%", true)}</div></div></div>"
+    "<div class=\"faith\"><div class=\"points\"><img title=\"Fe: #{Faith::NAMES[Faith.level(user.faith_points)]}\" class=\"sprite1 level#{Faith.level(user.faith_points)}\" style=\"margin: 0;\" src=\"/images/blank.gif\" /></div> <div style=\"margin-left: 12px; padding-top: 2px;\"><div class=\"faith\">#{draw_pcent_bar(pcdone.to_f/100, "#{pcdone}%", true)}</div></div></div>"
   end
 
   def draw_comments_bar_sm(user, refobj)

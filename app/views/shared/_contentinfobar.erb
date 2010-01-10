@@ -36,7 +36,7 @@ can_delete = Cms::user_can_delete_content?(@user, object) %>
   if ((not user_is_authed and not ContentRating.find(:first, :conditions => ['user_id is null and ip = ? and created_on > now() - \'1 day\'::interval', @ip])) or (user_is_authed and @user.can_rate?(object))) %>
   <li class="actions <%='first' unless user_is_authed%>">
   <div id="ratebar-container">Valorar:</div>
-  <div id="ratebar"><%
+  <div id="ratebar" class="sprite1"><%
     d = 1..10
     c = 6
     d.each { |i| 

@@ -1,3 +1,9 @@
+.sprite1 { 
+background-image: url(../../images/s.png);
+background-repeat: no-repeat; 
+}
+
+
 .comments-count a, .comments-count span {
     background: url(../../images/icons/comments_16x16.gif) center left no-repeat;
 }

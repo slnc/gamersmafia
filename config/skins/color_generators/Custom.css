@@ -167,7 +167,7 @@ a:hover { color: ${page_link_hover_color}; }
 
 /* other sprites */
 .btn { background-image: ${bbeditor_sprites}; }
-
+.sprite1 { background-image: ${sprite1_sprites}; }
 
 #homecontents .homebox .subheader { background-image: ${ccontent_header_titles_sprite}; }
 #homecommunity .homebox .subheader { background-image: ${ccontent_header_titles_sprite}; }
