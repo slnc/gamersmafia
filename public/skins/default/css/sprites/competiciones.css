@@ -14,16 +14,15 @@
     background: url(../../images/icons/msn.gif);
 }
 
-.competition-cup {
-    background: url(../../images/icons/cups.gif) 0 0;
+.cup0 {
+    background-position: 0px -513px;
+}
+.cup1 {
+    background-position: -16px -513px;
 }
 
-.competition-cup.cup1 {
-    background-position: -16px 0;
-}
-
-.competition-cup.cup2 {
-    background-position: -32px 0;
+.cup2 {
+    background-position: -32px -513px;
 }
 
 .competition-progress {

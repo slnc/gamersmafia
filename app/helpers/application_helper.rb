@@ -1200,7 +1200,7 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
   end
   
   def winner_cup(winner)
-    "<img src=\"/images/blank.gif\" class=\"competition-cup cup#{winner}\" />"
+    "<img src=\"/images/blank.gif\" class=\"sprite1 competition-cup cup#{winner}\" />"
   end
   
   def faction_cohesion(faction=@faction)

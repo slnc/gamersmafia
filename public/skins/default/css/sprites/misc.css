@@ -24,10 +24,6 @@ background-repeat: no-repeat;
     background: url(../../images/icons/clan-soft.gif) center left no-repeat;
 }
 
-img.topic-indicator {
-    background: url(../../images/icons/topic-indicators.gif);
-}
-
 .gmd10 {
     background: url(../../images/icons/gmd10.png);
 }
