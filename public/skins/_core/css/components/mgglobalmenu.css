@@ -10,6 +10,7 @@
     background: #960000 url(/skins/default/images/gm20085navmenu_bottom.png) left 19px repeat-x;
 }
 
+
 #sawtop.hq {
     width: 460px;
 }
@@ -330,10 +331,6 @@ ul#sawbody-bazar {
     text-decoration: none;
 }
 
-#mggnav-factions-list a,
-#mggnav-clans-list a,
-#mggnav-hq-list a { font-weight: normal;} 
-
 #mggnav a:hover {
     text-decoration: underline;
 }
@@ -367,7 +364,6 @@ li#mggnav-gm {
 }
 
 #mggnav-factions-list td,
-#mggnav-clans-list td,
 #mggnav-hq-list td {
     text-align: left;
     font-variant: normal;
@@ -376,22 +372,14 @@ li#mggnav-gm {
     width: 33%;
 }
 
-#mggnav-clans-list table {
-	width: 100%;
-	}
-#mggnav-clans-list td {
-	width: 25%;
-}
-
 #mggnav-factions-list a,
-#mggnav-clans-list a,
 #mggnav-hq-list a {
     line-height: 16px;
     display: block;
+	font-weight: normal;
 }
 
-#mggnav-factions-list a img,
-#mggnav-clans-list a img {
+#mggnav-factions-list a img {
     margin-right: 5px;
 }
 
@@ -407,25 +395,6 @@ li#mggnav-gm {
     margin-left: 10px;
 }
 
-#mggnav-see-all-clans {
-    position: absolute;
-	margin-top: 147px;
-	z-index: 5;
-	font-size: 11px;
-	margin-left: 590px;
-}
-
-
-#mggnav-clans-list {
-    display: none;
-    visibility: hidden;
-    position: absolute;
-    z-index: 4;
-    top: 20px;
-    left: 312px;
-    width: 650px;
-    height: 170px;
-}
 
 #mggnav-hq-list {
     display: none;
