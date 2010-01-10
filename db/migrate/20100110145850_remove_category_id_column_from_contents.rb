@@ -1,6 +1,6 @@
 class RemoveCategoryIdColumnFromContents < ActiveRecord::Migration
   def self.up
-    Cms::contents_classes.each do |cls|
+    (Cms::contents_classes - [Coverage, Funthing, RecruitmentAd]).each do |cls|
       begin
         execute "alter table #{ActiveSupport::Inflector::tableize(cls.name)} drop column #{ActiveSupport::Inflector::tableize(cls.name)}_category_id;"
       rescue
