@@ -1,3 +1,4 @@
+require "date"
 class Potd < ActiveRecord::Base
   belongs_to :image
   
@@ -7,9 +8,9 @@ class Potd < ActiveRecord::Base
     potd
   end
   
-  def Potd.current_category(category_id, d=Date.today)
-    potd = Potd.find(:first, :conditions => ['date = ? AND images_category_id = ?', d, category_id])
-    potd = Potd.choose_one_category(category_id, d) if potd.nil?
+  def Potd.current_category(term_id, d=Date.today)
+    potd = Potd.find(:first, :conditions => ['date = ? AND term_id = ?', d, term_id])
+    potd = Potd.choose_one_category(term_id, d) if potd.nil?
     potd
   end
   
@@ -31,12 +32,12 @@ class Potd < ActiveRecord::Base
     end
   end
   
-  def Potd.choose_one_category(category_id, d=Date.today)
-    term = Term.find(category_id)
-    im = select_from_term(term, "images.clan_id IS NULL AND images.id NOT IN (select distinct(image_id) from potds WHERE term_id = #{category_id})")
+  def Potd.choose_one_category(term_id, d=Date.today)
+    term = Term.find(term_id)
+    im = select_from_term(term, "images.clan_id IS NULL AND images.id NOT IN (select distinct(image_id) from potds WHERE term_id = #{term_id})")
     if im
       begin
-        Potd.create({:date => d, :image_id => im.id, :term_id => category_id})
+        Potd.create({:date => d, :image_id => im.id, :term_id => term_id})
       rescue ActiveRecord::StatementInvalid # necesario por si dos usuarios visitan la web a la vez
       end
     end

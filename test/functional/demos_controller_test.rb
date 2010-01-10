@@ -74,7 +74,7 @@ class DemosControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  test "get_games_versions_shouldnt_crash_if_undefined_demos_category_id" do
+  test "get_games_versions_shouldnt_crash_if_undefined_demos_term_id" do
     assert_raises(ActiveRecord::RecordNotFound) { get :get_games_versions }
   end
   
@@ -83,7 +83,7 @@ class DemosControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  test "get_games_modes_shouldnt_crash_if_undefined_demos_category_id" do
+  test "get_games_modes_shouldnt_crash_if_undefined_demos_term_id" do
     assert_raises(ActiveRecord::RecordNotFound) { get :get_games_modes }
   end
   

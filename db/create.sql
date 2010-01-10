@@ -258,7 +258,6 @@ CREATE TABLE bets (
     cache_comments_count integer DEFAULT 0 NOT NULL,
     title character varying NOT NULL,
     description character varying,
-    bets_category_id integer,
     closes_on timestamp without time zone NOT NULL,
     total_ammount numeric(14,2) DEFAULT 0 NOT NULL,
     winning_bets_option_id integer,
@@ -508,7 +507,6 @@ CREATE TABLE columns (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     approved_by_user_id integer,
-    columns_category_id integer,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     hits_registered integer DEFAULT 0 NOT NULL,
     deleted boolean DEFAULT false NOT NULL,
@@ -994,7 +992,6 @@ CREATE TABLE demos (
     state smallint DEFAULT 0 NOT NULL,
     title character varying NOT NULL,
     description character varying,
-    demos_category_id integer,
     entity1_local_id integer,
     entity2_local_id integer,
     entity1_external character varying,
@@ -1077,7 +1074,6 @@ CREATE TABLE downloads (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     approved_by_user_id integer,
-    downloads_category_id integer,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     hits_registered integer DEFAULT 0 NOT NULL,
     file character varying,
@@ -1138,7 +1134,6 @@ CREATE TABLE events (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     description text,
-    events_category_id integer,
     starts_on timestamp without time zone NOT NULL,
     ends_on timestamp without time zone NOT NULL,
     website character varying,
@@ -1350,7 +1345,6 @@ ALTER SEQUENCE forum_forums_id_seq OWNED BY topics_categories.id;
 CREATE TABLE topics (
     id integer NOT NULL,
     title character varying NOT NULL,
-    topics_category_id integer,
     main text NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
@@ -1608,7 +1602,6 @@ CREATE TABLE images (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     approved_by_user_id integer,
-    images_category_id integer,
     hits_registered integer DEFAULT 0 NOT NULL,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     cache_rating smallint,
@@ -1657,7 +1650,6 @@ CREATE TABLE interviews (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     approved_by_user_id integer,
-    interviews_category_id integer,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     hits_registered integer DEFAULT 0 NOT NULL,
     home_image character varying,
@@ -1834,7 +1826,6 @@ CREATE TABLE news (
     description text NOT NULL,
     main text,
     approved_by_user_id integer,
-    news_category_id integer,
     hits_registered integer DEFAULT 0 NOT NULL,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     cache_rating smallint,
@@ -1920,7 +1911,6 @@ CREATE TABLE polls (
     cache_rating smallint,
     cache_rated_times smallint,
     cache_comments_count integer DEFAULT 0 NOT NULL,
-    polls_category_id integer,
     log character varying,
     state smallint DEFAULT 0 NOT NULL,
     clan_id integer,
@@ -2116,7 +2106,6 @@ ALTER SEQUENCE publishing_personalities_id_seq OWNED BY publishing_personalities
 CREATE TABLE questions (
     id integer NOT NULL,
     title character varying NOT NULL,
-    questions_category_id integer,
     description text,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
@@ -2221,7 +2210,6 @@ CREATE TABLE reviews (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     approved_by_user_id integer,
-    reviews_category_id integer,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     hits_registered integer DEFAULT 0 NOT NULL,
     cache_rating smallint,
@@ -2460,7 +2448,6 @@ CREATE TABLE tutorials (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     approved_by_user_id integer,
-    tutorials_category_id integer,
     hits_anonymous integer DEFAULT 0 NOT NULL,
     hits_registered integer DEFAULT 0 NOT NULL,
     home_image character varying,
@@ -3610,7 +3597,6 @@ CREATE INDEX contents_user_id_state ON contents USING btree (user_id, state);
 CREATE INDEX demos_approved_by_user_id ON demos USING btree (approved_by_user_id);
 CREATE INDEX demos_approved_by_user_id_deleted ON demos USING btree (approved_by_user_id, deleted);
 CREATE UNIQUE INDEX demos_categories_unique ON demos_categories USING btree (name, parent_id);
-CREATE INDEX demos_common ON demos USING btree (created_on, approved_by_user_id, deleted, user_id, demos_category_id);
 CREATE UNIQUE INDEX demos_file ON demos USING btree (file);
 CREATE UNIQUE INDEX demos_hash_md5 ON demos USING btree (file_hash_md5);
 CREATE INDEX demos_state ON demos USING btree (state);
@@ -3758,8 +3744,6 @@ SET search_path = public, pg_catalog;
 ALTER TABLE ONLY bets
     ADD CONSTRAINT bets_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id);
 ALTER TABLE ONLY bets
-    ADD CONSTRAINT bets_bets_category_id_fkey FOREIGN KEY (bets_category_id) REFERENCES bets_categories(id);
-ALTER TABLE ONLY bets
     ADD CONSTRAINT bets_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY bets
     ADD CONSTRAINT bets_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
@@ -3771,8 +3755,6 @@ ALTER TABLE ONLY blogentries
     ADD CONSTRAINT blogentries_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY clans
     ADD CONSTRAINT clans_creator_user_id_fkey FOREIGN KEY (creator_user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY columns
-    ADD CONSTRAINT columns_columns_category_id_fkey FOREIGN KEY (columns_category_id) REFERENCES columns_categories(id) MATCH FULL;
 ALTER TABLE ONLY columns
     ADD CONSTRAINT columns_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY comment_violation_opinions
@@ -3802,8 +3784,6 @@ ALTER TABLE ONLY coverages
 ALTER TABLE ONLY demos
     ADD CONSTRAINT demos_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id);
 ALTER TABLE ONLY demos
-    ADD CONSTRAINT demos_demos_category_id_fkey FOREIGN KEY (demos_category_id) REFERENCES demos_categories(id);
-ALTER TABLE ONLY demos
     ADD CONSTRAINT demos_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) MATCH FULL;
 ALTER TABLE ONLY demos
     ADD CONSTRAINT demos_games_map_id_fkey FOREIGN KEY (games_map_id) REFERENCES games_maps(id) MATCH FULL;
@@ -3818,15 +3798,11 @@ ALTER TABLE ONLY demos
 ALTER TABLE ONLY downloads
     ADD CONSTRAINT downloads_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY downloads
-    ADD CONSTRAINT downloads_downloads_category_id_fkey FOREIGN KEY (downloads_category_id) REFERENCES downloads_categories(id) MATCH FULL;
-ALTER TABLE ONLY downloads
     ADD CONSTRAINT downloads_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-ALTER TABLE ONLY events
-    ADD CONSTRAINT events_events_category_id_fkey FOREIGN KEY (events_category_id) REFERENCES events_categories(id) MATCH FULL;
 ALTER TABLE ONLY coverages
     ADD CONSTRAINT events_news_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY coverages
@@ -3839,8 +3815,6 @@ ALTER TABLE ONLY events
     ADD CONSTRAINT events_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY topics
-    ADD CONSTRAINT forum_topics_forum_forum_id_fkey FOREIGN KEY (topics_category_id) REFERENCES topics_categories(id) MATCH FULL ON DELETE CASCADE;
 ALTER TABLE ONLY topics
     ADD CONSTRAINT forum_topics_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY funthings
@@ -3858,11 +3832,7 @@ ALTER TABLE ONLY groups_messages
 ALTER TABLE ONLY images
     ADD CONSTRAINT images_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY images
-    ADD CONSTRAINT images_images_category_id_fkey FOREIGN KEY (images_category_id) REFERENCES images_categories(id) MATCH FULL;
-ALTER TABLE ONLY images
     ADD CONSTRAINT images_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-ALTER TABLE ONLY interviews
-    ADD CONSTRAINT interviews_interviews_category_id_fkey FOREIGN KEY (interviews_category_id) REFERENCES interviews_categories(id) MATCH FULL;
 ALTER TABLE ONLY interviews
     ADD CONSTRAINT interviews_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY macropolls_2007_1
@@ -3872,8 +3842,6 @@ ALTER TABLE ONLY macropolls
 ALTER TABLE ONLY news
     ADD CONSTRAINT news_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY news
-    ADD CONSTRAINT news_news_category_id_fkey FOREIGN KEY (news_category_id) REFERENCES news_categories(id) MATCH FULL;
-ALTER TABLE ONLY news
     ADD CONSTRAINT news_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY platforms_users
     ADD CONSTRAINT platforms_users_platform_id_fkey FOREIGN KEY (platform_id) REFERENCES platforms(id) MATCH FULL ON DELETE CASCADE;
@@ -3881,8 +3849,6 @@ ALTER TABLE ONLY platforms_users
     ADD CONSTRAINT platforms_users_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
 ALTER TABLE ONLY polls
     ADD CONSTRAINT polls_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-ALTER TABLE ONLY polls
-    ADD CONSTRAINT polls_polls_category_id_fkey FOREIGN KEY (polls_category_id) REFERENCES polls_categories(id) MATCH FULL;
 ALTER TABLE ONLY polls
     ADD CONSTRAINT polls_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY potds
@@ -3895,8 +3861,6 @@ ALTER TABLE ONLY questions
     ADD CONSTRAINT questions_accepted_answer_comment_id_fkey FOREIGN KEY (accepted_answer_comment_id) REFERENCES comments(id);
 ALTER TABLE ONLY questions
     ADD CONSTRAINT questions_answer_selected_by_user_id_fkey FOREIGN KEY (answer_selected_by_user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY questions
-    ADD CONSTRAINT questions_questions_category_id_fkey FOREIGN KEY (questions_category_id) REFERENCES questions_categories(id) MATCH FULL;
 ALTER TABLE ONLY questions
     ADD CONSTRAINT questions_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY questions
@@ -3913,8 +3877,6 @@ ALTER TABLE ONLY recruitment_ads
     ADD CONSTRAINT recruitment_ads_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY refered_hits
     ADD CONSTRAINT refered_hits_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY reviews
-    ADD CONSTRAINT reviews_reviews_category_id_fkey FOREIGN KEY (reviews_category_id) REFERENCES reviews_categories(id) MATCH FULL;
 ALTER TABLE ONLY reviews
     ADD CONSTRAINT reviews_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY skins_files
@@ -3937,8 +3899,6 @@ ALTER TABLE ONLY topics
     ADD CONSTRAINT topics_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY topics
     ADD CONSTRAINT topics_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-ALTER TABLE ONLY tutorials
-    ADD CONSTRAINT tutorials_tutorials_category_id_fkey FOREIGN KEY (tutorials_category_id) REFERENCES tutorials_categories(id) MATCH FULL;
 ALTER TABLE ONLY tutorials
     ADD CONSTRAINT tutorials_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY users

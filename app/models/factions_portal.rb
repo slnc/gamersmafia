@@ -178,7 +178,7 @@ class FactionsPortalPollProxy
     obj = Poll
     g = @portal.games
     if g.size > 1
-      obj = obj.category_class.find_by_code(g[0].code) # cargamos la categoría como proxy para hacer consultas y que incluya la constraint de category_id
+      obj = obj.category_class.find_by_code(g[0].code) # cargamos la categoría como proxy para hacer consultas y que incluya la constraint de term
     elsif @portal.factions.size > 0 # platform
       obj = obj.category_class.find_by_code(@portal.factions[0].code)
     end

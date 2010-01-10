@@ -253,15 +253,7 @@ for demo in @last_demos
        <div class="more"><a title="Ver más demos" href="/demos">Más demos &raquo;</a></div>
     </div>
 
-
-
-<!-- start homebazar -->
-<div id="homebazar">
-	
-	
-	
-	
-	
+<div id="homebazar">	
 <% d = Date.today
 cache("/#{controller.portal_code}/home/index/potd_#{d.strftime('%Y%m%d')}") do
 
@@ -282,8 +274,5 @@ if @daily_img then %>
       </div>
 	  
 	</div>
-<!-- end homebazar -->
-
-
     </div>
   </div>

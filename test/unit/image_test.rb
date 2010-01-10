@@ -1,22 +1,6 @@
 require 'test_helper'
 
 class ImageTest < ActiveSupport::TestCase
-
-  def setup
-    @image = Image.find(1)
-  end
-
-  def atest_changing_an_image_category_should_delete_potd_if_new_category_is_in_special_and_current_potd
-    im = Image.new(:description => 'foo', :file => fixture_file_upload('files/buddha.jpg'), :user_id => 1, :state => Cms::PUBLISHED)
-    assert im.save
-    # TODO term
-    p = Potd.new({:image_id => im.id, :date => Time.now})
-    assert_equal true, p.save
-    im.images_category_id = ImagesCategory.find_by_code('bazar').id
-    assert_equal true, im.save, im.errors.full_messages_html
-    assert_nil Potd.find_by_id(p.id)
-  end
-  
   # TODO copypaste de download
   # TODO esto va a a plugin de file_column!
   test "should_update_md5_hash_after_creating_with_image" do

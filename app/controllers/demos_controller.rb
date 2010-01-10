@@ -11,7 +11,7 @@ class DemosController < ArenaController
     @title = 'Resultados de la búsqueda'
     sql_conds = []
     if params[:demo]
-    %w(demos_category_id demotype pov_type games_mode_id event_id games_version_id games_map_id entity1_local_id entity2_local_id).each do |attr|
+    %w(demotype pov_type games_mode_id event_id games_version_id games_map_id entity1_local_id entity2_local_id).each do |attr|
       next unless params[:demo] && params[:demo][attr.to_sym].to_s != ''
       sql_conds<< "#{attr} = #{params[:demo][attr.to_sym].to_i}"
     end
@@ -46,7 +46,7 @@ class DemosController < ArenaController
   
   def _after_show
     if @demo
-      @navpath = [['Demos', '/demos'], [@demo.main_category.name, "/demos/buscar?demo[demos_category_id]=#{@demo.demos_category_id}"], [@demo.title, "/demos/#{@demo.main_category.id}/#{@demo.id}"],]
+      @navpath = [['Demos', '/demos'], [@demo.main_category.name, "/demos/buscar?demo_term_id=#{@demo.main_category.id}"], [@demo.title, "/demos/#{@demo.main_category.id}/#{@demo.id}"],]
       @title = @demo.title
     end
   end

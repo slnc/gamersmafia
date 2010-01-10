@@ -81,12 +81,12 @@ end -%>
 	<%=render :partial => 'daily_joy' %>
 	
 	<%mftext('xD') do %>
-		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'xD\' And taxonomy = \'ImagesCategory\'').id}%>
+		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :term_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'xD\' And taxonomy = \'ImagesCategory\'').id}%>
 	<% end -%>
 	
 	
 	<%mftext('Wallpapers') do %>
-		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'Fondos de Escritorio - Wallpapers\' And taxonomy = \'ImagesCategory\'').id}%>
+		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :term_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'Fondos de Escritorio - Wallpapers\' And taxonomy = \'ImagesCategory\'').id}%>
 	<% end -%>
 <% end -%>
 

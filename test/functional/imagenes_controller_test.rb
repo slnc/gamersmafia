@@ -67,15 +67,6 @@ class ImagenesControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  test "babes_image_visible_from_factions_portal" do
-    User.db_query("UPDATE images_categories SET root_id = (select id from images_categories WHERE code = 'bazar'), parent_id = (select id from images_categories WHERE code = 'bazar') WHERE code = 'babes'") 
-    User.db_query("UPDATE images_categories SET root_id = (select id from images_categories WHERE code = 'bazar'), parent_id = (select id from images_categories WHERE code = 'bazar') WHERE code = 'dudes'")
-    User.db_query("UPDATE images SET state = #{Cms::PUBLISHED} WHERE images_category_id = (select id from images_categories where code = 'babes')")
-    @request.host = 'ut.gamersmafia.com'
-    get :show, { :id => 4 }
-    assert_response :redirect
-  end
-  
   test "imagenes_bazar_should_work" do
     @request.host = "bazar.#{App.domain}"
     get :index
