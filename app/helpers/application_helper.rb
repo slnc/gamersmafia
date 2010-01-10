@@ -280,7 +280,7 @@ type: 'bhs'}))
   end
   
   def content_category(thing)
-    "<div class=\"content-category\">#{faction_favicon(thing)}</div>"
+    "<div class=\"sprite1 content-category\">#{faction_favicon(thing)}</div>"
   end
   
   def render_tree_list(objs, options = {})

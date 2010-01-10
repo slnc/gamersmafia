@@ -332,6 +332,10 @@ body.cocuenta-cuenta .choose-avatar img.selected {
     background: #e7e7e7;
 }
 
+.content-category {
+    background-position: 24px 24px;
+}
+
 .new .content-category {
     background-position: 0px -45px;
 }
