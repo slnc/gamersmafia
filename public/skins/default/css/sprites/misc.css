@@ -140,3 +140,6 @@ img.cash-in {
 #ccontent .messages .preview span.replied {
     background: url(../../images/icons/replied.gif) left center no-repeat;
 }
+
+
+.gotop a { background: url(../../images/icons/top.png) right 0 no-repeat; padding-right: 18px;}

@@ -119,7 +119,7 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
   end
   
   def draw_emblem(emblema)
-    "<img class=\"emblema emblema-#{emblema}\" src=\"/images/blank.gif\" />"  
+    "<img class=\"sprite1 emblema emblema-#{emblema}\" src=\"/images/blank.gif\" />"  
   end
   
   def sparkline(opts)

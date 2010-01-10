@@ -5,6 +5,6 @@
 		get_last_commented_contents,
 		:id => 'lastcomments',
 		:show_even_if_empty => true) do |o| %>
-	<a title="<%=o.main_category ? "#{o.main_category.root.code} | " : ''%><%=h o.resolve_hid%>" href="<%=controller.url_for_content_onlyurl(o)%>?_xs=gmlco"><%=truncate(o.resolve_hid, 26, '..')%></a> 
+	<a title="<%=o.main_category ? "#{o.main_category.root.code} | " : ''%><%=h o.resolve_hid%>" href="<%=controller.url_for_content_onlyurl(o)%>"><%=truncate(o.resolve_hid, 26, '..')%></a> 
 <% end %>
 <% end -%>

@@ -390,7 +390,7 @@ body.cocuenta-cuenta .choose-avatar img.selected {
 }
 
 .rss16 {
-    list-style-image: url(/skins/default/images/rss16.png);
+    list-style-image: url(../images/icons/rss16.png);
 }
 
 .rss16 li a {
