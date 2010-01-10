@@ -2,7 +2,16 @@ class Admin::EntradasfaqController < ApplicationController
   require_admin_permission :faq
   
   def wmenu_pos
-    'hq'
+	  'hq'
+  end
+  
+  def submenu
+	  'faq'
+  end
+
+  def submenu_items
+	  [['Entradas', '/admin/entradasfaq'],
+		  ['Categorías', '/admin/categoriasfaq']]
   end
   
   def index

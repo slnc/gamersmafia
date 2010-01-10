@@ -13,7 +13,7 @@ class Admin::UsuariosController < ApplicationController
   # gm_options :submenu => 'admin', :submenu_items => admin_menu_items, :global_pos => 'admin'
   
   def wmenu_pos
-    'hq'
+	  'hq'
   end
   
   def index
@@ -250,7 +250,11 @@ Quedo a la espera de tu respuesta :)")
   
   def set_antiflood_level
     u = User.find(params[:user_id])
-    u.impose_antiflood(params[:antiflood_level].to_i, @user)
+    if u.impose_antiflood(params[:antiflood_level].to_i, @user)
+	    flash[:notice] = "Antiflood modificado correctamente"
+    else
+	    flash[:error] = "Error al actualizar el nivel de antiflood: #{u.errors.full_messages_html}"
+    end
     redirect_to gmurl(u)
   end
   

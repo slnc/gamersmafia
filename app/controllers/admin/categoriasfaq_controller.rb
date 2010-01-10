@@ -1,6 +1,18 @@
 class Admin::CategoriasfaqController < ApplicationController
   require_admin_permission :faq
+  def wmenu_pos
+	  'hq'
+  end
   
+  def submenu
+	  'faq'
+  end
+
+  def submenu_items
+	  [['Entradas', '/admin/entradasfaq'],
+		  ['Categorías', '/admin/categoriasfaq']]
+  end
+
   def index
     @faq_categories = FaqCategory.find(:all, :conditions => 'parent_id is null', :order => 'position asc, root_id asc, parent_id desc, lower(name) asc')
   end
