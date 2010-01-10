@@ -297,14 +297,6 @@ textarea {
     background: #FFFFC6;
 }
 
-
-
-
-.rss {
-    background: url(../images/icons/feed-icon_orange-12px.png) top left no-repeat;
-}
-
-
 body.cocuenta-cuenta .choose-avatar img.selected {
     border-color: #f00;
 }
