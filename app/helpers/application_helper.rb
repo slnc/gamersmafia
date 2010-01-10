@@ -119,7 +119,7 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
   end
   
   def draw_emblem(emblema)
-    "<img class=\"emblema emblema-#{emblema}\" src=\"/images/blank.gif\" />"  
+    "<img class=\"sprite1 emblema emblema-#{emblema}\" src=\"/images/blank.gif\" />"  
   end
   
   def sparkline(opts)
@@ -251,7 +251,7 @@ type: 'bhs'}))
   end
   
   def member_state(state)
-    "<img class=\"member-state #{state}\" src=\"/images/blank.gif\" />"
+    "<img class=\"sprite1 member-state #{state}\" src=\"/images/blank.gif\" />"
   end
   
   def user_link(user, opts={})
@@ -267,8 +267,8 @@ type: 'bhs'}))
   end
   
   def comments_icon(name, desp=false)   
-    vdesp = desp ? '0' : '12'
-    '<img alt="' << "#{name}" << '" title="' << "#{name}" << '" class="comments-icon" src="/images/blank.gif" style="background-position: -' << COMMENTS_DESPL[name] << 'px -' << vdesp << 'px;" />'
+    vdesp = desp ? '547' : '559'
+    '<img alt="' << "#{name}" << '" title="' << "#{name}" << '" class="sprite1 comments-icon" src="/images/blank.gif" style="background-position: -' << COMMENTS_DESPL[name] << 'px -' << vdesp << 'px;" />'
   end
   
   def notags(txt)
@@ -463,7 +463,7 @@ type: 'bhs'}))
       text = "Valoración: #{src}"
     end
     
-    "<span class=\"rating stars#{src}\"><span><img alt=\"#{text}\" title=\"#{text} (#{rating_h[1]} valoraciones)\" src=\"/images/blank.gif\" width=\"64\" height=\"13\" /></span></span>"
+    "<span class=\"rating stars#{src}\"><span class=\"sprite1\"><img alt=\"#{text}\" title=\"#{text} (#{rating_h[1]} valoraciones)\" src=\"/images/blank.gif\" width=\"64\" height=\"13\" /></span></span>"
   end
   
   def draw_contentheadline(content)
@@ -485,7 +485,7 @@ type: 'bhs'}))
   end
   
   def gmd10
-    '<img class="gmd10" alt="Dólares GM" src="/images/blank.gif" />'
+    '<img class="gmd10 sprite1" alt="Dólares GM" src="/images/blank.gif" />'
   end
   
   def gmd12
@@ -735,16 +735,16 @@ END
   def navpathgm20085
     out = '<ul>'
     firstlevelname = "Portada #{controller.portal.code}" # controller.active_sawmode ? controller.active_sawmode.titleize : 'Portada'
-    out<< "<li class=\"home\"><a title=\"Ir a portada\" class=\"nav\" href=\"/\"><span>#{firstlevelname}</span></a></li>" 
+    out<< "<li class=\"home\"><a title=\"Ir a portada\" class=\"sprite1 nav\" href=\"/\"><span>#{firstlevelname}</span></a></li>" 
     if @navpath # TODO oldschool navpath, remove all of 'em
       #return '' if @navpath.size == 1
       last = @navpath.pop # TODO remove pop directamente en todos los controllers y quitar aquí (a la vez)
-      @navpath.each { |np_name, np_url| out<< "<li><a class=\"nav\" href=\"#{np_url}\">#{np_name}</a></li>" unless np_name == 'Application'}
-      out<< "<li class=\"current\">#{last[0]}</li>" if last
+      @navpath.each { |np_name, np_url| out<< "<li><a class=\"sprite1 nav\" href=\"#{np_url}\">#{np_name}</a></li>" unless np_name == 'Application'}
+      out<< "<li class=\"current sprite1\">#{last[0]}</li>" if last
     elsif controller.controller_name != 'home' && controller.navpath2 then
       #return '' if controller.navpath2.size == 1
-      controller.navpath2.each { |np_name, np_url| out<< "<li><a class=\"nav\" href=\"#{np_url}\">#{np_name}</a></li>"  unless np_name == 'Application' }
-      out<< "<li class=\"current\">#{controller.title}</li>"
+      controller.navpath2.each { |np_name, np_url| out<< "<li><a class=\"sprite1 nav\" href=\"#{np_url}\">#{np_name}</a></li>"  unless np_name == 'Application' }
+      out<< "<li class=\"current sprite1\">#{controller.title}</li>"
       #else
       #return ''
     end
@@ -1105,7 +1105,7 @@ END
     collection.each do |item|
       ids<< item.unique_content.id
       out<< "<li class=\"new #{oddclass} content#{item.unique_content.id}\"><a title=\"#{tohtmlattribute(item.title)}\" href=\"#{gmurl(item)}\">"
-      out<< draw_content_favicon(item) if opts[:faction_favicon]
+      out<< content_category(item) if opts[:faction_favicon]
       out<< "#{truncate(item.title, opts[:truncate_at], '..')}</a></li>"
     end
     out<< '</ul>'
@@ -1116,10 +1116,6 @@ END
 </div>'
     @oddclass = old_oddclass 
     out
-  end
-  
-  def draw_content_favicon(item)
-    "<div class=\"content-category\">#{faction_favicon(item)}</div>" 
   end
   
   def hue_selector(id, field_name, v)
@@ -1204,7 +1200,7 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
   end
   
   def winner_cup(winner)
-    "<img src=\"/images/blank.gif\" class=\"competition-cup cup#{winner}\" />"
+    "<img src=\"/images/blank.gif\" class=\"sprite1 competition-cup cup#{winner}\" />"
   end
   
   def faction_cohesion(faction=@faction)

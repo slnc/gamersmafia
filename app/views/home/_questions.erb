@@ -2,6 +2,6 @@
 <% mfcontents_list("Preguntas", 
 				   Proc.new { controller.portal.question.find(:published, :content_type => 'Question', :conditions => 'answered_on IS NULL AND questions.created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, questions.created_on DESC', :limit => 5)}
 				   ) do |o| %>
-<a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a>
+<a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a>
 <% end -%>
 <% end %><%# cache -%>

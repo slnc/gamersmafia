@@ -55,7 +55,7 @@ mfcontents_list(Cms::translate_content_name(it),
 					Proc.new { controller.portal.send(it.downcase).find(:published, :order => 'created_on desc', :limit => 5) }, 					
 					:truncate_at => 28, :grid => grid_size, :glast => (it == classes.last)) do |o| %>
 					
-<%=draw_content_favicon(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
+<%=content_category(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
 <% if dafirst && o.home_image then %><div style="margin: 5px 0 10px 0;"><a href="<%=gmurl(o)%>"><%=fc_thumbnail(o.home_image, 'i', "#{thumb_width}x54", false)%></a></div><% end -%>
 <%	dafirst = false 
 	end -%>

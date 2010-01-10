@@ -21,7 +21,7 @@ for news in @last_news
 	break if i > max
     shown_news << news.unique_content.id
 %>
-<li class="content<%=news.unique_content.id%> new <%=oddclass%>"><%= link_to "<div class=\"content-category\">#{faction_favicon(news.main_category)}</div>#{truncate(news.title, 30)}", gmurl(news) %></li>
+<li class="content<%=news.unique_content.id%> new <%=oddclass%>"><%= link_to "#{content_category(news.main_category)}#{truncate(news.title, 30)}", gmurl(news) %></li>
 <%  
 	i += 1
 end 
@@ -45,7 +45,7 @@ shown_downloads = []
 for download in @last_downloads
     shown_downloads << download.unique_content.id
 %>
-    <li class="content<%=download.unique_content.id%> new <%=oddclass%>"><%=link_to "<div class=\"content-category\">#{faction_favicon(download.main_category)}</div>#{download.title}", gmurl(download)%></li>
+    <li class="content<%=download.unique_content.id%> new <%=oddclass%>"><%=link_to "#{content_category(download.main_category)}#{download.title}", gmurl(download)%></li>
 <% end %>
 </ul>
 <script type="text/javascript">contents = contents.concat(<%=shown_downloads.join(',')%>);</script>
@@ -78,7 +78,7 @@ for topicid in @last_topics
   root = topic.main_category.root
   active_topics = root.count(:content_type => 'Topic', :conditions => 'contents.updated_on > now() - \'1 week\'::interval') - 1
 %>
-  <li class="content<%=topic.unique_content.id%> new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "<div class=\"content-category\">#{faction_favicon(topic.main_category)}</div>#{truncate(topic.title.gsub('<', ''), 28)}", gmurl(topic)%></li>
+  <li class="content<%=topic.unique_content.id%> new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "#{content_category(topic.main_category)}#{truncate(topic.title.gsub('<', ''), 28)}", gmurl(topic)%></li>
 <% end %>
 
         </ul>
@@ -244,7 +244,7 @@ shown_demos = []
 for demo in @last_demos
     shown_demos << demo.unique_content.id
 %>
-    <li class="content<%=demo.unique_content.id%> new <%=oddclass%>"><%=link_to "<div class=\"content-category\">#{faction_favicon(demo.main_category)}</div>#{demo.title}", gmurl(demo)%></li>
+    <li class="content<%=demo.unique_content.id%> new <%=oddclass%>"><%=link_to "#{content_category(demo.main_category)}#{demo.title}", gmurl(demo)%></li>
 <% end -%>
 
 </ul>
@@ -253,15 +253,7 @@ for demo in @last_demos
        <div class="more"><a title="Ver más demos" href="/demos">Más demos &raquo;</a></div>
     </div>
 
-
-
-<!-- start homebazar -->
-<div id="homebazar">
-	
-	
-	
-	
-	
+<div id="homebazar">	
 <% d = Date.today
 cache("/#{controller.portal_code}/home/index/potd_#{d.strftime('%Y%m%d')}") do
 
@@ -282,8 +274,5 @@ if @daily_img then %>
       </div>
 	  
 	</div>
-<!-- end homebazar -->
-
-
     </div>
   </div>

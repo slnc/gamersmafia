@@ -11,7 +11,7 @@
 </tr>
 <% @slog_entries.each do |sle| %>
 <tr class="<%=oddclass%>">
-	<td style="width: 16px;"><img class="slog-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
+	<td style="width: 16px;"><img class="sprite1 slog-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
 	<td class="w50 centered infoinline"><%=print_tstamp(sle.created_on, 'intelligent')%></td>
 	<td><%=sle.headline%></td>
 	<td class="infoinline"><%=user_link(sle.reporter)%></td>

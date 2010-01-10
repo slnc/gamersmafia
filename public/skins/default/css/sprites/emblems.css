@@ -7,111 +7,109 @@
     border: 0;
     width: 16px;
     height: 16px;
-    background-image: url(../../images/emblemas.png);
-    background-repeat: no-repeat;
     margin-top: 2px;
 }
 
 .emblema-hq {
-    background-position: 0 0;
+    background-position: 0 -576px;
 }
 
 .emblema-capo {
-    background-position: -16px 0;
+    background-position: -16px -576px;
 }
 
 .emblema-baby {
-    background-position: -32px 0;
+    background-position: -32px -576px;
 }
 
 .emblema-webmaster {
-    background-position: -48px 0;
+    background-position: -48px -576px;
 }
 
 .emblema-okupa {
-    background-position: -64px 0;
+    background-position: -64px -576px;
 }
 
 .emblema-bets_master {
-    background-position: -80px 0;
+    background-position: -80px -576px;
 }
 
 .emblema-best_overall {
-    background-position: -96px 0;
+    background-position: -96px -576px;
 }
 
 .emblema-boss {
-    background-position: -112px 0;
+    background-position: -112px -576px;
 }
 
 .emblema-underboss {
-    background-position: -128px 0;
+    background-position: -128px -576px;
 }
 
 .emblema-editor {
-    background-position: -160px 0;
+    background-position: -160px -576px;
 }
 
 .emblema-moderator {
-    background-position: -144px 0;
+    background-position: -144px -576px;
 }
 
 .emblema-funniest {
-    background-position: -176px 0;
+    background-position: -176px -576px;
 }
 
 .emblema-profoundest {
-    background-position: -192px 0;
+    background-position: -192px -576px;
 }
 
 .emblema-most_informational {
-    background-position: -208px 0;
+    background-position: -208px -576px;
 }
 
 .emblema-most_interesting {
-    background-position: -224px 0;
+    background-position: -224px -576px;
 }
 
 .emblema-wealthiest {
-    background-position: -240px 0;
+    background-position: -240px -576px;
 }
 
 .emblema-best_blogger {
-    background-position: -256px 0;
+    background-position: -256px -576px;
 }
 
 .emblema-living_legend {
-    background-position: -288px 0;
+    background-position: -288px -576px;
 }
 
 .emblema-talker {
-    background-position: -272px 0;
+    background-position: -272px -576px;
 }
 
 .emblema-faith_avalanche {
-    background-position: -304px 0;
+    background-position: -304px -576px;
 }
 
 .emblema-oldest_faction_member {
-    background-position: -320px 0;
+    background-position: -320px -576px;
 }
 
 .emblema-karma_fury {
-    background-position: -336px 0;
+    background-position: -336px -576px;
 }
 
 .emblema-most_knowledgeable {
-    background-position: -352px 0;
+    background-position: -352px -576px;
 }
 
 .emblema-sicario {
-    background-position: -402px 0;
+    background-position: -402px -576px;
 }
 
 .emblema-don {
-    background-position: -418px 0;
+    background-position: -418px -576px;
 }
 
 .emblema-mano_derecha {
-    background-position: -436px 0;
+    background-position: -436px -576px;
 }

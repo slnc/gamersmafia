@@ -2,13 +2,9 @@
     color: #ccc;
 }
 
-.rating span {
-    background-image: url(../../images/s.png);
-}
-
-
 #ratebar {
-    background: url(../../images/s.png) 0 -274px no-repeat;
+    background-position: 0px -274px;
+	background-repeat: no-repeat;
 }
 
 #ratebar-container { float: left; z-index: 1000; width: 47px; }

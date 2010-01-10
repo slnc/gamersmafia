@@ -48,7 +48,7 @@ end
 <% mfcontents_list("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.domain}/preguntas\">Preguntas</a>", 
 				   Proc.new { cat.question.find(:published, :conditions => 'answered_on IS NULL AND contents.created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, contents.created_on DESC', :limit => 5)}
 				   ) do |o| %>
-<a href="<%=gmurl(o)%>"><%=draw_content_favicon(o)%><%=o.title%></a>
+<a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a>
 <% end -%>
 <% end %><%# if -%>
 					
@@ -81,12 +81,12 @@ end -%>
 	<%=render :partial => 'daily_joy' %>
 	
 	<%mftext('xD') do %>
-		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'xD\' And taxonomy = \'ImagesCategory\'').id}%>
+		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :term_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'xD\' And taxonomy = \'ImagesCategory\'').id}%>
 	<% end -%>
 	
 	
 	<%mftext('Wallpapers') do %>
-		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :category_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'Fondos de Escritorio - Wallpapers\' And taxonomy = \'ImagesCategory\'').id}%>
+		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :term_id => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'name = \'Fondos de Escritorio - Wallpapers\' And taxonomy = \'ImagesCategory\'').id}%>
 	<% end -%>
 <% end -%>
 

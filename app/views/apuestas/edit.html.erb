@@ -20,9 +20,5 @@
 </form>
 <%=render :partial => '/shared/accept_or_deny', :locals => {:object => @bet}%>
 <%=render :partial => '/shared/change_authorship', :locals => {:object => @bet}%>
-
-<br />
-<%= link_to 'Mostrar apuesta', gmurl(@bet) %> |
-<%= link_to 'Volver', :action => 'list' %>
 <% end -%>
 <% end-%>

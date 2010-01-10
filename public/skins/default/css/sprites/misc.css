@@ -1,3 +1,10 @@
+.sprite1 { 
+background-image: url(../../images/s.png);
+background-repeat: no-repeat; 
+}
+
+.ico16 { width: 16px; height: 16px; vertical-align: middle; }
+
 .comments-count a, .comments-count span {
     background: url(../../images/icons/comments_16x16.gif) center left no-repeat;
 }
@@ -18,10 +25,6 @@
     background: url(../../images/icons/clan-soft.gif) center left no-repeat;
 }
 
-img.topic-indicator {
-    background: url(../../images/icons/topic-indicators.gif);
-}
-
 .gmd10 {
     background: url(../../images/icons/gmd10.png);
 }
@@ -32,10 +35,6 @@ img.topic-indicator {
 
 .gmd12 {
     background: url(../../images/icons/gmd12.png);
-}
-
-.comments-icon {
-    background: url(../../images/icons/comments.gif) 0 0 no-repeat;
 }
 
 img.pageviews-count {
@@ -54,59 +53,48 @@ img.downloads-count {
  * Slog
  */
 .slog-type0 {
-    background: url(../../images/icons/slog-type0.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: 0px -464px;
 }
 
 .slog-type1 {
-    background: url(../../images/icons/slog-type1.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -16px -464px;
 }
 
 .slog-type2 {
-    background: url(../../images/icons/slog-type2.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -32px -464px;
 }
 
 .slog-type3 {
-    background: url(../../images/icons/slog-type3.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -48px -464px;
 }
 
 .slog-type4 {
-    background: url(../../images/icons/slog-type4.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -64px -464px;
 }
 
 .slog-type5 {
-    background: url(../../images/icons/slog-type5.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -80px -464px;
 }
 
 .slog-type6 {
-    background: url(../../images/icons/slog-type6.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -96px -464px;
 }
 
 .slog-type7 {
-    background: url(../../images/icons/slog-type7.gif) 0 0 no-repeat;
+	margin-right: 2px;
+    background-position: -112px -464px;
 }
 
 .slog-type8 {
-    background: url(../../images/icons/slog-type8.gif) 0 0 no-repeat;
-}
-
-.faction-role {
-    background: url(../../images/icons/faction_roles.gif) 0 0;
-}
-
-.faction-role.boss {
-    background-position: 0 0;
-}
-
-.faction-role.underboss {
-    background-position: -16px 0;
-}
-
-.faction-role.editor {
-    background-position: -32px 0;
-}
-
-.faction-role.moderator {
-    background-position: -48px 0;
+	margin-right: 2px;
+    background-position: -128px -464px;
 }
 
 .user-sex .male {
@@ -152,3 +140,6 @@ img.cash-in {
 #ccontent .messages .preview span.replied {
     background: url(../../images/icons/replied.gif) left center no-repeat;
 }
+
+
+.gotop a { background: url(../../images/icons/top.png) right 0 no-repeat; padding-right: 18px;}

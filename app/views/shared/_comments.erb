@@ -65,7 +65,7 @@ end %><%# each -%>
     <div class="comment-info infoinline"> 
       <span class="hidden" id="comment<%=comment.id%>editlink"><% if nil then %><a class="action" href="" onclick="editcomment(<%=comment.id%>); return false;">Editar2</a><% end -%><a class="action" href="" onclick="document.location='/comments/edit/<%=comment.id%>?redirto=<%=request.path%>'; return false;">Editar</a> |</span>
       <span class="hidden" id="comment<%=comment.id%>dellink"><a class="action" href="" onclick="return confirm('¿Estás seguro de que quieres borrar este comentario?') && (document.location = '/comments/destroy/<%=comment.id%>?redirto=<%=request.path%>') && false;">Borrar</a> |</span>
-      <%=print_tstamp comment.created_on%> <span class="commentlink"><a title="Enlace a este comentario" href="#comment<%=comment.id%>"><img src="/images/blank.gif" class="icon16" /></a></span>
+      <%=print_tstamp comment.created_on%> <span class="commentlink"><a title="Enlace a este comentario" href="#comment<%=comment.id%>"><img src="/images/blank.gif" class="icon16 sprite1" /></a></span>
     </div>
 
     <div class="comment-number f_number">#<span><%=i-1%></span></div>
@@ -163,7 +163,7 @@ function load_comments()
 </script>
 <% end -%>
 
-<div class="infoinline right"><a style="background: url(/skins/default/images/top.png) right 0 no-repeat; padding-right: 18px;" href="#" onclick="return GM.utils.gototop();">Volver arriba</a></div>
+<div class="infoinline right gotop"><a href="#" onclick="return GM.utils.gototop();">Volver arriba</a></div>
 <%
 if user_is_authed then
   begin

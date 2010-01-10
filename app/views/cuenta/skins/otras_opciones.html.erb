@@ -207,7 +207,12 @@
 	
 	<h2>Otros sprites</h2>
 	<table>
-		<tr class="<%=oddclass%>">
+	<tr class="<%=oddclass%>">
+		<th>sprite1_sprites</th>
+		<td><%=css_image_selector("skin[css_properties][sprite1_sprites]", @skin.config[:css_properties][:sprite1_sprites], @skin) %><br />
+		<div class="infoinline f_sm">usar <a target="_blank" href="/skins/default/images/s.png">plantilla</a></div></td>
+	</tr>
+	<tr class="<%=oddclass%>">
 		<th>bbeditor_sprites</th>
 		<td><%=css_image_selector("skin[css_properties][bbeditor_sprites]", @skin.config[:css_properties][:bbeditor_sprites], @skin) %><br />
 		<div class="infoinline f_sm">usar <a target="_blank" href="/skins/default/images/bbeditor.gif">plantilla</a></div></td>

@@ -201,19 +201,6 @@ class ActiveSupport::TestCase
     c
   end
   
-  #  def create_content(type, params)
-  #    cls = Object.const_get(ActiveSupport::Inflector::camelize(type))
-  #    if cls.respond_to?(:is_categorizable?)
-  #      cat_attrib = "#{ActiveSupport::Inflector::tableize(type)}_category_id".to_sym
-  #      params[cat_attrib] = 1 unless params.has_key?(cat_attrib)
-  #    end
-  #    cls_count = cls.count
-  #    params[:user_id] = 1 unless params.has_key?(:user_id)
-  ##    post "", { type => params }
-  ##    assert_response :redirect
-  #    assert_equal cls_count + 1, cls.count
-  #  end
-  
   def go_to(url, template=nil)
     get url
     assert_response :success, response.body

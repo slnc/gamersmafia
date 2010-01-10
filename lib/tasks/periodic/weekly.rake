@@ -82,7 +82,8 @@ having portal_id in (select id
         proc_root_cat_id = "#{ActiveSupport::Inflector::tableize(rc.class.name)}#{root_cat.id}"
         next if processed_root_cats.include?(proc_root_cat_id)
         cat_ids = root_cat.all_children_ids
-        q = "WHERE #{ActiveSupport::Inflector::tableize(rc.class.name)}_category_id IN (#{cat_ids.join(',')})"
+        #q = "WHERE #{ActiveSupport::Inflector::tableize(rc.class.name)}_category_id IN (#{cat_ids.join(',')})"
+        q = '' # TODO BROKEN!!! 
         processed_root_cats<< proc_root_cat_id
       else
         next if processed_ctypes.include?(rc.class.name)

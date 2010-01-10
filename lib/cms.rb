@@ -719,13 +719,15 @@ module Cms
       elsif org        
         if org.user_is_moderator(user)
           true
-        elsif content.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(content.main_category.id)) && c.user_is_admin(user.id)
-          true
+        # TODO
+        #elsif content.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(content.main_category.id)) && c.user_is_admin(user.id)
+        #  true
         elsif content.class.name == 'Comment'
           real = content.content.real_content
-          if real.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(real.main_category.id)) && c.user_is_admin(user.id)
-            true
-          elsif real.class.name == 'Event' && (cm = CompetitionsMatch.find_by_event_id(real.id)) && cm.competition.user_is_admin(user.id)
+          # TODO
+          #if real.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(real.main_category.id)) && c.user_is_admin(user.id)
+          #  true
+          if real.class.name == 'Event' && (cm = CompetitionsMatch.find_by_event_id(real.id)) && cm.competition.user_is_admin(user.id)
             true
           else
             false

@@ -522,19 +522,19 @@ img.topic-indicator {
 }
 
 img.topic-indicator.topic-hot {
-    background-position: 0 0;
+    background-position: 0px 0px;
 }
 
 img.topic-indicator.topic-moved {
-    background-position: -24px 0;
+    background-position: -24px -480px;
 }
 
 img.topic-indicator.topic-locked {
-    background-position: -48px 0;
+    background-position: -48px -480px;
 }
 
 img.topic-indicator.topic-sticky {
-    background-position: -72px 0;
+    background-position: -72px -480px;
 }
 
 .topic-indicators {

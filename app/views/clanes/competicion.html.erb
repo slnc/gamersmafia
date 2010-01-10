@@ -18,7 +18,7 @@
     %>
     <tr class="<%=oddclass%>">
       <td><div><div style="float: left; margin-right: 2px;"><%=faction_favicon(c.game)%></div> <strong><a href="/competiciones/show/<%=c.id%>"><%=truncate(c.name, 25, '..')%></a></strong></div></td>
-      <td><img class="competition-cup cup<%=trophey%>" src="/images/blank.gif" /></td>
+      <td><%=winner_cup(trophey)%></td>
     </tr>
 <% end %>
   </table>

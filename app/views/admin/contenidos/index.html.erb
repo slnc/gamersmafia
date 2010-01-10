@@ -65,7 +65,7 @@ for @item in collection:
     u = lock.user
     %>
     <td><%=@item.resolve_hid%><br />
-      <span class="infoinline content-locked"> <a href="<%=gmurl(u)%>"><%=u.login%></a></span>
+      <span class="infoinline content-locked"><img src="/images/blank.gif" class="ico16 sprite1 lock" /> <a href="<%=gmurl(u)%>"><%=u.login%></a></span>
     </td>
     <%
     else %>

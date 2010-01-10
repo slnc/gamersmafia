@@ -30,7 +30,7 @@ body {
 }
 
 #cpageout {
-    background: url(../images/bricks.jpg) left 0 repeat;
+    background: url(../images/layout/bricks.jpg) left 0 repeat;
 }
 
 body.lypopup {
@@ -126,13 +126,13 @@ body.lypopup h1 {
 
 /* downloads  */
 tr.downloads-folder td.first {
-    background-image: url(../images/misc/downloads_folder.png);
+    background-image: url(../images/icons/downloads_folder.png);
     background-position: center left;
     background-repeat: no-repeat;
 }
 
 tr.downloads-download td.first {
-    background-image: url(../images/misc/downloads_download.png);
+    background-image: url(../images/icons/downloads_download.png);
     background-position: center left;
     background-repeat: no-repeat;
 }
@@ -281,7 +281,7 @@ textarea {
 }
 
 .commentlink img {
-    background: url(../images/s.png) left -162px no-repeat;
+    background-position: left -162px;
 }
 
 
@@ -296,14 +296,6 @@ textarea {
 #ccontent tr.alt1.selrow td, #ccontent tr.alt0.selrow td {
     background: #FFFFC6;
 }
-
-
-
-
-.rss {
-    background: url(../images/icons/feed-icon_orange-12px.png) top left no-repeat;
-}
-
 
 body.cocuenta-cuenta .choose-avatar img.selected {
     border-color: #f00;
@@ -341,11 +333,11 @@ body.cocuenta-cuenta .choose-avatar img.selected {
 }
 
 .new .content-category {
-    background: url(../images/s.png) 0 -45px no-repeat;
+    background-position: 0px -45px;
 }
 
 .alt1.new .content-category {
-    background: url(../images/s.png) -24px -45px no-repeat;
+    background-position: -24px -45px;
 }
 
 #ccontent a .shop-buy {
@@ -360,7 +352,7 @@ body.cocuenta-cuenta .choose-avatar img.selected {
 }
 
 .gmd10 {
-    background: url(../images/s.png) 0 -267px;
+    background-position: 0px -267px;
 }
 
 .information {
@@ -398,7 +390,7 @@ body.cocuenta-cuenta .choose-avatar img.selected {
 }
 
 .rss16 {
-    list-style-image: url(/skins/default/images/rss16.png);
+    list-style-image: url(../images/icons/rss16.png);
 }
 
 .rss16 li a {

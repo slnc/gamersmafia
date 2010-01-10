@@ -30,9 +30,9 @@
 	height: 16px;
 }
 
-.sawbottom-sel-left { height: 21px; padding-left: 4px; background: url(/skins/default/images/sawsel_left.png) 0 0 no-repeat; }
-.sawbottom-sel-right { height: 21px; background: url(/skins/default/images/sawsel_right.png) right 0 no-repeat; }
-.sawbottom-sel-bg { background: url(/skins/default/images/sawsel_mid.png) 0 0 repeat-x; height: 21px; line-height: 21px; }
+.sawbottom-sel-left { height: 21px; padding-left: 4px; background: url(/skins/default/images/mgglobalmenu/sawsel_left.png) 0 0 no-repeat; }
+.sawbottom-sel-right { height: 21px; background: url(/skins/default/images/mgglobalmenu/sawsel_right.png) right 0 no-repeat; }
+.sawbottom-sel-bg { background: url(/skins/default/images/mgglobalmenu/sawsel_mid.png) 0 0 repeat-x; height: 21px; line-height: 21px; }
 .sawbottom-sel-bg img.factionfavicon { margin: 2px 5px 0 3px; float: left; }
 
 #mggnav-clans-my-clans-list { 

@@ -84,7 +84,7 @@ class Competition < ActiveRecord::Base
   # aunque no sea participante
   named_scope :related_with_user, lambda { |user| 
     ids = [0]
-    Clan.related_with_user(user.id).each { |c| ids<< c.id }
+    Clan.related_with_user(user.id).compact.each { |c| ids<< c.id }
     
     { :conditions => "id IN (SELECT role_data::int4 FROM users_roles WHERE user_id = #{user.id} AND role IN ('CompetitionAdmin', 'CompetitionSupervisor'))
                                            or id IN (SELECT a.id 

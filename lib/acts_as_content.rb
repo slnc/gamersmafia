@@ -416,7 +416,6 @@ module ActsAsContent
       out = {}
       self.attributes.each do |k,v|
         next if [:id, :unique_content_id, :terms].include?(k.to_sym)
-        next if k == "#{ActiveSupport::Inflector::tableize(self.class.name)}_category_id"
         out[k.to_sym] = v unless Cms::COMMON_CLASS_ATTRIBUTES.include?(k.to_sym)
       end
       out
@@ -587,12 +586,10 @@ module ActsAsContent
                                           JOIN contents_terms ON contents.id = contents_terms.content_id 
                                          WHERE contents.state = #{Cms::PUBLISHED} 
                                            AND term_id IN (#{self.main_category.root.all_children_ids(:content_type => self.class.name).join(',')})"
-          #puts q
+          
           contents_ids = User.db_query(q).collect { |dbr| dbr['content_id'] }
           
           q = "AND unique_content_id IN (#{contents_ids.join(',')})"
-          #cat_ids = self.main_category.root.all_children_ids
-          #q = "AND #{ActiveSupport::Inflector::tableize(self.class.name)}_category_id IN (#{cat_ids.join(',')})"
         else
           q = ''
           total = self.class.count(:conditions => "state = #{Cms::PUBLISHED} #{q}")
