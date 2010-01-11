@@ -2,7 +2,7 @@
 
 LOGIN_REGEXP = /[^\/]+/
 ActionController::Routing::Routes.draw do |map|
-  map.resources :tags
+  map.resources :tags, :requirements => { :id => /[a-z0-9.]+/ }
   
   map.namespace(:admin) do |admin|
     admin.resources :tags
