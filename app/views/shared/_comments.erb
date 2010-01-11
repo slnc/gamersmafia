@@ -53,7 +53,7 @@ negative_valorations_types = CommentsValorationsType.find_negative
 			comment.user.emblems_mask.split('').each do |char|
 			  if char == '1' then
 			 %>
-		 	<img class="emblema emblema-<%=Emblems::EMBLEMS_BY_INDEX[emi]%>" src="/images/blank.gif" title="<%=Emblems::EMBLEMS[Emblems::EMBLEMS_BY_INDEX[emi]][:title]%>" />
+		 	<img class="sprite1 emblema emblema-<%=Emblems::EMBLEMS_BY_INDEX[emi]%>" src="/images/blank.gif" title="<%=Emblems::EMBLEMS[Emblems::EMBLEMS_BY_INDEX[emi]][:title]%>" />
 			<% end %><%# if -%>
 		<% emi+=1 
 end %><%# each -%>
