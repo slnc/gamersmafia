@@ -33,11 +33,31 @@ class CacheObserverMiembrosTest < ActionController::IntegrationTest
   test "should_clear_firmas_on_updating_signature" do
     test_should_clear_firmas_on_new_signature
     get "/miembros/#{@u1.login}/firmas"
+    get "/miembros/#{@u1.login}"
     assert_response :success
     assert_cache_exists "/common/miembros/#{@u1.id % 1000}/#{@u1.id}/firmas"
+    assert_cache_exists "#{Cache.user_base(@u1.id)}/profile/last_profile_signatures"
     post "/miembros/#{@u1.login}/update_signature", { :profile_signature => { :signature => 'mmmmmmmuermota' } }
     assert_response :redirect
     assert_cache_dont_exist "/miembros/#{@u1.id % 1000}/#{@u1.id}/firmas"
+    assert_cache_dont_exist "#{Cache.user_base(@u1.id)}/profile/last_profile_signatures"
+  end
+  
+  
+  test "should_clear_firmas_on_deleting_signature" do
+    test_should_clear_firmas_on_new_signature
+    get "/miembros/#{@u1.login}"
+    get "/miembros/#{@u1.login}/firmas"
+    assert_response :success
+    assert_cache_exists "/common/miembros/#{@u1.id % 1000}/#{@u1.id}/firmas"
+    assert_cache_exists "#{Cache.user_base(@u1.id)}/profile/last_profile_signatures"
+    
+    assert_count_decreases(ProfileSignature) do
+      ProfileSignature.last.destroy
+    end
+    
+    assert_cache_dont_exist "/miembros/#{@u1.id % 1000}/#{@u1.id}/firmas"
+    assert_cache_dont_exist "#{Cache.user_base(@u1.id)}/profile/last_profile_signatures"
   end
   
   test "should_clear_content_stats_on_new_comment" do

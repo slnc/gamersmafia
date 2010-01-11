@@ -76,8 +76,8 @@ class DemosController < ArenaController
 #gm_link = nil
       final_mirror = nil # Demo.create_symlink(dd.download_cookie, @demo.file, gm_link)  # 1 = NLS
       final_mirror = 0 if final_mirror.nil?
-      end_file = @demo.file.gsub("#{RAILS_ROOT}/public/storage", '')
-      @demo_link = @demo.file # "#{Download::MIRRORS_DOWNLOAD[final_mirror]}d/#{dd.download_cookie}/#{File.basename(end_file)}" 
+      end_file = @demo.file.to_s.gsub("#{RAILS_ROOT}/public/storage", '')
+      @demo_link = @demo.file.to_s # "#{Download::MIRRORS_DOWNLOAD[final_mirror]}d/#{dd.download_cookie}/#{File.basename(end_file)}" 
     end
     render :layout => 'blank'
   end

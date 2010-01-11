@@ -22,34 +22,34 @@ class SiteControllerTest < ActionController::TestCase
     assert l.updated_on > 10.seconds.ago, l.updated_on
   end
   
-  test "mrachmed clasifica comentarios" do
-    [:mrachmed_clasifica_comentarios_good, :mrachmed_clasifica_comentarios_bad].each do |act|
-      assert_raises(AccessDenied) { get act }
-    end
-    
-    sym_login 1
-    
-    assert_count_increases(CommentViolationOpinion) do
-      c_id = Comment.first.id
-      post :mrachmed_clasifica_comentarios_good, :comment_id => c_id
-      assert_redirected_to "/site/mrachmed_clasifica_comentarios?prev_comment_id=#{c_id}"
-      assert flash[:error].nil?
-    end
-    CommentViolationOpinion.last.destroy
-    
-    assert_count_increases(CommentViolationOpinion) do
-      c_id = Comment.first.id
-      post :mrachmed_clasifica_comentarios_bad, :comment_id => c_id
-      assert_redirected_to "/site/mrachmed_clasifica_comentarios?prev_comment_id=#{c_id}"
-      assert flash[:error].nil?
-    end
-    
-    [:mrachmed_clasifica_comentarios_good, :mrachmed_clasifica_comentarios_bad].each do |act|
-      get act
-      assert_response :success
-      assert flash[:error]
-    end
-  end
+#  test "mrachmed clasifica comentarios" do
+#    [:mrachmed_clasifica_comentarios_good, :mrachmed_clasifica_comentarios_bad].each do |act|
+#      assert_raises(AccessDenied) { get act }
+#    end
+#    
+#    sym_login 1
+#    
+#    assert_count_increases(CommentViolationOpinion) do
+#      c_id = Comment.first.id
+#      post :mrachmed_clasifica_comentarios_good, :comment_id => c_id
+#      assert_redirected_to "/site/mrachmed_clasifica_comentarios?prev_comment_id=#{c_id}"
+#      assert flash[:error].nil?
+#    end
+#    CommentViolationOpinion.last.destroy
+#    
+#    assert_count_increases(CommentViolationOpinion) do
+#      c_id = Comment.first.id
+#      post :mrachmed_clasifica_comentarios_bad, :comment_id => c_id
+#      assert_redirected_to "/site/mrachmed_clasifica_comentarios?prev_comment_id=#{c_id}"
+#      assert flash[:error].nil?
+#    end
+#    
+#    [:mrachmed_clasifica_comentarios_good, :mrachmed_clasifica_comentarios_bad].each do |act|
+#      get act
+#      assert_response :success
+#      assert flash[:error]
+#    end
+#  end
   
   test "get_banners_of_gallery" do
     assert_raises(ActiveRecord::RecordNotFound) { get :get_banners_of_gallery }

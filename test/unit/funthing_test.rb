@@ -42,11 +42,7 @@ class FunthingTest < ActiveSupport::TestCase
     assert_equal embed, ft.main
   end
   
-  test "dont allow iframe or javascript" do
-    ft = Funthing.new({:title => 'foo funthing2', :main => '<iframe', :user_id => 1})
-    assert_equal false, ft.save
-    assert_not_nil ft.errors[:main]
-    
+  test "dont allow javascript" do
     ft = Funthing.new({:title => 'foo funthing2', :main => '<script', :user_id => 1})
     assert_equal false, ft.save
     assert_not_nil ft.errors[:main]

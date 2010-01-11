@@ -20,3 +20,4 @@ nohup.out
 _pending_patches_from_svn
 .pydevproject
 
+db/schema.rb

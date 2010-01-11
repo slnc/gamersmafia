@@ -440,6 +440,7 @@ module Cms
       html_fragment.gsub!(/(<img[^>]+src="\/cache\/thumbnails\/(f|k)\/([\d]+)x([\d]+)\/([^"]+)"[^>]*>)/i, "<a href=\"/\\5\">\\1</a>")
     end
     
+    #html_fragment.gsub(/color:\s*#[abcdef0-9]+)
     
     return html_fragment
   end
