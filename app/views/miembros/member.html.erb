@@ -391,7 +391,7 @@ if last_matches.size > 0 then
 		<ul style="margin: 0; padding-left: 0;">
 	<%dbe.each do |db| %>
 	<li class="<%=oddclass%>" style="float: left; padding: 3px; list-style: none;">
-		<img class="emblema emblema-<%=db['emblem']%>" src="/images/blank.gif" title="<%=Emblems::EMBLEMS[db['emblem'].to_sym][:title]%>" />
+		<img class="sprite1 emblema emblema-<%=db['emblem']%>" src="/images/blank.gif" title="<%=Emblems::EMBLEMS[db['emblem'].to_sym][:title]%>" />
 		<%=db['count']%>
 	</li>
 	<% end -%>
