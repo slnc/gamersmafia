@@ -14,6 +14,7 @@ class SiteController < ApplicationController
     
   end
   
+  if nil 
   def mrachmed_clasifica_comentarios
     @prev_comment_id = params[:prev_comment_id] if params[:prev_comment_id]
     if params[:comment_id]
@@ -81,6 +82,7 @@ class SiteController < ApplicationController
         Bank.transfer(:bank, @user, 0.25, 'Enseñar a MrAchmed')
     end
     redirect_to "/site/mrachmed_clasifica_comentarios?prev_comment_id=#{params[:comment_id]}"
+  end
   end
 
   def novedades
