@@ -2,7 +2,7 @@
     <div class="content<%=poll.unique_content.id%> new"><a href="<%=gmurl(poll)%>"><%=content_category(poll)%><%=poll.title%></a></div>
 
   <%= form_tag(:action => 'vote', :controller => 'encuestas', :id => poll.id) %>
-  <ul style="padding-left: 3px;">
+  <ul style="padding-left: 3px; clear: left;">
    <% if user_is_authed and poll.user_voted(controller.user) then
               stats_reg = PollsOption.db_query("SELECT a.id, 
                                                           a.name, 
@@ -42,7 +42,7 @@
     <% end %>
   </ul>
   <% if not (user_is_authed and poll.user_voted(controller.user)) then %>
-    <%= submit_tag('Votar') %> | 
+    <input type="submit" class="submit" value="Votar" style="margin-top: 10px;" /> 
   <% end -%>
   <div class="infoinline" style="text-align: right; padding-right: 3px;"><strong><%=poll.votes%></strong> votos | <span class="comments-count"><a style="display: inline;" href="<%=gmurl(poll)%>#comments"><%=poll.cache_comments_count%></a></span></div>
   </form>

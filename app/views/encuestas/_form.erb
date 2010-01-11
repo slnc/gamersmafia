@@ -4,10 +4,10 @@
 <%= text_field 'poll', 'title', :class => 'text'  %></p>
 
 <p><label for="poll_starts_on">Comienza</label><br/>
-<%= datetime_select 'poll', 'starts_on', :start_year => Time.now.year%></p>
+<%= datetime_select 'poll', 'starts_on', :start_year => @poll.new_record? ? Time.now.year : 2004 %></p>
 
 <p><label for="poll_ends_on">Termina</label><br/>
-<%= datetime_select 'poll', 'ends_on', :start_year => Time.now.year%></p>
+<%= datetime_select 'poll', 'ends_on', :start_year => @poll.new_record? ? Time.now.year : 2004 %></p>
 
 <strong>Opciones</strong><br />
 <% @poll.polls_options.find(:all, :order => 'id ASC').each do |option| %>
