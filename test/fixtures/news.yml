@@ -117,3 +117,18 @@ published_gm1:
   approved_by_user_id: 1
   state: 2
   unique_content_id: 1114
+  
+published_rj1:
+  id: 67
+  user_id: 1
+  created_on: 2006-01-01 00:00:00
+  updated_on: 2006-01-01 00:00:00
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: noticia de rj 1
+  description: noticia de rj description
+  main: 
+  approved_by_user_id: 1
+  state: 2
+  unique_content_id: 1117

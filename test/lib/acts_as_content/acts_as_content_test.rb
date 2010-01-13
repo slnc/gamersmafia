@@ -59,7 +59,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert_equal 2, @tut.terms.size
     termz = [19, 28]
     @tut.terms.each do |t|
-        assert termz.include?(t.id)
+      assert termz.include?(t.id)
     end
   end
   
@@ -234,5 +234,39 @@ class ActsAsContentTest < ActiveSupport::TestCase
     relportals = n.get_related_portals
     assert_equal 4, relportals.size
     assert_equal 'anime', relportals[3].code
+  end
+  
+  test "in_portal with GmPortal should return all contents" do
+    assert_equal News.count, News.in_portal(GmPortal.new).count
+  end
+  
+  test "in_portal with BazarDistrictPortal should return BazarDistrict's contents" do
+    assert News.in_portal(BazarDistrictPortal.find(31)).find_by_id(65)
+  end
+  
+  test "in_portal with BazarDistrictPortal should not return non-BazarDistrict's contents" do
+    assert_nil News.in_portal(BazarDistrictPortal.find(31)).find_by_id(1)
+    assert_nil News.in_portal(BazarDistrictPortal.find(31)).find_by_id(66) # gm's
+  end
+  
+  test "in_portal with FactionsPortal with single faction should return the faction's contents" do
+    assert News.in_portal(FactionsPortal.find(1)).find(1)
+  end
+  
+  test "in_portal with FactionsPortal with single faction should not return other faction's contents" do
+    assert_nil News.in_portal(FactionsPortal.find(20)).find_by_id(1)
+  end
+  
+  
+  test "in_portal with FactionsPortal with multiple factions should return all the factions's contents" do
+    fsp = FactionsPortal.find_by_code('unreal')
+    assert News.in_portal(fsp).find(1) # ut's news
+    assert News.in_portal(fsp).find(67) # rj's news
+  end
+  
+  test "in_portal with FactionsPortal with multiple factions should not return other portal's contents" do
+    fsp = FactionsPortal.find_by_code('unreal')
+    assert_nil News.in_portal(fsp).find_by_id(66) # gm news
+    assert_nil News.in_portal(fsp).find_by_id(65) # anime news
   end
 end

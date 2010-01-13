@@ -256,3 +256,7 @@ gmpollpending:
     content_id: 1116
     term_id: 15
     
+rj_news1:
+    id: 48
+    content_id: 1117
+    term_id: 2
