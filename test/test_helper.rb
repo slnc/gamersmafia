@@ -257,6 +257,10 @@ class ActiveSupport::TestCase
 end
 
 class ActionController::IntegrationTest
+  def setup
+        host! App.domain
+  end
+  
   def sym_login(login, pass)
     logout if (request && request.session && request.session[:user])
     post '/cuenta/do_login', { :login => login, :password => pass }

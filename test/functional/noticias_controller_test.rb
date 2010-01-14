@@ -83,4 +83,14 @@ class NoticiasControllerTest < ActionController::TestCase
     end
     assert_equal 1, News.find(:first, :order => 'id desc').terms[0].id
   end
+  
+  test "content locked" do
+    get :index
+    
+    @controller.send(:erase_render_results)
+    @controller.send(:rescue_action_in_public, ContentLocked.new)
+    assert_response 403
+    # assert_template 'application/content_locked' doesn't seem to works (rails 2.3.5)
+    assert @response.body.include?('El contenido especificado est')
+  end
 end

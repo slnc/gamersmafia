@@ -621,7 +621,7 @@ Request information:
       redirect_to("http://#{App.domain}", :status => 301)
       
       when ContentLocked
-      render(:layout => 'default', :file => "#{RAILS_ROOT}/app/views/site/content_locked.rhtml", :status => '403 Forbidden')
+      render :template => 'application/content_locked', :status => 403
       
       when AccessDenied
       http_401
@@ -657,7 +657,6 @@ Request information:
   end
 
 
-  
   public
   def track(opts={})
     opts = {:redirecting => false, :cookiereq => true }.merge(opts)
