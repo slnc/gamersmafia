@@ -36,8 +36,9 @@ max = @competition.competitions_matches.find(:first, :order => 'stage DESC').sta
 <table>
   <% for cm in @competition.competitions_matches.find(:all, :conditions => ['stage = ?', time], :order => 'play_on ASC') %>
   <tr class="<%=oddclass%>">
-    <td class="w125"><a href="/competiciones/participante/<%=cm.participant1_id%>"><%=cm.participant1.name%></a></td>
-    <td class="w125"><a href="/competiciones/participante/<%=cm.participant2_id%>"><%=cm.participant2.name%></a></td>
+  	<%# Matches without participants here shouldn't happen %>
+    <td class="w125"><% if cm.participant1 then %><a href="/competiciones/participante/<%=cm.participant1_id%>"><%=cm.participant1.name%></a><% end -%></td>
+    <td class="w125"><% if cm.participant2 then %><a href="/competiciones/participante/<%=cm.participant2_id%>"><%=cm.participant2.name%></a><% end -%></td>
     <td class="centered"><a href="/competiciones/partida/<%=cm.id%>"><% 
         if cm.completed? then
           case cm.result
