@@ -40,9 +40,8 @@ class Event < ActiveRecord::Base
     hotmap = {}
     
     # buscamos todos los eventos en la intersección
-    self.find(:published, 
-             :conditions => "id not in (SELECT event_id from competitions where event_id is not null) 
-                     AND parent_id is null
+    self.published.top_level.find(:all, 
+             :conditions => "id not in (SELECT event_id from competitions where event_id is not null)
                      AND date_trunc('month', to_timestamp('#{t.strftime('%Y%m%d%H%M%S')}', 'YYYYMMDDHH24MISS')) BETWEEN date_trunc('month', starts_on) AND date_trunc('month', ends_on)").each do |e|
       
       start_d = Time.local(e.starts_on.year, e.starts_on.month, e.starts_on.day) # ponemos el primer día a 00:00:00 
@@ -99,7 +98,6 @@ class Event < ActiveRecord::Base
       }
     end
     
-    # limito los valores de los días
     hotmap
   end
   
