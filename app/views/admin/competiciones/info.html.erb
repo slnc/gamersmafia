@@ -11,7 +11,7 @@
 <% content_main do %>
   <%mftext(@competition.name) do %>
   <table>
-    <% @competition.competitions_logs_entries.each do |cle| %>
+    <% @competition.competitions_logs_entries.find(:all, :order => 'created_on DESC').each do |cle| %>
       <tr class="<%=oddclass%>">
         <td class="timestamp infoinline"><%= print_tstamp(cle.created_on) %></td>
         <td><%= cle.message %></td>
