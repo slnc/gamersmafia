@@ -27,11 +27,11 @@ class User < ActiveRecord::Base
   STATES_CANNOT_LOGIN = [ST_UNCONFIRMED, ST_BANNED, ST_DISABLED, ST_DELETED, ST_UNCONFIRMED_1W, ST_UNCONFIRMED_2W]
   
   STATES_DESCRIPTIONS = {ST_UNCONFIRMED => 'no confirmada',
-                         ST_BANNED => 'baneada',
-                         ST_DISABLED => 'deshabilitada',
-                         ST_DELETED => 'borrada',
-                         ST_UNCONFIRMED_1W => 'no confirmada',
-                         ST_UNCONFIRMED_2W => 'no confirmada'}
+    ST_BANNED => 'baneada',
+    ST_DISABLED => 'deshabilitada',
+    ST_DELETED => 'borrada',
+    ST_UNCONFIRMED_1W => 'no confirmada',
+    ST_UNCONFIRMED_2W => 'no confirmada'}
   has_many :groups_messages
   
   has_many :users_roles, :dependent => :destroy
@@ -158,6 +158,13 @@ class User < ActiveRecord::Base
       true
     end
   end
+  
+  
+  def ban_reason
+    bp = BanRequest.find(:first, :conditions => ['banned_user_id = ?', self.id], :order => 'created_on DESC')
+    return bp ? bp.reason : 'Desconocida'
+  end
+  
   
   def latent_rating(c)
     cr = self.content_ratings.find_by_content_id(c.id)
