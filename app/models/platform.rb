@@ -56,7 +56,7 @@ class Platform < ActiveRecord::Base
   
   def update_img_file
     if @temp_file and @filename != ''
-      File.open("#{RAILS_ROOT}/public/storage/games/#{self.code}.gif", "wb+") do |f| 
+      File.open(self.img_file, "wb+") do |f| 
         f.write(@temp_file.read)
       end
       Rake::Task["gm:update_default_skin_styles"].invoke
@@ -64,6 +64,14 @@ class Platform < ActiveRecord::Base
       #self.path = "/storage/games/#{self.code}.gif"
       #self.save
     end
+  end
+  
+  def has_img_file?
+    File.exists?(self.img_file)
+  end
+  
+  def img_file
+    "#{RAILS_ROOT}/public/storage/games/#{self.code}.gif"
   end
   
   def check_code_doesnt_belong_to_portal

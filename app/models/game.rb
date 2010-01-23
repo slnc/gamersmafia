@@ -67,12 +67,20 @@ class Game < ActiveRecord::Base
   
   def update_img_file
     if @temp_file and @filename != ''
-      File.open("#{RAILS_ROOT}/public/storage/games/#{self.code}.gif", "wb+") do |f| 
+      File.open(self.img_file, "wb+") do |f| 
         f.write(@temp_file.read)
       end
       @temp_file = nil
       GmSys.command('rake gm:update_default_skin_styles')
     end
+  end
+  
+  def has_img_file?
+    File.exists?(self.img_file)
+  end
+  
+  def img_file
+    "#{RAILS_ROOT}/public/storage/games/#{self.code}.gif"
   end
   
   # TODO tb a plataformas
