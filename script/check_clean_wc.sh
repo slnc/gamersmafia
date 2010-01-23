@@ -6,5 +6,5 @@ if echo `pwd` | grep -q script; then
 	echo "Este script debe ejecutarse desde RAILS_ROOT"
 fi
 
-EXIT_STATUS=`git reset | grep -c locally`
+EXIT_STATUS=`git reset | grep -c ^M`
 exit $EXIT_STATUS
