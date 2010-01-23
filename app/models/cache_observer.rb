@@ -88,7 +88,7 @@ class CacheObserver < ActiveRecord::Observer
       end
       
       when 'Faction':
-        Cache::Faction.common(object)
+      Cache::Faction.common(object)
       
       when 'Blogentry':
       expire_fragment '/common/home/index/blogentries'
@@ -389,8 +389,11 @@ class CacheObserver < ActiveRecord::Observer
       when 'CompetitionsParticipant':
       expire_fragment "/arena/home/open_ladders" if object.competition.kind_of?(Ladder)
       expire_fragment("/common/competiciones/#{object.competition_id}/participantes")
-      object.users.each do |u|
-        Cache::Competition.expire_competitions_lists(u)
+      begin # This is necessary in case we are recreating games and competitions_participants are nil
+        object.users.each do |u|
+          Cache::Competition.expire_competitions_lists(u)
+        end
+      rescue
       end
       
       when 'CompetitionsMatch':
@@ -440,7 +443,7 @@ class CacheObserver < ActiveRecord::Observer
       
       when 'Game':
       expire_fragment('/common/miembros/buscar_por_guid')
-    when 'Faction':
+      when 'Faction':
       Cache::Faction.common(object)
       
       when 'FactionsLink':
@@ -693,7 +696,7 @@ class CacheObserver < ActiveRecord::Observer
       end
       expire_fragment("/common/home/index/news_inet")  
       expire_fragment("/common/gmversion") if object.title.index('Gamersmafia actualizada a la')
-        
+      
       object.get_related_portals.each do |p|
         expire_fragment("/#{p.code}/home/index/news")
         expire_fragment("/#{p.code}/home/index/news2")

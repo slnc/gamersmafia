@@ -550,7 +550,11 @@ class Competition < ActiveRecord::Base
     self.log("Partidas recreadas")
     self.competitions_matches.clear
     self.state = 1
-    self.switch_to_state(2)
+    return unless self.switch_to_state(2)
+    self.competitions_participants.each do |cp|
+      cp.update_attributes(:wins => 0, :losses => 0, :ties => 0)
+    end
+    true
   end
   
   def setup_matches_play_times
