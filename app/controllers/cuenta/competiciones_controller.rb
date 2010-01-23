@@ -35,6 +35,8 @@ class Cuenta::CompeticionesController < ApplicationController
       if competition.user_is_participant(@user.id) then # TODO con clanes rulará?
         l<< ['Mis partidas', '/cuenta/competiciones/mis_partidas']
       end
+      
+      l<< ['Todas mis partidas pendientes', '/cuenta/competiciones/warning_list'] if @user.enable_competition_indicator
     end
     l<< ['&raquo; Cambiar de competición', '/cuenta/competiciones/cambiar']
   end
@@ -44,9 +46,7 @@ class Cuenta::CompeticionesController < ApplicationController
   # TODO navpaths
   # TODO views que sobren
   def index
-    if @user.enable_competition_indicator
-      render :action => 'warning_list'
-    elsif @competition then 
+    if @competition then 
       if @competition.user_is_admin(@user.id) then
         render :action => 'general'
       else
