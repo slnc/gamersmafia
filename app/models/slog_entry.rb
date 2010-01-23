@@ -112,7 +112,8 @@ class SlogEntry < ActiveRecord::Base
     end
     
     users.each do |u|
-      SlogEntry.update_pending_slog(u)
+      # Lo hacemos en diferido para evitar deadlocks que se están produciendo
+      GmSys.job("SlogEntry.update_pending_slog(User.find_by_id(#{u.id}))")
     end
   end
   
