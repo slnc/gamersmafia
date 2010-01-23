@@ -743,6 +743,8 @@ class Competition < ActiveRecord::Base
   
   MATCHES_ON_FIRST_ROUND_PER_TOURNEY_ROUNDS = {1 => 1, 2 => 2, 3 => 4, 4 => 8, 5 => 16, 6 => 32}
   def check_tourney_groups
+    # TODO megahack
+    return self.competitions_types_options[:tourney_groups].to_i if self.competitions_types_options[:tourney_groups]
     max_participantes_in_phase2 = {3 => 8, 4 => 16, 5 => 32}[self.competitions_types_options[:tourney_rounds].to_i]
     max_winners_per_group = self.competitions_types_options[:tourney_classifiers_rounds].to_i
     max_participantes_in_phase2 / max_winners_per_group # TODO revisar los ceil/floor
