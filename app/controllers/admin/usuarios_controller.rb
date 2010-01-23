@@ -171,11 +171,18 @@ class Admin::UsuariosController < ApplicationController
   end
   
   def create_ban_request
+    params[:public_ban_reason] = [] if params[:public_ban_reason].nil?
     require_admin_permission(:capo)
     u = User.find_by_login!(params[:login])
     b = BanRequest.new({:user_id => @user.id, :banned_user_id => u.id, :reason => params[:reason]})
     if b.save
       flash[:notice] = "Ban creado correctamente."
+      out = "<ul>"
+      params[:public_ban_reason].each do |r|
+        out << "<li>#{r}</li>"
+      end
+      out << "</ul>"
+      u.pref_public_ban_reason = out
     else
       flash[:error] = "Error al crear el ban: #{b.errors.full_messages_html}"
     end

@@ -2,8 +2,18 @@
 
 <form method="post" action="/admin/usuarios/create_ban_request">
 <input type="hidden" name="login" value="<%=params[:login]%>" />
-Razón:<br />
-<textarea style="width: 80%; height: 200px;" name="reason"></textarea><br />
+<strong>Razones internas</strong> (visibles solo por capos):<br />
+<textarea style="width: 80%; height: 150px;" name="reason"></textarea><br />
+<br />
+
+<strong>Razones externas</strong> (visibles en el perfil):<br />
+
+<input type="checkbox" name="ban_external_reasons[]" /> Abusar de poderes de staff<br />
+<input type="checkbox" name="ban_external_reasons[]" /> Aprovecharse de fallos de la web<br />
+<input type="checkbox" name="ban_external_reasons[]" /> Ataques continuos a otros usuarios<br />
+<input type="checkbox" name="ban_external_reasons[]" /> Bot<br />
+<input type="checkbox" name="ban_external_reasons[]" /> Multicuenta<br />
+Otra (que sea claramente localizable en el código de conducta): <input type="text" name="ban_external_reasons[]" style="width: 230px;" /><br />
 <br />
 <input type="submit" class="button" value="Banear" onclick="return confirm('¿Estás seguro?')"/>
 </form>

@@ -161,8 +161,7 @@ class User < ActiveRecord::Base
   
   
   def ban_reason
-    bp = BanRequest.find(:first, :conditions => ['banned_user_id = ?', self.id], :order => 'created_on DESC')
-    return bp ? bp.reason : 'Desconocida'
+    self.pref_public_ban_reason || 'Desconocida'
   end
   
   

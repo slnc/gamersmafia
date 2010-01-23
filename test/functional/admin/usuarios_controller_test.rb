@@ -180,7 +180,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     u2.give_admin_permission(:capo)
     sym_login 2
     @u3 = User.find(3)
-    get :ban_request, :login => @u3.login 
+    get :ban_request, :login => @u3.login
     assert_response :success
   end
   
@@ -207,10 +207,13 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     u2.give_admin_permission(:capo)
     @u3 = User.find(3)
     sym_login 2
-    assert_count_increases(BanRequest) do
-      post :create_ban_request, {:login => @u3.login, :reason => "Reiteradas violaciones del código de conducta." }
-      assert_redirected_to "/miembros/#{@u3.login}"
+    assert_count_increases(UsersPreference) do
+      assert_count_increases(BanRequest) do
+        post :create_ban_request, {:login => @u3.login, :reason => "Reiteradas violaciones del código de conducta.", :public_reasons => ['Foo', 'Bar'] }
+        assert_redirected_to "/miembros/#{@u3.login}"
+      end
     end
+    assert_not_nil @u3.pref_public_ban_reason == "<ul><li>Foo</li><li>Bar</li></ul>"
   end
   
   test "confirm_ban_request_should_work_for_capo" do
@@ -321,23 +324,23 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     end
     assert_response :success
   end
-
+  
   test "capos should be able to delete underboss roles" do 
     u2 = User.find(2)
     u3 = User.find(3)
     u2.give_admin_permission(:capo)
     u2.reload
     assert u2.has_admin_permission?(:capo)
-
+    
     f1 = Faction.find(1)
     f1.update_underboss(u3)
-
+    
     last_id = UsersRole.last.id
     post :users_role_destroy, :id => last_id
     assert_response :success
     assert_nil UsersRole.find_by_id(last_id)
   end
-
+  
   test "capos should be able to update users data" do 
     u2 = User.find(2)
     u3 = User.find(3)

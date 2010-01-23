@@ -6,6 +6,7 @@ class UsersPreference < ActiveRecord::Base
     :looking_for => '',
     :quicklinks => [],
     :user_forums => [[], [], []],
+    :public_ban_reason => ''
   }
   # WARNING usar clone!!!
   serialize :value

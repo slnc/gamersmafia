@@ -1,6 +1,6 @@
 <div class="grid-11">
 <% unless @curuser.can_login? %>
-<div class="warning">Esta cuenta está <strong><%=User::STATES_DESCRIPTIONS[@curuser.state]%></strong><% if nil && @curuser.state == User::ST_BANNED then %>. Razón: <strong><%=@curuser.ban_reason%></strong><% end -%></div>
+<div class="warning">Esta cuenta está <strong><%=User::STATES_DESCRIPTIONS[@curuser.state]%></strong><% if @curuser.state == User::ST_BANNED then %>. Razón: <strong><%=@curuser.ban_reason%></strong><% end -%></div>
 <% end -%>
 	
 <%mftext(@curuser.login, :grid => 5) do %>
