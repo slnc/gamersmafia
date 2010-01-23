@@ -426,7 +426,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   
   test "should_confirm_new_account_if_valid_confirm_key" do
     test_should_create_user_if_everything_is_valid
-
+    
     @u.change_internal_state('unconfirmed')
     
     post :do_confirmar, {:k => @u.validkey, :email => @u.email}, {}
@@ -756,5 +756,23 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_response :success
     u1 = User.find(1)
     assert_equal 'arena', u1.default_portal
+  end
+  
+  test "shouldnt delete if invalid password" do
+    sym_login 1
+    post :borrar
+    assert_response :success
+    assert_not_equal User::ST_DELETED, User.find(1).state
+    
+    post :borrar, :password => 'dadsdasd'
+    assert_response :success
+    assert_not_equal User::ST_DELETED, User.find(1).state
+  end
+  
+  test "should delete if valid password" do
+    sym_login 1
+    post :borrar, :password => 'lalala'
+    assert_response :redirect
+    assert_equal User::ST_DELETED, User.find(1).state
   end
 end

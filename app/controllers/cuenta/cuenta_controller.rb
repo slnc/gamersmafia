@@ -521,9 +521,13 @@ class Cuenta::CuentaController < ApplicationController
     @navpath = [] # necesario para que no salga lo de Cuenta
   end
   
-  def logout
+  def _logout_intern
     session[:user] = nil
     cookies[:ak] = {:value => '', :expires => 1.second.ago, :domain => COOKIEDOMAIN}
+  end
+  
+  def logout
+    _logout_intern
     phrases = [['Te echaremos de menos.', 'MrGod'],
     ['Vuelve pronto.', 'MrCheater'],
     ['En el fondo nos caes bien.', 'MrCheater'],
@@ -539,6 +543,19 @@ class Cuenta::CuentaController < ApplicationController
     rnd = phrases[Kernel.rand(phrases.size-1)]
     flash[:notice] = "Sesión cerrada correctamente<br /><br />#{rnd[1]}: <strong>#{rnd[0]}</strong>"
     redirect_to '/'
+  end
+  
+  def borrar
+    if @user.clearpasswd(params[:password].to_s) == @user.password
+      @user.update_attributes(:state => User::ST_DELETED)
+      _logout_intern
+      flash[:notice] = 'Cuenta borrada correctamente. Que te vaya bien en la vida.'
+      redirect_to '/'
+    else
+      flash[:error] = 'La contraseña introducida es incorrecta. Debes introducir tu contraseña actual para poder borrar tu cuenta.'
+      render :action => 'configuracion'
+    end
+    
   end
   
   def do_reset
