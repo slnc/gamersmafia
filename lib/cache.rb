@@ -98,7 +98,7 @@ module Cache
   end
   
   module Skins
-    extends Cache::Common
+    extend Cache::Common
     def self.common(object)
       expire_fragment "/common/layout/skins"
     end
