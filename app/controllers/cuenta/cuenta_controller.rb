@@ -4,8 +4,6 @@ class Cuenta::CuentaController < ApplicationController
   before_filter :only_non_registered, :only => [:login, :do_login, :alta, :bienvenido, :create2, :create, :olvide_clave, :do_olvide_clave, :reset, :do_reset, :confirmar, :do_confirmar, :username_check, :email_check]
   audit :do_reset, :do_olvide_clave, :do_change_email
   
-  include ApplicationHelper
-  
   def index
     @navpath = [['Cuenta', '/cuenta'],]
     @title = 'Cuenta'
