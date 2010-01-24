@@ -1,5 +1,8 @@
 <%generic_support do %>
 <%=render :partial => '/respuestas/top_sabios', :locals => { :category => @category } %>
+
+<%=render(:partial => '/shared/category_tag_browser', :locals => {:cls => Download, :category => @category}) if @category %>
+
 <% end -%>
 <% obj = @category ? @category : controller.portal.question %>
 <%content_main do %>

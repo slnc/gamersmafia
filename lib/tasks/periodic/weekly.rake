@@ -10,6 +10,12 @@ namespace :gm do
     #Download.check_invalid_downloads
     send_weekly_page_render_report_and_truncate
     update_content_ranks
+    recalculate_terms_count
+  end
+
+  def recalculate_terms_count
+    # TODO hack
+    Term.find_each do |t| t.recalculate_contents_count end
   end
   
   def pay_organizations_wages

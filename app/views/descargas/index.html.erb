@@ -1,5 +1,7 @@
 <% generic_support do %>
-<% if @category && !@category.nil? then %>
+<% if @category then %>
+<%=render :partial => '/shared/category_tag_browser', :locals => {:cls => Download, :category => @category}%>
+
 <%=render :partial => '/descargas/esenciales2', :locals => { :category => @category }%>
 
 <% mftext('Los más descargados') do %>
@@ -18,6 +20,7 @@
 <% cache("/common/descargas/index/most_productive_author_by_cat_#{@category.nil? ? '' : @category.id}") do %>
 <%=render :partial => '/shared/most_productive_authors', :locals => {:cls => Download, :category => @category}%>
 <% end -%>
+
 <% end if @category-%>
 <% end -%>
 

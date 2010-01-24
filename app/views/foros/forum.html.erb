@@ -5,6 +5,8 @@
   <%=render :partial => 'most_active_users', :object => @object = @forum%>
   <%=render :partial => 'most_active_topics', :object => @object = @forum%>
   <%=render :partial => 'all_time_users', :object => @object = @forum%>
+  
+  <%=render :partial => '/shared/category_tag_browser', :locals => {:cls => Download, :category => @forum } %>
 
 <% if @forum.parent then %>
   <%mftext('Subforos') do %>

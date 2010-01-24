@@ -8,10 +8,11 @@ class Term < ActiveRecord::Base
   named_scope :not_contents_tags, :conditions => 'taxonomy <> \'ContentsTag\''
   named_scope :top_level, :conditions => 'id = root_id AND parent_id IS NULL'
   named_scope :with_taxonomy, lambda { |taxonomy| {:conditions => "taxonomy = '#{taxonomy}'"}}
+  named_scope :in_category, lambda { |t| { :conditions => ['id IN (SELECT term_id FROM contents_terms WHERE content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?)))', t.all_children_ids]} }
   
   has_many :contents_terms, :dependent => :destroy
   has_many :contents, :through => :contents_terms
-  has_many :users_contents_tags, :dependent => :destroy
+  has_many :users_contents_tags #, :dependent => :destroy
   has_many :tagged_contents, :through => :users_contents_tags, :source => :content
   
   belongs_to :last_updated_item, :class_name => 'Content', :foreign_key => 'last_updated_item_id'
