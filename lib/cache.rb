@@ -1,9 +1,9 @@
 module Cache
-
+  
   def self.after_daily_key
     6.hours.ago.strftime("%Y%m%d")
   end
-
+  
   def self.user_base(uid)
     "/_users/#{uid % 1000}/#{uid}"
   end
@@ -94,6 +94,13 @@ module Cache
       object.real_content.get_related_portals.each do |p|
         expire_fragment("/#{p.code}/miembros/#{comment_user_id % 1000}/#{comment_user_id}/last_comments")
       end
+    end
+  end
+  
+  module Skins
+    extends Cache::Common
+    def self.common(object)
+      expire_fragment "/common/layout/skins"
     end
   end
   

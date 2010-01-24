@@ -5,7 +5,7 @@
 # Esta clase se encarga de gestionar los fragmentos de vista cacheados
 # TODO TODO TODO optimizar todo esto para no limpiar con tanta facilidad
 class CacheObserver < ActiveRecord::Observer
-  observe News, Topic, Demo, Download, Interview, Tutorial, Column, Image, Comment, PollsVote, Poll, Faction, Bet, Potd, Portal, Event, FactionsLink, Clan, Game, Competition, CompetitionsMatch, CompetitionsParticipant, Review, Funthing, Blogentry, User, Content, ProfileSignature, CommentsValoration, Coverage, GmtvChannel, SlogEntry, Question, Friendship, UsersEmblem, BazarDistrict, ContentsRecommendation, UsersRole, RecruitmentAd, ClansMovement, Term, ContentsTerm
+  observe News, Topic, Demo, Download, Interview, Tutorial, Column, Image, Comment, PollsVote, Poll, Faction, Bet, Potd, Portal, Event, FactionsLink, Clan, Game, Competition, CompetitionsMatch, CompetitionsParticipant, Review, Funthing, Blogentry, User, Content, ProfileSignature, CommentsValoration, Coverage, GmtvChannel, SlogEntry, Question, Friendship, UsersEmblem, BazarDistrict, ContentsRecommendation, UsersRole, RecruitmentAd, ClansMovement, Term, ContentsTerm, Skin
   
   def self.bazar_root_tc_id
     @@bazar_root_tc_id ||= Term.single_toplevel(:slug => 'bazar')
@@ -172,6 +172,8 @@ class CacheObserver < ActiveRecord::Observer
   
   def after_destroy(object)
     case object.class.name
+      when 'Skin':
+      Cache::Skins.common(object)
       when 'ClansMovement':
       expire_fragment "/home/comunidad/clans_movements"
       expire_fragment "#{Cache.user_base(object.user_id)}/profile/clanes"
@@ -344,6 +346,8 @@ class CacheObserver < ActiveRecord::Observer
     
     
     case object.class.name
+      when 'Skin' then
+      Cache::Skins.common(object)
       when 'Term' then
       Cache::Terms.after_save(object) unless object.import_mode
       when 'ContentsTerm' then

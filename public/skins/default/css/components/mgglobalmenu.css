@@ -39,4 +39,10 @@
 	position: absolute; 
 	top: 23px; left: 450px;
 }
+
+#mggnav-skins-list { 
+	position: absolute; 
+	top: 27px; left: 500px;
+}
+
 #mggnav-clans-my-clans-list a { display: block; width: 100%;}

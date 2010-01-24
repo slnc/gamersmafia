@@ -50,7 +50,7 @@ Tipo: <select name="skin[type]">
     <td class="infoinline"><%=user_link(User.find(1))%></td>
     <td class="infoinline"><a href="/skins/default.zip">Descargar</a></td>
 </tr>
-	<%Skin.find(:all, :conditions => 'type = \'FactionsSkin\' and is_public = \'t\'', :order => 'lower(name)').each do |skin| %>
+	<%Skin.public.each do |skin| %>
 <tr class="<%=oddclass%>">
     <td><%=skin.name%></td>
     <td><strong><a href="/cuenta/skins/activate?skin=<%=skin.id%>">Ponérmela</a></strong></td>

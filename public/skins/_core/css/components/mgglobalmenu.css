@@ -220,7 +220,13 @@ li#sawbody-comunidad-nuevoclan2 {
 
 #mggnav-clans {
     position: absolute;
-    top: 4px;
+    top: 8px;
+    left: 510px;
+}
+
+#mggnav-skins {
+    position: absolute;
+    top: 8px;
     left: 510px;
 }
 

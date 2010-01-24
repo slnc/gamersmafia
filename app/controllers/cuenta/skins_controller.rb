@@ -277,6 +277,6 @@ class Cuenta::SkinsController < ApplicationController
     @user.pref_skin = @skin.id
     flash[:notice] = "Skin #{@skin.name} activada correctamente"
 	  end
-    redirect_to "/cuenta/skins"
+    redirect_to params[:redirto] ? params[:redirto] : "/cuenta/skins"
   end
 end

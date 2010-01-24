@@ -13,18 +13,19 @@ class Skin < ActiveRecord::Base
   after_save :check_file_changed
   after_create :setup_initial_zip
   before_create :check_names
-
-
+  
+  named_scope :public,  :conditions => 'type = \'FactionsSkin\' and is_public = \'t\'', :order => 'lower(name)'
+  
   def check_names
     return !%w(arena bazar default).include?(self.hid)
   end
-
+  
   validates_uniqueness_of :name
   belongs_to :user
-
-
+  
+  
   def resolve_hid
-	  self.name
+    self.name
   end
   
   CGEN_CSS_START = '/* COLOR GEN START - DO NOT REMOVE */'
@@ -33,7 +34,7 @@ class Skin < ActiveRecord::Base
   def used_by_users_count
     UsersPreference.count(:conditions => ['name = \'skin\' AND value::int4 = ?', self.id])
   end
-
+  
   def self.extract_css_imports(s)
     out = []
     while s.length > 0
@@ -76,16 +77,19 @@ class Skin < ActiveRecord::Base
     out
   end
   
+  DEFAULT_SKINS_IDS  = {'default' => -1, 'arena' => -2, 'bazar' => -3}
   def self.find_by_hid(hid)
     if %w(arena default bazar).include?(hid)
-      Skin.new({:name => hid, :hid => hid, :version => SVNVERSION.to_i(16)})
+      s = Skin.new({:name => hid, :hid => hid, :version => SVNVERSION.to_i(16)})
+      s.id = DEFAULT_SKINS_IDS[hid]
+      s
     else
       super(hid)
     end
   end
   
   public
-    
+  
   def remove_skin_texture(sk)
     clean_style_file(*sk.texture.markers)
     sk.destroy
@@ -115,7 +119,7 @@ class Skin < ActiveRecord::Base
     File.open(compressed, 'w') { |f| f.write(data) }
     `java -jar script/yuicompressor-2.4.2.jar "#{compressed}" -o "#{compressed}" --line-break 500`
   end
-
+  
   def clear_redundant_rules(str)
     str.gsub(/([a-z-]+:\sinherit;)/, "").gsub(/([a-z-]+:\s;)/, "")
   end
