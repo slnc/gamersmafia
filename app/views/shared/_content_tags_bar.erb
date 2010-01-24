@@ -3,13 +3,21 @@
 		<img src="/dot.gif" title="Tags de sistema" class="floatl system-tag-icon ico16 sprite1" /> 
 		<div class="tag"><a href="/<%=Cms::CONTENTS_CONTROLLERS[object.content_type.name]%>"><%=Cms::CLASS_NAMES[object.content_type.name]%></a></div>
 		
-		<% if Cms::CATEGORIES_TERMS_CONTENTS.include?(object.content_type.name) then %>
-			<% object.terms.find(:all, :conditions => 'taxonomy LIKE \'%Category\'').each do |tt| %>
-			<div class="tag"><%=tt.slug%></div>
+		<% if Cms::CATEGORIES_TERMS_CONTENTS.include?(object.content_type.name) then 
+		root_slugs = []
+	
+	%>
+	<% object.terms.find(:all, :conditions => 'taxonomy LIKE \'%Category\'').each do |tt| 
+		this_root = tt.root
+%>
+<% if !root_slugs.include?(this_root) then 
+root_slugs<< this_root
+%><div class="tag"><a href="http://<%=this_root.slug%>.<%=App.domain%>/"><%=this_root.slug%></a></div><% end -%>
+                          <div class="tag"><a href="<%=gmurl(tt)%>"><%=tt.slug%></a></div>
 			<% end -%>
 		<% else %>
 			<% object.terms.find(:all, :conditions => 'taxonomy IS NULL and terms.id = terms.root_id').each do |tt| %>
-			<div class="tag"><a href="http://<%=tt.slug%><%=App.domain%>/"><%=tt.slug%></a></div>
+			<div class="tag"><a href="http://<%=tt.slug%>.<%=App.domain%>/"><%=tt.slug%></a></div>
 			<% end -%>
 		<% end -%>
 		<div class="tag"><a href="<%=gmurl(object.user)%>"><%=object.user.login%></a></div>
