@@ -36,7 +36,15 @@ namespace :gm do
     Karma.update_ranking
     Faith.update_ranking
     update_max_cache_valorations_weights_on_self_comments
+    delete_empty_content_tags_terms
   end
+
+    def delete_empty_content_tags_terms
+	    Term.contents_tags.find(:all, :conditions => 'contents_count = 0').each do |t|
+		    next if t.contents_terms.size > 0
+		    t.destroy
+	    end and nil
+    end
   
   def update_max_cache_valorations_weights_on_self_comments
     User.db_query("update global_vars set max_cache_valorations_weights_on_self_comments = (select max(cache_valorations_weights_on_self_comments) from users where cache_valorations_weights_on_self_comments is not null);")
