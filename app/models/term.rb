@@ -5,6 +5,7 @@ class Term < ActiveRecord::Base
   belongs_to :clan
   
   named_scope :contents_tags, :conditions => 'taxonomy = \'ContentsTag\''
+  named_scope :not_contents_tags, :conditions => 'taxonomy <> \'ContentsTag\''
   named_scope :top_level, :conditions => 'id = root_id AND parent_id IS NULL'
   named_scope :with_taxonomy, lambda { |taxonomy| {:conditions => "taxonomy = '#{taxonomy}'"}}
   

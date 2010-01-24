@@ -4,20 +4,26 @@ class UsersContentsTag < ActiveRecord::Base
   belongs_to :term
   belongs_to :content
   
+  before_validation :downcase_name
   before_create :resolve_term
   after_destroy Proc.new { |c| 
     UsersContentsTag.recalculate_content_top_tags(c.content) 
     c.term.destroy if c.term && c.term.orphan?
   }
   
-  validates_format_of :original_name, :with => /^[a-zñ0-9.]{1,30}$/i, :message => 'El tag tiene más de 30 caracteres o bien contiene caracteres ilegales (solo se permiten letras, numeros y puntos)'
+  validates_format_of :original_name, :with => /^[a-záéíóúñ0-9.]{1,30}$/i, :message => 'El tag tiene más de 30 caracteres o bien contiene caracteres ilegales (solo se permiten letras, numeros y puntos)'
   validates_uniqueness_of :term_id, :scope => [:content_id, :user_id]
+  
+  def downcase_name
+    self.original_name.downcase!
+  end
   
   private
   def resolve_term
+    return false if (Cms::ROOT_TERMS_CONTENTS + Cms::CATEGORIES_TERMS_CONTENTS).include?(self.content.content_type.name) && (Term.not_contents_tags.find(:first, :conditions => ['lower(name) = lower(?)', self.original_name]) || Term.not_contents_tags.find(:first, :conditions => ['slug = lower(?)', self.original_name]))
     t = Term.contents_tags.find_by_name(self.original_name.downcase)
     if t.nil?
-      t = Term.create(:taxonomy => 'ContentsTag', :name => self.original_name.downcase)
+      t = Term.create(:taxonomy => 'ContentsTag', :name => self.original_name)
     end
     self.term_id = t.id
     

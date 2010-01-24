@@ -9,7 +9,21 @@ class UsersContentsTagTest < ActiveSupport::TestCase
       end
     end
   end
-
+  
+  test "tildes should work" do
+    @uct = UsersContentsTag.new(:user_id => 1, :content_id => 1, :original_name => 'holá')
+    assert @uct.save
+    assert_equal 'hola', @uct.term.slug
+  end
+  
+  test "no duplicated terms" do
+    [17, 1].each do |tid|
+      t = Term.find(tid)
+      @uct = UsersContentsTag.new(:user_id => 1, :content_id => 1, :original_name => t.name)
+      assert !@uct.save
+    end
+  end
+  
   test "eñe should work" do
     @uct = UsersContentsTag.new(:user_id => 1, :content_id => 1, :original_name => 'ñ')
     assert @uct.save
