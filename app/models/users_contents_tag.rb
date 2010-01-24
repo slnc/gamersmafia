@@ -61,8 +61,10 @@ class UsersContentsTag < ActiveRecord::Base
   end
   
   def self.biggest_taggers
-    total = self.count.to_f
-    User.db_query("SELECT count(*), user_id FROM users_contents_tags GROUP BY user_id ORDER BY count DESC LIMIT 10").collect do |dbr|
+    
+    dbrs = User.db_query("SELECT count(*), user_id FROM users_contents_tags GROUP BY user_id ORDER BY count DESC LIMIT 10")
+    total = dbrs[0]['count'].to_f
+    dbrs.collect do |dbr|
      [User.find(dbr['user_id'].to_i), {:count => dbr['count'].to_i, :relative_pcent => dbr['count'].to_i / total}] 
     end
   end
