@@ -1,6 +1,6 @@
 <%generic_support(:show_ads => false) do %>
 	<ul>
-		<li>Borrar solo tags que violen el codigo de conducta (es decir, no borrar tags solo porque no creais que sea la categoria incorrecta</li>
+		<li>Borrar solo tags que violen el codigo de conducta (es decir, no borrar tags solo porque creáis que el tag no sirve para nada)</li>
 		<li>información privada (creo q sobra decirlo pero esta info no es publica en la web por lo que no mencionar nunca publicamente: "fulanito taguea bien, mal o regular", etc</li>
 		<li>borrar tags es rapido pero hay que tratar tags que violen el codigo como si fueran comentarios o topics que lo violen (aviso, ban si reincide, etc)</li>
 	</ul>
@@ -27,5 +27,5 @@
 <% end -%>
     </table>
 
-<%= will_paginate @tags, :class => 'digg_pagination'%>
+<%= render :partial => '/shared/pager2', :locals => { :collection => @tags, :pos => 'bottom' } %>
 <% end -%>

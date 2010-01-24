@@ -143,3 +143,20 @@ img.cash-in {
 
 
 .gotop a { background: url(../../images/icons/top.png) right 0 no-repeat; padding-right: 18px;}
+
+
+.system-tag-icon {
+    background-position: 0px -192px;
+}
+
+.user-tag-icon {
+    background-position: -16px -192px;
+}
+
+.user-tag-icon-add {
+    background-position: -32px -192px;
+}
+
+.user-tag-icon-del {
+    background-position: -48px -192px;
+}

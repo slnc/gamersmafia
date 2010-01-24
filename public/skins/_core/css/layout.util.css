@@ -34,3 +34,12 @@ img.icon, a img.icon {
     display: block;
     visibility: visible;
 }
+
+.ico16 { width: 16px; height: 16px; }
+
+.floatl { float: left; }
+
+
+.ico16.floatl { margin-right: 3px; }
+
+#ccontent a .ico16 { border: 0; }

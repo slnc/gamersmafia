@@ -92,7 +92,7 @@ for @item in collection:
           %>
           <td><table class="compact">
               <tr>
-                <td class="w100"><%=link_to fc_thumbnail(@item.file, 'f', '85x60', false), gmurl(@item).gsub('show', 'edit')%><br /><span class="infoinline"><%=format_interval((Time.now - @item.created_on).to_i)%></span></td>
+                <td class="w100"><%=link_to fc_thumbnail(@item.file, 'i', '85x60', false), gmurl(@item).gsub('show', 'edit')%><br /><span class="infoinline"><%=format_interval((Time.now - @item.created_on).to_i)%></span></td>
                 <td><%=img.format%> <%=img.columns%>x<%=img.rows%><br />
                   <span class="infoinline">en <strong><%=paths.join(' &raquo; ')%></strong></span>
                 </td>

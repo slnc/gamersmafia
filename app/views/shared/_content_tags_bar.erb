@@ -1,5 +1,31 @@
+<div id="tags" class="f_sm infoinline">
+	<div class="system">
+		<img src="/dot.gif" title="Tags de sistema" class="floatl system-tag-icon ico16 sprite1" /> 
+		<div class="tag"><a href="/<%=Cms::CONTENTS_CONTROLLERS[object.content_type.name]%>"><%=Cms::CLASS_NAMES[object.content_type.name]%></a></div>
+		
+		<% if Cms::CATEGORIES_TERMS_CONTENTS.include?(object.content_type.name) then %>
+			<% object.terms.find(:all, :conditions => 'taxonomy LIKE \'%Category\'').each do |tt| %>
+			<div class="tag"><%=tt.slug%></div>
+			<% end -%>
+		<% else %>
+			<% object.terms.find(:all, :conditions => 'taxonomy IS NULL and terms.id = terms.root_id').each do |tt| %>
+			<div class="tag"><a href="http://<%=tt.slug%><%=App.domain%>/"><%=tt.slug%></a></div>
+			<% end -%>
+		<% end -%>
+		<div class="tag"><a href="<%=gmurl(object.user)%>"><%=object.user.login%></a></div>
+		<div class="clearl"></div>
+	</div>
+	
+	<div id="top-content-tags">
+	<img src="/dot.gif" title="Tags de usuario" class="floatl user-tag-icon ico16 sprite1" />
+	<%object.terms.contents_tags.find(:all, :order => 'lower(name)').each do |t| %> 
+		<div class="tag"><a title="Ver los <%=t.contents_count%> contenidos con este mismo tag" href="/tags/<%=t.slug%>"><%=t.name%></a> <span title="Contenidos con el mismo tag">(<%=t.contents_count%>)</span></div>
+	<% end -%>
+	<div class="clearl"></div>
+	</div>
+	
 <% if user_is_authed then %>
-<div id="tag-this-content">tag!</div>
+<div id="tag-this-content"><img src="/dot.gif" title="Añadir tag" class="floatl user-tag-icon-add ico16 sprite1" /></div>
 <div id="new-tag-input" style="display: none;"><% form_remote_tag(:url => '/admin/contenidos/tag_content', :update => 'content-tags') do %>
 <input type="hidden" name="id" value="<%=object.id%>" />
 <input id="new-tag-input-text" type="text" name="tags" />
@@ -7,32 +33,25 @@
 </div>
 
 <div id="my-content-tags">
-<div id="my-content-tags-title" class="f_sm"><span style="display: none;">Mis tags</span></div>
 <%object.users_contents_tags.find(:all, :conditions => ['user_id = ?', @user.id], :order => 'lower(original_name)').each do |uct| %> 	
 	<div class="tag one-of-my-tags" id="one-of-my-tags<%=uct.id%>">
-	<div style="display: none;" class="one-of-my-tags-ops" id="one-of-my-tags-ops<%=uct.id%>"><%=link_to_remote('X', :url => "/admin/contenidos/remove_user_tag/?id=#{uct.id}", :update => 'content-tags', :complete => "$j('#one-of-my-tags#{uct.id}').fadeOut('normal');")%></div>
-	<%=uct.original_name%></div><% end -%>
+	<div style="display: none;" class="one-of-my-tags-ops" id="one-of-my-tags-ops<%=uct.id%>"><%=link_to_remote('<img src="/dot.gif" title="Eliminar tag" class="floatl user-tag-icon-del ico16 sprite1" />', :url => "/admin/contenidos/remove_user_tag/?id=#{uct.id}", :update => 'content-tags', :complete => "$j('#one-of-my-tags#{uct.id}').fadeOut('normal');")%></div>
+	<%=uct.original_name%></div>
+<% end -%>
+	<div class="clearl"></div>
 </div>
+
 
 <% end %><%# if user_is_authed -%>
 
-<div id="top-content-tags">
-<div id="top-content-tags-title" class="f_sm"><span style="display: none;">Top tags</span></div>
-<%object.terms.contents_tags.find(:all, :order => 'lower(name)').each do |t| %> 
-<div class="tag"><%=t.name%></div>
-<% end -%>
-</div>
 <script type="text/javascript">
 $j('#tag-this-content').toggle(function () { $j('#new-tag-input-text').val(''); $j('#new-tag-input').toggle(); $j('#new-tag-input-text').focus(); },
 	function () { $j('#new-tag-input').toggle(); });
 	
 $j('.one-of-my-tags').mouseover(function () { $j(this).children('.one-of-my-tags-ops').show(); } );
 $j('.one-of-my-tags').mouseout(function () { $j(this).children('.one-of-my-tags-ops').hide(); } );
-$j('#my-content-tags').mouseover(function () { $j('#my-content-tags-title span').show(); } );
-$j('#my-content-tags').mouseout(function () { $j('#my-content-tags-title span').hide(); } );
-$j('#top-content-tags').mouseover(function () { $j('#top-content-tags-title span').show(); } );
-$j('#top-content-tags').mouseout(function () { $j('#top-content-tags-title span').hide(); } );
 </script>
 
 
-<div style="clear:left;"></div>
+<div class="clearl"></div>
+</div>

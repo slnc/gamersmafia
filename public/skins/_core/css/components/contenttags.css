@@ -1,3 +1,5 @@
+#tags { border-top: 1px solid #efefef; padding-top: 5px; margin-top: 25px; }
+
 #new-tag-input-text {
     width: 100px;
     margin-left: 3px;
@@ -8,43 +10,49 @@
     margin-top: -15px;
 }
 
-#my-content-tags-title, #top-content-tags-title {
+#my-content-tags-title {
     position: absolute;
     margin-top: -15px;
     font-weight: bold;
     text-transform: uppercase;
 }
 
-#my-content-tags .tag, #top-content-tags .tag {
-    float: left;
-    margin-right: 10px;
-    padding-top: 15px;
-    font-family: verdana;
-    font-size: 10px;
+#tags .tag {
+	float: left; 
+	margin-right: 10px;
+	margin-bottom: 1px;
+	background: #f3f3f3;
+	padding: 2px 5px 0 5px;
+	-moz-border-radius-topleft: 6px;
+	-webkit-border-top-left-radius: 6px;
+	-moz-border-radius-bottomright: 6px;
+	-webkit-border-bottom-right-radius: 6px;
 }
 
-#tag-this-content, #new-tag-input, #my-content-tags, #top-content-tags {
-    float: left;
+#my-content-tags .tag {
+	margin-top: 4px;
+	margin-right: 15px;
+    padding-top: 15px;
 }
+
+#top-content-tags { margin-top: 5px; }
 
 #tag-this-content, #new-tag-input {
-    padding-top: 15px;
+    float: left;
 }
+
+#tag-this-content img { margin-top: 5px; }
 
 #tag-this-content, #new-tag-input {
-    margin-right: 5px;
+    padding-top: 7px;
 }
 
-#top-content-tags {
-    padding-left: 10px;
-}
+
 
 #content-tags {
     clear: left;
 }
 
 #tag-this-content {
-    font-size: 11px;
-    font-weight: bold;
     cursor: pointer;
 }
