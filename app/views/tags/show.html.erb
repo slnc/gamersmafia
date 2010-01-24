@@ -2,10 +2,20 @@
 <% end -%>
 
 <%content_main do %>
-<%mfcontents_table("Contenidos tagueados con #{@tag.name}", @tag.tagged_contents.find(:all, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 100).uniq.collect { |c| c.real_content} ) do |c| %>
+<%
+tagged_contents = @tag.tagged_contents.paginate(:per_page => 100, :page => params[:page], :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 100) %>
+<%mftext("Contenidos tagueados con #{@tag.name}") do %>
+<%=render :partial => '/shared/pager2', :locals => { :collection => tagged_contents, :pos => 'top' } %>
+<table>
+<% tagged_contents.uniq.collect { |c| c.real_content}.each do |c| %>
+	<tr class="<%=oddclass%>">
 	<td><a href="<%=gmurl(c)%>"><%=faction_favicon(c)%></a> <a href="<%=gmurl(c)%>"><%=c.resolve_hid%></a></td>
     <td style="width: 75px;"><%=draw_rating(c.rating)%></td>
     <td style="width: 35px;"><span class="infoinline comments-count"><a href="<%=controller.url_for_content_onlyurl(c)%>"><%=c.cache_comments_count%></a></span></td>
 <td class="infoinline timestamp"><%=print_tstamp(c.created_on, 'intelligent')%></td>
+</tr>
+<% end -%>
+</table>
+<%=render :partial => '/shared/pager2', :locals => { :collection => tagged_contents, :pos => 'bottom' } %>
 <% end -%>
 <% end -%>
