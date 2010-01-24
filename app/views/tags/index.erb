@@ -13,14 +13,28 @@
 </table>
 <script type="text/javascript">slnc.marklinks('most_active_users', '_xs=maut');</script>
 <% end -%>
+
+<% mftable("Últimos tags", UsersContentsTag.find(:all, :order => 'created_on DESC', :limit => 20, :include => [:user, :term, :content])) do |uct| %>
+<td><a href="<%=gmurl(uct.term)%>"><%=uct.original_name%></a> <br /> <div class="f_sm infoinline"><%=faction_favicon(uct.content)%><%=link_to truncate(uct.content.name, 30, '..'), gmurl(uct.content)%></div></td>
+<td class="w75 right f_sm infoinline"><%=print_tstamp(uct.created_on, 'intelligent')%></td>
+<% end -%>
+
 <% end -%>
 
 <% content_main do %>
-<div class="grid-5">
-<%mftable('Tags más populares', Term.with_taxonomy('ContentsTag').find(:all, :conditions => 'contents_count > 1', :order => 'contents_count DESC'), :no_mcontent_title => true) do |tag| %>
-	<td><a href="<%=gmurl(tag)%>"><%=tag.name%></a></td>
-	<td><%=tag.contents_count%></td>
-<% end -%>
+<%mftext('Tags') do%>
+<% chunks = Term.with_taxonomy('ContentsTag').find(:all, :conditions => 'contents_count > 1', :order => 'name').chunk(3) %>	
+<% chunks.each do |chunk| %>
+<div style="width: 33%; float: left;">
+	<table>
+	<%chunk.each do |tag| %>
+	<tr class="<%=oddclass%>">
+		<td><a href="<%=gmurl(tag)%>"><%=tag.name%></a></td>
+		<td class="f_sm infoinline"><%=tag.contents_count%></td>
+	</tr>
+	<% end -%>
+	</table>
 </div>
-
+<% end -%>
+<% end -%>
 <% end -%>
