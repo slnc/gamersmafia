@@ -20,7 +20,11 @@ class UsersContentsTag < ActiveRecord::Base
   
   private
   def resolve_term
-    return false if (Cms::ROOT_TERMS_CONTENTS + Cms::CATEGORIES_TERMS_CONTENTS).include?(self.content.content_type.name) && (Term.not_contents_tags.find(:first, :conditions => ['lower(name) = lower(?)', self.original_name]) || Term.not_contents_tags.find(:first, :conditions => ['slug = lower(?)', self.original_name]))
+    if (Cms::ROOT_TERMS_CONTENTS + Cms::CATEGORIES_TERMS_CONTENTS).include?(self.content.content_type.name)
+      mc = self.content.real_content.main_category
+      return false if Term.top_level.find(:first, :conditions => ['taxonomy IS NULL AND (lower(name) = ? or slug = ?)', self.original_name, self.original_name]) || mc.slug == self.original_name || mc.name.downcase == self.original_name
+    end
+
     t = Term.contents_tags.find_by_name(self.original_name.downcase)
     if t.nil?
       t = Term.create(:taxonomy => 'ContentsTag', :name => self.original_name)
