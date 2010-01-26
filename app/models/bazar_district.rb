@@ -6,9 +6,15 @@ class BazarDistrict < ActiveRecord::Base
   ROLE_MANO_DERECHA = 'ManoDerecha'
   after_save :check_if_icon_updated
   after_save :rename_everything_if_name_or_code_changed
+  
   file_column :icon
+  file_column :building_top
+  file_column :building_middle
+  file_column :building_bottom
+  
   observe_attr :icon, :name, :code
   has_many :terms
+  
   has_users_role 'Don'
   has_users_role 'ManoDerecha'
   has_users_role 'Sicario'
@@ -78,6 +84,10 @@ class BazarDistrict < ActiveRecord::Base
   
   def sicarios
     UsersRole.find(:all, :conditions => ["role = 'Sicario' AND role_data = ?", self.id.to_s], :include => :user, :order => 'lower(users.login)').collect { |ur| ur.user }
+  end
+  
+  def has_building?
+    self.building_top.to_s != ''
   end
   
   def update_single_person_staff(newuser, role)

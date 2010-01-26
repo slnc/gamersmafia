@@ -1,7 +1,7 @@
 <%mftext("Distrito de bazar: #{@bd.name}") do %>
 <%= form_tag('/admin/bazar_districts/update', {:multipart => true}) %>
 <form method="post" action="">
-<input type="hidden" name="id" value="<%=@bd.id%>"	
+<input type="hidden" name="id" value="<%=@bd.id%>" />	
 
 <table>
 	<tr class="<%=oddclass%>">
@@ -22,6 +22,18 @@ real_path = "#{RAILS_ROOT}/public/" + @bd.icon
 <% end -%>
 <%= file_field 'bd', 'icon' %></p></td>
 	</tr>
+	<tr><td><label for="bazar_district_file">Building Top (PNG)</label></td>
+	<td><img src="<%=ASSET_URL%>/<%=@bd.building_top%>" />
+<%= file_field 'bd', 'building_top' %></td></tr>
+
+<tr><td><label for="bazar_district_file">Building Middle (PNG)</label></td>
+<td><img src="<%=ASSET_URL%>/<%=@bd.building_middle%>" />
+<%= file_field 'bd', 'building_middle' %></td></tr>
+
+<tr><td><label for="bazar_district_file">Building Bottom (PNG)</label></td>
+<td><img src="<%=ASSET_URL%>/<%=@bd.building_bottom%>" />
+<%= file_field 'bd', 'building_bottom' %></td></tr>
+
 </table>
 
 <input type="submit" value="Guardar" />

@@ -470,18 +470,18 @@ type: 'bhs'}))
     "<div class=\"infoinline\">#{print_tstamp(content.created_on)} | #{draw_rating(content.rating)} | <span class=\"comments-count\"><a title=\"Ver comentarios\" href=\"#{controller.url_for_content_onlyurl(content)}\#comments\">#{content.unique_content.comments_count}</a></span></div>"
   end
   
-  def draw_faction_building(faction_id, stories=1)
-    if File.exists?("#{RAILS_ROOT}/public/storage/factions/#{faction_id}/building_top.png")
-      base_path = "/storage/factions/#{faction_id}"
+  def draw_organization_building(org, stories=1)
+    if org.has_building?
+      bldgs = [org.building_top, org.building_middle, org.building_bottom]
     else
-      base_path = '/images'
+      bldgs = ['images/building_top.png', 'images/building_middle.png', 'images/building_middle.png']
     end
     
-    out = "<div style=\"margin: 2px;\"><img src=\"#{base_path}/building_top.png\" /><br />"
+    out = "<div style=\"margin: 2px;\"><img src=\"/#{bldgs[0]}\" /><br />"
     stories.times do
-      out << "<img src=\"#{base_path}/building_middle.png\" /><br />"
+      out << "<img src=\"/#{bldgs[1]}\" /><br />"
     end
-    out << "<img src=\"#{base_path}/building_bottom.png\" /></div>"
+    out << "<img src=\"/#{bldgs[2]}\" /></div>"
   end
   
   def gmd10

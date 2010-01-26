@@ -33,6 +33,22 @@ class Faction < ActiveRecord::Base
     end
   end
 
+  def has_building?
+    File.exists?("#{RAILS_ROOT}/public/storage/factions/#{faction_id}/building_top.png")
+  end
+  
+  # TODO migrate them to files
+  def building_top
+    "storage/factions/#{self.id}/building_top.png"
+  end
+  
+  def building_middle
+    "storage/factions/#{self.id}/building_middle.png"
+  end
+  
+  def building_bottom
+    "storage/factions/#{self.id}/building_bottom.png"
+  end
   
   def update_related_portal
     if self.slnc_changed?(:code) && self.slnc_changed_old_values[:code].to_s != ''

@@ -11,6 +11,10 @@ class BazarDistrictPortal < Portal
     'distrito'
   end
   
+  def bazar_district
+    BazarDistrict.find_by_code(self.code)
+  end
+  
   # Devuelve todas las categorías de primer nivel visibles en la clase dada
   def categories(content_class)
     Term.toplevel(:slug => self.code)

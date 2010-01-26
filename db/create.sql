@@ -236,7 +236,10 @@ CREATE TABLE bazar_districts (
     id integer NOT NULL,
     name character varying NOT NULL,
     code character varying NOT NULL,
-    icon character varying
+    icon character varying,
+    building_top character varying,
+    building_middle character varying,
+    building_bottom character varying
 );
 CREATE SEQUENCE bazar_districts_id_seq
     START WITH 1
