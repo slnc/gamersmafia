@@ -100,6 +100,7 @@ end %><%# cache %>
 </div>
 
 <div class="grid-3 glast">
+<%=render :partial => '/home/bazar_district_stats', :locals => { :bazar_district => @bazar_district} %>
 <%mftext('Destacados') do %>
 <%= render :partial => '/home/outstanding_entity', :locals => { :outstanding_entity_cls => OutstandingUser } %>
 <%= render :partial => '/home/outstanding_entity', :locals => { :outstanding_entity_cls => OutstandingClan } %>
