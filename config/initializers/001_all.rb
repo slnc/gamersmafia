@@ -130,7 +130,7 @@ SVNVERSION = AppR.ondisk_git_version
 #require 'category_acting'
 
 ActiveRecord::Base.send :include, HasHid
-ActiveRecord::Base.send :include, HasSlug
+# ActiveRecord::Base.send :include, HasSlug
 
 # NOTA: los observers DEBEN ser los últimos para que se puedan cargar los contenidos de lib/ y plugins
 TIMEZONE = '+0100'
