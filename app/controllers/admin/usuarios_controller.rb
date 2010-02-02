@@ -179,6 +179,7 @@ class Admin::UsuariosController < ApplicationController
       flash[:notice] = "Ban creado correctamente."
       out = "<ul>"
       params[:public_ban_reason].each do |r|
+        next if r == ''
         out << "<li>#{r}</li>"
       end
       out << "</ul>"

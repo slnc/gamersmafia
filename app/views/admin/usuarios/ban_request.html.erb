@@ -8,12 +8,12 @@
 
 <strong>Razones externas</strong> (visibles en el perfil):<br />
 
-<input type="checkbox" name="ban_external_reasons[]" /> Abusar de poderes de staff<br />
-<input type="checkbox" name="ban_external_reasons[]" /> Aprovecharse de fallos de la web<br />
-<input type="checkbox" name="ban_external_reasons[]" /> Ataques continuos a otros usuarios<br />
-<input type="checkbox" name="ban_external_reasons[]" /> Bot<br />
-<input type="checkbox" name="ban_external_reasons[]" /> Multicuenta<br />
-Otra (que sea claramente localizable en el código de conducta): <input type="text" name="ban_external_reasons[]" style="width: 230px;" /><br />
+<input type="checkbox" name="public_ban_reason[]" value="Abusar de poderes de staff" /> Abusar de poderes de staff<br />
+<input type="checkbox" name="public_ban_reason[]" value="Aprovecharse de fallos de la web" /> Aprovecharse de fallos de la web<br />
+<input type="checkbox" name="public_ban_reason[]" value="Ataques contínuos a otros usuarios" /> Ataques continuos a otros usuarios<br />
+<input type="checkbox" name="public_ban_reason[]" value="Bot" /> Bot<br />
+<input type="checkbox" name="public_ban_reason[]" value="Multicuenta" /> Multicuenta<br />
+Otra (que sea claramente localizable en el código de conducta): <input type="text" name="public_ban_reason[]" style="width: 230px;" value="" /><br />
 <br />
 <input type="submit" class="button" value="Banear" onclick="return confirm('¿Estás seguro?')"/>
 </form>
