@@ -41,7 +41,7 @@ namespace :gm do
 
     def delete_empty_content_tags_terms
 	    Term.contents_tags.find(:all, :conditions => 'contents_count = 0').each do |t|
-		    next if t.contents_terms.size > 0
+		    next if t.contents_terms.count > 0 || t.users_contents_tags.count > 0
 		    t.destroy
 	    end and nil
     end

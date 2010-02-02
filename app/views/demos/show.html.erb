@@ -69,7 +69,7 @@ function open_demo_win(demo_id)
 
 	<div style="margin: 20px; text-align: center;">
 <% if @demo.file.to_s != '' then %>
-<a href="/descargas/download/<%=@demo.id%>"><img class="icon" src="/skins/default/images/btn_descargar.png" /></a><br />
+<a href="/demos/download/<%=@demo.id%>"><img class="icon" src="/skins/default/images/btn_descargar.png" /></a><br />
 <% end -%>
 
 	<% mirrors = @demo.demo_mirrors.find(:all, :order => 'lower(url)') 
