@@ -7,7 +7,10 @@
       <form method="post" action="/competiciones/confirmar_resultado">
         <input type="hidden" name="id" value="<%=@competitions_match.id%>" />
         <% if @competitions_match.participant1_id then %><label><input type="radio" name="result" value="0" <%=@competitions_match.result == 0 ? 'checked="checked"' : ''%> /> Gana <%=notags(@competitions_match.participant1.name)%></label><br /><% end -%>
-        <% if (not @competition.kind_of?(Tournament)) and @competitions_match.participant1_id and @competitions_match.participant2_id then %><label><input type="radio" name="result" value="1" <%=@competitions_match.result == 1 ? 'checked="checked"' : ''%> /> Empate</label><br /><% end -%>
+	<% if nil then %>
+	    <% if (not (@competition.kind_of?(Tournament) && @competition.competitions_types_options[:tourney_use_classifiers] == 'on' && @competitions_match.stage > 0)) and @competitions_match.participant1_id and @competitions_match.participant2_id then %><label><input type="radio" name="result" value="1" <%=@competitions_match.result == 1 ? 'checked="checked"' : ''%> /> Empate</label><br /><% end -%>
+	<% end -%>
+	<% if (not (@competition.kind_of?(Tournament) && @competition.competitions_types_options[:tourney_use_classifiers] == 'on')) and @competitions_match.participant1_id and @competitions_match.participant2_id then %><label><input type="radio" name="result" value="1" <%=@competitions_match.result == 1 ? 'checked="checked"' : ''%> /> Empate</label><br /><% end -%>
         <% if @competitions_match.participant2_id then %><label><input type="radio" name="result" value="2" <%=@competitions_match.result == 2 ? 'checked="checked"' : ''%> /> Gana <%=notags(@competitions_match.participant2.name)%></label><br /><% end -%>
         <br />
         <%=render :partial => 'match_participation', :locals => { :match => @competitions_match } %>
