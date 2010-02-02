@@ -11,6 +11,8 @@ class Content < ActiveRecord::Base
   has_many :terms, :through => :contents_terms
   has_many :contents_terms, :dependent => :destroy
   has_many :users_contents_tags, :dependent => :destroy
+
+  named_scope :with_tags_from_user, lambda { |tags,user| { :conditions => ['contents.id IN (SELECT content_id FROM users_contents_tags WHERE user_id = ? AND original_name IN (?))', user, tags] } }
   
   after_save do |m| 
     m.contents_locks.clear if m.contents_locks
