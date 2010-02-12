@@ -6,9 +6,14 @@
 		<td><a href="<%=gmurl(@br.banned_user)%>"><%=@br.banned_user.login%></a></td>
 	</tr>
 	<tr class="<%=oddclass%>">
-		<td>Razón</td>
+		<td>Razones privadas</td>
 		<td><%=Comments::formatize(@br.reason)%></td>
 	</tr>
+	<tr class="<%=oddclass%>">
+		<td>Razones pública</td>
+		<td><%=@br.banned_user.pref_public_ban_reason%></td>
+	</tr>
+		
 	<tr class="<%=oddclass%>">
 		<td>Fecha</td>
 		<td><%=print_tstamp @br.created_on%></td>
