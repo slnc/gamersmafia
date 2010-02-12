@@ -83,6 +83,16 @@ class CompetitionsMatch < ActiveRecord::Base
     Notification.deliver_rechallenge(self.participant2.the_real_thing, :participant => self.participant1)
   end
   
+  
+  def can_be_tied?
+    c = self.competition
+    
+    has_participants = self.participant1_id && self.participant2_id
+    no_tourney_round = !(c.kind_of?(Tournament) && c.competitions_types_options[:tourney_use_classifiers] == 'on' && c.competitions_match.stage >= c.tourney_rounds_starting_stage)
+    
+    has_participants && no_tourney_round
+  end
+  
   # Solo para ladders
   def accept_challenge
     self.accepted = true
@@ -137,7 +147,7 @@ class CompetitionsMatch < ActiveRecord::Base
       self.event_id = my_event.id
       self.save
     else # just update if we changed the participants
-
+      
       if self.slnc_changed?(:participant1_id) || self.slnc_changed?(:participant2_id)
         event_name = ''
         event_name << self.participant1.to_s if self.participant1_id 

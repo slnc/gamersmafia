@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class CompetitionTest < ActiveSupport::TestCase
-
+  
   # TODO test user_indicator
   
   #  test "update_user_indicator" do
@@ -86,5 +86,13 @@ class CompetitionTest < ActiveSupport::TestCase
     end
   end
   
+  test "can recreate matches" do
+    [Tournament, League].each do |c_class|
+      c = c_class.find(:first, :conditions => 'state = 1')
+      assert c.can_recreate_matches?, "#{c_class}(Competition) can't recreate matches!!"
+    end
+    
+    assert League.find(1).can_recreate_matches?
+  end
   # TODO resto de tests
 end
