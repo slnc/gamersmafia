@@ -1,6 +1,13 @@
 require 'test_helper'
 
 class FactionTest < ActiveSupport::TestCase
+  test "has_building should work" do
+    f1 = Faction.find(1)
+    BLDG_FILE = "touch #{RAILS_ROOT}/public/storage/factions/#{f1.id}/building_top"
+    system(BLDG_FILE) unless File.exists?(BLDG_FILE)
+    assert f1.has_building?
+  end
+  
   test "should update related portal" do
     f1 = Faction.find(1)
     fp1 = FactionsPortal.find_by_code(f1.code)

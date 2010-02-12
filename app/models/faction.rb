@@ -34,7 +34,7 @@ class Faction < ActiveRecord::Base
   end
 
   def has_building?
-    File.exists?("#{RAILS_ROOT}/public/storage/factions/#{faction_id}/building_top.png")
+    File.exists?("#{RAILS_ROOT}/public/storage/factions/#{self.id}/building_top.png")
   end
   
   # TODO migrate them to files
