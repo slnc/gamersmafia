@@ -161,7 +161,7 @@ class User < ActiveRecord::Base
   
   
   def ban_reason
-    self.pref_public_ban_reason || 'Desconocida'
+    self.pref_public_ban_reason != '' ? self.pref_public_ban_reason : 'Desconocida'
   end
   
   
@@ -258,7 +258,7 @@ class User < ActiveRecord::Base
       pref = self.preferences.find_by_name(pref_name)
       if pref.nil?
         final = UsersPreference::DEFAULTS[pref_name.to_sym]
-        final = final.clone if final.kind_of?(Hash)
+        final = final.new if final.class.name == 'Class'
       else
         final = pref.value
       end

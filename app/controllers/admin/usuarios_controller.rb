@@ -165,6 +165,16 @@ class Admin::UsuariosController < ApplicationController
     @title = "Banear a #{u.login}"
   end
   
+  def update_public_ban_reason
+    u = User.find(params[:id])
+    if u.pref_public_ban_reason = params[:public_ban_reason]
+      flash[:notice] = "Razón de ban actualizada correctamente"
+    else
+      flash[:error] = "Error al actualizar la razón de ban: #{u.errors.full_messages_html}"
+    end
+    redirect_to "/admin/usuarios/edit/#{params[:id]}"
+  end
+  
   def confirmar_ban_request
     @br = BanRequest.find(params[:id])
     @title = "Ban #{@br.id}"

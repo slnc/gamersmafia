@@ -18,11 +18,6 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_not_nil @response.body =~ /panzer/
   end
   
-  #  test "should_not_destroy_non_superadmin_user_if_get" do
-  #    get :destroy, :id => 2
-  #    assert_redirected_to '/admin/usuarios'
-  #  end
-  
   test "check_registered_on" do
     sym_login 1
     post :check_registered_on, { :id => 1}
@@ -55,7 +50,12 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  
+  test "should update banned reason" do
+    sym_login 1
+    assert_equal 'Desconocida', User.find(51).ban_reason
+    post :update_public_ban_reason, { :id => 51, :public_ban_reason => 'feooo' }
+    assert_equal 'feooo', User.find(51).ban_reason
+  end
   
   test "should_not_destroy_superadmin_user" do
     sym_login :superadmin

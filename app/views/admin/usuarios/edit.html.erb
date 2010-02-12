@@ -228,4 +228,13 @@
 <input type="submit" class="button" value="Borrar" onclick="return confirm('¿Estás seguro de BORRAR todos los comentarios?');" />
 </form>
 <% end -%>
+
+<% if @edituser.banned then %>
+<%mftext("Razón del ban") do %>
+<form method="post" action="/admin/usuarios/update_public_ban_reason/<%=@edituser.id%>">
+<%=wysiwyg('public_ban_reason', :value => @edituser.ban_reason, :height => '100px')%>
+<input type="submit" value="Guardar" />
+</form>
+<% end -%>
+<% end -%>
 <% end -%>
