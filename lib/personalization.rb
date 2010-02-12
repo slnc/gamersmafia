@@ -69,7 +69,7 @@ module Personalization
   def self.populate_user_forums(u)
     a = Array.new
     3.times do 
-      a.append Array.new
+      a<< Array.new
     end
     a
   end
