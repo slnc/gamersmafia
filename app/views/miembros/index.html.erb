@@ -8,7 +8,7 @@
         <% cache("/common/miembros/index/top_karma_#{Time.now.to_i/21600}") do  
         %>
         <% i=0
-        for u in User.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED} and cache_karma_points is not null and cache_karma_points > 0 and is_bot is false", :order => 'cache_karma_points DESC', :limit => 10) %>
+        User.can_login.humans.find(:all, :conditions => "cache_karma_points is not null and cache_karma_points > 0", :order => 'cache_karma_points DESC', :limit => 10).each do |u| %>
         <tr class="<%=oddclass%>">
           <td class="sm-icon number f_number"><%=i+=1%></td>
           <td><%if i <= 3 then %><%=draw_user_info(u)%>
@@ -27,7 +27,7 @@
           i=0
           max = nil
 
-          for dbu in User.most_popular
+          for dbu in User.most_friends
             u = dbu[:user] 
             max = dbu[:friends].to_f if max.nil?
           %>
@@ -49,7 +49,7 @@
         <% cache("/common/miembros/index/top_faith_#{Time.now.to_i/21600}") do   
         %>
         <% i=0
-        for u in User.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED} and cache_faith_points is not null and cache_faith_points > 0 and is_bot is false", :order => 'cache_faith_points DESC', :limit => 10) %>
+        User.can_login.humans.find(:all, :conditions => "cache_faith_points is not null and cache_faith_points > 0", :order => 'cache_faith_points DESC', :limit => 10).each do |u| %>
         <tr class="<%=oddclass%>">
           <td class="sm-icon number f_number"><%=i+=1%></td>
           <td><%if i <= 3 then %><%=draw_user_info(u)%>
@@ -67,7 +67,7 @@
           <% 
           i = 0
           max = nil
-          for u in User.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED} and cash > 0 and is_bot is false", :order => 'cash DESC', :limit => 10) 
+          User.can_login.humans.find(:all, :order => 'cash DESC', :limit => 10).each do |u| 
             max = u.cash if max.nil? 
           %>
           <tr class="<%=oddclass%>">
@@ -76,8 +76,7 @@
               <%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span><br /> <div class="infoinline" style="width: 67px;"><%=draw_pcent_bar(u.cash / max, "#{(Math.log10(u.cash) + 1).to_i} dígitos")%></div></td>
           </tr>
           <% end -%>
-          <% end %><%# cache de 6h 
-          %>
+          <% end %><%# cache de 6h %>
         </table>
 		<% end -%>
 <% end -%>
@@ -86,7 +85,7 @@
 
 	<% cache("/common/miembros/index/top_real_popularity_#{Cache.after_daily_key}") do %>
 	<% max = nil
-	mflist('Top popularidad', User.can_login.find(:all, :order => 'ranking_popularity_pos ASC, lower(login)', :limit => 10)) do |u| 
+	mflist('Top popularidad', User.can_login.humans.find(:all, :order => 'ranking_popularity_pos ASC, lower(login)', :limit => 10)) do |u| 
 	  max = u.cache_popularity.to_f if max.nil? %>
             <td class="sm-icon number f_number"><%=u.ranking_popularity_pos%></td>
             <td>
@@ -101,7 +100,7 @@
           <% 
           i = 0
           max = nil
-          for dbu in User.db_query("select count(referer_user_id), referer_user_id as user_id from users where state <> #{User::ST_UNCONFIRMED} and lastseen_on > now() - '3 months'::interval group by(referer_user_id) order by count(referer_user_id) DESC limit 10"):
+          for dbu in User.db_query("select count(referer_user_id), referer_user_id as user_id from users where state IN (#{User::STATES_CANNOT_LOGIN.join(',')}) and lastseen_on > now() - '3 months'::interval group by(referer_user_id) order by count(referer_user_id) DESC limit 10"):
             next if dbu['user_id'].to_i == 0
             u = User.find(dbu['user_id'].to_i)
             if max.nil? then
@@ -126,7 +125,7 @@
           <% 
           i = 0
           max = nil
-          for dbu in User.db_query('select user_id, count(user_id) from refered_hits group by (user_id) order by count(user_id) desc limit 10'):
+          for dbu in User.db_query("select user_id, count(user_id) from refered_hits group by (user_id) HAVING user_id NOT IN (select id from users where state IN (#{User::STATES_CANNOT_LOGIN.join(',')})) order by count(user_id) desc limit 10")
             u = User.find(dbu['user_id'].to_i)
             if max.nil? then
               max = dbu['count'].to_f
@@ -138,8 +137,7 @@
               <%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span><br /> <div class="infoinline" style="width: 67px;"><%=draw_pcent_bar(dbu['count'].to_i / max, "#{dbu['count']} visitas referidas")%></div></td>
           </tr>
           <% end -%>
-          <% end %><%# cache de 6h 
-          %>
+          <% end %><%# cache de 6h %>
         </table>
 		<% end -%>
 		

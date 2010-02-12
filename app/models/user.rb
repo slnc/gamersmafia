@@ -130,6 +130,7 @@ class User < ActiveRecord::Base
   before_save :check_if_website
   
   named_scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})", :order => 'lower(login)'
+  named_scope :humans, :conditions => 'is_bot is false'
   
   def can_login?
     STATES_CAN_LOGIN.include?(self.state)   
@@ -884,7 +885,7 @@ class User < ActiveRecord::Base
   end
   # TODO no contabilizar usuarios baneados en amistades
   # TODO pensar este algoritmo
-  def self.most_popular(limit=10)
+  def self.most_friends(limit=10)
     User.db_query("select sender_user_id,
                           count(*) as total_friends_from,
                           (select count(*) 
@@ -893,12 +894,12 @@ class User < ActiveRecord::Base
                               and accepted_on is not null 
                               and sender_user_id not in (select id 
                                                            from users 
-                                                          where state = #{User::ST_BANNED})) as total_friends_to
+                                                          where state IN (#{User::STATES_CANNOT_LOGIN.join(', ')}))) as total_friends_to
                      from friendships as a
                     where accepted_on is not null
                       AND receiver_user_id not in (select id 
                                                            from users 
-                                                          where state = #{User::ST_BANNED})
+                                                          where state IN (#{User::STATES_CANNOT_LOGIN.join(', ')}))
                  group by sender_user_id
                  order by count(*) + (select count(*) 
                                         from friendships 
@@ -906,7 +907,7 @@ class User < ActiveRecord::Base
                                          and accepted_on is not null 
                                          and sender_user_id not in (select id 
                                                                       from users 
-                                                                     where state = #{User::ST_BANNED})) desc 
+                                                                     where state IN (#{User::STATES_CANNOT_LOGIN.join(', ')}))) desc 
                     limit #{limit}").collect { |dbu|
       
       {:user => User.find(dbu['sender_user_id'].to_i), :friends => dbu['total_friends_from'].to_i + dbu['total_friends_to'].to_i }

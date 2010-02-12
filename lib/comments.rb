@@ -120,7 +120,7 @@ module Comments
     else
       max_karma = Karma.max_user_points
       max_faith = Faith.max_user_points
-      max_friends = User.most_popular(1)[:friends] rescue 1 # en caso de que no haya nadie popular
+      max_friends = User.most_friends(1)[:friends] rescue 1 # en caso de que no haya nadie popular
       ukp = user.karma_points
       ukp = 1.1 if ukp < 1.1
       

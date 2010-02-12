@@ -156,7 +156,7 @@ module Emblems
   end
   
   # living_legend
-  mp = User.most_popular(10)
+  mp = User.most_friends(10)
   if mp.size > 0
     maxf = nil
     mp.each do |h|
