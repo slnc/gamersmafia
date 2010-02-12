@@ -207,7 +207,7 @@
 <br />
 <% end %><%# if user.is_superadmin? -%>
 
-<%= render :partial => '/shared/cash_movements', :locals => { :entity => @edituser } %>
+<%= render :partial => '/shared/cash_movements', :locals => { :entity => @edituser, :show_amount_filter => true } %>
 
 <div class="subheader"><div>Últimos 50 comentarios</div></div>
 

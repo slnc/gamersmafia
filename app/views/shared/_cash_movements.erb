@@ -1,6 +1,20 @@
 <%mftext('Movimientos') do %>
+<%
+if params[:min_cash]
+  cond = " AND ammount >= #{params[:min_cash].to_f}"
+else
+  cond = ""
+end %>
 
-<% @cash_movements = CashMovement.paginate(:conditions => "(object_id_to = #{entity.id} and object_id_to_class = \'#{entity.class.name}\') or (object_id_from = #{entity.id} and object_id_from_class = \'#{entity.class.name}\')", :order => 'created_on DESC', :page => params[:page], :per_page => 30) %>
+<% show_amount_filter ||= false
+if show_amount_filter then %>
+<form class="right" method="get" action="?">
+<span class="f_sm infoinline">Mostrar solo movimientos de al menos <input class="text w50" type="text" name="min_cash" value="<%=params[:min_cash] if params[:min_cash].to_f > 0 %>" /> <%=gmd10%></span>
+</form>
+<% end -%>
+
+
+<% @cash_movements = CashMovement.paginate(:conditions => "((object_id_to = #{entity.id} and object_id_to_class = \'#{entity.class.name}\') or (object_id_from = #{entity.id} and object_id_from_class = \'#{entity.class.name}\')) #{cond}", :order => 'created_on DESC', :page => params[:page], :per_page => 30) %>
 
 <%= render :partial => 'shared/pager2', :locals => {:collection => @cash_movements, :pos => 'top'} %>
 
