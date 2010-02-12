@@ -72,7 +72,7 @@ class Competition < ActiveRecord::Base
   
     
   def can_recreate_matches?
-    self.kind_of?(Tournament) && self.competitions_matches.count(:conditions => 'completed_on is NOT NULL') == 0
+	  (self.kind_of?(League) || self.kind_of?(Tournament)) && self.competitions_matches.count(:conditions => 'completed_on is NOT NULL') == 0
   end
   
   def can_delete_participants?
