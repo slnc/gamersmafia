@@ -21,14 +21,14 @@ module ActsAsContent
       named_scope :deleted, :conditions => "state = #{Cms::DELETED}"
       named_scope :onhold, :conditions => "state = #{Cms::ONHOLD}"
       
-      named_scope :in_term # , lambda { |term| { :conditions => "unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (#{games.collect { |g| g.id } }))" }}
-      named_scope :in_term_tree
+      named_scope :in_term, lambda { |term| { :conditions => ["unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id = ?)", term.id] }}
+      named_scope :in_term_tree, lambda { |term| { :conditions => ["unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?))", term.all_children_ids] }}
       named_scope :in_portal, lambda { |portal|
         if portal.id == -1
           {}
         else
-          taxonomy = "#{self.name}Taxonomy"
-          { :conditions => "unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (#{portal.terms_ids(taxonomy).join(',')}))" }
+          taxonomy = "#{ActiveSupport::Inflector.pluralize(self.name)}Category"
+          { :conditions => ["unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?))", portal.terms_ids(taxonomy)] }
         end
       }
       

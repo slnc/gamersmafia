@@ -73,6 +73,28 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert last_entry[2] > 5.seconds.ago
   end
   
+  test "in_term should work" do
+    n = News.find(1)
+    t = n.unique_content.contents_terms.first.term
+    
+    assert_not_nil News.in_term(t).find(n.id)
+    assert_nil News.in_term(t).find_by_id(67)
+  end
+  
+  test "in_term_tree should work" do
+    i = Image.find(4)
+    t = i.unique_content.contents_terms.first.term
+    assert_not_nil Image.in_term_tree(t.root).find(i.id)
+    assert_nil Image.in_term_tree(t.root).find_by_id(1)
+  end
+  
+  test "in_portal should work" do
+    d = Download.find(1)
+    t = d.unique_content.contents_terms.first.term
+    assert_not_nil Download.in_term_tree(t.root).find(d.id)
+    assert_nil Download.in_term_tree(t.root).find_by_id(3)
+  end
+  
   test "should_add_log_entry_on_modification" do
     test_should_add_log_entry_on_creation
     n = News.find(:first, :order => 'id DESC')

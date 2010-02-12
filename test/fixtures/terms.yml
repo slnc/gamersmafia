@@ -265,3 +265,11 @@
       parent_id: 21
       taxonomy: TutorialsCategory
 
+- another_downloads_cat:
+      id: 36
+      name: Foo
+      slug: foo
+      root_id: 4
+      parent_id: 4
+      taxonomy: DownloadsCategory
+

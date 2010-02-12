@@ -26,7 +26,7 @@ download_unpublished:
 download_deleted:
     id: 6
     content_id: 2005
-    term_id: 16
+    term_id: 36
 
 demo_published:
     id: 7
