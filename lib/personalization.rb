@@ -51,7 +51,7 @@ module Personalization
   
   def self.load_user_forums(u)
     puf = u.pref_user_forums
-    puf.size > 0 ? puf : Personalization.populate_user_forums
+    puf.size > 0 ? puf : Personalization.populate_user_forums(u)
   end
   
   def self.default_user_forums
