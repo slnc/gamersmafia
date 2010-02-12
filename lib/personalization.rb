@@ -50,7 +50,8 @@ module Personalization
   
   
   def self.load_user_forums(u)
-    u.pref_user_forums || [[], [], []]
+    puf = u.pref_user_forums
+    puf.size > 0 ? puf : Personalization.populate_user_forums
   end
   
   def self.default_user_forums
@@ -66,8 +67,11 @@ module Personalization
   end
   
   def self.populate_user_forums(u)
-    # raise "fail"
-    [[], [], []]
+    a = Array.new
+    3.times do 
+      a.append Array.new
+    end
+    a
   end
   
   def self.update_user_forums_order(u, bucket1, bucket2, bucket3)
