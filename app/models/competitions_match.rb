@@ -6,23 +6,27 @@ class CompetitionsMatch < ActiveRecord::Base
   belongs_to :participant1, :class_name => 'CompetitionsParticipant', :foreign_key => 'participant1_id'
   belongs_to :participant2, :class_name => 'CompetitionsParticipant', :foreign_key => 'participant2_id'
   belongs_to :competition
+  belongs_to :event
   
   has_many :competitions_matches_games_maps, :dependent => :destroy
   has_many :competitions_matches_uploads, :dependent => :destroy
   has_many :competitions_matches_reports, :dependent => :destroy
   
-  after_save :check_after_saves
-  after_save :update_participants_indicators
-  belongs_to :event
+  before_create :check_play_on
   before_save :check_completed_on
   before_save :look_at_servers
+
+  after_save :check_after_saves
+  after_save :update_participants_indicators
   after_save :update_event
+
   after_destroy :destroy_my_event
   after_destroy :update_participants_indicators # necesario?
+
   observe_attr :result
   observe_attr :participant1_id
   observe_attr :participant2_id
-  before_create :check_play_on
+
   
   #  after_save :reset_faith_indicators
   

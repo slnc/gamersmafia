@@ -522,7 +522,7 @@ class SiteController < ApplicationController
   
   def do_contactar
     raise ActiveRecord::RecordNotFound unless params[:subject].to_s != '' && params[:message].to_s != ''
-    redirect_to '/site/contactar' if params[:email] && (params[:email].include?('seo.sales.traffic@gmail.com') || params[:email].include?('traffic.internet.marketing@gmail.com'))
+    redirect_to '/site/contactar' if params[:email] && (params[:email] == 'seo.sales.traffic@gmail.com' || params[:email] == 'traffic.internet.marketing@gmail.com') || params[:email] == 'seo.sales.traffic@gamil.com'
     # TODO más protecciones
     if params[:fsckspmr] && params[:fsckspmr] == self.class.do_contactar_key
       if user_is_authed
