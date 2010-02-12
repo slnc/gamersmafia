@@ -55,7 +55,7 @@ Rails::Initializer.run do |config|
   config.action_controller.cache_store = :file_store, "#{RAILS_ROOT}/tmp/fragment_cache"
 
   # Activate observers that should always be running
-  config.active_record.observers = :cache_observer, :faith_observer, :users_action_observer
+  config.active_record.observers = :cache_observer, :faith_observer, :users_action_observer, :achmed_observer
 
   # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
   # Run "rake -D time" for a list of tasks for finding time zone names.
