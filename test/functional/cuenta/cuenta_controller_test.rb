@@ -57,7 +57,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     post :del_quicklink, :code => 'ut'
     assert_response :success
     u2.reload
-    assert_equal orig_qlinks - 1, u2.pref_quicklinks.size
+    assert_equal orig_qlinks, u2.pref_quicklinks.size
   end
   
   test "add_user_forum" do
