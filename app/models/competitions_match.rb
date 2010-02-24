@@ -92,7 +92,7 @@ class CompetitionsMatch < ActiveRecord::Base
     c = self.competition
     
     has_participants = self.participant1_id && self.participant2_id
-    no_tourney_round = !(c.kind_of?(Tournament) && c.competitions_types_options[:tourney_use_classifiers] == 'on' && c.competitions_match.stage >= c.tourney_rounds_starting_stage)
+    no_tourney_round = !(c.kind_of?(Tournament) && c.competitions_types_options[:tourney_use_classifiers] == 'on' && self.stage >= c.tourney_rounds_starting_stage)
     
     has_participants && no_tourney_round
   end
