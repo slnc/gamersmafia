@@ -10,7 +10,7 @@ class CashMovement < ActiveRecord::Base
   def to_s
     s = self.sender
     s = '(Banco)' unless s
-    r = self.sender
+    r = self.receiver
     r = '(Banco)' unless r
     
     "transferencia de #{self.ammount} de '#{s}' a '#{r}'"

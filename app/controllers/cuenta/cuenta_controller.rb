@@ -134,7 +134,7 @@ class Cuenta::CuentaController < ApplicationController
       #      end
       #      flash[:notice] = "Te hemos enviado un mensaje a #{@newuser.email} con la clave de confirmación."
       #      redirect_to '/cuenta/confirmar' and return
-    elsif Cms::EMAIL_REGEXP =~ @newuser.email && User::BANNED_DOMAINS.include?(@newuser.email.split('@')[1])
+    elsif Cms::EMAIL_REGEXP =~ @newuser.email && User::BANNED_DOMAINS.include?(@newuser.email.split('@')[1].downcase)
       flash[:error] = "El dominio #{@newuser.email.split('@')[1]} está baneado por abusos. Por favor, elige otra cuenta de correo."
       render :action => :alta
     elsif @newuser.save
