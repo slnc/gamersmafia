@@ -12,7 +12,7 @@ class Tournament < Competition
     # TODO
     if match_stage_is_tourney_rounds_stage?(cm.stage)
       # es partida de fase de árbol
-      next_cm = self.competition.get_next_match(cm)
+      next_cm = self.get_next_match(cm)
       if next_cm
         # reseteamos la siguiente partida
         self.reset_tourney_match(next_cm)
