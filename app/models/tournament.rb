@@ -46,15 +46,20 @@ class Tournament < Competition
   
   def winner_of_tourney_rounds_match_is_participant1?(cm)
     prev = self.competitions_matches.count(:conditions => ['stage = ? and id < ?', cm.stage, cm.id])
-    is_participant1 = (prev % 4 < 2) ? true : false
     
+    is_participant1 = (prev % 4 < 2) ? true : false
+    #puts "prev: #{prev} #{is_participant1}"
     # TODO hack, arreglar esto
     if self.tourney_rounds_starting_stage > 0 then
+      #puts "here"
       is_participant1 = true if (prev % 4 < 2 && cm.stage > self.total_tourney_rounds + self.tourney_rounds_starting_stage - 2) #  la comprobación de stage es para la semifinal
     else
+      #puts "horo"
       is_participant1 = true if (prev % 4 < 2 && cm.stage > self.total_tourney_rounds + self.tourney_rounds_starting_stage - 2) #  la comprobación de stage es para la semifinal
     end
     is_participant1 = false if cm.stage == self.total_tourney_rounds - 2 && prev == 1 # para la semifinal del lado derecho
+    #puts "final_value: #{is_participant1}"
+    is_participant1
   end
   
   def get_next_match(cm)
@@ -71,29 +76,39 @@ class Tournament < Competition
   
   def match_stage_is_group_stage?(stage)
     self.competitions_types_options[:tourney_use_classifiers] &&
-    stage < self.total_tourney_rounds + self.tourney_rounds_starting_stage - 2
+    stage < self.tourney_rounds_starting_stage
   end
   
   def match_stage_is_tourney_rounds_stage?(stage)
-    # si la partida es de fase de rounds y algo más
+    # si la partida es de fase de rounds
     # TODO la segunda condición no la entiendo, es para un caso crítico?
-    stage >= self.tourney_rounds_starting_stage && 
-    stage < self.total_tourney_rounds + self.tourney_rounds_starting_stage - 1
+    stage >= self.tourney_rounds_starting_stage
+  end
+  
+  def is_final?(cm)
+    # puts "#{cm.stage} == #{self.total_tourney_rounds} + #{self.tourney_rounds_starting_stage} - 1"
+    cm.stage == self.total_tourney_rounds - 1
   end
   
   def match_completed(cm)
-    if match_stage_is_tourney_rounds_stage?(cm.stage)
+    if match_stage_is_tourney_rounds_stage?(cm.stage) && !self.is_final?(cm)
+      # puts "completing tree stage match (stage: #{cm.stage}  |starting_stage: #{self.tourney_rounds_starting_stage}"
+      # p cm
       # es partida de fase de árbol
       is_participant1 = self.winner_of_tourney_rounds_match_is_participant1?(cm) 
       next_cm = self.get_next_match(cm)
-      
+      return if next_cm.nil? && self.is_final?(cm)
       if is_participant1 then
+        #puts "changing next_cm.participant1_id"
         next_cm.participant1_id = cm.winner.id # TODO no puede ser empate
       else
+        #puts "changing next_cm.participant2_id"
         next_cm.participant2_id = cm.winner.id # TODO no puede ser empate
       end
-      next_cm.save
       
+      #p next_cm
+      next_cm.save
+      #puts "\n"
     elsif match_stage_is_group_stage?(cm.stage) 
       # si todas las partidas del grupo están completas cogemos a los ganadores
       # y los movemos a la fase de eliminatorias

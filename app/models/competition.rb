@@ -70,9 +70,9 @@ class Competition < ActiveRecord::Base
   
   observe_attr :state
   
-    
+  
   def can_recreate_matches?
-	  (self.kind_of?(League) || self.kind_of?(Tournament)) && self.competitions_matches.count(:conditions => 'completed_on is NOT NULL') == 0
+   (self.kind_of?(League) || self.kind_of?(Tournament)) && self.competitions_matches.count(:conditions => 'completed_on is NOT NULL') == 0
   end
   
   def can_delete_participants?
@@ -402,6 +402,17 @@ class Competition < ActiveRecord::Base
         sql_cond << " AND ((participant1_id = #{pa} and participant2_id = #{pb}) OR (participant1_id = #{pb} and participant2_id = #{pa}))"
       end
       
+      when :octavos
+        sql_cond << "stage = (select max(stage) from competitions_matches where competition_id = #{self.id}) - 3"
+      when :cuartos
+      sql_cond << "stage = (select max(stage) from competitions_matches where competition_id = #{self.id}) - 2"
+      
+      when :semifinales
+      sql_cond << "stage = (select max(stage) from competitions_matches where competition_id = #{self.id}) - 1"
+      
+      when :final
+      sql_cond << "stage = (select max(stage) from competitions_matches where competition_id = #{self.id})"
+      
       when :unapproved
       sql_cond << 'accepted = \'f\''
       if options.has_key?(:participant)
@@ -698,13 +709,9 @@ class Competition < ActiveRecord::Base
   end
   
   def tourney_classifier_groups
-    # TODO validation
-    groups_count = self.competitions_types_options[:tourney_groups].to_i
-    groups = []
-    groups_count.times do |time|
-      groups << Competitions::TourneyClassifierRound.new(self, time)
+    self.tourney_groups.times.collect do |time|
+      Competitions::TourneyClassifierRound.new(self, time)
     end
-    groups
   end
   
   
@@ -741,6 +748,7 @@ class Competition < ActiveRecord::Base
     end
   end
   
+  # jugadores máximos necesarios dependiendo del nivel en el que queremos empezar las eliminatorias
   MATCHES_ON_FIRST_ROUND_PER_TOURNEY_ROUNDS = {1 => 1, 2 => 2, 3 => 4, 4 => 8, 5 => 16, 6 => 32}
   def check_tourney_groups
     # TODO megahack
@@ -750,15 +758,19 @@ class Competition < ActiveRecord::Base
     max_participantes_in_phase2 / max_winners_per_group # TODO revisar los ceil/floor
   end
   
+  # Devuelve número de grupos necesarios para que se generen los jugadores necesarios para llenar el máximo de 
   def tourney_groups
-    check_tourney_groups
+    max_participantes_in_phase2 = {3 => 8, 4 => 16, 5 => 32}[self.competitions_types_options[:tourney_rounds].to_i].to_f
+    max_winners_per_group = self.competitions_types_options[:tourney_classifiers_rounds].to_f
+     (max_participantes_in_phase2 / max_winners_per_group).ceil
   end
+  
   
   def setup_matches_tourney_classifiers
     # TODO aplicar mínimo de participantes según opcions elegidas antes de llegar aquí
     # fase clasificatoria
     # determino 
-    groups_count = self.check_tourney_groups # self.competitions_types_options[:tourney_groups].to_i # self.tourney_groups
+    groups_count = self.tourney_groups # self.competitions_types_options[:tourney_groups].to_i # self.tourney_groups
     # el grupo (+1) al que pertenece cada participante lo determina el resto de
     # dividir su pos (por id asc) en el torneo entre el número de grupos
     
