@@ -643,7 +643,7 @@ skin: 'v2'
   end
   
   def draft_check_box(obj)
-    if (obj.state.nil? || obj.state == Cms::DRAFT) && !(controller.portal.respond_to?(:clan_id) && controller.portal.clan_id)
+    if obj.state.nil? || obj.state == Cms::DRAFT
       "<p><label><input type=\"checkbox\" name=\"draft\" value=\"1\" #{'checked=\"checked\"' if (obj.state == Cms::DRAFT && !obj.new_record?) }/> Borrador</label></p>"
     end
   end

@@ -4,19 +4,15 @@ class Admin::CategoriasController < ApplicationController
   
   private
   def check_permissions
-    if portal.respond_to?(:clan_id) && portal.clan_id
-      require_auth_clanleader
-    else
-      require_auth_users
-      if params[:id]
-        t = Term.find_by_id(params[:id])
-        if t && (params[:content_type] || t.taxonomy)
-          raise AccessDenied unless Cms::can_admin_term?(user, t, params[:content_type] ? params[:content_type] : ApplicationController.extract_content_name_from_taxonomy(t.taxonomy))
-        end
+    require_auth_users
+    if params[:id]
+      t = Term.find_by_id(params[:id])
+      if t && (params[:content_type] || t.taxonomy)
+        raise AccessDenied unless Cms::can_admin_term?(user, t, params[:content_type] ? params[:content_type] : ApplicationController.extract_content_name_from_taxonomy(t.taxonomy))
       end
-      
-      raise AccessDenied unless user.users_roles.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha', 'Sicario', 'Editor')") > 0 || user.has_admin_permission?(:capo)
-    end  
+    end
+    
+    raise AccessDenied unless user.users_roles.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha', 'Sicario', 'Editor')") > 0 || user.has_admin_permission?(:capo)
   end
   
   def populate_portal_data

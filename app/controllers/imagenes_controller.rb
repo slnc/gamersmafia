@@ -99,10 +99,6 @@ class ImagenesController < BazarController
             im.state = Cms::PENDING
             im.description = ''
             im.user_id = @user.id
-            if @portal.respond_to?(:clan_id) && @portal.clan_id
-              im.clan_id = @portal.clan_id
-              im.state = Cms::PUBLISHED
-            end
             if im.save
               @category.link(im.unique_content)
               i += 1
