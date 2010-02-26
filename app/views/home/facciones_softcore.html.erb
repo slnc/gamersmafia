@@ -17,7 +17,7 @@
 					:truncate_at => 44, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	</div>
 	
-	<%mftext('Foros', :grid => 4, :glast => true, :blast => true) do %>
+	<%mftext('Foros activos', :grid => 4, :glast => true, :blast => true) do %>
 	<%= render :partial => '/home/foros_list', :locals => { :topterm => controller.portal.categories(Topic)[0] } %>
 	<% end -%>
 <% end -%>
