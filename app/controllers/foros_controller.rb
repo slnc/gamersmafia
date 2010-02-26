@@ -130,7 +130,6 @@ class ForosController < ComunidadController
     raise ActiveRecord::RecordNotFound if params[:topic].nil?
     
     params[:topic][:user_id] = @user.id
-    params[:topic][:clan_id] = portal.clan_id if portal.kind_of?(ClansPortal) && portal.clan_id
     params[:topic][:main] = Comments::formatize(params[:topic][:main])
     
     raise "terms must be single forum" unless params[:categories_terms] && params[:categories_terms].size == 1

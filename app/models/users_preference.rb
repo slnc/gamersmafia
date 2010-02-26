@@ -8,6 +8,6 @@ class UsersPreference < ActiveRecord::Base
     :user_forums => Array,
     :public_ban_reason => String
   }
-  # WARNING usar clone!!!
+  
   serialize :value
 end

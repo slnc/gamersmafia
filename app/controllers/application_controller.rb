@@ -450,7 +450,7 @@ Request information:
       end
     end
     
-
+    
     response.headers['X-UserId'] = @user ? @user.id.to_s : '-'
     response.headers['X-Controller'] = controller_name
     response.headers['X-Action'] = action_name
@@ -460,14 +460,14 @@ Request information:
     response.headers['X-VisitorId'] = params['_xnvi'] ? params['_xnvi'].to_s : '-'
     response.headers['X-AbTreatment'] = params['_xab'] ? params['_xab'].to_json : '-'
     response.headers['X-AdsShown'] = self._xad ? self._xad.join(',') : '-'
-
+    
     begin
       Stats.pageloadtime(self, seconds, response, controller_name, action_name, portal)
     rescue 
       raise unless RAILS_ENV == 'test'
     end
   end
-
+  
   
   def resolve_portal_mode
     @global_vars = User.db_query("SELECT * FROM global_vars")[0]
@@ -479,7 +479,7 @@ Request information:
     if request.env.include?('HTTP_CLIENT_IP') and (request.env['HTTP_CLIENT_IP'] =~ /^unknown$|^(10|172\.(1[6-9]|2[0-9]|30|31)|192\.168)\./i).nil? then
       request.env['HTTP_CLIENT_IP'] = request.env['REMOTE_ADDR']
     end
-
+    
     if [App.domain, 'kotoko'].include?(request.host) 
       @portal = GmPortal.new
     elsif request.host == "bazar.#{App.domain}"
@@ -499,7 +499,7 @@ Request information:
           raise DomainNotFound # ya no soportamos los dominios viejos
         else
           ptal = Portal.find_by_code(host.match('^([^.]+)[.]+')[1])
-	  ptal = nil if ptal && ptal.clan_id
+          ptal = nil if ptal && ptal.clan_id
           ptal = Portal.find_by_fqdn(k) if ptal.nil?
           @@portals[host] = ptal
         end
@@ -507,7 +507,6 @@ Request information:
       
       @portal = @@portals[host]
       raise DomainNotFound if @portal.nil?
-      @portal_clan = @portal.clan if @portal.clan_id
     end
   end
   
@@ -517,10 +516,10 @@ Request information:
   def skin
     if user_is_authed && @user.pref_skin
       begin 
-	      Skin.find(@user.pref_skin.to_i)
+        Skin.find(@user.pref_skin.to_i)
       rescue ActiveRecord::RecordNotFound
-	      @user.preferences.find_by_name('skin').destroy
-	      Skin.find_by_hid('default')
+        @user.preferences.find_by_name('skin').destroy
+        Skin.find_by_hid('default')
       end
     elsif params['skin']
       Skin.find(params['skin'].to_i) || Skin.find_by_hid('default')
@@ -601,7 +600,7 @@ Request information:
   include ExceptionNotifiable
   ExceptionNotifier.exception_recipients = %w(s@slnc.me)
   ExceptionNotifier.sender_address = %("GM Error Notifier" <httpd@gamersmafia.com>)
-
+  
   def rescuiing
     @rescuiing || false
   end
@@ -613,7 +612,7 @@ Request information:
       when ActiveRecord::RecordNotFound
       check404
       http_404
-
+      
       when ActionController::UnknownHttpMethod
       http_401
       
@@ -634,16 +633,16 @@ Request information:
         http_404
       end
     else
-	deliverer = self.class.exception_data
-          data = case deliverer
-            when nil then {}
-            when Symbol then send(deliverer)
-            when Proc then deliverer.call(self)
-          end
- 
-          ExceptionNotifier.deliver_exception_notification(exception, self,
-            request, data)
-
+      deliverer = self.class.exception_data
+      data = case deliverer
+        when nil then {}
+        when Symbol then send(deliverer)
+        when Proc then deliverer.call(self)
+      end
+      
+      ExceptionNotifier.deliver_exception_notification(exception, self,
+                                                       request, data)
+      
       # SystemNotifier.deliver_exception_notification(self, request, exception)
       begin
         render :template => 'application/http_500', :status => 500
@@ -655,8 +654,8 @@ Request information:
     end
     @rescuiing = false # para tests
   end
-
-
+  
+  
   public
   def track(opts={})
     opts = {:redirecting => false, :cookiereq => true }.merge(opts)
@@ -665,7 +664,7 @@ Request information:
     cka = cookies['__stma']
     
     return if @_track_done # no entiendo por qué está pasando pero se llama dos veces desde redirect_to
-      
+    
     return if !cka && opts[:cookiereq] # no trackeamos lo que no podemos cookear
     
     if opts[:redirecting]

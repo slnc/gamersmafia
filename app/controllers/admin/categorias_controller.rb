@@ -15,10 +15,6 @@ class Admin::CategoriasController < ApplicationController
     raise AccessDenied unless user.users_roles.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha', 'Sicario', 'Editor')") > 0 || user.has_admin_permission?(:capo)
   end
   
-  def populate_portal_data
-    @cond = (@portal.respond_to?(:clan_id) && @portal.clan_id) ? "clan_id = #{@portal.clan_id}" : nil
-  end
-  
   public  
   def wmenu_pos
     'hq'
