@@ -186,6 +186,10 @@ class User < ActiveRecord::Base
   end
   
   def check_permissions
+    [self.users_roles.find_by_role('Boss'), self.users_roles.find_by_role('Underboss')].compact.each do |ur|
+      ur.destroy
+    end if slnc_changed?(:faction_id)
+    
     self.users_roles.clear if slnc_changed?(:state) && STATES_CANNOT_LOGIN.include?(self.state)
   end
   

@@ -7,6 +7,22 @@ class UserTest < ActiveSupport::TestCase
     ActionMailer::Base.deliveries = []
   end
   
+  test "boss who changes to another faction should lose boss permission" do
+    u = User.find(1)
+    u.faction_id = 1
+    assert u.save
+    assert_equal 1, u.faction_id
+    assert_count_increases(UsersRole) do
+      u.users_roles.create(:role => 'Boss', :role_data => '1')
+    end
+    
+    assert_count_decreases(UsersRole) do
+      u.faction_id = 2
+      assert u.save
+      assert_nil u.users_roles.find_by_role('Boss')
+    end
+  end
+  
   test "banning someone should remove all permissions" do
     u = User.find(1)
     u.users_roles.create(:role => 'Don', :role_data => '1')
