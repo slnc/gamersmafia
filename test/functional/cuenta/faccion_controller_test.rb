@@ -1,8 +1,6 @@
 require 'test_helper'
 
-class Cuenta::FaccionControllerTest < ActionController::TestCase
-
-  
+class Cuenta::FaccionControllerTest < ActionController::TestCase  
   test "should_be_able_to_join_a_faction" do
     u = User.find_by_login('panzer')
      (u.faction_id = nil && u.save) if u.faction_id

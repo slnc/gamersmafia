@@ -122,7 +122,10 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
     f1.add_editor(User.find(2), ContentType.find_by_name('Column'))
     f1.add_editor(User.find(2), ContentType.find_by_name('News'))
     f1.add_moderator(User.find(3))
-    f1.update_underboss(User.find(56))
+    u56 = User.find(56)
+    f1.update_underboss(u56)
+    assert f1.is_underboss?(u56)
+    assert_equal 1, u56.faction_id
     sym_login 56
     msgs = Message.count
     post :create_message, { :message=> {:message_type => Message::R_FACTION_STAFF, :title => "foo litio", :message => "soy litio teodorakis" }}

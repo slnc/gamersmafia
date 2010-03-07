@@ -168,7 +168,7 @@ class Faction < ActiveRecord::Base
         SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :reviewer_user_id => User.find_by_login('MrAchmed').id, :headline => "Eliminado permiso <strong>#{ur.role}</strong> de #{Faction.find(ur.role_data.to_i).name} a #{newuser.login} por hacerse boss en <strong>#{self.code}</strong>", :completed_on => Time.now)
       end
       
-      if newuser.faction_id == self.id
+      if newuser.faction_id != self.id
         Factions.user_joins_faction(newuser, self)
         newuser = User.find(newuser.id) # we need this because faction_id appears as changed and that will delete permissions at the next update_attributes
       end
@@ -177,7 +177,7 @@ class Faction < ActiveRecord::Base
       newuser.update_attributes(:cache_is_faction_leader => 't')
     end
     
-    if prev && prev.user_id != newuser.id
+    if prev && (newuser.nil? || (newuser && prev.user_id != newuser.id))
       prev.user.update_attributes(:cache_is_faction_leader => 'f')
       prev.destroy
     end

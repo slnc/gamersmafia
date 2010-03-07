@@ -25,8 +25,10 @@ class FactionTest < ActiveSupport::TestCase
     u1 = User.find(1)
     f1.update_boss(u1)
     assert_equal 1, Faction.find_by_bigboss(u1).id
+    u1 = User.find(1)
     f1.update_boss(nil)
     f1.update_underboss(u1)
+    assert_equal 1, u1.faction_id
     assert_equal 1, Faction.find_by_bigboss(u1).id
   end
   

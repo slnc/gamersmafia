@@ -76,7 +76,7 @@ class Cuenta::MensajesController < ApplicationController
       recipients = f.members.collect { |u| u.id }
       when Message::R_FACTION_STAFF:
       f = @user.faction
-      raise ActiveRecord::RecordNotFound unless f.is_bigboss?(@user)
+      raise ActiveRecord::RecordNotFound unless f && f.is_bigboss?(@user)
       recipients = []
       recipients += f.moderators.collect { |u| u.id}
       recipients += f.editors.collect { |content_type, u| u.id }

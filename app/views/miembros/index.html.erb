@@ -67,8 +67,9 @@
           <% 
           i = 0
           max = nil
-          User.can_login.humans.find(:all, :order => 'cash DESC', :limit => 10).each do |u| 
-            max = u.cash if max.nil? 
+          User.can_login.humans.find(:all, :conditions => 'cash > 0', :order => 'cash DESC', :limit => 10).each do |u| 
+            max = u.cash if max.nil?
+			puts "#{u.login} #{u.cash}" 
           %>
           <tr class="<%=oddclass%>">
             <td class="sm-icon number f_number"><%=i+=1%></td>
@@ -85,7 +86,7 @@
 
 	<% cache("/common/miembros/index/top_real_popularity_#{Cache.after_daily_key}") do %>
 	<% max = nil
-	mflist('Top popularidad', User.can_login.humans.find(:all, :order => 'ranking_popularity_pos ASC, lower(login)', :limit => 10)) do |u| 
+	mflist('Top popularidad', User.can_login.humans.find(:all, :conditions => 'ranking_popularity_pos is not null', :order => 'ranking_popularity_pos ASC, lower(login)', :limit => 10)) do |u| 
 	  max = u.cache_popularity.to_f if max.nil? %>
             <td class="sm-icon number f_number"><%=u.ranking_popularity_pos%></td>
             <td>

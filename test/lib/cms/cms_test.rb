@@ -440,8 +440,7 @@ class CmsTest < ActiveSupport::TestCase
     assert f.update_boss(nil) if f
     ut = Faction.find_by_code('ut')
     assert ut.update_boss(u10)
-    u10.faction_id = ut.id
-    assert u10.save
+    assert_equal ut.id, u10.faction_id
     assert Cms.user_can_edit_content?(u10, Image.new(:terms => 1))
   end
   
@@ -526,8 +525,7 @@ class CmsTest < ActiveSupport::TestCase
     assert f.update_boss(nil) if f
     ut = Faction.find_by_code('ut')
     assert ut.update_boss(u10)
-    u10.faction_id = ut.id
-    assert u10.save
+    assert_equal ut.id, u10.faction_id
     e = Event.new(:starts_on => 1.year.ago, :ends_on => 11.months.ago, :user_id => 1, :title => 'foo')
     assert e.save, e.errors.full_messages_html
     Term.single_toplevel(:slug => 'ut').link(e.unique_content)
