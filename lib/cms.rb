@@ -744,6 +744,7 @@ module Cms
         end
       end
     else # editor o jefazo de organization?
+
       org = Organizations.find_by_content(content)
       if org
         org.user_is_editor_of_content_type?(user, ContentType.find_by_name(content.class.name))

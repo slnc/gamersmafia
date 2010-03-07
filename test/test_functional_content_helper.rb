@@ -207,7 +207,8 @@ module TestCaseMixings
         panzer = User.find_by_login('panzer')
         if f then
           if !f.is_bigboss?(panzer)
-            assert f.update_boss(panzer)
+            f.update_boss(panzer)
+            assert f.is_bigboss?(panzer)
           end
           
           post :update, post_vars.merge({:id => 2}), {:user => panzer.id}

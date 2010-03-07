@@ -160,6 +160,7 @@ class Faction < ActiveRecord::Base
     # cambia si no habia don y ahora hay, si habia y ahora no o si no es el mismo
     changed = ((newuser.nil? && prev) || (newuser && prev.nil?) || (newuser && prev && newuser.id != prev.user_id))
     return true unless changed
+    
     #raise "hola"
     if newuser # le quitamos los roles viejos como don/mano_derecha
       UsersRole.find(:all, :conditions => ["role IN ('Boss', 'Underboss') AND user_id = ?", newuser.id]).each do |ur|
@@ -167,15 +168,21 @@ class Faction < ActiveRecord::Base
         SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :reviewer_user_id => User.find_by_login('MrAchmed').id, :headline => "Eliminado permiso <strong>#{ur.role}</strong> de #{Faction.find(ur.role_data.to_i).name} a #{newuser.login} por hacerse boss en <strong>#{self.code}</strong>", :completed_on => Time.now)
       end
       
+      if newuser.faction_id == self.id
+        Factions.user_joins_faction(newuser, self)
+        newuser = User.find(newuser.id) # we need this because faction_id appears as changed and that will delete permissions at the next update_attributes
+      end
       ur = UsersRole.create(:role => role, :role_data => self.id.to_s, :user_id => newuser.id)
-      Factions.user_joins_faction(newuser, self) unless newuser.faction_id == self.id
+    
       newuser.update_attributes(:cache_is_faction_leader => 't')
     end
     
-    if prev
+    if prev && prev.user_id != newuser.id
       prev.user.update_attributes(:cache_is_faction_leader => 'f')
       prev.destroy
     end
+    
+    # self.update_attributes("#{role.downcase}_id" => newuser)
     
     SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :reviewer_user_id => User.find_by_login('MrAchmed').id, :headline => "Actualizado #{role} de #{self.name} a #{newuser.nil? ? 'nadie' : newuser.login}", :completed_on => Time.now)
   end
