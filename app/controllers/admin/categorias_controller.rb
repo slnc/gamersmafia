@@ -1,6 +1,5 @@
 class Admin::CategoriasController < ApplicationController  
   before_filter :check_permissions
-  before_filter :populate_portal_data
   
   private
   def check_permissions
