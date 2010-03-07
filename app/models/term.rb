@@ -224,8 +224,8 @@ class Term < ActiveRecord::Base
       f = Faction.find_by_code(self.root.slug)
       if f
         portals += Portal.find(:all, :conditions => ['id in (SELECT portal_id from factions_portals where faction_id = ?)', f.id])  
-      else
-        puts "warning, term #{self.id} #{self.name} #{self.code} has no related_portals"
+      #else
+        #puts "warning, term #{self.id} #{self.name} #{self.code} has no related_portals"
       end
     elsif self.bazar_district_id
       portals << self.bazar_district
