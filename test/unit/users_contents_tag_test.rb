@@ -16,8 +16,16 @@ class UsersContentsTagTest < ActiveSupport::TestCase
     assert_equal 'hola', @uct.term.slug
   end
   
-  test "no duplicated terms" do
-    [17, 1].each do |tid|
+  test "duplicated non root terms ok" do
+    [17].each do |tid|
+      t = Term.find(tid)
+      @uct = UsersContentsTag.new(:user_id => 1, :content_id => 1, :original_name => t.name)
+      assert @uct.save
+    end
+  end
+  
+  test "no duplicated root terms" do
+    [1, 4].each do |tid|
       t = Term.find(tid)
       @uct = UsersContentsTag.new(:user_id => 1, :content_id => 1, :original_name => t.name)
       assert !@uct.save
@@ -38,7 +46,8 @@ class UsersContentsTagTest < ActiveSupport::TestCase
     UsersContentsTag.tag_content(@c1, @u1, 'anime foo bar baz')
     UsersContentsTag.tag_content(@c1, @u2, 'foo bar  gorvachob baz')
     UsersContentsTag.tag_content(@c1, @u3, 'foo bar baz kapoing')
-    assert_equal t_count + 6, Term.contents_tags.count
+    assert_equal t_count + 5, Term.contents_tags.count
+    # anime no debe estar en tags porque ya hay un term con ese code
     tofind = %w(foo bar baz)
     @c1.top_tags.each do |t|
       tofind.delete(t.name)
