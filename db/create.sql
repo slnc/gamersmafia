@@ -134,7 +134,8 @@ CREATE TABLE advertisers (
     name character varying NOT NULL,
     email character varying NOT NULL,
     due_on_day smallint NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    active boolean DEFAULT true NOT NULL
 );
 CREATE SEQUENCE advertisers_id_seq
     START WITH 1
