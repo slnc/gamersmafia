@@ -1,3 +1,4 @@
+<% if user_is_authed then %>
 	<%mftext('Alegría del día') do %>
 		<div style="width: auto; background: none; text-align: right; float: right; padding: 0px 4px 0 0;" >
 		<a class="daily-joy-babe2" title="Ver chicas" onclick="setpref('sex', 'babe');"><img src="/images/blank.gif" /></a> 
@@ -16,6 +17,8 @@ end
 if images_cat then
 %>
 		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :term_id => images_cat}%>		
+<% end -%>
+
 <% end -%>
 
 <% end -%>
