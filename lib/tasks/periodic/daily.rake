@@ -318,7 +318,7 @@ having portal_id in (select id
     # This scripts executes on the first day of the non paid period so we return the info ending yesterday midnight
     tend = Time.now.at_beginning_of_day.ago(1)
     tstart = tend.months_ago(1).beginning_of_day
-    Advertiser.find(:all, :conditions => ['due_on_day = ?', Time.now.day]).each do |advertiser|
+    Advertiser.find(:all, :conditions => ['active=\'t\' AND due_on_day = ?', Time.now.day]).each do |advertiser|
       Notification.deliver_ad_report(advertiser, {:tstart => tstart, :tend => tend})
     end
   end
