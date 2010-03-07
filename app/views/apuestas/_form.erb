@@ -18,12 +18,12 @@
 <input type="text" class="text" name="bet[options][<%=option.id.to_s%>]" value="<%=option.name%>" /> &nbsp; <label><input type="checkbox" name="bet[options_delete][]" value="<%=option.id.to_s%>" /> Borrar</label><br />
 <% end %>
 
-<% if @bet.new_record? then %>
+<%# if @bet.new_record? then %>
 <span id="newoptions">
   <input type="text" class="text" name="bet[options_new][]" value="" /><br /><br />
   <input type="text" class="text" name="bet[options_new][]" value="" />
 </span>
-<% end -%>
+<%# end -%>
 
 <br />
 <br />
