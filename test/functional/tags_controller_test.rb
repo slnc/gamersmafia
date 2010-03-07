@@ -1,14 +1,21 @@
 require 'test_helper'
 
 class TagsControllerTest < ActionController::TestCase
-  # Replace this with your real tests.
-  test "index should work" do
+  
+  test "index should work without tags" do
+    get :index
+    assert_response :success
+  end
+  
+  test "index should work with tags" do
+    t = Term.create(:taxonomy => 'ContentsTag', :name => 'foo')
+    t.link(Content.find(:first))
+    
     get :index
     assert_response :success
   end
   
   test "show should work" do
-    
     t = Term.create(:taxonomy => 'ContentsTag', :name => 'foo')
     t.link(Content.find(:first))
     get :show, :id => t.slug

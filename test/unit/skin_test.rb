@@ -7,7 +7,7 @@ class SkinTest < ActiveSupport::TestCase
     defskin = Skin.find_by_hid('default')
     assert_equal 'default', defskin.hid
     assert_equal 'default', defskin.name
-    assert_nil defskin.id
+    assert_equal -1, defskin.id
   end
   
   test "other_skin_is_found" do
