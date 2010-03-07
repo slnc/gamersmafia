@@ -72,8 +72,8 @@ for download in @last_downloads
 shown_topics = []
 @last_topics = Topic.latest_by_category(20)
 
-for topicid in @last_topics
-  topic = Topic.find(topicid)
+for topic in @last_topics
+  # topic = Topic.find(topicid)
   shown_topics << topic.unique_content_id
   root = topic.main_category.root
   active_topics = root.count(:content_type => 'Topic', :conditions => 'contents.updated_on > now() - \'1 week\'::interval') - 1

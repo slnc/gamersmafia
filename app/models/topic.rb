@@ -89,6 +89,6 @@ class Topic < ActiveRecord::Base
       contents_r_root_id[root_term.id] ||= content.real_content.id
       i += 1
     end
-    contents_r_root_id.values
+    contents_r_root_id.values.collect { |tid| Topic.find(tid) }.sort_by { |t| t.updated_on }
   end
 end
