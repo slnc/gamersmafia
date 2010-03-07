@@ -4,6 +4,7 @@
 <% end -%>
 	
 <%mftext(@curuser.login, :grid => 5) do %>
+<% if @curuser.can_login? %>
 <div style="float: left; text-align: center; margin-right: 7px;"><%=fc_thumbnail(@curuser.show_photo, 'k', '161x161', false)%></div>
   <div style="margin-left: 60px;">
   <div class="avatar" style="text-align: right;"><img src="<%=ASSET_URL%><%=@curuser.show_avatar%>" /></div>
@@ -58,6 +59,7 @@
   <input type="hidden" name="login" value="<%=@curuser.login%>" />
   <input type="submit" class="button" value="Iniciar resurrección" />
 </form>
+<% end -%>
 <% end -%>
 <% end %><%# mftext -%>
 <% end -%>
