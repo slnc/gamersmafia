@@ -791,7 +791,10 @@ class User < ActiveRecord::Base
   
   protected
   def password=(clearpasswd)
-    self['password'] = Digest::MD5.hexdigest(clearpasswd) unless clearpasswd.to_s == ''
+    if clearpasswd.to_s != ''
+        self['password'] = Digest::MD5.hexdigest(clearpasswd) 
+        self.generate_validkey
+    end
   end
   
   def is_online

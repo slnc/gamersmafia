@@ -651,7 +651,9 @@ module ActsAsContent
                               SET cache_rating = NULL, 
                                   cache_rated_times = NULL, 
                                   cache_weighted_rank = NULL WHERE id = #{self.id}")
-      self.reload
+      self.cache_rating = nil
+      self.cache_rated_times = nil
+      self.cache_weighted_rank = nil
       self.rating # TODO PERF
     end
     
