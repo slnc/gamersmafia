@@ -64,7 +64,7 @@ module Comments
   
   def self.fix_incorrect_bbcode_nesting(input)
     q = []
-    regexp = /(\[\/*(b|i|span|code|quote|img|url=[^\]|url]*)\])/i
+    regexp = /(\[\/*(b|i|span|code|quote|img|url=[^\]]*|url)\])/i
     next_idx = input.index(regexp)
     
     while next_idx
@@ -74,9 +74,7 @@ module Comments
       
       if m[0][1..1] != '/'
         q << bbcode
-      
       else
-      
         if bbcode.gsub('/', '') == q.last
           q.pop
         else
