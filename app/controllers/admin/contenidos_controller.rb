@@ -137,12 +137,16 @@ class Admin::ContenidosController < ApplicationController
   def close
     params[:reason] = nil if params[:reason] && params[:reason] == 'Razón...'
     @content = Content.find(params[:id]).real_content
+    return if @content.closed
     require_user_can_edit(@content)
     if params[:reason].to_s.strip == ''
       flash[:error] = "Debes indicar una razón para cerrar este contenido"
     else
-      @content.close(@user, params[:reason]) unless @content.closed
-      flash[:notice] = "#{Cms::CLASS_NAMES[@content.class.name]} cerrado a comentarios."
+      if @content.close(@user, params[:reason]) 
+        flash[:notice] = "Contenido '#{@content}' cerrado a comentarios."
+      else
+        flash[:error] = "Error al cerrar contenido: #{@content.errors.full_messages_html}."
+      end
     end
     
     redirect_to gmurl(@content)

@@ -25,7 +25,7 @@ class Bet < ActiveRecord::Base
   end
 
 
-  def closed?
+  def bet_closed?
     self.closes_on < Time.now && (!self.winning_bets_option_id.nil? || self.tie == true || self.cancelled == true || self.forfeit == true)
   end
   
