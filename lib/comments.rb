@@ -62,10 +62,44 @@ module Comments
     newstr
   end
   
+  def self.fix_incorrect_bbcode_nesting(input)
+    q = []
+    regexp = /(\[\/*(b|i|span|code|quote|img|url=[^\]|url]*)\])/i
+    next_idx = input.index(regexp)
+    
+    while next_idx
+      m = regexp.match(input[next_idx..-1])
+      bbcode = m[2][0..(m[2].index(/=|$/)-1)]      # get 'b' or 'quote'
+      insertion = ''
+      
+      if m[0][1..1] != '/'
+        q << bbcode
+      
+      else
+      
+        if bbcode.gsub('/', '') == q.last
+          q.pop
+        else
+          insertion = "[#{bbcode}]"
+          input = "#{input[0..next_idx-1]}#{insertion}#{input[next_idx..-1]}"
+        end
+      end
+      
+      next_idx += m[0].size + insertion.size
+      next_idx = input.index(regexp, next_idx)
+    end
+    
+    q.each do |bbcode|
+      input = "#{input}[/#{bbcode}]"
+    end
+    input = input.gsub(/(\[(b|i|code|quote)\]\[\/(b|i|code|quote)\])/i, '')
+    input
+  end
+  
   def self.formatize(str)
     # parsea comentarios de usuarios, líneas de chat, etc
     str ||= ''
-    str = str.clone
+    str = Comments.fix_incorrect_bbcode_nesting(str.clone)
     
     str.strip!
     str.gsub!(/</, '&lt;')

@@ -79,4 +79,6 @@ class CommentTest < ActiveSupport::TestCase
     u.reload
     assert_nil u.lastcommented_on
   end
+  
+
 end

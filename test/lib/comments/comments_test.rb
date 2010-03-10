@@ -17,19 +17,26 @@ class CommentsTest < ActiveSupport::TestCase
   #  t_unclosed = '[b]hola'
   #  assert_equal '[b]hola[/b]'
   #end
-  
+  test "should fix incorrectly nested bbcodes" do
+    assert_equal "[b]hola[/b]", Comments.fix_incorrect_bbcode_nesting("[b]hola")
+    assert_equal '[B]hola[/B]', Comments.fix_incorrect_bbcode_nesting('[B]hola')
+    assert_equal "[URL=http://google.com]hola[img]aa[/img][/URL]", Comments.fix_incorrect_bbcode_nesting('[URL=http://google.com]hola[img]aa[/img]')
+    assert_equal '[URL=http://google.com]hola[img]aa[/img][img][/img][img][/img][/URL]', Comments.fix_incorrect_bbcode_nesting('[URL=http://google.com]hola[img]aa[/img][/img][/img]')
+  end  
+
+
   # TODO
-  def atest_fix_malformed_comment
-    assert_equal '', Comments.fix_malformed_comment('')
-    assert_equal 'hola', Comments.fix_malformed_comment('hola')
-    assert_equal '[b]hola[/b]', Comments.fix_malformed_comment('[b]hola[/b]')
-    assert_equal '[b][i]hola[/i][/b]', Comments.fix_malformed_comment('[b][i]hola[/i][/b]')
-    puts "!!!"
-    assert_equal '[b][i]hola[/i][/b]', Comments.fix_malformed_comment('[b][i]hola[/b][/i]')
-    assert_equal 'hola', Comments.fix_malformed_comment('hola[/b]')
-    assert_equal '[url=http://gamersmafia.com]hola[/url]', Comments.fix_malformed_comment('[url=http://gamersmafia.com]hola[/url]')
-    assert_equal '[b]hola[/b] adios', Comments.fix_malformed_comment('[b]hola[/b] adios')
-    assert_equal '[i][b]hola[/b] [b]adios[\b][/i]', Comments.fix_malformed_comment('[i][b]hola[/b] [b]adios[\b][/i]')    
+  def test_fix_incorrect_bbcode_nesting
+    assert_equal '', Comments.fix_incorrect_bbcode_nesting('')
+    assert_equal 'hola', Comments.fix_incorrect_bbcode_nesting('hola')
+    assert_equal '[b]hola[/b]', Comments.fix_incorrect_bbcode_nesting('[b]hola[/b]')
+    assert_equal '[b][i]hola[/i][/b]', Comments.fix_incorrect_bbcode_nesting('[b][i]hola[/i][/b]')
+    
+    assert_equal '[b][i]hola[/i][/b]', Comments.fix_incorrect_bbcode_nesting('[b][i]hola[/b][/i]')
+    assert_equal 'hola', Comments.fix_incorrect_bbcode_nesting('hola[/b]')
+    assert_equal '[url=http://gamersmafia.com]hola[/url]', Comments.fix_incorrect_bbcode_nesting('[url=http://gamersmafia.com]hola[/url]')
+    assert_equal '[b]hola[/b] adios', Comments.fix_incorrect_bbcode_nesting('[b]hola[/b] adios')
+    assert_equal '[i][b]hola[/b] [b]adios[/b][/i]', Comments.fix_incorrect_bbcode_nesting('[i][b]hola[/b] [b]adios[/b][/i]')    
   end
     
   test "sicario_can_edit_comments_of_own_district" do
