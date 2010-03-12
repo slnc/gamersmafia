@@ -103,7 +103,7 @@ class Content < ActiveRecord::Base
     # devuelve el objeto real al que referencia
     @_cache_real_content ||= begin       
       ctype = Object.const_get(self.content_type.name)
-      ctype.find(self.external_id)
+      ctype.send(:with_exclusive_scope) { ctype.find(self.external_id) } # NECESSARY because we use find_each in weekly.rb and there is a rails bug ( https://rails.lighthouseapp.com/projects/8994/tickets/1267-methods-invoked-within-named_scope-procs-should-respect-the-scope-stack )
     end
   end
   
