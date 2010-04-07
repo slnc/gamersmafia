@@ -17,6 +17,7 @@ class Message < ActiveRecord::Base
   after_create :notify_recipient
   after_create :set_thread_id_if_nil
   before_create :check_in_reply_to
+  #before_create :check_spam
   
   after_save :update_recipient_unread 
   after_destroy :update_recipient_unread 
@@ -26,6 +27,11 @@ class Message < ActiveRecord::Base
   plain_text :title
   before_save :sanitize_message
   
+
+  #def check_spam
+  #  self.sender.created_on < 2.days.ago || Message.count(:conditions => ['user_id_from = ?', self.user_id_from]) < 10
+  #end
+
   def sanitize_message
     self.message = self.message
   end

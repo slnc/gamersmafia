@@ -19,7 +19,7 @@ namespace :gm do
     new_accounts_cleanup
     check_ladder_matches
     update_portals_hits_stats
-    # provocar_golpes_de_estado
+    provocar_golpes_de_estado
     forget_old_tracker_items
     forget_old_pageviews
     forget_old_autologin_keys
@@ -215,7 +215,7 @@ having portal_id in (select id
                                        and id IN #{Faction.factions_ids_with_bigbosses}))
              AND sum(karma) = 0)").each do |f|
       # mrCheater provoca golpe de estado publicando un tópic al respecto
-      puts "golpe de estado a #{f.name}"
+      #puts "golpe de estado a #{f.name}"
       f.golpe_de_estado
     end
   end

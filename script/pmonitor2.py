@@ -20,7 +20,7 @@ if __name__ == '__main__':
     try:
         check_full_stack()
     except Exception, e:
-        os.system('/etc/init.d/apachectl stop')
+        os.system('/etc/init.d/apache stop')
         time.sleep(5)
-        os.system('/etc/init.d/apachectl start')
+        os.system('/etc/init.d/apache start')
 
