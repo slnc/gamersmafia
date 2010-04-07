@@ -12,7 +12,7 @@ namespace :gm do
     update_content_ranks
     recalculate_terms_count
   end
-
+  
   def recalculate_terms_count
     # TODO hack
     Term.find_each do |t| t.recalculate_contents_count end
@@ -72,7 +72,7 @@ having portal_id in (select id
         ammount_boss = 0.05 * 1.0 * dbr['sum'].to_i
         ammount_underboss = nil
       end
-
+      
       Bank.transfer(:bank, master_o, ammount_boss, "Sueldo de #{master} de #{organization.name}") if ammount_boss
       Bank.transfer(:bank, undermaster_o, ammount_underboss, "Sueldo de #{undermaster} de #{organization.name}") if ammount_underboss
     end
