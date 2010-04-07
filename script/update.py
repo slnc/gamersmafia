@@ -46,7 +46,7 @@ def send_changelog_email():
         prev = 'N/A'
         interval = ''
     
-    log = os.popen('git log --pretty=format:"- %%s\\n%%b" %s production | grep -v -- "vendor/plugins" |grep -v -- "web.shared" | grep -v -- "- Merge " | grep -v -- "- new deployment: "' % interval).read().replace('\\n', "\n")
+    log = os.popen('git log origin/production --pretty=format:"- %%s\\n%%b" %s | grep -v -- "vendor/plugins" |grep -v -- "web.shared" | grep -v -- "- Merge " | grep -v -- "- new deployment: "' % interval).read().replace('\\n', "\n")
 
     # send the email
     fromaddr = 'webmaster@gamersmafia.com'
