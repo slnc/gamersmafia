@@ -3,7 +3,7 @@ set :repository,  "ssh://git@balrog.slnc.net:62331/gamersmafia"
 set :user, 'slnc'
 set :use_sudo, false
 
-set :deploy_to, "/home/httpd/websites/gamersmafia"
+set :deploy_to, "/srv/www/gamersmafia"
 set :deploy_via, :remote_cache
 set :scm, :git
 set :scm_username, 'git'
