@@ -33,6 +33,11 @@ module Reports
     virgins = ["Oh, sigo buscando novia. Si alguna mujer joven está interesada por favor que me mande un mensaje privado.", 
                'Soy una persona muy sensible, no me gustaría leer críticas negativas.',
                '¿Está todo bien?',
+               'kh0rne es un cielo.',
+               '(afilando un cuchillo de carnicero) javitario se está haciendo muy popular.',
+               'Lo que hay entre Unk y yo es secreto.',
+               'El punto débil de B4styON son los culos.',
+               '2_Face es un chucho tan.. mimado.',
                'Un tal gr3333n me ha confesado que le gustan los chicos.',
                'Mi psicólogo me ha dicho que hacer esto me ayudará.']
     main = "#{virgins.random}"
