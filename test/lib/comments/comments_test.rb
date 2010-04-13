@@ -15,7 +15,7 @@ class CommentsTest < ActiveSupport::TestCase
 
 
   test "formatize should properly formatize code tags" do
-    assert_equal "<pre class=\"brush: js\">hola</pre>", Comments.formatize("[code]hola[/code]")
+    assert_equal "<pre class=\"brush: js\">hola[]</pre>", Comments.formatize("[code]hola[][/code]")
     assert_equal "<pre class=\"brush: python\">hola</pre>", Comments.formatize("[code=python]hola[/code]")
     assert_equal "<pre class=\"brush: js\">hola\n  mundo</pre>", Comments.formatize("[code]hola\n  mundo[/code]")
   end

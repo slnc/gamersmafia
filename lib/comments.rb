@@ -115,8 +115,8 @@ module Comments
     str.gsub!(/\[img\]([^\[]+)\[\/img\]/i, '<img src="\\1" />')
     str.gsub!(/\[url=([^\]]+)\]([^\[]+)\[\/url\]/i, '<a href="\\1">\\2</a>')
     str.gsub!(/\[color=([^\]]+)\]([^\[]+)\[\/color\]/i, '<span class="c_\\1">\\2</span>')
-    str.gsub!(/\[code=([^\]]+)\]([^\[]+)\[\/code\]/i, '<pre class="brush: \\1">\\2</pre>')
-    str.gsub!(/\[code\]([^\[]+)\[\/code\]/i, '<pre class="brush: js">\\1</pre>')
+    str.gsub!(/\[code=([^\]]+)\](.+?)\[\/code\]/i, '<pre class="brush: \\1">\\2</pre>')
+    str.gsub!(/\[code\](.+?)\[\/code\]/i, '<pre class="brush: js">\\1</pre>')
     puts str
     # remove any html tag inside a <code></code>
     #str.gsub!(/<code>(<\/?[^>]*>)<\/code>/,"")
