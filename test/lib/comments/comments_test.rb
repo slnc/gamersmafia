@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../../../test/test_helper'
 class CommentsTest < ActiveSupport::TestCase
   test "formatize_should_correctly_translate_known_tags" do
     t = "Hola Mundo![b]me siento negrita[/b] y ahora..[i]CURSIVA!!![/i]\nAdemás tengo saltos de línea, [~dharana], [flag=es], [img]http://domain.test[/img] y [url=http://otherdomain.test]enlaces!![/url]>>>Ownage!<<<[quote]mwahwahwa[/quote]"
-    t_formatized = "Hola Mundo!<b>me siento negrita</b> y ahora..<i>CURSIVA!!!</i><br />Además tengo saltos de línea, <a href=\"/miembros/dharana\">dharana</a>, <img class=\"icon\" src=\"/images/flags/es.gif\" />, <img src=\"http://domain.test\" /> y <a href=\"http://otherdomain.test\">enlaces!!</a>&gt;&gt;&gt;Ownage!&lt;&lt;&lt;<blockquote>mwahwahwa</blockquote>"
+    t_formatized = "Hola Mundo!<b>me siento negrita</b> y ahora..<i>CURSIVA!!!</i><br />\nAdemás tengo saltos de línea, <a href=\"/miembros/dharana\">dharana</a>, <img class=\"icon\" src=\"/images/flags/es.gif\" />, <img src=\"http://domain.test\" /> y <a href=\"http://otherdomain.test\">enlaces!!</a>&gt;&gt;&gt;Ownage!&lt;&lt;&lt;<blockquote>mwahwahwa</blockquote>"
     assert_equal t_formatized, Comments.formatize(t)
   end
 
@@ -13,6 +13,12 @@ class CommentsTest < ActiveSupport::TestCase
     assert_equal t_unformatized, Comments.unformatize(t)
   end
 
+
+  test "formatize should properly formatize code tags" do
+    assert_equal "<code>hola</code>", Comments.formatize("[code]hola[/code]")
+    assert_equal "<code>hola\n  mundo</code>", Comments.formatize("[code]hola\n  mundo[/code]")
+  end
+  
   #test "formatize_should_close_unclosed_tags" do
   #  t_unclosed = '[b]hola'
   #  assert_equal '[b]hola[/b]'
@@ -22,8 +28,7 @@ class CommentsTest < ActiveSupport::TestCase
     assert_equal '[B]hola[/B]', Comments.fix_incorrect_bbcode_nesting('[B]hola')
     assert_equal "[URL=http://google.com]hola[img]aa[/img][/URL]", Comments.fix_incorrect_bbcode_nesting('[URL=http://google.com]hola[img]aa[/img]')
     assert_equal '[URL=http://google.com]hola[img]aa[/img][img][/img][img][/img][/URL]', Comments.fix_incorrect_bbcode_nesting('[URL=http://google.com]hola[img]aa[/img][/img][/img]')
-  end  
-
+  end
 
   # TODO
   def test_fix_incorrect_bbcode_nesting

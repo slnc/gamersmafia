@@ -102,18 +102,20 @@ module Comments
     str.strip!
     str.gsub!(/</, '&lt;')
     str.gsub!(/>/, '&gt;')
-    str.gsub!(/\r\n/, '<br />')
-    str.gsub!(/\r/, '<br />')
-    str.gsub!(/\n/, '<br />')
+    str.gsub!(/\r\n/, "<br />\\n")
+    str.gsub!(/\r/, "<br />\\n")
+    str.gsub!(/\n/, "<br />\\n")
     str.gsub!(/(\[(\/*)(b|i|code|quote)\])/i, '<\\2\\3>')
     str.gsub!(/(<(\/*)(quote)>)/i, '<\\2blockquote>')
-    str.gsub!(/(<(\/*)(code)>)/i, '<\\2code>')
     str.gsub!(/(\[~([^\]]+)\])/, '<a href="/miembros/\\2">\\2</a>') # ~dharana >> <a href="/miembros/dharana">dharana</a>
     str.gsub!(/\[flag=([^\]]+)\]/i, '<img class="icon" src="/images/flags/\\1.gif" />')
     str.gsub!(/\[img\]([^\[]+)\[\/img\]/i, '<img src="\\1" />')
     str.gsub!(/\[url=([^\]]+)\]([^\[]+)\[\/url\]/i, '<a href="\\1">\\2</a>')
     str.gsub!(/\[color=([^\]]+)\]([^\[]+)\[\/color\]/i, '<span class="c_\\1">\\2</span>')
-    
+    # remove any html tag inside a <code></code>
+    #str.gsub!(/<code>(<\/?[^>]*>)<\/code>/,"")
+    str.gsub!(/<code>.*<\/code>/) { |blck| blck[0..5] + blck[6..-8].gsub('<br />', '') + blck[-7..-1] }
+    str.gsub!("\\n", "\n")
     str
   end
   
