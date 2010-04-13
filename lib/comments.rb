@@ -105,7 +105,7 @@ module Comments
     str.strip!
     str.gsub!(/</, '&lt;')
     str.gsub!(/>/, '&gt;')
-    str.gsub!(/\r\n/, "<br />\\n")
+    str.gsub!(/\r\n/, "<br />")
     str.gsub!(/\r/, "<br />\\n")
     str.gsub!(/\n/, "<br />\\n")
     str.gsub!(/(\[(\/*)(b|i|quote)\])/i, '<\\2\\3>')
@@ -117,7 +117,6 @@ module Comments
     str.gsub!(/\[color=([^\]]+)\]([^\[]+)\[\/color\]/i, '<span class="c_\\1">\\2</span>')
     str.gsub!(/\[code=([^\]]+)\](.+?)\[\/code\]/i, '<pre class="brush: \\1">\\2</pre>')
     str.gsub!(/\[code\](.+?)\[\/code\]/i, '<pre class="brush: js">\\1</pre>')
-    puts str
     # remove any html tag inside a <code></code>
     #str.gsub!(/<code>(<\/?[^>]*>)<\/code>/,"")
     str.gsub!(/<pre class="brush: [a-z]+">.*<\/pre>/) { |blck| blck[0..5] + blck[6..-8].gsub('<br />', '') + blck[-7..-1] }
