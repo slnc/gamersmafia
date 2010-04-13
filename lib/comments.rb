@@ -50,6 +50,8 @@ module Comments
     # parsea comentarios de usuarios, líneas de chat, etc
     newstr.gsub!('<br />', "\n")
     newstr.gsub!(/(<(\/*)(blockquote)>)/i, '<\\2quote>')
+    newstr.gsub!(/<pre class="brush: ([^"]+)">/i, '[code=\\1]')
+    newstr.gsub!(/(<(\/*)(pre)>)/i, '[\\2code]') # TODO we don't preseve the class!
     newstr.gsub!(/(<(\/*)(b|i|code|quote)>)/i, '[\\2\\3]')
     newstr.gsub!(/<img class="icon" src="\/images\/flags\/([a-z]+).gif" \/>/i, '[flag=\\1]')
     newstr.gsub!(/<img src="([^"]+)" \/>/i, '[img]\\1[/img]')
@@ -64,7 +66,8 @@ module Comments
   
   def self.fix_incorrect_bbcode_nesting(input)
     q = []
-    regexp = /(\[\/*(b|i|span|code|quote|img|url=[^\]]*|url)\])/i
+    #regexp = /(\[\/*(b|i|span|code|quote|img|url=[^\]]*|url)\])/i
+    regexp = /(\[\/*(b|i|span|code=[^\]]*|code|quote|img|url=[^\]]*|url)\])/i
     next_idx = input.index(regexp)
     
     while next_idx
@@ -98,23 +101,26 @@ module Comments
     # parsea comentarios de usuarios, líneas de chat, etc
     str ||= ''
     str = Comments.fix_incorrect_bbcode_nesting(str.clone)
-    
+    puts str
     str.strip!
     str.gsub!(/</, '&lt;')
     str.gsub!(/>/, '&gt;')
     str.gsub!(/\r\n/, "<br />\\n")
     str.gsub!(/\r/, "<br />\\n")
     str.gsub!(/\n/, "<br />\\n")
-    str.gsub!(/(\[(\/*)(b|i|code|quote)\])/i, '<\\2\\3>')
+    str.gsub!(/(\[(\/*)(b|i|quote)\])/i, '<\\2\\3>')
     str.gsub!(/(<(\/*)(quote)>)/i, '<\\2blockquote>')
     str.gsub!(/(\[~([^\]]+)\])/, '<a href="/miembros/\\2">\\2</a>') # ~dharana >> <a href="/miembros/dharana">dharana</a>
     str.gsub!(/\[flag=([^\]]+)\]/i, '<img class="icon" src="/images/flags/\\1.gif" />')
     str.gsub!(/\[img\]([^\[]+)\[\/img\]/i, '<img src="\\1" />')
     str.gsub!(/\[url=([^\]]+)\]([^\[]+)\[\/url\]/i, '<a href="\\1">\\2</a>')
     str.gsub!(/\[color=([^\]]+)\]([^\[]+)\[\/color\]/i, '<span class="c_\\1">\\2</span>')
+    str.gsub!(/\[code=([^\]]+)\]([^\[]+)\[\/code\]/i, '<pre class="brush: \\1">\\2</pre>')
+    str.gsub!(/\[code\]([^\[]+)\[\/code\]/i, '<pre class="brush: js">\\1</pre>')
+    puts str
     # remove any html tag inside a <code></code>
     #str.gsub!(/<code>(<\/?[^>]*>)<\/code>/,"")
-    str.gsub!(/<code>.*<\/code>/) { |blck| blck[0..5] + blck[6..-8].gsub('<br />', '') + blck[-7..-1] }
+    str.gsub!(/<pre class="brush: [a-z]+">.*<\/pre>/) { |blck| blck[0..5] + blck[6..-8].gsub('<br />', '') + blck[-7..-1] }
     str.gsub!("\\n", "\n")
     str
   end

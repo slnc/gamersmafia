@@ -98,7 +98,7 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
     <div title="Cursiva" class="btn italic"></div>
     <div title="Enlace" class="btn link"></div>
     <div title="Quote" class="btn quote"></div>
-    <div title="Código" class="btn code"></div>
+    <div title="Código (bash,cpp,csharp,css,java,perl,php,python,ruby,sql,vb,xml)" class="btn code"></div>
     <div title="Imagen" class="btn image"></div>
     <div title="Deshacer" class="btn back"></div>
     <div title="Rehacer" class="btn forward"></div>
@@ -676,6 +676,8 @@ END
 <script src="#{ASSET_URL}/javascripts/tracking.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/app.bbeditor.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/colorpicker.#{SVNVERSION}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shCore.#{SVNVERSION}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shBrushRuby.#{SVNVERSION}.js" type="text/javascript"></script>
       END
     end
     

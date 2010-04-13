@@ -44,3 +44,6 @@
 @import url(css/sprites/misc.css);
 @import url(css/sprites/tienda.css);
 @import url(css/sprites/users.css);
+
+@import url(css/components/syntaxhighlighter/shCore.css);
+@import url(css/components/syntaxhighlighter/shThemeDefault.css);

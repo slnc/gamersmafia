@@ -412,7 +412,7 @@ textarea {
     border: 1px solid;
 }
 
-#ccontent blockquote, #ccontent code {
+#ccontent blockquote {
     border: 1px solid;
     margin: 0px 20px;
     padding: 5px 10px;

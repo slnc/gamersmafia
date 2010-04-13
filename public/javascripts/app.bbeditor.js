@@ -30,7 +30,7 @@
 		if(options.italic != false) options.italic.click(function() {print_bbc('texto','[i]','[/i]')});
 		if(options.link != false) options.link.click(add_link);
 		if(options.quote != false) options.quote.click(function() {print_bbc('quote','[quote]','[/quote]',true)});
-		if(options.code != false) options.code.click(function() {print_bbc('hello(world);','[code]','[/code]',true)});
+		if(options.code != false) options.code.click(function() {print_bbc('hello(world);','[code=python]','[/code]',true)});
 		if(options.image != false) options.image.click(add_image);
 		if(options.nlist != false) options.nlist.click(function() {print_bbc('entrada de lista','[list=1]' + lb + '[*]','[/list]',true)});
 		if(options.blist != false) options.blist.click(function() {print_bbc('entrada de lista','[list]' + lb + '[*]','[/list]',true)});

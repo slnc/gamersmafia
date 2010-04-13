@@ -34,6 +34,8 @@ function cfgPage(user_is_authed, contents, controller, action, model_id, newsess
         pageTracker.setVar('_xab', abtest);
     
     pageTracker.trackPageview(user_is_authed, contents);
+	
+	SyntaxHighlighter.all()
 }
 
 function form_sym_action(form_id, initial_str, new_str){
