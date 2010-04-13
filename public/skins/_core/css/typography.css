@@ -36,3 +36,5 @@ a:hover { text-decoration: underline; }
 .infoinline a { text-decoration: underline; }
 
 .sm { font-size: 10px; }
+
+code { white-space: preserve; overflow: auto; }
