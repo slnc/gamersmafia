@@ -1021,12 +1021,12 @@ module Cms
     terms = {:games => [], :platforms => [], :clans => [], :bazar_districts => [], :special => []}
     
     if u.has_admin_permission?(:capo)
-      Term.toplevel(:clan_id => nil).each do |t|
+      Term.top_level(:conditions => 'taxonomy <> \'ContentsTag\'').each do |t|
         if t.game_id
           terms[:games] << t
         elsif t.platform_id
           terms[:platforms] << t
-        elsif t.clan_id.nil? && t.bazar_district_id.nil?
+        elsif t.clan_id.nil? && t.bazar_district_id.nil? && t.taxonomy.nil?
           terms[:special] << t
         end
       end
