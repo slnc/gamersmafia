@@ -342,10 +342,6 @@ GM.menu = function(){
 			}
 		},
 		
-		/**
-		 * 
-		 * @param {Object} id
-		 */
 		showSawDropDown: function(id) {
 			var the_dropdown =  $j('#'+id);
 

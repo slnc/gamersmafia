@@ -172,6 +172,8 @@ class CacheObserver < ActiveRecord::Observer
   
   def after_destroy(object)
     case object.class.name
+      when 'FactionsSkin' then
+      Cache::Skins.common(object)
       when 'Skin':
       Cache::Skins.common(object)
       when 'ClansMovement':
@@ -346,6 +348,8 @@ class CacheObserver < ActiveRecord::Observer
     
     
     case object.class.name
+      when 'FactionsSkin' then
+      Cache::Skins.common(object)
       when 'Skin' then
       Cache::Skins.common(object)
       when 'Term' then

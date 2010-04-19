@@ -23,6 +23,21 @@ class CacheObserverGeneralTest < ActionController::IntegrationTest
 
   end
 
+  test "should clear skins cache on skin's public attribute change" do
+    sym_login :superadmin, 'lalala' 
+    get '/'
+    assert_response :success
+    assert_cache_exists '/common/layout/skins'
+    s = Skin.find(1)
+    assert s.update_attributes(:is_public => false)
+    assert_cache_dont_exist '/common/layout/skins'
+    get '/'
+    assert_response :success
+    assert_cache_exists '/common/layout/skins'
+    assert s.update_attributes(:is_public => true)
+    assert_cache_dont_exist '/common/layout/skins'
+  end
+
   def teardown
     ActionController::Base.perform_caching             = false
   end
