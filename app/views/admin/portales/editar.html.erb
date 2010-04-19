@@ -18,7 +18,8 @@
 				
 		<tr class="<%=oddclass%>">
 			<td>Skin</td>
-			<td><%=@theportal.skin_id%></td>
+			<td><%= select("theportal", "skin_id", FactionsSkin.public.collect {|p| [ p.name, p.id ] }, {:include_blank => 'Ninguna'}) %>
+</td>
 		</tr>
 		
 		<tr class="<%=oddclass%>">

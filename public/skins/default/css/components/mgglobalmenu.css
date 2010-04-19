@@ -43,6 +43,7 @@
 #mggnav-skins-list { 
 	position: absolute; 
 	top: 27px; left: 500px;
+	width: 175px;
 }
 
 #mggnav-clans-my-clans-list a { display: block; width: 100%;}
