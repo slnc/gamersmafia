@@ -523,7 +523,11 @@ class SiteController < ApplicationController
   def do_contactar
     raise ActiveRecord::RecordNotFound unless params[:subject].to_s != '' && params[:message].to_s != ''
     forbidden = %w(justinmadridsssd@gmail.com seo.sales.traffic@gmail.com traffic.internet.marketing@gmail.com seo.sales.traffic@gamil.com justinmadridsssd@gmail.com)
-    redirect_to '/site/contactar' if params[:email] && forbidden.include?(params[:email])
+    if params[:subject] == ''
+	    flash[:error] = 'Por favor, elige una categorÃa para tu mensaje'
+    else
+      flash[:notice] = "Mensaje recibido correctamente. Muchas gracias por tu tiempo."
+      (redirect_to '/site/contactar' and return) if params[:subject] == 'seo' || (params[:email] && forbidden.include?(params[:email]))
     # TODO mÃ¡s protecciones
     if params[:fsckspmr] && params[:fsckspmr] == self.class.do_contactar_key
       if user_is_authed
@@ -532,8 +536,8 @@ class SiteController < ApplicationController
         Notification.deliver_newcontactar(params)  
       end
     end
+    end
     
-    flash[:notice] = "Mensaje recibido correctamente. Muchas gracias por tu tiempo."
     redirect_to '/site/contactar'
   end
   
