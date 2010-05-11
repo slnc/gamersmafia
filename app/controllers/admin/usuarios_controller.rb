@@ -1,6 +1,6 @@
 class Admin::UsuariosController < ApplicationController
-  before_filter :require_auth_admins, :except => [ :edit, :index, :clear_photo, :clear_description, :report, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request, :confirmar_ban_request , :set_antiflood_level, :update, :users_role_destroy]
-  before_filter :only => [ :index, :clear_photo, :clear_description, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request ] do |c|
+  before_filter :require_auth_admins, :except => [ :edit, :index, :clear_photo, :clear_description, :report, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request, :confirmar_ban_request , :set_antiflood_level, :update, :users_role_destroy, :ipsduplicadas]
+  before_filter :only => [ :index, :clear_photo, :clear_description, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request] do |c|
     raise AccessDenied unless c.user && c.user.has_admin_permission?(:capo)
   end
   before_filter :only => [ :confirmar_ban_request ] do |c|
@@ -44,8 +44,12 @@ class Admin::UsuariosController < ApplicationController
     
     @users = User.paginate(:page => params[:page], :per_page => 20, :conditions => conditions, :order => order_by)
   end
+	
+  def ipsduplicadas
+  end
   
   def destroy
+	  raise AccessDenied unless @user.is_hq?
     @edituser = User.find_or_404(:first, :conditions => ['id = ? and is_superadmin is false', params[:id]])
     flash[:notice] = "Usuario #{@edituser.login} borrado correctamente." if @edituser.destroy
     redirect_to '/admin/usuarios'
