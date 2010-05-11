@@ -12,5 +12,50 @@
 <% end -%>
 
 <% content_main do %> 
-  <%=mfcontent(@funthing)%>
+  <%mfcontent(@funthing) do |funthing| %>
+<div style="margin: 10px; text-align: center;">
+<script type="text/javascript">
+        
+        function maximize_image(a_im) {
+                $j('#cleft').addClass('hidden');
+                $j('#csupport').addClass('hidden');
+                $j('#ccontent').addClass('maximized');
+                $j('#cmain').addClass('maximized');
+                
+                a_im.title = 'Haz click para ver la imagen más pequeña'
+                
+                document.location = '#ccontent';
+                a_im.onclick = function() {
+                        return minimize_image(a_im);
+                }
+                
+                return false;
+        }
+        
+        function minimize_image(a_im) { 
+                a_im.title = 'Haz click para ver la imagen más grande'
+                
+                $j('#ccontent').removeClass('maximized');
+                $j('#cmain').removeClass('maximized');
+                $j('#cleft').removeClass('hidden');
+                $j('#csupport').removeClass('hidden');
+                
+                document.location = '#ccontent';
+                a_im.onclick = function(){
+                        return maximize_image(a_im);
+                }
+                return false;
+        }
+</script>
+
+  <p style="margin-right: 108px;"><%=@funthing.description%></p>
+
+<div class="funthing">
+<%=@funthing.main%>
+<br /><br />
+<a href="#" title="Haz click para ver la curiosidad más grande" onclick="return maximize_image(this);">Ver a pantalla completa</a>
+</div>
+
+</div>
+  <% end -%>
 <%end -%>

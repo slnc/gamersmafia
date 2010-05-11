@@ -388,6 +388,7 @@ Request information:
       items<< ['Clanes', '/admin/clanes']
       items<< ['Violaciones Netiqueta', '/comments/violaciones_netiqueta']
       items<< ['IP Bans', '/admin/ip_bans']
+      items<< ['IPs Duplicadas', '/admin/usuarios/ipsduplicadas']
       items<< ['Mapas', '/admin/mapas_juegos']
       items<< ['Users', '/admin/usuarios']
       items<< ['Facciones', '/admin/facciones']

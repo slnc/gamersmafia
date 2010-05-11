@@ -191,6 +191,7 @@ class Question < ActiveRecord::Base
                           a.avatar_id, 
                           a.cache_karma_points, 
                           a.cache_faith_points 
+		HAVING count(*) > 1
                  ORDER BY count(*) DESC, 
                           lower(a.login) 
                     LIMIT #{limit}").each do |dbu|
