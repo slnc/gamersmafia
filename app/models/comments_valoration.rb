@@ -8,6 +8,8 @@ class CommentsValoration < ActiveRecord::Base
   
   before_save :check_not_self
   after_create :reset_user_cache 
+
+  named_scope :recent, :conditions => 'created_on >= now() - \'1 month\'::interval'
   
   private
   def reset_user_cache

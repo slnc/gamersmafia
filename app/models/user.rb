@@ -160,6 +160,18 @@ class User < ActiveRecord::Base
     end
   end
   
+  def update_default_comments_valorations_weight
+          positive = self.comments_valorations.recent.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 1)')
+          negative = self.comments_valorations.recent.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = -1)')
+          neutral = self.comments_valorations.recent.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 0)')
+          ratio = negative.to_f/(positive + negative + neutral)
+          if (positive + negative + neutral) > 15 && ratio > 0.6
+                   default = 0.0
+          else
+                  default = 1.0
+          end
+          self.update_attributes(:default_comments_valorations_weight => default)
+  end
   
   def ban_reason
     self.pref_public_ban_reason != '' ? self.pref_public_ban_reason : 'Desconocida'

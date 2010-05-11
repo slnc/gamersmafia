@@ -150,6 +150,7 @@ module Comments
   end
   
   def self.get_user_weight_in_comment(user, comment)
+    return 0 if user.default_comments_valorations_weight == 0
     content = comment.content.real_content
     case content.class.name
       when 'Blogentry':

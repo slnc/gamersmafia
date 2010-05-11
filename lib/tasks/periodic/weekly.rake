@@ -9,8 +9,23 @@ namespace :gm do
     Reports.send_mrachmed_dominical
     #Download.check_invalid_downloads
     send_weekly_page_render_report_and_truncate
-    update_content_ranks
     recalculate_terms_count
+    update_default_comments_valorations_weight
+    update_content_ranks
+  end
+
+  def update_default_comments_valorations_weight
+    User.find(:all, :conditions => 'lastseen_on >= now() - \'1 week\'::interval and cache_karma_points > 0').each do |u|
+      puts u
+      prev = u.default_comments_valorations_weight
+        u.update_default_comments_valorations_weight
+	if prev != u.default_comments_valorations_weight
+	  u.comments_valorations.recent.find(:all, :include => :comment).each do |cv|
+	    cv.update_attributes(:weight => Comments.get_user_weight_in_comment(u, cv.comment))
+	  end
+	end
+    end
+
   end
   
   def recalculate_terms_count

@@ -1,0 +1,10 @@
+<%mftext('Cuentas activas en los útimos 3 meses con una ip idéntica a la de otro usuio') do%>
+<table>
+<% User.find_by_sql("select * from users where ipaddr in (select ipaddr from users where state = 5) and state <> 5 and ipaddr not in ('127.0.0.1', '0.0.0.0') and lastseen_on >= now() - '3 months'::interval;").each do |u| %>
+<tr class="<%=oddclass%>">
+  <td><%=member_state(u.hstate)%> <%=user_link(u)%></td>
+  <td><%User.find(:all, :conditions => ['ipaddr = ? AND id <> ?', u.ipaddr, u.id]).each do |uu| %><%=member_state(uu.hstate)%> <%=user_link(uu)%> | <% end -%></td>
+</tr>
+<% end -%>
+</table>
+<% end -%>

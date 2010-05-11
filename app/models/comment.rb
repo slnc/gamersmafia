@@ -136,6 +136,19 @@ class Comment < ActiveRecord::Base
       end
     end
   end
+
+  def update_default_comments_valorations_weight
+	  positive = self.comments_valorations_ratings.recent.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 1)')
+	  negative = self.comments_valorations_ratings.recent.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = -1)')
+	  neutral = self.comments_valorations_ratings.recent.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 0)')
+          ratio = negative.to_f/(positive + negative + neutral)
+	  if ratio > 0.6
+		   default = 0.0
+	  else
+		  default = 1.0
+	  end
+	  self.update_attributes(:default_comments_valorations_weight => default)
+  end
   
   def add_karma
     Karma.add_karma_after_comment_is_created(self)
