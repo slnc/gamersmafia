@@ -336,7 +336,7 @@ class Bet < ActiveRecord::Base
   
   # reabre una apuesta cerrada
   # TODO: hay que hacer tests para esto
-  def reopen
+  def reopen_bet
     # Esto solo funciona si no se cambia el título de la apuesta desde el momento que se reparten las ganancias al momento de revertirlas
     raise "Bet unclosed" unless self.can_be_reopened?
     self.winning_bets_option_id = nil
