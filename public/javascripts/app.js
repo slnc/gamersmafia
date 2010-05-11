@@ -124,7 +124,7 @@ function disable_rating_controls() {
     }
 }
 
-function check_comments_controls(user_is_mod, user_id, user_last_visited_on, unix_now, comments_ratings, remaining_slots, old_enough, user_is_hq, first_time_content, do_autosctroll){
+function check_comments_controls(user_is_mod, user_id, user_last_visited_on, unix_now, comments_ratings, remaining_slots, old_enough, user_is_hq, first_time_content, do_autoscroll){
     // NO calcular tiempo unix_now por el cliente, es una caja de pandora
 	var scroll_to_comment; // contiene el elemento al que hacer scroll
 	
@@ -159,7 +159,7 @@ function check_comments_controls(user_is_mod, user_id, user_last_visited_on, uni
         }
     }
 	
-	if (do_autosctroll == '1' && scroll_to_comment && !first_time_content) {
+	if (do_autoscroll == '1' && scroll_to_comment && !first_time_content) {
 		$j(document).ready(function() {
 			$j(window).scrollTo(scroll_to_comment, 750, { easing:'swing', queue:true, axis:'y', offset:-60 });
 		});

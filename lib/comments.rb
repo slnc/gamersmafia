@@ -101,7 +101,7 @@ module Comments
     # parsea comentarios de usuarios, líneas de chat, etc
     str ||= ''
     str = Comments.fix_incorrect_bbcode_nesting(str.clone)
-    puts str
+    
     str.strip!
     str.gsub!(/</, '&lt;')
     str.gsub!(/>/, '&gt;')
@@ -119,7 +119,7 @@ module Comments
     str.gsub!(/\[code\](.+?)\[\/code\]/i, '<pre class="brush: js">\\1</pre>')
     # remove any html tag inside a <code></code>
     #str.gsub!(/<code>(<\/?[^>]*>)<\/code>/,"")
-    str.gsub!(/<pre class="brush: [a-z]+">.*<\/pre>/) { |blck| blck[0..5] + blck[6..-8].gsub('<br />', '') + blck[-7..-1] }
+    str.gsub!(/<pre class="brush: [a-z]+">.*<\/pre>/) { |blck| blck[0..5] + blck[6..-8].gsub('<br />', "\n") + blck[-7..-1] }
     str.gsub!("\\n", "\n")
     str
   end

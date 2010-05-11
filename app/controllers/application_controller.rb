@@ -817,7 +817,6 @@ Request information:
         @first_time_content = false
       else
         @first_time_content = true
-        Time.at(1)
       end
     end
     

@@ -11,6 +11,7 @@ namespace :gm do
     send_weekly_page_render_report_and_truncate
     update_content_ranks
     recalculate_terms_count
+    User.db_query("DELETE FROM ip_passwords_resets_requests WHERE created_on <= now() - '1 week'::interval;")
   end
   
   def recalculate_terms_count
