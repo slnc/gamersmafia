@@ -97,18 +97,14 @@ namespace :cs410 do
   
   
   class Experiment
-    def initialize(model_cls, test_obj, test_method, model_opts={}, experiment_id=nil)
+    def initialize(model_cls, test_obj, test_method, model_opts={}, experiment_id=nil, vals=nil)
       @model_cls = model_cls
       @model = model_cls.new(model_opts)
       @test_obj = test_obj
       @test_method = test_method
       @experiment_id = experiment_id
-    end
-    
-    def run
-      puts "\n#{@experiment_id ? @experiment_id : @model.class.name}.run!"
-      max_time = '2010-04-18 00:00:00'.to_time
-      vals = [
+      @vals = vals
+      @vals = [
       0.00033, # 104
       0.00066, # 205
       0.00099, # 205
@@ -120,13 +116,19 @@ namespace :cs410 do
       0.099,   # 29162
       0.33,    # 97722
       0.66,    # 195477
-      1.00]    # 296048
-      #vals = [0.33,
+      1.00] unless @vals   # 296048
+
+    end
+    
+    def run
+      puts "\n#{@experiment_id ? @experiment_id : @model.class.name}.run!"
+      max_time = '2010-04-18 00:00:00'.to_time
+            #vals = [0.33,
       #        0.66,
       #        1.00]
       
       
-      vals.each do |v|
+      @vals.each do |v|
         folds = 10
         fold = 0
         errors = []
@@ -143,7 +145,7 @@ namespace :cs410 do
   
   class NaiveBayes2c
     def initialize(opts={})
-      @opts = {:idf => false}.mege(opts)
+      @opts = {:idf => false}.merge(opts)
     end
     
     def classify(text, user_id, cv)
@@ -213,7 +215,7 @@ namespace :cs410 do
   # PER USER ------------------------------------------------------
   class NaiveBayes2cPerUser
     def initialize(opts={})
-      @opts = {:idf => false}.mege(opts)
+      @opts = {:idf => false}.merge(opts)
     end
     
     def classify(text, user_id, cv)
@@ -319,7 +321,7 @@ namespace :cs410 do
       cv.comment.user_id
     end
     
-    def _extract_feature_comment_forum_id(cv)
+    def _extract_feature_forum_id(cv)
       maincat = cv.comment.content.real_content.main_category
       maincat ? maincat.root.id : -1
     end
@@ -463,7 +465,7 @@ namespace :cs410 do
     #Experiment.new(DT2cPerUser3f, self, :test_model2c).run
     #Experiment.new(DT2cPerUser5f, self, :test_model2c).run
     #Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comment_author_id)}, 'DT2cPerUser.comment_author_id').run
-    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comment_author_id)}, 'DT2cPerUser.forum_id').run
+    #Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comment_author_id)}, 'DT2cPerUser.forum_id').run
     Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(forum_id)}, 'DT2cPerUser.forum_id').run
     Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comments_direction)}, 'DT2cPerUser.comments_direction').run
     Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(rater_commented_before)}, 'DT2cPerUser.rater_commented_before').run
@@ -476,5 +478,13 @@ namespace :cs410 do
     Experiment.new(NaiveBayes2cIDF, self, :test_model2c).run
     Experiment.new(NaiveBayes3c, self, :test_model3c).run
     Experiment.new(NaiveBayes3cIDF, self, :test_model3c).run
+  end
+
+  desc "Remaining"
+  task :remaining => :environment do
+    #Experiment.new(NaiveBayes2cPerUser, self, :test_model2c, {}, nil, [0.33, 0.66, 1.0]).run
+    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comment_author_id forum_id)}, 'DT2cPerUser2f(comment_author_id, forum_id)', [0.66,1.00]).run
+    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comment_author_id forum_id comments_direction)}, 'DT2cPerUser3f', [0.066, 0.099, 0.33,0.66,1.00]).run
+    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comment_author_id forum_id comments_direction rater_commented_before commenter_commented_before)}, 'DT2cPerUser5f', [0.33,0.66,1.00]).run
   end
 end
