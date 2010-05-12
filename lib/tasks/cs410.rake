@@ -331,11 +331,11 @@ namespace :cs410 do
     end
     
     def _extract_feature_rater_commented_before(cv)
-      content.comments.count(:conditions => ['user_id = ? AND created_on < ?', cv.user_id, cv.comment.created_on]) > 0
+      cv.comment.content.comments.count(:conditions => ['user_id = ? AND created_on < ?', cv.user_id, cv.comment.created_on]) > 0
     end
     
     def _extract_feature_commenter_commented_before(cv)
-      content.comments.count(:conditions => ['user_id = ? AND created_on < ?', cv.comment.user_id, cv.comment.created_on]) > 0
+      cv.comment.content.comments.count(:conditions => ['user_id = ? AND created_on < ?', cv.comment.user_id, cv.comment.created_on]) > 0
     end
   end  
 
@@ -470,6 +470,20 @@ namespace :cs410 do
     Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comments_direction)}, 'DT2cPerUser.comments_direction').run
     Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(rater_commented_before)}, 'DT2cPerUser.rater_commented_before').run
     Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(commenter_commented_before)}, 'DT2cPerUser.commenter_commented_before').run
+  end
+
+  desc "DT Single"
+  task :dt_single_limited => :environment do
+    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comments_direction)}, 'DT2cPerUser.comments_direction', [0.066, 0.099, 0.33]).run
+    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(rater_commented_before)}, 'DT2cPerUser.rater_commented_before', [0.066, 0.099, 0.33]).run
+    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(commenter_commented_before)}, 'DT2cPerUser.commenter_commented_before', [0.066, 0.099, 0.33]).run
+  end
+
+  desc "DT Mixed"
+  task :dt_mixed => :environment do
+    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(author_id comments_direction)}, 'DT2cPerUser.mix1', [0.00033, 0.00066, 0.00099, 0.0033, 0.0066, 0.0099, 0.033]).run
+    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(author_id forum_id comments_direction)}, 'DT2cPerUser.mix2', [0.00033, 0.00066, 0.00099, 0.0033, 0.0066, 0.0099, 0.033]).run
+    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(forum_id comments_direction)}, 'DT2cPerUser.mix3', [0.00033, 0.00066, 0.00099, 0.0033, 0.0066, 0.0099, 0.033]).run
   end
   
   desc "All"

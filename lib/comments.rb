@@ -365,8 +365,9 @@ module Comments
       [CommentsValorationsType.find(winner_options_weight[0]['comments_valorations_type_id'].to_i), winner_options_weight[0]['sum'].to_f / all_options_weight[0]['sum'].to_f]
     end
   end
-  
+  @_cache_get_ratings_for_user = {}
   def self.get_ratings_for_user(user_id)
+    @_cache_get_ratings_for_user[user_id] ||= begin
     winner_direction_weight = User.db_query("select direction, sum(weight)
                                                from comments_valorations a 
                                                join comments_valorations_types b on a.comments_valorations_type_id = b.id 
@@ -392,7 +393,13 @@ module Comments
       
       [CommentsValorationsType.find(winner_options_weight[0]['comments_valorations_type_id'].to_i), winner_options_weight[0]['sum'].to_f / all_options_weight[0]['sum'].to_f]
     end
+    end
   end
+  
+  #User.find_each(:conditions => 'id IN (select distinct(user_id) from comments_valorations)') do |u|
+  #  puts u.login
+  #  u.update_attributes(:comments_direction => Comments.get_ratings_for_user(u.id)[0].direction)
+  #end
   
   # TODO copypaste de laflecha  
   # Devuelve la página en la que aparece el comentario actual
