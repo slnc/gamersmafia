@@ -1,0 +1,126 @@
+1. INSTALACIÓN
+
+Instrucciones mínimas (seguir en este orden)
+- instalar linux
+- instalar git
+- instalar apache
+- instalar postgres
+- instalar ruby-enterprise
+- instalar las siguientes gems (gem install <nombre de la gem>)
+
+    aasm 
+    actionmailer 
+    actionpack 
+    activerecord 
+    activeresource 
+    activesupport 
+    ai4r 
+    blackbook 
+    builder 
+    capistrano 
+    ci_reporter 
+    classifier 
+    curb 
+    fastercsv 
+    fastthread 
+    feedbag 
+    feedzirra 
+    geoip 
+    gruff 
+    highline 
+    hoe 
+    hpricot 
+    json_pure 
+    loofah 
+    mechanize 
+    net-scp 
+    net-sftp 
+    net-ssh 
+    net-ssh-gateway 
+    nokogiri 
+    passenger 
+    pg 
+    rack 
+    rails 
+    rake 
+    rcov 
+    rmagick 
+    rubyforge 
+    rubystats 
+    sax-machine 
+    scrubyt 
+    stemmer 
+    tidy 
+
+- en PostgreSQL crea una bd para gm llamada "gamersmafia"
+    createdb gamersmafia
+    psql -f db/create.sql gamersmafia
+
+- crea la bd de test (puedes hacerlo automáticamente con el siguiente script):
+    ./script/sync_testenv.sh
+
+
+2. COMO COLABORAR
+2.1 Lee todas las guías de http://guides.rubyonrails.org/
+
+¿Cómo saber si ya has leído suficiente?
+- Sabes crear una aplicación rails desde cero
+- Sabes cómo crear nuevos modelos, controladores y resources
+- Sabes modificar vistas, añadir atributos a un modelo y modificar las vistas correspondientes
+- Sabes para qué escribir tests y la diferencia entre unit tests, functional tests e integration tests
+- Sabes escribir tests de cada tipo
+
+
+2.2 Aprende a usar Git ( http://git-scm.com/documentation ) y github ( http://github.com/guides/home )
+¿Cómo saber si ya has leído suficiente?
+- Sabes qué hace Git
+- Sabes crear un repositorio desde cero
+- Sabes clonar un repositorio existente
+- Sabes qué es una branch
+- Sabes cómo crear una branch y cómo hacer merge posteriormente
+
+2.2.1 Branches en GM
+En GM usamos 3 ramas principales: 
+- production
+- development
+- nuclear
+
+"production" solo la toca slnc. Es la rama que se usa en producción. Solo los cambios definitivos van
+a esta rama.
+
+"development": es la rama de desarrollo. Cuando vayas a crear una nueva rama hazlo desde development.
+
+"nuclear": rama para modificaciones que conllevan mucha inestabilidad (solo hay una incidencia abierta
+a día de hoy que precisará de esta rama)
+
+
+
+2.3 ¡Estoy listo!
+Pasos:
+1- Asegúrate de que el bug que vas a corregir o la funcionalidad a añadir ha
+   sido aprobada por slnc. Temporalmente vamos a seguir usando JIRA (
+   http://hq.gamersmafia.com ) para llevar el control de incidencias pero la idea
+   es migrar a http://lighthouseapp.com/ en las próximas semanas.
+
+   De momento si ves una incidencia en JIRA de tipo bug por defecto asume que está
+   "aprobada". Si no es un bug lo más seguro es dejar un comentario y en cuanto
+   slnc dé el visto bueno adelante con ella.
+
+
+2- Desde "development" crea una nueva rama con el nombre de la incidencia.
+   Si es una incidencia de JIRA el nombre sería "gm-1000" si vas a trabajar en la
+   incidencia con dicho código. Ejemplo:
+
+   Imprescindible: clona el repositorio "Gamersmafia" en Github a tu propia cuenta.
+
+    git clone git@github.com:TUNICK/gamersmafia.git
+
+    cd gamersmafia
+    git checkout origin/development
+    git checkout -b gm-1000
+    # modificar código
+    # git add nuevo_archivo1 nuevo_archivo2
+    git commit -m "GM-1000: Título completo de la incidencia"
+    git push origin gm-1000
+    # crea un pull request o si lo prefieres mándale un email a slnc para avisarle
+
