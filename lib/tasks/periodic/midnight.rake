@@ -232,8 +232,8 @@ namespace :gm do
         puts "WARNING: proxy errors count disabled"
         proxy_errors = 0
       else
-      proxy_errors = `grep -c "All workers are in error state" /var/log/apache/gamersmafia.com/error-#{first_stat.strftime('%Y%m%d')}.log`.strip
-      proxy_errors = 0 if proxy_errors.strip == ''
+      #proxy_errors = `grep -c "All workers are in error state" #{RAILS_ROOT}/log/error-#{first_stat.strftime('%Y%m%d')}.log`.strip
+      proxy_errors = 0 #if proxy_errors.strip == ''
       end
       dbsize = User.db_query("SELECT pg_database_size('#{ActiveRecord::Base.configurations[RAILS_ENV]['database']}');")[0]['pg_database_size']
       requests = User.db_query("SELECT count(*) FROM stats.pageloadtime WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'")[0]['count']

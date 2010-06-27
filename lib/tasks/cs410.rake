@@ -481,9 +481,12 @@ namespace :cs410 do
 
   desc "DT Mixed"
   task :dt_mixed => :environment do
-    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(author_id comments_direction)}, 'DT2cPerUser.mix1', [0.00033, 0.00066, 0.00099, 0.0033, 0.0066, 0.0099, 0.033]).run
-    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(author_id forum_id comments_direction)}, 'DT2cPerUser.mix2', [0.00033, 0.00066, 0.00099, 0.0033, 0.0066, 0.0099, 0.033]).run
-    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(forum_id comments_direction)}, 'DT2cPerUser.mix3', [0.00033, 0.00066, 0.00099, 0.0033, 0.0066, 0.0099, 0.033]).run
+    #Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comment_author_id comments_direction)}, 'DT2cPerUser.mix1', [0.00033, 0.00066, 0.00099, 0.0033, 0.0066, 0.0099, 0.033]).run
+    #Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comment_author_id forum_id comments_direction)}, 'DT2cPerUser.mix2', [0.00033, 0.00066, 0.00099, 0.0033, 0.0066, 0.0099, 0.033]).run
+    #Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(forum_id comments_direction)}, 'DT2cPerUser.mix3', [0.00033, 0.00066, 0.00099, 0.0033, 0.0066, 0.0099, 0.033]).run
+    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comment_author_id comments_direction)}, 'DT2cPerUser.mix1', [0.066, 0.099, 0.33]).run
+    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comment_author_id forum_id comments_direction)}, 'DT2cPerUser.mix2', [0.066, 0.099, 0.33]).run
+    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(forum_id comments_direction)}, 'DT2cPerUser.mix3', [0.066, 0.099, 0.33]).run
   end
   
   desc "All"
