@@ -142,7 +142,7 @@ class Cuenta::CuentaController < ApplicationController
         prev = User.find(:first, :conditions => ['ipaddr = ? AND id <> ?', request.remote_ip, @newuser.id])
         nagato = User.find_by_login('nagato')
         SlogEntry.create({:type_id => SlogEntry::TYPES[:security], 
-          :headline => "Registro desde IP existente <strong><a href=\"#{gmurl(@newuser)}\">#{@newuser.login}</a></strong> (#{request.remote_ip}): "<< (User.find(:all, :conditions => ['ipaddr = ? and id <> ?', request.remote_ip, @newuser.id]).collect {|u| "#{ActionView::Base.new.member_state(u.hstate)}<a href=\"#{gmurl(u)}\">#{u.login}</a>"}).join(', ')})
+          :headline => "Registro desde IP existente <strong><a href=\"#{gmurl(@newuser)}\">#{@newuser.login}</a></strong> (#{request.remote_ip}): "<< (User.find(:all, :conditions => ['ipaddr = ? and id <> ?', request.remote_ip, @newuser.id]).collect {|u| "<a href=\"#{gmurl(u)}\">#{u.login}</a>"}).join(', ')})
         
         Notification.deliver_signup(@newuser, :mode => @mmode)
         flash[:notice] = "Te hemos enviado un mensaje a #{@newuser.email} con la clave de confirmación."
