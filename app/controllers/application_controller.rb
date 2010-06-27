@@ -379,19 +379,19 @@ Request information:
       items<< ['Notificaciones globales', '/admin/global_notifications']
       items<< ['Plataformas', '/admin/plataformas'] 
       items<< ['Portales', '/admin/portales']
-      items<< ['Tags', '/admin/tags']
       items<< ['Tienda', '/admin/tienda']
     end
     
     if user.is_superadmin? || user.has_admin_permission?(:capo)
       items<< ['Avatares', '/avatares']
       items<< ['Clanes', '/admin/clanes']
-      items<< ['Violaciones Netiqueta', '/comments/violaciones_netiqueta']
+      items<< ['Facciones', '/admin/facciones']
       items<< ['IP Bans', '/admin/ip_bans']
       items<< ['IPs Duplicadas', '/admin/usuarios/ipsduplicadas']
       items<< ['Mapas', '/admin/mapas_juegos']
+      items<< ['Tags', '/admin/tags']
       items<< ['Users', '/admin/usuarios']
-      items<< ['Facciones', '/admin/facciones']
+      items<< ['Violaciones Netiqueta', '/comments/violaciones_netiqueta']
     end
     
     if user.is_superadmin? || user.has_admin_permission?(:bazar_manager) || user.has_admin_permission?(:capo) 
