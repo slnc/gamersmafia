@@ -19,5 +19,5 @@ public/skins/default/style_compressed.css
 nohup.out
 _pending_patches_from_svn
 .pydevproject
-
+config/app_production.yml
 db/schema.rb

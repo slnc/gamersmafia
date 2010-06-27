@@ -63,7 +63,7 @@ namespace :cs410 do
     #puts "#{classn} #{find_each_opts}"
     dict = {0 => {}, 1 => {}, -1 => {}}
     global_dict = {}
-    ActiveRecord::Base.uncached do
+    #ActiveRecord::Base.uncached do
       classn.find_each(find_each_opts) do |cv|
         direction = cv.comments_valorations_type.direction
         comment = cv.comment
@@ -75,7 +75,7 @@ namespace :cs410 do
           global_dict[word] += 1 
         end
       end
-    end
+    #end
     #
     # now convert freqs to probs
     pdict = {0 => {}, 1 => {}, -1 => {}}
@@ -161,7 +161,7 @@ namespace :cs410 do
     def train(classn, find_each_opts)
       dict = {0 => {}, 1 => {}, -1 => {}}
       global_dict = {}
-      ActiveRecord::Base.uncached do
+      #ActiveRecord::Base.uncached do
         classn.find_each(find_each_opts) do |cv|
           direction = cv.comments_valorations_type.direction
           comment = cv.comment
@@ -173,7 +173,7 @@ namespace :cs410 do
             global_dict[word] += 1 
           end
         end
-      end
+      #end
       #
       # now convert freqs to probs
       pdict = {0 => {}, 1 => {}, -1 => {}}
@@ -231,7 +231,7 @@ namespace :cs410 do
     def train(classn, find_each_opts)
       dict = {} # 0 => {}, 1 => {}, -1 => {}}
       global_dict = {}
-      ActiveRecord::Base.uncached do
+      #ActiveRecord::Base.uncached do
         classn.find_each(find_each_opts) do |cv|
           direction = cv.comments_valorations_type.direction
           comment = cv.comment
@@ -245,7 +245,7 @@ namespace :cs410 do
             global_dict[cv.user_id][word] += 1 
           end
         end
-      end
+      #end
       #
       # now convert freqs to probs
       pdict = {}
@@ -289,7 +289,7 @@ namespace :cs410 do
     def train(classn, find_each_opts)
       trees = {}
       data_sets = {}
-      ActiveRecord::Base.uncached do
+      #ActiveRecord::Base.uncached do
         classn.find_each(find_each_opts) do |cv|
           direction = cv.comments_valorations_type.direction
           comment = cv.comment
@@ -297,7 +297,7 @@ namespace :cs410 do
           data_sets[cv.user_id] = [] unless data_sets[cv.user_id]
           data_sets[cv.user_id]<< self.extract_features(cv)
         end
-      end
+      #end
       
       data_sets.each do |user_id, data_set|
         trees[user_id] = Ai4r::Classifiers::ID3.new.build(Ai4r::Classifiers::DataSet.new(:data_items=> data_set, :data_labels=> self.features_labels))
@@ -348,7 +348,7 @@ namespace :cs410 do
     def train(classn, find_each_opts)
       trees = {}
       data_sets = {}
-      ActiveRecord::Base.uncached do
+      #ActiveRecord::Base.uncached do
         classn.find_each(find_each_opts) do |cv|
           direction = cv.comments_valorations_type.direction
           comment = cv.comment
@@ -356,7 +356,7 @@ namespace :cs410 do
           data_sets[cv.user_id] = [] unless data_sets[cv.user_id]
           data_sets[cv.user_id]<< DT2cPerUser.extract_features_basic(cv)
         end
-      end
+      #end
       
       data_sets.each do |user_id, data_set|
         trees[user_id] = Ai4r::Classifiers::ID3.new.build(Ai4r::Classifiers::DataSet.new(:data_items=> data_set, :data_labels=> FEATURES_BASIC_LABELS))
@@ -474,8 +474,8 @@ namespace :cs410 do
 
   desc "DT Single"
   task :dt_single_limited => :environment do
-    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comments_direction)}, 'DT2cPerUser.comments_direction', [0.066, 0.099, 0.33]).run
-    Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(rater_commented_before)}, 'DT2cPerUser.rater_commented_before', [0.066, 0.099, 0.33]).run
+    #Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(comments_direction)}, 'DT2cPerUser.comments_direction', [0.066, 0.099, 0.33]).run
+    #Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(rater_commented_before)}, 'DT2cPerUser.rater_commented_before', [0.066, 0.099, 0.33]).run
     Experiment.new(DT2cPerUser, self, :test_model2c, {:features => %w(commenter_commented_before)}, 'DT2cPerUser.commenter_commented_before', [0.066, 0.099, 0.33]).run
   end
 

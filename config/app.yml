@@ -45,7 +45,7 @@ common: &common
   system_mail_user: nagatodev@gamersmafia.com
   system_mail_password: megustanlasgalletas
   jira_username: alariko
-  jira_password:  katapultapsicologica
+  jira_password:  secretpassword
 
 # basic roles (usable)
 production: &production
@@ -55,6 +55,7 @@ production: &production
   enable_google_analytics?: true
   enable_slonik?: false
   system_mail_user: nagato@gamersmafia.com
+  system_mail_password: secretpassword
   <<: *common
 
 development: &development

@@ -12,12 +12,15 @@ if !defined?(::App)
   mode = File.exists?("#{RAILS_ROOT}/config/mode") ? File.open("#{RAILS_ROOT}/config/mode").read.strip : 'doll2'
   mode = 'test' if RAILS_ENV == 'test'
   require 'action_mailer'
-#  puts ActionMailer::Base.perform_deliveries
+
   if mode != 'production'
     ActionMailer::Base.perform_deliveries = false
   end
-#  puts ActionMailer::Base.perform_deliveries
-  nconfig = OpenStruct.new(YAML::load(ERB.new((IO.read("#{RAILS_ROOT}/config/app.yml"))).result))
+
+  default_appyml = "#{RAILS_ROOT}/config/app.yml"
+  production_appyml = "#{RAILS_ROOT}/config/app_production.yml"
+  appyml = File.exists?(production_appyml) ? production_appyml : default_appyml  
+  nconfig = OpenStruct.new(YAML::load(ERB.new((IO.read(appyml))).result))
   env_config = nconfig.send(mode)
   ::App = OpenStruct.new(env_config)
   

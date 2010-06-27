@@ -27,5 +27,5 @@ support:
   database: gamersmafia_replicated
   host: tachikoma.slnc.net
   username: postgres
-  password: ic4ro69
+  password: secretpassword
   client_min_messages: warning
