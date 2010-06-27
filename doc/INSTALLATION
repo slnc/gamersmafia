@@ -1,3 +1,7 @@
+WARNING / ACHUN MINEN
+Documentación escrita en 20min.
+
+
 1. INSTALACIÓN
 
 Instrucciones mínimas (seguir en este orden)
@@ -59,6 +63,22 @@ Instrucciones mínimas (seguir en este orden)
 - crea la bd de test (puedes hacerlo automáticamente con el siguiente script):
     ./script/sync_testenv.sh
 
+- intenta ejecutar algún test, por ejemplo:
+
+~/workspace/gamersmafia[gm-2000]$ ruby -Itest test/unit/user_test.rb 
+
+Si ves algo como esto:
+--------------------------------------------------------------------
+Loaded suite test/unit/user_test
+Started
+.............................
+Finished in 8.477707 seconds.
+
+29 tests, 91 assertions, 0 failures, 0 errors
+--------------------------------------------------------------------
+
+Tienes todo listo para empezar a colaborar.
+
 
 2. COMO COLABORAR
 2.1 Lee todas las guías de http://guides.rubyonrails.org/
@@ -116,11 +136,15 @@ Pasos:
     git clone git@github.com:TUNICK/gamersmafia.git
 
     cd gamersmafia
-    git checkout origin/development
+    git checkout development 
     git checkout -b gm-1000
     # modificar código
     # git add nuevo_archivo1 nuevo_archivo2
     git commit -m "GM-1000: Título completo de la incidencia"
     git push origin gm-1000
     # crea un pull request o si lo prefieres mándale un email a slnc para avisarle
+    git checkout development
 
+    # Listo para trabajar en la siguiente incidencia. Cuando slnc vea el commit tu
+    # pull request si está todo bien actualizará development y cuando eso ocurra
+    # podrás ejecutar "git pull" desde development y verás el cambio en esa rama.
