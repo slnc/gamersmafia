@@ -56,6 +56,15 @@ Instrucciones mínimas (seguir en este orden)
     stemmer 
     tidy 
 
+- git clone git://github.com/slnc/gamersmafia.git 
+  git submodule init
+  git submodule update
+  cd gamersmafia
+
+  Si vas a colaborar necesitarás crearte una cuenta en github y clonar el
+  repositorio, instrucciones más abajo.
+
+
 - en PostgreSQL crea una bd para gm llamada "gamersmafia"
     createdb gamersmafia
     psql -f db/create.sql gamersmafia
