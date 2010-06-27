@@ -98,22 +98,22 @@ class DemosController < ArenaController
   end
   
   def get_games_maps
-    raise ActiveRecord::RecordNotFound unless params[:demo_term_id].to_s != ''
-    @g = Game.find(Term.find(params[:demo_term_id]).game_id)
+    raise ActiveRecord::RecordNotFound unless params[:game_id].to_s != ''
+    @g = Game.find(params[:game_id])
     raise ActiveRecord::RecordNotFound unless @g        
     render :layout => false
   end
   
   def get_games_modes
-    raise ActiveRecord::RecordNotFound unless params[:demo_term_id].to_s != ''
-    @g = Game.find(Term.find(params[:demo_term_id]).game_id)
+    raise ActiveRecord::RecordNotFound unless params[:game_id].to_s != ''
+    @g = Game.find(params[:game_id])
     raise ActiveRecord::RecordNotFound unless @g
     render :layout => false
   end  
   
   def get_games_versions
-    raise ActiveRecord::RecordNotFound unless params[:demo_term_id].to_s != ''
-    @g = Game.find(Term.find(params[:demo_term_id]).game_id)
+    raise ActiveRecord::RecordNotFound unless params[:game_id].to_s != ''
+    @g = Game.find(params[:game_id])
     raise ActiveRecord::RecordNotFound unless @g
     render :layout => false
   end
