@@ -109,19 +109,7 @@ Tienes todo listo para empezar a colaborar.
 - Sabes cómo crear una branch y cómo hacer merge posteriormente
 
 2.2.1 Branches en GM
-En GM usamos 3 ramas principales: 
-- production
-- development
-- nuclear
-
-"production" solo la toca slnc. Es la rama que se usa en producción. Solo los cambios definitivos van
-a esta rama.
-
-"development": es la rama de desarrollo. Cuando vayas a crear una nueva rama hazlo desde development.
-
-"nuclear": rama para modificaciones que conllevan mucha inestabilidad (solo hay una incidencia abierta
-a día de hoy que precisará de esta rama)
-
+En GM la rama por defecto se llama "production" en lugar de "master".
 
 
 2.3 ¡Estoy listo!
@@ -136,7 +124,7 @@ Pasos:
    slnc dé el visto bueno adelante con ella.
 
 
-2- Desde "development" crea una nueva rama con el nombre de la incidencia.
+2- Desde "production" crea una nueva rama con el nombre de la incidencia.
    Si es una incidencia de JIRA el nombre sería "gm-1000" si vas a trabajar en la
    incidencia con dicho código. Ejemplo:
 
@@ -145,15 +133,15 @@ Pasos:
     git clone git@github.com:TUNICK/gamersmafia.git
 
     cd gamersmafia
-    git checkout development 
+    git checkout production
     git checkout -b gm-1000
     # modificar código
     # git add nuevo_archivo1 nuevo_archivo2
     git commit -m "GM-1000: Título completo de la incidencia"
     git push origin gm-1000
     # crea un pull request o si lo prefieres mándale un email a slnc para avisarle
-    git checkout development
+    git checkout production
 
     # Listo para trabajar en la siguiente incidencia. Cuando slnc vea el commit tu
-    # pull request si está todo bien actualizará development y cuando eso ocurra
-    # podrás ejecutar "git pull" desde development y verás el cambio en esa rama.
+    # pull request si está todo bien actualizará production y cuando eso ocurra
+    # podrás ejecutar "git pull" desde production y verás el cambio en esa rama.
