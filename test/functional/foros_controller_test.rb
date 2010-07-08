@@ -1,7 +1,18 @@
 require 'test_helper'
 
 class ForosControllerTest < ActionController::TestCase
-
+  
+  test "a topic without forum should return 404" do
+    @request.host = "ut.#{App.domain}"
+    @topic = Topic.find(1)
+    @forum = @topic.terms.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'')
+    @forum.unlink(@topic.unique_content)
+    assert_equal 0, @topic.terms.count
+    
+    assert_raises(ActiveRecord::RecordNotFound) do 
+      get :topic, :id => 1
+    end   
+  end
   
   test "mis_foros" do
     get :mis_foros
@@ -19,7 +30,7 @@ class ForosControllerTest < ActionController::TestCase
     tc = Term.single_toplevel(:slug => 'ut')
     tcc = tc.children.find(:first, :conditions => "name = 'General' AND taxonomy = 'TopicsCategory'")
     assert fbu.save 
-     
+    
     post :create_topic, {:topic => {:title => 'footopic', :main => 'textio'}, :categories_terms => [tcc.id]}
     assert_response :redirect
     assert_not_nil flash[:error]

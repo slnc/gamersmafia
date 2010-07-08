@@ -60,8 +60,6 @@ class ForosController < ComunidadController
   end
   
   def topic
-    # TODO TEMP desde MARZO 
-    # @topic = portal.topic.find(params[:id])
     @topic = Topic.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @topic.is_public? or (user_is_authed and Cms::user_can_edit_content?(@user, @topic))
     obj = @topic
@@ -70,12 +68,14 @@ class ForosController < ComunidadController
       redirect_to(obj.unique_content.url, :status => 301) and return
     end
     
-    @forum = @topic.terms.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'') # send(ActiveSupport::Inflector::underscore(@topic.class.category_class.name))
+    @forum = @topic.terms.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'')
+    
+    raise ActiveRecord::RecordNotFound unless @forum
     @title = @topic.title
     @navpath = [['Foros', '/foros']]
-    @forum.get_ancestors.reverse.each { |p| @navpath<< [p.name, "/foros/forum/#{p.id}"] } if @forum
+    @forum.get_ancestors.reverse.each { |p| @navpath<< [p.name, "/foros/forum/#{p.id}"] }
     
-    @navpath<<[@forum.name, "/foros/forum/#{@forum.id}"] if @forum
+    @navpath<<[@forum.name, "/foros/forum/#{@forum.id}"]
     @navpath<<[@topic.title, gmurl(@topic)]
     track_item(@topic)
   end

@@ -10,7 +10,7 @@
   
   <%# TODO cachear esto %>
   <% cache("/common/foros/subforos/#{@forum.parent_id}") do %>
-<% if (not @forum.respond_to? :competition or not @forum.competition) and @forum.parent then %>
+<% if (not @forum.respond_to?(:competition) or not @forum.competition) and @forum.parent then %>
   <%mftext('Subforos') do %>
 <ul class="content-hid">
 <strong><%=@forum.parent.name%></strong>
