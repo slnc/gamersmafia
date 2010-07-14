@@ -1,5 +1,5 @@
 set :application, "Gamersmafia"
-set :repository,  "ssh://git@github.com:slnc/gamersmafia.git"
+set :repository,  "ssh://git@github.com/slnc/gamersmafia.git"
 set :user, 'slnc'
 set :use_sudo, false
 
@@ -35,6 +35,7 @@ namespace(:customs) do
   end
   
   task :updated_app, :roles => :app do
+    `scp -P62331 /Users/slnc/core/projects/gamersmafia.com/app_production.yml httpd@light.slnc.net:#{release_path}/config `
     run "cd #{release_path} && echo 'production' > config/mode && ./script/update.py"
   end
   
