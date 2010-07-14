@@ -525,7 +525,7 @@ module ActsAsContent
     end
     
     def change_state(new_state, editor)
-      return if new_state == self.state
+      return if new_state == self.state || self.invalid?
       raise AccessDenied unless Cms::user_can_edit_content?(editor, self)
       case new_state
         when Cms::DRAFT:

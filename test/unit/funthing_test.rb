@@ -1,6 +1,16 @@
 require 'test_helper'
 
 class FunthingTest < ActiveSupport::TestCase
+  test "funthing with youtube url whose corresponding youtube embed already exists in another funthing shouldn't cause problems" do
+    f1 = Funthing.new({:title => 'foo funthing', :main => 'http://www.youtube.com/watch?v=rrNriyDJmdw', :user_id => 1})
+    f2 = Funthing.new({:title => 'foo funthing2', :main => 'http://www.youtube.com/watch?v=rrNriyDJmdw', :user_id => 1})
+    assert f1.save
+    assert !f2.save
+    assert !(Funthing::YOUTUBE_EMBED =~ f1.main)
+    assert_equal f1.main, f2.main 
+  end
+  
+  
   test "should_create_funthing" do
     ft = Funthing.new({:title => 'foo funthing', :main => 'somecode', :user_id => 1})
     assert_equal true, ft.save

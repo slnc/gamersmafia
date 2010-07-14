@@ -5,7 +5,7 @@ class Funthing < ActiveRecord::Base
   
   acts_as_content
   before_validation :check_youtube_embed
-  before_save :filter_main
+  before_validation :filter_main
   
   validates_presence_of [ :title, :main ], :message => 'no pueden estar vacíos con este campo'
   validates_uniqueness_of [ :title, :main ], :message => 'ya existe otra curiosidad con este campo'
@@ -29,7 +29,8 @@ class Funthing < ActiveRecord::Base
       info = self.main.match(YOUTUBE_EMBED)
       self.main = "<object width=\"425\" height=\"355\"><param name=\"movie\" value=\"http://www.youtube.com/v/#{info[2]}&rel=1\"></param><param name=\"wmode\" value=\"transparent\"></param><embed src=\"http://www.youtube.com/v/#{info[2]}&rel=1\" type=\"application/x-shockwave-flash\" wmode=\"transparent\" width=\"425\" height=\"355\"></embed></object>"
     end
-    true
+    q_id = self.new_record? ? nil : "id <> #{self.id} AND" 
+    Funthing.count(:conditions => ["#{q_id} main = ?", self.main]) == 0
   end
   
   def thumbnail

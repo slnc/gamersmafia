@@ -2,6 +2,15 @@ require File.dirname(__FILE__) + '/../../../test/test_helper'
 require 'RMagick'
 
 class ActsAsContentTest < ActiveSupport::TestCase
+  test "change state should return false if model is invalid" do
+    f1 = Funthing.new({:title => 'foo funthing', :main => 'http://www.youtube.com/watch?v=rrNriyDJmdw', :user_id => 1})
+    f2 = Funthing.new({:title => 'foo funthing2', :main => 'http://www.youtube.com/watch?v=rrNriyDJmdw2', :user_id => 1})
+    assert f1.save
+    assert f2.save
+    #User.db_query("UPDATE funthings SET main = (SELECT main FROM funthings WHERE id = #{f1.id}) WHERE id = #{f2.id}")
+    f2.reload
+    assert !f2.modify_content_state(Cms::PUBLISHED, User.find(1))
+  end
   
   test "no_null_title_in_content" do
     n = News.new({:title => '', :terms => 1, :user_id => 1, :description => 'foojahaha'})
