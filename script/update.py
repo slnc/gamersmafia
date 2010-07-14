@@ -53,9 +53,7 @@ def send_changelog_email():
     toaddrs = 'slnc@gamersmafia.com'
 
     msg = ("Content-Type: text/plain; charset=UTF-8\r\nSubject: GM actualizada a la versión %s\r\nFrom: %s\r\nTo: %s\r\n\r\n%s" % (cur[0:8], fromaddr, toaddrs, log))
-    server = smtplib.SMTP('gamersmafia.com')
-    #server.set_debuglevel(1)
-    # server.login('nagato.gamersmafia.com', 'megustanlasgalletas')
+    server = smtplib.SMTP('aspmx.l.google.com')
     server.sendmail(fromaddr, toaddrs, msg)
     
     server.quit()
