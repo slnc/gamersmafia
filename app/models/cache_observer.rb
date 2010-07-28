@@ -335,7 +335,7 @@ class CacheObserver < ActiveRecord::Observer
     # user_id borramos las caches de contenidos de dicho usuario
     if object.respond_to?('user_id') and object.respond_to?(:state) then # TODO no correcto del todo
       expire_fragment("#{Cache.user_base(object.user_id)}/sus_contenidos_son")
-      expire_fragment("#{Cache.user_base(object.user_id)}/aportaciones")
+      expire_fragment("#{Cache.user_base(object.user_id)}/profile/aportaciones")
       expire_fragment("/common/miembros/#{object.user_id % 1000}/#{object.user_id}/contents_stats")
       expire_fragment("/common/miembros/#{object.user_id % 1000}/#{object.user_id}/contenidos/#{object.class.name.downcase}/*")
       if object.slnc_changed?(:state) and object.state == Cms::DELETED
@@ -770,7 +770,7 @@ class CacheObserver < ActiveRecord::Observer
       end
       expire_fragment("/common/imagenes/toplevel/#{object.main_category.root_id}/page_*}")
       expire_fragment("/common/imagenes/gallery/#{object.main_category.id}/page_*")
-      expire_fragment("/common/imagenes/gallery/#{object.main_category.id}/aportaciones")
+      expire_fragment("/common/imagenes/gallery/#{object.main_category.id}/profile/aportaciones")
       expire_fragment("/common/imagenes/show/g#{object.main_category.id}/*") # muy heavy
       
       when 'CommentsValoration':
