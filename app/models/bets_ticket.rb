@@ -4,7 +4,6 @@ class BetsTicket < ActiveRecord::Base
   MIN_BET = 5.0
   belongs_to :user
   belongs_to :bets_option
-  after_destroy :return_to_owner
   
   observe_attr :ammount
   has_bank_ammount_from_user
