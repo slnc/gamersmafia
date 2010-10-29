@@ -37,7 +37,7 @@ class BazarDistrict < ActiveRecord::Base
   end
   
   def check_if_icon_updated
-    Bj.submit('rake gm:update_default_skin_styles', :tag => 'rake gm:update_default_skin_styles') if slnc_changed?(:icon)
+    GmSys.job('rake gm:update_default_skin_styles') if slnc_changed?(:icon)
     true
   end
   
