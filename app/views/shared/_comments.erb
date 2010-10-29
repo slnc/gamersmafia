@@ -1,3 +1,17 @@
+<% if !user_is_authed || @user.created_on > 1.year.ago then %>
+<div style="margin: 15px 0; padding-left: 120px;">
+<script type="text/javascript"><!--
+google_ad_client = "pub-6007823011396728";
+google_ad_slot = "5381241906";
+google_ad_width = 300;
+google_ad_height = 250;
+//-->
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+<% end -%>
+
 <%
 if defined?(allinone) and allinone == true then
   per_page = 1000000

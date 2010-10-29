@@ -14,17 +14,16 @@ namespace :gm do
     update_default_comments_valorations_weight
     update_content_ranks
   end
-
+  
   def update_default_comments_valorations_weight
     User.find(:all, :conditions => 'lastseen_on >= now() - \'1 week\'::interval and cache_karma_points > 0').each do |u|
-      puts u
       prev = u.default_comments_valorations_weight
-        u.update_default_comments_valorations_weight
-	if prev != u.default_comments_valorations_weight
-	  u.comments_valorations.recent.find(:all, :include => :comment).each do |cv|
-	    cv.update_attributes(:weight => Comments.get_user_weight_in_comment(u, cv.comment))
-	  end
-	end
+      u.update_default_comments_valorations_weight
+      if prev != u.default_comments_valorations_weight
+        u.comments_valorations.recent.find(:all, :include => :comment).each do |cv|
+          cv.update_attributes(:weight => Comments.get_user_weight_in_comment(u, cv.comment))
+        end
+      end
     end
   end
   
@@ -112,17 +111,17 @@ having portal_id in (select id
       end
       User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(rc.class.name)} SET cache_weighted_rank = null #{q}")
     end
-    
+    return # TODO deshabilitado recálculo de contenidos más votados porque este algoritmo no es escalable.
     ContentType.find(:all).each do |ctype|
       #  slonik_execute "alter table #{ActiveSupport::Inflector::tableize(ctype.name)} add column cache_weighted_rank numeric(10, 2);"
       # puts ctype.name
       Object.const_get(ctype.name).find_each(:conditions => "cache_weighted_rank is null and state = #{Cms::PUBLISHED}") do |content|
         next if content.respond_to?(:clan_id) && content.clan_id
-	begin
-        content.clear_rating_cache
-	rescue Exception => e
-		puts "Error with #{content.id}(#{ctype}): #{e}"
-	end
+        begin
+          content.clear_rating_cache
+        rescue Exception => e
+          puts "Error with #{content.id}(#{ctype}): #{e}"
+        end
         nil
       end
     end
