@@ -97,7 +97,8 @@ class Tournament < Competition
       # es partida de fase de árbol
       is_participant1 = self.winner_of_tourney_rounds_match_is_participant1?(cm) 
       next_cm = self.get_next_match(cm)
-      return if next_cm.nil? && self.is_final?(cm)
+      return if next_cm.nil? || (next_cm.nil? && self.is_final?(cm))
+
       if is_participant1 then
         #puts "changing next_cm.participant1_id"
         next_cm.participant1_id = cm.winner.id # TODO no puede ser empate
