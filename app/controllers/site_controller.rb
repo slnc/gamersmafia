@@ -11,7 +11,10 @@ class SiteController < ApplicationController
   end
   
   def responsabilidades
-    
+  end
+
+  def gmcity
+    @title = 'Gamersmafia City (por 2_Face)'
   end
   
   if nil 
