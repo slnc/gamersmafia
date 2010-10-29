@@ -11,8 +11,6 @@ class Bet < ActiveRecord::Base
   after_save :process_bets_options
   has_many :bets_options, :dependent => :destroy
   
-  validates_uniqueness_of :title, :message => 'Ya hay otra apuesta con el mismo título'
-  
   observe_attr :winning_bets_option_id, :cancelled, :forfeit, :tie
   
   def _total_ammount
@@ -460,5 +458,4 @@ class Bet < ActiveRecord::Base
     :order => 'closes_on DESC, id DESC', :limit => opts[:limit])
   end
   
-  validates_uniqueness_of :title, :message => 'Nombre de la partida duplicado. Ejemplo de un nombre irrepetible: "Eurocup06 Quarters: oG vs P"'
 end
