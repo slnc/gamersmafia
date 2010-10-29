@@ -565,10 +565,8 @@ width: '#{opts[:width]}',
 skin: 'v2'
 }
  );
-
 				//]]>
 				</script>
-
       END
   end
   

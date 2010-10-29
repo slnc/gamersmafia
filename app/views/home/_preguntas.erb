@@ -1,23 +1,29 @@
 <div class="homebox">
-        <div id="home-questions" class="subheader first"><div><span>Preguntas</span></div></div>
-        <table>
-        	
-<%# METER EXPIRE A LA CACHE cache("/#{controller.portal_code}/home/index/preguntas") do %>
-      <% shown_questions = [] 
-qs = controller.portal.question.find(:published, :content_type => 'Question', :conditions => "contents.created_on >= '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'COALESCE(ammount, 0) desc, contents.created_on desc', :limit => 7)
-
-qs.each do |bet|
-shown_questions<< bet.unique_content.id
- %>
+    <div id="home-questions" class="subheader first">
+        <div>
+            <span>Preguntas</span>
+        </div>
+    </div>
+    <table>
+        <% cache("/#{controller.portal_code}#{Cache::FRAG_HOME_INDEX_QUESTIONS}") do %>
+        <% shown_questions = []
+        qs = controller.portal.question.find(:published, :content_type => 'Question', :conditions => "contents.created_on >= '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'COALESCE(ammount, 0) desc, contents.created_on desc', :limit => 7)
+        qs.each do |bet|
+        	shown_questions<< bet.unique_content.id %>
         <tr class="<%=oddclass%>">
-          <td class="content<%=bet.unique_content.id%> new" style="font-size: 11px;"><%=content_category(bet.main_category)%> <%=link_to truncate(bet.title, 35), gmurl(bet) %></td>
-          <td style="font-size: 11px;" class="right"><%= "#{bet.ammount.to_i}#{gmd11}" if bet.prize > Question::MIN_AMMOUNT%></td>
+            <td class="content<%=bet.unique_content.id%> new" style="font-size: 11px;">
+                <%=content_category(bet.main_category) %><%=link_to truncate(bet.title, 35), gmurl(bet) %>
+            </td>
+            <td style="font-size: 11px;" class="right">
+                <%= "#{bet.ammount.to_i}#{gmd11}" if bet.prize > Question::MIN_AMMOUNT %>
+            </td>
         </tr>
-        <% end -%>
-      <%#end -%>
-      </table>
-	  
-	  <script type="text/javascript">contents = contents.concat(<%=shown_questions.join(',')%>);</script>
-	  <div class="more"><a title="Ver más preguntas" href="/respuestas">Más preguntas &raquo;</a></div>
-
+        	<% end -%>
+    </table>
+    <script type="text/javascript">contents = contents.concat(<%=shown_questions.join(',')%>);
+	<% end -%>
+    </script>
+    <div class="more">
+        <a title="Ver más preguntas" href="/respuestas">Más preguntas &raquo;</a>
+    </div>
 </div>
