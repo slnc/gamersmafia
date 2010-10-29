@@ -99,7 +99,7 @@ if u_clans.size == 0 then %>
 					<li class="first"><a href="/site/portales">Portales</a></li>
 					<li><a href="http://<%=App.domain%>/tags">Tags</a></li>
 					<li><a href="http://<%=App.domain%>/site/novedades">Novedades sobre la web</a></li>
-					<li><a href="http://<%=App.domain%>/site/el_callejon">El callejón</a></li>
+					<li><a href="http://<%=App.domain%>/site/gmcity">GM City</a></li>
 					<li><a href="http://<%=App.domain%>/site/rss">RSS</a></li>
 					<% if user_is_authed then %>
 					<li><div class="sawbottom-arrow hidden"></div>
@@ -418,7 +418,22 @@ if crecs.size > 0 then %>
 
 <%= render :partial => '/layouts/last_commented_objects' %>
 
-<div id="mgads" class="container"><div class="mcontent"><%= render :partial => '/shared/bandits_sideleft' %></div></div>
+<div id="mgads" class="container"><div class="mcontent"><%= render :partial => '/shared/bandits_sideleft' %><br />
+
+<% if user_is_authed && @user.created_on > 1.year.ago || !user_is_authed then %>
+<script type="text/javascript"><!--
+google_ad_client = "pub-6007823011396728";
+google_ad_slot = "3523960064";
+google_ad_width = 120;
+google_ad_height = 600;
+//-->
+</script>
+<script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+<% end -%>
+
+</div></div>
 <%= render(:partial => '/layouts/webs_aliadas') if @portal.kind_of?(FactionsPortal) && controller.controller_name == 'home' %>
 </div>
 </div>  
