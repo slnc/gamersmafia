@@ -54,10 +54,6 @@ for download in @last_downloads
 <% end -%>
   </div>
 
-
-
-
-
 </div>
 
 
@@ -87,9 +83,10 @@ for topic in @last_topics
     </div>
 <% end %><%# cache -%>
 
+
     <div class="homebox poll">
         <div id="home-polls" class="subheader first"><div><span>Encuestas</span></div></div>
-<% 
+<%
     for @cur_poll in controller.portal.poll.current do %>
       <%=render :partial => '/encuestas/encuesta', :locals => {:poll => @cur_poll, :user => (user_is_authed ? @user : nil)} %>
       <script type="text/javascript">contents = contents.concat(<%=@cur_poll.unique_content.id%>);</script>

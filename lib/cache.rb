@@ -1,4 +1,5 @@
 module Cache
+  FRAG_HOME_INDEX_QUESTIONS = '/home/index/preguntas'
   
   def self.after_daily_key
     6.hours.ago.strftime("%Y%m%d")
@@ -101,6 +102,29 @@ module Cache
     extend Cache::Common
     def self.common(object)
       expire_fragment "/common/layout/skins"
+    end
+  end
+  
+  module Contents
+    extend Cache::Common
+    def self.after_save(object)
+      
+    end
+    
+    def self.common_question(object)
+      codes = object.get_related_portals.collect do |portal| portal.code end
+      for p in object.get_related_portals 
+        expire_fragment("/#{p.code}#{FRAG_HOME_INDEX_QUESTIONS}")
+        expire_fragment("/#{p.code}/respuestas/show/latest_by_author_#{object.user_id}")
+        expire_fragment("/#{p.code}/respuestas/top_sabios/") # if object.slnc_changed?(:answered_on)
+      end
+      #if object.slnc_changed?(:answered_on)
+      if object.unique_content
+        object.unique_content.linked_terms('QuestionsCategory').each do |t|
+          expire_fragment("/common/respuestas/top_sabios/#{t.root_id}")
+        end
+      end
+      # end
     end
   end
   

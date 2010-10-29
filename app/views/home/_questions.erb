@@ -1,4 +1,4 @@
-<% cache("/#{controller.portal_code}/home/index/questions") do %>
+<% cache("/#{controller.portal_code}#{Cache::FRAG_HOME_INDEX_QUESTIONS}") do %>
 <% 
 questions = controller.portal.question.find(:published, :content_type => 'Question', :conditions => 'answered_on IS NULL AND questions.created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, questions.created_on DESC', :limit => 5)
 questions = controller.portal.question.find(:published, :content_type => 'Question', :conditions => 'answered_on IS NULL', :order => 'COALESCE(ammount, 0) desc, questions.created_on DESC', :limit => 5) if questions.size == 0
