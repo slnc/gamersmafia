@@ -2,7 +2,9 @@ require 'digest/md5'
 require 'karma'
 
 class User < ActiveRecord::Base
-  BANNED_DOMAINS = %w(fishfuse.com 10minutemail.com correo.nu tempinbox.com mintemail.uni.cc yopmail.com uggsrock.com tempemail.net meyzo.net)
+  BANNED_DOMAINS = %w(10minutemail.com correo.nu fishfuse.com meyzo.net
+                      mintemail.uni.cc tempemail.net tempinbox.com uggsrock.com
+                      yopmail.com)
   
   ANTIFLOOD_LEVELS = {
     1 => 'suave',
@@ -22,9 +24,12 @@ class User < ActiveRecord::Base
   ST_UNCONFIRMED_1W = 8
   ST_UNCONFIRMED_2W = 9
   
-  HSTATES = %w(unconfirmed active zombie resurrected shadow banned disabled deleted)
-  STATES_CAN_LOGIN = [ST_ACTIVE, ST_ZOMBIE, ST_RESURRECTED, ST_SHADOW]
-  STATES_CANNOT_LOGIN = [ST_UNCONFIRMED, ST_BANNED, ST_DISABLED, ST_DELETED, ST_UNCONFIRMED_1W, ST_UNCONFIRMED_2W]
+  HSTATES = %w(unconfirmed active zombie resurrected shadow banned disabled 
+               deleted)
+  
+  STATES_CAN_LOGIN = [ST_ACTIVE, ST_RESURRECTED, ST_SHADOW, ST_ZOMBIE]
+  STATES_CANNOT_LOGIN = [ST_BANNED, ST_DISABLED, ST_DELETED, ST_UNCONFIRMED,
+  ST_UNCONFIRMED_1W, ST_UNCONFIRMED_2W]
   
   STATES_DESCRIPTIONS = {ST_UNCONFIRMED => 'no confirmada',
     ST_BANNED => 'baneada',
@@ -46,7 +51,8 @@ class User < ActiveRecord::Base
   belongs_to :faction
   belongs_to :avatar
   belongs_to :referer, :class_name => 'User', :foreign_key => 'referer_user_id'
-  belongs_to :resurrector, :class_name => 'User', :foreign_key => 'resurrected_by_user_id'
+  belongs_to :resurrector, :class_name => 'User', 
+                           :foreign_key => 'resurrected_by_user_id'
   belongs_to :comments_valorations_type  
   has_many :comments_valorations
   has_many :users_contents_tags
@@ -54,8 +60,10 @@ class User < ActiveRecord::Base
   has_many :profile_signatures
   has_one :filter
   has_many :polls_votes
-  belongs_to :requests_to_be_banned, :class_name => 'User', :foreign_key => 'banned_user_id'
-  belongs_to :confirmed_ban_requests, :class_name => 'User', :foreign_key => 'confirming_user_id'
+  belongs_to :requests_to_be_banned, :class_name => 'User', 
+                                     :foreign_key => 'banned_user_id'
+  belongs_to :confirmed_ban_requests, :class_name => 'User', 
+                                      :foreign_key => 'confirming_user_id'
   has_many :ban_requests
   has_many :skins
   has_many :sold_products
@@ -100,8 +108,10 @@ class User < ActiveRecord::Base
   
   has_many :users_guids
   
-  has_many :messages_sent, :foreign_key => 'user_id_from', :class_name => 'Message'
-  has_many :messages_received, :foreign_key => 'user_id_to', :class_name => 'Message'
+  has_many :messages_sent, :foreign_key => 'user_id_from', 
+                           :class_name => 'Message'
+  has_many :messages_received, :foreign_key => 'user_id_to',
+                               :class_name => 'Message'
   
   has_many :contents_recommendations, :foreign_key => 'receiver_user_id'
   has_many :contents_recommended, :foreign_key => 'sender_user_id'
@@ -119,12 +129,14 @@ class User < ActiveRecord::Base
   after_save :check_is_hq
   after_save :check_login_changed
   after_save :check_permissions
-  observe_attr :competition_roster, :login, :state, :is_hq, :faction_id, :lastcommented_on, :avatar_id, :photo, :homepage
+  observe_attr :competition_roster, :login, :state, :is_hq, :faction_id, 
+               :lastcommented_on, :avatar_id, :photo, :homepage
   
   before_create :generate_validkey
   after_create :change_avatar
   attr_accessor :ident, :expire_at
-  attr_protected :cache_karma_points, :is_superadmin, :admin_permissions, :faction_id
+  attr_protected :cache_karma_points, :is_superadmin, :admin_permissions, 
+                 :faction_id
   
   before_save :check_if_shadow
   before_save :check_if_website
@@ -142,7 +154,8 @@ class User < ActiveRecord::Base
   end
   
   def ne_references
-    NeReference.find(:all, :conditions => ['(entity_class = \'User\' AND entity_id = ?)', self.id])  
+    NeReference.find(:all, :conditions => ["(entity_class = 'User' 
+                                            AND entity_id = ?)", self.id])  
   end
   
   def check_if_website
@@ -161,22 +174,22 @@ class User < ActiveRecord::Base
   end
   
   def update_default_comments_valorations_weight
-          positive = self.comments_valorations.recent.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 1)')
-          negative = self.comments_valorations.recent.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = -1)')
-          neutral = self.comments_valorations.recent.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 0)')
-          ratio = negative.to_f/(positive + negative + neutral)
-          if (positive + negative + neutral) > 15 && ratio > 0.6
-                   default = 0.0
-          else
-                  default = 1.0
-          end
-          self.update_attributes(:default_comments_valorations_weight => default)
+    recent_valorations = self.comments_valorations.recent
+    positive = recent_valorations.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 1)')
+    negative = recent_valorations.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = -1)')
+    neutral = recent_valorations.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 0)')
+    ratio = negative.to_f/(positive + negative + neutral)
+    if (positive + negative + neutral) > 15 && ratio > 0.6
+      default = 0.0
+    else
+      default = 1.0
+    end
+    self.update_attributes(:default_comments_valorations_weight => default)
   end
   
   def ban_reason
     self.pref_public_ban_reason != '' ? self.pref_public_ban_reason : 'Desconocida'
   end
-  
   
   def latent_rating(c)
     cr = self.content_ratings.find_by_content_id(c.id)
@@ -194,11 +207,15 @@ class User < ActiveRecord::Base
   end
   
   def contents_visited_between(t1, t2)
-    self.tracker_items.find(:all, :conditions => ['lastseen_on BETWEEN ? AND ?', t1, t2], :include => :content).collect { |ti| ti.content } || []
+    self.tracker_items.find(:all, :conditions => ['lastseen_on BETWEEN ? AND ?',
+    t1, t2], :include => :content).collect { |ti| 
+      ti.content 
+    } || []
   end
   
   def check_permissions
-    [self.users_roles.find_by_role('Boss'), self.users_roles.find_by_role('Underboss')].compact.each do |ur|
+    [self.users_roles.find_by_role('Boss'), 
+    self.users_roles.find_by_role('Underboss')].compact.each do |ur|
       ur.destroy
     end if slnc_changed?(:faction_id)
     
@@ -217,7 +234,8 @@ class User < ActiveRecord::Base
     
     # TODO This should go into an observer
     if impositor.has_admin_permission?(:capo)
-      SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], :reporter_user_id => impositor.id, :headline => "Antiflood #{User::ANTIFLOOD_LEVELS[self.antiflood_level]} impuesto a <strong><a href=\"#{ApplicationController.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{ApplicationController.gmurl(impositor)}\">#{impositor.login}</a>")
+      SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], 
+                       :reporter_user_id => impositor.id, :headline => "Antiflood #{User::ANTIFLOOD_LEVELS[self.antiflood_level]} impuesto a <strong><a href=\"#{ApplicationController.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{ApplicationController.gmurl(impositor)}\">#{impositor.login}</a>")
     else
       SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], :reporter_user_id => impositor.id, :headline => "Antiflood de emergencia impuesto a <strong><a href=\"#{ApplicationController.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{ApplicationController.gmurl(impositor)}\">#{impositor.login}</a>")
     end
@@ -236,10 +254,22 @@ class User < ActiveRecord::Base
   end
   
   
-  def check_is_staff
+  def update_staff_status
     # actualiza la variable is_staff
-    is_staff = self.users_roles.count(:conditions => "role IN ('Don', 'ManoDerecha', 'Sicario', 'Moderator', 'Editor', 'Boss', 'Underboss')") > 0 || has_admin_permissions? || is_competition_admin? || is_competition_supervisor?
-    self.update_attributes(:is_staff => is_staff, :cache_is_faction_leader => self._no_cache_is_faction_leader?)
+    has_some_roles = self.users_roles.count(:conditions => "role IN ('Don', 
+                                                                     'ManoDerecha', 
+                                                                     'Sicario', 
+                                                                     'Moderator', 
+                                                                     'Editor', 
+                                                                     'Boss', 
+                                                                     'Underboss')") > 0
+                                                               
+    is_staff = has_some_roles || has_admin_permissions? || 
+               is_competition_admin? || is_competition_supervisor?
+
+    self.update_attributes(:is_staff => is_staff, 
+                           :cache_is_faction_leader => 
+                              self._no_cache_is_faction_leader?)
   end
   
   def check_comments_values
@@ -306,33 +336,22 @@ class User < ActiveRecord::Base
   end  
   
   def check_is_hq
-    if slnc_changed?(:is_hq) && self.is_hq?
-      require 'open-uri'
+    return unless slnc_changed?(:is_hq)
+    
+    if self.is_hq?
       valid_username = self.login.bare
-      q_auth = "&os_username=#{App.jira_username}&os_password=#{App.jira_password}"
-      
-      contents = open("http://hq.gamersmafia.com/secure/admin/user/ViewUser.jspa?name=#{valid_username}#{q_auth}", OPENURI_HEADERS).read
-      
-      if contents.include?('User does not exist') # let's go!
-        #puts "creating account at jira"
-        open("http://hq.gamersmafia.com/secure/admin/user/AddUser.jspa?username=#{valid_username}&fullname=#{valid_username}&email=#{self.email}&sendEmail=true&Crear=Crear#{q_auth}", OPENURI_HEADERS).read
-        ['GM+HQ', 'confluence-users'].each do |g|
-          open("http://hq.gamersmafia.com/secure/admin/user/EditUserGroups.jspa?join=Join+%3E%3E&groupsToJoin=#{g}&name=#{valid_username}#{q_auth}", OPENURI_HEADERS)
-        end
+      if !Jira.user_exists?(valid_username)
+        Jira.create_user(valid_username, self.email)
+        Jira.activate_user(valid_username)
       end
-      # TODO enviar mp con info y bienvenida
+      
       Notification.deliver_add_to_hq(User.find(1), :new_member => self)
-      # Notification.deliver_welcome_to_hq(self)
-      Message.create(:sender => User.find(1), :recipient => self, :title => "¡Bienvenido al HQ!", :message => "Ya te he dado de alta en el HQ.\n\nTe recomiendo que para empezar vayas al wiki (menú horizontal encima de la cabecera HQ -> Wiki) ya que hay un información sobre cómo usar tanto el wiki como jira y la lista de correo interna.. \n\nTe debería haber llegado un email con un nombre de usuario y una contraseña, son para acceder al wiki y al gestor de incidencias (JIRA). En el wiki verás varias zonas con toda la información sobre wiki y gestor de incidencias y sobre la lista de correo. Te recomiendo empezar por esta pagina: http://hq.gamersmafia.com/confluence/display/GM/Bienvenido+a+Gamersmafia y tener bien claro esta otra: http://hq.gamersmafia.com/confluence/display/GM/Netiqueta+para+miembros+del+HQ. Por favor, échales un vistazo (por supuesto no hay prisa, cuando puedas) y si tienes alguna duda puedes preguntar tanto en la lista interna como por privado.\n\nUn saludete :D")
-      #old_email = self.email
-      #self.email = 'ayuda-form@gamersmafia.com'
-      #is_hq? ? Notification.deliver_add_to_hq(self) : Notification.deliver_del_from_hq(self)
-      #self.email = old_email
-    elsif slnc_changed?(:is_hq) # dando de baja del hq
-      # TODO dar de baja del hq
-      ['jira-users', 'GM+HQ', 'confluence-users'].each do |g|
-        contents = open("http://hq.gamersmafia.com/secure/admin/user/EditUserGroups.jspa?leave=%3C%3C+Leave&groupsToLeave=#{g}&name=#{valid_username}&returnUrl=UserBrowser.jspa#{q_auth}", OPENURI_HEADERS)
-      end
+      Message.create(:sender => User.find(1), 
+                     :recipient => self, 
+                     :title => "¡Bienvenido al HQ!", 
+                     :message => "Ya te he dado de alta en el HQ.\n\nTe recomiendo que para empezar vayas al wiki (menú horizontal encima de la cabecera HQ -> Wiki) ya que hay un información sobre cómo usar tanto el wiki como jira y la lista de correo interna.. \n\nTe debería haber llegado un email con un nombre de usuario y una contraseña, son para acceder al wiki y al gestor de incidencias (JIRA). En el wiki verás varias zonas con toda la información sobre wiki y gestor de incidencias y sobre la lista de correo. Te recomiendo empezar por esta pagina: http://hq.gamersmafia.com/confluence/display/GM/Bienvenido+a+Gamersmafia y tener bien claro esta otra: http://hq.gamersmafia.com/confluence/display/GM/Netiqueta+para+miembros+del+HQ. Por favor, échales un vistazo (por supuesto no hay prisa, cuando puedas) y si tienes alguna duda puedes preguntar tanto en la lista interna como por privado.\n\nUn saludete :D")
+    else
+      Jira.deactivate_user(valid_username)
     end
   end
   
@@ -374,14 +393,27 @@ class User < ActiveRecord::Base
     akey = AutologinKey.find_by_key(k)
     
     if akey
-      User.db_query("update users set lastseen_on = now() where id = #{akey.user_id}")
+      User.db_query("UPDATE users SET lastseen_on = now() 
+                      WHERE id = #{akey.user_id}")
       akey.update_attributes(:lastused_on => Time.now)
       akey.user
     end
   end
   
-  ADMIN_PERMISSIONS_INDEXES = {:faq => 0, :blogs => 1, :clans => 2, :avatars => 3, :faction_headers => 4, :capo => 5, :designer => 6, :qa => 7, :fusions => 8, :gladiador => 9, :advertiser => 10, :bazar_manager => 11}
-  
+  ADMIN_PERMISSIONS_INDEXES = { :faq => 0, 
+                                :blogs => 1, 
+                                :clans => 2, 
+                                :avatars => 3, 
+                                :faction_headers => 4, 
+                                :capo => 5, 
+                                :designer => 6, 
+                                :qa => 7, 
+                                :fusions => 8, 
+                                :gladiador => 9, 
+                                :advertiser => 10, 
+                                :bazar_manager => 11, 
+                              }
+
   def self.find_with_admin_permissions(args)
     if args.kind_of?(Symbol)
       args = [ADMIN_PERMISSIONS_INDEXES[args]]
@@ -804,8 +836,8 @@ class User < ActiveRecord::Base
   protected
   def password=(clearpasswd)
     if clearpasswd.to_s != ''
-        self['password'] = Digest::MD5.hexdigest(clearpasswd) 
-        self.generate_validkey
+      self['password'] = Digest::MD5.hexdigest(clearpasswd) 
+      self.generate_validkey
     end
   end
   
