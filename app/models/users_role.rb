@@ -66,7 +66,7 @@ class UsersRole < ActiveRecord::Base
       Message.create(:title => "Recibido permiso de #{format_scope}", :message => "Acabas de recibir permisos de #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id)
     end
     
-    self.user.check_is_staff
+    self.user.update_is_staff
   end
   
   def format_scope

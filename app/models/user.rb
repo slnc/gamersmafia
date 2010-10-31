@@ -254,7 +254,7 @@ class User < ActiveRecord::Base
   end
   
   
-  def update_staff_status
+  def update_is_staff
     # actualiza la variable is_staff
     has_some_roles = self.users_roles.count(:conditions => "role IN ('Don', 
                                                                      'ManoDerecha', 
