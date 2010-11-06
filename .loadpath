@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<loadpath>
-	<pathentry path="" type="src"/>
-	<pathentry path="GEM_LIB/ci_reporter-1.6.0/lib" type="var"/>
-</loadpath>
