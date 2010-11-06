@@ -17,11 +17,11 @@ Disallow: /
 User-Agent: VoilaBot
 Disallow: /
 
-User-Agent WebAlta Crawler/2.0
+User-Agent WebAlta
 Disallow: /
 
 User-Agent WebAlta Crawler
 Disallow: /
 
-User-Agent WebAlta
+User-Agent WebAlta Crawler/2.0
 Disallow: /

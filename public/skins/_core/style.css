@@ -5,6 +5,7 @@
 @import url(css/layout.misc.css);
 @import url(css/layout.popup.css);
 
+@import url(css/components/autocomplete.css);
 @import url(css/components/bbeditor.css);
 @import url(css/components/cleft.css);
 @import url(css/components/colorpicker.css);

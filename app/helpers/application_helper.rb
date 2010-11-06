@@ -644,19 +644,7 @@ skin: 'v2'
     if obj.state.nil? || obj.state == Cms::DRAFT
       "<p><label><input type=\"checkbox\" name=\"draft\" value=\"1\" #{'checked=\"checked\"' if (obj.state == Cms::DRAFT && !obj.new_record?) }/> Borrador</label></p>"
     end
-  end
-  
-  def prototype_includes
-  <<-END
-  <script src="#{ASSET_URL}/javascripts/prototype/prototype.js?#{SVNVERSION}" type="text/javascript"></script>
-  <script src="#{ASSET_URL}/javascripts/prototype/scriptaculous.js?#{SVNVERSION}" type="text/javascript"></script>
-  <script src="#{ASSET_URL}/javascripts/prototype/effects.js?#{SVNVERSION}" type="text/javascript"></script>
-  <script src="#{ASSET_URL}/javascripts/prototype/dragdrop.js?#{SVNVERSION}" type="text/javascript"></script>
-  <script src="#{ASSET_URL}/javascripts/prototype/controls.js?#{SVNVERSION}" type="text/javascript"></script>
-END
-  end
-  
-  
+  end  
   
   def javascript_includes
     if App.compress_js?
