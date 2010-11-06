@@ -34,9 +34,8 @@
 	width: 200px;
 }
 
-
 #homecontents .homebox .subheader {
-    background: #2E228B url(../../images/layout/cabeceras_portada.png) left 0 repeat-x;
+    background: url(../../images/layout/cabeceras_portada.png) left 0 repeat-x;
 }
 
 #homecommunity .homebox .subheader {
