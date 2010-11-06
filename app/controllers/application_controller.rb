@@ -7,7 +7,6 @@ class ApplicationController < ActionController::Base
   
   helper :account, :miembros, :competiciones, :calendar
   before_filter :ident, :resolve_portal_mode, :check_referer, :populate_navpath2, :parse_params_page
-  # before_filter :init_xab # TODO necesario por rails 2.2
   
   attr_accessor :competition, :portal, :third_menu, :global_vars
   cattr_accessor :navpath2
