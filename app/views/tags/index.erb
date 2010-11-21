@@ -25,7 +25,7 @@
 
 <% content_main do %>
 <%mftext('Tags') do%>
-<% chunks = Term.with_taxonomy('ContentsTag').find(:all, :conditions => 'contents_count > 1', :order => 'name').chunk(3) %>	
+<% chunks = Term.with_taxonomy('ContentsTag').find(:all, :conditions => 'contents_count >= 5', :order => 'name').chunk(3) %>	
 <% chunks.each do |chunk| %>
 <div style="width: 31%; float: left; margin-right: 10px;">
 	<table>
