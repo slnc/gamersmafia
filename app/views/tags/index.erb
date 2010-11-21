@@ -1,5 +1,6 @@
 <%generic_support do %>
 <% mftext("Los que más taguean") do %>
+<% cache("/common/top_taggers/#{Time.now.strftime('%Y%m%d')}") do %>
 <table id="most_active_users">
   <% UsersContentsTag.biggest_taggers.each do |u, data|%>
   <tr class="<%=oddclass%>">
@@ -11,6 +12,7 @@
   </tr>
   <% end -%>
 </table>
+<% end -%>
 <script type="text/javascript">slnc.marklinks('most_active_users', '_xs=maut');</script>
 <% end -%>
 
@@ -29,7 +31,7 @@
 	<table>
 	<%chunk.each do |tag| %>
 	<tr class="<%=oddclass%>">
-		<td><a href="<%=gmurl(tag)%>"><%=tag.name%></a></td>
+		<td><a href="<%=gmurl(tag)%>"><%=truncate(tag.name, 24, '..')%></a></td>
 		<td class="right f_sm infoinline"><%=tag.contents_count%></td>
 	</tr>
 	<% end -%>
