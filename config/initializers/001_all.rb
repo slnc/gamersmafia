@@ -1,18 +1,7 @@
 FRAGMENT_CACHE_PATH = "#{RAILS_ROOT}/tmp/fragment_cache"
 ActionController::Base.cache_store = :file_store, FRAGMENT_CACHE_PATH
-#ActionController::Base.session_store = :p_store
-# require File.join(File.dirname(__FILE__), 'app_config')
-#require 'vendor/plugins/rails_mixings/lib/action_controller.rb'
-#require 'vendor/plugins/rails_mixings/lib/action_mailer.rb'
-#require 'vendor/plugins/rails_mixings/lib/notification.rb'
-# require 'vendor/plugins/rails_mixings/lib/friendship.rb'
 
 OPENURI_HEADERS = {'Accept-Encoding' => '', 'Accept-Language' => 'en-us,en;q=0.5', 'Accept-Charset' => 'ISO-8859-1,utf-8;q=0.7,*;q=0.7', 'Keep-Alive' => '300', 'Connection' => 'keep-alive', 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent' => 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.1.4) Gecko/20091016 Firefox/3.5.4'}
-
-REPLICATION_CLUSTER = 'gamersmafia'
-#ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS[:session_domain] = ".#{App.domain}" # unless ENV['RAILS_ENV'] == 'test'
-#ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS[:session_key] = "adn2" # unless ENV['RAILS_ENV'] == 'test'
-# ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS[:secret] = "watashi ha kanachan daisuki dayou"
 
 class Dbs < ActiveRecord::Base; end
 

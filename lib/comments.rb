@@ -400,8 +400,7 @@ module Comments
   #  puts u.login
   #  u.update_attributes(:comments_direction => Comments.get_ratings_for_user(u.id)[0].direction)
   #end
-  
-  # TODO copypaste de laflecha  
+    
   # Devuelve la página en la que aparece el comentario actual
   def self.page_for_comment(comment)
    (Comment.count(:conditions => ['deleted = \'f\' AND content_id = ? AND created_on <= ?', comment.content_id, comment.created_on]) / Cms.comments_per_page.to_f).ceil
