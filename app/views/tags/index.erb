@@ -24,6 +24,7 @@
 <% end -%>
 
 <% content_main do %>
+<% cache("/common/tags/index/#{Time.now.strftime('%Y%m%d')}") do %>
 <%mftext('Tags') do%>
 <% chunks = Term.with_taxonomy('ContentsTag').find(:all, :conditions => 'contents_count >= 5', :order => 'name').chunk(3) %>	
 <% chunks.each do |chunk| %>
@@ -37,6 +38,7 @@
 	<% end -%>
 	</table>
 </div>
+<% end -%>
 <% end -%>
 <% end -%>
 <% end -%>
