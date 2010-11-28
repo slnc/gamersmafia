@@ -23,6 +23,7 @@ require 'RMagick'
 require 'net/http'
 require 'open-uri'
 require 'timeout'
+require 'uri'
 
 module Cms
   # Este módulo contiene toda la información de todos los tipos de contenidos
@@ -239,7 +240,7 @@ module Cms
   
   VALID_TITLE_REGEXP = /^([a-zA-ZáéíóúÁÉÍÓÚüëÜËñÑ0-9¿\?[:space:]\(\):;\.,_¡!\/&%"\+\-]+)$/i
   DNS_REGEXP = /^((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/i # no es perfecto
-  URL_REGEXP = URI::regexp(%w(http https ftp)) # /(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=;&%@!\-\/]))?/
+  URL_REGEXP = URI::regexp(%w(http https ftp))
   URL_REGEXP_FULL = /^(#{URI::regexp(%w(http https ftp))})$/ # /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?;+=&%@!\-\/]))?$/
   EMAIL_REGEXP = /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/
   IP_REGEXP = /\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/

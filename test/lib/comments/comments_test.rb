@@ -34,6 +34,13 @@ class CommentsTest < ActiveSupport::TestCase
     assert_equal "[URL=http://google.com]hola[img]aa[/img][/URL]", Comments.fix_incorrect_bbcode_nesting('[URL=http://google.com]hola[img]aa[/img]')
     assert_equal '[URL=http://google.com]hola[img]aa[/img][img][/img][img][/img][/URL]', Comments.fix_incorrect_bbcode_nesting('[URL=http://google.com]hola[img]aa[/img][/img][/img]')
   end
+  
+  test "should be careful of xss in url tags" do
+    assert_equal "[url=blag\" onclick=\"alert('foo');]Click me![/url]", Comments.formatize("[url=blag\" onclick=\"alert('foo');]Click me![/url]")
+       assert_equal "<a href=\"http://example.com/\">Click me!\"&gt;&lt;script type=\"text/javascript\"&gt;&lt;/script&gt;</a>",
+ Comments.formatize("[url=http://example.com/]Click me!\"><script type=\"text/javascript\"></script>[/url]")
+  end
+  
 
   # TODO
   def test_fix_incorrect_bbcode_nesting

@@ -28,15 +28,17 @@ class User < ActiveRecord::Base
                deleted)
   
   STATES_CAN_LOGIN = [ST_ACTIVE, ST_RESURRECTED, ST_SHADOW, ST_ZOMBIE]
-  STATES_CANNOT_LOGIN = [ST_BANNED, ST_DISABLED, ST_DELETED, ST_UNCONFIRMED,
+  STATES_CANNOT_LOGIN = [ST_BANNED, ST_DELETED, ST_DISABLED, ST_UNCONFIRMED,
   ST_UNCONFIRMED_1W, ST_UNCONFIRMED_2W]
   
-  STATES_DESCRIPTIONS = {ST_UNCONFIRMED => 'no confirmada',
-    ST_BANNED => 'baneada',
-    ST_DISABLED => 'deshabilitada',
-    ST_DELETED => 'borrada',
-    ST_UNCONFIRMED_1W => 'no confirmada',
-    ST_UNCONFIRMED_2W => 'no confirmada'}
+  STATES_DESCRIPTIONS = { 
+                          ST_BANNED => 'baneada',
+                          ST_DELETED => 'borrada',
+                          ST_DISABLED => 'deshabilitada',
+                          ST_UNCONFIRMED => 'no confirmada',
+                          ST_UNCONFIRMED_1W => 'no confirmada',
+                          ST_UNCONFIRMED_2W => 'no confirmada'
+                        }
   has_many :groups_messages
   
   has_many :users_roles, :dependent => :destroy
@@ -47,6 +49,7 @@ class User < ActiveRecord::Base
   has_many :factions_banned_users
   has_many :comment_violation_opinions
   has_many :preferences, :class_name => 'UsersPreference'
+  
   belongs_to :country
   belongs_to :faction
   belongs_to :avatar
@@ -141,7 +144,8 @@ class User < ActiveRecord::Base
   before_save :check_if_shadow
   before_save :check_if_website
   
-  named_scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})", :order => 'lower(login)'
+  named_scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})", 
+                          :order => 'lower(login)'
   named_scope :humans, :conditions => 'is_bot is false'
   
   def can_login?
@@ -875,6 +879,7 @@ class User < ActiveRecord::Base
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/
   validates_format_of :newemail, :with => /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/, :allow_nil => true
   LOGIN_REGEXP = /^[-a-zA-Z0-9_~.\[\]\(\)\:=|*^]{3,18}$/
+  LOGIN_REGEXP_NOT_FULL = /[-a-zA-Z0-9_~.\[\]\(\)\:=|*^]{3,18}/
   INVALID_LOGIN_CHARS = 'Caracteres válidos: a-z A-Z 0-9 _-.[]():=|*^'
   validates_format_of :login, :with => LOGIN_REGEXP, :on => :create, :message => INVALID_LOGIN_CHARS # TODO forzar estas restricciones a cuentas existentes
   

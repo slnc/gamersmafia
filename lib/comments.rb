@@ -97,11 +97,13 @@ module Comments
     input
   end
   
+  SIMPLE_URL_REGEXP = /[a-zA-Z0-9_.:?#&%-\/]+/
+  
   def self.formatize(str)
     # parsea comentarios de usuarios, líneas de chat, etc
     str ||= ''
     str = Comments.fix_incorrect_bbcode_nesting(str.clone)
-    
+    interword_regexp = /[^><]+/
     str.strip!
     str.gsub!(/</, '&lt;')
     str.gsub!(/>/, '&gt;')
@@ -110,17 +112,26 @@ module Comments
     str.gsub!(/\n/, "<br />\\n")
     str.gsub!(/(\[(\/*)(b|i|quote)\])/i, '<\\2\\3>')
     str.gsub!(/(<(\/*)(quote)>)/i, '<\\2blockquote>')
-    str.gsub!(/(\[~([^\]]+)\])/, '<a href="/miembros/\\2">\\2</a>') # ~dharana >> <a href="/miembros/dharana">dharana</a>
-    str.gsub!(/\[flag=([^\]]+)\]/i, '<img class="icon" src="/images/flags/\\1.gif" />')
-    str.gsub!(/\[img\]([^\[]+)\[\/img\]/i, '<img src="\\1" />')
-    str.gsub!(/\[url=([^\]]+)\]([^\[]+)\[\/url\]/i, '<a href="\\1">\\2</a>')
-    str.gsub!(/\[color=([^\]]+)\]([^\[]+)\[\/color\]/i, '<span class="c_\\1">\\2</span>')
-    str.gsub!(/\[code=([^\]]+)\](.+?)\[\/code\]/i, '<pre class="brush: \\1">\\2</pre>')
+    str.gsub!(/(\[~(#{User::LOGIN_REGEXP_NOT_FULL})\])/, '<a href="/miembros/\\2">\\2</a>') # ~dharana >> <a href="/miembros/dharana">dharana</a>
+    str.gsub!(/\[flag=([a-z]+)\]/i, '<img class="icon" src="/images/flags/\\1.gif" />')
+    
+    str.gsub!(/\[img\](#{SIMPLE_URL_REGEXP})\[\/img\]/i, '<img src="\\1" />')
+    str.gsub!(/\[url=(#{SIMPLE_URL_REGEXP})\](#{interword_regexp})\[\/url\]/i, '<a href="\\1">\\2</a>')
+    
+    str.gsub!(/\[color=([a-zA-Z]+)\](#{interword_regexp})\[\/color\]/i, '<span class="c_\\1">\\2</span>')
+    
+    str.gsub!(/\[code=([a-zA-Z0-9]+)\](.+?)\[\/code\]/i, '<pre class="brush: \\1">\\2</pre>')
     str.gsub!(/\[code\](.+?)\[\/code\]/i, '<pre class="brush: js">\\1</pre>')
     # remove any html tag inside a <code></code>
-    #str.gsub!(/<code>(<\/?[^>]*>)<\/code>/,"")
-    str.gsub!(/<pre class="brush: [a-z]+">.*<\/pre>/) { |blck| blck[0..5] + blck[6..-8].gsub('<br />', "\n") + blck[-7..-1] }
+    
+    str.gsub!(/<pre class="brush: [a-z]+">.*<\/pre>/) { |blck|
+      code_part = blck.scan(/<pre class="brush: [a-z]+">(.*)<\/pre>/)[0].to_s.gsub("<", "&lt;").gsub(">", "&gt;").gsub("&lt;br /&gt;", "\n")
+      brush_part = blck.scan(/<pre class="brush: ([a-z]+)">.*<\/pre>/)[0]
+      "<pre class=\"brush: #{brush_part}\">#{code_part}<\/pre>"
+    }
+    
     str.gsub!("\\n", "\n")
+    str.gsub!("\n\n", "\n")
     str
   end
   
