@@ -37,8 +37,11 @@ class CommentsTest < ActiveSupport::TestCase
   
   test "should be careful of xss in url tags" do
     assert_equal "[url=blag\" onclick=\"alert('foo');]Click me![/url]", Comments.formatize("[url=blag\" onclick=\"alert('foo');]Click me![/url]")
-       assert_equal "<a href=\"http://example.com/\">Click me!\"&gt;&lt;script type=\"text/javascript\"&gt;&lt;/script&gt;</a>",
- Comments.formatize("[url=http://example.com/]Click me!\"><script type=\"text/javascript\"></script>[/url]")
+    assert_equal "<a href=\"http://example.com/\">Click me!\"&gt;&lt;script type=\"text/javascript\"&gt;&lt;/script&gt;</a>",
+                 Comments.formatize("[url=http://example.com/]Click me!\"><script type=\"text/javascript\"></script>[/url]")
+    invalid_img_tag = "[img]http://www.frank151.com/wp-content/uploads/2009/07/chief_wiggum.png\" onload=\"alert('foo');[/img]"
+    assert_equal invalid_img_tag, Comments.formatize(invalid_img_tag)
+  
   end
   
 
