@@ -92,6 +92,8 @@ class Admin::AdsSlotsController < AdministrationController
     end
     
     def require_user_can_owns_ads_slot(ads_slot_id)
-      @user.is_superadmin? || !@user.users_roles.find(:first, :conditions => 'role = \'Advertiser\' AND role_data = \'#{ads_slot_id}\'').nil?
+      @user.is_superadmin? || 
+        !@user.users_roles.count(:conditions => "role = 'Advertiser' AND 
+                                                 role_data = '#{ads_slot_id}'") == 0
     end
   end

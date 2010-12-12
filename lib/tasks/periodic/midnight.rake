@@ -9,7 +9,7 @@ namespace :gm do
     #dbi = Stats::Metrics::mdata('NewUsers', s, e)
     #`python script/spark.py metric #{dbi.collect {|dbr| dbr['count'] }.concat([0] * (days - dbi.size)).reverse.join(',')} "#{dst_file}"`
     #return
-
+    
     GmSys.job('Faith.reset_remaining_rating_slots')
     GmSys.job('Faction.update_factions_cohesion')
     generate_top_bets_winners_minicolumns
@@ -64,13 +64,13 @@ namespace :gm do
       min_time = dbmaxstats['max'].to_time
     end
     min_time = min_time.yesterday.beginning_of_day
-
+    
     min_time = 1.day.ago.beginning_of_day if RAILS_ENV == 'test'
     
     today = Time.now.beginning_of_day
     
     while min_time < today
-            # puts "Calculando para #{min_time}"
+      # puts "Calculando para #{min_time}"
       min_time_strted = min_time.strftime('%Y-%m-%d %H:%M:%S')
       
       portals_stats = {}
@@ -101,11 +101,11 @@ namespace :gm do
           portals_stats[platforms_r_portals[comment.content.platform_id]] ||= 0
           portals_stats[platforms_r_portals[comment.content.platform_id]] += Karma::KPS_CREATE['Comment']
         elsif comment.content.bazar_district # Contenido de distrito
-#puts "comment de bazar district #{comment.content.bazar_district_id}"
+          #puts "comment de bazar district #{comment.content.bazar_district_id}"
           bazar_districts_r_portals[comment.content.bazar_district_id] ||= Portal.find(:first, :conditions => ['code = ?', comment.content.bazar_district.code]).id
           portals_stats[bazar_districts_r_portals[comment.content.bazar_district_id]] ||= 0
           portals_stats[bazar_districts_r_portals[comment.content.bazar_district_id]] += Karma::KPS_CREATE['Comment']
-#p portals_stats
+          #p portals_stats
         elsif comment.content.clan # Contenido de clan
           portal = Portal.find(:first, :conditions => ['clan_id = ?', comment.content.clan_id])
           if portal then
@@ -162,15 +162,15 @@ namespace :gm do
       rescue Exception
         User.db_query("UPDATE stats.portals SET karma = #{general} WHERE created_on = '#{min_time.strftime('%Y-%m-%d')}' AND portal_id IS NULL")
       end
-
+      
       q = "insert into stats.portals(portal_id, karma, created_on, pageviews, visits, unique_visitors, unique_visitors_reg) select id, 0, '#{min_time.strftime('%Y-%m-%d')}',0 ,0, 0, 0 from portals where id not in (select portal_id from stats.portals where portal_id is not null AND created_on = '#{min_time.strftime('%Y-%m-%d')}')"
       User.db_query(q)
       # Ponemos a 0 las estadísticas del resto de portales
       # TODO cuando el campo created_on de portals represente fielmente el nacimiento de un portal esto se puede optimizar
-
+      
       Portal.find(:all).each do |portal|
-       portal_id = portal.id
-       karma = portals_stats[portal_id] ? portals_stats[portal_id] : 0
+        portal_id = portal.id
+        karma = portals_stats[portal_id] ? portals_stats[portal_id] : 0
         dbrstats_visits = Dbs.db_query("SELECT count(*) as pageviews,
                                             count(distinct(session_id)) as visits,
                                             count(distinct(visitor_id)) as unique_visitors,
@@ -185,11 +185,11 @@ namespace :gm do
         unique_visitors = dbrstats_visits['unique_visitors']
         unique_visitors_reg = dbrstats_visits['unique_visitors_reg']
         
-      #  begin
-      #    User.db_query("INSERT INTO stats.portals(created_on, portal_id, karma, pageviews, visits, unique_visitors) VALUES('#{min_time.strftime('%Y-%m-%d')}', #{portal_id}, #{karma}, #{pageviews}, #{visits}, #{unique_visitors}, #{unique_visitors_reg})") 
-      #  rescue Exception
-          User.db_query("UPDATE stats.portals SET karma = #{karma}, pageviews = #{pageviews}, visits = #{visits}, unique_visitors = #{unique_visitors}, unique_visitors_reg = #{unique_visitors_reg} WHERE created_on = '#{min_time.strftime('%Y-%m-%d')}' AND portal_id = #{portal_id}")
-      #  end
+        #  begin
+        #    User.db_query("INSERT INTO stats.portals(created_on, portal_id, karma, pageviews, visits, unique_visitors) VALUES('#{min_time.strftime('%Y-%m-%d')}', #{portal_id}, #{karma}, #{pageviews}, #{visits}, #{unique_visitors}, #{unique_visitors_reg})") 
+        #  rescue Exception
+        User.db_query("UPDATE stats.portals SET karma = #{karma}, pageviews = #{pageviews}, visits = #{visits}, unique_visitors = #{unique_visitors}, unique_visitors_reg = #{unique_visitors_reg} WHERE created_on = '#{min_time.strftime('%Y-%m-%d')}' AND portal_id = #{portal_id}")
+        #  end
       end
       min_time = min_time.advance(:days => 1)
     end
@@ -228,13 +228,8 @@ namespace :gm do
       active_factions_portals = Dbs.db_query("SELECT count(*) FROM stats.portals WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND karma > 0 AND portal_id IN (SELECT id FROM portals WHERE type='FactionsPortal')")[0]['count']
       active_clans_portals = Dbs.db_query("SELECT count(*) FROM stats.portals WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND karma > 0 AND portal_id IN (SELECT id FROM portals WHERE type='ClansPortal')")[0]['count']
       completed_competitions_matches = CompetitionsMatch.count(:conditions => ["date_trunc('day', completed_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'"])
-      if App.windows?
-        puts "WARNING: proxy errors count disabled"
-        proxy_errors = 0
-      else
       #proxy_errors = `grep -c "All workers are in error state" #{RAILS_ROOT}/log/error-#{first_stat.strftime('%Y%m%d')}.log`.strip
       proxy_errors = 0 #if proxy_errors.strip == ''
-      end
       dbsize = User.db_query("SELECT pg_database_size('#{ActiveRecord::Base.configurations[RAILS_ENV]['database']}');")[0]['pg_database_size']
       requests = User.db_query("SELECT count(*) FROM stats.pageloadtime WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'")[0]['count']
       http_500 = User.db_query("SELECT count(*) FROM stats.pageloadtime WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND http_status = 500")[0]['count']
@@ -283,6 +278,5 @@ namespace :gm do
                   WHERE created_on = '#{cur_str}'")
       first_stat = next_stat
     end
-  end
-
+  end  
 end

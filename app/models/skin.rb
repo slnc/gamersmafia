@@ -184,9 +184,7 @@ class Skin < ActiveRecord::Base
     
     # Tengo que crear el .zip inicial con la template
     cfg_dir = Pathname.new("#{RAILS_ROOT}\/config/skins/template_#{template}").realpath.to_s
-    cfg_dir.gsub!('/', '\\') if App.windows?
     dst_file = Pathname.new("#{RAILS_ROOT}/public/storage/skins").realpath.to_s << "/#{self.hid}_initial.zip"
-    dst_file.gsub!('/', '\\') if App.windows?
     system("cd \"#{cfg_dir}\" && zip -q -r \"#{dst_file}\" .")
     User.db_query("UPDATE skins SET file = 'storage/skins/#{self.hid}_initial.zip' WHERE id = #{self.id}")
     self.reload # para leer file bien (no funciona hacer self.file)

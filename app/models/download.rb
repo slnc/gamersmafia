@@ -101,7 +101,7 @@ class Download < ActiveRecord::Base
     if mirror.nil?
       FileUtils.mkdir_p(dstdir) unless File.exists?(dstdir)
       dstfile = "#{dstdir}/#{File.basename(realfile)}"
-      File.symlink(realfile, dstfile) unless File.exists?(dstfile) || App.windows?
+      File.symlink(realfile, dstfile) unless File.exists?(dstfile)
     else
       require 'open-uri'
       # TODO hacer un megabegin

@@ -1,7 +1,9 @@
 class AccessDenied < StandardError; end
 class DomainNotFound < StandardError; end
 
-class ApplicationController < ActionController::Base  
+class ApplicationController < ActionController::Base
+  VERSIONING_EREG = /^\/(.*\.)[a-z0-9.]+\.(css|js|gif|png|jpg)$/
+  
   include Clans::Authentication
   include Users::Authentication
   
@@ -14,7 +16,6 @@ class ApplicationController < ActionController::Base
   def no_ads
     false
   end
-  
   
   def can_add_as_quicklink?
     if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(portal.class.name)
@@ -555,7 +556,7 @@ Request information:
     end
   end
   
-  VERSIONING_EREG = /^\/(.*\.)[a-z0-9.]+\.(css|js|gif|png|jpg)$/
+  
   
   def http_404
     if App.port != 80 # solo capturamos estas URLs cuando ejecutamos en desarrollo

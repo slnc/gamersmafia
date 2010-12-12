@@ -1,7 +1,6 @@
 # common config (not usable directly, must use basic roles or specific machines)
 common: &common
   platform: <%=(RUBY_PLATFORM =~ /(win|w)32$/) ? WINDOWS : LINUX%>
-  windows?: <%= !(RUBY_PLATFORM =~ /(win|w)32$/).nil? %>
   tidy_path: <% if RUBY_PLATFORM =~ /darwin/ then %> '/usr/lib/libtidy.dylib' <% elsif RUBY_PLATFORM =~ /(win|w)32$/ then %> 'c:\tidy.dll' <% else %> '/usr/lib/libtidy.so' <% end %>
   domain: gamersmafia.com
   domain_bazar: bazar.gamersmafia.com

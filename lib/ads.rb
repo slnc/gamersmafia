@@ -41,11 +41,7 @@ module Ads
           in2 = ''
           @ads_slot.ads.count(:conditions => 'deleted = \'f\'').times do |t|
             in1 << "lever#{t}_reward, "
-            #if WINDOWS # TODO postgres 8.3 en windows no funciona
             in2 << "'#{'-' * ROUNDS_FIELD_SIZE}', "
-            #else
-            #  in2 << "lpad('', #{ROUNDS_FIELD_SIZE}, '0')::bit(#{ROUNDS_FIELD_SIZE}), "
-            #end
           end
           dbi = User.db_query("INSERT INTO stats.bandit_treatments (behaviour_class, round, abtest_treatment, #{in1[0..-3]}) VALUES ('#{self.behaviour_class}', 0, '#{game_id}', #{in2[0..-3]}); SELECT * FROM stats.bandit_treatments WHERE abtest_treatment = '#{game_id}';")
         end

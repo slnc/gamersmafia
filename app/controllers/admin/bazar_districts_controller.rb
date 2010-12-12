@@ -2,7 +2,6 @@ class Admin::BazarDistrictsController < ApplicationController
   require_admin_permission :bazar_manager
   
   def index
-    
   end
   
   def create
