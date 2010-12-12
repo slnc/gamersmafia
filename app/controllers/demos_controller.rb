@@ -40,7 +40,7 @@ class DemosController < ArenaController
     end
     sql_conds<< ['1 = 1']
     @demos = portal.demo.find(:published, :conditions => sql_conds.join(' AND '), :limit => 51, :order => 'created_on')
-    @limited = (@demos.size == 51) ? true : false
+    @limited = (@demos.size == 51)
   end
   
   

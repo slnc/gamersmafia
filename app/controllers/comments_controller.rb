@@ -115,7 +115,7 @@ class CommentsController < ApplicationController
     @comment = Comment.find(params[:comment_id])
     if Comments.user_can_rate_comment(@user, @comment)
       @cvt = CommentsValorationsType.find(params[:rate_id])
-      @disable_ratings = ((@user.remaining_rating_slots - 1) <= 0) ? true : false
+      @disable_ratings = (@user.remaining_rating_slots - 1 <= 0)
       GmSys.job("Comment.find(#{@comment.id}).rate(User.find(#{@user.id}), CommentsValorationsType.find(#{params[:rate_id]}))")
     else
       @disable_ratings = true

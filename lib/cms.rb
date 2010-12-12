@@ -718,7 +718,7 @@ module Cms
       # el autor del topic/comment y no está baneado
       if content.class.name == 'Topic' && user.id == content.user_id && content.created_on.to_i > 15.minutes.ago.to_i && (org.nil? || !org.user_is_banned?(content.user)) then
         true
-      elsif org        
+      elsif org
         if org.user_is_moderator(user)
           true
         # TODO

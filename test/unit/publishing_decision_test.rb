@@ -19,7 +19,7 @@ class PublishingDecisionTest < ActiveSupport::TestCase
     end
     
     assert %w(publish_content deny_content destroy_content).include?(decision.to_s)
-    b_decision = decision.to_s == 'publish_content' ? true : false
+    b_decision = (decision.to_s == 'publish_content')
     # n = News.find(:first, :conditions => 'state = 1', :order => 'id DESC')
     assert_not_nil @n
     if decision == :deny_content

@@ -1,6 +1,8 @@
+require 'digest/sha1'
 require 'digest/md5'
 require 'karma'
 
+    
 class User < ActiveRecord::Base
   BANNED_DOMAINS = %w(10minutemail.com correo.nu fishfuse.com meyzo.net
                       mintemail.uni.cc tempemail.net tempinbox.com uggsrock.com
@@ -39,6 +41,21 @@ class User < ActiveRecord::Base
                           ST_UNCONFIRMED_1W => 'no confirmada',
                           ST_UNCONFIRMED_2W => 'no confirmada'
                         }
+                        
+  ADMIN_PERMISSIONS_INDEXES = { :faq => 0, 
+                                :blogs => 1, 
+                                :clans => 2, 
+                                :avatars => 3, 
+                                :faction_headers => 4, 
+                                :capo => 5, 
+                                :designer => 6, 
+                                :qa => 7, 
+                                :fusions => 8, 
+                                :gladiador => 9, 
+                                :advertiser => 10, 
+                                :bazar_manager => 11, 
+                              }
+                              
   has_many :groups_messages
   
   has_many :users_roles, :dependent => :destroy
@@ -182,8 +199,8 @@ class User < ActiveRecord::Base
     positive = recent_valorations.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 1)')
     negative = recent_valorations.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = -1)')
     neutral = recent_valorations.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 0)')
-    ratio = negative.to_f/(positive + negative + neutral)
-    if (positive + negative + neutral) > 15 && ratio > 0.6
+    ratio = negative.to_f / (positive + negative + neutral)
+    if positive + negative + neutral > 15 && ratio > 0.6
       default = 0.0
     else
       default = 1.0
@@ -223,7 +240,8 @@ class User < ActiveRecord::Base
       ur.destroy
     end if slnc_changed?(:faction_id)
     
-    self.users_roles.clear if slnc_changed?(:state) && STATES_CANNOT_LOGIN.include?(self.state)
+    self.users_roles.clear if slnc_changed?(:state) && 
+                              STATES_CANNOT_LOGIN.include?(self.state)
   end
   
   def check_login_changed
@@ -239,9 +257,12 @@ class User < ActiveRecord::Base
     # TODO This should go into an observer
     if impositor.has_admin_permission?(:capo)
       SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], 
-                       :reporter_user_id => impositor.id, :headline => "Antiflood #{User::ANTIFLOOD_LEVELS[self.antiflood_level]} impuesto a <strong><a href=\"#{ApplicationController.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{ApplicationController.gmurl(impositor)}\">#{impositor.login}</a>")
+                       :reporter_user_id => impositor.id, 
+                       :headline => "Antiflood #{User::ANTIFLOOD_LEVELS[self.antiflood_level]} impuesto a <strong><a href=\"#{ApplicationController.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{ApplicationController.gmurl(impositor)}\">#{impositor.login}</a>")
     else
-      SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], :reporter_user_id => impositor.id, :headline => "Antiflood de emergencia impuesto a <strong><a href=\"#{ApplicationController.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{ApplicationController.gmurl(impositor)}\">#{impositor.login}</a>")
+      SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], 
+                       :reporter_user_id => impositor.id, 
+                       :headline => "Antiflood de emergencia impuesto a <strong><a href=\"#{ApplicationController.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{ApplicationController.gmurl(impositor)}\">#{impositor.login}</a>")
     end
     true
   end
@@ -294,10 +315,11 @@ class User < ActiveRecord::Base
   
   def valorations_weights_on_self_comments
     if self.cache_valorations_weights_on_self_comments.nil?
-      self.update_attributes(:cache_valorations_weights_on_self_comments => User.db_query("SELECT sum(weight) as sum
-                     FROM comments_valorations                     
-           JOIN comments on comments_valorations.comment_id = comments.id
-                    WHERE comments.user_id = #{self.id}")[0]['sum'].to_f)
+      sum_weights = User.db_query("SELECT sum(weight) as sum
+                                     FROM comments_valorations
+                                     JOIN comments ON comments_valorations.comment_id = comments.id
+                                    WHERE comments.user_id = #{self.id}")[0]['sum'].to_f
+      self.update_attributes(:cache_valorations_weights_on_self_comments => sum_weights)
     end
     self.cache_valorations_weights_on_self_comments
   end
@@ -368,7 +390,10 @@ class User < ActiveRecord::Base
   end
   
   def is_district_leader?
-    self.has_admin_permission?(:bazar_manager) || UsersRole.count(:conditions => ["role IN ('#{BazarDistrict::ROLE_DON}', '#{BazarDistrict::ROLE_MANO_DERECHA}') AND user_id = ?", self.id]) > 0
+    self.has_admin_permission?(:bazar_manager) || 
+    UsersRole.count(:conditions => ["role IN ('#{BazarDistrict::ROLE_DON}', 
+                                              '#{BazarDistrict::ROLE_MANO_DERECHA}')
+                                     AND user_id = ?", self.id]) > 0
   end
   
   def check_homepage
@@ -378,7 +403,8 @@ class User < ActiveRecord::Base
   end
   
   def self.online(order='faction_id asc, lastseen_on desc')
-    User.find(:all, :conditions => 'lastseen_on >= now() - \'30 minutes\'::interval', :order => order, :limit => 100)
+    User.find(:all, :conditions => "lastseen_on >= now() - '30 minutes'::interval", 
+              :order => order, :limit => 100)
   end
   
   def banned # TODO remove this
@@ -390,7 +416,8 @@ class User < ActiveRecord::Base
   end
   
   def self.online_count
-    self.count(:conditions => "lastseen_on >= now() - '30 minutes'::interval and state <> #{User::ST_UNCONFIRMED}")
+    self.count(:conditions => "lastseen_on >= now() - '30 minutes'::interval 
+                               AND state <> #{User::ST_UNCONFIRMED}")
   end
   
   def self.find_by_autologin_key(k)
@@ -403,20 +430,6 @@ class User < ActiveRecord::Base
       akey.user
     end
   end
-  
-  ADMIN_PERMISSIONS_INDEXES = { :faq => 0, 
-                                :blogs => 1, 
-                                :clans => 2, 
-                                :avatars => 3, 
-                                :faction_headers => 4, 
-                                :capo => 5, 
-                                :designer => 6, 
-                                :qa => 7, 
-                                :fusions => 8, 
-                                :gladiador => 9, 
-                                :advertiser => 10, 
-                                :bazar_manager => 11, 
-                              }
 
   def self.find_with_admin_permissions(args)
     if args.kind_of?(Symbol)
@@ -439,13 +452,15 @@ class User < ActiveRecord::Base
   end
   
   def has_admin_permission?(permission)
-    #is_superadmin || (admin_permissions.size >= (User::ADMIN_PERMISSIONS_INDEXES[permission.to_sym] - 1) && admin_permissions[User::ADMIN_PERMISSIONS_INDEXES[permission.to_sym]..User::ADMIN_PERMISSIONS_INDEXES[permission.to_sym]] == '1')
-    is_superadmin || admin_permissions[User::ADMIN_PERMISSIONS_INDEXES.fetch(permission.to_sym)..User::ADMIN_PERMISSIONS_INDEXES.fetch(permission.to_sym)] == '1'
+    is_superadmin || 
+    admin_permissions[User::ADMIN_PERMISSIONS_INDEXES.fetch(permission.to_sym)..
+                      User::ADMIN_PERMISSIONS_INDEXES.fetch(permission.to_sym)] == '1'
   end
   
   def give_admin_permission(permission)
     if self.admin_permissions.size < User::ADMIN_PERMISSIONS_INDEXES[permission]
-      self.admin_permissions << '0'*(User::ADMIN_PERMISSIONS_INDEXES.size - self.admin_permissions.size) 
+      self.admin_permissions << '0' * (User::ADMIN_PERMISSIONS_INDEXES.size - 
+                                       self.admin_permissions.size) 
     end
     self.admin_permissions[User::ADMIN_PERMISSIONS_INDEXES[permission]] = '1'
     self.save
@@ -475,14 +490,8 @@ class User < ActiveRecord::Base
   
   # Busca un usuario que se corresponda con el username y el password indicados
   def self.login(username, password)
-    u = find(:first, :conditions => ['lower(login) = lower(?) AND password = ?', username, Digest::MD5.hexdigest(password)])
-    
-    if u then
-      #u.db_query("update users set lastseen_on = now() where id = #{u.id}")
-      #u.lastseen_on = Time.now # perf: da igual que haya una diferencia entre
-      # el lastseen_on de db y el del modelo
-    end
-    u
+    User.find(:first, :conditions => ['lower(login) = lower(?) AND password = ?', 
+                                      username, Digest::MD5.hexdigest(password)])
   end
   
   def clearpasswd(password)
@@ -492,7 +501,6 @@ class User < ActiveRecord::Base
   
   public
   def get_new_autologin_key
-    require 'digest/sha1'
     newkey = Digest::SHA1.hexdigest((Kernel.rand(1000000).to_i + self.id.to_i + Time.now.to_i).to_s + self.login)
     
     while AutologinKey.find_by_key(newkey)
@@ -575,7 +583,6 @@ class User < ActiveRecord::Base
   end
   
   def is_editor?
-    
     # TODO cachear
     # devuelve true si el usuario puede editar algún tipo de contenido
     if self.is_bigboss?
@@ -613,7 +620,7 @@ class User < ActiveRecord::Base
   def is_friend_of?(user)
     # si self está en la lista de amigos de user devuelve true
     f = Friendship.find_between(self, user)
-     (f && f.accepted_on) ? true : false
+    f && f.accepted_on
   end
   
   def remaining_rating_slots
@@ -634,11 +641,11 @@ class User < ActiveRecord::Base
   end
   
   def can_change_faction_after
-    time_activate_again = Time.at(self.faction_last_changed_on + 86400 * 30)
+    Time.at(self.faction_last_changed_on + 86400 * 30)
   end
   
   def tracker_empty?
-    return TrackerItem.count(:conditions => ['user_id = ? and is_tracked = \'t\'', self.id]) == 0 ? true : false
+    TrackerItem.count(:conditions => ['user_id = ? and is_tracked = \'t\'', self.id]) == 0
   end
   
   def tracker_has?(object_id)

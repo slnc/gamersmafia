@@ -434,14 +434,14 @@ class CompetitionsMatch < ActiveRecord::Base
           allowed_players += self.participant1.the_real_thing.admins
           allowed_players_ids = []
           allowed_players.each { |player| allowed_players_ids<< player.id }
-          allowed_players_ids.include?(user.id) ? true : false
-        elsif self.participant2_id # buscaoms en el otro participante
+          allowed_players_ids.include?(user.id)
+        elsif self.participant2_id # buscamos en el otro participante
           allowed_players = self.participant2.the_real_thing.members_of_game(competition.game)
           allowed_players ||= []
           allowed_players += self.participant2.the_real_thing.admins
           allowed_players_ids = []
           allowed_players.each { |player| allowed_players_ids<< player.id }
-          allowed_players_ids.include?(user.id) ? true : false
+          allowed_players_ids.include?(user.id)
         else
           false
         end

@@ -47,7 +47,7 @@ class Tournament < Competition
   def winner_of_tourney_rounds_match_is_participant1?(cm)
     prev = self.competitions_matches.count(:conditions => ['stage = ? and id < ?', cm.stage, cm.id])
     
-    is_participant1 = (prev % 4 < 2) ? true : false
+    is_participant1 = (prev % 4 < 2)
     #puts "prev: #{prev} #{is_participant1}"
     # TODO hack, arreglar esto
     if self.tourney_rounds_starting_stage > 0 then

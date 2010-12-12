@@ -50,7 +50,7 @@ gencat.name = 'General' %>
 
 <% cache("/#{controller.portal_code}/home/index/articles2") do %>
 <%mftext('Artículos', :has_submodules => true, :grid => 12, :glast => true) do 
-	revs = (controller.portal.review && controller.portal.review.count > 0) ? true : false
+	revs = (controller.portal.review && controller.portal.review.count > 0)
 	classes = %w(Column Interview Tutorial Review)
 	if revs
 		classes = classes - ['Review']

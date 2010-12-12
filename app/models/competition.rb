@@ -128,7 +128,7 @@ class Competition < ActiveRecord::Base
                                                                                            (participant2_id IN (#{participants_ids.join(',')}) AND participant2_confirmed_result = 'f')) AND play_on < now() AND admin_confirmed_result = 'f')")
     end
     
-    user.enable_competition_indicator = (update_indicator) ? true : false
+    user.enable_competition_indicator = update_indicator
     user.save
   end
   
@@ -596,7 +596,7 @@ class Competition < ActiveRecord::Base
   def user_is_participant(user_id)
     case self.competitions_participants_type_id
       when 1:
-      self.competitions_participants.find(:first, :conditions => ['participant_id = ?', user_id]) ? true : false
+      self.competitions_participants.count(:conditions => ['participant_id = ?', user_id]) > 0
       when 2:
       ids = [0]
       for c in Clan.leaded_by(user_id)
@@ -604,7 +604,7 @@ class Competition < ActiveRecord::Base
       end
       if ids then
         # first pq solo necesitamos uno
-        self.competitions_participants.find(:first, :conditions => "participant_id in (#{ids.join(',')})") ? true : false
+        self.competitions_participants.count(:conditions => "participant_id in (#{ids.join(',')})") > 0
       else
         false
       end

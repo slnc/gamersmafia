@@ -113,7 +113,7 @@ class Content < ActiveRecord::Base
   
   def locked_for_user?(user)
     mlock = cur_lock
-     (mlock && mlock.user_id != user.id) ? true : false
+    (mlock && mlock.user_id != user.id)
   end
   
   def cur_lock    

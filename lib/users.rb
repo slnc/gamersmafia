@@ -33,7 +33,7 @@ module Users
 
     public
     def user_is_authed
-      user ? true : false
+      !user.nil?
     end
     
     protected
@@ -74,7 +74,7 @@ module Users
     # Autologin, session maintenance
     def ident
       clean_url = "#{request.request_uri}"
-      redirect_to_clean = params[:vk] ? true : false
+      redirect_to_clean = !params[:vk].nil?
       clean_url.gsub!(/(\?vk=([a-z0-9]{32}))/, '?fromvk=1') if /\?vk=([a-z0-9]{32})/ =~ clean_url
       
       if session[:user]
