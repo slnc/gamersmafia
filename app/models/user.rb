@@ -196,7 +196,7 @@ class User < ActiveRecord::Base
   
   def update_default_comments_valorations_weight
     recent_valorations = self.comments_valorations.recent
-    positive = recent_valorations.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 1)')
+    positive = recent_valorations.positive.count
     negative = recent_valorations.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = -1)')
     neutral = recent_valorations.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 0)')
     ratio = negative.to_f / (positive + negative + neutral)
