@@ -3,10 +3,19 @@ class CompetitionsMatch < ActiveRecord::Base
   TIE = 1
   P2_WINS = 2
   
-  belongs_to :participant1, :class_name => 'CompetitionsParticipant', :foreign_key => 'participant1_id'
-  belongs_to :participant2, :class_name => 'CompetitionsParticipant', :foreign_key => 'participant2_id'
+  VALID_SCORING_SIMPLE_OPTIONS = [ :forfeit_participant1, 
+                                   :forfeit_participant2,
+                                   :participation, 
+                                   :result
+                                 ]
+  
   belongs_to :competition
   belongs_to :event
+  belongs_to :participant1, :class_name => 'CompetitionsParticipant', 
+                            :foreign_key => 'participant1_id'
+                            
+  belongs_to :participant2, :class_name => 'CompetitionsParticipant', 
+                            :foreign_key => 'participant2_id'
   
   has_many :competitions_matches_games_maps, :dependent => :destroy
   has_many :competitions_matches_uploads, :dependent => :destroy
@@ -27,7 +36,8 @@ class CompetitionsMatch < ActiveRecord::Base
   observe_attr :participant1_id
   observe_attr :participant2_id
 
-  
+  named_scope :accepted, :conditions => "accepted = 't'"
+  named_scope :not_accepted, :conditions => "accepted = 'f'"
   #  after_save :reset_faith_indicators
   
   # TODO 
@@ -84,7 +94,8 @@ class CompetitionsMatch < ActiveRecord::Base
       end
     end
     self.save
-    Notification.deliver_rechallenge(self.participant2.the_real_thing, :participant => self.participant1)
+    Notification.deliver_rechallenge(self.participant2.the_real_thing, 
+                                     :participant => self.participant1)
   end
   
   
@@ -92,22 +103,25 @@ class CompetitionsMatch < ActiveRecord::Base
     c = self.competition
     
     has_participants = self.participant1_id && self.participant2_id
-    no_tourney_round = !(c.kind_of?(Tournament) && c.competitions_types_options[:tourney_use_classifiers] == 'on' && self.stage >= c.tourney_rounds_starting_stage)
+    no_tourney_round = !(c.kind_of?(Tournament) && 
+                         c.competitions_types_options[:tourney_use_classifiers] == 'on' &&
+                         self.stage >= c.tourney_rounds_starting_stage)
     
     has_participants && no_tourney_round
   end
   
   # Solo para ladders
   def accept_challenge
-    self.accepted = true
-    self.save
-    Notification.deliver_reto_aceptado(self.participant1.the_real_thing, { :participant => self.participant2 })
+    self.update_attribute(:accepted, true)
+    Notification.deliver_reto_aceptado(self.participant1.the_real_thing, 
+                                       :participant => self.participant2)
   end
   
   # Solo para ladders
   def reject_challenge
     self.competition.log("#{self.participant2.name} rechaza el reto de #{self.participant1.name}")
-    Notification.deliver_reto_rechazado(self.participant1.the_real_thing, { :participant => self.participant2 })
+    Notification.deliver_reto_rechazado(self.participant1.the_real_thing, 
+                                        :participant => self.participant2)
     self.destroy
   end
   
@@ -167,13 +181,13 @@ class CompetitionsMatch < ActiveRecord::Base
   
   def completed?
     # TODO añadir constraint dependiendo del tipo de confirmación de resultado
-     ((participant1_confirmed_result && participant2_confirmed_result) || admin_confirmed_result)
+     ((participant1_confirmed_result && participant2_confirmed_result) || 
+      admin_confirmed_result)
   end
+  
   
   private
   # parsea los parámetros para confirmar el resultado de una partida simple
-  VALID_SCORING_SIMPLE_OPTIONS = [ :participation, :result, :forfeit_participant1, :forfeit_participant2 ]
-  
   def parse_scoring_simple(params)
     #params.assert_valid_keys(VALID_SCORING_SIMPLE_OPTIONS)
     if self.result != params[:result].to_i and self.forfeit_participant1 == params[:forfeit_participant1] and  self.forfeit_participant2 == params[:forfeit_participant2] then

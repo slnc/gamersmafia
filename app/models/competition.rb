@@ -121,11 +121,11 @@ class Competition < ActiveRecord::Base
     participants.each { |participant| participants_ids<< participant.id }
     # La siguiente query es una combinación de la query para partidas pendientes de confirmar resultado y la query para ver resultados pendientes de responder
     # buscamos partidas pendientes de aceptar por el user
-    update_indicator = CompetitionsMatch.find(:first, :conditions => "accepted='f' AND participant2_id IN (#{participants_ids.join(',')})")
-    if update_indicator.nil?
+    update_indicator = CompetitionsMatch.not_accepted.count(:conditions => "participant2_id IN (#{participants_ids.join(',')})") > 0
+    if !update_indicator
       # Buscamos partidas pendientes de confirmar resultado por este lado
-      update_indicator = CompetitionsMatch.find(:first, :conditions => "accepted='t' AND (((participant1_id IN (#{participants_ids.join(',')}) AND participant1_confirmed_result = 'f') OR 
-                                                                                           (participant2_id IN (#{participants_ids.join(',')}) AND participant2_confirmed_result = 'f')) AND play_on < now() AND admin_confirmed_result = 'f')")
+      update_indicator = CompetitionsMatch.accepted.count(:conditions => "(((participant1_id IN (#{participants_ids.join(',')}) AND participant1_confirmed_result = 'f') OR 
+                                                                                           (participant2_id IN (#{participants_ids.join(',')}) AND participant2_confirmed_result = 'f')) AND play_on < now() AND admin_confirmed_result = 'f')") > 0
     end
     
     user.enable_competition_indicator = update_indicator
