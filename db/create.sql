@@ -594,7 +594,8 @@ CREATE TABLE comments_valorations (
     user_id integer NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     comments_valorations_type_id integer NOT NULL,
-    weight real NOT NULL
+    weight real NOT NULL,
+    randval numeric DEFAULT random() NOT NULL
 );
 CREATE SEQUENCE comments_valorations_id_seq
     START WITH 1
@@ -1499,22 +1500,6 @@ CREATE SEQUENCE games_versions_id_seq
     NO MINVALUE
     CACHE 1;
 ALTER SEQUENCE games_versions_id_seq OWNED BY games_versions.id;
-CREATE TABLE global_notifications (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    completed_on timestamp without time zone,
-    recipient_type character varying,
-    title character varying,
-    main character varying,
-    confirmed boolean DEFAULT false NOT NULL
-);
-CREATE SEQUENCE global_notifications_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-ALTER SEQUENCE global_notifications_id_seq OWNED BY global_notifications.id;
 CREATE TABLE global_vars (
     id integer NOT NULL,
     online_anonymous integer DEFAULT 0 NOT NULL,
@@ -2266,8 +2251,7 @@ CREATE TABLE sent_emails (
     first_read_on timestamp without time zone,
     sender character varying,
     recipient character varying,
-    recipient_user_id integer,
-    global_notification_id integer
+    recipient_user_id integer
 );
 CREATE SEQUENCE sent_emails_id_seq
     START WITH 1
@@ -2524,7 +2508,6 @@ CREATE TABLE users (
     sex smallint,
     msn character varying,
     icq character varying,
-    send_global_announces boolean DEFAULT true NOT NULL,
     birthday date,
     cache_karma_points integer,
     irc character varying,
@@ -2598,7 +2581,8 @@ CREATE TABLE users (
     ranking_popularity_pos integer,
     cache_popularity integer,
     login_is_ne_unfriendly boolean DEFAULT false NOT NULL,
-    cache_valorations_weights_on_self_comments numeric
+    cache_valorations_weights_on_self_comments numeric,
+    comments_direction integer
 );
 CREATE TABLE users_actions (
     id integer NOT NULL,
@@ -3032,7 +3016,6 @@ ALTER TABLE games ALTER COLUMN id SET DEFAULT nextval('games_id_seq'::regclass);
 ALTER TABLE games_maps ALTER COLUMN id SET DEFAULT nextval('games_maps_id_seq'::regclass);
 ALTER TABLE games_modes ALTER COLUMN id SET DEFAULT nextval('games_modes_id_seq'::regclass);
 ALTER TABLE games_versions ALTER COLUMN id SET DEFAULT nextval('games_versions_id_seq'::regclass);
-ALTER TABLE global_notifications ALTER COLUMN id SET DEFAULT nextval('global_notifications_id_seq'::regclass);
 ALTER TABLE global_vars ALTER COLUMN id SET DEFAULT nextval('global_vars_id_seq'::regclass);
 ALTER TABLE gmtv_broadcast_messages ALTER COLUMN id SET DEFAULT nextval('gmtv_broadcast_messages_id_seq'::regclass);
 ALTER TABLE gmtv_channels ALTER COLUMN id SET DEFAULT nextval('gmtv_channels_id_seq'::regclass);
@@ -3347,8 +3330,6 @@ ALTER TABLE ONLY games_platforms
     ADD CONSTRAINT games_platforms_pkey PRIMARY KEY (game_id, platform_id);
 ALTER TABLE ONLY games_versions
     ADD CONSTRAINT games_versions_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY global_notifications
-    ADD CONSTRAINT global_notifications_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY global_vars
     ADD CONSTRAINT global_vars_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY gmtv_broadcast_messages
@@ -3680,7 +3661,6 @@ CREATE UNIQUE INDEX reviews_categories_unique ON reviews_categories USING btree 
 CREATE INDEX reviews_state ON reviews USING btree (state);
 CREATE INDEX reviews_user_id ON reviews USING btree (user_id);
 CREATE INDEX sent_emails_created_on ON sent_emails USING btree (created_on);
-CREATE INDEX sent_emails_gnotif ON sent_emails USING btree (global_notification_id);
 CREATE INDEX silenced_emails_lower ON silenced_emails USING btree (lower((email)::text));
 CREATE INDEX slog_entries_completed_on ON slog_entries USING btree (completed_on);
 CREATE INDEX slog_entries_headline ON slog_entries USING btree (headline);
@@ -3766,6 +3746,8 @@ ALTER TABLE ONLY comment_violation_opinions
     ADD CONSTRAINT comment_violation_opinions_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES comments(id);
 ALTER TABLE ONLY comment_violation_opinions
     ADD CONSTRAINT comment_violation_opinions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
+ALTER TABLE ONLY comments_valorations
+    ADD CONSTRAINT comments_valorations_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES comments(id);
 ALTER TABLE ONLY competitions_matches
     ADD CONSTRAINT competitions_matches_participant1_id_fkey FOREIGN KEY (participant1_id) REFERENCES competitions_participants(id);
 ALTER TABLE ONLY competitions_matches

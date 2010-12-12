@@ -375,7 +375,6 @@ Request information:
       items<< ['Grupos', '/admin/grupos']
       items<< ['Hipótesis', '/admin/hipotesis']
       items<< ['Juegos', '/admin/juegos']
-      items<< ['Notificaciones globales', '/admin/global_notifications']
       items<< ['Plataformas', '/admin/plataformas'] 
       items<< ['Portales', '/admin/portales']
       items<< ['Tienda', '/admin/tienda']

@@ -8,7 +8,6 @@ common: &common
   domain_arena: arena.gamersmafia.com
   asset_domain: gamersmafia.com
   debug: false
-  enable_global_notifications?: false
   enable_google_analytics?: false
   enable_bgjobs?: false
   enable_support_db?: false
@@ -51,7 +50,6 @@ common: &common
 production: &production
   enable_bgjobs?: true
   enable_support_db?: false
-  enable_global_notifications?: true
   enable_google_analytics?: true
   enable_slonik?: false
   system_mail_user: nagato@gamersmafia.com

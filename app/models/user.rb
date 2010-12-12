@@ -937,8 +937,7 @@ class User < ActiveRecord::Base
   
   public
   def disable_all_email_notifications
-    self.update_attributes(:send_global_announces => false,
-                           :notifications_global => false,
+    self.update_attributes(:notifications_global => false,
                            :notifications_newregistrations => false,
                            :notifications_newmessages => false,
                            :notifications_trackerupdates => false

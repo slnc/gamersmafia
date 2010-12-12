@@ -27,7 +27,6 @@ namespace :gm do
     check_faction_leaders
     generate_daily_ads_stats
     kill_zombified_staff
-    GmSys.job('Notification.check_global_notifications')
     close_old_open_questions
     
     update_users_karma_stats

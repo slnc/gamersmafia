@@ -4,12 +4,12 @@ class Notification < ActionMailer::Base
   def deliver!
     val = super
     # :body => self.mail.body,
-    SentEmail.create({:message_key => @message_key, 
-      :title => @subject, 
-      :sender => @from, 
+    SentEmail.create(:message_key => @message_key,
       :recipient => @recipients,
       :recipient_user_id => @recipient_user_id,
-      :global_notification_id => @global_notification_id})
+      :sender => @from,
+      :title => @subject 
+    )
     val
   end
   
@@ -70,15 +70,6 @@ class Notification < ActionMailer::Base
     vars[:message_key] = @message_key
     #attachment :content_type => 'image/png', :body => File.read("#{RAILS_ROOT}/public/images/emails/gm.png")
     #attachment :content_type => 'image/png', :body => File.read("#{RAILS_ROOT}/public/images/emails/footer-bg.png")
-  end
-  
-  # keys: title, announcement, global_notification
-  def global_announcement(user, vars)
-    @global_notification_id = vars[:global_notification_id]
-    vars[:announcement] = vars[:announcement].gsub('_slu_', "vk=#{user.validkey}")
-    vars.merge!({ :actions => [['Ir a gamersmafia', "/#{sl(user)}"]],
-      :title => vars[:title]})
-    setup(user, vars)
   end
   
   # keys: prod, support (both are Time's) 
@@ -339,25 +330,6 @@ class Notification < ActionMailer::Base
       ],
       :title => vars[:subject].strip})
     setup(User.find(1), vars)
-  end
-  
-  def self.check_global_notifications
-    # processes pending global_notifications
-    GlobalNotification.find(:all, :conditions => 'confirmed = \'t\' AND completed_on IS NULL', :order => 'id').each do |gn|
-      # select last user_id to whom we sent it
-      se = SentEmail.find(:first, :conditions => ['global_notification_id = ?', gn.id], :order => 'id desc')
-      starting_after = se ? se.recipient_user_id : nil
-      # send it to all the remaining users
-      # ORDER is critical
-      # enviamos las notificaciones de 500 en 500
-      # PERF esto se podría optimizar agrupando por dominios y usando threads
-      User.find(:all, :conditions => gn.sql_user_conditions(starting_after), :order => 'id', :limit => 500).each do |u|
-        # puts "sending notification to #{u.login}"
-        Notification.deliver_global_announcement(u, :title => gn.title, :announcement => gn.main, :global_notification_id => gn.id)
-      end
-      
-      gn.check_completedness
-    end
   end
   
   def new_friendship_request(user, vars)

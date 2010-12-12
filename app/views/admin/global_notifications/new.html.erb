@@ -1,8 +1,0 @@
-<%content_main do %>
-<%mftext('Nuevo mensaje global') do %>
-<%= form_tag({:action => 'create' }, :multipart => true )%>
-  <%= render :partial => 'form' %>
-  <%= submit_tag 'Crear' %>
-</form>
-<% end -%>
-<% end -%>

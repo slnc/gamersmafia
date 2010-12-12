@@ -82,27 +82,6 @@ class NotificationTest < ActiveSupport::TestCase
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
   
-  test "global_announcement" do
-    
-    
-    #Notification.deliver_newmessage(m.recipient, { :sender => m.sender, :message => m})
-    #assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
-    #puts ActionMailer::Base.deliveries.last.body
-    #assert ActionMailer::Base.deliveries.last.body.include?(s2)
-    
-    sender = User.find(1)
-    recipient = User.find(2)
-    deliveries = ActionMailer::Base.deliveries.size
-    
-    announcement = 'http://gamersmafia.com/?_slu_ http://cs2.gamersmafia.com/noticias/show/1?page=3&_slu_'    
-    announcement_mod = "http://gamersmafia.com/?vk=#{recipient.validkey} http://cs2.gamersmafia.com/noticias/show/1?page=3&vk=#{recipient.validkey}"
-    
-    Notification.deliver_global_announcement(recipient, { :title => 'Título de la notificación', :sender => sender, :announcement => announcement })
-    assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
-    # puts ActionMailer::Base.deliveries.last.body.index(announcement_mod)
-    assert ActionMailer::Base.deliveries.last.body.include?(announcement_mod)
-  end
-  
   test "newmessage" do
     sender = User.find(1)
     recipient = User.find(2)
