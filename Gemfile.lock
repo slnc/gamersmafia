@@ -1,0 +1,87 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    actionmailer (2.3.10)
+      actionpack (= 2.3.10)
+    actionpack (2.3.10)
+      activesupport (= 2.3.10)
+      rack (~> 1.1.0)
+    activerecord (2.3.10)
+      activesupport (= 2.3.10)
+    activeresource (2.3.10)
+      activesupport (= 2.3.10)
+    activesupport (2.3.10)
+    ai4r (1.9)
+    blackbook (1.0.4)
+      fastercsv (>= 1.2.0)
+      hoe (>= 1.5.0)
+      mechanize (>= 0.7.0)
+    builder (3.0.0)
+    capistrano (2.5.8)
+      highline
+      net-scp (>= 1.0.0)
+      net-sftp (>= 2.0.0)
+      net-ssh (>= 2.0.10)
+      net-ssh-gateway (>= 1.0.0)
+    ci_reporter (1.6.0)
+      builder (>= 2.1.2)
+    clusterer (0.1.9)
+      stemmer (>= 0.0.0)
+    fastercsv (1.5.3)
+    feedtools (0.2.29)
+      activerecord (>= 1.10.1)
+      builder (>= 1.2.4)
+      uuidtools (>= 1.0.0)
+    feedvalidator (0.1.2)
+    geoip (0.8.7)
+    gruff (0.3.6)
+    highline (1.5.0)
+    hoe (2.8.0)
+      rake (>= 0.8.7)
+    mechanize (1.0.0)
+      nokogiri (>= 1.2.1)
+    net-scp (1.0.2)
+      net-ssh (>= 1.99.1)
+    net-sftp (2.0.2)
+      net-ssh (>= 2.0.9)
+    net-ssh (2.0.14)
+    net-ssh-gateway (1.0.1)
+      net-ssh (>= 1.99.1)
+    nokogiri (1.4.4)
+    rack (1.1.0)
+    rails (2.3.10)
+      actionmailer (= 2.3.10)
+      actionpack (= 2.3.10)
+      activerecord (= 2.3.10)
+      activeresource (= 2.3.10)
+      activesupport (= 2.3.10)
+      rake (>= 0.8.3)
+    rake (0.8.7)
+    rcov (0.9.9)
+    rmagick (2.13.1)
+    ruby-pg (0.7.9.2008.01.28)
+    rubystats (0.2.3)
+    stemmer (1.0.1)
+    tidy (1.1.2)
+    uuidtools (2.1.1)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  ai4r
+  blackbook
+  capistrano
+  ci_reporter
+  clusterer
+  feedtools
+  feedvalidator
+  geoip
+  gruff
+  nokogiri
+  rails (~> 2.3.5)
+  rcov
+  rmagick
+  ruby-pg
+  rubystats
+  tidy

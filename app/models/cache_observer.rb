@@ -494,8 +494,7 @@ class CacheObserver < ActiveRecord::Observer
       next_count = Funthing.count(:conditions => ["state = #{Cms::PUBLISHED} and created_on >= ?", object.created_on])
       start_page = prev_count / 20 # TODO especificar esto en un único sitio
       end_page = start_page + next_count / 20 + 1
-      
-      for i in (start_page..end_page)
+      [start_page..end_page].each do |i|
         expire_fragment("/common/curiosidades/index/page_#{i}")
       end
       

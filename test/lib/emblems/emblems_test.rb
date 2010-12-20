@@ -8,7 +8,6 @@ class EmblemsTest < ActiveSupport::TestCase
     Emblems.give_emblems
     @u.reload
     assert_equal 1, @u.users_emblems.count(:conditions => "emblem = '#{emblem}'")
-    # Emblems::EMBLEMS[emblem.to_sym]
     assert_equal '1', @u.emblems_mask[Emblems::EMBLEMS[emblem.to_sym][:index]..Emblems::EMBLEMS[emblem.to_sym][:index]]
   end
   
@@ -26,8 +25,6 @@ class EmblemsTest < ActiveSupport::TestCase
     assert @u.emblems_mask.index('1') != nil 
     Emblems.give_emblems
     @u.reload
-    #puts @u.emblems_mask.index('1')
-    #puts @u.emblems_mask
     assert_equal '0', @u.emblems_mask[Emblems::EMBLEMS[:hq][:index]..Emblems::EMBLEMS[:hq][:index]]
   end
   
@@ -48,15 +45,6 @@ class EmblemsTest < ActiveSupport::TestCase
       assert @u.update_attributes(:created_on => Time.now)
     end
   end
-  
-  # Ya no damos emblema al okupa porque siempre levanta ampoyas
-  #test "give_emblems_okupa" do
-  #  assert_gives_emblem('okupa') do
-  #    sym_pageview({:user_id => @u.id, :url => '/dadadd/adsdasd/1', :portal_id => nil})
-  #    sym_pageview({:user_id => @u.id, :url => '/dadadd/adsdasd/2', :portal_id => nil})
-  #    sym_pageview({:user_id => @u.id + 1, :url => '/dadadd/adsdasd/1', :portal_id => nil})
-  #  end
-  #end
   
   test "give_emblems_bets_master" do
     # TODO test
