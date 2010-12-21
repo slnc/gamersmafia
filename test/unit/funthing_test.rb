@@ -20,23 +20,20 @@ class FunthingTest < ActiveSupport::TestCase
   test "should_not_create_funthing_if_duplicated_name" do
     test_should_create_funthing
     ft = Funthing.new({:title => 'foo funthing', :main => 'somecode2', :user_id => 1})
-    assert_equal false, ft.save
-    assert_not_nil ft.errors[:title]
+    assert !ft.save
   end
   
   test "should_not_create_funthing_if_duplicated_url" do
     test_should_create_funthing
-    ft = Funthing.new({:title => 'foo funthing2', :main => 'somecode', :user_id => 1})
-    assert_equal false, ft.save
-    assert_not_nil ft.errors[:main]
+    ft = Funthing.new(:title => 'foo funthing2', :main => 'somecode', :user_id => 1)
+    assert !ft.save
   end
   
   test "should_not_create_funthing_if_duplicated_url_with_youtube" do
     test_should_create_funthing
     assert_equal true, Funthing.find(:first, :order => 'id desc').update_attributes({:main => 'http://www.youtube.com/watch?v=rrNriyDJmdw'})
     ft = Funthing.new({:title => 'foo funthing2', :main => 'http://www.youtube.com/watch?v=rrNriyDJmdw', :user_id => 1})
-    assert_equal false, ft.save
-    assert_not_nil ft.errors[:main]
+    assert !ft.save
   end
   
   test "should_automatically_transform_youtube_url_into_youtube_embed" do

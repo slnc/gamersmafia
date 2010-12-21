@@ -289,4 +289,3 @@ COPY countriies (id, code, name) FROM stdin;
 --
 
 alter table countriies rename to countries;
-
