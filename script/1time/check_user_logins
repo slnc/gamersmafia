@@ -1,6 +1,0 @@
-for u in User.find(:all, :order => 'id desc')
-  if not u.save then
-    puts "#{u.login} #{u.errors.full_messages}"
-  end
-end
-
