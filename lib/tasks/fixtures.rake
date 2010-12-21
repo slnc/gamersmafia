@@ -56,7 +56,6 @@ fixtures = [
 :faq_entries,
 :topics,
 :funthings,
-:gmtv_broadcast_messages,
 :images,
 :demos,
 :potds,
