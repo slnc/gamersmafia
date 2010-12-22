@@ -111,10 +111,9 @@ having portal_id in (select id
       end
       User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(rc.class.name)} SET cache_weighted_rank = null #{q}")
     end
+    
     return # TODO deshabilitado recálculo de contenidos más votados porque este algoritmo no es escalable.
     ContentType.find(:all).each do |ctype|
-      #  slonik_execute "alter table #{ActiveSupport::Inflector::tableize(ctype.name)} add column cache_weighted_rank numeric(10, 2);"
-      # puts ctype.name
       Object.const_get(ctype.name).find_each(:conditions => "cache_weighted_rank is null and state = #{Cms::PUBLISHED}") do |content|
         next if content.respond_to?(:clan_id) && content.clan_id
         begin

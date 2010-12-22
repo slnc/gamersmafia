@@ -333,7 +333,7 @@ class Clan < ActiveRecord::Base
   def self.hot(limit, t1, t2)
     t1, t2 = t2, t1 if t1 > t2
     # TODO PERF no podemos hacer esto, dios, hay que calcular esta info en segundo plano y solo leerla
-    dbi = Dbs.db_query("select count(distinct(visitor_id)), 
+    dbi = User.db_query("select count(distinct(visitor_id)), 
                                 model_id 
                            from stats.pageviews 
                           where controller = 'clanes' 

@@ -1,5 +1,3 @@
-ActionController::Base.cache_store = :file_store, FRAGMENT_CACHE_PATH
-
 OPENURI_HEADERS = { 
                     'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                     'Accept-Charset' => 'ISO-8859-1,utf-8;q=0.7,*;q=0.7', 
@@ -10,19 +8,7 @@ OPENURI_HEADERS = {
                     'User-Agent' => 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.1.4) Gecko/20091016 Firefox/3.5.4'
 }
 
-class Dbs < ActiveRecord::Base; end
-
-if App.enable_support_db? && RAILS_ENV != 'test'
-  abcs = ActiveRecord::Base.configurations
-  Dbs.establish_connection( :adapter  => abcs['support']['adapter'],
-  :host     => abcs['support']['host'],
-  :username => abcs['support']['username'],
-  :password => abcs['support']['password'],
-  :database => abcs['support']['database']
-  )
-end
 User.connection.client_min_messages = 'warning'
-Dbs.connection.client_min_messages = 'warning'
 
 ActionMailer::Base.smtp_settings = {
   :address  => "mail.gamersmafia.com",
@@ -101,7 +87,7 @@ ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.module_eval do
   alias_method_chain :select, :stats
 end
 
-
+ActionController::Base.cache_store = :file_store, FRAGMENT_CACHE_PATH
 ActionController::Base.module_eval do
   def perform_action_with_reset
     ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::reset_stats

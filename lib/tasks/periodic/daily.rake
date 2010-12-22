@@ -144,7 +144,7 @@ namespace :gm do
   end
   
   def update_portals_hits_stats
-    Dbs.db_query("select count(*), 
+    User.db_query("select count(*), 
                           portal_id 
                      from stats.pageviews 
                     where portal_id > 0

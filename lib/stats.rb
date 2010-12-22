@@ -145,7 +145,7 @@ group by date_trunc('day', created_on) order by s asc
   def self.ad_hits_in_timestamp(tstart, tend, ad)
     raise "DEPRECATED"
     sql_created_on = "created_on BETWEEN '#{tstart}' AND '#{tend}'"
-    Dbs.db_query("SELECT count(*)
+    User.db_query("SELECT count(*)
                            FROM stats.ads
                           WHERE element_id = 'ad#{ad.id}'
                             AND #{sql_created_on}")[0]['count'].to_i
@@ -155,7 +155,7 @@ group by date_trunc('day', created_on) order by s asc
     # Hits = clicks
     sql_created_on = "created_on BETWEEN '#{tstart}' AND '#{tend}'"
     # aqui todavia no tenemos la info consolidada
-    Dbs.db_query("SELECT count(*)
+    User.db_query("SELECT count(*)
                            FROM stats.ads
                           WHERE element_id = 'adsi#{adsi.id}'
                             AND #{sql_created_on}")[0]['count'].to_i
@@ -174,7 +174,7 @@ group by date_trunc('day', created_on) order by s asc
     sql_created_on_alias = "a.created_on BETWEEN '#{tstart}' AND '#{tend}'"
     total = total_advertiser_clicks_in_timerange(tstart, tend, advertiser)
     sum = 0
-    res = Dbs.db_query("SELECT count(*), 
+    res = User.db_query("SELECT count(*), 
                          b.name as name, 
                          a.portal_id 
                     FROM stats.ads a 
@@ -232,14 +232,14 @@ group by date_trunc('day', created_on) order by s asc
     pageviews = ad_impressions_in_timestamp(tstart, tend, ad)
     result = {:hits => adhits, :pageviews => pageviews, :ctr => adhits/(pageviews+0.1), :daily_hits => nil}
     
-    db_daily_hits = Dbs.db_query("select count(*), 
+    db_daily_hits = User.db_query("select count(*), 
                             date_trunc('day', created_on)::date as date 
                        from stats.ads 
                       where element_id = 'ad#{ad.id}' 
                         AND #{sql_created_on}
                    GROUP BY date_trunc('day', created_on)::date 
                    ORDER BY date_trunc('day', created_on)::date asc") 
-    db_all_daily = Dbs.db_query("select generate_series(0,#{((tstart.to_i - tend.to_i) / 86400).ceil}) + '#{tstart.strftime('%Y-%m-%d')}'::date as date, 0 as count")
+    db_all_daily = User.db_query("select generate_series(0,#{((tstart.to_i - tend.to_i) / 86400).ceil}) + '#{tstart.strftime('%Y-%m-%d')}'::date as date, 0 as count")
     db_daily_hits_h = {}
     db_all_daily.collect { |dbr| db_daily_hits_h[dbr['date']] = dbr['count'].to_i }
     db_daily_hits.collect { |dbr| db_daily_hits_h[dbr['date']] = dbr['count'].to_i }
@@ -330,11 +330,11 @@ group by date_trunc('day', created_on) order by s asc
       # contabilizamos impresiones y conversiones
       count_sql = opts[:total] ? 'count(visitor_id)' :  'count(distinct(visitor_id))'
       
-      out[:impressions] = Dbs.db_query("SELECT #{count_sql}
+      out[:impressions] = User.db_query("SELECT #{count_sql}
                                           FROM stats.pageviews as parent
                                          WHERE #{from_where_sql}")[0]['count'].to_f
       
-      out[:conversions] = Dbs.db_query("SELECT count(id) 
+      out[:conversions] = User.db_query("SELECT count(id) 
                                           FROM #{opts[:content_type] ? ActiveSupport::Inflector::tableize(opts[:content_type]) : 'contents'}
                                          WHERE #{date_constraints(opts)} 
                                            AND state = #{Cms::PUBLISHED} 
@@ -362,11 +362,11 @@ group by date_trunc('day', created_on) order by s asc
       # contabilizamos impresiones y conversiones
       count_sql = opts[:total] ? 'count(visitor_id)' :  'count(distinct(visitor_id))'
       
-      out[:impressions] = Dbs.db_query("SELECT #{count_sql}
+      out[:impressions] = User.db_query("SELECT #{count_sql}
                                           FROM stats.pageviews as parent
                                          WHERE #{from_where_sql}")[0]['count'].to_f
       
-      out[:conversions] = Dbs.db_query("SELECT count(id) 
+      out[:conversions] = User.db_query("SELECT count(id) 
                                FROM comments 
                               WHERE deleted = \'f\' 
                                 AND #{date_constraints(opts)}  
@@ -393,11 +393,11 @@ group by date_trunc('day', created_on) order by s asc
       # contabilizamos impresiones y conversiones
       count_sql = opts[:total] ? 'count(visitor_id)' :  'count(distinct(visitor_id))'
       
-      out[:impressions] = Dbs.db_query("SELECT #{count_sql}
+      out[:impressions] = User.db_query("SELECT #{count_sql}
                                           FROM stats.pageviews as parent
                                          WHERE #{from_where_sql}")[0]['count'].to_f
       
-      out[:conversions] = Dbs.db_query("SELECT count(distinct(user_id) )
+      out[:conversions] = User.db_query("SELECT count(distinct(user_id) )
                                FROM stats.pageviews
                               WHERE 1 = 1 #{visitor_id_constraint(opts)}
                                 AND #{date_constraints(opts)}  
@@ -411,7 +411,7 @@ group by date_trunc('day', created_on) order by s asc
       # usuarios expuestos al tratamiento (no es necesario clickthrough) que hayan iniciado el proceso de registro
       #out = {}
       #out[:treated_visitors] = self.treated_visitors(opts)
-      #dbinfo = Dbs.db_query("SELECT count(distinct(visitor_id))
+      #dbinfo = User.db_query("SELECT count(distinct(visitor_id))
       #                              FROM stats.pageviews as parent
       #                             WHERE #{date_constraints(opts)}
       #                                   #{visitor_id_constraint(opts)}
@@ -443,11 +443,11 @@ group by date_trunc('day', created_on) order by s asc
       # contabilizamos impresiones y conversiones
       count_sql = opts[:total] ? 'count(visitor_id)' :  'count(distinct(visitor_id))'
       
-      out[:impressions] = Dbs.db_query("SELECT #{count_sql}
+      out[:impressions] = User.db_query("SELECT #{count_sql}
                                           FROM stats.pageviews as parent
                                          WHERE #{from_where_sql}")[0]['count'].to_f
       
-      out[:conversions] = Dbs.db_query("SELECT #{count_sql}
+      out[:conversions] = User.db_query("SELECT #{count_sql}
                                           FROM stats.ads
                                          WHERE #{to_where_sql}")[0]['count'].to_f
       
@@ -462,12 +462,12 @@ group by date_trunc('day', created_on) order by s asc
   
   
   def self.update_online_stats
-    online_anon = Dbs.db_query("SELECT count(distinct(visitor_id)) 
+    online_anon = User.db_query("SELECT count(distinct(visitor_id)) 
                                   FROM stats.pageviews 
                                  WHERE user_id IS NULL 
                                    AND created_on >= now() - '30 minutes'::interval")[0]['count'].to_i
     
-    online_reg = Dbs.db_query("SELECT count(*) 
+    online_reg = User.db_query("SELECT count(*) 
                                   FROM users 
                                  WHERE lastseen_on >= now() - '30 minutes'::interval")[0]['count'].to_i
     
@@ -515,7 +515,7 @@ group by date_trunc('day', created_on) order by s asc
     
     date_sql = "created_on BETWEEN '#{tstart.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{tend.strftime('%Y-%m-%d %H:%M:%S')}'"
     
-    Dbs.db_query("select count(*), ads_shown from stats.pageviews where #{date_sql} AND ads_shown IS NOT NULL group by ads_shown order by ads_shown").each do |dbr|     
+    User.db_query("select count(*), ads_shown from stats.pageviews where #{date_sql} AND ads_shown IS NOT NULL group by ads_shown order by ads_shown").each do |dbr|     
       dbr['ads_shown'].scan(myre).each do |ad_id| 
         ad_id = ad_id[0]
         pageviews_by_ad_id[ad_id.to_i] ||= 0

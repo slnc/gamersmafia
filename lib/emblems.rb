@@ -105,16 +105,7 @@ module Emblems
       u.users_emblems.create(:emblem => 'moderator')
     end
     
-    if nil # ya no damos más el emblema de okupa
-    dbq = Dbs.db_query("select user_id, '1 minute'::interval * count(distinct(date_trunc('minute', created_on))) as total_time_online FROM stats.pageviews WHERE user_id IS NOT NULL AND created_on >= now() - '1 week'::interval GROUP BY user_id ORDER BY total_time_online DESC LIMIT 1")
-    if dbq.size > 0
-      t = dbq[0]['total_time_online']
-      str_t = "#{t[0..1].to_i} horas y #{t[3..4].to_i} minutos"
-      User.find(dbq[0]['user_id'].to_i).users_emblems.create(:emblem => 'okupa', :details => "#{str_t} online")
-    end
-    end
-    
-    dbq = Dbs.db_query("SELECT count(*), avg(char_length(line)) as avg_length, user_id FROM chatlines WHERE created_on > now() - '1 week'::interval and user_id not in (select id from users where is_bot='t') GROUP BY user_id HAVING count(*) > 0  ORDER BY count(*) DESC LIMIT 1")
+    dbq = User.db_query("SELECT count(*), avg(char_length(line)) as avg_length, user_id FROM chatlines WHERE created_on > now() - '1 week'::interval and user_id not in (select id from users where is_bot='t') GROUP BY user_id HAVING count(*) > 0  ORDER BY count(*) DESC LIMIT 1")
     if dbq.size > 0
       User.find(dbq[0]['user_id'].to_i).users_emblems.create(:emblem => 'talker', :details => "#{dbq[0]['count']} frases (#{sprintf("%.2f", dbq[0]['avg_length'].to_f)} caracteres por frase)")
     end

@@ -171,7 +171,7 @@ namespace :gm do
       Portal.find(:all).each do |portal|
         portal_id = portal.id
         karma = portals_stats[portal_id] ? portals_stats[portal_id] : 0
-        dbrstats_visits = Dbs.db_query("SELECT count(*) as pageviews,
+        dbrstats_visits = User.db_query("SELECT count(*) as pageviews,
                                             count(distinct(session_id)) as visits,
                                             count(distinct(visitor_id)) as unique_visitors,
                                             count(distinct(user_id)) as unique_visitors_reg
@@ -225,8 +225,8 @@ namespace :gm do
       karma_diff = Gmstats.karma_in_time_period(first_stat, next_stat)
       faith_diff = Gmstats.faith_in_time_period(first_stat, next_stat)
       users_generating_karma = User.count(:conditions => "id IN (SELECT user_id FROM comments WHERE deleted = 'f' AND date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' UNION SELECT user_id FROM contents WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}')")
-      active_factions_portals = Dbs.db_query("SELECT count(*) FROM stats.portals WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND karma > 0 AND portal_id IN (SELECT id FROM portals WHERE type='FactionsPortal')")[0]['count']
-      active_clans_portals = Dbs.db_query("SELECT count(*) FROM stats.portals WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND karma > 0 AND portal_id IN (SELECT id FROM portals WHERE type='ClansPortal')")[0]['count']
+      active_factions_portals = User.db_query("SELECT count(*) FROM stats.portals WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND karma > 0 AND portal_id IN (SELECT id FROM portals WHERE type='FactionsPortal')")[0]['count']
+      active_clans_portals = User.db_query("SELECT count(*) FROM stats.portals WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND karma > 0 AND portal_id IN (SELECT id FROM portals WHERE type='ClansPortal')")[0]['count']
       completed_competitions_matches = CompetitionsMatch.count(:conditions => ["date_trunc('day', completed_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'"])
       #proxy_errors = `grep -c "All workers are in error state" #{RAILS_ROOT}/log/error-#{first_stat.strftime('%Y%m%d')}.log`.strip
       proxy_errors = 0 #if proxy_errors.strip == ''

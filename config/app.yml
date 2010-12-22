@@ -9,8 +9,6 @@ common: &common
   debug: false
   enable_google_analytics?: false
   enable_bgjobs?: false
-  enable_support_db?: false
-  enable_slonik?: false
   cache_templates_in_production: true
   port: 80
   python: /usr/local/hosting/bin/python2.4
@@ -48,9 +46,7 @@ common: &common
 # basic roles (usable)
 production: &production
   enable_bgjobs?: true
-  enable_support_db?: false
   enable_google_analytics?: true
-  enable_slonik?: false
   system_mail_user: nagato@gamersmafia.com
   system_mail_password: secretpassword
   <<: *common
@@ -81,8 +77,6 @@ blackwings: &blackwings
   compress_js?: false
   enable_dbstats?: true
   enable_bgjobs?: true
-  enable_support_db?: false
-  enable_slonik?: false
   python: python
 # port: 3000
   <<: *development

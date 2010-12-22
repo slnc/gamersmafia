@@ -26,7 +26,6 @@ module ApplicationHelper
                Admin::FaccionesController
                Admin::IpBansController
                Admin::MapasJuegosController
-               Admin::MotorController
                Admin::UsuariosController
                AdministrationController
                AvataresController
@@ -512,8 +511,6 @@ type: 'bhs'}))
     if user.is_superadmin? || user.has_admin_permission?(:bazar_manager)
       items<< ['Distritos bazar', '/admin/bazar_districts']
     end
-    
-    items<< ['Motor (info)', '/admin/motor']
     
     # ordenamos las entradas
     items2 = {}

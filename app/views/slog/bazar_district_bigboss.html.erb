@@ -29,9 +29,9 @@
 <%
 fp = BazarDistrictPortal.find_by_code(bd.code)
 dbk = User.db_query("SELECT COALESCE(sum(karma), 0) as sum FROM stats.portals WHERE portal_id = #{fp.id} AND created_on >= date_trunc('day', now() - '1 month'::interval) and created_on < date_trunc('day', now())")
-dbh = Dbs.db_query("select sum(pageviews) from stats.portals where portal_id = #{fp.id} and created_on >= date_trunc('day', now() - '1 month'::interval) and created_on < date_trunc('day', now())")
+dbh = User.db_query("select sum(pageviews) from stats.portals where portal_id = #{fp.id} and created_on >= date_trunc('day', now() - '1 month'::interval) and created_on < date_trunc('day', now())")
 total_karma = dbk.size > 0 ? dbk[0]['sum'].to_f : 0.1
-dbu = Dbs.db_query("select sum(karma), (select login from users where id = stats.users_karma_daily_by_portal.user_id) as login from stats.users_karma_daily_by_portal where portal_id = #{fp.id} and created_on >= date_trunc('day', now() - '1 month'::interval) group by portal_id, user_id order by sum(karma) desc limit 10")
+dbu = User.db_query("select sum(karma), (select login from users where id = stats.users_karma_daily_by_portal.user_id) as login from stats.users_karma_daily_by_portal where portal_id = #{fp.id} and created_on >= date_trunc('day', now() - '1 month'::interval) group by portal_id, user_id order by sum(karma) desc limit 10")
 %>
 <table>
 <% dbu.each do |dbi| %>
