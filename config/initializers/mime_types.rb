@@ -5,11 +5,10 @@
 # Mime::Type.register_alias "text/html", :iphone
 #
 module Mime
-class Type
-
-def split(*args)
-  to_s.split(*args)
+  class Type
+    
+    def split(*args)
+      to_s.split(*args)
+    end
+  end
 end
-end
-end
-

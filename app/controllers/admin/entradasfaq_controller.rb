@@ -1,9 +1,5 @@
-class Admin::EntradasfaqController < ApplicationController
+class  < ApplicationController
   require_admin_permission :faq
-  
-  def wmenu_pos
-	  'hq'
-  end
   
   def index
     @faq_entries = FaqEntry.paginate(:page => params[:page], :per_page => 50, 

@@ -140,7 +140,7 @@ class CommentsController < ApplicationController
         scope = nil
       end
       reason_str = (params[:reason] && params[:reason].to_s != '' && params[:reason].to_s != 'Razón..') ? " (#{params[:reason]})" : '' 
-      sl = SlogEntry.create({:scope => scope, :type_id => SlogEntry::TYPES[ttype], :reporter_user_id => @user.id, :headline => "#{Cms.faction_favicon(@comment.content.real_content)}<strong><a href=\"#{url_for_content_onlyurl(@comment.content.real_content)}?page=#{Comments.page_for_comment(@comment)}#comment#{@comment.id}\">#{@comment.id}</a></strong> (<a href=\"#{gmurl(@comment.user)}\">#{@comment.user.login}</a>) reportado #{reason_str} por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"})
+      sl = SlogEntry.create({:scope => scope, :type_id => SlogEntry::TYPES[ttype], :reporter_user_id => @user.id, :headline => "#{Cms.faction_favicon(@comment.content.real_content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(@comment.content.real_content)}?page=#{Comments.page_for_comment(@comment)}#comment#{@comment.id}\">#{@comment.id}</a></strong> (<a href=\"#{gmurl(@comment.user)}\">#{@comment.user.login}</a>) reportado #{reason_str} por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"})
       if sl.new_record?
         flash[:error] = "Error al reportar el comentario:<br />#{sl.errors.full_messages_html}"
       else

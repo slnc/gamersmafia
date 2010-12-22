@@ -1,12 +1,8 @@
-class Admin::FaccionesController < ApplicationController
+class  < ApplicationController
   helper :miembros
   audit :destroy
   
   require_admin_permission :capo
-
-  def wmenu_pos
-    'hq'
-  end
   
   def index
     @title = 'Facciones'

@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   include Clans::Authentication
   include Users::Authentication
   include ExceptionNotifiable
+  include Routing
   
   ExceptionNotifier.exception_recipients = %w(s@slnc.me)
   ExceptionNotifier.sender_address = %("GM Error Notifier" <httpd@gamersmafia.com>)
@@ -43,7 +44,7 @@ class ApplicationController < ActionController::Base
       flash[:notice] = "#{model.class.name} #{@name_action_participe} correctamente."
       if success_dst.kind_of?(String)
         redirect_to(success_dst.gsub("@#{ActiveSupport::Inflector::underscore(model.class.name)}.id", 
-                                     model.id.to_s))
+        model.id.to_s))
       else
         redirect_to(success_dst)
       end
@@ -82,14 +83,6 @@ class ApplicationController < ActionController::Base
   
   def can_set_as_default_home
     controller_name == 'home' && current_default_portal != action_name
-  end
-  
-  def active_sawmode
-    @active_sawmode || wmenu_pos
-  end
-  
-  def wmenu_pos
-    ''
   end
   
   def sys_audit
@@ -137,7 +130,7 @@ Request information:
   end
   
   def url_for_content_onlyurl(object)
-    self.class.url_for_content_onlyurl(object)
+    Routing.url_for_content_onlyurl(object)
   end
   
   # DEPRECATED Use Routing.url_for
@@ -302,11 +295,10 @@ Request information:
   
   
   public
-  
   # Saves information about the current page being served.
   def track(opts={})
     # Tracks
-    opts = {:redirecting => false, :cookiereq => true }.merge(opts)
+    opts = { :redirecting => false, :cookiereq => true }.merge(opts)
     user_id = user_is_authed ? @user.id : 'NULL'
     user_agent = request.user_agent.to_s != '' ? request.user_agent : ''
     cka = cookies['__stma']
@@ -453,9 +445,7 @@ Request information:
   def redirect_to(*args)
     track(:redirecting => true)
     super
-    #old_redirect_to(*args)
   end
-  # end tracking
   
   
   protected
@@ -496,58 +486,6 @@ Request information:
       end
     end
   end
-  
-  def can_add_as_quicklink?
-    if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(portal.class.name)
-      qlinks = Personalization.quicklinks_for_user(@user)
-      if qlinks.delete_if { |ql| ql[:code] != self.portal.code }.size == 0 # no estaba
-        true
-      else
-        false
-      end
-    else
-      false
-    end
-  end
-  
-  def can_del_quicklink?
-    if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(portal.class.name)
-      qlinks = Personalization.quicklinks_for_user(@user)
-      if qlinks.delete_if { |ql| ql[:code] != self.portal.code }.size == 1 # estaba
-        true
-      else
-        false
-      end
-    else
-      false
-    end
-  end
-  
-  def can_add_as_user_forum?
-    if user_is_authed && controller_name == 'foros' && @forum
-      ufs = Personalization.get_user_forums(@user)
-      if ufs[0].delete_if { |ql| ql != @forum.id.to_s }.size == 0 && ufs[1].delete_if { |ql| ql != @forum.id.to_s }.size == 0 # no estaba
-        true
-      else
-        false
-      end
-    else
-      false
-    end
-  end
-  
-  def can_del_user_forum?
-    if user_is_authed && controller_name == 'foros' && @forum
-      ufs = Personalization.get_user_forums(@user)
-      if ufs[0].delete_if { |ql| ql != @forum.id.to_s }.size == 1 || ufs[1].delete_if { |ql| ql != @forum.id.to_s }.size == 1 # estaba
-        true
-      else
-        false
-      end
-    else
-      false
-    end
-  end  
   
   def get_category_address(category, taxonomy)
     paths = []

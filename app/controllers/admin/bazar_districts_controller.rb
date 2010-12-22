@@ -1,4 +1,4 @@
-class Admin::BazarDistrictsController < ApplicationController
+class Admin::BazarDistrictsController < AdministrationController
   require_admin_permission :bazar_manager
   
   def index

@@ -4,7 +4,6 @@ require 'yaml'
 # Esto es un initializer pero necesitamos tenerlo cargado en config/environment.rb
 # porque hacemos uso de App. Por lo que necesitamos evitar que se ejecute 2 veces.
 if !defined?(::App)
-  
   LINUX = 0
   WINDOWS = 1
   
@@ -23,6 +22,10 @@ if !defined?(::App)
   nconfig = OpenStruct.new(YAML::load(ERB.new((IO.read(appyml))).result))
   env_config = nconfig.send(mode)
   ::App = OpenStruct.new(env_config)
+  
+  ASSET_URL = "http://#{App.asset_domain}#{':' << App.port.to_s if App.port != 80}"
+  COOKIEDOMAIN = ".#{App.domain}"
+  FRAGMENT_CACHE_PATH = "#{RAILS_ROOT}/tmp/fragment_cache"
   
   module AppR
     def self.ondisk_git_version

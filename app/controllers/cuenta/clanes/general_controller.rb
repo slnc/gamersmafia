@@ -14,10 +14,6 @@ class Cuenta::Clanes::GeneralController < ApplicationController
     end
   end
   
-  def wmenu_pos
-    'comunidad'
-  end  
-  
   def index
   end
   

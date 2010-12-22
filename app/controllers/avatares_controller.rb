@@ -1,12 +1,7 @@
 class AvataresController < ApplicationController
   require_admin_permission :capo
   
-  def wmenu_pos
-    'hq'
-  end
-  
   def index
-
   end
   
   def list
@@ -24,8 +19,6 @@ class AvataresController < ApplicationController
   end
   
   def create_from_zip
-    
-    
     # descomprimimos archivo
     # workdir is ~/tmp/avatares
     

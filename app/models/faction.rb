@@ -512,7 +512,7 @@ class Faction < ActiveRecord::Base
     [self.boss, self.underboss].each do |u|
       next if u.nil?
       sent_uids << u.id
-      Message.create(:user_id_from => mrcheater.id, :user_id_to => u.id, :title => 'Golpe de estado', :message => 'Más información en ' << ApplicationController.url_for_content_onlyurl(t))
+      Message.create(:user_id_from => mrcheater.id, :user_id_to => u.id, :title => 'Golpe de estado', :message => 'Más información en ' << Routing.url_for_content_onlyurl(t))
     end
     
     # quitamos al boss y al underboss
@@ -523,7 +523,7 @@ class Faction < ActiveRecord::Base
     self.members.each do |m|
       next if sent_uids.include?(m.id) # si ya hemos enviado al boss/underboss
       # next unless m.notifications_global
-      Message.create(:user_id_from => mrcheater.id, :user_id_to => m.id, :title => "Golpe de estado en #{self.name}", :message => 'Más información en ' << ApplicationController.url_for_content_onlyurl(t))
+      Message.create(:user_id_from => mrcheater.id, :user_id_to => m.id, :title => "Golpe de estado en #{self.name}", :message => 'Más información en ' << Routing.url_for_content_onlyurl(t))
     end
   end
   

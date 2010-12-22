@@ -36,10 +36,6 @@ Rails::Initializer.run do |config|
   require 'erb'
   require 'config/initializers/000_app_config.rb'
 
-  ASSET_URL = "http://#{App.asset_domain}#{':' << App.port.to_s if App.port != 80}"
-  COOKIEDOMAIN = ".#{App.domain}"
-
-
   # Only load the plugins named here, in the order given (default is alphabetical).
   # :all can be used as a placeholder for all plugins not explicitly named
   # config.plugins = [ :exception_notification, :ssl_requirement, :all ]

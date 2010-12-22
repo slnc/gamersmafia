@@ -141,7 +141,7 @@ module Routing
     elsif nil
       raise "Nil object can't have url"
     else
-      ApplicationController.url_for_content_onlyurl(object)
+      Routing.url_for_content_onlyurl(object)
     end
   end
   

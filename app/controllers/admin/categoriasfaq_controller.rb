@@ -1,9 +1,5 @@
 class Admin::CategoriasfaqController < ApplicationController
   require_admin_permission :faq
-  
-  def wmenu_pos
-	  'hq'
-  end
 
   def index
     @faq_categories = FaqCategory.find(:all, 

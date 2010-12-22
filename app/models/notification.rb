@@ -222,7 +222,7 @@ class Notification < ActionMailer::Base
   end
   
   def trackerupdate(user, vars)
-    vars.merge!({ :actions => [[vars[:content].resolve_hid, ApplicationController.url_for_content_onlyurl(vars[:content])],
+    vars.merge!({ :actions => [[vars[:content].resolve_hid, Routing.url_for_content_onlyurl(vars[:content])],
       ['Ir a mi tracker', "/cuenta/cuenta/tracker#{sl(user)}"],],
       :title => "Nuevos comentarios en #{vars[:content].resolve_hid}"})
     setup(user, vars)

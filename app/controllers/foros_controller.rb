@@ -8,10 +8,6 @@ class ForosController < ComunidadController
       ['Arena', 'arena'],
       ['Bazar', 'bazar'],
       ]
-    
-  def wmenu_pos
-    'foros'
-  end
   
   def index
   end

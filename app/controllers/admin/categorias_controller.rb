@@ -14,12 +14,7 @@ class Admin::CategoriasController < ApplicationController
     raise AccessDenied unless user.users_roles.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha', 'Sicario', 'Editor')") > 0 || user.has_admin_permission?(:capo)
   end
   
-  public  
-  def wmenu_pos
-    'hq'
-  end
-  
-  
+  public
   def cats_path
     'admin/categorias'
   end

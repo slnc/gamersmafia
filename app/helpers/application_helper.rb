@@ -11,6 +11,105 @@ module ApplicationHelper
     :Spam => '108',
   }
   
+  WMENU_POS = {
+    'arena' => %w(
+                   Admin::CompeticionesController
+                   ArenaController  
+              ),
+    'bazar' => %w(Cuenta::TiendaController
+                  BazarController),
+    'foros' => %w(ForosController),
+    'hq' => %w(Admin::CategoriasController
+               Admin::ClanesController
+               Admin::CategoriasfaqController
+               Admin::EntradasfaqController
+               Admin::FaccionesController
+               Admin::IpBansController
+               Admin::MapasJuegosController
+               Admin::MotorController
+               Admin::UsuariosController
+               AdministrationController
+               AvataresController
+               ),
+    'comunidad' => %w(
+                Cuenta::Clanes::GeneralController
+                ReclutamientoController
+                ComunidadController
+    )
+  }
+  
+  # Class-level array for fast lookups 
+  WMENU_POS_BY_CONTROLLER = begin
+    out = {}
+    WMENU_POS.each do |k,v|
+      v.each do |controller_name|
+        out[controller_name] = k
+      end
+    end
+    out
+  end
+  
+  def active_sawmode
+    if controller.active_sawmode
+      @active_sawmode
+    else
+      WMENU_POS[controller.controller_name] || ''
+    end
+  end
+  
+  
+  def can_add_as_quicklink?
+    if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(portal.class.name)
+      qlinks = Personalization.quicklinks_for_user(@user)
+      if qlinks.delete_if { |ql| ql[:code] != self.portal.code }.size == 0 # no estaba
+        true
+      else
+        false
+      end
+    else
+      false
+    end
+  end
+  
+  def can_del_quicklink?
+    if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(portal.class.name)
+      qlinks = Personalization.quicklinks_for_user(@user)
+      if qlinks.delete_if { |ql| ql[:code] != self.portal.code }.size == 1 # estaba
+        true
+      else
+        false
+      end
+    else
+      false
+    end
+  end
+  
+  def can_add_as_user_forum?
+    if user_is_authed && controller_name == 'foros' && @forum
+      ufs = Personalization.get_user_forums(@user)
+      if ufs[0].delete_if { |ql| ql != @forum.id.to_s }.size == 0 && ufs[1].delete_if { |ql| ql != @forum.id.to_s }.size == 0 # no estaba
+        true
+      else
+        false
+      end
+    else
+      false
+    end
+  end
+  
+  def can_del_user_forum?
+    if user_is_authed && controller_name == 'foros' && @forum
+      ufs = Personalization.get_user_forums(@user)
+      if ufs[0].delete_if { |ql| ql != @forum.id.to_s }.size == 1 || ufs[1].delete_if { |ql| ql != @forum.id.to_s }.size == 1 # estaba
+        true
+      else
+        false
+      end
+    else
+      false
+    end
+  end
+  
   def url_for_content(object, text)
     "<a class=\"content\" href=\"#{Routing.url_for_content_onlyurl(object)}\">#{text}</a>"
   end
@@ -33,7 +132,7 @@ module ApplicationHelper
     
     out << '</select>'
   end
-
+  
   def css_background_repeat(field_name, field_value, skin)
     out = <<-END
   <select name="#{field_name}">
@@ -43,7 +142,7 @@ module ApplicationHelper
   <option #{'selected="selected"' if field_value == 'repeat-x' } value="repeat-x">repetir en horizontal</option>
   <option #{'selected="selected"' if field_value == 'repeat' } value="repeat">repetir en ambas direcciones</option>
     END
-     
+    
     out << '</select>'
   end
   
@@ -62,7 +161,7 @@ module ApplicationHelper
   <option #{'selected="selected"' if field_value == 'bottom right' } value="bottom right">bottom right</option>
   
     END
-     
+    
     out << '</select>'
   end
   
@@ -425,7 +524,7 @@ type: 'bhs'}))
     items3
   end
   
-    def clanes_menu_items
+  def clanes_menu_items
     l = []
     
     if @user.last_clan_id then
@@ -494,10 +593,10 @@ type: 'bhs'}))
       text = text.gsub('<p><p>', '<p>')
       text = text.gsub('</p></p>', '</p>')
     end
-      text = text.gsub('<blockquote></p><p>', '<blockquote>')
-      text = text.gsub('</p><p></blockquote>', '</blockquote>')
-      text = text.gsub('<code></p><p>', '<code>')
-      text = text.gsub('</p><p></code>', '</code>')
+    text = text.gsub('<blockquote></p><p>', '<blockquote>')
+    text = text.gsub('</p><p></blockquote>', '</blockquote>')
+    text = text.gsub('<code></p><p>', '<code>')
+    text = text.gsub('</p><p></code>', '</code>')
     
     text.strip!
     
@@ -550,7 +649,7 @@ type: 'bhs'}))
   end
   
   def draw_contentheadline(content)
-    "<div class=\"infoinline\">#{print_tstamp(content.created_on)} | #{draw_rating(content.rating)} | <span class=\"comments-count\"><a title=\"Ver comentarios\" href=\"#{controller.url_for_content_onlyurl(content)}\#comments\">#{content.unique_content.comments_count}</a></span></div>"
+    "<div class=\"infoinline\">#{print_tstamp(content.created_on)} | #{draw_rating(content.rating)} | <span class=\"comments-count\"><a title=\"Ver comentarios\" href=\"#{Routing.url_for_content_onlyurl(content)}\#comments\">#{content.unique_content.comments_count}</a></span></div>"
   end
   
   def draw_organization_building(org, stories=1)
@@ -636,8 +735,8 @@ type: 'bhs'}))
     opts[:height] ||= '400px'
     opts[:width] ||= '550px'
     
-
-      load_javascript_lib('ckeditor')
+    
+    load_javascript_lib('ckeditor')
       <<-END
         <textarea name="#{field_name}">#{opts[:value]}</textarea><br />
 				<script type="text/javascript">

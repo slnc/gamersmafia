@@ -163,7 +163,7 @@ class Content < ActiveRecord::Base
     to_del.each { |tid| self.contents_terms.find(:first, :conditions => ['term_id = ?', tid]).destroy }
     # We force an update of the url
     self.url = nil
-    ApplicationController.url_for_content_onlyurl(self)
+    Routing.url_for_content_onlyurl(self)
     self.save
     true
   end
@@ -180,7 +180,7 @@ class Content < ActiveRecord::Base
     to_del.each { |tid| self.contents_terms.find(:first, :conditions => ['term_id = ?', tid]).destroy }
     # We force an update of the url
     self.url = nil
-    ApplicationController.url_for_content_onlyurl(self)
+    Routing.url_for_content_onlyurl(self)
     self.save
     true
   end
@@ -193,7 +193,7 @@ class Content < ActiveRecord::Base
       t.link(self) 
     end
     self.url = nil
-    ApplicationController.url_for_content_onlyurl(self)
+    Routing.url_for_content_onlyurl(self)
     self.save
     true
   end
@@ -206,7 +206,7 @@ class Content < ActiveRecord::Base
       t.link(self) 
     end
     self.url = nil
-    ApplicationController.url_for_content_onlyurl(self)
+    Routing.url_for_content_onlyurl(self)
     self.save
     true
   end

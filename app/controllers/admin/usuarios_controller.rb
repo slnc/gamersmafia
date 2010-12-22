@@ -9,11 +9,8 @@ class Admin::UsuariosController < ApplicationController
   before_filter :only => [ :report, :set_antiflood_level ] do |c|
     raise AccessDenied unless c.user && c.user.is_hq?
   end
-  verify :method => :post, :only => [ :update, :check_karma, :check_faith, :check_registered_on ], :redirect_to => '/admin/usuarios'
   
-  def wmenu_pos
-	  'hq'
-  end
+  verify :method => :post, :only => [ :update, :check_karma, :check_faith, :check_registered_on ], :redirect_to => '/admin/usuarios'
   
   def index
     order_by = 'id DESC'

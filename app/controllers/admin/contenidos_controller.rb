@@ -86,7 +86,7 @@ class Admin::ContenidosController < ApplicationController
     pd = PublishingDecision.find(params[:id], :include => :content)
     require_user_can_edit pd.content.real_content
     Cms::publish_content(pd.content.real_content, pd.user)
-    redirect_to url_for_content_onlyurl(pd.content.real_content).gsub('show', 'edit')
+    redirect_to Routing.url_for_content_onlyurl(pd.content.real_content).gsub('show', 'edit')
   end
   
   def publish_content
@@ -111,7 +111,7 @@ class Admin::ContenidosController < ApplicationController
     raise AccessDenied unless @user.is_hq?
     
     ttype, scope = SlogEntry.fill_ttype_and_scope_for_content_report(@content)
-    sl = SlogEntry.create({:scope => scope, :type_id => ttype, :reporter_user_id => @user.id, :headline => "#{Cms.faction_favicon(@content.real_content)}<strong><a href=\"#{url_for_content_onlyurl(@content.real_content)}\">#{@content.id}</a></strong> reportado (#{params[:reason]}) por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"})
+    sl = SlogEntry.create({:scope => scope, :type_id => ttype, :reporter_user_id => @user.id, :headline => "#{Cms.faction_favicon(@content.real_content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(@content.real_content)}\">#{@content.id}</a></strong> reportado (#{params[:reason]}) por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"})
     if sl.new_record?
       flash[:error] = "Error al reportar el contenido:<br />#{sl.errors.full_messages_html}"
     else

@@ -1,7 +1,14 @@
-FRAGMENT_CACHE_PATH = "#{RAILS_ROOT}/tmp/fragment_cache"
 ActionController::Base.cache_store = :file_store, FRAGMENT_CACHE_PATH
 
-OPENURI_HEADERS = {'Accept-Encoding' => '', 'Accept-Language' => 'en-us,en;q=0.5', 'Accept-Charset' => 'ISO-8859-1,utf-8;q=0.7,*;q=0.7', 'Keep-Alive' => '300', 'Connection' => 'keep-alive', 'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 'User-Agent' => 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.1.4) Gecko/20091016 Firefox/3.5.4'}
+OPENURI_HEADERS = { 
+                    'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept-Charset' => 'ISO-8859-1,utf-8;q=0.7,*;q=0.7', 
+                    'Accept-Encoding' => '', 
+                    'Accept-Language' => 'en-us,en;q=0.5', 
+                    'Connection' => 'keep-alive', 
+                    'Keep-Alive' => '300',  
+                    'User-Agent' => 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.1.4) Gecko/20091016 Firefox/3.5.4'
+}
 
 class Dbs < ActiveRecord::Base; end
 
@@ -105,35 +112,29 @@ ActionController::Base.module_eval do
   
   def active_record_runtime
     stats = ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::get_stats
-      "#{super} #{sprintf("%.1fk", stats[:bytes].to_f / 1024)} queries: #{stats[:queries]}"
+    "#{super} #{sprintf("%.1fk", stats[:bytes].to_f / 1024)} queries: #{stats[:queries]}"
   end
 end
 #end
 
-# require File.join(File.dirname(__FILE__), '../app_config')
-
 ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS.update(:prefix => 'gm.')
+ActionController::Base.ip_spoofing_check = false
+ActiveRecord::Base.partial_updates = false if ActiveRecord::Base.respond_to?(:partial_updates)
 SVNVERSION = AppR.ondisk_git_version
-
-# NOTA: el orden importa
-#require 'category_acting'
-
-ActiveRecord::Base.send :include, HasHid
-# ActiveRecord::Base.send :include, HasSlug
-
-# NOTA: los observers DEBEN ser los últimos para que se puedan cargar los contenidos de lib/ y plugins
 TIMEZONE = '+0100'
 
 FileUtils.mkdir_p("#{RAILS_ROOT}/public/storage/skins") unless File.exists?("#{RAILS_ROOT}/public/storage/skins")
-ActiveRecord::Base.partial_updates = false if ActiveRecord::Base.respond_to?(:partial_updates) 
+
+# NOTA: el orden importa
+ActiveRecord::Base.send :include, HasHid
+
+# NOTA: los observers DEBEN ser los últimos para que se puedan cargar los contenidos de lib/ y plugins
 
 raise "libtidy not found" unless File.exists?(App.tidy_path)
 
-  module ActionController::Caching::Fragments
-    def fragment_cache_key(key)
-      # quitar views/ de las keys
-      ActiveSupport::Cache.expand_cache_key(key.is_a?(Hash) ? url_for(key).split("://").last : key, '')
-    end
+module ActionController::Caching::Fragments
+  # Quitamos views/ de las keys
+  def fragment_cache_key(key)
+    ActiveSupport::Cache.expand_cache_key(key.is_a?(Hash) ? url_for(key).split("://").last : key, '')
   end
-
-ActionController::Base.ip_spoofing_check = false
+end

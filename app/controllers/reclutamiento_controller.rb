@@ -2,12 +2,7 @@ class ReclutamientoController < ApplicationController
   acts_as_content_browser :recruitment_ads
   allowed_portals [:gm, :faction]
   
-  def wmenu_pos
-    'comunidad'
-  end
-  
   def index
-    
     if params[:search]
       @game = Game.find_by_id(params[:game_id].to_i)
       return if @game.nil?

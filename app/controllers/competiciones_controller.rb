@@ -3,8 +3,7 @@ class CompeticionesController < ArenaController
   helper :calendar
   helper Cuenta::CompeticionesHelper
   
-  verify :method => :post, :only => [ :join ],
-  :redirect_to => { :action => :index }
+  verify :method => :post, :only => [ :join ], :redirect_to => { :action => :index }
   
   # TODO titles
   # TODO navpaths
@@ -210,7 +209,6 @@ class CompeticionesController < ArenaController
     #    p = @competition.get_active_participant_for_user(@user)
     render :action => :retar
   end
-  
   
   def do_retar
     require_auth_users

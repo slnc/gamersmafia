@@ -1,10 +1,6 @@
 class Cuenta::TiendaController < ApplicationController
   before_filter :require_auth_users
   
-  def wmenu_pos
-    'bazar'
-  end
-  
   def index
   end
 

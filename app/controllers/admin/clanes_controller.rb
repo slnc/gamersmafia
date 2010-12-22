@@ -1,10 +1,6 @@
 class Admin::ClanesController < ApplicationController
   require_admin_permission :capo
   
-  def wmenu_pos
-    'hq'
-  end
-  
   def index
     @title = 'Clanes'
     @navpath = [['Admin', '/admin'], ['Clanes', '/admin/clanes']]
