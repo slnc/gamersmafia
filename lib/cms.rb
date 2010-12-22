@@ -155,6 +155,21 @@ module Cms
     self.contents_classes - [Topic, Blogentry, Question, RecruitmentAd]
   end
   
+  # Returns the content name out of taxonomy name.
+  # Args:
+  # - taxonomy_name: eg. ImagesCategory
+  #
+  # Returns:
+  # - "Image"
+  def self.extract_content_name_from_taxonomy(taxonomy_name)
+    ActiveSupport::Inflector::singularize(taxonomy_name.gsub('Category', ''))
+  end
+  
+    
+  def self.taxonomy_from_content_name(content_name)
+    "#{ActiveSupport::Inflector::pluralize(content_name)}Categories"
+  end
+  
   CONTENTS_CONTROLLERS = {
     'News' => 'noticias',
     'Image' => 'imagenes',

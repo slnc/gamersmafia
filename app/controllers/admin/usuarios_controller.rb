@@ -10,7 +10,6 @@ class Admin::UsuariosController < ApplicationController
     raise AccessDenied unless c.user && c.user.is_hq?
   end
   verify :method => :post, :only => [ :update, :check_karma, :check_faith, :check_registered_on ], :redirect_to => '/admin/usuarios'
-  # gm_options :submenu => 'admin', :submenu_items => admin_menu_items, :global_pos => 'admin'
   
   def wmenu_pos
 	  'hq'

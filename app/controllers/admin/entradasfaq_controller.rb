@@ -5,18 +5,9 @@ class Admin::EntradasfaqController < ApplicationController
 	  'hq'
   end
   
-  def submenu
-	  'faq'
-  end
-
-  def submenu_items
-	  [['Entradas', '/admin/entradasfaq'],
-		  ['Categorías', '/admin/categoriasfaq']]
-  end
-  
   def index
-    # TODO habría que reescribir esta query
-    @faq_entries = FaqEntry.paginate(:page => params[:page], :per_page => 50, :order => '(select position from faq_categories where id = faq_category_id) ASC, position ASC')
+    @faq_entries = FaqEntry.paginate(:page => params[:page], :per_page => 50, 
+                                     :order => '(select position from faq_categories where id = faq_category_id), position')
   end
   
   def new

@@ -7,7 +7,7 @@ class Admin::CategoriasController < ApplicationController
     if params[:id]
       t = Term.find_by_id(params[:id])
       if t && (params[:content_type] || t.taxonomy)
-        raise AccessDenied unless Cms::can_admin_term?(user, t, params[:content_type] ? params[:content_type] : ApplicationController.extract_content_name_from_taxonomy(t.taxonomy))
+        raise AccessDenied unless Cms::can_admin_term?(user, t, params[:content_type] ? params[:content_type] : Cms.extract_content_name_from_taxonomy(t.taxonomy))
       end
     end
     
@@ -94,7 +94,7 @@ class Admin::CategoriasController < ApplicationController
     raise AccessDenied if params[:term][:taxonomy].to_s == ''
     @term = Term.new(params[:term])
     if @term.save
-      if !Cms.can_edit_term?(user, @term, ApplicationController.extract_content_name_from_taxonomy(params[:term][:taxonomy]))
+      if !Cms.can_edit_term?(user, @term, Cms.extract_content_name_from_taxonomy(params[:term][:taxonomy]))
         @term.destroy
         raise AccessDenied
       end

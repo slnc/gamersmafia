@@ -15,27 +15,6 @@ class CompeticionesController < ArenaController
     @navpath = [['Competiciones', '/competiciones'], ]
   end
   
-  def submenu
-    if @action_name != 'index' && @action_name != 'index' then
-      'Competicion'
-    end
-  end
-  
-  def submenu_items
-    if @action_name != 'index' && @action_name != 'index' && @competition then
-      items = [['Información', "/competiciones/show/#{@competition.id}"],]
-      if !@competition.kind_of?(Tournament) and @competition.state >= 3 then
-        items<< ['Ranking', "/competiciones/show/#{@competition.id}/ranking"]
-      end
-      if @competition.state >= 3 
-        items<< ['Partidas', "/competiciones/show/#{@competition.id}/partidas"]
-      end
-      
-      items<< ['Participantes', "/competiciones/show/#{@competition.id}/participantes"]
-      items<< ['Reglas', "/competiciones/show/#{@competition.id}/reglas"]
-    end
-  end
-  
   def mapa
     @games_map = GamesMap.find(params[:id])
     @title = @games_map.name

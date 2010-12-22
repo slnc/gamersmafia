@@ -11,18 +11,26 @@ module ApplicationHelper
     :Spam => '108',
   }
   
+  def url_for_content(object, text)
+    "<a class=\"content\" href=\"#{Routing.url_for_content_onlyurl(object)}\">#{text}</a>"
+  end
+  
   def css_image_selector(field_name, field_value, skin)
+    cls_string = field_value == 'none' ? 'selected="selected"' : ''
+    
     out = <<-END
   <select name="#{field_name}">
 <option value="">(por defecto)</option>
-<option #{'selected="selected"' if field_value == 'none' } value="none">(ninguna)</option>
+<option #{cls_string} value="none">(ninguna)</option>
     END
+    
     skin.skins_files.each do |sfn|  
       val = "url(/#{sfn.file})"
       out << <<-END
-      <option #{'selected="selected"' if val == field_value } value="#{val}">#{File.basename(sfn.file)}</option>
-    END
+        <option #{'selected="selected"' if val == field_value } value="#{val}">#{File.basename(sfn.file)}</option>
+      END
     end 
+    
     out << '</select>'
   end
 
@@ -362,6 +370,81 @@ type: 'bhs'}))
     else
       str 
     end
+  end
+  
+  def admin_menu_items
+    return [] unless user_is_authed 
+    # TODO hack
+    items = []
+    if user.is_superadmin?
+      items<< ['Ads', '/admin/ads']
+      items<< ['Ads Slots', '/admin/ads_slots']
+      items<< ['Canales GMTV', '/admin/canales']
+      items<< ['Competiciones', '/admin/competiciones']
+      items<< ['Grupos', '/admin/grupos']
+      items<< ['Hipótesis', '/admin/hipotesis']
+      items<< ['Juegos', '/admin/juegos']
+      items<< ['Plataformas', '/admin/plataformas'] 
+      items<< ['Portales', '/admin/portales']
+      items<< ['Tienda', '/admin/tienda']
+    end
+    
+    if user.is_superadmin? || user.has_admin_permission?(:capo)
+      items<< ['Avatares', '/avatares']
+      items<< ['Clanes', '/admin/clanes']
+      items<< ['Facciones', '/admin/facciones']
+      items<< ['IP Bans', '/admin/ip_bans']
+      items<< ['IPs Duplicadas', '/admin/usuarios/ipsduplicadas']
+      items<< ['Mapas', '/admin/mapas_juegos']
+      items<< ['Tags', '/admin/tags']
+      items<< ['Users', '/admin/usuarios']
+      items<< ['Violaciones Netiqueta', '/comments/violaciones_netiqueta']
+    end
+    
+    if user.is_superadmin? || user.has_admin_permission?(:bazar_manager) || user.has_admin_permission?(:capo) 
+      items<< ['Cat Contenidos', '/admin/categorias']
+    end
+    
+    if user.is_superadmin? || user.has_admin_permission?(:faq)
+      items<< ['Entradas FAQ', '/admin/entradasfaq']
+      items<< ['Cat FAQ', '/admin/categoriasfaq']
+    end
+    
+    if user.is_superadmin? || user.has_admin_permission?(:bazar_manager)
+      items<< ['Distritos bazar', '/admin/bazar_districts']
+    end
+    
+    items<< ['Motor (info)', '/admin/motor']
+    
+    # ordenamos las entradas
+    items2 = {}
+    items.each { |i| items2[i[0]] = i[1] }
+    items3 = []
+    items2.keys.sort.each { |k| items3<< [k, items2[k]]}
+    
+    items3
+  end
+  
+    def clanes_menu_items
+    l = []
+    
+    if @user.last_clan_id then
+      l<<['Portada', '/cuenta/clanes']
+      
+      if @clan.user_is_clanleader(@user.id) then
+        l<<['Configuración', '/cuenta/clanes/configuracion']
+        l<<['Miembros', '/cuenta/clanes/miembros']
+        l<<['Clanes amigos', '/cuenta/clanes/amigos']
+        l<<['Sponsors', '/cuenta/clanes/sponsors']
+        l<<['Banco', '/cuenta/clanes/banco']
+        if @portal.kind_of?(ClansPortal)
+          l<<['Categorías de contenidos', "/admin/categorias"]
+          l<<['Skin', "/cuenta/skins/edit/#{@portal.skin_id}"]
+        end
+      end
+    end
+    
+    l
   end
   
   def smilelize(text)

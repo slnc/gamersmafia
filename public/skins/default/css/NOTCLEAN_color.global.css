@@ -86,7 +86,6 @@ body.lypopup h1 {
     background: #000;
 }
 
-
 .karmalevel {
     color: #000;
 }
@@ -153,16 +152,13 @@ tr.downloads-download td.first {
     color: #666;
 }
 
-
-body.community #ccontent .content-hid li.new a, body.wpcomunidad #ccontent .fcontents-basic li.new a, #homecommunity .content-hid li.new a {
-    background: url(../images/icons/content-hid-new-contents.png) left center no-repeat;
-}
-
-#homegamer .content-hid li.new a, body.wpgamer #ccontent .fcontents-basic li.new a {
-    background: url(../images/icons/content-hid-new-contents.png) left center no-repeat;
-}
-
-body.wpbazar #ccontent .fcontents-basic li.new a, #homebazar .content-hid li.new a {
+body.community #ccontent .content-hid li.new a, 
+body.wpcomunidad #ccontent .fcontents-basic li.new a, 
+#homecommunity .content-hid li.new a, 
+#homegamer .content-hid li.new a, 
+body.wpgamer #ccontent .fcontents-basic li.new a, 
+body.wpbazar #ccontent .fcontents-basic li.new a, 
+#homebazar .content-hid li.new a {
     background: url(../images/icons/content-hid-new-contents.png) left center no-repeat;
 }
 
@@ -189,8 +185,6 @@ textarea {
     background: #FAEFEF;
     font-weight: bold;
 }
-
-
 
 #homegamer .calendar .dayName th {
     background: #DFDFDF;
@@ -235,7 +229,6 @@ textarea {
     background: #AD0011;
 }
 
-
 .negative .pcent-bar .bar {
     background: #860000;
 }
@@ -278,7 +271,6 @@ textarea {
 .commentlink img {
     background-position: left -162px;
 }
-
 
 .cash-in {
     color: #045E0A;

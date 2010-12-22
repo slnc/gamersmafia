@@ -1,5 +1,6 @@
 module Clans
-  module Authentication # to be included in a controller
+  module Authentication
+    # Authentication module to be mixed in with a Controller.
     attr_accessor :clan
 
     def require_auth_clan_leader

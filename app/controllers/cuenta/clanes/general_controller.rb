@@ -5,26 +5,18 @@ class Cuenta::Clanes::GeneralController < ApplicationController
   
   before_filter :require_auth_users
   
-  before_filter { |c| 
+  before_filter do |c| 
     if c.user.last_clan_id then
       c.clan = Clan.find_by_id(c.user.last_clan_id)
       if c.clan.nil? or c.clan.deleted?
         c.user.update_attributes(:last_clan_id => nil)
       end
     end
-  }
-  
-  def submenu
-    'Clan'
   end
   
   def wmenu_pos
     'comunidad'
-  end
-  
-  def submenu_items
-    clanes_menu_items
-  end
+  end  
   
   def index
   end
@@ -178,23 +170,6 @@ class Cuenta::Clanes::GeneralController < ApplicationController
   
   def switch_active_clan
     @user.update_attributes(:last_clan_id => params[:id])
-    redirect_to '/cuenta/clanes'
-  end
-  
-  def activate_website 
-    require_auth_clan_leader
-    if @clan.website_activated?
-      flash[:error] = 'El clan ya tiene activada la página web'
-    else
-      sp = @user.sold_products.find(:first, :conditions => "product_id = #{Product.find_by_cls('SoldClanWebsite').id} AND used is false", :order => 'id ASC')
-      if sp.nil?
-        flash[:error] = 'Debes comprar una "Web de Clan" en la <a href="/cuenta/tienda">tienda</a>.'
-      else
-        @clan.activate_website
-        sp.update_attributes(:used => true)
-        flash[:notice] = 'Página web activada correctamente'
-      end
-    end
     redirect_to '/cuenta/clanes'
   end
 end

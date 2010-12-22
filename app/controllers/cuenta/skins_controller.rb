@@ -1,20 +1,6 @@
 class Cuenta::SkinsController < ApplicationController
   before_filter :require_auth_users
   
-  #def submenu
-  #  'skin' if @skin
-  #end
-  
-  #def submenu_items
-    #if @skin && @skin.is_intelliskin?
-    #  [['General', "/cuenta/skins/edit/#{@skin.id}"],
-    #  ['Avanzadas', "/cuenta/skins/avanzadas/#{@skin.id}"],
-    #  ]
-    #else
-	  #  []
-    #end
-  #end
-  
   def index
     @title = "Mis skins"
   end

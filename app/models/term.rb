@@ -437,7 +437,7 @@ class Term < ActiveRecord::Base
     end
     
     if options[:content_type].nil? && options[:content_type_id].nil? && self.taxonomy.to_s.index('Category')
-      options[:content_type] = ApplicationController.extract_content_name_from_taxonomy(self.taxonomy)
+      options[:content_type] = Cms.extract_content_name_from_taxonomy(self.taxonomy)
     end
     
     if options[:content_type].nil? && options[:content_type_id].nil? && @content_type_mask

@@ -66,7 +66,7 @@ class FactionsPortal < Portal
     # buscamos los nombres de todas las categorías de los juegos que tenemos
     # asociados
     cats_full = [0]
-    taxonomy = ApplicationController.taxonomy_from_content_name(cls.name)
+    taxonomy = Cms.taxonomy_from_content_name(cls.name)
     self.categories(cls).each do |t|
       cats_full += t.all_children_ids(:taxonomy => taxonomy)
     end

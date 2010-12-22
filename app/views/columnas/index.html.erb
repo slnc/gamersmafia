@@ -3,7 +3,7 @@
 <ul class="sidelist">
 <% cache("/#{controller.portal_code}/columnas/index/best_rated#{Time.now.strftime('%Y%m%d')}") do %>
 <% Column.in_portal(controller.portal).most_rated.find(:all, :limit => 3).each do |c| %>
-  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
+  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
   <% end -%>
 <% end -%>
 </ul>
@@ -13,7 +13,7 @@
 <ul class="sidelist">
 <% cache ("/#{controller.portal.code}/columnas/index/most_popular_#{Time.now.to_i/(86400)}") do %>
 <% Column.in_portal(controller.portal).most_popular.find(:all, :limit => 3).each do |c| %>
-  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=controller.url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
+  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
   <% end -%>
 <% end -%>
 </ul>

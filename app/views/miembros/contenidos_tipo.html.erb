@@ -14,7 +14,7 @@ end
 <table>
 <% @contents.each do |content| %>
   <tr class="<%=oddclass%>">
-    <td><%=controller.url_for_content(content, content.resolve_hid)%></td>
+    <td><%=url_for_content(content, content.resolve_hid)%></td>
     <td style="width: 75px;"><%=draw_rating(content.rating)%></td>
     <td style="width: 35px;"><span class="infoinline comments-count"><a href="<%=controller.url_for_content_onlyurl(content)%>"><%=content.cache_comments_count%></a></span></td>
     <td class="infoinline" style="width: 125px;"><%=print_tstamp(content.created_on)%></td>
