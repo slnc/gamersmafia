@@ -2,7 +2,7 @@ Hola <%=@recipient%>,
 
 El contenido "<%=@content.resolve_hid%>" tiene nuevos comentarios.
 
-<%=@base_url[0..-1]%><%=Routing.url_for_content(@content, '').gsub('<a href="', '').gsub('">', '').gsub('</a>', '')%>?vk=<%=@recipient.validkey%>
+<%=@base_url[0..-1]%><%=Routing.url_for_content_onlyurl(@content) %>?vk=<%=@recipient.validkey%>
 
 Gracias,
 
