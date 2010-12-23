@@ -139,7 +139,7 @@ class Term < ActiveRecord::Base
       
       if self.id == self.root_id || self.taxonomy.include?('Category')
         content.url = nil
-        ApplicationController.gmurl(content)
+        Routing.gmurl(content)
       end
     end
     true
@@ -344,7 +344,7 @@ class Term < ActiveRecord::Base
       uniq = rc.unique_content
       User.db_query("UPDATE contents SET url = NULL, portal_id = NULL WHERE id = #{uniq.id}")
       uniq.reload
-      ApplicationController.gmurl(uniq)
+      Routing.gmurl(uniq)
       # self.children.each { |child| child.reset_contents}
     end
   end

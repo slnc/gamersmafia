@@ -36,7 +36,7 @@ class PersonalizationTest < ActiveSupport::TestCase
   test "user_forums_add" do
     @u2 = User.find(2)
     @tcf = Term.single_toplevel(:slug => 'ut').children.find(:first, :conditions => 'name = \'General\' AND taxonomy = \'TopicsCategory\'')
-    Personalization.add_user_forum(@u2, @tcf.id, ApplicationController.gmurl(@tcf))
+    Personalization.add_user_forum(@u2, @tcf.id, Routing.gmurl(@tcf))
     ufs = Personalization.get_user_forums(@u2)
     
     assert_equal 3, ufs.size

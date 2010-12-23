@@ -854,7 +854,7 @@ module Cms
     User.db_query("UPDATE contents set updated_on = '#{original_updated_on}' WHERE id = #{newinst.unique_content.id}")
     uniq = newinst.unique_content
     uniq.url = nil
-    ApplicationController.gmurl(uniq)
+    Routing.gmurl(uniq)
     newinst
   end
   

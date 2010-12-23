@@ -238,7 +238,7 @@ class Faction < ActiveRecord::Base
   end
   
   def notify_capos_on_create
-    SlogEntry.create({:type_id => SlogEntry::TYPES[:info], :headline => "Nueva facción creada <strong><a href=\"#{ApplicationController.gmurl(self)}\">#{self.name}</a></strong>."})
+    SlogEntry.create({:type_id => SlogEntry::TYPES[:info], :headline => "Nueva facción creada <strong><a href=\"#{Routing.gmurl(self)}\">#{self.name}</a></strong>."})
   end
   
   def pib

@@ -192,7 +192,7 @@ module TestCaseMixings
         post :update, post_vars.merge({:id => 1}), {:user => opt[:authed_user_id]}
         assert_response :redirect
         obj = Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)).find(1)
-        assert_redirected_to ApplicationController.gmurl(obj)
+        assert_redirected_to Routing.gmurl(obj)
       end
       
       test "should_allow_update_published_if_authed_faction_leader" do

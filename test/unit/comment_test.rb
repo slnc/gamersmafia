@@ -20,7 +20,7 @@ class CommentTest < ActiveSupport::TestCase
     content = Content.find(1)
     content.url = nil
     content.portal_id = nil
-    ApplicationController.gmurl(content) # TODO temp make sure the fixture has portal_id set
+    Routing.gmurl(content) # TODO temp make sure the fixture has portal_id set
     assert_not_nil content.portal_id
     c = Comment.new({:user_id => 1, :comment => 'hola mundo!', :content_id => 1, :host => '127.0.0.1'})
     assert c.save

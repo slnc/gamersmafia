@@ -234,7 +234,7 @@ module ActsAsContent
         if self.unique_content_id
           uniq = self.unique_content
           uniq.url = nil
-          ApplicationController.gmurl(uniq)
+          Routing.gmurl(uniq)
         end
       end
       

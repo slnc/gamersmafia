@@ -17,7 +17,7 @@ class Content < ActiveRecord::Base
   after_save do |m| 
     m.contents_locks.clear if m.contents_locks
     old_url = m.url 
-    new_url = ApplicationController.gmurl(m)
+    new_url = Routing.gmurl(m)
     if old_url != new_url # url has changed, let's update comments
       User.db_query("UPDATE comments SET portal_id = #{m.portal_id} WHERE content_id = #{m.id}")
     end

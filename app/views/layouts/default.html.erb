@@ -202,7 +202,7 @@ if u_clans.size == 0 then %>
 					<li style="padding-right: 10px;"><div id="mggnav-hq-admin"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-hq-admin-list');" href="/admin">Admin</a></div></div></div></div>
 						<div id="mggnav-hq-admin-list" class="saw-dropdownlist hidden">
 							<ul>
-    				<%controller.admin_menu_items.each do |title, url| %>
+    				<%admin_menu_items.each do |title, url| %>
 								<li><a href="<%=url%>"><%=title%></a></li>
 					<% end -%>
 							</ul>
@@ -262,7 +262,7 @@ if u_clans.size == 0 then %>
 		   	
 		   </div>
 	
-	  <script type="text/javascript">GM.menu.sawbottom_real('<%=controller.active_sawmode != '' ? controller.active_sawmode : 'gm' %>', 1);</script>
+	  <script type="text/javascript">GM.menu.sawbottom_real('<%=active_sawmode != '' ? active_sawmode : 'gm' %>', 1);</script>
 	
       </div>
     </div>
@@ -298,11 +298,11 @@ if u_clans.size == 0 then %>
 				<li><a href="" title="Ir a esta página directamente al entrar en gamersmafia.com" onclick="return GM.personalization.set_default_portal(<%=user_is_authed ? 'true' : 'false'%>, '<%=controller.action_name%>');">Hacer <%=controller.action_name == 'index' ? 'portada' : controller.action_name%> mi página por defecto</a></li>
 			<% end -%>
 			
-			<% if controller.can_add_as_quicklink? then %>
+			<% if can_add_as_quicklink? then %>
 				<li id="add-to-quicklinks"><a href="" title="Añadir a accesos directos" onclick="return GM.personalization.add_quicklink('<%=controller.portal.code%>', 'http://<%=controller.portal.code%>.<%=App.domain%>');">Añadir a quicklinks</a></li>
 			<% end -%>
 			
-			<% if controller.can_del_quicklink? then %>
+			<% if can_del_quicklink? then %>
 				<li id="del-from-quicklinks"><a href="" title="Quitar de accesos directos" onclick="return GM.personalization.del_quicklink('<%=controller.portal.code%>');">Quitar de quicklinks</a></li>
 			<% end -%>
 			

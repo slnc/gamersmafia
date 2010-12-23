@@ -18,7 +18,7 @@ class Notification < ActionMailer::Base
   end
   
   def gmurl(object)
-    ApplicationController.gmurl(object)
+    Routing.gmurl(object)
   end
   
   def setup(recipients, vars={})

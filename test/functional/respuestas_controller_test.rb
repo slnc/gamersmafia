@@ -66,7 +66,7 @@ class RespuestasControllerTest < ActionController::TestCase
   
   test "show should work for anon" do
     qfirst = Question.published.find(:first)
-    @request.host = host_from_url(ApplicationController.gmurl(qfirst))
+    @request.host = host_from_url(Routing.gmurl(qfirst))
     get :show, :id => qfirst.id
     assert_response :success
   end

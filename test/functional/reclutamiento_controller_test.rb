@@ -27,7 +27,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
   test "anuncio" do
     test_create_type_1
     #get :anuncio, :id => @ra.id
-    #puts ApplicationController.gmurl(@ra)
+    #puts Routing.gmurl(@ra)
     # ApplicactionController.
     #assert_redirected_to "reclutamiento/show/13"
   end
@@ -62,7 +62,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
     post :update, :id => @ra.id, :recruitment_ad => { :game_id => 2 }
     @ra.reload
     assert_equal 2, @ra.game_id
-    assert_redirected_to ApplicationController.gmurl(@ra)
+    assert_redirected_to Routing.gmurl(@ra)
   end
   
   test "buscar" do

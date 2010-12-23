@@ -5,7 +5,7 @@ class Gm2539FixUrls < ActiveRecord::Migration
     Content.find(:all, :conditions => 'created_on >= \'2009-03-01 00:00:00\'', :order => 'id').each do |c|
       prev = c.url
       c.url = nil
-      ApplicationController.gmurl(c)
+      Routing.gmurl(c)
       
       if c.url.gsub('.dev', '.com') != prev
         puts "#{c.id.to_s.ljust(7, ' ')}  #{c.created_on}   #{prev} >> #{c.url}"

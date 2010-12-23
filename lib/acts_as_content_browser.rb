@@ -44,7 +44,7 @@ module ActsAsContentBrowser
       raise ActiveRecord::RecordNotFound unless obj.is_public? or (user_is_authed and Cms::user_can_edit_content?(@user, obj))
       # puts "http://#{request.host}#{request.request_uri} #{obj.unique_content.url}"
       # puts "http://#{request.host}#{request.request_uri}".index(obj.unique_content.url)
-      ApplicationController.gmurl(obj.unique_content) if obj.unique_content.url.nil?
+      Routing.gmurl(obj.unique_content) if obj.unique_content.url.nil?
       if "http://#{request.host}#{request.request_uri}".index(obj.unique_content.url).nil?
         redirect_to(obj.unique_content.url, :status => 301) and return
       end

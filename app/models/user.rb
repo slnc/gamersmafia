@@ -258,11 +258,11 @@ class User < ActiveRecord::Base
     if impositor.has_admin_permission?(:capo)
       SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], 
                        :reporter_user_id => impositor.id, 
-                       :headline => "Antiflood #{User::ANTIFLOOD_LEVELS[self.antiflood_level]} impuesto a <strong><a href=\"#{ApplicationController.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{ApplicationController.gmurl(impositor)}\">#{impositor.login}</a>")
+                       :headline => "Antiflood #{User::ANTIFLOOD_LEVELS[self.antiflood_level]} impuesto a <strong><a href=\"#{Routing.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{Routing.gmurl(impositor)}\">#{impositor.login}</a>")
     else
       SlogEntry.create(:type_id => SlogEntry::TYPES[:emergency_antiflood], 
                        :reporter_user_id => impositor.id, 
-                       :headline => "Antiflood de emergencia impuesto a <strong><a href=\"#{ApplicationController.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{ApplicationController.gmurl(impositor)}\">#{impositor.login}</a>")
+                       :headline => "Antiflood de emergencia impuesto a <strong><a href=\"#{Routing.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{Routing.gmurl(impositor)}\">#{impositor.login}</a>")
     end
     true
   end

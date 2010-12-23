@@ -6,7 +6,7 @@ module Comments
     raise 'El contenido no está publicado. No se permiten nuevos comentarios.' if object.state == Cms::DELETED
     if object.closed
       if object.reason_to_close
-        msg = "El contenido ha sido cerrado por <a href=\"#{ApplicationController.gmurl(object.closed_by_user)}\">#{object.closed_by_user.login}</a> (Razón: #{object.reason_to_close}).<br />No se permiten nuevos comentarios."
+        msg = "El contenido ha sido cerrado por <a href=\"#{Routing.gmurl(object.closed_by_user)}\">#{object.closed_by_user.login}</a> (Razón: #{object.reason_to_close}).<br />No se permiten nuevos comentarios."
       else
         msg = 'El contenido ha sido cerrado. No se permiten nuevos comentarios.'
       end

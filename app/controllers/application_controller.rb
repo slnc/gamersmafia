@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   helper :account, :miembros, :competiciones, :calendar
   before_filter :ident, :resolve_portal_mode, :check_referer, :populate_navpath2, :parse_params_page
   
-  attr_accessor :competition, :portal, :third_menu, :global_vars
+  attr_accessor :competition, :portal, :third_menu, :global_vars, :active_sawmode
   cattr_accessor :navpath2
   around_filter :gm_process
   
@@ -135,7 +135,7 @@ Request information:
   
   # DEPRECATED Use Routing.url_for
   def gmurl(object, opts={})
-    self.class.gmurl(object, opts)
+    Routing.gmurl(object, opts)
   end
   
   
@@ -469,6 +469,7 @@ Request information:
     self.class.navpath2<< [controller_name.titleize, "/#{self.class.controller_path}"] unless action_name == 'index'
   end
   
+  public
   def navpath2
     self.class.navpath2
   end

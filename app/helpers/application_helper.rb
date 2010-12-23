@@ -58,9 +58,9 @@ module ApplicationHelper
   
   
   def can_add_as_quicklink?
-    if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(portal.class.name)
+    if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(controller.portal.class.name)
       qlinks = Personalization.quicklinks_for_user(@user)
-      if qlinks.delete_if { |ql| ql[:code] != self.portal.code }.size == 0 # no estaba
+      if qlinks.delete_if { |ql| ql[:code] != controller.portal.code }.size == 0 # no estaba
         true
       else
         false
@@ -71,9 +71,9 @@ module ApplicationHelper
   end
   
   def can_del_quicklink?
-    if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(portal.class.name)
+    if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(controller.portal.class.name)
       qlinks = Personalization.quicklinks_for_user(@user)
-      if qlinks.delete_if { |ql| ql[:code] != self.portal.code }.size == 1 # estaba
+      if qlinks.delete_if { |ql| ql[:code] != controller.portal.code }.size == 1 # estaba
         true
       else
         false
@@ -353,7 +353,7 @@ type: 'bhs'}))
   end
   
   def gmurl(object, opts={})
-    ApplicationController.gmurl(object, opts)
+    Routing.gmurl(object, opts)
   end
   
   def member_state(state)
@@ -474,7 +474,7 @@ type: 'bhs'}))
     return [] unless user_is_authed 
     # TODO hack
     items = []
-    if user.is_superadmin?
+    if @user.is_superadmin?
       items<< ['Ads', '/admin/ads']
       items<< ['Ads Slots', '/admin/ads_slots']
       items<< ['Canales GMTV', '/admin/canales']
@@ -487,7 +487,7 @@ type: 'bhs'}))
       items<< ['Tienda', '/admin/tienda']
     end
     
-    if user.is_superadmin? || user.has_admin_permission?(:capo)
+    if @user.is_superadmin? || @user.has_admin_permission?(:capo)
       items<< ['Avatares', '/avatares']
       items<< ['Clanes', '/admin/clanes']
       items<< ['Facciones', '/admin/facciones']
@@ -499,16 +499,16 @@ type: 'bhs'}))
       items<< ['Violaciones Netiqueta', '/comments/violaciones_netiqueta']
     end
     
-    if user.is_superadmin? || user.has_admin_permission?(:bazar_manager) || user.has_admin_permission?(:capo) 
+    if @user.is_superadmin? || @user.has_admin_permission?(:bazar_manager) || @user.has_admin_permission?(:capo) 
       items<< ['Cat Contenidos', '/admin/categorias']
     end
     
-    if user.is_superadmin? || user.has_admin_permission?(:faq)
+    if @user.is_superadmin? || @user.has_admin_permission?(:faq)
       items<< ['Entradas FAQ', '/admin/entradasfaq']
       items<< ['Cat FAQ', '/admin/categoriasfaq']
     end
     
-    if user.is_superadmin? || user.has_admin_permission?(:bazar_manager)
+    if @user.is_superadmin? || @user.has_admin_permission?(:bazar_manager)
       items<< ['Distritos bazar', '/admin/bazar_districts']
     end
     

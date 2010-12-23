@@ -14,7 +14,7 @@ module Reports
       ues = UsersEmblem.find(:all, :conditions => ["created_on = ? AND emblem = ?", cur_date, emblema])
       if ues.size > 0
         base << "<tr class=\"#{oddclass}\"><td class=\"w150\"><img class=\"sprite1 emblema emblema-#{emblema}\" src=\"/images/blank.gif\" /> #{Emblems::EMBLEMS[emblema.to_sym][:title]}</td> <td><strong>"
-        base << ues.collect { |ue| "<a href=\"#{ApplicationController.gmurl(ue.user)}\">#{ue.user.login}</a>" }.join(', ')
+        base << ues.collect { |ue| "<a href=\"#{Routing.gmurl(ue.user)}\">#{ue.user.login}</a>" }.join(', ')
         base << "</strong></td><td>#{ues[0].details}</td></tr>\n"
       end
     end
@@ -26,7 +26,7 @@ module Reports
     
     if dbmax.size > 0
       c = Comment.find(dbmax[0]['comment_id'].to_i)
-      base<< "<br /><br />El comentario con más valoraciones positivas (<strong>#{dbmax[0]['count']}</strong>) de la semana ha sido:<br /><blockquote>#{ActionView::Base.new.smilelize(c.comment)}</blockquote><br /><br /> enviado por <strong><a href=\"/miembros/#{c.user.login}\">#{c.user.login}</a></strong> en '<a href=\"#{ApplicationController.gmurl(c.content)}\">#{c.content.name}</a>'."
+      base<< "<br /><br />El comentario con más valoraciones positivas (<strong>#{dbmax[0]['count']}</strong>) de la semana ha sido:<br /><blockquote>#{ActionView::Base.new.smilelize(c.comment)}</blockquote><br /><br /> enviado por <strong><a href=\"/miembros/#{c.user.login}\">#{c.user.login}</a></strong> en '<a href=\"#{Routing.gmurl(c.content)}\">#{c.content.name}</a>'."
     end
     
     
