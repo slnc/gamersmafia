@@ -1,4 +1,4 @@
-class  < ApplicationController
+class Admin::FaccionesController < ApplicationController
   helper :miembros
   audit :destroy
   

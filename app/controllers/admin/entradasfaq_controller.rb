@@ -1,4 +1,4 @@
-class  < ApplicationController
+class Admin::EntradasfaqController < ApplicationController
   require_admin_permission :faq
   
   def index
