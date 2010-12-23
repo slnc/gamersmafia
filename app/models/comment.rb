@@ -23,7 +23,7 @@ class Comment < ActiveRecord::Base
   after_save :schedule_ne_references_calculation
   
   belongs_to :lastedited_by, :class_name => 'User', :foreign_key => 'lastedited_by_user_id'
-  has_many :comments_valorations
+  has_many :comments_valorations, :dependent => :destroy
   
   before_save :truncate_long_comments
   before_save :set_portal_id_based_on_content
