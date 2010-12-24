@@ -6,9 +6,11 @@ class FactionsPortalTest < ActiveSupport::TestCase
     @fp = FactionsPortal.create({:name => 'fooo', :code => 'fooo'})
     assert_equal false, @fp.new_record?
     f = Faction.create({:name => 'fooo', :code => 'fooo'})
-    assert_equal false, f.new_record?
-    flc = f.factions_links.create({:name => 'nombre del link', :url => 'http://google.com/', :image => fixture_file_upload('/files/babe.jpg', 'image/jpeg')})
-    assert_equal false, flc.new_record?
+    assert !f.new_record?
+    flc = f.factions_links.create(:name => 'nombre del link', 
+                                  :url => 'http://google.com/', 
+                                  :image => fixture_file_upload('/files/babe.jpg', 'image/jpeg'))
+    assert !flc.new_record?
     @fp.factions<< f
     assert_equal 1, @fp.factions_links.size
     assert_equal flc.id, @fp.factions_links[0].id
@@ -18,9 +20,11 @@ class FactionsPortalTest < ActiveSupport::TestCase
     test_should_return_factions_links_if_any
     @fp.reload
     f2 = Faction.create({:name => 'fooo2', :code => 'fooo2'})
-    assert_equal false, f2.new_record?
-    flc2 = f2.factions_links.create({:name => 'nombre del link2', :url => 'http://google.com/', :image => fixture_file_upload('/files/babe.jpg', 'image/jpeg')})
-    assert_equal false, flc2.new_record?
+    assert !f2.new_record?
+    flc2 = f2.factions_links.create(:name => 'nombre del link2', 
+                                    :url => 'http://google.com/', 
+                                    :image => fixture_file_upload('/files/babe.jpg', 'image/jpeg'))
+    assert !flc2.new_record?
     @fp.factions<< f2
     
     assert_equal 1, @fp.factions_links.size

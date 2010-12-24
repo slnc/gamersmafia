@@ -131,7 +131,7 @@ class CacheObserverMiembrosTest < ActionController::IntegrationTest
     assert_cache_exists @cache_path
     post '/cuenta/amigos/cancelar_amistad/superadmin'
     assert_response :redirect, @response.body
-    assert User.find_by_login('panzer').is_friend_of?(@u1)
+    assert !User.find_by_login('panzer').is_friend_of?(@u1)
     assert_cache_dont_exist @cache_path
   end
   

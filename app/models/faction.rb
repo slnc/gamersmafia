@@ -396,21 +396,24 @@ class Faction < ActiveRecord::Base
   end
   
   def building_top=(incoming_file)
-    if Cms::is_valid_upload(incoming_file)
+    # WARNING: incoming_file.nil? es un valid upload
+    if Cms::is_valid_upload(incoming_file) and incoming_file 
       @temp_file_building_top = incoming_file
       @filename_building_top = incoming_file.original_filename
     end
   end
   
   def building_middle=(incoming_file)
-    if Cms::is_valid_upload(incoming_file)
+    # WARNING: incoming_file.nil? es un valid upload
+    if Cms::is_valid_upload(incoming_file) and incoming_file
       @temp_file_building_middle = incoming_file
       @filename_building_middle = incoming_file.original_filename
     end
   end
   
   def building_bottom=(incoming_file)
-    if Cms::is_valid_upload(incoming_file)
+    # WARNING: incoming_file.nil? es un valid upload
+    if Cms::is_valid_upload(incoming_file) and incoming_file
       @temp_file_building_bottom = incoming_file
       @filename_building_bottom = incoming_file.original_filename
     end

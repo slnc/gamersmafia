@@ -10,7 +10,6 @@ class Admin::PortalesController < AdministrationController
   
   def update
     @theportal = Portal.find(params[:id])
-    params[:portal][:skin_id] = params[:theportal][:skin_id]
     @theportal.update_attributes(params[:portal])
     redirect_to "/admin/portales/editar/#{@theportal.id}"
   end
