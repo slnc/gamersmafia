@@ -66,9 +66,12 @@ class CompeticionesController < ArenaController
     raise ActiveRecord::RecordNotFound unless (@competition.state == 1 or (@competition.state == 3 and @competition.class.name == 'Ladder'))
     
     if @competition.user_is_participant(@user.id)
-      p = @competition.get_active_participant_for_user(@user)
-      Bank.transfer(@competition, p.the_real_thing, @competition.fee, "Devolución de inscripción en #{@competition.name}") if @competition.fee?
-      p.destroy
+      participant = @competition.get_active_participant_for_user(@user)
+      if @competition.fee?
+        Bank.transfer(@competition, participant.the_real_thing, @competition.fee, 
+                      "Devolución de inscripción en #{@competition.name}")
+      end
+      participant.destroy
       flash[:notice] = 'Desinscripción realizada correctamente.'
     end
     
@@ -238,7 +241,7 @@ class CompeticionesController < ArenaController
   def do_responder_reto
     require_auth_users
     # Aquí solo llegamos cuando el usuario no ha rechazado el reto
-
+    
     @competitions_match = CompetitionsMatch.find(params[:competitions_match_id])
     @competition = @competitions_match.competition
     p = @competition.get_active_participant_for_user(@user)
@@ -292,9 +295,9 @@ class CompeticionesController < ArenaController
     @competition = p2.competition
     
     case @competition.competitions_participants_type_id
-    when 1:
+      when 1:
       raise AccessDenied unless p2.participant_id == @user.id 
-    when 2:
+      when 2:
       c = Clan.find(p2.participant_id)
       raise AccessDenied unless c.user_is_clanleader(@user.id)
     else
@@ -338,9 +341,9 @@ class CompeticionesController < ArenaController
     @competition = p1.competition
     
     case @competition.competitions_participants_type_id
-    when 1:
+      when 1:
       raise AccessDenied unless p1.participant_id == @user.id
-    when 2:
+      when 2:
       c = Clan.find(p1.participant_id)
       raise AccessDenied unless c.user_is_clanleader(@user.id)
     else

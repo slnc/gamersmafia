@@ -3,9 +3,9 @@ class PublishingPersonality < ActiveRecord::Base
   belongs_to :content_type
   
   def self.find_or_create(user, content_type)
-    p = find(:first, :conditions => ['user_id = ? and content_type_id = ?', user.id, content_type.id])
-    p = create({:user_id => user.id, :content_type_id => content_type.id}) if p.nil?
-    p
+    pp = find(:first, :conditions => ['user_id = ? and content_type_id = ?', user.id, content_type.id])
+    pp = create({:user_id => user.id, :content_type_id => content_type.id}) if pp.nil?
+    pp
   end
   
   def recalculate

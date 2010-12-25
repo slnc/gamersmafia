@@ -13,8 +13,8 @@ class SkinsResolutionTest < ActionController::IntegrationTest
   end
 
   test "should_resolve_subdomain_as_faction_portal" do
-    p = FactionsPortal.find_by_code('ut')
-    host! "#{p.code}.#{App.domain}"
+    portal = FactionsPortal.find_by_code('ut')
+    host! "#{portal.code}.#{App.domain}"
     get '/'
     assert_response :success, @response.body
     assert @controller.skin.hid == 'default'

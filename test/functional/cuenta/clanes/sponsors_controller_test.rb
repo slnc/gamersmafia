@@ -50,7 +50,7 @@ class Cuenta::Clanes::SponsorsControllerTest < ActionController::TestCase
     assert_not_equal 'foo2', @cs.name
     post :update, :id => @cs.id, :clans_sponsor => {:name => 'foo2', :url => 'http://www.foo2.com/', :image => fixture_file_upload('files/buddha.jpg', 'file/jpeg')}
     assert_response :redirect
-    assert_redirected_to :action => 'edit'
+    assert_redirected_to :controller => 'sponsors', :action => 'edit', :id => @cs
     @cs.reload
     assert_equal 'foo2', @cs.name
   end

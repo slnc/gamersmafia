@@ -68,8 +68,7 @@
           i = 0
           max = nil
           User.can_login.humans.find(:all, :conditions => 'cash > 0', :order => 'cash DESC', :limit => 10).each do |u| 
-            max = u.cash if max.nil?
-			puts "#{u.login} #{u.cash}" 
+            max = u.cash if max.nil? 
           %>
           <tr class="<%=oddclass%>">
             <td class="sm-icon number f_number"><%=i+=1%></td>

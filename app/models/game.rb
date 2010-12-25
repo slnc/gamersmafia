@@ -42,8 +42,8 @@ class Game < ActiveRecord::Base
       f.save
     end
     
-    p = Portal.create({:name => self.name, :code => self.code})
-    p.factions<< f
+    portal = Portal.create({:name => self.name, :code => self.code})
+    portal.factions<< f
     
     # El orden es importante
     root_term = Term.create(:game_id => self.id, :name => self.name, :slug => self.code) 

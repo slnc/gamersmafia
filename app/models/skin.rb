@@ -218,7 +218,7 @@ class Skin < ActiveRecord::Base
       
       build_skin
     else
-      puts "#{da_fail} doesnt exists"
+      Rails.logging.error "Skin.unzip_package: #{da_fail} doesnt exist" 
     end
     true
   end

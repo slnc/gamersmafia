@@ -154,7 +154,7 @@ class Content < ActiveRecord::Base
   end
   
   def root_terms_ids=(newt)
-    puts "#{self.content_type.name} no permite enlazar a root_terms" unless Cms::ROOT_TERMS_CONTENTS.include?(self.content_type.name)
+    # puts "#{self.content_type.name} no permite enlazar a root_terms" unless Cms::ROOT_TERMS_CONTENTS.include?(self.content_type.name)
     newt = [newt] unless newt.kind_of?(Array)
     existing = self.root_terms.collect { |t| t.id }
     to_del = existing - newt
@@ -169,7 +169,7 @@ class Content < ActiveRecord::Base
   end
   
   def categories_terms_ids=(arg)
-    puts "#{self.content_type.name} no permite enlazar a categories_terms" unless Cms::CATEGORIES_TERMS_CONTENTS.include?(self.content_type.name)
+    # puts "#{self.content_type.name} no permite enlazar a categories_terms" unless Cms::CATEGORIES_TERMS_CONTENTS.include?(self.content_type.name)
     newt = arg[0]
     taxonomy = arg[1]
     newt = [newt] unless newt.kind_of?(Array)
@@ -186,7 +186,7 @@ class Content < ActiveRecord::Base
   end
   
   def root_terms_add_ids(terms)
-    puts "#{self.content_type.name} no permite enlazar a root_terms" unless Cms::ROOT_TERMS_CONTENTS.include?(self.content_type.name)
+    # puts "#{self.content_type.name} no permite enlazar a root_terms" unless Cms::ROOT_TERMS_CONTENTS.include?(self.content_type.name)
     terms = [terms] unless terms.kind_of?(Array)
     terms.each do |tid|
       t = Term.find_taxonomy(tid, nil)
@@ -199,7 +199,7 @@ class Content < ActiveRecord::Base
   end
   
   def categories_terms_add_ids(terms, taxonomy)
-    puts "#{self.content_type.name} no permite enlazar a categories_terms" unless Cms::CATEGORIES_TERMS_CONTENTS.include?(self.content_type.name)
+    # puts "#{self.content_type.name} no permite enlazar a categories_terms" unless Cms::CATEGORIES_TERMS_CONTENTS.include?(self.content_type.name)
     terms = [terms] unless terms.kind_of?(Array)
     terms.each do |tid|
       t = Term.find_taxonomy(tid, taxonomy)

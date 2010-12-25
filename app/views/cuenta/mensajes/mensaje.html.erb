@@ -13,26 +13,6 @@
       <li><a href="/cuenta/amigos/iniciar_amistad/<%=@curmessage.sender.login%>?redirto=<%=request.path%>">Añadir a mi lista de amigos</a></li>
     <% end -%>
     </ul></div>
-<%
-def message_quotize(txt)
-  prev_is_quoted = false
-	txt.split("\n").collect do |ln|
-	  puts ln[0..0]
-    if ln[0..0] == '>' && !prev_is_quoted
-          prev_is_quoted = true
-      '[quote]'<<ln
-
-    elsif ln[0..0] != '>' && prev_is_quoted
-          prev_is_quoted = false
-      ln<<'[/quote]'
-
-    else
-      ln
-    end
-	end.join("\n")
-end
-
-%>
 </div>
 <div class="message-body"><%=@curmessage.message.index('<br />') ? @curmessage.message : auto_link(smilelize(Comments::formatize(message_quotize(@curmessage.message))))%></div>
   

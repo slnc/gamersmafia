@@ -445,9 +445,9 @@ class Competition < ActiveRecord::Base
   
   def user_can_challenge(user)
     return false unless self.kind_of?(Ladder) && self.state == 3
-    p = self.get_active_participant_for_user(user)
-    return false if p.nil?
-    return false if self.competitions_participants_type_id == 2 and not p.the_real_thing.user_is_clanleader(user.id)
+    participant = self.get_active_participant_for_user(user)
+    return false if participant.nil?
+    return false if self.competitions_participants_type_id == 2 and not participant.the_real_thing.user_is_clanleader(user.id)
     true
   end
   

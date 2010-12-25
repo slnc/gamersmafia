@@ -25,4 +25,19 @@ module Cuenta::MensajesHelper
     out << "</ul>" if indent_level == 0
     out
   end
+  
+  def message_quotize(txt)
+    prev_is_quoted = false
+    txt.split("\n").collect do |ln|
+      if ln[0..0] == '>' && !prev_is_quoted
+        prev_is_quoted = true
+        '[quote]'<<ln
+      elsif ln[0..0] != '>' && prev_is_quoted
+        prev_is_quoted = false
+        ln<<'[/quote]'
+      else
+      ln
+      end
+    end.join("\n")
+  end
 end

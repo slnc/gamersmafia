@@ -55,8 +55,7 @@ namespace(:customs) do
       begin
         run "if [ -d #{current_path} ]; then cd #{current_path} && ./script/check_clean_wc.sh; fi"
       rescue
-        puts "\n\tERROR: production has dirty wc!\n\n"
-        raise
+        raise "\n\tERROR: production has dirty wc!\n\n"
       end
       run "if [ -d #{current_path} ]; then cd #{current_path} && rake gm:alariko:stop; fi"
     end    

@@ -85,20 +85,20 @@ class Cuenta::CompeticionesController < ApplicationController
     cps0 = []
     data_old = {}
     
-    for p in params[:participants]
-      p = p[1]
-      next if p[:old_participant_id] == p[:new_participant_id]
-      
-      # raise "going to change #{p[:old_participant_id]} with #{p[:new_participant_id]}"
-      cp = @competition.competitions_participants.find(p[:old_participant_id])
-      new = @competition.competitions_participants.find(p[:new_participant_id])
+    for participant in params[:participants]
+      participant = participant[1]
+      next if participant[:old_participant_id] == participant[:new_participant_id]
+
+      cp = @competition.competitions_participants.find(participant[:old_participant_id])
+      new = @competition.competitions_participants.find(participant[:new_participant_id])
       
       if data_old.has_key?(new.id) # no vaya a ser que ya lo hayamos tocado en esta ocasión
         new.participant_id = data_old[new.id][:participant_id]
         new.name = data_old[new.id][:name]
       end
       
-      data_old[cp.id] = { :participant_id => cp.participant_id, :name => cp.name, :roster => cp.roster, :created_on => cp.created_on }
+      data_old[cp.id] = { :created_on => cp.created_on, :name => cp.name, 
+                          :participant_id => cp.participant_id, :roster => cp.roster }
       cp.participant_id = i;
       cp.name = i;
       raise cp.errors.full_messages.join("\n") unless cp.save

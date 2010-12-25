@@ -8,10 +8,10 @@ class RefererHitTest < ActionController::IntegrationTest
 
   test "should_give_faith_points_if_refered_link" do
     u1 = User.find(1)
-    p = u1.faith_points
+    points = u1.faith_points
     get '/?rusid=1'
     assert_response :success, @response.body
     u1.reload
-    assert_equal p + Faith::FPS_ACTIONS['hit'], u1.faith_points
+    assert_equal points + Faith::FPS_ACTIONS['hit'], u1.faith_points
   end
 end
