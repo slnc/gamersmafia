@@ -3567,6 +3567,7 @@ CREATE UNIQUE INDEX competitions_supervisors_uniq ON competitions_supervisors US
 CREATE INDEX content_ratings_comb ON content_ratings USING btree (ip, user_id, created_on);
 CREATE UNIQUE INDEX content_ratings_user_id_content_id ON content_ratings USING btree (user_id, content_id);
 CREATE INDEX contents_created_on ON contents USING btree (created_on);
+CREATE INDEX contents_id_state_content_type_id ON contents USING btree (id, state, content_type_id);
 CREATE INDEX contents_is_public ON contents USING btree (is_public);
 CREATE INDEX contents_is_public_and_game_id ON contents USING btree (is_public, game_id);
 CREATE UNIQUE INDEX contents_locks_uniq ON contents_locks USING btree (content_id);
