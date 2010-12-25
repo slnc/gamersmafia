@@ -11,9 +11,11 @@ set :scm_command, '/usr/local/hosting/bin/git'
 set :git_enable_submodules, 1
 set :branch, 'production'
 
-role :app, "httpd@light.slnc.net:62331"
-role :web, "httpd@light.slnc.net:62331"
-role :db,  "httpd@light.slnc.net:62331", :primary => true
+SSH_PATH_TO_HOST = "httpd@light.slnc.net:62331"
+
+role :app, SSH_PATH_TO_HOST
+role :web, SSH_PATH_TO_HOST
+role :db, SSH_PATH_TO_HOST, :primary => true
 
 default_environment['PATH'] = '/bin:/usr/bin:/usr/local/bin:/usr/local/hosting/bin'
 default_environment['RAILS_ENV'] = 'production'
@@ -35,7 +37,7 @@ namespace(:customs) do
   end
   
   task :updated_app, :roles => :app do
-    `scp -P62331 /Users/slnc/core/projects/gamersmafia.com/app_production.yml httpd@light.slnc.net:#{release_path}/config `
+    `scp -P62331 /Users/slnc/core/projects/gamersmafia.com/app_production.yml #{SSH_PATH_TO_HOST.split(":")[0]}:#{release_path}/config `
     run "cd #{release_path} && echo 'production' > config/mode && ./script/update.py"
   end
   

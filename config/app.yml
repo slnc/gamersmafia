@@ -1,64 +1,57 @@
-# common config (not usable directly, must use basic roles or specific machines)
+# Common config. It defines all configuration variables but it's not intended to be used 
+# directly.
 common: &common
-  platform: <%=(RUBY_PLATFORM =~ /(win|w)32$/) ? WINDOWS : LINUX%>
-  tidy_path: /usr/lib/libtidy.so
+  asset_domain: gamersmafia.com
+  cache_templates_in_production: true
+  compress_js?: true
+  compress_skins?: true
+  debug: false
   domain: gamersmafia.com
   domain_bazar: bazar.gamersmafia.com
-  domain_arena: arena.gamersmafia.com
-  asset_domain: gamersmafia.com
-  debug: false
-  enable_google_analytics?: false
-  enable_bgjobs?: false
-  cache_templates_in_production: true
-  port: 80
-  python: /usr/local/hosting/bin/python2.4
-  ia_auto_abtests: MrAchmed
-  mirror_auth_key: 4ffff4e235041687dd31b55a9867f385
-  webmaster_user_id: 1
-  enable_dbstats?: false
-  compress_skins?: true
-  compress_js?: true
   domain_aliases:
     - 4americasarmy.com
     - 4coders.net
-    - 4doomers.net
-    - 4guildwars.com
     - 4mohers.com
+    - 4quakers.com
     - 4ragnarok.com
     - 4soldiers.net
-    - nwnspain.com
     - 4unrealers.com
-    - 4quakers.com
-    - dowforever.com
-    - 4warcraft.com
     - battlefieldspain.com
     - bf1942spain.com
     - defuseit.com
-    - sc2-esp.net
+    - dowforever.com
     - quakereligion.com
+    - sc2-esp.net
+  domain_arena: arena.gamersmafia.com
+  enable_bgjobs?: false
+  enable_dbstats?: false
+  enable_google_analytics?: false
+  ia_auto_abtests: MrAchmed
+  jira_username: jira_username
+  jira_password:  secret
+  mirror_auth_key: secret
+  port: 80
+  python: /usr/local/hosting/bin/python2.4
+  session_secret: secret
   system_mail_host: imap.gmail.com
   system_mail_domain: gamersmafia.com
   system_mail_user: nagatodev@gamersmafia.com
   system_mail_password: megustanlasgalletas
-  jira_username: alariko
-  jira_password:  secretpassword
+  tidy_path: /usr/lib/libtidy.so
+  webmaster_user_id: 1
 
-# basic roles (usable)
-production: &production
-  enable_bgjobs?: true
-  enable_google_analytics?: true
-  system_mail_user: nagato@gamersmafia.com
-  system_mail_password: secretpassword
-  <<: *common
-
+# Basic roles.
 development: &development
-  domain: gamersmafia.dev
-  domain_bazar: bazar.gamersmafia.dev
-  domain_arena: arena.gamersmafia.dev
   asset_domain: gamersmafia.dev
-  enable_dbstats?: true
-  compress_skins?: false
   cache_templates_in_production: false
+  compress_js?: false
+  compress_skins?: false
+  domain: gamersmafia.dev
+  domain_arena: arena.gamersmafia.dev
+  domain_bazar: bazar.gamersmafia.dev
+  enable_bgjobs?: true
+  enable_dbstats?: true
+  python: python
   <<: *common
   
 test: &test
@@ -67,25 +60,3 @@ test: &test
   domain_arena: arena.test.host
   asset_domain: test.host
   <<: *common
-
-    
-# specific machines or profiles
-blackwings: &blackwings
-  domain: gamersmafia.dev
-  asset_domain: gamersmafia.dev
-  compress_skins?: false
-  compress_js?: false
-  enable_dbstats?: true
-  enable_bgjobs?: true
-  python: python
-# port: 3000
-  <<: *development
-
-mac:
-  <<: *blackwings
-
-  
-doll2:
-  domain: gamersmafia.dev2
-  asset_domain: gamersmafia.dev2
-  <<: *development

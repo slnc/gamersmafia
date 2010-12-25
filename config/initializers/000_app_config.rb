@@ -8,7 +8,7 @@ if !defined?(::App)
   WINDOWS = 1
   
   # load custom config
-  mode = File.exists?("#{RAILS_ROOT}/config/mode") ? File.open("#{RAILS_ROOT}/config/mode").read.strip : 'doll2'
+  mode = File.exists?("#{RAILS_ROOT}/config/mode") ? File.open("#{RAILS_ROOT}/config/mode").read.strip : 'development'
   mode = 'test' if RAILS_ENV == 'test'
   require 'action_mailer'
 
@@ -18,9 +18,12 @@ if !defined?(::App)
 
   default_appyml = "#{RAILS_ROOT}/config/app.yml"
   production_appyml = "#{RAILS_ROOT}/config/app_production.yml"
-  appyml = File.exists?(production_appyml) ? production_appyml : default_appyml  
-  nconfig = OpenStruct.new(YAML::load(ERB.new((IO.read(appyml))).result))
+  appyml = File.open(default_appyml).read
+  appyml<< "\n#{File.open(production_appyml).read}" if File.exists?(production_appyml)
+  #appyml = File.exists?(production_appyml) ? production_appyml : default_appyml  
+  nconfig = OpenStruct.new(YAML::load(ERB.new(appyml).result))
   env_config = nconfig.send(mode)
+  raise "Mode '#{mode}' is not present on app.yml" unless env_config
   ::App = OpenStruct.new(env_config)
   
   ASSET_URL = "http://#{App.asset_domain}#{':' << App.port.to_s if App.port != 80}"
