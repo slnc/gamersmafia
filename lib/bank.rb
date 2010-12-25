@@ -41,7 +41,7 @@ module Bank
   def self.transfer(src, dst, ammount, description)
     # puts "#{src}, #{dst}, #{ammount}, #{description}"
     raise NegativeAmmountError unless ammount > 0
-    raise IdenticalEntityError if (src.class.name == dst.class.name && src.id == dst.id)
+    raise IdenticalEntityError if src && dst && src.class.name == dst.class.name && src.id == dst.id
     description = description.to_s.strip
     raise TransferDescriptionError unless description != ''
     
