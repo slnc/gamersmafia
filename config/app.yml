@@ -32,7 +32,7 @@ common: &common
   mirror_auth_key: secret
   port: 80
   python: /usr/local/hosting/bin/python2.4
-  session_secret: secret
+  session_secret: secretsecretsecretsecretsecret
   system_mail_host: imap.gmail.com
   system_mail_domain: gamersmafia.com
   system_mail_user: nagatodev@gamersmafia.com
