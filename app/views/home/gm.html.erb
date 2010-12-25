@@ -5,7 +5,7 @@
     <div class="homebox" id="hmnt">
         <div id="home-news" class="subheader first"><div><span>Noticias</span></div></div>
         <ul class="content-hid2">
-          <% @last_news = News.find(:published, :conditions => 'clan_id IS NULL and title not LIKE \'Gamersmafia actualizada a%\'', :limit => 40, :order => 'created_on DESC')
+          <% @last_news = News.find(:published, :conditions => 'clan_id IS NULL and title not LIKE \'Gamersmafia actualizada a%\'', :limit => 60, :order => 'created_on DESC')
 %>
 <%# @last_news = @portal.news_find(:all, :state => :published, :limit => 15) %>
 <%
