@@ -8,28 +8,26 @@ class CacheControllerTest < ActionController::TestCase
 
 
   test "thumbnails with invalid size" do
-    full_file = "#{RAILS_ROOT}/public/cache/thumbnails/f/125x125/images/headers/tu_gustar_ficha_miembros.jpg"
-    File.unlink(full_file) if File.exists?(full_file)
     %w(0x0 ax0 -1x-5 100000x50).each do |wrongdim|
       assert_raises(ActiveRecord::RecordNotFound) do
-        get :thumbnails, { :mode => 'f', :dim => wrongdim, :path => 'images/headers/tu_gustar_ficha_miembros.jpg' }
+        get :thumbnails, { :mode => 'f', :dim => wrongdim, :path => 'images/golpe_de_estado.jpg' }
       end
     end
   end
 
   test "thumbnails_with_valid_image" do
-    full_file = "#{RAILS_ROOT}/public/cache/thumbnails/f/125x125/images/headers/tu_gustar_ficha_miembros.jpg"
+    full_file = "#{RAILS_ROOT}/public/cache/thumbnails/f/125x125/images/golpe_de_estado.jpg"
     File.unlink(full_file) if File.exists?(full_file)
-    get :thumbnails, { :mode => 'f', :dim => '125x125', :path => 'images/headers/tu_gustar_ficha_miembros.jpg' }
+    get :thumbnails, { :mode => 'f', :dim => '125x125', :path => 'images/golpe_de_estado.jpg' }
     assert_response :success
     assert File.exists?(full_file)
   end
 
   test "thumbnails_with_valid_image_if_msie" do
-    full_file = "#{RAILS_ROOT}/public/cache/thumbnails/f/125x125/images/headers/tu_gustar_ficha_miembros.jpg"
+    full_file = "#{RAILS_ROOT}/public/cache/thumbnails/f/125x125/images/golpe_de_estado.jpg"
     File.unlink(full_file) if File.exists?(full_file)
     @request.user_agent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)'
-    get :thumbnails, { :mode => 'f', :dim => '125x125', :path => 'images/headers/tu_gustar_ficha_miembros.jpg' }
+    get :thumbnails, { :mode => 'f', :dim => '125x125', :path => 'images/golpe_de_estado.jpg' }
     assert_response :success
     # assert 'image/jpeg', @response.content_type
     assert File.exists?(full_file)

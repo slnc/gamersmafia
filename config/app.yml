@@ -1,7 +1,7 @@
 # common config (not usable directly, must use basic roles or specific machines)
 common: &common
   platform: <%=(RUBY_PLATFORM =~ /(win|w)32$/) ? WINDOWS : LINUX%>
-  tidy_path: <% if RUBY_PLATFORM =~ /darwin/ then %> '/usr/lib/libtidy.dylib' <% elsif RUBY_PLATFORM =~ /(win|w)32$/ then %> 'c:\tidy.dll' <% else %> '/usr/lib/libtidy.so' <% end %>
+  tidy_path: /usr/lib/libtidy.so
   domain: gamersmafia.com
   domain_bazar: bazar.gamersmafia.com
   domain_arena: arena.gamersmafia.com
@@ -82,7 +82,6 @@ blackwings: &blackwings
   <<: *development
 
 mac:
-  tidy_path: /usr/lib/libtidy.dylib
   <<: *blackwings
 
   
