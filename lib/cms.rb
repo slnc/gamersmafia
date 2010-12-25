@@ -155,6 +155,14 @@ module Cms
     self.contents_classes - [Topic, Blogentry, Question, RecruitmentAd]
   end
   
+  def self.uncompress_ckeditor_if_necessary
+    if !File.exists?("#{RAILS_ROOT}/public/ckeditor")
+      system("tar xfz \"#{RAILS_ROOT}/public/ckeditor_3.0.1.tar.gz\" -C public") 
+      system("cat \"#{RAILS_ROOT}/public/ckeditor/lang/es.js\" >> \"#{RAILS_ROOT}/public/ckeditor/ckeditor.js\"")
+      system("cat \"#{RAILS_ROOT}/public/ckeditor_custom.js\" >> \"#{RAILS_ROOT}/public/ckeditor/ckeditor.js\"")
+    end
+  end
+  
   # Returns the content name out of taxonomy name.
   # Args:
   # - taxonomy_name: eg. ImagesCategory

@@ -14,3 +14,5 @@
   ).each do |f|
   require "#{RAILS_ROOT}/lib/#{f}.rb"
 end
+
+Cms.uncompress_ckeditor_if_necessary

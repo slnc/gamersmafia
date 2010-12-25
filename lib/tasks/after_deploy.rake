@@ -6,12 +6,7 @@ namespace :gm do
     Rake::Task["gm:update_default_skin_styles"].invoke
     mralariko_id = User.find_by_login!('MrAlariko').id
     Chatline.create({:line => "slnc ha actualizado el motor de la web a la versión #{AppR.ondisk_git_version}", :user_id => mralariko_id})
-    
-    if !File.exists?("#{RAILS_ROOT}/public/ckeditor")
-      system("tar xfz \"#{RAILS_ROOT}/public/ckeditor_3.0.1.tar.gz\" -C public") 
-      system("cat \"#{RAILS_ROOT}/public/ckeditor/lang/es.js\" >> \"#{RAILS_ROOT}/public/ckeditor/ckeditor.js\"")
-      system("cat \"#{RAILS_ROOT}/public/ckeditor_custom.js\" >> \"#{RAILS_ROOT}/public/ckeditor/ckeditor.js\"")
-    end
+    Cms.uncompress_ckeditor_if_necessary
     n = News.create(:title => "Gamersmafia actualizada a la versión #{AppR.ondisk_git_version}",
                 :description => Comments::formatize(open("#{RAILS_ROOT}/public/storage/gitlog").read),
                 :user_id => 1, 
