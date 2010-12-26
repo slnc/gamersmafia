@@ -5,6 +5,17 @@ class FaccionController < ApplicationController
     raise ActiveRecord::RecordNotFound if c.faction.nil?
   end
   attr_accessor :faction
+
+  def submenu
+    'Facción'
+  end
+  
+  def submenu_items
+    [['Información', '/faccion'],
+    ['Miembros', '/faccion/miembros'],
+    ['Clanes', '/faccion/clanes'],
+    ['Staff', '/faccion/staff']]
+  end
   
   def index
     @active_sawmode = 'facciones'

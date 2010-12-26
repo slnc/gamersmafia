@@ -1,4 +1,11 @@
 class Cuenta::Clanes::GeneralController < ApplicationController
+  def submenu
+    'Clan'
+  end
+  
+  def submenu_items
+    clanes_menu_items
+  end
   
   verify :method => :post, :only => [ :destroy, :create, :update ],
   :redirect_to => { :action => :index}

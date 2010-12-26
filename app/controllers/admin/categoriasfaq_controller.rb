@@ -1,6 +1,6 @@
 class Admin::CategoriasfaqController < ApplicationController
   require_admin_permission :faq
-
+  
   def index
     @faq_categories = FaqCategory.find(:all, 
                                        :conditions => 'parent_id is null', 
@@ -57,5 +57,14 @@ class Admin::CategoriasfaqController < ApplicationController
       flash[:error] = "Error al borrar categoría de FAQ."
     end
     redirect_to :action => 'index'
+  end
+  
+  def submenu
+    'faq'
+  end
+  
+  def submenu_items
+    [['Entradas', '/admin/entradasfaq'],
+    ['Categorías', '/admin/categoriasfaq']]
   end
 end

@@ -1,13 +1,4 @@
 module Cuenta::MensajesHelper  
-  def submenu
-    'Mensajes'
-  end
-  
-  def submenu_items
-    [['Mensajes recibidos', '/cuenta/mensajes'],
-    ['Mensajes enviados', '/cuenta/mensajes/mensajes_enviados'],]
-  end
-  
   def print_thread_tree(msg, curmsg, indent_level=0)
     out = (indent_level == 0) ? '<ul class="messages-thread">' : ""
     # '&nbsp; '*indent_level

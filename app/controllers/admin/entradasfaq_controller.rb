@@ -1,5 +1,14 @@
 class Admin::EntradasfaqController < ApplicationController
   require_admin_permission :faq
+
+  def submenu
+    'faq'
+  end
+  
+  def submenu_items
+    [['Entradas', '/admin/entradasfaq'],
+    ['Categorías', '/admin/categoriasfaq']]
+  end
   
   def index
     @faq_entries = FaqEntry.paginate(:page => params[:page], :per_page => 50, 

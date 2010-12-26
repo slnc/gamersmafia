@@ -1,6 +1,6 @@
 <% content_main do %>
 <% mftext('Admin') do %>
-<% clanes_menu_items.each do |subitem| %>
+<% controller.clanes_menu_items.each do |subitem| %>
 <h2><a class="nav" href="<%=subitem[1]%>"><%=subitem[0]%></a></h2>
 <% end -%>
 <% end -%>

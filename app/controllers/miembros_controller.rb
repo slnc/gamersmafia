@@ -12,6 +12,28 @@ class MiembrosController < ComunidadController
     c.curuser = u
     c.params[:id] = u.id
   end
+
+  def submenu
+    'Ficha' if @curuser
+  end
+  
+  def submenu_items
+    if @curuser then
+      b = gmurl(curuser)
+      # blog_add = be_count > 0 ? " (#{be_count})" : ''
+      base = [['Información', "#{b}"], ]
+      base<< ['Hardware', "#{b}/hardware"]
+      base<< ['Amigos', "#{b}/amigos"]
+      base<< ['Competición', "#{b}/competicion"]
+      base<< ['Estadísticas', "#{b}/estadisticas"]
+      
+      if @curuser.enable_profile_signatures?
+        psigs_add = (@curuser.profile_signatures_count > 0) ? " (#{@curuser.profile_signatures_count})" : ''
+        base<< ['Firmas', "#{b}/firmas"] 
+      end
+      base
+    end
+  end
   
   def index
   end

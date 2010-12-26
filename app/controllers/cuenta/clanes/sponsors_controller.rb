@@ -1,7 +1,14 @@
 class Cuenta::Clanes::SponsorsController < ApplicationController
   before_filter :require_auth_users
   before_filter :require_auth_clan_leader
+
+  def submenu
+    'Clan'
+  end
   
+  def submenu_items
+    clanes_menu_items
+  end  
   
   # TODO duplicado en general_controller.rb
   before_filter do |c| 

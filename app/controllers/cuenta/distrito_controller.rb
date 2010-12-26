@@ -1,5 +1,18 @@
 class Cuenta::DistritoController < ApplicationController
   before_filter :require_user_is_don_or_mano_derecha
+    
+  def submenu
+    'Distrito'
+  end
+  
+  def submenu_items
+    l = [] 
+    
+    l<<['Staff', '/cuenta/distrito/staff']
+    l<<['Categorías de contenidos', '/cuenta/distrito/categorias']
+    
+    l
+  end
   
   def index
   end

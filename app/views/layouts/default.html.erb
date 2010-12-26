@@ -202,7 +202,7 @@ if u_clans.size == 0 then %>
 					<li style="padding-right: 10px;"><div id="mggnav-hq-admin"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-hq-admin-list');" href="/admin">Admin</a></div></div></div></div>
 						<div id="mggnav-hq-admin-list" class="saw-dropdownlist hidden">
 							<ul>
-    				<%admin_menu_items.each do |title, url| %>
+    				<%controller.admin_menu_items.each do |title, url| %>
 								<li><a href="<%=url%>"><%=title%></a></li>
 					<% end -%>
 							</ul>
@@ -336,7 +336,7 @@ if u_clans.size == 0 then %>
 	<div id="mgsubmenu" class="module"><div clas="mcontent">
 	<ul>
     <li class="first"><span><%=submenu_name%></span></li>
-    <% for item in (submenu_items || [])
+    <% for item in (controller.submenu_items || [])
     htmlclass= (item[1].gsub("/", "") == controller.controller_name.gsub("/", "")) ? ' class="current"' : ''
     %>
     <li id="wms-<%=item[0].bare%>" <%=htmlclass-%>><a href="<%=item[1]%>"><%=item[0]%></a></li>

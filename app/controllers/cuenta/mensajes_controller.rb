@@ -1,6 +1,16 @@
 class Cuenta::MensajesController < ApplicationController
   before_filter :require_auth_users
+
+  def submenu
+    'Mensajes'
+  end
   
+  def submenu_items
+    [['Mensajes recibidos', '/cuenta/mensajes'],
+    ['Mensajes enviados', '/cuenta/mensajes/mensajes_enviados'],]
+  end
+
+
   def mensajes
     # TODO debe tener su propio controller
     @navpath = [['Preferencias', '/cuenta'], ['Mensajes', '/cuenta/mensajes']]

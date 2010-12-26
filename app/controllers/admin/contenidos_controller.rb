@@ -1,5 +1,19 @@
 class Admin::ContenidosController < ApplicationController
   before_filter :require_auth_users
+
+  def submenu
+    'Contenidos'
+  end
+  
+  def submenu_items
+    if @user.is_bigboss? then
+      return [['Hotmap', '/admin/contenidos/hotmap'], ['Pendientes', '/admin/contenidos'], ['Huérfanos', '/admin/contenidos/huerfanos'], ['Últimas decisiones', '/admin/contenidos/ultimas_decisiones'], ['Papelera', '/admin/contenidos/papelera'], ]
+    elsif @user.is_editor? then
+      return [['Pendientes', '/admin/contenidos'], ['Huérfanos', '/admin/contenidos/huerfanos'], ['Papelera', '/admin/contenidos/papelera'], ]
+    else
+      return [['Pendientes', '/admin/contenidos'], ]
+    end
+  end
   
   def index
     @title = 'Contenidos pendientes de moderar'
