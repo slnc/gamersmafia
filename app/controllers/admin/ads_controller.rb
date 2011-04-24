@@ -19,9 +19,9 @@ class Admin::AdsController < AdministrationController
   def create_and_associate
     @ad = Ad.new(params[:ad])
     if @ad.save
-      flash[:notice] = 'Ad creado correctamente.'
       @ads_slot = AdsSlot.find(params[:ads_slot_id])
       @ads_slot.ads_slots_instances.create(:ad_id => @ad.id)
+      flash[:notice] = 'Ad creado correctamente.'
     end
     redirect_to params[:redirto] ? params[:redirto] : '/admin/ads'
   end

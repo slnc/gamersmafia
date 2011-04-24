@@ -177,7 +177,7 @@ module Emblems
   end
   
   # bets_master
-  mp = Bet.top_winners('7 days')
+  mp = Bet.top_earners('7 days')
   if mp.size > 0
     maxc = nil
     mp.each do |h|

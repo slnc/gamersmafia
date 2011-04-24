@@ -216,12 +216,12 @@ class BetTest < ActiveSupport::TestCase
     assert_equal 74.44, @u3.cash
   end
   
-  test "should properly return net_win" do
+  test "should properly return earnings" do
     test_should_properly_distribute_money_if_tie_mixed
     
-    assert_equal (-97).to_i, @bet.net_win(@u1)
-    assert_equal (123).to_i, @bet.net_win(@u2)
-    assert_equal (-25).to_i, @bet.net_win(@u3)
+    assert_equal (-97).to_i, @bet.earnings(@u1)
+    assert_equal (123).to_i, @bet.earnings(@u2)
+    assert_equal (-25).to_i, @bet.earnings(@u3)
   end
   
   test "should be able to close bet to comments" do

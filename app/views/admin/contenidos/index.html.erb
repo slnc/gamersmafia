@@ -2,7 +2,7 @@
 	<%mftext('Apuestas pendientes de completar') do %>
   <ul class="content-hid">
   	<%# TODO perf cache("/common/admin/contenidos/index/pending_bets") do %>
-  <% for bet in Bet.awaiting_result %>
+  <% for bet in Bet.awaiting_result.find(:published) %>
     <% if Cms::user_can_edit_content?(@user, bet) then %>
     <li><%=link_to bet.resolve_hid, "/apuestas/resolve/#{bet.id}"%></li>
     <% else %>

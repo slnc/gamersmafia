@@ -35,13 +35,13 @@ namespace :gm do
     bets = 30
     data = {}
     i = 0
-    Bet.top_winners("#{days} days").each do |dbt|
+    Bet.top_earners("#{days} days").each do |dbt|
       k = "#{i}_#{dbt[0].id}" # usamos i para que al cargar luego el dict se cargue luego en el orden correcto
       data[k] = {:sum => dbt[1].to_i}
       u = dbt[0]
       dst_file = "#{RAILS_ROOT}/public/storage/minicolumns/bets_top_last30/#{u.id}.png"
       FileUtils.mkdir_p(File.dirname(dst_file)) unless File.exists?(File.dirname(dst_file))
-      netw = Bet.net_wins(u, bets, "#{days} days")
+      netw = Bet.earnings(u, bets, "#{days} days")
       data[k][:individual] = netw
       i += 1
       `/usr/bin/python script/spark.py bet_rate #{netw.concat([0] * (bets - netw.size)).reverse.join(',')} "#{dst_file}"`
