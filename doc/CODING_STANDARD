@@ -2,7 +2,7 @@ COMMENTS
 Comments about specific line of code only to explain why you do something.
 
 LINE LENGTH
-Max line length: 100 chars.
+Max line length: 80 chars.
 
 RUBY SPECIFICS
 "return if" preferred to "return unless"

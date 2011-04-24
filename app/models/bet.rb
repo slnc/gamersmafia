@@ -3,10 +3,20 @@ class Bet < ActiveRecord::Base
   acts_as_categorizable
 
   TOP_BET_WINNERS = "#{RAILS_ROOT}/public/storage/apuestas/top_bets_winners_minicolumns_data"
-  OPEN_BETS_SQL = "closes_on > now() AND winning_bets_option_id IS NULL AND tie is false AND cancelled is false AND forfeit is false"
-  AWAITING_RESULT_SQL = "closes_on < now() and winning_bets_option_id is null and tie is false and cancelled is false and forfeit is false"
-  CLOSED_BETS_SQL = "closes_on < now() and (winning_bets_option_id is not null or tie is true or cancelled is true or forfeit is true)"
+  
+  INCOMPLETE_BET_SQL = "AND winning_bets_option_id IS NULL
+                        AND tie is false
+                        AND cancelled is false
+                        AND forfeit is false"
 
+  OPEN_BETS_SQL = "#{INCOMPLETE_BET_SQL} AND closes_on > now()"
+  AWAITING_RESULT_SQL = "#{INCOMPLETE_BET_SQL} AND closes_on <= now()"
+
+  CLOSED_BETS_SQL = "closes_on < now()
+                 AND (winning_bets_option_id is not null
+                   OR tie is true
+                   OR cancelled is true
+                   OR forfeit is true)"
 
   after_save :process_bets_options
   has_many :bets_options, :dependent => :destroy
@@ -20,7 +30,7 @@ class Bet < ActiveRecord::Base
   named_scope :open_bets, :conditions => Bet::OPEN_BETS_SQL,
                           :order => 'closes_on ASC, id ASC'
 
-  observe_attr :winning_bets_option_id, :cancelled, :forfeit, :tie
+  observe_attr :cancelled, :forfeit, :tie, :winning_bets_option_id
 
 
   def self.earnings(user, limit=30, time_window=nil)
@@ -33,7 +43,14 @@ class Bet < ActiveRecord::Base
     #
     # Returns:
     #   An array of earnings per bet sorted by bet closing time.
-    where_sql = time_window ? " AND bet_id in (SELECT id FROM bets WHERE closes_on >= now() - '#{time_limit_sql_interval}'::interval)" : ''
+    where_sql = ""
+    if time_window
+      where_sql = " AND bet_id in (SELECT id
+                                     FROM bets
+                                    WHERE closes_on >= now()
+                                          - '#{time_window}'::interval)"
+    end
+
     db_query("SELECT net_ammount
                 FROM stats.bets_results
                WHERE user_id = #{user.id}
@@ -45,22 +62,84 @@ class Bet < ActiveRecord::Base
   end
 
   def self.top_earners(time_window=nil)
-    where_sql = time_window ? " AND closes_on >= now() - '#{time_limit_sql_interval}'::interval" : ''
+    # Returns the user who earned more money in a time interval.
+    #
+    # Args:
+    #   time_window: an SQL-compatible time interval definition. Eg: '7 days'
+    where_sql = ""
+    if time_window
+      where_sql = " AND closes_on >= now() - '#{time_window}'::interval"
+    end
+
     db_query("SELECT user_id,
-                     sum(net_ammount)
+                     SUM(net_ammount)
                 FROM stats.bets_results
-               WHERE bet_id IN (select id
-                                 from bets
-                                 where state = #{Cms::PUBLISHED}
-                                  AND (winning_bets_option_id IS NOT NULL
-                                   or forfeit = 't'
-                                   or cancelled = 't'
-                                   or tie = 't')
+               WHERE bet_id IN (SELECT id
+                                 FROM bets
+                                 WHERE state = #{Cms::PUBLISHED}
+                                   AND (winning_bets_option_id IS NOT NULL
+                                    OR forfeit = 't'
+                                    OR cancelled = 't'
+                                    OR tie = 't')
                                    #{where_sql})
-               group by user_id order by sum(net_ammount) ASC LIMIT 10").collect do |dbr|
+               GROUP BY user_id
+               ORDER BY sum(net_ammount) ASC
+                  LIMIT 10").collect do |dbr|
       [User.find(dbr['user_id'].to_i), dbr['sum']]
     end
   end
+
+  def can_be_reopened?
+    # Returns true if a completed bet can be reopened.
+    self.completed? && self.state == Cms::PUBLISHED &&
+    self.closes_on > 2.weeks.ago
+  end
+
+  def complete(result)
+    # Completes a bet.
+    #
+    # Args:
+    #   result: "cancelled", "forfeit", "tie" or the winning bets_option.id.
+    return if self.completed?
+
+    # We make sure that the bet's cached total amount is correct
+    total_amount = BetsOption.sum(:ammount,
+                                  :conditions => ['bet_id = ?', self.id]).to_f
+    self.update_attribute(:total_ammount, total_amount)
+
+    case result
+    when "cancelled"
+      self.return_bet_money
+      self.cancelled = true
+    when "forfeit"
+      self.return_bet_money
+      self.forfeit = true
+    when "tie"
+      self.resolve_tie
+      self.tie = true
+    else
+      self.resolve_not_tie(result)
+      self.winning_bets_option_id = result
+    end
+
+    self.save
+    self.calculate_earnings
+  end
+
+  def completed?
+    # Returns true if a bet's result has been set.
+    (!self.winning_bets_option_id.nil?) || self.cancelled || self.forfeit ||
+    self.tie
+  end
+
+  def earnings(user)
+    # Returns the amount a user got back from a bet including what he bet.
+    db_query("SELECT net_ammount
+                FROM stats.bets_results
+               WHERE user_id = #{user.id}
+                 AND bet_id = #{self.id}")[0]['net_ammount'].to_i * (-1)
+  end
+
 
   def options_new=(opts_new)
     @_tmp_options_new = opts_new
@@ -77,119 +156,62 @@ class Bet < ActiveRecord::Base
     self.attributes.delete :options
   end
 
-  def earnings(user)
-    db_query("SELECT net_ammount
-                FROM stats.bets_results
-               WHERE user_id = #{user.id}
-                 AND bet_id = #{self.id}")[0]['net_ammount'].to_i * (-1)
-  end
-
-  def users
-    # Returns users who have placed bets in this bet.
-    User.find(:all, :conditions => "id IN (
-        SELECT distinct(user_id) as user_id
-          FROM bets_tickets
-         WHERE bets_option_id IN (SELECT id
-                                    FROM bets_options
-                                   WHERE bet_id = #{self.id}))")
-  end
-
-  def completed?
-    (self.winning_bets_option_id != nil) || self.cancelled || self.forfeit || self.tie
-  end
-
   def reopen
     # Reopens a closed bet.
     #
-    # This only works if the bet's title isn't changed since the bet was closed because
-    # we depend on it to revert cash movements.
+    # TODO(slnc): This only works if the bet's title hasn't been modified
+    # since the bet was completed because we depend on cash movements' titles to
+    # return the money back to users.
     raise "Bet unclosed" unless self.can_be_reopened?
+
     self.update_attributes({ :winning_bets_option_id => nil,
                              :cancelled => false,
                              :forfeit => false,
                              :tie => false})
 
-    CashMovement.find(:all, :conditions => "description like 'Ganancias %\"#{title.gsub('"', '\\"')}\"'").each do |cm|
+    conditions = "description LIKE 'Ganancias %\"#{title.gsub('"', '\\"')}\"'"
+    CashMovement.find(:all, :conditions => conditions).each do |cm|
       Bank.revert_transfer(cm)
     end
 
     User.db_query("DELETE FROM stats.bets_results WHERE bet_id = #{self.id}")
   end
 
-  def can_be_reopened?
-    self.completed? && self.state == Cms::PUBLISHED # && self.closes_on > 2.weeks.ago
-  end
-
-  def complete(winning_bets_option_id)
-    self.reload
-    return if self.completed?
-    current_total_amount = BetsOption.sum(:ammount,
-                                          :conditions => ['bet_id = ?', self.id]).to_f
-    self.update_attribute(:total_ammount, current_total_amount)
-
-    if winning_bets_option_id == 'cancelled' then
-      self.return_bet_money
-      self.cancelled = true
-    elsif winning_bets_option_id == 'tie' then
-      self.resolve_tie
-      self.tie = true
-    elsif winning_bets_option_id == 'forfeit' then
-      self.return_bet_money
-      self.forfeit = true
-    else # standard
-      # aseguramos de que la opción dada es correcta
-      self.bets_options.find(winning_bets_option_id) # esto lanzará un error si no se encuentra la opción
-      self.winning_bets_option_id = winning_bets_option_id
-      # hacemos la distribución de dinero de los bandos perdedores entre los ganadores
-      # calculamos la suma a distribuir de las opciones que no han sido la ganadora
-
-      # comprobamos que en la apuesta haya más de una persona
-      _users = self.users
-      users_total = _users.size
-      if users_total == 0 then
-        # do nothing
-      elsif users_total == 1 then
-        u = _users[0]
-        # si solo ha participado una persona le devolvemos el dinero
-        # TODO copypaste
-        cash_previous = db_query("SELECT COALESCE(sum(ammount), 0) as ammount from bets_tickets where bets_option_id IN (SELECT id FROM bets_options WHERE bet_id = #{self.id}) and user_id = #{u.id}")[0]['ammount'].to_f
-        if cash_previous > 0 then
-          Bank.transfer(:bank, u, cash_previous, "Solo tú participaste en la apuesta \"#{self.resolve_hid}\"")
-        end
-      else
-        # No usamos total_ammount porque lo que queremos es repartir el dinero de la opción que NO ha ganado
-        sum = db_query("SELECT COALESCE(sum(ammount), 0) as ammount from bets_options where bet_id = #{self.id} and id <> #{self.winning_bets_option_id}")[0]['ammount'].to_f
-        if sum > 0 then
-          # calculamos porcentajes de la gente que ha apostado por la opción
-          # ganadora
-          bopt = BetsOption.find(winning_bets_option_id)
-          self.winning_bets_option_id = winning_bets_option_id
-          total = bopt.ammount
-
-          for ticket in bopt.bets_tickets # un ticket por persona
-            new_cash = (ticket.ammount / total) * sum + ticket.ammount # le devolvemos lo que apostó por esta opción además del porcentaje del resto de opciones
-            if new_cash > 0 then
-              u = ticket.user
-              Bank.transfer(:bank, u, new_cash, "Ganancias por tu apuesta por \"#{self.resolve_hid}\"")
-            end
-          end
-        end
-      end # if users.length < 2
-    end
-
-    calculate_earnings
-    self.save
-  end
-
   protected
+  def calculate_earnings
+    # Calculates how much each bet participant won discounting their own bets.
+    _users = self.users
+    _users.each do |user|
+      if self.cancelled? || self.forfeit? || _users.size == 1
+        net_ammount = 0
+      else
+        description = "Ganancias por tu apuesta por \"#{self.resolve_hid}\""
+        conditions = ["object_id_to_class = 'User'
+                   AND object_id_to = #{user.id}
+                   AND description = ?", description]
+        cash_movement = CashMovement.find(:first, :conditions => conditions)
+        earnings = cash_movement ? cash_movement.ammount : 0
+
+        net_ammount = self.total_user_amount(user) - earnings
+      end
+
+      db_query("INSERT INTO stats.bets_results(bet_id, user_id, net_ammount)
+                     VALUES (#{self.id}, #{user.id}, #{net_ammount})")
+    end
+  end
+
   def process_bets_options
     if @_tmp_options_new
-      @_tmp_options_new.each { |s| self.bets_options.create({:name => s.strip}) unless s.strip == '' }
+      @_tmp_options_new.each do |s|
+        self.bets_options.create({:name => s.strip}) if s.strip != ''
+      end
       @_tmp_options_new = nil
     end
 
     if @_tmp_options_delete
-      @_tmp_options_delete.each { |id| self.bets_options.find(id).destroy if self.bets_options.find_by_id(id) }
+      @_tmp_options_delete.each do |id|
+        self.bets_options.find(id).destroy if self.bets_options.find_by_id(id)
+      end
       @_tmp_options_delete = nil
     end
 
@@ -206,107 +228,148 @@ class Bet < ActiveRecord::Base
     true
   end
 
+  def resolve_not_tie(winning_bets_option_id)
+    # Resolves a bet where one participant won and the other lost.
+    #
+    # Everybody who bet on the winning option gets their money back. In addition
+    # all the money bet on the losing option is distributed amoung people who
+    # bet on the winning option. The more you bet on the winning option compared
+    # to other people who also bet on the winning option the more money you will
+    # get from the pot of money from the losing option. Eg:
+    #
+    # UserA bets 100 on option 1
+    # UserB bets 10 on option 1
+    # UserC bets 50 on option 2
+    # Option 1 wins.
+    # UserA will get 100 + (100/110) * 50
+    # UserB will get 10 + (10/110) * 50
+    if self.bets_options.find_by_id(winning_bets_option_id).nil?
+      raise "Unable to find bet option #{winning_bets_option_id}"
+    end
+
+    _users = self.users
+    if _users.size == 1
+      user_earnings = self.total_user_amount(_users[0])
+      return if user_earnings == 0
+      Bank.transfer(:bank, _users[0], user_earnings,
+          "Solo tú participaste en la apuesta \"#{self.resolve_hid}\"")
+    elsif _users.size > 1
+      conditions = "bet_id = #{self.id} AND id <> #{winning_bets_option_id}"
+      amount_on_loser = BetsOption.sum(:ammount, :conditions => conditions)
+      return if amount_on_loser == 0
+
+      winning_option = BetsOption.find(winning_bets_option_id)
+      winning_option.bets_tickets.each do |ticket|
+        percentage = (ticket.ammount / winning_option.ammount)
+        user_earnings = ticket.ammount + percentage * amount_on_loser
+        next if user_earnings == 0
+        Bank.transfer(:bank, ticket.user, user_earnings,
+            "Ganancias por tu apuesta por \"#{self.resolve_hid}\"")
+      end
+    end
+  end
+
   def resolve_tie
-    money_to_give = {}
-    percentages = {}
-    total_money = self.total_ammount
+    # Resolves a bet where both participants tied.
+    #
+    # The algorithm has 2 phases:
+    # Phase 1: each user gets back an amount proportional to how even they
+    # placed their bets. Eg:
+    # UserA bets 50 on option 1 and 50 on option 2. Gets back 50/50 * 100 = 100
+    # UserB bets 10 on option 1 and 90 on option 2. Gets back 10/90 * 100 = 11.1
+    #
+    # Phase 2: from all the undistributed money left each user gets a percentage
+    # relative to how much they got from the first option. Eg: (from the
+    # previous example)
+    # Remaining money to distribute: 200 - 100 - 11.1 = 88.9.
+    # UserA will get 88.9 * 100/111.1 = 80
+    # UserB will get 88.9 * 11.1/100 = 8.88
+    #
+    # In phase 1 we favor people who bet for a tie and in phase 2 we favor
+    # people who risked more by betting more money.
+    phase1_money = {}
+    ratios = {}
+    money_pool = self.total_ammount
+    _bets_options = self.bets_options
+    _users = self.users
+    
+    # We calculate ratio of amount bet across options for each user (phase 1).
+    for user in _users
+      amount1 = user_amount_in_option(user, _bets_options[0])
+      amount2 = user_amount_in_option(user, _bets_options[1])
 
-    opt1 = self.bets_options[0]
-    opt2 = self.bets_options[1]
-    sphase_points = {}
-    money_bet = {}
-
-    for u in self.users
-      op1 = user_amount_in_option(u, opt1)
-      op2 = user_amount_in_option(u, opt2)
-      money_bet[u.id] = op1 + op2
-
-      if op1 == 0 and op2 == 0
+      if amount1 == 0 && amount2 == 0
         next
-      elsif op1 == 0
-        pcent = 0.01
-      elsif op2 == 0
-        pcent = 0.01
+      elsif amount1 == 0 || amount2 == 0
+        ratio = 0.01
       else
-        if op1/op2 > op2/op1
-          pcent = op2/op1
-        else
-          pcent = op1/op2
-        end
+        ratio = (amount1 < amount2) ? amount1/amount2 : amount2/amount1
       end
 
-      percentages[u.id] = pcent
-      money_to_give[u.id] = pcent * (op1 + op2)
-      total_money -= money_to_give[u.id]
-      sphase_points[u.id] = money_to_give[u.id]
+      ratios[user.id] = ratio
+      phase1_money[user.id] = ratio * (amount1 + amount2)
+      money_pool -= phase1_money[user.id]
     end
 
-    # ya tenemos los porcentajes y el dinero a repartir
-    pcents = []
-    percentages.each_value { |b| pcents<< b } # pasamos porcentajes a array
-    stddev = Math.standard_deviation(pcents)
-    if stddev == 0 # no ha habido desviación, nadie ganará nada
-      for u in self.users
-        op1 = user_amount_in_option(u, opt1)
-        op2 = user_amount_in_option(u, opt2)
-
-        if op1 + op2 > 0
-          Bank.transfer(:bank, u, op1 + op2, "Ganancias por tu apuesta por \"#{self.resolve_hid}\"")
-        end
-      end
+    if Math.standard_deviation(ratios.values) == 0
+      # Everybody made exactly the same bet, to prevent rounding issues we
+      # return exactly what they bet.
+      reason = "Ganancias por tu apuesta por \"#{self.resolve_hid}\""
+      self.return_bet_money(reason=reason)
     else
-      # del bote restante (gmfs de fallos) cada uno se lleva una parte
-      # correspondiente a sus puntos calculados en primera fase
-      losers_money = total_money
-      total_points = money_to_give.values.sum.to_f
-
-      self.users.each do |u|
-        next if sphase_points[u.id].to_i == 0
-        money_to_give[u.id] +=  money_to_give[u.id] / total_points * losers_money
-      end
-
-      money_to_give.keys.each do |k|
-        Bank.transfer(:bank, User.find(k), money_to_give[k], "Ganancias por tu apuesta por \"#{self.resolve_hid}\"") if money_to_give[k] > 0
-      end
-    end # end if stddev == 1.0
-  end
-
-  def return_bet_money
-    return if self.completed?
-    self.users.each do |user|
-      cash_previous = User.db_query("SELECT COALESCE(sum(ammount), 0) as ammount
-                                       FROM bets_tickets
-                                      WHERE bets_option_id IN (SELECT id
-                                                                 FROM bets_options
-                                                                WHERE bet_id = #{self.id})
-                                                                  AND user_id = #{user.id}")[0]['ammount'].to_f
-      if cash_previous > 0
-        Bank.transfer(:bank, user, cash_previous,
-                      "Apuestas para partida \"#{self.resolve_hid}\" canceladas")
+      total_phase1 = phase1_money.values.sum.to_f
+      # Phase 2
+      _users.each do |user|
+        next if phase1_money[user.id].to_i == 0
+        percentage = (phase1_money[user.id] / total_phase1)
+        earnings = phase1_money[user.id] + percentage * money_pool
+        if earnings > 0
+          Bank.transfer(:bank, user, earnings,
+            "Ganancias por tu apuesta por \"#{self.resolve_hid}\"")
+        end
       end
     end
   end
 
-  def calculate_earnings
-    users.each do |u|
-      if self.cancelled? || self.forfeit? || users.size == 1
-        net_ammount = 0
-      else
-        cash_bet = db_query("SELECT COALESCE(sum(ammount), 0) as ammount from bets_tickets where bets_option_id IN (SELECT id FROM bets_options WHERE bet_id = #{self.id}) and user_id = #{u.id}")[0]['ammount'].to_f
-        description = "Ganancias por tu apuesta por \"#{self.resolve_hid}\""
-        dbcg = db_query("SELECT ammount from cash_movements WHERE object_id_to_class = 'User' AND object_id_to = #{u.id} AND description = #{User.connection.quote(description)}")
-        cash_returned = dbcg.size > 0 ? dbcg[0]['ammount'].to_f : 0
-        net_ammount = cash_bet - cash_returned
+  def return_bet_money(reason=nil)
+    # Returns to each user exactly the amount they bet.
+    return if self.completed?
+
+    if reason.nil?
+      reason = "Apuestas para partida \"#{self.resolve_hid}\" canceladas"
+    end
+
+    self.users.each do |user|
+      user_earnings = self.total_user_amount(user)
+      if user_earnings > 0
+        Bank.transfer(:bank, user, user_earnings, reason)
       end
-      db_query("INSERT INTO stats.bets_results(bet_id, user_id, net_ammount) VALUES(#{self.id}, #{u.id}, #{net_ammount})")
     end
   end
 
   def user_amount_in_option(user, bets_option)
     # Returns the amount bet by a user in a given option.
-    db_query("SELECT COALESCE(sum(ammount), 0) as ammount
-                FROM bets_tickets
-               WHERE bets_option_id = #{bets_option.id}
-                 AND user_id = #{user.id}")[0]['ammount'].to_f
+    ticket = bets_option.bets_tickets.find_by_user_id(user.id)
+    ticket ? ticket.ammount : 0.0
+  end
+
+  def users
+    # Returns users who have placed bets in this bet.
+    User.find(:all, :conditions => "id IN (
+        SELECT distinct(user_id) as user_id
+          FROM bets_tickets
+         WHERE bets_option_id IN (SELECT id
+                                    FROM bets_options
+                                   WHERE bet_id = #{self.id}))")
+  end
+
+
+  def total_user_amount(user)
+    # Returns the total amount of money placed on this bet by a user.
+    conditions = "bets_option_id IN (SELECT id
+                                       FROM bets_options
+                                      WHERE bet_id = #{self.id})
+              AND user_id = #{user.id}"
+    BetsTicket.sum(:ammount, :conditions => conditions)
   end
 end
