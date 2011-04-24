@@ -1,0 +1,4 @@
+Max line length: 100 chars.
+
+RUBY
+"return if" preferred to "return unless"
