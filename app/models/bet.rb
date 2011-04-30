@@ -4,7 +4,7 @@ class Bet < ActiveRecord::Base
 
   TOP_BET_WINNERS = "#{RAILS_ROOT}/public/storage/apuestas/top_bets_winners_minicolumns_data"
   
-  INCOMPLETE_BET_SQL = "AND winning_bets_option_id IS NULL
+  INCOMPLETE_BET_SQL = "winning_bets_option_id IS NULL
                         AND tie is false
                         AND cancelled is false
                         AND forfeit is false"
