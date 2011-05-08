@@ -134,8 +134,7 @@ class User < ActiveRecord::Base
                                      :foreign_key => 'banned_user_id'
   belongs_to :confirmed_ban_requests, :class_name => 'User', 
                                       :foreign_key => 'confirming_user_id'
-  
-  #  has_many :friends, :through => :friendships  
+    
   # has_and_belongs_to_many :friends
   file_column :photo
   file_column :competition_roster
