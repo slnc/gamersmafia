@@ -59,7 +59,7 @@ cache_category_paths = {}
               <tr>
                 <td class="w100"><%=link_to fc_thumbnail(@item.file, 'f', '85x60', false), gmurl(@item).gsub('show', 'edit')%><br /><span class="infoinline"><%=format_interval((Time.now - @item.created_on).to_i)%></span></td>
                 <td>
-                  <span class="infoinline">en <strong><%=paths.join(' &raquo; ')%></strong></span>
+                  <span class="infoinline">en <strong><%=(paths || []).join(' &raquo; ')%></strong></span>
                 </td>
               </tr>
             </table>

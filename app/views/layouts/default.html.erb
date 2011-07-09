@@ -17,7 +17,7 @@
 		  <input type="text" class="text" name="searchq" id="searchq" onmouseout="this.className = 'text';" onmouseover="this.className = 'text hover';" name="q" />
       </form>
 	  </div>
-	  
+
 	  <div id="mgheader" class="module">
 		<div class="mcontent">
 		   <a id="logo" <% if !(controller.controller_name == 'home' && controller.action_name == 'index' && controller.portal.id == '-1') then %>onmouseover="this.className = 'hover';" onmouseout="this.className=''"<%end -%> href="http://<%=App.domain%>/"><img src="/images/blank.gif" /></a>
@@ -63,7 +63,7 @@ end %>
 		   	  		<%=draw_organization_building(controller.portal.bazar_district, 0)%>
 		   	  	<% end -%>
 		   	  </div>
-			  
+
 			  <div id="sawbottom">
 			  	<ul id="sawbody-comunidad" class="hidden">
 			  		<li><a href="http://<%=App.domain%>/miembros">Miembros</a></li>
@@ -77,7 +77,7 @@ end %>
 if u_clans.size == 0 then %>
 <li id="sawbody-comunidad-nuevoclan2"><a href="/cuenta/clanes/new">Nuevo clan</a></li>
 <% else %>
-					
+
 					<li><div class="sawbottom-arrow hidden"></div>
 			  			<div id="mggnav-clans"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-clans-my-clans-list');" href=""><%=@user.last_clan_id ? @user.last_clan.tag : 'mis clanes'%></a></div></div></div></div>
 						<div id="mggnav-clans-my-clans-list" class="saw-dropdownlist hidden">

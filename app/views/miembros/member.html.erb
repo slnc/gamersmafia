@@ -444,7 +444,7 @@ if prev_nicks.size > 0 then %>
   	<% if user_is_authed && (@user.is_superadmin || @user.is_hq?) then %>
 	<% mftext('Control') do %>
 	<%
-		users_same_ip = User.find(:all, :conditions => ['login <> ? and state <> ? and ipaddr <> \'0.0.0.0\' and ipaddr = ?', @curuser.login, User::ST_DELETED, @curuser.ipaddr], :order => 'lastseen_on')
+		users_same_ip = User.find(:all, :conditions => ['login <> ? and ipaddr not in (\'0.0.0.0\', \'127.0.0.1\') and ipaddr = ?', @curuser.login, @curuser.ipaddr], :order => 'lastseen_on')
 if users_same_ip.size > 0 then %>
 <div class="infoinline"><%=member_state('active')%> <strong><%=users_same_ip.size%></strong> usuario<%='s' if users_same_ip.size > 1%> con la misma ip:</div>
 <ul class="inline infoinline">

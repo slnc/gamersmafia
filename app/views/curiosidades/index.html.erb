@@ -11,7 +11,7 @@
 <%= render :partial => 'shared/pager2', :locals => {:collection => @funthings, :pos => 'top'} %>
 <table>
 <% cache("/common/curiosidades/index/page_#{params[:page]}") do %>
-<% 
+<%
 for funthing in @funthings.reverse %>
 <tr class="<%=oddclass%>">
   <td><strong><%=link_to funthing.title, gmurl(funthing) %></strong><br /><span class="infoinline"><%=truncate(strip_tags(funthing.description), 150)%></span></td>
