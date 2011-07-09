@@ -17,7 +17,7 @@ class ApuestasController < ArenaController
     @bet = Bet.find(params[:id])
     require_user_can_edit(@bet)
     raise ActiveRecord::RecordNotFound unless @bet.can_be_reopened?
-    @bet.reopen_bet
+    @bet.reopen
     redirect_to "/apuestas/resolve/#{@bet.id}"
   end
   

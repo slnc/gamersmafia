@@ -181,24 +181,26 @@ class ActiveSupport::TestCase
     assert request.session[:user]
     c_text = (Kernel.rand * 100000).to_s
     comments_count = Comment.count
-    post '/comments/create', { :comment => { :content_id => content.unique_content.id, :comment => c_text } }
+    post '/comments/create', { :comment => { :comment => c_text,
+                                             :content_id => content.unique_content.id } }
     assert_response :redirect, @response.body
     assert_equal comments_count + 1, Comment.count
-    last_c = content.unique_content.comments.find(:first, :conditions => 'deleted = \'f\'', :order => 'id DESC')
+    last_c = content.unique_content.comments.find(:first, :conditions => "deleted = 'f'",
+                                                  :order => 'id DESC')
     assert_not_nil last_c
     assert_equal c_text, last_c.comment
   end
   
-  def post_comment_on_unittest(content, options = {:user_id => 1, :host => '127.0.0.1', :comment => "#{Kernel.rand(1000)}Hola mundo!"})
-    if content.class.name == 'Content'
-      c_id = content.id
-    else
-      c_id = content.unique_content.id
-    end
+  def post_comment_on_unittest(content, 
+                               options = { :comment => "#{Kernel.rand(1000)}Hola mundo!",
+                                           :user_id => 1, 
+                                           :host => '127.0.0.1' })
+    content_id = (content.class.name == 'Content') ? content.id : 
+                                                     content.unique_content.id  
     
-    c = Comment.new(options.merge({:content_id => c_id}))
-    assert_equal true, c.save
-    c
+    content = Comment.new(options.merge({:content_id => content_id}))
+    assert_equal true, content.save
+    content
   end
   
   def go_to(url, template=nil)

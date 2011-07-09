@@ -2,7 +2,7 @@ require 'digest/sha1'
 require 'digest/md5'
 require 'karma'
 
-    
+
 class User < ActiveRecord::Base
   BANNED_DOMAINS = %w(10minutemail.com correo.nu fishfuse.com meyzo.net
                       mintemail.uni.cc tempemail.net tempinbox.com uggsrock.com
@@ -14,6 +14,11 @@ class User < ActiveRecord::Base
     3 => 'duro',
     4 => 'extremo',
     5 => 'absoluto'}
+  
+  VALID_SEXUAL_ORIENTATIONS = [:women, :men, :both, :none]
+  MALE = 0
+  FEMALE = 1
+  SEXUAL_ORIENTATIONS_REL = { :women => "sex = #{FEMALE}", :men => "sex = #{FEMALE}", }
   
   ST_UNCONFIRMED = 0
   ST_ACTIVE = 1
@@ -34,14 +39,14 @@ class User < ActiveRecord::Base
   ST_UNCONFIRMED_1W, ST_UNCONFIRMED_2W]
   
   STATES_DESCRIPTIONS = { 
-                          ST_BANNED => 'baneada',
-                          ST_DELETED => 'borrada',
-                          ST_DISABLED => 'deshabilitada',
-                          ST_UNCONFIRMED => 'no confirmada',
-                          ST_UNCONFIRMED_1W => 'no confirmada',
-                          ST_UNCONFIRMED_2W => 'no confirmada'
-                        }
-                        
+    ST_BANNED => 'baneada',
+    ST_DELETED => 'borrada',
+    ST_DISABLED => 'deshabilitada',
+    ST_UNCONFIRMED => 'no confirmada',
+    ST_UNCONFIRMED_1W => 'no confirmada',
+    ST_UNCONFIRMED_2W => 'no confirmada'
+  }
+  
   ADMIN_PERMISSIONS_INDEXES = { :faq => 0, 
                                 :blogs => 1, 
                                 :clans => 2, 
@@ -54,8 +59,8 @@ class User < ActiveRecord::Base
                                 :gladiador => 9, 
                                 :advertiser => 10, 
                                 :bazar_manager => 11, 
-                              }
-                              
+  }
+  
   has_many :groups_messages
   
   has_many :users_roles, :dependent => :destroy
@@ -67,23 +72,6 @@ class User < ActiveRecord::Base
   has_many :comment_violation_opinions
   has_many :preferences, :class_name => 'UsersPreference'
   
-  belongs_to :country
-  belongs_to :faction
-  belongs_to :avatar
-  belongs_to :referer, :class_name => 'User', :foreign_key => 'referer_user_id'
-  belongs_to :resurrector, :class_name => 'User', 
-                           :foreign_key => 'resurrected_by_user_id'
-  belongs_to :comments_valorations_type  
-  has_many :comments_valorations
-  has_many :users_contents_tags
-  
-  has_many :profile_signatures
-  has_one :filter
-  has_many :polls_votes
-  belongs_to :requests_to_be_banned, :class_name => 'User', 
-                                     :foreign_key => 'banned_user_id'
-  belongs_to :confirmed_ban_requests, :class_name => 'User', 
-                                      :foreign_key => 'confirming_user_id'
   has_many :ban_requests
   has_many :skins
   has_many :sold_products
@@ -96,13 +84,22 @@ class User < ActiveRecord::Base
   has_many :tracker_items
   has_many :user_login_changes
   has_many :users_newsfeeds
-  #  has_many :friends, :through => :friendships  
-  # has_and_belongs_to_many :friends
-  file_column :photo
-  file_column :competition_roster
-  belongs_to :last_clan, :class_name => 'Clan', :foreign_key => 'last_clan_id'
-  has_and_belongs_to_many :events
-  has_many :avatars
+  
+  has_many :users_guids
+  
+  has_many :messages_sent, :foreign_key => 'user_id_from', 
+                           :class_name => 'Message'
+  has_many :messages_received, :foreign_key => 'user_id_to',
+                               :class_name => 'Message'
+  
+  has_many :contents_recommendations, :foreign_key => 'receiver_user_id'
+  has_many :contents_recommended, :foreign_key => 'sender_user_id'
+  
+  has_many :autologin_keys
+  has_many :comments_valorations
+  has_many :users_contents_tags
+  has_many :profile_signatures
+  
   
   # contents
   has_many :news
@@ -123,22 +120,33 @@ class User < ActiveRecord::Base
   has_many :blogentries
   has_many :questions
   
+  belongs_to :country
+  belongs_to :faction
+  belongs_to :avatar
+  belongs_to :referer, :class_name => 'User', :foreign_key => 'referer_user_id'
+  belongs_to :resurrector, :class_name => 'User', 
+                           :foreign_key => 'resurrected_by_user_id'
+  belongs_to :comments_valorations_type  
+  
+  has_one :filter
+  has_many :polls_votes
+  belongs_to :requests_to_be_banned, :class_name => 'User', 
+                                     :foreign_key => 'banned_user_id'
+  belongs_to :confirmed_ban_requests, :class_name => 'User', 
+                                      :foreign_key => 'confirming_user_id'
+    
+  # has_and_belongs_to_many :friends
+  file_column :photo
+  file_column :competition_roster
+  belongs_to :last_clan, :class_name => 'Clan', :foreign_key => 'last_clan_id'
+  has_and_belongs_to_many :events
+  has_many :avatars
+  
   has_and_belongs_to_many :games
   has_and_belongs_to_many :platforms
   
-  has_many :users_guids
-  
-  has_many :messages_sent, :foreign_key => 'user_id_from', 
-                           :class_name => 'Message'
-  has_many :messages_received, :foreign_key => 'user_id_to',
-                               :class_name => 'Message'
-  
-  has_many :contents_recommendations, :foreign_key => 'receiver_user_id'
-  has_many :contents_recommended, :foreign_key => 'sender_user_id'
-  
-  has_many :autologin_keys
-  
   has_bank_account
+  
   before_save :update_rosters
   before_save :check_rating_slots
   before_save :check_homepage
@@ -165,6 +173,203 @@ class User < ActiveRecord::Base
                           :order => 'lower(login)'
   named_scope :humans, :conditions => 'is_bot is false'
   
+  # Class methods
+  def self.suspicious_users
+    res = []
+    User.db_query("select user_id, count(*) from comments where netiquette_violation  = 't' and created_on >= now() - '1 week'::interval group by (user_id) having count(*) > 1 order by count(*) desc").each do |dbu|
+      u = User.find(dbu['user_id'].to_i)
+      next if u.state == User::ST_BANNED
+      res<< {:user => u, :suspiciousness => dbu['count'].to_i}
+    end
+    res
+  end
+  
+  def self.random_with_photo(opts)
+    opts = {:limit => 1, :exclude_user_id => nil, :exclude_friends_of_user_id => nil}.merge(opts)
+    sql_user = opts[:exclude_user_id] ? "id <> #{opts[:exclude_user_id]} AND " : '' 
+    User.find(:all, :conditions => "#{sql_user} photo is not null AND random_id > random() AND photo <> '' AND state NOT IN (#{User::STATES_CANNOT_LOGIN.join(',')})", :order => 'random_id', :limit => opts[:limit])
+  end
+  
+  def self.random_same_city(user, opts)
+    opts = {:limit => 1}.merge(opts)
+    User.find(:all, :conditions => ["id <> #{user.id} AND lower(city) = lower(?) AND random_id > random() AND id not in (#{user.friends_ids_sql}) and state NOT IN (#{User::STATES_CANNOT_LOGIN.join(',')})", user.city], :order => 'random_id', :limit => opts[:limit])
+  end
+  
+  def self.possible_friends_of(user, opts)
+    opts = {:limit => 1}.merge(opts)
+    recs = user.friends_recommendations.find(:all, :conditions => 'added_as_friend IS NULL', :order => 'friends_recommendations.id', :limit => opts[:limit], :include => :recommended_user)
+    FriendsRecommendation.gen_more_recommendations(user) if recs.size == 0
+    recs
+  end
+  
+  def self.find_by_sexual_desire(orientation, limit='all')
+    
+  end
+  
+  # named_scope :ligoteo, lambda {{ :conditions => ['state IN () AND ']}}
+  # buscar usuarios que esten interesados en
+  def self.ligoteo(interested_in, sex_of_searcher, user_id, limit=50)
+    sex_sql = case interested_in
+      when 'men':
+        "sex = #{User::MALE}"
+      when 'women':
+        "sex = #{User::FEMALE}"
+      when 'men women':
+        "sex IS NOT NULL"
+    end
+    
+    sex_of_searcher_sql = case interested_in
+      when User::MALE:
+        "men"
+      when User::FEMALE:
+        "women"
+    end
+    
+    # buscamos todos los usuarios interesados en #{interested_in}, que sean del sexo adecuado y que busquen pareja
+    q = "SELECT a.id, a.login, a.avatar_id, a.photo
+                        FROM users A 
+                        JOIN users_preferences b ON a.id = b.user_id 
+                        JOIN users_preferences c ON a.id = c.user_id
+                       WHERE b.name = 'looking_for' 
+                         AND (b.value LIKE '%amistad%' OR b.value LIKE '%pareja%' OR b.value LIKE '%quedar%')
+                         AND c.name = 'interested_in'
+                         AND c.value LIKE '%#{sex_of_searcher_sql}%' 
+                         AND a.id <> #{user_id} 
+                         AND #{sex_sql} GROUP BY a.id, a.login, a.avatar_id, a.photo
+                       LIMIT #{limit}"
+    User.find_by_sql(q)
+  end
+  
+  def self.refered_users_in_time_period(t1, t2)
+    t2, t1 = t1, t2 if t1 > t2
+    User.db_query("SELECT count(*) 
+                     FROM users 
+                    WHERE referer_user_id is not null 
+                      AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")[0]['count'].to_i
+  end
+  
+  def self.online_count
+    self.count(:conditions => "lastseen_on >= now() - '30 minutes'::interval 
+                               AND state <> #{User::ST_UNCONFIRMED}")
+  end
+  
+  def self.find_by_autologin_key(k)
+    akey = AutologinKey.find_by_key(k)
+    
+    if akey
+      akey.touch
+      akey.user
+    end
+  end
+  
+  def self.find_with_admin_permissions(args)
+    if args.kind_of?(Symbol)
+      args = [ADMIN_PERMISSIONS_INDEXES[args]]
+    elsif args.kind_of?(Hash) && args[0].kind_of?(Symbol)
+      args = args.collect { |a| ADMIN_PERMISSIONS_INDEXES[a] }
+    end
+    
+    # args tiene que valer ahora
+    s = ''
+    args.each do |a|
+      s<< ('_'*a) if a > 0
+      s<< '1%'
+    end
+    User.find(:all, :conditions => "admin_permissions LIKE '#{s}'")
+  end
+  
+  def self.online(order='faction_id asc, lastseen_on desc')
+    User.find(:all, :conditions => "lastseen_on >= now() - '30 minutes'::interval", 
+              :order => order, :limit => 100)
+  end
+  
+  def self.find_by_login(login)
+    self.find(:first, :conditions => ['lower(login) = lower(?)', login.to_s])
+  end
+  
+  def self.find_by_login!(login)
+    self.find_by_login(login) || (raise ActiveRecord::RecorNotFound)
+  end
+  
+  def self.find_by_email(email)
+    self.find(:first, :conditions => ['lower(email) = lower(?)', email])
+  end
+  
+  # Busca un usuario que se corresponda con el username y el password indicados
+  def self.login(username, password)
+    User.find(:first, :conditions => ['lower(login) = lower(?) AND password = ?', 
+    username, Digest::MD5.hexdigest(password)])
+  end
+  
+  def self.md5(txt)
+    Digest::MD5.hexdigest(txt)
+  end
+  
+  def self.top_profile_hits
+    raise "TODO"
+    # "select count(distinct(visitor_id)), (select login from users where id = stats.pageviews.model_id::integer) from stats.pageviews where controller = 'miembros' and action = 'member' and created_on >= now() - '1 month'::interval group by model_id order by count(distinct(visitor_id)) desc limit 10;
+  end
+  
+  def self.hot(limit, t1, t2)
+    t1, t2 = t2, t1 if t1 > t2
+    # TODO PERF no podemos hacer esto, dios, hay que calcular esta info en segundo plano y solo leerla
+    dbi = User.db_query("select count(distinct(visitor_id)), 
+                                model_id 
+                           from stats.pageviews 
+                          where controller = 'miembros' 
+                            and action = 'member' 
+                            and created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}' 
+                            and model_id not in (select id::varchar 
+                                                   from users 
+                                                  where state in (#{STATES_CANNOT_LOGIN.join(',')})) 
+                       group by model_id 
+                       order by count(distinct(visitor_id)) desc 
+                          limit #{limit}")
+    results = []
+    dbi.each do |dbu|
+      u = User.find_by_id(dbu['model_id'].to_i)
+      next unless u
+      results<< [u, dbu['count'].to_i]
+    end
+    results
+  end
+  
+  # TODO no contabilizar usuarios baneados en amistades
+  # TODO pensar este algoritmo
+  def self.most_friends(limit=10)
+    User.db_query("select sender_user_id,
+                          count(*) as total_friends_from,
+                          (select count(*) 
+                             from friendships 
+                            where receiver_user_id = a.sender_user_id 
+                              and accepted_on is not null 
+                              and sender_user_id not in (select id 
+                                                           from users 
+                                                          where state IN (#{User::STATES_CANNOT_LOGIN.join(', ')}))) as total_friends_to
+                     from friendships as a
+                    where accepted_on is not null
+                      AND receiver_user_id not in (select id 
+                                                           from users 
+                                                          where state IN (#{User::STATES_CANNOT_LOGIN.join(', ')}))
+                 group by sender_user_id
+                 order by count(*) + (select count(*) 
+                                        from friendships 
+                                       where receiver_user_id = a.sender_user_id 
+                                         and accepted_on is not null 
+                                         and sender_user_id not in (select id 
+                                                                      from users 
+                                                                     where state IN (#{User::STATES_CANNOT_LOGIN.join(', ')}))) desc 
+                    limit #{limit}").collect { |dbu|
+      
+      {:user => User.find(dbu['sender_user_id'].to_i), :friends => dbu['total_friends_from'].to_i + dbu['total_friends_to'].to_i }
+    }
+  end
+  
+  
+  
+  
+  
+  # Instance methods
   def can_login?
     STATES_CAN_LOGIN.include?(self.state)   
   end
@@ -174,27 +379,31 @@ class User < ActiveRecord::Base
     true
   end
   
+  # More elaborated has_many
   def ne_references
     NeReference.find(:all, :conditions => ["(entity_class = 'User' 
                                             AND entity_id = ?)", self.id])  
   end
   
   def check_if_website
-    return unless self.slnc_changed?(:homepage)
+    return true unless self.slnc_changed?(:homepage)
     
-    if self.homepage.to_s != '' 
-      if !(Cms::URL_REGEXP_FULL =~ self.homepage)
-        self.homepage  = "http://#{self.homepage}"
-        Cms::URL_REGEXP_FULL =~ self.homepage
-      else
-        true
-      end
+    if self.homepage.to_s != '' && !(Cms::URL_REGEXP_FULL =~ self.homepage)  
+      self.homepage  = "http://#{self.homepage}"
+      Cms::URL_REGEXP_FULL =~ self.homepage
+      true
     else
       true
     end
   end
   
   def update_default_comments_valorations_weight
+    # Updates the default comment valoration weight of this user.
+    #
+    # If a comment has 2 valorations from 2 different people, the valoration of person A
+    # will weight more than person B's. This is so that people who incessantly rate other
+    # people negatively (just rating the person, not the comments) will have a lesser
+    # impact on the system.
     recent_valorations = self.comments_valorations.recent
     positive = recent_valorations.positive.count
     negative = recent_valorations.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = -1)')
@@ -205,7 +414,7 @@ class User < ActiveRecord::Base
     else
       default = 1.0
     end
-    self.update_attributes(:default_comments_valorations_weight => default)
+    self.update_attribute(:default_comments_valorations_weight, default)
   end
   
   def ban_reason
@@ -229,9 +438,9 @@ class User < ActiveRecord::Base
   
   def contents_visited_between(t1, t2)
     self.tracker_items.find(:all, :conditions => ['lastseen_on BETWEEN ? AND ?',
-    t1, t2], :include => :content).collect { |ti| 
+    t1, t2], :include => :content).collect do |ti| 
       ti.content 
-    } || []
+    end || []
   end
   
   def check_permissions
@@ -241,7 +450,7 @@ class User < ActiveRecord::Base
     end if slnc_changed?(:faction_id)
     
     self.users_roles.clear if slnc_changed?(:state) && 
-                              STATES_CANNOT_LOGIN.include?(self.state)
+    STATES_CANNOT_LOGIN.include?(self.state)
   end
   
   def check_login_changed
@@ -251,8 +460,8 @@ class User < ActiveRecord::Base
   
   def impose_antiflood(level, impositor)
     level = 0 if level < -1 || level > 5
-    self.antiflood_level = level
-    return false unless self.save
+    
+    return false unless self.update_attribute(:antiflood_level, level)
     
     # TODO This should go into an observer
     if impositor.has_admin_permission?(:capo)
@@ -268,19 +477,19 @@ class User < ActiveRecord::Base
   end
   
   def get_comments_valorations_type
-    check_comments_values
+    self.check_comments_values
     # recalcula en caso de ser nulo
     self.comments_valorations_type
   end
   
   def get_comments_valorations_strength
-    check_comments_values
+    self.check_comments_values
     self.comments_valorations_strength
   end
   
   
   def update_is_staff
-    # actualiza la variable is_staff
+    # Actualiza la variable is_staff.
     has_some_roles = self.users_roles.count(:conditions => "role IN ('Don', 
                                                                      'ManoDerecha', 
                                                                      'Sicario', 
@@ -288,13 +497,12 @@ class User < ActiveRecord::Base
                                                                      'Editor', 
                                                                      'Boss', 
                                                                      'Underboss')") > 0
-                                                               
-    is_staff = has_some_roles || has_admin_permissions? || 
-               is_competition_admin? || is_competition_supervisor?
-
+    
+    is_staff = has_some_roles || has_admin_permissions? || is_competition_admin? || 
+    is_competition_supervisor?
+    
     self.update_attributes(:is_staff => is_staff, 
-                           :cache_is_faction_leader => 
-                              self._no_cache_is_faction_leader?)
+                           :cache_is_faction_leader => self._no_cache_is_faction_leader?)
   end
   
   def check_comments_values
@@ -306,12 +514,14 @@ class User < ActiveRecord::Base
     end
   end
   
+  
   def valorations_on_self_comments
     User.db_query("SELECT count(*) as count
                      FROM comments_valorations                     
            JOIN comments on comments_valorations.comment_id = comments.id
                     WHERE comments.user_id = #{self.id}")[0]['count'].to_i
   end
+  
   
   def valorations_weights_on_self_comments
     if self.cache_valorations_weights_on_self_comments.nil?
@@ -324,7 +534,11 @@ class User < ActiveRecord::Base
     self.cache_valorations_weights_on_self_comments
   end
   
+  
   def method_missing(method_id, *args)
+    # The only shadow methods we are catching are self.pref_*.
+    #
+    # When writing an unexisting preference variable we create it.
     smethod_id = method_id.to_s
     if /pref_([a-z0-9_]+)$/ =~ smethod_id
       pref_name = smethod_id.gsub('pref_', '')
@@ -402,10 +616,6 @@ class User < ActiveRecord::Base
     end
   end
   
-  def self.online(order='faction_id asc, lastseen_on desc')
-    User.find(:all, :conditions => "lastseen_on >= now() - '30 minutes'::interval", 
-              :order => order, :limit => 100)
-  end
   
   def banned # TODO remove this
     self.state == User::ST_BANNED
@@ -415,38 +625,6 @@ class User < ActiveRecord::Base
     self.state == User::ST_DISABLED
   end
   
-  def self.online_count
-    self.count(:conditions => "lastseen_on >= now() - '30 minutes'::interval 
-                               AND state <> #{User::ST_UNCONFIRMED}")
-  end
-  
-  def self.find_by_autologin_key(k)
-    akey = AutologinKey.find_by_key(k)
-    
-    if akey
-      User.db_query("UPDATE users SET lastseen_on = now() 
-                      WHERE id = #{akey.user_id}")
-      akey.update_attributes(:lastused_on => Time.now)
-      akey.user
-    end
-  end
-
-  def self.find_with_admin_permissions(args)
-    if args.kind_of?(Symbol)
-      args = [ADMIN_PERMISSIONS_INDEXES[args]]
-    elsif args.kind_of?(Hash) && args[0].kind_of?(Symbol)
-      args = args.collect { |a| ADMIN_PERMISSIONS_INDEXES[a] }
-    end
-    
-    # args tiene que valer ahora
-    s = ''
-    args.each do |a|
-      s<< ('_'*a) if a > 0
-      s<< '1%'
-    end
-    User.find(:all, :conditions => "admin_permissions LIKE '#{s}'")
-  end
-  
   def has_admin_permissions?
     self.admin_permissions.to_i > 0
   end
@@ -454,13 +632,13 @@ class User < ActiveRecord::Base
   def has_admin_permission?(permission)
     is_superadmin || 
     admin_permissions[User::ADMIN_PERMISSIONS_INDEXES.fetch(permission.to_sym)..
-                      User::ADMIN_PERMISSIONS_INDEXES.fetch(permission.to_sym)] == '1'
+    User::ADMIN_PERMISSIONS_INDEXES.fetch(permission.to_sym)] == '1'
   end
   
   def give_admin_permission(permission)
     if self.admin_permissions.size < User::ADMIN_PERMISSIONS_INDEXES[permission]
       self.admin_permissions << '0' * (User::ADMIN_PERMISSIONS_INDEXES.size - 
-                                       self.admin_permissions.size) 
+      self.admin_permissions.size) 
     end
     self.admin_permissions[User::ADMIN_PERMISSIONS_INDEXES[permission]] = '1'
     self.save
@@ -474,24 +652,6 @@ class User < ActiveRecord::Base
   def update_admin_permissions(new_permissions)
     self.admin_permissions = new_permissions
     save
-  end
-  
-  def self.find_by_login(login)
-    self.find(:first, :conditions => ['lower(login) = lower(?)', login.to_s])
-  end
-  
-  def self.find_by_login!(login)
-    self.find_by_login(login) || (raise ActiveRecord::RecorNotFound)
-  end
-  
-  def self.find_by_email(email)
-    self.find(:first, :conditions => ['lower(email) = lower(?)', email])
-  end
-  
-  # Busca un usuario que se corresponda con el username y el password indicados
-  def self.login(username, password)
-    User.find(:first, :conditions => ['lower(login) = lower(?) AND password = ?', 
-                                      username, Digest::MD5.hexdigest(password)])
   end
   
   def clearpasswd(password)
@@ -715,9 +875,7 @@ class User < ActiveRecord::Base
     total
   end
   
-  def self.md5(txt)
-    Digest::MD5.hexdigest(txt)
-  end
+  
   
   def upload_file(tmpfile)
     d = "#{RAILS_ROOT}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/"   
@@ -895,6 +1053,7 @@ class User < ActiveRecord::Base
       self.state = ST_ACTIVE
     end
   end
+  
   # NOTA: esto debe estar aquí para que validates_confirmation_of no nos machaque
   def password_confirmation=(clearpasswd)
     @password_confirmation = Digest::MD5.hexdigest(clearpasswd) unless clearpasswd.to_s == ''
@@ -903,36 +1062,6 @@ class User < ActiveRecord::Base
   def check_rating_slots
     self.cache_remaining_rating_slots = nil if self.cache_remaining_rating_slots && self.cache_remaining_rating_slots < 0
     true
-  end
-  
-  def self.top_profile_hits
-    raise "TODO"
-    # "select count(distinct(visitor_id)), (select login from users where id = stats.pageviews.model_id::integer) from stats.pageviews where controller = 'miembros' and action = 'member' and created_on >= now() - '1 month'::interval group by model_id order by count(distinct(visitor_id)) desc limit 10;
-    
-  end
-  
-  def self.hot(limit, t1, t2)
-    t1, t2 = t2, t1 if t1 > t2
-    # TODO PERF no podemos hacer esto, dios, hay que calcular esta info en segundo plano y solo leerla
-    dbi = User.db_query("select count(distinct(visitor_id)), 
-                                model_id 
-                           from stats.pageviews 
-                          where controller = 'miembros' 
-                            and action = 'member' 
-                            and created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}' 
-                            and model_id not in (select id::varchar 
-                                                   from users 
-                                                  where state in (#{STATES_CANNOT_LOGIN.join(',')})) 
-                       group by model_id 
-                       order by count(distinct(visitor_id)) desc 
-                          limit #{limit}")
-    results = []
-    dbi.each do |dbu|
-      u = User.find_by_id(dbu['model_id'].to_i)
-      next unless u
-      results<< [u, dbu['count'].to_i]
-    end
-    results
   end
   
   public
@@ -945,120 +1074,12 @@ class User < ActiveRecord::Base
     self.save
     Message.create(:sender => User.find_by_login('nagato'), :recipient => self, :title => 'Notificaciones desactivadas', :message => "Hola, he desactivado el envío de todas las notificaciones por email a tu cuenta ya que estamos recibiendo errores de tu servidor de correo. Si crees que esto es un error por favor mandale un mensaje a [~slnc].\n\nPuedes reactivar las notificaciones en la sección [url=http://gamersmafia.com/cuenta]Mi cuenta[/url]")
   end
-  # TODO no contabilizar usuarios baneados en amistades
-  # TODO pensar este algoritmo
-  def self.most_friends(limit=10)
-    User.db_query("select sender_user_id,
-                          count(*) as total_friends_from,
-                          (select count(*) 
-                             from friendships 
-                            where receiver_user_id = a.sender_user_id 
-                              and accepted_on is not null 
-                              and sender_user_id not in (select id 
-                                                           from users 
-                                                          where state IN (#{User::STATES_CANNOT_LOGIN.join(', ')}))) as total_friends_to
-                     from friendships as a
-                    where accepted_on is not null
-                      AND receiver_user_id not in (select id 
-                                                           from users 
-                                                          where state IN (#{User::STATES_CANNOT_LOGIN.join(', ')}))
-                 group by sender_user_id
-                 order by count(*) + (select count(*) 
-                                        from friendships 
-                                       where receiver_user_id = a.sender_user_id 
-                                         and accepted_on is not null 
-                                         and sender_user_id not in (select id 
-                                                                      from users 
-                                                                     where state IN (#{User::STATES_CANNOT_LOGIN.join(', ')}))) desc 
-                    limit #{limit}").collect { |dbu|
-      
-      {:user => User.find(dbu['sender_user_id'].to_i), :friends => dbu['total_friends_from'].to_i + dbu['total_friends_to'].to_i }
-    }
-  end
   
   def confirm_tasks
-    # se ejecuta cuando un usuario confirma su cuenta
+    # Tasks to execute when a user account has been confirmed.
     self.state = User::ST_SHADOW
     self.save
     Notification.deliver_newregistration(User.find(self.referer_user_id), { :refered => self }) if self.referer_user_id
     Notification.deliver_welcome(self)
-  end
-  
-  def self.suspicious_users
-    res = []
-    User.db_query("select user_id, count(*) from comments where netiquette_violation  = 't' and created_on >= now() - '1 week'::interval group by (user_id) having count(*) > 1 order by count(*) desc").each do |dbu|
-      u = User.find(dbu['user_id'].to_i)
-      next if u.state == User::ST_BANNED
-      res<< {:user => u, :suspiciousness => dbu['count'].to_i}
-    end
-    res
-  end
-  
-  def self.random_with_photo(opts)
-    opts = {:limit => 1, :exclude_user_id => nil, :exclude_friends_of_user_id => nil}.merge(opts)
-    sql_user = opts[:exclude_user_id] ? "id <> #{opts[:exclude_user_id]} AND " : '' 
-    User.find(:all, :conditions => "#{sql_user} photo is not null AND random_id > random() AND photo <> '' AND state NOT IN (#{User::STATES_CANNOT_LOGIN.join(',')})", :order => 'random_id', :limit => opts[:limit])
-  end
-  
-  def self.random_same_city(user, opts)
-    opts = {:limit => 1}.merge(opts)
-    User.find(:all, :conditions => ["id <> #{user.id} AND lower(city) = lower(?) AND random_id > random() AND id not in (#{user.friends_ids_sql}) and state NOT IN (#{User::STATES_CANNOT_LOGIN.join(',')})", user.city], :order => 'random_id', :limit => opts[:limit])
-  end
-  
-  def User.possible_friends_of(user, opts)
-    opts = {:limit => 1}.merge(opts)
-    recs = user.friends_recommendations.find(:all, :conditions => 'added_as_friend IS NULL', :order => 'friends_recommendations.id', :limit => opts[:limit], :include => :recommended_user)
-    FriendsRecommendation.gen_more_recommendations(user) if recs.size == 0
-    recs
-  end
-  
-  VALID_SEXUAL_ORIENTATIONS = [:women, :men, :both, :none]
-  MALE=0
-  FEMALE=1
-  SEXUAL_ORIENTATIONS_REL = { :women => "sex = #{FEMALE}", :men => "sex = #{FEMALE}", }
-  def self.find_by_sexual_desire(orientation, limit='all')
-    
-  end
-  
-  # named_scope :ligoteo, lambda {{ :conditions => ['state IN () AND ']}}
-  # buscar usuarios que esten interesados en
-  def self.ligoteo(interested_in, sex_of_searcher, user_id, limit=50)
-    sex_sql = case interested_in
-      when 'men':
-        "sex = #{User::MALE}"
-      when 'women':
-        "sex = #{User::FEMALE}"
-      when 'men women':
-        "sex IS NOT NULL"
-    end
-    
-    sex_of_searcher_sql = case interested_in
-      when User::MALE:
-        "men"
-      when User::FEMALE:
-        "women"
-    end
-    
-    # buscamos todos los usuarios interesados en #{interested_in}, que sean del sexo adecuado y que busquen pareja
-    q = "SELECT a.id, a.login, a.avatar_id, a.photo
-                        FROM users A 
-                        JOIN users_preferences b ON a.id = b.user_id 
-                        JOIN users_preferences c ON a.id = c.user_id
-                       WHERE b.name = 'looking_for' 
-                         AND (b.value LIKE '%amistad%' OR b.value LIKE '%pareja%' OR b.value LIKE '%quedar%')
-                         AND c.name = 'interested_in'
-                         AND c.value LIKE '%#{sex_of_searcher_sql}%' 
-                         AND a.id <> #{user_id} 
-                         AND #{sex_sql} GROUP BY a.id, a.login, a.avatar_id, a.photo
-                       LIMIT #{limit}"
-    User.find_by_sql(q)
-  end
-  
-  def self.refered_users_in_time_period(t1, t2)
-    t2, t1 = t1, t2 if t1 > t2
-    User.db_query("SELECT count(*) 
-                     FROM users 
-                    WHERE referer_user_id is not null 
-                      AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")[0]['count'].to_i
-  end
+  end  
 end

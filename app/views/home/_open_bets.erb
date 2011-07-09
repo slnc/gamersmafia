@@ -1,7 +1,7 @@
 <% cache("/#{controller.portal_code}/home/index/apuestas2_#{Time.now.to_i / 3600}") do %>
 <% if controller.portal.bet then 
 	mfcontents_table('Apuestas', 
-																			   Proc.new { controller.portal.bet.find(:published, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC') }) do |o| %>
+	                 Proc.new { Bet.open_bets.in_term(controller.portal.bet).find(:published) }) do |o| %>
 <td><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline" style="float: left;"><%=format_interval(o.closes_on.to_i - Time.now.to_i, 'horas', true)%></div>
 <div class="infoinline" style="float: right;"><%=o.total_ammount.to_i%> <%=gmd11%></div>
