@@ -12,17 +12,27 @@ class Game < ActiveRecord::Base
   after_create :create_contents_categories
   after_save :update_faction_code
   before_save :check_code_doesnt_belong_to_portal
+  before_create :check_hid
   
   validates_format_of :code, :with => /^[a-z0-9]{1,6}$/
   validates_format_of :name, :with => /^[a-z0-9:[:space:]]{1,36}$/i
   validates_uniqueness_of :code
   validates_uniqueness_of :name
-  
+
   observe_attr :code, :name
-  
+
   ENTITY_USER = 0
   ENTITY_CLAN = 1
-  
+
+  def check_hid
+    if Term.count(:conditions => ["slug = ?", self.code]) > 0
+      self.errors.add('code', "'#{self.code}' ya está siendo usado")
+      return false
+    else
+      return true
+    end
+  end
+
   def faction
     Faction.find_by_code(self.code)
   end
@@ -46,7 +56,8 @@ class Game < ActiveRecord::Base
     portal.factions<< f
     
     # El orden es importante
-    root_term = Term.create(:game_id => self.id, :name => self.name, :slug => self.code) 
+    root_term = Term.create(:game_id => self.id, :name => self.name, :slug => self.code)
+    raise "Term isn't created #{root_term.errors.full_messages.html}" if root_term.new_record?
     Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
       root_term.children.create(:name => c[1], :taxonomy => c[0])
     end
