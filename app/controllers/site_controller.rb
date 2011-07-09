@@ -46,7 +46,10 @@ class SiteController < ApplicationController
       end # if
     end # for
 
-    send_file "#{RAILS_ROOT}/public/images/banners/duke_nukem/#{files[Kernel.rand(files.length)]}", :type => 'image/gif', :disposition => 'inline'
+    filename = files[Kernel.rand(files.length)]
+    send_file "#{RAILS_ROOT}/public/images/banners/duke_nukem/#{filename}",
+              :type => 'image/gif',
+              :disposition => 'inline'
   end
 
   def banners_misc
@@ -57,7 +60,10 @@ class SiteController < ApplicationController
       end # if
     end # for
 
-    send_file "#{RAILS_ROOT}/public/images/banners/#{files[Kernel.rand(files.length)]}", :type => 'image/gif', :disposition => 'inline'
+    filename = files[Kernel.rand(files.length)]
+    send_file "#{RAILS_ROOT}/public/images/banners/#{filename}",
+              :type => 'image/gif',
+              :disposition => 'inline'
   end
 
   def faq
@@ -65,15 +71,19 @@ class SiteController < ApplicationController
     @title = 'Ayuda - FAQ'
   end
 
+  def raise404_if(condition)
+    raise ActiveRecord::RecordNotFound if condition
+  end
+
   def rate_content
-    raise ActiveRecord::RecordNotFound if params[:content_rating].nil? or params[:content_rating][:rating].to_s == ''
+    self.raise404_if(params[:content_rating].nil? ||
+                     params[:content_rating][:rating].nil?)
+
     params[:content_rating][:ip] = request.remote_ip
-    if user_is_authed then
-      params[:content_rating][:user_id] = @user.id
-    end
+    params[:content_rating][:user_id] = @user.id if user_is_authed
     rating = ContentRating.new(params[:content_rating])
 
-    if user_is_authed and @user.can_rate?(rating.content.real_content) then
+    if user_is_authed && @user.can_rate?(rating.content.real_content) then
       rating.save
     elsif !user_is_authed && ContentRating.count(:conditions => ['user_id is null and content_id = ? and ip = ?', rating.content_id, rating.ip]) == 0
       rating.save
@@ -173,49 +183,49 @@ class SiteController < ApplicationController
       render :layout => false, :action => 'update_chatlines_mini'
     end
   end
-  
+
   def add_to_tracker
     require_auth_users
     Users.add_to_tracker(@user, Content.find(params[:id]))
     redirect_to params[:redirto]
   end
-  
-  def del_from_tracker 
+
+  def del_from_tracker
     require_auth_users
     Users.remove_from_tracker(@user, Content.find(params[:id]))
     redirect_to params[:redirto]
   end
-  
+
   def get_non_updated_tracker_items
     response.headers["Cache-Control"] = "no-cache"
     render :layout => false
     response.headers["Cache-Control"] = "no-cache"
   end
-  
+
   def trastornos
     @title = 'Trastornos psíquicos'
   end
-  
+
   def ejemplos_guids
     @title = 'Ejemplos de GUIDs'
     render :layout => 'popup'
   end
-  
+
   def confirmar_transferencia
     require_auth_users
-    
+
     params[:redirto] = '/' unless params[:redirto]
-    
+
     @title = 'Confirmar transferencia'
     if params[:recipient_class] == 'User'
-      @recipient = User.find_by_login(params[:recipient_user_login])
+      @recipient = User.find(:first, :conditions => ['login = ? AND created_on <= now() - \'1 month\'::interval', params[:recipient_user_login]]) #_by_login(params[:recipient_user_login])
     elsif params[:recipient_class] == 'Clan'
       @recipient = Clan.find_by_name(params[:recipient_clan_name])
     else
       cls = Object.const_get(params[:recipient_class]) if params[:recipient_class] && params[:recipient_class] != ''
        (@recipient = cls.find(params["recipient_#{params[:recipient_class]}_id".to_sym])) if cls
     end
-    
+
     if not defined?(@recipient) or @recipient.nil?
       flash[:error] = 'No se ha encontrado el destinatario especificado.'
       redirect_to params[:redirto] and return
@@ -262,30 +272,33 @@ class SiteController < ApplicationController
       when 'Faction'
       raise AccessDenied unless sender.is_boss?(@user)
     end
-    
+
     if params[:ammount].to_f < 0 || sender.cash < 0 || sender.cash < params[:ammount].to_f then
       flash[:error] = 'No tienes el dinero suficiente para hacer esa transferencia'
       redirect_to params[:redirto]
     else
       recipient = Object.const_get(params[:recipient_class]).find(params[:recipient_id])
+      if recipient.class.name == 'User' and recipient.created_on >= 2.months.ago
+        raise ActiveRecord::RecordNotFound
+      end
       Bank.transfer(sender, recipient, params[:ammount].to_f, params[:description])
       flash[:notice] = 'Transferencia realizada correctamente.'
       redirect_to params[:redirto]
     end
   end
-  
+
   def http_401
     raise AccessDenied
   end
-  
+
   def http_500
     raise Exception
   end
-  
+
   def unserviceable_domain
     @title = 'Dominio fuera de servicio'
   end
-  
+
   def maintain_lock
     require_auth_users
     lock = ContentsLock.find(:first, :conditions => ['id = ? and user_id = ?', params[:id], @user.id])
