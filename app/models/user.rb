@@ -804,10 +804,10 @@ class User < ActiveRecord::Base
       return true
     end
     
-    if DateTime.now.year - self.birthday.year >= 3 && DateTime.now.year - self.birthday.year <= 130 then
+    if DateTime.now.year - self.birthday.year >= 3 && DateTime.now.year - self.birthday.year <= 230 then
       true
     else
-      self.errors.add('birthday','Error: Fecha de cumpleaños no válida. Se debe introducir una edad entre 4 y 130 años.')
+      self.errors.add('birthday','Error: Fecha de cumpleaños no válida. Se debe introducir una edad entre 4 y 230 años.')
       false  
     end
     

@@ -3,7 +3,7 @@ class ContentsRecommendation < ActiveRecord::Base
   belongs_to :receiver, :class_name => 'User', :foreign_key => 'receiver_user_id'
   belongs_to :content
   validates_presence_of [:sender_user_id, :receiver_user_id, :content_id]
-  
+
   before_create :check_if_already_recommended
   validates_uniqueness_of :content_id, :scope => [:sender_user_id, :receiver_user_id]
   
@@ -28,6 +28,7 @@ class ContentsRecommendation < ActiveRecord::Base
     seen_contents = []
     recs_f = []
     recs.each do |rec|
+      next unless rec
       recs_f << rec unless seen_contents.include?(rec.content_id)
       seen_contents << rec.content_id
     end
