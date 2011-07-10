@@ -735,7 +735,7 @@ class User < ActiveRecord::Base
   end
   
   def is_bigboss?
-   (self.users_roles.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha')") > 0) || self.has_admin_permission?(:bazar_manager) || self.has_admin_permission?(:capo) || self.is_superadmin 
+   (self.users_roles.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha')") > 0) || self.has_admin_permission?(:bazar_manager) || self.has_admin_permission?(:capo) 
   end
   
   def is_faction_editor?

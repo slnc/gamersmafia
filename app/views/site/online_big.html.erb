@@ -30,7 +30,7 @@
   <% for chatline in Chatline.latest %>
   <li id="chatline<%=chatline.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 0px; margin-bottom: 0px;">
     <div class="avatar" style="float: left; margin-right: 3px;"><img style="border: 1px solid black; width: 32px; height: 32px;" src="<%=ASSET_URL%>/cache/thumbnails/f/32x32<%=chatline.user.show_avatar%>" /></div>
-    <div style="float: right; margin-right: 5px;" class="infoinline"><% if user_is_authed and (@user.has_admin_permission?(:capo) or @user.is_superadmin) then %>
+    <div style="float: right; margin-right: 5px;" class="infoinline"><% if user_is_authed and @user.has_admin_permission?(:capo) then %>
       <%=link_to_remote('x', :update => 'bigchat', :url => "/site/del_chatline/#{chatline.id}?time=#{now}")%> | 
     <% end -%>
     <%=print_tstamp(chatline.created_on, 'time')%></div>

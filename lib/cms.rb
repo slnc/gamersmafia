@@ -669,7 +669,7 @@ module Cms
   
   # Devuelve el peso de un usuario a la hora de moderar un contenido del tipo dado. En caso de superadmins o editores el peso es siempre Infinito
   def self.get_user_weight_with(content_type, user, content=nil)
-    if user.is_superadmin or user.has_admin_permission?(:capo) or (!content.nil? and Cms::user_can_edit_content?(user, content))
+    if user.has_admin_permission?(:capo) or (!content.nil? and Cms::user_can_edit_content?(user, content))
       Infinity
     else
       aciertos = User.db_query("SELECT count(a.id) FROM publishing_decisions A JOIN contents b ON a.content_id = b.id WHERE a.is_right = 't' AND b.content_type_id = #{content_type.id} AND a.user_id = #{user.id} AND a.created_on >= now() - '1 year'::interval")[0]['count'].to_i
@@ -719,7 +719,7 @@ module Cms
     return false unless user && user.id
     
     #raise "(#{content.respond_to?(:state)} and #{content.user_id} == #{self.id} and #{content.state} == #{Cms::DRAFT})"
-    if user.has_admin_permission?(:capo) || user.is_superadmin 
+    if user.has_admin_permission?(:capo) 
       true
     elsif (content.respond_to?(:state) and content.user_id == user.id and content.state == Cms::DRAFT) then
       true

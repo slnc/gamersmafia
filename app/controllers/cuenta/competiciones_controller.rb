@@ -394,7 +394,7 @@ class Cuenta::CompeticionesController < ApplicationController
   end
   
   def create
-    params[:competition][:pro] = false unless @user.is_superadmin
+    params[:competition][:pro] = false
     raise ActiveRecord::RecordNotFound unless (%w(Ladder Tournament League).include?(params[:competition][:type]))
     params[:competition][:competitions_types_options] = HashWithIndifferentAccess.new
     params[:competition][:timetable_options] = HashWithIndifferentAccess.new

@@ -98,7 +98,7 @@
 
 <% content_main do %>
   <% if @competition.user_is_admin(@user.id) then %>
-    <% if @user.is_superadmin then %>
+    <% if @user.has_admin_permission?(:capo) then %>
   <div id="error"><strong>Acciones temporales para pruebas (SOLO LO VEMOS LOS SUPERADMINS)</strong><br />
   <ul>
     <li><form method="post" action="/cuenta/competiciones/hack/add_participants">

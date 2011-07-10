@@ -127,13 +127,6 @@ class Cuenta::CuentaController < ApplicationController
       SlogEntry.create({:type_id => SlogEntry::TYPES[:security], :headline => "IP baneada #{request.remote_ip} (#{ban.comment}) ha intentado crearse una cuenta"})      
       flash[:notice] = "Te hemos enviado un mensaje a #{@newuser.email} con la clave de confirmación."
       redirect_to('/cuenta/confirmar') and return
-      #    elsif User.count(:conditions => ['ipaddr = ? AND lastseen_on >= now() - \'1 day\'::interval', request.remote_ip]) > 2
-      #      nagato = User.find_by_login('nagato')
-      #      User.find(:all, :conditions => 'is_superadmin = \'t\'').each do |u|
-      #        Message.create({:user_id_from => nagato.id, :user_id_to => u.id, :title => "Intento de registro desde ip sospechosa #{request.remote_ip}", :message => "Desde la ip #{request.remote_ip} se ha intentado registrar el usuario #{@newuser.login}"})
-      #      end
-      #      flash[:notice] = "Te hemos enviado un mensaje a #{@newuser.email} con la clave de confirmación."
-      #      redirect_to '/cuenta/confirmar' and return
     elsif Cms::EMAIL_REGEXP =~ @newuser.email && User::BANNED_DOMAINS.include?(@newuser.email.split('@')[1].downcase)
       flash[:error] = "El dominio #{@newuser.email.split('@')[1]} está baneado por abusos. Por favor, elige otra cuenta de correo."
       render :action => :alta

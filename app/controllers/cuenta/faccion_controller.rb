@@ -11,7 +11,7 @@ class Cuenta::FaccionController < ApplicationController
   
   def submenu_items
     l = [] 
-    if @faction and (user_is_boss(@user, @faction) or @user.is_superadmin) then
+    if @faction and (user_is_boss(@user, @faction) or @user.has_admin_permission?(:capo)) then
       l<<['Información', '/cuenta/faccion/informacion']
       l<<['Staff', '/cuenta/faccion/staff']
       l<<['Cabeceras', '/cuenta/faccion/cabeceras']

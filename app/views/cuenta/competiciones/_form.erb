@@ -5,7 +5,7 @@
 <%= text_field 'competition', 'name', :class => 'text'  %> <span class="infoinline">No cambiar innecesariamente.</span></p>
 
 <% if @competition.new_record? then %>
-<% if @user.is_superadmin? and @competition.new_record? then %>
+<% if @user.has_admin_permission?(:capo) and @competition.new_record? then %>
 <p><label for="competition_pro"><%= check_box 'competition', 'pro'  %> ¿Competición Pro (Portal propio, etc)?</label></p>
 <% end -%>
 

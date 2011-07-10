@@ -545,37 +545,37 @@ Request information:
       items<< ['Ads', '/admin/ads']
       items<< ['Ads Slots', '/admin/ads_slots']
       items<< ['Canales GMTV', '/admin/canales']
-      items<< ['Competiciones', '/admin/competiciones']
       items<< ['Grupos', '/admin/grupos']
       items<< ['Hipótesis', '/admin/hipotesis']
-      items<< ['Juegos', '/admin/juegos']
-      items<< ['Plataformas', '/admin/plataformas']
-      items<< ['Portales', '/admin/portales']
-      items<< ['Tienda', '/admin/tienda']
     end
 
-    if @user.is_superadmin? || @user.has_admin_permission?(:capo)
+    if @user.has_admin_permission?(:capo)
       items<< ['Avatares', '/avatares']
       items<< ['Clanes', '/admin/clanes']
+      items<< ['Competiciones', '/admin/competiciones']
       items<< ['Facciones', '/admin/facciones']
       items<< ['IP Bans', '/admin/ip_bans']
       items<< ['IPs Duplicadas', '/admin/usuarios/ipsduplicadas']
+      items<< ['Juegos', '/admin/juegos']
       items<< ['Mapas', '/admin/mapas_juegos']
+      items<< ['Plataformas', '/admin/plataformas']
+      items<< ['Portales', '/admin/portales']
       items<< ['Tags', '/admin/tags']
       items<< ['Users', '/admin/usuarios']
+      items<< ['Tienda', '/admin/tienda']
       items<< ['Violaciones Netiqueta', '/comments/violaciones_netiqueta']
     end
 
-    if @user.is_superadmin? || @user.has_admin_permission?(:bazar_manager) || @user.has_admin_permission?(:capo)
+    if @user.has_admin_permission?(:bazar_manager) || @user.has_admin_permission?(:capo)
       items<< ['Cat Contenidos', '/admin/categorias']
     end
 
-    if @user.is_superadmin? || @user.has_admin_permission?(:faq)
+    if @user.has_admin_permission?(:capo) || @user.has_admin_permission?(:faq)
       items<< ['Entradas FAQ', '/admin/entradasfaq']
       items<< ['Cat FAQ', '/admin/categoriasfaq']
     end
 
-    if @user.is_superadmin? || @user.has_admin_permission?(:bazar_manager)
+    if @user.has_admin_permission?(:capo) || @user.has_admin_permission?(:bazar_manager)
       items<< ['Distritos bazar', '/admin/bazar_districts']
     end
 
