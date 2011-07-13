@@ -42,7 +42,7 @@ Instrucciones mínimas (seguir en este orden)
     pg 
     rack 
     rails 
-    rake (instalar la versión 8.0.7. haciendo uso del comando "gem install rake --version 0.8.7")
+    rake (instalar versión 8.0.7. haciendo uso del comando "gem install rake --version 0.8.7")
     rcov 
     rmagick 
     rubyforge 
