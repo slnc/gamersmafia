@@ -22,12 +22,20 @@ module Blogs
   
   def self.top_bloggers(opts={})
     opts = {:limit => 5}.merge(opts)
-    User.find_by_sql("SELECT a.id, a.login
-                     FROM users a
-                     JOIN blogentries padre on a.id = padre.user_id
-                    WHERE padre.state=#{Cms::PUBLISHED} 
-                 GROUP BY a.id, a.login, padre.user_id
-                 ORDER BY count(*)*((SELECT coalesce(avg(cache_rating), 5.0) FROM blogentries WHERE user_id = padre.user_id and state <> '#{Cms::DELETED}' and cache_rated_times > 0) /10.0) desc limit #{opts[:limit]}")
+    User.find_by_sql("SELECT a.id,
+                             a.login
+                        FROM users a
+                        JOIN blogentries padre on a.id = padre.user_id
+                       WHERE padre.state = #{Cms::PUBLISHED} 
+                    GROUP BY a.id, a.login, padre.user_id
+                    ORDER BY count(*) * ((SELECT coalesce(avg(cache_rating),
+                                                          5.0)
+                                            FROM blogentries
+                                           WHERE user_id = padre.user_id
+                                             AND state <> '#{Cms::PUBLISHED}'
+                                             AND cache_rated_times > 0)
+                                         / 10.0)  DESC
+                       LIMIT #{opts[:limit]}")
   end
   
   def self.top_bloggers_in_date_range(date_start, date_end)
