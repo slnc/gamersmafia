@@ -24,14 +24,31 @@ module Emblems
     :wealthiest => {:title => 'El más rico', :index => 19},
     :okupa => {:title => 'Omnipresente', :index => 20},
     :bets_master => {:title => 'Maestro de las apuestas', :index => 21},
-    :talker => {:title => 'Hablador', :index => 22},
     :best_blogger => {:title => 'Blogger A-List', :index => 23},
     :oldest_faction_member => {:title => 'Pionero de su facción', :index => 24},
     :baby => {:title => 'Recién registrado', :index => 25},
+
+    # DEPRECATED: mantenemos los siguientes emblemas por razones históricas y
+    # para que las personas que los ganaron los conserven pero ya no se otorgan
+    # más.
+    :talker => {:title => 'Hablador', :index => 22},
   }
-  
-  EMBLEMS_TO_REPORT = %w(best_overall karma_fury faith_avalanche most_knowledgeable living_legend funniest profoundest most_informational most_interesting wealthiest bets_master talker best_blogger okupa)
-  
+
+  EMBLEMS_TO_REPORT = %w(best_blogger
+                         best_overall
+                         bets_master
+                         faith_avalanche
+                         funniest
+                         karma_fury
+                         living_legend
+                         most_informational
+                         most_interesting
+                         most_knowledgeable
+                         okupa
+                         profoundest
+                         wealthiest
+                         )
+
   EMBLEMS_BY_INDEX = begin
     res = {} 
     EMBLEMS.each do |k,v|
@@ -104,12 +121,7 @@ module Emblems
     User.find(:all, :conditions => "id IN (SELECT user_id FROM users_roles WHERE role = 'Moderator') AND state IN (#{User::STATES_CAN_LOGIN.join(',')}) AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')}) AND id NOT IN (#{dons.join(',')})  AND id NOT IN (#{mano_derechas.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'moderator')
     end
-    
-    dbq = User.db_query("SELECT count(*), avg(char_length(line)) as avg_length, user_id FROM chatlines WHERE created_on > now() - '1 week'::interval and user_id not in (select id from users where is_bot='t') GROUP BY user_id HAVING count(*) > 0  ORDER BY count(*) DESC LIMIT 1")
-    if dbq.size > 0
-      User.find(dbq[0]['user_id'].to_i).users_emblems.create(:emblem => 'talker', :details => "#{dbq[0]['count']} frases (#{sprintf("%.2f", dbq[0]['avg_length'].to_f)} caracteres por frase)")
-    end
-    
+
     points = Karma::karma_points_of_users_at_date_range(Time.now, 1.week.ago)
     if points.size > 0
       maxk = 0
