@@ -195,7 +195,7 @@ end
 <%mftext('Cumplen años hoy', :grid => 3) do %>
   <table>
 <%  cache("/common/miembros/_rightside/birthdays_#{Time.now.strftime('%Y%m%d')}") do %>
-      <% User.find(:all, :conditions => "state IN (#{(User::STATES_CAN_LOGIN - [User::ST_ZOMBIE]).join(',')}) and date_part('day', birthday)::text || date_part('month', birthday)::text = date_part('day', now())::text || date_part('month', now())::text", :order => 'lower(login)').each do |u| 
+      <% User.can_login.birthday_today.find(:all, :conditions => "state <> #{User::ST_ZOMBIE}", :order => 'lower(login)').each do |u| 
 		 next if u.age < 5 || u.age > 100 %>
       <tr class="<%=oddclass%>">
         <td><%=user_link(u)%><br /> <span class="infoinline"><strong><%=u.age%></strong> años</span></td>
@@ -209,7 +209,7 @@ end
 <%mftext('Perfiles actualizados', :grid => 3) do %>
   <table>
 <%# cache("/common/miembros/_rightside/birthdays_#{Time.now.strftime('%Y%m%d')}") do %>
-      <% User.find(:all, :conditions => "profile_last_updated_on is not null and state IN (#{User::STATES_CAN_LOGIN.join(',')})", :order => 'profile_last_updated_on DESC', :limit => 5).each do |u| %>
+      <% User.can_login.find(:all, :conditions => "profile_last_updated_on is not null", :order => 'profile_last_updated_on DESC', :limit => 5).each do |u| %>
       <tr class="<%=oddclass%>">
         <td><strong><%=user_link(u)%></strong><br /> <span class="infoinline"><%=print_tstamp(u.profile_last_updated_on, 'intelligent')%></span></td>
 		<td class="right"><img src="/cache/thumbnails/f/32x32/<%=u.show_photo%>" /></td>

@@ -326,7 +326,7 @@ having portal_id in (select id
     # enviamos un mensaje de felicitación
     nagato = User.find_by_login!('nagato')
     today = Date.today
-    User.find(:all, :conditions => "birthday::text LIKE '%-#{today.strftime('%m-%d')}' AND state in (#{User::STATES_CAN_LOGIN.join(',')}) ").each do |u|
+    User.can_login.birthday_today.find(:all).each do |u|
       m = Message.new({ :sender => nagato, 
         :recipient => u, 
         :title => '¡Feliz cumpleaños!', 
@@ -337,7 +337,7 @@ having portal_id in (select id
   
   def clear_faith_points_of_referers_and_resurrectors
     parsed_referers = []
-    User.find(:all, :conditions => "state in (#{User::STATES_CAN_LOGIN.join(',')}) AND referer_user_id is not null and lastseen_on between (now() - '3 months 2 days'::interval) and (now() - '3 months'::interval)").each do |u|
+    User.can_login.find(:all, :conditions => "referer_user_id is not null and lastseen_on between (now() - '3 months 2 days'::interval) and (now() - '3 months'::interval)").each do |u|
       next if parsed_referers.include?(u.referer_user_id)
       r = User.find(u.referer_user_id)
       r.cache_faith_points = nil
@@ -346,7 +346,7 @@ having portal_id in (select id
       parsed_referers<< u.referer_user_id
     end
     
-    User.find(:all, :conditions => "state in (#{User::STATES_CAN_LOGIN.join(',')}) AND resurrected_by_user_id is not null and lastseen_on between (now() - '3 months 2 days'::interval) and (now() - '3 months'::interval)").each do |u|
+    User.can_login.find(:all, :conditions => "resurrected_by_user_id is not null and lastseen_on between (now() - '3 months 2 days'::interval) and (now() - '3 months'::interval)").each do |u|
       next if parsed_referers.include?(u.referer_user_id)
       r = User.find(u.resurrected_by_user_id)
       r.cache_faith_points = nil
@@ -358,7 +358,7 @@ having portal_id in (select id
   
   def pay_faith_prices
     # damos los premios por nivel de fe elevado
-    User.find(:all, :conditions => "state in (#{User::STATES_CAN_LOGIN.join(',')})  and lastseen_on >= now() - '3 months'::interval and cache_faith_points > 0", :order => 'lastseen_on DESC').each do |u|
+    User.can_login.find(:all, :conditions => "lastseen_on >= now() - '3 months'::interval and cache_faith_points > 0", :order => 'lastseen_on DESC').each do |u|
       faith_level = Faith.level(u)
       new_cash = Bank::convert(faith_level, 'faith_level')
       if new_cash > 0 then

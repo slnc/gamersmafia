@@ -188,49 +188,49 @@ module Faith
   end
   
   def self.registrations_active(user)
-    User.count(:conditions => ["state IN (#{User::STATES_CAN_LOGIN.join(',')}) and lastseen_on >= now() - '3 months'::interval and referer_user_id = ?", user.id])
+    User.can_login.count(:conditions => ["lastseen_on >= now() - '3 months'::interval and referer_user_id = ?", user.id])
   end
   
   def self.registrations_inactive(user)
-    User.count(:conditions => ["state IN (#{User::STATES_CAN_LOGIN.join(',')}) and lastseen_on < now() - '3 months'::interval and referer_user_id = ?", user.id])
+    User.can_login.count(:conditions => ["lastseen_on < now() - '3 months'::interval and referer_user_id = ?", user.id])
   end
   
   def self.registrations_total(user)
-    User.count(:conditions => ["state IN (#{User::STATES_CAN_LOGIN.join(',')}) and referer_user_id = ?", user.id])
+    User.can_login.count(:conditions => ["referer_user_id = ?", user.id])
   end
   
   def self.resurrections_own_active(user)
     # TODO tests
     #      puts User.count(:conditions => ["state IN (#{User::STATES_CAN_LOGIN.join(',')}) and referer_user_id = ? and resurrected_by_user_id = ? and lastseen_on < now() - \'3 months\'::interval', user.id, user.id])
-    User.count(:conditions => ["state IN (#{User::STATES_CAN_LOGIN.join(',')}) and referer_user_id = ? and resurrected_by_user_id = ? and lastseen_on > now() - '3 months'::interval", user.id, user.id])
+    User.can_login.count(:conditions => ["referer_user_id = ? and resurrected_by_user_id = ? and lastseen_on > now() - '3 months'::interval", user.id, user.id])
   end
   
   def self.resurrections_own_inactive(user)
-    User.count(:conditions => ["state IN (#{User::STATES_CAN_LOGIN.join(',')}) and referer_user_id = ? and resurrected_by_user_id = ? and lastseen_on < now() - '3 months'::interval", user.id, user.id])
+    User.can_login.count(:conditions => ["referer_user_id = ? and resurrected_by_user_id = ? and lastseen_on < now() - '3 months'::interval", user.id, user.id])
   end
   
   def self.resurrections_own_total(user)
-    User.count(:conditions => ["state IN (#{User::STATES_CAN_LOGIN.join(',')}) and referer_user_id = ? and resurrected_by_user_id = ?", user.id, user.id])
+    User.can_login.count(:conditions => ["referer_user_id = ? and resurrected_by_user_id = ?", user.id, user.id])
   end
   
   def self.resurrections_active(user)
     # resurrecciones activas de usuarios no referidos por mi
-    User.count(:conditions => ["state IN (#{User::STATES_CAN_LOGIN.join(',')}) and COALESCE(referer_user_id, 0) <> ? and resurrected_by_user_id = ? and lastseen_on >= now() - '3 months'::interval", user.id, user.id])
+    User.can_login.count(:conditions => ["COALESCE(referer_user_id, 0) <> ? and resurrected_by_user_id = ? and lastseen_on >= now() - '3 months'::interval", user.id, user.id])
   end
   
   def self.resurrections_inactive(user)
     # resurrecciones inactivas de usuarios no referidos por mi
-    User.count(:conditions => ["state IN (#{User::STATES_CAN_LOGIN.join(',')}) and COALESCE(referer_user_id, 0) <> ? and resurrected_by_user_id = ? and lastseen_on > now() - '3 months'::interval", user.id, user.id])
+    User.can_login.count(:conditions => ["COALESCE(referer_user_id, 0) <> ? and resurrected_by_user_id = ? and lastseen_on > now() - '3 months'::interval", user.id, user.id])
   end
   
   def self.resurrections_total(user)
     # resurrecciones de usuarios no referidos por mi
-    User.count(:conditions => ["state IN (#{User::STATES_CAN_LOGIN.join(',')}) and COALESCE(referer_user_id, 0) <> ? and resurrected_by_user_id = ?", user.id, user.id])
+    User.can_login.count(:conditions => ["COALESCE(referer_user_id, 0) <> ? and resurrected_by_user_id = ?", user.id, user.id])
   end
   
   def self.resurrections_incomplete(user)
     # resurrecciones inactivas de usuarios no referidos por mi
-    User.count(:conditions => ["state IN (#{User::STATES_CAN_LOGIN.join(',')}) and resurrected_by_user_id = ? and resurrection_started_on > now() - '7 days'::interval and lastseen_on < now() - '3 months'::interval", user.id])
+    User.can_login.count(:conditions => ["resurrected_by_user_id = ? and resurrection_started_on > now() - '7 days'::interval and lastseen_on < now() - '3 months'::interval", user.id])
   end
   
   def self.competitions_matches(user)

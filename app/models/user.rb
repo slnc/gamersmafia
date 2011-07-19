@@ -171,6 +171,7 @@ class User < ActiveRecord::Base
   
   named_scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})", 
                           :order => 'lower(login)'
+  named_scope :birthday_today, :condition => "date_part('day', birthday)::text || date_part('month', birthday)::text = date_part('day', now())::text || date_part('month', now())::text"
   named_scope :humans, :conditions => 'is_bot is false'
   
   # Class methods
