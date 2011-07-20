@@ -121,15 +121,11 @@ class SiteController < ApplicationController
   end
 
   def online
-    @title = 'Usuarios Online'
-
-    if cookies.keys.include?('chatpref') and cookies['chatpref'].to_s == 'big' then
-      @online_users = User.find(:all, :conditions => 'lastseen_on >= now() - \'30 minutes\'::interval', :order => 'lastseen_on desc', :limit => 100)
-      render :action => 'online_big'
-    else
-      @online_users = User.find(:all, :conditions => 'lastseen_on >= now() - \'30 minutes\'::interval', :order => 'faction_id asc, lastseen_on desc', :limit => 100)
-      render :action => 'online_mini'
-    end
+    @title = "Webchat"
+    @online_users = User.can_login.online.find(:all, 
+                                               :order => 'lastseen_on desc',
+                                               :limit => 100)
+    render :action => 'online_big'
   end
 
   def update_chatlines
@@ -467,7 +463,7 @@ class SiteController < ApplicationController
     raise ActiveRecord::RecordNotFound unless params[:subject].to_s != '' && params[:message].to_s != ''
     forbidden = %w(justinmadridsssd@gmail.com seo.sales.traffic@gmail.com traffic.internet.marketing@gmail.com seo.sales.traffic@gamil.com justinmadridsssd@gmail.com)
     if params[:subject] == ''
-	    flash[:error] = 'Por favor, elige una categorÃa para tu mensaje'
+	    flash[:error] = 'Por favor, elige una categorï¿½a para tu mensaje'
     else
       flash[:notice] = "Mensaje recibido correctamente. Muchas gracias por tu tiempo."
       (redirect_to '/site/contactar' and return) if params[:subject] == 'seo' || (params[:email] && forbidden.include?(params[:email]))
