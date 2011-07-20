@@ -1,14 +1,9 @@
 <% generic_support do %>
-  <%mftext('Modo') do %>
-  <div style="text-align: center;"><a href="/site/online" onclick="setpref('chat', 'mini');">Cambiar a <strong>miniChat</strong></a></div>
-  <% end -%>
-
   <%mftext('Online') do %>
   <ul class="skeletal">
     <% 
     now = Time.now.to_i
     max = 60 * 30
-
     for u in @online_users %>
     <li class="<%=oddclass%>"><div style="float: right; width: 67px; margin-top: 5px;" class="infoinline"><%=draw_pcent_bar(1 - (now - u.lastseen_on.to_i) / max.to_f, "#{format_interval(now - u.lastseen_on.to_i, 'secs')}")%></div><span class="nick"><%=link_to u.login, gmurl(u) %></span></li>
   <% end -%>
@@ -24,9 +19,7 @@
 <ul id="bigchat"  style="background: #fafafa;">
 
   <% now = Time.now.to_i %>
-<script type="text/javascript">
-  cur_time_chat=<%=now%>;
-</script>
+<script type="text/javascript">cur_time_chat=<%=now%>;</script>
   <% for chatline in Chatline.latest %>
   <li id="chatline<%=chatline.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 0px; margin-bottom: 0px;">
     <div class="avatar" style="float: left; margin-right: 3px;"><img style="border: 1px solid black; width: 32px; height: 32px;" src="<%=ASSET_URL%>/cache/thumbnails/f/32x32<%=chatline.user.show_avatar%>" /></div>
@@ -88,7 +81,7 @@ document.getElementById('newlinesend').disabled = 'disabled';
 <% end -%>
   <div class="right infoinline">(<a title="Enlazado con #gamersmafia en Quakenet" href="irc://irc.quakenet.org/#gamersmafia">#gamersmafia</a>)</div>
 <script type="text/javascript">
-  function check_chat_size()
+function check_chat_size()
 {
   var o = document.getElementById('bigchat');
   // TODO ie

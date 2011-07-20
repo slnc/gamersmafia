@@ -120,12 +120,11 @@ class SiteController < ApplicationController
     @title = 'Código de Conducta'
   end
 
-  def online
-    @title = "Webchat"
+  def chat
+    @title = "Chat Gamersmafia"
     @online_users = User.can_login.online.find(:all, 
                                                :order => 'lastseen_on desc',
                                                :limit => 100)
-    render :action => 'online_big'
   end
 
   def update_chatlines
