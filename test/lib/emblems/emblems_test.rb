@@ -193,17 +193,7 @@ class EmblemsTest < ActiveSupport::TestCase
       assert User.find(@u.id+1).update_attributes(:lastseen_on => Time.now)
     end
   end
-  
-  test "give_emblems_talker" do
-    assert_gives_emblem('talker') do
-      c_count = Chatline.count
-      Chatline.create(:user_id => @u.id, :line => 'holaaa')
-      Chatline.create(:user_id => @u.id, :line => 'holaaa jajajaja')
-      Chatline.create(:user_id => @u.id + 1, :line => 'holooo')
-      assert_equal c_count + 3, Chatline.count 
-    end
-  end
-  
+    
   test "give_emblems_best_blogger" do
       assert Blogentry.find(1).update_attributes(:created_on => Time.now)
     assert_gives_emblem('best_blogger') do
@@ -212,8 +202,5 @@ class EmblemsTest < ActiveSupport::TestCase
       sym_pageview({:user_id => @u.id, :url => '/dadadd/adsdasd/1', :controller => 'blogs', :action => 'blogentry', :model_id => '2', :portal_id => nil})
       User.db_query("UPDATE stats.pageviews SET created_on = now() - '1 minute'::interval")
     end
-  end
-  
-  test "give_emblems_best_overall" do
   end  
 end
