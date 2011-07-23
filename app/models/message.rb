@@ -11,7 +11,9 @@ class Message < ActiveRecord::Base
   R_FACTION = 3
   R_FACTION_STAFF = 4
 
-  validates_presence_of :title, :message, {:message => 'no puede estar en blanco'}
+  NO_EMPTY_TITLE = 'no puede estar en blanco'
+
+  validates_presence_of :title, :message, {:message => NO_EMPTY_TITLE}
 
   before_save :check_not_self
   after_create :notify_recipient

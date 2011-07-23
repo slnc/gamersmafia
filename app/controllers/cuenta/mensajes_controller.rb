@@ -41,6 +41,7 @@ class Cuenta::MensajesController < ApplicationController
 
   def create_message
     @title = 'Mensajes'
+    @curuser = @user
     @message = Message.new
     @messages = Message.recipient_is(@user).recipient_undeleted.paginate(
         :order => 'messages.created_on DESC', :include => [:sender],
@@ -93,13 +94,19 @@ class Cuenta::MensajesController < ApplicationController
     params[:message][:user_id_from] = @user.id
     params[:message].delete(:recipient_clan_id)
     params[:message].delete(:recipient_user_login)
-
+    new_message = @message
     recipients.uniq.each do |uid|
       params[:message][:user_id_to] = uid
-      Message.create(params[:message])
+      new_message = Message.create(params[:message])
     end
 
-    flash[:notice] = 'Mensaje enviado correctamente.'
+    if new_message.errors.size > 0
+      flash[:error] = "Error al crear mensaje:
+          #{new_message.errors.full_messages_html}"
+    else
+      flash[:notice] = 'Mensaje enviado correctamente.'
+    end
+
     if params[:ajax]
       render :partial => '/shared/ajax_facebox_feedback', :layout => false
     else
