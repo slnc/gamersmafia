@@ -4,7 +4,7 @@ class Cuenta::MensajesController < ApplicationController
   def submenu
     'Mensajes'
   end
-  
+
   def submenu_items
     [['Mensajes recibidos', '/cuenta/mensajes'],
     ['Mensajes enviados', '/cuenta/mensajes/mensajes_enviados'],]
@@ -12,39 +12,43 @@ class Cuenta::MensajesController < ApplicationController
 
 
   def mensajes
-    # TODO debe tener su propio controller
     @navpath = [['Preferencias', '/cuenta'], ['Mensajes', '/cuenta/mensajes']]
-    @messages = Message.paginate(:conditions => "user_id_to = #{@user.id} and receiver_deleted is false", :order => 'messages.created_on DESC', :include => [:sender], :page => params[:page], :per_page => 30)
+    @messages = Message.recipient_is(@user).recipient_undeleted.paginate(
+        :order => 'messages.created_on DESC', :include => [:sender],
+        :page => params[:page], :per_page => 30)
     @title = 'Mensajes recibidos'
     @highlighted_user = :sender
     @message = Message.new
   end
-  
+
   def mensajes_enviados
-    # TODO debe tener su propio controller
     @navpath = [['Preferencias', '/cuenta'], ['Mensajes', '/cuenta/mensajes']]
     @title = 'Mensajes enviados'
     @message = Message.new
     @highlighted_user = :recipient
-    @messages = Message.paginate(:conditions => "user_id_from = #{@user.id} and sender_deleted is false", :order => 'created_on DESC', :page => params[:page], :per_page => 30)
+    @messages = Message.paginate(:conditions => "user_id_from = #{@user.id}" +
+                                             "AND sender_deleted is false",
+                                 :order => 'created_on DESC',
+                                 :page => params[:page], :per_page => 30)
     render :action => 'mensajes'
   end
-  
+
   def new
     @curuser = User.find(params[:id])
     render :layout => false
   end
-  
-  
+
+
   def create_message
     @title = 'Mensajes'
     @message = Message.new
-    @messages = Message.paginate(:conditions => "user_id_to = #{@user.id} and receiver_deleted is false", :order => 'messages.created_on DESC', :include => [:sender], :page => params[:page], :per_page => 30)
+    @messages = Message.recipient_is(@user).recipient_undeleted.paginate(
+        :order => 'messages.created_on DESC', :include => [:sender],
+        :page => params[:page], :per_page => 30)
     recipient = User.find_by_login(params[:message][:recipient])
-    
-     
+
     params[:redirto] = '/cuenta/mensajes' if params[:redirto].to_s == ''
-    
+
     # Check recipient
     case params[:message][:message_type].to_i
       when Message::R_USER:
@@ -62,12 +66,12 @@ class Cuenta::MensajesController < ApplicationController
       if params[:message][:recipient_clan_id].nil?
         params[:message][:recipient_clan_id] = @user.last_clan_id
       end
-      
+
       if params[:message][:recipient_clan_id].nil?
         flash[:error] = "No se ha encontrado el clan especificado."
         redirect_to params[:redirto] and return false
       end
-      
+
       c = Clan.find(params[:message][:recipient_clan_id])
       raise ActiveRecord::RecordNotFound unless c && c.user_is_member(@user.id)
       recipients = c.all_users_of_this_clan.collect { |u| u.id }
@@ -89,12 +93,12 @@ class Cuenta::MensajesController < ApplicationController
     params[:message][:user_id_from] = @user.id
     params[:message].delete(:recipient_clan_id)
     params[:message].delete(:recipient_user_login)
-    
+
     recipients.uniq.each do |uid|
       params[:message][:user_id_to] = uid
       Message.create(params[:message])
     end
-    
+
     flash[:notice] = 'Mensaje enviado correctamente.'
     if params[:ajax]
       render :partial => '/shared/ajax_facebox_feedback', :layout => false
@@ -106,17 +110,22 @@ class Cuenta::MensajesController < ApplicationController
       end
     end
   end
-  
+
   def mensaje
-    @curmessage = Message.find(:first, :conditions => ['id = ? and (user_id_to = ? or user_id_from = ?)', params[:id], @user.id, @user.id])
+    @curmessage = Message.find(:first,
+                               :conditions => ['id = ? AND (user_id_to = ?
+                                                         OR user_id_from = ?)',
+                                               params[:id], @user.id, @user.id])
     raise ActiveRecord::RecordNotFound unless @curmessage
     @message = Message.new
     @curmessage.read(@user) if @user.id == @curmessage.user_id_to
-    @navpath = [['Cuenta', '/cuenta'], ['Mensajes', '/cuenta/mensajes'], [@curmessage.title, "/cuenta/mensajes/mensaje/#{@curmessage.id}"]]
+    @navpath = [['Cuenta', '/cuenta'], ['Mensajes', '/cuenta/mensajes'],
+                [@curmessage.title,
+                 "/cuenta/mensajes/mensaje/#{@curmessage.id}"]]
     @title = @curmessage.title
   end
-  
-  
+
+
   def del_messages
     if params[:messages] then
       for mid in params[:messages]
@@ -129,7 +138,7 @@ class Cuenta::MensajesController < ApplicationController
       end
       flash[:notice] = 'Mensajes borrados correctamente.'
     end
-    
+
     redirect_to params[:redirto] || '/cuenta/mensajes'
   end
 end
