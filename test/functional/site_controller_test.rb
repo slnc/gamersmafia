@@ -290,14 +290,22 @@ class SiteControllerTest < ActionController::TestCase
     assert_redirected_to '/'
   end
   
+  test "shouldn't transfer if user is too young" do
+    Bank.transfer(:bank, User.find(1), 10, 'f')
+    User.db_query("UPDATE users SET created_on = now() - '1 day'::interval where login = 'panzer'")
+    sym_login(1)
+    post :confirmar_transferencia, {:sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_user_login => 'panzer', :description => 'foobar', :ammount => '1'}
+    assert_response :redirect
+  end
+  
   test "transfer_should_show_confirm_dialog_if_all_existing" do
     Bank.transfer(:bank, User.find(1), 10, 'f')
+    User.db_query("UPDATE users SET created_on = now() - '2 months'::interval where login = 'panzer'")
     sym_login(1)
     post :confirmar_transferencia, {:sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_user_login => 'panzer', :description => 'foobar', :ammount => '1'}
     assert_response :success
     assert_template 'site/confirmar_transferencia'
   end
-  
   
   test "transferencia_confirmada" do
     test_transfer_should_show_confirm_dialog_if_all_existing

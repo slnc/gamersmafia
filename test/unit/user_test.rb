@@ -126,7 +126,7 @@ class UserTest < ActiveSupport::TestCase
   test "check_age" do    
     u = User.find(1) 
     
-    u.birthday = DateTime.new(1800, 3, 26)    
+    u.birthday = DateTime.new(1700, 3, 26)    
     assert !u.save # No salvará bien, edad incorrecta (> 130 años)
     
     u.birthday = DateTime.now

@@ -39,7 +39,7 @@ module Users
     protected
     def require_admin_permission(perm_name)
       @no_ads = true
-      raise AccessDenied unless user_is_authed && (perm_name.to_s == 'hq' && @user.is_hq?) || @user.has_admin_permission?(perm_name)
+      raise AccessDenied unless user_is_authed && ((perm_name.to_s == 'hq' && @user.is_hq?) || @user.has_admin_permission?(perm_name))
     end
     
     def require_user_is_staff
