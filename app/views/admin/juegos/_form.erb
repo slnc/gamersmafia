@@ -7,7 +7,7 @@
 <p><label for="game_code">Abreviatura</label><br/>
 <%= text_field 'game', 'code', :class => 'text'  %></p>
 
-<p><label for="game_file">Archivo .GIF de 16x16</label><br/>
+<p><label for="game_file">Archivo .GIF en blanco y negro de 16x16</label><br/>
 <img src="<%=ASSET_URL%>/storage/games/<%=@game.code%>.gif" />
 <%= file_field 'game', 'file' %></p>
 

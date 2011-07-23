@@ -40,12 +40,16 @@ Líderes:<br />
 <% if !@user.faction.referenced_thing.has_img_file? || @user.faction.building_top == '' then %>
 <%mftext('Avisos') do %>
 <% if !@user.faction.referenced_thing.has_img_file? then %>
-<div class="warning">Tu facción todavía no tiene icono. Consigue un icono de 16x16 en blanco y negro y formato gif y envíaselo a <a href="/miembros/slnc">slnc</a> para activarlo.</div>
+<div class="warning">Tu facción todavía no tiene icono. Consigue un icono de
+16x16 en blanco y negro y formato gif y envíaselo a <a href=/"ite/staff">alg�n
+capo</a> para activarlo.</div>
 <% end -%>
 
 <% if @user.faction.building_top == '' then %>
 <% end -%>
-<div class="warning">Tu facción todavía no tiene edificio. Cuando consigas un edificio (<a href="http://gamersmafia.com/tutoriales/show/1183">tutorial</a>) envíaselo a <a href="/miembros/slnc">slnc</a> para activarlo.</div>
+<div class="warning">Tu facción todavía no tiene edificio. Cuando consigas un
+edificio (<a href="http://gamersmafia.com/tutoriales/show/1183">tutorial</a>)
+envíaselo a <a href=/site/staff">alg�n capo</a> para activarlo.</div>
 <% end -%>
 <% end -%>
 

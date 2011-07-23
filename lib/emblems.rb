@@ -29,123 +29,123 @@ module Emblems
     :oldest_faction_member => {:title => 'Pionero de su facción', :index => 24},
     :baby => {:title => 'Recién registrado', :index => 25},
   }
-  
+
   EMBLEMS_TO_REPORT = %w(best_overall karma_fury faith_avalanche most_knowledgeable living_legend funniest profoundest most_informational most_interesting wealthiest bets_master talker best_blogger okupa)
-  
+
   EMBLEMS_BY_INDEX = begin
-    res = {} 
+    res = {}
     EMBLEMS.each do |k,v|
       res[v[:index]] = k
     end
     res
   end
-  
+
   def self.give_emblems
     # si ha pasado una semana desde los últimos emblemas genera los emblemas actuales
     # TODO chequeos
     last_ue = UsersEmblem.find(:first, :order => 'created_on DESC', :limit => 1)
-    if last_ue 
+    if last_ue
       if last_ue.created_on.to_time.to_i > 5.days.ago.to_i
         puts "Error: el último emblema se dio el #{last_ue.created_on}"
         return
       end
     end
-    
+
     # hq
     User.find(:all, :conditions => 'is_hq = \'t\'').each do |u|
       #puts "dando hq a #{u.login}"
       u.users_emblems.create(:emblem => 'hq')
     end
-    
+
     User.find(:all, :conditions => 'is_superadmin = \'t\'').each do |u|
       u.users_emblems.create(:emblem => 'webmaster')
     end
-    
+
     User.find(:all, :conditions => "created_on >= now() - '1 week'::interval AND state IN (#{User::STATES_CAN_LOGIN.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'baby')
     end
-    
+
     bosses = [0]
     User.find(:all, :conditions => "id IN (SELECT user_id FROM users_roles WHERE role = 'Boss') AND state IN (#{User::STATES_CAN_LOGIN.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'boss')
       bosses<< u.id
     end
-    
+
     underbosses = [0]
     User.find(:all, :conditions => "id IN (SELECT user_id FROM users_roles WHERE role = 'Underboss') AND state IN (#{User::STATES_CAN_LOGIN.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'underboss')
       underbosses<< u.id
     end
-    
+
     dons = [0]
     User.find(:all, :conditions => "id IN (SELECT user_id FROM users_roles WHERE role = '#{BazarDistrict::ROLE_DON}') AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')}) AND state IN (#{User::STATES_CAN_LOGIN.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'don')
       dons<< u.id
     end
-    
+
     mano_derechas = [0]
     User.find(:all, :conditions => "id IN (SELECT user_id FROM users_roles WHERE role = '#{BazarDistrict::ROLE_MANO_DERECHA}') AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')}) AND state IN (#{User::STATES_CAN_LOGIN.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'mano_derecha')
       mano_derechas<< u.id
     end
-    
+
     User.find_with_admin_permissions(:capo).each do |u|
       u.users_emblems.create(:emblem => 'capo')
     end
-    
+
     User.find(:all, :conditions => "id IN (SELECT user_id FROM users_roles WHERE role = 'Sicario') AND state IN (#{User::STATES_CAN_LOGIN.join(',')}) AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')}) AND id NOT IN (#{dons.join(',')})  AND id NOT IN (#{mano_derechas.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'sicario')
     end
-    
+
     User.find(:all, :conditions => "id IN (SELECT user_id FROM users_roles WHERE role = 'Editor') AND state IN (#{User::STATES_CAN_LOGIN.join(',')}) AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')}) AND id NOT IN (#{dons.join(',')})  AND id NOT IN (#{mano_derechas.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'editor')
     end
-    
+
     User.find(:all, :conditions => "id IN (SELECT user_id FROM users_roles WHERE role = 'Moderator') AND state IN (#{User::STATES_CAN_LOGIN.join(',')}) AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')}) AND id NOT IN (#{dons.join(',')})  AND id NOT IN (#{mano_derechas.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'moderator')
     end
-    
+
     dbq = User.db_query("SELECT count(*), avg(char_length(line)) as avg_length, user_id FROM chatlines WHERE created_on > now() - '1 week'::interval and user_id not in (select id from users where is_bot='t') GROUP BY user_id HAVING count(*) > 0  ORDER BY count(*) DESC LIMIT 1")
     if dbq.size > 0
       User.find(dbq[0]['user_id'].to_i).users_emblems.create(:emblem => 'talker', :details => "#{dbq[0]['count']} frases (#{sprintf("%.2f", dbq[0]['avg_length'].to_f)} caracteres por frase)")
     end
-    
+
     points = Karma::karma_points_of_users_at_date_range(Time.now, 1.week.ago)
     if points.size > 0
       maxk = 0
       max_uid = nil
-      points.each do |u,k| 
-        if maxk.nil? || k > maxk 
+      points.each do |u,k|
+        if maxk.nil? || k > maxk
           maxk = k
           max_uid = u
         end
       end
-      
+
       User.find(max_uid.to_i).users_emblems.create(:emblem => 'karma_fury', :details => "<strong>#{maxk}</strong> puntos de karma")
   end
-  
+
   points = Faith::faith_points_of_users_at_date_range(Time.now, 1.week.ago)
   if points.size > 0
     maxk = 0
     max_uid = nil
-    points.each do |u,k| 
-      if maxk.nil? || k > maxk 
+    points.each do |u,k|
+      if maxk.nil? || k > maxk
         maxk = k
         max_uid = u
       end
     end
-    
-    
+
+
     User.find(max_uid.to_i).users_emblems.create(:emblem => 'faith_avalanche', :details => "<strong>#{maxk}</strong> puntos de fe") unless max_uid.nil?
   end
-  
+
   # oldest faction_members
   Faction.find(:all, :conditions => 'members_count > 0').each do |f|
     u = f.oldest_active_member
     next unless u
     u.users_emblems.create(:emblem => 'oldest_faction_member', :details => "miembro desde <strong>#{u.faction_last_changed_on.strftime('%d del %b de %Y')}</strong>")
   end
-  
+
   # living_legend
   mp = User.most_friends(10)
   if mp.size > 0
@@ -155,14 +155,14 @@ module Emblems
       h[:user].users_emblems.create(:emblem => 'living_legend', :details => "<strong>#{maxf}</strong> amigos") if h[:friends] == maxf
     end
   end
-  
+
   # wealthiest living
   maxc = nil
   User.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED} and cash > 0 and is_bot is false AND lastseen_on > now() - '3 months'::interval", :order => 'cash DESC', :limit => 10).each do |u|
     maxc = u.cash if maxc.nil? || u.cash > maxc
     u.users_emblems.create(:emblem => 'wealthiest', :details => "Muchos GMFs") if u.cash == maxc
   end
-  
+
   # top commenters de cada tipo
   r_emblems = {'Divertido' => 'funniest', 'Interesante' => 'most_interesting', 'Profundo' => 'profoundest', 'Informativo' => 'most_informational'}
   CommentsValorationsType.find_positive.each do |cvt|
@@ -175,7 +175,7 @@ module Emblems
       u.users_emblems.create(:emblem => r_emblems[cvt.name], :details => "<strong>#{sum}</strong> puntos")
     end
   end
-  
+
   # bets_master
   mp = Bet.top_earners('7 days')
   if mp.size > 0
@@ -187,7 +187,7 @@ module Emblems
       u.users_emblems.create(:emblem => 'bets_master', :details => "<strong>#{maxc}</strong> GMFs ganados") if sum == maxc
     end
   end
-  
+
   # best blogger
   mp = Blogs.top_bloggers_in_date_range(Time.now, 1.week.ago)
   if mp.size > 0
@@ -199,7 +199,7 @@ module Emblems
       u.users_emblems.create(:emblem => 'best_blogger', :details => "<strong>#{maxc}</strong> visitas") if sum == maxc
     end
   end
-  
+
   # most knowledgeable
   mp = Question.top_sages_in_date_range(Time.now, 1.week.ago)
   if mp.size > 0
@@ -211,8 +211,8 @@ module Emblems
       u.users_emblems.create(:emblem => 'most_knowledgeable', :details => "<strong>#{maxc}</strong> mejores respuestas") if sum == maxc
     end
   end
-  
-  
+
+
   # ACTUALIZAMOS emblemas
   # p User.db_query("select user_id FROM users_emblems WHERE created_on = '#{last_ue.created_on.to_time.strftime('%Y-%m-%d')}'") if last_ue
   User.db_query("UPDATE users SET emblems_mask = '' WHERE id IN (select user_id FROM users_emblems WHERE created_on = '#{last_ue.created_on.to_time.strftime('%Y-%m-%d')}')") if last_ue

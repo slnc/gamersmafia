@@ -7,6 +7,17 @@
 <%=css_includes %>
 <%=javascript_includes %>
 <link rel="alternate" type="application/rss+xml" title="Feed RSS de Gamersmafia" href="/rss/noticias" />
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-130555-1']);
+  _gaq.push(['_setDomainName', '.gamersmafia.com']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
 </head>
 <body class="lydefault <%=' has-submenu ' if controller.submenu %><%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=params[:action].to_s.split('/').last%>">
   <div id="cpageout" class="container gm20085">
@@ -443,20 +454,6 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </div>
 
 <script type="text/javascript">cfgPage(<%=user_is_authed%>, contents, '<%=controller.controller_name%>', '<%=controller.action_name%>', '<%=params[:id]%>'<%= params['_xnvi'] ? ", '#{params['_xnvi']}'" : ', undefined'%><%= params['_xab'].size > 0 ? ", '#{CGI::escape(params['_xab'].to_json)}'" : ', undefined'%><%= controller._xad.size > 0 ? ", '#{CGI::escape(controller._xad.to_json)}'" : ', undefined'%>);</script>
-<% if App.enable_google_analytics? then %>
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-130555-1']);
-  _gaq.push(['_trackPageview']);
-  _gaq.push(['_trackPageLoadTime']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
-<% end -%>
 <%= render :partial => '/shared/dbstats' if App.enable_dbstats? %>
 </body>
 </html>

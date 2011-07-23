@@ -36,14 +36,19 @@ namespace :gm do
     Faith.update_ranking
     update_max_cache_valorations_weights_on_self_comments
     delete_empty_content_tags_terms
+    delete_old_users_newsfeeds
   end
 
-    def delete_empty_content_tags_terms
-	    Term.contents_tags.find(:all, :conditions => 'contents_count = 0').each do |t|
-		    next if t.contents_terms.count > 0 || t.users_contents_tags.count > 0
-		    t.destroy
-	    end and nil
-    end
+  def delete_old_users_newsfeeds
+    UsersNewsfeed.old.delete_all
+  end
+
+  def delete_empty_content_tags_terms
+    Term.contents_tags.find(:all, :conditions => 'contents_count = 0').each do |t|
+      next if t.contents_terms.count > 0 || t.users_contents_tags.count > 0
+      t.destroy
+    end and nil
+  end
   
   def update_max_cache_valorations_weights_on_self_comments
     User.db_query("update global_vars set max_cache_valorations_weights_on_self_comments = (select max(cache_valorations_weights_on_self_comments) from users where cache_valorations_weights_on_self_comments is not null);")

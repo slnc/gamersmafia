@@ -1,15 +1,15 @@
 class Admin::TiendaController < ApplicationController
-  before_filter :require_auth_admins
-  
+  require_admin_permission :capo
+
   def index
-    
+
   end
-  
+
   def producto
     @product = Product.find(params[:id])
     @title = "Editar #{@product.name}"
   end
-  
+
   def update_product
     @product = Product.find(params[:id])
     if @product.update_attributes(params[:product])
