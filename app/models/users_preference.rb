@@ -2,7 +2,6 @@ class UsersPreference < ActiveRecord::Base
   belongs_to :user
   DEFAULTS = {
     :comments_autoscroll => 1,
-    :interested_in => String,
     :looking_for => String,
     :quicklinks => Array,
     :user_forums => Array,

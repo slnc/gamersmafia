@@ -186,36 +186,6 @@ class UserTest < ActiveSupport::TestCase
     assert !u1.notifications_global
   end
   
-  test "ligoteo" do
-    u1 = User.find(1)
-    u2 = User.find(2)
-    assert u1.update_attributes(:sex => User::MALE)
-    assert u2.update_attributes(:sex => User::FEMALE)
-    u1.pref_interested_in = 'women'
-    u1.pref_looking_for = ['quedar', 'amistad']
-    
-    u2.pref_interested_in = 'men women'
-    u2.pref_looking_for = ['quedar', 'amistad']
-    
-    # hombre buscando mujeres interesadas en hombres
-    ulw = User.ligoteo('women', User::MALE, 1)
-    assert ulw.size > 0
-    assert_equal 2, ulw[0].id
-    
-    # mujer buscando mujeres interesadas en mujeres
-    ulw = User.ligoteo('women', User::FEMALE, 2)
-    assert ulw.size == 0
-    
-    # hombres buscando hombres interesados en hombres
-    ulw = User.ligoteo('men', User::MALE, 1)
-    assert ulw.size == 0
-    
-    # mujeres buscando hombres interesados en mujeres
-    ulw = User.ligoteo('men', User::FEMALE, 2) 
-    assert ulw.size > 0
-    assert_equal 1, ulw[0].id
-  end
-  
   test "banning_user_should_remove_all_his_permissions" do
     u1 = User.find(1)
     ur1 = u1.users_roles.create(:role => 'Don', :role_data => '1')

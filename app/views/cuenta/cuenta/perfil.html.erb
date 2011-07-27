@@ -34,23 +34,6 @@
 	</select></td>
   </tr>
   <tr>
-    <td><label for="post_lastname"><%=ActiveSupport::Inflector::sexualize('Interesado', @user.sex)%> en</label></td>
-    <td><select name="interested_in">
-    	<option <%=@user.pref_interested_in == 'men' ? 'selected="selected"' : ''%> value="0">Hombres</option>
-		<option <%=@user.pref_interested_in == 'women' ? 'selected="selected"' : ''%> value="1">Mujeres</option>
-		<option <%=@user.pref_interested_in == 'men women' ? 'selected="selected"' : ''%> value="1">Hombres y Mujeres</option>
-		<option <%=@user.pref_interested_in == '' ? 'selected="selected"' : ''%> value="1">Nada</option>
-	</select></td>
-  </tr>
-  <tr>
-    <td><label for="post_lastname">Buscas</label></td>
-    <td>
-    	<label><input <%='checked="checked"' if @user.pref_looking_for.include?('Amistad')%> type="checkbox" name="user[pref_looking_for] "/> Amistad</label><br />
-		<label><input <%='checked="checked"' if @user.pref_looking_for.include?('Quedar')%> type="checkbox" name="user[pref_looking_for] "/> Quedar</label><br />
-		<label><input <%='checked="checked"' if @user.pref_looking_for.include?('Amor')%> type="checkbox" name="user[pref_looking_for] "/> Amor</label><br />
-	</select></td>
-  </tr>
-  <tr>
     <td><label for="post_lastname">Fecha de nacimiento</label></td>
     <td><%= date_select "post", "birthday", :class=>"text", :start_year => Time.now.year - 130, :end_year => Time.now.year - 3 %></td>
   </tr>

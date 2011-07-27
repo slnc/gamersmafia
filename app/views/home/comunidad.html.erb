@@ -103,24 +103,7 @@ end
 	 <% else%>
 	 <p><strong><a href="/cuenta/alta">Regístrate</a></strong> para recibir recomendaciones de amigos.</p>
 	<% end %><%# user_is_authed -%>
-	<% if nil then %>	
-	<%mftext('Ligoteo', :grid => 2) do %>
-	<% if user_is_authed && !@user.sex.nil? && @user.pref_interested_in != '' then 
-		us = User.ligoteo(@user.pref_interested_in, @user.sex, @user.id)
-		if us.size > 0 then %>
-		<%=comunidad_user_with_photo(u[0]) %>
-		<% else %>
-		<p>No se ha encontrado a nadie compatible con tu orientación sexual.</p>
-		<% end %>
-	<% elsif user_is_authed -%>
-	<p>Debes <a href="/cuenta/cuenta/perfil">configurar tu perfil</a> antes de usar esta funcionalidad.</p>
-	<% else -%>
-	<p>Necesitas <a href="/cuenta/alta">estar registrado</a>.</p>
 	<% end -%>
-	<% end -%>
-	<% end -%>
-	
-	
 	
 	<% if user_is_authed then %>
 	<%	poss = User.possible_friends_of(@user, :limit => 3)

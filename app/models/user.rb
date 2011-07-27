@@ -208,44 +208,6 @@ class User < ActiveRecord::Base
     recs
   end
 
-  def self.find_by_sexual_desire(orientation, limit='all')
-
-  end
-
-  # named_scope :ligoteo, lambda {{ :conditions => ['state IN () AND ']}}
-  # buscar usuarios que esten interesados en
-  def self.ligoteo(interested_in, sex_of_searcher, user_id, limit=50)
-    sex_sql = case interested_in
-      when 'men':
-        "sex = #{User::MALE}"
-      when 'women':
-        "sex = #{User::FEMALE}"
-      when 'men women':
-        "sex IS NOT NULL"
-    end
-
-    sex_of_searcher_sql = case interested_in
-      when User::MALE:
-        "men"
-      when User::FEMALE:
-        "women"
-    end
-
-    # buscamos todos los usuarios interesados en #{interested_in}, que sean del sexo adecuado y que busquen pareja
-    q = "SELECT a.id, a.login, a.avatar_id, a.photo
-                        FROM users A
-                        JOIN users_preferences b ON a.id = b.user_id
-                        JOIN users_preferences c ON a.id = c.user_id
-                       WHERE b.name = 'looking_for'
-                         AND (b.value LIKE '%amistad%' OR b.value LIKE '%pareja%' OR b.value LIKE '%quedar%')
-                         AND c.name = 'interested_in'
-                         AND c.value LIKE '%#{sex_of_searcher_sql}%'
-                         AND a.id <> #{user_id}
-                         AND #{sex_sql} GROUP BY a.id, a.login, a.avatar_id, a.photo
-                       LIMIT #{limit}"
-    User.find_by_sql(q)
-  end
-
   def self.refered_users_in_time_period(t1, t2)
     t2, t1 = t1, t2 if t1 > t2
     User.db_query("SELECT count(*)
