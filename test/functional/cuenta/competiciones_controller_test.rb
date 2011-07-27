@@ -174,7 +174,7 @@ class Cuenta::CompeticionesControllerTest < ActionController::TestCase
   test "create" do
     sym_login 1
     assert_count_increases(Competition) do
-      post :create, :competition => { :type => 'Ladder', :name => 'mi ladder', :pro => false, :game_id => 1, :competitions_participants_type_id => 1, :competitions_types_options => {}, :timetable_options => {}}
+      post :create, :competition => { :type => 'Ladder', :name => 'mi ladder', :game_id => 1, :competitions_participants_type_id => 1, :competitions_types_options => {}, :timetable_options => {}}
     end
     @c = Competition.find(:first, :order => 'id desc')
     assert_equal @c.id, User.find(1).last_competition_id

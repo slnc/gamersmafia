@@ -394,12 +394,11 @@ class Cuenta::CompeticionesController < ApplicationController
   end
   
   def create
-    params[:competition][:pro] = false
     raise ActiveRecord::RecordNotFound unless (%w(Ladder Tournament League).include?(params[:competition][:type]))
     params[:competition][:competitions_types_options] = HashWithIndifferentAccess.new
     params[:competition][:timetable_options] = HashWithIndifferentAccess.new
     cls = ActiveSupport::Inflector::constantize(params[:competition][:type])
-    @competition = cls.new(params[:competition].pass_sym(:name, :pro, :game_id, :competitions_participants_type_id, :competitions_types_options, :timetable_options))
+    @competition = cls.new(params[:competition].pass_sym(:name, :game_id, :competitions_participants_type_id, :competitions_types_options, :timetable_options))
     if @competition.save
       @user.last_competition_id = @competition.id
       @user.save
@@ -416,7 +415,7 @@ class Cuenta::CompeticionesController < ApplicationController
     
     @competition = Competition.find(params[:id])
     if @competition.state < 3 then
-      params[:competition] = params[:competition].block_sym(:pro, :game_id, :type, :competitions_participants_type_id)
+      params[:competition] = params[:competition].block_sym(:game_id, :type, :competitions_participants_type_id)
       if params[:competition][:allowed_competitions_participants] then
         @competition.allowed_competitions_participants.clear
         for p in params[:competition][:allowed_competitions_participants].strip.split("\n")
