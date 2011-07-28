@@ -44,11 +44,11 @@
 
 #homegamer .homebox .subheader {
     background: url(../../images/layout/cabeceras_portada.png) left -52px repeat-x;
-} 
+}
 
 #homebazar .homebox .subheader {
     background: url(../../images/layout/cabeceras_portada.png) left -78px repeat-x;
-} 
+}
 
 #home-news div {
     background: url(../../images/layout/cabeceras_portada.png) left -104px no-repeat;
@@ -274,13 +274,13 @@
     width: 50%;
 }
 
-.homebox.poll .option, 
+.homebox.poll .option,
 .faction-poll .option,
 #small-poll .option {
     margin-left: 5px;
 }
 
-.homebox.poll .percent, 
+.homebox.poll .percent,
 .faction-poll .percent,
 #small-poll .percent {
     width: 98%;
@@ -288,7 +288,7 @@
     margin-bottom: 10px;
 }
 
-.homebox .percent img, 
+.homebox .percent img,
 .faction-poll .percent img,
 #small-poll .percent img {
     height: 7px;
@@ -463,6 +463,18 @@
 .homebox .content-hid a, .homebox .content-hid2 a, .messages .new a {
     font-weight: bold;
     text-decoration: none;
+}
+
+.madness .homebox .content-hid a, .madness .homebox .content-hid2 a, .madness .messages .new a {
+    overflow: hidden;
+    display: block;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -icab-text-overflow: ellipsis;
+    -khtml-text-overflow: ellipsis;
+    -moz-text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
 }
 
 .homebox .content-hid a:visited, .homebox .content-hid2 a:visited {

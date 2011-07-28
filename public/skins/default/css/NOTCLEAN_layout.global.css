@@ -89,7 +89,7 @@ ul.slog-entries-browser-filter li { list-style: none; float: left; margin-right:
 .mfcontent .mtitle span { margin-left: 0px; padding-top: 0; display: block; }
 .mfcontent .mtitle span { padding-left: 61px; }
 
-.mfcontent .mtitle .iset { margin-top: -14px; margin-left: 0; }  
+.mfcontent .mtitle .iset { margin-top: -14px; margin-left: 0; }
 
 #ccontent .module.sub-modules .mcontent { padding-top: 0; }
 #ccontent .module.sub-modules .mcontent .mcontent { padding-top: 0.54em; }
@@ -100,7 +100,7 @@ ul.slog-entries-browser-filter li { list-style: none; float: left; margin-right:
 #ccontent .module.sub-modules .mcontent .mtitle span { margin-left: 0; padding: 0 0 0 5px; }
 #ccontent table { padding: 0; margin: 0; border-collapse: collapse; }
 #ccontent td { padding-left: 0; padding-right: 0; margin-left: 0; margin-right: 0; line-height: 18px; padding-top: 0; padding-bottom: 0; }
-#ccontent table img { border-collapse: separate; } 
+#ccontent table img { border-collapse: separate; }
 
 .mgimage-right { margin-right: 0px; }
 
@@ -131,7 +131,7 @@ ul.slog-entries-browser-filter li { list-style: none; float: left; margin-right:
 #mgfriends-online-table { width: 100%; }
 #mgfriends-online-table table { width: 100%; }
 #mgfriends-online-table td { margin: 0; padding: 0; text-align: left; line-height: 16px;}
-	
+
 #tracker-bg-text { height: 16px; width: 100%; background: url(../images/txts_sidebar.png) right -30px no-repeat; }
 #lastcommented-bg-text { height: 16px; width: 100%; background: url(../images/txts_sidebar.png) right top no-repeat; }
 #recommended-bg-text { height: 16px; width: 100%; background: url(../images/txts_sidebar.png) right -14px no-repeat; }
@@ -145,5 +145,5 @@ ul.slog-entries-browser-filter li { list-style: none; float: left; margin-right:
 
 .mfcontents-basic .mcontent ul , .mfcontents-ul .mcontent ul { margin-left: 0; }
 #ccontent td.match-won { padding-right: 4px; }
-#ccontent .module .mtitle span img.factionfavicon { margin: 6px 4px 0 4px; float: left; } 
-#cmain { width: 550px; }
+#ccontent .module .mtitle span img.factionfavicon { margin: 6px 4px 0 4px; float: left; }
+#cmain {  }

@@ -103,7 +103,6 @@ end
 	 <% else%>
 	 <p><strong><a href="/cuenta/alta">Regístrate</a></strong> para recibir recomendaciones de amigos.</p>
 	<% end %><%# user_is_authed -%>
-	<% end -%>
 	
 	<% if user_is_authed then %>
 	<%	poss = User.possible_friends_of(@user, :limit => 3)

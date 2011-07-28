@@ -21,7 +21,7 @@ for news in @last_news
 	break if i > max
     shown_news << news.unique_content.id
 %>
-<li class="content<%=news.unique_content.id%> new <%=oddclass%>"><%= link_to "#{content_category(news.main_category)}#{truncate(news.title, 30)}", gmurl(news) %></li>
+<li class="content<%=news.unique_content.id%> new <%=oddclass%>"><%= link_to "#{content_category(news.main_category)}#{news.title}", gmurl(news) %></li>
 <%  
 	i += 1
 end 
@@ -74,7 +74,7 @@ for topic in @last_topics
   root = topic.main_category.root
   active_topics = root.count(:content_type => 'Topic', :conditions => 'contents.updated_on > now() - \'1 week\'::interval') - 1
 %>
-  <li class="content<%=topic.unique_content.id%> new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "#{content_category(topic.main_category)}#{truncate(topic.title.gsub('<', ''), 28)}", gmurl(topic)%></li>
+  <li class="content<%=topic.unique_content.id%> new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "#{content_category(topic.main_category)}#{topic.title.gsub('<', '')}", gmurl(topic)%></li>
 <% end %>
 
         </ul>
