@@ -10,6 +10,40 @@
     background: #960000 url(/skins/default/images/gm20085navmenu_bottom.png) left 19px repeat-x;
 }
 
+.madness #thesaw {
+    margin-left: 275px;
+	margin-top: -65px;
+	width: 0; overflow: hidden;
+}
+
+.madness #sawtop {
+	margin-left: 0;
+	position: relative;
+	margin-top: 0px;
+}
+
+.madness #sawbottom {
+	margin-left: 0;
+	position: relative;
+	margin-top: 0px;
+	top: 0;
+}
+
+.madness #show-menu {
+	float: left;
+	position: absolute;
+	margin-left: 200px;
+	margin-top: -20px;
+	cursor: pointer;
+	color: #fff;
+	text-align: center;
+}
+
+.madness #show-menu span {
+    background: url(/skins/default/images/mgglobalmenu/leftarrow.png) right center no-repeat; padding-right: 20px; }
+.madness #show-menu.shown span {
+    background: url(/skins/default/images/mgglobalmenu/rightarrow.png) right center no-repeat;
+}
 
 #sawtop.hq {
     width: 460px;
@@ -411,5 +445,5 @@ li#mggnav-gm {
     left: 327px;
     width: 110px;
     height: 75px;
-    
+
 }

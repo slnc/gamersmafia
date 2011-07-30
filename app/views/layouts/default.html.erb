@@ -37,8 +37,16 @@
 				   #logo img { background: url(/<%=controller.portal.small_header%>) 0 0 no-repeat; }
 				   </style>
 			   <% end -%>
-		   <div id="thesaw">
-		   	<% if user_is_authed then
+
+              <div id="faction-building" style="position: absolute; margin-left: 900px; top: -12px; height: 80px; overflow: hidden; z-index: 5;">
+                <% if controller.portal.class.name == 'FactionsPortal' then %>
+                    <%=draw_organization_building(controller.portal.factions[0], 0)%>
+                <% elsif controller.portal.class.name == 'BazarDistrictPortal' then %>
+                    <%=draw_organization_building(controller.portal.bazar_district, 0)%>
+                <% end -%>
+              </div>
+
+			  <% if user_is_authed then
 if @user.is_superadmin?
  sawmode = 'full'
 elsif @user.is_hq?
@@ -48,9 +56,16 @@ elsif @user.has_admin_permission?(:advertiser)
 else
                  sawmode = ''
 end
-			   else 
+               else
                  sawmode = ''
 end %>
+
+			   <% if @madness then %>
+			     <div id="show-menu" style="width: 70px;">
+                    <div id="div1"><div id="div2"><span>menu</span></div></div>
+                 </div>
+			   <% end %>
+		   <div id="thesaw">
 		   	  <div id="sawtop" class="<%=sawmode%>">
 		   	  	<ul>
 		   	  		<li id="sawli-comunidad"><div class="f"><a title="Ir a Comunidad" href="http://<%=App.domain%>/home/comunidad"><span>Comunidad</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('comunidad');"></div></li>
@@ -66,14 +81,6 @@ end %>
 					<% end -%>
 		   	  	</ul>
 		   	  </div>
-		   	  
-              <div id="faction-building" style="position: absolute; margin-left: 900px; top: -12px; height: 80px; overflow: hidden; z-index: 5;">
-		   	  	<% if controller.portal.class.name == 'FactionsPortal' then %>
-		   	  		<%=draw_organization_building(controller.portal.factions[0], 0)%>
-				<% elsif controller.portal.class.name == 'BazarDistrictPortal' then %>
-		   	  		<%=draw_organization_building(controller.portal.bazar_district, 0)%>
-		   	  	<% end -%>
-		   	  </div>
 
 			  <div id="sawbottom">
 			  	<ul id="sawbody-comunidad" class="hidden">
@@ -83,7 +90,7 @@ end %>
 					<li><a href="http://<%=App.domain%>/reclutamiento">Reclutamiento</a></li>
 					<% if nil then %><li><a href="http://<%=App.domain%>/parties">Parties</a></li><% end -%>
 					<% if user_is_authed then %>
-					<% cache("/_users/#{@user.id % 1000}/#{@user.id}/layouts/clans") do %> 
+					<% cache("/_users/#{@user.id % 1000}/#{@user.id}/layouts/clans") do %>
 						<% u_clans = @user.clans
 if u_clans.size == 0 then %>
 <li id="sawbody-comunidad-nuevoclan2"><a href="/cuenta/clanes/new">Nuevo clan</a></li>
@@ -124,12 +131,12 @@ if u_clans.size == 0 then %>
 							<% end %><%# cache %>
 							</ul>
 							</div>
-							
+
 						</li>
-						
+
 					<% end %><%# if user_is_authed  %>
 				</ul>
-				
+
 				<ul id="sawbody-facciones" class="hidden">
 			  		<li id="sawbody-facciones-faccion">
 			  			<div class="sawbottom-arrow hidden"></div>
@@ -147,7 +154,7 @@ if u_clans.size == 0 then %>
 					<li id="sawbody-facciones-staff"><a href="/faccion/staff">Staff</a></li>
 					<% end -%>
 			  	</ul>
-				
+
 				<ul id="sawbody-bazar" class="hidden">
 					<li style="padding-right: 10px;"><div id="mggnav-bazar-themes"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-bazar-themes-list');" href=""><%=controller.portal.kind_of?(BazarDistrictPortal) ? controller.portal.name : 'Distritos'%></a></div></div></div></div>
 						<div id="mggnav-bazar-themes-list" class="saw-dropdownlist hidden">
@@ -160,7 +167,7 @@ if u_clans.size == 0 then %>
 							</ul>
 							</div>
 					</li>
-					
+
 					<% if controller.portal.kind_of?(BazarDistrictPortal) then %>
 						<li class="first"><a href="/noticias">Noticias</a></li>
 						<li><a href="/articulos">Artículos</a></li>
@@ -177,12 +184,12 @@ if u_clans.size == 0 then %>
 					<li><a href="http://<%=App.domain_bazar%>/cuenta/tienda">Tienda GM</a></li>
 					<li><a href="http://<%=App.domain_bazar%>/site/chat">Webchat</a></li>
 					<% end -%>
-					
+
 					<% if controller.portal.kind_of?(BazarDistrictPortal) then %>
 					<li id="sawbody-distrito-staff"><a href="/distrito">Staff</a></li>
 					<% end -%>
 			  	</ul>
-				
+
 				<ul id="sawbody-arena" class="hidden">
 					<li><a href="http://<%=App.domain_arena%>/apuestas">Apuestas</a></li>
 					<li><a href="http://<%=App.domain_arena%>/demos">Demos</a></li>
@@ -201,7 +208,7 @@ if u_clans.size == 0 then %>
 					</li>
 					<% end -%>
 			  	</ul>
-				
+
 				<ul id="sawbody-foros" class="hidden">
 			  		<li><a href="http://<%=App.domain%>/foros">Índice</a></li>
 					<% if nil then %>
@@ -219,20 +226,20 @@ if u_clans.size == 0 then %>
 							</ul>
 							</div>
 					</li>
-					
+
 					<li><a id="sawbody-hq-experimentos" href="/site/stats_hipotesis">Experimentos</a></li>
 					<li><a id="sawbody-hq-jira" target="_blank" href="http://hq.gamersmafia.com/">JIRA</a></li>
 					<li><a id="sawbody-hq-wiki" target="_blank" href="http://hq.gamersmafia.com/confluence">Wiki</a></li>
 			  	</ul>
 				<% end %><%# if user_is_authed %>
 				<ul id="sawbody-anunciante" class="hidden">
-			  		
+
 			  	</ul>
-			</div>  
+			</div>
 		   </div>
-		   
+
 		    <div id="mggnav-factions-list" class="saw-dropdownlist hidden" style="z-index: 2;">
-		    	
+
 				<%cache("/common/gnav/factions_list") do %>
 		   	<table id="mggnav-games-list" style="margin-top: 5px; z-index: 2;">
 		   		<tr colspan="3">
@@ -246,14 +253,14 @@ if u_clans.size == 0 then %>
 					<td><% if gg[2][c] then %><a href="http://<%=gg[2][c].code%>.<%=App.domain%>"><img src="/images/blank.gif" class="factionfavicon gs-<%=gg[2][c].code%>" /><%=truncate(gg[2][c].name, 20, '..')%></a><% end -%></td>
 					</tr>
 				<% end -%>
-				
+
 				<tr colspan="3">
 					<td></td>
 					<td></td>
 		   			<td style="text-align: right;"><a href="http://<%=App.domain%>/facciones">Todos los juegos &raquo;</a></td>
 		   		</tr>
 		   	</table>
-			
+
 			<table id="mggnav-platforms-list" style="margin-top: 5px; z-index: 2;">
 		   		<tr>
 		   			<td style="color: #dedede; text-transform: uppercase;"><strong>Plataformas</strong></td>
@@ -268,23 +275,23 @@ if u_clans.size == 0 then %>
 				</tr>
 		   	</table>
 			<% end %><%# cache -%>
-			
+
 			<div style="width: 650px; float: left; padding-bottom: 10px; padding-top: 4px; margin: 10px 0 0 10px; border-top: 1px solid #880000;"><% if user_is_authed then %><a href="/cuenta/tienda/9" style="font-size: 11px; font-weight: bold;">Crear nueva facción</a><% end -%></div>
-		   	
+
 		   </div>
-	
+
 	  <script type="text/javascript">GM.menu.sawbottom_real('<%=active_sawmode != '' ? active_sawmode : 'gm' %>', 1);</script>
-	
+	<% # end if madness -%>
       </div>
     </div>
 
 	<div id="mgintellibar" class="module"><div class="mcontent">
 		<% if user_is_authed then %>
 		<% cache("/_users/#{@user.id % 1000}/#{@user.id}/layouts/quicklinks2") do %>
-		<% qlinks = Personalization.quicklinks_for_user(@user) 
+		<% qlinks = Personalization.quicklinks_for_user(@user)
 
 		if qlinks.size > 0 then
-	width = 8 + 25*(qlinks.size) 
+	width = 8 + 25*(qlinks.size)
 %>
 	<div id="quickportals" style="width: <%=width%>px;">
 		<div id="div1">
@@ -300,33 +307,34 @@ if u_clans.size == 0 then %>
 	<% end -%>
 	<% end %><%# cache %>
 	<% end %><%# if user_is_authed %>
-		
-		
+
+
+
 		<div id="mgintellibar-switcher" class="hidden"><a href="">NAV</a> | <a href="">GMTV</a></div>
-		 
+
 		<div id="mgintellibar-links"><ul>
 			<% if controller.can_set_as_default_home then %>
 				<li><a href="" title="Ir a esta página directamente al entrar en gamersmafia.com" onclick="return GM.personalization.set_default_portal(<%=user_is_authed ? 'true' : 'false'%>, '<%=controller.action_name%>');">Hacer <%=controller.action_name == 'index' ? 'portada' : controller.action_name%> mi página por defecto</a></li>
 			<% end -%>
-			
+
 			<% if can_add_as_quicklink? then %>
 				<li id="add-to-quicklinks"><a href="" title="Añadir a accesos directos" onclick="return GM.personalization.add_quicklink('<%=controller.portal.code%>', 'http://<%=controller.portal.code%>.<%=App.domain%>');">Añadir a quicklinks</a></li>
 			<% end -%>
-			
+
 			<% if can_del_quicklink? then %>
 				<li id="del-from-quicklinks"><a href="" title="Quitar de accesos directos" onclick="return GM.personalization.del_quicklink('<%=controller.portal.code%>');">Quitar de quicklinks</a></li>
 			<% end -%>
-			
+
 			<% if user_is_authed && controller.controller_name == 'foros' && @forum then %>
 				<li id="add-to-user-forums" class="<%='hidden' unless can_add_as_user_forum?%>"><a href="" title="Añadir a mis foros" onclick="return GM.personalization.add_user_forum('<%=@forum.id%>', '<%=gmurl(@forum, :taxonomy => 'TopicsCategory')%>');">Añadir a mis foros</a></li>
 			<% end -%>
-			
+
 			<% if user_is_authed && controller.controller_name == 'foros' && @forum then %>
 				<li id="del-from-user-forums" class="<%='hidden' unless can_del_user_forum?%>"><a href="" title="Quitar de mis foros" onclick="return GM.personalization.del_user_forum('<%=@forum.id%>');">Quitar de mis foros</a></li>
 			<% end -%>
-			
+
 			<% if controller.portal.class.name == 'FactionsPortal' then %>
-				
+
 			<% end -%>
 			<% if nil then %>
 			<% if user_is_authed && @user.is_faction_leader? then %>
@@ -336,13 +344,13 @@ if u_clans.size == 0 then %>
 			</ul>
 		</div>
 		</div></div>
-	
+
 	<% if controller.controller_name != 'home' then %>
     <div id="mgbreadcrumb" class="module"><div class="mcontent"><%=navpathgm20085%></div></div>
 	<% else %>
 	<div style="margin-top: 10px;"></div>
 	<% end -%>
-	
+
 	<% if controller.submenu && !controller.rescuiing then %>
 	<div id="mgsubmenu" class="module"><div clas="mcontent">
 	<ul>
@@ -375,7 +383,7 @@ if u_clans.size == 0 then %>
 	<div style="padding: 0 0 7px 5px; font-weight: bold; font-size: 11px;"><a href="http://<%=App.domain%>/">Portada GM</a></div>
 	<% if user_is_authed && @user.faction_id then %><div style="padding: 0 0 10px 5px; font-weight: bold; font-size: 11px;"><a href="http://<%=@user.faction.code%>.<%=App.domain%>/">Portada <%=@user.faction.code.upcase%></a></div><% end -%>
 	<% end -%>
-	
+
 	<%= render :partial => '/layouts/userbox2' %>
 <%
 if user_is_authed && @user.is_faction_leader? && @user.faction_id then %>
@@ -447,7 +455,7 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </div></div>
 <%= render(:partial => '/layouts/webs_aliadas') if @portal.kind_of?(FactionsPortal) && controller.controller_name == 'home' %>
 </div>
-</div>  
+</div>
 </div>
 </div>
 <%=render :partial => '/layouts/footer' %>

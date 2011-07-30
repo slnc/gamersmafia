@@ -161,6 +161,7 @@ Request information:
 
   # Used to be able to leave out the action
   def gm_process
+    @madness = true
     @_track_done = false
     seconds = Benchmark.realtime do
       catch(:abort) do
