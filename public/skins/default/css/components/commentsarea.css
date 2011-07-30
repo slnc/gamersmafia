@@ -92,3 +92,27 @@
 
 .comment-textarea { width: 520px; margin-left: auto; margin-right: auto; }
 
+.inactive .user-info .user-info-bar,
+.inactive .user-info .emblemas,
+.inactive .comments-sig { opacity: 0.4; }
+
+.inactive .user-info .avatar { opacity: 0.8 }
+
+.inactive .comment-header { opacity: 0.8 }
+
+.inactive .comment-header .comment-info,
+.inactive .moderate-comments-opener-detail { opacity: 0.2; }
+
+.inactive .user-info .user-info-bar,
+.inactive .user-info .emblemas,
+.inactive .comment-header,
+.inactive .comment-header .comment-info,
+.inactive .moderate-comments-opener-detail,
+.inactive .user-info .avatar,
+.inactive .comments-sig {
+-webkit-transition: all 250ms ease-in-out;
+    -moz-transition: all 250ms ease-in-out;
+    -o-transition: all 250ms ease-in-out;
+    -ms-transition: all 250ms ease-in-out;
+    transition: all 250ms ease-in-out;
+	}

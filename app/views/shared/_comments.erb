@@ -33,7 +33,6 @@ cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{per_page}_#{params[:page]}"
 <%    udata = Comments.get_comments_ratings_for_content(object)
     cvt = udata[0]
 %>
-  <div style="padding: 15px 5px;"><%=flash_obj(:url => "/flash/comments_count.swf?commentscount=#{Comment.count(:conditions => ['deleted = \'f\' AND content_id = ?', object.unique_content.id])}&pcent=#{(udata[1]*100).to_i}&dir=#{udata[0].direction}", :width => '74px', :height => '34px')%></div>
   <div class="comments-area">
 <%= render :partial => 'shared/pager2', :locals => { :collection => @comments, :pos => 'top', :pager_params => { :anchor => 'comments' } } %>
 <%

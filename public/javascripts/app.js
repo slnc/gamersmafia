@@ -72,6 +72,9 @@ function cfgPage(user_is_authed, contents, controller, action, model_id, newsess
     }
 	); */
 
+	$j('div.comment').hover(function() {
+		GM.utils.highlightComment($j(this).attr('id'));
+	});
 }
 
 function form_sym_action(form_id, initial_str, new_str){
@@ -434,7 +437,12 @@ GM.utils = function(){
                     offset: -60
                 });
             return false;
-        }
+        },
+		highlightComment: function(id) {
+			$j('div.comment').addClass('inactive');
+			$j('#' + id).removeClass('inactive');
+			//alert("id: " + id);
+		}
     }
 }();
 
