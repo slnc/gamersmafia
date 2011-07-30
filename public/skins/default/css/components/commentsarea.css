@@ -87,3 +87,8 @@
     font-family: verdana;
     font-size: 10px;
 }
+
+#comment_comment { height: 50px; }
+
+.comment-textarea { width: 520px; margin-left: auto; margin-right: auto; }
+

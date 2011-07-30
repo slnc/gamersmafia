@@ -10,11 +10,11 @@ module ApplicationHelper
     :Interesante => '96',
     :Spam => '108',
   }
-  
+
   WMENU_POS = {
     'arena' => %w(
                    Admin::CompeticionesController
-                   ArenaController  
+                   ArenaController
               ),
     'bazar' => %w(Cuenta::TiendaController
                   BazarController),
@@ -36,8 +36,8 @@ module ApplicationHelper
                 ComunidadController
     )
   }
-  
-  # Class-level array for fast lookups 
+
+  # Class-level array for fast lookups
   WMENU_POS_BY_CONTROLLER = begin
     out = {}
     WMENU_POS.each do |k,v|
@@ -47,7 +47,7 @@ module ApplicationHelper
     end
     out
   end
-  
+
   def active_sawmode
     if controller.active_sawmode
       @active_sawmode
@@ -55,8 +55,8 @@ module ApplicationHelper
       WMENU_POS[controller.controller_name] || ''
     end
   end
-  
-  
+
+
   def can_add_as_quicklink?
     if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(controller.portal.class.name)
       qlinks = Personalization.quicklinks_for_user(@user)
@@ -69,7 +69,7 @@ module ApplicationHelper
       false
     end
   end
-  
+
   def can_del_quicklink?
     if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(controller.portal.class.name)
       qlinks = Personalization.quicklinks_for_user(@user)
@@ -82,7 +82,7 @@ module ApplicationHelper
       false
     end
   end
-  
+
   def can_add_as_user_forum?
     if user_is_authed && controller_name == 'foros' && @forum
       ufs = Personalization.get_user_forums(@user)
@@ -95,7 +95,7 @@ module ApplicationHelper
       false
     end
   end
-  
+
   def can_del_user_forum?
     if user_is_authed && controller_name == 'foros' && @forum
       ufs = Personalization.get_user_forums(@user)
@@ -108,30 +108,30 @@ module ApplicationHelper
       false
     end
   end
-  
+
   def url_for_content(object, text)
     "<a class=\"content\" href=\"#{Routing.url_for_content_onlyurl(object)}\">#{text}</a>"
   end
-  
+
   def css_image_selector(field_name, field_value, skin)
     cls_string = field_value == 'none' ? 'selected="selected"' : ''
-    
+
     out = <<-END
   <select name="#{field_name}">
 <option value="">(por defecto)</option>
 <option #{cls_string} value="none">(ninguna)</option>
     END
-    
-    skin.skins_files.each do |sfn|  
+
+    skin.skins_files.each do |sfn|
       val = "url(/#{sfn.file})"
       out << <<-END
         <option #{'selected="selected"' if val == field_value } value="#{val}">#{File.basename(sfn.file)}</option>
       END
-    end 
-    
+    end
+
     out << '</select>'
   end
-  
+
   def css_background_repeat(field_name, field_value, skin)
     out = <<-END
   <select name="#{field_name}">
@@ -141,10 +141,10 @@ module ApplicationHelper
   <option #{'selected="selected"' if field_value == 'repeat-x' } value="repeat-x">repetir en horizontal</option>
   <option #{'selected="selected"' if field_value == 'repeat' } value="repeat">repetir en ambas direcciones</option>
     END
-    
+
     out << '</select>'
   end
-  
+
   def css_background_position(field_name, field_value, skin)
     out = <<-END
   <select name="#{field_name}">
@@ -158,17 +158,17 @@ module ApplicationHelper
   <option #{'selected="selected"' if field_value == 'bottom left' } value="bottom left">bottom left</option>
   <option #{'selected="selected"' if field_value == 'bottom center' } value="bottom center">bottom center</option>
   <option #{'selected="selected"' if field_value == 'bottom right' } value="bottom right">bottom right</option>
-  
+
     END
-    
+
     out << '</select>'
   end
-  
+
   def color_selector(field_name, field_value)
     field_id = "colorSelectorField#{field_name.gsub('[', '').gsub(']', '')}"
     div_sel_id = "colorSelector#{field_name.gsub('[', '').gsub(']', '')}"
   <<-END
-  <div id="#{div_sel_id}" style="width: 20px; height: 20px; float: left; border: 1px solid black; margin-right: 5px;"><div style="width: 100%; height: 100%;"></div></div> <input name="#{field_name}" id="#{field_id}" value="#{field_value}" /> 
+  <div id="#{div_sel_id}" style="width: 20px; height: 20px; float: left; border: 1px solid black; margin-right: 5px;"><div style="width: 100%; height: 100%;"></div></div> <input name="#{field_name}" id="#{field_id}" value="#{field_value}" />
 
 <script type="text/javascript">
 $j(document).ready(function () {
@@ -194,11 +194,11 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
 </script>
     END
   end
-  
+
   def bbeditor(opts={})
     raise "id not given for bbeditor" unless opts[:id]
     raise "name not given for bbeditor" unless opts[:name]
-    
+
     <<-EOS
     <div title="Negrita" class="btn bold"></div>
     <div title="Cursiva" class="btn italic"></div>
@@ -208,8 +208,9 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
     <div title="Imagen" class="btn image"></div>
     <div title="Deshacer" class="btn back"></div>
     <div title="Rehacer" class="btn forward"></div>
-    <div><textarea id="#{opts[:id]}" class="bbeditor" name="#{opts[:name]}" rows="#{opts[:rows]}" style="#{opts[:style]}">#{opts[:value]}</textarea></div>
-    
+    <div class="clearb">
+      <textarea id="#{opts[:id]}" class="bbeditor" name="#{opts[:name]}" rows="#{opts[:rows]}" style="#{opts[:style]}">#{opts[:value]}</textarea></div>
+
     <script type="text/javascript">
     $j('textarea[name=#{opts[:name]}]').bbcodeeditor(
         {
@@ -219,15 +220,16 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
         });
         if (is_ie)
     $j('textarea[name=#{opts[:name]}]').css('width', '100%');
+    $j('##{opts[:id]}').elastic();
     </script>
     #{controller.send(:render_to_string, :partial => '/shared/smileys', :locals => { :dom_id => opts[:id] })}
     EOS
   end
-  
+
   def draw_emblem(emblema)
-    "<img class=\"sprite1 emblema emblema-#{emblema}\" src=\"/images/blank.gif\" />"  
+    "<img class=\"sprite1 emblema emblema-#{emblema}\" src=\"/images/blank.gif\" />"
   end
-  
+
   def sparkline(opts)
     # req: data size
     opts = {:colors => ['0077cc'], :fillcolors => ['E6F2FA']}.merge(opts)
@@ -238,28 +240,28 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
     out << "<div id=\"line#{spid}\"></div>
 <script type=\"text/javascript\">
 $j(document).ready(function() {
-var api = new jGCharts.Api(); 
-jQuery('<img>') 
-.attr('src', api.make({ 
+var api = new jGCharts.Api();
+jQuery('<img>')
+.attr('src', api.make({
 data: [#{opts[:data].join(',')}],
 fillarea: true,
 fillbottom: true,
 size: '#{opts[:size]}',"
-    
+
     out << " max: #{opts[:max]}," if opts[:max]
     out << "linestyle: '1,0,0',
 colors: ['#{opts[:colors][0]}'],
 fillcolors: ['#{opts[:fillcolors][0]}'],
-min: 0, 
-type: 'ls'})) 
+min: 0,
+type: 'ls'}))
 .appendTo(\"#line#{spid}\");
 });
 </script>
 "
-    
+
     out
   end
-  
+
   def pie(opts)
     # req: data size
     out = ''
@@ -269,9 +271,9 @@ type: 'ls'}))
     out << "<div id=\"line#{spid}\"></div>
 <script type=\"text/javascript\">
 $j(document).ready(function() {
-var api = new jGCharts.Api(); 
-jQuery('<img>') 
-.attr('src', api.make({ 
+var api = new jGCharts.Api();
+jQuery('<img>')
+.attr('src', api.make({
 data: [#{opts[:data].join(',')}],
 size: '#{opts[:size]}',"
     if opts[:axis_labels]
@@ -279,15 +281,15 @@ size: '#{opts[:size]}',"
       out << " axis_labels: [#{opts[:axis_labels].join(',')}],"
     end
     out << "
-type: 'p'})) 
+type: 'p'}))
 .appendTo(\"#line#{spid}\");
 });
 </script>
 "
-    
+
     out
   end
-  
+
   def horizontal_stacked_bar(opts)
     # req: data size
     out = ''
@@ -297,9 +299,9 @@ type: 'p'}))
     out << "<div id=\"line#{spid}\"></div>
 <script type=\"text/javascript\">
 $j(document).ready(function() {
-var api = new jGCharts.Api(); 
-jQuery('<img>') 
-.attr('src', api.make({ 
+var api = new jGCharts.Api();
+jQuery('<img>')
+.attr('src', api.make({
 data: [#{opts[:data].join(',')}],
 size: '#{opts[:size]}',"
     if opts[:axis_labels]
@@ -307,59 +309,59 @@ size: '#{opts[:size]}',"
       out << " axis_labels: [#{opts[:axis_labels].join(',')}],"
     end
     out << "
-type: 'bhs'})) 
+type: 'bhs'}))
 .appendTo(\"#line#{spid}\");
 });
 </script>
 "
-    
+
     out
   end
-  
+
   def header(title, opts={})
     # {:mode => opts
   end
-  
+
   def header_content(title, icon)
-    
+
   end
-  
+
   def header_support(title, icon='')
-    
+
   end
-  
+
   def content_2colx(&block)
     concat("<div class=\"container c2colx\">")
     yield
     concat("</div>")
   end
-  
+
   def content_3col(&block)
     concat("<div class=\"container c3col\">")
     yield
     concat("</div>")
   end
-  
+
   def content_3colx(&block)
     concat("<div class=\"container c3colx\">")
     yield
     concat("</div>")
   end
-  
+
   def content_3coly(&block)
     concat("<div class=\"container c3coly\">")
     yield
     concat("</div>")
   end
-  
+
   def gmurl(object, opts={})
     Routing.gmurl(object, opts)
   end
-  
+
   def member_state(state)
     "<img class=\"sprite1 member-state #{state}\" src=\"/images/blank.gif\" />"
   end
-  
+
   def user_link(user, opts={})
     opts = {:avatar => false}.merge(opts)
     out = ''
@@ -371,28 +373,28 @@ type: 'bhs'}))
     end
     out
   end
-  
-  def comments_icon(name, desp=false)   
+
+  def comments_icon(name, desp=false)
     vdesp = desp ? '547' : '559'
     '<img alt="' << "#{name}" << '" title="' << "#{name}" << '" class="sprite1 comments-icon" src="/images/blank.gif" style="background-position: -' << COMMENTS_DESPL[name] << 'px -' << vdesp << 'px;" />'
   end
-  
+
   def notags(txt)
     txt.to_s.gsub('<', '&lt;').gsub('>', '&gt;')
   end
-  
+
   def faction_favicon(thing)
     Cms.faction_favicon(thing)
   end
-  
+
   def content_category(thing)
     "<div class=\"sprite1 content-category\">#{faction_favicon(thing)}</div>"
   end
-  
+
   def render_tree_list(objs, options = {})
-    return '' if objs.nil? or objs.size == 0    
+    return '' if objs.nil? or objs.size == 0
     out = options[:ul_class] ? "<ul class=\"#{options[:ul_class]}\"" : '<ul'
-    options[:level] ||= 0 
+    options[:level] ||= 0
     out<< " style=\"margin-left: #{15*options[:level]}px\">"
     options[:level] += 1
     objs = [objs] unless objs.respond_to?(:to_a)
@@ -402,41 +404,41 @@ type: 'bhs'}))
     end
     out << '</ul>'
   end
-  
+
   # TODO cachear
   def render_tree_select(pages, name, select_name, value = nil, noparent_id=false)
     ret = ''
-    
+
     found = false
-    for page in pages 
+    for page in pages
       if page.parent_id == nil || noparent_id
         if page.id == value then
           ret += "<option selected=\"selected\" value=\"#{page.id}\">"
           found = true
         else
-          ret += "<option value=\"#{page.id}\">" 
+          ret += "<option value=\"#{page.id}\">"
         end
-        ret += page[name] if page[name] 
-        ret += recurse_tree(page, 0, name, value) if page.children and page.children.size>0 
+        ret += page[name] if page[name]
+        ret += recurse_tree(page, 0, name, value) if page.children and page.children.size>0
       end
-    end 
+    end
     ret += "</select>"
-    
+
     if (!found) && noparent_id
       ret = "<select id=\"#{select_name}\" name=\"#{select_name}\"><option value=\"#{value unless value.nil?}\"></option>#{ret}"
     else
       ret = "<select id=\"#{select_name}\" name=\"#{select_name}\"><option value=\"\"></option>#{ret}"
     end
-    
+
     ret
   end
-  
+
   def recurse_tree(page, depth, name, value)
     depth = depth + 1
     level = "- " * depth
     ret = ''
     if page.children.size > 0
-      page.children.each { |subpage| 
+      page.children.each { |subpage|
         if subpage.children.size > 0
           if subpage.id == value then
             ret += '<option selected="selected" value="'+subpage.id.to_s+'">'
@@ -459,29 +461,29 @@ type: 'bhs'}))
       ret += ''
     end
   end
-  
-  
+
+
   def hide_email(str)
     if Cms::EMAIL_REGEXP =~ str
       parts = str.split('@')
       "<script type=\"text/javascript\">document.write('#{parts[0]}')</script>&#64;<script type=\"text/javascript\">document.write('#{parts[1]}')</script>"
     else
-      str 
+      str
     end
   end
-  
+
   def smilelize(text)
     return text if text.nil?
     text = "#{text}"
-    
+
     text.gsub!('<br />', "SALTOLINEA333\n") if text.index('<p>').to_s == '' # TODO deprecated
-    
+
     text.gsub!(/\r\n/, "\n")
     text.gsub!(/\r/, "\n")
     text = Cms.add_p(text) if text.index('<p>').to_s == '' # si tiene <p> suponemos que está bien formateado ya
     text = " #{text}"
     text.gsub!(/([\s>]{1}|^)[oO]{1}:(\))+/, '\1<img src="/images/smileys/angel.gif" />')      # o:)
-    
+
     text.gsub!(/([\s>]{1}|^)(:['_*´]+(\()+)/, '\1<img src="/images/smileys/cry.gif" />')      # // :'( | :*( | :_( | :´(
     text.gsub!(/([\s>]{1}|^):([a-z0-9]+):/, '\1<img src="/images/smileys/\2.gif" />')
     text.gsub!(/([\s>]{1}|^)(:(o)+)/i, '\1<img src="/images/smileys/eek.gif" />')             #// :o | :O
@@ -490,9 +492,9 @@ type: 'bhs'}))
     text.gsub!(/([\s>]{1}|^)(z_z)/i, '\1<img src="/images/smileys/zz.gif" />')
     text.gsub!(/([\s>]{1}|^)(o(_)+(o)+)/i, '\1<img src="/images/smileys/eek.gif" />')         #// o_O
     text.gsub!(/([\s>]{1}|^)(:(p)+)/i, '\1<img src="/images/smileys/tongue.gif" />\\4')          #// :p | :P
-    
+
     text.gsub!(/([\s>]{1}|^)(x(d)+)/i, '\1<img src="/images/smileys/grin.gif" />')            #// xd TODO TODO TODO acabar de poner el comienzo de línea a las demás smileys
-    
+
     text.gsub!(/([\s>]{1}|^)(:(0)+)/, '\1<img src="/images/smileys/eek.gif" />')              #// :0
     text.gsub!(/([\s>]{1}|^)(8\)+)/, '\1<img src="/images/smileys/cool.gif" />')              #// 8)
     text.gsub!(/([\s>]{1}|^)(:\?+)/, '\1<img src="/images/smileys/huh.gif" />')              #// :?
@@ -508,7 +510,7 @@ type: 'bhs'}))
     text.gsub!(/([\s>]{1}|^)(:(D)+)/i, '\1<img src="/images/smileys/happy.gif" />')           ##// :D
     text.gsub!(/([\s>]{1}|^)(:(\()+)/, '\1<img src="/images/smileys/sad.gif" />')             #// :(
     text.gsub!(/([\s>]{1}|^)=(\))+/, '\1<img src="/images/smileys/smile.gif" />')             #// =)
-    
+
     if text.index('SALTOLINEA333').to_s != '' then
       text.gsub!("SALTOLINEA333\n", '</p><p>')
       text.gsub!("SALTOLINEA333", '')
@@ -521,30 +523,30 @@ type: 'bhs'}))
     text = text.gsub('</p><p></blockquote>', '</blockquote>')
     text = text.gsub('<code></p><p>', '<code>')
     text = text.gsub('</p><p></code>', '</code>')
-    
+
     text.strip!
-    
+
     # TODO cambiar nombre de función
     # text = text.gsub(/((http|ftp|irc|unreal):\/\/([^\s]+))/, '<a class="external" href="\1">\3</a>')
     return text
   end
-  
+
   def user_is_authed
     self.controller.user_is_authed
   end
-  
+
   def print_forum_path(category)
     asc = category.get_ancestors.reverse
     asc<< category
     out = ''
-    
+
     for c in asc
       out<< " &raquo; <a href=\"/foros/forum/#{c.id}\">#{c.name}</a>"
     end
-    
+
     out
   end
-  
+
   def draw_pcent_bar(pcent, text = nil, compact=false, color=nil)
     # 0 <= pcent <= 1
     if (pcent.kind_of?(Float) && pcent.nan? ) || pcent == Infinity
@@ -552,13 +554,13 @@ type: 'bhs'}))
     elsif pcent > 1.0
       pcent = 1.0
     end
-    
+
     # text = "%.2f" % pcent if text == nil
     text = "#{(pcent*100).to_i}%" if text == nil
-    
+
     "<div class=\"pcent-bar#{(compact)?' compact':''}\"><img src=\"/images/blank.gif\" title=\"#{text}\" class=\"bar\" style=\"width: #{(pcent*100).to_i}%; #{'background-color: ' + color + ';' if color}\" /></div>"
   end
-  
+
   def draw_rating(rating_h)
     rating_points = rating_h[0]
     if rating_points.nil?
@@ -568,46 +570,46 @@ type: 'bhs'}))
       src = rating_points
       text = "Valoración: #{src}"
     end
-    
+
     "<span class=\"rating stars#{src}\"><span class=\"sprite1\"><img alt=\"#{text}\" title=\"#{text} (#{rating_h[1]} valoraciones)\" src=\"/images/blank.gif\" width=\"64\" height=\"13\" /></span></span>"
   end
-  
+
   def draw_contentheadline(content)
     "<div class=\"infoinline\">#{print_tstamp(content.created_on)} | #{draw_rating(content.rating)} | <span class=\"comments-count\"><a title=\"Ver comentarios\" href=\"#{Routing.url_for_content_onlyurl(content)}\#comments\">#{content.unique_content.comments_count}</a></span></div>"
   end
-  
+
   def draw_organization_building(org, stories=1)
     if org.has_building?
       bldgs = [org.building_top, org.building_middle, org.building_bottom]
     else
       bldgs = ['images/building_top.png', 'images/building_middle.png', 'images/building_middle.png']
     end
-    
+
     out = "<div style=\"margin: 2px;\"><img src=\"/#{bldgs[0]}\" /><br />"
     stories.times do
       out << "<img src=\"/#{bldgs[1]}\" /><br />"
     end
     out << "<img src=\"/#{bldgs[2]}\" /></div>"
   end
-  
+
   def gmd10
     '<img class="gmd10 sprite1" alt="Dólares GM" src="/images/blank.gif" />'
   end
-  
+
   def gmd12
     '<img class="gmd12" alt="Dólares GM" src="/images/blank.gif" />'
   end
-  
+
   def gmd11
     '<img class="gmd11" alt="Dólares GM" src="/images/blank.gif" />'
   end
-  
+
   def clan_switcher
     out = "
 <script type=\"text/javascript\">
   function switch_clan_page(new_clan)
 {
-  if (new_clan == 'new') 
+  if (new_clan == 'new')
     document.location = '/cuenta/clanes/new';
   else if (new_clan != '')
     document.location = '/cuenta/clanes/switch_active_clan/'+new_clan;
@@ -620,18 +622,18 @@ type: 'bhs'}))
     for clan in @user.clans
       out<< "<option #{(@clan and @clan.id == clan.id) ? 'selected=\"selected\"' : ''} value=\"#{clan.id}\">#{clan.name}</option>"
     end
-    
+
     out<< "</optgroup>
   </select>"
     out
   end
-  
+
   def competition_switcher
     out = "
 <script type=\"text/javascript\">
   function switch_competition_page(new_competition)
 {
-  if (new_competition == 'new') 
+  if (new_competition == 'new')
     document.location = '/cuenta/competiciones/new';
   else if (new_competition != '')
     document.location = '/cuenta/competiciones/switch_active_competition/'+new_competition;
@@ -644,22 +646,22 @@ type: 'bhs'}))
     for competition in Competition.related_with_user(@user)
       out<< "<option #{(@competition and @competition.id == competition.id) ? 'selected=\"selected\"' : ''} value=\"#{competition.id}\">#{competition.name}</option>"
     end
-    
+
     out<< "</optgroup>
   </select>"
     out
   end
-  
+
   def popup(link_text, link_url, width, height)
     "<a href=\"#{link_url}\" onclick=\"window.open('#{link_url}', '_blank', 'width=#{width},height=#{height}'); return false;\">#{link_text}</a>"
   end
-  
+
   def wysiwyg(field_name, opts={})
     opts[:value] ||= ''
     opts[:height] ||= '400px'
     opts[:width] ||= '550px'
-    
-    
+
+
     load_javascript_lib('ckeditor')
       <<-END
         <textarea name="#{field_name}">#{opts[:value]}</textarea><br />
@@ -675,12 +677,12 @@ skin: 'v2'
 				</script>
       END
   end
-  
+
   def load_javascript_lib(lib)
     @_additional_js_libs ||= []
     @_additional_js_libs << lib
   end
-  
+
   def get_last_commented_contents
     # TODO ugly
     if @controller.portal_code && @controller.portal.class.name == 'FactionsPortal'
@@ -692,8 +694,8 @@ skin: 'v2'
     end
     contents.collect { |c| c.real_content }
   end
-  
-  
+
+
   def content_bottom(obj)
     if user_is_authed and obj.state == Cms::PENDING and obj.class.name != 'Blogentry' and @user.id != obj.user_id
       controller.send(:render_to_string, :partial => '/shared/accept_or_deny', :locals => { :object => obj })
@@ -704,17 +706,17 @@ skin: 'v2'
       ''
     end
   end
-  
-  
+
+
   # selected_games is an array of selected games_ids
   def games_selector(fieldname, selected_games=[])
-    total_games = Game.count 
+    total_games = Game.count
     interval = total_games / 3
     i = 0
     col1 = ''
     col2 = ''
     col3 = ''
-    
+
     for g in Game.find(:all, :order => 'lower(name) ASC')
       if i < interval then
         dst = col1
@@ -723,12 +725,12 @@ skin: 'v2'
       else
         dst = col3
       end
-      
+
       selected = selected_games.include?(g.id) ? "checked=\"checked\"" : ''
       dst<< "<label><input type=\"checkbox\" name=\"#{fieldname}[]\" #{selected} value=\"#{g.id}\" /> #{g.name} #{faction_favicon(g)}</label><br />"
       i += 1
     end
-    
+
     "<table>
       <tr>
         <td>#{col1}</td>
@@ -738,31 +740,32 @@ skin: 'v2'
     </table>
     <br />"
   end
-  
+
   def generic_contents_list(collection, opts={})
     opts = {:action => :show}.merge(opts)
     out = '<ul class="content-hid">'
     collection.each { |obj| out<< "<li><a href=\"#{gmurl(obj).gsub('show', opts[:action].to_s)}\">#{obj.resolve_hid}</a></li>" }
     out << '</ul>'
   end
-  
+
   def draft_check_box(obj)
     if obj.state.nil? || obj.state == Cms::DRAFT
       "<p><label><input type=\"checkbox\" name=\"draft\" value=\"1\" #{'checked=\"checked\"' if (obj.state == Cms::DRAFT && !obj.new_record?) }/> Borrador</label></p>"
     end
-  end  
-  
+  end
+
   def javascript_includes
     if App.compress_js?
       out = "<script type=\"text/javascript\" src=\"#{ASSET_URL}/gm.#{SVNVERSION}.js\"></script>\n"
     else
-      out = <<-END 
+      out = <<-END
 <script src="#{ASSET_URL}/javascripts/web.shared/jquery-1.3.2.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/web.shared/jquery.scrollTo-1.4.0.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/jquery-ui-1.7.2.custom.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/web.shared/jgcharts-0.9.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/jrails.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/jquery.facebox.#{SVNVERSION}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/jquery.elastic.source.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/web.shared/slnc.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/app.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/tracking.#{SVNVERSION}.js" type="text/javascript"></script>
@@ -772,14 +775,14 @@ skin: 'v2'
 <script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shBrushRuby.#{SVNVERSION}.js" type="text/javascript"></script>
       END
     end
-    
+
     if @_additional_js_libs
       @_additional_js_libs.uniq.each do |lib|
         if lib == 'ckeditor'
           out << "<script src=\"#{ASSET_URL}/ckeditor/ckeditor.js\" type=\"text/javascript\"></script>"
         elsif lib.include?('http://')
           out << "<script src=\"#{lib}\" type=\"text/javascript\"></script>"
-        else      
+        else
           out << <<-END
 <script src="#{ASSET_URL}/javascripts/#{lib}.#{'pack.' if App.compress_js?}#{SVNVERSION}.js" type="text/javascript"></script>
         END
@@ -788,11 +791,11 @@ skin: 'v2'
     end
     out.strip
   end
-  
+
   def css_includes
     "<link href=\"#{ASSET_URL}#{controller.skin.css_include}\" media=\"all\" rel=\"Stylesheet\" type=\"text/css\" />"
   end
-  
+
   def submenu_name
     case controller.submenu
       when 'Facción':
@@ -807,10 +810,10 @@ skin: 'v2'
       ActiveSupport::Inflector::humanize(ActiveSupport::Inflector::tableize(controller.submenu))
     end
   end
-  
+
   def navpath
     out = '<ul>'
-    out<< '<li class="home"><a title="Ir a portada" class="nav" href="/"><span>Portada</span></a></li>' unless controller.controller_name == 'home' 
+    out<< '<li class="home"><a title="Ir a portada" class="nav" href="/"><span>Portada</span></a></li>' unless controller.controller_name == 'home'
     if @navpath # TODO oldschool navpath, remove all of 'em
       #return '' if @navpath.size == 1
       last = @navpath.pop # TODO remove pop directamente en todos los controllers y quitar aquí (a la vez)
@@ -825,11 +828,11 @@ skin: 'v2'
     end
     out<< '</ul>'
   end
-  
+
   def navpathgm20085
     out = '<ul>'
     firstlevelname = "Portada #{controller.portal.code}" # controller.active_sawmode ? controller.active_sawmode.titleize : 'Portada'
-    out<< "<li class=\"home\"><a title=\"Ir a portada\" class=\"sprite1 nav\" href=\"/\"><span>#{firstlevelname}</span></a></li>" 
+    out<< "<li class=\"home\"><a title=\"Ir a portada\" class=\"sprite1 nav\" href=\"/\"><span>#{firstlevelname}</span></a></li>"
     if @navpath # TODO oldschool navpath, remove all of 'em
       #return '' if @navpath.size == 1
       last = @navpath.pop # TODO remove pop directamente en todos los controllers y quitar aquí (a la vez)
@@ -844,13 +847,13 @@ skin: 'v2'
     end
     out<< '</ul>'
   end
-  
+
   def show_url(url)
     nurl = url.gsub('http://', '')
     nurl.gsub('/', '') if nurl.count('/') == 1
     nurl
   end
-  
+
   def show_rating_title(obj)
     if obj.is_public?
       out = "<div id=\"content-stats-title\">"
@@ -858,7 +861,7 @@ skin: 'v2'
       out<< '</div>'
     end
   end
-  
+
   def show_rating(obj)
     if obj.is_public?
       out = "<div id=\"content-stats\">"
@@ -871,11 +874,11 @@ skin: 'v2'
       out<< '</div>'
     end
   end
-  
+
   def show_news_category_file(file)
     "<img class=\"news-category-image\" src=\"#{ASSET_URL}/cache/thumbnails/f/188x110/#{file}\" />"
   end
-  
+
   def content_support(opts={}, &block)
     raise "opts[:content] not given!" unless opts[:content]
     generic_support(opts) do
@@ -884,7 +887,7 @@ skin: 'v2'
       concat(controller.send(:render_to_string, :partial => '/shared/content_tag_browser', :locals => { :content => opts[:content] }))
     end
   end
-  
+
   def generic_support(opts={}, &block)
     opts = {:show_ads => true}.merge(opts)
     return '' if controller.portal.kind_of?(ClansPortal)
@@ -896,13 +899,13 @@ skin: 'v2'
     #ab_test('sideright NLS-bandits', 4, :add_xab_to_links => true, :returnmode => :out) { out = ads_slots('sideright-softmax', '2-4') }
     #ab_test('sideright NLS-bandits', 5, :add_xab_to_links => true, :returnmode => :out) { out = ads_slots('sideright-leasttaken', '2-5') }
     #ab_test('sideright NLS-bandits', 6, :add_xab_to_links => true, :returnmode => :out) { out = ads_slots('sideright-poker', '2-6') }
-    
+
     concat("<div class=\"container\" id=\"csupport\"><div class=\"ads-slots\"><div class=\"ads-slots1\">#{out if opts[:show_ads]}")
     concat("#{ads_slots('sideright') if opts[:show_ads]}</div></div>")
     yield
     concat("</div>")
   end
-  
+
   def content_main(opts={}, &block)
     # opts = {:show_ads => true}.merge(opts)
     # @show_ads = opts[:show_ads]
@@ -910,14 +913,14 @@ skin: 'v2'
     yield
     concat("</div>")
   end
-  
-  
-  
+
+
+
   def mftext(title=nil, opts={}, &block)
     old_oddclass = @oddclass
     oddclass_reset
     opts[:additional_class] = opts[:additional_class] ? " #{opts[:additional_class]}" : nil
-    grid_cls = opts[:grid] ? "grid-#{opts[:grid]}" : '' 
+    grid_cls = opts[:grid] ? "grid-#{opts[:grid]}" : ''
     glast_cls = 'glast' if opts[:glast]
     blast_cls = 'blast' if opts[:blast]
     out = "<div class=\"module mftext #{grid_cls} #{glast_cls} #{blast_cls} #{'sub-modules' if opts[:has_submodules]}\""
@@ -927,14 +930,14 @@ skin: 'v2'
     concat("<div class=\"mcontent\">")
     yield
     concat("</div></div>")
-    @oddclass = old_oddclass 
+    @oddclass = old_oddclass
   end
-  
+
   def mflistOLD(title, collection, options={}, &block)
     old_oddclass = @oddclass
     collection = collection.call if collection.respond_to? :call
     oddclass_reset
-    grid_cls = options[:grid] ? "grid-#{options[:grid]}" : '' 
+    grid_cls = options[:grid] ? "grid-#{options[:grid]}" : ''
     glast_cls = 'glast' if options[:glast]
     blast_cls = 'blast' if options[:blast]
     class_cls = options[:class_container] if options[:class_container]
@@ -952,25 +955,25 @@ skin: 'v2'
     concat("</div></div>")
     @oddclass = old_oddclass
   end
-  
+
   def mftable(title, collection, options={}, &block)
     mfcontainer_list('table', title, collection, options, &block)
   end
-  
-  
+
+
   def mflist(title, collection, options={}, &block)
     mfcontainer_list('list', title, collection, options, &block)
   end
-  
+
   def new_ads(opts={})
     # TODO
   end
-  
+
   def mfcontainer_list(mode, title, collection, options={}, &block)
     old_oddclass = @oddclass
     collection = collection.call if collection.respond_to? :call
     oddclass_reset
-    grid_cls = options[:grid] ? "grid-#{options[:grid]}" : '' 
+    grid_cls = options[:grid] ? "grid-#{options[:grid]}" : ''
     glast_cls = 'glast' if options[:glast]
     blast_cls = 'blast' if options[:blast]
     class_cls = options[:class_container] if options[:class_container]
@@ -989,11 +992,11 @@ skin: 'v2'
     concat("</div></div>")
     @oddclass = old_oddclass
   end
-  
+
   def clan_link(clan)
     "<a href=\"#{gmurl(clan)}\">#{clan.name}</a>"
   end
-  
+
   def mfcontent(content, &block)
     out = <<-END
      <div class="module mfcontent"><div class="mtitle mcontent-title"><div class=\"iset iset#{content.class.name.downcase}\"></div> <span>#{show_rating_title(content)} #{content.resolve_hid}</span></div>
@@ -1010,7 +1013,7 @@ skin: 'v2'
 
 #{"<div class=\"xmain\">"<<auto_link(smilelize(content.main))<<"</div>" if content.respond_to?(:main) && content.main.to_s != ''}
     END
-      
+
     end
     if block
       concat("#{content_bottom(content)}</div></div>")
@@ -1018,26 +1021,26 @@ skin: 'v2'
       out<< "#{content_bottom(content)}</div></div>"
     end
   end
-  
-  
-  
+
+
+
   def mfcontents_summaries(title, object, find_args, opts={})
     # soporte show_day_separator
     #find_args.last[:include] = :user
     params['page'] = params['page'].to_i if params['page']
-    opts[:pager].current_page = opts[:pager].last if params['page'].nil? && opts[:pager]    
+    opts[:pager].current_page = opts[:pager].last if params['page'].nil? && opts[:pager]
     find_args[1][:limit] = opts[:pager].current.to_sql[0] if opts[:pager]
     find_args[1][:offset] = opts[:pager].current.to_sql[1] if opts[:pager]
-    
+
     out = <<-END
     <div class="module mfcontents-summaries" id="#{opts[:id] if opts[:id]}">
   <div class="mtitle"><span>#{title}</span></div>
   <div class="mcontent">
     END
-    
+
     out<< controller.send(:render_to_string, :partial => 'shared/pager', :object => opts[:pager], :locals => {:pos => 'top'}) if opts[:pager]
-    
-    cache_out = cache_without_erb_block(opts.fetch(:cache)) do 
+
+    cache_out = cache_without_erb_block(opts.fetch(:cache)) do
       collection = object.find(*find_args)
       out2 = ' '
       if collection.size > 0 # no podemos hacer un return
@@ -1045,11 +1048,11 @@ skin: 'v2'
         collection = collection.reverse unless opts[:reverse] === false
         collection.reverse.each do |item|
           cur_day = Date.new(item.created_on.year, item.created_on.month, item.created_on.day)
-          if cur_day != previous_day then 
+          if cur_day != previous_day then
             previous_day = Date.new(item.created_on.year, item.created_on.month, item.created_on.day)
             out2 << "<div class=\"day-separator\">#{print_tstamp(cur_day, 'date')}</div>"
           end
-          
+
           out2<< <<-END
         <div class=\"mfcontents-summaries-item #{oddclass}\">
         <h2><a class=\"content\" href=\"#{gmurl(item)}\">#{item.title}</a></h2>
@@ -1062,11 +1065,11 @@ skin: 'v2'
       out2
     end
     out<< cache_out if cache_out
-    
+
     out<< controller.send(:render_to_string, :partial => 'shared/pager', :object => opts[:pager], :locals => {'pos' => 'bottom'}) if opts[:pager]
     out<< '</div></div>'
   end
-  
+
   def mfcontents_basic(title, object, find_args, opts={})
     # TODO mostrar como is_read o no
     # TODO icono de facción
@@ -1083,26 +1086,26 @@ skin: 'v2'
       _mfcontents_basic(title, object, find_args, opts)
     end
   end
-  
+
   def cache_without_erb_block(name, &block)
     unless controller.perform_caching then block.call; return end
     if cache = controller.read_fragment(name, {})
       cache
     else
-      buffer = block.call 
+      buffer = block.call
       pos = buffer.length
       block.call
       controller.write_fragment(name, block.call, {})
     end
   end
-  
+
   def mfcontents_list_old(title, object, options={}, &block)
     raise "DEPRECATED"
     if object.class.name == 'Array'
       collection = object
     elsif object.respond_to?(:call)
       collection = object.call
-    elsif object.respond_to?(:unique_content_id) 
+    elsif object.respond_to?(:unique_content_id)
       collection = object
     else
       collection = object.find(*find_args)
@@ -1110,7 +1113,7 @@ skin: 'v2'
     return '' if collection.size == 0
     old_oddclass = @oddclass
     oddclass_reset
-    grid_cls = options[:grid] ? "grid-#{options[:grid]}" : '' 
+    grid_cls = options[:grid] ? "grid-#{options[:grid]}" : ''
     glast_cls = 'glast' if options[:glast]
     blast_cls = 'blast' if options[:blast]
     ids = []
@@ -1127,32 +1130,32 @@ skin: 'v2'
     concat('<script type="text/javascript">contents = contents.concat('<< ids.join(',') <<');</script>')
     concat(options[:bottom]) if options[:bottom]
     concat("</div></div>")
-    @oddclass = old_oddclass 
+    @oddclass = old_oddclass
   end
-  
+
   def mfcontents_table(title, object, options={}, &block)
     mfcontents_thing('table', 'tr', title, object, options, &block)
   end
-  
+
   def mfcontents_list(title, object, options={}, &block)
     mfcontents_thing('ul', 'li', title, object, options, &block)
   end
-  
+
   def mfcontents_thing(container_tag, row_tag, title, object, options={}, &block)
     if object.class.name == 'Array'
       collection = object
     elsif object.respond_to?(:call)
       collection = object.call
-    elsif object.respond_to?(:unique_content_id) 
+    elsif object.respond_to?(:unique_content_id)
       collection = object
     else
       collection = object.find(*find_args)
     end
-    
-    return '' if collection.size == 0 && !options[:show_even_if_empty] 
+
+    return '' if collection.size == 0 && !options[:show_even_if_empty]
     old_oddclass = @oddclass
     oddclass_reset
-    grid_cls = options[:grid] ? "grid-#{options[:grid]}" : '' 
+    grid_cls = options[:grid] ? "grid-#{options[:grid]}" : ''
     glast_cls = 'glast' if options[:glast]
     blast_cls = 'blast' if options[:blast]
     ids = []
@@ -1169,16 +1172,16 @@ skin: 'v2'
     concat('<script type="text/javascript">contents = contents.concat('<< ids.join(',') <<');</script>')
     concat(options[:bottom]) if options[:bottom]
     concat("</div></div>")
-    @oddclass = old_oddclass 
+    @oddclass = old_oddclass
   end
-  
+
   def _mfcontents_basic(title, object, find_args, opts={})
     opts = {:truncate_at => 30}.merge(opts)
     if object.class.name == 'Array'
       collection = object
     elsif object.respond_to?(:call)
       collection = object.call
-    elsif object.respond_to?(:unique_content_id) 
+    elsif object.respond_to?(:unique_content_id)
       collection = object
     else
       collection = object.find(*find_args)
@@ -1186,7 +1189,7 @@ skin: 'v2'
     return '' if collection.size == 0
     old_oddclass = @oddclass
     oddclass_reset
-    grid_cls = opts[:grid] ? "grid-#{opts[:grid]}" : '' 
+    grid_cls = opts[:grid] ? "grid-#{opts[:grid]}" : ''
     glast_cls = 'glast' if opts[:glast]
     blast_cls = 'blast' if opts[:blast]
     ids = []
@@ -1208,18 +1211,18 @@ skin: 'v2'
     out<< '
   </div>
 </div>'
-    @oddclass = old_oddclass 
+    @oddclass = old_oddclass
     out
   end
-  
+
   def hue_selector(id, field_name, v)
     out = <<-END
-    <div id="#{id}-hue-preview" style="width: 16px; height: 16px; float: left; border: 1px solid black;"></div> 
+    <div id="#{id}-hue-preview" style="width: 16px; height: 16px; float: left; border: 1px solid black;"></div>
     <input type="text" class="text" name="#{field_name}" value="#{v}" onclick="$j('##{id}-hue-selector').removeClass('hidden');" />
 <div id="#{id}-hue-selector" class="hidden"><img src="/images/hue_selector.png" onclick="cpMouseClick" /></div>
 <script type="text/javascript">$j('##{id}-hue-selector img').onclick = cpMouseClick;
     END
-    
+
     if v then
       out<< <<-END
         $j('##{id}-hue-preview').css('background', hsv2rgb(Math.round(#{v}), 100, 100));
@@ -1227,33 +1230,33 @@ skin: 'v2'
     end
     out<< '</script>'
   end
-  
-  
+
+
   def rgbcolor_selector(id, field_name, v)
     out = <<-END
       <div id="#{id}-hue-preview" style="width: 16px; height: 16px; float: left; border: 1px solid black;"></div> <input id="#{id}-hue-input" type="text" class="text" name="#{field_name}" value="#{v.to_s.gsub('#', '')}" />
 <script type="text/javascript">
 attachColorPicker(document.getElementById('#{id}-hue-input'));
     END
-    
-    if v then 
+
+    if v then
       out<< <<-END
           $j('##{id}-hue-preview').css('background', '##{v.gsub('#','')}');
         END
     end
     out<< '</script>'
   end
-  
+
   def percent_selector(id, field_name, v)
     <<-END
       <input type="text" class="text" name="#{field_name}" value="#{v}" />
     END
   end
-  
+
   def string_selector(id, field_name, v)
     "STRING_SELECTOR_NOT_YET_IMPLEMENTED"
   end
-  
+
   # columns es un hash de titulos de columnas como keys y o bien symbols o bien procs como valores
   def xdelitems(collection, form_destination, input_name, columns, options={})
     options = {:submit_value => 'Enviar'}.merge(options)
@@ -1280,30 +1283,30 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
     out<< "</table>
     <input type=\"submit\" onclick=\"return confirm('¿Estás seguro?');\" value=\"#{options[:submit_value]}\" /></form>"
   end
-  
+
   def faction_activity_minicolumns(faction)
     # TODO esto no lo cachearan algunos browsers, usar .1.png
     "<img title=\"Karma generado durante el último mes en #{faction.code} (1 día una columna)\" class=\"minicolumns\" src=\"/storage/minicolumns/factions_activity/#{faction.id}.png?d=#{Time.now.strftime('%Y-%m-%d')}\" />"
   end
-  
+
   def minicolumns(mode, data)
     mc_id = "minicols_{mode}#{data.join(',')}"
     f = "#{RAILS_ROOT}/public/storage/minicolumns/#{mc_id}.png"
     Cms.gen_minicolumns(mode, data, f) unless File.exists?(f)
     "<img src=\"/storage/minicolumns/#{mc_id}.png\" />"
   end
-  
+
   def winner_cup(winner)
     "<img src=\"/images/blank.gif\" class=\"sprite1 competition-cup cup#{winner}\" />"
   end
-  
+
   def faction_cohesion(faction=@faction)
     "#{(faction.member_cohesion * 1000).to_i.to_f / 10}%"
   end
-  
+
   @@_cache_ads_slots = {}
   @@_cache_ads_slots_time = nil
-  
+
   def ads_slots(location, game_id=nil)
     @@_cache_ads_slots_time = controller.global_vars['ads_slots_updated_on'] if @@_cache_ads_slots_time.nil?
     if controller.global_vars['ads_slots_updated_on'] > @@_cache_ads_slots_time
@@ -1311,15 +1314,15 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
       @@_cache_ads_slots_time = controller.global_vars['ads_slots_updated_on']
     end
     cache_key = "#{controller.portal.id}-#{location}-#{game_id}"
-    @@_cache_ads_slots[cache_key] ||= AdsSlot.find(:all, :conditions => ["location = ? 
-                                    AND id IN (select id 
-                                                 from ads_slots 
-                                                where id not in (select ads_slot_id 
-                                                                   from ads_slots_portals) 
-                                                UNION select id 
-                                                                   from ads_slots 
-                                                                  where id in (select ads_slot_id 
-                                                                                 from ads_slots_portals 
+    @@_cache_ads_slots[cache_key] ||= AdsSlot.find(:all, :conditions => ["location = ?
+                                    AND id IN (select id
+                                                 from ads_slots
+                                                where id not in (select ads_slot_id
+                                                                   from ads_slots_portals)
+                                                UNION select id
+                                                                   from ads_slots
+                                                                  where id in (select ads_slot_id
+                                                                                 from ads_slots_portals
                                                                                 where portal_id = #{controller.portal.id}))", location], :order => 'position')
     out = ''
     @@_cache_ads_slots[cache_key].each do |asl|

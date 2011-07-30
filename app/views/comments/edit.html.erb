@@ -12,6 +12,7 @@
 <p><label for="comment_comment">Comentario</label><br/>
 <%= error_messages_for 'comment' %>
 <%= hidden_field_tag 'redirto', params[:redirto] %>
+    <div class="comment-textarea">
     <%= bbeditor :name => 'comment[comment]', :id => 'comment_comment', :rows => 10, :value => Comments::unformatize(@comment.comment) %>
 	
   <p style="clear: right;"><% if not Cms::user_can_edit_content?(@user, @comment) then %>Nota: Dispones de 15 minutos (hasta <strong><%=print_tstamp (Time.now + 60 * 15)%></strong>) para modificar el comentario. No se guardarán los cambios después de ese momento.<% end -%></p>
@@ -22,6 +23,7 @@
   		<label style="display: block; margin-bottom: 10px;"><input type="checkbox" name="comment[netiquette_violation]" value="true" <%= 'checked="checked"' if (@comment.netiquette_violation.nil? || @comment.netiquette_violation? == true)%> /> Modificado por violar el código de conducta.</label>
   <% end -%>
   <%= submit_tag 'Guardar' %>
+  </div>
 </form>
 <% end -%>
 <% end -%>

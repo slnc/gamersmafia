@@ -16,7 +16,7 @@
 </tr>
 <tr style="vertical-align: top;">
   <td>Texto</td>
-  <td><%= bbeditor :name => 'topic[main]', :id => 'comment_comment', :rows => 20, :value => Comments::unformatize(@topic.main) %></td>
+  <td><%= bbeditor :name => 'topic[main]', :id => 'comment_comment', :value => Comments::unformatize(@topic.main), :style => ' height: 50px;' %></td>
 </tr>
 <tr>
 <td></td>
