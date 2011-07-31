@@ -666,7 +666,6 @@ input.sm-text {
     overflow: auto;
     margin-bottom: 10px;
     margin-top: 5px;
-    visibility: hidden;
     display: none;
 }
 

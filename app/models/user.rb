@@ -2,7 +2,6 @@ require 'digest/sha1'
 require 'digest/md5'
 require 'karma'
 
-
 class User < ActiveRecord::Base
   BANNED_DOMAINS = %w(10minutemail.com correo.nu fishfuse.com meyzo.net
                       mintemail.uni.cc tempemail.net tempinbox.com uggsrock.com
