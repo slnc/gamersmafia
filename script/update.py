@@ -31,18 +31,8 @@ def compress_js():
            'app.bbeditor',
            'colorpicker',
            'syntaxhighlighter/shCore',
-           'syntaxhighlighter/shBrushBash',
-           'syntaxhighlighter/shBrushCpp',
-           'syntaxhighlighter/shBrushCSharp',
-           'syntaxhighlighter/shBrushCss',
-           'syntaxhighlighter/shBrushJava',
-           'syntaxhighlighter/shBrushPerl',
            'syntaxhighlighter/shBrushPhp',
-           'syntaxhighlighter/shBrushPython',
-           'syntaxhighlighter/shBrushRuby',
-           'syntaxhighlighter/shBrushSql',
-           'syntaxhighlighter/shBrushVb',
-           'syntaxhighlighter/shBrushXml']
+           'syntaxhighlighter/shBrushPython']
     additional_libs = []
 
     dst = 'public/gm.js'
@@ -54,8 +44,8 @@ def compress_js():
     compress_file(dst, dst)
 
     for o in additional_libs:
-    	compress_file('public/javascripts/%s.js' % o, 'public/javascripts/%s.pack.js' % o)
-        # f.write(file('public/javascripts/%s.js' % o).read())
+    	compress_file('public/javascripts/%s.js' % o,
+                      'public/javascripts/%s.pack.js' % o)
 
 
 def send_changelog_email():

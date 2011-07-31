@@ -22,7 +22,7 @@ function cfgPage(user_is_authed, contents, controller, action, model_id, newsess
 
     pageTracker.trackPageview(user_is_authed, contents);
 
-    SyntaxHighlighter.all()
+    SyntaxHighlighter.all();
 
     // Menu setup
     $j('#smenu .second-level').hide();

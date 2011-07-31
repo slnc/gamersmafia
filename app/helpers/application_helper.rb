@@ -772,7 +772,7 @@ skin: 'v2'
 <script src="#{ASSET_URL}/javascripts/app.bbeditor.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/colorpicker.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shCore.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shBrushRuby.#{SVNVERSION}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shBrushPython.#{SVNVERSION}.js" type="text/javascript"></script>
       END
     end
 
