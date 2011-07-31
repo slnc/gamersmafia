@@ -104,6 +104,7 @@ module Comments
     str ||= ''
     str = Comments.fix_incorrect_bbcode_nesting(str.clone)
     interword_regexp = /[^><]+/
+    interword_regexp_strict = /[a-z0-9 _!"$%&\/()=¿?-]+/
     str.strip!
     str.gsub!(/</, '&lt;')
     str.gsub!(/>/, '&gt;')
@@ -116,7 +117,7 @@ module Comments
     str.gsub!(/\[flag=([a-z]+)\]/i, '<img class="icon" src="/images/flags/\\1.gif" />')
     
     str.gsub!(/\[img\](#{SIMPLE_URL_REGEXP})\[\/img\]/i, '<img src="\\1" />')
-    str.gsub!(/\[url=(#{SIMPLE_URL_REGEXP})\](#{interword_regexp})\[\/url\]/i, '<a href="\\1">\\2</a>')
+    str.gsub!(/\[url=(#{SIMPLE_URL_REGEXP})\](#{interword_regexp_strict})\[\/url\]/i, '<a href="\\1">\\2</a>')
     
     str.gsub!(/\[color=([a-zA-Z]+)\](#{interword_regexp})\[\/color\]/i, '<span class="c_\\1">\\2</span>')
     
