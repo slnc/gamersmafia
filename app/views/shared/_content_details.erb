@@ -52,7 +52,7 @@ setInterval(function(){
   </table>
   <% if object.log then %>
   <%# TODO CACHE THIS %>
-    <div class="right infoinline"><a href="" onclick="showblock('content-log'); return false;">Ver log de cambios</a></div>
+    <div class="right infoinline"><a href="" onclick="$j('#content-log').show(); return false;">Ver log de cambios</a></div>
     <div class="hidden" id="content-log"><%object.log.reverse.each do |l0, l1, l2|
 		u = User.find_by_login(l1) 
       %>

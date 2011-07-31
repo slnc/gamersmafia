@@ -31,7 +31,7 @@
 
 <% if @competition.pro? then%><p><label for="competition_header_image">Banner de la competición .JPG <span class="infoinline">Dimensiones recomendadas: 650x100</span></label><br/>
   <% if @competition.header_image then %>
-  <%=fc_thumbnail(@competition.header_image, 'k', '153x53')%> 
+  <%=fc_thumbnail(@competition.header_image, 'k', '153x53')%>
   <% end -%>
   <%= file_field 'competition', 'header_image' %></p><% end -%>
 
@@ -42,22 +42,22 @@ function check_maps(val)
 {
   if (!val)
   {
-    hideblock('maps');
-    hideblock('maps-points');
+    $j("#maps").hide();
+    $j("#maps-points").hide();
   }
   else
   {
-    showblock('maps');
-    showblock('maps-points');
+  	$j("#maps").show();
+	$j("#maps-points").show();
   }
 }
 
 function check_participants(val)
 {
   if (val == 'false')
-    hideblock('invitational-participants');
+    $j('#invitational-participants').hide();
   else
-    showblock('invitational-participants');
+    $j('#invitational-participants').show();
 }
 </script>
 <br />
@@ -97,8 +97,8 @@ opts = @competition.competitions_types_options %>
     Número de participantes por grupo que pasan a rondas eliminatorias: <input type="name" class="sm-text" name="competition[competitions_types_options][tourney_classifiers_rounds]" value="<%=opts && opts[:tourney_classifiers_rounds] ? opts[:tourney_classifiers_rounds] : ''%>" /> <br />
     <input type="hidden" name="competition[competitions_types_options][tourney_classifiers_rounds]" value="2" />
     <input type="hidden" name="competition[competitions_types_options][tourney_rounds]" value="4" />
-    
-    Empezar fase eliminatoria en: 
+
+    Empezar fase eliminatoria en:
     <select id="tourney_rounds" name="competition[competitions_types_options][tourney_rounds]">
       <option value="3">Cuartos</option>
       <option value="4" selected="selected">Octavos</option>
@@ -128,7 +128,7 @@ total_games_maps = @competition.game.games_maps.count
 g = @competition.game
 f = g.faction
 
-if total_games_maps == 0 then 
+if total_games_maps == 0 then
 %>
 <div id="error">El juego <strong><%=g.name%></strong> no tiene ningún mapa. Por favor, ponte en contacto con los <a href="<%=gmurl(f)%>">líderes de la facción de <%=g.name%></a> antes de crear la competición para que ellos añadan los mapas necesarios.</div>
 <%
@@ -196,17 +196,17 @@ faction = game.faction
 function check_timetable_mode(val)
 {
   if (val == '1')
-    showblock('timetable-options');
+    $j('#timetable-options').show();
   else
-    hideblock('timetable-options');
+    $j('#timetable-options').hide();
 }
 
 function check_randommap_selection_mode(val)
 {
   if (val == 'true')
-    showblock('random-map-selection-mode');
+    $j('#random-map-selection-mode').show();
   else
-    hideblock('random-map-selection-mode');
+    $j('#random-map-selection-mode').hide();
 }
 check_randommap_selection_mode('<%=@competition.forced_maps.to_s%>');
 </script>
@@ -228,19 +228,19 @@ check_randommap_selection_mode('<%=@competition.forced_maps.to_s%>');
 <div id="timetable-options">
 <strong>Organizar partidas</strong><br />
 <%
-starts_on_day = (t_opt) ? t_opt[:starts_on_day] : 7.days.from_now.day 
-starts_on_month = (t_opt) ? t_opt[:starts_on_month] : 7.days.from_now.month 
-starts_on_year = (t_opt) ? t_opt[:starts_on_year] : 7.days.from_now.year 
+starts_on_day = (t_opt) ? t_opt[:starts_on_day] : 7.days.from_now.day
+starts_on_month = (t_opt) ? t_opt[:starts_on_month] : 7.days.from_now.month
+starts_on_year = (t_opt) ? t_opt[:starts_on_year] : 7.days.from_now.year
 %>
-Día de comienzo de las partidas: 
-<%=select_day(starts_on_day.to_i, :prefix => 'competition[timetable_options]', :field_name => 'starts_on_day')%> 
-<%=select_month(starts_on_month.to_i, :prefix => 'competition[timetable_options]', :field_name => 'starts_on_month')%> 
-<%=select_year(starts_on_year.to_i, :prefix => 'competition[timetable_options]', :field_name => 'starts_on_year')%> 
+Día de comienzo de las partidas:
+<%=select_day(starts_on_day.to_i, :prefix => 'competition[timetable_options]', :field_name => 'starts_on_day')%>
+<%=select_month(starts_on_month.to_i, :prefix => 'competition[timetable_options]', :field_name => 'starts_on_month')%>
+<%=select_year(starts_on_year.to_i, :prefix => 'competition[timetable_options]', :field_name => 'starts_on_year')%>
 <table>
   <tr style="vertical-align: top;">
     <td style="width: 50%;">
       <strong>Días de la semana disponibles</strong><br />
-<% 7.times do |dow| 
+<% 7.times do |dow|
 dow += 1
 dow = 0 unless dow < 7
 %>
@@ -250,7 +250,7 @@ dow = 0 unless dow < 7
 <td>
 <strong>Horario disponible entre semana</strong><br />
 <table>
-  <%  
+  <%
   t_start_week = t_opt ? Time.local(1,1,1,t_opt[:time_start_week_hours],t_opt[:time_start_week_mins]) : Time.local(1,1,1,20)
   t_end_week = t_opt ? Time.local(1,1,1,t_opt[:time_end_week_hours],t_opt[:time_end_week_mins]) : Time.local(1,1,1,0)
   t_start_weekend = t_opt ? Time.local(1,1,1,t_opt[:time_start_weekend_hours],t_opt[:time_start_weekend_mins]) : Time.local(1,1,1,15)

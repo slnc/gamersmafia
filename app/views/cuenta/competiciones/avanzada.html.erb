@@ -75,7 +75,7 @@ function set_remaining_players()
       var newopt = sel.appendChild(document.createElement('option'));
       newopt.value = avail[i];
       newopt.appendChild(document.createTextNode(player.html()));
-      hideblock(player.id);
+      $j('#' + player.id).hide();
     }
   }
 }
@@ -91,7 +91,7 @@ function send_player()
   var pl_to_situate_opt = document.getElementById('player_to_situate_opt'+player_to_situate.value);
   newopt.appendChild(document.createTextNode(pl_to_situate_opt.innerHTML));
   player_to_situate.selectedIndex = -1;
-  hideblock(pl_to_situate_opt.id);
+  $j('#' + pl_to_situate_opt.id).hide();
   document.getElementById('player_to_situate_send').disabled = 'disabled';
 }
 

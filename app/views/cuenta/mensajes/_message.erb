@@ -1,14 +1,14 @@
 <%= error_messages_for 'message' %>
 <script type="text/javascript">
 function set_recipients_dropdown(v) {
-	hideinline('dest-user');
-	hideinline('dest-clans');
+	$j('#dest-user').hide();
+	$j('#dest-clans').hide();
 	switch (v) {
 		case '<%=Message::R_USER%>':
-		showinline('dest-user');
+		$j('#dest-user').show();
 		break;
 		case '<%=Message::R_CLAN%>':
-		showinline('dest-clans');
+		$j('#dest-clans').show();
 		break;
 	}
 }

@@ -218,7 +218,7 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
           usize:$j('.usize'), dsize:$j('.dsize'), nlist:$j('.nlist'), blist:$j('.blist'),
           back:$j('.back'), forward:$j('.forward'), back_disable:'btn back_disable', forward_disable:'btn forward_disable'
         });
-        if (is_ie)
+        if ($j.browser.msie)
     $j('textarea[name=#{opts[:name]}]').css('width', '100%');
     $j('##{opts[:id]}').elastic();
     </script>

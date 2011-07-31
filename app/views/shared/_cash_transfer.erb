@@ -1,12 +1,11 @@
 <script type="text/javascript">
-function update_transfer_recipient(id)
-{
-  hideblock('Useropt');
-  hideblock('Clanopt');
-  hideblock('Factionopt');
+function update_transfer_recipient(id) {
+  $j('#Useropt').hide();
+  $j('#Clanopt').hide();
+  $j('#Factionopt').hide();
   
   if (id != '')
-    showblock(id + 'opt');
+    $j('#' + id + 'opt').show();
 }
 </script>
   <%mftext('Hacer transferencia') do %>

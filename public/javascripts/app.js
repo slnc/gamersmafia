@@ -1,21 +1,9 @@
-var dparts = document.domain.split('.');
-dparts = dparts.reverse();
-var ADOMAIN = '.' + dparts[1] + '.' + dparts[0];
-
-function wysiwyg_mode(mode){
-    if (confirm('¿Estás seguro?')) {
-        slnc.setPref('wysiwyg', mode);
-        document.location = document.location;
-    }
-}
-
 /**
  * Realiza diversas tareas de configuración de la página.
  * @param {Object} user_is_authed
  * @param {Object} contents
  */
 function cfgPage(user_is_authed, contents, controller, action, model_id, newsessid, abtest, ads_shown){
-
     slnc.setupAdClicks();
 
     pageTracker = st.getTracker();
@@ -36,92 +24,28 @@ function cfgPage(user_is_authed, contents, controller, action, model_id, newsess
 
     SyntaxHighlighter.all()
 
-	/*
-    $j('#sawtop').hover(function(){
-        $j(this).stop().animate({
-            'marginTop': '-2px'
-        }, 200);
-    }, function(){
-        $j(this).stop().animate({
-            'marginTop': '-85px'
-        }, 200);
+    // Menu setup
+    $j('#smenu .second-level').hide();
+    $j('#smenu .third-level').hide();
+
+    $j('#show-menu').click(function(){
+        if ($j(this).hasClass('shown')) {
+            $j('#thesaw').stop().animate({
+                'width': '0'
+            }, 100);
+            $j(this).removeClass('shown');
+        }
+        else {
+            $j('#thesaw').stop().animate({
+                'width': '615px'
+            }, 100);
+            $j(this).addClass('shown');
+        }
     });
-    */
 
-	// Menu setup
-	$j('#smenu .second-level').hide();
-	$j('#smenu .third-level').hide();
-
-	$j('#show-menu').click(function() {
-		if ($j(this).hasClass('shown')) {
-			$j('#thesaw').stop().animate({'width': '0'}, 100);
-			$j(this).removeClass('shown');
-		} else {
-			$j('#thesaw').stop().animate({'width': '615px'}, 100);
-			$j(this).addClass('shown');
-		}
-	});
-
-	// TODO(slnc): hacer esto con css3 completamente.
-	/*
-	$j('#logo').hover(function() {
-		$j('#smenu').stop().animate({'width': '400px'}, 100);
-	},
-	function() {
-        $j('#smenu').stop().animate({'width': '0'}, 100);
-    }
-	); */
-
-	$j('div.comment').hover(function() {
-		GM.utils.highlightComment($j(this).attr('id'));
-	});
-}
-
-function form_sym_action(form_id, initial_str, new_str){
-    var f = document.getElementById(form_id);
-    if (!f) {
-        alert(form_id + ' not found');
-        return;
-    }
-
-    f.action = f.action.replace(initial_str, new_str);
-    f.submit();
-}
-
-function showblock(id){
-    $j('#' + id).css('display', 'block').css('visibility', 'visible');
-}
-
-function hideblock(id){
-    $j('#' + id).css('display', 'none').css('visibility', 'hidden');
-}
-
-function showinline(id){
-    $j('#' + id).css('display', 'inline').css('visibility', 'visible');
-}
-
-function hideinline(id){
-    hideblock(id);
-}
-
-function create_new_option(name){
-    var n = $j('<input type="text" />');
-    n.attr('name', name);
-    n.addClass('text');
-    $j('#newoptions').append(n).append($j('<br />'));
-}
-
-function setpref(prefname, prefval){
-    document.cookie = prefname + 'pref=' + prefval + '; expires=Thu, 2 Aug 2010 20:47:11 UTC; domain=' + ADOMAIN + '; path=/';
-    document.location = '/';
-}
-
-function rate_comment(comment_id, cvt_name, cvt_id){
-    $j.get('/comments/rate?comment_id=' + comment_id + '&rate_id=' + cvt_id + '&redirto=' + document.location, function(data){
-        $j('#moderate-comments-opener-rating' + comment_id).html(data);
-    })
-    hideinline('moderate-comments' + comment_id);
-    return false;
+    $j('div.comment').hover(function(){
+        GM.utils.highlightComment($j(this).attr('id'));
+    });
 }
 
 function report_comment(comment_id){
@@ -171,7 +95,7 @@ function disable_rating_controls(){
     for (key in comments) {
         var dEl = $j('#moderate-comments-opener-rating' + key);
         if (dEl && dEl.html() == 'Ninguna')
-            hideinline('moderate-comments-opener' + key);
+            $j('#moderate-comments-opener' + key).hide();
     }
 }
 
@@ -185,7 +109,7 @@ function check_comments_controls(user_is_mod, user_id, user_last_visited_on, uni
                 $j('#moderate-comments-opener-rating' + key).html(comments_ratings[key]);
 
             if ($j('#moderate-comments-opener' + key) != undefined && (comments_ratings[key] != undefined || remaining_slots > 0)) // necesario por un error js raro
-                showinline('moderate-comments-opener' + key);
+                $j('#moderate-comments-opener' + key).show();
         }
 
         if (comments[key][0] > user_last_visited_on && comments[key][1] != user_id) {
@@ -232,9 +156,7 @@ function close_new_content_selector(){
 }
 
 function mark_new(item_id, base){
-    var d = $j("#" + base + item_id);
-    if (d)
-        d.addClass('updated');
+   $j("#" + base + item_id).addClass('updated');
 }
 
 function mark_visited(item_id){
@@ -246,54 +168,11 @@ function mailto(p1){
     document.location = 'mailto:' + p1 + '@' + p2 + '.com?Subject=Email sobre Gamersmafia';
 }
 
-var agt = navigator.userAgent.toLowerCase();
-var appVer = navigator.appVersion.toLowerCase();
-
-var is_minor = parseFloat(appVer);
-var is_major = parseInt(is_minor);
-var is_opera = (agt.indexOf("opera") != -1);
-
-var is_mac = (agt.indexOf("mac") != -1);
-var iePos = appVer.indexOf('msie');
-if (iePos != -1) {
-    if (is_mac) {
-        var iePos = agt.indexOf('msie');
-        is_minor = parseFloat(agt.substring(iePos + 5, agt.indexOf(';', iePos)));
-    }
-    else
-        is_minor = parseFloat(appVer.substring(iePos + 5, appVer.indexOf(';', iePos)));
-    is_major = parseInt(is_minor);
-}
-
-var is_konq = false;
-var kqPos = agt.indexOf('konqueror');
-if (kqPos != -1) {
-    is_konq = true;
-    is_minor = parseFloat(agt.substring(kqPos + 10, agt.indexOf(';', kqPos)));
-    is_major = parseInt(is_minor);
-}
-
-var is_safari = ((agt.indexOf('safari') != -1) && (agt.indexOf('mac') != -1)) ? true : false;
-var is_khtml = (is_safari || is_konq);
-
-var is_gecko = ((!is_khtml) && (navigator.product) && (navigator.product.toLowerCase() == "gecko")) ? true : false;
-var is_gver = 0;
-if (is_gecko)
-    is_gver = navigator.productSub;
-
-
-var is_ie = ((iePos != -1) && (!is_opera) && (!is_khtml));
-
-var req;
-
 function skinselector(val){
     if (val == 'mis-skins')
         document.location = '/cuenta/skins';
-    else {
-        /* TODO hacerlo mejor */
-        document.cookie = 'skin=' + val + '; expires=Thu, 2 Aug 2100 20:47:11 UTC; domain=' + ADOMAIN + '; path=/';
-        document.location = '/';
-    }
+    else
+		slnc.setPref('skin', val);
 }
 
 /**
@@ -315,12 +194,12 @@ function switch_block_visi(block_base){
     var min = block_base + 'min';
 
     if ($j('#' + min).css('display') != 'none') {
-        hideblock(min);
-        showblock(max);
+        $j('#' + min).hide();
+        $j('#' + max).show();
     }
     else {
-        hideblock(max);
-        showblock(min);
+        $j('#' + max).hide();
+        $j('#' + min).show();
     }
     return false;
 }
@@ -426,8 +305,16 @@ GM.menu = function(){
 
 GM.utils = function(){
     return {
+        rate_comment: function(comment_id, cvt_name, cvt_id){
+            $j.get('/comments/rate?comment_id=' + comment_id + '&rate_id=' + cvt_id + '&redirto=' + document.location, function(data){
+                $j('#moderate-comments-opener-rating' + comment_id).html(data);
+            })
+            $j('#moderate-comments' + comment_id).hide();
+            return false;
+        },
+
         gototop: function(){
-            if ($j.browser.msie && jQuery.browser.version == '6.0')
+            if (jQuery.browser.msie && jQuery.browser.version == '6.0')
                 document.location = '#';
             else
                 $j(window).scrollTo(0, 750, {
@@ -438,11 +325,24 @@ GM.utils = function(){
                 });
             return false;
         },
-		highlightComment: function(id) {
-			$j('div.comment').addClass('inactive');
-			$j('#' + id).removeClass('inactive');
-			//alert("id: " + id);
-		}
+        /**
+         * Resalta el comentario actual.
+         * @param {string} id: id del comentario a resaltar.
+         */
+        highlightComment: function(id){
+            $j('div.comment').addClass('inactive');
+            $j('#' + id).removeClass('inactive');
+        },
+        form_sym_action: function(form_id, initial_str, new_str){
+            var f = document.getElementById(form_id);
+            if (!f) {
+                alert(form_id + ' not found');
+                return;
+            }
+
+            f.action = f.action.replace(initial_str, new_str);
+            f.submit();
+        }
     }
 }();
 
@@ -484,10 +384,8 @@ GM.personalization = function(){
 
 function closeFacebox(){
     $j(document).trigger('close.facebox');
-
     return false;
 }
-
 
 $j.fn.insertAtCaret = function(myValue){
     return this.each(function(){

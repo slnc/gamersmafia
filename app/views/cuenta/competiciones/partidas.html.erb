@@ -61,7 +61,7 @@
   
   <% mftext('Modificar fecha de partidas seleccionadas') do %>
   Nueva fecha de juego: <%=datetime_select 'matches', 'play_on'  %>
-  <input type="submit" class="button" value="Guardar nueva fecha" onclick="form_sym_action('superform', 'partidas', 'update_matches_play_on');" />
+  <input type="submit" class="button" value="Guardar nueva fecha" onclick="GM.utils.form_sym_action('superform', 'partidas', 'update_matches_play_on');" />
   <% end -%>
   
   <% mftext('Modificar mapas de partidas seleccionadas') do %>
@@ -74,7 +74,7 @@
 <%
    end
    %>
-  <input type="submit" class="button" value="Guardar nuevos mapas" onclick="form_sym_action('superform', 'partidas', 'update_matches_games_maps');" />
+  <input type="submit" class="button" value="Guardar nuevos mapas" onclick="GM.utils.form_sym_action('superform', 'partidas', 'update_matches_games_maps');" />
   <%
 end
 

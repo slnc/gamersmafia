@@ -1,16 +1,15 @@
 <script type="text/javascript">
-  function create_member_link(tag_id, login)
-{
-  if ($j('#' + tag_id))
-    showblock(tag_id);
-  else
-  {
-    var u = document.getElementById('userslist');
-    var li = u.appendChild(document.createElement('li'));
-    li.id = tag_id;
-    var a = li.appendChild(document.createElement('a'));
-    a.href = '/miembros/' + login;
-    a.appendChild(document.createTextNode(login));
+function create_member_link(tag_id, login) {
+  var member_tag = $j('#' + tag_id);
+  if (member_tag) {
+  	member_tag.show();
+  } else {
+  	var u = document.getElementById('userslist');
+  	var li = u.appendChild(document.createElement('li'));
+  	li.id = tag_id;
+  	var a = li.appendChild(document.createElement('a'));
+  	a.href = '/miembros/' + login;
+  	a.appendChild(document.createTextNode(login));
   }
 }
 </script>
@@ -31,15 +30,15 @@
   <% if user_is_authed then %>
   <% mftext('¿Estarás en este evento?') do %>
   <div class="centered-link">
-    <div id="leave-link"><%=link_to_remote 'No', :complete => "$j('#user#{@user.id}').fadeOut('normal'); hideblock('leave-link'); showblock('join-link');", :url => "/eventos/member_leave/#{@event.id}" %></div>
-    <div id="join-link"><%=link_to_remote 'Sí', :complete => "create_member_link('user#{@user.id}', '#{@user.login}'); hideblock('join-link'); showblock('leave-link');", :url => "/eventos/member_join/#{@event.id}" %></div>
+    <div id="leave-link"><%=link_to_remote 'No', :complete => "$j('#user#{@user.id}').fadeOut('normal'); $j('#leave-link').hide(); $j('#join-link').show();", :url => "/eventos/member_leave/#{@event.id}" %></div>
+    <div id="join-link"><%=link_to_remote 'Sí', :complete => "create_member_link('user#{@user.id}', '#{@user.login}'); $j('#join-link').hide(); $j('#leave-link').show();", :url => "/eventos/member_join/#{@event.id}" %></div>
   </div>
   <% end -%>
     <script type="text/javascript">
     <% if users.find_by_id(@user.id) %>
-    showblock('leave-link'); hideblock('join-link');
+    $j('#leave-link').show(); $j('#join-link').hide();
     <% else %>
-    showblock('join-link'); hideblock('leave-link');
+    $j('#join-link').show(); $j('#leave-link').hide();
     <% end -%>
     </script>
   <% end -%>
