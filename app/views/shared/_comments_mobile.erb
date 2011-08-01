@@ -1,0 +1,47 @@
+<%
+ per_page = Cms.comments_per_page
+  uniq_id = object.unique_content.id
+  params[:page] = Cms::page_to_show(@user, object, @object_lastseen_on) if user_is_authed and not params[:page]
+  params[:page] = (params[:page].nil? or params[:page].to_i < 1) ? 1 : params[:page].to_i
+  ckey = object.updated_on < 1.month.ago ? 'perm' : Time.now.to_i/(86400*7)
+  questions_mode = (object.class.name == 'Question')
+  @comments = Comment.paginate(:page => params[:page], :per_page => per_page, :conditions => ['deleted = \'f\' AND content_id = ?', object.unique_content.id], :order => 'comments.created_on asc', :include => :user)
+%>
+<div class="comments-container">
+  <div class="comments-area">
+    <%= render :partial => 'shared/pager3', :locals => { :collection => @comments, :pos => 'top', :pager_params => { :anchor => 'comments' } } %>
+    <%
+    params[:page] ||= 1
+    i = (params[:page].to_i - 1) * per_page + 1
+
+    @comments.each do |comment|
+    i+=1
+    show_signature = comment.user.enable_comments_sig? && comment.user.comments_sig.to_s != ''
+    show_signature = false if questions_mode
+    %>
+    <div class="comment" id="comment<%= comment.id%>">
+      <div class="user-info">
+        <div class="user-info-holder">
+          <div class="avatar"><img src="<%= ASSET_URL%><%= comment.user.show_avatar%>" />
+          </div>
+        </div>
+      </div>
+      <div class="comment-header">
+        <div class="comment-info infoinline">
+          <%= print_tstamp comment.created_on%>
+        </div>
+        <div class="author">
+          #<span><%= i-1%></span> <a class="nav" href="<%= gmurl(comment.user)%>"><%= comment.user.login%></a> <%= faction_favicon(comment.user)%>
+        </div>
+      </div>
+      <div class="text" id="commenttext<%= comment.id%>">
+        <%= auto_link(smilelize(comment.comment)) do |text|
+          truncate(text.gsub(/http:\/\//, ''), 50)
+        end%>
+      </div>
+      <div class="clearb"></div>
+    </div>
+    <% end -%>
+    <%= render :partial => 'shared/pager3', :object => @comments_pages, :locals => { :collection => @comments, :pos => 'bottom', :pager_params => { :anchor => 'comments' } } %>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Gamersmafia</title>
+<style type="text/css">
+.comment { clear: both; border-bottom: 1px solid #ccc; padding: 5px 0; }
+.comment:nth-child(odd) { background: #fafafa; }
+.comment:nth-child(even) { background: #efefef; }
+.comment .user-info {float: left;}
+.comment .comment-header,
+.comment .text { margin-left: 55px; padding-right: 10px; }
+.comment .comment-info { float: right; color: #777; }
+.comment .comment-header { font-size: 13px; font-weight: bold; }
+.comment .comment-header .comment-info { font-weight: normal; font-size: 11px; }
+h1 { font-size: 18px; }
+.pagination { display: inline; }
+.pages { display: block; margin: 3px 0; }
+</style>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+</head>
+
+<body style="margin: 0; padding: 0 3px; font-family: arial, verdana; font-size: 12px;">
+	<div id="header" style="height: 29px;">
+		<a href="/" title="Volver a la portada"><img src="/images/logo_mobile.png" style="height: 29px;" /></a>
+	</div>
+
+	<div id="content" style="padding: 5px 0 5px 0;">
+	   <%= @content_for_layout %>
+	</div>
+
+	<div id="footer" style="text-align: center; padding: 10px 0;">
+		<strong>versión móvil</strong> | <a href="?mobile_param=0">versión escritorio</a>
+	</div>
+</body>
+
+</html>
