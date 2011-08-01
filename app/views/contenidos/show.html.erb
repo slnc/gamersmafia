@@ -1,0 +1,5 @@
+<h1><%=@content.resolve_hid%></h1>
+
+<%= render_content_contents @content %>
+
+<%= render :partial => 'shared/comments_mobile', :locals => { :object => @content } %>

@@ -9,12 +9,20 @@ class HomeController < ApplicationController
     render :action => 'index_h5', :layout => 'h5'
   end
 
+  def index_mobile
+    render :action => 'index_mobile', :layout => 'mobile'
+  end
+
   def index
+    if self.mobile_device?
+      self.index_mobile
+      return
+    end
+
     if params[:h5]
       index_h5
       return
     end
-
 
     if portal.kind_of?(ClansPortal) then
       @home = @portal.home

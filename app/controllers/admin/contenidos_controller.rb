@@ -1,5 +1,5 @@
 class Admin::ContenidosController < ApplicationController
-  before_filter :require_auth_users
+  before_filter :require_auth_users, :except => [ :show ]
 
   def submenu
     'Contenidos'

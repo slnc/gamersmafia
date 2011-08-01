@@ -48,6 +48,15 @@ module ApplicationHelper
     out
   end
 
+  def render_content_contents(content)
+  case content.class.name
+    when "Image":
+      return controller.send(:render_to_string, :partial => '/contenidos/image', :locals => { :content => content })
+    else
+      return controller.send(:render_to_string, :partial => '/contenidos/base', :locals => { :content => content })
+    end
+  end
+
   def active_sawmode
     if controller.active_sawmode
       @active_sawmode

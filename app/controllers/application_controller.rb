@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
       if success_dst.kind_of?(String)
         redirect_to(success_dst.gsub(
           "@#{ActiveSupport::Inflector::underscore(model.class.name)}.id",
-          model.id.to_s))
+        model.id.to_s))
       else
         redirect_to(success_dst)
       end
@@ -67,7 +67,7 @@ class ApplicationController < ActionController::Base
       if success_dst.kind_of?(String)
         destination = success_dst.gsub(
           "@#{ActiveSupport::Inflector::underscore(model.class.name)}.id",
-          model.id.to_s)
+        model.id.to_s)
       else
         destination = success_dst
       end
@@ -77,6 +77,18 @@ class ApplicationController < ActionController::Base
       flash[:error] = "Error al actualizar el #{model.class.name}:" +
                       " #{model.errors.full_messages_html}"
       render :action => error_render_action
+    end
+  end
+
+  def mobile_device?
+    if params[:mobile_param]
+      session[:mobile_param] = (params[:mobile_param] == "1")
+    end
+
+    if session[:mobile_param]
+      session[:mobile_param]
+    else
+      request.user_agent =~ /Mobile|webOS/
     end
   end
 
@@ -137,7 +149,7 @@ Request information:
   def check_referer
     if params[:rusid] && request.remote_ip != 'unknown'
       Stats.register_referer(params[:rusid].to_i, request.remote_ip,
-                             request.env['HTTP_REFERER'])
+      request.env['HTTP_REFERER'])
     end
   end
 
@@ -207,10 +219,10 @@ Request information:
 
   def check_portal_access_mode(allowed_portals)
     portal_sym = ActiveSupport::Inflector::singularize(
-                   ActiveSupport::Inflector::underscore(
-                     @portal.class.name.gsub('Portal', '')
-                   )
-                 ).to_sym
+                                                       ActiveSupport::Inflector::underscore(
+                                         @portal.class.name.gsub('Portal', '')
+    )
+    ).to_sym
     if defined?(allowed_portals) and not allowed_portals.include?(portal_sym)
       raise ActiveRecord::RecordNotFound
     end

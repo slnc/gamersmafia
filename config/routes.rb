@@ -3,7 +3,7 @@
 LOGIN_REGEXP = /[^\/]+/
 ActionController::Routing::Routes.draw do |map|
   map.resources :tags, :requirements => { :id => /[a-z0-9._]+/ }
-  
+
   map.namespace(:admin) do |admin|
     admin.resources :tags
   end
@@ -15,7 +15,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'admin/contenidos/recover/:id', :controller => 'admin/contenidos', :action => 'recover'
 
   map.connect 'admin/categorias/', :controller => 'admin/categorias', :action => 'index'
-  
+
   map.connect 'admin/categorias/create', :controller => 'admin/categorias', :action => 'create'
   map.connect 'admin/categorias/term/:id', :controller => 'admin/categorias', :action => 'root'
   map.connect 'admin/categorias/term/:id/update', :controller => 'admin/categorias', :action => 'update'
@@ -97,7 +97,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'cuenta/faccion/mapas_juegos', :controller => 'cuenta/faccion', :action => 'mapas_juegos'
   map.connect 'cuenta/faccion/mapas_juegos/:action/:id', :controller => 'cuenta/faccion'
   map.connect 'cuenta/faccion/informacion', :controller => 'cuenta/faccion', :action => 'informacion'
-  
+
   map.connect 'cuenta/faccion/categorias', :controller => 'cuenta/faccion/categorias', :action => 'index'
   map.connect 'cuenta/faccion/categorias/create', :controller => 'cuenta/faccion/categorias', :action => 'create'
   map.connect 'cuenta/faccion/categorias/term/:id', :controller => 'cuenta/faccion/categorias', :action => 'root'
@@ -106,7 +106,7 @@ ActionController::Routing::Routes.draw do |map|
   map.connect 'cuenta/faccion/categorias/term/:id/hijos/:content_type', :controller => 'cuenta/faccion/categorias', :action => 'hijos'
   map.connect 'cuenta/faccion/categorias/term/:id/contenidos/:content_type', :controller => 'cuenta/faccion/categorias', :action => 'contenidos'
   map.connect 'cuenta/faccion/categorias/term/:id/contenidos/:content_type/mass_move', :controller => 'cuenta/faccion/categorias', :action => 'mass_move'
-  
+
   map.connect 'cuenta/faccion/cabeceras/new', :controller => 'cuenta/faccion', :action => 'cabeceras_new'
   map.connect 'cuenta/faccion/cabeceras/create', :controller => 'cuenta/faccion', :action => 'cabeceras_create'
   map.connect 'cuenta/faccion/cabeceras/update/:id', :controller => 'cuenta/faccion', :action => 'cabeceras_update'
@@ -158,7 +158,9 @@ ActionController::Routing::Routes.draw do |map|
 
   map.connect "foros/nuevo_topic", :controller => 'foros', :action => 'nuevo_topic'
   map.connect "foros/topics_activos", :controller => 'foros', :action => 'topics_activos'
-  
+
+  map.connect "contenidos/:id", :controller => 'contenidos', :action => 'show'
+
   map.connect "tutoriales/list", :controller => 'tutoriales', :action => 'index'
   map.connect "tutoriales/create", :controller => 'tutoriales', :action => 'create'
   map.connect "tutoriales/new", :controller => 'tutoriales', :action => 'new'
@@ -173,9 +175,9 @@ ActionController::Routing::Routes.draw do |map|
 
   # Install the default route as the lowest priority.
   map.connect ':controller/:action/:id'
-  map.connect 'site/slog.:format', :controller => 'site', :action => 'slog' 
+  map.connect 'site/slog.:format', :controller => 'site', :action => 'slog'
   map.connect '*path' , :controller => 'application' , :action => 'http_404' # necesario para coger todas las demás rutas inexistentes
-  
+
     # The priority is based upon order of creation: first created -> highest priority.
 
   # Sample of regular route:

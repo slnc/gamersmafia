@@ -1,0 +1,5 @@
+<ul>
+<% get_last_commented_contents.each do |c| %>
+  <li><%=link_to c.resolve_hid, "/contenidos/#{c.unique_content_id}" %></li>
+<% end %>
+</ul>
