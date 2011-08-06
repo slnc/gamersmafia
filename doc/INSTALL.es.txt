@@ -15,7 +15,6 @@ Instrucciones mínimas (seguir en este orden)
     activeresource 
     activesupport 
     ai4r 
-    blackbook 
     builder 
     capistrano 
     ci_reporter 

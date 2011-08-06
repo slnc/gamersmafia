@@ -1,7 +1,6 @@
 source "http://rubygems.org"
 
 gem "ai4r"
-gem "blackbook"
 gem "capistrano"
 gem "ci_reporter"
 gem "clusterer"

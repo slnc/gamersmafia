@@ -18,7 +18,6 @@ Rails::Initializer.run do |config|
   #config.gem 'rmagick', :lib => 'RMagick'
   #config.gem 'postgres'
   #config.gem 'ci_reporter'
-  config.gem 'blackbook'
   #config.gem 'feedtools', :lib => 'feed_tools'
   #config.gem 'feedvalidator', :lib => 'feed_validator'
   config.gem 'tidy'
