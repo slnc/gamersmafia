@@ -8,50 +8,49 @@ Instrucciones mínimas (seguir en este orden)
 - instalar ruby-enterprise
 - instalar las siguientes gems (gem install <nombre de la gem>)
 
-    aasm 
-    actionmailer 
-    actionpack 
-    activerecord 
-    activeresource 
-    activesupport 
-    ai4r 
-    builder 
-    capistrano 
-    ci_reporter 
-    classifier 
-    curb 
-    fastercsv 
-    fastthread 
-    feedbag 
-    feedzirra 
-    geoip 
-    gruff 
-    highline 
-    hoe 
-    hpricot 
-    json_pure 
-    loofah 
-    mechanize 
-    net-scp 
-    net-sftp 
-    net-ssh 
-    net-ssh-gateway 
-    nokogiri 
-    passenger 
-    pg 
-    rack 
-    rails 
+    aasm
+    actionmailer
+    actionpack
+    activerecord
+    activeresource
+    activesupport
+    ai4r
+    builder
+    capistrano
+    ci_reporter
+    classifier
+    curb
+    fastercsv
+    fastthread
+    feedbag
+    feedzirra
+    geoip
+    gruff
+    highline
+    hoe
+    hpricot
+    json_pure
+    loofah
+    mechanize
+    net-scp
+    net-sftp
+    net-ssh
+    net-ssh-gateway
+    nokogiri
+    passenger
+    pg
+    rack
+    rails
     rake (instalar versión 8.0.7. haciendo uso del comando "gem install rake --version 0.8.7")
-    rcov 
-    rmagick 
-    rubyforge 
-    rubystats 
-    sax-machine 
-    scrubyt 
-    stemmer 
-    tidy 
+    rmagick
+    rubyforge
+    rubystats
+    sax-machine
+    scrubyt
+    stemmer
+    tidy
 
-- git clone git://github.com/slnc/gamersmafia.git 
+- git clone git://github.com/slnc/gamersmafia.git
   git submodule init
   git submodule update
   cd gamersmafia
@@ -69,7 +68,7 @@ Instrucciones mínimas (seguir en este orden)
 
 - intenta ejecutar algún test, por ejemplo:
 
-~/workspace/gamersmafia[gm-2000]$ ruby -Itest test/unit/user_test.rb 
+~/workspace/gamersmafia[gm-2000]$ ruby -Itest test/unit/user_test.rb
 
 Si ves algo como esto:
 --------------------------------------------------------------------
@@ -90,14 +89,14 @@ Tienes todo listo para empezar a colaborar.
 ¿Cómo saber si ya has leído suficiente?
 - Sabes crear una aplicación rails desde cero
 - Sabes cómo crear nuevos modelos, controladores y resources
-- Sabes modificar vistas, añadir atributos a un modelo y modificar las vistas 
+- Sabes modificar vistas, añadir atributos a un modelo y modificar las vistas
     correspondientes.
 - Sabes para qué escribir tests y la diferencia entre unit tests, functional
     tests e integration tests
 - Sabes escribir tests de cada tipo
 
 
-2.2 Aprende a usar Git (http://git-scm.com/documentation) y github 
+2.2 Aprende a usar Git (http://git-scm.com/documentation) y github
     (http://github.com/guides/home).
 ¿Cómo saber si ya has leído suficiente?
 - Sabes qué hace Git
@@ -114,11 +113,11 @@ En GM la rama por defecto se llama "production" en lugar de "master".
 Pasos:
 1- Asegúrate de que el bug que vas a corregir o la funcionalidad a añadir ha
    sido aprobada por slnc. Temporalmente vamos a seguir usando JIRA (
-   http://hq.gamersmafia.com ) para llevar el control de incidencias pero la 
+   http://hq.gamersmafia.com ) para llevar el control de incidencias pero la
    idea es migrar a http://lighthouseapp.com/ en las próximas semanas.
 
-   De momento si ves una incidencia en JIRA de tipo bug por defecto asume que 
-   está "aprobada". Si no es un bug lo más seguro es dejar un comentario y en 
+   De momento si ves una incidencia en JIRA de tipo bug por defecto asume que
+   está "aprobada". Si no es un bug lo más seguro es dejar un comentario y en
    cuanto slnc dé el visto bueno adelante con ella.
 
 
@@ -138,10 +137,10 @@ Pasos:
     # git add nuevo_archivo1 nuevo_archivo2
     git commit -m "GM-1000: Título completo de la incidencia"
     git push origin gm-1000
-    # crea un pull request o si lo prefieres mándale un email a slnc para 
+    # crea un pull request o si lo prefieres mándale un email a slnc para
     avisarle git checkout production
 
-    # Listo para trabajar en la siguiente incidencia. Cuando slnc vea el commit 
-    # tu pull request si está todo bien actualizará production y cuando eso 
-    # ocurra podrás ejecutar "git pull" desde production y verás el cambio en 
+    # Listo para trabajar en la siguiente incidencia. Cuando slnc vea el commit
+    # tu pull request si está todo bien actualizará production y cuando eso
+    # ocurra podrás ejecutar "git pull" desde production y verás el cambio en
     # esa rama.

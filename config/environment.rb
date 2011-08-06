@@ -24,9 +24,7 @@ Rails::Initializer.run do |config|
   config.gem 'geoip'
   config.gem 'rmagick', :lib => 'RMagick'
   config.gem 'nokogiri'
-  #config.gem 'capistrano'
   config.gem 'gruff'
-  config.gem 'rcov'
 
   #config.time_zone = 'Madrid'
   #config.active_record.default_timezone = 'Madrid' 
