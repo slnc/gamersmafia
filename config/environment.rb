@@ -23,7 +23,6 @@ Rails::Initializer.run do |config|
   config.gem 'tidy'
   config.gem 'geoip'
   config.gem 'rmagick', :lib => 'RMagick'
-  config.gem 'nokogiri'
   config.gem 'gruff'
 
   #config.time_zone = 'Madrid'

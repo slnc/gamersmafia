@@ -36,7 +36,6 @@ Instrucciones mínimas (seguir en este orden)
     net-sftp
     net-ssh
     net-ssh-gateway
-    nokogiri
     passenger
     pg
     rack
