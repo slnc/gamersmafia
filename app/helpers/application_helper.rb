@@ -901,13 +901,6 @@ skin: 'v2'
     opts = {:show_ads => true}.merge(opts)
     return '' if controller.portal.kind_of?(ClansPortal)
     out = ''
-    #ab_test('sideright NLS-bandits', 0, :add_xab_to_links => true, :returnmode => :out) { out = ads_slots('sideright-random', '2-0') }
-    #ab_test('sideright NLS-bandits', 1, :add_xab_to_links => true, :returnmode => :out) { out = ads_slots('sideright-epsilongreedy', '2-1') }
-    #ab_test('sideright NLS-bandits', 2, :add_xab_to_links => true, :returnmode => :out) { out = ads_slots('sideright-epsilonfirst', '2-2') }
-    #ab_test('sideright NLS-bandits', 3, :add_xab_to_links => true, :returnmode => :out) { out = ads_slots('sideright-epsilondecreasing', '2-3') }
-    #ab_test('sideright NLS-bandits', 4, :add_xab_to_links => true, :returnmode => :out) { out = ads_slots('sideright-softmax', '2-4') }
-    #ab_test('sideright NLS-bandits', 5, :add_xab_to_links => true, :returnmode => :out) { out = ads_slots('sideright-leasttaken', '2-5') }
-    #ab_test('sideright NLS-bandits', 6, :add_xab_to_links => true, :returnmode => :out) { out = ads_slots('sideright-poker', '2-6') }
 
     concat("<div class=\"container\" id=\"csupport\"><div class=\"ads-slots\"><div class=\"ads-slots1\">#{out if opts[:show_ads]}")
     concat("#{ads_slots('sideright') if opts[:show_ads]}</div></div>")

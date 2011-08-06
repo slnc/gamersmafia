@@ -437,7 +437,7 @@ if crecs.size > 0 then %>
 
 <%= render :partial => '/layouts/last_commented_objects' %>
 
-<div id="mgads" class="container"><div class="mcontent"><%= render :partial => '/shared/bandits_sideleft' %><br />
+<div id="mgads" class="container"><div class="mcontent"><%=ads_slots('sideleft', '1-0')%><br />
 
 <% if user_is_authed && @user.created_on > 1.year.ago || !user_is_authed then %>
 <script type="text/javascript"><!--

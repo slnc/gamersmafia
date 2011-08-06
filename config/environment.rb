@@ -23,7 +23,6 @@ Rails::Initializer.run do |config|
   config.gem 'tidy'
   config.gem 'geoip'
   config.gem 'rmagick', :lib => 'RMagick'
-  config.gem 'rubystats'
   config.gem 'nokogiri'
   #config.gem 'capistrano'
   config.gem 'gruff'

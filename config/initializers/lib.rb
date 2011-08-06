@@ -8,7 +8,6 @@
     bank
     gmstats
     skins
-    bandit
     ads
     stats
   ).each do |f|
