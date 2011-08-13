@@ -17,12 +17,10 @@
 }
 
 .mpager .currentpage {
-    font-family: verdana;
     font-size: 11px;
 }
 
 .mpager a {
     text-decoration: none;
-    font-family: verdana;
     font-size: 11px;
 }

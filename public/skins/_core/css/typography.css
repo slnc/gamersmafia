@@ -1,16 +1,28 @@
-/* unfinished */
-body, body td, input, textarea {
-	font-family: Tahoma, Arial, "sans-serif"; 
-	font-size: 12px;
+/**
+ * This file contains all font-related CSS.
+ */
+
+/* Font families */
+body, input, textarea {
+	font-family: Tahoma, Arial, "sans-serif";
 }
 
 .f_sm {
 	font-family: Verdana, Arial, "sans-serif";
-	font-size: 10px; 
 }
 
 .f_number {
 	font-family: Georgia, "Courier New", "Times New Roman", serif;
+}
+
+
+/* Font sizes */
+body, body td, input, textarea {
+	font-size: 12px;
+}
+
+.f_sm {
+	font-size: 10px;
 }
 
 h1 { font-size: 1.55em; letter-spacing: 0.09em; word-spacing: 0.09em}

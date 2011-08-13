@@ -435,7 +435,6 @@
 #home-factions td { padding-bottom: 10px; }
 
 .homebox table.calendar, .homebox table.calendar td, #ccontent .homebox table.calendar th {
-    font-family: arial;
     font-size: 10px;
     text-align: center;
 }
@@ -482,7 +481,6 @@
 }
 
 #homecontents .subheader, #homecommunity .subheader, #homegamer .subheader {
-    font-family: "Arial Black", Arial;
     font-size: 15px;
     text-transform: uppercase;
     font-weight: normal;
