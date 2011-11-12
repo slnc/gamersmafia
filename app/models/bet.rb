@@ -2,8 +2,9 @@ class Bet < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable
 
+  TIE = 0
   TOP_BET_WINNERS = "#{RAILS_ROOT}/public/storage/apuestas/top_bets_winners_minicolumns_data"
-  
+
   INCOMPLETE_BET_SQL = "winning_bets_option_id IS NULL
                         AND tie is false
                         AND cancelled is false
@@ -292,7 +293,7 @@ class Bet < ActiveRecord::Base
     money_pool = self.total_ammount
     _bets_options = self.bets_options
     _users = self.users
-    
+
     # We calculate ratio of amount bet across options for each user (phase 1).
     for user in _users
       amount1 = user_amount_in_option(user, _bets_options[0])
@@ -371,5 +372,52 @@ class Bet < ActiveRecord::Base
                                       WHERE bet_id = #{self.id})
               AND user_id = #{user.id}"
     BetsTicket.sum(:ammount, :conditions => conditions)
+  end
+
+  public
+  def determine_crowd_decision
+    votes_tie = 0
+    votes_a = 0
+    votes_b = 0
+    options = []
+    users_tie = []
+    users_a = []
+    users_b = []
+    user_votes = {}
+    self.bets_options.each do |option|
+      options<< option
+    end
+    winners = []
+    self.users.each do |user|
+      sum_option_a = self.user_amount_in_option(user, options[0])
+      sum_option_b = self.user_amount_in_option(user, options[1])
+      next if sum_option_a + sum_option_b == 0
+      if sum_option_a == sum_option_b
+        votes_tie += 1
+        user_votes[user.id] = Bet::TIE
+        winners<< user.id if self.tie
+      elsif sum_option_a > sum_option_b
+        votes_a += 1
+        user_votes[user.id] = options[0].id
+        winners<< user.id if self.winning_bets_option_id == options[0].id
+      else
+        votes_b += 1
+        user_votes[user.id] = options[1].id
+        winners<< user.id if self.winning_bets_option_id == options[1].id
+      end
+    end
+
+    puts "tie | option #{options[0].id} | option #{options[1].id}"
+    puts "#{votes_tie} #{votes_a} #{votes_b}"
+
+    if votes_tie > votes_a and votes_tie > votes_b
+      return [Bet::TIE, winners, user_votes]
+    elsif votes_a > votes_tie and votes_a > votes_b
+      return [options[0].id, winners, user_votes]
+    elsif votes_b > votes_tie and votes_b > votes_a
+      return [options[1].id, winners, user_votes]
+    else
+      return [options[0].id, winners, user_votes]
+    end
   end
 end
