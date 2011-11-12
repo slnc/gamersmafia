@@ -34,6 +34,9 @@ ActionController::Routing::Routes.draw do |map|
   #map.connect 'competiciones/show/:id/partidas', :controller => 'competiciones', :action =>
   #map.connect 'competiciones/show/:id/participantes', :controller => 'competiciones', :action =>
 
+  map.connect 'gamersmafiageist/:survey_edition_date', :controller =>
+  'gamersmafiageist', :action => 'edicion', :survey_edition_date => /[0-9]{4}/
+
   map.connect 'cuenta', :controller => 'cuenta/cuenta', :action => 'index'
 
   map.connect 'cuenta/mis_borradores', :controller => 'cuenta/cuenta', :action => 'mis_borradores'
