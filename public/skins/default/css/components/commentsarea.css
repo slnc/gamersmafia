@@ -101,7 +101,7 @@
 .inactive .comment-header { opacity: 0.8 }
 
 .inactive .comment-header .comment-info,
-.inactive .moderate-comments-opener-detail { opacity: 0.2; }
+.inactive .moderate-comments-opener-detail { opacity: 1.0; }
 
 .inactive .user-info .user-info-bar,
 .inactive .user-info .emblemas,
