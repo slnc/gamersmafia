@@ -112,7 +112,7 @@ end
     <th class="timestamp">Terminó hace</th>
   </tr>
   <% cache("/#{@controller.portal_code}/apuestas/index/closed_#{Time.now.to_i/3600}") do %>
-  <% controller.portal.bet.closed_bets.find(:published, :limit => 20).each do |bet| %>
+  <% Bet.in_term(controller.portal.bet).closed_bets.find(:published, :limit => 20).each do |bet| %>
     <tr class="<%=oddclass%>">
       <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
       <td class="right"><%=bet.total_ammount.to_i%></td>

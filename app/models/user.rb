@@ -349,6 +349,10 @@ class User < ActiveRecord::Base
     true
   end
 
+  def settled?
+    return self.created_on <= 1.month.ago
+  end
+
   # More elaborated has_many
   def ne_references
     NeReference.find(:all, :conditions => ["(entity_class = 'User'
@@ -1042,6 +1046,8 @@ class User < ActiveRecord::Base
                            :notifications_trackerupdates => false
     )
     self.save
+    return
+
     Message.create(:sender => User.find_by_login('nagato'), :recipient => self, :title => 'Notificaciones desactivadas', :message => "Hola, he desactivado el envío de todas las notificaciones por email a tu cuenta ya que estamos recibiendo errores de tu servidor de correo. Si crees que esto es un error por favor mandale un mensaje a [~slnc].\n\nPuedes reactivar las notificaciones en la sección [url=http://gamersmafia.com/cuenta]Mi cuenta[/url]")
   end
 
