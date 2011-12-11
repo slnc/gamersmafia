@@ -168,6 +168,7 @@ class User < ActiveRecord::Base
   before_save :check_if_shadow
   before_save :check_if_website
 
+  named_scope :settled, :conditions => 'created_on <= now() - \'1 month\'::interval'
   named_scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})",
                           :order => 'lower(login)'
   named_scope :birthday_today, :conditions => "date_part('day', birthday)::text || date_part('month', birthday)::text = date_part('day', now())::text || date_part('month', now())::text"

@@ -5,6 +5,8 @@ class GamersmafiageistController < ApplicationController
   end
 
   def edicion
+  flash[:error] = "La encuesta est&aacute; cerrada."
+  return
     if !@user.settled?
       flash[:error] = "No llevas en Gamersmafia suficiente tiempo como para participar en esta ediciÃn de la Gamersmafiageist, lo sentimos"
     else
