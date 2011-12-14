@@ -340,32 +340,6 @@ class SiteController < ApplicationController
       params['_xsi'] = nil
     end
 
-
-    # TODO HACK
-    pdata = /ad[0-9]+--ab([0-9-]+)r([0-9]+)l([0-9]+)/.match(element_id)
-    # TODO temp disabled
-    if nil && pdata # /--/ =~ element_id # bandit algorithm tracking
-      game_id = pdata[1]
-      lever = pdata[3].to_i
-      round = pdata[2].to_i
-
-      data = User.db_query("SELECT lever#{lever}_reward FROM stats.bandit_treatments WHERE abtest_treatment = '#{game_id}'")
-      if data.size == 0
-        raise "game data for #{game_id} NOT FOUND"
-      end
-      data = data[0]["lever#{lever}_reward"]
-      data[round..round] = '1'
-      # new_data = gambler.rewards[lever]['t']
-      User.db_query("UPDATE stats.bandit_treatments
-                          SET lever#{lever}_reward = '#{data}'
-                        WHERE abtest_treatment = '#{game_id}'")
-      #else
-      #  User.db_query("UPDATE stats.bandit_treatments
-      #                    SET lever#{lever}_reward = lever#{lever}_reward | (lpad('', #{round}, '0') || '1')::bit(#{round + 1})
-      #                  WHERE abtest_treatment = '#{game_id}'")
-      #end
-    end
-
     User.db_query("INSERT INTO stats.ads (referer,
                                           user_id,
                                           ip,

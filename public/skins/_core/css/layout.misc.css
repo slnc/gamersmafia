@@ -16,7 +16,7 @@
 .comments-icon {
     width: 12px;
     height: 12px;
-    
+
 }
 
 img.pageviews-count {
@@ -27,13 +27,13 @@ img.pageviews-count {
 img.comments-count {
     width: 16px;
     height: 16px;
-    
+
 }
 
 img.downloads-count {
     width: 16px;
     height: 16px;
-    
+
 }
 
 #notice, #error {
@@ -52,7 +52,6 @@ img.downloads-count {
     padding-left: 15px;
     line-height: 33px;
     font-weight: bold;
-    font-family: tahoma, arial;
     font-size: 16px;
 }
 

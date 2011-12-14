@@ -27,7 +27,6 @@ h2 {
 
 
 #ccontent .contentinfobar {
-    font-family: verdana;
     font-size: 10px;
 }
 
@@ -43,19 +42,16 @@ tr, td {
 }
 
 #navpath {
-    font-family: arial;
     font-size: 11px;
 }
 
 .homebox .title {
-    font-family: Verdana;
     font-weight: bold;
     font-size: 0.85em;
     line-height: 27px;
 }
 
 .homebox {
-    font-family: verdana;
     font-size: 11px;
 }
 
@@ -95,12 +91,10 @@ body.lypopup h1 {
 }
 
 .contenttitle .infoinline {
-    font-family: arial;
     font-size: 10px;
 }
 
 .contenttitle .author {
-    font-family: verdana;
     font-size: 11px;
 }
 
@@ -145,7 +139,6 @@ body.lypopup h1 {
 
 .infoinline, #ccontent .pageviews-count, #ccontent .comments-count, .infoinline td {
     font-size: 10px;
-    font-family: verdana;
 }
 
 #ccontent th {
@@ -262,7 +255,6 @@ textarea {
 
 .contentinfobar {
     font-size: 10px;
-    font-family: verdana;
 }
 
 #ccontent table.calendar .monthName th {
@@ -292,7 +284,6 @@ th.sm-icon, td.sm-icon {
 .karma .points, .faith .points {
     font-weight: bold;
     text-align: right;
-    font-family: arial;
     font-size: 10px;
 }
 
@@ -310,7 +301,6 @@ th.sm-icon, td.sm-icon {
 }
 
 .comment-rating-state {
-    font-family: verdana;
     font-size: 10px;
     font-weight: bold;
 }
@@ -330,7 +320,6 @@ th.sm-icon, td.sm-icon {
 .match-won, .match-lost, .match-tie {
     font-weight: bold;
     font-size: 10px;
-    font-family: verdana;
 }
 
 #ccontent dt {
@@ -348,7 +337,6 @@ th.sm-icon, td.sm-icon {
 
 #content-stats {
     font-size: 10px;
-    font-family: verdana;
 }
 
 /**

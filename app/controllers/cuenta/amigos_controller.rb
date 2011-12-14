@@ -1,5 +1,3 @@
-require 'blackbook'
-
 class Cuenta::AmigosController < ApplicationController
   before_filter :require_auth_users, :only => [ :index ]
   
@@ -79,38 +77,6 @@ class Cuenta::AmigosController < ApplicationController
     @title = "No deseo recibir más emails de LaFlecha"
   end
   
-  def invitar_contactos
-    require_auth_users
-    raise ActiveRecord::RecordNotFound unless %w(gmail hotmail yahoo).include?(params[:source])
-    params[:login] = params[:login].gsub(/@(.+)/, '')
-    params[:login] = "#{params[:login]}@#{params[:source]}.com"
-    begin      
-      @amigos = Blackbook.get(params[:source].to_sym, { :username => params[:login], :password => params[:password]} )
-    rescue Blackbook::BadCredentialsError
-      flash[:error] = "El nombre de usuario y la contraseña introducidos no son válidos en <strong>#{params[:source]}</strong>"
-    rescue
-      
-      flash[:error] = "Ocurrió un error al intentar obtener tus amigos. Por favor, inténtalo de nuevo dentro de un rato o si el error persiste contacta con nosotros."
-    end
-    @title = "Invitar contactos de #{params[:source]}"
-    # @navpath = [['Usuarios', '/usuarios'], ]
-  end
-  
-  def do_invitar_contactos
-    require_auth_users
-    i = 0
-    params[:contacts_emails].each do |email|
-      # TODO usar name provisto para que el email quede más cool
-      invit = create_friendship_from_external_email(email, ActionView::Base.new.strip_tags(params[:invite_text]))
-      if invit.new_record?
-        flash[:error] = "Error al enviar invitación a #{email}: #{invit.errors.full_messages_html}"
-      else
-        i += 1
-      end
-    end
-    flash[:notice] = "Invitaciones enviadas correctamente a <strong>#{i}</strong> contactos."
-    redirect_to "/cuenta/amigos"
-  end
   
   def create_friendship_from_external_email(email, invite_text='')
     u = User.find(:first, :conditions => ['lower(email) = lower(?)', email])
