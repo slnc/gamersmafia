@@ -168,6 +168,7 @@ class User < ActiveRecord::Base
   before_save :check_if_shadow
   before_save :check_if_website
 
+  named_scope :settled, :conditions => 'created_on <= now() - \'1 month\'::interval'
   named_scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})",
                           :order => 'lower(login)'
   named_scope :birthday_today, :conditions => "date_part('day', birthday)::text || date_part('month', birthday)::text = date_part('day', now())::text || date_part('month', now())::text"
@@ -347,6 +348,10 @@ class User < ActiveRecord::Base
   def check_if_shadow
     self.state = ST_SHADOW if self.state == ST_ZOMBIE && self.lastseen_on > 1.minute.ago
     true
+  end
+
+  def settled?
+    return self.created_on <= 1.month.ago
   end
 
   # More elaborated has_many
@@ -1042,6 +1047,8 @@ class User < ActiveRecord::Base
                            :notifications_trackerupdates => false
     )
     self.save
+    return
+
     Message.create(:sender => User.find_by_login('nagato'), :recipient => self, :title => 'Notificaciones desactivadas', :message => "Hola, he desactivado el envío de todas las notificaciones por email a tu cuenta ya que estamos recibiendo errores de tu servidor de correo. Si crees que esto es un error por favor mandale un mensaje a [~slnc].\n\nPuedes reactivar las notificaciones en la sección [url=http://gamersmafia.com/cuenta]Mi cuenta[/url]")
   end
 

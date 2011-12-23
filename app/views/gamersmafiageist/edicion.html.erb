@@ -1,0 +1,12 @@
+<% if @code.nil? then %>
+Lo sentimos pero no puedes participar en esta edición de la Gamersmafiageist.
+<% else %>
+Tu código para la Gamersmafiageist <%= @code.survey_edition_date %> es:<strong>
+<%= @code.code %></strong>
+<br />
+<br />
+<strong><a
+href="https://docs.google.com/a/slnc.me/spreadsheet/viewform?hl=en_US&formkey=dDFMT0xSSkM5Y0FKUm5NUWpIRDJOWWc6MQ#gid=0"
+target="_blank">Rellenar
+la gmGeist <%= @code.survey_edition_date %> &raquo;</a></strong>
+<% end -%>

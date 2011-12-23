@@ -81,11 +81,11 @@ class ApplicationController < ActionController::Base
   end
 
   def mobile_device?
-    if params[:mobile_param]
+    if params.key?(:mobile_param)
       session[:mobile_param] = (params[:mobile_param] == "1")
     end
 
-    if session[:mobile_param]
+    if session.key?(:mobile_param)
       session[:mobile_param]
     else
       request.user_agent =~ /Mobile|webOS/

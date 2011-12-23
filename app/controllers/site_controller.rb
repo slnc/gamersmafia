@@ -3,6 +3,14 @@ require 'md5'
 class SiteController < ApplicationController
   helper :miembros
   CONTACT_MAGIC = 982579815691299191
+  VALID_TOPIC = /^[0-9]+\/[a-z1-9&.=]+$/
+
+  def ideas
+    @title = 'Ideas'
+    if params[:topic] && VALID_TOPIC =~ params[:topic]
+      @topic = params[:topic]
+    end
+  end
 
   def banners
     @title = 'Banners de Gamersmafia'
@@ -122,7 +130,7 @@ class SiteController < ApplicationController
 
   def chat
     @title = "Chat Gamersmafia"
-    @online_users = User.can_login.online.find(:all, 
+    @online_users = User.can_login.online.find(:all,
                                                :order => 'lastseen_on desc',
                                                :limit => 100)
   end
