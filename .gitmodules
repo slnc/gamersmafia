@@ -1,6 +1,0 @@
-[submodule "public/javascripts/web.shared"]
-    path = public/javascripts/web.shared
-    url = git://github.com/slnc/web.shared.git
-[submodule "vendor/plugins"]
-    path = vendor/plugins
-    url = git://github.com/slnc/vendor.plugins.git
