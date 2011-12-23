@@ -1,0 +1,1 @@
+require 'deadlock_retry'
