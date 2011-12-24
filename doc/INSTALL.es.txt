@@ -1,86 +1,19 @@
 1. INSTALACIÓN
 
-Instrucciones mínimas (seguir en este orden)
-- instalar linux
-- instalar git
-- instalar apache
-- instalar postgres
-- instalar ruby-enterprise
-- instalar las siguientes gems (gem install <nombre de la gem>)
+Pasos:
+1. Instala Ubuntu en una máquina virtual de tu elección y crea un usuario con
+login: "unnamed".
+2. Copia y pega las siguientes líneas en una terminal:
 
-    aasm
-    actionmailer
-    actionpack
-    activerecord
-    activeresource
-    activesupport
-    ai4r
-    builder
-    capistrano
-    ci_reporter
-    classifier
-    curb
-    fastercsv
-    fastthread
-    feedbag
-    feedzirra
-    geoip
-    gruff
-    highline
-    hoe
-    hpricot
-    json_pure
-    loofah
-    mechanize
-    net-scp
-    net-sftp
-    net-ssh
-    net-ssh-gateway
-    passenger
-    pg
-    rack
-    rails
-    rake (instalar versión 8.0.7. haciendo uso del comando "gem install rake --version 0.8.7")
-    rmagick
-    rubyforge
-    rubystats
-    sax-machine
-    scrubyt
-    stemmer
-    tidy
-
-- git clone git://github.com/slnc/gamersmafia.git
-  git submodule init
-  git submodule update
-  cd gamersmafia
-
-  Si vas a colaborar necesitarás crearte una cuenta en github y clonar el
-  repositorio, instrucciones más abajo.
+# -- inicio copypaste
+wget https://raw.github.com/slnc/gamersmafia/production/script/bootstrap_gm.sh
+chmod u+x bootstrap_gm.sh
+./bootstrap_gm.sh
+# -- fin copypaste
 
 
-- en PostgreSQL crea una bd para gm llamada "gamersmafia"
-    createdb gamersmafia
-    psql -f db/create.sql gamersmafia
-
-- crea la bd de test (puedes hacerlo automáticamente con el siguiente script desde la carpeta en la que tienes el git de gamersmafia):
-    ./script/sync_testenv.sh
-
-- intenta ejecutar algún test, por ejemplo:
-
-~/workspace/gamersmafia[gm-2000]$ ruby -Itest test/unit/user_test.rb
-
-Si ves algo como esto:
---------------------------------------------------------------------
-Loaded suite test/unit/user_test
-Started
-.............................
-Finished in 8.477707 seconds.
-
-29 tests, 91 assertions, 0 failures, 0 errors
---------------------------------------------------------------------
-
-Tienes todo listo para empezar a colaborar.
-
+Si vas a colaborar necesitarás crearte una cuenta en github y clonar el
+repositorio, instrucciones más abajo.
 
 2. COMO COLABORAR
 2.1 Lee todas las guías de http://guides.rubyonrails.org/
