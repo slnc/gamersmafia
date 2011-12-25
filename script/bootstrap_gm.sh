@@ -74,7 +74,8 @@ CloneRepo() {
 InstallSystemPackages() {
   sudo apt-get install -qq -y `echo ${PACKAGES_TO_INSTALL} | tr '\n' ' '`
   sudo gem update rubygems-update=1.3.5
-  sudo gem install passenger
+  sudo gem install passenger --no-rdoc --no-ri
+  sudo gem install bundler --no-rdoc --no-ri
   echo -e "\nSnippet that should be present now in apache2.conf"
   sudo passenger-install-apache2-module -a --snippet
   echo -e "\n"
@@ -87,6 +88,7 @@ SetupPostgreSql() {
     echo "export PGUSER=postgres" >> ~/.bashrc
     export PGUSER=postgres
   fi
+  sudo /etc/init.d/postgresql restart
 
   if ! `psql --list | grep -q gamersmafia`
   then
