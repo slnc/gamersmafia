@@ -112,7 +112,7 @@ SetupApache2() {
   do
     module_dst="/etc/apache2/mods-enabled/${module}"
     if [ ! -f ${module_dst} ]; then
-      sudo ln -s /etc/apache2/mods-available/${module}.load ${module_dst}
+      sudo ln -s /etc/apache2/mods-available/${module}.load ${module_dst}.load
     fi
   done
 
