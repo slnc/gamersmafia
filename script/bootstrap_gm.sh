@@ -56,8 +56,8 @@ PassengerRuby /usr/bin/ruby1.8"
 __HERE
 
 Bootstrap() {
-  CloneRepo
   InstallSystemPackages
+  CloneRepo
   SetupPostgreSql
   SetupApache2
   SetupGamersmafiaApp
