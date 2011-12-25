@@ -46,14 +46,6 @@ rubygems
 vim
 zip
 "
-PASSENGER_APACHE2_CONF=<<-__HERE
-
-# Passenger
-LoadModule passenger_module
-/usr/lib/ruby/gems/1.8/gems/passenger-3.0.9/ext/apache2/mod_passenger.so
-PassengerRoot /usr/lib/ruby/gems/1.8/gems/passenger-3.0.9
-PassengerRuby /usr/bin/ruby1.8"
-__HERE
 
 Bootstrap() {
   InstallSystemPackages
@@ -77,9 +69,6 @@ InstallSystemPackages() {
   sudo gem update rubygems-update=1.3.5
   sudo gem install passenger --no-rdoc --no-ri
   sudo gem install bundler --no-rdoc --no-ri
-  echo -e "\nSnippet that should be present now in apache2.conf"
-  sudo passenger-install-apache2-module -a --snippet
-  echo -e "\n"
 }
 
 SetupPostgreSql() {
@@ -108,11 +97,13 @@ SetupGamersmafiaApp() {
 }
 
 SetupApache2() {
+  passenger_snippet=`sudo passenger-install-apache2-module -a --snippet`
+
   for module in ${APACHE2_MODULES}
   do
-    module_dst="/etc/apache2/mods-enabled/${module}"
+    module_dst="/etc/apache2/mods-enabled/${module}.load"
     if [ ! -f ${module_dst} ]; then
-      sudo ln -s /etc/apache2/mods-available/${module}.load ${module_dst}.load
+      sudo ln -s /etc/apache2/mods-available/${module}.load ${module_dst}
     fi
   done
 
@@ -123,7 +114,10 @@ SetupApache2() {
 
   if ! grep -q passenger /etc/apache2/apache2.conf
   then
-    sudo sh -c "echo ${PASSENGER_APACHE2_CONF} >> /etc/apache2/apache2.conf"
+    passenger_config="/tmp/apache2-passenger.conf"
+    rm -f ${passenger_config}
+    cat "${passenger_snippet}" > /tmp/apache2-passenger.conf
+    sudo sh -c "cat ${passenger_config} >> /etc/apache2/apache2.conf"
   fi
 }
 
