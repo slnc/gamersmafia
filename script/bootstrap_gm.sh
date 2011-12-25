@@ -25,6 +25,7 @@ apache2-threaded-dev
 apache2.2-bin
 apache2.2-common
 build-essential
+git
 libapr1-dev
 libaprutil1-dev
 libgraphicsmagick++1-dev
@@ -35,12 +36,14 @@ libpq-dev
 libtidy-0.99-0
 libxml2-dev libxml2 libxslt1-dev
 nodejs
-postgresql-client
+openssh-server
 postgresql
+postgresql-client
 rpl
 ruby1.8
 ruby1.8-dev
 rubygems
+vim
 zip
 "
 PASSENGER_APACHE2_CONF=<<-__HERE
@@ -63,7 +66,7 @@ Bootstrap() {
 
 CloneRepo() {
   if [ ! -d ${GM_CURRENT} ]; then
-    mkdir -p ${GM_CURRENT}
+    sudo mkdir -p ${GM_CURRENT}
     git clone ${GIT_REPOSITORY} ${GM_CURRENT}
   fi
 }
