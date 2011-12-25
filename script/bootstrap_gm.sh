@@ -68,6 +68,7 @@ CloneRepo() {
   if [ ! -d ${GM_CURRENT} ]; then
     sudo mkdir -p ${GM_CURRENT}
     git clone ${GIT_REPOSITORY} ${GM_CURRENT}
+    sudo chown -R ${USER} ${GM_CURRENT}
   fi
 }
 
