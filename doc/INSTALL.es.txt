@@ -1,19 +1,21 @@
 1. INSTALACIÓN
 
 Pasos:
-1. Instala Ubuntu en una máquina virtual de tu elección y crea un usuario con
-login: "unnamed".
-2. Copia y pega las siguientes líneas en una terminal:
+1. Instala la última versión de 64bits de Ubuntu Server en una máquina virtual
+   de tu elección y crea un usuario llamado "unnamed".
 
-# -- inicio copypaste
+2. Copia y pega las siguientes 3 líneas en una terminal:
+
 wget https://raw.github.com/slnc/gamersmafia/production/script/bootstrap_gm.sh
 chmod u+x bootstrap_gm.sh
 ./bootstrap_gm.sh
-# -- fin copypaste
 
+3. Sigue las instrucciones en pantalla para editar tu archivo hosts y acceder a
+tu versión de desarrollo de GM.
 
 Si vas a colaborar necesitarás crearte una cuenta en github y clonar el
 repositorio, instrucciones más abajo.
+
 
 2. COMO COLABORAR
 2.1 Lee todas las guías de http://guides.rubyonrails.org/
