@@ -83,10 +83,10 @@ InstallSystemPackages() {
 
 SetupPostgreSql() {
   sudo rpl " peer" " trust" /etc/postgresql/9.1/main/pg_hba.conf
+  export PGUSER=postgres
   if ! grep -q PGUSER ~/.bashrc
   then
     echo "export PGUSER=postgres" >> ~/.bashrc
-    export PGUSER=postgres
   fi
   sudo /etc/init.d/postgresql restart
 
@@ -122,7 +122,7 @@ SetupApache2() {
 
   if ! grep -q passenger /etc/apache2/apache2.conf
   then
-    sudo echo PASSENGER_APACHE2_CONF >> /etc/apache2/apache2.conf
+    sudo sh -c "echo ${PASSENGER_APACHE2_CONF} >> /etc/apache2/apache2.conf"
   fi
 }
 
