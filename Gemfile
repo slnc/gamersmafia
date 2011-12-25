@@ -1,9 +1,7 @@
-# source :gemcutter
 source :rubygems
 
 gem 'ai4r'
 gem 'aasm'
-gem 'capistrano'
 gem 'ci_reporter'
 gem 'clusterer'
 gem 'feedtools'
@@ -14,7 +12,6 @@ gem 'pg'
 gem 'rails', '2.3.10'
 gem 'rmagick', :require => 'RMagick'
 gem 'ruby-pg'
-gem 'tidy'
 gem 'tidy'
 
 group :development do

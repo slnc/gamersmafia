@@ -28,6 +28,7 @@ build-essential
 git
 libapr1-dev
 libaprutil1-dev
+libcurl4-openssl-dev
 libgraphicsmagick++1-dev
 libgraphicsmagick1-dev
 libmagick++-dev
@@ -73,6 +74,7 @@ InstallSystemPackages() {
 
 SetupPostgreSql() {
   sudo rpl " peer" " trust" /etc/postgresql/9.1/main/pg_hba.conf
+  sudo rpl "127.0.0.1/32            md5" "127.0.0.1/32            trust" /etc/postgresql/9.1/main/pg_hba.conf
   export PGUSER=postgres
   if ! grep -q PGUSER ~/.bashrc
   then
@@ -89,16 +91,23 @@ SetupPostgreSql() {
   fi
 }
 
+SQL_USERS_TABLE_EXISTS="select * from pg_tables where schemaname='public' and tablename='users';"
+
 SetupGamersmafiaApp() {
   old_pwd=`pwd`
-  cd ${GM_CURRENT} && bundle install && cd ${old_pwd}
-
+  cd ${GM_CURRENT}
+  bundle install
+  if ! psql -c "${SQL_USERS_TABLE_EXISTS}" gamersmafia | grep -q users
+  then
+    psql -f db/create.sql gamersmafia
+    # TODO(slnc): load seed data here
+    ./script/sync_testenv.sh
+  fi
+  cd ${old_pwd}
   sudo apache2ctl restart
 }
 
 SetupApache2() {
-  passenger_snippet=`sudo passenger-install-apache2-module -a --snippet`
-
   for module in ${APACHE2_MODULES}
   do
     module_dst="/etc/apache2/mods-enabled/${module}.load"
@@ -114,9 +123,10 @@ SetupApache2() {
 
   if ! grep -q passenger /etc/apache2/apache2.conf
   then
+    passenger_snippet=`sudo passenger-install-apache2-module -a --snippet`
     passenger_config="/tmp/apache2-passenger.conf"
     rm -f ${passenger_config}
-    cat "${passenger_snippet}" > /tmp/apache2-passenger.conf
+    echo "${passenger_snippet}" > /tmp/apache2-passenger.conf
     sudo sh -c "cat ${passenger_config} >> /etc/apache2/apache2.conf"
   fi
 }
