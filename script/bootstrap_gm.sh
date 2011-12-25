@@ -123,6 +123,7 @@ SetupApache2() {
 
   if ! grep -q passenger /etc/apache2/apache2.conf
   then
+    sudo passenger-install-apache2-module -a
     passenger_snippet=`sudo passenger-install-apache2-module -a --snippet`
     passenger_config="/tmp/apache2-passenger.conf"
     rm -f ${passenger_config}
