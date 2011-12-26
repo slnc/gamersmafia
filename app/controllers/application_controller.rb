@@ -6,11 +6,7 @@ class ApplicationController < ActionController::Base
 
   include Clans::Authentication
   include Users::Authentication
-  include ExceptionNotifiable
   include Routing
-
-  ExceptionNotifier.exception_recipients = %w(s@slnc.me)
-  ExceptionNotifier.sender_address = %("GM Error Notifier" <httpd@gamersmafia.com>)
 
   helper :account, :miembros, :competiciones, :calendar
   before_filter :ident, :resolve_portal_mode, :check_referer,
@@ -316,8 +312,8 @@ Request information:
         when Proc then deliverer.call(self)
       end
 
-      ExceptionNotifier.deliver_exception_notification(exception, self,
-                                                       request, data)
+      #ExceptionNotifier.deliver_exception_notification(exception, self,
+      #                                                 request, data)
 
       # SystemNotifier.deliver_exception_notification(self, request, exception)
       begin

@@ -1,20 +1,14 @@
 source :rubygems
 
-gem 'ai4r'
-gem 'aasm'
-gem 'ci_reporter'
+# TODO(slnc): add exception notifier plugin back
+# gem 'ai4r'
+# gem 'ci_reporter'
 gem 'clusterer'
 gem 'feedtools'
 gem 'feedvalidator'
 gem 'geoip'
 gem 'gruff'
 gem 'pg'
-gem 'rails', '3.1.1'
+gem 'rails', '~> 3.1.0'
 gem 'rmagick', :require => 'RMagick'
-gem 'ruby-pg'
 gem 'tidy'
-
-group :development do
-  # bundler requires these gems in development
-  gem "rails-footnotes"
-end

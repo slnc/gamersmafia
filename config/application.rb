@@ -1,6 +1,15 @@
 require File.expand_path('../boot', __FILE__)
 
-module Current
+require 'rails/all'
+
+if defined?(Bundler)
+  # If you precompile assets before deploying to production, use this line
+  Bundler.require(*Rails.groups(:assets => %w(development test)))
+  # If you want your assets lazily compiled in production, use this line
+  # Bundler.require(:default, :assets, Rails.env)
+end
+
+module Gamersmafia
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -20,6 +29,7 @@ module Current
     #config.gem 'rmagick', :lib => 'RMagick'
     #config.gem 'tidy'
 
+    # TODO(slnc): this shouldn't be here anymore
     require 'erb'
     require 'config/initializers/000_app_config.rb'
 
@@ -30,8 +40,15 @@ module Current
     # Skip frameworks you're not going to use. To use Rails without a database,
     # you must remove the Active Record framework.
     # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
+    config.encoding = "utf-8"
 
-    config.action_controller.cache_store = :file_store, "#{RAILS_ROOT}/tmp/fragment_cache"
+    config.filter_parameters += [:password]
+
+    config.assets.enabled = false
+
+    config.assets.version = '1.0'
+
+    config.action_controller.cache_store = :file_store, "#{Rails.root}/tmp/fragment_cache"
 
     # Activate observers that should always be running
     config.active_record.observers = :cache_observer, :faith_observer, :users_action_observer, :achmed_observer
