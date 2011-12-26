@@ -1,8 +1,8 @@
 class Cuenta::CompeticionesController < ApplicationController
   helper :competiciones
-  
+
   before_filter :require_auth_users
-  before_filter do |c| 
+  before_filter do |c|
     if c.user.last_competition_id then
       begin
         c.competition = Competition.find(c.user.last_competition_id)
@@ -18,7 +18,7 @@ class Cuenta::CompeticionesController < ApplicationController
   def submenu
     'MisCompeticiones'
   end
-  
+
   def submenu_items
     l = []
     if competition && (!competition.new_record?) then
@@ -31,22 +31,22 @@ class Cuenta::CompeticionesController < ApplicationController
         l<< ['Admins y supervisores', '/cuenta/competiciones/admins']
         l<< ['Sponsors', '/cuenta/competiciones/sponsors'] if @competition.pro?
       end
-      
+
       if competition.user_is_participant(@user.id) then # TODO con clanes rulará?
         l<< ['Mis partidas', '/cuenta/competiciones/mis_partidas']
       end
-      
+
       l<< ['Todas mis partidas pendientes', '/cuenta/competiciones/warning_list'] if @user.enable_competition_indicator
     end
     l<< ['&raquo; Cambiar de competición', '/cuenta/competiciones/cambiar']
   end
-  
+
   # TODO permisos
   # TODO titles
   # TODO navpaths
   # TODO views que sobren
   def index
-    if @competition then 
+    if @competition then
       if @competition.user_is_admin(@user.id) then
         render :action => 'general'
       else
@@ -57,7 +57,7 @@ class Cuenta::CompeticionesController < ApplicationController
       render :action => 'list'
     end
   end
-  
+
   def update_tourney_groups
     require_auth_competition_admin
     raise ActiveRecord::RecordNotFound unless @competition.has_advanced?
@@ -82,7 +82,7 @@ class Cuenta::CompeticionesController < ApplicationController
       flash[:error] = "Imposible"
     end
   end
-  
+
   def update_tourney_seeds
     require_auth_competition_admin
     raise ActiveRecord::RecordNotFound unless @competition.has_advanced?
@@ -110,25 +110,25 @@ class Cuenta::CompeticionesController < ApplicationController
     cps = []
     cps0 = []
     data_old = {}
-    
+
     for participant in params[:participants]
       participant = participant[1]
       next if participant[:old_participant_id] == participant[:new_participant_id]
 
       cp = @competition.competitions_participants.find(participant[:old_participant_id])
       new = @competition.competitions_participants.find(participant[:new_participant_id])
-      
+
       if data_old.has_key?(new.id) # no vaya a ser que ya lo hayamos tocado en esta ocasión
         new.participant_id = data_old[new.id][:participant_id]
         new.name = data_old[new.id][:name]
       end
-      
-      data_old[cp.id] = { :created_on => cp.created_on, :name => cp.name, 
+
+      data_old[cp.id] = { :created_on => cp.created_on, :name => cp.name,
                           :participant_id => cp.participant_id, :roster => cp.roster }
       cp.participant_id = i;
       cp.name = i;
       raise cp.errors.full_messages.join("\n") unless cp.save
-      
+
       cp.participant_id = new.participant_id
       cp.name = new.name
       cp.roster = new.roster
@@ -138,34 +138,34 @@ class Cuenta::CompeticionesController < ApplicationController
       cps<< cp
       i -= 1
     end
-    
+
     cps.each { |cp| raise cp.errors.full_messages.join("\n") unless cp.save }
-    
+
     flash[:notice] = 'Cambios guardados correctamente'
     redirect_to :action => 'avanzada'
   end
-  
-  
+
+
   def add_participants
     require_auth_competition_admin
     if @competition.competitions_participants_type_id == 1 then
       params[:participants_count].to_i.times do |time|
         u = User.find(:first, :order => 'RANDOM() ASC') # TODO puede haber duplicados
-        
+
         # TODO no limpio, copypasted
         @competition.competitions_participants.create({:participant_id => u.id, :name => u.login, :competitions_participants_type_id => @competition.competitions_participants_type_id})
       end
     else # clanes
       params[:participants_count].to_i.times do |time|
         c = Clan.find(:first, :order => 'RANDOM() ASC') # TODO puede haber duplicados
-        
+
         # TODO no limpio, copypasted
         @competition.competitions_participants.create({:participant_id => c.id, :name => c.tag, :competitions_participants_type_id => @competition.competitions_participants_type_id})
       end
     end
     redirect_to '/cuenta/competiciones'
   end
-  
+
   def recreate_matches
     require_auth_competition_admin
     raise AccessDenied unless @competition.can_recreate_matches?
@@ -174,13 +174,13 @@ class Cuenta::CompeticionesController < ApplicationController
     @competition.save
     redirect_to '/cuenta/competiciones/partidas'
   end
-  
+
   def remove_all_participants
     require_auth_competition_admin
     @competition.competitions_participants.clear
     redirect_to '/cuenta/competiciones'
   end
-  
+
   def reselect_maps
     require_auth_competition_admin
     for cm in @competition.competitions_matches
@@ -189,7 +189,7 @@ class Cuenta::CompeticionesController < ApplicationController
     @competition.setup_maps_for_matches
     redirect_to '/cuenta/competiciones'
   end
-  
+
   def update_matches_games_maps
     require_auth_competition_admin
     raise AccessDenied unless @competition.default_maps_per_match
@@ -206,20 +206,20 @@ class Cuenta::CompeticionesController < ApplicationController
         end
         i += 1
       end
-      
+
       # por si acaso falta alguno
       if i < @competition.default_maps_per_match
        (@competition.default_maps_per_match - i).times do |times_more|
           m.competitions_matches_games_maps.create({:games_map_id => params[:new_maps][(i + times_more)]})
         end
       end
-      
+
       n += 1
     end
     flash[:notice] =  "<strong>#{n}</strong> partidas actualizadas correctamente."
     redirect_to '/cuenta/competiciones/partidas'
   end
-  
+
   def update_matches_play_on
     require_auth_competition_admin
     params[:competitions_matches] ||= []
@@ -234,7 +234,7 @@ class Cuenta::CompeticionesController < ApplicationController
     flash[:notice] =  "<strong>#{i}</strong> partidas actualizadas correctamente."
     redirect_to '/cuenta/competiciones/partidas'
   end
-  
+
   def previous_stage
     require_auth_competition_admin
     @competition.state -= 1
@@ -246,16 +246,16 @@ class Cuenta::CompeticionesController < ApplicationController
     redirect_to '/cuenta/competiciones'
   end
   # end TODO
-  
+
   def general
     require_auth_competition_admin
   end
-  
+
   def avanzada
     require_auth_competition_admin
     raise ActiveRecord::RecordNotFound unless @competition.has_advanced?
   end
-  
+
   def add_participant
     require_auth_competition_admin
     raise "Imposible" unless @competition.can_add_participants?
@@ -264,7 +264,7 @@ class Cuenta::CompeticionesController < ApplicationController
     else
       new_p_real = User.find_by_login(params[:participant_hid])
     end
-    
+
     if new_p_real
       participant = @competition.add_participant(new_p_real)
       flash[:notice] = 'Participante añadido correctamente' # TODO enviar email de que ha sido invitado
@@ -273,7 +273,7 @@ class Cuenta::CompeticionesController < ApplicationController
     end
     redirect_to '/cuenta/competiciones/participantes'
   end
-  
+
   def add_allowed_participant
     require_auth_competition_admin
     raise ActiveRecord::RecordNotFound unless @competition.can_modify_allowed_participants?
@@ -282,7 +282,7 @@ class Cuenta::CompeticionesController < ApplicationController
     else
       new_p_real = User.find_by_login(params[:participant_hid])
     end
-    
+
     if new_p_real
       participant = @competition.allowed_competitions_participants.create({:participant_id => new_p_real.id})
       flash[:notice] = 'Participante invitado correctamente' # TODO enviar email de que ha sido invitado
@@ -297,26 +297,26 @@ class Cuenta::CompeticionesController < ApplicationController
     else
       flash[:error] = "No se ha encontrado al participante #{participant_hid}"
     end
-    redirect_to '/cuenta/competiciones/participantes'   
+    redirect_to '/cuenta/competiciones/participantes'
   end
-  
+
   def configuracion
     require_auth_competition_admin
     raise AccessDenied if @competition.state == 4
   end
-  
+
   def admins
     require_auth_competition_admin
   end
-  
+
   def partidas
     require_auth_competition_admin
   end
-  
+
   def participantes
     require_auth_competition_admin
   end
-  
+
   def eliminar_participante
     require_auth_competition_admin
     # TODO almost copypasted de controllers/competiciones_controller
@@ -328,8 +328,8 @@ class Cuenta::CompeticionesController < ApplicationController
     end
     redirect_to '/cuenta/competiciones/participantes'
   end
-  
-  def crear_admin 
+
+  def crear_admin
     require_auth_competition_admin
     u = User.find_by_login(params[:login])
     if u
@@ -340,15 +340,15 @@ class Cuenta::CompeticionesController < ApplicationController
     end
     redirect_to '/cuenta/competiciones/admins'
   end
-  
+
   def eliminar_admin
     require_auth_competition_admin
     @competition.del_admin(User.find(params[:user_id]))
     redirect_to '/cuenta/competiciones/admins'
   end
-  
-  
-  def crear_supervisor 
+
+
+  def crear_supervisor
     require_auth_competition_admin
     u = User.find_by_login(params[:login])
     if u
@@ -359,26 +359,26 @@ class Cuenta::CompeticionesController < ApplicationController
     end
     redirect_to '/cuenta/competiciones/admins'
   end
-  
+
   def eliminar_supervisor
     require_auth_competition_admin
     @competition.del_supervisor(User.find(params[:user_id]))
     redirect_to '/cuenta/competiciones/admins'
   end
-  
+
   def cambiar
   end
-  
+
   def mis_partidas
     require_auth_competition_participant
   end
-  
+
   # GETs should be safe (see http://www.w3.org/2001/tag/doc/whenToUseGet.html)
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-  :redirect_to => { :action => :list }
-  
+  #verify :method => :post, :only => [ :destroy, :create, :update ],
+  #:redirect_to => { :action => :list }
+
   def list
-    if @competition then 
+    if @competition then
       if @competition.user_is_admin(@user.id) then
         render :action => 'general'
       else
@@ -386,13 +386,13 @@ class Cuenta::CompeticionesController < ApplicationController
       end
     end
   end
-  
+
   def new
     @title = 'Crear nueva competición'
     @navpath = [['Cuenta', '/cuenta'], ['Competiciones', '/cuenta/competiciones'], ['Nueva', '/cuenta/competiciones/new']]
     @competition = Competition.new
   end
-  
+
   def create
     raise ActiveRecord::RecordNotFound unless (%w(Ladder Tournament League).include?(params[:competition][:type]))
     params[:competition][:competitions_types_options] = HashWithIndifferentAccess.new
@@ -409,10 +409,10 @@ class Cuenta::CompeticionesController < ApplicationController
       render :action => 'new'
     end
   end
-  
+
   def update
     require_auth_competition_admin
-    
+
     @competition = Competition.find(params[:id])
     if @competition.state < 3 then
       params[:competition] = params[:competition].block_sym(:game_id, :type, :competitions_participants_type_id)
@@ -433,7 +433,7 @@ class Cuenta::CompeticionesController < ApplicationController
     elsif @competition.state < 4 then
       params[:competition] = params[:competition].pass_sym(:description, :rules, :games_map_ids, :header_image)
     end
-    
+
     if @competition.update_attributes(params[:competition])
       flash[:notice] = 'Competición actualizada correctamente.'
       redirect_to :action => 'configuracion'
@@ -441,7 +441,7 @@ class Cuenta::CompeticionesController < ApplicationController
       render :action => 'configuracion'
     end
   end
-  
+
   def destroy
     @competition = Competition.find(@user.last_competition_id)
     require_auth_competition_admin
@@ -450,17 +450,17 @@ class Cuenta::CompeticionesController < ApplicationController
     flash[:notice] = 'Competición borrada correctamente'
     redirect_to :action => 'cambiar'
   end
-  
+
   def change_state
     if @competition.switch_to_state(params[:new_state_id].to_i) then
       flash[:notice] = 'La competición ha avanzado a la siguiente fase.'
     else
       flash[:error] = 'No se puede avanzar a la siguiente fase.'
     end
-    
+
     redirect_to :action => 'general', :id => @competition.id
   end
-  
+
   def switch_active_competition
     @user.last_competition_id = params[:id]
     @user.save
@@ -475,22 +475,22 @@ class Cuenta::CompeticionesController < ApplicationController
       redirect_to '/cuenta/competiciones'
     end
   end
-  
+
   def require_auth_competition_admin
     raise AccessDenied unless @competition && (@competition.user_is_admin(@user.id) || @user.is_superadmin?)
   end
-  
+
   def require_auth_competition_participant
     raise AccessDenied unless @competition && @competition.user_is_participant(@user.id)
   end
-  
-  
-  
+
+
+
   def sponsors
     sponsors_list
     render :action => 'sponsors_list'
   end
-  
+
   def sponsors_list
     require_auth_competition_admin
     raise ActiveRecord::RecordNotFound unless @competition.pro?
@@ -498,7 +498,7 @@ class Cuenta::CompeticionesController < ApplicationController
     @navpath = [['Mis clanes', '/cuenta/competiciones'], ['Sponsors', '/cuenta/competiciones/sponsors']]
     @competitions_sponsor_pages, @competitions_sponsors = paginate :competitions_sponsors, :conditions => ['competition_id = ?', @competition.id], :per_page => 10
   end
-  
+
   def sponsors_new
     require_auth_competition_admin
     raise ActiveRecord::RecordNotFound unless @competition.pro?
@@ -506,12 +506,12 @@ class Cuenta::CompeticionesController < ApplicationController
     @navpath = [['Mis clanes', '/cuenta/competiciones'], ['Sponsors', '/cuenta/competiciones/sponsors'], ['Nuevo', '/cuenta/competiciones/sponsors_new']]
     @competitions_sponsor = CompetitionsSponsor.new
   end
-  
+
   def sponsors_create
     require_auth_competition_admin
     raise ActiveRecord::RecordNotFound unless @competition.pro?
     params[:competitions_sponsor][:competition_id] = @competition.id
-    
+
     @competitions_sponsor = CompetitionsSponsor.new(params[:competitions_sponsor])
     if @competitions_sponsor.save
       flash[:notice] = 'Sponsor creado correctamente.'
@@ -520,7 +520,7 @@ class Cuenta::CompeticionesController < ApplicationController
       render :action => 'sponsors_new'
     end
   end
-  
+
   def sponsors_edit
     require_auth_competition_admin
     raise ActiveRecord::RecordNotFound unless @competition.pro?
@@ -528,7 +528,7 @@ class Cuenta::CompeticionesController < ApplicationController
     @title = 'Nuevo sponsor'
     @navpath = [['Mis clanes', '/cuenta/competiciones'], ['Sponsors', '/cuenta/competiciones/sponsors'], ['Nuevo', "/cuenta/competiciones/sponsors_edit/#{@competitions_sponsor.id}"]]
   end
-  
+
   def sponsors_update
     require_auth_competition_admin
     raise ActiveRecord::RecordNotFound unless @competition.pro?
@@ -540,7 +540,7 @@ class Cuenta::CompeticionesController < ApplicationController
       render :action => 'sponsors_edit'
     end
   end
-  
+
   def sponsors_destroy
     require_auth_competition_admin
     raise ActiveRecord::RecordNotFound unless @competition.pro?
@@ -548,7 +548,7 @@ class Cuenta::CompeticionesController < ApplicationController
     flash[:notice] = 'Sponsor borrado correctamente.'
     redirect_to :action => 'sponsors_list'
   end
-  
+
   def select_datetime_to_time(parent,field)
     t={}
     parent.keys.map{|k| k.to_s}.grep(/^#{field}\(.+\)$/).each do |k|

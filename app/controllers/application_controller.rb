@@ -1,3 +1,8 @@
+require 'cache'
+require 'clans'
+require 'users'
+require 'routing'
+
 class AccessDenied < StandardError; end
 class DomainNotFound < StandardError; end
 

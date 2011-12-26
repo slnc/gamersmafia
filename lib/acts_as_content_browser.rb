@@ -4,37 +4,37 @@ module ActsAsContentBrowser
   def self.included(base)
     base.extend AddActsAsContentBrowser
   end
-  
+
   module AddActsAsContentBrowser
     def acts_as_content_browser(*args)
       before_filter :require_auth_users, :only => [ :new, :create, :edit, :update, :destroy ]
-      
+
       class_eval <<-END
         include ActsAsContentBrowser::InstanceMethods
       END
-      
-      verify :method => :post, :only => [ :destroy, :create, :update, :deny ],
-      :redirect_to => '/site/http_401'
+
+      #verify :method => :post, :only => [ :destroy, :create, :update, :deny ],
+      #:redirect_to => '/site/http_401'
     end
   end
-  
+
   module InstanceMethods
     define_method 'content_name' do
       @_content_name ||= Cms.content_from_controller(ActiveSupport::Inflector::demodulize(self.class.name).gsub('Controller', ''))
     end
-    
+
     define_method 'index' do
       if @portal.id != -1 && @portal.kind_of?(FactionsPortal)
         @title = "#{ActiveSupport::Inflector::demodulize(self.class.name).gsub('Controller', '')} de #{@portal.name}"
       end
     end
-    
+
     define_method 'new' do
       @title = "Crear #{Cms::CLASS_NAMES[content_name].downcase}"
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), cls.new(params[ActiveSupport::Inflector::underscore(content_name)]))
     end
-    
+
     define_method 'show' do
       _before_show if respond_to?(:_before_show)
       # TODO temp hasta que google reindexe bien
@@ -54,34 +54,34 @@ module ActsAsContentBrowser
       instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
       _after_show if respond_to?(:_after_show)
     end
-    
+
     define_method 'create' do
       _before_create if respond_to?(:_before_create)
-      
+
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.new(params[ActiveSupport::Inflector::underscore(content_name)])
-      
+
       obj.user_id = @user.id
-      
+
       obj.state = case
         when obj.respond_to?(:clan_id) && obj.clan_id: Cms::PUBLISHED
         when (params[:draft] == '1'): Cms::DRAFT
       else Cms::PENDING
       end
-      
+
       instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
       if Cms.user_can_create_content(@user)
         if obj.respond_to?(:game_id) && params[:root_terms].nil?
-          params[:root_terms] = [Term.single_toplevel(:game_id => obj.game_id).id] 
+          params[:root_terms] = [Term.single_toplevel(:game_id => obj.game_id).id]
         end
-        
+
         # chequeamos que se haya especificado categoría
         if (Cms::CATEGORIES_TERMS_CONTENTS.include?(content_name) && (!params[:categories_terms] || params[:categories_terms].size == 0 || params[:categories_terms][0].to_i == 0)) ||
          (Cms::ROOT_TERMS_CONTENTS.include?(content_name)  && (!params[:root_terms] || params[:root_terms].size == 0 || params[:root_terms][0].to_i == 0))
           flash[:error] = "Debes elegir al menos una categoría para este contenido."
           render :action => 'new' and return
         end
-        
+
         if obj.save
           # enlazamos
           proc_terms(obj)
@@ -102,13 +102,13 @@ module ActsAsContentBrowser
         render :action => 'new'
       end
       _after_create if respond_to?(:_after_create)
-      if flash[:error] 
+      if flash[:error]
         render :action => 'new' unless performed?
       else
         rediring.call
       end
     end
-    
+
     define_method 'edit' do
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.find(params[:id])
@@ -124,12 +124,12 @@ module ActsAsContentBrowser
         render :action => 'show'
       end
     end
-    
+
     define_method 'proc_terms' do |obj|
       if Cms::CATEGORIES_TERMS_CONTENTS.include?(content_name) && params[:categories_terms]
         params[:categories_terms] = [params[:categories_terms]] unless params[:categories_terms].kind_of?(Array)
         params[:categories_terms].collect! { |rtid| rtid.to_i }
-        params[:categories_terms] = params[:categories_terms].delete_if { |rtid| rtid < 1 } 
+        params[:categories_terms] = params[:categories_terms].delete_if { |rtid| rtid < 1 }
         obj.categories_terms_ids = [params[:categories_terms], "#{ActiveSupport::Inflector::pluralize(content_name)}Category"]
       elsif Cms::ROOT_TERMS_CONTENTS.include?(content_name) && params[:root_terms]
         params[:root_terms] = [params[:root_terms]] unless params[:root_terms].kind_of?(Array)
@@ -138,7 +138,7 @@ module ActsAsContentBrowser
         obj.root_terms_ids = params[:root_terms]
       end
     end
-    
+
     define_method 'deny' do
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.find(:first, :conditions => ['id = ? and state = ?', params[:id], Cms::PENDING])
@@ -147,7 +147,7 @@ module ActsAsContentBrowser
       flash[:notice] = 'Contenido denegado correctamente'
       redirect_to :action => 'index'
     end
-    
+
     define_method 'destroy' do
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.find(params[:id])
@@ -156,7 +156,7 @@ module ActsAsContentBrowser
       flash[:notice] = 'Contenido enviado a la papelera correctamente'
       redirect_to :action => 'index'
     end
-    
+
     define_method 'recover' do
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.find(params[:id])
@@ -165,7 +165,7 @@ module ActsAsContentBrowser
       flash[:notice] = 'Contenido recuperado de la papelera correctamente'
       redirect_to :action => 'show', :id => obj.id
     end
-    
+
     define_method 'update' do
       _before_update if respond_to?(:_before_update)
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
@@ -181,12 +181,12 @@ module ActsAsContentBrowser
         proc_terms(obj)
         # obj.process_wysiwyg_fields
         flash[:notice] = "#{Cms::CLASS_NAMES[cls.name]} actualizado correctamente." unless flash[:error]
-        
+
         if params[:publish_content] == '1'
           Cms::publish_content(obj, @user)
           flash[:notice] += "\nContenido publicado correctamente. Gracias."
         end
-        
+
         if obj.state == Cms::PUBLISHED then
           redirect_to gmurl(obj)
         else
@@ -198,14 +198,14 @@ module ActsAsContentBrowser
       end
       _after_update if respond_to?(:_after_update)
     end
-    
+
     define_method 'reopen' do
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.find(params[:id])
       require_user_can_edit(obj)
-      
+
       obj.reopen(@user) if obj.closed?
-      
+
       flash[:notice] = "#{Cms::CLASS_NAMES[cls.name]} reabierto a comentarios."
       redirect_to gmurl(obj)
     end

@@ -43,4 +43,6 @@ Gamersmafia::Application.configure do
   # config.instantiated_fixtures = false
   # config.pre_loaded_fixtures = true
   config.active_record.schema_format = :sql
+
+  config.log_level = :debug
 end

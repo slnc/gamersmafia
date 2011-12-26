@@ -1,3 +1,3 @@
-module AdministrationHelper
+module AdminHelper
 
 end
