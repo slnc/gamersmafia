@@ -1,4 +1,4 @@
-load Rails.root + '/Rakefile'
+load RAILS_ROOT + '/Rakefile'
 
 class Game < ActiveRecord::Base
   has_many :games_maps, :dependent => :destroy
@@ -91,7 +91,7 @@ class Game < ActiveRecord::Base
   end
   
   def img_file
-    "#{Rails.root}/public/storage/games/#{self.code}.gif"
+    "#{RAILS_ROOT}/public/storage/games/#{self.code}.gif"
   end
   
   # TODO tb a plataformas

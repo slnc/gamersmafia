@@ -68,8 +68,8 @@ class Notification < ActionMailer::Base
     @headers = {'gmmid' => @message_key, 'Return-Path' => "#{App.system_mail_user.split('@')[0]}-#{@message_key}@gamersmafia.com"}
     @return_path ="#{App.system_mail_user.split('@')[0]}-#{@message_key}@gamersmafia.com"
     vars[:message_key] = @message_key
-    #attachment :content_type => 'image/png', :body => File.read("#{Rails.root}/public/images/emails/gm.png")
-    #attachment :content_type => 'image/png', :body => File.read("#{Rails.root}/public/images/emails/footer-bg.png")
+    #attachment :content_type => 'image/png', :body => File.read("#{RAILS_ROOT}/public/images/emails/gm.png")
+    #attachment :content_type => 'image/png', :body => File.read("#{RAILS_ROOT}/public/images/emails/footer-bg.png")
   end
   
   # keys: prod, support (both are Time's) 

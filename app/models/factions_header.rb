@@ -10,14 +10,14 @@ class FactionsHeader < ActiveRecord::Base
     end
 
     def update_img_file
-      fullpath = "#{Rails.root}/public/storage/factions_headers/#{self.faction_id}/#{self.id}.jpg"
+      fullpath = "#{RAILS_ROOT}/public/storage/factions_headers/#{self.faction_id}/#{self.id}.jpg"
 
       if not File.exists?((File.dirname(fullpath)))then
           FileUtils.mkdir_p File.dirname(fullpath)
       end
 
       if @temp_file and @filename != ''
-        thumb_path = "#{Rails.root}/public/cache/thumbnails/f/500x60/storage/factions_headers/#{self.faction_id}/#{self.id}.jpg"
+        thumb_path = "#{RAILS_ROOT}/public/cache/thumbnails/f/500x60/storage/factions_headers/#{self.faction_id}/#{self.id}.jpg"
         if File.exists?(thumb_path) then
           File.unlink(thumb_path)
         end
@@ -30,7 +30,7 @@ class FactionsHeader < ActiveRecord::Base
     end
 
     def delete_files
-      fullpath = "#{Rails.root}/public/storage/factions_headers/#{self.faction_id}/#{self.id}.jpg"
+      fullpath = "#{RAILS_ROOT}/public/storage/factions_headers/#{self.faction_id}/#{self.id}.jpg"
       if File.exists?(fullpath) then
         File.unlink(fullpath)
       end

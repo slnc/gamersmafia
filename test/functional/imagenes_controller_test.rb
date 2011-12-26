@@ -2,7 +2,7 @@ require 'test_helper'
 require File.dirname(__FILE__) + '/../test_functional_content_helper'
 
 class ImagenesControllerTest < ActionController::TestCase
-  test_common_content_crud :name => 'Image', :form_vars => {:description => 'footapang', :file => ActionController::TestUploadedFile.new("#{Rails.root}/test/fixtures/files/buddha.jpg", nil, nil)}, :categories_terms => 18
+  test_common_content_crud :name => 'Image', :form_vars => {:description => 'footapang', :file => ActionController::TestUploadedFile.new("#{RAILS_ROOT}/test/fixtures/files/buddha.jpg", nil, nil)}, :categories_terms => 18
 
   test "category_404_if_invalid" do
     assert_raises(ActiveRecord::RecordNotFound) { get :category, :id => 'foo' }

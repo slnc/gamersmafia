@@ -8,7 +8,7 @@ class Texture < ActiveRecord::Base
   end
   
   def dir
-    "#{Rails.root}/config/skins/textures/#{self.name}"
+    "#{RAILS_ROOT}/config/skins/textures/#{self.name}"
   end
   
   def screenshot

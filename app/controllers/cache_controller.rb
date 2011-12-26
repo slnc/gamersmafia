@@ -15,8 +15,8 @@ class CacheController < ApplicationController
     match_dim = params[:dim].match(/([1-9]{1}[0-9]{0,4})x([1-9]{1}[0-9]{0,4})/)
     raise ActiveRecord::RecordNotFound if not match_dim
     
-    thumbpath = "#{Rails.root}/public/cache/thumbnails/#{params[:mode]}/#{match_dim[1]}x#{match_dim[2]}/#{sp}"
-    Cms::image_thumbnail("#{Rails.root}/public/#{sp}", thumbpath, match_dim[1].to_i, match_dim[2].to_i, params[:mode])
+    thumbpath = "#{RAILS_ROOT}/public/cache/thumbnails/#{params[:mode]}/#{match_dim[1]}x#{match_dim[2]}/#{sp}"
+    Cms::image_thumbnail("#{RAILS_ROOT}/public/#{sp}", thumbpath, match_dim[1].to_i, match_dim[2].to_i, params[:mode])
     
     send_file(thumbpath, :type => 'image/jpg', :stream => false, :disposition => 'inline')
     # redirect_to "/cache/thumbnails/#{params[:mode]}/#{params[:dim]}/#{params[:path]}"
@@ -34,9 +34,9 @@ class CacheController < ApplicationController
     f = Faction.find(params[:faction_id][0].gsub('.png', '').to_i)
     g.data('Activos', [f.active_members_count], '#BB0012')
     g.data('Inactivos', [f.inactive_members_count], '#BBA9AB')
-    g.font= "#{Rails.root}/public/ttf/verdana.ttf"
+    g.font= "#{RAILS_ROOT}/public/ttf/verdana.ttf"
     # no usamos date para evitar ataques de denegación de servicio generando imágenes para cada año
-    dst = "#{Rails.root}/public/cache/graphs/faction_users_ratios/#{Time.now.strftime('%Y%m%d')}/#{f.id}.png"
+    dst = "#{RAILS_ROOT}/public/cache/graphs/faction_users_ratios/#{Time.now.strftime('%Y%m%d')}/#{f.id}.png"
     FileUtils.mkdir_p(File.dirname(dst)) if !File.exists?(File.dirname(dst))
     begin
       g.write(dst)

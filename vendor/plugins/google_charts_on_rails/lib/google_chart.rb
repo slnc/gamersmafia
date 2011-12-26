@@ -173,10 +173,10 @@ protected
   #encoding ends here
   #utils start
   def self.logger
-    Rails.logger
+    RAILS_DEFAULT_LOGGER
   end
   def logger
-    Rails.logger
+    RAILS_DEFAULT_LOGGER
   end
   def self.protect_from_deep_stack
     return nil if @protection_from_deep_stack_is_set

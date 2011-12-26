@@ -10,9 +10,9 @@ class AvatarTest < ActiveSupport::TestCase
   test "should_delete_file_after_destroying" do
     @av = Avatar.create({:name => 'fulanito de tal', :submitter_user_id => 1, :path => fixture_file_upload('files/buddha.jpg')})
     assert_equal false, @av.new_record?
-    assert_equal true, File.exists?("#{Rails.root}/public/#{@av.path}")
+    assert_equal true, File.exists?("#{RAILS_ROOT}/public/#{@av.path}")
     @av.destroy
-    # assert_equal false, File.exists?("#{Rails.root}/public/#{@av.path}")
+    # assert_equal false, File.exists?("#{RAILS_ROOT}/public/#{@av.path}")
   end
   
   test "should_set_users_owning_avatar_to_nil_after_destroy" do

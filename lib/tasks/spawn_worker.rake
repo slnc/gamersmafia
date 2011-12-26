@@ -1,4 +1,4 @@
-Rails.env='production' unless defined?(Rails.env)
+RAILS_ENV='production' unless defined?(RAILS_ENV)
 namespace :gm do
   desc "Spawn a delayed job worker"
   task :spawn_worker => :environment do

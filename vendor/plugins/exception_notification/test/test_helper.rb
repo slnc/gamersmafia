@@ -4,4 +4,4 @@ require 'active_support'
 
 $:.unshift File.join(File.dirname(__FILE__), '../lib')
 
-Rails.root = '.' unless defined?(Rails.root)
+RAILS_ROOT = '.' unless defined?(RAILS_ROOT)

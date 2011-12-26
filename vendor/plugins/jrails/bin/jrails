@@ -3,7 +3,7 @@
 require 'rubygems'
 require 'rake'
 
-Rails.root = Dir.pwd
+RAILS_ROOT = Dir.pwd
 rakeapp = Rake.application
 fname =File.join(File.dirname(__FILE__), '..', 'tasks', 'jrails.rake')
 load fname

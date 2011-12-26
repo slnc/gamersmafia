@@ -209,7 +209,7 @@
     <tr class="<%=oddclass%>" id="u<%=f.id%>">
       <td><a target="_blank" href="/<%=f.file%>"><%=f.file ? File.basename(f.file) : ''%></a></td>
       <td><%=notags(f.description)%></td>
-      <td class="infoinline"><%=(f.file && File.exists?("#{Rails.root}/public/#{f.file}")) ? number_to_human_size(File.size("#{Rails.root}/public/#{f.file}")) : ''%></a></td>
+      <td class="infoinline"><%=(f.file && File.exists?("#{RAILS_ROOT}/public/#{f.file}")) ? number_to_human_size(File.size("#{RAILS_ROOT}/public/#{f.file}")) : ''%></a></td>
       <td><a href="<%=gmurl(f.user)%>"><%=f.user.login%></a></td>
       <td class="timestamp infoinline"><%=print_tstamp(f.created_on)%></td>
       <% if user_is_competition_admin then %><td><%=link_to_remote 'Borrar', :url => "/competiciones/borrar_upload/#{f.id}" %></td><% end -%>

@@ -6,15 +6,15 @@ class Chatline < ActiveRecord::Base
     return true # TODO temp disabled
     f_name = Kernel.rand(1000)
     
-    while File.exists?("#{Rails.root}/tmp/ircmsgs/#{f_name}")
+    while File.exists?("#{RAILS_ROOT}/tmp/ircmsgs/#{f_name}")
       f_name = Kernel.rand(1000)
     end
     
-    if not File.exists?("#{Rails.root}/tmp/ircmsgs") then
-      Dir.mkdir("#{Rails.root}/tmp/ircmsgs")
+    if not File.exists?("#{RAILS_ROOT}/tmp/ircmsgs") then
+      Dir.mkdir("#{RAILS_ROOT}/tmp/ircmsgs")
     end
     
-    File.open("#{Rails.root}/tmp/ircmsgs/#{f_name}", 'w+') do |f|
+    File.open("#{RAILS_ROOT}/tmp/ircmsgs/#{f_name}", 'w+') do |f|
       self.line.split("\n").each do |line|
         if self.user.login == 'MrAlariko'
           f.write("#{line}\n") if line.strip != ''

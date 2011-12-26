@@ -9,7 +9,7 @@ class CacheObserverFaccionesTest < ActionController::IntegrationTest
   test "should_clear_faction_user_ratios_graph_after_new_member_joining" do
     Factions::user_joins_faction(User.find(2), 1) # necesario por gruff que falla si intentamos dibujar pie con 0, 0
     link = "/cache/graphs/faction_users_ratios/#{Time.now.strftime('%Y%m%d')}/1.png"
-    graph_file = "#{Rails.root}/public#{link}"
+    graph_file = "#{RAILS_ROOT}/public#{link}"
     File.unlink(graph_file) if File.exists?(graph_file)
     get link
     assert_response :redirect

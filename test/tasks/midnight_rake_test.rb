@@ -1,5 +1,5 @@
 require 'test_helper'
-load Rails.root + '/Rakefile'
+load RAILS_ROOT + '/Rakefile'
 
 class MidnightRakeTest < ActiveSupport::TestCase
   include Rake

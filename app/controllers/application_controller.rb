@@ -195,7 +195,7 @@ Request information:
       Stats.pageloadtime(self, seconds, response, controller_name, action_name,
                          portal)
     rescue
-      raise unless Rails.env == 'test'
+      raise unless RAILS_ENV == 'test'
     end
   end
 
@@ -259,9 +259,9 @@ Request information:
         end
         response.headers["Content-Type"] = "#{base}/#{ext}"
         if %w(css js).include?(res[2])
-          render :file => "#{Rails.root}/public/#{res[1]}#{res[2]}"
+          render :file => "#{RAILS_ROOT}/public/#{res[1]}#{res[2]}"
         else
-          send_file "#{Rails.root}/public/#{res[1]}#{res[2]}"
+          send_file "#{RAILS_ROOT}/public/#{res[1]}#{res[2]}"
         end
       else
         @title = "Página no encontrada (Error 404)"
@@ -324,8 +324,8 @@ Request information:
         render :template => 'application/http_500', :status => 500
       rescue
         #layout nil
-        # render :file => "#{Rails.root}/app/views/application/http_500.rhtml", :status => 500
-        render(:file => "#{Rails.root}/public/500.html", :status => '500 Error')
+        # render :file => "#{RAILS_ROOT}/app/views/application/http_500.rhtml", :status => 500
+        render(:file => "#{RAILS_ROOT}/public/500.html", :status => '500 Error')
       end
     end
     @rescuiing = false # para tests

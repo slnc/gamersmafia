@@ -12,7 +12,7 @@ namespace :gm do
      games.each do |t|
       begin
         bp = t.respond_to?(:icon) ? t.icon : "storage/games/#{t.code}.gif"
-        im2 = Magick::Image.read("#{Rails.root}/public/#{bp}").first
+        im2 = Magick::Image.read("#{RAILS_ROOT}/public/#{bp}").first
         if im2.columns != 16 || im2.rows != 16
           puts "ERROR: #{t.code} is not a 16x16 img"
           next
@@ -27,6 +27,6 @@ namespace :gm do
     end
     File.open(Skin::FAVICONS_CSS_FILENAME, 'w') {|f| f.write(css_out) }
 
-    im.quantize.write("#{Rails.root}/public/storage/gs.png")  unless `hostname`.strip == 'tachikoma' # para evitar que haya error por no tener píxeles
+    im.quantize.write("#{RAILS_ROOT}/public/storage/gs.png")  unless `hostname`.strip == 'tachikoma' # para evitar que haya error por no tener píxeles
   end
 end

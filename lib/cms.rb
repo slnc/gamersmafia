@@ -156,10 +156,10 @@ module Cms
   end
   
   def self.uncompress_ckeditor_if_necessary
-    if !File.exists?("#{Rails.root}/public/ckeditor")
-      system("tar xfz \"#{Rails.root}/public/ckeditor_3.0.1.tar.gz\" -C public") 
-      system("cat \"#{Rails.root}/public/ckeditor/lang/es.js\" >> \"#{Rails.root}/public/ckeditor/ckeditor.js\"")
-      system("cat \"#{Rails.root}/public/ckeditor_custom.js\" >> \"#{Rails.root}/public/ckeditor/ckeditor.js\"")
+    if !File.exists?("#{RAILS_ROOT}/public/ckeditor")
+      system("tar xfz \"#{RAILS_ROOT}/public/ckeditor_3.0.1.tar.gz\" -C public") 
+      system("cat \"#{RAILS_ROOT}/public/ckeditor/lang/es.js\" >> \"#{RAILS_ROOT}/public/ckeditor/ckeditor.js\"")
+      system("cat \"#{RAILS_ROOT}/public/ckeditor_custom.js\" >> \"#{RAILS_ROOT}/public/ckeditor/ckeditor.js\"")
     end
   end
   
@@ -287,7 +287,7 @@ module Cms
         if new_file.nil?
           rs
         else
-          rs.gsub(md[0], new_file.gsub("#{Rails.root}/public", "http://#{App.domain}"))
+          rs.gsub(md[0], new_file.gsub("#{RAILS_ROOT}/public", "http://#{App.domain}"))
         end
       else
         rs
@@ -295,7 +295,7 @@ module Cms
     end
   end
   
-  # relative_savedir is relative to #{Rails.root}/public/storage/
+  # relative_savedir is relative to #{RAILS_ROOT}/public/storage/
   # Devuelve la ruta guardada o nil si no la ha podido guardar
   def self.copy_image_to_dir(imgurl, relative_savedir)
     if /http:\/\// =~ imgurl # download it first
@@ -313,10 +313,10 @@ module Cms
               open(imgurl) { |str| f.write(str.read) }
            }
          rescue Exception => errdesc
-              puts errdesc if Rails.env == 'test'
+              puts errdesc if RAILS_ENV == 'test'
               return nil
            rescue Exception => errdesc
-             puts errdesc if Rails.env == 'test'
+             puts errdesc if RAILS_ENV == 'test'
              return nil
            end
         end
@@ -329,7 +329,7 @@ module Cms
           img = Cms::read_image(tmpfile)
           raise Exception unless img
         rescue Exception => errdesc
-          puts "no es una imagen valida tronc... #{errdesc}" if Rails.env == 'test'
+          puts "no es una imagen valida tronc... #{errdesc}" if RAILS_ENV == 'test'
           imgurl = nil
         else
           imgurl = tmpfile
@@ -347,14 +347,14 @@ module Cms
   def self.unique_file_move_to_relative_savedir(src, relative_savedir) 
     filename = File.basename(src).bare
     
-    if File.exists?("#{Rails.root}/public/storage/#{relative_savedir}/#{filename}")
+    if File.exists?("#{RAILS_ROOT}/public/storage/#{relative_savedir}/#{filename}")
       incrementor = 1
-      while File.exists?("#{Rails.root}/public/storage/#{relative_savedir}/#{incrementor}_#{filename}") 
+      while File.exists?("#{RAILS_ROOT}/public/storage/#{relative_savedir}/#{incrementor}_#{filename}") 
         incrementor += 1
       end
-      dst = "#{Rails.root}/public/storage/#{relative_savedir}/#{incrementor}_#{filename}"
+      dst = "#{RAILS_ROOT}/public/storage/#{relative_savedir}/#{incrementor}_#{filename}"
     else
-      dst = "#{Rails.root}/public/storage/#{relative_savedir}/#{filename}"
+      dst = "#{RAILS_ROOT}/public/storage/#{relative_savedir}/#{filename}"
     end
     
     FileUtils.mkdir_p(File.dirname(dst)) if not File.directory?(File.dirname(dst))
@@ -383,9 +383,9 @@ module Cms
         # puts new_file
       elsif /users_files/ =~ imgurl # users's file, copy it to the correct directory and rename it
         if md # quitamos el http://
-          imgurl = "#{Rails.root}/public/#{URI::unescape(md[2])}" # TODO si la url es maliciosa? ../
+          imgurl = "#{RAILS_ROOT}/public/#{URI::unescape(md[2])}" # TODO si la url es maliciosa? ../
         elsif !(/^\// =~ imgurl).nil?
-          imgurl = "#{Rails.root}/public#{URI::unescape(imgurl)}"
+          imgurl = "#{RAILS_ROOT}/public#{URI::unescape(imgurl)}"
         end
         # puts 'ble'
         new_file = self.copy_image_to_dir(imgurl, savedir)
@@ -395,7 +395,7 @@ module Cms
       if new_file.nil?
         frag
       else
-        frag.gsub(orig_imgurl, new_file.gsub("#{Rails.root}/public", ''))
+        frag.gsub(orig_imgurl, new_file.gsub("#{RAILS_ROOT}/public", ''))
       end 
     end
     
@@ -408,7 +408,7 @@ module Cms
       m = /(<img([^>]+)src="([^"]+)"([^>]*)>)/i.match(ztr)
       md = /http:\/\/([^\/]+)\/(.+)/i.match(m[3]) # si no tiene slash después del hostname seguro que no es una imagen
       if md # quitamos el http://
-        imgurl = "#{Rails.root}/public/#{md[2]}" # TODO si la url es maliciosa? ../ > cuando intentemos cargar la imagen petará
+        imgurl = "#{RAILS_ROOT}/public/#{md[2]}" # TODO si la url es maliciosa? ../ > cuando intentemos cargar la imagen petará
       else
         imgurl = m[3]
       end
@@ -420,7 +420,7 @@ module Cms
       shown_w = nil
       shown_h = nil
       begin
-        img = Cms::read_image("#{Rails.root}/public/#{imgurl}")
+        img = Cms::read_image("#{RAILS_ROOT}/public/#{imgurl}")
         raise ActiveRecord::RecordNotFound if img.nil?
       rescue Magick::ImageMagickError
       else

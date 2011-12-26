@@ -169,7 +169,7 @@ module Routing
       raise DomainNotFound if km.nil? # blank host or invalid name
       k = km[1]
       @@portals ||= {}
-      @@portals = {} if Rails.env == 'test'
+      @@portals = {} if RAILS_ENV == 'test'
       if not @@portals.has_key?(host) then
         if App.domain_aliases.include?(k)
           raise DomainNotFound # ya no soportamos los dominios viejos

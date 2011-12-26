@@ -11,7 +11,7 @@
     ads
     stats
   ).each do |f|
-  require "#{Rails.root}/lib/#{f}.rb"
+  require "#{RAILS_ROOT}/lib/#{f}.rb"
 end
 
 Cms.uncompress_ckeditor_if_necessary

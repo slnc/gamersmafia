@@ -1293,7 +1293,7 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
 
   def minicolumns(mode, data)
     mc_id = "minicols_{mode}#{data.join(',')}"
-    f = "#{Rails.root}/public/storage/minicolumns/#{mc_id}.png"
+    f = "#{RAILS_ROOT}/public/storage/minicolumns/#{mc_id}.png"
     Cms.gen_minicolumns(mode, data, f) unless File.exists?(f)
     "<img src=\"/storage/minicolumns/#{mc_id}.png\" />"
   end

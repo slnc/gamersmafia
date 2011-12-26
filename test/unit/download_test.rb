@@ -11,14 +11,14 @@ class DownloadTest < ActiveSupport::TestCase
     @d = Download.create({:user_id => 1, :terms => 1, :title => 'mi archivito', :file => fixture_file_upload('/files/images.zip', 'application/zip')})
     assert_equal false, @d.new_record?
     assert /images\.zip/ =~ @d.file
-    assert_equal file_hash("#{Rails.root}/test/fixtures/files/images.zip"), @d.file_hash_md5
+    assert_equal file_hash("#{RAILS_ROOT}/test/fixtures/files/images.zip"), @d.file_hash_md5
   end
   
   test "should_update_md5_hash_after_updating_with_new_file" do
     test_should_update_md5_hash_after_creating_with_file
     assert_equal true, @d.update_attributes({:file => fixture_file_upload('/files/buddha.jpg', 'image/jpeg')})
     assert /buddha\.jpg/ =~ @d.file
-    assert_equal file_hash("#{Rails.root}/test/fixtures/files/buddha.jpg"), @d.file_hash_md5
+    assert_equal file_hash("#{RAILS_ROOT}/test/fixtures/files/buddha.jpg"), @d.file_hash_md5
   end
   
   # TODO this should be done by silencecore_filecolumn
@@ -32,7 +32,7 @@ class DownloadTest < ActiveSupport::TestCase
   test "create_symlink_should_work" do
     test_should_update_md5_hash_after_updating_with_new_file
     mcookie = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-    cookiedir = "#{Rails.root}/public/storage/d/#{mcookie}"
+    cookiedir = "#{RAILS_ROOT}/public/storage/d/#{mcookie}"
     FileUtils.rm_rf(cookiedir) if File.exists?(cookiedir)
     Download.create_symlink(mcookie, @d.file)
     assert File.exists?(cookiedir)

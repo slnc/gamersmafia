@@ -853,7 +853,7 @@ class User < ActiveRecord::Base
 
 
   def upload_file(tmpfile)
-    d = "#{Rails.root}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/"
+    d = "#{RAILS_ROOT}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/"
     FileUtils.mkdir_p(d) unless File.exists?(d)
 
     preppend = ''
@@ -885,14 +885,14 @@ class User < ActiveRecord::Base
     # TODO revisar esto
     for f in self.get_my_files
       if f == filename then
-        File.unlink("#{Rails.root}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/#{f}")
+        File.unlink("#{RAILS_ROOT}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/#{f}")
         break
       end
     end
   end
 
   def get_my_files
-    d = "#{Rails.root}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/"
+    d = "#{RAILS_ROOT}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/"
 
     if not File.exists?(d) then
       FileUtils.mkdir_p d

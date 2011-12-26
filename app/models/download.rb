@@ -92,12 +92,12 @@ class Download < ActiveRecord::Base
     # mirror=nil means a local request, for testing purposes
     download = Download.find_by_file(download_file)
     raise ActiveRecord::RecordNotFound unless download 
-    realfile = "#{Rails.root}/public/#{download.file}"
-    mirror = nil if Rails.env == 'test' # && !mirror.nil?
+    realfile = "#{RAILS_ROOT}/public/#{download.file}"
+    mirror = nil if RAILS_ENV == 'test' # && !mirror.nil?
     
     raise ActiveRecord::RecordNotFound if download.new_record? || (!File.exists?(realfile)) || !File.file?(realfile)
     raise "invalid cookie chars: #{cookie}" unless Download::VALID_DOWNLOAD_COOKIE =~ cookie
-    dstdir = "#{Rails.root}/public/storage/d/#{cookie}"
+    dstdir = "#{RAILS_ROOT}/public/storage/d/#{cookie}"
     if mirror.nil?
       FileUtils.mkdir_p(dstdir) unless File.exists?(dstdir)
       dstfile = "#{dstdir}/#{File.basename(realfile)}"
@@ -122,7 +122,7 @@ class Download < ActiveRecord::Base
   def self.check_invalid_downloads
     u = User.find_by_login('MrAchmed')
     Download.find(:all, :conditions => ['state = ?', Cms::PUBLISHED], :order => 'id DESC').each do |d|
-      if d.file.to_s != '' && !File.exists?("#{Rails.root}/public/#{d.file}") && d.download_mirrors.count == 0
+      if d.file.to_s != '' && !File.exists?("#{RAILS_ROOT}/public/#{d.file}") && d.download_mirrors.count == 0
         d.update_attributes(:file => nil)
       end
       

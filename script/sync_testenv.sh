@@ -6,5 +6,5 @@
 # ya funciona bien.
  
 rake db:test:clone_structure && \
-rake Rails.env=test db:fixtures:load2 && \
-rake Rails.env=test db:fixtures:load2
+rake RAILS_ENV=test db:fixtures:load2 && \
+rake RAILS_ENV=test db:fixtures:load2

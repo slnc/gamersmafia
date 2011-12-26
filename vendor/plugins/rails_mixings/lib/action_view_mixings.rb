@@ -26,7 +26,7 @@ module ActionViewMixings
     if abtest.nil?
       abtest = AbTest.new(:name => test_name, :treatments => treatment > 1 ? treatment : 1, :metrics => [:clickthrough])
       abtest.save
-      Message.create(:user_id_from => User.find_by_login(App.ia_auto_abtests).id, :user_id_to => App.webmaster_user_id, :title => "AB Test '#{abtest.name}' creado automáticamente con #{abtest.treatments} tratamientos", :message => "Revisa que esté bien, ¿vale?") unless Rails.env == 'test'
+      Message.create(:user_id_from => User.find_by_login(App.ia_auto_abtests).id, :user_id_to => App.webmaster_user_id, :title => "AB Test '#{abtest.name}' creado automáticamente con #{abtest.treatments} tratamientos", :message => "Revisa que esté bien, ¿vale?") unless RAILS_ENV == 'test'
     end
     
     if abtest.completed_on  || controller.is_crawler?

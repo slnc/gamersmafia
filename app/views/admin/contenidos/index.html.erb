@@ -72,7 +72,7 @@ for @item in collection:
     <% if @item.class.name == 'Image' then 
  i += 1
           begin
-            img = Cms::read_image("#{Rails.root}/public/#{@item.file}")
+            img = Cms::read_image("#{RAILS_ROOT}/public/#{@item.file}")
             raise Exception unless img
           rescue Exception
             img = nil

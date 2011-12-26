@@ -12,7 +12,7 @@ Rails::Initializer.run do |config|
   # -- all .rb files in that directory are automatically loaded.
 
   # Add additional load paths for your own custom dirs
-  # config.load_paths += %W( #{Rails.root}/extras )
+  # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
   # Specify gems that this application depends on and have them installed with rake gems:install
   #config.gem 'postgres'
@@ -36,7 +36,7 @@ Rails::Initializer.run do |config|
   # you must remove the Active Record framework.
   # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
 
-  config.action_controller.cache_store = :file_store, "#{Rails.root}/tmp/fragment_cache"
+  config.action_controller.cache_store = :file_store, "#{RAILS_ROOT}/tmp/fragment_cache"
 
   # Activate observers that should always be running
   config.active_record.observers = :cache_observer, :faith_observer, :users_action_observer, :achmed_observer

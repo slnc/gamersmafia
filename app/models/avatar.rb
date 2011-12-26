@@ -30,7 +30,7 @@ class Avatar < ActiveRecord::Base
   
   def after_save
     if slnc_changed?(:path) && self.path then
-      f = "#{Rails.root}/public/#{self.path}"
+      f = "#{RAILS_ROOT}/public/#{self.path}"
       
       if self.path.to_s != '' && !(/\.jpg$/ =~ self.path)
         # TODO: La mejor solución pasa por permitir especificar formatos permitidos al plugin pero aún no podemos hacer esto.

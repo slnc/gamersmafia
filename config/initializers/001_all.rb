@@ -109,7 +109,7 @@ ActiveRecord::Base.partial_updates = false if ActiveRecord::Base.respond_to?(:pa
 SVNVERSION = AppR.ondisk_git_version
 TIMEZONE = '+0100'
 
-FileUtils.mkdir_p("#{Rails.root}/public/storage/skins") unless File.exists?("#{Rails.root}/public/storage/skins")
+FileUtils.mkdir_p("#{RAILS_ROOT}/public/storage/skins") unless File.exists?("#{RAILS_ROOT}/public/storage/skins")
 
 # NOTA: el orden importa
 ActiveRecord::Base.send :include, HasHid

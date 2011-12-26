@@ -3,7 +3,7 @@ class Bet < ActiveRecord::Base
   acts_as_categorizable
 
   TIE = 0
-  TOP_BET_WINNERS = "#{Rails.root}/public/storage/apuestas/top_bets_winners_minicolumns_data"
+  TOP_BET_WINNERS = "#{RAILS_ROOT}/public/storage/apuestas/top_bets_winners_minicolumns_data"
 
   INCOMPLETE_BET_SQL = "winning_bets_option_id IS NULL
                         AND tie is false

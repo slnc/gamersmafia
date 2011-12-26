@@ -23,7 +23,7 @@ GamesMode.find(:all, :conditions => ['game_id = ?', g_id]).each do |gm| %>
 
 <p><label for="image_file">Archivo</label><br/>
 <% if @demo.file then 
-real_path = "#{Rails.root}/public/" + @demo.file
+real_path = "#{RAILS_ROOT}/public/" + @demo.file
 %>
 <a href="<%=fc_path(@demo.file)%>"><%=File.basename(@demo.file)%></a> <span class="infoinline"><%=(File.exists?(real_path) ? number_to_human_size(File.size(real_path)) : 'El archivo físico no existe')%></span>
 <% end -%>

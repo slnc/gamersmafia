@@ -16,7 +16,7 @@ class CacheControllerTest < ActionController::TestCase
   end
 
   test "thumbnails_with_valid_image" do
-    full_file = "#{Rails.root}/public/cache/thumbnails/f/125x125/images/golpe_de_estado.jpg"
+    full_file = "#{RAILS_ROOT}/public/cache/thumbnails/f/125x125/images/golpe_de_estado.jpg"
     File.unlink(full_file) if File.exists?(full_file)
     get :thumbnails, { :mode => 'f', :dim => '125x125', :path => 'images/golpe_de_estado.jpg' }
     assert_response :success
@@ -24,7 +24,7 @@ class CacheControllerTest < ActionController::TestCase
   end
 
   test "thumbnails_with_valid_image_if_msie" do
-    full_file = "#{Rails.root}/public/cache/thumbnails/f/125x125/images/golpe_de_estado.jpg"
+    full_file = "#{RAILS_ROOT}/public/cache/thumbnails/f/125x125/images/golpe_de_estado.jpg"
     File.unlink(full_file) if File.exists?(full_file)
     @request.user_agent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)'
     get :thumbnails, { :mode => 'f', :dim => '125x125', :path => 'images/golpe_de_estado.jpg' }
@@ -49,6 +49,6 @@ class CacheControllerTest < ActionController::TestCase
     Faction.find(1).users<< User.find(1)
     get :faction_users_ratios, { :date => Time.now.strftime('%Y%m%d'), :faction_id => ['1.png'] }
     assert_response :redirect
-    assert File.exists?("#{Rails.root}/public/cache/graphs/faction_users_ratios/#{Time.now.strftime('%Y%m%d')}/1.png")
+    assert File.exists?("#{RAILS_ROOT}/public/cache/graphs/faction_users_ratios/#{Time.now.strftime('%Y%m%d')}/1.png")
   end
 end
