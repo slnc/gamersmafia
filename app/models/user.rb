@@ -402,7 +402,7 @@ class User < ActiveRecord::Base
       cr.rating
     else
       comments_count = c.comments.count(:conditions => ['user_id = ?', self.id])
-      if comments_count = 0
+      if comments_count == 0
         5.5
       else
         comments_count = 5 if comments_count > 5

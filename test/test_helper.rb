@@ -1,6 +1,6 @@
 ENV["Rails.env"] = "test"
-require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
-require 'test_help'
+require File.expand_path('../../config/environment', __FILE__)
+require 'rails/test_help'
 require 'feed_validator/assertions'
 require 'vendor/plugins/rails_mixings/lib/test_unit_mixings.rb'
 
@@ -24,7 +24,7 @@ ActionMailer::Base.deliveries = []
 class ActiveSupport::TestCase
   # Turn off transactional fixtures if you're working with MyISAM tables in MySQL
   self.use_transactional_fixtures = true
-  
+
   # TODO Rails no incluye fixture_file_upload en esta clase. Quizás haya que reescribir los
   # tests para que no hagan uso de ello? No estoy seguro de que sea incoherente de esta forma.
   # https://rails.lighthouseapp.com/projects/8994/tickets/1985-fixture_file_upload-no-longer-available-in-tests-by-default
@@ -32,12 +32,12 @@ class ActiveSupport::TestCase
     fixture_path = ActionController::TestCase.send(:fixture_path) if ActionController::TestCase.respond_to?(:fixture_path)
     ActionController::TestUploadedFile.new("#{fixture_path}#{path}", mime_type, binary)
   end
-  
-  
+
+
   # Instantiated fixtures are slow, but give you @david where you otherwise would need people(:david)
   self.use_instantiated_fixtures  = false
   self.pre_loaded_fixtures = true
-  
+
   #  @@fixtures_loaded = false
   #  def self.append_features(base)
   #    unless @@fixtures_loaded
@@ -45,38 +45,38 @@ class ActiveSupport::TestCase
   #      @@fixtures_loaded = true
   #    end
   #  end
-  
+
   def host_from_url(uri)
     URI::split(uri)[2]
   end
-  
+
   def portal
     @portal || GmPortal.new
   end
-  
+
   def portal=(portal)
     @portal = portal
     faction_host portal
   end
-  
-  
+
+
   def sym_pageview(opts)
     # req: url
     opts = {:ip => '127.0.0.1'}.merge(opts)
-    User.db_query("INSERT INTO stats.pageviews( 
-                                               user_id, 
+    User.db_query("INSERT INTO stats.pageviews(
+                                               user_id,
                                                url,
                                                portal_id,
                                                controller,
                                                action,
                                                model_id,
                                                ads_shown,
-                                               ip) 
-                                   VALUES ( 
-                                            #{opts[:user_id] ? opts[:user_id] : 'NULL'}, 
+                                               ip)
+                                   VALUES (
+                                            #{opts[:user_id] ? opts[:user_id] : 'NULL'},
                                             '#{opts[:url]}',
                                             #{opts[:portal_id] ? opts[:portal_id] : 'NULL'},
-                                            
+
                                             '#{opts[:controller] ? opts[:controller] : 'NULL'}',
                                             '#{opts[:action] ? opts[:action] : 'NULL'}',
                                             '#{opts[:model_id] ? opts[:model_id] : 'NULL'}',
@@ -84,7 +84,7 @@ class ActiveSupport::TestCase
                                             '#{opts[:ip]}'
                                             )")
   end
-  
+
   def setup_faction_skin
     @s = FactionsSkin.create({:user_id => 1, :name => 'labeling'})
     assert !@s.new_record?
@@ -94,33 +94,33 @@ class ActiveSupport::TestCase
     cp.skin_id = @s.id
     assert cp.save
   end
-  
-  
+
+
   def self.test_min_acl_level(level, actions, method = :get)
     raise TypeError unless actions.kind_of?(Array)
     raise TypeError unless level.kind_of?(Symbol)
     @@min_acl_level = level
     @@min_acl_actions = actions
-    
+
     def min_acl_level
       @@min_acl_level
     end
-    
+
     def min_acl_actions
       @@min_acl_actions
     end
-    
+
     actions.each do |action|
       define_method "test_min_acl_level_#{level}_#{action}" do
         @request.session[:user] = nil
         assert_raises(AccessDenied) { eval("#{method} action.to_sym") }
-        
+
         case level
           when :superadmin
           assert_raises(AccessDenied) do
             eval("#{method} action.to_sym, {}, { :user => 2 }")
           end
-          
+
           begin
             eval("#{method} action.to_sym, {}, { :user => 1 }")
           rescue AccessDenied
@@ -135,7 +135,7 @@ class ActiveSupport::TestCase
             raise
           rescue Exception
           end
-          
+
           begin
             eval("#{method} action.to_sym, {}, { :user => 1 }")
           rescue AccessDenied
@@ -147,7 +147,7 @@ class ActiveSupport::TestCase
         end
       end
     end
-    
+
     # TODO sin terminar, solo chequeamos que no deje a anónimos
     #    class_eval <<-END
     #      include TestMinAclLevelMethods
@@ -160,7 +160,7 @@ class ActiveSupport::TestCase
     #      raise 'unimplemented'
     #    end
   end
-  
+
   def sym_login(user_ident)
     case user_ident.class.name
       when 'User':
@@ -176,7 +176,7 @@ class ActiveSupport::TestCase
     end
     assert_not_nil session[:user]
   end
-  
+
   def post_comment_on content
     assert request.session[:user]
     c_text = (Kernel.rand * 100000).to_s
@@ -190,19 +190,19 @@ class ActiveSupport::TestCase
     assert_not_nil last_c
     assert_equal c_text, last_c.comment
   end
-  
-  def post_comment_on_unittest(content, 
+
+  def post_comment_on_unittest(content,
                                options = { :comment => "#{Kernel.rand(1000)}Hola mundo!",
-                                           :user_id => 1, 
+                                           :user_id => 1,
                                            :host => '127.0.0.1' })
-    content_id = (content.class.name == 'Content') ? content.id : 
-                                                     content.unique_content.id  
-    
+    content_id = (content.class.name == 'Content') ? content.id :
+                                                     content.unique_content.id
+
     content = Comment.new(options.merge({:content_id => content_id}))
     assert_equal true, content.save
     content
   end
-  
+
   def go_to(url, template=nil)
     get url
     assert_response :success, response.body
@@ -210,43 +210,43 @@ class ActiveSupport::TestCase
       assert_template portal.home # 'index'
     else
       if template.nil?
-        assert_template url[1..-1] # quitamos el / 
+        assert_template url[1..-1] # quitamos el /
       else
         assert_template template
       end
     end
   end
-  
+
   def delete_content(content)
     assert content.state != Cms::DELETED
     Cms::delete_content(content)
     content.reload
     assert_equal Cms::DELETED, content.state
   end
-  
+
   def faction_host(portal=nil)
     portal ||= FactionsPortal.find_by_code('ut')
     host! "#{portal.code}.#{App.domain}"
     @portal = portal
   end
-  
+
   def rate_content(content)
     prev = ContentRating.count
     post '/site/rate_content', { :content_rating => { :content_id => content.unique_content.id, :rating => '5'} }
     assert_response :success
     assert_equal prev + 1, ContentRating.count
   end
-  
+
   def publish_content(content)
     assert content.state != Cms::PUBLISHED
     Cms::publish_content(content, User.find(1))
     content.reload
     assert_equal Cms::PUBLISHED, content.state
   end
-  
+
   def self.fixtures(*a)
   end
-  
+
   def file_hash(somefile)
     md5_hash = ''
     assert_equal true, File.exists?(somefile), "#{somefile} doesn't exists"
@@ -262,14 +262,14 @@ class ActionController::IntegrationTest
   def setup
         host! App.domain
   end
-  
+
   def sym_login(login, pass)
     logout if (request && request.session && request.session[:user])
     post '/cuenta/do_login', { :login => login, :password => pass }
     assert_response :redirect, @response.body
     assert_not_nil request.session[:user]
   end
-  
+
   def logout
     if request.session[:user]
       post '/cuenta/logout'
@@ -277,7 +277,7 @@ class ActionController::IntegrationTest
       assert_nil request.session[:user]
     end
   end
-  
+
   def create_content(type, content_vals, other_vals={})
     cls_name = ActiveSupport::Inflector::camelize(type.to_s)
     action = (cls_name == 'Topic') ? 'create_topic' : 'create'
@@ -292,7 +292,7 @@ class ActiveSupport::TestCase
   def self.basic_test(*views)
     cattr_accessor :basic_views_test
     self.basic_views_test = views
-    
+
     class_eval <<-END
       test "basic_views" do
         self.basic_views_test.each do |view|

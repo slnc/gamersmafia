@@ -1,3 +1,5 @@
+require 'has_slug'
+
 class Term < ActiveRecord::Base
   belongs_to :game
   belongs_to :bazar_district

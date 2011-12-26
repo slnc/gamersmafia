@@ -171,4 +171,4 @@ module TestRequestMixings
       @headers, @request_method, @accepts, @content_type = nil, nil, nil, nil
     end
 end
-ActionController::TestRequest.include TestRequestMixings
+ActionController::TestRequest.send :include, TestRequestMixings

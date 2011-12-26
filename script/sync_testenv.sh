@@ -4,7 +4,7 @@
 # bien todas si no lo hacemos así.
 # TODO rails 2.3.1: probar a quitar el segundo db:fixtures:load2 a ver si
 # ya funciona bien.
- 
+
 rake db:test:clone_structure && \
-rake Rails.env=test db:fixtures:load2 && \
-rake Rails.env=test db:fixtures:load2
+rake --trace RAILS_ENV=test db:fixtures:load2 && \
+rake --trace RAILS_ENV=test db:fixtures:load2
