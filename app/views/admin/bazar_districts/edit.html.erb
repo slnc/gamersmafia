@@ -16,7 +16,7 @@
 		<td>Icono</td>
 		<td>
 <% if @bd.icon then 
-real_path = "#{RAILS_ROOT}/public/" + @bd.icon
+real_path = "#{Rails.root}/public/" + @bd.icon
 %>
 <a href="<%=fc_path(@bd.icon)%>"><%=File.basename(@bd.icon)%></a> <span class="infoinline"><%=(File.exists?(real_path) ? number_to_human_size(File.size(real_path)) : 'El archivo físico no existe')%></span>
 <% end -%>

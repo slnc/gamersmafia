@@ -49,7 +49,7 @@ class DescargasController < InformacionController
 #gm_link = nil
       final_mirror = Download.create_symlink(dd.download_cookie, @download.file, gm_link)  # 1 = NLS
       final_mirror = 0 if final_mirror.nil?
-      end_file = @download.file.gsub("#{RAILS_ROOT}/public/storage", '')
+      end_file = @download.file.gsub("#{Rails.root}/public/storage", '')
       @download_link = "#{Download::MIRRORS_DOWNLOAD[final_mirror]}d/#{dd.download_cookie}/#{File.basename(end_file)}" 
     end
     render :layout => 'blank'

@@ -310,7 +310,7 @@ module Skins
       def self.process(options)
         options_f = Skins::convert_strings_to_attribute_wrappers(attributes, options)
         skin_colors = get_colors(options_f)
-        base_color_generators_dir = "#{RAILS_ROOT}/config/skins/color_generators"
+        base_color_generators_dir = "#{Rails.root}/config/skins/color_generators"
         css_tpl = File.open("#{base_color_generators_dir}/_core.css").read
         # core.css
         COLORS_STRICT.keys.each do |k|

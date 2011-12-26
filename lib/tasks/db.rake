@@ -8,7 +8,7 @@ namespace :db do
       require 'active_record/fixtures'
       require 'lib/overload_insert_fixtures'
       ActiveRecord::Base.establish_connection(:test)
-      fixture_files = (ENV['FIXTURES'] ? ENV['FIXTURES'].split(/,/) : Dir.glob(File.join(RAILS_ROOT, 'test', 'fixtures', '*.{yml,csv}'))).collect {|fixture_file| File.basename(fixture_file, '.*') }
+      fixture_files = (ENV['FIXTURES'] ? ENV['FIXTURES'].split(/,/) : Dir.glob(File.join(Rails.root, 'test', 'fixtures', '*.{yml,csv}'))).collect {|fixture_file| File.basename(fixture_file, '.*') }
       Fixtures.create_fixtures('test/fixtures', fixture_files)
     end
   end

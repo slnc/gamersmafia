@@ -1,6 +1,6 @@
 require 'test_helper'
-load RAILS_ROOT + '/Rakefile'
-#load RAILS_ROOT + '/lib/tasks/periodic/daily.rake'
+load Rails.root + '/Rakefile'
+#load Rails.root + '/lib/tasks/periodic/daily.rake'
 
 class PeriodicTest < ActiveSupport::TestCase
   include Rake

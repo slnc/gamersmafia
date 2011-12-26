@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Este script está pensado para ejecutarse desde RAILS_ROOT.
+# Este script está pensado para ejecutarse desde Rails.root.
 # TODO: convertir a una rake task
 import os
 import re

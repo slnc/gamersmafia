@@ -44,7 +44,7 @@ module Jira
   end
 end
 
-if RAILS_ENV == 'test'
+if Rails.env == 'test'
   module Jira
     def self.user_exists?(user)
     end

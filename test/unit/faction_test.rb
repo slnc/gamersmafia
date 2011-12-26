@@ -3,7 +3,7 @@ require 'test_helper'
 class FactionTest < ActiveSupport::TestCase
   test "has_building should work" do
     f1 = Faction.find(1)
-    BLDG_FILE = "touch #{RAILS_ROOT}/public/storage/factions/#{f1.id}/building_top.png"
+    BLDG_FILE = "touch #{Rails.root}/public/storage/factions/#{f1.id}/building_top.png"
     system(BLDG_FILE) unless File.exists?(BLDG_FILE)
     assert f1.has_building?
   end

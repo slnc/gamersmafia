@@ -314,7 +314,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   #    assert_equal 'Pepito', u.name
   #    assert_equal 'storage/users/0000/001_avatar_pepito.png', u.avatar, "do: #{@controller.user.avatar}"
   #    assert_equal 'soy pro', u.description
-  #    File.unlink("#{RAILS_ROOT}/public/#{u.avatar}") # TODO debería hacerlo el modelo al destruirlo y deberíamos destruirlo, no?
+  #    File.unlink("#{Rails.root}/public/#{u.avatar}") # TODO debería hacerlo el modelo al destruirlo y deberíamos destruirlo, no?
   #  end
   
   

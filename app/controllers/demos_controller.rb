@@ -66,7 +66,7 @@ class DemosController < ArenaController
       @demo_link = params[:r]
     else
       gm_link = @demo.created_on > 1.day.ago ? 0 : 1
-      end_file = @demo.file.to_s.gsub("#{RAILS_ROOT}/public/storage", '')
+      end_file = @demo.file.to_s.gsub("#{Rails.root}/public/storage", '')
       @demo_link = @demo.file.to_s 
     end
     render :layout => 'blank'

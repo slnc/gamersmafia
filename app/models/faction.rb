@@ -34,7 +34,7 @@ class Faction < ActiveRecord::Base
   end
 
   def has_building?
-    File.exists?("#{RAILS_ROOT}/public/storage/factions/#{self.id}/building_top.png")
+    File.exists?("#{Rails.root}/public/storage/factions/#{self.id}/building_top.png")
   end
   
   # TODO migrate them to files
@@ -420,7 +420,7 @@ class Faction < ActiveRecord::Base
   end
   
   def update_img_files
-    basedir = "#{RAILS_ROOT}/public/storage/factions/#{self.id}"
+    basedir = "#{Rails.root}/public/storage/factions/#{self.id}"
     
     if not File.exists?(basedir)
       FileUtils.mkdir_p(basedir)

@@ -1,4 +1,4 @@
-load RAILS_ROOT + '/Rakefile'
+load Rails.root + '/Rakefile'
 
 class ActionController::Caching::Fragments::UnthreadedFileStore
   def write(name, value, options = nil) #:nodoc:
