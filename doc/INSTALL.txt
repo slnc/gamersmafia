@@ -1,10 +1,10 @@
 INSTALACIÓN DE GAMERSMAFIA
 
-1. Instala la última versión de 64bits de Ubuntu Server
+1. Instala la última versión de Ubuntu Server
 (http://www.ubuntu.com/download/server/download) en una máquina virtual de tu
 elección (eg: Vmware, Parallels, etc) y crea un usuario llamado "unnamed".
-Opciones recomendadas: disco auto expandible de 10G y al menos 500M de RAM
-asignados.
+Opciones recomendadas: disco auto expandible de mínimo 4G (recomendados 10G) y
+al menos 500M de RAM asignados.
 
 2. Conecta a tu nueva máquina virtual como usuario "unnamed" y copia y pega las
 siguientes 4 líneas en una terminal:
