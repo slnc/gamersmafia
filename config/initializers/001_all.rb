@@ -1,10 +1,10 @@
-OPENURI_HEADERS = { 
+OPENURI_HEADERS = {
                     'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-                    'Accept-Charset' => 'ISO-8859-1,utf-8;q=0.7,*;q=0.7', 
-                    'Accept-Encoding' => '', 
-                    'Accept-Language' => 'en-us,en;q=0.5', 
-                    'Connection' => 'keep-alive', 
-                    'Keep-Alive' => '300',  
+                    'Accept-Charset' => 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
+                    'Accept-Encoding' => '',
+                    'Accept-Language' => 'en-us,en;q=0.5',
+                    'Connection' => 'keep-alive',
+                    'Keep-Alive' => '300',
                     'User-Agent' => 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.1.4) Gecko/20091016 Firefox/3.5.4'
 }
 
@@ -12,15 +12,15 @@ User.connection.client_min_messages = 'warning'
 
 ActionMailer::Base.smtp_settings = {
   :address  => "mail.gamersmafia.com",
-  :port  => 25, 
+  :port  => 25,
   :domain  => "gamersmafia.com",
   :user_name  => "nagato.gamersmafia.com",
   :password  => 'megustanlasgalletas',
   :authentication  => :login
-} 
+}
 
 # if App.enable_dbstats? then
-#if nil 
+if nil
 # TODO copypaste de environment de GM
 module ActiveRecord
   module ConnectionAdapters
@@ -67,7 +67,7 @@ ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.module_eval do
   def self.reset_stats
     @@stats_queries = @@stats_bytes = @@stats_rows = 0
   end
-  
+
   def select_with_stats(sql, name)
     bytes = 0
     rows = select_without_stats(sql, name)
@@ -88,23 +88,24 @@ ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.module_eval do
 end
 
 ActionController::Base.cache_store = :file_store, FRAGMENT_CACHE_PATH
-ActionController::Base.module_eval do
-  def perform_action_with_reset
-    ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::reset_stats
-    perform_action_without_reset
-  end
-  
-  alias_method_chain :perform_action, :reset
-  
-  def active_record_runtime
-    stats = ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::get_stats
-    "#{super} #{sprintf("%.1fk", stats[:bytes].to_f / 1024)} queries: #{stats[:queries]}"
-  end
-end
+# TODO(slnc): rails3 commented out
+#ActionController::Base.module_eval do
+#  def perform_action_with_reset
+#    ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::reset_stats
+#    perform_action_without_reset
+#  end
+#
+#  alias_method_chain :perform_action, :reset
+#
+#  def active_record_runtime
+#    stats = ActiveRecord::ConnectionAdapters::PostgreSQLAdapter::get_stats
+#    "#{super} #{sprintf("%.1fk", stats[:bytes].to_f / 1024)} queries: #{stats[:queries]}"
+#  end
 #end
+end
 
-ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS.update(:prefix => 'gm.')
-ActionController::Base.ip_spoofing_check = false
+# TODO(slnc): rails3 commented out
+# ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS.update(:prefix => 'gm.')
 ActiveRecord::Base.partial_updates = false if ActiveRecord::Base.respond_to?(:partial_updates)
 SVNVERSION = AppR.ondisk_git_version
 TIMEZONE = '+0100'
@@ -112,6 +113,7 @@ TIMEZONE = '+0100'
 FileUtils.mkdir_p("#{Rails.root}/public/storage/skins") unless File.exists?("#{Rails.root}/public/storage/skins")
 
 # NOTA: el orden importa
+require 'has_hid'
 ActiveRecord::Base.send :include, HasHid
 
 # NOTA: los observers DEBEN ser los últimos para que se puedan cargar los contenidos de lib/ y plugins

@@ -1,4 +1,4 @@
-Current::Application.routes.draw do
+Gamersmafia::Application.routes.draw do
   resources :tags
   namespace :admin do
       resources :tags
@@ -139,7 +139,7 @@ Current::Application.routes.draw do
   match 'tutoriales/create' => 'tutoriales#create'
   match 'tutoriales/list' => 'tutoriales#index'
   match 'tutoriales/new' => 'tutoriales#new'
-  match '' => 'home#index', :title => 'Inicio'
+  root :to => 'home#index', :title => 'Inicio'
   match '/:controller(/:action(/:id))'
   match '*path' => 'application#http_404'
 end

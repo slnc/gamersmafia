@@ -1,5 +1,3 @@
-load Rails.root + '/Rakefile'
-
 class ActionController::Caching::Fragments::UnthreadedFileStore
   def write(name, value, options = nil) #:nodoc:
     ensure_cache_path(File.dirname(real_file_path(name)))
