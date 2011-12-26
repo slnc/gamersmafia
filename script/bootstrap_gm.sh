@@ -65,7 +65,6 @@ DownloadMiscConfigFiles() {
   wget -O ~/.gitconfig https://raw.github.com/slnc/gamersmafia/production/script/bootstrap/.gitconfig
   wget -O ~/.bashrc_gm https://raw.github.com/slnc/gamersmafia/production/script/bootstrap/.bashrc
   echo -e "\nsource ~/.bashrc_gm" >> ~/.bashrc
-  source ~/.bashrc
 }
 
 CloneRepo() {
@@ -164,6 +163,9 @@ archivo hosts de tu sistema principal y añade la siguiente línea:
 He intenta acceder desde tu navegador escribiendo:
 
   http://gamersmafia.dev/
+
+Recuerda que si tienes un client ssh puedes conectarte al servidor por ssh.
+
 END`
 echo -e "$msg\n"
 }
