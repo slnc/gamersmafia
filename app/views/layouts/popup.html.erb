@@ -8,7 +8,7 @@
 </head>
 <body class="popup">
   <div id="content">
-    <%= @content_for_layout %>
+    <%= yield %>
   </div>
   <div style="clear: both; margin: 10px; text-align: right;"><a href="#" title="Haz click para cerrar esta ventana" onclick="window.close();">cerrar</a></div>
   <script type="text/javascript">

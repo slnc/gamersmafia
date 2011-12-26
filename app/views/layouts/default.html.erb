@@ -369,7 +369,7 @@ if u_clans.size == 0 then %>
 <script type="text/javascript">var contents = [];</script>
 <% if flash[:notice] -%><div id="notice"><%= flash[:notice] %></div><% end -%>
 <% if flash[:error] -%><div id="error"><%= flash[:error] %></div><% end -%>
-<%= @content_for_layout %>
+<%= yield %>
 <div style="clear:both;">&nbsp;</div>
 </div>
 
