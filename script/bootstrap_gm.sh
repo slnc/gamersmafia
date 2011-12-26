@@ -64,7 +64,8 @@ DownloadMiscConfigFiles() {
   wget -O ~/.vimrc vrc=https://raw.github.com/slnc/gamersmafia/production/script/bootstrap/.vimrc
   wget -O ~/.gitconfig https://raw.github.com/slnc/gamersmafia/production/script/bootstrap/.gitconfig
   wget -O ~/.bashrc_gm https://raw.github.com/slnc/gamersmafia/production/script/bootstrap/.bashrc
-  echo "\nsource ~/.bashrc_gm" >> ~/.bashrc
+  echo -e "\nsource ~/.bashrc_gm" >> ~/.bashrc
+  source ~/.bashrc
 }
 
 CloneRepo() {
