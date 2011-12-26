@@ -3,8 +3,9 @@ COMO COLABORAR CON PARCHES
 METODO PARA LOS IMPACIENTES
 1- Regístrate en GitHub
 2- Configura git y ssh en tu máquina virtual de ubuntu (http://help.github.com/mac-set-up-git/)
-3- Desde GitHub crea un fork del repositorio oficial de GM (https://github.com/slnc/gamersmafia)
-4- Ejecuta estos comandos desde /srv/www/gamersmafia/current (reemplaza <TU_NICK> for tu nick en GitHub):
+3- Edita ~/.gitconfig y pon tus datos arriba del todo
+4- Desde GitHub crea un fork del repositorio oficial de GM (https://github.com/slnc/gamersmafia)
+5- Ejecuta estos comandos desde /srv/www/gamersmafia/current (reemplaza <TU_NICK> for tu nick en GitHub):
 
    git remote rm origin
    git remote add git@github.com:<TU_NICK>/gamersmafia.git
