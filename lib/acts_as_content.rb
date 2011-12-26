@@ -15,15 +15,15 @@ module ActsAsContent
       
       #belongs_to :unique_content, :class_name => 'Content'
       
-      named_scope :draft, :conditions => "state = #{Cms::DRAFT}"
-      named_scope :pending, :conditions => "state = #{Cms::PENDING}"
-      named_scope :published, :conditions => "state = #{Cms::PUBLISHED}"
-      named_scope :deleted, :conditions => "state = #{Cms::DELETED}"
-      named_scope :onhold, :conditions => "state = #{Cms::ONHOLD}"
+      scope :draft, :conditions => "state = #{Cms::DRAFT}"
+      scope :pending, :conditions => "state = #{Cms::PENDING}"
+      scope :published, :conditions => "state = #{Cms::PUBLISHED}"
+      scope :deleted, :conditions => "state = #{Cms::DELETED}"
+      scope :onhold, :conditions => "state = #{Cms::ONHOLD}"
       
-      named_scope :in_term, lambda { |term| { :conditions => ["unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id = ?)", term.id] }}
-      named_scope :in_term_tree, lambda { |term| { :conditions => ["unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?))", term.all_children_ids] }}
-      named_scope :in_portal, lambda { |portal|
+      scope :in_term, lambda { |term| { :conditions => ["unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id = ?)", term.id] }}
+      scope :in_term_tree, lambda { |term| { :conditions => ["unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?))", term.all_children_ids] }}
+      scope :in_portal, lambda { |portal|
         if portal.id == -1
           {}
         else
@@ -32,8 +32,8 @@ module ActsAsContent
         end
       }
       
-      named_scope :most_rated, :conditions => 'cache_rated_times > 1', :order => 'coalesce(cache_weighted_rank, 0) DESC'
-      named_scope :most_popular, :conditions => "cache_rated_times > 1", 
+      scope :most_rated, :conditions => 'cache_rated_times > 1', :order => 'coalesce(cache_weighted_rank, 0) DESC'
+      scope :most_popular, :conditions => "cache_rated_times > 1", 
         :order => '(coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0)) DESC'
       
       validates_presence_of :user

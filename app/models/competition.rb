@@ -82,7 +82,7 @@ class Competition < ActiveRecord::Base
   # Busca competiciones relacionadas con el usuario, ya sean competiciones de
   # usuarios o de clanes. Si el usuario es admin también devolverá la competición
   # aunque no sea participante
-  named_scope :related_with_user, lambda { |user| 
+  scope :related_with_user, lambda { |user| 
     ids = [0]
     Clan.related_with_user(user.id).compact.each { |c| ids<< c.id }
     
@@ -100,14 +100,14 @@ class Competition < ActiveRecord::Base
   }
   
   
-  named_scope :related_with_clan, lambda { |clan| { :conditions => "id IN (SELECT competition_id 
+  scope :related_with_clan, lambda { |clan| { :conditions => "id IN (SELECT competition_id 
                                                                              FROM competitions_participants 
                                                                             WHERE participant_id = #{clan.id} 
                                                                               AND competition_id IN (SELECT id 
                                                                                                        FROM competitions 
                                                                                                       WHERE competitions_participants_type_id = #{Competition::CLANS}))"}}
-  named_scope :active, :conditions => "state < #{CLOSED}"
-  named_scope :started, :conditions => "state = #{Competition::STARTED}"
+  scope :active, :conditions => "state < #{CLOSED}"
+  scope :started, :conditions => "state = #{Competition::STARTED}"
   
   def self.update_user_indicator(user)
     # TODO copypasted de warning_list.rhtml

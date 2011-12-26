@@ -10,7 +10,7 @@ class Portal < ActiveRecord::Base
   file_column :small_header
   after_save :update_global_vars
   
-  named_scope :factions, :conditions => ['type = \'FactionsPortal\'']
+  scope :factions, :conditions => ['type = \'FactionsPortal\'']
   
   before_save :check_code
   

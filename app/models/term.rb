@@ -4,11 +4,11 @@ class Term < ActiveRecord::Base
   belongs_to :platform
   belongs_to :clan
 
-  named_scope :contents_tags, :conditions => 'taxonomy = \'ContentsTag\''
-  named_scope :not_contents_tags, :conditions => 'taxonomy IS NULL or taxonomy <> \'ContentsTag\''
-  named_scope :top_level, :conditions => 'id = root_id AND parent_id IS NULL AND clan_id IS NULL'
-  named_scope :with_taxonomy, lambda { |taxonomy| {:conditions => "taxonomy = '#{taxonomy}'"}}
-  named_scope :in_category, lambda { |t| { :conditions => ['id IN (SELECT term_id FROM contents_terms WHERE content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?)))', t.all_children_ids]} }
+  scope :contents_tags, :conditions => 'taxonomy = \'ContentsTag\''
+  scope :not_contents_tags, :conditions => 'taxonomy IS NULL or taxonomy <> \'ContentsTag\''
+  scope :top_level, :conditions => 'id = root_id AND parent_id IS NULL AND clan_id IS NULL'
+  scope :with_taxonomy, lambda { |taxonomy| {:conditions => "taxonomy = '#{taxonomy}'"}}
+  scope :in_category, lambda { |t| { :conditions => ['id IN (SELECT term_id FROM contents_terms WHERE content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?)))', t.all_children_ids]} }
 
   has_many :contents_terms, :dependent => :destroy
   has_many :contents, :through => :contents_terms

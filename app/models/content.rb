@@ -12,7 +12,7 @@ class Content < ActiveRecord::Base
   has_many :contents_terms, :dependent => :destroy
   has_many :users_contents_tags, :dependent => :destroy
 
-  named_scope :with_tags_from_user, lambda { |tags,user| { :conditions => ['contents.id IN (SELECT content_id FROM users_contents_tags WHERE user_id = ? AND original_name IN (?))', user, tags] } }
+  scope :with_tags_from_user, lambda { |tags,user| { :conditions => ['contents.id IN (SELECT content_id FROM users_contents_tags WHERE user_id = ? AND original_name IN (?))', user, tags] } }
   
   after_save do |m| 
     m.contents_locks.clear if m.contents_locks
@@ -103,7 +103,7 @@ class Content < ActiveRecord::Base
     # devuelve el objeto real al que referencia
     @_cache_real_content ||= begin       
       ctype = Object.const_get(self.content_type.name)
-      ctype.send(:with_exclusive_scope) { ctype.find(self.external_id) } # NECESSARY because we use find_each in weekly.rb and there is a rails bug ( https://rails.lighthouseapp.com/projects/8994/tickets/1267-methods-invoked-within-named_scope-procs-should-respect-the-scope-stack )
+      ctype.send(:with_exclusive_scope) { ctype.find(self.external_id) } # NECESSARY because we use find_each in weekly.rb and there is a rails bug ( https://rails.lighthouseapp.com/projects/8994/tickets/1267-methods-invoked-within-scope-procs-should-respect-the-scope-stack )
     end
   end
   

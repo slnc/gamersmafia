@@ -1,6 +1,6 @@
 class Term < ActiveRecord::Base
-  named_scope :top_level, :conditions => 'id = root_id AND parent_id IS NULL'
-  named_scope :in_type, lambda { |type| { :conditions => "type = '#{type}'"}}
+  scope :top_level, :conditions => 'id = root_id AND parent_id IS NULL'
+  scope :in_type, lambda { |type| { :conditions => "type = '#{type}'"}}
   
   acts_as_rootable
   acts_as_tree :order => 'name'

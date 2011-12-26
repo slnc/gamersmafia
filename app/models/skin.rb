@@ -14,7 +14,7 @@ class Skin < ActiveRecord::Base
   after_create :setup_initial_zip
   before_create :check_names
 
-  named_scope :public,
+  scope :public,
               :conditions => 'type = \'FactionsSkin\' AND is_public = \'t\'',
               :order => 'lower(name)'
 

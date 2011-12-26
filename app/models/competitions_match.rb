@@ -36,8 +36,8 @@ class CompetitionsMatch < ActiveRecord::Base
   observe_attr :participant1_id
   observe_attr :participant2_id
 
-  named_scope :accepted, :conditions => "accepted = 't'"
-  named_scope :not_accepted, :conditions => "accepted = 'f'"
+  scope :accepted, :conditions => "accepted = 't'"
+  scope :not_accepted, :conditions => "accepted = 'f'"
   #  after_save :reset_faith_indicators
   
   # TODO 

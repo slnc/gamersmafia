@@ -4,7 +4,7 @@ class UsersNewsfeed < ActiveRecord::Base
 
   belongs_to :users_action
 
-  named_scope :old, :conditions => "created_on < now() - '1 month'::interval"
+  scope :old, :conditions => "created_on < now() - '1 month'::interval"
 
   def self.process
     # Actualiza el apartado "En tu Red" para todos los usuarios activos

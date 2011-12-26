@@ -15,16 +15,16 @@ class CommentsValoration < ActiveRecord::Base
   belongs_to :user
   belongs_to :comment
   
-  named_scope :negative, :conditions => "comments_valorations_type_id IN (SELECT id 
+  scope :negative, :conditions => "comments_valorations_type_id IN (SELECT id 
       FROM comments_valorations_types WHERE direction = #{NEGATIVE})"
   
-  named_scope :neutral, :conditions => "comments_valorations_type_id IN (SELECT id 
+  scope :neutral, :conditions => "comments_valorations_type_id IN (SELECT id 
       FROM comments_valorations_types WHERE direction = #{NEUTRAL})"
   
-  named_scope :positive, :conditions => "comments_valorations_type_id IN (SELECT id 
+  scope :positive, :conditions => "comments_valorations_type_id IN (SELECT id 
       FROM comments_valorations_types WHERE direction = #{POSITIVE})"
   
-  named_scope :recent, :conditions => "created_on >= now() - '1 month'::interval"
+  scope :recent, :conditions => "created_on >= now() - '1 month'::interval"
   
   private
   def init_randval

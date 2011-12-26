@@ -168,16 +168,16 @@ class User < ActiveRecord::Base
   before_save :check_if_shadow
   before_save :check_if_website
 
-  named_scope :settled, :conditions => 'created_on <= now() - \'1 month\'::interval'
-  named_scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})",
+  scope :settled, :conditions => 'created_on <= now() - \'1 month\'::interval'
+  scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})",
                           :order => 'lower(login)'
-  named_scope :birthday_today, :conditions => "date_part('day', birthday)::text || date_part('month', birthday)::text = date_part('day', now())::text || date_part('month', now())::text"
-  named_scope :humans, :conditions => 'is_bot is false'
+  scope :birthday_today, :conditions => "date_part('day', birthday)::text || date_part('month', birthday)::text = date_part('day', now())::text || date_part('month', now())::text"
+  scope :humans, :conditions => 'is_bot is false'
 
-  named_scope :recently_active,
+  scope :recently_active,
               :conditions => "lastseen_on >= now() - '1 week'::interval"
 
-  named_scope :online, :conditions => "lastseen_on >= now() - '30 minutes'::interval"
+  scope :online, :conditions => "lastseen_on >= now() - '30 minutes'::interval"
 
   # Class methods
   def self.suspicious_users

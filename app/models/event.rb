@@ -3,8 +3,8 @@ class Event < ActiveRecord::Base
   acts_as_categorizable
   acts_as_tree :order => 'title'
   
-  named_scope :top_level, :conditions => 'parent_id IS NULL'
-  named_scope :current_events, :conditions => "events.starts_on < now() + '2 months'::interval
+  scope :top_level, :conditions => 'parent_id IS NULL'
+  scope :current_events, :conditions => "events.starts_on < now() + '2 months'::interval
                                            AND events.parent_id is null
                                            AND events.ends_on > now() 
                                            AND events.id not in (SELECT event_id from competitions)", 

@@ -22,13 +22,13 @@ class Bet < ActiveRecord::Base
   after_save :process_bets_options
   has_many :bets_options, :dependent => :destroy
 
-  named_scope :awaiting_result, :conditions => Bet::AWAITING_RESULT_SQL,
+  scope :awaiting_result, :conditions => Bet::AWAITING_RESULT_SQL,
                                 :order => 'closes_on DESC, id DESC'
 
-  named_scope :closed_bets, :conditions => Bet::CLOSED_BETS_SQL,
+  scope :closed_bets, :conditions => Bet::CLOSED_BETS_SQL,
                             :order => 'closes_on DESC, id DESC'
 
-  named_scope :open_bets, :conditions => Bet::OPEN_BETS_SQL,
+  scope :open_bets, :conditions => Bet::OPEN_BETS_SQL,
                           :order => 'closes_on ASC, id ASC'
 
   observe_attr :cancelled, :forfeit, :tie, :winning_bets_option_id

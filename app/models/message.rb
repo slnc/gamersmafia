@@ -29,9 +29,9 @@ class Message < ActiveRecord::Base
   plain_text :title
   before_save :sanitize_message
 
-  named_scope :recipient_is,
+  scope :recipient_is,
               lambda { |user| { :conditions => ["user_id_to = ?", user.id]}}
-  named_scope :recipient_undeleted,
+  scope :recipient_undeleted,
               :conditions => "receiver_deleted is false"
 
 
