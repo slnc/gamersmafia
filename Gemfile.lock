@@ -1,0 +1,66 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    aasm (3.0.1)
+      activerecord
+    actionmailer (2.3.10)
+      actionpack (= 2.3.10)
+    actionpack (2.3.10)
+      activesupport (= 2.3.10)
+      rack (~> 1.1.0)
+    activerecord (2.3.10)
+      activesupport (= 2.3.10)
+    activeresource (2.3.10)
+      activesupport (= 2.3.10)
+    activesupport (2.3.10)
+    ai4r (1.9)
+    builder (3.0.0)
+    ci_reporter (1.6.9)
+      builder (>= 2.1.2)
+    clusterer (0.1.9)
+      stemmer (>= 0.0.0)
+    feedtools (0.2.29)
+      activerecord (>= 1.10.1)
+      builder (>= 1.2.4)
+      uuidtools (>= 1.0.0)
+    feedvalidator (0.1.2)
+    geoip (1.1.1)
+    gruff (0.3.6)
+    pg (0.12.0)
+      rake-compiler (~> 0.7)
+    rack (1.1.2)
+    rails (2.3.10)
+      actionmailer (= 2.3.10)
+      actionpack (= 2.3.10)
+      activerecord (= 2.3.10)
+      activeresource (= 2.3.10)
+      activesupport (= 2.3.10)
+      rake (>= 0.8.3)
+    rails-footnotes (3.6.7)
+    rake (0.9.2.2)
+    rake-compiler (0.7.9)
+      rake
+    rmagick (2.13.1)
+    ruby-pg (0.7.9.2008.01.28)
+    stemmer (1.0.1)
+    tidy (1.1.2)
+    uuidtools (2.1.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  aasm
+  ai4r
+  ci_reporter
+  clusterer
+  feedtools
+  feedvalidator
+  geoip
+  gruff
+  pg
+  rails (= 2.3.10)
+  rails-footnotes
+  rmagick
+  ruby-pg
+  tidy
