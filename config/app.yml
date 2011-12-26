@@ -1,4 +1,4 @@
-# Common config. It defines all configuration variables but it's not intended to be used 
+# Common config. It defines all configuration variables but it's not intended to be used
 # directly.
 common: &common
   asset_domain: gamersmafia.com
@@ -34,6 +34,7 @@ common: &common
   port: 80
   python: /usr/local/hosting/bin/python2.4
   session_secret: secretsecretsecretsecretsecret
+  show_ads: false
   system_mail_host: imap.gmail.com
   system_mail_domain: gamersmafia.com
   system_mail_user: nagatodev@gamersmafia.com
@@ -54,7 +55,7 @@ development: &development
   enable_dbstats?: true
   python: python
   <<: *common
-  
+
 test: &test
   domain: test.host
   domain_bazar: bazar.test.host

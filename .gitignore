@@ -1,3 +1,5 @@
+config/app_production.yml
 log/*.log
+public/cache/*
 public/ckeditor
 public/storage/GeoLiteCity.dat
