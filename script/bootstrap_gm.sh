@@ -38,6 +38,7 @@ libpq-dev
 libtidy-0.99-0
 libxml2-dev libxml2 libxslt1-dev
 nodejs
+openjdk-7-jre
 openssh-server
 postgresql
 postgresql-client
