@@ -70,7 +70,7 @@
             <div class="title centered drafts"><a class="nav" onclick="close_new_content_selector();" href="/cuenta/mis_borradores">Mis borradores</a></div>
             <div class="title centered">Enviar contenidos</div>
             <ul>
-              <% if @controller.portal && @controller.portal.class.name == 'ClansPortal' then %>
+              <% if controller.portal && controller.portal.class.name == 'ClansPortal' then %>
               <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="/noticias/new">Noticia</a></li>
               <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="/descargas/new">Descarga</a></li>
               <li class="alt0"><a class="nav" onclick="close_new_content_selector();" href="/imagenes/new">Imagen</a></li>

@@ -111,7 +111,7 @@ end
     <th style="width: 125px;"><%=gmd11%> apostados</th>
     <th class="timestamp">Terminó hace</th>
   </tr>
-  <% cache("/#{@controller.portal_code}/apuestas/index/closed_#{Time.now.to_i/3600}") do %>
+  <% cache("/#{controller.portal_code}/apuestas/index/closed_#{Time.now.to_i/3600}") do %>
   <% Bet.in_term(controller.portal.bet).closed_bets.find(:published, :limit => 20).each do |bet| %>
     <tr class="<%=oddclass%>">
       <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>

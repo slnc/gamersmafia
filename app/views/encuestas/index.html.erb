@@ -34,7 +34,7 @@ mfcontents_list('Más comentadas',
     <%= render :partial => 'shared/pager2', :locals => {:collection => @polls, :pos => 'top'} %>
 
     <table> 	
-<% cache("/#{@controller.portal_code}/encuestas/index/page_#{params[:page]}") do %>
+<% cache("/#{controller.portal_code}/encuestas/index/page_#{params[:page]}") do %>
 <% @polls.each do |poll| %>
     <tr class="<%=oddclass%>">
       <td class="icon"><%=faction_favicon(Organizations.find_by_content(poll))%></td>
