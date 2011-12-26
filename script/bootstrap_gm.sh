@@ -25,6 +25,7 @@ apache2-threaded-dev
 apache2.2-bin
 apache2.2-common
 build-essential
+exuberant-ctags
 git
 libapr1-dev
 libaprutil1-dev
@@ -44,7 +45,7 @@ rpl
 ruby1.8
 ruby1.8-dev
 rubygems
-vim
+vim-nox
 zip
 "
 
@@ -54,7 +55,16 @@ Bootstrap() {
   SetupPostgreSql
   SetupApache2
   SetupGamersmafiaApp
+  DownloadMiscConfigFiles
   PrintFinalNotes
+}
+
+DownloadMiscConfigFiles() {
+  mkdir -p ~/.vim/sessions
+  wget -O ~/.vimrc vrc=https://raw.github.com/slnc/gamersmafia/production/script/bootstrap/.vimrc
+  wget -O ~/.gitconfig https://raw.github.com/slnc/gamersmafia/production/script/bootstrap/.gitconfig
+  wget -O ~/.bashrc_gm https://raw.github.com/slnc/gamersmafia/production/script/bootstrap/.bashrc
+  echo "\nsource ~/.bashrc_gm" >> ~/.bashrc
 }
 
 CloneRepo() {
