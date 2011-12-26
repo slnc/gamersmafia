@@ -42,34 +42,34 @@ class SiteController < ApplicationController
 
   def get_banners_of_gallery
     raise ActiveRecord::RecordNotFound unless params[:gallery] && params[:gallery] =~ /[a-zA-Z0-9_-]+/
-    @banners = (Dir.entries("#{RAILS_ROOT}/public/images/banners/#{params[:gallery]}") - %w(. ..)).sort
+    @banners = (Dir.entries("#{Rails.root}/public/images/banners/#{params[:gallery]}") - %w(. ..)).sort
     render :layout => false
   end
 
   def banners_duke
     files = []
-    for f in Dir.entries("#{RAILS_ROOT}/public/images/banners/duke_nukem")
+    for f in Dir.entries("#{Rails.root}/public/images/banners/duke_nukem")
       if not f.index('_88x31.gif').nil? then
         files<< f
       end # if
     end # for
 
     filename = files[Kernel.rand(files.length)]
-    send_file "#{RAILS_ROOT}/public/images/banners/duke_nukem/#{filename}",
+    send_file "#{Rails.root}/public/images/banners/duke_nukem/#{filename}",
               :type => 'image/gif',
               :disposition => 'inline'
   end
 
   def banners_misc
     files = []
-    for f in Dir.entries("#{RAILS_ROOT}/public/images/banners")
+    for f in Dir.entries("#{Rails.root}/public/images/banners")
       if not f.index('misc_120x60_').nil? then
         files<< f
       end # if
     end # for
 
     filename = files[Kernel.rand(files.length)]
-    send_file "#{RAILS_ROOT}/public/images/banners/#{filename}",
+    send_file "#{Rails.root}/public/images/banners/#{filename}",
               :type => 'image/gif',
               :disposition => 'inline'
   end
@@ -404,7 +404,7 @@ class SiteController < ApplicationController
 
   def i
     track(:cookiereq => false)
-    send_file "#{RAILS_ROOT}/public/images/blank.gif", :type => 'image/gif', :disposition => 'inline'
+    send_file "#{Rails.root}/public/images/blank.gif", :type => 'image/gif', :disposition => 'inline'
   end
 
   def smileys
@@ -437,7 +437,7 @@ class SiteController < ApplicationController
       se = SentEmail.find(:first, :conditions => ['message_key = ? AND first_read_on is null', params[:mid]])
       se.update_attribute(:first_read_on, Time.now) if se
     end
-    send_file "#{RAILS_ROOT}/public/skins/default/images/notifications/logo.gif", :type => 'image/gif', :disposition => 'inline'
+    send_file "#{Rails.root}/public/skins/default/images/notifications/logo.gif", :type => 'image/gif', :disposition => 'inline'
   end
 
   def do_contactar
@@ -463,7 +463,7 @@ class SiteController < ApplicationController
 
   def album
     @title = "Aquellos maravillosos años"
-    @files = Dir.entries("#{RAILS_ROOT}/public/images/history").collect { |e| e if  /thumb\-/ =~ e }.compact.sort
+    @files = Dir.entries("#{Rails.root}/public/images/history").collect { |e| e if  /thumb\-/ =~ e }.compact.sort
   end
 
   def fusiones

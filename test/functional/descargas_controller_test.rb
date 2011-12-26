@@ -47,7 +47,7 @@ class DescargasControllerTest < ActionController::TestCase
     d = Download.find(1)
     assert_count_increases(DownloadedDownload) { get :download, :id => d.id, :h => 0 }
     dd = DownloadedDownload.find(:first, :order => 'id DESC', :limit => 1)
-    end_file = d.file.gsub("#{RAILS_ROOT}/public/storage", '').gsub('storage/downloads/', '')
+    end_file = d.file.gsub("#{Rails.root}/public/storage", '').gsub('storage/downloads/', '')
     # TODO hay que redirigir a pag de download creada, no? 
     assert_response :success
     assert_equal "http://#{App.domain}/d/#{dd.download_cookie}/#{end_file}", @controller.instance_variable_get(:@download_link)
@@ -64,9 +64,9 @@ class DescargasControllerTest < ActionController::TestCase
   
   def add_file_to_d1
     User.db_query("UPDATE downloads SET file = 'storage/downloads/tall.jpg' WHERE id = 1")
-    dstdir = "#{RAILS_ROOT}/public/storage/downloads"
+    dstdir = "#{Rails.root}/public/storage/downloads"
     FileUtils.mkdir(dstdir) unless File.exists?(dstdir)
-    FileUtils.copy("#{RAILS_ROOT}/test/fixtures/files/tall.jpg", dstdir)
+    FileUtils.copy("#{Rails.root}/test/fixtures/files/tall.jpg", dstdir)
   end
 
   test "descargas with invalid r should show error" do

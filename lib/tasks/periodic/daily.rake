@@ -169,7 +169,7 @@ namespace :gm do
   
   
   def provocar_golpes_de_estado
-    require "#{RAILS_ROOT}/app/controllers/application_controller" # necesario por llamada a ApplicationController
+    require "#{Rails.root}/app/controllers/application_controller" # necesario por llamada a ApplicationController
     mrcheater = User.find_by_login!('MrCheater')
     if [7, 8].include?(Time.now.month)
       days = 12
@@ -406,7 +406,7 @@ having portal_id in (select id
       cur_day = User.db_query("SELECT created_on from contents order by created_on asc limit 1")[0]['created_on'].to_time
     end
     
-    cur_day = 1.day.ago.beginning_of_day if RAILS_ENV == 'test'
+    cur_day = 1.day.ago.beginning_of_day if Rails.env == 'test'
     
     while cur_day <= max_day
       # puts cur_day
@@ -446,7 +446,7 @@ having portal_id in (select id
       cur_day = User.db_query("SELECT created_on from contents order by created_on asc limit 1")[0]['created_on'].to_time
     end
     
-    cur_day = 1.day.ago.beginning_of_day if RAILS_ENV == 'test'
+    cur_day = 1.day.ago.beginning_of_day if Rails.env == 'test'
     
     while cur_day <= max_day
       # puts cur_day

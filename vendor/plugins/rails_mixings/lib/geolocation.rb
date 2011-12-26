@@ -1,11 +1,11 @@
 require 'geoip'
-load RAILS_ROOT + '/Rakefile'
+load Rails.root + '/Rakefile'
 
 module Geolocation
-  if RAILS_ENV == 'test'
-    DB_FILE = "#{RAILS_ROOT}/test/GeoLiteCity.dat.test"
+  if Rails.env == 'test'
+    DB_FILE = "#{Rails.root}/test/GeoLiteCity.dat.test"
   else
-    DB_FILE = "#{RAILS_ROOT}/public/storage/GeoLiteCity.dat"
+    DB_FILE = "#{Rails.root}/public/storage/GeoLiteCity.dat"
   end
   
   begin

@@ -1,8 +1,8 @@
 <%mftext('Banners de Gamersmafia') do 
 
 def gmbanners_galleries
-  (Dir.entries("#{RAILS_ROOT}/public/images/banners") - %w(. ..)).collect { |d|
-	(File.directory?("#{RAILS_ROOT}/public/images/banners/#{d}") && d[0..0] != '.') ? d : nil
+  (Dir.entries("#{Rails.root}/public/images/banners") - %w(. ..)).collect { |d|
+	(File.directory?("#{Rails.root}/public/images/banners/#{d}") && d[0..0] != '.') ? d : nil
   }.compact.sort
 end
 %>

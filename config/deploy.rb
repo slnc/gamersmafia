@@ -18,7 +18,7 @@ role :web, SSH_PATH_TO_HOST
 role :db, SSH_PATH_TO_HOST, :primary => true
 
 default_environment['PATH'] = '/bin:/usr/bin:/usr/local/bin:/usr/local/hosting/bin'
-default_environment['RAILS_ENV'] = 'production'
+default_environment['Rails.env'] = 'production'
 
 SHARED_DIRS = [
 ['public/storage', 'system/storage'],

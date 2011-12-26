@@ -88,7 +88,7 @@ namespace :cs410 do
       end
     end
     model = {:pglobal_dict => pglobal_dict, :pdict => pdict}
-    base = "#{RAILS_ROOT}/public/storage/cs410"
+    base = "#{Rails.root}/public/storage/cs410"
     FileUtils.mkdir_p(base) unless File.exists?(base)
     open("#{base}/unigram.model", 'w') do |f| f.write(model.to_json) end
     

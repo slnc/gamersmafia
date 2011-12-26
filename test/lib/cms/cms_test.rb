@@ -4,10 +4,10 @@ require 'RMagick'
 class CmsTest < ActiveSupport::TestCase
   # tests para image_thumbnail
   THUMB_FILE = "/tmp/thumb.jpg"
-  SQUARE_FILE = "#{RAILS_ROOT}/test/fixtures/files/square.jpg"
-  TALL_FILE = "#{RAILS_ROOT}/test/fixtures/files/tall.jpg"
-  WIDE_FILE = "#{RAILS_ROOT}/test/fixtures/files/wide.jpg"
-  PARSE_IMAGES_BASEDIR = "#{RAILS_ROOT}/tmp/test/lib/cms"
+  SQUARE_FILE = "#{Rails.root}/test/fixtures/files/square.jpg"
+  TALL_FILE = "#{Rails.root}/test/fixtures/files/tall.jpg"
+  WIDE_FILE = "#{Rails.root}/test/fixtures/files/wide.jpg"
+  PARSE_IMAGES_BASEDIR = "#{Rails.root}/tmp/test/lib/cms"
   
   def setup
     # solo lo necesitamos para los tests de image_thumbnail pero bueno
@@ -228,42 +228,42 @@ class CmsTest < ActiveSupport::TestCase
   
   test "parse_images_should_do_nothing_on_string_with_no_images" do
     # TODO check that its copying files to correct place
-    FileUtils.mkdir_p("#{RAILS_ROOT}/public/storage/users_files/0/0")
-    FileUtils.cp(TALL_FILE, "#{RAILS_ROOT}/public/storage/users_files/0/0/userfile.jpg")
-    FileUtils.cp(TALL_FILE, "#{RAILS_ROOT}/public/storage/users_files/0/0/userfile a.jpg")
+    FileUtils.mkdir_p("#{Rails.root}/public/storage/users_files/0/0")
+    FileUtils.cp(TALL_FILE, "#{Rails.root}/public/storage/users_files/0/0/userfile.jpg")
+    FileUtils.cp(TALL_FILE, "#{Rails.root}/public/storage/users_files/0/0/userfile a.jpg")
     assert_equal '<a href="http://www.hola.com/">Mundo img jajaja</a> aa', Cms::parse_images('<a href="http://www.hola.com/">Mundo img jajaja</a> aa', PARSE_IMAGES_BASEDIR)
   end
   
   test "parse_images_should_download_remote_image_if_domain_is_unknown" do
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/wswg/0000")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
     assert_equal '<img src="/storage/wswg/0000/dark_castle0.jpg" />', Cms::parse_images('<img src="http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg" />', 'wswg/0000')
   end
   
   test "parse_images_should_download_local_image_if_userdir" do
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/wswg/0000")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
     assert_equal '<img src="/storage/wswg/0000/userfile.jpg" />', Cms::parse_images("<img src=\"http://#{App.domain}/storage/users_files/0/0/userfile.jpg\" />", 'wswg/0000')
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/wswg/0000")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
     assert_equal '<img src="/storage/wswg/0000/userfile.jpg" />', Cms::parse_images("<img src=\"/storage/users_files/0/0/userfile.jpg\" />", 'wswg/0000')
   end
   
   test "parse_images_should_thumbnail_and_put_a_link_image_if_shown_dimensions_differ_from_image_dimensions_and_no_link_around" do
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/wswg/0000")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
     assert_equal '<a href="/storage/wswg/0000/userfile.jpg"><img src="/cache/thumbnails/f/50x50/storage/wswg/0000/userfile.jpg" /></a>', Cms::parse_images("<img src=\"/storage/users_files/0/0/userfile.jpg\" width=\"50px\" height=\"50px\" />", 'wswg/0000')
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/wswg/0000")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
     assert_equal '<a href="/storage/wswg/0000/userfile.jpg"><img src="/cache/thumbnails/f/50x50/storage/wswg/0000/userfile.jpg" /></a>', Cms::parse_images("<img src=\"/storage/users_files/0/0/userfile.jpg\" style=\"width: 50px; height: 50px\" />", 'wswg/0000')
     
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/wswg/0000")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
     assert_equal '<a href="/storage/wswg/0000/userfile-a.jpg"><img src="/cache/thumbnails/f/50x50/storage/wswg/0000/userfile-a.jpg" /></a>', Cms::parse_images("<img src=\"/storage/users_files/0/0/userfile%20a.jpg\" style=\"width: 50px; height: 50px\" />", 'wswg/0000')
     
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/wswg/0000")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
     
     assert_equal '<div style="text-align: center;"><a href="/storage/wswg/0000/userfile.jpg"><img src="/cache/thumbnails/f/342x70/storage/wswg/0000/userfile.jpg" /></a>foo<img class="flag" src="/storage/wswg/0000/dark_castle0.jpg" border="0"> ', Cms::parse_images('<div style="text-align: center;"><img style="width: 342px; height: 70px;" src="/storage/users_files/0/0/userfile.jpg">foo<img src="http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg" class="flag" border="0"> ', 'wswg/0000')
   end
   
   test "parse_images_should_thumbnail_image_without_creating_link_if_shown_dimensions_differ_from_image_dimensions_and_has_link_around" do
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/wswg/0000")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
     assert_equal '<a href="foo"><img src="/cache/thumbnails/f/50x50/storage/wswg/0000/userfile.jpg" /></a>', Cms::parse_images("<a href=\"foo\"><img src=\"/storage/users_files/0/0/userfile.jpg\" width=\"50px\" height=\"50px\" /></a>", 'wswg/0000')
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/wswg/0000")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
     assert_equal '<a href="foo"><img src="/cache/thumbnails/f/50x50/storage/wswg/0000/userfile.jpg" /></a>', Cms::parse_images("<a href=\"foo\"><img src=\"/storage/users_files/0/0/userfile.jpg\" width=\"50px\" height=\"50px\" /></a>", 'wswg/0000')
   end
   
@@ -298,7 +298,7 @@ class CmsTest < ActiveSupport::TestCase
   YEAH
   END
     
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/wswg/0000")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
     assert_equal expected, Cms::parse_images(strn, 'wswg/0000')
   end
   
@@ -332,37 +332,37 @@ class CmsTest < ActiveSupport::TestCase
   YEAH
   END
     
-    FileUtils.mkdir_p("#{RAILS_ROOT}/public/storage/news/")
-    FileUtils.cp(TALL_FILE, "#{RAILS_ROOT}/public/storage/news/userfile.jpg")
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/wswg/0000")
+    FileUtils.mkdir_p("#{Rails.root}/public/storage/news/")
+    FileUtils.cp(TALL_FILE, "#{Rails.root}/public/storage/news/userfile.jpg")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
     assert_equal expected, Cms::parse_images(strn, 'wswg/0000')
   end
   
   test "copy_image_to_dir_should_copy_local_file_to_tmp_dir" do
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/fii")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/fii")
     Cms::copy_image_to_dir(TALL_FILE, 'fii')
-    assert File.exists?("#{RAILS_ROOT}/public/storage/fii/#{File.basename(TALL_FILE)}")
+    assert File.exists?("#{Rails.root}/public/storage/fii/#{File.basename(TALL_FILE)}")
   end
   
   test "copy_image_to_dir_should_copy_local_file_to_tmp_dir_and_rename_it_correctly" do
     test_copy_image_to_dir_should_copy_local_file_to_tmp_dir
     Cms::copy_image_to_dir(TALL_FILE, 'fii')
-    assert File.exists?("#{RAILS_ROOT}/public/storage/fii/#{File.basename(TALL_FILE)}")
+    assert File.exists?("#{Rails.root}/public/storage/fii/#{File.basename(TALL_FILE)}")
   end
   
   test "copy_image_to_dir_should_copy_external_file_to_tmp_dir" do
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/fii")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/fii")
     Cms::copy_image_to_dir('http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg', 'fii')
-    assert File.exists?("#{RAILS_ROOT}/public/storage/fii/dark_castle0.jpg")
+    assert File.exists?("#{Rails.root}/public/storage/fii/dark_castle0.jpg")
   end
   
   test "copy_image_to_dir_should_return_nil_if_unexisting_local_file" do
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/fii")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/fii")
     assert_nil Cms::copy_image_to_dir('adkjsakdasjhdkjsadkd', 'fii')
   end
   
   test "copy_image_to_dir_should_return_nil_if_unexisting_remote_file" do
-    FileUtils.rm_rf("#{RAILS_ROOT}/public/storage/fii")
+    FileUtils.rm_rf("#{Rails.root}/public/storage/fii")
     assert_nil Cms::copy_image_to_dir('http://www.dharana.net/adakjhdskahdk', 'fii')
   end
   

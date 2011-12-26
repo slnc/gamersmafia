@@ -1,6 +1,6 @@
 require 'test_helper'
 require 'notification'
-load RAILS_ROOT + '/Rakefile'
+load Rails.root + '/Rakefile'
 
 class NotificationTest < ActiveSupport::TestCase
   include Rake

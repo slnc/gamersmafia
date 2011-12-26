@@ -26,12 +26,12 @@ module GmSys
   
   def self.kill_workers
     # we kill all currently active workers and spawn a new one
-    Dir.glob("#{RAILS_ROOT}/tmp/pids/delayed_worker.*.pid").each do |fname|
+    Dir.glob("#{Rails.root}/tmp/pids/delayed_worker.*.pid").each do |fname|
       m = /\.([0-9]+)\.pid$/.match(fname)
       begin
         Process.kill('TERM', m[1].to_i)
         puts "killing delayed_job #{m[1]}" if App.debug
-        File.unlink("#{RAILS_ROOT}/tmp/pids/#{fname}")
+        File.unlink("#{Rails.root}/tmp/pids/#{fname}")
       rescue
         puts "the bastard didn't want to die" if App.debug
       end
@@ -43,7 +43,7 @@ module GmSys
   def self.check_workers_pids
     # we remove pids not refering to anyone
     working_workers = 0
-    Dir.glob("#{RAILS_ROOT}/tmp/pids/delayed_worker.*.pid").each do |fname|
+    Dir.glob("#{Rails.root}/tmp/pids/delayed_worker.*.pid").each do |fname|
       m = /\.([0-9]+)\.pid$/.match(fname)
       if running?(m[1].to_i)
         working_workers += 1

@@ -109,7 +109,7 @@ module SlncFileColumn
       for f in @tmp_files.keys
         if is_valid_upload(@tmp_files[f]) then
           hash_attrib = "#{f}_hash_md5".to_sym
-          File.unlink("#{RAILS_ROOT}/public/#{@old_files[f]}") if (@old_files[f].to_s != '' && File.exists?("#{RAILS_ROOT}/public/#{@old_files[f]}"))
+          File.unlink("#{Rails.root}/public/#{@old_files[f]}") if (@old_files[f].to_s != '' && File.exists?("#{Rails.root}/public/#{@old_files[f]}"))
           if @tmp_files[f].kind_of?(NilClass)
             self.class.db_query("UPDATE #{self.class.table_name} SET #{f} = NULL WHERE id = #{self.id}")
           else
@@ -117,7 +117,7 @@ module SlncFileColumn
             new_path = save_uploaded_file_to(@tmp_files[f], dir, (id%1000).to_s.rjust(3, '0'))
             self.class.db_query("UPDATE #{self.class.table_name} SET #{f} = '#{new_path.gsub(/'/, '\\\'')}' WHERE id = #{self.id}")
             if self.respond_to?(hash_attrib)
-              hash = file_hash("#{RAILS_ROOT}/public/#{new_path}")
+              hash = file_hash("#{Rails.root}/public/#{new_path}")
               self.class.db_query("UPDATE #{self.class.table_name} SET #{hash_attrib} = '#{hash}' WHERE id = #{self.id}")
             end
             @tmp_files.delete(f)
@@ -130,7 +130,7 @@ module SlncFileColumn
 
   def destroy_file
     for f in self.class.file_column_attrs
-      File.unlink("#{RAILS_ROOT}/public/#{self[f]}") if (self[f].to_s != '' && File.exists?("#{RAILS_ROOT}/public/#{self[f]}"))
+      File.unlink("#{Rails.root}/public/#{self[f]}") if (self[f].to_s != '' && File.exists?("#{Rails.root}/public/#{self[f]}"))
     end
   end
 
@@ -153,7 +153,7 @@ module SlncFileColumn
     #     find_unused, overwrite
     #
     #   ej de path recibido: users/1
-            #   la función entiende que se refiere al dir: #{RAILS_ROOT}/public/storage/users/1/
+            #   la función entiende que se refiere al dir: #{Rails.root}/public/storage/users/1/
             #
             #   ej de path devuelto: /storage/users/1/fulanito.jpg
             #
@@ -164,14 +164,14 @@ module SlncFileColumn
             preppend = ''
             filename = _fc_file_name(tmp_file)
             
-            if File.exists?("#{RAILS_ROOT}/public/storage/#{path}/#{prefix}_#{filename}") 
+            if File.exists?("#{Rails.root}/public/storage/#{path}/#{prefix}_#{filename}") 
               incrementor = 1
-              while File.exists?("#{RAILS_ROOT}/public/storage/#{path}/#{prefix}_#{incrementor}_#{filename}") 
+              while File.exists?("#{Rails.root}/public/storage/#{path}/#{prefix}_#{incrementor}_#{filename}") 
                 incrementor += 1
               end
-              dst = "#{RAILS_ROOT}/public/storage/#{path}/#{prefix}_#{incrementor}_#{filename}"
+              dst = "#{Rails.root}/public/storage/#{path}/#{prefix}_#{incrementor}_#{filename}"
             else
-              dst = "#{RAILS_ROOT}/public/storage/#{path}/#{prefix}_#{filename}"
+              dst = "#{Rails.root}/public/storage/#{path}/#{prefix}_#{filename}"
             end
             
             FileUtils.mkdir_p(File.dirname(dst)) if not File.directory?(File.dirname(dst))
@@ -182,7 +182,7 @@ module SlncFileColumn
               File.open(dst, "wb") {|f| f.write(tmp_file.read) }
             end
             
-            dst.gsub("#{RAILS_ROOT}/public/", '')
+            dst.gsub("#{Rails.root}/public/", '')
           end
           
           private

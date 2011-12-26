@@ -1,4 +1,4 @@
-load RAILS_ROOT + '/Rakefile'
+load Rails.root + '/Rakefile'
 
 class Platform < ActiveRecord::Base
   validates_format_of :code, :with => /^[a-z0-9]{1,6}$/
@@ -71,7 +71,7 @@ class Platform < ActiveRecord::Base
   end
   
   def img_file
-    "#{RAILS_ROOT}/public/storage/games/#{self.code}.gif"
+    "#{Rails.root}/public/storage/games/#{self.code}.gif"
   end
   
   def check_code_doesnt_belong_to_portal
