@@ -439,7 +439,7 @@ if crecs.size > 0 then %>
 
 <div id="mgads" class="container"><div class="mcontent"><%=ads_slots('sideleft', '1-0')%><br />
 
-<% if user_is_authed && @user.created_on > 1.year.ago || !user_is_authed then %>
+<% if !controller.no_ads && (user_is_authed && @user.created_on > 1.year.ago || !user_is_authed) then %>
 <script type="text/javascript"><!--
 google_ad_client = "pub-6007823011396728";
 google_ad_slot = "3523960064";

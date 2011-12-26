@@ -111,8 +111,10 @@ SetupGamersmafiaApp() {
   if ! psql -c "${SQL_USERS_TABLE_EXISTS}" gamersmafia | grep -q users
   then
     psql -f db/create.sql gamersmafia
-    # TODO(slnc): load seed data here
+    psql -f db/seed.sql gamersmafia
     ./script/sync_testenv.sh
+    cp ${GM_CURRENT}/config/app.yml ${GM_CURRENT}/config/app_production.yml
+    rpl ".com" ".dev" ${GM_CURRENT}/config/app_production.yml
   fi
   cd ${old_pwd}
   sudo apache2ctl restart

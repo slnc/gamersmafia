@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
   end
 
   def no_ads
-    false
+    not App.show_ads
   end
 
   def save_or_error(model, success_dst, error_render_action)
