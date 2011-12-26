@@ -3,11 +3,25 @@ INSTALACIÓN DE GAMERSMAFIA
 1. Instala la última versión de 64bits de Ubuntu Server en una máquina virtual
    de tu elección y crea un usuario llamado "unnamed".
 
-2. Copia y pega las siguientes 3 líneas en una terminal:
+2. Copia y pega las siguientes 4 líneas en una terminal:
 
 wget https://raw.github.com/slnc/gamersmafia/production/script/bootstrap_gm.sh
 chmod u+x bootstrap_gm.sh
 ./bootstrap_gm.sh
+source ~/.bashrc
 
 3. Sigue las instrucciones en pantalla para editar tu archivo hosts y acceder a
 tu versión de desarrollo de GM.
+
+Todo el código de la web está en:
+
+  /srv/www/gamersmafia/current
+
+Puedes conectarte a la base de datos con
+
+  psql gamersmafia
+
+Puedes ejecutar la batería de tests para ver si el código nuevo que has añadido
+funciona ejecutando el siguiente comando desde /srv/www/gamersmafia/current:
+
+  rake test
