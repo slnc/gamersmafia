@@ -18,6 +18,26 @@ class User < ActiveRecord::Base
   MALE = 0
   FEMALE = 1
   SEXUAL_ORIENTATIONS_REL = { :women => "sex = #{FEMALE}", :men => "sex = #{FEMALE}", }
+  MESSAGE_WELCOME_TO_HQ = <<-end
+  Ya te he dado de alta en el HQ.
+
+  Te recomiendo que para empezar vayas al wiki (menú horizontal encima de la
+  cabecera HQ -> Wiki) ya que hay un información sobre cómo usar tanto el wiki
+  como jira y la lista de correo interna..
+
+  Te debería haber llegado un email con un nombre de usuario y una contraseña,
+  son para acceder al wiki y al gestor de incidencias (JIRA). En el wiki verás
+  varias zonas con toda la información sobre wiki y gestor de incidencias y
+  sobre la lista de correo. Te recomiendo empezar por esta pagina:
+  http://hq.gamersmafia.com/confluence/display/GM/Bienvenido+a+Gamersmafia y
+  tener bien claro esta otra:
+  http://hq.gamersmafia.com/confluence/display/GM/Netiqueta+para+miembros+del+HQ.
+  Por favor, échales un vistazo (por supuesto no hay prisa, cuando puedas) y si
+  tienes alguna duda puedes preguntar tanto en la lista interna como por
+  privado.
+
+  Un saludete :D
+  end
 
   ST_UNCONFIRMED = 0
   ST_ACTIVE = 1
@@ -564,7 +584,7 @@ class User < ActiveRecord::Base
       Message.create(:sender => User.find(1),
                      :recipient => self,
                      :title => "¡Bienvenido al HQ!",
-                     :message => "Ya te he dado de alta en el HQ.\n\nTe recomiendo que para empezar vayas al wiki (menú horizontal encima de la cabecera HQ -> Wiki) ya que hay un información sobre cómo usar tanto el wiki como jira y la lista de correo interna.. \n\nTe debería haber llegado un email con un nombre de usuario y una contraseña, son para acceder al wiki y al gestor de incidencias (JIRA). En el wiki verás varias zonas con toda la información sobre wiki y gestor de incidencias y sobre la lista de correo. Te recomiendo empezar por esta pagina: http://hq.gamersmafia.com/confluence/display/GM/Bienvenido+a+Gamersmafia y tener bien claro esta otra: http://hq.gamersmafia.com/confluence/display/GM/Netiqueta+para+miembros+del+HQ. Por favor, échales un vistazo (por supuesto no hay prisa, cuando puedas) y si tienes alguna duda puedes preguntar tanto en la lista interna como por privado.\n\nUn saludete :D")
+                     :message => MESSAGE_WELCOME_TO_HQ)
     else
       Jira.deactivate_user(valid_username)
     end

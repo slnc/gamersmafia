@@ -24,7 +24,7 @@ class Friendship < ActiveRecord::Base
 
   def check_max_unanswered
     if Friendship.count(:conditions => ['sender_user_id = ? and accepted_on is null', self.sender_user_id]) >= Friendship.max_unanswered
-      self.errors.add_to_base("Tienes demasiadas peticiones de amistad abiertas. Debes cancelar alguna antes de crear nuevas")
+      self.errors[:base] << ("Tienes demasiadas peticiones de amistad abiertas. Debes cancelar alguna antes de crear nuevas")
       false
     else
       true
@@ -99,12 +99,12 @@ class Friendship < ActiveRecord::Base
 
   def check_either_receiver_user_id_or_email_is_set
     if self.receiver_user_id.nil? && self.receiver_email.to_s.empty? then
-      self.errors.add_to_base("Imposible crear la amistad sin un destinatario.")
+      self.errors[:base] << ("Imposible crear la amistad sin un destinatario.")
       return false
     end
 
     if self.receiver_email.to_s != '' && !(Cms::EMAIL_REGEXP =~ self.receiver_email) then
-      self.errors.add_to_base("El email introducido no es válido.")
+      self.errors[:base] << ("El email introducido no es válido.")
       return false
     end
 

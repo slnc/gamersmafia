@@ -88,7 +88,8 @@ class Message < ActiveRecord::Base
 
   def notify_recipient
     if self.recipient.notifications_newmessages then
-      Notification.newmessage(self.recipient, { :sender => self.sender, :message => self})
+      Notification.newmessage(
+          self.recipient, :sender => self.sender, :message => self).deliver
     end
   end
 

@@ -175,7 +175,8 @@ class Comment < ActiveRecord::Base
 
     c = self.content
     if c.nil? or c.real_content.nil?
-      self.errors.add_to_base('El contenido al que se refiere este comentario ya no existe')
+      self.errors[:base] << (
+        'El contenido al que se refiere este comentario ya no existe')
       return false
     end
   end

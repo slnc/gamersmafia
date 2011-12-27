@@ -116,7 +116,7 @@ module ActiveRecordMixings
   end
 end
 
-class ActiveRecord::Errors
+class ActiveModel::Errors
   def full_messages_html
     out = '<ul>'
     self.each do |attr, msg|

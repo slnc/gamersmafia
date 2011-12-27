@@ -60,10 +60,10 @@ class UserTest < ActiveSupport::TestCase
 
 
   test "should_send_email_to_add_user_to_hq" do
-    prev = ActionMailer::Base.deliveries.size
     @p = User.find_by_login(:panzer)
-    assert @p.update_attributes(:is_hq => true)
-    assert_equal prev + 2, ActionMailer::Base.deliveries.size
+    assert_difference('ActionMailer::Base.deliveries.size', 2) do
+      assert @p.update_attributes(:is_hq => true)
+    end
   end
 
   test "find_with_permissions" do
