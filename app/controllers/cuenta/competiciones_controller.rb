@@ -288,9 +288,9 @@ class Cuenta::CompeticionesController < ApplicationController
       flash[:notice] = 'Participante invitado correctamente' # TODO enviar email de que ha sido invitado
       if @competition.state == 3 then
         #        if @competition.competitions_participants_type_id == Competition::CLANS
-        #          new_p_real.admins.each { |admin| Notification.deliver_invitedparticipant(admin, {:competition => @competition}) }
+        #          new_p_real.admins.each { |admin| Notification.invitedparticipant(admin, {:competition => @competition}) }
         #        else
-        #          Notification.deliver_invitedparticipant(new_p_real, {:competition => @competition})
+        #          Notification.invitedparticipant(new_p_real, {:competition => @competition})
         #        end
         #        TODO enviar email al comenzar competición
       end

@@ -453,7 +453,7 @@ class SiteController < ApplicationController
       if user_is_authed
         m = Message.create(:title => params[:subject], :message => params[:message], :user_id_from => @user.id, :user_id_to => User.find(1))
       else
-        Notification.deliver_newcontactar(params)
+        Notification.newcontactar(params).deliver
       end
     end
     end

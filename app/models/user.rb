@@ -560,7 +560,7 @@ class User < ActiveRecord::Base
         Jira.activate_user(valid_username)
       end
 
-      Notification.deliver_add_to_hq(User.find(1), :new_member => self)
+      Notification.add_to_hq(User.find(1), :new_member => self).deliver
       Message.create(:sender => User.find(1),
                      :recipient => self,
                      :title => "¡Bienvenido al HQ!",
@@ -904,7 +904,7 @@ class User < ActiveRecord::Base
   def resurrect
     # método llamado cuando un usuario en modo resurreción incompleta inicia sesión
     Faith.reset(self.resurrector)
-    Notification.deliver_resurrection(resurrector, {:resurrected => self})
+    Notification.resurrection(resurrector, {:resurrected => self}).deliver
   end
 
   def contents_stats
@@ -1070,7 +1070,10 @@ class User < ActiveRecord::Base
     # Tasks to execute when a user account has been confirmed.
     self.state = User::ST_SHADOW
     self.save
-    Notification.deliver_newregistration(User.find(self.referer_user_id), { :refered => self }) if self.referer_user_id
-    Notification.deliver_welcome(self)
+    if self.referer_user_id
+      Notification.newregistration(
+          User.find(self.referer_user_id), {:refered => self}).deliver
+    end
+    Notification.welcome(self).deliver
   end
 end
