@@ -1,8 +1,8 @@
-Rails.env='production' unless defined?(Rails.env)
 namespace :gm do
   desc "Launch iRC bot"
   task :alariko do
     Rake::Task['gm:alariko:stop']
+    Rails.env='production' unless defined?(Rails.env)
     # system("#{Rails.root}/script/alariko.py")
   end
 

@@ -44,6 +44,8 @@ module Gamersmafia
 
     config.filter_parameters += [:password]
 
+    config.autoload_paths << File.join(config.root, 'lib')
+
     config.assets.enabled = false
 
     config.assets.version = '1.0'

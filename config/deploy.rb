@@ -18,7 +18,7 @@ role :web, SSH_PATH_TO_HOST
 role :db, SSH_PATH_TO_HOST, :primary => true
 
 default_environment['PATH'] = '/bin:/usr/bin:/usr/local/bin:/usr/local/hosting/bin'
-default_environment['Rails.env'] = 'production'
+default_environment['RAILS_ENV'] = 'production'
 
 SHARED_DIRS = [
 ['public/storage', 'system/storage'],
@@ -35,18 +35,18 @@ namespace(:customs) do
      CMD
     end
   end
-  
+
   task :updated_app, :roles => :app do
     `scp -P62331 /Users/slnc/core/projects/gamersmafia.com/app_production.yml #{SSH_PATH_TO_HOST.split(":")[0]}:#{release_path}/config `
     run "cd #{release_path} && echo 'production' > config/mode && ./script/update.py"
   end
-  
+
   task :setup, :roles => :app do
     SHARED_DIRS.each do |dinfo|
       run "mkdir #{shared_path}/#{dinfo[1]}"
     end
   end
-  
+
   task :check_clean_wc, :roles => :app do
     begin
       current_path
@@ -58,7 +58,7 @@ namespace(:customs) do
         raise "\n\tERROR: production has dirty wc!\n\n"
       end
       run "if [ -d #{current_path} ]; then cd #{current_path} && rake gm:alariko:stop; fi"
-    end    
+    end
   end
 end
 
@@ -67,15 +67,15 @@ after "deploy:update","customs:updated_app"
 after "deploy:setup","customs:setup"
 after "deploy:symlink","customs:symlink"
 #after "deploy:migrations","customs:updated_app"
-# Hasta que no esté seguro de que funciona bien el nuevo sistema de 
+# Hasta que no esté seguro de que funciona bien el nuevo sistema de
 # comprobación de wc antes de updatear no activo esto:
 #after "deploy", "deploy:cleanup"
 
 # monkey patch para no hacer un touch a los assets ya que no hacemos uso de ello
 namespace :deploy do
-  task :finalize_update, :except => { :no_release => true } do 
+  task :finalize_update, :except => { :no_release => true } do
     run "chmod -R g+w #{latest_release}" if fetch(:group_writable, true)
-    
+
     # mkdir -p is making sure that the directories are there for some SCM's that don't
     # save empty folders
     run <<-CMD
@@ -85,7 +85,7 @@ namespace :deploy do
        ln -s #{shared_path}/log #{latest_release}/log &&
        ln -s #{shared_path}/pids #{latest_release}/tmp/pids
      CMD
-  end 
+  end
 
   # passenger
   task :start, :roles => :app do
