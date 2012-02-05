@@ -541,9 +541,10 @@ class CacheObserver < ActiveRecord::Observer
       stickies = object.main_category.count(:content_type => 'Topic', :conditions => "sticky is true and contents.state = #{Cms::PUBLISHED}")
       prev_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and contents.state = #{Cms::PUBLISHED} and contents.updated_on <= ?", object.created_on]) + stickies
       next_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and contents.state = #{Cms::PUBLISHED} and contents.updated_on >= ?", object.created_on])
-      start_page = prev_count / 50 # TODO especificar esto en un único sitio
+      start_page = (prev_count / 50).to_i # TODO especificar esto en un único sitio
       end_page = start_page + next_count / 50 + 1
 
+      Rails.logger.warn ">>>>>>>>>>> #{start_page} #{end_page}"
       for i in (start_page..end_page)
         expire_fragment("/common/foros/_topics_list/#{object.main_category.id}/page_#{i}")
       end

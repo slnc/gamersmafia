@@ -1,7 +1,7 @@
-<% cache("/common/foros/_all_time_users/#{forum.class.name}/#{forum.id}_#{Time.now.to_i/86400}") do %>
-<% mftext("Top global de #{forum.name}") do %>
+<% cache("/common/foros/_all_time_users/#{@forum.class.name}/#{@forum.id}_#{Time.now.to_i/86400}") do %>
+<% mftext("Top global de #{@forum.name}") do %>
 <table id="most_active_users">
-  <% forum.most_active_users('TopicsCategory', nil).each do |u,data|%>
+  <% @forum.most_active_users('TopicsCategory', nil).each do |u,data|%>
   <tr class="<%=oddclass%>">
     <td style="padding-left: 3px;"><%=member_state(u.hstate)%>
       <span class="nick"><%=link_to u.login, gmurl(u) %></span>

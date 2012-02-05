@@ -1,13 +1,8 @@
-<%
-topics_pages = ActionController::Pagination::Paginator.new self, forum.count(:published), 50, params[:page]
-
-topics_pages.current_page = topics_pages.last if params[:page].nil? 
-%>
-<%= render :partial => 'shared/pager', :object => topics_pages, :locals => {:pos => 'top'} %>
+<% topics = get_topics(forum) %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => topics, :pos => 'top'} %>
 <%
 cache("/common/foros/_topics_list/#{forum.id}/page_#{params[:page]}") do
-topics = forum.find(:published, :order => "sticky asc, contents.updated_on asc", :limit => 50, :offset => ((topics_pages.current_page.to_i - 1) * 50))
-        %>
+%>
 <table>
   <tr>
     <th class="topic-indicators">&nbsp;</th>
@@ -19,10 +14,10 @@ topics = forum.find(:published, :order => "sticky asc, contents.updated_on asc",
     <th style="text-align: right;">Visitas</th>
     <th style="text-align: right;">Último comentario</th>
   </tr>
-<% 
-for topic in topics.reverse
-    author = topic.user
-    last_comment = topic.last_comment
+<%
+topics.each do |topic|
+  author = topic.user
+  last_comment = topic.last_comment
 %>
   <tr class="<%=oddclass%>">
     <td class="topic-indicators"><%=draw_topic_indicators(topic)%></td>
@@ -39,4 +34,4 @@ for topic in topics.reverse
 </table>
 <% end -%>
 
-<%= render :partial => 'shared/pager', :object => topics_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2', :locals => {:collection => topics, :pos => 'bottom'} %>

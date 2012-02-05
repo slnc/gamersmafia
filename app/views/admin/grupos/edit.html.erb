@@ -4,7 +4,8 @@
 </form>
 <% end -%>
 
-<%= form_remote_tag(:url => "/admin/grupos/add_user_to_group/#{@group.id}") %>
+<%= form_tag(:url => "/admin/grupos/add_user_to_group/#{@group.id}",
+             :remote => true) %>
 Usuario: <input type="text" name="login" /><br />
 <input type="submit" value="Añadir" />
 </form>

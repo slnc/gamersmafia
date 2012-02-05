@@ -12,7 +12,8 @@
   <%mftext('Subforos') do %>
 <ul class="content-hid">
 <strong><%=@forum.parent.name%></strong>
-<% for subforum in @forum.parent.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'], :order => 'lower(name)') %>
+<% subforums = subforums(@forum.parent) %>
+<% subforums.each do |subforum| %>
 <% if @forum.id == subforum.id then %>
 <li class="current"><%=link_to subforum.name, :action => 'forum', :id => subforum.id%></li>
 <% else %>
@@ -27,7 +28,6 @@
 
 <% content_main do %>
   <%mftext(@title) do %>
-
 <table>
   <tr>
     <th colspan="2">Foro</td>

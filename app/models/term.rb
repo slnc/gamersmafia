@@ -18,8 +18,8 @@ class Term < ActiveRecord::Base
   validates_format_of :name, :with => /^.{1,100}$/
   validates_presence_of :type
   plain_text :name, :description
-  validates_uniqueness_of :name, :scope => [:type, :parent_id]
-  validates_uniqueness_of :slug, :scope => [:type, :parent_id]
+  validates_uniqueness_of :name, :scope => [:parent_id]  # missing :type
+  validates_uniqueness_of :slug, :scope => [:parent_id]  # missing :type
   before_save :check_scope_if_toplevel
   before_save :check_type
 
