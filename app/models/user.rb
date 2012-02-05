@@ -969,7 +969,7 @@ class User < ActiveRecord::Base
   # Before creating, we generate a validkey.
   # This is used for confirmation
   def generate_validkey
-    self.validkey = Digest::MD5.hexdigest("#{self.login}#{ActiveSupport::SecureRandom.hex(16)}")
+    self.validkey = Digest::MD5.hexdigest("#{self.login}#{SecureRandom.hex(16)}")
   end
 
   def hstate

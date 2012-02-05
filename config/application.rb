@@ -2,6 +2,11 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 
+require 'log4r'
+require 'log4r/yamlconfigurator'
+require 'log4r/outputter/datefileoutputter'
+include Log4r
+
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
   Bundler.require(*Rails.groups(:assets => %w(development test)))
@@ -50,7 +55,8 @@ module Gamersmafia
 
     config.assets.version = '1.0'
 
-    config.action_controller.cache_store = :file_store, "#{Rails.root}/tmp/fragment_cache"
+    config.action_controller.cache_store = :file_store,
+                                           "#{Rails.root}/tmp/fragment_cache"
 
     # Activate observers that should always be running
     config.active_record.observers = :cache_observer, :faith_observer, :users_action_observer, :achmed_observer
@@ -62,5 +68,10 @@ module Gamersmafia
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}')]
     # config.i18n.default_locale = :de
+
+    # assign log4r's logger as rails' logger.
+    log4r_config= YAML.load_file(File.join(File.dirname(__FILE__),"log4r.yml"))
+    YamlConfigurator.decode_yaml(log4r_config['log4r_config'])
+    config.logger = Log4r::Logger[App.log_env]
   end
 end

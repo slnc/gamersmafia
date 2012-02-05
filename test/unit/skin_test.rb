@@ -40,7 +40,7 @@ class SkinTest < ActiveSupport::TestCase
   test "skin_file_changed_must_make_it_updated" do
     @el_dir = "#{Rails.root}/public/storage/skins/miwanna"
     initialzip = "#{Rails.root}/public/storage/skins/miwanna_initial.zip"
-    File.unlink(initializip) if File.exists?(initialzip)
+    File.unlink(initialzip) if File.exists?(initialzip)
     FileUtils.rm_rf(@el_dir) if File.exists?(@el_dir)
     test_create_skin_should_create_default_file_with_factions_skin
     assert_equal true, @s.update_attributes({:file => fixture_file_upload('/files/sample_skin_in_root.zip', 'application/zip')})

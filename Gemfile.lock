@@ -45,6 +45,7 @@ GEM
     hike (1.2.1)
     i18n (0.6.0)
     json (1.6.4)
+    log4r (1.1.10)
     mail (2.3.0)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -109,6 +110,7 @@ DEPENDENCIES
   feedvalidator
   geoip
   gruff
+  log4r
   pg
   rails
   rmagick

@@ -126,3 +126,5 @@ module ActionController::Caching::Fragments
     ActiveSupport::Cache.expand_cache_key(key.is_a?(Hash) ? url_for(key).split("://").last : key, '')
   end
 end
+
+

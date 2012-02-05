@@ -31,7 +31,7 @@ Gamersmafia::Application.configure do
   # config.force_ssl = true
 
   # See everything in the log (default is :info)
-  # config.log_level = :debug
+  config.log_level = :info
 
   # Use a different logger for distributed setups
   # config.logger = SyslogLogger.new
@@ -73,7 +73,6 @@ Gamersmafia::Application.configure do
 
   # Enable serving of images, stylesheets, and javascripts from an asset server
   # config.action_controller.asset_host                  = "http://assets.example.com"
-  config.log_level = :error
 
   # Disable delivery errors if you bad email addresses should just be ignored
   # config.action_mailer.raise_delivery_errors = false

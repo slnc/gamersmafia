@@ -30,6 +30,7 @@ common: &common
   ia_auto_abtests: MrAchmed
   jira_username: jira_username
   jira_password:  secret
+  log_env: development
   mirror_auth_key: secret
   port: 80
   python: /usr/local/hosting/bin/python2.4
