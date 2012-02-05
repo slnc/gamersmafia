@@ -1,5 +1,6 @@
-<%=mfcontents_basic("Más populares en #{@object.root.code.upcase}", 
-					Proc.new { @object.most_active_items('Topic') }, 
-					[], 
-					:faction_favicon => true,
-					:cache => "/common/foros/_most_active_topics/#{@object.id}/_#{Time.now.to_i/86400}")%>
+<%=mfcontents_basic(
+    "Más populares en #{forum.root.code.upcase}",
+    Proc.new { forum.most_active_items('Topic') },
+    [],
+    :faction_favicon => true,
+    :cache => "/common/foros/_most_active_topics/#{forum.id}/_#{Time.now.to_i/86400}")%>

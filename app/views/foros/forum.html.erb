@@ -1,11 +1,11 @@
 <% generic_support do %>
   <%=render :partial => '/foros/nuevo_topic'%>
-  
-  <%=render :partial => '/shared/last_commented_items_in_category', :locals => { :category => @forum, :content_type => 'Topic' }%>
-  <%=render :partial => 'most_active_users', :object => @object = @forum%>
-  <%=render :partial => 'most_active_topics', :object => @object = @forum%>
-  <%=render :partial => 'all_time_users', :object => @object = @forum%>
-  
+
+  <%=render :partial => '/shared/last_commented_items_in_category', :locals => {:category => @forum, :content_type => 'Topic'} %>
+  <%=render :partial => 'most_active_users', :locals => {:forum => @forum} %>
+  <%=render :partial => 'most_active_topics', :locals => {:forum => @forum} %>
+  <%=render :partial => 'all_time_users', :locals => {:forum => @forum} %>
+
   <%=render :partial => '/shared/category_tag_browser', :locals => {:cls => Download, :category => @forum } %>
 
 <% if @forum.parent then %>
