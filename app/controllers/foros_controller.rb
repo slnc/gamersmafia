@@ -60,7 +60,7 @@ class ForosController < ComunidadController
     raise ActiveRecord::RecordNotFound unless @topic.is_public? or (user_is_authed and Cms::user_can_edit_content?(@user, @topic))
     obj = @topic
     # TODO las 4 líneas siguientes duplicadas en acts_as_content_browser
-    if "http://#{request.host}#{request.request_uri}".index(gmurl(obj)).nil?
+    if "http://#{request.host}#{request.fullpath}".index(gmurl(obj)).nil?
       redirect_to(obj.unique_content.url, :status => 301) and return
     end
     

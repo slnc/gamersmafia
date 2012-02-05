@@ -2,7 +2,7 @@ class CacheController < ApplicationController
   def thumbnails
     # TODO proteger
     raise ActiveRecord::RecordNotFound if (not %w(f k i).include?(params[:mode]) or not params[:dim])
-    sp = request.request_uri
+    sp = request.fullpath
     
     begin
       5.times { sp = sp[(sp.index('/') + 1)..-1] }

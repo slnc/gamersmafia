@@ -266,7 +266,7 @@ group by date_trunc('day', created_on) order by s asc
     element_id = (/([a-zA-Z0-9_-])/ =~ element_id) ? element_id : 'NULL'
     user_agent = (request.user_agent.to_s != '') ? request.user_agent : ''
     referer = request.env['HTTP_REFERER'] ? request.env['HTTP_REFERER'] : ''
-    url = request.request_uri
+    url = request.fullpath
     ip = request.remote_ip
     if nil
       User.db_query("INSERT INTO stats.ads_shown (referer,

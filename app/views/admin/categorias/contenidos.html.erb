@@ -1,6 +1,6 @@
 <% mftext("Contenidos de #{@term.name} (#{ActiveSupport::Inflector::titleize(Cms::translate_content_name(params[:content_type]))})") do %>
 <div class="right infoinline">Los contenidos de subcategorías de la categoría actual no se muestran en este listado.</div>
-<form method="post" action="/<%=controller.cats_path%>/term/<%=@term.id%>/contenidos/<%=params[:content_type]%>/mass_move?redirto=<%=controller.request.request_uri%>">
+<form method="post" action="/<%=controller.cats_path%>/term/<%=@term.id%>/contenidos/<%=params[:content_type]%>/mass_move?redirto=<%=controller.request.fullpath%>">
 <table>
 	<tr>
 		<th class="w25"><input type="checkbox" onclick="slnc.checkboxSwitchGroup(this);" /></th>

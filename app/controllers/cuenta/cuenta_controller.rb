@@ -403,7 +403,7 @@ class Cuenta::CuentaController < ApplicationController
 
   def olvide_clave
     @title = 'Olvidé mi contraseña'
-    @navpath = [['Cuenta', '/cuenta'], ['Olvidé mi contraseña', request.request_uri]]
+    @navpath = [['Cuenta', '/cuenta'], ['Olvidé mi contraseña', request.fullpath]]
   end
 
   def do_olvide_clave
@@ -440,7 +440,7 @@ class Cuenta::CuentaController < ApplicationController
 
   def reset
     @title = 'Resetear mi contraseña'
-    @navpath = [['Cuenta', '/account'], ['Resetear mi contraseña', request.request_uri]]
+    @navpath = [['Cuenta', '/account'], ['Resetear mi contraseña', request.fullpath]]
   end
 
   def do_change_email

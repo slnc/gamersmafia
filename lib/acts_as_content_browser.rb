@@ -42,10 +42,10 @@ module ActsAsContentBrowser
       #cls = portal.send ActiveSupport::Inflector::underscore(content_name).to_sym # ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.find(params[:id])
       raise ActiveRecord::RecordNotFound unless obj.is_public? or (user_is_authed and Cms::user_can_edit_content?(@user, obj))
-      # puts "http://#{request.host}#{request.request_uri} #{obj.unique_content.url}"
-      # puts "http://#{request.host}#{request.request_uri}".index(obj.unique_content.url)
+      # puts "http://#{request.host}#{request.fullpath} #{obj.unique_content.url}"
+      # puts "http://#{request.host}#{request.fullpath}".index(obj.unique_content.url)
       Routing.gmurl(obj.unique_content) if obj.unique_content.url.nil?
-      if "http://#{request.host}#{request.request_uri}".index(obj.unique_content.url).nil?
+      if "http://#{request.host}#{request.fullpath}".index(obj.unique_content.url).nil?
         redirect_to(obj.unique_content.url, :status => 301) and return
       end
       @title = obj.resolve_hid
@@ -115,7 +115,7 @@ module ActsAsContentBrowser
       # require_user_can_edit(obj)
       raise ContentLocked if obj.is_locked_for_user?(@user)
       @title = "Editando #{obj.resolve_hid}"
-      navpath2<< [obj.resolve_hid, request.request_uri.gsub('edit', 'show')]
+      navpath2<< [obj.resolve_hid, request.fullpath.gsub('edit', 'show')]
       instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
       if Cms::user_can_edit_content?(@user, obj) then
         obj.lock(@user)

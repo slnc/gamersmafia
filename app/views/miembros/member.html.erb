@@ -36,7 +36,7 @@
 	  		<div style="margin: 10px 0;">
 <% if Friendship.find_between(@curuser, @user).nil? then %>
 <form method="post" action="/cuenta/amigos/iniciar_amistad/<%=@curuser.login%>">
-  <input type="hidden" name="redirto" value="<%=controller.request.request_uri%>" />
+  <input type="hidden" name="redirto" value="<%=controller.request.fullpath%>" />
   <input type="submit" class="button" value="Añadir a mi lista de amigos" />
 </form>
 <% end -%>	  		
@@ -55,7 +55,7 @@
 <% else %>
 <p><%=@curuser.login%> lleva más de 3 meses sin aparecer por la web. Si sabes cómo hacer que vuelva a iniciar sesión en la web y consigues que lo haga tu nivel de fe aumentará.<br />
 <form method="post" action="/cuenta/cuenta/resurrect">
-  <input type="hidden" name="redirto" value="<%=controller.request.request_uri%>" />
+  <input type="hidden" name="redirto" value="<%=controller.request.fullpath%>" />
   <input type="hidden" name="login" value="<%=@curuser.login%>" />
   <input type="submit" class="button" value="Iniciar resurrección" />
 </form>

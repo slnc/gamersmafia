@@ -18,6 +18,6 @@ module AccountHelper
   # store current uri in the ccokies
   # we can return to this location by calling return_location
   def store_location
-    cookies[:return_to] = {:value => request.request_uri, :expires => nil, :domain => COOKIEDOMAIN}
+    cookies[:return_to] = {:value => request.fullpath, :expires => nil, :domain => COOKIEDOMAIN}
   end
 end

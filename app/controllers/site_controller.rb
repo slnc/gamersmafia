@@ -366,7 +366,7 @@ class SiteController < ApplicationController
                                             #{User.connection.quote(params['_xsi'])},
                                             #{User.connection.quote(url)},
                                             '#{element_id}')")
-    head :created, :location => request.request_uri
+    head :created, :location => request.fullpath
   end
 
   def stats_hipotesis

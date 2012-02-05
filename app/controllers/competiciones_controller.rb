@@ -135,7 +135,7 @@ class CompeticionesController < ArenaController
     @competitions_matches_report = CompetitionsMatchesReport.new
     raise AccessDenied unless @competitions_match.user_can_upload_attachment(@user)
     @title = "Nuevo informe para #{@competitions_match.participant1.name} vs #{@competitions_match.participant2.name}"
-    @navpath = [['Competiciones', '/competiciones'], ['Nuevo informe', request.request_uri]]
+    @navpath = [['Competiciones', '/competiciones'], ['Nuevo informe', request.fullpath]]
   end
 
   def editar_informe
@@ -147,7 +147,7 @@ class CompeticionesController < ArenaController
     @competition = @competitions_match.competition
 
     @title = "Editar informe para #{@competitions_match.participant1.name} vs #{@competitions_match.participant2.name}"
-    @navpath = [['Competiciones', '/competiciones'], ['Editar informe', request.request_uri]]
+    @navpath = [['Competiciones', '/competiciones'], ['Editar informe', request.fullpath]]
   end
 
   def update_report

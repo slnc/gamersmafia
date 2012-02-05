@@ -1,3 +1,11 @@
+-- CHEATSHEET FOR DOING DUMPS
+-- For specific tables:
+-- pg_dump -Oxa --column-inserts -t terms gamersmafia > terms.sql
+--
+-- For specific rows:
+-- CREATE temptable as SELECT ...
+-- pg_dump -Oxa --column-inserts -t temptable gamersmafia > temptable.sql
+
 TRUNCATE comments_valorations_types CASCADE;
 TRUNCATE content_types CASCADE;
 TRUNCATE global_vars;
@@ -41,6 +49,22 @@ INSERT INTO terms (id, name, slug, description, parent_id, game_id, platform_id,
 
 INSERT INTO terms (id, name, slug, description, parent_id, game_id, platform_id, bazar_district_id, clan_id, contents_count, last_updated_item_id, comments_count, root_id, taxonomy)
   VALUES (1560, 'Dudes', 'dudes', '', 97, NULL, NULL, NULL, NULL, 0, NULL, -16502, 97, 'ImagesCategory');
+
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (474, 'General', 'general_23', 'DownloadsCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (2396, 'Party Larga', 'party-larga_2', 'EventsCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (2397, 'Party Corta', 'party-corta_2', 'EventsCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (1570, 'Wallpapers GM', 'wallpapers-gm', 'ImagesCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (2170, 'Partys', 'partys_4', 'NewsCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (2171, 'Competiciones', 'competiciones_36', 'NewsCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (869, 'General', 'general_86', 'TopicsCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (871, 'Sugerencias', 'sugerencias', 'TopicsCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (2262, 'General', 'general_264', 'TutorialsCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (2282, 'Programas de Comunicacion', 'programas-de-comunicacion_1', 'TutorialsCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (2283, 'Pc//Sistema Operativo', 'pc-sistema-operativo', 'TutorialsCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (2284, 'Punkbuster', 'punkbuster_13', 'TutorialsCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (2285, 'Conceptos', 'conceptos', 'TutorialsCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (2286, 'Clanbase', 'clanbase_7', 'TutorialsCategory', 95, 95);
+INSERT INTO terms (id, name, slug, taxonomy, parent_id, root_id) VALUES (2287, 'Tutoriales para videofrags', 'tutoriales-para-videofrags', 'TutorialsCategory', 95, 95);
 
 INSERT INTO comments_valorations_types (id, name, direction) VALUES (1, 'Normal', 0);
 INSERT INTO comments_valorations_types (id, name, direction) VALUES (2, 'Divertido', 1);

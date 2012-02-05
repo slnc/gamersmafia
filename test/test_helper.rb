@@ -10,7 +10,7 @@ class ActionController::TestRequest
   def initialize_default_values
     # Copypasted por host
     @host                    = App.domain
-    @request_uri             = "/"
+    @fullpath             = "/"
     self.remote_addr         = "0.0.0.0"
     @env["SERVER_PORT"]      = 80
     @env['REQUEST_METHOD']   = "GET"
