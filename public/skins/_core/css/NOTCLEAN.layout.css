@@ -496,12 +496,12 @@ img.icon, #ccontent a img.icon, #ccontent a img.icon16 {
 
 .comments-count a, .comments-count span {
     padding-left: 18px;
-   
+
 }
 
 .pageviews-count {
     padding-left: 18px;
-   
+
 }
 
 .downloads-count {
@@ -700,7 +700,7 @@ img.cash-in {
 
 .modbar {
     width: 102px;
- 
+
 }
 
 .modbar img {
@@ -738,7 +738,7 @@ img.cash-in {
 .flhdr {
     width: 16px;
     height: 16px;
- 
+
 }
 
 #ccontent ul.inline {
@@ -755,7 +755,7 @@ img.cash-in {
 }
 
 #ccontent ul.messages-thread li {
- 
+
     padding-left: 18px;
     list-style: none;
 }
@@ -821,4 +821,12 @@ img.cash-in {
 #mgads-bottom .adslot {
     text-align: center;
     margin: 0 0 10px 0;
+}
+
+.potd-pref-selector {
+  background: none;
+  float: right;
+  padding: 0px 4px 0 0;
+  text-align: right;
+  width: auto;
 }

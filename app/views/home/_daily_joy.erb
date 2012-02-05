@@ -1,24 +1,23 @@
 <% if user_is_authed then %>
-	<%mftext('Alegría del día') do %>
-		<div style="width: auto; background: none; text-align: right; float: right; padding: 0px 4px 0 0;" >
-		<a class="daily-joy-babe2" title="Ver chicas" onclick="slnc.setPref('sex', 'babe');"><img src="/images/blank.gif" /></a>
-		<a class="daily-joy-dude2"  title="Ver chicos" onclick="slnc.setPref('sex', 'dude');"><img src="/images/blank.gif" /></a>
-		<a class="daily-joy-void2" title="No ver nada" onclick="slnc.setPref('sex', 'void');"><img class="icon" src="/images/blank.gif" /></a></div><div></div>
+	<% mftext('Alegría del día') do %>
+		<div class="potd-pref-selector">
+		<a class="daily-joy-babe2" title="Ver chicas" onclick="slnc.setPref('sex', 'babe');">
+      <img src="/images/blank.gif" />
+    </a>
+		<a class="daily-joy-dude2"  title="Ver chicos" onclick="slnc.setPref('sex', 'dude');">
+      <img src="/images/blank.gif" />
+    </a>
+		<a class="daily-joy-void2" title="No ver nada" onclick="slnc.setPref('sex', 'void');">
+      <img class="icon" src="/images/blank.gif" /></a>
+    </div>
+    <div></div>
 		<div style="clear: right;"></div>
-		<%
-if cookies.keys.include?('sexpref') and cookies['sexpref'] == 'dude'
-	images_cat = Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'slug = \'dudes\' And taxonomy = \'ImagesCategory\'').id
-elsif cookies.keys.include?('sexpref') and cookies['sexpref'] == 'void'
-	images_cat = nil
-else
-	images_cat = Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => 'slug = \'babes\' And taxonomy = \'ImagesCategory\'').id
-end
-
-if images_cat then
-%>
-		<%=render :partial => '/imagenes/pick_from_gallery', :locals => { :term_id => images_cat}%>
-<% end -%>
-
+    <%
+    daily_job_term = get_user_daily_joy_term
+    if daily_job_term then %>
+		<%= render(:partial => '/imagenes/pick_from_gallery',
+               :locals => { :term_id => daily_job_term })%>
+    <% end -%>
 <% end -%>
 
 <% end -%>
