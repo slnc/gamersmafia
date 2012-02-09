@@ -25,7 +25,7 @@ namespace :gm do
       css_out<< "img.gs-#{t.code} { background-position: -#{i*16}px 0; }\n"
       i += 1
     end
-    File.open("#{RAILS_ROOT}/public/skins/_core/css/games_sprites.css", 'w') {|f| f.write(css_out) }
+    File.open(Skin::FAVICONS_CSS_FILENAME, 'w') {|f| f.write(css_out) }
 
     im.quantize.write("#{RAILS_ROOT}/public/storage/gs.png")  unless `hostname`.strip == 'tachikoma' # para evitar que haya error por no tener píxeles
   end

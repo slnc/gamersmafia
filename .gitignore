@@ -1,0 +1,7 @@
+config/app_production.yml
+log/*.log
+public/cache
+public/ckeditor
+public/skins/_core/css/games_sprites.css
+public/storage
+script/feedvalidator2/

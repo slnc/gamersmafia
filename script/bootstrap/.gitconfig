@@ -1,0 +1,23 @@
+[user]
+ 	name = unnamed
+	email = unnamed@gamersmafia.dev
+
+[http]
+	sslVerify = false
+
+[color]
+	ui = auto
+	diff = auto
+	status = auto
+	branch = auto
+[push]
+	default = matching
+
+[alias]
+	st = status
+	ci = commit
+	br = branch
+	co = checkout
+	df = diff
+	lg = log -p
+  hs = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short

@@ -1,88 +1,19 @@
-1. INSTALACIÓN
+COMO COLABORAR CON PARCHES
 
-Instrucciones mínimas (seguir en este orden)
-- instalar linux
-- instalar git
-- instalar apache
-- instalar postgres
-- instalar ruby-enterprise
-- instalar las siguientes gems (gem install <nombre de la gem>)
+METODO PARA LOS IMPACIENTES
+1- Regístrate en GitHub
+2- Configura git y ssh en tu máquina virtual de ubuntu (http://help.github.com/mac-set-up-git/)
+3- Edita ~/.gitconfig y pon tus datos arriba del todo
+4- Desde GitHub crea un fork del repositorio oficial de GM (https://github.com/slnc/gamersmafia)
+5- Ejecuta estos comandos desde /srv/www/gamersmafia/current (reemplaza <TU_NICK> for tu nick en GitHub):
 
-    aasm
-    actionmailer
-    actionpack
-    activerecord
-    activeresource
-    activesupport
-    ai4r
-    builder
-    capistrano
-    ci_reporter
-    classifier
-    curb
-    fastercsv
-    fastthread
-    feedbag
-    feedzirra
-    geoip
-    gruff
-    highline
-    hoe
-    hpricot
-    json_pure
-    loofah
-    mechanize
-    net-scp
-    net-sftp
-    net-ssh
-    net-ssh-gateway
-    passenger
-    pg
-    rack
-    rails
-    rake (instalar versión 8.0.7. haciendo uso del comando "gem install rake --version 0.8.7")
-    rmagick
-    rubyforge
-    rubystats
-    sax-machine
-    scrubyt
-    stemmer
-    tidy
+   git remote rm origin
+   git remote add git@github.com:<TU_NICK>/gamersmafia.git
 
-- git clone git://github.com/slnc/gamersmafia.git
-  git submodule init
-  git submodule update
-  cd gamersmafia
+4- Crea una nueva rama por cambio que quieras hacer, haz commits a esa rama y
+cuando esté lista para ser revisada por slnc haz un pull request desde GitHub.
 
-  Si vas a colaborar necesitarás crearte una cuenta en github y clonar el
-  repositorio, instrucciones más abajo.
-
-
-- en PostgreSQL crea una bd para gm llamada "gamersmafia"
-    createdb gamersmafia
-    psql -f db/create.sql gamersmafia
-
-- crea la bd de test (puedes hacerlo automáticamente con el siguiente script desde la carpeta en la que tienes el git de gamersmafia):
-    ./script/sync_testenv.sh
-
-- intenta ejecutar algún test, por ejemplo:
-
-~/workspace/gamersmafia[gm-2000]$ ruby -Itest test/unit/user_test.rb
-
-Si ves algo como esto:
---------------------------------------------------------------------
-Loaded suite test/unit/user_test
-Started
-.............................
-Finished in 8.477707 seconds.
-
-29 tests, 91 assertions, 0 failures, 0 errors
---------------------------------------------------------------------
-
-Tienes todo listo para empezar a colaborar.
-
-
-2. COMO COLABORAR
+PARA LOS MENOS IMPACIENTES
 2.1 Lee todas las guías de http://guides.rubyonrails.org/
 
 ¿Cómo saber si ya has leído suficiente?

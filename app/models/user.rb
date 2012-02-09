@@ -1023,6 +1023,14 @@ class User < ActiveRecord::Base
   INVALID_LOGIN_CHARS = 'Caracteres válidos: a-z A-Z 0-9 _-.[]():=|*^'
   validates_format_of :login, :with => LOGIN_REGEXP, :on => :create, :message => INVALID_LOGIN_CHARS # TODO forzar estas restricciones a cuentas existentes
 
+  MESSAGE_NOTIFICATIONS_DISABLED = <<-eos
+    Hola, he desactivado el envío de todas las notificaciones por email a tu
+    cuenta ya que estamos recibiendo errores de tu servidor de correo. Si crees
+    que esto es un error por favor mandale un mensaje a [~slnc].\n\nPuedes
+    reactivar las notificaciones en la sección
+    [url=http://gamersmafia.com/cuenta]Mi cuenta[/url]
+  eos
+
   def check_lastcommented_on
     if [ST_SHADOW, ST_ZOMBIE].include?(state) && slnc_changed?(:lastcommented_on) && self.lastcommented_on && self.lastcommented_on > 3.months.ago
       self.state = ST_ACTIVE
@@ -1041,15 +1049,21 @@ class User < ActiveRecord::Base
 
   public
   def disable_all_email_notifications
-    self.update_attributes(:notifications_global => false,
-                           :notifications_newregistrations => false,
-                           :notifications_newmessages => false,
-                           :notifications_trackerupdates => false
+    self.update_attributes(
+        :notifications_global => false,
+        :notifications_newregistrations => false,
+        :notifications_newmessages => false,
+        :notifications_trackerupdates => false
     )
-    self.save
-    return
 
-    Message.create(:sender => User.find_by_login('nagato'), :recipient => self, :title => 'Notificaciones desactivadas', :message => "Hola, he desactivado el envío de todas las notificaciones por email a tu cuenta ya que estamos recibiendo errores de tu servidor de correo. Si crees que esto es un error por favor mandale un mensaje a [~slnc].\n\nPuedes reactivar las notificaciones en la sección [url=http://gamersmafia.com/cuenta]Mi cuenta[/url]")
+    return
+    # Deshabilitamos envío de notificaciones temporalmente porque parece haber
+    # un bug con el deshabilitando automático de notificaciones.
+    Message.create(
+        :sender => User.find_by_login('nagato'),
+        :recipient => self,
+        :title => 'Notificaciones desactivadas',
+        :message => MESSAGE_NOTIFICATIONS_DISABLED)
   end
 
   def confirm_tasks

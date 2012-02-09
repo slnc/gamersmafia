@@ -5,7 +5,7 @@ module Routing
       # actualizamos url y portal_id
       # competitions
       # %w(Competition CompetitionsMatch)
-      
+
       object = uniq.real_content
       cls_name = object.class.name
       # determinamos dominio
@@ -21,26 +21,26 @@ module Routing
       elsif cls_name == 'Coverage'
         dom = Routing.get_domain_of_root_term(object.event.main_category.root)
       elsif Cms::CONTENTS_WITH_CATEGORIES.include?(cls_name)
-        
+
         maincat = object.main_category
         if maincat
           dom = Routing.get_domain_of_root_term(maincat.root)
         else
-          dom = App.domain  
+          dom = App.domain
         end
       else
         raise "url_for_content_onlyurl() #{cls_name} not understood}"
       end
-      
+
       d = dom.gsub(".#{App.domain}", '')
       d = 'gm' if d == "" || d == App.domain
-      
+
       if %w(gm arena bazar).include?(d)
         portal_id = Object.const_get("#{d.titleize}Portal").new.id
       else
         portal_id = Portal.find_by_code(d).id
       end
-      
+
       href = Cms.translate_content_name(object.class.name)
       href = href.normalize
       # TODO quitar esto y usar gmurl
@@ -71,7 +71,7 @@ module Routing
     end
     uniq.url
   end
-  
+
   # Devuelve el dominio para el término raíz dado
   def self.get_domain_of_root_term(term)
     raise "term is not root term" unless term.id == term.root_id
@@ -88,7 +88,7 @@ module Routing
       App.domain
     end
   end
-  
+
   def self.gmurl(object, opts={})
     cls_name = object.class.name
     if cls_name.index('Category')
@@ -131,9 +131,9 @@ module Routing
       end
     elsif cls_name == 'Faction'
       "http://#{object.code}.#{App.domain}/"
-    elsif cls_name == 'Clan'      
+    elsif cls_name == 'Clan'
       "http://#{App.domain}/clanes/clan/#{object.id}"
-    elsif %w(Competition League Ladder Tournament).include?(cls_name)      
+    elsif %w(Competition League Ladder Tournament).include?(cls_name)
       "http://arena.#{App.domain}/competiciones/show/#{object.id}"
     elsif %w(Friend User).include?(cls_name)
       # TODO the right way would be URI.escape('b@rto',Regexp.new("[^#{URI::PATTERN::UNRESERVED}]")) but we only have problems with @ right now so I hack it
@@ -144,19 +144,19 @@ module Routing
       Routing.url_for_content_onlyurl(object)
     end
   end
-  
+
   def resolve_portal_mode
     @global_vars = User.db_query("SELECT * FROM global_vars")[0]
-    
+
     @@portals = {} if @global_vars['portals_updated_on'].to_time > Time.now
-    
+
     # esto no hay que hacerlo aquí
     # hay clientes que mandan un HTTP_CLIENT_IP incorrecto TODO esto peta
     if request.env.include?('HTTP_CLIENT_IP') and (request.env['HTTP_CLIENT_IP'] =~ /^unknown$|^(10|172\.(1[6-9]|2[0-9]|30|31)|192\.168)\./i).nil? then
       request.env['HTTP_CLIENT_IP'] = request.env['REMOTE_ADDR']
     end
-    
-    if [App.domain, 'kotoko'].include?(request.host) 
+
+    if [App.domain, 'kotoko'].include?(request.host)
       @portal = GmPortal.new
     elsif request.host == "bazar.#{App.domain}"
       @portal = BazarPortal.new
@@ -169,7 +169,7 @@ module Routing
       raise DomainNotFound if km.nil? # blank host or invalid name
       k = km[1]
       @@portals ||= {}
-      @@portals = {} if RAILS_ENV == 'test' 
+      @@portals = {} if RAILS_ENV == 'test'
       if not @@portals.has_key?(host) then
         if App.domain_aliases.include?(k)
           raise DomainNotFound # ya no soportamos los dominios viejos
@@ -180,7 +180,7 @@ module Routing
           @@portals[host] = ptal
         end
       end
-      
+
       @portal = @@portals[host]
       raise DomainNotFound if @portal.nil?
     end
