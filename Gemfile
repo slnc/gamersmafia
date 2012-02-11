@@ -2,8 +2,6 @@ source :rubygems
 
 # TODO(slnc): add exception notifier plugin back
 gem 'ai4r'
-# gem 'ci_reporter'
-gem 'clusterer'
 gem 'feedtools'
 gem 'feedvalidator'
 gem 'geoip'
