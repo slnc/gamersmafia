@@ -4,6 +4,21 @@ class Term < ActiveRecord::Base
   scope :top_level, :conditions => 'id = root_id AND parent_id IS NULL'
   scope :in_type, lambda { |type| { :conditions => "type = '#{type}'"}}
 
+  VALID_TAXONOMIES = %w(
+      ColumnsCategory
+      ContentsTag
+      DemosCategory
+      DownloadsCategory
+      EventsCategory
+      ImagesCategory
+      InterviewsCategory
+      NewsCategory
+      QuestionsCategory
+      ReviewsCategory
+      TopicsCategory
+      TutorialsCategory
+  )
+
   acts_as_rootable
   acts_as_tree :order => 'name'
 
