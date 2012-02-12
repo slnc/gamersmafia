@@ -1040,7 +1040,14 @@ skin: 'v2'
   <div class="mcontent">
     END
 
-    out<< controller.send(:render_to_string, :partial => 'shared/pager', :object => opts[:pager], :locals => {:pos => 'top'}) if opts[:pager]
+    if opts[:pager]
+      Rails.logging.warn "Paginación temporalmente deshabilitada."
+      out<< controller.send(
+          :render_to_string,
+          :partial => 'shared/pager',
+          :object => opts[:pager],
+          :locals => {:pos => 'top'})
+    end
 
     cache_out = cache_without_erb_block(opts.fetch(:cache)) do
       collection = object.find(*find_args)
