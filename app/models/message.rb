@@ -79,7 +79,7 @@ class Message < ActiveRecord::Base
 
   private
   def update_recipient_unread
-    if (self.frozen? || !self.is_read? || self.is_read_changed?
+    if (self.frozen? || !self.is_read? || self.is_read_changed? ||
         self.receiver_deleted_changed?)
       Message.update_unread_count(self.recipient)
     end

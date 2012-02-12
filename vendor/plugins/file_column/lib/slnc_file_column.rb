@@ -8,12 +8,12 @@ module SlncFileColumn
       class_eval <<-END
       @@file_column_attrs ||= []
       cattr_accessor :file_column_attrs unless self.respond_to?(:file_column_attrs)
-      
+
       @@_fc_options ||= {}
       @@_fc_options[attrib] = options
       cattr_accessor :_fc_options unless self.respond_to?(:_fc_options)
       END
-      
+
       define_method "#{attrib}=" do |file|
         self.file_column_attrs<< attrib
         @tmp_files ||= {}
@@ -23,27 +23,27 @@ module SlncFileColumn
         self[attrib.to_s] = file.to_s if (is_valid_upload(file)) # necesario para poder hacer validates_presence_of
         # raise "self[#{attrib.to_s}] = #{file.to_s} if (#{is_valid_upload(file)} && #{self[attrib.to_s].nil?})"
       end
-      
-      #define_method "#{attrib}" do 
-      #  if object_instance_variable_get(attrib).nil? && defined?(@tmp_files) && @tmp_files.has_key?(attrib.to_s) 
-      #    @tmp_files[attrib.to_s] 
-      #  else 
+
+      #define_method "#{attrib}" do
+      #  if object_instance_variable_get(attrib).nil? && defined?(@tmp_files) && @tmp_files.has_key?(attrib.to_s)
+      #    @tmp_files[attrib.to_s]
+      #  else
       #    self[attrib]
       #  end
       #end
-      
+
       define_method "#{attrib}" do
         self[attrib] # necesario por rails 2.2
       end
-      
+
       # TODO after destroy
-      
+
       after_save :save_uploaded_files
       after_destroy :destroy_file
       before_save :_fc_checks
     end
   end
-  
+
   def _fc_file_name(tmp_file, orig=false)
     if tmp_file.respond_to?(:original_filename)
       orig ? tmp_file.original_filename : tmp_file.original_filename.bare
@@ -53,15 +53,15 @@ module SlncFileColumn
       nil
     end
   end
-  
+
   def _fc_checks
     if @tmp_files
       @tmp_files.keys.each do |f|
         next unless is_valid_upload(@tmp_files[f])
-        
+
         hash_attrib = "#{f}_hash_md5".to_sym
         if self.respond_to?(hash_attrib) && !@tmp_files[f].nil?
-          
+
           tmp_file = @tmp_files[f.to_s]
           if tmp_file.respond_to?('path') and tmp_file.path.to_s != '' then
             new_hash = file_hash(tmp_file.path)
@@ -80,9 +80,9 @@ module SlncFileColumn
               return false
             end
           end
-          
+
         end
-        
+
         # check format
         # check size (TODO)
         if self.class._fc_options[f.to_sym][:format]
@@ -92,14 +92,14 @@ module SlncFileColumn
             if !(/\.jpg$/i =~ filename)
               self.errors.add(f.to_sym, "El archivo #{_fc_file_name(tmp_file, true)} no es una imagen (Formato válido: JPG)")
               return false
-            end           
+            end
           end
         end
       end
     end
     true
   end
-  
+
   def save_uploaded_files
     if @tmp_files then
       # irb(main):024:0> my_id = 654321
@@ -113,7 +113,7 @@ module SlncFileColumn
           if @tmp_files[f].kind_of?(NilClass)
             self.class.db_query("UPDATE #{self.class.table_name} SET #{f} = NULL WHERE id = #{self.id}")
           else
-            dir = self.class.table_name << '/' << (id/1000).to_s.rjust(4, '0')
+            dir = "#{self.class.table_name}/#{(id/1000).to_s.rjust(4, '0')}"
             new_path = save_uploaded_file_to(@tmp_files[f], dir, (id%1000).to_s.rjust(3, '0'))
             self.class.db_query("UPDATE #{self.class.table_name} SET #{f} = '#{new_path.gsub(/'/, '\\\'')}' WHERE id = #{self.id}")
             if self.respond_to?(hash_attrib)
@@ -146,7 +146,7 @@ module SlncFileColumn
   end
 
   def save_uploaded_file_to(tmp_file, path, prefix='')
-    # guarda el archivo tmp_file en path. 
+    # guarda el archivo tmp_file en path.
     #   tmp_file es un archivo tal y como viene de form
     #   path es el directorio donde se quiere guardar el archivo
     #   mode define qué hacer si ya existe un archivo con esa ruta
@@ -158,33 +158,33 @@ module SlncFileColumn
             #   ej de path devuelto: /storage/users/1/fulanito.jpg
             #
             # Si ya existe un archivo con ese nombre en path se busca uno único.
-            # Devuelve la ruta absoluta final del archivo 
-            
+            # Devuelve la ruta absoluta final del archivo
+
             # buscamos un nombre de archivo factible
             preppend = ''
             filename = _fc_file_name(tmp_file)
-            
-            if File.exists?("#{Rails.root}/public/storage/#{path}/#{prefix}_#{filename}") 
+
+            if File.exists?("#{Rails.root}/public/storage/#{path}/#{prefix}_#{filename}")
               incrementor = 1
-              while File.exists?("#{Rails.root}/public/storage/#{path}/#{prefix}_#{incrementor}_#{filename}") 
+              while File.exists?("#{Rails.root}/public/storage/#{path}/#{prefix}_#{incrementor}_#{filename}")
                 incrementor += 1
               end
               dst = "#{Rails.root}/public/storage/#{path}/#{prefix}_#{incrementor}_#{filename}"
             else
               dst = "#{Rails.root}/public/storage/#{path}/#{prefix}_#{filename}"
             end
-            
+
             FileUtils.mkdir_p(File.dirname(dst)) if not File.directory?(File.dirname(dst))
-            
+
             if tmp_file.respond_to?('path') and tmp_file.path.to_s != '' then
               FileUtils.cp(tmp_file.path, dst)
             else # file size < 19Kb (es un StringIO)
               File.open(dst, "wb") {|f| f.write(tmp_file.read) }
             end
-            
+
             dst.gsub("#{Rails.root}/public/", '')
           end
-          
+
           private
           # Calculates the md5 hash of filename somefile
           def file_hash(somefile)

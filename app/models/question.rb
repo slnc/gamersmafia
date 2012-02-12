@@ -9,7 +9,6 @@ class Question < ActiveRecord::Base
   acts_as_categorizable
 
   has_one :last_updated_item, :class_name => 'Question'
-  # after_create :update_avg_popularity
   before_create :check_ammount
   before_create :check_max_open
   before_save :check_state
@@ -17,19 +16,21 @@ class Question < ActiveRecord::Base
 
   has_bank_ammount_from_user
 
-  validates_presence_of :title, :message => 'El campo pregunta no puede estar en blanco'
+  validates_presence_of :title,
+                        :message => 'El campo pregunta no puede estar en blanco'
   validates_length_of :title, :maximum => 100
 
-  belongs_to :answer_selected_by_user, :foreign_key => :answer_selected_by_user_id, :class_name => 'User'
+  belongs_to :answer_selected_by_user,
+             :foreign_key => :answer_selected_by_user_id, :class_name => 'User'
 
   scope :unanswered, :conditions => 'answered_on IS NULL'
   scope :answered, :conditions => 'answered_on IS NOT NULL'
 
-  # attr_protected :ammount
-
   def user_can_set_no_question?(user)
-    # que pueda editar el contenido sin ser el autor o siendo el autor pero siendo del hq
-    Cms::user_can_edit_content?(user, self) && (user.is_hq? || !(user.id == self.user_id))
+    # que pueda editar el contenido sin ser el autor o siendo el autor pero
+    # siendo del hq
+    (Cms::user_can_edit_content?(user, self) &&
+     (user.is_hq? || !(user.id == self.user_id)))
   end
 
   def check_max_open
@@ -47,11 +48,13 @@ class Question < ActiveRecord::Base
   end
 
   def check_ammount
-    # puts "sa #{self.ammount}"
     if self.ammount.nil? || self.ammount == 0.0 || self.ammount >= MIN_AMMOUNT
       true
     else
-      self.errors.add('ammount', "Recompensa incorrecta. Debes o especificar una cantidad mayor que #{Question::MIN_AMMOUNT} o no especificar ninguna cantidad.")
+      self.errors.add("ammount",
+                      "Recompensa incorrecta. Debes o especificar una" +
+                      " cantidad mayor que #{Question::MIN_AMMOUNT} o no" +
+                      " especificar ninguna cantidad.")
       false
     end
   end
@@ -148,8 +151,6 @@ class Question < ActiveRecord::Base
   end
 
   def ammount_increase_checks(diff, new_ammount)
-    # puts "#{self.ammount} #{new_ammount} #{diff}"
-    # puts new_ammount
     raise AlreadyAnswered if self.answered_on
     raise Unpublished if self.state != Cms::PUBLISHED
     raise TooLateToLower if diff < 0 || (diff > 0 && new_ammount < Question::MIN_AMMOUNT)
@@ -157,7 +158,7 @@ class Question < ActiveRecord::Base
 
   def check_switching_from_published
     if (self.ammount && self.state_changed? &&
-        self.state == Cms::PUBLISHED &&
+        self.state_was == Cms::PUBLISHED &&
         self.ammount > 0)
       return_to_owner
     end

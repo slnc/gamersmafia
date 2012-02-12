@@ -2,6 +2,21 @@ require 'test_helper'
 
 class QuestionTest < ActiveSupport::TestCase
 
+  def setup
+    Bank::transfer(:bank, User.find(2), 100, 'test')
+  end
+
+  test "should_be_able_to_create_question_with_min_ammount" do
+    @bt = Question.create({
+        :user_id => 2,
+        :title => "should_be_able_to_create_question_with_min_ammount",
+        :ammount => Question::MIN_AMMOUNT,
+    })
+    Term.find(20).link(@bt.unique_content)
+    assert !@bt.new_record?
+    assert_equal Question::MIN_AMMOUNT.to_i, @bt.ammount.to_i
+  end
+
   test "should_return_money_to_owner_if_no_best_answer" do
     @q = Question.find(1)
     @q.ammount = Question::MIN_AMMOUNT
@@ -50,21 +65,10 @@ class QuestionTest < ActiveSupport::TestCase
     assert_equal ("%.2f" % (init_cash - @q.prize)), ("%.2f" % @c.user.cash)
   end
 
-  def setup
-    Bank::transfer(:bank, User.find(2), 100, 'test')
-  end
-
   test "should_be_able_to_create_question_with_0_ammount" do
     @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => 0, :terms => 1})
     puts @bt.errors.class.name
     assert_equal false, @bt.new_record?, @bt.errors.full_messages_html
-  end
-
-  test "should_be_able_to_create_question_with_min_ammount" do
-    @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => Question::MIN_AMMOUNT})
-    Term.find(20).link(@bt.unique_content)
-    assert_equal false, @bt.new_record?
-    assert_equal Question::MIN_AMMOUNT.to_i, @bt.ammount.to_i
   end
 
   test "shouldnt_be_able_to_create_question_with_less_than_min_ammount" do
