@@ -178,7 +178,7 @@ module Cache
           expire_fragment("/#{p.code}/imagenes/index/galleries")
         end
         expire_fragment("/common/imagenes/toplevel/#{object.root_id}/page_*")
-        if object.parent_id_changed
+        if object.parent_id_changed?
           # no buscamos el root pq con la config de la sección actualmente no
           # hay más de 2 niveles en la jerarquía
           expire_fragment("/common/imagenes/toplevel/#{object.parent_id_was}/page_*")

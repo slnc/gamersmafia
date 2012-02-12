@@ -14,10 +14,10 @@ class TermTest < ActiveSupport::TestCase
     t = Term.new(:name => 'foo', :slug => 'bar', :parent_id => t.id, :bazar_district_id => 1)
     assert t.save
 
-    tc = Term.new(:name => 'foo', :slug => 'bar3', :clan_id => 1)
-    assert tc.save
+    tc = Term.new(:name => 'foo 3', :slug => 'bar3', :clan_id => 1)
+    assert tc.save, tc.errors.full_messages_html
 
-    t = Term.new(:name => 'foo', :slug => 'bar3', :clan_id => 1, :parent_id => tc.id)
+    t = Term.new(:name => 'foo 4', :slug => 'bar3', :clan_id => 1, :parent_id => tc.id)
     assert t.save
   end
 
@@ -65,10 +65,14 @@ class TermTest < ActiveSupport::TestCase
 
   test "all_children_ids_taxonomy" do
     test_mirror_category
-    t2 = @t.children.create(:name => "oniris", :taxonomy => "fulanito")
-    assert !t2.new_record?
-    expected = Term.find(:all, :conditions => "root_id = #{@t.id} AND id <> #{t2.id}").collect { |t| t.id }.sort
-    assert_equal expected, @t.all_children_ids(:taxonomy => 'DownloadsCategory').sort
+    t2 = @t.children.create(:name => "oniris", :taxonomy => "NewsCategory")
+    assert !t2.new_record?, t2.errors.full_messages_html
+    expected = Term.find(
+      :all,
+      :conditions => ["root_id = ? AND id <> ?",
+                      @t.id, t2.id]).collect { |t| t.id }.sort
+    assert_equal(expected,
+                 @t.all_children_ids(:taxonomy => 'DownloadsCategory').sort)
   end
 
   test "last_published_content" do

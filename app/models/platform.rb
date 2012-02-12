@@ -8,10 +8,18 @@ class Platform < ActiveRecord::Base
   after_create :create_term_and_categories
 
   def create_term_and_categories
-    root_term = Term.create(:platform_id => self.id, :name => self.name, :slug => self.code)
+    root_term = Term.create({
+        :platform_id => self.id,
+        :name => self.name,
+        :slug => self.code
+    })
 
     Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
-      root_term.children.create(:name => c[1], :taxonomy => c[0])
+      Rails.logger.debug(
+          "Creating children of #{root_term} with :name => #{c[1]}, :taxonomy" +
+          " => #{c[0]}")
+      new_term = root_term.children.create(:name => c[1], :taxonomy => c[0])
+      raise new_term.errors.full_messages_html if new_term.new_record?
     end
   end
 
