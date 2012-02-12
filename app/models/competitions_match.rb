@@ -32,10 +32,6 @@ class CompetitionsMatch < ActiveRecord::Base
   after_destroy :destroy_my_event
   after_destroy :update_participants_indicators # necesario?
 
-  observe_attr :result
-  observe_attr :participant1_id
-  observe_attr :participant2_id
-
   scope :accepted, :conditions => "accepted = 't'"
   scope :not_accepted, :conditions => "accepted = 'f'"
   #  after_save :reset_faith_indicators
@@ -166,7 +162,7 @@ class CompetitionsMatch < ActiveRecord::Base
       self.save
     else # just update if we changed the participants
 
-      if self.slnc_changed?(:participant1_id) || self.slnc_changed?(:participant2_id)
+      if self.participant1_id_changed? || self.participant2_id_changed?
         event_name = ''
         event_name << self.participant1.to_s if self.participant1_id
         event_name << ' vs '
@@ -469,7 +465,7 @@ class CompetitionsMatch < ActiveRecord::Base
   # private
   def check_completed_on
     return false if self.participant1_id != nil && self.participant1_id == self.participant2_id
-    @changed_completed_on_result = (self.slnc_changed?(:result) && self.completed_on)
+    @changed_completed_on_result = (self.result_changed? && self.completed_on)
 
     if self.completed? && self.completed_on.nil? then # lo estamos completando
       self.completed_on = Time.now

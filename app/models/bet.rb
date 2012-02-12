@@ -31,9 +31,6 @@ class Bet < ActiveRecord::Base
   scope :open_bets, :conditions => Bet::OPEN_BETS_SQL,
                           :order => 'closes_on ASC, id ASC'
 
-  observe_attr :cancelled, :forfeit, :tie, :winning_bets_option_id
-
-
   def self.earnings(user, limit=30, time_window=nil)
     # Returns a user earnings during a time window.
     #

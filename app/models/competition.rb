@@ -68,9 +68,6 @@ class Competition < ActiveRecord::Base
     self.game.portals
   end
 
-  observe_attr :state
-
-
   def can_recreate_matches?
    (self.kind_of?(League) || self.kind_of?(Tournament)) && self.competitions_matches.count(:conditions => 'completed_on is NOT NULL') == 0
   end

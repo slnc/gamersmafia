@@ -8,7 +8,6 @@ class BanRequest < ActiveRecord::Base
   belongs_to :unban_confirming_user, :class_name => 'User', :foreign_key => 'unban_confirming_user_id'
 
   before_save :check_unban_requirements
-  observe_attr :unban_user_id
 
   before_create :check_not_already_pending
 
@@ -65,7 +64,7 @@ class BanRequest < ActiveRecord::Base
   end
 
   def check_unban_requirements
-    if slnc_changed?(:unban_user_id)
+    if self.unban_user_id_changed?
       if self.reason_unban.to_s == ''
         self.errors.add('unban_user_id', "El campo razón del unban no puede estar en blanco")
         false

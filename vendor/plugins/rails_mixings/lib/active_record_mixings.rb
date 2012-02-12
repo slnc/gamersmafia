@@ -7,13 +7,15 @@ module ActiveRecordMixings
     self.class.db_query(q)
   end
 
-  def reset_observable_attrs_state
-    @slnc_changed = nil
+  def changed_attr(field_name)
+    self.changed.include?(field_name)
   end
+  alias :changed_attr? :changed_attr
 
-  def slnc_changed?(attr_name = nil)
-    attr_name ? (@slnc_changed && @slnc_changed[attr_name]) : (@slnc_changed && @slnc_changed.any?)
+  def changed_attr_before_save(field_name)
+    self.previous_changes.include?(field_name)
   end
+  alias :changed_attr_before_save? :changed_attr_before_save
 
   define_method 'delete_associated_users_roles' do
     return true unless self.id
@@ -38,30 +40,35 @@ module ActiveRecordMixings
       before_destroy :delete_associated_users_roles
     end
 
+
     def observe_attr(*args)
       if args.size == 1 && !args.kind_of?(Array)
         args = [args]
       end
-      # args = [args] unless args.kind_of?(Array)
-      attr_accessor :slnc_changed, :slnc_changed_old_values
-      args.each do |attr_name|
-        begin
-          alias_method("old_#{attr_name}=".to_sym, "#{attr_name}=".to_sym) if self.new.respond_to?("#{attr_name}=")
-        rescue: # ignoramos todos en lugar de solo NameError porque en acts_as_rootable no existe la tabla a la hora de leer la clase
-        end
 
-        define_method "#{attr_name}=" do |value|
-          @slnc_changed ||= HashWithIndifferentAccess.new
-          @slnc_changed_old_values ||= HashWithIndifferentAccess.new
-          @slnc_changed_old_values[attr_name] = self.send attr_name.to_sym
-          if self.respond_to?("old_#{attr_name}=")
-            send("old_#{attr_name}=", value)
-          else
-            write_attribute attr_name, value
-          end
-          @slnc_changed[attr_name] = true if self.send(attr_name.to_sym) != @slnc_changed_old_values[attr_name] # hacemos esta comprobación por file_column
-        end
-      end
+      #attr_accessor :slnc_changed, :slnc_changed_old_values
+      #args.each do |attr_name|
+      #  begin
+      #    alias_method(
+      #        "old_#{attr_name}=".to_sym,
+      #        "#{attr_name}=".to_sym) if self.new.respond_to?("#{attr_name}=")
+      #  rescue: # ignoramos todos en lugar de solo NameError porque en acts_as_rootable no existe la tabla a la hora de leer la clase
+      #  end
+
+      #  define_method "#{attr_name}=" do |value|
+      #    Rails.logger.debug "Calling #{attr_name}(#{value})..."
+      #    @slnc_changed ||= HashWithIndifferentAccess.new
+      #    @slnc_changed_old_values ||= HashWithIndifferentAccess.new
+      #    @slnc_changed_old_values[attr_name] = self.send attr_name.to_sym
+      #    old_attr_writer = "old_#{attr_name}="
+      #    if self.respond_to?(old_attr_writer)
+      #      send(old_attr_writer, value)
+      #    else
+      #      write_attribute attr_name, value
+      #    end
+      #    @slnc_changed[attr_name] = true if self.send(attr_name.to_sym) != @slnc_changed_old_values[attr_name] # hacemos esta comprobación por file_column
+      #  end
+      #end
     end
 
     def find_or_404(*args)

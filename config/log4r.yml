@@ -11,6 +11,7 @@ log4r_config:
       trace     : 'true'
       outputters :
       - datefile
+      - stdout
 
   # define all outputters (incl. formatters)
   outputters:
@@ -18,6 +19,12 @@ log4r_config:
     name: datefile
     dirname: "log"
     file: "my_log" # this will be overrided by rails' config.
+    formatter:
+      date_pattern: '%H:%M:%S'
+      pattern     : '[%-5l] %d: %m '
+      type        : PatternFormatter
+  - type: StdoutOutputter
+    name: stdout
     formatter:
       date_pattern: '%H:%M:%S'
       pattern     : '[%-5l] %d: %m '

@@ -1,8 +1,8 @@
 class UsersActionObserver < ActiveRecord::Observer
   observe User, RecruitmentAd, ClansMovement, Clan, Content, ProfileSignature, Friendship, UsersEmblem
-  
+
   include ApplicationHelper
-  
+
   def after_create(object)
     case object.class.name
       when 'ProfileSignature'
@@ -12,70 +12,70 @@ class UsersActionObserver < ActiveRecord::Observer
         UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_PROFILE_SIGNATURE_SIGNED, :object_id => object.id, :data => data)
         UsersAction.create(:user_id => object.signer_user_id, :type_id => UsersAction::NEW_PROFILE_SIGNATURE_RECEIVED, :object_id => object.id, :data => data)
       end
-      
+
       when 'ClansMovement'
-      data = "#{user_link(object.user)} #{ClansMovement.translate_direction(object.direction)} <a href=\"/clanes/clan/#{object.id}\">#{object.clan}</a>"      
+      data = "#{user_link(object.user)} #{ClansMovement.translate_direction(object.direction)} <a href=\"/clanes/clan/#{object.id}\">#{object.clan}</a>"
       UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_CLANS_MOVEMENT, :object_id => object.id, :data => data)
-      
+
       when 'UsersEmblem'
       if Emblems::EMBLEMS_TO_REPORT.include?(object.emblem)
-        data = "#{user_link(object.user)} ha obtenido el emblema de <strong>#{Emblems::EMBLEMS[object.emblem.to_sym][:title]}</strong>"      
+        data = "#{user_link(object.user)} ha obtenido el emblema de <strong>#{Emblems::EMBLEMS[object.emblem.to_sym][:title]}</strong>"
         UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_USERS_EMBLEM, :object_id => object.id, :data => data)
       end
-      
+
       when 'Clan'
       if object.creator_user_id
-        data = "#{user_link(object.creator)} ha creado un nuevo clan: <a href=\"#{gmurl(object)}\">#{object.name}</a>"      
+        data = "#{user_link(object.creator)} ha creado un nuevo clan: <a href=\"#{gmurl(object)}\">#{object.name}</a>"
         UsersAction.create(:user_id => object.creator_user_id, :type_id => UsersAction::NEW_CLAN, :object_id => object.id, :data => data)
       end
     end
   end
-  
+
   def after_save(object)
     case object.class.name
       when 'Content'
-      if object.slnc_changed?(:state)
+      if object.state_changed?
         if object.state == Cms::PUBLISHED
-          
+
           # TODO si es foto poner thumbnail
           data = "#{user_link(object.user)} ha publicado <a href=\"#{gmurl(object)}\">#{Cms.faction_favicon(object)} "
           if object.real_content.class.name == 'Image'
             data << "<img src=\"/cache/thumbnails/i/32x32/#{object.real_content.file}\" />"
           else
-            data << "#{object.name}"            
+            data << "#{object.name}"
           end
           data << '</a>'
-          
+
           UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_CONTENT, :object_id => object.id, :data => data)
         elsif object.state == Cms::DELETED
           UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_CONTENT, object.id]).each { |ra| ra.destroy }
-        end  
+        end
       end
-      
+
       when 'User':
-      if object.slnc_changed?(:photo)
+      if object.photo_changed?
         if UsersAction.count(:conditions => ['created_on >= now() - \'5\'::interval AND user_id = ? AND type_id = ?', object.id, UsersAction::PROFILE_PHOTO_UPDATED]) == 0 then
           u = User.find(object.id) # para que photo tenga ya la ruta
-          UsersAction.create(:user_id => object.id, 
-                             :type_id => UsersAction::PROFILE_PHOTO_UPDATED, 
+          UsersAction.create(:user_id => object.id,
+                             :type_id => UsersAction::PROFILE_PHOTO_UPDATED,
                              :data => "#{user_link(object)} ha actualizado la foto de su perfil <img src=\"/cache/thumbnails/i/32x32/#{u.photo}\" />")
         end
       end
-      
-      if object.slnc_changed?(:faction_id)
+
+      if object.faction_id_changed?
         msg = object.faction_id ? "se ha pasado a la facción de <a href=\"/facciones/show/#{object.faction_id}\">#{object.faction.name}</a>" : "ha dejado de pertenecer a cualquier facción"
-        UsersAction.create(:user_id => object.id, 
-                           :type_id => UsersAction::USER_CHANGED_TO_NEW_FACTION, 
+        UsersAction.create(:user_id => object.id,
+                           :type_id => UsersAction::USER_CHANGED_TO_NEW_FACTION,
                            :data => "#{user_link(object)} #{msg}")
       end
-      
+
       when 'RecruitmentAd':
-      if object.slnc_changed?(:deleted)
+      if object.deleted_changed?
         UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_CONTENT, object.unique_content_id]).each { |ra| ra.destroy }
       end
-      
+
       when 'Friendship':
-      if object.slnc_changed?(:accepted_on) && !object.accepted_on.nil?
+      if object.accepted_on_changed? && !object.accepted_on.nil?
         UsersAction.create(:user_id => object.sender_user_id,
                            :type_id => UsersAction::NEW_FRIENDSHIP_SENDER,
                            :object_id => object.id,
@@ -85,14 +85,14 @@ class UsersActionObserver < ActiveRecord::Observer
                            :object_id => object.id,
                            :data => "#{user_link(object.receiver)} y #{user_link(object.sender)} son ahora amigos")
       end
-      
+
       when 'Clan':
-      if object.slnc_changed?(:deleted) && object.creator_user_id
+      if object.deleted_changed? && object.creator_user_id
         UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_CLAN, object.id]).each { |ra| ra.destroy }
       end
     end
   end
-  
+
   def after_destroy(object)
     case object.class.name
       when 'ProfileSignature':

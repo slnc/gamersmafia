@@ -9,13 +9,14 @@ class UsersContentsTagTest < ActiveSupport::TestCase
       end
     end
   end
-  
+
   test "tildes should work" do
-    @uct = UsersContentsTag.new(:user_id => 1, :content_id => 1, :original_name => 'holá')
+    @uct = UsersContentsTag.new(
+        :user_id => 1, :content_id => 1, :original_name => 'holá')
     assert @uct.save
     assert_equal 'hola', @uct.term.slug
   end
-  
+
   test "duplicated non root terms ok" do
     [17].each do |tid|
       t = Term.find(tid)
@@ -23,7 +24,7 @@ class UsersContentsTagTest < ActiveSupport::TestCase
       assert @uct.save
     end
   end
-  
+
   test "no duplicated root terms" do
     [1, 4].each do |tid|
       t = Term.find(tid)
@@ -31,12 +32,12 @@ class UsersContentsTagTest < ActiveSupport::TestCase
       assert !@uct.save
     end
   end
-  
+
   test "eñe should work" do
     @uct = UsersContentsTag.new(:user_id => 1, :content_id => 1, :original_name => 'ñ')
     assert @uct.save
   end
-  
+
   test "official tags should be just the top popular tags" do
     @c1 = Content.find(1)
     @u1 = User.find(1)
@@ -54,21 +55,21 @@ class UsersContentsTagTest < ActiveSupport::TestCase
     end
     assert_equal [], tofind
   end
-  
+
   test "should only allow valid tag characters" do
     @uct = UsersContentsTag.new(:user_id => 1, :content_id => 1, :original_name => '~)!"U(#~)')
     assert !@uct.save
   end
-  
+
   test "should ignore case" do
     assert_count_increases(UsersContentsTag) do
       @uct = UsersContentsTag.create(:user_id => 1, :content_id => 1, :original_name => 'HOLA')
     end
-    
+
     @uct2 = UsersContentsTag.new(:user_id => 1, :content_id => 1, :original_name => 'hola')
     assert !@uct2.save
   end
-  
+
   test "tag_content should create tags its first time" do
     tc = UsersContentsTag.count
     @c1 = Content.find(1)
@@ -79,16 +80,16 @@ class UsersContentsTagTest < ActiveSupport::TestCase
     @c1.users_contents_tags.find(:all, :conditions => ['user_id = ?', @u1.id], :order => 'created_on DESC').each do |t|
       tofind.delete(t.original_name)
     end
-    assert_equal [], tofind 
+    assert_equal [], tofind
   end
-  
+
   test "tag_content should delete tags once they were created" do
     test_tag_content_should_create_tags_its_first_time
     UsersContentsTag.tag_content(@c1, @u1, 'lel')
     assert_equal 1, @c1.users_contents_tags.count
-    assert @c1.users_contents_tags.find_by_original_name('lel') 
+    assert @c1.users_contents_tags.find_by_original_name('lel')
   end
-  
+
   test "delete_tag should recalculate contents_terms" do
     @c1 = Content.find(1)
     @u1 = User.find(1)
@@ -98,7 +99,7 @@ class UsersContentsTagTest < ActiveSupport::TestCase
     end
     assert_equal [], @c1.top_tags
   end
-  
+
   test "deleting because too many top tags should work" do
     ct_old = ContentsTerm.count
     test_official_tags_should_be_just_the_top_popular_tags

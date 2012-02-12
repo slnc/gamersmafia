@@ -26,14 +26,14 @@ module SlncActsAsRootable
     end
 
     def check_parent_id
-      if self.new_record? or self.slnc_changed?(:parent_id) or self.root_id.nil?
+      if self.new_record? || self.changed_attr('parent_id') or self.root_id.nil?
         if self.parent_id
-          p = self.parent
-          while p.parent_id
-            p = p.parent
+          parent = self.parent
+          while parent.parent_id
+            parent = parent.parent
           end
 
-          self.root_id = p.id
+          self.root_id = parent.id
         else
           self.root_id = self.id
         end

@@ -29,8 +29,7 @@ class ActiveSupport::TestCase
   # tests para que no hagan uso de ello? No estoy seguro de que sea incoherente de esta forma.
   # https://rails.lighthouseapp.com/projects/8994/tickets/1985-fixture_file_upload-no-longer-available-in-tests-by-default
   def fixture_file_upload(path, mime_type = nil, binary = false)
-    fixture_path = ActionController::TestCase.send(:fixture_path) if ActionController::TestCase.respond_to?(:fixture_path)
-    ActionController::TestUploadedFile.new("#{fixture_path}#{path}", mime_type, binary)
+    Rack::Test::UploadedFile.new("#{fixture_path}#{path}", mime_type, binary)
   end
 
 

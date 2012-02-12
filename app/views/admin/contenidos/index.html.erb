@@ -2,7 +2,7 @@
 	<%mftext('Apuestas pendientes de completar') do %>
   <ul class="content-hid">
   	<%# TODO perf cache("/common/admin/contenidos/index/pending_bets") do %>
-  <% for bet in Bet.awaiting_result.find(:published) %>
+  <% Bet.published.awaiting_result.find(:all).each do |bet| %>
     <% if Cms::user_can_edit_content?(@user, bet) then %>
     <li><%=link_to bet.resolve_hid, "/apuestas/resolve/#{bet.id}"%></li>
     <% else %>
@@ -12,17 +12,17 @@
   <%# end -%>
   </ul>
   <% end -%>
-  
-<%=mfcontents_basic("Preguntas en el limbo", 
-					Proc.new { Question.find(:published, :conditions => "created_on < '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'created_on ASC') }, 
+
+<%=mfcontents_basic("Preguntas en el limbo",
+					Proc.new { Question.find(:published, :conditions => "created_on < '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'created_on ASC') },
 					[],
 					:truncate_at => 28, :faction_favicon => true, :blast => true)%>
 
   <%mftext('Mi nivel de moderación') do %>
   <%= render :partial => '/miembros/publishing_experience', :locals => { :curuser => @user } %>
   <% end -%>
-  
-  <% if nil then %> 
+
+  <% if nil then %>
   <%# esto no funciona pq no sabemos cuándo se ha modificado el estado de un contenido por última vez %>
   <div class="subheader"><div>Últimos contenidos resueltos</div></div>
   <ul class="content-hid">
@@ -38,7 +38,7 @@
 <form method="post" action="/admin/contenidos/mass_moderate">
   <input type="hidden" id="f1action" name="mass_action" value="" />
 <table>
-<% for name, collection, controller_name in @contents 
+<% for name, collection, controller_name in @contents
     if collection.size == 0 then
       next
     end
@@ -50,7 +50,7 @@
 <%
 i = 0
 cache_category_paths = {}
-for @item in collection: 
+for @item in collection:
   lock = @item.cur_lock
   next if @item.class.name == 'Image' and i >= 50
 %>
@@ -60,7 +60,7 @@ for @item in collection:
     <% else %>
       <td class="checkbox">&nbsp;</td>
     <% end -%>
-    <% 
+    <%
     if lock && lock.user_id != @user.id then
     u = lock.user
     %>
@@ -69,7 +69,7 @@ for @item in collection:
     </td>
     <%
     else %>
-    <% if @item.class.name == 'Image' then 
+    <% if @item.class.name == 'Image' then
  i += 1
           begin
             img = Cms::read_image("#{Rails.root}/public/#{@item.file}")
@@ -110,7 +110,7 @@ for @item in collection:
     </tr>
   <% end -%>
 </ul>
-<% 
+<%
 end %><%# for
 
 GC.start
@@ -123,7 +123,7 @@ GC.start
 <script type="text/javascript">
 function mass_publish()
 {
-  if (confirm('¿PUBLICAR todos los contenidos seleccionados?')) 
+  if (confirm('¿PUBLICAR todos los contenidos seleccionados?'))
   {
     $j('#f1action').val('publish');
     return true;
@@ -134,7 +134,7 @@ function mass_publish()
 
 function mass_deny()
 {
-  if (confirm('¿DENEGAR todos los contenidos seleccionados?')) 
+  if (confirm('¿DENEGAR todos los contenidos seleccionados?'))
   {
     $j('#f1action').val('deny');
     return true;

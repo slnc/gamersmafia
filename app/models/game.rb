@@ -17,8 +17,6 @@ class Game < ActiveRecord::Base
   validates_uniqueness_of :code
   validates_uniqueness_of :name
 
-  observe_attr :code, :name
-
   ENTITY_USER = 0
   ENTITY_CLAN = 1
 
@@ -55,7 +53,7 @@ class Game < ActiveRecord::Base
 
     # El orden es importante
     root_term = Term.create(:game_id => self.id, :name => self.name, :slug => self.code)
-    raise "Term isn't created #{root_term.errors.full_messages.html}" if root_term.new_record?
+    raise "Term isn't created #{root_term.errors.full_messages_html}" if root_term.new_record?
     Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
       root_term.children.create(:name => c[1], :taxonomy => c[0])
     end
@@ -71,7 +69,7 @@ class Game < ActiveRecord::Base
   end
 
   def portals
-    [GmPortal.new] + FactionsPortal.find_by_sql("select * from portals where id in (select portal_id from factions_portals a join factions b on a.faction_id = b.id and b.code = '#{self.code}')")
+    [GmPortal.new] + FactionsPortal.find_by_sql("SELECT * from portals where id in (select portal_id from factions_portals a join factions b on a.faction_id = b.id and b.code = '#{self.code}')")
   end
 
   def update_img_file
@@ -95,12 +93,16 @@ class Game < ActiveRecord::Base
   # TODO tb a plataformas
   def update_code_in_other_places_if_changed
     [:code, :name].each do |thing|
-    if slnc_changed?(:code)
-      return if slnc_changed_old_values[thing].nil?
-      f = Faction.send("find_by_#{thing}", slnc_changed_old_values[thing].strip)
+    if self.code_changed?
+      return if self.send("#{thing}_changed?".to_sym)
+      f = Faction.send("find_by_#{thing}", self.send("#{thing}_was".strip))
       f.send("#{thing}=", self.send(thing))
       f.save
-      Term.find(:first, :conditions => ['id = root_id AND slug = ?', slnc_changed_old_values[:code].strip]).update_attributes(:slug => self.code)
+      Term.find(
+          :first,
+          :conditions => [
+              'id = root_id AND slug = ?',
+              self.changed["code"].strip]).update_attributes(:slug => self.code)
       Content.find(:all, :conditions => ['id = ?', self.id]).each do |c|
         User.db_query("UPDATE contents SET url = nil WHERE id = #{c.id}")
       end

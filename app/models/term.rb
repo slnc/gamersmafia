@@ -36,7 +36,7 @@ class Term < ActiveRecord::Base
   validates_uniqueness_of :name, :scope => [:parent_id]  # missing :type
   validates_uniqueness_of :slug, :scope => [:parent_id]  # missing :type
   before_save :check_scope_if_toplevel
-  before_save :check_type
+  before_save :check_taxonomy
 
   def self.taxonomies
     VALID_TAXONOMIES
@@ -51,9 +51,10 @@ class Term < ActiveRecord::Base
     " parent: '#{self.parent_id}' root_id: '#{self.root_id}'"
   end
 
-  def check_type
-    if !self.class.taxonomies.include?(self.type)
-      self.errors.add('term', "Taxonomía '#{self.type}' incorrecta. Taxonomías válidas: #{self.class.taxonomies.join(', ')}")
+  def check_taxonomy
+    Rails.logger.debug ">>>> #{self.taxonomy} | #{self.class.name}"
+    if self.taxonomy && !self.class.taxonomies.include?(self.taxonomy)
+      self.errors.add('term', "Taxonomía '#{self.taxonomy}' incorrecta. Taxonomías válidas: #{self.class.taxonomies.join(', ')}")
       false
     else
       true
@@ -85,7 +86,7 @@ class Term < ActiveRecord::Base
 
     par = self.parent
 
-    self.type = par.type if par.type
+    self.taxonomy = par.taxonomy if par.taxonomy
     true
   end
 
@@ -98,14 +99,14 @@ class Term < ActiveRecord::Base
     true
   end
 
-  def self.find_type(id, type)
-    sql_tax = type.nil? ? 'IS NULL' : "= #{User.connection.quote(type)}"
-    Term.find(:first, :conditions => ["id = ? AND type #{sql_tax}", id])
+  def self.find_taxonomy(id, taxonomy)
+    sql_tax = taxonomy.nil? ? 'IS NULL' : "= #{User.connection.quote(taxonomy)}"
+    Term.find(:first, :conditions => ["id = ? AND taxonomy #{sql_tax}", id])
   end
 
-  def self.find_type_by_code(code, type)
+  def self.find_taxonomy_by_code(code, taxonomy)
     # Solo para taxonomías toplevel
-    Term.find(:first, :conditions => ['id = root_id AND code = ? AND type = ?', code, type])
+    Term.find(:first, :conditions => ['id = root_id AND code = ? AND taxonomy = ?', code, taxonomy])
   end
 
 
@@ -114,7 +115,7 @@ class Term < ActiveRecord::Base
     cats = [self.id]
     conds = []
     conds << opts[:cond] if opts[:cond].to_s != ''
-    conds << "type = #{User.connection.quote(opts[:type])}" if opts[:type]
+    conds << "taxonomy = #{User.connection.quote(opts[:taxonomy])}" if opts[:taxonomy]
 
     cond = ''
     cond = " AND #{conds.join(' AND ')}" if conds.size > 0
@@ -132,7 +133,7 @@ class Term < ActiveRecord::Base
     cats.uniq
   end
 
-  def self.type_from_class_name(cls_name)
+  def self.taxonomy_from_class_name(cls_name)
     "#{ActiveSupport::Inflector::pluralize(cls_name)}Category"
   end
 
@@ -165,7 +166,7 @@ class Term < ActiveRecord::Base
   private
   def check_references_to_ancestors
     if !self.new_record?
-      if slnc_changed?(:parent_id) then
+      if self.parent_id_changed?
         return false if self.parent_id == self.id # para evitar bucles infinitos
         self.root_id = parent_id.nil? ? self.id : self.class.find(parent_id).root_id
         self.class.find(:all, :conditions => "id IN (#{self.all_children_ids.join(',')})").each do |child|
@@ -484,9 +485,8 @@ class Term < ActiveRecord::Base
   # valid opts keys: cls_name
   def contents_count(opts={})
     # TODO perf optimizar mas, si el tag tiene el mismo taxonomy que el solicitado
-    raise "cls_name not specified" if self.taxonomy.nil? && opts[:cls_name].nil?
     sql_cond = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
-    if opts[:cls_name] != nil
+    if !opts[:cls_name].nil?
       taxo = self.class.taxonomy_from_class_name(opts[:cls_name])
       User.db_query("SELECT count(*) FROM (SELECT content_id
                                                               FROM contents_terms a
@@ -961,7 +961,7 @@ class Term < ActiveRecord::Base
   private
   def check_references_to_ancestors
     if !self.new_record?
-      if slnc_changed?(:parent_id) then
+      if self.parent_id_changed?
         return false if self.parent_id == self.id # para evitar bucles infinitos
         self.root_id = parent_id.nil? ? self.id : self.class.find(parent_id).root_id
         self.class.find(:all, :conditions => "id IN (#{self.all_children_ids.join(',')})").each do |child|
@@ -971,8 +971,7 @@ class Term < ActiveRecord::Base
         end
       end
 
-      # TODO Rails 2.1 (dirty tracking)
-      if slnc_changed?(:root_id) && self.root_id != self.slnc_changed_old_values[:root_id] then # reseteamos la url de todos los contenidos aquí y en categorías inferiores
+      if self.root_id_changed?
         GmSys.job("#{self.class.name}.find(#{self.id}).reset_contents_urls")
       end
     end

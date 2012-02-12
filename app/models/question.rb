@@ -15,7 +15,6 @@ class Question < ActiveRecord::Base
   before_save :check_state
   before_save :check_switching_from_published
 
-  observe_attr :ammount, :answered_on
   has_bank_ammount_from_user
 
   validates_presence_of :title, :message => 'El campo pregunta no puede estar en blanco'
@@ -157,14 +156,18 @@ class Question < ActiveRecord::Base
   end
 
   def check_switching_from_published
-    if self.ammount && self.slnc_changed?(:state) && slnc_changed_old_values[:state] == Cms::PUBLISHED && self.ammount > 0
+    if (self.ammount && self.state_changed? &&
+        self.state == Cms::PUBLISHED &&
+        self.ammount > 0)
       return_to_owner
     end
     true
   end
 
   def self.max_open(user)
-    if user.created_on.to_i > Time.now.to_i - 1.week.ago.to_i || user.karma_points == 0 # usuario es reciente
+    if (user.created_on.to_i > Time.now.to_i - 1.week.ago.to_i ||
+        user.karma_points == 0)
+      # usuario es reciente
       5
     else
       10

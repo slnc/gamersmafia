@@ -14,9 +14,6 @@ class Comment < ActiveRecord::Base
   before_save :check_copy_if_changing_lastedited_by_user_id
   serialize :cache_rating
 
-  observe_attr :lastedited_by_user_id
-  observe_attr :comment
-
   def regenerate_ne_references(users=[])
     NeReference.find(:all, :conditions => ['referencer_class = \'Comment\' AND referencer_id = ?', self.id]).each { |ne| ne.destroy }
 
@@ -64,12 +61,14 @@ class Comment < ActiveRecord::Base
   end
 
   def check_copy_if_changing_lastedited_by_user_id
-    if slnc_changed?(:lastedited_by_user_id) && self.lastedited_by_user_id != self.user_id && (slnc_changed_old_values[:lastedited_by_user_id].nil? || slnc_changed_old_values[:lastedited_by_user_id] == self.user_id)
-      self.lastowner_version = self.slnc_changed_old_values[:comment]
+    if (self.lastedited_by_user_id_changed? &&
+        self.lastedited_by_user_id != self.user_id &&
+        (self.lastedited_by_user_id_was.nil? ||
+          self.lastedited_by_user_id_was == self.user_id))
+      self.lastowner_version = self.comment_was
     elsif self.lastedited_by_user_id == self.user_id
       self.lastowner_version =  nil
     end
-
     true
   end
 

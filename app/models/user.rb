@@ -176,8 +176,6 @@ class User < ActiveRecord::Base
   after_save :check_is_hq
   after_save :check_login_changed
   after_save :check_permissions
-  observe_attr :competition_roster, :login, :state, :is_hq, :faction_id,
-               :lastcommented_on, :avatar_id, :photo, :homepage
 
   before_create :generate_validkey
   after_create :change_avatar
@@ -381,7 +379,7 @@ class User < ActiveRecord::Base
   end
 
   def check_if_website
-    return true unless self.slnc_changed?(:homepage)
+    return true unless self.homepage_changed?
 
     if self.homepage.to_s != '' && !(Cms::URL_REGEXP_FULL =~ self.homepage)
       self.homepage  = "http://#{self.homepage}"
@@ -442,14 +440,17 @@ class User < ActiveRecord::Base
     [self.users_roles.find_by_role('Boss'),
     self.users_roles.find_by_role('Underboss')].compact.each do |ur|
       ur.destroy
-    end if slnc_changed?(:faction_id)
+    end if self.faction_id_changed?
 
-    self.users_roles.clear if slnc_changed?(:state) &&
-    STATES_CANNOT_LOGIN.include?(self.state)
+    if self.state_changed? && STATES_CANNOT_LOGIN.include?(self.state)
+      self.users_roles.clear
+    end
   end
 
   def check_login_changed
-    GmSys.job("Blogentry.reset_urls_of_user_id(#{self.id})") if slnc_changed?(:login)
+    if self.login_changed?
+      GmSys.job("Blogentry.reset_urls_of_user_id(#{self.id})")
+    end
     true
   end
 
@@ -571,7 +572,7 @@ class User < ActiveRecord::Base
   end
 
   def check_is_hq
-    return unless slnc_changed?(:is_hq)
+    return unless self.is_hq_changed?
 
     if self.is_hq?
       valid_username = self.login.bare
@@ -669,7 +670,7 @@ class User < ActiveRecord::Base
   end
 
   def update_competition_name
-    if self.slnc_changed?(:login)
+    if self.login_changed?
       for cp in CompetitionsParticipant.find(:all, :conditions => ['competition_id IN (select id from competitions WHERE state < 4 and competitions_participants_type_id = 1) and participant_id = ?', self.id])
         cp.name = self.login
         cp.save
@@ -678,7 +679,7 @@ class User < ActiveRecord::Base
   end
 
   def update_rosters
-    if self.slnc_changed?(:competition_roster)
+    if self.competition_roster_changed?
       for cp in CompetitionsParticipant.find(:all, :conditions => ['competition_id IN (select id from competitions WHERE state < 4 and competitions_participants_type_id = 1) and participant_id = ?', self.id])
         cp.roster = nil
         cp.save
@@ -1052,7 +1053,10 @@ class User < ActiveRecord::Base
   eos
 
   def check_lastcommented_on
-    if [ST_SHADOW, ST_ZOMBIE].include?(state) && slnc_changed?(:lastcommented_on) && self.lastcommented_on && self.lastcommented_on > 3.months.ago
+    if ([ST_SHADOW, ST_ZOMBIE].include?(state) &&
+        self.lastcommented_on_changed? &&
+        self.lastcommented_on &&
+        self.lastcommented_on > 3.months.ago)
       self.state = ST_ACTIVE
     end
   end

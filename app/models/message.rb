@@ -23,8 +23,6 @@ class Message < ActiveRecord::Base
 
   after_save :update_recipient_unread
   after_destroy :update_recipient_unread
-  observe_attr :is_read
-  observe_attr :receiver_deleted
 
   plain_text :title
   before_save :sanitize_message
@@ -81,7 +79,8 @@ class Message < ActiveRecord::Base
 
   private
   def update_recipient_unread
-    if self.frozen? || (!self.is_read?) || self.slnc_changed?(:is_read) || self.slnc_changed?(:receiver_deleted)
+    if (self.frozen? || !self.is_read? || self.is_read_changed?
+        self.receiver_deleted_changed?)
       Message.update_unread_count(self.recipient)
     end
   end

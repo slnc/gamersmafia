@@ -7,7 +7,6 @@ class Skin < ActiveRecord::Base
   file_column :file
   file_column :intelliskin_header
   file_column :intelliskin_favicon
-  observe_attr :file
 
   before_save :update_version_if_file_changed
   after_save :check_file_changed
@@ -194,13 +193,14 @@ class Skin < ActiveRecord::Base
   end
 
   def update_version_if_file_changed
-    self.version += 1 if slnc_changed?(:file)
+    self.version += 1 if self.file_changed?
   end
 
   def check_file_changed
     # Si ha cambiado el archivo de la skin desempaquetamos
-    # TODO comprobar que la estructura es correcta, no haya symlinks, que el hid es válido, etc
-    unzip_package if slnc_changed?(:file)
+    # TODO comprobar que la estructura es correcta, no haya symlinks, que el hid
+    # es válido, etc
+    unzip_package if self.file_changed?
   end
 
   def unzip_package

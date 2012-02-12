@@ -1,9 +1,9 @@
 require 'test/unit'
 module Test::Unit::Assertions
-  def fixture_file_upload(path, mime_type = nil, binary = false)
-    fixture_path = ActionController::TestCase.send(:fixture_path) if ActionController::TestCase.respond_to?(:fixture_path)
-    ActionController::TestUploadedFile.new("#{fixture_path}#{path}", mime_type, binary)
-  end
+  #def fixture_file_upload(path, mime_type = nil, binary = false)
+  #  fixture_path = ActionController::TestCase.send(:fixture_path) if ActionController::TestCase.respond_to?(:fixture_path)
+  #  Rack::Test::UploadedFile.new("#{fixture_path}#{path}", mime_type, binary)
+  #end
 
   def overload_rake_for_tests
     load File.dirname(__FILE__) + '/overload_rake_for_tests.rb'
