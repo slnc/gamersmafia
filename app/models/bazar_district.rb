@@ -6,6 +6,7 @@ class BazarDistrict < ActiveRecord::Base
   ROLE_MANO_DERECHA = 'ManoDerecha'
   after_save :check_if_icon_updated
   after_save :rename_everything_if_name_or_code_changed
+  after_create :create_portal_and_terms
 
   file_column :icon
   file_column :building_top
@@ -150,7 +151,7 @@ class BazarDistrict < ActiveRecord::Base
   end
 
   protected
-  def after_create
+  def create_portal_and_terms
     root_term = Term.single_toplevel(:slug => self.code)
     root_term = Term.create(:bazar_district_id => self.id, :name => self.name, :slug => self.code) unless root_term
 

@@ -9,6 +9,7 @@ class Avatar < ActiveRecord::Base
   before_destroy :set_users_avatar_to_nil
 
   after_create :create_slog_entry
+  after_save :update_image
 
   validates_presence_of :name
   def destroy(returning=false)
@@ -26,7 +27,7 @@ class Avatar < ActiveRecord::Base
     super()
   end
 
-  def after_save
+  def update_image
     if self.path_changed? && self.path then
       f = "#{Rails.root}/public/#{self.path}"
 

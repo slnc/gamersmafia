@@ -7,25 +7,30 @@ class GmPortalTest < ActiveSupport::TestCase
   end
 
   test "should_respond_to_all_content_classes" do
-    p = GmPortal.new
-    Cms::contents_classes_symbols.each do |s|
-      assert_not_nil p.send(s)
+    portal = GmPortal.new
+    Cms::contents_classes_symbols.each do |class_symbol|
+      assert_not_nil portal.send(class_symbol)
     end
   end
 
   test "should return question from a game's subcategory" do
-    t = Term.single_toplevel(:slug => 'ut')
-    tquestion = t.children.create(:taxonomy => 'QuestionsCategory', :name => 'General')
+    term_ut = Term.single_toplevel(:slug => 'ut')
+    general_questions_category = term_ut.children.find(
+        :first,
+        :conditions => ["taxonomy = ? AND name = ?",
+                        "QuestionsCategory", "General"])
+    assert_not_nil general_questions_category
 
-    assert !tquestion.new_record?
-    q = Question.create(:user_id => 1, :title => 'holaaaaa')
-    assert !q.new_record?
-    Cms.publish_content(q, User.find(1))
-    q.reload
-    
-    assert_equal Cms::PUBLISHED, q.state
-    assert_nil GmPortal.new.question.find(:first, :conditions => ['questions.id = ?', q.id])
-    tquestion.link(q.unique_content)
-    assert_not_nil GmPortal.new.question.find(:first, :conditions => ['questions.id = ?', q.id])
+    question = Question.create(:user_id => 1, :title => 'holaaaaa')
+    assert !question.new_record?
+    Cms.publish_content(question, User.find(1))
+    question.reload
+
+    assert_equal Cms::PUBLISHED, question.state
+    assert_nil GmPortal.new.question.find(
+        :first, :conditions => ['questions.id = ?', question.id])
+    general_questions_category.link(question.unique_content)
+    assert_not_nil GmPortal.new.question.find(
+        :first, :conditions => ['questions.id = ?', question.id])
   end
 end
