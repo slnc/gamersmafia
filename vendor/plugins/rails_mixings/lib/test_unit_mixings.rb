@@ -26,9 +26,11 @@ module Test::Unit::Assertions
   def assert_email_with_text(some_text)
     found = false
     ActionMailer::Base.deliveries.each do |eml|
-      if eml.body.index(some_text)
+      if eml.encoded.index(some_text)
         found = true
         break
+      else
+        Rails.logger.debug("#{some_text} not found in #{eml.encoded}")
       end
     end
     assert found

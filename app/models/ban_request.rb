@@ -34,8 +34,8 @@ class BanRequest < ActiveRecord::Base
       self.confirmed_on = Time.now
       self.save
       self.banned_user.change_internal_state('banned')
-      Notification.yourebanned(self.banned_user,
-                               {:reason => self.reason}).deliver
+      Notification.yourebanned(
+        self.banned_user, {:reason => self.reason}).deliver
     end
     true
   end

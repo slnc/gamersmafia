@@ -15,7 +15,6 @@ class Notification < ActionMailer::Base
   end
 
   def yourebanned(user, vars)
-    vars = {}
     vars.merge!({
         :actions => [],
         :title => "Tu cuenta ha sido baneada"})
