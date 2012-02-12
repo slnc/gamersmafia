@@ -220,7 +220,7 @@ class Skin < ActiveRecord::Base
 
       build_skin
     else
-      Rails.logging.error "Skin.unzip_package: #{da_fail} doesnt exist"
+      Rails.logger.error "Skin.unzip_package: #{da_fail} doesnt exist"
     end
     true
   end

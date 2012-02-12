@@ -1041,7 +1041,7 @@ skin: 'v2'
     END
 
     if opts[:pager]
-      Rails.logging.warn "Paginación temporalmente deshabilitada."
+      Rails.logger.warn "Paginación temporalmente deshabilitada."
       out<< controller.send(
           :render_to_string,
           :partial => 'shared/pager',

@@ -293,7 +293,7 @@ class Term < ActiveRecord::Base
     return true unless self.contents.find(:first, :conditions => ['contents.id = ?', content.id]).nil? # dupcheck
 
     if Cms::CATEGORIES_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy.nil?
-      # Rails.logging.error "imposible enlazar categories_terms_content con un root_term, enlazando con un hijo"
+      # Rails.logger.error "imposible enlazar categories_terms_content con un root_term, enlazando con un hijo"
       return false if normal_op
       taxo = "#{ActiveSupport::Inflector::pluralize(content.content_type.name)}Category"
       t = self.children.find(:first, :conditions => "taxonomy = '#{taxo}'")
@@ -301,7 +301,7 @@ class Term < ActiveRecord::Base
       t.link(content, normal_op)
       #return false
     elsif Cms::ROOT_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy && self.taxonomy.index('Category')
-      Rails.logging.warning "error: imposible enlazar root_terms_content con un category_term, enlazando con root"
+      Rails.logger.warning "error: imposible enlazar root_terms_content con un category_term, enlazando con root"
       return false if normal_op
       self.root.link(content, normal_op)
       #return false
