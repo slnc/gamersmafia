@@ -359,8 +359,14 @@ class Notification < ActionMailer::Base
     raise Exception unless vars.kind_of? Hash
     vars = {
         :available_actions => [],
-        :base_url => "http://#{App.domain}"
+        :base_url => "http://#{App.domain}",
     }.merge(vars)
+
+    if recipients.kind_of?(Array)
+      vars[:recipient] = recipients[0]
+    else
+      vars[:recipient] = recipients
+    end
 
     if vars[:sender] && vars[:sender].class.name != 'User'
       raise "Sender is #{vars[:sender].class.name} but can only be User"
@@ -386,6 +392,9 @@ class Notification < ActionMailer::Base
   end
 
   def populate_email_vars(vars, recipients)
+    vars.each do |k, v|
+      instance_variable_set("@#{k}", v)
+    end
     # Order is important
     @subject = "[gm] #{vars[:title].to_s}"
     @body = vars
@@ -395,6 +404,7 @@ class Notification < ActionMailer::Base
 
     email_username = App.system_mail_user.split('@')[0]
     @from = "#{vars[:sender].login} <#{email_username}@gamersmafia.com>"
+    @sender = vars[:sender]
     @return_path ="#{email_username}-#{@message_key}@gamersmafia.com"
     self.headers({'gmmid' => @message_key, 'Return-Path' => @return_path})
     @sent_on = Time.now
