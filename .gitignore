@@ -8,3 +8,4 @@ public/skins/_core/css/games_sprites.css
 public/storage
 script/feedvalidator2/
 tmp/
+*.swp
