@@ -16,8 +16,6 @@ class Friendship < ActiveRecord::Base
   after_destroy :check_friendship_requests_flags
   after_destroy :mark_pending_friends_recommendations
 
-  observe_attr :accepted_on
-
   def mark_pending_friends_recommendations
     FriendsRecommendation.users_are_now_not_friends(self.receiver, self.sender) if self.sender.respond_to?(:friends_recommendations)
   end

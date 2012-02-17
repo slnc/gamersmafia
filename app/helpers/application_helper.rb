@@ -79,6 +79,17 @@ module ApplicationHelper
     end
   end
 
+
+  def error_messages_for(obj)
+    return "" unless obj.errors.any?
+    out = ""
+    out << "<ul>"
+    obj.errors.full_messages.each do |msg|
+      out << "<li>#{msg}</li>"
+    end
+    out << "</ul>"
+  end
+
   def can_del_quicklink?
     if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(controller.portal.class.name)
       qlinks = Personalization.quicklinks_for_user(@user)

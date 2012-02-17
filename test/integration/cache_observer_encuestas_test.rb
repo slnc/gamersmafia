@@ -20,7 +20,7 @@ class CacheObserverEncuestasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_unpublishing_poll" do
-    n = portal.poll.find(:published)[0]
+    n = portal.poll.published.find(:all)[0]
     assert_not_nil n
     go_to '/encuestas', 'encuestas/index'
     assert_cache_exists "#{portal.code}/encuestas/index/page_"
@@ -29,7 +29,7 @@ class CacheObserverEncuestasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_updating_poll" do
-    n = portal.poll.find(:published)[0]
+    n = portal.poll.published.find(:all)[0]
     assert_not_nil n
     go_to '/encuestas', 'encuestas/index'
     assert_cache_exists "#{portal.code}/encuestas/index/page_"
@@ -38,7 +38,7 @@ class CacheObserverEncuestasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_most_votes_on_main_after_voting" do
-    n = portal.poll.find(:published)[0]
+    n = portal.poll.published.find(:all)[0]
     assert_not_nil n
     go_to '/encuestas', 'encuestas/index'
     assert_cache_exists "#{portal.code}/encuestas/index/most_votes"

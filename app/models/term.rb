@@ -554,12 +554,6 @@ class Term < ActiveRecord::Base
         TermContentProxy.new(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id.to_s)), self)
       else
         raise "No se que hacer con metodo #{method_id}"
-        #args = _add_cats_ids_cond(*args)
-        #begin
-        #  self.class.items_class.send(method_id, *args)
-        #rescue ArgumentError
-        #  self.class.items_class.send(method_id)
-        #end
       end
     end
   end

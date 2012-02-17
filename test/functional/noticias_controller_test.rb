@@ -75,7 +75,7 @@ class NoticiasControllerTest < ActionController::TestCase
     setup_clan_skin
     cp = ClansPortal.find(:first)
     @request.host = "#{cp.code}.#{App.domain}"
-    get :show, :id => News.find(:published, :conditions => "news_category_id IN (SELECT id FROM news_categories WHERE clan_id = #{cp.clan.id} AND id = root_id)", :limit => 1)[0].id
+    get :show, :id => News.published.find(:all, :conditions => "news_category_id IN (SELECT id FROM news_categories WHERE clan_id = #{cp.clan.id} AND id = root_id)", :limit => 1)[0].id
     assert @controller.portal.kind_of?(ClansPortal), @controller.portal.class.name
     assert_response :success
   end

@@ -19,7 +19,7 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_unpublishing_interview" do
-    n = portal.interview.find(:published)[0]
+    n = portal.interview.published.find(:all)[0]
     assert_not_nil n
     go_to '/entrevistas', 'entrevistas/index'
     assert_cache_exists "#{portal.code}/entrevistas/index/page_"
@@ -28,7 +28,7 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_updating_interview" do
-    n = portal.interview.find(:published)[0]
+    n = portal.interview.published.find(:all)[0]
     assert_not_nil n
     go_to '/entrevistas', 'entrevistas/index'
     assert_cache_exists "#{portal.code}/entrevistas/index/page_"
@@ -37,7 +37,7 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_others_by_author_on_main_after_publishing_a_new_interview" do
-    n = portal.interview.find(:published)[0]
+    n = portal.interview.published.find(:all)[0]
     assert_not_nil n
     go_to "/entrevistas/show/#{n.id}", 'entrevistas/show'
     assert_cache_exists "#{portal.code}/entrevistas/show/latest_by_author_#{n.user_id}"
@@ -66,7 +66,7 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
   test "should_clear_cache_on_portal_after_rating_faction interview 2" do
     faction_host FactionsPortal.find_by_code('ut')
     # TODO hack temporal
-    Interview.find(:published).each do |c|
+    Interview.published.find(:all).each do |c|
       uniq = c.unique_content
       uniq.url = uniq.url.gsub("http://#{App.domain}", "http://ut.#{App.domain}")
       uniq.save

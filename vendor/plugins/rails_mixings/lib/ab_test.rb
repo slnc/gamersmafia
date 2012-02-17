@@ -5,7 +5,6 @@ class AbTest < ActiveRecord::Base
   validates_presence_of :treatments
 
   before_save :clear_cache_if_changed_parameters
-  observe_attr :min_difference, :treatments, :metrics, :completed_on
 
   def running_time
     if self.completed_on then

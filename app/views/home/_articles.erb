@@ -2,12 +2,12 @@
     <div class="homebox articles">
         <div id="home-articles" class="subheader first"><div><span>Artículos</span></div></div>
         <ul class="content-hid2">
-<% 
+<%
 articles = []
-articles += controller.portal.interview.find(:published, :content_type => 'Interview', :limit => 8, :order => 'created_on DESC') if controller.portal.interview
-articles += controller.portal.column.find(:published, :content_type => 'Column', :limit => 8, :order => 'created_on DESC') if  controller.portal.column
-articles += controller.portal.tutorial.find(:published, :content_type => 'Tutorial', :limit => 8, :order => 'created_on DESC') if controller.portal.tutorial
-articles += controller.portal.review.find(:published, :content_type => 'Review', :limit => 8, :order => 'created_on DESC') if controller.portal.review
+articles += controller.portal.interview.published.find(:all, :content_type => 'Interview', :limit => 8, :order => 'created_on DESC') if controller.portal.interview
+articles += controller.portal.column.published.find(:all, :content_type => 'Column', :limit => 8, :order => 'created_on DESC') if  controller.portal.column
+articles += controller.portal.tutorial.published.find(:all, :content_type => 'Tutorial', :limit => 8, :order => 'created_on DESC') if controller.portal.tutorial
+articles += controller.portal.review.published.find(:all, :content_type => 'Review', :limit => 8, :order => 'created_on DESC') if controller.portal.review
 
 ordered = {}
 for a in articles
@@ -27,7 +27,7 @@ namess = {'Interview' => 'entrevistas', 'Column' => 'columnas', 'Tutorial' => 't
 i = 0
 while i < 8 and i < articles.length do
   article = articles[i][1]
-  shown_articles << article.unique_content.id 
+  shown_articles << article.unique_content.id
 %>
     <li class="content<%=article.unique_content.id%> new <%=oddclass%>">
     <%=content_category(article.main_category)%>

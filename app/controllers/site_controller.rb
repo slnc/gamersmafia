@@ -136,11 +136,8 @@ class SiteController < ApplicationController
   end
 
   def update_chatlines
-    if cookies.keys.include?('chatpref') and cookies['chatpref'].to_s == 'big' then
-      render :layout => false, :action => 'update_chatlines_big'
-    else
-      render :layout => false, :action => 'update_chatlines_mini'
-    end
+    mode = (cookies[:chatpref] == 'big') ? 'big' : 'mini'
+    render :layout => false, :action => "update_chatlines_#{mode}"
   end
 
   def new_chatline

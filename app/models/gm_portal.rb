@@ -87,7 +87,11 @@ end
 
 class GmPortalPollProxy
   def self.current
-    Term.single_toplevel(:slug => 'gm').poll.find(:published, :conditions => Poll::CURRENT_SQL, :order => 'polls.created_on DESC', :limit => 1)
+    Term.single_toplevel(:slug => 'gm').poll.published.find(
+        :all,
+        :conditions => Poll::CURRENT_SQL,
+        :order => 'polls.created_on DESC',
+        :limit => 1)
   end
 
   def self.method_missing(method_id, *args)

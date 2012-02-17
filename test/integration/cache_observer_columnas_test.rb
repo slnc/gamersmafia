@@ -20,7 +20,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
   test "should_clear_most_popular_authors_cache_on_main_after_changing_column_authorship" do
     go_to '/columnas', 'columnas/index'
     assert_cache_exists "gm/columnas/index/most_popular_authors_#{Time.now.to_i/(86400)}"
-    n = Column.find(:published)[0]
+    n = Column.published.find(:all)[0]
     assert_not_nil n
     n.change_authorship(User.find(2), User.find(1))
     assert_equal 2, n.user_id
@@ -28,7 +28,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_unpublishing_column" do
-    n = Column.find(:published)[0]
+    n = Column.published.find(:all)[0]
     assert_not_nil n
     go_to '/columnas', 'columnas/index'
     assert_cache_exists "#{portal.code}/columnas/index/page_"
@@ -37,7 +37,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_updating_column" do
-    n = Column.find(:published)[0]
+    n = Column.published.find(:all)[0]
     assert_not_nil n
     go_to '/columnas', 'columnas/index'
     assert_cache_exists "#{portal.code}/columnas/index/page_"
@@ -48,7 +48,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
   test "should_clear_cache_others_by_author_on_main_after_publishing_a_new_column" do
     pp = Portal.find_by_code('ut')
     faction_host pp
-    n = pp.column.find(:published)[0]
+    n = pp.column.published.find(:all)[0]
     assert_not_nil n
     go_to Routing.gmurl(n), 'columnas/show'
     assert_cache_exists "#{pp.code}/columnas/show/latest_by_author_#{n.user_id}"
@@ -77,7 +77,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
   test "should_clear_cache_on_portal_after_rating_columnfaction 2" do
     faction_host FactionsPortal.find_by_code('ut')
     # TODO hack temporal hasta que las referencias desde inet se hayan reducido
-    Column.find(:published).each do |c|
+    Column.published.find(:all).each do |c|
       uniq = c.unique_content
       uniq.url = uniq.url.gsub("http://#{App.domain}", "http://ut.#{App.domain}")
       uniq.save

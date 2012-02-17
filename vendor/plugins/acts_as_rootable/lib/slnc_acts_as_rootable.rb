@@ -7,8 +7,6 @@ module SlncActsAsRootable
 
   module AddActsAsMethod
     def acts_as_rootable
-      observe_attr :parent_id
-      observe_attr :root_id
       before_save :check_parent_id
       after_create :check_parent_id_on_create
 

@@ -15,7 +15,9 @@ for chatline in Chatline.latest %>
         :class => 'action')%>
     <% end -%></li>
   <% if chatline.created_on.to_i > params[:time].to_i then %>
-  <script type="text/javascript"><%=visual_effect(:highlight, "chatline#{chatline.id}", :duration => 0.5)%></script>
+  <script type="text/javascript">
+    $j("chatline<%=chatline.id%>").effect("highlight", {}, 500);
+  </script>
 <%  end %>
 <% end -%>
 </ul>

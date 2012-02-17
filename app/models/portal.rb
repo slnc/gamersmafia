@@ -9,25 +9,25 @@ class Portal < ActiveRecord::Base
   belongs_to :skin
   file_column :small_header
   after_save :update_global_vars
-  
+
   scope :factions, :conditions => ['type = \'FactionsPortal\'']
-  
+
   before_save :check_code
-  
+
   def update_global_vars
     User.db_query("UPDATE global_vars SET portals_updated_on = now()")
   end
-  
+
   def skin
     self.skin_id ? Skin.find(self.skin_id) : Skin.find_by_hid('default')
   end
-  
+
   def self.find_by_competitions_match(cm)
     # Buscamos los portales que estén asociados a la facción del juego de la competición de cm
     f = Faction.find_by_code("#{cm.competition.game.code}")
     Portal.find(:all, :conditions => "id IN (SELECT portal_id FROM factions_portals WHERE faction_id = #{f.id})")
   end
-  
+
   def self.find_by_id(id)
     id = id.to_i if id.kind_of?(String)
     if id == -1
@@ -40,23 +40,23 @@ class Portal < ActiveRecord::Base
       Portal.find(:first, :conditions => ['id = ?', id])
     end
   end
-  
+
   def self.find_by_root_term(term)
-    
+
   end
-  
+
   def latest_articles(limit=8)
     articles = []
-    articles += self.interview.find(:published, :limit => limit, :order => 'created_on DESC') if self.interview
-    articles += self.column.find(:published, :limit => limit, :order => 'created_on DESC') if  self.column
-    articles += self.tutorial.find(:published, :limit => limit, :order => 'created_on DESC') if self.tutorial
-    articles += self.review.find(:published, :limit => limit, :order => 'created_on DESC') if self.review
-    
+    articles += self.interview.published.find(:all, :limit => limit, :order => 'created_on DESC') if self.interview
+    articles += self.column.published.find(:all, :limit => limit, :order => 'created_on DESC') if  self.column
+    articles += self.tutorial.published.find(:all, :limit => limit, :order => 'created_on DESC') if self.tutorial
+    articles += self.review.published.find(:all, :limit => limit, :order => 'created_on DESC') if self.review
+
     ordered = {}
     for a in articles
       ordered[a.created_on.to_i] = a
     end
-    
+
     articles = ordered.sort.reverse
     afinal = []
     i = 0
@@ -66,7 +66,7 @@ class Portal < ActiveRecord::Base
     end
     afinal
   end
-  
+
   private
   def check_code
     !UNALLOWED_CODES.include?(self.code)

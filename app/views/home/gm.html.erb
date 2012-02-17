@@ -5,7 +5,7 @@
     <div class="homebox" id="hmnt">
         <div id="home-news" class="subheader first"><div><span>Noticias</span></div></div>
         <ul class="content-hid2">
-          <% @last_news = News.find(:published, :conditions => 'clan_id IS NULL and title not LIKE \'Gamersmafia actualizada a%\'', :limit => 60, :order => 'created_on DESC')
+          <% @last_news = News.published.find(:all, :conditions => 'clan_id IS NULL and title not LIKE \'Gamersmafia actualizada a%\'', :limit => 60, :order => 'created_on DESC')
 %>
 <%# @last_news = @portal.news_find(:all, :state => :published, :limit => 15) %>
 <%
@@ -39,7 +39,7 @@ end
         <div id="home-downloads" class="subheader first"><div><span>Descargas</span></div></div>
         <ul class="content-hid2">
 <%
-@last_downloads = controller.portal.download.find(:published, :limit => 10, :order => 'created_on DESC')
+@last_downloads = controller.portal.download.published.find(:all, :limit => 10, :order => 'created_on DESC')
 shown_downloads = []
 for download in @last_downloads
     shown_downloads << download.unique_content.id
@@ -100,7 +100,7 @@ for topic in @last_topics
 <%
 
 if p then
-    @cur_polls = p.polls.find(:published, :conditions => Poll::CURRENT_SQL, :order => 'created_on DESC')
+    @cur_polls = p.polls.published.find(:all, :conditions => Poll::CURRENT_SQL, :order => 'created_on DESC')
 else
 @cur_polls = []
 end
@@ -204,7 +204,7 @@ end
 	<% cache("/#{controller.portal_code}/home/index/apuestas_#{Time.now.to_i / 3600}") do %>
 <table>
       <% shown_bets = []
-      controller.portal.bet.find(:published, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC').each do |o|
+      controller.portal.bet.published.find(:all, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC').each do |o|
 shown_bets<< o.unique_content.id %>
         <tr class="<%=oddclass%> new content<%=o.unique_content.id%>">
 <td><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
@@ -239,7 +239,7 @@ shown_bets<< o.unique_content.id %>
         <ul class="content-hid2">
 
 <%
-@last_demos = controller.portal.demo.find(:published, :limit => 5, :order => 'created_on DESC')
+@last_demos = controller.portal.demo.published.find(:all, :limit => 5, :order => 'created_on DESC')
 shown_demos = []
 for demo in @last_demos
     shown_demos << demo.unique_content.id

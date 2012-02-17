@@ -1,7 +1,7 @@
 <%mftext('Mejor valoradas') do %>
 <ul class="content-hid">
 <% cache("/common/#{controller.controller_name.downcase}/index/best_rated#{Time.now.strftime('%Y%m%d')}") do %>
-<% cls.find(:published, :conditions => "cache_rated_times > 2", :order => 'coalesce(cache_weighted_rank, 0) DESC, (hits_anonymous + hits_registered) DESC', :limit => 10).each do |c| %>
+<% cls.published.find(:all, :conditions => "cache_rated_times > 2", :order => 'coalesce(cache_weighted_rank, 0) DESC, (hits_anonymous + hits_registered) DESC', :limit => 10).each do |c| %>
   <li class="<%=oddclass%>"><%=url_for_content(c, c.resolve_hid)%><br /><%=draw_rating(c.rating)%></li>
   <% end -%>
 <% end -%>

@@ -100,7 +100,7 @@ module ActsAsContent
         opts = {:limit => 5}.merge(opts)
         q_add = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
 
-        self.find(:published, :conditions => "cache_rated_times > 1#{q_add}", :order => 'coalesce(cache_weighted_rank, 0) DESC, (hits_anonymous + hits_registered) DESC', :limit => opts[:limit])
+        self.published.find(:all, :conditions => "cache_rated_times > 1#{q_add}", :order => 'coalesce(cache_weighted_rank, 0) DESC, (hits_anonymous + hits_registered) DESC', :limit => opts[:limit])
       end
 
       def pending
@@ -116,7 +116,7 @@ module ActsAsContent
         :order => 'created_on DESC')
       end
 
-      # Soporte para find(:published) find(:drafts) find(:deleted), etc
+      # Soporte para published.find(:all) find(:drafts) find(:deleted), etc
       def find(*args)
         t_name = ActiveSupport::Inflector::tableize(table_name)
         agfirst = args.first
