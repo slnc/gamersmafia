@@ -41,10 +41,10 @@ class BazarPortal
 
   def latest_articles
     articles = []
-    articles += self.interview.published.find(:all, :limit => 8, :order => 'created_on DESC') if self.interview
-    articles += self.column.published.find(:all, :limit => 8, :order => 'created_on DESC') if  self.column
-    articles += self.tutorial.published.find(:all, :limit => 8, :order => 'created_on DESC') if self.tutorial
-    articles += self.review.published.find(:all, :limit => 8, :order => 'created_on DESC') if self.review
+    articles += Inteview.in_portal(self).published.find(:all, :limit => 8, :order => 'created_on DESC') if self.interview
+    articles += Column.in_portal(self).published.find(:all, :limit => 8, :order => 'created_on DESC') if  self.column
+    articles += Tutorial.in_portal(self).published.find(:all, :limit => 8, :order => 'created_on DESC') if self.tutorial
+    articles += Review.in_portal(self).published.find(:all, :limit => 8, :order => 'created_on DESC') if self.review
 
     ordered = {}
     for a in articles

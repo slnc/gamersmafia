@@ -1,4 +1,4 @@
-<%= error_messages_for 'message' %>
+<%= error_messages_for @message %>
 <script type="text/javascript">
 function set_recipients_dropdown(v) {
 	$j('#dest-user').hide();
@@ -14,7 +14,7 @@ function set_recipients_dropdown(v) {
 }
 </script>
 <!--[form:message]-->
-<p><label for="message_title">Destinatario</label> 
+<p><label for="message_title">Destinatario</label>
 <select id="message_message_type" onchange="set_recipients_dropdown(this.value);" name="message[message_type]">
 	<option value="<%=Message::R_USER%>">Usuario</option>
 	<option value="<%=Message::R_CLAN%>">Mi clan</option>

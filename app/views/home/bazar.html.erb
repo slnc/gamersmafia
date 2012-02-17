@@ -17,7 +17,7 @@ end
 
 	<%cache("/common/noticias/_latest_by_cat2_#{cat.code}") do %>
 	<%=mfcontents_basic("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.domain}/noticias\">Noticias</a>",
-					Proc.new { cat.news.published.find(:all, :order => 'created_on desc', :limit => 5) },
+					Proc.new { News.in_term(cat).published.find(:all, :order => 'created_on desc', :limit => 5) },
 					[],
 					:faction_favicon => true, :blast => true)%>
 	<% end %><%# cache -%>
@@ -25,7 +25,7 @@ end
 
 	<% cache("/common/topics/_latest_by_cat2#{cat.code}") do %>
 	<%=mfcontents_basic("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.domain}/foros\">Tópics activos</a>",
-					Proc.new { cat.topic.published.find(:all, :conditions => 'topics.closed is false', :order => 'updated_on desc', :limit => 5) },
+					Proc.new { Topic.in_term(cat).published.find(:all, :conditions => 'topics.closed is false', :order => 'updated_on desc', :limit => 5) },
 					[],
 					:faction_favicon => true, :blast => true)%>
 	<% end %><%# cache -%>
@@ -33,7 +33,8 @@ end
 	<%
 	if cat.image then
 	cache("/common/home/index/imagenes_#{cat.code}") do
-	mflist("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.domain}/imagenes\">Imágenes</a>", Proc.new { cat.image.published.find(:all, :order => 'created_on desc', :limit => 4) }, :class_container => 'mflist-row-images', :blast => true) do |im| %>
+	mflist("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.domain}/imagenes\">Imágenes</a>",
+      Proc.new { Image.in_term(cat).published.find(:all, :order => 'created_on desc', :limit => 4) }, :class_container => 'mflist-row-images', :blast => true) do |im| %>
 		<%=link_to fc_thumbnail(im.file, 'i', Cms::IMG_SIZE_GRIDB1, false), gmurl(im)%>
 	<% end %>
 	<div class="clearl"></div>
@@ -46,7 +47,7 @@ end
 
 <% if cat.question then %>
 <% mfcontents_list("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.domain}/preguntas\">Preguntas</a>",
-				   Proc.new { cat.question.published.find(:all, :conditions => 'answered_on IS NULL AND contents.created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, contents.created_on DESC', :limit => 5)}
+				   Proc.new { Question.in_term(cat).published.find(:all, :conditions => 'answered_on IS NULL AND contents.created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, contents.created_on DESC', :limit => 5)}
 				   ) do |o| %>
 <a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a>
 <% end -%>
@@ -54,7 +55,7 @@ end
 
 	<% if cat.download then %>
 	<%=mfcontents_basic("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.domain}/noticias\">Descargas</a>",
-					Proc.new { cat.download.published.find(:all, :order => 'created_on DESC', :limit => 5) },
+					Proc.new { Download.in_term(cat).published.find(:all, :order => 'created_on DESC', :limit => 5) },
 					[],
 					:faction_favicon => true, :cache => "/common/home/index/downloads3#{cat.code}", :blast => true) %>
 	<% end -%>
@@ -62,7 +63,7 @@ end
 	<%
 if cat.bet then
 mfcontents_table("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.domain}/apuestas\">Apuestas</a>",
-				   Proc.new { cat.bet.published.find(:all, :conditions => "#{Bet::OPEN_BETS_SQL}") },
+				   Proc.new { Bet.in_term(cat).published.find(:all, :conditions => "#{Bet::OPEN_BETS_SQL}") },
 				   :grid => 4) do |o| %>
 <td class="<%=oddclass%>"><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline" style="float: left;"><%=format_interval(o.closes_on.to_i - Time.now.to_i, 'horas', true)%></div>

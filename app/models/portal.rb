@@ -47,10 +47,10 @@ class Portal < ActiveRecord::Base
 
   def latest_articles(limit=8)
     articles = []
-    articles += self.interview.published.find(:all, :limit => limit, :order => 'created_on DESC') if self.interview
-    articles += self.column.published.find(:all, :limit => limit, :order => 'created_on DESC') if  self.column
-    articles += self.tutorial.published.find(:all, :limit => limit, :order => 'created_on DESC') if self.tutorial
-    articles += self.review.published.find(:all, :limit => limit, :order => 'created_on DESC') if self.review
+    articles += Interview.in_portal(self).published.find(:all, :limit => limit, :order => 'created_on DESC') if self.interview
+    articles += Column.in_portal(self).published.find(:all, :limit => limit, :order => 'created_on DESC') if  self.column
+    articles += Tutorial.in_portal(self).published.find(:all, :limit => limit, :order => 'created_on DESC') if self.tutorial
+    articles += Review.in_portal(self).published.find(:all, :limit => limit, :order => 'created_on DESC') if self.review
 
     ordered = {}
     for a in articles

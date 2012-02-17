@@ -2,7 +2,7 @@
 <% cache ("/#{controller.portal_code}/encuestas/index/most_votes") do %>
 <%
 mfcontents_list('Más votadas',
-				   Proc.new { controller.portal.poll.published.find(:all, :order => 'polls_votes_count DESC', :limit => 5) }) do |o| %>
+				   Proc.new { Poll.in_portal(controller.portal).published.find(:all, :order => 'polls_votes_count DESC', :limit => 5) }) do |o| %>
 <a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline right"><%=o.votes%> votos</div>
 <% end %>
@@ -11,7 +11,7 @@ mfcontents_list('Más votadas',
 <% cache ("/#{controller.portal_code}/encuestas/index/most_commented/#{Time.now.strftime('%Y%m%d')}") do %>
 <%
 mfcontents_list('Más leídas',
-				   Proc.new { controller.portal.poll.published.find(:all, :order => 'hits_anonymous + hits_registered DESC', :limit => 5) }) do |o| %>
+				   Proc.new { Poll.in_portal(controller.portal).published.find(:all, :order => 'hits_anonymous + hits_registered DESC', :limit => 5) }) do |o| %>
 <a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline right"><%=(o.hits_anonymous + o.hits_registered)%></span> lecturas</div>
 <% end %>
@@ -20,7 +20,7 @@ mfcontents_list('Más leídas',
 <% cache ("/#{controller.portal_code}/encuestas/index/most_read/#{Time.now.strftime('%Y%m%d')}") do %>
 <%
 mfcontents_list('Más comentadas',
-				   Proc.new { controller.portal.poll.published.find(:all, :order => 'cache_comments_count DESC', :limit => 5) }) do |o| %>
+				   Proc.new { Poll.in_portal(controller.portal).published.find(:all, :order => 'cache_comments_count DESC', :limit => 5) }) do |o| %>
 <a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline right"><span class="comments-count"><a style="display: inline;" href="<%=gmurl(o)%>#comments"><%=o.cache_comments_count%></a></span></div>
 <% end %>

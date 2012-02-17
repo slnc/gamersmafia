@@ -48,7 +48,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
   test "should_clear_cache_others_by_author_on_main_after_publishing_a_new_column" do
     pp = Portal.find_by_code('ut')
     faction_host pp
-    n = pp.column.published.find(:all)[0]
+    n = Column.in_portal(pp).published.find(:all)[0]
     assert_not_nil n
     go_to Routing.gmurl(n), 'columnas/show'
     assert_cache_exists "#{pp.code}/columnas/show/latest_by_author_#{n.user_id}"

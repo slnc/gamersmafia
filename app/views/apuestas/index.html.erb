@@ -79,7 +79,7 @@ end
     <th class="right w100"><%=gmd11%> apostados</th>
     <th class="right timestamp" style="width: 150px;">Termina en</th>
   </tr>
-  <% controller.portal.bet.published.find(
+  <% Bet.in_portal(controller.portal).published.find(
       :all,
       :conditions => Bet::OPEN_BETS_SQL,
       :order => 'closes_on ASC, id ASC').each do |bet| %>
@@ -98,7 +98,7 @@ end
     <th>Apuesta</th>
     <th style="width: 125px;"><%=gmd11%> apostados</th>
   </tr>
-  <% controller.portal.bet.published.find(
+  <% Bet.in_portal(controller.portal).published.find(
       :all,
       :conditions => Bet::AWAITING_RESULT_SQL,
       :order => 'closes_on DESC, id DESC').each do |bet| %>

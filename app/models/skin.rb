@@ -88,7 +88,8 @@ class Skin < ActiveRecord::Base
   end
 
   def used_by_users_count
-    UsersPreference.count(:conditions => ['name = \'skin\' AND value::int4 = ?', self.id])
+    UsersPreference.count(
+        :conditions => ["name = 'skin' AND value::int4 = ?", self.id])
   end
 
 

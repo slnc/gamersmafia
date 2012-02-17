@@ -188,7 +188,7 @@ class User < ActiveRecord::Base
 
   scope :settled, :conditions => 'created_on <= now() - \'1 month\'::interval'
   scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})",
-                          :order => 'lower(login)'
+                    :order => 'lower(login)'
   scope :birthday_today, :conditions => "date_part('day', birthday)::text || date_part('month', birthday)::text = date_part('day', now())::text || date_part('month', now())::text"
   scope :humans, :conditions => 'is_bot is false'
 

@@ -9,7 +9,7 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
 
   # COMMON
   test "should_clear_cache_latest_by_cat_after_publishing_news" do
-    n = portal.news.published.find(:all)[0]
+    n = News.in_portal(portal).published.find(:all)[0]
     assert_not_nil n
     go_to "/noticias/show/#{n.id}", 'noticias/show'
     assert_cache_exists "/common/noticias/show/_latest_by_cat_#{n.main_category.id}"
@@ -19,7 +19,7 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
 
   # MAIN
   test "should_clear_cache_on_main_after_publishing_news" do
-    n = portal.news.find(:pending)[0]
+    n = News.in_portal(portal).find(:pending)[0]
     assert_not_nil n
     go_to '/noticias', 'noticias/index'
     assert_cache_exists "#{portal.code}/noticias/index/page_"
@@ -28,7 +28,7 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_unpublishing_news" do
-    n = portal.news.published.find(:all)[0]
+    n = News.in_portal(portal).published.find(:all)[0]
     assert_not_nil n
     go_to '/noticias', 'noticias/index'
     assert_cache_exists "#{portal.code}/noticias/index/page_"
@@ -37,7 +37,7 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_updating_news" do
-    n = portal.news.published.find(:all)[0]
+    n = News.in_portal(portal).published.find(:all)[0]
     assert_not_nil n
     go_to '/noticias', 'noticias/index'
     assert_cache_exists "#{portal.code}/noticias/index/page_"

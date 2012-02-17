@@ -39,7 +39,7 @@ end
         <div id="home-downloads" class="subheader first"><div><span>Descargas</span></div></div>
         <ul class="content-hid2">
 <%
-@last_downloads = controller.portal.download.published.find(:all, :limit => 10, :order => 'created_on DESC')
+@last_downloads = Download.in_portal(controller.portal).published.find(:all, :limit => 10, :order => 'created_on DESC')
 shown_downloads = []
 for download in @last_downloads
     shown_downloads << download.unique_content.id
@@ -204,7 +204,7 @@ end
 	<% cache("/#{controller.portal_code}/home/index/apuestas_#{Time.now.to_i / 3600}") do %>
 <table>
       <% shown_bets = []
-      controller.portal.bet.published.find(:all, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC').each do |o|
+      Bet.in_portal(controller.portal).published.find(:all, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC').each do |o|
 shown_bets<< o.unique_content.id %>
         <tr class="<%=oddclass%> new content<%=o.unique_content.id%>">
 <td><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
@@ -239,7 +239,7 @@ shown_bets<< o.unique_content.id %>
         <ul class="content-hid2">
 
 <%
-@last_demos = controller.portal.demo.published.find(:all, :limit => 5, :order => 'created_on DESC')
+@last_demos = Demo.in_portal(controller.portal).published.find(:all, :limit => 5, :order => 'created_on DESC')
 shown_demos = []
 for demo in @last_demos
     shown_demos << demo.unique_content.id

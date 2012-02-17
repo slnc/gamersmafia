@@ -18,7 +18,7 @@ function create_member_link(tag_id, login) {
 <% if @event.respond_to?(:coverages) then %>
 <% mftext('Noticias relacionadas') do %>
 <%# TODO cache this %>
-<%=generic_contents_list(@event.coverages.find(:published, :order => 'created_on DESC'))%>
+<%=generic_contents_list(@event.coverages.published.find(:all, :order => 'created_on DESC'))%>
 <% end -%>
 <% end -%>
 <br />

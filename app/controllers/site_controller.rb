@@ -130,9 +130,8 @@ class SiteController < ApplicationController
 
   def chat
     @title = "Chat Gamersmafia"
-    @online_users = User.can_login.online.find(:all,
-                                               :order => 'lastseen_on desc',
-                                               :limit => 100)
+    @online_users = User.can_login.online.find(
+      :all, :order => 'lastseen_on desc', :limit => 100)
   end
 
   def update_chatlines
@@ -175,7 +174,7 @@ class SiteController < ApplicationController
     @title = 'Usuarios Online'
     @clear_comment_line = true
 
-    if cookies:chatpref] == 'big'
+    if cookies[:chatpref] == 'big'
       @online_users = User.find(:all, :conditions => 'lastseen_on >= now() - \'30 minutes\'::interval', :order => 'lastseen_on desc', :limit => 100)
       render :layout => false, :action => 'update_chatlines_big'
     else

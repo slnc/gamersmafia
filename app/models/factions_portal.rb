@@ -168,7 +168,7 @@ class FactionsPortalPollProxy
         :first,
         :conditions => "id = root_id AND slug IN (#{@portal.toplevel_categories_codes.join(',')})",
         :order => 'UPPER(name) ASC')
-    t.poll.published.find(:all, :conditions => Poll::CURRENT_SQL, :order => 'created_on DESC', :limit => 1)
+    Poll.in_term(t).published.find(:all, :conditions => Poll::CURRENT_SQL, :order => 'created_on DESC', :limit => 1)
   end
 
   def respond_to?(method_id, include_priv = false)

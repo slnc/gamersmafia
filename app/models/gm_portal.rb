@@ -87,7 +87,8 @@ end
 
 class GmPortalPollProxy
   def self.current
-    Term.single_toplevel(:slug => 'gm').poll.published.find(
+    t = Term.single_toplevel(:slug => 'gm')
+    Poll.in_term(t).published.find(
         :all,
         :conditions => Poll::CURRENT_SQL,
         :order => 'polls.created_on DESC',
