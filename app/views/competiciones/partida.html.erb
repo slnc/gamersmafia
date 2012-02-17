@@ -92,8 +92,8 @@
           Ganador: <strong><%=@competitions_match.winner%></strong>
         </div>
   <%  end %>
-  <% 
-  
+  <%
+
         cm = @competitions_match
     c = cm.competition
     if cm.result == 1
@@ -102,7 +102,7 @@
       p1_class = (cm.result == 0) ? 'match-won' : 'match-lost'
       p2_class = (cm.result == 2) ? 'match-won' : 'match-lost'
     end
-  case @competition.scoring_mode 
+  case @competition.scoring_mode
         when 1: %>
         <%#~TODO duplicado en list.rhtml y otros sitios
     %>
@@ -132,8 +132,8 @@
   <% end %>
   <% end %><%# mftext -%>
 
-  <% if user_is_authed && @competitions_match.user_can_upload_attachment(@user) then 
-     existing_report = @competitions_match.competitions_matches_reports.find_by_user_id(@user.id) 
+  <% if user_is_authed && @competitions_match.user_can_upload_attachment(@user) then
+     existing_report = @competitions_match.competitions_matches_reports.find_by_user_id(@user.id)
   %>
   <% mftext('Informe de la partida') do %>
     <% if existing_report.nil? then %>
@@ -155,13 +155,13 @@
   </form>
   <% end -%>
   <% end -%>
-  
+
   <% if user_is_authed && @competition.user_is_admin(@user.id) && @competition.matches_can_be_reset? then %>
   <% mftext('Resetear resultado') do %>
   	<a href="/competiciones/reset_match/<%=@competitions_match.id%>" onclick="return confirm('¿Estás seguro de que quieres RESETEAR el resultado de la partida?');">Resetear resultado</a>
   <% end -%>
   <% end -%>
-  
+
 <% end -%>
 
 <% content_main do %>
@@ -171,8 +171,8 @@
   <% end -%>
   <% mftext('Mapas') do %>
   <div class="competitions-match-maps">
-  <% 
-  if @competitions_match.maps then 
+  <%
+  if @competitions_match.maps then
   @competitions_match.maps.times do |time|
   m = @competitions_match.competitions_matches_games_maps.find(:all, :order => 'id ASC', :limit => 1, :offset => time)
     if m then
@@ -197,7 +197,13 @@
       <td><a href="/competiciones/informe/<%=r.id%>">Informe de <%=r.user.login%></a></td>
       <td><a href="<%=gmurl(r.user)%>"><%=r.user.login%></a></td>
       <td class="timestamp infoinline"><%=print_tstamp(r.created_on)%></td>
-      <% if user_is_competition_admin then %><td><%=link_to_remote 'Borrar', :url => "/competiciones/borrar_upload/#{r.id}" %></td><% end -%>
+      <% if user_is_competition_admin then %>
+      <td>
+        <%=link_to('Borrar',
+                   :url => "/competiciones/borrar_upload/#{r.id}",
+                   :remote => true)%>
+      </td>
+      <% end -%>
     </tr>
   <% end -%>
   </table>
@@ -205,14 +211,18 @@
 
   <% mftext('Archivos') do %>
   <table>
-  <% for f in @competitions_match.competitions_matches_uploads.find(:all, :order => 'created_on DESC') %>
+  <%@competitions_match.competitions_matches_uploads.find(
+      :all, :order => 'created_on DESC').each do |f| %>
     <tr class="<%=oddclass%>" id="u<%=f.id%>">
       <td><a target="_blank" href="/<%=f.file%>"><%=f.file ? File.basename(f.file) : ''%></a></td>
       <td><%=notags(f.description)%></td>
       <td class="infoinline"><%=(f.file && File.exists?("#{Rails.root}/public/#{f.file}")) ? number_to_human_size(File.size("#{Rails.root}/public/#{f.file}")) : ''%></a></td>
       <td><a href="<%=gmurl(f.user)%>"><%=f.user.login%></a></td>
       <td class="timestamp infoinline"><%=print_tstamp(f.created_on)%></td>
-      <% if user_is_competition_admin then %><td><%=link_to_remote 'Borrar', :url => "/competiciones/borrar_upload/#{f.id}" %></td><% end -%>
+      <% if user_is_competition_admin then %>
+      <td><%=link_to('Borrar', :url => "/competiciones/borrar_upload/#{f.id}")%>
+      </td>
+      <% end -%>
     </tr>
   <% end -%>
   </table>

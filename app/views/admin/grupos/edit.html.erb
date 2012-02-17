@@ -15,7 +15,12 @@ Usuario: <input type="text" name="login" /><br />
 <%@group.members.each do |gm| %>
 	<tr class="<%=oddclass%>" id="gm<%=gm.id%>">
 		<td><%=user_link(gm)%></td>
-		<td><%=link_to_remote 'Borrar', :url => "/admin/grupos/remove_user_from_group/#{@group.id}?user_id=#{gm.id}", :complete => "$j('#gm#{gm.id}').fadeOut('normal');"%></td>
+		<td>
+      <%=link_to(
+          'Borrar',
+          :url => "/admin/grupos/remove_user_from_group/#{@group.id}?user_id=#{gm.id}",
+          :complete => "$j('#gm#{gm.id}').fadeOut('normal');",
+          :remote => true)%></td>
 	</tr>
 <% end -%>
 </table>

@@ -44,7 +44,15 @@ root_slugs<< this_root
 <div id="my-content-tags">
 <%object.users_contents_tags.find(:all, :conditions => ['user_id = ?', @user.id], :order => 'lower(original_name)').each do |uct| %>
 	<div class="tag one-of-my-tags" id="one-of-my-tags<%=uct.id%>">
-	<div style="display: none;" class="one-of-my-tags-ops" id="one-of-my-tags-ops<%=uct.id%>"><%=link_to_remote('<img src="/dot.gif" title="Eliminar tag" class="floatl user-tag-icon-del ico16 sprite1" />', :url => "/admin/contenidos/remove_user_tag/?id=#{uct.id}", :update => 'content-tags', :complete => "$j('#one-of-my-tags#{uct.id}').fadeOut('normal');")%></div>
+	<div style="display: none;" class="one-of-my-tags-ops" id="one-of-my-tags-ops<%=uct.id%>">
+    <%=link_to(
+        '<img src="/dot.gif" title="Eliminar tag" class="floatl' +
+        ' user-tag-icon-del ico16 sprite1" />',
+        :url => "/admin/contenidos/remove_user_tag/?id=#{uct.id}",
+        :update => 'content-tags',
+        :complete => "$j('#one-of-my-tags#{uct.id}').fadeOut('normal');",
+        :remote => true)%>
+  </div>
 	<%=uct.original_name%></div>
 <% end -%>
 	<div class="clearl"></div>

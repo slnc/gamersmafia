@@ -1,18 +1,35 @@
 <%
-    @comments = Comment.paginate(:page => params[:page], :conditions => 'netiquette_violation = \'t\'', :order => 'created_on DESC', :per_page => 50, :include => [:user, :content, :lastedited_by]) %>
+@comments = Comment.paginate(
+    :page => params[:page],
+    :conditions => 'netiquette_violation = \'t\'',
+    :order => 'created_on DESC',
+    :per_page => 50,
+    :include => [:user, :content, :lastedited_by]) %>
 <%= will_paginate @comments, :class => 'digg_pagination'%>
-    <table>
-<tr>
-<th>Comentario</th>
-</tr>
-<%    @comments.each do |comment| %>
-<tr class="<%=oddclass%>" id="comment<%=comment.id%>">
-	<td style="padding-top: 20px;"><%=strip_tags(comment.lastowner_version.gsub('<img', '[IMAGEN]<img').gsub('<br />', ' '))%><br />
-	<div class="infoinline">Moderador: <strong><%=user_link(comment.lastedited_by)%></strong> | <%=print_tstamp(comment.updated_on)%> | <a href="<%=controller.url_for_content_onlyurl(comment.content.real_content)%>?page=<%=Comments.page_for_comment(comment)%>#comment<%=comment.id%>"><%=comment.content.name%></a></div>
-	</td>
-<td><%=link_to_remote 'No violación', :url => "/comments/no_violation/#{comment.id}", :confirm => '¿Estás seguro?', :complete => "$j('#comment#{comment.id}').fadeOut('normal');", :method => :delete%></td>
-</tr>
+<table>
+  <tr>
+    <th>Comentario</th>
+  </tr>
+  <% @comments.each do |comment| %>
+  <tr class="<%=oddclass%>" id="comment<%=comment.id%>">
+    <td style="padding-top: 20px;">
+      <%=strip_tags(comment.lastowner_version.gsub('<img', '[IMAGEN]<img').gsub('<br />', ' '))%>
+      <br />
+      <div class="infoinline">
+        Moderador: <strong><%=user_link(comment.lastedited_by)%></strong> |
+        <%=print_tstamp(comment.updated_on)%> | 
+        <a href="<%=controller.url_for_content_onlyurl(comment.content.real_content)%>?page=<%=Comments.page_for_comment(comment)%>#comment<%=comment.id%>"><%=comment.content.name%></a>
+      </div>
+    </td>
+    <td><%=link_to(
+        'No violación',
+        :url => "/comments/no_violation/#{comment.id}",
+        :confirm => '¿Estás seguro?',
+        :complete => "$j('#comment#{comment.id}').fadeOut('normal');",
+        :method => :delete,
+        :remote => true)%>
+    </td>
+  </tr>
 <% end -%>
-    </table>
-
+</table>
 <%= will_paginate @comments, :class => 'digg_pagination'%>

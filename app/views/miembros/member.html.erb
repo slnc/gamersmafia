@@ -2,7 +2,7 @@
 <% unless @curuser.can_login? %>
 <div class="warning">Esta cuenta está <strong><%=User::STATES_DESCRIPTIONS[@curuser.state]%></strong><% if @curuser.state == User::ST_BANNED then %>. Razones: <strong><%=@curuser.ban_reason%></strong><% end -%></div>
 <% end -%>
-	
+
 <%mftext(@curuser.login, :grid => 5) do %>
 <% if @curuser.can_login? %>
 <div style="float: left; text-align: center; margin-right: 7px;"><%=fc_thumbnail(@curuser.show_photo, 'k', '161x161', false)%></div>
@@ -12,36 +12,36 @@
     <div class="right infoinline" style="margin-top: 0px; line-height: 16px; color: #000;"><%=@curuser.age%> años <img style="vertical-align: middle; margin-top: -6px;" class="user-sex <%=(@curuser.sex != 1) ? 'male' : 'female'%>" src="/images/blank.gif" /> <br />
       <%=@curuser.city%> <%=ip_country_flag(@curuser.ipaddr)%><br /><br />
       </div>
-	  
-	  
+
+
   </div>
   <table>
 	  	<tr>
 	  		<td class="infoinline" style="width: 50%">Registrado</td>
 			<td class="infoinline" style="width: 50%">Última visita</td>
 	  	</tr>
-	
+
 		<tr>
 	  		<td class="infoinline" style="width: 50%"><strong><%=print_tstamp(@curuser.created_on, 'date')%></strong></td>
 			<td class="infoinline" style="width: 50%"><strong><%=print_tstamp(@curuser.lastseen_on)%></strong></td>
 	  	</tr>
 	</table>
-	
+
 	<% if user_is_authed and @curuser.id != @user.id then %>
-	  	
+
 	  	<div style="margin: 10px 0;">
 	  		<a href="" onclick="return new_message(<%=@curuser.id%>);">Enviar un mensaje</a><br />
 	  	</div>
-	  	
+
 	  		<div style="margin: 10px 0;">
 <% if Friendship.find_between(@curuser, @user).nil? then %>
 <form method="post" action="/cuenta/amigos/iniciar_amistad/<%=@curuser.login%>">
   <input type="hidden" name="redirto" value="<%=controller.request.fullpath%>" />
   <input type="submit" class="button" value="Añadir a mi lista de amigos" />
 </form>
-<% end -%>	  		
+<% end -%>
 	  	</div>
-  	
+
 	  	<% if @curuser.hstate == 'zombie' then %>
 	  	<br />
 	  	<br />
@@ -73,7 +73,14 @@
 <%mftext('Últimas firmas', :grid => 6, :glast => true) do %>
 <% @curuser.profile_signatures.find(:all, :order => 'updated_on DESC', :include => :signer, :limit => 4).each do |ps| %>
   <div id="ps<%=ps.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 5px; font-size: 11px; line-height: 15px; padding: 3px;">
-  <div class="hidden infoinline delprofilesignature"><%=link_to_remote 'Borrar', :url => "/miembros/del_firma/#{ps.id}", :confirm => '¿Estás seguro?', :complete => "$j('#ps#{ps.id}').fadeOut('normal');"%></div>
+  <div class="hidden infoinline delprofilesignature">
+    <%=link_to(
+        'Borrar',
+        :url => "/miembros/del_firma/#{ps.id}",
+        :confirm => '¿Estás seguro?',
+        :complete => "$j('#ps#{ps.id}').fadeOut('normal');",
+        :remote => true)%>
+  </div>
     <div style="float: left;"><img src="<%=ASSET_URL%>/cache/thumbnails/f/32x32<%=ps.signer.show_avatar%>" /></div>
     <div style="margin-left: 40px;"><strong><a href="<%=gmurl(ps.signer)%>"><%=ps.signer.login%></a></strong>: <%=Comments::formatize(truncate(ps.signature.strip, 80, '..'))%></div>
   </div>
@@ -85,14 +92,14 @@
 
 <%mftext('Estadísticas', :has_submodules => true, :grid => 6) do %>
 <div class="grid-3">
-    
+
 
 <%cache("#{Cache.user_base(@curuser.id)}/profile/rankings/#{Cache.after_daily_key}") do %>
 <%mftext('Karma') do %>
 <%karma_rk_info = Karma.ranking_user(@curuser)%>
 <div class="infoinline right" style="margin-bottom: 3px;">
 	#<strong><%=karma_rk_info[:pos]%></strong> de <%=karma_rk_info[:total]%>
-</div> 
+</div>
 <div class="clearb"><%=sparkline(:size => '145x25', :data => Karma.user_daily_karma(@curuser, 30.days.ago, 1.day.ago).collect { |k,v| v } )%></div>
 <div class="infoinline right"><strong><%=@curuser.karma_points%></strong> ptos (Nivel <strong><%=Karma.level(@curuser.karma_points)%></strong>)</div>
 <% end -%>
@@ -132,7 +139,7 @@ negative_valorations_types = CommentsValorationsType.find_negative
 %>
 
 <table class="positive">
-    <% positive_valorations_types.each do |cvt| 
+    <% positive_valorations_types.each do |cvt|
 dat[cvt.id] = 0 unless dat[cvt.id] %>
     <tr>
     	<td class="w20" style="height: 16px;"><%=comments_icon(cvt.name.to_sym, true)%></td>
@@ -140,9 +147,9 @@ dat[cvt.id] = 0 unless dat[cvt.id] %>
 	</tr>
     <% end -%>
     </table>
-	
+
 	<table class="neutral">
-    <% neutral_valorations_types.each do |cvt|  
+    <% neutral_valorations_types.each do |cvt|
 dat[cvt.id] = 0 unless dat[cvt.id] %>
     <tr>
     	<td class="w20" style="height: 16px;"><%=comments_icon(cvt.name.to_sym, true)%></td>
@@ -150,9 +157,9 @@ dat[cvt.id] = 0 unless dat[cvt.id] %>
 	</tr>
     <% end -%>
     </table>
-	
+
     <table class="negative">
-    <% negative_valorations_types.each do |cvt| 
+    <% negative_valorations_types.each do |cvt|
 dat[cvt.id] = 0 unless dat[cvt.id] %>
     <tr>
     	<td class="w20" style="height: 16px;"><%=comments_icon(cvt.name.to_sym, true)%></td>
@@ -178,7 +185,7 @@ dat[cvt.id] = 0 unless dat[cvt.id] %>
 <% end -%>
 
 <%cache("#{Cache.user_base(@curuser.id)}/profile/sus_contenidos_son") do %>
-<%mftext('Sus contenidos son') do 
+<%mftext('Sus contenidos son') do
 dat = Stats.user_contents_by_rating(@curuser)
 vals = []
 dat.keys.sort.each { |k| vals << dat[k] }
@@ -205,7 +212,7 @@ max = vals.max
 
 <%# cache("#{Cache.user_base(@curuser.id)}/profile/clanes") do %>
 <% clans = @curuser.clans %>
-<% 
+<%
 if clans.size > 0 then %>
 	<%mftable('Clanes', clans) do |c| %>
       <td><a href="/clanes/clan/<%=c.id%>"><%=h c.tag%></a></td>
@@ -232,7 +239,7 @@ if clans.size > 0 then %>
 <%@curuser.platforms.find(:all, :order => 'lower(name)').each do |g| %>
 <%=faction_favicon(g.code)%>
 <% end -%><% end -%>
-  
+
 <% end -%>
 
 
@@ -243,7 +250,7 @@ if clans.size > 0 then %>
 <div class="grid-5 glast">
 <%cache("#{Cache.user_base(@curuser.id)}/profile/aportaciones") do %>
 <%mftext('Aportaciones', :has_submodules => true) do %>
-<%mftext('Por tipo') do 
+<%mftext('Por tipo') do
 dat = Stats.user_contents_by_type(@curuser)
 %>
 <%=pie(:size => '250x110', :data => dat.values, :axis_labels => dat.keys.collect { |en| en != 'Otros' ? Cms::translate_content_name(en) : en}) %>
@@ -333,26 +340,26 @@ if last_matches.size > 0 then
 %>
 <%mftext('Competición', :has_submodules => true) do %>
 	<%
-	
+
 	mftext('Últimos resultados') do %>
 	<%= render :partial => '/competiciones/matches_results', :locals =>  { :matches => last_matches } %>
 	<% end -%>
-	
+
 	<%mftable('Trofeos', Competitions.trophies_for_user(@curuser)) do |h| %>
 		<td><a href="<%=gmurl(h[1])%>"><%=faction_favicon(h[1].game)%><%=h[1]%></a></td>
 		<td><%=winner_cup(h[0])%></td>
 	<% end -%>
-	
+
 
 	<%=render :partial => '/demos/listado_demos', :locals => { :demos => Demo.find_from_user(@curuser, :limit => 1), :more_link => '<div class="more"><a href="/demos">Ver más..</a></div>'} %>
 
 	<%
 	comps = Competition.related_with_user(@curuser).active.find(:all, :conditions => "state = #{Competition::STARTED}", :order => 'lower(name)')
-	if comps	
+	if comps
 	mflist('Está participando en', comps) do |o|
 	    cpart = o.get_active_participant_for_user(@curuser)
 		lres = o.matches(:completed, :participant => cpart, :limit => 30, :order => 'completed_on DESC')
-		
+
 		data = lres.collect do |cm|
 			w = cm.winner
 			if w == 'Empate'
@@ -384,9 +391,9 @@ if last_matches.size > 0 then
 <% end -%>
 
 
-<% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/emblemas") do %>  
+<% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/emblemas") do %>
 		<% sql_emblems = Emblems::EMBLEMS_TO_REPORT.collect { |e| "'#{e}'" }.join(',')
-		dbe = User.db_query("SELECT count(*), emblem from users_emblems where user_id = #{@curuser.id} AND emblem in (#{sql_emblems}) GROUP BY emblem ORDER BY emblem") 
+		dbe = User.db_query("SELECT count(*), emblem from users_emblems where user_id = #{@curuser.id} AND emblem in (#{sql_emblems}) GROUP BY emblem ORDER BY emblem")
 
 		if dbe.size > 0 then %>
 		<%mftext('Emblemas') do %>
@@ -403,7 +410,7 @@ if last_matches.size > 0 then
 <% end -%>
 <% end %><%# cache -%>
   <div style="clear: left;"></div>
-    
+
 
 
 <%mftext('Amigos') do %>
@@ -414,15 +421,15 @@ User.find(:all, :conditions => "id IN (#{@curuser.friends_ids_sql}) AND photo IS
 		<div style="font-size: 11px; width: 63px; overflow: hidden; float: left; text-align: center; margin: 5px 0 15px 0px;"><a href="<%=gmurl(u)%>"><img src="/cache/thumbnails/i/50x50/<%=u.show_photo%>" /></a><br /><%=user_link(u)%></div>
 <% if i % 3 == 2 %></div><div style="clear: left;"><% end -%>
 
-	<% i += 1 
+	<% i += 1
 end -%>
 <% if i % 3 != 3 %></div><% end -%>
-	
+
 	<div class="clearl right"><a href="/miembros/<%=@curuser.login%>/amigos">Ver todos &raquo;</a></div>
 
 <% end -%>
 
-<% prev_nicks = @curuser.user_login_changes.find(:all, :order => 'created_on') 
+<% prev_nicks = @curuser.user_login_changes.find(:all, :order => 'created_on')
 if prev_nicks.size > 0 then %>
 <% mftext('Nicks antiguos') do %>
 <table class="compact">
@@ -451,7 +458,7 @@ if users_same_ip.size > 0 then %>
 <% users_same_ip.each do |user| %>
 	<li><a href="<%=gmurl(user)%>"><%=user.login%></a></li>
 <% end %>
-</ul>  
+</ul>
 <% else %>
 <%=member_state('zombie')%> <strong>Ningún</strong> usuario con la misma ip.
 <% end %>
@@ -469,7 +476,7 @@ Antiflood: <select name="antiflood_level" id="antiflood_level" onchange="documen
 </div>
 
 <div class="centered-link"><a href="/admin/usuarios/clear_description/<%=@curuser.id%>" onclick="return confirm('¿Estás seguro? ¡Esta acción no se puede deshacer!');">Borrar Descripción</a></div>
-<div class="centered-link"><a href="/admin/usuarios/clear_photo/<%=@curuser.id%>" onclick="return confirm('¿Estás seguro? ¡Esta acción no se puede deshacer!');">Borrar Foto</a></div>	
+<div class="centered-link"><a href="/admin/usuarios/clear_photo/<%=@curuser.id%>" onclick="return confirm('¿Estás seguro? ¡Esta acción no se puede deshacer!');">Borrar Foto</a></div>
 <% elsif @curuser.antiflood_level != 5 then %>
 	<div class="centered-link">
 		<a onclick="return confirm('El usuario no podrá enviar contenidos ni publicar comentarios hasta que un capo lo revise. SOLO PARA EMERGENCIAS. ¿Estás seguro?');" href="/admin/usuarios/set_antiflood_level?user_id=<%=@curuser.id%>&antiflood_level=5"><strong>Poner antiflood de emergencia</strong></a>
@@ -481,7 +488,7 @@ Antiflood: <select name="antiflood_level" id="antiflood_level" onchange="documen
 <% end -%>
 
 <% if @curuser.hstate != User::ST_BANNED && @user.has_admin_permission?(:capo) then
-bp = BanRequest.find(:first, :conditions => ['banned_user_id = ?', @curuser.id], :order => 'created_on DESC') 
+bp = BanRequest.find(:first, :conditions => ['banned_user_id = ?', @curuser.id], :order => 'created_on DESC')
 if bp && bp.confirming_user_id.nil? then %>
 <div class="centered-link"><strong><a href="/admin/usuarios/confirmar_ban_request?id=<%=bp.id%>">Proceso de ban en marcha</a></strong></div>
 <% elsif bp && bp.confirming_user_id && bp.unban_user_id.nil? %>

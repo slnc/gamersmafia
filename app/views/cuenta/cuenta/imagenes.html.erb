@@ -18,14 +18,14 @@
       return;
 
       window.opener.CKEDITOR.tools.callFunction(1, 'http://gamersmafia.com/' + img_src);
-	  
+
       window.close();
       return;
-	if (window.opener.SetUrl) 
+	if (window.opener.SetUrl)
 		window.opener.SetUrl(img_src);
 	else {
 		window.opener.wsEditorInsertImage('<%=params[:sEditorId]%>', img_src);
-		
+
 	}
 	window.close();
   }
@@ -53,15 +53,21 @@
   <h2>Elegir</h2>
   <div style="width: 325px; height: 360px; clear: left; overflow: scroll;">
   <table style="width: 308px;">
-<% 
+<%
 fid = 0
-for f in @user.get_my_files 
+for f in @user.get_my_files
   if f.match(/\.(jpg|gif|png|jpeg)$/i) %>
   <tr class="<%=oddclass%>" id="fid<%=fid%>">
   	<td><a href="#" onclick="select_image('<%="#{@user.get_tmp_basedir}#{f}"%>');"><%=f%></a></td>
-	<td class="infoinline"><%=link_to_remote('Borrar', :url => "/cuenta/imagenes/borrar?filename=#{File.basename(f)}&sEditorId=#{params[:sEditorId]}", :complete => "$j('#fid#{fid}').fadeOut('normal');")%></td></tr>
+    <td class="infoinline">
+    <%=link_to(
+        'Borrar',
+        :url => "/cuenta/imagenes/borrar?filename=#{File.basename(f)}&sEditorId=#{params[:sEditorId]}",
+        :complete => "$j('#fid#{fid}').fadeOut('normal');",
+        :remote => true)%>
+    </td>
+  </tr>
 <%
- 
   end
 fid += 1
 end
