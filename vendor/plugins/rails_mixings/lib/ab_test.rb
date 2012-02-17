@@ -159,11 +159,12 @@ class AbTest < ActiveRecord::Base
     if cache_expected_completion_date.nil?
       # tiempo que hemos tardado en conseguir las impresiones actuales
       self.cache_expected_completion_date = begin
-        if completed_on then
+        if self.completed_on then
           self.completed_on
         else
           secs_done = Time.now.to_i - self.created_on.to_i
-          secs_total = secs_done / ((experiment_completedness > 0) ? experiment_completedness : 1.0)
+          secs_total = secs_done / (
+              (self.experiment_completedness || 0 > 0) ? self.experiment_completedness : 1.0)
            (secs_total - secs_done).seconds.since
         end
       end

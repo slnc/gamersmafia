@@ -159,7 +159,7 @@ class SiteController < ApplicationController
 
     @clear_comment_line = true
 
-    if cookies.keys.include?('chatpref') and cookies['chatpref'].to_s == 'big' then
+    if cookies[:chatpref] == 'big'
       @online_users = User.find(:all, :conditions => 'lastseen_on >= now() - \'30 minutes\'::interval', :order => 'lastseen_on desc', :limit => 100)
       render :layout => false, :action => 'update_chatlines_big'
     else
@@ -175,7 +175,7 @@ class SiteController < ApplicationController
     @title = 'Usuarios Online'
     @clear_comment_line = true
 
-    if cookies.keys.include?('chatpref') and cookies['chatpref'].to_s == 'big' then
+    if cookies:chatpref] == 'big'
       @online_users = User.find(:all, :conditions => 'lastseen_on >= now() - \'30 minutes\'::interval', :order => 'lastseen_on desc', :limit => 100)
       render :layout => false, :action => 'update_chatlines_big'
     else
