@@ -159,7 +159,7 @@ INSTALACIÓN COMPLETADA
 GM debería estar ejecutándose en el puerto 80. Para acceder a ella edita el
 archivo hosts de tu sistema principal y añade la siguiente línea:
 
-  ${ip} gamersmafia.dev
+  ${ip} gamersmafia.dev bazar.gamersmafia.dev arena.gamersmafia.dev
 
 
 E intenta acceder desde tu navegador escribiendo:

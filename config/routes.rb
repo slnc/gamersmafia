@@ -15,7 +15,7 @@ Gamersmafia::Application.routes.draw do
   match 'admin/categorias/term/:id/hijos/:content_type' => 'admin/categorias#hijos'
   match 'admin/categorias/term/:id/update' => 'admin/categorias#update'
   match 'admin/contenidos' => 'admin/contenidos#index'
-  match 'admin/contenidos/publish_content' => 'admin/contenidos#publish_content'
+  match 'admin/contenidos/:action' => 'admin/contenidos'
   match 'admin/contenidos/recover/:id' => 'admin/contenidos#recover'
   match 'blogs/:login' => 'blogs#blog', :login => /[^\/]+/
   match 'blogs/:login/:id' => 'blogs#blogentry', :login => /[^\/]+/, :constraints => { :id => /\d+/ }
