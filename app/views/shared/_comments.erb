@@ -1,4 +1,4 @@
-<% if !user_is_authed || @user.created_on > 1.year.ago then %>
+<% if App.show_ads && (!user_is_authed || @user.created_on > 1.year.ago) %>
 <div style="margin: 15px 0; padding-left: 120px;">
 <script type="text/javascript"><!--
 google_ad_client = "pub-6007823011396728";
