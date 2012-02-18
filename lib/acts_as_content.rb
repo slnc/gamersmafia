@@ -574,17 +574,18 @@ module ActsAsContent
         r = self.cache_rating.to_f
         v = self.cache_rated_times.to_f
 
-        # cogemos el numero de votos como el valor del 1er cuartil ordenando la lista de contenidos por votos asc
+        # cogemos el numero de votos como el valor del 1er cuartil ordenando la
+        # lista de contenidos por votos asc
         # calculamos "m"
         if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
           return 0 if self.main_category.nil?# TODO hack temporal
           total = self.main_category.root.count(:content_type => self.class.name)
           # TODO esto debería ir en term
           q = "SELECT content_id
-                                          FROM contents
-                                          JOIN contents_terms ON contents.id = contents_terms.content_id
-                                         WHERE contents.state = #{Cms::PUBLISHED}
-                                           AND term_id IN (#{self.main_category.root.all_children_ids(:content_type => self.class.name).join(',')})"
+                 FROM contents
+                 JOIN contents_terms ON contents.id = contents_terms.content_id
+                WHERE contents.state = #{Cms::PUBLISHED}
+                  AND term_id IN (#{self.main_category.root.all_children_ids(:content_type => self.class.name).join(',')})"
 
           contents_ids = User.db_query(q).collect { |dbr| dbr['content_id'] }
 
