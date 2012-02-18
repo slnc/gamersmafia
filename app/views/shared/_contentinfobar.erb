@@ -8,10 +8,12 @@
 
 <div class="contentinfobar">
   	  <div class="last f_sm">
-	  <%cache("/common/contents/#{object.class.name}/#{object.id % 100}/#{object.id}") do %>
+	  <%cache("/common/contents/#{object.class.name}/#{object.id % 100}/" +
+            "#{object.id}-#{object.updated_on}") do %>
     <div class="author-avatar"><img src="<%=ASSET_URL%>/cache/thumbnails/f/50x50<%=object.user.show_avatar%>" /></div>
     <div class="content-details">
-      por <a class="content" href="<%=gmurl(object.user)%>"><%=object.user.login%></a><br />
+      por <a class="content" href="<%=gmurl(object.user)%>"><%=object.user.login%></a>
+      <br />
 	  <%=print_tstamp object.created_on%>
     </div>
 	<% end -%>

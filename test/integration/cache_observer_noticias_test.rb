@@ -17,6 +17,24 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/noticias/show/_latest_by_cat_#{n.main_category.id}"
   end
 
+  test "should clear authorship box" do
+    panzer = User.find(2)
+    n = News.in_portal(portal).published.find(:all, :include => :user)[0]
+    assert_not_nil n
+    assert n.user_id != panzer.id
+    go_to "/noticias/show/#{n.id}", 'noticias/show'
+    assert @response.body.include?(
+        "por <a class=\"content\" href=\"http://test.host/miembros/superadmin" +
+        "\">superadmin</a>")
+
+    n.change_authorship(panzer, User.find(1))
+
+    go_to "/noticias/show/#{n.id}", 'noticias/show'
+    assert @response.body.include?(
+        "por <a class=\"content\" href=\"http://test.host/miembros/panzer\">" +
+        "panzer</a>")
+  end
+
   # MAIN
   test "should_clear_cache_on_main_after_publishing_news" do
     n = News.in_portal(portal).pending.find(:all)[0]
