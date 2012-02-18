@@ -4,7 +4,7 @@
 # aconsejable usarlo en una máquina virtual o en una instalación que no tenga
 # nada más.
 #
-# Es seguro ejecutar este script más de una vez  ya que no se borran base de
+# Es seguro ejecutar este script más de una vez ya que no se borran base de
 # datos o repositorios existentes.
 #
 # Para más información:
@@ -61,10 +61,11 @@ Bootstrap() {
 }
 
 DownloadMiscConfigFiles() {
+  BOOTSTRAP_GITHUB_URL=https://raw.github.com/slnc/gamersmafia/production/script/bootstrap
   mkdir -p ~/.vim/sessions
-  wget -O ~/.vimrc vrc=https://raw.github.com/slnc/gamersmafia/production/script/bootstrap/.vimrc
-  wget -O ~/.gitconfig https://raw.github.com/slnc/gamersmafia/production/script/bootstrap/.gitconfig
-  wget -O ~/.bashrc_gm https://raw.github.com/slnc/gamersmafia/production/script/bootstrap/.bashrc
+  wget -O ~/.vimrc vrc=${BOOTSTRAP_GITHUB_URL}/.vimrc
+  wget -O ~/.gitconfig ${BOOTSTRAP_GITHUB_URL}/.gitconfig
+  wget -O ~/.bashrc_gm ${BOOTSTRAP_GITHUB_URL}/.bashrc
   echo -e "\nsource ~/.bashrc_gm" >> ~/.bashrc
 }
 
@@ -161,11 +162,14 @@ archivo hosts de tu sistema principal y añade la siguiente línea:
   ${ip} gamersmafia.dev
 
 
-He intenta acceder desde tu navegador escribiendo:
+E intenta acceder desde tu navegador escribiendo:
 
   http://gamersmafia.dev/
 
-Recuerda que si tienes un client ssh puedes conectarte al servidor por ssh.
+Ya hay un usuario registrado con todos los poderes.
+Login: "unnamed", password: "unnamedhacker"
+
+Recuerda que si tienes un cliente ssh puedes conectarte al servidor por ssh.
 
 END`
 echo -e "$msg\n"
