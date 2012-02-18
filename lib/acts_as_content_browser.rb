@@ -32,7 +32,7 @@ module ActsAsContentBrowser
     define_method 'new' do
       @title = "Crear #{Cms::CLASS_NAMES[content_name].downcase}"
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
-      instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), cls.new(params[ActiveSupport::Inflector::underscore(content_name)]))
+      instance_variable_set("@#{ActiveSupport::Inflector::underscore(content_name)}", cls.new(params[ActiveSupport::Inflector::underscore(content_name)]))
     end
 
     define_method 'show' do
@@ -51,7 +51,7 @@ module ActsAsContentBrowser
       @title = obj.resolve_hid
       # TODO si tiene categoría se la añadimos al navpath
       track_item(obj)
-      instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
+      instance_variable_set("@#{ActiveSupport::Inflector::underscore(content_name)}", obj)
       _after_show if respond_to?(:_after_show)
     end
 
@@ -69,7 +69,7 @@ module ActsAsContentBrowser
       else Cms::PENDING
       end
 
-      instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
+      instance_variable_set("@#{ActiveSupport::Inflector::underscore(content_name)}", obj)
       if Cms.user_can_create_content(@user)
         if obj.respond_to?(:game_id) && params[:root_terms].nil?
           params[:root_terms] = [Term.single_toplevel(:game_id => obj.game_id).id]
@@ -116,7 +116,7 @@ module ActsAsContentBrowser
       raise ContentLocked if obj.is_locked_for_user?(@user)
       @title = "Editando #{obj.resolve_hid}"
       navpath2<< [obj.resolve_hid, request.fullpath.gsub('edit', 'show')]
-      instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
+      instance_variable_set("@#{ActiveSupport::Inflector::underscore(content_name)}", obj)
       if Cms::user_can_edit_content?(@user, obj) then
         obj.lock(@user)
         render :action => 'edit'
@@ -176,7 +176,7 @@ module ActsAsContentBrowser
       obj.state = Cms::PENDING if obj.state == Cms::DRAFT and params[:draft].to_s != '1'
       params[ActiveSupport::Inflector::underscore(content_name)][:state] = obj.state
       params[ActiveSupport::Inflector::underscore(content_name)].delete(:approved_by_user_id) unless obj.respond_to? :approved_by_user_id
-      instance_variable_set('@' << ActiveSupport::Inflector::underscore(content_name), obj)
+      instance_variable_set("@#{ActiveSupport::Inflector::underscore(content_name)}", obj)
       if obj.update_attributes(params[ActiveSupport::Inflector::underscore(content_name)])
         proc_terms(obj)
         # obj.process_wysiwyg_fields
