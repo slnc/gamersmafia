@@ -7,6 +7,7 @@ Gamersmafia::Application.routes.draw do
   match 'account/messages' => 'account#messages'
   match 'account/messages/:id' => 'account#show_message'
   match 'admin/categorias/' => 'admin/categorias#index'
+  match 'admin/juegos(/:action)' => 'admin/juegos'
   match 'admin/categorias/create' => 'admin/categorias#create'
   match 'admin/categorias/term/:id' => 'admin/categorias#root'
   match 'admin/categorias/term/:id/contenidos/:content_type' => 'admin/categorias#contenidos'
