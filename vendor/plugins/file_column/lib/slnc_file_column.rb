@@ -1,6 +1,8 @@
 require 'fileutils'
+
 # mi propia versión de file_column
-# guardas los archivos en storage/class_name_en_plural/hashed_subdir_basado_en_id/unique_filename
+# guardas los archivos en
+# storage/class_name_en_plural/hashed_subdir_basado_en_id/unique_filename
 module SlncFileColumn
   # TODO incluir solo los métodos para instances a los objetos que tengan file_column!! (revisar init.rb)
   module ClassMethods
@@ -20,17 +22,8 @@ module SlncFileColumn
         @old_files ||= {}
         @tmp_files[attrib.to_s] = file
         @old_files[attrib.to_s] = self[attrib.to_s]
-        self[attrib.to_s] = file.to_s if (is_valid_upload(file)) # necesario para poder hacer validates_presence_of
-        # raise "self[#{attrib.to_s}] = #{file.to_s} if (#{is_valid_upload(file)} && #{self[attrib.to_s].nil?})"
+        self[attrib.to_s] = file.to_s if (is_valid_upload(file))
       end
-
-      #define_method "#{attrib}" do
-      #  if object_instance_variable_get(attrib).nil? && defined?(@tmp_files) && @tmp_files.has_key?(attrib.to_s)
-      #    @tmp_files[attrib.to_s]
-      #  else
-      #    self[attrib]
-      #  end
-      #end
 
       define_method "#{attrib}" do
         self[attrib] # necesario por rails 2.2
@@ -102,29 +95,38 @@ module SlncFileColumn
 
   def save_uploaded_files
     if @tmp_files then
-      # irb(main):024:0> my_id = 654321
-      # => 654321
-      # irb(main):025:0> (my_id/1000).to_s.rjust(4, '0')<<'/'<<(my_id%1000).to_s.rjust(3, '0')
-      # => "0654/321"
       for f in @tmp_files.keys
         if is_valid_upload(@tmp_files[f]) then
           hash_attrib = "#{f}_hash_md5".to_sym
-          File.unlink("#{Rails.root}/public/#{@old_files[f]}") if (@old_files[f].to_s != '' && File.exists?("#{Rails.root}/public/#{@old_files[f]}"))
+          if (@old_files[f].to_s != '' &&
+              File.exists?("#{Rails.root}/public/#{@old_files[f]}"))
+            File.unlink("#{Rails.root}/public/#{@old_files[f]}")
+          end
           if @tmp_files[f].kind_of?(NilClass)
-            self.class.db_query("UPDATE #{self.class.table_name} SET #{f} = NULL WHERE id = #{self.id}")
+            self.class.db_query(
+                "UPDATE #{self.class.table_name} SET #{f} = NULL WHERE id =" +
+                " #{self.id}")
           else
             dir = "#{self.class.table_name}/#{(id/1000).to_s.rjust(4, '0')}"
-            new_path = save_uploaded_file_to(@tmp_files[f], dir, (id%1000).to_s.rjust(3, '0'))
-            self.class.db_query("UPDATE #{self.class.table_name} SET #{f} = '#{new_path.gsub(/'/, '\\\'')}' WHERE id = #{self.id}")
+            new_path = save_uploaded_file_to(
+                @tmp_files[f], dir, (id%1000).to_s.rjust(3, '0'))
+            new_field_path = new_path.gsub(/'/, '\\\'')
+            self.class.db_query(
+                "UPDATE #{self.class.table_name} SET #{f} =" +
+                " '#{new_field_path}' WHERE id = #{self.id}")
+            self.send("#{f}=", new_field_path)
+
             if self.respond_to?(hash_attrib)
               hash = file_hash("#{Rails.root}/public/#{new_path}")
-              self.class.db_query("UPDATE #{self.class.table_name} SET #{hash_attrib} = '#{hash}' WHERE id = #{self.id}")
+              self.class.db_query(
+                  "UPDATE #{self.class.table_name} SET #{hash_attrib} =" +
+                  " '#{hash}' WHERE id = #{self.id}")
+            self.send("#{hash_attrib}=", new_field_path)
             end
             @tmp_files.delete(f)
           end
         end
       end
-      self.reload # necesario para que el modelo tenga los nuevos atributos
     end
   end
 
@@ -153,46 +155,46 @@ module SlncFileColumn
     #     find_unused, overwrite
     #
     #   ej de path recibido: users/1
-            #   la función entiende que se refiere al dir: #{Rails.root}/public/storage/users/1/
-            #
-            #   ej de path devuelto: /storage/users/1/fulanito.jpg
-            #
-            # Si ya existe un archivo con ese nombre en path se busca uno único.
-            # Devuelve la ruta absoluta final del archivo
+    #   la función entiende que se refiere al dir: #{Rails.root}/public/storage/users/1/
+    #
+    #   ej de path devuelto: /storage/users/1/fulanito.jpg
+    #
+    # Si ya existe un archivo con ese nombre en path se busca uno único.
+    # Devuelve la ruta absoluta final del archivo
 
-            # buscamos un nombre de archivo factible
-            preppend = ''
-            filename = _fc_file_name(tmp_file)
+    # buscamos un nombre de archivo factible
+    preppend = ''
+    filename = _fc_file_name(tmp_file)
 
-            if File.exists?("#{Rails.root}/public/storage/#{path}/#{prefix}_#{filename}")
-              incrementor = 1
-              while File.exists?("#{Rails.root}/public/storage/#{path}/#{prefix}_#{incrementor}_#{filename}")
-                incrementor += 1
-              end
-              dst = "#{Rails.root}/public/storage/#{path}/#{prefix}_#{incrementor}_#{filename}"
-            else
-              dst = "#{Rails.root}/public/storage/#{path}/#{prefix}_#{filename}"
-            end
+    if File.exists?("#{Rails.root}/public/storage/#{path}/#{prefix}_#{filename}")
+      incrementor = 1
+      while File.exists?("#{Rails.root}/public/storage/#{path}/#{prefix}_#{incrementor}_#{filename}")
+        incrementor += 1
+      end
+      dst = "#{Rails.root}/public/storage/#{path}/#{prefix}_#{incrementor}_#{filename}"
+    else
+      dst = "#{Rails.root}/public/storage/#{path}/#{prefix}_#{filename}"
+    end
 
-            FileUtils.mkdir_p(File.dirname(dst)) if not File.directory?(File.dirname(dst))
+    FileUtils.mkdir_p(File.dirname(dst)) if not File.directory?(File.dirname(dst))
 
-            if tmp_file.respond_to?('path') and tmp_file.path.to_s != '' then
-              FileUtils.cp(tmp_file.path, dst)
-            else # file size < 19Kb (es un StringIO)
-              File.open(dst, "wb") {|f| f.write(tmp_file.read) }
-            end
+    if tmp_file.respond_to?('path') and tmp_file.path.to_s != '' then
+      FileUtils.cp(tmp_file.path, dst)
+    else # file size < 19Kb (es un StringIO)
+      File.open(dst, "wb") {|f| f.write(tmp_file.read) }
+    end
 
-            dst.gsub("#{Rails.root}/public/", '')
-          end
+    dst.gsub("#{Rails.root}/public/", '')
+  end
 
-          private
-          # Calculates the md5 hash of filename somefile
-          def file_hash(somefile)
-            md5_hash = ''
-            File.open(somefile) do |f| # binmode es vital por los saltos de línea y win/linux
-              f.binmode
-              md5_hash = Digest::MD5.hexdigest(f.read)
-            end
-            md5_hash
-          end
-        end
+  private
+  # Calculates the md5 hash of filename somefile
+  def file_hash(somefile)
+    md5_hash = ''
+    File.open(somefile) do |f| # binmode es vital por los saltos de línea y win/linux
+      f.binmode
+      md5_hash = Digest::MD5.hexdigest(f.read)
+    end
+    md5_hash
+  end
+end

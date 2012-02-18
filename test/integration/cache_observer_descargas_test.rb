@@ -16,7 +16,11 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
     c2 = c1.children.create({:taxonomy => 'DownloadsCategory', :slug => 'c2', :name => 'foo1'})
     c2.reload
     assert_not_nil c2
-    d = Download.create(:user_id => 1, :title => 'xxxfootapang', :terms => c2.id)
+    d = Download.create(
+      :user_id => 1,
+      :title => 'xxxfootapang',
+      :terms => c2.id,
+      :file => fixture_file_upload('/files/babe.jpg', 'image/jpeg'))
     assert_not_nil d
 
     go_to_downloads_category(c1)

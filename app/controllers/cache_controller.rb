@@ -19,7 +19,6 @@ class CacheController < ApplicationController
     Cms::image_thumbnail("#{Rails.root}/public/#{sp}", thumbpath, match_dim[1].to_i, match_dim[2].to_i, params[:mode])
 
     send_file(thumbpath, :type => 'image/jpg', :stream => false, :disposition => 'inline')
-    # redirect_to "/cache/thumbnails/#{params[:mode]}/#{params[:dim]}/#{params[:path]}"
   end
 
   def faction_users_ratios
@@ -31,7 +30,7 @@ class CacheController < ApplicationController
       :background_colors => %w(white white)
     }
 
-    f = Faction.find(params[:faction_id][0].to_s.gsub('.png', '').to_i)
+    f = Faction.find(params[:faction_id].to_i)
     g.data('Activos', [f.active_members_count], '#BB0012')
     g.data('Inactivos', [f.inactive_members_count], '#BBA9AB')
     g.font= "#{Rails.root}/public/ttf/verdana.ttf"

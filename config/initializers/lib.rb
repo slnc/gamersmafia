@@ -2,7 +2,6 @@
     acts_as_categorizable
     acts_as_content
     acts_as_content_browser
-    overload_remote_ip
     all
     cms
     bank
