@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class Admin::TiendaControllerTest < ActionController::TestCase
-  test_min_acl_level :superadmin, [ :index, :ultimas_compras, :producto ]
+  test_min_acl_level :superadmin, [ :index, :producto ]
 
   test "producto_work" do
     sym_login 1

@@ -87,10 +87,16 @@ class BetTest < ActiveSupport::TestCase
   test "should_properly_distribute_money_if_single_winner" do
     prepare_first_three_users
 
-    @bets_option_foo.bets_tickets.create({:user_id => 1, :ammount => BetsTicket::MIN_BET})
-    @bets_option_foo.bets_tickets.create({:user_id => 2, :ammount => BetsTicket::MIN_BET})
-    @bets_option_bar.bets_tickets.create({:user_id => 2, :ammount => BetsTicket::MIN_BET})
-    @bets_option_bar.bets_tickets.create({:user_id => 3, :ammount => BetsTicket::MIN_BET})
+    @bets_option_foo.bets_tickets.create(
+        :user_id => 1, :ammount => BetsTicket::MIN_BET)
+
+    @bets_option_foo.bets_tickets.create(
+        :user_id => 2, :ammount => BetsTicket::MIN_BET)
+    @bets_option_bar.bets_tickets.create(
+        :user_id => 2, :ammount => BetsTicket::MIN_BET)
+
+    @bets_option_bar.bets_tickets.create(
+        :user_id => 3, :ammount => BetsTicket::MIN_BET)
 
     @bet.complete(@bets_option_bar.id)
 

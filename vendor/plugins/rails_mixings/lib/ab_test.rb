@@ -164,7 +164,7 @@ class AbTest < ActiveRecord::Base
         else
           secs_done = Time.now.to_i - self.created_on.to_i
           secs_total = secs_done / (
-              (self.experiment_completedness || 0 > 0) ? self.experiment_completedness : 1.0)
+              (self.experiment_completedness > 0) ? self.experiment_completedness : 1.0)
            (secs_total - secs_done).seconds.since
         end
       end
