@@ -491,7 +491,6 @@ group by date_trunc('day', created_on) order by s asc
     db_rows = dbs[:rows]
     # TODO(slnc): rails3 temporarily disabled pg stats
 
-    Rails.logger.warn("PostgreSQL stats disabled")
     response_status = response.headers['status'] ? response.headers['Status'].split(' ')[0]: '500'
     User.db_query("INSERT INTO stats.pageloadtime(http_status,
                                                   controller,

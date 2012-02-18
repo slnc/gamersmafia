@@ -2,10 +2,6 @@ require 'test_helper'
 
 class CommentsControllerTest < ActionController::TestCase
   def setup
-    @controller = CommentsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-
     ActionMailer::Base.delivery_method = :test
     ActionMailer::Base.perform_deliveries = true
     ActionMailer::Base.deliveries = []

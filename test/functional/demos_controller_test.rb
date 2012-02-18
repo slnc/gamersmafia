@@ -3,9 +3,6 @@ require File.dirname(__FILE__) + '/../test_functional_content_helper'
 
 class DemosControllerTest < ActionController::TestCase
   def setup
-    @controller = DemosController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
     @request.host = "arena.#{App.domain}"
   end
 

@@ -1,31 +1,27 @@
 require 'test_helper'
 
 class Cuenta::CuentaControllerTest < ActionController::TestCase
-  
+
   def setup
-    @controller = Cuenta::CuentaController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
-    
     ActionMailer::Base.delivery_method = :test
     ActionMailer::Base.perform_deliveries = true
     ActionMailer::Base.deliveries = []
   end
-  
+
   test "mis_permisos_should_work" do
     sym_login 2
     %w(Don ManoDerecha Boss Underboss Sicario Moderator Advertiser GroupMember GroupAdministrator CompetitionAdmin CompetitionSupervisor).each do |r|
       @ur = UsersRole.new(:user_id => 2, :role => r, :role_data => '1')
       assert @ur.save
     end
-    
+
     @ur = UsersRole.new(:user_id => 2, :role => 'Editor', :role_data => {:content_type_id => 1, :faction_id => 1}.to_yaml)
     assert @ur.save
-    
+
     get :mis_permisos
     assert_response :success
   end
-  
+
   test "del_role_should_work" do
     test_mis_permisos_should_work
     assert_count_decreases(UsersRole) do
@@ -33,13 +29,13 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     end
     assert_response :success
   end
-  
+
   test "del_role_other_shouldnt_work" do
     test_mis_permisos_should_work
-    sym_login 1    
+    sym_login 1
     assert_raises(ActiveRecord::RecordNotFound) {  post :del_role, :id => @ur.id }
   end
-  
+
   test "add_quicklink" do
     sym_login 2
     u2 = User.find(2)
@@ -48,7 +44,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     qlinks = u2.pref_quicklinks
     assert qlinks[0][:code] == 'ut'
   end
-  
+
   test "del_quicklink" do
     sym_login 2
     u2 = User.find(2)
@@ -59,7 +55,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     u2.reload
     assert_equal orig_qlinks, u2.pref_quicklinks.size
   end
-  
+
   test "add_user_forum" do
     sym_login 2
     u2 = User.find(2)
@@ -68,7 +64,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     ufs = u2.pref_user_forums
     assert_equal 1, ufs[0][0]
   end
-  
+
   test "del_user_forum" do
     sym_login 2
     u2 = User.find(2)
@@ -79,7 +75,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_equal 0, ufs[0].size
     assert_equal 0, ufs[1].size
   end
-  
+
   test "update_user_forums_order" do
     sym_login 2
     u2 = User.find(2)
@@ -91,9 +87,9 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_equal 2, ufs[1][0]
     assert_equal 3, ufs[1][1]
   end
-  
-  
-  
+
+
+
   test "should_resurrect_resurrectable_user" do
     u2 = User.find(2)
     u2.lastseen_on = 4.months.ago
@@ -105,7 +101,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     u2.reload
     assert_equal 1, u2.resurrected_by_user_id
   end
-  
+
   test "should_login_valid_user" do
     u1 = User.find(1)
     one_month_ago = 1.month.ago
@@ -118,7 +114,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     u1.reload
     assert_equal one_month_ago.to_i, u1.lastseen_on.to_i
   end
-  
+
   test "should_not_login_user_in_nonlogin_state" do
     u1 = User.find(1)
      (User::HSTATES - User::STATES_CAN_LOGIN).each do |invalid_state|
@@ -129,7 +125,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
       assert_nil(session[:user])
     end
   end
-  
+
   test "should_not_ping_in_nonlogin_state" do
     u1 = User.find(1)
     User::STATES_CANNOT_LOGIN.each do |invalid_state|
@@ -140,91 +136,91 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
       assert_nil session[:user]
     end
   end
-  
+
   test "should_not_login_with_unconfirmed_user" do
     post :do_login, :login => 'unconfirmed_user', :password => 'lelele'
     assert_response :success
     assert_template 'login'
     assert_nil session[:user]
   end
-  
+
   test "should_not_login_with_banned_account" do
     post :do_login, :login => 'banned_user', :password => 'lelele'
     assert_response :success
     assert_template 'login'
     assert_nil session[:user]
   end
-  
+
   test "should_not_login_with_disabled_account" do
     post :do_login, :login => 'disabled_user', :password => 'lelele'
     assert_response :success
     assert_template 'login'
     assert_nil session[:user]
   end
-  
+
   test "should_redirect_if_login_without_form" do
     post :do_login
     assert_redirected_to '/cuenta/login'
     assert_nil(session[:user])
   end
-  
+
   test "should_redirect_if_create_without_form" do
     post :create
     assert_redirected_to '/cuenta/alta'
     assert_nil(session[:user])
   end
-  
+
   test "should_not_create_user_if_login_is_invalid" do
     post :create, :user => { :login => '' }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
-    
+
     post :create, :user => { :login => '")!="dmk1ionloº¡L-_:*^,' }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
-  
+
   test "should_not_create_user_if_passwords_dont_match" do
     post :create, :user => { :login => 'chindasvinto', :password => 'jauja', :password_confirmation=> 'marauja' }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
-  
+
   test "should_not_create_user_if_password_length_is_too_short" do
     post :create, :user => { :login => 'chindasvinto', :password => 'jau', :password_confirmation=> 'jau' }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
-  
+
   test "should_not_create_if_login_is_duplicated_ignoring_case" do
     post :create, :user => { :login => 'superadmin', :password => 'marauja', :password_confirmation => 'marauja', :email => 'lala@lala.com' }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
-  
+
   test "should_not_create_if_email_is_duplicated_ignoring_case" do
     post :create, :user => { :login => 'superadmin', :password => 'marauja', :password_confirmation => 'marauja', :email => 'superadmin@GAMERSMAFIA.com' }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
-  
+
   test "should_not_create_if_email_is_invalid" do
     post :create, :user => { :login => 'chindasvinto', :password => 'marauja', :password_confirmation => 'marauja', :email => 'tupmuamad@jaja.ñ!jeje' }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
-  
+
   test "should_not_create_if_email_domain_is_banned" do
     dom = User::BANNED_DOMAINS[0]
     post :create, :user => { :login => 'chindasvinto', :password => 'marauja', :password_confirmation => 'marauja', :email => "tupmuamad@#{dom}" }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
-  
+
   test "should_create_user_if_everything_is_valid" do
     post :create, :user => { :login => 'chindasvinto', :password => 'marauja', :password_confirmation => 'marauja', :email => 'tupmuamad@jaja.com' }
     #assert_response :success
-    
+
     assert_redirected_to "/cuenta"
     @u = User.find_by_login('chindasvinto')
     assert_not_nil @u
@@ -233,16 +229,16 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_equal User::ST_SHADOW, @u.state
     # assert session[:user].kind_of?(Fixnum)
   end
-  
+
   test "should_create_second_account_from_same_ip" do
     test_should_create_user_if_everything_is_valid
     session.clear
-    
+
     assert_count_increases(SlogEntry) do
       post :create, :user => { :login => 'chindasvinto2', :password => 'marauja', :password_confirmation => 'marauja', :email => 'tupmuamad2@jaja.com' }
-      
+
     end
-    
+
     assert_redirected_to "/cuenta/confirmar?em=tupmuamad2@jaja.com"
     @u2 = User.find_by_login('chindasvinto2')
     assert_not_nil @u2
@@ -250,17 +246,17 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_equal Digest::MD5.hexdigest('marauja'), @u2.password
     assert_equal User::ST_UNCONFIRMED, @u2.state
   end
-  
+
   test "should_not_create_user_if_ip_banned" do
     assert_count_increases(IpBan) { IpBan.create({:ip => '0.0.0.0', :user_id => 1}) }
-    
+
     post :create, {:user => { :login => 'chindasvinto', :password => 'marauja', :password_confirmation => 'marauja', :email => 'tupmuamad@jaja.com' }}
     # Para un usuario con ip baneada no le decimos que está baneado, que se quede esperando el email
     assert_redirected_to '/cuenta/confirmar'
     @u = User.find_by_login('chindasvinto')
     assert_nil @u
   end
-  
+
   test "should_properly_acknowledge_referer" do
     panzer = User.find_by_login('panzer')
     fp = panzer.faith_points
@@ -274,13 +270,13 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_equal u.email, ActionMailer::Base.deliveries.at(-1).to[0]
     assert_equal Faith::FPS_ACTIONS['registration'] + fp, panzer.faith_points
   end
-  
+
   test "should_send_confirmation_email_after_creating_account" do
     num_deliveries = ActionMailer::Base.deliveries.size
     test_should_create_user_if_everything_is_valid
     assert_equal num_deliveries + 1, ActionMailer::Base.deliveries.size
   end
-  
+
   test "should_send_welcome_email_after_confirming_account" do
     test_should_create_user_if_everything_is_valid
     num_deliveries = ActionMailer::Base.deliveries.size
@@ -290,19 +286,19 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_equal User::ST_SHADOW, User.find_by_validkey(@u.validkey).state
     assert_equal num_deliveries + 1, ActionMailer::Base.deliveries.size
   end
-  
+
   #test "should_redirect_to_login_if_anonymous_tries_to_access_profile_settings" do
   #  get :preferencias
   #  assert_response :redirect
   #  assert_redirected_to '/cuenta/login'
   #end
-  
+
   #test "should_redirect_to_login_if_anonymous_tries_to_save_settings" do
   #  post :guardar_preferencias
   #  assert_response :redirect
   #  assert_redirected_to '/cuenta/login'
   #end
-  
+
   #  test "should_save_settings_if_logged_in_and_correct_settings" do
   #    test_should_login_valid_user
   #    get :preferencias
@@ -316,25 +312,25 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   #    assert_equal 'soy pro', u.description
   #    File.unlink("#{Rails.root}/public/#{u.avatar}") # TODO debería hacerlo el modelo al destruirlo y deberíamos destruirlo, no?
   #  end
-  
-  
+
+
   # TODO test que solo pasen los params que deben pasar
   # TODO añadir tests para cambio de settings, baja de una cuenta y logout
-  
+
   def logout
     get :logout, {}, {:user => 1}
     assert_redirected_to '/'
     # TODO necesitamos integration testing para confirmar que logout funciona
   end
-  
-  # TODO test método GET 
+
+  # TODO test método GET
   test "should_not_autologin_if_invalid_client_cookie" do
-    @request.cookies['ak'] = 'foobar'    
+    @request.cookies['ak'] = 'foobar'
     get :login
     assert_response :success
     assert_nil session[:user]
   end
-  
+
   test "should_not_autologin_if_client_cookie_non_existant_in_db" do
     akey = AutologinKey.find_by_key('05e3ab2d90b022d7bf1b3782dc0fd2e2aa7cc926')
     akey.destroy if akey
@@ -343,24 +339,23 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_response :success
     assert_nil session[:user]
   end
-  
+
   #test "should_not_autologin_if_client_cookie_has_expired" do
   #end
-  
+
   test "should_autologin_and_redirect_if_sending_validkey_as_param" do
     get :login, { :vk => User.find(1).validkey }
     assert_response :redirect
-    # assert_redirected_to
-    assert !(/\?vk=([a-f0-9]{32})/ =~ @response.redirected_to)
+    # assert !(/\?vk=([a-f0-9]{32})/ =~ @response.redirected_to)
     assert_not_nil session[:user]
     assert_equal 1, session[:user]
   end
-  
+
   test "should_redirect_if_authed_and_sending_validkey_as_param" do
-    sym_login 1 
+    sym_login 1
     test_should_autologin_and_redirect_if_sending_validkey_as_param
   end
-  
+
   test "should_autologin_if_client_cookie_is_set_and_exists_in_db" do
     k = '05e3ab2d90b022d7bf1b3782dc0fd2e2aa7cc926'
     akey = AutologinKey.find_by_key(k)
@@ -371,7 +366,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_not_nil session[:user]
     assert_equal 1, session[:user]
   end
-  
+
   test "should_not_autologin_with_unconfirmed_user" do
     test_should_autologin_if_client_cookie_is_set_and_exists_in_db
     u = User.find(1)
@@ -381,7 +376,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_redirected_to '/cuenta/login'
     assert_nil session[:user]
   end
-  
+
   test "should_not_autologin_with_banned_user" do
     test_should_autologin_if_client_cookie_is_set_and_exists_in_db
     u = User.find(1)
@@ -391,7 +386,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_redirected_to '/cuenta/login'
     assert_nil session[:user]
   end
-  
+
   test "should_not_autologin_with_disabled_user" do
     test_should_autologin_if_client_cookie_is_set_and_exists_in_db
     u = User.find(1)
@@ -401,7 +396,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_redirected_to '/cuenta/login'
     assert_nil session[:user]
   end
-  
+
   test "should_logout_active_user_if_just_banned" do
     test_should_autologin_if_client_cookie_is_set_and_exists_in_db
     u = User.find(1)
@@ -411,7 +406,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_redirected_to'/cuenta/login'
     assert_nil session[:user]
   end
-  
+
   test "should_touch_if_autologged_in" do
     u = User.find(1)
     u.lastseen_on = 1.day.ago
@@ -423,24 +418,24 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     # (probablemente por redondeos)
     # nota: pasamos a i porque hay discrepancia de milisegundos entre los tiempos de postgresql y los tiempos de ruby
   end
-  
+
   test "should_confirm_new_account_if_valid_confirm_key" do
     test_should_create_user_if_everything_is_valid
-    
+
     @u.change_internal_state('unconfirmed')
-    
+
     post :do_confirmar, {:k => @u.validkey, :email => @u.email}, {}
     assert_redirected_to '/cuenta'
     assert_equal User::ST_SHADOW, User.find_by_validkey(@u.validkey).state
   end
-  
+
   test "should_confirm_new_account_if_valid_confirm_key_but_with_extra_spaces" do
     test_should_create_user_if_everything_is_valid
     post :do_confirmar, {:k => " #{@u.validkey} ", :email => @u.email}, {}
     assert_redirected_to '/cuenta'
     assert_equal User::ST_SHADOW, User.find_by_validkey(@u.validkey).state
   end
-  
+
   test "should_not_confirm_new_account_if_invalid_confirm_key" do
     test_should_create_user_if_everything_is_valid
     @u.update_attributes(:state => User::ST_UNCONFIRMED)
@@ -450,46 +445,46 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     u = User.find_by_login('chindasvinto')
     assert_equal User::ST_UNCONFIRMED, u.state
   end
-  
+
   test "should_send_reset_email_if_valid_login_or_email" do
     num_deliveries = ActionMailer::Base.deliveries.size
     post :do_olvide_clave, {:login => 'superadmin'}
     assert_equal num_deliveries + 1, ActionMailer::Base.deliveries.size
     assert_template 'cuenta/cuenta/do_olvide_clave'
-    
+
     post :do_olvide_clave, {:email => 'superadmin@gamersmafia.com'}
     assert_equal num_deliveries + 2, ActionMailer::Base.deliveries.size
     assert_template 'cuenta/cuenta/do_olvide_clave'
-    
+
     post :do_olvide_clave, {:email => 'SUPERADMIN@GAMERSMAFIA.COM'}
     assert_equal num_deliveries + 3, ActionMailer::Base.deliveries.size
     assert_template 'cuenta/cuenta/do_olvide_clave'
   end
-  
+
   test "should_not_send_reset_email_if_invalid_login_or_email" do
     num_deliveries = ActionMailer::Base.deliveries.size
-    
+
     post :do_olvide_clave, {:login => 'superadminaaa'}
     assert_redirected_to :action => :olvide_clave
     assert_equal num_deliveries, ActionMailer::Base.deliveries.size
-    
+
     post :do_olvide_clave, {:email => 'superadminaaaa@gamersmafia.com'}
     assert_redirected_to :action => :olvide_clave
     assert_equal num_deliveries, ActionMailer::Base.deliveries.size
     # assert_template 'cuenta/cuenta/olvide_clave'
   end
-  
+
   test "should_not_send_reset_email_after_three_times_in_5_mins" do
     num_deliveries = ActionMailer::Base.deliveries.size
     test_should_send_reset_email_if_valid_login_or_email
     assert_equal num_deliveries + 3, ActionMailer::Base.deliveries.size
-    
+
     num_deliveries = ActionMailer::Base.deliveries.size
     post :do_olvide_clave, {:email => 'superadmin@gamersmafia.com'}
     assert_equal num_deliveries, ActionMailer::Base.deliveries.size
     assert_redirected_to :action => :olvide_clave
   end
-  
+
   test "should_send_reset_email_after_two_times_and_more_than_5_mins" do
     num_deliveries = ActionMailer::Base.deliveries.size
     test_should_send_reset_email_if_valid_login_or_email
@@ -497,7 +492,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     User.db_query("UPDATE ip_passwords_resets_requests SET created_on = now() - '1 year'::interval")
     test_should_send_reset_email_if_valid_login_or_email
   end
-  
+
   test "should_allow_to_reset_if_valid_reset_key" do
     test_should_send_reset_email_if_valid_login_or_email
     u = User.find_by_login('superadmin')
@@ -505,7 +500,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_response :success
     assert_template 'cuenta/cuenta/reset'
   end
-  
+
   test "should_reset_if_valid_key" do
     test_should_send_reset_email_if_valid_login_or_email
     u = User.find_by_login('superadmin')
@@ -514,7 +509,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     u = User.find_by_login('superadmin')
     assert_equal Digest::MD5.hexdigest('brahman'), u.password
   end
-  
+
   test "should_not_reset_if_valid_key_but_invalid_passwords" do
     test_should_send_reset_email_if_valid_login_or_email
     u = User.find_by_login('superadmin')
@@ -524,7 +519,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     u = User.find_by_login('superadmin')
     assert(Digest::MD5.hexdigest('brahman') != u.password)
   end
-  
+
   test "should_not_reset_if_invalid_key" do
     test_should_send_reset_email_if_valid_login_or_email
     u = User.find_by_login('superadmin')
@@ -534,7 +529,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     u = User.find_by_login('superadmin')
     assert(Digest::MD5.hexdigest('brahman') != u.password)
   end
-  
+
   test "should_update_newemail_if_given" do
     u = User.find(1)
     sym_login 1
@@ -543,20 +538,20 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     u.reload
     assert_equal 'superadmin2@example.com', u.newemail
   end
-  
-  
+
+
   test "should_show_mis_borradores" do
     sym_login 1
     get :mis_borradores
     assert_response :success
   end
-  
+
   test "should_show_estadisticas" do
     sym_login 1
     get :estadisticas
     assert_response :success
   end
-  
+
   test "should_show_estadisticas_and_not_reset" do
     u = User.find(1)
     faith_points = u.faith_points
@@ -566,19 +561,19 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     u.reload
     assert_equal faith_points, u.faith_points
   end
-  
+
   test "should_show_estadisticas_hits" do
     sym_login 1
     get :estadisticas_hits
     assert_response :success
   end
-  
+
   test "should_show_estadisticas_registros" do
     sym_login 1
     get :estadisticas_registros
     assert_response :success
   end
-  
+
   test "should_update_profile_with_youtube_in_description" do
     sym_login 1
     u = User.find(1)
@@ -593,7 +588,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert u.profile_last_updated_on >= 1.minute.ago
     assert_equal youtube_expec, u.description
   end
-  
+
   test "should_save_tracker_config" do
     sym_login 1
     u = User.find(1)
@@ -607,7 +602,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_equal true, u.comment_adds_to_tracker_enabled
     assert_equal true, u.tracker_autodelete_old_contents
   end
-  
+
   test "should_save_notifications_options_without_newprofile_signatures" do
     sym_login 1
     u = User.find(1)
@@ -624,24 +619,24 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_equal true, u.notifications_newregistrations
     assert_equal true, u.notifications_trackerupdates
   end
-  
+
   test "tracker_should_work" do
     sym_login 1
     get :tracker
     assert_response :success
   end
-  
+
   test "configuracion_should_work" do
     sym_login 1
     get :configuracion
     assert_response :success
   end
-  
+
   test "confirmar_should_work" do
     get :confirmar
     assert_response :success
   end
-  
+
   test "resendnewmail_should_work" do
     sym_login 1
     assert_count_increases(ActionMailer::Base.deliveries) do
@@ -649,45 +644,45 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
       assert_redirected_to '/cuenta'
     end
   end
-  
+
   test "perfil_should_work" do
     sym_login 1
     get :perfil
     assert_response :success
   end
-  
+
   test "notificaciones_should_work" do
     sym_login 1
     get :notificaciones
     assert_response :success
   end
-  
+
   test "imagenes_should_work" do
     sym_login 1
     get :imagenes
     assert_response :success
   end
-  
+
   test "subir_imagen_should_work" do
     sym_login 1
     @u1 = User.find(1)
     f_count = @u1.get_my_files.size
     post :subir_imagen, { :file => fixture_file_upload('files/buddha.jpg', 'image/jpeg') }
-    assert_equal f_count + 1, @u1.get_my_files.size  
+    assert_equal f_count + 1, @u1.get_my_files.size
     assert_response :redirect
   end
-  
+
   test "subir_imagen_shouldnt_throw_except_if_no_image" do
     sym_login 1
     @u1 = User.find(1)
     f_count = @u1.get_my_files.size
     [nil, ''].each do |t|
       post :subir_imagen, { :file =>  t}
-      assert_equal f_count, @u1.get_my_files.size  
+      assert_equal f_count, @u1.get_my_files.size
       assert_response :redirect
     end
   end
-  
+
   test "borrar_imagen_should_work" do
     test_subir_imagen_should_work
     f_count = @u1.get_my_files.size
@@ -695,9 +690,9 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_response :success
     assert_equal f_count - 1, @u1.get_my_files.size
   end
-  
+
   test "save_avatar_should_work" do
-    
+
     @u1 = User.find(1)
     @u1.change_avatar
     assert_nil @u1.avatar_id
@@ -713,7 +708,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     @u1.reload
     assert_equal 1, @u1.avatar_id
   end
-  
+
   test "should_update_custom_avatar" do
     sym_login 1
     u1 = User.find(1)
@@ -724,13 +719,13 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     av.reload
     assert av.path.include?('buddha.jpg')
   end
-  
+
   test "avatar_should_work" do
     sym_login 1
     get :avatar
     assert_response :success
   end
-  
+
   test "do_change_email_should_work" do
     @u1 = User.find(1)
     @u1.newemail = 'fulanoides@dadad.com'
@@ -740,7 +735,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     @u1.reload
     assert_equal 'fulanoides@dadad.com', @u1.email
   end
-  
+
   test "resendsignup_should_work" do
     u = User.find_by_login('unconfirmed_user')
     assert_not_nil u
@@ -748,7 +743,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
       post :resendsignup, {:post => { :email => u.email }}
     end
   end
-  
+
   test "set_default_portal" do
     assert_raises(AccessDenied) { get :set_default_portal }
     sym_login 1
@@ -757,18 +752,18 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     u1 = User.find(1)
     assert_equal 'arena', u1.default_portal
   end
-  
+
   test "shouldnt delete if invalid password" do
     sym_login 1
     post :borrar
     assert_response :success
     assert_not_equal User::ST_DELETED, User.find(1).state
-    
+
     post :borrar, :password => 'dadsdasd'
     assert_response :success
     assert_not_equal User::ST_DELETED, User.find(1).state
   end
-  
+
   test "should delete if valid password" do
     sym_login 1
     post :borrar, :password => 'lalala'

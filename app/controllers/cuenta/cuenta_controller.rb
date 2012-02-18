@@ -584,7 +584,7 @@ class Cuenta::CuentaController < ApplicationController
     @hackview.strip_tags(html)
   end
 
-  def strip_tags_allowed(html, allowed=CorereactorHelper::DEF_ALLOW_TAGS)
+  def strip_tags_allowed(html, allowed=None)
     @hackview ||= ActionView::Base.new
     @hackview.strip_tags_allowed(html, allowed)
   end

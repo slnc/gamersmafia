@@ -57,6 +57,18 @@ module ApplicationHelper
     end
   end
 
+  def observe_field(field, opts={})
+    out = <<-END
+      jQuery(function($) {
+        $("##{field}").change(function() {
+          $.get("#{opts[:url]}", function(data) {
+            $("##{opts[:update]}").html(data);
+          });
+        });
+      })
+    END
+  end
+
   def active_sawmode
     if controller.active_sawmode
       @active_sawmode
