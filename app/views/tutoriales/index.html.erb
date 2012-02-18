@@ -84,8 +84,8 @@ end %>
 
 
 <%
-tutorials = Tutorial.in_term(@category).published.find(
-    :all, :page => params[:page], :per_page => 30, :order => 'LOWER(title)')
+tutorials = Tutorial.in_term(@category).published.paginate(
+  :page => params[:page], :per_page => 30, :order => 'LOWER(title)')
 
 if tutorials.size > 0 then %>
 <%mftext('Tutoriales en esta categoría') do %>

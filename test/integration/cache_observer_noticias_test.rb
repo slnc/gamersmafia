@@ -19,7 +19,7 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
 
   # MAIN
   test "should_clear_cache_on_main_after_publishing_news" do
-    n = News.in_portal(portal).find(:pending)[0]
+    n = News.in_portal(portal).pending.find(:all)[0]
     assert_not_nil n
     go_to '/noticias', 'noticias/index'
     assert_cache_exists "#{portal.code}/noticias/index/page_"

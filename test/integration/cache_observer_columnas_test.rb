@@ -9,7 +9,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
 
   # MAIN
   test "should_clear_cache_on_main_after_publishing_column" do
-    n = Column.find(:pending)[0]
+    n = Column.pending.find(:all)[0]
     assert_not_nil n
     go_to '/columnas', 'columnas/index'
     assert_cache_exists "#{portal.code}/columnas/index/page_"
@@ -52,7 +52,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
     assert_not_nil n
     go_to Routing.gmurl(n), 'columnas/show'
     assert_cache_exists "#{pp.code}/columnas/show/latest_by_author_#{n.user_id}"
-    n2 = pp.column.find(:pending, :conditions => ['contents.user_id = ?', n.user_id])[0]
+    n2 = Column.in_portal(pp).pending.find(:all, :conditions => ['user_id = ?', n.user_id])[0]
     publish_content n2
     assert_cache_dont_exist "#{pp.code}/columnas/show/latest_by_author_#{n.user_id}"
   end

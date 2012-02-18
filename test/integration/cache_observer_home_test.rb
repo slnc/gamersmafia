@@ -53,7 +53,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
 
   test "should_clear_funthings_cache_after_publishing_funthing" do
     host! App.domain_bazar
-    n = Funthing.find(:pending)[0]
+    n = Funthing.pending.find(:all)[0]
     assert_not_nil n
     get '/'
     assert_response :success, response.body

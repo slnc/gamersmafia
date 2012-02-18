@@ -8,16 +8,17 @@ class BetsTicket < ActiveRecord::Base
   has_bank_ammount_from_user
 
   def after_ammount_update
-    if self.ammount_changed?
-      bo = BetsOption.find(self.bets_option_id)
-      bo.ammount ||= 0
-      bet = bo.bet
-      bet.total_ammount ||= 0
-      bo.ammount += self.ammount - self.ammount_was
-      bet.total_ammount += self.ammount - self.ammount_was
-      bo.save
-      bet.save
-    end
+    bo = self.bets_option
+    bo.ammount = BetsTicket.sum(
+        :ammount,
+        :conditions => ["bets_option_id = ?", self.bets_option_id])
+    bo.save
+
+    bet = bo.bet
+    bet.total_ammount = BetsOption.sum(
+        :ammount, :conditions => ["bet_id = ?", bet.id])
+    bet.save
+
     true
   end
 

@@ -252,8 +252,9 @@ class Bet < ActiveRecord::Base
       Bank.transfer(:bank, _users[0], user_earnings,
           "Solo tú participaste en la apuesta \"#{self.resolve_hid}\"")
     elsif _users.size > 1
-      conditions = "bet_id = #{self.id} AND id <> #{winning_bets_option_id}"
-      amount_on_loser = BetsOption.sum(:ammount, :conditions => conditions)
+      amount_on_loser = BetsOption.sum(
+          :ammount, :conditions => ["bet_id = ? AND id <> ?", self.id,
+                                    winning_bets_option_id])
       return if amount_on_loser == 0
 
       winning_option = BetsOption.find(winning_bets_option_id)
