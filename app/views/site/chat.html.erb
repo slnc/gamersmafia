@@ -1,7 +1,7 @@
 <% generic_support do %>
   <%mftext('Online') do %>
   <ul class="skeletal">
-    <% 
+    <%
     now = Time.now.to_i
     max = 60 * 30
     for u in @online_users %>
@@ -24,7 +24,11 @@
   <li id="chatline<%=chatline.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 0px; margin-bottom: 0px;">
     <div class="avatar" style="float: left; margin-right: 3px;"><img style="border: 1px solid black; width: 32px; height: 32px;" src="<%=ASSET_URL%>/cache/thumbnails/f/32x32<%=chatline.user.show_avatar%>" /></div>
     <div style="float: right; margin-right: 5px;" class="infoinline"><% if user_is_authed and @user.has_admin_permission?(:capo) then %>
-      <%=link_to_remote('x', :update => 'bigchat', :url => "/site/del_chatline/#{chatline.id}?time=#{now}")%> | 
+      <%=link_to(
+          'x',
+          :update => 'bigchat',
+          :url => "/site/del_chatline/#{chatline.id}?time=#{now}",
+          :remote => true)%> |
     <% end -%>
     <%=print_tstamp(chatline.created_on, 'time')%></div>
   <div style="padding-left: 40px;">
@@ -32,7 +36,7 @@
   	<% if chatline.user_id != 8 then %><strong><%=user_link(chatline.user)%></strong>
 	<% else %>
 	&lt;<%=chatline.line.match(/^<([^>]+)>/)[1]%>&gt;
-	<% end -%></div>: 
+	<% end -%></div>:
 	<% if chatline.user_id != 8 then %>
 		<%=auto_link(smilelize(Comments::formatize(chatline.line)))%>
 	<% else %>
@@ -45,7 +49,7 @@
 <script type="text/javascript">
 //<![CDATA[
 setInterval(function(){
-	$j.get('/site/update_chatlines?time='+cur_time_chat, function(data) { 
+	$j.get('/site/update_chatlines?time='+cur_time_chat, function(data) {
 		$j('#bigchat').html(data);
 	})
 }, 15000);
@@ -57,7 +61,7 @@ setInterval(function(){
 <script type="text/javascript">
 function send_chatline() {
 	$j.get('/site/new_chatline?time='+cur_time_chat, {line: $j('#newline').val()}, function(data) { $j('#bigchat').html(data); });
-	return false;		
+	return false;
 }
 </script>
 <form id="uberform" action="/site/new_chatline?time=1154219146" method="post" onsubmit="return send_chatline();">

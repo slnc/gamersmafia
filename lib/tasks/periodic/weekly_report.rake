@@ -4,8 +4,10 @@ namespace :gm do
     require 'app/controllers/application_controller'
     nagato = User.find_by_login!(:nagato)
     Faction.find_unorphaned.each do |f|
-      Notification.deliver_faction_summary(f.boss, { :sender => nagato, :faction => f }) if f.boss
-      Notification.deliver_faction_summary(f.underboss, { :sender => nagato, :faction => f }) if f.underboss   
+      Notification.faction_summary(
+          f.boss, :sender => nagato, :faction => f).deliver if f.boss
+      Notification.faction_summary(
+          f.underboss, :sender => nagato, :faction => f).deliver if f.underboss
     end
   end
 end

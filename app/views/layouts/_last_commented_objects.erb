@@ -1,6 +1,6 @@
 <div id="lastcommented-bg-text"></div>
 
-<% cache("/#{@controller.portal_code}/site/last_commented_objects") do %>
+<% cache("/#{controller.portal_code}/site/last_commented_objects") do %>
 <% mfcontents_list('Últimos comentarios',
 		get_last_commented_contents,
 		:id => 'lastcomments',

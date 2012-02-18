@@ -28,10 +28,6 @@ class CommentsTest < ActiveSupport::TestCase
     assert_equal "<a href=\"http://example.com/1\">hello</a> <a href=\"http://example.com/2\">world</a>", Comments.formatize("[url=http://example.com/1]hello[/url] [url=http://example.com/2]world[/url]")
   end
 
-  #test "formatize_should_close_unclosed_tags" do
-  #  t_unclosed = '[b]hola'
-  #  assert_equal '[b]hola[/b]'
-  #end
   test "should fix incorrectly nested bbcodes" do
     assert_equal "[b]hola[/b]", Comments.fix_incorrect_bbcode_nesting("[b]hola")
     assert_equal '[B]hola[/B]', Comments.fix_incorrect_bbcode_nesting('[B]hola')
@@ -39,15 +35,33 @@ class CommentsTest < ActiveSupport::TestCase
     assert_equal '[URL=http://google.com]hola[img]aa[/img][img][/img][img][/img][/URL]', Comments.fix_incorrect_bbcode_nesting('[URL=http://google.com]hola[img]aa[/img][/img][/img]')
   end
 
-  test "should be careful of xss in url tags" do
-    assert_equal "[url=blag\" onclick=\"alert('foo');]Click me![/url]", Comments.formatize("[url=blag\" onclick=\"alert('foo');]Click me![/url]")
-    assert_equal "<a href=\"http://example.com/\">Click me!\"&gt;&lt;script type=\"text/javascript\"&gt;&lt;/script&gt;</a>",
-                 Comments.formatize("[url=http://example.com/]Click me!\"><script type=\"text/javascript\"></script>[/url]")
-    invalid_img_tag = "[img]http://www.frank151.com/wp-content/uploads/2009/07/chief_wiggum.png\" onload=\"alert('foo');[/img]"
-    assert_equal invalid_img_tag, Comments.formatize(invalid_img_tag)
-
+  test "xss1 in url tag" do
+    assert_equal(
+      "[url=blag\" onclick=\"alert('foo');]Click me![/url]",
+      Comments.formatize("[url=blag\" onclick=\"alert('foo');]Click me![/url]"))
   end
 
+  test "xss2 in url tag" do
+    assert_equal(
+      "[url=blag\" onclick=\"alert('foo');]Click me![/url]",
+      Comments.formatize("[url=blag\" onclick=\"alert('foo');]Click me![/url]"))
+  end
+
+  test "xss3 in url tag" do
+    assert_equal(
+        "[url=http://example.com/]Click me!\"&gt;&lt;script type=\"text/" +
+        "javascript\"&gt;&lt;/script&gt;[/url]",
+      Comments.formatize(
+          "[url=http://example.com/]Click me!\"><script type=" +
+          "\"text/javascript\"></script>[/url]"))
+  end
+
+  test "invalid img tag" do
+    invalid_img_tag = (
+        "[img]http://www.frank151.com/wp-content/uploads/2009/07/chief_wiggum" +
+        ".png\" onload=\"alert('foo');[/img]")
+    assert_equal invalid_img_tag, Comments.formatize(invalid_img_tag)
+  end
 
   # TODO
   def test_fix_incorrect_bbcode_nesting
@@ -71,5 +85,11 @@ class CommentsTest < ActiveSupport::TestCase
     c = Comment.new(:content_id => n65.unique_content.id, :user_id => 1, :host => '127.0.0.1', :comment => 'comentario')
     assert c.save
     assert Comments.user_can_edit_comment(u59, c, bd.user_is_moderator(u59))
+  end
+
+  test "should replace all urls in a line" do
+    assert_equal(
+        "<a href=\"foo\">fóo</a> <a href=\"bar\">bAr</a>",
+        Comments.formatize('[url=foo]fóo[/url] [url=bar]bAr[/url]'))
   end
 end

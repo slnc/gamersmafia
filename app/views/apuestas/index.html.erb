@@ -1,5 +1,5 @@
 <% generic_support do %>
-<% cache_file = Bet::TOP_BET_WINNERS 
+<% cache_file = Bet::TOP_BET_WINNERS
 if File.exists?(cache_file) then %>
 <% cache("common/apuestas/los_que_mas_ganan_#{1.hour.ago.strftime('%Y-%m-%d')}") do %>
 <% mftext('Top 10 mensual') do %>
@@ -16,8 +16,8 @@ trimmed = Array.new(v[:individual].reverse).delete_if { |c| stop_deleting = true
 sum = 0
 won = 0
 lost = 0
-v[:individual].each do |s| 
-  sum += s 
+v[:individual].each do |s|
+  sum += s
   if s < 0
 	  lost += -s
   else
@@ -35,7 +35,7 @@ end
 	<td style="margin-right: 2px;"><div class="infoinline" style="line-height: 10px; font-weight: bold; float: right; text-align: right; font-size: 8px;">
 	<span class="supermini good" style="color: #00790b;"><%=won%></span><br />
 	<span class="supermini bad" style="color: #a90014;"><%=lost%></span></div></td>
-	
+
 </tr>
 <% end -%>
 </table>
@@ -45,22 +45,22 @@ end
 <% end %><%# if File.exists -%>
 
   <% cache("/common/apuestas/index/stats_laterales_#{Time.now.to_i/86400}") do %>
-  
+
   <%mftext("#{gmd12} movidos en la última semana") do %>
-  <table>  
+  <table>
   <% for dbentry in dbinfo = User.db_query("SELECT sum(total_ammount), date_trunc('day', closes_on) FROM bets WHERE closes_on < now() and state = #{Cms::PUBLISHED} group by date_trunc('day', closes_on) order by date_trunc('day', closes_on) DESC LIMIT 7;") %>
   <tr class="<%=oddclass%>">
     <td style="width: 90px;"><%=print_tstamp(Time.local(*ParseDate.parsedate(dbentry['date_trunc'])), 'date')%></td>
     <td class="timestamp"><%=dbentry['sum'].to_i%><%=gmd12%></td>
   </tr>
-  <% end -%>  
-  </table>
-  
   <% end -%>
-  
+  </table>
+
+  <% end -%>
+
   <%mftext('Los que más apuestan') do %>
   <table>
-    <% for dbentry in dbinfo = User.db_query("SELECT sum(a.ammount), b.login FROM bets_tickets a join users b on a.user_id = b.id group by (b.login) order by sum(a.ammount) DESC LIMIT 10") 
+    <% for dbentry in dbinfo = User.db_query("SELECT sum(a.ammount), b.login FROM bets_tickets a join users b on a.user_id = b.id group by (b.login) order by sum(a.ammount) DESC LIMIT 10")
     u = User.find_by_login(dbentry['login'])%>
   <tr class="<%=oddclass%>">
     <td><%=member_state(u.hstate)%> <%=link_to u.login, gmurl(u) %><br /><div style="text-align: right;"><%=dbentry['sum'].to_i%><%=gmd12%></div></td>
@@ -79,7 +79,10 @@ end
     <th class="right w100"><%=gmd11%> apostados</th>
     <th class="right timestamp" style="width: 150px;">Termina en</th>
   </tr>
-  <% controller.portal.bet.find(:published, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC').each do |bet| %>
+  <% Bet.in_portal(controller.portal).published.find(
+      :all,
+      :conditions => Bet::OPEN_BETS_SQL,
+      :order => 'closes_on ASC, id ASC').each do |bet| %>
   <tr class="<%=oddclass%>">
     <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
     <td class="right"><%=bet.total_ammount.to_i%></td>
@@ -95,7 +98,10 @@ end
     <th>Apuesta</th>
     <th style="width: 125px;"><%=gmd11%> apostados</th>
   </tr>
-  <% controller.portal.bet.find(:published, :conditions => Bet::AWAITING_RESULT_SQL, :order => 'closes_on DESC, id DESC').each do |bet| %>
+  <% Bet.in_portal(controller.portal).published.find(
+      :all,
+      :conditions => Bet::AWAITING_RESULT_SQL,
+      :order => 'closes_on DESC, id DESC').each do |bet| %>
   <tr class="<%=oddclass%>">
     <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
     <td class="right"><%=bet.total_ammount%></td>
@@ -111,8 +117,9 @@ end
     <th style="width: 125px;"><%=gmd11%> apostados</th>
     <th class="timestamp">Terminó hace</th>
   </tr>
-  <% cache("/#{@controller.portal_code}/apuestas/index/closed_#{Time.now.to_i/3600}") do %>
-  <% Bet.in_term(controller.portal.bet).closed_bets.find(:published, :limit => 20).each do |bet| %>
+  <% cache("/#{controller.portal_code}/apuestas/index/closed_#{Time.now.to_i/3600}") do %>
+  <% Bet.in_term(controller.portal.bet).closed_bets.published.find(
+      :all, :limit => 20).each do |bet| %>
     <tr class="<%=oddclass%>">
       <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
       <td class="right"><%=bet.total_ammount.to_i%></td>

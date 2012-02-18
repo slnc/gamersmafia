@@ -9,15 +9,15 @@ class Admin::UsuariosController < ApplicationController
   before_filter :only => [ :report, :set_antiflood_level ] do |c|
     raise AccessDenied unless c.user && c.user.is_hq?
   end
-  
-  verify :method => :post, :only => [ :update, :check_karma, :check_faith, :check_registered_on ], :redirect_to => '/admin/usuarios'
-  
+
+  #verify :method => :post, :only => [ :update, :check_karma, :check_faith, :check_registered_on ], :redirect_to => '/admin/usuarios'
+
   def index
     order_by = 'id DESC'
     conditions = ''
     if params[:s]
       params[:s].strip!
-      conditions = ['lower(login) like lower(?) or lower(email) like lower(?) or lower(firstname) like lower(?) or lower(lastname) like lower(?) or ipaddr LIKE ?', 
+      conditions = ['lower(login) like lower(?) or lower(email) like lower(?) or lower(firstname) like lower(?) or lower(lastname) like lower(?) or ipaddr LIKE ?',
 				'%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
 				'%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
 				'%' + params[:s].gsub(/[']/) { '\\'+$& } + '%',
@@ -34,23 +34,23 @@ class Admin::UsuariosController < ApplicationController
       smc[:disabled] = "state = #{User::ST_DISABLED}"
       smc[:zombies] = "state = #{User::ST_ZOMBIE}"
       smc[:antiflood] = "state <> #{User::ST_UNCONFIRMED} and antiflood_level > -1"
-      
+
       conditions = smc.fetch(params[:sm].to_sym)
     end
-    
+
     @users = User.paginate(:page => params[:page], :per_page => 20, :conditions => conditions, :order => order_by)
   end
-	
+
   def ipsduplicadas
   end
-  
+
   def destroy
 	  raise AccessDenied unless @user.is_hq?
     @edituser = User.find_or_404(:first, :conditions => ['id = ? and is_superadmin is false', params[:id]])
     flash[:notice] = "Usuario #{@edituser.login} borrado correctamente." if @edituser.destroy
     redirect_to '/admin/usuarios'
   end
-  
+
   def ban
     @edituser = User.find_or_404(:first, :conditions => ['id = ? and is_superadmin is false', params[:id]])
     @edituser.change_internal_state 'banned'
@@ -58,25 +58,25 @@ class Admin::UsuariosController < ApplicationController
     flash[:notice] = "Usuario <strong>#{@edituser.login}</strong> baneado. Ip <strong>#{@edituser.ipaddr}</strong> baneada para nuevos registros durante 7 días."
     redirect_to '/admin/usuarios'
   end
-  
+
   def edit
     @edituser = User.find(params[:id])
     @title = "Editar usuario #{@edituser.login}"
   end
-  
+
   def update
     u = User.find(params[:id])
-    
+
     if params[:edituser][:faction_id].to_s != u.faction_id.to_s
       Factions::user_joins_faction(u, params[:edituser][:faction_id])
       expire_fragment('/home/index/factions') # TODO esto no debería hacerse aquí
     end
-    
+
     if params[:users_role] && params[:users_role][:role].to_s != '' # añadir rol
       u.users_roles<< UsersRole.create(:role => params[:users_role][:role], :role_data => params[:users_role][:role_data])
     end
-    
-    u.update_admin_permissions(params[:edituser][:admin_permissions]) if params[:edituser][:admin_permissions].to_s != '' 
+
+    u.update_admin_permissions(params[:edituser][:admin_permissions]) if params[:edituser][:admin_permissions].to_s != ''
     if u.update_attributes(params[:edituser].pass_sym(:firstname, :lastname, :login, :antiflood_level, :state, :password, :password_confirmation, :email, :is_hq, :comments_sig))
       flash[:notice] = 'Cambios guardados correctamente.'
       redirect_to :action => 'edit', :id => u.id
@@ -85,17 +85,17 @@ class Admin::UsuariosController < ApplicationController
       render :action => 'edit'
     end
   end
-  
+
   def users_role_destroy
     UsersRole.find(params[:id]).destroy
     render :nothing => true
   end
-  
+
   def check_registered_on
     # trata de buscar la fecha de registro más cercana a la que el usuario
     # empezó a participar
     @edituser = User.find(params[:id])
-    
+
     if @edituser.first_activity < @edituser.created_on then
       @edituser.update_attributes(:created_on => @edituser.first_activity)
       render :layout => false, :action => 'check_registered_on_fixed'
@@ -103,39 +103,39 @@ class Admin::UsuariosController < ApplicationController
       render :layout => false, :action => 'check_registered_on_ok'
     end
   end
-  
+
   def check_karma
     @edituser = User.find(params[:id])
     @kp_previous = @edituser.karma_points
     @edituser.update_attributes(:cache_karma_points => nil)
     @kp_correct = @edituser.karma_points
-    
+
     if @kp_previous != @kp_correct then
       render :layout => false, :action => 'check_karma_fixed'
     else
       render :layout => false, :action => 'check_karma_ok'
     end
   end
-  
+
   def check_faith
     @edituser = User.find(params[:id])
     @fp_previous = @edituser.faith_points
     @edituser.update_attributes(:cache_faith_points => nil)
     @fp_correct = @edituser.faith_points
-    
+
     if @fp_previous != @fp_correct then
       render :layout => false, :action => 'check_faith_fixed'
     else
       render :layout => false, :action => 'check_faith_ok'
     end
   end
-  
+
   def check_gmf
     u = User.find(params[:id])
     @edituser = u
     cash = u.cash
     cash2 = Bank.cash(u)
-    
+
     if cash != cash2 then
       User.db_query("UPDATE users SET cash = #{cash2} WHERE id = #{u.id}")
       @edituser.reload
@@ -146,25 +146,25 @@ class Admin::UsuariosController < ApplicationController
       render :layout => false, :action => 'check_gmf_ok'
     end
   end
-  
+
   def del_comments
     params[:comments].each { |c_id| Comment.find(c_id.to_i).mark_as_deleted }
     flash[:notice] = "Comentarios borrados correctamente"
     redirect_to "/admin/usuarios/edit/#{params[:user_id]}#comments"
   end
-  
+
   def reset_avatar
     u = User.find(params[:id])
     u.change_avatar
     redirect_to "/admin/usuarios/edit/#{params[:id]}"
   end
-  
-  
+
+
   def ban_request
     u = User.find_by_login!(params[:login])
     @title = "Banear a #{u.login}"
   end
-  
+
   def update_public_ban_reason
     u = User.find(params[:id])
     if u.pref_public_ban_reason = params[:public_ban_reason]
@@ -174,12 +174,12 @@ class Admin::UsuariosController < ApplicationController
     end
     redirect_to "/admin/usuarios/edit/#{params[:id]}"
   end
-  
+
   def confirmar_ban_request
     @br = BanRequest.find(params[:id])
     @title = "Ban #{@br.id}"
   end
-  
+
   def create_ban_request
     params[:public_ban_reason] = [] if params[:public_ban_reason].nil?
     require_admin_permission(:capo)
@@ -199,7 +199,7 @@ class Admin::UsuariosController < ApplicationController
     end
     redirect_to gmurl(u)
   end
-  
+
   def create_unban_request
     require_admin_permission(:capo)
     u = User.find_by_login!(params[:login])
@@ -212,7 +212,7 @@ class Admin::UsuariosController < ApplicationController
     end
     redirect_to gmurl(u)
   end
-  
+
   def confirm_ban_request
     br = BanRequest.find(:first, :conditions => ['id = ? and user_id <> ? and confirming_user_id is null', params[:id], @user.id])
     raise ActiveRecord::RecordNotFound unless br
@@ -223,7 +223,7 @@ class Admin::UsuariosController < ApplicationController
     end
     redirect_to "/slog/capo"
   end
-  
+
   def confirm_unban_request
     br = BanRequest.find(:first, :conditions => ['id = ? and unban_user_id <> ? and unban_confirming_user_id is null', params[:id], @user.id])
     raise ActiveRecord::RecordNotFound unless br
@@ -234,8 +234,8 @@ class Admin::UsuariosController < ApplicationController
     end
     redirect_to "/slog/capo"
   end
-  
-  def cancel_ban_request    
+
+  def cancel_ban_request
     br = BanRequest.find(:first, :conditions => ['id = ? and user_id = ? and confirming_user_id is null', params[:id], @user.id])
     raise ActiveRecord::RecordNotFound unless br
     if br.destroy
@@ -245,7 +245,7 @@ class Admin::UsuariosController < ApplicationController
     end
     redirect_to "/site/slog"
   end
-  
+
   def send_hq_invitation
     recipient = User.find(params[:id])
     raise ActiveRecord::RecordNotFound unless recipient
@@ -265,7 +265,7 @@ Quedo a la espera de tu respuesta :)")
     end
     redirect_to "/admin/usuarios/edit/#{params[:id]}"
   end
-  
+
   def set_antiflood_level
     u = User.find(params[:user_id])
     if u.impose_antiflood(params[:antiflood_level].to_i, @user)
@@ -275,7 +275,7 @@ Quedo a la espera de tu respuesta :)")
     end
     redirect_to gmurl(u)
   end
-  
+
   def clear_description
     u = User.find(params[:id])
     if u.update_attributes(:description => nil)
@@ -285,19 +285,19 @@ Quedo a la espera de tu respuesta :)")
     end
     redirect_to gmurl(u)
   end
-  
+
   def clear_photo
     u = User.find(params[:id])
     User.db_query("UPDATE users SET photo = null where id = #{u.id}")
     flash[:notice] = "Foto borrada correctamente."
     redirect_to gmurl(u)
   end
-  
+
   def report
     @curuser = User.find(params[:id])
     if @user.is_hq?
-      reason_str = (params[:reason] && params[:reason].to_s != '' && params[:reason].to_s != 'Razón..') ? " (#{params[:reason]})" : '' 
-      
+      reason_str = (params[:reason] && params[:reason].to_s != '' && params[:reason].to_s != 'Razón..') ? " (#{params[:reason]})" : ''
+
       sl = SlogEntry.create({:type_id => SlogEntry::TYPES[:user_report], :reporter_user_id => @user.id, :headline => "Perfil de <strong><a href=\"#{gmurl(@curuser)}\">#{@curuser.login}</a></strong> reportado #{reason_str} por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"})
       if sl.new_record?
         flash[:error] = "Error al reportar al usuario:<br />#{sl.errors.full_messages_html}"

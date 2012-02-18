@@ -2,7 +2,8 @@
 
 <div class="facebox-content">
 <div id="aaa"></div>
-<%=form_remote_tag({:update => 'aaa', :url => "/cuenta/mensajes/create_message", :evalScripts => true})%>
+<%=form_tag({:update => 'aaa', :url => "/cuenta/mensajes/create_message",
+    :evalScripts => true, :remote => true})%>
 <input type="hidden" name="message[message_type]" value="<%=Message::R_USER%>" />
 <input type="hidden" name="message[recipient_user_login]" value="<%=@curuser.login%>" />
 <input type="hidden" name="ajax" value="1" />

@@ -4,7 +4,7 @@ class UsersGuid < ActiveRecord::Base
   belongs_to :game
   validates_uniqueness_of :guid, :scope => :game_id
 
-  def self.find_last(user, game)
+  def self.find_last_by(user, game)
     find(:first, :conditions => ['user_id = ? and game_id = ?', user.id, game.id], :order => 'created_on DESC')
   end
 

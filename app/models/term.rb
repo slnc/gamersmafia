@@ -1,14 +1,195 @@
+require 'has_slug'
+
 class Term < ActiveRecord::Base
+  VALID_TAXONOMIES = %w(
+      ColumnsCategory
+      ContentsTag
+      DemosCategory
+      DownloadsCategory
+      EventsCategory
+      ImagesCategory
+      InterviewsCategory
+      NewsCategory
+      QuestionsCategory
+      ReviewsCategory
+      TopicsCategory
+      TutorialsCategory
+  )
+
+  acts_as_rootable
+  acts_as_tree :order => 'name'
+
+  has_slug :name
+  file_column :image
+
+  before_save :check_references_to_ancestors
+  before_save :copy_parent_attrs
+
+  # VALIDATES siempre los últimos
+  validates_format_of :slug, :with => /^[a-z0-9_.-]{0,50}$/
+  validates_format_of :name, :with => /^.{1,100}$/
+  validates_presence_of :type
+  plain_text :name, :description
+  validates_uniqueness_of :name, :scope => [:parent_id, :taxonomy]  # missing :type
+  validates_uniqueness_of :slug, :scope => [:parent_id, :taxonomy]  # missing :type
+  before_save :check_scope_if_toplevel
+  before_save :check_taxonomy
+
+  def self.taxonomies
+    VALID_TAXONOMIES
+  end
+
+  def to_param
+    self.slug
+  end
+
+  def to_s
+    "id: '#{self.id}' slug: '#{self.slug}' name: '#{self.name}'" +
+    " parent: '#{self.parent_id}' root_id: '#{self.root_id}'"
+  end
+
+  def check_taxonomy
+    Rails.logger.debug ">>>> #{self.taxonomy} | #{self.class.name}"
+    if self.taxonomy && !self.class.taxonomies.include?(self.taxonomy)
+      self.errors.add('term', "Taxonomía '#{self.taxonomy}' incorrecta. Taxonomías válidas: #{self.class.taxonomies.join(', ')}")
+      false
+    else
+      true
+    end
+  end
+
+  def check_scope_if_toplevel
+    if self.new_record? && self.parent_id.nil?
+      if Term.count(:conditions => ['parent_id IS NULL AND slug = ?', self.slug]) > 0
+        self.errors.add('slug', 'Slug is already taken')
+        false
+      else
+        true
+      end
+    elsif (!self.new_record?) && self.parent_id.nil?
+      if Term.count(:conditions => ['id <> ? AND parent_id IS NULL AND slug = ?', self.id, self.slug]) > 0
+        self.errors.add('slug', 'Slug is already taken')
+        false
+      else
+        true
+      end
+    else
+      true
+    end
+  end
+
+  def copy_parent_attrs
+    return true if self.id == self.root_id
+
+    par = self.parent
+
+    self.taxonomy = par.taxonomy if par.taxonomy
+    true
+  end
+
+
+  def set_slug
+    if self.slug.nil? || self.slug.to_s == ''
+      self.slug = self.name.bare.downcase
+      # TODO esto no comprueba si el slug está repetido
+    end
+    true
+  end
+
+  def self.find_taxonomy(id, taxonomy)
+    sql_tax = taxonomy.nil? ? 'IS NULL' : "= #{User.connection.quote(taxonomy)}"
+    Term.find(:first, :conditions => ["id = ? AND taxonomy #{sql_tax}", id])
+  end
+
+  def self.find_taxonomy_by_code(code, taxonomy)
+    # Solo para taxonomías toplevel
+    Term.find(:first, :conditions => ['id = root_id AND code = ? AND taxonomy = ?', code, taxonomy])
+  end
+
+
+  # Devuelve los ids de los hijos de la categoría actual o de la categoría obj de forma recursiva incluido el id de obj
+  def all_children_ids(opts={})
+    cats = [self.id]
+    conds = []
+    conds << opts[:cond] if opts[:cond].to_s != ''
+    conds << "taxonomy = #{User.connection.quote(opts[:taxonomy])}" if opts[:taxonomy]
+
+    cond = ''
+    cond = " AND #{conds.join(' AND ')}" if conds.size > 0
+
+
+    if self.id == self.root_id then # shortcut
+      db_query("SELECT id FROM terms WHERE root_id = #{self.id} AND id <> #{self.id} #{cond}").each { |dbc| cats<< dbc['id'].to_i }
+    else # hay que ir preguntando categoría por categoría
+      if conds.size > 0
+        self.children.find(:all, :conditions => cond[4..-1]).each { |child| cats.concat(child.all_children_ids(opts)) }
+      else
+        self.children.find(:all).each { |child| cats.concat(child.all_children_ids(opts)) }
+      end
+    end
+    cats.uniq
+  end
+
+  def self.taxonomy_from_class_name(cls_name)
+    "#{ActiveSupport::Inflector::pluralize(cls_name)}Category"
+  end
+
+
+  def get_ancestors
+    # devuelve los ascendientes. en [0] el padre directo y en el último el root
+    path = []
+    parent = self.parent
+
+    while parent do
+      path<< parent
+      parent = parent.parent
+    end
+
+    path
+  end
+
+  # TODO PERF
+  def set_dummy
+    @siblings ||= []
+    Term.toplevel(:clan_id => nil).each do |t| @siblings<< t end
+  end
+
+  def add_sibling(sibling_term)
+    raise "sibling_term must be a term but is a #{sibling_term.class.name}" unless sibling_term.class.name == 'Term'
+    @siblings ||= []
+    @siblings<< sibling_term
+  end
+
+  private
+  def check_references_to_ancestors
+    if !self.new_record?
+      if self.parent_id_changed?
+        return false if self.parent_id == self.id # para evitar bucles infinitos
+        self.root_id = parent_id.nil? ? self.id : self.class.find(parent_id).root_id
+        self.class.find(:all, :conditions => "id IN (#{self.all_children_ids.join(',')})").each do |child|
+          next if child.id == self.id
+          child.root_id = self.root_id
+          child.save
+        end
+      end
+    end
+    true
+  end
+
+  public
+
+
+# OLD
   belongs_to :game
   belongs_to :bazar_district
   belongs_to :platform
   belongs_to :clan
 
-  named_scope :contents_tags, :conditions => 'taxonomy = \'ContentsTag\''
-  named_scope :not_contents_tags, :conditions => 'taxonomy IS NULL or taxonomy <> \'ContentsTag\''
-  named_scope :top_level, :conditions => 'id = root_id AND parent_id IS NULL AND clan_id IS NULL'
-  named_scope :with_taxonomy, lambda { |taxonomy| {:conditions => "taxonomy = '#{taxonomy}'"}}
-  named_scope :in_category, lambda { |t| { :conditions => ['id IN (SELECT term_id FROM contents_terms WHERE content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?)))', t.all_children_ids]} }
+  scope :contents_tags, :conditions => 'taxonomy = \'ContentsTag\''
+  scope :not_contents_tags, :conditions => 'taxonomy IS NULL or taxonomy <> \'ContentsTag\''
+  scope :top_level, :conditions => 'id = root_id AND parent_id IS NULL AND clan_id IS NULL'
+  scope :with_taxonomy, lambda { |taxonomy| {:conditions => "taxonomy = '#{taxonomy}'"}}
+  scope :in_category, lambda { |t| { :conditions => ['id IN (SELECT term_id FROM contents_terms WHERE content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?)))', t.all_children_ids]} }
 
   has_many :contents_terms, :dependent => :destroy
   has_many :contents, :through => :contents_terms
@@ -110,7 +291,7 @@ class Term < ActiveRecord::Base
     return true unless self.contents.find(:first, :conditions => ['contents.id = ?', content.id]).nil? # dupcheck
 
     if Cms::CATEGORIES_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy.nil?
-      # Rails.logging.error "imposible enlazar categories_terms_content con un root_term, enlazando con un hijo"
+      # Rails.logger.error "imposible enlazar categories_terms_content con un root_term, enlazando con un hijo"
       return false if normal_op
       taxo = "#{ActiveSupport::Inflector::pluralize(content.content_type.name)}Category"
       t = self.children.find(:first, :conditions => "taxonomy = '#{taxo}'")
@@ -118,7 +299,7 @@ class Term < ActiveRecord::Base
       t.link(content, normal_op)
       #return false
     elsif Cms::ROOT_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy && self.taxonomy.index('Category')
-      Rails.logging.warning "error: imposible enlazar root_terms_content con un category_term, enlazando con root"
+      Rails.logger.warning "error: imposible enlazar root_terms_content con un category_term, enlazando con root"
       return false if normal_op
       self.root.link(content, normal_op)
       #return false
@@ -301,9 +482,8 @@ class Term < ActiveRecord::Base
   # valid opts keys: cls_name
   def contents_count(opts={})
     # TODO perf optimizar mas, si el tag tiene el mismo taxonomy que el solicitado
-    raise "cls_name not specified" if self.taxonomy.nil? && opts[:cls_name].nil?
     sql_cond = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
-    if opts[:cls_name] != nil
+    if !opts[:cls_name].nil?
       taxo = self.class.taxonomy_from_class_name(opts[:cls_name])
       User.db_query("SELECT count(*) FROM (SELECT content_id
                                                               FROM contents_terms a
@@ -371,12 +551,6 @@ class Term < ActiveRecord::Base
         TermContentProxy.new(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id.to_s)), self)
       else
         raise "No se que hacer con metodo #{method_id}"
-        #args = _add_cats_ids_cond(*args)
-        #begin
-        #  self.class.items_class.send(method_id, *args)
-        #rescue ArgumentError
-        #  self.class.items_class.send(method_id)
-        #end
       end
     end
   end
@@ -778,7 +952,7 @@ class Term < ActiveRecord::Base
   private
   def check_references_to_ancestors
     if !self.new_record?
-      if slnc_changed?(:parent_id) then
+      if self.parent_id_changed?
         return false if self.parent_id == self.id # para evitar bucles infinitos
         self.root_id = parent_id.nil? ? self.id : self.class.find(parent_id).root_id
         self.class.find(:all, :conditions => "id IN (#{self.all_children_ids.join(',')})").each do |child|
@@ -788,8 +962,7 @@ class Term < ActiveRecord::Base
         end
       end
 
-      # TODO Rails 2.1 (dirty tracking)
-      if slnc_changed?(:root_id) && self.root_id != self.slnc_changed_old_values[:root_id] then # reseteamos la url de todos los contenidos aquí y en categorías inferiores
+      if self.root_id_changed?
         GmSys.job("#{self.class.name}.find(#{self.id}).reset_contents_urls")
       end
     end

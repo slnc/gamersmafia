@@ -10,7 +10,7 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
 
   # MAIN
   test "should_clear_cache_on_main_after_publishing_interview" do
-    n = portal.interview.find(:pending)[0]
+    n = Interview.in_portal(portal).pending.find(:all)[0]
     assert_not_nil n
     go_to '/entrevistas', 'entrevistas/index'
     assert_cache_exists "#{portal.code}/entrevistas/index/page_"
@@ -19,7 +19,7 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_unpublishing_interview" do
-    n = portal.interview.find(:published)[0]
+    n = Interview.in_portal(portal).published.find(:all)[0]
     assert_not_nil n
     go_to '/entrevistas', 'entrevistas/index'
     assert_cache_exists "#{portal.code}/entrevistas/index/page_"
@@ -28,7 +28,7 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_updating_interview" do
-    n = portal.interview.find(:published)[0]
+    n = Interview.in_portal(portal).published.find(:all)[0]
     assert_not_nil n
     go_to '/entrevistas', 'entrevistas/index'
     assert_cache_exists "#{portal.code}/entrevistas/index/page_"
@@ -37,11 +37,11 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_others_by_author_on_main_after_publishing_a_new_interview" do
-    n = portal.interview.find(:published)[0]
+    n = Interview.in_portal(portal).published.find(:all)[0]
     assert_not_nil n
     go_to "/entrevistas/show/#{n.id}", 'entrevistas/show'
     assert_cache_exists "#{portal.code}/entrevistas/show/latest_by_author_#{n.user_id}"
-    n2 = portal.interview.find(:pending, :conditions => ['contents.user_id = ?', n.user_id])[0]
+    n2 = Interview.in_portal(portal).pending.find(:all, :conditions => ['user_id = ?', n.user_id])[0]
     publish_content n2
     assert_cache_dont_exist "#{portal.code}/entrevistas/show/latest_by_author_#{n.user_id}"
   end
@@ -66,7 +66,7 @@ class CacheObserverEntrevistasTest < ActionController::IntegrationTest
   test "should_clear_cache_on_portal_after_rating_faction interview 2" do
     faction_host FactionsPortal.find_by_code('ut')
     # TODO hack temporal
-    Interview.find(:published).each do |c|
+    Interview.published.find(:all).each do |c|
       uniq = c.unique_content
       uniq.url = uniq.url.gsub("http://#{App.domain}", "http://ut.#{App.domain}")
       uniq.save

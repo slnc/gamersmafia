@@ -1,4 +1,4 @@
-<%= error_messages_for 'clan' %>
+<%= error_messages_for @clan %>
 
 <!--[form:clan]-->
 <p><label for="clan_name">Nombre</label><br/>
@@ -21,7 +21,7 @@
 
 <p><label for="clan_logo">Logo del clan .JPG</label><br/>
 <% if @clan.logo then %>
-<%=fc_thumbnail(@clan.logo, 'k', '153x115')%> 
+<%=fc_thumbnail(@clan.logo, 'k', '153x115')%>
 <% end -%>
 <%= file_field 'clan', 'logo' %></p>
 

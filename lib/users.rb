@@ -79,7 +79,7 @@ module Users
 
     # Autologin, session maintenance
     def ident
-      clean_url = "#{request.request_uri}"
+      clean_url = "#{request.fullpath}"
       redirect_to_clean = !params[:vk].nil?
       clean_url.gsub!(/(\?vk=([a-z0-9]{32}))/, '?fromvk=1') if /\?vk=([a-z0-9]{32})/ =~ clean_url
 

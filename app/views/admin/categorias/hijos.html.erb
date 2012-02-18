@@ -44,7 +44,7 @@ end
 <% end -%>
 
 <%mftext('Editar esta categoría') do %>
-<form method="post" action="/<%=controller.cats_path%>/term/<%=@term.id%>/update?redirto=<%=controller.request.request_uri%>">
+<form method="post" action="/<%=controller.cats_path%>/term/<%=@term.id%>/update?redirto=<%=controller.request.fullpath%>">
 <p><label for="term_name">Nombre</label><br/>
 <%= text_field 'term', 'name', :class => 'text'  %></p>
 <% if @term.root_id != @term.id then %>
@@ -60,7 +60,7 @@ end
 <%content_main do %>
 <%#=render :partial => 'categorias_selector' %>
 <% mftext("Subcategorías de #{@term.name} (#{ActiveSupport::Inflector::titleize(Cms::translate_content_name(params[:content_type]))})") do %>
-<form method="post" action="/<%=controller.cats_path%>/create?redirto=<%=controller.request.request_uri%>">
+<form method="post" action="/<%=controller.cats_path%>/create?redirto=<%=controller.request.fullpath%>">
 <p><strong>Nueva categoría</strong><br/>
 <% @tterm = @term
 @term = nil %>
@@ -93,7 +93,7 @@ end
         %></td>
 	    <td><%=category.all_children_ids(:taxonomy => Term.taxonomy_from_class_name(params[:content_type])).uniq.size - 1%></td>
 		<td><a href="/<%=controller.cats_path%>/term/<%=category.id%>/contenidos/<%=ct.name%>"><%=category.contents_count(:cls_name => ct.name)%></a></td>
-      <td><a href="/<%=controller.cats_path%>/term/<%=category.id%>/destroy?redirto=<%=controller.request.request_uri%>" onclick="return confirm('¿Estás seguro?');">Eliminar</a></td>
+      <td><a href="/<%=controller.cats_path%>/term/<%=category.id%>/destroy?redirto=<%=controller.request.fullpath%>" onclick="return confirm('¿Estás seguro?');">Eliminar</a></td>
     </tr>
   <% end %>
   </table>

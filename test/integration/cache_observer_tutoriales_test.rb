@@ -15,7 +15,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     @tcc = @tc.children.create(:name => 'tutoriales del fin der mundo', :taxonomy => 'TutorialsCategory')
     assert_cache_dont_exist '/gm/tutoriales/index/folders'
   end
-  
+
   test "should_clear_tutoriales_index_index_after_updating_a_category" do
     test_should_clear_tutoriales_index_index_after_creating_a_new_category
     get '/tutoriales'
@@ -23,7 +23,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     @tcc.save
     assert_cache_dont_exist '/gm/tutoriales/index/folders'
   end
-  
+
   test "should_clear_tutoriales_index_index_after_deleting_a_category" do
     test_should_clear_tutoriales_index_index_after_creating_a_new_category
     get '/tutoriales'
@@ -31,7 +31,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     @tcc.destroy
     assert_cache_dont_exist '/gm/tutoriales/index/folders'
   end
-  
+
   test "should_clear_tutoriales_forums_list_after_creating_a_subcategory" do
     test_should_clear_tutoriales_index_index_after_creating_a_new_category
     get "/tutoriales/#{@tc.id}"
@@ -40,7 +40,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     @tc_child = @tc.children.create({:name => 'subfoocat', :slug => 'subcodecot', :taxonomy => 'TutorialsCategory'})
     assert_cache_dont_exist "/common/tutoriales/index/folders_#{@tc.id}"
   end
-  
+
   test "should_clear_tutoriales_forums_list_after_updating_a_subcategory" do
     test_should_clear_tutoriales_forums_list_after_creating_a_subcategory
     get "/tutoriales/#{@tc_child.id}"
@@ -53,7 +53,7 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/tutoriales/index/folders_#{@tc.id}"
     assert_cache_dont_exist "/common/tutoriales/index/folders_#{@tc_child.id}"
   end
-  
+
   test "should_clear_tutoriales_forums_list_after_destroying_a_subcategory" do
     test_should_clear_tutoriales_forums_list_after_creating_a_subcategory
     get "/tutoriales/#{@tc_child.id}"
@@ -66,9 +66,9 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/tutoriales/index/folders_#{@tc.id}"
     assert_cache_dont_exist "/common/tutoriales/index/folders_#{@tc_child.id}"
   end
-  
+
   test "should_clear_tutoriales_index_of_previous_category_when_moving_to_new_category" do
-    tut = Tutorial.find(:published, :limit => 1).first
+    tut = Tutorial.published.find(:all, :limit => 1).first
     fcat = tut.main_category
     assert !fcat.nil?
     get "/tutoriales/#{fcat.id}"

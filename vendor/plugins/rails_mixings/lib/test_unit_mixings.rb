@@ -1,40 +1,42 @@
 require 'test/unit'
 module Test::Unit::Assertions
-  def fixture_file_upload(path, mime_type = nil, binary = false)
-    fixture_path = ActionController::TestCase.send(:fixture_path) if ActionController::TestCase.respond_to?(:fixture_path)
-    ActionController::TestUploadedFile.new("#{fixture_path}#{path}", mime_type, binary)
-  end
-  
+  #def fixture_file_upload(path, mime_type = nil, binary = false)
+  #  fixture_path = ActionController::TestCase.send(:fixture_path) if ActionController::TestCase.respond_to?(:fixture_path)
+  #  Rack::Test::UploadedFile.new("#{fixture_path}#{path}", mime_type, binary)
+  #end
+
   def overload_rake_for_tests
     load File.dirname(__FILE__) + '/overload_rake_for_tests.rb'
   end
-  
+
   def get_task_names
     Rake.application.tasks.collect { |task| task.name }
   end
-  
+
   def assert_cache_exists f
     assert_equal true, File.exists?("#{FRAGMENT_CACHE_PATH}/#{f}.cache"), "#{f}.cache DONT EXIST and it SHOULD"
   end
-  
+
   def assert_cache_dont_exist f
     assert_equal false, File.exists?("#{FRAGMENT_CACHE_PATH}/#{f}.cache"), "#{f}.cache EXISTS and it SHOULD NOT"
   end
-  
-    
+
+
   # Busca en todos los emails uno que contenga el texto indicado
   def assert_email_with_text(some_text)
     found = false
     ActionMailer::Base.deliveries.each do |eml|
-      if eml.body.index(some_text)
+      if eml.encoded.index(some_text)
         found = true
         break
+      else
+        Rails.logger.debug("#{some_text} not found in #{eml.encoded}")
       end
     end
     assert found
   end
-  
-  
+
+
   def assert_count_increases(model, &block)
     m = :count
     begin
@@ -46,7 +48,7 @@ module Test::Unit::Assertions
     yield
     assert_equal initial_count + 1, model.send(m)
   end
-  
+
   def assert_count_decreases(model, &block)
     m = :count
     begin
@@ -58,7 +60,7 @@ module Test::Unit::Assertions
     yield
     assert_equal initial_count - 1, model.send(m)
   end
-  
+
   # Add more helper methods to be used by all tests here...
   def assert_valid_markup(markup=@response.body)
     ENV['MARKUP_VALIDATOR'] ||= 'tidy'
@@ -75,14 +77,14 @@ module Test::Unit::Assertions
         parser = XML::Parser.new
         parser.string = response.body
         doc = parser.parse
-        
+
         doc.find('//result/messages/msg').each do |msg|
           error_str += "  Line %i: %s\n" % [msg['line'], msg]
         end
-        
+
         flunk error_str
       end
-      
+
       when 'tidy', 'tidy_no_warnings'
       require 'tidy'
       Tidy.path = defined?(App.tidy_path) ? App.tidy_path : '/usr/lib/libtidy.so'
@@ -104,22 +106,22 @@ module Test::Unit::Assertions
         i = 1
         markup.split("\n").each { |l| out << i.to_s << ': ' << l << "\n"; i += 1 }
         error_str = "XHTML Validation Failed:\n  #{out}\n\n#{error_str}"
-        
+
         assert_block(error_str) { false }
       end
     end
   end
-  
+
   def uncompress_feedvalidator2(zipfile, dst_dir)
     FileUtils.mkdir_p(dst_dir)
     system ("tar xfz #{zipfile} -C #{dst_dir}")
   end
-  
+
   def assert_valid_feed2(content=@response.body)
-    validate = "#{RAILS_ROOT}/script/feedvalidator2/demo.py"
+    validate = "#{Rails.root}/script/feedvalidator2/demo.py"
     bname = File.dirname(validate)
     self.uncompress_feedvalidator2("#{bname}.tar.gz", "#{bname}/..") unless File.exists?(validate)
-    path = Pathname.new("#{RAILS_ROOT}/tmp")
+    path = Pathname.new("#{Rails.root}/tmp")
     Tempfile.open('feed', path.cleanpath) do |tmpfile|
       tmpfile.write(content)
       tmpfile.flush
@@ -136,7 +138,7 @@ module Test::Unit::Assertions
       end
     end
   end
-  
+
   # Tests that a cookie named +name+ does not exist. This is useful
   # because cookies['name'] may be nil or [] in a functional test.
   #
@@ -146,12 +148,12 @@ module Test::Unit::Assertions
     msg = build_message(message, "no cookie expected but found <?>.", name)
     assert_block(msg) { cookie.nil? or (cookie.kind_of?(Array) and cookie.blank?) }
   end
-  
+
   protected
   def assert_call_or_value(name, options, cookie, message="")
     case
       when options[name].respond_to?(:call)
-      msg = build_message(message, 
+      msg = build_message(message,
                   "expected result of <?> block to be true but it was false.", name.to_s)
       assert(options[name].call(cookie.send(name)), msg)
     else
@@ -162,7 +164,6 @@ module Test::Unit::Assertions
   end
 end
 
-if RAILS_GEM_VERSION >= "3.2.2"
 module TestRequestMixings
     # Hasta que salga rails 2.3.3
     def recycle!
@@ -172,5 +173,4 @@ module TestRequestMixings
       @headers, @request_method, @accepts, @content_type = nil, nil, nil, nil
     end
 end
-ActionController::TestRequest.include TestRequestMixings
-end
+ActionController::TestRequest.send :include, TestRequestMixings

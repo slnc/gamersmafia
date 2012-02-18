@@ -8,10 +8,12 @@
 
 <div class="contentinfobar">
   	  <div class="last f_sm">
-	  <%cache("/common/contents/#{object.class.name}/#{object.id % 100}/#{object.id}") do %>
+	  <%cache("/common/contents/#{object.class.name}/#{object.id % 100}/" +
+            "#{object.id}-#{object.updated_on}") do %>
     <div class="author-avatar"><img src="<%=ASSET_URL%>/cache/thumbnails/f/50x50<%=object.user.show_avatar%>" /></div>
     <div class="content-details">
-      por <a class="content" href="<%=gmurl(object.user)%>"><%=object.user.login%></a><br />
+      por <a class="content" href="<%=gmurl(object.user)%>"><%=object.user.login%></a>
+      <br />
 	  <%=print_tstamp object.created_on%>
     </div>
 	<% end -%>
@@ -23,9 +25,9 @@ can_edit = Cms::user_can_edit_content?(@user, object)
 can_delete = Cms::user_can_delete_content?(@user, object) %>
 
       <% if @user.tracker_has?(object.unique_content.id) then %>
-      <li class="actions first"><%=link_to 'Quitar del tracker', {:controller => 'site', :action => 'del_from_tracker', :id => object.unique_content.id, :params => {:redirto => request.request_uri}}, {:confirm => '¿Estás seguro de que quieres quitarlo de tu tracker?', :class => 'action'}%></li>
+      <li class="actions first"><%=link_to 'Quitar del tracker', {:controller => 'site', :action => 'del_from_tracker', :id => object.unique_content.id, :params => {:redirto => request.fullpath}}, {:confirm => '¿Estás seguro de que quieres quitarlo de tu tracker?', :class => 'action'}%></li>
       <% else %>
-      <li class="actions first"><%=link_to 'Añadir al tracker', :controller => 'site', :action => 'add_to_tracker', :id => object.unique_content.id, :params => {:redirto => request.request_uri}, :class => 'action' %></li>
+      <li class="actions first"><%=link_to 'Añadir al tracker', :controller => 'site', :action => 'add_to_tracker', :id => object.unique_content.id, :params => {:redirto => request.fullpath}, :class => 'action' %></li>
       <% end -%>
 
 		<li><a href="#" onclick="return recommend_to_friend(<%=object.unique_content.id%>);">Recomendar</a></li>

@@ -7,16 +7,15 @@ class Skin < ActiveRecord::Base
   file_column :file
   file_column :intelliskin_header
   file_column :intelliskin_favicon
-  observe_attr :file
 
   before_save :update_version_if_file_changed
   after_save :check_file_changed
   after_create :setup_initial_zip
   before_create :check_names
 
-  named_scope :public,
-              :conditions => 'type = \'FactionsSkin\' AND is_public = \'t\'',
-              :order => 'lower(name)'
+  scope :only_public,
+        :conditions => "type = 'FactionsSkin' AND is_public = 't'",
+        :order => 'lower(name)'
 
   validates_uniqueness_of :name
   belongs_to :user
@@ -25,7 +24,7 @@ class Skin < ActiveRecord::Base
   CGEN_CSS_END = '/* COLOR GEN END - DO NOT REMOVE */'
   DEFAULT_SKINS_IDS  = {'default' => -1, 'arena' => -2, 'bazar' => -3}
   FAVICONS_CSS_FILENAME = (
-      "#{RAILS_ROOT}/public/skins/_core/css/games_sprites.css")
+      "#{Rails.root}/public/skins/_core/css/games_sprites.css")
 
   def self.extract_css_imports(s)
     out = []
@@ -52,10 +51,10 @@ class Skin < ActiveRecord::Base
     out = f_contents
     imports.each do |import|
       # TODO Higher Security?
-      full = "#{RAILS_ROOT}/public#{import[0..import.length]}" if import[0..0] == '/'
+      full = "#{Rails.root}/public#{import[0..import.length]}" if import[0..0] == '/'
       fname = (import[0..0] == '/' || import[1..1] == ':') ? full : "#{File.dirname(base_file_name)}/#{import}"
       import_contents = self.rextract_css_imports(fname)
-      import_contents.gsub!(/(url\(([^\/]{1}))/, "url(#{File.dirname(fname).gsub(RAILS_ROOT, '').gsub('public/', '')}/\\2")
+      import_contents.gsub!(/(url\(([^\/]{1}))/, "url(#{File.dirname(fname).gsub(Rails.root, '').gsub('public/', '')}/\\2")
       # reemplazamos urls relativas por absolutas
       if import[0..0] != '/' then # asumimos que este import es relativo
         # miramos cuantas / hay y quitamos los ../ necesarios
@@ -89,7 +88,9 @@ class Skin < ActiveRecord::Base
   end
 
   def used_by_users_count
-    UsersPreference.count(:conditions => ['name = \'skin\' AND value::int4 = ?', self.id])
+    Rails.logger.warn "self.id: #{self.id}"
+    UsersPreference.count(
+        :conditions => "name = 'skin' AND value = '#{self.id}'")
   end
 
 
@@ -134,7 +135,7 @@ class Skin < ActiveRecord::Base
 
   def update_favicon(mixed_thing)
     if mixed_thing
-      File.open("#{RAILS_ROOT}/public/storage/skins/#{self.hid}/favicon.png", 'wb') do |f|
+      File.open("#{Rails.root}/public/storage/skins/#{self.hid}/favicon.png", 'wb') do |f|
         f.write(mixed_thing.read) # TODO write as ico file too
       end
     end
@@ -185,8 +186,8 @@ class Skin < ActiveRecord::Base
     end
 
     # Tengo que crear el .zip inicial con la template
-    cfg_dir = Pathname.new("#{RAILS_ROOT}\/config/skins/template_#{template}").realpath.to_s
-    dst_file = Pathname.new("#{RAILS_ROOT}/public/storage/skins").realpath.to_s << "/#{self.hid}_initial.zip"
+    cfg_dir = Pathname.new("#{Rails.root}\/config/skins/template_#{template}").realpath.to_s
+    dst_file = Pathname.new("#{Rails.root}/public/storage/skins").realpath.to_s << "/#{self.hid}_initial.zip"
     system("cd \"#{cfg_dir}\" && zip -q -r \"#{dst_file}\" .")
     User.db_query("UPDATE skins SET file = 'storage/skins/#{self.hid}_initial.zip' WHERE id = #{self.id}")
     self.reload # para leer file bien (no funciona hacer self.file)
@@ -194,19 +195,20 @@ class Skin < ActiveRecord::Base
   end
 
   def update_version_if_file_changed
-    self.version += 1 if slnc_changed?(:file)
+    self.version += 1 if self.file_changed?
   end
 
   def check_file_changed
     # Si ha cambiado el archivo de la skin desempaquetamos
-    # TODO comprobar que la estructura es correcta, no haya symlinks, que el hid es válido, etc
-    unzip_package if slnc_changed?(:file)
+    # TODO comprobar que la estructura es correcta, no haya symlinks, que el hid
+    # es válido, etc
+    unzip_package if self.file_changed?
   end
 
   def unzip_package
-    dst_folder = "#{RAILS_ROOT}/public/storage/skins/#{self.hid}"
+    dst_folder = "#{Rails.root}/public/storage/skins/#{self.hid}"
     FileUtils.mkdir_p(dst_folder) unless File.exists?(dst_folder)
-    da_fail ="#{RAILS_ROOT}/public/#{self.file}"
+    da_fail ="#{Rails.root}/public/#{self.file}"
     if File.exists?(da_fail)
       config if File.exists?("{realpath}/config.yml") # antes de machacar leemos la config si existe
       system("unzip -o -q \"#{da_fail}\" -d \"#{dst_folder}\"")
@@ -220,7 +222,7 @@ class Skin < ActiveRecord::Base
 
       build_skin
     else
-      Rails.logging.error "Skin.unzip_package: #{da_fail} doesnt exist"
+      Rails.logger.error "Skin.unzip_package: #{da_fail} doesnt exist"
     end
     true
   end
@@ -256,9 +258,9 @@ class Skin < ActiveRecord::Base
   end
 
   #  def unzip_package
-  #    dst_folder = "#{RAILS_ROOT}/public/storage/skins/#{self.hid}"
+  #    dst_folder = "#{Rails.root}/public/storage/skins/#{self.hid}"
   #    FileUtils.mkdir_p(dst_folder) unless File.exists?(dst_folder)
-  #    da_fail ="#{RAILS_ROOT}/public/#{self.file}"
+  #    da_fail ="#{Rails.root}/public/#{self.file}"
   #    if File.exists?(da_fail)
   #      config if File.exists?("{realpath}/config.yml") # antes de machacar leemos la config si existe
   #      system("unzip -o -q \"#{da_fail}\" -d \"#{dst_folder}\"")
@@ -299,7 +301,7 @@ class Skin < ActiveRecord::Base
   end
 
   def realpath
-    "#{RAILS_ROOT}/public#{uripath}"
+    "#{Rails.root}/public#{uripath}"
   end
 
 

@@ -4,9 +4,10 @@
 <head>
 <title><%=controller.title%></title>
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
-<%=css_includes %>
-<%=javascript_includes %>
+<%=css_includes.html_safe %>
+<%=javascript_includes.html_safe %>
 <link rel="alternate" type="application/rss+xml" title="Feed RSS de Gamersmafia" href="/rss/noticias" />
+<% if App.enable_google_analytics? %>
 <script type="text/javascript">
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-130555-1']);
@@ -18,6 +19,7 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
+<% end %>
 </head>
 <body class="madness lydefault <%=' has-submenu ' if controller.submenu %><%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=params[:action].to_s.split('/').last%>">
   <div id="cpageout" class="container gm20085">
@@ -125,7 +127,7 @@ if u_clans.size == 0 then %>
 						<div id="mggnav-skins-list" class="saw-dropdownlist hidden">
 							<ul>
 													<% cache("/common/layout/skins") do %>
-							<%([Skin.find_by_hid('default')] + Skin.public).each do |skin| %>
+							<%([Skin.find_by_hid('default')] + Skin.only_public).each do |skin| %>
 								<li><strong><a href="/cuenta/skins/activate?skin=<%=skin.id%>&redirto=/"><%=skin.name%></a></strong></li>
 							<% end -%>
 							<% end %><%# cache %>
@@ -369,7 +371,7 @@ if u_clans.size == 0 then %>
 <script type="text/javascript">var contents = [];</script>
 <% if flash[:notice] -%><div id="notice"><%= flash[:notice] %></div><% end -%>
 <% if flash[:error] -%><div id="error"><%= flash[:error] %></div><% end -%>
-<%= @content_for_layout %>
+<%= yield %>
 <div style="clear:both;">&nbsp;</div>
 </div>
 

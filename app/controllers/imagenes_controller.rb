@@ -1,10 +1,10 @@
 class ImagenesController < BazarController
   acts_as_content_browser :image
   allowed_portals [:gm, :faction, :clan, :bazar, :bazar_district]
-  
+
   def category
     @category = Term.find_taxonomy(params[:category].to_i, 'ImagesCategory')
-    @category = Term.find_taxonomy(params[:category].to_i, nil) if @category.nil? 
+    @category = Term.find_taxonomy(params[:category].to_i, nil) if @category.nil?
     raise ActiveRecord::RecordNotFound unless @category
     @title = @category.name
     if not @category.parent_id then
@@ -15,7 +15,7 @@ class ImagenesController < BazarController
       render :action => 'gallery'
     end
   end
-  
+
   def index
     @categories = portal.categories(Image)
     #if @categories.size == 1 && @categories[0].slug != 'gm'
@@ -28,17 +28,17 @@ class ImagenesController < BazarController
     #  render :action => 'index'
     #end
   end
-  
+
   def toplevel
   end
-  
+
   def potds
     @title = 'Imágenes del día'
   end
-  
+
   def gallery
   end
-  
+
   def _after_show
     if @image # podemos estar haciendo 301
       if @image.main_category && @image.main_category.parent then
@@ -50,7 +50,7 @@ class ImagenesController < BazarController
       end
     end
   end
-  
+
   def _after_create
     # @image.reload
     if @image.file.nil? || @image.file == ''
@@ -58,7 +58,7 @@ class ImagenesController < BazarController
       Cms::modify_content_state(@image, User.find_by_login('MrMan'), Cms::DELETED, "Sin imagen")
     end
   end
-  
+
   def create_from_zip
     require_auth_users
     raise ActiveRecord::RecordNotFound unless Cms::user_can_mass_upload(@user)
@@ -67,9 +67,9 @@ class ImagenesController < BazarController
       new
       render :action => 'new'
     else
-      
+
       @category = Term.find_taxonomy(params[:categories_terms][0], 'ImagesCategory')
-      
+
       if @category.parent_id.nil? then
         flash[:error] = 'Debes elegir una subcategoría, no una categoría'
         new
@@ -88,7 +88,7 @@ class ImagenesController < BazarController
         else
           path = newfile.path
         end
-        
+
         system("unzip -q -j #{path} -d #{tmp_dir}")
         # añadimos imgs al dir del usuario
         i = 0
@@ -105,7 +105,7 @@ class ImagenesController < BazarController
             end
           end
         end
-        
+
         # limpiamos
         system("rm -r #{tmp_dir}")
         flash[:notice] = "#{i} imágenes subidas correctamente. Tendrán que ser moderadas antes de aparecer publicada."

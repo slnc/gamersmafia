@@ -1,3 +1,8 @@
+require 'cache'
+require 'clans'
+require 'users'
+require 'routing'
+
 class AccessDenied < StandardError; end
 class DomainNotFound < StandardError; end
 
@@ -6,11 +11,7 @@ class ApplicationController < ActionController::Base
 
   include Clans::Authentication
   include Users::Authentication
-  include ExceptionNotifiable
   include Routing
-
-  ExceptionNotifier.exception_recipients = %w(s@slnc.me)
-  ExceptionNotifier.sender_address = %("GM Error Notifier" <httpd@gamersmafia.com>)
 
   helper :account, :miembros, :competiciones, :calendar
   before_filter :ident, :resolve_portal_mode, :check_referer,
@@ -135,7 +136,7 @@ class ApplicationController < ActionController::Base
     info = """-------------------------------
 Request information:
 -------------------------------
-* URL: #{request.protocol}#{request.host}#{request.request_uri}
+* URL: #{request.protocol}#{request.host}#{request.fullpath}
 * Remote IP: #{request.remote_ip}
 * Parameters: #{params_copy.inspect}</code>"""
     SlogEntry.create({:type_id => SlogEntry::TYPES[:info],
@@ -195,7 +196,7 @@ Request information:
       Stats.pageloadtime(self, seconds, response, controller_name, action_name,
                          portal)
     rescue
-      raise unless RAILS_ENV == 'test'
+      raise unless Rails.env == 'test'
     end
   end
 
@@ -238,14 +239,14 @@ Request information:
 
   def check404
     if 1 == 0 && request.env.include?('HTTP_REFERER') && request.env['HTTP_REFERER'].to_s != '' && request.env['HTTP_REFERER'].index('gamersmafia')
-      uri = "http://#{request.env['HTTP_X_FORWARDED_HOST']}#{request.request_uri}"
-      SystemNotifier.deliver_notification404_notification(request.request_uri, request.env['HTTP_REFERER'], request)
+      uri = "http://#{request.env['HTTP_X_FORWARDED_HOST']}#{request.fullpath}"
+      SystemNotifier.deliver_notification404_notification(request.fullpath, request.env['HTTP_REFERER'], request)
     end
   end
 
   def http_404
     if App.port != 80 # solo capturamos estas URLs cuando ejecutamos en desarrollo
-      res = request.request_uri.match(VERSIONING_EREG)
+      res = request.fullpath.match(VERSIONING_EREG)
       if res
         if %w(gif png jpg).include?(res[2])
           base = 'image'
@@ -259,9 +260,9 @@ Request information:
         end
         response.headers["Content-Type"] = "#{base}/#{ext}"
         if %w(css js).include?(res[2])
-          render :file => "#{RAILS_ROOT}/public/#{res[1]}#{res[2]}"
+          render :file => "#{Rails.root}/public/#{res[1]}#{res[2]}"
         else
-          send_file "#{RAILS_ROOT}/public/#{res[1]}#{res[2]}"
+          send_file "#{Rails.root}/public/#{res[1]}#{res[2]}"
         end
       else
         @title = "Página no encontrada (Error 404)"
@@ -316,16 +317,16 @@ Request information:
         when Proc then deliverer.call(self)
       end
 
-      ExceptionNotifier.deliver_exception_notification(exception, self,
-                                                       request, data)
+      #ExceptionNotifier.deliver_exception_notification(exception, self,
+      #                                                 request, data)
 
       # SystemNotifier.deliver_exception_notification(self, request, exception)
       begin
         render :template => 'application/http_500', :status => 500
       rescue
         #layout nil
-        # render :file => "#{RAILS_ROOT}/app/views/application/http_500.rhtml", :status => 500
-        render(:file => "#{RAILS_ROOT}/public/500.html", :status => '500 Error')
+        # render :file => "#{Rails.root}/app/views/application/http_500.rhtml", :status => 500
+        render(:file => "#{Rails.root}/public/500.html", :status => '500 Error')
       end
     end
     @rescuiing = false # para tests
@@ -351,7 +352,7 @@ Request information:
       params['_xmi'] = params[:id]
       params['_xc'] = controller_name
       params['_xa'] = action_name
-      url = request.request_uri
+      url = request.fullpath
     else
       url = params['_xu']
     end

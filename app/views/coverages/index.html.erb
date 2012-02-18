@@ -4,7 +4,11 @@
 <ul class="sidelist">
   <%# TODO sick
   %>
-  <% for c in Coverage.find(:published, :conditions => "cache_rated_times > 1 and state = #{Cms::PUBLISHED}", :order => 'coalesce(cache_weighted_rank, 0) DESC, (hits_anonymous + hits_registered) DESC', :limit => 5) %>
+  <% for c in Coverage.published.find(
+      :all,
+      :conditions => "cache_rated_times > 1",
+      :order => 'coalesce(cache_weighted_rank, 0) DESC, (hits_anonymous + hits_registered) DESC',
+      :limit => 5) %>
   <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
   <% end -%>
   </ul>
@@ -22,7 +26,7 @@
   @coverages.each do |news|
     cur_day = Date.new(news.created_on.year, news.created_on.month, news.created_on.day)
 
-    if cur_day != previous_day then 
+    if cur_day != previous_day then
       previous_day = Date.new(news.created_on.year, news.created_on.month, news.created_on.day) %>
     <div class="day-separator"><%=print_tstamp(cur_day, 'date')%></div>
     <% end %>

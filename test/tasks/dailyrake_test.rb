@@ -1,5 +1,5 @@
 require 'test_helper'
-load RAILS_ROOT + '/Rakefile'
+load Rails.root + '/Rakefile'
 
 class DailyRakeTest < ActiveSupport::TestCase
   include Rake

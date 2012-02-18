@@ -5,8 +5,8 @@ module Delayed
     cattr_accessor :logger
     self.logger = if defined?(Merb::Logger)
                     Merb.logger
-                  elsif defined?(RAILS_DEFAULT_LOGGER)
-                    RAILS_DEFAULT_LOGGER
+                  elsif defined?(Rails.logger)
+                    Rails.logger
                   end
 
     def initialize(options={})
@@ -22,7 +22,7 @@ module Delayed
       trap('INT')  { say 'Exiting...'; $exit = true }
 
       # save my pid so people can kill me
-      pid_file = "#{RAILS_ROOT}/tmp/pids/delayed_worker.#{Process.pid}.pid"
+      pid_file = "#{Rails.root}/tmp/pids/delayed_worker.#{Process.pid}.pid"
       File.mkdir(File.dirname(pid_file)) unless File.exists?(File.dirname(pid_file))
       f = File.open(pid_file, 'w')
       f.write(Process.pid.to_s)

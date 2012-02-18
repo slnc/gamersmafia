@@ -3,12 +3,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
 <head>
 	<title><%=controller.title%></title>
-	<%#=css_includes %>
-	<%=javascript_includes %>
+	<%#=css_includes.html_safe %>
+	<%=javascript_includes.html_safe %>
 </head>
 <body class="lyblank <%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=params[:action].to_s.split('/').last%>">
 
-<%= @content_for_layout %>
+<%= yield %>
 <script type="text/javascript">cfgPage(<%=user_is_authed%>, [], '<%=controller.controller_name%>', '<%=controller.action_name%>', '<%=params[:id]%>'<%= params['_xnvi'] ? ", '#{params['_xnvi']}'" : ', undefined'%><%= params['_xab'].size > 0 ? ", '#{CGI::escape(params['_xab'].to_json)}'" : ', undefined'%><%= controller._xad.size > 0 ? ", '#{CGI::escape(controller._xad.to_json)}'" : ', undefined'%>);</script>
 <% if App.enable_google_analytics? then %>
   <script type="text/javascript">

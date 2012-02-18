@@ -1,13 +1,20 @@
-<% cache("/common/foros/_most_active_users/#{@object.class.name}/#{@object.id}_#{Time.now.to_i/86400}") do %>
-<% mftext("Los más activos en #{object.name}") do %>
+<% cache("/common/foros/_most_active_users/#{@forum.class.name}/#{@forum.id}_#{Time.now.to_i/86400}") do %>
+
+<% mftext("Los más activos en #{@forum.name}") do %>
 <table id="most_active_users">
-  <% @object.most_active_users('TopicsCategory').each do |u,data|%>
+  <% @forum.most_active_users('TopicsCategory').each do |u, data| %>
   <tr class="<%=oddclass%>">
-  <td style="padding-left: 3px;><%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span></td>
-  <td style="padding-left: 3px; width: 100px;" class="infoinline">
-        <%="<strong>#{data[:topics]}</strong> tópics &nbsp;" if data[:topics] > 0 %> <%="<span class=\"comments-count\" title=\"Comentarios\"><span>#{data[:comments]}</span></span>" if data[:comments] > 0 %><br />
-      <%=draw_pcent_bar(data[:relative_pcent], "#{data[:karma_sum]} puntos de karma en este foro en el último mes")%>
-  </td>
+    <td style="padding-left: 3px;">
+      <%=member_state(u.hstate)%>
+      <span class="nick"><%=link_to u.login, gmurl(u) %></span>
+    </td>
+    <td style="padding-left: 3px; width: 100px;" class="infoinline">
+      <%="<strong>#{data[:topics]}</strong> tópics &nbsp;" if data[:topics] > 0 %>
+      <%="<span class=\"comments-count\" title=\"Comentarios\"><span>#{data[:comments]}</span></span>" if data[:comments] > 0 %><br />
+        <%=draw_pcent_bar(
+          data[:relative_pcent],
+          "#{data[:karma_sum]} puntos de karma en este foro en el último mes") %>
+    </td>
   </tr>
   <% end -%>
 </table>

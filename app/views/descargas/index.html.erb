@@ -1,7 +1,6 @@
 <% generic_support do %>
 <% if @category then %>
 <%=render :partial => '/shared/category_tag_browser', :locals => {:cls => Download, :category => @category}%>
-
 <%=render :partial => '/descargas/esenciales2', :locals => { :category => @category }%>
 
 <% mftext('Los más descargados') do %>
@@ -32,7 +31,7 @@
     <th>Archivos</th>
   </tr>
 
-<% 
+<%
 if params[:category]
   cache_path = "/common/descargas/index/folders_#{@category.id}"
 else
@@ -60,10 +59,11 @@ end %>
 <% if @category then %>
 <%mftext('Archivos en esta carpeta') do %>
 <%
-@download_pages = ActionController::Pagination::Paginator.new self, @category.count(:published, :content_type => 'Download', :treemode => false), 30, params['page']
-@download_pages.current_page = @download_pages.first if params['page'].nil?
+downloads = Download.in_term(@category).published.paginate(
+    :page => params[:page], :per_page => 30, :order => "LOWER(title)")
 %>
-<%= render :partial => 'shared/pager', :object => @download_pages, :locals => {:pos => 'top'} %>
+<%= render :partial => 'shared/pager2',
+           :locals => {:collection => downloads, :pos => 'top'} %>
 <table>
 <tr class="downloads-download <%=oddclass%>">
   <th class="first">Archivo</th>
@@ -72,17 +72,18 @@ end %>
   <th class="timestamp">Tamaño</th>
 </tr>
 <% cache("/common/descargas/index/downloads_#{@category.id}/page_#{params[:page]}") do %>
-<% @category.find(:published, :content_type => 'Download', :treemode => false, :order => 'lower(title) asc', :limit => @download_pages.current.to_sql[0], :offset => @download_pages.current.to_sql[1]).each do |download| %>
+<% downloads.each do |download| %>
 <tr class="downloads-download <%=oddclass%>">
   <td class="first"><%=link_to download.title, gmurl(download)%></td>
   <td class="infoinline timestamp centered"><%=print_tstamp download.created_on%></td>
   <td class="infoinline centered"><%=download.downloaded_times%></td>
-  <td class="infoinline timestamp"><%=(download.file.to_s != '' and File.exists?("#{RAILS_ROOT}/public/#{download.file}")) ? number_to_human_size(File.size("#{RAILS_ROOT}/public/#{download.file}")) : ''%></td>
+  <td class="infoinline timestamp"><%=(download.file.to_s != '' and File.exists?("#{Rails.root}/public/#{download.file}")) ? number_to_human_size(File.size("#{Rails.root}/public/#{download.file}")) : ''%></td>
 </tr>
 <% end -%>
 <% end -%>
 </table>
-<%= render :partial => 'shared/pager', :object => @download_pages, :locals => {:pos => 'bottom'} %>
+<%= render :partial => 'shared/pager2',
+           :locals => {:collection => downloads, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>
 <% end -%>

@@ -57,6 +57,18 @@ module ApplicationHelper
     end
   end
 
+  def observe_field(field, opts={})
+    out = <<-END
+      jQuery(function($) {
+        $("##{field}").change(function() {
+          $.get("#{opts[:url]}", function(data) {
+            $("##{opts[:update]}").html(data);
+          });
+        });
+      })
+    END
+  end
+
   def active_sawmode
     if controller.active_sawmode
       @active_sawmode
@@ -77,6 +89,17 @@ module ApplicationHelper
     else
       false
     end
+  end
+
+
+  def error_messages_for(obj)
+    return "" unless obj && obj.errors.any?
+    out = ""
+    out << "<ul>"
+    obj.errors.full_messages.each do |msg|
+      out << "<li>#{msg}</li>"
+    end
+    out << "</ul>"
   end
 
   def can_del_quicklink?
@@ -557,6 +580,10 @@ type: 'bhs'}))
   end
 
   def draw_pcent_bar(pcent, text = nil, compact=false, color=nil)
+    if pcent.nil?
+      Rails.logger.warn("draw_pcent_bar of nil. Transforming pcent to 0.0")
+      pcent = 0
+    end
     # 0 <= pcent <= 1
     if (pcent.kind_of?(Float) && pcent.nan? ) || pcent == Infinity
       pcent = 0
@@ -694,9 +721,9 @@ skin: 'v2'
 
   def get_last_commented_contents
     # TODO ugly
-    if @controller.portal_code && @controller.portal.class.name == 'FactionsPortal'
-      # contents_condition = @controller.portal.contents_condition
-      ids = [0] + @controller.portal.games.collect { |g| g.id }
+    if controller.portal_code && controller.portal.class.name == 'FactionsPortal'
+      # contents_condition = controller.portal.contents_condition
+      ids = [0] + controller.portal.games.collect { |g| g.id }
       contents = Content.find(:all, :conditions => "comments_count > 0 and is_public = 't' AND ((game_id is null AND clan_id IS NULL) OR game_id IN (#{ids.join(',')}))", :order => 'updated_on DESC', :limit => 15)
     else
       contents = Content.find(:all, :conditions => "comments_count > 0 and is_public = 't' AND ((game_id is null AND clan_id IS NULL) OR game_id IS NOT NULL)", :order => 'updated_on DESC', :limit => 15)
@@ -1040,7 +1067,14 @@ skin: 'v2'
   <div class="mcontent">
     END
 
-    out<< controller.send(:render_to_string, :partial => 'shared/pager', :object => opts[:pager], :locals => {:pos => 'top'}) if opts[:pager]
+    if opts[:pager]
+      Rails.logger.warn "Paginación temporalmente deshabilitada."
+      out<< controller.send(
+          :render_to_string,
+          :partial => 'shared/pager',
+          :object => opts[:pager],
+          :locals => {:pos => 'top'})
+    end
 
     cache_out = cache_without_erb_block(opts.fetch(:cache)) do
       collection = object.find(*find_args)
@@ -1293,7 +1327,7 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
 
   def minicolumns(mode, data)
     mc_id = "minicols_{mode}#{data.join(',')}"
-    f = "#{RAILS_ROOT}/public/storage/minicolumns/#{mc_id}.png"
+    f = "#{Rails.root}/public/storage/minicolumns/#{mc_id}.png"
     Cms.gen_minicolumns(mode, data, f) unless File.exists?(f)
     "<img src=\"/storage/minicolumns/#{mc_id}.png\" />"
   end

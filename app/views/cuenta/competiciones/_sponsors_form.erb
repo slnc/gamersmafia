@@ -1,4 +1,4 @@
-<%= error_messages_for 'competitions_sponsor' %>
+<%= error_messages_for @competitions_sponsor %>
 
 <!--[form:competitions_sponsor]-->
 <p><label for="competitions_sponsor_name">Name</label><br/>
@@ -9,7 +9,7 @@
 
 <p><label for="competition_logo">Archivo .JPG</label><br/>
 <% if @competitions_sponsor.image then %>
-<%=fc_thumbnail(@competitions_sponsor.image, 'k', '153x115')%> 
+<%=fc_thumbnail(@competitions_sponsor.image, 'k', '153x115')%>
 <% end -%>
 <%= file_field 'competitions_sponsor', 'image' %></p>
 <!--[eoform:competitions_sponsor]-->

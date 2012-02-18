@@ -1,6 +1,6 @@
 <% generic_support do %>
   <% mftext('Información') do %>
-  <p>Se permite editar comentarios hasta 15 minutos después de su creación. 
+  <p>Se permite editar comentarios hasta 15 minutos después de su creación.
 <cite>Quince es el número que se contará. Y el número de la cuenta será quince. No se deberán contar dieciséis ni se contarán catorce, salvo para seguir después a quince. Eliminado será el diecisiete.</cite>
   </p>
   <% end -%>
@@ -8,13 +8,13 @@
 
 <% content_main do %>
   <% mftext('Modificar comentario') do %>
-<form method="post" action="/comments/update/<%=@comment.id%>" name="REPLIER"> 
+<form method="post" action="/comments/update/<%=@comment.id%>" name="REPLIER">
 <p><label for="comment_comment">Comentario</label><br/>
-<%= error_messages_for 'comment' %>
+<%= error_messages_for @comment %>
 <%= hidden_field_tag 'redirto', params[:redirto] %>
     <div class="comment-textarea">
     <%= bbeditor :name => 'comment[comment]', :id => 'comment_comment', :rows => 10, :value => Comments::unformatize(@comment.comment) %>
-	
+
   <p style="clear: right;"><% if not Cms::user_can_edit_content?(@user, @comment) then %>Nota: Dispones de 15 minutos (hasta <strong><%=print_tstamp (Time.now + 60 * 15)%></strong>) para modificar el comentario. No se guardarán los cambios después de ese momento.<% end -%></p>
   <% if @user.id != @comment.user_id then %>
   <% if @comment.lastedited_by_user_id then %>

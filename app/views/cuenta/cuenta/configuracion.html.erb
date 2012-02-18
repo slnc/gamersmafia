@@ -15,8 +15,8 @@ Contraseña: <input type="password" name="password" />
 <%=form_tag(:action=> 'update_configuration') %>
 <% @post = @user %>
 
-  <% @newuser and if error_messages_for 'newuser' %>
-  <div class="Message"><%= error_messages_for 'newuser' %></div>
+  <% @newuser and if error_messages_for @newuser %>
+  <div class="Message"><%= error_messages_for @newuser %></div>
   <% end %>
 <table>
 <tr>

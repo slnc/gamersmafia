@@ -1,17 +1,17 @@
 class ForosController < ComunidadController
   allowed_portals [:gm, :faction, :clan, :bazar, :arena, :bazar_district]
   acts_as_content_browser :topic
-  
-  TOPLEVEL_GROUPS = [['Gamersmafia', 'gm'], 
+
+  TOPLEVEL_GROUPS = [['Gamersmafia', 'gm'],
       ['Juegos', 'juegos'],
       ['Plataformas', 'plataformas'],
       ['Arena', 'arena'],
       ['Bazar', 'bazar'],
       ]
-  
+
   def index
   end
-  
+
   def nuevo_topic
     require_auth_users
     @title = 'Nuevo tópic'
@@ -20,63 +20,63 @@ class ForosController < ComunidadController
       @forum = Term.single_toplevel(:id => params[:forum_id]) if @forum.nil?
     end
   end
-  
+
   def mis_foros
-    
+
   end
-  
+
   def forum
     # TODO no chequeamos que sea un foro correcto para este portal
     @forum = Term.find_taxonomy(params[:id], 'TopicsCategory')
     @forum = Term.single_toplevel(:id => params[:id]) if @forum.nil?
     raise ActiveRecord::RecordNotFound if @forum.nil?
-    
+
     forum_for_title = @forum
     @title = ''
     @navpath = [] # [['Foros', '/foros'], [@forum.parent.name]
-    
+
     # TODO usar get_category_ascendants y print_forum_path
     while forum_for_title != nil do
       @title = forum_for_title.name  + ' &raquo; ' + @title# TODO pintar la ruta completa de acceso
       @navpath<< [forum_for_title.name, "/foros/forum/#{forum_for_title.id}"]
       forum_for_title = forum_for_title.parent
     end
-    
+
     @navpath<< ['Foros', '/foros']
     @navpath.reverse!
-    
+
     if !@forum.parent then # TODO little hack
       @navpath = [['Foros', '/foros'], [@forum.name, "/foros/forum/#{@forum.id}"]]
       category
       render :action => 'category'
     end
   end
-  
+
   def category
   end
-  
+
   def topic
     @topic = Topic.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @topic.is_public? or (user_is_authed and Cms::user_can_edit_content?(@user, @topic))
     obj = @topic
     # TODO las 4 líneas siguientes duplicadas en acts_as_content_browser
-    if "http://#{request.host}#{request.request_uri}".index(gmurl(obj)).nil?
+    if "http://#{request.host}#{request.fullpath}".index(gmurl(obj)).nil?
       redirect_to(obj.unique_content.url, :status => 301) and return
     end
-    
+
     @forum = @topic.terms.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'')
-    
+
     raise ActiveRecord::RecordNotFound unless @forum
     @title = @topic.title
     @navpath = [['Foros', '/foros']]
     @forum.get_ancestors.reverse.each { |p| @navpath<< [p.name, "/foros/forum/#{p.id}"] }
-    
+
     @navpath<<[@forum.name, "/foros/forum/#{@forum.id}"]
     @navpath<<[@topic.title, gmurl(@topic)]
     track_item(@topic)
   end
-  
-  
+
+
   def edit
     @topic = Topic.find(params[:id])
     require_user_can_edit(@topic)
@@ -85,13 +85,13 @@ class ForosController < ComunidadController
     @navpath = [['Foros', '/foros'], [@forum.parent.name, "/foros/forum/#{@forum.parent.id}"], [@forum.name, "/foros/forum/#{@forum.id}"], [@topic.title, gmurl(@topic)], ['Editar', "/foros/edit/#{@topic.id}"]]
     @topic = @topic
   end
-  
+
   def update_topic
     require_auth_users
     @topic = Topic.find(params[:topic]['id'])
     require_user_can_edit(@topic)
     params[:topic][:main] = Comments::formatize(params[:topic][:main])
-    
+
     @topic.cur_editor = @user
     if @topic.update_attributes(params[:topic])
       flash[:notice] = 'Topic actualizado correctamente.'
@@ -100,7 +100,7 @@ class ForosController < ComunidadController
       render :action => 'edit'
     end
   end
-  
+
   def move_topic
     require_auth_users
     @topic = Topic.find(params[:topic]['id'])
@@ -111,7 +111,7 @@ class ForosController < ComunidadController
     @topic.terms.each { |t| t.unlink(@topic.unique_content) }
     newt.link(@topic.unique_content)
     params[:topic][:moved_on] = Time.now
-    @topic.cur_editor = @user 
+    @topic.cur_editor = @user
     if @topic.update_attributes(params[:topic])
       flash[:notice] = 'Topic movido correctamente.'
       redirect_to :action => 'topic', :id => @topic
@@ -119,20 +119,20 @@ class ForosController < ComunidadController
       render :action => 'edit'
     end
   end
-  
+
   def create_topic
     require_auth_users
-    
+
     raise ActiveRecord::RecordNotFound if params[:topic].nil?
-    
+
     params[:topic][:user_id] = @user.id
     params[:topic][:main] = Comments::formatize(params[:topic][:main])
-    
+
     raise "terms must be single forum" unless params[:categories_terms] && params[:categories_terms].size == 1
-    forum = Term.find_taxonomy(params[:categories_terms][0].to_i, 'TopicsCategory') 
-    
+    forum = Term.find_taxonomy(params[:categories_terms][0].to_i, 'TopicsCategory')
+
     @topic = Topic.new(params[:topic])
-    
+
     if forum.nil? then
       flash[:error] = 'Debes elegir un foro'
       render :action => 'nuevo_topic'
@@ -161,12 +161,12 @@ class ForosController < ComunidadController
             @topic.change_state(Cms::DELETED, User.find_by_login('MrMan'))
             redirect_to '/foros'
           else
-            flash[:notice] = 'Tópic creado correctamente.'            
+            flash[:notice] = 'Tópic creado correctamente.'
             # no es una tonter:ia quitarlo, lo dejamos que se añada para que no le salga como nuevo elemento pendiente de leer
-            Users.remove_from_tracker(@user, @topic.unique_content) if params[:add_to_tracker] != '1' 
+            Users.remove_from_tracker(@user, @topic.unique_content) if params[:add_to_tracker] != '1'
             redirect_to :action => 'topic', :id => @topic
           end
-          
+
         else
           flash[:error] = @topic.errors.full_messages.join('<br />')
           render :action => 'nuevo_topic'
@@ -174,7 +174,7 @@ class ForosController < ComunidadController
       end
     end
   end
-  
+
   def destroy
     @topic = Topic.find(params[:id])
     require_user_can_edit(@topic)

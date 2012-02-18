@@ -7,8 +7,8 @@
     <th>Url</th>
     <th>Imagen</th>
   </tr>
-  
-<% for clans_sponsor in @clans_sponsors %>
+
+<% @clans_sponsors.each do |clans_sponsor| %>
   <tr class="<%=oddclass%>">
     <td><a href="/cuenta/clanes/sponsors/edit/<%=clans_sponsor.id%>"><%=clans_sponsor.name%></a></td>
     <td><%=clans_sponsor.url%></td>
@@ -18,8 +18,8 @@
 <% end %>
 </table>
 
-<%= link_to 'Página anterior', { :page => @clans_sponsor_pages.current.previous } if @clans_sponsor_pages.current.previous %>
-<%= link_to 'Página siguiente', { :page => @clans_sponsor_pages.current.next } if @clans_sponsor_pages.current.next %> 
+<%= render :partial => 'shared/pager2',
+           :locals => {:collection => @clans_sponsors, :position => 'bottom'} %>
 
 <br />
 

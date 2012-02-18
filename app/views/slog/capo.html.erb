@@ -4,7 +4,7 @@
 	<%mftext('Bans', :has_submodules => true, :blast => true) do %>
 	<%mftext('Pendientes', :grid => 4, :blast => true) do %>
 	<ul class="skeletal">
-		<% brs = BanRequest.find(:all, :conditions => 'confirming_user_id is null or (unban_user_id is not null and unban_confirming_user_id is null)', :order => 'ban_requests.id desc', :include => :banned_user)%> 
+		<% brs = BanRequest.find(:all, :conditions => 'confirming_user_id is null or (unban_user_id is not null and unban_confirming_user_id is null)', :order => 'ban_requests.id desc', :include => :banned_user)%>
 		<% if brs.size > 0 then %>
 	<%brs.each do |b|%>
 	<li><%=member_state('active')%> <a href="/admin/usuarios/confirmar_ban_request/<%=b.id%>"><%=b.banned_user.login%></a></li>
@@ -12,9 +12,9 @@
 	</ul>
 	<% else %>
 	<div class="centered infoinline">(No hay bans pendientes)</div>
-	<% end %>		
 	<% end %>
-	
+	<% end %>
+
 	<%mftext('Últimas aprobaciones', :grid => 5, :glast => true, :blast => true) do %>
 	<table class="skeletal">
 	<%BanRequest.find(:all, :conditions => 'confirming_user_id is not null or unban_confirming_user_id is not null', :order => 'coalesce(ban_requests.unban_confirmed_on, ban_requests.confirmed_on) desc', :limit => 5, :include => :banned_user).each do |b|%>
@@ -30,9 +30,9 @@
 		<li><a href="/site/carcel">Usuarios baneados</a></li>
 	</ul>
 	<% end -%>
-	
+
 	<% end -%>
-	
+
 	<%mftext('Usuarios en el punto de mira', :grid => 4) do %>
 	<% suspi = User.suspicious_users %>
 	<% if suspi.size > 0 then %>
@@ -48,16 +48,17 @@
 		<div class="centered infoinline">(No hay usuarios sospechosos, vivimos en un mundo lleno de paz y amor)</div>
 		<% end -%>
 	<% end %>
-	
+
 	<%mftext('Información sobre IP', :grid => 5, :glast => true) do %>
 	<%load_javascript_lib('http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAEOjv-mMw1xr-JlZWx6sROxRJVT2NB8JzbEZfe8sDjFMVxsRdOxQYcc_XlpviiJUle379pMJdOqwNEQ') %>
-	<%=form_remote_tag(:url => '/site/ipinfo', :update => 'ipinfo', :evalscripts => true)%>
+	<%=form_tag(:url => '/site/ipinfo', :update => 'ipinfo', :evalscripts => true,
+      :remote => true)%>
 		<input type="text" name="ip" style="width: 100px;" /> <input type="submit" value="Geolocalizar" />
 	</form>
 	<div id="ipinfo">
 	</div>
 	<% end %>
-	
+
 	<div class="grid-9 glast">
 		<%cache("/common/slog/capo/#{Time.now.to_i / (3600 * 6)}") do %>
 			<%=render :partial => 'organization_status', :locals => { :cls => Faction }%>

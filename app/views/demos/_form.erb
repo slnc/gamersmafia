@@ -12,7 +12,7 @@
 <p><label>Modo de juego</label><br/>
 <select id="games_mode_id" name="demo[games_mode_id]">
 <% if @demo.games_mode_id then %>
-<% 
+<%
 g_id = User.db_query("SELECT id FROM games WHERE name = '#{@demo.games_mode.game.name}'")[0]['id'].to_i
 GamesMode.find(:all, :conditions => ['game_id = ?', g_id]).each do |gm| %>
     <option <%='selected="selected"' if gm.id == @demo.games_mode_id%>value="<%= gm.id %>"><%= gm.name %></option>
@@ -22,8 +22,8 @@ GamesMode.find(:all, :conditions => ['game_id = ?', g_id]).each do |gm| %>
 </p>
 
 <p><label for="image_file">Archivo</label><br/>
-<% if @demo.file then 
-real_path = "#{RAILS_ROOT}/public/" + @demo.file
+<% if @demo.file then
+real_path = "#{Rails.root}/public/" + @demo.file
 %>
 <a href="<%=fc_path(@demo.file)%>"><%=File.basename(@demo.file)%></a> <span class="infoinline"><%=(File.exists?(real_path) ? number_to_human_size(File.size(real_path)) : 'El archivo físico no existe')%></span>
 <% end -%>
@@ -53,7 +53,7 @@ real_path = "#{RAILS_ROOT}/public/" + @demo.file
 <p><label>Mapa</label><br/>
 <select id="games_map_id" name="demo[games_map_id]">
 <% if @demo.games_mode_id then %>
-<% 
+<%
 GamesMap.find(:all, :conditions => ['game_id = ?', g_id], :order => 'lower(name) asc').each do |gm| %>
     <option <%='selected="selected"' if gm.id == @demo.games_map_id%>value="<%= gm.id %>"><%= gm.name %></option>
 <% end %>
@@ -64,7 +64,7 @@ GamesMap.find(:all, :conditions => ['game_id = ?', g_id], :order => 'lower(name)
 <p><label>Versión</label><br/>
 <select id="games_version_id" name="demo[games_version_id]">
 <% if @demo.games_mode_id then %>
-<% 
+<%
 GamesVersion.find(:all, :conditions => ['game_id = ?', g_id]).each do |gm| %>
     <option <%='selected="selected"' if gm.id == @demo.games_version_id%>value="<%= gm.id %>"><%= gm.version %></option>
 <% end %>
@@ -73,7 +73,10 @@ GamesVersion.find(:all, :conditions => ['game_id = ?', g_id]).each do |gm| %>
 </p>
 
 <p><label>Evento</label><br/>
-<%= select("demo", "event_id", Event.find(:published, :conditions => 'parent_id is null', :order => 'lower(title) ASC').collect {|p| [ p.title, p.id ] }, { :include_blank => true })%></p>
+<%= select("demo", "event_id", Event.published.find(
+      :all,
+      :conditions => 'parent_id is null',
+      :order => 'lower(title) ASC').collect { |p| [ p.title, p.id ] }, { :include_blank => true })%></p>
 </p>
 
 <script type="text/javascript">
