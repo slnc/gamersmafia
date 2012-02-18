@@ -8,6 +8,16 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     ActionMailer::Base.deliveries = []
   end
 
+  VALID_CREATE_ARGS = {
+      :accept_terms => '1',
+      :user => {
+          :login => 'chindasvinto',
+          :password => 'marauja',
+          :password_confirmation => 'marauja',
+          :email => 'tupmuamad@jaja.com',
+      },
+  }
+
   test "mis_permisos_should_work" do
     sym_login 2
     %w(Don ManoDerecha Boss Underboss Sicario Moderator Advertiser GroupMember GroupAdministrator CompetitionAdmin CompetitionSupervisor).each do |r|
@@ -218,7 +228,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   end
 
   test "should_create_user_if_everything_is_valid" do
-    post :create, :user => { :login => 'chindasvinto', :password => 'marauja', :password_confirmation => 'marauja', :email => 'tupmuamad@jaja.com' }
+    post :create, VALID_CREATE_ARGS
     #assert_response :success
 
     assert_redirected_to "/cuenta"
@@ -234,12 +244,15 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     test_should_create_user_if_everything_is_valid
     session.clear
 
-    assert_count_increases(SlogEntry) do
-      post :create, :user => { :login => 'chindasvinto2', :password => 'marauja', :password_confirmation => 'marauja', :email => 'tupmuamad2@jaja.com' }
+    params = VALID_CREATE_ARGS.clone
+    params[:user].update(
+        {:login => 'chindasvinto2', :email => 'lolailo@example.com'})
 
+    assert_count_increases(SlogEntry) do
+      post :create, params
     end
 
-    assert_redirected_to "/cuenta/confirmar?em=tupmuamad2@jaja.com"
+    assert_redirected_to "/cuenta/confirmar?em=#{params[:user][:email]}"
     @u2 = User.find_by_login('chindasvinto2')
     assert_not_nil @u2
     assert_equal 'chindasvinto2', @u2.login
@@ -248,10 +261,13 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   end
 
   test "should_not_create_user_if_ip_banned" do
-    assert_count_increases(IpBan) { IpBan.create({:ip => '0.0.0.0', :user_id => 1}) }
+    assert_count_increases(IpBan) do
+      IpBan.create({:ip => '0.0.0.0', :user_id => 1})
+    end
 
-    post :create, {:user => { :login => 'chindasvinto', :password => 'marauja', :password_confirmation => 'marauja', :email => 'tupmuamad@jaja.com' }}
-    # Para un usuario con ip baneada no le decimos que está baneado, que se quede esperando el email
+    post :create, VALID_CREATE_ARGS
+    # Para un usuario con ip baneada no le decimos que está baneado, que se
+    # quede esperando el email
     assert_redirected_to '/cuenta/confirmar'
     @u = User.find_by_login('chindasvinto')
     assert_nil @u
@@ -261,8 +277,8 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     panzer = User.find_by_login('panzer')
     fp = panzer.faith_points
     mails_sent = ActionMailer::Base.deliveries.size
-    post :create, :user => { :login => 'chindasvinto', :password => 'marauja', :password_confirmation => 'marauja', :email => 'tupmuamad@jaja.com'},
-    :referer => 'panzer'
+    post :create, {:referer => 'panzer'}.update(VALID_CREATE_ARGS)
+
     panzer.reload
     u = User.find_by_login('chindasvinto')
     assert_equal panzer.id, u.referer_user_id

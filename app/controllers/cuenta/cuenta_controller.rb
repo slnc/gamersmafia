@@ -127,6 +127,9 @@ class Cuenta::CuentaController < ApplicationController
       SlogEntry.create({:type_id => SlogEntry::TYPES[:security], :headline => "IP baneada #{request.remote_ip} (#{ban.comment}) ha intentado crearse una cuenta"})
       flash[:notice] = "Te hemos enviado un mensaje a #{@newuser.email} con la clave de confirmación."
       redirect_to('/cuenta/confirmar') and return
+    elsif params[:accept_terms] != '1'
+      flash[:error] = "Debes leer y aceptar el código de conducta de Gamersmafia para poder registrarte."
+      render :action => :alta
     elsif Cms::EMAIL_REGEXP =~ @newuser.email && User::BANNED_DOMAINS.include?(@newuser.email.split('@')[1].downcase)
       flash[:error] = "El dominio #{@newuser.email.split('@')[1]} está baneado por abusos. Por favor, elige otra cuenta de correo."
       render :action => :alta

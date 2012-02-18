@@ -1,13 +1,13 @@
 <% generic_support do %>
 <% end -%>
 
-<% content_main do 
+<% content_main do
 parsed_users = []
 %>
 <%mftext('Staff') do %>
 <h2>Capos</h2>
 <table>
-<% User.find(:all, :conditions => 'is_bot = \'f\' and admin_permissions LIKE \'_____1%\'', :order => 'lower(login) asc').each do |u| 
+<% User.find(:all, :conditions => 'is_bot = \'f\' and admin_permissions LIKE \'_____1%\'', :order => 'lower(login) asc').each do |u|
 parsed_users << u %>
 <tr class="<%=oddclass%>">
 <td class="timestamp"></td>
@@ -20,7 +20,7 @@ parsed_users << u %>
 <br />
 <h2>Bosses y underbosses</h2>
 <table>
-<% Faction.find_unorphaned.each do |f|  
+<% Faction.find_unorphaned.each do |f|
 parsed_users << f.boss if f.boss
 parsed_users << f.underboss if f.underboss %>
 <tr class="<%=oddclass%>">
@@ -36,7 +36,7 @@ parsed_users << f.underboss if f.underboss %>
 <% perms = HashWithIndifferentAccess.new(User::ADMIN_PERMISSIONS_INDEXES)
 perms.stringify_keys!
 perms.keys.sort.each do |k|
-	v = perms[k] 
+	v = perms[k]
 	next if v == perms[:capo] || v == perms[:advertiser]
 	str_cond = '_' * v
 	str_cond<< '1%'
@@ -44,7 +44,7 @@ perms.keys.sort.each do |k|
 	if users.size > 0 then %>
 	<h2><%=User::ADMIN_PERMISSIONS_INDEXES.index(v)%></h2>
 	<table>
-	<% users.each do |u| 
+	<% users.each do |u|
 parsed_users << u%>
 <tr class="<%=oddclass%>">
 <td class="timestamp"></td>
@@ -59,7 +59,7 @@ parsed_users << u%>
 <br />
 <h2>Webmaster</h2>
 <table>
-	
+
 <%
 u = User.find(1)
 parsed_users << u

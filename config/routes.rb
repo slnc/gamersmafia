@@ -39,6 +39,7 @@ Gamersmafia::Application.routes.draw do
   match 'cuenta/amigos/cancelar_amistad/:login' => 'cuenta/amigos#cancelar_amistad', :login => /[^\/]+/
   match 'cuenta/amigos/iniciar_amistad/:login' => 'cuenta/amigos#iniciar_amistad', :login => /[^\/]+/
   match 'cuenta/apuestas' => 'cuenta/apuestas#index'
+  match 'cuenta/cuenta/:action' => 'cuenta/cuenta'
   match 'cuenta/avatar' => 'cuenta/cuenta#avatar'
   match 'cuenta/banco' => 'cuenta/banco#index'
   match 'cuenta/blog' => 'cuenta/blog#index'
