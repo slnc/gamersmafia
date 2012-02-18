@@ -127,7 +127,7 @@ if u_clans.size == 0 then %>
 						<div id="mggnav-skins-list" class="saw-dropdownlist hidden">
 							<ul>
 													<% cache("/common/layout/skins") do %>
-							<%([Skin.find_by_hid('default')] + Skin.public).each do |skin| %>
+							<%([Skin.find_by_hid('default')] + Skin.only_public).each do |skin| %>
 								<li><strong><a href="/cuenta/skins/activate?skin=<%=skin.id%>&redirto=/"><%=skin.name%></a></strong></li>
 							<% end -%>
 							<% end %><%# cache %>

@@ -13,9 +13,9 @@ class Skin < ActiveRecord::Base
   after_create :setup_initial_zip
   before_create :check_names
 
-  scope :public,
-              :conditions => 'type = \'FactionsSkin\' AND is_public = \'t\'',
-              :order => 'lower(name)'
+  scope :only_public,
+        :conditions => "type = 'FactionsSkin' AND is_public = 't'",
+        :order => 'lower(name)'
 
   validates_uniqueness_of :name
   belongs_to :user
