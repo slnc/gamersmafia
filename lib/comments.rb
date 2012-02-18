@@ -106,7 +106,7 @@ module Comments
     str ||= ''
     str = Comments.fix_incorrect_bbcode_nesting(str.clone)
     interword_regexp = /[^><]+/
-    interword_regexp_strict = /[a-z0-9 _!"$%&\/()=¿?-]+/
+    interword_regexp_strict = /[^\[]+/
     str.strip!
     str.gsub!(/</, '&lt;')
     str.gsub!(/>/, '&gt;')

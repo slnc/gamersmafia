@@ -86,4 +86,10 @@ class CommentsTest < ActiveSupport::TestCase
     assert c.save
     assert Comments.user_can_edit_comment(u59, c, bd.user_is_moderator(u59))
   end
+
+  test "should replace all urls in a line" do
+    assert_equal(
+        "<a href=\"foo\">fóo</a> <a href=\"bar\">bAr</a>",
+        Comments.formatize('[url=foo]fóo[/url] [url=bar]bAr[/url]'))
+  end
 end
