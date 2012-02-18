@@ -1,4 +1,5 @@
-<% cache("/common/distritos/#{Time.now.strftime('%Y%m%d')}/stats/2_#{bazar_district.id}") do %>
+<%
+cache("/common/distritos/#{Time.now.strftime('%Y%m%d')}/stats/2_#{bazar_district.id}-#{bazar_district.updated_on}") do %>
 <% if bazar_district then %>
 <%mftext('El distrito', :has_submodules => true) do %>
 	<div style="float: left;" class="mgimage-right"><%=draw_organization_building(controller.portal.bazar_district, 2)%></div>
