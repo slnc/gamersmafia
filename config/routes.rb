@@ -16,6 +16,8 @@ Gamersmafia::Application.routes.draw do
   match 'admin/categorias/term/:id/update' => 'admin/categorias#update'
   match 'admin/contenidos' => 'admin/contenidos#index'
   match 'admin/contenidos/:action' => 'admin/contenidos'
+  match 'admin/usuarios' => 'admin/usuarios#index'
+  match 'admin/usuarios/:action' => 'admin/usuarios'
   match 'admin/contenidos/recover/:id' => 'admin/contenidos#recover'
   match 'blogs/:login' => 'blogs#blog', :login => /[^\/]+/
   match 'blogs/:login/:id' => 'blogs#blogentry', :login => /[^\/]+/, :constraints => { :id => /\d+/ }

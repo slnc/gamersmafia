@@ -19,22 +19,11 @@ class User < ActiveRecord::Base
   FEMALE = 1
   SEXUAL_ORIENTATIONS_REL = { :women => "sex = #{FEMALE}", :men => "sex = #{FEMALE}", }
   MESSAGE_WELCOME_TO_HQ = <<-end
-  Ya te he dado de alta en el HQ.
+  Ya estás dado de alta en el HQ.
 
   Te recomiendo que para empezar vayas al wiki (menú horizontal encima de la
   cabecera HQ -> Wiki) ya que hay un información sobre cómo usar tanto el wiki
-  como jira y la lista de correo interna..
-
-  Te debería haber llegado un email con un nombre de usuario y una contraseña,
-  son para acceder al wiki y al gestor de incidencias (JIRA). En el wiki verás
-  varias zonas con toda la información sobre wiki y gestor de incidencias y
-  sobre la lista de correo. Te recomiendo empezar por esta pagina:
-  http://hq.gamersmafia.com/confluence/display/GM/Bienvenido+a+Gamersmafia y
-  tener bien claro esta otra:
-  http://hq.gamersmafia.com/confluence/display/GM/Netiqueta+para+miembros+del+HQ.
-  Por favor, échales un vistazo (por supuesto no hay prisa, cuando puedas) y si
-  tienes alguna duda puedes preguntar tanto en la lista interna como por
-  privado.
+  como GitHub y la lista de correo interna..
 
   Un saludete :D
   end
@@ -575,19 +564,10 @@ class User < ActiveRecord::Base
     return unless self.is_hq_changed?
 
     if self.is_hq?
-      valid_username = self.login.bare
-      if !Jira.user_exists?(valid_username)
-        Jira.create_user(valid_username, self.email)
-        Jira.activate_user(valid_username)
-      end
-
-      Notification.add_to_hq(User.find(1), :new_member => self).deliver
-      Message.create(:sender => User.find(1),
+      Message.create(:sender => User.find_by_login('nagato'),
                      :recipient => self,
                      :title => "¡Bienvenido al HQ!",
                      :message => MESSAGE_WELCOME_TO_HQ)
-    else
-      Jira.deactivate_user(valid_username)
     end
   end
 

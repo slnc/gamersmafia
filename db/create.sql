@@ -240,7 +240,9 @@ CREATE TABLE bazar_districts (
     icon character varying,
     building_top character varying,
     building_middle character varying,
-    building_bottom character varying
+    building_bottom character varying,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL
 );
 CREATE SEQUENCE bazar_districts_id_seq
     START WITH 1
