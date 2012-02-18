@@ -2,8 +2,8 @@
 <%= form_tag({:action=> 'update_profile' }, :multipart => true) %>
 <% @post = @user %>
 
-<% @newuser and if error_messages_for 'newuser' %>
-<div class="Message"><%= error_messages_for 'newuser' %></div>
+<% @newuser and if error_messages_for @newuser %>
+<div class="Message"><%= error_messages_for @newuser %></div>
 <% end %>
 
 <table cellpadding="3" cellspacing="3" border="0" class="signup">

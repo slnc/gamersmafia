@@ -3,7 +3,7 @@
 </div>
 
 <div class="content-left">
-<%= error_messages_for 'ab_test' %>
+<%= error_messages_for @ab_test %>
 
 <!--[form:ab_test]-->
 <table class="formfields">
@@ -16,23 +16,23 @@
     <td class="formlabel">Sensibilidad</td>
     <td><%=text_field('ab_test', 'min_difference')%> <span class="f_sm">de 0.00 a 1.00</span></td>
   </tr>
-  
+
   <tr class="<%=oddclass%>">
     <td class="formlabel">Tratamientos</td>
     <td><%=text_field('ab_test', 'treatments')%></td>
   </tr>
-  
+
   <tr class="<%=oddclass%>">
     <td class="formlabel">Activo</td>
     <td><%=check_box('ab_test', 'active')%></td>
   </tr>
-  
+
   <tr class="<%=oddclass%>">
     <td class="formlabel">URL Info</td>
-    <td><%=text_field('ab_test', 'info_url')%> 
+    <td><%=text_field('ab_test', 'info_url')%>
 	<strong><% if @ab_test.info_url then %><a href="<%=@ab_test.info_url%>">Visitar</a><% end %></strong></td>
   </tr>
-  
+
   <tr class="<%=oddclass%>">
     <td class="formlabel">Métricas medidas</td>
     <td>

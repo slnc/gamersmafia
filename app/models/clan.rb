@@ -14,14 +14,22 @@ class Clan < ActiveRecord::Base
   after_create :setup_clan
   has_bank_account
 
-  scope :in_games, lambda { |games| { :conditions => "id IN (SELECT clan_id FROM clans_games WHERE game_id IN (#{[0] + games.collect { |g| g.id } }))" }}
+  scope :in_games,
+        lambda { |games|
+            game_ids = [0] + games.collect { |g| g.id }
+            {:conditions => "id IN (SELECT clan_id FROM clans_games WHERE" +
+                            " game_id IN (#{game_ids}))"
+            }
+        }
 
   before_save :update_rosters
   after_update :update_competition_name
 
   belongs_to :creator, :class_name => 'User', :foreign_key => 'creator_user_id'
 
-  # attr_accessible :name, :tag, :website_external, :irc_channel, :irc_server, :logo, :description, :competition_roster
+  def game_ids_changed?
+    @game_ids_changed || false
+  end
 
   def mark_as_deleted
     self.members.each { |member| self.member_leave(member) }
@@ -55,6 +63,14 @@ class Clan < ActiveRecord::Base
     else
       nil
     end
+  end
+
+  attr_accessor :game_ids_was
+
+  def update_games(game_ids)
+    @game_ids_changed = true
+    self.game_ids_was = self.game_ids
+    self.update_attributes(game_ids)
   end
 
   def update_rosters

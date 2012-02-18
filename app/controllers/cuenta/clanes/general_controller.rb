@@ -7,9 +7,6 @@ class Cuenta::Clanes::GeneralController < ApplicationController
     clanes_menu_items
   end
 
-  #verify :method => :post, :only => [ :destroy, :create, :update ],
-  #:redirect_to => { :action => :index}
-
   before_filter :require_auth_users
 
   before_filter do |c|

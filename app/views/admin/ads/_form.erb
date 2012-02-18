@@ -1,4 +1,4 @@
-<%= error_messages_for 'ad' %>
+<%= error_messages_for @ad %>
 
 <!--[form:ad]-->
 <p><label for="ad_question">Nombre</label><br/>
@@ -9,7 +9,7 @@
 		<td class="w50pc">
 <p><label for="image_file">Imagen</label><br/>
 <% if @ad.file then %>
-<%=fc_thumbnail(@ad.file, 'k', '153x115')%> 
+<%=fc_thumbnail(@ad.file, 'k', '153x115')%>
 <% end -%>
 <%= file_field 'ad', 'file' %></p>
 

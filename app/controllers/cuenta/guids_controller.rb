@@ -11,10 +11,10 @@ class Cuenta::GuidsController < ApplicationController
     flash[:notice] = ''
     for g in Game.find(:all, 'has_guids = \'t\'')
       if g.has_guids?
-        f_field = "guid#{g.id}".to_sym 
+        f_field = "guid#{g.id}".to_sym
         params[f_field][:game_id] = g.id
         params[f_field][:user_id] = @user.id
-        last_guid = @user.users_guids.find_last(@user, g)
+        last_guid = @user.users_guids.find_last_by(@user, g)
         # TODO añadir formato/validación de GUIDs
         if (not params[f_field][:guid].blank?) and (not (last_guid && last_guid.guid == params[f_field][:guid])) then # si ha cambiado guardamos
           if not last_guid then
@@ -34,7 +34,7 @@ class Cuenta::GuidsController < ApplicationController
               flash[:error] << "(#{g.name}) " << new_ug.errors.full_messages.join('<br />') << '<br />'
             end
           end
-        end  
+        end
       end # has_guids
     end # for
 

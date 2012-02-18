@@ -264,7 +264,7 @@ class User < ActiveRecord::Base
     User.find(:all, :conditions => "admin_permissions LIKE '#{s}'")
   end
 
-  def self.online(order='faction_id asc, lastseen_on desc')
+  def self.online_users(order='faction_id asc, lastseen_on desc')
     User.find(:all, :conditions => "lastseen_on >= now() - '30 minutes'::interval",
               :order => order, :limit => 100)
   end
@@ -797,7 +797,7 @@ class User < ActiveRecord::Base
   end
 
   def can_change_faction_after
-    Time.at(self.faction_last_changed_on + 86400 * 30)
+    self.faction_last_changed_on.advance(:days => 30)
   end
 
   def tracker_empty?

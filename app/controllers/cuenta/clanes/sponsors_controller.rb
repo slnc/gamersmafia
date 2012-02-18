@@ -21,10 +21,6 @@ class Cuenta::Clanes::SponsorsController < ApplicationController
     end
   end
 
-  #verify :method => :post, :only => [ :destroy, :create, :update ],
-  #       :redirect_to => { :action => :list }
-
-
   def index
     @title = 'Sponsors'
     @navpath = [['Mis clanes', '/cuenta/clanes'], ['Sponsors', '/cuenta/clanes/sponsors']]
@@ -36,7 +32,10 @@ class Cuenta::Clanes::SponsorsController < ApplicationController
   def list
     @title = 'Sponsors'
     @navpath = [['Mis clanes', '/cuenta/clanes'], ['Sponsors', '/cuenta/clanes/sponsors']]
-    @clans_sponsor_pages, @clans_sponsors = paginate :clans_sponsors, :conditions => ['clan_id = ?', @clan.id], :per_page => 10
+    @clans_sponsors = ClansSponsor.paginate(
+      :conditions => ['clan_id = ?', @clan.id],
+      :page => params[:page],
+      :per_page => 10)
   end
 
   def new

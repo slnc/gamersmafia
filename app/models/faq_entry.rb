@@ -3,7 +3,7 @@ class FaqEntry < ActiveRecord::Base
   before_create :set_position
   before_save :check_category_id_changed
 
-  private
+  protected
   def set_position
     self.position = User.db_query("SELECT coalesce(max(position),0) as max from faq_entries WHERE faq_category_id = #{self.faq_category_id.to_i}")[0]['max'].to_i + 1
   end

@@ -81,7 +81,7 @@ module ApplicationHelper
 
 
   def error_messages_for(obj)
-    return "" unless obj.errors.any?
+    return "" unless obj && obj.errors.any?
     out = ""
     out << "<ul>"
     obj.errors.full_messages.each do |msg|
@@ -568,6 +568,10 @@ type: 'bhs'}))
   end
 
   def draw_pcent_bar(pcent, text = nil, compact=false, color=nil)
+    if pcent.nil?
+      Rails.logger.warn("draw_pcent_bar of nil. Transforming pcent to 0.0")
+      pcent = 0
+    end
     # 0 <= pcent <= 1
     if (pcent.kind_of?(Float) && pcent.nan? ) || pcent == Infinity
       pcent = 0

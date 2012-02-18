@@ -16,15 +16,15 @@
     por uno nuevo o aún cuando la cuenta se dé de baja.</li>
   </ul>
   <% end -%>
-  
+
   <% mftext('Ejemplos de GUIDs') do %>
   <p>Ver <%=popup('ejemplos de GUIDs', '/site/ejemplos_guids', 350, 225)%>.</p>
   <% end -%>
 <% end -%>
 
-<% content_main do %> 
+<% content_main do %>
   <p>Marca los juegos en los que participas habitualmente.</p>
-  <% 
+  <%
 	g_ids = @user.game_ids
 	platforms_ids = @user.platform_ids
 
@@ -39,8 +39,8 @@
       <th>GUID Actual</th>
       <th>Nuevo GUID</th>
     </tr>
-    <% for g in Game.find(:all, :order => 'lower(name) ASC') 
-    last = @user.users_guids.find_last(@user, g) %>
+    <% for g in Game.find(:all, :order => 'lower(name) ASC')
+    last = @user.users_guids.find_last_by(@user, g) %>
     <tr class="<%=oddclass%>">
       <td class="w20"><input type="checkbox" name="games[]" value="<%=g.id%>" <%=g_ids.include?(g.id) ? 'checked="checked"' : ''%> /></td>
       <td class="w20"><%=faction_favicon(g)%></td>
@@ -59,7 +59,7 @@
     <% end -%>
   </table>
   <% end -%>
-  
+
   <%mftext('Plataformas') do %>
   <table>
     <% for g in Platform.find(:all, :order => 'lower(name) ASC') %>
@@ -71,7 +71,7 @@
     <% end -%>
   </table>
   <% end -%>
-  
+
   <input type="submit" class="button" value="Guardar" />
 </form>
 <% end -%>

@@ -88,8 +88,9 @@ class Skin < ActiveRecord::Base
   end
 
   def used_by_users_count
+    Rails.logger.warn "self.id: #{self.id}"
     UsersPreference.count(
-        :conditions => ["name = 'skin' AND value::int4 = ?", self.id])
+        :conditions => "name = 'skin' AND value = '#{self.id}'")
   end
 
 

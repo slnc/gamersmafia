@@ -1,4 +1,4 @@
-<%= error_messages_for 'games_map' %>
+<%= error_messages_for @games_map %>
 
 <!--[form:games_map]-->
 <p><label for="games_map_name">Nombre</label><br/>
@@ -6,7 +6,7 @@
 
 <p><label for="games_map_screenshot">Archivo .JPG</label><br/>
 <% if @games_map.screenshot then %>
-<%=fc_thumbnail(@games_map.screenshot, 'k', '153x115')%> 
+<%=fc_thumbnail(@games_map.screenshot, 'k', '153x115')%>
 <% end -%>
 <%= file_field 'games_map', 'screenshot' %></p>
 

@@ -9,6 +9,14 @@ class CompetitionsMatch < ActiveRecord::Base
                                    :result
                                  ]
 
+  RESULT_PENDING_SQL = <<-END
+  accepted = 't'
+  AND NOT (
+      (participant1_confirmed_result = 't' AND
+       participant2_confirmed_result = 't')
+      OR admin_confirmed_result = 't')"
+  END
+
   belongs_to :competition
   belongs_to :event
   belongs_to :participant1, :class_name => 'CompetitionsParticipant',
@@ -34,6 +42,11 @@ class CompetitionsMatch < ActiveRecord::Base
 
   scope :accepted, :conditions => "accepted = 't'"
   scope :not_accepted, :conditions => "accepted = 'f'"
+
+  scope :completed, :conditions => Competition::COMPLETED_ON_SQL
+  scope :approved, :conditions => "accepted = 't'"
+  scope :result_pending,
+        :conditions => CompetitionsMatch::RESULT_PENDING_SQL
   #  after_save :reset_faith_indicators
 
   # TODO

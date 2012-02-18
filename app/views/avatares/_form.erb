@@ -1,4 +1,4 @@
-<%= error_messages_for 'avatar' %>
+<%= error_messages_for @avatar %>
 
 <!--[form:avatar]-->
 <p><label for="avatar_name">Name</label><br/>
@@ -21,7 +21,7 @@ when 'faction': %>
 <% end -%>
 <p><label for="avatar_file">File</label><br/>
 <% if @avatar.path then %>
-<%=fc_thumbnail(@avatar.path, 'k', '50x50')%> 
+<%=fc_thumbnail(@avatar.path, 'k', '50x50')%>
 <% end -%>
 <%= file_field 'avatar', 'path' %></p>
 <!--[eoform:avatar]-->
