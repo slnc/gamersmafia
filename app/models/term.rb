@@ -1,9 +1,6 @@
 require 'has_slug'
 
 class Term < ActiveRecord::Base
-  scope :top_level, :conditions => 'id = root_id AND parent_id IS NULL'
-  scope :in_type, lambda { |type| { :conditions => "type = '#{type}'"}}
-
   VALID_TAXONOMIES = %w(
       ColumnsCategory
       ContentsTag

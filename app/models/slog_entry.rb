@@ -71,7 +71,7 @@ class SlogEntry < ActiveRecord::Base
   OPEN_SQL = 'completed_on IS NULL AND reviewer_user_id IS NULL'
 
   scope :closed, :conditions => CLOSED_SQL
-  scope :open, :conditions => OPEN_SQL
+  scope :unassigned, :conditions => OPEN_SQL
   scope :assigned_to_me,
         lambda { |user_id|
             {:conditions => ["completed_on IS NULL AND reviewer_user_id = ?",
@@ -259,10 +259,6 @@ class SlogEntry < ActiveRecord::Base
       total += recursive_ccount(mode, opts.merge(new_opts))
     end
 
-    # types, scopes = get_child_types_and_scopes(mode, opts)
-    # (modes + [mode]).each do |m|
-    #   total += ccount(mode, opts)
-    # end
     total
   end
 
