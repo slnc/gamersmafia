@@ -47,7 +47,11 @@ end
 
 <% if cat.question then %>
 <% mfcontents_list("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.domain}/preguntas\">Preguntas</a>",
-				   Proc.new { Question.in_term(cat).published.find(:all, :conditions => 'answered_on IS NULL AND contents.created_on > now() - \'7 days\'::interval', :order => 'COALESCE(ammount, 0) desc, contents.created_on DESC', :limit => 5)}
+				   Proc.new { Question.in_term(cat).published.find(
+             :all,
+             :conditions => "answered_on IS NULL AND created_on > now() -" +
+                            " '7 days'::interval",
+             :order => 'COALESCE(ammount, 0) desc, created_on DESC', :limit => 5)}
 				   ) do |o| %>
 <a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a>
 <% end -%>

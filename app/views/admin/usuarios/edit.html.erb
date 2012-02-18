@@ -203,7 +203,12 @@
 <tr>
        <td><label for="post_confirmed">Permisos de admin</label></td>
        <td>
-<%=input "edituser", "admin_permissions"%><br /> <% User::ADMIN_PERMISSIONS_INDEXES.values.sort.each do |v| %><%=User::ADMIN_PERMISSIONS_INDEXES.index(v)%>, <%end%><br />
+       <%=text_field(:edituser, :admin_permissions)%>
+       <br />
+       <% User::ADMIN_PERMISSIONS_INDEXES.values.sort.each do |v| %>
+         <%=User::ADMIN_PERMISSIONS_INDEXES.index(v)%>,
+       <%end%>
+       <br />
 </td>
     </tr>
 	<tr>

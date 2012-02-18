@@ -101,7 +101,7 @@ class AbTest < ActiveRecord::Base
   # se devuelve el mayor tiempo para completarse si el test tiene varias métricas
   def experiment_completedness(recalculate=true)
     rates_metrics = conversion_rates(recalculate)
-    max = nil
+    max = 0
     return max unless rates_metrics
 
     rates_metrics.keys.each do |rm|
@@ -111,7 +111,7 @@ class AbTest < ActiveRecord::Base
         cur_treated += rates[k][:impressions] ? rates[k][:impressions] : rates[k][:treated_visitors] # rates[k][:treated_visitors]
       end
       cur_estimated = cur_treated / desired_sample_rate(rates)
-      max = cur_estimated if max.nil? || cur_estimated > max
+      max = cur_estimated if cur_estimated > max
     end
     max
   end

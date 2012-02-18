@@ -496,7 +496,10 @@ class Cuenta::CompeticionesController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @competition.pro?
     @title = 'Sponsors'
     @navpath = [['Mis clanes', '/cuenta/competiciones'], ['Sponsors', '/cuenta/competiciones/sponsors']]
-    @competitions_sponsor_pages, @competitions_sponsors = paginate :competitions_sponsors, :conditions => ['competition_id = ?', @competition.id], :per_page => 10
+    @competitions_sponsors = CompetitionsSponsor.paginate(
+        :conditions => ['competition_id = ?', @competition.id],
+        :per_page => 10,
+        :page => params[:page])
   end
 
   def sponsors_new
