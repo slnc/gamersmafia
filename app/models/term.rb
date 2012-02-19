@@ -403,8 +403,6 @@ class Term < ActiveRecord::Base
       f = Faction.find_by_code(self.root.slug)
       if f
         portals += Portal.find(:all, :conditions => ['id in (SELECT portal_id from factions_portals where faction_id = ?)', f.id])
-      #else
-        #puts "warning, term #{self.id} #{self.name} #{self.code} has no related_portals"
       end
     elsif self.bazar_district_id
       portals << self.bazar_district
@@ -795,7 +793,6 @@ class Term < ActiveRecord::Base
 		  	    #{q_time}
 		     GROUP BY user_id HAVING count(*) > 2
 		     ORDER BY count(*) DESC").each do |c|
-		puts c
 		tbl[c['user_id'].to_i] = {:karma_sum => 0, :topics => 0, :comments => 0} unless tbl[c['user_id'].to_i]
 		tbl[c['user_id'].to_i][:karma_sum] += Karma::KPS_CREATE['Comment'] * c['count'].to_i
 		tbl[c['user_id'].to_i][:comments] += c['count'].to_i

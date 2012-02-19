@@ -17,7 +17,7 @@ class Notification < ActionMailer::Base
     max = 500
     i = 0
     @imap.search(["NOT", "DELETED"]).each do |message_id|
-      #puts "processing email #{message_id}"
+      # puts "processing email #{message_id}"
       break if i >= max
       if process_email_envelope(@imap.fetch(message_id, "ENVELOPE")[0].attr["ENVELOPE"])
         mark_for_deletion(message_id)
@@ -35,12 +35,12 @@ class Notification < ActionMailer::Base
   end
 
   def self.mark_for_deletion(message_id)
-    ##puts "marking for deletion message_id #{message_id}"
+    ## puts "marking for deletion message_id #{message_id}"
     @imap.store(message_id, "+FLAGS", [:Deleted])
   end
 
   def self.process_email_envelope(envelope)
-    #puts "processing envelope.subject #{envelope.subject} (#{envelope.to[0]})"
+    # puts "processing envelope.subject #{envelope.subject} (#{envelope.to[0]})"
     failed = ['Mail delivery failed: returning message to sender',
             'Undelivered Mail Returned to Sender',
             'Delivery Status Notification (Failure)',

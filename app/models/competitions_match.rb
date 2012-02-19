@@ -308,8 +308,8 @@ class CompetitionsMatch < ActiveRecord::Base
     basic = (c.state == Competition::STARTED && self.accepted?)
     completed_admin_on_ladder = (c.kind_of?(Ladder) && c.state == Competition::STARTED && (c.user_is_admin(user.id) || c.user_is_supervisor(user.id)) && completed_on && completed_on > 1.month.ago)
     participants = (!self.completed? && !awaiting_participant? && (c.user_is_admin(user.id) || c.user_is_supervisor(user.id) || c.user_is_participant_of_match(user.id, self)))
-    #puts "(#{!self.completed?} && #{!awaiting_participant?} && (#{c.user_is_admin(user.id)} || #{c.user_is_supervisor(user.id)} || #{c.user_is_participant_of_match(user.id, self)}))"
-    #puts "#{basic} && (#{participants} || #{completed_admin_on_ladder} || (#{user.login.downcase} == 'mrman'))"
+    # puts "(#{!self.completed?} && #{!awaiting_participant?} && (#{c.user_is_admin(user.id)} || #{c.user_is_supervisor(user.id)} || #{c.user_is_participant_of_match(user.id, self)}))"
+    # puts "#{basic} && (#{participants} || #{completed_admin_on_ladder} || (#{user.login.downcase} == 'mrman'))"
     if basic && (participants || completed_admin_on_ladder || (user.login.downcase == 'mrman'))
       true
     else

@@ -103,7 +103,6 @@ namespace :gm do
       Stats.consolidate_ads_daily_stats(tstart, tend)
       cur = cur.advance(:days => 1)
     end
-    #puts "select count(*), ads_shown from stats.pageviews where created_on BETWEEN '#{tstart.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{tend.strftime('%Y-%m-%d %H:%M:%S')}' group by ads_shown order by ads_shown"
   end
 
   def check_faction_leaders
@@ -157,7 +156,9 @@ namespace :gm do
                  group by portal_id").each do |dbr|
       portal = Portal.find_by_id(dbr['portal_id'])
       if portal.nil?
-        puts "daily.update_portals_hits_stats(). Warning, portal id #{dbr['portal_id']} (#{dbr['count']} pageviews) not found"
+        Rails.logger.warn(
+          "daily.update_portals_hits_stats(). Warning, portal id" +
+          " #{dbr['portal_id']} (#{dbr['count']} pageviews) not found")
       else
         portal.cache_recent_hits_count = dbr['count'].to_i
         portal.save
@@ -219,7 +220,7 @@ having portal_id in (select id
                                        and id IN #{Faction.factions_ids_with_bigbosses}))
              AND sum(karma) = 0)").each do |f|
       # mrCheater provoca golpe de estado publicando un tópic al respecto
-      #puts "golpe de estado a #{f.name}"
+      Rails.logger.info("golpe de estado a #{f.name}")
       f.golpe_de_estado
     end
   end
@@ -414,7 +415,6 @@ having portal_id in (select id
     cur_day = 1.day.ago.beginning_of_day if Rails.env == 'test'
 
     while cur_day <= max_day
-      # puts cur_day
       # iteramos a través de todos los users que han creado contenidos o comentarios hoy
       User.find(:all, :conditions => "id IN (select user_id
                                                from contents
@@ -425,7 +425,6 @@ having portal_id in (select id
                                               where deleted = 'f' AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00')").each do |u|
         # TODO here
         Karma.karma_points_of_user_at_date(u, cur_day).each do |portal_id, points|
-          # puts "#{u.login} #{portal_id} #{points}"
           User.db_query("INSERT INTO stats.users_karma_daily_by_portal(user_id, portal_id, karma, created_on) VALUES(#{u.id}, #{portal_id}, #{points}, '#{cur_day.strftime('%Y-%m-%d')}')")
         end
       end
@@ -454,7 +453,6 @@ having portal_id in (select id
     cur_day = 1.day.ago.beginning_of_day if Rails.env == 'test'
 
     while cur_day <= max_day
-      # puts cur_day
       # iteramos a través de todos los users que han creado contenidos o comentarios hoy
       pointz = {}
 
@@ -470,8 +468,6 @@ having portal_id in (select id
         Karma.karma_points_of_user_at_date(u, cur_day).each do |portal_id, points|
           pointz[u.id] ||= {:karma => 0, :faith => 0, :popularity => 0}
           pointz[u.id][:karma] += points
-          # puts "#{u.login} #{portal_id} #{points}"
-          # User.db_query("INSERT INTO stats.users_karma_daily_by_portal(user_id, portal_id, karma, created_on) VALUES(#{u.id}, #{portal_id}, #{points}, '#{cur_day.strftime('%Y-%m-%d')}')")
         end
       end
 

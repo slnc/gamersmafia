@@ -30,10 +30,10 @@ module GmSys
       m = /\.([0-9]+)\.pid$/.match(fname)
       begin
         Process.kill('TERM', m[1].to_i)
-        puts "killing delayed_job #{m[1]}" if App.debug
+        Rails.logger.info("killing delayed_job #{m[1]}") if App.debug
         File.unlink("#{Rails.root}/tmp/pids/#{fname}")
       rescue
-        puts "the bastard didn't want to die" if App.debug
+        Rails.logger.info("the bastard didn't want to die") if App.debug
       end
     end
 

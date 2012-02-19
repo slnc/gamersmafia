@@ -116,8 +116,8 @@ module Achmed
         index.each do |word, occur|
             if occur.size < 100
                 occur.each do |i, j|
-                    #puts "replacing #{i} #{j} word: #{word} occur.size: #{occur.size}"
-                    #puts "replacing #{i} #{j} #{corpus[i].size}"
+                    # puts "replacing #{i} #{j} word: #{word} occur.size: #{occur.size}"
+                    # puts "replacing #{i} #{j} #{corpus[i].size}"
                     corpus[i][j] = UNK_TAG
                     index[UNK_TAG] ||= []
                     index[UNK_TAG] += occur
@@ -264,8 +264,8 @@ module Achmed
           w1 += 1 if v == 1.0
       end
 
-      #puts "Prob mass to give to unk: #{w1 / unigram.values.sum}"
-      #puts "\n\n"
+      # puts "Prob mass to give to unk: #{w1 / unigram.values.sum}"
+      # puts "\n\n"
 
       pctg = 1 - w1 / unigram.values.sum
       p_unigram.each { |w, v| p_unigram[w] *= pctg }

@@ -64,8 +64,8 @@ module CRF
      (simils.keys - [cid]).each do |ccid|
       next unless user_ratings.include?(uid) && user_ratings[uid].include?(ccid)
       
-      #puts "#{cid} not in simils!!!" if !simils.keys.include?(cid)
-      #puts "#{ccid} not in simils#{cid}!!!" if !simils[cid].keys.include?(ccid)
+      # puts "#{cid} not in simils!!!" if !simils.keys.include?(cid)
+      # puts "#{ccid} not in simils#{cid}!!!" if !simils[cid].keys.include?(ccid)
       sum_simil += simils[cid][ccid]
       weighted_simil += simils[cid][ccid] * user_ratings[uid][ccid]
     end
@@ -87,7 +87,7 @@ module CRF
         if ccid > cid # we need to calculate it
           simils[cid][ccid] = dist(cid, ccid, cr_u_content)
         else # we already calculated it, we are in the lower part of the matrix
-          #puts "computing distance between #{cid}, #{ccid}"
+          # puts "computing distance between #{cid}, #{ccid}"
           simils[cid][ccid] = simils[ccid][cid]
         end
       end
@@ -174,7 +174,7 @@ cratings.each do |cr|
   
   i += 1
   prediction = predict(cr.user_id, cr.content_id, simils, cr_u_content)
-  #puts "prediction is: #{prediction}"
+  # puts "prediction is: #{prediction}"
   if cr.rating >= THRESHOLD_TO_RECOMMEND
     recall_total += 1
   end

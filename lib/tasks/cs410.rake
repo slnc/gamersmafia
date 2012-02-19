@@ -60,7 +60,7 @@ namespace :cs410 do
   
   
   def self.train_bayes(classn, find_each_opts)
-    #puts "#{classn} #{find_each_opts}"
+    # puts "#{classn} #{find_each_opts}"
     dict = {0 => {}, 1 => {}, -1 => {}}
     global_dict = {}
     #ActiveRecord::Base.uncached do
@@ -200,7 +200,7 @@ namespace :cs410 do
         prob_neg += Math.log(@model['pdict']['-1'][word].to_f / (@opts[:idf] ? @model['pglobal_dict'][word] : 1)) if @model['pdict']['-1'][word].to_f > 0
         prob_neutral += Math.log(@model['pdict']['0'][word].to_f / (@opts[:idf] ? @model['pglobal_dict'][word] : 1)) if @model['pdict']['0'][word].to_f > 0
       end
-      #puts "Prob pos: #{prob_pos} | Prob neg: #{prob_neg} | Prob neutral: #{prob_neutral}"
+      # puts "Prob pos: #{prob_pos} | Prob neg: #{prob_neg} | Prob neutral: #{prob_neutral}"
       
       positive = -2*prob_pos + prob_neg + prob_neutral
       negative = -2*prob_neg + prob_pos + prob_neutral
@@ -390,7 +390,7 @@ namespace :cs410 do
       next if comment.nil? || comment.comment.nil? || comment.deleted
       classif = model.classify(cv.comment.comment, cv.user_id, cv)
       error_hops = ((classif + 1) - (cv.comments_valorations_type.direction + 1)).abs
-      #puts "error_hops: #{error_hops} | classif: #{classif} | actual: #{cv.comments_valorations_type.direction}"
+      # puts "error_hops: #{error_hops} | classif: #{classif} | actual: #{cv.comments_valorations_type.direction}"
       if error_hops > 1
         error += 2
       elsif error_hops > 0

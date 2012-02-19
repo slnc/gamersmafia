@@ -83,7 +83,7 @@ module Skins
         base_hue = texture.texture_attrs[:base_hue].to_i / 360.0
         huoc = user_options_color[:hue].value / 360.0 #, suoc, vuoc =  Skins::ColorGenerators::rgb_to_hsv(*Skins::ColorGenerators::rgbhex_to_rgb(user_options_color.to_s))
         # puts "User Color: #{user_options_color.to_s} hsv(#{huoc}, #{suoc}, #{vuoc}) h360: #{huoc*360}deg"
-        #puts huoc, suoc, vuoc
+        # puts huoc, suoc, vuoc
         im.colors.times do |i|
           color = Magick::Pixel.from_color(im.colormap(i))
           # cogemos el hue y se lo aplicamos al color
@@ -97,11 +97,11 @@ module Skins
           newcolor = Skins::ColorGenerators::hsv_to_rgb(cur_huoc, s, v) # (v + vuoc) / 2)
           im.colormap(i, "rgb(#{(newcolor[0]*255).to_i}, #{(newcolor[1]*255).to_i}, #{(newcolor[2]*255).to_i})")
 
-          #puts "\nPROCESANDO COLOR DE PALETA #{i}"
-          #puts "original RGB(#{color.red} #{color.green} #{color.blue}) HSV(#{h} #{s} #{v})"
-          #puts "nuevo    RGB(#{(newcolor[0]*255).to_i}, #{(newcolor[1]*255).to_i}, #{(newcolor[2]*255).to_i}) HSV(#{huoc} #{s} #{(v + vuoc) / 2})"
-          #puts "color viejo: #{color}"
-          #puts "color nuevo: #{(newcolor[0]*255).to_i}, #{(newcolor[1]*255).to_i}, #{(newcolor[2]*255).to_i}"
+          # puts "\nPROCESANDO COLOR DE PALETA #{i}"
+          # puts "original RGB(#{color.red} #{color.green} #{color.blue}) HSV(#{h} #{s} #{v})"
+          # puts "nuevo    RGB(#{(newcolor[0]*255).to_i}, #{(newcolor[1]*255).to_i}, #{(newcolor[2]*255).to_i}) HSV(#{huoc} #{s} #{(v + vuoc) / 2})"
+          # puts "color viejo: #{color}"
+          # puts "color nuevo: #{(newcolor[0]*255).to_i}, #{(newcolor[1]*255).to_i}, #{(newcolor[2]*255).to_i}"
         end
         im.write(newtmpfile)
         css = css_read_and_replace(texture, {:element_selector => user_options[:element_selector].gsub("'", '')})
@@ -135,7 +135,7 @@ module Skins
 
 
         huoc, suoc, vuoc =  Skins::ColorGenerators::rgb_to_hsv(*Skins::ColorGenerators::rgbhex_to_rgb(user_options_color.to_s))
-        #puts "User Color: #{user_options_color.to_s} hsv(#{huoc}, #{suoc}, #{vuoc}) h360: #{huoc*360}deg"
+        # puts "User Color: #{user_options_color.to_s} hsv(#{huoc}, #{suoc}, #{vuoc}) h360: #{huoc*360}deg"
 
         im.colors.times do |i|
           color = Magick::Pixel.from_color(im.colormap(i))
@@ -153,7 +153,7 @@ module Skins
             cur_huoc = huoc - ((v*2) * color_dispersion) /360.0
             cur_huoc = 1 - cur_huoc if cur_huoc < 0.0
           end
-          #puts "huoc DISPERSION: orig #{huoc} | cur_huoc: #{cur_huoc}"
+          # puts "huoc DISPERSION: orig #{huoc} | cur_huoc: #{cur_huoc}"
 
 
           if v < vuoc # el brillo solicitado es más claro, hacemos el color más claro de Lo q dice la plantilla
@@ -161,13 +161,13 @@ module Skins
           else
             newv = v - d*strength
           end
-          #puts "#{huoc}, #{suoc}, #{newv}"
+          # puts "#{huoc}, #{suoc}, #{newv}"
           newcolor = Skins::ColorGenerators::hsv_to_rgb(cur_huoc, suoc, newv) # (v + vuoc) / 2)
           im.colormap(i, "rgb(#{(newcolor[0]*255).to_i}, #{(newcolor[1]*255).to_i}, #{(newcolor[2]*255).to_i})")
 
-          #puts "\nPROCESANDO COLOR DE PALETA #{i}"
-          #puts "original RGB(#{color.red} #{color.green} #{color.blue}) HSV(#{h} #{s} #{v})"
-          #puts "nuevo    RGB(#{(newcolor[0]*255).to_i}, #{(newcolor[1]*255).to_i}, #{(newcolor[2]*255).to_i}) HSV(#{huoc} #{s} #{(v + vuoc) / 2})"
+          # puts "\nPROCESANDO COLOR DE PALETA #{i}"
+          # puts "original RGB(#{color.red} #{color.green} #{color.blue}) HSV(#{h} #{s} #{v})"
+          # puts "nuevo    RGB(#{(newcolor[0]*255).to_i}, #{(newcolor[1]*255).to_i}, #{(newcolor[2]*255).to_i}) HSV(#{huoc} #{s} #{(v + vuoc) / 2})"
         end
         im.write(newtmpfile)
         # FileUtils.cp("#{texture.dir}/file.png", newtmpfile)

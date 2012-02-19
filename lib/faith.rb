@@ -201,7 +201,6 @@ module Faith
 
   def self.resurrections_own_active(user)
     # TODO tests
-    #      puts User.count(:conditions => ["state IN (#{User::STATES_CAN_LOGIN.join(',')}) and referer_user_id = ? and resurrected_by_user_id = ? and lastseen_on < now() - \'3 months\'::interval', user.id, user.id])
     User.can_login.count(:conditions => ["referer_user_id = ? and resurrected_by_user_id = ? and lastseen_on > now() - '3 months'::interval", user.id, user.id])
   end
 

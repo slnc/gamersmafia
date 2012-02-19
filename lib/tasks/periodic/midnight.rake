@@ -9,7 +9,7 @@ namespace :gm do
     #dbi = Stats::Metrics::mdata('NewUsers', s, e)
     #`python script/spark.py metric #{dbi.collect {|dbr| dbr['count'] }.concat([0] * (days - dbi.size)).reverse.join(',')} "#{dst_file}"`
     #return
-    
+
     GmSys.job('Faith.reset_remaining_rating_slots')
     GmSys.job('Faction.update_factions_cohesion')
     generate_top_bets_winners_minicolumns
@@ -17,18 +17,18 @@ namespace :gm do
     update_general_stats
     generate_minicolumns_factions_activity
   end
-  
+
   def generate_minicolumns_factions_activity
     days = 23
     Faction.find(:all).each do |f|
       dbi = User.db_query("select karma from stats.portals where portal_id = (select id from portals where code = '#{f.code}') order by created_on desc limit #{days}")
       dst_file = "#{Rails.root}/public/storage/minicolumns/factions_activity/#{f.id}.png"
-      
+
       FileUtils.mkdir_p(File.dirname(dst_file)) unless File.exists?(File.dirname(dst_file))
       `/usr/bin/python script/spark.py faction_activity #{dbi.collect {|dbr| dbr['karma'] }.concat([0] * (days - dbi.size)).reverse.join(',')} "#{dst_file}"`
     end
   end
-  
+
   def generate_top_bets_winners_minicolumns
     # Buscamos los users que más han ganado en los ultimos days y mostramos sus ganancias en sus últimas 30 apuestas
     days = 30
@@ -51,7 +51,7 @@ namespace :gm do
     FileUtils.mkdir_p(File.dirname(dst)) unless File.exists?(File.dirname(dst))
     File.open(dst, 'w').write(YAML::dump(data))
   end
-  
+
   # Actualiza las estadísticas de karma generado por cada facción y por la web general
   # TODO no calcula karma generado por clanes
   def update_factions_stats
@@ -64,22 +64,21 @@ namespace :gm do
       min_time = dbmaxstats['max'].to_time
     end
     min_time = min_time.yesterday.beginning_of_day
-    
+
     min_time = 1.day.ago.beginning_of_day if Rails.env == 'test'
-    
+
     today = Time.now.beginning_of_day
-    
+
     while min_time < today
-      # puts "Calculando para #{min_time}"
       min_time_strted = min_time.strftime('%Y-%m-%d %H:%M:%S')
-      
+
       portals_stats = {}
       games_r_portals = {}
       platforms_r_portals = {}
       bazar_districts_r_portals = {}
       clans_r_portals = {}
       general = 0
-      
+
       # Comments
       # TODO esto cuenta comentarios de contenidos borrados
       Comment.find(:all, :conditions => "deleted = 'f' AND comments.created_on BETWEEN date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS'))  AND date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS')) + '1 day'::interval - '1 second'::interval", :include => [ :content]).each do |comment|
@@ -89,19 +88,18 @@ namespace :gm do
           if portal.nil?
             portal = Portal.find(:first, :conditions => ['name = ?', comment.content.game.name])
           end
-          if portal 
+          if portal
             games_r_portals[comment.content.game_id] ||= portal.id
             portals_stats[games_r_portals[comment.content.game_id]] ||= 0
             portals_stats[games_r_portals[comment.content.game_id]] += Karma::KPS_CREATE['Comment']
           else
-            puts "game #{comment.content.game.name} has no portal"
+            Rails.logger.warn("game #{comment.content.game.name} has no portal")
           end
         elsif comment.content.platform # Contenido de facción
           platforms_r_portals[comment.content.platform_id] ||= Portal.find(:first, :conditions => ['code = ?', comment.content.platform.code]).id
           portals_stats[platforms_r_portals[comment.content.platform_id]] ||= 0
           portals_stats[platforms_r_portals[comment.content.platform_id]] += Karma::KPS_CREATE['Comment']
         elsif comment.content.bazar_district # Contenido de distrito
-          #puts "comment de bazar district #{comment.content.bazar_district_id}"
           bazar_districts_r_portals[comment.content.bazar_district_id] ||= Portal.find(:first, :conditions => ['code = ?', comment.content.bazar_district.code]).id
           portals_stats[bazar_districts_r_portals[comment.content.bazar_district_id]] ||= 0
           portals_stats[bazar_districts_r_portals[comment.content.bazar_district_id]] += Karma::KPS_CREATE['Comment']
@@ -113,13 +111,14 @@ namespace :gm do
             portals_stats[clans_r_portals[comment.content.clan_id]] ||= 0
             portals_stats[clans_r_portals[comment.content.clan_id]] += Karma::KPS_CREATE['Comment']
           else
-            puts "clan_id: #{comment.content.clan_id} has no portal"
+            Rails.logger.warn(
+              "clan_id: #{comment.content.clan_id} has no portal")
           end
         else
           general += Karma::KPS_CREATE['Comment']
         end
       end
-      
+
       # Contents
       Content.find(:all, :conditions => "state = #{Cms::PUBLISHED} AND created_on BETWEEN date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS'))  AND date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS')) + '1 day'::interval - '1 second'::interval", :include => [:content_type]).each do |content|
         if content.game # Contenido de facción
@@ -128,12 +127,14 @@ namespace :gm do
           if portal.nil?
             portal = Portal.find(:first, :conditions => ['name = ?', content.game.name])
           end
-          if portal 
+          if portal
             games_r_portals[content.game_id] ||= portal.id
             portals_stats[games_r_portals[content.game_id]] ||= 0
             portals_stats[games_r_portals[content.game_id]] += Karma.contents_karma(content, false)
           else
-            puts "game #{content.game_id ? content.game.name : content.name} has no portal"
+            Rails.logger.warn(
+              "game #{content.game_id ? content.game.name : content.name} has" +
+              " no portal")
           end
         elsif content.platform # Contenido de facción
           platforms_r_portals[content.platform_id] ||= Portal.find(:first, :conditions => ['code = ?', content.platform.code]).id
@@ -150,24 +151,24 @@ namespace :gm do
             portals_stats[clans_r_portals[content.clan_id]] ||= 0
             portals_stats[clans_r_portals[content.clan_id]] += Karma.contents_karma(content, false)
           else
-            puts "clan_id: #{content.clan_id} has no portal"
+            Rails.logger.warn("clan_id: #{content.clan_id} has no portal")
           end
         else
           general += Karma.contents_karma(content, false)
         end
       end
-      
+
       begin
         User.db_query("INSERT INTO stats.portals(created_on, portal_id, karma) VALUES('#{min_time.strftime('%Y-%m-%d')}', NULL, #{general})")
       rescue Exception
         User.db_query("UPDATE stats.portals SET karma = #{general} WHERE created_on = '#{min_time.strftime('%Y-%m-%d')}' AND portal_id IS NULL")
       end
-      
+
       q = "insert into stats.portals(portal_id, karma, created_on, pageviews, visits, unique_visitors, unique_visitors_reg) select id, 0, '#{min_time.strftime('%Y-%m-%d')}',0 ,0, 0, 0 from portals where id not in (select portal_id from stats.portals where portal_id is not null AND created_on = '#{min_time.strftime('%Y-%m-%d')}')"
       User.db_query(q)
       # Ponemos a 0 las estadísticas del resto de portales
       # TODO cuando el campo created_on de portals represente fielmente el nacimiento de un portal esto se puede optimizar
-      
+
       Portal.find(:all).each do |portal|
         portal_id = portal.id
         karma = portals_stats[portal_id] ? portals_stats[portal_id] : 0
@@ -175,8 +176,8 @@ namespace :gm do
                                             count(distinct(session_id)) as visits,
                                             count(distinct(visitor_id)) as unique_visitors,
                                             count(distinct(user_id)) as unique_visitors_reg
-                                       FROM stats.pageviews 
-                                      WHERE created_on 
+                                       FROM stats.pageviews
+                                      WHERE created_on
                                     BETWEEN date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS'))
                                         AND date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS')) + '1 day'::interval - '1 second'::interval
                                         AND portal_id = #{portal_id}")[0]
@@ -184,9 +185,9 @@ namespace :gm do
         visits = dbrstats_visits['visits']
         unique_visitors = dbrstats_visits['unique_visitors']
         unique_visitors_reg = dbrstats_visits['unique_visitors_reg']
-        
+
         #  begin
-        #    User.db_query("INSERT INTO stats.portals(created_on, portal_id, karma, pageviews, visits, unique_visitors) VALUES('#{min_time.strftime('%Y-%m-%d')}', #{portal_id}, #{karma}, #{pageviews}, #{visits}, #{unique_visitors}, #{unique_visitors_reg})") 
+        #    User.db_query("INSERT INTO stats.portals(created_on, portal_id, karma, pageviews, visits, unique_visitors) VALUES('#{min_time.strftime('%Y-%m-%d')}', #{portal_id}, #{karma}, #{pageviews}, #{visits}, #{unique_visitors}, #{unique_visitors_reg})")
         #  rescue Exception
         User.db_query("UPDATE stats.portals SET karma = #{karma}, pageviews = #{pageviews}, visits = #{visits}, unique_visitors = #{unique_visitors}, unique_visitors_reg = #{unique_visitors_reg} WHERE created_on = '#{min_time.strftime('%Y-%m-%d')}' AND portal_id = #{portal_id}")
         #  end
@@ -194,7 +195,7 @@ namespace :gm do
       min_time = min_time.advance(:days => 1)
     end
   end
-  
+
   def update_general_stats
     # buscamos fecha más antigua de comentario
     # buscamos fecha más antigua en stats globales que tenga info de comentarios creados
@@ -206,7 +207,7 @@ namespace :gm do
     first_stat = (first_stat and first_stat != '') ? first_stat.to_time : first_comment
     first_stat.advance(:days => 1).beginning_of_day # nos ponemos en el primer día que tenemos que calcular
     first_stat = 1.day.ago.beginning_of_day if Rails.env == 'test'
-    
+
     while first_stat < tonight
       cur_str = first_stat.strftime('%Y-%m-%d')
       next_stat = first_stat.advance(:days => 1)
@@ -214,7 +215,7 @@ namespace :gm do
       new_closed_topics = Topic.count(:conditions => "state = #{Cms::PUBLISHED} AND closed = 't' AND date_trunc('day', updated_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'")
       new_clans_portals = ClansPortal.count(:conditions => "clan_id IS NOT NULL AND date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'")
       dbrender = User.db_query("SELECT avg(time), stddev(time), avg(db_queries) as avg_dbq, stddev(db_queries) as stddev_dbq FROM stats.pageloadtime WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'")[0]
-      sql_created_on = "date_trunc('day', created_on) = date_trunc('day', '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'::timestamp)"  
+      sql_created_on = "date_trunc('day', created_on) = date_trunc('day', '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'::timestamp)"
       new_factions = Faction.count(:conditions => sql_created_on)
       sent_emails = SentEmail.count(:conditions => sql_created_on)
       downloaded_downloads_count = DownloadedDownload.count(:conditions => sql_created_on)
@@ -236,8 +237,8 @@ namespace :gm do
       http_401 = User.db_query("SELECT count(*) FROM stats.pageloadtime WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND http_status = 401")[0]['count']
       http_404 = User.db_query("SELECT count(*) FROM stats.pageloadtime WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND http_status = 404")[0]['count']
       User.db_query("INSERT INTO stats.general(created_on) VALUES('#{cur_str}')") if User.db_query("SELECT * FROM stats.general WHERE created_on = '#{cur_str}'").size == 0
-      
-      User.db_query("UPDATE stats.general 
+
+      User.db_query("UPDATE stats.general
                     SET new_comments = '#{Gmstats.comments_created_in_time_period(first_stat, next_stat)}',
                         users_total = '#{Gmstats.users(:total, next_stat)}',
                         users_confirmed = '#{Gmstats.users(:confirmed, next_stat)}',
@@ -278,5 +279,5 @@ namespace :gm do
                   WHERE created_on = '#{cur_str}'")
       first_stat = next_stat
     end
-  end  
+  end
 end

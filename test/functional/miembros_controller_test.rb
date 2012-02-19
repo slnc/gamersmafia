@@ -92,8 +92,8 @@ class MiembrosControllerTest < ActionController::TestCase
       get :no_tengo_amigos, { :login => 'panzer' }
       assert_response :redirect
     end
-    #puts ActionMailer::Base.deliveries[ActionMailer::Base.deliveries.size - 2]
-    #puts ActionMailer::Base.deliveries.last
+    # puts ActionMailer::Base.deliveries[ActionMailer::Base.deliveries.size - 2]
+    # puts ActionMailer::Base.deliveries.last
     assert_equal deliv + 1, ActionMailer::Base.deliveries.size
   end
 

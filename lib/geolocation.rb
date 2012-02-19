@@ -18,7 +18,7 @@ module Geolocation
     Geolocation.update_geoip_db unless File.exists?(DB_FILE)
     DISABLED=false
   rescue
-    puts "Geolocation disabled"
+    Rails.logger.warn("Geolocation disabled")
     DISABLED=true
   end
 

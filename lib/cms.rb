@@ -313,10 +313,10 @@ module Cms
               open(imgurl) { |str| f.write(str.read) }
            }
          rescue Exception => errdesc
-              puts errdesc if Rails.env == 'test'
+              Rails.logger.warn(errdesc)
               return nil
            rescue Exception => errdesc
-             puts errdesc if Rails.env == 'test'
+              Rails.logger.warn(errdesc)
              return nil
            end
         end
@@ -329,7 +329,7 @@ module Cms
           img = Cms::read_image(tmpfile)
           raise Exception unless img
         rescue Exception => errdesc
-          puts "no es una imagen valida tronc... #{errdesc}" if Rails.env == 'test'
+          Rails.logger.warn("Imagen inválida: #{errdesc}")
           imgurl = nil
         else
           imgurl = tmpfile

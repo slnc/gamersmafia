@@ -27,7 +27,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
   test "anuncio" do
     test_create_type_1
     #get :anuncio, :id => @ra.id
-    #puts Routing.gmurl(@ra)
+    # puts Routing.gmurl(@ra)
     # ApplicactionController.
     #assert_redirected_to "reclutamiento/show/13"
   end

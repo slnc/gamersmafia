@@ -180,9 +180,10 @@ module Comments
 
       ufp = user.faith_points
       ufp = 1.1 if ufp < 1.1
-      #      puts "user: #{user.karma_points} #{user.faith_points} #{user.friends_count}  ||| max: #{max_karma} #{max_faith} #{max_friends}"
       w = ((l10(ukp)/l10(max_karma)) + l10(ufp)/l10(max_faith) + (user.friends_count)/(max_friends) ) / 3.0
-      # Aproximación: si el usuario está comentado en su facción multiplicamos por 2. Si usásemos los puntos de karma y de fe para esta facción no sería necesario
+      # Aproximación: si el usuario está comentado en su facción multiplicamos
+      # por 2. Si usásemos los puntos de karma y de fe para esta facción no
+      # sería necesario
       if content.respond_to?(:my_faction) && content.has_category? && content.main_category && content.my_faction && content.my_faction.id == user.faction_id
         w *= 2
         # no limitamos a 1 para no perjudicar a los peces gordos
@@ -410,11 +411,6 @@ module Comments
     end
   end
 
-  #User.find_each(:conditions => 'id IN (select distinct(user_id) from comments_valorations)') do |u|
-  #  puts u.login
-  #  u.update_attributes(:comments_direction => Comments.get_ratings_for_user(u.id)[0].direction)
-  #end
-
   # Devuelve la página en la que aparece el comentario actual
   def self.page_for_comment(comment)
    (Comment.count(:conditions => ['deleted = \'f\' AND content_id = ? AND created_on <= ?', comment.content_id, comment.created_on]) / Cms.comments_per_page.to_f).ceil
@@ -432,44 +428,28 @@ module Comments
   # TODO NO FUNCIONA
   def self.fix_malformed_comment(comment_text)
     new = comment_text.clone
-    #i = 0
 
-    #while i > new.length
-    # nos posicionamos delante del próximo tag
-    # puts new.index(/(\[.*?\])/m)
-    #end
     stack = []
     new.gsub!(/(\[.*?\])/m) do |element|
       clean_el = element.gsub(/([\[\]\/]+)/, '')
-      #puts "#{element} #{clean_el}"
       if element.index('[/') == nil # abriendo
-        #puts "abriendo"
         stack.push(clean_el) # TODO meter solo b, i, url, etc
         element
       else # cerrando
-        #puts "cerrando"
         out = ''
-        # cur = stack.pop
-        #puts "#{stack.last} != #{clean_el}"
         while stack.size > 0 && stack.last != clean_el
-          #puts "cerrando tag mal cerrado #{stack.last}"
           out << "[/#{stack.pop}]"
         end
         if stack.size  == 0 # el elemento que se esta cerrando no existia, lo descartamos
-          #puts "out #{out}"
           out
         else
           if out == ''
             stack.pop
             element
           else
-            #puts "#{out}[/#{clean_el}]"
             "#{out}[/#{clean_el}]"
           end
         end
-        #if stack.last != clean_el
-        #  "#{stack.pop}#{clean_el}"
-        #end
       end
     end
     new

@@ -510,7 +510,7 @@ group by date_trunc('day', created_on) order by s asc
 
   def self.consolidate_ads_daily_stats(tstart, tend)
     if User.db_query("SELECT count(*) FROM stats.ads_daily WHERE created_on = '#{tstart.strftime('%Y-%m-%d')}'")[0]['count'].to_i > 0 then
-      puts "ya hay stats para #{tstart}, no recalculo"
+      Rails.logger.warn("Ya hay stats para #{tstart}, no recalculo")
       return
     end
     pageviews_by_ad_id = {}

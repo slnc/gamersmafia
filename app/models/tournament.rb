@@ -48,17 +48,17 @@ class Tournament < Competition
     prev = self.competitions_matches.count(:conditions => ['stage = ? and id < ?', cm.stage, cm.id])
 
     is_participant1 = (prev % 4 < 2)
-    #puts "prev: #{prev} #{is_participant1}"
+    # puts "prev: #{prev} #{is_participant1}"
     # TODO hack, arreglar esto
     if self.tourney_rounds_starting_stage > 0 then
-      #puts "here"
+      # puts "here"
       is_participant1 = true if (prev % 4 < 2 && cm.stage > self.total_tourney_rounds + self.tourney_rounds_starting_stage - 2) #  la comprobación de stage es para la semifinal
     else
-      #puts "horo"
+      # puts "horo"
       is_participant1 = true if (prev % 4 < 2 && cm.stage > self.total_tourney_rounds + self.tourney_rounds_starting_stage - 2) #  la comprobación de stage es para la semifinal
     end
     is_participant1 = false if cm.stage == self.total_tourney_rounds - 2 && prev == 1 # para la semifinal del lado derecho
-    #puts "final_value: #{is_participant1}"
+    # puts "final_value: #{is_participant1}"
     is_participant1
   end
 
@@ -100,16 +100,16 @@ class Tournament < Competition
       return if next_cm.nil? || (next_cm.nil? && self.is_final?(cm))
 
       if is_participant1 then
-        #puts "changing next_cm.participant1_id"
+        # puts "changing next_cm.participant1_id"
         next_cm.participant1_id = cm.winner.id # TODO no puede ser empate
       else
-        #puts "changing next_cm.participant2_id"
+        # puts "changing next_cm.participant2_id"
         next_cm.participant2_id = cm.winner.id # TODO no puede ser empate
       end
 
       #p next_cm
       next_cm.save
-      #puts "\n"
+      # puts "\n"
     elsif match_stage_is_group_stage?(cm.stage)
       # si todas las partidas del grupo están completas cogemos a los ganadores
       # y los movemos a la fase de eliminatorias
