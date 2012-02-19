@@ -5,8 +5,8 @@
 	<% if demo.event then %><div class="infoinline"><a href="<%=gmurl(demo.event)%>"><%=demo.event.title%></a></div><% end -%></td>
 	<td style="width: 50%" class="infoinline">
 		<%=fc_thumbnail(demo.games_map.screenshot, 'i', '93x47', false) if demo.games_map%>
-		<br />		
-		<%=faction_favicon(demo)%> <%=demo.games_map.name%></td>
+		<br />
+		<%=faction_favicon(demo)%> <%=demo.games_map.name unless demo.games_map.nil? %></td>
 </tr>
 </table>
 <div class="right infoinline"><span class="downloads-count"><%=demo.downloaded_times%></span> | <%=draw_rating(demo.rating)%></div>

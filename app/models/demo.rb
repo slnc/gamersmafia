@@ -8,10 +8,10 @@ class Demo < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable
 
-  belongs_to :games_mode
-  belongs_to :games_version
   belongs_to :event
   belongs_to :games_map
+  belongs_to :games_mode
+  belongs_to :games_version
 
   file_column :file
   has_many :demo_mirrors, :dependent => :destroy
