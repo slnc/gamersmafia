@@ -25,7 +25,6 @@ module Clusterer
   VERSION = '0.2.0'
 end
 
-require 'mathn'
 require 'clusterer/stop_words'
 require 'clusterer/similarity'
 require 'clusterer/tokenizer'
@@ -46,15 +45,15 @@ class Foo
     @title = title
     @body = bbody ? bbody : ''
   end
-  
+
   def title
     @title
   end
-  
+
   def snippet
     @body
   end
-  
+
   def body
     @body
   end
@@ -108,5 +107,5 @@ def write_cluster_results(clusters, fname="temp1b.html")
     end
     #f.write("</ul>")
     f.write("</li>")
-  end  
+  end
 end
