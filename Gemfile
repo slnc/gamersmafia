@@ -3,6 +3,8 @@ source :rubygems
 # TODO(slnc): add exception notifier plugin back
 gem "ai4r"
 gem "deadlock_retry"
+gem "delayed_job", "~> 3.0.1"
+gem "delayed_job_active_record"
 gem "exception_notification"
 gem "feedtools"
 gem "feedvalidator"

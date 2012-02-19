@@ -4,7 +4,8 @@ require 'fileutils'
 # guardas los archivos en
 # storage/class_name_en_plural/hashed_subdir_basado_en_id/unique_filename
 module SlncFileColumn
-  # TODO incluir solo los métodos para instances a los objetos que tengan file_column!! (revisar init.rb)
+  # TODO incluir solo los métodos para instances a los objetos que tengan
+  # file_column!! (revisar init.rb)
   module ClassMethods
     def file_column(attrib, options={})
       class_eval <<-END
@@ -224,3 +225,6 @@ module SlncFileColumn
     md5_hash
   end
 end
+
+ActiveRecord::Base.send :include, SlncFileColumn
+ActiveRecord::Base.send :extend, SlncFileColumn::ClassMethods

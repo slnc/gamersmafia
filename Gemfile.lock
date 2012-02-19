@@ -39,6 +39,12 @@ GEM
     ai4r (1.9)
     arel (3.0.0)
     builder (3.0.0)
+    deadlock_retry (1.2.0)
+    delayed_job (3.0.1)
+      activesupport (~> 3.0)
+    delayed_job_active_record (0.3.2)
+      activerecord (> 2.1.0)
+      delayed_job (~> 3.0.0)
     erubis (2.7.0)
     exception_notification (2.5.2)
       actionmailer (>= 3.0.4)
@@ -109,6 +115,9 @@ PLATFORMS
 
 DEPENDENCIES
   ai4r
+  deadlock_retry
+  delayed_job (~> 3.0.1)
+  delayed_job_active_record
   exception_notification
   feedtools
   feedvalidator

@@ -12,6 +12,8 @@
    ads
    stats
    acts_as_rootable
+   slnc_file_column
+   slnc_file_column_helper
   ).each do |f|
   require "#{Rails.root}/lib/#{f}.rb"
 end

@@ -33,3 +33,5 @@ module SlncFileColumnHelper
     ((file_path =~ /^\//) ? file_path : '/' << file_path) unless file_path.nil?
   end
 end
+
+ActionView::Base.send :include, SlncFileColumnHelper
