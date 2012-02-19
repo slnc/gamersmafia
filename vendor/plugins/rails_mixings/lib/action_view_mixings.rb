@@ -128,64 +128,6 @@ module ActionViewMixings
     }
   end
 
-  def pagination_links(paginator, options={}, html_options={})
-    if params[:id]
-      old_id = params[:id]
-      params.delete(:id)
-    else
-      old_id = nil
-    end
-
-    options = DEFAULT_OPTIONS.merge(options)
-    options.delete('') if options.has_key?('')
-
-    params.delete('') if params.has_key?('')
-    params2 = HashWithIndifferentAccess.new(params)
-    params2[:params] = options[:params]
-
-    window_pages = paginator.current.window(options[:window_size]).pages
-
-    return if window_pages.length <= 1 unless
-    options[:link_to_current_page]
-
-    first, last = paginator.first, paginator.last
-
-    if params2['controller'].match('/') then
-      params2['controller'] = "/#{params2[:controller]}"
-      params2['controller'].gsub!('//', '/')
-    end
-
-
-    validk = %w(action params controller page id category)
-    validk = validk + (options[:preserve_keys].kind_of?(Array) ? options[:preserve_keys] : [options[:preserve_keys]]) if options[:preserve_keys]
-    params2.delete_if { |k,v| !validk.include?(k.to_s)}
-    returning html = '' do
-      if options[:always_show_anchors] and not window_pages[0].first?
-        html << link_to(paginator.first.number, params2.merge(:page => first.number), html_options) # "<a href=\"?page=#{first.number}\">#{paginator.first.number}</a>"
-        html << ' ... ' if window_pages[0].number - first.number > 1
-        html << ' '
-      end
-
-      window_pages.each do |page|
-        if paginator.current == page && !options[:link_to_current_page]
-          html << "<span class=\"currentpage\">#{page.number.to_s}</span>"
-        else
-          html << link_to(page.number, params2.merge(:page => page.number), html_options) #"<a href=\"?page=#{page.number}\">#{page.number}</a>"
-        end
-        html << ' '
-      end
-
-      if options[:always_show_anchors] && !window_pages.last.last?
-        html << ' ... ' if last.number - window_pages[-1].number > 1
-        html << link_to(paginator.last.number, params2.merge(:page => last.number), html_options) # "<a href=\"?page=#{first.number}\">#{paginator.first.number}</a>"
-      end
-      if old_id
-        params[:id] = old_id
-      end
-    end
-  end
-
-
   def clean_html(text, tags=['a','img','p','br','i','b','u','ul','li', 'em', 'strong', 'span', 'table', 'tr', 'td'])
     text = strip_tags_allowed(text, tags)
     Tidy.path = defined?(App.tidy_path) ? App.tidy_path : '/usr/lib/libtidy.so'
