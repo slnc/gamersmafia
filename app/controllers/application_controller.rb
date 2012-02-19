@@ -266,17 +266,17 @@ Request information:
         end
       else
         @title = "Página no encontrada (Error 404)"
-        render :template => 'application/http_404', :status => 404
+        render :template => 'application/http_404.html.erb', :status => 404
       end
     else
       @title = "Página no encontrada (Error 404)"
-      render :template => 'application/http_404', :status => 404
+      render :template => 'application/http_404.html.erb', :status => 404
     end
   end
 
   def http_401
     @title = "Acceso Denegado (Error 401)"
-    render :template => 'application/http_401', :status => 401
+    render :template => 'application/http_401.html.erb', :status => 401
   end
 
   def rescuiing
@@ -284,7 +284,7 @@ Request information:
   end
 
   unless Rails.application.config.consider_all_requests_local
-   rescue_from Exception, :with => :render_error
+    rescue_from Exception, :with => :render_error
   end
 
   def render_error(exception)
