@@ -1,5 +1,4 @@
 <option value=""></option>
-<% 
-@g.games_maps.find(:all, :order => 'lower(name) ASC').each do |gm| %>
+<% @g.games_maps.find(:all, :order => 'lower(name) ASC').each do |gm| %>
     <option value="<%= gm.id %>"><%= gm.name %></option>
 <% end %>

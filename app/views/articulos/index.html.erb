@@ -1,24 +1,25 @@
 <% first = true
 [%w(Column Interview), %w(Tutorial Review)].each do |par| %>
 <div class="grid-6 <%='glast' unless first%>">
-	<%par.each do |it| 
-		collection = controller.portal.send(it.downcase).find(:published, :content_type => it, :order => 'created_on desc', :limit => 5) 
-next if collection.size == 0 %>	
+	<%par.each do |it|
+		collection = Object.const_get(it).in_portal(controller.portal).published.find(
+        :all, :order => 'created_on desc', :limit => 5)
+next if collection.size == 0 %>
 		<% dafirst = true
-mfcontents_list(Cms::translate_content_name(it).titleize,  
-					Proc.new { collection }, 					
+mfcontents_list(Cms::translate_content_name(it).titleize,
+					Proc.new { collection },
 					{:truncate_at => 28, :blast => true,
 :bottom => "<div class=\"right\"><a href=\"/#{Cms::CONTENTS_CONTROLLERS[it]}/\">Más #{ActiveSupport::Inflector::pluralize(Cms::translate_content_name(it))}</a> &raquo;</div>"}) do |o| %>
-					
+
 <%=content_category(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
 <% if dafirst then
 	if  o.home_image then %><div style="margin: 5px 0 10px 0;"><a href="<%=gmurl(o)%>"><%=fc_thumbnail(o.home_image, 'i', "#{Cms::IMGWG5}x54", false)%></a></div><% end -%>
 	<div class="infoinline"><%=truncate(strip_tags(o.description), 150, '..')%></div>
 	<div class="right infoinline"><strong><a href="<%=gmurl(o)%>">Seguir leyendo &raquo;</a></strong></div>
 <% end -%>
-<%	dafirst = false 
+<%	dafirst = false
 	end -%>
 	<% end -%>
 	</div>
-<%	first = false 
+<%	first = false
 end -%>

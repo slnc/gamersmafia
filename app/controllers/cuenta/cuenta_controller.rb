@@ -1,63 +1,75 @@
 class Cuenta::CuentaController < ApplicationController
   # TODO wtf?? o lo uno o lo otro
-  before_filter :require_auth_users, :except => [:login, :do_login, :alta, :bienvenido, :create, :create2, :olvide_clave, :do_olvide_clave, :do_change_email, :reset, :do_reset, :confirmar, :do_confirmar, :resendsignup, :username_check, :email_check]
-  before_filter :only_non_registered, :only => [:login, :do_login, :alta, :bienvenido, :create2, :create, :olvide_clave, :do_olvide_clave, :reset, :do_reset, :confirmar, :do_confirmar, :username_check, :email_check]
+  before_filter :require_auth_users,
+                :except => [
+                    :login, :do_login, :alta, :bienvenido, :create,
+                    :create2, :olvide_clave, :do_olvide_clave, :do_change_email,
+                    :reset, :do_reset, :confirmar, :do_confirmar, :resendsignup,
+                    :username_check, :email_check]
+  before_filter :only_non_registered,
+                :only => [
+                    :login, :do_login, :alta, :bienvenido, :create2, :create,
+                    :olvide_clave, :do_olvide_clave, :reset, :do_reset,
+                    :confirmar, :do_confirmar, :username_check, :email_check]
+
   audit :do_reset, :do_olvide_clave, :do_change_email
-  
+
+  MAX_ACCOUNTS_SAME_IP = 5
+
   def index
     @navpath = [['Cuenta', '/cuenta'],]
     @title = 'Cuenta'
   end
-  
+
   def tracker
     @navpath = [['Cuenta', '/cuenta'], ['Tracker', '/cuenta/tracker']]
     @title = 'Tracker'
   end
-  
+
   def alta
     @no_ads = true
   end
-  
+
   def mis_permisos
-    
+
   end
-  
+
   def del_role
     @user.users_roles.find(params[:id]).destroy
     render :nothing => true
   end
-  
+
   def add_quicklink
     Personalization.add_quicklink(@user, params[:code], params[:url])
     render :nothing => true
   end
-  
+
   def del_quicklink
     Personalization.del_quicklink(@user, params[:code])
     render :nothing => true
   end
-  
+
   def add_user_forum
     Personalization.add_user_forum(@user, params[:id], params[:url])
     render :nothing => true
   end
-  
+
   def del_user_forum
     Personalization.del_user_forum(@user, params[:id])
     render :nothing => true
   end
-  
+
   def update_user_forums_order
     Personalization.update_user_forums_order(@user, (params[:buckets1] || []), (params[:buckets2] || []), (params[:buckets3] || []))
     render :nothing => true
   end
-  
+
   def save_tracker_config
     @user.update_attributes(params[:user].pass_sym(:tracker_autodelete_old_contents, :comment_adds_to_tracker_enabled))
     flash[:notice] = 'Opciones del tracker guardadas correctamente'
     redirect_to '/cuenta/cuenta/tracker'
   end
-  
+
   def resurrect
     u = User.find_by_login(params[:login])
     if u
@@ -71,16 +83,16 @@ class Cuenta::CuentaController < ApplicationController
       flash[:error] = "No se ha encontrado al usuario #{params[:login]}"
     end
   end
-  
+
   def configuracion
     @navpath = [['Cuenta', '/cuenta'], ['Configuración', '/cuenta/configuracion']]
     @title = 'Configuración'
   end
-  
+
   def login
     redirect_to '/cuenta' if user_is_authed
   end
-  
+
   def create2
    (redirect_to '/cuenta' and return) if cookies[:adn3]
     if params[:user].nil?
@@ -93,40 +105,91 @@ class Cuenta::CuentaController < ApplicationController
       create
     end
   end
-  
+
+  protected
+  def account_creation_silent_checks
+    if cookies[:adn3]
+      Rails.logger.warn(
+          "Someone with an adn3 cookie and desired login" +
+          " #{params[:user][:login]} tried to create an account.")
+      return "/"
+    end
+
+    if self.user_is_authed && @user.state != User::ST_UNCONFIRMED
+      Rails.logger.warn(
+          "Authentified and not unconfirmed user #{user.login} tried to" +
+          " create an account.")
+      return "/cuenta"
+    end
+
+    banned_accounts_same_ip = User.count(
+        :conditions => ["lastseen_on >= now() - '1 day'::interval" +
+                        " AND ipaddr = ? AND state = ?", request.remote_ip,
+                        User::ST_BANNED])
+    if banned_accounts_same_ip >= 1
+        Rails.logger.warn(
+            "#{params[:user][:login]} tried to create an account but there" +
+            " are #{banned_accounts_same_ip} accounts from the same ip" +
+            " recently banned.")
+      return "/"
+    end
+
+    accounts_from_same_ip = User.count(
+        :conditions => ["lastseen_on >= now() - '1 day'::interval AND" +
+                        " ipaddr = ?", request.remote_ip])
+    if accounts_from_same_ip > MAX_ACCOUNTS_SAME_IP
+        Rails.logger.warn(
+            "#{params[:user][:login]} tried to create an account but there" +
+            " are #{accounts_from_same_ip} (>#{MAX_ACCOUNTS_SAME_IP})" +
+            " accounts from the same ip recently banned.")
+      return "/"
+    end
+
+    nil
+  end
+
+  public
   def create
-   (redirect_to '/' and return) if cookies[:adn3]
-   (redirect_to '/cuenta' and return) if user_is_authed && @user.state != User::ST_UNCONFIRMED
-   (redirect_to '/cuenta/alta' and return) unless params.has_key?(:user) and not(params[:user][:email] =~ /trash-mail.de/)
-    
-     (redirect_to '/' and return) if cookies[:adn3]
-     (redirect_to '/' and return) if User.count(:conditions => ['lastseen_on >= now() - \'1 day\'::interval AND ipaddr = ? AND state = ?', request.remote_ip, User::ST_BANNED]) >= 1
-    
-     (redirect_to '/' and return) if User.count(:conditions => ['lastseen_on >= now() - \'1 day\'::interval AND ipaddr = ?', request.remote_ip]) > 5
-    
-    params[:user] = params[:user].pass_sym(:login, :email, :email_confirmation, :image, :firstname, :lastname, :faction_id, :password, :password_confirmation, :email, :email_confirmation)
+    should_redirect_to = self.account_creation_silent_checks
+    (redirect_to(should_redirect_to) && return) if !should_redirect_to.nil?
+
+    params[:user] = params[:user].pass_sym(
+        :login, :email, :email_confirmation, :image, :firstname, :lastname,
+        :faction_id, :password, :password_confirmation, :email,
+        :email_confirmation)
     params[:user][:state] = User::ST_UNCONFIRMED
     params[:user][:ipaddr] = request.remote_ip
     params[:user][:lastseen_on] = Time.now
     @newuser = User.new(params[:user])
-    
+
     @mmode ||= :old
-    
+
     if (not params[:referer].nil?) and params[:referer] != '' then
       referer = User.find_by_login(params[:referer])
       if referer
         @newuser.referer_user_id = referer.id
       else
-        flash[:error] = 'El usuario referido especificado no se ha encontrado aunque no impedirá que se cree la cuenta.'
+        flash[:error] = ("El usuario referido especificado no se ha" +
+            " encontrado aunque esto no impedirá que se cree la cuenta.")
       end
     end
-    ban = IpBan.find(:first, :conditions => ['ip = ? and (expires_on IS NULL or expires_on >= now())', request.remote_ip])
+    ban = IpBan.find(
+        :first,
+        :conditions => ['ip = ? and (expires_on IS NULL or expires_on >= now())', request.remote_ip])
+
     if ban
-      # Si está baneado le hacemos ver que todo va bien para que se quede esperando el mensaje de confirmación
+      # Si está baneado le hacemos ver que todo va bien para que se quede
+      # esperando el mensaje de confirmación.
       nagato = User.find_by_login('nagato')
-      SlogEntry.create({:type_id => SlogEntry::TYPES[:security], :headline => "IP baneada #{request.remote_ip} (#{ban.comment}) ha intentado crearse una cuenta"})      
+      SlogEntry.create(
+          :type_id => SlogEntry::TYPES[:security],
+          :headline => "IP baneada #{request.remote_ip} (#{ban.comment}) ha intentado crearse una cuenta")
       flash[:notice] = "Te hemos enviado un mensaje a #{@newuser.email} con la clave de confirmación."
       redirect_to('/cuenta/confirmar') and return
+    elsif params[:accept_terms] != '1'
+      flash[:error] = ("Debes leer y aceptar el código de conducta de" +
+                       " Gamersmafia para poder registrarte.")
+      render :action => :alta
     elsif Cms::EMAIL_REGEXP =~ @newuser.email && User::BANNED_DOMAINS.include?(@newuser.email.split('@')[1].downcase)
       flash[:error] = "El dominio #{@newuser.email.split('@')[1]} está baneado por abusos. Por favor, elige otra cuenta de correo."
       render :action => :alta
@@ -134,10 +197,10 @@ class Cuenta::CuentaController < ApplicationController
       if User.count(:conditions => ['ipaddr = ?', request.remote_ip]) > 1
         prev = User.find(:first, :conditions => ['ipaddr = ? AND id <> ?', request.remote_ip, @newuser.id])
         nagato = User.find_by_login('nagato')
-        SlogEntry.create({:type_id => SlogEntry::TYPES[:security], 
+        SlogEntry.create({:type_id => SlogEntry::TYPES[:security],
           :headline => "Registro desde IP existente <strong><a href=\"#{gmurl(@newuser)}\">#{@newuser.login}</a></strong> (#{request.remote_ip}): "<< (User.find(:all, :conditions => ['ipaddr = ? and id <> ?', request.remote_ip, @newuser.id]).collect {|u| "<a href=\"#{gmurl(u)}\">#{u.login}</a>"}).join(', ')})
-        
-        Notification.deliver_signup(@newuser, :mode => @mmode)
+
+        Notification.signup(@newuser, :mode => @mmode).deliver
         flash[:notice] = "Te hemos enviado un mensaje a #{@newuser.email} con la clave de confirmación."
         redirect_to "/cuenta/confirmar?em=#{@newuser.email}" and return
       else # no parece un usuario sospechoso
@@ -152,11 +215,11 @@ class Cuenta::CuentaController < ApplicationController
       render :action => :alta
     end
   end
-  
+
   def mis_borradores
     @title = "Mis borradores"
   end
-  
+
   def do_login
    (redirect_to '/cuenta/login' and return) unless (params[:login] && params[:password] && cookies[:adn3].nil?)
     cookies[:login] = {:value => params[:login], :expires => 10.years.since, :domain => COOKIEDOMAIN}
@@ -186,23 +249,23 @@ class Cuenta::CuentaController < ApplicationController
       redirect_to '/cuenta/login'
     end
   end
-  
+
   def update_configuration
     @navpath = [['Cuenta', '/cuenta'], ['Configuración', '/cuenta/configuracion']]
     @title = 'Configuración'
-    
+
     notice = ''
-    
+
     @user.update_attributes(params[:user].pass_sym(:password, :password_confirmation))
     @newuser = User.find(:first, :conditions => ["login = ? AND state <> #{User::ST_UNCONFIRMED}", @user.login])
-    
+
     if @user.errors.size > 0
       flash[:error] = @user.errors.full_messages.join('<br />')
     elsif params[:user][:password_confirmation].to_s != ''
       flash[:notice] = 'Contraseña cambiada correctamente.'
     end
-    
-    
+
+
     sentemail = false
     if not params[:user][:newemail].empty? and params[:user][:newemail] != @user.email
       tmpuser = User.find(:first, :conditions => ["email = ?",params[:user][:newemail]])
@@ -210,13 +273,13 @@ class Cuenta::CuentaController < ApplicationController
         @newuser.newemail = params[:user][:newemail]
         sentemail = true
         @newuser.generate_validkey
-        
-        Notification.deliver_emailchange(@newuser)
+
+        Notification.emailchange(@newuser).deliver
       else
         notice = "Ya hay una cuenta usando el email \"#{params[:user][:newemail]}\"."
       end
     end
-    
+
     if not notice.empty?
       flash[:notice] = notice
     else
@@ -231,19 +294,19 @@ class Cuenta::CuentaController < ApplicationController
     end
     redirect_to :action => 'configuracion'
   end
-  
+
   def resendnewemail
    (redirect_to '/cuenta' and return) if cookies[:adn3]
-    Notification.deliver_emailchange(@user)
+    Notification.emailchange(@user).deliver
     flash[:notice] = "Te hemos enviado un email a #{@user.newemail} para confirmar el cambio."
     redirect_to '/cuenta'
   end
-  
+
   def perfil
     @navpath = [['Cuenta', '/cuenta'], ['Perfil', '/cuenta/perfil']]
     @title = 'Perfil'
   end
-  
+
   def update_profile
     # TODO move this if we can optimize it
     @newuser = User.find(:first, :conditions => ["login = ? AND state <> #{User::ST_UNCONFIRMED}", @user.login])
@@ -275,29 +338,29 @@ class Cuenta::CuentaController < ApplicationController
     @newuser.photo = params[:user][:photo] if params[:user][:photo]
     @newuser.competition_roster = params[:user][:competition_roster]
     @newuser.profile_last_updated_on = Time.now
-    
+
     if params[:sex].to_i == 0 then
       @newuser.sex = 0
     elsif params[:sex].to_i == 1
       @newuser.sex = 1
     end
-    
+
     save_or_error(@newuser, '/cuenta/cuenta/perfil', :perfil)
     @user.reload
     #flash[:notice] = 'Perfil guardado correctamente.'
     #redirect_to :action => 'perfil'
   end
-  
+
   def notificaciones
     @navpath = [['Cuenta', '/cuenta'], ['Notificaciones', '/cuenta/notificaciones']]
     @title = 'Notificaciones'
   end
-  
+
   def amigos
     @navpath = [['Cuenta', '/cuenta'], ['Amigos', '/cuenta/amigos']]
     @title = 'Amigos'
   end
-  
+
   def update_notifications
     newuser = User.find(@user.id)
     newuser.notifications_global = params[:user][:notifications_global]
@@ -309,26 +372,26 @@ class Cuenta::CuentaController < ApplicationController
     flash[:notice] = 'Preferencias de notificaciones guardadas correctamente.'
     redirect_to :action => 'notificaciones'
   end
-  
+
   def estadisticas
     @navpath = [['Cuenta', '/cuenta'], ['Estadísticas', '/cuenta/estadisticas']]
     @title = 'Estadísticas'
   end
-  
+
   def estadisticas_hits
     @navpath = [['Cuenta', '/cuenta'], ['Estadísticas', '/cuenta/estadisticas'], ['Hits', '/cuenta/estadisticas/hits']]
     @title = 'Estadísticas de visitas referidas'
   end
-  
+
   def estadisticas_registros
     @navpath = [['Cuenta', '/cuenta'], ['Estadísticas', '/cuenta/estadisticas'], ['Registros', '/cuenta/estadisticas/registros']]
     @title = 'Estadísticas de registros'
   end
-  
+
   def imagenes
     render :layout => 'popup'
   end
-  
+
   def subir_imagen
     newfile = params[:file]
     if newfile.respond_to?(:original_filename) then
@@ -346,7 +409,7 @@ class Cuenta::CuentaController < ApplicationController
         else
           path = newfile.path
         end
-        
+
         system ("unzip -q -j #{path} -d #{tmp_dir}")
         # añadimos imgs al dir del usuario
         for f in (Dir.entries(tmp_dir) - %w(.. .))
@@ -354,22 +417,22 @@ class Cuenta::CuentaController < ApplicationController
           @user.upload_file(ff)
           ff.close
         end
-        
+
         # limpiamos
         system("rm -r #{tmp_dir}")
       end
     end
-    
+
     redirect_to "/cuenta/imagenes?sEditorId=#{params[:sEditorId]}"
   end
-  
+
   def borrar_imagen
     @user.del_my_file(params[:filename])
     # render :nothing => true TODO error javascript al intentar borrar: components is not defined
     render :nothing => true
   end
-  
-  
+
+
   def save_avatar
     # TODO validation checks!
     if params[:new_avatar_id].to_s.strip == ''  then
@@ -379,35 +442,35 @@ class Cuenta::CuentaController < ApplicationController
       @user.change_avatar(params[:new_avatar_id])
       flash[:notice] = "Avatar cambiado correctamente"
     end
-    
+
     redirect_to :action => 'avatar'
   end
-  
+
   def custom_avatars_set
     @user.avatars.find(:all, :conditions => 'path is null or path = \'\'', :order => 'id ASC').each do |a|
       a.update_attributes({:path => params[:custom_avatars][a.id.to_s]}) if params[:custom_avatars][a.id.to_s].to_s != ''
     end
     redirect_to :action => 'avatar'
   end
-  
-  
+
+
   def avatar
     @title = 'Avatar'
     @navpath = [['Preferencias', '/cuenta'], ['Avatar', '/cuenta/avatar']]
-    
+
     if @user.faction then
       faction = @user.faction
       @avatars = faction.avatars.find(:all, :order => 'level ASC')
     end
   end
-  
+
   def olvide_clave
     @title = 'Olvidé mi contraseña'
-    @navpath = [['Cuenta', '/cuenta'], ['Olvidé mi contraseña', request.request_uri]]
+    @navpath = [['Cuenta', '/cuenta'], ['Olvidé mi contraseña', request.fullpath]]
   end
-  
+
   def do_olvide_clave
-    
+
     if params[:email] && params[:email] != '' then
       u = User.find(:first, :conditions => ['lower(email) = lower(?)', params[:email]])
       if u.nil? then
@@ -421,28 +484,28 @@ class Cuenta::CuentaController < ApplicationController
         redirect_to(:action => 'olvide_clave') and return
       end
     end
-    
+
     if u.nil? then
       flash[:error] = 'No ha especificado un nombre de usuario o una dirección de email válidos.'
       redirect_to :action => 'olvide_clave'
     end
-    
+
     ipr = IpPasswordsResetsRequest.create({:ip => request.remote_ip})
-    
+
     if IpPasswordsResetsRequest.count(:conditions => ['ip = ? AND created_on > now() - \'5 minutes\'::interval', request.remote_ip]) > 3 then
       flash[:error] = "Demasiadas peticiones de reseteo de contraseña. Debes esperar un poco antes de poder realizar una nueva petición."
       redirect_to :action => 'olvide_clave'
     else
-      Notification.deliver_forgot(u)
+      Notification.forgot(u).deliver
       flash[:notice] = 'Notificación enviada correctamente.'
     end
   end
-  
+
   def reset
     @title = 'Resetear mi contraseña'
-    @navpath = [['Cuenta', '/account'], ['Resetear mi contraseña', request.request_uri]]
+    @navpath = [['Cuenta', '/account'], ['Resetear mi contraseña', request.fullpath]]
   end
-  
+
   def do_change_email
     if params[:k] && params[:email]
       u = User.find_by_validkey(params[:k])
@@ -464,7 +527,7 @@ class Cuenta::CuentaController < ApplicationController
       render :action => 'configuracion'
     end
   end
-  
+
   def resendsignup
     if cookies[:email] and not cookies[:email].nil?
       @email = cookies[:email]
@@ -473,14 +536,14 @@ class Cuenta::CuentaController < ApplicationController
     else
       @email = nil
     end
-    
+
     if @email
       user = User.find(:first, :conditions => ["email = ? and validkey != 'NULL' and state = #{User::ST_UNCONFIRMED}",@email])
       if user.nil?
         flash[:notice] = "¡No hay ninguna cuenta registrada con esa dirección de email! "
         flash[:notice] << "O tu cuenta no ha sido confirmada o necesitas crear una nueva cuenta."
       else
-        Notification.deliver_signup(user)
+        Notification.signup(user).deliver
         cookies[:email] = { :value => user.email, :expires => nil, :domain => COOKIEDOMAIN}
         flash[:notice] = "Hemos enviado un email a #{user.email}. "
         flash[:notice] << "Por favor, pega la clave de confirmación que recibirás en el email."
@@ -488,8 +551,8 @@ class Cuenta::CuentaController < ApplicationController
     end
     redirect_to :action => 'confirmar'
   end
-  
-  
+
+
   def do_confirmar
     if params[:k] && params[:email]
       u = User.find_by_validkey(params[:k].strip)
@@ -508,17 +571,17 @@ class Cuenta::CuentaController < ApplicationController
       render :action => 'confirmar'
     end
   end
-  
+
   def confirmar
     @title = 'Confirmar creación de cuenta'
     @navpath = [] # necesario para que no salga lo de Cuenta
   end
-  
+
   def _logout_intern
     session[:user] = nil
     cookies[:ak] = {:value => '', :expires => 1.second.ago, :domain => COOKIEDOMAIN}
   end
-  
+
   def logout
     _logout_intern
     phrases = [['Te echaremos de menos.', 'MrGod'],
@@ -532,12 +595,12 @@ class Cuenta::CuentaController < ApplicationController
     ['Deja el mundo real para la gente aburrida!', 'MrCheater'],
     ['Sabemos desde donde conectas. Te estaremos vigilando.', 'MrGod'],
     ['Te he enseñado todo lo que sé. Ya estás listo para enfrentarte al mundo real joven padawan. Que la fuerza te acompañe.', 'MrCheater']]
-    
+
     rnd = phrases[Kernel.rand(phrases.size-1)]
     flash[:notice] = "Sesión cerrada correctamente<br /><br />#{rnd[1]}: <strong>#{rnd[0]}</strong>"
     redirect_to '/'
   end
-  
+
   def borrar
     if @user.clearpasswd(params[:password].to_s) == @user.password
       @user.update_attributes(:state => User::ST_DELETED)
@@ -548,9 +611,9 @@ class Cuenta::CuentaController < ApplicationController
       flash[:error] = 'La contraseña introducida es incorrecta. Debes introducir tu contraseña actual para poder borrar tu cuenta.'
       render :action => 'configuracion'
     end
-    
+
   end
-  
+
   def do_reset
     if params[:k] && params[:login] && params[:password] && params[:password_confirmation]
       u = User.find(:first, :conditions => ['lower(login) = lower(?) and validkey = ?', params[:login], params[:k]])
@@ -577,28 +640,28 @@ class Cuenta::CuentaController < ApplicationController
       render :action => 'olvide_clave'
     end
   end
-  
+
   # TODO quitar esto
   def strip_tags(html)
     @hackview ||= ActionView::Base.new
     @hackview.strip_tags(html)
   end
-  
-  def strip_tags_allowed(html, allowed=CorereactorHelper::DEF_ALLOW_TAGS)
+
+  def strip_tags_allowed(html, allowed=None)
     @hackview ||= ActionView::Base.new
     @hackview.strip_tags_allowed(html, allowed)
   end
-  
+
   def username_check
     if User.find_by_login(params[:login])
       @feedback = "500+=Nombre no disponible, debes elegir otro nombre"
     else
-      @feedback = '111+=Nombre disponible'    
+      @feedback = '111+=Nombre disponible'
     end
     render :layout => false
   end
-  
-  
+
+
   def email_check
     if User.find(:first, :conditions => ['lower(email) = lower(?)', params[:email]])
       @feedback = '500+=El email introducido ya está asignado a otra persona'
@@ -607,7 +670,7 @@ class Cuenta::CuentaController < ApplicationController
     end
     render :layout => false, :action => :username_check
   end
-  
+
   def set_default_portal
     raise ActiveRecord::RecordNotFound unless params[:new_portal] && HomeController::VALID_DEFAULT_PORTALS.include?(params[:new_portal])
     @user.default_portal = params[:new_portal]

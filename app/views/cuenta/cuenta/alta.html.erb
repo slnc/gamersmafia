@@ -3,7 +3,7 @@
 <%= form_tag :action=> "create2" %>
   <script type="text/javascript">
   	var email_stat=user_stat=true;
-    
+
     function feedback_scan(feedback,div_id)
     {
         var code=feedback.split('+=');
@@ -12,11 +12,11 @@
             return class_toggle('good',div_id);
         else
             return class_toggle('bad',div_id);
-		
+
     }
   	    function class_toggle(type,div_id)
     {
-		
+
         if (type=='bad'){
             $j('#' + div_id).removeClass('good').addClass('bad').css('display', 'inline');
             return false;
@@ -32,11 +32,11 @@
         {
             action='blur';
         }
-		
+
         var login = $j('#signup_user_login').val();
 		if (login == '')
 			return;
-			
+
         if (login.trim().length < 3 || login.trim().length > 25)
         {
             $j('#username_msg').html('Mínimo 3 caracteres, máximo 25 caracteres');
@@ -51,17 +51,17 @@
         {
 			$j.get('/cuenta/cuenta/username_check', {login: login}, function(feedback) {
             	user_stat=feedback_scan(feedback,'username_msg');});
-        }  
+        }
 
-         
+
     }
-	
+
 	    function password_checks()
     {
         var password = $j('#signup_user_password').val();
 		if (password == '')
 			return;
-		
+
         if (password.length <4)
         {
             $j('#password_msg').html('Mínimo 4 caracteres, máximo lo que dé de si tu memoria');
@@ -78,7 +78,7 @@
             return true;
         }
     }
-	
+
     function email_checks(action)
     {
         if (action==null)
@@ -96,7 +96,7 @@
         {
             $j.get('/cuenta/cuenta/email_check', {email: email}, function(feedback) {
             	email_stat=feedback_scan(feedback,'email_msg');});
-        } 
+        }
     }
 	</script>
 	<style type="text/css">
@@ -120,6 +120,13 @@
 </tr>
 
 <tr>
+  <td colspan="2" style="height: 30px;">
+  <label><input type="checkbox" name="accept_terms" value="1" /> He leído y
+  acepto el <a href="/site/netiquette" target="_blank">código de conducta de
+  Gamersmafia</a>.</label></td>
+</tr>
+
+<tr>
   <td colspan="2"  class="infoinline" style="padding-top: 10px; padding-bottom: 20px;"><a href="#" onclick="$j('#optionalfields').removeClass('hidden'); return false;">Campos opcionales</a>
     <table class="<%='hidden' unless params[:referer]%>" id="optionalfields">
       <tr>
@@ -132,7 +139,7 @@
 <script type="text/javascript">
 	if ($j('#signup_user_login').val() != "")
 		username_checks();
-		
+
 	if ($j('#signup_user_email').val() != "")
 		email_checks();
 </script>

@@ -1,18 +1,19 @@
 <% generic_support do %>
   <%=render :partial => '/foros/nuevo_topic'%>
-  
-  <%=render :partial => '/shared/last_commented_items_in_category', :locals => { :category => @forum, :content_type => 'Topic' }%>
-  <%=render :partial => 'most_active_users', :object => @object = @forum%>
-  <%=render :partial => 'most_active_topics', :object => @object = @forum%>
-  <%=render :partial => 'all_time_users', :object => @object = @forum%>
-  
+
+  <%=render :partial => '/shared/last_commented_items_in_category', :locals => {:category => @forum, :content_type => 'Topic'} %>
+  <%=render :partial => 'most_active_users', :locals => {:forum => @forum} %>
+  <%=render :partial => 'most_active_topics', :locals => {:forum => @forum} %>
+  <%=render :partial => 'all_time_users', :locals => {:forum => @forum} %>
+
   <%=render :partial => '/shared/category_tag_browser', :locals => {:cls => Download, :category => @forum } %>
 
 <% if @forum.parent then %>
   <%mftext('Subforos') do %>
 <ul class="content-hid">
 <strong><%=@forum.parent.name%></strong>
-<% for subforum in @forum.parent.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'], :order => 'lower(name)') %>
+<% subforums = subforums(@forum.parent) %>
+<% subforums.each do |subforum| %>
 <% if @forum.id == subforum.id then %>
 <li class="current"><%=link_to subforum.name, :action => 'forum', :id => subforum.id%></li>
 <% else %>
@@ -27,7 +28,6 @@
 
 <% content_main do %>
   <%mftext(@title) do %>
-
 <table>
   <tr>
     <th colspan="2">Foro</td>

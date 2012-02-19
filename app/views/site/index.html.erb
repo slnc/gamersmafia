@@ -1,7 +1,6 @@
 <% generic_support(:show_ads => false) do %>
 <% mftext('Partners y sponsors') do %>
 <div class="centered">
-	<a href="/site/sponsors/atlassian"><img class="icon" src="/images/atlassian.jpg" /></a><br /><br />
 	<a href="/site/sponsors/fourfrags"><img class="icon" src="/images/sponsors/fourfrags.jpg" /></a><br /><br />
 	<a href="/site/sponsors/nls"><img class="icon" src="/images/sponsors/nls.jpg" /></a>
 </div>
@@ -9,7 +8,7 @@
 
 <% mftext('Aquellos maravillosos años') do %>
 <div class="centered">
-<a title="Ir al álbum de fotos" href="/site/album"><img style="border: 0;" src="/images/history/<%=Dir.entries("#{RAILS_ROOT}/public/images/history").collect { |e| e if  /thumb\-/ =~ e }.compact.sort.sample%>" /></a>
+<a title="Ir al álbum de fotos" href="/site/album"><img style="border: 0;" src="/images/history/<%=Dir.entries("#{Rails.root}/public/images/history").collect { |e| e if  /thumb\-/ =~ e }.compact.sort.sample%>" /></a>
 </div>
 <% end -%>
 

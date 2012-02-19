@@ -17,10 +17,10 @@
 		<tr class="<%=oddclass%>">
 			<td colspan="2"><input type="submit" class="button" value="Banear" /></td>
 			</tr>
-	</table>	 
+	</table>
 </form>
 <% end -%>
-	
+
 <%mftext('Bans activos') do %>
 <table>
 	<tr class="<%=oddclass%>">
@@ -37,8 +37,18 @@
 		<td class="timestamp infoinline"><%=print_tstamp(ban.created_on)%></td>
 		<td class="infoinline"><%=user_link(ban.user) if ban.user_id%></td>
 		<td><%=ban.comment%></td>
-		<td class="timestamp infoinline"><%=print_tstamp(ban.expires_on)%><br />(<%=distance_of_time_in_words_to_now(ban.expires_on) if ban.expires_on %>)</td>
-		<td class="w50"><%=link_to_remote 'Borrar', :url => "/admin/ip_bans/destroy/#{ban.id}", :complete => "$j('#ipban#{ban.id}').fadeOut('normal');"%></td>
+		<td class="timestamp infoinline">
+      <%=print_tstamp(ban.expires_on)%>
+      <br />
+      (<%=distance_of_time_in_words_to_now(ban.expires_on) if ban.expires_on %>)
+    </td>
+		<td class="w50">
+      <%=link_to(
+          'Borrar',
+          :url => "/admin/ip_bans/destroy/#{ban.id}",
+          :complete => "$j('#ipban#{ban.id}').fadeOut('normal');",
+          :remote => true)%>
+    </td>
 	</tr>
 	<% end -%>
 </table>

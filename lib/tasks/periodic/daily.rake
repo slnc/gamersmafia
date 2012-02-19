@@ -73,7 +73,7 @@ namespace :gm do
 
   def close_old_open_questions
     mrman = User.find_by_login!('mrman')
-    Question.find(:published, :conditions => 'answered_on IS NULL AND created_on <= now() - \'1 month\'::interval', :order => 'id').each do |q|
+    Question.published.find(:all, :conditions => 'answered_on IS NULL AND created_on <= now() - \'1 month\'::interval', :order => 'id').each do |q|
       c_text = Kernel.rand > 0.5 ? 'Esta pregunta lleva pendiente de respuesta demasiado tiempo y le está empezando a salir musgo verde así que me veo en la obligación de cerrarla.' : 'Esta pregunta lleva demasiado tiempo abierta y se encuentra en paupérrimas condiciones. Por consiguiente me siento con la obligación de cerrarla.'
       if q.unique_content.comments.count(:conditions => ['user_id <> ?', q.user_id]) > 0
         c_text << ' Si alguna de las respuestas es válida por favor avisad al staff.'
@@ -169,7 +169,7 @@ namespace :gm do
 
 
   def provocar_golpes_de_estado
-    require "#{RAILS_ROOT}/app/controllers/application_controller" # necesario por llamada a ApplicationController
+    require "#{Rails.root}/app/controllers/application_controller" # necesario por llamada a ApplicationController
     mrcheater = User.find_by_login!('MrCheater')
     if [7, 8].include?(Time.now.month)
       days = 12
@@ -237,7 +237,8 @@ having portal_id in (select id
         end
 
         recipients.each do |u|
-          Notification.deliver_reto_pendiente_1w(u, {:match => m, :participant => m.participant2})
+          Notification.reto_pendiente_1w(
+              u, {:match => m, :participant => m.participant2}).deliver
         end
       end
 
@@ -268,7 +269,8 @@ having portal_id in (select id
         end
 
         recipients.each do |u|
-          Notification.deliver_reto_cancelado_sin_respuesta(u, {:match => m, :participant => m.participant2})
+          Notification.reto_cancelado_sin_respuesta(
+              u, {:match => m, :participant => m.participant2}).deliver
         end
         m.destroy
       end
@@ -286,7 +288,8 @@ having portal_id in (select id
           end
 
           recipients.each do |u|
-            #Notification.deliver_reto_cancelado_sin_respuesta(u, {:match => m, :participant => m.participant2})
+            # TODO(slnc): deberíamos habilitar esto de nuevo?
+            #Notification.reto_cancelado_sin_respuesta(u, {:match => m, :participant => m.participant2})
           end
           m.complete_match(User.find_by_login!('MrMan'), {}, true)
         end
@@ -303,13 +306,13 @@ having portal_id in (select id
   def new_accounts_cleanup
     # 1st warning
     User.find(:all, :conditions => "state = #{User::ST_UNCONFIRMED} AND updated_at < now() - '3 days'::interval", :limit => 200).each do |u|
-      Notification.deliver_unconfirmed_1w(u)
+      Notification.unconfirmed_1w(u).deliver
       User.db_query("UPDATE users SET state = #{User::ST_UNCONFIRMED_1W}, updated_at = now() WHERE id = #{u.id}")
     end
 
     # 2nd warning
     User.find(:all, :conditions => "state = #{User::ST_UNCONFIRMED_1W} AND updated_at < now() - '3 days'::interval", :limit => 200).each do |u|
-      Notification.deliver_unconfirmed_2w(u)
+      Notification.unconfirmed_2w(u).deliver
       User.db_query("UPDATE users SET state = #{User::ST_UNCONFIRMED_2W}, updated_at = now() WHERE id = #{u.id}")
     end
 
@@ -324,7 +327,8 @@ having portal_id in (select id
     tend = Time.now.at_beginning_of_day.ago(1)
     tstart = tend.months_ago(1).beginning_of_day
     Advertiser.find(:all, :conditions => ['active=\'t\' AND due_on_day = ?', Time.now.day]).each do |advertiser|
-      Notification.deliver_ad_report(advertiser, {:tstart => tstart, :tend => tend})
+      Notification.ad_report(
+          advertiser, {:tstart => tstart, :tend => tend}).deliver
     end
   end
 
@@ -407,7 +411,7 @@ having portal_id in (select id
       cur_day = User.db_query("SELECT created_on from contents order by created_on asc limit 1")[0]['created_on'].to_time
     end
 
-    cur_day = 1.day.ago.beginning_of_day if RAILS_ENV == 'test'
+    cur_day = 1.day.ago.beginning_of_day if Rails.env == 'test'
 
     while cur_day <= max_day
       # puts cur_day
@@ -447,7 +451,7 @@ having portal_id in (select id
       cur_day = User.db_query("SELECT created_on from contents order by created_on asc limit 1")[0]['created_on'].to_time
     end
 
-    cur_day = 1.day.ago.beginning_of_day if RAILS_ENV == 'test'
+    cur_day = 1.day.ago.beginning_of_day if Rails.env == 'test'
 
     while cur_day <= max_day
       # puts cur_day

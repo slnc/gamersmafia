@@ -1,10 +1,10 @@
 require 'yaml'
 
 module Achmed
-  COMMENTS_P_UNIGRAM_FILE_BAD = "#{RAILS_ROOT}/public/storage/achmed/comments_bad"
+  COMMENTS_P_UNIGRAM_FILE_BAD = "#{Rails.root}/public/storage/achmed/comments_bad"
   UNK_TAG = '---unk---'
-  COMMENTS_P_UNIGRAM_FILE_GOOD = "#{RAILS_ROOT}/public/storage/achmed/comments_good"
-  COMMENTS_MODELS_BASE = "#{RAILS_ROOT}/public/storage/achmed/comments"
+  COMMENTS_P_UNIGRAM_FILE_GOOD = "#{Rails.root}/public/storage/achmed/comments_good"
+  COMMENTS_MODELS_BASE = "#{Rails.root}/public/storage/achmed/comments"
   COMMENTS_JOB_MAX_CREATED_ON = '2008-09-01 00:00:00'
 
   STOP_WORDS = ['.', ',', ':', '...', '?', '¿', '¡', '!', '$', '&', '/', '=', 'este', 'esta', 'xd', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'hasta', 'me', 'mi', ')', '(']
@@ -283,7 +283,7 @@ module Achmed
       # nospam class
       p_unigram_good = self.train_unigram(Comment.find(:all, :conditions => good_comments_cond, :order => 'id', :limit => bad_comments_count).collect { |c| Achmed.clean_comment(c.comment) } )
 
-      FileUtils.mkdir_p("#{RAILS_ROOT}/public/storage/achmed") unless File.exists?("#{RAILS_ROOT}/public/storage/achmed")
+      FileUtils.mkdir_p("#{Rails.root}/public/storage/achmed") unless File.exists?("#{Rails.root}/public/storage/achmed")
       File.open(COMMENTS_P_UNIGRAM_FILE_BAD, 'w' ) { |out| YAML.dump(p_unigram_bad, out ) }
       File.open(COMMENTS_P_UNIGRAM_FILE_GOOD, 'w' ) { |out| YAML.dump(p_unigram_good, out ) }
     end

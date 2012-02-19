@@ -1,12 +1,14 @@
 <% generic_support do %>
 <% mftext('Últimas demos subidas') do %>
-<%=generic_contents_list(controller.portal.demo.find(:published, :order => 'created_on DESC', :limit => 5))%>
+<%=generic_contents_list(Demo.in_portal(controller.portal).published.find(
+      :all, :order => 'created_on DESC', :limit => 5))%>
 <% end -%>
 
 <% mftext('Las más descargadas') do %>
 <ul class="content-hid">
 <%	# TODO cache %>
-<% controller.portal.demo.find(:published, :order => 'downloaded_times DESC', :limit => 5).each do |d| %>
+<% Demo.in_portal(controller.portal).published.find(
+    :all, :order => 'downloaded_times DESC', :limit => 5).each do |d| %>
 <li class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%>
   <div class="infoinline"><span class="downloads-count"><%=d.downloaded_times%></span> | <%=draw_rating(d.rating)%></div></li>
 <% end -%>
@@ -25,7 +27,7 @@
     <td>Juego</td>
     <% games = controller.portal.respond_to?(:factions) ? controller.portal.factions.find(:all).collect { |f| "#{f.code}" } : Game.find(:all).collect { |g| "#{g.code}" } %>
     <td>
-    	
+
 		<%= select_tag("demo_term_id", options_for_select(['',''] + Term.top_level.find(:all, :conditions => ['slug IN (?)', games], :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }), { :include_blank => true })%></p></td>
 </tr>
 <tr>
@@ -39,7 +41,10 @@
 </tr>
 <tr>
     <td>Evento</td>
-    <td><%= select("demo", "event_id", Event.find(:published, :conditions => 'parent_id is null', :order => 'lower(title) ASC').collect {|p| [ p.title, p.id ] }, { :include_blank => true })%></td>
+    <td><%= select("demo", "event_id", Event.published.find(
+          :all,
+          :conditions => 'parent_id is null',
+          :order => 'lower(title) ASC').collect {|p| [ p.title, p.id ] }, { :include_blank => true })%></td>
 </tr>
 <tr>
     <td>Tipo</td>

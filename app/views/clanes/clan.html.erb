@@ -6,7 +6,7 @@
   <% end -%>
 
 <% cache("/common/clanes/#{@clan.id}/sponsors") do %>
-  <% sponsors = @clan.clans_sponsors 
+  <% sponsors = @clan.clans_sponsors
   if sponsors.size > 0 then %>
     <%mftext('Sponsors') do %>
   <ul class="skeletal">
@@ -55,7 +55,7 @@
 
   <%mftext('Miembros') do %>
   <table>
-    <% cache("/common/clanes/#{@clan.id}/miembros") do 
+    <% cache("/common/clanes/#{@clan.id}/miembros") do
     %>
     <% for member in @clan.members %>
     <tr class="<%=oddclass%>">
@@ -67,7 +67,7 @@
   <% end -%>
   <% end -%>
   </div>
-  
+
   <div class="grid-5">
 	<%#cache("#{Cache.user_base(@clan.id)}/profile/competicion") do %>
 <%
@@ -76,26 +76,30 @@ if last_matches.size > 0 then
 %>
 <%mftext('Competición', :has_submodules => true) do %>
 	<%
-	
+
 	mftext('Últimos resultados') do %>
 	<%= render :partial => '/competiciones/matches_results', :locals =>  { :matches => last_matches } %>
 	<% end -%>
-	
+
 	<%mftable('Trofeos', Competitions.trophies_for_clan(@clan)) do |h| %>
 		<td><a href="<%=gmurl(h[1])%>"><%=faction_favicon(h[1].game)%><%=h[1]%></a></td>
 		<td><%=winner_cup(h[0])%></td>
 	<% end -%>
-	
 
-	<%=render :partial => '/demos/listado_demos', :locals => { :demos => Demo.of_clan(@clan).find(:published, :limit => 1), :more_link => '<div class="more"><a href="/demos">Ver más..</a></div>'} %>
 
+	<%=render(
+      :partial => '/demos/listado_demos',
+      :locals => {
+          :demos => Demo.of_clan(@clan).published.find(:all, :limit => 1),
+          :more_link => '<div class="more"><a href="/demos">Ver más..</a></div>'
+      })%>
 	<%
 	comps = Competition.related_with_clan(@clan).find(:all, :conditions => "state = #{Competition::STARTED}", :order => 'lower(name)')
-	if comps	
+	if comps
 	mflist('Está participando en', comps) do |o|
 	    cpart = o.get_active_participant_for_clan(@clan)
 		lres = o.matches(:completed, :participant => cpart, :limit => 30, :order => 'completed_on DESC')
-		
+
 		data = lres.collect do |cm|
 			w = cm.winner
 			if w == 'Empate'
@@ -115,5 +119,5 @@ if last_matches.size > 0 then
 <% end -%>
 <% # end -%>
 	</div>
-  
+
 <% end -%>

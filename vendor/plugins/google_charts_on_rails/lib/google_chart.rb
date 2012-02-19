@@ -40,7 +40,7 @@ class GoogleChart
   end
   def self.respond_to?(method)
     #TODO: have to check with identifiers before returning true
-    true 
+    true
   end
 
   def initialize()
@@ -67,7 +67,7 @@ class GoogleChart
   def data_encoding_type
     #TODO: identify the data type automatically after the data array is set
     @data_encoding_type || :text
-  end  
+  end
 
   def to_url
     params = {}
@@ -77,7 +77,7 @@ class GoogleChart
     params[DATA_VAR] = encode_data
     params[LABELS_VAR] = join_labels if (@labels && @show_labels)
     params[COLORS_VAR] = join(@colors) if (@colors)
-    
+
     chart_params = []
     params.each_pair do |key, value|
       chart_params << "#{key}=#{value}"
@@ -87,13 +87,13 @@ class GoogleChart
     chart_params << "chxt=x,y"
     chart_params << "chxl=0:|#{@xlabels.join('|')}"
     interval_size = (100 / (@xlabels.size-1)).floor
-    
+
     chxp = @xlabels.size.times.collect do |t|
       t*interval_size
     end
     chxp[chxp.size-1] = 100
     chart_params << "chxp=0,#{chxp.join(',')}"
-    
+
     #chart_params << "chxr=1,#{@data.min},#{@data.max},#{(@data.max - @data.min)/100}"
     "#{SERVER}#{(chart_params * '&amp;')}"
   end
@@ -130,9 +130,9 @@ protected
     self.labels = label_array
   end
   def identify_size(source)
-    matched = source.match(SIZE_MATCHING_REGEX) 
+    matched = source.match(SIZE_MATCHING_REGEX)
     if matched
-      self.width = matched[1].to_i 
+      self.width = matched[1].to_i
       self.height = matched[2].to_i
     end
   end
@@ -173,10 +173,10 @@ protected
   #encoding ends here
   #utils start
   def self.logger
-    RAILS_DEFAULT_LOGGER
+    Rails.logger
   end
   def logger
-    RAILS_DEFAULT_LOGGER
+    Rails.logger
   end
   def self.protect_from_deep_stack
     return nil if @protection_from_deep_stack_is_set
@@ -185,7 +185,7 @@ protected
     @protection_from_deep_stack_is_set = false
     whatever
   end
-  
+
   def join(thingy)
     case thingy
       when String

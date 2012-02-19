@@ -1,18 +1,18 @@
 class Cuenta::BlogController < ApplicationController
   before_filter :require_auth_users
-  
-  verify :method => :post, :only => [:update, :destroy], :redirect_to => '/cuenta/blog'
-  
+
+  #verify :method => :post, :only => [:update, :destroy], :redirect_to => '/cuenta/blog'
+
   def index
     navpath2<< ['Preferencias', '/cuenta']
   end
-  
+
   def new
     @title = "Nueva entrada de blog"
     @blogentry = Blogentry.new
     navpath2<< ['Preferencias', '/cuenta']
   end
-  
+
   def create
     be = @user.blogentries.create(params[:blogentry].merge({ :state => Cms::PUBLISHED }))
     if be
@@ -24,14 +24,14 @@ class Cuenta::BlogController < ApplicationController
       render :action => 'new'
     end
   end
-  
+
   def edit
     navpath2<< ['Preferencias', '/cuenta']
     @blogentry = Blogentry.find_or_404(:first, :conditions => ['id = ?', params[:id]])
-    raise AccessDenied unless @user.has_admin_permission?(:capo) || @user.id == @blogentry.user_id 
+    raise AccessDenied unless @user.has_admin_permission?(:capo) || @user.id == @blogentry.user_id
     @title = "Editar entrada de blog \"#{@blogentry.title}\""
   end
-  
+
   def update
     @blogentry = Blogentry.find(params[:id])
     raise ActiveRecord::RecordNotFound unless (user_is_authed and Cms::user_can_edit_content?(@user, @blogentry))
@@ -41,10 +41,10 @@ class Cuenta::BlogController < ApplicationController
     else
       flash[:error] = 'Error al actualizar la entrada'
     end
-    
+
     redirect_to :action => 'edit', :id => @blogentry.id
   end
-  
+
   def destroy
     @blogentry = Blogentry.find(params[:id])
     raise ActiveRecord::RecordNotFound unless (user_is_authed and Cms::user_can_edit_content?(@user, @blogentry))

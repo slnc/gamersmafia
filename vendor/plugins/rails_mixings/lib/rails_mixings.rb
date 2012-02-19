@@ -1,5 +1,5 @@
-if File.exists?("#{RAILS_ROOT}/config/initializers/pre_plugins.rb")
-  require "#{RAILS_ROOT}/config/initializers/pre_plugins.rb"
+if File.exists?("#{Rails.root}/config/initializers/pre_plugins.rb")
+  require "#{Rails.root}/config/initializers/pre_plugins.rb"
 end
 
 require 'active_record_mixings.rb'

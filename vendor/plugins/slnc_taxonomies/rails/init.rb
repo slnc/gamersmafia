@@ -1,1 +1,0 @@
-require 'slnc_taxonomies'

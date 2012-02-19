@@ -9,7 +9,7 @@ class CacheObservercuriosidadesTest < ActionController::IntegrationTest
 
   # MAIN
   test "should_clear_cache_on_main_after_publishing_funthing" do
-    n = Funthing.find(:pending)[0]
+    n = Funthing.pending.find(:all)[0]
     assert_not_nil n
     go_to '/curiosidades', 'curiosidades/index'
     assert_cache_exists "common/curiosidades/index/page_"
@@ -18,7 +18,7 @@ class CacheObservercuriosidadesTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_unpublishing_funthing" do
-    n = Funthing.find(:published)[0]
+    n = Funthing.published.find(:all)[0]
     assert_not_nil n
     go_to '/curiosidades', 'curiosidades/index'
     assert_cache_exists "common/curiosidades/index/page_"
@@ -27,7 +27,7 @@ class CacheObservercuriosidadesTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_on_main_after_updating_funthing" do
-    n = Funthing.find(:published)[0]
+    n = Funthing.published.find(:all)[0]
     assert_not_nil n
     go_to '/curiosidades', 'curiosidades/index'
     assert_cache_exists "common/curiosidades/index/page_"

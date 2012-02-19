@@ -2,17 +2,14 @@ class Cuenta::Clanes::GeneralController < ApplicationController
   def submenu
     'Clan'
   end
-  
+
   def submenu_items
     clanes_menu_items
   end
-  
-  verify :method => :post, :only => [ :destroy, :create, :update ],
-  :redirect_to => { :action => :index}
-  
+
   before_filter :require_auth_users
-  
-  before_filter do |c| 
+
+  before_filter do |c|
     if c.user.last_clan_id then
       c.clan = Clan.find_by_id(c.user.last_clan_id)
       if c.clan.nil? or c.clan.deleted?
@@ -20,21 +17,21 @@ class Cuenta::Clanes::GeneralController < ApplicationController
       end
     end
   end
-  
+
   def index
   end
-  
+
   def menu
-    
+
   end
-  
+
   def new
     @user.last_clan_id = nil
     @title = 'Nuevo clan'
     @navpath = [['Mis clanes', '/cuenta/clanes'], ['Nuevo', '/cuenta/clanes/new']]
     @newclan = Clan.new
   end
-  
+
   def create
     # TODO validación
     @newclan = Clan.new(params[:newclan].merge({:creator_user_id => @user.id}))
@@ -48,7 +45,7 @@ class Cuenta::Clanes::GeneralController < ApplicationController
       render :action => 'new'
     end
   end
-  
+
   def borrar
     @clan = Clan.find(params[:clan_id])
     require_auth_clan_leader
@@ -57,7 +54,7 @@ class Cuenta::Clanes::GeneralController < ApplicationController
     flash[:notice] = "Clan eliminado correctamente"
     redirect_to '/cuenta/clanes'
   end
-  
+
   def abandonar
     @clan = Clan.find(params[:clan_id])
     require_auth_member
@@ -69,7 +66,7 @@ class Cuenta::Clanes::GeneralController < ApplicationController
     end
     redirect_to '/cuenta/clanes'
   end
-  
+
   def update
     require_auth_clan_leader
     params[:clan][:irc_channel] = params[:clan][:irc_channel].gsub('#', '').strip if params[:clan][:irc_channel]
@@ -81,7 +78,7 @@ class Cuenta::Clanes::GeneralController < ApplicationController
       render :action => 'configuracion'
     end
   end
-  
+
   def add_member_to_group
     require_auth_clan_leader
     u = User.find_by_login(params[:login])
@@ -94,11 +91,11 @@ class Cuenta::Clanes::GeneralController < ApplicationController
     else
       flash[:error] = 'El usuario especificado no existe.'
     end
-    
+
     redirect_to '/cuenta/clanes/miembros'
   end
-  
-  
+
+
   def remove_member_from_group
     require_auth_clan_leader
     begin
@@ -110,26 +107,26 @@ class Cuenta::Clanes::GeneralController < ApplicationController
       ClansMovement.create(:clan_id => @clan.id, :user_id => u.id, :direction => ClansMovement::OUT)
       @clan.recalculate_members_count # TODO hack
     end
-    
+
     redirect_to '/cuenta/clanes/miembros'
   end
-  
-  
+
+
   def configuracion
     require_auth_clan_leader
   end
-  
+
   def miembros
     require_auth_clan_leader
   end
-  
+
   def amigos
     require_auth_clan_leader
   end
-  
+
   def add_friend
     require_auth_clan_leader
-    
+
     begin
       if params[:id] then
         c = Clan.find(params[:id])
@@ -142,13 +139,13 @@ class Cuenta::Clanes::GeneralController < ApplicationController
       @clan.add_friend(c)
       flash[:notice] = 'Amistad establecida correctamente.'
     end
-    
+
     redirect_to '/cuenta/clanes/amigos'
   end
-  
+
   def del_friends
     require_auth_clan_leader
-    
+
     if params[:clans] then
       params[:clans].each do |c|
         flash[:notice] = ''
@@ -162,15 +159,15 @@ class Cuenta::Clanes::GeneralController < ApplicationController
         end
       end
     end
-    
+
     flash[:notice] = nil if flash[:notice] == ''
     redirect_to '/cuenta/clanes/amigos'
   end
-  
+
   def banco
     require_auth_clan_leader
   end
-  
+
   def switch_active_clan
     @user.update_attributes(:last_clan_id => params[:id])
     redirect_to '/cuenta/clanes'

@@ -87,8 +87,8 @@
 </form>
 
 <br />
-<strong>Online:</strong> <% for u in User.online('lower(login)') %>
-<a href="/admin/usuarios/edit/<%=u.id%>"><%=u.login%></a>, 
+<strong>Online:</strong> <% for u in User.online_users('lower(login)') %>
+<a href="/admin/usuarios/edit/<%=u.id%>"><%=u.login%></a>,
 <% end
 %>
 <br />

@@ -3,9 +3,18 @@ require 'digest/md5'
 require 'karma'
 
 class User < ActiveRecord::Base
-  BANNED_DOMAINS = %w(10minutemail.com correo.nu fishfuse.com meyzo.net
-                      mintemail.uni.cc tempemail.net tempinbox.com uggsrock.com
-                      yopmail.com)
+  BANNED_DOMAINS = %w(
+      10minutemail.com
+      correo.nu
+      fishfuse.com
+      meyzo.net
+      mintemail.uni.cc
+      tempemail.net
+      tempinbox.com
+      trash-mail.de
+      uggsrock.com
+      yopmail.com
+  )
 
   ANTIFLOOD_LEVELS = {
     1 => 'suave',
@@ -18,6 +27,15 @@ class User < ActiveRecord::Base
   MALE = 0
   FEMALE = 1
   SEXUAL_ORIENTATIONS_REL = { :women => "sex = #{FEMALE}", :men => "sex = #{FEMALE}", }
+  MESSAGE_WELCOME_TO_HQ = <<-end
+  Ya estás dado de alta en el HQ.
+
+  Te recomiendo que para empezar vayas al wiki (menú horizontal encima de la
+  cabecera HQ -> Wiki) ya que hay un información sobre cómo usar tanto el wiki
+  como GitHub y la lista de correo interna..
+
+  Un saludete :D
+  end
 
   ST_UNCONFIRMED = 0
   ST_ACTIVE = 1
@@ -156,8 +174,6 @@ class User < ActiveRecord::Base
   after_save :check_is_hq
   after_save :check_login_changed
   after_save :check_permissions
-  observe_attr :competition_roster, :login, :state, :is_hq, :faction_id,
-               :lastcommented_on, :avatar_id, :photo, :homepage
 
   before_create :generate_validkey
   after_create :change_avatar
@@ -168,16 +184,16 @@ class User < ActiveRecord::Base
   before_save :check_if_shadow
   before_save :check_if_website
 
-  named_scope :settled, :conditions => 'created_on <= now() - \'1 month\'::interval'
-  named_scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})",
-                          :order => 'lower(login)'
-  named_scope :birthday_today, :conditions => "date_part('day', birthday)::text || date_part('month', birthday)::text = date_part('day', now())::text || date_part('month', now())::text"
-  named_scope :humans, :conditions => 'is_bot is false'
+  scope :settled, :conditions => 'created_on <= now() - \'1 month\'::interval'
+  scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})",
+                    :order => 'lower(login)'
+  scope :birthday_today, :conditions => "date_part('day', birthday)::text || date_part('month', birthday)::text = date_part('day', now())::text || date_part('month', now())::text"
+  scope :humans, :conditions => 'is_bot is false'
 
-  named_scope :recently_active,
+  scope :recently_active,
               :conditions => "lastseen_on >= now() - '1 week'::interval"
 
-  named_scope :online, :conditions => "lastseen_on >= now() - '30 minutes'::interval"
+  scope :online, :conditions => "lastseen_on >= now() - '30 minutes'::interval"
 
   # Class methods
   def self.suspicious_users
@@ -246,7 +262,7 @@ class User < ActiveRecord::Base
     User.find(:all, :conditions => "admin_permissions LIKE '#{s}'")
   end
 
-  def self.online(order='faction_id asc, lastseen_on desc')
+  def self.online_users(order='faction_id asc, lastseen_on desc')
     User.find(:all, :conditions => "lastseen_on >= now() - '30 minutes'::interval",
               :order => order, :limit => 100)
   end
@@ -346,7 +362,11 @@ class User < ActiveRecord::Base
   end
 
   def check_if_shadow
-    self.state = ST_SHADOW if self.state == ST_ZOMBIE && self.lastseen_on > 1.minute.ago
+    if self.state == ST_ZOMBIE && self.lastseen_on > 1.minute.ago
+      Rails.logger.info(
+          "Zombie #{self.login} turned up online. Changing state to shadow.")
+      self.state = ST_SHADOW
+    end
     true
   end
 
@@ -361,7 +381,7 @@ class User < ActiveRecord::Base
   end
 
   def check_if_website
-    return true unless self.slnc_changed?(:homepage)
+    return true unless self.homepage_changed?
 
     if self.homepage.to_s != '' && !(Cms::URL_REGEXP_FULL =~ self.homepage)
       self.homepage  = "http://#{self.homepage}"
@@ -402,7 +422,7 @@ class User < ActiveRecord::Base
       cr.rating
     else
       comments_count = c.comments.count(:conditions => ['user_id = ?', self.id])
-      if comments_count = 0
+      if comments_count == 0
         5.5
       else
         comments_count = 5 if comments_count > 5
@@ -422,14 +442,17 @@ class User < ActiveRecord::Base
     [self.users_roles.find_by_role('Boss'),
     self.users_roles.find_by_role('Underboss')].compact.each do |ur|
       ur.destroy
-    end if slnc_changed?(:faction_id)
+    end if self.faction_id_changed?
 
-    self.users_roles.clear if slnc_changed?(:state) &&
-    STATES_CANNOT_LOGIN.include?(self.state)
+    if self.state_changed? && STATES_CANNOT_LOGIN.include?(self.state)
+      self.users_roles.clear
+    end
   end
 
   def check_login_changed
-    GmSys.job("Blogentry.reset_urls_of_user_id(#{self.id})") if slnc_changed?(:login)
+    if self.login_changed?
+      GmSys.job("Blogentry.reset_urls_of_user_id(#{self.id})")
+    end
     true
   end
 
@@ -551,22 +574,13 @@ class User < ActiveRecord::Base
   end
 
   def check_is_hq
-    return unless slnc_changed?(:is_hq)
+    return unless self.is_hq_changed?
 
     if self.is_hq?
-      valid_username = self.login.bare
-      if !Jira.user_exists?(valid_username)
-        Jira.create_user(valid_username, self.email)
-        Jira.activate_user(valid_username)
-      end
-
-      Notification.deliver_add_to_hq(User.find(1), :new_member => self)
-      Message.create(:sender => User.find(1),
+      Message.create(:sender => User.find_by_login('nagato'),
                      :recipient => self,
                      :title => "¡Bienvenido al HQ!",
-                     :message => "Ya te he dado de alta en el HQ.\n\nTe recomiendo que para empezar vayas al wiki (menú horizontal encima de la cabecera HQ -> Wiki) ya que hay un información sobre cómo usar tanto el wiki como jira y la lista de correo interna.. \n\nTe debería haber llegado un email con un nombre de usuario y una contraseña, son para acceder al wiki y al gestor de incidencias (JIRA). En el wiki verás varias zonas con toda la información sobre wiki y gestor de incidencias y sobre la lista de correo. Te recomiendo empezar por esta pagina: http://hq.gamersmafia.com/confluence/display/GM/Bienvenido+a+Gamersmafia y tener bien claro esta otra: http://hq.gamersmafia.com/confluence/display/GM/Netiqueta+para+miembros+del+HQ. Por favor, échales un vistazo (por supuesto no hay prisa, cuando puedas) y si tienes alguna duda puedes preguntar tanto en la lista interna como por privado.\n\nUn saludete :D")
-    else
-      Jira.deactivate_user(valid_username)
+                     :message => MESSAGE_WELCOME_TO_HQ)
     end
   end
 
@@ -649,7 +663,7 @@ class User < ActiveRecord::Base
   end
 
   def update_competition_name
-    if self.slnc_changed?(:login)
+    if self.login_changed?
       for cp in CompetitionsParticipant.find(:all, :conditions => ['competition_id IN (select id from competitions WHERE state < 4 and competitions_participants_type_id = 1) and participant_id = ?', self.id])
         cp.name = self.login
         cp.save
@@ -658,7 +672,7 @@ class User < ActiveRecord::Base
   end
 
   def update_rosters
-    if self.slnc_changed?(:competition_roster)
+    if self.competition_roster_changed?
       for cp in CompetitionsParticipant.find(:all, :conditions => ['competition_id IN (select id from competitions WHERE state < 4 and competitions_participants_type_id = 1) and participant_id = ?', self.id])
         cp.roster = nil
         cp.save
@@ -776,7 +790,7 @@ class User < ActiveRecord::Base
   end
 
   def can_change_faction_after
-    Time.at(self.faction_last_changed_on + 86400 * 30)
+    self.faction_last_changed_on.advance(:days => 30)
   end
 
   def tracker_empty?
@@ -853,7 +867,7 @@ class User < ActiveRecord::Base
 
 
   def upload_file(tmpfile)
-    d = "#{RAILS_ROOT}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/"
+    d = "#{Rails.root}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/"
     FileUtils.mkdir_p(d) unless File.exists?(d)
 
     preppend = ''
@@ -885,14 +899,14 @@ class User < ActiveRecord::Base
     # TODO revisar esto
     for f in self.get_my_files
       if f == filename then
-        File.unlink("#{RAILS_ROOT}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/#{f}")
+        File.unlink("#{Rails.root}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/#{f}")
         break
       end
     end
   end
 
   def get_my_files
-    d = "#{RAILS_ROOT}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/"
+    d = "#{Rails.root}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/"
 
     if not File.exists?(d) then
       FileUtils.mkdir_p d
@@ -904,7 +918,7 @@ class User < ActiveRecord::Base
   def resurrect
     # método llamado cuando un usuario en modo resurreción incompleta inicia sesión
     Faith.reset(self.resurrector)
-    Notification.deliver_resurrection(resurrector, {:resurrected => self})
+    Notification.resurrection(resurrector, {:resurrected => self}).deliver
   end
 
   def contents_stats
@@ -949,7 +963,7 @@ class User < ActiveRecord::Base
   # Before creating, we generate a validkey.
   # This is used for confirmation
   def generate_validkey
-    self.validkey = Digest::MD5.hexdigest("#{self.login}#{ActiveSupport::SecureRandom.hex(16)}")
+    self.validkey = Digest::MD5.hexdigest("#{self.login}#{SecureRandom.hex(16)}")
   end
 
   def hstate
@@ -1032,7 +1046,10 @@ class User < ActiveRecord::Base
   eos
 
   def check_lastcommented_on
-    if [ST_SHADOW, ST_ZOMBIE].include?(state) && slnc_changed?(:lastcommented_on) && self.lastcommented_on && self.lastcommented_on > 3.months.ago
+    if ([ST_SHADOW, ST_ZOMBIE].include?(state) &&
+        self.lastcommented_on_changed? &&
+        self.lastcommented_on &&
+        self.lastcommented_on > 3.months.ago)
       self.state = ST_ACTIVE
     end
   end
@@ -1070,7 +1087,10 @@ class User < ActiveRecord::Base
     # Tasks to execute when a user account has been confirmed.
     self.state = User::ST_SHADOW
     self.save
-    Notification.deliver_newregistration(User.find(self.referer_user_id), { :refered => self }) if self.referer_user_id
-    Notification.deliver_welcome(self)
+    if self.referer_user_id
+      Notification.newregistration(
+          User.find(self.referer_user_id), {:refered => self}).deliver
+    end
+    Notification.welcome(self).deliver
   end
 end

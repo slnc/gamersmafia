@@ -1,9 +1,15 @@
 <table>
-<% Competition.find(:all, :conditions => ['type = \'Ladder\' state > 1 and state < 4'], :order => 'game_id ASC, lower(name) ASC').each do |competition| %>
+<% Competition.find(
+  :all,
+  :conditions => ["type = 'Ladder' AND state > 1 AND state < 4"],
+  :order => 'game_id ASC, lower(name) ASC').each do |competition| %>
     <tr class="<%=oddclass%>">
       <td style="line-height: 20px;">
-         <%=faction_favicon(competition.game)%> <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a><br />
-            <td style="width: 35px;" class="infoinline"><div class="<%=competition.competitions_participants_type_id == 1 ? 'members' : 'clans'%>-count"><%=competition.competitions_participants.count%></div></td>
+         <%=faction_favicon(competition.game)%>
+         <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a>
+      </td>
+      <td style="width: 35px;" class="infoinline">
+        <div class="<%=competition.competitions_participants_type_id == 1 ? 'members' : 'clans'%>-count"><%=competition.competitions_participants.count%></div></td>
       </td>
     </tr>
   <% end %>

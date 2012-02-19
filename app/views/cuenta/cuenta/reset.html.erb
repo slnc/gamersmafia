@@ -3,8 +3,8 @@
 <form method="post" action="/cuenta/do_reset">
   <input type="hidden" name="k" value="<%=params[:k]%>" />
   <input type="hidden" name="login" value="<%=params[:login]%>" />
-    <% if @newuser and error_messages_for 'newuser' %>
-    <div class="Message"><%= error_messages_for 'newuser' %></div>
+    <% if @newuser and error_messages_for @newuser %>
+    <div class="Message"><%= error_messages_for @newuser %></div>
     <% end %>
 		<table class="signup">
 

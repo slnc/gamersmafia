@@ -59,11 +59,15 @@ class UserTest < ActiveSupport::TestCase
   end
 
 
-  test "should_send_email_to_add_user_to_hq" do
-    prev = ActionMailer::Base.deliveries.size
-    @p = User.find_by_login(:panzer)
-    assert @p.update_attributes(:is_hq => true)
-    assert_equal prev + 2, ActionMailer::Base.deliveries.size
+  test "check_is_hq should create message" do
+    panzer = User.find_by_login('panzer')
+    assert_difference('panzer.messages_received.count') do
+      add_user_to_hq(panzer)
+    end
+  end
+
+  def add_user_to_hq(user)
+    assert user.update_attributes(:is_hq => true)
   end
 
   test "find_with_permissions" do
@@ -79,9 +83,9 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "del_user_from_hq_should_work" do
-    test_should_send_email_to_add_user_to_hq
-    @p.is_hq = false
-    assert @p.save
+    panzer = User.find_by_login('panzer')
+    add_user_to_hq(panzer)
+    assert panzer.update_attributes(:is_hq => false)
   end
 
   test "create" do
@@ -153,12 +157,13 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "changing_last_commented_on_should_change_state_from_shadow" do
-    [User::ST_SHADOW, User::ST_ZOMBIE].each do |st|
+    [User::ST_SHADOW, User::ST_ZOMBIE].each do |state|
       u1 = User.find(1)
-      u1.state = st
+      u1.lastseen_on = 1.year.ago
+      u1.state = state
       u1.lastcommented_on = nil
-      assert_equal true, u1.save
-      assert_equal st, u1.state
+      assert u1.save
+      assert_equal(state, u1.state)
       u1.lastcommented_on = Time.now
       u1.save
       assert_equal User::ST_ACTIVE, u1.state

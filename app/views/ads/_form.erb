@@ -1,4 +1,4 @@
-<%= error_messages_for 'ad' %>
+<%= error_messages_for @ad %>
 
 <!--[form:ad]-->
 <p><label for="ad_question">Nombre</label><br/>
@@ -6,7 +6,7 @@
 
 <p><label for="image_file">Imagen</label><br/>
 <% if @ad.file then %>
-<%=fc_thumbnail(@ad.file, 'k', '153x115')%> <%=@ads_slot.image_dimensions if @ads_slot%> 
+<%=fc_thumbnail(@ad.file, 'k', '153x115')%> <%=@ads_slot.image_dimensions if @ads_slot%>
 <% end -%>
 <%= file_field 'ad', 'file' %>
 <% if !@ad.new_record? then %>

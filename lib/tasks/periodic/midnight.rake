@@ -22,7 +22,7 @@ namespace :gm do
     days = 23
     Faction.find(:all).each do |f|
       dbi = User.db_query("select karma from stats.portals where portal_id = (select id from portals where code = '#{f.code}') order by created_on desc limit #{days}")
-      dst_file = "#{RAILS_ROOT}/public/storage/minicolumns/factions_activity/#{f.id}.png"
+      dst_file = "#{Rails.root}/public/storage/minicolumns/factions_activity/#{f.id}.png"
       
       FileUtils.mkdir_p(File.dirname(dst_file)) unless File.exists?(File.dirname(dst_file))
       `/usr/bin/python script/spark.py faction_activity #{dbi.collect {|dbr| dbr['karma'] }.concat([0] * (days - dbi.size)).reverse.join(',')} "#{dst_file}"`
@@ -39,7 +39,7 @@ namespace :gm do
       k = "#{i}_#{dbt[0].id}" # usamos i para que al cargar luego el dict se cargue luego en el orden correcto
       data[k] = {:sum => dbt[1].to_i}
       u = dbt[0]
-      dst_file = "#{RAILS_ROOT}/public/storage/minicolumns/bets_top_last30/#{u.id}.png"
+      dst_file = "#{Rails.root}/public/storage/minicolumns/bets_top_last30/#{u.id}.png"
       FileUtils.mkdir_p(File.dirname(dst_file)) unless File.exists?(File.dirname(dst_file))
       netw = Bet.earnings(u, bets, "#{days} days")
       data[k][:individual] = netw
@@ -65,7 +65,7 @@ namespace :gm do
     end
     min_time = min_time.yesterday.beginning_of_day
     
-    min_time = 1.day.ago.beginning_of_day if RAILS_ENV == 'test'
+    min_time = 1.day.ago.beginning_of_day if Rails.env == 'test'
     
     today = Time.now.beginning_of_day
     
@@ -205,7 +205,7 @@ namespace :gm do
     first_stat = User.db_query("SELECT max(created_on) FROM stats.general WHERE new_comments is not null")[0]['max']
     first_stat = (first_stat and first_stat != '') ? first_stat.to_time : first_comment
     first_stat.advance(:days => 1).beginning_of_day # nos ponemos en el primer día que tenemos que calcular
-    first_stat = 1.day.ago.beginning_of_day if RAILS_ENV == 'test'
+    first_stat = 1.day.ago.beginning_of_day if Rails.env == 'test'
     
     while first_stat < tonight
       cur_str = first_stat.strftime('%Y-%m-%d')
@@ -228,9 +228,9 @@ namespace :gm do
       active_factions_portals = User.db_query("SELECT count(*) FROM stats.portals WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND karma > 0 AND portal_id IN (SELECT id FROM portals WHERE type='FactionsPortal')")[0]['count']
       active_clans_portals = User.db_query("SELECT count(*) FROM stats.portals WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND karma > 0 AND portal_id IN (SELECT id FROM portals WHERE type='ClansPortal')")[0]['count']
       completed_competitions_matches = CompetitionsMatch.count(:conditions => ["date_trunc('day', completed_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'"])
-      #proxy_errors = `grep -c "All workers are in error state" #{RAILS_ROOT}/log/error-#{first_stat.strftime('%Y%m%d')}.log`.strip
+      #proxy_errors = `grep -c "All workers are in error state" #{Rails.root}/log/error-#{first_stat.strftime('%Y%m%d')}.log`.strip
       proxy_errors = 0 #if proxy_errors.strip == ''
-      dbsize = User.db_query("SELECT pg_database_size('#{ActiveRecord::Base.configurations[RAILS_ENV]['database']}');")[0]['pg_database_size']
+      dbsize = User.db_query("SELECT pg_database_size('#{ActiveRecord::Base.configurations[Rails.env]['database']}');")[0]['pg_database_size']
       requests = User.db_query("SELECT count(*) FROM stats.pageloadtime WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'")[0]['count']
       http_500 = User.db_query("SELECT count(*) FROM stats.pageloadtime WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND http_status = 500")[0]['count']
       http_401 = User.db_query("SELECT count(*) FROM stats.pageloadtime WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND http_status = 401")[0]['count']

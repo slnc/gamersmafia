@@ -18,7 +18,7 @@ function create_member_link(tag_id, login) {
 <% if @event.respond_to?(:coverages) then %>
 <% mftext('Noticias relacionadas') do %>
 <%# TODO cache this %>
-<%=generic_contents_list(@event.coverages.find(:published, :order => 'created_on DESC'))%>
+<%=generic_contents_list(@event.coverages.published.find(:all, :order => 'created_on DESC'))%>
 <% end -%>
 <% end -%>
 <br />
@@ -30,8 +30,19 @@ function create_member_link(tag_id, login) {
   <% if user_is_authed then %>
   <% mftext('¿Estarás en este evento?') do %>
   <div class="centered-link">
-    <div id="leave-link"><%=link_to_remote 'No', :complete => "$j('#user#{@user.id}').fadeOut('normal'); $j('#leave-link').hide(); $j('#join-link').show();", :url => "/eventos/member_leave/#{@event.id}" %></div>
-    <div id="join-link"><%=link_to_remote 'Sí', :complete => "create_member_link('user#{@user.id}', '#{@user.login}'); $j('#join-link').hide(); $j('#leave-link').show();", :url => "/eventos/member_join/#{@event.id}" %></div>
+    <div id="leave-link">
+      <%=link_to(
+          'No',
+          :complete => "$j('#user#{@user.id}').fadeOut('normal'); $j('#leave-link').hide(); $j('#join-link').show();",
+          :url => "/eventos/member_leave/#{@event.id}",
+          :remote => true)%>
+    </div>
+    <div id="join-link">
+      <%=link_to(
+          'Sí',
+          :complete => "create_member_link('user#{@user.id}', '#{@user.login}'); $j('#join-link').hide(); $j('#leave-link').show();",
+          :url => "/eventos/member_join/#{@event.id}",
+          :remote => true)%></div>
   </div>
   <% end -%>
     <script type="text/javascript">

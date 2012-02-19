@@ -12,7 +12,7 @@ class Content < ActiveRecord::Base
   has_many :contents_terms, :dependent => :destroy
   has_many :users_contents_tags, :dependent => :destroy
 
-  named_scope :with_tags_from_user, lambda { |tags,user| { :conditions => ['contents.id IN (SELECT content_id FROM users_contents_tags WHERE user_id = ? AND original_name IN (?))', user, tags] } }
+  scope :with_tags_from_user, lambda { |tags,user| { :conditions => ['contents.id IN (SELECT content_id FROM users_contents_tags WHERE user_id = ? AND original_name IN (?))', user, tags] } }
 
   after_save do |m|
     m.contents_locks.clear if m.contents_locks
@@ -23,8 +23,6 @@ class Content < ActiveRecord::Base
     end
   end
   before_save :check_changed_attributes
-  observe_attr :state
-  observe_attr :comments_count
   belongs_to :clan
   belongs_to :game
   belongs_to :platform
@@ -44,6 +42,10 @@ class Content < ActiveRecord::Base
     end
   end
 
+  def to_s
+    ("Content: id: #{self.id}, content_type_id: #{self.content_type_id}," +
+     " name: #{self.name}")
+  end
 
   def resolve_portal_id
     # primero los fáciles
@@ -64,7 +66,8 @@ class Content < ActiveRecord::Base
   end
 
   def ne_references
-    NeReference.find(:all, :conditions => ['(referencer_class = \'Content\' AND referencer_id = ?) OR (referencer_class = \'Comment\' AND referencer_id IN (?))', self.id, comment_ids])
+    NeReference.find(:all,
+                     :conditions => ['(referencer_class = \'Content\' AND referencer_id = ?) OR (referencer_class = \'Comment\' AND referencer_id IN (?))', self.id, comment_ids])
   end
 
   def comments_ids
@@ -86,7 +89,7 @@ class Content < ActiveRecord::Base
       end
     end
 
-    if self.slnc_changed?(:state) && self.state != Cms::PUBLISHED
+    if self.state_changed? && self.state != Cms::PUBLISHED
       self.contents_recommendations.each { |cr| cr.destroy }
     end
     self.name = rc.resolve_hid if self.name != rc.resolve_hid
@@ -103,7 +106,12 @@ class Content < ActiveRecord::Base
     # devuelve el objeto real al que referencia
     @_cache_real_content ||= begin
       ctype = Object.const_get(self.content_type.name)
-      ctype.send(:with_exclusive_scope) { ctype.find(self.external_id) } # NECESSARY because we use find_each in weekly.rb and there is a rails bug ( https://rails.lighthouseapp.com/projects/8994/tickets/1267-methods-invoked-within-named_scope-procs-should-respect-the-scope-stack )
+      ctype.send(:with_exclusive_scope) { ctype.find(self.external_id) }
+      # NECESSARY because we use find_each in weekly.rb and there is a rails bug
+      # (
+      # https://rails.lighthouseapp.com/projects/8994/tickets/
+      #   1267-methods-invoked-within-scope-procs-should-respect-the-scope-stack
+      # )
     end
   end
 
@@ -213,6 +221,17 @@ class Content < ActiveRecord::Base
 
   def self.orphaned
     q_cts = Cms::CONTENTS_WITH_CATEGORIES.collect { |ctn| "'#{ctn}'"}
+    #Content.find_by_sql("SELECT *
+    #                      FROM contents
+    #                     WHERE id IN (select a.id
+    #                                    from contents a
+    #                               left join contents_terms b on a.id = b.content_id
+    #                                   where a.clan_id IS NULL
+    #                                     and b.content_id is null
+    #                                     and content_type_id in (select id
+    #                                                               from content_types
+    #                                                              where name in (#{q_cts.join(',')})))
+    #                  ORDER BY created_on")
     Content.find_by_sql("SELECT *
                            FROM contents
                           WHERE content_type_id in (select id from content_types where name in (#{q_cts.join(',')}))

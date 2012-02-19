@@ -1,9 +1,0 @@
-COMMENTS
-Write comments to explain "why", not "what" unless it's something that an
-average Ruby/Rails programmer wouldn't easily understand.
-
-LINE LENGTH
-Max line length: 80 chars.
-
-RUBY SPECIFICS
-"return if" preferred to "return unless"

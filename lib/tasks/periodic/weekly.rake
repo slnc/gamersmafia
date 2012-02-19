@@ -14,7 +14,7 @@ namespace :gm do
     update_default_comments_valorations_weight
     update_content_ranks
   end
-  
+
   def update_default_comments_valorations_weight
     User.find(:all, :conditions => 'lastseen_on >= now() - \'1 week\'::interval and cache_karma_points > 0').each do |u|
       prev = u.default_comments_valorations_weight
@@ -26,19 +26,19 @@ namespace :gm do
       end
     end
   end
-  
+
   def recalculate_terms_count
     # TODO hack
     Term.find_each do |t| t.recalculate_contents_count end
   end
-  
+
   def pay_organizations_wages
-    User.db_query("select (select code from portals where id = stats.portals.portal_id) as code, 
+    User.db_query("select (select code from portals where id = stats.portals.portal_id) as code,
                           sum(karma)
   from stats.portals
  where portal_id in (select id
                        from portals
-                      where code in (select code from games 
+                      where code in (select code from games
                                      UNION
                                      select code from platforms
                                      UNION
@@ -50,11 +50,11 @@ having portal_id in (select id
                       where code in (select code
                                        from factions
                                       where created_on < now() - '7 days'::interval
-                                        and id IN #{Faction.factions_ids_with_bigbosses} 
+                                        and id IN #{Faction.factions_ids_with_bigbosses}
                                 UNION
                                      select code
                                        from bazar_districts)
-                                     
+
                                      )
              AND sum(karma) > 0").each do |dbr|
       t = Term.single_toplevel(:slug => dbr['code'])
@@ -65,17 +65,17 @@ having portal_id in (select id
       elsif t.game_id || t.platform_id
         master = :boss
         undermaster = :underboss
-        organization = Faction.find_by_code(t.game_id ? t.game.code : t.platform.code) 
+        organization = Faction.find_by_code(t.game_id ? t.game.code : t.platform.code)
       end
       if organization.nil?
         puts "ERROR: cannot find associated organization for portal_code #{dbr['code']}"
         next
       end
-      
+
       master_o = organization.send(master)
       undermaster_o = organization.send(undermaster)
       next if master_o.nil? && undermaster_o.nil?
-      
+
       if master_o && undermaster_o
         ammount_boss = 0.05 * 0.6 * dbr['sum'].to_i
         ammount_underboss = 0.05 * 0.4 * dbr['sum'].to_i
@@ -86,12 +86,12 @@ having portal_id in (select id
         ammount_boss = 0.05 * 1.0 * dbr['sum'].to_i
         ammount_underboss = nil
       end
-      
+
       Bank.transfer(:bank, master_o, ammount_boss, "Sueldo de #{master} de #{organization.name}") if ammount_boss
       Bank.transfer(:bank, undermaster_o, ammount_underboss, "Sueldo de #{undermaster} de #{organization.name}") if ammount_underboss
     end
   end
-  
+
   def update_content_ranks
     processed_root_cats = []
     processed_ctypes = []
@@ -103,7 +103,7 @@ having portal_id in (select id
         next if processed_root_cats.include?(proc_root_cat_id)
         cat_ids = root_cat.all_children_ids
         #q = "WHERE #{ActiveSupport::Inflector::tableize(rc.class.name)}_category_id IN (#{cat_ids.join(',')})"
-        q = '' # TODO BROKEN!!! 
+        q = '' # TODO BROKEN!!!
         processed_root_cats<< proc_root_cat_id
       else
         next if processed_ctypes.include?(rc.class.name)
@@ -111,7 +111,7 @@ having portal_id in (select id
       end
       User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(rc.class.name)} SET cache_weighted_rank = null #{q}")
     end
-    
+
     return # TODO deshabilitado recálculo de contenidos más votados porque este algoritmo no es escalable.
     ContentType.find(:all).each do |ctype|
       Object.const_get(ctype.name).find_each(:conditions => "cache_weighted_rank is null and state = #{Cms::PUBLISHED}") do |content|
@@ -125,33 +125,34 @@ having portal_id in (select id
       end
     end
   end
-  
+
   def send_weekly_page_render_report_and_truncate
     # TODO
     # TODO User.db_query("DELETE FROM stats.pageloadtime WHERE created_on <= now() - '1 week'::interval")
-    @top_avg_time = User.db_query("SELECT avg(time), 
-                          stddev(time), 
-                          count(*), 
-                          controller, 
-                          action 
-                     FROM stats.pageloadtime 
-                    WHERE created_on >= now() - '1 week'::interval 
+    @top_avg_time = User.db_query("SELECT avg(time),
+                          stddev(time),
+                          count(*),
+                          controller,
+                          action
+                     FROM stats.pageloadtime
+                    WHERE created_on >= now() - '1 week'::interval
                  GROUP BY controller, action
                  HAVING count(*) > 10
                  ORDER BY avg(time) DESC")
-    
-    @top_count = User.db_query("SELECT avg(time), 
-                          stddev(time), 
-                          count(*), 
-                          controller, 
-                          action 
-                     FROM stats.pageloadtime 
-                    WHERE created_on >= now() - '1 week'::interval 
+
+    @top_count = User.db_query("SELECT avg(time),
+                          stddev(time),
+                          count(*),
+                          controller,
+                          action
+                     FROM stats.pageloadtime
+                    WHERE created_on >= now() - '1 week'::interval
                  GROUP BY controller, action
                  HAVING count(*) > 10
                  ORDER BY count(*) DESC")
-    Notification.deliver_weekly_avg_page_render_time(:top_avg_time => @top_avg_time, :top_count => @top_count)
-    
+    Notification.weekly_avg_page_render_time(
+        :top_avg_time => @top_avg_time, :top_count => @top_count).deliver
+
     User.db_query("DELETE FROM stats.pageloadtime WHERE created_on <= now() - '1 week'::interval")
   end
 end

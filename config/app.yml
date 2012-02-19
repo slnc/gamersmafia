@@ -28,8 +28,7 @@ common: &common
   enable_dbstats?: false
   enable_google_analytics?: false
   ia_auto_abtests: MrAchmed
-  jira_username: jira_username
-  jira_password:  secret
+  log_env: development
   mirror_auth_key: secret
   port: 80
   python: /usr/local/hosting/bin/python2.4
@@ -41,6 +40,7 @@ common: &common
   system_mail_password: megustanlasgalletas
   tidy_path: /usr/lib/libtidy.so
   webmaster_user_id: 1
+  webmaster_email: unnamed@gamersmafia.dev
 
 # Basic roles.
 development: &development

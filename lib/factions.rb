@@ -8,7 +8,7 @@ module Factions
       CacheObserver.expire_fragment("/common/facciones/#{user.faction_id}/last_joined") # TODO UGLY!
       CacheObserver.expire_fragment("/common/facciones/miembros/#{user.faction_id}/page_*") # TODO UGLY
       CacheObserver.expire_fragment "/common/facciones/#{Time.now.strftime('%Y%m%d')}/stats/#{user.faction_id}"
-      graph_prev = "#{RAILS_ROOT}/public/cache/graphs/faction_users_ratios/#{Time.now.strftime('%Y%m%d')}/#{user.faction_id}.png"
+      graph_prev = "#{Rails.root}/public/cache/graphs/faction_users_ratios/#{Time.now.strftime('%Y%m%d')}/#{user.faction_id}.png"
       File.unlink(graph_prev) if File.exists?(graph_prev)
     end
     
@@ -25,7 +25,7 @@ module Factions
       CacheObserver.expire_fragment("/common/facciones/#{user.faction_id}/last_joined") # TODO UGLY!
       CacheObserver.expire_fragment("/common/facciones/miembros/#{user.faction_id}/page_*") # TODO UGLY
       CacheObserver.expire_fragment "/common/facciones/#{Time.now.strftime('%Y%m%d')}/stats/#{user.faction_id}"
-      graph_next = "#{RAILS_ROOT}/public/cache/graphs/faction_users_ratios/#{Time.now.strftime('%Y%m%d')}/#{user.faction_id}.png"
+      graph_next = "#{Rails.root}/public/cache/graphs/faction_users_ratios/#{Time.now.strftime('%Y%m%d')}/#{user.faction_id}.png"
       File.unlink(graph_next) if File.exists?(graph_next)
     end
   end

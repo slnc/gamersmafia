@@ -3,7 +3,7 @@ class Bet < ActiveRecord::Base
   acts_as_categorizable
 
   TIE = 0
-  TOP_BET_WINNERS = "#{RAILS_ROOT}/public/storage/apuestas/top_bets_winners_minicolumns_data"
+  TOP_BET_WINNERS = "#{Rails.root}/public/storage/apuestas/top_bets_winners_minicolumns_data"
 
   INCOMPLETE_BET_SQL = "winning_bets_option_id IS NULL
                         AND tie is false
@@ -22,17 +22,14 @@ class Bet < ActiveRecord::Base
   after_save :process_bets_options
   has_many :bets_options, :dependent => :destroy
 
-  named_scope :awaiting_result, :conditions => Bet::AWAITING_RESULT_SQL,
+  scope :awaiting_result, :conditions => Bet::AWAITING_RESULT_SQL,
                                 :order => 'closes_on DESC, id DESC'
 
-  named_scope :closed_bets, :conditions => Bet::CLOSED_BETS_SQL,
+  scope :closed_bets, :conditions => Bet::CLOSED_BETS_SQL,
                             :order => 'closes_on DESC, id DESC'
 
-  named_scope :open_bets, :conditions => Bet::OPEN_BETS_SQL,
+  scope :open_bets, :conditions => Bet::OPEN_BETS_SQL,
                           :order => 'closes_on ASC, id ASC'
-
-  observe_attr :cancelled, :forfeit, :tie, :winning_bets_option_id
-
 
   def self.earnings(user, limit=30, time_window=nil)
     # Returns a user earnings during a time window.
@@ -255,8 +252,9 @@ class Bet < ActiveRecord::Base
       Bank.transfer(:bank, _users[0], user_earnings,
           "Solo tú participaste en la apuesta \"#{self.resolve_hid}\"")
     elsif _users.size > 1
-      conditions = "bet_id = #{self.id} AND id <> #{winning_bets_option_id}"
-      amount_on_loser = BetsOption.sum(:ammount, :conditions => conditions)
+      amount_on_loser = BetsOption.sum(
+          :ammount, :conditions => ["bet_id = ? AND id <> ?", self.id,
+                                    winning_bets_option_id])
       return if amount_on_loser == 0
 
       winning_option = BetsOption.find(winning_bets_option_id)

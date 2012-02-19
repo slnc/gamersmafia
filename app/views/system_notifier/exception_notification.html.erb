@@ -5,7 +5,7 @@ A <%= @exception.class %> occurred in
 -------------------------------
 Request information:
 -------------------------------
-* URL: <%= @request.protocol %><%= @host %><%= @request.request_uri %>
+* URL: <%= @request.protocol %><%= @host %><%= @request.fullpath %>
 * Parameters: <%= @request.parameters.inspect %>
 * Rails root: <%= @rails_root %>
 -------------------------------

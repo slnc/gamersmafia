@@ -1,19 +1,20 @@
 <% content_support(:content => @blogentry.unique_content) do %>
 	<% if @blogentry.is_public? then %>
-<%=mfcontents_basic("Archivo", 
-	Proc.new { @curuser.blogentries.find(:published, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC') },
+<%=mfcontents_basic("Archivo",
+	Proc.new { @curuser.blogentries.published.find(
+    :all, :order => 'created_on DESC') },
 	[],
  	:rating => true,
 	:cache => "/common/blogs/#{@curuser.id % 1000}/#{@curuser.id}",
 	:highlight_id => @blogentry.id,
 	:faction_favicon => true,
-	:comments_count => true)%>	
+	:comments_count => true)%>
 		<%= render :partial => 'top_bloggers' %>
 	<% else %>
 		<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @blogentry } %>
 	<% end -%>
 <% end -%>
 
-<% content_main do %> 
+<% content_main do %>
   <%=mfcontent(@blogentry)%>
 <%end -%>

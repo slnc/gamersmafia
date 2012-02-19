@@ -5,7 +5,7 @@
 	<% mftext('Editar canal') do %>
 	<form method="post" action="/cuenta/mis_canales/update/<%=@gmtv_channel.id%>" enctype="multipart/form-data">
 		<% if @gmtv_channel.file then 
-real_path = "#{RAILS_ROOT}/public/" + @gmtv_channel.file
+real_path = "#{Rails.root}/public/" + @gmtv_channel.file
 %>
 <% end -%>
 <table>

@@ -1,22 +1,24 @@
-  <% @matches_pages = ActionController::Pagination::Paginator.new self, @competition.competitions_matches.count, 25, params['page'] 
-  @matches_pages.current_page = @matches_pages.last if params['page'].nil? 
-  %>
-  <%=render :partial => 'shared/pager', :object => @matches_pages, :locals => {:pos => 'top'} %>
+<% matches = @competition.competitions_matches.paginate(
+     :page => params[:page], :per_page => 25, :order => 'play_on DESC')
+%>
+  <%=render :partial => 'shared/pager2',
+            :locals => {:collection => matches, :pos => 'top'} %>
   <table>
 <%# TODO refactor %>
 <%# TODO paginar %>
-  <% for cm in @competition.matches(:completed, :order => 'play_on DESC, completed_on DESC') %>
+  <% matches.completed.find(
+      :all, :order => 'play_on DESC, completed_on DESC').each do |cm| %>
   <tr class="<%=oddclass%>">
     <td class="infoinline w100"><% if cm.completed? then %><%=print_tstamp(cm.completed_on, 'date')%><% end %></td>
     <td><a href="/competiciones/partida/<%=cm.id%>"><%=cm.participant1.name%> <span class="infoinline">vs</span> <%=cm.participant2.name%></a></td>
-    <td class="centered"><% 
+    <td class="centered"><%
         if cm.completed? then
           case cm.result
             when 0: %><span class="infoinline">Gana</span> <%=cm.participant1.name%><%
             when 1: %>Empate<%
             when 2: %><span class="infoinline">Gana</span> <%=cm.participant2.name%><%
-            else 
-          end 
+            else
+          end
          end-%>
              </td>
 <% if @competition.default_maps_per_match then %><td class="infoinline w150"><%cm.competitions_matches_games_maps.each do |map| %><%=map.games_map.name%>, <% end %></td>
@@ -28,5 +30,6 @@
   </tr>
 <% end -%>
 </table>
-  <%=render :partial => 'shared/pager', :object => @matches_pages, :locals => {:pos => 'bottom'} %>
+  <%=render :partial => 'shared/pager2',
+            :locals => {:collection => matches, :pos => 'bottom'} %>
 </form>

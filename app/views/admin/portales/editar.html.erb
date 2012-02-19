@@ -15,18 +15,18 @@
 <%= file_field 'portal', 'small_header' %></p>
 			</td>
 		</tr>
-				
+
 		<tr class="<%=oddclass%>">
 			<td>Skin</td>
-			<td><%= select("portal", "skin_id", FactionsSkin.public.collect {|p| [ p.name, p.id ] }, {:include_blank => 'Ninguna'}) %>
+			<td><%= select("portal", "skin_id", FactionsSkin.only_public.collect {|p| [ p.name, p.id ] }, {:include_blank => 'Ninguna'}) %>
 </td>
 		</tr>
-		
+
 		<tr class="<%=oddclass%>">
 			<td>Code</td>
 			<td><%=@theportal.code%></td>
 		</tr>
-		
+
 		<tr class="<%=oddclass%>">
 			<td>Tipo</td>
 			<td><%=@theportal.type%></td>

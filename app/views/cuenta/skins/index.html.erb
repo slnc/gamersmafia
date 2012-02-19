@@ -25,7 +25,7 @@ Tipo: <select name="skin[type]">
 <%@user.skins.find(:all, :order => 'lower(name)').each do |skin| %>
 <tr class="<%=oddclass%>">
     <td><a href="/cuenta/skins/edit/<%=skin.id%>"><%=skin.name%></a></td>
-    <td><% if skin.is_public? then %><strong>Pública</strong> (<a href="/cuenta/skins/make_private?id=<%=skin.id%>">Hacer privada</a>) 
+    <td><% if skin.is_public? then %><strong>Pública</strong> (<a href="/cuenta/skins/make_private?id=<%=skin.id%>">Hacer privada</a>)
 	<% else %><strong>Privada</strong> (<a href="/cuenta/skins/make_public?id=<%=skin.id%>">Hacer pública</a>)<% end -%></td>
     <td><strong><a href="/cuenta/skins/activate?skin=<%=skin.id%>">Ponérmela</a></strong></td>
     <td class="infoinline f_sm"><a href="/<%=skin.file%>">Descargar</a></td>
@@ -50,7 +50,7 @@ Tipo: <select name="skin[type]">
     <td class="infoinline"><%=user_link(User.find(1))%></td>
     <td class="infoinline"><a href="/skins/default.zip">Descargar</a></td>
 </tr>
-	<%Skin.public.each do |skin| %>
+	<%Skin.only_public.each do |skin| %>
 <tr class="<%=oddclass%>">
     <td><%=skin.name%></td>
     <td><strong><a href="/cuenta/skins/activate?skin=<%=skin.id%>">Ponérmela</a></strong></td>

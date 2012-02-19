@@ -19,84 +19,84 @@
       slug: th
       root_id: 3
       game_id: 3
-      
+
 - wii:
       id: 4
       name: Wii
       slug: wii
       root_id: 4
       platform_id: 1
-      
+
 - bd1:
       id: 5
       name: Anime
       slug: anime
       root_id: 5
       bazar_district_id: 1
-  
+
 - bd2:
       id: 6
       name: Cine
       slug: cine
       root_id: 6
       bazar_district_id: 2
-  
+
 - bd3:
       id: 7
       name: Deportes
       slug: deportes
       root_id: 7
       bazar_district_id: 3
-  
+
 - bd4:
       id: 8
       name: Desarrollo
       slug: desarrollo
       root_id: 8
       bazar_district_id: 4
-  
+
 - bd5:
       id: 9
       name: Estudiantes
       slug: estudiantes
       root_id: 9
       bazar_district_id: 5
-  
+
 - bd6:
       id: 10
       name: Hardware
       slug: hardware
       root_id: 10
       bazar_district_id: 6
-  
+
 - bd7:
       id: 11
       name: Software
       slug: software
       root_id: 11
       bazar_district_id: 7
-  
+
 - bd8:
       id: 12
       name: Internet
       slug: inet
       root_id: 12
       bazar_district_id: 8
-  
+
 - bd9:
       id: 13
       name: Musica
       slug: musica
       root_id: 13
       bazar_district_id: 9
-  
+
 - bd10:
       id: 14
       name: Literatura
       slug: literatura
       root_id: 14
-      bazar_district_id: 10 
-      
+      bazar_district_id: 10
+
 - gm:
       id: 15
       name: Gamersmafia
@@ -129,7 +129,7 @@
       parent_id: 1
       game_id: 1
       taxonomy: ImagesCategory
-      
+
 - uttutorialsgeneral:
       id: 19
       name: General
@@ -181,21 +181,21 @@
       name: Arena
       slug: arena
       root_id: 25
-      
+
 - indios:
       id: 26
       name: Indios Mataharis
       slug: indios
       root_id: 26
       clan_id: 1
-      
+
 - mapaches:
       id: 27
       name: Mapaches
       slug: mapaches
       root_id: 27
       clan_id: 2
-      
+
 - bd8_categories_root:
       id: 28
       name: General
@@ -204,7 +204,7 @@
       parent_id: 12
       bazar_district_id: 8
       taxonomy: TutorialsCategory
-      
+
 - utdemosgeneral:
       id: 29
       name: General

@@ -9,15 +9,25 @@ module ForosHelper
       icons<< '<img class="sprite1 topic-indicator topic-moved" src="/images/blank.gif" />'
     end
 
-    # if topic.hot? then
-    #   icons<<  '<img class="sprite1 topic-indicator topic-flame" src="/images/blank.gif" />'
-    # end
-    # TOO db intensive
-
     if topic.sticky? then
       icons<< '<img class="sprite1 topic-indicator topic-sticky" src="/images/blank.gif" />'
     end
 
     icons.join(' ')
+  end
+
+  def subforums(forum)
+    forum.children.paginate(
+      :conditions => ["taxonomy = ?", "TopicsCategory"],
+      :order => "LOWER(name)",
+      :page => params[:page],
+      :per_page => 100)
+  end
+
+  def get_topics(forum)
+    Topic.published.in_term(forum).paginate(
+      :order => "sticky, updated_on DESC",
+      :page => params[:page],
+      :per_page => 50)
   end
 end

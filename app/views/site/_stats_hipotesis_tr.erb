@@ -7,22 +7,22 @@ css_cls = oddclass
 <tr class="<%=css_cls%>">
 	<td>
 	<div id="abtinfo<%=t.id%>min">
-	
+
 	<table class="compact">
 		<tr style="vertical-align: top;">
     <td style="width: 250px; font-size: 11px;"><a style="font-weight: bold;" href="" onclick="return switch_block_visi('abtinfo<%=t.id%>');"><%=t.name%></a></td>
 	<td class="w35 centered infoinline"><% if t.info_url.to_s != '' then %><a title="Información sobre este experimento"  target="_blank" href="<%=t.info_url%>">info</a><% end -%></td>
         <td class="infoinline"><% if crates && !t.dirty? then %>
-		<% t.metrics.each do |metric| 
+		<% t.metrics.each do |metric|
 		best_info = t.best_treatment(metric) %>
-		<%=best_info[:abbrv]%> 
+		<%=best_info[:abbrv]%>
 		<% if best_info[:value].nil? then %>
 			-
 		<% else %>
 			<%=best_info[:type]%> <strong><%='%.2f' % best_info[:value]%></strong> <% if best_info[:type] != 'C' then %><% css_cls2 = best_info[:relative_improvement] >= (t.min_difference * 100) ? 'smgood' : ''%><%="<span class=\"#{css_cls2}\">(#{'%.2f' % (best_info[:relative_improvement])}%)</span>"%><% end -%>
 		<% end -%>
-		 
-		<%= '|' unless metric == t.metrics.last%>  
+
+		<%= '|' unless metric == t.metrics.last%>
 	<% end %><%# each metric -%>
 	<% end -%>
 	</td>
@@ -31,13 +31,24 @@ css_cls = oddclass
 	</tr>
 	</table>
 	</div>
-		
+
 	<div class="hidden" id="abtinfo<%=t.id%>max">
 		<table class="compact">
 			<tr style="vertical-align: top;">
 				<td style="width: 250px; font-size: 11px;"><a style="font-weight: bold;" href="" onclick="return switch_block_visi('abtinfo<%=t.id%>');"><%=t.name%></a><br />
         		<span class="f_sm">Completado: <strong><%= crates ? ('%.2f%%' % (experiment_completedness*100)) : '-'%></strong><br />
-				Finalización: <strong><% if t.completed_on then%><%=print_tstamp(t.completed_on)%><%else %><% if crates then %><%=cdate.kind_of?(String) ? cdate : print_tstamp(cdate)%><% else %>-<%end -%><% end -%></strong><br />
+				Finalización:
+        <strong>
+        <% if t.completed_on then%>
+          <%=print_tstamp(t.completed_on)%>
+        <%else %>
+          <% if crates then %>
+            <%=cdate.kind_of?(String) ? cdate : print_tstamp(cdate)%>
+          <% else %>-
+          <%end -%>
+        <% end -%>
+        </strong>
+        <br />
 				Diferencia mínima: <strong><%=(t.min_difference * 100).to_i%>%</strong><br />
 				Estadísticas recalculadas: <strong><%=print_tstamp(t.updated_on) if t.updated_on%></strong>
 				<% if t.info_url.to_s != '' then %><br /><a title="Información sobre este experimento" target="_blank" href="<%=t.info_url%>">info</a><% end -%>

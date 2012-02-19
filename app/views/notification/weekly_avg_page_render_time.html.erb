@@ -1,0 +1,44 @@
+<%= render :partial => '/notification/header' %>
+<%=notification_header('Top avg')%>
+<table>
+<tr>
+	<th style="font-size: 11px;">Controller</th>
+	<th style="font-size: 11px;">Acción</th>
+	<th style="font-size: 11px;">count</th>
+	<th style="font-size: 11px;">avg (s)</th>
+	<th style="font-size: 11px;">stddev(s)</th>
+	<th style="font-size: 11px;">Coste total (s)</th>
+</tr>
+<%@top_avg_time.each do |dbr| %>
+<tr>
+	<td><%=dbr['controller']%></td>
+	<td><%=dbr['action']%></td>
+	<td><%=dbr['count']%></td>
+	<td><%="%.2f" % dbr['avg'].to_f%></td>
+	<td><%="%.2f" % dbr['stddev'].to_f%></td>
+	<td><%=(dbr['count'].to_f * dbr['avg'].to_f).to_i%></td>
+</tr>
+<% end -%>
+</table>
+<br />
+<br />
+<%=notification_header('Top count')%>
+<table>
+<tr>
+	<th style="font-size: 11px;">Controller</th>
+	<th style="font-size: 11px;">Acción</th>
+	<th style="font-size: 11px;">count</th>
+	<th style="font-size: 11px;">avg (s)</th>
+	<th style="font-size: 11px;">stddev(s)</th>
+</tr>
+<%@top_count.each do |dbr| %>
+<tr>
+	<td><%=dbr['controller']%></td>
+	<td><%=dbr['action']%></td>
+	<td><%=dbr['count']%></td>
+	<td><%="%.2f" % dbr['avg'].to_f%></td>
+	<td><%="%.2f" % dbr['stddev'].to_f%></td>
+</tr>
+<% end -%>
+</table>
+<%= render :partial => '/notification/footer' %>

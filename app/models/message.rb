@@ -23,15 +23,13 @@ class Message < ActiveRecord::Base
 
   after_save :update_recipient_unread
   after_destroy :update_recipient_unread
-  observe_attr :is_read
-  observe_attr :receiver_deleted
 
   plain_text :title
   before_save :sanitize_message
 
-  named_scope :recipient_is,
+  scope :recipient_is,
               lambda { |user| { :conditions => ["user_id_to = ?", user.id]}}
-  named_scope :recipient_undeleted,
+  scope :recipient_undeleted,
               :conditions => "receiver_deleted is false"
 
 
@@ -81,14 +79,16 @@ class Message < ActiveRecord::Base
 
   private
   def update_recipient_unread
-    if self.frozen? || (!self.is_read?) || self.slnc_changed?(:is_read) || self.slnc_changed?(:receiver_deleted)
+    if (self.frozen? || !self.is_read? || self.is_read_changed? ||
+        self.receiver_deleted_changed?)
       Message.update_unread_count(self.recipient)
     end
   end
 
   def notify_recipient
     if self.recipient.notifications_newmessages then
-      Notification.deliver_newmessage(self.recipient, { :sender => self.sender, :message => self})
+      Notification.newmessage(
+          self.recipient, :sender => self.sender, :message => self).deliver
     end
   end
 

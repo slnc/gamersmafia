@@ -1,12 +1,12 @@
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 CREATE SCHEMA archive;
 CREATE SCHEMA stats;
-CREATE PROCEDURAL LANGUAGE plpgsql;
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 SET search_path = archive, pg_catalog;
 SET default_tablespace = '';
 SET default_with_oids = false;
@@ -50,8 +50,8 @@ SET search_path = public, pg_catalog;
 CREATE SEQUENCE ab_tests_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 CREATE TABLE ab_tests (
     id integer DEFAULT nextval('ab_tests_id_seq'::regclass) NOT NULL,
@@ -83,8 +83,8 @@ CREATE TABLE ads (
 CREATE SEQUENCE ads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ads_id_seq OWNED BY ads.id;
 CREATE TABLE ads_slots (
@@ -99,8 +99,8 @@ CREATE TABLE ads_slots (
 CREATE SEQUENCE ads_slots_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ads_slots_id_seq OWNED BY ads_slots.id;
 CREATE TABLE ads_slots_instances (
@@ -113,8 +113,8 @@ CREATE TABLE ads_slots_instances (
 CREATE SEQUENCE ads_slots_instances_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ads_slots_instances_id_seq OWNED BY ads_slots_instances.id;
 CREATE TABLE ads_slots_portals (
@@ -125,8 +125,8 @@ CREATE TABLE ads_slots_portals (
 CREATE SEQUENCE ads_slots_portals_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ads_slots_portals_id_seq OWNED BY ads_slots_portals.id;
 CREATE TABLE advertisers (
@@ -140,8 +140,8 @@ CREATE TABLE advertisers (
 CREATE SEQUENCE advertisers_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE advertisers_id_seq OWNED BY advertisers.id;
 CREATE TABLE allowed_competitions_participants (
@@ -152,8 +152,8 @@ CREATE TABLE allowed_competitions_participants (
 CREATE SEQUENCE allowed_competitions_participants_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE allowed_competitions_participants_id_seq OWNED BY allowed_competitions_participants.id;
 CREATE TABLE anonymous_users (
@@ -164,8 +164,8 @@ CREATE TABLE anonymous_users (
 CREATE SEQUENCE anonymous_users_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE anonymous_users_id_seq OWNED BY anonymous_users.id;
 CREATE TABLE autologin_keys (
@@ -178,8 +178,8 @@ CREATE TABLE autologin_keys (
 CREATE SEQUENCE autologin_keys_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE autologin_keys_id_seq OWNED BY autologin_keys.id;
 CREATE TABLE avatars (
@@ -196,8 +196,8 @@ CREATE TABLE avatars (
 CREATE SEQUENCE avatars_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE avatars_id_seq OWNED BY avatars.id;
 CREATE TABLE babes (
@@ -208,8 +208,8 @@ CREATE TABLE babes (
 CREATE SEQUENCE babes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE babes_id_seq OWNED BY babes.id;
 CREATE TABLE ban_requests (
@@ -229,8 +229,8 @@ CREATE TABLE ban_requests (
 CREATE SEQUENCE ban_requests_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ban_requests_id_seq OWNED BY ban_requests.id;
 CREATE TABLE bazar_districts (
@@ -240,13 +240,15 @@ CREATE TABLE bazar_districts (
     icon character varying,
     building_top character varying,
     building_middle character varying,
-    building_bottom character varying
+    building_bottom character varying,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL
 );
 CREATE SEQUENCE bazar_districts_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bazar_districts_id_seq OWNED BY bazar_districts.id;
 CREATE TABLE bets (
@@ -288,15 +290,15 @@ CREATE TABLE bets_categories (
 CREATE SEQUENCE bets_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bets_categories_id_seq OWNED BY bets_categories.id;
 CREATE SEQUENCE bets_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bets_id_seq OWNED BY bets.id;
 CREATE TABLE bets_options (
@@ -308,8 +310,8 @@ CREATE TABLE bets_options (
 CREATE SEQUENCE bets_options_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bets_options_id_seq OWNED BY bets_options.id;
 CREATE TABLE bets_tickets (
@@ -322,8 +324,8 @@ CREATE TABLE bets_tickets (
 CREATE SEQUENCE bets_tickets_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bets_tickets_id_seq OWNED BY bets_tickets.id;
 CREATE TABLE blogentries (
@@ -348,8 +350,8 @@ CREATE TABLE blogentries (
 CREATE SEQUENCE blogentries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE blogentries_id_seq OWNED BY blogentries.id;
 CREATE TABLE cash_movements (
@@ -365,8 +367,8 @@ CREATE TABLE cash_movements (
 CREATE SEQUENCE cash_movements_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE cash_movements_id_seq OWNED BY cash_movements.id;
 SET default_with_oids = true;
@@ -380,8 +382,8 @@ CREATE TABLE chatlines (
 CREATE SEQUENCE chatlines_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE chatlines_id_seq OWNED BY chatlines.id;
 CREATE TABLE clans (
@@ -415,8 +417,8 @@ CREATE TABLE clans_friends (
 CREATE SEQUENCE clans_friends_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_friends_id_seq OWNED BY clans_friends.id;
 CREATE TABLE clans_games (
@@ -432,8 +434,8 @@ CREATE TABLE clans_groups (
 CREATE SEQUENCE clans_groups_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_groups_id_seq OWNED BY clans_groups.id;
 CREATE TABLE clans_groups_types (
@@ -443,8 +445,8 @@ CREATE TABLE clans_groups_types (
 CREATE SEQUENCE clans_groups_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_groups_types_id_seq OWNED BY clans_groups_types.id;
 CREATE TABLE clans_groups_users (
@@ -454,8 +456,8 @@ CREATE TABLE clans_groups_users (
 CREATE SEQUENCE clans_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_id_seq OWNED BY clans.id;
 SET default_with_oids = false;
@@ -468,8 +470,8 @@ CREATE TABLE clans_logs_entries (
 CREATE SEQUENCE clans_logs_entries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_logs_entries_id_seq OWNED BY clans_logs_entries.id;
 CREATE TABLE clans_movements (
@@ -482,8 +484,8 @@ CREATE TABLE clans_movements (
 CREATE SEQUENCE clans_movements_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_movements_id_seq OWNED BY clans_movements.id;
 SET default_with_oids = true;
@@ -497,8 +499,8 @@ CREATE TABLE clans_sponsors (
 CREATE SEQUENCE clans_sponsors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_sponsors_id_seq OWNED BY clans_sponsors.id;
 SET default_with_oids = false;
@@ -538,15 +540,15 @@ CREATE TABLE columns_categories (
 CREATE SEQUENCE columns_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE columns_categories_id_seq OWNED BY columns_categories.id;
 CREATE SEQUENCE columns_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE columns_id_seq OWNED BY columns.id;
 CREATE TABLE comment_violation_opinions (
@@ -560,8 +562,8 @@ CREATE TABLE comment_violation_opinions (
 CREATE SEQUENCE comment_violation_opinions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE comment_violation_opinions_id_seq OWNED BY comment_violation_opinions.id;
 CREATE TABLE comments (
@@ -584,8 +586,8 @@ CREATE TABLE comments (
 CREATE SEQUENCE comments_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE comments_id_seq OWNED BY comments.id;
 CREATE TABLE comments_valorations (
@@ -600,8 +602,8 @@ CREATE TABLE comments_valorations (
 CREATE SEQUENCE comments_valorations_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE comments_valorations_id_seq OWNED BY comments_valorations.id;
 CREATE TABLE comments_valorations_types (
@@ -612,8 +614,8 @@ CREATE TABLE comments_valorations_types (
 CREATE SEQUENCE comments_valorations_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE comments_valorations_types_id_seq OWNED BY comments_valorations_types.id;
 CREATE TABLE competitions (
@@ -656,8 +658,8 @@ CREATE TABLE competitions_games_maps (
 CREATE SEQUENCE competitions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_id_seq OWNED BY competitions.id;
 CREATE TABLE competitions_logs_entries (
@@ -669,8 +671,8 @@ CREATE TABLE competitions_logs_entries (
 CREATE SEQUENCE competitions_logs_entries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_logs_entries_id_seq OWNED BY competitions_logs_entries.id;
 CREATE TABLE competitions_matches (
@@ -707,8 +709,8 @@ CREATE TABLE competitions_matches_clans_players (
 CREATE SEQUENCE competitions_matches_clans_players_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_matches_clans_players_id_seq OWNED BY competitions_matches_clans_players.id;
 CREATE TABLE competitions_matches_games_maps (
@@ -721,15 +723,15 @@ CREATE TABLE competitions_matches_games_maps (
 CREATE SEQUENCE competitions_matches_games_maps_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_matches_games_maps_id_seq OWNED BY competitions_matches_games_maps.id;
 CREATE SEQUENCE competitions_matches_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_matches_id_seq OWNED BY competitions_matches.id;
 CREATE TABLE competitions_matches_reports (
@@ -742,8 +744,8 @@ CREATE TABLE competitions_matches_reports (
 CREATE SEQUENCE competitions_matches_reports_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_matches_reports_id_seq OWNED BY competitions_matches_reports.id;
 CREATE TABLE competitions_matches_uploads (
@@ -757,8 +759,8 @@ CREATE TABLE competitions_matches_uploads (
 CREATE SEQUENCE competitions_matches_uploads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_matches_uploads_id_seq OWNED BY competitions_matches_uploads.id;
 CREATE TABLE competitions_participants (
@@ -778,8 +780,8 @@ CREATE TABLE competitions_participants (
 CREATE SEQUENCE competitions_participants_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_participants_id_seq OWNED BY competitions_participants.id;
 CREATE TABLE competitions_participants_types (
@@ -789,8 +791,8 @@ CREATE TABLE competitions_participants_types (
 CREATE SEQUENCE competitions_participants_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_participants_types_id_seq OWNED BY competitions_participants_types.id;
 CREATE TABLE competitions_sponsors (
@@ -803,8 +805,8 @@ CREATE TABLE competitions_sponsors (
 CREATE SEQUENCE competitions_sponsors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_sponsors_id_seq OWNED BY competitions_sponsors.id;
 CREATE TABLE competitions_supervisors (
@@ -822,8 +824,8 @@ CREATE TABLE content_ratings (
 CREATE SEQUENCE content_ratings_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE content_ratings_id_seq OWNED BY content_ratings.id;
 CREATE TABLE content_types (
@@ -833,8 +835,8 @@ CREATE TABLE content_types (
 CREATE SEQUENCE content_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE content_types_id_seq OWNED BY content_types.id;
 CREATE TABLE contents (
@@ -860,8 +862,8 @@ CREATE TABLE contents (
 CREATE SEQUENCE contents_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE contents_id_seq OWNED BY contents.id;
 CREATE TABLE contents_locks (
@@ -874,8 +876,8 @@ CREATE TABLE contents_locks (
 CREATE SEQUENCE contents_locks_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE contents_locks_id_seq OWNED BY contents_locks.id;
 CREATE TABLE contents_recommendations (
@@ -893,8 +895,8 @@ CREATE TABLE contents_recommendations (
 CREATE SEQUENCE contents_recommendations_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE contents_recommendations_id_seq OWNED BY contents_recommendations.id;
 CREATE TABLE contents_terms (
@@ -906,8 +908,8 @@ CREATE TABLE contents_terms (
 CREATE SEQUENCE contents_terms_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE contents_terms_id_seq OWNED BY contents_terms.id;
 CREATE TABLE contents_versions (
@@ -919,8 +921,8 @@ CREATE TABLE contents_versions (
 CREATE SEQUENCE contents_versions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE contents_versions_id_seq OWNED BY contents_versions.id;
 CREATE TABLE countries (
@@ -965,8 +967,8 @@ CREATE TABLE delayed_jobs (
 CREATE SEQUENCE delayed_jobs_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE delayed_jobs_id_seq OWNED BY delayed_jobs.id;
 CREATE TABLE demo_mirrors (
@@ -977,8 +979,8 @@ CREATE TABLE demo_mirrors (
 CREATE SEQUENCE demo_mirrors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE demo_mirrors_id_seq OWNED BY demo_mirrors.id;
 CREATE TABLE demos (
@@ -1031,15 +1033,15 @@ CREATE TABLE demos_categories (
 CREATE SEQUENCE demos_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE demos_categories_id_seq OWNED BY demos_categories.id;
 CREATE SEQUENCE demos_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE demos_id_seq OWNED BY demos.id;
 CREATE TABLE download_mirrors (
@@ -1050,8 +1052,8 @@ CREATE TABLE download_mirrors (
 CREATE SEQUENCE download_mirrors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE download_mirrors_id_seq OWNED BY download_mirrors.id;
 CREATE TABLE downloaded_downloads (
@@ -1067,8 +1069,8 @@ CREATE TABLE downloaded_downloads (
 CREATE SEQUENCE downloaded_downloads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE downloaded_downloads_id_seq OWNED BY downloaded_downloads.id;
 CREATE TABLE downloads (
@@ -1110,15 +1112,15 @@ CREATE TABLE downloads_categories (
 CREATE SEQUENCE downloads_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE downloads_categories_id_seq OWNED BY downloads_categories.id;
 CREATE SEQUENCE downloads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE downloads_id_seq OWNED BY downloads.id;
 CREATE TABLE dudes (
@@ -1129,8 +1131,8 @@ CREATE TABLE dudes (
 CREATE SEQUENCE dudes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE dudes_id_seq OWNED BY dudes.id;
 CREATE TABLE events (
@@ -1173,22 +1175,22 @@ CREATE TABLE events_categories (
 CREATE SEQUENCE events_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE events_categories_id_seq OWNED BY events_categories.id;
 CREATE SEQUENCE events_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE events_id_seq OWNED BY events.id;
 CREATE SEQUENCE events_news_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE events_news_id_seq OWNED BY coverages.id;
 CREATE TABLE events_users (
@@ -1225,8 +1227,8 @@ CREATE TABLE factions_banned_users (
 CREATE SEQUENCE factions_banned_users_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE factions_banned_users_id_seq OWNED BY factions_banned_users.id;
 CREATE TABLE factions_capos (
@@ -1237,8 +1239,8 @@ CREATE TABLE factions_capos (
 CREATE SEQUENCE factions_capos_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE factions_capos_id_seq OWNED BY factions_capos.id;
 CREATE TABLE factions_editors (
@@ -1250,8 +1252,8 @@ CREATE TABLE factions_editors (
 CREATE SEQUENCE factions_editors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE factions_editors_id_seq OWNED BY factions_editors.id;
 CREATE TABLE factions_headers (
@@ -1263,15 +1265,15 @@ CREATE TABLE factions_headers (
 CREATE SEQUENCE factions_headers_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE factions_headers_id_seq OWNED BY factions_headers.id;
 CREATE SEQUENCE factions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE factions_id_seq OWNED BY factions.id;
 CREATE TABLE factions_links (
@@ -1284,14 +1286,22 @@ CREATE TABLE factions_links (
 CREATE SEQUENCE factions_links_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE factions_links_id_seq OWNED BY factions_links.id;
 CREATE TABLE factions_portals (
     faction_id integer NOT NULL,
-    portal_id integer NOT NULL
+    portal_id integer NOT NULL,
+    id integer NOT NULL
 );
+CREATE SEQUENCE factions_portals_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE factions_portals_id_seq OWNED BY factions_portals.id;
 SET default_with_oids = true;
 CREATE TABLE faq_categories (
     id integer NOT NULL,
@@ -1303,8 +1313,8 @@ CREATE TABLE faq_categories (
 CREATE SEQUENCE faq_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE faq_categories_id_seq OWNED BY faq_categories.id;
 CREATE TABLE faq_entries (
@@ -1318,8 +1328,8 @@ CREATE TABLE faq_entries (
 CREATE SEQUENCE faq_entries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE faq_entries_id_seq OWNED BY faq_entries.id;
 SET default_with_oids = false;
@@ -1343,8 +1353,8 @@ CREATE TABLE topics_categories (
 CREATE SEQUENCE forum_forums_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE forum_forums_id_seq OWNED BY topics_categories.id;
 CREATE TABLE topics (
@@ -1371,8 +1381,8 @@ CREATE TABLE topics (
 CREATE SEQUENCE forum_topics_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE forum_topics_id_seq OWNED BY topics.id;
 CREATE TABLE friends_recommendations (
@@ -1387,8 +1397,8 @@ CREATE TABLE friends_recommendations (
 CREATE SEQUENCE friends_recommendations_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE friends_recommendations_id_seq OWNED BY friends_recommendations.id;
 SET default_with_oids = true;
@@ -1405,8 +1415,8 @@ CREATE TABLE friendships (
 CREATE SEQUENCE friends_users_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE friends_users_id_seq OWNED BY friendships.id;
 SET default_with_oids = false;
@@ -1433,8 +1443,8 @@ CREATE TABLE funthings (
 CREATE SEQUENCE funthings_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE funthings_id_seq OWNED BY funthings.id;
 CREATE TABLE gamersmafiageist_codes (
@@ -1447,8 +1457,8 @@ CREATE TABLE gamersmafiageist_codes (
 CREATE SEQUENCE gamersmafiageist_codes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE gamersmafiageist_codes_id_seq OWNED BY gamersmafiageist_codes.id;
 SET default_with_oids = true;
@@ -1462,8 +1472,8 @@ CREATE TABLE games (
 CREATE SEQUENCE games_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE games_id_seq OWNED BY games.id;
 SET default_with_oids = false;
@@ -1477,8 +1487,8 @@ CREATE TABLE games_maps (
 CREATE SEQUENCE games_maps_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE games_maps_id_seq OWNED BY games_maps.id;
 CREATE TABLE games_modes (
@@ -1490,8 +1500,8 @@ CREATE TABLE games_modes (
 CREATE SEQUENCE games_modes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE games_modes_id_seq OWNED BY games_modes.id;
 CREATE TABLE games_platforms (
@@ -1510,8 +1520,8 @@ CREATE TABLE games_versions (
 CREATE SEQUENCE games_versions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE games_versions_id_seq OWNED BY games_versions.id;
 CREATE TABLE global_vars (
@@ -1528,8 +1538,8 @@ CREATE TABLE global_vars (
 CREATE SEQUENCE global_vars_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE global_vars_id_seq OWNED BY global_vars.id;
 CREATE TABLE gmtv_broadcast_messages (
@@ -1541,8 +1551,8 @@ CREATE TABLE gmtv_broadcast_messages (
 CREATE SEQUENCE gmtv_broadcast_messages_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE gmtv_broadcast_messages_id_seq OWNED BY gmtv_broadcast_messages.id;
 CREATE TABLE gmtv_channels (
@@ -1557,15 +1567,15 @@ CREATE TABLE gmtv_channels (
 CREATE SEQUENCE gmtv_channels_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE gmtv_channels_id_seq OWNED BY gmtv_channels.id;
 CREATE SEQUENCE goals_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 CREATE TABLE groups (
     id integer NOT NULL,
@@ -1577,8 +1587,8 @@ CREATE TABLE groups (
 CREATE SEQUENCE groups_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE groups_id_seq OWNED BY groups.id;
 CREATE TABLE groups_messages (
@@ -1593,8 +1603,8 @@ CREATE TABLE groups_messages (
 CREATE SEQUENCE groups_messages_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE groups_messages_id_seq OWNED BY groups_messages.id;
 CREATE TABLE images (
@@ -1633,15 +1643,15 @@ CREATE TABLE images_categories (
 CREATE SEQUENCE images_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE images_categories_id_seq OWNED BY images_categories.id;
 CREATE SEQUENCE images_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE images_id_seq OWNED BY images.id;
 CREATE TABLE interviews (
@@ -1679,15 +1689,15 @@ CREATE TABLE interviews_categories (
 CREATE SEQUENCE interviews_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE interviews_categories_id_seq OWNED BY interviews_categories.id;
 CREATE SEQUENCE interviews_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE interviews_id_seq OWNED BY interviews.id;
 CREATE TABLE ip_bans (
@@ -1701,8 +1711,8 @@ CREATE TABLE ip_bans (
 CREATE SEQUENCE ip_bans_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ip_bans_id_seq OWNED BY ip_bans.id;
 CREATE TABLE ip_passwords_resets_requests (
@@ -1713,8 +1723,8 @@ CREATE TABLE ip_passwords_resets_requests (
 CREATE SEQUENCE ip_passwords_resets_requests_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ip_passwords_resets_requests_id_seq OWNED BY ip_passwords_resets_requests.id;
 CREATE TABLE macropolls (
@@ -1769,15 +1779,15 @@ CREATE TABLE macropolls_2007_1 (
 CREATE SEQUENCE macropolls_2007_1_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE macropolls_2007_1_id_seq OWNED BY macropolls_2007_1.id;
 CREATE SEQUENCE macropolls_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE macropolls_id_seq OWNED BY macropolls.id;
 SET default_with_oids = true;
@@ -1799,8 +1809,8 @@ CREATE TABLE messages (
 CREATE SEQUENCE messages_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE messages_id_seq OWNED BY messages.id;
 SET default_with_oids = false;
@@ -1816,8 +1826,8 @@ CREATE TABLE ne_references (
 CREATE SEQUENCE ne_references_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ne_references_id_seq OWNED BY ne_references.id;
 CREATE TABLE news (
@@ -1858,15 +1868,15 @@ CREATE TABLE news_categories (
 CREATE SEQUENCE news_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE news_categories_id_seq OWNED BY news_categories.id;
 CREATE SEQUENCE news_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE news_id_seq OWNED BY news.id;
 CREATE TABLE outstanding_entities (
@@ -1880,8 +1890,8 @@ CREATE TABLE outstanding_entities (
 CREATE SEQUENCE outstanding_users_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE outstanding_users_id_seq OWNED BY outstanding_entities.id;
 CREATE TABLE platforms (
@@ -1892,8 +1902,8 @@ CREATE TABLE platforms (
 CREATE SEQUENCE platforms_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE platforms_id_seq OWNED BY platforms.id;
 CREATE TABLE platforms_users (
@@ -1937,15 +1947,15 @@ CREATE TABLE polls_categories (
 CREATE SEQUENCE polls_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE polls_categories_id_seq OWNED BY polls_categories.id;
 CREATE SEQUENCE polls_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE polls_id_seq OWNED BY polls.id;
 CREATE TABLE polls_options (
@@ -1958,8 +1968,8 @@ CREATE TABLE polls_options (
 CREATE SEQUENCE polls_options_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE polls_options_id_seq OWNED BY polls_options.id;
 CREATE TABLE polls_votes (
@@ -1972,8 +1982,8 @@ CREATE TABLE polls_votes (
 CREATE SEQUENCE polls_votes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE polls_votes_id_seq OWNED BY polls_votes.id;
 CREATE TABLE portal_headers (
@@ -1985,8 +1995,8 @@ CREATE TABLE portal_headers (
 CREATE SEQUENCE portal_headers_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE portal_headers_id_seq OWNED BY portal_headers.id;
 CREATE TABLE portal_hits (
@@ -1998,8 +2008,8 @@ CREATE TABLE portal_hits (
 CREATE SEQUENCE portal_hits_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE portal_hits_id_seq OWNED BY portal_hits.id;
 CREATE TABLE portals (
@@ -2020,8 +2030,8 @@ CREATE TABLE portals (
 CREATE SEQUENCE portals_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE portals_id_seq OWNED BY portals.id;
 CREATE TABLE portals_skins (
@@ -2039,8 +2049,8 @@ CREATE TABLE potds (
 CREATE SEQUENCE potds_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE potds_id_seq OWNED BY potds.id;
 CREATE TABLE products (
@@ -2056,8 +2066,8 @@ CREATE TABLE products (
 CREATE SEQUENCE products_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE products_id_seq OWNED BY products.id;
 CREATE TABLE profile_signatures (
@@ -2070,8 +2080,8 @@ CREATE TABLE profile_signatures (
 CREATE SEQUENCE profile_signatures_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE profile_signatures_id_seq OWNED BY profile_signatures.id;
 CREATE TABLE publishing_decisions (
@@ -2089,8 +2099,8 @@ CREATE TABLE publishing_decisions (
 CREATE SEQUENCE publishing_decisions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE publishing_decisions_id_seq OWNED BY publishing_decisions.id;
 CREATE TABLE publishing_personalities (
@@ -2102,8 +2112,8 @@ CREATE TABLE publishing_personalities (
 CREATE SEQUENCE publishing_personalities_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE publishing_personalities_id_seq OWNED BY publishing_personalities.id;
 CREATE TABLE questions (
@@ -2149,15 +2159,15 @@ CREATE TABLE questions_categories (
 CREATE SEQUENCE questions_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE questions_categories_id_seq OWNED BY questions_categories.id;
 CREATE SEQUENCE questions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE questions_id_seq OWNED BY questions.id;
 CREATE TABLE recruitment_ads (
@@ -2186,8 +2196,8 @@ CREATE TABLE recruitment_ads (
 CREATE SEQUENCE recruitment_ads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE recruitment_ads_id_seq OWNED BY recruitment_ads.id;
 CREATE TABLE refered_hits (
@@ -2200,8 +2210,8 @@ CREATE TABLE refered_hits (
 CREATE SEQUENCE refered_hits_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE refered_hits_id_seq OWNED BY refered_hits.id;
 CREATE TABLE reviews (
@@ -2239,15 +2249,15 @@ CREATE TABLE reviews_categories (
 CREATE SEQUENCE reviews_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE reviews_categories_id_seq OWNED BY reviews_categories.id;
 CREATE SEQUENCE reviews_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE reviews_id_seq OWNED BY reviews.id;
 CREATE TABLE schema_info (
@@ -2270,8 +2280,8 @@ CREATE TABLE sent_emails (
 CREATE SEQUENCE sent_emails_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE sent_emails_id_seq OWNED BY sent_emails.id;
 CREATE TABLE silenced_emails (
@@ -2281,8 +2291,8 @@ CREATE TABLE silenced_emails (
 CREATE SEQUENCE silenced_emails_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE silenced_emails_id_seq OWNED BY silenced_emails.id;
 CREATE TABLE skin_textures (
@@ -2298,8 +2308,8 @@ CREATE TABLE skin_textures (
 CREATE SEQUENCE skin_textures_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE skin_textures_id_seq OWNED BY skin_textures.id;
 CREATE TABLE skins (
@@ -2322,15 +2332,15 @@ CREATE TABLE skins_files (
 CREATE SEQUENCE skins_files_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE skins_files_id_seq OWNED BY skins_files.id;
 CREATE SEQUENCE skins_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE skins_id_seq OWNED BY skins.id;
 CREATE TABLE slog_entries (
@@ -2350,8 +2360,8 @@ CREATE TABLE slog_entries (
 CREATE SEQUENCE slog_entries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE slog_entries_id_seq OWNED BY slog_entries.id;
 CREATE TABLE slog_visits (
@@ -2370,8 +2380,8 @@ CREATE TABLE sold_products (
 CREATE SEQUENCE sold_products_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE sold_products_id_seq OWNED BY sold_products.id;
 CREATE TABLE terms (
@@ -2393,8 +2403,8 @@ CREATE TABLE terms (
 CREATE SEQUENCE terms_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE terms_id_seq OWNED BY terms.id;
 CREATE TABLE textures (
@@ -2407,8 +2417,8 @@ CREATE TABLE textures (
 CREATE SEQUENCE textures_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE textures_id_seq OWNED BY textures.id;
 SET default_with_oids = true;
@@ -2423,15 +2433,15 @@ CREATE TABLE tracker_items (
 CREATE SEQUENCE tracker_items_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE tracker_items_id_seq OWNED BY tracker_items.id;
 CREATE SEQUENCE treated_visitors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 SET default_with_oids = false;
 CREATE TABLE treated_visitors (
@@ -2476,15 +2486,15 @@ CREATE TABLE tutorials_categories (
 CREATE SEQUENCE tutorials_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE tutorials_categories_id_seq OWNED BY tutorials_categories.id;
 CREATE SEQUENCE tutorials_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE tutorials_id_seq OWNED BY tutorials.id;
 CREATE TABLE user_login_changes (
@@ -2496,8 +2506,8 @@ CREATE TABLE user_login_changes (
 CREATE SEQUENCE user_login_changes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE user_login_changes_id_seq OWNED BY user_login_changes.id;
 CREATE TABLE users (
@@ -2609,8 +2619,8 @@ CREATE TABLE users_actions (
 CREATE SEQUENCE users_actions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_actions_id_seq OWNED BY users_actions.id;
 CREATE TABLE users_contents_tags (
@@ -2624,8 +2634,8 @@ CREATE TABLE users_contents_tags (
 CREATE SEQUENCE users_contents_tags_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_contents_tags_id_seq OWNED BY users_contents_tags.id;
 CREATE TABLE users_emblems (
@@ -2638,8 +2648,8 @@ CREATE TABLE users_emblems (
 CREATE SEQUENCE users_emblems_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_emblems_id_seq OWNED BY users_emblems.id;
 CREATE TABLE users_guids (
@@ -2653,15 +2663,15 @@ CREATE TABLE users_guids (
 CREATE SEQUENCE users_guids_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_guids_id_seq OWNED BY users_guids.id;
 CREATE SEQUENCE users_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_id_seq OWNED BY users.id;
 CREATE TABLE users_lastseen_ips (
@@ -2674,8 +2684,8 @@ CREATE TABLE users_lastseen_ips (
 CREATE SEQUENCE users_lastseen_ips_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_lastseen_ips_id_seq OWNED BY users_lastseen_ips.id;
 CREATE TABLE users_newsfeeds (
@@ -2688,8 +2698,8 @@ CREATE TABLE users_newsfeeds (
 CREATE SEQUENCE users_newsfeeds_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_newsfeeds_id_seq OWNED BY users_newsfeeds.id;
 CREATE TABLE users_preferences (
@@ -2701,8 +2711,8 @@ CREATE TABLE users_preferences (
 CREATE SEQUENCE users_preferences_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_preferences_id_seq OWNED BY users_preferences.id;
 CREATE TABLE users_roles (
@@ -2715,8 +2725,8 @@ CREATE TABLE users_roles (
 CREATE SEQUENCE users_roles_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_roles_id_seq OWNED BY users_roles.id;
 SET search_path = stats, pg_catalog;
@@ -2744,15 +2754,15 @@ CREATE TABLE ads_daily (
 CREATE SEQUENCE ads_daily_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ads_daily_id_seq OWNED BY ads_daily.id;
 CREATE SEQUENCE ads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ads_id_seq OWNED BY ads.id;
 CREATE TABLE bandit_treatments (
@@ -2785,8 +2795,8 @@ CREATE TABLE bandit_treatments (
 CREATE SEQUENCE bandit_treatments_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bandit_treatments_id_seq OWNED BY bandit_treatments.id;
 CREATE TABLE bets_results (
@@ -2798,8 +2808,8 @@ CREATE TABLE bets_results (
 CREATE SEQUENCE bets_results_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bets_results_id_seq OWNED BY bets_results.id;
 CREATE TABLE clans_daily_stats (
@@ -2811,8 +2821,8 @@ CREATE TABLE clans_daily_stats (
 CREATE SEQUENCE clans_daily_stats_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_daily_stats_id_seq OWNED BY clans_daily_stats.id;
 CREATE TABLE dates (
@@ -2875,8 +2885,8 @@ CREATE TABLE pageloadtime (
 CREATE SEQUENCE pageloadtime_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE pageloadtime_id_seq OWNED BY pageloadtime.id;
 CREATE TABLE pageviews (
@@ -2903,8 +2913,8 @@ CREATE TABLE pageviews (
 CREATE SEQUENCE pageviews_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE pageviews_id_seq OWNED BY pageviews.id;
 CREATE TABLE portals (
@@ -2920,8 +2930,8 @@ CREATE TABLE portals (
 CREATE SEQUENCE portals_stats_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE portals_stats_id_seq OWNED BY portals.id;
 CREATE TABLE users_daily_stats (
@@ -2935,8 +2945,8 @@ CREATE TABLE users_daily_stats (
 CREATE SEQUENCE users_daily_stats_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_daily_stats_id_seq OWNED BY users_daily_stats.id;
 CREATE TABLE users_karma_daily_by_portal (
@@ -2949,8 +2959,8 @@ CREATE TABLE users_karma_daily_by_portal (
 CREATE SEQUENCE users_karma_daily_by_portal_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_karma_daily_by_portal_id_seq OWNED BY users_karma_daily_by_portal.id;
 SET search_path = public, pg_catalog;
@@ -3021,6 +3031,7 @@ ALTER TABLE factions_capos ALTER COLUMN id SET DEFAULT nextval('factions_capos_i
 ALTER TABLE factions_editors ALTER COLUMN id SET DEFAULT nextval('factions_editors_id_seq'::regclass);
 ALTER TABLE factions_headers ALTER COLUMN id SET DEFAULT nextval('factions_headers_id_seq'::regclass);
 ALTER TABLE factions_links ALTER COLUMN id SET DEFAULT nextval('factions_links_id_seq'::regclass);
+ALTER TABLE factions_portals ALTER COLUMN id SET DEFAULT nextval('factions_portals_id_seq'::regclass);
 ALTER TABLE faq_categories ALTER COLUMN id SET DEFAULT nextval('faq_categories_id_seq'::regclass);
 ALTER TABLE faq_entries ALTER COLUMN id SET DEFAULT nextval('faq_entries_id_seq'::regclass);
 ALTER TABLE friends_recommendations ALTER COLUMN id SET DEFAULT nextval('friends_recommendations_id_seq'::regclass);

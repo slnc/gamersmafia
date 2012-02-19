@@ -20,9 +20,12 @@ La partida está en curso o finalizada, ya no se permiten las apuestas.
 
 <%# TODO esto está mal , revisar todas, no podemos poner and id <> ? %>
 <% cache("/common/apuestas/show/latest_by_cat_#{@bet.main_category.id}") do %>
-<% other_bets = @bet.main_category.find(:published, :content_type => 'Bet', :order => 'created_on desc', :limit => 5)
+<% other_bets = Bet.in_term(@bet.main_category).published.find(
+    :all, :order => 'created_on desc', :limit => 5)
 if other_bets.size > 0 then %>
-<%mfcontents_list('Más apuestas', other_bets, :faction_favicon => true) do |item| %>
+<%mfcontents_list('Más apuestas',
+                   other_bets,
+                   :faction_favicon => true) do |item| %>
 <%=content_category(item)%><%=url_for_content(item, item.title)%><div class="infoinline"><%=draw_rating(item.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(item)%>#comments"><%=item.cache_comments_count%></a></span></div>
 <% end -%>
 
@@ -38,7 +41,7 @@ if other_bets.size > 0 then %>
 
 <%=@bet.description%>
 <br />
-<% if @bet.completed? then 
+<% if @bet.completed? then
 if @bet.cancelled then %><div class="warning">Partida cancelada</div><% elsif @bet.forfeit then %><div class="warning">Forfeit</div><% elsif @bet.tie then %><div class="warning">Empate</div><% else %><div class="notice">Ganador: <strong><%=BetsOption.find(@bet.winning_bets_option_id).name%></strong></div><% end -%>
 <% end %>
 <%mftext('Estado') do %>

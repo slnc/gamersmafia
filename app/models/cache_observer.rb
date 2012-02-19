@@ -45,7 +45,9 @@ class CacheObserver < ActiveRecord::Observer
 
       when 'Content':
       CacheObserver.update_pending_contents
-      expire_fragment('/site/pending_contents') if object.slnc_changed? :state # TODO esto se cargará la cache de elementos pendientes de moderar al crear/modificar topics
+      # TODO esto se cargará la cache de elementos pendientes de moderar al
+      # crear/modificar topics.
+      expire_fragment('/site/pending_contents') if object.state_changed?
 
       when 'CompetitionsMatch':
       if object.participant1_id
@@ -253,7 +255,7 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/home/index/topics")
         expire_fragment("/#{p.code}/home/index/topics2")
         expire_fragment("/site/lasttopics_left#{p.code}")
-        if object.slnc_changed?(:state)
+        if object.state_changed?
           expire_fragment("/#{p.code}/site/last_commented_objects")
           expire_fragment("/#{p.code}/site/last_commented_objects_ids")
         end
@@ -338,7 +340,7 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment("#{Cache.user_base(object.user_id)}/profile/aportaciones")
       expire_fragment("/common/miembros/#{object.user_id % 1000}/#{object.user_id}/contents_stats")
       expire_fragment("/common/miembros/#{object.user_id % 1000}/#{object.user_id}/contenidos/#{object.class.name.downcase}/*")
-      if object.slnc_changed?(:state) and object.state == Cms::DELETED
+      if object.state_changed? && object.state == Cms::DELETED
         expire_fragment('/gm/site/last_commented_objects') # borramos caches de últimos comentarios
         expire_fragment('/gm/site/last_commented_objects_ids')
       end
@@ -364,7 +366,9 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment "/_users/#{object.receiver_user_id % 1000}/#{object.receiver_user_id}/layouts/recommendations"
 
       when 'BazarDistrict':
-      expire_fragment "/layouts/default/districts" if object.slnc_changed?(:name) || object.slnc_changed?(:code)
+      if object.name_changed? || object.code_changed?
+        expire_fragment "/layouts/default/districts"
+      end
 
       when 'Friendship':
       Cache::Friendship.common(object)
@@ -378,22 +382,32 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment "#{Cache.user_base(object.user_id)}/profile/last_profile_signatures"
 
       when 'Content':
-      CacheObserver.update_pending_contents if object.slnc_changed?(:state)
-      if (object.slnc_changed?(:state) && object.state == Cms::DELETED) || object.slnc_changed?(:comments_count)
+      CacheObserver.update_pending_contents if object.state_changed?
+      if ((object.state_changed? && object.state == Cms::DELETED) ||
+          object.comments_count_changed?)
         object.terms.each do |t|
           t.recalculate_counters
         end
       end
 
       when 'User':
-      expire_fragment "/common/globalnavbar/#{object.id % 1000}/#{object.id}_avatar.cache" if object.slnc_changed? :login
-      if object.slnc_changed? :state
+      if object.login_changed?
+        expire_fragment(
+            "/common/globalnavbar/#{object.id % 1000}/#{object.id}_avatar.cache")
+      end
+      if object.state_changed?
         expire_fragment("/common/carcel")
         expire_fragment("/common/carcel_full")
       end
-      Cache::Personalization.expire_quicklinks(object) if object.slnc_changed? :faction_id
-      expire_fragment("/common/miembros/_rightside/ultimos_registros") if object.slnc_changed? :state
-      expire_fragment("/common/globalnavbar/#{object.id % 1000}/#{object.id}_avatar") if object.slnc_changed? :avatar_id
+      if object.faction_id_changed?
+        Cache::Personalization.expire_quicklinks(object)
+      end
+      if object.state_changed?
+        expire_fragment("/common/miembros/_rightside/ultimos_registros")
+      end
+      if object.avatar_id_changed?
+        expire_fragment("/common/globalnavbar/#{object.id % 1000}/#{object.id}_avatar")
+      end
       when 'CompetitionsParticipant':
       expire_fragment "/arena/home/open_ladders" if object.competition.kind_of?(Ladder)
       expire_fragment("/common/competiciones/#{object.competition_id}/participantes")
@@ -518,7 +532,7 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/home/index/topics2")
         expire_fragment("/site/lasttopics_left#{p.code}")
         expire_fragment("/#{p.code}/foros/index/index")
-        if object.slnc_changed?(:state)
+        if object.state_changed?
           expire_fragment("/#{p.code}/site/last_commented_objects")
           expire_fragment("/#{p.code}/site/last_commented_objects_ids")
         end
@@ -541,7 +555,7 @@ class CacheObserver < ActiveRecord::Observer
       stickies = object.main_category.count(:content_type => 'Topic', :conditions => "sticky is true and contents.state = #{Cms::PUBLISHED}")
       prev_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and contents.state = #{Cms::PUBLISHED} and contents.updated_on <= ?", object.created_on]) + stickies
       next_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and contents.state = #{Cms::PUBLISHED} and contents.updated_on >= ?", object.created_on])
-      start_page = prev_count / 50 # TODO especificar esto en un único sitio
+      start_page = (prev_count / 50).to_i # TODO especificar esto en un único sitio
       end_page = start_page + next_count / 50 + 1
 
       for i in (start_page..end_page)
@@ -590,7 +604,10 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/common/home/index/articles2b#{p.code}") if p.class.name == 'BazarDistrictPortal'
         expire_fragment("/#{p.code}/home/index/articles")
         expire_fragment("/#{p.code}/home/index/articles2")
-        expire_fragment("/#{p.code}/reviews/index/most_popular_authors_#{Time.now.to_i/(86400)}") if object.slnc_changed?(:user_id)
+        if object.user_id_changed?
+          expire_fragment(
+              "/#{p.code}/reviews/index/most_popular_authors_#{Time.now.to_i/(86400)}")
+        end
       end
 
 
@@ -673,7 +690,10 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/columnas/index/page_")
         expire_fragment("/#{p.code}/columnas/index/page_*")
         expire_fragment("/#{p.code}/columnas/show/latest_by_author_#{object.user_id}")
-        expire_fragment("/#{p.code}/columnas/index/most_popular_authors_#{Time.now.to_i/(86400)}") if object.slnc_changed?(:user_id)
+        if object.user_id_changed?
+          expire_fragment(
+              "/#{p.code}/columnas/index/most_popular_authors_#{Time.now.to_i/(86400)}")
+          end
       end
 
 
@@ -723,7 +743,12 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/common/apuestas/show/latest_by_cat_#{p.id}")
       end
 
-      expire_fragment "/common/admin/contenidos/index/pending_bets" if object.slnc_changed?(:winning_bets_option_id) || object.slnc_changed?(:forfeit) || object.slnc_changed?(:cancelled) || object.slnc_changed?(:tie)
+      if (object.winning_bets_option_id_changed? ||
+          object.forfeit_changed? ||
+          object.cancelled_changed? ||
+          object.tie_changed?)
+        expire_fragment "/common/admin/contenidos/index/pending_bets"
+      end
 
       when 'Event':
 
@@ -814,7 +839,7 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment('/gm/clanes/index/page*')
       expire_fragment("/common/clanes/#{object.id}/*") # TODO excesivo :s
 
-      if object.slnc_changed and object.slnc_changed.has_key?(:deleted)
+      if object.deleted_changed?
         expire_fragment("/gm/clanes/index/newest")
         expire_fragment("/gm/clanes/index/biggest")
         object.games.each do |g|
@@ -826,10 +851,14 @@ class CacheObserver < ActiveRecord::Observer
         end
       end
 
-      if object.slnc_changed and object.slnc_changed.has_key?(:game_ids)
+      if object.game_ids_changed?
         changed_games = []
 
-        prev = object.slnc_changed_old_values[:game_ids] ? object.slnc_changed_old_values[:game_ids] : []
+        if object.game_ids_changed?
+          prev = object.game_ids_was
+        else
+          prev = []
+        end
         prev = prev.collect { |d| d.to_i }
         cur = object.games.collect { |g| g.id }
 
@@ -845,7 +874,7 @@ class CacheObserver < ActiveRecord::Observer
           end
         end
 
-      elsif object.slnc_changed and object.slnc_changed.has_key?(:members_count)
+      elsif object.members_count_changed?
         expire_fragment("/gm/clanes/index/biggest")
         object.games.each do |g|
           g.faction.portals.each do |p|

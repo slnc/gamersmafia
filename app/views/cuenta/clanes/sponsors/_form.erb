@@ -1,4 +1,4 @@
-<%= error_messages_for 'clans_sponsor' %>
+<%= error_messages_for @clans_sponsor %>
 
 <!--[form:clans_sponsor]-->
 <p><label for="clans_sponsor_name">Name</label><br/>
@@ -9,7 +9,7 @@
 
 <p><label for="clan_logo">Archivo .JPG</label><br/>
 <% if @clans_sponsor.image then %>
-<%=fc_thumbnail(@clans_sponsor.image, 'k', '153x115')%> 
+<%=fc_thumbnail(@clans_sponsor.image, 'k', '153x115')%>
 <% end -%>
 <%= file_field 'clans_sponsor', 'image' %></p>
 <!--[eoform:clans_sponsor]-->

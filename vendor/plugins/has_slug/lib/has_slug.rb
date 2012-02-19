@@ -1,1 +1,0 @@
-require 'has_slug/has_slug'

@@ -37,7 +37,7 @@ for message in @messages
 <br />
 <div style="float: right; margin-top: -20px;"><%= render :partial => 'shared/pager2', :locals => {:collection => @messages, :pos => 'bottom'} %></div>
 <div style="margin: 10px 0;"><input type="submit" class="button primary" onclick="return confirm('¿Estás seguro de que quieres borrar los mensajes seleccionados?');" value="Borrar" /></div>
-<input type="hidden" name="redirto" value="<%=request.request_uri%>" />
+<input type="hidden" name="redirto" value="<%=request.fullpath%>" />
 </form>
 <% end -%>
 <% end -%>

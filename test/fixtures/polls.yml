@@ -6,8 +6,8 @@ published:
   hits_anonymous: 0
   hits_registered: 0
   cache_comments_count: 0
-  starts_on: <%=1.month.since%>
-  ends_on: <%=2.months.since%>
+  starts_on: <%=1.year.since%>
+  ends_on: <%=2.year.since%>
   title: foo
   approved_by_user_id: 1
   state: 2
@@ -42,7 +42,7 @@ deleted:
   approved_by_user_id: 1
   state: 3
   unique_content_id: 2006
-  
+
 publishedgm:
   id: 4
   user_id: 1
@@ -58,7 +58,7 @@ publishedgm:
   state: 2
   unique_content_id: 1115
   polls_votes_count: 0
-  
+
 pendinggm:
   id: 5
   user_id: 1
@@ -74,4 +74,4 @@ pendinggm:
   state: 1
   unique_content_id: 1116
   polls_votes_count: 0
-  
+

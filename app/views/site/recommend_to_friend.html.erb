@@ -3,7 +3,8 @@
 <div class="facebox-content">
 <div id="aaa"></div>
 <% content = Content.find(params[:content_id]) %>
-<%=form_remote_tag({:update => 'aaa', :url => "/site/do_recommend_to_friend/#{params[:id]}", :evalScripts => true})%>
+<%=form_tag({:update => 'aaa', :evalScripts => true, :remote => true,
+   :url => "/site/do_recommend_to_friend/#{params[:id]}"})%>
 <input type="hidden" name="content_id" value="<%=content.id%>" />
 <select name="friends[]" id="friend_user_id" multiple="multiple" style="height: 80px;">
 	<%@user.friends.each do |f| %>

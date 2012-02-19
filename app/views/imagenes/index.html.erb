@@ -1,7 +1,7 @@
 <% generic_support do %>
 <% mftext('Últimas imágenes del día') do %>
 <ul class="sidelist images">
-<% cache("/#{@controller.portal_code}/imagenes/index/last_potds_#{Time.now.to_i/86400}") do %>
+<% cache("/#{controller.portal_code}/imagenes/index/last_potds_#{Time.now.to_i/86400}") do %>
 <%  # TODO portal
 for im in Image.find_by_sql('SELECT a.* FROM images a JOIN potds b on a.id = b.image_id ORDER BY b.date DESC LIMIT 3') %>
 <li><%=render :partial => '/imagenes/image_thumbnail', :locals => {:image => im}%></li>
@@ -22,7 +22,7 @@ for im in Image.find_by_sql('SELECT a.* FROM images a JOIN potds b on a.id = b.i
     <th>Últimas galerías actualizadas</th>
     <th>Imágenes</th>
   </tr>
-<% cache("/#{@controller.portal_code}/imagenes/index/galleries") do %>
+<% cache("/#{controller.portal_code}/imagenes/index/galleries") do %>
 <% @categories.each do |category|
     if category.children.size > 0 then %>
   <tr class="<%=oddclass%>">

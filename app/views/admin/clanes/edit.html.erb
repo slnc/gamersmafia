@@ -8,12 +8,18 @@
   <table>
   <%cg.users.each do |u| %>
   <tr class="<%=oddclass%>" id="clans_group_<%=cg.id%>_<%=u.id%>">
-  <td><%=user_link(u)%></td>
-  <td class="right infoinline"><%=link_to_remote('Borrar', :url => "/admin/clanes/remove_user_from_clans_group/?clans_group_id=#{cg.id}&user_id=#{u.id}", :complete => "$j('#clans_group_#{cg.id}_#{u.id}').fadeOut('normal');")%></td>
+    <td><%=user_link(u)%></td>
+    <td class="right infoinline">
+    <%=link_to(
+        'Borrar',
+        :url => "/admin/clanes/remove_user_from_clans_group/?clans_group_id=#{cg.id}&user_id=#{u.id}",
+        :complete => "$j('#clans_group_#{cg.id}_#{u.id}').fadeOut('normal');",
+        :remote => true)%>
+    </td>
   </tr>
   <% end -%>
-  </table>  
-  
+  </table>
+
 <% end -%>
 <% end -%>
 

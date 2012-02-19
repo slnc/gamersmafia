@@ -14,8 +14,8 @@ max ||= u.cache_popularity %>
   <%mftext('Clanes más recientes') do %>
   <table>
     <% 
-    cache("/#{@controller.portal_code}/clanes/index/newest") do
-	games = (@controller.portal_code != 'gm' && @controller.portal.respond_to?(:games))? @controller.portal.games : [] 
+    cache("/#{controller.portal_code}/clanes/index/newest") do
+	games = (controller.portal_code != 'gm' && controller.portal.respond_to?(:games))? controller.portal.games : [] 
     if games.size > 0 
       clans = Clan.find_by_games(:games => games, :conditions => 'deleted is false', :order => 'created_on DESC', :limit => 5)
     else
@@ -35,8 +35,8 @@ max ||= u.cache_popularity %>
   <%mftext('Clanes más numerosos') do %>
   <table>
     <% 
-    cache("/#{@controller.portal_code}/clanes/index/biggest") do 
-    games = (@controller.portal_code != 'gm' && @controller.portal.respond_to?(:games))? @controller.portal.games : [] 
+    cache("/#{controller.portal_code}/clanes/index/biggest") do 
+    games = (controller.portal_code != 'gm' && controller.portal.respond_to?(:games))? controller.portal.games : [] 
     if games.size > 0 
       clans = Clan.find_by_games(:games => games, :conditions => 'deleted is false and members_count > 0', :order => 'members_count DESC', :limit => 10)
     else
@@ -56,9 +56,9 @@ max ||= u.cache_popularity %>
 
 <% content_main do %>
 <%mftext('Clanes') do %>
-<% cache("/#{@controller.portal_code}/clanes/index/page_#{params[:page]}") do %>
+<% cache("/#{controller.portal_code}/clanes/index/page_#{params[:page]}") do %>
 <% 
-games = (@controller.portal_code != 'gm' && @controller.portal.respond_to?(:games))? @controller.portal.games : [] 
+games = (controller.portal_code != 'gm' && controller.portal.respond_to?(:games))? controller.portal.games : [] 
 if games.size > 0 
   @clans = Clan.in_games(games).paginate(:page => params[:page], :per_page => 40, :conditions => 'deleted is false', :order => 'lower(name)')
 else

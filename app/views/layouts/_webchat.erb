@@ -8,7 +8,12 @@
 <% for chatline in Chatline.latest %>
   <li id="chatline<%=chatline.id%>" class="<%=oddclass%>"><div style="float: right; margin-right: 5px;" class="infoinline"><%=print_tstamp(chatline.created_on, 'time')%></div><span class="nick"><% if chatline.user_id != 8 then %><%=link_to chatline.user.login, {:controller => 'miembros', :action => chatline.user.login}, :class => 'nav' %><% else %>&lt;<%=chatline.line.match(/^<([^>]+)>/)[1]%>&gt;<% end -%>
     <% if user_is_authed and (@user.has_admin_permission?(:capo) or @user.has_admin_permission?(:capo)) then %>
-      <%=link_to_remote('x', { :update => 'minichat', :url => "/site/del_chatline/#{chatline.id}?time=#{now}"}, :class => 'action')%>
+      <%=link_to(
+          'x',
+          {:update => 'minichat',
+           :url => "/site/del_chatline/#{chatline.id}?time=#{now}",
+           :remote => true},
+          :class => 'action')%>
     <% end -%>
     <br /></span><% if chatline.user_id != 8 then %><%=auto_link(smilelize(Comments::formatize(chatline.line)))%><% else %><%=smilelize(Comments::formatize(chatline.line.gsub(/^(<[^>]+>: )/, '')))%><% end -%></li>
 <% end -%>
@@ -23,11 +28,11 @@ setInterval(function(){
 } , 15000);
 //]]>
 function send_chatline() {
-	$j.post('/site/new_chatline?time='+cur_time_chat, {line: $j('#newline').val()}, function(data){ 
+	$j.post('/site/new_chatline?time='+cur_time_chat, {line: $j('#newline').val()}, function(data){
 		$j('#minichat').html(data);
 		$j('#newline').val('');
 		document.getElementById('newlinesend').disabled = '';
-	}); 
+	});
 	return false;
 }
 </script>
@@ -51,9 +56,13 @@ function disablesend()
 <br />
  <div id="smileystable" style="width: 195px; height: 325px; overflow: auto;">
 
-  <%= link_to_remote("Mostrar smileys disponibles",
-                    :update => 'smileystable',
-                    :url => { :controller => 'site', :action => :show_smileys}) %></div>
-                    <% end -%>
-<% end -%>
+  <%=link_to(
+      "Mostrar smileys disponibles",
+      {:update => 'smileystable',
+       :remote => true},
+      :url => {:controller => 'site',
+               :action => :show_smileys})%>
+</div>
+    <% end -%>
+  <% end -%>
 <% end %>
