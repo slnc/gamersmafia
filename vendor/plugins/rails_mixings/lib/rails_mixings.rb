@@ -16,10 +16,8 @@ begin
 rescue Exception
 else
 %w(
-ab_test
 action_mailer
 friendship
-geolocation
 notification_mixings
 silenced_email
 stats_mixings
