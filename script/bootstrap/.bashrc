@@ -9,7 +9,8 @@ function parse_git_branch {
 
 export HISTCONTROL=erasedups
 export HISTSIZE=50000
-export PS1='\[\033[0;33m\]\w\[\033[0m\]\[\033[1;30m\]$(parse_git_branch)$\[\033[0m\] '
+export HISTTIMEFORMAT="%Y%m%d %H:%M:%S "
+export PS1="\[\033[1;30m\]$(date +%H:%M:%S)\[\033[0;33m\]\w\[\033[0m\]\[\033[1;30m\]$(parse_git_branch)$\[\033[0m\] "
 
 shopt -s histappend
 
