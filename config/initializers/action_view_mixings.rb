@@ -275,3 +275,5 @@ class Time
     end
   end
 end
+
+ActionView::Base.send :include, ActionViewMixings

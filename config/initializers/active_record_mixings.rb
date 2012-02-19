@@ -1,4 +1,5 @@
 module ActiveRecordMixings
+
   def self.included(base)
     base.extend ClassMethods
   end
@@ -133,25 +134,6 @@ class ActiveModel::Errors
   end
 end
 
-# TODO(slnc): re-enable disabling QueryCache
-#  module ::ActiveRecord
-#    module QueryCache
-#      alias :cache :uncached
-#    end
-#  end
-
-class ActiveRecord::Migration
-  def self.slonik_execute(str)
-    if App.enable_slonik?
-      set_id = User.db_query("select tab_set from _#{REPLICATION_CLUSTER}.sl_table group by tab_set order by count(*) desc limit 1")[0]['tab_set']
-      raise "set_id not found" unless set_id != ''
-      puts `/usr/local/hosting/bin/slonik_execute_script -C "#{str}" set#{set_id} | /usr/local/hosting/bin/slonik`
-    else
-      User.db_query(str)
-    end
-  end
-end
-
 ActiveRecord::Base.class_eval do
   def self.paginate_in_reverse(options = {})
     unless options[:page]
@@ -168,3 +150,5 @@ ActiveRecord::Base.class_eval do
     self.paginate(options)
   end
 end
+
+ActiveRecord::Base.send :include, ActiveRecordMixings

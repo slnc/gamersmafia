@@ -15,10 +15,10 @@ class ApplicationController < ActionController::Base
 
   helper :account, :miembros, :competiciones, :calendar
   before_filter :ident, :resolve_portal_mode, :check_referer,
-                :populate_navpath2, :parse_params_page
+                :populate_navpath2, :parse_params_page, :init_xab
 
   attr_accessor :active_sawmode, :competition, :global_vars, :portal,
-                :third_menu
+                :third_menu, :_xad, :smodel_id
 
   cattr_accessor :navpath2
   around_filter :gm_process
@@ -35,6 +35,18 @@ class ApplicationController < ActionController::Base
 
   def self.require_admin_permission(mode)
     before_filter { |c| c.send(:require_admin_permission, mode) }
+  end
+
+  def init_xab
+    params['_xab'] = {} unless params['_xab']
+    params['_xab'] = ActiveSupport::JSON.decode(CGI::unescape(params['_xab'])) if params['_xab'].kind_of?(String)
+    params['_xab_new_treated_visitors'] = {}
+
+    self._xad = [] unless self._xad
+    self._xad = params[:_xad] if params[:_xad]
+    self._xad = ActiveSupport::JSON.decode(CGI::unescape(self._xad)) if self._xad.kind_of?(String)
+
+    self.smodel_id = params[:id] if self.smodel_id.nil? && params[:id]
   end
 
   def no_ads

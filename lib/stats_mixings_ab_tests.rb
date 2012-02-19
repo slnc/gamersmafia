@@ -166,3 +166,5 @@ module StatsMixings
     end
   end
 end
+
+Stats::Goals.send :include, StatsMixings::GoalsMixings

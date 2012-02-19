@@ -1,3 +1,4 @@
+# Order matters!
 %w(
    ruby_mixings
    acts_as_categorizable
@@ -11,6 +12,7 @@
    skins
    ads
    stats
+   stats_mixings_ab_tests
    acts_as_rootable
    slnc_file_column
    slnc_file_column_helper

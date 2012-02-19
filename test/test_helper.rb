@@ -2,7 +2,7 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'feed_validator/assertions'
-require 'vendor/plugins/rails_mixings/lib/test_unit_mixings.rb'
+require 'lib/test_unit_mixings.rb'
 
 # lo metemos aquí porque test_helper parece que se incluye varias veces
 class ActionController::TestRequest
