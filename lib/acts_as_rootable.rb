@@ -1,6 +1,6 @@
 # Añade hooks al modelo para que cuando cambie el parent_id se sincronice
 # correctamente el root_id de la categoría
-module SlncActsAsRootable
+module ActsAsRootable
   def self.included(base)
     base.extend AddActsAsMethod
   end
@@ -11,7 +11,7 @@ module SlncActsAsRootable
       after_create :check_parent_id_on_create
 
       class_eval <<-END
-        include SlncActsAsRootable::InstanceMethods
+        include ActsAsRootable::InstanceMethods
       END
     end
   end
@@ -39,3 +39,5 @@ module SlncActsAsRootable
     end
   end
 end
+
+ActiveRecord::Base.send :include, ActsAsRootable

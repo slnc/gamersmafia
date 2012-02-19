@@ -9,6 +9,7 @@
     skins
     ads
     stats
+    acts_as_rootable
   ).each do |f|
   require "#{Rails.root}/lib/#{f}.rb"
 end

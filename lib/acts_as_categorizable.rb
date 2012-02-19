@@ -1,4 +1,3 @@
-# puts ActiveSupport::ActiveSupport::Inflector.pluralize('hola')
 # Este módulo se encarga de añadir funcionalidad de categoría a los objetos que
 # se puedan clasificar
 module ActsAsCategorizable
