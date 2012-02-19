@@ -1,3 +1,5 @@
+require 'net/imap'
+
 module NotificationMixings
   def self.included(base)
     base.extend ClassMethods
