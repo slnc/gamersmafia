@@ -30,7 +30,7 @@ class GameTest < ActiveSupport::TestCase
   
   test "should_create_if_everything_ok" do
     @g = Game.new({:name => 'Worms', :code => 'w'})
-    assert_equal true, @g.save, @g.errors.to_yaml
+    assert_equal true, @g.save, @g.errors.full_messages_html
     assert_not_nil Game.find_by_name('Worms')
     assert_not_nil Game.find_by_code('w')
   end

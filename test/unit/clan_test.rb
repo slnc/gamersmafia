@@ -19,7 +19,7 @@ class ClanTest < ActiveSupport::TestCase
 
   test "invalid_minimal_data" do
     c = Clan.new({:tag => 'mega large owning tag', :name => '31337!!'})
-    assert_equal false, c.save, c.errors.to_yaml
+    assert_equal false, c.save, c.errors.full_messages_html
   end
 
   test "should_create_clan_with_tag_with_extended_chars" do
@@ -41,7 +41,7 @@ class ClanTest < ActiveSupport::TestCase
 
   test "invalid_extended_data" do
     c = Clan.new({:tag => 'tagvalium', :name => 'Super valid clan', :irc_server => 'irc.quakenet.org', :irc_channel => 'somos_los_campeones', :competition_roster => fixture_file_upload('files/image.jpg'), :website_external => 'gamersmafia.com/', :description => '<script type="text/javascript">alert("Hello World!");</script>somos los amos!'})
-    assert_equal false, c.save, c.errors.to_yaml
+    assert_equal false, c.save, c.errors.full_messages_html
   end
 
   test "hot" do

@@ -33,6 +33,6 @@ class PlatformTest < ActiveSupport::TestCase
   protected
   def create_platform
     @platform = Platform.new({:name => 'Worms', :code => 'w'})
-    assert @platform.save, @platform.errors.to_yaml
+    assert @platform.save, @platform.errors.full_messages_html
   end
 end

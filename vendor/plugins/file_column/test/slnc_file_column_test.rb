@@ -15,14 +15,14 @@ class SlncFileColumnTest < ActiveSupport::TestCase
   
   test "should_save_record_if_file_empty_and_not_required" do
     mock = SlncFileColumnMockRecord.create({:name => 'foo'})
-    assert_equal true, mock.save, mock.errors.to_yaml
+    assert_equal true, mock.save, mock.errors.full_messages_html
     assert_nil mock.file
     assert_not_nil mock.destroy
   end
   
   test "should_save_record_if_file_not_empty_and_not_required" do
     @mock = SlncFileColumnMockRecord.create({:name => 'foo', :file => fixture_file_upload('files/image.jpg', 'image/jpeg')})
-    assert_equal true, @mock.save, @mock.errors.to_yaml
+    assert_equal true, @mock.save, @mock.errors.full_messages_html
     assert_equal 'storage/slnc_file_column_mock_records/0000/001_image.jpg', @mock.file
     assert_equal true, File.exists?("#{Rails.root}/public/#{@mock.file}")
   end
@@ -36,7 +36,7 @@ class SlncFileColumnTest < ActiveSupport::TestCase
   test "should_delete_previous_file_when_updating" do
     mock = SlncFileColumnMockRecord.create({:name => 'foo', :file => fixture_file_upload('files/image.jpg', 'image/jpeg')})
     prev = mock.file
-    assert_equal true, mock.update_attributes({:file => fixture_file_upload('files/buddha.jpg', 'image/jpeg')}), mock.errors.to_yaml
+    assert_equal true, mock.update_attributes({:file => fixture_file_upload('files/buddha.jpg', 'image/jpeg')}), mock.errors.full_messages_html
     assert_equal false, File.exists?("#{Rails.root}/public/#{prev}")
     assert_equal true, File.exists?("#{Rails.root}/public/#{mock.file}")
     assert_equal 'storage/slnc_file_column_mock_records/0000/001_buddha.jpg', mock.file
@@ -94,35 +94,35 @@ class SlncFileColumnTest < ActiveSupport::TestCase
   
   def atest_should_save_record_if_format_jpg_and_is_jpg
     @mock = SlncFileColumnMockFormatJpg.create({:name => 'foo', :file => fixture_file_upload('files/image.jpg', 'image/jpeg')})
-    assert_equal true, @mock.save, @mock.errors.to_yaml
+    assert_equal true, @mock.save, @mock.errors.full_messages_html
     assert_equal 'storage/slnc_file_column_mock_format_jpgs/0000/001_image.jpg', @mock.file
     assert_equal true, File.exists?("#{Rails.root}/public/#{@mock.file}")
   end
   
   def atest_should_save_record_if_format_jpg_and_is_gif
     @mock = SlncFileColumnMockFormatJpg.create({:name => 'foo', :file => fixture_file_upload('files/lines.gif', 'image/gif')})
-    assert_equal @mock.save, @mock.errors.to_yaml
+    assert_equal @mock.save, @mock.errors.full_messages_html
     assert_equal 'storage/slnc_file_column_mock_format_jpgs/0000/001_lines.jpg', @mock.file
     assert_equal true, File.exists?("#{Rails.root}/public/#{@mock.file}")
   end
   
   def atest_should_save_record_if_format_jpg_and_is_png
     @mock = SlncFileColumnMockFormatJpg.create({:name => 'foo', :file => fixture_file_upload('files/pokemon.png', 'image/png')})
-    assert_equal true, @mock.save, @mock.errors.to_yaml
+    assert_equal true, @mock.save, @mock.errors.full_messages_html
     assert_equal 'storage/slnc_file_column_mock_format_jpgs/0000/001_pokemon.jpg', @mock.file
     assert_equal true, File.exists?("#{Rails.root}/public/#{@mock.file}")
   end
   
   def atest_should_save_record_if_format_jpg_and_is_bmp
     @mock = SlncFileColumnMockFormatJpg.new({:name => 'foo', :file => fixture_file_upload('files/lines.bmp', 'image/bmp')})
-    assert @mock.save, @mock.errors.to_yaml
+    assert @mock.save, @mock.errors.full_messages_html
     assert_equal 'storage/slnc_file_column_mock_format_jpgs/0000/001_lines.jpg', @mock.file
     assert File.exists?("#{Rails.root}/public/#{@mock.file}")
   end
   
   def atest_should_not_save_record_if_format_jpg_but_not_image    
     @mock = SlncFileColumnMockFormatJpg.create({:name => 'foo', :file => fixture_file_upload('files/images.zip', 'application/zip')})
-    assert_equal false, @mock.save, @mock.errors.to_yaml
+    assert_equal false, @mock.save, @mock.errors.full_messages_html
   end
   
   # TODO cuando hay un tag con más de una referencia comprobar que
