@@ -35,41 +35,41 @@
       name: Dudes
       code: dudes
       root_id: 6 # TODO Necesario en lugar de 3 porque esto no carga en orden
-  
+
 - second:
       id: 7
       name: rejects faction
       code: rj
       root_id: 7
-  
+
 - third:
       id: 8
       name: third faction
       code: th
       root_id: 8
-  
+
 - fourth:
       id: 9
       name: Wii
       code: wii
       root_id: 9
-  
+
 - clans:
       id: 10
       name: mapaches
       code: mapaches
       root_id: 10
       clan_id: 2
-  
+
 - bd1:
       id: 20
       name: Anime
       code: anime
       root_id: 4
       parent_id: 4
-  
+
 - bd2:
-      id: 11 
+      id: 11
       name: Cine
       code: cine
       root_id: 4
@@ -81,49 +81,49 @@
       code: deportes
       root_id: 4
       parent_id: 4
-  
+
 - bd4:
       id: 13
       name: Desarrollo
       code: desarrollo
       root_id: 4
       parent_id: 4
-  
+
 - bd5:
       id: 14
       name: Estudiantes
       code: estudiantes
       root_id: 4
       parent_id: 4
-  
+
 - bd6:
       id: 15
       name: Hardware
       code: hardware
       root_id: 4
       parent_id: 4
-  
+
 - bd7:
       id: 16
       name: Software
       code: software
       root_id: 4
       parent_id: 4
-  
+
 - bd8:
       id: 17
       name: Internet
       code: inet
       root_id: 4
       parent_id: 4
-  
+
 - bd9:
       id: 18
       name: Musica
       code: musica
       root_id: 4
       parent_id: 4
-  
+
 - bd10:
       id: 19
       name: Literatura

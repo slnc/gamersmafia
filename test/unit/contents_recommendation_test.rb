@@ -1,15 +1,15 @@
 require 'test_helper'
 
 class ContentsRecommendationTest < ActiveSupport::TestCase
-  
+
   test "cannot_recommend_to_self" do
     # flunk
   end
-  
+
   test "cannot_recommend_if_user_already_saw_content" do
-    
+
   end
-  
+
   test "if you get a recommendation from a seen content automatically mark the new recommendation as seen" do
     u1 = User.find(1)
     u2 = User.find(2)
@@ -22,7 +22,7 @@ class ContentsRecommendationTest < ActiveSupport::TestCase
     assert cr2.save
     assert cr2.created_on >= cr2.seen_on
   end
-  
+
   test "mark all recommendations as seen when they belong to the same content" do
     u1 = User.find(1)
     u2 = User.find(2)

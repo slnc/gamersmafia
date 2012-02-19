@@ -12,7 +12,7 @@
   	</form>
   <% end -%>
   <% end -%>
-  
+
   <% mftext('Resultado pendiente') do %>
   <%=matches_list(@competition.matches(:result_pending))%>
   <% end -%>
@@ -42,7 +42,7 @@
         when 0: %><span class="infoinline">Gana</span> <%=match.participant1.name%><%
         when 1: %>Empate<%
         when 2: %><span class="infoinline">Gana</span> <%=match.participant2.name%><%
-        else 
+        else
           if match.accepted then %><span class="infoinline">No jugado</span><%
           else %><span class="infoinline">Aún no ha sido aceptado (retado hace <%=format_interval(Time.now.to_i - match.created_on.to_i, 'días')%>)</span>
        <% end -%>
@@ -58,12 +58,12 @@
   <%=render :partial => 'shared/pager2', :locals => {:collection => @mmatches, :pos => 'bottom'} %>
   <% end -%>
 
-  
+
   <% mftext('Modificar fecha de partidas seleccionadas') do %>
   Nueva fecha de juego: <%=datetime_select 'matches', 'play_on'  %>
   <input type="submit" class="button" value="Guardar nueva fecha" onclick="GM.utils.form_sym_action('superform', 'partidas', 'update_matches_play_on');" />
   <% end -%>
-  
+
   <% mftext('Modificar mapas de partidas seleccionadas') do %>
 <% if @competition.default_maps_per_match then
 @competition.default_maps_per_match.times do |time|

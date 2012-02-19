@@ -1,13 +1,13 @@
 class Admin::JuegosController < AdministrationController
-  
+
   def index
     @games = Game.paginate(:order => 'lower(name) asc', :per_page => 50, :page => params[:page])
   end
-  
+
   def new
     @game = Game.new
   end
-  
+
   def create
     @game = Game.new(params[:game])
     if @game.save
@@ -17,7 +17,7 @@ class Admin::JuegosController < AdministrationController
       render :action => 'new'
     end
   end
-  
+
   # TODO remove this from here
   def create_games_version
     gm = GamesVersion.new(params[:games_version])
@@ -26,10 +26,10 @@ class Admin::JuegosController < AdministrationController
     else
       flash[:error] = "Error al crear la versión: #{gm.errors.full_messages_html}"
     end
-    
+
     redirect_to "/admin/juegos/edit/#{gm.game_id}"
   end
-  
+
   def create_games_mode
     gm = GamesMode.new(params[:games_mode])
     if gm.save
@@ -37,10 +37,10 @@ class Admin::JuegosController < AdministrationController
     else
       flash[:error] = "Error al crear el modo de juego: #{gm.errors.full_messages_html}"
     end
-    
+
     redirect_to "/admin/juegos/edit/#{gm.game_id}"
   end
-  
+
   def destroy_games_version
     gv = GamesVersion.find(params[:id])
     if gv
@@ -51,7 +51,7 @@ class Admin::JuegosController < AdministrationController
     end
     redirect_to "/admin/juegos/edit/#{gv.game_id}"
   end
-  
+
   def destroy_games_mode
     gv = GamesMode.find(params[:id])
     if gv
@@ -62,11 +62,11 @@ class Admin::JuegosController < AdministrationController
     end
     redirect_to "/admin/juegos/edit/#{gv.game_id}"
   end
-  
+
   def edit
     @game = Game.find(params[:id])
   end
-  
+
   def update
     @game = Game.find(params[:id])
     if @game.update_attributes(params[:game])
@@ -77,7 +77,7 @@ class Admin::JuegosController < AdministrationController
       render :action => 'edit'
     end
   end
-  
+
   def destroy
     Game.find(params[:id]).destroy
     redirect_to :action => 'index'

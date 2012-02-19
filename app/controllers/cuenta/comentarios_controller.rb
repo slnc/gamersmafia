@@ -1,5 +1,5 @@
 class Cuenta::ComentariosController < ApplicationController
-  
+
   def index
     require_auth_users
   end

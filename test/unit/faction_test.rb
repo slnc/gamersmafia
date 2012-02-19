@@ -7,7 +7,7 @@ class FactionTest < ActiveSupport::TestCase
     system(BLDG_FILE) unless File.exists?(BLDG_FILE)
     assert f1.has_building?
   end
-  
+
   test "should update related portal" do
     f1 = Faction.find(1)
     fp1 = FactionsPortal.find_by_code(f1.code)
@@ -31,7 +31,7 @@ class FactionTest < ActiveSupport::TestCase
     assert_equal 1, u1.faction_id
     assert_equal 1, Faction.find_by_bigboss(u1).id
   end
-  
+
   test "destroy_faction_should_destroy_related_factions_portals" do
     f1 = Faction.find(1)
     faction_portal = f1.portals.find(1)
@@ -45,14 +45,14 @@ class FactionTest < ActiveSupport::TestCase
     f1 = Faction.find(1)
     assert_equal [], f1.editors
   end
-  
+
   test "create_should_create_slog_entry" do
-    assert_count_increases(SlogEntry) do 
+    assert_count_increases(SlogEntry) do
       f = Faction.new({:code => 'oo', :name => "Oinoiroko"})
       assert f.save, f.errors.full_messages_html
     end
   end
-  
+
   test "update_boss_shouldnt_touch_faction_last_changed_on_if_already_member" do
     f1 = Faction.find(1)
     f1.members.clear
@@ -63,14 +63,14 @@ class FactionTest < ActiveSupport::TestCase
     u2.reload
     assert u2.faction_last_changed_on < 1.day.ago
   end
-  
+
   test "golpe_de_estado_should_work" do
     f1 = Faction.find(1)
     f1.members.clear
     assert f1.update_boss(User.find(2))
     f1.update_underboss(nil)
     Factions.user_joins_faction(User.find(3), f1.id)
-    
+
     m = Message.count
     tgen = Term.single_toplevel(:slug => f1.code).children.find(:first, :conditions => ['taxonomy = \'TopicsCategory\' AND name = \'General\''])
     topics_count = tgen.contents_count(:cls_name => 'Topic')
@@ -79,11 +79,11 @@ class FactionTest < ActiveSupport::TestCase
     end
     assert_equal topics_count + 1, tgen.contents_count(:cls_name => 'Topic')
     assert_equal m + 3, Message.count # un mensaje al boss y otro al miembro
-    
+
     f1.reload
     assert_nil f1.boss
   end
-  
+
   test "user_is_editor_if_editor" do
     f1 = Faction.find(1)
     ctype = ContentType.find(:first)
@@ -92,7 +92,7 @@ class FactionTest < ActiveSupport::TestCase
     f1.add_editor(u59, ctype)
     assert f1.user_is_editor_of_content_type?(u59, ctype)
   end
-  
+
   test "user_is_editor_if_boss" do
     f1 = Faction.find(1)
     ctype = ContentType.find(:first)
@@ -100,7 +100,7 @@ class FactionTest < ActiveSupport::TestCase
     assert f1.update_boss(User.find(59))
     assert f1.user_is_editor_of_content_type?(User.find(59), ctype)
   end
-  
+
   test "user_is_editor_if_underboss" do
     f1 = Faction.find(1)
     ctype = ContentType.find(:first)
@@ -109,7 +109,7 @@ class FactionTest < ActiveSupport::TestCase
     assert f1.update_boss(u59)
     assert f1.user_is_editor_of_content_type?(u59, ctype)
   end
-  
+
   test "proper_boss" do
     f1 = Faction.find(1)
     u59 = User.find(59)
@@ -117,7 +117,7 @@ class FactionTest < ActiveSupport::TestCase
     f1.reload
     assert_equal 59, f1.boss.id
   end
-  
+
   test "karma_points_should_work_correctly" do
     f1 = Faction.find(1)
     assert_equal 1745, f1.karma_points

@@ -14,7 +14,7 @@
     <th class="w50">Empatadas</th>
     <th class="w50">Perdidas</th>
   </tr>
-  <% 
+  <%
   i = 1
   for p in @competition.winners(100) %>
   <tr class="<%=oddclass%>">
@@ -25,7 +25,7 @@
     <td class="centered"><%=p.ties%></td>
     <td class="centered"><%=p.losses%></td>
   </tr>
-<%  winner += 1 if w.include?(p.id)  
+<%  winner += 1 if w.include?(p.id)
     i += 1
   end -%>
 </table>

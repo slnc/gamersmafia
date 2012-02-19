@@ -38,7 +38,7 @@ polls.each do |dbr|
         results[tras[k]][v] ||= 0
         results[tras[k]][v] += 1
         anzwers[tras[k]] = v
-        k = tras[k] 
+        k = tras[k]
       else
         results[k] ||= {}
         results[k][v] ||= 0
@@ -55,10 +55,10 @@ end
 results.each do |k,v| %>
 <%=k%>
 <%
-  v.each do |k2,v2| 
+  v.each do |k2,v2|
 if k == '__quetendriaquetenerlawebparaquefueseperfectaparati_' or k == '__quecreesquedeberiamosmejorardeformamasurgenteenlaweb_' then %>
     <div style="margin-bottom: 5px; background: #eee; border: 1px solid #ccc; padding: 3px;"><%=k2.gsub("\n", '<br />')%> (<%=v2%>)</div>
-<% 
+<%
 else %>
 <pre>    <%="    #{k2}: #{v2}"%></pre>
 <% end

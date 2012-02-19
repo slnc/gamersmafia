@@ -2,7 +2,7 @@
 <% end -%>
 
 <% content_main do
-  participants = Competitions.participants_of_user(@user) 
+  participants = Competitions.participants_of_user(@user)
   participants_ids = [0]
   participants.each { |participant| participants_ids<< participant.id }
   %>

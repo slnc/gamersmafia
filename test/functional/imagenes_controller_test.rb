@@ -7,14 +7,14 @@ class ImagenesControllerTest < ActionController::TestCase
   test "category_404_if_invalid" do
     assert_raises(ActiveRecord::RecordNotFound) { get :category, :id => 'foo' }
   end
-    
+
   test "image_nil_file" do
     User.db_query("UPDATE images SET file = NULL WHERE id = 1")
     @request.host = "ut.#{App.domain}"
     get :show, :id => 1
     assert_response :success
   end
-    
+
   test "category_404_if_unexistant" do
     assert_raises(ActiveRecord::RecordNotFound) { get :category }
   end
@@ -60,13 +60,13 @@ class ImagenesControllerTest < ActionController::TestCase
     im = Image.find(:first, :order => 'id DESC')
     assert_equal sld.id, im.terms[0].id
   end
-  
+
   test "babes_gallery_visible_from_factions_portal" do
     @request.host = 'ut.gamersmafia.com'
     get :category, { :category => Term.single_toplevel(:slug => 'bazar').children.find(:first, :conditions => "slug = 'babes' AND taxonomy = 'ImagesCategory'").id }
     assert_response :success
   end
-  
+
   test "imagenes_bazar_should_work" do
     @request.host = "bazar.#{App.domain}"
     get :index

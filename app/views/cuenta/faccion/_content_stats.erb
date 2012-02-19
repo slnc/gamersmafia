@@ -1,10 +1,10 @@
-<% root_term = Term.single_toplevel(faction.referenced_thing_field => faction.referenced_thing.id) 
+<% root_term = Term.single_toplevel(faction.referenced_thing_field => faction.referenced_thing.id)
   Cms::CONTENTS_WITH_CATEGORIES.each do |cls_name|
     last = root_term.last_published_content(cls_name)
     max_t = Time.now.to_i - (Time.now.to_i - 86400 * 14)
     %><div class="<%=oddclass%>">
       <strong><%=Cms::translate_content_name(cls_name).capitalize%></strong><br />
-    <div class="infoinline"><%if last then 
+    <div class="infoinline"><%if last then
       last_t = (Time.now - last.created_on).to_i
       %>
     Hace <%=format_interval(last_t, 'horas') %>
@@ -14,7 +14,7 @@
         last_t = max_t
       end
       %>
-    <% else 
+    <% else
       last_t = max_t %>
     Nunca
     <% end -%></div>

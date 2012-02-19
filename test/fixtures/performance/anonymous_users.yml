@@ -1,4 +1,4 @@
-<% 
+<%
 require 'digest/md5'
 100.times do |time| %>
 anonymous_user_<%=time%>:

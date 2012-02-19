@@ -22,8 +22,8 @@
 		<td class="centered"><a href="/slog/moderator?scope=<%=@scope%>"><%=SlogEntry.ccount(:open, { :domain => :editor, :scope => @scope})%></a></td>
 	</tr>
 	<%
-cnames = Cms::CONTENTS_WITH_CATEGORIES.collect { |cname| "'#{cname}'" } 
-ContentType.find(:all, :conditions => "name IN (#{cnames.join(',')})", :order => 'lower(name)').each do |ct| 
+cnames = Cms::CONTENTS_WITH_CATEGORIES.collect { |cname| "'#{cname}'" }
+ContentType.find(:all, :conditions => "name IN (#{cnames.join(',')})", :order => 'lower(name)').each do |ct|
 scope = SlogEntry.encode_editor_scope(@scope, ct.id) %>
 	<tr class="<%=oddclass%>">
 		<td>Editores de <%=Cms::translate_content_name(ct.name)%></td>

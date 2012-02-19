@@ -46,7 +46,7 @@
 </tr>
 
 <% cache("/#{controller.portal.code}/eventos/index/page_#{params['page']}") do %>
-<% @events.each do |event| 
+<% @events.each do |event|
 event.description = (event.description.to_s == '') ? '&nbsp;' : event.description
 %>
 <tr class="<%=oddclass%>">

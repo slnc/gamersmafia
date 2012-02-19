@@ -6,7 +6,7 @@
 function show_active_generator_attrs(val) {
     var gens = <%=Skins::ColorGenerators.generators.collect { |cg| ActiveSupport::Inflector::demodulize(cg.name) }.to_json%>;
     var el;
-    for (var i = 0; i < gens.length; i ++) 
+    for (var i = 0; i < gens.length; i ++)
     {
         el = $j('#attrs-' + gens[i]);
 		(gens[i] == val) ? el.removeClass('hidden') : el.addClass('hidden');

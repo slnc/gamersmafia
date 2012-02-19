@@ -62,7 +62,7 @@ class SharedViewsTest < ActionController::IntegrationTest
     assert /Comentario 1/ =~ @response.body
     Cms.comments_per_page = 30
   end
-  
+
   test "should_show_first_page_of_unread_comments_for_registered_user_when_user_has_read_the_content_but_only_the_first_comment" do
     sym_login('superadmin', 'lalala')
     Cms.comments_per_page = 2
@@ -70,7 +70,7 @@ class SharedViewsTest < ActionController::IntegrationTest
     create_comments n, 1
     Term.single_toplevel(:slug => 'gm').link(n.unique_content)
     # User.db_query("UPDATE comments set created_on = created_on - '5 minutes'::interval where id = (SELECT max(id) FROM comments)")
-    
+
     get "/noticias/show/#{n.id}"
     assert_response :success, @response.body
     assert /Comentario 1/ =~ @response.body
@@ -78,13 +78,13 @@ class SharedViewsTest < ActionController::IntegrationTest
     create_comments n, 2
 #    User.db_query("UPDATE comments set created_on = created_on - '2 minutes'::interval where id IN (SELECT id FROM comments ORDER BY id DESC LIMIT 2)")
     # Kernel.sleep 1
-    
+
     get "/noticias/show/#{n.id}"
     assert_response :success
     assert /Comentario 2/ =~ @response.body
     Cms.comments_per_page = 30
   end
-  
+
   def teardown
     ActionController::Base.perform_caching             = false
   end

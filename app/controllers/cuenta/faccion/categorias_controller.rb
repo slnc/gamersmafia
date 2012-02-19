@@ -3,7 +3,7 @@ class Cuenta::Faccion::CategoriasController < Admin::CategoriasController
   def categorias_skip_path
     '../../../'
   end
-  
+
   def cats_path
     'cuenta/faccion/categorias'
   end

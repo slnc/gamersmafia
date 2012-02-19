@@ -26,7 +26,7 @@ module Clusterer
     include DocumentSimilarity
 
     def vector_length
-      @vector_length ||= Math.sqrt(self.inject(0) {|n,y| n + y[1]*y[1]}) 
+      @vector_length ||= Math.sqrt(self.inject(0) {|n,y| n + y[1]*y[1]})
     end
   end
 end

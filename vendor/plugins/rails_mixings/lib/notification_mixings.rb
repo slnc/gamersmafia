@@ -2,7 +2,7 @@ module NotificationMixings
   def self.included(base)
     base.extend ClassMethods
   end
-  
+
   module ClassMethods
     def check_system_emails
       if App.system_mail_host.index('gmail')
@@ -14,7 +14,7 @@ module NotificationMixings
       end
 
       @imap.select('INBOX')
-      
+
       max = 500
       i = 0
       @imap.search(["NOT", "DELETED"]).each do |message_id|
@@ -31,15 +31,15 @@ module NotificationMixings
         end
         i = i+1
       end
-      
+
       @imap.expunge
     end
-    
+
     def mark_for_deletion(message_id)
       ##puts "marking for deletion message_id #{message_id}"
       @imap.store(message_id, "+FLAGS", [:Deleted])
     end
-    
+
     def process_email_envelope(envelope)
       #puts "processing envelope.subject #{envelope.subject} (#{envelope.to[0]})"
       failed = ['Mail delivery failed: returning message to sender',
@@ -51,10 +51,10 @@ module NotificationMixings
               'Message Delivery Failure',
               'Delivery status notification',
               'Delivery Status Notification']
-      
+
       if failed.include?(envelope.subject) or (envelope.subject and (envelope.subject.downcase.include?('delivery') or envelope.subject.downcase.include?('returned mail')))
         m = /-([0-9a-zA-Z]+)$/.match(envelope.to[0].mailbox)
-        
+
         if envelope.to[0].host == App.system_mail_domain.gsub('mail.', '') && !m.nil?
           message_key = m[1]
           se = SentEmail.find_by_message_key(message_key)
@@ -71,7 +71,7 @@ module NotificationMixings
         false
       end
     end
-    
+
     def process_email_body(envelope)
       false
     end

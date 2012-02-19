@@ -28,7 +28,7 @@ module Clusterer
     #there were some typos in the original algorithm in the paper
     #also see the Pascal code in NashSVD, file alg01.pas; for an idea
     #the partial algorithm is an adaptation of that algo
-    
+
     def svd
       m, n = self.row_size, self.column_size
       tol =  0.001
@@ -69,7 +69,7 @@ module Clusterer
             end
             n.times do |i|
               r = v[i,j]
-              v[i,j] = c * r + s * v[i,k] #typo in paper replace r by s 
+              v[i,j] = c * r + s * v[i,k] #typo in paper replace r by s
               v[i,k] = -s*r + c * v[i,k]  #typo in paper replace A(i,k) by v(i,k)
             end
           end
@@ -94,14 +94,14 @@ module Clusterer
     def self.join_rows(rows)
       DMatrix[*rows.collect {|r| [*r] }]
     end
-    
+
     def transpose
       x = super
       y = DMatrix[]
       y.instance_variable_set("@rows",x.instance_variable_get("@rows"))
       y
     end
-    
+
     def self.join_columns(columns)
       DMatrix[*columns.collect {|c| [*c] }].transpose
     end
@@ -117,11 +117,11 @@ end
 
 class Vector
   alias :dot :inner_product
-  
+
   def transpose
     self
   end
-  
+
   def dimensions
     [size]
   end

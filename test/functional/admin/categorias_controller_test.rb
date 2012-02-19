@@ -1,12 +1,12 @@
 require 'test_helper'
 
 class Admin::CategoriasControllerTest < ActionController::TestCase
-  
+
   test "index_no_perm" do
     sym_login 3
     assert_raises(AccessDenied) { get :index }
   end
-  
+
   test "index_capo" do
     u2 = User.find(2)
     u2.give_admin_permission(:capo)
@@ -14,7 +14,7 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
     get :index
     assert_response :success
   end
-  
+
   test "index_boss" do
     u2 = User.find(2)
     Faction.find(1).update_boss(u2)
@@ -22,7 +22,7 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
     get :index
     assert_response :success
   end
-  
+
   test "index_editor" do
     u2 = User.find(2)
     f1 = Faction.find(1)
@@ -31,7 +31,7 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
     get :index
     assert_response :success
   end
-  
+
   test "index_don" do
     u2 = User.find(2)
     bd1 = BazarDistrict.find(1)
@@ -40,7 +40,7 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
     get :index
     assert_response :success
   end
-  
+
   test "index_sicario" do
     u2 = User.find(2)
     bd1 = BazarDistrict.find(1)
@@ -49,83 +49,83 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
     get :index
     assert_response :success
   end
-  
+
   test "hijos_if_perm" do
     u2 = User.find(2)
     u2.give_admin_permission(:capo)
     sym_login 2
     get :hijos, :id => 1, :content_type => 'News'
   end
-  
+
   test "hijos_if_no_perm" do
     u2 = User.find(2)
     sym_login 2
-    assert_raises(AccessDenied) { get :hijos, :id => 1, :content_type => 'Topic' }    
+    assert_raises(AccessDenied) { get :hijos, :id => 1, :content_type => 'Topic' }
   end
-  
+
   test "hijos_if_boss_but_no_perm" do
     u2 = User.find(2)
     Faction.find(1).update_boss(u2)
-    
+
     sym_login 2
     assert_raises(AccessDenied) do
       get :hijos, :id => 5, :content_type => 'Topic' # anime
-    end 
+    end
   end
-  
+
   test "contenidos_if_perm" do
     u2 = User.find(2)
     u2.give_admin_permission(:capo)
     sym_login 2
-    get :contenidos, :id => 1, :content_type => 'Topic'  
+    get :contenidos, :id => 1, :content_type => 'Topic'
   end
-  
+
   test "contenidos_if_no_perm" do
     u2 = User.find(2)
     Faction.find(1).update_boss(u2)
-    
+
     sym_login 2
-    assert_raises(AccessDenied) { get :contenidos, :id => 5, :content_type => 'Topic' } # anime 
+    assert_raises(AccessDenied) { get :contenidos, :id => 5, :content_type => 'Topic' } # anime
   end
-  
+
   test "cant_create_root_level_blank_taxonomy_term" do
     u2 = User.find(2)
     u2.give_admin_permission(:capo)
-    
+
     sym_login 2
     assert_raises(AccessDenied) do
       post :create, :term => { :name => 'furrinori', :taxonomy => ''}
     end
   end
-  
-  
+
+
   test "create_if_perm" do
     u2 = User.find(2)
     Faction.find(1).update_boss(u2)
-    
+
     sym_login 2
     assert_count_increases(Term) do
       post :create, :term => { :name => 'furrinori', :taxonomy => 'TopicsCategory', :parent_id => 1}
       assert_response :redirect
     end
-    
+
     @t = Term.find(:first, :order => 'id DESC')
     assert_equal 'furrinori', @t.name
     assert_equal 'TopicsCategory', @t.taxonomy
     assert_equal 1, @t.parent_id
   end
-  
+
   test "create_if_no_perm" do
     u2 = User.find(2)
     Faction.find(1).update_boss(u2)
-    
+
     sym_login 2
-    
+
     assert_raises(AccessDenied) do
       post :create, :term => { :name => 'furrinori', :taxonomy => 'TopicsCategory', :parent_id => 5}
     end
   end
-  
+
   test "update_if_perm" do
     test_create_if_perm
     post :update, :id => @t.id, :term => { :name => 'furrinori2' }
@@ -133,7 +133,7 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
     @t.reload
     assert_equal 'furrinori2', @t.name
   end
-  
+
   test "update_if_no_perm" do
     test_create_if_perm
     sym_login 3
@@ -141,7 +141,7 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
       post :update, :id => @t.id, :term => { :name => 'furrinori2' }
     end
   end
-  
+
   test "mass_move_if_perm" do
     test_create_if_perm
     n = Topic.find(:first)
@@ -152,7 +152,7 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
     t17 = Term.find(17)
     assert_equal 1, t17.find(:all, :content_type => 'Topic', :conditions => ['contents.id = ?', n.unique_content_id]).size
   end
-  
+
   test "mass_move_if_no_perm" do
     test_create_if_perm
     n = Topic.find(:first)
@@ -162,14 +162,14 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
       post :mass_move, :id => t.id, :destination_term_id => 5, :content_type => 'Topic', :contents => [n.unique_content.id]
     end
   end
-  
+
   test "destroy_if_perm" do
     test_create_if_perm
     post :destroy, :id => @t.id
     assert_response :redirect
     assert_nil Term.find_by_id(@t.id)
   end
-  
+
   test "destroy_if_perm_and_root" do
     g = Game.new(:name => 'baaaa', :code => 'b2')
     assert g.save
@@ -181,15 +181,15 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
     assert_response :redirect
     assert_nil Term.find_by_id(@t1.id)
   end
-  
+
   test "destroy_if_no_perm" do
     test_create_if_perm
     sym_login 3
     assert_raises(AccessDenied) do
       post :destroy, :id => @t.id
-    end  
+    end
   end
-  
+
   test "destroy_if_perm_but_not_empty" do
     test_create_if_perm
     n = Topic.find(:first)

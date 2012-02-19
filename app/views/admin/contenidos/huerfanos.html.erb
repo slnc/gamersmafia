@@ -1,7 +1,7 @@
 <%mftext('Contenidos huérfanos') do %>
 <table>
 <%Content.orphaned.each do |uniq|
-  item = uniq.real_content 
+  item = uniq.real_content
   begin
   url = gmurl(item).gsub('show', 'edit')
   rescue

@@ -17,7 +17,7 @@ Nombre: <input type="text" name="ads_slot[name]" /><br />
 
 
 <h1>Ads asociados a este slot</h1>
-<% 
+<%
 instances = @ads_slot.ads_slots_instances.find(:all, :conditions => 'deleted is false')
 adsis = @ads_slot.ads_slots_instance_ids
 adsis = [0] if adsis.size == 0
@@ -49,7 +49,7 @@ max_ctr = max_group_ctr.to_f * 1000
 instances.each do |adsi|
 	ddata = User.db_query("select avg(ctr) as ctr, sum(hits) as hits, sum(pageviews) as pageviews, (extract('epoch' from created_on) / 259200)::int as epoch from stats.ads_daily where ads_slots_instance_id = #{adsi.id} group by (extract('epoch' from created_on) / 259200)::int order by (extract('epoch' from created_on) / 259200)::int desc limit 30")
 	ddata.reverse!
-	data = ddata.collect { |dbr| dbr['ctr'].to_f*1000 } 
+	data = ddata.collect { |dbr| dbr['ctr'].to_f*1000 }
 cur_mean_ctr = ddata.collect { |dbr| dbr['ctr'].to_f }.mean * 1000
 
 %>
@@ -83,7 +83,7 @@ cur_mean_ctr = ddata.collect { |dbr| dbr['ctr'].to_f }.mean * 1000
 
 <%= form_tag({:action => 'update_slots_instances', :id => @ads_slot})%>
 <table>
-<% 
+<%
 instances = @ads_slot.ads_slots_instances.find(:all, :conditions => 'deleted is false').collect { |asi| asi.ad_id }
 Ad.find(:all, :order => 'name').each do |ad| %>
 <tr class="<%=oddclass%>">
@@ -99,7 +99,7 @@ Ad.find(:all, :order => 'name').each do |ad| %>
 
 <div class="subheader"><div>Portales en los que aparece</div></div>
 <form method="post" action="/admin/ads_slots/add_to_portal/<%=@ads_slot.id%>">
-	Portal: 
+	Portal:
 	<select name="portal_id">
 		<%=options_for_select([['gm', GmPortal.new.id], ['arena', ArenaPortal.new.id], ['bazar', BazarPortal.new.id]] + Portal.find(:all, :conditions => 'type <> \'ClansPortal\'', :order => 'code').collect { |o| [o.code, o.id] }) %>
 	</select><br />
@@ -108,7 +108,7 @@ Ad.find(:all, :order => 'name').each do |ad| %>
 <% if @ads_slot.portals.size == 0 then %>
 <p>Aparece en todos los portales</p>
 <% else %>
-<p>Solo aparece en los portales: 
+<p>Solo aparece en los portales:
 <table>
 	<%@ads_slot.portals.each do |portal| %>
 	<tr class="<%=oddclass%>">

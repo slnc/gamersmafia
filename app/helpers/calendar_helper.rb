@@ -8,11 +8,11 @@ module CalendarHelper
   # calendar (which can then be customized using CSS) for a given month and year.
   # However, this may be customized in a variety of ways -- changing the default CSS
   # classes, generating the individual day entries yourself, and so on.
-  # 
+  #
   # The following options are required:
   #  :year  # The  year number to show the calendar for.
   #  :month # The month number to show the calendar for.
-  # 
+  #
   # The following are optional, available for customizing the default behaviour:
   #   :table_class       => "calendar"        # The class for the <table> tag.
   #   :month_name_class  => "monthName"       # The class for the name of the month, at the top of the table.
@@ -23,14 +23,14 @@ module CalendarHelper
   #   :abbrev            => (0..2)            # This option specifies how the day names should be abbreviated.
   #                                             Use (0..2) for the first three letters, (0..0) for the first, and
   #                                             (0..-1) for the entire name.
-  # 
+  #
   # For more customization, you can pass a code block to this method, that will get one argument, a Date object,
   # and return a values for the individual table cells. The block can return an array, [cell_text, cell_attrs],
   # cell_text being the text that is displayed and cell_attrs a hash containing the attributes for the <td> tag
   # (this can be used to change the <td>'s class for customization with CSS).
   # This block can also return the cell_text only, in which case the <td>'s class defaults to the value given in
   # +:day_class+. If the block returns nil, the default options are used.
-  # 
+  #
   # Example usage:
   #   calendar(:year => 2005, :month => 6) # This generates the simplest possible calendar.
   #   calendar({:year => 2005, :month => 6, :table_class => "calendar_helper"}) # This generates a calendar, as

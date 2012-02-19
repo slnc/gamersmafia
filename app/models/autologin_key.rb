@@ -1,6 +1,6 @@
 class AutologinKey < ActiveRecord::Base
   belongs_to :user
-  
+
   def touch
     # Things to do when an autologin key is used.
     tstamp = Time.now

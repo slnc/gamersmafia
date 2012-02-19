@@ -1,7 +1,7 @@
 class TutorialesController < InformacionController
   acts_as_content_browser :tutorial
   allowed_portals [:gm, :faction, :bazar, :bazar_district]
-  
+
   def index
     parent_id = params[:category]
     if parent_id then
@@ -13,7 +13,7 @@ class TutorialesController < InformacionController
       @title = "Tutoriales de #{@category.name}"
     end
   end
-  
+
   def _after_show
     if @tutorial
       @title = @tutorial.title

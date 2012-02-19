@@ -2,19 +2,19 @@ require 'test_helper'
 
 class Admin::AdsSlotsControllerTest < ActionController::TestCase
   test_min_acl_level :superadmin, [ :index, :new, :edit, :update, :destroy ]
-  
+
   test "index" do
     sym_login 1
     get :index
     assert_response :success
   end
-  
+
   test "new" do
     sym_login 1
     get :index
     assert_response :success
   end
-  
+
   test "create" do
     sym_login 1
     assert_count_increases(AdsSlot) do
@@ -22,22 +22,22 @@ class Admin::AdsSlotsControllerTest < ActionController::TestCase
     end
     assert_response :redirect
   end
-  
+
   test "edit" do
     test_create
     get :edit, :id => AdsSlot.find(:first).id
     assert_response :success
   end
-  
+
   test "update" do
     test_create
-    
+
     post :update, { :id => AdsSlot.find(:first, :order => 'id DESC').id, :ads_slot => { :name => 'fourling2'}}
-    
+
     assert_response :redirect
     assert_equal 'fourling2', AdsSlot.find(:first, :order => 'id desc').name
   end
-  
+
   test "update_slots_instances" do
     test_create
     a_a = Ad.create(:name => 'foo', :html => 'flick')
@@ -46,29 +46,29 @@ class Admin::AdsSlotsControllerTest < ActionController::TestCase
     as = AdsSlot.find(:first)
     post :update_slots_instances, {:id => as.id, :ads => [a_a.id, a_b.id]}
     assert_response :redirect
-    assert_equal ainst + 2, AdsSlotsInstance.count    
+    assert_equal ainst + 2, AdsSlotsInstance.count
   end
-  
+
   test "add_to_portal" do
     test_create
     @as = AdsSlot.find(:first)
     p_size = @as.portals.size
     post :add_to_portal, :id => @as.id, :portal_id => -1
-    assert_equal p_size + 1, @as.portals.size 
+    assert_equal p_size + 1, @as.portals.size
     assert_response :redirect
   end
-  
+
   test "add_to_portal2" do
     test_create
     @as = AdsSlot.find(:first)
     p_size = @as.portals.size
     post :add_to_portal, :id => @as.id, :portal_id => 1
-    assert_equal p_size + 1, @as.portals.size   
+    assert_equal p_size + 1, @as.portals.size
     assert @as.portals[0].kind_of?(Portal)
     assert_equal 1, @as.portals[0].id
     assert_response :redirect
   end
-  
+
   test "remove_from_portal" do
     test_add_to_portal
     p_size = @as.portals.size
@@ -76,7 +76,7 @@ class Admin::AdsSlotsControllerTest < ActionController::TestCase
     assert_equal p_size - 1, @as.portals.size
     assert_response :redirect
   end
-  
+
   test "copy" do
     test_create
     @as = AdsSlot.find(:first)

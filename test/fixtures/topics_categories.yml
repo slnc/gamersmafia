@@ -5,7 +5,7 @@
       code: foo
       root_id: 1
       topics_count: 0
-      
+
 - ut:
       id: 2
       name: Unreal Tournament
@@ -20,21 +20,21 @@
       root_id: 1
       parent_id: 1
       topics_count: 0
-  
+
 - fourth:
       id: 4
       name: Wii
       code: wii
       root_id: 4
-  
-  
+
+
 - clan:
       id: 5
       name: mapaches
       code: mapaches
       root_id: 5
       clan_id: 2
-      
+
 - arena:
       id: 6
       name: Arena
@@ -55,79 +55,78 @@
       code: gm
       root_id: 9
       topics_count: 0
-  
+
 - general:
       id: 10
       name: General
       parent_id: 9
       root_id: 9
       topics_count: 0
-      
+
 - anime:
       id: 20
       name: Anime
       code: anime
       root_id: 20
-      
+
 - cine:
       id: 11
       name: Cine
       code: cine
       root_id: 11
-      
+
 
 - deportes:
       id: 12
       name: Deportes
       code: deportes
       root_id: 12
-      
-      
+
+
 - desarrollo:
       id: 13
       name: Desarrollo
       code: desarrollo
       root_id: 13
-      
-      
+
+
 - estudiantes:
       id: 14
       name: Estudiantes
       code: estudiantes
       root_id: 14
 
-      
+
 - hardware:
       id: 15
       name: Hardware
       code: hardware
       root_id: 15
-      
-      
+
+
 - software:
       id: 16
       name: Software
       code: software
       root_id: 16
-      
-      
+
+
 - internet:
       id: 17
       name: Internet
       code: inet
       root_id: 17
-      
-      
+
+
 - musica:
       id: 18
       name: Musica
       code: musica
       root_id: 18
-      
-      
+
+
 - literatura:
       id: 19
       name: Literatura
       code: literatura
       root_id: 19
-      

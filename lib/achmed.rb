@@ -11,13 +11,13 @@ module Achmed
   SENTENCE_BOUNDARIES = ['.', '...', '?', '!']
   SENTENCE_BOUNDARIES_REGEXP = /(\.\.\.)|(\.)|(!)(\?)/
   def self.cross_pending_done
-	  total = Comment.count(:conditions => " id in (SELECT comment_id 
-                                                                  FROM comment_violation_opinions 
+	  total = Comment.count(:conditions => " id in (SELECT comment_id
+                                                                  FROM comment_violation_opinions
                                                               GROUP BY comment_id )
                                                      AND created_on <= '#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
-	  done = Comment.count(:conditions => " id in (SELECT comment_id 
-                                                                  FROM comment_violation_opinions 
-                                                              GROUP BY comment_id 
+	  done = Comment.count(:conditions => " id in (SELECT comment_id
+                                                                  FROM comment_violation_opinions
+                                                              GROUP BY comment_id
                                                                 HAVING count(*) = 3)
                                                      AND created_on <= '#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp")
 						     puts "total: #{total} | done: #{done}"
@@ -27,14 +27,14 @@ module Achmed
 
   def self.get_comment_to_classify_for_user(user)
     # User.db_query("SELECT id from comment_violation_opinions where user_id <> #{user.id} group by user_id having count(*)
-    cross_pending = Comment.find(:first, :conditions => " id in (SELECT comment_id 
-                                                                  FROM comment_violation_opinions 
-                                                                 WHERE user_id <> #{user.id} 
-                                                              GROUP BY comment_id 
+    cross_pending = Comment.find(:first, :conditions => " id in (SELECT comment_id
+                                                                  FROM comment_violation_opinions
+                                                                 WHERE user_id <> #{user.id}
+                                                              GROUP BY comment_id
                                                                 HAVING count(*) < 3)
 				 		     AND id not in (select comment_id from comment_violation_opinions where user_id = #{user.id})
                                                      AND created_on <= '#{COMMENTS_JOB_MAX_CREATED_ON}'::timestamp AND id >= random() * (select max(id) from comments)")
-    
+
     return cross_pending # if cross_pending # && Kernel.rand < 0.3
 
     # else return a random comment
@@ -97,7 +97,7 @@ module Achmed
             iv[occur.size] ||= 0
             iv[occur.size] += 1
             if occur.size > max && occur.size != mazzz
-                max = occur.size 
+                max = occur.size
         #        puts "new max: #{word}"
             end
         end
@@ -112,7 +112,7 @@ module Achmed
         puts "\n\n"
         #raise "bar"
 
-        
+
         index.each do |word, occur|
             if occur.size < 100
                 occur.each do |i, j|
@@ -129,17 +129,17 @@ module Achmed
         bigram = {}
         # count total number of tokens
         total = 0.0
-        
+
         index.each do |w, occur|
             total += occur.size
             bigram[w] = {}
         end
-        
+
 
         # build an associative array where bigram[word1][word] has the frequency
         # of "word1 word" in the corpus
         index.each do |word, occur|
-            occur.each do |i,j| 
+            occur.each do |i,j|
               next if j == 0
               # we are evaluating '<s>'. we skip because it
               # cannot have a word before it
@@ -161,7 +161,7 @@ module Achmed
             # count total number of tokens that appear after word1
             word1_total = bigram[word1].values().sum.to_f
 
-            # calculate and store P(word | word1). 
+            # calculate and store P(word | word1).
             # BE CAREFUL: It will be stored as [word1][word]
             bigram[word1].each do |word, freq|
               bigram_p[word1][word] = freq / word1_total
@@ -184,7 +184,7 @@ module Achmed
       good = self.bigrams[1]
       l_bad = self.likelihood(bad, comment)
       l_good = self.likelihood(good, comment)
-      
+
       puts "comparing #{l_bad} > #{l_good} " #   (#{(l_bad - l_good).abs / [l_bad, l_good].max})"
       l_bad > l_good
     end
@@ -251,7 +251,7 @@ module Achmed
             unigram[w] += 1
           end
       end
-      
+
       # normalize
       p_unigram = {}
       max = unigram.values.sum
@@ -263,13 +263,13 @@ module Achmed
       unigram.each do |w, v|
           w1 += 1 if v == 1.0
       end
-      
+
       #puts "Prob mass to give to unk: #{w1 / unigram.values.sum}"
       #puts "\n\n"
 
       pctg = 1 - w1 / unigram.values.sum
       p_unigram.each { |w, v| p_unigram[w] *= pctg }
-      
+
       p_unigram[UNK_TAG] = w1 / unigram.values.sum
       p_unigram
     end
@@ -297,7 +297,7 @@ module Achmed
       good = self.bigrams[1]
       l_bad = self.likelihood(bad, comment)
       l_good = self.likelihood(good, comment)
-      
+
       puts "comparing #{l_bad} > #{l_good}    (#{(l_bad - l_good).abs / [l_bad, l_good].max})"
       l_bad > l_good
     end
@@ -307,9 +307,9 @@ module Achmed
       p = 0
       text.split(' ').each do |w|
           if punigram.include?(w)
-              p += Math.log(punigram[w]) 
+              p += Math.log(punigram[w])
           else
-              # p += Math.log(punigram[UNK_TAG]) 
+              # p += Math.log(punigram[UNK_TAG])
           end
       end
 
@@ -348,7 +348,7 @@ module Achmed
       tag_as_spam = model.most_likely_spam?(c.comment)
       err += 1.0 if (bad_comment && !tag_as_spam) || (!bad_comment && tag_as_spam)
 
-      if (bad_comment && !tag_as_spam) 
+      if (bad_comment && !tag_as_spam)
           puts "bad mouth but didn't detect"
           false_negatives += 1
       elsif (!bad_comment && tag_as_spam)
@@ -357,10 +357,10 @@ module Achmed
       end
       #
       #tag_as_spam = model.most_likely_spam?(c.netiquette_violation ? c.lastowner_version : c.comment)
-      
+
       #err += 1.0 if (c.netiquette_violation && !tag_as_spam) || (!c.netiquette_violation && tag_as_spam)
 
-      #if (c.netiquette_violation && !tag_as_spam) 
+      #if (c.netiquette_violation && !tag_as_spam)
       #    puts "bad mouth but didn't detect"
       #    false_negatives += 1
       #elsif (!c.netiquette_violation && tag_as_spam)

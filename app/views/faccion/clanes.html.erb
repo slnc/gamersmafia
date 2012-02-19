@@ -1,16 +1,16 @@
 <% generic_support do %>
   <% mftext('Clanes más recientes') do %>
   <table>
-    <% 
+    <%
     cache("/#{controller.portal_code}/clanes/index/newest") do
-	games = (controller.portal_code != 'gm' && controller.portal.respond_to?(:games))? controller.portal.games : [] 
-    if games.size > 0 
+	games = (controller.portal_code != 'gm' && controller.portal.respond_to?(:games))? controller.portal.games : []
+    if games.size > 0
       clans = Clan.find_by_games(:games => games, :conditions => 'deleted is false', :order => 'created_on DESC', :limit => 5)
     else
       clans = Clan.find(:all, :conditions => 'deleted is false', :order => 'created_on DESC', :limit => 5)
     end
-    
-    clans.each do |clan| %> 
+
+    clans.each do |clan| %>
     <tr class="<%=oddclass%>">
       <td><a href="/clanes/clan/<%=clan.id%>"><%=notags(clan.name)%></a><br />
         <div class="infoinline timestamp"><%=print_tstamp(clan.created_on)%></div></td>
@@ -22,10 +22,10 @@
 
   <% mftext('Clanes más numerosos') do %>
   <table>
-    <% 
-    cache("/#{controller.portal_code}/clanes/index/biggest") do 
-    games = (controller.portal_code != 'gm' && controller.portal.respond_to?(:games))? controller.portal.games : [] 
-    if games.size > 0 
+    <%
+    cache("/#{controller.portal_code}/clanes/index/biggest") do
+    games = (controller.portal_code != 'gm' && controller.portal.respond_to?(:games))? controller.portal.games : []
+    if games.size > 0
       clans = Clan.find_by_games(:games => games, :conditions => 'deleted is false and members_count > 0', :order => 'members_count DESC', :limit => 10)
     else
       clans = Clan.find(:all, :conditions => 'deleted is false', :order => 'members_count DESC', :limit => 10)

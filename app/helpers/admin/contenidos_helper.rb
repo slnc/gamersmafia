@@ -1,4 +1,4 @@
-module Admin::ContenidosHelper  
+module Admin::ContenidosHelper
   def draw_content_mod_state(obj)
     points = PublishingDecision.find_sum_for_content(obj)
     h = (points > 0) ? 7 : 14

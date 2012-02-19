@@ -93,7 +93,7 @@ module Clusterer
                 "algo",
                 "algun",
                 "mas",
-                
+
                 "eso",
                 "el",
                 "thei",
@@ -132,21 +132,21 @@ module Clusterer
                 "donde",
                 "cuando",
                 "quien",
-                
+
                 "mientras",
-                
+
                 "con",
                 "entre",
-                
+
                 "www",
                 "si",
                 "tu",
                "nosotros",
                "vosotros",
                "ellos",
-                
+
                ]
-               
+
   STOP_WORDS_EN = ["and",
                 "but",
                 "came",

@@ -9,12 +9,12 @@ class ActionViewMixingsTest < ActiveSupport::TestCase
     str = '<a href="mailto:dharana@dharana.net">dharana@dharana.net</a>'
     assert_equal str, ActionViewTestContainer.new.clean_html(str).strip
   end
-  
+
   test "clean html should remove harmful attributes" do
     str = 'foo <a href="mailto:dharana@dharana.net" onclick="alert(\'foo\');">dharana@dharana.net</a>'
     assert_equal 'foo <a href="mailto:dharana@dharana.net">dharana@dharana.net</a>', ActionViewTestContainer.new.clean_html(str).strip
   end
-  
+
   #test "print_interval" do
   #  assert_equal '2 semanas', ActionViewTestContainer.new.format_interval(Time.now - 2.weeks.ago, 'horas', true).strip
   #end

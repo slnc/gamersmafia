@@ -4,7 +4,7 @@
 <% content_main do %>
 	<% mftext('Editar canal') do %>
 	<form method="post" action="/cuenta/mis_canales/update/<%=@gmtv_channel.id%>" enctype="multipart/form-data">
-		<% if @gmtv_channel.file then 
+		<% if @gmtv_channel.file then
 real_path = "#{Rails.root}/public/" + @gmtv_channel.file
 %>
 <% end -%>
@@ -17,7 +17,7 @@ real_path = "#{Rails.root}/public/" + @gmtv_channel.file
 	<tr class="<%=oddclass%>">
 		<td class="w125">Screenshot (se mostrará a 50x50)</td>
 		<td><% if @gmtv_channel.screenshot then %>
-<%=fc_thumbnail(@gmtv_channel.screenshot, 'k', '153x115')%> 
+<%=fc_thumbnail(@gmtv_channel.screenshot, 'k', '153x115')%>
 <% end -%>
 <%= file_field 'gmtv_channel', 'screenshot' %></td>
 	</tr>

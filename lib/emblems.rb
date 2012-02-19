@@ -78,21 +78,21 @@ module Emblems
       u.users_emblems.create(:emblem => 'webmaster')
     end
 
-    User.can_login.find(:all, :conditions => "created_on >= now() - 
+    User.can_login.find(:all, :conditions => "created_on >= now() -
                                              '1 week'::interval").each do |u|
       u.users_emblems.create(:emblem => 'baby')
     end
 
     bosses = [0]
-    User.can_login.find(:all, :conditions => "id IN (SELECT user_id 
-                                                       FROM users_roles 
+    User.can_login.find(:all, :conditions => "id IN (SELECT user_id
+                                                       FROM users_roles
                                                       WHERE role = 'Boss')").each do |u|
       u.users_emblems.create(:emblem => 'boss')
       bosses<< u.id
     end
 
     underbosses = [0]
-    User.can_login.find(:all, :conditions => "id IN (SELECT user_id 
+    User.can_login.find(:all, :conditions => "id IN (SELECT user_id
                                              FROM users_roles
                                             WHERE role = 'Underboss')").each do |u|
       u.users_emblems.create(:emblem => 'underboss')

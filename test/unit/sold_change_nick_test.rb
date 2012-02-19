@@ -14,6 +14,6 @@ class SoldChangeNickTest < ActiveSupport::TestCase
     assert receipt.used?
     u.reload
     assert_equal 'Awajujija', u.login
-    
+
   end
 end

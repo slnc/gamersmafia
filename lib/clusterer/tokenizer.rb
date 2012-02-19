@@ -33,7 +33,7 @@ end
 
 module Clusterer
   #the tokenizer algorithms take a block, to which the string tokens are passed
-  
+
   module Tokenizer
     def simple_tokenizer (text, options = {})
       text.gsub(/[^\w\s]/,"").split.each do |word|
@@ -45,11 +45,11 @@ module Clusterer
 
     def simple_ngram_tokenizer (text, options = {})
       ngram = options[:ngram] || 3
-      
+
       ngram_list = (0..ngram).collect { []}
       text.split(/[\.\?\!]/).each do |sentence|
         #split the text into sentences, Ngrams cannot straddle sentences
-        
+
         sentence.gsub(/[^\w\s]/,"").split.each do |word|
           word.downcase!
           word = word.stem unless options[:no_stem]

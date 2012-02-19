@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class AllowedCompetitionsParticipantTest < ActiveSupport::TestCase
-  
+
   test "should_send_notification_after_being_invited_if_competition_is_invitational_and_in_state_gt_0_and_users" do
     u = User.find(1)
     c = Competition.find(:first, :conditions => "invitational is true and fee is null and state BETWEEN 1 AND 3 and competitions_participants_type_id = #{Competition::USERS}")
@@ -10,7 +10,7 @@ class AllowedCompetitionsParticipantTest < ActiveSupport::TestCase
     c.allowed_competitions_participants.create({:participant_id => u.id})
     assert_equal prev + 1, ActionMailer::Base.deliveries.size
   end
-  
+
   test "should_send_notification_after_being_invited_if_competition_is_invitational_and_in_state_gt_0_and_clans" do
     u = User.find(1)
     c = Competition.find(:first, :conditions => "invitational is true and fee is null and state BETWEEN 1 AND 3 and competitions_participants_type_id = #{Competition::CLANS}")
@@ -21,13 +21,13 @@ class AllowedCompetitionsParticipantTest < ActiveSupport::TestCase
     c.allowed_competitions_participants.create({:participant_id => clan.id})
     assert_equal prev + 1, ActionMailer::Base.deliveries.size
   end
-  
+
   test "should_not_send_notification_after_being_invited_if_competition_is_invitational_but_in_state_0" do
     u = User.find(1)
     c = Competition.find(:first, :conditions => "invitational is true and fee is null and state = 0 and competitions_participants_type_id = #{Competition::USERS}")
     assert_not_nil c
     prev = ActionMailer::Base.deliveries.size
     c.allowed_competitions_participants.create({:participant_id => u.id})
-    assert_equal prev, ActionMailer::Base.deliveries.size    
+    assert_equal prev, ActionMailer::Base.deliveries.size
   end
 end

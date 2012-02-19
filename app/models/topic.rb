@@ -16,7 +16,7 @@ class Topic < ActiveRecord::Base
   def update_avg_popularity
     # TODO tb liimpiamos cache de avg_popularity de foro, pero aquí es mal lugar
     # TODO duplicado
-      
+
     c = self.main_category
     c.avg_popularity = nil
     raise Exception unless c.save
@@ -52,7 +52,7 @@ class Topic < ActiveRecord::Base
   def move_to_forum(new_forum)
     self.categories_terms_ids= [new_forum.id, 'TopicsCategory']
   end
-  
+
   def hot?
     # TODO
     # un topic es hot si su ratio de respuestas es mayor a la media de ese foro
@@ -65,18 +65,18 @@ class Topic < ActiveRecord::Base
       false
     end
   end
-  
+
   def self.latest_by_category(limit=20)
     contents_r_root_id = {}
     i = 0
-    Content.find_by_sql("SELECT contents.* 
-                           FROM contents 
+    Content.find_by_sql("SELECT contents.*
+                           FROM contents
                           WHERE state = #{Cms::PUBLISHED}
                             AND clan_id IS NULL
-                            AND id IN (SELECT last_updated_item_id 
-                                         FROM terms 
+                            AND id IN (SELECT last_updated_item_id
+                                         FROM terms
                                         WHERE root_id = parent_id
-                                          AND bazar_district_id IS NULL 
+                                          AND bazar_district_id IS NULL
                                           AND taxonomy = 'TopicsCategory' )
                                 AND updated_on >= now() - '1 week'::interval
                        ORDER BY updated_on DESC").each do |content|

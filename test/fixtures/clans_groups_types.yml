@@ -1,7 +1,7 @@
 first:
   id: 1
   name: clanleaders
-  
+
 clanleaders:
   id: 2
   name: members

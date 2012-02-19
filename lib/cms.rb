@@ -2,7 +2,7 @@ prev_verbose = $VERBOSE
 $VERBOSE = nil
 begin
   class Tidybuf
-    
+
     # Mimic TidyBuffer.
     #
     TidyBuffer = struct [
@@ -35,7 +35,7 @@ module Cms
   PUBLISHED = 2
   DELETED = 3
   ONHOLD = 4 # estado especial para contenidos que temporalmente queremos q estén en el limbo, no públicos
-  
+
   IMG_SIZE_GRID3 = '143x143'
   IMG_SIZE_GRID2 = '90x90'
   IMG_SIZE_GRIDB1 = '58x58'
@@ -45,22 +45,22 @@ module Cms
   IMGWG3 = 143
   IMGWG2 = 88
   IMGWG1 = 33
-  
+
   IMG_ARTICLE_THUMB = "#{IMGWG4}x54"
-  
+
   IMAGE_FORMAT = /\.(jpg|gif|png|jpeg|bmp)$/i
-  
+
   ROOT_TERMS_CONTENTS = %w(News Bet Poll Event Coverage Interview Column Review Demo RecruitmentAd)
   CATEGORIES_TERMS_CONTENTS = %w(Image Download Topic Tutorial Question)
   NO_MODERATION_NEEDED_CONTENTS = %w(Topic Blogentry Question RecruitmentAd)
   DONT_PARSE_IMAGES_OF_CONTENTS = %w(Topic Blogentry RecruitmentAd)
   AUTHOR_CAN_EDIT_CONTENTS = %w(Blogentry RecruitmentAd)
-  
+
   CONTENTS_WITH_CATEGORIES = %w(Column Download Demo Topic Image Interview News Tutorial Poll Bet Review Event Question RecruitmentAd)
   BAZAR_DISTRICTS_VALID = %w(Column Interview Tutorial News Topic Image Poll Bet Review Event Question Download)
   BAZAR_DISTRICTS_REQUIRED = %w(News Topic Poll Question)
   CLANS_CONTENTS = %w(News Topic Download Image Event Poll)
-  
+
   SAFE_PUBLICATION_THRESHOLDS = {'News' => 86400 * 14,
                                 'Image' => 86400 * 14,
                                 'Event' => 86400 * 14,
@@ -75,7 +75,7 @@ module Cms
                                 'Poll' => 86400 * 14,
                                 'Bet' => 86400 * 7,
                                 'Review' => 86400 * 30 }
-  
+
   WYSIWYG_ATTRIBUTES = {
     'News' => ['description', 'main'],
     'Image' => ['description'],
@@ -92,7 +92,7 @@ module Cms
     'Column' => ['description', 'main'],
     'Review' => ['description', 'main'],
   }
-  
+
   CLASS_NAMES = {'News' => 'noticia',
                 'Image' => 'imagen',
                 'Download' => 'descarga',
@@ -112,7 +112,7 @@ module Cms
                 'Coverage' => 'coverage',
                 'Comments' => 'comentario',
   }
-  
+
   def self.contents_classes
     [News,
     Image,
@@ -131,7 +131,7 @@ module Cms
     RecruitmentAd,
     Topic]
   end
-  
+
   def self.contents_classes_symbols
     [:news,
     :image,
@@ -150,19 +150,19 @@ module Cms
     :funthing,
     :topic]
   end
-  
+
   def self.contents_classes_publishable
     self.contents_classes - [Topic, Blogentry, Question, RecruitmentAd]
   end
-  
+
   def self.uncompress_ckeditor_if_necessary
     if !File.exists?("#{Rails.root}/public/ckeditor")
-      system("tar xfz \"#{Rails.root}/public/ckeditor_3.0.1.tar.gz\" -C public") 
+      system("tar xfz \"#{Rails.root}/public/ckeditor_3.0.1.tar.gz\" -C public")
       system("cat \"#{Rails.root}/public/ckeditor/lang/es.js\" >> \"#{Rails.root}/public/ckeditor/ckeditor.js\"")
       system("cat \"#{Rails.root}/public/ckeditor_custom.js\" >> \"#{Rails.root}/public/ckeditor/ckeditor.js\"")
     end
   end
-  
+
   # Returns the content name out of taxonomy name.
   # Args:
   # - taxonomy_name: eg. ImagesCategory
@@ -172,12 +172,12 @@ module Cms
   def self.extract_content_name_from_taxonomy(taxonomy_name)
     ActiveSupport::Inflector::singularize(taxonomy_name.gsub('Category', ''))
   end
-  
-    
+
+
   def self.taxonomy_from_content_name(content_name)
     "#{ActiveSupport::Inflector::pluralize(content_name)}Categories"
   end
-  
+
   CONTENTS_CONTROLLERS = {
     'News' => 'noticias',
     'Image' => 'imagenes',
@@ -198,7 +198,7 @@ module Cms
     'Comments' => 'comentarios',
     'RecruitmentAd' => 'reclutamiento',
   }
-  
+
   def self.translate_content_name(name, en2es = 1)
     name = name.downcase.normalize if en2es != 1
     translates = {'News' => 'noticias',
@@ -220,7 +220,7 @@ module Cms
                   'Coverage' => 'coverages',
                   'Comments' => 'comentarios',
     }
-    
+
     if en2es == 1 then
       raise "#{name} not found" unless translates[name]
       translates.fetch(name) { |k| raise "IndexError (#{k} not found)" }
@@ -228,25 +228,25 @@ module Cms
       translates2 = {}
       translates.each { |k,v| translates2[v] = k }
       translates2.fetch(name) { |k| raise "IndexError (#{k} not found)" }
-      
+
     end
   end
-  
+
   @@comments_per_page = 30
   def self.comments_per_page
     @@comments_per_page
   end
-  
+
   def self.comments_per_page= num
     @@comments_per_page = num
   end
-  
+
   def self.gen_minicolumns(mode, data, dst_file)
     FileUtils.mkdir_p(File.dirname(dst_file)) unless File.exists?(File.dirname(dst_file))
     `#{App.python} script/spark.py #{mode} #{data.join(',')} "#{dst_file}"`
   end
-  
-  
+
+
   def self.min_hits_before_reaching_max_publishing_power(contents_type_name)
     case contents_type_name
       when 'Image':
@@ -255,27 +255,27 @@ module Cms
       30
     end
   end
-  
+
   def self.clans_contents_symbols
-    @_cache_ccs ||= CLANS_CONTENTS.collect { |c| c.downcase.to_sym }    
+    @_cache_ccs ||= CLANS_CONTENTS.collect { |c| c.downcase.to_sym }
   end
-  
-  
-  
+
+
+
   VALID_TITLE_REGEXP = /^([a-zA-ZáéíóúÁÉÍÓÚüëÜËñÑ0-9¿\?[:space:]\(\):;\.,_¡!\/&%"\+\-]+)$/i
   DNS_REGEXP = /^((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/i # no es perfecto
   URL_REGEXP = URI::regexp(%w(http https ftp))
   URL_REGEXP_FULL = /^(#{URI::regexp(%w(http https ftp))})$/ # /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?;+=&%@!\-\/]))?$/
   EMAIL_REGEXP = /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/
   IP_REGEXP = /\b(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/
-  
-  
+
+
   def self.content_from_controller(name)
     t = {}
     CONTENTS_CONTROLLERS.each { |k,v| t[v] = k unless /Clans/ =~ k}
     t.fetch(name.downcase) { |k| raise "#{k} not found" }
   end
-  
+
   def self.download_and_rewrite_bb_imgs(corpus, relative_savedir)
     known_domains = App.domain_aliases + [App.domain]
     corpus.gsub(/<img[^>]+src="([^"]+)"/i) do |rs|
@@ -283,7 +283,7 @@ module Cms
 
       if md and not known_domains.include?(md[1].gsub('www.', '')) # remote download
         new_file = self.copy_image_to_dir(md[0], relative_savedir) # "#{self.class.name.downcase}/#{self.id % 1000}/#{self.id % 100}"
-        
+
         if new_file.nil?
           rs
         else
@@ -294,16 +294,16 @@ module Cms
       end
     end
   end
-  
+
   # relative_savedir is relative to #{Rails.root}/public/storage/
   # Devuelve la ruta guardada o nil si no la ha podido guardar
   def self.copy_image_to_dir(imgurl, relative_savedir)
     if /http:\/\// =~ imgurl # download it first
-      
+
       FileUtils.rm_rf("/tmp/gm_tmp_files/")
       tmpfile = "/tmp/gm_tmp_files/#{File.basename(imgurl).bare}"
       FileUtils.mkdir_p(File.dirname(tmpfile)) if not File.directory?(File.dirname(tmpfile)) # TODO clean this dir
-      
+
       # using block
       File.open(tmpfile, 'w') do |f|
         f.binmode
@@ -321,9 +321,9 @@ module Cms
            end
         end
       end
-      
+
       File.unlink(tmpfile) if File.size(tmpfile) == 0
-      
+
       if File.exists?(tmpfile)
         begin
           img = Cms::read_image(tmpfile)
@@ -336,45 +336,45 @@ module Cms
         end
       end
     end
-    
+
     # TODO añadir protección para no descargar archivos enormes
-    
+
     return nil unless (!imgurl.nil?) and File.exists?(imgurl)
-    
+
     self.unique_file_move_to_relative_savedir(imgurl, relative_savedir)
   end
-  
-  def self.unique_file_move_to_relative_savedir(src, relative_savedir) 
+
+  def self.unique_file_move_to_relative_savedir(src, relative_savedir)
     filename = File.basename(src).bare
-    
+
     if File.exists?("#{Rails.root}/public/storage/#{relative_savedir}/#{filename}")
       incrementor = 1
-      while File.exists?("#{Rails.root}/public/storage/#{relative_savedir}/#{incrementor}_#{filename}") 
+      while File.exists?("#{Rails.root}/public/storage/#{relative_savedir}/#{incrementor}_#{filename}")
         incrementor += 1
       end
       dst = "#{Rails.root}/public/storage/#{relative_savedir}/#{incrementor}_#{filename}"
     else
       dst = "#{Rails.root}/public/storage/#{relative_savedir}/#{filename}"
     end
-    
+
     FileUtils.mkdir_p(File.dirname(dst)) if not File.directory?(File.dirname(dst))
     FileUtils.cp(src, dst) if File.exists?(src)
     return dst
   end
-  
-  
+
+
   def self.parse_images(html_fragment, savedir)
     html_fragment = Cms.rails1_sanitize(html_fragment) if html_fragment.kind_of?(String)
     return html_fragment if html_fragment.nil? or not /<img / =~html_fragment
     known_domains = App.domain_aliases + [App.domain]
-    
+
     # buscamos todos los tags imgs y los procesamos uno a uno para ver si el archivo es remoto o no o si es del dir del usuario
     html_fragment = html_fragment.gsub(/<img[^>]+src="([^"]+)"/i) do |frag|
-      
+
       imgurl = /<img[^>]+src="([^"]+)"/i.match(frag).captures[0]
       md = /http:\/\/([^\/]+)\/(.+)/i.match(imgurl) # si no tiene slash después del hostname seguro que no es una imagen
       orig_imgurl = imgurl
-      
+
       new_file = nil
       # puts "checking #{imgurl}"
       # TODO las imgs de urls con subdominio no las reconoce como propias
@@ -391,16 +391,16 @@ module Cms
         new_file = self.copy_image_to_dir(imgurl, savedir)
         # puts "#{imgurl} #{savedir} #{new_file}"
       end
-      
+
       if new_file.nil?
         frag
       else
         frag.gsub(orig_imgurl, new_file.gsub("#{Rails.root}/public", ''))
-      end 
+      end
     end
-    
-    
-    
+
+
+
     # hacemos thumbnail de las imágenes locales (que hemos podido descargar) en las que el tamaño mostrado difiera  del original
     i = html_fragment.index(/<img([^>]+)src="([^"]+)"([^>]*)>/i)
     while !i.nil? and i < html_fragment.length
@@ -412,10 +412,10 @@ module Cms
       else
         imgurl = m[3]
       end
-      
+
       # Todas las imágenes van a ser ahora o bien locales (con slash o con
       # http) o bien externas que no se pudieron descargar
-      
+
       # comprobamos tamaño real y mostramos thumbnail si hay tamaño especificado distinto del original
       shown_w = nil
       shown_h = nil
@@ -436,22 +436,22 @@ module Cms
           html_fragment.gsub!(m[1], "<img src=\"/cache/thumbnails/f/#{shown_w}x#{shown_h}#{imgurl}\" />")
         end
       end
-      
+
       i += 1
       i = html_fragment.index(/<img([^>]+)src="([^"]+)"([^>]*)>/i, i)
     end
-    
+
     # 1. buscamos los imgs con tags <a alrededor suyo y los guardamos
     img_with_signatures_with_links= []
     frag = "#{html_fragment}"
     while frag.match(/<a[^>]+><img[^>]+src="\/cache\/thumbnails\/(f|k)\/([\d]+)x([\d]+)\/([^"]+)"[^>]*><\/a>/i)
       img_with_signatures_with_links<< frag.match(/<a[^>]+><img[^>]+src="\/cache\/thumbnails\/(f|k)\/([\d]+)x([\d]+)\/([^"]+)"[^>]*><\/a>/i)[0]
-      frag = frag[(frag.index(/<a[^>]+><img[^>]+src="\/cache\/thumbnails\/(f|k)\/([\d]+)x([\d]+)\/([^"]+)"[^>]*><\/a>/i) + 1)..-1] # vamos avanzando 
+      frag = frag[(frag.index(/<a[^>]+><img[^>]+src="\/cache\/thumbnails\/(f|k)\/([\d]+)x([\d]+)\/([^"]+)"[^>]*><\/a>/i) + 1)..-1] # vamos avanzando
     end
-    
+
     img_with_signatures_with_links.reverse!
-    
-    
+
+
     if img_with_signatures_with_links.size > 0 # hay imgs con cache y link alrededor a ignorar
       # 2. cortamos la cadena con los tags img con cache con link alrededor y substituimos en los interiores que encontramos
       new_html_fragment = ''
@@ -464,13 +464,13 @@ module Cms
     else # no hay imgs con cache y con links alrededor pero puede haber imgs con cache que necesiten link alrededor
       html_fragment.gsub!(/(<img[^>]+src="\/cache\/thumbnails\/(f|k)\/([\d]+)x([\d]+)\/([^"]+)"[^>]*>)/i, "<a href=\"/\\5\">\\1</a>")
     end
-    
+
     #html_fragment.gsub(/color:\s*#[abcdef0-9]+)
-    
+
     return html_fragment
   end
-  
-  
+
+
   # crea una thumbnail de una imagen src en dst.
   # width y height son enteros en px
   # mode puede ser:
@@ -480,9 +480,9 @@ module Cms
   def self.image_thumbnail(src, dst, width, height, mode, overwrite_existing=false)
     return if File.exists?(dst) and not overwrite_existing
     raise ActiveRecord::RecordNotFound if !File.exists?(src)
-    
+
     FileUtils.mkdir_p(File.dirname(dst)) if !File.exists?(File.dirname(dst))
-    
+
     begin
       img = Cms::read_image(src)
       raise ActiveRecord::RecordNotFound if img.nil?
@@ -501,7 +501,7 @@ module Cms
             FileUtils::cp(src, dst)
           else
             new_width = ((img.columns * height) / img.rows).to_i
-            
+
             if new_width > width
               new_width = width
               new_height = ((img.rows * width) / img.columns).to_i
@@ -511,14 +511,14 @@ module Cms
             thumb = img.thumbnail(new_width, new_height)
             thumb.write(dst)
           end # end resize
-          
+
         elsif mode == 'i' then # extract square feature
           crop_img_to_square(img, width, height).write(dst)
         end # end mode
       end # make thumbnail if not same dimensions
     end # end no error
   end
-  
+
   def self.crop_img_to_square(img, width, height)
     if height != width then
       # TODO esto falla muy fácilmente
@@ -537,7 +537,7 @@ module Cms
       img.crop(Magick::CenterGravity, new_width, new_height).thumbnail(width, height)
     end
   end
-  
+
   def self.clean_html(html_fragment)
     if !(html_fragment.nil? or html_fragment.empty?)
       require 'tidy'
@@ -553,7 +553,7 @@ module Cms
         :wrap => 0,
         :join_styles => false,
         :force_output => true,
-        
+
         # pueden ser peligrosas
         :bare => true,
         :clean => false,
@@ -561,7 +561,7 @@ module Cms
         :output_xhtml => true,
         :word_2000 => true
       }
-      
+
       Tidy.path = App.tidy_path
       Tidy.open(opts) do |tidy|
         html_fragment = tidy.clean(html_fragment)
@@ -574,7 +574,7 @@ module Cms
     end
     html_fragment
   end
-  
+
   # TODO copypasted de file_colum para usar en modelo de facción
   def self.is_valid_upload(fileobj)
     # comprobamos path para archivos subidos en masa
@@ -583,22 +583,22 @@ module Cms
       true
     end
   end
-  
+
   def self.modify_content_state(content, user, new_state, reason=nil)
     raise AccessDenied if (user.id == content.user_id and not Cms::user_can_edit_content?(user, content))
     uniq = content.unique_content
     u_weight = Cms::get_user_weight_with(uniq.content_type, user, content)
-    
+
     if u_weight == Infinity
-      real_weight = 1.0 
+      real_weight = 1.0
     else
       real_weight = u_weight
     end
-    
+
     do_we_publish = (new_state == Cms::PUBLISHED) ? true : false
     pd = PublishingDecision.find(:first, :conditions => ['user_id = ? and content_id = ?', user.id, uniq.id])
     if pd then # ya había voto, actualizamos en lugar de crear
-      pd.publish = do_we_publish 
+      pd.publish = do_we_publish
       pd.deny_reason = reason if !do_we_publish
       pd.accept_comment = reason if do_we_publish
       pd.user_weight = real_weight
@@ -612,15 +612,15 @@ module Cms
       end
       pd = PublishingDecision.create(base)
     end
-    prev_state = content.state    
-    if u_weight == Infinity # está votando un moderador, actualizamos campo 'is_right' de todos los publishing_decisions      
+    prev_state = content.state
+    if u_weight == Infinity # está votando un moderador, actualizamos campo 'is_right' de todos los publishing_decisions
       content.change_state(new_state, user)
       if new_state == Cms::DELETED && prev_state == PENDING then
         msg = "Lo lamentamos pero tu contenido ha sido denegado por las siguientes razones:\n\n"
-        uniq.publishing_decisions.find(:all, :include => :user).each do |pd| 
-          msg<< "[~#{pd.user.login}]: #{pd.deny_reason}\n" if not pd.publish? 
+        uniq.publishing_decisions.find(:all, :include => :user).each do |pd|
+          msg<< "[~#{pd.user.login}]: #{pd.deny_reason}\n" if not pd.publish?
         end
-        
+
         m = Message.new({ :message => msg, :sender => User.find_by_login('nagato'), :recipient => content.user, :title => "Contenido \"#{content.resolve_hid}\" denegado"})
         m.save
       end
@@ -632,25 +632,25 @@ module Cms
     elsif PublishingDecision.find_sum_for_content(content) <= -1.0
       content.change_state(Cms::DELETED, User.find_by_login('MrMan'))
       msg = "Lo lamentamos pero tu contenido ha sido denegado por las siguientes razones:\n\n"
-      uniq.publishing_decisions.find(:all, :include => :user).each do |pd| 
-        msg<< "[~#{pd.user.login}]: #{pd.deny_reason}\n" if not pd.publish? 
+      uniq.publishing_decisions.find(:all, :include => :user).each do |pd|
+        msg<< "[~#{pd.user.login}]: #{pd.deny_reason}\n" if not pd.publish?
       end
-      
+
       ttype, scope = SlogEntry.fill_ttype_and_scope_for_content_report(uniq)
       mrman = User.find_by_login('mrman')
       SlogEntry.create(:type_id => ttype, :scope => scope, :reporter_user_id => mrman.id, :headline => "#{Cms.faction_favicon(content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.real_content.resolve_html_hid}</a></strong> denegado") if prev_state == Cms::PENDING
-      
+
       m = Message.new({ :message => msg, :sender => User.find_by_login('nagato'), :recipient => content.user, :title => "Contenido \"#{content.resolve_hid}\" denegado"})
       m.save
     end
-    
+
     if [Cms::PUBLISHED, Cms::DELETED].include?(content.state) then # actualizamos campo 'is_right' de todos los publishing_decisions ya que o bien un editor ha tomado una decisión o bien la suma de los pesos de las personas que han votado ya ha superado uno de los ratios
-      uniq.publishing_decisions.find(:all).each do |pd| 
+      uniq.publishing_decisions.find(:all).each do |pd|
         pd.is_right = ((content.state == Cms::PUBLISHED && pd.publish) || ((content.state == Cms::DELETED && !pd.publish))) ? true : false
         pd.save
         pd.personality.recalculate
       end
-      
+
       #if content.state == Cms::PUBLISHED then
       #User.db_query("UPDATE publishing_decisions set is_right = publish WHERE content_id = #{uniq.id}")
       #else
@@ -658,15 +658,15 @@ module Cms
       #end
     end
   end
-  
+
   def self.publish_content(content, user, reason=nil)
     self.modify_content_state(content, user, Cms::PUBLISHED, reason)
   end
-  
+
   def self.deny_content(content, user, reason)
     self.modify_content_state(content, user, Cms::DELETED, reason)
   end
-  
+
   # Devuelve el peso de un usuario a la hora de moderar un contenido del tipo dado. En caso de superadmins o editores el peso es siempre Infinito
   def self.get_user_weight_with(content_type, user, content=nil)
     if user.has_admin_permission?(:capo) or (!content.nil? and Cms::user_can_edit_content?(user, content))
@@ -685,28 +685,28 @@ module Cms
       end
     end
   end
-  
+
   def self.delete_content(content)
     content.state = Cms::DELETED
     content.save
   end
-  
+
   def self.to_fqdn(str)
     str.bare.gsub('-', '').gsub('_', '').gsub('.', '')
   end
-  
-  
+
+
   def self.read_image(im)
     @@_images_read ||= 0
     @@_images_read += 1
     if @@_images_read >= 10
-      @@_images_read = 0 
-      GC.enable 
+      @@_images_read = 0
+      GC.enable
       GC.start
     end
     Magick::Image.read(im).first
   end
-  
+
   def self.user_can_delete_content?(user, content)
     old = content.created_on
     content.created_on = 20.minutes.ago
@@ -714,18 +714,18 @@ module Cms
     content.created_on = old
     ret
   end
-  
+
   def self.user_can_edit_content?(user, content)
     return false unless user && user.id
-    
+
     #raise "(#{content.respond_to?(:state)} and #{content.user_id} == #{self.id} and #{content.state} == #{Cms::DRAFT})"
-    if user.has_admin_permission?(:capo) 
+    if user.has_admin_permission?(:capo)
       true
     elsif (content.respond_to?(:state) and content.user_id == user.id and content.state == Cms::DRAFT) then
       true
     elsif (content.respond_to?(:state) and user.is_hq? and content.state == Cms::PENDING) then
       true
-    elsif content.class.name == 'Question' && content.user_id == user.id && (content.created_on > 15.minutes.ago || content.unique_content.comments_count == 0) 
+    elsif content.class.name == 'Question' && content.user_id == user.id && (content.created_on > 15.minutes.ago || content.unique_content.comments_count == 0)
       true
     elsif content.class.name == 'RecruitmentAd' && (user.has_admin_permission?(:capo) || user.id == content.user_id || (content.clan_id && content.clan.user_is_clanleader(user.id)))
       true
@@ -760,8 +760,8 @@ module Cms
           end
         else # TODO Coverage
           false
-        end 
-      else # categoría Otros o categoría GM        
+        end
+      else # categoría Otros o categoría GM
         if content.respond_to?(:content) && (real = content.content.real_content) && real.class.name == 'Coverage' && (c = Competition.find_by_event_id(real.event_id)) && c.user_is_admin(user.id)
           true
         else
@@ -778,16 +778,16 @@ module Cms
       end
     end
   end
-  
+
   def self.page_to_show(user, somecontent, objlastseen_on)
     objlastseen_on ||= Time.at(1)
     uniq_id = somecontent.unique_content.id
     tracker_item = TrackerItem.find(:first, :conditions => ['user_id = ? and content_id = ?', user.id, uniq_id])
     if tracker_item then
-      comments_seen = Comment.db_query("SELECT count(id) 
-                                                       FROM comments 
-                                                      WHERE deleted = 'f' 
-                                                        AND content_id = #{uniq_id} 
+      comments_seen = Comment.db_query("SELECT count(id)
+                                                       FROM comments
+                                                      WHERE deleted = 'f'
+                                                        AND content_id = #{uniq_id}
                                                         AND created_on <= to_timestamp('#{objlastseen_on.strftime('%Y%m%d%H%M%S')}',
                                                                                        'YYYYMMDDHH24MISS')")[0]
       page = ((comments_seen['count'].to_i + 1) / Cms.comments_per_page.to_f).to_f.ceil # le sumamos 1 porque queremos la página en la que está el primer comentario nuevo
@@ -796,51 +796,51 @@ module Cms
     else
       page = 1
     end
-    
+
     page
   end
-  
+
   def self.transform_content(original, dst_class, rpl_attributes={})
     # puts "Broken" # no funciona comments_count y se borra lo que no se debe, entre otras cosas
     # a la espera de unificar sistema de contenidos y que cambiar el tipo de contenidos sea simplemente cambiar un atributo y el karma
     original_updated_on = original.updated_on
     # Transforma el contenido dado a la clase de destino dada, lanza excepción si no puede
-    # rpl_attributes debería tener atributos que dst_class requiere pero original no proporciona 
-    
+    # rpl_attributes debería tener atributos que dst_class requiere pero original no proporciona
+
     # creamos un nuevo objeto en modo NO PUBLICADO siempre
     # intercambios atributos comunes de tdas las clases
     # intercambios atributos comunes entre ellos
     attrs_new_obj = {}
-    valid_attrs_to_copy = Cms::COMMON_CLASS_ATTRIBUTES + dst_class.new.unique_attributes.keys - [:id, :state] 
+    valid_attrs_to_copy = Cms::COMMON_CLASS_ATTRIBUTES + dst_class.new.unique_attributes.keys - [:id, :state]
     original.attributes.collect do |k,v|
-      attrs_new_obj[k.to_sym] = v if valid_attrs_to_copy.include?(k.to_sym)   
-    end
-    
-    rpl_attributes.each do |k,v|
-      raise "atributo #{k} ya esta definido!! valor: #{attrs_new_obj[k.to_sym]}" if attrs_new_obj[k.to_sym] 
       attrs_new_obj[k.to_sym] = v if valid_attrs_to_copy.include?(k.to_sym)
     end
-    
+
+    rpl_attributes.each do |k,v|
+      raise "atributo #{k} ya esta definido!! valor: #{attrs_new_obj[k.to_sym]}" if attrs_new_obj[k.to_sym]
+      attrs_new_obj[k.to_sym] = v if valid_attrs_to_copy.include?(k.to_sym)
+    end
+
     attrs_new_obj.delete(:approved_by_user_id) unless dst_class.new.respond_to?(:approved_by_user_id)
     newinst = dst_class.new(attrs_new_obj)
-    
+
     # newinst.terms = rpl_attributes[:terms] if rpl_attributes[:terms]
-    
+
     raise newinst.errors.full_messages_html unless newinst.save
     newinst.log = original.log
     newinst.save # this will create additional log entry
-    
+
     # actualizamos karma
     original.del_karma if original.state == Cms::PUBLISHED
-    
-    
+
+
     # intercambiamos los unique_content
     # puts "original.id: #{original.id}"
     origc_old = original.unique_content
     newc_old = newinst.unique_content
     # el primero es solo para evitar problemas con las constraints
     User.db_query("UPDATE contents set external_id = -1 WHERE id = #{origc_old.id}")
-    
+
     User.db_query("UPDATE contents set content_type_id = #{origc_old.content_type_id}, external_id = #{origc_old.external_id} WHERE id = #{newc_old.id}")
     User.db_query("UPDATE contents set content_type_id = #{newc_old.content_type_id}, external_id = #{newc_old.external_id} WHERE id = #{origc_old.id}")
     # borramos el contenido viejo
@@ -850,11 +850,11 @@ module Cms
     Cms.delete_content(original)
     User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(original.class.name)} SET unique_content_id = NULL WHERE id = #{original.id}")
     original.destroy
-    
+
     # si el contenido viejo estaba en estado publicado publicamos el contenido nuevo
-    # necesario para dar los gmfs y ajustar las caches  
+    # necesario para dar los gmfs y ajustar las caches
     if orig_state == Cms::PUBLISHED then
-      newinst.change_state(Cms::PUBLISHED, User.find_by_login('mrman'))      
+      newinst.change_state(Cms::PUBLISHED, User.find_by_login('mrman'))
     end
     User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(newinst.class.name)} set updated_on = '#{original_updated_on}' WHERE id = #{newinst.id}")
     newinst.updated_on = original_updated_on
@@ -865,11 +865,11 @@ module Cms
     Routing.gmurl(uniq)
     newinst
   end
-  
+
   def self.user_can_mass_upload(u)
-    u.is_hq || u.is_bigboss? || Faith.level(u) >= 2 
+    u.is_hq || u.is_bigboss? || Faith.level(u) >= 2
   end
-  
+
   def self.faction_favicon(thing)
     # TODO optimizar
     if thing.class.name == 'Faction'
@@ -916,13 +916,13 @@ module Cms
         thing = thing.real_content
       end
       if /Category/ =~ thing.class.name then
-        # 
+        #
       elsif Cms::CONTENTS_WITH_CATEGORIES.include?(thing.class.name) # si es contenido con categoría buscamos la categoría
         thing = thing.main_category
       else
         thing = nil
       end
-      
+
       if thing.nil?
         code = 'gm'
         name = 'gm'
@@ -934,23 +934,23 @@ module Cms
         name = thing.root.name
       end
     end
-    
+
     return if code.nil?
-    
+
     src = 'games'
     "<img class=\"factionfavicon gs-#{code}\" title=\"#{name}\" src=\"/images/blank.gif\" />"
   end
-  
+
   VERBOTEN_TAGS = %w(form script plaintext u applet iframe) unless defined?(VERBOTEN_TAGS)
   VERBOTEN_ATTRS_REGEXP = /^on/i unless defined?(VERBOTEN_ATTRS_REGEXP)
   #VERBOTEN_ATTRS = %w()
-  
+
   def self.rails1_sanitize(html)
     # only do this if absolutely necessary
     if html.index("<")
       tokenizer = HTML::Tokenizer.new(html)
       new_text = ""
-      
+
       while token = tokenizer.next
         node = HTML::Node.parse(nil, 0, 0, token, false)
         new_text << case node
@@ -970,13 +970,13 @@ module Cms
           node.to_s.gsub(/</, "&lt;")
         end
       end
-      
+
       html = new_text
     end
-    
+
     html
   end
-  
+
   def self.add_p(text)
     return text if text.nil?
     # Añade tags p al texto en cuestión
@@ -1000,7 +1000,7 @@ module Cms
     ntext.gsub!('<p></p>', '')
     ntext.strip
   end
-  
+
   def self.get_unique_portal_code(code)
     i = ''
     if Portal.find_by_code(code) || Portal::UNALLOWED_CODES.include?(code)
@@ -1011,22 +1011,22 @@ module Cms
     end
     code
   end
-  
+
   def self.user_can_select_best_answer(user, content)
     content.class.name == 'Question' && (Cms::user_can_edit_content?(user, content) || user.id == content.user_id)
   end
-  
+
   def self.user_can_create_content(user)
     User::STATES_CAN_LOGIN.include?(user.state) && user.antiflood_level < 5
   end
-  
+
   def self.can_edit_term?(u, term, taxonomy)
     self.can_admin_term?(u, term, taxonomy) && term.id != term.root_id
   end
-  
+
   def self.can_admin_term?(u, term, taxonomy)
     return true if u.has_admin_permission?(:capo)
-    
+
     if term.game_id
       f = Faction.find_by_code(term.game.code)
       f.is_bigboss?(u) || f.user_is_editor_of_content_type?(u, ContentType.find_by_name(taxonomy))
@@ -1041,10 +1041,10 @@ module Cms
       c.user_is_clanleader(u)
     end
   end
-  
+
   def self.get_editable_terms_by_group(u)
     terms = {:games => [], :platforms => [], :clans => [], :bazar_districts => [], :special => []}
-    
+
     if u.has_admin_permission?(:capo)
       Term.top_level(:conditions => 'taxonomy <> \'ContentsTag\'').each do |t|
         if t.game_id
@@ -1056,13 +1056,13 @@ module Cms
         end
       end
     end
-    
+
     if u.has_admin_permission?(:bazar_manager)
       Term.find(:all, :conditions => 'id = root_id AND bazar_district_id IS NOT NULL').each do |t|
         terms[:bazar_districts] << t
       end
     end
-    
+
     u.users_roles.find(:all, :conditions => "role IN ('Boss', 'Underboss')").each do |ur|
       f = Faction.find(ur.role_data.to_i)
       t = f.single_toplevel_term
@@ -1072,7 +1072,7 @@ module Cms
         terms[:platforms] << t
       end
     end
-    
+
     u.users_roles.find(:all, :conditions => "role = 'Editor'").each do |ur|
       f = Faction.find(ur.role_data_yaml[:faction_id])
       t = f.single_toplevel_term
@@ -1082,16 +1082,16 @@ module Cms
         terms[:platforms] << t
       end
     end
-    
+
     u.users_roles.find(:all, :conditions => "role IN ('Don', 'ManoDerecha', 'Sicario')").each do |ur|
       terms[:bazar_districts] << BazarDistrict.find(ur.role_data.to_i).top_level_category
     end
-    
+
     [:games, :platforms, :special, :bazar_districts].each do |sym|
       terms[sym].uniq!
       # terms[sym].sort {|a,b| a.name.downcase <=> b.code.name.downcase }
     end
-    
+
     terms
   end
 end

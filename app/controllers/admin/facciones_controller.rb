@@ -1,9 +1,9 @@
 class Admin::FaccionesController < ApplicationController
   helper :miembros
   audit :destroy
-  
+
   require_admin_permission :capo
-  
+
   def index
     @title = 'Facciones'
     @navpath = [['Admin', '/admin'], ['Facciones', '/admin/facciones'], ]
@@ -26,7 +26,7 @@ class Admin::FaccionesController < ApplicationController
     else
       params[:faction][:boss] = nil
     end
-    
+
     if params[:faction][:underboss].to_s != '' then
       params[:faction][:underboss] = User.find_by_login(params[:faction][:underboss])
     else
@@ -46,7 +46,7 @@ class Admin::FaccionesController < ApplicationController
       render :action => 'edit'
     end
   end
-  
+
   def destroy
     faction = Faction.find(params[:id])
     raise AccessDenied unless faction.created_on >= Faction::GRACE_DAYS.days.ago

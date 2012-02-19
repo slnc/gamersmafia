@@ -3,7 +3,7 @@
 <% mftext('Navegador de galería') do %>
 <ul class="sidelist images">
   <% cache("/common/imagenes/show/g#{@image.main_category.id}/#{@image.id}") do %>
-  <% 
+  <%
   im_prev = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id < ?', Cms::PUBLISHED, @image.unique_content_id], :order => 'images.id DESC')
 
   im_next = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id > ?', Cms::PUBLISHED, @image.unique_content_id], :order => 'images.id ASC')

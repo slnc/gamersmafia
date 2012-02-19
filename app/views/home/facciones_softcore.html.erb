@@ -1,8 +1,8 @@
 <div class="grid-5">
 <%mftext('Noticias', :has_submodules => true, :blast => true) do %>
 	<div class="grid-5 glast">
-		<%=mfcontents_basic("Generales", 
-					Proc.new { controller.portal.news.find(:published, :order => 'created_on desc', :limit => 10) }, 
+		<%=mfcontents_basic("Generales",
+					Proc.new { controller.portal.news.find(:published, :order => 'created_on desc', :limit => 10) },
 					[],
 					:truncate_at => 36, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/news2")%>
 					</div>
@@ -11,8 +11,8 @@
 
 <%mftext('En los foros', :has_submodules => true, :grid => 10, :glast => true, :blast => true) do %>	
 	<div class="grid-6 blast">
-	<%=mfcontents_basic("Tópics activos", 
-					Proc.new { controller.portal.topic.find(:published, :conditions => 'topics.closed is false', :order => 'updated_on desc', :limit => 10) }, 
+	<%=mfcontents_basic("Tópics activos",
+					Proc.new { controller.portal.topic.find(:published, :conditions => 'topics.closed is false', :order => 'updated_on desc', :limit => 10) },
 					[],
 					:truncate_at => 44, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	</div>
@@ -23,7 +23,7 @@
 <% end -%>
 
 <div class="grid-12">
-	<%=mfcontents_basic('Descargas', 
+	<%=mfcontents_basic('Descargas',
 					Proc.new { controller.portal.categories(Download)[0].root.download.find(:published, :order => 'created_on DESC', :limit => 5) },
 					[],
 					:truncate_at => 28, :faction_favicon => true, :grid => 4, :cache => "/#{controller.portal_code}/home/index/downloads2")%>
@@ -36,7 +36,7 @@
 <div class="clearb"></div>
 
 <% cache("/#{controller.portal_code}/home/index/articles2") do %>
-<%mftext('Artículos', :has_submodules => true, :grid => 12, :glast => true) do 
+<%mftext('Artículos', :has_submodules => true, :grid => 12, :glast => true) do
 	revs = controller.portal.review.count > 0
 	classes = %w(Column Interview Tutorial Review)
 	if revs
@@ -46,20 +46,20 @@
 	else
 		grid_size = 3
 		thumb_width = '143'
-	end 
+	end
 	
 %>
 <% classes.each do |it| %>
 <% dafirst = true
-mfcontents_list(Cms::translate_content_name(it),  
+mfcontents_list(Cms::translate_content_name(it),
 					Proc.new { controller.portal.send(it.downcase).find(:published, :order => 'created_on desc', :limit => 5) }, 					
 					:truncate_at => 28, :grid => grid_size, :glast => (it == classes.last)) do |o| %>
 					
 <%=content_category(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
 <% if dafirst && o.home_image then %><div style="margin: 5px 0 10px 0;"><a href="<%=gmurl(o)%>"><%=fc_thumbnail(o.home_image, 'i', "#{thumb_width}x54", false)%></a></div><% end -%>
-<%	dafirst = false 
+<%	dafirst = false
 	end -%>
-<% end -%> 
+<% end -%>
 <% end -%>
 <% end -%>
 
@@ -90,7 +90,7 @@ if @daily_img then %>
    	<%=render :partial => '/imagenes/image_thumbnail', :locals => {:image => @daily_img, :size => Cms::IMG_SIZE_GRID3}%>
     <div class="more"><a href="/imagenes/potds">Ver anteriores..</a></div>
 <% end -%>
-<% end 
+<% end
 -%>
 <% end -%>
 

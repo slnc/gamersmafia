@@ -1,8 +1,8 @@
 <% content_support(:content => @review.unique_content) do %>
 <% if @review.is_public? then %>
-<%=mfcontents_basic("Más reviews de #{@review.main_category.name}", 
+<%=mfcontents_basic("Más reviews de #{@review.main_category.name}",
 	controller.portal.review,
-	[:published, 
+	[:published,
 	{:content_type => 'Review', :order => 'created_on desc', :limit => 5}],
     :cache => "/common/reviews/_latest_by_cat/#{@review.main_category.id}",
  	:rating => true,
@@ -15,6 +15,6 @@
 <% end -%>
 <% end -%>
 
-<% content_main do %> 
+<% content_main do %>
   <%=mfcontent(@review)%>
 <%end -%>

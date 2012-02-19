@@ -2,12 +2,12 @@
 <ul class="content-hid">
 <% cache("/common/descargas/index/essential2_#{category.root_id}") do %>
 <% shown_downloads = []
-category.root.find(:published, :content_type => 'Download', :conditions => "essential is true", :order => 'created_on DESC', :limit => 12).each do |d| 
+category.root.find(:published, :content_type => 'Download', :conditions => "essential is true", :order => 'created_on DESC', :limit => 12).each do |d|
     shown_downloads << d.unique_content.id
 %>
   <li class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%></li>
   <% end -%>
 <script type="text/javascript">contents = contents.concat(<%=shown_downloads.join(',')%>);</script>
 <% end -%>
-</ul> 
+</ul>
 <% end -%>

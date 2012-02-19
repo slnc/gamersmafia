@@ -10,13 +10,13 @@
   <tr>
     <th>Pregunta</th>
   </tr>
-  
-<% 
+
+<%
 i = 0
 j = 1
 prev = nil
-for faq_entry in @faq_entries 
-if prev.nil? || prev.id != faq_entry.faq_category_id then 
+for faq_entry in @faq_entries
+if prev.nil? || prev.id != faq_entry.faq_category_id then
 i += 1
 j = 1
 prev = faq_entry.faq_category %>
@@ -32,7 +32,7 @@ min_pos = User.db_query("SELECT COALESCE(min(position),0) as min FROM faq_entrie
     <td><% if faq_entry.position && faq_entry.position < last_pos then %><a href="/admin/entradasfaq/movedown/<%=faq_entry.id%>">abajo</a><% end %></td>
     <td><%= link_to 'Borrar', { :action => 'destroy', :id => faq_entry }, :confirm => '¿Estás seguro?' %></td>
   </tr>
-<% 
+<%
 j += 1
 end %>
 </table>

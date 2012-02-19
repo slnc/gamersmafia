@@ -24,7 +24,7 @@ module Clusterer
   class DocumentArray < Array
     #stores the text in an array format, used with LSI or SVD
     attr_reader :object
-    
+
     @@term_array_position_mapper = {}
     include(Tokenizer)
 
@@ -40,30 +40,30 @@ module Clusterer
         self.each_with_index {|ind,val| idf << @@term_array_position_mapper.index(ind) if val && val > 0.0}
       end
     end
-    
+
     def << (term)
       self[term_array_position_mapper(term)] = (self[term_array_position_mapper(term)] || 0) + 1
     end
-    
+
     def normalize!(idf = nil, add_term = false)
       normalizing_factor = 0.0
       idf.increment_documents_count if add_term
 
-      self[@@term_array_position_mapper.size - 1] ||= 0.0 
+      self[@@term_array_position_mapper.size - 1] ||= 0.0
 
       self.each_with_index do |frequency, ind|
         f = add_term ? (idf << term) : (idf ? idf[@@term_array_position_mapper.index(ind)] : 1.0)
         self[ind] = (frequency || 0) * f
         normalizing_factor += self[ind] ** 2
       end
-      
+
       normalizing_factor = Math.sqrt(normalizing_factor)
       normalizing_factor = 1 if normalizing_factor.zero?
       self.each_with_index {|frequency, ind| self[ind] = frequency/normalizing_factor}
       @vector_length = 1.0
       self.freeze
     end
-    
+
     def vector_length
       @vector_length ||= Math.sqrt(self.inject(0) {|n,y| n + y*y})
     end

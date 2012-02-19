@@ -2,21 +2,21 @@ require 'test_helper'
 
 class Cuenta::MisCanalesControllerTest < ActionController::TestCase
 
-  
+
   test "index_should_work" do
     sym_login 1
     get :index
     assert_response :success
     assert_template 'index'
   end
-  
+
   test "editar_should_work" do
     sym_login 1
     get :editar, { :id => 1 }
     assert_response :success
     assert_template 'editar'
   end
-  
+
   test "update_should_work" do
     sym_login 1
     channel1 = GmtvChannel.find(:first, :conditions => 'user_id = 1')

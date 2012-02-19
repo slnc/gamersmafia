@@ -5,13 +5,13 @@ class CacheObserverGeneralTest < ActionController::IntegrationTest
     ActionController::Base.perform_caching             = true
     host! App.domain
   end
-  
+
   def go_to_index
     get '/'
     assert_response :success
     assert_template 'home/index'
   end
-  
+
   test "should clear cache aportaciones after content is saved" do
     sym_login :superadmin, 'lalala'
     get '/miembros/superadmin'
@@ -24,8 +24,8 @@ class CacheObserverGeneralTest < ActionController::IntegrationTest
     assert_response :redirect
     assert_cache_dont_exist "#{Cache.user_base(u.id)}/profile/aportaciones"
   end
-  
-  
+
+
   test "should clear users avatar cache after changing nick" do
     sym_login :superadmin, 'lalala'
     get '/'
@@ -33,11 +33,11 @@ class CacheObserverGeneralTest < ActionController::IntegrationTest
     assert_cache_exists "/common/globalnavbar/#{1 % 1000}/1_avatar"
     assert User.find(1).update_attributes(:login => 'foobarbaz')
     assert_cache_dont_exist "/common/globalnavbar/#{1 % 1000}/1_avatar"
-    
+
   end
-  
+
   test "should clear skins cache on skin's public attribute change" do
-    sym_login :superadmin, 'lalala' 
+    sym_login :superadmin, 'lalala'
     get '/'
     assert_response :success
     assert_cache_exists '/common/layout/skins'
@@ -50,7 +50,7 @@ class CacheObserverGeneralTest < ActionController::IntegrationTest
     assert s.update_attributes(:is_public => true)
     assert_cache_dont_exist '/common/layout/skins'
   end
-  
+
   def teardown
     ActionController::Base.perform_caching             = false
   end

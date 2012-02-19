@@ -75,7 +75,7 @@ end
       <th>Subcategorías</th>
       <th>Contenidos</th>
     </tr>
-    
+
 	<% ct = ContentType.find_by_name(params[:content_type])%>
   <% @term.children.find(:all, :conditions => ["taxonomy = ?", Term.taxonomy_from_class_name(params[:content_type])]).each do |category| %>
     <tr class="<%=oddclass%>">

@@ -1,6 +1,6 @@
 require "#{File.dirname(__FILE__)}/../test_helper"
 
-class PortalsResolutionTest < ActionController::IntegrationTest  
+class PortalsResolutionTest < ActionController::IntegrationTest
   test "urls of contents should be correct" do
     host! App.domain
     g = Game.new(:name => 'Diablo 3', :code => 'diablo')
@@ -22,20 +22,20 @@ class PortalsResolutionTest < ActionController::IntegrationTest
     assert n.is_public?
     assert_equal "http://#{g.code}.#{App.domain}/noticias/show/#{n.id}", n.unique_content.url
   end
-  
+
   test "should_resolve_main" do
     host! App.domain
     get '/'
     assert @controller.portal.kind_of?(GmPortal), @response.body
     assert_response :success, @response.body
   end
-  
+
   test "should_resolve_subdomain_as_faction_portal" do
     p = FactionsPortal.find_by_code('ut')
     host! "#{p.code}.#{App.domain}"
     get '/'
     assert_response :success, @response.body
-    
+
     assert_equal p.code, @controller.portal_code
   end
 end

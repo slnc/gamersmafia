@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class BanRequestTest < ActiveSupport::TestCase
-  
+
   test "should_send_email_to_banned_user_after_confirmation" do
     u2 = User.find(2)
     assert_not_equal u2.state, User::ST_BANNED
@@ -11,7 +11,7 @@ class BanRequestTest < ActiveSupport::TestCase
     u2.reload
     assert_equal User::ST_BANNED, u2.state
   end
-  
+
   test "should_send_email_after_unban_process_initiated" do
     test_should_send_email_to_banned_user_after_confirmation
     u2 = User.find(2)
@@ -26,7 +26,7 @@ class BanRequestTest < ActiveSupport::TestCase
     assert_not_equal User::ST_BANNED, u2.state
     #end
   end
-  
+
   test "no_crear_dos_iguales" do
     br1 = BanRequest.new(:user_id => 1, :banned_user_id => 4, :reason => 'mas feo')
     assert br1.save

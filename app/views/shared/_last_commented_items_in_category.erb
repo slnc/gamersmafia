@@ -1,5 +1,5 @@
-<%=mfcontents_basic("Activos en #{category.root.code.upcase}", 
-					Proc.new { category.root.last_updated_items(:content_type => 'Topic') }, 
+<%=mfcontents_basic("Activos en #{category.root.code.upcase}",
+					Proc.new { category.root.last_updated_items(:content_type => 'Topic') },
 					[],
-					:faction_favicon => true, 
+					:faction_favicon => true,
 					:cache => "/common/foros/by_root/#{category.root.id}")%>

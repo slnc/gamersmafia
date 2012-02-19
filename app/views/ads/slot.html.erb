@@ -13,7 +13,7 @@ max_group_ctr = nil
 
 db_ctrs.each do |dbr|
   max_group_ctr = dbr['max'].to_f if max_group_ctr.nil? || dbr['max'].to_f > max_group_ctr
-  avg_ctrs << (dbr['avg'].to_f * 100) 
+  avg_ctrs << (dbr['avg'].to_f * 100)
 avgs_ctr[dbr['ads_slots_instance_id'].to_i] = (dbr['avg'].to_f * 100)
 %>
   <%#=dbr['ads_slots_instance_id']%> <%#= (dbr['avg'].to_f * 100)%>
@@ -38,7 +38,7 @@ max_ctr = max_group_ctr.to_f * 100
 instances.each do |adsi|
 	ddata = User.db_query("select avg(ctr) as ctr, sum(hits) as hits, sum(pageviews) as pageviews, (extract('epoch' from created_on) / 259200)::int as epoch from stats.ads_daily where ads_slots_instance_id = #{adsi.id} group by (extract('epoch' from created_on) / 259200)::int order by (extract('epoch' from created_on) / 259200)::int desc limit 30")
 	ddata.reverse!
-	data = ddata.collect { |dbr| dbr['ctr'].to_f*100 } 
+	data = ddata.collect { |dbr| dbr['ctr'].to_f*100 }
 	cur_mean_ctr = avgs_ctr[adsi.id] # ddata.collect { |dbr| dbr['ctr'].to_f }.mean * 100
 %>
 <tr class="<%=oddclass%> value-is-<%='low' if cur_mean_ctr && cur_mean_ctr <= low_ctr_threshold %><%='high' if cur_mean_ctr && cur_mean_ctr >= high_ctr_threshold %>" id="adsi<%=adsi.id%>">
@@ -53,7 +53,7 @@ instances.each do |adsi|
 </table>
 <div class="infoinline right">Las estadísticas muestran los datos del último mes y se recalculan de madrugada. Última actualización: <strong><%=Stats::Ads.last_update%></strong></div>
 <div class="infoinline">
-Rendimiento bajo a partir de CTR <strong><%=sprintf("%.3f", low_ctr_threshold)%>%</strong>.<br /> 
+Rendimiento bajo a partir de CTR <strong><%=sprintf("%.3f", low_ctr_threshold)%>%</strong>.<br />
 Rendimiento alto a partir de CTR <strong><%=sprintf("%.3f", high_ctr_threshold)%>%</strong>.<br />
 El rendimiento se mide comparándolos con el resto de banners por lo que siempre habrá banners en rojo y en verde.<br />
 </div>

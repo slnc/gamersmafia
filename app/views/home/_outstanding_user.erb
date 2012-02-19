@@ -1,10 +1,10 @@
-<% cache("/#{controller.portal.code}/outstanding_users/#{Time.now.strftime('%Y%m%d')}") do 
+<% cache("/#{controller.portal.code}/outstanding_users/#{Time.now.strftime('%Y%m%d')}") do
 outstanding_user = OutstandingUser.current(controller.portal.id)
 if outstanding_user then
 u = outstanding_user.user
 %>
 <div class="homebox">
-  <div id="home-outstanding" class="subheader first"><div><span>Usuario del día</span></div></div>        
+  <div id="home-outstanding" class="subheader first"><div><span>Usuario del día</span></div></div>
   <div style="float: left; margin-right: 5px;"><a href="<%=gmurl(outstanding_user.user)%>"><img src="<%=ASSET_URL%><%=u.show_avatar%>" /></a></div><strong><a href="<%=gmurl(u)%>"><%=u.login%></a></strong>
   <table style="width: 100%;">
     <tr><td style="width: 75px"><div class="userbox-karma-bar"><%=draw_karma_bar_sm(u)%></div></td><td class="infoinline"><a href="<%=gmurl(u)%>/amigos">Amigos: <strong><%=u.friends_count%></strong></a></td></tr>

@@ -1,9 +1,9 @@
 require 'test_helper'
 
 class CompetitionTest < ActiveSupport::TestCase
-  
+
   # TODO test user_indicator
-  
+
   #  test "update_user_indicator" do
   #    superadmin = new_session_as(:superadmin)
   #    panzer = new_session_as(:panzer)
@@ -38,7 +38,7 @@ class CompetitionTest < ActiveSupport::TestCase
   #      end
   #    end
   #  end
-  
+
   test "should_send_notifications_to_allowed_participants_if_invitational_and_switching_to_state_1_and_users" do
     c = Competition.find(:first, :conditions => "state = 0 AND invitational is true and competitions_participants_type_id = #{Competition::USERS}")
     prev = ActionMailer::Base.deliveries.size
@@ -49,7 +49,7 @@ class CompetitionTest < ActiveSupport::TestCase
     c.switch_to_state(1)
     assert_equal prev + 1, ActionMailer::Base.deliveries.size
   end
-  
+
   test "should_send_notifications_to_allowed_participants_if_invitational_and_switching_to_state_1_and_clans" do
     c = Competition.find(:first, :conditions => "state = 0 AND invitational is true and competitions_participants_type_id = #{Competition::CLANS}")
     prev = ActionMailer::Base.deliveries.size
@@ -61,22 +61,22 @@ class CompetitionTest < ActiveSupport::TestCase
     c.switch_to_state(1)
     assert_equal prev + 1, ActionMailer::Base.deliveries.size
   end
-  
+
   test "should_be_able_to_join_competition_if_user_and_everything_ok" do
     ladder = Ladder.find(:first, :conditions => "invitational is false and fee is null and state = 3 and competitions_participants_type_id = #{Competition::USERS}")
     u1 = User.find(1)
     p1 = ladder.join(u1)
     assert p1.kind_of?(CompetitionsParticipant)
   end
-  
-  
+
+
   test "should_set_closed_on_when_closed" do
     [Tournament.find(:first, :conditions => 'state = 3'), League.find(:first, :conditions => 'state = 3')].each do |c|
       assert_equal true, c.switch_to_state(4)
       assert_not_nil c.closed_on
     end
   end
-  
+
   test "should not be able to start competition without players" do
     [Tournament, League].each do |c_class|
       c = c_class.find(:first, :conditions => 'state = 2')
@@ -85,20 +85,20 @@ class CompetitionTest < ActiveSupport::TestCase
       end
     end
   end
-  
+
   test "can recreate matches" do
     [Tournament, League].each do |c_class|
       c = c_class.find(:first, :conditions => 'state = 1')
       assert c.can_recreate_matches?, "#{c_class}(Competition) can't recreate matches!!"
     end
-    
+
     assert League.find(1).can_recreate_matches?
   end
-  
+
   test "should create group matches correctly in tournament that uses classifiers" do
-    c = Tournament.new(:name => 'Hattrick GM-2', 
-                       :competitions_participants_type_id => Competition::USERS, 
-                       :rules => 'foooa bo', 
+    c = Tournament.new(:name => 'Hattrick GM-2',
+                       :competitions_participants_type_id => Competition::USERS,
+                       :rules => 'foooa bo',
                        :description => 'adadada',
                        :competitions_types_options => HashWithIndifferentAccess.new({ :tourney_classifiers_rounds => '2',
                                                         :tourney_classifiers_rounds => '2',
@@ -112,7 +112,7 @@ class CompetitionTest < ActiveSupport::TestCase
                        :scoring_mode => '0')
     assert c.save
     c.switch_to_state(1)
-    
+
     # create users
      (1..26).each do |i|
       u = User.new(:login => "gmht2cp#{i}", :password => 'booooo', :email => "em#{i}@gmht2.com", :ipaddr => '0.0.0.0', :lastseen_on => Time.now)
@@ -139,7 +139,7 @@ class CompetitionTest < ActiveSupport::TestCase
       group_participants_ids = g.participants.collect { |cp| cp.id }
       #puts "\n\n-- grupo #{g} #{group_participants_ids.join(' ')}"
       matches_remaining = group_participants_ids.each_choose(2)
-      
+
       g.matches.each do |cm|
         matches_clasificatorias += 1
         #puts "checking (#{cm.participant1_id} == ? && #{cm.participant2_id} == ?) || (#{cm.participant1_id} == ? && #{cm.participant2_id} == ?)"
@@ -148,17 +148,17 @@ class CompetitionTest < ActiveSupport::TestCase
       end
       assert_equal 0, matches_remaining.size
     end
-    
-    
+
+
     # Check matches in eliminatorias
     total_eliminatorias = 15
     assert_equal 8, c.matches(:octavos, :count => true)
     assert_equal 4, c.matches(:cuartos, :count => true)
     assert_equal 2, c.matches(:semifinales, :count => true)
     assert_equal 1, c.matches(:final, :count => true)
-    
+
     # TODO check that the participants are actually correct
-    
+
     # now make sure that eliminatorias works
     c.competitions_matches.find(:all, :conditions => ['stage = ?', c.tourney_rounds_starting_stage], :order => "id ASC").each do |cm|
       #p cm
@@ -166,23 +166,23 @@ class CompetitionTest < ActiveSupport::TestCase
       assert_not_nil cm.participant2_id
       cm.complete_match(u1, :participation => 'both', :result => 0)
     end
-    
+
     #puts "--------------------------------------------------"
-    
+
     c.competitions_matches.find(:all, :conditions => ['stage = ?', c.tourney_rounds_starting_stage + 1], :order => "id ASC").each do |cm|
       #p cm
       assert_not_nil cm.participant1_id
       assert_not_nil cm.participant2_id
       cm.complete_match(u1, :participation => 'both', :result => 0)
     end
-    
+
     c.competitions_matches.find(:all, :conditions => ['stage = ?', c.tourney_rounds_starting_stage + 2], :order => "id ASC").each do |cm|
       #p cm
       assert_not_nil cm.participant1_id
       assert_not_nil cm.participant2_id
       cm.complete_match(u1, :participation => 'both', :result => 0)
     end
-    
+
     c.competitions_matches.find(:all, :conditions => ['stage = ?', c.tourney_rounds_starting_stage + 3], :order => "id ASC").each do |cm|
       #p cm
       assert_not_nil cm.participant1_id
@@ -190,13 +190,13 @@ class CompetitionTest < ActiveSupport::TestCase
       cm.complete_match(u1, :participation => 'both', :result => 0)
     end
   end
-  
+
   test "tourney groups should properly compute" do
     t = Tournament.first
     # We want to start in octavos and have 3 winners per group
     t.competitions_types_options = HashWithIndifferentAccess.new({:tourney_rounds => 4, :tourney_classifiers_rounds => 3})
     assert_equal 6, t.tourney_groups
   end
-  
+
   # TODO resto de tests
 end

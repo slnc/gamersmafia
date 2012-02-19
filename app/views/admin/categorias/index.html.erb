@@ -4,7 +4,7 @@
 <% content_main do %>
   <%mftext('Categorías') do %>
   <%=render :partial => '/admin/categorias/categorias_selector' %>
-  
+
 <div id="categorias_content">
 </div>
 <% if nil then %>
@@ -21,7 +21,7 @@
       <th>Nombre corto</th>
       <th></th>
     </tr>
-    
+
   <% for category in @categories %>
     <tr class="<%=oddclass%>">
       <td><%=

@@ -1,17 +1,17 @@
-<% 
+<%
 categories.each do |nc|
   next if %w(inet bazar).include?(nc.code)
   cache("/bazar/home/categories/#{nc.code}") do
 	tc = TopicsCategory.find(:first, :conditions => ['code = ?', nc.code])
-    next unless tc 
+    next unless tc
 %>
 <div id="home-<%=tc.code%>" class="subheader"><div><span><%=tc.name%></span></div></div>
 <ul class="content-hid">
-<% 
+<%
 shown_offtopics = []
 raise nc.code unless tc
 nc.news.find(:published, :limit => 12, :order => 'created_on DESC').each do |offtopic|
-  shown_offtopics << offtopic.unique_content.id 
+  shown_offtopics << offtopic.unique_content.id
 %>
     <li class="content<%=offtopic.unique_content.id%> new <%=oddclass%>"><%=link_to truncate(offtopic.title, 35), gmurl(offtopic)%></li>
 <% end %>

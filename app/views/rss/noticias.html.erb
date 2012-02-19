@@ -1,35 +1,35 @@
-<% cache('/rss/noticias/all') do %><?xml version="1.0" encoding="utf-8" ?> 
+<% cache('/rss/noticias/all') do %><?xml version="1.0" encoding="utf-8" ?>
 <rss version="2.0">
   <channel>
-    <title>Gamersmafia</title> 
-    <link>http://gamersmafia.com/?from=rss</link> 
-    <description>Solo gamers.</description> 
-    <language>es</language> 
-    <copyright>Copyright 2005, Gamersmafia</copyright> 
-    <managingEditor>webmaster@gamersmafia.com</managingEditor> 
-    <webMaster>webmaster@gamersmafia.com</webMaster> 
-    <lastBuildDate><%=Time.now.strftime("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></lastBuildDate> 
-    <category>Videojuegos</category> 
-    <docs>http://blogs.law.harvard.edu/tech/rss</docs> 
-    <ttl>10</ttl> 
+    <title>Gamersmafia</title>
+    <link>http://gamersmafia.com/?from=rss</link>
+    <description>Solo gamers.</description>
+    <language>es</language>
+    <copyright>Copyright 2005, Gamersmafia</copyright>
+    <managingEditor>webmaster@gamersmafia.com</managingEditor>
+    <webMaster>webmaster@gamersmafia.com</webMaster>
+    <lastBuildDate><%=Time.now.strftime("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></lastBuildDate>
+    <category>Videojuegos</category>
+    <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+    <ttl>10</ttl>
     <% if nil %>    <image>
-      <url>http://laflecha.net/img/banners/laflecha_rss.gif</url> 
-      <title>LaFlecha.net</title> 
-      <link>http://laflecha.net/</link> 
-      <width>88</width> 
-      <height>31</height> 
+      <url>http://laflecha.net/img/banners/laflecha_rss.gif</url>
+      <title>LaFlecha.net</title>
+      <link>http://laflecha.net/</link>
+      <width>88</width>
+      <height>31</height>
     </image>
     <% end -%>
-    <% for news in News.find(:all, :conditions => "state = #{Cms::PUBLISHED} and clan_id is null", :order => 'created_on desc', :limit => 10) 
+    <% for news in News.find(:all, :conditions => "state = #{Cms::PUBLISHED} and clan_id is null", :order => 'created_on desc', :limit => 10)
     next unless news.main_category
 %>
   <item>
-    <title><%=news.title.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;')%></title> 
-    <link><%=gmurl(news)%>?from=rss</link> 
-    <description><%=strip_tags(news.description.gsub(']', '')).gsub('&', '&amp;')%></description> 
-    <category><%=news.main_category.name%></category> 
-    <comments>http://gamersmafia.com/noticias/show/<%=news.id%>?from=rss#comments</comments> 
-    <pubDate><%=news.created_on.strftime("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></pubDate> 
+    <title><%=news.title.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;')%></title>
+    <link><%=gmurl(news)%>?from=rss</link>
+    <description><%=strip_tags(news.description.gsub(']', '')).gsub('&', '&amp;')%></description>
+    <category><%=news.main_category.name%></category>
+    <comments>http://gamersmafia.com/noticias/show/<%=news.id%>?from=rss#comments</comments>
+    <pubDate><%=news.created_on.strftime("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></pubDate>
   </item>
 <% end -%>
   </channel>

@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class CommentTest < ActiveSupport::TestCase
-  
+
   test "refered_people_should_work" do
     c = Comment.new({:user_id => 1, :comment => "hola #{User.find(2).login}", :content_id => 1, :host => '127.0.0.1'})
     assert c.save
@@ -10,12 +10,12 @@ class CommentTest < ActiveSupport::TestCase
     assert_equal 'Comment', references[0].referencer_class
     assert_equal 2, references[0].entity_id
     assert_equal c.id, references[0].referencer_id
-    
+
     assert_equal references[0].id, c.content.ne_references[0].id
     assert_equal references[0].id, User.find(2).ne_references[0].id
   end
-  
-  
+
+
   test "should_create_comment_if_valid" do
     content = Content.find(1)
     content.url = nil
@@ -39,23 +39,23 @@ class CommentTest < ActiveSupport::TestCase
     assert c.update_attributes(:lastedited_by_user_id => 2, :comment => 'u2')
     assert_equal 'u1', c.lastowner_version
     assert_equal 2, c.lastedited_by_user_id
-    
+
     # lo edita otra vez el mismo moderadors
     assert c.update_attributes(:lastedited_by_user_id => 2, :comment => 'u22')
     assert_equal 'u1', c.lastowner_version
     assert_equal 2, c.lastedited_by_user_id
-    
-    # ahora lo edita un segundo moderador    
+
+    # ahora lo edita un segundo moderador
     assert c.update_attributes(:lastedited_by_user_id => 3, :comment => 'u3')
     assert_equal 'u1', c.lastowner_version
     assert_equal 3, c.lastedited_by_user_id
-    
+
     # ahora lo vuelve a editar el propietario
     assert c.update_attributes(:lastedited_by_user_id => 1, :comment => 'u1b')
     assert_nil c.lastowner_version
     assert_equal 1, c.lastedited_by_user_id
   end
-  
+
   test "should_not_create_comment_if_duplicated" do
   end
 

@@ -9,7 +9,7 @@ class ClanWebsitesIntegrationTest < ActionController::IntegrationTest
 
   # COMMON
   test "clan_website_should_work_right_after_buying_the_product" do
-    
+
   end
 
   def teardown

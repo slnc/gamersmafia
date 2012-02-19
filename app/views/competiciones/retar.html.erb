@@ -25,14 +25,14 @@
 	<% end -%>
 
   <% end -%>
-  
+
   <% mftext('Condiciones del reto') do %>
-<% if @competitions_match.new_record? then 
+<% if @competitions_match.new_record? then
 specified_maps = []
 %>
   <form method="post" action="/competiciones/do_retar">
     <input type="hidden" name="id" value="<%=@competitions_participant.id%>" />
-<% else 
+<% else
 specified_maps = @competitions_match.competitions_matches_games_maps
 %>
   <form method="post" action="/competiciones/do_responder_reto">
@@ -53,7 +53,7 @@ specified_maps = @competitions_match.competitions_matches_games_maps
 <td>
 	        <table>
         <% i = 0
-          @competition.default_maps_per_match.times do |time| 
+          @competition.default_maps_per_match.times do |time|
 			selected_opt = specified_maps.size >= (i + 1) ? specified_maps[i].games_map_id : nil
 %>
                 <tr>
@@ -68,9 +68,9 @@ end %>
     <input type="submit" class="button" value="<% if @competitions_match.new_record? then %>Retar<% else %>Contrarreto<% end%>" onclick="return confirm('¿Estás seguro?');" />
   </form>
   <% end -%>
-  
+
     <% if !@competitions_match.new_record? then %><br />
-  
+
     <% mftext('Rechazar reto') do %>
             <form method="post" action="/competiciones/do_deny_challenge">
                     <input type="hidden" name="competitions_match_id" value="<%=@competitions_match.id%>" />

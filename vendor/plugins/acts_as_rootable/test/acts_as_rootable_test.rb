@@ -48,7 +48,7 @@ class ActsAsRootableTest < Test::Unit::TestCase
 
   # TODO cuando hay un tag con más de una referencia comprobar que
   # last_tagged_on y que references se guardan bien
-  
+
   def teardown
     # destruimos objeto de prueba
     ActiveRecord::Base.db_query('DROP TABLE acts_as_rootable_mock_records')

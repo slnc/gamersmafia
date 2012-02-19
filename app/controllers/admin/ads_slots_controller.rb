@@ -1,11 +1,11 @@
 class Admin::AdsSlotsController < AdministrationController
-  def index    
+  def index
   end
-  
+
   def new
     @ads_slot = AdsSlot.new
   end
-  
+
   def create
     @ads_slot = AdsSlot.new(params[:ads_slot])
     if @ads_slot.save
@@ -15,7 +15,7 @@ class Admin::AdsSlotsController < AdministrationController
       render :action => 'new'
     end
   end
-  
+
   def copy
     @ads_slot_orig = AdsSlot.find(params[:id])
     @as = @ads_slot_orig.populate_copy(params[:ads_slot])
@@ -29,12 +29,12 @@ class Admin::AdsSlotsController < AdministrationController
       render :action => 'new'
     end
   end
-  
+
   def edit
     @ads_slot = AdsSlot.find(params[:id])
     @title = "Editar ad: #{@ads_slot.name}"
   end
-  
+
   def update
     @ads_slot = AdsSlot.find(params[:id])
     if @ads_slot.update_attributes(params[:ads_slot])
@@ -44,7 +44,7 @@ class Admin::AdsSlotsController < AdministrationController
       render :action => 'edit'
     end
   end
-  
+
   def destroy
     if AdsSlot.find(params[:id]).destroy
       flash[:notice] = "AdsSlot eliminado correctamente."
@@ -53,18 +53,18 @@ class Admin::AdsSlotsController < AdministrationController
     end
     redirect_to :action => 'index'
   end
-  
+
   def _update_slots_instances
     params[:ads] ||= []
     @as.update_slots_instances(params[:ads].each do |ad| ad.to_i end)
     end
-    
+
     def update_slots_instances
       @as = AdsSlot.find(params[:id])
       _update_slots_instances
       redirect_to "/admin/ads_slots/edit/#{@as.id}"
     end
-    
+
     def add_to_portal
       as = AdsSlot.find(params[:id])
       portal = Portal.find_by_id(params[:portal_id])
@@ -74,10 +74,10 @@ class Admin::AdsSlotsController < AdministrationController
       else
         flash[:notice] = "Asociación creada correctamente."
       end
-      
+
       redirect_to "/admin/ads_slots/edit/#{as.id}"
     end
-    
+
     def remove_from_portal
       as = AdsSlot.find(params[:id])
       portal = Portal.find_by_id(params[:portal_id])
@@ -87,13 +87,13 @@ class Admin::AdsSlotsController < AdministrationController
       else
         flash[:error] = "La asociación no existe."
       end
-      
+
       redirect_to "/admin/ads_slots/edit/#{as.id}"
     end
-    
+
     def require_user_can_owns_ads_slot(ads_slot_id)
-      @user.is_superadmin? || 
-        !@user.users_roles.count(:conditions => "role = 'Advertiser' AND 
+      @user.is_superadmin? ||
+        !@user.users_roles.count(:conditions => "role = 'Advertiser' AND
                                                  role_data = '#{ads_slot_id}'") == 0
     end
   end

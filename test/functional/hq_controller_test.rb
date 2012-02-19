@@ -8,14 +8,14 @@ class HqControllerTest < ActionController::TestCase
     get :bans_requests
     assert_response :success
   end
-  
+
     test "antifloods" do
     assert_raises(AccessDenied) { get :antifloods }
     sym_login 1
     get :antifloods
     assert_response :success
   end
-  
+
     test "slog_archive" do
     assert_raises(AccessDenied) { get :slog_archive }
     sym_login 1

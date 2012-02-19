@@ -5,7 +5,7 @@
 
 <%cache("/#{controller.portal.code}/encuestas/daily_random/#{Time.now.strftime('%Y%m%d')}") do %>
 <%
-mfcontents_list('Aleatorias de hoy', 
+mfcontents_list('Aleatorias de hoy',
 				   Proc.new { controller.portal.poll.find(:published, :order => 'random()', :limit => 5) }) do |o| %>
 <a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline right"><%=o.votes%> votos | <span class="comments-count"><a style="display: inline;" href="<%=gmurl(o)%>#comments"><%=o.cache_comments_count%></a></span></div>
@@ -57,7 +57,7 @@ for option in @poll.polls_options.find(:all, :order => 'id asc')
 <td class="w125"><img src="/images/blank.gif" style="border: 0px solid #9b2405; background: #A63131; width: <%=cur_pc_reg%>%; height: 10px;" /></td>
 <td class="w125"><img src="/images/blank.gif" style="border: 0px solid #823939; background: #777; width: <%=cur_pc_anon%>%; height: 10px;" /></td>
 <td class="w100 centered">
-  <strong style="color: #A63131"><%=votes_reg%></strong> / <strong style="color: #A09090"><%=votes_anon%></strong> 
+  <strong style="color: #A63131"><%=votes_reg%></strong> / <strong style="color: #A09090"><%=votes_anon%></strong>
   <br />
   <span class="infoinline" style="color: #d95e5e"><%=cur_pc_reg_abs%>%</span> / <span class="infoinline" style="color: #A09090"><%=cur_pc_anon_abs%>%</span>
 </td>

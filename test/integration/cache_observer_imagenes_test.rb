@@ -5,7 +5,7 @@ class CacheObserverImagenesTest < ActionController::IntegrationTest
     ActionController::Base.perform_caching             = true
     host! App.domain
   end
-  
+
   def atest_should_clear_imagenes_index_galleries_after_creating_a_new_category
     get '/imagenes'
     assert_response :success
@@ -14,7 +14,7 @@ class CacheObserverImagenesTest < ActionController::IntegrationTest
     @tcc = rt.children.create(:name => 'foocat', :taxonomy => 'ImagesCategory')
     assert_cache_dont_exist '/gm/imagenes/index/galleries'
   end
-  
+
   def atest_should_clear_imagenes_index_galleries_after_updating_a_category
     test_should_clear_imagenes_index_galleries_after_creating_a_new_category
     get '/imagenes'
@@ -31,7 +31,7 @@ class CacheObserverImagenesTest < ActionController::IntegrationTest
     @tcc.destroy
     assert_cache_dont_exist '/gm/imagenes/index/galleries'
   end
-  
+
   def atest_should_clear_toplevel_cache_after_changing_a_gallery_that_is_toplevel
     # not sure we have to still do this
     rt = Term.single_toplevel(:slug => 'gm')
@@ -41,7 +41,7 @@ class CacheObserverImagenesTest < ActionController::IntegrationTest
     @ic.save
     assert_cache_dont_exist "/common/imagenes/toplevel/#{@ic.id}/page_"
   end
-  
+
   def atest_should_clear_toplevel_from_previous_cache_after_changing_a_gallery_that_has_toplevel_above
     test_should_clear_toplevel_cache_after_changing_a_gallery_that_is_toplevel
     ic_child = @ic.children.create({:name => 'subcat'})
@@ -58,7 +58,7 @@ class CacheObserverImagenesTest < ActionController::IntegrationTest
     ic_child.destroy
     assert_cache_dont_exist "/common/imagenes/toplevel/#{@ic2.id}/page_"
   end
-  
+
   def teardown
     ActionController::Base.perform_caching             = false
   end

@@ -12,7 +12,7 @@ function open_download_win(download_id)
 	<% end -%>
 <% end -%>
 
-<% content_main do %> 
+<% content_main do %>
   <% mfcontent(@download) do %>
   <% if nil then %><div style="float: right; margin-right: 10px;"><span class="infoinline"><strong><%=@download.downloaded_times%></strong> descargas</span></div><% end -%>
   <%=auto_link_raw(smilelize(@download.description))%>
@@ -23,15 +23,15 @@ function open_download_win(download_id)
 <a href="/descargas/download/<%=@download.id%>"><img class="icon" src="/skins/default/images/btn_descargar.png" /></a><br />
 <% end -%>
 
-	<% mirrors = @download.download_mirrors.find(:all, :order => 'lower(url)') 
+	<% mirrors = @download.download_mirrors.find(:all, :order => 'lower(url)')
 if mirrors.size > 0 then %>
 	<table style="margin-top: 20px; border: 1px solid #efefef;">
 		<tr>
 			<th colspan="2">Descargas alternativas</th>
 		</tr>
 		<%mirrors.each do |dm| %>
-		<% begin 
-      mirror_name = URI.parse(dm.url).host.gsub(/www./, '') 
+		<% begin
+      mirror_name = URI.parse(dm.url).host.gsub(/www./, '')
     rescue
       mirror_name = nil
     end

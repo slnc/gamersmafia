@@ -10,7 +10,7 @@ module Import
       obj
     end
   end
-  
+
   module Users
     def self.import(dbu)
       # importa el usuario representado por dbr. Ya debe tener todos los campos con los atributos correctos
@@ -23,7 +23,7 @@ module Import
       un.email = "#{un.login}@nonexistant.com" if !(Cms::EMAIL_REGEXP =~ un.email.to_s )
       un.ipaddr = '127.0.0.1' if !(Cms::IP_REGEXP =~ un.ipaddr)
       dbu['username'] = un.login
-      
+
       # (0) Si existe un usuario con el mismo login, el mismo email y misma contraseña -> perfect match
       # Warning para todos los demás
       # (1) Si coinciden login y email pero no contraseña se queda la contraseña de la web que visitase por última vez
@@ -38,7 +38,7 @@ module Import
         un = u
         puts "no conflict | perfect match #{u.login}"
       elsif (u = User.find(:first, :conditions => ['lower(login) = lower(?)  AND lower(email) = lower(?)', un.login, un.email]))
-        un = u 
+        un = u
         puts "no conflict | pw mismatch   #{u.login}"
       elsif (u = User.find(:first, :conditions => ['lower(email) = lower(?)', un.email]))
         puts "no conflict | email match   #{u.email}"
@@ -79,7 +79,7 @@ module Import
           puts "new account (#{un.login})\n"
         end
       end
-      
+
       if un.new_record?
         un.save
         if un.new_record?
@@ -89,7 +89,7 @@ module Import
         end
         User.db_query("UPDATE users SET password = '#{un.password}' WHERE id = #{un.id}")
       end
-      
+
       if un.new_record?
         puts "#{un.login} todavía tiene errores, imposible guardar"
         puts un.errors.full_messages

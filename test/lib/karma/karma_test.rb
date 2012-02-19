@@ -33,7 +33,7 @@ class KarmaTest < ActiveSupport::TestCase
     assert_equal kp_initial + 2, u_a.karma_points
     assert_equal kp_initial + 2, u_b.karma_points
   end
-  
+
   test "update_ranking" do
     User.db_query("UPDATE users SET cache_karma_points = id")
     Karma.update_ranking

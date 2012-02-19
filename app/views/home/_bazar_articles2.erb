@@ -1,11 +1,11 @@
 <% cache("/common/home/index/articles2b#{bazar_district.code}") do %>
 <%
-bazar_district_portal = BazarDistrictPortal.find_by_code(bazar_district.code) 
+bazar_district_portal = BazarDistrictPortal.find_by_code(bazar_district.code)
 names = {'Interview' => 'Entrevista', 'Column' => 'Columna', 'Tutorial' => 'Tutorial', 'Review' => 'Review'}
 namess = {'Interview' => 'entrevistas', 'Column' => 'columnas', 'Tutorial' => 'tutoriales', 'Review' => 'reviews'}
 %>
 <%
-mfcontents_list("<a style=\"color: #969696;\" href=\"http://#{bazar_district.code}.#{App.domain}/articulos\">Artículos</a>",  
+mfcontents_list("<a style=\"color: #969696;\" href=\"http://#{bazar_district.code}.#{App.domain}/articulos\">Artículos</a>",
 					Proc.new { bazar_district_portal.latest_articles(3) },				
 					:blast => true) do |o| %>
 					

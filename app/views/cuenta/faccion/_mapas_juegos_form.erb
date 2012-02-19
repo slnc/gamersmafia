@@ -4,7 +4,7 @@
 
 <p><label for="games_map_screenshot">Archivo .JPG</label><br/>
 <% if @games_map.screenshot then %>
-<%=fc_thumbnail(@games_map.screenshot, 'k', '153x115')%> 
+<%=fc_thumbnail(@games_map.screenshot, 'k', '153x115')%>
 <% end -%>
 <%= file_field 'games_map', 'screenshot' %></p>
 

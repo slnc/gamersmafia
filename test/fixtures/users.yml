@@ -120,7 +120,7 @@ faction_editor:
   is_hq: true
   enable_profile_signatures: false
   admin_permissions: '00000000000000'
-    
+
 faction_moderator:
   id: 12
   state: <%=User::ST_ACTIVE%>

@@ -1,15 +1,15 @@
 <div class="grid-8 blast">
 <%mftext('Noticias', :has_submodules => true, :blast => true) do %>
 	<div class="grid-4">
-		<%=mfcontents_basic("Generales", 
-					Proc.new { controller.portal.news.find(:published, :order => 'created_on desc', :limit => 10) }, 
+		<%=mfcontents_basic("Generales",
+					Proc.new { controller.portal.news.find(:published, :order => 'created_on desc', :limit => 10) },
 					[],
 					:truncate_at => 28, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/news2")%>
 					</div>
 
 <div class="grid-4 glast">
 <% cache("/#{controller.portal_code}/home/index/coverages2") do %>	
-	<% mfcontents_list('Coverages', 
+	<% mfcontents_list('Coverages',
 				   Proc.new { controller.portal.coverage.find(:published, :order => 'coverages.created_on DESC', :limit => 8, :include => :event)},
 				   :blast => true, :truncate_at => 28) do |o| %>
 <a href="<%=gmurl(o)%>"><%=content_category(o)%> <%=o.title%></a><br />
@@ -25,8 +25,8 @@
 	<%mftext('En los foros', :has_submodules => true, :blast => true) do %>
 	
 	<div class="grid-4">
-	<%=mfcontents_basic("Tópics activos", 
-					Proc.new { controller.portal.topic.find(:published, :conditions => 'topics.closed is false', :order => 'contents.updated_on desc', :limit => 10) }, 
+	<%=mfcontents_basic("Tópics activos",
+					Proc.new { controller.portal.topic.find(:published, :conditions => 'topics.closed is false', :order => 'contents.updated_on desc', :limit => 10) },
 					[],
 					:truncate_at => 28, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	</div>
@@ -48,7 +48,7 @@
 <div class="grid-4"><%=render :partial => '/home/open_bets' %></div>
 
 <% cache("/#{controller.portal_code}/home/index/demos2") do %>
-<%mfcontents_list('Demos', 
+<%mfcontents_list('Demos',
 					Proc.new { controller.portal.demo.find(:published, :content_type => 'Demo', :order => 'demos.created_on desc', :limit => 5) }, 					
 					{:faction_favicon => true, :grid => 4, :glast => true}) do |o| %>
 <%=content_category(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a><br />
@@ -61,7 +61,7 @@
 <div class="clearb"></div>
 
 <% cache("/#{controller.portal_code}/home/index/articles2") do %>
-<%mftext('Artículos', :has_submodules => true, :grid => 12, :glast => true) do 
+<%mftext('Artículos', :has_submodules => true, :grid => 12, :glast => true) do
 	revs = controller.portal.review.count > 0
 	classes = %w(Column Interview Tutorial Review)
 	if revs
@@ -71,20 +71,20 @@
 	else
 		grid_size = 3
 		thumb_width = '143'
-	end 
+	end
 	
 %>
 <% classes.each do |it| %>
 <% dafirst = true
-mfcontents_list(Cms::translate_content_name(it),  
+mfcontents_list(Cms::translate_content_name(it),
 					Proc.new { controller.portal.send(it.downcase).find(:published, :content_type => it, :order => 'created_on desc', :limit => 3) }, 					
 					{:truncate_at => 28, :grid => grid_size, :glast => (it == classes.last)}) do |o| %>
 					
 <%=content_category(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
 <% if dafirst && o.home_image then %><div style="margin: 5px 0 10px 0;"><a href="<%=gmurl(o)%>"><%=fc_thumbnail(o.home_image, 'i', "#{thumb_width}x54", false)%></a></div><% end -%>
-<%	dafirst = false 
+<%	dafirst = false
 	end -%>
-<% end -%> 
+<% end -%>
 <% end -%>
 <% end -%>
 
@@ -93,18 +93,18 @@ mfcontents_list(Cms::translate_content_name(it),
 
 
 <%mftext('Descargas', :has_submodules => true, :grid => 8) do
-cache("/#{controller.portal_code}/home/index/downloads2") do 
+cache("/#{controller.portal_code}/home/index/downloads2") do
 category = controller.portal.categories(Download)[0]
 %>
 	<div class="grid-4">
-	<%=mfcontents_basic('Últimas', 
+	<%=mfcontents_basic('Últimas',
 					Proc.new { category.root.download.find(:published, :order => 'created_on DESC', :limit => 12) },
 					[],
 					:truncate_at => 28, :faction_favicon => true)%>
 	</div>
 	
 	<div class="grid-4 glast">
-	<%=mfcontents_basic('Esenciales', 
+	<%=mfcontents_basic('Esenciales',
 					Proc.new { category.root.download.find(:published, :content_type => 'Download', :conditions => "essential is true", :order => 'created_on DESC', :limit => 12) },
 					[],
 					:truncate_at => 28, :faction_favicon => true)%>

@@ -24,7 +24,7 @@ module Clusterer
   class DocumentsCentroidVector
     attr_reader :no_of_documents
     attr_reader :centroid
-    
+
     def initialize(docs = [])
       @no_of_documents = docs.size
       return if @no_of_documents == 0
@@ -36,7 +36,7 @@ module Clusterer
     def to_dmatrix
       @centroid
     end
-    
+
     def merge!(centroid)
       return unless centroid.centroid
       unless @centroid

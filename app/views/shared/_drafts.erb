@@ -1,4 +1,4 @@
-<% 
+<%
 objs = cls.find(:all, :conditions => "state = #{Cms::DRAFT} AND user_id = #{@user.id}", :order => 'created_on ASC')
 
 if objs.size > 0 then %>

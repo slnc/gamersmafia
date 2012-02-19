@@ -1,6 +1,6 @@
 column_published:
-    id: 1 
-    content_id: 3 
+    id: 1
+    content_id: 3
     term_id: 1
 
 column_unpublished:
@@ -15,7 +15,7 @@ column_deleted:
 
 download_published:
     id: 4
-    content_id: 5 
+    content_id: 5
     term_id: 16
 
 download_unpublished:
@@ -40,7 +40,7 @@ demo_unpublished:
 
 demo_deleted:
     id: 9
-    content_id: 2015 
+    content_id: 2015
     term_id: 1
 
 topic_published:
@@ -90,13 +90,13 @@ interview_deleted:
 
 news_published:
     id: 19
-    content_id: 1 
+    content_id: 1
     term_id: 1
 
 news_unpublished:
     id: 20
     content_id: 1000
-    term_id: 1 
+    term_id: 1
 
 news_deleted:
     id: 21
@@ -110,12 +110,12 @@ tutorial_published:
 
 tutorial_unpublished:
     id: 23
-    content_id: 1007 
+    content_id: 1007
     term_id: 19
 
 tutorial_deleted:
     id: 24
-    content_id: 2007 
+    content_id: 2007
     term_id: 19
 
 poll_published:
@@ -139,7 +139,7 @@ bet_published:
     term_id: 1
 
 bet_unpublished:
-    id: 29 
+    id: 29
     content_id: 1002
     term_id: 1
 
@@ -192,7 +192,7 @@ question_deleted:
     id: 39
     content_id: 1112
     term_id: 20
-        
+
 news66:
     id: 40
     content_id: 1114
@@ -202,12 +202,12 @@ news65:
     id: 41
     content_id: 1113
     term_id: 5
-    
+
 newsclan:
     id: 42
     content_id: 1100
     term_id: 27
-    
+
 news64:
     id: 43
     content_id: 1104
@@ -222,7 +222,7 @@ dude:
     id: 45
     content_id: 16
     term_id: 24
-    
+
 <% i = 100 %>
 <% ii = 100 %>
 <% [0,1,2,3,4].each do |state| %>
@@ -235,7 +235,7 @@ dude:
 compevent<%=competitions_type%><%=i%>:
   id: <%=i%>
   content_id: <%=ii%>
-  term_id: 25 
+  term_id: 25
 
             <% i += 1 %>
             <% ii += 1 %>
@@ -250,12 +250,12 @@ gmpollpublished:
     id: 46
     content_id: 1115
     term_id: 15
-    
+
 gmpollpending:
     id: 47
     content_id: 1116
     term_id: 15
-    
+
 rj_news1:
     id: 48
     content_id: 1117

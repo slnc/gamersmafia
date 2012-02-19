@@ -2,19 +2,19 @@ class OutstandingClan < OutstandingEntity
   def clan
     @_entity ||= Clan.find(self.entity_id)
   end
-  
+
   def name
     clan.name
   end
-  
+
   def logo
     clan.logo
   end
-  
+
   def entity
     clan
   end
-  
+
   def self.current(portal_id, redir=true)
     bought = OutstandingClan.find(:first, :conditions => ["portal_id = ? AND active_on = ? ", portal_id, Time.now])
     i = 0
@@ -23,17 +23,17 @@ class OutstandingClan < OutstandingEntity
       # TODO
       # raise "TODO hacer como en comunidad.html para sacar las visitas"
       return nil
-      cool_clanz = User.db_query("select (select clan_id from portals where id = stats.portals.portal_id) 
-                                                       from stats.portals 
-                                                      where created_on >= now() - '14 days'::interval 
-                                                        and portal_id in (select id 
-                                                                            from portals 
-                                                                           where clan_id is not null) 
-                                                   GROUP BY portal_id 
-                                                     HAVING sum(karma) > 0 
-                                                   order by sum(karma) desc 
+      cool_clanz = User.db_query("select (select clan_id from portals where id = stats.portals.portal_id)
+                                                       from stats.portals
+                                                      where created_on >= now() - '14 days'::interval
+                                                        and portal_id in (select id
+                                                                            from portals
+                                                                           where clan_id is not null)
+                                                   GROUP BY portal_id
+                                                     HAVING sum(karma) > 0
+                                                   order by sum(karma) desc
                                                       limit 1")
-      
+
       # TODO tests
       if cool_clans.size > 0 then
         bu = Clan.find(cool_clanz['clan_id'].to_i)
@@ -45,7 +45,7 @@ class OutstandingClan < OutstandingEntity
         end
       else
         i += 1
-      end      
+      end
     end
     bought
   end

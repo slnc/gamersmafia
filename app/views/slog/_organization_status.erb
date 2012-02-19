@@ -20,7 +20,7 @@ bds.each do |bd|
   max_karma = stats_karma[bd.id].max if stats_karma[bd.id].size > 0 && stats_karma[bd.id].max > max_karma
 
   stats_pageviews[bd.id] = Stats::Portals.daily_pageviews(Portal.find_by_code(bd.code), 31.days.ago, 1.day.ago)
-  max_pageviews = stats_pageviews[bd.id].max if stats_pageviews[bd.id].size > 0 && stats_pageviews[bd.id].max > max_pageviews 
+  max_pageviews = stats_pageviews[bd.id].max if stats_pageviews[bd.id].size > 0 && stats_pageviews[bd.id].max > max_pageviews
 end
 
 bds.each do |bd| %>

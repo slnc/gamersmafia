@@ -13,7 +13,7 @@ class UsersAction < ActiveRecord::Base
   NEW_FRIENDSHIP_SENDER = 8
   NEW_FRIENDSHIP_RECEIVER = 9
   NEW_USERS_EMBLEM = 10
-  
+
   validates_presence_of :type_id, :user_id
-  
+
 end

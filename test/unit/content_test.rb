@@ -1,39 +1,39 @@
 require 'test_helper'
 
 class ContentTest < ActiveSupport::TestCase
-  
+
   def setup
     @content = Content.find(1)
   end
-  
+
   test "refered_people_should_work_with_content_title" do
-    
+
   end
-  
+
   test "refered_people_should_work_with_content_description" do
-    
+
   end
-  
+
   test "refered_people_should_work_with_content_main" do
-    
+
   end
-  
+
   test "refered_people_should_work_with_content_comments" do
-    
+
   end
-  
-  
+
+
   test "locked_for_user_when_unlocked" do
     c = Content.find(1)
     assert !c.locked_for_user?(User.find(1))
   end
-  
+
   test "locked_for_user_when_locked" do
     assert_not_nil ContentsLock.create({:content_id => 1, :user_id => 1})
     c = Content.find(1)
     assert c.locked_for_user?(User.find(2))
   end
-  
+
   test "locked_for_user_when_lock_expired" do
     lock = ContentsLock.create({:content_id => 1, :user_id => 1})
     assert_not_nil lock
@@ -41,8 +41,8 @@ class ContentTest < ActiveSupport::TestCase
     c = Content.find(1)
     assert !c.locked_for_user?(User.find(2))
   end
-  
-  
+
+
   test "del_recommendations_after_delete_content" do
     c = Content.find(:first, :conditions => "state = #{Cms::PUBLISHED}")
     cr = ContentsRecommendation.create(:sender_user_id => 1, :content_id => c.id, :receiver_user_id => 3)
@@ -50,7 +50,7 @@ class ContentTest < ActiveSupport::TestCase
     assert c.update_attributes(:state => Cms::DELETED)
     assert ContentsRecommendation.find_by_id(cr.id).nil?
   end
-  
+
   test "linked_terms" do
     c = Content.find(1)
     assert_equal 'News', c.content_type.name
@@ -59,14 +59,14 @@ class ContentTest < ActiveSupport::TestCase
     assert_nil lterms[0].taxonomy
     assert_equal 1, lterms[0].id
   end
-  
+
   test "linked_terms_taxonomy" do
     c = Content.find(5)
     lterms = c.linked_terms('DownloadsCategory')
     assert_equal 1, lterms.size
     assert_equal 16, lterms[0].id
   end
-  
+
   test "linked_terms_null" do
     c = Content.find(1)
     lterms = c.linked_terms('NULL')

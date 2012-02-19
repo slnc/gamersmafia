@@ -1,10 +1,10 @@
 class Cuenta::SkinsController < ApplicationController
   before_filter :require_auth_users
-  
+
   def index
     @title = "Mis skins"
   end
-  
+
   def make_private
     @skin = @user.skins.find(params[:id])
     if @skin.update_attributes(:is_public => false)
@@ -14,7 +14,7 @@ class Cuenta::SkinsController < ApplicationController
     end
     redirect_to params[:redirto] ? params[:redirto] : "/cuenta/skins"
   end
-  
+
   def make_public
     @skin = @user.skins.find(params[:id])
     if @skin.update_attributes(:is_public => true)
@@ -24,7 +24,7 @@ class Cuenta::SkinsController < ApplicationController
     end
     redirect_to params[:redirto] ? params[:redirto] : "/cuenta/skins"
   end
-  
+
   def edit
     @skin = @user.skins.find(params[:id])
     @title = "Editar skin #{@skin.name}"
@@ -32,25 +32,25 @@ class Cuenta::SkinsController < ApplicationController
       render :action => 'otras_opciones'
     else
       render :action => 'edit'
-    end    
+    end
   end
-  
+
   def create
     raise ActiveRecord::RecordNotFound unless %w(FactionsSkin ClansSkin).include?(params[:skin][:type])
     @skin = Object.const_get(params[:skin][:type]).new(params[:skin].merge({:user_id => @user.id}))
-    if @skin.save 
+    if @skin.save
       flash[:notice] = "Skin #{@skin.name} creada correctamente."
     else
       flash[:error] = "Ocurrió un error al crear la skin: #{@skin.errors.full_messages_html}"
     end
     redirect_to :action => :index
   end
-  
+
   def update
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
-    
-    @skin.update_favicon(params[:favicon]) if params[:favicon].to_s != ''      
-    
+
+    @skin.update_favicon(params[:favicon]) if params[:favicon].to_s != ''
+
     if (!params[:skin][:intelliskin].nil?)
       @skin.config[:intelliskin] ||= {}
       @skin.config[:intelliskin].merge!(params[:skin][:intelliskin])
@@ -65,44 +65,44 @@ class Cuenta::SkinsController < ApplicationController
     end
     redirect_to :action => :edit, :id => @skin.id
   end
-  
+
   def destroy
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
     @skin.destroy
     flash[:notice] = "Skin #{@skin.name} borrada correctamente."
     redirect_to :action => :index
   end
-  
+
   def cabecera
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
     @title = "Cabecera de skin #{@skin.name}"
   end
-  
+
   def organizacion
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
     @title = "Organización de skin #{@skin.name}"
   end
-  
+
   def modulos
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
     @title = "Módulos de skin #{@skin.name}"
   end
-  
+
   def colores
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
     @title = "Colores de skin #{@skin.name}"
   end
-  
+
   def texturas
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
     @title = "Texturas de skin #{@skin.name}"
   end
-  
+
   def otras_opciones
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
     @title = "Otras opciones de skin #{@skin.name}"
   end
-  
+
   def do_modulos
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
     @skin.config[:intelliskin] ||= {}
@@ -112,7 +112,7 @@ class Cuenta::SkinsController < ApplicationController
     flash[:notice] = "Skin #{@skin.name} actualizada correctamente"
     redirect_to "/cuenta/skins/modulos/#{@skin.id}"
   end
-  
+
   def do_organizacion
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
     @skin.config[:intelliskin] ||= {}
@@ -121,7 +121,7 @@ class Cuenta::SkinsController < ApplicationController
     flash[:notice] = "Skin #{@skin.name} actualizada correctamente"
     redirect_to "/cuenta/skins/organizacion/#{@skin.id}"
   end
-  
+
   def do_colores
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
     @skin.config[:intelliskin] ||= {}
@@ -130,7 +130,7 @@ class Cuenta::SkinsController < ApplicationController
     flash[:notice] = "Skin #{@skin.name} actualizada correctamente"
     redirect_to "/cuenta/skins/colores/#{@skin.id}"
   end
-  
+
   def do_cabecera
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
     params[:skin][:intelliskin][:header_height] = '224' if params[:skin][:intelliskin][:header_height] && params[:skin][:intelliskin][:header_height].to_i > 224
@@ -143,10 +143,10 @@ class Cuenta::SkinsController < ApplicationController
     else
       flash[:error] = "Error al actualizar la página"
     end
-    
+
     redirect_to "/cuenta/skins/cabecera/#{@skin.id}"
   end
-  
+
   def do_otras_opciones
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:id], @user.id])
     @skin.config[:intelliskin] ||= {}
@@ -158,10 +158,10 @@ class Cuenta::SkinsController < ApplicationController
     #else
     #  flash[:error] = "Error al actualizar la página"
     #end
-    
+
     redirect_to "/cuenta/skins/edit/#{@skin.id}"
   end
-  
+
   def texturas_por_tipo
     if Skins::TexturesGenerators.texturable_things.include?(params[:id])
       @textures = Texture.find(:all, :conditions => "valid_element_selectors = '''all''' or valid_element_selectors LIKE '%''#{params[:id]}''%'")
@@ -170,7 +170,7 @@ class Cuenta::SkinsController < ApplicationController
     end
     render :layout => false
   end
-  
+
   def config_textura
     @texture = Texture.find_by_name(params[:id])
     # TODO esto porque sabemos que es en config de la skin actual (unicamente)
@@ -180,7 +180,7 @@ class Cuenta::SkinsController < ApplicationController
     #@sk.initialize_user_config
     render :layout => false
   end
-  
+
   def do_create_textura
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:skin_texture][:skin_id], @user.id])
     @texture = Texture.find(params[:skin_texture][:texture_id])
@@ -193,32 +193,32 @@ class Cuenta::SkinsController < ApplicationController
     else
       flash[:error] = "Error al crear la textura: #{@sk.errors.full_messages_html}"
     end
-    
+
     redirect_to "/cuenta/skins/texturas/#{@skin.id}"
   end
-  
+
   def skin_textura
     @sk = skin.skin_textures.find_by_id(params[:id])
     raise ActiveRecord::RecordNotFound unless @sk
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', @sk.skin_id, @user.id])
   end
-  
+
   def update_skin_texture
     sk = skin.skin_textures.find_by_id(params[:id])
     raise ActiveRecord::RecordNotFound unless sk
     skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', sk.skin_id, @user.id])
     raise ActiveRecord::RecordNotFound unless skin
-    
+
     if sk.update_attributes(params[:skin_texture])
       flash[:notice] = "Textura actualizada correctamente"
       skin.save_config
     else
       flash[:error] = "Error al crear la textura: #{sk.errors.full_messages_html}"
     end
-    
+
     redirect_to "/cuenta/skins/texturas/#{skin.id}"
   end
-  
+
   def create_skins_file
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:skin_id], @user.id])
     sfn = @skin.skins_files.create(params[:skins_file])
@@ -229,7 +229,7 @@ class Cuenta::SkinsController < ApplicationController
     end
     redirect_to "/cuenta/skins/edit/#{@skin.id}"
   end
-  
+
   def delete_skins_file
     @skin = Skin.find_or_404(:first, :conditions => ['id = ? AND user_id = ?', params[:skin_id], @user.id])
     sfn = @skin.skins_files.find(params[:skins_file_id])
@@ -241,7 +241,7 @@ class Cuenta::SkinsController < ApplicationController
     end
     redirect_to "/cuenta/skins/edit/#{@skin.id}"
   end
-  
+
   def borrar_skin_textura
     sk = skin.skin_textures.find_by_id(params[:id])
     raise ActiveRecord::RecordNotFound unless sk

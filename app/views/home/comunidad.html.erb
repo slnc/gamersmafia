@@ -6,8 +6,8 @@
 <%
 cur_date = nil
 is_first = true
-@user.users_newsfeeds.find(:all, :order => 'created_on DESC', :limit => 28).each do |unf| 
-if cur_date.nil? && unf.created_on >= Time.now.beginning_of_day 
+@user.users_newsfeeds.find(:all, :order => 'created_on DESC', :limit => 28).each do |unf|
+if cur_date.nil? && unf.created_on >= Time.now.beginning_of_day
 cur_date = Time.now.beginning_of_day
 cur_str = 'Hoy'
 output_date = true
@@ -20,9 +20,9 @@ end
 
 if output_date then %>
 <li class="en-tu-red-date <%='first' if is_first%>"><%=cur_str%></li>
-<% output_date = false 
+<% output_date = false
 is_first = false
-end  
+end
 %>
 <li class="<%=oddclass%>"><%=unf.summary%></li>
 <% end -%>
@@ -87,7 +87,7 @@ end
 	<% end -%>
 	
 <%mftext('Hacer amigos', :grid => 9, :has_submodules => true, :glast => true) do %>
-	<%mftext('Aleatorio', :grid => 2) do 
+	<%mftext('Aleatorio', :grid => 2) do
 	us = User.random_with_photo(:exclude_user_id => (user_is_authed ? @user.id : nil))
 	if us.size > 0 then
 	%>
@@ -95,7 +95,7 @@ end
 	<% end -%>
 	<% end -%>
 	
-	<% if user_is_authed then 
+	<% if user_is_authed then
 		us = User.random_same_city(@user, :limit => 1)
 		if us.size > 0 then %>
 		  <%mftext('De tu ciudad', :grid => 2) do %><%=comunidad_user_with_photo(us[0]) %><% end -%>
@@ -177,7 +177,7 @@ end
 <%mftext('Cumplen años hoy', :grid => 3) do %>
   <table>
 <%  cache("/common/miembros/_rightside/birthdays_#{Time.now.strftime('%Y%m%d')}") do %>
-      <% User.can_login.birthday_today.find(:all, :conditions => "state <> #{User::ST_ZOMBIE}", :order => 'lower(login)').each do |u| 
+      <% User.can_login.birthday_today.find(:all, :conditions => "state <> #{User::ST_ZOMBIE}", :order => 'lower(login)').each do |u|
 		 next if u.age < 5 || u.age > 100 %>
       <tr class="<%=oddclass%>">
         <td><%=user_link(u)%><br /> <span class="infoinline"><strong><%=u.age%></strong> años</span></td>
@@ -212,7 +212,7 @@ end
 <% end -%>
 
 <% cache("/home/comunidad/top_semanal/#{Time.now.strftime('%Y%W')}") do %>
-<%mftext('Top semanal', :grid => 6, :glast => true) do 
+<%mftext('Top semanal', :grid => 6, :glast => true) do
 emblems = Emblems.get_latest_emblems.chunk(2)
 	2.times do |itime| %>
 <div class="grid-3 <%='glast' if itime == 1%>">

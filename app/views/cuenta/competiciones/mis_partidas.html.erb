@@ -1,7 +1,7 @@
-<% 
+<%
 participant = @competition.get_active_participant_for_user(@user)
 generic_support do %>
-  <%  
+  <%
   raise ActiveRecord::RecordNotFound if participant.nil?
   %>
   <% if @competition.kind_of?(Ladder) then %>
@@ -23,7 +23,7 @@ generic_support do %>
   <tr class="<%=oddclass%>">
     <td><a href="/competiciones/responder_reto/<%=cm.id%>"><%=cm.participant1.name%> <span class="infoinline">(#<%=cm.id%>)</span></a></td>
   </tr>
-  <% end -%>  
+  <% end -%>
   </table>
   <% end -%>
   <!--

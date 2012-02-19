@@ -5,7 +5,7 @@ class CacheObserverForosTest < ActionController::IntegrationTest
     ActionController::Base.perform_caching             = true
     host! App.domain
   end
-  
+
   test "should_clear_foros_index_index_after_creating_a_new_category" do
     get '/foros'
     assert_response :success
@@ -14,7 +14,7 @@ class CacheObserverForosTest < ActionController::IntegrationTest
     @tc = @rt.children.create({:name => 'foocat', :taxonomy => 'TopicsCategory'})
     assert_cache_dont_exist '/gm/foros/index/index'
   end
-  
+
   test "should_clear_foros_index_index_after_updating_a_category" do
     test_should_clear_foros_index_index_after_creating_a_new_category
     get '/foros'
@@ -23,7 +23,7 @@ class CacheObserverForosTest < ActionController::IntegrationTest
     @tc.save
     assert_cache_dont_exist '/gm/foros/index/index'
   end
-  
+
   test "should_clear_foros_index_index_after_deleting_a_category" do
     test_should_clear_foros_index_index_after_creating_a_new_category
     get '/foros'
@@ -32,7 +32,7 @@ class CacheObserverForosTest < ActionController::IntegrationTest
     @tc.destroy
     assert_cache_dont_exist '/gm/foros/index/index'
   end
-  
+
   test "should_clear_foros_forums_list_after_creating_a_subcategory" do
     test_should_clear_foros_index_index_after_creating_a_new_category
     get "/foros/forum/#{@tc.id}"
@@ -41,7 +41,7 @@ class CacheObserverForosTest < ActionController::IntegrationTest
     @tc_child = @tc.children.create({:name => 'subfoocat', :slug => 'subcodecot'})
     assert_cache_dont_exist "/common/foros/_forums_list/#{@tc.id}"
   end
-  
+
   test "should_clear_foros_forums_list_after_updating_a_subcategory" do
     test_should_clear_foros_forums_list_after_creating_a_subcategory
     get "/foros/forum/#{@tc_child.id}"
@@ -54,7 +54,7 @@ class CacheObserverForosTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/foros/_forums_list/#{@tc.id}"
     assert_cache_dont_exist "/common/foros/_forums_list/#{@tc_child.id}"
   end
-  
+
   test "should_clear_foros_forums_list_after_destroying_a_subcategory" do
     test_should_clear_foros_forums_list_after_creating_a_subcategory
     get "/foros/forum/#{@tc_child.id}"
@@ -67,7 +67,7 @@ class CacheObserverForosTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/foros/_forums_list/#{@tc.id}"
     assert_cache_dont_exist "/common/foros/_forums_list/#{@tc_child.id}"
   end
-  
+
   def teardown
     ActionController::Base.perform_caching             = false
   end

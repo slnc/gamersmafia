@@ -45,7 +45,7 @@ Competitions.find_all_matches_from_user(@curuser).each do |cm|
   p = cm.competition.get_active_participant_for_user(@curuser)
   if cm.completed_on.nil?
     p1_class = ''
-  elsif cm.result == 1 
+  elsif cm.result == 1
     p1_class = p2_class = 'match-tie'
   else %>
     <%# nuestro participant va a estar siempre a la izquierda en la lista %>

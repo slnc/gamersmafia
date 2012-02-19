@@ -1,6 +1,6 @@
 first:
   faction_id: 1
-  portal_id: 1 
+  portal_id: 1
 
 second:
   faction_id: 1
@@ -9,7 +9,7 @@ second:
 platform:
   faction_id: 4
   portal_id: 20
-  
+
 second_faction:
   faction_id: 2
   portal_id: 11

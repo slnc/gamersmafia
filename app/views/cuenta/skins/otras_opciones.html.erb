@@ -1,7 +1,7 @@
 <% generic_support do %>
 <%mftext('Estado de la skin') do %>
 	<div class="centered-link">
-		<% if @skin.is_public? then %><strong>Pública</strong> <br /><span class="f_sm"><a href="/cuenta/skins/make_private?id=<%=@skin.id%>&redirto=/cuenta/skins/edit/<%=@skin.id%>">Hacer privada</a></span> 
+		<% if @skin.is_public? then %><strong>Pública</strong> <br /><span class="f_sm"><a href="/cuenta/skins/make_private?id=<%=@skin.id%>&redirto=/cuenta/skins/edit/<%=@skin.id%>">Hacer privada</a></span>
 		<% else %><strong>Privada</strong><br /><span class="f_sm"><a href="/cuenta/skins/make_public?id=<%=@skin.id%>&redirto=/cuenta/skins/edit/<%=@skin.id%>">Hacer pública</a></span><% end -%>
 	</div>
 <% end -%>

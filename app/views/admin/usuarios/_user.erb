@@ -3,7 +3,7 @@
     <td><%=user.email%></td>
 	<td class="timestamp infoinline"><%= print_tstamp(user.lastseen_on)%><br /><%=user.ipaddr %></td>
 	<% if nil then %>
-    
+
 		<td class="infoinline">
 		<a onclick="return confirm('¿Estás seguro de querer BORRAR a <%=user.login%>?');" href="/admin/usuarios/destroy/<%=user.id%>">Borrar</a><br />
 		<a onclick="return confirm('¿Estás seguro de querer BANEAR a <%=user.login%>?');" href="/admin/usuarios/ban/<%=user.id%>">Banear</a><br />

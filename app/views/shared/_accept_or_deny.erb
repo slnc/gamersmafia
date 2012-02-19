@@ -49,12 +49,12 @@ function publishContent()
   <tr valign="top">
     <td style="width: 50%; text-align: center;">
       <form name="accept_or_deny" method="post" action="/admin/contenidos/deny_content/<%=object.id%>">
-        
+
         <div style="margin-left: auto; margin-right: auto; width: 200px; text-align: left; margin-bottom: 10px;" class="infoinline">
           <div class="infoinline">Elige la primera opción aplicable:</div>
 <%        ['Duplicado', 'Tipo de contenido incorrecto', 'Viola el código de conducta', 'Categoría incorrecta', 'Ilegible', 'Otra'].each do |r| %>
           <label><input type="radio" name="deny_reason" value="<%=r%>" /> <%=r%></label><br />
-          <% 
+          <%
           defset = true
           end -%>
           <input type="text" class="text" name="deny_reason_other" size="20" style="margin-left: 25px;" />

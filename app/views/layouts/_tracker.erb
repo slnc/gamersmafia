@@ -8,6 +8,6 @@
 	       :class => 'new',
 		   :bottom => '<div style="text-align: right"><a class="nav" title="Ver todos los elementos de mi tracker" href="/cuenta/cuenta/tracker">ver tracker</a></div>',
 		   :show_even_if_empty => true) do |o| %>
-	<a title="<%=o.main_category ? "#{o.main_category.root.code} | " : ''%><%=h o.resolve_hid%>" href="<%=controller.url_for_content_onlyurl(o)%>"><%=truncate(o.resolve_hid, 26, '..')%></a> 
+	<a title="<%=o.main_category ? "#{o.main_category.root.code} | " : ''%><%=h o.resolve_hid%>" href="<%=controller.url_for_content_onlyurl(o)%>"><%=truncate(o.resolve_hid, 26, '..')%></a>
 <% end %>
 <% end %>

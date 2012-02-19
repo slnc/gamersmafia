@@ -21,11 +21,11 @@ class CacheObserverSiteWideTest < ActionController::IntegrationTest
     sym_login 'superadmin', 'lalala'
     go_to '/'
     assert_cache_exists "#{g1.code}/site/last_commented_objects"
-    
+
     post_comment_on Blogentry.find(:first, :conditions => "state = #{Cms::PUBLISHED}")
     assert_cache_dont_exist "#{g1.code}/site/last_commented_objects"
-  end  
-  
+  end
+
   test "should_clear_lasttopics_box_when_deleting_a_topic" do
     sym_login 'superadmin', 'lalala'
     create_content(:topic, { :title => 'topico titulado 2', :main => 'contenido del topicotitulado 2'}, :categories_terms => [Term.find(:first, :conditions => "taxonomy = 'TopicsCategory'").id])

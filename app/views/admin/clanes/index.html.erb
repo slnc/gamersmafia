@@ -9,7 +9,7 @@
     <th>Juegos</th>
     <th style="text-align: right;">Creado</th>
   </tr>
-  
+
 <% @clans.each do |clan| %>
   <tr class="<%=oddclass%>">
     <td><a href="/admin/clanes/edit/<%=clan.id%>"><%=clan.name.to_s == '' ? "\##{clan.id}" : clan.name%></a></td>

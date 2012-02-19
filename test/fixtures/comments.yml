@@ -8,7 +8,7 @@ first_comment:
   comment: caca
   has_comments_valorations: false
   portal_id: 1
-  
+
 second_comment:
   id: 2
   content_id: 1110

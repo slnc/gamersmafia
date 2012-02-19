@@ -15,7 +15,7 @@
 <% if @faction.created_on >= Faction::GRACE_DAYS.days.ago then %>
 <%mftext('Borrar la facción') do %>
 <%= form_tag({:action => 'destroy', :id => @faction})%>
-  
+
   <input type="submit" value="Borrar" onclick="return confirm('¿Estás seguro?');" />
 </form>
 <% end -%>

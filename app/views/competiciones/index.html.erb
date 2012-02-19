@@ -41,9 +41,9 @@
   </table>
   <% end -%>
   </div>
-  
+
   <div style="float: left; width: 49%;">
-    <%mftext('Ligas') do %>  
+    <%mftext('Ligas') do %>
   	<% leagues = controller.portal.competitions.find(:all, :conditions => 'type = \'League\' and state > 1 and state < 4', :order => 'game_id ASC, lower(name) ASC') %>
 	<% if leagues.size > 0 then %>
 	<table>
@@ -66,7 +66,7 @@
   <div class="centered infoinline">No hay ligas en curso.</div>
   <% end %>
   <% end -%>
-  
+
     <%mftext('Torneos') do %>
  <% tournaments = controller.portal.competitions.find(:all, :conditions => 'type = \'Tournament\' and state > 1 and state < 4', :order => 'game_id ASC, lower(name) ASC') %>
 	<% if tournaments.size > 0 then %>

@@ -22,7 +22,7 @@
 	<th>spark</th>
 	<% end -%>
   </tr>
-<% AdsSlot.find(:all, :conditions =>"advertiser_id IN (#{@advertisers_ids.join(',')})", :order => 'lower(name)').each do |ads| 
+<% AdsSlot.find(:all, :conditions =>"advertiser_id IN (#{@advertisers_ids.join(',')})", :order => 'lower(name)').each do |ads|
 ads_pageviews30 = ads.pageviews(:sum, 30)
 ads_clicks30 = ads.clicks(:sum, 30)
 ads_portals = ads.portals

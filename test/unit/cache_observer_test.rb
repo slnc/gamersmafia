@@ -12,7 +12,7 @@ class CacheObserverTest < ActiveSupport::TestCase
     CacheObserver.expire_fragment cache_id
     assert_equal false, File.exists?(f)
   end
-  
+
   test "expire_fragment_should_do_nothing_when_given_cache_id_didnt_exist" do
     CacheObserver.expire_fragment '/unexisting'
   end

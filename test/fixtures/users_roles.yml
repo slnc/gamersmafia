@@ -5,7 +5,7 @@ one:
   role: Advertiser
   role_data: '1'
   created_on: 2007-01-01 00:00:00
-  
+
 two:
   id: 2
   user_id: 59
@@ -18,13 +18,13 @@ moderator:
   user_id: 1
   role: Moderator
   role_data: 1
-  
+
 editor:
   id: 4
   user_id: 2
   role: Editor
   role_data: "--- \n:faction_id: \"1\"\n:content_type_id: \"1\"\n"
-  
+
 faction_boss:
   id: 5
   user_id: 10

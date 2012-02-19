@@ -20,14 +20,14 @@
     <th>Fe</th>
     <th class="timestamp">Última actividad</th>
   </tr>
-  
-<% 
+
+<%
 time1 = Time.now
 time_3_month_ago = Time.at(time1.to_i + 86400 * 30 * 3) # TODO eughh
 
 for member in @members
   if member.faction then
-    game = Game.find_by_name(member.faction.name) 
+    game = Game.find_by_name(member.faction.name)
   else
     game = nil
   end

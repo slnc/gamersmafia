@@ -57,7 +57,7 @@ published_clans_news:
   approved_by_user_id: 1
   state: 2
   unique_content_id: 1100
-  
+
 unpublished_clans_news:
   id: 5
   user_id: 1
@@ -72,7 +72,7 @@ unpublished_clans_news:
   main: foo & war24
   state: 1
   unique_content_id: 1103
-  
+
 published_news2:
   id: 64
   user_id: 1
@@ -98,7 +98,7 @@ published_anime1:
   cache_comments_count: 0
   title: noticia de anime 1
   description: noticiad e anime 1 description
-  main: 
+  main:
   approved_by_user_id: 1
   state: 2
   unique_content_id: 1113
@@ -113,11 +113,11 @@ published_gm1:
   cache_comments_count: 0
   title: noticia de gm 1
   description: noticia de gm description
-  main: 
+  main:
   approved_by_user_id: 1
   state: 2
   unique_content_id: 1114
-  
+
 published_rj1:
   id: 67
   user_id: 1
@@ -128,7 +128,7 @@ published_rj1:
   cache_comments_count: 0
   title: noticia de rj 1
   description: noticia de rj description
-  main: 
+  main:
   approved_by_user_id: 1
   state: 2
   unique_content_id: 1117

@@ -7,7 +7,7 @@
     <div class="infoinline"><ul>
     <li class="first">de <%=link_to @curmessage.sender.login, :controller => '/miembros', :action => @curmessage.sender.login%> para <%=link_to @curmessage.recipient.login, :controller => '/miembros', :action => @curmessage.recipient.login%></li>
     <li><%=print_tstamp @curmessage.created_on%></li>
-    <% begin 
+    <% begin
         @user.friends.find(@curmessage.sender.id)
       rescue %>
       <li><a href="/cuenta/amigos/iniciar_amistad/<%=@curmessage.sender.login%>?redirto=<%=request.path%>">Añadir a mi lista de amigos</a></li>
@@ -15,7 +15,7 @@
     </ul></div>
 </div>
 <div class="message-body"><%=@curmessage.message.index('<br />') ? @curmessage.message : auto_link_raw(smilelize(Comments::formatize(message_quotize(@curmessage.message))))%></div>
-  
+
 <div class="subheader"><div>Conversación</div></div>
 <%=print_thread_tree(Message.find(@curmessage.thread_id), @curmessage)%>
 
@@ -27,11 +27,11 @@
 <br />
 <div class="subheader"><div>Responder</div></div>
 <p>
-<% 
+<%
 @message.message = "" # \n\n\n> [~#{@curmessage.sender.login}] escribió (#{print_tstamp(@curmessage.created_on)})\n" << Comments::unformatize(@curmessage.message.strip).gsub(/^/,'> ')
 
 if @curmessage.title[0,3] != 'Re:' then
-  @message.title = "Re: #{@curmessage.title}" 
+  @message.title = "Re: #{@curmessage.title}"
 else
   @message.title = @curmessage.title
 end %>

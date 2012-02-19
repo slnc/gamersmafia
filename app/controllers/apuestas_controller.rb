@@ -1,7 +1,7 @@
 class ApuestasController < ArenaController
   acts_as_content_browser :bet
   allowed_portals [:gm, :faction, :arena, :bazar, :bazar_district]
-  
+
   def complete
     require_auth_users
     @bet = Bet.find(params[:id])
@@ -11,7 +11,7 @@ class ApuestasController < ArenaController
     flash[:notice] = "Apuesta completada correctamente. En cuanto finalice el reparto de gamersmafios (unos segundos) aparecerá como completada."
     redirect_to gmurl(@bet)
   end
-  
+
   def cambiar_resultado
     require_auth_users
     @bet = Bet.find(params[:id])
@@ -20,7 +20,7 @@ class ApuestasController < ArenaController
     @bet.reopen
     redirect_to "/apuestas/resolve/#{@bet.id}"
   end
-  
+
   def update_cash_for_bet
     require_auth_users
     @bet = Bet.find(params[:id])
@@ -29,7 +29,7 @@ class ApuestasController < ArenaController
 
     raise ActiveRecord::RecordNotFound if (not @bet.is_public? or @bet.closes_on < Time.now)
     err = 0
-    
+
     # Para cada opción actualizamos el ticket correspondiente o lo creamos si no existe
     @bet.bets_options.each do |bets_option|
       ticket = bets_option.bets_tickets.find_by_user_id(@user.id)
@@ -50,11 +50,11 @@ class ApuestasController < ArenaController
         flash[:error] = "La apuesta mínima por cada participante es de #{BetsTicket::MIN_BET} GMF"
       end
     end
-    
+
     flash[:notice] = "Tu apuesta para esta partida se ha actualizado correctamente" unless err == 1
     redirect_to gmurl(@bet)
   end
-  
+
   def new
     require_auth_users
     @title = 'Nueva apuesta'
@@ -62,7 +62,7 @@ class ApuestasController < ArenaController
     @bet = Bet.new
     @bet.closes_on = Time.at(Time.now().to_i + 86400 * 2)
   end
-  
+
   def resolve
     @bet = Bet.find(params[:id])
     require_user_can_edit(@bet)

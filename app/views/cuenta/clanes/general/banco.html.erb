@@ -10,6 +10,6 @@
   <% mftext('Banco') do %>
   <p>Saldo del clan: <strong><code><%=@clan.cash%></code></strong><%=gmd11%></p>
   <% end %>
-  
+
   <%= render :partial => '/shared/cash_movements', :locals => { :entity => @clan } %>
 <% end %>

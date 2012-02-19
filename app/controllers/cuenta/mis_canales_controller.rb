@@ -1,16 +1,16 @@
 class Cuenta::MisCanalesController < ApplicationController
   before_filter :require_auth_users
-  
+
   def index
     @title = "Mis canales GMTV"
   end
-  
+
   def editar
     @title = "Editar canal"
     @gmtv_channel = @user.gmtv_channels.find_by_id(params[:id])
     raise ActiveRecord::RecordNotFound unless @gmtv_channel
   end
-  
+
   def update
     @gmtv_channel = @user.gmtv_channels.find_by_id(params[:id])
     raise ActiveRecord::RecordNotFound unless @gmtv_channel

@@ -32,7 +32,7 @@ class Cuenta::TiendaControllerTest < ActionController::TestCase
     assert_not_nil @bp
     assert @bp.created_on.to_i > Time.now.to_i - 5
   end
-  
+
   test "use_should_work" do
     test_should_buy_product_if_enough_money
     assert !@bp.used?
@@ -40,7 +40,7 @@ class Cuenta::TiendaControllerTest < ActionController::TestCase
     assert_response :redirect
     @bp.reload
     assert @bp.used?
-    
+
     assert_raises(ActiveRecord::RecordNotFound) { post :use, {:id => @bp.id, :nuevo_login => 'fulanitodetal' } }
   end
 

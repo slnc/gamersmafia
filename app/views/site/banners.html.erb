@@ -1,4 +1,4 @@
-<%mftext('Banners de Gamersmafia') do 
+<%mftext('Banners de Gamersmafia') do
 
 def gmbanners_galleries
   (Dir.entries("#{Rails.root}/public/images/banners") - %w(. ..)).collect { |d|
@@ -32,7 +32,7 @@ end
 	function update_banner_code() {
 		var code = '';
 		js_code = 'uberjs';
-		var add_ref_code = (document.getElementById('add_ref_link') && document.getElementById('add_ref_link').checked) ? '?rusid=<%=user_is_authed ? @user.id : ''%>' : ''; 
+		var add_ref_code = (document.getElementById('add_ref_link') && document.getElementById('add_ref_link').checked) ? '?rusid=<%=user_is_authed ? @user.id : ''%>' : '';
 		html_code = '<a href="http://gamersmafia.com/'+ add_ref_code +'"><img  style="border: none;" src="' + prev.childNodes[0].src +'" /></a>';	
 		
 		if (document.getElementById('code-format-js').checked) {
@@ -41,7 +41,7 @@ end
 		else {
 			$j('#banner-code').val(html_code);
 		}
-		$j('#banner-preview').html(html_code); 
+		$j('#banner-preview').html(html_code);
 	}
   </script>
   <h2>1. Elige galería</h2>
@@ -50,12 +50,12 @@ end
 		<option <%='selected="selected"' if gmg == default_gal%> value="<%=gmg%>"><%=gmg%></option>
 		<%end%>
 	</select>
-	  
+	
   <h2 style="margin-top: 20px;">2. Elige un banner</h2>
   <div id="banners-gallery">
   	<script type="text/javascript">update_gallery_banners($j('#available-galleries').val());</script>
   </div>
-  
+
   <h2 style="padding-top: 40px; clear: left;">3. Opciones</h2>
   <% if !user_is_authed then %><p>Debes estar registrado para poder personalizar el código.</p><% end -%>
   <table class="w100pc hidden">
@@ -65,7 +65,7 @@ end
   	</tr>
   </table>
   <% if user_is_authed then %><label><input type="checkbox" checked="checked" onchange="update_banner_code();" id="add_ref_link" value="1" /> Ganar fe cada vez que alguien haga click en el banner.</label><% end -%>
-  
+
   <h2 style="margin-top: 40px; clear: left;">4. Tu Código</h2>
   <textarea style="width: 600px; height: 50px;" id="banner-code" onclick="select();">
   	

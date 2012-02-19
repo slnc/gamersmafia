@@ -96,7 +96,7 @@ public
         super
       end
     end
-    
+
         def respond_to?(name)
       if name.to_s =~ /^(un)?train_/
         true

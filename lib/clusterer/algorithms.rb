@@ -23,7 +23,7 @@
 module Clusterer
   class Algorithms
     class << self
-      
+
 private
       def random_cluster_seeds(documents,k)
         temp = []
@@ -36,14 +36,14 @@ private
           t
         end
       end
-      
+
 public
       def kmeans(documents, k, options = { })
         old_clusters = Array.new(k)
         max_iter = options[:maximum_iterations] || 10
         clusters = options[:seeds] || random_cluster_seeds(documents, k)
         sim_fun = options[:similarity_function] || :cosine_similarity
-        
+
         iter = 0
         while (!max_iter || iter < max_iter) && clusters != old_clusters
           puts "Iteration ....#{iter}"

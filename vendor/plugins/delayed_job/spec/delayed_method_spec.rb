@@ -5,7 +5,7 @@ class SimpleJob
   def perform; @@runs += 1; end
 end
 
-class RandomRubyObject  
+class RandomRubyObject
   def say_hello
     'hello'
   end
