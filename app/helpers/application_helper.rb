@@ -581,7 +581,9 @@ type: 'bhs'}))
 
   def draw_pcent_bar(pcent, text = nil, compact=false, color=nil)
     if pcent.nil?
-      Rails.logger.warn("draw_pcent_bar of nil. Transforming pcent to 0.0")
+      Rails.logger.warn(
+          "draw_pcent_bar(nil, #{text}, #{compact}, #{color}). Using 0" +
+          " instead of nil.")
       pcent = 0
     end
     # 0 <= pcent <= 1
@@ -1068,7 +1070,7 @@ skin: 'v2'
     END
 
     if opts[:pager]
-      Rails.logger.warn "Paginación temporalmente deshabilitada."
+      Rails.logger.warn("Pagination temporarily disabled.")
       out<< controller.send(
           :render_to_string,
           :partial => 'shared/pager',

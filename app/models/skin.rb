@@ -88,7 +88,6 @@ class Skin < ActiveRecord::Base
   end
 
   def used_by_users_count
-    Rails.logger.warn "self.id: #{self.id}"
     UsersPreference.count(
         :conditions => "name = 'skin' AND value = '#{self.id}'")
   end
@@ -222,7 +221,7 @@ class Skin < ActiveRecord::Base
 
       build_skin
     else
-      Rails.logger.error "Skin.unzip_package: #{da_fail} doesnt exist"
+      Rails.logger.error("Skin.unzip_package: #{da_fail} doesnt exist.")
     end
     true
   end

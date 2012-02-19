@@ -42,6 +42,10 @@ class Content < ActiveRecord::Base
     end
   end
 
+  def to_s
+    ("Content: id: #{self.id}, content_type_id: #{self.content_type_id}," +
+     " name: #{self.name}")
+  end
 
   def resolve_portal_id
     # primero los fáciles

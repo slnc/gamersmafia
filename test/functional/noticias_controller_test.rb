@@ -20,7 +20,6 @@ class NoticiasControllerTest < ActionController::TestCase
     @request.host = "ut.test.host"
     sym_login 1
     get :show, :id => 1
-    Rails.logger.info "Response: #{@response.body}"
     assert_response :success
     assert_not_nil @response.body.index('me caía mal')
   end

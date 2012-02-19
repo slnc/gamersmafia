@@ -74,9 +74,6 @@ class Poll < ActiveRecord::Base
   end
 
   def check_start_ends
-    Rails.logger.debug(">>>>>> starts_on: #{self.starts_on} ? ends_on:" +
-        " #{self.ends_on}, now: #{Time.now}")
-    Rails.logger.debug("#{starts_on} <= #{Time.now} and #{state} <= #{Cms::PENDING}")
     if self.starts_on >= self.ends_on
       self.errors.add(
           "starts_on",

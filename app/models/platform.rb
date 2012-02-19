@@ -15,9 +15,6 @@ class Platform < ActiveRecord::Base
     })
 
     Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
-      Rails.logger.debug(
-          "Creating children of #{root_term} with :name => #{c[1]}, :taxonomy" +
-          " => #{c[0]}")
       new_term = root_term.children.create(:name => c[1], :taxonomy => c[0])
       raise new_term.errors.full_messages_html if new_term.new_record?
     end

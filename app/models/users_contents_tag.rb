@@ -37,8 +37,7 @@ class UsersContentsTag < ActiveRecord::Base
       t = Term.create(:taxonomy => 'ContentsTag', :name => self.original_name)
       raise ("Unable to create term for ContentsTag: " +
             "#{t.errors.full_messages_html}") if t.new_record?
-
-      Rails.logger.warn("Created t: #{t}")
+      Rails.logger.info("Automatically created ContentsTag: #{t}")
     end
     self.term_id = t.id
 
