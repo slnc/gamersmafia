@@ -89,7 +89,7 @@
     <% if real_thing.class.name == 'User' then %>
     <% if not real_thing.msn.to_s.empty? then %><img class="competition-msn" src="/images/blank.gif" /> <%=hide_email(real_thing.msn)%><br /><% end %>
     <% if not real_thing.irc.to_s.empty? then %><img class="competition-irc" src="/images/blank.gif" /> <%=real_thing.irc%><br /><% end %>
-      <% if real_thing.homepage then %><%=auto_link(real_thing.homepage, :all, :target => '_blank') do |text| 
+      <% if real_thing.homepage then %><%=auto_link_raw(real_thing.homepage, :all, :target => '_blank') do |text| 
       text.gsub!('http://', '')
       text = text[0..-2] if text.count('/') == 1
       text
@@ -98,7 +98,7 @@
     <% else %><%#clan %>
     <%=real_thing.name%><br />
       <% if not real_thing.irc_channel.to_s.empty? then %><img class="competition-irc" src="/images/blank.gif" /> <%=real_thing.irc_server%>#<%=real_thing.irc_channel%><br /><% end %>
-      <% if real_thing.website_external then %><%=auto_link(real_thing.website_external, :all, :target => '_blank') do |text| 
+      <% if real_thing.website_external then %><%=auto_link_raw(real_thing.website_external, :all, :target => '_blank') do |text| 
       text = text.gsub('http://', '')
       text = text[0..-2] if text.count('/') == 1
       text

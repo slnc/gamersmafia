@@ -1028,6 +1028,10 @@ skin: 'v2'
     "<a href=\"#{gmurl(clan)}\">#{clan.name}</a>"
   end
 
+  def auto_link_raw(input)
+    auto_link(input, :sanitize => false)
+  end
+
   def mfcontent(content, &block)
     out = <<-END
      <div class="module mfcontent"><div class="mtitle mcontent-title"><div class=\"iset iset#{content.class.name.downcase}\"></div> <span>#{show_rating_title(content)} #{content.resolve_hid}</span></div>
@@ -1039,10 +1043,10 @@ skin: 'v2'
       yield
     else
       out<< <<-END
-    #{"<div class=\"xdescription\">"<<auto_link(smilelize(content.description))<<"</div><br />" if content.respond_to?(:description) && content.description.to_s != ''}
+    #{"<div class=\"xdescription\">"<<auto_link_raw(smilelize(content.description))<<"</div><br />" if content.respond_to?(:description) && content.description.to_s != ''}
 
 
-#{"<div class=\"xmain\">"<<auto_link(smilelize(content.main))<<"</div>" if content.respond_to?(:main) && content.main.to_s != ''}
+#{"<div class=\"xmain\">"<<auto_link_raw(smilelize(content.main))<<"</div>" if content.respond_to?(:main) && content.main.to_s != ''}
     END
 
     end
@@ -1095,7 +1099,7 @@ skin: 'v2'
         <div class=\"mfcontents-summaries-item #{oddclass}\">
         <h2><a class=\"content\" href=\"#{gmurl(item)}\">#{item.title}</a></h2>
         <div class="infoinline" style="line-height: 16px;">por #{link_to item.user.login, "#{gmurl(item.user)}", :class => 'nav' } | #{item.main_category.root.name} | #{print_tstamp(item.created_on, 'time')} | <span class="comments-count"><a title="Leer los comentarios de esta noticia" class="content" href="/noticias/show/#{item.id}#comments">#{item.cache_comments_count}</a></span></div>
-          <div class="xdescription">#{auto_link(smilelize(item.description))}</div>
+          <div class="xdescription">#{auto_link_raw(smilelize(item.description))}</div>
         </div>
           END
         end

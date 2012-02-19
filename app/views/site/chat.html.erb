@@ -38,9 +38,9 @@
 	&lt;<%=chatline.line.match(/^<([^>]+)>/)[1]%>&gt;
 	<% end -%></div>:
 	<% if chatline.user_id != 8 then %>
-		<%=auto_link(smilelize(Comments::formatize(chatline.line)))%>
+		<%=auto_link_raw(smilelize(Comments::formatize(chatline.line)))%>
 	<% else %>
-		<%=auto_link(smilelize(Comments::formatize(chatline.line.gsub(/^(<[^>]+>: )/, ''))))%>
+		<%=auto_link_raw(smilelize(Comments::formatize(chatline.line.gsub(/^(<[^>]+>: )/, ''))))%>
 	<% end -%>
 	<div style="clear: left;"></div></div></li>
 <% end -%>

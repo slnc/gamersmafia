@@ -15,21 +15,18 @@ begin
   User
 rescue Exception
 else
-  require 'user_mixings.rb'
-  User.send :include, UserMixings
-  
 %w(
-ab_test  
+ab_test
 action_mailer
 friendship
 geolocation
 notification_mixings
 silenced_email
-stats_mixings  
+stats_mixings
 ).each do |f|
     require "#{File.dirname(__FILE__)}/#{f}.rb"
   end
-  
+
   # $:.unshift "#{File.dirname(__FILE__)}/lib"
 end
 
@@ -40,7 +37,7 @@ else
   Notification.send :include, NotificationMixings
 end
 
-begin 
+begin
   Stats
 rescue Exception
 else

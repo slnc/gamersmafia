@@ -35,7 +35,7 @@
         </div>
       </div>
       <div class="text" id="commenttext<%= comment.id%>">
-        <%= auto_link(smilelize(comment.comment)) do |text|
+        <%= auto_link_raw(smilelize(comment.comment)) do |text|
           truncate(text.gsub(/http:\/\//, ''), 50)
         end%>
       </div>

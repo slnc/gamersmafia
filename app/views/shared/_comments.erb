@@ -103,7 +103,7 @@ end %><%# each -%>
     <div class="comment-rating-state <%=colour%>" style="opacity: <%=opacity%>; filter=alpha(opacity=<%=ie_opacity%>)"><div><%=comments_icon(crating[0].name.to_sym, true)%> <%=crating[0].name%></div></div>
   <% end -%>
 
-  <div class="text" id="commenttext<%=comment.id%>"><%=auto_link(smilelize(comment.comment)) do |text|
+  <div class="text" id="commenttext<%=comment.id%>"><%=auto_link_raw(smilelize(comment.comment)) do |text|
     truncate(text.gsub(/http:\/\//, ''), 50)
     end%>
 

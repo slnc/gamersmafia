@@ -1,6 +1,6 @@
 <% content_support(:content => @news.unique_content) do %>
 <% if @news.is_public? then %>
-<%=mfcontents_basic("Últimas noticias", 
+<%=mfcontents_basic("Últimas noticias",
 	@news.main_category.news, [:published, {:order => 'created_on desc', :limit => 10}],
 	:cache => "/common/noticias/show/_latest_by_cat_#{@news.main_category.id}",
 	:faction_favicon => true)%>
@@ -9,6 +9,6 @@
 <% end -%>
 <% end -%>
 
-<% content_main do %> 
-  <%=mfcontent(@news)%>
+<% content_main do %>
+  <%=mfcontent(@news).html_safe%>
 <%end -%>

@@ -15,7 +15,7 @@
            :remote => true},
           :class => 'action')%>
     <% end -%>
-    <br /></span><% if chatline.user_id != 8 then %><%=auto_link(smilelize(Comments::formatize(chatline.line)))%><% else %><%=smilelize(Comments::formatize(chatline.line.gsub(/^(<[^>]+>: )/, '')))%><% end -%></li>
+    <br /></span><% if chatline.user_id != 8 then %><%=auto_link_raw(smilelize(Comments::formatize(chatline.line)))%><% else %><%=smilelize(Comments::formatize(chatline.line.gsub(/^(<[^>]+>: )/, '')))%><% end -%></li>
 <% end -%>
 </ul>
 

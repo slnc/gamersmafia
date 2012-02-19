@@ -15,7 +15,7 @@ function open_download_win(download_id)
 <% content_main do %> 
   <% mfcontent(@download) do %>
   <% if nil then %><div style="float: right; margin-right: 10px;"><span class="infoinline"><strong><%=@download.downloaded_times%></strong> descargas</span></div><% end -%>
-  <%=auto_link(smilelize(@download.description))%>
+  <%=auto_link_raw(smilelize(@download.description))%>
 
 
 	<div style="margin: 20px; text-align: center;">
