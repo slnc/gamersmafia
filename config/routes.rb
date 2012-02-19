@@ -33,7 +33,6 @@ Gamersmafia::Application.routes.draw do
   match 'competiciones/show/:id/:action' => 'competiciones#index'
   match 'contenidos/:id' => 'contenidos#show'
   match 'cuenta' => 'cuenta/cuenta#index'
-  match 'cuenta/:action' => 'cuenta/cuenta#index'
   match 'cuenta/amigos' => 'cuenta/amigos#index'
   match 'cuenta/amigos/:action' => 'cuenta/amigos#index'
   match 'cuenta/amigos/aceptar_amistad/:login' => 'cuenta/amigos#aceptar_amistad', :login => /[^\/]+/
@@ -101,6 +100,7 @@ Gamersmafia::Application.routes.draw do
   match 'cuenta/imagenes' => 'cuenta/cuenta#imagenes'
   match 'cuenta/imagenes/borrar' => 'cuenta/cuenta#borrar_imagen'
   match 'cuenta/mensajes' => 'cuenta/mensajes#mensajes'
+  match 'cuenta/mensajes/:action' => 'cuenta/mensajes'
   match 'cuenta/mis_borradores' => 'cuenta/cuenta#mis_borradores'
   match 'cuenta/mis_canales' => 'cuenta/mis_canales#index'
   match 'cuenta/mis_canales/:action' => 'cuenta/mis_canales#index'
@@ -114,6 +114,7 @@ Gamersmafia::Application.routes.draw do
   match 'cuenta/tienda' => 'cuenta/tienda#index'
   match 'cuenta/tienda/:id' => 'cuenta/tienda#show'
   match 'cuenta/tienda/:id/:action' => 'cuenta/tienda#index'
+  match 'cuenta/:action' => 'cuenta/cuenta#index'
   match 'descargas/:category' => 'descargas#index', :constraints => { :category => /\d+/ }
   match 'descargas/create' => 'descargas#create'
   match 'descargas/create_from_zip' => 'descargas#create_from_zip'

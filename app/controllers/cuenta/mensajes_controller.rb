@@ -10,7 +10,6 @@ class Cuenta::MensajesController < ApplicationController
     ['Mensajes enviados', '/cuenta/mensajes/mensajes_enviados'],]
   end
 
-
   def mensajes
     @navpath = [['Preferencias', '/cuenta'], ['Mensajes', '/cuenta/mensajes']]
     @messages = Message.recipient_is(@user).recipient_undeleted.paginate(
