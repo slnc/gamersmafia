@@ -11,12 +11,12 @@ class ActsAsContentTest < ActiveSupport::TestCase
     f2.reload
     assert !f2.change_state(Cms::PUBLISHED, User.find(1))
   end
-  
+
   test "no_null_title_in_content" do
     n = News.new({:title => '', :terms => 1, :user_id => 1, :description => 'foojahaha'})
     assert !n.save
   end
-  
+
   test "should_link_if_terms_given_as_param" do
     @n = News.create({:title => 'foo title ibernews', :terms => 1, :user_id => 1, :description => 'foojahaha', :terms => 1})
     assert_not_nil @n
@@ -24,21 +24,21 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert_equal 1, @n.terms.size
     assert_equal 1, @n.terms[0].id
   end
-  
+
   test "should_delete_old_terms_if_new_terms_doesnt_include_them" do
     test_should_link_if_terms_given_as_param
     @n.root_terms_ids = 2
     assert_equal 1, @n.terms.size
     assert_equal 2, @n.terms[0].id
   end
-  
+
   test "should_allow_array_formats_of_terms" do
     test_should_link_if_terms_given_as_param
     @n.root_terms_ids = [2]
     assert_equal 1, @n.terms.size
     assert_equal 2, @n.terms[0].id
   end
-  
+
   test "should_allow_to_add_without_deleting" do
     test_should_link_if_terms_given_as_param
     @n.root_terms_add_ids([2])
@@ -46,22 +46,21 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert_equal 1, @n.terms[0].id
     assert_equal 2, @n.terms[1].id
   end
-  
+
   test "should_not_allow_to_link_to_child_term_if_content_is_categorizable_and_root_term_given" do
     @tut = Tutorial.new(:user_id => 1, :title => 'footapang', :description => 'bartapang', :main => 'aaa', :terms => 1)
     assert @tut.save, @tut.errors.full_messages_html
     @tut.reload
     assert @tut.terms.size == 0
   end
-  
+
   test "should_allow_two_root_terms_if_not_categorizable" do
     test_should_link_if_terms_given_as_param
     @n.root_terms_ids = [1, 2]
-    assert_equal 2, @n.terms.size
-    assert_equal 1, @n.terms[0].id
-    assert_equal 2, @n.terms[1].id
+    expected_terms = @n.terms.collect {|term| term.id}.to_set
+    assert_equal Set.new([1, 2]), expected_terms
   end
-  
+
   test "should_allow_two_categories_terms_if_categorizable" do
     test_should_not_allow_to_link_to_child_term_if_content_is_categorizable_and_root_term_given
     @tut.categories_terms_ids = [[19, 28], 'TutorialsCategory']
@@ -71,7 +70,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
       assert termz.include?(t.id)
     end
   end
-  
+
   test "should_add_log_entry_on_creation" do
     n = News.create({:title => 'foo title ibernews', :terms => 1, :user_id => 1, :description => 'foojahaha'})
     assert_not_nil n
@@ -81,29 +80,30 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert last_entry[1] = 'superadmin'
     assert last_entry[2] > 5.seconds.ago
   end
-  
+
   test "in_term should work" do
     n = News.find(1)
     t = n.unique_content.contents_terms.first.term
-    
+    assert !t.nil?
+
     assert_not_nil News.in_term(t).find(n.id)
     assert_nil News.in_term(t).find_by_id(67)
   end
-  
+
   test "in_term_tree should work" do
     i = Image.find(4)
     t = i.unique_content.contents_terms.first.term
     assert_not_nil Image.in_term_tree(t.root).find(i.id)
     assert_nil Image.in_term_tree(t.root).find_by_id(1)
   end
-  
+
   test "in_portal should work" do
     d = Download.find(1)
     t = d.unique_content.contents_terms.first.term
     assert_not_nil Download.in_term_tree(t.root).find(d.id)
     assert_nil Download.in_term_tree(t.root).find_by_id(3)
   end
-  
+
   test "should_add_log_entry_on_modification" do
     test_should_add_log_entry_on_creation
     n = News.find(:first, :order => 'id DESC')
@@ -114,7 +114,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert last_entry[1] = 'superadmin'
     assert last_entry[2] > 5.seconds.ago
   end
-  
+
   test "should_add_log_entry_on_publication" do
     test_should_add_log_entry_on_creation
     n = News.find(:first, :order => 'id DESC')
@@ -125,7 +125,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert last_entry[1] = 'superadmin'
     assert last_entry[2] > 5.seconds.ago
   end
-  
+
   test "should_add_log_entry_on_unpublish_a_published_item" do
     test_should_add_log_entry_on_publication
     n = News.find(:first, :order => 'id DESC')
@@ -136,7 +136,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert last_entry[1] = 'superadmin'
     assert last_entry[2] > 5.seconds.ago
   end
-  
+
   test "should_add_log_entry_on_sent_to_trash" do
     test_should_add_log_entry_on_creation
     n = News.find(:first, :order => 'id DESC')
@@ -147,7 +147,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert last_entry[1] = 'superadmin'
     assert last_entry[2] > 5.seconds.ago
   end
-  
+
   test "should_add_log_entry_on_change_authorship" do
     test_should_add_log_entry_on_creation
     n = News.find(:first, :order => 'id DESC')
@@ -158,7 +158,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert last_entry[1] = 'superadmin'
     assert last_entry[2] > 5.seconds.ago
   end
-  
+
   test "should_add_log_entry_on_recover" do
     test_should_add_log_entry_on_creation
     n = News.find(:first, :order => 'id DESC')
@@ -169,7 +169,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert last_entry[1] = 'superadmin'
     assert last_entry[2] > 5.seconds.ago
   end
-  
+
   test "shouldnt_touch_karma_when_changing_state_from_pending_to_deleted" do
     @u = User.find(1)
     @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::PENDING})
@@ -179,7 +179,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     @u.reload
     assert_equal k, @u.karma_points
   end
-  
+
   test "shouldnt_touch_karma_when_changing_state_from_draft_to_deleted" do
     @u = User.find(1)
     @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::DRAFT})
@@ -189,13 +189,13 @@ class ActsAsContentTest < ActiveSupport::TestCase
     @u.reload
     assert_equal k, @u.karma_points
   end
-  
+
   test "shouldnt_send_msg_when_changing_state_from_draft_to_deleted" do
-    m = Message.count    
+    m = Message.count
     test_shouldnt_touch_karma_when_changing_state_from_draft_to_deleted
     assert_equal m, Message.count
   end
-  
+
   test "should_give_karma_when_changing_state_from_draft_to_published" do
     @u = User.find(1)
     @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::DRAFT})
@@ -205,7 +205,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     @u.reload
     assert_equal k + Karma::KPS_CREATE['News'], @u.karma_points
   end
-  
+
   test "should_give_karma_when_changing_state_from_pending_to_published" do
     @u = User.find(1)
     @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::PENDING})
@@ -215,7 +215,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     @u.reload
     assert_equal k + Karma::KPS_CREATE['News'], @u.karma_points
   end
-  
+
   test "should_take_karma_when_changing_state_from_published_to_deleted" do
     test_should_give_karma_when_changing_state_from_pending_to_published
     k = @u.karma_points
@@ -223,7 +223,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     @u.reload
     assert_equal k - Karma::KPS_CREATE['News'], @u.karma_points
   end
-  
+
   test "should_add_to_tracker_of_creator" do
     # TODO y si cambiamos la autoría qué pasa con el tracker?
     @u = User.find(1)
@@ -231,7 +231,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert_not_nil @n
     assert_equal true, @u.tracker_has?(@n.unique_content.id)
   end
-  
+
   test "shouldnt_appear_as_updated_in_tracker_after_publishing" do
     test_should_add_to_tracker_of_creator
     ti = TrackerItem.find(:first, :order => 'id DESC')
@@ -247,7 +247,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     ti.reload
     assert_equal true, ti.lastseen_on > 1.hour.ago
   end
-  
+
   test "unique_attributes_should_work" do
     o1 = News.find(1)
     uattrs = [:title, :description, :main, :clan_id]
@@ -257,7 +257,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
       assert_equal o1[uattr], uattrs_received[uattr]
     end
   end
-  
+
   test "related_portals_of_district_proper_district" do
     n = News.new(:title => 'Noticia 1', :description => 'sumario', :user_id => 1)
     assert n.save
@@ -266,35 +266,35 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert_equal 4, relportals.size
     assert_equal 'anime', relportals[3].code
   end
-  
+
   test "in_portal with GmPortal should return all contents" do
     assert_equal News.count, News.in_portal(GmPortal.new).count
   end
-  
+
   test "in_portal with BazarDistrictPortal should return BazarDistrict's contents" do
     assert News.in_portal(BazarDistrictPortal.find(31)).find_by_id(65)
   end
-  
+
   test "in_portal with BazarDistrictPortal should not return non-BazarDistrict's contents" do
     assert_nil News.in_portal(BazarDistrictPortal.find(31)).find_by_id(1)
     assert_nil News.in_portal(BazarDistrictPortal.find(31)).find_by_id(66) # gm's
   end
-  
+
   test "in_portal with FactionsPortal with single faction should return the faction's contents" do
     assert News.in_portal(FactionsPortal.find(1)).find(1)
   end
-  
+
   test "in_portal with FactionsPortal with single faction should not return other faction's contents" do
     assert_nil News.in_portal(FactionsPortal.find(20)).find_by_id(1)
   end
-  
-  
+
+
   test "in_portal with FactionsPortal with multiple factions should return all the factions's contents" do
     fsp = FactionsPortal.find_by_code('unreal')
     assert News.in_portal(fsp).find(1) # ut's news
     assert News.in_portal(fsp).find(67) # rj's news
   end
-  
+
   test "in_portal with FactionsPortal with multiple factions should not return other portal's contents" do
     fsp = FactionsPortal.find_by_code('unreal')
     assert_nil News.in_portal(fsp).find_by_id(66) # gm news

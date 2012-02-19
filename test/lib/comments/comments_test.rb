@@ -49,8 +49,8 @@ class CommentsTest < ActiveSupport::TestCase
 
   test "xss3 in url tag" do
     assert_equal(
-        "[url=http://example.com/]Click me!\"&gt;&lt;script type=\"text/" +
-        "javascript\"&gt;&lt;/script&gt;[/url]",
+        "<a href=\"http://example.com/\">Click me!\"&gt;&lt;script" +
+        " type=\"text/javascript\"&gt;&lt;/script&gt;</a>",
       Comments.formatize(
           "[url=http://example.com/]Click me!\"><script type=" +
           "\"text/javascript\"></script>[/url]"))

@@ -229,7 +229,6 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
 
   test "should_create_user_if_everything_is_valid" do
     post :create, VALID_CREATE_ARGS
-    #assert_response :success
 
     assert_redirected_to "/cuenta"
     @u = User.find_by_login('chindasvinto')
@@ -237,7 +236,6 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_equal 'chindasvinto', @u.login
     assert_equal Digest::MD5.hexdigest('marauja'), @u.password
     assert_equal User::ST_SHADOW, @u.state
-    # assert session[:user].kind_of?(Fixnum)
   end
 
   test "should_create_second_account_from_same_ip" do

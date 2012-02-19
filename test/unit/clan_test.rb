@@ -24,13 +24,19 @@ class ClanTest < ActiveSupport::TestCase
 
   test "should_create_clan_with_tag_with_extended_chars" do
     c = Clan.new({:tag => '[|]', :name => 'Super valid clan', :irc_server => 'irc.quakenet.org', :irc_channel => 'somos_los_campeones', :competition_roster => fixture_file_upload('files/image.jpg'), :website_external => 'http://gamersmafia.com/', :description => 'somos los amos!'})
-    assert_equal true, c.save, c.errors.to_yaml
+    assert_equal true, c.save, c.errors.full_messages_html
   end
 
-
   test "valid_extended_data" do
-    c = Clan.new({:tag => 'tagvali', :name => 'Super valid clan', :irc_server => 'irc.quakenet.org', :irc_channel => 'somos_los_campeones', :competition_roster => fixture_file_upload('files/image.jpg'), :website_external => 'http://gamersmafia.com/', :description => 'somos los amos!'})
-    assert_equal true, c.save, c.errors.to_yaml
+    c = Clan.new(
+      :tag => 'tagvali',
+      :name => 'Super valid clan',
+      :irc_server => 'irc.quakenet.org',
+      :irc_channel => 'somos_los_campeones',
+      :competition_roster => fixture_file_upload('files/image.jpg'),
+      :website_external => 'http://gamersmafia.com/',
+      :description => 'somos los amos!')
+    assert_equal true, c.save, c.errors.full_messages_html
   end
 
   test "invalid_extended_data" do

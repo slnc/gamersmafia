@@ -34,20 +34,23 @@ class CacheControllerTest < ActionController::TestCase
   end
 
   test "raises_404_if_invalid_image" do
-    assert_raises(ActiveRecord::RecordNotFound) { 
+    assert_raises(ActiveRecord::RecordNotFound) {
       get :thumbnails, { :mode => 'f', :dim => '125x125', :path => 'abdulkabarahjmed.jpg' }
     }
   end
-  
+
   test "raises_404_if_invalid_image2" do
-    assert_raises(ActiveRecord::RecordNotFound) { 
+    assert_raises(ActiveRecord::RecordNotFound) {
       get :thumbnails, { :mode => 'f', :dim => '125x125', :path => '' }
     }
   end
-  
+
   test "faction_users_ratios_should_work" do
     Faction.find(1).users<< User.find(1)
-    get :faction_users_ratios, { :date => Time.now.strftime('%Y%m%d'), :faction_id => ['1.png'] }
+    get :faction_users_ratios,
+        {:date => Time.now.strftime('%Y%m%d'),
+         :faction_id => ['1.png']
+        }
     assert_response :redirect
     assert File.exists?("#{Rails.root}/public/cache/graphs/faction_users_ratios/#{Time.now.strftime('%Y%m%d')}/1.png")
   end

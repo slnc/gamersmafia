@@ -69,7 +69,6 @@ class DownloadTest < ActiveSupport::TestCase
     d1 = Download.find(1)
     d1.download_mirrors.clear
     assert d1.update_attributes({:file => nil})
-
     assert_nil d1.file
     slogentries = SlogEntry.count
     User.db_query("DELETE FROM downloads WHERE id <> 1")

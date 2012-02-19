@@ -30,7 +30,10 @@ class CacheController < ApplicationController
       :background_colors => %w(white white)
     }
 
-    f = Faction.find(params[:faction_id].to_i)
+    if params[:faction_id].kind_of?(Array)
+      params[:faction_id] = params[:faction_id][0]
+    end
+    f = Faction.find(params[:faction_id].gsub(".png", "").to_i)
     g.data('Activos', [f.active_members_count], '#BB0012')
     g.data('Inactivos', [f.inactive_members_count], '#BBA9AB')
     g.font= "#{Rails.root}/public/ttf/verdana.ttf"
