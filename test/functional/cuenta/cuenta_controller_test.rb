@@ -279,6 +279,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
 
     panzer.reload
     u = User.find_by_login('chindasvinto')
+    assert u
     assert_equal panzer.id, u.referer_user_id
     assert_equal mails_sent + 2, ActionMailer::Base.deliveries.size # el email de bienvenida y el de referido
     assert_equal u.email, ActionMailer::Base.deliveries.at(-1).to[0]

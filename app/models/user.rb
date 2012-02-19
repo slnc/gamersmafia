@@ -3,9 +3,18 @@ require 'digest/md5'
 require 'karma'
 
 class User < ActiveRecord::Base
-  BANNED_DOMAINS = %w(10minutemail.com correo.nu fishfuse.com meyzo.net
-                      mintemail.uni.cc tempemail.net tempinbox.com uggsrock.com
-                      yopmail.com)
+  BANNED_DOMAINS = %w(
+      10minutemail.com
+      correo.nu
+      fishfuse.com
+      meyzo.net
+      mintemail.uni.cc
+      tempemail.net
+      tempinbox.com
+      trash-mail.de
+      uggsrock.com
+      yopmail.com
+  )
 
   ANTIFLOOD_LEVELS = {
     1 => 'suave',

@@ -1,8 +1,20 @@
 class Cuenta::CuentaController < ApplicationController
   # TODO wtf?? o lo uno o lo otro
-  before_filter :require_auth_users, :except => [:login, :do_login, :alta, :bienvenido, :create, :create2, :olvide_clave, :do_olvide_clave, :do_change_email, :reset, :do_reset, :confirmar, :do_confirmar, :resendsignup, :username_check, :email_check]
-  before_filter :only_non_registered, :only => [:login, :do_login, :alta, :bienvenido, :create2, :create, :olvide_clave, :do_olvide_clave, :reset, :do_reset, :confirmar, :do_confirmar, :username_check, :email_check]
+  before_filter :require_auth_users,
+                :except => [
+                    :login, :do_login, :alta, :bienvenido, :create,
+                    :create2, :olvide_clave, :do_olvide_clave, :do_change_email,
+                    :reset, :do_reset, :confirmar, :do_confirmar, :resendsignup,
+                    :username_check, :email_check]
+  before_filter :only_non_registered,
+                :only => [
+                    :login, :do_login, :alta, :bienvenido, :create2, :create,
+                    :olvide_clave, :do_olvide_clave, :reset, :do_reset,
+                    :confirmar, :do_confirmar, :username_check, :email_check]
+
   audit :do_reset, :do_olvide_clave, :do_change_email
+
+  MAX_ACCOUNTS_SAME_IP = 5
 
   def index
     @navpath = [['Cuenta', '/cuenta'],]
@@ -94,17 +106,57 @@ class Cuenta::CuentaController < ApplicationController
     end
   end
 
+  protected
+  def account_creation_silent_checks
+    if cookies[:adn3]
+      Rails.logger.warn(
+          "Someone with an adn3 cookie and desired login" +
+          " #{params[:user][:login]} tried to create an account.")
+      return "/"
+    end
+
+    if self.user_is_authed && @user.state != User::ST_UNCONFIRMED
+      Rails.logger.warn(
+          "Authentified and not unconfirmed user #{user.login} tried to" +
+          " create an account.")
+      return "/cuenta"
+    end
+
+    banned_accounts_same_ip = User.count(
+        :conditions => ["lastseen_on >= now() - '1 day'::interval" +
+                        " AND ipaddr = ? AND state = ?", request.remote_ip,
+                        User::ST_BANNED])
+    if banned_accounts_same_ip >= 1
+        Rails.logger.warn(
+            "#{params[:user][:login]} tried to create an account but there" +
+            " are #{banned_accounts_same_ip} accounts from the same ip" +
+            " recently banned.")
+      return "/"
+    end
+
+    accounts_from_same_ip = User.count(
+        :conditions => ["lastseen_on >= now() - '1 day'::interval AND" +
+                        " ipaddr = ?", request.remote_ip])
+    if accounts_from_same_ip > MAX_ACCOUNTS_SAME_IP
+        Rails.logger.warn(
+            "#{params[:user][:login]} tried to create an account but there" +
+            " are #{accounts_from_same_ip} (>#{MAX_ACCOUNTS_SAME_IP})" +
+            " accounts from the same ip recently banned.")
+      return "/"
+    end
+
+    nil
+  end
+
+  public
   def create
-   (redirect_to '/' and return) if cookies[:adn3]
-   (redirect_to '/cuenta' and return) if user_is_authed && @user.state != User::ST_UNCONFIRMED
-   (redirect_to '/cuenta/alta' and return) unless params.has_key?(:user) and not(params[:user][:email] =~ /trash-mail.de/)
+    should_redirect_to = self.account_creation_silent_checks
+    (redirect_to(should_redirect_to) && return) if !should_redirect_to.nil?
 
-     (redirect_to '/' and return) if cookies[:adn3]
-     (redirect_to '/' and return) if User.count(:conditions => ['lastseen_on >= now() - \'1 day\'::interval AND ipaddr = ? AND state = ?', request.remote_ip, User::ST_BANNED]) >= 1
-
-     (redirect_to '/' and return) if User.count(:conditions => ['lastseen_on >= now() - \'1 day\'::interval AND ipaddr = ?', request.remote_ip]) > 5
-
-    params[:user] = params[:user].pass_sym(:login, :email, :email_confirmation, :image, :firstname, :lastname, :faction_id, :password, :password_confirmation, :email, :email_confirmation)
+    params[:user] = params[:user].pass_sym(
+        :login, :email, :email_confirmation, :image, :firstname, :lastname,
+        :faction_id, :password, :password_confirmation, :email,
+        :email_confirmation)
     params[:user][:state] = User::ST_UNCONFIRMED
     params[:user][:ipaddr] = request.remote_ip
     params[:user][:lastseen_on] = Time.now
@@ -117,18 +169,26 @@ class Cuenta::CuentaController < ApplicationController
       if referer
         @newuser.referer_user_id = referer.id
       else
-        flash[:error] = 'El usuario referido especificado no se ha encontrado aunque no impedirá que se cree la cuenta.'
+        flash[:error] = ("El usuario referido especificado no se ha" +
+            " encontrado aunque esto no impedirá que se cree la cuenta.")
       end
     end
-    ban = IpBan.find(:first, :conditions => ['ip = ? and (expires_on IS NULL or expires_on >= now())', request.remote_ip])
+    ban = IpBan.find(
+        :first,
+        :conditions => ['ip = ? and (expires_on IS NULL or expires_on >= now())', request.remote_ip])
+
     if ban
-      # Si está baneado le hacemos ver que todo va bien para que se quede esperando el mensaje de confirmación
+      # Si está baneado le hacemos ver que todo va bien para que se quede
+      # esperando el mensaje de confirmación.
       nagato = User.find_by_login('nagato')
-      SlogEntry.create({:type_id => SlogEntry::TYPES[:security], :headline => "IP baneada #{request.remote_ip} (#{ban.comment}) ha intentado crearse una cuenta"})
+      SlogEntry.create(
+          :type_id => SlogEntry::TYPES[:security],
+          :headline => "IP baneada #{request.remote_ip} (#{ban.comment}) ha intentado crearse una cuenta")
       flash[:notice] = "Te hemos enviado un mensaje a #{@newuser.email} con la clave de confirmación."
       redirect_to('/cuenta/confirmar') and return
     elsif params[:accept_terms] != '1'
-      flash[:error] = "Debes leer y aceptar el código de conducta de Gamersmafia para poder registrarte."
+      flash[:error] = ("Debes leer y aceptar el código de conducta de" +
+                       " Gamersmafia para poder registrarte.")
       render :action => :alta
     elsif Cms::EMAIL_REGEXP =~ @newuser.email && User::BANNED_DOMAINS.include?(@newuser.email.split('@')[1].downcase)
       flash[:error] = "El dominio #{@newuser.email.split('@')[1]} está baneado por abusos. Por favor, elige otra cuenta de correo."
