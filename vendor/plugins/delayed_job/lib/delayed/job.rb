@@ -6,7 +6,7 @@ module Delayed
   class Job < ActiveRecord::Base
     MAX_ATTEMPTS = 25
     MAX_RUN_TIME = 4.hours
-    set_table_name :delayed_jobs
+    self.table_name = :delayed_jobs
 
     # By default failed jobs are destroyed after too many attempts.
     # If you want to keep them around (perhaps to inspect the reason
@@ -81,7 +81,7 @@ module Delayed
       unless object.respond_to?(:perform) || block_given?
         raise ArgumentError, 'Cannot enqueue items which do not respond to perform'
       end
-    
+
       priority = args.first || 0
       run_at   = args[1]
 

@@ -27,4 +27,8 @@ Gamersmafia::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
+
+  config.middleware.use "Rack::Bug",
+      :secret_key => "someverylongandveryhardtoguesspreferablyrandomstring",
+      :password   => "yourpassword"
 end
