@@ -157,12 +157,13 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "changing_last_commented_on_should_change_state_from_shadow" do
-    [User::ST_SHADOW, User::ST_ZOMBIE].each do |st|
+    [User::ST_SHADOW, User::ST_ZOMBIE].each do |state|
       u1 = User.find(1)
-      u1.state = st
+      u1.lastseen_on = 1.year.ago
+      u1.state = state
       u1.lastcommented_on = nil
-      assert_equal true, u1.save
-      assert_equal st, u1.state
+      assert u1.save
+      assert_equal(state, u1.state)
       u1.lastcommented_on = Time.now
       u1.save
       assert_equal User::ST_ACTIVE, u1.state

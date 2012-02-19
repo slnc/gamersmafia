@@ -20,6 +20,9 @@ class Skin < ActiveRecord::Base
   validates_uniqueness_of :name
   belongs_to :user
 
+  APPEND=0
+  PREPPEND=1
+
   CGEN_CSS_START = '/* COLOR GEN START - DO NOT REMOVE */'
   CGEN_CSS_END = '/* COLOR GEN END - DO NOT REMOVE */'
   DEFAULT_SKINS_IDS  = {'default' => -1, 'arena' => -2, 'bazar' => -3}
@@ -51,17 +54,17 @@ class Skin < ActiveRecord::Base
     out = f_contents
     imports.each do |import|
       # TODO Higher Security?
-      full = "#{Rails.root}/public#{import[0..import.length]}" if import[0..0] == '/'
+      if import[0..0] == '/'
+        full = "#{Rails.root}/public#{import[0..import.length]}"
+      end
       fname = (import[0..0] == '/' || import[1..1] == ':') ? full : "#{File.dirname(base_file_name)}/#{import}"
       import_contents = self.rextract_css_imports(fname)
       import_contents.gsub!(/(url\(([^\/]{1}))/, "url(#{File.dirname(fname).gsub(Rails.root, '').gsub('public/', '')}/\\2")
       # reemplazamos urls relativas por absolutas
       if import[0..0] != '/' then # asumimos que este import es relativo
         # miramos cuantas / hay y quitamos los ../ necesarios
-        #import.count('/').times do
-        #  import_contents.gsub!('url(../', 'url(') # quitamos un nivel de anidamiento
-        #end
-        import_contents.gsub!('url(/storage/gs.png)', "url(/storage/gs.png?#{SVNVERSION})")
+        import_contents.gsub!(
+            "url(/storage/gs.png)", "url(/storage/gs.png?#{SVNVERSION})")
       end
       out.gsub!("@import url(#{import});", import_contents)
     end
@@ -70,7 +73,7 @@ class Skin < ActiveRecord::Base
 
   def self.find_by_hid(hid)
     if %w(arena default bazar).include?(hid)
-      s = Skin.new({:name => hid, :hid => hid, :version => SVNVERSION.to_i(16)})
+      s = Skin.new(:name => hid, :hid => hid, :version => SVNVERSION.to_i(16))
       s.id = DEFAULT_SKINS_IDS[hid]
       s
     else
@@ -112,7 +115,6 @@ class Skin < ActiveRecord::Base
     end
   end
 
-
   def gen_compressed
     fpath = "#{realpath}/style.css"
     compressed = "#{realpath}/style_compressed.css"
@@ -126,11 +128,6 @@ class Skin < ActiveRecord::Base
   def clear_redundant_rules(str)
     str.gsub(/([a-z-]+:\sinherit;)/, "").gsub(/([a-z-]+:\s;)/, "")
   end
-
-  #  def update_intelliskin(new_params)
-  #    config.merge!(new_params)
-  #    save_config
-  #  end
 
   def update_favicon(mixed_thing)
     if mixed_thing
@@ -149,7 +146,7 @@ class Skin < ActiveRecord::Base
   def save_config
     cfg_path = "#{realpath}/config.yml"
     return false unless File.exists?(cfg_path)
-    config # necesario ponerlo aquí
+    self.config # necesario ponerlo aquí
     self.version += 1
     self.save
     File.open(cfg_path, 'w') { |f| f.write(YAML::dump(config)) }
@@ -194,7 +191,9 @@ class Skin < ActiveRecord::Base
   end
 
   def update_version_if_file_changed
-    self.version += 1 if self.file_changed?
+    if self.file_changed? && self.file.index("#<Rack::").nil?
+      self.version += 1
+    end
   end
 
   def check_file_changed
@@ -255,32 +254,6 @@ class Skin < ActiveRecord::Base
       inject_into_css(sk.texture.markers[0] + "\n" + css + "\n" + sk.texture.markers[1])
     end
   end
-
-  #  def unzip_package
-  #    dst_folder = "#{Rails.root}/public/storage/skins/#{self.hid}"
-  #    FileUtils.mkdir_p(dst_folder) unless File.exists?(dst_folder)
-  #    da_fail ="#{Rails.root}/public/#{self.file}"
-  #    if File.exists?(da_fail)
-  #      config if File.exists?("{realpath}/config.yml") # antes de machacar leemos la config si existe
-  #      system("unzip -o -q \"#{da_fail}\" -d \"#{dst_folder}\"")
-  #      # Si la skin hereda de otro incluímos su css al principio de style.css
-  #      parent = config[:general][:parentskin]
-  #      # TODO sanitize parent
-  #      if parent
-  #        import = %w(default clan_default).include?(parent) ? "/skins/#{parent}" : "../#{parent}"
-  #        inject_into_css("@import url(#{import}/style.css);", PREPPEND)
-  #      end
-  #
-  #      # Si la skin es intelliskin generamos los colores
-  #      if config[:intelliskin]
-  #        inject_into_css(Skins::ColorGenerators.const_get(config[:intelliskin][:color_gen]).process(config[:intelliskin][:color_gen_params]))
-  #      end
-  #    end
-  #    true
-  #  end
-
-  APPEND=0
-  PREPPEND=1
 
   def inject_into_css(str, mode=APPEND)
     fpath = "#{realpath}/style.css"

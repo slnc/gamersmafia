@@ -52,9 +52,12 @@ class SkinTest < ActiveSupport::TestCase
 
   test "skin_file_changed_must_bump_its_version" do
     test_create_skin_should_create_default_file_with_factions_skin
-    v = @s.version
-    assert_equal true, @s.update_attributes({:file => fixture_file_upload('/files/sample_skin_in_root.zip', 'application/zip')})
-    assert_equal v + 1, @s.version
+    old_version = @s.version
+    assert(
+        @s.update_attributes(
+            :file => fixture_file_upload(
+                '/files/sample_skin_in_root.zip', 'application/zip')))
+    assert_equal(old_version + 1, @s.version)
   end
 
   test "skin_update_intelliskin_should_update_config_attrs_correctly" do

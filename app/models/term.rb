@@ -427,12 +427,8 @@ class Term < ActiveRecord::Base
   end
 
   def recalculate_contents_count
-    #([self] + self.children.find(:all)).each do |t|
-    #  newc = ContentsTerm.count(:conditions => "term_id IN (#{t.all_children_ids(t)})")
-    #  t.contents_count = newc
-    #  t.save
-    #end
-    newc = ContentsTerm.count(:conditions => "term_id IN (#{self.all_children_ids(self)})")
+    newc = ContentsTerm.count(
+        :conditions => "term_id IN (#{self.all_children_ids(self)})")
     self.contents_count = newc
     self.save
   end

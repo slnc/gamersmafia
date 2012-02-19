@@ -353,7 +353,11 @@ class User < ActiveRecord::Base
   end
 
   def check_if_shadow
-    self.state = ST_SHADOW if self.state == ST_ZOMBIE && self.lastseen_on > 1.minute.ago
+    if self.state == ST_ZOMBIE && self.lastseen_on > 1.minute.ago
+      Rails.logger.info(
+          "Zombie #{self.login} turned up online. Changing state to shadow.")
+      self.state = ST_SHADOW
+    end
     true
   end
 
