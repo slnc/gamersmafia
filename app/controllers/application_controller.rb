@@ -283,7 +283,11 @@ Request information:
     @rescuiing || false
   end
 
-  def rescue_action_in_public(exception)
+  unless Rails.application.config.consider_all_requests_local
+   rescue_from Exception, :with => :render_error
+  end
+
+  def render_error(exception)
     @rescuiing = true
     case exception
       when ActiveRecord::RecordNotFound
@@ -304,28 +308,18 @@ Request information:
 
       when ::ActionController::UnknownAction, ::ActionController::RoutingError
       if request.path.index('www.') != nil then
-        redirect_to("http://#{request.path[request.path.index('www.')..-1]}", :status => 301)
+        redirect_to("http://#{request.path[request.path.index('www.')..-1]}",
+                    :status => 301)
       else
         check404
         http_404
       end
     else
-      deliverer = self.class.exception_data
-      data = case deliverer
-        when nil then {}
-        when Symbol then send(deliverer)
-        when Proc then deliverer.call(self)
-      end
-
-      #ExceptionNotifier.deliver_exception_notification(exception, self,
-      #                                                 request, data)
-
-      # SystemNotifier.deliver_exception_notification(self, request, exception)
+      ExceptionNotifier::Notifier.exception_notification(
+        request.env, exception).deliver
       begin
         render :template => 'application/http_500', :status => 500
       rescue
-        #layout nil
-        # render :file => "#{Rails.root}/app/views/application/http_500.rhtml", :status => 500
         render(:file => "#{Rails.root}/public/500.html", :status => '500 Error')
       end
     end

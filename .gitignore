@@ -1,6 +1,7 @@
 .bundle
 .sass-cache/
 config/app_production.yml
+exception_notification
 log/*.log
 public/cache
 public/ckeditor

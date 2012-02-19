@@ -40,6 +40,7 @@ common: &common
   system_mail_password: megustanlasgalletas
   tidy_path: /usr/lib/libtidy.so
   webmaster_user_id: 1
+  webmaster_email: unnamed@gamersmafia.dev
 
 # Basic roles.
 development: &development
