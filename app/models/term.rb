@@ -28,7 +28,6 @@ class Term < ActiveRecord::Base
   # VALIDATES siempre los últimos
   validates_format_of :slug, :with => /^[a-z0-9_.-]{0,50}$/
   validates_format_of :name, :with => /^.{1,100}$/
-  validates_presence_of :type
   plain_text :name, :description
   validates_uniqueness_of :name, :scope => [:parent_id, :taxonomy]  # missing :type
   validates_uniqueness_of :slug, :scope => [:parent_id, :taxonomy]  # missing :type
