@@ -1,6 +1,6 @@
 <% generic_support do %>
-<%  if user_is_authed && @competition.user_can_challenge(@user) then 
-      p = @competition.get_active_participant_for_user(@user) 
+<%  if user_is_authed && @competition.user_can_challenge(@user) then
+      p = @competition.get_active_participant_for_user(@user)
       if p.id != @competitions_participant.id then %>
         <% mftext('Retar') do %>
       <% if @competition.matches(:unapproved, :participants => [p, @competitions_participant]).size > 0 or @competition.matches(:result_pending, :participants => [p, @competitions_participant]).size > 0 then %>
@@ -89,7 +89,7 @@
     <% if real_thing.class.name == 'User' then %>
     <% if not real_thing.msn.to_s.empty? then %><img class="competition-msn" src="/images/blank.gif" /> <%=hide_email(real_thing.msn)%><br /><% end %>
     <% if not real_thing.irc.to_s.empty? then %><img class="competition-irc" src="/images/blank.gif" /> <%=real_thing.irc%><br /><% end %>
-      <% if real_thing.homepage then %><%=auto_link_raw(real_thing.homepage, :all, :target => '_blank') do |text| 
+      <% if real_thing.homepage then %><%=auto_link(real_thing.homepage, :all, :target => '_blank') do |text|
       text.gsub!('http://', '')
       text = text[0..-2] if text.count('/') == 1
       text
@@ -98,13 +98,13 @@
     <% else %><%#clan %>
     <%=real_thing.name%><br />
       <% if not real_thing.irc_channel.to_s.empty? then %><img class="competition-irc" src="/images/blank.gif" /> <%=real_thing.irc_server%>#<%=real_thing.irc_channel%><br /><% end %>
-      <% if real_thing.website_external then %><%=auto_link_raw(real_thing.website_external, :all, :target => '_blank') do |text| 
+      <% if real_thing.website_external then %><%=auto_link_raw(real_thing.website_external, :all, :target => '_blank') do |text|
       text = text.gsub('http://', '')
       text = text[0..-2] if text.count('/') == 1
       text
       end %><br /><% end %>
-      Admins: 
-      <% real_thing.admins.each do |u| %> 
+      Admins:
+      <% real_thing.admins.each do |u| %>
       <a href="<%=gmurl(u)%>"><%=u.login%></a>
         <% if not u.msn.to_s.empty? then %> <span class="infoinline">(<img class="competition-msn" src="/images/blank.gif" /><%=hide_email(u.msn)%>)</span><% end -%>,
       <% end -%>
@@ -115,9 +115,9 @@
   </div>
   <div class="right" style="margin: 10px 5px 10px 0; clear: left;"><a href="<%=gmurl(real_thing)%>">Más información &raquo;</a></div>
   <% end -%>
-  
-  <% 
-    if @competition.competitions_participants_type_id == 1 then 
+
+  <%
+    if @competition.competitions_participants_type_id == 1 then
       users = [@competitions_participant.the_real_thing]
     else
       users = @competitions_participant.the_real_thing.members_of_game(@competition.game)
@@ -134,7 +134,7 @@
       <th class="timestamp">Último cambio</th>
   <% end -%>
     </tr>
-    <% 
+    <%
     for user in users
       guid = user.users_guids.find_by_game_id(@competition.game_id, :order => 'id DESC')
     %>
