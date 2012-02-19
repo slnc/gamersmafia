@@ -147,17 +147,6 @@ module RubyMixings
     end
   end
 
-  # module DateTime
-  #   def to_time
-  #     d = new_offset(0)
-  #     d.instance_eval do
-  #       Time.utc(year, mon, mday, hour, min, sec,
-  #        (sec_fraction * 86400000000).to_i)
-  #     end
-  #     getlocal
-  #   end
-  # end
-
   module ObjectMixing
     # private
     def this_method
@@ -362,3 +351,10 @@ class MarkovChainer
     arr && arr[rand(arr.size)]
   end
 end
+
+String.send :include, RubyMixings::StringMixing
+Hash.send :include, RubyMixings::HashMixing
+Math.send :extend, RubyMixings::MathMixing
+Object.send :include, RubyMixings::ObjectMixing
+Float.send :include, RubyMixings::FloatMixing
+Date.send :include, RubyMixings::DateMixing
