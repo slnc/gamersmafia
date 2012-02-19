@@ -8,7 +8,7 @@ OPENURI_HEADERS = {
                     'User-Agent' => 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.6; en-US; rv:1.9.1.4) Gecko/20091016 Firefox/3.5.4'
 }
 
-User.connection.client_min_messages = 'warning'
+ActiveRecord::Base.connection.client_min_messages = 'warning'
 
 ActionMailer::Base.smtp_settings = {
   :address  => "mail.gamersmafia.com",

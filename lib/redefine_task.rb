@@ -1,3 +1,5 @@
+require 'rake'
+
 unless Rake::TaskManager.methods.include?(:redefine_task)
   module Rake
     module TaskManager
@@ -22,4 +24,9 @@ unless Rake::TaskManager.methods.include?(:redefine_task)
       end
     end
   end
+end
+
+# Necesario para poder testear las tareas rake
+Rake::Task.redefine_task :environment do
+  # nothing
 end

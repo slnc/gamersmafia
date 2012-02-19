@@ -117,16 +117,12 @@ class CompetitionTest < ActiveSupport::TestCase
      (1..26).each do |i|
       u = User.new(:login => "gmht2cp#{i}", :password => 'booooo', :email => "em#{i}@gmht2.com", :ipaddr => '0.0.0.0', :lastseen_on => Time.now)
       assert u.save, u.errors.full_messages_html
-      #puts "user created"
       u.change_internal_state(:active)
       assert_count_increases(CompetitionsParticipant) do
         c.add_participant(u)
       end
-      #puts "competition participant created"
     end
-    #puts "before switching to state"
     c.switch_to_state(Competition::INSCRIPTIONS_CLOSED)
-    #puts "after switching to state"
     c.switch_to_state(Competition::STARTED)
     # Check group creation is correct
     assert_equal 8, c.tourney_groups
@@ -137,18 +133,15 @@ class CompetitionTest < ActiveSupport::TestCase
     matches_clasificatorias = 0
     groups.each do |g|
       group_participants_ids = g.participants.collect { |cp| cp.id }
-      #puts "\n\n-- grupo #{g} #{group_participants_ids.join(' ')}"
       matches_remaining = group_participants_ids.each_choose(2)
 
       g.matches.each do |cm|
         matches_clasificatorias += 1
-        #puts "checking (#{cm.participant1_id} == ? && #{cm.participant2_id} == ?) || (#{cm.participant1_id} == ? && #{cm.participant2_id} == ?)"
         matches_remaining.delete_if { |cmids| (cm.participant1_id == cmids[0] && cm.participant2_id == cmids[1]) || (cm.participant1_id == cmids[1] && cm.participant2_id == cmids[0])}
         cm.complete_match(u1, :participation => 'both', :result => 0)
       end
       assert_equal 0, matches_remaining.size
     end
-
 
     # Check matches in eliminatorias
     total_eliminatorias = 15
@@ -166,8 +159,6 @@ class CompetitionTest < ActiveSupport::TestCase
       assert_not_nil cm.participant2_id
       cm.complete_match(u1, :participation => 'both', :result => 0)
     end
-
-    #puts "--------------------------------------------------"
 
     c.competitions_matches.find(:all, :conditions => ['stage = ?', c.tourney_rounds_starting_stage + 1], :order => "id ASC").each do |cm|
       #p cm

@@ -43,7 +43,6 @@ class QuestionTest < ActiveSupport::TestCase
     assert_equal @q.user.id, @q.answer_selected_by_user_id
     assert_equal @q.user.id, @q.answer_selected_by_user.id
     @c.user.reload
-    # puts "#{u_cash} + #{@q.prize}, #{c.user.cash}"
     assert_equal ("%.2f" % (@u_cash + @q.prize)), ("%.2f" % @c.user.cash)
   end
 
@@ -67,7 +66,6 @@ class QuestionTest < ActiveSupport::TestCase
 
   test "should_be_able_to_create_question_with_0_ammount" do
     @bt = Question.create({:user_id => 2, :title => "fooafoasofd osadka", :ammount => 0, :terms => 1})
-    puts @bt.errors.class.name
     assert_equal false, @bt.new_record?, @bt.errors.full_messages_html
   end
 
