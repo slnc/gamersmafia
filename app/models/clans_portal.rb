@@ -19,7 +19,7 @@ class ClansPortal < Portal
   end
 
   def method_missing(method_id, *args)
-    cs_method = ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id))
+    cs_method = ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id.to_s))
     if Cms::CLANS_CONTENTS.include?(cs_method)
       t = Term.single_toplevel(:clan_id => self.clan_id)
     elsif /(news|downloads|topics|events|images|polls)_categories/ =~ method_id.to_s then
@@ -30,7 +30,7 @@ class ClansPortal < Portal
   end
 
   def respond_to?(method_id, include_priv = false)
-    cs_method = ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id))
+    cs_method = ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id.to_s))
     if Cms::CLANS_CONTENTS.include?(cs_method)
       true
     elsif /(news|downloads|topics|events|images|polls)_categories/ =~ method_id.to_s then

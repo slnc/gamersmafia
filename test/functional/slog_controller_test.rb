@@ -6,7 +6,7 @@ class SlogControllerTest < ActionController::TestCase
     assert_raises(AccessDenied) { get :index }
     exception = AccessDenied.new
     @request.remote_addr = '0.0.0.0'
-    @controller.send :rescue_action_in_public, exception
+    @controller.send :render_error, exception
     assert_response 401
     assert_template 'application/http_401'
 
