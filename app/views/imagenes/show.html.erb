@@ -1,9 +1,13 @@
 <% content_support(:content => @image.unique_content) do %>
-<% if @image.is_public? then %>
+<% if @image.is_public? && !@image.main_category then
+  Rails.logger.warn("Image #{@image} has no main_category")
+end %>
+
+<% if @image.is_public? && @image.main_category then %>
 <% mftext('Navegador de galería') do %>
 <ul class="sidelist images">
   <% cache("/common/imagenes/show/g#{@image.main_category.id}/#{@image.id}") do %>
-  <% 
+  <%
   im_prev = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id < ?', Cms::PUBLISHED, @image.unique_content_id], :order => 'images.id DESC')
 
   im_next = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id > ?', Cms::PUBLISHED, @image.unique_content_id], :order => 'images.id ASC')
@@ -22,7 +26,7 @@
 <% end -%>
 
 		<%#= render :partial => '/imagenes/random', :locals => {:category => @image.main_category} %>
-	
+
 <%= render :partial => '/imagenes/best_rated', :locals => {:category => @image.main_category} %>
 
 <% cache("/#{controller.portal_code}/imagenes/show/_other_images_by_user/#{@image.user_id % 1000}/#{@image.user_id}") do %>
@@ -45,15 +49,15 @@
 <div style="margin: 10px; text-align: center;">
 <script type="text/javascript">
 	var prev_w;
-	
+
 	function maximize_image(a_im) {
 		$j('#cleft').addClass('hidden');
 		$j('#csupport').addClass('hidden');
 		$j('#ccontent').addClass('maximized');
 		$j('#cmain').addClass('maximized');
-		
+
 		a_im.title = 'Haz click para ver la imagen más pequeña'
-		
+
 		var previm = a_im.childNodes[0].src;
 		prev_w = a_im.childNodes[0].width;
 		// TODO show spinner temporarily
@@ -64,19 +68,19 @@
 		a_im.onclick = function() {
 			return minimize_image(a_im);
 		}
-		
+
 		return false;
 	}
-	
-	function minimize_image(a_im) {	
+
+	function minimize_image(a_im) {
 		a_im.childNodes[0].src = a_im.childNodes[0].src.replace('/cache/thumbnails/k/930x700', '/cache/thumbnails/k/460x345');
 		a_im.title = 'Haz click para ver la imagen más grande'
-		
+
 		$j('#ccontent').removeClass('maximized');
 		$j('#cmain').removeClass('maximized');
 		$j('#cleft').removeClass('hidden');
 		$j('#csupport').removeClass('hidden');
-		
+
 		a_im.childNodes[0].style.width = prev_w;
 
 		document.location = '#ccontent';

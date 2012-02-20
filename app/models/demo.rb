@@ -208,10 +208,19 @@ class Demo < ActiveRecord::Base
     conds = []
     conds << opts[:conditions] if opts[:conditions]
     clans_ids = [0] + u.clans_ids
-    conds <<  "((games_mode_id IN (SELECT id FROM games_modes WHERE entity_type = #{Game::ENTITY_USER}) AND (entity1_local_id = #{u.id} OR entity2_local_id = #{u.id})) OR
-    (games_mode_id IN (SELECT id FROM games_modes WHERE entity_type = #{Game::ENTITY_CLAN}) AND (entity1_local_id IN (#{clans_ids.join(',')}) OR entity2_local_id IN (#{clans_ids.join(',')}))))
-    "
+    conds <<  <<-END
+    ((games_mode_id IN (SELECT id
+                          FROM games_modes
+                         WHERE entity_type = #{Game::ENTITY_USER})
+      AND (entity1_local_id = #{u.id} OR entity2_local_id = #{u.id}))
+     OR (games_mode_id IN (SELECT id
+                             FROM games_modes
+                            WHERE entity_type = #{Game::ENTITY_CLAN})
+      AND (entity1_local_id IN (#{clans_ids.join(',')})
+        OR entity2_local_id IN (#{clans_ids.join(',')}))))
+    END
     opts[:conditions] = conds.join(' AND ')
-    self.published(:all, opts)
+    Rails.logger.warn("opts: #{opts}")
+    self.published.find(:all, opts)
   end
 end

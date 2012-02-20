@@ -343,8 +343,10 @@ class Term < ActiveRecord::Base
   end
 
   def self.find_taxonomy(id, taxonomy)
+    id = id.to_i if id.kind_of?(String)
     sql_tax = taxonomy.nil? ? 'IS NULL' : "= #{User.connection.quote(taxonomy)}"
-    Term.find(:first, :conditions => ["id = ? AND taxonomy #{sql_tax}", id])
+    Term.find(:first, :conditions => ["id = ? AND taxonomy #{sql_tax}",
+        id])
   end
 
   def self.find_taxonomy_by_code(code, taxonomy)

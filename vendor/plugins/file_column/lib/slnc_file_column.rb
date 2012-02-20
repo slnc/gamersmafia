@@ -85,7 +85,7 @@ module SlncFileColumn
         case self.class._fc_options[f.to_sym][:format]
           when :jpg then
           if !(/\.jpg$/i =~ filename)
-            self.errors.add(f.to_sym, "El archivo #{_fc_file_name(tmp_file, true)} no es una imagen (Formato v√°lido: JPG)")
+            self.errors.add(f.to_sym, "El archivo #{_fc_file_name(tmp_file, true)} no es una imagen (Formato v√alido: JPG)")
             return false
           end
         end

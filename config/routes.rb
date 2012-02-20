@@ -75,6 +75,7 @@ Gamersmafia::Application.routes.draw do
   match 'cuenta/faccion' => 'cuenta/faccion#index'
   match 'cuenta/faccion/alertas/new' => 'cuenta/faccion#alertas_new'
   match 'cuenta/faccion/alertas/show/:id' => 'cuenta/faccion#alertas_show', :constraints => { :id => /\d+/ }
+  match 'cuenta/faccion/cabeceras' => 'cuenta/faccion#cabeceras'
   match 'cuenta/faccion/cabeceras/create' => 'cuenta/faccion#cabeceras_create'
   match 'cuenta/faccion/cabeceras/destroy/:id' => 'cuenta/faccion#cabeceras_destroy', :constraints => { :id => /\d+/ }
   match 'cuenta/faccion/cabeceras/edit/:id' => 'cuenta/faccion#cabeceras_edit', :constraints => { :id => /\d+/ }
@@ -89,13 +90,17 @@ Gamersmafia::Application.routes.draw do
   match 'cuenta/faccion/categorias/term/:id/hijos/:content_type' => 'cuenta/faccion/categorias#hijos'
   match 'cuenta/faccion/categorias/term/:id/update' => 'cuenta/faccion/categorias#update'
   match 'cuenta/faccion/informacion' => 'cuenta/faccion#informacion'
+  match 'cuenta/faccion/links' => 'cuenta/faccion#links'
+  match 'cuenta/faccion/juego' => 'cuenta/faccion#juego'
   match 'cuenta/faccion/links/create' => 'cuenta/faccion#links_create'
   match 'cuenta/faccion/links/destroy/:id' => 'cuenta/faccion#links_destroy', :constraints => { :id => /\d+/ }
   match 'cuenta/faccion/links/edit/:id' => 'cuenta/faccion#links_edit', :constraints => { :id => /\d+/ }
   match 'cuenta/faccion/links/new' => 'cuenta/faccion#links_new'
   match 'cuenta/faccion/links/update/:id' => 'cuenta/faccion#links_update'
   match 'cuenta/faccion/mapas_juegos' => 'cuenta/faccion#mapas_juegos'
+  match 'cuenta/faccion/staff' => 'cuenta/faccion#staff'
   match 'cuenta/faccion/mapas_juegos/:action/:id' => 'cuenta/faccion#index'
+  match 'cuenta/faccion/:action' => 'cuenta/faccion'
   match 'cuenta/guids' => 'cuenta/guids#index'
   match 'cuenta/imagenes' => 'cuenta/cuenta#imagenes'
   match 'cuenta/imagenes/borrar' => 'cuenta/cuenta#borrar_imagen'
@@ -122,6 +127,7 @@ Gamersmafia::Application.routes.draw do
   match 'descargas/new' => 'descargas#new'
   match 'foros/nuevo_topic' => 'foros#nuevo_topic'
   match 'foros/topics_activos' => 'foros#topics_activos'
+  match 'foros/forum/:id' => 'foros#forum', :id => /\d+/
   match 'gamersmafiageist/:survey_edition_date' => 'gamersmafiageist#edicion', :survey_edition_date => /[0-9]{4}/
   match 'imagenes/:category' => 'imagenes#category', :constraints => { :category => /\d+/ }
   match 'imagenes/create' => 'imagenes#create'

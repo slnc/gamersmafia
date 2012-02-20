@@ -1,13 +1,13 @@
 class DescargasController < InformacionController
   acts_as_content_browser :download
   allowed_portals [:gm, :faction, :clan, :bazar_district]
-  
+
   def index
     @title = 'Descargas'
     params[:category] = Term.top_level.find_by_slug(portal.code) if params[:category].nil? && portal.id > 0
     parent_id = params[:category]
     if parent_id then
-      # TODO BUG no estamos chequeando que la categoría se pueda ver desde aquí 
+      # TODO BUG no estamos chequeando que la categoría se pueda ver desde aquí
       @category = Term.find_taxonomy(parent_id, 'DownloadsCategory')
       @category = Term.find_taxonomy(parent_id, nil) if @category.nil?
       raise ActiveRecord::RecordNotFound if @category.nil?
@@ -15,19 +15,23 @@ class DescargasController < InformacionController
       @title = paths.join(' &raquo; ')
     end
   end
-  
+
   def _after_show
     if @download
-      paths, navpath = get_category_address(@download.main_category, 'DownloadsCategory')
-      @navpath = navpath + [[@download.title, "/descargas/#{@download.main_category.id}/#{@download.id}"],]
-      @title = @download.title
+      if @download.main_category
+        paths, navpath = get_category_address(@download.main_category, 'DownloadsCategory')
+        @navpath = navpath + [[@download.title, "/descargas/#{@download.main_category.id}/#{@download.id}"],]
+        @title = @download.title
+      else
+        Rails.logger.warn("Descarga: #{@download} no tiene main_category.")
+      end
     end
   end
-  
+
   def download
     @download = Download.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @download.is_public?
-      
+
     @title = @download.title
     @download_mirrors = @download.download_mirrors
     Download.increment_counter('downloaded_times', @download.id)
@@ -35,7 +39,7 @@ class DescargasController < InformacionController
     # TODO PERF no borrar las caches con tanta gracia, ¿no?
     CacheObserver.expire_fragment("/common/descargas/index/downloads_#{@download.main_category.id}/page_*") # TODO MUY HEAVY, no podemos hacer que cada descarga suponga borrar todas las caches de índices
     CacheObserver.expire_fragment("/common/descargas/index/most_downloaded_#{@download.main_category.root_id}")
-    if params[:r] 
+    if params[:r]
         #if Cms::URL_REGEXP_FULL =~ params[:r] #DownloadMirror.find_by_url(URI::unescape(params[:r]))
           @download_link = params[:r]
         #lse
@@ -50,18 +54,18 @@ class DescargasController < InformacionController
       final_mirror = Download.create_symlink(dd.download_cookie, @download.file, gm_link)  # 1 = NLS
       final_mirror = 0 if final_mirror.nil?
       end_file = @download.file.gsub("#{Rails.root}/public/storage", '')
-      @download_link = "#{Download::MIRRORS_DOWNLOAD[final_mirror]}d/#{dd.download_cookie}/#{File.basename(end_file)}" 
+      @download_link = "#{Download::MIRRORS_DOWNLOAD[final_mirror]}d/#{dd.download_cookie}/#{File.basename(end_file)}"
     end
     render :layout => 'blank'
   end
-  
+
   def dauth
     raise ActiveRecord::RecordNotFound unless params[:gmk] && params[:ddc] && params[:f]
     raise AccessDenied unless params[:gmk] == App.mirror_auth_key
     Download.create_symlink(params[:ddc], params[:f])
     render :nothing => true
   end
-  
+
   def create_from_zip
     require_auth_users
     raise ActiveRecord::RecordNotFound unless Cms::user_can_mass_upload(@user)
@@ -70,9 +74,9 @@ class DescargasController < InformacionController
       new
       render :action => 'new'
     else
-      
+
       @category = Term.find_taxonomy(params[:categories_terms][0], 'DownloadsCategory')
-      
+
       if @category.nil? || @category.parent_id.nil? then
         flash[:error] = 'Debes elegir una subcategoría, no una categoría'
         new
@@ -91,7 +95,7 @@ class DescargasController < InformacionController
         else
           path = newfile.path
         end
-        
+
         system("unzip -q -j #{path} -d #{tmp_dir}")
         # añadimos imgs al dir del usuario
         i = 0
@@ -109,7 +113,7 @@ class DescargasController < InformacionController
             end
           end
         end
-        
+
         # limpiamos
         system("rm -r #{tmp_dir}")
         flash[:notice] = "#{i} descargas subidas correctamente. Tendrán que ser moderadas antes de aparecer publicada."
@@ -117,7 +121,7 @@ class DescargasController < InformacionController
       end
     end
   end
-  
+
   def edit
     @download = Download.find(params[:id])
     # require_user_can_edit(@download)

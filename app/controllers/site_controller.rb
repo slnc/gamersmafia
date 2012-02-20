@@ -141,6 +141,8 @@ class SiteController < ApplicationController
 
   def new_chatline
     require_auth_users
+
+    if params[:line].kind_of?(String)
     # TODO copypasted
     chatline = Chatline.new
     chatline.line = params[:line][0..450].strip
@@ -157,6 +159,7 @@ class SiteController < ApplicationController
     @user.save
 
     @clear_comment_line = true
+    end
 
     if cookies[:chatpref] == 'big'
       @online_users = User.find(:all, :conditions => 'lastseen_on >= now() - \'30 minutes\'::interval', :order => 'lastseen_on desc', :limit => 100)
@@ -185,14 +188,16 @@ class SiteController < ApplicationController
 
   def add_to_tracker
     require_auth_users
-    Users.add_to_tracker(@user, Content.find(params[:id]))
-    redirect_to params[:redirto]
+    content = Content.find(params[:id])
+    Users.add_to_tracker(@user, content)
+    redirect_to params[:redirto] || gmurl(content)
   end
 
   def del_from_tracker
     require_auth_users
-    Users.remove_from_tracker(@user, Content.find(params[:id]))
-    redirect_to params[:redirto]
+    content = Content.find(params[:id])
+    Users.remove_from_tracker(@user, content)
+    redirect_to params[:redirto] || gmurl(content)
   end
 
   def get_non_updated_tracker_items
@@ -474,7 +479,7 @@ class SiteController < ApplicationController
   end
 
   def sponsor
-    raise ActiveRecord::RecordNotFound unless %w(atlassian fourfrags nls).include?(params[:sponsor])
+    raise ActiveRecord::RecordNotFound unless %w(fourfrags nls).include?(params[:sponsor])
     render :template => "site/sponsors_#{params[:sponsor]}"
   end
 
