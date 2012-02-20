@@ -244,14 +244,14 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
       <textarea id="#{opts[:id]}" class="bbeditor" name="#{opts[:name]}" rows="#{opts[:rows]}" style="#{opts[:style]}">#{opts[:value]}</textarea></div>
 
     <script type="text/javascript">
-    $j('textarea[name=#{opts[:name]}]').bbcodeeditor(
+    $j('##{opts[:id]}').bbcodeeditor(
         {
           bold:$j('.bold'), italic:$j('.italic'), link:$j('.link'), quote:$j('.quote'), code:$j('.code'), image:$j('.btn.image'),
           usize:$j('.usize'), dsize:$j('.dsize'), nlist:$j('.nlist'), blist:$j('.blist'),
           back:$j('.back'), forward:$j('.forward'), back_disable:'btn back_disable', forward_disable:'btn forward_disable'
         });
         if ($j.browser.msie)
-    $j('textarea[name=#{opts[:name]}]').css('width', '100%');
+    $j('##{opts[:id]}').css('width', '100%');
     $j('##{opts[:id]}').elastic();
     </script>
     #{controller.send(:render_to_string, :partial => '/shared/smileys', :locals => { :dom_id => opts[:id] })}
@@ -797,11 +797,11 @@ skin: 'v2'
       out = "<script type=\"text/javascript\" src=\"#{ASSET_URL}/gm.#{SVNVERSION}.js\"></script>\n"
     else
       out = <<-END
-<script src="#{ASSET_URL}/javascripts/web.shared/jquery-1.3.2.#{SVNVERSION}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/web.shared/jquery-1.7.1.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/web.shared/jquery.scrollTo-1.4.0.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/jquery-ui-1.7.2.custom.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/web.shared/jgcharts-0.9.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/jrails.#{SVNVERSION}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/jquery_ujs.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/jquery.facebox.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/jquery.elastic.source.#{SVNVERSION}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/web.shared/slnc.#{SVNVERSION}.js" type="text/javascript"></script>

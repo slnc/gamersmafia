@@ -18,10 +18,10 @@ def compress_file(src, dst):
 def compress_js():
     # TODO(slnc): eliminar los archivos de syntaxhighlighter, apenas se están
     # usando.
-    cfg = ['web.shared/jquery-1.3.2',
+    cfg = ['web.shared/jquery-1.7.1',
            'web.shared/jquery.scrollTo-1.4.0',
            'jquery-ui-1.7.2.custom',
-           'jrails',
+           'jquery_ujs.js',
            'jquery.facebox',
            'jquery.elastic.source',
            'web.shared/jgcharts-0.9',
