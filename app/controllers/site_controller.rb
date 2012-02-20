@@ -521,7 +521,9 @@ class SiteController < ApplicationController
 
   def do_recommend_to_friend
     require_auth_users
-    GmSys.job("Content.find(#{params[:content_id].to_i}).recommend_to_friends(User.find(#{@user.id}), [#{params[:friends].join(',')}], '#{params[:comment]}')")
+    params[:friends] = [] unless params[:friends]
+    friends_list = params[:friends].join(',')
+    GmSys.job("Content.find(#{params[:content_id].to_i}).recommend_to_friends(User.find(#{@user.id}), [#{friends_list}], '#{params[:comment]}')")
     flash[:notice] = "Recomendación enviada"
     render :partial => '/shared/ajax_facebox_feedback', :layout => false
   end

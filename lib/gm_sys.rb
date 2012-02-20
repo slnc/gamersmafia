@@ -59,8 +59,9 @@ module GmSys
   def self.job(task)
     # performs or schedules a lengthy job depending on the current configuration
     if App.enable_bgjobs?
-      Delayed::Job.enqueue DjJobWrapper.new(task)
+      Delayed::Job.enqueue(DjJobWrapper.new(task))
     else
+      Rails.logger.info("App.enable_bgjobs is down. Evaluating: #{task}")
       eval(task)
     end
   end
