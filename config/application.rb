@@ -73,5 +73,8 @@ module Gamersmafia
     log4r_config= YAML.load_file(File.join(File.dirname(__FILE__),"log4r.yml"))
     YamlConfigurator.decode_yaml(log4r_config['log4r_config'])
     config.logger = Log4r::Logger[App.log_env]
+
+    # Disable auto explains
+    config.active_record.auto_explain_threshold_in_seconds = nil
   end
 end
