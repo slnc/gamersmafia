@@ -23,7 +23,7 @@ set showmatch
 set tabstop=2
 set textwidth=80
 set visualbell
-set wildignore=.git
+set wildignore=.git,*.log,exception_notification,public/cache,public/storage,tmp
 set wildmode=longest,list:full
 let mapleader = ","
 
