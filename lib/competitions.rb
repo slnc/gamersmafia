@@ -147,6 +147,10 @@ module Competitions
     end
 
     def participants
+      if @groups_count.nil? or @groups_count == 0
+        Rails.logger.warn("@groups_count nil or 0, setting to 1")
+        @groups_count = 1
+      end
       participants = {}
       i = 0
       for p in @competition.competitions_participants.find(:all, :select => '*, (wins * 2 + ties) as points', :order => 'position ASC')

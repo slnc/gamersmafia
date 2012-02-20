@@ -14,4 +14,8 @@ class Image < ActiveRecord::Base
       end
     end
   end
+
+  def to_s
+    ("Image: id: #{self.id}")
+  end
 end

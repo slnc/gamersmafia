@@ -286,7 +286,7 @@ Request information:
     end
   end
 
-  def http_401
+  def handle_http_401
     @title = "Acceso Denegado (Error 401)"
     render :template => 'application/http_401.html.erb', :status => 401
   end
@@ -307,7 +307,7 @@ Request information:
       http_404
 
       when ActionController::UnknownHttpMethod
-      http_401
+      handle_http_401
 
       when DomainNotFound
       redirect_to("http://#{App.domain}", :status => 301)
@@ -316,7 +316,7 @@ Request information:
       render :template => 'application/content_locked', :status => 403
 
       when AccessDenied
-      http_401
+      handle_http_401
 
       when ::ActionController::UnknownAction, ::ActionController::RoutingError
       if request.path.index('www.') != nil then
