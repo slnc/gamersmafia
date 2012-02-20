@@ -118,14 +118,12 @@ class CommentsController < ApplicationController
       @disable_ratings = (@user.remaining_rating_slots - 1 <= 0)
       GmSys.job("Comment.find(#{@comment.id}).rate(User.find(#{@user.id}), CommentsValorationsType.find(#{params[:rate_id]}))")
     else
+      Rails.logger.warn("User #{@user.login} can't rate comment #{@comment}")
       @disable_ratings = true
       @cvt = CommentsValorationsType.new({:name => 'Ninguna'})
     end
 
     render :layout => false, :action => 'rate'
-    #    flash[:notice] = "Comentario valorado correctamente como <strong>#{cvt.name}</strong>"
-    #    params[:redirto] = '/' if params[:redirto].nil?
-    #    redirect_to params[:redirto]
   end
 
   def report
