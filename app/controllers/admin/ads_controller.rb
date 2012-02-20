@@ -1,11 +1,11 @@
 class Admin::AdsController < AdministrationController
-  def index    
+  def index
   end
-  
+
   def new
     @ad = Ad.new
   end
-  
+
   def create
     @ad = Ad.new(params[:ad])
     if @ad.save
@@ -15,7 +15,7 @@ class Admin::AdsController < AdministrationController
       render :action => 'new'
     end
   end
-  
+
   def create_and_associate
     @ad = Ad.new(params[:ad])
     if @ad.save
@@ -25,12 +25,12 @@ class Admin::AdsController < AdministrationController
     end
     redirect_to params[:redirto] ? params[:redirto] : '/admin/ads'
   end
-  
+
   def edit
     @ad = Ad.find(params[:id])
     @title = "Editar ad: #{@ad.name}"
   end
-  
+
   def update
     @ad = Ad.find(params[:id])
     if @ad.update_attributes(params[:ad])
@@ -40,7 +40,7 @@ class Admin::AdsController < AdministrationController
       render :action => 'edit'
     end
   end
-  
+
   def destroy
     if Ad.find(params[:id]).destroy
       flash[:notice] = "Ad eliminado correctamente."

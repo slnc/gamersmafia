@@ -2,7 +2,7 @@
   <% if @competition.user_is_admin(@user.id) then %>
   <% mftext('Estado actual') do %>
   <ul class="skeletal">
-    <% for s in Competition::STATES_ES.keys 
+    <% for s in Competition::STATES_ES.keys
     next if @competition.kind_of?(Ladder) && [1,2].include?(s)
     %>
   <li class="centered"><%= @competition.state == s ? '<strong>' : ''%><%=Competition::STATES_ES[s]%><%= @competition.state == s ? '</strong>' : ''%></li>
@@ -10,7 +10,7 @@
   </ul>
   <% end -%>
 
-  <% case @competition.current_state 
+  <% case @competition.current_state
   when 'created':
   %>
   <% mftext('Avanzar competición') do %>
@@ -29,7 +29,7 @@
   when 'inscriptions_open':
   %>
   <% mftext('Avanzar competición') do %>
-  <div class="centered" style="padding: 10px 0;">  
+  <div class="centered" style="padding: 10px 0;">
     <% if @competition.competitions_participants.count < 3 then %>
     <p>No se ha alcanzado el número mínimo de participantes (3) para esta competición.</p>
     <% else %>
@@ -64,11 +64,11 @@
       <input type="hidden" name="new_state_id" value="4" />
       <input type="submit" class="button" value="Cerrar competición" onclick="return confirm('¿Estás seguro?');" />
     </form>
-    <% else 
+    <% else
         pending = @competition.matches(:result_pending).size
         if pending > 0 then %>
         <p>Quedan por confirmar los resultados de <strong><%=pending%></strong> partidas.</p>
-    <%  else 
+    <%  else
           last = @competition.matches(:completed, :order => 'completed_on DESC', :limit => 1)[0]
           if last then%>
             <p>Todavía no han pasado 7 días desde la conclusión del campeonato. Quedan <%=format_interval(Time.now.to_i - last.completed_on.to_i)%>.</p>

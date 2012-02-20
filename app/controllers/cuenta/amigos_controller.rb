@@ -1,6 +1,6 @@
 class Cuenta::AmigosController < ApplicationController
   before_filter :require_auth_users, :only => [ :index ]
-  
+
   def invitar_email
     suc = []
     fail = []
@@ -14,7 +14,7 @@ class Cuenta::AmigosController < ApplicationController
       else
         f = Friendship.new({:sender_user_id => @user.id, :receiver_email => params["email_invitation_eml#{i}"], :invitation_text => params["email_invitation_msg#{i}"]})
       end
-      
+
       if f.save
         suc<< params["email_invitation_eml#{i}"]
       else
@@ -27,7 +27,7 @@ class Cuenta::AmigosController < ApplicationController
     end
     redirto_or "/cuenta/amigos"
   end
-  
+
   def create_and_accept_friendship
     redirect_to "/cuenta" and return false if user_is_authed
     redirect_to "/cuenta/alta" if !cookies[:killbill].nil?
@@ -64,7 +64,7 @@ class Cuenta::AmigosController < ApplicationController
       end
     end
   end
-  
+
   def olvidadme
     f = Friendship.find_by_external_invitation_key(params[:eik])
     raise ActiveRecord::RecordNotFound unless f
@@ -72,12 +72,12 @@ class Cuenta::AmigosController < ApplicationController
     flash[:notice] = "Email añadido a la lista negra. No te enviaremos ninguna invitación más."
     redirect_to "/"
   end
-  
+
   def colvidadme
     @title = "No deseo recibir más emails de LaFlecha"
   end
-  
-  
+
+
   def create_friendship_from_external_email(email, invite_text='')
     u = User.find(:first, :conditions => ['lower(email) = lower(?)', email])
     if u then # user is local, add as a local friendship, not external
@@ -90,7 +90,7 @@ class Cuenta::AmigosController < ApplicationController
     f.save
     f
   end
-  
+
   def iniciar_amistad
     require_auth_users
     u = User.find_by_login(params[:login])
@@ -108,7 +108,7 @@ class Cuenta::AmigosController < ApplicationController
       redirto_or "/cuenta/amigos/aceptar_amistad/#{u.login}"
     end
   end
-  
+
   def aceptar_amistad
     if params[:login] then # authentified mode
       require_auth_users
@@ -124,11 +124,11 @@ class Cuenta::AmigosController < ApplicationController
         else
           flash[:notice] = "#{u.login} todavía no ha aceptado tu amistad."
         end
-        params[:aj] ? render(:nothing => true): redirect_to("/cuenta/amigos") 
+        params[:aj] ? render(:nothing => true): redirect_to("/cuenta/amigos")
       end
     else # external user is coming
       @friendship = Friendship.find_by_external_invitation_key(params[:eik])
-      @suggested_login = @friendship.receiver_email.split('@')[0] 
+      @suggested_login = @friendship.receiver_email.split('@')[0]
       ok = false
       i = 0
       while not ok
@@ -139,7 +139,7 @@ class Cuenta::AmigosController < ApplicationController
       render :action => 'external_user_aceptar_amistad'
     end
   end
-  
+
   def cancelar_amistad
     if params[:eid] then # cancel external mode
       f = Friendship.find_by_external_invitation_key(params[:eid])
@@ -149,9 +149,9 @@ class Cuenta::AmigosController < ApplicationController
       else
         flash[:error] = "La invitación especificada no existe."
       end
-      
+
       if user_is_authed
-        params[:aj] ? render(:nothing => true): redirect_to("/cuenta/amigos") 
+        params[:aj] ? render(:nothing => true): redirect_to("/cuenta/amigos")
       else
         redirect_to "/cuenta/alta"
       end
@@ -163,7 +163,7 @@ class Cuenta::AmigosController < ApplicationController
         u = User.find_by_login(params[:login])
         raise ActiveRecord::RecordNotFound unless u
       end
-      
+
       f = Friendship.find_between(@user, u)
       if f
         f.destroy
@@ -171,17 +171,17 @@ class Cuenta::AmigosController < ApplicationController
       else
         flash[:error] = "No existe amistad entre tu y #{params[:login]}."
       end
-      params[:aj] ? render(:nothing => true): redirect_to("/cuenta/amigos") 
-    end    
+      params[:aj] ? render(:nothing => true): redirect_to("/cuenta/amigos")
+    end
   end
-  
+
   def mark_fr_good
     require_auth_users
     fr = @user.friends_recommendations.find_by_id(params[:id])
     fr.add_friend if fr
     render :nothing => true
   end
-  
+
   def mark_fr_bad
     require_auth_users
     fr = @user.friends_recommendations.find_by_id(params[:id])

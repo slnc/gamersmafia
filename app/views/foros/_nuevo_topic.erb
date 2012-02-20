@@ -1,5 +1,5 @@
   <% if user_is_authed then %>
-      <% mftext do 
+      <% mftext do
 		qc = Term.single_toplevel(:slug => @forum.root.code) if @forum
 %>
 	    <div class="centered" style="margin-bottom: 15px;"><a href="/respuestas/new?presel_term_id=<%=qc.id if @forum && qc%>"><img src="/images/blank.gif" class="icon btn-nueva-pregunta" /></a></div>

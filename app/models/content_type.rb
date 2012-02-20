@@ -5,7 +5,7 @@ class ContentType < ActiveRecord::Base
     def self.find_by_name(name)
       find(:first, :conditions => ['LOWER(name) = LOWER(?)', name])
     end
-    
+
     def name_translated
       Cms::CLASS_NAMES[name].capitalize
     end

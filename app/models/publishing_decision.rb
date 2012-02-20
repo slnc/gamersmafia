@@ -5,7 +5,7 @@ class PublishingDecision < ActiveRecord::Base
   after_save :update_faith_counters
   plain_text :deny_reason
   validates_uniqueness_of :content_id, :scope => :user_id
-  
+
   # content is News, etc
   # Devuelve la suma de los pesos actuales de un contenido
   def self.find_sum_for_content(content, return_mixed=false)
@@ -20,15 +20,15 @@ class PublishingDecision < ActiveRecord::Base
       return publish_sum - deny_sum
     end
   end
-  
+
   def self.find_voters_count_for_content(content)
     User.db_query("SELECT count(user_id) FROM publishing_decisions WHERE content_id = #{content.unique_content.id}")[0]['count'].to_i
   end
-  
+
   def update_faith_counters
     personality.recalculate
   end
-  
+
   def personality
     PublishingPersonality.find_or_create(self.user, self.content.content_type)
   end

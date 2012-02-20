@@ -105,9 +105,9 @@ Razón unban:<br />
 
 <div class="grid-5 glast">
 	<%mftext('Historial', :has_submodules => true) do %>
-	<%mftext('Otros bans globales') do 
-brs = BanRequest.find(:all, :conditions => ['id <> ? AND banned_user_id = ?', @br.id, @br.banned_user_id], :order => 'created_on DESC') 
-if brs.size == 0 then %> 
+	<%mftext('Otros bans globales') do
+brs = BanRequest.find(:all, :conditions => ['id <> ? AND banned_user_id = ?', @br.id, @br.banned_user_id], :order => 'created_on DESC')
+if brs.size == 0 then %>
 <div class="infoinline centered">No tiene otros bans globales.</div>
 <% else %>
 	<table>
@@ -127,7 +127,7 @@ if brs.size == 0 then %>
 	<% end -%>
 <% end %><%# if -%>
 	
-	<%mftext('Bans de facción') do 
+	<%mftext('Bans de facción') do
 		fbus = FactionsBannedUser.find(:all, :conditions => ['user_id = ?', @br.banned_user_id], :order => 'created_on DESC')
 if fbus.size == 0 then %>
 <div class="centered infoinline">No tiene bans de facción.</div>

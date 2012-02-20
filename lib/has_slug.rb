@@ -2,17 +2,17 @@ module HasSlug
   def self.included(base)
     base.extend AddHasMethod
   end
-  
+
   module AddHasMethod
     def has_slug(slug_attr=nil)
       before_save "check_slug('#{slug_attr}')"
-      
+
       class_eval <<-END
         include HasSlug::InstanceMethods
       END
     end
   end
-  
+
   module InstanceMethods
     def check_slug(mattr)
       if self.slug.to_s.strip == '' then
@@ -40,4 +40,4 @@ module HasSlug
   end
 end
 
-ActiveRecord::Base.send :include, HasSlug 
+ActiveRecord::Base.send :include, HasSlug

@@ -108,6 +108,8 @@ class Cuenta::CuentaController < ApplicationController
 
   protected
   def account_creation_silent_checks
+    return "/" if params[:user].nil?
+
     if cookies[:adn3]
       Rails.logger.warn(
           "Someone with an adn3 cookie and desired login" +

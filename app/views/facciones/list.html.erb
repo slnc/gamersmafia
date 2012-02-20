@@ -10,7 +10,7 @@
     <% end -%>
 <% end %><%# cache -%>
   </table>
-  
+
 <% end %><%# mftext -%>
 
 
@@ -52,7 +52,7 @@
   </table>
   <% end -%>
   <% end -%>
-  
+
 <% mftext('Top conectadas') do%>
   <table>
 <% cache("/common/facciones/index/top_cohesion_#{Time.now.strftime('%Y%m%d')}") do %>
@@ -94,7 +94,7 @@
     <th>PIB</th>
     <th>Cohesión</th>
   </tr>
-  
+
 <% for faction in Faction.find(:all, :conditions => 'is_platform = \'f\'', :order => 'lower(name) asc') %>
   <tr class="<%=oddclass%>">
     <td><%=faction_favicon(faction)%> <%=link_to faction.name, gmurl(faction) %></td>
@@ -118,7 +118,7 @@
     <th>PIB</th>
     <th>Amistad</th>
   </tr>
-  
+
 <% for faction in Faction.find(:all, :conditions => 'is_platform = \'t\'', :order => 'lower(name) asc') %>
   <tr class="<%=oddclass%>">
     <td><%=faction_favicon(faction)%> <%=link_to faction.name, gmurl(faction) %></td>

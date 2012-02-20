@@ -1,7 +1,7 @@
 <% groups = competition.tourney_classifier_groups %>
 <% generic_support do %>
   <% for group in groups %>
-  
+
   <table style="margin-bottom: 20px;">
     <tr>
       <th style="text-align: center;" colspan="4">Grupo <%=group%></th>
@@ -23,10 +23,10 @@
 <% for group in groups %>
 <div class="subheader"><div>Partidas grupo <%=group%></div></div>
 <table>
-  <% 
+  <%
   prev_stage = 0
-  for match in group.matches 
-    if match.stage > prev_stage then 
+  for match in group.matches
+    if match.stage > prev_stage then
       prev_stage = match.stage
     %>
     <tr>

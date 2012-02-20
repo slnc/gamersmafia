@@ -3,7 +3,7 @@ require 'test_helper'
 class BlogentryTest < ActiveSupport::TestCase
   # TODO model checks
   def setup
-    
+
   end
 
   test "url_should_be_reset_when_user_changes_login" do

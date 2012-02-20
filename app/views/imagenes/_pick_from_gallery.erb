@@ -6,7 +6,7 @@ if @daily_img then
         <%=render :partial => '/imagenes/image_thumbnail', :locals => {:image => @daily_img, :size => Cms::IMG_SIZE_GRID3, :mode => 'i'}%>
 		
 <% end %><%# if %>
- 
+
 <% twodaysago = Potd.current_category(term_id, 2.days.ago.to_date)
 if twodaysago
 twodaysago = twodaysago.image if twodaysago %>

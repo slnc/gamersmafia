@@ -91,7 +91,7 @@ class NoticiasControllerTest < ActionController::TestCase
     get :index
 
     @controller.instance_variable_set(:@_response_body, nil)
-    @controller.send(:rescue_action_in_public, ContentLocked.new)
+    @controller.send(:render_error, ContentLocked.new)
     assert_response 403
     # assert_template 'application/content_locked' doesn't seem to works (rails 2.3.5)
     assert @response.body.include?('El contenido especificado est')

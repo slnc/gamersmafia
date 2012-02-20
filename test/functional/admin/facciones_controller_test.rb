@@ -6,13 +6,13 @@ class Admin::FaccionesControllerTest < ActionController::TestCase
     get :index
     assert_response :success
   end
-  
+
   test "edit_should_work" do
     sym_login 1
     get :edit, { :id => 1}
     assert_response :success
   end
-  
+
   test "update_works" do
     sym_login 1
     f = Faction.find(:first)
@@ -23,7 +23,7 @@ class Admin::FaccionesControllerTest < ActionController::TestCase
     f.reload
     assert_equal "#{n} a", f.name
   end
-  
+
   test "delete_works" do
     sym_login 1
     g = Game.new(:name => 'faccionita', :code => 'code')

@@ -12,7 +12,7 @@ class ClansSponsor < ActiveRecord::Base
   def log_it(what)
     case what
     when :creation
-      # Nota: lo hacemos así para evitar cargar clan y para poder testear. 
+      # Nota: lo hacemos así para evitar cargar clan y para poder testear.
       # Si lo hacemos así:
       #   self.clan.log("Añadido #{self.name} a la lista de sponsors")
       #

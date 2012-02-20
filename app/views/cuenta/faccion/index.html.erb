@@ -60,28 +60,28 @@ envíaselo a <a href="/site/staff">algún capo</a> para activarlo.</div>
 	<% 	
 	ddata = User.db_query("select avg(karma) as karma, (extract('epoch' from created_on) / 259200)::int as epoch from stats.portals where portal_id = (select id from portals where code = '#{@user.faction.code}') group by (extract('epoch' from created_on) / 259200)::int order by (extract('epoch' from created_on) / 259200)::int desc limit 30")
 	ddata.reverse!
-	data = ddata.collect { |dbr| dbr['karma'].to_i } 
+	data = ddata.collect { |dbr| dbr['karma'].to_i }
 	data_ready = data.collect { |da| "[#{da}]" }
 	i = 0
 	axis = ddata.collect { |da|
 	i += 1
-		if i % 4 == 0 then  
+		if i % 4 == 0 then
 		Time.at(da['epoch'].to_i*86440*3).strftime("'%d %b'")
 		else
 		"' '"
-		end 
+		end
 	}
 	%>
-var api = new jGCharts.Api(); 
-jQuery('<img>') 
-.attr('src', api.make({ 
+var api = new jGCharts.Api();
+jQuery('<img>')
+.attr('src', api.make({
 data: [<%=data.join(',')%>],
 axis_labels: [<%=axis.join(',')%>],
 fillarea: true,
 fillbottom: true,
 size: '500x150',
-title: 'Karma en los últimos 3 meses', 
-type: 'lc'})) 
+title: 'Karma en los últimos 3 meses',
+type: 'lc'}))
 .appendTo("#line1");
 </script>
 <% end %><%# cache -%>

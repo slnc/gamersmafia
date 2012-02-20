@@ -10,7 +10,7 @@
 <% @blogentries = Blogentry.paginate(:page => params[:page], :per_page => 20, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC') %>
 <%= render :partial => 'shared/pager2', :locals => {:collection => @blogentries, :pos => 'top'} %>
 
-<% for blogentry in @blogentries 
+<% for blogentry in @blogentries
 u = blogentry.user
 %>
 <div style="height: 60px; clear: left; margin-bottom: 10px; padding: 2px;" class="<%=oddclass%>">

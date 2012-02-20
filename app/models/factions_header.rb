@@ -22,7 +22,7 @@ class FactionsHeader < ActiveRecord::Base
           File.unlink(thumb_path)
         end
 
-        File.open(fullpath, "wb+") do |f| 
+        File.open(fullpath, "wb+") do |f|
           f.write(@temp_file.read)
         end
         @temp_file = nil

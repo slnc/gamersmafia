@@ -4,21 +4,21 @@ class Admin::EntradasfaqController < ApplicationController
   def submenu
     'faq'
   end
-  
+
   def submenu_items
     [['Entradas', '/admin/entradasfaq'],
     ['Categorías', '/admin/categoriasfaq']]
   end
-  
+
   def index
-    @faq_entries = FaqEntry.paginate(:page => params[:page], :per_page => 50, 
+    @faq_entries = FaqEntry.paginate(:page => params[:page], :per_page => 50,
                                      :order => '(select position from faq_categories where id = faq_category_id), position')
   end
-  
+
   def new
     @faq_entry = FaqEntry.new
   end
-  
+
   def create
     @faq_entry = FaqEntry.new(params[:faq_entry])
     if @faq_entry.save
@@ -28,12 +28,12 @@ class Admin::EntradasfaqController < ApplicationController
       render :action => 'new'
     end
   end
-  
+
   def edit
     @faq_entry = FaqEntry.find(params[:id])
     @title = "Editar entrada de FAQ: #{@faq_entry.question}"
   end
-  
+
   def update
     @faq_entry = FaqEntry.find(params[:id])
     if @faq_entry.update_attributes(params[:faq_entry])
@@ -43,7 +43,7 @@ class Admin::EntradasfaqController < ApplicationController
       render :action => 'edit'
     end
   end
-  
+
   def destroy
     if FaqEntry.find(params[:id]).destroy
       flash[:notice] = "Entrada de FAQ eliminada correctamente."
@@ -52,7 +52,7 @@ class Admin::EntradasfaqController < ApplicationController
     end
     redirect_to :action => 'index'
   end
-  
+
   def moveup
     @faq_entry = FaqEntry.find(params[:id])
     @prev = @faq_entry.faq_category.faq_entries.find(:first, :conditions => ['position < ?', @faq_entry.position], :order => 'position DESC', :limit => 1)
@@ -68,7 +68,7 @@ class Admin::EntradasfaqController < ApplicationController
     end
     redirect_to :action => 'index'
   end
-  
+
   def movedown
     @faq_entry = FaqEntry.find(params[:id])
     @prev = @faq_entry.faq_category.faq_entries.find(:first, :conditions => ['position > ?', @faq_entry.position], :order => 'position ASC', :limit => 1)

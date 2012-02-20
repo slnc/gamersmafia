@@ -2,7 +2,7 @@
 	<% if !@funthing.is_public? then %>
 		<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @funthing } %>
 	<% else %>
-		<%=mfcontents_basic("Últimas curiosidades", 
+		<%=mfcontents_basic("Últimas curiosidades",
 							 Funthing, [:published, {:order => 'created_on desc', :limit => 10}],
 							:cache => "/common/curiosidades/show/_latest",
 							:faction_favicon => true)%>
@@ -11,35 +11,35 @@
 	<% end -%>
 <% end -%>
 
-<% content_main do %> 
+<% content_main do %>
   <%mfcontent(@funthing) do %>
 <div style="margin: 10px; text-align: center;">
 <script type="text/javascript">
-        
+
         function maximize_image(a_im) {
                 $j('#cleft').addClass('hidden');
                 $j('#csupport').addClass('hidden');
                 $j('#ccontent').addClass('maximized');
                 $j('#cmain').addClass('maximized');
-                
+
                 a_im.title = 'Haz click para ver la imagen más pequeña'
-                
+
                 document.location = '#ccontent';
                 a_im.onclick = function() {
                         return minimize_image(a_im);
                 }
-                
+
                 return false;
         }
-        
-        function minimize_image(a_im) { 
+
+        function minimize_image(a_im) {
                 a_im.title = 'Haz click para ver la imagen más grande'
-                
+
                 $j('#ccontent').removeClass('maximized');
                 $j('#cmain').removeClass('maximized');
                 $j('#cleft').removeClass('hidden');
                 $j('#csupport').removeClass('hidden');
-                
+
                 document.location = '#ccontent';
                 a_im.onclick = function(){
                         return maximize_image(a_im);

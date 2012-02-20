@@ -140,7 +140,7 @@ function do_send()
   <% @i.times do |i| %>
     var btn = valButton(document.forms['myfff'].<%=@options[i+1]%>);
   if (go) {
-    if (btn == null) 
+    if (btn == null)
     {
       go = false;
       alert('La pregunta <%=i+1%> no tiene respuesta.');

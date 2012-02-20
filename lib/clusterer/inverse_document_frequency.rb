@@ -28,7 +28,7 @@ module Clusterer
   #this class is provided.
   class DocumentsCount
     attr_reader :value
-    def initialize 
+    def initialize
       @value = 0
     end
 
@@ -47,7 +47,7 @@ module Clusterer
       self[term] = (self[term] || 0) + 1
     end
   end
-  
+
   #InverseDocumentFrequency maintains a count of the total number of documents
   #and the number of documents where a term has been seen with the help of helper
   #classes. It also calculates the normalizing factor, the formula for whichis
@@ -60,7 +60,7 @@ module Clusterer
     def clean_cached_normalizing_factor
       @nf.clear
     end
-    
+
     def initialize (options = { })
       @terms_count = options[:terms_count] || TermsCount.new
       @nf = Hash.new
@@ -70,7 +70,7 @@ module Clusterer
     def increment_documents_count
       @documents_count.increment
     end
-    
+
     def << (term)
       @terms_count.increment_count(term) unless term.nil? || term.empty?
     end

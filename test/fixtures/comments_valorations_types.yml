@@ -2,7 +2,7 @@ normal:
   id: 1
   name: Normal
   direction: 0
-  
+
 divertido:
   id: 2
   name: Divertido
@@ -12,34 +12,33 @@ informativo:
   id: 3
   name: Informativo
   direction: 1
-  
+
 profundo:
   id: 4
   name: Profundo
   direction: 1
-  
+
 flame:
   id: 5
   name: Flame
   direction: -1
-  
+
 redundante:
   id: 6
   name: Redundante
   direction: -1
-  
+
 irrelevante:
   id: 7
   name: Irrelevante
   direction: -1
-  
+
 interesante:
   id: 8
   name: Interesante
   direction: 1
-  
+
 spammer:
   id: 9
   name: Spam
   direction: -1
-  

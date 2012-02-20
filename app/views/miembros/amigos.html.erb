@@ -1,9 +1,9 @@
 <% generic_support do %>
-  
+
 <% end -%>
 
 <% content_main do %>
-  <% mftext("Amigos de #{@curuser.login}") do %> 
+  <% mftext("Amigos de #{@curuser.login}") do %>
   <table>
   <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/friends_#{Time.now.to_i/(86400*30)}") do %>
   <% friends = @curuser.friends
@@ -12,7 +12,7 @@ f_count = friends.size
     <%friends.each do |friend| %>
     <tr class="<%=oddclass%>"><td><a style="display: block; float: left;" href="<%=gmurl(friend)%>"><img style="width: 32px; height: 32px;" src="/cache/thumbnails/i/32x32<%=friend.show_photo%>" /></a> <a href="<%=gmurl(friend)%>"><%=friend.login%></a></td></tr>
     <% end -%>
-    <% else 
+    <% else
     parts = f_count / 3
     part1 = ''
     part2 = ''

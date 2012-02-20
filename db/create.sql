@@ -962,7 +962,8 @@ CREATE TABLE delayed_jobs (
     failed_at timestamp without time zone,
     locked_by character varying(255),
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    queue character varying
 );
 CREATE SEQUENCE delayed_jobs_id_seq
     START WITH 1
@@ -1452,7 +1453,7 @@ CREATE TABLE gamersmafiageist_codes (
     user_id integer NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     code character varying,
-    survey_edition_date character varying NOT NULL
+    survey_edition_date date NOT NULL
 );
 CREATE SEQUENCE gamersmafiageist_codes_id_seq
     START WITH 1
@@ -3294,8 +3295,6 @@ ALTER TABLE ONLY coverages
     ADD CONSTRAINT events_news_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY events_users
-    ADD CONSTRAINT events_users_pkey PRIMARY KEY (event_id, user_id);
 ALTER TABLE ONLY factions_banned_users
     ADD CONSTRAINT factions_banned_users_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY factions
@@ -3641,7 +3640,6 @@ CREATE INDEX friends_recommendations_user_id_undecided ON friends_recommendation
 CREATE UNIQUE INDEX friends_users_uniq ON friendships USING btree (sender_user_id, receiver_user_id);
 CREATE INDEX funthings_state ON funthings USING btree (state);
 CREATE UNIQUE INDEX funthings_title_uniq ON funthings USING btree (title);
-CREATE INDEX gamersmafiageist_codes_user_edition ON gamersmafiageist_codes USING btree (user_id, survey_edition_date);
 CREATE UNIQUE INDEX games_maps_name_game_id ON games_maps USING btree (name, game_id);
 CREATE UNIQUE INDEX games_modes_uniq ON games_modes USING btree (name, game_id);
 CREATE INDEX games_users_game_id ON games_users USING btree (game_id);

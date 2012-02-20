@@ -1,6 +1,6 @@
 <%# TODO cache this
 %>
-<% Dir.entries("#{Rails.root}/public/images/smileys").sort.each do |smiley| 
+<% Dir.entries("#{Rails.root}/public/images/smileys").sort.each do |smiley|
 	next unless (/\.gif$/ =~ smiley and not /^zz\./ =~ smiley and not /^rolf\./ =~ smiley ) %>
 	<span style="margin: 2px;" class="<%=oddclass%>">
 		<img class="smiley" style="cursor: pointer;" title="Insertar smiley" onclick="$j('#<%=params[:dom_id]%>').insertAtCaret(' :<%=smiley.gsub('.gif', '')%>: ').focus();" src="/images/smileys/<%=smiley%>" />

@@ -7,5 +7,5 @@ first_message:
   created_on: 2006-01-01 00:00:00
   is_read: false
   sender_deleted: false
-  receiver_deleted: false 
+  receiver_deleted: false
   thread_id: 1

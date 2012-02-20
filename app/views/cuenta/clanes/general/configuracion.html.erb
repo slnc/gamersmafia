@@ -10,13 +10,13 @@
 
   <p><label for="clan_logo">Logo del clan .JPG</label><br/>
   <% if @clan.logo then %>
-  <%=fc_thumbnail(@clan.logo, 'k', '153x115')%> 
+  <%=fc_thumbnail(@clan.logo, 'k', '153x115')%>
   <% end -%>
   <%= file_field 'clan', 'logo' %></p>
 
   <p><label for="clan_logo">Logo para competiciones</label><br/>
   <% if @clan.competition_roster then %>
-  <%=fc_thumbnail(@clan.competition_roster, 'f', '50x50')%> 
+  <%=fc_thumbnail(@clan.competition_roster, 'f', '50x50')%>
   <% end -%>
   <%= file_field 'clan', 'competition_roster' %> <span class="infoinline">Se verá a 50x50</span></p>
 
@@ -34,7 +34,7 @@
 
   <%mftext('Juegos a los que juega tu clan') do %>
   <%=games_selector 'clan[game_ids]', @clan.game_ids%>
-  
+
   <input type="submit" class="button" value="Guardar" />
 
   </form>

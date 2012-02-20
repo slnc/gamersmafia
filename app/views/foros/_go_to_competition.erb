@@ -1,5 +1,5 @@
-<% cache("/common/foros/_go_to_competition/#{@object.id}") do 
-if @object.respond_to?(:competition) && @object.competition then 
+<% cache("/common/foros/_go_to_competition/#{@object.id}") do
+if @object.respond_to?(:competition) && @object.competition then
   c = @object.competition
 %>
 <%mftext('Competición relacionada') do %>

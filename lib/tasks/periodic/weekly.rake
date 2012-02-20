@@ -68,7 +68,8 @@ having portal_id in (select id
         organization = Faction.find_by_code(t.game_id ? t.game.code : t.platform.code)
       end
       if organization.nil?
-        puts "ERROR: cannot find associated organization for portal_code #{dbr['code']}"
+        Rails.logger.error(
+          "Cannot find associated organization for portal_code #{dbr['code']}")
         next
       end
 
@@ -119,7 +120,7 @@ having portal_id in (select id
         begin
           content.clear_rating_cache
         rescue Exception => e
-          puts "Error with #{content.id}(#{ctype}): #{e}"
+          Rails.logger.error("Error with #{content.id}(#{ctype}): #{e}")
         end
         nil
       end

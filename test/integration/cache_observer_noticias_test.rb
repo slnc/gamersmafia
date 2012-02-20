@@ -94,9 +94,9 @@ class CacheObserverNoticiasTest < ActionController::IntegrationTest
 
   def atest_should_clear_cache_on_clans_portal_after_updating_news
     setup_clan_skin
-    #puts ClansPortal.find_by_code('mapaches').skin_id
+    # puts ClansPortal.find_by_code('mapaches').skin_id
     faction_host ClansPortal.find_by_code('mapaches')
-    #puts ClansPortal.find_by_code('mapaches').skin_id
+    # puts ClansPortal.find_by_code('mapaches').skin_id
     test_should_clear_cache_on_main_after_updating_news
   end
 

@@ -1,6 +1,6 @@
 <%mftext('¿Publicamos?') do %>
 <table>
-  <% object.unique_content.publishing_decisions.find(:all, :order => 'updated_on DESC', :include => 'user').each do |pd| 
+  <% object.unique_content.publishing_decisions.find(:all, :order => 'updated_on DESC', :include => 'user').each do |pd|
     odd = oddclass
   %>
   <tr class="<%=odd%>">
@@ -9,11 +9,11 @@
     <td class="w50" class="<%=pd.publish? ? 'publishbar' : 'denybar'%>"><%=draw_pcent_bar(pd.user_weight)%></td>
     <% if Cms::user_can_edit_content?(@user, object) and ! pd.publish? then %><td class="w25"><a title="Cambiar a publicar ya que el contenido se ha modificado" onclick="return confirm('¿Estás seguro?');" href="/admin/contenidos/switch_decision/<%=pd.id%>"><img class="change-publishing-state" src="/images/blank.gif" /></a></td><% end -%>
   </tr>
-  
+
   <tr class="<%=odd%>">
-    
+
   </tr>
-  
+
 <% end %>
 </table>
 <% end -%>

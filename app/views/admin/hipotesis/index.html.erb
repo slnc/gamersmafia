@@ -9,7 +9,7 @@
   <tr>
     <th>Nombre</th>
   </tr>
-  
+
 <% for ab_test in AbTest.find(:all, :order => 'completed_on is null, LOWER(name)') %>
   <tr class="<%=oddclass%>">
     <td><a href="/admin/hipotesis/editar/<%=ab_test.id%>"><%=ab_test.name%></a></td>

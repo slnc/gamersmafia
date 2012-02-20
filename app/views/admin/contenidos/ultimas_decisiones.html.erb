@@ -14,7 +14,7 @@ else %>
 	g = g.collect { |x| x.id } if g.size > 0
 	if g.size > 0
     	cond<< " AND game_id IN (#{g.join(',')})"
-	else %><%# si no tiene games tiene platforms%><% 
+	else %><%# si no tiene games tiene platforms%><%
 		plat_codes = controller.portal.factions.find(:all, :conditions => 'is_platform = \'t\'').collect { |x| "'#{x.code}'" }
 		plats_ids = Platform.find(:all, :conditions => "code IN (#{plat_codes.join(',')})").collect { |x| x.id }
 		cond<< " AND platform_id IN (#{plats_ids.join(',')})" if plats_ids.size > 0
@@ -35,7 +35,7 @@ end
     <th>Publicado hace</th>
     <th>Autor</th>
   </tr>
-<% 
+<%
 cache_category_paths = {}
 @contents.each do |uniq|
   content = uniq.real_content
@@ -45,7 +45,7 @@ cache_category_paths = {}
 %>
   <tr class="content<%=uniq.id%> <%=oddclass%>">
   <td class="infoinline" style="font-weight: bold;"><%=Cms::translate_content_name(@item.class.name)[0..2].upcase%></td>
-    <% 
+    <%
         if @item.class.name == 'Image' then %>
         <%
             if cache_category_paths.keys.include?(@item.main_category.id)

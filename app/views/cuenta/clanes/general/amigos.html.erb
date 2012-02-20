@@ -1,5 +1,5 @@
 <%
-clans_i_consider_my_friends = @clan.friends 
+clans_i_consider_my_friends = @clan.friends
 clans_that_consider_my_their_friend = @clan.consider_us_friends
 h_clans_i_consider_my_friends = []
 h_clans_that_consider_my_their_friend = []
@@ -8,7 +8,7 @@ for u in clans_i_consider_my_friends
   h_clans_i_consider_my_friends.insert(-1, u.id)
 end
 
-for u in clans_that_consider_my_their_friend 
+for u in clans_that_consider_my_their_friend
   h_clans_that_consider_my_their_friend.insert(-1, u.id)
 end
 
@@ -28,7 +28,7 @@ end
 <% mftext('Clanes amigos') do %>
 <%=xdelitems(@clan.friends, '/cuenta/clanes/general/del_friends', 'clans',
 			 {'Clan' => :name,
-		      '¿Es recíproco?' => Proc.new { |c| 
+		      '¿Es recíproco?' => Proc.new { |c|
 				if not h_clans_that_consider_my_their_friend.include?(c.id) then
 					'No te quiere como amigo'
 				else

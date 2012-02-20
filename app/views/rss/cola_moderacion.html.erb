@@ -1,44 +1,44 @@
 <% if @user then %>
 <rss version="2.0">
   <channel>
-  <title>GM Cola de moderación para <%=@user.login%></title> 
-    <link>http://gamersmafia.com/</link> 
-    <description>Solo gamers.</description> 
-    <language>es</language> 
-    <copyright>Copyright 2005, Gamersmafia</copyright> 
-    <managingEditor>webmaster@gamersmafia.com</managingEditor> 
-    <webMaster>webmaster@gamersmafia.com</webMaster> 
-    <lastBuildDate><%=Time.now.strftime("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></lastBuildDate> 
-    <category>Videojuegos</category> 
-    <docs>http://blogs.law.harvard.edu/tech/rss</docs> 
-    <ttl>10</ttl> 
-<% for name, collection, controller in [['Columnas', @columns, 'columnas'], 
-                                        ['Tutoriales', @tutorials, 'tutoriales'], 
-                                        ['Entrevistas', @interviews, 'entrevistas'], 
-                                        ['Reviews', @reviews, 'reviews'], 
-                                        ['Funthings', @funthings, 'funthings'], 
-                                        ['Demos', @demos, 'demos'], 
-                                        ['Descargas', @downloads, 'descargas'], 
-                                        ['Encuestas', @polls, 'encuestas'], 
+  <title>GM Cola de moderación para <%=@user.login%></title>
+    <link>http://gamersmafia.com/</link>
+    <description>Solo gamers.</description>
+    <language>es</language>
+    <copyright>Copyright 2005, Gamersmafia</copyright>
+    <managingEditor>webmaster@gamersmafia.com</managingEditor>
+    <webMaster>webmaster@gamersmafia.com</webMaster>
+    <lastBuildDate><%=Time.now.strftime("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></lastBuildDate>
+    <category>Videojuegos</category>
+    <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+    <ttl>10</ttl>
+<% for name, collection, controller in [['Columnas', @columns, 'columnas'],
+                                        ['Tutoriales', @tutorials, 'tutoriales'],
+                                        ['Entrevistas', @interviews, 'entrevistas'],
+                                        ['Reviews', @reviews, 'reviews'],
+                                        ['Funthings', @funthings, 'funthings'],
+                                        ['Demos', @demos, 'demos'],
+                                        ['Descargas', @downloads, 'descargas'],
+                                        ['Encuestas', @polls, 'encuestas'],
                                         ['Eventos', @events, 'eventos'],
                                         ['Imágenes', @images, 'imagenes'],
                                         ['Noticias', @news, 'noticias'],
-                                        ] 
+                                        ]
     if collection.size == 0 then
       next
     end
 %>
-<% 
-for @item in collection: 
+<%
+for @item in collection:
   next unless Cms::user_can_edit_content?(@user, @item)
   next if Cms::CONTENTS_WITH_CATEGORIES.include?(@item.class.name) && @item.main_category.nil?
 %>
   <item>
-    <title><%= Cms::CONTENTS_WITH_CATEGORIES.include?(@item.class.name) ? @item.main_category.code.to_s.gsub(/&/, '&amp;') : ''%> | <%=@item.class.name%> | <%=@item.resolve_hid.to_s.gsub(/&/, '&amp;')%></title> 
-    <link>http://gamersmafia.com/<%=controller%>/edit/<%=@item.id%></link> 
-    <description><%=@item.class.name%> | <%=Cms::CONTENTS_WITH_CATEGORIES.include?(@item.class.name) ? @item.main_category.code.to_s.gsub(/&/, '&amp;') : ''%> | autor: <%=@item.user.login%></description> 
-    <category><%=Cms::CONTENTS_WITH_CATEGORIES.include?(@item.class.name) ? @item.main_category.code.to_s.gsub(/&/, '&amp;') : ''%></category> 
-    <pubDate><%=@item.created_on.strftime("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></pubDate> 
+    <title><%= Cms::CONTENTS_WITH_CATEGORIES.include?(@item.class.name) ? @item.main_category.code.to_s.gsub(/&/, '&amp;') : ''%> | <%=@item.class.name%> | <%=@item.resolve_hid.to_s.gsub(/&/, '&amp;')%></title>
+    <link>http://gamersmafia.com/<%=controller%>/edit/<%=@item.id%></link>
+    <description><%=@item.class.name%> | <%=Cms::CONTENTS_WITH_CATEGORIES.include?(@item.class.name) ? @item.main_category.code.to_s.gsub(/&/, '&amp;') : ''%> | autor: <%=@item.user.login%></description>
+    <category><%=Cms::CONTENTS_WITH_CATEGORIES.include?(@item.class.name) ? @item.main_category.code.to_s.gsub(/&/, '&amp;') : ''%></category>
+    <pubDate><%=@item.created_on.strftime("%a, %d %b %Y %H:%M:%S #{TIMEZONE}")%></pubDate>
   </item>
     <% end -%>
 <% end -%>

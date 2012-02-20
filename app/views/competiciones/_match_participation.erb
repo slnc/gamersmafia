@@ -1,5 +1,5 @@
 <div class="centered"><br />
-  Han jugado: 
+  Han jugado:
   <select name="participation">
     <option value="both" <%='selected="selected"' if (!match.forfeit_participant1 && !match.forfeit_participant2)%>>Ambos</option>
     <option value="p1" <%='selected="selected"' if (!match.forfeit_participant1 && match.forfeit_participant2)%>><%=notags(match.participant1.name)%></option>

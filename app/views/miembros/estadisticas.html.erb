@@ -53,7 +53,7 @@
     <table>
       <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/contents_stats") do %>
       <%
-	  stats = @curuser.contents_stats 
+	  stats = @curuser.contents_stats
 for key in (stats.keys.sort - ['Comentarios']) %>
         <tr class="<%=oddclass%>">
             <td class="w150"><%=key%></td>

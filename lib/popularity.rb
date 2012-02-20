@@ -3,24 +3,24 @@ module Popularity
     update_ranking_users
     update_ranking_clans
   end
-  
+
   def self.update_ranking_users
-    lista = {} 
+    lista = {}
     #User.db_query("CREATE TEMP table tmp_users_ranking_pos AS SELECT id, cache_popularity, rank() over (order by cache_popularity desc) from users where cache_popularity is not null order by rank() over (order by cache_popularity desc) asc limit 10;
 
 #")
 
-    User.db_query("SELECT id, 
-                          coalesce((select sum(popularity) 
-                                      from stats.users_daily_stats 
-                                     where created_on >= now() - '1 week'::interval 
-                                       AND user_id = users.id), 0) as popularity 
-                     FROM users 
+    User.db_query("SELECT id,
+                          coalesce((select sum(popularity)
+                                      from stats.users_daily_stats
+                                     where created_on >= now() - '1 week'::interval
+                                       AND user_id = users.id), 0) as popularity
+                     FROM users
                     WHERE state IN (#{User::STATES_CAN_LOGIN.join(',')})").each do |dbr|
       lista[dbr['popularity'].to_i] ||= []
       lista[dbr['popularity'].to_i] << dbr['id'].to_i
     end
-    
+
     pos = 1
     real_pos = 1
     lista.keys.sort.reverse.each do |k|
@@ -32,20 +32,20 @@ module Popularity
       pos = real_pos
     end
   end
-  
+
   def self.update_ranking_clans
-    lista = {} 
-    User.db_query("SELECT id, 
-                          coalesce((select sum(popularity) 
-                                      from stats.clans_daily_stats 
-                                     where created_on >= now() - '1 week'::interval 
-                                       AND clan_id = clans.id), 0) as popularity 
+    lista = {}
+    User.db_query("SELECT id,
+                          coalesce((select sum(popularity)
+                                      from stats.clans_daily_stats
+                                     where created_on >= now() - '1 week'::interval
+                                       AND clan_id = clans.id), 0) as popularity
                      FROM clans
                     WHERE deleted='f'").each do |dbr|
       lista[dbr['popularity'].to_i] ||= []
       lista[dbr['popularity'].to_i] << dbr['id'].to_i
     end
-    
+
     pos = 1
     real_pos = 1
     lista.keys.sort.reverse.each do |k|
@@ -57,7 +57,7 @@ module Popularity
       pos = real_pos
     end
   end
-  
+
   def self.user_daily_popularity(u, date_start, date_end)
     res = {}
     User.db_query("SELECT popularity,
@@ -66,12 +66,12 @@ module Popularity
                   WHERE user_id = #{u.id}
                     AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'  AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
                  ORDER BY created_on").each do |dbr|
-      res[dbr['created_on'][0..10]] = dbr['popularity'].to_i            
+      res[dbr['created_on'][0..10]] = dbr['popularity'].to_i
     end
     curdate = date_start
     curstr = curdate.strftime('%Y-%m-%d')
     endd = date_end.strftime('%Y-%m-%d')
-    
+
     while curstr <= endd
       res[curstr] ||= 0
       curdate = curdate.advance(:days => 1)
@@ -79,11 +79,11 @@ module Popularity
     end
     res
   end
-  
+
   def self.ranking_user(u)
     # contamos incluso los que tienen 0
     ucount = User.db_query("SELECT count(*) FROM users WHERE state IN (#{User::STATES_CAN_LOGIN.join(',')})")[0]['count'].to_i
-    pos = u.ranking_popularity_pos ? u.ranking_popularity_pos : ucount 
+    pos = u.ranking_popularity_pos ? u.ranking_popularity_pos : ucount
     {:pos => pos, :total => ucount }
   end
 end

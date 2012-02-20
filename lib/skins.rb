@@ -23,11 +23,11 @@ module Skins
         bp = t.respond_to?(:icon) ? t.icon : "storage/games/#{t.code}.gif"
         im2 = Magick::Image.read("#{Rails.root}/public/#{bp}").first
         if im2.columns != 16 || im2.rows != 16
-          puts "ERROR: #{t.code} is not a 16x16 img"
+          Rails.logger.error("ERROR: #{t.code} is not a 16x16 img")
           next
         end
       rescue
-        puts "cannot read image for #{t.code}"
+        Rails.logger.error("cannot read image for #{t.code}")
       else
         im = im.store_pixels(i*16, 0, 16, 16, im2.get_pixels(0, 0, 16, 16))
       end
@@ -263,7 +263,6 @@ module Skins
         #// r = g = b = 0    // s = 0, v is undefined
         s = 0
         h = -1
-        #puts "rgb_to_hsv A (#{r}, #{g}, #{b}): (#{h}, #{s}, #{v})"
         return [h/360.0, s, v]
       else
         s = delta / v   # s
@@ -280,8 +279,6 @@ module Skins
         if( h < 0 )
           h += 360
         end
-        #puts [h/360.0, s, v]
-        #puts "rgb_to_hsv B (#{r}, #{g}, #{b}): (#{h}, #{s}, #{v})"
         [h/360.0, s, v]
       end
     end
@@ -294,7 +291,6 @@ module Skins
       s = 0.0 #
       v = [r, g, b].max #
       d = v - [r, g, b].min #
-      # puts "d #{d}" #
       d = 1.0 if d == 0
       if v != 0 #
         s = d / v.to_f #
@@ -309,12 +305,10 @@ module Skins
         h = 4.0 + (r-g) / d
       end
 
-      #puts "h 111: #{h}"
       h = h * (60.0/360)
       if h < 0
         h = h + 1.0
       end
-      #puts "rgb_to_hsv(#{r}, #{g}, #{b}): (#{h}, #{s}, #{v})"
       return h, s, v
     end
 
@@ -459,7 +453,6 @@ module Skins
 
         colors_generated = {}
         s.each do |k,v|
-          # puts "#{k} #{v}"
           colors_generated[k] = Skins::ColorGenerators.hsv_to_rgb(*v).collect { |v| sprintf("%02x", (v*255).to_i) }.join
         end
         colors_generated[:good_color] = '90ee7d'
@@ -1067,7 +1060,6 @@ module Skins
 
         colors_generated = {}
         s.each { |k,v|
-          # puts k
           colors_generated[k] = Skins::ColorGenerators.hsv_to_rgb(*v).collect { |v| sprintf("%02x", (v*255).to_i) }.join }
         colors_generated
       end

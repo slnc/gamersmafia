@@ -3,8 +3,8 @@
     <br/>
     <% if ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.respond_to?(:get_stats) %>
     <% stats = ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.get_stats %>
-    Queries: <strong><%= stats[:queries] %></strong> | 
-    Rows: <strong><%= stats[:rows] %></strong> | 
+    Queries: <strong><%= stats[:queries] %></strong> |
+    Rows: <strong><%= stats[:rows] %></strong> |
     Transfer: <strong><%= sprintf("%.1fk", stats[:bytes].to_f / 1024) %></strong>
     <% end %>
 </div>

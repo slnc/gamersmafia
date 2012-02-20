@@ -11,14 +11,14 @@ second_faction:
   code: rj
   cash: 0
   created_on: 2006-01-01 00:00:00
-  
+
 third_faction:
   id: 3
   name: third faction
   code: th
   cash: 0
   created_on: 2006-01-01 00:00:00
-  
+
 platform:
   id: 4
   name: Wii

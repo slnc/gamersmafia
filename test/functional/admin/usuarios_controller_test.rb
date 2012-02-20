@@ -2,14 +2,14 @@ require 'test_helper'
 
 class Admin::UsuariosControllerTest < ActionController::TestCase
   test_min_acl_level :superadmin, [ :index, :destroy, :check_registered_on, :check_karma, :check_faith ]
-  
+
   test "index" do
     sym_login :superadmin
     get :index, {}
     assert_response :success
     assert_template 'index'
   end
-  
+
   test "search" do
     sym_login :superadmin
     get :index, {:s => 'panzer'}
@@ -17,19 +17,19 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_template 'index'
     assert_not_nil @response.body =~ /panzer/
   end
-  
+
   test "check_registered_on" do
     sym_login 1
     post :check_registered_on, { :id => 1}
     assert_response :success
   end
-  
+
   test "check_karma" do
     sym_login 1
     post :check_karma, { :id => 1}
     assert_response :success
   end
-  
+
   test "send_hq_invitation" do
     sym_login 1
     assert_count_increases(Message) do
@@ -37,38 +37,38 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
       assert_response :redirect
     end
   end
-  
+
   test "check_faith" do
     sym_login 1
     post :check_karma, { :id => 1}
     assert_response :success
   end
-  
+
   test "check_gmf" do
     sym_login 1
     post :check_karma, { :id => 1}
     assert_response :success
   end
-  
+
   test "should update banned reason" do
     sym_login 1
     assert_equal 'Desconocida', User.find(51).ban_reason
     post :update_public_ban_reason, { :id => 51, :public_ban_reason => 'feooo' }
     assert_equal 'feooo', User.find(51).ban_reason
   end
-  
+
   test "should_not_destroy_superadmin_user" do
     sym_login :superadmin
     assert_raises(ActiveRecord::RecordNotFound) { post :destroy, :id => 1 }
   end
-  
+
   test "del_comments_should_work" do
     sym_login :superadmin
     post :del_comments, { :comments => ['1']}
     assert Comment.find(1).deleted?
     assert_response :redirect
   end
-  
+
   test "should_destroy_non_superadmin_user" do
     sym_login :superadmin
     assert_not_nil User.find_by_id(3)
@@ -76,14 +76,14 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_redirected_to '/admin/usuarios'
     assert_nil User.find_by_id(3)
   end
-  
+
   test "should_edit_existing_user" do
     sym_login :superadmin
     get :edit, :id => 2
     assert_response :success
     assert_template 'edit'
   end
-  
+
   test "should_update_existing_user" do
     sym_login :superadmin
     panzer = User.find_by_login(:panzer)
@@ -92,7 +92,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     panzer.reload
     assert_equal 'panzerito', panzer.login
   end
-  
+
   test "should_update_existing_user_without_changing_faction_if_nil_faction" do
     sym_login :superadmin
     panzer = User.find_by_login(:panzer)
@@ -104,7 +104,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_equal old_faction_id, panzer.faction_id
     assert_equal old_last_changed_faction, panzer.faction_last_changed_on
   end
-  
+
   test "should_update_existing_user_without_changing_faction_if_not_nil_faction" do
     sym_login :superadmin
     panzer = User.find_by_login(:panzer)
@@ -120,7 +120,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_equal old_faction_id, panzer.faction_id
     assert_equal old_last_changed_faction.to_i, panzer.faction_last_changed_on.to_i
   end
-  
+
   test "should_update_existing_users_new_state_deleted" do
     sym_login :superadmin
     panzer = User.find_by_login(:panzer)
@@ -129,7 +129,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     panzer.reload
     assert panzer.state == User::ST_DISABLED
   end
-  
+
   # TODO faltan tests de check_*
   #
   test "should_fix_gmf_ammount_if_incorrect" do
@@ -140,7 +140,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_response :success
     assert_template 'check_gmf_fixed'
   end
-  
+
   test "should_do_nothing_if_gmf_ammount_is_correct" do
     sym_login :superadmin
     panzer = User.find_by_login(:panzer)
@@ -150,7 +150,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_response :success
     assert_template 'check_gmf_ok'
   end
-  
+
   test "reset_avatar_should_reset_avatar" do
     sym_login :superadmin
     panzer = User.find_by_login(:panzer)
@@ -161,7 +161,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     panzer.reload
     assert_equal nil, panzer.avatar_id
   end
-  
+
   test "ban_should_work" do
     sym_login :superadmin
     u2 = User.find(2)
@@ -170,11 +170,11 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     u2.reload
     assert_equal User::ST_BANNED, u2.state
   end
-  
+
   test "ban_request_shouldnt_work_for_normal_user" do
-    assert_raises(AccessDenied) { get :ban_request }  
+    assert_raises(AccessDenied) { get :ban_request }
   end
-  
+
   test "ban_request_should_work_for_capo" do
     u2 = User.find(2)
     u2.give_admin_permission(:capo)
@@ -183,25 +183,25 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     get :ban_request, :login => @u3.login
     assert_response :success
   end
-  
-  
+
+
   test "confirmar_ban_request_should_work_for_capo" do
     u2 = User.find(2)
     u2.give_admin_permission(:capo)
     sym_login 2
-    get :confirmar_ban_request, :id => 1 
+    get :confirmar_ban_request, :id => 1
     assert_response :success
   end
-  
+
   test "confirmar_ban_request_should_work_for_hq" do
     u2 = User.find(2)
     u2.is_hq = true
     u2.save
     sym_login 2
-    get :confirmar_ban_request, :id => 1 
+    get :confirmar_ban_request, :id => 1
     assert_response :success
   end
-  
+
   test "create_ban_request_should_work_for_capo" do
     u2 = User.find(2)
     u2.give_admin_permission(:capo)
@@ -215,7 +215,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     end
     assert_not_nil @u3.pref_public_ban_reason == "<ul><li>Foo</li><li>Bar</li></ul>"
   end
-  
+
   test "confirm_ban_request_should_work_for_capo" do
     test_create_ban_request_should_work_for_capo
     @u4 = User.find(56)
@@ -227,7 +227,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_equal @u4.id, last.confirming_user_id
     assert_redirected_to "/slog/capo"
   end
-  
+
   test "create_unban_request_should_work_for_capo" do
     test_confirm_ban_request_should_work_for_capo
     sym_login 2
@@ -235,7 +235,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     @br = BanRequest.find_by_banned_user_id(@u3.id)
     assert_equal 2, @br.unban_user_id
   end
-  
+
   test "confirm_unban_request_should_work_for_capo" do
     test_create_unban_request_should_work_for_capo
     sym_login @u4.id
@@ -245,14 +245,14 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     @u3.reload
     assert_not_equal User::ST_BANNED, @u3.state
   end
-  
+
   test "cancel_ban_request_should_work_for_owner" do
     test_create_ban_request_should_work_for_capo
     last = BanRequest.find(:first, :order => 'id desc')
     assert_count_decreases(BanRequest) { post :cancel_ban_request, {:id => last.id } }
     assert_redirected_to "/site/slog"
   end
-  
+
   test "should_set_antiflood_level_if_capo" do
     @u4 = User.find(56)
     @u4.give_admin_permission(:capo)
@@ -264,7 +264,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     u2.reload
     assert_equal 5, u2.antiflood_level
   end
-  
+
   test "should_set_antiflood_max_if_hq" do
     @u4 = User.find(56)
     @u4.is_superadmin = false
@@ -274,8 +274,8 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     @u4.reload
     @u4.is_hq = true
     assert @u4.save
-    
-    
+
+
     sym_login @u4
     u2 = User.find(2)
     assert_equal -1, u2.antiflood_level
@@ -286,7 +286,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     u2.reload
     assert_equal 5, u2.antiflood_level
   end
-  
+
   test "clear_description" do
     @u4 = User.find(56)
     @u4.give_admin_permission(:capo)
@@ -300,7 +300,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     @u2.reload
     assert_nil @u2.description
   end
-  
+
   test "clear_photo" do
     @u4 = User.find(56)
     @u4.give_admin_permission(:capo)
@@ -313,7 +313,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     @u2.reload
     assert_nil @u2.photo
   end
-  
+
   test "report" do
     @u4 = User.find(56)
     @u4.is_hq = true
@@ -324,24 +324,24 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     end
     assert_response :success
   end
-  
-  test "capos should be able to delete underboss roles" do 
+
+  test "capos should be able to delete underboss roles" do
     u2 = User.find(2)
     u3 = User.find(3)
     u2.give_admin_permission(:capo)
     u2.reload
     assert u2.has_admin_permission?(:capo)
-    
+
     f1 = Faction.find(1)
     f1.update_underboss(u3)
-    
+
     last_id = UsersRole.last.id
     post :users_role_destroy, :id => last_id
     assert_response :success
     assert_nil UsersRole.find_by_id(last_id)
   end
-  
-  test "capos should be able to update users data" do 
+
+  test "capos should be able to update users data" do
     u2 = User.find(2)
     u3 = User.find(3)
     u2.give_admin_permission(:capo)

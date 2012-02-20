@@ -2,7 +2,7 @@
 
 <p><label for="image_file">Archivo <span class="infoinline">(Formatos válidos: <strong>JPG</strong>, <strong>GIF</strong> o <strong>PNG</strong>)</span></label><br/>
 <% if @image.file then %>
-<%=fc_thumbnail(@image.file, 'k', '153x115')%> 
+<%=fc_thumbnail(@image.file, 'k', '153x115')%>
 <% end -%>
 <%= file_field 'image', 'file' %></p>
 

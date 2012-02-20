@@ -9,26 +9,26 @@ class FaccionController < ApplicationController
   def submenu
     'Facción'
   end
-  
+
   def submenu_items
     [['Información', '/faccion'],
     ['Miembros', '/faccion/miembros'],
     ['Clanes', '/faccion/clanes'],
     ['Staff', '/faccion/staff']]
   end
-  
+
   def index
     @active_sawmode = 'facciones'
   end
-  
+
   def miembros
     @active_sawmode = 'facciones'
   end
-  
+
   def clanes
     @active_sawmode = 'facciones'
   end
-  
+
   def staff
     @active_sawmode = 'facciones'
   end

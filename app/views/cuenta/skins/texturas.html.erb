@@ -7,9 +7,9 @@ Elemento: <%=thing%>
 <tr class="<%=oddclass%>">
 	<td><a href="/cuenta/skins/skin_textura/<%=sk.id%>"><%=sk.texture.screenshot%></a></td>
 	<td><a onclick="return confirm('¿Estás seguro?');" href="/cuenta/skins/borrar_skin_textura/<%=sk.id%>">Borrar</a></td>
-</tr> 
+</tr>
 <% end %>
-</table> 
+</table>
 <% end %>
 <% end %>
 
@@ -36,7 +36,7 @@ function update_available_textures(v) {
 }
 
 function show_new_texture_config_window(v) {
-	$j.get('/cuenta/skins/config_textura/'+v, function(data) { 
+	$j.get('/cuenta/skins/config_textura/'+v, function(data) {
 		$j('configgg').html(data);
 		$j('#new-texture-skin-id').val(<%=params[:id]%>);
 	});

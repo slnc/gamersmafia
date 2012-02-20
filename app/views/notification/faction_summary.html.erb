@@ -101,7 +101,7 @@ sum = User.db_query("select count(*) from stats.pageviews where portal_id = #{fp
 %>
 <table style="width: 100%;">
 <%
-root_term = Term.single_toplevel(faction.referenced_thing_field => faction.referenced_thing.id) 
+root_term = Term.single_toplevel(faction.referenced_thing_field => faction.referenced_thing.id)
   	Cms::CONTENTS_WITH_CATEGORIES.each do |cls_name|
     last = root_term.last_published_content(cls_name)
     max_t = Time.now.to_i - (Time.now.to_i - 86400 * 14)

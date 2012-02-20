@@ -7,7 +7,7 @@
   <% if can_modify_participance then %>
   <%mftext('Inscríbete en esta competición') do %>
   <% if user_is_authed then %>
-    <% if competition.competitions_participants_type_id == 1 then %><%# TODO horrible hack, kill me %> 
+    <% if competition.competitions_participants_type_id == 1 then %><%# TODO horrible hack, kill me %>
       <% if (competition.competitions_participants_type_id == 1 && competition.user_is_participant(@user.id)) then %>
       <p>Inscripción en la competición correcta.</p>
       <% if competition.state == 1 then %><div class="centered-link"><form method="post" action="/competiciones/leave/<%=@competition.id%>"><input type="submit" class="button" value="Desinscribirme" onclick="return confirm('¿Estás seguro?');" /></form></div><% end -%>
@@ -29,12 +29,12 @@
       </form>
       <% end -%>
     <% elsif competition.competitions_participants_type_id == 2 %>
-    <% if @user.last_clan_id and Clan.find(@user.last_clan_id).user_is_clanleader(@user.id) then 
+    <% if @user.last_clan_id and Clan.find(@user.last_clan_id).user_is_clanleader(@user.id) then
         last_clan = Clan.find(@user.last_clan_id) # TODO refactor this
 
         if competition.competitions_participants.find_by_participant_id(last_clan.id) then %>
         <p>Inscripción del clan <%=notags(last_clan.tag)%> correcta.</p>
-        <% if competition.state == 1 then %><div class="centered-link"><form method="post" action="/competiciones/leave/<%=@competition.id%>"><input type="submit" class="button" value="Desinscribirme" onclick="return confirm('¿Estás seguro?');" /></form></div><% 
+        <% if competition.state == 1 then %><div class="centered-link"><form method="post" action="/competiciones/leave/<%=@competition.id%>"><input type="submit" class="button" value="Desinscribirme" onclick="return confirm('¿Estás seguro?');" /></form></div><%
            end -%>
       <% else %>
         <form method="post" action="/competiciones/join/<%=competition.id%>">
@@ -86,7 +86,7 @@
   <% if nil then %>
   <%mftext('Calendario') do %>
   <div class="competition-calendar">
-  <%= calendar(:year => Time.now.year, :month => Time.now.month, :day => Time.now.day) do |d| 
+  <%= calendar(:year => Time.now.year, :month => Time.now.month, :day => Time.now.day) do |d|
   cls = (d == Date.today) ? 'day today' : 'day'
   if competition.state > 0 && competition.state < 4 && competition.created_on.to_date <= d && (competition.closed_on.nil? or competition.closed_on.to_date >= d) then
     cls << ' competition-day '
@@ -98,7 +98,7 @@
   <% end -%>
 
   <%mftext('Últimos resultados') do %>
-  <%# TODO esto está cuasiduplicado en list.rhtml 
+  <%# TODO esto está cuasiduplicado en list.rhtml
   %>
   <%
   cache("/common/competiciones/_show/#{@competition.id}/partidas_mas_recientes") do %>
@@ -148,7 +148,7 @@
   </ul>
   <% end -%>
 
-  <% tc_cat = @competition.myforum 
+  <% tc_cat = @competition.myforum
 	if tc_cat then %>
   <%mftext('Foro') do %>
   <ul class="skeletal">
@@ -173,7 +173,7 @@
   for news in competition.event.coverages.find(:all, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 10)
     cur_day = Date.new(news.created_on.year, news.created_on.month, news.created_on.day)
 
-    if cur_day != previous_day then 
+    if cur_day != previous_day then
       previous_day = Date.new(news.created_on.year, news.created_on.month, news.created_on.day) %>
     <div class="day-separator"><%=print_tstamp(cur_day, 'date')%></div>
     <% end %>

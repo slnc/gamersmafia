@@ -3,9 +3,9 @@ class CompetitionsParticipant < ActiveRecord::Base
   has_many :competitions_matches
   belongs_to :competition
   before_create do |c|
-    pos = Kernel.rand(999999) 
+    pos = Kernel.rand(999999)
     while CompetitionsParticipant.find(:first, :conditions => ['competition_id = ? and position = ?', c.competition_id, pos])
-      pos = Kernel.rand(999999) 
+      pos = Kernel.rand(999999)
     end
     c.position = pos
   end

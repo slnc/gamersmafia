@@ -19,5 +19,5 @@ class UserLoginTest < ActionController::IntegrationTest
     assert_nil request.session[:user]
   end
 
-  
+
 end

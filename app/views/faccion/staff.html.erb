@@ -11,7 +11,7 @@
 	<dd>Se asegura de que los comentarios de la facción cumplan el código de conducta de la web y de supervisar los foros y asegurarse de que todo marche sobre ruedas.</dd>
 </dl>
 <% end -%>
-<% end -%> 
+<% end -%>
 
 <%content_main do%>
 <div class="grid-5">
@@ -54,7 +54,7 @@ editors.each do |content_type, user|
 end
 ctypes.uniq!
 ctypes_i = 1
-ctypes.each do |ctype| 
+ctypes.each do |ctype|
 %>
 <div class="grid-2 <%='glast' if ctypes_i % 3 == 0%>">
 <% mftext(Cms.translate_content_name(ctype).gsub('-', ' ').split(' ')[0][0..11]) do %>
@@ -68,16 +68,16 @@ ctypes.each do |ctype|
 <%end %><%# mftext -%>
 </div>
 <% if ctypes_i % 3 == 0 then %><div class="clearb"></div><% end -%>
-<% ctypes_i += 1 
+<% ctypes_i += 1
 end %><%# ctypes.each -%>
 <% end %><%# if -%>
 <% end -%>
 </div>
 
 <div class="grid-3">
-<%mftext('Vacantes') do 
+<%mftext('Vacantes') do
 cat_names = (Cms::CONTENTS_WITH_CATEGORIES - %w(Topic)).collect { |cn| "'#{cn}'" }
-missing_ctypes = ContentType.find(:all, :conditions => "name IN (#{cat_names.join(',')})") 
+missing_ctypes = ContentType.find(:all, :conditions => "name IN (#{cat_names.join(',')})")
 %>
 <table>
 <% missing_ctypes.each do |ct|

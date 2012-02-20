@@ -3,7 +3,7 @@ news_deleted:
   content_type_id: 1
   external_id: 3
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1001  
+  name: foooiki1001
   comments_count: 0
   url: http://ut.<%=App.domain%>/noticias/show/3
   state: 3
@@ -322,7 +322,7 @@ image_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
-  
+
 demo_unpublished:
   id: 1015
   content_type_id: 23
@@ -541,7 +541,7 @@ image_dude:
   user_id: 1
   state: 2
   portal_id: 1
-  
+
 demo_published:
   id: 17
   content_type_id: 23
@@ -650,7 +650,7 @@ news_pending_clan1:
   state: 1
   user_id: 1
   portal_id: 1
-  
+
 news_64:
   id: 1104
   content_type_id: 1
@@ -722,7 +722,7 @@ topics_1265:
   state: 3
   user_id: 1
   portal_id: 1
-  
+
 question_published:
   id: 1110
   content_type_id: 24
@@ -748,13 +748,13 @@ question_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
-  
+
 question_deleted:
   id: 1112
   content_type_id: 24
   external_id: 3
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1001  
+  name: foooiki1001
   comments_count: 0
   url: http://ut.<%=App.domain%>/respuestas/show/3
   state: 3
@@ -786,7 +786,7 @@ news_published_gm:
   state: 2
   user_id: 1
   portal_id: -1
-  
+
 polls_published_gm:
   id: 1115
   content_type_id: 7
@@ -799,7 +799,7 @@ polls_published_gm:
   state: 2
   user_id: 1
   portal_id: -1
-  
+
 polls_pending_gm:
   id: 1116
   content_type_id: 7
@@ -812,7 +812,7 @@ polls_pending_gm:
   state: 1
   user_id: 1
   portal_id: -1
-  
+
 news_published_rj:
   id: 1117
   content_type_id: 1

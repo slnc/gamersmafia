@@ -19,6 +19,6 @@ min_pos = User.db_query("SELECT COALESCE(min(position),0) as min FROM faq_catego
     <td><% if faq_category.position && faq_category.position < last_pos then %><a href="/admin/categoriasfaq/movedown/<%=faq_category.id%>">abajo</a><% end %></td>
     <td><%= link_to 'Borrar', { :action => 'destroy', :id => faq_category }, :confirm => '¿Estás seguro?' %></td>
   </tr>
-<% faq_category.children.each do |child| %> 
+<% faq_category.children.each do |child| %>
 <%= render :partial => 'faq_category_entry', :locals => { :faq_category => child } %>
 <% end -%>

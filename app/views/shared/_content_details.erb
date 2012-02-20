@@ -1,5 +1,5 @@
-<% 
-author = object.user 
+<%
+author = object.user
 
 if not object.new_record? and Cms::user_can_edit_content?(@user, object) then %>
 <script type="text/javascript">
@@ -54,7 +54,7 @@ setInterval(function(){
   <%# TODO CACHE THIS %>
     <div class="right infoinline"><a href="" onclick="$j('#content-log').show(); return false;">Ver log de cambios</a></div>
     <div class="hidden" id="content-log"><%object.log.reverse.each do |l0, l1, l2|
-		u = User.find_by_login(l1) 
+		u = User.find_by_login(l1)
       %>
       <div class="infoinline <%=oddclass%>"><strong><%=l0.capitalize%></strong> por <a href="<%=u ? gmurl(u) : 'nonexistant_user'%>"><%=l1%></a><br /> <%=print_tstamp(l2, 'compact')%></div>
   <% end -%>

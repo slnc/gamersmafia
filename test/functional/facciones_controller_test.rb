@@ -1,22 +1,22 @@
 require 'test_helper'
 
 class FaccionesControllerTest < ActionController::TestCase
-  
 
-  
+
+
   test "index" do
     get :index
     assert_response :success
     assert_template 'list'
   end
-  
+
   test "borrar_should_work" do
     sym_login 2
     g = Game.new({:code => 'fooli', :name => "Foo ling pun"})
     assert g.save, g.errors.full_messages_html
     f = g.faction
     assert_raises(AccessDenied) { post :borrar, { :id => f.id} }
-    
+
     sym_login 1
     t = f.referenced_thing
     assert_not_nil t

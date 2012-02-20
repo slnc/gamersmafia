@@ -405,8 +405,8 @@ class Bet < ActiveRecord::Base
       end
     end
 
-    puts "tie | option #{options[0].id} | option #{options[1].id}"
-    puts "#{votes_tie} #{votes_a} #{votes_b}"
+    Rails.logger.info("tie | option #{options[0].id} | option #{options[1].id}")
+    Rails.logger.info("#{votes_tie} #{votes_a} #{votes_b}")
 
     if votes_tie > votes_a and votes_tie > votes_b
       return [Bet::TIE, winners, user_votes]

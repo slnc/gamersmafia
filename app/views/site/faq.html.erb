@@ -2,7 +2,7 @@
     @faq_categories = FaqCategory.find(:all, :conditions => 'parent_id is null', :order => 'position asc')
     @last_modified = FaqCategory.db_query('SELECT max(updated_on) as last_modified from faq_entries')[0]['last_modified']
 %>
-<% generic_support do %> 
+<% generic_support do %>
 <%mftext('Mi pregunta no figura aquí') do %>
 <p>Si tienes una pregunta que no figura aquí puedes enviárnosla <a href="javascript: mailto('preguntas')" onclick="mailto('preguntas'); return false;">por email</a> para ampliar este listado.
 <% end -%>

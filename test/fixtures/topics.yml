@@ -27,7 +27,7 @@ second_forum_topic:
   sticky: false
   state: 1
   unique_content_id: 1013
-  
+
 third_forum_topic:
   id: 3
   user_id: 1

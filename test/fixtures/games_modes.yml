@@ -3,10 +3,9 @@ one:
   name: DM
   game_id: 1
   entity_type: <%=Game::ENTITY_USER%>
-  
+
 tue:
   id: 2
   name: CTF
   game_id: 1
   entity_type: <%=Game::ENTITY_CLAN%>
-  

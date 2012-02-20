@@ -1,5 +1,5 @@
 <%
-all1 = @competition.competitions_participants 
+all1 = @competition.competitions_participants
 all2 = all1.clone
 size = all1.size
 %>
@@ -14,7 +14,7 @@ size = all1.size
   <% size.times do |i| %>
   <tr class="<%=oddclass%>">
     <th style="font-size: 10px;"><%=notags(all1[i].name)%></th>
-    <% size.times do |j| 
+    <% size.times do |j|
          match = @competition.find_league_match_between(all1[i].id, all2[j].id) # TODO cuando usemos ligas con ida y vuelta quitar el i < j
          if match and i < j then %>
          <td class="match infoinline centered"><a href="/competiciones/partida/<%=match.id%>"><% if match.completed? then %><%=match.winner.to_s%><% else %>-<%end -%></a></td>
@@ -29,7 +29,7 @@ size = all1.size
 </table>
 
 <%# TODO refactor%>
-<% 
+<%
 max = @competition.competitions_matches.find(:first, :order => 'stage DESC').stage
 (max+1).times do |time| %>
 <div class="subheader"><div>Jornada <%=time+1%></div></div>
@@ -39,14 +39,14 @@ max = @competition.competitions_matches.find(:first, :order => 'stage DESC').sta
   	<%# Matches without participants here shouldn't happen %>
     <td class="w125"><% if cm.participant1 then %><a href="/competiciones/participante/<%=cm.participant1_id%>"><%=cm.participant1.name%></a><% end -%></td>
     <td class="w125"><% if cm.participant2 then %><a href="/competiciones/participante/<%=cm.participant2_id%>"><%=cm.participant2.name%></a><% end -%></td>
-    <td class="centered"><a href="/competiciones/partida/<%=cm.id%>"><% 
+    <td class="centered"><a href="/competiciones/partida/<%=cm.id%>"><%
         if cm.completed? then
           case cm.result
             when 0: %><span class="infoinline">Gana</span> <%=cm.participant1.name%><%
             when 1: %>Empate<%
             when 2: %><span class="infoinline">Gana</span> <%=cm.participant2.name%><%
-            else 
-          end 
+            else
+          end
          end-%></a> <% if cm.completed? then %><br /><span class="infoinline">(<%=print_tstamp(cm.completed_on, 'date')%>)</span><% end %>
 <% if @competition.default_maps_per_match then %><div class="infoinline"><%cm.competitions_matches_games_maps.each do |map| %><%=map.games_map.name%>, <% end %></div>
     <% end %>

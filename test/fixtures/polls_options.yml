@@ -8,7 +8,7 @@ second_polls_option:
   name: foobar
   poll_id: 4
 
-  
+
 third_polls_option:
   id: 3
   name: foobars

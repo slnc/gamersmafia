@@ -63,14 +63,14 @@ module Emblems
     last_ue = UsersEmblem.find(:first, :order => 'created_on DESC', :limit => 1)
     if last_ue
       if last_ue.created_on.to_time.to_i > 5.days.ago.to_i
-        puts "Error: el último emblema se dio el #{last_ue.created_on}"
+        Rails.logger.error(
+          "Error: el último emblema se dio el #{last_ue.created_on}")
         return
       end
     end
 
     # hq
     User.find(:all, :conditions => 'is_hq = \'t\'').each do |u|
-      #puts "dando hq a #{u.login}"
       u.users_emblems.create(:emblem => 'hq')
     end
 
@@ -78,21 +78,21 @@ module Emblems
       u.users_emblems.create(:emblem => 'webmaster')
     end
 
-    User.can_login.find(:all, :conditions => "created_on >= now() - 
+    User.can_login.find(:all, :conditions => "created_on >= now() -
                                              '1 week'::interval").each do |u|
       u.users_emblems.create(:emblem => 'baby')
     end
 
     bosses = [0]
-    User.can_login.find(:all, :conditions => "id IN (SELECT user_id 
-                                                       FROM users_roles 
+    User.can_login.find(:all, :conditions => "id IN (SELECT user_id
+                                                       FROM users_roles
                                                       WHERE role = 'Boss')").each do |u|
       u.users_emblems.create(:emblem => 'boss')
       bosses<< u.id
     end
 
     underbosses = [0]
-    User.can_login.find(:all, :conditions => "id IN (SELECT user_id 
+    User.can_login.find(:all, :conditions => "id IN (SELECT user_id
                                              FROM users_roles
                                             WHERE role = 'Underboss')").each do |u|
       u.users_emblems.create(:emblem => 'underboss')

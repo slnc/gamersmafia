@@ -8,7 +8,7 @@ function open_demo_win(demo_id)
 
 <% content_support(:content => @demo.unique_content) do %>
 	<% if @demo.is_public? then %>
-	<%=mfcontents_basic("Más demos de #{@demo.main_category.name}", 
+	<%=mfcontents_basic("Más demos de #{@demo.main_category.name}",
 	controller.portal.demo,
 	[:published, { :order => 'created_on DESC', :limit => 5}],
  	:rating => true,
@@ -22,7 +22,7 @@ function open_demo_win(demo_id)
 	<% end -%>
 <% end -%>
 
-<% content_main do %> 
+<% content_main do %>
   <% mfcontent(@demo) do %>
   <div style="float: right; margin: 5px;"><%=fc_thumbnail(@demo.games_map.screenshot, 'k', '153x115', false) if @demo.games_map%></div>
 <table class="skeletal">
@@ -72,15 +72,15 @@ function open_demo_win(demo_id)
 <a href="/demos/download/<%=@demo.id%>"><img class="icon" src="/skins/default/images/btn_descargar.png" /></a><br />
 <% end -%>
 
-	<% mirrors = @demo.demo_mirrors.find(:all, :order => 'lower(url)') 
+	<% mirrors = @demo.demo_mirrors.find(:all, :order => 'lower(url)')
 if mirrors.size > 0 then %>
 	<table style="margin-top: 20px; border: 1px solid #efefef;">
 		<tr>
 			<th colspan="2">Descargas alternativas</th>
 		</tr>
 		<%mirrors.each do |dm| %>
-		<% begin 
-      mirror_name = URI.parse(dm.url).host.gsub(/www./, '') 
+		<% begin
+      mirror_name = URI.parse(dm.url).host.gsub(/www./, '')
     rescue
       mirror_name = nil
     end

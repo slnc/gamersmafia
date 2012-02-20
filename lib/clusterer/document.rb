@@ -39,7 +39,7 @@ module Clusterer
       send(options[:tokenizer] || :simple_tokenizer,
            ((defined? yield) == "yield" ? yield(object) : object.to_s),
            options[:tokenizer_options] || {}) {|term| self << term }
-      
+
       if (idf = options[:idf])
         idf.increment_documents_count
         self.each_key {|term| idf << term}
@@ -53,7 +53,7 @@ module Clusterer
     def normalize!(idf = nil, add_term = false)
       normalizing_factor = 0.0
       idf.increment_documents_count if add_term
-      
+
       self.each do |term,frequency|
         idf << term if add_term
         f =  idf ? idf[term] : 1.0

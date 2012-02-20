@@ -47,7 +47,7 @@ module Clusterer
     def clear_cached_results
       @t= @s= @d= @s_inv= @sd= nil
     end
-    
+
     def perform_svd (cutoff = 0.80)
       matrix = DMatrix[*@documents].transpose
       @t, @s, @d =  matrix.svd
@@ -63,11 +63,11 @@ module Clusterer
     def cluster_documents(k, options = { })
       rebuild_if_needed
       cnt = -1
-      clusters = Algorithms.send(options[:algorithm] || :kmeans, 
+      clusters = Algorithms.send(options[:algorithm] || :kmeans,
                                  sd.columns.collect{|c| c.position = (cnt += 1); c}, k, options)
       clusters.collect {|clus| clus.documents.collect {|d| @documents[d.position]}}
     end
-    
+
     def search(document, threshold = 0.5)
       rebuild_if_needed
       vec = $LINALG ? DMatrix[document] : DMatrix[document] #DMatrix[document] #transform_to_vector(document)
@@ -82,12 +82,12 @@ module Clusterer
     def <<(doc)
       @documents << doc
     end
-    
+
     private
     def sd
       @sd ||= @s*@d
     end
-    
+
     def s_inv
       @s_inv ||=  @s.inverse
     end

@@ -29,14 +29,14 @@ class KarmaObserverTest < ActiveSupport::TestCase
     u2.reload
     assert_equal u2_kp_initial, u2.karma_points
     n.reload
-    
+
     # publicamos
     Cms::publish_content(n, User.find(1))
     assert true, n.is_public?
     u2.reload
     assert_equal u2_kp_initial + Karma::KPS_CREATE['News'], u2.karma_points
   end
-  
+
   test "should_give_reduced_karma_when_copypaste_content_is_published" do
     u2 = User.find(2)
     u2_kp_initial = u2.karma_points
@@ -45,7 +45,7 @@ class KarmaObserverTest < ActiveSupport::TestCase
     u2.reload
     assert_equal u2_kp_initial, u2.karma_points
     n.reload
-    
+
     # publicamos
     Cms::publish_content(n, User.find(1))
     assert true, n.is_public?

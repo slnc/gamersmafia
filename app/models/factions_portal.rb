@@ -103,10 +103,10 @@ class FactionsPortal < Portal
         FactionsPortalCoverageProxy.new(self)
       else
         # TODO TAXONOMIES BUG, portales con mas de un root term no funcionan ya
-        obj = Object.const_get(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id)))
+        obj = Object.const_get(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id.to_s)))
         if obj.respond_to?(:is_categorizable?)
           t = Term.find(:first, :conditions => "id = root_id AND slug IN (#{toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC')
-          t.add_content_type_mask(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id)))
+          t.add_content_type_mask(ActiveSupport::Inflector::camelize(ActiveSupport::Inflector::singularize(method_id.to_s)))
           #return t
           # TODO
           # ahora reemplazamos obj por la categoría de primer nivel si es facción o plataforma

@@ -1,4 +1,4 @@
-<% 
+<%
 opts = HashWithIndifferentAccess.new({ :tourney_groups => 8, :tourney_winners_per_group => 2, :tourney_rounds => 4 })
 opts.merge!(@competition.competitions_types_options)
 -%>
@@ -139,7 +139,7 @@ function update_tournament_starting_point()
     window.status = 'num_groups isNaN o num_winners_per_group isNaN';
 }
 
-/* 
+/*
    analiza las opciones hechas y manda el form
    TODO: como no metan todos los jugadores cosas malas le ocurrirán a su competición
    TODO: los grupos que tengan más jugadores que otros grupos deben estar

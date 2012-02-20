@@ -19,7 +19,7 @@ function moveup(side) {
 
 function movedown(side){
 	sel = document.getElementById('modules-' + side);
-	if (sel.selectedIndex == sel.length - 1) 
+	if (sel.selectedIndex == sel.length - 1)
 		return;
 	
 	var opt = sel.options[sel.selectedIndex];
@@ -38,7 +38,7 @@ function changeselect(orig, dst) {
 	var oDst = document.getElementById('modules-'+dst);
 	var opt = oOrig.options[oOrig.selectedIndex];
 	oDst.options[oDst.length] = new Option(opt.text, opt.value);
-	oOrig.options[oOrig.selectedIndex] = null; 
+	oOrig.options[oOrig.selectedIndex] = null;
 }
 
 function changeallselect(orig, dst) {
@@ -47,7 +47,7 @@ function changeallselect(orig, dst) {
 	while (oOrig.length > 0) {
 		oOrig.selectedIndex = 0;
 		changeselect(orig, dst);
-	} 
+	}
 	
 }
 

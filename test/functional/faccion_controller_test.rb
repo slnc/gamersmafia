@@ -6,19 +6,19 @@ class FaccionControllerTest < ActionController::TestCase
     get :index
     assert_response :success
   end
-  
+
   test "miembros" do
     @request.host = "#{FactionsPortal.find(:first).code}.#{App.domain}"
     get :miembros
     assert_response :success
   end
-  
+
   test "clanes" do
     @request.host = "#{FactionsPortal.find(:first).code}.#{App.domain}"
     get :clanes
     assert_response :success
   end
-  
+
   test "staff" do
     @request.host = "#{FactionsPortal.find(:first).code}.#{App.domain}"
     get :staff

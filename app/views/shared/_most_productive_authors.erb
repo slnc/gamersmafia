@@ -1,4 +1,4 @@
-<% 
+<%
 uzers = category.top_contributors(:taxonomy => "#{ActiveSupport::Inflector::pluralize(cls.name)}Categories", :limit => 5)
 uzers.each do |info|
   %>
