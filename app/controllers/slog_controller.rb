@@ -164,15 +164,17 @@ class SlogController < ApplicationController
   end
 
   def slog_entry_assigntome
-    sle = SlogEntry.find(:first, :conditions => ['id = ? AND reviewer_user_id IS NULL', params[:id]])
-    require_can_edit_sle?(sle)
-    if sle.nil?
+    @sle = SlogEntry.find_or_404(
+        :first,
+        :conditions => ['id = ? AND reviewer_user_id IS NULL', params[:id]])
+    require_can_edit_sle?(@sle)
+    if @sle.nil?
       flash[:error] = "La entrada especificada ya ha sido resuelta, ha sido asignada a otro usuario o no existe."
     else
-      sle.reviewer_user_id = @user.id
-      sle.save
+      @sle.reviewer_user_id = @user.id
+      @sle.save
     end
-    render :nothing => true
+    render :partial => '/site/slog_feedback', :layout => false
   end
 
   protected

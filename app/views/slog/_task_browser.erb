@@ -15,8 +15,7 @@
     <%=link_to(
         "<img title=\"Asignarme este evento\" class=\"icon\"" +
         " src=\"/skins/default/images/icons/status_assigned.gif\" \>",
-        :url => "/slog/slog_entry_assigntome/#{sle.id}",
-        :complete => "$j('#sle#{sle.id}').fadeOut('normal');",
+        "/slog/slog_entry_assigntome/#{sle.id}",
         :remote => true)%>
     </td>
 	<% end -%>
@@ -25,8 +24,7 @@
       <%=link_to(
           "<img title=\"Marcar como resuelto\" class=\"icon\"" +
           " src=\"/skins/default/images/icons/confirm_16.png\" \>",
-          :url => "/slog/slog_entry_reviewed/#{sle.id}",
-          :complete => "$j('#sle#{sle.id}').fadeOut('normal');",
+          "/slog/slog_entry_reviewed/#{sle.id}",
           :remote => true) %>
     </td>
 	<% end -%>
