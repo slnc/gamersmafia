@@ -17,8 +17,10 @@ class Admin::IpBansController < ApplicationController
   end
 
   def destroy
-    IpBan.find(params[:id]).destroy
-    flash[:notice] = "Ban borrado correctamente"
-    redirect_to :action => 'index'
+    ban = IpBan.find(params[:id])
+    ban.destroy
+    @js_response = "$j('#ipban#{ban.id}').fadeOut('normal');"
+    render :partial => '/shared/silent_ajax_feedback',
+           :locals => { :js_response => @js_response }
   end
 end

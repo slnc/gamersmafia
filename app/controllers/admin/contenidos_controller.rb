@@ -59,7 +59,10 @@ class Admin::ContenidosController < ApplicationController
     obj = Content.find(params[:id]).real_content
     require_user_can_edit(obj)
     obj.recover(@user)
-    render :nothing => true
+    @js_response = (
+        "$j('#content#{obj.unique_content_id}').fadeOut('normal');")
+    render :partial => '/shared/silent_ajax_feedback',
+           :locals => { :js_response => @js_response }
   end
 
   def change_authorship

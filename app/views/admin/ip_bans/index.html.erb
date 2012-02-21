@@ -31,7 +31,10 @@
 		<th class="timestamp">Caduca</th>
 		<th class="w50"></th>
 	</tr>
-	<% IpBan.find(:all, :conditions => 'expires_on >= now()', :order => 'created_on DESC').each do |ban| %>
+	<% IpBan.find(
+      :all,
+      :conditions => 'expires_on >= now()',
+      :order => 'created_on DESC').each do |ban| %>
 	<tr class="<%=oddclass%>" id="ipban<%=ban.id%>">
 		<td class="w100"><%=ban.ip%></td>
 		<td class="timestamp infoinline"><%=print_tstamp(ban.created_on)%></td>
@@ -44,10 +47,7 @@
     </td>
 		<td class="w50">
       <%=link_to(
-          'Borrar',
-          :url => "/admin/ip_bans/destroy/#{ban.id}",
-          :complete => "$j('#ipban#{ban.id}').fadeOut('normal');",
-          :remote => true)%>
+          "Borrar", "/admin/ip_bans/destroy/#{ban.id}", :remote => true)%>
     </td>
 	</tr>
 	<% end -%>

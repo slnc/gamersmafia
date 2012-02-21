@@ -42,8 +42,7 @@ uniq = @item.unique_content
       <% if Cms::user_can_edit_content?(@user, @item) then %>
         <%=link_to(
             "Recuperar",
-            :url => "/admin/contenidos/recover/#{uniq.id}",
-            :complete => "$j('#content#{uniq.id}').fadeOut('normal');",
+            "/admin/contenidos/recover/#{uniq.id}",
             :remote => true)%>
       <% end -%>
       </td>

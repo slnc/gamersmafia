@@ -4,7 +4,7 @@
 </form>
 <% end -%>
 
-<%= form_tag(:url => "/admin/grupos/add_user_to_group/#{@group.id}",
+<%= form_tag("/admin/grupos/add_user_to_group/#{@group.id}",
              :remote => true) %>
 Usuario: <input type="text" name="login" /><br />
 <input type="submit" value="Añadir" />
@@ -18,8 +18,7 @@ Usuario: <input type="text" name="login" /><br />
 		<td>
       <%=link_to(
           'Borrar',
-          :url => "/admin/grupos/remove_user_from_group/#{@group.id}?user_id=#{gm.id}",
-          :complete => "$j('#gm#{gm.id}').fadeOut('normal');",
+          "/admin/grupos/remove_user_from_group/#{@group.id}?user_id=#{gm.id}",
           :remote => true)%></td>
 	</tr>
 <% end -%>

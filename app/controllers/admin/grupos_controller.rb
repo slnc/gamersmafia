@@ -30,6 +30,8 @@ class Admin::GruposController < AdministrationController
   def remove_user_from_group
     @group = Group.find(params[:id])
     @group.remove_user_from_group(User.find(params[:user_id]))
-    render :nothing => true
+    @js_response = "$j('#gm#{params[:user_id]}').fadeOut('normal');"
+    render :partial => '/shared/silent_ajax_feedback',
+           :locals => { :js_response => @js_response }
   end
 end
