@@ -7,6 +7,7 @@ Gamersmafia::Application.routes.draw do
   match 'account/messages' => 'account#messages'
   match 'account/messages/:id' => 'account#show_message'
   match 'admin/categorias/' => 'admin/categorias#index'
+  match 'admin/clanes/(:action)(/:id)' => 'admin/clanes'
   match 'admin/juegos(/:action)' => 'admin/juegos'
   match 'admin/categorias/create' => 'admin/categorias#create'
   match 'admin/categorias/term/:id' => 'admin/categorias#root'
@@ -148,6 +149,8 @@ Gamersmafia::Application.routes.draw do
   match 'site/slog.:format' => 'site#slog'
   match 'site/sponsors' => 'site#sponsors'
   match 'site/sponsors/:sponsor' => 'site#sponsor'
+  match 'slog' => 'slog#index'
+  match 'slog/:action(/:id)' => 'slog'
   match 'tutoriales/:category' => 'tutoriales#index', :constraints => { :category => /\d+/ }
   match 'tutoriales/create' => 'tutoriales#create'
   match 'tutoriales/list' => 'tutoriales#index'

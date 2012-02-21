@@ -11,9 +11,8 @@
     <td><%=user_link(u)%></td>
     <td class="right infoinline">
     <%=link_to(
-        'Borrar',
-        :url => "/admin/clanes/remove_user_from_clans_group/?clans_group_id=#{cg.id}&user_id=#{u.id}",
-        :complete => "$j('#clans_group_#{cg.id}_#{u.id}').fadeOut('normal');",
+        "Borrar",
+        "/admin/clanes/remove_user_from_clans_group/?clans_group_id=#{cg.id}&user_id=#{u.id}",
         :remote => true)%>
     </td>
   </tr>
@@ -25,10 +24,9 @@
 
 <% content_main do %>
   <%mftext('Editar clan') do %>
-
-<%= form_tag({:action => 'update', :id => @clan}, :multipart => true)%>
-  <%= render :partial => 'form' %>
-  <%= submit_tag 'Guardar' %>
-</form>
-<% end -%>
+  <%= form_tag({:action => 'update', :id => @clan}, :multipart => true)%>
+    <%= render :partial => 'form' %>
+    <%= submit_tag 'Guardar' %>
+  </form>
+  <% end -%>
 <% end -%>
