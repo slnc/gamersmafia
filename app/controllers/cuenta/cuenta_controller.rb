@@ -435,7 +435,6 @@ class Cuenta::CuentaController < ApplicationController
            :locals => { :js_response => @js_response }
   end
 
-
   def save_avatar
     # TODO validation checks!
     if params[:new_avatar_id].to_s.strip == ''  then
