@@ -1,11 +1,7 @@
 <%
-slog_entries_filter = { :domain => @domain, :scope => @scope }
 slog_entries = SlogEntry.closed.in_domain_and_scope(@domain, @scope).paginate(
     :page => params[:page], :per_page => 50, :include => [:reviewer, :reporter],
     :order => 'slog_entries.id DESC')
-slog_entries_filter[:limit] = pager.current.to_sql[0]
-slog_entries_filter[:offset] = pager.current.to_sql[1]
-slog_entries_filter[:order] = 'slog_entries.id DESC'
 %>
 <%= render :partial => 'shared/pager2',
            :locals => {:collection => slog_entries,
@@ -15,6 +11,7 @@ slog_entries_filter[:order] = 'slog_entries.id DESC'
                            :params => {:domain => @domain, :scope => @scope}
                        }
                       } %>
+
 <table>
 	<tr class="<%=oddclass%>">
 		<th style="width: 16px;"></th>
@@ -26,7 +23,9 @@ slog_entries_filter[:order] = 'slog_entries.id DESC'
 </tr>
 <% slog_entries.each do |sle| %>
 <tr class="<%=oddclass%>">
-	<td style="width: 16px;"><img class="sprite1 slog-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
+	<td style="width: 16px;">
+    <img class="sprite1 slog-type<%=sle.type_id%>" src="/images/blank.gif" />
+  </scope_conditionstd>
 	<td class="w125 centered infoinline"><%=print_tstamp(sle.created_on, 'compact')%></td>
 	<td><%=sle.headline%></td>
 	<td class="infoinline"><%=user_link(sle.reporter) if sle.reporter%></td>

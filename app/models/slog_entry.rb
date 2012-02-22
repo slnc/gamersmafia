@@ -85,8 +85,9 @@ class SlogEntry < ActiveRecord::Base
         }
   scope :in_domain_and_scope, lambda { |domain, scope|
     valid_types = self.valid_types_from_domain(domain)
-    scope_conditions = self._process_scope(:domain => domain, :scope => scope)
-    { :conditions => "#{sql_cond} AND type_id IN (#{valid_types.join(',')})" }
+    sql_cond = self._process_scope(:domain => domain, :scope => scope)
+    sql_cond = "#{sql_cond} AND" if sql_cond.to_s != ""
+    { :conditions => "#{sql_cond} type_id IN (#{valid_types.join(',')})" }
   }
 
   def update_pending_slog
