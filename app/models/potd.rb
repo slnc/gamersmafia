@@ -68,7 +68,7 @@ class Potd < ActiveRecord::Base
   #
   # 2º aleatoria
   def self.select_from_term(term, conditions)
-    image_proxy = term.image
+    image_proxy = term.images
 
     if image_proxy.nil?
       Rails.logger.error("Term #{term} has no image proxy to select potd from.")
@@ -85,7 +85,7 @@ class Potd < ActiveRecord::Base
 
     if im.nil? then
       # averiguar categorías de las imgs de los últimos 7 días
-      im = term.image.find(
+      im = term.images.find(
         :first,
         :conditions => "#{conditions} AND contents.state = #{Cms::PUBLISHED}",
         :order => 'RANDOM()')
