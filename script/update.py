@@ -21,7 +21,7 @@ def compress_js():
     cfg = ['web.shared/jquery-1.7.1',
            'web.shared/jquery.scrollTo-1.4.0',
            'jquery-ui-1.7.2.custom',
-           'jquery_ujs.js',
+           'jquery_ujs',
            'jquery.facebox',
            'jquery.elastic.source',
            'web.shared/jgcharts-0.9',
