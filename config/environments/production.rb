@@ -57,14 +57,9 @@ Gamersmafia::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
-
-  # The production environment is meant for finished, "live" apps.
-  # Code is not reloaded between requests
-  config.cache_classes = true
-
-  # Use a different logger for distributed setups
   # config.logger        = SyslogLogger.new
 
+  config.dependency_loading = true if $rails_rake_task
 
   # OLD CONFIG
 
