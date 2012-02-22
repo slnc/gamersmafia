@@ -1,1 +1,1 @@
-<%=draw_karma_bar_sm(@edituser)%><div class="warning infoinline"><strong>FIXED</strong>: Antes: <%=@kp_previous%><br />Después: <%=@kp_correct%><br />Diff: (<%=@kp_correct - @kp_previous%>)</div>
+$j('#check_karma').html('<%=draw_karma_bar_sm(@edituser)%><div class="warning infoinline"><strong>FIXED</strong>: Antes: <%=@kp_previous%><br />Después: <%=@kp_correct%><br />Diff: (<%=@kp_correct - @kp_previous%>)</div>');

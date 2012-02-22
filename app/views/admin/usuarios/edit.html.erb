@@ -13,9 +13,8 @@
       <td class="infoinline"><%=print_tstamp(@edituser.created_on)%>
         <div id="check_registered_on">
           <%=link_to(
-              'check',
-              :update => 'check_registered_on',
-              :url => "/admin/usuarios/check_registered_on/#{@edituser.id}",
+              "check",
+              "/admin/usuarios/check_registered_on/#{@edituser.id}",
               :remote => true)%>
         </div>
       </td>
@@ -42,8 +41,7 @@
         <div id="check_karma"><%=draw_karma_bar_sm(@edituser)%>
         <% if @user.has_admin_permission?(:capo) then %>
           <%=link_to('check',
-                     :update => 'check_karma',
-                     :url => "/admin/usuarios/check_karma/#{@edituser.id}",
+                     "/admin/usuarios/check_karma/#{@edituser.id}",
                      :remote => true)%>
         <% end -%>
         </div>
@@ -55,8 +53,7 @@
         <div id="check_faith"><%=draw_faith_bar_sm(@edituser)%>
         <% if @user.has_admin_permission?(:capo) then %>
           <%=link_to('check',
-                     :update => 'check_faith',
-                     :url => "/admin/usuarios/check_faith/#{@edituser.id}",
+                     "/admin/usuarios/check_faith/#{@edituser.id}",
                      :remote => true)%>
         <% end -%>
         </div>
@@ -68,8 +65,7 @@
         <div id="check_gmf"><%=@edituser.cash%> <%=gmd10%>
         <% if @user.has_admin_permission?(:capo) then %>
           <%=link_to('check',
-                     :update => 'check_gmf',
-                     :url => "/admin/usuarios/check_gmf/#{@edituser.id}",
+                     "/admin/usuarios/check_gmf/#{@edituser.id}",
                      :remote => true)%>
         <% end -%>
         </div>
@@ -220,10 +216,9 @@
 			<td><%=role.role%></td>
 			<td><%=role.role_data%></td>
 			<td><%=link_to(
-          'del',
-          :url => "/admin/usuarios/users_role_destroy/#{role.id}&aj=1",
-          :confirm => '¿Estás seguro de que deseas cancelar esta invitación?',
-          :complete => "$j('#users_role#{role.id}').fadeOut('normal');",
+          "del",
+          "/admin/usuarios/users_role_destroy/#{role.id}&aj=1",
+          :confirm => '¿Estás seguro de que deseas este rol?',
           :remote => true)%>
       </td>
 		</tr>

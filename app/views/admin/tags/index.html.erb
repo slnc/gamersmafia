@@ -35,9 +35,8 @@
     <td class="infoinline"><%=print_tstamp(tag.created_on)%></td>
     <td><%=user_link(tag.user)%></td>
     <td><%=link_to('Borrar',
-                   :url => "/admin/tags/#{tag.id}",
-                   :confirm => '¿Estás seguro?',
-                   :complete => "$j('#tag#{tag.id}').fadeOut('normal');",
+                   "/admin/tags/#{tag.id}",
+                   :confirm => "¿Estás seguro?",
                    :method => :delete,
                    :remote => true)%></td>
   </tr>
