@@ -22,11 +22,9 @@
       </div>
     </td>
     <td><%=link_to(
-        'No violación',
-        :url => "/comments/no_violation/#{comment.id}",
+        "No violación",
+        "/comments/no_violation/#{comment.id}",
         :confirm => '¿Estás seguro?',
-        :complete => "$j('#comment#{comment.id}').fadeOut('normal');",
-        :method => :delete,
         :remote => true)%>
     </td>
   </tr>

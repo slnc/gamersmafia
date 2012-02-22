@@ -1,8 +1,6 @@
 class CommentsController < ApplicationController
   before_filter :require_auth_users
 
-  #verify :method => :post, :params => [ :comment ], :only => :create, :redirect_to => '/'
-
   def create
     content = Content.find(params[:comment][:content_id])
     object = content.real_content
@@ -12,26 +10,41 @@ class CommentsController < ApplicationController
     rescue Exception => e
       flash[:error] = e.to_s
     else
-      # buscamos el último comentario y si es nuestro y de menos de 1h lo editamos en lugar de crear
-      last_comment = content.comments.find(:first, :conditions => 'deleted = \'f\'', :order => 'id DESC')
-      if last_comment && last_comment.user_id == @user.id && last_comment.created_on >= 1.hour.ago then
-        if last_comment.comment == Comments::formatize(params[:comment][:comment]) then
+      # buscamos el último comentario y si es nuestro y de menos de 1h lo
+      # editamos en lugar de crear
+      last_comment = content.comments.find(
+          :first, :conditions => 'deleted = \'f\'', :order => 'id DESC')
+      if (last_comment && last_comment.user_id == @user.id &&
+          last_comment.created_on >= 1.hour.ago)
+        if (last_comment.comment ==
+            Comments::formatize(params[:comment][:comment]))
           # para evitar doble clicks a enviar comentario
           flash[:notice] = 'Comentario añadido correctamente'
         else
-          last_comment.comment = "#{last_comment.comment}<br /><br /><strong>Editado</strong>: #{Comments::formatize(params[:comment][:comment])}"
+          last_comment.comment = (
+              "#{last_comment.comment}<br /><br /><strong>Editado</strong>:" +
+              " #{Comments::formatize(params[:comment][:comment])}")
           if last_comment.save
             flash[:notice] = 'Comentario añadido correctamente'
           else
-            flash[:error] = "Ocurrió un error al guardar el comentario: <br /> #{last_comment.errors.full_messages_html}"
+            flash[:error] = ("Ocurrió un error al guardar el comentario:" +
+                " <br /> #{last_comment.errors.full_messages_html}")
           end
         end
       else
-        # si el último comentario de este usuario es de hace menos de 15 segundos le bloqueamos
-        if @user.comments.count(:conditions => 'created_on > now() - \'15 seconds\'::interval') > 0 then
-          flash[:error] = "Debes esperar al menos 15 segundos antes de publicar un nuevo comentario"
-        elsif @user.created_on > 1.day.ago && @user.comments.count(:conditions => 'created_on > now() - \'1 hour\'::interval') > 10 then
-          flash[:error] = "No puedes publicar tantos comentarios seguidos, inténtalo un poco más tarde."
+        # si el último comentario de este usuario es de hace menos de 15
+        # segundos le bloqueamos
+        if @user.comments.count(
+            :conditions => 'created_on > now() - \'15 seconds\'::interval') > 0
+          flash[:error] = (
+              "Debes esperar al menos 15 segundos antes de publicar un nuevo" +
+              " comentario")
+        elsif (@user.created_on > 1.day.ago &&
+               @user.comments.count(
+                 :conditions => "created_on > now() - '1 hour'::interval") > 10)
+          flash[:error] = (
+            "No puedes publicar tantos comentarios seguidos, inténtalo un" +
+            " poco más tarde.")
         else
           @comment = Comment.new({:content_id => params[:comment][:content_id],
             :user_id => @user.id,
@@ -48,8 +61,11 @@ class CommentsController < ApplicationController
       end
     end
 
-    params[:redirto] = '/' if params[:redirto].to_s == '' or /create/ =~ params[:redirto]
-    redirect_to params[:redirto] # tenemos que redirigir siempre ya que se crean desde distintas páginas
+    if (params[:redirto].to_s == '' || /create/ =~ params[:redirto])
+      params[:redirto] = '/'
+    end
+   # tenemos que redirigir siempre ya que se crean desde distintas páginas
+    redirect_to params[:redirto]
   end
 
   def destroy
@@ -154,8 +170,12 @@ class CommentsController < ApplicationController
     @comment = Comment.find(params[:id])
     raise AccessDenied unless @user && @user.has_admin_permission?(:capo)
     require_user_can_edit(@comment)
-    @comment.update_attributes(:netiquette_violation => false, :lastedited_by_user_id => @user.id)
-    render :nothing => true
+    @comment.update_attributes(
+        :netiquette_violation => false, :lastedited_by_user_id => @user.id)
+
+    @js_response = "$j('#comment#{@comment.id}').fadeOut('normal');"
+    render :partial => '/shared/silent_ajax_feedback',
+           :locals => { :js_response => @js_response }
   end
 
   def violaciones_netiqueta
