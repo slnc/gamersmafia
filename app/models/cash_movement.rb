@@ -13,6 +13,6 @@ class CashMovement < ActiveRecord::Base
     r = self.receiver
     r = '(Banco)' unless r
 
-    "transferencia de #{self.ammount} de '#{s}' a '#{r}'"
+    "Transferencia de #{self.ammount.to_i} de '#{s}' a '#{r}'"
   end
 end
