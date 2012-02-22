@@ -8,9 +8,14 @@ class Cuenta::AmigosController < ApplicationController
       next unless params["email_invitation_eml#{i}"].to_s != ''
       next if SilencedEmail.find(:first, :conditions => ['lower(email) = lower(?)', params["email_invitation_eml#{i}"]])
       u = User.find(:first, :conditions => ['lower(email) = lower(?)', params["email_invitation_eml#{i}"]])
-      if u then # user is local, add as a local friendship, not external
-        next if Friendship.find_between(@user, u) # if there is already a friendship between them we do nothing
-        f = Friendship.new({:sender_user_id => @user.id, :receiver_user_id => u.id, :invitation_text => params["email_invitation_msg#{i}"]})
+      # user is local, add as a local friendship, not external
+      if u
+        # if there is already a friendship between them we do nothing
+        next if Friendship.find_between(@user, u)
+        f = Friendship.new(
+            :sender_user_id => @user.id,
+            :receiver_user_id => u.id,
+            :invitation_text => params["email_invitation_msg#{i}"])
       else
         f = Friendship.new({:sender_user_id => @user.id, :receiver_email => params["email_invitation_eml#{i}"], :invitation_text => params["email_invitation_msg#{i}"]})
       end
@@ -124,7 +129,13 @@ class Cuenta::AmigosController < ApplicationController
         else
           flash[:notice] = "#{u.login} todavía no ha aceptado tu amistad."
         end
-        params[:aj] ? render(:nothing => true): redirect_to("/cuenta/amigos")
+        if params[:aj]
+          @js_response = "$j('#friendship#{f.id}').fadeOut('normal');"
+          render :partial => '/shared/silent_ajax_feedback',
+                 :locals => { :js_response => @js_response }
+        else
+          redirect_to("/cuenta/amigos")
+        end
       end
     else # external user is coming
       @friendship = Friendship.find_by_external_invitation_key(params[:eik])
@@ -141,22 +152,31 @@ class Cuenta::AmigosController < ApplicationController
   end
 
   def cancelar_amistad
-    if params[:eid] then # cancel external mode
+    if params[:eid] then
+      # cancel external mode
       f = Friendship.find_by_external_invitation_key(params[:eid])
       if f
         f.destroy
-        flash[:notice] = "Invitación a <strong>#{f.receiver_email}</strong> cancelada correctamente."
+        flash[:notice] = ("Invitación a <strong>#{f.receiver_email}</strong>" +
+            " cancelada correctamente.")
       else
         flash[:error] = "La invitación especificada no existe."
       end
 
       if user_is_authed
-        params[:aj] ? render(:nothing => true): redirect_to("/cuenta/amigos")
+        if params[:aj]
+          @js_response = "$j('#friendship#{f.id}').fadeOut('normal');"
+          render :partial => '/shared/silent_ajax_feedback',
+                 :locals => { :js_response => @js_response }
+        else
+          redirect_to("/cuenta/amigos")
+        end
       else
         redirect_to "/cuenta/alta"
       end
     else
       require_auth_users
+
       if Cms::EMAIL_REGEXP =~ params[:login] then
         u = params[:login]
       else
@@ -171,7 +191,20 @@ class Cuenta::AmigosController < ApplicationController
       else
         flash[:error] = "No existe amistad entre tu y #{params[:login]}."
       end
-      params[:aj] ? render(:nothing => true): redirect_to("/cuenta/amigos")
+
+      if params[:aj]
+        if f.sender_user_id == @user.id
+          the_other = f.receiver_user_id
+        else
+          the_other = f.sender_user_id
+        end
+        @js_response = ("$j('#friendshipu#{the_other.id}').fadeOut('normal');"+
+            "$j('#friendship#{f.id}').fadeOut('normal');")
+        render :partial => '/shared/silent_ajax_feedback',
+               :locals => { :js_response => @js_response }
+      else
+        redirect_to("/cuenta/amigos")
+      end
     end
   end
 

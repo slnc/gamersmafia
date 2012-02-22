@@ -20,9 +20,8 @@ if pending_users.size > 0 then %>
 			<td style="text-align: right;">
         <%=link_to(
             'Cancelar',
-            :url => "/cuenta/amigos/cancelar_amistad/?#{cancel_params}&aj=1",
+            "/cuenta/amigos/cancelar_amistad/?#{cancel_params}&aj=1",
             :confirm => '¿Estás seguro de que deseas cancelar esta invitación?',
-            :complete => "$j('#friendship#{f.id}').fadeOut('normal');",
             :remote => true)%></td>
 		</tr>
 	<% end -%>
@@ -46,17 +45,15 @@ if received_pending.size > 0 then %>
         <%=link_to(
             '<img class="icon" title="Aceptar amistad" alt="Aceptar amistad"' +
             ' src="/skins/default/images/btn_aceptar_sm.png" />',
-            :url => "/cuenta/amigos/aceptar_amistad/#{f.sender.login}?aj=1",
-            :complete => "$j('#friendship#{f.id}').fadeOut('normal');",
+            "/cuenta/amigos/aceptar_amistad/#{f.sender.login}?aj=1",
             :remote => true)%>
       </td>
 			<td style="width: 117px; text-align: center;">
         <%=link_to(
             '<img class="icon" title="Rechazar amistad" alt="Rechazar' +
             ' amistad" src="/skins/default/images/btn_rechazar_sm.png" />',
-            :url => "/cuenta/amigos/cancelar_amistad/#{f.sender.login}?aj=1",
-            :complete => "$j('#friendship#{f.id}').fadeOut('normal');",
-            :Remote => true)%>
+            "/cuenta/amigos/cancelar_amistad/#{f.sender.login}?aj=1",
+            :remote => true)%>
       </td>
 		</tr>
 	<% end -%>
@@ -98,11 +95,10 @@ if friends.size == 0 then %>
 			<td class="w100 sm" style="text-align: right;">
         <%=link_to(
             'Terminar amistad',
-            :url => "/cuenta/amigos/cancelar_amistad/#{f.login}?aj=1",
+            "/cuenta/amigos/cancelar_amistad/#{f.login}?aj=1",
             :confirm => '¿Estás seguro de que deseas terminar con esta' +
                         ' amistad? Mira que nunca sabemos qué puede pasar en' +
                         ' el futuro..',
-            :complete => "$j('#friendshipu#{f.id}').fadeOut('normal');",
             :remote => true)%>
       </td>
 
