@@ -14,6 +14,8 @@ class Admin::TagsController < AdministrationController
     else
       uct.destroy
     end
-    render :nothing => true
+    @js_response = "$j('#tag#{uct.id}').fadeOut('normal');"
+    render :partial => '/shared/silent_ajax_feedback',
+           :locals => { :js_response => @js_response }
   end
 end

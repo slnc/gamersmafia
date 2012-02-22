@@ -160,7 +160,10 @@ class SlogController < ApplicationController
     else
       sle.mark_as_resolved(@user.id)
     end
-    render :nothing => true
+
+    @js_response = "$j('#sle#{sle.id}').fadeOut('normal');"
+    render :partial => '/shared/silent_ajax_feedback',
+           :locals => { :js_response => @js_response }
   end
 
   def slog_entry_assigntome

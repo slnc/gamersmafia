@@ -87,8 +87,11 @@ class Admin::UsuariosController < ApplicationController
   end
 
   def users_role_destroy
-    UsersRole.find(params[:id]).destroy
-    render :nothing => true
+    role = UsersRole.find(params[:id])
+    role.destroy
+    @js_response = "$j('#users_role#{role.id}').fadeOut('normal');"
+    render :partial => '/shared/silent_ajax_feedback',
+           :locals => { :js_response => @js_response }
   end
 
   def check_registered_on

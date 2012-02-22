@@ -17,6 +17,7 @@ Gamersmafia::Application.routes.draw do
   match 'admin/categorias/term/:id/hijos/:content_type' => 'admin/categorias#hijos'
   match 'admin/categorias/term/:id/update' => 'admin/categorias#update'
   match 'admin/contenidos' => 'admin/contenidos#index'
+  match 'admin/ip_bans(/:action)(/:id)' => 'admin/ip_bans'
   match 'admin/contenidos/:action' => 'admin/contenidos'
   match 'admin/usuarios' => 'admin/usuarios#index'
   match 'admin/usuarios/:action' => 'admin/usuarios'

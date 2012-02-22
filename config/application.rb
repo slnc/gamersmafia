@@ -47,6 +47,8 @@ module Gamersmafia
     # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
     config.encoding = "utf-8"
 
+    config.dependency_loading = true if $rails_rake_task
+
     config.filter_parameters += [:password]
 
     config.autoload_paths << File.join(config.root, 'lib')

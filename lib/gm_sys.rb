@@ -19,12 +19,14 @@ module GmSys
       return true
     rescue Errno::ESRCH
       return false
-    rescue ::Exception   # for example on EPERM (process exists but does not belong to us)
+    rescue ::Exception
+      # for example on EPERM (process exists but does not belong to us)
       return true
     end
   end
 
   def self.kill_workers
+    Rails.logger.warn("kill_workers temporarily disabled") && return
     # we kill all currently active workers and spawn a new one
     Dir.glob("#{Rails.root}/tmp/pids/delayed_worker.*.pid").each do |fname|
       m = /\.([0-9]+)\.pid$/.match(fname)
@@ -41,6 +43,7 @@ module GmSys
   end
 
   def self.check_workers_pids
+    Rails.logger.warn("check_workers_pids temporarily disabled") && return
     # we remove pids not refering to anyone
     working_workers = 0
     Dir.glob("#{Rails.root}/tmp/pids/delayed_worker.*.pid").each do |fname|
@@ -61,7 +64,7 @@ module GmSys
     if App.enable_bgjobs?
       Delayed::Job.enqueue(DjJobWrapper.new(task))
     else
-      Rails.logger.info("App.enable_bgjobs is down. Evaluating: #{task}")
+      Rails.logger.info("App.enable_bgjobs is disabled. Evaluating: #{task}")
       eval(task)
     end
   end
