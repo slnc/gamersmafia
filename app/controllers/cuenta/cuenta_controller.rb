@@ -429,9 +429,10 @@ class Cuenta::CuentaController < ApplicationController
   end
 
   def borrar_imagen
-    @user.del_my_file(params[:filename])
-    # render :nothing => true TODO error javascript al intentar borrar: components is not defined
-    render :nothing => true
+    counter = @user.del_my_file(params[:filename])
+    @js_response = "$j('#fid#{counter}').fadeOut('normal');"
+    render :partial => '/shared/silent_ajax_feedback',
+           :locals => { :js_response => @js_response }
   end
 
 

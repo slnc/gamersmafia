@@ -895,14 +895,18 @@ class User < ActiveRecord::Base
     d = "/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/"
   end
 
-  def del_my_file filename
+  def del_my_file(filename)
     # TODO revisar esto
+    counter = 0
     for f in self.get_my_files
       if f == filename then
         File.unlink("#{Rails.root}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/#{f}")
         break
+      else
+        counter += 1
       end
     end
+    counter
   end
 
   def get_my_files

@@ -62,8 +62,8 @@ for f in @user.get_my_files
     <td class="infoinline">
     <%=link_to(
         'Borrar',
-        :url => "/cuenta/imagenes/borrar?filename=#{File.basename(f)}&sEditorId=#{params[:sEditorId]}",
-        :complete => "$j('#fid#{fid}').fadeOut('normal');",
+        "/cuenta/imagenes/borrar?filename=#{File.basename(f)}&sEditorId=#{params[:sEditorId]}",
+        :confirm => '¿Estás seguro?',
         :remote => true)%>
     </td>
   </tr>
