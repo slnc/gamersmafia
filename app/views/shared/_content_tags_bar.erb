@@ -33,11 +33,14 @@ root_slugs<< this_root
 	</div>
 
 <% if user_is_authed then %>
-<div id="tag-this-content"><img src="/images/dot.gif" title="Añadir tag" class="floatl user-tag-icon-add ico16 sprite1" /></div>
-<div id="new-tag-input" style="display: none;"><% form_tag(:url =>
-    '/admin/contenidos/tag_content', :update => 'content-tags', :remote => true) do %>
-<input type="hidden" name="id" value="<%=object.id%>" />
-<input id="new-tag-input-text" type="text" name="tags" />
+<div id="tag-this-content">
+  <img src="/images/dot.gif" title="Añadir tag" class="floatl user-tag-icon-add ico16 sprite1" />
+</div>
+<div id="new-tag-input" style="display: none;">
+<% # TODO(slnc): crear el elemento por ajax %>
+<% form_tag('/admin/contenidos/tag_content') do %>
+  <input type="hidden" name="id" value="<%=object.id%>" />
+  <input id="new-tag-input-text" type="text" name="tags" />
 <% end -%>
 </div>
 
@@ -48,9 +51,7 @@ root_slugs<< this_root
     <%=link_to(
         '<img src="/images/dot.gif" title="Eliminar tag" class="floatl' +
         ' user-tag-icon-del ico16 sprite1" />',
-        :url => "/admin/contenidos/remove_user_tag/?id=#{uct.id}",
-        :update => 'content-tags',
-        :complete => "$j('#one-of-my-tags#{uct.id}').fadeOut('normal');",
+        "/admin/contenidos/remove_user_tag/?id=#{uct.id}",
         :remote => true)%>
   </div>
 	<%=uct.original_name%></div>
@@ -62,8 +63,15 @@ root_slugs<< this_root
 <% end %><%# if user_is_authed -%>
 
 <script type="text/javascript">
-$j('#tag-this-content').toggle(function () { $j('#new-tag-input-text').val(''); $j('#new-tag-input').toggle(); $j('#new-tag-input-text').focus(); },
-	function () { $j('#new-tag-input').toggle(); });
+$j('#tag-this-content').toggle(function () {
+    $j('#new-tag-input-text').val('');
+    $j('#new-tag-input').toggle();
+    $j('#new-tag-input-text').focus();
+  },
+
+	function () {
+    $j('#new-tag-input').toggle();
+  });
 
 $j('.one-of-my-tags').mouseover(function () { $j(this).children('.one-of-my-tags-ops').show(); } );
 $j('.one-of-my-tags').mouseout(function () { $j(this).children('.one-of-my-tags-ops').hide(); } );

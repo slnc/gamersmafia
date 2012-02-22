@@ -159,14 +159,18 @@ class Admin::ContenidosController < ApplicationController
     @content = Content.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @content
     UsersContentsTag.tag_content(@content, @user, params[:tags], delete_missing=false)
-    render :layout => false
+    render :nothing => true
   end
 
   def remove_user_tag
-    @uct = UsersContentsTag.find(:first, :conditions => ['user_id = ? AND id = ?', @user.id, params[:id]])
+    @uct = UsersContentsTag.find(
+        :first,
+        :conditions => ['user_id = ? AND id = ?', @user.id, params[:id]])
     raise ActiveRecord::RecordNotFound unless @uct
     @content = @uct.content
     @uct.destroy
-    render :layout => false
+    @js_response = "$j('#one-of-my-tags#{@uct.id}').fadeOut('normal');"
+    render :partial => '/shared/silent_ajax_feedback',
+           :locals => { :js_response => @js_response }
   end
 end

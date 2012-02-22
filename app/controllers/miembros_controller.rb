@@ -76,7 +76,9 @@ class MiembrosController < ComunidadController
     ps = ProfileSignature.find(params[:id])
     raise ActiveRecord::RecordNotFound unless ps
     ps.destroy
-    render :nothing => true
+    @js_response = "$j('#ps#{ps.id}').fadeOut('normal');"
+    render :partial => '/shared/silent_ajax_feedback',
+           :locals => { :js_response => @js_response }
   end
 
   def update_signature

@@ -76,9 +76,8 @@
   <div class="hidden infoinline delprofilesignature">
     <%=link_to(
         'Borrar',
-        :url => "/miembros/del_firma/#{ps.id}",
+        "/miembros/del_firma/#{ps.id}",
         :confirm => '¿Estás seguro?',
-        :complete => "$j('#ps#{ps.id}').fadeOut('normal');",
         :remote => true)%>
   </div>
     <div style="float: left;"><img src="<%=ASSET_URL%>/cache/thumbnails/f/32x32<%=ps.signer.show_avatar%>" /></div>
