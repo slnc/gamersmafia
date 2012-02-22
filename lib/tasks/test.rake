@@ -1,5 +1,3 @@
-#require 'lib/redefine_task'
-
 desc 'Batería de tests por defecto'
 redefine_task :test => :environment do
   Rails.env = 'test'

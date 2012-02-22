@@ -8,11 +8,12 @@ namespace :gm do
     rescue
     end
 
-    Rake::Task['gm:alariko'].invoke
+    # Rake::Task['gm:alariko'].invoke
     clear_anonymous_users
     clear_faith_points_of_referers_and_resurrectors
-    pay_faith_prices
-    send_happy_birthday
+    # DO NOT SUBMIT
+    # pay_faith_prices
+    # send_happy_birthday
     switch_inactive_users_to_zombies
     clear_file_caches
     send_reports_to_publisher_if_on_due_date

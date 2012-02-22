@@ -1,5 +1,5 @@
 namespace :db do
-  desc 'Create YAML test fixtures from data in an existing database.  
+  desc 'Create YAML test fixtures from data in an existing database.
   Defaults to development database. Set Rails.env to override.'
   task :extract_fixtures => :environment do
     sql = "SELECT * FROM %s"

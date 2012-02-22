@@ -8,9 +8,9 @@ namespace :gm do
     Chatline.create({:line => "slnc ha actualizado el motor de la web a la versión #{AppR.ondisk_git_version}", :user_id => mralariko_id})
     Cms.uncompress_ckeditor_if_necessary
     n = News.create(:title => "Gamersmafia actualizada a la versión #{AppR.ondisk_git_version}",
-                :description => Comments::formatize(open("#{Rails.root}/public/storage/gitlog").read),
-                :user_id => 1, 
+                :description => open("#{Rails.root}/public/storage/gitlog").read,
+                :user_id => 1,
                 :state => Cms::DRAFT)
-    Term.single_toplevel(:slug => 'gmversion').link(n.unique_content)                
+    Term.single_toplevel(:slug => 'gmversion').link(n.unique_content)
   end
 end
