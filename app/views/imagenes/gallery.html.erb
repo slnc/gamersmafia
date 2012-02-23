@@ -35,7 +35,7 @@
 <div class="imagesgallery">
 <%
 images = Image.in_term(@category).published.paginate(
-    :page => params[:page], :per_page => 15)
+    :page => params[:page], :per_page => 15, :order => 'id')
 %>
 <%= render :partial => 'shared/pager2',
            :locals => {:collection => images, :pos => 'top'} %>

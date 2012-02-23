@@ -8,25 +8,26 @@ class ImagenesController < BazarController
     raise ActiveRecord::RecordNotFound unless @category
     @title = @category.name
     if not @category.parent_id then
-      @navpath = [['Imágenes', '/imagenes'], [@category.name, "/imagenes/#{@category.id}"]]
+      @navpath = [
+          ['Imágenes', '/imagenes'],
+          [@category.name, "/imagenes/#{@category.id}"],
+      ]
       render :action => 'toplevel'
     else
-      @navpath = [['Imágenes', '/imagenes'], [@category.parent.name, "/imagenes/#{@category.parent.id}"], [@category.name, "/imagenes/#{@category.id}"]]
+      @navpath = [
+          ['Imágenes', '/imagenes'],
+          [@category.parent.name, "/imagenes/#{@category.parent.id}"],
+          [@category.name, "/imagenes/#{@category.id}"],
+      ]
       render :action => 'gallery'
     end
   end
 
   def index
     @categories = portal.categories(Image)
-    #if @categories.size == 1 && @categories[0].slug != 'gm'
     @navpath = [['Imágenes', '/imagenes'], ]
     @category = @categories[0]
     render :action => 'toplevel'
-    #else
-    #  @title = "Imágenes"
-    #  @navpath = [['Imágenes', '/imagenes'], ]
-    #  render :action => 'index'
-    #end
   end
 
   def toplevel
