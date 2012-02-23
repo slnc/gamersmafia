@@ -36,8 +36,9 @@ class ForosController < ComunidadController
     @navpath = [] # [['Foros', '/foros'], [@forum.parent.name]
 
     # TODO usar get_category_ascendants y print_forum_path
+    # TODO pintar la ruta completa de acceso
     while forum_for_title != nil do
-      @title = forum_for_title.name  + ' &raquo; ' + @title# TODO pintar la ruta completa de acceso
+      @title = forum_for_title.name  + ' &raquo; ' + @title
       @navpath<< [forum_for_title.name, "/foros/forum/#{forum_for_title.id}"]
       forum_for_title = forum_for_title.parent
     end
