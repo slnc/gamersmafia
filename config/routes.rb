@@ -46,7 +46,7 @@ Gamersmafia::Application.routes.draw do
   match 'cuenta/avatar' => 'cuenta/cuenta#avatar'
   match 'cuenta/banco' => 'cuenta/banco#index'
   match 'cuenta/blog' => 'cuenta/blog#index'
-  match 'cuenta/blog/:action/:id' => 'cuenta/blog#index'
+  match 'cuenta/blog/:action(/:id)' => 'cuenta/blog'
   match 'cuenta/clanes' => 'cuenta/clanes/general#index'
   match 'cuenta/clanes/:action' => 'cuenta/clanes/general'
   match 'cuenta/clanes/general/:action' => 'cuenta/clanes/general'
