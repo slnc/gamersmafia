@@ -149,6 +149,7 @@ Gamersmafia::Application.routes.draw do
   match 'site/slog.:format' => 'site#slog'
   match 'site/sponsors' => 'site#sponsors'
   match 'site/sponsors/:sponsor' => 'site#sponsor'
+  match 'site/:action(/:id)' => 'site'
   match 'slog' => 'slog#index'
   match 'slog/:action(/:id)' => 'slog'
   match 'tutoriales/:category' => 'tutoriales#index', :constraints => { :category => /\d+/ }
