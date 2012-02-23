@@ -6,6 +6,7 @@ Gamersmafia::Application.routes.draw do
 
   match 'account/messages' => 'account#messages'
   match 'account/messages/:id' => 'account#show_message'
+  match 'admin/bazar_districts(/:action)(/:id)' => 'admin/bazar_districts'
   match 'admin/categorias/' => 'admin/categorias#index'
   match 'admin/clanes/(:action)(/:id)' => 'admin/clanes'
   match 'admin/juegos(/:action)' => 'admin/juegos'
