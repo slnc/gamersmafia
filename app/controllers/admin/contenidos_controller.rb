@@ -159,7 +159,8 @@ class Admin::ContenidosController < ApplicationController
     @content = Content.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @content
     UsersContentsTag.tag_content(@content, @user, params[:tags], delete_missing=false)
-    render :nothing => true
+    # TODO(slnc): crear los tags por ajax en lugar de redirigir
+    redirect_to gmurl(@content)
   end
 
   def remove_user_tag

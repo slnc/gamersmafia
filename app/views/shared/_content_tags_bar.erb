@@ -36,11 +36,11 @@ root_slugs<< this_root
 <div id="tag-this-content">
   <img src="/images/dot.gif" title="Añadir tag" class="floatl user-tag-icon-add ico16 sprite1" />
 </div>
-<div id="new-tag-input" style="display: none;">
+<div id="new-tag-input">
 <% # TODO(slnc): crear el elemento por ajax %>
-<% form_tag('/admin/contenidos/tag_content') do %>
+<%= form_tag('/admin/contenidos/tag_content') do %>
   <input type="hidden" name="id" value="<%=object.id%>" />
-  <input id="new-tag-input-text" type="text" name="tags" />
+  <input style="display: none;" id="new-tag-input-text" type="text" name="tags" />
 <% end -%>
 </div>
 
@@ -63,18 +63,20 @@ root_slugs<< this_root
 <% end %><%# if user_is_authed -%>
 
 <script type="text/javascript">
-$j('#tag-this-content').toggle(function () {
-    $j('#new-tag-input-text').val('');
-    $j('#new-tag-input').toggle();
+$j('#tag-this-content').click(function () {
+  var text_input = $j('#new-tag-input-text');
+  text_input.toggle();
+  if (text_input.is(":visible")) {
     $j('#new-tag-input-text').focus();
-  },
+  }
+});
 
-	function () {
-    $j('#new-tag-input').toggle();
-  });
-
-$j('.one-of-my-tags').mouseover(function () { $j(this).children('.one-of-my-tags-ops').show(); } );
-$j('.one-of-my-tags').mouseout(function () { $j(this).children('.one-of-my-tags-ops').hide(); } );
+$j('.one-of-my-tags').mouseover(function () {
+  $j(this).children('.one-of-my-tags-ops').show();
+});
+$j('.one-of-my-tags').mouseout(function () {
+  $j(this).children('.one-of-my-tags-ops').hide();
+});
 </script>
 
 
