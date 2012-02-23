@@ -1,6 +1,7 @@
 <% root_term = Term.single_toplevel(faction.referenced_thing_field => faction.referenced_thing.id)
   Cms::CONTENTS_WITH_CATEGORIES.each do |cls_name|
-    last = root_term.last_published_content(cls_name)
+    last = Object.const_get(cls_name).in_term_tree(root_term).published.find(
+        :last, :order => 'id DESC')
     max_t = Time.now.to_i - (Time.now.to_i - 86400 * 14)
     %><div class="<%=oddclass%>">
       <strong><%=Cms::translate_content_name(cls_name).capitalize%></strong><br />
