@@ -9,10 +9,9 @@ class EncuestasController < InformacionController
     @poll = Poll.new
     one_hour_since = 2.hours.since
     if @user.faction_id then
-      last = Term.single_toplevel(
-        :slug => @user.faction.code).published.find(
+      faction_root = Term.single_toplevel(:slug => @user.faction.code)
+      last = Poll.in_term(faction_root).published.find(
           :all,
-          :content_type => 'Poll',
           :order => 'created_on DESC',
           :limit => 1)
       last = last.size > 0 ? last[0] : nil
