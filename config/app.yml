@@ -48,6 +48,7 @@ development: &development
   cache_templates_in_production: false
   compress_js?: false
   compress_skins?: false
+  debug: false
   domain: gamersmafia.dev
   domain_arena: arena.gamersmafia.dev
   domain_bazar: bazar.gamersmafia.dev

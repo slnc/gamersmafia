@@ -1,5 +1,6 @@
 class Coverage < ActiveRecord::Base
   acts_as_content
+  acts_as_categorizable
   belongs_to :event
 
   has_one :content, :foreign_key => 'external_id'
@@ -8,4 +9,5 @@ class Coverage < ActiveRecord::Base
   def main_category
     event.main_category
   end
+
 end

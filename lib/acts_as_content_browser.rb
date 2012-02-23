@@ -58,7 +58,8 @@ module ActsAsContentBrowser
     define_method 'create' do
       _before_create if respond_to?(:_before_create)
 
-      cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
+      cls = ActiveSupport::Inflector::constantize(
+          ActiveSupport::Inflector::camelize(content_name))
       obj = cls.new(params[ActiveSupport::Inflector::underscore(content_name)])
 
       obj.user_id = @user.id
@@ -69,23 +70,40 @@ module ActsAsContentBrowser
       else Cms::PENDING
       end
 
-      instance_variable_set("@#{ActiveSupport::Inflector::underscore(content_name)}", obj)
+      instance_variable_set(
+          "@#{ActiveSupport::Inflector::underscore(content_name)}", obj)
       if Cms.user_can_create_content(@user)
         if obj.respond_to?(:game_id) && params[:root_terms].nil?
-          params[:root_terms] = [Term.single_toplevel(:game_id => obj.game_id).id]
+          params[:root_terms] = [
+              Term.single_toplevel(:game_id => obj.game_id).id]
+        end
+
+        # TODO(slnc): hack para coverages
+        if (obj.respond_to?(:event_id) && params[:root_terms].nil? &&
+            params[:coverage][:event_id])
+          params[:root_terms] = [
+              Event.find_or_404(
+                  params[:coverage][:event_id]).main_category.root_id]
         end
 
         # chequeamos que se haya especificado categoría
-        if (Cms::CATEGORIES_TERMS_CONTENTS.include?(content_name) && (!params[:categories_terms] || params[:categories_terms].size == 0 || params[:categories_terms][0].to_i == 0)) ||
-         (Cms::ROOT_TERMS_CONTENTS.include?(content_name)  && (!params[:root_terms] || params[:root_terms].size == 0 || params[:root_terms][0].to_i == 0))
-          flash[:error] = "Debes elegir al menos una categoría para este contenido."
+        if (Cms::CATEGORIES_TERMS_CONTENTS.include?(content_name) &&
+            (!params[:categories_terms] ||
+             params[:categories_terms].size == 0 ||
+             params[:categories_terms][0].to_i == 0)) ||
+            (Cms::ROOT_TERMS_CONTENTS.include?(content_name) &&
+             (!params[:root_terms] || params[:root_terms].size == 0 ||
+              params[:root_terms][0].to_i == 0))
+          flash[:error] = (
+            "Debes elegir al menos una categoría para este contenido.")
           render :action => 'new' and return
         end
 
         if obj.save
           # enlazamos
           proc_terms(obj)
-          obj.process_wysiwyg_fields # TODO lo estamos haciendo en _dos sitios_ ???
+          # TODO lo estamos haciendo en _dos sitios_ ???
+          obj.process_wysiwyg_fields
           flash[:notice] = "Contenido de tipo <strong>#{Cms::CLASS_NAMES[cls.name]}</strong> creado correctamente."
           UsersContentsTag.tag_content(obj.unique_content, @user, params[:tags], delete_missing=false) if params[:tags]
           if obj.state == Cms::DRAFT

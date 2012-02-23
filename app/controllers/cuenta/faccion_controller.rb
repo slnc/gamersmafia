@@ -29,8 +29,8 @@ class Cuenta::FaccionController < ApplicationController
   end
 
   def user_is_boss(user, faction)
-    if ((faction.boss and faction.boss.id == user.id) or
-     (faction.underboss and faction.underboss.id == user.id))
+    if ((faction.boss && faction.boss.id == user.id) ||
+        (faction.underboss && faction.underboss.id == user.id))
       true
     else
       false

@@ -29,7 +29,24 @@ module Cms
   # Este módulo contiene toda la información de todos los tipos de contenidos
   # específicos
   # Atributos comunes a todas las clases de contenidos
-  COMMON_CLASS_ATTRIBUTES = [:created_on, :updated_on, :user_id, :approved_by_user_id, :hits_registered, :hits_anonymous, :cache_rating, :cache_rated_times, :cache_weighted_rank, :cache_comments_count, :log, :state, :closed, :terms, :source]
+  COMMON_CLASS_ATTRIBUTES = [
+      :created_on,
+      :updated_on,
+      :user_id,
+      :approved_by_user_id,
+      :hits_registered,
+      :hits_anonymous,
+      :cache_rating,
+      :cache_rated_times,
+      :cache_weighted_rank,
+      :cache_comments_count,
+      :log,
+      :state,
+      :closed,
+      :terms,
+      :source,
+  ]
+
   DRAFT = 0
   PENDING = 1
   PUBLISHED = 2
@@ -50,105 +67,189 @@ module Cms
 
   IMAGE_FORMAT = /\.(jpg|gif|png|jpeg|bmp)$/i
 
-  ROOT_TERMS_CONTENTS = %w(News Bet Poll Event Coverage Interview Column Review Demo RecruitmentAd)
-  CATEGORIES_TERMS_CONTENTS = %w(Image Download Topic Tutorial Question)
-  NO_MODERATION_NEEDED_CONTENTS = %w(Topic Blogentry Question RecruitmentAd)
-  DONT_PARSE_IMAGES_OF_CONTENTS = %w(Topic Blogentry RecruitmentAd)
-  AUTHOR_CAN_EDIT_CONTENTS = %w(Blogentry RecruitmentAd)
+  ROOT_TERMS_CONTENTS = %w(
+      Bet
+      Column
+      Coverage
+      Demo
+      Event
+      Interview
+      News
+      Poll
+      RecruitmentAd
+      Review
+  )
 
-  CONTENTS_WITH_CATEGORIES = %w(Column Download Demo Topic Image Interview News Tutorial Poll Bet Review Event Question RecruitmentAd)
-  BAZAR_DISTRICTS_VALID = %w(Column Interview Tutorial News Topic Image Poll Bet Review Event Question Download)
-  BAZAR_DISTRICTS_REQUIRED = %w(News Topic Poll Question)
-  CLANS_CONTENTS = %w(News Topic Download Image Event Poll)
+  CATEGORIES_TERMS_CONTENTS = %w(
+      Image
+      Download
+      Topic
+      Tutorial
+      Question
+  )
 
-  SAFE_PUBLICATION_THRESHOLDS = {'News' => 86400 * 14,
-                                'Image' => 86400 * 14,
-                                'Event' => 86400 * 14,
-                                'Coverage' => 86400 * 14,
-                                'Download' => 86400 * 14,
-                                'Demo' => 86400 * 14,
-                                'Question' => 86400 * 14,
-                                'RecruitmentAd' => 86400 * 14,
-                                'Tutorial' => 86400 * 30,
-                                'Column' => 86400 * 30,
-                                'Interview' => 86400 * 60,
-                                'Poll' => 86400 * 14,
-                                'Bet' => 86400 * 7,
-                                'Review' => 86400 * 30 }
+  NO_MODERATION_NEEDED_CONTENTS = %w(
+      Topic
+      Blogentry
+      Question
+      RecruitmentAd
+  )
 
-  WYSIWYG_ATTRIBUTES = {
-    'News' => ['description', 'main'],
-    'Image' => ['description'],
-    'Event' => ['description'],
-    'Coverage' => ['description', 'main'],
-    'Download' => ['description'],
-    'Demo' => ['description'],
-    'Tutorial' => ['description', 'main'],
-    'Poll' => [],
-    'Question' => ['description'],
-    'Bet' => ['description'],
-    'Funthing' => ['description'],
-    'Interview' => ['description', 'main'],
-    'Column' => ['description', 'main'],
-    'Review' => ['description', 'main'],
+  DONT_PARSE_IMAGES_OF_CONTENTS = %w(
+      Blogentry
+      RecruitmentAd
+      Topic
+  )
+
+  AUTHOR_CAN_EDIT_CONTENTS = %w(
+      Blogentry
+      RecruitmentAd
+  )
+
+  CONTENTS_WITH_CATEGORIES = %w(
+      Bet
+      Column
+      Coverage
+      Demo
+      Download
+      Event
+      Image
+      Interview
+      News
+      Poll
+      Question
+      RecruitmentAd
+      Review
+      Topic
+      Tutorial
+  )
+
+  BAZAR_DISTRICTS_VALID = %w(
+      Bet
+      Column
+      Download
+      Event
+      Image
+      Interview
+      News
+      Poll
+      Question
+      Review
+      Topic
+      Tutorial
+  )
+
+  BAZAR_DISTRICTS_REQUIRED = %w(
+      News
+      Poll
+      Question
+      Topic
+  )
+
+  CLANS_CONTENTS = %w(
+      News
+      Topic
+      Download
+      Image
+      Event
+      Poll
+  )
+
+  SAFE_PUBLICATION_THRESHOLDS = {
+      'Bet' => 86400 * 7,
+      'Column' => 86400 * 30,
+      'Coverage' => 86400 * 14,
+      'Demo' => 86400 * 14,
+      'Download' => 86400 * 14,
+      'Event' => 86400 * 14,
+      'Image' => 86400 * 14,
+      'Interview' => 86400 * 60,
+      'News' => 86400 * 14,
+      'Poll' => 86400 * 14,
+      'Question' => 86400 * 14,
+      'RecruitmentAd' => 86400 * 14,
+      'Review' => 86400 * 30,
+      'Tutorial' => 86400 * 30,
   }
 
-  CLASS_NAMES = {'News' => 'noticia',
-                'Image' => 'imagen',
-                'Download' => 'descarga',
-                'Demo' => 'demo',
-                'Topic' => 'tópic',
-                'Blogentry' => 'entrada de blog',
-                'Question' => 'pregunta',
-                'Poll' => 'encuesta',
-                'Bet' => 'apuesta',
-                'Event' => 'evento',
-                'Tutorial' => 'tutorial',
-                'Column' => 'columna',
-                'Interview' => 'entrevista',
-                'RecruitmentAd' => 'anuncio de reclutamiento',
-                'Review' => 'review',
-                'Funthing' => 'curiosidad',
-                'Coverage' => 'coverage',
-                'Comments' => 'comentario',
+  WYSIWYG_ATTRIBUTES = {
+      'Bet' => ['description'],
+      'Column' => ['description', 'main'],
+      'Coverage' => ['description', 'main'],
+      'Demo' => ['description'],
+      'Download' => ['description'],
+      'Event' => ['description'],
+      'Funthing' => ['description'],
+      'Image' => ['description'],
+      'Interview' => ['description', 'main'],
+      'News' => ['description', 'main'],
+      'Poll' => [],
+      'Question' => ['description'],
+      'Review' => ['description', 'main'],
+      'Tutorial' => ['description', 'main'],
+  }
+
+  CLASS_NAMES = {
+      'Bet' => 'apuesta',
+      'Blogentry' => 'entrada de blog',
+      'Column' => 'columna',
+      'Comments' => 'comentario',
+      'Coverage' => 'coverage',
+      'Demo' => 'demo',
+      'Download' => 'descarga',
+      'Event' => 'evento',
+      'Funthing' => 'curiosidad',
+      'Image' => 'imagen',
+      'Interview' => 'entrevista',
+      'News' => 'noticia',
+      'Poll' => 'encuesta',
+      'Question' => 'pregunta',
+      'RecruitmentAd' => 'anuncio de reclutamiento',
+      'Review' => 'review',
+      'Topic' => 'tópic',
+      'Tutorial' => 'tutorial',
   }
 
   def self.contents_classes
-    [News,
-    Image,
-    Event,
-    Download,
-    Demo,
-    Tutorial,
-    Interview,
-    Poll,
-    Bet,
-    Question,
-    Column,
-    Coverage,
-    Review,
-    Funthing,
-    RecruitmentAd,
-    Topic]
+    [
+     Bet,
+     Column,
+     Coverage,
+     Demo,
+     Download,
+     Event,
+     Funthing,
+     Image,
+     Interview,
+     News,
+     Poll,
+     Question,
+     RecruitmentAd,
+     Review,
+     Topic,
+     Tutorial,
+    ]
   end
 
   def self.contents_classes_symbols
-    [:news,
-    :image,
-    :event,
-    :download,
-    :demo,
-    :tutorial,
-    :interview,
-    :poll,
-    :recruitment_ad,
-    :bet,
-    :column,
-    :coverage,
-    :question,
-    :review,
-    :funthing,
-    :topic]
+    [
+     :bet,
+     :column,
+     :coverage,
+     :demo,
+     :download,
+     :event,
+     :funthing,
+     :image,
+     :interview,
+     :news,
+     :poll,
+     :question,
+     :recruitment_ad,
+     :review,
+     :topic,
+     :tutorial,
+    ]
   end
 
   def self.contents_classes_publishable
