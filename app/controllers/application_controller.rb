@@ -295,12 +295,11 @@ Request information:
     @rescuiing || false
   end
 
-  unless Rails.application.config.consider_all_requests_local || App.debug
+  unless Rails.application.config.consider_all_requests_local
     rescue_from Exception, :with => :render_error
   end
 
   def render_error(exception)
-    logging.warn("#{App.debug}")
     @rescuiing = true
     case exception
       when ActiveRecord::RecordNotFound

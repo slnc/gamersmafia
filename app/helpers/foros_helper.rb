@@ -26,7 +26,7 @@ module ForosHelper
 
   def get_topics(forum)
     Topic.published.in_term(forum).paginate(
-      :order => "sticky, updated_on DESC",
+      :order => "sticky DESC, updated_on DESC",
       :page => params[:page],
       :per_page => 50)
   end

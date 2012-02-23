@@ -43,13 +43,19 @@
           <p>El clan <%=last_clan.tag%> no puede inscribirse porque no ha sido invitado a esta competición.</p>
           <% else %>
             <% if competition.fee %>
-            <div class="centered">Coste participación: <span style="font-weight: bold;"><%=competition.fee%></span><%=gmd12%></div>
+            <div class="centered">
+              Coste participación:
+              <span style="font-weight: bold;"><%=competition.fee%></span>
+              <%=gmd12%>
+            </div>
             <% end -%>
 
             <% if competition.fee and last_clan.cash < competition.fee then %>
               <p>Tu clan no tiene suficientes <%=gmd12%> para inscribirse.</p>
             <% else %>
-              <div class="centered-link"><input type="submit" class="button" value="Inscribir a <%=tohtmlattribute(last_clan.tag)%>" onclick="return confirm('¿Estás seguro?');" /></div>
+              <div class="centered-link">
+                <input type="submit" class="button" value="Inscribir a <%=tohtmlattribute(last_clan.tag)%>" onclick="return confirm('¿Estás seguro?');" />
+              </div>
             <% end -%>
           <% end -%>
         </form>
