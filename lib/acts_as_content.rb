@@ -550,6 +550,13 @@ module ActsAsContent
         raise 'impossible' unless [Cms::PENDING, Cms::PUBLISHED, Cms::ONHOLD, Cms::DRAFT].include?(self.state)
         self.log_action('borrado', editor)
         del_karma if self.state == Cms::PUBLISHED
+        ContentsRecommendation.find(
+            :all,
+            :conditions => ['content_id = ?',
+                            self.unique_content_id]).each do |cr|
+          cr.destroy
+        end
+
         when Cms::ONHOLD:
         raise 'impossible' unless [Cms::PUBLISHED, Cms::DELETED, Cms::ONHOLD].include?(self.state)
         self.log_action('movido a espera', editor)
