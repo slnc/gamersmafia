@@ -1,13 +1,13 @@
 class CreateStaffPositions < ActiveRecord::Migration
   def change
     User.db_query(<<-END
-    CREATE TABLE staff_types(
+    CREATE TABLE staff_positions(
         id serial primary key not null,
         staff_type_id int not null references staff_types(id) match full,
         state varchar not null default 'unassigned',
         term_started_on timestamp,
         term_ends_on timestamp,
-        staff_candidate_id int,
+        staff_candidate_id int
         );
     END
     )

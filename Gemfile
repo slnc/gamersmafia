@@ -1,6 +1,6 @@
 source :rubygems
 
-# TODO(slnc): add exception notifier plugin back
+gem "aasm"
 gem "ai4r"
 gem "deadlock_retry"
 gem "delayed_job", "~> 3.0.1"

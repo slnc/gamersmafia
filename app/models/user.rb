@@ -101,6 +101,7 @@ class User < ActiveRecord::Base
   has_many :tracker_items
   has_many :user_login_changes
   has_many :users_newsfeeds
+  has_many :staff_candidates
 
   has_many :users_guids
 

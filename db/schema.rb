@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120225171915) do
+ActiveRecord::Schema.define(:version => 20120225175205) do
 
   create_table "ab_tests", :id => false, :force => true do |t|
     t.integer  "id",                                                                                              :null => false
@@ -1713,6 +1713,24 @@ ActiveRecord::Schema.define(:version => 20120225171915) do
     t.decimal  "price_paid",                :precision => 14, :scale => 2,                    :null => false
     t.boolean  "used",                                                     :default => false, :null => false
     t.string   "type",       :limit => nil
+  end
+
+  create_table "staff_candidates", :force => true do |t|
+    t.integer  "staff_position_id",                :null => false
+    t.datetime "created_on",                       :null => false
+    t.datetime "updated_on",                       :null => false
+    t.integer  "user_id",                          :null => false
+    t.string   "key_result1",       :limit => nil
+    t.string   "key_result2",       :limit => nil
+    t.string   "key_result3",       :limit => nil
+  end
+
+  create_table "staff_positions", :force => true do |t|
+    t.integer  "staff_type_id",                                               :null => false
+    t.string   "state",              :limit => nil, :default => "unassigned", :null => false
+    t.datetime "term_started_on"
+    t.datetime "term_ends_on"
+    t.integer  "staff_candidate_id"
   end
 
   create_table "staff_types", :force => true do |t|

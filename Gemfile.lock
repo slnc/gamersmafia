@@ -9,6 +9,8 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    aasm (3.0.3)
+      activerecord
     actionmailer (3.2.1)
       actionpack (= 3.2.1)
       mail (~> 2.4.0)
@@ -125,6 +127,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  aasm
   ai4r
   deadlock_retry
   delayed_job (~> 3.0.1)
