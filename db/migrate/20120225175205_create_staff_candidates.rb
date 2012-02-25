@@ -9,7 +9,10 @@ class CreateStaffCandidates < ActiveRecord::Migration
         user_id int not null references users(id) match full,
         key_result1 varchar,
         key_result2 varchar,
-        key_result3 varchar
+        key_result3 varchar,
+        is_winner bool not null default 'f',
+        term_starts_on timestamp,
+        term_ends_on timestamp
     );
     END
     )

@@ -2393,7 +2393,10 @@ CREATE TABLE staff_candidates (
     user_id integer NOT NULL,
     key_result1 character varying,
     key_result2 character varying,
-    key_result3 character varying
+    key_result3 character varying,
+    is_winner boolean DEFAULT false NOT NULL,
+    term_starts_on timestamp without time zone,
+    term_ends_on timestamp without time zone
 );
 CREATE SEQUENCE staff_candidates_id_seq
     START WITH 1

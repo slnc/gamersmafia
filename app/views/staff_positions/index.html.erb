@@ -1,0 +1,38 @@
+<% generic_support do %>
+  <%mftable('Candidaturas abiertas',
+            StaffPosition.candidacy_presentation.find(
+              :all, :order => 'term_started_on, lower(staff_types.name)',
+              :include => [:staff_type]) do |staff_position| %>
+    <td><%=link_to(staff_position.staff_type.name,
+                   staff_position_path(staff_position))%></td>
+  <% end -%>
+
+  <%mftable('En votación',
+            StaffPosition.voting.find(
+              :all, :order => 'term_started_on, lower(staff_types.name)',
+              :include => [:staff_type]) do |staff_position| %>
+    <td><%=link_to(staff_position.staff_type.name,
+                   staff_position_path(staff_position))%></td>
+  <% end -%>
+<% end %>
+
+<% content_main do %>
+  <% mftext('Staff de Gamersmafia') do %>
+    <table>
+      <tr>
+        <th>Posición</th>
+        <th>Miembros</th>
+      </tr>
+    <% StaffPosition.assigned.find(
+           :all,
+           :order => 'lower(name)',
+           :include => [:staff_type,
+                        :staff_candidate]).each do |staff_position| %>
+      <tr>
+        <td><%=staff_position.staff_type.name%></td>
+        <td><%=staff_position.staff_candidate.user.login%></td>
+      </tr>
+    <% end -%>
+    </table>
+  <% end -%>
+<% end -%>
