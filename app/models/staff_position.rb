@@ -1,6 +1,7 @@
 class StaffPosition < ActiveRecord::Base
   include AASM
   belongs_to :staff_candidate
+  belongs_to :user, :through => :staff_candidate
 
   aasm :column => :state do
     state :unassigned, :initial => true
