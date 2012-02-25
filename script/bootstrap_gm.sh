@@ -61,7 +61,7 @@ Bootstrap() {
 }
 
 DownloadMiscConfigFiles() {
-  BOOTSTRAP_GITHUB_URL=https://raw.github.com/slnc/gamersmafia/production/script/bootstrap
+  BOOTSTRAP_GITHUB_URL=https://raw.github.com/gamersmafia/gamersmafia/production/script/bootstrap
   mkdir -p ~/.vim/sessions
   wget -O ~/.vimrc vrc=${BOOTSTRAP_GITHUB_URL}/.vimrc
   wget -O ~/.gitconfig ${BOOTSTRAP_GITHUB_URL}/.gitconfig

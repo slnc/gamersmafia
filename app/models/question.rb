@@ -177,6 +177,8 @@ class Question < ActiveRecord::Base
 
   def self.top_sages(category=nil, limit=10)
     res = []
+    # TODO(slnc): simplicar las queries SQL haciendo 2, una para obtener el top
+    # y otra para cargar los usuarios.
     if category.nil?
       User.db_query("SELECT count(*) as points,
                           a.id,
@@ -202,7 +204,7 @@ class Question < ActiveRecord::Base
         res<< {:user => User.new(dbu.block_sym(:points)), :points => dbu['points'].to_i}
       end
     else
-      User.db_query("SELECT count(*) as points,
+      User.db_query("SELECT count(a.id) as points,
                           a.id,
                           a.avatar_id,
                           a.login,
@@ -222,7 +224,7 @@ class Question < ActiveRecord::Base
                           a.avatar_id,
                           a.cache_karma_points,
                           a.cache_faith_points
-                 ORDER BY count(distinct(a.id)) DESC,
+                 ORDER BY count(a.id) DESC,
                           lower(a.login)
                     LIMIT #{limit}").each do |dbu|
         res<< {:user => User.new(dbu.block_sym(:points)), :points => dbu['points'].to_i}
