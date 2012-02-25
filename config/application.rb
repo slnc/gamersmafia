@@ -78,5 +78,8 @@ module Gamersmafia
 
     # Disable auto explains
     config.active_record.auto_explain_threshold_in_seconds = nil
+
+    # Disable ip spoofing as it gives too many false positives
+    config.action_dispatch.ip_spoofing_check = false
   end
 end
