@@ -1,5 +1,7 @@
 Gamersmafia::Application.routes.draw do
-  resources :staff_positions, :path => 'staff'
+  resources :staff_positions, :path => "staff" do
+    resources :staff_types, :path => "candidato"
+  end
 
   resources :tags
   namespace :admin do
