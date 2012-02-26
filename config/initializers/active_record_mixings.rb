@@ -152,3 +152,4 @@ ActiveRecord::Base.class_eval do
 end
 
 ActiveRecord::Base.send :include, ActiveRecordMixings
+ActiveRecord::Base.partial_updates = false

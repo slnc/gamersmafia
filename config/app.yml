@@ -2,6 +2,7 @@
 # directly.
 common: &common
   asset_domain: gamersmafia.com
+  asset_url: http://gamersmafia.com
   cache_templates_in_production: true
   compress_js?: true
   compress_skins?: true
@@ -45,6 +46,7 @@ common: &common
 # Basic roles.
 development: &development
   asset_domain: gamersmafia.dev
+  asset_url: http://gamersmafia.dev
   cache_templates_in_production: false
   compress_js?: false
   compress_skins?: false

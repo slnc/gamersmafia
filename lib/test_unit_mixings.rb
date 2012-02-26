@@ -122,11 +122,7 @@ module Test::Unit::Assertions
     Tempfile.open('feed', path.cleanpath) do |tmpfile|
       tmpfile.write(content)
       tmpfile.flush
-      if App.platform == WINDOWS
-        result = `python "#{validate.gsub('/', '\\')}" "file:///#{tmpfile.path.gsub('/', '\\')}" A`
-      else
-        result = `python "#{validate}" "#{tmpfile.path}" A`
-      end
+      result = `python "#{validate}" "#{tmpfile.path}" A`
       unless result =~ /No errors or warnings/
         out = ''
         i = 1

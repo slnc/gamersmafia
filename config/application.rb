@@ -1,3 +1,5 @@
+#require `gem which memprof/signal`.chomp
+
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
@@ -9,7 +11,7 @@ include Log4r
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
-  Bundler.require(*Rails.groups(:assets => %w(development test)))
+  # Bundler.require(*Rails.groups(:assets => %w(development test)))
   # If you want your assets lazily compiled in production, use this line
   # Bundler.require(:default, :assets, Rails.env)
 end
@@ -47,7 +49,7 @@ module Gamersmafia
     # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
     config.encoding = "utf-8"
 
-    config.dependency_loading = true if $rails_rake_task
+    # config.dependency_loading = true if $rails_rake_task
 
     config.filter_parameters += [:password]
 
@@ -61,7 +63,12 @@ module Gamersmafia
                                            "#{Rails.root}/tmp/fragment_cache"
 
     # Activate observers that should always be running
-    config.active_record.observers = :cache_observer, :faith_observer, :users_action_observer, :achmed_observer
+    config.active_record.observers = [
+      :cache_observer,
+      :faith_observer,
+      :users_action_observer,
+      :achmed_observer,
+    ]
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names.
@@ -78,5 +85,7 @@ module Gamersmafia
 
     # Disable auto explains
     config.active_record.auto_explain_threshold_in_seconds = nil
+
+    config.cache_store  = :file_store, FRAGMENT_CACHE_PATH
   end
 end

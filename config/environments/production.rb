@@ -31,7 +31,7 @@ Gamersmafia::Application.configure do
   # config.force_ssl = true
 
   # See everything in the log (default is :info)
-  config.log_level = :info
+  config.log_level = :warn
 
   # Use a different logger for distributed setups
   # config.logger = SyslogLogger.new
@@ -59,7 +59,7 @@ Gamersmafia::Application.configure do
   config.active_support.deprecation = :notify
   # config.logger        = SyslogLogger.new
 
-  config.dependency_loading = true if $rails_rake_task
+  # config.dependency_loading = true if $rails_rake_task
 
   # OLD CONFIG
 
@@ -72,4 +72,15 @@ Gamersmafia::Application.configure do
   # Disable delivery errors if you bad email addresses should just be ignored
   # config.action_mailer.raise_delivery_errors = false
   #ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS.update(:session_domain => '.gamersmafia.com')
+
+  # Email delivery
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :address  => "mail.gamersmafia.com",
+    :port  => 25,
+    :domain  => "gamersmafia.com",
+    :user_name  => "nagato.gamersmafia.com",
+    :password  => 'megustanlasgalletas',
+    :authentication  => :login,
+  }
 end

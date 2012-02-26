@@ -11,7 +11,7 @@ Gamersmafia::Application.configure do
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching             = true
   #config.action_view.cache_template_extensions         = false
-  config.log_level = :warn
+  config.log_level = :debug
 
   # Don't care if the mailer can't send
   config.action_mailer.raise_delivery_errors = false
@@ -27,8 +27,4 @@ Gamersmafia::Application.configure do
 
   # Expands the lines which load the assets
   config.assets.debug = true
-
-  config.middleware.use "Rack::Bug",
-      :secret_key => "someverylongandveryhardtoguesspreferablyrandomstring",
-      :password   => "yourpassword"
 end
