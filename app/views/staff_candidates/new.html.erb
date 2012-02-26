@@ -1,0 +1,10 @@
+<% generic_support do %>
+<% end -%>
+
+<% content_main do %>
+
+  <% mftext("Crear candidatura para #{@staff_position.staff_type.name}") do %>
+    <%= render 'form' %>
+  <% end -%>
+
+<% end -%>

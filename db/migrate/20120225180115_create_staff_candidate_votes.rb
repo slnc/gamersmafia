@@ -9,6 +9,9 @@ class CreateStaffCandidateVotes < ActiveRecord::Migration
 
 
     );
+
+    insert into staff_types(name) VALUES('capo');
+    insert into staff_positions(staff_type_id) VALUES ((SELECT id FROM staff_types WHERE name = 'capo'));
     END
     )
   end

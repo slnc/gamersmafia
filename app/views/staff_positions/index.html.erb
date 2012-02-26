@@ -2,7 +2,7 @@
   <%mftable('Candidaturas abiertas',
             StaffPosition.candidacy_presentation.find(
               :all, :order => 'term_started_on, lower(staff_types.name)',
-              :include => [:staff_type]) do |staff_position| %>
+              :include => [:staff_type])) do |staff_position| %>
     <td><%=link_to(staff_position.staff_type.name,
                    staff_position_path(staff_position))%></td>
   <% end -%>
@@ -10,27 +10,31 @@
   <%mftable('En votación',
             StaffPosition.voting.find(
               :all, :order => 'term_started_on, lower(staff_types.name)',
-              :include => [:staff_type]) do |staff_position| %>
+              :include => [:staff_type])) do |staff_position| %>
     <td><%=link_to(staff_position.staff_type.name,
                    staff_position_path(staff_position))%></td>
   <% end -%>
+
+  <% if @user.is_superadmin? %>
+     <%mftable('Vacantes',
+               StaffPosition.unassigned.find(
+                 :all, :order => 'term_started_on, lower(staff_types.name)',
+                 :include => [:staff_type])) do |staff_position| %>
+       <td><%=link_to(staff_position.staff_type.name,
+                      staff_position_path(staff_position))%></td>
+     <% end -%>
+   <% end -%>
 <% end %>
 
 <% content_main do %>
   <% mftext('Staff de Gamersmafia') do %>
     <table>
-      <tr>
-        <th>Posición</th>
-        <th>Miembros</th>
-      </tr>
-    <% StaffPosition.assigned.find(
+    <% StaffType.find(
            :all,
-           :order => 'lower(name)',
-           :include => [:staff_type,
-                        :staff_candidate]).each do |staff_position| %>
+           :order => 'lower(name)').each do |staff_type| %>
       <tr>
-        <td><%=staff_position.staff_type.name%></td>
-        <td><%=staff_position.staff_candidate.user.login%></td>
+        <td><%= staff_type.name %></td>
+        <td><%# =staff_position.staff_candidate.user.login %></td>
       </tr>
     <% end -%>
     </table>

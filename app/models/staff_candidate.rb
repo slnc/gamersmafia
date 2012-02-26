@@ -5,9 +5,9 @@ class StaffCandidate < ActiveRecord::Base
 
   def key_results
     out = []
-    out.append(self.key_result1 if self.key_result1)
-    out.append(self.key_result2 if self.key_result2)
-    out.append(self.key_result3 if self.key_result3)
+    out.append(self.key_result1) if !self.key_result1.nil?
+    out.append(self.key_result2) if !self.key_result2.nil?
+    out.append(self.key_result3) if !self.key_result3.nil?
     out
   end
 end
