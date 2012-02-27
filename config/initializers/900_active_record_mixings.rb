@@ -18,6 +18,20 @@ module ActiveRecordMixings
   end
   alias :changed_attr_before_save? :changed_attr_before_save
 
+  def update_without_timestamping
+    class << self
+      def record_timestamps; false; end
+    end
+
+    if !save
+     raise "Error al guardar #{self.class.name}(#{self.id}): #{self.errors.full_messages_html}"
+    end
+
+    class << self
+      def record_timestamps; super ; end
+    end
+  end
+
   define_method 'delete_associated_users_roles' do
     return true unless self.id
     instance_eval <<-END
@@ -31,6 +45,21 @@ module ActiveRecordMixings
   end
 
   module ClassMethods
+    def paginate_in_reverse(options = {})
+      unless options[:page]
+        # we only default to the last page if no explicit page has been given
+        total_entries = self.count(:conditions => options[:conditions])
+        # calculate the last page
+        per_page = options[:per_page] ? options[:per_page] : self.per_page
+        total_pages = (total_entries / per_page.to_f).ceil
+        # update the options hash to hold this information
+        options = options.merge(:page => total_pages, :total_entries => total_entries)
+      end
+
+      # do the usual stuff
+      self.paginate(options)
+    end
+
     def has_users_role(role_name)
       class_eval <<-END
 
@@ -46,30 +75,6 @@ module ActiveRecordMixings
       if args.size == 1 && !args.kind_of?(Array)
         args = [args]
       end
-
-      #attr_accessor :slnc_changed, :slnc_changed_old_values
-      #args.each do |attr_name|
-      #  begin
-      #    alias_method(
-      #        "old_#{attr_name}=".to_sym,
-      #        "#{attr_name}=".to_sym) if self.new.respond_to?("#{attr_name}=")
-      #  rescue: # ignoramos todos en lugar de solo NameError porque en acts_as_rootable no existe la tabla a la hora de leer la clase
-      #  end
-
-      #  define_method "#{attr_name}=" do |value|
-      #    Rails.logger.debug "Calling #{attr_name}(#{value})..."
-      #    @slnc_changed ||= HashWithIndifferentAccess.new
-      #    @slnc_changed_old_values ||= HashWithIndifferentAccess.new
-      #    @slnc_changed_old_values[attr_name] = self.send attr_name.to_sym
-      #    old_attr_writer = "old_#{attr_name}="
-      #    if self.respond_to?(old_attr_writer)
-      #      send(old_attr_writer, value)
-      #    else
-      #      write_attribute attr_name, value
-      #    end
-      #    @slnc_changed[attr_name] = true if self.send(attr_name.to_sym) != @slnc_changed_old_values[attr_name] # hacemos esta comprobación por file_column
-      #  end
-      #end
     end
 
     def find_or_404(*args)
@@ -131,23 +136,6 @@ class ActiveModel::Errors
       out = "#{out}<li><strong>#{ActiveSupport::Inflector::titleize(attr)}</strong> #{msg}</li>"
     end
     out = "#{out}</ul>"
-  end
-end
-
-ActiveRecord::Base.class_eval do
-  def self.paginate_in_reverse(options = {})
-    unless options[:page]
-      # we only default to the last page if no explicit page has been given
-      total_entries = self.count(:conditions => options[:conditions])
-      # calculate the last page
-      per_page = options[:per_page] ? options[:per_page] : self.per_page
-      total_pages = (total_entries / per_page.to_f).ceil
-      # update the options hash to hold this information
-      options = options.merge(:page => total_pages, :total_entries => total_entries)
-    end
-
-    # do the usual stuff
-    self.paginate(options)
   end
 end
 

@@ -702,10 +702,14 @@ module ActsAsContent
 
       uniq = self.unique_content
       # si el usuario no tiene un elemento del tracker para este contenido lo creamos
-      tracker_item = TrackerItem.find(:first, :conditions => ['user_id = ? and content_id = ?', user.id, self.unique_content.id])
+      tracker_item = TrackerItem.find(
+          :first,
+          :conditions => ['user_id = ? and content_id = ?',
+                          user.id, self.unique_content.id])
 
       if not tracker_item then
-        tracker_item = TrackerItem.new(:user_id => user.id, :content_id => uniq.id)
+        tracker_item = TrackerItem.new(
+            :user_id => user.id, :content_id => uniq.id)
       end
 
       tracker_item.lastseen_on = Time.now

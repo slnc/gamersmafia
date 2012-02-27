@@ -1,6 +1,8 @@
 class InsufficientCash < Exception; end
 class TooLateToLower < Exception; end
 
+puts "loading bank.rb"
+
 module Bank
   class NegativeAmmountError < Exception; end
   class TransferDescriptionError < Exception; end
@@ -219,3 +221,6 @@ module Bank
     end # module BankAccount
   end # module Has
 end
+
+ActiveRecord::Base.send(:include, Bank::Has::BankAccount)
+ActiveRecord::Base.send(:include, Bank::Has::BankAmmountFromUser)

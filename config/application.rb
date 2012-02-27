@@ -1,5 +1,3 @@
-#require `gem which memprof/signal`.chomp
-
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
@@ -11,7 +9,7 @@ include Log4r
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
-  # Bundler.require(*Rails.groups(:assets => %w(development test)))
+  Bundler.require(*Rails.groups(:assets => %w(development test)))
   # If you want your assets lazily compiled in production, use this line
   # Bundler.require(:default, :assets, Rails.env)
 end
@@ -25,18 +23,8 @@ module Gamersmafia
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
-    # Specify gems that this application depends on and have them installed with rake gems:install
-    #config.gem 'postgres'
-    #config.gem 'ci_reporter'
-    #config.gem 'feedtools', :lib => 'feed_tools'
-    #config.gem 'feedvalidator', :lib => 'feed_validator'
-
-    #config.gem 'geoip'
-    #config.gem 'gruff'
-    #config.gem 'rmagick', :lib => 'RMagick'
-    #config.gem 'tidy'
-
     # TODO(slnc): this shouldn't be here anymore
+    puts "loading 000_app_config.rb"
     require 'erb'
     load 'config/initializers/000_app_config.rb'
 
@@ -87,5 +75,11 @@ module Gamersmafia
     config.active_record.auto_explain_threshold_in_seconds = nil
 
     config.cache_store  = :file_store, FRAGMENT_CACHE_PATH
+    puts "finished loading config/application.rb"
+
+    config.session_store(:cookie_store,
+        :key => 'adn2', :domain => ".#{App.domain}")
+
+    config.secret_token = App.session_secret
   end
 end

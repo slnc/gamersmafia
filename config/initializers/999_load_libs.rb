@@ -1,5 +1,9 @@
+puts "initializers/lib.rb"
+
 # Order matters!
 %w(
+   slnc_file_column
+   slnc_file_column_helper
    has_hid
    ruby_mixings
    acts_as_categorizable
@@ -15,8 +19,6 @@
    stats
    stats_mixings_ab_tests
    acts_as_rootable
-   slnc_file_column
-   slnc_file_column_helper
    redefine_task
   ).each do |f|
   require "#{Rails.root}/lib/#{f}.rb"

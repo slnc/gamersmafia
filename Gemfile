@@ -15,7 +15,6 @@ gem "log4r"
 gem "newrelic_rpm"
 gem "passenger"
 gem "pg"
-gem 'rack-bug', :require => 'rack/bug', :git => 'git://github.com/brynary/rack-bug.git', :branch => 'rails3'
 gem "rails", "3.2.1"
 gem "rails_autolink"
 gem "rmagick", :require => "RMagick"

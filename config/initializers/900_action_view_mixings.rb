@@ -243,37 +243,4 @@ module ActionViewMixings
   end
 end
 
-
-class Time
-  def slnc_print(format='default', customformat=nil)
-    formats = {'default' => '%d %b %Y, %H:%M',
-               'time' => '%H:%M',
-               'date' => '%d %b %Y',
-               'custom' => '',
-               'compact' => '%d/%m/%Y, %H:%M' }
-
-
-    if format == 'unix'
-      self.to_i
-    elsif format == 'full'
-      "<span class=\"tstamp\">#{self.iso8601}</span>"
-    elsif format == 'intelligent'
-      d_now = Time.now.beginning_of_day
-      if self >= d_now
-        self.strftime_es('%H:%M')
-      elsif self >= Time.local(d_now.year, 1, 1)
-        self.strftime_es('%d %b')
-      else
-        self.strftime_es('%d/%m/%Y')
-      end
-    elsif format == 'custom'
-      self.strftime_es(customformat)
-    elsif self != nil
-      self.strftime_es(formats[format])
-    else
-        ''
-    end
-  end
-end
-
 ActionView::Base.send :include, ActionViewMixings
