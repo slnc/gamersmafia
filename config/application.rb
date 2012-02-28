@@ -9,7 +9,11 @@ include Log4r
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
+
+  # Esta línea es mágica. Por lo que más quieras, no la elimines o los plugins
+  # no cargarán bien.
   Bundler.require(*Rails.groups(:assets => %w(development test)))
+
   # If you want your assets lazily compiled in production, use this line
   # Bundler.require(:default, :assets, Rails.env)
 end
