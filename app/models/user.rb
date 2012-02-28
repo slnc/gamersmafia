@@ -2,8 +2,6 @@ require 'digest/sha1'
 require 'digest/md5'
 require 'karma'
 
-puts "loading user.rb"
-
 class User < ActiveRecord::Base
   BANNED_DOMAINS = %w(
       10minutemail.com

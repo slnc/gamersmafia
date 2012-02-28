@@ -1,5 +1,4 @@
 require 'fileutils'
-puts "initializing file_column"
 
 # mi propia versión de file_column
 # guardas los archivos en

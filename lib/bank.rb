@@ -1,8 +1,6 @@
 class InsufficientCash < Exception; end
 class TooLateToLower < Exception; end
 
-puts "loading bank.rb"
-
 module Bank
   class NegativeAmmountError < Exception; end
   class TransferDescriptionError < Exception; end

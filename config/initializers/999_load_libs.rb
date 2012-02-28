@@ -1,5 +1,3 @@
-puts "initializers/lib.rb"
-
 # Order matters!
 %w(
    slnc_file_column
