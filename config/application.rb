@@ -27,8 +27,6 @@ module Gamersmafia
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
-    # TODO(slnc): this shouldn't be here anymore
-    puts "loading 000_app_config.rb"
     require 'erb'
     load 'config/initializers/000_app_config.rb'
 
@@ -79,7 +77,6 @@ module Gamersmafia
     config.active_record.auto_explain_threshold_in_seconds = nil
 
     config.cache_store  = :file_store, FRAGMENT_CACHE_PATH
-    puts "finished loading config/application.rb"
 
     config.session_store(:cookie_store,
         :key => 'adn2', :domain => ".#{App.domain}")

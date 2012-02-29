@@ -2,12 +2,6 @@ require 'test_helper'
 
 class Cuenta::CuentaControllerTest < ActionController::TestCase
 
-  def setup
-    ActionMailer::Base.delivery_method = :test
-    ActionMailer::Base.perform_deliveries = true
-    ActionMailer::Base.deliveries = []
-  end
-
   VALID_CREATE_ARGS = {
       :accept_terms => '1',
       :user => {
@@ -20,12 +14,30 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
 
   test "mis_permisos_should_work" do
     sym_login 2
-    %w(Don ManoDerecha Boss Underboss Sicario Moderator Advertiser GroupMember GroupAdministrator CompetitionAdmin CompetitionSupervisor).each do |r|
+    %w(
+       Don
+       ManoDerecha
+       Boss
+       Underboss
+       Sicario
+       Moderator
+       Advertiser
+       GroupMember
+       GroupAdministrator
+       CompetitionAdmin
+       CompetitionSupervisor
+      ).each do |r|
       @ur = UsersRole.new(:user_id => 2, :role => r, :role_data => '1')
       assert @ur.save
     end
 
-    @ur = UsersRole.new(:user_id => 2, :role => 'Editor', :role_data => {:content_type_id => 1, :faction_id => 1}.to_yaml)
+    @ur = UsersRole.new(
+        :user_id => 2,
+        :role => 'Editor',
+        :role_data => {
+            :content_type_id => 1,
+            :faction_id => 1
+        }.to_yaml)
     assert @ur.save
 
     get :mis_permisos
@@ -43,7 +55,9 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   test "del_role_other_shouldnt_work" do
     test_mis_permisos_should_work
     sym_login 1
-    assert_raises(ActiveRecord::RecordNotFound) {  post :del_role, :id => @ur.id }
+    assert_raises(ActiveRecord::RecordNotFound) do
+      post :del_role, :id => @ur.id
+    end
   end
 
   test "add_quicklink" do
@@ -89,7 +103,8 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   test "update_user_forums_order" do
     sym_login 2
     u2 = User.find(2)
-    post :update_user_forums_order, :user_id => 1, :buckets1 => ['1'], :buckets2 => ['2', '3']
+    post :update_user_forums_order,
+         :user_id => 1, :buckets1 => ['1'], :buckets2 => ['2', '3']
     assert_response :success
     ufs = u2.pref_user_forums
     assert_equal 3, ufs.size
@@ -97,8 +112,6 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_equal 2, ufs[1][0]
     assert_equal 3, ufs[1][1]
   end
-
-
 
   test "should_resurrect_resurrectable_user" do
     u2 = User.find(2)
@@ -191,7 +204,12 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   end
 
   test "should_not_create_user_if_passwords_dont_match" do
-    post :create, :user => { :login => 'chindasvinto', :password => 'jauja', :password_confirmation=> 'marauja' }
+    post :create,
+         :user => {
+            :login => 'chindasvinto',
+            :password => 'jauja',
+            :password_confirmation=> 'marauja'
+         }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
@@ -222,7 +240,13 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
 
   test "should_not_create_if_email_domain_is_banned" do
     dom = User::BANNED_DOMAINS[0]
-    post :create, :user => { :login => 'chindasvinto', :password => 'marauja', :password_confirmation => 'marauja', :email => "tupmuamad@#{dom}" }
+    post :create,
+         :user => {
+            :login => 'chindasvinto',
+            :password => 'marauja',
+            :password_confirmation => 'marauja',
+            :email => "tupmuamad@#{dom}"
+         }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
@@ -301,33 +325,6 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_equal User::ST_SHADOW, User.find_by_validkey(@u.validkey).state
     assert_equal num_deliveries + 1, ActionMailer::Base.deliveries.size
   end
-
-  #test "should_redirect_to_login_if_anonymous_tries_to_access_profile_settings" do
-  #  get :preferencias
-  #  assert_response :redirect
-  #  assert_redirected_to '/cuenta/login'
-  #end
-
-  #test "should_redirect_to_login_if_anonymous_tries_to_save_settings" do
-  #  post :guardar_preferencias
-  #  assert_response :redirect
-  #  assert_redirected_to '/cuenta/login'
-  #end
-
-  #  test "should_save_settings_if_logged_in_and_correct_settings" do
-  #    test_should_login_valid_user
-  #    get :preferencias
-  #    assert_response :success
-  #    post :guardar_preferencias, :user => { :name => 'Pepito', :avatar => fixture_file_upload('/files/avatar_pepito.png', 'image/png'), :description => 'soy pro' }
-  #    assert_response :redirect
-  #    assert_redirected_to '/cuenta/'
-  #    u = User.find(session[:user])
-  #    assert_equal 'Pepito', u.name
-  #    assert_equal 'storage/users/0000/001_avatar_pepito.png', u.avatar, "do: #{@controller.user.avatar}"
-  #    assert_equal 'soy pro', u.description
-  #    File.unlink("#{Rails.root}/public/#{u.avatar}") # TODO debería hacerlo el modelo al destruirlo y deberíamos destruirlo, no?
-  #  end
-
 
   # TODO test que solo pasen los params que deben pasar
   # TODO añadir tests para cambio de settings, baja de una cuenta y logout
