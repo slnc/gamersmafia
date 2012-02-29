@@ -27,6 +27,9 @@ class ForosController < ComunidadController
 
   def forum
     # TODO no chequeamos que sea un foro correcto para este portal
+    params[:id] = params[:id].to_i
+    # Rails routes constraints no parecen funcionar. /foros/forum/index.php lleg
+    # aquí.
     @forum = Term.find_taxonomy(params[:id], 'TopicsCategory')
     @forum = Term.single_toplevel(:id => params[:id]) if @forum.nil?
     raise ActiveRecord::RecordNotFound if @forum.nil?

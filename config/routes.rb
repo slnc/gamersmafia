@@ -129,7 +129,7 @@ Gamersmafia::Application.routes.draw do
   match 'descargas/new' => 'descargas#new'
   match 'foros/nuevo_topic' => 'foros#nuevo_topic'
   match 'foros/topics_activos' => 'foros#topics_activos'
-  match 'foros/forum/:id' => 'foros#forum', :id => /\d+/
+  match 'foros/forum/:id' => 'foros#forum', :constraints => {:id => /\d+/}
   match 'gamersmafiageist/:survey_edition_date' => 'gamersmafiageist#edicion', :survey_edition_date => /[0-9]{4}/
   match 'imagenes/:category' => 'imagenes#category', :constraints => { :category => /\d+/ }
   match 'imagenes/create' => 'imagenes#create'

@@ -2,6 +2,8 @@ class CommentsController < ApplicationController
   before_filter :require_auth_users
 
   def create
+    params[:comment] ||= {}
+    params[:comment][:content_id] ||= 0
     content = Content.find(params[:comment][:content_id])
     object = content.real_content
 
