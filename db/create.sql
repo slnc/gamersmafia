@@ -2385,6 +2385,52 @@ CREATE SEQUENCE sold_products_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE sold_products_id_seq OWNED BY sold_products.id;
+CREATE TABLE staff_candidates (
+    id integer NOT NULL,
+    staff_position_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    key_result1 character varying,
+    key_result2 character varying,
+    key_result3 character varying,
+    is_winner boolean DEFAULT false NOT NULL,
+    term_starts_on timestamp without time zone,
+    term_ends_on timestamp without time zone
+);
+CREATE SEQUENCE staff_candidates_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE staff_candidates_id_seq OWNED BY staff_candidates.id;
+CREATE TABLE staff_positions (
+    id integer NOT NULL,
+    staff_type_id integer NOT NULL,
+    state character varying DEFAULT 'unassigned'::character varying NOT NULL,
+    term_started_on timestamp without time zone,
+    term_ends_on timestamp without time zone,
+    staff_candidate_id integer
+);
+CREATE SEQUENCE staff_positions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE staff_positions_id_seq OWNED BY staff_positions.id;
+CREATE TABLE staff_types (
+    id integer NOT NULL,
+    name character varying NOT NULL
+);
+CREATE SEQUENCE staff_types_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE staff_types_id_seq OWNED BY staff_types.id;
 CREATE TABLE terms (
     id integer NOT NULL,
     name character varying NOT NULL,
@@ -3087,6 +3133,9 @@ ALTER TABLE skins ALTER COLUMN id SET DEFAULT nextval('skins_id_seq'::regclass);
 ALTER TABLE skins_files ALTER COLUMN id SET DEFAULT nextval('skins_files_id_seq'::regclass);
 ALTER TABLE slog_entries ALTER COLUMN id SET DEFAULT nextval('slog_entries_id_seq'::regclass);
 ALTER TABLE sold_products ALTER COLUMN id SET DEFAULT nextval('sold_products_id_seq'::regclass);
+ALTER TABLE staff_candidates ALTER COLUMN id SET DEFAULT nextval('staff_candidates_id_seq'::regclass);
+ALTER TABLE staff_positions ALTER COLUMN id SET DEFAULT nextval('staff_positions_id_seq'::regclass);
+ALTER TABLE staff_types ALTER COLUMN id SET DEFAULT nextval('staff_types_id_seq'::regclass);
 ALTER TABLE terms ALTER COLUMN id SET DEFAULT nextval('terms_id_seq'::regclass);
 ALTER TABLE textures ALTER COLUMN id SET DEFAULT nextval('textures_id_seq'::regclass);
 ALTER TABLE topics ALTER COLUMN id SET DEFAULT nextval('forum_topics_id_seq'::regclass);
@@ -3479,6 +3528,14 @@ ALTER TABLE ONLY slog_visits
     ADD CONSTRAINT slog_visits_pkey PRIMARY KEY (user_id);
 ALTER TABLE ONLY sold_products
     ADD CONSTRAINT sold_products_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY staff_candidates
+    ADD CONSTRAINT staff_candidates_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY staff_positions
+    ADD CONSTRAINT staff_positions_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY staff_types
+    ADD CONSTRAINT staff_types_name_key UNIQUE (name);
+ALTER TABLE ONLY staff_types
+    ADD CONSTRAINT staff_types_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY terms
     ADD CONSTRAINT terms_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY textures
@@ -3898,6 +3955,12 @@ ALTER TABLE ONLY reviews
     ADD CONSTRAINT reviews_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY skins_files
     ADD CONSTRAINT skins_files_skin_id_fkey FOREIGN KEY (skin_id) REFERENCES skins(id) MATCH FULL;
+ALTER TABLE ONLY staff_candidates
+    ADD CONSTRAINT staff_candidates_staff_position_id_fkey FOREIGN KEY (staff_position_id) REFERENCES staff_positions(id) MATCH FULL;
+ALTER TABLE ONLY staff_candidates
+    ADD CONSTRAINT staff_candidates_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
+ALTER TABLE ONLY staff_positions
+    ADD CONSTRAINT staff_positions_staff_type_id_fkey FOREIGN KEY (staff_type_id) REFERENCES staff_types(id) MATCH FULL;
 ALTER TABLE ONLY terms
     ADD CONSTRAINT terms_bazar_district_id_fkey FOREIGN KEY (bazar_district_id) REFERENCES bazar_districts(id) MATCH FULL;
 ALTER TABLE ONLY terms

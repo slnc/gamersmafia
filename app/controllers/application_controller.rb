@@ -295,7 +295,7 @@ Request information:
     @rescuiing || false
   end
 
-  unless App.domain == 'gamersmafia.dev' || Rails.application.config.consider_all_requests_local
+  unless Rails.application.config.consider_all_requests_local
     rescue_from Exception, :with => :render_error
   end
 
@@ -335,7 +335,7 @@ Request information:
         render(:file => "#{Rails.root}/public/500.html", :status => '500 Error')
       end
     end
-    @rescuiing = false # para tests
+    @rescuiing = false  # para tests
   end
 
 

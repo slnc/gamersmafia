@@ -9,7 +9,11 @@ include Log4r
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
+
+  # Esta línea es mágica. Por lo que más quieras, no la elimines o los plugins
+  # no cargarán bien.
   Bundler.require(*Rails.groups(:assets => %w(development test)))
+
   # If you want your assets lazily compiled in production, use this line
   # Bundler.require(:default, :assets, Rails.env)
 end
@@ -23,18 +27,6 @@ module Gamersmafia
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{RAILS_ROOT}/extras )
 
-    # Specify gems that this application depends on and have them installed with rake gems:install
-    #config.gem 'postgres'
-    #config.gem 'ci_reporter'
-    #config.gem 'feedtools', :lib => 'feed_tools'
-    #config.gem 'feedvalidator', :lib => 'feed_validator'
-
-    #config.gem 'geoip'
-    #config.gem 'gruff'
-    #config.gem 'rmagick', :lib => 'RMagick'
-    #config.gem 'tidy'
-
-    # TODO(slnc): this shouldn't be here anymore
     require 'erb'
     load 'config/initializers/000_app_config.rb'
 
@@ -47,7 +39,7 @@ module Gamersmafia
     # config.frameworks -= [ :active_record, :active_resource, :action_mailer ]
     config.encoding = "utf-8"
 
-    config.dependency_loading = true if $rails_rake_task
+    # config.dependency_loading = true if $rails_rake_task
 
     config.filter_parameters += [:password]
 
@@ -61,7 +53,12 @@ module Gamersmafia
                                            "#{Rails.root}/tmp/fragment_cache"
 
     # Activate observers that should always be running
-    config.active_record.observers = :cache_observer, :faith_observer, :users_action_observer, :achmed_observer
+    config.active_record.observers = [
+      :cache_observer,
+      :faith_observer,
+      :users_action_observer,
+      :achmed_observer,
+    ]
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names.
@@ -81,5 +78,12 @@ module Gamersmafia
 
     # Disable ip spoofing as it gives too many false positives
     config.action_dispatch.ip_spoofing_check = false
+
+    config.cache_store  = :file_store, FRAGMENT_CACHE_PATH
+
+    config.session_store(:cookie_store,
+        :key => 'adn2', :domain => ".#{App.domain}")
+
+    config.secret_token = App.session_secret
   end
 end

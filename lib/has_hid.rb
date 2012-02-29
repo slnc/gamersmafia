@@ -39,3 +39,5 @@ module HasHid
     end
   end
 end
+
+ActiveRecord::Base.send :include, HasHid

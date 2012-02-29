@@ -23,8 +23,8 @@ class SkinTest < ActiveSupport::TestCase
   end
 
   test "create_skin_should_create_default_file_with_factions_skin" do
-    FileUtils.rm_rf("#{Rails.root}/public/storage/skins/miwanna") if File.exists?("#{Rails.root}/public/storage/skins/miwanna")
-    FileUtils.rm("#{Rails.root}/public/storage/skins/miwanna_initial.zip") if File.exists?("#{Rails.root}/public/storage/skins/miwanna_initial.zip")
+    FileUtils.rm_rf("#{Skin::SKINS_DIR}/miwanna") if File.exists?("#{Skin::SKINS_DIR}/miwanna")
+    FileUtils.rm("#{Skin::SKINS_DIR}/miwanna_initial.zip") if File.exists?("#{Skin::SKINS_DIR}/miwanna_initial.zip")
     @s = FactionsSkin.create({:user_id => 1, :name => 'miwanna'})
     assert_equal false, @s.new_record?
     assert_equal true, File.exists?("#{Rails.root}/public/#{@s.file}")
@@ -38,8 +38,8 @@ class SkinTest < ActiveSupport::TestCase
   end
 
   test "skin_file_changed_must_make_it_updated" do
-    @el_dir = "#{Rails.root}/public/storage/skins/miwanna"
-    initialzip = "#{Rails.root}/public/storage/skins/miwanna_initial.zip"
+    @el_dir = "#{Skin::SKINS_DIR}/miwanna"
+    initialzip = "#{Skin::SKINS_DIR}/miwanna_initial.zip"
     File.unlink(initialzip) if File.exists?(initialzip)
     FileUtils.rm_rf(@el_dir) if File.exists?(@el_dir)
     test_create_skin_should_create_default_file_with_factions_skin

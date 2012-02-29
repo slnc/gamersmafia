@@ -20,7 +20,7 @@ class Admin::IpBansControllerTest < ActionController::TestCase
     test_create
     assert_count_decreases(IpBan) do
       post :destroy, {:id => IpBan.find(:first)}
-      assert_response :redirect
+      assert_response :success
     end
   end
 

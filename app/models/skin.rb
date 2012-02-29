@@ -29,6 +29,8 @@ class Skin < ActiveRecord::Base
   FAVICONS_CSS_FILENAME = (
       "#{Rails.root}/public/skins/_core/css/games_sprites.css")
 
+  SKINS_DIR = "#{Rails.root}/public/storage/skins"
+
   def self.extract_css_imports(s)
     out = []
     while s.length > 0
@@ -64,7 +66,8 @@ class Skin < ActiveRecord::Base
       if import[0..0] != '/' then # asumimos que este import es relativo
         # miramos cuantas / hay y quitamos los ../ necesarios
         import_contents.gsub!(
-            "url(/storage/gs.png)", "url(/storage/gs.png?#{SVNVERSION})")
+            "url(/storage/gs.png)",
+            "url(/storage/gs.png?#{AppR.ondisk_git_version})")
       end
       out.gsub!("@import url(#{import});", import_contents)
     end
@@ -73,7 +76,8 @@ class Skin < ActiveRecord::Base
 
   def self.find_by_hid(hid)
     if %w(arena default bazar).include?(hid)
-      s = Skin.new(:name => hid, :hid => hid, :version => SVNVERSION.to_i(16))
+      s = Skin.new(
+        :name => hid, :hid => hid, :version => AppR.ondisk_git_version.to_i(16))
       s.id = DEFAULT_SKINS_IDS[hid]
       s
     else
@@ -131,7 +135,7 @@ class Skin < ActiveRecord::Base
 
   def update_favicon(mixed_thing)
     if mixed_thing
-      File.open("#{Rails.root}/public/storage/skins/#{self.hid}/favicon.png", 'wb') do |f|
+      File.open("#{Skin::SKINS_DIR}/#{self.hid}/favicon.png", 'wb') do |f|
         f.write(mixed_thing.read) # TODO write as ico file too
       end
     end
@@ -183,7 +187,7 @@ class Skin < ActiveRecord::Base
 
     # Tengo que crear el .zip inicial con la template
     cfg_dir = Pathname.new("#{Rails.root}\/config/skins/template_#{template}").realpath.to_s
-    dst_file = Pathname.new("#{Rails.root}/public/storage/skins").realpath.to_s << "/#{self.hid}_initial.zip"
+    dst_file = Pathname.new("#{Skin::SKINS_DIR}").realpath.to_s << "/#{self.hid}_initial.zip"
     system("cd \"#{cfg_dir}\" && zip -q -r \"#{dst_file}\" .")
     User.db_query("UPDATE skins SET file = 'storage/skins/#{self.hid}_initial.zip' WHERE id = #{self.id}")
     self.reload # para leer file bien (no funciona hacer self.file)
@@ -204,7 +208,7 @@ class Skin < ActiveRecord::Base
   end
 
   def unzip_package
-    dst_folder = "#{Rails.root}/public/storage/skins/#{self.hid}"
+    dst_folder = "#{Skin::SKINS_DIR}/#{self.hid}"
     FileUtils.mkdir_p(dst_folder) unless File.exists?(dst_folder)
     da_fail ="#{Rails.root}/public/#{self.file}"
     if File.exists?(da_fail)
@@ -285,3 +289,5 @@ class Skin < ActiveRecord::Base
 
   end
 end
+
+FileUtils.mkdir_p(Skin::SKINS_DIR) unless File.exists?(Skin::SKINS_DIR)

@@ -219,3 +219,6 @@ module Bank
     end # module BankAccount
   end # module Has
 end
+
+ActiveRecord::Base.send(:include, Bank::Has::BankAccount)
+ActiveRecord::Base.send(:include, Bank::Has::BankAmmountFromUser)

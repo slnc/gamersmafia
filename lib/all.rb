@@ -9,6 +9,14 @@ class ActionController::Caching::Fragments::UnthreadedFileStore
   end
 end
 
+module ActionController::Caching::Fragments
+  # Quitamos views/ de las keys
+  def fragment_cache_key(key)
+    ActiveSupport::Cache.expand_cache_key(
+        key.is_a?(Hash) ? url_for(key).split("://").last : key, '')
+  end
+end
+
 class String
   def slnc_tokenize
     Achmed.clean_comment(self).split(' ')

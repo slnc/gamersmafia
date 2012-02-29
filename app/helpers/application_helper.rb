@@ -1,4 +1,3 @@
-# Methods added to this helper will be available to all templates in the application.
 module ApplicationHelper
   COMMENTS_DESPL = {:Normal => '0',
     :Divertido => '12',
@@ -794,23 +793,23 @@ skin: 'v2'
 
   def javascript_includes
     if App.compress_js?
-      out = "<script type=\"text/javascript\" src=\"#{ASSET_URL}/gm.#{SVNVERSION}.js\"></script>\n"
+      out = "<script type=\"text/javascript\" src=\"#{ASSET_URL}/gm.#{AppR.ondisk_git_version}.js\"></script>\n"
     else
       out = <<-END
-<script src="#{ASSET_URL}/javascripts/web.shared/jquery-1.7.1.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/web.shared/jquery.scrollTo-1.4.0.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/jquery-ui-1.7.2.custom.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/web.shared/jgcharts-0.9.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/jquery_ujs.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/jquery.facebox.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/jquery.elastic.source.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/web.shared/slnc.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/app.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/tracking.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/app.bbeditor.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/colorpicker.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shCore.#{SVNVERSION}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shBrushPython.#{SVNVERSION}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/web.shared/jquery-1.7.1.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/web.shared/jquery.scrollTo-1.4.0.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/jquery-ui-1.7.2.custom.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/web.shared/jgcharts-0.9.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/jquery_ujs.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/jquery.facebox.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/jquery.elastic.source.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/web.shared/slnc.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/app.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/tracking.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/app.bbeditor.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/colorpicker.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shCore.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shBrushPython.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
       END
     end
 
@@ -822,7 +821,7 @@ skin: 'v2'
           out << "<script src=\"#{lib}\" type=\"text/javascript\"></script>"
         else
           out << <<-END
-<script src="#{ASSET_URL}/javascripts/#{lib}.#{'pack.' if App.compress_js?}#{SVNVERSION}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/#{lib}.#{'pack.' if App.compress_js?}#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
         END
         end
       end
@@ -938,8 +937,6 @@ skin: 'v2'
   end
 
   def content_main(opts={}, &block)
-    # opts = {:show_ads => true}.merge(opts)
-    # @show_ads = opts[:show_ads]
     concat("<div class=\"container\" id=\"cmain\">")
     yield
     concat("</div>")

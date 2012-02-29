@@ -191,7 +191,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     sym_login 1
     t_count = Term.contents_tags.count
     post :tag_content, :id => 1, :tags => 'fumanchu se fue a la guerra'
-    assert_response :success
+    assert_response :redirect
     assert_equal t_count + 6, Term.contents_tags.count
   end
 

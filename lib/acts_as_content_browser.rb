@@ -7,7 +7,8 @@ module ActsAsContentBrowser
 
   module AddActsAsContentBrowser
     def acts_as_content_browser(*args)
-      before_filter :require_auth_users, :only => [ :new, :create, :edit, :update, :destroy ]
+      before_filter :require_auth_users,
+                    :only => [ :new, :create, :edit, :update, :destroy ]
 
       class_eval <<-END
         include ActsAsContentBrowser::InstanceMethods

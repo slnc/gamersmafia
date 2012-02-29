@@ -17,7 +17,7 @@ set -e
 APACHE2_MODULES="expires headers rewrite"
 GM_CURRENT="/srv/www/gamersmafia/current"
 GM_APACHE_CONFIG="${GM_CURRENT}/config/apache.morpheus.conf"
-GIT_REPOSITORY="git://github.com/slnc/gamersmafia.git"
+GIT_REPOSITORY="git://github.com/gamersmafia/gamersmafia.git"
 PACKAGES_TO_INSTALL="
 apache2
 apache2-mpm-prefork

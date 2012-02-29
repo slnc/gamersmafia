@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+
+# Based on a pre-commit hook by Henrik Nyh <http://henrik.nyh.se>
+
+FORBIDDEN = [
+  /\bconsole\.log\b/,
+  /\bconsole\.debug\b/,
+  /\bdo not commit\b/i,
+  /\bdo not submit\b/i,
+]
+
+full_diff = `git diff --cached --`
+
+full_diff.scan(%r{^\+\+\+ b/(.+)\n@@.*\n([\s\S]*?)(?:^diff|\z)}).each do |file,
+                                                                          diff|
+  added = diff.split("\n").select { |x| x.start_with?("+") }.join("\n")
+  if FORBIDDEN.any? { |re| added.match(re) }
+    puts %{Pre-commit tests failed: "#{$1 || $&}" to #{file}}
+    puts "To commit anyway, use --no-verify"
+    exit 1
+  end
+end
