@@ -19,14 +19,12 @@
 <% end -%>
 
 <% content_main do %>
-<% if nil then %>
 <%= mfcontents_summaries('Noticias',
         News.in_portal(controller.portal),
-        [:order => 'created_on asc'],
+        {:order => 'created_on asc'},
 				{:cache =>
              "/#{controller.portal_code}/noticias/index/page_#{params['page']}",
 				 :show_day_separator => true,
          :page => params['page'],
          :pager => true})%>
-<% end -%>
 <% end -%>
