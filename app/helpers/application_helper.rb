@@ -1059,26 +1059,18 @@ skin: 'v2'
   def mfcontents_summaries(title, object, find_args, opts={})
     # soporte show_day_separator
     #find_args.last[:include] = :user
-    params['page'] = params['page'].to_i if params['page']
-    find_args[:page] = params[:page]
-    find_args[:per_page] = 50
-
     out = <<-END
     <div class="module mfcontents-summaries" id="#{opts[:id] if opts[:id]}">
   <div class="mtitle"><span>#{title}</span></div>
   <div class="mcontent">
     END
 
-    collection = object.published.paginate(find_args)
+    collection = object.paginate(find_args)
 
-    if opts[:pager]
-      out<< controller.send(
-          :render_to_string,
-          :partial => 'shared/pager2',
-          :object => opts[:pager],
-          :locals => {:collection => collection, :pos => 'top'}
-      )
-    end
+    out<< controller.send(
+        :render_to_string,
+        :partial => 'shared/pager2',
+        :locals => {:collection => collection, :pos => 'top'})
 
     cache_out = cache_without_erb_block(opts.fetch(:cache)) do
       out2 = ' '
@@ -1105,14 +1097,10 @@ skin: 'v2'
     end
     out<< cache_out if cache_out
 
-    if opts[:pager]
-      out<< controller.send(
-          :render_to_string,
-          :partial => 'shared/pager2',
-          :object => opts[:pager],
-          :locals => {:collection => collection, :pos => 'bottom'}
-      )
-    end
+    out<< controller.send(
+        :render_to_string,
+        :partial => 'shared/pager2',
+        :locals => {:collection => collection, :pos => 'bottom'})
     out<< '</div></div>'
   end
 

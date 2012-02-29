@@ -7,8 +7,8 @@ params[:page] = 1 if params[:page].nil?
 %>
 <% # :pager => ActionController::Pagination::Paginator.new(self, Term.single_toplevel(:slug => 'gm').news.count(:published, :content_type => 'News'), 15, params[:page]), %>
 <%= mfcontents_summaries('Noticias',
-						Term.single_toplevel(:slug => 'gm'),
-						[:published, {:content_type => 'News', :order => 'created_on desc'}],
+						News.in_term(Term.single_toplevel(:slug => 'gm')).published,
+            {:order => 'created_on asc', :page => params['page'], :per_page => 30},
 						{:cache => "/common/novedades/page_#{params['page']}",
 						:show_day_separator => true})%>
 <% end -%>
