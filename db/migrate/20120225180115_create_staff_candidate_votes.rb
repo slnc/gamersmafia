@@ -5,7 +5,7 @@ class CreateStaffCandidateVotes < ActiveRecord::Migration
         id serial primary key not null,
         user_id int not null references users(id) match full,
         created_on timestamp not null default now(),
-        staff_candidate_id int not null references staff_candidates match full,
+        staff_candidate_id int not null references staff_candidates match full
 
 
     );

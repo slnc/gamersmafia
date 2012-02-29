@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120225175205) do
+ActiveRecord::Schema.define(:version => 20120225180115) do
 
   create_table "ab_tests", :id => false, :force => true do |t|
     t.integer  "id",                                                                                              :null => false
@@ -950,7 +950,6 @@ ActiveRecord::Schema.define(:version => 20120225175205) do
   create_table "factions_portals", :id => false, :force => true do |t|
     t.integer "faction_id", :null => false
     t.integer "portal_id",  :null => false
-    t.integer "id",         :null => false
   end
 
   create_table "faq_categories", :force => true do |t|
@@ -1023,10 +1022,11 @@ ActiveRecord::Schema.define(:version => 20120225175205) do
     t.integer  "user_id",                            :null => false
     t.datetime "created_on",                         :null => false
     t.string   "code",                :limit => nil
-    t.date     "survey_edition_date",                :null => false
+    t.string   "survey_edition_date", :limit => nil, :null => false
   end
 
   add_index "gamersmafiageist_codes", ["code"], :name => "gamersmafiageist_codes_code_key", :unique => true
+  add_index "gamersmafiageist_codes", ["user_id", "survey_edition_date"], :name => "gamersmafiageist_codes_user_edition"
 
   create_table "games", :force => true do |t|
     t.string  "name",        :limit => nil,                    :null => false
@@ -1118,6 +1118,105 @@ ActiveRecord::Schema.define(:version => 20120225175205) do
     t.integer  "parent_id"
     t.integer  "root_id"
     t.integer  "user_id"
+  end
+
+  create_table "ias", :id => false, :force => true do |t|
+    t.integer  "id"
+    t.string   "login",                                      :limit => 80
+    t.string   "password",                                   :limit => 40
+    t.string   "validkey",                                   :limit => 40
+    t.string   "email",                                      :limit => 100
+    t.string   "newemail",                                   :limit => 100
+    t.string   "ipaddr",                                     :limit => 15
+    t.datetime "created_on"
+    t.datetime "updated_at"
+    t.string   "firstname",                                  :limit => nil
+    t.string   "lastname",                                   :limit => nil
+    t.binary   "image"
+    t.datetime "lastseen_on"
+    t.integer  "faction_id"
+    t.datetime "faction_last_changed_on"
+    t.integer  "avatar_id"
+    t.string   "city",                                       :limit => nil
+    t.string   "homepage",                                   :limit => nil
+    t.integer  "sex",                                        :limit => 2
+    t.string   "msn",                                        :limit => nil
+    t.string   "icq",                                        :limit => nil
+    t.date     "birthday"
+    t.integer  "cache_karma_points"
+    t.string   "irc",                                        :limit => nil
+    t.integer  "country_id"
+    t.string   "photo",                                      :limit => nil
+    t.string   "hw_mouse",                                   :limit => nil
+    t.string   "hw_processor",                               :limit => nil
+    t.string   "hw_motherboard",                             :limit => nil
+    t.string   "hw_ram",                                     :limit => nil
+    t.string   "hw_hdd",                                     :limit => nil
+    t.string   "hw_graphiccard",                             :limit => nil
+    t.string   "hw_soundcard",                               :limit => nil
+    t.string   "hw_headphones",                              :limit => nil
+    t.string   "hw_monitor",                                 :limit => nil
+    t.string   "hw_connection",                              :limit => nil
+    t.text     "description"
+    t.boolean  "is_superadmin"
+    t.integer  "comments_count"
+    t.integer  "referer_user_id"
+    t.integer  "cache_faith_points"
+    t.boolean  "notifications_global"
+    t.boolean  "notifications_newmessages"
+    t.boolean  "notifications_newregistrations"
+    t.boolean  "notifications_trackerupdates"
+    t.string   "xfire",                                      :limit => nil
+    t.integer  "cache_unread_messages"
+    t.integer  "resurrected_by_user_id"
+    t.datetime "resurrection_started_on"
+    t.boolean  "using_tracker"
+    t.string   "secret",                                     :limit => 32
+    t.decimal  "cash",                                                      :precision => 14, :scale => 2
+    t.datetime "lastcommented_on"
+    t.integer  "global_bans"
+    t.integer  "last_clan_id"
+    t.integer  "antiflood_level",                            :limit => 2
+    t.integer  "last_competition_id"
+    t.string   "competition_roster",                         :limit => nil
+    t.boolean  "enable_competition_indicator"
+    t.boolean  "is_hq"
+    t.boolean  "enable_profile_signatures"
+    t.integer  "profile_signatures_count"
+    t.string   "wii_code",                                   :limit => 16
+    t.boolean  "email_public"
+    t.string   "gamertag",                                   :limit => nil
+    t.string   "googletalk",                                 :limit => nil
+    t.string   "yahoo_im",                                   :limit => nil
+    t.boolean  "notifications_newprofilesignature"
+    t.boolean  "tracker_autodelete_old_contents"
+    t.boolean  "comment_adds_to_tracker_enabled"
+    t.integer  "cache_remaining_rating_slots"
+    t.boolean  "has_seen_tour"
+    t.boolean  "is_bot"
+    t.string   "admin_permissions",                          :limit => nil
+    t.integer  "state",                                      :limit => 2
+    t.boolean  "cache_is_faction_leader"
+    t.datetime "profile_last_updated_on"
+    t.string   "visitor_id",                                 :limit => nil
+    t.integer  "comments_valorations_type_id"
+    t.decimal  "comments_valorations_strength",                             :precision => 10, :scale => 2
+    t.boolean  "enable_comments_sig"
+    t.string   "comments_sig",                               :limit => nil
+    t.boolean  "comment_show_sigs"
+    t.boolean  "has_new_friend_requests"
+    t.string   "default_portal",                             :limit => nil
+    t.string   "emblems_mask",                               :limit => nil
+    t.float    "random_id"
+    t.boolean  "is_staff"
+    t.integer  "pending_slog"
+    t.integer  "ranking_karma_pos"
+    t.integer  "ranking_faith_pos"
+    t.integer  "ranking_popularity_pos"
+    t.integer  "cache_popularity"
+    t.boolean  "login_is_ne_unfriendly"
+    t.decimal  "cache_valorations_weights_on_self_comments"
+    t.float    "default_comments_valorations_weight"
   end
 
   create_table "images", :force => true do |t|
@@ -1716,13 +1815,22 @@ ActiveRecord::Schema.define(:version => 20120225175205) do
   end
 
   create_table "staff_candidates", :force => true do |t|
-    t.integer  "staff_position_id",                :null => false
-    t.datetime "created_on",                       :null => false
-    t.datetime "updated_on",                       :null => false
-    t.integer  "user_id",                          :null => false
+    t.integer  "staff_position_id",                                   :null => false
+    t.datetime "created_on",                                          :null => false
+    t.datetime "updated_on",                                          :null => false
+    t.integer  "user_id",                                             :null => false
     t.string   "key_result1",       :limit => nil
     t.string   "key_result2",       :limit => nil
     t.string   "key_result3",       :limit => nil
+    t.boolean  "is_winner",                        :default => false, :null => false
+    t.datetime "term_starts_on"
+    t.datetime "term_ends_on"
+  end
+
+  create_table "staff_canditate_votes", :force => true do |t|
+    t.integer  "user_id",            :null => false
+    t.datetime "created_on",         :null => false
+    t.integer  "staff_candidate_id", :null => false
   end
 
   create_table "staff_positions", :force => true do |t|
@@ -1837,6 +1945,15 @@ ActiveRecord::Schema.define(:version => 20120225175205) do
 
   add_index "treated_visitors", ["ab_test_id", "visitor_id", "treatment"], :name => "treated_visitors_multi"
   add_index "treated_visitors", ["ab_test_id", "visitor_id"], :name => "treated_visitors_per_test", :unique => true
+
+  create_table "tterms", :id => false, :force => true do |t|
+    t.integer "id"
+    t.string  "name",      :limit => nil
+    t.string  "slug",      :limit => nil
+    t.string  "taxonomy",  :limit => nil
+    t.integer "parent_id"
+    t.integer "root_id"
+  end
 
   create_table "tutorials", :force => true do |t|
     t.string   "title",                :limit => nil,                                                   :null => false
