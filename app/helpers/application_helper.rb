@@ -1060,9 +1060,8 @@ skin: 'v2'
     # soporte show_day_separator
     #find_args.last[:include] = :user
     params['page'] = params['page'].to_i if params['page']
-    opts[:pager].current_page = opts[:pager].last if params['page'].nil? && opts[:pager]
-    find_args[1][:limit] = opts[:pager].current.to_sql[0] if opts[:pager]
-    find_args[1][:offset] = opts[:pager].current.to_sql[1] if opts[:pager]
+    find_args[:page] = params[:page]
+    find_args[:per_page] = 50
 
     out = <<-END
     <div class="module mfcontents-summaries" id="#{opts[:id] if opts[:id]}">
@@ -1070,17 +1069,18 @@ skin: 'v2'
   <div class="mcontent">
     END
 
+    collection = object.published.paginate(find_args)
+
     if opts[:pager]
-      Rails.logger.warn("Pagination temporarily disabled.")
       out<< controller.send(
           :render_to_string,
-          :partial => 'shared/pager',
+          :partial => 'shared/pager2',
           :object => opts[:pager],
-          :locals => {:pos => 'top'})
+          :locals => {:collection => collection, :pos => 'top'}
+      )
     end
 
     cache_out = cache_without_erb_block(opts.fetch(:cache)) do
-      collection = object.find(*find_args)
       out2 = ' '
       if collection.size > 0 # no podemos hacer un return
         previous_day = nil
@@ -1105,7 +1105,14 @@ skin: 'v2'
     end
     out<< cache_out if cache_out
 
-    out<< controller.send(:render_to_string, :partial => 'shared/pager', :object => opts[:pager], :locals => {'pos' => 'bottom'}) if opts[:pager]
+    if opts[:pager]
+      out<< controller.send(
+          :render_to_string,
+          :partial => 'shared/pager2',
+          :object => opts[:pager],
+          :locals => {:collection => collection, :pos => 'bottom'}
+      )
+    end
     out<< '</div></div>'
   end
 
