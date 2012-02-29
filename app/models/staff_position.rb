@@ -13,6 +13,7 @@ class StaffPosition < ActiveRecord::Base
     state :voting
     state :elect
     state :assigned
+    state :disabled
 
     #event :view do
     #  transitions :to => :read, :from => [:unread]

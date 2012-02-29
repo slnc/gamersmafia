@@ -4,9 +4,14 @@ Gamersmafia::Application.routes.draw do
       get 'move_to_candidacy_presentation'
     end
 
-    resources :staff_candidates, :path => "candidatos", :path_names => {
-      :new => "nuevo",
-    }
+    resources :staff_candidates,
+        :path => "candidatos",
+        :path_names => { :new => "nuevo" } do
+
+      member do
+        get 'vote'
+      end
+    end
   end
 
   resources :tags

@@ -10,17 +10,18 @@
 <% end %>
 
 <% content_main do %>
-  <%= @staff_candidate.user.login %>
+  <%mftext(@staff_candidate.user.login) do %>
+    <% if (@staff_position.state == 'voting' &&
+           user_can_vote_staff_candidate(@user, @staff_candidate)) %>
+    <%=link_to 'Votar', vote_staff_position_staff_candidate_path %>
+    <% end %>
 
-  <% if @staff_position.state == 'voting' %>
-  VOTAR
-  <% end %>
-
-  <% if @staff_position.state == 'voting' %>
-    <% @staff_position.current_candidates.find(
-         :all, :include => :user).each do |staff_candidate| %>
-      <% if staff_candidate.id != @staff_candidate.id %>
-        <%= staff_candidate.user.login %>
+    <% if @staff_position.state == 'voting' %>
+      <% @staff_position.current_candidates.find(
+           :all, :include => :user).each do |staff_candidate| %>
+        <% if staff_candidate.id != @staff_candidate.id %>
+          <%= staff_candidate.user.login %>
+        <% end -%>
       <% end -%>
     <% end -%>
   <% end -%>
