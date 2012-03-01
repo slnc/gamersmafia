@@ -59,7 +59,6 @@ class HomeControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  # Replace this with your real tests.
   test "home" do
     get :index
     assert_response :success

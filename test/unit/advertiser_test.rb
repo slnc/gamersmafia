@@ -2,7 +2,6 @@ require 'test_helper'
 
 class AdvertiserTest < ActiveSupport::TestCase
 
-  # Replace this with your real tests.
   test "del_roles" do
     adv = Advertiser.new(:name => 'foo adv', :due_on_day => 15, :email => 'money@me.com')
     assert adv.save

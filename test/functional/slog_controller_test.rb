@@ -17,7 +17,6 @@ class SlogControllerTest < ActionController::TestCase
     assert_not_nil @response.body.index('Gladiador')
   end
 
-  # Replace this with your real tests.
   test "index_should_work" do
     assert_raises(AccessDenied) { get :index }
     sym_login 1

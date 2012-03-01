@@ -4,7 +4,6 @@ class BetsTicketTest < ActiveSupport::TestCase
   def setup
     Bank::transfer(:bank, User.find(2), 100, 'test')
   end
-  # Replace this with your real tests.
   test "shouldnt_be_able_to_create_a_bet_ticket_with_less_than_min_ammount" do
     assert_raises (AmmountTooLow) do
       BetsTicket.create({:user_id => 2, :bets_option_id => 1, :ammount => 0.1})

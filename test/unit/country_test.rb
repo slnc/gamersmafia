@@ -6,7 +6,6 @@ class CountryTest < ActiveSupport::TestCase
     @country = Country.find(1)
   end
 
-  # Replace this with your real tests.
   test "truth" do
     assert_kind_of Country,  @country
   end

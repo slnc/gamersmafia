@@ -3,7 +3,6 @@ require 'test_helper'
 class GmtvControllerTest < ActionController::TestCase
 
 
-  # Replace this with your real tests.
   test "should_return_channels_if_gm" do
     get :channels
     assert_response :success
