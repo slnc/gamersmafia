@@ -17,10 +17,6 @@ class ActionController::TestRequest
   end
 end
 
-ActionMailer::Base.delivery_method = :test
-ActionMailer::Base.perform_deliveries = true
-ActionMailer::Base.deliveries = []
-
 class ActiveSupport::TestCase
   # Turn off transactional fixtures if you're working with MyISAM tables in MySQL
   self.use_transactional_fixtures = true
