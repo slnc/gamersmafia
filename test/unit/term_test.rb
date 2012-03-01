@@ -191,13 +191,6 @@ class TermTest < ActiveSupport::TestCase
   end
 
   # TODO
-  def atest_all_children_ids_should_return_the_same_if_same_cat_asked_in_different_ways
-    test_all_children_ids_should_properly_return_if_root_id_given
-    cats2 = @nc.all_children_ids(@nc)
-    assert_equal true, @cats == cats2
-  end
-
-  # TODO
   def atest_all_children_ids_should_properly_work_if_asking_for_non_root_id_cat
     @nc = Term.create({:name => 'catnonfaction'})
     @ncchild = @nc.children.create({:name => 'subcat'})
