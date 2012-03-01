@@ -436,7 +436,6 @@ type: 'bhs'}))
     out << '</ul>'
   end
 
-  # TODO cachear
   def render_tree_select(pages, name, select_name, value = nil, noparent_id=false)
     ret = ''
 
@@ -507,7 +506,7 @@ type: 'bhs'}))
     return text if text.nil?
     text = "#{text}"
 
-    text.gsub!('<br />', "SALTOLINEA333\n") if text.index('<p>').to_s == '' # TODO deprecated
+    text.gsub!('<br />', "SALTOLINEA333\n") if text.index('<p>').to_s == ''
 
     text.gsub!(/\r\n/, "\n")
     text.gsub!(/\r/, "\n")
@@ -524,7 +523,7 @@ type: 'bhs'}))
     text.gsub!(/([\s>]{1}|^)(o(_)+(o)+)/i, '\1<img src="/images/smileys/eek.gif" />')         #// o_O
     text.gsub!(/([\s>]{1}|^)(:(p)+)/i, '\1<img src="/images/smileys/tongue.gif" />\\4')          #// :p | :P
 
-    text.gsub!(/([\s>]{1}|^)(x(d)+)/i, '\1<img src="/images/smileys/grin.gif" />')            #// xd TODO TODO TODO acabar de poner el comienzo de línea a las demás smileys
+    text.gsub!(/([\s>]{1}|^)(x(d)+)/i, '\1<img src="/images/smileys/grin.gif" />')            #// xd
 
     text.gsub!(/([\s>]{1}|^)(:(0)+)/, '\1<img src="/images/smileys/eek.gif" />')              #// :0
     text.gsub!(/([\s>]{1}|^)(8\)+)/, '\1<img src="/images/smileys/cool.gif" />')              #// 8)
@@ -557,9 +556,7 @@ type: 'bhs'}))
 
     text.strip!
 
-    # TODO cambiar nombre de función
-    # text = text.gsub(/((http|ftp|irc|unreal):\/\/([^\s]+))/, '<a class="external" href="\1">\3</a>')
-    return text
+    text
   end
 
   def user_is_authed
@@ -721,9 +718,7 @@ skin: 'v2'
   end
 
   def get_last_commented_contents
-    # TODO ugly
     if controller.portal_code && controller.portal.class.name == 'FactionsPortal'
-      # contents_condition = controller.portal.contents_condition
       ids = [0] + controller.portal.games.collect { |g| g.id }
       contents = Content.find(:all, :conditions => "comments_count > 0 and is_public = 't' AND ((game_id is null AND clan_id IS NULL) OR game_id IN (#{ids.join(',')}))", :order => 'updated_on DESC', :limit => 15)
     else
@@ -994,7 +989,6 @@ skin: 'v2'
   end
 
   def new_ads(opts={})
-    # TODO
   end
 
   def mfcontainer_list(mode, title, collection, options={}, &block)
@@ -1105,15 +1099,6 @@ skin: 'v2'
   end
 
   def mfcontents_basic(title, object, find_args, opts={})
-    # TODO mostrar como is_read o no
-    # TODO icono de facción
-    # TODO limitar tamaño de title
-    # TODO highlight_id
-    # TODO downloads_count
-    # TODO soporte rating
-    # TODO soporte comments_count
-    # TODO skip_id soporte para ocultar un id dado (por javascript) de forma que "Otras reviews" no muestre la review actual por accidente
-    # TODO todas las llamadas deber:ian ser cacheadas
     if opts[:cache]
       cache_without_erb_block(opts[:cache]) { _mfcontents_basic(title, object, find_args, opts) }
     else

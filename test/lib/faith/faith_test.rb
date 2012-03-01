@@ -21,44 +21,20 @@ class FaithTest < ActiveSupport::TestCase
     cm.completed_on = Time.now
     assert_equal true, cm.save
     @u1.cache_faith_points = nil
-    @u1.save # TODO temp
+    @u1.save
     @u1.reload
     assert_equal @initial_fp + Faith::FPS_ACTIONS['competitions_match'], @u1.faith_points
   end
-
-  #  test "calculate_faith_points_should_consider_registrations_active" do
-  #    flunk
-  #  end
-  #
-  #  test "calculate_faith_points_should_consider_resurrections_active" do
-  #    flunk
-  #  end
-  #
-  #  test "calculate_faith_points_should_consider_own_resurrections_active" do
-  #    flunk
-  #  end
-  #
-  #  test "calculate_faith_points_should_consider_referred_hits" do
-  #    flunk # TODO
-  #  end
 
   test "calculate_faith_points_should_consider_content_ratings" do
     initial_cr = ContentRating.count
     @u1.content_ratings.create({:ip => '0.0.0.0', :content_id => Content.find(:first, :conditions => 'id NOT IN (SELECT content_id from content_ratings where user_id = 1)').id, :rating => 1})
     assert_equal initial_cr + 1, ContentRating.count
     @u1.cache_faith_points = nil
-    @u1.save # TODO temp
+    @u1.save
     @u1.reload
     assert_equal @initial_fp + Faith::FPS_ACTIONS['rating'], @u1.faith_points
   end
-
-  #  test "calculate_faith_points_should_consider_publishing_decisions" do
-  #    flunk # TODO
-  #  end
-
-  # TODO faltan más chequeos
-
-
 
   test "should_give_faith_points_if_valid" do
     u = User.find(1)

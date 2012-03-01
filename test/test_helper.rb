@@ -21,9 +21,12 @@ class ActiveSupport::TestCase
   # Turn off transactional fixtures if you're working with MyISAM tables in MySQL
   self.use_transactional_fixtures = true
 
-  # TODO Rails no incluye fixture_file_upload en esta clase. Quizás haya que reescribir los
-  # tests para que no hagan uso de ello? No estoy seguro de que sea incoherente de esta forma.
-  # https://rails.lighthouseapp.com/projects/8994/tickets/1985-fixture_file_upload-no-longer-available-in-tests-by-default
+  # Rails no incluye fixture_file_upload en esta clase. Quizás haya que
+  # reescribir los tests para que no hagan uso de ello? No estoy seguro de que
+  # sea incoherente de esta forma.
+  #
+  # https://rails.lighthouseapp.com/projects/8994/tickets/
+  # 1985-fixture_file_upload-no-longer-available-in-tests-by-default
   def fixture_file_upload(path, mime_type = nil, binary = false)
     Rack::Test::UploadedFile.new("#{fixture_path}#{path}", mime_type, binary)
   end
@@ -111,7 +114,7 @@ class ActiveSupport::TestCase
         assert_raises(AccessDenied) { eval("#{method} action.to_sym") }
 
         case level
-          when :superadmin
+        when :superadmin
           assert_raises(AccessDenied) do
             eval("#{method} action.to_sym, {}, { :user => 2 }")
           end
@@ -122,8 +125,8 @@ class ActiveSupport::TestCase
             raise
           rescue Exception
           end
-          # assert_response :success
-          when :user
+
+        when :user
           begin
             eval("#{method} action.to_sym, {}, { :user => 2 }")
           rescue AccessDenied
@@ -142,18 +145,6 @@ class ActiveSupport::TestCase
         end
       end
     end
-
-    # TODO sin terminar, solo chequeamos que no deje a anónimos
-    #    class_eval <<-END
-    #      include TestMinAclLevelMethods
-    #    END
-    #
-    #    case level
-    #    when :superadmin
-    #      not_super_admin = User.find
-    #    else
-    #      raise 'unimplemented'
-    #    end
   end
 
   def sym_login(user_ident)

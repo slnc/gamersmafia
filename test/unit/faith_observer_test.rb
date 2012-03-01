@@ -1,8 +1,8 @@
 require 'test_helper'
 
 class FaithObserverTest < ActiveSupport::TestCase
-  test "should_give_faith_after_creating_users_contents_tag" do
 
+  test "should_give_faith_after_creating_users_contents_tag" do
     initial_cr = UsersContentsTag.count
     @content = Content.find(1)
     @u1 = User.find(1)

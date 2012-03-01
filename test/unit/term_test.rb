@@ -190,17 +190,6 @@ class TermTest < ActiveSupport::TestCase
     assert_equal true, @cats.include?(@ncchild.id)
   end
 
-  # TODO
-  def atest_all_children_ids_should_properly_work_if_asking_for_non_root_id_cat
-    @nc = Term.create({:name => 'catnonfaction'})
-    @ncchild = @nc.children.create({:name => 'subcat'})
-    @ncsubchild = @ncchild.children.create({:name => 'subsubcat'})
-    @cats = @ncchild.all_children_ids
-    assert_equal 2, @cats.size
-    assert_equal true, @cats.include?(@ncchild.id)
-    assert_equal true, @cats.include?(@ncsubchild.id)
-  end
-
   test "reset_contents_urls" do
     topic = Topic.find(1)
     User.db_query("UPDATE contents SET url = 'fuuck yu' WHERE id = #{topic.unique_content_id}")

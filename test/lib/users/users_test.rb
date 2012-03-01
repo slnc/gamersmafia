@@ -44,8 +44,6 @@ class UsersTest < ActiveSupport::TestCase
     assert_equal true, @inst.action_user_is_authed
   end
 
-  # TODO faltan tests
-  #
   test "should_add_to_tracker_if_existing_user_id_and_content_id" do
     TrackerItem.db_query("DELETE FROM tracker_items")
     u = User.find(1)

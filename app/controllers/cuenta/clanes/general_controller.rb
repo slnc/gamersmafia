@@ -86,7 +86,7 @@ class Cuenta::Clanes::GeneralController < ApplicationController
       g = @clan.clans_groups.find(params[:clans_group_id])
       g.users<< u unless g.users.find_by_id(u.id)
       ClansMovement.create(:clan_id => @clan.id, :user_id => u.id, :direction => ClansMovement::IN)
-      @clan.recalculate_members_count # TODO hack
+      @clan.recalculate_members_count
       flash[:notice] = "Usuario añadido al grupo \"#{g.name}\" correctamente"
     else
       flash[:error] = 'El usuario especificado no existe.'
@@ -105,7 +105,7 @@ class Cuenta::Clanes::GeneralController < ApplicationController
     else
       @clan.clans_groups.find(params[:clans_group_id]).users.delete(u)
       ClansMovement.create(:clan_id => @clan.id, :user_id => u.id, :direction => ClansMovement::OUT)
-      @clan.recalculate_members_count # TODO hack
+      @clan.recalculate_members_count
     end
 
     redirect_to '/cuenta/clanes/miembros'

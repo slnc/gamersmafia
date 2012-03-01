@@ -56,8 +56,6 @@ class Cuenta::AmigosControllerTest < ActionController::TestCase
     get :aceptar_amistad, { :eik => f5.external_invitation_key }
     assert_response :success
     assert_nil(session[:user])
-    # TODO test that the original email's user part is shown
-    #    assert_equal true, @response.body.index(f5.receiver_email...?)
   end
 
   test "should_be_able_to_create_new_account_when_accepting_email_invitation_and_stablish_friendship" do

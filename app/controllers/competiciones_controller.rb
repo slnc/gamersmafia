@@ -26,10 +26,6 @@ class CompeticionesController < ArenaController
     end
   end
 
-  # TODO titles
-  # TODO navpaths
-  # TODO views que sobren
-  # TODO refactorizar
   def index
     @title = 'Competiciones'
     @navpath = [['Competiciones', '/competiciones'], ]
@@ -123,7 +119,7 @@ class CompeticionesController < ArenaController
     require_auth_users
     @competitions_matches_upload = CompetitionsMatchesUpload.find(params[:id])
     @competition = @competitions_matches_upload.competitions_match.competition
-    raise AccessDenied unless @competition.user_is_admin(@user.id) # TODO esto es require_auth_competition_admin de cuenta/competiciones
+    raise AccessDenied unless @competition.user_is_admin(@user.id)
     @competitions_matches_upload.destroy
     @element_id = "u#{@competitions_matches_upload.id}"
   end
@@ -230,7 +226,6 @@ class CompeticionesController < ArenaController
     # TODO poner el title bien
     # TODO permisos
     @title = "Responder al reto de #{@competitions_match.participant1.name}"
-    #    p = @competition.get_active_participant_for_user(@user)
     render :action => :retar
   end
 
@@ -310,7 +305,6 @@ class CompeticionesController < ArenaController
 
   def retos_a_mi
     require_auth_users
-    # TODO refactor
     # guarda aceptación/rechazo de retos
     p2 = CompetitionsParticipant.find(params[:id])
     @competition = p2.competition
@@ -345,7 +339,7 @@ class CompeticionesController < ArenaController
       end
     end
 
-    redirect_to '/cuenta/competiciones/mis_partidas' # TODO ugly
+    redirect_to '/cuenta/competiciones/mis_partidas'
   end
 
   def notify(thing, notification, vars)
@@ -376,7 +370,7 @@ class CompeticionesController < ArenaController
     cm = @competition.competitions_matches.find(:first, :conditions => ['participant1_id = ? and participant2_id = ? and accepted = \'f\'', p1.id, p2.id])
     cm.destroy
     @competition.log("#{p1.name} cancela su reto con #{p2.name}")
-    redirect_to '/cuenta/competiciones/mis_partidas' # TODO ugly
+    redirect_to '/cuenta/competiciones/mis_partidas'
   end
 
   def partida
