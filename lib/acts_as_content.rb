@@ -455,6 +455,10 @@ module ActsAsContent
     end
 
     def my_faction
+      if self.main_category.nil?
+        Rails.logger.warn("No main_category found for #{self}")
+        raise ActiveRecord::RecordNotFound
+      end
       Faction.find_by_name(self.main_category.root.name)
     end
 
