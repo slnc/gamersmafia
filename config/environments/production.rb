@@ -74,7 +74,7 @@ Gamersmafia::Application.configure do
   #ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS.update(:session_domain => '.gamersmafia.com')
 
   # Email delivery
-  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.delivery_method = :sendmail
   config.action_mailer.smtp_settings = {
     :address  => "mail.gamersmafia.com",
     :port  => 25,
