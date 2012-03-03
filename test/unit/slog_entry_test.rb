@@ -2,7 +2,6 @@ require 'test_helper'
 
 class SlogEntryTest < ActiveSupport::TestCase
 
-  # Replace this with your real tests.
   test "decode_editor_scope" do
     assert_equal [50, 1], SlogEntry.decode_editor_scope(50001)
   end
@@ -25,11 +24,6 @@ class SlogEntryTest < ActiveSupport::TestCase
     assert_equal [f1], SlogEntry.scopes(:faction_bigboss, u2)
   end
 
-  test "can_create_entries_of_each_type" do
-
-  end
-
-  # TODO falta testear todas las scopes
   test "competition supervisor scope must inherit competition_admin scope" do
     u2 = User.find(2)
     c = Ladder.find(:first, :conditions => ['state > ?', Competition::STARTED])

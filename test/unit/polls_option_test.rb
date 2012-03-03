@@ -5,7 +5,6 @@ class PollsOptionTest < ActiveSupport::TestCase
     @polls_option = PollsOption.find(1)
   end
 
-  # Replace this with your real tests.
   test "truth" do
     assert_kind_of PollsOption,  @polls_option
   end

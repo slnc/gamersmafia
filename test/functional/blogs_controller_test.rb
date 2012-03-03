@@ -3,7 +3,6 @@ require 'test_helper'
 class BlogsControllerTest < ActionController::TestCase
 
 
-  # Replace this with your real tests.
   test "index_should_work" do
     get :index
     assert_response :success

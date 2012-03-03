@@ -2,7 +2,6 @@ require 'test_helper'
 
 class CompetitionsMatchTest < ActiveSupport::TestCase
 
-  # Replace this with your real tests.
   test "should_complete_match_with_simple_scoring" do
     #    @l = Ladder.find(:first, :conditions => 'invitational is false and competitions_participants_type_id = 1
   end

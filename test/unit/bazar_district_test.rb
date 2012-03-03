@@ -68,7 +68,4 @@ class BazarDistrictTest < ActiveSupport::TestCase
     assert bd.user_is_editor_of_content_type?(u59, ctype)
   end
 
-  def atest_rename_bazar_district_code
-    # TODO test
-  end
 end

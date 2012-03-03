@@ -1,11 +1,6 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  def setup
-    ActionMailer::Base.delivery_method = :test
-    ActionMailer::Base.perform_deliveries = true
-    ActionMailer::Base.deliveries = []
-  end
 
   test "boss who changes to another faction should lose boss permission" do
     u = User.find(1)
@@ -58,7 +53,6 @@ class UserTest < ActiveSupport::TestCase
     assert u2.is_editor?
   end
 
-
   test "check_is_hq should create message" do
     panzer = User.find_by_login('panzer')
     assert_difference('panzer.messages_received.count') do
@@ -89,13 +83,18 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "create" do
-    # TODO granuralize this
-    params = {:login => 'dharana', :password => 'limitedconsistency', :email => 'dharana@dharana.net', :ipaddr => '127.0.0.1', :lastseen_on => Time.now}
+    params = {
+        :login => 'dharana',
+        :password => 'limitedconsistency',
+        :email => 'dharana@dharana.net',
+        :ipaddr => '127.0.0.1',
+        :lastseen_on => Time.now
+    }
     u = User.new(params)
-    assert_equal true, u.save, u.errors.full_messages.to_yaml
+    assert_equal(true, u.save, u.errors.full_messages.to_yaml)
     assert u.kind_of?(User)
-    assert_equal 'dharana', u.login
-    assert_equal Digest::MD5.hexdigest('limitedconsistency'), u.password
+    assert_equal(params[:login], u.login)
+    assert_equal(Digest::MD5.hexdigest(params[:password]), u.password)
   end
 
   test "find_by_login_should_behave_correctly" do
@@ -120,9 +119,12 @@ class UserTest < ActiveSupport::TestCase
     assert_equal 21, u.age(DateTime.new(2009, 3, 27))
   end
 
-  # GM-2531
-  test "flash_age_hoy" do
-    u = User.create({:login => 'Flashky', :email => 'moon@moon.moon', :birthday => DateTime.new(1988, 3, 26)})
+  test "users with age today should work" do
+    u = User.create(
+        :login => 'Flashky',
+        :email => 'moon@example.com',
+        :birthday => DateTime.new(1988, 3, 26),
+    )
     years = DateTime.now.year - u.birthday.year
     assert([(years - 1), years].include?(u.age), u.age)
   end
@@ -140,12 +142,11 @@ class UserTest < ActiveSupport::TestCase
     assert u.save # Deberá salvar bien (3 >= edad <= 130)
 
     u.birthday = nil
-    # Usuario que no tiene la edad fijada. Es una edad válida para el chequeo (pe: si el
-    # usuario no ha fijado todavia su edad)
-    assert_nil u.birthday # Comprobamos que efectivamente hay nil
-    assert u.save         # Deberá salvar bien aun con birthday a nil
+    # Usuario que no tiene la edad fijada. Es una edad válida para el chequeo
+    # (pe: si el usuario no ha fijado todavia su edad)
+    assert_nil u.birthday
+    assert u.save
   end
-
 
   test "should_allow_youtube_videos_on_profile" do
     u = User.find(1)

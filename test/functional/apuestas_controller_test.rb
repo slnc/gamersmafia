@@ -4,8 +4,6 @@ require File.dirname(__FILE__) + '/../test_functional_content_helper'
 class ApuestasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Bet', :form_vars => {:title => 'footapang', :closes_on => 1.week.since, :options_new => ['opcion1', 'opcion2']}, :root_terms => 1
 
-  # TODO más tests
-  #
   test "should_create_with_options" do
     sym_login 1
     post :create, :bet => {:title => 'footapang', :closes_on => 1.week.since, :options_new => ['opcion1', 'opcion2']}, :root_terms => 1
@@ -16,20 +14,6 @@ class ApuestasControllerTest < ActionController::TestCase
     assert_not_nil @b.bets_options.find_by_name('opcion1')
     assert_not_nil @b.bets_options.find_by_name('opcion2')
   end
-
-  #  test "should_publish_as_is" do
-  #    test_should_create_with_options
-  #
-  #    @b = Bet.find_by_title('footapang')
-  #    post :update, {:id => @b.id,
-  #                   :bet => {:approved_by_user_id => 1}
-  #                  }
-  #    @b.reload
-  #    assert_equal Cms::PUBLISHED, @b.state
-  #    assert_equal 2, @b.bets_options.count
-  #    assert_not_nil @b.bets_options.find_by_name('opcion1')
-  #    assert_not_nil @b.bets_options.find_by_name('opcion2')
-  #  end
 
   test "should_allow_to_change_options_if_not_published" do
     test_should_create_with_options
@@ -49,7 +33,6 @@ class ApuestasControllerTest < ActionController::TestCase
     assert_not_nil b.bets_options.find_by_name('opcion4')
   end
 
-  # TODO faltan tests
   test "shouldnt_allow_to_reduce_bet_for_option_after_15min" do
     test_should_create_with_options
     sym_login 1

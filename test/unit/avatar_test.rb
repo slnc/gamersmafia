@@ -6,7 +6,6 @@ class AvatarTest < ActiveSupport::TestCase
 
   end
 
-  # Replace this with your real tests.
   test "should_delete_file_after_destroying" do
     @av = Avatar.create({:name => 'fulanito de tal', :submitter_user_id => 1, :path => fixture_file_upload('files/buddha.jpg')})
     assert_equal false, @av.new_record?

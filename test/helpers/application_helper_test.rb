@@ -1,7 +1,12 @@
 require 'test_helper'
 
 class ApplicationHelperTest < HelperTestCase
+
   include ApplicationHelper
+
+  test "faction_favicon_should_show_work" do
+    assert_not_nil faction_favicon(Faction.find(:first))
+  end
 
   test "smilelize" do
     assert_equal '<p>foo</p>', smilelize('foo')

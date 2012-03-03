@@ -2,43 +2,6 @@ require 'test_helper'
 
 class CompetitionTest < ActiveSupport::TestCase
 
-  # TODO test user_indicator
-
-  #  test "update_user_indicator" do
-  #    superadmin = new_session_as(:superadmin)
-  #    panzer = new_session_as(:panzer)
-  #    assert_equal false, superadmin.enable_competition_indicator
-  #    assert_equal false, panzer.enable_competition_indicator
-  #
-  #    ladder = superadmin.creates_ladder({:name => 'foo', :game_id => 1, :competitions_participants_type_id => 1})
-  #    ladder.start
-  #    ladder.join(superadmin)
-  #    ladder.join(panzer)
-  #    superadmin_participant = ladder.get_active_participant_for_user(superadmin)
-  #    panzer_participant = ladder.get_active_participant_for_user(panzer)
-  #    superadmin_participant.challenge(panzer_participant)
-  #    assert_equal false, superadmin.enable_competition_indicator
-  #    assert_equal true, panzer.enable_competition_indicator
-  #  end
-  #
-  #  private
-  #  module CompetitionTestingDSL
-  #    def autologs_in_as(login)
-  #      @user = User.find_by_login(login)
-  #      key = AutologinKey.find_by_user_id(@user.id)
-  #      post '/', :login => login
-  #      assert_redirected_to '/cuenta'
-  #    end
-  #
-  #    def new_session_as(person)
-  #      new_session do |sess|
-  #        sess.goes_to_login
-  #        sess.logs_in_as_(person)
-  #        yield sess if block_given?
-  #      end
-  #    end
-  #  end
-
   test "should_send_notifications_to_allowed_participants_if_invitational_and_switching_to_state_1_and_users" do
     c = Competition.find(:first, :conditions => "state = 0 AND invitational is true and competitions_participants_type_id = #{Competition::USERS}")
     prev = ActionMailer::Base.deliveries.size

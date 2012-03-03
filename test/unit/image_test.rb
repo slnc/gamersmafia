@@ -5,9 +5,11 @@ class ImageTest < ActiveSupport::TestCase
   # TODO esto va a a plugin de file_column!
   test "should_update_md5_hash_after_creating_with_image" do
     @download = Image.create(
-      :user_id => 1,
-      :terms => 1,
-      :file => fixture_file_upload('/files/babe.jpg', 'application/zip'))
+        :user_id => 1,
+        :terms => 1,
+        :file => fixture_file_upload('/files/babe.jpg', 'application/zip'),
+    )
+
     assert !@download.new_record?
     assert(
       /babe\.jpg/ =~ @download.file,

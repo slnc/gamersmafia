@@ -94,7 +94,6 @@ class DailyRakeTest < ActiveSupport::TestCase
     fp = u1.faith_points
     User.db_query("UPDATE users SET lastseen_on = now() - '3 months 1 day'::interval where id = 2")
     Rake::Task['gm:daily'].send :clear_faith_points_of_referers_and_resurrectors
-    # TODO enviar aviso al usuario de que su usuario referido se ha vuelto zombie
     u1.reload
     assert_equal fp - Faith::FPS_ACTIONS['registration'], u1.faith_points
   end
@@ -109,7 +108,6 @@ class DailyRakeTest < ActiveSupport::TestCase
     fp = u1.faith_points
     User.db_query("UPDATE users SET lastseen_on = now() - '3 months 1 day'::interval where id = 2")
     Rake::Task['gm:daily'].send :clear_faith_points_of_referers_and_resurrectors
-    # TODO enviar aviso al usuario de que su usuario referido se ha vuelto zombie
     u1.reload
     assert_equal fp - Faith::FPS_ACTIONS['resurrection'], u1.faith_points
   end
@@ -189,13 +187,9 @@ class DailyRakeTest < ActiveSupport::TestCase
     cm = l.challenge(cp1, cp2)
     cm.accept_challenge
     cm.complete_match(u2, {:result => 1}, true)
-    # TODO falta completar los matches de otros tipos de competiciones
     assert_nil cm.completed_on
     User.db_query("UPDATE competitions_matches SET updated_on = now() - '32 days'::interval")
-    #TODO enviar notificación antes al que falta y ahora al que queda
-    #assert_count_increases(ActionMailer::Base.deliveries) do
     Rake::Task['gm:daily'].send :check_ladder_matches
-    #end
     cm.reload
     assert_not_nil cm.completed_on
   end
@@ -213,10 +207,7 @@ class DailyRakeTest < ActiveSupport::TestCase
 
       assert_nil cm.completed_on
       User.db_query("UPDATE competitions_matches SET updated_on = now() - '32 days'::interval")
-      # TODO: Notificaciones
-      #msgs = ActionMailer::Base.deliveries.size
       Rake::Task['gm:daily'].send :check_ladder_matches
-      #assert_equal msgs + 2, ActionMailer::Base.deliveries.size
       cm.reload
       assert_not_nil cm.completed_on
     end

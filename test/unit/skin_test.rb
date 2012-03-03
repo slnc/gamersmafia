@@ -95,7 +95,6 @@ class SkinTest < ActiveSupport::TestCase
     # WARNING: @s se va a redefinir ahora
     test_skin_update_intelliskin_should_update_config_attrs_correctly
     assert_equal true, File.exists?("#{@s.send(:realpath)}/style_compressed.css")
-    #assert_css_contents_match(File.open("#{@s.send(:realpath)}/style.css").read, File.open("#{@s.send(:realpath)}/style_compressed.css").read)
   end
 
   test "unzip_package_should_regenerate_compressed_file" do
@@ -133,11 +132,4 @@ class SkinTest < ActiveSupport::TestCase
   test "provided_colors_should_return_color_gen_colors" do
 
   end
-
-  test "provided_colors_should_return_templates_colors" do
-    # TODO
-    # @s.templates<< Skins::Textures::STBackground.generate('')
-
-  end
-  # TODO no hay tests para verificar que estamos haciendo bien la traducción de urls
 end

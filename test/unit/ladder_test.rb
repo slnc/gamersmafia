@@ -7,7 +7,6 @@ class LadderTest < ActiveSupport::TestCase
     assert_equal false, l.has_options?
   end
 
-  # TODO more tests
   test "should_be_able_to_challenge_other_participant_user" do
     @ladder = Ladder.find(:first, :conditions => "invitational is false and fee is null and scoring_mode = #{Competition::SCORING_SIMPLE} and state = 3 and competitions_participants_type_id = #{Competition::USERS}")
     u1 = User.find(3)
@@ -39,7 +38,6 @@ class LadderTest < ActiveSupport::TestCase
     assert_not_nil @ladder.challenge(@p1, @p2)
     assert_equal cm_total + 1, CompetitionsMatch.count
   end
-
 
   test "should_not_be_able_to_challenge_other_participant_if_unapproved_match_with_him" do
     test_should_be_able_to_challenge_other_participant_user
@@ -78,6 +76,7 @@ class LadderTest < ActiveSupport::TestCase
   end
 
   test "should_send_notification_to_challenged_participant_after_challenge_sent" do
+    # TODO(slnc): falta escribir este test
 
   end
 end

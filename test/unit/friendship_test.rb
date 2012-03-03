@@ -58,10 +58,6 @@ class FriendshipTest < ActiveSupport::TestCase
     assert_not_nil f.external_invitation_key
   end
 
-  test "should_only_accept_valid_emails" do
-    # TODO
-  end
-
   test "should_only_create_new_friendship_if_number_of_unanswered_friendships_is_below_max" do
     User.db_query("DELETE FROM friendships WHERE sender_user_id = 1")
     Friendship.class_eval do

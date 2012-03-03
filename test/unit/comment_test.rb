@@ -20,7 +20,7 @@ class CommentTest < ActiveSupport::TestCase
     content = Content.find(1)
     content.url = nil
     content.portal_id = nil
-    Routing.gmurl(content) # TODO temp make sure the fixture has portal_id set
+    Routing.gmurl(content)
     assert_not_nil content.portal_id
     c = Comment.new({:user_id => 1, :comment => 'hola mundo!', :content_id => 1, :host => '127.0.0.1'})
     assert c.save
@@ -59,14 +59,10 @@ class CommentTest < ActiveSupport::TestCase
   test "should_not_create_comment_if_duplicated" do
   end
 
-  test "should_not_create_comment_if_last_comment_is_from_the_same_user_and_is_too_soon" do
-    # TODO
-  end
-
   test "should_properly_update_lastcommented_on_from_author_when_destroying_comments" do
     # caso 1: existen comentarios anteriormente
     test_should_create_comment_if_valid
-    c2 = Comment.new({:user_id => 1, :comment => 'hola mundo2!', :content_id => 1, :host => '127.0.0.1'})
+    c2 = Comment.new(:user_id => 1, :comment => 'hola mundo2!', :content_id => 1, :host => '127.0.0.1')
     assert_equal true, c2.save
     c2.reload
     assert_not_nil c2.mark_as_deleted

@@ -89,7 +89,6 @@ class NotificationTest < ActionMailer::TestCase
 
   test "should_log_emails_sent" do
     assert_difference("SentEmail.count") do
-      # TODO(slnc): rewrite to not depend on test_newmessage
       test_newmessage
     end
   end
@@ -169,7 +168,6 @@ class NotificationTest < ActionMailer::TestCase
 
 
   test "reto_aceptado" do
-    # TODO brittle test
     deliveries = ActionMailer::Base.deliveries.size
     u = User.find(1)
     c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and type = \'Ladder\'')
@@ -180,7 +178,6 @@ class NotificationTest < ActionMailer::TestCase
   end
 
   test "reto_recibido" do
-    # TODO brittle test
     deliveries = ActionMailer::Base.deliveries.size
     u = User.find(1)
     c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and type = \'Ladder\'')
@@ -191,7 +188,6 @@ class NotificationTest < ActionMailer::TestCase
   end
 
   test "reto_pendiente_1w" do
-    # TODO brittle test
     deliveries = ActionMailer::Base.deliveries.size
     u = User.find(1)
     c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and type = \'Ladder\'')
@@ -202,7 +198,6 @@ class NotificationTest < ActionMailer::TestCase
   end
 
   test "reto_pendiente_2w" do
-    # TODO brittle test
     deliveries = ActionMailer::Base.deliveries.size
     u = User.find(1)
     c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and type = \'Ladder\'')
@@ -213,7 +208,6 @@ class NotificationTest < ActionMailer::TestCase
   end
 
   test "reto_cancelado_sin_respuesta" do
-    # TODO brittle test
     deliveries = ActionMailer::Base.deliveries.size
     u = User.find(1)
     c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and type = \'Ladder\'')
@@ -234,7 +228,6 @@ class NotificationTest < ActionMailer::TestCase
   end
 
   test "reto_rechazado" do
-    # TODO brittle test
     deliveries = ActionMailer::Base.deliveries.size
     u = User.find(1)
     c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and type = \'Ladder\'')
