@@ -1,7 +1,7 @@
 <% generic_support do %>
   <%mftable('Candidaturas abiertas',
             StaffPosition.candidacy_presentation.find(
-              :all, :order => 'term_started_on, lower(staff_types.name)',
+              :all, :order => 'term_starts_on, lower(staff_types.name)',
               :include => [:staff_type])) do |staff_position| %>
     <td><%=link_to(staff_position.staff_type.name,
                    staff_position_path(staff_position))%></td>
@@ -9,7 +9,7 @@
 
   <%mftable('En votación',
             StaffPosition.voting.find(
-              :all, :order => 'term_started_on, lower(staff_types.name)',
+              :all, :order => 'term_starts_on, lower(staff_types.name)',
               :include => [:staff_type])) do |staff_position| %>
     <td><%=link_to(staff_position.staff_type.name,
                    staff_position_path(staff_position))%></td>
@@ -18,7 +18,7 @@
   <% if @user.is_superadmin? %>
      <%mftable('Vacantes',
                StaffPosition.unassigned.find(
-                 :all, :order => 'term_started_on, lower(staff_types.name)',
+                 :all, :order => 'term_starts_on, lower(staff_types.name)',
                  :include => [:staff_type])) do |staff_position| %>
        <td><%=link_to(staff_position.staff_type.name,
                       staff_position_path(staff_position))%></td>

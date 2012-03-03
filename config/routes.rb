@@ -10,6 +10,7 @@ Gamersmafia::Application.routes.draw do
 
       member do
         get 'vote'
+        get 'delete'
       end
     end
   end

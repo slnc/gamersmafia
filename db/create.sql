@@ -2395,8 +2395,8 @@ CREATE TABLE staff_candidates (
     key_result2 character varying,
     key_result3 character varying,
     is_winner boolean DEFAULT false NOT NULL,
-    term_starts_on timestamp without time zone,
-    term_ends_on timestamp without time zone
+    term_starts_on date NOT NULL,
+    term_ends_on date NOT NULL
 );
 CREATE SEQUENCE staff_candidates_id_seq
     START WITH 1
@@ -2409,8 +2409,8 @@ CREATE TABLE staff_positions (
     id integer NOT NULL,
     staff_type_id integer NOT NULL,
     state character varying DEFAULT 'unassigned'::character varying NOT NULL,
-    term_started_on timestamp without time zone,
-    term_ends_on timestamp without time zone,
+    term_starts_on date,
+    term_ends_on date,
     staff_candidate_id integer
 );
 CREATE SEQUENCE staff_positions_id_seq
@@ -3751,6 +3751,7 @@ CREATE INDEX slog_entries_completed_on ON slog_entries USING btree (completed_on
 CREATE INDEX slog_entries_headline ON slog_entries USING btree (headline);
 CREATE INDEX slog_entries_scope ON slog_entries USING btree (scope);
 CREATE INDEX slog_type_id ON slog_entries USING btree (type_id);
+CREATE UNIQUE INDEX staff_candidates_uniq ON staff_candidates USING btree (staff_position_id, user_id, term_starts_on);
 CREATE INDEX terms_lower_name ON terms USING btree (lower((name)::text));
 CREATE INDEX terms_name_uniq ON terms USING btree (game_id, bazar_district_id, platform_id, clan_id, taxonomy, parent_id, name);
 CREATE INDEX terms_parent_id ON terms USING btree (parent_id);

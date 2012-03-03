@@ -1,0 +1,15 @@
+<% generic_support do %>
+<% end -%>
+
+<% content_main do %>
+  <% mftext("Candidatos a #{@staff_position.staff_type.name}") do %>
+    <% @staff_position.staff_candidates.find(
+           :all, :include => :user).each do |candidate| %>
+    <%= link_to(candidate.user.login,
+                staff_position_staff_candidate_path(
+                    @staff_position, candidate)) %>
+    <% end -%>
+  <div class="clearb"></div>
+  <%= link_to "Volver", staff_position_path(@staff_position) %>
+  <% end -%>
+<% end -%>
