@@ -18,6 +18,7 @@ APACHE2_MODULES="expires headers rewrite"
 GM_CURRENT="/srv/www/gamersmafia/current"
 GM_APACHE_CONFIG="${GM_CURRENT}/config/apache.morpheus.conf"
 GIT_REPOSITORY="git://github.com/gamersmafia/gamersmafia.git"
+MATCHIT_URL="http://www.vim.org/scripts/download_script.php?src_id=8196"
 PACKAGES_TO_INSTALL="
 apache2
 apache2-mpm-prefork
@@ -66,6 +67,7 @@ DownloadMiscConfigFiles() {
   wget -O ~/.vimrc vrc=${BOOTSTRAP_GITHUB_URL}/.vimrc
   wget -O ~/.gitconfig ${BOOTSTRAP_GITHUB_URL}/.gitconfig
   wget -O ~/.bashrc_gm ${BOOTSTRAP_GITHUB_URL}/.bashrc
+  wget -O ~/.vim/matchit.zip ${MATCHIT_URL} && cd ~/.vim && unzip matchit.zip && cd
   echo -e "\nsource ~/.bashrc_gm" >> ~/.bashrc
 }
 

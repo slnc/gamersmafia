@@ -2,6 +2,7 @@ Gamersmafia::Application.routes.draw do
   resources :staff_positions, :path => "staff" do
     member do
       get 'move_to_candidacy_presentation'
+      get 'confirm_winners'
     end
 
     resources :staff_candidates,
@@ -9,8 +10,9 @@ Gamersmafia::Application.routes.draw do
         :path_names => { :new => "nuevo" } do
 
       member do
-        get 'vote'
+        get 'deny'
         get 'delete'
+        get 'vote'
       end
     end
   end

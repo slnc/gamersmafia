@@ -2385,6 +2385,20 @@ CREATE SEQUENCE sold_products_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE sold_products_id_seq OWNED BY sold_products.id;
+CREATE TABLE staff_candidate_votes (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    staff_candidate_id integer NOT NULL,
+    staff_position_id integer NOT NULL
+);
+CREATE SEQUENCE staff_candidate_votes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE staff_candidate_votes_id_seq OWNED BY staff_candidate_votes.id;
 CREATE TABLE staff_candidates (
     id integer NOT NULL,
     staff_position_id integer NOT NULL,
@@ -2396,7 +2410,8 @@ CREATE TABLE staff_candidates (
     key_result3 character varying,
     is_winner boolean DEFAULT false NOT NULL,
     term_starts_on date NOT NULL,
-    term_ends_on date NOT NULL
+    term_ends_on date NOT NULL,
+    is_denied boolean DEFAULT false NOT NULL
 );
 CREATE SEQUENCE staff_candidates_id_seq
     START WITH 1
@@ -2411,7 +2426,8 @@ CREATE TABLE staff_positions (
     state character varying DEFAULT 'unassigned'::character varying NOT NULL,
     term_starts_on date,
     term_ends_on date,
-    staff_candidate_id integer
+    staff_candidate_id integer,
+    slots smallint DEFAULT 1 NOT NULL
 );
 CREATE SEQUENCE staff_positions_id_seq
     START WITH 1
@@ -3133,6 +3149,7 @@ ALTER TABLE skins ALTER COLUMN id SET DEFAULT nextval('skins_id_seq'::regclass);
 ALTER TABLE skins_files ALTER COLUMN id SET DEFAULT nextval('skins_files_id_seq'::regclass);
 ALTER TABLE slog_entries ALTER COLUMN id SET DEFAULT nextval('slog_entries_id_seq'::regclass);
 ALTER TABLE sold_products ALTER COLUMN id SET DEFAULT nextval('sold_products_id_seq'::regclass);
+ALTER TABLE staff_candidate_votes ALTER COLUMN id SET DEFAULT nextval('staff_candidate_votes_id_seq'::regclass);
 ALTER TABLE staff_candidates ALTER COLUMN id SET DEFAULT nextval('staff_candidates_id_seq'::regclass);
 ALTER TABLE staff_positions ALTER COLUMN id SET DEFAULT nextval('staff_positions_id_seq'::regclass);
 ALTER TABLE staff_types ALTER COLUMN id SET DEFAULT nextval('staff_types_id_seq'::regclass);
@@ -3528,6 +3545,8 @@ ALTER TABLE ONLY slog_visits
     ADD CONSTRAINT slog_visits_pkey PRIMARY KEY (user_id);
 ALTER TABLE ONLY sold_products
     ADD CONSTRAINT sold_products_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY staff_candidate_votes
+    ADD CONSTRAINT staff_candidate_votes_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY staff_candidates
     ADD CONSTRAINT staff_candidates_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY staff_positions
@@ -3956,6 +3975,12 @@ ALTER TABLE ONLY reviews
     ADD CONSTRAINT reviews_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY skins_files
     ADD CONSTRAINT skins_files_skin_id_fkey FOREIGN KEY (skin_id) REFERENCES skins(id) MATCH FULL;
+ALTER TABLE ONLY staff_candidate_votes
+    ADD CONSTRAINT staff_candidate_votes_staff_candidate_id_fkey FOREIGN KEY (staff_candidate_id) REFERENCES staff_candidates(id) MATCH FULL;
+ALTER TABLE ONLY staff_candidate_votes
+    ADD CONSTRAINT staff_candidate_votes_staff_position_id_fkey FOREIGN KEY (staff_position_id) REFERENCES staff_positions(id) MATCH FULL;
+ALTER TABLE ONLY staff_candidate_votes
+    ADD CONSTRAINT staff_candidate_votes_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY staff_candidates
     ADD CONSTRAINT staff_candidates_staff_position_id_fkey FOREIGN KEY (staff_position_id) REFERENCES staff_positions(id) MATCH FULL;
 ALTER TABLE ONLY staff_candidates

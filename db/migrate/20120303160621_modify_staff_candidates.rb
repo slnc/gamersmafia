@@ -8,6 +8,8 @@ class ModifyStaffCandidates < ActiveRecord::Migration
     User.db_query("alter table staff_positions alter column term_ends_on type date;")
     User.db_query("alter table staff_candidates alter column term_ends_on type date;")
     User.db_query("alter table staff_candidates alter column term_starts_on type date;")
+    User.db_query("alter table staff_positions add column slots smallint not null default 1;")
+    User.db_query("alter table staff_candidates add column is_denied bool not null default 'f';")
   end
 
   def down

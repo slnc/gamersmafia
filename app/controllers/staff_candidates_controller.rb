@@ -60,13 +60,37 @@ class StaffCandidatesController < ApplicationController
     if !Staff.user_can_vote_staff_candidate(@user, @staff_candidate)
       raise AccessDenied
     end
-    @staff_position.update_user_vote(@user, @staff_candidate)
+
+    new_vote = @staff_position.update_user_vote(@user, @staff_candidate)
+    if new_vote.new_record?
+      feedback = {:error => new_vote.errors.full_messages_html}
+    else
+      feedback = {:notice => "Voto registrado correctamente."}
+    end
+    redirect_to(
+      staff_position_staff_candidate_path(@staff_position, @staff_candidate),
+      feedback)
   end
 
-  #protected
-  #def require_can_present_himself
-  #  reasons = @staff_position.user_is_candidate(@user)
+  def deny
+    @staff_position = StaffPosition.find_or_404(
+      params[:staff_position_id], :include => :staff_type)
 
-  #  end
-  #end
+    @staff_candidate = StaffCandidate.find_or_404(
+      params[:id])
+
+    if !Staff.user_can_deny_staff_candidate(@user, @staff_candidate)
+      raise AccessDenied
+    end
+
+    if @staff_position.update_attributes(:is_denied => true)
+      feedback = {:notice => "Posición denegada correctamente."}
+    else
+      feedback = {:error => "Error al denegar posición:" +
+                  " #{@staff_position.errors.full_messages_html}"}
+    end
+    redirect_to(
+      staff_position_staff_candidate_path(@staff_position, @staff_candidate),
+      feedback)
+  end
 end

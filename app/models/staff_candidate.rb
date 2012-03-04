@@ -25,6 +25,12 @@ class StaffCandidate < ActiveRecord::Base
     out
   end
 
+  def to_s
+    ("<StaffCandidate id: #{self.id}, user_id: #{self.user_id}," +
+     " staff_position_id: #{self.staff_position_id}, term_starts_on:" +
+     "  #{self.term_starts_on}>")
+  end
+
   protected
   def copy_term_starting_dates
     return if self.term_starts_on

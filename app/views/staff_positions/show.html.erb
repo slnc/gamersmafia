@@ -10,7 +10,8 @@
 
   <% if @staff_position.state == 'candidacy_presentation' then %>
     <% mflist("Candidatos",
-              @staff_position.staff_candidates.find(:all, :include => :user)) do |candidate| %>
+              @staff_position.staff_candidates.find(
+                  :all, :include => :user)) do |candidate| %>
     <%= link_to(candidate.user.login,
                 staff_position_staff_candidate_path(
                     @staff_position, candidate)) %>
@@ -31,15 +32,25 @@
                     new_staff_position_staff_candidate_path(@staff_position)) %>
         <% end -%>
       <% end -%>
-    <% end -%>
 
-    <% if @staff_position.state == 'voting' then %>
+    <% elsif @staff_position.state == 'voting' then %>
       <% mftext("En periodo de votación") do %>
       <p>Esta posición está en periodo de votación.</p>
       <% @staff_position.current_candidates.each do |staff_candidate| %>
         <%= link_to(staff_candidate.user.login,
                     staff_position_staff_candidate_path(
                         @staff_position, staff_candidate)) %>
+        <% end -%>
+      <% end -%>
+    <% elsif @staff_position.state == 'elect' then %>
+      <% mftext("Pendiente de confirmar") do %>
+        <p>Ganador<%= "es" if @staff_position.slots > 1 %>
+        electo<%= "s" if @staff_position.slots > 1 %>:
+        <%= staff_position_winners(@staff_position) %></p>
+        <% if user_is_authed && can_confirm_staff_position_winners(@user, @staff_position) %>
+        <%= link_to("Confirmar ganadores",
+                    confirm_winners_staff_position_path(@staff_position),
+                    :confirm => '¿Estás seguro?') %>
         <% end -%>
       <% end -%>
     <% end -%>

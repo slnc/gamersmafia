@@ -7,7 +7,7 @@ log4r_config:
       outputters :
       - datefile
     - name      : development
-      level     : WARN
+      level     : INFO
       trace     : 'true'
       outputters :
       - datefile

@@ -20,4 +20,18 @@ module Staff
   def self.user_can_vote_staff_candidate(user, staff_candidate)
     user.id != staff_candidate.user_id
   end
+
+  def self.can_edit_staff_candidate(user, staff_position, staff_candidate)
+    ([StaffPosition::VOTING,
+      StaffPosition::CANDIDACY_PRESENTATION].include?(staff_position.state) &&
+     user.id == staff_candidate.user_id)
+  end
+
+  def self.can_deny_staff_candidate(user, staff_position, staff_candidate)
+    staff_position.state == StaffPosition::ELECT && user.is_superadmin
+  end
+
+  def self.can_confirm_staff_position_winners(user, staff_position)
+    staff_position.state == StaffPosition::ELECT && user.is_superadmin
+  end
 end

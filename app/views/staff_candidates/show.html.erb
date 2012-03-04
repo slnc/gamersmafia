@@ -10,7 +10,9 @@
   <%mftext(@staff_candidate.user.login) do %>
     <%=link_to @staff_position.staff_type.name, staff_position_path(@staff_position) %>
 
-    <% if user_is_authed && @user.id == @staff_candidate.user_id %>
+    <% if (user_is_authed &&
+           can_edit_staff_candidate(
+               @user, @staff_position, @staff_candidate)) %>
       Mi candidatura:
       <%= link_to("Editar",
                   edit_staff_position_staff_candidate_path(
@@ -21,7 +23,18 @@
                   :confirm => '¿Estás seguro?') %>
     <% end -%>
 
-    <div>Key results:</div>
+    <% if (user_is_authed &&
+           @staff_position.state == StaffPosition::ELECT &&
+           can_confirm_staff_candidate(
+               @user, @staff_position, @staff_candidate)) %>
+      <%= link_to("Denegar candidatura",
+                  deny_staff_position_staff_candidate_path(
+                      @staff_position, @staff_candidate),
+                  :confirm => '¿Estás seguro?') %>
+    <% end %>
+    Estado de la candidatura: <%= staff_candidate_state(@staff_candidate) %>
+
+    <div>Resultados prometidos:</div>
     <ul>
     <% @staff_candidate.key_results.each do |kr| %>
       <li><%= kr %></li>
