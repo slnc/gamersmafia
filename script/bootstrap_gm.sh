@@ -82,6 +82,7 @@ CloneRepo() {
 InstallSystemPackages() {
   sudo apt-get install -qq -y `echo ${PACKAGES_TO_INSTALL} | tr '\n' ' '`
   sudo gem update rubygems-update=1.3.5
+  sudo REALLY_GEM_UPDATE_SYSTEM=1 gem update --system
   sudo gem install passenger --no-rdoc --no-ri
   sudo gem install bundler --no-rdoc --no-ri
 }
