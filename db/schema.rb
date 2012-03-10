@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120225180115) do
+ActiveRecord::Schema.define(:version => 20120303160621) do
 
   create_table "ab_tests", :id => false, :force => true do |t|
     t.integer  "id",                                                                                              :null => false
@@ -1823,9 +1823,12 @@ ActiveRecord::Schema.define(:version => 20120225180115) do
     t.string   "key_result2",       :limit => nil
     t.string   "key_result3",       :limit => nil
     t.boolean  "is_winner",                        :default => false, :null => false
-    t.datetime "term_starts_on"
-    t.datetime "term_ends_on"
+    t.date     "term_starts_on",                                      :null => false
+    t.date     "term_ends_on",                                        :null => false
+    t.boolean  "is_denied",                        :default => false, :null => false
   end
+
+  add_index "staff_candidates", ["staff_position_id", "user_id", "term_starts_on"], :name => "staff_candidates_uniq", :unique => true
 
   create_table "staff_canditate_votes", :force => true do |t|
     t.integer  "user_id",            :null => false
@@ -1834,11 +1837,12 @@ ActiveRecord::Schema.define(:version => 20120225180115) do
   end
 
   create_table "staff_positions", :force => true do |t|
-    t.integer  "staff_type_id",                                               :null => false
-    t.string   "state",              :limit => nil, :default => "unassigned", :null => false
-    t.datetime "term_started_on"
-    t.datetime "term_ends_on"
-    t.integer  "staff_candidate_id"
+    t.integer "staff_type_id",                                               :null => false
+    t.string  "state",              :limit => nil, :default => "unassigned", :null => false
+    t.date    "term_starts_on"
+    t.date    "term_ends_on"
+    t.integer "staff_candidate_id"
+    t.integer "slots",              :limit => 2,   :default => 1,            :null => false
   end
 
   create_table "staff_types", :force => true do |t|
