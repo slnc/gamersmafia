@@ -2,6 +2,7 @@ source :rubygems
 
 gem "aasm"
 gem "ai4r"
+gem "daemons"
 gem "deadlock_retry"
 gem "delayed_job", "~> 3.0.1"
 gem "delayed_job_active_record"

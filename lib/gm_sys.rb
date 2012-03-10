@@ -1,4 +1,7 @@
 module GmSys
+
+  WORKER_PID_FILE = "#{Rails.root}/tmp/pids/delayed_worker.pid"
+
   class DjJobWrapper
     def initialize(task)
       @task = task
@@ -26,38 +29,37 @@ module GmSys
   end
 
   def self.kill_workers
-    Rails.logger.warn("kill_workers temporarily disabled") && return
-    # we kill all currently active workers and spawn a new one
-    Dir.glob("#{Rails.root}/tmp/pids/delayed_worker.*.pid").each do |fname|
-      m = /\.([0-9]+)\.pid$/.match(fname)
-      begin
-        Process.kill('TERM', m[1].to_i)
-        Rails.logger.info("killing delayed_job #{m[1]}") if App.debug
-        File.unlink("#{Rails.root}/tmp/pids/#{fname}")
-      rescue
-        Rails.logger.info("the bastard didn't want to die") if App.debug
-      end
-    end
-
-    Rake::Task["gm:spawn_worker"].invoke if App.enable_bgjobs?
+    `#{Rails.root}/script/delayed_job stop`
   end
 
+  def self.start_workers
+    unless App.enable_bgjobs?
+      Rails.logger.warn(
+          "Background jobs functionality disabled, not starting DelayedJob.")
+      return
+    end
+
+    `#{Rails.root}/script/delayed_job start`
+  end
+
+  # Ensures that there is a DelayedJob worker process running.
   def self.check_workers_pids
-    Rails.logger.warn("check_workers_pids temporarily disabled") && return
-    # we remove pids not refering to anyone
-    working_workers = 0
-    Dir.glob("#{Rails.root}/tmp/pids/delayed_worker.*.pid").each do |fname|
-      m = /\.([0-9]+)\.pid$/.match(fname)
-      if running?(m[1].to_i)
-        working_workers += 1
-      else
-        File.unlink(fname)
+    return unless App.enable_bgjobs?
+
+    is_running = false
+    if File.exists?(WORKER_PID_FILE)
+      pid = File.open(WORKER_PID_FILE).read
+      is_running = self.running?(pid)
+      if !is_running
+        Rails.logger.warn(
+            "DelayedJob pid file found but no process running. Cleaning up" +
+            " and starting a new worker.")
+        File.unlink(WORKER_PID_FILE)
       end
     end
 
-    Rake::Task["gm:spawn_worker"].invoke if App.enable_bgjobs? && working_workers == 0
+    self.start_workers unless is_running
   end
-
 
   def self.job(task)
     # performs or schedules a lengthy job depending on the current configuration
@@ -69,12 +71,12 @@ module GmSys
     end
   end
 
-  def self.command(task)
+  def self.command(task, run_now=false)
     # performs or schedules a direct bash command
-    if App.enable_bgjobs?
-      job("`#{task}`")
-    else
+    if run_now || !App.enable_bgjobs?
       IO.popen(task) {|pipe| puts pipe.gets }
+    else
+      job("`#{task}`")
     end
   end
 end

@@ -34,6 +34,7 @@ GEM
     arel (3.0.2)
     builder (3.0.0)
     daemon_controller (1.0.0)
+    daemons (1.1.8)
     deadlock_retry (1.2.0)
     delayed_job (3.0.1)
       activesupport (~> 3.0)
@@ -121,6 +122,7 @@ PLATFORMS
 DEPENDENCIES
   aasm
   ai4r
+  daemons
   deadlock_retry
   delayed_job (~> 3.0.1)
   delayed_job_active_record
