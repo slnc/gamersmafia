@@ -1936,7 +1936,6 @@ ActiveRecord::Schema.define(:version => 20120303160621) do
 
   add_index "tracker_items", ["content_id", "user_id", "lastseen_on", "is_tracked"], :name => "tracker_items_full"
   add_index "tracker_items", ["content_id", "user_id"], :name => "tracker_items_content_id_user_id", :unique => true
-  add_index "tracker_items", ["id"], :name => "tracker_items_pkey", :unique => true
   add_index "tracker_items", ["user_id", "is_tracked"], :name => "tracker_items_user_id_is_tracked"
 
   create_table "treated_visitors", :id => false, :force => true do |t|

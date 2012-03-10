@@ -3562,8 +3562,6 @@ ALTER TABLE ONLY textures
 ALTER TABLE ONLY textures
     ADD CONSTRAINT textures_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY tracker_items
-    ADD CONSTRAINT tracker_items_pkey UNIQUE (id);
-ALTER TABLE ONLY tracker_items
     ADD CONSTRAINT tracker_items_pkey1 PRIMARY KEY (id);
 ALTER TABLE ONLY treated_visitors
     ADD CONSTRAINT treated_visitors_pkey PRIMARY KEY (id);
