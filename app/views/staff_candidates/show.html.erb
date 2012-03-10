@@ -1,24 +1,53 @@
 <% generic_support do %>
-  <% mftext("slnc como boss de ut") do %>
+  <% mftext("slnc como #{@staff_position.staff_type.name}") do %>
   <% end -%>
 
-  <% mftext("slnc como boss") do %>
-  <% end -%>
-
-  <% mftext("historial de slnc") do %>
+  <% mftext("historial de #{@staff_candidate.user.login}") do %>
   <% end -%>
 <% end %>
 
 <% content_main do %>
   <%mftext(@staff_candidate.user.login) do %>
-    <% if (@staff_position.state == 'voting' &&
+    <%=link_to @staff_position.staff_type.name, staff_position_path(@staff_position) %>
+
+    <% if (user_is_authed &&
+           can_edit_staff_candidate(
+               @user, @staff_position, @staff_candidate)) %>
+      Mi candidatura:
+      <%= link_to("Editar",
+                  edit_staff_position_staff_candidate_path(
+                      @staff_position, @staff_candidate)) %>
+      <%= link_to("Borrar",
+                  delete_staff_position_staff_candidate_path(
+                      @staff_position, @staff_candidate),
+                  :confirm => '¿Estás seguro?') %>
+    <% end -%>
+
+    <% if (user_is_authed &&
+           @staff_position.state == StaffPosition::ELECT &&
+           can_confirm_staff_candidate(
+               @user, @staff_position, @staff_candidate)) %>
+      <%= link_to("Denegar candidatura",
+                  deny_staff_position_staff_candidate_path(
+                      @staff_position, @staff_candidate),
+                  :confirm => '¿Estás seguro?') %>
+    <% end %>
+    Estado de la candidatura: <%= staff_candidate_state(@staff_candidate) %>
+
+    <div>Resultados prometidos:</div>
+    <ul>
+    <% @staff_candidate.key_results.each do |kr| %>
+      <li><%= kr %></li>
+    <% end -%>
+    </ul>
+
+    <% if (@staff_position.state == 'voting' && user_is_authed &&
            user_can_vote_staff_candidate(@user, @staff_candidate)) %>
     <%=link_to 'Votar', vote_staff_position_staff_candidate_path %>
     <% end %>
 
     <% if @staff_position.state == 'voting' %>
-      <% @staff_position.current_candidates.find(
-           :all, :include => :user).each do |staff_candidate| %>
+      <% @staff_position.current_candidates.each do |staff_candidate| %>
         <% if staff_candidate.id != @staff_candidate.id %>
           <%= staff_candidate.user.login %>
         <% end -%>

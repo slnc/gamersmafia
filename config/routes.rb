@@ -2,6 +2,7 @@ Gamersmafia::Application.routes.draw do
   resources :staff_positions, :path => "staff" do
     member do
       get 'move_to_candidacy_presentation'
+      get 'confirm_winners'
     end
 
     resources :staff_candidates,
@@ -9,6 +10,8 @@ Gamersmafia::Application.routes.draw do
         :path_names => { :new => "nuevo" } do
 
       member do
+        get 'deny'
+        get 'delete'
         get 'vote'
       end
     end
@@ -24,6 +27,8 @@ Gamersmafia::Application.routes.draw do
   match 'admin/bazar_districts(/:action)(/:id)' => 'admin/bazar_districts'
   match 'admin/categorias/' => 'admin/categorias#index'
   match 'admin/clanes/(:action)(/:id)' => 'admin/clanes'
+  match 'admin/facciones(/:action)' => 'admin/facciones'
+  match 'admin/plataformas(/:action)' => 'admin/plataformas'
   match 'admin/juegos(/:action)' => 'admin/juegos'
   match 'admin/categorias/create' => 'admin/categorias#create'
   match 'admin/categorias/term/:id' => 'admin/categorias#root'
@@ -35,6 +40,17 @@ Gamersmafia::Application.routes.draw do
   match 'admin/contenidos' => 'admin/contenidos#index'
   match 'admin/ip_bans(/:action)(/:id)' => 'admin/ip_bans'
   match 'admin/contenidos/:action' => 'admin/contenidos'
+  match 'admin/tienda(/:action)' => 'admin/tienda'
+  match 'admin/portales(/:action)' => 'admin/portales'
+  match 'admin/mapas_juegos(/:action)' => 'admin/mapas_juegos'
+  match 'admin/hipotesis(/:action)' => 'admin/hipotesis'
+  match 'admin/grupos(/:action)' => 'admin/grupos'
+  match 'admin/entradasfaq(/:action)' => 'admin/entradasfaq'
+  match 'admin/competiciones(/:action)' => 'admin/competiciones'
+  match 'admin/categoriasfaq(/:action)' => 'admin/categoriasfaq'
+  match 'admin/canales(/:action)' => 'admin/canales'
+  match 'admin/ads_slots(/:action)' => 'admin/ads_slots'
+  match 'admin/ads(/:action)' => 'admin/ads'
   match 'admin/usuarios' => 'admin/usuarios#index'
   match 'admin/usuarios/:action' => 'admin/usuarios'
   match 'admin/contenidos/recover/:id' => 'admin/contenidos#recover'

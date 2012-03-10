@@ -578,7 +578,6 @@ Request information:
       items<< ['IPs Duplicadas', '/admin/usuarios/ipsduplicadas']
       items<< ['Juegos', '/admin/juegos']
       items<< ['Mapas', '/admin/mapas_juegos']
-      items<< ['Plataformas', '/admin/plataformas']
       items<< ['Portales', '/admin/portales']
       items<< ['Tags', '/admin/tags']
       items<< ['Users', '/admin/usuarios']

@@ -17,13 +17,21 @@ class StaffPositionsController < ApplicationController
       params[:id], :include => :staff_type)
     @staff_position.open_candidacy_presentation
     if @staff_position.save
-      #flash[:notice] = "Posición movida a candidaturas abiertas."
     else
       flash[:error] = (
           "Error al mover posición: " +
           " #{@staff_position.errors.full_messages_html}.")
     end
-    # redirect_to staff_position_path(@staff_position)
     render :nothing => true
+  end
+
+  def confirm_winners
+    require_auth_users
+    @staff_position = StaffPosition.find_or_404(params[:id])
+    if !Staff.can_confirm_staff_position_winners(@user, @staff_position)
+      raise AccessDenied
+    end
+    @staff_position.confirm_winners
+    render :action => "show"
   end
 end
