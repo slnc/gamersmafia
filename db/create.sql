@@ -2261,10 +2261,6 @@ CREATE SEQUENCE reviews_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE reviews_id_seq OWNED BY reviews.id;
-CREATE TABLE schema_info (
-    version integer NOT NULL,
-    "_Slony-I_gamersmafia_rowID" bigint NOT NULL
-);
 CREATE TABLE schema_migrations (
     version character varying NOT NULL
 );
@@ -3517,10 +3513,6 @@ ALTER TABLE ONLY reviews_categories
     ADD CONSTRAINT reviews_categories_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY reviews
     ADD CONSTRAINT reviews_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY schema_info
-    ADD CONSTRAINT "schema_info__Slony-I_gamersmafia_rowID_key" UNIQUE ("_Slony-I_gamersmafia_rowID");
-ALTER TABLE ONLY schema_info
-    ADD CONSTRAINT schema_info_version_key UNIQUE (version);
 ALTER TABLE ONLY schema_migrations
     ADD CONSTRAINT schema_migrations_version_key UNIQUE (version);
 ALTER TABLE ONLY sent_emails

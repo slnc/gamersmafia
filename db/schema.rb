@@ -1725,14 +1725,6 @@ ActiveRecord::Schema.define(:version => 20120303160621) do
 
   add_index "reviews_categories", ["name", "parent_id"], :name => "reviews_categories_unique", :unique => true
 
-  create_table "schema_info", :id => false, :force => true do |t|
-    t.integer "version",                                 :null => false
-    t.integer "_Slony-I_gamersmafia_rowID", :limit => 8, :null => false
-  end
-
-  add_index "schema_info", ["_Slony-I_gamersmafia_rowID"], :name => "schema_info__Slony-I_gamersmafia_rowID_key", :unique => true
-  add_index "schema_info", ["version"], :name => "schema_info_version_key", :unique => true
-
   create_table "sent_emails", :force => true do |t|
     t.string   "message_key",       :limit => nil, :null => false
     t.string   "title",             :limit => nil
