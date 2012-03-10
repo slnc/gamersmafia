@@ -1569,7 +1569,7 @@ ActiveRecord::Schema.define(:version => 20120303160621) do
     t.string   "name",        :limit => nil,                                                  :null => false
     t.decimal  "price",                      :precision => 14, :scale => 2,                   :null => false
     t.datetime "created_on",                                                                  :null => false
-    t.string   "description", :limit => nil
+    t.text     "description", :limit => nil
     t.datetime "updated_on",                                                                  :null => false
     t.string   "cls",         :limit => nil,                                                  :null => false
     t.boolean  "enabled",                                                   :default => true, :null => false

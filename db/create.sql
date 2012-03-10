@@ -2059,7 +2059,7 @@ CREATE TABLE products (
     name character varying NOT NULL,
     price numeric(14,2) NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
-    description character varying,
+    description text,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     cls character varying NOT NULL,
     enabled boolean DEFAULT true NOT NULL
