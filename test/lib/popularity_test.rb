@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../../test/test_helper'
+require 'test_helper'
 
 class PopularityTest < ActiveSupport::TestCase
   test "update_ranking_users_users" do

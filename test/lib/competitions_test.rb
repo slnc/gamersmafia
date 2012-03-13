@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../../test/test_helper'
+require 'test_helper'
 
 class CompetitionsTest < ActiveSupport::TestCase
   test "recalculate_points_should_properly_account_for_double_forfeit_games" do

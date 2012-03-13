@@ -1,6 +1,7 @@
 module GmSys
 
   WORKER_PID_FILE = "#{Rails.root}/tmp/pids/delayed_worker.pid"
+  TOO_MANY_JOBS = 1000
 
   class DjJobWrapper
     def initialize(task)
@@ -77,6 +78,15 @@ module GmSys
       IO.popen(task) {|pipe| puts pipe.gets }
     else
       job("`#{task}`")
+    end
+  end
+
+  def self.warn_if_big_queue
+    pending_jobs = User.db_query("SELECT COUNT(*) FROM delayed_jobs")[0].to_i
+    if pending_jobs >= TOO_MANY_JOBS
+      Notification.too_many_delayed_jobs(
+          User.find(App.webmaster_user_id),
+          :pending_jobs => pending_jobs).deliver
     end
   end
 end

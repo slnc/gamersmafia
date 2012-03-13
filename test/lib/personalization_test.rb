@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../../test/test_helper'
+require 'test_helper'
 
 class PersonalizationTest < ActiveSupport::TestCase
   # TODO estos tests fallan y no se por que, parece que no se borre la bd despues de ejecutarlos

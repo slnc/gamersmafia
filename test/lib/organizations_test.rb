@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../../test/test_helper'
+require 'test_helper'
 
 class OrganizationsTest < ActiveSupport::TestCase
   test "find_organization_by_content_should_work_with_factions_content" do

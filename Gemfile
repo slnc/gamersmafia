@@ -13,6 +13,7 @@ gem "geoip"
 gem "gruff"
 gem "jquery-rails", ">= 1.0.12"
 gem "log4r"
+gem "mocha", :require => false
 gem "newrelic_rpm"
 gem "passenger"
 gem "pg"

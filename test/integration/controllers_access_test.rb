@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/../test_helper"
+require "test_helper"
 
 class ControllersAccessTest < ActionController::IntegrationTest
   test "test_app_config" do

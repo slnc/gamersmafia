@@ -65,6 +65,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.17.2)
+    mocha (0.9.12)
     multi_json (1.1.0)
     newrelic_rpm (3.3.2)
     passenger (3.0.11)
@@ -133,6 +134,7 @@ DEPENDENCIES
   gruff
   jquery-rails (>= 1.0.12)
   log4r
+  mocha
   newrelic_rpm
   passenger
   pg

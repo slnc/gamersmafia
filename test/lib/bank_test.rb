@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../../test/test_helper'
+require 'test_helper'
 require File.dirname(__FILE__) + '/test_helper'
 
 class BankTest < ActiveSupport::TestCase
