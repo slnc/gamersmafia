@@ -66,7 +66,6 @@ GEM
       treetop (~> 1.4.8)
     mime-types (1.17.2)
     multi_json (1.1.0)
-    newrelic_rpm (3.3.2)
     passenger (3.0.11)
       daemon_controller (>= 0.2.5)
       fastthread (>= 1.0.1)
@@ -133,7 +132,6 @@ DEPENDENCIES
   gruff
   jquery-rails (>= 1.0.12)
   log4r
-  newrelic_rpm
   passenger
   pg
   rails (= 3.2.1)

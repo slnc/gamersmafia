@@ -85,7 +85,7 @@ module Mime
 
     class << self
 
-      TRAILING_STAR_REGEXP = /(text|application)\/\*/
+      # TRAILING_STAR_REGEXP = /(text|application)\/\*/
       Q_SEPARATOR_REGEXP = /;\s*q=/
 
       def lookup(string)
