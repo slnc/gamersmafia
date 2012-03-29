@@ -4,6 +4,11 @@
 
 " OPTIONS
 syntax on
+
+if &diff
+    syntax off
+endif
+
 set autoindent  " Copy indent from current line when starting a new line
 set background=dark  " Tell Vim that we are using a dark background
 set cc=+1  " Highlight the first column after textwidth
@@ -22,7 +27,7 @@ set ruler  " Show the line and column number of the cursor position
 set scrolloff=3  "Minimal number of lines to keep above and below the cursor
 set matchtime=1  " Show matching character for 1th of a second
 set shiftwidth=2  " Number of spaces to use for each step of (auto)indent
-set shortmess=atI   " Abbreviate messages
+set shortmess=atIoO   " Abbreviate messages
 set showcmd  " Show (partial) command in the last line of the screen
 set showmatch  " When a bracket is inserted, briefly jump to the matching one.
 set t_Co=256  " Tell Vim we have a terminal that can display 256 colors
@@ -50,6 +55,12 @@ highlight LineNr ctermfg=DarkGrey
 highlight ColorColumn ctermbg=8
 highlight MatchParen ctermfg=DarkGrey ctermbg=black
 
+" Vimdiff mode
+highlight DiffAdd ctermfg=black ctermbg=darkgreen
+highlight DiffDelete ctermfg=lightred ctermbg=darkred
+highlight DiffChange ctermbg=brown
+highlight DiffText ctermfg=black ctermbg=yellow
+
 " Function to remove trailing whitespace from the currently opened file
 fun! <SID>StripTrailingWhitespaces()
     let l = line(".")
@@ -75,26 +86,26 @@ nnoremap <C-w>c <Nop>
 " Warning: You need to install CommandT for Vim if you want to enable the
 " following command:
 " http://www.vim.org/scripts/script.php?script_id=3025
-" map <Leader>r :CommandT<CR>
+map <Leader>r :CommandT<CR>
 
 
 " TAGLIST
 " Warning: You need to install Taglist for Vim if you want to enable the
 " following options:
 " Shortcut for showing taglist window
-" nmap <leader>o :TlistToggle<CR>
-"
+nmap <leader>o :TlistToggle<CR>
+
 " Reduce delay between changes in editor and taglist window to 1s
-" set updatetime=1000
-"
+set updatetime=1000
+
 " Always sort method names by name
-" let Tlist_Sort_Type = "name"
-"
+let Tlist_Sort_Type = "name"
+
 " Increase default taglist window width to 60 chars
-" let Tlist_WinWidth = 60
-"
+let Tlist_WinWidth = 60
+
 " Don't show line numbering on taglist window
-" autocmd FileType taglist setlocal norelativenumber
+autocmd FileType taglist setlocal norelativenumber
 
 " Redefine ColorColumn's color now because Taglist overrides right
 highlight ColorColumn ctermbg=8
