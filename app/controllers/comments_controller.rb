@@ -48,10 +48,12 @@ class CommentsController < ApplicationController
             "No puedes publicar tantos comentarios seguidos, inténtalo un" +
             " poco más tarde.")
         else
-          @comment = Comment.new({:content_id => params[:comment][:content_id],
-            :user_id => @user.id,
-            :host => request.remote_ip,
-            :comment => Comments::formatize(params[:comment][:comment])})
+          @comment = Comment.new({
+              :comment => Comments::formatize(params[:comment][:comment])
+              :content_id => params[:comment][:content_id],
+              :host => self.remote_ip,
+              :user_id => @user.id,
+          })
 
           if @comment.save
             Users.add_to_tracker(@user, @comment.content) if params[:add_to_tracker] && params[:add_to_tracker] == '1'

@@ -261,31 +261,6 @@ group by date_trunc('day', created_on) order by s asc
     total
   end
 
-  def self.account_ad_impression(request, element_id, user_id, portal_id)
-    user_id = user_id ? user_id : 'NULL'
-    element_id = (/([a-zA-Z0-9_-])/ =~ element_id) ? element_id : 'NULL'
-    user_agent = (request.user_agent.to_s != '') ? request.user_agent : ''
-    referer = request.env['HTTP_REFERER'] ? request.env['HTTP_REFERER'] : ''
-    url = request.fullpath
-    ip = request.remote_ip
-    if nil
-      User.db_query("INSERT INTO stats.ads_shown (referer,
-                                          user_id,
-                                          ip,
-                                          user_agent,
-                                          portal_id,
-                                          url,
-                                          element_id)
-                                   VALUES (#{User.connection.quote(referer)},
-                                            #{user_id},
-                                            '#{ip}',
-                                            #{User.connection.quote(user_agent)},
-                                            #{portal_id},
-                                            #{User.connection.quote(url)},
-                                            '#{element_id}')")
-    end
-  end
-
   class Goals
     def self.after_init
       self.available_goals << :partial_user_registrations

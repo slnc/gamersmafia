@@ -44,7 +44,7 @@ class Cuenta::AmigosController < ApplicationController
     params[:u][:password] ||= ''
     params[:u][:password_confirm] ||= ''
     params[:u][:email] = freq.receiver_email
-    params[:u][:ipaddr] = request.remote_ip
+    params[:u][:ipaddr] = self.remote_ip
     params[:u][:lastseen_on] = Time.now
     params[:u][:referer_user_id] = freq.sender_user_id
     @u = User.new(params[:u].pass_sym(:login, :password, :email, :ipaddr, :lastseen_on)) # TODO testear que solo se pasan estos atributos
