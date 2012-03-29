@@ -1,6 +1,7 @@
 desc 'Batería de tests por defecto'
 redefine_task :test => :environment do
   Rails.env = 'test'
+  Rake::Task['db:fixtures:load2'].invoke
   got_error = false
   %w(functionals integration libs plugins scripts tasks units).each do |tpack|
     Rake::Task["test:#{tpack}"].invoke rescue got_error = true

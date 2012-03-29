@@ -4,10 +4,10 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
+one:
   id: 1
   name: "capo"
 
-boss: {}
-  id: 1
+moderador:
+  id: 2
   name: "moderador"

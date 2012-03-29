@@ -85,5 +85,7 @@ module Gamersmafia
         :key => 'adn2', :domain => ".#{App.domain}")
 
     config.secret_token = App.session_secret
+
+    config.active_record.schema_format = :sql
   end
 end
