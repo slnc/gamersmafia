@@ -49,7 +49,7 @@ class CommentsController < ApplicationController
             " poco más tarde.")
         else
           @comment = Comment.new({
-              :comment => Comments::formatize(params[:comment][:comment])
+              :comment => Comments::formatize(params[:comment][:comment]),
               :content_id => params[:comment][:content_id],
               :host => self.remote_ip,
               :user_id => @user.id,
