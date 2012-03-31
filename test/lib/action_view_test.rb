@@ -5,24 +5,26 @@ class ActionViewTestContainer
 end
 
 class ActionViewMixingsTest < ActiveSupport::TestCase
-  test "clean_html_shouldnt_mess_up_mailto_links" do
-    str = '<a href="mailto:dharana@dharana.net">dharana@dharana.net</a>'
-    assert_equal str, ActionViewTestContainer.new.clean_html(str).strip
+  def setup
+    @action_view = ActionViewTestContainer.new
   end
 
-  test "clean html should remove harmful attributes" do
-    str = 'foo <a href="mailto:dharana@dharana.net" onclick="alert(\'foo\');">dharana@dharana.net</a>'
-    assert_equal 'foo <a href="mailto:dharana@dharana.net">dharana@dharana.net</a>', ActionViewTestContainer.new.clean_html(str).strip
+  test "format interval should work 8 days ago" do
+    eight_days_ago = Time.now - 8.days.ago
+    assert_equal('1 semana',
+                 @action_view.format_interval(eight_days_ago, 'semanas', true))
   end
 
-  #test "print_interval" do
-  #  assert_equal '2 semanas', ActionViewTestContainer.new.format_interval(Time.now - 2.weeks.ago, 'horas', true).strip
-  #end
+  test "format interval should work 1 hour ago" do
+    plus_one_hour_ago = Time.now - 61.minutes.ago
+    assert_equal('1 hora',
+                 @action_view.format_interval(plus_one_hour_ago, 'horas', true)
+  end
 
-  test "format interval should work" do
-     assert_equal '1 semana', ActionViewTestContainer.new.format_interval(Time.now - 8.days.ago, 'semanas', true)
-     assert_equal '1 hora', ActionViewTestContainer.new.format_interval(Time.now - 61.minutes.ago, 'horas', true)
-     assert_equal '59 mins', ActionViewTestContainer.new.format_interval(Time.now - 1.hour.ago, 'horas', true)
+  test "format interval should work 59 mins ago" do
+    one_hour_ago = Time.now - 1.hour.ago
+    assert_equal('59 mins',
+                 @action_view.format_interval(one_hour_ago, 'horas', true)
   end
 end
 

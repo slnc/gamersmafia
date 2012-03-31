@@ -106,7 +106,6 @@ class SiteControllerTest < ActionController::TestCase
     get :index
     assert_response :success
     assert_template 'site/index'
-    # assert_valid_markup
   end
 
   test "add_to_tracker_should_work" do

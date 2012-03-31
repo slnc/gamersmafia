@@ -640,39 +640,42 @@ module Cms
   end
 
   def self.clean_html(html_fragment)
-    if !(html_fragment.nil? or html_fragment.empty?)
-      require 'tidy'
-      opts = {:input_html => true,
-        # opciones seguras
-        :hide_comments => true,
-        :logical_emphasis => true,
-        :doctype => 'omit',
-        :drop_font_tags => true,
-        :drop_proprietary_attributes => true,
-        :drop_empty_paras => false,
-        :show_body_only => true,
-        :wrap => 0,
-        :join_styles => false,
-        :force_output => true,
+    return html_fragment unless App.enable_tidy?
+    return html_fragment if !(html_fragment.nil? or html_fragment.empty?)
 
-        # pueden ser peligrosas
-        :bare => true,
-        :clean => false,
-        :quote_marks => true,
-        :output_xhtml => true,
-        :word_2000 => true
-      }
+    require 'tidy'
+    opts = {:input_html => true,
+      # opciones seguras
+      :hide_comments => true,
+      :logical_emphasis => true,
+      :doctype => 'omit',
+      :drop_font_tags => true,
+      :drop_proprietary_attributes => true,
+      :drop_empty_paras => false,
+      :show_body_only => true,
+      :wrap => 0,
+      :join_styles => false,
+      :force_output => true,
 
-      Tidy.path = App.tidy_path
-      Tidy.open(opts) do |tidy|
-        html_fragment = tidy.clean(html_fragment)
-      end
-      html_fragment.gsub!('<body>', '')
-      html_fragment.gsub!('</body>', '')
-      html_fragment.gsub!('<?xml version="1.0"?>', '')
-      html_fragment.gsub!(/\n$/, '')
-      html_fragment.gsub!(/\r$/, '')
+      # pueden ser peligrosas
+      :bare => true,
+      :clean => false,
+      :quote_marks => true,
+      :output_xhtml => true,
+      :word_2000 => true
+    }
+
+    Tidy.path = App.tidy_path
+    Tidy.open(opts) do |tidy|
+      html_fragment = tidy.clean(html_fragment)
     end
+
+    html_fragment.gsub!('<body>', '')
+    html_fragment.gsub!('</body>', '')
+    html_fragment.gsub!('<?xml version="1.0"?>', '')
+    html_fragment.gsub!(/\n$/, '')
+    html_fragment.gsub!(/\r$/, '')
+
     html_fragment
   end
 

@@ -28,6 +28,7 @@ common: &common
   enable_bgjobs?: false
   enable_dbstats?: false
   enable_google_analytics?: false
+  enable_tidy?: true
   ia_auto_abtests: MrAchmed
   log_env: development
   mirror_auth_key: secret

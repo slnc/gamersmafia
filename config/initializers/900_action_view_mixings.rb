@@ -1,5 +1,3 @@
-require 'tidy'
-
 module ActionViewMixings
   def get_visitor_id
     if cookies['__stma'] then # tenemos visitor_id, lo leemos ZimplY!
@@ -126,27 +124,6 @@ module ActionViewMixings
       :link_to_current_page => false,
       :params => {}
     }
-  end
-
-  def clean_html(text, tags=['a','img','p','br','i','b','u','ul','li', 'em', 'strong', 'span', 'table', 'tr', 'td'])
-    text = strip_tags_allowed(text, tags)
-    Tidy.path = defined?(App.tidy_path) ? App.tidy_path : '/usr/lib/libtidy.so'
-    xml = Tidy.open do |tidy|
-      tidy.options.bare = 1
-      tidy.options.doctype = 'omit'
-      tidy.options.drop_empty_paras = 0
-      tidy.options.drop_font_tags = 1
-      tidy.options.drop_propietary_attributes = 1
-      tidy.options.hide_comments = 1
-      tidy.options.word_2000 = 1
-      tidy.options.join_styles = 1
-      tidy.options.logical_emphasis = 1
-      tidy.options.quote_marks = 1
-      tidy.options.show_body_only = 1
-      tidy.options.char_encoding = 'utf8'
-      tidy.clean(text)
-    end
-    xml
   end
 
   def tohtmlattribute(str)
