@@ -1,2 +1,5 @@
 before_script:
   - psql -c 'create database gamersmafia_test;' -U postgres
+  - "rake db:migrate"
+  - "rake db:migrate"
+  - "rake --trace RAILS_ENV=test db:fixtures:load2"
