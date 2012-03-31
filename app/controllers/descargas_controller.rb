@@ -33,7 +33,7 @@ class DescargasController < InformacionController
     Download.increment_counter('downloaded_times', @download.id)
     dd = @download.downloaded_downloads.create({
         :ip => self.remote_ip,
-        :referer => request.env['HTTP_REFERER'].to_s
+        :referer => request.env['HTTP_REFERER'].to_s,
         :session_id => session[:session_id],
         :user_id => (user_is_authed ? @user.id : nil),
     })

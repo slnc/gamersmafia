@@ -5,7 +5,7 @@ class CommentsControllerTest < ActionController::TestCase
   NEW_COMMENT_OPTS = {
     :comment => {
       :comment => 'foo',
-      :content_id => Content.find(:first).id
+      :content_id => Content.find(:first).id,
     },
     :add_to_tracker => '1', :redirto => '/foo',
   }
