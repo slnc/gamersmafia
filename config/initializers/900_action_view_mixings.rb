@@ -1,4 +1,8 @@
 module ActionViewMixings
+  def remote_ip
+    self.controller.remote_ip
+  end
+
   def get_visitor_id
     if cookies['__stma'] then # tenemos visitor_id, lo leemos ZimplY!
       # _udh + "." + _uu + "." + _ust + "." + _ust + "." + _ust + ".1";

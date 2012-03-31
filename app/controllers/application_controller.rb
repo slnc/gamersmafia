@@ -157,6 +157,7 @@ Request information:
                       :completed_on => Time.now})
   end
 
+  public
   def remote_ip
     @remote_ip ||= begin
       http_headers = []
