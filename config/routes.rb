@@ -167,15 +167,16 @@ Gamersmafia::Application.routes.draw do
   match 'imagenes/create_from_zip' => 'imagenes#create_from_zip'
   match 'imagenes/new' => 'imagenes#new'
   match 'imagenes/potds' => 'imagenes#potds'
+  match 'miembros/buscar' => 'miembros#buscar'
+  match 'miembros/buscar/:s' => 'miembros#buscar'
+  match 'miembros/buscar_por_guid' => 'miembros#buscar_por_guid'
+  match 'miembros/del_firma' => 'miembros#del_firma'
+  match 'miembros/del_firma/:id' => 'miembros#del_firma'
+  match 'miembros/explorar' => 'miembros#explorar'
   match 'miembros/:login' => 'miembros#member', :login => /[^\/]+/
   match 'miembros/:login/:action' => 'miembros#index', :login => /[^\/]+/
   match 'miembros/:login/contenidos' => 'miembros#contenidos', :login => /[^\/]+/
   match 'miembros/:login/contenidos/:content_name' => 'miembros#contenidos_tipo', :login => /[^\/]+/
-  match 'miembros/buscar' => 'miembros#buscar'
-  match 'miembros/buscar/:s' => 'miembros#buscar'
-  match 'miembros/buscar_por_guid' => 'miembros#buscar_por_guid'
-  match 'miembros/del_firma/:id' => 'miembros#del_firma'
-  match 'miembros/explorar' => 'miembros#explorar'
   match 'site/banners/duke' => 'site#banners_duke'
   match 'site/banners/misc' => 'site#banners_misc'
   match 'site/slog.:format' => 'site#slog'
