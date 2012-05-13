@@ -62,7 +62,6 @@ class DemosController < ArenaController
     @title = @demo.title
     @demo_mirrors = @demo.demo_mirrors
     Demo.increment_counter('downloaded_times', @demo.id)
-    #dd = @demo.downloaded_demos.create(:user_id => (user_is_authed ? @user.id : nil), :session_id => session[:session_id], :ip => request.remote_ip, :referer => request.env['HTTP_REFERER'].to_s)
     # TODO PERF no borrar las caches con tanta gracia, ¿no?
     CacheObserver.expire_fragment("/common/demos/index/downloads_#{@demo.main_category.id}/page_*") # TODO MUY HEAVY, no podemos hacer que cada descarga suponga borrar todas las caches de índices
     CacheObserver.expire_fragment("/common/demos/index/most_demoed_#{@demo.main_category.root_id}")

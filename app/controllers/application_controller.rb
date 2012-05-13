@@ -149,7 +149,7 @@ class ApplicationController < ActionController::Base
 Request information:
 -------------------------------
 * URL: #{request.protocol}#{request.host}#{request.fullpath}
-* Remote IP: #{request.remote_ip}
+* Remote IP: #{self.remote_ip}
 * Parameters: #{params_copy.inspect}</code>"""
     SlogEntry.create({:type_id => SlogEntry::TYPES[:info],
                       :headline => headline, :info => info,
@@ -157,11 +157,38 @@ Request information:
                       :completed_on => Time.now})
   end
 
+  public
+  def remote_ip
+    @remote_ip ||= begin
+      http_headers = []
+      if env.include?("HTTP_X_FORWARDED_FOR")
+        http_headers.append('HTTP_X_FORWARDED_FOR')
+      end
+      http_headers.append('REMOTE_ADDR')
+
+      remote_ips = []
+      http_headers.each do |http_header|
+        ips = env[http_header]
+        ips.gsub!(',', ' ')
+        remote_ips.concat(ips.split(' '))
+      end
+
+      remote_ips = remote_ips.uniq.reject do |ip|
+        (ip =~ /^(10|172\.(1[6-9]|2[0-9]|30|31)|192\.168)\./i ||
+         ip == 'unknown' ||
+         ip == '127.0.0.1' ||
+         ip.strip == '')
+      end
+
+      remote_ips.append('127.0.0.1')
+      remote_ips.first
+    end
+  end
 
   # TODO PERF Do it in the background in batches. GmSys.job
   def check_referer
-    if params[:rusid] && request.remote_ip != 'unknown'
-      Stats.register_referer(params[:rusid].to_i, request.remote_ip,
+    if params[:rusid]
+      Stats.register_referer(params[:rusid].to_i, self.remote_ip,
       request.env['HTTP_REFERER'])
     end
   end
@@ -446,7 +473,7 @@ Request information:
 
     medium = params['_xm'] ? params['_xm'] : 'default'
     campaign = params['_xca'] ? params['_xca'] : '-'
-    ip = request.remote_ip
+    ip = self.remote_ip
     # TODO PERF guardar informacion del visitante en tabla aparte
     user_agent = user_agent.bare if user_agent
     # flash_error = #{User.connection.quote(params['_xe'])}

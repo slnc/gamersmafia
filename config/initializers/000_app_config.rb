@@ -13,7 +13,9 @@ if !defined?(::App)
   end
 
   require 'action_mailer'
-  ActionMailer::Base.perform_deliveries = (mode == 'production')
+  if mode == 'development'
+    ActionMailer::Base.perform_deliveries = false
+  end
 
   default_appyml = "#{Rails.root}/config/app.yml"
   production_appyml = "#{Rails.root}/config/app_production.yml"

@@ -33,9 +33,9 @@ class EncuestasController < InformacionController
 
     @polls_option = @poll.polls_options.find(params[:poll_option])
     if user_is_authed:
-      @poll.vote(@polls_option, self.request.remote_ip, @user.id)
+      @poll.vote(@polls_option, self.remote_ip, @user.id)
     else
-      @poll.vote(@polls_option, self.request.remote_ip)
+      @poll.vote(@polls_option, self.remote_ip)
     end
     flash[:notice] = 'Voto realizado correctamente'
     # TODO esto no hay que hacerlo aquí

@@ -4,5 +4,6 @@ namespace :gm do
     Stats.update_online_stats
     GmSys.command("find #{Rails.root}/public/storage/d -mindepth 1 -maxdepth 1  -type d -mmin +60 -exec rm -r {} \\\\\;")
     GmSys.check_workers_pids
+    GmSys.warn_if_big_queue
   end
 end

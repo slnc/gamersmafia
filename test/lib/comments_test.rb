@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../../test/test_helper'
+require 'test_helper'
 
 class CommentsTest < ActiveSupport::TestCase
   test "formatize_should_correctly_translate_known_tags" do

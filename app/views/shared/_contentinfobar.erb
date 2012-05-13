@@ -33,8 +33,8 @@ can_delete = Cms::user_can_delete_content?(@user, object) %>
 		<li><a href="#" onclick="return recommend_to_friend(<%=object.unique_content.id%>);">Recomendar</a></li>
 
 	<% end %><%# if user_is_authed -%>
-	  <%  # TODO hack temporal hasta que funcione siempre lo de no devolver unknown como ip
-  ip = (request.remote_ip == 'unknown') ? '127.0.0.1' : request.remote_ip
+	  <%
+  ip = self.remote_ip
   if ((not user_is_authed and not ContentRating.find(:first, :conditions => ['user_id is null and ip = ? and created_on > now() - \'1 day\'::interval', @ip])) or (user_is_authed and @user.can_rate?(object))) %>
   <li class="actions <%='first' unless user_is_authed%>">
   <div id="ratebar-container">Valorar:</div>

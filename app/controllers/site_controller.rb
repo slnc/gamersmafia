@@ -87,7 +87,7 @@ class SiteController < ApplicationController
     self.raise404_if(params[:content_rating].nil? ||
                      params[:content_rating][:rating].nil?)
 
-    params[:content_rating][:ip] = request.remote_ip
+    params[:content_rating][:ip] = self.remote_ip
     params[:content_rating][:user_id] = @user.id if user_is_authed
     rating = ContentRating.new(params[:content_rating])
 
@@ -316,9 +316,9 @@ class SiteController < ApplicationController
     if user_is_authed and User.db_query("SELECT * FROM macropolls WHERE poll_id = 1 AND user_id = #{user_id}").size == 0 then
       Bank::transfer(:bank, @user, 10, "Agradecimiento por completar la encuesta global")
       flash[:notice] = "Te hemos ingresado 10GMF como muestra de nuestro agradecimiento. No, no la puedes rellenar más veces."
-      User.db_query("INSERT INTO macropolls(poll_id, host, ipaddr, user_id, answers) VALUES(1, '#{request.host}', '#{request.remote_ip}', #{user_id}, '#{YAML::dump(params)}')")
+      User.db_query("INSERT INTO macropolls(poll_id, host, ipaddr, user_id, answers) VALUES(1, '#{request.host}', '#{self.remote_ip}', #{user_id}, '#{YAML::dump(params)}')")
     elsif !user_is_authed
-      User.db_query("INSERT INTO macropolls(poll_id, host, ipaddr, user_id, answers) VALUES(1, '#{request.host}', '#{request.remote_ip}', #{user_id}, '#{YAML::dump(params)}')")
+      User.db_query("INSERT INTO macropolls(poll_id, host, ipaddr, user_id, answers) VALUES(1, '#{request.host}', '#{self.remote_ip}', #{user_id}, '#{YAML::dump(params)}')")
     end
     redirect_to :action => :macropoll_thanks
   end
@@ -339,7 +339,7 @@ class SiteController < ApplicationController
     referer = request.env['HTTP_REFERER'] ? request.env['HTTP_REFERER'] : ''
     portal_id = @portal.id != -1 ? @portal.id : 'NULL'
     url = params[:url]
-    ip = request.remote_ip
+    ip = self.remote_ip
     cka = cookies['__stma']
     if cka
       params['_xvi'] = cka.split('.')[1]
@@ -397,7 +397,7 @@ class SiteController < ApplicationController
           @user.resurrect
         end
 
-        @user.update_attributes(:lastseen_on => Time.now, :ipaddr => request.remote_ip)
+        @user.update_attributes(:lastseen_on => Time.now, :ipaddr => self.remote_ip)
       end
     end
     render :layout => false

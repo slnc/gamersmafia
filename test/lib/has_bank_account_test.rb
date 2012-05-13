@@ -1,5 +1,8 @@
-require File.dirname(__FILE__) + '/../../../test/test_helper'
-require File.dirname(__FILE__) + '/test_helper'
+require 'test_helper'
+
+class HasBankAccountRecord < ActiveRecord::Base
+    has_bank_account
+end
 
 class HasBankAccountTest < ActiveSupport::TestCase
   def setup

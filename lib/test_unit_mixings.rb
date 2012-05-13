@@ -58,57 +58,6 @@ module Test::Unit::Assertions
     assert_equal initial_count - 1, model.send(m)
   end
 
-  # Add more helper methods to be used by all tests here...
-  def assert_valid_markup(markup=@response.body)
-    ENV['MARKUP_VALIDATOR'] ||= 'tidy'
-    case ENV['MARKUP_VALIDATOR']
-      when 'w3c'
-      # Thanks http://scottraymond.net/articles/2005/09/20/rails-xhtml-validation
-      require 'net/http'
-      response = Net::HTTP.start('validator.w3.org') do |w3c|
-        query = 'fragment=' + CGI.escape(markup) + '&output=xml'
-        w3c.post2('/check', query)
-      end
-      if response['x-w3c-validator-status'] != 'Valid'
-        error_str = "XHTML Validation Failed:\n"
-        parser = XML::Parser.new
-        parser.string = response.body
-        doc = parser.parse
-
-        doc.find('//result/messages/msg').each do |msg|
-          error_str += "  Line %i: %s\n" % [msg['line'], msg]
-        end
-
-        flunk error_str
-      end
-
-      when 'tidy', 'tidy_no_warnings'
-      require 'tidy'
-      Tidy.path = defined?(App.tidy_path) ? App.tidy_path : '/usr/lib/libtidy.so'
-      errors = []
-      Tidy.open(:input_xml => true) do |tidy|
-        tidy.clean(markup)
-        errors.concat(tidy.errors)
-      end
-      Tidy.open(:show_warnings => false) do |tidy|
-        tidy.clean(markup)
-        errors.concat(tidy.errors)
-      end
-      if errors.length > 0
-        error_str = ''
-        errors.each do |e|
-          error_str += e.gsub(/\n/, "\n  ")
-        end
-        out = ''
-        i = 1
-        markup.split("\n").each { |l| out << i.to_s << ': ' << l << "\n"; i += 1 }
-        error_str = "XHTML Validation Failed:\n  #{out}\n\n#{error_str}"
-
-        assert_block(error_str) { false }
-      end
-    end
-  end
-
   def uncompress_feedvalidator2(zipfile, dst_dir)
     FileUtils.mkdir_p(dst_dir)
     system ("tar xfz #{zipfile} -C #{dst_dir}")

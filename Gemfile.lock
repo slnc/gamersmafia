@@ -65,6 +65,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.17.2)
+    mocha (0.9.12)
     multi_json (1.1.0)
     passenger (3.0.11)
       daemon_controller (>= 0.2.5)
@@ -132,6 +133,7 @@ DEPENDENCIES
   gruff
   jquery-rails (>= 1.0.12)
   log4r
+  mocha
   passenger
   pg
   rails (= 3.2.1)

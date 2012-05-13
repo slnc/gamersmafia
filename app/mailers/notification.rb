@@ -415,6 +415,14 @@ class Notification < ActionMailer::Base
     setup(user, vars)
   end
 
+  def too_many_delayed_jobs(user, vars)
+    vars.merge!({
+        :actions => [],
+        :title => "Hay #{vars[:pending_jobs]} background jobs pendientes"})
+
+    setup(user, vars)
+  end
+
   protected
   def get_common_competitions_actions(user, vars)
     [["Ir a la ficha de #{vars[:participant].name}",

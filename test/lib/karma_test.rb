@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../../test/test_helper'
+require 'test_helper'
 
 class KarmaTest < ActiveSupport::TestCase
   test "should_give_karma_points_if_valid" do

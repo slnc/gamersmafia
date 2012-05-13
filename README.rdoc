@@ -2,3 +2,5 @@ This is the source code of online gaming community gamersmafia.com.
 
 Read LICENSE for copyright information and doc/INSTALL.txt for installation
 instructions in Spanish.
+
+== Build Status {<img src="https://secure.travis-ci.org/gamersmafia/gamersmafia.png"/>}[http://travis-ci.org/gamersmafia/gamersmafia]
