@@ -19,6 +19,9 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
+<% if controller.portal.code == 'diablo' then %>
+<script src="http://eu.battle.net/d3/static/js/tooltips.js"></script>
+<% end -%>
 <% end %>
 </head>
 <body class="madness lydefault <%=' has-submenu ' if controller.submenu %><%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=params[:action].to_s.split('/').last%>">
