@@ -149,6 +149,7 @@ Gamersmafia::Application.routes.draw do
   match 'cuenta/notificaciones' => 'cuenta/cuenta#notificaciones'
   match 'cuenta/perfil' => 'cuenta/cuenta#perfil'
   match 'cuenta/skins' => 'cuenta/skins#index'
+  match 'cuenta/skins/:action' => 'cuenta/skins'
   match 'cuenta/tienda' => 'cuenta/tienda#index'
   match 'cuenta/tienda/:id' => 'cuenta/tienda#show'
   match 'cuenta/tienda/:id/:action' => 'cuenta/tienda#index'
