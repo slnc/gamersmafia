@@ -68,6 +68,14 @@ module ApplicationHelper
     END
   end
 
+  def should_show_bottom_ad?
+    if controller.no_ads
+      false
+    elsif !user_is_authed || @user.created_on > 1.year.ago
+      true
+    end
+  end
+
   def active_sawmode
     if controller.active_sawmode
       @active_sawmode
