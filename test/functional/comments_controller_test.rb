@@ -78,7 +78,8 @@ class CommentsControllerTest < ActionController::TestCase
   test "rate" do
     test_should_allow_registered_user_to_comment
     sym_login 1
-    User.db_query("UPDATE users set created_on = '2006-01-01 00:00:00' where id = 1")
+    User.db_query(
+        "UPDATE users set created_on = '2006-01-01 00:00:00' where id = 1")
     assert_count_increases(CommentsValoration) do
       post :rate, {:comment_id => @c.id, :rate_id => 1}
     end
