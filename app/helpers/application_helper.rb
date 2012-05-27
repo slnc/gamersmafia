@@ -1067,6 +1067,7 @@ skin: 'v2'
   <div class="mcontent">
     END
 
+    page = 1 if page.to_i == 0
     collection = object.paginate(find_args)
 
     out<< controller.send(
