@@ -82,7 +82,8 @@ module GmSys
   end
 
   def self.warn_if_big_queue
-    pending_jobs = User.db_query("SELECT COUNT(*) FROM delayed_jobs")[0].to_i
+    pending_jobs = User.db_query(
+        "SELECT COUNT(*) as count FROM delayed_jobs")[0]['count'].to_i
     if pending_jobs >= TOO_MANY_JOBS
       Notification.too_many_delayed_jobs(
           User.find(App.webmaster_user_id),
