@@ -169,6 +169,7 @@ Request information:
       remote_ips = []
       http_headers.each do |http_header|
         ips = env[http_header]
+        next unless ips
         ips.gsub!(',', ' ')
         remote_ips.concat(ips.split(' '))
       end

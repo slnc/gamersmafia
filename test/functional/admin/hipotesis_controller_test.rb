@@ -18,7 +18,12 @@ class Admin::HipotesisControllerTest < ActionController::TestCase
   test "create" do
     sym_login 1
     assert_count_increases(AbTest) do
-      post :create, :ab_test => {:name => 'babbab', :metrics => ['comments'], :min_difference => '0.05', :treatments => 3 }
+      post :create, :ab_test => {
+        :name => 'babbab',
+        :metrics => ['comments'],
+        :min_difference => '0.05',
+        :treatments => 3,
+      }
     end
     assert_response :redirect
     @ab_test = AbTest.find(:first, :order => 'id desc')
