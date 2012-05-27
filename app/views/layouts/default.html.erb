@@ -19,6 +19,12 @@
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
+<% if controller.portal.code == 'diablo' then %>
+<script src="http://eu.battle.net/d3/static/js/tooltips.js"></script>
+<% elsif controller.portal.code == 'loleu' then %>
+<script type="text/javascript" src="http://pseudobit.net/loltip/item_es.php" language="javascript" charset="utf-8"></script>
+<link rel="stylesheet" type="text/css" href="http://pseudobit.net/loltip/style.css" />
+<% end -%>
 <% end %>
 </head>
 <body class="madness lydefault <%=' has-submenu ' if controller.submenu %><%=user_is_authed ? 'user-authed ' : 'user-anonymous '%> co<%=controller.controller_path.gsub('/', '-').gsub('_', '-')%> v<%=params[:action].to_s.split('/').last%>">
@@ -48,18 +54,18 @@
                 <% end -%>
               </div>
 
-			  <% if user_is_authed then
-if @user.is_superadmin?
- sawmode = 'full'
-elsif @user.is_hq?
- sawmode = 'hq'
-elsif @user.has_admin_permission?(:advertiser)
- sawmode = 'anunciante'
-else
-                 sawmode = ''
-end
-               else
-                 sawmode = ''
+<% if user_is_authed then
+  if @user.is_superadmin?
+   sawmode = 'full'
+  elsif @user.is_hq?
+   sawmode = 'hq'
+  elsif @user.has_admin_permission?(:advertiser)
+   sawmode = 'anunciante'
+  else
+    sawmode = ''
+  end
+ else
+  sawmode = ''
 end %>
 
 			   <% if @madness then %>
