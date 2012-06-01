@@ -4,6 +4,7 @@
 end %>
 
 <% if @image.is_public? && @image.main_category then %>
+  <%=render :partial => '/shared/content_summary', :locals => { :content => @image }%>
 <% mftext('Navegador de galería') do %>
 <ul class="sidelist images">
   <% cache("/common/imagenes/show/g#{@image.main_category.id}/#{@image.id}") do %>

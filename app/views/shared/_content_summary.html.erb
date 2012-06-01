@@ -1,0 +1,5 @@
+<% if params[:summary] then %>
+<%=mftext("Resumen") do %>
+<%= Nlp::Summarization::TextRank.summarize_text(Nlp::Extractor.extract_texts_from_content(content)).join(", ") %>
+<% end -%>
+<% end -%>
