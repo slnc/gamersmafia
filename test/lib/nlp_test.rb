@@ -62,7 +62,7 @@ class TextRankTest < ActiveSupport::TestCase
     ["<a href=\"http://google.com/\">Google</a>", %w(google)],
   ].each do |input, expected_out|
     test "tokenize #{input} #{expected_out}" do
-      assert_equal expected_out, TextRank.send(:tokenize, input)
+      assert_equal expected_out, Nlp::Tokenizer.send(:tokenize, input)
     end
   end
 
@@ -74,7 +74,7 @@ class TextRankTest < ActiveSupport::TestCase
     ["hello world http://www.example.com/fuul?foo=bar", %w(hello world)],
   ].each do |input, expected_out|
     test "tokenize_with_punctuation #{input} #{expected_out}" do
-      assert_equal expected_out, TextRank.send(
+      assert_equal expected_out, Nlp::Tokenizer.send(
           :tokenize_with_punctuation, input)
     end
   end

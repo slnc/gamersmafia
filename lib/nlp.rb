@@ -608,6 +608,91 @@ module Nlp
     # TODO(slnc): add a more accurate POS Tagger
   end
 
+  module PosTagger
+    POS_NOUN = 1
+    POS_ADJECTIVE = 2
+    POS_OTHER = 3
+    POS_VARIES = 4
+
+    MAPPING_POS = {
+      :adjective => POS_ADJECTIVE,
+      :noun => POS_NOUN,
+      :other => POS_OTHER,
+      :varies => POS_VARIES,
+    }
+
+    NON_CONTENT_POS_TYPES = [POS_OTHER, POS_VARIES]
+
+    # Extracts all content words from text.
+    #
+    # An unseen word will be used to be a content word.
+    def self.extract_content_words(text)
+      words = Nlp::Tokenizer.tokenize(text)
+      dictionary_words = DictionaryWord.find(
+          :all,
+          :conditions => ['name IN (?) AND pos_type IN (?)',
+                          words, Nlp::PosTagger::NON_CONTENT_POS_TYPES])
+
+      invalid_words = dictionary_words.collect { |word| word.name }
+      final_words = []
+      words.each do |word|
+        next if invalid_words.include?(word)
+        final_words<< word
+      end
+      final_words
+    end
+  end
+
+  module Tokenizer
+    # Convert a text into a sequence of words.
+    #
+    # Anything not matching RE_WORD will be treated as a word separator.
+    # Urls will be removed.
+    # Numbers will be removed.
+    # The output string will be lowercased.
+    def self.tokenize(some_text)
+      some_text = some_text.downcase
+      some_text.gsub!(/(<[^>]+>)/, " ")
+      some_text.gsub!("&nbsp;", " ")
+      some_text.gsub!("&aacute;", "á")
+      some_text.gsub!("&ntilde;", "ñ")
+      some_text.gsub!("&eacute;", "é")
+      some_text.gsub!("&gt;", ",")
+      some_text.gsub!("&lt;", ",")
+      some_text.gsub!("&iacute;", "í")
+      some_text.gsub!("&oacute;", "ó")
+      some_text.gsub!("&uacute;", "ú")
+      some_text.gsub!("&quot;", " ")
+      some_text.gsub!(")", ",")
+      some_text.gsub!("(", ",")
+      some_text.gsub!(/http:\/\/[\S]+/, " ")
+      words = some_text.downcase.gsub(
+          /[^a-zA-ZáéíóúñÁÉÍÓÚÑ]{2,}/, " ").split(" ")
+      words.delete_if { |w| w.size == 1 }
+    end
+
+    # Converts a string into a sequence of words.
+    #
+    # Works like tokenize but it preserves punctuation.
+    def self.tokenize_with_punctuation(some_text)
+      some_text = some_text.downcase
+      some_text.gsub!(/(<[^>]+>)/, " ")
+      some_text.gsub!("&nbsp;", " ")
+      some_text.gsub!("&aacute;", "á")
+      some_text.gsub!("&eacute;", "é")
+      some_text.gsub!("&ntilde;", "ñ")
+      some_text.gsub!("&iacute;", "í")
+      some_text.gsub!("&oacute;", "ó")
+      some_text.gsub!("&uacute;", "ú")
+      some_text.gsub!("&quot;", " ")
+      some_text.gsub!(")", ",")
+      some_text.gsub!("(", ",")
+      some_text.gsub!(/http:\/\/[\S]+/, " ")
+      words = some_text.downcase.gsub(/([.,¡!¿?])/, " \\1 ").gsub(
+          /[^.,¡!?¿a-zA-ZáéíóúñÁÉÍÓÚÑ]{2,}/, " ").split(" ")
+    end
+  end
+
   module Summarization
     CONVERGENCE_LIMIT = 0.0001
     MAX_ITERATIONS = 30
@@ -627,7 +712,9 @@ module Nlp
 
     module TextRank
       def self.summarize_text(some_text)
-        words = self.tokenize(some_text)
+        content_words = Nlp::Pos.extract_by_tag(
+            some_text, [Nlp::Pos::POS_NOUN, Nlp::Pos::POS_ADJECTIVE])
+        words = Nlp::Tokenizer.tokenize(some_text)
         graph = self.build_graph(words)
         target_keywords = graph.size / 3
         target_keywords = 15 if target_keywords > 15
@@ -640,7 +727,7 @@ module Nlp
           final_out.append(ranked_words[i])
         end
         final_out
-        tokenized_with_punctuation = self.tokenize_with_punctuation(some_text)
+        tokenized_with_punctuation = Nlp::Tokenizer.tokenize_with_punctuation(some_text)
         self.merge_adjacent_keywords(
             tokenized_with_punctuation, target_keywords, graph)
       end
@@ -757,54 +844,6 @@ module Nlp
           end
         end
         out
-      end
-
-      # Convert a text into a sequence of words.
-      #
-      # Anything not matching RE_WORD will be treated as a word separator.
-      # Urls will be removed.
-      # Numbers will be removed.
-      # The output string will be lowercased.
-      def self.tokenize(some_text)
-        some_text = some_text.downcase
-        some_text.gsub!(/(<[^>]+>)/, " ")
-        some_text.gsub!("&nbsp;", " ")
-        some_text.gsub!("&aacute;", "á")
-        some_text.gsub!("&ntilde;", "ñ")
-        some_text.gsub!("&eacute;", "é")
-        some_text.gsub!("&gt;", ",")
-        some_text.gsub!("&lt;", ",")
-        some_text.gsub!("&iacute;", "í")
-        some_text.gsub!("&oacute;", "ó")
-        some_text.gsub!("&uacute;", "ú")
-        some_text.gsub!("&quot;", " ")
-        some_text.gsub!(")", ",")
-        some_text.gsub!("(", ",")
-        some_text.gsub!(/http:\/\/[\S]+/, " ")
-        words = some_text.downcase.gsub(
-            /[^a-zA-ZáéíóúñÁÉÍÓÚÑ]{2,}/, " ").split(" ")
-        words.delete_if { |w| w.size == 1 }
-      end
-
-      # Converts a string into a sequence of words.
-      #
-      # Works like tokenize but it preserves punctuation.
-      def self.tokenize_with_punctuation(some_text)
-        some_text = some_text.downcase
-        some_text.gsub!(/(<[^>]+>)/, " ")
-        some_text.gsub!("&nbsp;", " ")
-        some_text.gsub!("&aacute;", "á")
-        some_text.gsub!("&eacute;", "é")
-        some_text.gsub!("&ntilde;", "ñ")
-        some_text.gsub!("&iacute;", "í")
-        some_text.gsub!("&oacute;", "ó")
-        some_text.gsub!("&uacute;", "ú")
-        some_text.gsub!("&quot;", " ")
-        some_text.gsub!(")", ",")
-        some_text.gsub!("(", ",")
-        some_text.gsub!(/http:\/\/[\S]+/, " ")
-        words = some_text.downcase.gsub(/([.,¡!¿?])/, " \\1 ").gsub(
-            /[^.,¡!?¿a-zA-ZáéíóúñÁÉÍÓÚÑ]{2,}/, " ").split(" ")
       end
 
       def self.tag_candidate_keywords(all_words, graph)

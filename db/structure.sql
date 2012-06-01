@@ -2103,6 +2103,36 @@ ALTER SEQUENCE demos_id_seq OWNED BY demos.id;
 
 
 --
+-- Name: dictionary_words; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE dictionary_words (
+    id integer NOT NULL,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: dictionary_words_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE dictionary_words_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MAXVALUE
+    NO MINVALUE
+    CACHE 1;
+
+
+--
+-- Name: dictionary_words_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE dictionary_words_id_seq OWNED BY dictionary_words.id;
+
+
+--
 -- Name: download_mirrors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -6443,6 +6473,13 @@ ALTER TABLE demos_categories ALTER COLUMN id SET DEFAULT nextval('demos_categori
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE dictionary_words ALTER COLUMN id SET DEFAULT nextval('dictionary_words_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE download_mirrors ALTER COLUMN id SET DEFAULT nextval('download_mirrors_id_seq'::regclass);
 
 
@@ -7761,6 +7798,14 @@ ALTER TABLE ONLY demos_categories
 
 ALTER TABLE ONLY demos
     ADD CONSTRAINT demos_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dictionary_words_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY dictionary_words
+    ADD CONSTRAINT dictionary_words_pkey PRIMARY KEY (id);
 
 
 --
@@ -11238,6 +11283,8 @@ INSERT INTO schema_migrations (version) VALUES ('20120225175205');
 INSERT INTO schema_migrations (version) VALUES ('20120225180115');
 
 INSERT INTO schema_migrations (version) VALUES ('20120303160621');
+
+INSERT INTO schema_migrations (version) VALUES ('20120601195027');
 
 INSERT INTO schema_migrations (version) VALUES ('224');
 
