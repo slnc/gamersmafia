@@ -1050,7 +1050,7 @@ CREATE TABLE dictionary_words (
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
     name character varying NOT NULL,
-    part_of_speech_type integer
+    pos_type integer
 );
 CREATE SEQUENCE dictionary_words_id_seq
     START WITH 1
@@ -2599,13 +2599,22 @@ CREATE SEQUENCE tracker_items_id_seq
     NO MINVALUE
     CACHE 1;
 ALTER SEQUENCE tracker_items_id_seq OWNED BY tracker_items.id;
+SET default_with_oids = false;
+CREATE TABLE training_questions (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer,
+    type character varying NOT NULL,
+    _ner_annotate_comment_main text,
+    _ner_annotate_comment_main_annotated text,
+    _ner_annotate_comment_comment_id integer
+);
 CREATE SEQUENCE treated_visitors_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MAXVALUE
     NO MINVALUE
     CACHE 1;
-SET default_with_oids = false;
 CREATE TABLE treated_visitors (
     id integer DEFAULT nextval('treated_visitors_id_seq'::regclass) NOT NULL,
     ab_test_id integer NOT NULL,
@@ -3674,6 +3683,8 @@ ALTER TABLE ONLY tracker_items
     ADD CONSTRAINT tracker_items_pkey UNIQUE (id);
 ALTER TABLE ONLY tracker_items
     ADD CONSTRAINT tracker_items_pkey1 PRIMARY KEY (id);
+ALTER TABLE ONLY training_questions
+    ADD CONSTRAINT training_questions_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY treated_visitors
     ADD CONSTRAINT treated_visitors_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY tutorials_categories
@@ -4113,6 +4124,10 @@ ALTER TABLE ONLY topics
     ADD CONSTRAINT topics_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY topics
     ADD CONSTRAINT topics_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
+ALTER TABLE ONLY training_questions
+    ADD CONSTRAINT training_questions__ner_annotate_comment_comment_id_fkey FOREIGN KEY (_ner_annotate_comment_comment_id) REFERENCES comments(id) MATCH FULL;
+ALTER TABLE ONLY training_questions
+    ADD CONSTRAINT training_questions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY tutorials
     ADD CONSTRAINT tutorials_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY users
