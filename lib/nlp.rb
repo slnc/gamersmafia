@@ -585,7 +585,7 @@ module Nlp
       frequencies = {}
       Content.find(
             :all,
-            :conditions => "created_on >= now() - '1 months'::interval",
+            :conditions => "created_on >= now() - '6 months'::interval",
             :order => 'created_on DESC').each do |content|
         text = Nlp::Extractor.extract_texts_from_content(content.real_content)
         Nlp::Summarization::TextRank.tokenize(text).each do |word|
