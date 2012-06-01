@@ -284,8 +284,23 @@ module Nlp
         "yo",
     ]
 
-    # TODO(slnc): add a more accurate POS Tagger
+    # Returns a dict of word frequencies for the last 90 days.
+    def self.word_frequencies
+      frequencies = {}
+      Content.find(
+            :all,
+            :conditions => "created_on >= now() - '6 months'::interval",
+            :order => 'created_on DESC').each do |content|
+        text = Nlp::Extractor.extract_texts_from_content(content.real_content)
+        Nlp::Summarization::TextRank.tokenize(text).each do |word|
+          frequencies[word] = 0 unless frequencies.has_key?(word)
+          frequencies[word] = frequencies[word] + 1
+        end
+      end
+      frequencies.sort_by { |word, frequency| -frequency }
+    end
 
+    # TODO(slnc): add a more accurate POS Tagger
   end
 
   module Summarization
