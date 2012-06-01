@@ -42,7 +42,7 @@ module Summarization
   def self.summarize_text(some_text)
     words = self.tokenize(some_text)
     graph = self.build_graph(words)
-    target_keywords = graph.size / 2
+    target_keywords = graph.size / 3
     self.add_cooccurrence_relations(words, graph, Summarization::WINDOW)
     self.converge(graph)
     out = graph.sort_by { |word, node| -node.score }
@@ -52,8 +52,9 @@ module Summarization
       final_out.append(ranked_words[i])
     end
     final_out
+    tokenized_with_punctuation = self.tokenize_with_punctuation(some_text)
     merged_keywords = self.merge_adjacent_keywords(
-        words, final_out.collect {|word, score| word})
+        tokenized_with_punctuation, target_keywords, graph)
   end
 
   ARTICLES_ADVERBS_VERBS = [
@@ -75,10 +76,10 @@ module Summarization
  "over",
  "solving",
  "supporting",
+ "set",
  "the",
  "these",
  "types",
- "upper",
  "used",
 
  # SPANISH
@@ -206,7 +207,14 @@ module Summarization
  "nosotros",
  "nueva",
  "o",
+ "gastar",
+ "cuanto",
+ "poniendo",
  "ocupaba",
+ "ello",
+ "debes",
+ "demás",
+ "guardadas",
  "pagar",
  "par",
  "para",
@@ -272,7 +280,20 @@ module Summarization
  "unos",
  "unos",
  "vale",
+ "entrar",
+ "recomendamos",
+ "otra",
+ "parte",
+ "estamos",
  "vaya",
+ "siguiente",
+ "siguientes",
+ "consta",
+ "perderás",
+ "podremos",
+ "empezar",
+ "asimilar",
+ "atestigua",
  "veces",
  "venirse",
  "vez",
@@ -332,39 +353,28 @@ module Summarization
       graph.each do |word, node|
         all_summed = self.calculate_all_summed(word, node, graph)
         new_ws[word] = (1 - d) + d * (all_summed)
-        puts "new ws for #{word}: #{new_ws[word]}"
 
         # Update
         convergence_error += (node.score - new_ws[word]).abs
         node.score = new_ws[word]
       end
-      puts " --- "
 
-      #graph.each do |word, node|
-      #  node.score = new_ws[word]
-      #end
-      puts "Convergence error: #{convergence_error} (last: #{last_convergence_error})"
-      #if iterations > 1 && convergence_error > last_convergence_error
-      #  raise "Not converging, exiting.."
-      #end
+      Rails.logger.debug("Convergence error: #{convergence_error} (last: #{last_convergence_error})")
       iterations += 1
     end
-    puts " >>>>>>>>>>>> Converged after: #{iterations} (#{convergence_error})"
+    Rails.logger.debug("Converged after: #{iterations} (#{convergence_error})")
   end
 
   def self.calculate_all_summed(word, node, graph)
-    puts "calculate_all_summed(#{node}: #{node.neighbors.collect {|node| " " + node.word}}"
     out = 0.0
     node.neighbors.each do |incoming_node|
       numerator = self.weight(incoming_node, node)
       denominator = incoming_node.neighbors.collect { |neighbor|
         self.weight(incoming_node, neighbor)
       }.sum
-      puts "neighbor_sum: #{numerator} / #{denominator} * #{node.score}"
       neighbor_sum = (numerator / denominator) * node.score
       out += neighbor_sum
     end
-    puts "\n\n"
     out
   end
 
@@ -375,31 +385,20 @@ module Summarization
   private
   def self.add_cooccurrence_relations(words, graph, window)
     outer_idx = 0
-    puts ">>>>>>>>>>> ADDDING COOCURRENCE RELATIONSHIPS"
     words.each do |word|
-      puts "-- procesing #{word}"
       node = graph[word]
-      puts " --- node: #{node}"
       if node.nil?
-        puts "node.nil!"
         next
       end
       first_i = outer_idx + 1
       neighbors = words[first_i..first_i+(window/2)]
       neighbors.each do |neighbor_word|
-        puts "  ---- evaluating neighbor: #{neighbor_word}"
         if ARTICLES_ADVERBS_VERBS.include?(neighbor_word)
           next
         end
-        puts "  ---- adding!"
         node.bidirectional_link(graph[neighbor_word])
       end
       outer_idx += 1
-    end
-
-    puts "=========== FINAL GRAPH ==============="
-    graph.each do |word, node|
-      puts "node: #{node}: #{node.neighbors}"
     end
   end
 
@@ -414,30 +413,122 @@ module Summarization
   end
 
   def self.tokenize(some_text)
-    some_text.downcase.gsub(".", " ").gsub(",", " ").gsub(/[^a-zA-ZáéíóúñÁÉÍÓÚÑ]{2,}/, " ").split(" ")
+    some_text = some_text.downcase
+    some_text.gsub!(/http:\/\/[\S]+/, " ")
+    words = some_text.downcase.gsub(/[^a-zA-ZáéíóúñÁÉÍÓÚÑ]{2,}/, " ").split(" ")
+    words.delete_if { |w| w.size == 1 }
   end
 
-  def self.merge_adjacent_keywords(words, target_keywords)
-    merged_keyword = true
-    copied_target_kws = target_keywords.dup
-    puts "#{copied_target_kws} vs #{target_keywords}"
-    while merged_keyword
-      merged_keyword = false
-      i = 0
-      (words.size - 1).times do |i|
-        if copied_target_kws.include?(words[i]) && copied_target_kws.include?(words[i+1])
-          copied_target_kws.delete(words[i])
-          copied_target_kws.delete(words[i+1])
-          new_kw = "#{words[i]} #{words[i+1]}"
-          copied_target_kws<< new_kw
-          words[i+1] = new_kw
-          puts " going to delete #{words[i]} and replace with #{new_kw}"
-          words.delete(i)
-          merged_keyword = true
-          break
+  def self.tokenize_with_punctuation(some_text)
+    some_text = some_text.downcase
+    some_text.gsub!(/http:\/\/[\S]+/, " ")
+    words = some_text.downcase.gsub(/([.,¡!¿?])/, " \\1 ").gsub(/[^.,¡!?¿a-zA-ZáéíóúñÁÉÍÓÚÑ]{2,}/, " ").split(" ")
+  end
+
+
+  def self.tag_candidate_keywords(all_words, graph)
+    tagged_words = []
+    all_words.each do |word|
+      if graph.include?(word)
+        tagged_words<< "#{word}/k"
+      else
+        tagged_words<< word
+      end
+    end
+    tagged_words
+  end
+
+  def self.merge_adjacent_keywords_p(tagged_words)
+    keywords_merged = true
+    while keywords_merged
+      keywords_merged = false
+      tagged_words.size.times do |i|
+        cur_word = tagged_words[i]
+        next_word = tagged_words[i+1]
+        break if next_word.nil?
+        if cur_word.include?("/k") && next_word.include?("/k")
+          tagged_words[i] = "#{cur_word} #{next_word}".gsub("/k", "") + "/k"
+          tagged_words.delete_at(i+1)
+          i += 1
+          keywords_merged = true
         end
       end
     end
-    copied_target_kws
+  end
+
+  def self.remove_unigrams_part_of_compounds(final_keyphrases)
+    # remove single words that also appear as part of a keyphrase
+    # Collect all words that are part of compound words
+    single_words_part_of_compound = []
+    final_keyphrases.each do |final_keyphrase|
+      next if !final_keyphrase.include?(" ")
+      final_keyphrase.split(" ").each do |single_keyword|
+        single_words_part_of_compound<< single_keyword
+      end
+    end
+
+    # Remove all single words that are also part of compound words
+    final_keyphrases.size.times do |i|
+      break if i >= final_keyphrases.size
+      final_keyphrase = final_keyphrases[i]
+      next if final_keyphrase.include?(" ")
+
+      if single_words_part_of_compound.include?(final_keyphrase)
+        final_keyphrases.delete_at(i)
+        i += 1 # final_keyphrase.count(final_keyphrase)
+      end
+    end
+  end
+
+  def self.get_keyphrases(tagged_words)
+    # Collect keyphrases
+    final_keyphrases = []
+    tagged_words.each do |word|
+      final_keyphrases<< word.gsub("/k", "") if word.include?("/k")
+    end
+    final_keyphrases.uniq || []
+  end
+
+
+  # Merges keywords into keyphrases respecting scores and max words.
+  #
+  # When 2 or 3 more adjacent keywords are merged the max score of the group is
+  # selected.
+  #
+  # Args:
+  # - all_words: sequence of words with the original text with punctuation
+  #     preserved. Eg: ["hello", "world", ".", "how", "are", "you"].
+  # - graph: the TextRank graph for the corresponding text with final weights.
+  # - max_keyphrases: int with number of max words to include
+  def self.merge_adjacent_keywords(all_words, max_keyphrases, graph)
+    tagged_words = self.tag_candidate_keywords(all_words, graph)
+    self.merge_adjacent_keywords_p(tagged_words)
+    keyphrases = self.get_keyphrases(tagged_words)
+
+    self.remove_unigrams_part_of_compounds(keyphrases)
+    sorted_keyphrases = self.sort_by_keyphrase_score(keyphrases, graph)
+
+    top_keyphrases = sorted_keyphrases[0..max_keyphrases-1]
+    top_keyphrases = top_keyphrases.collect {|word, score| word}
+    top_keyphrases.sort
+  end
+
+  def self.sort_by_keyphrase_score(final_keyphrases, graph)
+    # Calculate rank of keyphrases by taking max rank of any given word in a
+    # keyphrase
+    keyphrases_rank = {}
+    final_keyphrases.each do |keyphrase|
+      single_words = keyphrase.split(" ")
+      single_words.each do |single_word|
+        if !graph.include?(single_word)
+          raise "Graph doesn't include #{single_word} which is in #{keyphrase}"
+        end
+      end
+      scores = single_words.collect {|word| graph[word].score }
+      rank = scores.max
+      keyphrases_rank[keyphrase] = rank
+    end
+
+    keyphrases_rank.sort_by {|word, score| -score }
   end
 end

@@ -15,7 +15,7 @@ class SummarizationTest < ActiveSupport::TestCase
   systems and systems of mixed types.
   END
 
-  PAPER_KEYPHRASE_EXTRACTION = <<-END
+  PAPER_KEYPHRASE_EXTRACTION_1 = <<-END
   505 Games y la desarrollado Behaviour Interactive han anunciado la llegada de un nuevo Naughty Dog que estará disponible en Xbox Live Arcade y Playstation Network a finales de este año.
 
   Naughty Bear: Panic in Paradise mete a los jugadores en la piel de Naughty Bear, que una vez más vuelve a ser uno de los habitantes más rechazados y marginados de todo el vecindario. Su viaje le llevara hasta unas paradisiacas vacciones de lujo en la llamada Paradise Island, pero por desgracia nadie le ha invitado a venirse de vacaciones. Armado hasta los dientes, este Oso hará pagar a todos que le den la espalda, uno por uno.
@@ -23,7 +23,7 @@ class SummarizationTest < ActiveSupport::TestCase
   Naughty Bear: Panic in Paradise contará con un mejorado sistema de combate, nuevo sistema para subir de nivel, equipo personaliazble y más de 30 misiones en 11 diferentes áreas.
   END
 
-PAPER_KEYPHRASE_EXTRACTION = <<-END
+PAPER_KEYPHRASE_EXTRACTION_5 = <<-END
 La fotografía que tenéis sobre estas líneas fue realizada el lunes en las oficinas centrales que VK.com, la red social más popular de Rusia, Ucrania, Bielorrusia, Kazajistán y Moldavia y una de las 50 páginas más populares de Internet de acuerdo al ránking Alexa, posee en San Petersburgo.
 
 El diseño de este portal, que fue lanzado en septiembre de 2006, copia de manera poco disimulada el aspecto y las funcionalidades de Facebook, pero ello no ha sido óbice para que se haya convertido en un enorme éxito y haya hecho de su fundador, un joven que responde al nombre de Pavel Durov, un multimillonario con tan solo 27 años.
@@ -38,7 +38,7 @@ La lluvia de dinero en forma de aviones de papel provocó que una muchedumbre se
 En un rato lanzó por la ventana unos 1.800 euros. Más tarde, a través de su cuenta de Twitter, confesó en un alarde de soberbia insultante, que, y cito textualmente, "tuvimos que parar pronto debido a que la gente se comportó como si fueran animales". Todo un personaje, como podéis ver.
 END
 
-PAPER_KEYPHRASE_EXTRACTION = <<-END
+PAPER_KEYPHRASE_EXTRACTION_2 = <<-END
 Hola Mafiosos,
 
 Tras días de hard work con trinee y V1rus_92 por fin abrimos las puertas del server Towny NO PREMIUM que tanto ansiábamos todos.
@@ -110,7 +110,7 @@ Para entrar al servidor, hay que bajarse ESTE archivo y sustituirlo por tu archi
 Imágenes del spawn en proceso:
 END
 
-PAPER_KEYPHRASE_EXTRACTION = <<-END
+PAPER_KEYPHRASE_EXTRACTION_5 = <<-END
 Hola ninios y ninias.
 
 Creo que mi tarjeta grafica ha muerto. El PC se peta constantemente y al reiniciarse solo me aparece un pantallazo pixelado de lo último que ocupaba la pantalla al congelarse.
@@ -144,13 +144,25 @@ Yo lo del horno lo hice ya 2 veces con la 8800GTS 512, la primera vez me aguant�
 
 END
 
+
+  #PAPER_KEYPHRASE_EXPECTED_SORTED = [
+  #    'linear constraints',
+  #    'linear diophantine equations',
+  #    'natural numbers',
+  #    'nonstrict inequations',
+  #    'strict inequations',
+  #    'upper bounds',
+  #]
+
+
   PAPER_KEYPHRASE_EXPECTED_SORTED = [
-      'linear constraints',
-      'linear diophantine equations',
-      'natural numbers',
-      'nonstrict inequations',
-      'strict inequations',
-      'upper bounds',
+      "compatibility",
+      "criteria",
+      "linear constraints",
+      "linear diophantine equations",
+      "nonstrict inequations",
+      "strict inequations",
+      "upper bounds",
   ]
 
   test "summarize_test keyphrase" do
@@ -179,10 +191,22 @@ END
 
   test "tokenize" do
     assert_equal %w(), Summarization.send(:tokenize, "")
-    assert_equal %w(hello world), Summarization.send(:tokenize, "hello world")
-    assert_equal %w(hello world), Summarization.send(:tokenize, "hello.world")
+    assert_equal %w(hello world), Summarization.send(:tokenize, "Hello World")
+    assert_equal %w(hello world), Summarization.send(:tokenize, "hello.,world")
     assert_equal %w(hello-world), Summarization.send(:tokenize, "hello-world")
+    assert_equal %w(hello world), Summarization.send(
+        :tokenize, "hello world http://www.example.com/fuul?foo=bar")
   end
+
+  test "tokenize_with_punctuation" do
+    assert_equal %w(), Summarization.send(:tokenize_with_punctuation, "")
+    assert_equal %w(hello world), Summarization.send(:tokenize_with_punctuation, "Hello World")
+    assert_equal %w(hello . , world), Summarization.send(:tokenize_with_punctuation, "hello.,world")
+    assert_equal %w(hello-world), Summarization.send(:tokenize_with_punctuation, "hello-world")
+    assert_equal %w(hello world), Summarization.send(
+        :tokenize, "hello world http://www.example.com/fuul?foo=bar")
+  end
+
 
   test "add_cooccurrence_relations simple" do
     # Build input_graph
@@ -197,15 +221,49 @@ END
     node_world.neighbors<< node_hello
     expected_graph = {"hello" => node_hello, "world" => node_world}
 
-    actual_graph = Summarization.send(
+    Summarization.send(
         :add_cooccurrence_relations, ["hello", "world"], input_graph, 10)
 
-    assert_equal(expected_graph, actual_graph)
+    assert_equal(expected_graph, input_graph)
   end
 
-  test "merge_adjacent_keywords" do
+  test "merge_adjacent_keywords 1" do
+    graph = self.setup_graph(%w(hello world bar))
     merged_kws = Summarization.send(
-      :merge_adjacent_keywords, %w(hello world foo bar), %w(hello world bar))
-    assert_equal ["hello world", "bar"], merged_kws
+      :merge_adjacent_keywords, %w(hello world foo bar), 10, graph)
+    assert_equal ["bar", "hello world"], merged_kws
+  end
+
+  def setup_graph(words)
+    graph = {}
+    words.each do |word|
+      graph[word] = Summarization::Node.new(word)
+      graph[word].score = 1
+    end
+    graph
+  end
+
+  test "merge_adjacent_keywords 2" do
+    graph = self.setup_graph(%w(hello world))
+    merged_kws = Summarization.send(
+      :merge_adjacent_keywords, %w(hello world), 10, graph)
+    assert_equal ["hello world"], merged_kws
+  end
+
+  test "merge_adjacent_keywords 3" do
+    graph = self.setup_graph(%w(hello world))
+    merged_kws = Summarization.send(
+      :merge_adjacent_keywords, %w(one hello room world), 10, graph)
+    assert_equal %w(hello world), merged_kws
+  end
+
+  test "merge_adjacent_keywords 4" do
+    graph = self.setup_graph(%w(linear constraints diophantine equations))
+    merged_kws = Summarization.send(
+        :merge_adjacent_keywords,
+        %w(linear constraints foo linear diophantine equations),
+        10,
+        graph)
+    assert_equal ["linear constraints", "linear diophantine equations"], merged_kws
   end
 end
