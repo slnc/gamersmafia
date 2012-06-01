@@ -1,4 +1,35 @@
 module Nlp
+  module Extractor
+    def self.extract_texts(object)
+      case object.class.name
+      when 'String':
+        self.extract_texts_from_string(object)
+      else  # Assume it's an ActsAsContent object
+        self.extract_texts_from_content(object)
+      end
+    end
+
+    def self.extract_texts_from_content(content)
+      sentences = []
+      sentences<< self.extract_texts(content.title)
+      if content.respond_to?(:description)
+        sentences<< self.extract_texts_from_string(content.description)
+      end
+      if content.respond_to?(:main)
+        sentences<< self.extract_texts_from_string(content.main)
+      end
+
+      content.unique_content.comments.each do |comment|
+        sentences<< self.extract_texts_from_string(comment.comment)
+      end
+      sentences.join(". ")
+    end
+
+    def self.extract_texts_from_string(some_string)
+      some_string.split("<br />")
+    end
+  end
+
   module Dictionary
     ARTICLES_ADVERBS_VERBS = [
         "a",
@@ -29,8 +60,15 @@ module Nlp
         "abrimos",
         "acuerdo",
         "agolpara",
+        "esta",
+        "este",
+        "estas",
+        "esto",
+        "estos",
         "aguantó",
         "ahorrarte",
+        "muchos",
+        "sido",
         "ahorrarte",
         "al",
         "algo",
@@ -265,33 +303,6 @@ module Nlp
         self.build_summary(sentences_graph, desired_summary_word_length)
       end
 
-      def self.extract_sentences(object)
-        case object.class.name
-        when 'String':
-          self.extract_sentences_from_string(object)
-        else  # Assume it's an ActsAsContent object
-          self.extract_sentences_from_content(object)
-        end
-      end
-
-      def self.extract_sentences_from_content(content)
-        sentences = []
-        sentences<< self.extract_sentences(content.title)
-        if content.respond_to?(:description)
-          sentences<< self.get_all_text(content.description)
-        end
-        if content.respond_to?(:main)
-          sentences<< self.extract_sentences(content.main)
-        end
-
-        content.comments.each do |comment|
-          sentences<< self.extract_sentences(comment.comment)
-        end
-      end
-
-      def self.extract_sentences_from_string(some_string)
-        some_string.split("<br />")
-      end
     end
 
     module TextRank
@@ -435,6 +446,13 @@ module Nlp
       # The output string will be lowercased.
       def self.tokenize(some_text)
         some_text = some_text.downcase
+        some_text.gsub!(/(<[^>]+>)/, " ")
+        some_text.gsub!("&nbsp;", " ")
+        some_text.gsub!("&aacute;", "á")
+        some_text.gsub!("&eacute;", "é")
+        some_text.gsub!("&iacute;", "í")
+        some_text.gsub!("&oacute;", "ó")
+        some_text.gsub!("&uacute;", "ú")
         some_text.gsub!(/http:\/\/[\S]+/, " ")
         words = some_text.downcase.gsub(
             /[^a-zA-ZáéíóúñÁÉÍÓÚÑ]{2,}/, " ").split(" ")
@@ -446,6 +464,13 @@ module Nlp
       # Works like tokenize but it preserves punctuation.
       def self.tokenize_with_punctuation(some_text)
         some_text = some_text.downcase
+        some_text.gsub!(/(<[^>]+>)/, " ")
+        some_text.gsub!("&nbsp;", " ")
+        some_text.gsub!("&aacute;", "á")
+        some_text.gsub!("&eacute;", "é")
+        some_text.gsub!("&iacute;", "í")
+        some_text.gsub!("&oacute;", "ó")
+        some_text.gsub!("&uacute;", "ú")
         some_text.gsub!(/http:\/\/[\S]+/, " ")
         words = some_text.downcase.gsub(/([.,¡!¿?])/, " \\1 ").gsub(
             /[^.,¡!?¿a-zA-ZáéíóúñÁÉÍÓÚÑ]{2,}/, " ").split(" ")
@@ -489,20 +514,20 @@ module Nlp
         # Collect all words that are part of compound words
         unigrams_part_of_compound = []
         keyphrases.each do |keyphrase|
-          next if !final_keyphrase.include?(" ")
-          final_keyphrase.split(" ").each do |single_keyword|
+          next if !keyphrase.include?(" ")
+          keyphrase.split(" ").each do |single_keyword|
             unigrams_part_of_compound<< single_keyword
           end
         end
 
         # Remove all single words that are also part of compound words
-        final_keyphrases.size.times do |i|
-          break if i >= final_keyphrases.size
-          final_keyphrase = final_keyphrases[i]
-          next if final_keyphrase.include?(" ")
+        keyphrases.size.times do |i|
+          break if i >= keyphrases.size
+          keyphrase = keyphrases[i]
+          next if keyphrase.include?(" ")
 
-          if unigrams_part_of_compound.include?(final_keyphrase)
-            final_keyphrases.delete_at(i)
+          if unigrams_part_of_compound.include?(keyphrase)
+            keyphrases.delete_at(i)
             i += 1
           end
         end

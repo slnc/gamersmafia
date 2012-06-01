@@ -57,7 +57,9 @@ class TextRankTest < ActiveSupport::TestCase
     ["Hello World", %w(hello world)],
     ["hello.,world", %w(hello world)],
     ["hello-world", %w(hello-world)],
+    ["hell&oacute;", %w(helló)],
     ["hello world http://www.example.com/fuul?foo=bar", %w(hello world)],
+    ["<a href=\"http://google.com/\">Google</a>", %w(google)],
   ].each do |input, expected_out|
     test "tokenize #{input} #{expected_out}" do
       assert_equal expected_out, TextRank.send(:tokenize, input)
