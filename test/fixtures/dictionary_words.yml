@@ -1,11 +1,114 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+dw1:
+  id: 1
+  name: "a",
+  pos_type: 3
 
-# This model initially had no columns defined.  If you add columns to the
-# model remove the '{}' from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-#  column: value
+dw2:
+  id: 2
+  name: "all",
+  pos_type: 3
+
+dw3:
+  id: 3
+  name: "and",
+  pos_type: 3
+
+dw4:
+  id: 4
+  name: "are",
+  pos_type: 3
+
+dw5:
+  id: 5
+  name: "be",
+  pos_type: 3
+
+dw6:
+  id: 6
+  name: "can",
+  pos_type: 3
+
+dw7:
+  id: 7
+  name: "considered",
+  pos_type: 3
+
+dw8:
+  id: 8
+  name: "constructing",
+  pos_type: 3
+
+dw9:
+  id: 9
+  name: "corresponding",
+  pos_type: 3
+
+dw10:
+  id: 10
+  name: "for",
+  pos_type: 3
+
+dw11:
+  id: 11
+  name: "generating",
+  pos_type: 3
+
+dw12:
+  id: 12
+  name: "given",
+  pos_type: 3
+
+dw13:
+  id: 13
+  name: "in",
+  pos_type: 3
+
+dw14:
+  id: 14
+  name: "mixed",
+  pos_type: 3
+
+dw15:
+  id: 15
+  name: "of",
+  pos_type: 3
+
+dw16:
+  id: 16
+  name: "over",
+  pos_type: 3
+
+dw17:
+  id: 17
+  name: "solving",
+  pos_type: 3
+
+dw18:
+  id: 18
+  name: "supporting",
+  pos_type: 3
+
+dw19:
+  id: 19
+  name: "set",
+  pos_type: 3
+
+dw20:
+  id: 20
+  name: "the",
+  pos_type: 3
+
+dw21:
+  id: 21
+  name: "these",
+  pos_type: 3
+
+dw22:
+  id: 22
+  name: "types",
+  pos_type: 3
+
+dw23:
+  id: 23
+  name: "used",
+  pos_type: 3
