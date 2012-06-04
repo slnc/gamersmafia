@@ -1,114 +1,114 @@
 dw1:
   id: 1
-  name: "a",
+  name: "a"
   pos_type: 3
 
 dw2:
   id: 2
-  name: "all",
+  name: "all"
   pos_type: 3
 
 dw3:
   id: 3
-  name: "and",
+  name: "and"
   pos_type: 3
 
 dw4:
   id: 4
-  name: "are",
+  name: "are"
   pos_type: 3
 
 dw5:
   id: 5
-  name: "be",
+  name: "be"
   pos_type: 3
 
 dw6:
   id: 6
-  name: "can",
+  name: "can"
   pos_type: 3
 
 dw7:
   id: 7
-  name: "considered",
+  name: "considered"
   pos_type: 3
 
 dw8:
   id: 8
-  name: "constructing",
+  name: "constructing"
   pos_type: 3
 
 dw9:
   id: 9
-  name: "corresponding",
+  name: "corresponding"
   pos_type: 3
 
 dw10:
   id: 10
-  name: "for",
+  name: "for"
   pos_type: 3
 
 dw11:
   id: 11
-  name: "generating",
+  name: "generating"
   pos_type: 3
 
 dw12:
   id: 12
-  name: "given",
+  name: "given"
   pos_type: 3
 
 dw13:
   id: 13
-  name: "in",
+  name: "in"
   pos_type: 3
 
 dw14:
   id: 14
-  name: "mixed",
+  name: "mixed"
   pos_type: 3
 
 dw15:
   id: 15
-  name: "of",
+  name: "of"
   pos_type: 3
 
 dw16:
   id: 16
-  name: "over",
+  name: "over"
   pos_type: 3
 
 dw17:
   id: 17
-  name: "solving",
+  name: "solving"
   pos_type: 3
 
 dw18:
   id: 18
-  name: "supporting",
+  name: "supporting"
   pos_type: 3
 
 dw19:
   id: 19
-  name: "set",
+  name: "set"
   pos_type: 3
 
 dw20:
   id: 20
-  name: "the",
+  name: "the"
   pos_type: 3
 
 dw21:
   id: 21
-  name: "these",
+  name: "these"
   pos_type: 3
 
 dw22:
   id: 22
-  name: "types",
+  name: "types"
   pos_type: 3
 
 dw23:
   id: 23
-  name: "used",
+  name: "used"
   pos_type: 3
