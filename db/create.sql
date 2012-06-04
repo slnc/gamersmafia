@@ -1307,7 +1307,8 @@ CREATE SEQUENCE factions_links_id_seq
 ALTER SEQUENCE factions_links_id_seq OWNED BY factions_links.id;
 CREATE TABLE factions_portals (
     faction_id integer NOT NULL,
-    portal_id integer NOT NULL
+    portal_id integer NOT NULL,
+    id integer
 );
 SET default_with_oids = true;
 CREATE TABLE faq_categories (
