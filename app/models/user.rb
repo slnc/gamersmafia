@@ -48,8 +48,16 @@ class User < ActiveRecord::Base
   ST_UNCONFIRMED_1W = 8
   ST_UNCONFIRMED_2W = 9
 
-  HSTATES = %w(unconfirmed active zombie resurrected shadow banned disabled
-               deleted)
+  # Order is important
+  HSTATES = %w(
+      unconfirmed
+      active
+      zombie
+      resurrected
+      shadow
+      banned
+      disabled
+      deleted)
 
   STATES_CAN_LOGIN = [ST_ACTIVE, ST_RESURRECTED, ST_SHADOW, ST_ZOMBIE]
   STATES_CANNOT_LOGIN = [ST_BANNED, ST_DELETED, ST_DISABLED, ST_UNCONFIRMED,
@@ -64,18 +72,19 @@ class User < ActiveRecord::Base
     ST_UNCONFIRMED_2W => 'no confirmada'
   }
 
-  ADMIN_PERMISSIONS_INDEXES = { :faq => 0,
-                                :blogs => 1,
-                                :clans => 2,
-                                :avatars => 3,
-                                :faction_headers => 4,
-                                :capo => 5,
-                                :designer => 6,
-                                :qa => 7,
-                                :fusions => 8,
-                                :gladiador => 9,
-                                :advertiser => 10,
-                                :bazar_manager => 11,
+  ADMIN_PERMISSIONS_INDEXES = {
+      :faq => 0,
+      :blogs => 1,
+      :clans => 2,
+      :avatars => 3,
+      :faction_headers => 4,
+      :capo => 5,
+      :designer => 6,
+      :qa => 7,
+      :fusions => 8,
+      :gladiador => 9,
+      :advertiser => 10,
+      :bazar_manager => 11,
   }
 
   has_many :groups_messages
