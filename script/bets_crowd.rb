@@ -1,10 +1,12 @@
-require File.dirname(__FILE__) + '/../config/boot'
+#require File.dirname(__FILE__) + '/../config/boot'
+
 total_bets = 0
 crowd_wins = 0
 users_totals = {}
 users_wins = {}
 
-Bet.published.closed_bets.find(:all, :conditions => 'cancelled <> \'t\' and forfeit <> \'t\'').each do |bet|
+Bet.published.closed_bets.find(
+    :all, :conditions => "cancelled <> 't' and forfeit <> 't'").each do |bet|
   total_bets += 1
   out = bet.determine_crowd_decision
   crowd_decision = out[0]
@@ -15,8 +17,8 @@ Bet.published.closed_bets.find(:all, :conditions => 'cancelled <> \'t\' and forf
     users_totals[k] += 1
   end
   winners.each do |user_id|
-    users_wins[k] ||= 0
-    users_wins[k] += 1
+    users_wins[user_id] ||= 0
+    users_wins[user_id] += 1
   end
   puts "crowd_decision: #{crowd_decision} | result: #{bet.winning_bets_option_id} | tie: #{bet.tie?}"
   if bet.tie and crowd_decision == Bet::TIE
@@ -36,11 +38,11 @@ users_total.each do |u,k|
 end
 
 users_wins.each do |u, k|
-  users_pcent[u] = k / users_pcent[u].
+  users_pcent[u] = k / users_pcent[u]
 end
 
 (users_totals.keys - users_wins.keys).each do |loser_user|
-  users_pcent[loser_user] = 0.
+  users_pcent[loser_user] = 0.0
 end
 
 puts users_pcent
