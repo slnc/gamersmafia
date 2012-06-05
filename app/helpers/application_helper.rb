@@ -1,4 +1,18 @@
 module ApplicationHelper
+  ANALYTICS_SNIPPET = <<-END
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-130555-1']);
+  _gaq.push(['_setDomainName', '.gamersmafia.com']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+  END
+
   COMMENTS_DESPL = {:Normal => '0',
     :Divertido => '12',
     :Informativo => '24',
@@ -12,27 +26,30 @@ module ApplicationHelper
 
   WMENU_POS = {
     'arena' => %w(
-                   Admin::CompeticionesController
-                   ArenaController
-              ),
-    'bazar' => %w(Cuenta::TiendaController
-                  BazarController),
+        Admin::CompeticionesController
+        ArenaController
+    ),
+    'bazar' => %w(
+        Cuenta::TiendaController
+        BazarController
+    ),
     'foros' => %w(ForosController),
-    'hq' => %w(Admin::CategoriasController
-               Admin::ClanesController
-               Admin::CategoriasfaqController
-               Admin::EntradasfaqController
-               Admin::FaccionesController
-               Admin::IpBansController
-               Admin::MapasJuegosController
-               Admin::UsuariosController
-               AdministrationController
-               AvataresController
-               ),
+    'hq' => %w(
+        Admin::CategoriasController
+        Admin::ClanesController
+        Admin::CategoriasfaqController
+        Admin::EntradasfaqController
+        Admin::FaccionesController
+        Admin::IpBansController
+        Admin::MapasJuegosController
+        Admin::UsuariosController
+        AdministrationController
+        AvataresController
+    ),
     'comunidad' => %w(
-                Cuenta::Clanes::GeneralController
-                ReclutamientoController
-                ComunidadController
+        Cuenta::Clanes::GeneralController
+        ReclutamientoController
+        ComunidadController
     )
   }
 
@@ -48,19 +65,7 @@ module ApplicationHelper
   end
 
   def analytics_code
-    return <<-END
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-130555-1']);
-  _gaq.push(['_setDomainName', '.gamersmafia.com']);
-  _gaq.push(['_trackPageview']);
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
-    END
+    ApplicationHelper::ANALYTICS_SNIPPET
   end
 
   def body_css_classes
@@ -78,12 +83,15 @@ module ApplicationHelper
   end
 
   def render_content_contents(content)
-  case content.class.name
+    case content.class.name
     when "Image":
-      return controller.send(:render_to_string, :partial => '/contenidos/image', :locals => { :content => content })
+      partial = '/contenidos/image'
     else
-      return controller.send(:render_to_string, :partial => '/contenidos/base', :locals => { :content => content })
+      partial = '/contenidos/base'
     end
+    controller.send(
+        :render_to_string,
+        :partial => partial, :locals => {:content => content})
   end
 
   def observe_field(field, opts={})
@@ -114,20 +122,25 @@ module ApplicationHelper
     end
   end
 
+  QUICKLINK_ENABLED_PORTALS = %w(FactionsPortal BazarDistrictPortal)
 
-  def can_add_as_quicklink?
-    if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(controller.portal.class.name)
-      qlinks = Personalization.quicklinks_for_user(@user)
-      if qlinks.delete_if { |ql| ql[:code] != controller.portal.code }.size == 0 # no estaba
-        true
-      else
-        false
-      end
-    else
-      false
+  def quicklinks_enabled_current_user_portal
+    if (!user_is_authed ||
+        !ApplicationHelper::QUICKLINK_ENABLED_PORTALS.include?(
+            controller.portal.class.name))
+      return false
     end
   end
 
+  def can_add_as_quicklink?
+    return false if !quicklinks_enabled_current_user_portal
+    !current_portal_is_quicklink
+  end
+
+  def can_del_quicklink?
+    return false if !quicklinks_enabled_current_user_portal
+    current_portal_is_quicklink
+  end
 
   def error_messages_for(obj)
     return "" unless obj && obj.errors.any?
@@ -137,19 +150,6 @@ module ApplicationHelper
       out << "<li>#{msg}</li>"
     end
     out << "</ul>"
-  end
-
-  def can_del_quicklink?
-    if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(controller.portal.class.name)
-      qlinks = Personalization.quicklinks_for_user(@user)
-      if qlinks.delete_if { |ql| ql[:code] != controller.portal.code }.size == 1 # estaba
-        true
-      else
-        false
-      end
-    else
-      false
-    end
   end
 
   def can_add_as_user_forum?
@@ -1392,4 +1392,18 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
     end
     out
   end
+
+  private
+  def current_portal_is_quicklink
+    quicklinks = Personalization.quicklinks_for_user(@user)
+    current_is_quicklink = false
+    quicklinks.each do |quicklink|
+      if quicklink[:code] == controller.portal.code
+        current_is_quicklink = true
+        break
+      end
+    end
+    current_is_quicklink
+  end
+
 end
