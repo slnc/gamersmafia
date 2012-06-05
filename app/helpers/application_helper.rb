@@ -124,14 +124,6 @@ module ApplicationHelper
 
   QUICKLINK_ENABLED_PORTALS = %w(FactionsPortal BazarDistrictPortal)
 
-  def quicklinks_enabled_current_user_portal
-    if (!user_is_authed ||
-        !ApplicationHelper::QUICKLINK_ENABLED_PORTALS.include?(
-            controller.portal.class.name))
-      return false
-    end
-  end
-
   def can_add_as_quicklink?
     return false if !quicklinks_enabled_current_user_portal
     !current_portal_is_quicklink
@@ -153,29 +145,13 @@ module ApplicationHelper
   end
 
   def can_add_as_user_forum?
-    if user_is_authed && controller_name == 'foros' && @forum
-      ufs = Personalization.get_user_forums(@user)
-      if ufs[0].delete_if { |ql| ql != @forum.id.to_s }.size == 0 && ufs[1].delete_if { |ql| ql != @forum.id.to_s }.size == 0 # no estaba
-        true
-      else
-        false
-      end
-    else
-      false
-    end
+    return false if !user_forums_enabled?
+    !user_forum_is_present
   end
 
   def can_del_user_forum?
-    if user_is_authed && controller_name == 'foros' && @forum
-      ufs = Personalization.get_user_forums(@user)
-      if ufs[0].delete_if { |ql| ql != @forum.id.to_s }.size == 1 || ufs[1].delete_if { |ql| ql != @forum.id.to_s }.size == 1 # estaba
-        true
-      else
-        false
-      end
-    else
-      false
-    end
+    return false if !user_forums_enabled?
+    user_forum_is_present
   end
 
   def url_for_content(object, text)
@@ -1394,6 +1370,11 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
   end
 
   private
+  def quicklinks_enabled_current_user_portal
+    !user_is_authed || !ApplicationHelper::QUICKLINK_ENABLED_PORTALS.include?(
+        controller.portal.class.name)
+  end
+
   def current_portal_is_quicklink
     quicklinks = Personalization.quicklinks_for_user(@user)
     current_is_quicklink = false
@@ -1406,4 +1387,19 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
     current_is_quicklink
   end
 
+  def user_forums_enabled?
+    user_is_authed && controller_name && 'foros' && !@forum.nil?
+  end
+
+  def user_forum_is_present
+    quicklinks = Personalization.get_user_forums(@user)
+    current_forum_is_present = false
+    quicklinks.each do |quicklink|
+      if quicklink[:code] == controller.portal.code
+        current_forum_is_present = true
+        break
+      end
+    end
+    current_forum_is_present
+  end
 end
