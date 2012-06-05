@@ -155,7 +155,8 @@ module ApplicationHelper
   end
 
   def url_for_content(object, text)
-    "<a class=\"content\" href=\"#{Routing.url_for_content_onlyurl(object)}\">#{text}</a>"
+    content_url = Routing.url_for_content_onlyurl(object)
+    "<a class=\"content\" href=\"#{content_url}\">#{text}</a>"
   end
 
   def css_image_selector(field_name, field_value, skin)
