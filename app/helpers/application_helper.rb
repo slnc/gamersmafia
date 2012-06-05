@@ -63,6 +63,20 @@ module ApplicationHelper
     END
   end
 
+  def body_css_classes
+    classes = %w(madness lydefault)
+    classes<< "has-submenu" if controller.submenu
+    if user_is_authed
+      classes<< "user-authed"
+    else
+      classes<< "user-anonymous"
+    end
+    classes<< "co#{controller.controller_path.gsub('/', '-').gsub('_', '-')}"
+    classes<< "v#{params[:action].to_s.split('/').last}"
+
+    classes.join(" ")
+  end
+
   def render_content_contents(content)
   case content.class.name
     when "Image":
