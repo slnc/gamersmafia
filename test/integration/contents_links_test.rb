@@ -14,8 +14,8 @@ class ContentsLinksTest < ActionController::IntegrationTest
     assert !response.body.include?('report-contents'), response.body
 
     host! "ut.#{App.domain}"
-    User.find_by_login('panzer').update_attributes(:is_hq => true)
+    assert User.find_by_login('panzer').update_attributes(:is_hq => true)
     get '/noticias/show/1'
-    assert response.body.include?('report-contents')
+    assert response.body.include?('report-contents'), response.body
   end
 end

@@ -2,11 +2,22 @@ require 'test_helper'
 require File.dirname(__FILE__) + '/../test_functional_content_helper'
 
 class ApuestasControllerTest < ActionController::TestCase
-  test_common_content_crud :name => 'Bet', :form_vars => {:title => 'footapang', :closes_on => 1.week.since, :options_new => ['opcion1', 'opcion2']}, :root_terms => 1
+  test_common_content_crud({
+      :name => 'Bet',
+      :form_vars => {
+          :title => 'footapang',
+          :closes_on => 1.week.since,
+          :options_new => ['opcion1', 'opcion2']},
+      :root_terms => 1})
 
   test "should_create_with_options" do
     sym_login 1
-    post :create, :bet => {:title => 'footapang', :closes_on => 1.week.since, :options_new => ['opcion1', 'opcion2']}, :root_terms => 1
+    post(:create,
+         :bet => {
+             :title => 'footapang',
+             :closes_on => 1.week.since,
+             :options_new => ['opcion1', 'opcion2']},
+         :root_terms => 1)
     assert_response :redirect
     @b = Bet.find_by_title('footapang')
     assert_not_nil @b
@@ -69,7 +80,7 @@ class ApuestasControllerTest < ActionController::TestCase
     @b.reload
     @b.closes_on = 1.week.ago
     assert @b.save
-    post :complete, { :id => @b.id, :winner => @b.bets_options.find(:first).id }
+    post :complete, {:id => @b.id, :winner => @b.bets_options.find(:first).id}
     assert_response :redirect
     assert !@b.completed?
     @b.reload
