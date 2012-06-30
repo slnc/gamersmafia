@@ -18,3 +18,4 @@ shopt -s histappend
 
 alias ls='ls -ApG --color=auto'
 alias ll='ls -l'
+alias rtest="ruby -Itest"

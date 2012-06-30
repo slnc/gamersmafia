@@ -64,7 +64,7 @@ Bootstrap() {
 DownloadMiscConfigFiles() {
   BOOTSTRAP_GITHUB_URL=https://raw.github.com/gamersmafia/gamersmafia/production/script/bootstrap
   mkdir -p ~/.vim/sessions
-  wget -O ~/.vimrc vrc=${BOOTSTRAP_GITHUB_URL}/.vimrc
+  wget -O ~/.vimrc ${BOOTSTRAP_GITHUB_URL}/.vimrc
   wget -O ~/.gitconfig ${BOOTSTRAP_GITHUB_URL}/.gitconfig
   wget -O ~/.bashrc_gm ${BOOTSTRAP_GITHUB_URL}/.bashrc
   wget -O ~/.vim/matchit.zip ${MATCHIT_URL} && cd ~/.vim && unzip matchit.zip && cd

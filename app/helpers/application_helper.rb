@@ -1,4 +1,18 @@
 module ApplicationHelper
+  ANALYTICS_SNIPPET = <<-END
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-130555-1']);
+  _gaq.push(['_setDomainName', '.gamersmafia.com']);
+  _gaq.push(['_trackPageview']);
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+  END
+
   COMMENTS_DESPL = {:Normal => '0',
     :Divertido => '12',
     :Informativo => '24',
@@ -12,27 +26,30 @@ module ApplicationHelper
 
   WMENU_POS = {
     'arena' => %w(
-                   Admin::CompeticionesController
-                   ArenaController
-              ),
-    'bazar' => %w(Cuenta::TiendaController
-                  BazarController),
+        Admin::CompeticionesController
+        ArenaController
+    ),
+    'bazar' => %w(
+        Cuenta::TiendaController
+        BazarController
+    ),
     'foros' => %w(ForosController),
-    'hq' => %w(Admin::CategoriasController
-               Admin::ClanesController
-               Admin::CategoriasfaqController
-               Admin::EntradasfaqController
-               Admin::FaccionesController
-               Admin::IpBansController
-               Admin::MapasJuegosController
-               Admin::UsuariosController
-               AdministrationController
-               AvataresController
-               ),
+    'hq' => %w(
+        Admin::CategoriasController
+        Admin::ClanesController
+        Admin::CategoriasfaqController
+        Admin::EntradasfaqController
+        Admin::FaccionesController
+        Admin::IpBansController
+        Admin::MapasJuegosController
+        Admin::UsuariosController
+        AdministrationController
+        AvataresController
+    ),
     'comunidad' => %w(
-                Cuenta::Clanes::GeneralController
-                ReclutamientoController
-                ComunidadController
+        Cuenta::Clanes::GeneralController
+        ReclutamientoController
+        ComunidadController
     )
   }
 
@@ -47,13 +64,34 @@ module ApplicationHelper
     out
   end
 
-  def render_content_contents(content)
-  case content.class.name
-    when "Image":
-      return controller.send(:render_to_string, :partial => '/contenidos/image', :locals => { :content => content })
+  def analytics_code
+    ApplicationHelper::ANALYTICS_SNIPPET
+  end
+
+  def body_css_classes
+    classes = %w(madness lydefault)
+    classes<< "has-submenu" if controller.submenu
+    if user_is_authed
+      classes<< "user-authed"
     else
-      return controller.send(:render_to_string, :partial => '/contenidos/base', :locals => { :content => content })
+      classes<< "user-anonymous"
     end
+    classes<< "co#{controller.controller_path.gsub('/', '-').gsub('_', '-')}"
+    classes<< "v#{params[:action].to_s.split('/').last}"
+
+    classes.join(" ")
+  end
+
+  def render_content_contents(content)
+    case content.class.name
+    when "Image":
+      partial = '/contenidos/image'
+    else
+      partial = '/contenidos/base'
+    end
+    controller.send(
+        :render_to_string,
+        :partial => partial, :locals => {:content => content})
   end
 
   def observe_field(field, opts={})
@@ -84,20 +122,17 @@ module ApplicationHelper
     end
   end
 
+  QUICKLINK_ENABLED_PORTALS = %w(FactionsPortal BazarDistrictPortal)
 
   def can_add_as_quicklink?
-    if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(controller.portal.class.name)
-      qlinks = Personalization.quicklinks_for_user(@user)
-      if qlinks.delete_if { |ql| ql[:code] != controller.portal.code }.size == 0 # no estaba
-        true
-      else
-        false
-      end
-    else
-      false
-    end
+    return false if !quicklinks_enabled_current_user_portal
+    !current_portal_is_quicklink
   end
 
+  def can_del_quicklink?
+    return false if !quicklinks_enabled_current_user_portal
+    current_portal_is_quicklink
+  end
 
   def error_messages_for(obj)
     return "" unless obj && obj.errors.any?
@@ -109,47 +144,19 @@ module ApplicationHelper
     out << "</ul>"
   end
 
-  def can_del_quicklink?
-    if user_is_authed && %w(FactionsPortal BazarDistrictPortal).include?(controller.portal.class.name)
-      qlinks = Personalization.quicklinks_for_user(@user)
-      if qlinks.delete_if { |ql| ql[:code] != controller.portal.code }.size == 1 # estaba
-        true
-      else
-        false
-      end
-    else
-      false
-    end
-  end
-
   def can_add_as_user_forum?
-    if user_is_authed && controller_name == 'foros' && @forum
-      ufs = Personalization.get_user_forums(@user)
-      if ufs[0].delete_if { |ql| ql != @forum.id.to_s }.size == 0 && ufs[1].delete_if { |ql| ql != @forum.id.to_s }.size == 0 # no estaba
-        true
-      else
-        false
-      end
-    else
-      false
-    end
+    return false if !user_forums_enabled?
+    !user_forum_is_present
   end
 
   def can_del_user_forum?
-    if user_is_authed && controller_name == 'foros' && @forum
-      ufs = Personalization.get_user_forums(@user)
-      if ufs[0].delete_if { |ql| ql != @forum.id.to_s }.size == 1 || ufs[1].delete_if { |ql| ql != @forum.id.to_s }.size == 1 # estaba
-        true
-      else
-        false
-      end
-    else
-      false
-    end
+    return false if !user_forums_enabled?
+    user_forum_is_present
   end
 
   def url_for_content(object, text)
-    "<a class=\"content\" href=\"#{Routing.url_for_content_onlyurl(object)}\">#{text}</a>"
+    content_url = Routing.url_for_content_onlyurl(object)
+    "<a class=\"content\" href=\"#{content_url}\">#{text}</a>"
   end
 
   def css_image_selector(field_name, field_value, skin)
@@ -1361,5 +1368,39 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
       end
     end
     out
+  end
+
+  private
+  def quicklinks_enabled_current_user_portal
+    !user_is_authed || !ApplicationHelper::QUICKLINK_ENABLED_PORTALS.include?(
+        controller.portal.class.name)
+  end
+
+  def current_portal_is_quicklink
+    quicklinks = Personalization.quicklinks_for_user(@user)
+    current_is_quicklink = false
+    quicklinks.each do |quicklink|
+      if quicklink[:code] == controller.portal.code
+        current_is_quicklink = true
+        break
+      end
+    end
+    current_is_quicklink
+  end
+
+  def user_forums_enabled?
+    user_is_authed && controller_name && 'foros' && !@forum.nil?
+  end
+
+  def user_forum_is_present
+    quicklinks = Personalization.get_user_forums(@user)
+    current_forum_is_present = false
+    quicklinks.each do |quicklink|
+      if quicklink[:code] == controller.portal.code
+        current_forum_is_present = true
+        break
+      end
+    end
+    current_forum_is_present
   end
 end
