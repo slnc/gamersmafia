@@ -1,7 +1,15 @@
+# This library is in charge of handling quicklinks (shortcuts to portals) and
+# user forums (forums shown on the forums homepage).
 module Personalization
   MAX_QUICKLINKS = 10
-  def self.add_quicklink(u, code, link)
-    qlinks = self.load_quicklinks(u)
+
+  def self.get_user_quicklinks(user)
+    quicklinks = user.pref_quicklinks
+    quicklinks.size > 0 ? quicklinks : []
+  end
+
+  def self.add_quicklink(user, code, link)
+    qlinks = self.get_user_quicklinks(user)
     return if qlinks.size >= MAX_QUICKLINKS
     found = false
     qlinks.each do |ql|
@@ -12,78 +20,76 @@ module Personalization
     end
     return if found
     qlinks << {:code => code, :url => link}
-    u.pref_quicklinks = qlinks.uniq
-    Cache::Personalization.expire_quicklinks(u)
+    user.pref_quicklinks = qlinks.uniq
+    Cache::Personalization.expire_quicklinks(user)
   end
 
-  def self.load_quicklinks(u)
-    u.pref_quicklinks || Array.new
+  def self.del_quicklink(user, code)
+    quicklinks = self.get_user_quicklinks(user)
+    user.pref_quicklinks = quicklinks.delete_if { |q| q[:code] == code }
+    Cache::Personalization.expire_quicklinks(user)
   end
 
-  def self.del_quicklink(u, code)
-    qlinks = self.load_quicklinks(u)
-    u.pref_quicklinks = qlinks.delete_if { |a| a[:code] == code}
-    Cache::Personalization.expire_quicklinks(u)
+  def self.clear_quicklinks(user)
+    user.pref_quicklinks = nil
+    Cache::Personalization.expire_quicklinks(user)
   end
 
-  def self.clear_quicklinks(u)
-    u.pref_quicklinks = nil
-    Cache::Personalization.expire_quicklinks(u)
-  end
-
-  def self.quicklinks_for_user(u)
-    qlinks = self.load_quicklinks(u)
+  def self.quicklinks_for_user(user)
+    qlinks = self.get_user_quicklinks(user)
     codes = qlinks.collect { |a| a[:code] }
 
     # TODO añadir facciones de las que eres editor/moderador
-    if u.faction_id && !codes.include?(u.faction.code)
-      qlinks << {:code => u.faction.code, :url => "http://#{u.faction.code}.#{App.domain}/"}
+    if user.faction_id && !codes.include?(user.faction.code)
+      qlinks << {
+          :code => user.faction.code,
+          :url => "http://#{user.faction.code}.#{App.domain}/"}
     end
 
-    u.users_roles.find(:all, :conditions => "role IN ('Don', 'ManoDerecha', 'Sicario')").each do |ur|
+    user.users_roles.find(
+        :all,
+        :conditions => "role IN ('Don', 'ManoDerecha', 'Sicario')").each do |ur|
       bd = BazarDistrict.find(ur.role_data.to_i)
-      qlinks << {:code => bd.code, :url => "http://#{bd.code}.#{App.domain}"} unless codes.include?(bd.code)
+      if !codes.include?(bd.code)
+        qlinks << {:code => bd.code, :url => "http://#{bd.code}.#{App.domain}"}
+      end
     end
 
     qlinks.uniq[0..MAX_QUICKLINKS]
   end
 
-
-  def self.load_user_forums(u)
-    puf = u.pref_user_forums
-    puf.size > 0 ? puf : Personalization.populate_user_forums(u)
-  end
-
   def self.default_user_forums
-    # TODO aqui se podria aplicar inteligencia en base al historial de navegación del usuario
-    # TODO no tenemos updated_on en terms asi que usamos el id del ultimo el actualizado para elegir los foros por defecto
-    Term.find(:all, :conditions => 'id = root_id', :order => 'last_updated_item_id DESC', :limit => 12).collect {|tc| tc.id }.chunk(3)
+    # TODO aqui se podria aplicar inteligencia en base al historial de
+    # navegación del usuario.
+    # TODO no tenemos updated_on en terms asi que usamos el id del ultimo el
+    # actualizado para elegir los foros por defecto.
+    Term.find(
+        :all,
+        :conditions => 'id = root_id',
+        :order => 'last_updated_item_id DESC',
+        :limit => 12).collect {|tc| tc.id }.chunk(3)
   end
 
-  def self.get_user_forums(u)
-    uf = self.load_user_forums(u)
-    uf = self.populate_user_forums(u) if uf.size == 0
-    uf
-  end
-
-  def self.populate_user_forums(u)
-    a = Array.new
-    3.times do
-      a<< Array.new
-    end
-    a
+  def self.get_user_forums(user)
+    forums = user.pref_user_forums
+    forums.size > 0 ? forums : [[], [], []]
   end
 
   def self.update_user_forums_order(u, bucket1, bucket2, bucket3)
-    u.pref_user_forums = [bucket1.collect {|i| i.to_i }, bucket2.collect {|i| i.to_i }, bucket3.collect {|i| i.to_i }] # 3 buckets
+    u.pref_user_forums = [
+        bucket1.collect {|i| i.to_i},
+        bucket2.collect {|i| i.to_i},
+        bucket3.collect {|i| i.to_i}
+    ]
   end
 
-  def self.add_user_forum(u, id, link)
-    user_forums = self.load_user_forums(u)
-    user_forums[0] = user_forums[0].each { |ql| return if ql == id.to_i }
-    user_forums[1] = user_forums[1].each { |ql| return if ql == id.to_i }
-    user_forums[2] = user_forums[2].each { |ql| return if ql == id.to_i }
-    if (user_forums[1].size < user_forums[0].size)
+  def self.add_user_forum(user, forum_id, link)
+    forum_id = forum_id.to_i unless forum_id.kind_of?(Fixnum)
+    user_forums = self.get_user_forums(user)
+    user_forums[0] = user_forums[0].each {|ql| return if ql == forum_id}
+    user_forums[1] = user_forums[1].each {|ql| return if ql == forum_id}
+    user_forums[2] = user_forums[2].each {|ql| return if ql == forum_id}
+    if user_forums[1].size < user_forums[0].size
       dst = 1
     elsif (user_forums[2].size < user_forums[1].size)
       dst = 2
@@ -91,15 +97,16 @@ module Personalization
       dst = 0
     end
 
-    user_forums[dst] << id.to_i
-    u.pref_user_forums = user_forums
+    user_forums[dst] << forum_id.to_i
+    user.pref_user_forums = user_forums
   end
 
-  def self.del_user_forum(u, id)
-    user_forums = self.load_user_forums(u)
-    user_forums[0] = user_forums[0].delete_if { |a| a == id.to_i}
-    user_forums[1] = user_forums[1].delete_if { |a| a == id.to_i}
-    user_forums[2] = user_forums[1].delete_if { |a| a == id.to_i}
-    u.pref_user_forums = user_forums
+  def self.del_user_forum(user, forum_id)
+    forum_id = forum_id.to_i unless forum_id.kind_of?(Fixnum)
+    user_forums = self.get_user_forums(user)
+    user_forums[0] = user_forums[0].delete_if {|a| a == forum_id}
+    user_forums[1] = user_forums[1].delete_if {|a| a == forum_id}
+    user_forums[2] = user_forums[1].delete_if {|a| a == forum_id}
+    user.pref_user_forums = user_forums
   end
 end

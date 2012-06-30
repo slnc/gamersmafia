@@ -33,20 +33,24 @@ class PersonalizationTest < ActiveSupport::TestCase
     assert_equal 0, qlinks.size
   end
 
-  test "user_forums_add" do
+  def add_user_forum
     @u2 = User.find(2)
-    @tcf = Term.single_toplevel(:slug => 'ut').children.find(:first, :conditions => 'name = \'General\' AND taxonomy = \'TopicsCategory\'')
-    Personalization.add_user_forum(@u2, @tcf.id, Routing.gmurl(@tcf))
-    ufs = Personalization.get_user_forums(@u2)
+    @forum = Term.single_toplevel(
+        :slug => 'ut').children.find(
+            :first,
+            :conditions => "name = 'General' AND taxonomy = 'TopicsCategory'")
+    Personalization.add_user_forum(@u2, @forum.id, Routing.gmurl(@forum))
+  end
 
-    assert_equal 3, ufs.size
-    assert_equal 1, ufs[0].size
-    assert_equal @tcf.id, ufs[0][0]
+  test "user_forums_add" do
+    self.add_user_forum
+    forums = Personalization.get_user_forums(@u2)
+    assert_equal [[@forum.id], [], []], forums
   end
 
   test "user_forums_del" do
-    test_user_forums_add
-    Personalization.del_user_forum(@u2, @tcf.id)
+    self.add_user_forum
+    Personalization.del_user_forum(@u2, @forum.id)
     ufs = Personalization.get_user_forums(@u2)
     assert_equal 0, ufs[0].size
   end

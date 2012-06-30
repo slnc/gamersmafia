@@ -308,6 +308,7 @@ if u_clans.size == 0 then %>
 
 		<div id="mgintellibar-switcher" class="hidden"><a href="">NAV</a> | <a href="">GMTV</a></div>
 
+    <% if user_is_authed %>
 		<div id="mgintellibar-links"><ul>
 			<% if controller.can_set_as_default_home then %>
 				<li><a href="" title="Ir a esta página directamente al entrar en gamersmafia.com" onclick="return GM.personalization.set_default_portal(<%=user_is_authed ? 'true' : 'false'%>, '<%=controller.action_name%>');">Hacer <%=controller.action_name == 'index' ? 'portada' : controller.action_name%> mi página por defecto</a></li>
@@ -329,16 +330,10 @@ if u_clans.size == 0 then %>
 				<li id="del-from-user-forums" class="<%='hidden' unless can_del_user_forum?%>"><a href="" title="Quitar de mis foros" onclick="return GM.personalization.del_user_forum('<%=@forum.id%>');">Quitar de mis foros</a></li>
 			<% end -%>
 
-			<% if controller.portal.class.name == 'FactionsPortal' then %>
-
-			<% end -%>
-			<% if nil then %>
-			<% if user_is_authed && @user.is_faction_leader? then %>
-				<li><a href="/cuenta/faccion">Mi Facción</a></li>
-			<% end -%>
-			<% end -%>
 			</ul>
 		</div>
+    <% end -%>
+
 		</div></div>
 
 	<% if controller.controller_name != 'home' then %>
