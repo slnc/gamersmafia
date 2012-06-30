@@ -18,13 +18,13 @@ class ActionViewMixingsTest < ActiveSupport::TestCase
   test "format interval should work 1 hour ago" do
     plus_one_hour_ago = Time.now - 61.minutes.ago
     assert_equal('1 hora',
-                 @action_view.format_interval(plus_one_hour_ago, 'horas', true)
+                 @action_view.format_interval(plus_one_hour_ago, 'horas', true))
   end
 
   test "format interval should work 59 mins ago" do
     one_hour_ago = Time.now - 1.hour.ago
     assert_equal('59 mins',
-                 @action_view.format_interval(one_hour_ago, 'horas', true)
+                 @action_view.format_interval(one_hour_ago, 'horas', true))
   end
 end
 

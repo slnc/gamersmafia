@@ -242,13 +242,13 @@ class PublishingDecisionTest < ActiveSupport::TestCase
   end
 
   test "non_editor_cant_vote_on_his_content" do
-    n = News.create(
+    n = News.create({
         :title => "check_exp_non_editor",
         :description => 'foo',
         :terms => 1,
         :user_id => @panzer.id,
         :state => Cms::PENDING,
-    )
+    })
     assert_not_nil n
     assert_equal Cms::PENDING, n.state
     assert_raises(AccessDenied) { Cms::publish_content(n, @panzer) }

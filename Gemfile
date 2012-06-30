@@ -2,7 +2,6 @@ source :rubygems
 
 gem "aasm"
 gem "ai4r"
-gem "ci_reporter"
 gem "daemons"
 gem "deadlock_retry"
 gem "delayed_job", "~> 3.0.1"
@@ -22,3 +21,7 @@ gem "rails_autolink"
 gem "rmagick", :require => "RMagick"
 gem "tidy"
 gem "will_paginate", "~> 3.0"
+
+group :test do
+  gem "ci_reporter"
+end

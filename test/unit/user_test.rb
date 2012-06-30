@@ -120,11 +120,11 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "users with age today should work" do
-    u = User.create(
+    u = User.create({
         :login => 'Flashky',
         :email => 'moon@example.com',
         :birthday => DateTime.new(1988, 3, 26),
-    )
+    })
     years = DateTime.now.year - u.birthday.year
     assert([(years - 1), years].include?(u.age), u.age)
   end

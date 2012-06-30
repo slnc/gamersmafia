@@ -1,3 +1,5 @@
+require 'ci/reporter/rake/test_unit'
+
 desc 'Batería de tests por defecto'
 redefine_task :test => :environment do
   Rails.env = 'test'
