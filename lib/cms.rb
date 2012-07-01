@@ -210,6 +210,8 @@ module Cms
       'Tutorial' => 'tutorial',
   }
 
+  URI_OPEN_TIMEOUT_SECONDS = 5
+
   def self.contents_classes
     [
      Bet,
@@ -396,51 +398,68 @@ module Cms
     end
   end
 
+  def self.get_url_contents(url)
+    open(url).read
+  end
+
+  def self._download_image_to_file(local_filename, img_url)
+    # using block
+    File.open(local_filename, "w") do |f|
+      f.binmode
+      begin
+        begin
+          status = Timeout::timeout(Cms::URI_OPEN_TIMEOUT_SECONDS) {
+            f.write(self.get_url_contents(img_url))
+          }
+        rescue Exception => errdesc
+          Rails.logger.warn("Error download image: #{errdesc}")
+          return nil
+        rescue Exception => errdesc
+          Rails.logger.warn("Error download image: #{errdesc}")
+          return nil
+        end
+      end
+    end
+
+    File.unlink(local_filename) if File.size(local_filename) == 0
+  end
+
+  def self._valid_image_file?(local_filename)
+    begin
+      img = Cms::read_image(local_filename)
+      raise Exception unless img
+    rescue Exception => errdesc
+      Rails.logger.warn("Invalid image format: #{errdesc}")
+      false
+    else
+      true
+    end
+  end
+
   # relative_savedir is relative to #{Rails.root}/public/storage/
   # Devuelve la ruta guardada o nil si no la ha podido guardar
   def self.copy_image_to_dir(imgurl, relative_savedir)
     if /http:\/\// =~ imgurl # download it first
-
       FileUtils.rm_rf("/tmp/gm_tmp_files/")
       tmpfile = "/tmp/gm_tmp_files/#{File.basename(imgurl).bare}"
-      FileUtils.mkdir_p(File.dirname(tmpfile)) if not File.directory?(File.dirname(tmpfile)) # TODO clean this dir
-
-      # using block
-      File.open(tmpfile, 'w') do |f|
-        f.binmode
-        begin
-          begin
-           status = Timeout::timeout(5) {
-              open(imgurl) { |str| f.write(str.read) }
-           }
-         rescue Exception => errdesc
-              Rails.logger.warn(errdesc)
-              return nil
-           rescue Exception => errdesc
-              Rails.logger.warn(errdesc)
-             return nil
-           end
-        end
+      if not File.directory?(File.dirname(tmpfile))
+        FileUtils.mkdir_p(File.dirname(tmpfile))  # TODO clean this dir
       end
 
-      File.unlink(tmpfile) if File.size(tmpfile) == 0
+      self._download_image_to_file(tmpfile, imgurl)
 
       if File.exists?(tmpfile)
-        begin
-          img = Cms::read_image(tmpfile)
-          raise Exception unless img
-        rescue Exception => errdesc
-          Rails.logger.warn("Imagen inválida: #{errdesc}")
-          imgurl = nil
-        else
+        if self._valid_image_file?(tmpfile)
           imgurl = tmpfile
+        else
+          imgurl = nil
         end
       end
     end
 
     # TODO añadir protección para no descargar archivos enormes
 
-    return nil unless (!imgurl.nil?) and File.exists?(imgurl)
+    return nil if imgurl.nil? || !File.exists?(imgurl)
 
     self.unique_file_move_to_relative_savedir(imgurl, relative_savedir)
   end
@@ -465,24 +484,31 @@ module Cms
 
 
   def self.parse_images(html_fragment, savedir)
-    html_fragment = Cms.rails1_sanitize(html_fragment) if html_fragment.kind_of?(String)
-    return html_fragment if html_fragment.nil? or not /<img / =~html_fragment
+    if html_fragment.kind_of?(String)
+      html_fragment = Cms.rails1_sanitize(html_fragment)
+    end
+
+    return html_fragment if html_fragment.nil? || ! /<img / =~ html_fragment
+
     known_domains = App.domain_aliases + [App.domain]
 
-    # buscamos todos los tags imgs y los procesamos uno a uno para ver si el archivo es remoto o no o si es del dir del usuario
+    # buscamos todos los tags imgs y los procesamos uno a uno para ver si el
+    # archivo es remoto o no o si es del dir del usuario
     html_fragment = html_fragment.gsub(/<img[^>]+src="([^"]+)"/i) do |frag|
 
       imgurl = /<img[^>]+src="([^"]+)"/i.match(frag).captures[0]
-      md = /http:\/\/([^\/]+)\/(.+)/i.match(imgurl) # si no tiene slash después del hostname seguro que no es una imagen
+      md = /http:\/\/([^\/]+)\/(.+)/i.match(imgurl)
+      # si no tiene slash después del hostname seguro que no es una imagen
       orig_imgurl = imgurl
 
       new_file = nil
-      # puts "checking #{imgurl}"
       # TODO las imgs de urls con subdominio no las reconoce como propias
-      if md and not known_domains.include?(md[1].gsub('www.', '')) # remote download
+      if md and not known_domains.include?(md[1].gsub('www.', ''))
+        # remote download
         new_file = self.copy_image_to_dir(imgurl, savedir)
-        # puts new_file
-      elsif /users_files/ =~ imgurl # users's file, copy it to the correct directory and rename it
+        Rails.logger.info("Remote download, new_file: #{new_file}")
+      elsif /users_files/ =~ imgurl
+        # users's file, copy it to the correct directory and rename it
         if md # quitamos el http://
           imgurl = "#{Rails.root}/public/#{URI::unescape(md[2])}" # TODO si la url es maliciosa? ../
         elsif !(/^\// =~ imgurl).nil?
@@ -641,7 +667,7 @@ module Cms
 
   def self.clean_html(html_fragment)
     return html_fragment unless App.enable_tidy?
-    return html_fragment if !(html_fragment.nil? or html_fragment.empty?)
+    return html_fragment if html_fragment.nil? || html_fragment.empty?
 
     require 'tidy'
     opts = {:input_html => true,

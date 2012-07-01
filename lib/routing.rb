@@ -146,9 +146,9 @@ module Routing
   end
 
   def resolve_portal_mode
-    @global_vars = User.db_query("SELECT * FROM global_vars")[0]
+    @global_vars = GlobalVars.get_all_vars
 
-    @@portals = {} if @global_vars['portals_updated_on'].to_time > Time.now
+    @@portals = {} if @global_vars["portals_updated_on"].to_time > Time.now
 
     # esto no hay que hacerlo aquí
     # hay clientes que mandan un HTTP_CLIENT_IP incorrecto TODO esto peta

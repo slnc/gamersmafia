@@ -3,7 +3,7 @@
 <%# cacheamos la info de users online durante 60 secs %>
 <%
 cache("/site/_online_state/stats/#{Time.now.to_i/60}") do
-online_stats = Stats::online_users
+online_stats = Stats.online_users
 @anon = online_stats['anonymous'].to_i
 @reg = online_stats['registered'].to_i
 total = @anon + @reg %>

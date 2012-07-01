@@ -81,7 +81,7 @@ module ActsAsContentBrowser
 
         # TODO(slnc): hack para coverages
         if (obj.respond_to?(:event_id) && params[:root_terms].nil? &&
-            params[:coverage][:event_id])
+            params[:coverage] && params[:coverage][:event_id])
           params[:root_terms] = [
               Event.find_or_404(
                   params[:coverage][:event_id]).main_category.root_id]

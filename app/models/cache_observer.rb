@@ -5,7 +5,49 @@
 # Esta clase se encarga de gestionar los fragmentos de vista cacheados
 # TODO TODO TODO optimizar todo esto para no limpiar con tanta facilidad
 class CacheObserver < ActiveRecord::Observer
-  observe News, Topic, Demo, Download, Interview, Tutorial, Column, Image, Comment, PollsVote, Poll, Faction, Bet, Potd, Portal, Event, FactionsLink, Clan, Game, Competition, CompetitionsMatch, CompetitionsParticipant, Review, Funthing, Blogentry, User, Content, ProfileSignature, CommentsValoration, Coverage, GmtvChannel, SlogEntry, Question, Friendship, UsersEmblem, BazarDistrict, ContentsRecommendation, UsersRole, RecruitmentAd, ClansMovement, Term, ContentsTerm, Skin
+  observe BazarDistrict,
+          Bet,
+          Blogentry,
+          Clan,
+          ClansMovement,
+          Column,
+          Comment,
+          CommentsValoration,
+          Competition,
+          CompetitionsMatch,
+          CompetitionsParticipant,
+          Content,
+          ContentsRecommendation,
+          ContentsTerm,
+          Coverage,
+          Demo,
+          Download,
+          Event,
+          Faction,
+          FactionsLink,
+          Friendship,
+          Funthing,
+          Game,
+          GmtvChannel,
+          Image,
+          Interview,
+          News,
+          Poll,
+          PollsVote,
+          Portal,
+          Potd,
+          ProfileSignature,
+          Question,
+          RecruitmentAd,
+          Review,
+          Skin,
+          SlogEntry,
+          Term,
+          Topic,
+          Tutorial,
+          User,
+          UsersEmblem,
+          UsersRole
 
   def self.bazar_root_tc_id
     @@bazar_root_tc_id ||= Term.single_toplevel(:slug => 'bazar')
@@ -37,7 +79,7 @@ class CacheObserver < ActiveRecord::Observer
 
       when 'GmtvChannel'
       object.get_related_portals.each { |p| expire_fragment("/#{p.code}/channels") }
-      User.db_query("UPDATE global_vars SET gmtv_channels_updated_on = now()")
+      Globalvars.update_var("gmtv_channels_updated_on", "now()")
 
       when 'ProfileSignature':
       expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/firmas"
@@ -201,7 +243,7 @@ class CacheObserver < ActiveRecord::Observer
 
       when 'GmtvChannel'
       object.get_related_portals.each { |p| expire_fragment("/#{p.code}/channels") }
-      User.db_query("UPDATE global_vars SET gmtv_channels_updated_on = now()")
+      Globalvars.update_var("gmtv_channels_updated_on", "now()")
 
       when 'CompetitionsMatch':
       if object.participant1_id
@@ -335,7 +377,8 @@ class CacheObserver < ActiveRecord::Observer
 
     # para evitar repetir hacemos una cosa, si el contenido tiene un atributo
     # user_id borramos las caches de contenidos de dicho usuario
-    if object.respond_to?('user_id') and object.respond_to?(:state) then # TODO no correcto del todo
+    # TODO(slnc): too aggressive
+    if object.respond_to?('user_id') && object.respond_to?(:state)
       expire_fragment("#{Cache.user_base(object.user_id)}/sus_contenidos_son")
       expire_fragment("#{Cache.user_base(object.user_id)}/profile/aportaciones")
       expire_fragment("/common/miembros/#{object.user_id % 1000}/#{object.user_id}/contents_stats")
@@ -375,7 +418,7 @@ class CacheObserver < ActiveRecord::Observer
 
       when 'GmtvChannel'
       object.get_related_portals.each { |p| expire_fragment("/#{p.code}/channels") }
-      User.db_query("UPDATE global_vars SET gmtv_channels_updated_on = now()")
+      Globalvars.update_var("gmtv_channels_updated_on", "now()")
 
       when 'ProfileSignature':
       expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/firmas"
@@ -896,28 +939,30 @@ class CacheObserver < ActiveRecord::Observer
 
     if File.file?(fpath) then
       begin; File.delete(fpath); rescue; end
-  elsif File.directory?(File.dirname(fpath)) then
-    for i in Dir.glob(fmask)
-      if File.file?(i) then
-        begin; File.delete(i); rescue; end
+    elsif File.directory?(File.dirname(fpath)) then
+      for i in Dir.glob(fmask)
+        if File.file?(i) then
+          begin; File.delete(i); rescue; end
+        end
+      end
+    else
+      # raise "#{fpath} #{File.dirname(fpath)}"
     end
   end
-else
-  # raise "#{fpath} #{File.dirname(fpath)}"
-end
-end
 
-def expire_fragment(file)
-self.class.expire_fragment(file)
-end
+  def expire_fragment(file)
+    self.class.expire_fragment(file)
+  end
 
-def self.user_may_have_joined_clan(user)
-expire_fragment("/common/globalnavbar/#{user.id % 1000}/#{user.id}_clans")
-expire_fragment("/common/globalnavbar/#{user.id % 1000}/#{user.id}_clans_box_en_member")
-expire_fragment("/_users/#{user.id % 1000}/#{user.id}/layouts/clans")
-end
+  def self.user_may_have_joined_clan(user)
+    expire_fragment("/common/globalnavbar/#{user.id % 1000}/#{user.id}_clans")
+    expire_fragment("/common/globalnavbar/#{user.id % 1000}/#{user.id}_clans_box_en_member")
+    expire_fragment("/_users/#{user.id % 1000}/#{user.id}/layouts/clans")
+  end
 
-def self.update_pending_contents
-User.db_query("UPDATE global_vars SET pending_contents = (SELECT count(*) FROM contents WHERE state = #{Cms::PENDING})")
-end
+  def self.update_pending_contents
+    GlobalVars.update_var(
+        "pending_contents",
+        Content.count(:conditions => ["state = ?", Cms::PENDING]))
+  end
 end

@@ -432,21 +432,26 @@ group by date_trunc('day', created_on) order by s asc
   end
 
   def self.online_users
-    User.db_query("SELECT online_anonymous as anonymous, online_registered as registered FROM global_vars")[0]
+    all_vars = GlobalVars.get_all_vars
+    {"anonymous" => all_vars["online_anonymous"],
+     "registered" => all_vars["online_registered"]}
   end
 
 
   def self.update_online_stats
-    online_anon = User.db_query("SELECT count(distinct(visitor_id))
-                                  FROM stats.pageviews
-                                 WHERE user_id IS NULL
-                                   AND created_on >= now() - '30 minutes'::interval")[0]['count'].to_i
+    online_anonymous = User.db_query(
+        "SELECT count(distinct(visitor_id))
+           FROM stats.pageviews
+          WHERE user_id IS NULL
+            AND created_on >= now() - '30 minutes'::interval")[0]["count"].to_i
 
-    online_reg = User.db_query("SELECT count(*)
-                                  FROM users
-                                 WHERE lastseen_on >= now() - '30 minutes'::interval")[0]['count'].to_i
+    online_registered = User.db_query(
+        "SELECT count(*)
+           FROM users
+          WHERE lastseen_on >= now() - '30 minutes'::interval")[0]["count"].to_i
 
-    User.db_query("UPDATE global_vars SET online_anonymous = #{online_anon}, online_registered = #{online_reg}")
+    GlobalVars.update_var("online_anonymous", online_anonymous)
+    GlobalVars.update_var("online_registered", online_registered)
   end
 
   def self.register_referer(user_id, remote_ip, referer)

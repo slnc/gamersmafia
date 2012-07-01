@@ -58,23 +58,23 @@ class SkinsTest < ActiveSupport::TestCase
   test "css_regexp_optional_is_ok" do
     re = Skins::ColorGenerators::AbstractGenerator.get_re_for_key('sample')
     css_sample1 = <<-END
-      body {
-        color: red;
-      }
+body {
+color: red;
+}
 
-      .module {
-        background-color: \#${sample};
-      }
+.module {
+background-color: \#${sample};
+}
     END
 
     css_sample_without_opt = <<-END
-      body {
-        color: red;
-      }
+body {
+color: red;
+}
 
-      .module {
+.module {
 
-      }
+}
     END
 
     assert_not_nil re =~ css_sample1

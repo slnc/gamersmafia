@@ -31,7 +31,7 @@ class AdsSlot < ActiveRecord::Base
   end
 
   def update_global_vars
-    User.db_query("UPDATE global_vars SET ads_slots_updated_on = now();")
+    GlobalVars.update_var("ads_slots_updated_on", "now()")
   end
 
   def portals

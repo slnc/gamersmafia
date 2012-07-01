@@ -15,7 +15,7 @@ class Portal < ActiveRecord::Base
   before_save :check_code
 
   def update_global_vars
-    User.db_query("UPDATE global_vars SET portals_updated_on = now()")
+    GlobalVars.update_var("portals_updated_on", "now()")
   end
 
   def skin

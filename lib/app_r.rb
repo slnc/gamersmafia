@@ -9,8 +9,7 @@ module AppR
         version = "HEAD"
       end
 
-      ActiveRecord::Base.db_query(
-        "UPDATE global_vars set svn_revision = '#{version}'")
+      GlobalVars.update_var("svn_revision", version)
       version
     end
   end

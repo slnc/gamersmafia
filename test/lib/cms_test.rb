@@ -202,7 +202,8 @@ class CmsTest < ActiveSupport::TestCase
   end
 
   test "html_clean_broken" do
-    assert_equal "<strong>hello world</strong>", Cms::clean_html("<strong>hello world")
+    assert_equal("<strong>hello world</strong>",
+                 Cms::clean_html("<strong>hello world"))
   end
 
   test "should_create_valid_fqdn_from_string" do
@@ -215,7 +216,7 @@ class CmsTest < ActiveSupport::TestCase
 
   test "comments_parse_images_should_work_if_remote" do
     out = Cms::download_and_rewrite_bb_imgs(
-        'foo <img src="http://dharana.net/wp-content/uploads/2006/11/' +
+        'foo <img src="http://slnc.me/wp-content/uploads/2006/11/' +
         'dark_castle0.jpg" /> bar', 'test/cms')
     assert(/foo <img src=\"http:\/\/test.host\/storage\/test\/cms\/.*dark_castle0.jpg\" \/> bar/ =~ out)
   end
@@ -235,7 +236,11 @@ class CmsTest < ActiveSupport::TestCase
 
   test "parse_images_should_download_remote_image_if_domain_is_unknown" do
     FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
-    assert_equal '<img src="/storage/wswg/0000/dark_castle0.jpg" />', Cms::parse_images('<img src="http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg" />', 'wswg/0000')
+    tall_file_contents = open(TALL_FILE).read
+    Cms.expects(:get_url_contents).returns(tall_file_contents)
+    in_html = '<img src="http://www.google.com/dark_castle0.jpg" />'
+    assert_equal('<img src="/storage/wswg/0000/dark_castle0.jpg" />',
+                 Cms::parse_images(in_html, 'wswg/0000'))
   end
 
   test "parse_images_should_download_local_image_if_userdir" do
@@ -256,7 +261,7 @@ class CmsTest < ActiveSupport::TestCase
 
     FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
 
-    assert_equal '<div style="text-align: center;"><a href="/storage/wswg/0000/userfile.jpg"><img src="/cache/thumbnails/f/342x70/storage/wswg/0000/userfile.jpg" /></a>foo<img class="flag" src="/storage/wswg/0000/dark_castle0.jpg" border="0"> ', Cms::parse_images('<div style="text-align: center;"><img style="width: 342px; height: 70px;" src="/storage/users_files/0/0/userfile.jpg">foo<img src="http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg" class="flag" border="0"> ', 'wswg/0000')
+    assert_equal "<div style=\"text-align: center;\"><a href=\"/storage/wswg/0000/userfile.jpg\"><img src=\"/cache/thumbnails/f/342x70/storage/wswg/0000/userfile.jpg\" /></a>foo<img class=\"flag\" border=\"0\" src=\"/storage/wswg/0000/dark_castle0.jpg\"> ", Cms::parse_images('<div style="text-align: center;"><img style="width: 342px; height: 70px;" src="/storage/users_files/0/0/userfile.jpg">foo<img src="http://slnc.me/wp-content/uploads/2006/11/dark_castle0.jpg" class="flag" border="0"> ', 'wswg/0000')
   end
 
   test "parse_images_should_thumbnail_image_without_creating_link_if_shown_dimensions_differ_from_image_dimensions_and_has_link_around" do
@@ -268,14 +273,14 @@ class CmsTest < ActiveSupport::TestCase
 
   test "parse_images_should_work_with_everything_in_place" do
     strn = <<-END
-    <img src="http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg" style="width: 100px; height: 100px;" />
+    <img src="http://slnc.me/wp-content/uploads/2006/11/dark_castle0.jpg" style="width: 100px; height: 100px;" />
     hola
-    <img src="http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg" />
+    <img src="http://slnc.me/wp-content/uploads/2006/11/dark_castle0.jpg" />
   foobar
   hahah
-    <img src="http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg" style="width: 100px; height: 100px;" width="95px" height="95px" />
+    <img src="http://slnc.me/wp-content/uploads/2006/11/dark_castle0.jpg" style="width: 100px; height: 100px;" width="95px" height="95px" />
   hehe
-    <img src="http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg" width="95px" height="95px" />
+    <img src="http://slnc.me/wp-content/uploads/2006/11/dark_castle0.jpg" width="95px" height="95px" />
 
   lerebinonn
     <img src="http://#{App.domain}/storage/users_files/0/0/userfile.jpg" />
@@ -305,12 +310,12 @@ class CmsTest < ActiveSupport::TestCase
     strn = <<-END
     <img src="/storage/news/userfile.jpg" style="width: 25px; height: 25px;" />
     hola
-    <img src="http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg" />
+    <img src="http://slnc.me/wp-content/uploads/2006/11/dark_castle0.jpg" />
   foobar
   hahah
-    <img src="http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg" style="width: 100px; height: 100px;" width="95px" height="95px" />
+    <img src="http://slnc.me/wp-content/uploads/2006/11/dark_castle0.jpg" style="width: 100px; height: 100px;" width="95px" height="95px" />
   hehe
-    <img src="http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg" width="95px" height="95px" />
+    <img src="http://slnc.me/wp-content/uploads/2006/11/dark_castle0.jpg" width="95px" height="95px" />
 
   lerebinonn
     <img src="http://#{App.domain}/storage/users_files/0/0/userfile.jpg" />
@@ -351,7 +356,7 @@ class CmsTest < ActiveSupport::TestCase
 
   test "copy_image_to_dir_should_copy_external_file_to_tmp_dir" do
     FileUtils.rm_rf("#{Rails.root}/public/storage/fii")
-    Cms::copy_image_to_dir('http://dharana.net/wp-content/uploads/2006/11/dark_castle0.jpg', 'fii')
+    Cms::copy_image_to_dir('http://slnc.me/wp-content/uploads/2006/11/dark_castle0.jpg', 'fii')
     assert File.exists?("#{Rails.root}/public/storage/fii/dark_castle0.jpg")
   end
 
@@ -362,7 +367,7 @@ class CmsTest < ActiveSupport::TestCase
 
   test "copy_image_to_dir_should_return_nil_if_unexisting_remote_file" do
     FileUtils.rm_rf("#{Rails.root}/public/storage/fii")
-    assert_nil Cms::copy_image_to_dir('http://www.dharana.net/adakjhdskahdk', 'fii')
+    assert_nil Cms::copy_image_to_dir('http://www.slnc.me/adakjhdskahdk', 'fii')
   end
 
   test "transform_content_should_work_if_requirements_match" do

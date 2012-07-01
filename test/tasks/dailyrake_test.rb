@@ -212,4 +212,9 @@ class DailyRakeTest < ActiveSupport::TestCase
       assert_not_nil cm.completed_on
     end
   end
+
+  test "update_max_cache_valorations_weights_on_self_comments" do
+      Rake::Task['gm:daily'].send(
+          :update_max_cache_valorations_weights_on_self_comments)
+  end
 end

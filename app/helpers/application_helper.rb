@@ -1393,10 +1393,10 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
   end
 
   def user_forum_is_present
-    forums = Personalization.get_user_forums(@user)
+    buckets = Personalization.get_user_forums(@user)
     current_forum_is_present = false
-    forums.each do |forum|
-      if forum.id == @forum.id
+      buckets.each do |saved_forum_id|
+      if saved_forum_id == @forum.id
         current_forum_is_present = true
         break
       end

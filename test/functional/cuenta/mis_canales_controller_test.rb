@@ -1,8 +1,6 @@
 require 'test_helper'
 
 class Cuenta::MisCanalesControllerTest < ActionController::TestCase
-
-
   test "index_should_work" do
     sym_login 1
     get :index

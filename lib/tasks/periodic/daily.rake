@@ -51,7 +51,13 @@ namespace :gm do
   end
 
   def update_max_cache_valorations_weights_on_self_comments
-    User.db_query("update global_vars set max_cache_valorations_weights_on_self_comments = (select max(cache_valorations_weights_on_self_comments) from users where cache_valorations_weights_on_self_comments is not null);")
+    max_weights = User.db_query(
+        "SELECT MAX(cache_valorations_weights_on_self_comments) AS max_weights
+           FROM users
+          WHERE cache_valorations_weights_on_self_comments IS NOT NULL"
+    )[0]["max_weights"]
+    GlobalVars.update_var(
+      "max_cache_valorations_weights_on_self_comments", max_weights)
   end
 
   def forget_old_pageviews
