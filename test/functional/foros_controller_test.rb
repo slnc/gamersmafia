@@ -57,7 +57,11 @@ class ForosControllerTest < ActionController::TestCase
     u1 = User.find(1)
     kp = u1.karma_points
     topics = Topic.count
-    post :create_topic, {:topic => {:title => 'footopic', :main => 'textio'}, :categories_terms => [Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id]}
+    post :create_topic, {
+        :topic => {:title => 'footopic', :main => 'textio'},
+        :categories_terms => [
+            Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id]
+    }
     assert_response :redirect
     assert_equal topics + 1, Topic.count
     u1.reload

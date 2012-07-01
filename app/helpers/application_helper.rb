@@ -1393,10 +1393,10 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
   end
 
   def user_forum_is_present
-    quicklinks = Personalization.get_user_forums(@user)
+    forums = Personalization.get_user_forums(@user)
     current_forum_is_present = false
-    quicklinks.each do |quicklink|
-      if quicklink[:code] == controller.portal.code
+    forums.each do |forum|
+      if forum.id == @forum.id
         current_forum_is_present = true
         break
       end
