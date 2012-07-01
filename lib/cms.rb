@@ -488,7 +488,7 @@ module Cms
       html_fragment = Cms.rails1_sanitize(html_fragment)
     end
 
-    return html_fragment if html_fragment.nil? || ! /<img / =~ html_fragment
+    return html_fragment if html_fragment.nil? || !(/<img / =~ html_fragment)
 
     known_domains = App.domain_aliases + [App.domain]
 

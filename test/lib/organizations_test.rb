@@ -41,7 +41,12 @@ class OrganizationsTest < ActiveSupport::TestCase
     faction.add_moderator(User.find(3))
     faction.add_editor(User.find(4), ContentType.find(:first))
     Factions.user_joins_faction(User.find(5), faction)
-    Avatar.create(:name => 'foo', :submitter_user_id => 1, :level => 1, :faction_id => faction.id, :path => fixture_file_upload('files/buddha.jpg', 'image/jpeg'))
+    Avatar.create(
+        :name => 'foo',
+        :submitter_user_id => 1,
+        :level => 1,
+        :faction_id => faction.id,
+        :path => fixture_file_upload('files/buddha.jpg', 'image/jpeg'))
     bd = Organizations.change_organization_type(faction, BazarDistrict)
     assert_equal 'BazarDistrict', bd.class.name
     assert_nil Faction.find_by_code(bd.code)
@@ -49,7 +54,7 @@ class OrganizationsTest < ActiveSupport::TestCase
     assert bdp
     assert_equal 1, bd.don.id
     assert_equal 2, bd.mano_derecha.id
-    assert_equal [1, 3, 4], bd.sicarios.collect { |u| u.id }.sort
+    assert_equal [3, 4], bd.sicarios.collect { |u| u.id }.sort
 
     # TODO categorías viejas de contenidos tienen que haber cambiado
     # TODO las urls de los contenidos correctas

@@ -79,7 +79,7 @@ class CacheObserver < ActiveRecord::Observer
 
       when 'GmtvChannel'
       object.get_related_portals.each { |p| expire_fragment("/#{p.code}/channels") }
-      Globalvars.update_var("gmtv_channels_updated_on", "now()")
+      GlobalVars.update_var("gmtv_channels_updated_on", "now()")
 
       when 'ProfileSignature':
       expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/firmas"
@@ -243,7 +243,7 @@ class CacheObserver < ActiveRecord::Observer
 
       when 'GmtvChannel'
       object.get_related_portals.each { |p| expire_fragment("/#{p.code}/channels") }
-      Globalvars.update_var("gmtv_channels_updated_on", "now()")
+      GlobalVars.update_var("gmtv_channels_updated_on", "now()")
 
       when 'CompetitionsMatch':
       if object.participant1_id
@@ -418,7 +418,7 @@ class CacheObserver < ActiveRecord::Observer
 
       when 'GmtvChannel'
       object.get_related_portals.each { |p| expire_fragment("/#{p.code}/channels") }
-      Globalvars.update_var("gmtv_channels_updated_on", "now()")
+      GlobalVars.update_var("gmtv_channels_updated_on", "now()")
 
       when 'ProfileSignature':
       expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/firmas"

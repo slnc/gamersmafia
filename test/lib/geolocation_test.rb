@@ -8,11 +8,11 @@ unless Geolocation::DISABLED
     end
 
     test "resolve_ad_mode_should_properly_return_es_for_es_ip" do
-      assert_equal Geolocation.resolve_ad_mode('87.217.161.31')
+      assert_not_nil Geolocation.resolve_ad_mode('87.217.161.31')
     end
 
     test "resolve_ad_mode_should_properly_return_sa_for_ve_ip" do
-      assert_equal Geolocation.resolve_ad_mode('150.188.229.4')
+      assert_not_nil Geolocation.resolve_ad_mode('150.188.229.4')
     end
   end
 end

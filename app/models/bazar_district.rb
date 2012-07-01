@@ -88,7 +88,11 @@ class BazarDistrict < ActiveRecord::Base
   end
 
   def sicarios
-    UsersRole.find(:all, :conditions => ["role = 'Sicario' AND role_data = ?", self.id.to_s], :include => :user, :order => 'lower(users.login)').collect { |ur| ur.user }
+    UsersRole.find(
+        :all,
+        :conditions => ["role = 'Sicario' AND role_data = ?", self.id.to_s],
+        :include => :user,
+        :order => "LOWER(users.login)").collect { |ur| ur.user }
   end
 
   def has_building?

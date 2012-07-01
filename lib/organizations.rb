@@ -36,7 +36,9 @@ module Organizations
       # WARNING ESTO ES SOLO PARA PASAR DE FACTION A BAZAR_DISTRICT
       portal = Portal.find_by_code(obj.code)
 
-      User.db_query("UPDATE portals SET type = 'BazarDistrictPortal' WHERE id = #{portal.id}")
+      User.db_query("UPDATE portals
+                        SET type = 'BazarDistrictPortal'
+                      WHERE id = #{portal.id}")
       root_term = Term.single_toplevel(:slug => obj.code)
       root_term.game_id = nil
       root_term.platform_id = nil
@@ -45,7 +47,11 @@ module Organizations
       root_term.bazar_district_id = bd.id
       root_term.save
       refthing = obj.referenced_thing
-      User.db_query("UPDATE contents SET bazar_district_id = #{bd.id}, game_id = NULL WHERE #{refthing.class.name.downcase}_id = #{refthing.id}")
+      User.db_query(
+          "UPDATE contents
+              SET bazar_district_id = #{bd.id},
+                  game_id = NULL
+            WHERE #{refthing.class.name.downcase}_id = #{refthing.id}")
       bd.update_don(obj.boss)
       bd.update_mano_derecha(obj.underboss)
 
@@ -59,6 +65,7 @@ module Organizations
       obj.avatars.each do |av|
         av.destroy(true)
       end
+
       obj.reload
       obj.destroy
       bd
