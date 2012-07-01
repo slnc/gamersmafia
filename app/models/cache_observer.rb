@@ -166,15 +166,8 @@ class CacheObserver < ActiveRecord::Observer
       when 'Clan':
       expire_fragment('/gm/clanes/index/page*')
 
-      if object.new_record? # changed[:deleted] == true
+      if object.new_record?
         expire_fragment("/gm/clanes/index/newest")
-        #expire_fragment("/clanes/boxes/biggest_")
-        #object.games.each do |g|
-        #  g.faction.factions_portals.each do |p|
-        #    expire_fragment("/clanes/boxes/newest_#{p.code}")
-        #    expire_fragment("/clanes/boxes/biggest_#{p.code}")
-        #  end
-        #end
       end
 
       when 'FactionsPortal':
@@ -359,12 +352,10 @@ class CacheObserver < ActiveRecord::Observer
 
       # TODO copypaste de arriba
       expire_fragment("/gm/clanes/index/newest")
-      expire_fragment("/gm/clanes/index/biggest")
       object.games.each do |g|
         g.faction.portals.each do |p|
           expire_fragment("/#{p.code}/clanes/index/page*")
           expire_fragment("/#{p.code}/clanes/index/newest")
-          expire_fragment("/#{p.code}/clanes/index/biggest")
         end
       end
     end
@@ -391,66 +382,76 @@ class CacheObserver < ActiveRecord::Observer
       return if Cms::CONTENTS_WITH_CATEGORIES.include?(object.class.name) && object.main_category.nil?
     end
 
-
     case object.class.name
-      when 'FactionsSkin' then
-      Cache::Skins.common(object)
-      when 'Skin' then
-      Cache::Skins.common(object)
-      when 'Term' then
-      Cache::Terms.after_save(object) unless object.import_mode
-      when 'ContentsTerm' then
-      Cache::Terms.after_save(object.term) unless object.import_mode
-
-      when 'RecruitmentAd':
-      expire_fragment "/home/comunidad/recruitment_ads_#{object.clan_id ? 'clans' : 'users'}"
-
-      when 'ContentsRecommendation':
-      expire_fragment "/_users/#{object.receiver_user_id % 1000}/#{object.receiver_user_id}/layouts/recommendations"
-
       when 'BazarDistrict':
       if object.name_changed? || object.code_changed?
         expire_fragment "/layouts/default/districts"
       end
 
-      when 'Friendship':
-      Cache::Friendship.common(object)
+      when 'Bet':
+      object.get_related_portals.each do |p|
+        expire_fragment("/#{p.code}/home/index/apuestas_#{Time.now.to_i / 3600}")
+        expire_fragment("/#{p.code}/home/index/apuestas2_#{Time.now.to_i / 3600}")
+        expire_fragment("/common/apuestas/show/latest_by_cat_#{p.id}")
+      end
 
-      when 'GmtvChannel'
-      object.get_related_portals.each { |p| expire_fragment("/#{p.code}/channels") }
-      GlobalVars.update_var("gmtv_channels_updated_on", "now()")
+      if (object.winning_bets_option_id_changed? ||
+          object.forfeit_changed? ||
+          object.cancelled_changed? ||
+          object.tie_changed?)
+        expire_fragment "/common/admin/contenidos/index/pending_bets"
+      end
 
-      when 'ProfileSignature':
-      expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/firmas"
-      expire_fragment "#{Cache.user_base(object.user_id)}/profile/last_profile_signatures"
+      when 'Blogentry':
+      expire_fragment '/common/home/index/blogentries'
+      expire_fragment "/common/blogs/#{object.user_id % 1000}/#{object.user_id}"
+      object.user.faction.portals.each { |p| expire_fragment("/#{p.code}/home/index/blogentries") }  if object.user.faction_id
 
-      when 'Content':
-      CacheObserver.update_pending_contents if object.state_changed?
-      if ((object.state_changed? && object.state == Cms::DELETED) ||
-          object.comments_count_changed?)
-        object.terms.each do |t|
-          t.recalculate_counters
+      when 'Clan':
+      GlobalVars.update_clans_updated_on
+      expire_fragment('/gm/clanes/index/page*')
+      expire_fragment("/common/clanes/#{object.id}/*") # TODO excesivo :s
+
+      if object.deleted_changed?
+        expire_fragment("/gm/clanes/index/newest")
+        object.games.each do |g|
+          g.faction.portals.each do |p|
+            expire_fragment("/#{p.code}/clanes/index/page*")
+            expire_fragment("/#{p.code}/clanes/index/newest")
+          end
         end
       end
 
-      when 'User':
-      if object.login_changed?
-        expire_fragment(
-            "/common/globalnavbar/#{object.id % 1000}/#{object.id}_avatar.cache")
+      if object.game_ids_changed?
+        changed_games = []
+
+        if object.game_ids_changed?
+          prev = object.game_ids_was
+        else
+          prev = []
+        end
+        prev = prev.collect { |d| d.to_i }
+        cur = object.games.collect { |g| g.id }
+
+        prev.delete_if { |g_id| cur.include?(g_id) }
+        cur.delete_if { |g_id| prev.include?(g_id) }
+
+         (prev + cur).uniq.each do |g_id|
+          g = Game.find(g_id)
+          g.faction.portals.each do |p|
+            expire_fragment("/#{p.code}/clanes/index/page*")
+            expire_fragment("/#{p.code}/clanes/index/newest")
+          end
+        end
+
+      elsif object.members_count_changed?
+        object.games.each do |g|
+          g.faction.portals.each do |p|
+            expire_fragment("/#{p.code}/clanes/index/page*")
+          end
+        end
       end
-      if object.state_changed?
-        expire_fragment("/common/carcel")
-        expire_fragment("/common/carcel_full")
-      end
-      if object.faction_id_changed?
-        Cache::Personalization.expire_quicklinks(object)
-      end
-      if object.state_changed?
-        expire_fragment("/common/miembros/_rightside/ultimos_registros")
-      end
-      if object.avatar_id_changed?
-        expire_fragment("/common/globalnavbar/#{object.id % 1000}/#{object.id}_avatar")
-      end
+
       when 'CompetitionsParticipant':
       expire_fragment "/arena/home/open_ladders" if object.competition.kind_of?(Ladder)
       expire_fragment("/common/competiciones/#{object.competition_id}/participantes")
@@ -459,6 +460,28 @@ class CacheObserver < ActiveRecord::Observer
           Cache::Competition.expire_competitions_lists(u)
         end
       rescue
+      end
+
+      when 'Column':
+      object.get_related_portals.each do |p|
+        expire_fragment("/common/home/index/articles2b#{p.code}") if p.class.name == 'BazarDistrictPortal'
+        expire_fragment("/#{p.code}/home/index/articles")
+        expire_fragment("/#{p.code}/home/index/articles2")
+        next unless p.column
+        # borramos las páginas de listado de columnas posteriores a la actual
+        #prev_count = p.column.count(:published, :conditions => ["created_on <= ?", object.created_on])
+        #next_count = p.column.count(:published, :conditions => ["created_on >= ?", object.created_on])
+        #start_page = prev_count / ColumnasController::COLUMNS_PER_PAGE
+        #end_page = start_page + next_count / ColumnasController::COLUMNS_PER_PAGE + 1
+
+        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/columnas/index/page_#{i}") }
+        expire_fragment("/#{p.code}/columnas/index/page_")
+        expire_fragment("/#{p.code}/columnas/index/page_*")
+        expire_fragment("/#{p.code}/columnas/show/latest_by_author_#{object.user_id}")
+        if object.user_id_changed?
+          expire_fragment(
+              "/#{p.code}/columnas/index/most_popular_authors_#{Time.now.to_i/(86400)}")
+          end
       end
 
       when 'CompetitionsMatch':
@@ -495,35 +518,63 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment "/#{portal.code}/competiciones/index/competiciones_en_curso"
       end
 
-      when 'League':
-      do_competitions(object)
-      when 'Tournament':
-      do_competitions(object)
-      when 'Ladder':
-      do_competitions(object)
-      when 'Blogentry':
-      expire_fragment '/common/home/index/blogentries'
-      expire_fragment "/common/blogs/#{object.user_id % 1000}/#{object.user_id}"
-      object.user.faction.portals.each { |p| expire_fragment("/#{p.code}/home/index/blogentries") }  if object.user.faction_id
+      when 'CommentsValoration':
+      expire_fragment("/comments/#{Time.now.to_i/(86400*7)}/#{object.comment.content_id%100}/#{object.comment.content_id}_*") # cacheamos solo una semana para q se actualicen barras
 
-      when 'Game':
-      expire_fragment('/common/miembros/buscar_por_guid')
-      when 'Faction':
-      Cache::Faction.common(object)
+      when 'Comment':
+      expire_fragment("/comments/#{Time.now.to_i/(86400*7)}/#{object.content_id%100}/#{object.content_id}_*") # cacheamos una semana para q se actualicen barras
+      real = object.content.real_content
 
-      when 'FactionsLink':
-      expire_fragment("/common/facciones/#{object.faction_id}/webs_aliadas")
-      object.faction.portals.each { |p| expire_fragment("/#{p.code}/webs_aliadas") }
-      when 'Poll':
-      object.get_related_portals.each do |p|
-        if object.respond_to?(:my_faction)
-          f = object.my_faction
-          expire_fragment("/#{p.code}/home/index/polls_#{f.id}") if f # note: no funciona en webs de clanes
+      # TODO solo hay que limpiar cache si aparecen en portada y tb
+      # TODO ESTO se sigue usando?
+      case real.class.name
+        when 'Topic':
+        expire_fragment("/bazar/home/categories/#{real.main_category.code}")
+        expire_fragment("/gm/home/index/topics")# :controller => '/home', :action => 'index', :part => 'topics')
+        f = real.main_category
+        if f
+          f.save
+          expire_fragment("/foros/active_items/#{f.root_id}")
         end
 
-        expire_fragment("/#{p.code}/encuestas/index/page_*")
+        when 'Column':
+        expire_fragment(:controller => '/home', :action => 'index', :part => 'articles')
+        when 'Interview':
+        expire_fragment(:controller => '/home', :action => 'index', :part => 'articles')
+        when 'Review':
+        expire_fragment(:controller => '/home', :action => 'index', :part => 'articles')
+        when 'Tutorial':
+        expire_fragment(:controller => '/home', :action => 'index', :part => 'articles')
+        when 'News':
+        expire_fragment(:controller => '/home', :action => 'index', :part => 'news')
+        expire_fragment(:controller => '/home', :action => 'index', :part => 'news_developed')
+        when 'Download':
+        expire_fragment(:controller => '/home', :action => 'index', :part => 'downloads')
+        when 'Poll':
+        expire_fragment(:controller => '/home', :action => 'index', :part => 'polls')
+        expire_fragment(:controller => '/home', :action => 'index', :part => "polls_#{object.content.real_content.my_faction.id}")
+        when 'Image':
+        expire_fragment(:controller => '/home', :action => 'index', :part => "daily_image#{Time.now.to_i/86400}")
+        when 'Funthing':
+        expire_fragment(:controller => '/home', :action => 'index', :part => 'curiosidades')
+
       end
 
+      when 'Content':
+      CacheObserver.update_pending_contents if object.state_changed?
+      if ((object.state_changed? && object.state == Cms::DELETED) ||
+          object.comments_count_changed?)
+        object.terms.each do |t|
+          t.recalculate_counters
+        end
+      end
+
+      when 'ContentsRecommendation':
+      expire_fragment "/_users/#{object.receiver_user_id % 1000}/#{object.receiver_user_id}/layouts/recommendations"
+
+      when 'ContentsTerm' then
+      Cache::Terms.after_save(object.term) unless object.import_mode
+      #
       # TODO ser más exquisito cuando reordenemos la sección
       when 'Coverage':
       for p in object.get_related_portals
@@ -539,6 +590,70 @@ class CacheObserver < ActiveRecord::Observer
       end
 
       expire_fragment "/common/demos/show/_latest_cat#{object.main_category.id}"
+
+      when 'Download':
+      expire_fragment('/home/index/downloads')
+      for p in object.get_related_portals
+        expire_fragment("/#{p.code}/home/index/downloads")
+        expire_fragment("/#{p.code}/home/index/downloads2")
+
+      end
+      expire_fragment "/common/home/index/downloads3#{object.main_category.root.code}"
+
+      # borramos las páginas de listados por si es un nuevo comment
+      expire_fragment("/common/descargas/index/downloads_#{object.main_category.id}/page_*")
+
+      # TODO optimizar, no?
+      p = object.main_category
+      expire_fragment("/common/descargas/index/most_downloaded_#{p.root_id}")
+      expire_fragment("/common/descargas/index/essential_#{p.root_id}")
+      expire_fragment("/common/descargas/index/essential2_#{p.root_id}")
+      expire_fragment("/common/descargas/index/essential3_#{p.root_id}")
+      object.get_related_portals.each do |pp|
+        expire_fragment("/#{pp.code}/descargas/index/folders")
+      end
+
+      while p do
+        expire_fragment("/common/descargas/index/most_productive_author_by_cat_#{p.id}")
+        expire_fragment("/common/descargas/index/folders_#{p.id}")
+        expire_fragment("/common/descargas/index/downloads_#{p.id}/page_*")
+        p = p.parent # necesario por la clase proxy de noticias de GmPortal
+      end
+
+      when 'Event':
+      # TODO borrar de forma más selectiva
+      object.get_related_portals.each do |p|
+        expire_fragment("/#{p.code}/home/index/eventos/#{Time.now.strftime('%Y%m%d')}")
+        expire_fragment("/#{p.code}/home/index/eventos2/#{Time.now.strftime('%Y%m%d')}")
+        #next if p.event.nil?
+        # borramos las páginas de listado de noticias posteriores a la actual
+        # TODO PERF
+        #prev_count = p.event.count(:published, :conditions => ["created_on <= ?", object.created_on])
+        #next_count = p.event.count(:published, :conditions => ["created_on >= ?", object.created_on])
+        #start_page = prev_count / EventosController::PER_PAGE
+        #end_page = start_page + next_count / EventosController::PER_PAGE + 1
+
+        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/eventos/index/page_#{i}") }
+
+        expire_fragment("/#{p.code}/eventos/index/page_")
+        expire_fragment("/#{p.code}/eventos/index/page_*")
+      end
+
+      when 'Faction':
+      Cache::Faction.common(object)
+
+      when 'FactionsLink':
+      expire_fragment("/common/facciones/#{object.faction_id}/webs_aliadas")
+      object.faction.portals.each { |p| expire_fragment("/#{p.code}/webs_aliadas") }
+
+      when 'FactionsPortal':
+      do_portal_expire(object)
+
+      when 'FactionsSkin' then
+      Cache::Skins.common(object)
+
+      when 'Friendship':
+      Cache::Friendship.common(object)
 
       when 'Funthing':
       expire_fragment('/common/home/index/curiosidades')
@@ -558,6 +673,150 @@ class CacheObserver < ActiveRecord::Observer
       end
 
       expire_fragment("/common/curiosidades/index/page_")
+
+      when 'Game':
+      expire_fragment('/common/miembros/buscar_por_guid')
+
+      when 'GmtvChannel'
+      object.get_related_portals.each { |p| expire_fragment("/#{p.code}/channels") }
+      GlobalVars.update_var("gmtv_channels_updated_on", "now()")
+
+      when 'Image':
+      d = Date.today
+      # TODO un poco de porfavor
+      expire_fragment("/gm/home/index/potd_#{d.strftime('%Y%m%d')}")
+      expire_fragment "/common/home/index/imagenes_#{object.main_category.root.code}"
+      object.get_related_portals.each do |p|
+        expire_fragment("/#{p.code}/home/index/daily_image#{d.strftime('%Y%m%d')}")
+        expire_fragment("/#{p.code}/imagenes/index/galleries")
+        expire_fragment("/#{p.code}/imagenes/show/_other_images_by_user/#{object.user_id % 1000}/#{object.user_id}")
+      end
+      expire_fragment("/common/imagenes/toplevel/#{object.main_category.root_id}/page_*}")
+      expire_fragment("/common/imagenes/gallery/#{object.main_category.id}/page_*")
+      expire_fragment("/common/imagenes/gallery/#{object.main_category.id}/profile/aportaciones")
+      expire_fragment("/common/imagenes/show/g#{object.main_category.id}/*") # muy heavy
+
+      when 'Interview':
+      object.get_related_portals.each do |p|
+        expire_fragment("/common/home/index/articles2b#{p.code}") if p.class.name == 'BazarDistrictPortal'
+        expire_fragment("/#{p.code}/home/index/articles")
+        expire_fragment("/#{p.code}/home/index/articles2")
+        next unless p.interview
+        # borramos las páginas de listado de entrevistas posteriores a la actual
+        # TODO PERF
+        #prev_count = p.interview.count(:published, :conditions => ["created_on <= ?", object.created_on])
+        #next_count = p.interview.count(:published, :conditions => ["created_on >= ?", object.created_on])
+        #start_page = prev_count / EntrevistasController::INTERVIEWS_PER_PAGE
+        #end_page = start_page + next_count / EntrevistasController::INTERVIEWS_PER_PAGE + 1
+
+        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/entrevistas/index/page_#{i}") }
+
+        expire_fragment("/#{p.code}/entrevistas/index/page_")
+        expire_fragment("/#{p.code}/entrevistas/index/page_*")
+        expire_fragment("/#{p.code}/entrevistas/show/latest_by_author_#{object.user_id}")
+      end
+
+      when 'Ladder':
+      do_competitions(object)
+
+      when 'League':
+      do_competitions(object)
+
+      when 'News':
+      # TODO borrar de forma más selectiva
+      object.terms.find(:all).each do |t|
+        expire_fragment("/bazar/home/categories/#{t.slug}")
+        expire_fragment("/common/noticias/_latest_by_cat2_#{t.root.code}")
+        # borramos el listado de últimas noticias de categoría X
+        # TODO solo deberíamos borrar si es la última
+        expire_fragment("/common/noticias/show/_latest_by_cat_#{t.id}")
+
+        if t.slug == 'gm'
+          expire_fragment("/common/novedades/page_*")
+          expire_fragment("/common/novedades/page_")
+        end
+      end
+      expire_fragment("/common/home/index/news_inet")
+      expire_fragment("/common/gmversion") if object.title.index('Gamersmafia actualizada a la')
+
+      object.get_related_portals.each do |p|
+        expire_fragment("/#{p.code}/home/index/news")
+        expire_fragment("/#{p.code}/home/index/news2")
+        expire_fragment("/#{p.code}/home/index/news30")
+
+        expire_fragment("/#{p.code}/home/index/news_developed")
+        # borramos las páginas de listado de noticias posteriores a la actual
+        #prev_count = p.news.count(:published, :content_type => 'News', :conditions => "contents.created_on <= '#{object.created_on.strftime('%Y-%m-%d %H:%M:%s')}'")
+        #next_count = p.news.count(:published, :content_type => 'News', :conditions => "contents.created_on >= '#{object.created_on.strftime('%Y-%m-%d %H:%M:%s')}'")
+        #start_page = prev_count / NoticiasController::NEWS_PER_PAGE
+        #end_page = start_page + next_count / NoticiasController::NEWS_PER_PAGE + 1
+        # TODO PERF
+        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/noticias/index/page_#{i}") }
+
+        expire_fragment("/#{p.code}/noticias/index/page_*")
+        expire_fragment("/#{p.code}/noticias/index/page_")
+      end
+
+      expire_fragment('/rss/noticias/all')
+
+      when 'Poll':
+      object.get_related_portals.each do |p|
+        if object.respond_to?(:my_faction)
+          f = object.my_faction
+          expire_fragment("/#{p.code}/home/index/polls_#{f.id}") if f # note: no funciona en webs de clanes
+        end
+
+        expire_fragment("/#{p.code}/encuestas/index/page_*")
+      end
+
+      when 'Portal':
+      do_portal_expire(object)
+
+      when 'Question':
+      Cache::Contents.common_question(object)
+
+      when 'ProfileSignature':
+      expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/firmas"
+      expire_fragment "#{Cache.user_base(object.user_id)}/profile/last_profile_signatures"
+
+      when 'RecruitmentAd':
+      expire_fragment "/home/comunidad/recruitment_ads_#{object.clan_id ? 'clans' : 'users'}"
+
+      when 'Review':
+      expire_fragment('/home/index/articles')
+      for p in object.get_related_portals
+        expire_fragment("/common/home/index/articles2b#{p.code}") if p.class.name == 'BazarDistrictPortal'
+        expire_fragment("/#{p.code}/home/index/articles")
+        expire_fragment("/#{p.code}/home/index/articles2")
+        if object.user_id_changed?
+          expire_fragment(
+              "/#{p.code}/reviews/index/most_popular_authors_#{Time.now.to_i/(86400)}")
+        end
+      end
+
+      # borramos las páginas de listados por si es un nuevo comment
+      expire_fragment("/reviews/page_*") # TODO un poco basto, no?
+      p = object.main_category
+
+      while p do
+        expire_fragment("/reviews/latest_by_cat_#{p.id}")
+        expire_fragment("/reviews/latest_by_cat_5_#{p.id}")
+        expire_fragment("/reviews/most_productive_author_by_cat_#{p.id}")
+        expire_fragment("/reviews/list/subcategories_#{p.id}")
+        expire_fragment("/reviews/cat_#{p.id}/page_*")
+        p = p.parent
+      end
+
+      expire_fragment("/reviews/latest_by_cat_")
+      expire_fragment("/reviews/most_productive_author_by_cat")
+
+      expire_fragment("/reviews/list/subcategories_")
+
+      when 'Skin' then
+      Cache::Skins.common(object)
+
+      when 'Term' then
+      Cache::Terms.after_save(object) unless object.import_mode
 
       # TODO duplicado
       when 'Topic':
@@ -607,71 +866,8 @@ class CacheObserver < ActiveRecord::Observer
 
       expire_fragment("/common/foros/_topics_list/#{object.main_category.id}/page_")
 
-
-      when 'Question':
-      Cache::Contents.common_question(object)
-
-      when 'Download':
-      expire_fragment('/home/index/downloads')
-      for p in object.get_related_portals
-        expire_fragment("/#{p.code}/home/index/downloads")
-        expire_fragment("/#{p.code}/home/index/downloads2")
-
-      end
-      expire_fragment "/common/home/index/downloads3#{object.main_category.root.code}"
-
-      # borramos las páginas de listados por si es un nuevo comment
-      expire_fragment("/common/descargas/index/downloads_#{object.main_category.id}/page_*")
-
-      # TODO optimizar, no?
-      p = object.main_category
-      expire_fragment("/common/descargas/index/most_downloaded_#{p.root_id}")
-      expire_fragment("/common/descargas/index/essential_#{p.root_id}")
-      expire_fragment("/common/descargas/index/essential2_#{p.root_id}")
-      expire_fragment("/common/descargas/index/essential3_#{p.root_id}")
-      object.get_related_portals.each do |pp|
-        expire_fragment("/#{pp.code}/descargas/index/folders")
-      end
-
-      while p do
-        expire_fragment("/common/descargas/index/most_productive_author_by_cat_#{p.id}")
-        expire_fragment("/common/descargas/index/folders_#{p.id}")
-        expire_fragment("/common/descargas/index/downloads_#{p.id}/page_*")
-        p = p.parent # necesario por la clase proxy de noticias de GmPortal
-      end
-
-
-      when 'Review':
-      expire_fragment('/home/index/articles')
-      for p in object.get_related_portals
-        expire_fragment("/common/home/index/articles2b#{p.code}") if p.class.name == 'BazarDistrictPortal'
-        expire_fragment("/#{p.code}/home/index/articles")
-        expire_fragment("/#{p.code}/home/index/articles2")
-        if object.user_id_changed?
-          expire_fragment(
-              "/#{p.code}/reviews/index/most_popular_authors_#{Time.now.to_i/(86400)}")
-        end
-      end
-
-
-
-      # borramos las páginas de listados por si es un nuevo comment
-      expire_fragment("/reviews/page_*") # TODO un poco basto, no?
-      p = object.main_category
-
-      while p do
-        expire_fragment("/reviews/latest_by_cat_#{p.id}")
-        expire_fragment("/reviews/latest_by_cat_5_#{p.id}")
-        expire_fragment("/reviews/most_productive_author_by_cat_#{p.id}")
-        expire_fragment("/reviews/list/subcategories_#{p.id}")
-        expire_fragment("/reviews/cat_#{p.id}/page_*")
-        p = p.parent
-      end
-
-      expire_fragment("/reviews/latest_by_cat_")
-      expire_fragment("/reviews/most_productive_author_by_cat")
-
-      expire_fragment("/reviews/list/subcategories_")
+      when 'Tournament':
+      do_competitions(object)
 
       when 'Tutorial':
       expire_fragment('/home/index/articles')
@@ -697,234 +893,23 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/tutoriales/index/folders")
       end
 
-      when 'Interview':
-      object.get_related_portals.each do |p|
-        expire_fragment("/common/home/index/articles2b#{p.code}") if p.class.name == 'BazarDistrictPortal'
-        expire_fragment("/#{p.code}/home/index/articles")
-        expire_fragment("/#{p.code}/home/index/articles2")
-        next unless p.interview
-        # borramos las páginas de listado de entrevistas posteriores a la actual
-        # TODO PERF
-        #prev_count = p.interview.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        #next_count = p.interview.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        #start_page = prev_count / EntrevistasController::INTERVIEWS_PER_PAGE
-        #end_page = start_page + next_count / EntrevistasController::INTERVIEWS_PER_PAGE + 1
-
-        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/entrevistas/index/page_#{i}") }
-
-        expire_fragment("/#{p.code}/entrevistas/index/page_")
-        expire_fragment("/#{p.code}/entrevistas/index/page_*")
-        expire_fragment("/#{p.code}/entrevistas/show/latest_by_author_#{object.user_id}")
+      when 'User':
+      if object.login_changed?
+        expire_fragment(
+            "/common/globalnavbar/#{object.id % 1000}/#{object.id}_avatar.cache")
       end
-
-      when 'Column':
-      object.get_related_portals.each do |p|
-        expire_fragment("/common/home/index/articles2b#{p.code}") if p.class.name == 'BazarDistrictPortal'
-        expire_fragment("/#{p.code}/home/index/articles")
-        expire_fragment("/#{p.code}/home/index/articles2")
-        next unless p.column
-        # borramos las páginas de listado de columnas posteriores a la actual
-        #prev_count = p.column.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        #next_count = p.column.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        #start_page = prev_count / ColumnasController::COLUMNS_PER_PAGE
-        #end_page = start_page + next_count / ColumnasController::COLUMNS_PER_PAGE + 1
-
-        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/columnas/index/page_#{i}") }
-        expire_fragment("/#{p.code}/columnas/index/page_")
-        expire_fragment("/#{p.code}/columnas/index/page_*")
-        expire_fragment("/#{p.code}/columnas/show/latest_by_author_#{object.user_id}")
-        if object.user_id_changed?
-          expire_fragment(
-              "/#{p.code}/columnas/index/most_popular_authors_#{Time.now.to_i/(86400)}")
-          end
+      if object.state_changed?
+        expire_fragment("/common/carcel")
+        expire_fragment("/common/carcel_full")
       end
-
-
-      when 'News':
-      # TODO borrar de forma más selectiva
-      object.terms.find(:all).each do |t|
-        expire_fragment("/bazar/home/categories/#{t.slug}")
-        expire_fragment("/common/noticias/_latest_by_cat2_#{t.root.code}")
-        # borramos el listado de últimas noticias de categoría X
-        # TODO solo deberíamos borrar si es la última
-        expire_fragment("/common/noticias/show/_latest_by_cat_#{t.id}")
-
-        if t.slug == 'gm'
-          expire_fragment("/common/novedades/page_*")
-          expire_fragment("/common/novedades/page_")
-        end
+      if object.faction_id_changed?
+        Cache::Personalization.expire_quicklinks(object)
       end
-      expire_fragment("/common/home/index/news_inet")
-      expire_fragment("/common/gmversion") if object.title.index('Gamersmafia actualizada a la')
-
-      object.get_related_portals.each do |p|
-        expire_fragment("/#{p.code}/home/index/news")
-        expire_fragment("/#{p.code}/home/index/news2")
-        expire_fragment("/#{p.code}/home/index/news30")
-
-        expire_fragment("/#{p.code}/home/index/news_developed")
-        # borramos las páginas de listado de noticias posteriores a la actual
-        #prev_count = p.news.count(:published, :content_type => 'News', :conditions => "contents.created_on <= '#{object.created_on.strftime('%Y-%m-%d %H:%M:%s')}'")
-        #next_count = p.news.count(:published, :content_type => 'News', :conditions => "contents.created_on >= '#{object.created_on.strftime('%Y-%m-%d %H:%M:%s')}'")
-        #start_page = prev_count / NoticiasController::NEWS_PER_PAGE
-        #end_page = start_page + next_count / NoticiasController::NEWS_PER_PAGE + 1
-        # TODO PERF
-        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/noticias/index/page_#{i}") }
-
-        expire_fragment("/#{p.code}/noticias/index/page_*")
-        expire_fragment("/#{p.code}/noticias/index/page_")
+      if object.state_changed?
+        expire_fragment("/common/miembros/_rightside/ultimos_registros")
       end
-
-      expire_fragment('/rss/noticias/all')
-
-
-
-      when 'Bet':
-      object.get_related_portals.each do |p|
-        expire_fragment("/#{p.code}/home/index/apuestas_#{Time.now.to_i / 3600}")
-        expire_fragment("/#{p.code}/home/index/apuestas2_#{Time.now.to_i / 3600}")
-        expire_fragment("/common/apuestas/show/latest_by_cat_#{p.id}")
-      end
-
-      if (object.winning_bets_option_id_changed? ||
-          object.forfeit_changed? ||
-          object.cancelled_changed? ||
-          object.tie_changed?)
-        expire_fragment "/common/admin/contenidos/index/pending_bets"
-      end
-
-      when 'Event':
-
-      # TODO borrar de forma más selectiva
-
-      object.get_related_portals.each do |p|
-        expire_fragment("/#{p.code}/home/index/eventos/#{Time.now.strftime('%Y%m%d')}")
-        expire_fragment("/#{p.code}/home/index/eventos2/#{Time.now.strftime('%Y%m%d')}")
-        #next if p.event.nil?
-        # borramos las páginas de listado de noticias posteriores a la actual
-        # TODO PERF
-        #prev_count = p.event.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        #next_count = p.event.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        #start_page = prev_count / EventosController::PER_PAGE
-        #end_page = start_page + next_count / EventosController::PER_PAGE + 1
-
-        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/eventos/index/page_#{i}") }
-
-        expire_fragment("/#{p.code}/eventos/index/page_")
-        expire_fragment("/#{p.code}/eventos/index/page_*")
-      end
-
-
-      when 'Image':
-      d = Date.today
-      # TODO un poco de porfavor
-      expire_fragment("/gm/home/index/potd_#{d.strftime('%Y%m%d')}")
-      expire_fragment "/common/home/index/imagenes_#{object.main_category.root.code}"
-      object.get_related_portals.each do |p|
-        expire_fragment("/#{p.code}/home/index/daily_image#{d.strftime('%Y%m%d')}")
-        expire_fragment("/#{p.code}/imagenes/index/galleries")
-        expire_fragment("/#{p.code}/imagenes/show/_other_images_by_user/#{object.user_id % 1000}/#{object.user_id}")
-      end
-      expire_fragment("/common/imagenes/toplevel/#{object.main_category.root_id}/page_*}")
-      expire_fragment("/common/imagenes/gallery/#{object.main_category.id}/page_*")
-      expire_fragment("/common/imagenes/gallery/#{object.main_category.id}/profile/aportaciones")
-      expire_fragment("/common/imagenes/show/g#{object.main_category.id}/*") # muy heavy
-
-      when 'CommentsValoration':
-      expire_fragment("/comments/#{Time.now.to_i/(86400*7)}/#{object.comment.content_id%100}/#{object.comment.content_id}_*") # cacheamos solo una semana para q se actualicen barras
-
-      when 'Comment':
-      expire_fragment("/comments/#{Time.now.to_i/(86400*7)}/#{object.content_id%100}/#{object.content_id}_*") # cacheamos una semana para q se actualicen barras
-      real = object.content.real_content
-
-      # TODO solo hay que limpiar cache si aparecen en portada y tb
-      # TODO ESTO se sigue usando?
-      case real.class.name
-        when 'Topic':
-        expire_fragment("/bazar/home/categories/#{real.main_category.code}")
-        expire_fragment("/gm/home/index/topics")# :controller => '/home', :action => 'index', :part => 'topics')
-        f = real.main_category
-        if f
-          f.save
-          expire_fragment("/foros/active_items/#{f.root_id}")
-        end
-
-        when 'Column':
-        expire_fragment(:controller => '/home', :action => 'index', :part => 'articles')
-        when 'Interview':
-        expire_fragment(:controller => '/home', :action => 'index', :part => 'articles')
-        when 'Review':
-        expire_fragment(:controller => '/home', :action => 'index', :part => 'articles')
-        when 'Tutorial':
-        expire_fragment(:controller => '/home', :action => 'index', :part => 'articles')
-        when 'News':
-        expire_fragment(:controller => '/home', :action => 'index', :part => 'news')
-        expire_fragment(:controller => '/home', :action => 'index', :part => 'news_developed')
-        when 'Download':
-        expire_fragment(:controller => '/home', :action => 'index', :part => 'downloads')
-        when 'Poll':
-        expire_fragment(:controller => '/home', :action => 'index', :part => 'polls')
-        expire_fragment(:controller => '/home', :action => 'index', :part => "polls_#{object.content.real_content.my_faction.id}")
-        when 'Image':
-        expire_fragment(:controller => '/home', :action => 'index', :part => "daily_image#{Time.now.to_i/86400}")
-        when 'Funthing':
-        expire_fragment(:controller => '/home', :action => 'index', :part => 'curiosidades')
-
-      end
-
-      when 'FactionsPortal':
-      do_portal_expire(object)
-
-      when 'Portal':
-      do_portal_expire(object)
-
-      when 'Clan':
-      expire_fragment('/gm/clanes/index/page*')
-      expire_fragment("/common/clanes/#{object.id}/*") # TODO excesivo :s
-
-      if object.deleted_changed?
-        expire_fragment("/gm/clanes/index/newest")
-        expire_fragment("/gm/clanes/index/biggest")
-        object.games.each do |g|
-          g.faction.portals.each do |p|
-            expire_fragment("/#{p.code}/clanes/index/page*")
-            expire_fragment("/#{p.code}/clanes/index/newest")
-            expire_fragment("/#{p.code}/clanes/index/biggest")
-          end
-        end
-      end
-
-      if object.game_ids_changed?
-        changed_games = []
-
-        if object.game_ids_changed?
-          prev = object.game_ids_was
-        else
-          prev = []
-        end
-        prev = prev.collect { |d| d.to_i }
-        cur = object.games.collect { |g| g.id }
-
-        prev.delete_if { |g_id| cur.include?(g_id) }
-        cur.delete_if { |g_id| prev.include?(g_id) }
-
-         (prev + cur).uniq.each do |g_id|
-          g = Game.find(g_id)
-          g.faction.portals.each do |p|
-            expire_fragment("/#{p.code}/clanes/index/page*")
-            expire_fragment("/#{p.code}/clanes/index/newest")
-            expire_fragment("/#{p.code}/clanes/index/biggest")
-          end
-        end
-
-      elsif object.members_count_changed?
-        expire_fragment("/gm/clanes/index/biggest")
-        object.games.each do |g|
-          g.faction.portals.each do |p|
-            expire_fragment("/#{p.code}/clanes/index/page*")
-            expire_fragment("/#{p.code}/clanes/index/biggest")
-          end
-        end
+      if object.avatar_id_changed?
+        expire_fragment("/common/globalnavbar/#{object.id % 1000}/#{object.id}_avatar")
       end
     end
   end

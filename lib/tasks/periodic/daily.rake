@@ -61,7 +61,7 @@ namespace :gm do
   end
 
   def forget_old_pageviews
-    User.db_query("delete from stats.pageviews where created_on <= now() - '3 months'::interval")
+    User.db_query("DELETE FROM stats.pageviews WHERE created_on <= now() - '3 months'::interval")
   end
 
   def kill_zombified_staff

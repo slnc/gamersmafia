@@ -68,6 +68,15 @@ module ApplicationHelper
     ApplicationHelper::ANALYTICS_SNIPPET
   end
 
+  def portal_code
+    controller.portal_code
+  end
+
+  # Global var shortcut function
+  def global_var(var_name)
+    controller.global_vars[var_name]
+  end
+
   def body_css_classes
     classes = %w(madness lydefault)
     classes<< "has-submenu" if controller.submenu

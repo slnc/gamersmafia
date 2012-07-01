@@ -1,6 +1,7 @@
 require 'test_helper'
 
 class CacheObserverClanesTest < ActionController::IntegrationTest
+
   def setup
     ActionController::Base.perform_caching             = true
     host! App.domain
@@ -13,150 +14,33 @@ class CacheObserverClanesTest < ActionController::IntegrationTest
     assert_template 'clanes/index'
   end
 
-  test "should_clear_newest_box_on_main_when_new_clan_is_created" do
-    go_to_clanes
-    assert_cache_exists '/gm/clanes/index/newest'
-
-    @c = Clan.new({:name => 'foomasters', :tag => 'tagm'})
-    assert_equal true, @c.save, @c.errors.full_messages
-    @c.games<< Game.find(1)
-    assert_cache_dont_exist '/gm/clanes/index/newest'
+  def create_a_clan
+    @c = Clan.new(:name => "foomasters", :tag => "tagm")
+    assert @c.save, @c.errors.full_messages
   end
 
-  test "should_clear_newest_box_on_main_when_clan_is_deleted" do
-    test_should_clear_newest_box_on_main_when_new_clan_is_created
-    go_to_clanes
-    assert_cache_exists '/gm/clanes/index/newest'
-    @c.deleted = true
-    @c.save
-    assert_cache_dont_exist '/gm/clanes/index/newest'
-  end
-
-  test "should_not_clear_newest_box_on_main_when_clan_changes_its_games_associations" do
-    test_should_clear_newest_box_on_main_when_new_clan_is_created
-    go_to_clanes
-    assert_cache_exists '/gm/clanes/index/newest'
-    assert_equal true, @c.update_attributes(:game_ids => [])
-    assert_cache_exists '/gm/clanes/index/newest'
-  end
-
-  test "should_clear_newest_box_on_portals_when_clan_is_deleted" do
-    test_should_clear_newest_box_on_main_when_new_clan_is_created
-    g1 = Game.find(1)
-    host! "#{g1.code}.#{App.domain}"
-    go_to_clanes
-    assert_cache_exists "/#{g1.code}/clanes/index/newest"
-    @c.deleted = true
-    @c.save
-    assert_cache_dont_exist "/#{g1.code}/clanes/index/newest"
-  end
-
-  test "should_clear_newest_box_on_portals_when_clan_changes_its_games_associations" do
-    test_should_clear_newest_box_on_main_when_new_clan_is_created
-    g1 = Game.find(1)
-    host! "#{g1.code}.#{App.domain}"
-    go_to_clanes
-    assert_cache_exists "/#{g1.code}/clanes/index/newest"
-
-    g2 = Game.new(:name => 'rikitauunn', :code => 'ri')
-    assert_count_increases(Portal) do
-      assert_equal true, g2.save
-    end
-    host! "#{g2.code}.#{App.domain}"
-
-    go_to_clanes
-    assert_cache_exists "/#{g2.code}/clanes/index/newest"
-
-    assert_equal true, @c.update_attributes(:game_ids => [])
-    @c.reload
-    assert_cache_dont_exist "/#{g1.code}/clanes/index/newest"
-    assert_cache_exists "/#{g2.code}/clanes/index/newest"
-    host! "#{g2.code}.#{App.domain}"
-    go_to_clanes
-    host! "#{g1.code}.#{App.domain}"
-    go_to_clanes
-
-    assert_equal true, @c.update_attributes(:game_ids => [g2.id])
-    @c.reload
-    assert_cache_dont_exist "/#{g2.code}/clanes/index/newest"
-    assert_cache_exists "/#{g1.code}/clanes/index/newest"
-    host! "#{g2.code}.#{App.domain}"
-    go_to_clanes
-    host! "#{g1.code}.#{App.domain}"
-    go_to_clanes
-
-    assert_equal true, @c.update_attributes(:game_ids => [1])
-    @c.reload
-    assert_cache_dont_exist "/#{g2.code}/clanes/index/newest"
-    assert_cache_dont_exist "/#{g1.code}/clanes/index/newest"
+  test "should update global var on clan update" do
+    cur_value = GlobalVars.get_var("clans_updated_on")
+    create_a_clan
+    assert_not_equal cur_value, GlobalVars.get_var("clans_updated_on")
   end
 
   test "should_not_clear_biggest_box_on_main_when_clan_changes_its_games_associations" do
-    test_should_clear_newest_box_on_main_when_new_clan_is_created
-    go_to_clanes
-    assert_cache_exists '/gm/clanes/index/biggest'
-    assert_equal true, @c.update_attributes(:game_ids => [])
-    assert_cache_exists '/gm/clanes/index/biggest'
-  end
-
-  test "should_clear_biggest_box_on_portals_when_clan_changes_its_games_associations" do
-    test_should_clear_newest_box_on_main_when_new_clan_is_created
-    g1 = Game.find(1)
-    g2 = Game.create(:name => 'rikitauunn', :code => 'ru')
-
-    host! "#{g1.code}.#{App.domain}"
-    go_to_clanes
-
-    host! "#{g2.code}.#{App.domain}"
-    go_to_clanes
-
-    assert_cache_exists "/#{g1.code}/clanes/index/biggest"
-    assert_cache_exists "/#{g2.code}/clanes/index/biggest"
-    assert_equal true, @c.update_attributes(:game_ids => [])
-    assert_cache_dont_exist "/#{g1.code}/clanes/index/biggest"
-    assert_cache_exists "/#{g2.code}/clanes/index/biggest"
+    create_a_clan
+    User.db_query(
+        "UPDATE global_vars SET clans_updated_on = now() - '1 hour'::interval")
+    cur_value = GlobalVars.get_var("clans_updated_on")
+    assert @c.update_attributes(:game_ids => [])
+    assert_not_equal cur_value, GlobalVars.get_var("clans_updated_on")
   end
 
   test "should_clear_biggest_box_on_main_when_clan_changes_its_members_count" do
-    test_should_clear_newest_box_on_main_when_new_clan_is_created
-    go_to_clanes
-    assert_cache_exists '/gm/clanes/index/biggest'
+    create_a_clan
+    User.db_query(
+        "UPDATE global_vars SET clans_updated_on = now() - '1 hour'::interval")
+    cur_value = GlobalVars.get_var("clans_updated_on")
     @c.add_user_to_group(User.find(1), 'clanleaders')
-    assert_cache_dont_exist '/gm/clanes/index/biggest'
-  end
-
-  test "should_clear_biggest_box_on_portals_when_clan_changes_its_members_count" do
-    test_should_clear_newest_box_on_main_when_new_clan_is_created
-    g1 = Game.find(1)
-
-    host! "#{g1.code}.#{App.domain}"
-    go_to_clanes
-
-    assert_cache_exists "/#{g1.code}/clanes/index/biggest"
-    @c.add_user_to_group(User.find(1), 'clanleaders')
-    assert_cache_dont_exist "/#{g1.code}/clanes/index/biggest"
-  end
-
-  test "should_clear_biggest_box_on_main_when_clan_is_deleted" do
-    test_should_clear_newest_box_on_main_when_new_clan_is_created
-    go_to_clanes
-    assert_cache_exists '/gm/clanes/index/biggest'
-    @c.deleted = true
-    @c.save
-    assert_cache_dont_exist '/gm/clanes/index/biggest'
-  end
-
-  test "should_clear_biggest_box_on_portals_when_clan_is_deleted" do
-    test_should_clear_newest_box_on_main_when_new_clan_is_created
-    g1 = Game.find(1)
-
-    host! "#{g1.code}.#{App.domain}"
-    go_to_clanes
-
-    assert_cache_exists "/#{g1.code}/clanes/index/biggest"
-    @c.deleted = true
-    @c.save
-    assert_cache_dont_exist "/#{g1.code}/clanes/index/biggest"
+    assert_not_equal cur_value, GlobalVars.get_var("clans_updated_on")
   end
 
   test "should_clear_cache_miembros" do
@@ -167,8 +51,7 @@ class CacheObserverClanesTest < ActionController::IntegrationTest
     assert_cache_dont_exist "/common/clanes/1/miembros"
   end
 
-
   def teardown
-    ActionController::Base.perform_caching             = false
+    ActionController::Base.perform_caching = false
   end
 end

@@ -21,6 +21,7 @@ class Clan < ActiveRecord::Base
                             " game_id IN (#{game_ids}))"
             }
         }
+  scope :active, :conditions => "deleted IS FALSE"
 
   before_save :update_rosters
   after_update :update_competition_name
@@ -109,7 +110,8 @@ class Clan < ActiveRecord::Base
   end
 
   def admins
-    self.clans_groups.find_by_clans_groups_type_id(1).users
+    self.clans_groups.find_by_clans_groups_type_id(
+        ClansGroupsType::CLANLEADERS).users
   end
 
   def all_users_of_this_clan_sql
@@ -251,8 +253,9 @@ class Clan < ActiveRecord::Base
                         AND from_clan_id = #{clan.id}")
         end
       else # no hay relación preexistente, la creamos
-        db_query("INSERT INTO clans_friends (from_clan_id, to_clan_id, from_wants) VALUES(#{id}, #{clan.id}, 't')")
-        # db::insert('clans_friends', array('from_wants'=>'t', 'from_clan_id'=>$this->id, 'to_clan_id'=>$clan_id));
+        db_query(
+            "INSERT INTO clans_friends (from_clan_id, to_clan_id, from_wants)
+                  VALUES (#{id}, #{clan.id}, 't')")
       end
     end
     self.log("Añadido clan #{clan} a la lista de amigos")
@@ -275,7 +278,11 @@ class Clan < ActiveRecord::Base
 
   def old_members_count
     # TODO cache this
-    self.class.db_query("SELECT count(distinct(user_id)) from clans_groups_users a join clans_groups b on a.clans_group_id = b.id and b.clan_id = #{self.id}")[0]['count'].to_i
+    User.db_query(
+        "SELECT count(distinct(user_id))
+           FROM clans_groups_users a
+           JOIN clans_groups b ON a.clans_group_id = b.id
+            AND b.clan_id = #{self.id}")[0]['count'].to_i
   end
 
   def recalculate_members_count
@@ -284,7 +291,12 @@ class Clan < ActiveRecord::Base
   end
 
   def user_is_clanleader(user_id)
-    ClansGroup.find(:first, :conditions => "clan_id = #{self.id} and clans_groups_type_id = 1").has_user(user_id) # TODO hack, magic number
+    clanleaders = ClansGroup.find(
+        :first,
+        :conditions => ["clan_id = ? AND clans_groups_type_id = ?",
+                        self.id,
+                        ClansGroupsType::CLANLEADERS])
+    clanleaders.has_user(user_id)
   end
 
   def user_is_member(user_id)
@@ -299,7 +311,11 @@ class Clan < ActiveRecord::Base
   end
 
   def add_user_to_group(user, clans_groups_type_name)
-    cg = ClansGroup.find(:first, :conditions => ['clan_id = ? and clans_groups_type_id = ?', id, ClansGroupsType.find_by_name('clanleaders').id])
+    cg = ClansGroup.find(
+        :first,
+        :conditions => ['clan_id = ? and clans_groups_type_id = ?',
+                        id,
+                        ClansGroupsType::CLANLEADERS])
     cg.users<< user
     self.log("Añadido usuario #{user} al grupo #{cg}")
     recalculate_members_count
@@ -309,8 +325,14 @@ class Clan < ActiveRecord::Base
   private
   def setup_clan
     # creamos grupos
-    cleaders = ClansGroup.create({:name => 'Clanleaders', :clans_groups_type_id => ClansGroupsType.find_by_name('clanleaders').id, :clan_id => self.id})
-    members = ClansGroup.create({:name => 'Miembros', :clans_groups_type_id => ClansGroupsType.find_by_name('members').id, :clan_id => self.id})
+    cleaders = ClansGroup.create({
+        :name => "Clanleaders",
+        :clans_groups_type_id => ClansGroupsType::CLANLEADERS,
+        :clan_id => self.id})
+    members = ClansGroup.create({
+        :name => 'Miembros',
+        :clans_groups_type_id => ClansGroupsType::MEMBERS,
+        :clan_id => self.id})
     Term.create(:clan_id => self.id, :name => self.name, :slug => self.tag)
     self.log("Clan creado")
   end
@@ -322,26 +344,6 @@ class Clan < ActiveRecord::Base
     else
       c
     end
-  end
-
-  def self.count_by_games(opts)
-    raise 'games array missing!' unless opts[:games].is_a? Array
-    raise 'limit error' if opts[:limit].to_i < 0
-    opts = {:conditions => ''}.merge(opts)
-    sqladd = (opts[:conditions] != '') ? "AND #{opts[:conditions]}" : ''
-
-    games_ids = opts[:games].collect { |o| o.id }
-    self.find_by_sql("SELECT count(a.*) FROM clans a JOIN clans_games b ON a.id = b.clan_id WHERE b.game_id IN (#{games_ids.join(',')}) #{sqladd}")[0]['count'].to_i
-  end
-
-  def self.find_by_games(opts)
-    raise 'games array missing!' unless opts[:games].is_a? Array
-    raise 'limit error' if opts[:limit].to_i < 0
-    opts = {:order => 'id ASC', :conditions => '', :limit => :all}.merge(opts)
-    sqladd = (opts[:conditions] != '') ? "AND #{opts[:conditions]}" : ''
-
-    games_ids = opts[:games].collect { |o| o.id }
-    self.find_by_sql("SELECT a.* FROM clans a JOIN clans_games b ON a.id = b.clan_id WHERE b.game_id IN (#{games_ids.join(',')}) #{sqladd} ORDER BY #{opts[:order]} LIMIT #{opts[:limit]}")
   end
 
   def self.hot(limit, t1, t2)
@@ -369,13 +371,23 @@ class Clan < ActiveRecord::Base
   end
 
 
-  validates_format_of :tag, :with => /^[a-z0-9<>¿\?[:space:]|\]\[\(\):;^\.,_¡!\/&%"\+\-]{1,7}$/i, :message => 'El tag tiene más de 7 caracteres o bien tiene caracteres ilegales'
-  # validates_format_of :name, :with => /^[a-z0-9<>¿\?[:space:]\(\):;\.,_¡!\/&%"\+\-]{1,40}$/i
-  validates_format_of :irc_server, :with => Cms::DNS_REGEXP, :if => Proc.new{ |c| c.irc_server.to_s != '' }
-  validates_format_of :irc_channel, :with => /^[a-z0-9_¡!¿\?.-]{1,30}$/i, :if => Proc.new{ |c| c.irc_channel.to_s != '' }
-  validates_format_of :website_external, :with => Cms::URL_REGEXP_FULL, :if => Proc.new{ |c| c.website_external.to_s != '' }
+  validates_format_of :tag,
+      :with => /^[a-z0-9<>¿\?[:space:]|\]\[\(\):;^\.,_¡!\/&%"\+\-]{1,7}$/i,
+      :message => ("El tag tiene más de 7 caracteres o bien tiene caracteres" +
+                   " ilegales")
 
-  # validates_format_of :description, :with => Cms::NO_JS TODO necesitamos una regexp para quitar el javascript
+  validates_format_of :irc_server,
+      :with => Cms::DNS_REGEXP,
+      :if => Proc.new{ |c| c.irc_server.to_s != '' }
+
+  validates_format_of :irc_channel,
+      :with => /^[a-z0-9_¡!¿\?.-]{1,30}$/i,
+      :if => Proc.new{ |c| c.irc_channel.to_s != '' }
+
+  validates_format_of :website_external,
+      :with => Cms::URL_REGEXP_FULL,
+      :if => Proc.new{ |c| c.website_external.to_s != '' }
+
   validates_uniqueness_of :tag
   validates_uniqueness_of :name
 end
