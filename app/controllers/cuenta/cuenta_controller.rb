@@ -348,7 +348,10 @@ class Cuenta::CuentaController < ApplicationController
 
   def update_profile
     # TODO move this if we can optimize it
-    @newuser = User.find(:first, :conditions => ["login = ? AND state <> #{User::ST_UNCONFIRMED}", @user.login])
+    @newuser = User.find(
+        :first,
+        :conditions => ["login = ? AND state <> #{User::ST_UNCONFIRMED}",
+                        @user.login])
     @newuser.lastname = strip_tags(params[:post][:lastname])
     @newuser.firstname= strip_tags(params[:post][:firstname])
     @newuser.birthday = Date.new(params[:post]['birthday(1i)'].to_i,params[:post]['birthday(2i)'].to_i, params[:post]['birthday(3i)'].to_i) if params[:post]['birthday(1i)']
@@ -370,7 +373,9 @@ class Cuenta::CuentaController < ApplicationController
     @newuser.hw_headphones = strip_tags(params[:post][:hw_headphones])
     @newuser.hw_connection = strip_tags(params[:post][:hw_connection])
     @newuser.homepage = strip_tags(params[:post][:homepage])
-    @newuser.description = strip_tags_allowed((params[:post][:description]), ['object', 'embed', 'param'] + ActionViewMixings::DEF_ALLOW_TAGS)
+    @newuser.description = strip_tags_allowed(
+      params[:post][:description],
+      ['object', 'embed', 'param'] + ActionViewMixings::DEF_ALLOW_TAGS)
     @newuser.city = strip_tags(params[:post][:city])
     @newuser.ipaddr = request.remote_ip
     @newuser.country_id = params[:user][:country_id] # TODO hackk
@@ -650,7 +655,6 @@ class Cuenta::CuentaController < ApplicationController
       flash[:error] = 'La contraseña introducida es incorrecta. Debes introducir tu contraseña actual para poder borrar tu cuenta.'
       render :action => 'configuracion'
     end
-
   end
 
   def do_reset
