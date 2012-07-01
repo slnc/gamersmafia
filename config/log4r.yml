@@ -13,7 +13,7 @@ log4r_config:
       - datefile
       - stdout
     - name      : test
-      level     : WARN
+      level     : INFO
       trace     : 'true'
       outputters :
       - datefile

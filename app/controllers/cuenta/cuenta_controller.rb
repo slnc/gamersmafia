@@ -152,6 +152,13 @@ class Cuenta::CuentaController < ApplicationController
 
   public
   def create
+    if params[:accept_terms].to_i != 1
+      flash[:error] = (
+        "Debes leer y aceptar el código de conducta para poder registrarte.")
+      render :action => :alta
+      return
+    end
+
     should_redirect_to = self.account_creation_silent_checks
     (redirect_to(should_redirect_to) && return) if !should_redirect_to.nil?
 
@@ -166,56 +173,86 @@ class Cuenta::CuentaController < ApplicationController
 
     @mmode ||= :old
 
-    if (not params[:referer].nil?) and params[:referer] != '' then
-      referer = User.find_by_login(params[:referer])
-      if referer
-        @newuser.referer_user_id = referer.id
-      else
-        flash[:error] = ("El usuario referido especificado no se ha" +
-            " encontrado aunque esto no impedirá que se cree la cuenta.")
-      end
+    if !params[:referer].nil? && params[:referer] != ''
+      process_referer(params[:referer], @newuser)
     end
-    ban = IpBan.find(
-        :first,
-        :conditions => ['ip = ? and (expires_on IS NULL or expires_on >= now())', request.remote_ip])
 
+    ban = IpBan.active.find_by_ip(request.remote_ip)
     if ban
       # Si está baneado le hacemos ver que todo va bien para que se quede
       # esperando el mensaje de confirmación.
       nagato = User.find_by_login('nagato')
       SlogEntry.create(
           :type_id => SlogEntry::TYPES[:security],
-          :headline => "IP baneada #{request.remote_ip} (#{ban.comment}) ha intentado crearse una cuenta")
-      flash[:notice] = "Te hemos enviado un mensaje a #{@newuser.email} con la clave de confirmación."
-      redirect_to('/cuenta/confirmar') and return
-    elsif params[:accept_terms] != '1'
-      flash[:error] = ("Debes leer y aceptar el código de conducta de" +
-                       " Gamersmafia para poder registrarte.")
-      render :action => :alta
-    elsif Cms::EMAIL_REGEXP =~ @newuser.email && User::BANNED_DOMAINS.include?(@newuser.email.split('@')[1].downcase)
-      flash[:error] = "El dominio #{@newuser.email.split('@')[1]} está baneado por abusos. Por favor, elige otra cuenta de correo."
-      render :action => :alta
-    elsif @newuser.save
-      if User.count(:conditions => ['ipaddr = ?', request.remote_ip]) > 1
-        prev = User.find(:first, :conditions => ['ipaddr = ? AND id <> ?', request.remote_ip, @newuser.id])
-        nagato = User.find_by_login('nagato')
-        SlogEntry.create({:type_id => SlogEntry::TYPES[:security],
-          :headline => "Registro desde IP existente <strong><a href=\"#{gmurl(@newuser)}\">#{@newuser.login}</a></strong> (#{request.remote_ip}): "<< (User.find(:all, :conditions => ['ipaddr = ? and id <> ?', request.remote_ip, @newuser.id]).collect {|u| "<a href=\"#{gmurl(u)}\">#{u.login}</a>"}).join(', ')})
-
-        Notification.signup(@newuser, :mode => @mmode).deliver
-        flash[:notice] = "Te hemos enviado un mensaje a #{@newuser.email} con la clave de confirmación."
-        redirect_to "/cuenta/confirmar?em=#{@newuser.email}" and return
-      else # no parece un usuario sospechoso
-        confirmar_nueva_cuenta(@newuser)
-        flash[:notice] = "Cuenta confirmada correctamente. Te hemos enviado un email de bienvenida a <strong>#{@newuser.email}</strong> con instrucciones."
-        redirect_to '/cuenta'
-      end
-      cookies[:email] = {:value => @newuser.email, :expires => 7.days.since, :domain => COOKIEDOMAIN}
-    else
-      flash[:error] ||= ''
-      flash[:error] << '<br />' << @newuser.errors.full_messages.join('<br />')
-      render :action => :alta
+          :headline => ("IP baneada #{request.remote_ip} (#{ban.comment}) ha" +
+          " intentado crearse una cuenta"))
+      flash[:notice] = (
+          "Te hemos enviado un mensaje a #{@newuser.email} con la clave de" +
+          " confirmación.")
+      redirect_to('/cuenta/confirmar')
+      return
     end
+
+    if email_is_banned(@newuser.email)
+      flash[:error] = (
+          "El dominio #{@newuser.email.split('@')[1]} está baneado por" +
+          " abusos. Por favor, elige otra cuenta de correo.")
+      render :action => :alta
+      return
+    end
+
+    if !@newuser.save
+      error_message = @newuser.errors.full_messages.join('<br />')
+      Rails.logger.warn("Unable to save new user account: #{error_message}")
+      flash[:error] ||= ""
+      flash[:error] << "<br />#{error_message}"
+      render :action => :alta
+      return
+    end
+
+    if User.count(:conditions => ['ipaddr = ?', request.remote_ip]) > 1
+      prev = User.find(
+        :first, :conditions => ['ipaddr = ? AND id <> ?',
+                                request.remote_ip, @newuser.id])
+      nagato = User.find_by_login('nagato')
+      users_same_ip = User.find(
+          :all,
+          :conditions => ['ipaddr = ? and id <> ?',
+                          request.remote_ip, @newuser.id])
+      users_same_ip_html = (
+        users_same_ip.collect {|u| "<a href=\"#{gmurl(u)}\">#{u.login}</a>"}
+      ).join(', ')
+
+      SlogEntry.create({
+          :type_id => SlogEntry::TYPES[:security],
+          :headline => (
+              "Registro desde IP existente <strong><a href=\"" +
+              "#{gmurl(@newuser)}\">#{@newuser.login}</a></strong>" +
+              " (#{request.remote_ip}): #{users_same_ip_html}")
+      })
+
+      Notification.signup(@newuser, :mode => @mmode).deliver
+      flash[:notice] = (
+          "Te hemos enviado un mensaje a #{@newuser.email} con la clave de" +
+          " confirmación.")
+      Rails.logger.warn("Account created from an IP with more accounts behind.")
+      redirect_to "/cuenta/confirmar?em=#{@newuser.email}"
+      return
+    end
+
+    # User doesn't seem malicious, we confirm his account straight away.
+    confirmar_nueva_cuenta(@newuser)
+    flash[:notice] = (
+        "Cuenta confirmada correctamente. Te hemos enviado un email de" +
+        " bienvenida a <strong>#{@newuser.email}</strong> con instrucciones.")
+
+    cookies[:email] = {
+      :domain => COOKIEDOMAIN,
+      :expires => 7.days.since,
+      :value => @newuser.email,
+    }
+
+    redirect_to '/cuenta'
   end
 
   def mis_borradores
@@ -679,8 +716,25 @@ class Cuenta::CuentaController < ApplicationController
     @user.save
     render :nothing => true
   end
+
   private
   def only_non_registered
    (redirect_to '/' and return) if user_is_authed
+  end
+
+  def process_referer(referer_login, refered_user)
+    referer = User.find_by_login(referer_login)
+    if referer
+      refered_user.referer_user_id = referer.id
+    else
+      flash[:error] = (
+          "El usuario referido especificado no se ha encontrado aunque esto" +
+          " no impedirá que se cree la cuenta.")
+    end
+  end
+
+  def email_is_banned(email)
+    (Cms::EMAIL_REGEXP =~ email &&
+     User::BANNED_DOMAINS.include?(email.split("@")[1].downcase))
   end
 end

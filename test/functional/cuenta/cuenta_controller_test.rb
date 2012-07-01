@@ -3,14 +3,23 @@ require 'test_helper'
 class Cuenta::CuentaControllerTest < ActionController::TestCase
 
   VALID_CREATE_ARGS = {
-      :accept_terms => '1',
+      :accept_terms => "1",
       :user => {
-          :login => 'chindasvinto',
-          :password => 'marauja',
-          :password_confirmation => 'marauja',
-          :email => 'tupmuamad@jaja.com',
+          :login => "chindasvinto",
+          :password => "marauja",
+          :password_confirmation => "marauja",
+          :email => "tupmuamad@jaja.com",
       },
-  }
+  }.deep_freeze
+
+  def setup
+    default_user = User.find_by_login(VALID_CREATE_ARGS[:user][:login])
+    if default_user
+      default_user.destroy
+      Rails.logger.error(
+          "Default test user '#{default_user.login}' found during test setup")
+    end
+  end
 
   test "mis_permisos_should_work" do
     sym_login 2
@@ -189,51 +198,79 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
 
   test "should_redirect_if_create_without_form" do
     post :create
-    assert_redirected_to '/cuenta/alta'
+    assert_template 'alta'
     assert_nil(session[:user])
   end
 
   test "should_not_create_user_if_login_is_invalid" do
-    post :create, :user => { :login => '' }
+    post :create, :accept_terms => 1, :user => { :login => '' }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
 
-    post :create, :user => { :login => '")!="dmk1ionloº¡L-_:*^,' }
+    post :create, :accept_terms => 1, :user => { :login => '")!="dmk1ionloº¡L-_:*^,' }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
 
   test "should_not_create_user_if_passwords_dont_match" do
     post :create,
-         :user => {
-            :login => 'chindasvinto',
-            :password => 'jauja',
-            :password_confirmation=> 'marauja'
-         }
+        :accept_terms => 1,
+        :user => {
+           :login => 'chindasvinto',
+           :password => 'jauja',
+           :password_confirmation=> 'marauja'
+        }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
 
   test "should_not_create_user_if_password_length_is_too_short" do
-    post :create, :user => { :login => 'chindasvinto', :password => 'jau', :password_confirmation=> 'jau' }
+    post :create,
+        :accept_terms => 1,
+        :user => {
+            :login => 'chindasvinto',
+            :password => 'jau',
+            :password_confirmation=> 'jau'
+        }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
 
   test "should_not_create_if_login_is_duplicated_ignoring_case" do
-    post :create, :user => { :login => 'superadmin', :password => 'marauja', :password_confirmation => 'marauja', :email => 'lala@lala.com' }
+    post :create,
+        :accept_terms => 1,
+        :user => {
+            :login => 'superadmin',
+            :password => 'marauja',
+            :password_confirmation => 'marauja',
+            :email => 'lala@lala.com'
+        }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
 
   test "should_not_create_if_email_is_duplicated_ignoring_case" do
-    post :create, :user => { :login => 'superadmin', :password => 'marauja', :password_confirmation => 'marauja', :email => 'superadmin@GAMERSMAFIA.com' }
+    post :create,
+        :accept_terms => 1,
+        :user => {
+            :login => 'superadmin',
+            :password => 'marauja',
+            :password_confirmation => 'marauja',
+            :email => 'superadmin@GAMERSMAFIA.com'
+        }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
 
   test "should_not_create_if_email_is_invalid" do
-    post :create, :user => { :login => 'chindasvinto', :password => 'marauja', :password_confirmation => 'marauja', :email => 'tupmuamad@jaja.ñ!jeje' }
+    post :create,
+        :accept_terms => 1,
+        :user => {
+            :login => 'chindasvinto',
+            :password => 'marauja',
+            :password_confirmation => 'marauja',
+            :email => 'tupmuamad@jaja.ñ!jeje'
+    }
     assert_template 'cuenta/cuenta/alta'
     assert_nil(session[:user])
   end
@@ -241,6 +278,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   test "should_not_create_if_email_domain_is_banned" do
     dom = User::BANNED_DOMAINS[0]
     post :create,
+         :accept_terms => 1,
          :user => {
             :login => 'chindasvinto',
             :password => 'marauja',
@@ -255,20 +293,27 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     post :create, VALID_CREATE_ARGS
 
     assert_redirected_to "/cuenta"
-    @u = User.find_by_login('chindasvinto')
+    @u = User.find_by_login(VALID_CREATE_ARGS[:user][:login])
     assert_not_nil @u
-    assert_equal 'chindasvinto', @u.login
-    assert_equal Digest::MD5.hexdigest('marauja'), @u.password
     assert_equal User::ST_SHADOW, @u.state
+    assert_equal(Digest::MD5.hexdigest(VALID_CREATE_ARGS[:user][:password]),
+                 @u.password)
   end
 
   test "should_create_second_account_from_same_ip" do
-    test_should_create_user_if_everything_is_valid
+    post :create, VALID_CREATE_ARGS
+
     session.clear
 
-    params = VALID_CREATE_ARGS.clone
-    params[:user].update(
-        {:login => 'chindasvinto2', :email => 'lolailo@example.com'})
+    params = {
+      :accept_terms => "1",
+      :user => {
+        :login => "chindasvinto2",
+        :password => "marauja",
+        :password_confirmation => "marauja",
+        :email => "lolailo@example.com",
+      },
+    }
 
     assert_count_increases(SlogEntry) do
       post :create, params
@@ -312,12 +357,14 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
 
   test "should_send_confirmation_email_after_creating_account" do
     num_deliveries = ActionMailer::Base.deliveries.size
-    test_should_create_user_if_everything_is_valid
+    post :create, VALID_CREATE_ARGS
     assert_equal num_deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
   test "should_send_welcome_email_after_confirming_account" do
-    test_should_create_user_if_everything_is_valid
+    post :create, VALID_CREATE_ARGS
+    @u = User.find_by_login(VALID_CREATE_ARGS[:user][:login])
+    assert_not_nil @u
     num_deliveries = ActionMailer::Base.deliveries.size
     @u.update_attributes(:state => User::ST_UNCONFIRMED)
     post :do_confirmar, {:k => @u.validkey, :email => @u.email}, {}
@@ -449,12 +496,15 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   end
 
   test "should_not_confirm_new_account_if_invalid_confirm_key" do
-    test_should_create_user_if_everything_is_valid
+    post :create, VALID_CREATE_ARGS
+    @u = User.find_by_login(VALID_CREATE_ARGS[:user][:login])
+    assert @u
     @u.update_attributes(:state => User::ST_UNCONFIRMED)
     post :do_confirmar, {:k => 'bailar_el_chachacha', :email => @u.email}, {}
     assert_response :success
     assert_template 'cuenta/cuenta/confirmar'
     u = User.find_by_login('chindasvinto')
+    assert_not_nil u
     assert_equal User::ST_UNCONFIRMED, u.state
   end
 
