@@ -382,7 +382,7 @@ module Cms
   def self.download_and_rewrite_bb_imgs(corpus, relative_savedir)
     known_domains = App.domain_aliases + [App.domain]
     corpus.gsub(/<img[^>]+src="([^"]+)"/i) do |rs|
-      md = /http:\/\/([^\/]+)\/([^"]+)/i.match(rs)
+      md = /http(s?):\/\/([^\/]+)\/([^"]+)/i.match(rs)
 
       if md and not known_domains.include?(md[1].gsub('www.', '')) # remote download
         new_file = self.copy_image_to_dir(md[0], relative_savedir) # "#{self.class.name.downcase}/#{self.id % 1000}/#{self.id % 100}"
@@ -439,7 +439,7 @@ module Cms
   # relative_savedir is relative to #{Rails.root}/public/storage/
   # Devuelve la ruta guardada o nil si no la ha podido guardar
   def self.copy_image_to_dir(imgurl, relative_savedir)
-    if /http:\/\// =~ imgurl # download it first
+    if /http(s?):\/\// =~ imgurl # download it first
       FileUtils.rm_rf("/tmp/gm_tmp_files/")
       tmpfile = "/tmp/gm_tmp_files/#{File.basename(imgurl).bare}"
       if not File.directory?(File.dirname(tmpfile))
@@ -497,7 +497,7 @@ module Cms
     html_fragment = html_fragment.gsub(/<img[^>]+src="([^"]+)"/i) do |frag|
 
       imgurl = /<img[^>]+src="([^"]+)"/i.match(frag).captures[0]
-      md = /http:\/\/([^\/]+)\/(.+)/i.match(imgurl)
+      md = /http(s?):\/\/([^\/]+)\/(.+)/i.match(imgurl)
       # si no tiene slash después del hostname seguro que no es una imagen
       orig_imgurl = imgurl
 
@@ -514,9 +514,7 @@ module Cms
         elsif !(/^\// =~ imgurl).nil?
           imgurl = "#{Rails.root}/public#{URI::unescape(imgurl)}"
         end
-        # puts 'ble'
         new_file = self.copy_image_to_dir(imgurl, savedir)
-        # puts "#{imgurl} #{savedir} #{new_file}"
       end
 
       if new_file.nil?
@@ -526,14 +524,12 @@ module Cms
       end
     end
 
-
-
     # hacemos thumbnail de las imágenes locales (que hemos podido descargar) en las que el tamaño mostrado difiera  del original
     i = html_fragment.index(/<img([^>]+)src="([^"]+)"([^>]*)>/i)
     while !i.nil? and i < html_fragment.length
       ztr = html_fragment[i..-1]
       m = /(<img([^>]+)src="([^"]+)"([^>]*)>)/i.match(ztr)
-      md = /http:\/\/([^\/]+)\/(.+)/i.match(m[3]) # si no tiene slash después del hostname seguro que no es una imagen
+      md = /http(s?):\/\/([^\/]+)\/(.+)/i.match(m[3]) # si no tiene slash después del hostname seguro que no es una imagen
       if md # quitamos el http://
         imgurl = "#{Rails.root}/public/#{md[2]}" # TODO si la url es maliciosa? ../ > cuando intentemos cargar la imagen petará
       else
