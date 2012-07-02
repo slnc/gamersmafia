@@ -2944,7 +2944,9 @@ CREATE TABLE general (
     database_size bigint,
     sent_emails integer,
     downloaded_downloads_count integer,
-    users_refered_today integer
+    users_refered_today integer,
+    played_bets_participation integer DEFAULT 0 NOT NULL,
+    played_bets_crowd_correctly_predicted integer DEFAULT 0 NOT NULL
 );
 CREATE TABLE pageloadtime (
     controller character varying,
@@ -3015,7 +3017,9 @@ CREATE TABLE users_daily_stats (
     created_on date NOT NULL,
     karma integer,
     faith integer,
-    popularity integer
+    popularity integer,
+    played_bets_participation integer DEFAULT 0 NOT NULL,
+    played_bets_correctly_predicted integer DEFAULT 0 NOT NULL
 );
 CREATE SEQUENCE users_daily_stats_id_seq
     START WITH 1

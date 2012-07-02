@@ -31,6 +31,60 @@ class Bet < ActiveRecord::Base
   scope :open_bets, :conditions => Bet::OPEN_BETS_SQL,
                           :order => 'closes_on ASC, id ASC'
 
+  scope :played_bets, :conditions => (
+      "#{CLOSED_BETS_SQL} AND cancelled IS FALSE AND forfeit IS FALSE")
+
+  # Calculates prediction accuracy stats for the crowd and for everybody who
+  # bet on every bet closed on a given date.
+  def self.update_prediction_accuracy(date)
+    crowd_wins = 0
+    users_totals = {}
+    users_wins = {}
+    bets = Bet.published.played_bets.find(
+        :all,
+        :conditions => ["closes_on::date = ?::date", date])
+    bets.each do |bet|
+      crowd_decision = bet.determine_crowd_decision
+      crowd_selection, winners, user_votes = crowd_decision
+      user_votes.each do |k, v|
+        users_totals[k] ||= 0
+        users_totals[k] += 1
+        users_wins[k] ||= 0
+      end
+      puts "winners: #{winners}"
+      winners.each do |user_id|
+        users_wins[user_id] += 1
+      end
+
+      if bet.tie and crowd_selection == Bet::TIE
+        crowd_wins += 1
+      elsif bet.winning_bets_option_id == crowd_selection
+        crowd_wins += 1
+      end
+    end
+
+    return if bets.size == 0
+
+    puts users_totals
+    puts users_wins
+    # Persist results
+    User.db_query(
+        "UPDATE stats.general
+            SET played_bets_participation = #{bets.size},
+                played_bets_crowd_correctly_predicted = #{crowd_wins}
+          WHERE created_on = '#{date}'::date")
+
+    users_totals.each do |user_id, bets|
+      correctly_predicted = users_wins[user_id]
+      User.db_query(
+          "UPDATE stats.users_daily_stats
+              SET played_bets_participation = #{bets},
+                  played_bets_correctly_predicted = #{correctly_predicted}
+            WHERE user_id = #{user_id}
+              AND created_on = '#{date}'::date")
+    end
+  end
+
   def self.earnings(user, limit=30, time_window=nil)
     # Returns a user earnings during a time window.
     #
@@ -405,8 +459,9 @@ class Bet < ActiveRecord::Base
       end
     end
 
-    Rails.logger.info("tie | option #{options[0].id} | option #{options[1].id}")
-    Rails.logger.info("#{votes_tie} #{votes_a} #{votes_b}")
+    if votes_tie + votes_a + votes_b == 0
+      return [-1, winners, user_votes]
+    end
 
     if votes_tie > votes_a and votes_tie > votes_b
       return [Bet::TIE, winners, user_votes]

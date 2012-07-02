@@ -27,6 +27,84 @@ class BetTest < ActiveSupport::TestCase
     @cash_u3 = @u2.cash
   end
 
+  test "update_prediction_accuracy smoke_test no winners" do
+    some_timestamp = 28.hours.ago
+    User.db_query(
+        "INSERT INTO stats.general(created_on)
+              VALUES ('#{some_timestamp}'::date)")
+
+    @bet.closes_on = some_timestamp
+    @bet.complete(@bet.bets_options.first.id)
+    assert @bet.completed?
+    Bet.update_prediction_accuracy(some_timestamp)
+    assert_equal 0, User.db_query(
+        "SELECT played_bets_participation
+           FROM stats.general
+       ORDER BY created_on DESC LIMIT 1")[0]["played_bets_participation"].to_i
+    assert_equal 1, User.db_query(
+        "SELECT played_bets_crowd_correctly_predicted
+           FROM stats.general
+       ORDER BY created_on DESC
+          LIMIT 1")[0]["played_bets_participation"].to_i
+  end
+
+  test "update_prediction_accuracy smoke_test with winners" do
+    some_timestamp = 28.hours.ago
+    User.db_query(
+        "INSERT INTO stats.general(created_on)
+              VALUES ('#{some_timestamp}'::date)")
+
+    User.db_query(
+        "INSERT INTO stats.users_daily_stats(user_id, created_on)
+              VALUES (1, '#{some_timestamp}'::date)")
+
+    User.db_query(
+        "INSERT INTO stats.users_daily_stats(user_id, created_on)
+              VALUES (2, '#{some_timestamp}'::date)")
+
+    prepare_first_three_users
+    @bets_option_foo.bets_tickets.create({:user_id => 1, :ammount => BetsTicket::MIN_BET})
+    @bets_option_bar.bets_tickets.create({:user_id => 2, :ammount => BetsTicket::MIN_BET + 10})
+    @bet.closes_on = some_timestamp
+    @bet.complete(@bets_option_foo.id)
+    assert @bet.completed?
+    Bet.update_prediction_accuracy(some_timestamp)
+    assert_equal 1, User.db_query(
+        "SELECT played_bets_participation
+           FROM stats.general
+       ORDER BY created_on DESC LIMIT 1")[0]["played_bets_participation"].to_i
+
+    assert_equal 1, User.db_query(
+        "SELECT played_bets_crowd_correctly_predicted
+           FROM stats.general
+       ORDER BY created_on DESC
+          LIMIT 1")[0]["played_bets_crowd_correctly_predicted"].to_i
+
+    assert_equal 1, User.db_query(
+        "SELECT played_bets_correctly_predicted
+           FROM stats.users_daily_stats
+          WHERE user_id = 1
+       ORDER BY created_on DESC LIMIT 1")[0]["played_bets_correctly_predicted"].to_i
+
+    assert_equal 1, User.db_query(
+        "SELECT played_bets_participation
+           FROM stats.users_daily_stats
+          WHERE user_id = 1
+       ORDER BY created_on DESC LIMIT 1")[0]["played_bets_participation"].to_i
+
+    assert_equal 0, User.db_query(
+        "SELECT played_bets_correctly_predicted
+           FROM stats.users_daily_stats
+          WHERE user_id = 2
+       ORDER BY created_on DESC LIMIT 1")[0]["played_bets_correctly_predicted"].to_i
+
+    assert_equal 1, User.db_query(
+        "SELECT played_bets_participation
+           FROM stats.users_daily_stats
+          WHERE user_id = 2
+       ORDER BY created_on DESC LIMIT 1")[0]["played_bets_participation"].to_i
+  end
+
 
   test "should_return_money_if_cancelled" do
     u1 = User.find(1)
