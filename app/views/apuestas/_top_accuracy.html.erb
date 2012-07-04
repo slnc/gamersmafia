@@ -1,0 +1,15 @@
+<% cache("/common/apuestas/ranking/#{8.hours.since.strftime('%Y%W')}") do %>
+  <% ranking_entries = bets_prediction_ranking %>
+  <% if ranking_entries.size > 0 %>
+    <% mftext("Los que más aciertan") do %>
+      <table>
+        <% bets_prediction_ranking.each do |user, score| %>
+          <tr>
+            <td><%= user.kind_of?(User) ? gmurl(user) : "GM" %></td>
+            <td class="w25"><%= draw_pcent_bar(score) %></td>
+          </tr>
+        <% end -%>
+      </table>
+    <% end -%>
+  <% end -%>
+<% end -%>

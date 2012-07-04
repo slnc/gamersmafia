@@ -1,4 +1,7 @@
 <% generic_support do %>
+
+<%= render :partial => "/apuestas/top_accuracy" %>
+
 <% cache_file = Bet::TOP_BET_WINNERS
 if File.exists?(cache_file) then %>
 <% cache("common/apuestas/los_que_mas_ganan_#{1.hour.ago.strftime('%Y-%m-%d')}") do %>
