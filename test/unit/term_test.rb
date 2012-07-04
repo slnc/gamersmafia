@@ -42,16 +42,32 @@ class TermTest < ActiveSupport::TestCase
     assert @ndcsss1
   end
 
-  test "link" do
-    t = Term.new(:name => 'foo', :slug => 'bar')
-    assert t.save
-    c = Content.find(:first)
+  test "link with root term" do
+    term = Term.new(:name => 'foo', :slug => 'bar')
+    assert term.save
+
+    # We pick a Funthing because it works with root categories
+    content = Funthing.find(:first).unique_content
+    link_content_to_term(content, term)
+  end
+
+  test "link with category term" do
+    term = Term.new(:name => 'foo', :slug => 'bar', :taxonomy => 'TopicsCategory')
+    assert term.save
+
+    # We pick a Topic because it works with root categories
+    content = Topic.find(:first).unique_content
+    link_content_to_term(content, term)
+  end
+
+  def link_content_to_term(content, term)
     assert_count_increases(ContentsTerm) do
-      t.link(c)
+      term.link(content)
     end
-    ct = ContentsTerm.find(:first, :order => 'id desc')
-    assert_equal t.id, ct.term_id
-    assert_equal c.id, ct.content_id
+
+    content_term = ContentsTerm.find(:first, :order => 'id desc')
+    assert_equal term.id, content_term.term_id
+    assert_equal content.id, content_term.content_id
   end
 
   test "all_children_ids" do
@@ -199,24 +215,18 @@ class TermTest < ActiveSupport::TestCase
     assert_equal "http://ut.#{App.domain}/foros/topic/1", topic.unique_content.url
   end
 
-  test "get_last_updated_item_id" do
-    t = Term.single_toplevel(:slug => 'ut')
-    it = t.get_last_updated_item
+  test "get_or_resolve_last_updated_item_id" do
+    a_term = Term.single_toplevel(:slug => "ut")
+    item = a_term.get_or_resolve_last_updated_item
+    assert_equal 1, item.id
 
-    assert_equal 1, it.id
-    Cms::modify_content_state(it, User.find(1), Cms::DELETED)
-    t.reload
-    it.reload
-    assert_equal Cms::DELETED, it.state
-    assert_equal Cms::DELETED, it.unique_content.state
+    Cms::modify_content_state(item, User.find(1), Cms::DELETED)
 
-    newit = t.get_last_updated_item
-
-    assert it != newit
-  end
-
-  test "get_ancestors" do
-
+    a_term.reload
+    item.reload
+    assert_equal Cms::DELETED, item.state
+    assert_equal Cms::DELETED, item.unique_content.state
+    assert_not_equal a_term.get_or_resolve_last_updated_item, item
   end
 
   test "should_update_parent_categories_counter" do

@@ -23,9 +23,20 @@ module ActsAsContent
 
       scope :in_term, lambda { |term|
           raise ArgumentError, "in_term(nil) called" if term.nil?
-          {:conditions => ["unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id = ?)", term.id]}
+          {:conditions => [
+              "unique_content_id IN (SELECT content_id
+                                       FROM contents_terms
+                                      WHERE term_id = ?)", term.id]}
       }
-      scope :in_term_tree, lambda { |term| { :conditions => ["unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?))", term.all_children_ids] }}
+
+      scope :in_term_tree, lambda { |term|
+          {:conditions => [
+              "unique_content_id IN (SELECT content_id
+                                       FROM contents_terms
+                                      WHERE term_id IN (?))",
+              term.all_children_ids]}
+      }
+
       scope :in_portal, lambda { |portal|
         if portal.id == -1
           {}

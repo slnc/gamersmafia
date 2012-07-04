@@ -37,11 +37,11 @@ class BetTest < ActiveSupport::TestCase
     @bet.complete(@bet.bets_options.first.id)
     assert @bet.completed?
     Bet.update_prediction_accuracy(some_timestamp)
-    assert_equal 0, User.db_query(
+    assert_equal 1, User.db_query(
         "SELECT played_bets_participation
            FROM stats.general
        ORDER BY created_on DESC LIMIT 1")[0]["played_bets_participation"].to_i
-    assert_equal 1, User.db_query(
+    assert_equal 0, User.db_query(
         "SELECT played_bets_crowd_correctly_predicted
            FROM stats.general
        ORDER BY created_on DESC

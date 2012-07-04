@@ -286,15 +286,24 @@ class Term < ActiveRecord::Base
 
   def link(content, normal_op=true)
     raise "TypeError, arg is #{content.class.name}" unless content.class.name == 'Content'
-    return true unless self.contents.find(:first, :conditions => ['contents.id = ?', content.id]).nil? # dupcheck
+
+    # dupcheck, don't link twice.
+    if !self.contents.find(:first, :conditions => ['contents.id = ?', content.id]).nil?
+      Rails.logger.warn("#{content} is already linked to #{self}")
+      return true
+    end
 
     if Cms::CATEGORIES_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy.nil?
+      Rails.logger.warn(
+        "#{self} is a root term but #{content} requires a category" +
+        " term.")
       return false if normal_op
+
+      # Exceptional behavior
       taxo = "#{ActiveSupport::Inflector::pluralize(content.content_type.name)}Category"
       t = self.children.find(:first, :conditions => "taxonomy = '#{taxo}'")
       t = self.children.create(:name => 'General', :taxonomy => taxo) if t.nil?
       t.link(content, normal_op)
-      #return false
     elsif Cms::ROOT_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy && self.taxonomy.index('Category')
       Rails.logger.warn(
         "Current term has taxonomy: #{self.taxonomy} but the specific content" +
@@ -306,14 +315,15 @@ class Term < ActiveRecord::Base
     ct = self.contents_terms.create(:content_id => content.id)
 
     if normal_op # TODO quitar esto despues de 2009.1
-      self.recalculate_last_updated_item_id
+      self.resolve_last_updated_item
       # PERF esto hacerlo en accion secundaria?
 
-      o = self
-      while o
-        Term.increment_counter(:contents_count, o.id)
-        User.db_query("UPDATE terms SET comments_count = comments_count + #{content.comments_count} WHERE id = #{o.id}")
-        o = o.parent
+      term = self
+      while term
+        term.update_attributes({
+            :contents_count => term.contents_count + 1,
+            :comments_count => term.comments_count + content.comments_count})
+        term = term.parent
       end
 
       if self.id == self.root_id || self.taxonomy.include?('Category')
@@ -337,8 +347,7 @@ class Term < ActiveRecord::Base
       User.db_query("UPDATE terms SET comments_count = comments_count - #{content.comments_count}")
       o = o.parent
     end
-    self.recalculate_last_updated_item_id
-
+    self.resolve_last_updated_item
     true
   end
 
@@ -416,11 +425,11 @@ class Term < ActiveRecord::Base
 
   def recalculate_counters
     recalculate_contents_count
-    last = self.get_last_updated_item
+    last = self.get_or_resolve_last_updated_item
     if last && last.state == Cms::DELETED
       self.last_updated_item_id = nil
       # self.save
-      self.get_last_updated_item
+      self.get_or_resolve_last_updated_item
     end
   end
 
@@ -431,33 +440,43 @@ class Term < ActiveRecord::Base
     self.save
   end
 
-  def recalculate_last_updated_item_id(excluding_id=nil)
-    opts = {}
-    opts[:conditions] = "a.id <> #{excluding_id}" if excluding_id
-    last = self.last_published_content(nil, opts)
-    if last
-      self.last_updated_item_id = last.id
-      self.save
+  # Finds the last updated item id within this term and updates the
+  # last_updated_item_id attribute with whatever is found recursively up to the
+  # root.
+  def resolve_last_updated_item
+    last_content = Content.published.in_term_tree(self).find(
+        :first, :order => "updated_on DESC")
+    if last_content
+      self.last_updated_item_id = last_content.id
+    else
+      self.last_updated_item_id = nil
     end
-    self.parent.recalculate_last_updated_item_id(excluding_id) if self.parent
-    true
+    self.save
+    self.parent.resolve_last_updated_item if self.parent
+  end
+
+  # Returns the last updated item linked to this term. If the attribute is nil
+  # it will call resolve_last_updated_item.
+  def get_or_resolve_last_updated_item
+    self.resolve_last_updated_item if self.last_updated_item_id.nil?
+    self.last_updated_item ? self.last_updated_item.real_content : nil
   end
 
   def last_published_content(cls_name, opts={})
     # opts: user_id
     conds = []
-    conds << "a.user_id = #{opts[:user_id].to_i}" if opts[:user_id]
+    conds << "user_id = #{opts[:user_id].to_i}" if opts[:user_id]
     conds << opts[:conditions] if opts[:conditions]
     cond = ''
-    cond = " AND #{conds.join(' AND ')}" if conds.size > 0
+    cond = "#{conds.join(' AND ')}" if conds.size > 0
     if cls_name
       cat_ids = self.all_children_ids(:taxonomy => Term.taxonomy_from_class_name(cls_name))
     else
       cat_ids = self.all_children_ids
     end
 
-    contents = Content.find_by_sql("SELECT a.* FROM contents a JOIN contents_terms b ON a.id = b.content_id WHERE b.term_id IN (#{cat_ids.join(',')}) AND a.state = #{Cms::PUBLISHED} #{cond} ORDER BY a.created_on DESC LIMIT 1")
-    contents.size > 0 ? contents[0] : nil
+    Content.in_term_ids(cat_ids).published.find(
+      :first, :conditions => cond, :order => "created_on DESC")
   end
 
   def can_be_destroyed?
@@ -659,27 +678,6 @@ class Term < ActiveRecord::Base
       args.push(options)
     end
     args
-  end
-
-  # devuelve el ultimo Content actualizado
-  def get_last_updated_item
-    if self.last_updated_item_id.nil? then
-      obj = self.find(:published, :order => 'updated_on DESC', :limit => 1)
-
-      if obj.size > 0 then
-        obj = obj[0]
-        # no usamos save para no tocar updated_on, created_on porque record_timestamps falla
-        self.class.db_query("UPDATE terms SET last_updated_item_id = #{obj.unique_content_id} WHERE id = #{self.id}")
-        self.reload
-        obj
-      else
-        self.class.db_query("UPDATE terms SET last_updated_item_id = NULL WHERE id = #{self.id}")
-        self.reload
-        nil
-      end
-    else
-      self.last_updated_item.real_content
-    end
   end
 
   def random(limit=3)

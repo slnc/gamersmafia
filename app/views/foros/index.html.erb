@@ -21,7 +21,7 @@ toplevelt.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'],
     <td style="line-height: 18px;"><strong><div style="float: left; vertical-align: middle; width: 20px;"></div> <a class="nav" href="<%=gmurl(category, :taxonomy => 'TopicsCategory')%>"><%=category.name%></a></strong></td>
     <td style="" class="infoinline timestamp"><%=category.contents_count(:cls_name => 'Topic')%></td>
     <td style="" class="infoinline timestamp"><%=category.comments_count%></td>
-    <td class="timestamp infoinline" style="font-weight: normal;"><%last = category.get_last_updated_item
+    <td class="timestamp infoinline" style="font-weight: normal;"><%last = category.get_or_resolve_last_updated_item
     if last then %><%=print_tstamp(last.updated_on)%> <a class="nav" href="<%=gmurl(last)%>"><img class="go-to-topic" src="/images/blank.gif" /></a><% end -%></td>
   </tr>
   <% if controller.portal_code and controller.portal.id > -1 then %>

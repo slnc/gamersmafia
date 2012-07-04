@@ -1,6 +1,7 @@
 class Content < ActiveRecord::Base
   belongs_to :content_type
   before_destroy :clear_comments
+  before_destroy :unlink_real_content
   has_many :comments, :dependent => :destroy
   has_many :contents_versions, :dependent => :destroy
   has_many :content_ratings, :dependent => :destroy
@@ -12,7 +13,38 @@ class Content < ActiveRecord::Base
   has_many :contents_terms, :dependent => :destroy
   has_many :users_contents_tags, :dependent => :destroy
 
-  scope :with_tags_from_user, lambda { |tags,user| { :conditions => ['contents.id IN (SELECT content_id FROM users_contents_tags WHERE user_id = ? AND original_name IN (?))', user, tags] } }
+  scope :draft, :conditions => "state = #{Cms::DRAFT}"
+  scope :pending, :conditions => "state = #{Cms::PENDING}"
+  scope :published, :conditions => "state = #{Cms::PUBLISHED}"
+  scope :deleted, :conditions => "state = #{Cms::DELETED}"
+  scope :onhold, :conditions => "state = #{Cms::ONHOLD}"
+
+  scope :in_term, lambda { |term|
+      raise ArgumentError, "in_term(nil) called" if term.nil?
+      {:conditions => [
+          "id IN (SELECT content_id FROM contents_terms WHERE term_id = ?)",
+          term.id]}
+  }
+
+  scope :in_term_ids, lambda { |term_ids|
+      {:conditions => [
+          "id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?))",
+          term_ids]}
+  }
+
+  scope :in_term_tree, lambda { |term|
+      {:conditions => [
+          "id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?))",
+          term.all_children_ids]}
+  }
+
+  scope :with_tags_from_user, lambda { |tags,user|
+      {:conditions => [
+          'contents.id IN (SELECT content_id
+                             FROM users_contents_tags
+                            WHERE user_id = ?
+                              AND original_name IN (?))', user, tags]}
+  }
 
   after_save do |m|
     m.contents_locks.clear if m.contents_locks
@@ -22,6 +54,7 @@ class Content < ActiveRecord::Base
       User.db_query("UPDATE comments SET portal_id = #{m.portal_id} WHERE content_id = #{m.id}")
     end
   end
+
   before_save :check_changed_attributes
   belongs_to :clan
   belongs_to :game
@@ -29,7 +62,6 @@ class Content < ActiveRecord::Base
   belongs_to :bazar_district
   belongs_to :user
 
-  before_destroy :unlink_real_content
 
   def recommend_to_friends(sender, friends, comment)
     friends.each do |uid|
@@ -56,12 +88,15 @@ class Content < ActiveRecord::Base
   end
 
   def unlink_real_content
-    # nos quitamos de last_updated_item_id si lo hay
-    Term.find(:all, :conditions => ['last_updated_item_id = ?', self.id]).each do |t|
-      t.recalculate_last_updated_item_id(self.id)
+    self.update_attribute(:state, Cms::DELETED)
+    self.terms.each do |term|
+      term.resolve_last_updated_item
     end
+
     cls_name = Object.const_get(self.content_type.name)
-    User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(cls_name)} SET unique_content_id = NULL WHERE id = #{self.external_id}")
+    User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(cls_name)}
+                      SET unique_content_id = NULL
+                    WHERE id = #{self.external_id}")
     true
   end
 
