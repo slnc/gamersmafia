@@ -809,7 +809,8 @@ CREATE TABLE clans (
     website_activated boolean DEFAULT false NOT NULL,
     creator_user_id integer,
     cache_popularity integer,
-    ranking_popularity_pos integer
+    ranking_popularity_pos integer,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -2109,7 +2110,9 @@ ALTER SEQUENCE demos_id_seq OWNED BY demos.id;
 CREATE TABLE dictionary_words (
     id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
-    updated_at timestamp without time zone NOT NULL
+    updated_at timestamp without time zone NOT NULL,
+    name character varying NOT NULL,
+    pos_type integer
 );
 
 
@@ -2642,7 +2645,8 @@ ALTER SEQUENCE factions_links_id_seq OWNED BY factions_links.id;
 
 CREATE TABLE factions_portals (
     faction_id integer NOT NULL,
-    portal_id integer NOT NULL
+    portal_id integer NOT NULL,
+    id integer
 );
 
 
@@ -3115,7 +3119,8 @@ CREATE TABLE global_vars (
     gmtv_channels_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     pending_contents integer DEFAULT 0 NOT NULL,
     portals_updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    max_cache_valorations_weights_on_self_comments numeric
+    max_cache_valorations_weights_on_self_comments numeric,
+    clans_updated_on timestamp without time zone
 );
 
 
@@ -5127,6 +5132,23 @@ CREATE SEQUENCE tracker_items_id_seq
 ALTER SEQUENCE tracker_items_id_seq OWNED BY tracker_items.id;
 
 
+SET default_with_oids = false;
+
+--
+-- Name: training_questions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE training_questions (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer,
+    type character varying NOT NULL,
+    _ner_annotate_comment_main text,
+    _ner_annotate_comment_main_annotated text,
+    _ner_annotate_comment_comment_id integer
+);
+
+
 --
 -- Name: treated_visitors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
@@ -5138,8 +5160,6 @@ CREATE SEQUENCE treated_visitors_id_seq
     NO MINVALUE
     CACHE 1;
 
-
-SET default_with_oids = false;
 
 --
 -- Name: treated_visitors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
@@ -5903,7 +5923,9 @@ CREATE TABLE general (
     database_size bigint,
     sent_emails integer,
     downloaded_downloads_count integer,
-    users_refered_today integer
+    users_refered_today integer,
+    played_bets_participation integer DEFAULT 0 NOT NULL,
+    played_bets_crowd_correctly_predicted integer DEFAULT 0 NOT NULL
 );
 
 
@@ -6034,7 +6056,9 @@ CREATE TABLE users_daily_stats (
     created_on date NOT NULL,
     karma integer,
     faith integer,
-    popularity integer
+    popularity integer,
+    played_bets_participation integer DEFAULT 0 NOT NULL,
+    played_bets_correctly_predicted integer DEFAULT 0 NOT NULL
 );
 
 
@@ -7801,6 +7825,14 @@ ALTER TABLE ONLY demos
 
 
 --
+-- Name: dictionary_words_name_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY dictionary_words
+    ADD CONSTRAINT dictionary_words_name_key UNIQUE (name);
+
+
+--
 -- Name: dictionary_words_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -8694,6 +8726,14 @@ ALTER TABLE ONLY tracker_items
 
 ALTER TABLE ONLY tracker_items
     ADD CONSTRAINT tracker_items_pkey1 PRIMARY KEY (id);
+
+
+--
+-- Name: training_questions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY training_questions
+    ADD CONSTRAINT training_questions_pkey PRIMARY KEY (id);
 
 
 --
@@ -11079,6 +11119,22 @@ ALTER TABLE ONLY topics
 
 
 --
+-- Name: training_questions__ner_annotate_comment_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY training_questions
+    ADD CONSTRAINT training_questions__ner_annotate_comment_comment_id_fkey FOREIGN KEY (_ner_annotate_comment_comment_id) REFERENCES comments(id) MATCH FULL;
+
+
+--
+-- Name: training_questions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY training_questions
+    ADD CONSTRAINT training_questions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
+
+
+--
 -- Name: tutorials_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -11285,6 +11341,12 @@ INSERT INTO schema_migrations (version) VALUES ('20120225180115');
 INSERT INTO schema_migrations (version) VALUES ('20120303160621');
 
 INSERT INTO schema_migrations (version) VALUES ('20120601195027');
+
+INSERT INTO schema_migrations (version) VALUES ('20120701043725');
+
+INSERT INTO schema_migrations (version) VALUES ('20120701201029');
+
+INSERT INTO schema_migrations (version) VALUES ('20120701224459');
 
 INSERT INTO schema_migrations (version) VALUES ('224');
 

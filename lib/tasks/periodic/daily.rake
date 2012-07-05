@@ -37,6 +37,14 @@ namespace :gm do
     update_max_cache_valorations_weights_on_self_comments
     delete_empty_content_tags_terms
     delete_old_users_newsfeeds
+
+    # We update predictions of bets for more than one day to account for  for
+    # bets that aren't completed on the same day they are closed. It's a
+    # tradeoff between the delay in backfilling for late bets and the cost of
+    # computing bets results multiple times.
+    Bet.update_prediction_accuracy(1.month.ago)
+    Bet.update_prediction_accuracy(7.days.ago)
+    Bet.update_prediction_accuracy(1.day.ago)
   end
 
   def delete_old_users_newsfeeds

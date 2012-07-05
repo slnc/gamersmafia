@@ -9,13 +9,6 @@ namespace :gm do
     Reports.send_mrachmed_dominical
     #Download.check_invalid_downloads
     send_weekly_page_render_report_and_truncate
-    # We update predictions of bets for more than one day to account for  for
-    # bets that aren't completed on the same day they are closed. It's a
-    # tradeoff between the delay in backfilling for late bets and the cost of
-    # computing bets results multiple times.
-    Bet.update_prediction_accuracy(1.month.ago)
-    Bet.update_prediction_accuracy(7.days.ago)
-    Bet.update_prediction_accuracy(1.day.ago)
     recalculate_terms_count
     User.db_query("DELETE FROM ip_passwords_resets_requests WHERE created_on <= now() - '1 week'::interval;")
     update_default_comments_valorations_weight
