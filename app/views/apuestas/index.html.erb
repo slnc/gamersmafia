@@ -5,7 +5,7 @@
 <% cache_file = Bet::TOP_BET_WINNERS
 if File.exists?(cache_file) then %>
 <% cache("common/apuestas/los_que_mas_ganan_#{1.hour.ago.strftime('%Y-%m-%d')}") do %>
-<% mftext('Top 10 mensual') do %>
+<% mftext("Los que más ganan") do %>
  <table class="compact">
 <%
 data = YAML::load(File.open(cache_file).read)
@@ -47,8 +47,7 @@ end
 <% end %><%# cache -%>
 <% end %><%# if File.exists -%>
 
-  <% cache("/common/apuestas/index/stats_laterales_#{Time.now.to_i/86400}") do %>
-
+<% cache("/common/apuestas/index/stats_laterales_#{Time.now.to_i/86400}") do %>
   <%mftext("#{gmd12} movidos en la última semana") do %>
   <table>
   <% for dbentry in dbinfo = User.db_query("SELECT sum(total_ammount), date_trunc('day', closes_on) FROM bets WHERE closes_on < now() and state = #{Cms::PUBLISHED} group by date_trunc('day', closes_on) order by date_trunc('day', closes_on) DESC LIMIT 7;") %>
@@ -59,17 +58,6 @@ end
   <% end -%>
   </table>
 
-  <% end -%>
-
-  <%mftext('Los que más apuestan') do %>
-  <table>
-    <% for dbentry in dbinfo = User.db_query("SELECT sum(a.ammount), b.login FROM bets_tickets a join users b on a.user_id = b.id group by (b.login) order by sum(a.ammount) DESC LIMIT 10")
-    u = User.find_by_login(dbentry['login'])%>
-  <tr class="<%=oddclass%>">
-    <td><%=member_state(u.hstate)%> <%=link_to u.login, gmurl(u) %><br /><div style="text-align: right;"><%=dbentry['sum'].to_i%><%=gmd12%></div></td>
-  </tr>
-  <% end -%>
-  </table>
   <% end -%>
   <% end %><%# cache -%>
 <% end -%>
