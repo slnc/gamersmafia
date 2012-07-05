@@ -1,0 +1,8 @@
+# m h  dom mon dow   command
+43 10 1 * * /usr/bin/nice -n19 /srv/www/gamersmafia/current/script/cron_rake_task.sh gm:monthly
+12 6 * * 0 /usr/bin/nice -n19 /srv/www/gamersmafia/current/script/cron_rake_task.sh gm:weekly
+2 0 * * 0 /usr/bin/nice -n19 /srv/www/gamersmafia/current/script/cron_rake_task.sh gm:weekly_report
+3 4 * * * /usr/bin/nice -n19 /srv/www/gamersmafia/current/script/cron_rake_task.sh gm:daily
+*/2 * * * * /usr/bin/nice -n19 /srv/www/gamersmafia/current/script/cron_rake_task.sh gm:fiveminutely
+0 0 * * * /usr/bin/nice -n19 /srv/www/gamersmafia/current/script/cron_rake_task.sh gm:midnight
+3 * * * * /usr/bin/nice -n19 /srv/www/gamersmafia/current/script/cron_rake_task.sh gm:hourly

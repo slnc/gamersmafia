@@ -159,7 +159,15 @@ class ForosControllerTest < ActionController::TestCase
   test "create_topic_should_work" do
     sym_login 1
     assert_count_increases(Topic) do
-      post :create_topic, { :topic => { :main => 'tezto del topic', :title => 'title del topiz'} , :categories_terms => [Term.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'').id] }
+      post :create_topic, {
+          :topic => {
+              :main => 'tezto del topic',
+              :title => 'title del topiz'
+          },
+          :categories_terms => [
+              Term.find(:first, :conditions => "taxonomy = 'TopicsCategory'").id
+          ]
+      }
     end
     assert_response :redirect
   end
