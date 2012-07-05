@@ -8,6 +8,12 @@ class PersonalizationTest < ActiveSupport::TestCase
     assert_equal 0, qlinks.size
   end
 
+  test "quicklinks_nil" do
+    u2 = User.find(2)
+    u2.expects(:pref_quicklinks).returns(nil)
+    assert_equal [], Personalization.quicklinks_for_user(u2)
+  end
+
   test "quicklinks_faction_id" do
     u2 = User.find(2)
     u2.preferences.clear # los otros tests afectan a este, no entiendo por que

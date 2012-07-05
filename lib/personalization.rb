@@ -5,7 +5,7 @@ module Personalization
 
   def self.get_user_quicklinks(user)
     quicklinks = user.pref_quicklinks
-    quicklinks.size > 0 ? quicklinks : []
+    (quicklinks && quicklinks.size) > 0 ? quicklinks : []
   end
 
   def self.add_quicklink(user, code, link)
