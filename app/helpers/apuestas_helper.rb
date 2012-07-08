@@ -1,6 +1,6 @@
 module ApuestasHelper
   GM_KEY = "%gm"
-  MIN_BETS_PREDICTION_RANKING = 30
+  MIN_BETS_PREDICTION_RANKING = 15
 
   def bets_prediction_ranking
     accuracy_table = {}
@@ -14,6 +14,7 @@ module ApuestasHelper
               SUM(played_bets_participation) AS played_bets_participation
          FROM stats.users_daily_stats
         WHERE played_bets_participation > 0
+          AND created_on >= now() - '90 days'::interval
         GROUP BY user_id
         HAVING SUM(played_bets_participation) >= #{MIN_BETS_PREDICTION_RANKING}
       ORDER BY accuracy DESC LIMIT 10").each do |db_row|
@@ -29,7 +30,9 @@ module ApuestasHelper
                  SUM(played_bets_crowd_correctly_predicted),
                  SUM(played_bets_participation) as played_bets_participation
            FROM stats.general
-          WHERE played_bets_participation > 0")
+          WHERE played_bets_participation > 0
+          AND created_on >= now() - '90 days'::interval
+          ")
     if gm_results.size == 0
       return []
     end
