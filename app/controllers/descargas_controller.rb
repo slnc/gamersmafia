@@ -20,7 +20,7 @@ class DescargasController < InformacionController
     if @download
       paths, navpath = get_category_address(
           @download.main_category, 'DownloadsCategory')
-      if natpath.nil?
+      if navpath.nil?
         Rails.logger.warn("No navpath found for #{@download}")
         @navpath = []
       else
