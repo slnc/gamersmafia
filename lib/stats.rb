@@ -456,12 +456,20 @@ group by date_trunc('day', created_on) order by s asc
 
   def self.register_referer(user_id, remote_ip, referer)
     referer = User.find(user_id)
-    referer ||= ''
-    # TODO HACK
-    if User.db_query("SELECT * FROM refered_hits WHERE ipaddr = '#{remote_ip}' AND created_on > now() - '10 minutes'::interval").length == 0
-      User.db_query("INSERT INTO refered_hits(user_id, ipaddr, referer) VALUES(#{user_id}, '#{remote_ip}', #{User.connection.quote(referer)})")
-      User.db_query("UPDATE users set cache_faith_points = COALESCE(cache_faith_points + #{Faith::FPS_ACTIONS['hit']}, 0) where id = #{user_id}")
-      # TODO chequear que las visitas referidas de nuestros propios dominios ni de bots cuenten
+    recent_same_ip_hits = User.db_query(
+        "SELECT *
+         FROM refered_hits
+         WHERE ipaddr = '#{remote_ip}'
+         AND created_on > now() - '10 minutes'::interval")
+    if recent_same_ip_hits.length == 0
+      User.db_query(
+          "INSERT INTO refered_hits(user_id, ipaddr, referer)
+           VALUES (#{user_id}, '#{remote_ip}',
+             #{User.connection.quote(referer)})")
+      referer.cache_faith_points
+      Faith.give(referer, Faith::FPS_ACTIONS["hit"])
+      # TODO chequear que las visitas referidas de nuestros propios dominios ni
+      # de bots cuenten.
     end
   end
 

@@ -269,8 +269,15 @@ module Faith
     raise TypeError unless points.kind_of?(Fixnum)
     raise ValueError unless points > 0
 
-    user.faith_points # forzamos el cálculo desde 0, esto sí que puede incurrir en race condition
-    user.cache_faith_points = User.db_query("UPDATE users SET cache_faith_points = cache_faith_points + #{points} WHERE id = #{user.id}; SELECT cache_faith_points FROM users WHERE id = #{user.id}")[0]['cache_faith_points']
+    # forzamos el cálculo desde 0, esto sí que puede incurrir en race condition
+    user.faith_points
+    user.cache_faith_points = User.db_query(
+        "UPDATE users
+         SET cache_faith_points = cache_faith_points + #{points}
+         WHERE id = #{user.id};
+         SELECT cache_faith_points
+         FROM users
+         WHERE id = #{user.id}")[0]["cache_faith_points"]
   end
 
   def self.take(user, points)
