@@ -455,6 +455,7 @@ group by date_trunc('day', created_on) order by s asc
   end
 
   def self.register_referer(user_id, remote_ip, referer)
+    referer = User.find(user_id)
     referer ||= ''
     # TODO HACK
     if User.db_query("SELECT * FROM refered_hits WHERE ipaddr = '#{remote_ip}' AND created_on > now() - '10 minutes'::interval").length == 0
