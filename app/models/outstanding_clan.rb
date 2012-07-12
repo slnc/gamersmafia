@@ -1,4 +1,23 @@
 class OutstandingClan < OutstandingEntity
+  # TODO(slnc): cambiar la query para darle el premio al clan del que más se
+  # hable o más partidas gane.
+  SQL_COOL_CLANS = <<-END
+SELECT (
+  SELECT clan_id
+  FROM portals
+  WHERE id = stats.portals.portal_id)
+FROM stats.portals
+WHERE created_on >= now() - '14 days'::interval
+AND portal_id in (
+  SELECT id
+  FROM portals
+  WHERE clan_id IS NOT NULL)
+GROUP BY portal_id
+HAVING SUM(karma) > 0
+ORDER BY SUM(karma) DESC
+LIMIT 1
+  END
+
   def clan
     @_entity ||= Clan.find(self.entity_id)
   end
@@ -16,35 +35,33 @@ class OutstandingClan < OutstandingEntity
   end
 
   def self.current(portal_id, redir=true)
-    bought = OutstandingClan.find(:first, :conditions => ["portal_id = ? AND active_on = ? ", portal_id, Time.now])
-    i = 0
-    while bought.nil? && i < 7 # se lo regalamos al que más karma haya generado en los últimos 3 días en toda la red y no haya sido elegido ayer
-      # TODO cambiar la query para regalárselo al clan que más karma genere
-      # TODO
-      # raise "TODO hacer como en comunidad.html para sacar las visitas"
-      return nil
-      cool_clanz = User.db_query("select (select clan_id from portals where id = stats.portals.portal_id)
-                                                       from stats.portals
-                                                      where created_on >= now() - '14 days'::interval
-                                                        and portal_id in (select id
-                                                                            from portals
-                                                                           where clan_id is not null)
-                                                   GROUP BY portal_id
-                                                     HAVING sum(karma) > 0
-                                                   order by sum(karma) desc
-                                                      limit 1")
+    # Temporarily disabled as there are no clan websites anymore.
+    return nil
+    bought = OutstandingClan.find(
+        :first,
+        :conditions => ["portal_id = ? AND active_on = ? ", portal_id, Time.now])
 
-      # TODO tests
-      if cool_clans.size > 0 then
-        bu = Clan.find(cool_clanz['clan_id'].to_i)
-        bought = OutstandingClan.create(:portal_id => portal_id, :active_on => Time.now, :entity_id => bu.id, :reason => "<strong>#{cool_guys[0]['sum']}</strong> visitas en la última semana")
-        if bought.new_record? && redir # si no se ha podido guardar probablemente sea porque se ha generado una nueva entrada a la vez
-          bought = self.current(portal_id, false)
-        elsif bought.new_record?
-          bought = nil
-        end
-      else
-        i += 1
+    return bought unless bought.nil?
+
+    # se lo regalamos al que más karma haya generado en los últimos 3 días en
+    # toda la red y no haya sido elegido ayer.
+    # TODO cambiar la query para regalárselo al clan que más karma genere
+    cool_clanz = User.db_query(SQL_COOL_CLANS)
+
+    if cool_clans.size > 0 then
+      bu = Clan.find(cool_clanz['clan_id'].to_i)
+      bought = OutstandingClan.create(
+          :portal_id => portal_id,
+          :active_on => Time.now,
+          :entity_id => bu.id,
+          :reason => (
+              "<strong>#{cool_guys[0]['sum']}</strong> visitas en la última" +
+              " semana")
+      )
+      if bought.new_record?
+        Rails.logger.warn(
+            "Error giving an outstanding clan for free:" +
+            " #{bought.errors.full_messages_html}")
       end
     end
     bought

@@ -51,7 +51,6 @@ class Bet < ActiveRecord::Base
         users_totals[k] += 1
         users_wins[k] ||= 0
       end
-      puts "winners: #{winners}"
       winners.each do |user_id|
         users_wins[user_id] += 1
       end
@@ -65,8 +64,6 @@ class Bet < ActiveRecord::Base
 
     return if bets.size == 0
 
-    puts users_totals
-    puts users_wins
     # Persist results
     User.db_query(
         "UPDATE stats.general
