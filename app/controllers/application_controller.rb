@@ -189,8 +189,12 @@ Request information:
   # TODO PERF Do it in the background in batches. GmSys.job
   def check_referer
     if params[:rusid]
-      Stats.register_referer(params[:rusid].to_i, self.remote_ip,
-      request.env['HTTP_REFERER'])
+      begin
+        Stats.delay.register_referer(
+            params[:rusid].to_i, self.remote_ip, request.env["HTTP_REFERER"])
+      rescue ActiveRecord::RecordNotFound
+        Rails.logger.warn("No user found with id #{params[:rusid]}")
+      end
     end
   end
 

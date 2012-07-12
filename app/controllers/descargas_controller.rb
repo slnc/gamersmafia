@@ -18,8 +18,17 @@ class DescargasController < InformacionController
 
   def _after_show
     if @download
-      paths, navpath = get_category_address(@download.main_category, 'DownloadsCategory')
-      @navpath = navpath + [[@download.title, "/descargas/#{@download.main_category.id}/#{@download.id}"],]
+      paths, navpath = get_category_address(
+          @download.main_category, 'DownloadsCategory')
+      if navpath.nil?
+        Rails.logger.warn("No navpath found for #{@download}")
+        @navpath = []
+      else
+        @navpath = navpath + [
+            [@download.title,
+             "/descargas/#{@download.main_category.id}/#{@download.id}"]
+        ]
+      end
       @title = @download.title
     end
   end
