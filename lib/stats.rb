@@ -5,9 +5,17 @@ module Stats
 
     end
 
+    # Returns Array where each element is an int with the karma generated on
+    # that given day. [0] is the furthest day in the requested interval.
     def self.daily_karma(portal, s, e)
-      sql_created = "created_on BETWEEN '#{s.strftime('%Y-%m-%d')}' AND '#{e.strftime('%Y-%m-%d')}'"
-      User.db_query("SELECT karma FROM stats.portals WHERE portal_id = #{portal.id} AND #{sql_created} ORDER BY created_on").collect { |dbr| dbr['karma'].to_i }
+      sql_created = "created_on BETWEEN '#{s.strftime('%Y-%m-%d')}'
+                                    AND '#{e.strftime('%Y-%m-%d')}'"
+      User.db_query(
+          "SELECT karma
+             FROM stats.portals
+            WHERE portal_id = #{portal.id}
+              AND #{sql_created}
+         ORDER BY created_on").collect { |dbr| dbr['karma'].to_i }
     end
 
     def self.daily_pageviews(portal, s, e)
@@ -28,7 +36,6 @@ module Stats
       const_get(metric).new.data(s, e, trunc)
     end
 
-
     class Base
       def data(tstart, tend, trunc)
         _data(tstart, tend, trunc)
@@ -41,13 +48,13 @@ module Stats
       end
     end
     """
-    select series.date,
+    SELECT series.date,
            count(date_trunc('day', content_ratings.created_on))
       from (select generate_series(0,31) + '2008-05-05'::date as date) as series
  left outer join content_ratings on series.date = date_trunc('day', content_ratings.created_on)
  where content_ratings.created_on between '2008-05-05 00:00:00'::timestamp and ('2008-05-05 00:00:00'::timestamp + '4 days'::interval)::timestamp
- group by series.date
- order by series.date;
+ GROUP BY series.date
+ ORDER BY series.date;
 
 
     select (current_date - '31 days'::interval)::date + s.t as dates,

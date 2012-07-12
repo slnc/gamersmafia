@@ -35,13 +35,9 @@ class Comment < ActiveRecord::Base
       end
     end
 
-    # users = User.db_query("SELECT login FROM users").collect { |dbu| dbu['login'].downcase } if users == []
     references = self.comment.slnc_tokenize & users.keys
     ne_refs = []
     references.uniq.each do |ref|
-      # puts "-- ref: #{ref}"
-      # puts ref, users[ref], users[ref][1]
-
       ne_refs<< NeReference.create(:entity_class => users[ref][0][0], :entity_id => users[ref][0][1], :referencer_class => 'Comment', :referencer_id => self.id, :referenced_on => self.created_on)
     end
     ne_refs

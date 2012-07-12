@@ -19,7 +19,7 @@ namespace :gm do
     new_accounts_cleanup
     check_ladder_matches
     update_portals_hits_stats
-    provocar_golpes_de_estado
+    Faction.check_daily_karma
     forget_old_tracker_items
     forget_old_pageviews
     forget_old_autologin_keys
@@ -181,65 +181,6 @@ namespace :gm do
     CacheObserver.expire_fragment("/common/gnav/#{Time.now.strftime('%Y-%m-%d')}")
   end
 
-
-
-  def provocar_golpes_de_estado
-    require "#{Rails.root}/app/controllers/application_controller" # necesario por llamada a ApplicationController
-    mrcheater = User.find_by_login!('MrCheater')
-    if [7, 8].include?(Time.now.month)
-      days = 12
-    else
-      days = 6
-    end
-
-    Faction.find(:all, :conditions => "code IN (
-select (select code from portals where id = stats.portals.portal_id)
-  from stats.portals
- where portal_id in (select id
-                       from portals
-                      where code in (select code
-                                       from games UNION
-                                     select code from platforms))
-   and created_on >= now() - '#{days+1} days'::interval
- group by portal_id
-having portal_id in (select id
-                       from portals
-                      where code in (select code
-                                       from factions
-                                      where created_on < now() - '14 days'::interval
-                                        and id IN #{Faction.factions_ids_with_bigbosses}))
-             AND sum(karma) = 0)").each do |f|
-      # avisamos de que mañana se provocará golpe de estado si no hacen nada
-      [f.boss, f.underboss].each do |u|
-        next if u.nil?
-        m = Message.create(:user_id_from => mrcheater.id, :user_id_to => u.id, :title => 'Peligro: Golpe de estado inminente', :message => "Han pasado 6 días sin generarse ni un comentario o contenido en la facción #{f.name}. Si la situación no cambia hoy perderás el control de la facción.")
-      end
-    end
-
-    Faction.find(:all, :conditions => "code IN (
-select (select code from portals where id = stats.portals.portal_id)
-  from stats.portals
- where portal_id in (select id
-                       from portals
-                      where code in (select code
-                                       from games UNION
-                                     select code from platforms))
-   and created_on >= now() - '#{days+3} days'::interval
- group by portal_id
-having portal_id in (select id
-                       from portals
-                      where code in (select code
-                                       from factions
-                                      where created_on < now() - '15 days'::interval
-                                       and id IN #{Faction.factions_ids_with_bigbosses}))
-             AND sum(karma) = 0)").each do |f|
-      # mrCheater provoca golpe de estado publicando un tópic al respecto
-      Rails.logger.info("golpe de estado a #{f.name}")
-      f.golpe_de_estado
-    end
-  end
-
-
   def check_ladder_matches
     # 1 week old and still unaccepted
     Ladder.find(:all, :conditions => ['state = ?', Competition::STARTED]).each do |l|
@@ -256,7 +197,6 @@ having portal_id in (select id
               u, {:match => m, :participant => m.participant2}).deliver
         end
       end
-
 
       # 3 weeks old and still unaccepted, 2 warning
       l.matches(:unapproved, :conditions => 'accepted is false and updated_on < now() - \'3 weeks\'::interval and updated_on > now() - \'1 month\'::interval').each do |m|
