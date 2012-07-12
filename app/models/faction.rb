@@ -11,7 +11,7 @@ class Faction < ActiveRecord::Base
 
   after_save :update_img_files
 
-  after_create :notify_capos_on_create # TODO mover a otro sitio
+  after_create :notify_capos_on_create  # TODO mover a otro sitio
 
   has_users_role 'Moderator'
   has_users_role 'Boss'
@@ -19,10 +19,80 @@ class Faction < ActiveRecord::Base
 
   GRACE_DAYS = 7
 
+  # Factions permanent are out of the grace period where they can be deleted.
+  scope :permanent, :conditions => [
+      "created_on <= NOW() - '? days'::interval", GRACE_DAYS]
+
+  scope :orphan, :conditions => [
+      "(SELECT COUNT(*)
+        FROM users_roles
+        WHERE role IN ('Boss', 'Underboss')
+        AND role_data = factions.id::text) = 0"]
+
+  scope :parented, :conditions => [
+      "(SELECT COUNT(*)
+        FROM users_roles
+        WHERE role IN ('Boss', 'Underboss')
+        AND role_data = factions.id::text) > 0"]
+
   before_destroy :set_users_faction_id_to_nil
   before_destroy :destroy_editors_too
   before_destroy :destroy_related_portals
   after_save :update_related_portal
+
+  validates_format_of :code, :with => /^[a-z0-9]{1,7}$/
+  validates_format_of :name, :with => /^[a-z0-9':[:space:]-]{1,36}$/i
+  validates_uniqueness_of :code
+  validates_uniqueness_of :name
+
+  # Checks daily karma for each faction. Factions with bosses that haven't
+  # generated karma for some time will receive a warning or a coup d'etat from
+  # MrCheater.
+  def self.check_daily_karma
+    Faction.parented.permanent.find(:all, :order => "id").each do |faction|
+      karma_last_two_weeks = Stats::Portals.daily_karma(
+          faction.my_portal, 14.days.ago, 1.day.ago)
+      if karma_last_two_weeks.size == 0
+        Rails.logger.warn(
+            "No daily stats found for #{faction}. Ignoring checks.")
+        next
+      end
+
+      sum_two_weeks = karma_last_two_weeks.sum
+      sum_last_week = karma_last_two_weeks[6..-1].sum
+      age_current_boss = faction.boss_age_days
+      if sum_two_weeks == 0
+        Rails.logger.warn("Coup d'etat to '#{faction}'")
+        faction.golpe_de_estado
+      elsif sum_last_week == 0
+        Rails.logger.warn("Sent coup d'etat warning to '#{faction}'")
+        faction.send_warning_coup_detat
+      end
+    end
+  end
+
+  # Returns number of days that the current boss has been a boss.
+  # If the faction has no boss an exception is raised
+  def boss_age_days
+    boss_roles = self._role('Boss')
+    raise "Faction #{self} has no boss." unless boss_roles.size > 0
+    ((Time.now - boss_roles[0].created_on) / 86400).floor
+  end
+
+  def send_warning_coup_detat
+    mrcheater = User.find_by_login!("MrCheater")
+    [self.boss, self.underboss].compact.each do |user|
+      Message.create({
+          :user_id_from => mrcheater.id,
+          :user_id_to => user.id,
+          :title => "Peligro: Golpe de estado inminente",
+          :message => (
+              "Han pasado muchos días sin generarse karma en tu facción (" +
+              "#{self.name}). Si no se genera karma en la próxima semana" +
+              " perderás el control de la facción.")
+      })
+    end
+  end
 
   def self.update_factions_cohesion
     Faction.find(:all, :order => 'id').each do |f|
@@ -33,7 +103,8 @@ class Faction < ActiveRecord::Base
   end
 
   def has_building?
-    File.exists?("#{Rails.root}/public/storage/factions/#{self.id}/building_top.png")
+    File.exists?(
+        "#{Rails.root}/public/storage/factions/#{self.id}/building_top.png")
   end
 
   # TODO migrate them to files
@@ -63,6 +134,10 @@ class Faction < ActiveRecord::Base
     true
   end
 
+  def my_portal
+    FactionsPortal.find_by_code!(self.code)
+  end
+
   def destroy_related_portals
     self.portals.clear
     portal = FactionsPortal.find_by_code(self.code)
@@ -71,25 +146,43 @@ class Faction < ActiveRecord::Base
   end
 
   def destroy_editors_too
-    UsersRole.find(:all, :conditions => ["role = 'Editor' AND role_data LIKE E'%%faction_id: #{self.id}\\n%%'"]).each do |ur|
-      ur.destroy
+    UsersRole.find(
+        :all,
+        :conditions => [
+            "role = 'Editor'
+         AND role_data LIKE E'%%faction_id: #{self.id}\\n%%'"]).each do |role|
+      role.destroy
     end
     true
   end
 
   def moderators
-    UsersRole.find(:all, :conditions => ["role = 'Moderator' AND role_data = ?", self.id.to_s], :include => :user, :order => 'lower(users.login)').collect { |ur| ur.user }
+    UsersRole.find(
+        :all,
+        :conditions => [
+              "role = 'Moderator' AND role_data = ?", self.id.to_s],
+        :include => :user,
+        :order => "LOWER(users.login)").collect {|ur| ur.user }
   end
 
   def set_users_faction_id_to_nil
-    self.users.each { |u| Factions.user_joins_faction(u, nil) }
+    self.users.each {|u| Factions.user_joins_faction(u, nil)}
     [:boss_user_id, :underboss_user_id].each do |s|
-      User.db_query("UPDATE users SET cache_is_faction_leader = NULL WHERE id = #{self.send(s)}") if self.send(s)
+      if self.send(s)
+        User.db_query(
+            "UPDATE users
+                SET cache_is_faction_leader = NULL
+              WHERE id = #{self.send(s)}")
+      end
     end
   end
 
   def is_moderator?(u)
-    u.has_admin_permission?(:capo) || UsersRole.count(:conditions => ["role IN ('Boss', 'Underboss', 'Moderator') AND role_data = ? AND user_id = ?", self.id.to_s, u.id]) > 0
+    (u.has_admin_permission?(:capo) ||
+     UsersRole.count(
+        :conditions => [
+            "role IN ('Boss', 'Underboss', 'Moderator')
+         AND role_data = ? AND user_id = ?", self.id.to_s, u.id]) > 0)
   end
 
   def is_editor_of_content_type?(u, content_type)
@@ -100,7 +193,11 @@ class Faction < ActiveRecord::Base
     return true if user.has_admin_permission?(:capo)
     if self.is_bigboss?(user)
       true
-    elsif UsersRole.count(:conditions => ["role = 'Editor' AND user_id = ? AND role_data LIKE E'%%faction_id: #{self.id}\\n%%'", user.id]) != 0
+    elsif UsersRole.count(
+        :conditions => [
+            "role = 'Editor'
+         AND user_id = ?
+         AND role_data LIKE E'%%faction_id: #{self.id}\\n%%'", user.id]) != 0
       true
     else
       false
@@ -155,22 +252,27 @@ class Faction < ActiveRecord::Base
     urs = _role(role)
     prev = urs.size > 0 ? urs[0] : nil
 
-    # cambia si no habia don y ahora hay, si habia y ahora no o si no es el mismo
-    changed = ((newuser.nil? && prev) || (newuser && prev.nil?) || (newuser && prev && newuser.id != prev.user_id))
-    return true unless changed
+    # cambia si no habia don y ahora hay, si habia y ahora no o si no es el
+    # mismo.
+    changed = ((newuser.nil? && prev) ||
+               (newuser && prev.nil?) ||
+               (newuser && prev && newuser.id != prev.user_id))
+    if !changed
+      Rails.logger.warn("User role didn't change, not doing anything.")
+      return true
+    end
 
-    #raise "hola"
-    if newuser # le quitamos los roles viejos como don/mano_derecha
-      UsersRole.find(:all, :conditions => ["role IN ('Boss', 'Underboss') AND user_id = ?", newuser.id]).each do |ur|
-        ur.destroy
-        SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :reviewer_user_id => User.find_by_login('MrAchmed').id, :headline => "Eliminado permiso <strong>#{ur.role}</strong> de #{Faction.find(ur.role_data.to_i).name} a #{newuser.login} por hacerse boss en <strong>#{self.code}</strong>", :completed_on => Time.now)
-      end
+    if newuser
+      self.remove_boss_incompatible_user_roles(newuser)
 
       if newuser.faction_id != self.id
         Factions.user_joins_faction(newuser, self)
-        newuser = User.find(newuser.id) # we need this because faction_id appears as changed and that will delete permissions at the next update_attributes
+        # we need this because faction_id appears as changed and that will
+        # delete permissions at the next update_attributes
+        newuser = User.find(newuser.id)
       end
-      ur = UsersRole.create(:role => role, :role_data => self.id.to_s, :user_id => newuser.id)
+      ur = UsersRole.create(
+        :role => role, :role_data => self.id.to_s, :user_id => newuser.id)
 
       newuser.update_attributes(:cache_is_faction_leader => 't')
     end
@@ -180,71 +282,140 @@ class Faction < ActiveRecord::Base
       prev.destroy
     end
 
-    # self.update_attributes("#{role.downcase}_id" => newuser)
-
-    SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :reviewer_user_id => User.find_by_login('MrAchmed').id, :headline => "Actualizado #{role} de #{self.name} a #{newuser.nil? ? 'nadie' : newuser.login}", :completed_on => Time.now)
+    dst_role_name = newuser.nil? ? 'nadie' : newuser.login
+    SlogEntry.create(
+        :type_id => SlogEntry::TYPES[:info],
+        :reviewer_user_id => User.find_by_login('MrAchmed').id,
+        :headline => "Actualizado #{role} de #{self.name} a #{dst_role_name}",
+        :completed_on => Time.now)
   end
+
+  def remove_boss_incompatible_user_roles(user)
+    UsersRole.find(
+        :all,
+        :conditions => ["role IN ('Boss', 'Underboss') AND user_id = ?",
+                        user.id]).each do |ur|
+        ur.destroy
+        SlogEntry.create(
+          :type_id => SlogEntry::TYPES[:info],
+          :reviewer_user_id => User.find_by_login('MrAchmed').id,
+          :headline => (
+            "Eliminado permiso <strong>#{ur.role}</strong> de" +
+            " #{Faction.find(ur.role_data.to_i).name} a #{user.login}" +
+            " por hacerse boss en <strong>#{self.code}</strong>"),
+            :completed_on => Time.now)
+    end
+
+  end
+
 
   def update_boss(newuser)
     @_cache_boss = nil
-    update_single_person_staff(newuser, 'Boss')
+    self.update_single_person_staff(newuser, 'Boss')
   end
 
   def update_underboss(newuser)
     @_cache_underboss = nil
-    update_single_person_staff(newuser, 'Underboss')
+    self.update_single_person_staff(newuser, 'Underboss')
   end
 
   def _role(role)
-    UsersRole.find(:all, :conditions => ['role = ? AND role_data = ?', role, self.id.to_s], :include => :user)
+    UsersRole.find(
+        :all,
+        :conditions => ['role = ? AND role_data = ?', role, self.id.to_s],
+        :include => :user)
   end
 
   def editors(content_type=nil)
     if content_type.nil?
-      UsersRole.find(:all, :conditions => "role = 'Editor' AND role_data LIKE E'%faction_id: #{self.id}\\n%'", :include => :user, :order => 'lower(users.login)').collect do |ur|
+      UsersRole.find(
+          :all,
+          :conditions => "role = 'Editor'
+                          AND role_data LIKE E'%faction_id: #{self.id}\\n%'",
+          :include => :user,
+          :order => 'LOWER(users.login)').collect do |ur|
         [ContentType.find(ur.role_data_yaml[:content_type_id].to_i), ur.user]
       end
     else
-      UsersRole.find(:all, :conditions => "role = 'Editor' AND role_data LIKE E'%faction_id: #{self.id}\\n%' AND role_data LIKE E'%content_type_id: #{content_type.id}\\n%'", :include => :user, :order => 'lower(users.login)').collect do |ur|
+      UsersRole.find(
+          :all,
+          :conditions => (
+              "role = 'Editor'
+               AND role_data LIKE E'%faction_id: #{self.id}\\n%'
+               AND role_data LIKE E'%content_type_id: #{content_type.id}\\n%'"),
+          :include => :user,
+          :order => 'LOWER(users.login)').collect do |ur|
         ur.user
       end
     end
   end
 
   def add_moderator(user)
-    if UsersRole.count(:conditions => ["role = 'Moderator' AND user_id = ? AND role_data = ?", user.id, self.id.to_s]) == 0
-      ur = UsersRole.new(:role => 'Moderator', :user_id => user.id, :role_data => self.id.to_s)
+    if UsersRole.count(
+        :conditions => ["role = 'Moderator' AND user_id = ? AND role_data = ?",
+                        user.id, self.id.to_s]) == 0
+      ur = UsersRole.new(
+          :role => 'Moderator', :user_id => user.id, :role_data => self.id.to_s)
       ur.save
     end
   end
 
   def del_moderator(user)
-    ur = UsersRole.find(:first, :conditions => ["role = 'Moderator' AND user_id = ? AND role_data = ?", user.id, self.id.to_s])
+    ur = UsersRole.find(
+        :first,
+        :conditions => ["role = 'Moderator' AND user_id = ? AND role_data = ?",
+                        user.id, self.id.to_s])
     ur.destroy if ur
   end
 
   def add_editor(user, content_type)
-    if UsersRole.count(:conditions => ["role = 'Editor' AND user_id = ? AND role_data LIKE E'%%faction_id: #{self.id}\\n%%' AND role_data LIKE E'%%content_type_id: #{content_type.id}\\n%%'", user.id]) == 0
-      ur = UsersRole.new(:role => 'Editor', :user_id => user.id, :role_data => {:faction_id => self.id, :content_type_id => content_type.id}.to_yaml)
+    if UsersRole.count(
+        :conditions => [
+            "role = 'Editor'
+             AND user_id = ?
+             AND role_data LIKE E'%%faction_id: #{self.id}\\n%%'
+             AND role_data LIKE E'%%content_type_id: #{content_type.id}\\n%%'",
+             user.id]) == 0
+      ur = UsersRole.new(
+          :role => 'Editor',
+          :user_id => user.id,
+          :role_data => {
+              :faction_id => self.id,
+              :content_type_id => content_type.id
+          }.to_yaml)
       ur.save
     end
   end
 
   def del_editor(user, content_type)
-    ur = UsersRole.find(:first, :conditions => ["role = 'Editor' AND user_id = ? AND role_data LIKE E'%%faction_id: #{self.id}\\n%%' AND role_data LIKE E'%%content_type_id: #{content_type.id}\\n%%'", user.id])
+    ur = UsersRole.find(
+        :first,
+        :conditions => [
+            "role = 'Editor'
+             AND user_id = ?
+             AND role_data LIKE E'%%faction_id: #{self.id}\\n%%'
+             AND role_data LIKE E'%%content_type_id: #{content_type.id}\\n%%'",
+            user.id])
     ur.destroy if ur
   end
 
   def notify_capos_on_create
-    SlogEntry.create({:type_id => SlogEntry::TYPES[:info], :headline => "Nueva facción creada <strong><a href=\"#{Routing.gmurl(self)}\">#{self.name}</a></strong>."})
+    SlogEntry.create({
+        :type_id => SlogEntry::TYPES[:info],
+        :headline => (
+            "Nueva facción creada <strong><a href=\"#{Routing.gmurl(self)}\">" +
+            "#{self.name}</a></strong>.")
+    })
   end
 
   def pib
-    User.db_query("SELECT sum(cash) FROM users WHERE faction_id = #{self.id}")[0]['sum'].to_f
+    User.db_query(
+        "SELECT sum(cash) FROM users WHERE faction_id = #{self.id}"
+    )[0]['sum'].to_f
   end
 
   def to_s
-    name
+    "Faction id: #{id}, name: #{name}"
   end
 
   def needs_you
@@ -390,7 +561,12 @@ class Faction < ActiveRecord::Base
   end
 
   def self.top_cohesion(limit=3)
-    Faction.find(:all, :conditions => 'cache_member_cohesion is not null and cache_member_cohesion > 0', :order => 'cache_member_cohesion DESC', :limit => limit)
+    Faction.find(
+        :all,
+        :conditions => "cache_member_cohesion IS NOT NULL
+                        AND cache_member_cohesion > 0",
+        :order => 'cache_member_cohesion DESC',
+        :limit => limit)
   end
 
   def building_top=(incoming_file)
@@ -424,7 +600,10 @@ class Faction < ActiveRecord::Base
       FileUtils.mkdir_p(basedir)
     end
 
-    for c in [[@temp_file_building_top, @filename_building_top, 'building_top'], [@temp_file_building_middle, @filename_building_middle, 'building_middle'], [@temp_file_building_bottom, @filename_building_bottom, 'building_bottom']]
+    for c in [
+        [@temp_file_building_top, @filename_building_top, 'building_top'],
+        [@temp_file_building_middle, @filename_building_middle, 'building_middle'],
+        [@temp_file_building_bottom, @filename_building_bottom, 'building_bottom']]
       if c[0] and c[1] != ''
         File.open("#{basedir}/#{c[2]}.png", "wb+") do |f|
           f.write(c[0].read)
@@ -451,10 +630,15 @@ class Faction < ActiveRecord::Base
   end
 
   def rank_members
-    # devuelve el rango que ocupa la facción en cuanto a número de usuarios registrados
+    # devuelve el rango que ocupa la facción en cuanto a número de usuarios
+    # registrados.
     i = 1
 
-    for f in Faction.db_query('select a.id, count(b.id) from factions a join users b on a.id = b.faction_id group by a.id order by count(b.id)')
+    for f in Faction.db_query(
+        "SELECT a.id, count(b.id)
+         FROM factions a
+         JOIN users b ON a.id = b.faction_id
+         GROUP BY a.id ORDER BY count(b.id)")
       if f['id'].to_i == self.id then
         break
       end
@@ -470,7 +654,10 @@ class Faction < ActiveRecord::Base
     if is_bigboss?(user)
       true
     else
-      UsersRole.count(:conditions => ["role = 'Moderator' AND user_id = ? AND role_data = ?", user.id, self.id.to_s]) != 0
+      UsersRole.count(
+          :conditions => ["role = 'Moderator'
+                           AND user_id = ?
+                           AND role_data = ?", user.id, self.id.to_s]) != 0
     end
   end
 
@@ -479,10 +666,15 @@ class Faction < ActiveRecord::Base
       u_ids = [0] # user_ids
       three_months_ago = 3.months.ago
       self.users.each { |u| u_ids<< u.id if u.lastseen_on >= three_months_ago }
-      dbt = User.db_query("SELECT count(*) FROM friendships WHERE sender_user_id IN (#{u_ids.join(',')}) AND receiver_user_id IN (#{u_ids.join(',')}) AND accepted_on IS NOT NULL")
+      dbt = User.db_query(
+          "SELECT count(*)
+           FROM friendships
+           WHERE sender_user_id IN (#{u_ids.join(',')})
+           AND receiver_user_id IN (#{u_ids.join(',')})
+           AND accepted_on IS NOT NULL")
       max_rels = 1
       Range.new(2, u_ids.size - 1).each { |s| max_rels += s }
-      max_rels *= 2 # la amistad va en 2 direcciones
+      max_rels *= 2  # la amistad va en 2 direcciones
       self.cache_member_cohesion = dbt[0]['count'].to_f / (max_rels)
     end
     self.cache_member_cohesion
@@ -494,26 +686,33 @@ class Faction < ActiveRecord::Base
 
   def golpe_de_estado
     mrcheater = User.find_by_login('mrcheater')
-
-    root_term = Term.single_toplevel(self.referenced_thing_field => self.referenced_thing.id)
+    root_term = Term.single_toplevel(
+        self.referenced_thing_field => self.referenced_thing.id)
 
     cat = root_term.children.find_by_name('General')
-    if cat.nil? # si no hay General buscamos cualquier otra
-      cat = root_term.children.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'')
+    if cat.nil?  # si no hay General buscamos cualquier otra
+      cat = root_term.children.find(
+          :first, :conditions => "taxonomy = 'TopicsCategory'")
     end
 
     who = self.boss ? self.boss.login : self.underboss.login
-    t = Topic.create(:user_id => mrcheater.id,
-                     :title => "¡Golpe de estado! ¡Abajo #{who}!",
-    :terms => cat.id,
-    :main => Comments::formatize("[IMG]http://gamersmafia.com/images/golpe_de_estado.jpg[/IMG]\n[~#{who}] no es un buen líder, no presta atención a la facción y los usuarios han hablado. ¡Quieren un cambio!\n¡Por esta razón y con el poder que el poder en la sombra me ha otorgado declaro esta facción libre de boss y underboss!\n\nCualquiera que desee hacerse cargo de esta facción puede comprarla en la tienda."))
+    t = Topic.create(
+        :user_id => mrcheater.id,
+        :title => "¡Golpe de estado! ¡Abajo #{who}!",
+        :terms => cat.id,
+        :main => Comments::formatize("[IMG]http://gamersmafia.com/images/golpe_de_estado.jpg[/IMG]\n[~#{who}] no es un buen líder, no presta atención a la facción y los usuarios han hablado. ¡Quieren un cambio!\n¡Por esta razón y con el poder que el poder en la sombra me ha otorgado declaro esta facción libre de boss y underboss!\n\nCualquiera que desee hacerse cargo de esta facción puede comprarla en la tienda."))
 
     # les enviamos un mensaje privado para notificarselo (desde MrCheater)
     sent_uids = []
     [self.boss, self.underboss].each do |u|
       next if u.nil?
       sent_uids << u.id
-      Message.create(:user_id_from => mrcheater.id, :user_id_to => u.id, :title => 'Golpe de estado', :message => 'Más información en ' << Routing.url_for_content_onlyurl(t))
+      Message.create(
+          :user_id_from => mrcheater.id,
+          :user_id_to => u.id,
+          :title => 'Golpe de estado',
+          :message => 'Más información en ' << Routing.url_for_content_onlyurl(t)
+      )
     end
 
     # quitamos al boss y al underboss
@@ -522,9 +721,13 @@ class Faction < ActiveRecord::Base
 
     # mandamos un email de notificación a los miembros
     self.members.each do |m|
-      next if sent_uids.include?(m.id) # si ya hemos enviado al boss/underboss
-      # next unless m.notifications_global
-      Message.create(:user_id_from => mrcheater.id, :user_id_to => m.id, :title => "Golpe de estado en #{self.name}", :message => 'Más información en ' << Routing.url_for_content_onlyurl(t))
+      next if sent_uids.include?(m.id)  # si ya hemos enviado al boss/underboss
+      Message.create(
+          :user_id_from => mrcheater.id,
+          :user_id_to => m.id,
+          :title => "Golpe de estado en #{self.name}",
+          :message => "Más información en #{Routing.url_for_content_onlyurl(t)}"
+      )
     end
   end
 
@@ -532,17 +735,18 @@ class Faction < ActiveRecord::Base
     return true if user.is_superadmin || user.has_admin_permission?(:capo)
     if self.is_bigboss?(user)
       true
-    elsif UsersRole.count(:conditions => ["role = 'Editor' AND user_id = ? AND role_data LIKE E'%%faction_id: #{self.id}\\n%%' AND role_data LIKE E'%%content_type_id: #{content_type.id}\\n%%'", user.id]) != 0
+    elsif UsersRole.count(
+        :conditions => [
+            "role = 'Editor'
+             AND user_id = ?
+             AND role_data LIKE E'%%faction_id: #{self.id}\\n%%'
+             AND role_data LIKE E'%%content_type_id: #{content_type.id}\\n%%'",
+            user.id]) != 0
       true
     else
       false
     end
   end
-
-  validates_format_of :code, :with => /^[a-z0-9]{1,7}$/
-  validates_format_of :name, :with => /^[a-z0-9':[:space:]-]{1,36}$/i
-  validates_uniqueness_of :code
-  validates_uniqueness_of :name
 
   def self.find_by_boss(u)
     ur = u.users_roles.find(:first, :conditions => 'role IN (\'Boss\')')
@@ -579,5 +783,3 @@ class Faction < ActiveRecord::Base
     "(SELECT role_data::int4 FROM users_roles WHERE role IN ('Boss', 'Underboss'))"
   end
 end
-
-# top  visitas gamersmafia_replicated=# select count(*), (select code from factions where code = (select code from portals where id = stats.pageviews.portal_id)) from stats.pageviews where portal_id in (select id from portals where code in (select code from factions)) and created_on >= now() - '1 month'::interval group by portal_id order by count(*) desc limit 3;

@@ -3,8 +3,9 @@ require 'test_helper'
 class FactionTest < ActiveSupport::TestCase
   test "has_building should work" do
     f1 = Faction.find(1)
-    BLDG_FILE = "touch #{Rails.root}/public/storage/factions/#{f1.id}/building_top.png"
-    system(BLDG_FILE) unless File.exists?(BLDG_FILE)
+    touch_bldg_file = (
+        "touch #{Rails.root}/public/storage/factions/#{f1.id}/building_top.png")
+    system(touch_bldg_file) unless File.exists?(touch_bldg_file)
     assert f1.has_building?
   end
 
@@ -72,13 +73,15 @@ class FactionTest < ActiveSupport::TestCase
     Factions.user_joins_faction(User.find(3), f1.id)
 
     m = Message.count
-    tgen = Term.single_toplevel(:slug => f1.code).children.find(:first, :conditions => ['taxonomy = \'TopicsCategory\' AND name = \'General\''])
+    tgen = Term.single_toplevel(:slug => f1.code).children.find(
+        :first,
+        :conditions => ["taxonomy = 'TopicsCategory' AND name = 'General'"])
     topics_count = tgen.contents_count(:cls_name => 'Topic')
     assert_count_increases(Topic) do
       f1.golpe_de_estado
     end
     assert_equal topics_count + 1, tgen.contents_count(:cls_name => 'Topic')
-    assert_equal m + 3, Message.count # un mensaje al boss y otro al miembro
+    assert_equal m + 3, Message.count  # un mensaje al boss y otro al miembro
 
     f1.reload
     assert_nil f1.boss
@@ -121,5 +124,45 @@ class FactionTest < ActiveSupport::TestCase
   test "karma_points_should_work_correctly" do
     f1 = Faction.find(1)
     assert_equal 1745, f1.karma_points
+  end
+
+  test "check_daily_karma smoke test" do
+    Faction.find(1)
+    Faction.check_daily_karma
+  end
+
+  test "check_daily_karma faction generated karma" do
+    faction = Faction.find(1)
+    boss_user = User.find(1)
+    faction.update_boss(boss_user)
+    assert_equal boss_user, faction.boss
+    Stats::Portals.expects(:daily_karma).at_least(1).returns([1]*14)
+    Faction.check_daily_karma
+    faction.reload
+    assert_equal boss_user, faction.boss
+  end
+
+  test "check_daily_karma faction no karma generated in 2 weeks" do
+    faction = Faction.find(1)
+    boss_user = User.find(1)
+    faction.update_boss(boss_user)
+    assert_equal boss_user, faction.boss
+    Stats::Portals.expects(:daily_karma).at_least(1).returns([0]*14)
+    Faction.check_daily_karma
+    faction.reload
+    assert_nil faction.boss
+  end
+
+  test "check_daily_karma faction no karma generated in 1 week" do
+    faction = Faction.find(1)
+    boss_user = User.find(1)
+    faction.update_boss(boss_user)
+    assert_equal boss_user, faction.boss
+    Stats::Portals.expects(:daily_karma).at_least(1).returns([1]+[0]*13)
+    message_count = Message.count
+    Faction.check_daily_karma
+    assert Message.count > message_count
+    faction.reload
+    assert_equal boss_user, faction.boss
   end
 end
