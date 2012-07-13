@@ -217,16 +217,15 @@ class TermTest < ActiveSupport::TestCase
 
   test "get_or_resolve_last_updated_item_id" do
     a_term = Term.single_toplevel(:slug => "ut")
-    item = a_term.get_or_resolve_last_updated_item
-    assert_equal 1, item.id
+    original_last_item = a_term.get_or_resolve_last_updated_item
 
-    Cms::modify_content_state(item, User.find(1), Cms::DELETED)
+    Cms::modify_content_state(original_last_item, User.find(1), Cms::DELETED)
 
     a_term.reload
-    item.reload
-    assert_equal Cms::DELETED, item.state
-    assert_equal Cms::DELETED, item.unique_content.state
-    assert_not_equal a_term.get_or_resolve_last_updated_item, item
+    original_last_item.reload
+    assert_equal Cms::DELETED, original_last_item.state
+    assert_equal Cms::DELETED, original_last_item.unique_content.state
+    assert_not_equal a_term.get_or_resolve_last_updated_item, original_last_item
   end
 
   test "should_update_parent_categories_counter" do

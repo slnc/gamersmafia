@@ -2,7 +2,10 @@ class FaccionController < ApplicationController
   allowed_portals [:faction]
   before_filter do |c|
     c.faction = Faction.find_by_code(c.portal.code)
-    raise ActiveRecord::RecordNotFound if c.faction.nil?
+    if c.faction.nil?
+      raise ActiveRecord::RecordNotFound
+      Rails.logger.error("Cannot find faction for portal #{c.portal.code}")
+    end
   end
   attr_accessor :faction
 

@@ -5,6 +5,10 @@ class Admin::HipotesisControllerTest < ActionController::TestCase
 
   def setup
     sym_login 1
+    # TODO(slnc): temporary hack. This test is failing when running rake test
+    # but not when running only this testcase
+    abtest = AbTest.find_by_id(1)
+    abtest.destroy if abtest
   end
 
   test "index" do

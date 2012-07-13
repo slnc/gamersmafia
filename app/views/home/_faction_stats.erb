@@ -1,5 +1,5 @@
-<% cache("/common/facciones/#{Time.now.strftime('%Y%m%d')}/stats/2_#{@cur_faction.id}") do %>
 <% if @cur_faction then %>
+<% cache("/common/facciones/#{Time.now.strftime('%Y%m%d')}/stats/2_#{@cur_faction.id}") do %>
 <%mftext('La Facción', :has_submodules => true) do %>
 	<div style="float: left;" class="mgimage-right"><%=draw_organization_building(controller.portal.factions[0], 2)%></div>
 	<%mftext('Karma', :blast => true) do %><div class="infoinline" style="float: left;"></div><div class="infoinline right"><%=number_with_delimiter(@cur_faction.karma_points, :delimiter => '.', :separator => '')%></div><% end -%>
