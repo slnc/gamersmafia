@@ -7,8 +7,10 @@ class Admin::HipotesisControllerTest < ActionController::TestCase
     sym_login 1
     # TODO(slnc): temporary hack. This test is failing when running rake test
     # but not when running only this testcase
-    abtest = AbTest.find_by_id(1)
-    abtest.destroy if abtest
+    [1, 2].each do |ab_test_id|
+      abtest = AbTest.find_by_id(ab_test_id)
+      abtest.destroy if abtest
+    end
   end
 
   test "index" do

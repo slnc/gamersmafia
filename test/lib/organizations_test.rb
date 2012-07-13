@@ -54,7 +54,10 @@ class OrganizationsTest < ActiveSupport::TestCase
     assert bdp
     assert_equal 1, bd.don.id
     assert_equal 2, bd.mano_derecha.id
-    assert_equal [3, 4], bd.sicarios.collect { |u| u.id }.sort
+    sicarios = bd.sicarios.collect { |u| u.id }
+    [3, 4].each do |user_id|
+      assert sicarios.include?(user_id)
+    end
 
     # TODO categorías viejas de contenidos tienen que haber cambiado
     # TODO las urls de los contenidos correctas

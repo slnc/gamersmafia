@@ -245,9 +245,9 @@ class CmsTest < ActiveSupport::TestCase
 
   test "parse_images_should_download_local_image_if_userdir" do
     FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
-    assert_equal "<img src=\"http://#{App.domain}/storage/wswg/0000/userfile.jpg\" />", Cms::parse_images("<img src=\"http://#{App.domain}/storage/users_files/0/0/userfile.jpg\" />", 'wswg/0000')
+    assert_equal "<img src=\"http://#{App.domain}/storage/users_files/0/0/userfile.jpg\" />", Cms::parse_images("<img src=\"http://#{App.domain}/storage/users_files/0/0/userfile.jpg\" />", 'wswg/0000')
     FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
-    assert_equal "<img src=\"http://#{App.domain}/storage/wswg/0000/userfile.jpg\" />", Cms::parse_images("<img src=\"/storage/users_files/0/0/userfile.jpg\" />", 'wswg/0000')
+    assert_equal "<img src=\"http://#{App.domain}/storage/users_files/0/0/userfile.jpg\" />", Cms::parse_images("<img src=\"/storage/users_files/0/0/userfile.jpg\" />", 'wswg/0000')
   end
 
   test "parse_images_should_thumbnail_and_put_a_link_image_if_shown_dimensions_differ_from_image_dimensions_and_no_link_around" do
@@ -300,7 +300,7 @@ class CmsTest < ActiveSupport::TestCase
     <a href="/storage/wswg/0000/3_dark_castle0.jpg"><img src="/cache/thumbnails/f/95x95/storage/wswg/0000/3_dark_castle0.jpg" /></a>
 
   lerebinonn
-    <img src="http://#{App.domain}/storage/wswg/0000/userfile.jpg" />
+    <img src="http://#{App.domain}/storage/users_files/0/0/userfile.jpg" />
   YEAH
   END
 
@@ -334,7 +334,7 @@ class CmsTest < ActiveSupport::TestCase
     <a href="/storage/wswg/0000/2_dark_castle0.jpg"><img src="/cache/thumbnails/f/95x95/storage/wswg/0000/2_dark_castle0.jpg" /></a>
 
   lerebinonn
-    <img src="http://#{App.domain}/storage/wswg/0000/userfile.jpg" />
+    <img src="http://#{App.domain}/storage/users_files/0/0/userfile.jpg" />
   YEAH
   END
 
