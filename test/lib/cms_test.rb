@@ -262,8 +262,8 @@ class CmsTest < ActiveSupport::TestCase
     FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
 
     output = Cms::parse_images('<div style="text-align: center;"><img style="width: 342px; height: 70px;" src="/storage/users_files/0/0/userfile.jpg">foo<img src="http://slnc.me/wp-content/uploads/2006/11/dark_castle0.jpg" class="flag" border="0"> ', 'wswg/0000')
-    assert output.include?("<img src=\"/cache/thumbnails/f/342x70/storage/wswg/0000/userfile.jpg\" />", output)
-    assert output.include?(" src=\"/storage/wswg/0000/dark_castle0.jpg\"", output)
+    assert output.include?("<img src=\"/cache/thumbnails/f/342x70/storage/wswg/0000/userfile.jpg\" />")
+    assert output.include?(" src=\"/storage/wswg/0000/dark_castle0.jpg\"")
   end
 
   test "parse_images_should_thumbnail_image_without_creating_link_if_shown_dimensions_differ_from_image_dimensions_and_has_link_around" do
