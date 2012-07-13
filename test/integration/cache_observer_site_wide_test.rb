@@ -27,8 +27,14 @@ class CacheObserverSiteWideTest < ActionController::IntegrationTest
   end
 
   test "should_clear_lasttopics_box_when_deleting_a_topic" do
+    User.db_query("UPDATE users SET created_on = NOW() - '1 month'::interval")
     sym_login 'superadmin', 'lalala'
-    create_content(:topic, { :title => 'topico titulado 2', :main => 'contenido del topicotitulado 2'}, :categories_terms => [Term.find(:first, :conditions => "taxonomy = 'TopicsCategory'").id])
+    a_forum = Term.find(:first, :conditions => "taxonomy = 'TopicsCategory'")
+    create_content(
+        :topic, {
+            :title => 'topico titulado 2',
+            :main => 'contenido del topicotitulado 2'},
+        :categories_terms => [a_forum.id])
     topic = Topic.find(:first, :order => 'id DESC')
     post_comment_on topic
     go_to '/'
@@ -41,7 +47,12 @@ class CacheObserverSiteWideTest < ActionController::IntegrationTest
 
   test "should_clear_lasttopics_box_when_deleting_a_content" do
     sym_login 'superadmin', 'lalala'
-    create_content(:news, { :title => 'topico titulado 2', :description => 'contenido del topicotitulado 2', :state => Cms::PUBLISHED }, :root_terms => 1)
+    create_content(
+        :news, {
+            :title => 'topico titulado 2',
+            :description => 'contenido del topicotitulado 2',
+            :state => Cms::PUBLISHED
+        }, :root_terms => 1)
     news = News.find(:first, :order => 'id DESC')
     news.state = Cms::PUBLISHED
     news.save

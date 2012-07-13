@@ -2,7 +2,6 @@ require 'test_helper'
 
 class CompeticionesControllerTest < ActionController::TestCase
 
-
   test "should_not_be_able_to_join_if_state_not_1" do
     [0, 2, 3, 4].each do |state|
       c = Competition.find(:first, :conditions => ['invitational is false and fee is null and competitions_participants_type_id = 1 and state = ? and type <> \'Ladder\'', state])
@@ -16,19 +15,26 @@ class CompeticionesControllerTest < ActionController::TestCase
   test "should_be_able_to_join_if_state_1_and_not_ladder" do
     c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and state = 1 and type <> \'Ladder\'')
     assert_not_nil c
-    get :join_competition, {:id => c.id}, {:user => 2}
+    sym_login 2
+    get :join_competition, {:id => c.id}
     assert_response :redirect
     u = User.find(2)
     assert_not_nil c.get_active_participant_for_user(u)
   end
 
   test "should_be_able_to_join_if_state_3_and_ladder" do
-    @c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and state = 3 and type = \'Ladder\'')
-    assert_not_nil @c
-    get :join_competition, {:id => @c.id}, {:user => 2}
-    assert_response :redirect
+    self.join_open_ladder
     u = User.find(2)
     assert_not_nil @c.get_active_participant_for_user(u)
+  end
+
+  def join_open_ladder
+    @c = Ladder.for_individuals.non_invitational.free_admission.find(
+        :first, :conditions => 'state = 3')
+    assert_not_nil @c
+    sym_login 2
+    get :join_competition, {:id => @c.id}
+    assert_response :redirect
   end
 
   test "should_set_active_competition_to_last_competition_used_when_joining_and_is_user" do
@@ -44,11 +50,13 @@ class CompeticionesControllerTest < ActionController::TestCase
     u.last_clan_id = 1
     u.save
     clan = Clan.find(1)
-    #    clan.add_user_to_group(u, 'clanleaders')
-    c = Competition.find(:first, :conditions => "invitational is false and fee is null and competitions_participants_type_id = #{Competition::CLANS} and state = 3 and type = 'Ladder'")
+    c = Ladder.free_admission.non_invitational.for_clans.find(
+        :first, :conditions => "state = 3")
     u.games<< c.game
     assert_not_nil c
-    get :join_competition, {:id => c.id}, {:user => 1}
+
+    sym_login 1
+    get :join_competition, {:id => c.id}
     assert_response :redirect
     assert_not_nil c.get_active_participant_for_user(u)
     last_competition_id = u.last_competition_id
@@ -63,7 +71,6 @@ class CompeticionesControllerTest < ActionController::TestCase
     u.last_clan_id = 1
     u.save
     clan = Clan.find(1)
-    #    clan.add_user_to_group(u, 'clanleaders')
 
     u.add_money(1000)
     clan.add_money(1000)
@@ -74,38 +81,29 @@ class CompeticionesControllerTest < ActionController::TestCase
 
       if c.invitational?
         if c.competitions_participants_type == 1
-          c.allowed_competitions_participants.create({:participant_id => u.id})
+          c.allowed_competitions_participants.create(:participant_id => u.id)
         else
-          c.allowed_competitions_participants.create({:participant_id => clan.id})
+          c.allowed_competitions_participants.create(:participant_id => clan.id)
         end
       end
 
-      #if c.competitions_participants_type == 1
-      #  p = c.competitions_participants.create({:participant_id => u.id, :name => u.login, :competitions_participants_type_id => c.competitions_participants_type_id, :roster => u.avatar})
-      #else
-      #  p = c.competitions_participants.create({:participant_id => clan.id, :name => clan.tag, :competitions_participants_type_id => c.competitions_participants_type_id, :roster => clan.competition_roster})
-      #end
-      get :join_competition, {:id => c.id}, {:user => 1}
+      sym_login 1
+      get :join_competition, {:id => c.id}
       assert_response :redirect
       p = c.get_active_participant_for_user(u)
       assert c.competitions_participants.find(p.id)
 
-
-      get :leave, {:id => c.id}, {:user => 1}
+      sym_login 1
+      get :leave, {:id => c.id}
       assert_response :redirect
-
-       (assert_equal orig_cash[p_type], p.the_real_thing.cash, "#{orig_cash[p_type]} vs #{p.the_real_thing.cash}") if c.fee?
+      if c.fee?
+        assert_equal(orig_cash[p_type], p.the_real_thing.cash,
+                     "#{orig_cash[p_type]} vs #{p.the_real_thing.cash}")
+      end
       assert_raises(ActiveRecord::RecordNotFound) do
         c.competitions_participants.find(p.id)
       end
     end
-  end
-
-  test "should_not_be_able_to_leave_if_state_not_1" do
-    # TODO
-    # c = Competition.find(:first, :conditions => 'state > 1')
-
-
   end
 
   test "index" do
@@ -160,57 +158,49 @@ class CompeticionesControllerTest < ActionController::TestCase
   end
 
   test "should_not_allow_to_see_ranking_when_in_a_tournament" do
-    c = Competition.find(:first, :conditions => 'state > 3 and type = \'Tournament\'')
+    c = Tournament.find(:first, :conditions => 'state > 3')
     assert_not_nil c
     assert_raises(ActiveRecord::RecordNotFound) { get :ranking, :id => c.id }
   end
 
   test "should_not_allow_to_see_ranking_when_in_a_ladder_not_started" do
-    c = Competition.find(:first, :conditions => 'state < 3 and type = \'Ladder\'')
+    c = Ladder.find(:first, :conditions => 'state < 3')
     assert_not_nil c
     assert_raises(ActiveRecord::RecordNotFound) { get :ranking, :id => c.id }
   end
 
   test "should_not_allow_to_see_ranking_when_in_a_league_not_started" do
-    c = Competition.find(:first, :conditions => 'state < 3 and type = \'League\'')
+    c = League.find(:first, :conditions => 'state < 3')
     assert_not_nil c
     assert_raises(ActiveRecord::RecordNotFound) { get :ranking, :id => c.id }
   end
 
   test "should_allow_to_see_ranking_when_in_a_league" do
-    c = Competition.find(:first, :conditions => 'state >= 3 and type = \'League\'')
+    c = League.find(:first, :conditions => 'state >= 3')
     assert_not_nil c
     get :ranking, :id => c.id
     assert_response :success
   end
 
   test "should_allow_to_see_ranking_when_in_a_ladder" do
-    c = Competition.find(:first, :conditions => 'state >= 3 and type = \'Ladder\'')
+    c = Ladder.find(:first, :conditions => 'state >= 3')
     assert_not_nil c
     get :ranking, :id => c.id
     assert_response :success
   end
 
   test "should_allow_to_see_partidas_when_in_a_ladder" do
-    c = Competition.find(:first, :conditions => 'state >= 3 and type = \'Ladder\'')
+    c = Ladder.find(:first, :conditions => 'state >= 3')
     assert_not_nil c
     get :partidas, :id => c.id
     assert_response :success
   end
 
-  test "should_not_allow_to_see_partidas_when_not_in_a_ladder_and_not_in_state_3" do
-    # TODO
-  end
-
-  test "should_allow_to_see_partidas_when_not_in_a_ladder_and_in_state_gt_or_eq_3" do
-    # TODO
-  end
-
-  # TODO test no challenging on non-ladders
-
   test "should_show_challenge_page_when_challenging_participant" do
-    test_should_be_able_to_join_if_state_3_and_ladder
-    get :join_competition, {:id => @c.id}, {:user => 3}
+    self.join_open_ladder
+
+    sym_login 3
+    get :join_competition, {:id => @c.id}
     assert_response :redirect
     @u3 = User.find(3)
     assert_not_nil @c.get_active_participant_for_user(@u3)
@@ -222,7 +212,10 @@ class CompeticionesControllerTest < ActionController::TestCase
   test "should_be_able_to_challenge_user" do
     test_should_show_challenge_page_when_challenging_participant
     cm_count = @c.competitions_matches.count
-    post :do_retar, { :id => @c.get_active_participant_for_user(@u3).id, :competitions_match => {:play_on => '', :servers =>  ''} }
+    post :do_retar, {
+        :id => @c.get_active_participant_for_user(@u3).id,
+        :competitions_match => {:play_on => '', :servers =>  ''}
+    }
     assert_response :redirect
     assert_equal cm_count + 1, @c.competitions_matches.count
   end
@@ -230,7 +223,9 @@ class CompeticionesControllerTest < ActionController::TestCase
   test "responder_reto" do
     test_should_be_able_to_challenge_user
     sym_login @u3.id
-    get :responder_reto, { :id => @c.competitions_matches.find(:first, :order => 'id desc').id }
+    get :responder_reto, {
+        :id => @c.competitions_matches.find(:first, :order => 'id desc').id
+    }
     assert_response :success
   end
 
@@ -238,7 +233,10 @@ class CompeticionesControllerTest < ActionController::TestCase
   test "cancelar_reto" do
     test_should_be_able_to_challenge_user
     cm = @c.competitions_matches.find(:first, :order => 'id desc')
-    post :cancelar_reto, {:participant1_id => cm.participant1_id, :participant2_id => cm.participant2_id}
+    post :cancelar_reto, {
+        :participant1_id => cm.participant1_id,
+        :participant2_id => cm.participant2_id
+    }
     assert_response :redirect
     assert_nil CompetitionsMatch.find_by_id(cm.id)
   end
@@ -288,21 +286,28 @@ class CompeticionesControllerTest < ActionController::TestCase
   test "create_report" do
     test_nuevo_informe
     assert_count_increases(CompetitionsMatchesReport) do
-      post :create_report, { :id => 1, :competitions_matches_report => { :report => 'po fale'}}
+      post :create_report, {
+          :id => 1, :competitions_matches_report => {:report => 'po fale'}
+      }
     end
     assert_response :redirect
   end
 
   test "editar_informe" do
     test_create_report
-    get :editar_informe, :id => CompetitionsMatchesReport.find(:first, :order => 'id desc').id
+    get :editar_informe, {
+        :id => CompetitionsMatchesReport.find(:first, :order => 'id desc').id
+    }
     assert_response :success
   end
 
   test "update_report" do
     test_create_report
     cmr = CompetitionsMatchesReport.find(:first, :order => 'id desc')
-    post :update_report, { :id => cmr.id, :competitions_matches_report => { :report => 'yolei'}}
+    post :update_report, {
+        :id => cmr.id,
+        :competitions_matches_report => { :report => 'yolei'}
+    }
     cmr.reload
     assert_equal 'yolei', cmr.report
     assert_response :redirect
@@ -317,16 +322,13 @@ class CompeticionesControllerTest < ActionController::TestCase
   test "upload_file" do
     prepare_for_competitions_match_tests
     assert_count_increases(CompetitionsMatchesUpload) do
-      post :upload_file, { :id => 1, :competitions_matches_upload => { :file => fixture_file_upload('files/buddha.jpg', 'image/jpeg')}}
+      post :upload_file, {
+          :id => 1,
+          :competitions_matches_upload => {
+              :file => fixture_file_upload('files/buddha.jpg', 'image/jpeg')
+          }
+      }
     end
-  end
-
-  test "do_responder_reto" do
-    # TODO
-  end
-
-  test "retos_a_mi" do
-    # TODO
   end
 
   test "partida_shouldnt_work_if_competition_not_started" do
@@ -345,10 +347,5 @@ class CompeticionesControllerTest < ActionController::TestCase
   test "participante" do
     get :participante, :id => CompetitionsParticipant.find(:first).id
     assert_response :success
-    # TODO faltan más condiciones para los tests
-  end
-
-  test "confirmar_resultado" do
-    # TODO
   end
 end

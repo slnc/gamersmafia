@@ -18,11 +18,16 @@ class Cuenta::MisCanalesControllerTest < ActionController::TestCase
   test "update_should_work" do
     sym_login 1
     channel1 = GmtvChannel.find(:first, :conditions => 'user_id = 1')
+    User.db_query(
+        "UPDATE gmtv_channels SET file = '' WHERE id = #{channel1.id}")
     assert_not_nil channel1
     prev_h = channel1.file
-    post :update, { :id => 1, :gmtv_channel => { :file => fixture_file_upload('files/header.swf')} }
+    post :update, {
+        :id => 1,
+        :gmtv_channel => {:file => fixture_file_upload('files/header.swf')}
+    }
     assert_redirected_to '/cuenta/mis_canales/editar/1'
     channel1.reload
-    assert_equal false, (channel1.file == prev_h)
+    assert_not_equal(channel1.file, prev_h)
   end
 end

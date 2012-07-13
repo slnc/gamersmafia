@@ -105,6 +105,15 @@ class Competition < ActiveRecord::Base
                                                                                                       WHERE competitions_participants_type_id = #{Competition::CLANS}))"}}
   scope :active, :conditions => "state < #{CLOSED}"
   scope :started, :conditions => "state = #{Competition::STARTED}"
+  scope :invitational, :conditions => "invitational IS TRUE"
+  scope :non_invitational, :conditions => "invitational IS FALSE"
+  scope :free_admission, :conditions => "fee IS NULL"
+
+  scope :for_clans, :conditions => (
+      "competitions_participants_type_id = #{Competition::CLANS}")
+
+  scope :for_individuals, :conditions => (
+      "competitions_participants_type_id = #{Competition::USERS}")
 
   def self.update_user_indicator(user)
     # TODO copypasted de warning_list.rhtml

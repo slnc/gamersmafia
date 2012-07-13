@@ -24,10 +24,11 @@ class ApuestasHelperTest < ActionView::TestCase
             VALUES (NOW(), 20, 200)")
 
     expected = [
-      [1, 0.5],
-      [3, 0.25],
-      ["%gm", 0.1],
+        [1, [0.5, 100]],
+        [3, [0.25, 100]],
+        ["%gm", [0.1, [200]]]
     ]
+
 
     out = bets_prediction_ranking.collect {|user, score|
       [user.kind_of?(User) ? user.id : user, score]
