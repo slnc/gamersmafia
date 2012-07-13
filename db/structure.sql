@@ -2447,8 +2447,6 @@ CREATE VIEW f AS
 CREATE TABLE factions (
     id integer NOT NULL,
     name character varying NOT NULL,
-    boss_user_id integer,
-    underboss_user_id integer,
     building_bottom character varying,
     building_top character varying,
     building_middle character varying,
@@ -11347,6 +11345,8 @@ INSERT INTO schema_migrations (version) VALUES ('20120701043725');
 INSERT INTO schema_migrations (version) VALUES ('20120701201029');
 
 INSERT INTO schema_migrations (version) VALUES ('20120701224459');
+
+INSERT INTO schema_migrations (version) VALUES ('20120712045528');
 
 INSERT INTO schema_migrations (version) VALUES ('224');
 
