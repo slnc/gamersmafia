@@ -10,7 +10,6 @@ class CmsTest < ActiveSupport::TestCase
   PARSE_IMAGES_BASEDIR = "#{Rails.root}/tmp/test/lib/cms"
 
   def setup
-    # solo lo necesitamos para los tests de image_thumbnail pero bueno
     File.unlink(THUMB_FILE) if File.exists?(THUMB_FILE)
   end
 
@@ -215,6 +214,7 @@ class CmsTest < ActiveSupport::TestCase
   end
 
   test "comments_parse_images_should_work_if_remote" do
+    Cms.expects(:get_url_contents).returns(open(TALL_FILE).read)
     out = Cms::download_and_rewrite_bb_imgs(
         'foo <img src="http://slnc.me/wp-content/uploads/2006/11/' +
         'dark_castle0.jpg" /> bar', 'test/cms')
@@ -236,8 +236,7 @@ class CmsTest < ActiveSupport::TestCase
 
   test "parse_images_should_download_remote_image_if_domain_is_unknown" do
     FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
-    tall_file_contents = open(TALL_FILE).read
-    Cms.expects(:get_url_contents).returns(tall_file_contents)
+    Cms.expects(:get_url_contents).returns(open(TALL_FILE).read)
     in_html = '<img src="http://www.google.com/dark_castle0.jpg" />'
     assert_equal('<img src="/storage/wswg/0000/dark_castle0.jpg" />',
                  Cms::parse_images(in_html, 'wswg/0000'))
@@ -251,6 +250,7 @@ class CmsTest < ActiveSupport::TestCase
   end
 
   test "parse_images_should_thumbnail_and_put_a_link_image_if_shown_dimensions_differ_from_image_dimensions_and_no_link_around" do
+    Cms.expects(:get_url_contents).returns(open(TALL_FILE).read)
     FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
     assert_equal '<a href="/storage/wswg/0000/userfile.jpg"><img src="/cache/thumbnails/f/50x50/storage/wswg/0000/userfile.jpg" /></a>', Cms::parse_images("<img src=\"/storage/users_files/0/0/userfile.jpg\" width=\"50px\" height=\"50px\" />", 'wswg/0000')
     FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
@@ -274,6 +274,7 @@ class CmsTest < ActiveSupport::TestCase
   end
 
   test "parse_images_should_work_with_everything_in_place" do
+    Cms.expects(:get_url_contents).at_least_once.returns(open(TALL_FILE).read)
     strn = <<-END
     <img src="http://slnc.me/wp-content/uploads/2006/11/dark_castle0.jpg" style="width: 100px; height: 100px;" />
     hola
@@ -300,7 +301,7 @@ class CmsTest < ActiveSupport::TestCase
     <a href="/storage/wswg/0000/3_dark_castle0.jpg"><img src="/cache/thumbnails/f/95x95/storage/wswg/0000/3_dark_castle0.jpg" /></a>
 
   lerebinonn
-    <img src="http://#{App.domain}/storage/users_files/0/0/userfile.jpg" />
+    <img src="/storage/wswg/0000/userfile.jpg" />
   YEAH
   END
 
@@ -309,6 +310,7 @@ class CmsTest < ActiveSupport::TestCase
   end
 
   test "parse_images_should_work_with_everything_in_place2" do
+    Cms.expects(:get_url_contents).at_least_once.returns(open(TALL_FILE).read)
     strn = <<-END
     <img src="/storage/news/userfile.jpg" style="width: 25px; height: 25px;" />
     hola
@@ -334,7 +336,7 @@ class CmsTest < ActiveSupport::TestCase
     <a href="/storage/wswg/0000/2_dark_castle0.jpg"><img src="/cache/thumbnails/f/95x95/storage/wswg/0000/2_dark_castle0.jpg" /></a>
 
   lerebinonn
-    <img src="http://#{App.domain}/storage/users_files/0/0/userfile.jpg" />
+    <img src="/storage/wswg/0000/userfile.jpg" />
   YEAH
   END
 
@@ -357,6 +359,7 @@ class CmsTest < ActiveSupport::TestCase
   end
 
   test "copy_image_to_dir_should_copy_external_file_to_tmp_dir" do
+    Cms.expects(:get_url_contents).returns(open(TALL_FILE).read)
     FileUtils.rm_rf("#{Rails.root}/public/storage/fii")
     Cms::copy_image_to_dir('http://slnc.me/wp-content/uploads/2006/11/dark_castle0.jpg', 'fii')
     assert File.exists?("#{Rails.root}/public/storage/fii/dark_castle0.jpg")
@@ -368,35 +371,24 @@ class CmsTest < ActiveSupport::TestCase
   end
 
   test "copy_image_to_dir_should_return_nil_if_unexisting_remote_file" do
+    Cms.expects(:get_url_contents).at_least_once.raises(Exception, "Error")
     FileUtils.rm_rf("#{Rails.root}/public/storage/fii")
     assert_nil Cms::copy_image_to_dir('http://www.slnc.me/adakjhdskahdk', 'fii')
   end
 
   test "transform_content_should_work_if_requirements_match" do
-
     @n1 = News.find(1)
     prev_content_url = @n1.unique_content.url
     @on = Cms.transform_content(@n1, Tutorial, {:terms => 1})
     assert_equal false, @on.new_record?
     assert_equal 'Tutorial', @on.class.name
-    # Verificamos que los atributos únicos de offtopic se han completado con la info de noticia
+    # Verificamos que los atributos únicos de offtopic se han completado con la
+    # info de noticia.
     @on.unique_attributes.each do |k,v|
       assert_equal(v, @n1.send(k)) if @n1.respond_to?(k)
     end
     assert_not_equal @on.unique_content.url, prev_content_url
   end
-
-  #test "transform_content_should_maintain_comments" do
-  #  @n1 = News.find(1)
-  #  c = post_comment_on_unittest @n1
-  #  @n1.reload
-  #  n1_coments_count = @n1.unique_content.comments.count
-  #  referred_content_id = c.content_id
-  #  test_transform_content_should_work_if_requirements_match
-  #  c.reload
-  #  assert_equal referred_content_id, c.content_id
-  #  assert_equal n1_coments_count, @on.unique_content.comments.count
-  #end
 
   test "transform_content_should_maintain_publishing_state" do
     @n1 = News.find(1)
