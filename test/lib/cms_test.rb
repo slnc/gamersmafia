@@ -231,7 +231,11 @@ class CmsTest < ActiveSupport::TestCase
     FileUtils.mkdir_p("#{Rails.root}/public/storage/users_files/0/0")
     FileUtils.cp(TALL_FILE, "#{Rails.root}/public/storage/users_files/0/0/userfile.jpg")
     FileUtils.cp(TALL_FILE, "#{Rails.root}/public/storage/users_files/0/0/userfile a.jpg")
-    assert_equal '<a href="http://www.hola.com/">Mundo img jajaja</a> aa', Cms::parse_images('<a href="http://www.hola.com/">Mundo img jajaja</a> aa', PARSE_IMAGES_BASEDIR)
+    output = Cms::parse_images(
+          '<a href="http://www.hola.com/">Mundo img jajaja</a> aa',
+        PARSE_IMAGES_BASEDIR)
+    assert_equal(
+      '<a href="http://www.hola.com/">Mundo img jajaja</a> aa', output)
   end
 
   test "parse_images_should_download_remote_image_if_domain_is_unknown" do
@@ -376,62 +380,6 @@ class CmsTest < ActiveSupport::TestCase
     assert_nil Cms::copy_image_to_dir('http://www.slnc.me/adakjhdskahdk', 'fii')
   end
 
-  test "transform_content_should_work_if_requirements_match" do
-    @n1 = News.find(1)
-    prev_content_url = @n1.unique_content.url
-    @on = Cms.transform_content(@n1, Tutorial, {:terms => 1})
-    assert_equal false, @on.new_record?
-    assert_equal 'Tutorial', @on.class.name
-    # Verificamos que los atributos únicos de offtopic se han completado con la
-    # info de noticia.
-    @on.unique_attributes.each do |k,v|
-      assert_equal(v, @n1.send(k)) if @n1.respond_to?(k)
-    end
-    assert_not_equal @on.unique_content.url, prev_content_url
-  end
-
-  test "transform_content_should_maintain_publishing_state" do
-    @n1 = News.find(1)
-    state = @n1.state
-    state_uniq = @n1.unique_content.state
-    assert_equal state, state_uniq
-    test_transform_content_should_work_if_requirements_match
-    assert_equal state, @on.state
-    assert_equal state, @on.state, @on.unique_content.state
-  end
-
-  test "transform_content_should_change_karma" do
-    @n1 = News.find(1)
-    u = @n1.user
-    orig_kp = u.karma_points
-    test_transform_content_should_work_if_requirements_match
-
-    u.reload
-    assert_equal orig_kp - Karma::KPS_CREATE['News'] + Karma::KPS_CREATE['Tutorial'], u.karma_points
-  end
-
-  test "should_maintain_clan_id_if_content_is_clannable" do
-
-  end
-
-  test "transform_content_should_maintain_common_class_attributes" do
-    @n1 = News.find(1)
-    old_values = {}
-    Cms::COMMON_CLASS_ATTRIBUTES.each { |attr| old_values[attr] = @n1.send(attr) }
-    test_transform_content_should_work_if_requirements_match
-     (Cms::COMMON_CLASS_ATTRIBUTES - [:id, :state, :log, :terms, :unique_content_id]).each do |attr|
-      assert_equal old_values[attr], @on.send(attr), "#{attr} is '#{@on.send(attr)}' but should be '#{old_values[attr]}'"
-    end
-  end
-
-  # TODO: confirmar que funciona con campos de tipo file y category
-
-  test "transform_content_should_destroy_previous_content" do
-    test_transform_content_should_work_if_requirements_match
-    assert_equal true, @n1.frozen?
-    assert_nil News.find_by_id(@n1.id)
-  end
-
   test "user_can_edit_content_that_is_category" do
     u10 = User.find(10)
     f = Faction.find_by_boss(u10)
@@ -538,8 +486,6 @@ class CmsTest < ActiveSupport::TestCase
     assert_equal Cms::PUBLISHED, e.state
     assert Cms.user_can_edit_content?(u10, c)
   end
-
-
 
   # permissions
   test "capos_should_edit_everything" do

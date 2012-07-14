@@ -5,9 +5,10 @@ class CompeticionesControllerTest < ActionController::TestCase
   test "should_not_be_able_to_join_if_state_not_1" do
     [0, 2, 3, 4].each do |state|
       c = Competition.find(:first, :conditions => ['invitational is false and fee is null and competitions_participants_type_id = 1 and state = ? and type <> \'Ladder\'', state])
+      u = User.find(2)
+      c.competitions_participants.clear
       assert_not_nil c
       assert_raises(ActiveRecord::RecordNotFound) { get :join_competition, {:id => c.id}, {:user => 2} }
-      u = User.find(2)
       assert_nil c.get_active_participant_for_user(u)
     end
   end

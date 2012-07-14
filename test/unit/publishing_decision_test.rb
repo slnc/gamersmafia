@@ -39,15 +39,7 @@ class PublishingDecisionTest < ActiveSupport::TestCase
   def maximize_exp(user)
     raise 'MrMan no puede ser el user a maximizar' if user.login == 'MrMan'
     personality = PublishingPersonality.find_or_create(user, ContentType.find_by_name('News'))
-    # creamos 20 noticias y las publicamos
-     (Cms::min_hits_before_reaching_max_publishing_power('News') + 1).times do |i|
-      n = News.create({:title => "maximize_exp#{i}", :description => 'foo', :terms => 1, :user_id => @mrman.id})
-      assert_not_nil n
-      Cms.publish_content(n, user)
-      Cms.publish_content(n, @superadmin)
-    end
-    personality.reload
-    assert_in_delta 0.99, personality.experience, 0.001
+    personality.update_attribute(:experience, 0.99)
   end
 
   # reject: cuando un usuario vota que un contenido no se publique

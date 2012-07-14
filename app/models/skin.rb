@@ -126,7 +126,11 @@ class Skin < ActiveRecord::Base
     data.gsub!('url(/', "url(#{ASSET_URL}/")
 
     File.open(compressed, 'w') { |f| f.write(data) }
-    `java -jar script/yuicompressor-2.4.2.jar "#{compressed}" -o "#{compressed}" --line-break 500`
+    self.call_yuicompressor(compressed, compressed)
+  end
+
+  def call_yuicompressor(input_file, output_file)
+    `java -jar script/yuicompressor-2.4.2.jar "#{input_file}" -o "#{output_file}" --line-break 500`
   end
 
   def clear_redundant_rules(str)

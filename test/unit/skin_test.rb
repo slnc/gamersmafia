@@ -6,6 +6,7 @@ class SkinTest < ActiveSupport::TestCase
     if not File.exists?(Skin::FAVICONS_CSS_FILENAME)
       `touch #{Skin::FAVICONS_CSS_FILENAME}`
     end
+
   end
 
   # Skin default should return an special skin
@@ -25,6 +26,7 @@ class SkinTest < ActiveSupport::TestCase
   test "create_skin_should_create_default_file_with_factions_skin" do
     FileUtils.rm_rf("#{Skin::SKINS_DIR}/miwanna") if File.exists?("#{Skin::SKINS_DIR}/miwanna")
     FileUtils.rm("#{Skin::SKINS_DIR}/miwanna_initial.zip") if File.exists?("#{Skin::SKINS_DIR}/miwanna_initial.zip")
+    FactionsSkin.any_instance.stubs(:call_yuicompressor).at_least_once
     @s = FactionsSkin.create({:user_id => 1, :name => 'miwanna'})
     assert_equal false, @s.new_record?
     assert_equal true, File.exists?("#{Rails.root}/public/#{@s.file}")
@@ -32,6 +34,7 @@ class SkinTest < ActiveSupport::TestCase
   end
 
   test "create_skin_should_create_default_file_with_clans_skin" do
+    FactionsSkin.any_instance.stubs(:call_yuicompressor).at_least_once
     @s = FactionsSkin.create({:user_id => 1, :name => 'miwanna'})
     assert_equal false, @s.new_record?
     assert_equal true, File.exists?("#{Rails.root}/public/#{@s.file}")
