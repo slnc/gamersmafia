@@ -23,14 +23,21 @@ class FaithObserverTest < ActiveSupport::TestCase
     assert_equal @initial_fp - Faith::FPS_ACTIONS['users_contents_tag']*2, @u1.faith_points
   end
 
-
-
   test "should_give_faith_after_creating_content_rating" do
     initial_cr = ContentRating.count
     @u1 = User.find(1)
+    content = Content.find(
+        :first,
+        :conditions => ["user_id <> ?", 1])
+    content.content_ratings.clear
     @initial_fp = @u1.faith_points
-    @cr = @u1.content_ratings.create({:ip => '0.0.0.0', :content_id => Content.find(:first, :conditions => 'id NOT IN (SELECT content_id from content_ratings where user_id = 1)').id, :rating => 1})
-    assert_equal initial_cr + 1, ContentRating.count
+    assert_difference("ContentRating.count") do
+      @cr = @u1.content_ratings.create({
+          :ip => '0.0.0.0',
+          :content_id => content.id,
+          :rating => 1
+      })
+    end
     @u1.reload
     assert_equal @initial_fp + Faith::FPS_ACTIONS['rating'], @u1.faith_points
   end
@@ -43,24 +50,29 @@ class FaithObserverTest < ActiveSupport::TestCase
     assert_equal @initial_fp - Faith::FPS_ACTIONS['rating'], @u1.faith_points
   end
 
-  # TODO
-  #  test "should_give_faith_after_creating_comment_rating" do
-  #    initial_cr = CommentsValoration.count
-  #    @u1 = User.find(1)
-  #    @initial_fp = @u1.faith_points
-  #    @cr = @u1.comments_valorations.create({:comments_valorations_type_id => 1, :comment_id => Comment.find(:first, :conditions => 'user_id <> 1').id, :rating => 1})
-  #    assert_equal initial_cr + 1, ContentRating.count
-  #    @u1.reload
-  #    assert_equal @initial_fp + Faith::FPS_ACTIONS['rating'], @u1.faith_points
-  #  end
-  #
-  #  test "should_take_faith_after_destroying_comment_rating" do
-  #    test_should_give_faith_after_creating_content_rating
-  #    @initial_fp = @u1.faith_points
-  #    @cr.destroy
-  #    @u1.reload
-  #    assert_equal @initial_fp - Faith::FPS_ACTIONS['rating'], @u1.faith_points
-  #  end
+  test "should_give_faith_after_creating_comment_rating" do
+    initial_cr = CommentsValoration.count
+    @u1 = User.find(1)
+    @initial_fp = @u1.faith_points
+    assert_difference("CommentsValoration.count") do
+      @cr = @u1.comments_valorations.create({
+          :comments_valorations_type_id => 1,
+          :comment_id => Comment.find(:first, :conditions => 'user_id <> 1').id,
+          :weight => 0.1,
+      })
+    end
+    assert_not_equal @cr.new_record?, @cr.errors.full_messages_html
+    @u1.reload
+    assert_equal @initial_fp + Faith::FPS_ACTIONS['rating'], @u1.faith_points
+  end
+
+  test "should_take_faith_after_destroying_comment_rating" do
+    test_should_give_faith_after_creating_content_rating
+    @initial_fp = @u1.faith_points
+    @cr.destroy
+    @u1.reload
+    assert_equal @initial_fp - Faith::FPS_ACTIONS['rating'], @u1.faith_points
+  end
 
   test "should_take_faith_after_destroying_user_with_referer_user_id" do
     User.db_query("UPDATE users SET referer_user_id = 1 WHERE id = 3")

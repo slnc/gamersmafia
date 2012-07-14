@@ -247,7 +247,7 @@ class CmsTest < ActiveSupport::TestCase
     FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
     assert_equal "<img src=\"http://#{App.domain}/storage/users_files/0/0/userfile.jpg\" />", Cms::parse_images("<img src=\"http://#{App.domain}/storage/users_files/0/0/userfile.jpg\" />", 'wswg/0000')
     FileUtils.rm_rf("#{Rails.root}/public/storage/wswg/0000")
-    assert_equal "<img src=\"http://#{App.domain}/storage/users_files/0/0/userfile.jpg\" />", Cms::parse_images("<img src=\"/storage/users_files/0/0/userfile.jpg\" />", 'wswg/0000')
+    assert_equal "<img src=\"/storage/wswg/0000/userfile.jpg\" />", Cms::parse_images("<img src=\"/storage/users_files/0/0/userfile.jpg\" />", 'wswg/0000')
   end
 
   test "parse_images_should_thumbnail_and_put_a_link_image_if_shown_dimensions_differ_from_image_dimensions_and_no_link_around" do
