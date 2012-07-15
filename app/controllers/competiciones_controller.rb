@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CompeticionesController < ArenaController
   allowed_portals [:gm, :arena, :faction, :competition]
   helper :calendar
@@ -310,9 +311,9 @@ class CompeticionesController < ArenaController
     @competition = p2.competition
 
     case @competition.competitions_participants_type_id
-      when 1:
+      when 1
       raise AccessDenied unless p2.participant_id == @user.id
-      when 2:
+      when 2
       c = Clan.find(p2.participant_id)
       raise AccessDenied unless c.user_is_clanleader(@user.id)
     else
@@ -356,9 +357,9 @@ class CompeticionesController < ArenaController
     @competition = p1.competition
 
     case @competition.competitions_participants_type_id
-      when 1:
+      when 1
       raise AccessDenied unless p1.participant_id == @user.id
-      when 2:
+      when 2
       c = Clan.find(p1.participant_id)
       raise AccessDenied unless c.user_is_clanleader(@user.id)
     else

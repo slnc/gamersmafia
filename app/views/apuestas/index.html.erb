@@ -52,7 +52,7 @@ end
   <table>
   <% for dbentry in dbinfo = User.db_query("SELECT sum(total_ammount), date_trunc('day', closes_on) FROM bets WHERE closes_on < now() and state = #{Cms::PUBLISHED} group by date_trunc('day', closes_on) order by date_trunc('day', closes_on) DESC LIMIT 7;") %>
   <tr class="<%=oddclass%>">
-    <td style="width: 90px;"><%=print_tstamp(Time.local(*ParseDate.parsedate(dbentry['date_trunc'])), 'date')%></td>
+    <td style="width: 90px;"><%=dbentry['date_trunc']%></td>
     <td class="timestamp"><%=dbentry['sum'].to_i%><%=gmd12%></td>
   </tr>
   <% end -%>

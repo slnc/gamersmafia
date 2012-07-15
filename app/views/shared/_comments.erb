@@ -1,148 +1,30 @@
-<% if App.show_ads && (!user_is_authed || @user.created_on > 1.year.ago) %>
-<div style="margin: 15px 0; padding-left: 120px;">
-<script type="text/javascript"><!--
-google_ad_client = "pub-6007823011396728";
-google_ad_slot = "5381241906";
-google_ad_width = 300;
-google_ad_height = 250;
-//-->
-</script>
-<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
-</div>
-<% end -%>
-
+<% # -*- encoding : utf-8 -*- %>
+<% #= adsense_comments %>
 <%
-if defined?(allinone) and allinone == true then
-  per_page = 1000000
-else
-  per_page = Cms.comments_per_page
-end
-
+resolve_comments_page(object)
 uniq_id = object.unique_content.id
-params[:page] = Cms::page_to_show(@user, object, @object_lastseen_on) if user_is_authed and not params[:page]
-params[:page] = (params[:page].nil? or params[:page].to_i < 1) ? 1 : params[:page].to_i
-ckey = object.updated_on < 1.month.ago ? 'perm' : Time.now.to_i/(86400*7)
+ckey = (object.updated_on < 1.month.ago) ? 'perm' : Time.now.to_i/(86400*7)
 questions_mode = (object.class.name == 'Question')
-cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{per_page}_#{params[:page]}") do
 
-@comments = Comment.paginate(:page => params[:page], :per_page => per_page, :conditions => ['deleted = \'f\' AND content_id = ?', object.unique_content.id], :order => 'comments.created_on asc', :include => :user)
+cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{Cms.comments_per_page}_#{params[:page]}") do
+@comments = get_comments(object)
 %>
-<script type="text/javascript">var comments = new Array();</script>
-<div class="comments-container"><a name="comments"></a>
-<%    udata = Comments.get_comments_ratings_for_content(object)
-    cvt = udata[0]
-%>
-  <div class="comments-area">
-<%= render :partial => 'shared/pager2', :locals => { :collection => @comments, :pos => 'top', :pager_params => { :anchor => 'comments' } } %>
 <%
-if params[:page] then
-  i = (params[:page].to_i - 1) * per_page + 1
-else
-  i = 1
-end
-
-positive_valorations_types = CommentsValorationsType.find_positive
-neutral_valorations_types = CommentsValorationsType.find_neutral
-negative_valorations_types = CommentsValorationsType.find_negative
+i = (params[:page].to_i - 1) * Cms.comments_per_page + 1
 
 @comments.each do |comment|
-  i+=1
+  i += 1
   show_signature = comment.user.enable_comments_sig? && comment.user.comments_sig.to_s != ''
   show_signature = false if questions_mode
 %>
-<div class="comment" id="comment<%=comment.id%>"></a>
-<script type="text/javascript">comments[<%=comment.id%>] = new Array(<%=comment.created_on.to_i%>, <%=comment.user_id%>);</script>
-
-  <div class="user-info">
-  	<div class="user-info-holder">
-     <div class="avatar"><img src="<%=ASSET_URL%><%=comment.user.show_avatar%>" /></div>
-     <div class="user-info-bar"><%=draw_karma_bar_sm(comment.user)%></div>
-     <div class="user-info-bar"><%=draw_faith_bar_sm(comment.user)%></div>
-     <div class="user-info-bar"><%=draw_comments_bar_sm(comment.user, comment)%></div>
-	 <div class="emblemas">
-	 <% if ckey != 'perm' && comment.user.emblems_mask.to_s.index('1') then
-		    emi = 0
-			comment.user.emblems_mask.split('').each do |char|
-			  if char == '1' then
-			 %>
-		 	<img class="sprite1 emblema emblema-<%=Emblems::EMBLEMS_BY_INDEX[emi]%>" src="/images/blank.gif" title="<%=Emblems::EMBLEMS[Emblems::EMBLEMS_BY_INDEX[emi]][:title]%>" />
-			<% end %><%# if -%>
-		<% emi+=1
-end %><%# each -%>
-		<% end %><%# if -%>
-		</div>
-  </div></div>
-
-  <div class="comment-header">
-    <div class="comment-info infoinline">
-      <span class="hidden" id="comment<%=comment.id%>editlink"><% if nil then %><a class="action" href="" onclick="editcomment(<%=comment.id%>); return false;">Editar2</a><% end -%><a class="action" href="" onclick="document.location='/comments/edit/<%=comment.id%>?redirto=<%=request.path%>'; return false;">Editar</a> |</span>
-      <span class="hidden" id="comment<%=comment.id%>dellink"><a class="action" href="" onclick="return confirm('¿Estás seguro de que quieres borrar este comentario?') && (document.location = '/comments/destroy/<%=comment.id%>?redirto=<%=request.path%>') && false;">Borrar</a> |</span>
-      <%=print_tstamp comment.created_on%> <span class="commentlink"><a title="Enlace a este comentario" href="#comment<%=comment.id%>"><img src="/images/blank.gif" class="icon16 sprite1" /></a></span>
-    </div>
-
-    <div class="comment-number f_number">#<span><%=i-1%></span></div>
-    <div class="author" style="padding-left: 15px;"><a class="nav" href="<%=gmurl(comment.user)%>"><%=comment.user.login%></a> <%=faction_favicon(comment.user)%></div>
-  </div>
-  <% crating = comment.get_rating
-    colour = case crating[0].direction
-      when 0: 'normal-rating'
-      when 1: 'positive-rating'
-      when -1: 'negative-rating'
-      else raise "error! #{crating[0].direction}"
-      end
-  if crating[0].name != 'Normal' then
-    if crating[1] == 1.0
-      opacity = '1.0'
-      ie_opacity = '100'
-    else
-       opacity = (crating[1]*10).to_i / 10.0
-       ie_opacity = (crating[1]*100).to_i
-      end
-  %>
-    <div class="comment-rating-state <%=colour%>" style="opacity: <%=opacity%>; filter=alpha(opacity=<%=ie_opacity%>)"><div><%=comments_icon(crating[0].name.to_sym, true)%> <%=crating[0].name%></div></div>
-  <% end -%>
-
-  <div class="text" id="commenttext<%=comment.id%>"><%=auto_link_raw(smilelize(comment.comment)) do |text|
-    truncate(text.gsub(/http:\/\//, ''), 50)
-    end%>
-
-	<% if questions_mode && comment.user.id != object.user_id then %>
-		<div class="questions-best-answer hidden"><a href="/respuestas/mejor_respuesta/<%=comment.id%>" onclick="return confirm('¿Estás seguro? Una vez marcada no se puede cambiar la mejor respuesta.');"><img class="icon" src="/skins/default/images/btn_mejor_respuesta.png" /></a></div>
-	<% end -%>
-
-	<% if show_signature then %>
-	<div class="hidden comments-sig"><%=h comment.user.comments_sig%></div>
-	<% end -%>
-	</div>
-
-	<div class="hidden report-comments infoinline <%='report-comment-with-sig' if show_signature %>" id="report-comments<%=comment.id%>">
-		<a href="" title="Reportar este comentario por violación del código de conducta" onclick="return report_comment(<%=comment.id%>);">Reportar</a>
-	</div>
-
-      <div class="moderate-comments-opener-detail">
-      <div class="moderate-comments-opener hidden" id="moderate-comments-opener<%=comment.id%>" onmouseout="$j('#moderate-comments<%=comment.id%>').hide();" onmouseover="$j('#moderate-comments<%=comment.id%>').show();">Mi valoración: <strong><span id="moderate-comments-opener-rating<%=comment.id%>">Ninguna</span></strong><br />
-    <div class="hidden moderate-comments" id="moderate-comments<%=comment.id%>">
-    <ul class="positive">
-    <% positive_valorations_types.each do |cvt| %>
-    <li><a href="" onclick="GM.utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
-    <% end -%>
-    </ul>
-    <ul class="negative">
-    <% negative_valorations_types.each do |cvt| %>
-    <li><a href="" onclick="return GM.utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
-    <% end -%>
-    </ul>
-    <ul class="neutral">
-    <% neutral_valorations_types.each do |cvt| %>
-    <li><a href="" onclick="return GM.utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
-    <% end -%>
-    </ul>
-    </div>
-    </div>
-    </div>
-</div>
-<div class="clearb"></div>
+<%= render :partial => 'shared/comment', :locals => {
+    :comment => comment,
+    :ckey => ckey,
+    :comment_number => i,
+    :questions_mode => questions_mode,
+    :object => object,
+    :show_signature => show_signature,
+} %>
 <% end -%>
 <%= render :partial => 'shared/pager2', :object => @comments_pages, :locals => { :collection => @comments, :pos => 'bottom', :pager_params => { :anchor => 'comments' } } %>
 
@@ -157,7 +39,7 @@ end %><%# cache %>
 <script type="text/javascript">$j('div.comments-sig').removeClass('hidden');</script>
 <% end -%>
 
-<%# TODO moderadores de facción no pueden moderar ahora mismo %>
+<%# TODO moderadores de faccion no pueden moderar ahora mismo %>
 <% if user_is_authed and not (defined?(nohighlight) and nohighlight == true) then %>
 <script type="text/javascript">
 function load_comments()
@@ -180,7 +62,7 @@ function load_comments()
 <%
 if user_is_authed then
   begin
-	Comments.require_user_can_comment_on_content(@user, object)
+	  Comments.require_user_can_comment_on_content(@user, object)
   rescue Exception => e
     %><p class="centered"><%=e.to_s%></p><%
   else
@@ -189,16 +71,15 @@ if user_is_authed then
       cur = Comment.count(:conditions => "user_id = #{@user.id} and created_on::date = now()::date")
     end
 %>
-
     <form action="/comments/create" method="post" name="REPLIER" style="padding-top: 25px;">
       <%= hidden_field_tag 'comment[content_id]', uniq_id %>
       <%= hidden_field_tag 'redirto', request.path %>
 	  <div class="comment-textarea">
-	  <%= bbeditor :name => 'comment[comment]', :id => 'comment_comment' %>
+	  <%= bbeditor(:name => 'comment[comment]', :id => 'comment_comment').force_encoding("utf-8") %>
 	  <% if @user.comment_adds_to_tracker_enabled? then %><input type="hidden" value="1" name="add_to_tracker"  /><% end -%>
       <div class="right"><input type="image" src="/images/blank.gif" class="btn-<%= (questions_mode && @user.id != object.user_id) ? 'responder' : 'comentar'%>" /></div>
-	  </div>
-    </form>
+    </div>
+  </form>
 
     <% end %><%# begin..rescue %>
     <% end %><%# if user_is_authed %>

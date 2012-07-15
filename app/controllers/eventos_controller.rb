@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class EventosController < ApplicationController
   acts_as_content_browser :event
   PER_PAGE = 20

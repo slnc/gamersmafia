@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Cuenta::MensajesController < ApplicationController
   before_filter :require_auth_users
 
@@ -51,7 +52,7 @@ class Cuenta::MensajesController < ApplicationController
 
     # Check recipient
     case params[:message][:message_type].to_i
-      when Message::R_USER:
+      when Message::R_USER
       u = User.find_by_login(params[:message][:recipient_user_login])
       if u.nil?
         flash[:error] = "El usuario especificado no existe."
@@ -62,7 +63,7 @@ class Cuenta::MensajesController < ApplicationController
       end
       recipients = [u.id]
       # no check
-      when Message::R_CLAN:
+      when Message::R_CLAN
       if params[:message][:recipient_clan_id].nil?
         params[:message][:recipient_clan_id] = @user.last_clan_id
       end
@@ -75,11 +76,11 @@ class Cuenta::MensajesController < ApplicationController
       c = Clan.find(params[:message][:recipient_clan_id])
       raise ActiveRecord::RecordNotFound unless c && c.user_is_member(@user.id)
       recipients = c.all_users_of_this_clan.collect { |u| u.id }
-      when Message::R_FACTION:
+      when Message::R_FACTION
       f = @user.faction
       raise ActiveRecord::RecordNotFound unless f.is_bigboss?(@user)
       recipients = f.members.collect { |u| u.id }
-      when Message::R_FACTION_STAFF:
+      when Message::R_FACTION_STAFF
       f = @user.faction
       raise ActiveRecord::RecordNotFound unless f && f.is_bigboss?(@user)
       recipients = []
@@ -87,7 +88,7 @@ class Cuenta::MensajesController < ApplicationController
       recipients += f.editors.collect { |content_type, u| u.id }
       recipients<< f.boss.id if f.has_boss? && f.boss.id != @user.id
       recipients<< f.underboss.id if f.has_underboss? && f.underboss.id != @user.id
-      when Message::R_FRIENDS:
+      when Message::R_FRIENDS
       recipients = @user.friends.collect { |u| u.id }
     end
     params[:message][:user_id_from] = @user.id

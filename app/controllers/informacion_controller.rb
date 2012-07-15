@@ -1,11 +1,12 @@
+# -*- encoding : utf-8 -*-
 class InformacionController < ApplicationController
   def wmenu_pos
     case @portal.class.name
-      when 'BazarPortal':
+      when 'BazarPortal'
         'bazar'
-      when 'FactionsPortal':
+      when 'FactionsPortal'
         'facciones'
-      when 'BazarDistrictPortal':
+      when 'BazarDistrictPortal'
         'bazar'
     else
       nil

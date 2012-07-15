@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module AccountHelper
 
   # Taken from the webrick server

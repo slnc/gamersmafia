@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Platform < ActiveRecord::Base
   validates_format_of :code, :with => /^[a-z0-9]{1,6}$/
   validates_format_of :name, :with => /^[a-z0-9:[:space:]]{1,36}$/i

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UsersContentsTag < ActiveRecord::Base
   MAX_TAGS_REFERENCES_BEFORE_DELETE = 25
   belongs_to :user

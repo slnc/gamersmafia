@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class FaqCategory < ActiveRecord::Base
   has_many :faq_entries, :dependent => :destroy
   acts_as_rootable

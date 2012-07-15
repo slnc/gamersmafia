@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class BetsPredictionRanking < ActiveRecord::Migration
   def up
     User.db_query("ALTER TABLE stats.general ADD COLUMN played_bets_participation int not null default 0;")

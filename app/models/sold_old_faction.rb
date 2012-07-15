@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SoldOldFaction < SoldProduct
   def _use(options)
     f = Faction.find(:first, :conditions => ['id = ?', options[:faction_id]])

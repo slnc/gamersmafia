@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class OutstandingEntity < ActiveRecord::Base
   validates_presence_of :active_on
   validates_uniqueness_of :active_on, :scope => [:type, :portal_id]

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module ForosHelper
   def draw_topic_indicators(topic)
     icons = []

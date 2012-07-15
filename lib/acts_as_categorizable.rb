@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Este módulo se encarga de añadir funcionalidad de categoría a los objetos que
 # se puedan clasificar
 module ActsAsCategorizable

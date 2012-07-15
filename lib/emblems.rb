@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Emblems
   # el índice implica la importancia
   EMBLEMS = {

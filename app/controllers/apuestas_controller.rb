@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ApuestasController < ArenaController
   acts_as_content_browser :bet
   allowed_portals [:gm, :faction, :arena, :bazar, :bazar_district]

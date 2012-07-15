@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Necesario para especificar Return-Path.
 class ActionMailer::Base
   def perform_delivery_sendmail(mail)

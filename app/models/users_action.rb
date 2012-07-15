@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UsersAction < ActiveRecord::Base
   belongs_to :user
   has_many :users_newsfeeds, :dependent => :destroy

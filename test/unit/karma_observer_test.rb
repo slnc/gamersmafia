@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
 
 class KarmaObserverTest < ActiveSupport::TestCase
@@ -32,7 +33,7 @@ class KarmaObserverTest < ActiveSupport::TestCase
 
     # publicamos
     Cms::publish_content(n, User.find(1))
-    assert true, n.is_public?
+    assert n.is_public?
     u2.reload
     assert_equal u2_kp_initial + Karma::KPS_CREATE['News'], u2.karma_points
   end
@@ -48,7 +49,7 @@ class KarmaObserverTest < ActiveSupport::TestCase
 
     # publicamos
     Cms::publish_content(n, User.find(1))
-    assert true, n.is_public?
+    assert n.is_public?
     u2.reload
     assert_equal u2_kp_initial + Karma::KPS_CREATE['Copypaste'], u2.karma_points
   end

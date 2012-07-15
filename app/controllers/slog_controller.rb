@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SlogController < ApplicationController
   before_filter :require_auth_users
 

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Users
   def self.add_to_tracker(user, content)
     obj = TrackerItem.find(:first, :conditions => ['content_id = ? and user_id = ? ', content.id, user.id])

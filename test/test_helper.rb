@@ -1,8 +1,8 @@
+# -*- encoding : utf-8 -*-
 ENV["RAILS_ENV"] = "test"
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
-require 'feed_validator/assertions'
-require 'lib/test_unit_mixings.rb'
+require 'test_unit_mixings.rb'
 require 'test/unit'
 require 'mocha'
 
@@ -151,13 +151,13 @@ class ActiveSupport::TestCase
 
   def sym_login(user_ident)
     case user_ident.class.name
-      when 'User':
+      when 'User'
       @request.session[:user] = user_ident.id
-      when 'Fixnum':
+      when 'Fixnum'
       @request.session[:user] = user_ident
-      when 'String':
+      when 'String'
       @request.session[:user] = User.find_by_login(user_ident).id
-      when 'Symbol':
+      when 'Symbol'
       @request.session[:user] = User.find_by_login(user_ident.to_s).id
     else
       raise "#{user_ident.class.name} as user_ident unimplemented"

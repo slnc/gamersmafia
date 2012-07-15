@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class MiembrosController < ComunidadController
   attr_accessor :curuser
   helper :competiciones

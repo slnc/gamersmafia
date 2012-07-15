@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Cuenta::DistritoController < ApplicationController
   before_filter :require_user_is_don_or_mano_derecha
 

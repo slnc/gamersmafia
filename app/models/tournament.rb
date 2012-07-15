@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Tournament < Competition
   def has_options?
     true

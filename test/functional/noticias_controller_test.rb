@@ -1,5 +1,6 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
-require File.dirname(__FILE__) + '/../test_functional_content_helper'
+require 'test_functional_content_helper'
 
 class NoticiasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'News',

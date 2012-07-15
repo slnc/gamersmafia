@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'net/imap'
 
 class Notification < ActionMailer::Base
@@ -496,16 +497,16 @@ class Notification < ActionMailer::Base
 
   def populate_recipients(recipients, vars)
     case recipients.class.name
-    when 'Clan':
+    when 'Clan'
       @recipients = ""
       recipients.admins.each do |user|
         @recipients << "#{user.login} <#{user.email}>, "
       end
-    when "Friend", "User":
+    when "Friend", "User"
       @recipients = "#{recipients.login} <#{recipients.email}>"
       vars[:sl] = sl(recipients)
       vars[:recipient] = recipients
-    when 'String':
+    when 'String'
       @recipients = "<#{recipients}>"
     else
       raise "#{recipients.class.name} is not a valid recipient class"

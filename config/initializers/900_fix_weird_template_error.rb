@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # https://github.com/rails/rails/blob/45503ecbb998a317a266e66cf8c55bfe55951719/actionpack/lib/action_dispatch/http/mime_type.rb
 # This fixes ActionView::MissingTemplate errors due to bogus handling of
 # */*;q=0.01 HTTP_ACCEPT header

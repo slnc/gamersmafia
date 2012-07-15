@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
 
 class CacheObserverClanesTest < ActionController::IntegrationTest
@@ -16,7 +17,7 @@ class CacheObserverClanesTest < ActionController::IntegrationTest
 
   def create_a_clan
     @c = Clan.new(:name => "foomasters", :tag => "tagm")
-    assert @c.save, @c.errors.full_messages
+    assert @c.save, @c.errors.full_messages_html
   end
 
   test "should update global var on clan update" do

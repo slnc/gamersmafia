@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module CompeticionesHelper
   def match_vs_name(match, left_participant=nil, with_links=false)
     if match.participant1_id then

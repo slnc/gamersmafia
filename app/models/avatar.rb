@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Avatar < ActiveRecord::Base
   belongs_to :faction
   belongs_to :clan

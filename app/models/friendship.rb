@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Friendship < ActiveRecord::Base
   # a friendship is said to be established when the accepted_on field is not null
   belongs_to :sender, :class_name => 'User', :foreign_key => 'sender_user_id'

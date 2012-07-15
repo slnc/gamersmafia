@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UserLoginChange < ActiveRecord::Base
   belongs_to :user
   validates_presence_of [:old_login, :user_id]

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module StaffPositionsHelper
   def staff_position_winners(staff_position)
     winners = staff_position.staff_candidates.find(

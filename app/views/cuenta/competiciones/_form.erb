@@ -85,13 +85,13 @@ function check_participants(val)
 opts = @competition.competitions_types_options %>
 <div class="subheader"><div>Opciones de <%=@competition.class.name%></div></div>
 <% case @competition.class.name
-    when 'League': %>
+    when 'League' %>
     <% if nil then %>
     <p>Divisiones/grupos:<br />
     <textarea name="competition[competitions_types_options][league_allowed_participants]">
     </textarea><span class="infoinline">Un nombre por línea. Dejar en blanco para no usarlo.</span></p>
     <% end -%>
-<%  when 'Tournament': %>
+<%  when 'Tournament' %>
 <% if nil then %><p><label><input type="checkbox" <%=opts && opts[:tourney_use_winners_losers] ? 'checked="checked"' : ''%> name="competition[competitions_types_options][tourney_use_winners_losers]" />Usar winner/loser brackets</label></p><% end -%>
 <p><label><input type="checkbox" <%=opts && opts[:tourney_use_classifiers]  ? 'checked="checked"' : ''%> name="competition[competitions_types_options][tourney_use_classifiers]" />Usar fase clasificatoria (grupos) antes de las rondas eliminatorias</label><div class="infoinline">Los grupos se podrán configurar cuando se cierren las inscripciones.</div></p>
     Número de participantes por grupo que pasan a rondas eliminatorias: <input type="name" class="sm-text" name="competition[competitions_types_options][tourney_classifiers_rounds]" value="<%=opts && opts[:tourney_classifiers_rounds] ? opts[:tourney_classifiers_rounds] : ''%>" /> <br />

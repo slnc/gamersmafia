@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module CRF
   def dist_euclidean(c1, c2, cruco)
     # Get the list of mutually rated items

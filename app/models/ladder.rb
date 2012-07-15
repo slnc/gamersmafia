@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Ladder < Competition
   VALID_CHALLENGE_OPTIONS = [:play_on, :servers, :maps, :ladder_rules]
 

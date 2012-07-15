@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # This script outputs one GitHub issue per line with the following format:
 # :title :issue_id :first_label
 #

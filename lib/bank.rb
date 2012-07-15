@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class InsufficientCash < Exception; end
 class TooLateToLower < Exception; end
 
@@ -10,22 +11,22 @@ module Bank
     raise NegativeAmmountError unless ammount >= 0
     # convierte una cantidad ammount de tipo units a su equivalente en gmd
     case units
-      when 'karma_points':
+      when 'karma_points'
       ammount * 0.2
 
-      when 'faith_level':
+      when 'faith_level'
       case ammount
-        when 0:
+        when 0
         0
-        when 1:
+        when 1
         5
-        when 2:
+        when 2
         15
-        when 3:
+        when 3
         35
-        when 4:
+        when 4
         75
-        when 5:
+        when 5
         100
       end
     end
@@ -41,7 +42,10 @@ module Bank
   def self.transfer(src, dst, ammount, description)
     # puts "#{src}, #{dst}, #{ammount}, #{description}"
     raise NegativeAmmountError unless ammount > 0
-    raise IdenticalEntityError if src && dst && src.class.name == dst.class.name && src.id == dst.id
+    if src && dst && (
+        src == dst || (src.class.name == dst.class.name && src.id == dst.id))
+      raise IdenticalEntityError
+    end
     description = description.to_s.strip
     raise TransferDescriptionError unless description != ''
 

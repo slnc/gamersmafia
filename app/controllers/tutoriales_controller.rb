@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class TutorialesController < InformacionController
   acts_as_content_browser :tutorial
   allowed_portals [:gm, :faction, :bazar, :bazar_district]

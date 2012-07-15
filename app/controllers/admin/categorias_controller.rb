@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Admin::CategoriasController < ApplicationController
   before_filter :check_permissions
 
@@ -23,7 +24,7 @@ class Admin::CategoriasController < ApplicationController
     @title = "Categorías"
     @navpath = [['Admin', '/admin'], ['Categorías de Contenidos', '/admin/categorias']]
     @categories = nil
-    render :template => "/admin/categorias/index.html.erb"
+    render :template => "/admin/categorias/index"
   end
 
   def categorias_skip_path
@@ -34,7 +35,7 @@ class Admin::CategoriasController < ApplicationController
     @root_term = Term.single_toplevel(:id => params[:id])
     raise ActiveRecord::RecordNotFound unless @root_term
     @content_types = Term.content_types_from_root(@root_term)
-    render :template => "/admin/categorias/root.html.erb", :layout => false
+    render :template => "/admin/categorias/root", :layout => false
   end
 
 
@@ -42,14 +43,14 @@ class Admin::CategoriasController < ApplicationController
     # TODO permisos
     @term = Term.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @term
-    render :template => "/admin/categorias/hijos.html.erb"
+    render :template => "/admin/categorias/hijos"
   end
 
   def contenidos
     # TODO permisos
     @term = Term.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @term
-    render :template => "/admin/categorias/contenidos.html.erb"
+    render :template => "/admin/categorias/contenidos"
   end
 
   def update

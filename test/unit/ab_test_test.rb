@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
 
 class AbTestTest < ActiveSupport::TestCase
@@ -8,7 +9,7 @@ class AbTestTest < ActiveSupport::TestCase
       assert @t.save, @t.errors.full_messages_html
       @new_treatment = @t.assign_visitor_to_treatment('a1')
       assert_not_nil @new_treatment
-      assert r.include?(@new_treatment), @new_treatment
+      assert r.include?(@new_treatment), @new_treatment.to_s
     end
   end
 

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Game < ActiveRecord::Base
   has_many :games_maps, :dependent => :destroy
   has_many :games_modes, :dependent => :destroy

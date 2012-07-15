@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class OutstandingUser < OutstandingEntity
   SQL_CANDIDATES = <<-END
 SELECT user_id, SUM(karma) as sum

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UsersPreference < ActiveRecord::Base
   belongs_to :user
   DEFAULTS = {

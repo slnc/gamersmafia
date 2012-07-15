@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Admin::ClanesController < ApplicationController
   require_admin_permission :capo
 

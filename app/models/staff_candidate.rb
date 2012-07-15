@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class StaffCandidate < ActiveRecord::Base
   ALLOWED_POSITION_STATES_TO_DELETE = [
       StaffPosition::CANDIDACY_PRESENTATION,

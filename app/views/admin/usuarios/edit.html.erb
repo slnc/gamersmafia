@@ -95,7 +95,7 @@
 
   <div class="subheader"><div>Referidos</div></div>
   <ul class="sidelist">
-    <% for u in User.find(:all, :conditions => ['referer_user_id = ?', @edituser.id]): %>
+    <% for u in User.find(:all, :conditions => ['referer_user_id = ?', @edituser.id]) %>
     <li><%=member_state(u.hstate)%> <a href="/admin/usuarios/edit/<%=u.id%>"><%=u.login%></a></li>
 <% end -%>
   </ul>

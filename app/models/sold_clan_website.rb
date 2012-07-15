@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SoldClanWebsite < SoldProduct
   def _use(options)
     clan = Clan.find(options[:clan_id])

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class EncuestasController < InformacionController
   acts_as_content_browser :poll
   allowed_portals [:gm, :faction, :clan, :bazar_district, :bazar]
@@ -32,7 +33,7 @@ class EncuestasController < InformacionController
     @poll = Poll.find(params[:id])
 
     @polls_option = @poll.polls_options.find(params[:poll_option])
-    if user_is_authed:
+    if user_is_authed
       @poll.vote(@polls_option, self.remote_ip, @user.id)
     else
       @poll.vote(@polls_option, self.remote_ip)

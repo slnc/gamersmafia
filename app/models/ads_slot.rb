@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AdsSlot < ActiveRecord::Base
   has_many :ads_slots_instances
   has_many :ads, :through => :ads_slots_instances

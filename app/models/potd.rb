@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Potd < ActiveRecord::Base
   belongs_to :image
 

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class OutstandingClan < OutstandingEntity
   # TODO(slnc): cambiar la query para darle el premio al clan del que más se
   # hable o más partidas gane.

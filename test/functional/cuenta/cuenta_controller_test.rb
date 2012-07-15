@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
 
 class Cuenta::CuentaControllerTest < ActionController::TestCase
@@ -20,7 +21,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
           :password_confirmation => "marauja",
           :email => "tupmuamad@jaja.com",
       },
-  }.deep_freeze
+  }  # .deep_freeze
 
   def setup
     default_user = User.find_by_login(VALID_CREATE_ARGS[:user][:login])
@@ -450,7 +451,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     test_should_autologin_if_client_cookie_is_set_and_exists_in_db
     u = User.find(1)
     u.state = User::ST_BANNED
-    assert_equal true, u.save, u.errors
+    assert_equal true, u.save, u.errors.full_messages_html
     get :index
     assert_redirected_to '/cuenta/login'
     assert_nil session[:user]

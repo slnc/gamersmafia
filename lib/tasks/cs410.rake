@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'ai4r'
 
 namespace :cs410 do

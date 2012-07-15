@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ForosController < ComunidadController
   allowed_portals [:gm, :faction, :clan, :bazar, :arena, :bazar_district]
   acts_as_content_browser :topic

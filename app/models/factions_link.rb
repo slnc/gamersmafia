@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class FactionsLink < ActiveRecord::Base
   belongs_to :faction
   file_column :image

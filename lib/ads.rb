@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Ads
   module SlotsBehaviours
     VALID_BEHAVIOURS = ['Random']

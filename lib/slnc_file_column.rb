@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'fileutils'
 
 # mi propia versión de file_column

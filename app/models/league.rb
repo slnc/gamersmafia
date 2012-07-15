@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class League < Competition
   def has_options?
     true

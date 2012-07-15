@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Karma
   POINTS_FIRST_LEVEL = 500
   INCREMENT_PER_LEVEL = 0.05

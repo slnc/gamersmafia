@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Factions
   def self.user_joins_faction(user, new_faction_id)
     return if user.faction_id == new_faction_id

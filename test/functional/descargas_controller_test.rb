@@ -1,5 +1,6 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
-require File.dirname(__FILE__) + '/../test_functional_content_helper'
+require 'test_functional_content_helper'
 
 class DescargasControllerTest < ActionController::TestCase
   test_common_content_crud :name => 'Download', :form_vars => {:title => 'footapang', :mirrors_new => ["http://google.com/foo.zip\nhttp://kamasutra.com/porn.zip"]}, :categories_terms => ['16']

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class FactionsHeader < ActiveRecord::Base
     after_save :update_img_file
     after_destroy :delete_files

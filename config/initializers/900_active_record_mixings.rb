@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module ActiveRecordMixings
 
   def self.included(base)
@@ -80,7 +81,7 @@ module ActiveRecordMixings
     def find_or_404(*args)
       begin
         out = self.find(*args)
-      rescue ActiveRecord::StatementInvalid => errstr:
+      rescue ActiveRecord::StatementInvalid => errstr
         # si el error es por meter mal el id cambiamos la excepción a recordnotfound
         raise ActiveRecord::RecordNotFound if not errstr.to_s.index('invalid input syntax for integer').nil?
       end

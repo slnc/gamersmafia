@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ContentsTerm < ActiveRecord::Base
   belongs_to :content
   belongs_to :term

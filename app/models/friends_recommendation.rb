@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class FriendsRecommendation < ActiveRecord::Base
   belongs_to :user
   belongs_to :recommended_user, :class_name => 'User', :foreign_key => 'recommended_user_id'

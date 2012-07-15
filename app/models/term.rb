@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'has_slug'
 
 class Term < ActiveRecord::Base
@@ -435,7 +436,7 @@ class Term < ActiveRecord::Base
 
   def recalculate_contents_count
     newc = ContentsTerm.count(
-        :conditions => "term_id IN (#{self.all_children_ids(self)})")
+        :conditions => ["term_id IN (?)", self.all_children_ids(self)])
     self.contents_count = newc
     self.save
   end
@@ -910,15 +911,15 @@ class Term < ActiveRecord::Base
 
   def self.find_by_toplevel_group_code(code)
     case code
-      when 'gm':
+      when 'gm'
       Term.single_toplevel(:slug => 'gm').children.find(:all, :order => 'lower(name)')
-      when 'juegos':
+      when 'juegos'
       Term.find(:all, :conditions => 'id = root_id AND game_id IS NOT NULL', :order => 'lower(name)')
-      when 'plataformas':
+      when 'plataformas'
       Term.find(:all, :conditions => 'id = root_id AND platform_id IS NOT NULL', :order => 'lower(name)')
-      when 'arena':
+      when 'arena'
       Term.single_toplevel(:slug => 'arena').children.find(:all, :order => 'lower(name)')
-      when 'bazar':
+      when 'bazar'
       Term.find(:all, :conditions => 'id = root_id AND bazar_district_id IS NOT NULL', :order => 'lower(name)')
     else
       raise "toplevel group code '#{code}' unknown"

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Override the key_file_path method to get rid of those hash subdirs for frag
 # cache files
 # http://scottiestech.info/2011/07/23/fixing-the-rails-3-fragment-cache-path/

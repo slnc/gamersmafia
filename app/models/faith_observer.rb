@@ -1,15 +1,16 @@
+# -*- encoding : utf-8 -*-
 class FaithObserver < ActiveRecord::Observer
   observe ContentRating, User, PublishingDecision, CommentsValoration, UsersContentsTag
 
   def after_create(object)
     case object.class.name
-      when 'CommentsValoration':
+      when 'CommentsValoration'
       Faith.give(object.user, Faith::FPS_ACTIONS['rating']) if object.user_id
 
-      when 'ContentRating':
+      when 'ContentRating'
       Faith.give(object.user, Faith::FPS_ACTIONS['rating']) if object.user_id
 
-      when 'UsersContentsTag':
+      when 'UsersContentsTag'
       Faith.give(object.user, Faith::FPS_ACTIONS['users_contents_tag']) if object.user_id
     end
   end
@@ -17,10 +18,10 @@ class FaithObserver < ActiveRecord::Observer
 
   def after_save(object)
     case object.class.name
-      when 'PublishingDecision':
+      when 'PublishingDecision'
       Faith.reset(object.user)
 
-      when 'User':
+      when 'User'
       if object.state_changed?
         if object.referer_user_id
           Faith.reset(object.referer)
@@ -38,16 +39,16 @@ class FaithObserver < ActiveRecord::Observer
 
   def after_destroy(object)
     case object.class.name
-      when 'CommentsValoration':
+      when 'CommentsValoration'
       Faith.take(object.user, Faith::FPS_ACTIONS['rating'])
 
-      when 'ContentRating':
+      when 'ContentRating'
       Faith.take(object.user, Faith::FPS_ACTIONS['rating'])
 
-      when 'UsersContentsTag':
+      when 'UsersContentsTag'
       Faith.take(object.user, Faith::FPS_ACTIONS['users_contents_tag'])
 
-      when 'User':
+      when 'User'
       # TODO
       Faith.reset(object.referer) if object.referer_user_id # no hacemos lo siguiente porque ahora mismo no controlamos muy bien cuándo pasa de un estado a otro y los puntos de fe asociados.
       Faith.reset(object.resurrector) if object.resurrected_by_user_id && (object.referer_user_id.nil? || object.referer_user_id != object.resurrected_by_user_id)

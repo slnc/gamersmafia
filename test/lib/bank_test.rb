@@ -1,4 +1,9 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
+
+class HasBankAccountRecord < ActiveRecord::Base
+  has_bank_account
+end
 
 class BankTest < ActiveSupport::TestCase
   def setup
@@ -75,7 +80,9 @@ class BankTest < ActiveSupport::TestCase
   end
 
   test "should_not_transfer_if_both_src_and_dst_are_bank" do
-    assert_raises(Bank::IdenticalEntityError) { Bank.transfer(:bank, :bank, 1, 'bank to bank') }
+    assert_raises(Bank::IdenticalEntityError) do
+      Bank.transfer(:bank, :bank, 1, 'bank to bank')
+    end
   end
 
   test "should_not_transfer_if_both_src_and_dst_are_the_same_record" do

@@ -50,7 +50,7 @@
 <%
 i = 0
 cache_category_paths = {}
-for @item in collection:
+for @item in collection
   lock = @item.cur_lock
   next if @item.class.name == 'Image' and i >= 50
 %>

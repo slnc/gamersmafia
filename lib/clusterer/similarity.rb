@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 #The MIT License
 
 ###Copyright (c) 2006 Surendra K Singhi <ssinghi AT kreeti DOT com>

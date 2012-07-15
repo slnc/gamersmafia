@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # This prevents Rails 3.2 from freezing for several seconds on TemplateError
 # exceptions. For more info:
 #

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ClansSponsor < ActiveRecord::Base
   belongs_to :clan
   file_column :image

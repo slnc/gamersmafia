@@ -23,7 +23,7 @@ Portal: <select onchange="document.location = '/admin/contenidos/papelera?portal
   <th style="padding-top: 20px;"><img class="pageviews-count" src="/images/blank.gif" /></th>
 </tr>
 <%
-for @item in collection:
+for @item in collection
 uniq = @item.unique_content
   url = gmurl(@item).gsub('show', 'edit')
 %>

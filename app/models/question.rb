@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Unpublished < Exception; end
 class AlreadyAnswered < Exception; end
 

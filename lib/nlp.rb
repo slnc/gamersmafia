@@ -1,8 +1,9 @@
+# -*- encoding : utf-8 -*-
 module Nlp
   module Extractor
     def self.extract_texts(object)
       case object.class.name
-      when 'String':
+      when 'String'
         self.extract_texts_from_string(object)
       else  # Assume it's an ActsAsContent object
         self.extract_texts_from_content(object)

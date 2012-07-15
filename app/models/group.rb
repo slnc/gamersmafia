@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Group < ActiveRecord::Base
   has_many :members
   belongs_to :owner, :class_name => 'User', :foreign_key => 'owner_user_id'

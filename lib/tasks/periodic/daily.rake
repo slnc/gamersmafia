@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 namespace :gm do
   desc "Daily operations"
   task :daily => :environment do

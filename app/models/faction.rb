@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Faction < ActiveRecord::Base
   has_many :factions_banned_users, :dependent => :destroy
   has_bank_account

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CompetitionsSponsor < ActiveRecord::Base
   belongs_to :competition
 

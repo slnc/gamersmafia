@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Routing
   def self.url_for_content_onlyurl(object)
     uniq = object.class.name == 'Content' ?  object : object.unique_content
@@ -96,11 +97,11 @@ module Routing
       href = Cms::translate_content_name(ActiveSupport::Inflector::singularize(cls_name.gsub('Category', '')))
       href = href.normalize
       case href
-        when 'topics':
+        when 'topics'
         href = "foros/forum"
-        when 'preguntas':
+        when 'preguntas'
         href = "respuestas/categoria"
-        when 'anuncios-de-reclutamiento':
+        when 'anuncios-de-reclutamiento'
         href = 'reclutamiento'
       end
       dom = get_domain_of_root_term(object.root)
@@ -116,11 +117,11 @@ module Routing
           href = Cms::translate_content_name(ActiveSupport::Inflector::singularize(opts[:taxonomy].gsub('Category', '')))
           href = href.normalize
           case href
-            when 'topics':
+            when 'topics'
             href = "foros/forum"
-            when 'preguntas':
+            when 'preguntas'
             href = "respuestas/categoria"
-            when 'anuncios-de-reclutamiento':
+            when 'anuncios-de-reclutamiento'
             href = 'reclutamiento'
           end
           dom = get_domain_of_root_term(object.root)

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Cuenta::MensajesHelper
   def print_thread_tree(msg, curmsg, indent_level=0)
     out = (indent_level == 0) ? '<ul class="messages-thread">' : ""

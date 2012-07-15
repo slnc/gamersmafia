@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CompetitionsLogsEntry < LogsEntry
   belongs_to :competition
 

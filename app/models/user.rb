@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'digest/sha1'
 require 'digest/md5'
 require 'karma'
@@ -495,7 +496,7 @@ class User < ActiveRecord::Base
 
   def get_comments_valorations_strength
     self.check_comments_values
-    self.comments_valorations_strength
+    self.comments_valorations_strength.to_f
   end
 
 
@@ -870,7 +871,7 @@ class User < ActiveRecord::Base
     for c in Karma::KPS_SAVE
       begin
         total += Object.const_get(c[0]).count(:conditions => ["approved_by_user_id = ? and state = #{Cms::PUBLISHED}", self.id]) * c[1]
-      rescue:
+      rescue
         raise c[0]
       end
     end

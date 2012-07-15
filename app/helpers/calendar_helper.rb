@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # http://www.jvoorhis.com/pages/calendar-helper
 # CalendarHelper allows you to draw a databound calendar with fine-grained CSS formatting
 #

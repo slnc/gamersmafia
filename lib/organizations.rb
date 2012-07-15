@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Organizations
   # Organizaciones son facciones y distritos
   # organizaciones tienen que responder a user_is_editor_of_content_type?

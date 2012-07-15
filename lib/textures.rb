@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Skins
   module TexturesGenerators
     class CssPosition

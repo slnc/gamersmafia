@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'yaml'
 class Fixtures < YAML::Omap
   def insert_fixtures

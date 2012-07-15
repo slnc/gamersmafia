@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Admin::JuegosController < AdministrationController
 
   def index

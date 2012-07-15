@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 desc "Generate agiledox-like documentation for tests"
 task :agiledox do
   tests = FileList['test/**/*_test.rb']

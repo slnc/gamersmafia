@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Bet < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable

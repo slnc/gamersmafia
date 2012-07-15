@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # This library is in charge of handling quicklinks (shortcuts to portals) and
 # user forums (forums shown on the forums homepage).
 module Personalization

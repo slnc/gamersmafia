@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # [states] 0=previo a inscripciones, 1=inscripciones abiertas, 2=inscripciones cerradas, 3=desarrollo torneo, 4=torneo cerrado
 # [competitions_participants_type_id] 1=user, 2=clan
 # [random_map_selection_mode] 0=completamente random, 1=el mismo para todas las partidas de una misma stage
@@ -257,13 +258,13 @@ class Competition < ActiveRecord::Base
           new_participant # only valid exit point
         else
           case self.competitions_participants_type_id
-            when 1:
+            when 1
             if self.user_is_participant(user.id)
               raise 'Ya estás inscrito en esta competición.'
             else
               raise 'Error desconocido al intentar inscribirte.'
             end
-            when 2:
+            when 2
             raise 'Error desconocido al intentar inscribir a tu clan.'
           else
             raise 'unimplemented'
@@ -459,18 +460,23 @@ class Competition < ActiveRecord::Base
 
   def get_active_participant_for_user(user)
     case competitions_participants_type_id
-      when USERS:
+      when USERS
       p = competitions_participants.find(:first, :conditions => ['participant_id = ?', user.id])
-      when CLANS:
+      when CLANS
       participants = competitions_participants.find(:all, :conditions => "participant_id IN (#{(user.clans_ids + [0]).join(',')})")
       # si participants > 0 el usuario es admin de más de un clan que están registrados como participants en esta competi
       # Devolvemos un clan aleatorio, habría que avisarle de alguna forma, no?
+      p = nil
+      out = nil
       if participants.size > 0 then
         participants.each do |p|
-          p = nil unless p.the_real_thing.user_is_clanleader(user.id)
-          break if p
+          if p.the_real_thing.user_is_clanleader(user.id)
+            out = p
+            break
+          end
         end
       end
+      p = out
     else
       raise 'unimplemented'
     end
@@ -500,7 +506,7 @@ class Competition < ActiveRecord::Base
       # TODO hacer comprobaciones necesarias según la etapa actual de la
       # competición
       case new_state_id
-        when 1:
+        when 1
         raise 'impossible' unless self.configured?
         # Mandamos invitación a usuarios invitados
         if invitational?
@@ -519,17 +525,17 @@ class Competition < ActiveRecord::Base
             end
           end
         end
-        when 2:
+        when 2
         case self.class.name
-          when 'League':
+          when 'League'
           setup_matches_league
-          when 'Tournament':
+          when 'Tournament'
           if self.competitions_types_options[:tourney_use_classifiers] then
             setup_matches_tourney_classifiers
           else
             setup_matches_tourney
           end
-          when 'Ladder':
+          when 'Ladder'
           # do nothing here
         else
           raise 'unimplemented'
@@ -538,7 +544,7 @@ class Competition < ActiveRecord::Base
         setup_times_for_matches if self.timetable_for_matches
         setup_maps_for_matches if self.random_map_selection_mode
 
-        when 3:
+        when 3
         raise Exception unless self.class.name == 'Ladder' || self.competitions_participants.count > 1
         if self.send_notifications?
           self.competitions_participants.each do |participant|
@@ -546,7 +552,7 @@ class Competition < ActiveRecord::Base
                 participant.the_real_thing, {:competition => self}).deliver
           end
         end
-        when 4:
+        when 4
         raise 'impossible' unless self.can_be_closed?
         if self.fee? then # repartimos el dinero entre los ganadores
           # Siempre va a haber 3 ganadores porque es el mínimo para crear una competición
@@ -605,9 +611,9 @@ class Competition < ActiveRecord::Base
   # de algún clan participante.
   def user_is_participant(user_id)
     case self.competitions_participants_type_id
-      when 1:
+      when 1
       self.competitions_participants.count(:conditions => ['participant_id = ?', user_id]) > 0
-      when 2:
+      when 2
       ids = [0]
       for c in Clan.leaded_by(user_id)
         ids<< c.id
@@ -870,7 +876,7 @@ class Competition < ActiveRecord::Base
     end
 
     case self.random_map_selection_mode
-      when 0: # absolutely random maps
+      when 0 # absolutely random maps
       available_maps = self.games_maps.find(:all, :order => 'lower(name) ASC')
       for cm in self.competitions_matches
         maps_selected = []
@@ -888,7 +894,7 @@ class Competition < ActiveRecord::Base
         end # cm.maps.times
       end # for cm
 
-      when 1:
+      when 1
       available_maps = self.games_maps.find(:all, :order => 'lower(name) ASC')
       tourney_rounds.times do |stage|
         # averiguamos mapas por partida, cargamos una partida de dicho stage

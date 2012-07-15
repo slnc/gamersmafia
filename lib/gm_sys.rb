@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module GmSys
 
   WORKER_PID_FILE = "#{Rails.root}/tmp/pids/delayed_worker.pid"

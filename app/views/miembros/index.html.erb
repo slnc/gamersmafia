@@ -95,7 +95,7 @@
           <%
           i = 0
           max = nil
-          for dbu in User.db_query("select count(referer_user_id), referer_user_id as user_id from users where state NOT IN (#{User::STATES_CANNOT_LOGIN.join(',')}) and lastseen_on > now() - '3 months'::interval and referer_user_id not in (select id from users where state IN (#{User::STATES_CANNOT_LOGIN.join(',')})) group by(referer_user_id) order by count(referer_user_id) DESC limit 10"):
+          for dbu in User.db_query("select count(referer_user_id), referer_user_id as user_id from users where state NOT IN (#{User::STATES_CANNOT_LOGIN.join(',')}) and lastseen_on > now() - '3 months'::interval and referer_user_id not in (select id from users where state IN (#{User::STATES_CANNOT_LOGIN.join(',')})) group by(referer_user_id) order by count(referer_user_id) DESC limit 10")
             next if dbu['user_id'].to_i == 0
             u = User.find(dbu['user_id'].to_i)
             if max.nil? then

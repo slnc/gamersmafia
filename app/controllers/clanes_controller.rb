@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ClanesController < ComunidadController
   allowed_portals [:gm, :faction]
 

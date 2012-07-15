@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class BlogsController < ComunidadController
   allowed_portals [:gm]
 

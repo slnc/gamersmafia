@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ContenidosController < ApplicationController
   def show
     @content = Content.find_by_id(params[:id])

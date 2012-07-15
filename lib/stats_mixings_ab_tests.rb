@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module StatsMixings
   module GoalsMixings
     def self.included(base)

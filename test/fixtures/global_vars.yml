@@ -3,6 +3,6 @@ theone:
   online_anonymous: 1
   online_registered: 1
   svn_revision: 0
-  ads_slots_updated_on: <%=Time.now.strftime('%Y-%m-%d %H:%m%:s')%>
-  portals_updated_on: <%=Time.now.strftime('%Y-%m-%d %H:%m%:s')%>
-  gmtv_channels_updated_on: <%=Time.now.strftime('%Y-%m-%d %H:%m%:s')%>
+  ads_slots_updated_on: <%=Time.now.strftime('%Y-%m-%d %H:%m%:%s')%>
+  portals_updated_on: <%=Time.now.strftime('%Y-%m-%d %H:%m%:%s')%>
+  gmtv_channels_updated_on: <%=Time.now.strftime('%Y-%m-%d %H:%m%:%s')%>

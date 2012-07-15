@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SkinTexture < ActiveRecord::Base
   # representa una instancia de una textura final asociada a una skin
   serialize :user_config

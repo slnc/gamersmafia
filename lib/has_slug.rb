@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module HasSlug
   def self.included(base)
     base.extend AddHasMethod

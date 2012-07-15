@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'pathname'
 class SystemNotifier < ActionMailer::Base
   SYSTEM_EMAIL_ADDRESS = %{"GM Error Notifier" <httpd@gamersmafia.com>}

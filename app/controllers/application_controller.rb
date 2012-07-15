@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'cache'
 require 'clans'
 require 'users'
@@ -311,17 +312,17 @@ Request information:
         end
       else
         @title = "Página no encontrada (Error 404)"
-        render :template => 'application/http_404.html.erb', :status => 404
+        render :template => 'application/http_404', :status => 404
       end
     else
       @title = "Página no encontrada (Error 404)"
-      render :template => 'application/http_404.html.erb', :status => 404
+      render :template => 'application/http_404', :status => 404
     end
   end
 
   def handle_http_401
     @title = "Acceso Denegado (Error 401)"
-    render :template => 'application/http_401.html.erb', :status => 401
+    render :template => 'application/http_401', :status => 401
   end
 
   def rescuiing

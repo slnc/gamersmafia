@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class HomeController < ApplicationController
   NEWS_PER_PAGE = 20
   VALID_DEFAULT_PORTALS = %w(index comunidad facciones bazar arena hq anunciante)

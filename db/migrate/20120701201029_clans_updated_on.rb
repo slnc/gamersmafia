@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ClansUpdatedOn < ActiveRecord::Migration
   def up
     User.db_query(

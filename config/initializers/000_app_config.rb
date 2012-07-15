@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'ostruct'
 require 'yaml'
 
@@ -20,7 +21,9 @@ if !defined?(::App)
   default_appyml = "#{Rails.root}/config/app.yml"
   production_appyml = "#{Rails.root}/config/app_production.yml"
   appyml = File.open(default_appyml).read
-  appyml<< "\n#{File.open(production_appyml).read}" if File.exists?(production_appyml)
+  if File.exists?(production_appyml)
+    appyml<< "\n#{File.open(production_appyml).read}"
+  end
   nconfig = OpenStruct.new(YAML::load(ERB.new(appyml).result))
   env_config = nconfig.send(mode)
   raise "Mode '#{mode}' is not present on app.yml" unless env_config

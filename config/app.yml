@@ -28,7 +28,7 @@ common: &common
   enable_bgjobs?: false
   enable_dbstats?: false
   enable_google_analytics?: false
-  enable_tidy?: true
+  enable_tidy?: false
   ia_auto_abtests: MrAchmed
   log_env: development
   mirror_auth_key: secret
@@ -40,12 +40,12 @@ common: &common
   system_mail_domain: gamersmafia.com
   system_mail_user: nagatodev@gamersmafia.com
   system_mail_password: megustanlasgalletas
-  tidy_path: /usr/lib/libtidy.so
   webmaster_user_id: 1
   webmaster_email: unnamed@gamersmafia.dev
 
 # Basic roles.
 development: &development
+  <<: *common
   asset_domain: gamersmafia.dev
   asset_url: http://gamersmafia.dev
   cache_templates_in_production: false
@@ -58,11 +58,10 @@ development: &development
   enable_bgjobs?: true
   enable_dbstats?: true
   python: python
-  <<: *common
 
 test: &test
+  <<: *common
   domain: test.host
   domain_bazar: bazar.test.host
   domain_arena: arena.test.host
   asset_domain: test.host
-  <<: *common

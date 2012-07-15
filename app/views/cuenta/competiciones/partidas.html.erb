@@ -39,9 +39,9 @@
       <td><% if match.participant1_id then%><a href="/competiciones/participante/<%=match.participant1_id%>"><%=match.participant1.name%></a><% end -%></td>
       <td><% if match.participant2_id then%><a href="/competiciones/participante/<%=match.participant2_id%>"><%=match.participant2.name%></a><% end -%></td>
       <td><% case match.result
-        when 0: %><span class="infoinline">Gana</span> <%=match.participant1.name%><%
-        when 1: %>Empate<%
-        when 2: %><span class="infoinline">Gana</span> <%=match.participant2.name%><%
+        when 0 %><span class="infoinline">Gana</span> <%=match.participant1.name%><%
+        when 1 %>Empate<%
+        when 2 %><span class="infoinline">Gana</span> <%=match.participant2.name%><%
         else
           if match.accepted then %><span class="infoinline">No jugado</span><%
           else %><span class="infoinline">Aún no ha sido aceptado (retado hace <%=format_interval(Time.now.to_i - match.created_on.to_i, 'días')%>)</span>

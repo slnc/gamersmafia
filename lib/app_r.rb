@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module AppR
   REVISION_FILE = "#{Rails.root}/config/REVISION"
 

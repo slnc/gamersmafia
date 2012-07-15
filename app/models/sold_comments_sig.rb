@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SoldCommentsSig < SoldProduct
   after_create :update_user
 

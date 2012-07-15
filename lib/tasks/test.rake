@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'ci/reporter/rake/test_unit'
 
 desc 'Batería de tests por defecto'

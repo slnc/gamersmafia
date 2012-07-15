@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Author: http://www.semintelligent.com/blog/articles/29/freezing-ruby-data-structures-recursively
 class Object
  # Define a deep_freeze method in Object (based on code posted by flavorrific

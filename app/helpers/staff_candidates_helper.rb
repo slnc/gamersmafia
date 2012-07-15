@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module StaffCandidatesHelper
   def user_can_vote_staff_candidate(user, staff_candidate)
     Staff.user_can_vote_staff_candidate(user, staff_candidate)

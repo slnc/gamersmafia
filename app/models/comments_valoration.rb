@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CommentsValoration < ActiveRecord::Base
   NEGATIVE = -1
   NEUTRAL = 0

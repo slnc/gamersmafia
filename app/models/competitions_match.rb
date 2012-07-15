@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CompetitionsMatch < ActiveRecord::Base
   P1_WINS = 0
   TIE = 1
@@ -329,11 +330,11 @@ class CompetitionsMatch < ActiveRecord::Base
       params[:forfeit_participant2] = %w(both p2).include?(params[:participation]) ? false : true
 
       case self.competition.scoring_mode
-        when Competition::SCORING_SIMPLE:
+        when Competition::SCORING_SIMPLE
         parse_scoring_simple(params)
-        when Competition::SCORING_PARTIAL:
+        when Competition::SCORING_PARTIAL
         parse_scoring_partial(params)
-        when Competition::SCORING_SIMPLE_PER_MAP:
+        when Competition::SCORING_SIMPLE_PER_MAP
         parse_scoring_simple_per_map(params)
       else
         raise 'unimplemented'
@@ -342,12 +343,12 @@ class CompetitionsMatch < ActiveRecord::Base
       params[:forfeit_participant1] = true
       params[:forfeit_participant2] = true
       case self.competition.scoring_mode
-        when Competition::SCORING_SIMPLE:
+        when Competition::SCORING_SIMPLE
         parse_scoring_simple(params.merge({:result => TIE}))
-        when Competition::SCORING_PARTIAL:
+        when Competition::SCORING_PARTIAL
         self.maps = 0
         parse_scoring_partial(params)
-        when Competition::SCORING_SIMPLE_PER_MAP:
+        when Competition::SCORING_SIMPLE_PER_MAP
         parse_scoring_simple_per_map(params.merge({:score_participant1 => 0, :score_participant2 => 0}))
       else
         raise 'unimplemented'
@@ -430,11 +431,11 @@ class CompetitionsMatch < ActiveRecord::Base
 
   def winner
     case result
-      when P1_WINS:
+      when P1_WINS
       self.participant1
-      when TIE:
+      when TIE
       'Empate'
-      when P2_WINS:
+      when P2_WINS
       self.participant2
     else
       raise 'ERROR: match unconfirmed'
@@ -446,10 +447,10 @@ class CompetitionsMatch < ActiveRecord::Base
     if self.completed_on.nil? or self.completed_on > Time.now.ago(86400 * 30) then
       return true if competition.user_is_admin(user) || competition.user_is_supervisor(user)
       case self.competition.competitions_participants_type_id
-        when Competition::USERS:
+        when Competition::USERS
         activep = self.competition.get_active_participant_for_user(user)
         competition.user_is_participant(user.id) && (self.participant1_id == activep.id || self.participant2_id == activep.id)
-        when Competition::CLANS:
+        when Competition::CLANS
         # miramos a ver si es miembro de alguno de los dos clanes
         if self.participant1_id
           allowed_players = self.participant1.the_real_thing.members_of_game(competition.game)
@@ -483,8 +484,10 @@ class CompetitionsMatch < ActiveRecord::Base
     if self.completed? && self.completed_on.nil? then # lo estamos completando
       self.completed_on = Time.now
       case self.competition.class.name
-        when 'Ladder': update_ladder_points
-        when 'League': update_league_points
+        when 'Ladder'
+          update_ladder_points
+        when 'League'
+          update_league_points
       end
 
       # Damos puntos de fe
@@ -515,10 +518,10 @@ class CompetitionsMatch < ActiveRecord::Base
     expected_p2 = 1 / (1 + 10 **((p1.points - p2.points) / 400.0))
 
     case self.result
-      when P1_WINS:
+      when P1_WINS
       p1_score = 1
       p2_score = 0
-      when TIE:
+      when TIE
       if forfeit_participant1 && forfeit_participant2 # double forfeit: points for no one
         p1_score = 0
         p2_score = 0
@@ -526,7 +529,7 @@ class CompetitionsMatch < ActiveRecord::Base
         p1_score = 0.5
         p2_score = 0.5
       end
-      when P2_WINS:
+      when P2_WINS
       p1_score = 0
       p2_score = 1
     end
@@ -541,10 +544,10 @@ class CompetitionsMatch < ActiveRecord::Base
 
   def check_after_saves
     case self.competition.class.name
-      when 'Tournament':
+      when 'Tournament'
       after_save_tourney
 
-      when 'Ladder':
+      when 'Ladder'
       if @changed_completed_on_result
         Competitions.recalculate_points(self.competition)
       end

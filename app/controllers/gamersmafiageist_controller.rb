@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class GamersmafiageistController < ApplicationController
   before_filter :require_auth_users
 
@@ -8,7 +9,7 @@ class GamersmafiageistController < ApplicationController
   flash[:error] = "La encuesta est&aacute; cerrada."
   return
     if !@user.settled?
-      flash[:error] = "No llevas en Gamersmafia suficiente tiempo como para participar en esta ediciÃn de la Gamersmafiageist, lo sentimos"
+      flash[:error] = "No llegas en Gamersmafia suficiente tiempo como para participar en esta ediciÃ³n de la Gamersmafiageist, lo sentimos"
     else
       @code = GamersmafiageistCode.find(:first,
         :conditions => ['user_id = ? AND survey_edition_date = ?', @user.id,

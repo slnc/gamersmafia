@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UsersGuid < ActiveRecord::Base
   # TODO validación dependiendo del tipo
   belongs_to :user

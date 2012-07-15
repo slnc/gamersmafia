@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 namespace :gm do
   desc "GmGeist Warning 2011"
   task :gmgeist2011 => :environment do

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RssController < ApplicationController
 
   TIMEZONE = '+0100'

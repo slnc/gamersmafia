@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Texture < ActiveRecord::Base
   has_many :skin_textures
   file_column :screenshot

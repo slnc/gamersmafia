@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Content < ActiveRecord::Base
   belongs_to :content_type
   before_destroy :clear_comments

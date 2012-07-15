@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Cuenta::CuentaController < ApplicationController
   # TODO wtf?? o lo uno o lo otro
   before_filter :require_auth_users,

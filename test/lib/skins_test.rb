@@ -1,8 +1,9 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
 
 class SkinsTest < ActiveSupport::TestCase
   test "all_color_generators_should_run_with_default_parameters" do
-   (Skins::ColorGenerators.constants - ["AbstractGenerator"]).each do |cg|
+   (Skins::ColorGenerators.constants - [:AbstractGenerator]).each do |cg|
       assert Skins::ColorGenerators.const_get(cg).process({}) != ''
     end
   end
@@ -20,7 +21,7 @@ class SkinsTest < ActiveSupport::TestCase
 
   test "all_color_generators_should_give_all_strict_colors" do
     sorted_strict_colors = Skins::COLORS_STRICT.keys
-     (Skins::ColorGenerators.constants - ["AbstractGenerator"]).sort.each do |cg|
+     (Skins::ColorGenerators.constants - [:AbstractGenerator]).sort.each do |cg|
       sg_colors = Skins::ColorGenerators.const_get(cg).get_colors
       undefined_keys = []
       sorted_strict_colors.each do |st_key|

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module HomeHelper
   def comunidad_user_with_photo(user)
     return <<-END
@@ -12,11 +13,11 @@ module HomeHelper
 
   def get_user_daily_joy_term
     case cookies[:sexpref]
-    when "dude":
+    when "dude"
       Term.single_toplevel(:slug => "bazar").children.find(
           :first,
           :conditions => "slug = 'dudes' AND taxonomy = 'ImagesCategory'").id
-    when "void":
+    when "void"
       nil
     else
       Term.single_toplevel(:slug => "bazar").children.find(

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module SlncFileColumnHelper
   def fc_thumbnail(im_path, mode, dim, link_original=true, title='')
     if im_path.to_s.strip != '' then

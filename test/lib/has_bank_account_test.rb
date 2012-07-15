@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
 
 class HasBankAccountRecord < ActiveRecord::Base
@@ -18,7 +19,7 @@ class HasBankAccountTest < ActiveSupport::TestCase
 
   test "crud" do
     d = HasBankAccountRecord.new({:name => 'foo'})
-    assert true, d.save
+    assert d.save
     d = HasBankAccountRecord.find_by_name('foo')
     assert_not_nil d
     d.destroy

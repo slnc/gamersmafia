@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Cuenta::CompeticionesController < ApplicationController
   helper :competiciones
 
@@ -420,10 +421,10 @@ class Cuenta::CompeticionesController < ApplicationController
         @competition.allowed_competitions_participants.clear
         for p in params[:competition][:allowed_competitions_participants].strip.split("\n")
           case @competition.competitions_participants_type_id
-            when 1:
+            when 1
             u = User.find_by_login(p.strip)
             @competition.allowed_competitions_participants.create({:participant_id => u.id}) if u
-            when 2:
+            when 2
             c = Clan.find_by_name(p.strip)
             @competition.allowed_competitions_participants.create({:participant_id => c.id})
           end

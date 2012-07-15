@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class LogsEntry < ActiveRecord::Base
   @abstract_class = true
 

@@ -1,5 +1,5 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
-require 'feed_tools'
 
 class RssControllerTest < ActionController::TestCase
 

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SkinsFile < ActiveRecord::Base
   file_column :file
   belongs_to :skin

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 used_codes = [
 'oBtn69Uvz',
 'UeI6fKioI',

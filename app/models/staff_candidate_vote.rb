@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class StaffCandidateVote < ActiveRecord::Base
   belongs_to :user
   belongs_to :staff_candidate

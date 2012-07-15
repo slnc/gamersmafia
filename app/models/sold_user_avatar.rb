@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SoldUserAvatar < SoldProduct
   after_create :create_avatar
 

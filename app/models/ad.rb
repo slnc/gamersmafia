@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Ad < ActiveRecord::Base
   before_save :check_not_both
   belongs_to :advertiser

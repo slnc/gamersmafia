@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ContentLocked < Exception; end
 
 module ActsAsContentBrowser
@@ -66,9 +67,12 @@ module ActsAsContentBrowser
       obj.user_id = @user.id
 
       obj.state = case
-        when obj.respond_to?(:clan_id) && obj.clan_id: Cms::PUBLISHED
-        when (params[:draft] == '1'): Cms::DRAFT
-      else Cms::PENDING
+        when obj.respond_to?(:clan_id) && obj.clan_id
+          Cms::PUBLISHED
+        when (params[:draft] == '1')
+          Cms::DRAFT
+        else
+          Cms::PENDING
       end
 
       instance_variable_set(

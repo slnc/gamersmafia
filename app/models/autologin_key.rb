@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AutologinKey < ActiveRecord::Base
   belongs_to :user
 

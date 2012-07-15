@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CacheController < ApplicationController
   def thumbnails
     # TODO proteger

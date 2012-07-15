@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Delayed::Worker.destroy_failed_jobs = true
 Delayed::Worker.sleep_delay = 5
 # Delayed::Worker.max_attempts = 25

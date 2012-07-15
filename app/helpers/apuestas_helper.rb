@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module ApuestasHelper
   GM_KEY = "%gm"
   MIN_BETS_PREDICTION_RANKING = 15

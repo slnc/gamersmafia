@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Skin < ActiveRecord::Base
   has_hid
   has_and_belongs_to_many :portals
@@ -61,7 +62,7 @@ class Skin < ActiveRecord::Base
       end
       fname = (import[0..0] == '/' || import[1..1] == ':') ? full : "#{File.dirname(base_file_name)}/#{import}"
       import_contents = self.rextract_css_imports(fname)
-      import_contents.gsub!(/(url\(([^\/]{1}))/, "url(#{File.dirname(fname).gsub(Rails.root, '').gsub('public/', '')}/\\2")
+      import_contents.gsub!(/(url\(([^\/]{1}))/, "url(#{File.dirname(fname).gsub(Rails.root.to_s, '').gsub('public/', '')}/\\2")
       # reemplazamos urls relativas por absolutas
       if import[0..0] != '/' then # asumimos que este import es relativo
         # miramos cuantas / hay y quitamos los ../ necesarios
@@ -181,9 +182,9 @@ class Skin < ActiveRecord::Base
   private
   def setup_initial_zip
     template = case self.class.name
-      when 'ClansSkin':
+      when 'ClansSkin'
         'clan'
-      when 'FactionsSkin':
+      when 'FactionsSkin'
         'default'
     else
       raise "#{self.class.name} unsupported skin type"

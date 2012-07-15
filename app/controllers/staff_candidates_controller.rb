@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class StaffCandidatesController < ApplicationController
   def index
     @staff_position = StaffPosition.find_or_404(

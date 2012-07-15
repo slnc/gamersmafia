@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class FaccionController < ApplicationController
   allowed_portals [:faction]
   before_filter do |c|

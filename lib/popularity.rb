@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Popularity
   def self.update_rankings
     update_ranking_users

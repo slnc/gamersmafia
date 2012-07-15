@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
@@ -126,7 +127,7 @@ class UserTest < ActiveSupport::TestCase
         :birthday => DateTime.new(1988, 3, 26),
     })
     years = DateTime.now.year - u.birthday.year
-    assert([(years - 1), years].include?(u.age), u.age)
+    assert([(years - 1), years].include?(u.age), u.age.to_s)
   end
 
   test "check_age" do

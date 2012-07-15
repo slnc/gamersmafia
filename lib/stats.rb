@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Stats
   module Portals
     def self.participation(portal, s, e)

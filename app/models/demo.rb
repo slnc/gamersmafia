@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Demo < ActiveRecord::Base
   POVS = {:freeflight => 0, :chase => 1, :in_eyes => 2, :server => 3}
   DEMOTYPES = {:official => 0, :friendly => 1, :tutorial => 2 }
@@ -146,7 +147,7 @@ class Demo < ActiveRecord::Base
     # check_entities
     # 1º comprobamos que si han especificado entidades locales de gm éstas existen
     case games_mode.entity_type
-      when Game::ENTITY_USER:
+      when Game::ENTITY_USER
       the_what = 'usuario'
       if entity1_local_id && User.find_by_id(entity1_local_id).nil? then
         self.errors.add('entity1', 'El usuario especificado como primer participante no está registrado en Gamersmafia.')
@@ -158,7 +159,7 @@ class Demo < ActiveRecord::Base
         return false
       end
 
-      when Game::ENTITY_CLAN:
+      when Game::ENTITY_CLAN
       the_what = 'clan'
       if entity1_local_id && Clan.find_by_id(entity1_local_id).nil? then
         self.errors.add('entity1', 'El clan especificado como primer participante no está registrado en Gamersmafia.')

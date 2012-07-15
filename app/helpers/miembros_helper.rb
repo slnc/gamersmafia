@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module MiembrosHelper
   def draw_user_info(user)
     out = "<div class=\"members-user-info\">

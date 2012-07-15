@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'rake'
 
 unless Rake::TaskManager.methods.include?(:redefine_task)

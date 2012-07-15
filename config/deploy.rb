@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 set :application, "Gamersmafia"
 set :repository,  "ssh://git@github.com/slnc/gamersmafia.git"
 set :user, 'slnc'

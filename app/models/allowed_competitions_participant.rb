@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AllowedCompetitionsParticipant < ActiveRecord::Base
   belongs_to :competition
   after_create :send_notification

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Gmstats
   def self.cash_in_time_period(t1, t2)
     injected = User.db_query("select sum(ammount) from cash_movements where object_id_from_class is null AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'")[0]['sum'].to_f

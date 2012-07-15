@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AbTest < ActiveRecord::Base
   serialize :metrics, Array
   serialize :cache_conversion_rates, Hash

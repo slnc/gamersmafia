@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Clan < ActiveRecord::Base
   has_many :avatars, :dependent => :destroy
   has_many :clans_groups, :dependent => :destroy
@@ -18,7 +19,7 @@ class Clan < ActiveRecord::Base
         lambda { |games|
             game_ids = [0] + games.collect { |g| g.id }
             {:conditions => "id IN (SELECT clan_id FROM clans_games WHERE" +
-                            " game_id IN (#{game_ids}))"
+                            " game_id IN (#{game_ids.join(",")}))"
             }
         }
   scope :active, :conditions => "deleted IS FALSE"
@@ -311,11 +312,18 @@ class Clan < ActiveRecord::Base
   end
 
   def add_user_to_group(user, clans_groups_type_name)
+    if clans_groups_type_name == "clanleaders"
+      group_type_id = ClansGroupsType::CLANLEADERS
+    elsif clans_groups_type_name == "members"
+      group_type_id = ClansGroupsType::MEMBERS
+    else
+      raise "Invalid Group Name: #{clans_groups_type_name}"
+    end
+
     cg = ClansGroup.find(
         :first,
         :conditions => ['clan_id = ? and clans_groups_type_id = ?',
-                        id,
-                        ClansGroupsType::CLANLEADERS])
+                        id, group_type_id])
     cg.users<< user
     self.log("Añadido usuario #{user} al grupo #{cg}")
     recalculate_members_count

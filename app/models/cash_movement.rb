@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CashMovement < ActiveRecord::Base
   def sender
     Object.const_get(self.object_id_from_class).find_by_id(self.object_id_from) unless self.object_id_from.nil?

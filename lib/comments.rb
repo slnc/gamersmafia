@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Comments
 
   def self.require_user_can_comment_on_content(user, object)
@@ -128,8 +129,8 @@ module Comments
     # remove any html tag inside a <code></code>
 
     str.gsub!(/<pre class="brush: [a-z]+">.*<\/pre>/) { |blck|
-      code_part = blck.scan(/<pre class="brush: [a-z]+">(.*)<\/pre>/)[0].to_s.gsub("<", "&lt;").gsub(">", "&gt;").gsub("&lt;br /&gt;", "\n")
-      brush_part = blck.scan(/<pre class="brush: ([a-z]+)">.*<\/pre>/)[0]
+      code_part = blck.scan(/<pre class="brush: [a-z]+">(.*)<\/pre>/)[0][0].to_s.gsub("<", "&lt;").gsub(">", "&gt;").gsub("&lt;br /&gt;", "\n")
+      brush_part = blck.scan(/<pre class="brush: ([a-z]+)">.*<\/pre>/)[0][0]
       "<pre class=\"brush: #{brush_part}\">#{code_part}<\/pre>"
     }
 
@@ -167,7 +168,7 @@ module Comments
     return 0 if user.default_comments_valorations_weight == 0
     content = comment.content.real_content
     case content.class.name
-      when 'Blogentry':
+      when 'Blogentry'
       user_authority = Blogs.user_authority(user)
       user_authority = 1.1 if user_authority < 1.1
       Math.log10(user_authority)/Math.log10(Blogs.max_user_authority)
@@ -240,20 +241,20 @@ module Comments
     # TODO SOY GILIPOLLAS
     # TODO esto es O(n) !!!!!
     case refobj.class.name
-      when 'Blogentry':
+      when 'Blogentry'
       comments_ids = User.db_query("SELECT a.id
                                       FROM comments a join contents b on a.content_id = b.id
                                      WHERE a.has_comments_valorations = 't'
                                        AND a.user_id = #{user.id}
                                        AND b.content_type_id = (SELECT id FROM content_types WHERE name = 'Blogentry')")
-      when 'Clan':
+      when 'Clan'
       comments_ids = User.db_query("SELECT a.id
                                       FROM comments a join contents b on a.content_id = b.id
                                      WHERE a.has_comments_valorations = 't'
                                        AND a.user_id = #{user.id}
                                        AND b.clan_id IS NOT NULL")
 
-      when 'Faction':
+      when 'Faction'
       # TODO si refobj es Faction hay que cambiar la consulta
       comments_ids = User.db_query("SELECT a.id
                                       FROM comments a join contents b on a.content_id = b.id

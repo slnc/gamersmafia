@@ -1,3 +1,4 @@
+<%# coding: utf-8 %>
 <% topics = get_topics(forum) %>
 <%= render :partial => 'shared/pager2', :locals => {:collection => topics, :pos => 'top'} %>
 <%

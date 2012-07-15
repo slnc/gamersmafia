@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Import
   module Contents
     def self.import(dba, cls)

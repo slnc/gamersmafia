@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class TQNerAnnotateComment < TrainingQuestion
   # _ner_annotate_main: plain text of a comment
   # _ner_annotate_main_annotated: newline separated list of entities, don't include repeated

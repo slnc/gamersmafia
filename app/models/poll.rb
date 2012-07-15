@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Poll < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable
@@ -51,6 +52,9 @@ class Poll < ActiveRecord::Base
 
   def process_polls_options
     if @_tmp_options_new
+      if @_tmp_options_new.kind_of?(String)
+        @_tmp_options_new = @_tmp_options_new.split("\n")
+      end
       @_tmp_options_new.each { |s| self.polls_options.create({:name => s.strip}) unless s.strip == ''  }
       @_tmp_options_new = nil
     end
@@ -98,7 +102,7 @@ class Poll < ActiveRecord::Base
 
   def user_voted(user)
     ids = [0]
-    for p in self.polls_options.find(:all):
+    for p in self.polls_options.find(:all)
       ids << p.id
     end
     ids = ids.join(', ')
@@ -116,12 +120,12 @@ class Poll < ActiveRecord::Base
       return
     end
 
-    for p in self.polls_options.find(:all):
+    for p in self.polls_options.find(:all)
       ids << p.id
     end
     ids = ids.join(', ')
 
-    if user_id:
+    if user_id
       # si el usuario ya ha votado no le dejamos cambiar su voto
       existing_vote = PollsVote.find(:first, :conditions => ["polls_option_id IN (#{ids}) and user_id = ?", user_id])
       if not existing_vote
@@ -130,7 +134,9 @@ class Poll < ActiveRecord::Base
       end
     else
       # si es usuario anónimo sólo contamos su voto si no encontramos un voto desde esa ip de hace menos de 5 minutos a esta encuesta
-      if not PollsVote.find(:first, :conditions => ["polls_option_id IN (#{ids}) and remote_ip = ? and created_on > (now() - '5 minutes'::interval)::timestamp", remote_ip])
+      if not PollsVote.find(
+          :first,
+          :conditions => ["polls_option_id IN (#{ids}) and remote_ip = ? and created_on > (now() - '5 minutes'::interval)::timestamp", remote_ip])
         pollsvote = polls_option.polls_votes.create({:polls_option_id => polls_option.id, :remote_ip => remote_ip, :user_id => user_id})
         pollsvote.save
       end

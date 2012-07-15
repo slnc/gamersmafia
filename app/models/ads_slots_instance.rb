@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AdsSlotsInstance < ActiveRecord::Base
   belongs_to :ads_slot
   belongs_to :ad

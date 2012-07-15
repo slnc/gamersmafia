@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Cuenta::AmigosController < ApplicationController
   before_filter :require_auth_users, :only => [ :index ]
 

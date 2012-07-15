@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Portal < ActiveRecord::Base
   UNALLOWED_CODES = %w(bazar arena gm sys sistema webmaster secure ssl static ww www admin)
   serialize :options

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CommentsValorationsType < ActiveRecord::Base
   def self.find_positive
     find(:all, :conditions => 'direction = 1', :order => 'lower(name) ASC')

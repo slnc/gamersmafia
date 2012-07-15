@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ArenaPortal
   def id
     -3

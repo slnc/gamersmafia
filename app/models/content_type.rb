@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ContentType < ActiveRecord::Base
     has_many :contents
     has_many :factions_editors

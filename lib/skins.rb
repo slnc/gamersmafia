@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Skins
   module Clans
     def self.available_modules
@@ -209,7 +210,6 @@ module Skins
 
   module ColorGenerators
 
-
     def self.generators
       Skins::ColorGenerators.constants.collect { |c| Skins::ColorGenerators.const_get(c) unless c == 'AbstractGenerator' }.compact
     end
@@ -369,7 +369,7 @@ module Skins
       end
 
       def self.attributes
-        self::DEF_OPTIONS #.each do |k,v|
+        self::DEF_OPTIONS
       end
     end
 

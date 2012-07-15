@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 namespace :gm do
   desc "Sync indexes"
   task :sync_indexes => :environment do

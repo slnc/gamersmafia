@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Admin::ContenidosHelper
   def draw_content_mod_state(obj)
     points = PublishingDecision.find_sum_for_content(obj)

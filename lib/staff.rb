@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Staff
   def self.transition_positions
     StaffPosition.should_be_in_elections.find(:all).each do |position|

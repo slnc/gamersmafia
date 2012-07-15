@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class FactionsPortal < Portal
   VALID_HOMES = %w(fps softcore)
   before_save :check_factions_portal_home

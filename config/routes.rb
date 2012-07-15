@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Gamersmafia::Application.routes.draw do
   resources :staff_positions, :path => "staff" do
     member do

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Topic < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable

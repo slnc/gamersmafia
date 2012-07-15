@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module NotificationHelper
   def notification_header(s)
     "<div class=\"notification-header\">#{s}</div>"

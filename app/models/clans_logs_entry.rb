@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ClansLogsEntry < LogsEntry
   belongs_to :clan
 

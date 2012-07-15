@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module ApplicationHelper
   ANALYTICS_SNIPPET = <<-END
 <script type="text/javascript">
@@ -11,6 +12,20 @@ module ApplicationHelper
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
 </script>
+  END
+
+  ADSENSE_COMMENTS_SNIPPET = <<-END
+<div style="margin: 15px 0; padding-left: 120px;">
+<script type="text/javascript"><!--
+google_ad_client = "pub-6007823011396728";
+google_ad_slot = "5381241906";
+google_ad_width = 300;
+google_ad_height = 250;
+//-->
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
   END
 
   COMMENTS_DESPL = {:Normal => '0',
@@ -93,7 +108,7 @@ module ApplicationHelper
 
   def render_content_contents(content)
     case content.class.name
-    when "Image":
+    when "Image"
       partial = '/contenidos/image'
     else
       partial = '/contenidos/base'
@@ -254,7 +269,7 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
     raise "id not given for bbeditor" unless opts[:id]
     raise "name not given for bbeditor" unless opts[:name]
 
-    <<-EOS
+    out = <<-EOS
     <div title="Negrita" class="btn bold"></div>
     <div title="Cursiva" class="btn italic"></div>
     <div title="Enlace" class="btn link"></div>
@@ -277,8 +292,9 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
     $j('##{opts[:id]}').css('width', '100%');
     $j('##{opts[:id]}').elastic();
     </script>
-    #{controller.send(:render_to_string, :partial => '/shared/smileys', :locals => { :dom_id => opts[:id] })}
+    #{controller.send(:render_to_string, :partial => '/shared/smileys', :locals => { :dom_id => opts[:id] }).force_encoding("utf-8")}
     EOS
+    out.force_encoding("utf-8")
   end
 
   def draw_emblem(emblema)
@@ -289,8 +305,7 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
     # req: data size
     opts = {:colors => ['0077cc'], :fillcolors => ['E6F2FA']}.merge(opts)
     out = ''
-    require 'md5'
-    spid = MD5.hexdigest((Time.now.to_i + Kernel.rand).to_s)
+    spid = Digest::MD5.hexdigest((Time.now.to_i + Kernel.rand).to_s)
     # load_javascript_lib('web.shared/jgcharts-0.9')
     out << "<div id=\"line#{spid}\"></div>
 <script type=\"text/javascript\">
@@ -320,8 +335,7 @@ type: 'ls'}))
   def pie(opts)
     # req: data size
     out = ''
-    require 'md5'
-    spid = MD5.hexdigest((Time.now.to_i + Kernel.rand).to_s)
+    spid = Digest::MD5.hexdigest((Time.now.to_i + Kernel.rand).to_s)
     # load_javascript_lib('web.shared/jgcharts-0.9')
     out << "<div id=\"line#{spid}\"></div>
 <script type=\"text/javascript\">
@@ -348,8 +362,7 @@ type: 'p'}))
   def horizontal_stacked_bar(opts)
     # req: data size
     out = ''
-    require 'md5'
-    spid = MD5.hexdigest((Time.now.to_i + Kernel.rand).to_s)
+    spid = Digest::MD5.hexdigest((Time.now.to_i + Kernel.rand).to_s)
     # load_javascript_lib('web.shared/jgcharts-0.9')
     out << "<div id=\"line#{spid}\"></div>
 <script type=\"text/javascript\">
@@ -386,25 +399,25 @@ type: 'bhs'}))
   end
 
   def content_2colx(&block)
-    concat("<div class=\"container c2colx\">")
+    concat("<div class=\"container c2colx\">".force_encoding("utf-8"))
     yield
     concat("</div>")
   end
 
   def content_3col(&block)
-    concat("<div class=\"container c3col\">")
+    concat("<div class=\"container c3col\">".force_encoding("utf-8"))
     yield
     concat("</div>")
   end
 
   def content_3colx(&block)
-    concat("<div class=\"container c3colx\">")
+    concat("<div class=\"container c3colx\">".force_encoding("utf-8"))
     yield
     concat("</div>")
   end
 
   def content_3coly(&block)
-    concat("<div class=\"container c3coly\">")
+    concat("<div class=\"container c3coly\">".force_encoding("utf-8"))
     yield
     concat("</div>")
   end
@@ -754,10 +767,10 @@ skin: 'v2'
 
   def content_bottom(obj)
     if user_is_authed and obj.state == Cms::PENDING and obj.class.name != 'Blogentry' and @user.id != obj.user_id
-      controller.send(:render_to_string, :partial => '/shared/accept_or_deny', :locals => { :object => obj })
+      controller.send(:render_to_string, :partial => '/shared/accept_or_deny', :locals => { :object => obj }).force_encoding("utf-8")
     elsif [Cms::PUBLISHED, Cms::DELETED, Cms::ONHOLD].include?(obj.state)
-      out = controller.send(:render_to_string, :partial => 'shared/contentinfobar', :locals => { :object => obj })
-      out<< controller.send(:render_to_string, :partial => 'shared/comments', :locals => { :object => obj })
+      out = controller.send(:render_to_string, :partial => 'shared/contentinfobar', :locals => { :object => obj }).force_encoding("utf-8")
+      out<< controller.send(:render_to_string, :partial => 'shared/comments', :locals => { :object => obj }).force_encoding("utf-8")
     else
       ''
     end
@@ -854,13 +867,13 @@ skin: 'v2'
 
   def submenu_name
     case controller.submenu
-      when 'Facción':
+      when 'Facción'
       if controller.class.name.include?('Cuenta')
         "Mi Facción"
       else
         'Facción'
       end
-      when 'Clan':
+      when 'Clan'
       "Mis Clanes"
     else
       ActiveSupport::Inflector::humanize(ActiveSupport::Inflector::tableize(controller.submenu))
@@ -940,7 +953,7 @@ skin: 'v2'
     generic_support(opts) do
       block.call
       #raise controller.render_to_string(:partial => '/shared/content_tag_browser', :locals => { :content => opts[:content] })
-      concat(controller.send(:render_to_string, :partial => '/shared/content_tag_browser', :locals => { :content => opts[:content] }))
+      concat(controller.send(:render_to_string, :partial => '/shared/content_tag_browser', :locals => { :content => opts[:content] }).force_encoding("utf-8"))
     end
   end
 
@@ -949,14 +962,14 @@ skin: 'v2'
     return '' if controller.portal.kind_of?(ClansPortal)
     out = ''
 
-    concat("<div class=\"container\" id=\"csupport\"><div class=\"ads-slots\"><div class=\"ads-slots1\">#{out if opts[:show_ads]}")
+    concat("<div class=\"container\" id=\"csupport\"><div class=\"ads-slots\"><div class=\"ads-slots1\">#{out if opts[:show_ads]}".force_encoding("utf-8"))
     concat("#{ads_slots('sideright') if opts[:show_ads]}</div></div>")
     yield
     concat("</div>")
   end
 
   def content_main(opts={}, &block)
-    concat("<div class=\"container\" id=\"cmain\">")
+    concat("<div class=\"container\" id=\"cmain\">".force_encoding("utf-8"))
     yield
     concat("</div>")
   end
@@ -972,8 +985,8 @@ skin: 'v2'
     blast_cls = 'blast' if opts[:blast]
     out = "<div class=\"module mftext #{grid_cls} #{glast_cls} #{blast_cls} #{'sub-modules' if opts[:has_submodules]}\""
     out << " id=\"#{opts[:id]}\"" if opts[:id]
-    concat(out << ">")
-    concat("<div class=\"mtitle#{opts[:additional_class]}\"><span>#{title}</span></div>") if title
+    concat(out << ">".force_encoding("utf-8"))
+    concat("<div class=\"mtitle#{opts[:additional_class]}\"><span>#{title}</span></div>".force_encoding("utf-8")) if title
     concat("<div class=\"mcontent\">")
     yield
     concat("</div></div>")
@@ -991,7 +1004,7 @@ skin: 'v2'
     return '' if collection.size == 0 && !options[:show_even_if_empty]
     out = "<div class=\"module mflist #{grid_cls} #{glast_cls} #{blast_cls} #{class_cls} \""
     out << " id=\"#{options[:id]}\"" if options[:id]
-    concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\"><ul>")
+    concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\"><ul>".force_encoding("utf-8"))
     collection.each do |o|
       concat("<li class=\"#{oddclass} #{options[:class] if options[:class]} \">")
       yield o
@@ -1026,7 +1039,7 @@ skin: 'v2'
     return '' if collection.size == 0 && !options[:show_even_if_empty]
     out = "<div class=\"module mf#{mode} #{grid_cls} #{glast_cls} #{blast_cls} #{class_cls} \""
     out << " id=\"#{options[:id]}\"" if options[:id]
-    concat(out << "><div class=\"mtitle #{'mcontent-title' unless options[:no_mcontent_title]}\"><span>#{title}</span></div><div class=\"mcontent\">")
+    concat(out << "><div class=\"mtitle #{'mcontent-title' unless options[:no_mcontent_title]}\"><span>#{title}</span></div><div class=\"mcontent\">".force_encoding("utf-8"))
     concat(((mode == 'list') ? '<ul>' : '<table>'))
     collection.each do |o|
       concat("<#{(mode == 'list') ? 'li' : 'tr'} class=\"#{oddclass} #{options[:class] if options[:class]} \">")
@@ -1052,9 +1065,10 @@ skin: 'v2'
      <div class="module mfcontent"><div class="mtitle mcontent-title"><div class=\"iset iset#{content.class.name.downcase}\"></div> <span>#{show_rating_title(content)} #{content.resolve_hid}</span></div>
      <div class="mcontent">
     END
+    out.force_encoding("utf-8")
     if block
       concat(out)
-      out = ''
+      out = ''.force_encoding("utf-8")
       yield
     else
       out<< <<-END
@@ -1062,9 +1076,9 @@ skin: 'v2'
 
 
 #{"<div class=\"xmain\">"<<auto_link_raw(smilelize(content.main))<<"</div>" if content.respond_to?(:main) && content.main.to_s != ''}
-    END
-
+      END
     end
+
     if block
       concat("#{content_bottom(content)}</div></div>")
     else
@@ -1084,13 +1098,14 @@ skin: 'v2'
     END
 
     page = 1 if page.to_i == 0
-    collection = object.paginate(find_args)
+    original_collection = object.paginate(find_args)
 
     out<< controller.send(
         :render_to_string,
         :partial => 'shared/pager2',
-        :locals => {:collection => collection, :pos => 'top'})
+        :locals => {:collection => original_collection, :pos => 'top'}).force_encoding("utf-8")
 
+    collection = original_collection.clone
     cache_out = cache_without_erb_block(opts.fetch(:cache)) do
       out2 = ' '
       if collection.size > 0 # no podemos hacer un return
@@ -1119,7 +1134,7 @@ skin: 'v2'
     out<< controller.send(
         :render_to_string,
         :partial => 'shared/pager2',
-        :locals => {:collection => collection, :pos => 'bottom'})
+        :locals => {:collection => original_collection, :pos => 'bottom'}).force_encoding("utf-8")
     out<< '</div></div>'
   end
 
@@ -1161,7 +1176,7 @@ skin: 'v2'
     glast_cls = 'glast' if options[:glast]
     blast_cls = 'blast' if options[:blast]
     ids = []
-    out = "<div class=\"module mfcontents-list #{grid_cls} #{glast_cls} #{blast_cls}\""
+    out = "<div class=\"module mfcontents-list #{grid_cls} #{glast_cls} #{blast_cls}\"".force_encoding("utf-8")
     out << " id=\"#{options[:id]}\"" if options[:id]
     concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\"><ul>")
     collection.each do |o|
@@ -1203,7 +1218,7 @@ skin: 'v2'
     glast_cls = 'glast' if options[:glast]
     blast_cls = 'blast' if options[:blast]
     ids = []
-    out = "<div class=\"module mfcontents-#{container_tag} #{grid_cls} #{blast_cls} #{glast_cls}\""
+    out = "<div class=\"module mfcontents-#{container_tag} #{grid_cls} #{blast_cls} #{glast_cls}\"".force_encoding("utf-8")
     out << " id=\"#{options[:id]}\"" if options[:id]
     concat(out << "><div class=\"mtitle\"><span>#{title}</span></div><div class=\"mcontent\"><#{container_tag}>")
     collection.each do |o|
@@ -1243,6 +1258,7 @@ skin: 'v2'
         <div class="mcontent">
         <ul>
         END
+    out.force_encoding("utf-8")
     collection.each do |item|
       ids<< item.unique_content.id
       out<< "<li class=\"new #{oddclass} content#{item.unique_content.id}\"><a title=\"#{tohtmlattribute(item.title)}\" href=\"#{gmurl(item)}\">"

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Admin::UsuariosController < ApplicationController
   before_filter :require_auth_admins, :except => [ :edit, :index, :clear_photo, :clear_description, :report, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request, :confirmar_ban_request , :set_antiflood_level, :update, :users_role_destroy, :ipsduplicadas]
   before_filter :only => [ :index, :clear_photo, :clear_description, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request] do |c|

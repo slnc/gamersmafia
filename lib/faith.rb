@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # VALORACIONES POR NIVEL
 # - Anónimos: 1 contenidos al día
 # - Nivels Iniciado: 5 contenidos al día

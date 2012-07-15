@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Determines aggregated accuracy determining winning of a match. We determine
 # aggregate by looking at each individual's prediction and the actual outcome.
 # Args:

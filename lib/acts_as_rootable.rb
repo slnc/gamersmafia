@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Añade hooks al modelo para que cuando cambie el parent_id se sincronice
 # correctamente el root_id de la categoría
 module ActsAsRootable

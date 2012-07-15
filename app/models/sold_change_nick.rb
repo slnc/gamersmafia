@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SoldChangeNick < SoldProduct
   def _use(options)
     if User::LOGIN_REGEXP =~ options[:nuevo_login]

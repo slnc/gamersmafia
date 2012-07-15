@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Cuenta::GuidsController < ApplicationController
   before_filter :require_auth_users
   @@navpath_base = ['GUIDs', '/guids']

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Cuenta::TiendaHelper
   def product_img(product, link=true)
     if link

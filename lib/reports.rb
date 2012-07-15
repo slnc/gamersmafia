@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Reports
   extend ActionViewMixings
   def self.send_mrachmed_dominical

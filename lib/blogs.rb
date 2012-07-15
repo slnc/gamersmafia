@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Blogs
   def self.user_authority(user)
     c = user.blogentries.count(:conditions => "state = '#{Cms::PUBLISHED}'")

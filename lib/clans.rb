@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Clans
   module Authentication
     # Authentication module to be mixed in with a Controller.

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Admin::CompeticionesController < ApplicationController
   require_admin_permission :capo
 

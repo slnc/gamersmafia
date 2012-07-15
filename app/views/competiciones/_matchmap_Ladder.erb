@@ -14,9 +14,9 @@
     <td class="centered"><%
         if cm.completed? then
           case cm.result
-            when 0: %><span class="infoinline">Gana</span> <%=cm.participant1.name%><%
-            when 1: %>Empate<%
-            when 2: %><span class="infoinline">Gana</span> <%=cm.participant2.name%><%
+            when 0 %><span class="infoinline">Gana</span> <%=cm.participant1.name%><%
+            when 1 %>Empate<%
+            when 2 %><span class="infoinline">Gana</span> <%=cm.participant2.name%><%
             else
           end
          end-%>

@@ -1,4 +1,4 @@
-require 'lib/redefine_task'
+require 'redefine_task'
 require 'fileutils'
 
 namespace :db do
@@ -6,7 +6,7 @@ namespace :db do
     desc "Load fixtures into the current environment's database in one transaction.  Load specific fixtures using FIXTURES=x,y"
     task :load2 => :environment do
       require 'active_record/fixtures'
-      require 'lib/overload_insert_fixtures'
+      require 'overload_insert_fixtures'
       ActiveRecord::Base.establish_connection(:test)
       fixture_files = (ENV['FIXTURES'] ? ENV['FIXTURES'].split(/,/) : Dir.glob(File.join(Rails.root, 'test', 'fixtures', '*.{yml,csv}'))).collect {|fixture_file| File.basename(fixture_file, '.*') }
       ActiveRecord::Fixtures.create_fixtures('test/fixtures', fixture_files)

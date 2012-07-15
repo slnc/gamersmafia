@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SoldFaction < SoldProduct
   def _use(options)
     raise 'faction type unset' unless options[:type]

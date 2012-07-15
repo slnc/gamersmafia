@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Admin::ContenidosController < ApplicationController
   before_filter :require_auth_users, :except => [ :show ]
 

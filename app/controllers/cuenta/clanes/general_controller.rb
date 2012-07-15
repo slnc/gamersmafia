@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Cuenta::Clanes::GeneralController < ApplicationController
   def submenu
     'Clan'

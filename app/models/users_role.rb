@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UsersRole < ActiveRecord::Base
   VALID_ROLES = %w(Advertiser Don ManoDerecha Sicario GroupMember GroupAdministrator Moderator Editor Boss Underboss CompetitionAdmin CompetitionSupervisor)
   # role                  | role_data
@@ -72,29 +73,29 @@ class UsersRole < ActiveRecord::Base
   def format_scope
     # cambiar tb cuenta_helper role_data
     case role
-      when 'Advertiser':
+      when 'Advertiser'
       "Anunciante"
-      when 'Don':
+      when 'Don'
       "Don de #{BazarDistrict.find(self.role_data.to_i).name}"
-      when 'ManoDerecha':
+      when 'ManoDerecha'
       "Mano derecha de #{BazarDistrict.find(self.role_data.to_i).name}"
-      when 'Boss':
+      when 'Boss'
       "Boss de #{Faction.find(self.role_data.to_i).name}"
-      when 'Underboss':
+      when 'Underboss'
       "Underboss de #{Faction.find(self.role_data.to_i).name}"
-      when 'Moderator':
+      when 'Moderator'
       "Moderador de #{Faction.find(self.role_data.to_i).name}"
-      when 'Sicario':
+      when 'Sicario'
       "Sicario de #{BazarDistrict.find(self.role_data.to_i).name}"
-      when 'Editor':
+      when 'Editor'
       "Editor de #{ContentType.find(self.role_data_yaml[:content_type_id]).name} en #{Faction.find(self.role_data_yaml[:faction_id].to_i).name}"
-      when 'GroupAdministrator':
+      when 'GroupAdministrator'
       "Administrador de #{Group.find(self.role_data.to_i).name}"
-      when 'GroupMember':
+      when 'GroupMember'
       "Miembro de #{Group.find(self.role_data.to_i).name}"
-      when 'CompetitionAdmin':
+      when 'CompetitionAdmin'
       "Admin de #{Competition.find(self.role_data.to_i).name}"
-      when 'CompetitionSupervisor':
+      when 'CompetitionSupervisor'
       "Supervisor de #{Competition.find(self.role_data.to_i).name}"
     end
   end

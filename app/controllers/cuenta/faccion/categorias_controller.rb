@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Cuenta::Faccion::CategoriasController < Admin::CategoriasController
   public
   def categorias_skip_path

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Chatline < ActiveRecord::Base
   belongs_to :user
   after_create :do_after_create

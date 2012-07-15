@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class PublishingDecision < ActiveRecord::Base
   VALID_SQL = "(is_right = 't' OR is_right IS NULL)"
   belongs_to :user

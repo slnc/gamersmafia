@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class DemosController < ArenaController
   acts_as_content_browser :demo
   allowed_portals [:gm, :faction, :clan, :arena]

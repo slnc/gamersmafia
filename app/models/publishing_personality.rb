@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class PublishingPersonality < ActiveRecord::Base
   belongs_to :user
   belongs_to :content_type
@@ -9,9 +10,14 @@ class PublishingPersonality < ActiveRecord::Base
   end
 
   def recalculate
-    self.experience = Cms::get_user_weight_with(self.content_type, self.user)
-    self.experience = 1.0 if self.experience == Infinity
-    self.experience = -1.0 if self.experience == -1*Infinity
+    new_weight = Cms::get_user_weight_with(self.content_type, self.user)
+    if new_weight == Infinity
+      self.experience = 1.0
+    elsif new_weight == -1*Infinity
+      self.experience = -1.0
+    else
+      self.experience = new_weight
+    end
     self.save
   end
 

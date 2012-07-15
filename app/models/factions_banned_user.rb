@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class FactionsBannedUser < ActiveRecord::Base
   belongs_to :user
   belongs_to :banner_user, :class_name => 'User', :foreign_key => 'banner_user_id'

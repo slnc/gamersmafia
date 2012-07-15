@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
 
 class TermTest < ActiveSupport::TestCase
@@ -234,7 +235,7 @@ class TermTest < ActiveSupport::TestCase
     @subcat1 = @cat1.children.create(:name => 'catsubfather', :taxonomy => 'TopicsCategory')
     assert @subcat1.save
     @topic = Topic.new(:user_id => 1, :title => 'topic 1', :main => 'topic1')
-    assert @topic.save, @topic.errors
+    assert @topic.save, @topic.errors.full_messages_html
     assert_equal Cms::PUBLISHED, @topic.state
     assert_equal Cms::PUBLISHED, @topic.unique_content.state
     @subcat1.link(@topic.unique_content)

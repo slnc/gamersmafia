@@ -11,7 +11,7 @@
   <% end -%>
 
   <% case @competition.current_state
-  when 'created':
+  when 'created'
   %>
   <% mftext('Avanzar competición') do %>
   <div class="centered" style="padding: 10px 0;">
@@ -26,7 +26,7 @@
 </div>
 <% end -%>
   <%
-  when 'inscriptions_open':
+  when 'inscriptions_open'
   %>
   <% mftext('Avanzar competición') do %>
   <div class="centered" style="padding: 10px 0;">
@@ -41,7 +41,7 @@
   </div>
   <% end -%>
   <%
-  when 'inscriptions_closed':
+  when 'inscriptions_closed'
   %>
   <% mftext('Avanzar competición') do %>
   <div class="centered" style="padding: 10px 0;">	
@@ -55,7 +55,7 @@
 </div>
 <% end -%>
   <%
-  when 'started':
+  when 'started'
   %>
   <% mftext('Avanzar competición') do %>
   <div class="centered" style="padding: 10px 0;">
@@ -80,7 +80,7 @@
   </div>
   <% end -%>
   <%
-  when 'closed':
+  when 'closed'
   %>
   <p>Competición finalizada. No son posibles nuevos cambios.</p>
 <%

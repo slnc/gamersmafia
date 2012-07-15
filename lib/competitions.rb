@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Este módulo contiene clases y métodos para gestión de competiciones
 module Competitions
   def self.participants_of_user(u, competition_cls=nil)
@@ -38,14 +39,14 @@ module Competitions
       points[m.participant2_id] ||= {:wins => 0, :ties => 0, :losses => 0}
 
       case m.result
-        when CompetitionsMatch::P1_WINS:
+        when CompetitionsMatch::P1_WINS
         points[m.participant1_id][:wins] += 1
         points[m.participant2_id][:losses] += 1
-        when CompetitionsMatch::TIE:
+        when CompetitionsMatch::TIE
         df = (m.forfeit_participant1 && m.forfeit_participant2) ? :losses : :ties
         points[m.participant1_id][df] += 1
         points[m.participant2_id][df] += 1
-        when CompetitionsMatch::P2_WINS:
+        when CompetitionsMatch::P2_WINS
         points[m.participant1_id][:losses] += 1
         points[m.participant2_id][:wins] += 1
       end
@@ -92,14 +93,18 @@ module Competitions
     trophies
   end
 
-  def self.find_all_matches_from_user(user, conditions=nil, limit=:all)
+  def self.find_all_matches_from_user(user, conditions=nil, limit=0)
     participant_ids = [0]
     Competition.related_with_user(user).find(:all, :order => 'lower(name)').each do |c|
       participant = c.get_active_participant_for_user(user)
       participant_ids<< participant.id if participant # TODO si un usuario pertenece a más de un clan apuntado al mismo torneo esto no será correcto
     end
     q_cond = conditions ? "AND #{conditions}" : ''
-    CompetitionsMatch.find(:all, :conditions => "(participant1_id IN (#{participant_ids.join(',')}) or participant2_id IN (#{participant_ids.join(',')})) #{q_cond}", :order => 'completed_on DESC', :limit => limit, :include => :competition)
+    CompetitionsMatch.find(
+        :all,
+        :conditions => "(participant1_id IN (#{participant_ids.join(',')}) or participant2_id IN (#{participant_ids.join(',')})) #{q_cond}", :order => 'completed_on DESC',
+        :limit => limit,
+        :include => :competition)
   end
 
   def self.find_all_matches_from_clan(clan, conditions=nil, limit=:all)

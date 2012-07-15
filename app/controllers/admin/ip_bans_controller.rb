@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Admin::IpBansController < ApplicationController
   require_admin_permission :capo
 

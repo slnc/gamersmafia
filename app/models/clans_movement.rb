@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ClansMovement < ActiveRecord::Base
   IN = 0
   OUT = 1

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 namespace :gm do
   desc "Tasks to be executed after deploying"
   task :after_deploy => :environment do

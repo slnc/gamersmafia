@@ -2,7 +2,7 @@
   <% mftext('Resultado') do %>
   <% if controller.user_can_set_result then %>
   <% case @competition.scoring_mode
-      when Competition::SCORING_SIMPLE:
+      when Competition::SCORING_SIMPLE
       %>
       <form method="post" action="/competiciones/confirmar_resultado">
         <input type="hidden" name="id" value="<%=@competitions_match.id%>" />
@@ -14,7 +14,7 @@
         <div class="centered"><input type="submit" class="button" value="<%if @competitions_match.completed? then %>Cambiar<% else %>Enviar<% end -%> resultado" onclick="return confirm('¿Estás seguro?');" /></div>
       </form>
 
-        <% when Competition::SCORING_PARTIAL: %>
+        <% when Competition::SCORING_PARTIAL %>
         <form method="post" action="/competiciones/confirmar_resultado">
           <input type="hidden" name="id" value="<%=@competitions_match.id%>" />
         <table>
@@ -56,7 +56,7 @@
         <div class="centered"><input type="submit" class="button" value="<%if @competitions_match.completed? then %>Cambiar<% else %>Enviar<% end -%> resultado" onclick="return confirm('¿Estás seguro?');" /></div>
       </form>
 
-      <% when Competition::SCORING_SIMPLE_PER_MAP: %>
+      <% when Competition::SCORING_SIMPLE_PER_MAP %>
         <form method="post" action="/competiciones/confirmar_resultado">
           <input type="hidden" name="id" value="<%=@competitions_match.id%>" />
         <table>
@@ -103,7 +103,7 @@
       p2_class = (cm.result == 2) ? 'match-won' : 'match-lost'
     end
   case @competition.scoring_mode
-        when 1: %>
+        when 1 %>
         <%#~TODO duplicado en list.rhtml y otros sitios
     %>
     <table>
@@ -117,7 +117,7 @@
       </tr>
   </table>
 
-    <%  when 2: %>
+    <%  when 2 %>
     <table>
       <tr class="<%=oddclass%>">
         <td><a href="/competiciones/participante/<%=cm.participant1_id%>"><%=cm.participant1%></a></td>

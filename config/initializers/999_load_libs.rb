@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Order matters!
 %w(
    slnc_file_column

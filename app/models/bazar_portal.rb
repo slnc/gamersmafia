@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class BazarPortal
   def id
     -2

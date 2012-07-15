@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Admin::TagsController < AdministrationController
   before_filter do |c|
     raise AccessDenied unless c.user && (c.user.has_admin_permission?(:capo) || c.user.is_hq?)

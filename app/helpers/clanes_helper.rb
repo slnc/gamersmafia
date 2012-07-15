@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module ClanesHelper
   # Returns top 10 clans by size given a portal.
   def get_biggest_clans(portal)

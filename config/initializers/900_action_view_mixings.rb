@@ -1,3 +1,5 @@
+# -*- encoding : utf-8 -*-
+#
 module ActionViewMixings
   def remote_ip
     self.controller.remote_ip
@@ -28,7 +30,10 @@ module ActionViewMixings
     if abtest.nil?
       abtest = AbTest.new(:name => test_name, :treatments => treatment > 1 ? treatment : 1, :metrics => [:clickthrough])
       abtest.save
-      Message.create(:user_id_from => User.find_by_login(App.ia_auto_abtests).id, :user_id_to => App.webmaster_user_id, :title => "AB Test '#{abtest.name}' creado automáticamente con #{abtest.treatments} tratamientos", :message => "Revisa que esté bien, ¿vale?") unless Rails.env == 'test'
+      Message.create(
+          :user_id_from => User.find_by_login(App.ia_auto_abtests).id,
+          :user_id_to => App.webmaster_user_id,
+          :title => "AB Test '#{abtest.name}' creado automáticamente con #{abtest.treatments} tratamientos", :message => "Revisa que esté bien, ¿vale?") unless Rails.env == 'test'
     end
 
     if abtest.completed_on  || controller.is_crawler?
@@ -152,10 +157,8 @@ module ActionViewMixings
   def truncate(text, length = 30, truncate_string = "...")
     if text.nil? then return end
     l = length - truncate_string.length
-    $KCODE = 'u'
     chars = text.split(//)
     out = chars.length > length ? chars[0...l].join + truncate_string : text
-    $KCODE = 'NONE'
     out
   end
 

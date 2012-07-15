@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Admin::HipotesisController < AdministrationController
   def index
     @navpath = [['Hipotesis', '/admin/hipotesis'], ]

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module GlobalVars
   VALID_VAR_NAME = /^[a-z0-9_]+$/
   def self.get_var(var)

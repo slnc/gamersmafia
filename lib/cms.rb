@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 prev_verbose = $VERBOSE
 $VERBOSE = nil
 begin
@@ -352,7 +353,7 @@ module Cms
 
   def self.min_hits_before_reaching_max_publishing_power(contents_type_name)
     case contents_type_name
-      when 'Image':
+      when 'Image'
       60
     else
       30
@@ -665,32 +666,22 @@ module Cms
     return html_fragment unless App.enable_tidy?
     return html_fragment if html_fragment.nil? || html_fragment.empty?
 
-    require 'tidy'
-    opts = {:input_html => true,
-      # opciones seguras
-      :hide_comments => true,
-      :logical_emphasis => true,
-      :doctype => 'omit',
-      :drop_font_tags => true,
-      :drop_proprietary_attributes => true,
-      :drop_empty_paras => false,
-      :show_body_only => true,
-      :wrap => 0,
-      :join_styles => false,
-      :force_output => true,
+    require 'tidy_ffi'
 
-      # pueden ser peligrosas
-      :bare => true,
-      :clean => false,
-      :quote_marks => true,
-      :output_xhtml => true,
-      :word_2000 => true
+    opts = {
+        :clean => 1,
+        :drop_empty_paras => 0,
+        :indent => 1,
+        :join_styles => 0,
+        :literal_attributes => 1,
+        :merge_divs => 0,
+        :merge_spans => 0,
+        :numeric_entities => 1,
+        :output_html => 1,
+        :wrap => 0,
+        :show_body_only => 1,
     }
-
-    Tidy.path = App.tidy_path
-    Tidy.open(opts) do |tidy|
-      html_fragment = tidy.clean(html_fragment)
-    end
+    html_fragment = TidyFFI::Tidy.new(html_fragment, opts).clean
 
     html_fragment.gsub!('<body>', '')
     html_fragment.gsub!('</body>', '')

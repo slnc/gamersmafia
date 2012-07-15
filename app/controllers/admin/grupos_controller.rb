@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Admin::GruposController < AdministrationController
 
   def index

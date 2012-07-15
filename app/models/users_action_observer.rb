@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UsersActionObserver < ActiveRecord::Observer
   observe User, RecruitmentAd, ClansMovement, Clan, Content, ProfileSignature, Friendship, UsersEmblem
 
@@ -52,7 +53,7 @@ class UsersActionObserver < ActiveRecord::Observer
         end
       end
 
-      when 'User':
+      when 'User'
       if object.photo_changed?
         if UsersAction.count(:conditions => ['created_on >= now() - \'5\'::interval AND user_id = ? AND type_id = ?', object.id, UsersAction::PROFILE_PHOTO_UPDATED]) == 0 then
           u = User.find(object.id) # para que photo tenga ya la ruta
@@ -69,12 +70,12 @@ class UsersActionObserver < ActiveRecord::Observer
                            :data => "#{user_link(object)} #{msg}")
       end
 
-      when 'RecruitmentAd':
+      when 'RecruitmentAd'
       if object.deleted_changed?
         UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_CONTENT, object.unique_content_id]).each { |ra| ra.destroy }
       end
 
-      when 'Friendship':
+      when 'Friendship'
       if object.accepted_on_changed? && !object.accepted_on.nil?
         UsersAction.create(:user_id => object.sender_user_id,
                            :type_id => UsersAction::NEW_FRIENDSHIP_SENDER,
@@ -86,7 +87,7 @@ class UsersActionObserver < ActiveRecord::Observer
                            :data => "#{user_link(object.receiver)} y #{user_link(object.sender)} son ahora amigos")
       end
 
-      when 'Clan':
+      when 'Clan'
       if object.deleted_changed? && object.creator_user_id
         UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_CLAN, object.id]).each { |ra| ra.destroy }
       end
@@ -95,15 +96,15 @@ class UsersActionObserver < ActiveRecord::Observer
 
   def after_destroy(object)
     case object.class.name
-      when 'ProfileSignature':
+      when 'ProfileSignature'
       UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_PROFILE_SIGNATURE_SIGNED, object.id]).each { |ra| ra.destroy }
       UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_PROFILE_SIGNATURE_RECEIVED, object.id]).each { |ra| ra.destroy }
-      when 'Friendship':
+      when 'Friendship'
       UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_FRIENDSHIP_SENDER, object.id]).each { |ra| ra.destroy }
       UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_FRIENDSHIP_RECEIVER, object.id]).each { |ra| ra.destroy }
-      when 'ClansMovement':
+      when 'ClansMovement'
       UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_CLANS_MOVEMENT, object.id]).each { |ra| ra.destroy }
-      when 'UsersEmblem':
+      when 'UsersEmblem'
       UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_USERS_EMBLEM, object.id]).each { |ra| ra.destroy }
       # TODO
       #Faith.reset(object.referer) if object.referer_user_id # no hacemos lo siguiente porque ahora mismo no controlamos muy bien cuándo pasa de un estado a otro y los puntos de fe asociados.

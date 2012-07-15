@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'test_helper'
 
 class SiteControllerTest < ActionController::TestCase
@@ -19,7 +20,7 @@ class SiteControllerTest < ActionController::TestCase
     get :maintain_lock, {:id => l.id}
     assert_response :success
     l.reload
-    assert l.updated_on > 10.seconds.ago, l.updated_on
+    assert l.updated_on > 10.seconds.ago, l.updated_on.to_s
   end
 
 #  test "mrachmed clasifica comentarios" do

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AchmedObserver < ActiveRecord::Observer
   CASH_MOVEMENT_SUSPICIOUSNESS_THRESHOLD = 5000
 

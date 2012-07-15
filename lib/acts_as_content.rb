@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Este módulo se encarga de añadir funcionalidad a los objetos que se comportan
 # como contenidos.
 module ActsAsContent
@@ -22,11 +23,16 @@ module ActsAsContent
       scope :onhold, :conditions => "state = #{Cms::ONHOLD}"
 
       scope :in_term, lambda { |term|
-          raise ArgumentError, "in_term(nil) called" if term.nil?
-          {:conditions => [
-              "unique_content_id IN (SELECT content_id
-                                       FROM contents_terms
-                                      WHERE term_id = ?)", term.id]}
+          if term.nil?
+            raise ArgumentError, "Invalid term passed (#{term})"
+          elsif term.kind_of?(Class)
+            {}
+          else
+            {:conditions => [
+                "unique_content_id IN (SELECT content_id
+                                         FROM contents_terms
+                                        WHERE term_id = ?)", term.id]}
+          end
       }
 
       scope :in_term_tree, lambda { |term|
@@ -545,12 +551,12 @@ module ActsAsContent
       return if new_state == self.state || self.invalid?
       raise AccessDenied unless Cms::user_can_edit_content?(editor, self)
       case new_state
-        when Cms::DRAFT:
+        when Cms::DRAFT
         raise 'impossible'
-        when Cms::PENDING:
+        when Cms::PENDING
         raise 'impossible' unless self.state == Cms::DRAFT
         self.log_action('enviado a cola de moderación', editor)
-        when Cms::PUBLISHED:
+        when Cms::PUBLISHED
         raise "impossible, current_state #{self.id} = #{self.state}" unless [Cms::PENDING, Cms::DELETED, Cms::ONHOLD, Cms::DRAFT].include?(self.state)
         self.created_on = Time.now if self.state == Cms::PENDING # solo le cambiamos la hora si el estado anterior era cola de moderación
         self.log_action('publicado', editor)
@@ -561,7 +567,7 @@ module ActsAsContent
         end
 
         # Update tracker_items so they don't figure as updated
-        when Cms::DELETED:
+        when Cms::DELETED
         raise 'impossible' unless [Cms::PENDING, Cms::PUBLISHED, Cms::ONHOLD, Cms::DRAFT].include?(self.state)
         self.log_action('borrado', editor)
         del_karma if self.state == Cms::PUBLISHED
@@ -572,7 +578,7 @@ module ActsAsContent
           cr.destroy
         end
 
-        when Cms::ONHOLD:
+        when Cms::ONHOLD
         raise 'impossible' unless [Cms::PUBLISHED, Cms::DELETED, Cms::ONHOLD].include?(self.state)
         self.log_action('movido a espera', editor)
         del_karma if self.state == Cms::PUBLISHED
@@ -733,7 +739,7 @@ module ActsAsContent
         tracker_item.save
         cr = ContentsRecommendation.find(:first, :conditions => ['receiver_user_id = ? AND content_id = ? AND seen_on IS NULL', user.id, uniq.id])
         cr.mark_seen if cr
-      rescue ActiveRecord::StatementInvalid:
+      rescue ActiveRecord::StatementInvalid
         # try again, maybe overloaded
         TrackerItem.find(:first, :conditions => ['user_id = ? and content_id = ?', user.id, uniq.id])
       end

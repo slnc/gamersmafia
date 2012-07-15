@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Cuenta::Clanes::SponsorsController < ApplicationController
   before_filter :require_auth_users
   before_filter :require_auth_clan_leader

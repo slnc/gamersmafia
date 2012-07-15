@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SoldProfileSignatures < SoldProduct
   after_create :update_user
 

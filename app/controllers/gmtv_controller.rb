@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class GmtvController < ApplicationController
 
   def channels

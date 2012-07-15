@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class SlogEntry < ActiveRecord::Base
   TYPES = {
     :info => 0,
@@ -109,7 +110,7 @@ class SlogEntry < ActiveRecord::Base
       when :competition_supervisor
       Competition.find(scope).supervisors
 
-    when :editor
+      when :editor
       faction_id, content_type_id = SlogEntry.decode_editor_scope(scope)
       Faction.find(faction_id).editors(ContentType.find_by_id(content_type_id))
 
@@ -271,12 +272,12 @@ class SlogEntry < ActiveRecord::Base
     sql_cond = case mode
       when :open
         OPEN_SQL
-      when :assigned_to_me:
+      when :assigned_to_me
         "completed_on IS NULL AND reviewer_user_id = #{opts[:user_id]}"
 
-      when :assigned_to_others:
+      when :assigned_to_others
         "completed_on IS NULL AND reviewer_user_id IS NOT NULL AND reviewer_user_id <> #{opts[:user_id]}"
-      when :closed:
+      when :closed
         CLOSED_SQL
     end
 
@@ -327,21 +328,21 @@ class SlogEntry < ActiveRecord::Base
 
   def self.scopes(domain, u)
     case domain
-      when :bazar_district_bigboss:
+      when :bazar_district_bigboss
       if u.has_admin_permission?(:bazar_manager)
         BazarDistrict.find(:all, :order => 'lower(name)')
       else
         [BazarDistrict.find_by_bigboss(u)].compact
       end
 
-      when :faction_bigboss:
+      when :faction_bigboss
       if u.has_admin_permission?(:capo)
         Faction.find(:all, :order => 'lower(name)')
       else
         [Faction.find_by_bigboss(u)].compact
       end
 
-      when :moderator:
+      when :moderator
       if u.has_admin_permission?(:capo)
         Faction.find(:all, :order => 'lower(name)')
       else
@@ -350,7 +351,7 @@ class SlogEntry < ActiveRecord::Base
         [Faction.find_by_bigboss(u)].compact + Faction.find_by_moderator(u)
       end
 
-      when :editor:
+      when :editor
       if u.has_admin_permission?(:capo)
         Faction.find(:all, :order => 'lower(name)').collect { |f| EditorScope.new(f.id, nil) }
       else
@@ -365,21 +366,21 @@ class SlogEntry < ActiveRecord::Base
         fs
       end
 
-      when :sicario:
+      when :sicario
       if u.has_admin_permission?(:bazar_manager)
         BazarDistrict.find(:all, :order => 'lower(name)')
       else
         [BazarDistrict.find_by_bigboss(u)].compact + BazarDistrict.find_by_sicario(u)
       end
 
-      when :competition_admin:
+      when :competition_admin
       if u.has_admin_permission?(:gladiador)
         Competition.find(:all, :conditions => 'deleted = \'f\'', :order => 'lower(name)')
       else
         Competition.find_by_admin(u)
       end
 
-      when :competition_supervisor:
+      when :competition_supervisor
       if u.has_admin_permission?(:gladiador)
         Competition.find(:all, :conditions => 'deleted = \'f\'', :order => 'lower(name)')
       else

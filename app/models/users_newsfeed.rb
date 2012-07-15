@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class UsersNewsfeed < ActiveRecord::Base
   MAX_NEW_ITEMS_PER_7DAYS = 50
   MAX_PER_BUCKET_ITEMS = 5

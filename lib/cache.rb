@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Cache
   FRAG_HOME_INDEX_QUESTIONS = '/home/index/preguntas'
 
@@ -132,10 +133,10 @@ module Cache
     extend Cache::Common
     def self.before_destroy(object)
       case object.taxonomy
-        when 'ImagesCategory':
+        when 'ImagesCategory'
         object.get_related_portals.each { |p| expire_fragment("/#{p.code}/imagenes/index/galleries") }
 
-        when 'TopicsCategory':
+        when 'TopicsCategory'
         object.get_related_portals.each { |p| expire_fragment("/#{p.code}/foros/index/index") } # tenemos que borrarla entera porque se guardan totales
         expire_fragment("/common/foros/subforos/#{object.parent_id}")
         expire_fragment '/common/home/foros/topics_list'
@@ -146,10 +147,10 @@ module Cache
           p = p.parent
         end
 
-        when 'DownloadsCategory':
+        when 'DownloadsCategory'
         Cache::Terms.after_save(object)
 
-        when 'TutorialsCategory':
+        when 'TutorialsCategory'
         object.get_related_portals.each { |p| expire_fragment("/#{p.code}/tutoriales/index/folders") }
         p = object
         while p

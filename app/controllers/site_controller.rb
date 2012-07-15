@@ -1,5 +1,4 @@
-require 'md5'
-
+# -*- encoding : utf-8 -*-
 class SiteController < ApplicationController
   helper :miembros
   CONTACT_MAGIC = 982579815691299191
@@ -529,7 +528,7 @@ class SiteController < ApplicationController
   end
 
   def self.do_contactar_key
-    MD5.hexdigest((CONTACT_MAGIC + (Time.now.to_i / 3600)).to_s)
+    Digest::MD5.hexdigest((CONTACT_MAGIC + (Time.now.to_i / 3600)).to_s)
   end
 
   def root_term_children
