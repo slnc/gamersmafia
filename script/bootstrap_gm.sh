@@ -44,9 +44,8 @@ openssh-server
 postgresql
 postgresql-client
 rpl
-ruby1.8
-ruby1.8-dev
-rubygems
+redis-server
+ruby1.9.1-full
 vim-nox
 zip
 "
