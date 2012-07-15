@@ -119,10 +119,10 @@ class Cuenta::MensajesController < ApplicationController
   end
 
   def mensaje
-    @curmessage = Message.find(:first,
-                               :conditions => ['id = ? AND (user_id_to = ?
-                                                         OR user_id_from = ?)',
-                                               params[:id], @user.id, @user.id])
+    @curmessage = Message.find(
+        :first,
+        :conditions => ['id = ? AND (user_id_to = ?  OR user_id_from = ?)',
+                        params[:id].to_i, @user.id, @user.id])
     raise ActiveRecord::RecordNotFound unless @curmessage
     @message = Message.new
     @curmessage.read(@user) if @user.id == @curmessage.user_id_to
