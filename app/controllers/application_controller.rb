@@ -228,6 +228,7 @@ Request information:
       end
     end
 
+    track_404_errors if response.status == 404
     response.headers['X-UserId'] = @user ? @user.id.to_s : '-'
     response.headers['X-Controller'] = controller_name
     response.headers['X-Action'] = action_name
@@ -266,9 +267,8 @@ Request information:
 
   def check_portal_access_mode(allowed_portals)
     portal_sym = ActiveSupport::Inflector::singularize(
-                                                       ActiveSupport::Inflector::underscore(
-                                         @portal.class.name.gsub('Portal', '')
-    )
+        ActiveSupport::Inflector::underscore(
+            @portal.class.name.gsub('Portal', ''))
     ).to_sym
     if defined?(allowed_portals) and not allowed_portals.include?(portal_sym)
       raise ActiveRecord::RecordNotFound
@@ -283,15 +283,26 @@ Request information:
     @_is_crawler ||= (/bot|mediapartners|slurp/i =~ request.user_agent)
   end
 
-  def check404
-    if 1 == 0 && request.env.include?('HTTP_REFERER') && request.env['HTTP_REFERER'].to_s != '' && request.env['HTTP_REFERER'].index('gamersmafia')
-      uri = "http://#{request.env['HTTP_X_FORWARDED_HOST']}#{request.fullpath}"
-      SystemNotifier.deliver_notification404_notification(request.fullpath, request.env['HTTP_REFERER'], request)
+  def track_500_errors
+    day = Time.now.strftime("%Y%m%d")
+    Keystore.incr("http.global.errors.500.#{day}")
+  end
+
+  def track_404_errors
+    day = Time.now.strftime("%Y%m%d")
+    if (request.env["HTTP_REFERER"] || "").index('gamersmafia').nil?
+      Keystore.incr("http.global.errors.external_404.#{day}")
+    else
+      Keystore.incr("http.global.errors.internal_404.#{day}")
+      # uri = "http://#{request.env['HTTP_X_FORWARDED_HOST']}#{request.fullpath}"
+      # SystemNotifier.deliver_notification404_notification(
+      #     request.fullpath, request.env['HTTP_REFERER'], request)
     end
   end
 
   def http_404
-    if App.port != 80 # solo capturamos estas URLs cuando ejecutamos en desarrollo
+    # solo capturamos estas URLs cuando ejecutamos en desarrollo
+    if App.port != 80
       res = request.fullpath.match(VERSIONING_EREG)
       if res
         if %w(gif png jpg).include?(res[2])
@@ -337,7 +348,6 @@ Request information:
     @rescuiing = true
     case exception
       when ActiveRecord::RecordNotFound
-      check404
       http_404
 
       when ActionController::UnknownHttpMethod
@@ -352,28 +362,27 @@ Request information:
       when AccessDenied
       handle_http_401
 
-      when ::ActionController::UnknownAction, ::ActionController::RoutingError
+      when ::AbstractController::ActionNotFound, ::ActionController::RoutingError
       if request.path.index('www.') != nil then
         redirect_to("http://#{request.path[request.path.index('www.')..-1]}",
                     :status => 301)
       else
-        check404
         http_404
       end
     else
+      track_500_errors
       ExceptionNotifier::Notifier.exception_notification(
         request.env, exception).deliver
       begin
         render :template => 'application/http_500', :status => 500
       rescue
-        render(:file => "#{Rails.root}/public/500.html", :status => '500 Error')
+        render(:file => "#{Rails.root}/public/500.html", :status => 500)
       end
     end
     @rescuiing = false  # para tests
   end
 
 
-  public
   # Saves information about the current page being served.
   def track(opts={})
     # Tracks

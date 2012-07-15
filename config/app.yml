@@ -34,6 +34,7 @@ common: &common
   mirror_auth_key: secret
   port: 80
   python: /usr/local/hosting/bin/python2.4
+  redis_db: 0
   session_secret: secretsecretsecretsecretsecret
   show_ads: false
   system_mail_host: imap.gmail.com
@@ -61,7 +62,8 @@ development: &development
 
 test: &test
   <<: *common
+  asset_domain: test.host
   domain: test.host
   domain_bazar: bazar.test.host
   domain_arena: arena.test.host
-  asset_domain: test.host
+  redis_db: 1

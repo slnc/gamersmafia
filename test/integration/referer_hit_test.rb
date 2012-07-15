@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 require 'test_helper'
 
-
 class RefererHitTest < ActionController::IntegrationTest
   def setup
     host! App.domain
