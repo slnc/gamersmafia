@@ -15,7 +15,7 @@
                    staff_position_path(staff_position))%></td>
   <% end -%>
 
-  <% if @user.is_superadmin? %>
+  <% if user_is_authed && @user.is_superadmin? %>
      <%mftable('Vacantes',
                StaffPosition.unassigned.find(
                  :all, :order => 'term_starts_on, lower(staff_types.name)',

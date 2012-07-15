@@ -112,9 +112,6 @@ class SiteController < ApplicationController
     render :layout => false
   end
 
-  def staff
-  end
-
   def index
     @title = 'Acerca de la web'
   end

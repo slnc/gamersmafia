@@ -2,7 +2,8 @@
 require 'test_helper'
 
 class StaffPositionsControllerTest < ActionController::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+  test "staff" do
+    get :index
+    assert_response :success
+  end
 end
