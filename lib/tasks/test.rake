@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'ci/reporter/rake/test_unit'
+require 'ci/reporter/rake/minitest'
 
 desc 'Batería de tests por defecto'
 redefine_task :test => :environment do
