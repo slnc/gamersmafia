@@ -1,5 +1,5 @@
 <% # -*- encoding : utf-8 -*- %>
-<% #= adsense_comments %>
+<%= adsense_comments %>
 <%
 resolve_comments_page(object)
 uniq_id = object.unique_content.id
@@ -9,6 +9,10 @@ questions_mode = (object.class.name == 'Question')
 cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{Cms.comments_per_page}_#{params[:page]}") do
 @comments = get_comments(object)
 %>
+<script type="text/javascript">var comments = new Array();</script>
+<div class="comments-container"><a name="comments"></a>
+<div class="comments-area">
+<%= render :partial => 'shared/pager2', :locals => { :collection => @comments, :pos => 'top', :pager_params => { :anchor => 'comments' } } %>
 <%
 i = (params[:page].to_i - 1) * Cms.comments_per_page + 1
 
