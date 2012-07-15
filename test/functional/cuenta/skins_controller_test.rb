@@ -2,6 +2,13 @@
 require 'test_helper'
 
 class Cuenta::SkinsControllerTest < ActionController::TestCase
+
+  def setup
+    if !File.exists?(Skin::FAVICONS_CSS_FILENAME)
+      open(Skin::FAVICONS_CSS_FILENAME, "w").write("// dummy css for tests")
+    end
+  end
+
   test "trying to use a deleted skin should work properly" do
       test_activate_my_own_skin_should_work
       post :destroy, :id => @skin.id

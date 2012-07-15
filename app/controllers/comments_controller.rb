@@ -11,6 +11,7 @@ class CommentsController < ApplicationController
     begin
       Comments.require_user_can_comment_on_content(@user, object)
     rescue Exception => e
+      Rails.logger.warn("User #{@user} cannot comment on #{object}: #{e}")
       flash[:error] = e.to_s
     else
       # buscamos el último comentario y si es nuestro y de menos de 1h lo

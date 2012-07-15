@@ -6,18 +6,18 @@ class CommentsControllerTest < ActionController::TestCase
   NEW_COMMENT_OPTS = {
     :comment => {
       :comment => 'foo',
-      :content_id => Content.find(:first).id,
+      :content_id => Content.published.find(:first).id,
     },
     :add_to_tracker => '1', :redirto => '/foo',
   }
 
   test "should_allow_registered_user_to_comment" do
-    c_initial = Comment.count
     sym_login :panzer
     panzer = User.find_by_login('panzer')
-    post :create, NEW_COMMENT_OPTS
+    assert_difference("Comment.count") do
+      post :create, NEW_COMMENT_OPTS
+    end
     assert_redirected_to '/foo'
-    assert_equal c_initial + 1, Comment.count
     @c = Comment.find(:first, :order => 'id DESC')
     assert_equal panzer.id, @c.user_id
   end
