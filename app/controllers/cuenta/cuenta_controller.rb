@@ -127,7 +127,7 @@ class Cuenta::CuentaController < ApplicationController
 
     banned_accounts_same_ip = User.count(
         :conditions => ["lastseen_on >= now() - '1 day'::interval" +
-                        " AND ipaddr = ? AND state = ?", request.remote_ip,
+                        " AND ipaddr = ? AND state = ?", remote_ip,
                         User::ST_BANNED])
     if banned_accounts_same_ip >= 1
         Rails.logger.warn(
@@ -139,7 +139,7 @@ class Cuenta::CuentaController < ApplicationController
 
     accounts_from_same_ip = User.count(
         :conditions => ["lastseen_on >= now() - '1 day'::interval AND" +
-                        " ipaddr = ?", request.remote_ip])
+                        " ipaddr = ?", remote_ip])
     if accounts_from_same_ip > MAX_ACCOUNTS_SAME_IP
         Rails.logger.warn(
             "#{params[:user][:login]} tried to create an account but there" +
@@ -168,7 +168,7 @@ class Cuenta::CuentaController < ApplicationController
         :faction_id, :password, :password_confirmation, :email,
         :email_confirmation)
     params[:user][:state] = User::ST_UNCONFIRMED
-    params[:user][:ipaddr] = request.remote_ip
+    params[:user][:ipaddr] = remote_ip
     params[:user][:lastseen_on] = Time.now
     @newuser = User.new(params[:user])
 
@@ -178,14 +178,14 @@ class Cuenta::CuentaController < ApplicationController
       process_referer(params[:referer], @newuser)
     end
 
-    ban = IpBan.active.find_by_ip(request.remote_ip)
+    ban = IpBan.active.find_by_ip(remote_ip)
     if ban
       # Si está baneado le hacemos ver que todo va bien para que se quede
       # esperando el mensaje de confirmación.
       nagato = User.find_by_login('nagato')
       SlogEntry.create(
           :type_id => SlogEntry::TYPES[:security],
-          :headline => ("IP baneada #{request.remote_ip} (#{ban.comment}) ha" +
+          :headline => ("IP baneada #{remote_ip} (#{ban.comment}) ha" +
           " intentado crearse una cuenta"))
       flash[:notice] = (
           "Te hemos enviado un mensaje a #{@newuser.email} con la clave de" +
@@ -211,15 +211,15 @@ class Cuenta::CuentaController < ApplicationController
       return
     end
 
-    if User.count(:conditions => ['ipaddr = ?', request.remote_ip]) > 1
+    if User.count(:conditions => ['ipaddr = ?', remote_ip]) > 1
       prev = User.find(
         :first, :conditions => ['ipaddr = ? AND id <> ?',
-                                request.remote_ip, @newuser.id])
+                                remote_ip, @newuser.id])
       nagato = User.find_by_login('nagato')
       users_same_ip = User.find(
           :all,
           :conditions => ['ipaddr = ? and id <> ?',
-                          request.remote_ip, @newuser.id])
+                          remote_ip, @newuser.id])
       users_same_ip_html = (
         users_same_ip.collect {|u| "<a href=\"#{gmurl(u)}\">#{u.login}</a>"}
       ).join(', ')
@@ -229,7 +229,7 @@ class Cuenta::CuentaController < ApplicationController
           :headline => (
               "Registro desde IP existente <strong><a href=\"" +
               "#{gmurl(@newuser)}\">#{@newuser.login}</a></strong>" +
-              " (#{request.remote_ip}): #{users_same_ip_html}")
+              " (#{remote_ip}): #{users_same_ip_html}")
       })
 
       Notification.signup(@newuser, :mode => @mmode).deliver
@@ -378,7 +378,7 @@ class Cuenta::CuentaController < ApplicationController
       params[:post][:description],
       ['object', 'embed', 'param'] + ActionViewMixings::DEF_ALLOW_TAGS)
     @newuser.city = strip_tags(params[:post][:city])
-    @newuser.ipaddr = request.remote_ip
+    @newuser.ipaddr = remote_ip
     @newuser.country_id = params[:user][:country_id] # TODO hackk
     @newuser.photo = params[:user][:photo] if params[:user][:photo]
     @newuser.competition_roster = params[:user][:competition_roster]
@@ -535,9 +535,9 @@ class Cuenta::CuentaController < ApplicationController
       redirect_to :action => 'olvide_clave'
     end
 
-    ipr = IpPasswordsResetsRequest.create({:ip => request.remote_ip})
+    ipr = IpPasswordsResetsRequest.create({:ip => remote_ip})
 
-    if IpPasswordsResetsRequest.count(:conditions => ['ip = ? AND created_on > now() - \'5 minutes\'::interval', request.remote_ip]) > 3 then
+    if IpPasswordsResetsRequest.count(:conditions => ['ip = ? AND created_on > now() - \'5 minutes\'::interval', remote_ip]) > 3 then
       flash[:error] = "Demasiadas peticiones de reseteo de contraseña. Debes esperar un poco antes de poder realizar una nueva petición."
       redirect_to :action => 'olvide_clave'
     else
@@ -663,7 +663,7 @@ class Cuenta::CuentaController < ApplicationController
       u = User.find(:first, :conditions => ['lower(login) = lower(?) and validkey = ?', params[:login], params[:k]])
       if u
         if u.update_attributes(params.pass_sym(:password, :password_confirmation))
-          IpPasswordsResetsRequest.find(:all, :conditions => ['ip = ?', request.remote_ip]).each do |ipr|
+          IpPasswordsResetsRequest.find(:all, :conditions => ['ip = ?', remote_ip]).each do |ipr|
             ipr.destroy
           end
           session[:user] = u.id
