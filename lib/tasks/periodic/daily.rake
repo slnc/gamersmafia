@@ -2,8 +2,6 @@
 namespace :gm do
   desc "Daily operations"
   task :daily => :environment do
-    require 'app/controllers/application_controller'
-
     begin
       Rake::Task['log:clear'].invoke
     rescue

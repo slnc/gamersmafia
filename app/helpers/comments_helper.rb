@@ -1,4 +1,18 @@
 module CommentsHelper
+  ADSENSE_COMMENTS_SNIPPET = <<-END
+<div style="margin: 15px 0; padding-left: 120px;">
+<script type="text/javascript"><!--
+google_ad_client = "pub-6007823011396728";
+google_ad_slot = "5381241906";
+google_ad_width = 300;
+google_ad_height = 250;
+//-->
+</script>
+<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</div>
+  END
+
   def adsense_comments
     if App.show_ads && (!user_is_authed || @user.created_on > 1.year.ago)
       ADSENSE_COMMENTS_SNIPPET

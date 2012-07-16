@@ -40,7 +40,6 @@
 <% content_main do %>
   <%mftext('Todas sus partidas') do %>
   <table>
-  	
 <%
 Competitions.find_all_matches_from_clan(@clan).each do |cm|
   p = cm.competition.get_active_participant_for_clan(@clan)

@@ -24,7 +24,7 @@ module Keystore
     init
     begin
       $redis.send(method_id, *args)
-    rescue Errno::ECONNREFUSED => e
+    rescue Errno::EAGAIN, Errno::ECONNREFUSED => e
       Rails.logger.error("redis.#{method_id} failed: Redis DB is down: #{e}")
       nil
     end
