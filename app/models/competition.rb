@@ -470,6 +470,7 @@ class Competition < ActiveRecord::Base
       out = nil
       if participants.size > 0 then
         participants.each do |p|
+          out = p if out.nil?
           if p.the_real_thing.user_is_clanleader(user.id)
             out = p
             break
@@ -489,7 +490,11 @@ class Competition < ActiveRecord::Base
   end
 
   def winners(limit=:all)
-    self.competitions_participants.find(:all, :conditions => 'wins > 0 or losses > 0 or ties > 0', :order => 'points DESC, lower(name) ASC', :limit => limit)
+    self.competitions_participants.find(
+          :all,
+          :conditions => 'wins > 0 or losses > 0 or ties > 0',
+          :order => 'points DESC, lower(name) ASC',
+          :limit => limit)
   end
 
   def has_advanced?

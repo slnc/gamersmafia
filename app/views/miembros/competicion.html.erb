@@ -5,6 +5,7 @@
     next if (c.kind_of?(Ladder) and c.state < 2) or (!c.kind_of?(Ladder) and c.state != 4)
     winners = c.winners(3)
     p = c.get_active_participant_for_user(@curuser)
+    next unless p
     trophey = nil
     if winners[0] && winners[0].id == p.id
       trophey = '0'
