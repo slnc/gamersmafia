@@ -340,7 +340,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
 
   test "should_not_create_user_if_ip_banned" do
     assert_count_increases(IpBan) do
-      IpBan.create({:ip => '0.0.0.0', :user_id => 1})
+      IpBan.create({:ip => '127.0.0.1', :user_id => 1})
     end
 
     post :create, VALID_CREATE_ARGS

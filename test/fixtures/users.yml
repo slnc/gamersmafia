@@ -10,7 +10,7 @@ superadmin:
   faction_last_changed_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: superadmin@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsuhi
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   is_superadmin: true
   secret: mamba
   enable_competition_indicator: false
@@ -28,7 +28,7 @@ panzer:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: panzer@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsuh1
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   secret: mambohahaha
   enable_competition_indicator: false
   is_hq: false
@@ -46,7 +46,7 @@ mralariko:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: mralariko@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu10
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   secret: mambohahaha2
   enable_competition_indicator: false
   is_hq: true
@@ -63,7 +63,7 @@ panzer4:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: panzer4@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsuhk
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   secret: mam2f2v1sa
   enable_competition_indicator: false
   is_hq: false
@@ -80,7 +80,7 @@ panzer5:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: panzer5@gamersmafia.com
   validkey: matsuhiratomatsuhiratoma4suhiratomatsuhk
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   secret: mambohahahasac
   enable_competition_indicator: false
   is_hq: false
@@ -97,7 +97,7 @@ faction_boss:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: reject@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu11
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   secret: mambusefuealaguerra
   enable_competition_indicator: false
   is_hq: true
@@ -114,7 +114,7 @@ faction_editor:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: reject2@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu12
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   secret: mireudmireudquepena
   enable_competition_indicator: false
   is_hq: true
@@ -131,7 +131,7 @@ faction_moderator:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: reject1@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu13
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   enable_competition_indicator: false
   is_hq: true
   enable_profile_signatures: false
@@ -147,7 +147,7 @@ faction_moderator2:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: reject4@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu14
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   enable_competition_indicator: false
   is_hq: true
   enable_profile_signatures: false
@@ -163,7 +163,7 @@ faction_moderator3:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: reject5@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu15
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   enable_competition_indicator: false
   is_hq: true
   enable_profile_signatures: false
@@ -179,7 +179,7 @@ unconfirmed:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: unconfirmed@gamersmafia.com
   validkey: blablabla16
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   enable_competition_indicator: false
   is_hq: false
   enable_profile_signatures: false
@@ -195,7 +195,7 @@ banned:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: banned@gamersmafia.com
   validkey: blablablablbilib17
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.2
   enable_competition_indicator: false
   is_hq: false
   enable_profile_signatures: false
@@ -211,7 +211,7 @@ disabled:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: disabled@gamersmafia.com
   validkey: blablablableblel18
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   enable_competition_indicator: false
   is_hq: false
   enable_profile_signatures: false
@@ -227,7 +227,7 @@ mrman:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: mrman@gamersmafia.com
   validkey: blablablableblella19
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   enable_competition_indicator: false
   is_superadmin: true
   is_hq: true
@@ -245,7 +245,7 @@ nagato:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: nagato@gamersmafia.com
   validkey: blablablableblella20
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   enable_competition_indicator: false
   is_superadmin: false
   is_hq: true
@@ -263,7 +263,7 @@ mrcheater:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: mrcheater@gamersmafia.com
   validkey: blablablableblella21
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   enable_competition_indicator: false
   is_superadmin: false
   is_hq: false
@@ -281,7 +281,7 @@ superadmin2:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: superadmin2@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsuh2
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   is_superadmin: true
   enable_competition_indicator: false
   is_hq: true
@@ -298,7 +298,7 @@ raulinho:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: raulinho@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsuh3
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   is_superadmin: false
   enable_competition_indicator: false
   is_hq: false
@@ -315,7 +315,7 @@ mrachmed:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: mrachmed@gamersmafia.com
   validkey: blablablableblella50
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   enable_competition_indicator: false
   is_superadmin: false
   is_hq: false
@@ -333,7 +333,7 @@ advertiser:
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: crusad3r@gamersmafia.com
   validkey: blablablableblella72
-  ipaddr: 127.0.0.1
+  ipaddr: 127.0.0.3
   enable_competition_indicator: false
   is_superadmin: false
   is_hq: false

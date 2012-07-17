@@ -218,8 +218,7 @@ class Cuenta::CuentaController < ApplicationController
       nagato = User.find_by_login('nagato')
       users_same_ip = User.find(
           :all,
-          :conditions => ['ipaddr = ? and id <> ?',
-                          remote_ip, @newuser.id])
+          :conditions => ['ipaddr = ? and id <> ?', remote_ip, @newuser.id])
       users_same_ip_html = (
         users_same_ip.collect {|u| "<a href=\"#{gmurl(u)}\">#{u.login}</a>"}
       ).join(', ')
