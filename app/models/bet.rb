@@ -37,24 +37,34 @@ class Bet < ActiveRecord::Base
       "#{CLOSED_BETS_SQL} AND cancelled IS FALSE AND forfeit IS FALSE")
 
   def self.generate_top_bets_winners_minicolumns
-    # Buscamos los users que más han ganado en los ultimos days y mostramos sus ganancias en sus últimas 30 apuestas
+    # Buscamos los users que más han ganado en los ultimos days y mostramos sus
+    # ganancias en sus últimas 30 apuestas.
     days = 30
     bets = 30
     data = {}
     i = 0
     Bet.top_earners("#{days} days").each do |dbt|
       # Don't remove tp, if you do YAML will incorrectly parse it as string for
-    # some values and as int for others .
-      k = "rank#{i}_#{dbt[0].id}" # usamos i para que al cargar luego el dict se cargue luego en el orden correcto
+      # some values and as int for others .
+      # usamos i para que al cargar luego el dict se cargue luego en el orden
+      # correcto.
+      k = "rank#{i}_#{dbt[0].id}"
       data[k] = {:sum => dbt[1].to_i}
       u = dbt[0]
-      dst_file = "#{Rails.root}/public/storage/minicolumns/bets_top_last30/#{u.id}.png"
-      FileUtils.mkdir_p(File.dirname(dst_file)) unless File.exists?(File.dirname(dst_file))
+      dst_file = (
+          "#{Rails.root}/public/storage/minicolumns/bets_top_last30/#{u.id}.png"
+      )
+
+      dst_dir = File.dirname(dst_file)
+      FileUtils.mkdir_p(dst_dir) unless File.exists?(dst_dir)
+
       netw = Bet.earnings(u, bets, "#{days} days")
       data[k][:individual] = netw
       i += 1
-      `/usr/bin/python script/spark.py bet_rate #{netw.concat([0] * (bets - netw.size)).reverse.join(',')} "#{dst_file}"`
+      bet_rate = netw.concat([0] * (bets - netw.size)).reverse.join(',')
+      `/usr/bin/python script/spark.py bet_rate #{bet_rate} "#{dst_file}"`
     end
+
     # TODO hacer esto para CADA portal LOL
     dst = Bet::TOP_BET_WINNERS
     FileUtils.mkdir_p(File.dirname(dst)) unless File.exists?(File.dirname(dst))
