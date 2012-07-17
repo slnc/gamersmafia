@@ -9,7 +9,7 @@ class SlogControllerTest < ActionController::TestCase
     @request.remote_addr = '0.0.0.0'
     @controller.send :render_error, exception
     assert_response 401
-    assert_template 'application/http_401'
+    assert !@response.body.index("gamersmafia").nil?
 
     sym_login 1
     get :index

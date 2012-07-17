@@ -199,7 +199,7 @@ class Cuenta::AmigosController < ApplicationController
         else
           the_other = f.sender_user_id
         end
-        @js_response = ("$j('#friendshipu#{the_other.id}').fadeOut('normal');"+
+        @js_response = ("$j('#friendshipu#{the_other}').fadeOut('normal');"+
             "$j('#friendship#{f.id}').fadeOut('normal');")
         render :partial => '/shared/silent_ajax_feedback',
                :locals => { :js_response => @js_response }
