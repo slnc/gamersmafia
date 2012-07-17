@@ -42,9 +42,9 @@ max = @competition.competitions_matches.find(:first, :order => 'stage DESC').sta
     <td class="centered"><a href="/competiciones/partida/<%=cm.id%>"><%
         if cm.completed? then
           case cm.result
-            when 0: %><span class="infoinline">Gana</span> <%=cm.participant1.name%><%
-            when 1: %>Empate<%
-            when 2: %><span class="infoinline">Gana</span> <%=cm.participant2.name%><%
+            when 0 %><span class="infoinline">Gana</span> <%=cm.participant1.name%><%
+            when 1 %>Empate<%
+            when 2 %><span class="infoinline">Gana</span> <%=cm.participant2.name%><%
             else
           end
          end-%></a> <% if cm.completed? then %><br /><span class="infoinline">(<%=print_tstamp(cm.completed_on, 'date')%>)</span><% end %>

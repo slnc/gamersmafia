@@ -357,9 +357,10 @@ if last_matches.size > 0 then
 	<%
 	comps = Competition.related_with_user(@curuser).active.find(:all, :conditions => "state = #{Competition::STARTED}", :order => 'lower(name)')
 	if comps
-	mflist('Está participando en', comps) do |o|
+      mflist('Está participando en', comps) do |o|
 	    cpart = o.get_active_participant_for_user(@curuser)
-		lres = o.matches(:completed, :participant => cpart, :limit => 30, :order => 'completed_on DESC')
+      next unless cpart  # A competition might be related to a user but he might not be the clanleader
+		  lres = o.matches(:completed, :participant => cpart, :limit => 30, :order => 'completed_on DESC')
 
 		data = lres.collect do |cm|
 			w = cm.winner

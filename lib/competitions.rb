@@ -107,7 +107,7 @@ module Competitions
         :include => :competition)
   end
 
-  def self.find_all_matches_from_clan(clan, conditions=nil, limit=:all)
+  def self.find_all_matches_from_clan(clan, conditions=nil, limit=0)
     participant_ids = User.db_query("SELECT id FROM competitions_participants WHERE participant_id = #{clan.id} AND competition_id IN (SELECT id FROM competitions WHERE competitions_participants_type_id = #{Competition::CLANS})").collect {|dbr| dbr['id'].to_i }
     q_cond = conditions ? "AND #{conditions}" : ''
     if participant_ids.size > 0

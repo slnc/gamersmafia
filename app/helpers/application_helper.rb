@@ -14,20 +14,6 @@ module ApplicationHelper
 </script>
   END
 
-  ADSENSE_COMMENTS_SNIPPET = <<-END
-<div style="margin: 15px 0; padding-left: 120px;">
-<script type="text/javascript"><!--
-google_ad_client = "pub-6007823011396728";
-google_ad_slot = "5381241906";
-google_ad_width = 300;
-google_ad_height = 250;
-//-->
-</script>
-<script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
-</div>
-  END
-
   COMMENTS_DESPL = {:Normal => '0',
     :Divertido => '12',
     :Informativo => '24',
@@ -620,7 +606,7 @@ type: 'bhs'}))
       pcent = 0
     end
     # 0 <= pcent <= 1
-    if (pcent.kind_of?(Float) && pcent.nan? ) || pcent == Infinity
+    if (pcent.kind_of?(Float) && pcent.nan? ) || pcent.to_f == Infinity
       pcent = 0
     elsif pcent > 1.0
       pcent = 1.0

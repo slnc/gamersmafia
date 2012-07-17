@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'iconv'
+# require 'iconv'
 require 'base64'
 Time
 
@@ -65,7 +65,8 @@ module RubyMixings
 
       newstr.gsub!(' ', '-')
       begin
-        Iconv.iconv('ascii//translit', 'utf-8', newstr)[0]
+        newstr.encode("ascii", :invalid => :replace, :undef => :replace, :replace => "-")
+        # Iconv.iconv('ascii//translit', 'utf-8', newstr)[0]
       rescue
         newstr
       end

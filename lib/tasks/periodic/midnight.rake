@@ -12,7 +12,7 @@ namespace :gm do
 
     GmSys.job('Faith.reset_remaining_rating_slots')
     GmSys.job('Faction.update_factions_cohesion')
-    generate_top_bets_winners_minicolumns
+    Bet.generate_top_bets_winners_minicolumns
     update_factions_stats # Order is important
     update_general_stats
     generate_minicolumns_factions_activity
@@ -27,29 +27,6 @@ namespace :gm do
       FileUtils.mkdir_p(File.dirname(dst_file)) unless File.exists?(File.dirname(dst_file))
       `/usr/bin/python script/spark.py faction_activity #{dbi.collect {|dbr| dbr['karma'] }.concat([0] * (days - dbi.size)).reverse.join(',')} "#{dst_file}"`
     end
-  end
-
-  def generate_top_bets_winners_minicolumns
-    # Buscamos los users que más han ganado en los ultimos days y mostramos sus ganancias en sus últimas 30 apuestas
-    days = 30
-    bets = 30
-    data = {}
-    i = 0
-    Bet.top_earners("#{days} days").each do |dbt|
-      k = "#{i}_#{dbt[0].id}" # usamos i para que al cargar luego el dict se cargue luego en el orden correcto
-      data[k] = {:sum => dbt[1].to_i}
-      u = dbt[0]
-      dst_file = "#{Rails.root}/public/storage/minicolumns/bets_top_last30/#{u.id}.png"
-      FileUtils.mkdir_p(File.dirname(dst_file)) unless File.exists?(File.dirname(dst_file))
-      netw = Bet.earnings(u, bets, "#{days} days")
-      data[k][:individual] = netw
-      i += 1
-      `/usr/bin/python script/spark.py bet_rate #{netw.concat([0] * (bets - netw.size)).reverse.join(',')} "#{dst_file}"`
-    end
-    # TODO hacer esto para CADA portal LOL
-    dst = Bet::TOP_BET_WINNERS
-    FileUtils.mkdir_p(File.dirname(dst)) unless File.exists?(File.dirname(dst))
-    File.open(dst, 'w').write(YAML::dump(data))
   end
 
   # Actualiza las estadísticas de karma generado por cada facción y por la web general
