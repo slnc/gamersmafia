@@ -41,6 +41,7 @@ module Gamersmafia
     config.encoding = "utf-8"
 
     # config.dependency_loading = true if $rails_rake_task
+    config.action_dispatch.ignore_accept_header = true
 
     config.filter_parameters += [:password]
 
