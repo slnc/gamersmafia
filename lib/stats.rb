@@ -54,33 +54,33 @@ module Stats
           "created_on >= ? and created_on <= ?", timestamp_start, timestamp_end]
 
       users = Set.new
-      users << BetsTicket.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << Content.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << ContentRating.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << ContentsRecommendation.count(
-          :all, :conditions => conditions, :group => :sender_user_id).keys
-      users << Comment.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << CommentsValoration.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << Message.count(
-          :all, :conditions => conditions, :group => :user_id_from).keys
-      users << PollsVote.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << PublishingDecision.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << SlogEntry.count(
+      users.merge(BetsTicket.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(Content.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(ContentRating.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(ContentsRecommendation.count(
+          :all, :conditions => conditions, :group => :sender_user_id).keys)
+      users.merge(Comment.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(CommentsValoration.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(Message.count(
+          :all, :conditions => conditions, :group => :user_id_from).keys)
+      users.merge(PollsVote.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(PublishingDecision.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(SlogEntry.count(
           :all,
           :conditions => ["completed_on >= ? AND completed_on <= ?",
                           timestamp_start, timestamp_end],
-          :group => :reviewer_user_id).keys
-      users << TrainingQuestion.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << UsersContentsTag.count(
-          :all, :conditions => conditions, :group => :user_id).keys
+          :group => :reviewer_user_id).keys)
+      users.merge(TrainingQuestion.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(UsersContentsTag.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
       users.size
     end
 

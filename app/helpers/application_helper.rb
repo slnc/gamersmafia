@@ -314,7 +314,6 @@ type: 'ls'}))
 });
 </script>
 "
-
     out
   end
 
