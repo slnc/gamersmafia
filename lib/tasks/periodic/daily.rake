@@ -44,6 +44,8 @@ namespace :gm do
     Bet.update_prediction_accuracy(1.month.ago)
     Bet.update_prediction_accuracy(7.days.ago)
     Bet.update_prediction_accuracy(1.day.ago)
+
+    Stats::Metrics.compute_daily_metrics(1.day.ago)
   end
 
   def delete_old_users_newsfeeds

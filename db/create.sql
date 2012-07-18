@@ -1218,8 +1218,6 @@ CREATE VIEW f AS
 CREATE TABLE factions (
     id integer NOT NULL,
     name character varying NOT NULL,
-    boss_user_id integer,
-    underboss_user_id integer,
     building_bottom character varying,
     building_top character varying,
     building_middle character varying,
@@ -2512,13 +2510,22 @@ CREATE SEQUENCE tracker_items_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE tracker_items_id_seq OWNED BY tracker_items.id;
+SET default_with_oids = false;
+CREATE TABLE training_questions (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer,
+    type character varying NOT NULL,
+    _ner_annotate_comment_main text,
+    _ner_annotate_comment_main_annotated text,
+    _ner_annotate_comment_comment_id integer
+);
 CREATE SEQUENCE treated_visitors_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-SET default_with_oids = false;
 CREATE TABLE treated_visitors (
     id integer DEFAULT nextval('treated_visitors_id_seq'::regclass) NOT NULL,
     ab_test_id integer NOT NULL,

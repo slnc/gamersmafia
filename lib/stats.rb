@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
+require 'set'
+
 module Stats
   module Portals
     def self.participation(portal, s, e)
@@ -33,6 +35,55 @@ module Stats
   end
 
   module Metrics
+    # Computes 30d active users from 30d ago to eod of date arg.
+    def self.compute_daily_metrics(date)
+      timestamp_end = date.end_of_day
+      timestamp_start = timestamp_end.advance(:days => -30).beginning_of_day
+      active_users_30d = self.active_users(timestamp_start, timestamp_end)
+      Rails.logger.info("active_users_30d: #{active_users_30d}")
+      Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y-%m-%d")}",
+                   active_users_30d)
+    end
+
+    def self.active_users(timestamp_start, timestamp_end)
+      if timestamp_start > timestamp_end
+        (timestamp_start, timestamp_end) = timestamp_end, timestamp_start
+      end
+
+      conditions = [
+          "created_on >= ? and created_on <= ?", timestamp_start, timestamp_end]
+
+      users = Set.new
+      users << BetsTicket.count(
+          :all, :conditions => conditions, :group => :user_id).keys
+      users << Content.count(
+          :all, :conditions => conditions, :group => :user_id).keys
+      users << ContentRating.count(
+          :all, :conditions => conditions, :group => :user_id).keys
+      users << ContentsRecommendation.count(
+          :all, :conditions => conditions, :group => :sender_user_id).keys
+      users << Comment.count(
+          :all, :conditions => conditions, :group => :user_id).keys
+      users << CommentsValoration.count(
+          :all, :conditions => conditions, :group => :user_id).keys
+      users << Message.count(
+          :all, :conditions => conditions, :group => :user_id_from).keys
+      users << PollsVote.count(
+          :all, :conditions => conditions, :group => :user_id).keys
+      users << PublishingDecision.count(
+          :all, :conditions => conditions, :group => :user_id).keys
+      users << SlogEntry.count(
+          :all,
+          :conditions => ["completed_on >= ? AND completed_on <= ?",
+                          timestamp_start, timestamp_end],
+          :group => :reviewer_user_id).keys
+      users << TrainingQuestion.count(
+          :all, :conditions => conditions, :group => :user_id).keys
+      users << UsersContentsTag.count(
+          :all, :conditions => conditions, :group => :user_id).keys
+      users.size
+    end
+
     def self.mdata(metric, s, e, trunc='day')
       const_get(metric).new.data(s, e, trunc)
     end
