@@ -56,18 +56,69 @@ module Stats
       timestamp_end = date.end_of_day
       timestamp_start = timestamp_end.advance(:days => -30).beginning_of_day
       active_users_30d = self.active_users(timestamp_start, timestamp_end)
-      puts "active_users_30d (#{date}): #{active_users_30d}"
       Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y-%m-%d")}",
                    active_users_30d)
+
+      date_before = date.advance(:days => -1)
+
+      if date.strftime("%Y-%m") != date_before.strftime("%Y-%m")
+        (monthly_avg, monthly_sd) = self.compute_monthly_metric(
+            "kpi.core.active_users_30d", date_before)
+        Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y-%m")}.avg",
+                     monthly_avg)
+        Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y-%m")}.sd",
+                     monthly_sd)
+      end
+
+      if date.strftime("%Y") != date_before.strftime("%Y")
+        (yearly_avg, yearly_sd) = self.compute_yearly_metric(
+            "kpi.core.active_users_30d", date_before)
+        Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y")}.avg",
+                     yearly_avg)
+        Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y")}.sd",
+                     yearly_sd)
+      end
     end
 
+    def self.compute_monthly_metric(metric, date)
+      end_of_month = date.end_of_month
+      self.compute_metric_days_back(end_of_month, end_of_month.mday, metric)
+    end
+
+    def self.compute_yearly_metric(metric, date)
+      end_of_year = date.end_of_year
+      self.compute_metric_days_back(end_of_year, end_of_year.yday, metric)
+    end
+
+    def self.compute_metric_days_back(end_date, days_back, metric)
+      values = []
+      days_back.times do |days|
+        cur_date = end_date.advance(:days => -days)
+        values.append(
+            Keystore.get("#{metric}.#{cur_date.strftime("%Y-%m-%d")}").to_i)
+      end
+      values.compact!
+      if values.size < days_back
+        Rails.logger.warn(
+            "compute_metric_days_back(#{end_date}, #{days_back}, #{metric})" +
+            " expected #{days_back} data points but found #{values.size}")
+      end
+
+      if values.size == 0
+        [0, 0]
+      else
+        [values.mean, Math.standard_deviation(values)]
+      end
+    end
+
+    # Computes 30d active users from 30d ago to eod of date arg.
     def self.active_users(timestamp_start, timestamp_end)
       if timestamp_start > timestamp_end
         (timestamp_start, timestamp_end) = timestamp_end, timestamp_start
       end
 
       conditions = [
-          "created_on >= ? and created_on <= ?", timestamp_start, timestamp_end]
+          "created_on >= ? AND created_on <= ?", timestamp_start, timestamp_end]
 
       users = Set.new
       users.merge(BetsTicket.count(
