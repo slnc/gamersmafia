@@ -1,2 +1,4 @@
 <%=render :partial => 'task_browser', :locals => { :slog_entries_filter => { :domain => :webmaster } } %>
 
+<%=sparkline({:data => Stats::Metrics.get_metric_last_30d("kpi.core.active_users_30d", 1.day.ago)}) %>
+

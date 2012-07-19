@@ -36,11 +36,27 @@ module Stats
 
   module Metrics
     # Computes 30d active users from 30d ago to eod of date arg.
+    def self.get_metric_last_30d(metric, date)
+      timestamp_end = date.end_of_day
+      timestamp_start = timestamp_end.advance(:days => -30).beginning_of_day
+      out = []
+      30.times do |days|
+        date_string = date.advance(:days => -days).strftime("%Y-%m-%d")
+        value = Keystore.get("#{metric}.#{date_string}")
+        if value == ""
+          out.append(-1)
+        else
+          out.append(value.to_i)
+        end
+      end
+      out
+    end
+
     def self.compute_daily_metrics(date)
       timestamp_end = date.end_of_day
       timestamp_start = timestamp_end.advance(:days => -30).beginning_of_day
       active_users_30d = self.active_users(timestamp_start, timestamp_end)
-      Rails.logger.info("active_users_30d: #{active_users_30d}")
+      puts "active_users_30d (#{date}): #{active_users_30d}"
       Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y-%m-%d")}",
                    active_users_30d)
     end
@@ -54,33 +70,33 @@ module Stats
           "created_on >= ? and created_on <= ?", timestamp_start, timestamp_end]
 
       users = Set.new
-      users << BetsTicket.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << Content.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << ContentRating.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << ContentsRecommendation.count(
-          :all, :conditions => conditions, :group => :sender_user_id).keys
-      users << Comment.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << CommentsValoration.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << Message.count(
-          :all, :conditions => conditions, :group => :user_id_from).keys
-      users << PollsVote.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << PublishingDecision.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << SlogEntry.count(
+      users.merge(BetsTicket.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(Content.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(ContentRating.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(ContentsRecommendation.count(
+          :all, :conditions => conditions, :group => :sender_user_id).keys)
+      users.merge(Comment.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(CommentsValoration.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(Message.count(
+          :all, :conditions => conditions, :group => :user_id_from).keys)
+      users.merge(PollsVote.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(PublishingDecision.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(SlogEntry.count(
           :all,
           :conditions => ["completed_on >= ? AND completed_on <= ?",
                           timestamp_start, timestamp_end],
-          :group => :reviewer_user_id).keys
-      users << TrainingQuestion.count(
-          :all, :conditions => conditions, :group => :user_id).keys
-      users << UsersContentsTag.count(
-          :all, :conditions => conditions, :group => :user_id).keys
+          :group => :reviewer_user_id).keys)
+      users.merge(TrainingQuestion.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
+      users.merge(UsersContentsTag.count(
+          :all, :conditions => conditions, :group => :user_id).keys)
       users.size
     end
 
