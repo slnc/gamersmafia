@@ -105,7 +105,7 @@ class User < ActiveRecord::Base
   has_many :gmtv_channels
   has_many :chatlines
   has_many :content_ratings
-  has_many :contents
+  has_many :contents, :dependent => :destroy
   has_many :publishing_personalities
   has_many :publishing_decisions
   has_many :tracker_items
