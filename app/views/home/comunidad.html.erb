@@ -38,15 +38,15 @@ end
 		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title%></a>
 	<% end %><%# mflist-%>
 	<% end %><%# cache-%>
-	
+
 	<% cache('/home/comunidad/recruitment_ads_users') do %>
 	<% mflist("Buscan clan", Proc.new { RecruitmentAd.find(:all, :conditions => 'clan_id IS NULL AND deleted = \'f\'', :order => 'created_on desc', :limit => 4) }, :class => 'lh16', :grid => 3, :glast => true) do |ra| %>
 		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title%></a>
 	<% end %><%# mflist-%>
 	<% end %><%# cache -%>
-	
+
 	<div class="clearb"></div>
-	
+
 	<%mftext('Buscar anuncios', :grid => 6, :glast => true, :blast => true) do %>
 	<form method="get" action="/reclutamiento" style="margin: 0; padding: 0;">
 	<input type="hidden" name="search" value="1">
@@ -77,24 +77,23 @@ end
 	</form>
 	<% end -%>
 	</div>
-	
-	
+
+
 	<% cache("/home/comunidad/clans_movements") do %>
 	<% mflist("Movimientos", Proc.new { ClansMovement.find(:all, :order => 'created_on DESC', :limit => 8)}, :grid => 3, :glast => true, :blast => true) do |cm| %>
 		<%=user_link(cm.user)%> <%=ClansMovement.translate_direction(cm.direction)%> <a href="<%=gmurl(cm.clan)%>"><%=cm.clan.tag%></a>
 	<% end %><%# mflist-%>
 	<% end %><%# cache -%>
 	<% end -%>
-	
+
 <%mftext('Hacer amigos', :grid => 9, :has_submodules => true, :glast => true) do %>
 	<%mftext('Aleatorio', :grid => 2) do
 	us = User.random_with_photo(:exclude_user_id => (user_is_authed ? @user.id : nil))
-	if us.size > 0 then
-	%>
-	<%=comunidad_user_with_photo(us[0])%>
+    if us.size > 0 then %>
+      <%=comunidad_user_with_photo(us[0])%>
+    <% end -%>
 	<% end -%>
-	<% end -%>
-	
+
 	<% if user_is_authed then
 		us = User.random_same_city(@user, :limit => 1)
 		if us.size > 0 then %>
@@ -103,7 +102,7 @@ end
 	 <% else%>
 	 <p><strong><a href="/cuenta/alta">Regístrate</a></strong> para recibir recomendaciones de amigos.</p>
 	<% end %><%# user_is_authed -%>
-	
+
 	<% if user_is_authed then %>
 	<%	poss = User.possible_friends_of(@user, :limit => 3)
 	  if poss.size > 0 then
@@ -126,7 +125,7 @@ end
 		</tr>
 		<% end -%>
 	</table>
-	
+
 	<% end %><%# mftext -%>
 	<% end %><%# if -%>
 	<% end -%>
@@ -150,7 +149,7 @@ end
 	</table>
 	<% end %><%# cache -%>
 	<% end -%>
-	
+
 	<%mftext('Clanes', :grid => 4, :glast => true, :blast => true) do %>
 	<%cache("/common/home/comunidad/hot_clans#{Time.now.strftime('%Y-%m-%d')}") do %>
 	<table>

@@ -231,9 +231,16 @@ class User < ActiveRecord::Base
 
   def self.possible_friends_of(user, opts)
     opts = {:limit => 1}.merge(opts)
-    recs = user.friends_recommendations.find(:all, :conditions => 'added_as_friend IS NULL', :order => 'friends_recommendations.id', :limit => opts[:limit], :include => :recommended_user)
-    FriendsRecommendation.gen_more_recommendations(user) if recs.size == 0
-    recs
+    recommended_users = user.friends_recommendations.find(
+        :all,
+        :conditions => 'added_as_friend IS NULL',
+        :order => 'friends_recommendations.id',
+        :limit => opts[:limit],
+        :include => :recommended_user)
+    if recommended_users.size == 0
+      FriendsRecommendation.delay.gen_more_recommendations(user)
+    end
+    recommended_users
   end
 
   def self.refered_users_in_time_period(t1, t2)
