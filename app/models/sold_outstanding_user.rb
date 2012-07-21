@@ -15,7 +15,8 @@ class SoldOutstandingUser < SoldProduct
         :message => (
             "El producto \"Usuario destacado\" que acabas de comprar estará" +
             " activo durante todo el día #{publish_date} en portada de" +
-            " #{oe.portal.name}."})
+            " #{oe.portal.name}.")
+    })
     true
   end
 end
