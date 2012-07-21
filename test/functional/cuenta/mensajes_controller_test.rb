@@ -45,10 +45,10 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
   test "should err on empty title" do
     sym_login 1
     assert_difference('Message.count', 0) do
-      post :create_message, { :message=> new_message_params(:title => "")}
+      post :create_message, {:message => new_message_params(:title => "")}
       assert_response :success
     end
-    assert @response.body.include?(Message::NO_EMPTY_TITLE)
+    assert @response.body.include?(Message::CANNOT_BE_EMPTY)
   end
 
   test "create_message_should_not_burp_if_nonexisting_user" do
@@ -194,8 +194,8 @@ class Cuenta::MensajesControllerTest < ActionController::TestCase
     end
   end
 
+  # Returns all necessary params for a new message
   def new_message_params(opts={})
-    # Returns all necessary params for a new message
     {:message_type => Message::R_USER,
      :recipient_user_login => User.find(2).login,
      :title => "foo litio",

@@ -3,30 +3,26 @@ class Message < ActiveRecord::Base
   belongs_to :sender, :class_name => 'User', :foreign_key => 'user_id_from'
   belongs_to :recipient, :class_name => 'User', :foreign_key => 'user_id_to'
 
-  #belongs_to :thread, :class_name => 'Message', :foreign_key => 'thread_id'
-  #belongs_to :in_reply_to, :class_name => 'Message', :foreign_key => 'in_reply_to'
-
   R_USER = 0
   R_CLAN = 1
   R_FRIENDS = 2
   R_FACTION = 3
   R_FACTION_STAFF = 4
 
-  NO_EMPTY_TITLE = 'no puede estar en blanco'
+  CANNOT_BE_EMPTY = 'no puede estar en blanco'
 
-  validates_presence_of :title, :message, {:message => NO_EMPTY_TITLE}
+  validates_presence_of :title, :message => CANNOT_BE_EMPTY
+  validates_presence_of :message, :message => CANNOT_BE_EMPTY
 
   before_save :check_not_self
   after_create :notify_recipient
   after_create :set_thread_id_if_nil
   before_create :check_in_reply_to
-  #before_create :check_spam
 
   after_save :update_recipient_unread
   after_destroy :update_recipient_unread
 
   plain_text :title
-  before_save :sanitize_message
 
   scope :recipient_is,
               lambda { |user| { :conditions => ["user_id_to = ?", user.id]}}
@@ -34,24 +30,18 @@ class Message < ActiveRecord::Base
               :conditions => "receiver_deleted is false"
 
 
-  #def check_spam
-  #  self.sender.created_on < 2.days.ago || Message.count(:conditions => ['user_id_from = ?', self.user_id_from]) < 10
-  #end
-
-  def sanitize_message
-    self.message = self.message
-  end
-
   # TODO borrando muchos mensajes de golpe no es eficiente
   def self.update_unread_count(user)
-    dbr = Message.db_query("UPDATE users
-                               SET cache_unread_messages = (SELECT COUNT(id)
-                                                              FROM messages
-                                                             WHERE user_id_to = #{user.id}
-                                                              AND is_read is false
-                                                              AND receiver_deleted is false)
-                            WHERE id = #{user.id};
-                           SELECT cache_unread_messages FROM users where id = #{user.id}")
+    dbr = Message.db_query(
+        "UPDATE users
+         SET cache_unread_messages = (
+           SELECT COUNT(id)
+           FROM messages
+           WHERE user_id_to = #{user.id}
+           AND is_read is false
+           AND receiver_deleted is false)
+         WHERE id = #{user.id};
+         SELECT cache_unread_messages FROM users where id = #{user.id}")
     user.cache_unread_messages = dbr[0]['cache_unread_messages'].to_i
   end
 

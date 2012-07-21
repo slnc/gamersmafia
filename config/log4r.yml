@@ -7,13 +7,13 @@ log4r_config:
       outputters :
       - datefile
     - name      : development
-      level     : INFO
+      level     : WARN
       trace     : 'true'
       outputters :
       - datefile
       - stdout
     - name      : test
-      level     : INFO
+      level     : WARN
       trace     : 'true'
       outputters :
       - datefile

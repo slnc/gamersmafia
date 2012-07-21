@@ -8,7 +8,7 @@ one:
 
 two:
   id: 2
-  name: fooar
+  name: show_full_menu
   min_difference: 0.2
   treatments: 1
   metrics: ---

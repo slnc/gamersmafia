@@ -25,6 +25,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
 
   def setup
     default_user = User.find_by_login(VALID_CREATE_ARGS[:user][:login])
+    User.db_query("UPDATE users SET ipaddr = '127.0.0.2'")
     if default_user
       default_user.destroy
       Rails.logger.error(

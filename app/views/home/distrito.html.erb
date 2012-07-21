@@ -2,34 +2,34 @@
 
 <div class="grid-5 blast">
 <%mftext('Noticias', :has_submodules => true, :blast => true) do %>
-
-		<%=mfcontents_basic("Generales",
-					Proc.new { cat.top_level_category.find(:published, :content_type => 'News', :order => 'created_on desc', :limit => 10) },
-					[],
-					:truncate_at => 36, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/news2")%>
-
-
+<%=mfcontents_basic("Generales",
+    Proc.new { cat.top_level_category.find(:published, :content_type => 'News', :order => 'created_on desc', :limit => 10) },
+    [],
+    :truncate_at => 36,
+    :faction_favicon => true,
+    :blast => true,
+    :cache => "/#{controller.portal_code}/home/index/news2")%>
 
 <div class="clearb"></div>
-<% end -%>	
+<% end -%>
 </div>
 
 <div class="grid-10 glast blast">
 	<%mftext('En los foros', :has_submodules => true, :blast => true) do %>
-	
+
 	<div class="grid-6">
 	<%=mfcontents_basic("Tópics activos",
 					Proc.new { cat.top_level_category.find(:published, :content_type => 'Topic', :conditions => 'topics.closed is false', :order => 'updated_on desc', :limit => 10) },
 					[],
 					:truncate_at => 44, :faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	</div>
-	
+
 	<%mftext('Foros activos', :grid => 4, :glast => true, :blast => true) do
 	gencat = cat.top_level_category
 gencat.name = 'General' %>
 	<%= render :partial => '/home/foros_list', :locals => { :topterm => cat.top_level_category } %>
 	<% end -%>
-	
+
 	<% end -%>
 </div>
 
@@ -38,12 +38,12 @@ gencat.name = 'General' %>
 <div class="grid-12">
 	<div class="grid-8">
 		<% imcat = cat.top_level_category
-	
+
 	mflist("Imágenes", Proc.new { imcat.find(:published, :content_type => 'Image', :order => 'created_on desc', :limit => 6) }, :class_container => 'mflist-row-images' ) do |im| %>
-		<%=link_to fc_thumbnail(im.file, 'i', Cms::IMG_SIZE_GRIDB1, false), gmurl(im)%>				
+		<%=link_to fc_thumbnail(im.file, 'i', Cms::IMG_SIZE_GRIDB1, false), gmurl(im)%>
 	<% end if imcat -%>
 	</div>
-	
+
 	<div class="grid-4"><%=render :partial => '/home/open_bets' %></div>
 
 <div class="clearb"></div>
@@ -60,16 +60,16 @@ gencat.name = 'General' %>
 		grid_size = 3
 		thumb_width = '143'
 	end
-	
+
 %>
 <% classes.each do |it|
 next if controller.portal.send(it.downcase).nil?
 %>
 <% dafirst = true
 mfcontents_list(Cms::translate_content_name(it),
-					Proc.new { cat.top_level_category.find(:published, :content_type => it, :order => 'created_on desc', :limit => 3) }, 					
+					Proc.new { cat.top_level_category.find(:published, :content_type => it, :order => 'created_on desc', :limit => 3) },
 					:truncate_at => 28, :grid => grid_size, :glast => (it == classes.last)) do |o| %>
-					
+
 <%=content_category(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
 <% if dafirst && o.home_image then %><div style="margin: 5px 0 10px 0;"><a href="<%=gmurl(o)%>"><%=fc_thumbnail(o.home_image, 'i', "#{thumb_width}x54", false)%></a></div><% end -%>
 <%	dafirst = false
@@ -104,7 +104,7 @@ end %><%# cache %>
 <%mftext('Destacados') do %>
 <%= render :partial => '/home/outstanding_entity', :locals => { :outstanding_entity_cls => OutstandingUser } %>
 <%= render :partial => '/home/outstanding_entity', :locals => { :outstanding_entity_cls => OutstandingClan } %>
-<% end -%>	
+<% end -%>
 
 <%=render :partial => '/home/questions' %>
 

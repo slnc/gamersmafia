@@ -168,14 +168,6 @@ class Faction < ActiveRecord::Base
 
   def set_users_faction_id_to_nil
     self.users.each {|u| Factions.user_joins_faction(u, nil)}
-    [:boss_user_id, :underboss_user_id].each do |s|
-      if self.send(s)
-        User.db_query(
-            "UPDATE users
-                SET cache_is_faction_leader = NULL
-              WHERE id = #{self.send(s)}")
-      end
-    end
   end
 
   def is_moderator?(u)
