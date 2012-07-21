@@ -462,9 +462,6 @@
 .homebox .content-hid a, .homebox .content-hid2 a, .messages .new a {
     font-weight: bold;
     text-decoration: none;
-}
-
-.madness .homebox .content-hid a, .madness .homebox .content-hid2 a, .madness .messages .new a {
     overflow: hidden;
     display: block;
     white-space: nowrap;
