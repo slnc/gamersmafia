@@ -73,6 +73,24 @@ module ApplicationHelper
     controller.portal_code
   end
 
+  def sawmode
+    @sawmode ||= begin
+      if user_is_authed then
+        if @user.is_superadmin?
+          sawmode = 'full'
+        elsif @user.is_hq?
+          sawmode = 'hq'
+        elsif @user.has_admin_permission?(:advertiser)
+          sawmode = 'anunciante'
+        else
+          sawmode = ''
+        end
+      else
+        sawmode = ''
+      end
+    end
+  end
+
   # Global var shortcut function
   def global_var(var_name)
     controller.global_vars[var_name]

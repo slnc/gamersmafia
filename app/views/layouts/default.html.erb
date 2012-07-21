@@ -42,25 +42,12 @@
                 <% end -%>
               </div>
 
-<% if user_is_authed then
-  if @user.is_superadmin?
-   sawmode = 'full'
-  elsif @user.is_hq?
-   sawmode = 'hq'
-  elsif @user.has_admin_permission?(:advertiser)
-   sawmode = 'anunciante'
-  else
-    sawmode = ''
-  end
- else
-  sawmode = ''
-end %>
+			 <% if @madness then %>
+       <div id="show-menu" style="width: 70px;">
+         <div id="div1"><div id="div2"><span>menu</span></div></div>
+       </div>
+			 <% end %>
 
-			   <% if @madness then %>
-			     <div id="show-menu" style="width: 70px;">
-                    <div id="div1"><div id="div2"><span>menu</span></div></div>
-                 </div>
-			   <% end %>
 		   <div id="thesaw">
 		   	  <div id="sawtop" class="<%=sawmode%>">
 		   	  	<ul>
