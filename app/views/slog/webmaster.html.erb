@@ -1,4 +1,31 @@
 <%=render :partial => 'task_browser', :locals => { :slog_entries_filter => { :domain => :webmaster } } %>
 
-<%=sparkline({:size => '145x25', :data => Stats::Metrics.get_metric_last_30d("kpi.core.active_users_30d", 1.day.ago)}) %>
-
+<div class="grid-9 glast">
+<table class="w100pc">
+  <tr>
+    <th>Métrica</th>
+    <th class="w75"></th>
+    <th>Últimos 30 días</th>
+    <th>Últimos 12 meses</th>
+  </tr>
+<% Stats::Metrics::ALL_METRICS.each do |metric|
+  daily_data = Stats::Metrics.get_metric_last_30d(metric, 1.day.ago)
+  monthly_data = Stats::Metrics.get_metric_last_12m("#{metric}.avg", 1.day.ago)
+  %>
+  <tr>
+    <td><%=metric%></td>
+    <td class="infoinline"><%=daily_data.last%></td>
+    <td><%=sparkline({
+          :size => "145x25",
+          :data => daily_data,
+          :max => daily_data.max}) %>
+    </td>
+    <td><%=sparkline({
+          :size => "145x25",
+          :data => monthly_data,
+          :max => monthly_data.max}) %>
+    </td>
+  </tr>
+<%- end %>
+</table>
+</div>

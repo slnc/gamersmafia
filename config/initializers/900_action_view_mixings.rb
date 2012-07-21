@@ -11,12 +11,9 @@ module ActionViewMixings
       # 174166463.1739858544.1204186402.1206010305.1206018180.88
       # dom hash  visitor_id
       cka = cookies['__stma']
-      #p cka.split('.')
-      #raise 'fuck'
       cka.split('.')[1]
     else # creamos nuevo visitor_id
       new_visitor_id = (Kernel.rand * 2147483647).to_i
-      # TODO tests!!
       params['_xnvi'] = new_visitor_id
     end
   end

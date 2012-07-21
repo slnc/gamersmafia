@@ -7,12 +7,12 @@
 	<% mftext('Versión resumida') do %>
 		<p>No generes mal ambiente, comparte y disfruta.</p>
 	<% end 	%>
-	
+
 	<%mftext('La Cárcel') do %>
 	<div class="centered"><a href="/site/carcel"><img class="icon" src="/images/carcel.png" /></a></div>
 	<p><strong><strong><a href="/site/carcel"><% cache('/common/carcel') do %><%=User.count(:conditions => "state = #{User::ST_BANNED}")%><% end -%></strong> personas</a></strong> se pasaron de mafiosos y disfrutan de unas vacaciones con todos los gastos pagados.</p>
 	<% end -%>
-	
+
 	<%mftext('Infracciones') do %>
 	<p>En la <strong><a href="/site/staff">sección de staff</a></strong> de la web puedes encontrar a los responsables de los distintos apartados de la web a los que te animamos que informes de violaciones de este código.</p>
 	<p>En la <strong><a href="/site/responsabilidades">sección de responsabilidades</a></strong> están listadas las funciones de cada miembro del staff.</p>
@@ -43,8 +43,6 @@
       <li>tenga intención de mofarse o de rebajar a los jugadores de un determinado juego.</li>
       </ul>
 
-  <p>No se permiten los comentarios o contenidos cuyo tema principal sea la política ya que invariablemente enrarecen el ambiente y convierten la límpida y pura zona de comentarios en una orgía de insultos y malas vibraciones.</p>
-
   <p>Si un usuario cede su cuenta voluntariamente para su uso por un usuario baneado dicha cuenta será baneada aunque su dueño no sea el usuario baneado.</p>
 
   <p>Gamersmafia no se hace responsable de ninguna transacción que use moneda real o virtual (Gamersmafios) que tenga lugar a través de la web.</p>
@@ -67,7 +65,7 @@
       <li>Los comentarios a preguntas inocentes del tipo "búscalo en google" o "newbie" y similares serán eliminados.</li>
       </ul>
 	<% end 	%>
-	
+
 	<%mftext('Código de conducta para miembros del staff') do %>
 	<p>Las siguientes acciones son delictivas y motivo de pérdida de poderes especiales. Si algun miembro del staff se extralimita por favor informar a su boss correspondiente o a <a href="http://<%=App.domain%>/site/staff">cualquiera de los capos</a>.</p>
 	<h2>Bosses y underbosses</h2>
@@ -77,13 +75,13 @@
     	<li>No dar razones o dar razones banales a la hora de banear o denegar contenidos que pasaron por la cola de moderación.</li>
 		<li>Ignorar o hacer mal uso de los eventos del log del sistema.</li>
 	</ul>
-	
+
 	<h2>Editores y sicarios</h2>
 	<ul>
     	<li>Publicar contenidos que no cumplen los requisitos mínimos de calidad (noticias que son dos líneas, contenidos a categorías incorrectas, etc)
 		<li>Ignorar o hacer mal uso de los eventos del log del sistema.</li>
 	</ul>
-	
+
 	<h2>Moderadores y sicarios</h2>
 	<ul>
     	<li>Borrar o editar comentarios o partes de comentarios que no incumplan el código de conducta y sin que haya una causa justificada.</li>
@@ -95,8 +93,8 @@
     	<li><strong>Cualquier impedimento a la participación y a la libre expresión de opiniones va contra las normas siempre y cuando no se esté violando este código de conducta.</strong></li>
 	</ul>
 	<%end -%>
-	
-<%mftext('Últimas palabras') do %>	
+
+<%mftext('Últimas palabras') do %>
 <p>Cuando te comuniques a través de internet recomendamos que lo hagas de la forma más clara posible para evitar confusiones. La comunicación textual no da demasiado juego para interpretrar posibles dobles sentidos, ironías o sarcasmo. En caso de duda recomendamos usar el sentido común y tratar de ser lo más claro posible.</p>
 
 <p>Todo el staff de gamersmafia dedica parte de su tiempo libre a velar por el bienestar del proyecto. Estas normas no están para reducir la libertad de los usuarios sino para garantizar una convivencia y un respetuo común así como para protegerse de posibles amenazas para la web.</p>

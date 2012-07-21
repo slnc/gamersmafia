@@ -35,47 +35,58 @@ module Stats
   end
 
   module Metrics
+    ALL_METRICS = [
+        "kpi.core.active_users_30d",
+        "http.global.errors.external_404",
+        "http.global.errors.internal_404",
+        "http.global.errors.500",
+    ]
+
     # Computes 30d active users from 30d ago to eod of date arg.
     def self.get_metric_last_30d(metric, date)
-      timestamp_end = date.end_of_day
-      timestamp_start = timestamp_end.advance(:days => -30).beginning_of_day
       out = []
       30.times do |days|
-        date_string = date.advance(:days => -days).strftime("%Y-%m-%d")
+        date_string = date.advance(:days => -days).strftime("%Y%m%d")
         value = Keystore.get("#{metric}.#{date_string}")
-        if value == ""
-          out.append(-1)
-        else
-          out.append(value.to_i)
-        end
+        out.append((value || -1).to_i)
       end
-      out
+      out.reverse
+    end
+
+    def self.get_metric_last_12m(metric, date)
+      out = []
+      12.times do |months|
+        date_string = date.advance(:months => -months).strftime("%Y%m")
+        value = Keystore.get("#{metric}.#{date_string}")
+        out.append((value || -1).to_i)
+      end
+      out.reverse
     end
 
     def self.compute_daily_metrics(date)
       timestamp_end = date.end_of_day
       timestamp_start = timestamp_end.advance(:days => -30).beginning_of_day
       active_users_30d = self.active_users(timestamp_start, timestamp_end)
-      Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y-%m-%d")}",
+      Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y%m%d")}",
                    active_users_30d)
 
-      date_before = date.advance(:days => -1)
+      date_before = date.beginning_of_day.advance(:days => -1).beginning_of_day
 
       if date.strftime("%Y-%m") != date_before.strftime("%Y-%m")
         (monthly_avg, monthly_sd) = self.compute_monthly_metric(
             "kpi.core.active_users_30d", date_before)
-        Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y-%m")}.avg",
+        Keystore.set("kpi.core.active_users_30d.avg.#{date.strftime("%Y%m")}",
                      monthly_avg)
-        Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y-%m")}.sd",
+        Keystore.set("kpi.core.active_users_30d.sd.#{date.strftime("%Y%m")}",
                      monthly_sd)
       end
 
       if date.strftime("%Y") != date_before.strftime("%Y")
         (yearly_avg, yearly_sd) = self.compute_yearly_metric(
             "kpi.core.active_users_30d", date_before)
-        Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y")}.avg",
+        Keystore.set("kpi.core.active_users_30d.avg.#{date.strftime("%Y")}",
                      yearly_avg)
-        Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y")}.sd",
+        Keystore.set("kpi.core.active_users_30d.sd.#{date.strftime("%Y")}",
                      yearly_sd)
       end
     end
@@ -95,7 +106,7 @@ module Stats
       days_back.times do |days|
         cur_date = end_date.advance(:days => -days)
         values.append(
-            Keystore.get("#{metric}.#{cur_date.strftime("%Y-%m-%d")}").to_i)
+            Keystore.get("#{metric}.#{cur_date.strftime("%Y%m%d")}").to_i)
       end
       values.compact!
       if values.size < days_back
