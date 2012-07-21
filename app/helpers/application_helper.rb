@@ -97,7 +97,7 @@ module ApplicationHelper
   end
 
   def body_css_classes
-    classes = %w(madness lydefault)
+    classes = %w(lydefault)
     classes<< "has-submenu" if controller.submenu
     if user_is_authed
       classes<< "user-authed"

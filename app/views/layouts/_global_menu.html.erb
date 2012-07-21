@@ -1,0 +1,225 @@
+<% if @madness then %>
+<div id="show-menu" style="width: 70px;">
+  <div id="div1"><div id="div2"><span>menu</span></div></div>
+</div>
+<% end %>
+
+<div id="thesaw">
+  <div id="sawtop" class="<%=sawmode%>">
+    <ul>
+      <li id="sawli-comunidad"><div class="f"><a title="Ir a Comunidad" href="http://<%=App.domain%>/home/comunidad"><span>Comunidad</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('comunidad');"></div></li>
+  <li id="sawli-facciones"><div class="f"><a title="Ir a Facciones" href="http://<%=App.domain%>/home/facciones"><span>Facciones</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('facciones');"></div></li>
+  <li id="sawli-bazar"><div class="f"><a title="Ir a Bazar" href="http://bazar.<%=App.domain%>/"><span>Bazar</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('bazar');"></div></li>
+  <li id="sawli-arena"><div class="f"><a title="Ir a Arena" href="http://arena.<%=App.domain%>/"><span>Arena</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('arena');"></div></li>
+  <li id="sawli-foros"><div class="f"><a title="Ir a Foros" href="http://<%=App.domain%>/home/foros"><span>Foros</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('foros');"></div></li>
+  <% if %w(full hq).include?(sawmode) then %>
+  <li id="sawli-hq"><div class="f"><a href="http://<%=App.domain%>/home/hq"><span>hq</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('hq');"></div></li>
+  <% end -%>
+  <% if %w(full anunciante).include?(sawmode) then %>
+  <li id="sawli-anunciante"><div class="f"><a href="http://<%=App.domain%>/home/anunciante"><span>Anunciante</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('anunciante');"></div></li>
+  <% end -%>
+    </ul>
+  </div>
+
+<div id="sawbottom">
+  <ul id="sawbody-comunidad" class="hidden">
+    <li><a href="http://<%=App.domain%>/miembros">Miembros</a></li>
+  <li><a href="http://<%=App.domain%>/clanes">Clanes</a></li>
+  <li><a href="http://<%=App.domain%>/blogs">Blogs</a></li>
+  <li><a href="http://<%=App.domain%>/reclutamiento">Reclutamiento</a></li>
+  <% if nil then %><li><a href="http://<%=App.domain%>/parties">Parties</a></li><% end -%>
+  <% if user_is_authed then %>
+  <% cache("/_users/#{@user.id % 1000}/#{@user.id}/layouts/clans") do %>
+    <% u_clans = @user.clans
+if u_clans.size == 0 then %>
+<li id="sawbody-comunidad-nuevoclan2"><a href="/cuenta/clanes/new">Nuevo clan</a></li>
+<% else %>
+
+  <li><div class="sawbottom-arrow hidden"></div>
+      <div id="mggnav-clans"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-clans-my-clans-list');" href=""><%=@user.last_clan_id ? @user.last_clan.tag : 'mis clanes'%></a></div></div></div></div>
+    <div id="mggnav-clans-my-clans-list" class="saw-dropdownlist hidden">
+      <ul>
+      <%u_clans.each do |clan|%>
+        <li><a href="/cuenta/clanes/switch_active_clan/<%=clan.id%>"><%=clan.tag%></a></li>
+      <% end -%>
+      <li class="mggnav-clans-new-clan"><a href="http://<%=App.domain%>/cuenta/clanes/new">Nuevo clan</a></li>
+      <li class="mggnav-clans-all-my-clans"><a href="http://<%=App.domain%>/cuenta/mis_clanes">Todos mis clanes</a></li>
+      </ul>
+      </div>
+    </li>
+    <% end %><%# if u_clans %>
+    <% end %><%# cache %>
+  <% end %><%# if user_is_authed  %>
+  </ul>
+
+<ul id="sawbody-gm" class="hidden">
+  <li class="first"><a href="/site/portales">Portales</a></li>
+  <li><a href="http://<%=App.domain%>/tags">Tags</a></li>
+  <li><a href="http://<%=App.domain%>/site/novedades">Novedades sobre la web</a></li>
+  <li><a href="http://<%=App.domain%>/site/gmcity">GM City</a></li>
+  <li><a href="http://<%=App.domain%>/site/rss">RSS</a></li>
+  <% if user_is_authed then %>
+  <li><div class="sawbottom-arrow hidden"></div>
+      <div id="mggnav-skins"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-skins-list');" href=""><%=controller.skin.name%></a></div></div></div></div>
+    <div id="mggnav-skins-list" class="saw-dropdownlist hidden">
+      <ul>
+                  <% cache("/common/layout/skins") do %>
+      <%([Skin.find_by_hid('default')] + Skin.only_public).each do |skin| %>
+        <li><strong><a href="/cuenta/skins/activate?skin=<%=skin.id%>&redirto=/"><%=skin.name%></a></strong></li>
+      <% end -%>
+      <% end %><%# cache %>
+      </ul>
+      </div>
+
+    </li>
+
+  <% end %><%# if user_is_authed  %>
+</ul>
+
+<ul id="sawbody-facciones" class="hidden">
+    <li id="sawbody-facciones-faccion">
+      <div class="sawbottom-arrow hidden"></div>
+      <div id="mggnav-factions"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-factions-list');" href=""><%=controller.portal.class.name == 'FactionsPortal' ? "#{faction_favicon(Faction.new({:code => controller.portal.code}))} #{controller.portal.name.size > 15 ? controller.portal.code.upcase : controller.portal.name}" : 'Facciones'%></a></div></div></div></div>
+    </li>
+  <li class="first"><a href="/noticias">Noticias</a></li>
+  <li><a href="/articulos">Artículos</a></li>
+  <li><a href="/respuestas">Respuestas</a></li>
+  <li><a href="/imagenes">Imágenes</a></li>
+  <li><a href="/descargas">Descargas</a></li>
+  <li><a href="/encuestas">Encuestas</a></li>
+  <% if controller.portal.kind_of?(FactionsPortal) then %>
+  <li id="sawbody-facciones-information"><a href="/faccion">Información</a></li>
+  <li id="sawbody-facciones-miembros"><a href="/faccion/miembros">Miembros</a></li>
+  <li id="sawbody-facciones-staff"><a href="/faccion/staff">Staff</a></li>
+  <% end -%>
+  </ul>
+
+<ul id="sawbody-bazar" class="hidden">
+  <li style="padding-right: 10px;"><div id="mggnav-bazar-themes"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-bazar-themes-list');" href=""><%=controller.portal.kind_of?(BazarDistrictPortal) ? controller.portal.name : 'Distritos'%></a></div></div></div></div>
+    <div id="mggnav-bazar-themes-list" class="saw-dropdownlist hidden">
+      <ul>
+<% cache("/layouts/default/districts") do %>
+<%BazarDistrict.find(:all, :order => 'lower(name)').each do |c| %>
+  <li class="sawbody-bazar-tema"><a href="http://<%=c.code%>.<%=App.domain%>/"><%=faction_favicon(c)%> <%=c.name%></a></li>
+<% end -%>
+<% end %><%# bazar_district %>
+      </ul>
+      </div>
+  </li>
+
+  <% if controller.portal.kind_of?(BazarDistrictPortal) then %>
+    <li class="first"><a href="/noticias">Noticias</a></li>
+    <li><a href="/articulos">Artículos</a></li>
+    <% if controller.portal.code == 'deportes' then %><li><a href="/apuestas">Apuestas</a></li><% end -%>
+    <li><a href="/respuestas">Respuestas</a></li>
+    <li><a href="/imagenes">Imágenes</a></li>
+    <li><a href="/descargas">Descargas</a></li>
+    <li><a href="/encuestas">Encuestas</a></li>
+  <% else %>
+  <li><a href="http://<%=App.domain_bazar%>/imagenes/1559">Babes</a></li>
+  <li><a href="http://<%=App.domain_bazar%>/curiosidades">Curiosidades</a></li>
+  <li><a href="http://<%=App.domain_bazar%>/imagenes/1495">Wallpapers</a></li>
+  <li><a href="http://<%=App.domain_bazar%>/imagenes/1543">xD</a></li>
+  <li><a href="http://<%=App.domain_bazar%>/cuenta/tienda">Tienda GM</a></li>
+  <li><a href="http://<%=App.domain_bazar%>/site/chat">Webchat</a></li>
+  <% end -%>
+
+  <% if controller.portal.kind_of?(BazarDistrictPortal) then %>
+  <li id="sawbody-distrito-staff"><a href="/distrito">Staff</a></li>
+  <% end -%>
+  </ul>
+
+<ul id="sawbody-arena" class="hidden">
+  <li><a href="http://<%=App.domain_arena%>/apuestas">Apuestas</a></li>
+  <li><a href="http://<%=App.domain_arena%>/demos">Demos</a></li>
+  <li><a href="http://<%=App.domain_arena%>/competiciones">Competiciones</a></li>
+  <% if user_is_authed then %>
+  <% cache("/_users/#{@user.id % 1000}/#{@user.id}/layouts/competitions") do %>
+  <li style="padding-right: 10px;"><div id="mggnav-arena-mycompetitions"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-arena-mycompetitions-list');" href=""><%=@user.last_competition_id ? truncate(Competition.find(@user.last_competition_id).name, 15, '..') : 'Mis competiciones'%></a></div></div></div></div>
+    <div id="mggnav-arena-mycompetitions-list" class="saw-dropdownlist hidden">
+      <ul>
+<%Competition.related_with_user(@user).find(:all, :order => 'lower(name)', :limit => 25).each do |c| %>
+        <li class="sawbody-arena-competition"><a href="<%=gmurl(c)%>"><%=c.name%></a></li>
+  <% end -%>
+  <% end %><%# cache %>
+      </ul>
+      </div>
+  </li>
+  <% end -%>
+  </ul>
+
+<ul id="sawbody-foros" class="hidden">
+    <li><a href="http://<%=App.domain%>/foros">Índice</a></li>
+  <% if nil then %>
+  <li><a href="">Tópics recomendados</a></li>
+  <% end -%>
+  </ul>
+<% if user_is_authed && @user.is_hq? then %>
+<ul id="sawbody-hq" class="hidden">
+  <li style="padding-right: 10px;"><div id="mggnav-hq-admin"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-hq-admin-list');" href="/admin">Admin</a></div></div></div></div>
+    <div id="mggnav-hq-admin-list" class="saw-dropdownlist hidden">
+      <ul>
+    <%controller.admin_menu_items.each do |title, url| %>
+        <li><a href="<%=url%>"><%=title%></a></li>
+  <% end -%>
+      </ul>
+      </div>
+  </li>
+
+  <li><a id="sawbody-hq-experimentos" href="/site/stats_hipotesis">Experimentos</a></li>
+  <li><a id="sawbody-hq-issues" target="_blank" href="https://github.com/slnc/gamersmafia/issues">Incidencias</a></li>
+  <li><a id="sawbody-hq-wiki" target="_blank" href="http://wiki.lastinieblas.com/">Wiki</a></li>
+  </ul>
+<% end %><%# if user_is_authed %>
+<ul id="sawbody-anunciante" class="hidden">
+
+  </ul>
+</div>
+</div>
+
+<div id="mggnav-factions-list" class="saw-dropdownlist hidden" style="z-index: 2;">
+
+<%cache("/common/gnav/factions_list") do %>
+<table id="mggnav-games-list" style="margin-top: 5px; z-index: 2;">
+  <tr colspan="3">
+    <td style="color: #dedede; text-transform: uppercase;"><strong>Juegos</strong></td>
+  </tr>
+<% gg = Portal.find(:all, :conditions => "code IN (select code from games)", :order => 'cache_recent_hits_count desc', :limit => 18).sort_by { |item| item.name }.chunk(3) %>
+<%[gg[0].size, gg[1].size, gg[2].size].max.times do |c| %>
+<tr>
+  <td><% if gg[0][c] then %><a href="http://<%=gg[0][c].code%>.<%=App.domain%>"><img src="/images/blank.gif" class="factionfavicon gs-<%=gg[0][c].code%>" /><%=truncate(gg[0][c].name, 20, '..')%></a><% end -%></td>
+  <td><% if gg[1][c] then %><a href="http://<%=gg[1][c].code%>.<%=App.domain%>"><img src="/images/blank.gif" class="factionfavicon gs-<%=gg[1][c].code%>" /><%=truncate(gg[1][c].name, 20, '..')%></a><% end -%></td>
+  <td><% if gg[2][c] then %><a href="http://<%=gg[2][c].code%>.<%=App.domain%>"><img src="/images/blank.gif" class="factionfavicon gs-<%=gg[2][c].code%>" /><%=truncate(gg[2][c].name, 20, '..')%></a><% end -%></td>
+  </tr>
+<% end -%>
+
+<tr colspan="3">
+  <td></td>
+  <td></td>
+    <td style="text-align: right;"><a href="http://<%=App.domain%>/facciones">Todos los juegos &raquo;</a></td>
+  </tr>
+</table>
+
+<table id="mggnav-platforms-list" style="margin-top: 5px; z-index: 2;">
+  <tr>
+    <td style="color: #dedede; text-transform: uppercase;"><strong>Plataformas</strong></td>
+  </tr>
+<% Portal.find(:all, :conditions => "code IN (select code from platforms)", :order => 'cache_recent_hits_count desc', :limit => 6).sort_by { |item| item.name }.each do |platform| %>
+  <tr>
+    <td><a href="http://<%=platform.code%>.<%=App.domain%>"><img src="/images/blank.gif" class="factionfavicon gs-<%=platform.code%>" /><%=truncate(platform.name, 20, '..')%></a></td>
+  </tr>
+<% end -%>
+<tr>
+  <td style="text-align: right;"><a href="http://<%=App.domain%>/facciones">Todas las plataformas &raquo;</a></td>
+</tr>
+</table>
+<% end %><%# cache -%>
+
+<div style="width: 650px; float: left; padding-bottom: 10px; padding-top: 4px; margin: 10px 0 0 10px; border-top: 1px solid #880000;"><% if user_is_authed then %><a href="/cuenta/tienda/9" style="font-size: 11px; font-weight: bold;">Crear nueva facción</a><% end -%></div>
+
+</div>
+
+<script type="text/javascript">GM.menu.sawbottom_real('<%=active_sawmode != '' ? active_sawmode : 'gm' %>', 1);</script>
+<% # end if madness -%>
+</div>
+</div>
