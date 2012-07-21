@@ -1,6 +1,7 @@
 # Common config. It defines all configuration variables but it's not intended to be used
 # directly.
 common: &common
+  ia_auto_ab_tests: nagato
   asset_domain: gamersmafia.com
   asset_url: http://gamersmafia.com
   cache_templates_in_production: true
