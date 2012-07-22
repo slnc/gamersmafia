@@ -156,18 +156,6 @@ CREATE SEQUENCE allowed_competitions_participants_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE allowed_competitions_participants_id_seq OWNED BY allowed_competitions_participants.id;
-CREATE TABLE anonymous_users (
-    id integer NOT NULL,
-    session_id character(32) NOT NULL,
-    lastseen_on timestamp without time zone DEFAULT now() NOT NULL
-);
-CREATE SEQUENCE anonymous_users_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE anonymous_users_id_seq OWNED BY anonymous_users.id;
 CREATE TABLE autologin_keys (
     id integer NOT NULL,
     created_on timestamp without time zone NOT NULL,
@@ -3056,7 +3044,6 @@ ALTER TABLE ONLY ads_slots_instances ALTER COLUMN id SET DEFAULT nextval('ads_sl
 ALTER TABLE ONLY ads_slots_portals ALTER COLUMN id SET DEFAULT nextval('ads_slots_portals_id_seq'::regclass);
 ALTER TABLE ONLY advertisers ALTER COLUMN id SET DEFAULT nextval('advertisers_id_seq'::regclass);
 ALTER TABLE ONLY allowed_competitions_participants ALTER COLUMN id SET DEFAULT nextval('allowed_competitions_participants_id_seq'::regclass);
-ALTER TABLE ONLY anonymous_users ALTER COLUMN id SET DEFAULT nextval('anonymous_users_id_seq'::regclass);
 ALTER TABLE ONLY autologin_keys ALTER COLUMN id SET DEFAULT nextval('autologin_keys_id_seq'::regclass);
 ALTER TABLE ONLY avatars ALTER COLUMN id SET DEFAULT nextval('avatars_id_seq'::regclass);
 ALTER TABLE ONLY babes ALTER COLUMN id SET DEFAULT nextval('babes_id_seq'::regclass);
@@ -3235,10 +3222,6 @@ ALTER TABLE ONLY advertisers
     ADD CONSTRAINT advertisers_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY allowed_competitions_participants
     ADD CONSTRAINT allowed_competitions_participants_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY anonymous_users
-    ADD CONSTRAINT anonymous_users_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY anonymous_users
-    ADD CONSTRAINT anonymous_users_session_id_key UNIQUE (session_id);
 ALTER TABLE ONLY autologin_keys
     ADD CONSTRAINT autologin_keys_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY avatars
@@ -3641,7 +3624,6 @@ ALTER TABLE ONLY users_karma_daily_by_portal
 SET search_path = archive, pg_catalog;
 CREATE UNIQUE INDEX tracker_items_pkey ON tracker_items USING btree (id);
 SET search_path = public, pg_catalog;
-CREATE INDEX anonymous_users_lastseen ON anonymous_users USING btree (lastseen_on);
 CREATE UNIQUE INDEX autologin_keys_key ON autologin_keys USING btree (key);
 CREATE INDEX autologin_keys_lastused_on ON autologin_keys USING btree (lastused_on);
 CREATE INDEX avatars_clan_id ON avatars USING btree (clan_id);

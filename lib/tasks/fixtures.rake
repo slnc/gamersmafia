@@ -9,7 +9,6 @@ fixtures = [
 :ads_slots,
 :users_roles,
 :ban_requests,
-:anonymous_users,
 :autologin_keys,
 :games,
 :games_versions,

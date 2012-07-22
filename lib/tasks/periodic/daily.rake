@@ -8,7 +8,6 @@ namespace :gm do
     end
 
     Rake::Task['gm:alariko'].invoke
-    clear_anonymous_users
     clear_faith_points_of_referers_and_resurrectors
     pay_faith_prices
     send_happy_birthday
@@ -331,11 +330,6 @@ namespace :gm do
         Bank.transfer(:bank, u, new_cash, "Nivel de fe (#{Faith::NAMES[faith_level]}) correspondiente a #{Time.new.ago(86400).strftime('%d %b %Y')}")
       end
     end
-  end
-
-
-  def clear_anonymous_users
-    User.db_query('delete from anonymous_users where lastseen_on < now()  - \'30 minutes\'::interval')
   end
 
   def clear_file_caches
