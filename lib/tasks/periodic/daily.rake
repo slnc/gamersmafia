@@ -8,7 +8,6 @@ namespace :gm do
     end
 
     # Order matters for these calls
-    Rake::Task['gm:alariko'].invoke
     Faith.clear_faith_points_of_referers_and_resurrectors
     Faith.pay_faith_prices
     Stats.update_users_karma_stats

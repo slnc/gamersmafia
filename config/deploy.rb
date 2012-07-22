@@ -58,7 +58,6 @@ namespace(:customs) do
       rescue
         raise "\n\tERROR: production has dirty wc!\n\n"
       end
-      run "if [ -d #{current_path} ]; then cd #{current_path} && rake gm:alariko:stop; fi"
     end
   end
 end
