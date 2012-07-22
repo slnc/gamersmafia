@@ -7,6 +7,29 @@ class AbTest < ActiveRecord::Base
 
   before_save :clear_cache_if_changed_parameters
 
+  def self.forget_old_treated_visitors
+    User.db_query("
+        INSERT INTO archive.treated_visitors (
+          SELECT *
+          FROM public.treated_visitors
+          WHERE ab_test_id IN (
+            SELECT id
+            FROM ab_tests
+            WHERE completed_on IS NOT NULL
+            AND dirty = 'f'
+            AND updated_on < now() - '2 weeks'::interval))")
+
+    User.db_query("
+        DELETE FROM treated_visitors
+        WHERE ab_test_id IN (
+          SELECT id
+          FROM ab_tests
+          WHERE completed_on is not null
+          AND dirty = 'f'
+          AND updated_on < now() - '2 weeks'::interval)")
+  end
+
+
   def running_time
     if self.completed_on then
       self.completed_on - self.created_on

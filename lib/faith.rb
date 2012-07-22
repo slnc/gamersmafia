@@ -45,6 +45,29 @@ module Faith
     4 => 'Semi-Dios',
     5 => 'Dios'}
 
+  def self.clear_faith_points_of_referers_and_resurrectors
+    parsed_referers = []
+    User.can_login.recently_zombified.find(
+        :all, :conditions => "referer_user_id IS NOT NULL").each do |u|
+      next if parsed_referers.include?(u.referer_user_id)
+      r = User.find(u.referer_user_id)
+      r.cache_faith_points = nil
+      r.save
+      r.faith_points
+      parsed_referers<< u.referer_user_id
+    end
+
+    User.can_login.recently_zombified.find(
+        :all, :conditions => "resurrected_by_user_id is not null").each do |u|
+      next if parsed_referers.include?(u.referer_user_id)
+      r = User.find(u.resurrected_by_user_id)
+      r.cache_faith_points = nil
+      r.save
+      r.faith_points
+      parsed_referers<< u.resurrected_by_user_id
+    end
+  end
+
   def self.kp_for_level(level)
     POINTS_PER_LEVEL[level]
   end
@@ -182,6 +205,26 @@ module Faith
     points += user.users_contents_tags.count * Faith::FPS_ACTIONS['users_contents_tag']
     points += Competitions.count_all_matches_from_user(user, Competition::COMPLETED_ON_SQL) * Faith::FPS_ACTIONS['competitions_match']
     points
+  end
+
+  def self.pay_faith_prices
+    # damos los premios por nivel de fe elevado
+    User.can_login.non_zombies.find(
+        :all,
+        :conditions => "cache_faith_points > 0",
+        :order => 'lastseen_on DESC').each do |u|
+      faith_level = Faith.level(u)
+      new_cash = Bank::convert(faith_level, 'faith_level')
+      if new_cash > 0 then
+        Bank.transfer(
+            :bank,
+            u,
+            new_cash,
+            ("Nivel de fe (#{Faith::NAMES[faith_level]}) correspondiente a" +
+             " #{Time.new.ago(86400).strftime('%d %b %Y')}")
+        )
+      end
+    end
   end
 
   def self.publishing_decisions(user)

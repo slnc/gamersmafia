@@ -25,6 +25,26 @@ module Stats
       sql_created = "created_on BETWEEN '#{s.strftime('%Y-%m-%d')}' AND '#{e.strftime('%Y-%m-%d')}'"
       User.db_query("SELECT pageviews FROM stats.portals WHERE portal_id = #{portal.id} AND #{sql_created} ORDER BY created_on").collect { |dbr| dbr['pageviews'].to_i }
     end
+
+    def self.update_portals_hits_stats
+      User.db_query("SELECT count(*),
+                          portal_id
+                     FROM stats.pageviews
+                    WHERE portal_id > 0
+                      AND created_on >= now() - '1 month'::interval
+                 GROUP BY portal_id").each do |dbr|
+        portal = Portal.find_by_id(dbr['portal_id'])
+        if portal.nil?
+          Rails.logger.warn(
+            "daily.update_portals_hits_stats(). Warning, portal id" +
+            " #{dbr['portal_id']} (#{dbr['count']} pageviews) not found")
+        else
+          portal.cache_recent_hits_count = dbr['count'].to_i
+          portal.save
+        end
+      end
+      CacheObserver.expire_fragment("/common/gnav/#{Time.now.strftime('%Y-%m-%d')}")
+    end
   end
 
   module Ads
@@ -385,6 +405,27 @@ group by date_trunc('day', created_on) order by s asc
     #.collect { |dbr| dbr['count'].to_i }
     result
   end
+
+  def self.generate_daily_ads_stats
+    # sacamos todas las impresiones ads del día
+    last_stats = User.db_query("SELECT created_on FROM stats.ads_daily ORDER BY created_on DESC LIMIT 1")
+    max = 1.day.ago.beginning_of_day
+
+    if last_stats.size > 0
+      start = last_stats[0]['created_on'].to_time.advance(:days => 1)
+    else
+      start = 1.day.ago.beginning_of_day
+    end
+
+    cur = start
+    while cur.strftime('%Y-%m-%d') <= max.strftime('%Y-%m-%d')
+      tstart = cur
+      tend = tstart.end_of_day
+      Stats.consolidate_ads_daily_stats(tstart, tend)
+      cur = cur.advance(:days => 1)
+    end
+  end
+
 
   def self.total_advertiser_clicks_in_timerange(tstart, tend, advertiser)
     sql_created_on = "created_on BETWEEN '#{tstart.strftime('%Y-%m-%d')}' AND '#{tend.strftime('%Y-%m-%d')}'"
@@ -755,6 +796,121 @@ group by date_trunc('day', created_on) order by s asc
     # res2[k] = (res[k]/tot) * 100
     #end
     res2
+  end
+
+  def self.update_users_daily_stats
+    # AFTER update_users_karma_stats
+    max_day = 1.day.ago
+    start_day = User.db_query("SELECT created_on
+                                 FROM stats.users_daily_stats
+                             ORDER BY created_on DESC LIMIT 1")
+    if start_day.size > 0
+      start_day = start_day[0]['created_on'].to_time.advance(:days => 1)
+      if start_day < max_day
+        cur_day = start_day
+      else
+        cur_day = max_day
+      end
+    else # no hay records, cogemos el m:as viejo
+      cur_day = User.db_query("SELECT created_on from contents order by created_on asc limit 1")[0]['created_on'].to_time
+    end
+
+    cur_day = 1.day.ago.beginning_of_day if Rails.env == 'test'
+
+    while cur_day <= max_day
+      # iteramos a través de todos los users que han creado contenidos o comentarios hoy
+      pointz = {}
+
+      User.find(:all, :conditions => "id IN (select user_id
+                                               from contents
+                                              where state = #{Cms::PUBLISHED}
+                                                AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00' UNION
+                                                select user_id
+                                               from comments
+                                              where deleted = 'f' AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00')").each do |u|
+        # TODO here
+
+        Karma.karma_points_of_user_at_date(u, cur_day).each do |portal_id, points|
+          pointz[u.id] ||= {:karma => 0, :faith => 0, :popularity => 0}
+          pointz[u.id][:karma] += points
+        end
+      end
+
+      # ahora calculamos stats de fe
+      faithres = Faith.faith_points_of_users_at_date_range(cur_day.beginning_of_day, cur_day.end_of_day)
+      faithres.keys.each do |uid|
+        pointz[uid] ||= {:karma => 0, :faith => 0, :popularity => 0}
+        pointz[uid][:faith] += faithres[uid]
+      end
+
+      # popularidad
+      User.hot('all', cur_day.beginning_of_day, cur_day.end_of_day).each do |hinfo|
+        pointz[hinfo[0].id] ||= {:karma => 0, :faith => 0, :popularity => 0}
+        pointz[hinfo[0].id][:popularity] = hinfo[1]
+      end
+
+      pointz.keys.each do |uid|
+        v = pointz[uid]
+        User.db_query("INSERT INTO stats.users_daily_stats(user_id, karma, faith, popularity, created_on) VALUES(#{uid}, #{v[:karma]}, #{v[:faith]}, #{v[:popularity]}, '#{cur_day.strftime('%Y-%m-%d')}')")
+      end
+
+      # clans
+      # popularidad
+      Clan.hot('all', cur_day.beginning_of_day, cur_day.end_of_day).each do |hinfo|
+        pointz[hinfo[0].id] ||= {:popularity => 0}
+        pointz[hinfo[0].id][:popularity] = hinfo[1]
+      end
+
+      pointz.keys.each do |uid|
+        v = pointz[uid]
+        next unless Clan.find_by_id(uid)
+        User.db_query("INSERT INTO stats.clans_daily_stats(clan_id, popularity, created_on) VALUES(#{uid}, #{v[:popularity]}, '#{cur_day.strftime('%Y-%m-%d')}')")
+      end
+
+      cur_day = cur_day.advance(:days => 1)
+    end
+  end
+
+  def self.update_users_karma_stats
+    max_day = 1.day.ago
+    start_day = User.db_query("SELECT created_on
+                                 FROM stats.users_karma_daily_by_portal
+                             ORDER BY created_on DESC LIMIT 1")
+    if start_day.size > 0
+      start_day = start_day[0]['created_on'].to_time.advance(:days => 1)
+      if start_day < max_day
+        cur_day = start_day
+      else
+        cur_day = max_day
+      end
+    else # no hay records, cogemos el m:as viejo
+      cur_day = User.db_query("SELECT created_on from contents order by created_on asc limit 1")[0]['created_on'].to_time
+    end
+
+    cur_day = 1.day.ago.beginning_of_day if Rails.env == 'test'
+
+    while cur_day <= max_day
+      # iteramos a través de todos los users que han creado contenidos o comentarios hoy
+      User.find(:all, :conditions => "id IN (select user_id
+                                               from contents
+                                              where state = #{Cms::PUBLISHED}
+                                                AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00' UNION
+                                                select user_id
+                                               from comments
+                                              where deleted = 'f' AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00')").each do |u|
+        # TODO here
+        Karma.karma_points_of_user_at_date(u, cur_day).each do |portal_id, points|
+          User.db_query("INSERT INTO stats.users_karma_daily_by_portal(user_id, portal_id, karma, created_on) VALUES(#{u.id}, #{portal_id}, #{points}, '#{cur_day.strftime('%Y-%m-%d')}')")
+        end
+      end
+      cur_day = cur_day.advance(:days => 1)
+    end
+  end
+
+  def self.forget_old_pageviews
+    User.db_query(
+        "DELETE FROM stats.pageviews
+         WHERE created_on <= now() - '3 months'::interval")
   end
 
   def self.user_comments_by_rating(u)

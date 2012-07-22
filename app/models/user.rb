@@ -196,16 +196,63 @@ class User < ActiveRecord::Base
   before_save :check_if_shadow
   before_save :check_if_website
 
-  scope :settled, :conditions => 'created_on <= now() - \'1 month\'::interval'
   scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})"
   scope :birthday_today,
-        :conditions => "date_part('day', birthday)::text || date_part('month', birthday)::text = date_part('day', now())::text || date_part('month', now())::text"
+        :conditions => (
+            "date_part('day', birthday)::text ||" +
+            " date_part('month', birthday)::text =" +
+            " date_part('day', now())::text ||" +
+            " date_part('month', now())::text")
+
   scope :humans, :conditions => 'is_bot is false'
+
+  scope :non_zombies,
+        :conditions => "lastseen_on >= now() - '3 months'::interval"
+
+  scope :online, :conditions => "lastseen_on >= now() - '30 minutes'::interval"
 
   scope :recently_active,
         :conditions => "lastseen_on >= now() - '1 week'::interval"
 
-  scope :online, :conditions => "lastseen_on >= now() - '30 minutes'::interval"
+  scope :recently_zombified,
+        :conditions => (
+            "lastseen_on between (now() - '3 months 2 days'::interval) AND" +
+            " (now() - '3 months'::interval)")
+
+  scope :settled, :conditions => "created_on <= now() - '1 month'::interval"
+
+  def self.new_accounts_cleanup
+    # 1st warning
+    User.find(:all, :conditions => "state = #{User::ST_UNCONFIRMED} AND updated_at < now() - '3 days'::interval", :limit => 200).each do |u|
+      Notification.unconfirmed_1w(u).deliver
+      User.db_query("UPDATE users SET state = #{User::ST_UNCONFIRMED_1W}, updated_at = now() WHERE id = #{u.id}")
+    end
+
+    # 2nd warning
+    User.find(:all, :conditions => "state = #{User::ST_UNCONFIRMED_1W} AND updated_at < now() - '3 days'::interval", :limit => 200).each do |u|
+      Notification.unconfirmed_2w(u).deliver
+      User.db_query("UPDATE users SET state = #{User::ST_UNCONFIRMED_2W}, updated_at = now() WHERE id = #{u.id}")
+    end
+
+    # delete older unconfirmed accounts
+    User.find(:all, :conditions => "state = #{User::ST_UNCONFIRMED_2W} AND updated_at < now() - '3 days'::interval", :limit => 200).each do |u|
+      User.db_query("UPDATE users SET state = #{User::ST_DELETED}, updated_at = now() WHERE id = #{u.id}")
+    end
+  end
+
+  def self.send_happy_birthday
+    nagato = User.find_by_login!('nagato')
+    User.can_login.birthday_today.find(:all).each do |u|
+      Message.create({
+          :sender => nagato,
+          :recipient => u,
+          :title => '¡Feliz cumpleaños!',
+          :message => (
+              "¡En nombre de todo el staff de gamersmafia te deseo un feliz" +
+              " día de cumpleaños! :)\n\nNos vemos por la web.")
+      })
+    end
+  end
 
   # Class methods
   def self.suspicious_users
@@ -217,6 +264,15 @@ class User < ActiveRecord::Base
     end
     res
   end
+
+  def self.switch_inactive_users_to_zombies
+    User.db_query(
+        "UPDATE users
+         SET state = #{User::ST_ZOMBIE}
+         WHERE state IN (#{User::ST_ACTIVE}, #{User::ST_RESURRECTED})
+         AND lastseen_on < now() - '3 months'::interval")
+  end
+
 
   def self.random_with_photo(opts)
     opts = {:limit => 1, :exclude_user_id => nil, :exclude_friends_of_user_id => nil}.merge(opts)
@@ -314,6 +370,17 @@ class User < ActiveRecord::Base
     raise "TODO"
     # "select count(distinct(visitor_id)), (select login from users where id = stats.pageviews.model_id::integer) from stats.pageviews where controller = 'miembros' and action = 'member' and created_on >= now() - '1 month'::interval group by model_id order by count(distinct(visitor_id)) desc limit 10;
   end
+
+  def self.update_max_cache_valorations_weights_on_self_comments
+    max_weights = User.db_query(
+        "SELECT MAX(cache_valorations_weights_on_self_comments) AS max_weights
+           FROM users
+          WHERE cache_valorations_weights_on_self_comments IS NOT NULL"
+    )[0]["max_weights"]
+    GlobalVars.update_var(
+      "max_cache_valorations_weights_on_self_comments", max_weights)
+  end
+
 
   def self.hot(limit, t1, t2)
     t1, t2 = t2, t1 if t1 > t2

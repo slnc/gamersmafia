@@ -27,6 +27,21 @@ class Question < ActiveRecord::Base
   scope :unanswered, :conditions => 'answered_on IS NULL'
   scope :answered, :conditions => 'answered_on IS NOT NULL'
 
+  def self.close_old_open_questions
+    mrman = User.find_by_login!('mrman')
+    Question.published.find(:all, :conditions => 'answered_on IS NULL AND created_on <= now() - \'1 month\'::interval', :order => 'id').each do |q|
+      c_text = Kernel.rand > 0.5 ? 'Esta pregunta lleva pendiente de respuesta demasiado tiempo y le está empezando a salir musgo verde así que me veo en la obligación de cerrarla.' : 'Esta pregunta lleva demasiado tiempo abierta y se encuentra en paupérrimas condiciones. Por consiguiente me siento con la obligación de cerrarla.'
+      if q.unique_content.comments.count(:conditions => ['user_id <> ?', q.user_id]) > 0
+        c_text << ' Si alguna de las respuestas es válida por favor avisad al staff.'
+      end
+
+      c = Comment.create(:user_id => mrman.id, :comment => c_text, :host => '127.0.0.1', :content_id => q.unique_content_id)
+
+      q.set_no_best_answer(mrman)
+    end
+  end
+
+
   def user_can_set_no_question?(user)
     # que pueda editar el contenido sin ser el autor o siendo el autor pero
     # siendo del hq

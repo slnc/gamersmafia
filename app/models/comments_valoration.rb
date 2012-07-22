@@ -27,6 +27,7 @@ class CommentsValoration < ActiveRecord::Base
 
   scope :recent, :conditions => "created_on >= now() - '1 month'::interval"
 
+
   private
   def init_randval
     self.randval = Kernel.rand unless self.randval

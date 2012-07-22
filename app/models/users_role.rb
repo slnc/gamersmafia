@@ -26,6 +26,20 @@ class UsersRole < ActiveRecord::Base
   after_create :check_is_staff
   after_destroy :check_is_staff
 
+  def self.kill_zombified_staff
+    # bigbosses, editors, moderators and sicarios
+    limit = 3.months.ago
+    now = Time.now
+    mrcheater = User.find_by_login!('mrcheater')
+    UsersRole.find(:all, :conditions => "role IN ('Don', 'ManoDerecha', 'Boss', 'Underboss', 'Editor', 'Moderator', 'Sicario')", :include => :user).each do |ur|
+      if ur.user.lastseen_on < limit
+        ur.destroy
+        SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :headline => "Quitando permiso de <strong>#{ur.role}</strong> a <strong>#{ur.user.login}</strong> por volverse zombie", :reviewer_user_id => mrcheater.id, :completed_on => now)
+      end
+    end
+  end
+
+
   def role_data_yaml
     YAML::load(role_data)
   end

@@ -72,6 +72,11 @@ class Faction < ActiveRecord::Base
     end
   end
 
+  def self.check_faction_leaders
+    # TODO TEMP, esto no debería ser necesario
+    User.db_query("update users set cache_is_faction_leader = 't' where id in (select user_id FROM users_roles WHERE role IN ('Boss', 'Underboss'));")
+  end
+
   # Returns number of days that the current boss has been a boss.
   # If the faction has no boss an exception is raised
   def boss_age_days

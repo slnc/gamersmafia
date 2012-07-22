@@ -2,6 +2,78 @@
 class Ladder < Competition
   VALID_CHALLENGE_OPTIONS = [:play_on, :servers, :maps, :ladder_rules]
 
+  def self.check_ladder_matches
+    # 1 week old and still unaccepted
+    Ladder.find(:all, :conditions => ['state = ?', Competition::STARTED]).each do |l|
+      l.matches(:unapproved, :conditions => 'accepted is false and updated_on < now() - \'1 week\'::interval and updated_on > now() - \'3 weeks\'::interval').each do |m|
+        rt = m.participant2.the_real_thing
+        if rt.class.name == 'User'
+          recipients = [rt]
+        else
+          recipients = rt.admins
+        end
+
+        recipients.each do |u|
+          Notification.reto_pendiente_1w(
+              u, {:match => m, :participant => m.participant2}).deliver
+        end
+      end
+
+      # 3 weeks old and still unaccepted, 2 warning
+      l.matches(:unapproved, :conditions => 'accepted is false and updated_on < now() - \'3 weeks\'::interval and updated_on > now() - \'1 month\'::interval').each do |m|
+        rt = m.participant2.the_real_thing
+        if rt.class.name == 'User'
+          recipients = [rt]
+        else
+          recipients = rt.admins
+        end
+
+        recipients.each do |u|
+          # TODO(slnc): temporalmente deshabilitado
+          # Notification.deliver_reto_pendiente_2w(u, {:match => m, :participant => m.participant2})
+        end
+      end
+
+
+      # cancel older challenges
+      l.matches(:unapproved, :conditions => 'accepted is false and updated_on < now() - \'1 month\'::interval').each do |m|
+        rt = m.participant2.the_real_thing
+        if rt.class.name == 'User'
+          recipients = [rt]
+        else
+          recipients = rt.admins
+        end
+
+        recipients.each do |u|
+          Notification.reto_cancelado_sin_respuesta(
+              u, {:match => m, :participant => m.participant2}).deliver
+        end
+        m.destroy
+      end
+
+      # automatically accept unconfirmed results if older than a month
+      l.matches(:result_pending, :conditions => 'updated_on < now() - \'1 month\'::interval').each do |m|
+        if !(m.participant1_confirmed_result && m.participant2_confirmed_result) then # double forfeit
+          m.complete_match(User.find_by_login!('MrMan'), {}, true)
+        else # accept result
+          rt = m.participant2.the_real_thing
+          if rt.class.name == 'User'
+            recipients = [rt]
+          else
+            recipients = rt.admins
+          end
+
+          recipients.each do |u|
+            # TODO(slnc): deberíamos habilitar esto de nuevo?
+            #Notification.reto_cancelado_sin_respuesta(u, {:match => m, :participant => m.participant2})
+          end
+          m.complete_match(User.find_by_login!('MrMan'), {}, true)
+        end
+
+      end
+    end
+  end
+
   def has_options?
     false
   end

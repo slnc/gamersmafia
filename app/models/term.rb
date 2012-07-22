@@ -35,6 +35,13 @@ class Term < ActiveRecord::Base
   before_save :check_scope_if_toplevel
   before_save :check_taxonomy
 
+  def self.delete_empty_content_tags_terms
+    Term.contents_tags.find(:all, :conditions => 'contents_count = 0').each do |t|
+      next if t.contents_terms.count > 0 || t.users_contents_tags.count > 0
+      t.destroy
+    end and nil
+  end
+
   def self.taxonomies
     VALID_TAXONOMIES
   end
