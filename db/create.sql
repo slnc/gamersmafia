@@ -570,7 +570,8 @@ CREATE TABLE comments (
     lastowner_version character varying,
     lastedited_by_user_id integer,
     deleted boolean DEFAULT false NOT NULL,
-    random_v numeric DEFAULT random()
+    random_v numeric DEFAULT random(),
+    state smallint DEFAULT 0 NOT NULL
 );
 CREATE SEQUENCE comments_id_seq
     START WITH 1

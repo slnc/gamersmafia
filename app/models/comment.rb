@@ -18,6 +18,39 @@ class Comment < ActiveRecord::Base
   validates_presence_of :comment, :message => 'no puede estar en blanco'
   validates_presence_of :user_id, :message => 'no puede estar en blanco'
 
+  # Comment is visible to everybody.
+  VISIBLE = 0
+
+  # Comment is only visible to people who want to see unpopular comments.
+  HIDDEN = 1
+
+  # Comment is not visible to anyone because it violates the netiquette.
+  MODERATED = 2
+
+  # Minimum number of comment valorations to hide a comment.
+  NEGATIVE_VALORATIONS_TO_HIDE = 3
+
+  def hidden?
+    self.state == HIDDEN
+  end
+
+  def moderated?
+    self.state == MODERATED
+  end
+
+  def visible?
+    self.state == VISIBLE
+  end
+
+  def check_crowd_decision_on_visibility
+    negative_valorations = self.comments_valorations.negative.count
+    if negative_valorations >= NEGATIVE_VALORATIONS_TO_HIDE && self.visible?
+      self.update_attributes(:state => HIDDEN)
+    elsif negative_valorations < NEGATIVE_VALORATIONS_TO_HIDE && self.hidden?
+      self.update_attributes(:state => VISIBLE)
+    end
+  end
+
   def regenerate_ne_references(users=[])
     NeReference.find(
         :all,

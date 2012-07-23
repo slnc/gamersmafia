@@ -19,6 +19,29 @@ google_ad_height = 250;
     end
   end
 
+  def check_hidden_comments(hidden_comments_count, hidden_comments_users)
+    if hidden_comments_count > 0
+      out = ["<div class=\"hidden-comments-indicator\">"]
+      hidden_comments_users.each do |user|
+        out << "#{avatar_img(user, :very_small)}"
+      end
+      out << ["</div>"]
+      out.join(" ")
+    end
+  end
+
+  def hidden_comments_count_toggler(hidden_comments_count)
+    return unless hidden_comments_count > 0
+
+    out = <<-END
+<div class="infoinline hidden-comments-warning" style="text-align: right;">
+  <a href="">Mostrar <strong>#{hidden_comments_count}</strong>
+  #{pluralize_on_count("comentario", hidden_comments_count)}
+  #{pluralize_on_count("oculto", hidden_comments_count)}</a>
+</div>
+      END
+  end
+
   def get_comments(object)
     Comment.paginate({
         :page => params[:page],

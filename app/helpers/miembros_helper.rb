@@ -1,5 +1,11 @@
 # -*- encoding : utf-8 -*-
 module MiembrosHelper
+  AVATAR_SIZES = {
+    :very_small => 16,
+    :small => 32,
+    :normal => 50,
+  }
+
   def draw_user_info(user)
     out = "<div class=\"members-user-info\">
         <div class=\"avatar\"><img src=\"#{ASSET_URL}#{user.show_avatar}\" /></div>
@@ -10,6 +16,15 @@ module MiembrosHelper
           <li>#{draw_faith_bar_sm(user)}</li>
         </ul>
         <div class=\"clearl\"></div></div>"
+  end
+
+  def avatar_img(user, size)
+    raise "Invalid size #{size}" unless AVATAR_SIZES.has_key?(size)
+    size_px = AVATAR_SIZES[size]
+    out = <<-END
+    <img title="#{user.login}"
+         src="#{ASSET_URL}/cache/thumbnails/f/#{size_px}x#{size_px}#{user.show_avatar}" />
+    END
   end
 
   def draw_user_info2(user)

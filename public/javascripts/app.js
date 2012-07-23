@@ -3,20 +3,21 @@
  * @param {Object} user_is_authed
  * @param {Object} contents
  */
-function cfgPage(user_is_authed, contents, controller, action, model_id, newsessid, abtest, ads_shown) {
+function cfgPage(user_is_authed, contents, controller, action, model_id,
+    newsessid, abtest, ads_shown) {
   slnc.setupAdClicks();
   pageTracker = st.getTracker();
-  if(newsessid)
+  if (newsessid)
     pageTracker.setVar('_xnvi', newsessid);
   pageTracker.initData();
   pageTracker.setVar('_xc', controller);
   pageTracker.setVar('_xa', action);
   pageTracker.setVar('_xmi', model_id);
 
-  if(ads_shown)
+  if (ads_shown)
     pageTracker.setVar('_xad', ads_shown);
 
-  if(abtest)
+  if (abtest)
     pageTracker.setVar('_xab', abtest);
 
   pageTracker.trackPageview(user_is_authed, contents);
@@ -28,7 +29,7 @@ function cfgPage(user_is_authed, contents, controller, action, model_id, newsess
   $j('#smenu .third-level').hide();
 
   $j('#show-menu').click(function() {
-    if($j(this).hasClass('shown')) {
+    if ($j(this).hasClass('shown')) {
       $j('#thesaw').stop().animate({
         'width' : '0'
       }, 100);
@@ -40,8 +41,13 @@ function cfgPage(user_is_authed, contents, controller, action, model_id, newsess
       $j(this).addClass('shown');
     }
   });
+
   $j('div.comment').hover(function() {
     GM.utils.highlightComment($j(this).attr('id'));
+  });
+
+  $j('.hidden-comments-warning a').click(function() {
+    return GM.utils.showAllHiddenComments();
   });
 }
 
@@ -90,47 +96,68 @@ function recommend_to_friend(content_id) {
 function disable_rating_controls() {
   for(key in comments) {
     var dEl = $j('#moderate-comments-opener-rating' + key);
-    if(dEl && dEl.html() == 'Ninguna')
+    if (dEl && dEl.html() == 'Ninguna')
       $j('#moderate-comments-opener' + key).hide();
   }
 }
 
-function check_comments_controls(user_is_mod, user_id, user_last_visited_on, unix_now, comments_ratings, remaining_slots, old_enough, user_is_hq, first_time_content, do_autoscroll) {
+function check_comments_controls(
+    user_is_mod,
+    user_id,
+    user_last_visited_on,
+    unix_now,
+    comments_ratings,
+    remaining_slots,
+    old_enough,
+    user_is_hq,
+    first_time_content,
+    do_autoscroll,
+    do_show_all_comments) {
   // NO calcular tiempo unix_now por el cliente, es una caja de pandora
   var scroll_to_comment;
   // contiene el elemento al que hacer scroll
-  for(key in comments) {
-    if(comments[key][1] != user_id && old_enough) // Puede valorarlo
-    {
-      if(comments_ratings[key] != undefined)
+  for (key in comments) {
+    var comment_div = $j('#comment' + key);
+    if (comments[key][1] != user_id && old_enough) {
+      // Puede valorarlo
+      if (comments_ratings[key] != undefined)
         $j('#moderate-comments-opener-rating' + key).html(comments_ratings[key]);
 
-      if($j('#moderate-comments-opener' + key) != undefined && (comments_ratings[key] != undefined || remaining_slots > 0))
+      if ($j('#moderate-comments-opener' + key) != undefined &&
+          (comments_ratings[key] != undefined || remaining_slots > 0)) {
         // // necesario por un error js raro
         $j('#moderate-comments-opener' + key).show();
+      }
     }
 
-    if(comments[key][0] > user_last_visited_on && comments[key][1] != user_id) {
-      $j('#comment' + key).addClass('new');
+    if (comments[key][0] > user_last_visited_on && comments[key][1] != user_id) {
+      comment_div.addClass('new');
       // hacemos scroll excepto que sea primera pag y primer comment
-      if((!first_time_content) && !scroll_to_comment) {
+      if ((!first_time_content) && !scroll_to_comment) {
         scroll_to_comment = $j('#comment' + key);
       }
     }
     cur_is_first = false;
 
-    if(((user_is_mod && comments[key][0] > unix_now - 86400 * 365) || (comments[key][1] == user_id && comments[key][0] > unix_now - 60 * 15))) {
+    if ((user_is_mod && comments[key][0] > unix_now - 86400 * 365) ||
+          (comments[key][1] == user_id &&
+           comments[key][0] > unix_now - 60 * 15)) {
       $j('#comment' + key + 'editlink').removeClass('hidden');
-      if(user_is_mod)
+      if (user_is_mod) {
         $j('#comment' + key + 'dellink').removeClass('hidden');
+      }
     }
     var rpc = $j('#report-comments' + key);
-    if(user_is_hq && !user_is_mod && rpc) {
+    if (user_is_hq && !user_is_mod && rpc) {
       rpc.removeClass('hidden');
     }
   }
 
-  if(do_autoscroll == '1' && scroll_to_comment && !first_time_content) {
+  if (do_show_all_comments == "1") {
+    GM.utils.showAllHiddenComments();
+  }
+
+  if (do_autoscroll == '1' && scroll_to_comment && !first_time_content) {
     $j(document).ready(function() {
       $j(window).scrollTo(scroll_to_comment, 750, {
         easing : 'swing',
@@ -166,7 +193,7 @@ function mailto(p1) {
 }
 
 function skinselector(val) {
-  if(val == 'mis-skins')
+  if (val == 'mis-skins')
     document.location = '/cuenta/skins';
   else
     slnc.setPref('skin', val);
@@ -189,7 +216,7 @@ function switch_block_visi(block_base) {
   var max = block_base + 'max';
   var min = block_base + 'min';
 
-  if($j('#' + min).css('display') != 'none') {
+  if ($j('#' + min).css('display') != 'none') {
     $j('#' + min).hide();
     $j('#' + max).show();
   } else {
@@ -227,20 +254,20 @@ GM.menu = function() {
     sawbottom : function(mode) {
       this.sawbottom_cancel();
       sawbottom_cur = mode;
-      if(sawbottom_cur_int) {
+      if (sawbottom_cur_int) {
         window.status = 'int found, deleting';
         clearTimeout(sawbottom_cur_int);
       }
       sawbottom_cur_int = setTimeout("GM.menu.sawbottom_real('" + mode + "')", 200);
     },
     sawbottom_real : function(mode) {
-      if(mode == sawbottom_cur || arguments.length == 2) {
+      if (mode == sawbottom_cur || arguments.length == 2) {
 
         $j('#sawli-' + sawbottom_mode).removeClass('alter');
         $j('#sawbody-' + sawbottom_mode).addClass('hidden');
 
         var d = $j('#sawli-' + mode);
-        if(d) {
+        if (d) {
           d.addClass('alter');
           $j('#sawbody-' + mode).removeClass('hidden');
           sawbottom_mode = mode;
@@ -248,7 +275,7 @@ GM.menu = function() {
       }
     },
     sawbottom_cancel : function() {
-      if(sawbottom_cur_int)
+      if (sawbottom_cur_int)
         clearTimeout(sawbottom_cur_int);
       sawbottom_cur = '';
     },
@@ -259,7 +286,7 @@ GM.menu = function() {
     sawdropdown_cancel_hiding : function(id) {
       var the_dropdown = $j('#' + id);
       var theint = the_dropdown.data('outint');
-      if(theint) {
+      if (theint) {
         clearInterval(theint);
         the_dropdown.data('outint', undefined);
       }
@@ -271,7 +298,7 @@ GM.menu = function() {
         // Creo y lanzo un timeout para cerrar el menú si dentro de 1000ms no se
         // ha eliminado el timeout
         var newint = the_dropdown.data('outint');
-        if(newint)
+        if (newint)
           clearInterval(newint);
         the_dropdown.data('outint', setTimeout("GM.menu.sawdropdown_hide('" + id + "')", 750));
       });
@@ -301,7 +328,7 @@ GM.utils = function() {
       return false;
     },
     gototop : function() {
-      if(jQuery.browser.msie && jQuery.browser.version == '6.0')
+      if (jQuery.browser.msie && jQuery.browser.version == '6.0')
         document.location = '#';
       else
         $j(window).scrollTo(0, 750, {
@@ -320,9 +347,17 @@ GM.utils = function() {
       $j('div.comment').addClass('inactive');
       $j('#' + id).removeClass('inactive');
     },
+
+    showAllHiddenComments : function() {
+      $j('.hidden-comments-warning').hide();
+      $j('.hidden-comments-indicator').hide();
+      $j('.comment.hidden').removeClass('hidden');
+      return false;
+    },
+
     form_sym_action : function(form_id, initial_str, new_str) {
       var f = document.getElementById(form_id);
-      if(!f) {
+      if (!f) {
         alert(form_id + ' not found');
         return;
       }
@@ -336,7 +371,7 @@ GM.utils = function() {
 GM.personalization = function() {
   return {
     set_default_portal : function(user_is_authed, new_portal) {
-      if(user_is_authed)
+      if (user_is_authed)
         $j.get('/cuenta/cuenta/set_default_portal?new_portal=' + new_portal);
       else
         slnc.setPref('defportal', new_portal);
@@ -379,14 +414,14 @@ function closeFacebox() {
 $j.fn.insertAtCaret = function(myValue) {
   return this.each(function() {
     //IE support
-    if(document.selection) {
+    if (document.selection) {
       this.focus();
       sel = document.selection.createRange();
       sel.text = myValue;
       this.focus();
     }
     //MOZILLA / NETSCAPE support
-    else if(this.selectionStart || this.selectionStart == '0') {
+    else if (this.selectionStart || this.selectionStart == '0') {
       var startPos = this.selectionStart;
       var endPos = this.selectionEnd;
       var scrollTop = this.scrollTop;

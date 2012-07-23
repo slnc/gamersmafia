@@ -5,7 +5,9 @@ class CommentsValoration < ActiveRecord::Base
   POSITIVE = 1
 
   after_create :reset_user_cache
+  after_create :check_crowd_decision_on_visibility
   after_destroy :reset_users_daily_allocation
+  after_save :check_crowd_decision_on_visibility
   after_save :reset_users_daily_allocation
   after_save :reset_comments_rating
 
@@ -35,6 +37,10 @@ class CommentsValoration < ActiveRecord::Base
 
   def check_not_self
     self.user_id != comment.user_id
+  end
+
+  def check_crowd_decision_on_visibility
+    self.comment.check_crowd_decision_on_visibility
   end
 
   def reset_comments_rating

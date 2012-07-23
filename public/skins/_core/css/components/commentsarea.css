@@ -138,3 +138,8 @@
 .moderate-comments-opener {
     display: inline;
 }
+
+.hidden-comments-indicator {
+  margin-top: 30px;
+  text-align: center;
+}

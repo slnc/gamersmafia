@@ -69,6 +69,10 @@ module ApplicationHelper
     ApplicationHelper::ANALYTICS_SNIPPET
   end
 
+  def pluralize_on_count(word, count)
+    (count == 1) ? word : "#{word}s"
+  end
+
   def portal_code
     controller.portal_code
   end

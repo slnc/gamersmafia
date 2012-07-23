@@ -18,9 +18,32 @@ cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{Cms.comments_per_page}_#{pa
                :pos => 'top',
                :pager_params => {:anchor => 'comments'}} %>
 <%
+hidden_comments_count = 0
+@comments.each do |comment|
+  hidden_comments_count += 1 if comment.hidden?
+end
+%>
+
+<%=hidden_comments_count_toggler(hidden_comments_count)%>
+
+<%
 i = (params[:page].to_i - 1) * Cms.comments_per_page + 1
 
+hidden_comments_users = []
+hidden_comments_count = 0
 @comments.each do |comment|
+  if comment.visible? %>
+  <%=check_hidden_comments(hidden_comments_count, hidden_comments_users) %>
+  <%
+    hidden_comments_count = 0
+    hidden_comments_users = []
+  end
+
+  if comment.hidden?
+    hidden_comments_count += 1
+    hidden_comments_users.append(comment.user)
+  end
+
   i += 1
   if questions_mode
     show_signature = false
@@ -38,6 +61,7 @@ i = (params[:page].to_i - 1) * Cms.comments_per_page + 1
     :show_signature => show_signature,
 } %>
 <% end -%>
+<%=check_hidden_comments(hidden_comments_count, hidden_comments_users) %>
 
 <%= render :partial => 'shared/pager2',
            :object => @comments_pages,
@@ -76,7 +100,8 @@ function load_comments()
       <%=ActiveSupport::JSON.encode(@user.created_on < 7.days.ago)%>,
       <%=@user.is_hq?%>,
       <%=@first_time_content%>,
-      '<%=@user.pref_comments_autoscroll%>');
+      '<%=@user.pref_comments_autoscroll%>',
+      '<%=@user.pref_show_all_comments%>');
 }
 
 /* for Mozilla */

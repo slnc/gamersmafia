@@ -57,7 +57,7 @@ development: &development
   domain: gamersmafia.dev
   domain_arena: arena.gamersmafia.dev
   domain_bazar: bazar.gamersmafia.dev
-  enable_bgjobs?: true
+  enable_bgjobs?: false
   enable_dbstats?: true
   python: python
 
