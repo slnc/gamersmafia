@@ -47,8 +47,6 @@ class SlogEntry < ActiveRecord::Base
   'CompetitionSupervisor' => :competition_supervisor
   }
 
-  # VALID_DOMAINS = DOMAINS_TYPES.keys
-
   EDITOR_SCOPE_CONTENT_TYPE_ID_MASK = 1000
 
   DOMAINS_NEEDING_SCOPE = [:faction_bigboss, :bazar_district_bigboss, :competition_admin, :competition_supervisor, :editor, :moderator, :sicario]
@@ -84,6 +82,7 @@ class SlogEntry < ActiveRecord::Base
                              " NOT NULL AND reviewer_user_id <> ?", user_id]
             }
         }
+
   scope :in_domain_and_scope, lambda { |domain, scope|
     valid_types = self.valid_types_from_domain(domain)
     sql_cond = self._process_scope(:domain => domain, :scope => scope)
@@ -137,11 +136,9 @@ class SlogEntry < ActiveRecord::Base
 
     users.each do |u|
       # Lo hacemos en diferido para evitar deadlocks que se están produciendo
-      GmSys.job("SlogEntry.update_pending_slog(User.find_by_id(#{u.id}))")
+      SlogEntry.delay.update_pending_slog(u)
     end
   end
-
-
 
   def self.update_pending_slog(u)
     # actualiza el campon pending_slog de u en base a sus permisos

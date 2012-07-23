@@ -16,12 +16,15 @@ namespace :gm do
   end
 
   def update_default_comments_valorations_weight
-    User.find(:all, :conditions => 'lastseen_on >= now() - \'1 week\'::interval and cache_karma_points > 0').each do |u|
+    User.find(
+        :all,
+        :conditions => ["lastseen_on >= now() - '1 week'::interval
+                         AND cache_karma_points > 0"]).each do |u|
       prev = u.default_comments_valorations_weight
       u.update_default_comments_valorations_weight
       if prev != u.default_comments_valorations_weight
         u.comments_valorations.recent.find(:all, :include => :comment).each do |cv|
-          cv.update_attributes(:weight => Comments.get_user_weight_in_comment(u, cv.comment))
+          cv.update_attributes(:weight => cv.comment.user_weight(u))
         end
       end
     end

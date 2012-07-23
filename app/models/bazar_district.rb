@@ -42,7 +42,8 @@ class BazarDistrict < ActiveRecord::Base
 
   def check_if_icon_updated
     if self.icon_changed?
-      GmSys.job('rake gm:update_default_skin_styles')
+      Skins.delay.update_games_and_factions_sprite
+      Skins.delay.update_default_skin_styles
     end
     true
   end

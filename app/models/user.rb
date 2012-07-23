@@ -538,9 +538,7 @@ class User < ActiveRecord::Base
   end
 
   def check_login_changed
-    if self.login_changed?
-      GmSys.job("Blogentry.reset_urls_of_user_id(#{self.id})")
-    end
+    Blogentry.delay.reset_urls_of_user_id(self.id) if self.login_changed?
     true
   end
 

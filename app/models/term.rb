@@ -959,9 +959,7 @@ class Term < ActiveRecord::Base
         end
       end
 
-      if self.root_id_changed?
-        GmSys.job("#{self.class.name}.find(#{self.id}).reset_contents_urls")
-      end
+      self.delay.reset_contents_urls if self.root_id_changed?
     end
     true
   end

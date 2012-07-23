@@ -450,14 +450,6 @@ res.content = unescape('#{content}');]]></result>
     assert_response :success
   end
 
-  test "x_should_work_with_funky_params" do
-    # @eng['USER_AGENT'] = ''
-  end
-
-  test "slog_options_switch" do
-
-  end
-
   test "report_content_form" do
     assert_raises(AccessDenied) { get :report_content_form }
     sym_login 1

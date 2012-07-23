@@ -10,8 +10,8 @@ namespace :gm do
     #`python script/spark.py metric #{dbi.collect {|dbr| dbr['count'] }.concat([0] * (days - dbi.size)).reverse.join(',')} "#{dst_file}"`
     #return
 
-    GmSys.job('Faith.reset_remaining_rating_slots')
-    GmSys.job('Faction.update_factions_cohesion')
+    Faith.delay.reset_remaining_rating_slots
+    Faction.delay.update_factions_cohesion
     Bet.generate_top_bets_winners_minicolumns
     update_factions_stats # Order is important
     update_general_stats

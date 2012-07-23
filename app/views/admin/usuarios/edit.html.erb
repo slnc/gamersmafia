@@ -202,7 +202,7 @@
        <%=text_field(:edituser, :admin_permissions)%>
        <br />
        <% User::ADMIN_PERMISSIONS_INDEXES.values.sort.each do |v| %>
-         <%=User::ADMIN_PERMISSIONS_INDEXES.index(v)%>,
+         <%=User::ADMIN_PERMISSIONS_INDEXES.key(v)%>,
        <%end%>
        <br />
 </td>

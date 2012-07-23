@@ -15,6 +15,12 @@ module Cache
     `find /tmp -maxdepth 1 -name CGI\\\* -mmin +60 -exec rm {} \\\;`
   end
 
+  def self.hourly_clear_file_caches
+    GmSys.command("find #{FRAGMENT_CACHE_PATH}/site/_online_state -type f -mmin +2 -exec rm {} \\\\\;")
+    `find /tmp -maxdepth 1 -mmin +1440  -type d -name "0.*" -exec rm -r {} \\\;`
+    `find /tmp -maxdepth 1 -mmin +60  -type f -name "RackMultipart*" -exec rm -r {} \\\;`
+  end
+
   def self.after_daily_key
     6.hours.ago.strftime("%Y%m%d")
   end

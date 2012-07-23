@@ -85,7 +85,7 @@ class CommentsTest < ActiveSupport::TestCase
     n65 = News.find(65)
     c = Comment.new(:content_id => n65.unique_content.id, :user_id => 1, :host => '127.0.0.1', :comment => 'comentario')
     assert c.save
-    assert Comments.user_can_edit_comment(u59, c, bd.user_is_moderator(u59))
+    assert c.can_edit_comment?(u59, bd.user_is_moderator(u59))
   end
 
   test "should replace all urls in a line" do

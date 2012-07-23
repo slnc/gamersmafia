@@ -1,6 +1,8 @@
 # -*- encoding : utf-8 -*-
 module Comments
 
+  SIMPLE_URL_REGEXP = /[a-zA-Z0-9_.:?#&%-\/]+/
+
   def self.require_user_can_comment_on_content(user, object)
     time1 = Time.now
     time_3_months_ago = time1 - 86400 * 90
@@ -31,19 +33,6 @@ module Comments
       contents_faction = Faction.find_by_game_id(game_id)
       raise 'Estás baneado de esta facción.' if contents_faction && contents_faction.user_is_banned?(user)
     end
-  end
-
-  def self.user_can_edit_comment(user, comment, curuser_is_moderator, saving = false)
-    tlimit = Time.now - 60 * (saving ? 30 : 15) # si está guardando un comentario le damos un margen de 30min en lugar de 15min
-
-    if user and
-     ((user.id == comment.user.id and comment.created_on > tlimit) or (curuser_is_moderator == true and comment.created_on > Time.now - 60 * 60 * 24 * 60)) then
-      can_edit = true
-    else
-      can_edit = false
-    end
-
-    can_edit
   end
 
   # Cambia de tags html a bbcode
@@ -100,8 +89,6 @@ module Comments
     input
   end
 
-  SIMPLE_URL_REGEXP = /[a-zA-Z0-9_.:?#&%-\/]+/
-
   def self.formatize(str)
     # parsea comentarios de usuarios, líneas de chat, etc
     str ||= ''
@@ -145,56 +132,18 @@ module Comments
     f = Organizations.find_by_content(content)
     return true if f && f.user_is_moderator(user)
 
-    # TODO copypasted de cms.rb, refactorizar
     real = content
-    # TODO broken since terms!! (also in cms.rb)
-    #if real.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(real.main_category.id)) && c.user_is_admin(user.id)
-    #  true
-    if real.class.name == 'Event' && (cm = CompetitionsMatch.find_by_event_id(real.id)) && cm.competition.user_is_admin(user.id)
+    if (real.class.name == 'Event' &&
+        (cm = CompetitionsMatch.find_by_event_id(real.id)) &&
+        cm.competition.user_is_admin(user.id))
       true
-    elsif real.class.name == 'Coverage' && (c = Competition.find_by_event_id(real.event_id)) && c.user_is_admin(user.id)
+    elsif (real.class.name == 'Coverage' &&
+           (c = Competition.find_by_event_id(real.event_id)) &&
+           c.user_is_admin(user.id))
       true
     else
       false
     end
-  end
-
-  def self.user_can_rate_comment(user, comment)
-    return false if user.id == comment.user_id || user.created_on > 7.days.ago || Karma.level(user.karma_points) == 0 || (user.remaining_rating_slots == 0 && user.comments_valorations.find_by_comment_id(comment.id).nil?)
-    true
-  end
-
-  def self.get_user_weight_in_comment(user, comment)
-    return 0 if user.default_comments_valorations_weight == 0
-    content = comment.content.real_content
-    case content.class.name
-      when 'Blogentry'
-      user_authority = Blogs.user_authority(user)
-      user_authority = 1.1 if user_authority < 1.1
-      Math.log10(user_authority)/Math.log10(Blogs.max_user_authority)
-    else
-      max_karma = Karma.max_user_points
-      max_faith = Faith.max_user_points
-      max_friends = User.most_friends(1)[:friends] rescue 1 # en caso de que no haya nadie popular
-      ukp = user.karma_points
-      ukp = 1.1 if ukp < 1.1
-
-      ufp = user.faith_points
-      ufp = 1.1 if ufp < 1.1
-      w = ((l10(ukp)/l10(max_karma)) + l10(ufp)/l10(max_faith) + (user.friends_count)/(max_friends) ) / 3.0
-      # Aproximación: si el usuario está comentado en su facción multiplicamos
-      # por 2. Si usásemos los puntos de karma y de fe para esta facción no
-      # sería necesario
-      if content.respond_to?(:my_faction) && content.has_category? && content.main_category && content.my_faction && content.my_faction.id == user.faction_id
-        w *= 2
-        # no limitamos a 1 para no perjudicar a los peces gordos
-      end
-      w
-    end
-  end
-
-  def self.l10(num)
-    Math.log10(num)
   end
 
   def self.get_user_type_based_on_comments(user)
@@ -226,7 +175,6 @@ module Comments
   end
 
   def self.get_user_comments_type(user, refobj)
-
     if refobj.class.name == 'Comment'
       content = refobj.content
       if content.clan_id
@@ -272,28 +220,13 @@ module Comments
     end
 
     # TODO índices
-
-    # Ahora ya tengo los comments_ids, lo demás es común
-
     # TODO TEMP
     comments_ids.collect!{ |c| c['id'] }
     get_ratings_for_comments(comments_ids+[0])
-    #    [CommentsValorationsType.find_by_name('Normal'), Kernel.rand]
   end
 
   def self.top_commenter_of_type_in_time_period(cvt, date_start, date_end, limit=10)
     date_start, date_end = date_end, date_start if date_start > date_end
-
-    #SELECT count(*) as valorac_dist, sum(a.weight), count(*) * count(distinct(a.user_id)) as m1, count(distinct(a.comment_id)) as comm_dist, count(distinct(a.user_id)) as u_dist,
-    #       count(*) / count(distinct(a.comment_id))::float,
-    #       count(*)::float / count(distinct(a.comment_id))::float * count(distinct(a.user_id))::float as m2,
-    #                          (select login from users where id = b.user_id)
-    #                     FROM comments_valorations a
-    #                     JOIN comments b ON a.comment_id = b.id
-    #                    WHERE a.created_on BETWEEN now() - '1 week'::interval AND now()
-    #                      AND a.comments_valorations_type_id = 2
-    #                 GROUP BY b.user_id
-    #                 ORDER BY m1 DESC LIMIT 10;
 
     User.db_query("SELECT count(*) * count(distinct(a.user_id)) as m1,
                           b.user_id
@@ -306,9 +239,6 @@ module Comments
       [dbr['m1'].to_i, User.find(dbr['user_id'].to_i)]
     end
   end
-
-
-  # select a.id from comments a join contents b on a.content_id = b.id where a.has_comments_valorations = 't' and a.user_id = 1;
 
   def self.get_comments_ratings_for_content(content)
     comments_ids = content.comments_ids
@@ -381,6 +311,7 @@ module Comments
       [CommentsValorationsType.find(winner_options_weight[0]['comments_valorations_type_id'].to_i), winner_options_weight[0]['sum'].to_f / all_options_weight[0]['sum'].to_f]
     end
   end
+
   @_cache_get_ratings_for_user = {}
   def self.get_ratings_for_user(user_id)
     @_cache_get_ratings_for_user[user_id] ||= begin
@@ -410,20 +341,6 @@ module Comments
       [CommentsValorationsType.find(winner_options_weight[0]['comments_valorations_type_id'].to_i), winner_options_weight[0]['sum'].to_f / all_options_weight[0]['sum'].to_f]
     end
     end
-  end
-
-  # Devuelve la página en la que aparece el comentario actual
-  def self.page_for_comment(comment)
-   (Comment.count(:conditions => ['deleted = \'f\' AND content_id = ? AND created_on <= ?', comment.content_id, comment.created_on]) / Cms.comments_per_page.to_f).ceil
-  end
-
-  # Returns previous comment if there is a previous comment to the current one or nil if there is no previous comment
-  def self.find_prev_comment(comment)
-    Comment.find(:first, :conditions => ['deleted = \'f\' AND content_id = ? AND created_on < ?', comment.content_id, comment.created_on], :order => 'created_on DESC, id DESC')
-  end
-
-  def self.user_can_report_comment(user, comment)
-    user.is_hq?
   end
 
   # TODO NO FUNCIONA

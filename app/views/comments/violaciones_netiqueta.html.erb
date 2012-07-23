@@ -18,7 +18,7 @@
       <div class="infoinline">
         Moderador: <strong><%=user_link(comment.lastedited_by)%></strong> |
         <%=print_tstamp(comment.updated_on)%> | 
-        <a href="<%=controller.url_for_content_onlyurl(comment.content.real_content)%>?page=<%=Comments.page_for_comment(comment)%>#comment<%=comment.id%>"><%=comment.content.name%></a>
+        <a href="<%=controller.url_for_content_onlyurl(comment.content.real_content)%>?page=<%=comment.comment_page%>#comment<%=comment.id%>"><%=comment.content.name%></a>
       </div>
     </td>
     <td><%=link_to(

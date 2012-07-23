@@ -78,15 +78,16 @@ class CommentsController < ApplicationController
     @comment = Comment.find(params[:id])
     require_user_can_edit(@comment)
     # TODO copypaste de laflecha
-    cur_page = Comments.page_for_comment(@comment)
-    prev_comment = Comments.find_prev_comment(@comment)
+    cur_page = @comment.comment_page
+    prev_comment = @comment.previous_comment
     anchor = prev_comment ? "comment#{prev_comment.id}" : 'comments'
 
-    if prev_comment and Comments.page_for_comment(prev_comment) < cur_page then # caso especial, cambio de pág?
+   # caso especial, cambio de pág?
+    if prev_comment && prev_comment.comment_page < cur_page
       if Comment.count(:conditions => ['id > ? and content_id = ?', params[:id].to_i, params[:content_id]]) > 0 # más comentarios en la página de la que hemos borrado el comment
         anchor = 'comments'
       else # no hay más comentarios después, redirigimos a la página del comentario ant
-        cur_page = Comments.page_for_comment(prev_comment)
+        cur_page = prev_comment.comment_page
       end
     end
 
@@ -106,9 +107,9 @@ class CommentsController < ApplicationController
   def edit
     @title = 'Editando comentario'
     @comment = Comment.find(params[:id])
-    curuser_can_edit_comment = Cms::user_can_edit_content?(@user, @comment)
+    curuser_can_edit_content = Cms::user_can_edit_content?(@user, @comment)
 
-    if not Comments.user_can_edit_comment(@user, @comment, curuser_can_edit_comment)
+    if not @comment.can_edit_comment?(@user, curuser_can_edit_content)
       params[:redirto] = '/' if params[:redirto].nil?
       redirect_to params[:redirto]
     end
@@ -116,14 +117,14 @@ class CommentsController < ApplicationController
 
   def update
     @comment = Comment.find(params[:id])
-    curuser_can_edit_comment = Cms::user_can_edit_content?(@user, @comment)
-    if Comments.user_can_edit_comment @user, @comment, curuser_can_edit_comment, true
+    curuser_can_edit_content = Cms::user_can_edit_content?(@user, @comment)
+    if @comment.can_edit_comment?(@user, curuser_can_edit_content, true)
       @comment.comment = Comments::formatize(params[:comment][:comment])
       @comment.netiquette_violation = (params[:comment][:netiquette_violation] || false)
       @comment.lastedited_by_user_id = @user.id
 
       if @comment.save
-        cur_page = Comments.page_for_comment(@comment)
+        cur_page = @comment.comment_page
         flash[:notice] = 'Comentario modificado correctamente'
         redirect_to "#{params[:redirto]}?page=#{cur_page}#comment#{@comment.id}"
       else
@@ -135,10 +136,10 @@ class CommentsController < ApplicationController
   def rate
     # TODO controls
     @comment = Comment.find(params[:comment_id])
-    if Comments.user_can_rate_comment(@user, @comment)
+    if @comment.can_be_rated_by?(@user)
       @cvt = CommentsValorationsType.find(params[:rate_id])
       @disable_ratings = (@user.remaining_rating_slots - 1 <= 0)
-      GmSys.job("Comment.find(#{@comment.id}).rate(User.find(#{@user.id}), CommentsValorationsType.find(#{params[:rate_id]}))")
+      @comment.delay.rate(@user, @cvt)
     else
       Rails.logger.warn("User #{@user.login} can't rate comment #{@comment}")
       @disable_ratings = true
@@ -150,7 +151,7 @@ class CommentsController < ApplicationController
 
   def report
     @comment = Comment.find(params[:id])
-    if Comments.user_can_report_comment(@user, @comment)
+    if @comment.user_can_report_comment?(@user)
       org = Organizations.find_by_content(@comment)
       if org
         ttype = org.class.name == 'Faction' ? :faction_comment_report : :bazar_district_comment_report
@@ -160,7 +161,7 @@ class CommentsController < ApplicationController
         scope = nil
       end
       reason_str = (params[:reason] && params[:reason].to_s != '' && params[:reason].to_s != 'Razón..') ? " (#{params[:reason]})" : ''
-      sl = SlogEntry.create({:scope => scope, :type_id => SlogEntry::TYPES[ttype], :reporter_user_id => @user.id, :headline => "#{Cms.faction_favicon(@comment.content.real_content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(@comment.content.real_content)}?page=#{Comments.page_for_comment(@comment)}#comment#{@comment.id}\">#{@comment.id}</a></strong> (<a href=\"#{gmurl(@comment.user)}\">#{@comment.user.login}</a>) reportado #{reason_str} por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"})
+      sl = SlogEntry.create({:scope => scope, :type_id => SlogEntry::TYPES[ttype], :reporter_user_id => @user.id, :headline => "#{Cms.faction_favicon(@comment.content.real_content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(@comment.content.real_content)}?page=#{@comment.comment_page}#comment#{@comment.id}\">#{@comment.id}</a></strong> (<a href=\"#{gmurl(@comment.user)}\">#{@comment.user.login}</a>) reportado #{reason_str} por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"})
       if sl.new_record?
         flash[:error] = "Error al reportar el comentario:<br />#{sl.errors.full_messages_html}"
       else

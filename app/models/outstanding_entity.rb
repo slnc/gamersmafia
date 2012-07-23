@@ -28,7 +28,7 @@ class OutstandingEntity < ActiveRecord::Base
 
     min_tstamp = Time.at(tstamp_last.to_time.to_i + users_using * 86400) # Si el usuario ya lo está usando no podrá aparecer 2 días seguidos
     # Le buscamos el hueco donde publicar
-    cur = 1.day.since
+    cur = 1.day.since.gmtime
     found = false
     while !found
       if OutstandingEntity.find(:first, :conditions => ["type = ? AND portal_id #{q_portal} AND active_on = ?", entity_cls, cur], :order => 'active_on desc').nil? && cur >= min_tstamp

@@ -24,13 +24,13 @@ class MidnightRakeTest < ActiveSupport::TestCase
 
     u1 = User.find(1)
     User.db_query("UPDATE users SET cache_remaining_rating_slots = NULL, lastseen_on = now() where id = 1")
-    GmSys.job('Faith.reset_remaining_rating_slots')
+    Faith.delay.reset_remaining_rating_slots
     u1.reload
     assert u1.remaining_rating_slots > 0
 
     u1 = User.find(1)
     User.db_query("UPDATE users SET cache_remaining_rating_slots = -1, lastseen_on = now() where id = 1")
-    GmSys.job('Faith.reset_remaining_rating_slots')
+    Faith.delay.reset_remaining_rating_slots
     u1.reload
     assert u1.remaining_rating_slots > 0
   end

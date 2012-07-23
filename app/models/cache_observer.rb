@@ -162,7 +162,6 @@ class CacheObserver < ActiveRecord::Observer
       # TODO PERF cache borramos de más, todas las páginas anteriores solo cambian por el paginador
       expire_fragment("/comments/#{Time.now.to_i/(86400*7)}/#{object.content_id%100}/#{object.content_id}_*") # cacheamos solo una semana para q se actualicen barras
       Cache::Comments.after_create(object.id)
-      # GmSys.job("Cache::Comments.after_create(#{object.id})")
 
       when 'Clan'
       expire_fragment('/gm/clanes/index/page*')
@@ -325,7 +324,7 @@ class CacheObserver < ActiveRecord::Observer
 
       when 'Comment'
       expire_fragment("/comments/#{Time.now.to_i/(86400*7)}/#{object.content_id%100}/#{object.content_id}_*") # cacheamos una semana para q se actualicen barras
-      GmSys.job("Cache::Comments.after_destroy(#{object.content_id}, #{object.user_id})")
+      Cache::Comments.delay.after_destroy(object.content_id, object.user_id)
 
       when 'FactionsPortal'
       do_portal_expire(object)

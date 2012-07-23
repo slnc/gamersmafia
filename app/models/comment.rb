@@ -15,8 +15,14 @@ class Comment < ActiveRecord::Base
   before_save :check_copy_if_changing_lastedited_by_user_id
   serialize :cache_rating
 
+  validates_presence_of :comment, :message => 'no puede estar en blanco'
+  validates_presence_of :user_id, :message => 'no puede estar en blanco'
+
   def regenerate_ne_references(users=[])
-    NeReference.find(:all, :conditions => ['referencer_class = \'Comment\' AND referencer_id = ?', self.id]).each { |ne| ne.destroy }
+    NeReference.find(
+        :all,
+        :conditions => ["referencer_class = 'Comment' AND referencer_id = ?",
+                        self.id]).each { |ne| ne.destroy }
 
     if users == []
       users = {}
@@ -39,17 +45,23 @@ class Comment < ActiveRecord::Base
     references = self.comment.slnc_tokenize & users.keys
     ne_refs = []
     references.uniq.each do |ref|
-      ne_refs<< NeReference.create(:entity_class => users[ref][0][0], :entity_id => users[ref][0][1], :referencer_class => 'Comment', :referencer_id => self.id, :referenced_on => self.created_on)
+      ne_refs << NeReference.create({
+          :entity_class => users[ref][0][0],
+          :entity_id => users[ref][0][1],
+          :referencer_class => 'Comment',
+          :referencer_id => self.id,
+          :referenced_on => self.created_on
+      })
     end
     ne_refs
   end
 
   def schedule_image_parsing
-    GmSys.job("Comment.find(#{self.id}).download_remotes")
+    self.delay.download_remotes
   end
 
   def schedule_ne_references_calculation
-    GmSys.job("Comment.find(#{self.id}).regenerate_ne_references")
+    self.delay.regenerate_ne_references
   end
 
   def download_remotes
@@ -74,7 +86,7 @@ class Comment < ActiveRecord::Base
 
     # update last_commented_on
     u = self.user
-    last_comment = Comment.find_by_user_id(u.id, :conditions => 'deleted = \'f\'', :order => 'created_on DESC')
+    last_comment = Comment.find_by_user_id(u.id, :conditions => "deleted = 'f'", :order => 'created_on DESC')
     u.lastcommented_on = last_comment ? last_comment.created_on : nil
     u.save
 
@@ -100,9 +112,9 @@ class Comment < ActiveRecord::Base
   end
 
   def do_after_create
-    add_karma
+    self.add_karma
     self.user.update_attributes(:lastcommented_on => self.created_on)
-    GmSys.job("Comment.find(#{self.id}).notify_trackers")
+    self.delay.notify_trackers
   end
 
   def notify_trackers
@@ -117,17 +129,83 @@ class Comment < ActiveRecord::Base
     end
   end
 
-  def update_default_comments_valorations_weight
-	  positive = self.comments_valorations_ratings.recent.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 1)')
-	  negative = self.comments_valorations_ratings.recent.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = -1)')
-	  neutral = self.comments_valorations_ratings.recent.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 0)')
-          ratio = negative.to_f/(positive + negative + neutral)
-	  if ratio > 0.6
-		   default = 0.0
-	  else
-		  default = 1.0
-	  end
-	  self.update_attributes(:default_comments_valorations_weight => default)
+  # Updates the weight that this comment has.
+  #
+  # If there are more than 60% negative ratings on a given comment the weight of
+  # this comment towards ? will be 0, else it will be 1.
+  # TODO(slnc): this is dead code but we are going to use something very similar
+  # soon to automatically hide comments with a lot of negative ratings.
+  #def update_default_comments_valorations_weight
+  #  recent_ratings_proxy = self.comments_valorations_ratings.recent
+	#  positive = recent_ratings_proxy.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 1)')
+	#  negative = recent_ratings_proxy.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = -1)')
+	#  neutral = recent_ratings_proxy.count(:conditions => 'comments_valorations_type_id IN (select id from comments_valorations_types where direction = 0)')
+  #  ratio = negative.to_f/(positive + negative + neutral)
+	#  if ratio > 0.6
+  #    weight = 0.0
+	#  else
+	#	  weight = 1.0
+	#  end
+  #end
+
+  # Devuelve la página en la que aparece el comentario actual.
+  def comment_page
+    younger_comments = Comment.count(
+        :conditions => ["deleted = 'f' AND content_id = ? AND created_on <= ?",
+                        self.content_id, self.created_on])
+   (younger_comments / Cms.comments_per_page.to_f).ceil
+  end
+
+  def can_be_rated_by?(user)
+    !(user.id == self.user_id ||  # is author
+     user.created_on > 7.days.ago ||  # is_too_young
+     Karma.level(user.karma_points) == 0 ||  # no karma
+     (user.remaining_rating_slots == 0 &&  # no ratings left
+      user.comments_valorations.find_by_comment_id(self.id).nil?))
+  end
+
+  # Returns weight of a user's valoration on a given comment.
+  #
+  # Users rating a comment on their own faction have more weight than when they
+  # rate on comments from a different faction.
+  def user_weight(user)
+    return 0 if user.default_comments_valorations_weight == 0
+
+    content = self.content.real_content
+    case content.class.name
+      when 'Blogentry'
+      user_authority = Blogs.user_authority(user)
+      user_authority = 1.1 if user_authority < 1.1
+      Math.log10(user_authority)/Math.log10(Blogs.max_user_authority)
+    else
+      max_karma = Karma.max_user_points
+      max_faith = Faith.max_user_points
+      # en caso de que no haya nadie popular
+      max_friends = User.most_friends(1)[:friends] rescue 1
+      ukp = user.karma_points
+      ukp = 1.1 if ukp < 1.1
+
+      ufp = user.faith_points
+      ufp = 1.1 if ufp < 1.1
+
+      karma_score = Math.log10(ukp) / Math.log10(max_karma)
+      faith_score = Math.log10(ufp) / Math.log10(max_faith)
+      friends_score = user.friends_count / (max_friends)
+      w = (karma_score + faith_score + friends_score) / 3.0
+
+      # Aproximación: si el usuario está comentado en su facción multiplicamos
+      # por 2. Si usásemos los puntos de karma y de fe para esta facción no
+      # sería necesario
+      if (content.respond_to?(:my_faction) &&
+          content.has_category? &&
+          content.main_category &&
+          content.my_faction &&
+          content.my_faction.id == user.faction_id)
+        w *= 2
+        # nono limitamos a 1 para no perjudicar a los peces gordos
+      end
+      w
+    end
   end
 
   def add_karma
@@ -138,18 +216,40 @@ class Comment < ActiveRecord::Base
     Karma.del_karma_after_comment_is_deleted(self)
   end
 
+  def can_edit_comment?(user, is_moderator, saving=false)
+    return false if user.nil?
+
+    # If author is editing his comment we increase the limit to 30 min instead
+    # of 15min.
+    author_max_secs = Time.now - 60 * (saving ? 30 : 15)
+    moderator_max_secs = 60 * 60 * 24 * 60  # two months
+
+    if ((user.id == self.user.id && self.created_on > author_max_secs) ||
+        (is_moderator && self.created_on > Time.now - moderator_max_secs))
+      true
+    else
+      false
+    end
+  end
+
   def rate(user, rating)
-    weight = Comments.get_user_weight_in_comment(user, self)
-    prev = comments_valorations.find(:first, :conditions => ['user_id = ?', user.id])
+    weight = self.user_weight(user)
+    prev = comments_valorations.find(
+        :first, :conditions => ['user_id = ?', user.id])
     if prev.nil?
-      prev = comments_valorations.create({:user_id => user.id, :comments_valorations_type_id => rating.id, :weight => weight})
+      prev = comments_valorations.create({
+          :user_id => user.id,
+          :comments_valorations_type_id => rating.id,
+          :weight => weight,
+      })
     else
       prev.comments_valorations_type_id = rating.id
       prev.weight = weight
       prev.save
     end
 
-    if !has_comments_valorations  # TODO: por qué has_comments_valorations? devuelve true????
+    # TODO: por qué has_comments_valorations? devuelve true?
+    if !has_comments_valorations
       self.has_comments_valorations = true
       self.save
     end
@@ -163,20 +263,36 @@ class Comment < ActiveRecord::Base
     self.cache_rating
   end
 
+  def user_can_report_comment?(user)
+    user.is_hq?
+  end
+
+  # Returns previous comment if there is a previous comment to the current one
+  # or nil if there is no previous comment.
+  def previous_comment
+    Comment.find(
+        :first,
+        :conditions => ["deleted = 'f' AND content_id = ? AND created_on < ?",
+                        self.content_id,
+                        self.created_on],
+        :order => 'created_on DESC, id DESC')
+  end
+
+
   def validate
-    if new_record? and Comment.find(:first, :conditions => ['host = ? and comment = ? and user_id = ? and content_id = ?', self.host, self.comment, self.user_id, self.content_id])
-      self.errors.add('text', 'Ya existe un comentario idéntico en este contenido.')
+    if new_record? && Comment.count(:conditions => [
+          'host = ? and comment = ? and user_id = ? and content_id = ?',
+          self.host, self.comment, self.user_id, self.content_id])
+      self.errors.add(
+          'text', 'Ya existe un comentario idéntico en este contenido.')
       return false
     end
 
-    c = self.content
-    if c.nil? or c.real_content.nil?
+    content = self.content
+    if content.nil? || content.real_content.nil?
       self.errors[:base] << (
         'El contenido al que se refiere este comentario ya no existe')
       return false
     end
   end
-
-  validates_presence_of :comment, :message => 'no puede estar en blanco'
-  validates_presence_of :user_id, :message => 'no puede estar en blanco'
 end

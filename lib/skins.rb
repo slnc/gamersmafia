@@ -7,9 +7,11 @@ module Skins
   end
 
   def self.update_default_skin_styles
-    FactionsSkin.find(:all).each do |s|
-      GmSys.job("Skin.find(#{s.id}).save_config && Skin.find(#{s.id}).gen_compressed") end
-    Skin.find_by_hid('default').gen_compressed
+    FactionsSkin.find(:all).each do |skin|
+      skin.delay.save_config
+      skin.delay.gen_compressed
+    end
+    Skin.find_by_hid('default').delay.gen_compressed
   end
 
   def self.update_games_and_factions_sprite
