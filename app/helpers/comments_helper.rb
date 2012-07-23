@@ -42,4 +42,23 @@ google_ad_height = 250;
     end
   end
 
+  ENTICING_IMAGES = [
+      '009d48',
+      '068b5b',
+      '1108b2',
+      '14826d',
+      '21db24',
+      '2bc937',
+      '2d3058',
+      '2e7ded',
+      '334d5e',
+      '73ec88',
+      '74254',
+      '7984ec',
+      'e5cbc8',
+      'ff0d19',
+  ]
+  def get_enticing_image
+    ENTICING_IMAGES[Kernel.rand(ENTICING_IMAGES.size)]
+  end
 end

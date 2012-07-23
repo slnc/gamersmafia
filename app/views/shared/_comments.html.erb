@@ -1,0 +1,113 @@
+<% # -*- encoding : utf-8 -*- %>
+<%= adsense_comments %>
+<%
+resolve_comments_page(object)
+uniq_id = object.unique_content.id
+ckey = (object.updated_on < 1.month.ago) ? 'perm' : Time.now.to_i/(86400*7)
+questions_mode = (object.class.name == 'Question')
+
+cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{Cms.comments_per_page}_#{params[:page]}") do
+  @comments = get_comments(object)
+%>
+<script type="text/javascript">var comments = new Array();</script>
+<div class="comments-container"><a name="comments"></a>
+<div class="comments-area">
+<%= render :partial => 'shared/pager2',
+           :locals => {
+               :collection => @comments,
+               :pos => 'top',
+               :pager_params => {:anchor => 'comments'}} %>
+<%
+i = (params[:page].to_i - 1) * Cms.comments_per_page + 1
+
+@comments.each do |comment|
+  i += 1
+  if questions_mode
+    show_signature = false
+  else
+    show_signature = (comment.user.enable_comments_sig? &&
+                      !comment.user.comments_sig.empty?)
+  end
+%>
+<%= render :partial => 'shared/comment', :locals => {
+    :comment => comment,
+    :ckey => ckey,
+    :comment_number => i,
+    :questions_mode => questions_mode,
+    :object => object,
+    :show_signature => show_signature,
+} %>
+<% end -%>
+
+<%= render :partial => 'shared/pager2',
+           :object => @comments_pages,
+           :locals => {
+             :collection => @comments,
+             :pos => 'bottom',
+             :pager_params => {:anchor => 'comments'}
+         } %>
+<% end # cache%>
+
+<script type="text/javascript">
+<% if (questions_mode && user_is_authed && object.answered_on.nil? &&
+       (@_cache_can_select ||= Cms.user_can_select_best_answer(@user, object)))  %>
+  $j('div.questions-best-answer').removeClass('hidden');
+<% end -%>
+
+<% if (user_is_authed && @user.comment_show_sigs?) %>
+  $j('div.comments-sig').removeClass('hidden');
+<% end -%>
+
+<%# TODO moderadores de faccion no pueden moderar ahora mismo %>
+<% if user_is_authed && !(defined?(nohighlight) && nohighlight == true) %>
+function load_comments()
+{
+  if (arguments.callee.done)
+    return;
+
+  arguments.callee.done = true;
+  check_comments_controls(
+      <%=Comments::user_can_moderate_comments_of_content(@user, object)%>,
+      <%=@user.id%>,
+      <%=@object_lastseen_on.to_i%>,
+      <%=Time.now.to_i%>,
+      <%=ActiveSupport::JSON.encode(Comments::comments_ratings_for_user_in_object_in_page(@user, object, params[:page]))%>,
+      <%=Karma.level(@user.karma_points) > 0 ? @user.remaining_rating_slots : 0%>,
+      <%=ActiveSupport::JSON.encode(@user.created_on < 7.days.ago)%>,
+      <%=@user.is_hq?%>,
+      <%=@first_time_content%>,
+      '<%=@user.pref_comments_autoscroll%>');
+}
+
+/* for Mozilla */
+if (document.addEventListener) {
+  document.addEventListener("DOMContentLoaded", load_comments, false);
+}
+
+window.onload = load_comments;
+<% end -%>
+</script>
+
+<div class="infoinline right gotop">
+  <a href="#" onclick="return GM.utils.gototop();">Volver arriba</a>
+</div>
+
+<% if user_is_authed %>
+<%= render :partial => '/shared/new_comment_form',
+           :locals => {
+               :content => object,
+               :questions_mode => questions_mode,
+               :uniq_id => uniq_id
+           } %>
+<% else %>
+    <div class="system-message">
+      <div class="register-now">
+        <a href="/cuenta/alta"><img src="/images/hentai/<%=get_enticing_image%>.jpg" /></a>
+      </div>
+      <p style="text-align: center;">
+      <a href="/cuenta/alta"><img style="border: 0;" src="/skins/default/images/btn_register.png" /></a>
+      <br />y comenta.</p>
+    </div>
+<% end -%>
+  </div>
+</div>

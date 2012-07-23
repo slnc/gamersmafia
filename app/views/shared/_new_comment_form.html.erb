@@ -1,0 +1,32 @@
+<%
+begin
+  Comments.require_user_can_comment_on_content(@user, content)
+rescue Exception => e
+%><p class="centered"><%=e.to_s%></p><%
+else
+  if @user.antiflood_level > -1
+    max = (5 - @user.antiflood_level) * 5
+    cur = Comment.count(
+        :conditions => ["user_id = ? AND created_on::date = now()::date",
+                        @user.id])
+  end
+  if questions_mode && @user.id != content.user_id
+    btn_action_class = 'responder'
+  else
+    btn_action_class = 'comentar'
+  end
+%>
+<form action="/comments/create" method="post" name="REPLIER" style="padding-top: 25px;">
+  <%= hidden_field_tag 'comment[content_id]', uniq_id %>
+  <%= hidden_field_tag 'redirto', request.path %>
+  <div class="comment-textarea">
+    <%= bbeditor(:name => 'comment[comment]',
+                 :id => 'comment_comment').force_encoding("utf-8") %>
+    <% if @user.comment_adds_to_tracker_enabled? %>
+      <input type="hidden" value="1" name="add_to_tracker"  />
+    <% end -%>
+    <div class="right">
+      <input type="image" src="/images/blank.gif" class="btn-<%=btn_action_class%>" /></div>
+  </div>
+</form>
+<% end %><%# begin..rescue %>
