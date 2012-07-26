@@ -10,7 +10,7 @@ namespace :gm do
     Tu opinión es imprescindible para poder decidir el rumbo de la comunidad.
     ¡Muchas gracias!
     '''
-    nagato = User.find_by_login('nagato')
+    nagato = Ias.nagato
     recipient = User.find(1)
     m = Message.new(:title => subject, :sender => nagato, :recipient => recipient, :message => body)
     m.save

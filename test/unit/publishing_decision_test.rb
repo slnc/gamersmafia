@@ -161,7 +161,7 @@ class PublishingDecisionTest < ActiveSupport::TestCase
 
   test "multiple_users_can_manage_to_publish_a_content_if_reaches_1_0" do
     test_users_exp_increases_when_a_content_he_accepted_is_published
-    @mralariko = User.find_by_login('mralariko')
+    @mralariko = Ias.MrAlariko
     assert_not_nil @mralariko
     maximize_exp(@mralariko)
 

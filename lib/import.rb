@@ -2,7 +2,7 @@
 module Import
   module Contents
     def self.import(dba, cls)
-      mrMan = User.find_by_login('mrman')
+      mrMan = Ias.MrMan
       obj = cls.new(dba)
       obj.save
       if obj.respond_to?(:state) && !dba.has_key?(:state)

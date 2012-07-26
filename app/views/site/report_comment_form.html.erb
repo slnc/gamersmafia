@@ -2,16 +2,26 @@
 
 <div class="facebox-content">
 <div id="aaa"></div>
-<%=form_tag("/comments/report/#{params[:id]}", :remote => true)%>
-<input type="text" class="w100pc text virgin" id="report-comment-reason" name="reason" value="Razón..." /><br />
+<%=form_tag("/comments/report/#{params[:id]}", :remote => true, :id => "report-comment-form")%>
+Razón:
+<select id="report-comment-form-moderation-reason" name="moderation_reason">
+  <option></option>
+  <% Comment::MODERATION_REASONS.each do |reason, idx| %>
+  <option value="<%=idx%>"><%=reason%></option>
+  <% end -%>
+</select>
 <br />
 <div class="action-buttons">
 <a href="#" onclick="closeFacebox();">Cancelar</a> &nbsp; &nbsp; &nbsp; <input type="submit" value="Reportar" />
 </div>
 </form>
 <script type="text/javascript">
-  $j('#report-comment-reason').val("Razón..").one('click', function(){
-    $j(this).val("").removeClass('virgin');
-  });
+  $j("#report-comment-form").submit(function () {
+      if ($j("#report-comment-form-moderation-reason").value() == "") {
+        alert("Debes especificar una razón para reportar este comentario.");
+        return false;
+      }
+      return true;
+    });
 </script>
 </div>

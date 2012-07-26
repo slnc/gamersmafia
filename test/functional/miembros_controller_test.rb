@@ -85,7 +85,7 @@ class MiembrosControllerTest < ActionController::TestCase
 
   test "no_tengo_amigos" do
     sym_login 1
-    u1 = User.find_by_login('mrcheater')
+    u1 = Ias.MrCheater
     friends_count = u1.friends_count
     assert_equal 0, u1.friends_count
     deliv = ActionMailer::Base.deliveries.size

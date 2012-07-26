@@ -164,7 +164,7 @@ class ForosController < ComunidadController
           rescue Exception => e
             # TODO aquí habría que no crearlo directamente, hay que refactorizar los permisos
             flash[:error] = "Permiso denegado"
-            @topic.change_state(Cms::DELETED, User.find_by_login('MrMan'))
+            @topic.change_state(Cms::DELETED, Ias.MrMan)
             redirect_to '/foros'
           else
             flash[:notice] = 'Tópic creado correctamente.'

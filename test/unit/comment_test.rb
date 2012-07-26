@@ -2,9 +2,128 @@
 require 'test_helper'
 
 class CommentTest < ActiveSupport::TestCase
+  COPYRIGHT = Comment::MODERATION_REASONS[:copyright]
+
+  test "moderate should work" do
+    comment = create_a_comment
+    comment.moderate(User.find(1), COPYRIGHT)
+    assert_equal 1, comment.lastedited_by_user_id
+    assert_equal Comment::MODERATED, comment.state
+    assert_equal COPYRIGHT, comment.moderation_reason
+  end
+
+  test "don't moderate self" do
+    comment = create_a_comment
+    assert_raises(RuntimeError) do
+      comment.moderate(comment.user, COPYRIGHT)
+    end
+  end
+
+  test "don't moderate twice" do
+    comment = create_a_comment
+    comment.moderate(User.find(1), COPYRIGHT)
+    assert_raises(RuntimeError) do
+      comment.moderate(User.find(1), COPYRIGHT)
+    end
+  end
+
+  test "superadmin reporting a comment triggers automatic removal" do
+    u1 = User.find(1)
+    comment = create_a_comment
+    comment.report_violation(u1, COPYRIGHT)
+    comment.reload
+    assert_comment_moderated(comment, u1)
+  end
+
+  test "normal user reporting a comment does not trigger automatic removal" do
+    user = User.find(4)
+    comment = create_a_comment
+    comment.report_violation(user, COPYRIGHT)
+    comment.reload
+    assert_comment_not_moderated(comment)
+  end
+
+  test "capo reporting a comment triggers automatic removal" do
+    user = User.find(4)
+    user.give_admin_permission(:capo)
+    comment = create_a_comment
+    comment.report_violation(user, COPYRIGHT)
+    comment.reload
+    assert_comment_moderated(comment, user)
+  end
+
+  test "faction moderator reporting a comment triggers automatic removal" do
+    user = User.find(4)
+    comment = create_a_comment
+    user.users_roles.create(
+        :role => "Moderator",
+        :role_data => comment.content.my_faction.id.to_s)
+    assert user.is_moderator?
+    comment.report_violation(user, COPYRIGHT)
+    comment.reload
+    assert_comment_moderated(comment, user)
+  end
+
+  test "faction boss reporting a comment triggers automatic removal" do
+    user = User.find(4)
+    comment = create_a_comment
+    faction = comment.content.my_faction
+    user.users_roles.create(
+        :role => "Boss",
+        :role_data => faction.id.to_s)
+    assert faction.user_is_moderator(user)
+    comment.report_violation(user, COPYRIGHT)
+    comment.reload
+    assert_comment_moderated(comment, user)
+  end
+
+  test "don reporting a comment triggers automatic removal" do
+    user = User.find(4)
+    comment = create_a_comment(:content_id => 1113)
+    bazar_district = comment.content.bazar_district
+    user.users_roles.create(
+        :role => "Don",
+        :role_data => bazar_district.id.to_s)
+    assert bazar_district.user_is_moderator(user)
+    comment.report_violation(user, COPYRIGHT)
+    comment.reload
+    assert_comment_moderated(comment, user)
+  end
+
+  test "sicario reporting a comment triggers automatic removal" do
+    user = User.find(4)
+    comment = create_a_comment(:content_id => 1113)
+    bazar_district = comment.content.bazar_district
+    user.users_roles.create(
+        :role => "Sicario",
+        :role_data => bazar_district.id.to_s)
+    assert bazar_district.user_is_moderator(user)
+    comment.report_violation(user, COPYRIGHT)
+    comment.reload
+    assert_comment_moderated(comment, user)
+  end
+
+  def assert_comment_not_moderated(comment)
+    assert_not_equal Comment::MODERATED, comment.state
+  end
+
+  def assert_comment_moderated(comment, moderator)
+    assert_equal Comment::MODERATED, comment.state
+    assert_equal moderator.id, comment.lastedited_by_user_id
+  end
+
+  def create_a_comment(opts={})
+    final_opts = {
+      :user_id => 2,
+      :comment => "hola #{User.find(2).login}",
+      :content_id => 1,
+      :host => '127.0.0.1',
+    }.merge(opts)
+    Comment.create(final_opts)
+  end
 
   test "refered_people_should_work" do
-    c = Comment.new({:user_id => 1, :comment => "hola #{User.find(2).login}", :content_id => 1, :host => '127.0.0.1'})
+    c = create_a_comment
     assert c.save
     references = c.regenerate_ne_references
     assert_equal 'User', references[0].entity_class
@@ -23,7 +142,12 @@ class CommentTest < ActiveSupport::TestCase
     content.portal_id = nil
     Routing.gmurl(content)
     assert_not_nil content.portal_id
-    c = Comment.new({:user_id => 1, :comment => 'hola mundo!', :content_id => 1, :host => '127.0.0.1'})
+    c = Comment.new({
+        :user_id => 1,
+        :comment => 'hola mundo!',
+        :content_id => 1,
+        :host => '127.0.0.1',
+    })
     assert c.save
     c.reload
     assert_not_nil c.portal_id

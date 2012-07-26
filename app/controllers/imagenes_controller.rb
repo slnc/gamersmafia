@@ -57,7 +57,7 @@ class ImagenesController < BazarController
     # @image.reload
     if @image.file.nil? || @image.file == ''
       flash[:error] = "Error al crear la imagen"
-      Cms::modify_content_state(@image, User.find_by_login('MrMan'), Cms::DELETED, "Sin imagen")
+      Cms::modify_content_state(@image, Ias.MrMan, Cms::DELETED, "Sin imagen")
     end
   end
 

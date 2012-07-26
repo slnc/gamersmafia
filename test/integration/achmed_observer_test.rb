@@ -9,7 +9,11 @@ class AchmedObserverTest < ActionController::IntegrationTest
 
   test "should create slog entry if ammount > 5000" do
     assert_count_increases(SlogEntry) do
-      Bank.transfer(:bank, User.find(1), AchmedObserver::CASH_MOVEMENT_SUSPICIOUSNESS_THRESHOLD, 'ta')
+      Bank.transfer(
+          :bank,
+          User.find(1),
+          AchmedObserver::CASH_MOVEMENT_SUSPICIOUSNESS_THRESHOLD,
+          'ta')
     end
   end
 

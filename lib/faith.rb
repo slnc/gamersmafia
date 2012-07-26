@@ -333,7 +333,9 @@ module Faith
   end
 
   def self.reset(user)
-    raise TypeError unless user.kind_of?(User)
+    if !user.kind_of?(User)
+      raise "Got #{user.class} but expected User."
+    end
     User.db_query("UPDATE users SET cache_faith_points = null WHERE id = #{user.id}")
     user.cache_faith_points = nil
   end

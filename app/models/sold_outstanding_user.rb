@@ -10,7 +10,7 @@ class SoldOutstandingUser < SoldProduct
     publish_date = oe.active_on.strftime('%d de %B de %Y')
     Message.create({
         :user_id_to => self.user_id,
-        :user_id_from => User.find_by_login('nagato').id,
+        :user_id_from => Ias.nagato.id,
         :title => "Fecha de publicación de tu compra de \"Usuario Destacado\"",
         :message => (
             "El producto \"Usuario destacado\" que acabas de comprar estará" +

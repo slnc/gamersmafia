@@ -454,7 +454,7 @@ class Notification < ActionMailer::Base
     if vars[:sender] && vars[:sender].class.name != 'User'
       raise "Sender is #{vars[:sender].class.name} but can only be User"
     elsif !vars[:sender]
-      vars[:sender] = User.find_by_login('nagato')
+      vars[:sender] = Ias.nagato
     end
 
     self.populate_email_vars(vars, recipients)

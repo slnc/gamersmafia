@@ -19,7 +19,7 @@ class Cuenta::DistritoControllerTest < ActionController::TestCase
     post :update_mano_derecha, :login => 'MrMan'
     assert_response :redirect
     @bd.reload
-    assert_equal 'mrman', @bd.mano_derecha.login
+    assert_equal 'MrMan', @bd.mano_derecha.login
   end
 
   test "should_add_sicario" do
@@ -27,12 +27,15 @@ class Cuenta::DistritoControllerTest < ActionController::TestCase
     post :add_sicario, :login => 'MrMan'
     assert_response :redirect
     @bd.reload
-    assert_equal 'mrman', @bd.sicarios[0].login
+    assert_equal 'MrMan', @bd.sicarios[0].login
   end
 
   test "should_del_sicario" do
     test_should_add_sicario
-    post :del_sicario, :user_id => User.find_by_login('MrMan').id
-    assert_equal 0, @bd.sicarios.size
+    assert_difference("@bd.sicarios.size", -1) do
+      post :del_sicario, :user_id => Ias.MrMan.id
+      @bd.reload
+      @bd.sicarios.each do |sicario| puts sicario.login end
+    end
   end
 end

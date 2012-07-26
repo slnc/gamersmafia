@@ -86,7 +86,11 @@ class BazarDistrict < ActiveRecord::Base
 
   def del_sicario(user)
     ur = UsersRole.find(:first, :conditions => ["role = 'Sicario' AND user_id = ? AND role_data = ?", user.id, self.id.to_s])
-    ur.destroy if ur
+    if ur
+      ur.destroy
+    else
+      Rails.logger.warn("No Sicario UserRole found for #{user}")
+    end
   end
 
   def sicarios
@@ -136,7 +140,13 @@ class BazarDistrict < ActiveRecord::Base
 
   def user_is_moderator(u)
     # si puede moderar comentarios, vamos
-    u.has_admin_permission?(:bazar_manager) || UsersRole.count(:conditions => ["role IN ('#{ROLE_DON}', '#{ROLE_MANO_DERECHA}', 'Sicario') AND user_id = ? AND role_data = ?", u.id, self.id.to_s]) > 0
+    (u.has_admin_permission?(:bazar_manager) ||
+     UsersRole.count(
+        :conditions => ["role IN ('#{ROLE_DON}',
+                                  '#{ROLE_MANO_DERECHA}',
+                                  'Sicario')
+                         AND user_id = ?
+                         AND role_data = ?", u.id, self.id.to_s]) > 0)
   end
 
   def is_sicario?(u)

@@ -241,7 +241,7 @@ class User < ActiveRecord::Base
   end
 
   def self.send_happy_birthday
-    nagato = User.find_by_login!('nagato')
+    nagato = Ias.nagato
     User.can_login.birthday_today.find(:all).each do |u|
       Message.create({
           :sender => nagato,
@@ -663,7 +663,7 @@ class User < ActiveRecord::Base
     return unless self.is_hq_changed?
 
     if self.is_hq?
-      Message.create(:sender => User.find_by_login('nagato'),
+      Message.create(:sender => Ias.nagato,
                      :recipient => self,
                      :title => "¡Bienvenido al HQ!",
                      :message => MESSAGE_WELCOME_TO_HQ)
@@ -1167,7 +1167,7 @@ class User < ActiveRecord::Base
     # Deshabilitamos envío de notificaciones temporalmente porque parece haber
     # un bug con el deshabilitando automático de notificaciones.
     Message.create(
-        :sender => User.find_by_login('nagato'),
+        :sender => Ias.nagato,
         :recipient => self,
         :title => 'Notificaciones desactivadas',
         :message => MESSAGE_NOTIFICATIONS_DISABLED)

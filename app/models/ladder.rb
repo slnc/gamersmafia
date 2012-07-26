@@ -54,7 +54,7 @@ class Ladder < Competition
       # automatically accept unconfirmed results if older than a month
       l.matches(:result_pending, :conditions => 'updated_on < now() - \'1 month\'::interval').each do |m|
         if !(m.participant1_confirmed_result && m.participant2_confirmed_result) then # double forfeit
-          m.complete_match(User.find_by_login!('MrMan'), {}, true)
+          m.complete_match(Ias.MrMan, {}, true)
         else # accept result
           rt = m.participant2.the_real_thing
           if rt.class.name == 'User'
@@ -67,7 +67,7 @@ class Ladder < Competition
             # TODO(slnc): deberíamos habilitar esto de nuevo?
             #Notification.reto_cancelado_sin_respuesta(u, {:match => m, :participant => m.participant2})
           end
-          m.complete_match(User.find_by_login!('MrMan'), {}, true)
+          m.complete_match(Ias.MrMan, {}, true)
         end
 
       end
