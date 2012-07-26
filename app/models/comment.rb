@@ -78,7 +78,7 @@ class Comment < ActiveRecord::Base
     end
 
     self.update_attributes(
-        :moderation_reason => MODERATION_REASONS[moderation_reason],
+        :moderation_reason => moderation_reason,
         :state => MODERATED,
         :lastedited_by_user_id => user.id)
   end

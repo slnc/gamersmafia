@@ -1,9 +1,17 @@
 # -*- encoding : utf-8 -*-
 class AchmedObserver < ActiveRecord::Observer
+  CASH_MOVEMENT_SUSPICIOUSNESS_THRESHOLD = 5000
+  observe CashMovement
   observe SlogEntry
 
   def after_create(object)
     case object.class.name
+
+     when 'CashMovement' then
+       if object.ammount >= CASH_MOVEMENT_SUSPICIOUSNESS_THRESHOLD
+         SlogEntry.create(:headline => object.to_s,
+                          :type_id => SlogEntry::TYPES[:security])
+       end
       when 'SlogEntry'
         self.handle_slog_entry(object)
     end

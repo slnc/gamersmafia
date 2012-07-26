@@ -4,7 +4,6 @@ require 'test_functional_content_helper'
 
 class ReclutamientoControllerTest < ActionController::TestCase
   basic_test :index
-  # test_common_content_crud :name => 'RecruitmentAd', :form_vars => { :title => 'buscamos miembros', :main => 'fulanitos del copon', :game_id => 1, :levels => ['low', 'med', 'high'], :clan_id => '1'}
 
   test "create_type_1" do
     sym_login 1
@@ -25,14 +24,6 @@ class ReclutamientoControllerTest < ActionController::TestCase
     assert_equal 'fulanitos del copon', @ra.main
   end
 
-  test "anuncio" do
-    test_create_type_1
-    #get :anuncio, :id => @ra.id
-    # puts Routing.gmurl(@ra)
-    # ApplicactionController.
-    #assert_redirected_to "reclutamiento/show/13"
-  end
-
   test "del_by_owner" do
     test_create_type_1
     post :destroy, :id => @ra.id
@@ -42,7 +33,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
 
   test "del_by_foreigner" do
     test_create_type_1
-    sym_login 3
+    sym_login 2
     assert_raises(AccessDenied) do
       post :destroy, :id => @ra.id
     end

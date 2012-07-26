@@ -29,6 +29,10 @@ module Cache
     "/_users/#{uid % 1000}/#{uid}"
   end
 
+  def self.user_base_with_login(uid, login)
+    "/_users/#{uid % 1000}/#{uid}/#{login}"
+  end
+
   module Common
     def expire_fragment(fragment)
       CacheObserver.expire_fragment(fragment)

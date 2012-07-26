@@ -549,13 +549,11 @@ module Cms
       rescue Magick::ImageMagickError
       else
         [m[2], m[4]].each do |tag_part|
-          # puts "tag_part: #{tag_part} from #{m[0]}"
           shown_w = /(width="([\d]+)px")/i.match(tag_part)[2].to_i if /(width="([\d]+)px")/i =~ tag_part
           shown_h = /(height="([\d]+)px")/i.match(tag_part)[2].to_i if /(height="([\d]+)px")/i =~ tag_part
           shown_w = /(width:[^\d]*([\d]+)px)/i.match(tag_part)[2].to_i if /(width:[^\d]*([\d]+)px)/i =~ tag_part
           shown_h = /(height:[^\d]*([\d]+)px)/i.match(tag_part)[2].to_i if /(height:[^\d]*([\d]+)px)/i =~ tag_part
         end
-        # puts "(#{shown_w} and #{shown_w} != #{img.columns}) and (#{shown_h} and #{shown_h} != #{img.rows})"
         if (shown_w and shown_w != img.columns) and (shown_h and shown_h != img.rows) then
           html_fragment.gsub!(m[1], "<img src=\"/cache/thumbnails/f/#{shown_w}x#{shown_h}#{imgurl}\" />")
         end
@@ -835,10 +833,11 @@ module Cms
   def self.user_can_edit_content?(user, content)
     return false unless user && user.id
 
-    #raise "(#{content.respond_to?(:state)} and #{content.user_id} == #{self.id} and #{content.state} == #{Cms::DRAFT})"
     if user.has_admin_permission?(:capo)
       true
-    elsif (content.respond_to?(:state) and content.user_id == user.id and content.state == Cms::DRAFT) then
+    elsif (content.respond_to?(:state) &&
+           content.user_id == user.id &&
+           content.state == Cms::DRAFT) then
       true
     elsif (content.respond_to?(:state) and user.is_hq? and content.state == Cms::PENDING) then
       true

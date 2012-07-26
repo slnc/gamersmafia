@@ -4,9 +4,9 @@ require 'test_helper'
 class UsersActionObserverTest < ActionController::IntegrationTest
 
   test "should_properly_work_with_recruitment_ads" do
-    @ra = RecruitmentAd.new(:user_id => 1, :game_id => 1, :title => 'busco cosas', :main => 'hola')
     assert_count_increases(UsersAction) do
-      assert @ra.save
+      @ra = RecruitmentAd.create(
+        :user_id => 1, :game_id => 1, :title => 'busco cosas', :main => 'hola')
     end
 
     assert_count_decreases(UsersAction) do

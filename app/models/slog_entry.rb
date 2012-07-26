@@ -1,55 +1,90 @@
 # -*- encoding : utf-8 -*-
 class SlogEntry < ActiveRecord::Base
   TYPES = {
-    :info => 0,
-    :security => 1,
-    :error => 2,
-    :multiple_accounts => 3,
-    :user_report => 4,
-    :general_content_report => 5,
-    :general_comment_report => 6,
-    :clan_report => 7,
-    :emergency_antiflood => 8,
-    :faction_content_report => 9,
-    :bazar_district_content_report => 10,
-    :faction_comment_report => 11,
-    :bazar_district_comment_report => 12,
-    :faction_topic_report => 13,
-    :new_avatar => 14,
+      :info => 0,
+      :security => 1,
+      :error => 2,
+      :multiple_accounts => 3,
+      :user_report => 4,
+      :general_content_report => 5,
+      :general_comment_report => 6,
+      :clan_report => 7,
+      :emergency_antiflood => 8,
+      :faction_content_report => 9,
+      :bazar_district_content_report => 10,
+      :faction_comment_report => 11,
+      :bazar_district_comment_report => 12,
+      :faction_topic_report => 13,
+      :new_avatar => 14,
   }
 
   # TODO dejar de usar :info
 
-  DOMAINS_TYPES = { :bazar_manager => [],
-    :bazar_district_bigboss => [],
-    :capo => [:info, :security, :multiple_accounts, :user_report, :general_content_report, :general_comment_report, :clan_report, :emergency_antiflood, :new_avatar],
-    :competition_admin => [],
-    :competition_supervisor => [],
-    :editor => [:faction_content_report],
-    :faction_bigboss => [],
-    :gladiador => [],
-    :moderator => [:faction_topic_report, :faction_comment_report],
-    :sicario => [:bazar_district_content_report, :bazar_district_comment_report],
-    :webmaster => [:error]
+  DOMAINS_TYPES = {
+      :bazar_manager => [],
+      :bazar_district_bigboss => [],
+      :capo => [
+          :info,
+          :security,
+          :multiple_accounts,
+          :user_report,
+          :general_content_report,
+          :general_comment_report,
+          :clan_report,
+          :emergency_antiflood,
+          :new_avatar,
+      ],
+      :competition_admin => [],
+      :competition_supervisor => [],
+      :editor => [:faction_content_report],
+      :faction_bigboss => [],
+      :gladiador => [],
+      :moderator => [
+          :faction_topic_report,
+          :faction_comment_report,
+      ],
+      :sicario => [
+          :bazar_district_content_report,
+          :bazar_district_comment_report,
+      ],
+      :webmaster => [:error]
   }
 
-  VALID_ROLES = %w(Don ManoDerecha Sicario Moderator Editor Boss Underboss CompetitionAdmin CompetitionSupervisor)
+  VALID_ROLES = %w(
+      Don
+      ManoDerecha
+      Sicario
+      Moderator
+      Editor
+      Boss
+      Underboss
+      CompetitionAdmin
+      CompetitionSupervisor
+  )
 
   USERS_ROLES_2_DOMAINS = {
-  'Don' => :bazar_district_bigboss,
-  'ManoDerecha' => :bazar_district_bigboss,
-  'Sicario' => :sicario,
-  'Moderator' => :moderator,
-  'Editor' => :editor,
-  'Boss' => :faction_bigboss,
-  'Underboss' => :faction_bigboss,
-  'CompetitionAdmin' => :competition_admin,
-  'CompetitionSupervisor' => :competition_supervisor
+      'Boss' => :faction_bigboss,
+      'CompetitionAdmin' => :competition_admin,
+      'CompetitionSupervisor' => :competition_supervisor,
+      'Don' => :bazar_district_bigboss,
+      'Editor' => :editor,
+      'ManoDerecha' => :bazar_district_bigboss,
+      'Moderator' => :moderator,
+      'Sicario' => :sicario,
+      'Underboss' => :faction_bigboss,
   }
 
   EDITOR_SCOPE_CONTENT_TYPE_ID_MASK = 1000
 
-  DOMAINS_NEEDING_SCOPE = [:faction_bigboss, :bazar_district_bigboss, :competition_admin, :competition_supervisor, :editor, :moderator, :sicario]
+  DOMAINS_NEEDING_SCOPE = [
+      :bazar_district_bigboss,
+      :competition_admin,
+      :competition_supervisor,
+      :editor,
+      :faction_bigboss,
+      :moderator,
+      :sicario,
+  ]
 
   OLD_SLOG_EXCLUDE = [TYPES[:info], TYPES[:error]]
 
@@ -65,6 +100,11 @@ class SlogEntry < ActiveRecord::Base
   before_create :populate_reporter
 
   after_save :update_pending_slog
+
+  # - faction_comment_report
+  # - general_comment_report
+  # - bazar_district_comment_report
+  # all 3 store a hash with {:moderation_reason => int}
 
   serialize :data
 
