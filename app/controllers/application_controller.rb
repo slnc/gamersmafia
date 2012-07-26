@@ -249,6 +249,11 @@ Request information:
 
   public
   def skin
+    if self.portal.nil?
+      Rails.logger.warn("portal is nil. Using GmPortal")
+      self.portal = GmPortal.new
+    end
+
     if user_is_authed && @user.pref_skin
       begin
         Skin.find(@user.pref_skin.to_i)
@@ -492,6 +497,7 @@ Request information:
     ip = self.remote_ip
     # TODO PERF guardar informacion del visitante en tabla aparte
     user_agent = user_agent.bare if user_agent
+    self..portal = GmPortal.new unless self.portal && self.portal.id
     # flash_error = #{User.connection.quote(params['_xe'])}
     User.db_query("INSERT INTO stats.pageviews(referer,
                                                user_id,
@@ -521,7 +527,7 @@ Request information:
                                             #{User.connection.quote(params['_xs'])},
                                             #{User.connection.quote(medium)},
                                             #{User.connection.quote(user_agent)},
-                                            #{portal.id},
+                                            #{self.portal.id},
                                             #{User.connection.quote(params['_xvi'])},
                                             #{User.connection.quote(params['_xsi'])},
                                             #{User.connection.quote(params['_xmi'])},
