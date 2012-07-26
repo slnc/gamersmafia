@@ -1,8 +1,8 @@
 # -*- encoding : utf-8 -*-
 class AchmedObserver < ActiveRecord::Observer
   CASH_MOVEMENT_SUSPICIOUSNESS_THRESHOLD = 5000
-  observe CashMovement
-  observe SlogEntry
+
+  observe CashMovement, SlogEntry
 
   def after_create(object)
     case object.class.name

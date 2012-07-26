@@ -86,7 +86,11 @@ class BazarDistrict < ActiveRecord::Base
 
   def del_sicario(user)
     ur = UsersRole.find(:first, :conditions => ["role = 'Sicario' AND user_id = ? AND role_data = ?", user.id, self.id.to_s])
-    ur.destroy if ur
+    if ur
+      ur.destroy
+    else
+      Rails.logger.warn("No Sicario UserRole found for #{user}")
+    end
   end
 
   def sicarios

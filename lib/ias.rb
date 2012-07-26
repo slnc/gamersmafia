@@ -1,5 +1,11 @@
 module Ias
-  # Apply everywhere where we call Nagato or any other bot
+  VALID_IAS = %w(
+    MrAlariko
+    MrAchmed
+    MrCheater
+    MrMan
+    nagato
+  )
 
   @@cache_ias = {}
   def self.ia(login)
@@ -7,23 +13,11 @@ module Ias
         :first, :conditions => ["login = ? AND is_bot IS TRUE", login])
   end
 
-  def self.MrAlariko
-    self.ia("MrAlariko")
-  end
+  def self.method_missing(method_name)
+    if !VALID_IAS.include?(method_name.to_s)
+      raise "Invalid IA name #{method_name}"
+    end
 
-  def self.MrAchmed
-    self.ia("MrAchmed")
-  end
-
-  def self.MrCheater
-    self.ia("MrCheater")
-  end
-
-  def self.MrMan
-    self.ia("MrCheater")
-  end
-
-  def self.nagato
-    self.ia("nagato")
+    self.ia(method_name)
   end
 end
