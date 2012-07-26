@@ -15,7 +15,7 @@ class RecruitmentAd < ActiveRecord::Base
   after_create :link_to_root_term
 
   def link_to_root_term
-    Cms::modify_content_state(self, User.find_by_login('MrMan'), Cms::PUBLISHED)
+    Cms::modify_content_state(self, Ias.MrMan, Cms::PUBLISHED)
     Term.single_toplevel(:game_id => self.game_id).link(self.unique_content)
     true
   end

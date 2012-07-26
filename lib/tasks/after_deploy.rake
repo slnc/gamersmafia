@@ -5,7 +5,7 @@ namespace :gm do
     include ApplicationHelper
     system("cd #{Rails.root}/public/skins/default && zip -q -r ../default.zip . && cd #{Rails.root}")
     Rake::Task["gm:update_default_skin_styles"].invoke
-    mralariko_id = User.find_by_login!('MrAlariko').id
+    mralariko_id = Ias.MrAlariko.id
     Chatline.create({:line => "slnc ha actualizado el motor de la web a la versión #{AppR.ondisk_git_version}", :user_id => mralariko_id})
     Cms.uncompress_ckeditor_if_necessary
     n = News.create(:title => "Gamersmafia actualizada a la versión #{AppR.ondisk_git_version}",

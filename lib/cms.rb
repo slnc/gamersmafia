@@ -738,26 +738,26 @@ module Cms
           msg<< "[~#{pd.user.login}]: #{pd.deny_reason}\n" if not pd.publish?
         end
 
-        m = Message.new({ :message => msg, :sender => User.find_by_login('nagato'), :recipient => content.user, :title => "Contenido \"#{content.resolve_hid}\" denegado"})
+        m = Message.new({ :message => msg, :sender => Ias.nagato, :recipient => content.user, :title => "Contenido \"#{content.resolve_hid}\" denegado"})
         m.save
       end
     elsif PublishingDecision.find_sum_for_content(content) >= 1.0
-      content.change_state(Cms::PUBLISHED, User.find_by_login('MrMan'))
+      content.change_state(Cms::PUBLISHED, Ias.MrMan)
       ttype, scope = SlogEntry.fill_ttype_and_scope_for_content_report(uniq)
-      mrman = User.find_by_login('mrman')
+      mrman = Ias.MrMan
       SlogEntry.create(:type_id => ttype, :scope => scope, :reporter_user_id => mrman.id, :headline => "#{Cms.faction_favicon(content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.real_content.resolve_html_hid}</a></strong> publicado") if prev_state == Cms::PENDING
     elsif PublishingDecision.find_sum_for_content(content) <= -1.0
-      content.change_state(Cms::DELETED, User.find_by_login('MrMan'))
+      content.change_state(Cms::DELETED, Ias.MrMan)
       msg = "Lo lamentamos pero tu contenido ha sido denegado por las siguientes razones:\n\n"
       uniq.publishing_decisions.find(:all, :include => :user).each do |pd|
         msg<< "[~#{pd.user.login}]: #{pd.deny_reason}\n" if not pd.publish?
       end
 
       ttype, scope = SlogEntry.fill_ttype_and_scope_for_content_report(uniq)
-      mrman = User.find_by_login('mrman')
+      mrman = Ias.MrMan
       SlogEntry.create(:type_id => ttype, :scope => scope, :reporter_user_id => mrman.id, :headline => "#{Cms.faction_favicon(content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.real_content.resolve_html_hid}</a></strong> denegado") if prev_state == Cms::PENDING
 
-      m = Message.new({ :message => msg, :sender => User.find_by_login('nagato'), :recipient => content.user, :title => "Contenido \"#{content.resolve_hid}\" denegado"})
+      m = Message.new({ :message => msg, :sender => Ias.nagato, :recipient => content.user, :title => "Contenido \"#{content.resolve_hid}\" denegado"})
       m.save
     end
 

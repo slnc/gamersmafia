@@ -15,7 +15,7 @@
 
 <% content_main do %>
   <% mftext("Lo que opinan de #{@curuser.login}") do %>
-  <% if @curuser.profile_signatures_count == 0 and Friendship.find_between(User.find_by_login('mrcheater'), @curuser).nil? then %>
+  <% if @curuser.profile_signatures_count == 0 and Friendship.find_between(Ias.MrCheater, @curuser).nil? then %>
   <p>Todavía no tienes ninguna firma. Envía esta página a tus amigos para que se animen y te pongan algo porque.. seguro que tienes amigos, ¿verdad? </p>
   <% if user_is_authed and @curuser.id == @user.id then %>
   <ul>

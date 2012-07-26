@@ -180,7 +180,7 @@ used_codes = [
 namespace :gm do
   desc "GmGeist Warning 2011"
   task :gmgeist2011 => :environment do
-    nagato = User.find_by_login('nagato')
+    nagato = Ias.nagato
     subject = '¡Sólo quedan 3 días para que concluya la GmGeist 2011!'
     body = '''Si todavía no has rellenado la primera encuesta anual de Gamersmafia esta es tu oportunidad:
 

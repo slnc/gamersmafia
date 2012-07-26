@@ -44,7 +44,7 @@ class UsersRole < ActiveRecord::Base
     # bigbosses, editors, moderators and sicarios
     limit = 3.months.ago
     now = Time.now
-    mrcheater = User.find_by_login!('mrcheater')
+    mrcheater = Ias.MrCheater
     UsersRole.find(:all, :conditions => "role IN ('Don', 'ManoDerecha', 'Boss', 'Underboss', 'Editor', 'Moderator', 'Sicario')", :include => :user).each do |ur|
       if ur.user.lastseen_on < limit
         ur.destroy
@@ -77,7 +77,7 @@ class UsersRole < ActiveRecord::Base
   end
 
   def check_is_staff
-    nagato = User.find_by_login('nagato')
+    nagato = Ias.nagato
     if self.frozen? # quitando permiso
       if self.role == 'Don'
         bd = BazarDistrict.find(self.role_data.to_i)

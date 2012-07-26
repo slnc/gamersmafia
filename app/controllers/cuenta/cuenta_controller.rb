@@ -182,7 +182,7 @@ class Cuenta::CuentaController < ApplicationController
     if ban
       # Si está baneado le hacemos ver que todo va bien para que se quede
       # esperando el mensaje de confirmación.
-      nagato = User.find_by_login('nagato')
+      nagato = Ias.nagato
       SlogEntry.create(
           :type_id => SlogEntry::TYPES[:security],
           :headline => ("IP baneada #{remote_ip} (#{ban.comment}) ha" +
@@ -215,7 +215,7 @@ class Cuenta::CuentaController < ApplicationController
       prev = User.find(
         :first, :conditions => ['ipaddr = ? AND id <> ?',
                                 remote_ip, @newuser.id])
-      nagato = User.find_by_login('nagato')
+      nagato = Ias.nagato
       users_same_ip = User.find(
           :all,
           :conditions => ['ipaddr = ? and id <> ?', remote_ip, @newuser.id])

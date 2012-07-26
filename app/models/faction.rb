@@ -683,7 +683,7 @@ class Faction < ActiveRecord::Base
   end
 
   def golpe_de_estado
-    mrcheater = User.find_by_login('mrcheater')
+    mrcheater = Ias.MrCheater
     root_term = Term.single_toplevel(
         self.referenced_thing_field => self.referenced_thing.id)
 
