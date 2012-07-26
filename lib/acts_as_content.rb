@@ -45,7 +45,7 @@ module ActsAsContent
 
       scope :in_portal, lambda { |portal|
         if portal.id == -1
-          {}
+          {:conditions => "unique_content_id NOT IN (SELECT id FROM contents WHERE bazar_district_id IS NOT NULL)"}
         else
           taxonomy = "#{ActiveSupport::Inflector.pluralize(self.name)}Category"
           { :conditions => ["unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?))", portal.terms_ids(taxonomy)] }
