@@ -22,24 +22,15 @@ class CommentsControllerTest < ActionController::TestCase
     assert_equal panzer.id, @c.user_id
   end
 
-  test "should_destroy" do
-    test_should_allow_registered_user_to_comment
-    sym_login 1
-    post :destroy, { :id => @c.id}
-    assert_response :redirect
-    assert Comment.find_by_id(@c.id).deleted
-  end
-
   test "should_update" do
     test_should_allow_registered_user_to_comment
     orig = @c.comment
-    sym_login 1
+    sym_login @c.user_id
     post :update, { :id => @c.id, :comment => {:comment => 'feoooote'}}
     assert_response :redirect
     @c.reload
     assert_equal 'feoooote', @c.comment
-    assert_equal orig, @c.lastowner_version
-    assert_equal 1, @c.lastedited_by_user_id
+    assert_equal @c.user_id, @c.lastedited_by_user_id
   end
 
   test "should_edit_previous_comment_if_last_comment_is_yours_and_less_than_1h" do
@@ -87,11 +78,20 @@ class CommentsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "report" do
+  test "report invalid moderation_reason" do
     test_should_allow_registered_user_to_comment
     sym_login 1
-    assert_count_increases(SlogEntry) do
+    assert_difference("SlogEntry.count", 0) do
       post :report, :id => @c.id
+    end
+    assert_response :success
+  end
+
+  test "report valid moderation_reason" do
+    test_should_allow_registered_user_to_comment
+    sym_login 1
+    assert_difference("SlogEntry.count", 1) do
+      post :report, :id => @c.id, :moderation_reason => Comment::MODERATION_REASONS_TO_SYM.keys.first
     end
     assert_response :success
   end

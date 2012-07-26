@@ -13,6 +13,7 @@ class Comment < ActiveRecord::Base
   before_save :truncate_long_comments
   before_save :set_portal_id_based_on_content
   before_save :check_copy_if_changing_lastedited_by_user_id
+  before_save :check_not_moderated
   serialize :cache_rating
 
   validates_presence_of :comment, :message => 'no puede estar en blanco'
@@ -29,6 +30,58 @@ class Comment < ActiveRecord::Base
 
   # Minimum number of comment valorations to hide a comment.
   NEGATIVE_VALORATIONS_TO_HIDE = 3
+
+  MODERATION_REASONS = {
+    :copyright => 1,
+    :malware => 2,
+    :porno => 3,
+  }
+
+  MODERATION_REASONS_TO_SYM = MODERATION_REASONS.invert
+
+  FROZEN_ATTRIBUTES_IF_MODERATED = [
+    :comment,
+  ].freeze
+
+  def check_not_moderated
+    if self.moderated?
+      FROZEN_ATTRIBUTES_IF_MODERATED.each do |attribute|
+        attr_name = "#{attribute}_changed?"
+        if self.send("#{attribute}_changed?")
+          self.errors.add(
+            attribute,
+            "Imposible guardar el comentario porque ya está moderado.")
+        end
+      end
+    end
+
+    self.errors.size == 0
+  end
+
+  def moderation_reason_sym
+    MODERATION_REASONS_TO_SYM[self.moderation_reason]
+  end
+
+  def self.moderation_reason_valid?(moderation_reason)
+    MODERATION_REASONS_TO_SYM.has_key?(moderation_reason)
+  end
+
+  def moderate(user, moderation_reason)
+    if !Comment.moderation_reason_valid?(moderation_reason)
+      raise "Invalid moderation reason '#{moderation_reason}'"
+    end
+
+    raise "Comment is already moderated" if self.moderated?
+
+    if user.id == self.user_id
+      raise "Comment owner cannot moderate self comments."
+    end
+
+    self.update_attributes(
+        :moderation_reason => MODERATION_REASONS[moderation_reason],
+        :state => MODERATED,
+        :lastedited_by_user_id => user.id)
+  end
 
   def hidden?
     self.state == HIDDEN
@@ -252,20 +305,13 @@ class Comment < ActiveRecord::Base
     Karma.del_karma_after_comment_is_deleted(self)
   end
 
-  def can_edit_comment?(user, is_moderator, saving=false)
+  def can_edit_comment?(user, saving=false)
     return false if user.nil?
 
     # If author is editing his comment we increase the limit to 30 min instead
     # of 15min.
     author_max_secs = Time.now - 60 * (saving ? 30 : 15)
-    moderator_max_secs = 60 * 60 * 24 * 60  # two months
-
-    if ((user.id == self.user.id && self.created_on > author_max_secs) ||
-        (is_moderator && self.created_on > Time.now - moderator_max_secs))
-      true
-    else
-      false
-    end
+    user.id == self.user.id && self.created_on > author_max_secs
   end
 
   def rate(user, rating)
@@ -314,7 +360,6 @@ class Comment < ActiveRecord::Base
         :order => 'created_on DESC, id DESC')
   end
 
-
   def validate
     if new_record? && Comment.count(:conditions => [
           'host = ? and comment = ? and user_id = ? and content_id = ?',
@@ -329,6 +374,44 @@ class Comment < ActiveRecord::Base
       self.errors[:base] << (
         'El contenido al que se refiere este comentario ya no existe')
       return false
+    end
+  end
+
+  def report_violation(user, moderation_reason)
+    org = Organizations.find_by_content(self)
+
+    if !Comment.moderation_reason_valid?(moderation_reason)
+      self.errors.add("state", "Razón de moderación inválida")
+      return
+    end
+
+    if org
+      if org.class.name == 'Faction'
+        ttype = :faction_comment_report
+      else
+        ttype = :bazar_district_comment_report
+      end
+      scope = org.id
+    else
+      ttype = :general_comment_report
+      scope = nil
+    end
+
+    sl = SlogEntry.create({
+      :scope => scope,
+      :type_id => SlogEntry::TYPES[ttype],
+      :data => {:moderation_reason => moderation_reason},
+      :reporter_user_id => user.id,
+      :entity_id => self.id,
+      :headline => (
+          "#{Cms.faction_favicon(self.content.real_content)} <strong>
+          <a href=\"#{Routing.url_for_content_onlyurl(self.content.real_content)}?page=#{self.comment_page}#comment#{self.id}\">#{self.id}</a></strong>
+          (<a href=\"#{Routing.gmurl(self.user)}\">#{self.user.login}</a>) reportado #{Comment::MODERATION_REASONS_TO_SYM[moderation_reason]} por <a href=\"#{Routing.gmurl(user)}\">#{user.login}</a>"),
+    })
+
+    if sl.new_record?
+      self.errors.add("state", sl.errors.full_messages_html)
+      return
     end
   end
 end

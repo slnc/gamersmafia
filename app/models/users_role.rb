@@ -1,6 +1,20 @@
 # -*- encoding : utf-8 -*-
 class UsersRole < ActiveRecord::Base
-  VALID_ROLES = %w(Advertiser Don ManoDerecha Sicario GroupMember GroupAdministrator Moderator Editor Boss Underboss CompetitionAdmin CompetitionSupervisor)
+  VALID_ROLES = %w(
+    Advertiser
+    Boss
+    CompetitionAdmin
+    CompetitionSupervisor
+    Don
+    Editor
+    GroupAdministrator
+    GroupMember
+    ManoDerecha
+    Moderator
+    Sicario
+    Underboss
+  )
+
   # role                  | role_data
   # ------------------------------------------
   # Advertiser            | advertiser_id
@@ -53,7 +67,7 @@ class UsersRole < ActiveRecord::Base
     if VALID_ROLES.include?(self.role)
       true
     else
-      self.errors.add('role', "Rol '#{self.role}' invalido.")
+      self.errors.add("role", "Rol '#{self.role}' invalido.")
       false
     end
   end

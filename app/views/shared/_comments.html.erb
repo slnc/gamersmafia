@@ -45,6 +45,11 @@ hidden_comments_count = 0
   end
 
   i += 1
+
+  if comment.moderated?
+    next
+  end
+
   if questions_mode
     show_signature = false
   else

@@ -19,7 +19,8 @@ class CommentsController < ApplicationController
       last_comment = content.comments.find(
           :first, :conditions => 'deleted = \'f\'', :order => 'id DESC')
       if (last_comment && last_comment.user_id == @user.id &&
-          last_comment.created_on >= 1.hour.ago)
+          last_comment.created_on >= 1.hour.ago &&
+          !last_comment.moderated?)
         if (last_comment.comment ==
             Comments::formatize(params[:comment][:comment]))
           # para evitar doble clicks a enviar comentario
@@ -74,42 +75,10 @@ class CommentsController < ApplicationController
     redirect_to params[:redirto]
   end
 
-  def destroy
-    @comment = Comment.find(params[:id])
-    require_user_can_edit(@comment)
-    # TODO copypaste de laflecha
-    cur_page = @comment.comment_page
-    prev_comment = @comment.previous_comment
-    anchor = prev_comment ? "comment#{prev_comment.id}" : 'comments'
-
-   # caso especial, cambio de pág?
-    if prev_comment && prev_comment.comment_page < cur_page
-      if Comment.count(:conditions => ['id > ? and content_id = ?', params[:id].to_i, params[:content_id]]) > 0 # más comentarios en la página de la que hemos borrado el comment
-        anchor = 'comments'
-      else # no hay más comentarios después, redirigimos a la página del comentario ant
-        cur_page = prev_comment.comment_page
-      end
-    end
-
-    @comment.mark_as_deleted
-    flash[:notice] = 'Comentario borrado correctamente'
-    if params[:redirto] then
-      if cur_page
-        redirect_to "#{params[:redirto]}?page=#{cur_page}##{anchor}"
-      else
-        redirect_to params[:redirto]
-      end
-    else
-      redirect_to '/'
-    end
-  end
-
   def edit
     @title = 'Editando comentario'
     @comment = Comment.find(params[:id])
-    curuser_can_edit_content = Cms::user_can_edit_content?(@user, @comment)
-
-    if not @comment.can_edit_comment?(@user, curuser_can_edit_content)
+    if not @comment.can_edit_comment?(@user)
       params[:redirto] = '/' if params[:redirto].nil?
       redirect_to params[:redirto]
     end
@@ -117,10 +86,8 @@ class CommentsController < ApplicationController
 
   def update
     @comment = Comment.find(params[:id])
-    curuser_can_edit_content = Cms::user_can_edit_content?(@user, @comment)
-    if @comment.can_edit_comment?(@user, curuser_can_edit_content, true)
+    if @comment.can_edit_comment?(@user, true)
       @comment.comment = Comments::formatize(params[:comment][:comment])
-      @comment.netiquette_violation = (params[:comment][:netiquette_violation] || false)
       @comment.lastedited_by_user_id = @user.id
 
       if @comment.save
@@ -152,21 +119,13 @@ class CommentsController < ApplicationController
   def report
     @comment = Comment.find(params[:id])
     if @comment.user_can_report_comment?(@user)
-      org = Organizations.find_by_content(@comment)
-      if org
-        ttype = org.class.name == 'Faction' ? :faction_comment_report : :bazar_district_comment_report
-        scope = org.id
-      else
-        ttype = :general_comment_report
-        scope = nil
-      end
-      reason_str = (params[:reason] && params[:reason].to_s != '' && params[:reason].to_s != 'Razón..') ? " (#{params[:reason]})" : ''
-      sl = SlogEntry.create({:scope => scope, :type_id => SlogEntry::TYPES[ttype], :reporter_user_id => @user.id, :headline => "#{Cms.faction_favicon(@comment.content.real_content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(@comment.content.real_content)}?page=#{@comment.comment_page}#comment#{@comment.id}\">#{@comment.id}</a></strong> (<a href=\"#{gmurl(@comment.user)}\">#{@comment.user.login}</a>) reportado #{reason_str} por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"})
-      if sl.new_record?
-        flash[:error] = "Error al reportar el comentario:<br />#{sl.errors.full_messages_html}"
+      @comment.report_violation(@user, params[:moderation_reason].to_i)
+      if @comment.errors.size > 0
+        flash[:error] = "Error al reportar el comentario:<br />#{@comment.errors.full_messages_html}"
       else
         flash[:notice] = "Comentario reportado correctamente"
       end
+
       render :partial => '/shared/ajax_facebox_feedback', :layout => false
     else
       raise AccessDenied

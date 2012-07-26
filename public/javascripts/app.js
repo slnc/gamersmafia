@@ -139,16 +139,13 @@ function check_comments_controls(
     }
     cur_is_first = false;
 
-    if ((user_is_mod && comments[key][0] > unix_now - 86400 * 365) ||
-          (comments[key][1] == user_id &&
-           comments[key][0] > unix_now - 60 * 15)) {
+    if ((comments[key][1] == user_id &&
+         comments[key][0] > unix_now - 60 * 15)) {
       $j('#comment' + key + 'editlink').removeClass('hidden');
-      if (user_is_mod) {
-        $j('#comment' + key + 'dellink').removeClass('hidden');
-      }
     }
+
     var rpc = $j('#report-comments' + key);
-    if (user_is_hq && !user_is_mod && rpc) {
+    if (rpc && (user_is_mod || user_is_hq)) {
       rpc.removeClass('hidden');
     }
   }

@@ -571,7 +571,8 @@ CREATE TABLE comments (
     lastedited_by_user_id integer,
     deleted boolean DEFAULT false NOT NULL,
     random_v numeric DEFAULT random(),
-    state smallint DEFAULT 0 NOT NULL
+    state smallint DEFAULT 0 NOT NULL,
+    moderation_reason smallint
 );
 CREATE SEQUENCE comments_id_seq
     START WITH 1
@@ -2355,7 +2356,9 @@ CREATE TABLE slog_entries (
     long_version character varying,
     short_version character varying,
     completed_on timestamp without time zone,
-    scope integer
+    scope integer,
+    entity_id integer,
+    data character varying
 );
 CREATE SEQUENCE slog_entries_id_seq
     START WITH 1
@@ -3976,6 +3979,8 @@ ALTER TABLE ONLY recruitment_ads
     ADD CONSTRAINT recruitment_ads_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY refered_hits
     ADD CONSTRAINT refered_hits_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
+ALTER TABLE ONLY users
+    ADD CONSTRAINT resurrected_by_user_idfk FOREIGN KEY (resurrected_by_user_id) REFERENCES users(id);
 ALTER TABLE ONLY reviews
     ADD CONSTRAINT reviews_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY skins_files

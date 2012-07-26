@@ -66,6 +66,8 @@ class SlogEntry < ActiveRecord::Base
 
   after_save :update_pending_slog
 
+  serialize :data
+
   CLOSED_SQL = 'completed_on IS NOT NULL'
   OPEN_SQL = 'completed_on IS NULL AND reviewer_user_id IS NULL'
 

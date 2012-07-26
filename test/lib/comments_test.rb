@@ -78,14 +78,18 @@ class CommentsTest < ActiveSupport::TestCase
     assert_equal '[i][b]hola[/b] [b]adios[/b][/i]', Comments.fix_incorrect_bbcode_nesting('[i][b]hola[/b] [b]adios[/b][/i]')
   end
 
-  test "sicario_can_edit_comments_of_own_district" do
+  test "sicario_cannot_edit_comments_of_own_district" do
     u59 = User.find(59)
     bd = BazarDistrict.find(1)
     bd.add_sicario(u59)
     n65 = News.find(65)
-    c = Comment.new(:content_id => n65.unique_content.id, :user_id => 1, :host => '127.0.0.1', :comment => 'comentario')
+    c = Comment.new(
+        :content_id => n65.unique_content.id,
+        :user_id => 1,
+        :host => '127.0.0.1',
+        :comment => 'comentario')
     assert c.save
-    assert c.can_edit_comment?(u59, bd.user_is_moderator(u59))
+    assert !c.can_edit_comment?(u59)
   end
 
   test "should replace all urls in a line" do
