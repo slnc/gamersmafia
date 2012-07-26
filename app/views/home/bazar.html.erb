@@ -12,7 +12,8 @@ end
 
 <% [cats1, cats2].each do |catz| %>
 <div class="grid-6">
-<%catz.each do |cat| %>
+<%catz.each do |portal|
+  cat = portal.categories(nil)[0] %>
 	<%mftext("<a style=\"color: #efefef; text-decoration: underline;\" href=\"http://#{cat.code}.#{App.domain}\">#{cat.name}</a>", :has_submodules => true) do %>
 
 	<%cache("/common/noticias/_latest_by_cat2_#{cat.code}") do %>

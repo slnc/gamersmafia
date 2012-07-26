@@ -52,7 +52,6 @@ module Users
     end
 
     def require_user_can_edit(item)
-      puts "#{user_is_authed} && #{Cms::user_can_edit_content?(@user, item)}"
       raise AccessDenied unless user_is_authed && Cms::user_can_edit_content?(@user, item)
     end
 
