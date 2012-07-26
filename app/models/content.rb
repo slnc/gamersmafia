@@ -135,7 +135,9 @@ class Content < ActiveRecord::Base
   end
 
   def my_faction
-    Faction.find(:first, :conditions => "code = (SELECT code FROM games WHERE id = #{game_id})")
+    Faction.find(
+      :first,
+      :conditions => "code = (SELECT code FROM games WHERE id = #{game_id})")
   end
 
   def real_content

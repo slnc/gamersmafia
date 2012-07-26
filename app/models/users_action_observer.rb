@@ -14,6 +14,15 @@ class UsersActionObserver < ActiveRecord::Observer
         UsersAction.create(:user_id => object.signer_user_id, :type_id => UsersAction::NEW_PROFILE_SIGNATURE_RECEIVED, :object_id => object.id, :data => data)
       end
 
+      when 'RecruitmentAd'
+      data = "#{user_link(object.user)} ha publicado <a href=\"#{Routing.gmurl(object)}\">un anuncio de reclutamiento</a>"
+      ua = UsersAction.create({
+          :user_id => object.user_id,
+          :type_id => UsersAction::NEW_RECRUITMENT_AD,
+          :object_id => object.id,
+          :data => data,
+      })
+
       when 'ClansMovement'
       data = "#{user_link(object.user)} #{ClansMovement.translate_direction(object.direction)} <a href=\"/clanes/clan/#{object.id}\">#{object.clan}</a>"
       UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_CLANS_MOVEMENT, :object_id => object.id, :data => data)
@@ -72,7 +81,11 @@ class UsersActionObserver < ActiveRecord::Observer
 
       when 'RecruitmentAd'
       if object.deleted_changed?
-        UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_CONTENT, object.unique_content_id]).each { |ra| ra.destroy }
+        UsersAction.find(
+            :all,
+            :conditions => ['type_id = ? AND object_id = ?',
+                            UsersAction::NEW_RECRUITMENT_AD,
+                            object.id]).each { |ra| ra.destroy }
       end
 
       when 'Friendship'

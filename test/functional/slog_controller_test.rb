@@ -174,26 +174,31 @@ class SlogControllerTest < ActionController::TestCase
     @bd = BazarDistrict.find(1)
     @editor_scope = 1 * SlogEntry::EDITOR_SCOPE_CONTENT_TYPE_ID_MASK + 1
     [
-    [:test_sicario, :bazar_district_content_report, :@bd, :id],
-    [:test_don, :bazar_district_content_report, :@bd, :id],
-    [:test_bazar_manager, :bazar_district_content_report, :@bd, :id],
+     [:test_sicario, :bazar_district_content_report, :@bd, :id, nil, nil],
+     [:test_don, :bazar_district_content_report, :@bd, :id, nil, nil],
+     [:test_bazar_manager, :bazar_district_content_report, :@bd, :id, nil, nil],
 
-    [:test_moderator, :faction_comment_report, :@f, :id],
-    [:test_boss, :faction_comment_report, :@f, :id],
-    [:test_capo, :faction_comment_report, :@f, :id],
+     [:test_moderator, :faction_comment_report, :@f, :id, 2, {:moderation_reason => Comment::MODERATION_REASONS_TO_SYM.keys.first}],
+     [:test_boss, :faction_comment_report, :@f, :id, 2, {:moderation_reason => Comment::MODERATION_REASONS_TO_SYM.keys.first}],
+     [:test_capo, :faction_comment_report, :@f, :id, 2, {:moderation_reason => Comment::MODERATION_REASONS_TO_SYM.keys.first}],
 
 
-    [:test_editor, :faction_content_report, :@editor_scope, :to_i],
-    [:test_boss, :faction_comment_report, :@f, :id],
-    [:test_capo, :faction_content_report, :@editor_scope, :to_i],
-    ].each do |t, type_id_sym, obj, meth|
-      # puts "#{t} #{type_id_sym} #{obj} #{meth}"
+     [:test_editor, :faction_content_report, :@editor_scope, :to_i, nil, nil],
+     [:test_boss, :faction_comment_report, :@f, :id, 2, {:moderation_reason => Comment::MODERATION_REASONS.keys.first}],
+     [:test_capo, :faction_content_report, :@editor_scope, :to_i, nil, nil],
+    ].each do |t, type_id_sym, obj, meth, entity_id, data|
       User.db_query("DELETE FROM users_roles")
       # UsersRole.find(:all).each do |ur| ur.destroy end
       User.db_query("UPDATE users SET is_superadmin = 'f', cache_is_faction_leader = 'f' AND admin_permissions = '0'")
       self.send t
       # @f.reload
-      sle = SlogEntry.create(:type_id => SlogEntry::TYPES[type_id_sym], :headline => 'foo', :scope => instance_variable_get(obj).send(meth))
+      sle = SlogEntry.create({
+          :type_id => SlogEntry::TYPES[type_id_sym],
+          :headline => 'foo',
+          :data => data,
+          :entity_id => entity_id,
+          :scope => instance_variable_get(obj).send(meth)
+      })
       get :slog_entry_assigntome, :id => sle.id
       assert_response :success
 

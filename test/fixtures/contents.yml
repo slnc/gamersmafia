@@ -832,7 +832,8 @@ news_published_anime:
   url: http://bazar.<%=App.domain%>/noticias/show/65
   state: 2
   user_id: 1
-  portal_id: -2
+  portal_id: 31
+  bazar_district_id: 1
 
 news_published_gm:
   id: 1114

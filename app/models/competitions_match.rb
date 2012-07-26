@@ -161,7 +161,7 @@ class CompetitionsMatch < ActiveRecord::Base
       event_name << self.participant1.to_s if self.participant1_id
       event_name << ' vs '
       event_name << self.participant2.to_s if self.participant2_id
-      mrman = User.find_by_login('mrman')
+      mrman = Ias.MrMan
       raise ActiveRecord::RecordNotFound unless mrman
       my_event = Event.create({:title => event_name,
         :parent_id => parent_event.id,

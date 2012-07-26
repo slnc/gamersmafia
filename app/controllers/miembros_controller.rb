@@ -94,7 +94,7 @@ class MiembrosController < ComunidadController
 
   def no_tengo_amigos
     require_auth_users
-    mrcheater = User.find_by_login('MrCheater')
+    mrcheater = Ias.MrCheater
     f = Friendship.new(:sender_user_id => mrcheater.id, :receiver_user_id => @user.id)
     f.save
     flash[:notice] = "Ahora ya tienes uno :)"

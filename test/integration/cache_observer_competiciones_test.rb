@@ -107,7 +107,7 @@ class CacheObserverCompeticionesTest < ActionController::IntegrationTest
       post "/competiciones/join_competition/#{l.id}"
       assert_response :redirect, @response.body
       assert_nil flash[:error], flash[:error]
-      assert_not_nil l.get_active_participant_for_user(User.find_by_login('mrman'))
+      assert_not_nil l.get_active_participant_for_user(Ias.MrMan)
       assert_equal true, l.switch_to_state(2)
       assert_cache_dont_exist "#{controller.portal.code}/competiciones/index/inscripciones_abiertas"
     end

@@ -32,7 +32,7 @@ class Cuenta::DistritoControllerTest < ActionController::TestCase
 
   test "should_del_sicario" do
     test_should_add_sicario
-    post :del_sicario, :user_id => User.find_by_login('MrMan').id
+    post :del_sicario, :user_id => Ias.MrMan.id
     assert_equal 0, @bd.sicarios.size
   end
 end

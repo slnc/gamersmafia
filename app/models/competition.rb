@@ -285,7 +285,7 @@ class Competition < ActiveRecord::Base
   end
 
   def create_contents_categories
-    mrman = User.find_by_login('mrman')
+    mrman = Ias.MrMan
     raise ActiveRecord::RecordNotFound unless mrman
 
 

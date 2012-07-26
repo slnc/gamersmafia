@@ -135,7 +135,6 @@ module ActsAsContentBrowser
     define_method 'edit' do
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.find(params[:id])
-      # require_user_can_edit(obj)
       raise ContentLocked if obj.is_locked_for_user?(@user)
       @title = "Editando #{obj.resolve_hid}"
       navpath2<< [obj.resolve_hid, request.fullpath.gsub('edit', 'show')]

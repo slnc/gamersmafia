@@ -28,7 +28,7 @@ class Question < ActiveRecord::Base
   scope :answered, :conditions => 'answered_on IS NOT NULL'
 
   def self.close_old_open_questions
-    mrman = User.find_by_login!('mrman')
+    mrman = Ias.MrMan
     Question.published.find(:all, :conditions => 'answered_on IS NULL AND created_on <= now() - \'1 month\'::interval', :order => 'id').each do |q|
       c_text = Kernel.rand > 0.5 ? 'Esta pregunta lleva pendiente de respuesta demasiado tiempo y le está empezando a salir musgo verde así que me veo en la obligación de cerrarla.' : 'Esta pregunta lleva demasiado tiempo abierta y se encuentra en paupérrimas condiciones. Por consiguiente me siento con la obligación de cerrarla.'
       if q.unique_content.comments.count(:conditions => ['user_id <> ?', q.user_id]) > 0
@@ -102,7 +102,7 @@ class Question < ActiveRecord::Base
     self.answer_selected_by_user_id = modifying_user.id
     if self.save
       self.log_action('set_sin_respuesta', modifying_user.login)
-      Message.create(:user_id_from => User.find_by_login('nagato').id, :user_id_to => self.user_id, :title => "Tu pregunta \"#{self.title}\" ha sido cerrada sin una respuesta", :message => "Lo sentimos pero nadie ha dado con una respuesta a tu pregunta o se ha cancelado por otra razón.")
+      Message.create(:user_id_from => Ias.nagato.id, :user_id_to => self.user_id, :title => "Tu pregunta \"#{self.title}\" ha sido cerrada sin una respuesta", :message => "Lo sentimos pero nadie ha dado con una respuesta a tu pregunta o se ha cancelado por otra razón.")
       Bank.transfer(:bank, self.user, self.prize, "Devolución por pregunta sin respuesta a \"#{self.title}\"") if self.ammount
       true
     else
@@ -124,7 +124,7 @@ class Question < ActiveRecord::Base
       if self.save
         comment = Comment.find(comment_id)
         self.log_action('set_respuesta', modifying_user.login)
-        Message.create(:user_id_from => User.find_by_login('nagato').id, :user_id_to => comment.user_id, :title => "Has dado la mejor respuesta a \"#{self.title}\"", :message => "Enhorabuena, la mejor respuesta a \"#{self.title}\" ha sido tuya por lo que te llevas la recompensa de #{self.prize} GMFs.")
+        Message.create(:user_id_from => Ias.nagato.id, :user_id_to => comment.user_id, :title => "Has dado la mejor respuesta a \"#{self.title}\"", :message => "Enhorabuena, la mejor respuesta a \"#{self.title}\" ha sido tuya por lo que te llevas la recompensa de #{self.prize} GMFs.")
         Bank.transfer(:bank, comment.user, self.prize, "Recompensa por mejor respuesta a la pregunta \"#{self.title}\"")
         true
       else
