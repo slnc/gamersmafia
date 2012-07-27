@@ -22,6 +22,15 @@ class TermTest < ActiveSupport::TestCase
     assert t.save
   end
 
+  test "no parent_id for taxonomy ContentsTag" do
+    term = Term.new({
+        :name => 'foo',
+        :slug => 'bar',
+        :taxonomy => 'ContentsTag',
+        :parent_id => Term.first.id,
+    })
+    assert !term.save
+  end
 
   test "find_by_id" do
     n = News.find(1)
