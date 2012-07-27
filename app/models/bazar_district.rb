@@ -16,9 +16,9 @@ class BazarDistrict < ActiveRecord::Base
 
   has_many :terms
 
-  has_users_role 'Don'
-  has_users_role 'ManoDerecha'
-  has_users_role 'Sicario'
+  has_users_skill 'Don'
+  has_users_skill 'ManoDerecha'
+  has_users_skill 'Sicario'
 
   def top_level_category
     Term.single_toplevel(:bazar_district_id => self.id)
@@ -49,7 +49,7 @@ class BazarDistrict < ActiveRecord::Base
   end
 
   def _role(role)
-    UsersRole.find(:all, :conditions => ['role = ? AND role_data = ?', role, self.id.to_s], :include => :user)
+    UsersSkill.find(:all, :conditions => ['role = ? AND role_data = ?', role, self.id.to_s], :include => :user)
   end
 
   def don
@@ -79,13 +79,13 @@ class BazarDistrict < ActiveRecord::Base
   end
 
   def add_sicario(user)
-    if UsersRole.count(:conditions => ["role = 'Sicario' AND user_id = ? AND role_data = ?", user.id, self.id.to_s]) == 0
-      UsersRole.create(:role => 'Sicario', :user_id => user.id, :role_data => self.id.to_s)
+    if UsersSkill.count(:conditions => ["role = 'Sicario' AND user_id = ? AND role_data = ?", user.id, self.id.to_s]) == 0
+      UsersSkill.create(:role => 'Sicario', :user_id => user.id, :role_data => self.id.to_s)
     end
   end
 
   def del_sicario(user)
-    ur = UsersRole.find(:first, :conditions => ["role = 'Sicario' AND user_id = ? AND role_data = ?", user.id, self.id.to_s])
+    ur = UsersSkill.find(:first, :conditions => ["role = 'Sicario' AND user_id = ? AND role_data = ?", user.id, self.id.to_s])
     if ur
       ur.destroy
     else
@@ -94,7 +94,7 @@ class BazarDistrict < ActiveRecord::Base
   end
 
   def sicarios
-    UsersRole.find(
+    UsersSkill.find(
         :all,
         :conditions => ["role = 'Sicario' AND role_data = ?", self.id.to_s],
         :include => :user,
@@ -118,11 +118,11 @@ class BazarDistrict < ActiveRecord::Base
     #raise "hola"
 
     if newuser # le quitamos los roles viejos como don/mano_derecha
-      UsersRole.find(:all, :conditions => ["role IN ('#{ROLE_DON}', '#{ROLE_MANO_DERECHA}') AND user_id = ?", newuser.id]).each do |ur|
+      UsersSkill.find(:all, :conditions => ["role IN ('#{ROLE_DON}', '#{ROLE_MANO_DERECHA}') AND user_id = ?", newuser.id]).each do |ur|
         ur.destroy
         SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :reviewer_user_id => User.find_by_login('MrAchmed').id, :headline => "Eliminado permiso <strong>#{ur.role}</strong> de #{BazarDistrict.find(ur.role_data.to_i).name} a #{newuser.login}", :completed_on => Time.now)
       end
-      ur = UsersRole.create(:role => role, :role_data => self.id.to_s, :user_id => newuser.id)
+      ur = UsersSkill.create(:role => role, :role_data => self.id.to_s, :user_id => newuser.id)
     end
 
     prev.destroy if prev
@@ -141,7 +141,7 @@ class BazarDistrict < ActiveRecord::Base
   def user_is_moderator(u)
     # si puede moderar comentarios, vamos
     (u.has_admin_permission?(:bazar_manager) ||
-     UsersRole.count(
+     UsersSkill.count(
         :conditions => ["role IN ('#{ROLE_DON}',
                                   '#{ROLE_MANO_DERECHA}',
                                   'Sicario')
@@ -150,20 +150,20 @@ class BazarDistrict < ActiveRecord::Base
   end
 
   def is_sicario?(u)
-    u.has_admin_permission?(:bazar_manager) || UsersRole.count(:conditions => ["role IN ('Don', 'ManoDerecha', 'Sicario') AND role_data = ? AND user_id = ?", self.id.to_s, u.id]) > 0
+    u.has_admin_permission?(:bazar_manager) || UsersSkill.count(:conditions => ["role IN ('Don', 'ManoDerecha', 'Sicario') AND role_data = ? AND user_id = ?", self.id.to_s, u.id]) > 0
   end
 
   def is_bigboss?(u)
-    u.has_admin_permission?(:bazar_manager) || UsersRole.count(:conditions => ["role IN ('Don', 'ManoDerecha') AND role_data = ? AND user_id = ?", self.id.to_s, u.id]) > 0
+    u.has_admin_permission?(:bazar_manager) || UsersSkill.count(:conditions => ["role IN ('Don', 'ManoDerecha') AND role_data = ? AND user_id = ?", self.id.to_s, u.id]) > 0
   end
 
   def self.find_by_bigboss(u)
-    ur = u.users_roles.find(:first, :conditions => 'role IN (\'Don\', \'ManoDerecha\')')
+    ur = u.users_skills.find(:first, :conditions => 'role IN (\'Don\', \'ManoDerecha\')')
     BazarDistrict.find(ur.role_data.to_i) if ur
   end
 
   def self.find_by_sicario(u)
-    u.users_roles.find(:all, :conditions => 'role = \'Sicario\'').collect { |ur| BazarDistrict.find(ur.role_data.to_i) }
+    u.users_skills.find(:all, :conditions => 'role = \'Sicario\'').collect { |ur| BazarDistrict.find(ur.role_data.to_i) }
   end
 
   protected
@@ -181,7 +181,7 @@ class BazarDistrict < ActiveRecord::Base
   def roles_by_user
     # devuelve un hash con user id como key
     roles = {}
-    UsersRole.find(:all, :conditions => ["role IN ('#{ROLE_DON}', '#{ROLE_MANO_DERECHA}', 'Sicario') AND role_data = ?", self.id.to_s]).each do |ur|
+    UsersSkill.find(:all, :conditions => ["role IN ('#{ROLE_DON}', '#{ROLE_MANO_DERECHA}', 'Sicario') AND role_data = ?", self.id.to_s]).each do |ur|
       roles[ur.user_id] ||= []
       roles[ur.user_id] << ur.role
     end

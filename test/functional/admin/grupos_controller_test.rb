@@ -35,7 +35,7 @@ class Admin::GruposControllerTest < ActionController::TestCase
 
   test "add_user_to_group" do
     sym_login 1
-    assert_count_increases(UsersRole) do
+    assert_count_increases(UsersSkill) do
       post :add_user_to_group, :id => 1, :login => 'panzer'
       assert_response :success
     end
@@ -43,7 +43,7 @@ class Admin::GruposControllerTest < ActionController::TestCase
 
   test "remove_user_from_group" do
     test_add_user_to_group
-    assert_count_decreases(UsersRole) do
+    assert_count_decreases(UsersSkill) do
       post :remove_user_from_group, :id => 1, :user_id => 2
       assert_response :success
     end

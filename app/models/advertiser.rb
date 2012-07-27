@@ -5,7 +5,7 @@ class Advertiser < ActiveRecord::Base
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/
   has_many :ads
 
-  has_users_role 'Advertiser'
+  has_users_skill 'Advertiser'
 
   def self.send_reports_to_publisher_if_on_due_date
     # This scripts executes on the first day of the non paid period so we return

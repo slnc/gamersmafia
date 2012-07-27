@@ -2789,7 +2789,7 @@ CREATE SEQUENCE users_preferences_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_preferences_id_seq OWNED BY users_preferences.id;
-CREATE TABLE users_roles (
+CREATE TABLE users_skills (
     id integer NOT NULL,
     user_id integer NOT NULL,
     role character varying NOT NULL,
@@ -2802,7 +2802,7 @@ CREATE SEQUENCE users_roles_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE users_roles_id_seq OWNED BY users_roles.id;
+ALTER SEQUENCE users_roles_id_seq OWNED BY users_skills.id;
 SET search_path = stats, pg_catalog;
 CREATE TABLE ads (
     id integer NOT NULL,
@@ -3184,7 +3184,7 @@ ALTER TABLE ONLY users_guids ALTER COLUMN id SET DEFAULT nextval('users_guids_id
 ALTER TABLE ONLY users_lastseen_ips ALTER COLUMN id SET DEFAULT nextval('users_lastseen_ips_id_seq'::regclass);
 ALTER TABLE ONLY users_newsfeeds ALTER COLUMN id SET DEFAULT nextval('users_newsfeeds_id_seq'::regclass);
 ALTER TABLE ONLY users_preferences ALTER COLUMN id SET DEFAULT nextval('users_preferences_id_seq'::regclass);
-ALTER TABLE ONLY users_roles ALTER COLUMN id SET DEFAULT nextval('users_roles_id_seq'::regclass);
+ALTER TABLE ONLY users_skills ALTER COLUMN id SET DEFAULT nextval('users_roles_id_seq'::regclass);
 SET search_path = stats, pg_catalog;
 ALTER TABLE ONLY ads ALTER COLUMN id SET DEFAULT nextval('ads_id_seq'::regclass);
 ALTER TABLE ONLY ads_daily ALTER COLUMN id SET DEFAULT nextval('ads_daily_id_seq'::regclass);
@@ -3598,7 +3598,7 @@ ALTER TABLE ONLY users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY users_preferences
     ADD CONSTRAINT users_preferences_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY users_roles
+ALTER TABLE ONLY users_skills
     ADD CONSTRAINT users_roles_pkey PRIMARY KEY (id);
 SET search_path = stats, pg_catalog;
 ALTER TABLE ONLY ads_daily
@@ -3814,10 +3814,10 @@ CREATE INDEX users_newsfeeds_created_on ON users_newsfeeds USING btree (created_
 CREATE INDEX users_newsfeeds_created_on_user_id ON users_newsfeeds USING btree (created_on, user_id);
 CREATE UNIQUE INDEX users_preferences_user_id_name ON users_preferences USING btree (user_id, name);
 CREATE INDEX users_random_id ON users USING btree (random_id);
-CREATE INDEX users_roles_role ON users_roles USING btree (role);
-CREATE INDEX users_roles_role_role_data ON users_roles USING btree (role, role_data);
-CREATE UNIQUE INDEX users_roles_uniq ON users_roles USING btree (user_id, role, role_data);
-CREATE INDEX users_roles_user_id ON users_roles USING btree (user_id);
+CREATE INDEX users_roles_role ON users_skills USING btree (role);
+CREATE INDEX users_roles_role_role_data ON users_skills USING btree (role, role_data);
+CREATE UNIQUE INDEX users_roles_uniq ON users_skills USING btree (user_id, role, role_data);
+CREATE INDEX users_roles_user_id ON users_skills USING btree (user_id);
 CREATE UNIQUE INDEX users_secret ON users USING btree (secret);
 CREATE INDEX users_state ON users USING btree (state);
 CREATE UNIQUE INDEX users_uniq_lower_email ON users USING btree (lower((email)::text));

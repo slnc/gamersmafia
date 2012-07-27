@@ -84,7 +84,7 @@ class SlogControllerTest < ActionController::TestCase
     sym_login 2
     @u2 = User.find(2)
     @u2.take_admin_permission(:capo)
-    @u2.users_roles.clear
+    @u2.users_skills.clear
 
     assert_raises(AccessDenied) { get :editor }
 
@@ -187,8 +187,8 @@ class SlogControllerTest < ActionController::TestCase
      [:test_boss, :faction_comment_report, :@f, :id, 2, {:moderation_reason => Comment::MODERATION_REASONS.keys.first}],
      [:test_capo, :faction_content_report, :@editor_scope, :to_i, nil, nil],
     ].each do |t, type_id_sym, obj, meth, entity_id, data|
-      User.db_query("DELETE FROM users_roles")
-      # UsersRole.find(:all).each do |ur| ur.destroy end
+      User.db_query("DELETE FROM users_skills")
+      # UsersSkill.find(:all).each do |ur| ur.destroy end
       User.db_query("UPDATE users SET is_superadmin = 'f', cache_is_faction_leader = 'f' AND admin_permissions = '0'")
       self.send t
       # @f.reload

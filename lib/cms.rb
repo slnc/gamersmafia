@@ -1113,7 +1113,7 @@ module Cms
       end
     end
 
-    u.users_roles.find(:all, :conditions => "role IN ('Boss', 'Underboss')").each do |ur|
+    u.users_skills.find(:all, :conditions => "role IN ('Boss', 'Underboss')").each do |ur|
       f = Faction.find(ur.role_data.to_i)
       t = f.single_toplevel_term
       if t.game_id
@@ -1123,7 +1123,7 @@ module Cms
       end
     end
 
-    u.users_roles.find(:all, :conditions => "role = 'Editor'").each do |ur|
+    u.users_skills.find(:all, :conditions => "role = 'Editor'").each do |ur|
       f = Faction.find(ur.role_data_yaml[:faction_id])
       t = f.single_toplevel_term
       if t.game_id
@@ -1133,7 +1133,7 @@ module Cms
       end
     end
 
-    u.users_roles.find(:all, :conditions => "role IN ('Don', 'ManoDerecha', 'Sicario')").each do |ur|
+    u.users_skills.find(:all, :conditions => "role IN ('Don', 'ManoDerecha', 'Sicario')").each do |ur|
       terms[:bazar_districts] << BazarDistrict.find(ur.role_data.to_i).top_level_category
     end
 

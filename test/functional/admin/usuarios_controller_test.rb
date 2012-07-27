@@ -336,10 +336,10 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     f1 = Faction.find(1)
     f1.update_underboss(u3)
 
-    last_id = UsersRole.last.id
-    post :users_role_destroy, :id => last_id
+    last_id = UsersSkill.last.id
+    post :users_skill_destroy, :id => last_id
     assert_response :success
-    assert_nil UsersRole.find_by_id(last_id)
+    assert_nil UsersSkill.find_by_id(last_id)
   end
 
   test "capos should be able to update users data" do

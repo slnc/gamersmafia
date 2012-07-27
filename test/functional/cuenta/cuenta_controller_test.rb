@@ -48,11 +48,11 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
        CompetitionAdmin
        CompetitionSupervisor
       ).each do |r|
-      @ur = UsersRole.new(:user_id => 2, :role => r, :role_data => '1')
+      @ur = UsersSkill.new(:user_id => 2, :role => r, :role_data => '1')
       assert @ur.save
     end
 
-    @ur = UsersRole.new(
+    @ur = UsersSkill.new(
         :user_id => 2,
         :role => 'Editor',
         :role_data => {
@@ -67,7 +67,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
 
   test "del_role_should_work" do
     test_mis_permisos_should_work
-    assert_count_decreases(UsersRole) do
+    assert_count_decreases(UsersSkill) do
       post :del_role, :id => @ur.id
     end
     assert_response :success

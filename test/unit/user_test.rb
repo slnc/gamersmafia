@@ -8,24 +8,24 @@ class UserTest < ActiveSupport::TestCase
     u.faction_id = 1
     assert u.save
     assert_equal 1, u.faction_id
-    assert_count_increases(UsersRole) do
-      u.users_roles.create(:role => 'Boss', :role_data => '1')
+    assert_count_increases(UsersSkill) do
+      u.users_skills.create(:role => 'Boss', :role_data => '1')
     end
 
-    assert_count_decreases(UsersRole) do
+    assert_count_decreases(UsersSkill) do
       u.faction_id = 2
       assert u.save
-      assert_nil u.users_roles.find_by_role('Boss')
+      assert_nil u.users_skills.find_by_role('Boss')
     end
   end
 
   test "banning someone should remove all permissions" do
     u = User.find(1)
-    u.users_roles.create(:role => 'Don', :role_data => '1')
+    u.users_skills.create(:role => 'Don', :role_data => '1')
     u.reload
-    assert u.users_roles.count > 0
+    assert u.users_skills.count > 0
     assert u.update_attributes(:state => User::ST_BANNED)
-    assert u.users_roles.count == 0
+    assert u.users_skills.count == 0
   end
 
   test "faith_ok" do
@@ -198,10 +198,10 @@ class UserTest < ActiveSupport::TestCase
 
   test "banning_user_should_remove_all_his_permissions" do
     u1 = User.find(1)
-    ur1 = u1.users_roles.create(:role => 'Don', :role_data => '1')
+    ur1 = u1.users_skills.create(:role => 'Don', :role_data => '1')
     assert !ur1.new_record?
     u1.change_internal_state('banned')
-    assert_equal 0, u1.users_roles.count
+    assert_equal 0, u1.users_skills.count
   end
 
   test "avatar_change_not_allowed_if_custom_from_other" do

@@ -194,7 +194,7 @@ class SlogEntry < ActiveRecord::Base
 
     valid_roles = USERS_ROLES_2_DOMAINS.keys.collect { |k| "'#{k}'" }
 
-    u.users_roles.find(:all, :conditions => "role IN (#{valid_roles.join(',')})").each do |ur|
+    u.users_skills.find(:all, :conditions => "role IN (#{valid_roles.join(',')})").each do |ur|
       if ur.role == 'Editor'
         total += ccount(:open, :domain => :editor, :scope => SlogEntry.encode_editor_scope(ur.role_data_yaml[:faction_id].to_i, ur.role_data_yaml[:content_type_id].to_i))
       elsif ur.role_data.to_s != ''
@@ -399,7 +399,7 @@ class SlogEntry < ActiveRecord::Base
         f = Faction.find_by_bigboss(u)
         fs << EditorScope.new(f.id, nil) if f
         # mas todas las que tenga editor
-        UsersRole.find(:all, :conditions => ['user_id = ? AND role = \'Editor\'', u.id]).collect do |ur|
+        UsersSkill.find(:all, :conditions => ['user_id = ? AND role = \'Editor\'', u.id]).collect do |ur|
           fs << EditorScope.new(ur.role_data_yaml[:faction_id], ur.role_data_yaml[:content_type_id])
         end
         fs
@@ -453,7 +453,7 @@ class SlogEntry < ActiveRecord::Base
   def self.reset_users_pending_slog
     us = User.find_with_admin_permissions(:capo)
 
-    UsersRole.find(:all, :include => :user).each do |ur|
+    UsersSkill.find(:all, :include => :user).each do |ur|
       us << ur.user
     end
 

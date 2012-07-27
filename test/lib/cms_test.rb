@@ -409,7 +409,7 @@ class CmsTest < ActiveSupport::TestCase
   test "factions_editor_can_edit_contents_of_own_faction" do
     f = Faction.find(1)
     u59 = User.find(59)
-    assert_count_increases(UsersRole) { f.add_editor(u59, ContentType.find_by_name('News'))}
+    assert_count_increases(UsersSkill) { f.add_editor(u59, ContentType.find_by_name('News'))}
     n1 = News.find(1)
     assert Cms.user_can_edit_content?(u59, n1)
   end

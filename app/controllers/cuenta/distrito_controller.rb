@@ -47,7 +47,7 @@ class Cuenta::DistritoController < ApplicationController
         redirect_to '/cuenta/distrito' and return
       end
        (redirect_to '/cuenta/distrito' and return) if @cur_district.mano_derecha && @cur_district.mano_derecha.id == thenew.id
-      if thenew.users_roles.count(:conditions => ['role IN (?)', %w(Don ManoDerecha)]) > 0
+      if thenew.users_skills.count(:conditions => ['role IN (?)', %w(Don ManoDerecha)]) > 0
         flash[:error] = "<strong>#{thenew.login}</strong> ya es don o mano derecha de otro distrito. Debe dejar su cargo actual antes de poder añadirlo como Mano Derecha de <strong>#{@cur_district.name}</strong>"
         redirect_to '/cuenta/distrito' and return
       end
@@ -67,7 +67,7 @@ class Cuenta::DistritoController < ApplicationController
   protected
   def require_user_is_don_or_mano_derecha
     require_auth_users
-    ur = @user.users_roles.find(:first, :conditions => ['role IN (?)', %w(Don ManoDerecha)])
+    ur = @user.users_skills.find(:first, :conditions => ['role IN (?)', %w(Don ManoDerecha)])
     raise AccessDenied unless ur
     @user_status_in_district = ur.role
     @cur_district = BazarDistrict.find(ur.role_data.to_i)
