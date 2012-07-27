@@ -10,7 +10,7 @@
 </script>
 <table>
 	
-<%@user.users_roles.find(:all, :order => 'lower(role)').each do |ur| %>
+<%@user.users_skills.find(:all, :order => 'lower(role)').each do |ur| %>
 <tr id="ur<%=ur.id%>" class="<%=oddclass%>">
 	<td class="w150"><%=ur.role%></td>
 	<td><%=role_data(ur)%></td>

@@ -268,8 +268,8 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert_equal 'anime', relportals[3].code
   end
 
-  test "in_portal with GmPortal should return all contents" do
-    assert_equal News.count, News.in_portal(GmPortal.new).count
+  test "in_portal with GmPortal should not return all contents" do
+    assert_not_equal News.count, News.in_portal(GmPortal.new).count
   end
 
   test "in_portal with BazarDistrictPortal should return BazarDistrict's contents" do

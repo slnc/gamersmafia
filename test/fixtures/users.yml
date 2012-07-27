@@ -45,6 +45,7 @@ mralariko:
   updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: mralariko@gamersmafia.com
+  is_bot: true
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu10
   ipaddr: 127.0.0.3
   secret: mambohahaha2

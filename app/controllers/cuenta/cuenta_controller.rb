@@ -36,7 +36,7 @@ class Cuenta::CuentaController < ApplicationController
   end
 
   def del_role
-    @user.users_roles.find(params[:id]).destroy
+    @user.users_skills.find(params[:id]).destroy
     render :nothing => true
   end
 

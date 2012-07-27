@@ -7,7 +7,7 @@ fixtures = [
 :groups,
 :advertisers,
 :ads_slots,
-:users_roles,
+:users_skills,
 :ban_requests,
 :autologin_keys,
 :games,

@@ -13,6 +13,8 @@ class Cuenta::ComentariosController < ApplicationController
         params[:user][:pref_comments_autoscroll])
     @user.pref_show_all_comments = parse_bool_preference(
         params[:user][:pref_show_all_comments])
+    @user.pref_use_elastic_comment_editor = parse_bool_preference(
+        params[:user][:pref_use_elastic_comment_editor])
 
     if @user.save
       flash[:notice] = "Cambios guardados correctamente."

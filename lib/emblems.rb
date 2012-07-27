@@ -86,7 +86,7 @@ module Emblems
 
     bosses = [0]
     User.can_login.find(:all, :conditions => "id IN (SELECT user_id
-                                                       FROM users_roles
+                                                       FROM users_skills
                                                       WHERE role = 'Boss')").each do |u|
       u.users_emblems.create(:emblem => 'boss')
       bosses<< u.id
@@ -94,20 +94,20 @@ module Emblems
 
     underbosses = [0]
     User.can_login.find(:all, :conditions => "id IN (SELECT user_id
-                                             FROM users_roles
+                                             FROM users_skills
                                             WHERE role = 'Underboss')").each do |u|
       u.users_emblems.create(:emblem => 'underboss')
       underbosses<< u.id
     end
 
     dons = [0]
-    User.can_login.find(:all, :conditions => "id IN (SELECT user_id FROM users_roles WHERE role = '#{BazarDistrict::ROLE_DON}') AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')})").each do |u|
+    User.can_login.find(:all, :conditions => "id IN (SELECT user_id FROM users_skills WHERE role = '#{BazarDistrict::ROLE_DON}') AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'don')
       dons<< u.id
     end
 
     mano_derechas = [0]
-    User.can_login.find(:all, :conditions => "id IN (SELECT user_id FROM users_roles WHERE role = '#{BazarDistrict::ROLE_MANO_DERECHA}') AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')})").each do |u|
+    User.can_login.find(:all, :conditions => "id IN (SELECT user_id FROM users_skills WHERE role = '#{BazarDistrict::ROLE_MANO_DERECHA}') AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'mano_derecha')
       mano_derechas<< u.id
     end
@@ -116,15 +116,15 @@ module Emblems
       u.users_emblems.create(:emblem => 'capo')
     end
 
-    User.can_login.find(:all, :conditions => "id IN (SELECT user_id FROM users_roles WHERE role = 'Sicario') AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')}) AND id NOT IN (#{dons.join(',')})  AND id NOT IN (#{mano_derechas.join(',')})").each do |u|
+    User.can_login.find(:all, :conditions => "id IN (SELECT user_id FROM users_skills WHERE role = 'Sicario') AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')}) AND id NOT IN (#{dons.join(',')})  AND id NOT IN (#{mano_derechas.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'sicario')
     end
 
-    User.can_login.find(:all, :conditions => "id IN (SELECT user_id FROM users_roles WHERE role = 'Editor') AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')}) AND id NOT IN (#{dons.join(',')})  AND id NOT IN (#{mano_derechas.join(',')})").each do |u|
+    User.can_login.find(:all, :conditions => "id IN (SELECT user_id FROM users_skills WHERE role = 'Editor') AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')}) AND id NOT IN (#{dons.join(',')})  AND id NOT IN (#{mano_derechas.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'editor')
     end
 
-    User.can_login.find(:all, :conditions => "id IN (SELECT user_id FROM users_roles WHERE role = 'Moderator') AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')}) AND id NOT IN (#{dons.join(',')})  AND id NOT IN (#{mano_derechas.join(',')})").each do |u|
+    User.can_login.find(:all, :conditions => "id IN (SELECT user_id FROM users_skills WHERE role = 'Moderator') AND id NOT IN (#{bosses.join(',')}) AND id NOT IN (#{underbosses.join(',')}) AND id NOT IN (#{dons.join(',')})  AND id NOT IN (#{mano_derechas.join(',')})").each do |u|
       u.users_emblems.create(:emblem => 'moderator')
     end
 

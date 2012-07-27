@@ -55,7 +55,7 @@ class CommentTest < ActiveSupport::TestCase
   test "faction moderator reporting a comment triggers automatic removal" do
     user = User.find(4)
     comment = create_a_comment
-    user.users_roles.create(
+    user.users_skills.create(
         :role => "Moderator",
         :role_data => comment.content.my_faction.id.to_s)
     assert user.is_moderator?
@@ -68,7 +68,7 @@ class CommentTest < ActiveSupport::TestCase
     user = User.find(4)
     comment = create_a_comment
     faction = comment.content.my_faction
-    user.users_roles.create(
+    user.users_skills.create(
         :role => "Boss",
         :role_data => faction.id.to_s)
     assert faction.user_is_moderator(user)
@@ -81,7 +81,7 @@ class CommentTest < ActiveSupport::TestCase
     user = User.find(4)
     comment = create_a_comment(:content_id => 1113)
     bazar_district = comment.content.bazar_district
-    user.users_roles.create(
+    user.users_skills.create(
         :role => "Don",
         :role_data => bazar_district.id.to_s)
     assert bazar_district.user_is_moderator(user)
@@ -94,7 +94,7 @@ class CommentTest < ActiveSupport::TestCase
     user = User.find(4)
     comment = create_a_comment(:content_id => 1113)
     bazar_district = comment.content.bazar_district
-    user.users_roles.create(
+    user.users_skills.create(
         :role => "Sicario",
         :role_data => bazar_district.id.to_s)
     assert bazar_district.user_is_moderator(user)

@@ -42,6 +42,6 @@ namespace :gm do
     User.switch_inactive_users_to_zombies
     User.update_max_cache_valorations_weights_on_self_comments
     UsersNewsfeed.old.delete_all
-    UsersRole.kill_zombified_staff
+    UsersSkill.kill_zombified_staff
   end
 end

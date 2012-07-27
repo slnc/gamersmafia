@@ -47,7 +47,7 @@ module Personalization
           :url => "http://#{user.faction.code}.#{App.domain}/"}
     end
 
-    user.users_roles.find(
+    user.users_skills.find(
         :all,
         :conditions => "role IN ('Don', 'ManoDerecha', 'Sicario')").each do |ur|
       bd = BazarDistrict.find(ur.role_data.to_i)

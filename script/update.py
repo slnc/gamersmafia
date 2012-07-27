@@ -45,7 +45,7 @@ def compress_js():
 
     for o in additional_libs:
     	compress_file('public/javascripts/%s.js' % o,
-                      'public/javascripts/%s.pack.js' % o)
+                    'public/javascripts/%s.pack.js' % o)
 
 
 def send_changelog_email():

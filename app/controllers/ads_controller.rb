@@ -13,7 +13,7 @@ class AdsController < ApplicationController
 
   def create
     @ad = Ad.new(params[:ad])
-    @ad.advertiser_id = @user.users_roles.find(:first, :conditions => 'role = \'Advertiser\'', :order => 'id').role_data.to_i
+    @ad.advertiser_id = @user.users_skills.find(:first, :conditions => 'role = \'Advertiser\'', :order => 'id').role_data.to_i
     if @ad.save
       flash[:notice] = 'Ad creado correctamente.'
       @ads_slot = AdsSlot.find(params[:ads_slot_id])
@@ -53,7 +53,7 @@ class AdsController < ApplicationController
   end
 
   def require_user_can_owns_ads_slot(ads_slot)
-    @user.is_superadmin? || !@user.users_roles.find(:first, :conditions => 'role = \'Advertiser\' AND role_data = \'#{ads_slot.advertiser_id}\'', :order => 'id').nil?
+    @user.is_superadmin? || !@user.users_skills.find(:first, :conditions => 'role = \'Advertiser\' AND role_data = \'#{ads_slot.advertiser_id}\'', :order => 'id').nil?
   end
 
   def require_user_can_edit_ad

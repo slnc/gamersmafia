@@ -136,7 +136,7 @@ class EmblemsTest < ActiveSupport::TestCase
   end
 
   test "give_emblems_sicario" do
-    User.db_query("DELETE from users_roles WHERE role = 'Sicario'")
+    User.db_query("DELETE from users_skills WHERE role = 'Sicario'")
     assert_gives_emblem('sicario') do
       d1 = BazarDistrict.find(1)
       d1.add_sicario(@u)
@@ -145,7 +145,7 @@ class EmblemsTest < ActiveSupport::TestCase
 
   test "give_emblems_editor" do
     assert_gives_emblem('editor') do
-      assert_count_increases(UsersRole) do
+      assert_count_increases(UsersSkill) do
         Faction.find(1).add_editor(@u, ContentType.find(:first))
       end
     end
@@ -154,14 +154,14 @@ class EmblemsTest < ActiveSupport::TestCase
   test "give_emblems_editor_if_not_already_boss" do
     test_give_emblems_boss
     ue_count = UsersEmblem.count
-    assert_count_increases(UsersRole) { UsersRole.create(:user_id => @u.id, :role => 'Editor', :role_data => {:faction_id => 1, :content_type_id => 1}.to_yaml) }
+    assert_count_increases(UsersSkill) { UsersSkill.create(:user_id => @u.id, :role => 'Editor', :role_data => {:faction_id => 1, :content_type_id => 1}.to_yaml) }
     assert_equal ue_count, UsersEmblem.count
   end
 
   test "give_emblems_moderator" do
-    User.db_query("DELETE FROM users_roles WHERE role = 'Moderator'")
+    User.db_query("DELETE FROM users_skills WHERE role = 'Moderator'")
     assert_gives_emblem('moderator') do
-      assert_count_increases(UsersRole) { UsersRole.create(:user_id => @u.id, :role => 'Moderator', :role_data => '1') }
+      assert_count_increases(UsersSkill) { UsersSkill.create(:user_id => @u.id, :role => 'Moderator', :role_data => '1') }
     end
   end
 
