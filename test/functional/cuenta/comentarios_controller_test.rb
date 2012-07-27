@@ -13,13 +13,14 @@ class Cuenta::ComentariosControllerTest < ActionController::TestCase
     User.db_query("UPDATE users SET enable_comments_sig = 't' WHERE id = 1")
 
     sym_login 1
-    assert_difference("UsersPreference.count", 2) do
+    assert_difference("UsersPreference.count", 3) do
       post :save, {
           :user => {
               :comments_sig => 'Foo',
               :comment_show_sigs => true,
               :pref_comments_autoscroll => '0',
               :pref_show_all_comments => '0',
+              :pref_use_elastic_comment_editor => '0',
           }
       }
     end
@@ -29,6 +30,7 @@ class Cuenta::ComentariosControllerTest < ActionController::TestCase
     u1 = User.find(1)
     assert_equal '0', u1.pref_comments_autoscroll
     assert_equal '0', u1.pref_show_all_comments
+    assert_equal '0', u1.pref_use_elastic_comment_editor
     assert_equal 'Foo', u1.comments_sig
     assert u1.comment_show_sigs
   end
