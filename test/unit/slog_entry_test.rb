@@ -29,7 +29,7 @@ class SlogEntryTest < ActiveSupport::TestCase
     u2 = User.find(2)
     c = Ladder.find(:first, :conditions => ['state > ?', Competition::STARTED])
     assert c
-    u2.users_roles.create(:role => 'CompetitionAdmin', :role_data => "#{c.id}")
+    u2.users_skills.create(:role => 'CompetitionAdmin', :role_data => "#{c.id}")
     assert_equal c.id, SlogEntry.scopes(:competition_admin, u2)[0].id
     assert_equal c.id, SlogEntry.scopes(:competition_supervisor, u2)[0].id
   end

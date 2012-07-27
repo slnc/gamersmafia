@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Admin::UsuariosController < ApplicationController
-  before_filter :require_auth_admins, :except => [ :edit, :index, :clear_photo, :clear_description, :report, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request, :confirmar_ban_request , :set_antiflood_level, :update, :users_role_destroy, :ipsduplicadas]
+  before_filter :require_auth_admins, :except => [ :edit, :index, :clear_photo, :clear_description, :report, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request, :confirmar_ban_request , :set_antiflood_level, :update, :users_skill_destroy, :ipsduplicadas]
   before_filter :only => [ :index, :clear_photo, :clear_description, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request] do |c|
     raise AccessDenied unless c.user && c.user.has_admin_permission?(:capo)
   end
@@ -73,8 +73,8 @@ class Admin::UsuariosController < ApplicationController
       expire_fragment('/home/index/factions') # TODO esto no debería hacerse aquí
     end
 
-    if params[:users_role] && params[:users_role][:role].to_s != '' # añadir rol
-      u.users_roles<< UsersRole.create(:role => params[:users_role][:role], :role_data => params[:users_role][:role_data])
+    if params[:users_skill] && params[:users_skill][:role].to_s != '' # añadir rol
+      u.users_skills<< UsersSkill.create(:role => params[:users_skill][:role], :role_data => params[:users_skill][:role_data])
     end
 
     if !params[:edituser][:admin_permissions].to_s.empty?
@@ -90,10 +90,10 @@ class Admin::UsuariosController < ApplicationController
     end
   end
 
-  def users_role_destroy
-    role = UsersRole.find(params[:id])
+  def users_skill_destroy
+    role = UsersSkill.find(params[:id])
     role.destroy
-    @js_response = "$j('#users_role#{role.id}').fadeOut('normal');"
+    @js_response = "$j('#users_skill#{role.id}').fadeOut('normal');"
     render :partial => '/shared/silent_ajax_feedback',
            :locals => { :js_response => @js_response }
   end

@@ -23,7 +23,10 @@ class Term < ActiveRecord::Base
   has_slug :name
   file_column :image
 
+  before_save :check_no_parent_if_contents_tag
   before_save :check_references_to_ancestors
+  before_save :check_scope_if_toplevel
+  before_save :check_taxonomy
   before_save :copy_parent_attrs
 
   # VALIDATES siempre los últimos
@@ -32,8 +35,6 @@ class Term < ActiveRecord::Base
   plain_text :name, :description
   validates_uniqueness_of :name, :scope => [:parent_id, :taxonomy]  # missing :type
   validates_uniqueness_of :slug, :scope => [:parent_id, :taxonomy]  # missing :type
-  before_save :check_scope_if_toplevel
-  before_save :check_taxonomy
 
   def self.delete_empty_content_tags_terms
     Term.contents_tags.find(:all, :conditions => 'contents_count = 0').each do |t|
@@ -167,6 +168,9 @@ class Term < ActiveRecord::Base
   end
 
   private
+  def check_no_parent_if_contents_tag
+    !(self.taxonomy == "ContentsTag" && !self.parent_id.nil?)
+  end
   def check_references_to_ancestors
     if !self.new_record?
       if self.parent_id_changed?

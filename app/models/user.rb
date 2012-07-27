@@ -90,7 +90,7 @@ class User < ActiveRecord::Base
 
   has_many :groups_messages
 
-  has_many :users_roles, :dependent => :destroy
+  has_many :users_skills, :dependent => :destroy
   has_many :friends_recommendations
   has_many :clans_movements
   has_many :recruitment_ads
@@ -527,13 +527,13 @@ class User < ActiveRecord::Base
   end
 
   def check_permissions
-    [self.users_roles.find_by_role('Boss'),
-    self.users_roles.find_by_role('Underboss')].compact.each do |ur|
+    [self.users_skills.find_by_role('Boss'),
+    self.users_skills.find_by_role('Underboss')].compact.each do |ur|
       ur.destroy
     end if self.faction_id_changed?
 
     if self.state_changed? && STATES_CANNOT_LOGIN.include?(self.state)
-      self.users_roles.clear
+      self.users_skills.clear
     end
   end
 
@@ -574,7 +574,7 @@ class User < ActiveRecord::Base
 
   def update_is_staff
     # Actualiza la variable is_staff.
-    has_some_roles = self.users_roles.count(:conditions => "role IN ('Don',
+    has_some_roles = self.users_skills.count(:conditions => "role IN ('Don',
                                                                      'ManoDerecha',
                                                                      'Sicario',
                                                                      'Moderator',
@@ -671,7 +671,7 @@ class User < ActiveRecord::Base
   end
 
   def _no_cache_is_faction_leader?
-   (!self.faction_id.nil?) && (self.has_admin_permission?(:capo) || self.users_roles.count(:conditions => "role IN ('Boss', 'Underboss')") > 0)
+   (!self.faction_id.nil?) && (self.has_admin_permission?(:capo) || self.users_skills.count(:conditions => "role IN ('Boss', 'Underboss')") > 0)
   end
 
   def is_faction_leader?
@@ -680,7 +680,7 @@ class User < ActiveRecord::Base
 
   def is_district_leader?
     self.has_admin_permission?(:bazar_manager) ||
-    UsersRole.count(:conditions => ["role IN ('#{BazarDistrict::ROLE_DON}',
+    UsersSkill.count(:conditions => ["role IN ('#{BazarDistrict::ROLE_DON}',
                                               '#{BazarDistrict::ROLE_MANO_DERECHA}')
                                      AND user_id = ?", self.id]) > 0
   end
@@ -810,11 +810,11 @@ class User < ActiveRecord::Base
   end
 
   def is_bigboss?
-   (self.users_roles.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha')") > 0) || self.has_admin_permission?(:bazar_manager) || self.has_admin_permission?(:capo)
+   (self.users_skills.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha')") > 0) || self.has_admin_permission?(:bazar_manager) || self.has_admin_permission?(:capo)
   end
 
   def is_faction_editor?
-    is_faction_leader? || self.users_roles.count(:conditions => "role = 'Editor'") > 0 || has_admin_permission?(:capo)
+    is_faction_leader? || self.users_skills.count(:conditions => "role = 'Editor'") > 0 || has_admin_permission?(:capo)
   end
 
   def is_editor?
@@ -822,9 +822,9 @@ class User < ActiveRecord::Base
     # devuelve true si el usuario puede editar algún tipo de contenido
     if self.is_bigboss?
       true
-    elsif self.users_roles.count(:conditions => 'role IN (\'CompetitionAdmin\', \'CompetitionSupervisor\')') > 0
+    elsif self.users_skills.count(:conditions => 'role IN (\'CompetitionAdmin\', \'CompetitionSupervisor\')') > 0
       true
-    elsif self.users_roles.count(:conditions => "role = 'Editor'") > 0
+    elsif self.users_skills.count(:conditions => "role = 'Editor'") > 0
       true
     else
       false
@@ -832,19 +832,19 @@ class User < ActiveRecord::Base
   end
 
   def is_moderator?
-    self.is_faction_leader? || self.users_roles.count(:conditions => "role = 'Moderator'") > 0
+    self.is_faction_leader? || self.users_skills.count(:conditions => "role = 'Moderator'") > 0
   end
 
   def is_competition_admin?
-    has_admin_permission?(:gladiador) || self.users_roles.count(:conditions => "role = 'CompetitionAdmin'") > 0
+    has_admin_permission?(:gladiador) || self.users_skills.count(:conditions => "role = 'CompetitionAdmin'") > 0
   end
 
   def is_competition_supervisor?
-    has_admin_permission?(:gladiador) || is_competition_admin? || self.users_roles.count(:conditions => "role = 'CompetitionSupervisor'") > 0
+    has_admin_permission?(:gladiador) || is_competition_admin? || self.users_skills.count(:conditions => "role = 'CompetitionSupervisor'") > 0
   end
 
   def is_sicario?
-    self.is_district_leader? || self.users_roles.count(:conditions => "role = 'Sicario'") > 0
+    self.is_district_leader? || self.users_skills.count(:conditions => "role = 'Sicario'") > 0
   end
 
   def unread_messages

@@ -9,10 +9,13 @@ class UsersContentsTag < ActiveRecord::Base
   before_create :resolve_term
   after_destroy Proc.new { |c|
     UsersContentsTag.recalculate_content_top_tags(c.content)
-    # c.term.destroy if c.term && c.term.orphan?
   }
 
-  validates_format_of :original_name, :with => /^[a-záéíóúñ0-9.]{1,30}$/i, :message => 'El tag tiene más de 30 caracteres o bien contiene caracteres ilegales (solo se permiten letras, numeros y puntos)'
+  validates_format_of :original_name,
+                      :with => /^[a-záéíóúñ0-9.]{1,30}$/i,
+                      :message => (
+      'El tag tiene más de 30 caracteres o bien contiene caracteres ilegales' +
+      ' (solo se permiten letras, numeros y puntos)')
   validates_uniqueness_of :term_id, :scope => [:content_id, :user_id]
 
   def downcase_name
@@ -21,7 +24,8 @@ class UsersContentsTag < ActiveRecord::Base
 
   private
   def resolve_term
-    if (Cms::ROOT_TERMS_CONTENTS + Cms::CATEGORIES_TERMS_CONTENTS).include?(self.content.content_type.name)
+    if (Cms::ROOT_TERMS_CONTENTS + Cms::CATEGORIES_TERMS_CONTENTS).include?(
+        self.content.content_type.name)
       mc = self.content.real_content.main_category
       if (Term.top_level.count(
               :conditions => [
@@ -43,20 +47,29 @@ class UsersContentsTag < ActiveRecord::Base
     self.term_id = t.id
 
     # El validates_uniqueness_of de arriba no está funcionando
-    UsersContentsTag.count(:conditions => ['term_id = ? AND user_id = ? AND content_id = ?', self.term_id, self.user_id, self.content_id]) == 0
+    UsersContentsTag.count(
+        :conditions => ['term_id = ? AND user_id = ? AND content_id = ?',
+                        self.term_id, self.user_id, self.content_id]) == 0
   end
 
   public
   def self.tag_content(content, user, tag_str, delete_missing=true)
     return if tag_str.length > 300 or tag_str.count(' ') > 10
-    tags_to_delete = content.users_contents_tags.find(:all, :conditions => ['user_id = ?', user.id])
+    tags_to_delete = content.users_contents_tags.find(
+        :all, :conditions => ['user_id = ?', user.id])
     return if tags_to_delete.size > 11
     tags_to_delete ||= []
     tag_str.split(' ').each do |tag|
-      uct = UsersContentsTag.create(:user_id => user.id, :content_id => content.id, :original_name => tag)
-      tags_to_delete = tags_to_delete.delete_if { |item| item.original_name == uct.original_name }
+      uct = UsersContentsTag.create(
+          :user_id => user.id, :content_id => content.id, :original_name => tag)
+      tags_to_delete = tags_to_delete.delete_if { |item|
+        item.original_name == uct.original_name
+      }
     end
-    tags_to_delete.each do |item| item.destroy end if delete_missing
+
+    if delete_missing
+      tags_to_delete.each { |item| item.destroy }
+    end
     self.recalculate_content_top_tags(content)
   end
 
@@ -76,11 +89,20 @@ class UsersContentsTag < ActiveRecord::Base
   end
 
   def self.biggest_taggers
-    dbrs = User.db_query("SELECT count(*), user_id FROM users_contents_tags GROUP BY user_id ORDER BY count DESC LIMIT 10")
+    dbrs = User.db_query(
+        "SELECT count(*),
+                user_id
+         FROM users_contents_tags
+         GROUP BY user_id
+         ORDER BY count DESC
+         LIMIT 10")
     return [] if dbrs.size == 0
     total = dbrs[0]['count'].to_f
     dbrs.collect do |dbr|
-     [User.find(dbr['user_id'].to_i), {:count => dbr['count'].to_i, :relative_pcent => dbr['count'].to_i / total}]
+     [User.find(dbr['user_id'].to_i),
+      {:count => dbr['count'].to_i,
+       :relative_pcent => dbr['count'].to_i / total},
+     ]
     end
   end
 end

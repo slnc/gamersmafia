@@ -14,9 +14,9 @@ class Faction < ActiveRecord::Base
 
   after_create :notify_capos_on_create  # TODO mover a otro sitio
 
-  has_users_role 'Moderator'
-  has_users_role 'Boss'
-  has_users_role 'Underboss'
+  has_users_skill 'Moderator'
+  has_users_skill 'Boss'
+  has_users_skill 'Underboss'
 
   GRACE_DAYS = 7
 
@@ -26,13 +26,13 @@ class Faction < ActiveRecord::Base
 
   scope :orphan, :conditions => [
       "(SELECT COUNT(*)
-        FROM users_roles
+        FROM users_skills
         WHERE role IN ('Boss', 'Underboss')
         AND role_data = factions.id::text) = 0"]
 
   scope :parented, :conditions => [
       "(SELECT COUNT(*)
-        FROM users_roles
+        FROM users_skills
         WHERE role IN ('Boss', 'Underboss')
         AND role_data = factions.id::text) > 0"]
 
@@ -74,7 +74,7 @@ class Faction < ActiveRecord::Base
 
   def self.check_faction_leaders
     # TODO TEMP, esto no debería ser necesario
-    User.db_query("update users set cache_is_faction_leader = 't' where id in (select user_id FROM users_roles WHERE role IN ('Boss', 'Underboss'));")
+    User.db_query("update users set cache_is_faction_leader = 't' where id in (select user_id FROM users_skills WHERE role IN ('Boss', 'Underboss'));")
   end
 
   # Returns number of days that the current boss has been a boss.
@@ -152,7 +152,7 @@ class Faction < ActiveRecord::Base
   end
 
   def destroy_editors_too
-    UsersRole.find(
+    UsersSkill.find(
         :all,
         :conditions => [
             "role = 'Editor'
@@ -163,7 +163,7 @@ class Faction < ActiveRecord::Base
   end
 
   def moderators
-    UsersRole.find(
+    UsersSkill.find(
         :all,
         :conditions => [
               "role = 'Moderator' AND role_data = ?", self.id.to_s],
@@ -177,7 +177,7 @@ class Faction < ActiveRecord::Base
 
   def is_moderator?(u)
     (u.has_admin_permission?(:capo) ||
-     UsersRole.count(
+     UsersSkill.count(
         :conditions => [
             "role IN ('Boss', 'Underboss', 'Moderator')
          AND role_data = ? AND user_id = ?", self.id.to_s, u.id]) > 0)
@@ -191,7 +191,7 @@ class Faction < ActiveRecord::Base
     return true if user.has_admin_permission?(:capo)
     if self.is_bigboss?(user)
       true
-    elsif UsersRole.count(
+    elsif UsersSkill.count(
         :conditions => [
             "role = 'Editor'
          AND user_id = ?
@@ -269,7 +269,7 @@ class Faction < ActiveRecord::Base
         # delete permissions at the next update_attributes
         newuser = User.find(newuser.id)
       end
-      ur = UsersRole.create(
+      ur = UsersSkill.create(
         :role => role, :role_data => self.id.to_s, :user_id => newuser.id)
 
       newuser.update_attributes(:cache_is_faction_leader => 't')
@@ -289,7 +289,7 @@ class Faction < ActiveRecord::Base
   end
 
   def remove_boss_incompatible_user_roles(user)
-    UsersRole.find(
+    UsersSkill.find(
         :all,
         :conditions => ["role IN ('Boss', 'Underboss') AND user_id = ?",
                         user.id]).each do |ur|
@@ -318,7 +318,7 @@ class Faction < ActiveRecord::Base
   end
 
   def _role(role)
-    UsersRole.find(
+    UsersSkill.find(
         :all,
         :conditions => ['role = ? AND role_data = ?', role, self.id.to_s],
         :include => :user)
@@ -326,7 +326,7 @@ class Faction < ActiveRecord::Base
 
   def editors(content_type=nil)
     if content_type.nil?
-      UsersRole.find(
+      UsersSkill.find(
           :all,
           :conditions => "role = 'Editor'
                           AND role_data LIKE E'%faction_id: #{self.id}\\n%'",
@@ -335,7 +335,7 @@ class Faction < ActiveRecord::Base
         [ContentType.find(ur.role_data_yaml[:content_type_id].to_i), ur.user]
       end
     else
-      UsersRole.find(
+      UsersSkill.find(
           :all,
           :conditions => (
               "role = 'Editor'
@@ -349,17 +349,17 @@ class Faction < ActiveRecord::Base
   end
 
   def add_moderator(user)
-    if UsersRole.count(
+    if UsersSkill.count(
         :conditions => ["role = 'Moderator' AND user_id = ? AND role_data = ?",
                         user.id, self.id.to_s]) == 0
-      ur = UsersRole.new(
+      ur = UsersSkill.new(
           :role => 'Moderator', :user_id => user.id, :role_data => self.id.to_s)
       ur.save
     end
   end
 
   def del_moderator(user)
-    ur = UsersRole.find(
+    ur = UsersSkill.find(
         :first,
         :conditions => ["role = 'Moderator' AND user_id = ? AND role_data = ?",
                         user.id, self.id.to_s])
@@ -367,14 +367,14 @@ class Faction < ActiveRecord::Base
   end
 
   def add_editor(user, content_type)
-    if UsersRole.count(
+    if UsersSkill.count(
         :conditions => [
             "role = 'Editor'
              AND user_id = ?
              AND role_data LIKE E'%%faction_id: #{self.id}\\n%%'
              AND role_data LIKE E'%%content_type_id: #{content_type.id}\\n%%'",
              user.id]) == 0
-      ur = UsersRole.new(
+      ur = UsersSkill.new(
           :role => 'Editor',
           :user_id => user.id,
           :role_data => {
@@ -386,7 +386,7 @@ class Faction < ActiveRecord::Base
   end
 
   def del_editor(user, content_type)
-    ur = UsersRole.find(
+    ur = UsersSkill.find(
         :first,
         :conditions => [
             "role = 'Editor'
@@ -438,11 +438,11 @@ class Faction < ActiveRecord::Base
   end
 
   def editors_total
-    UsersRole.count(:conditions => "role = 'Moderator' AND role_data LIKE E'%%faction_id: #{self.id}\\\n%%'")
+    UsersSkill.count(:conditions => "role = 'Moderator' AND role_data LIKE E'%%faction_id: #{self.id}\\\n%%'")
   end
 
   def moderators_total
-    UsersRole.count(:conditions => "role = 'Moderator AND role_data = #{self.id}'")
+    UsersSkill.count(:conditions => "role = 'Moderator AND role_data = #{self.id}'")
   end
 
   def referenced_thing
@@ -652,7 +652,7 @@ class Faction < ActiveRecord::Base
     if is_bigboss?(user)
       true
     else
-      UsersRole.count(
+      UsersSkill.count(
           :conditions => ["role = 'Moderator'
                            AND user_id = ?
                            AND role_data = ?", user.id, self.id.to_s]) != 0
@@ -733,7 +733,7 @@ class Faction < ActiveRecord::Base
     return true if user.is_superadmin || user.has_admin_permission?(:capo)
     if self.is_bigboss?(user)
       true
-    elsif UsersRole.count(
+    elsif UsersSkill.count(
         :conditions => [
             "role = 'Editor'
              AND user_id = ?
@@ -747,37 +747,37 @@ class Faction < ActiveRecord::Base
   end
 
   def self.find_by_boss(u)
-    ur = u.users_roles.find(:first, :conditions => 'role IN (\'Boss\')')
+    ur = u.users_skills.find(:first, :conditions => 'role IN (\'Boss\')')
     Faction.find(ur.role_data.to_i) if ur
   end
 
   def self.find_by_moderator(u)
-    u.users_roles.find(:all, :conditions => 'role = \'Moderator\'').collect { |ur| Faction.find(ur.role_data.to_i) }
+    u.users_skills.find(:all, :conditions => 'role = \'Moderator\'').collect { |ur| Faction.find(ur.role_data.to_i) }
   end
 
   def self.find_by_underboss(u)
-    ur = u.users_roles.find(:first, :conditions => 'role IN (\'Underboss\')')
+    ur = u.users_skills.find(:first, :conditions => 'role IN (\'Underboss\')')
     Faction.find(ur.role_data.to_i) if ur
   end
 
   def self.find_by_bigboss(u)
-    ur = u.users_roles.find(:first, :conditions => 'role IN (\'Boss\', \'Underboss\')')
+    ur = u.users_skills.find(:first, :conditions => 'role IN (\'Boss\', \'Underboss\')')
     Faction.find(ur.role_data.to_i) if ur
   end
 
   def self.find_orphaned
-    self.find(:all, :conditions => "id NOT IN (SELECT role_data::int4 FROM users_roles WHERE role IN ('Boss', 'Underboss'))", :order => 'lower(name)')
+    self.find(:all, :conditions => "id NOT IN (SELECT role_data::int4 FROM users_skills WHERE role IN ('Boss', 'Underboss'))", :order => 'lower(name)')
   end
 
   def self.count_orphaned
-    self.count(:conditions => "id NOT IN (SELECT role_data::int4 FROM users_roles WHERE role IN ('Boss', 'Underboss'))")
+    self.count(:conditions => "id NOT IN (SELECT role_data::int4 FROM users_skills WHERE role IN ('Boss', 'Underboss'))")
   end
 
   def self.find_unorphaned
-    self.find(:all, :conditions => "id IN (SELECT role_data::int4 FROM users_roles WHERE role IN ('Boss', 'Underboss'))", :order => 'lower(name)')
+    self.find(:all, :conditions => "id IN (SELECT role_data::int4 FROM users_skills WHERE role IN ('Boss', 'Underboss'))", :order => 'lower(name)')
   end
 
   def self.factions_ids_with_bigbosses
-    "(SELECT role_data::int4 FROM users_roles WHERE role IN ('Boss', 'Underboss'))"
+    "(SELECT role_data::int4 FROM users_skills WHERE role IN ('Boss', 'Underboss'))"
   end
 end

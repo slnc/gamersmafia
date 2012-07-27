@@ -29,7 +29,7 @@ class RecruitmentAd < ActiveRecord::Base
   end
 
   def mark_as_deleted
-    #Cms.modify_content_state(self, )
-    self.update_attributes(:deleted => true) unless self.deleted?
+    Cms.modify_content_state(self, Ias.MrMan, Cms::DELETED)
+    self.update_attributes(:deleted => true)
   end
 end

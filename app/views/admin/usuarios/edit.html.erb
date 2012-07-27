@@ -211,13 +211,13 @@
 	<td><label for="post_confirmed">Roles</label></td>
 	<td>
 		<table>
-		<% @edituser.users_roles.find(:all, :order => 'role, role_data').each do |role| %>
-		<tr class="<%=oddclass%>" id="users_role<%=role.id%>">
+		<% @edituser.users_skills.find(:all, :order => 'role, role_data').each do |role| %>
+		<tr class="<%=oddclass%>" id="users_skill<%=role.id%>">
 			<td><%=role.role%></td>
 			<td><%=role.role_data%></td>
 			<td><%=link_to(
           "del",
-          "/admin/usuarios/users_role_destroy/#{role.id}&aj=1",
+          "/admin/usuarios/users_skill_destroy/#{role.id}&aj=1",
           :confirm => '¿Estás seguro de que deseas este rol?',
           :remote => true)%>
       </td>
@@ -226,11 +226,11 @@
 	</table>
 
 	Añadir rol<br />
-	<select name="users_role[role]">
+	<select name="users_skill[role]">
 		<option value=""></option>
-		<%=options_for_select(UsersRole::VALID_ROLES.collect { |r| [r, r] } )%>
+		<%=options_for_select(UsersSkill::VALID_ROLES.collect { |r| [r, r] } )%>
 	</select>
-	<input type="text" class="text" name="users_role[role_data]" />
+	<input type="text" class="text" name="users_skill[role_data]" />
 	<input type="submit" class="button submit" value="Añadir" />
 	</td>
 	</tr>

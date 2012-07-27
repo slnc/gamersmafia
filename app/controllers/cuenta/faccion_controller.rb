@@ -450,7 +450,7 @@ class Cuenta::FaccionController < ApplicationController
         redirect_to '/cuenta/faccion/staff' and return
       end
        (redirect_to '/cuenta/faccion/staff' and return) if @faction.is_underboss?(thenew)
-      if thenew.users_roles.count(:conditions => ['role IN (?)', %w(Boss Underboss)]) > 0
+      if thenew.users_skills.count(:conditions => ['role IN (?)', %w(Boss Underboss)]) > 0
         flash[:error] = "<strong>#{thenew.login}</strong> ya es boss o underboss de otra facción. Debe dejar su cargo actual antes de poder añadirlo como Underboss de <strong>#{@faction.name}</strong>"
         redirect_to '/cuenta/faccion/staff' and return
       end

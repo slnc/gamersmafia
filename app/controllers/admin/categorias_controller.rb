@@ -12,7 +12,7 @@ class Admin::CategoriasController < ApplicationController
       end
     end
 
-    raise AccessDenied unless user.users_roles.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha', 'Sicario', 'Editor')") > 0 || user.has_admin_permission?(:capo)
+    raise AccessDenied unless user.users_skills.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha', 'Sicario', 'Editor')") > 0 || user.has_admin_permission?(:capo)
   end
 
   public

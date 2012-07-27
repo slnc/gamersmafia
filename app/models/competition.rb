@@ -60,8 +60,8 @@ class Competition < ActiveRecord::Base
 
   file_column :header_image
 
-  has_users_role 'CompetitionAdmin'
-  has_users_role 'CompetitionSupervisor'
+  has_users_skill 'CompetitionAdmin'
+  has_users_skill 'CompetitionSupervisor'
 
   has_bank_account
 
@@ -84,7 +84,7 @@ class Competition < ActiveRecord::Base
     ids = [0]
     Clan.related_with_user(user.id).compact.each { |c| ids<< c.id }
 
-    { :conditions => "id IN (SELECT role_data::int4 FROM users_roles WHERE user_id = #{user.id} AND role IN ('CompetitionAdmin', 'CompetitionSupervisor'))
+    { :conditions => "id IN (SELECT role_data::int4 FROM users_skills WHERE user_id = #{user.id} AND role IN ('CompetitionAdmin', 'CompetitionSupervisor'))
                                            or id IN (SELECT a.id
                                                        FROM competitions a
                                                        JOIN competitions_participants b on a.id = b.competition_id
@@ -145,47 +145,47 @@ class Competition < ActiveRecord::Base
   end
 
   def admins
-    UsersRole.find(:all, :conditions => ["role = 'CompetitionAdmin' AND role_data = ?", self.id.to_s], :include => :user, :order => 'lower(users.login)').collect { |ur| ur.user }
+    UsersSkill.find(:all, :conditions => ["role = 'CompetitionAdmin' AND role_data = ?", self.id.to_s], :include => :user, :order => 'lower(users.login)').collect { |ur| ur.user }
   end
 
   def supervisors
-    UsersRole.find(:all, :conditions => ["role = 'CompetitionSupervisor' AND role_data = ?", self.id.to_s], :include => :user, :order => 'lower(users.login)').collect { |ur| ur.user }
+    UsersSkill.find(:all, :conditions => ["role = 'CompetitionSupervisor' AND role_data = ?", self.id.to_s], :include => :user, :order => 'lower(users.login)').collect { |ur| ur.user }
   end
 
   def add_supervisor(user)
-    if UsersRole.count(:conditions => ["role = 'CompetitionSupervisor' AND user_id = ? AND role_data = ?", user.id, self.id.to_s]) == 0
-      ur = UsersRole.new(:role => 'CompetitionSupervisor', :user_id => user.id, :role_data => self.id.to_s)
+    if UsersSkill.count(:conditions => ["role = 'CompetitionSupervisor' AND user_id = ? AND role_data = ?", user.id, self.id.to_s]) == 0
+      ur = UsersSkill.new(:role => 'CompetitionSupervisor', :user_id => user.id, :role_data => self.id.to_s)
       ur.save
     end
     Cache::Competition.expire_competitions_lists(user)
   end
 
   def add_admin(user)
-    if UsersRole.count(:conditions => ["role = 'CompetitionAdmin' AND user_id = ? AND role_data = ?", user.id, self.id.to_s]) == 0
-      ur = UsersRole.new(:role => 'CompetitionAdmin', :user_id => user.id, :role_data => self.id.to_s)
+    if UsersSkill.count(:conditions => ["role = 'CompetitionAdmin' AND user_id = ? AND role_data = ?", user.id, self.id.to_s]) == 0
+      ur = UsersSkill.new(:role => 'CompetitionAdmin', :user_id => user.id, :role_data => self.id.to_s)
       ur.save
     end
     Cache::Competition.expire_competitions_lists(user)
   end
 
   def del_admin(u)
-    ur = UsersRole.find(:first, :conditions => ["role = 'CompetitionAdmin' AND user_id = ? AND role_data = ?", u.id, self.id.to_s])
+    ur = UsersSkill.find(:first, :conditions => ["role = 'CompetitionAdmin' AND user_id = ? AND role_data = ?", u.id, self.id.to_s])
     ur.destroy if ur
     Cache::Competition.expire_competitions_lists(u)
   end
 
   def del_supervisor(u)
-    ur = UsersRole.find(:first, :conditions => ["role = 'CompetitionSupervisor' AND user_id = ? AND role_data = ?", u.id, self.id.to_s])
+    ur = UsersSkill.find(:first, :conditions => ["role = 'CompetitionSupervisor' AND user_id = ? AND role_data = ?", u.id, self.id.to_s])
     ur.destroy if ur
     Cache::Competition.expire_competitions_lists(u)
   end
 
   def user_is_admin(user_id)
-    UsersRole.count(:conditions => ["role = 'CompetitionAdmin' AND role_data = ? AND user_id = ?", self.id.to_s, user_id]) > 0
+    UsersSkill.count(:conditions => ["role = 'CompetitionAdmin' AND role_data = ? AND user_id = ?", self.id.to_s, user_id]) > 0
   end
 
   def user_is_supervisor(user_id)
-    UsersRole.count(:conditions => ["role = 'CompetitionSupervisor' AND role_data = ? AND user_id = ?", self.id.to_s, user_id]) > 0
+    UsersSkill.count(:conditions => ["role = 'CompetitionSupervisor' AND role_data = ? AND user_id = ?", self.id.to_s, user_id]) > 0
   end
 
 
@@ -978,11 +978,11 @@ class Competition < ActiveRecord::Base
   end
 
   def self.find_by_admin(u)
-    # u.users_roles.find(:all, :conditions => 'role = \'CompetitionAdmin\'').collect { |ur| Competition.find(ur.role_data.to_i)}
-    Competition.find(:all, :conditions => "id IN (SELECT role_data::int4 FROM users_roles WHERE user_id = #{u.id} AND role = 'CompetitionAdmin')", :order => 'lower(name)')
+    # u.users_skills.find(:all, :conditions => 'role = \'CompetitionAdmin\'').collect { |ur| Competition.find(ur.role_data.to_i)}
+    Competition.find(:all, :conditions => "id IN (SELECT role_data::int4 FROM users_skills WHERE user_id = #{u.id} AND role = 'CompetitionAdmin')", :order => 'lower(name)')
   end
 
   def self.find_by_supervisor(u)
-    Competition.find(:all, :conditions => "id IN (SELECT role_data::int4 FROM users_roles WHERE user_id = #{u.id} AND role = 'CompetitionSupervisor')", :order => 'lower(name)')
+    Competition.find(:all, :conditions => "id IN (SELECT role_data::int4 FROM users_skills WHERE user_id = #{u.id} AND role = 'CompetitionSupervisor')", :order => 'lower(name)')
   end
 end

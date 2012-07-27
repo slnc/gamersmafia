@@ -48,7 +48,7 @@ class CacheObserver < ActiveRecord::Observer
           Tutorial,
           User,
           UsersEmblem,
-          UsersRole
+          UsersSkill
 
   def self.bazar_root_tc_id
     @@bazar_root_tc_id ||= Term.single_toplevel(:slug => 'bazar')
@@ -66,7 +66,7 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment "/home/comunidad/recruitment_ads_#{object.clan_id ? 'clans' : 'users'}"
       when 'ContentsRecommendation'
       expire_fragment "/_users/#{object.receiver_user_id % 1000}/#{object.receiver_user_id}/layouts/recommendations"
-      when 'UsersRole'
+      when 'UsersSkill'
       Cache::Personalization.expire_quicklinks(object.user) if %w(Don ManoDerecha Sicario).include?(object.role)
       if %w(Editor Moderator).include?(object.role)
         faction_id =object.role == 'Moderator' ? object.role_data : object.role_data_yaml[:faction_id]
@@ -218,7 +218,7 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment "#{Cache.user_base(object.user_id)}/profile/clanes"
       when 'RecruitmentAd'
       expire_fragment "/home/comunidad/recruitment_ads_#{object.clan_id ? 'clans' : 'users'}"
-      when 'UsersRole'
+      when 'UsersSkill'
       Cache::Personalization.expire_quicklinks(object.user) if %w(Don ManoDerecha Sicario).include?(object.role)
       if %w(Editor Moderator).include?(object.role)
         faction_id =object.role == 'Moderator' ? object.role_data : object.role_data_yaml[:faction_id]

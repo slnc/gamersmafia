@@ -33,11 +33,11 @@ module ActiveRecordMixings
     end
   end
 
-  define_method 'delete_associated_users_roles' do
+  define_method 'delete_associated_users_skills' do
     return true unless self.id
     instance_eval <<-END
-    self.class._users_roles.each do |urname|
-      UsersRole.find(:all, :conditions => ['role = ? AND role_data = ?', urname, self.id.to_s]).each do |ur|
+    self.class._users_skills.each do |urname|
+      UsersSkill.find(:all, :conditions => ['role = ? AND role_data = ?', urname, self.id.to_s]).each do |ur|
         ur.destroy
       end
     end
@@ -61,14 +61,14 @@ module ActiveRecordMixings
       self.paginate(options)
     end
 
-    def has_users_role(role_name)
+    def has_users_skill(role_name)
       class_eval <<-END
 
-      @@_users_roles ||= []
-      @@_users_roles << role_name
-      cattr_accessor :_users_roles
+      @@_users_skills ||= []
+      @@_users_skills << role_name
+      cattr_accessor :_users_skills
       END
-      before_destroy :delete_associated_users_roles
+      before_destroy :delete_associated_users_skills
     end
 
 

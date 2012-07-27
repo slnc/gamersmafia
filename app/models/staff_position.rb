@@ -69,7 +69,7 @@ class StaffPosition < ActiveRecord::Base
     end
 
     event :confirm_winners,
-          :after => [:save, :update_users_roles] do
+          :after => [:save, :update_users_skills] do
       transitions :to => :assigned, :from => [:elect]
     end
   end
@@ -78,9 +78,9 @@ class StaffPosition < ActiveRecord::Base
     User.find(self.staff_candidate.user_id)
   end
 
-  def update_users_roles
+  def update_users_skills
     # TODO(slnc): pendiente de integrar
-    Rails.logger.warn("UsersRole integration is not done yet")
+    Rails.logger.warn("UsersSkill integration is not done yet")
   end
 
   def next_term

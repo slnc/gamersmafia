@@ -1,6 +1,13 @@
 # -*- encoding : utf-8 -*-
 class UsersActionObserver < ActiveRecord::Observer
-  observe User, RecruitmentAd, ClansMovement, Clan, Content, ProfileSignature, Friendship, UsersEmblem
+  observe Clan,
+          ClansMovement,
+          Content,
+          Friendship,
+          ProfileSignature,
+          RecruitmentAd,
+          User,
+          UsersEmblem
 
   include ApplicationHelper
 
@@ -13,15 +20,6 @@ class UsersActionObserver < ActiveRecord::Observer
         UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_PROFILE_SIGNATURE_SIGNED, :object_id => object.id, :data => data)
         UsersAction.create(:user_id => object.signer_user_id, :type_id => UsersAction::NEW_PROFILE_SIGNATURE_RECEIVED, :object_id => object.id, :data => data)
       end
-
-      when 'RecruitmentAd'
-      data = "#{user_link(object.user)} ha publicado <a href=\"#{Routing.gmurl(object)}\">un anuncio de reclutamiento</a>"
-      ua = UsersAction.create({
-          :user_id => object.user_id,
-          :type_id => UsersAction::NEW_RECRUITMENT_AD,
-          :object_id => object.id,
-          :data => data,
-      })
 
       when 'ClansMovement'
       data = "#{user_link(object.user)} #{ClansMovement.translate_direction(object.direction)} <a href=\"/clanes/clan/#{object.id}\">#{object.clan}</a>"

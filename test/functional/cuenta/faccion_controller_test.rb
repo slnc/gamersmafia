@@ -37,7 +37,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
     test_staff_should_work_if_faction_leader
     @panzer = User.find_by_login('panzer')
     @ctype = ContentType.find_by_name('News')
-    assert_count_increases(UsersRole) do
+    assert_count_increases(UsersSkill) do
       post :add_editor, :content_type_id => @ctype.id, :login => @panzer.login
     end
     assert_response :redirect, @response.body
@@ -53,7 +53,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
 
   test "del_editor_should_work" do
     test_add_editor_should_work
-    assert_count_decreases(UsersRole) do
+    assert_count_decreases(UsersSkill) do
       post :del_editor, {:id =>  @panzer.id, :content_type_id => @ctype.id }
     end
     assert_response :redirect
@@ -61,7 +61,7 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
 
   test "add_moderator_should_work" do
     test_staff_should_work_if_faction_leader
-    assert_count_increases(UsersRole) do
+    assert_count_increases(UsersSkill) do
       post :add_moderator, {:login => 'panzer'}
     end
     assert_response :redirect
@@ -213,8 +213,8 @@ class Cuenta::FaccionControllerTest < ActionController::TestCase
 
   test "del_moderator_should_work" do
     test_add_moderator_should_work
-    assert_count_decreases(UsersRole) do
-      post :del_moderator, {:id => UsersRole.find(:first, :order => 'id desc').user_id }
+    assert_count_decreases(UsersSkill) do
+      post :del_moderator, {:id => UsersSkill.find(:first, :order => 'id desc').user_id }
     end
     assert_response :redirect
   end

@@ -102,3 +102,5 @@ INSERT INTO users (id, login, password, validkey, email, newemail, ipaddr, creat
 -- ClansGroupsTypes
 INSERT INTO clans_groups_types(name) VALUES('clanleaders');
 INSERT INTO clans_groups_types(name) VALUES('members');
+
+INSERT INTO games_maps (id, name, game_id, download_id, screenshot) VALUES (1, 'DM-Deck16', 1, NULL, NULL);
