@@ -87,10 +87,6 @@ end %><%# each -%>
 		<a href="" title="Reportar este comentario por violaci&oacute;n del c&oacute;digo de conducta" onclick="return report_comment(<%=comment.id%>);">Reportar</a>
 	</div>
 
-	<div class="hidden moderate-comments infoinline <%='report-comment-with-sig' if show_signature %>" id="moderate-comments<%=comment.id%>">
-		<a href="" title="Reportar este comentario por violaci&oacute;n del c&oacute;digo de conducta" onclick="return report_comment(<%=comment.id%>);">Reportar</a>
-	</div>
-
   <div class="moderate-comments-opener-detail">
     <div class="moderate-comments-opener hidden" id="moderate-comments-opener<%=comment.id%>" onmouseout="$j('#moderate-comments<%=comment.id%>').hide();" onmouseover="$j('#moderate-comments<%=comment.id%>').show();">Mi valoraci&oacute;n: <strong><span id="moderate-comments-opener-rating<%=comment.id%>">Ninguna</span></strong><br />
       <div class="hidden moderate-comments" id="moderate-comments<%=comment.id%>">
