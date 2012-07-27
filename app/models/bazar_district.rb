@@ -1,13 +1,15 @@
 # -*- encoding : utf-8 -*-
 class BazarDistrict < ActiveRecord::Base
+  ROLE_DON = 'Don'
+  ROLE_MANO_DERECHA = 'ManoDerecha'
+
   validates_uniqueness_of :name, :code
   validates_length_of :name, :within => 2..20
   validates_length_of :code, :within => 2..20
-  ROLE_DON = 'Don'
-  ROLE_MANO_DERECHA = 'ManoDerecha'
   after_save :check_if_icon_updated
   after_save :rename_everything_if_name_or_code_changed
   after_create :create_portal_and_terms
+  before_create :check_can_be_created
 
   file_column :icon
   file_column :building_top
@@ -34,7 +36,8 @@ class BazarDistrict < ActiveRecord::Base
               :name => self.name, :code => self.code)
       Cms::BAZAR_DISTRICTS_VALID.each do |cname|
         cls = Object.const_get(cname).category_class
-        inst = cls.find(:first, :conditions => ["#{field} = ?", self.send(field)])
+        inst = cls.find(:first,
+                        :conditions => ["#{field} = ?", self.send(field)])
         inst.update_attributes(:name => self.name, :code => self.code) if inst
       end
     end
@@ -49,7 +52,10 @@ class BazarDistrict < ActiveRecord::Base
   end
 
   def _role(role)
-    UsersSkill.find(:all, :conditions => ['role = ? AND role_data = ?', role, self.id.to_s], :include => :user)
+    UsersSkill.find(
+        :all,
+        :conditions => ['role = ? AND role_data = ?', role, self.id.to_s],
+        :include => :user)
   end
 
   def don
@@ -79,13 +85,19 @@ class BazarDistrict < ActiveRecord::Base
   end
 
   def add_sicario(user)
-    if UsersSkill.count(:conditions => ["role = 'Sicario' AND user_id = ? AND role_data = ?", user.id, self.id.to_s]) == 0
-      UsersSkill.create(:role => 'Sicario', :user_id => user.id, :role_data => self.id.to_s)
+    if UsersSkill.count(
+        :conditions => ["role = 'Sicario' AND user_id = ? AND role_data = ?",
+                        user.id, self.id.to_s]) == 0
+      UsersSkill.create(
+          :role => 'Sicario', :user_id => user.id, :role_data => self.id.to_s)
     end
   end
 
   def del_sicario(user)
-    ur = UsersSkill.find(:first, :conditions => ["role = 'Sicario' AND user_id = ? AND role_data = ?", user.id, self.id.to_s])
+    ur = UsersSkill.find(
+        :first,
+        :conditions => ["role = 'Sicario' AND user_id = ? AND role_data = ?",
+                        user.id, self.id.to_s])
     if ur
       ur.destroy
     else
@@ -115,19 +127,37 @@ class BazarDistrict < ActiveRecord::Base
                (newuser && prev.nil?) ||
                (newuser && prev && newuser.id != prev.user_id))
     return true unless changed
-    #raise "hola"
 
-    if newuser # le quitamos los roles viejos como don/mano_derecha
-      UsersSkill.find(:all, :conditions => ["role IN ('#{ROLE_DON}', '#{ROLE_MANO_DERECHA}') AND user_id = ?", newuser.id]).each do |ur|
+    if newuser
+      # le quitamos los roles viejos como don/mano_derecha
+      UsersSkill.find(
+          :all,
+          :conditions => ["role IN ('#{ROLE_DON}', '#{ROLE_MANO_DERECHA}')
+                           AND user_id = ?", newuser.id]).each do |ur|
         ur.destroy
-        SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :reviewer_user_id => User.find_by_login('MrAchmed').id, :headline => "Eliminado permiso <strong>#{ur.role}</strong> de #{BazarDistrict.find(ur.role_data.to_i).name} a #{newuser.login}", :completed_on => Time.now)
+        SlogEntry.create({
+            :type_id => SlogEntry::TYPES[:info],
+            :reviewer_user_id => User.find_by_login('MrAchmed').id,
+            :headline => (
+                "Eliminado permiso <strong>#{ur.role}</strong> de" +
+                " #{BazarDistrict.find(ur.role_data.to_i).name} a" +
+                " #{newuser.login}"),
+            :completed_on => Time.now,
+        })
       end
-      ur = UsersSkill.create(:role => role, :role_data => self.id.to_s, :user_id => newuser.id)
+      ur = UsersSkill.create(
+          :role => role, :role_data => self.id.to_s, :user_id => newuser.id)
     end
 
     prev.destroy if prev
 
-    SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :reviewer_user_id => User.find_by_login('MrAchmed').id, :headline => "Actualizado #{role} de #{self.name} a #{newuser.nil? ? 'nadie' : newuser.login}", :completed_on => Time.now)
+    receiver_name = newuser.nil? ? 'nadie' : newuser.login
+    SlogEntry.create({
+        :type_id => SlogEntry::TYPES[:info],
+        :reviewer_user_id => User.find_by_login('MrAchmed').id,
+        :headline => "Actualizado #{role} de #{self.name} a #{receiver_name}",
+        :completed_on => Time.now,
+    })
   end
 
   def user_is_editor_of_content_type?(user, content_type)
@@ -167,21 +197,45 @@ class BazarDistrict < ActiveRecord::Base
   end
 
   protected
-  def create_portal_and_terms
+  def check_can_be_created
     root_term = Term.single_toplevel(:slug => self.code)
-    root_term = Term.create(:bazar_district_id => self.id, :name => self.name, :slug => self.code) unless root_term
-
-    Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
-      root_term.children.create(:name => c[1], :taxonomy => c[0])
+    if root_term
+      self.errors.add("code",
+                      "Ya existe un Term con el mísmo código: #{root_term}.")
+      return false
     end
 
-    BazarDistrictPortal.create({:code => self.code, :name => self.name}) unless BazarDistrictPortal.find_by_code(self.code)
+    if BazarDistrictPortal.find_by_code(self.code)
+      self.errors.add("code", "Ya existe un portal para este distrito.")
+      return false
+    end
+    true
+  end
+
+  def create_portal_and_terms
+    root_term = Term.create(
+        :bazar_district_id => self.id, :name => self.name, :slug => self.code)
+
+    Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
+      term = root_term.children.create(:name => c[1], :taxonomy => c[0])
+      if term.new_record?
+        error = term.errors.full_messages_html
+        raise "Unable to create term for new district: #{error}"
+      end
+    end
+
+    BazarDistrictPortal.create({:code => self.code, :name => self.name})
   end
 
   def roles_by_user
     # devuelve un hash con user id como key
     roles = {}
-    UsersSkill.find(:all, :conditions => ["role IN ('#{ROLE_DON}', '#{ROLE_MANO_DERECHA}', 'Sicario') AND role_data = ?", self.id.to_s]).each do |ur|
+    UsersSkill.find(
+        :all,
+        :conditions => ["role IN ('#{ROLE_DON}',
+                                  '#{ROLE_MANO_DERECHA}',
+                                  'Sicario') AND role_data = ?",
+                        self.id.to_s]).each do |ur|
       roles[ur.user_id] ||= []
       roles[ur.user_id] << ur.role
     end

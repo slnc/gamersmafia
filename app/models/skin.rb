@@ -75,6 +75,12 @@ class Skin < ActiveRecord::Base
     out
   end
 
+  def self.update_default_skin_zip
+    system("cd #{Rails.root}/public/skins/default &&" +
+           " zip -q -r ../default.zip . &&" +
+           " cd #{Rails.root}")
+  end
+
   def self.find_by_hid(hid)
     if %w(arena default bazar).include?(hid)
       s = Skin.new(
