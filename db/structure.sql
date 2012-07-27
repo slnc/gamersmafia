@@ -322,36 +322,6 @@ ALTER SEQUENCE allowed_competitions_participants_id_seq OWNED BY allowed_competi
 
 
 --
--- Name: anonymous_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE anonymous_users (
-    id integer NOT NULL,
-    session_id character(32) NOT NULL,
-    lastseen_on timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
--- Name: anonymous_users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE anonymous_users_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: anonymous_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE anonymous_users_id_seq OWNED BY anonymous_users.id;
-
-
---
 -- Name: autologin_keys; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1181,7 +1151,9 @@ CREATE TABLE comments (
     lastowner_version character varying,
     lastedited_by_user_id integer,
     deleted boolean DEFAULT false NOT NULL,
-    random_v numeric DEFAULT random()
+    random_v numeric DEFAULT random(),
+    state smallint DEFAULT 0 NOT NULL,
+    moderation_reason smallint
 );
 
 
@@ -4253,7 +4225,7 @@ CREATE TABLE products (
     name character varying NOT NULL,
     price numeric(14,2) NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
-    description character varying,
+    description text,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     cls character varying NOT NULL,
     enabled boolean DEFAULT true NOT NULL
@@ -4822,7 +4794,9 @@ CREATE TABLE slog_entries (
     long_version character varying,
     short_version character varying,
     completed_on timestamp without time zone,
-    scope integer
+    scope integer,
+    entity_id integer,
+    data character varying
 );
 
 
@@ -6159,13 +6133,6 @@ ALTER TABLE allowed_competitions_participants ALTER COLUMN id SET DEFAULT nextva
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE anonymous_users ALTER COLUMN id SET DEFAULT nextval('anonymous_users_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE autologin_keys ALTER COLUMN id SET DEFAULT nextval('autologin_keys_id_seq'::regclass);
 
 
@@ -7300,22 +7267,6 @@ ALTER TABLE ONLY advertisers
 
 ALTER TABLE ONLY allowed_competitions_participants
     ADD CONSTRAINT allowed_competitions_participants_pkey PRIMARY KEY (id);
-
-
---
--- Name: anonymous_users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY anonymous_users
-    ADD CONSTRAINT anonymous_users_pkey PRIMARY KEY (id);
-
-
---
--- Name: anonymous_users_session_id_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY anonymous_users
-    ADD CONSTRAINT anonymous_users_session_id_key UNIQUE (session_id);
 
 
 --
@@ -8948,13 +8899,6 @@ CREATE UNIQUE INDEX tracker_items_pkey ON tracker_items USING btree (id);
 SET search_path = public, pg_catalog;
 
 --
--- Name: anonymous_users_lastseen; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX anonymous_users_lastseen ON anonymous_users USING btree (lastseen_on);
-
-
---
 -- Name: autologin_keys_key; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -9330,6 +9274,13 @@ CREATE UNIQUE INDEX contents_locks_uniq ON contents_locks USING btree (content_i
 --
 
 CREATE UNIQUE INDEX contents_recommendations_content_id_sender_user_id_receiver_use ON contents_recommendations USING btree (content_id, sender_user_id, receiver_user_id);
+
+
+--
+-- Name: contents_recommendations_created_on; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX contents_recommendations_created_on ON contents_recommendations USING btree (created_on);
 
 
 --
@@ -10989,6 +10940,14 @@ ALTER TABLE ONLY refered_hits
 
 
 --
+-- Name: resurrected_by_user_idfk; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY users
+    ADD CONSTRAINT resurrected_by_user_idfk FOREIGN KEY (resurrected_by_user_id) REFERENCES users(id);
+
+
+--
 -- Name: reviews_unique_content_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -11347,6 +11306,16 @@ INSERT INTO schema_migrations (version) VALUES ('20120701201029');
 INSERT INTO schema_migrations (version) VALUES ('20120701224459');
 
 INSERT INTO schema_migrations (version) VALUES ('20120712045528');
+
+INSERT INTO schema_migrations (version) VALUES ('20120722044855');
+
+INSERT INTO schema_migrations (version) VALUES ('20120723012211');
+
+INSERT INTO schema_migrations (version) VALUES ('20120724054925');
+
+INSERT INTO schema_migrations (version) VALUES ('20120725044653');
+
+INSERT INTO schema_migrations (version) VALUES ('20120726040535');
 
 INSERT INTO schema_migrations (version) VALUES ('224');
 
