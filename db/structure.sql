@@ -4,10 +4,9 @@
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 
 --
 -- Name: archive; Type: SCHEMA; Schema: -; Owner: -
@@ -24,10 +23,17 @@ CREATE SCHEMA stats;
 
 
 --
--- Name: plpgsql; Type: PROCEDURAL LANGUAGE; Schema: -; Owner: -
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
 --
 
-CREATE PROCEDURAL LANGUAGE plpgsql;
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
 
 SET search_path = archive, pg_catalog;
@@ -99,8 +105,8 @@ SET search_path = public, pg_catalog;
 CREATE SEQUENCE ab_tests_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -150,8 +156,8 @@ CREATE TABLE ads (
 CREATE SEQUENCE ads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -184,8 +190,8 @@ CREATE TABLE ads_slots (
 CREATE SEQUENCE ads_slots_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -216,8 +222,8 @@ CREATE TABLE ads_slots_instances (
 CREATE SEQUENCE ads_slots_instances_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -246,8 +252,8 @@ CREATE TABLE ads_slots_portals (
 CREATE SEQUENCE ads_slots_portals_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -279,8 +285,8 @@ CREATE TABLE advertisers (
 CREATE SEQUENCE advertisers_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -309,8 +315,8 @@ CREATE TABLE allowed_competitions_participants (
 CREATE SEQUENCE allowed_competitions_participants_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -319,36 +325,6 @@ CREATE SEQUENCE allowed_competitions_participants_id_seq
 --
 
 ALTER SEQUENCE allowed_competitions_participants_id_seq OWNED BY allowed_competitions_participants.id;
-
-
---
--- Name: anonymous_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE anonymous_users (
-    id integer NOT NULL,
-    session_id character(32) NOT NULL,
-    lastseen_on timestamp without time zone DEFAULT now() NOT NULL
-);
-
-
---
--- Name: anonymous_users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE anonymous_users_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: anonymous_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE anonymous_users_id_seq OWNED BY anonymous_users.id;
 
 
 --
@@ -371,8 +347,8 @@ CREATE TABLE autologin_keys (
 CREATE SEQUENCE autologin_keys_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -407,8 +383,8 @@ CREATE TABLE avatars (
 CREATE SEQUENCE avatars_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -437,8 +413,8 @@ CREATE TABLE babes (
 CREATE SEQUENCE babes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -476,8 +452,8 @@ CREATE TABLE ban_requests (
 CREATE SEQUENCE ban_requests_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -512,8 +488,8 @@ CREATE TABLE bazar_districts (
 CREATE SEQUENCE bazar_districts_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -579,8 +555,8 @@ CREATE TABLE bets_categories (
 CREATE SEQUENCE bets_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -598,8 +574,8 @@ ALTER SEQUENCE bets_categories_id_seq OWNED BY bets_categories.id;
 CREATE SEQUENCE bets_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -629,8 +605,8 @@ CREATE TABLE bets_options (
 CREATE SEQUENCE bets_options_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -661,8 +637,8 @@ CREATE TABLE bets_tickets (
 CREATE SEQUENCE bets_tickets_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -705,8 +681,8 @@ CREATE TABLE blogentries (
 CREATE SEQUENCE blogentries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -740,8 +716,8 @@ CREATE TABLE cash_movements (
 CREATE SEQUENCE cash_movements_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -774,8 +750,8 @@ CREATE TABLE chatlines (
 CREATE SEQUENCE chatlines_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -834,8 +810,8 @@ CREATE TABLE clans_friends (
 CREATE SEQUENCE clans_friends_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -875,8 +851,8 @@ CREATE TABLE clans_groups (
 CREATE SEQUENCE clans_groups_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -904,8 +880,8 @@ CREATE TABLE clans_groups_types (
 CREATE SEQUENCE clans_groups_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -933,8 +909,8 @@ CREATE TABLE clans_groups_users (
 CREATE SEQUENCE clans_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -966,8 +942,8 @@ CREATE TABLE clans_logs_entries (
 CREATE SEQUENCE clans_logs_entries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -998,8 +974,8 @@ CREATE TABLE clans_movements (
 CREATE SEQUENCE clans_movements_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1032,8 +1008,8 @@ CREATE TABLE clans_sponsors (
 CREATE SEQUENCE clans_sponsors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1098,8 +1074,8 @@ CREATE TABLE columns_categories (
 CREATE SEQUENCE columns_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1117,8 +1093,8 @@ ALTER SEQUENCE columns_categories_id_seq OWNED BY columns_categories.id;
 CREATE SEQUENCE columns_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1150,8 +1126,8 @@ CREATE TABLE comment_violation_opinions (
 CREATE SEQUENCE comment_violation_opinions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1181,7 +1157,8 @@ CREATE TABLE comments (
     lastowner_version character varying,
     lastedited_by_user_id integer,
     deleted boolean DEFAULT false NOT NULL,
-    random_v numeric DEFAULT random()
+    random_v numeric DEFAULT random(),
+    state smallint DEFAULT 0 NOT NULL
 );
 
 
@@ -1192,8 +1169,8 @@ CREATE TABLE comments (
 CREATE SEQUENCE comments_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1226,8 +1203,8 @@ CREATE TABLE comments_valorations (
 CREATE SEQUENCE comments_valorations_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1256,8 +1233,8 @@ CREATE TABLE comments_valorations_types (
 CREATE SEQUENCE comments_valorations_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1330,8 +1307,8 @@ CREATE TABLE competitions_games_maps (
 CREATE SEQUENCE competitions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1361,8 +1338,8 @@ CREATE TABLE competitions_logs_entries (
 CREATE SEQUENCE competitions_logs_entries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1423,8 +1400,8 @@ CREATE TABLE competitions_matches_clans_players (
 CREATE SEQUENCE competitions_matches_clans_players_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1455,8 +1432,8 @@ CREATE TABLE competitions_matches_games_maps (
 CREATE SEQUENCE competitions_matches_games_maps_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1474,8 +1451,8 @@ ALTER SEQUENCE competitions_matches_games_maps_id_seq OWNED BY competitions_matc
 CREATE SEQUENCE competitions_matches_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1506,8 +1483,8 @@ CREATE TABLE competitions_matches_reports (
 CREATE SEQUENCE competitions_matches_reports_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1539,8 +1516,8 @@ CREATE TABLE competitions_matches_uploads (
 CREATE SEQUENCE competitions_matches_uploads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1578,8 +1555,8 @@ CREATE TABLE competitions_participants (
 CREATE SEQUENCE competitions_participants_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1607,8 +1584,8 @@ CREATE TABLE competitions_participants_types (
 CREATE SEQUENCE competitions_participants_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1639,8 +1616,8 @@ CREATE TABLE competitions_sponsors (
 CREATE SEQUENCE competitions_sponsors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1682,8 +1659,8 @@ CREATE TABLE content_ratings (
 CREATE SEQUENCE content_ratings_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1711,8 +1688,8 @@ CREATE TABLE content_types (
 CREATE SEQUENCE content_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1756,8 +1733,8 @@ CREATE TABLE contents (
 CREATE SEQUENCE contents_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1788,8 +1765,8 @@ CREATE TABLE contents_locks (
 CREATE SEQUENCE contents_locks_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1825,8 +1802,8 @@ CREATE TABLE contents_recommendations (
 CREATE SEQUENCE contents_recommendations_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1856,8 +1833,8 @@ CREATE TABLE contents_terms (
 CREATE SEQUENCE contents_terms_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1887,8 +1864,8 @@ CREATE TABLE contents_versions (
 CREATE SEQUENCE contents_versions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1964,8 +1941,8 @@ CREATE TABLE delayed_jobs (
 CREATE SEQUENCE delayed_jobs_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -1994,8 +1971,8 @@ CREATE TABLE demo_mirrors (
 CREATE SEQUENCE demo_mirrors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2072,8 +2049,8 @@ CREATE TABLE demos_categories (
 CREATE SEQUENCE demos_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2091,8 +2068,8 @@ ALTER SEQUENCE demos_categories_id_seq OWNED BY demos_categories.id;
 CREATE SEQUENCE demos_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2123,8 +2100,8 @@ CREATE TABLE dictionary_words (
 CREATE SEQUENCE dictionary_words_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2153,8 +2130,8 @@ CREATE TABLE download_mirrors (
 CREATE SEQUENCE download_mirrors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2188,8 +2165,8 @@ CREATE TABLE downloaded_downloads (
 CREATE SEQUENCE downloaded_downloads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2255,8 +2232,8 @@ CREATE TABLE downloads_categories (
 CREATE SEQUENCE downloads_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2274,8 +2251,8 @@ ALTER SEQUENCE downloads_categories_id_seq OWNED BY downloads_categories.id;
 CREATE SEQUENCE downloads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2304,8 +2281,8 @@ CREATE TABLE dudes (
 CREATE SEQUENCE dudes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2372,8 +2349,8 @@ CREATE TABLE events_categories (
 CREATE SEQUENCE events_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2391,8 +2368,8 @@ ALTER SEQUENCE events_categories_id_seq OWNED BY events_categories.id;
 CREATE SEQUENCE events_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2410,8 +2387,8 @@ ALTER SEQUENCE events_id_seq OWNED BY events.id;
 CREATE SEQUENCE events_news_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2482,8 +2459,8 @@ CREATE TABLE factions_banned_users (
 CREATE SEQUENCE factions_banned_users_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2512,8 +2489,8 @@ CREATE TABLE factions_capos (
 CREATE SEQUENCE factions_capos_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2543,8 +2520,8 @@ CREATE TABLE factions_editors (
 CREATE SEQUENCE factions_editors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2574,8 +2551,8 @@ CREATE TABLE factions_headers (
 CREATE SEQUENCE factions_headers_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2593,8 +2570,8 @@ ALTER SEQUENCE factions_headers_id_seq OWNED BY factions_headers.id;
 CREATE SEQUENCE factions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2625,8 +2602,8 @@ CREATE TABLE factions_links (
 CREATE SEQUENCE factions_links_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2644,8 +2621,27 @@ ALTER SEQUENCE factions_links_id_seq OWNED BY factions_links.id;
 CREATE TABLE factions_portals (
     faction_id integer NOT NULL,
     portal_id integer NOT NULL,
-    id integer
+    id integer NOT NULL
 );
+
+
+--
+-- Name: factions_portals_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE factions_portals_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: factions_portals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE factions_portals_id_seq OWNED BY factions_portals.id;
 
 
 SET default_with_oids = true;
@@ -2670,8 +2666,8 @@ CREATE TABLE faq_categories (
 CREATE SEQUENCE faq_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2703,8 +2699,8 @@ CREATE TABLE faq_entries (
 CREATE SEQUENCE faq_entries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2747,8 +2743,8 @@ CREATE TABLE topics_categories (
 CREATE SEQUENCE forum_forums_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2793,8 +2789,8 @@ CREATE TABLE topics (
 CREATE SEQUENCE forum_topics_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2827,8 +2823,8 @@ CREATE TABLE friends_recommendations (
 CREATE SEQUENCE friends_recommendations_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2864,8 +2860,8 @@ CREATE TABLE friendships (
 CREATE SEQUENCE friends_users_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2911,8 +2907,8 @@ CREATE TABLE funthings (
 CREATE SEQUENCE funthings_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2932,7 +2928,7 @@ CREATE TABLE gamersmafiageist_codes (
     user_id integer NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     code character varying,
-    survey_edition_date character varying NOT NULL
+    survey_edition_date date NOT NULL
 );
 
 
@@ -2943,8 +2939,8 @@ CREATE TABLE gamersmafiageist_codes (
 CREATE SEQUENCE gamersmafiageist_codes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -2977,8 +2973,8 @@ CREATE TABLE games (
 CREATE SEQUENCE games_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3011,8 +3007,8 @@ CREATE TABLE games_maps (
 CREATE SEQUENCE games_maps_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3042,8 +3038,8 @@ CREATE TABLE games_modes (
 CREATE SEQUENCE games_modes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3092,8 +3088,8 @@ CREATE TABLE games_versions (
 CREATE SEQUENCE games_versions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3129,8 +3125,8 @@ CREATE TABLE global_vars (
 CREATE SEQUENCE global_vars_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3160,8 +3156,8 @@ CREATE TABLE gmtv_broadcast_messages (
 CREATE SEQUENCE gmtv_broadcast_messages_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3194,8 +3190,8 @@ CREATE TABLE gmtv_channels (
 CREATE SEQUENCE gmtv_channels_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3213,8 +3209,8 @@ ALTER SEQUENCE gmtv_channels_id_seq OWNED BY gmtv_channels.id;
 CREATE SEQUENCE goals_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3238,8 +3234,8 @@ CREATE TABLE groups (
 CREATE SEQUENCE groups_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3272,8 +3268,8 @@ CREATE TABLE groups_messages (
 CREATE SEQUENCE groups_messages_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3282,110 +3278,6 @@ CREATE SEQUENCE groups_messages_id_seq
 --
 
 ALTER SEQUENCE groups_messages_id_seq OWNED BY groups_messages.id;
-
-
---
--- Name: ias; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE ias (
-    id integer,
-    login character varying(80),
-    password character varying(40),
-    validkey character varying(40),
-    email character varying(100),
-    newemail character varying(100),
-    ipaddr character varying(15),
-    created_on timestamp without time zone,
-    updated_at timestamp without time zone,
-    firstname character varying,
-    lastname character varying,
-    image bytea,
-    lastseen_on timestamp without time zone,
-    faction_id integer,
-    faction_last_changed_on timestamp without time zone,
-    avatar_id integer,
-    city character varying,
-    homepage character varying,
-    sex smallint,
-    msn character varying,
-    icq character varying,
-    birthday date,
-    cache_karma_points integer,
-    irc character varying,
-    country_id integer,
-    photo character varying,
-    hw_mouse character varying,
-    hw_processor character varying,
-    hw_motherboard character varying,
-    hw_ram character varying,
-    hw_hdd character varying,
-    hw_graphiccard character varying,
-    hw_soundcard character varying,
-    hw_headphones character varying,
-    hw_monitor character varying,
-    hw_connection character varying,
-    description text,
-    is_superadmin boolean,
-    comments_count integer,
-    referer_user_id integer,
-    cache_faith_points integer,
-    notifications_global boolean,
-    notifications_newmessages boolean,
-    notifications_newregistrations boolean,
-    notifications_trackerupdates boolean,
-    xfire character varying,
-    cache_unread_messages integer,
-    resurrected_by_user_id integer,
-    resurrection_started_on timestamp without time zone,
-    using_tracker boolean,
-    secret character(32),
-    cash numeric(14,2),
-    lastcommented_on timestamp without time zone,
-    global_bans integer,
-    last_clan_id integer,
-    antiflood_level smallint,
-    last_competition_id integer,
-    competition_roster character varying,
-    enable_competition_indicator boolean,
-    is_hq boolean,
-    enable_profile_signatures boolean,
-    profile_signatures_count integer,
-    wii_code character(16),
-    email_public boolean,
-    gamertag character varying,
-    googletalk character varying,
-    yahoo_im character varying,
-    notifications_newprofilesignature boolean,
-    tracker_autodelete_old_contents boolean,
-    comment_adds_to_tracker_enabled boolean,
-    cache_remaining_rating_slots integer,
-    has_seen_tour boolean,
-    is_bot boolean,
-    admin_permissions character varying,
-    state smallint,
-    cache_is_faction_leader boolean,
-    profile_last_updated_on timestamp without time zone,
-    visitor_id character varying,
-    comments_valorations_type_id integer,
-    comments_valorations_strength numeric(10,2),
-    enable_comments_sig boolean,
-    comments_sig character varying,
-    comment_show_sigs boolean,
-    has_new_friend_requests boolean,
-    default_portal character varying,
-    emblems_mask character varying,
-    random_id double precision,
-    is_staff boolean,
-    pending_slog integer,
-    ranking_karma_pos integer,
-    ranking_faith_pos integer,
-    ranking_popularity_pos integer,
-    cache_popularity integer,
-    login_is_ne_unfriendly boolean,
-    cache_valorations_weights_on_self_comments numeric,
-    default_comments_valorations_weight double precision
-);
 
 
 --
@@ -3440,8 +3332,8 @@ CREATE TABLE images_categories (
 CREATE SEQUENCE images_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3459,8 +3351,8 @@ ALTER SEQUENCE images_categories_id_seq OWNED BY images_categories.id;
 CREATE SEQUENCE images_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3522,8 +3414,8 @@ CREATE TABLE interviews_categories (
 CREATE SEQUENCE interviews_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3541,8 +3433,8 @@ ALTER SEQUENCE interviews_categories_id_seq OWNED BY interviews_categories.id;
 CREATE SEQUENCE interviews_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3574,8 +3466,8 @@ CREATE TABLE ip_bans (
 CREATE SEQUENCE ip_bans_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3604,8 +3496,8 @@ CREATE TABLE ip_passwords_resets_requests (
 CREATE SEQUENCE ip_passwords_resets_requests_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3684,8 +3576,8 @@ CREATE TABLE macropolls_2007_1 (
 CREATE SEQUENCE macropolls_2007_1_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3703,8 +3595,8 @@ ALTER SEQUENCE macropolls_2007_1_id_seq OWNED BY macropolls_2007_1.id;
 CREATE SEQUENCE macropolls_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3745,8 +3637,8 @@ CREATE TABLE messages (
 CREATE SEQUENCE messages_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3781,8 +3673,8 @@ CREATE TABLE ne_references (
 CREATE SEQUENCE ne_references_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3847,8 +3739,8 @@ CREATE TABLE news_categories (
 CREATE SEQUENCE news_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3866,8 +3758,8 @@ ALTER SEQUENCE news_categories_id_seq OWNED BY news_categories.id;
 CREATE SEQUENCE news_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3899,8 +3791,8 @@ CREATE TABLE outstanding_entities (
 CREATE SEQUENCE outstanding_users_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -3929,8 +3821,8 @@ CREATE TABLE platforms (
 CREATE SEQUENCE platforms_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4004,8 +3896,8 @@ CREATE TABLE polls_categories (
 CREATE SEQUENCE polls_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4023,8 +3915,8 @@ ALTER SEQUENCE polls_categories_id_seq OWNED BY polls_categories.id;
 CREATE SEQUENCE polls_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4055,8 +3947,8 @@ CREATE TABLE polls_options (
 CREATE SEQUENCE polls_options_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4087,8 +3979,8 @@ CREATE TABLE polls_votes (
 CREATE SEQUENCE polls_votes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4118,8 +4010,8 @@ CREATE TABLE portal_headers (
 CREATE SEQUENCE portal_headers_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4149,8 +4041,8 @@ CREATE TABLE portal_hits (
 CREATE SEQUENCE portal_hits_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4189,8 +4081,8 @@ CREATE TABLE portals (
 CREATE SEQUENCE portals_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4232,8 +4124,8 @@ CREATE TABLE potds (
 CREATE SEQUENCE potds_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4253,7 +4145,7 @@ CREATE TABLE products (
     name character varying NOT NULL,
     price numeric(14,2) NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
-    description character varying,
+    description text,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     cls character varying NOT NULL,
     enabled boolean DEFAULT true NOT NULL
@@ -4267,8 +4159,8 @@ CREATE TABLE products (
 CREATE SEQUENCE products_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4299,8 +4191,8 @@ CREATE TABLE profile_signatures (
 CREATE SEQUENCE profile_signatures_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4336,8 +4228,8 @@ CREATE TABLE publishing_decisions (
 CREATE SEQUENCE publishing_decisions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4367,8 +4259,8 @@ CREATE TABLE publishing_personalities (
 CREATE SEQUENCE publishing_personalities_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4438,8 +4330,8 @@ CREATE TABLE questions_categories (
 CREATE SEQUENCE questions_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4457,8 +4349,8 @@ ALTER SEQUENCE questions_categories_id_seq OWNED BY questions_categories.id;
 CREATE SEQUENCE questions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4505,8 +4397,8 @@ CREATE TABLE recruitment_ads (
 CREATE SEQUENCE recruitment_ads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4537,8 +4429,8 @@ CREATE TABLE refered_hits (
 CREATE SEQUENCE refered_hits_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4600,8 +4492,8 @@ CREATE TABLE reviews_categories (
 CREATE SEQUENCE reviews_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4619,8 +4511,8 @@ ALTER SEQUENCE reviews_categories_id_seq OWNED BY reviews_categories.id;
 CREATE SEQUENCE reviews_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4663,8 +4555,8 @@ CREATE TABLE sent_emails (
 CREATE SEQUENCE sent_emails_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4692,8 +4584,8 @@ CREATE TABLE silenced_emails (
 CREATE SEQUENCE silenced_emails_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4727,8 +4619,8 @@ CREATE TABLE skin_textures (
 CREATE SEQUENCE skin_textures_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4775,8 +4667,8 @@ CREATE TABLE skins_files (
 CREATE SEQUENCE skins_files_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4794,8 +4686,8 @@ ALTER SEQUENCE skins_files_id_seq OWNED BY skins_files.id;
 CREATE SEQUENCE skins_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4822,7 +4714,9 @@ CREATE TABLE slog_entries (
     long_version character varying,
     short_version character varying,
     completed_on timestamp without time zone,
-    scope integer
+    scope integer,
+    entity_id integer,
+    data character varying
 );
 
 
@@ -4833,8 +4727,8 @@ CREATE TABLE slog_entries (
 CREATE SEQUENCE slog_entries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4877,8 +4771,8 @@ CREATE TABLE sold_products (
 CREATE SEQUENCE sold_products_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4887,6 +4781,38 @@ CREATE SEQUENCE sold_products_id_seq
 --
 
 ALTER SEQUENCE sold_products_id_seq OWNED BY sold_products.id;
+
+
+--
+-- Name: staff_candidate_votes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE staff_candidate_votes (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    staff_candidate_id integer NOT NULL,
+    staff_position_id integer NOT NULL
+);
+
+
+--
+-- Name: staff_candidate_votes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE staff_candidate_votes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: staff_candidate_votes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE staff_candidate_votes_id_seq OWNED BY staff_candidate_votes.id;
 
 
 --
@@ -4916,8 +4842,8 @@ CREATE TABLE staff_candidates (
 CREATE SEQUENCE staff_candidates_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -4926,37 +4852,6 @@ CREATE SEQUENCE staff_candidates_id_seq
 --
 
 ALTER SEQUENCE staff_candidates_id_seq OWNED BY staff_candidates.id;
-
-
---
--- Name: staff_canditate_votes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE staff_canditate_votes (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    staff_candidate_id integer NOT NULL
-);
-
-
---
--- Name: staff_canditate_votes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE staff_canditate_votes_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-
-
---
--- Name: staff_canditate_votes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE staff_canditate_votes_id_seq OWNED BY staff_canditate_votes.id;
 
 
 --
@@ -4981,8 +4876,8 @@ CREATE TABLE staff_positions (
 CREATE SEQUENCE staff_positions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5010,8 +4905,8 @@ CREATE TABLE staff_types (
 CREATE SEQUENCE staff_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5051,8 +4946,8 @@ CREATE TABLE terms (
 CREATE SEQUENCE terms_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5083,8 +4978,8 @@ CREATE TABLE textures (
 CREATE SEQUENCE textures_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5118,8 +5013,8 @@ CREATE TABLE tracker_items (
 CREATE SEQUENCE tracker_items_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5130,23 +5025,6 @@ CREATE SEQUENCE tracker_items_id_seq
 ALTER SEQUENCE tracker_items_id_seq OWNED BY tracker_items.id;
 
 
-SET default_with_oids = false;
-
---
--- Name: training_questions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE training_questions (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer,
-    type character varying NOT NULL,
-    _ner_annotate_comment_main text,
-    _ner_annotate_comment_main_annotated text,
-    _ner_annotate_comment_comment_id integer
-);
-
-
 --
 -- Name: treated_visitors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
@@ -5154,10 +5032,12 @@ CREATE TABLE training_questions (
 CREATE SEQUENCE treated_visitors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
+
+SET default_with_oids = false;
 
 --
 -- Name: treated_visitors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
@@ -5169,20 +5049,6 @@ CREATE TABLE treated_visitors (
     visitor_id character varying NOT NULL,
     treatment integer NOT NULL,
     user_id integer
-);
-
-
---
--- Name: tterms; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE tterms (
-    id integer,
-    name character varying,
-    slug character varying,
-    taxonomy character varying,
-    parent_id integer,
-    root_id integer
 );
 
 
@@ -5237,8 +5103,8 @@ CREATE TABLE tutorials_categories (
 CREATE SEQUENCE tutorials_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5256,8 +5122,8 @@ ALTER SEQUENCE tutorials_categories_id_seq OWNED BY tutorials_categories.id;
 CREATE SEQUENCE tutorials_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5287,8 +5153,8 @@ CREATE TABLE user_login_changes (
 CREATE SEQUENCE user_login_changes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5424,8 +5290,8 @@ CREATE TABLE users_actions (
 CREATE SEQUENCE users_actions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5457,8 +5323,8 @@ CREATE TABLE users_contents_tags (
 CREATE SEQUENCE users_contents_tags_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5489,8 +5355,8 @@ CREATE TABLE users_emblems (
 CREATE SEQUENCE users_emblems_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5522,8 +5388,8 @@ CREATE TABLE users_guids (
 CREATE SEQUENCE users_guids_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5541,8 +5407,8 @@ ALTER SEQUENCE users_guids_id_seq OWNED BY users_guids.id;
 CREATE SEQUENCE users_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5573,8 +5439,8 @@ CREATE TABLE users_lastseen_ips (
 CREATE SEQUENCE users_lastseen_ips_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5605,8 +5471,8 @@ CREATE TABLE users_newsfeeds (
 CREATE SEQUENCE users_newsfeeds_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5636,8 +5502,8 @@ CREATE TABLE users_preferences (
 CREATE SEQUENCE users_preferences_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5649,10 +5515,10 @@ ALTER SEQUENCE users_preferences_id_seq OWNED BY users_preferences.id;
 
 
 --
--- Name: users_roles; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: users_skills; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE TABLE users_roles (
+CREATE TABLE users_skills (
     id integer NOT NULL,
     user_id integer NOT NULL,
     role character varying NOT NULL,
@@ -5668,8 +5534,8 @@ CREATE TABLE users_roles (
 CREATE SEQUENCE users_roles_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5677,7 +5543,7 @@ CREATE SEQUENCE users_roles_id_seq
 -- Name: users_roles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE users_roles_id_seq OWNED BY users_roles.id;
+ALTER SEQUENCE users_roles_id_seq OWNED BY users_skills.id;
 
 
 SET search_path = stats, pg_catalog;
@@ -5722,8 +5588,8 @@ CREATE TABLE ads_daily (
 CREATE SEQUENCE ads_daily_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5741,8 +5607,8 @@ ALTER SEQUENCE ads_daily_id_seq OWNED BY ads_daily.id;
 CREATE SEQUENCE ads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5793,8 +5659,8 @@ CREATE TABLE bandit_treatments (
 CREATE SEQUENCE bandit_treatments_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5824,8 +5690,8 @@ CREATE TABLE bets_results (
 CREATE SEQUENCE bets_results_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5855,8 +5721,8 @@ CREATE TABLE clans_daily_stats (
 CREATE SEQUENCE clans_daily_stats_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5951,8 +5817,8 @@ CREATE TABLE pageloadtime (
 CREATE SEQUENCE pageloadtime_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -5997,8 +5863,8 @@ CREATE TABLE pageviews (
 CREATE SEQUENCE pageviews_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -6032,8 +5898,8 @@ CREATE TABLE portals (
 CREATE SEQUENCE portals_stats_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -6067,8 +5933,8 @@ CREATE TABLE users_daily_stats (
 CREATE SEQUENCE users_daily_stats_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -6099,8 +5965,8 @@ CREATE TABLE users_karma_daily_by_portal (
 CREATE SEQUENCE users_karma_daily_by_portal_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 
 
@@ -6117,1001 +5983,1001 @@ SET search_path = public, pg_catalog;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ads ALTER COLUMN id SET DEFAULT nextval('ads_id_seq'::regclass);
+ALTER TABLE ONLY ads ALTER COLUMN id SET DEFAULT nextval('ads_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ads_slots ALTER COLUMN id SET DEFAULT nextval('ads_slots_id_seq'::regclass);
+ALTER TABLE ONLY ads_slots ALTER COLUMN id SET DEFAULT nextval('ads_slots_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ads_slots_instances ALTER COLUMN id SET DEFAULT nextval('ads_slots_instances_id_seq'::regclass);
+ALTER TABLE ONLY ads_slots_instances ALTER COLUMN id SET DEFAULT nextval('ads_slots_instances_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ads_slots_portals ALTER COLUMN id SET DEFAULT nextval('ads_slots_portals_id_seq'::regclass);
+ALTER TABLE ONLY ads_slots_portals ALTER COLUMN id SET DEFAULT nextval('ads_slots_portals_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE advertisers ALTER COLUMN id SET DEFAULT nextval('advertisers_id_seq'::regclass);
+ALTER TABLE ONLY advertisers ALTER COLUMN id SET DEFAULT nextval('advertisers_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE allowed_competitions_participants ALTER COLUMN id SET DEFAULT nextval('allowed_competitions_participants_id_seq'::regclass);
+ALTER TABLE ONLY allowed_competitions_participants ALTER COLUMN id SET DEFAULT nextval('allowed_competitions_participants_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE anonymous_users ALTER COLUMN id SET DEFAULT nextval('anonymous_users_id_seq'::regclass);
+ALTER TABLE ONLY autologin_keys ALTER COLUMN id SET DEFAULT nextval('autologin_keys_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE autologin_keys ALTER COLUMN id SET DEFAULT nextval('autologin_keys_id_seq'::regclass);
+ALTER TABLE ONLY avatars ALTER COLUMN id SET DEFAULT nextval('avatars_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE avatars ALTER COLUMN id SET DEFAULT nextval('avatars_id_seq'::regclass);
+ALTER TABLE ONLY babes ALTER COLUMN id SET DEFAULT nextval('babes_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE babes ALTER COLUMN id SET DEFAULT nextval('babes_id_seq'::regclass);
+ALTER TABLE ONLY ban_requests ALTER COLUMN id SET DEFAULT nextval('ban_requests_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ban_requests ALTER COLUMN id SET DEFAULT nextval('ban_requests_id_seq'::regclass);
+ALTER TABLE ONLY bazar_districts ALTER COLUMN id SET DEFAULT nextval('bazar_districts_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE bazar_districts ALTER COLUMN id SET DEFAULT nextval('bazar_districts_id_seq'::regclass);
+ALTER TABLE ONLY bets ALTER COLUMN id SET DEFAULT nextval('bets_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE bets ALTER COLUMN id SET DEFAULT nextval('bets_id_seq'::regclass);
+ALTER TABLE ONLY bets_categories ALTER COLUMN id SET DEFAULT nextval('bets_categories_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE bets_categories ALTER COLUMN id SET DEFAULT nextval('bets_categories_id_seq'::regclass);
+ALTER TABLE ONLY bets_options ALTER COLUMN id SET DEFAULT nextval('bets_options_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE bets_options ALTER COLUMN id SET DEFAULT nextval('bets_options_id_seq'::regclass);
+ALTER TABLE ONLY bets_tickets ALTER COLUMN id SET DEFAULT nextval('bets_tickets_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE bets_tickets ALTER COLUMN id SET DEFAULT nextval('bets_tickets_id_seq'::regclass);
+ALTER TABLE ONLY blogentries ALTER COLUMN id SET DEFAULT nextval('blogentries_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE blogentries ALTER COLUMN id SET DEFAULT nextval('blogentries_id_seq'::regclass);
+ALTER TABLE ONLY cash_movements ALTER COLUMN id SET DEFAULT nextval('cash_movements_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE cash_movements ALTER COLUMN id SET DEFAULT nextval('cash_movements_id_seq'::regclass);
+ALTER TABLE ONLY chatlines ALTER COLUMN id SET DEFAULT nextval('chatlines_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE chatlines ALTER COLUMN id SET DEFAULT nextval('chatlines_id_seq'::regclass);
+ALTER TABLE ONLY clans ALTER COLUMN id SET DEFAULT nextval('clans_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE clans ALTER COLUMN id SET DEFAULT nextval('clans_id_seq'::regclass);
+ALTER TABLE ONLY clans_friends ALTER COLUMN id SET DEFAULT nextval('clans_friends_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE clans_friends ALTER COLUMN id SET DEFAULT nextval('clans_friends_id_seq'::regclass);
+ALTER TABLE ONLY clans_groups ALTER COLUMN id SET DEFAULT nextval('clans_groups_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE clans_groups ALTER COLUMN id SET DEFAULT nextval('clans_groups_id_seq'::regclass);
+ALTER TABLE ONLY clans_groups_types ALTER COLUMN id SET DEFAULT nextval('clans_groups_types_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE clans_groups_types ALTER COLUMN id SET DEFAULT nextval('clans_groups_types_id_seq'::regclass);
+ALTER TABLE ONLY clans_logs_entries ALTER COLUMN id SET DEFAULT nextval('clans_logs_entries_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE clans_logs_entries ALTER COLUMN id SET DEFAULT nextval('clans_logs_entries_id_seq'::regclass);
+ALTER TABLE ONLY clans_movements ALTER COLUMN id SET DEFAULT nextval('clans_movements_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE clans_movements ALTER COLUMN id SET DEFAULT nextval('clans_movements_id_seq'::regclass);
+ALTER TABLE ONLY clans_sponsors ALTER COLUMN id SET DEFAULT nextval('clans_sponsors_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE clans_sponsors ALTER COLUMN id SET DEFAULT nextval('clans_sponsors_id_seq'::regclass);
+ALTER TABLE ONLY columns ALTER COLUMN id SET DEFAULT nextval('columns_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE columns ALTER COLUMN id SET DEFAULT nextval('columns_id_seq'::regclass);
+ALTER TABLE ONLY columns_categories ALTER COLUMN id SET DEFAULT nextval('columns_categories_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE columns_categories ALTER COLUMN id SET DEFAULT nextval('columns_categories_id_seq'::regclass);
+ALTER TABLE ONLY comment_violation_opinions ALTER COLUMN id SET DEFAULT nextval('comment_violation_opinions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE comment_violation_opinions ALTER COLUMN id SET DEFAULT nextval('comment_violation_opinions_id_seq'::regclass);
+ALTER TABLE ONLY comments ALTER COLUMN id SET DEFAULT nextval('comments_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE comments ALTER COLUMN id SET DEFAULT nextval('comments_id_seq'::regclass);
+ALTER TABLE ONLY comments_valorations ALTER COLUMN id SET DEFAULT nextval('comments_valorations_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE comments_valorations ALTER COLUMN id SET DEFAULT nextval('comments_valorations_id_seq'::regclass);
+ALTER TABLE ONLY comments_valorations_types ALTER COLUMN id SET DEFAULT nextval('comments_valorations_types_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE comments_valorations_types ALTER COLUMN id SET DEFAULT nextval('comments_valorations_types_id_seq'::regclass);
+ALTER TABLE ONLY competitions ALTER COLUMN id SET DEFAULT nextval('competitions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE competitions ALTER COLUMN id SET DEFAULT nextval('competitions_id_seq'::regclass);
+ALTER TABLE ONLY competitions_logs_entries ALTER COLUMN id SET DEFAULT nextval('competitions_logs_entries_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE competitions_logs_entries ALTER COLUMN id SET DEFAULT nextval('competitions_logs_entries_id_seq'::regclass);
+ALTER TABLE ONLY competitions_matches ALTER COLUMN id SET DEFAULT nextval('competitions_matches_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE competitions_matches ALTER COLUMN id SET DEFAULT nextval('competitions_matches_id_seq'::regclass);
+ALTER TABLE ONLY competitions_matches_clans_players ALTER COLUMN id SET DEFAULT nextval('competitions_matches_clans_players_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE competitions_matches_clans_players ALTER COLUMN id SET DEFAULT nextval('competitions_matches_clans_players_id_seq'::regclass);
+ALTER TABLE ONLY competitions_matches_games_maps ALTER COLUMN id SET DEFAULT nextval('competitions_matches_games_maps_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE competitions_matches_games_maps ALTER COLUMN id SET DEFAULT nextval('competitions_matches_games_maps_id_seq'::regclass);
+ALTER TABLE ONLY competitions_matches_reports ALTER COLUMN id SET DEFAULT nextval('competitions_matches_reports_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE competitions_matches_reports ALTER COLUMN id SET DEFAULT nextval('competitions_matches_reports_id_seq'::regclass);
+ALTER TABLE ONLY competitions_matches_uploads ALTER COLUMN id SET DEFAULT nextval('competitions_matches_uploads_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE competitions_matches_uploads ALTER COLUMN id SET DEFAULT nextval('competitions_matches_uploads_id_seq'::regclass);
+ALTER TABLE ONLY competitions_participants ALTER COLUMN id SET DEFAULT nextval('competitions_participants_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE competitions_participants ALTER COLUMN id SET DEFAULT nextval('competitions_participants_id_seq'::regclass);
+ALTER TABLE ONLY competitions_participants_types ALTER COLUMN id SET DEFAULT nextval('competitions_participants_types_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE competitions_participants_types ALTER COLUMN id SET DEFAULT nextval('competitions_participants_types_id_seq'::regclass);
+ALTER TABLE ONLY competitions_sponsors ALTER COLUMN id SET DEFAULT nextval('competitions_sponsors_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE competitions_sponsors ALTER COLUMN id SET DEFAULT nextval('competitions_sponsors_id_seq'::regclass);
+ALTER TABLE ONLY content_ratings ALTER COLUMN id SET DEFAULT nextval('content_ratings_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE content_ratings ALTER COLUMN id SET DEFAULT nextval('content_ratings_id_seq'::regclass);
+ALTER TABLE ONLY content_types ALTER COLUMN id SET DEFAULT nextval('content_types_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE content_types ALTER COLUMN id SET DEFAULT nextval('content_types_id_seq'::regclass);
+ALTER TABLE ONLY contents ALTER COLUMN id SET DEFAULT nextval('contents_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE contents ALTER COLUMN id SET DEFAULT nextval('contents_id_seq'::regclass);
+ALTER TABLE ONLY contents_locks ALTER COLUMN id SET DEFAULT nextval('contents_locks_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE contents_locks ALTER COLUMN id SET DEFAULT nextval('contents_locks_id_seq'::regclass);
+ALTER TABLE ONLY contents_recommendations ALTER COLUMN id SET DEFAULT nextval('contents_recommendations_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE contents_recommendations ALTER COLUMN id SET DEFAULT nextval('contents_recommendations_id_seq'::regclass);
+ALTER TABLE ONLY contents_terms ALTER COLUMN id SET DEFAULT nextval('contents_terms_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE contents_terms ALTER COLUMN id SET DEFAULT nextval('contents_terms_id_seq'::regclass);
+ALTER TABLE ONLY contents_versions ALTER COLUMN id SET DEFAULT nextval('contents_versions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE contents_versions ALTER COLUMN id SET DEFAULT nextval('contents_versions_id_seq'::regclass);
+ALTER TABLE ONLY coverages ALTER COLUMN id SET DEFAULT nextval('events_news_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE coverages ALTER COLUMN id SET DEFAULT nextval('events_news_id_seq'::regclass);
+ALTER TABLE ONLY delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_id_seq'::regclass);
+ALTER TABLE ONLY demo_mirrors ALTER COLUMN id SET DEFAULT nextval('demo_mirrors_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE demo_mirrors ALTER COLUMN id SET DEFAULT nextval('demo_mirrors_id_seq'::regclass);
+ALTER TABLE ONLY demos ALTER COLUMN id SET DEFAULT nextval('demos_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE demos ALTER COLUMN id SET DEFAULT nextval('demos_id_seq'::regclass);
+ALTER TABLE ONLY demos_categories ALTER COLUMN id SET DEFAULT nextval('demos_categories_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE demos_categories ALTER COLUMN id SET DEFAULT nextval('demos_categories_id_seq'::regclass);
+ALTER TABLE ONLY dictionary_words ALTER COLUMN id SET DEFAULT nextval('dictionary_words_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE dictionary_words ALTER COLUMN id SET DEFAULT nextval('dictionary_words_id_seq'::regclass);
+ALTER TABLE ONLY download_mirrors ALTER COLUMN id SET DEFAULT nextval('download_mirrors_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE download_mirrors ALTER COLUMN id SET DEFAULT nextval('download_mirrors_id_seq'::regclass);
+ALTER TABLE ONLY downloaded_downloads ALTER COLUMN id SET DEFAULT nextval('downloaded_downloads_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE downloaded_downloads ALTER COLUMN id SET DEFAULT nextval('downloaded_downloads_id_seq'::regclass);
+ALTER TABLE ONLY downloads ALTER COLUMN id SET DEFAULT nextval('downloads_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE downloads ALTER COLUMN id SET DEFAULT nextval('downloads_id_seq'::regclass);
+ALTER TABLE ONLY downloads_categories ALTER COLUMN id SET DEFAULT nextval('downloads_categories_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE downloads_categories ALTER COLUMN id SET DEFAULT nextval('downloads_categories_id_seq'::regclass);
+ALTER TABLE ONLY dudes ALTER COLUMN id SET DEFAULT nextval('dudes_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE dudes ALTER COLUMN id SET DEFAULT nextval('dudes_id_seq'::regclass);
+ALTER TABLE ONLY events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
+ALTER TABLE ONLY events_categories ALTER COLUMN id SET DEFAULT nextval('events_categories_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE events_categories ALTER COLUMN id SET DEFAULT nextval('events_categories_id_seq'::regclass);
+ALTER TABLE ONLY factions ALTER COLUMN id SET DEFAULT nextval('factions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE factions ALTER COLUMN id SET DEFAULT nextval('factions_id_seq'::regclass);
+ALTER TABLE ONLY factions_banned_users ALTER COLUMN id SET DEFAULT nextval('factions_banned_users_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE factions_banned_users ALTER COLUMN id SET DEFAULT nextval('factions_banned_users_id_seq'::regclass);
+ALTER TABLE ONLY factions_capos ALTER COLUMN id SET DEFAULT nextval('factions_capos_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE factions_capos ALTER COLUMN id SET DEFAULT nextval('factions_capos_id_seq'::regclass);
+ALTER TABLE ONLY factions_editors ALTER COLUMN id SET DEFAULT nextval('factions_editors_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE factions_editors ALTER COLUMN id SET DEFAULT nextval('factions_editors_id_seq'::regclass);
+ALTER TABLE ONLY factions_headers ALTER COLUMN id SET DEFAULT nextval('factions_headers_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE factions_headers ALTER COLUMN id SET DEFAULT nextval('factions_headers_id_seq'::regclass);
+ALTER TABLE ONLY factions_links ALTER COLUMN id SET DEFAULT nextval('factions_links_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE factions_links ALTER COLUMN id SET DEFAULT nextval('factions_links_id_seq'::regclass);
+ALTER TABLE ONLY factions_portals ALTER COLUMN id SET DEFAULT nextval('factions_portals_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE faq_categories ALTER COLUMN id SET DEFAULT nextval('faq_categories_id_seq'::regclass);
+ALTER TABLE ONLY faq_categories ALTER COLUMN id SET DEFAULT nextval('faq_categories_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE faq_entries ALTER COLUMN id SET DEFAULT nextval('faq_entries_id_seq'::regclass);
+ALTER TABLE ONLY faq_entries ALTER COLUMN id SET DEFAULT nextval('faq_entries_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE friends_recommendations ALTER COLUMN id SET DEFAULT nextval('friends_recommendations_id_seq'::regclass);
+ALTER TABLE ONLY friends_recommendations ALTER COLUMN id SET DEFAULT nextval('friends_recommendations_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE friendships ALTER COLUMN id SET DEFAULT nextval('friends_users_id_seq'::regclass);
+ALTER TABLE ONLY friendships ALTER COLUMN id SET DEFAULT nextval('friends_users_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE funthings ALTER COLUMN id SET DEFAULT nextval('funthings_id_seq'::regclass);
+ALTER TABLE ONLY funthings ALTER COLUMN id SET DEFAULT nextval('funthings_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE gamersmafiageist_codes ALTER COLUMN id SET DEFAULT nextval('gamersmafiageist_codes_id_seq'::regclass);
+ALTER TABLE ONLY gamersmafiageist_codes ALTER COLUMN id SET DEFAULT nextval('gamersmafiageist_codes_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE games ALTER COLUMN id SET DEFAULT nextval('games_id_seq'::regclass);
+ALTER TABLE ONLY games ALTER COLUMN id SET DEFAULT nextval('games_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE games_maps ALTER COLUMN id SET DEFAULT nextval('games_maps_id_seq'::regclass);
+ALTER TABLE ONLY games_maps ALTER COLUMN id SET DEFAULT nextval('games_maps_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE games_modes ALTER COLUMN id SET DEFAULT nextval('games_modes_id_seq'::regclass);
+ALTER TABLE ONLY games_modes ALTER COLUMN id SET DEFAULT nextval('games_modes_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE games_versions ALTER COLUMN id SET DEFAULT nextval('games_versions_id_seq'::regclass);
+ALTER TABLE ONLY games_versions ALTER COLUMN id SET DEFAULT nextval('games_versions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE global_vars ALTER COLUMN id SET DEFAULT nextval('global_vars_id_seq'::regclass);
+ALTER TABLE ONLY global_vars ALTER COLUMN id SET DEFAULT nextval('global_vars_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE gmtv_broadcast_messages ALTER COLUMN id SET DEFAULT nextval('gmtv_broadcast_messages_id_seq'::regclass);
+ALTER TABLE ONLY gmtv_broadcast_messages ALTER COLUMN id SET DEFAULT nextval('gmtv_broadcast_messages_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE gmtv_channels ALTER COLUMN id SET DEFAULT nextval('gmtv_channels_id_seq'::regclass);
+ALTER TABLE ONLY gmtv_channels ALTER COLUMN id SET DEFAULT nextval('gmtv_channels_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE groups ALTER COLUMN id SET DEFAULT nextval('groups_id_seq'::regclass);
+ALTER TABLE ONLY groups ALTER COLUMN id SET DEFAULT nextval('groups_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE groups_messages ALTER COLUMN id SET DEFAULT nextval('groups_messages_id_seq'::regclass);
+ALTER TABLE ONLY groups_messages ALTER COLUMN id SET DEFAULT nextval('groups_messages_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE images ALTER COLUMN id SET DEFAULT nextval('images_id_seq'::regclass);
+ALTER TABLE ONLY images ALTER COLUMN id SET DEFAULT nextval('images_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE images_categories ALTER COLUMN id SET DEFAULT nextval('images_categories_id_seq'::regclass);
+ALTER TABLE ONLY images_categories ALTER COLUMN id SET DEFAULT nextval('images_categories_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE interviews ALTER COLUMN id SET DEFAULT nextval('interviews_id_seq'::regclass);
+ALTER TABLE ONLY interviews ALTER COLUMN id SET DEFAULT nextval('interviews_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE interviews_categories ALTER COLUMN id SET DEFAULT nextval('interviews_categories_id_seq'::regclass);
+ALTER TABLE ONLY interviews_categories ALTER COLUMN id SET DEFAULT nextval('interviews_categories_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ip_bans ALTER COLUMN id SET DEFAULT nextval('ip_bans_id_seq'::regclass);
+ALTER TABLE ONLY ip_bans ALTER COLUMN id SET DEFAULT nextval('ip_bans_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ip_passwords_resets_requests ALTER COLUMN id SET DEFAULT nextval('ip_passwords_resets_requests_id_seq'::regclass);
+ALTER TABLE ONLY ip_passwords_resets_requests ALTER COLUMN id SET DEFAULT nextval('ip_passwords_resets_requests_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE macropolls ALTER COLUMN id SET DEFAULT nextval('macropolls_id_seq'::regclass);
+ALTER TABLE ONLY macropolls ALTER COLUMN id SET DEFAULT nextval('macropolls_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE macropolls_2007_1 ALTER COLUMN id SET DEFAULT nextval('macropolls_2007_1_id_seq'::regclass);
+ALTER TABLE ONLY macropolls_2007_1 ALTER COLUMN id SET DEFAULT nextval('macropolls_2007_1_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE messages ALTER COLUMN id SET DEFAULT nextval('messages_id_seq'::regclass);
+ALTER TABLE ONLY messages ALTER COLUMN id SET DEFAULT nextval('messages_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ne_references ALTER COLUMN id SET DEFAULT nextval('ne_references_id_seq'::regclass);
+ALTER TABLE ONLY ne_references ALTER COLUMN id SET DEFAULT nextval('ne_references_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE news ALTER COLUMN id SET DEFAULT nextval('news_id_seq'::regclass);
+ALTER TABLE ONLY news ALTER COLUMN id SET DEFAULT nextval('news_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE news_categories ALTER COLUMN id SET DEFAULT nextval('news_categories_id_seq'::regclass);
+ALTER TABLE ONLY news_categories ALTER COLUMN id SET DEFAULT nextval('news_categories_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE outstanding_entities ALTER COLUMN id SET DEFAULT nextval('outstanding_users_id_seq'::regclass);
+ALTER TABLE ONLY outstanding_entities ALTER COLUMN id SET DEFAULT nextval('outstanding_users_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE platforms ALTER COLUMN id SET DEFAULT nextval('platforms_id_seq'::regclass);
+ALTER TABLE ONLY platforms ALTER COLUMN id SET DEFAULT nextval('platforms_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE polls ALTER COLUMN id SET DEFAULT nextval('polls_id_seq'::regclass);
+ALTER TABLE ONLY polls ALTER COLUMN id SET DEFAULT nextval('polls_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE polls_categories ALTER COLUMN id SET DEFAULT nextval('polls_categories_id_seq'::regclass);
+ALTER TABLE ONLY polls_categories ALTER COLUMN id SET DEFAULT nextval('polls_categories_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE polls_options ALTER COLUMN id SET DEFAULT nextval('polls_options_id_seq'::regclass);
+ALTER TABLE ONLY polls_options ALTER COLUMN id SET DEFAULT nextval('polls_options_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE polls_votes ALTER COLUMN id SET DEFAULT nextval('polls_votes_id_seq'::regclass);
+ALTER TABLE ONLY polls_votes ALTER COLUMN id SET DEFAULT nextval('polls_votes_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE portal_headers ALTER COLUMN id SET DEFAULT nextval('portal_headers_id_seq'::regclass);
+ALTER TABLE ONLY portal_headers ALTER COLUMN id SET DEFAULT nextval('portal_headers_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE portal_hits ALTER COLUMN id SET DEFAULT nextval('portal_hits_id_seq'::regclass);
+ALTER TABLE ONLY portal_hits ALTER COLUMN id SET DEFAULT nextval('portal_hits_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE portals ALTER COLUMN id SET DEFAULT nextval('portals_id_seq'::regclass);
+ALTER TABLE ONLY portals ALTER COLUMN id SET DEFAULT nextval('portals_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE potds ALTER COLUMN id SET DEFAULT nextval('potds_id_seq'::regclass);
+ALTER TABLE ONLY potds ALTER COLUMN id SET DEFAULT nextval('potds_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE products ALTER COLUMN id SET DEFAULT nextval('products_id_seq'::regclass);
+ALTER TABLE ONLY products ALTER COLUMN id SET DEFAULT nextval('products_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE profile_signatures ALTER COLUMN id SET DEFAULT nextval('profile_signatures_id_seq'::regclass);
+ALTER TABLE ONLY profile_signatures ALTER COLUMN id SET DEFAULT nextval('profile_signatures_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE publishing_decisions ALTER COLUMN id SET DEFAULT nextval('publishing_decisions_id_seq'::regclass);
+ALTER TABLE ONLY publishing_decisions ALTER COLUMN id SET DEFAULT nextval('publishing_decisions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE publishing_personalities ALTER COLUMN id SET DEFAULT nextval('publishing_personalities_id_seq'::regclass);
+ALTER TABLE ONLY publishing_personalities ALTER COLUMN id SET DEFAULT nextval('publishing_personalities_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE questions ALTER COLUMN id SET DEFAULT nextval('questions_id_seq'::regclass);
+ALTER TABLE ONLY questions ALTER COLUMN id SET DEFAULT nextval('questions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE questions_categories ALTER COLUMN id SET DEFAULT nextval('questions_categories_id_seq'::regclass);
+ALTER TABLE ONLY questions_categories ALTER COLUMN id SET DEFAULT nextval('questions_categories_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE recruitment_ads ALTER COLUMN id SET DEFAULT nextval('recruitment_ads_id_seq'::regclass);
+ALTER TABLE ONLY recruitment_ads ALTER COLUMN id SET DEFAULT nextval('recruitment_ads_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE refered_hits ALTER COLUMN id SET DEFAULT nextval('refered_hits_id_seq'::regclass);
+ALTER TABLE ONLY refered_hits ALTER COLUMN id SET DEFAULT nextval('refered_hits_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE reviews ALTER COLUMN id SET DEFAULT nextval('reviews_id_seq'::regclass);
+ALTER TABLE ONLY reviews ALTER COLUMN id SET DEFAULT nextval('reviews_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE reviews_categories ALTER COLUMN id SET DEFAULT nextval('reviews_categories_id_seq'::regclass);
+ALTER TABLE ONLY reviews_categories ALTER COLUMN id SET DEFAULT nextval('reviews_categories_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE sent_emails ALTER COLUMN id SET DEFAULT nextval('sent_emails_id_seq'::regclass);
+ALTER TABLE ONLY sent_emails ALTER COLUMN id SET DEFAULT nextval('sent_emails_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE silenced_emails ALTER COLUMN id SET DEFAULT nextval('silenced_emails_id_seq'::regclass);
+ALTER TABLE ONLY silenced_emails ALTER COLUMN id SET DEFAULT nextval('silenced_emails_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE skin_textures ALTER COLUMN id SET DEFAULT nextval('skin_textures_id_seq'::regclass);
+ALTER TABLE ONLY skin_textures ALTER COLUMN id SET DEFAULT nextval('skin_textures_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE skins ALTER COLUMN id SET DEFAULT nextval('skins_id_seq'::regclass);
+ALTER TABLE ONLY skins ALTER COLUMN id SET DEFAULT nextval('skins_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE skins_files ALTER COLUMN id SET DEFAULT nextval('skins_files_id_seq'::regclass);
+ALTER TABLE ONLY skins_files ALTER COLUMN id SET DEFAULT nextval('skins_files_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE slog_entries ALTER COLUMN id SET DEFAULT nextval('slog_entries_id_seq'::regclass);
+ALTER TABLE ONLY slog_entries ALTER COLUMN id SET DEFAULT nextval('slog_entries_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE sold_products ALTER COLUMN id SET DEFAULT nextval('sold_products_id_seq'::regclass);
+ALTER TABLE ONLY sold_products ALTER COLUMN id SET DEFAULT nextval('sold_products_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE staff_candidates ALTER COLUMN id SET DEFAULT nextval('staff_candidates_id_seq'::regclass);
+ALTER TABLE ONLY staff_candidate_votes ALTER COLUMN id SET DEFAULT nextval('staff_candidate_votes_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE staff_canditate_votes ALTER COLUMN id SET DEFAULT nextval('staff_canditate_votes_id_seq'::regclass);
+ALTER TABLE ONLY staff_candidates ALTER COLUMN id SET DEFAULT nextval('staff_candidates_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE staff_positions ALTER COLUMN id SET DEFAULT nextval('staff_positions_id_seq'::regclass);
+ALTER TABLE ONLY staff_positions ALTER COLUMN id SET DEFAULT nextval('staff_positions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE staff_types ALTER COLUMN id SET DEFAULT nextval('staff_types_id_seq'::regclass);
+ALTER TABLE ONLY staff_types ALTER COLUMN id SET DEFAULT nextval('staff_types_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE terms ALTER COLUMN id SET DEFAULT nextval('terms_id_seq'::regclass);
+ALTER TABLE ONLY terms ALTER COLUMN id SET DEFAULT nextval('terms_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE textures ALTER COLUMN id SET DEFAULT nextval('textures_id_seq'::regclass);
+ALTER TABLE ONLY textures ALTER COLUMN id SET DEFAULT nextval('textures_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE topics ALTER COLUMN id SET DEFAULT nextval('forum_topics_id_seq'::regclass);
+ALTER TABLE ONLY topics ALTER COLUMN id SET DEFAULT nextval('forum_topics_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE topics_categories ALTER COLUMN id SET DEFAULT nextval('forum_forums_id_seq'::regclass);
+ALTER TABLE ONLY topics_categories ALTER COLUMN id SET DEFAULT nextval('forum_forums_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE tracker_items ALTER COLUMN id SET DEFAULT nextval('tracker_items_id_seq'::regclass);
+ALTER TABLE ONLY tracker_items ALTER COLUMN id SET DEFAULT nextval('tracker_items_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE tutorials ALTER COLUMN id SET DEFAULT nextval('tutorials_id_seq'::regclass);
+ALTER TABLE ONLY tutorials ALTER COLUMN id SET DEFAULT nextval('tutorials_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE tutorials_categories ALTER COLUMN id SET DEFAULT nextval('tutorials_categories_id_seq'::regclass);
+ALTER TABLE ONLY tutorials_categories ALTER COLUMN id SET DEFAULT nextval('tutorials_categories_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE user_login_changes ALTER COLUMN id SET DEFAULT nextval('user_login_changes_id_seq'::regclass);
+ALTER TABLE ONLY user_login_changes ALTER COLUMN id SET DEFAULT nextval('user_login_changes_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE users_actions ALTER COLUMN id SET DEFAULT nextval('users_actions_id_seq'::regclass);
+ALTER TABLE ONLY users_actions ALTER COLUMN id SET DEFAULT nextval('users_actions_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE users_contents_tags ALTER COLUMN id SET DEFAULT nextval('users_contents_tags_id_seq'::regclass);
+ALTER TABLE ONLY users_contents_tags ALTER COLUMN id SET DEFAULT nextval('users_contents_tags_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE users_emblems ALTER COLUMN id SET DEFAULT nextval('users_emblems_id_seq'::regclass);
+ALTER TABLE ONLY users_emblems ALTER COLUMN id SET DEFAULT nextval('users_emblems_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE users_guids ALTER COLUMN id SET DEFAULT nextval('users_guids_id_seq'::regclass);
+ALTER TABLE ONLY users_guids ALTER COLUMN id SET DEFAULT nextval('users_guids_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE users_lastseen_ips ALTER COLUMN id SET DEFAULT nextval('users_lastseen_ips_id_seq'::regclass);
+ALTER TABLE ONLY users_lastseen_ips ALTER COLUMN id SET DEFAULT nextval('users_lastseen_ips_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE users_newsfeeds ALTER COLUMN id SET DEFAULT nextval('users_newsfeeds_id_seq'::regclass);
+ALTER TABLE ONLY users_newsfeeds ALTER COLUMN id SET DEFAULT nextval('users_newsfeeds_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE users_preferences ALTER COLUMN id SET DEFAULT nextval('users_preferences_id_seq'::regclass);
+ALTER TABLE ONLY users_preferences ALTER COLUMN id SET DEFAULT nextval('users_preferences_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE users_roles ALTER COLUMN id SET DEFAULT nextval('users_roles_id_seq'::regclass);
+ALTER TABLE ONLY users_skills ALTER COLUMN id SET DEFAULT nextval('users_roles_id_seq'::regclass);
 
 
 SET search_path = stats, pg_catalog;
@@ -7120,70 +6986,70 @@ SET search_path = stats, pg_catalog;
 -- Name: id; Type: DEFAULT; Schema: stats; Owner: -
 --
 
-ALTER TABLE ads ALTER COLUMN id SET DEFAULT nextval('ads_id_seq'::regclass);
+ALTER TABLE ONLY ads ALTER COLUMN id SET DEFAULT nextval('ads_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: stats; Owner: -
 --
 
-ALTER TABLE ads_daily ALTER COLUMN id SET DEFAULT nextval('ads_daily_id_seq'::regclass);
+ALTER TABLE ONLY ads_daily ALTER COLUMN id SET DEFAULT nextval('ads_daily_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: stats; Owner: -
 --
 
-ALTER TABLE bandit_treatments ALTER COLUMN id SET DEFAULT nextval('bandit_treatments_id_seq'::regclass);
+ALTER TABLE ONLY bandit_treatments ALTER COLUMN id SET DEFAULT nextval('bandit_treatments_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: stats; Owner: -
 --
 
-ALTER TABLE bets_results ALTER COLUMN id SET DEFAULT nextval('bets_results_id_seq'::regclass);
+ALTER TABLE ONLY bets_results ALTER COLUMN id SET DEFAULT nextval('bets_results_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: stats; Owner: -
 --
 
-ALTER TABLE clans_daily_stats ALTER COLUMN id SET DEFAULT nextval('clans_daily_stats_id_seq'::regclass);
+ALTER TABLE ONLY clans_daily_stats ALTER COLUMN id SET DEFAULT nextval('clans_daily_stats_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: stats; Owner: -
 --
 
-ALTER TABLE pageloadtime ALTER COLUMN id SET DEFAULT nextval('pageloadtime_id_seq'::regclass);
+ALTER TABLE ONLY pageloadtime ALTER COLUMN id SET DEFAULT nextval('pageloadtime_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: stats; Owner: -
 --
 
-ALTER TABLE pageviews ALTER COLUMN id SET DEFAULT nextval('pageviews_id_seq'::regclass);
+ALTER TABLE ONLY pageviews ALTER COLUMN id SET DEFAULT nextval('pageviews_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: stats; Owner: -
 --
 
-ALTER TABLE portals ALTER COLUMN id SET DEFAULT nextval('portals_stats_id_seq'::regclass);
+ALTER TABLE ONLY portals ALTER COLUMN id SET DEFAULT nextval('portals_stats_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: stats; Owner: -
 --
 
-ALTER TABLE users_daily_stats ALTER COLUMN id SET DEFAULT nextval('users_daily_stats_id_seq'::regclass);
+ALTER TABLE ONLY users_daily_stats ALTER COLUMN id SET DEFAULT nextval('users_daily_stats_id_seq'::regclass);
 
 
 --
 -- Name: id; Type: DEFAULT; Schema: stats; Owner: -
 --
 
-ALTER TABLE users_karma_daily_by_portal ALTER COLUMN id SET DEFAULT nextval('users_karma_daily_by_portal_id_seq'::regclass);
+ALTER TABLE ONLY users_karma_daily_by_portal ALTER COLUMN id SET DEFAULT nextval('users_karma_daily_by_portal_id_seq'::regclass);
 
 
 SET search_path = archive, pg_catalog;
@@ -7300,22 +7166,6 @@ ALTER TABLE ONLY advertisers
 
 ALTER TABLE ONLY allowed_competitions_participants
     ADD CONSTRAINT allowed_competitions_participants_pkey PRIMARY KEY (id);
-
-
---
--- Name: anonymous_users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY anonymous_users
-    ADD CONSTRAINT anonymous_users_pkey PRIMARY KEY (id);
-
-
---
--- Name: anonymous_users_session_id_key; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY anonymous_users
-    ADD CONSTRAINT anonymous_users_session_id_key UNIQUE (session_id);
 
 
 --
@@ -7916,14 +7766,6 @@ ALTER TABLE ONLY coverages
 
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_pkey PRIMARY KEY (id);
-
-
---
--- Name: events_users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY events_users
-    ADD CONSTRAINT events_users_pkey PRIMARY KEY (event_id, user_id);
 
 
 --
@@ -8647,19 +8489,19 @@ ALTER TABLE ONLY sold_products
 
 
 --
+-- Name: staff_candidate_votes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY staff_candidate_votes
+    ADD CONSTRAINT staff_candidate_votes_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: staff_candidates_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY staff_candidates
     ADD CONSTRAINT staff_candidates_pkey PRIMARY KEY (id);
-
-
---
--- Name: staff_canditate_votes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY staff_canditate_votes
-    ADD CONSTRAINT staff_canditate_votes_pkey PRIMARY KEY (id);
 
 
 --
@@ -8711,27 +8553,11 @@ ALTER TABLE ONLY textures
 
 
 --
--- Name: tracker_items_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY tracker_items
-    ADD CONSTRAINT tracker_items_pkey UNIQUE (id);
-
-
---
 -- Name: tracker_items_pkey1; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
 ALTER TABLE ONLY tracker_items
     ADD CONSTRAINT tracker_items_pkey1 PRIMARY KEY (id);
-
-
---
--- Name: training_questions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY training_questions
-    ADD CONSTRAINT training_questions_pkey PRIMARY KEY (id);
 
 
 --
@@ -8834,7 +8660,7 @@ ALTER TABLE ONLY users_preferences
 -- Name: users_roles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY users_roles
+ALTER TABLE ONLY users_skills
     ADD CONSTRAINT users_roles_pkey PRIMARY KEY (id);
 
 
@@ -8946,13 +8772,6 @@ CREATE UNIQUE INDEX tracker_items_pkey ON tracker_items USING btree (id);
 
 
 SET search_path = public, pg_catalog;
-
---
--- Name: anonymous_users_lastseen; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX anonymous_users_lastseen ON anonymous_users USING btree (lastseen_on);
-
 
 --
 -- Name: autologin_keys_key; Type: INDEX; Schema: public; Owner: -; Tablespace: 
@@ -9627,13 +9446,6 @@ CREATE UNIQUE INDEX funthings_title_uniq ON funthings USING btree (title);
 
 
 --
--- Name: gamersmafiageist_codes_user_edition; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX gamersmafiageist_codes_user_edition ON gamersmafiageist_codes USING btree (user_id, survey_edition_date);
-
-
---
 -- Name: games_maps_name_game_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -10267,28 +10079,28 @@ CREATE INDEX users_random_id ON users USING btree (random_id);
 -- Name: users_roles_role; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX users_roles_role ON users_roles USING btree (role);
+CREATE INDEX users_roles_role ON users_skills USING btree (role);
 
 
 --
 -- Name: users_roles_role_role_data; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX users_roles_role_role_data ON users_roles USING btree (role, role_data);
+CREATE INDEX users_roles_role_role_data ON users_skills USING btree (role, role_data);
 
 
 --
 -- Name: users_roles_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX users_roles_uniq ON users_roles USING btree (user_id, role, role_data);
+CREATE UNIQUE INDEX users_roles_uniq ON users_skills USING btree (user_id, role, role_data);
 
 
 --
 -- Name: users_roles_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX users_roles_user_id ON users_roles USING btree (user_id);
+CREATE INDEX users_roles_user_id ON users_skills USING btree (user_id);
 
 
 --
@@ -11005,6 +10817,30 @@ ALTER TABLE ONLY skins_files
 
 
 --
+-- Name: staff_candidate_votes_staff_candidate_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY staff_candidate_votes
+    ADD CONSTRAINT staff_candidate_votes_staff_candidate_id_fkey FOREIGN KEY (staff_candidate_id) REFERENCES staff_candidates(id) MATCH FULL;
+
+
+--
+-- Name: staff_candidate_votes_staff_position_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY staff_candidate_votes
+    ADD CONSTRAINT staff_candidate_votes_staff_position_id_fkey FOREIGN KEY (staff_position_id) REFERENCES staff_positions(id) MATCH FULL;
+
+
+--
+-- Name: staff_candidate_votes_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY staff_candidate_votes
+    ADD CONSTRAINT staff_candidate_votes_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
+
+
+--
 -- Name: staff_candidates_staff_position_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -11018,22 +10854,6 @@ ALTER TABLE ONLY staff_candidates
 
 ALTER TABLE ONLY staff_candidates
     ADD CONSTRAINT staff_candidates_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-
-
---
--- Name: staff_canditate_votes_staff_candidate_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY staff_canditate_votes
-    ADD CONSTRAINT staff_canditate_votes_staff_candidate_id_fkey FOREIGN KEY (staff_candidate_id) REFERENCES staff_candidates(id) MATCH FULL;
-
-
---
--- Name: staff_canditate_votes_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY staff_canditate_votes
-    ADD CONSTRAINT staff_canditate_votes_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 
 
 --
@@ -11114,22 +10934,6 @@ ALTER TABLE ONLY topics
 
 ALTER TABLE ONLY topics
     ADD CONSTRAINT topics_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-
-
---
--- Name: training_questions__ner_annotate_comment_comment_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY training_questions
-    ADD CONSTRAINT training_questions__ner_annotate_comment_comment_id_fkey FOREIGN KEY (_ner_annotate_comment_comment_id) REFERENCES comments(id) MATCH FULL;
-
-
---
--- Name: training_questions_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY training_questions
-    ADD CONSTRAINT training_questions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 
 
 --
@@ -11266,108 +11070,12 @@ ALTER TABLE ONLY users_daily_stats
 -- PostgreSQL database dump complete
 --
 
-INSERT INTO schema_migrations (version) VALUES ('20090222210145');
-
-INSERT INTO schema_migrations (version) VALUES ('20090224080019');
-
-INSERT INTO schema_migrations (version) VALUES ('20090227203116');
-
-INSERT INTO schema_migrations (version) VALUES ('20090301155823');
-
-INSERT INTO schema_migrations (version) VALUES ('20090306105825');
-
-INSERT INTO schema_migrations (version) VALUES ('20090313153722');
-
-INSERT INTO schema_migrations (version) VALUES ('20090405090507');
-
-INSERT INTO schema_migrations (version) VALUES ('20090415185436');
-
-INSERT INTO schema_migrations (version) VALUES ('20090502093744');
-
-INSERT INTO schema_migrations (version) VALUES ('20090725104627');
-
-INSERT INTO schema_migrations (version) VALUES ('20090725203454');
-
-INSERT INTO schema_migrations (version) VALUES ('20090726153637');
-
-INSERT INTO schema_migrations (version) VALUES ('20090726155511');
-
-INSERT INTO schema_migrations (version) VALUES ('20090726160256');
-
-INSERT INTO schema_migrations (version) VALUES ('20090729202656');
-
-INSERT INTO schema_migrations (version) VALUES ('20090808092838');
-
-INSERT INTO schema_migrations (version) VALUES ('20091013222823');
-
-INSERT INTO schema_migrations (version) VALUES ('20091022205614');
-
-INSERT INTO schema_migrations (version) VALUES ('20091105000544');
-
-INSERT INTO schema_migrations (version) VALUES ('20091106204805');
-
-INSERT INTO schema_migrations (version) VALUES ('20091214224458');
-
-INSERT INTO schema_migrations (version) VALUES ('20091216010234');
-
-INSERT INTO schema_migrations (version) VALUES ('20091229113540');
-
-INSERT INTO schema_migrations (version) VALUES ('20100108115148');
-
-INSERT INTO schema_migrations (version) VALUES ('20100108133055');
-
-INSERT INTO schema_migrations (version) VALUES ('20100108155537');
-
-INSERT INTO schema_migrations (version) VALUES ('20100110145850');
-
-INSERT INTO schema_migrations (version) VALUES ('20100124192939');
-
-INSERT INTO schema_migrations (version) VALUES ('20100126201240');
-
-INSERT INTO schema_migrations (version) VALUES ('20100728195416');
-
-INSERT INTO schema_migrations (version) VALUES ('20101212171527');
-
-INSERT INTO schema_migrations (version) VALUES ('20120225171915');
-
-INSERT INTO schema_migrations (version) VALUES ('20120225172334');
-
-INSERT INTO schema_migrations (version) VALUES ('20120225175205');
-
-INSERT INTO schema_migrations (version) VALUES ('20120225180115');
-
-INSERT INTO schema_migrations (version) VALUES ('20120303160621');
-
-INSERT INTO schema_migrations (version) VALUES ('20120601195027');
-
-INSERT INTO schema_migrations (version) VALUES ('20120701043725');
-
-INSERT INTO schema_migrations (version) VALUES ('20120701201029');
-
-INSERT INTO schema_migrations (version) VALUES ('20120701224459');
-
 INSERT INTO schema_migrations (version) VALUES ('20120712045528');
 
-INSERT INTO schema_migrations (version) VALUES ('224');
+INSERT INTO schema_migrations (version) VALUES ('20120722044855');
 
-INSERT INTO schema_migrations (version) VALUES ('225');
+INSERT INTO schema_migrations (version) VALUES ('20120723012211');
 
-INSERT INTO schema_migrations (version) VALUES ('226');
+INSERT INTO schema_migrations (version) VALUES ('20120725044653');
 
-INSERT INTO schema_migrations (version) VALUES ('227');
-
-INSERT INTO schema_migrations (version) VALUES ('228');
-
-INSERT INTO schema_migrations (version) VALUES ('229');
-
-INSERT INTO schema_migrations (version) VALUES ('230');
-
-INSERT INTO schema_migrations (version) VALUES ('231');
-
-INSERT INTO schema_migrations (version) VALUES ('232');
-
-INSERT INTO schema_migrations (version) VALUES ('233');
-
-INSERT INTO schema_migrations (version) VALUES ('234');
-
-INSERT INTO schema_migrations (version) VALUES ('235');
+INSERT INTO schema_migrations (version) VALUES ('20120727032921');
