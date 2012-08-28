@@ -96,7 +96,7 @@ class AbTest < ActiveRecord::Base
         all_rates
       end
       self.dirty = false
-      save
+      self.save
       self.cache_expected_completion_date = nil
       expected_completion_date # force cache regen
     end
