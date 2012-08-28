@@ -100,6 +100,11 @@ class CommentsController < ApplicationController
     end
   end
 
+  def redir
+    comment = Comment.find(params[:id])
+    redirect_to "#{Routing.gmurl(comment.content)}?page=#{comment.comment_page}#comment#{comment.id}"
+  end
+
   def rate
     # TODO controls
     @comment = Comment.find(params[:comment_id])

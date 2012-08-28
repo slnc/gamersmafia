@@ -39,11 +39,11 @@ module ApuestasHelper
     end
     accuracy_table[ApuestasHelper::GM_KEY] = [
         gm_results[0]["accuracy"].to_f,
-        [gm_results[0]["played_bets_participation"].to_i]]
+        gm_results[0]["played_bets_participation"].to_i]
 
     # Build the rank
     key = accuracy_table.keys.last
-    ranking = accuracy_table.sort_by {|user_id, data| data}
+    ranking = accuracy_table.sort_by {|user_id, data| data[0]}
     ranking.reverse!
     user_ids_to_user = {}
     User.find(:all, :conditions => ["id IN (?)", user_ids]).each do |user|
