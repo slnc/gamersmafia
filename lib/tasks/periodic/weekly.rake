@@ -1,7 +1,6 @@
 namespace :gm do
   desc "Weekly operations"
   task :weekly => :environment do
-    require 'app/controllers/application_controller'
     # Eliminamos cache de páginas de comentarios (limpiando avatares y stats)
     `find #{FRAGMENT_CACHE_PATH}/comments -mindepth 1 -mmin +10080 -type d -exec rm -r {} \\; &> /dev/null` if File.exists?("#{FRAGMENT_CACHE_PATH}/comments")
     pay_organizations_wages

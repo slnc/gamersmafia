@@ -5623,10 +5623,10 @@ ALTER SEQUENCE users_preferences_id_seq OWNED BY users_preferences.id;
 
 
 --
--- Name: users_roles; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: users_skills; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE TABLE users_roles (
+CREATE TABLE users_skills (
     id integer NOT NULL,
     user_id integer NOT NULL,
     role character varying NOT NULL,
@@ -5651,7 +5651,7 @@ CREATE SEQUENCE users_roles_id_seq
 -- Name: users_roles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE users_roles_id_seq OWNED BY users_roles.id;
+ALTER SEQUENCE users_roles_id_seq OWNED BY users_skills.id;
 
 
 SET search_path = stats, pg_catalog;
@@ -7078,7 +7078,7 @@ ALTER TABLE users_preferences ALTER COLUMN id SET DEFAULT nextval('users_prefere
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE users_roles ALTER COLUMN id SET DEFAULT nextval('users_roles_id_seq'::regclass);
+ALTER TABLE users_skills ALTER COLUMN id SET DEFAULT nextval('users_roles_id_seq'::regclass);
 
 
 SET search_path = stats, pg_catalog;
@@ -8785,7 +8785,7 @@ ALTER TABLE ONLY users_preferences
 -- Name: users_roles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
-ALTER TABLE ONLY users_roles
+ALTER TABLE ONLY users_skills
     ADD CONSTRAINT users_roles_pkey PRIMARY KEY (id);
 
 
@@ -10218,28 +10218,28 @@ CREATE INDEX users_random_id ON users USING btree (random_id);
 -- Name: users_roles_role; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX users_roles_role ON users_roles USING btree (role);
+CREATE INDEX users_roles_role ON users_skills USING btree (role);
 
 
 --
 -- Name: users_roles_role_role_data; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX users_roles_role_role_data ON users_roles USING btree (role, role_data);
+CREATE INDEX users_roles_role_role_data ON users_skills USING btree (role, role_data);
 
 
 --
 -- Name: users_roles_uniq; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE UNIQUE INDEX users_roles_uniq ON users_roles USING btree (user_id, role, role_data);
+CREATE UNIQUE INDEX users_roles_uniq ON users_skills USING btree (user_id, role, role_data);
 
 
 --
 -- Name: users_roles_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
-CREATE INDEX users_roles_user_id ON users_roles USING btree (user_id);
+CREATE INDEX users_roles_user_id ON users_skills USING btree (user_id);
 
 
 --
@@ -11316,6 +11316,8 @@ INSERT INTO schema_migrations (version) VALUES ('20120724054925');
 INSERT INTO schema_migrations (version) VALUES ('20120725044653');
 
 INSERT INTO schema_migrations (version) VALUES ('20120726040535');
+
+INSERT INTO schema_migrations (version) VALUES ('20120727032921');
 
 INSERT INTO schema_migrations (version) VALUES ('224');
 
