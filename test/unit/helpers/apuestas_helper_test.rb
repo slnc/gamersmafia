@@ -27,7 +27,7 @@ class ApuestasHelperTest < ActionView::TestCase
     expected = [
         [1, [0.5, 100]],
         [3, [0.25, 100]],
-        ["%gm", [0.1, [200]]]
+        ["%gm", [0.1, 200]]
     ]
 
 

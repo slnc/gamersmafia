@@ -67,6 +67,7 @@ Gamersmafia::Application.routes.draw do
   match 'competiciones/show/:id' => 'competiciones#show'
   match 'competiciones/show/:id/:action' => 'competiciones#index'
   match 'contenidos/:id' => 'contenidos#show'
+  match 'contenidos/:id/redir' => 'contenidos#redir'
   match 'cuenta' => 'cuenta/cuenta#index'
   match 'cuenta/amigos' => 'cuenta/amigos#index'
   match 'cuenta/amigos/:action' => 'cuenta/amigos#index'

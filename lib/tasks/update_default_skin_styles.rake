@@ -1,7 +1,7 @@
 namespace :gm do
   desc "Update CSS files of default skins"
   task :update_default_skin_styles => :environment do
-    Rake::Task["gm:update_games_and_factions_sprite"].invoke
+    Rake::Task["gm:update_portal_favicons"].invoke
     Skins.update_default_skin_styles
   end
 end

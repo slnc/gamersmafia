@@ -298,7 +298,12 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
         });
         if ($j.browser.msie)
     $j('##{opts[:id]}').css('width', '100%');
-    $j('##{opts[:id]}').elastic();
+    EOS
+
+    if user_is_authed && @user.pref_use_elastic_comment_editor.to_i == 1
+      out << "$j('##{opts[:id]}').elastic();"
+    end
+    out << <<-EOS
     </script>
     #{controller.send(:render_to_string, :partial => '/shared/smileys', :locals => { :dom_id => opts[:id] }).force_encoding("utf-8")}
     EOS

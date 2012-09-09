@@ -7,6 +7,7 @@ class UsersPreference < ActiveRecord::Base
     :public_ban_reason => String,
     :quicklinks => Array,
     :show_all_comments => 0,
+    :use_elastic_comment_editor => 1,
     :user_forums => Array,
   }
 

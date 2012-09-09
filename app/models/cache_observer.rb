@@ -552,7 +552,9 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment(:controller => '/home', :action => 'index', :part => 'downloads')
         when 'Poll'
         expire_fragment(:controller => '/home', :action => 'index', :part => 'polls')
-        expire_fragment(:controller => '/home', :action => 'index', :part => "polls_#{object.content.real_content.my_faction.id}")
+        if object.content.real_content.my_faction
+          expire_fragment(:controller => '/home', :action => 'index', :part => "polls_#{object.content.real_content.my_faction.id}")
+        end
         when 'Image'
         expire_fragment(:controller => '/home', :action => 'index', :part => "daily_image#{Time.now.to_i/86400}")
         when 'Funthing'

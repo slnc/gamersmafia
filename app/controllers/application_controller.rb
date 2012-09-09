@@ -497,7 +497,10 @@ Request information:
     ip = self.remote_ip
     # TODO PERF guardar informacion del visitante en tabla aparte
     user_agent = user_agent.bare if user_agent
-    self..portal = GmPortal.new unless self.portal && self.portal.id
+    if self.portal.nil? || self.portal.id.nil?
+      self.portal = GmPortal.new
+      Rails.logger.warn("portal is nil. Using GmPortal")
+    end
     # flash_error = #{User.connection.quote(params['_xe'])}
     User.db_query("INSERT INTO stats.pageviews(referer,
                                                user_id,
