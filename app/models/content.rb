@@ -52,7 +52,10 @@ class Content < ActiveRecord::Base
     old_url = m.url
     new_url = Routing.gmurl(m)
     if old_url != new_url # url has changed, let's update comments
-      User.db_query("UPDATE comments SET portal_id = #{m.portal_id} WHERE content_id = #{m.id}")
+      User.db_query(
+          "UPDATE comments
+              SET portal_id = #{m.portal_id}
+            WHERE content_id = #{m.id}")
     end
   end
 
@@ -63,6 +66,77 @@ class Content < ActiveRecord::Base
   belongs_to :bazar_district
   belongs_to :user
 
+  # Karma points are a weighted sum of unique users commenting on the content
+  # and the rating of that content. Contents belonging to portals with more
+  # active users have a higher starting karma points.
+  def new_karma_points
+    content_commentators = User.db_query(
+        "SELECT COUNT(DISTINCT(user_id)) as count
+         FROM comments
+         WHERE content_id = #{self.id}
+         AND created_on <= (
+              SELECT created_on
+              FROM contents
+              WHERE id = #{self.id}) + '2 weeks'::interval")[0]['count'].to_f
+
+    recent_portal_commentators = User.db_query(
+        "SELECT COUNT(DISTINCT(user_id)) as count
+         FROM comments
+         WHERE portal_id = #{self.portal_id}
+         AND created_on BETWEEN (
+           SELECT created_on
+           FROM contents
+           WHERE id = #{self.id}) AND (
+           SELECT created_on
+           FROM contents
+           WHERE id = #{self.id}) + '2 weeks'::interval")[0]['count'].to_f
+
+    ratings = self.content_ratings.count
+    if ratings >= 3
+      rating =  self.content_ratings.average(
+          :rating,
+          :conditions => "created_on <= (
+              SELECT created_on
+              FROM contents
+              WHERE id = #{self.id}) + '2 weeks'::interval")
+      rating = 0 if rating.nil?
+      w_ratings = 0.5
+      w_comments = 0.5
+    else
+      ratings = 0  # that way they don't affect w_comments
+      rating = 0
+      w_ratings = 0
+      w_comments = 0.7
+    end
+
+    users_ratio = Math.log10(
+        10 * content_commentators/recent_portal_commentators)
+    users_ratio = content_commentators/recent_portal_commentators
+    if users_ratio < 0 && content_commentators > 0
+      users_ratio = 0.1
+    end
+    users_ratio = 0 if users_ratio < 0
+
+    kpc = Karma::KPS_CREATE[self.content_type.name]
+
+    faction_factor = Math.log10(recent_portal_commentators)
+    comments_factor = w_comments * users_ratio
+    ratings_factor = w_ratings * (rating/10.0)
+    karma = kpc * faction_factor * (comments_factor + ratings_factor)
+
+    # We compute debugging line
+    faction_factor_explained = "%.2f" % faction_factor
+    users_ratio_explained = "%.2f" % users_ratio
+    comments_factor_explained = "#{w_comments} * #{users_ratio_explained}"
+    ratings_factor_explained = "#{w_ratings} * (#{rating/10.0})"
+    karma_explained = (
+        "#{kpc} * #{faction_factor_explained} * (#{comments_factor_explained}" +
+        " + #{ratings_factor_explained}):  # usuarios:" +
+        " #{content_commentators} de #{recent_portal_commentators}," +
+        " valoración: #{rating}")
+
+    [karma, karma_explained]
+  end
 
   def recommend_to_friends(sender, friends, comment)
     friends.each do |uid|
@@ -71,7 +145,10 @@ class Content < ActiveRecord::Base
       next if u.tracker_has?(self.id)
       comment = nil if comment.to_s == 'Comentario (opcional)'
       comment = comment[0..255] if comment && comment.size > 255
-      self.contents_recommendations.create(:sender_user_id => sender.id, :receiver_user_id => u.id, :comment => comment)
+      self.contents_recommendations.create(
+          :sender_user_id => sender.id,
+          :receiver_user_id => u.id,
+          :comment => comment)
     end
   end
 
