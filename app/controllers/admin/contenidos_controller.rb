@@ -102,7 +102,7 @@ class Admin::ContenidosController < ApplicationController
   def mass_moderate
     if params[:items] then
       if (params[:deny_reason] == 'Otra')
-      params[:deny_reason] = params[:deny_reason_other]
+        params[:deny_reason] = params[:deny_reason_other]
       end
 
       for k in params[:items]
@@ -142,7 +142,7 @@ class Admin::ContenidosController < ApplicationController
 
   def deny_content
     if (params[:deny_reason] == 'Otra')
-    params[:deny_reason] = params[:deny_reason_other]
+      params[:deny_reason] = params[:deny_reason_other]
     end
 
     if params[:deny_reason].to_s == ''
