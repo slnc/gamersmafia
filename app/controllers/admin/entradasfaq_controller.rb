@@ -81,8 +81,7 @@ class Admin::EntradasfaqController < ApplicationController
     @faq_entry = FaqEntry.find(params[:id])
     @prev = @faq_entry.faq_category.faq_entries.find(
         :first,
-        :conditions => ['position > ?',
-        @faq_entry.position],
+        :conditions => ['position > ?', @faq_entry.position],
         :order => 'position',
         :limit => 1)
     if @prev
