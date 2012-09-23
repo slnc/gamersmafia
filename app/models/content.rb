@@ -47,6 +47,8 @@ class Content < ActiveRecord::Base
                               AND original_name IN (?))', user, tags]}
   }
 
+  scope :recent, :conditions => "created_on >= now() - '3 months'::interval"
+
   after_save do |m|
     m.contents_locks.clear if m.contents_locks
     old_url = m.url

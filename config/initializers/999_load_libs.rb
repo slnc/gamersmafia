@@ -20,6 +20,7 @@
    acts_as_rootable
    redefine_task
    staff
+   crs
   ).each do |f|
   require "#{Rails.root}/lib/#{f}.rb"
 end
