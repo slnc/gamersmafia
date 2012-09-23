@@ -282,15 +282,33 @@ module Models
 
   CSV_LABELED_SAMPLES_HEADER = "user_id,content_id,interested"
 
+module AuthorIsFriend
+  def self.Train(csv_training)
+    # this model doesn't need to train
+  end
+
+  # Model that randomly decides whether a content is recommended to a user.
+  def self.Eval(csv_eval, csv_labeled_samples)
+    labeled_samples = CSV.generate do |csv|
+      CSV.foreach(csv_eval, :headers => true) do |row|
+        label = (row["author_is_friend"] == "1") ? 1 : 0
+        csv << [row["user_id"], row["content_id"], label]
+      end
+    end
+    open(csv_labeled_samples, "w").write(
+      "#{Crs::Models::CSV_LABELED_SAMPLES_HEADER}\n#{labeled_samples}")
+  end
+end
+
 module Random
   def self.Train(csv_training)
     # this model doesn't need to train
   end
 
   # Model that randomly decides whether a content is recommended to a user.
-  def self.Eval(csv_training, csv_labeled_samples)
+  def self.Eval(csv_eval, csv_labeled_samples)
     labeled_samples = CSV.generate do |csv|
-      CSV.foreach(csv_training, :headers => true) do |row|
+      CSV.foreach(csv_eval, :headers => true) do |row|
         if ::Random.rand < 0.5
           csv << [row["user_id"], row["content_id"], 1]
         end
@@ -308,7 +326,7 @@ module UsersRecommendations
     # this model doesn't need to train
   end
 
-  def self.Eval(csv_training, csv_labeled_samples)
+  def self.Eval(csv_eval, csv_labeled_samples)
     valid_contents = Set.new
     Content.recent.find_each(:batch_size => 10000) do |content|
       valid_contents.add(content.id)
