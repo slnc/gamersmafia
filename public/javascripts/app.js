@@ -86,13 +86,6 @@ function close_content(content_id) {
   return false;
 }
 
-function recommend_to_friend(content_id) {
-  jQuery.facebox({
-    ajax : '/site/recommend_to_friend?content_id=' + content_id
-  });
-  return false;
-}
-
 function disable_rating_controls() {
   for(key in comments) {
     var dEl = $j('#moderate-comments-opener-rating' + key);

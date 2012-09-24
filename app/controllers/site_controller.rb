@@ -510,19 +510,6 @@ class SiteController < ApplicationController
     render :layout => false
   end
 
-  def recommend_to_friend
-    require_auth_users
-    render :layout => false
-  end
-
-  def do_recommend_to_friend
-    require_auth_users
-    params[:friends] = [] unless params[:friends]
-    Content.find(params[:content_id].to_i).delay.recommend_to_friends(@user, params[:friends], params[:comment])
-    flash[:notice] = "Recomendación enviada"
-    render :partial => '/shared/ajax_facebox_feedback', :layout => false
-  end
-
   def self.do_contactar_key
     Digest::MD5.hexdigest((CONTACT_MAGIC + (Time.now.to_i / 3600)).to_s)
   end

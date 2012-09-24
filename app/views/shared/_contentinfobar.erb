@@ -31,8 +31,6 @@ can_delete = Cms::user_can_delete_content?(@user, object) %>
       <li class="actions first"><%=link_to 'Añadir al tracker', :controller => 'site', :action => 'add_to_tracker', :id => object.unique_content.id, :params => {:redirto => request.fullpath}, :class => 'action' %></li>
       <% end -%>
 
-		<li><a href="#" onclick="return recommend_to_friend(<%=object.unique_content.id%>);">Recomendar</a></li>
-
 	<% end %><%# if user_is_authed -%>
 	  <%
   ip = self.remote_ip
