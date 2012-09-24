@@ -855,7 +855,7 @@ class User < ActiveRecord::Base
   def is_friend_of?(user)
     # si self está en la lista de amigos de user devuelve true
     f = Friendship.find_between(self, user)
-    f && f.accepted_on
+    (f && f.accepted_on) ? true : false
   end
 
   def remaining_rating_slots

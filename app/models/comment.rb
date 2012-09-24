@@ -58,6 +58,15 @@ class Comment < ActiveRecord::Base
     self.errors.size == 0
   end
 
+  def new_karma_points
+    positive_ratings = self.comments_valorations_ratings.positive.count(
+        :conditions => (
+            "created_on <= (SELECT created_on FROM comments WHERE id =" +
+            " #{self.id}) + '2 weeks'::interval"))
+
+    (positive_ratings ** Math.log10(positive_ratings)).ceil
+  end
+
   def moderation_reason_sym
     MODERATION_REASONS_TO_SYM[self.moderation_reason]
   end

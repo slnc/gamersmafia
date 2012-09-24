@@ -1153,7 +1153,8 @@ CREATE TABLE comments (
     deleted boolean DEFAULT false NOT NULL,
     random_v numeric DEFAULT random(),
     state smallint DEFAULT 0 NOT NULL,
-    moderation_reason smallint
+    moderation_reason smallint,
+    karma_paid boolean DEFAULT false NOT NULL
 );
 
 
@@ -1717,7 +1718,8 @@ CREATE TABLE contents (
     portal_id integer,
     bazar_district_id integer,
     closed boolean DEFAULT false NOT NULL,
-    source character varying
+    source character varying,
+    karma_paid boolean DEFAULT false NOT NULL
 );
 
 
@@ -11318,6 +11320,8 @@ INSERT INTO schema_migrations (version) VALUES ('20120725044653');
 INSERT INTO schema_migrations (version) VALUES ('20120726040535');
 
 INSERT INTO schema_migrations (version) VALUES ('20120727032921');
+
+INSERT INTO schema_migrations (version) VALUES ('20120917014700');
 
 INSERT INTO schema_migrations (version) VALUES ('224');
 

@@ -457,43 +457,6 @@ res.content = unescape('#{content}');]]></result>
     assert_response :success
   end
 
-  test "recommend_to_friend" do
-    assert_raises(AccessDenied) { get :recommend_to_friend, :content_id => Content.find(:first).id }
-    sym_login 1
-    get :report_content_form, :content_id => Content.find(:first).id
-    assert_response :success
-  end
-
-  test "do_recommend_to_friend_not_friend" do
-    sym_login 1
-    rcount = ContentsRecommendation.count
-    raulinho = User.find_by_login('raulinho')
-    post :do_recommend_to_friend, :content_id => 1, :friends => [raulinho.id.to_s]
-    assert_equal rcount, ContentsRecommendation.count
-  end
-
-  test "do_recommend_to_friend_ok" do
-    sym_login 1
-    panzer = User.find_by_login('panzer')
-
-    assert_count_increases(ContentsRecommendation) do
-      post :do_recommend_to_friend, :content_id => 1, :friends => [panzer.id.to_s], :comment => 'feoo'
-    end
-    assert_equal 'feoo', ContentsRecommendation.last.comment
-  end
-
-  test "do_recommend_to_friend_but_friend_already_visited" do
-    sym_login 1
-    panzer = User.find_by_login('panzer')
-    assert_count_increases(TrackerItem) do
-      TrackerItem.create(:content_id => 1, :user_id => User.find_by_login('panzer').id, :lastseen_on => Time.now)
-    end
-
-    assert_count_increases(ContentsRecommendation) do
-      post :do_recommend_to_friend, :content_id => 1, :friends => [panzer.id.to_s]
-    end
-  end
-
   test "root_term_children_if_not_authed" do
     assert_raises(AccessDenied) { get :root_term_children, :id => 1, :content_type => 'Tutorial' }
   end
