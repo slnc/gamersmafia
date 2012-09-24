@@ -24,8 +24,75 @@
 # otherwise.  You can use RandomRecommendations as a base to your model.
 require "csv"
 require "set"
+require "msgpack"
 
 module Crs  # Collaborative Recommender System
+
+  def self.current_model_name
+    Time.now.strftime("%Y%m%d")
+  end
+
+  def self.rebuild_model
+    model_id = self.current_model_name
+    model_base = "#{Rails.root}/config/models/crs/#{model_id}"
+    training_csv = "#{model_base}_training.csv"
+    Crs::Training.GenerateGoldenSet(
+        "#{Rails.root}/config/models/crs/#{model_id}", [1.0, 0.0])
+    Crs::Models::UserSimilarity.Train(training_csv, "#{model_base}/")
+  end
+
+  def self.generate_recommendations
+    # For each user get all unvisited content_ids created in the last 15 days
+    # (via SQL).
+    # For each active user look at all the contents they have visited
+    # We generate recommendations for active users only and for
+    user_ids = {}
+    User.non_zombies.find_each do |user|
+      user_ids[user.id] = []
+      # TODO(juanalonso): we delete items from tracker_items after 3 months so
+      # we don't look back longer than that.
+      Content.published.recent.find_each(
+          :conditions => ["id NOT IN (SELECT content_id
+                                      FROM tracker_items
+                                      WHERE user_id = #{user.id})"],
+          :batch_size => 10000) do |content|
+        user_ids[user.id].append(content.id)
+      end
+    end
+
+    eval_samples = ["user_id,content_id\n"]
+    user_ids.each do |user_id, contents|
+      contents.each do |content_id|
+        # TODO(slnc): this csv should have all the features from
+        # GenerateGoldenSet. We don't populate ir right now for perf reasons
+        # because the current model doesn't use any of them.
+        eval_samples << CSV.generate_line([user_id, content_id])
+      end
+    end
+
+    model_id = self.current_model_name
+    model_base = "#{Rails.root}/config/models/crs/#{model_id}"
+    eval_csv = "#{model_base}_eval.csv"
+    labeled_samples_csv = "#{model_base}_UserSimilarity.csv"
+    open(eval_csv, "wb").write(eval_samples.join)
+    Rails.logger.info("Generated #{eval_samples.size} labeled samples")
+    Crs::Models::UserSimilarity.Eval(
+        eval_csv, labeled_samples_csv, "#{model_base}/")
+    recommendations = 0
+    CSV.foreach(labeled_samples_csv, :headers => true) do |row|
+      next unless row["interested"] == "1"
+      ContentsRecommendation.create({
+          :sender_user_id => Ias.MrMan.id,
+          :receiver_user_id => row["user_id"].to_i,
+          :content_id => row["content_id"].to_i,
+          :confidence => row["confidence"].to_f,
+          :comment => labeled_samples_csv,
+      })
+      recommendations += 1
+    end
+    Rails.logger.info("Generated #{recommendations} recommendations")
+  end
+
 module Util
   def self.content_user_to_key(content_id, user_id)
     # We assume we won't reach 1M users anytime soon and compressing a key
@@ -41,6 +108,10 @@ module Util
     bool ? 1 : 0
   end
 
+  def self.setup_work_dir(work_dir)
+    FileUtils.mkdir_p(work_dir) unless File.exists?(work_dir)
+  end
+
 end
 
 module Training
@@ -54,7 +125,11 @@ module Training
   # - basename_training.csv: dataset to use to train ml models. (60%)
   # - basename_eval.csv: dataset to use to select a winning model. (20%)
   # - basename_test.csv: dataset to use to document generalization error. (20%)
-  def self.GenerateGoldenSet(basename)
+  # bucket_rations: list with 2 floats, where each float determines the upper
+  # probability that a sample will go to a given bucket. Eg: [0.8, 0.1] will
+  # assign 98% of the samples to the training set, 10% to the eval set and 10%
+  # (implicit) to the test set.
+  def self.GenerateGoldenSet(basename, bucket_sizes=nil)
     # We limit to contents created within the last 3 months because we don't
     # have ground truth (TrackerItem) for further than that. If we don't limit
     # we might have a content that was of interest to a user and he commented
@@ -67,8 +142,9 @@ module Training
     # didn't like it. As a first pass a general model for all contents will be
     # an improvement over the existing system. We can build per content_type
     # models later.
+    bucket_sizes = [0.6, 0.2] if bucket_sizes.nil?
     valid_contents = Set.new
-    Content.recent.find_each(:batch_size => 10000) do |content|
+    Content.published.recent.find_each(:batch_size => 10000) do |content|
       valid_contents.add(content.id)
     end
 
@@ -152,7 +228,7 @@ module Training
 
       author_is_friend = content.user.is_friend_of?(tracker_item.user)
 
-      buckets[self.GetBucketFromKey(key)] << CSV.generate_line([
+      buckets[self.GetBucketFromKey(key, bucket_sizes)] << CSV.generate_line([
         Crs::Util.anonymize_id(tracker_item.user_id),
         Crs::Util.anonymize_id(tracker_item.content_id),
         Crs::Util.bool_to_i(interested),
@@ -173,6 +249,9 @@ module Training
       ])
     end
 
+    basedir = File.dirname(basename)
+    FileUtils.mkdir_p(basedir) unless File.exists?(basedir)
+
     buckets.each do |bucket_name, csv_lines|
       open("#{basename}_#{bucket_name}.csv", "w").write(
           "#{TRAINING_SET_CSV_HEADER}\n#{csv_lines.join}")
@@ -182,11 +261,11 @@ module Training
     puts "Users: #{unique_users.size}, Contents: #{unique_contents.size}"
   end
 
-  def self.GetBucketFromKey(key)
+  def self.GetBucketFromKey(key, bucket_sizes)
     v = ::Random.rand
-    if v < 0.6
+    if v <= bucket_sizes[0]
       :training
-    elsif v < 0.8
+    elsif v < bucket_sizes[1]
       :eval
     else
       :test
@@ -202,9 +281,10 @@ module Eval
     eval_csv = "#{golden_set_csv_basename}_eval.csv"
     labeled_samples_csv = "#{golden_set_csv_basename}_#{model_name}.csv"
     puts "Training.."
-    model_module.Train(training_csv)
+    model_module.Train(training_csv, "#{golden_set_csv_basename}/")
     puts "Evaluating.."
-    model_module.Eval(eval_csv, labeled_samples_csv)
+    model_module.Eval(
+        eval_csv, labeled_samples_csv, "#{golden_set_csv_basename}/")
     self.GetModelPerformance(eval_csv, labeled_samples_csv)
   end
 
@@ -280,19 +360,19 @@ end
 
 module Models
 
-  CSV_LABELED_SAMPLES_HEADER = "user_id,content_id,interested"
+  CSV_LABELED_SAMPLES_HEADER = "user_id,content_id,interested,confidence"
 
 module AuthorIsFriend
-  def self.Train(csv_training)
+  def self.Train(csv_training, work_dir)
     # this model doesn't need to train
   end
 
   # Model that randomly decides whether a content is recommended to a user.
-  def self.Eval(csv_eval, csv_labeled_samples)
+  def self.Eval(csv_eval, csv_labeled_samples, work_dir)
     labeled_samples = CSV.generate do |csv|
       CSV.foreach(csv_eval, :headers => true) do |row|
         label = (row["author_is_friend"] == "1") ? 1 : 0
-        csv << [row["user_id"], row["content_id"], label]
+        csv << [row["user_id"], row["content_id"], label, 1.0]
       end
     end
     open(csv_labeled_samples, "w").write(
@@ -301,16 +381,16 @@ module AuthorIsFriend
 end
 
 module Random
-  def self.Train(csv_training)
+  def self.Train(csv_training, work_dir)
     # this model doesn't need to train
   end
 
   # Model that randomly decides whether a content is recommended to a user.
-  def self.Eval(csv_eval, csv_labeled_samples)
+  def self.Eval(csv_eval, csv_labeled_samples, work_dir)
     labeled_samples = CSV.generate do |csv|
       CSV.foreach(csv_eval, :headers => true) do |row|
         if ::Random.rand < 0.5
-          csv << [row["user_id"], row["content_id"], 1]
+          csv << [row["user_id"], row["content_id"], 1, 1.0]
         end
       end
     end
@@ -322,11 +402,11 @@ end
 # Model that mimicks the current (2012-09-22) content recommendation system
 # where users decide which contents they recommend to other users.
 module UsersRecommendations
-  def self.Train(csv_training)
+  def self.Train(csv_training, work_dir)
     # this model doesn't need to train
   end
 
-  def self.Eval(csv_eval, csv_labeled_samples)
+  def self.Eval(csv_eval, csv_labeled_samples, work_dir)
     valid_contents = Set.new
     Content.recent.find_each(:batch_size => 10000) do |content|
       valid_contents.add(content.id)
@@ -361,6 +441,7 @@ module UsersRecommendations
             Crs::Util.anonymize_id(recommendation.receiver_user_id),
             Crs::Util.anonymize_id(recommendation.content_id),
             "1",
+            1.0,
         ]
       end
     end
@@ -369,6 +450,161 @@ module UsersRecommendations
       "#{Crs::Models::CSV_LABELED_SAMPLES_HEADER}\n#{labeled_samples}")
   end
 end
+
+module UserSimilarity
+  def self.cache_from_work_dir(work_dir)
+    "#{work_dir}/similarity_matrix"
+  end
+
+  def self.Train(csv_training, work_dir)
+    Crs::Util.setup_work_dir(work_dir)
+    cache_file = self.cache_from_work_dir(work_dir)
+    return if File.exists?(cache_file)
+    user_ratings = self.build_user_ratings(csv_training)
+    similarity_matrix = self.compute_similarity_matrix(
+        csv_training, user_ratings)
+    File.open(cache_file, "wb").write(
+        [similarity_matrix, user_ratings].to_msgpack)
+  end
+
+  # Builds a hash keyed by user with all the contents for which we know whether
+  # they are of interest or not to the user.
+  def self.build_user_ratings(csv_training)
+    user_ratings = {}
+    CSV.foreach(csv_training, :headers => true) do |row|
+      user_id = row["user_id"].to_i
+      if !user_ratings.include?(user_id)
+        user_ratings[user_id] = {}
+      end
+      user_ratings[user_id][row["content_id"].to_i] = (row["interested"] == "1")
+    end
+    user_ratings
+  end
+
+  def self.compute_similarity_matrix(csv_training, user_ratings)
+    puts "compute_similarity_matrix"
+    users = Set.new
+    contents = Set.new
+    CSV.foreach(csv_training, :headers => true) do |row|
+      users.add(row["user_id"].to_i)
+      contents.add(row["content_id"].to_i)
+    end
+
+    similarities = {}
+    base_row = {}
+    contents.sort.each do |content|
+      base_row[content] = 0.0
+    end
+    puts "Total: #{contents.size ** 2}"
+    i = 0
+    contents.sort.each do |content|
+      similarities[content] = base_row.clone
+      # puts "content: #{content}: #{similarities[content]}"
+
+      (contents - [content]).sort.each do |content_i|
+        i += 1
+        puts i if i % 10000 == 0
+        # puts "content_i: #{content_i}"
+        if content_i > content
+          # we need to calculate it
+          similarities[content][content_i] = self.distance(
+              content, content_i, user_ratings)
+        else
+          # we already calculated it, we are in the lower part of the matrix
+          similarities[content][content_i] = similarities[content_i][content]
+        end
+      end
+    end
+    puts "done with similarities"
+    similarities
+  end
+
+  def self.distance(item1, item2, user_ratings)
+    common_items={}
+    user_ratings.each do |user, rated_items|
+      if rated_items.include?(item1) && rated_items.include?(item2)
+        common_items[user] = 1
+      end
+    end
+
+    return 0 if common_items.size == 0
+
+    # Add up all the preferences
+    sumEuc = 0.0
+    common_items.each do |user, _|
+      same_interest = (user_ratings[user][item1] == user_ratings[user][item2])
+      sumEuc += (same_interest ? 1 : 0) ** 2
+    end
+
+    eudistance = 1 / (1 + sumEuc)
+    # puts "Euclidean distance between #{item1} and #{item2}: #{eudistance}"
+    eudistance
+  end
+
+  PREDICTION_THRESHOLD = 0.1
+
+  def self.Eval(csv_eval, csv_labeled_samples, work_dir)
+    cache_file = self.cache_from_work_dir(work_dir)
+    (similarity_matrix, user_ratings) = MessagePack.unpack(
+        File.open(cache_file).read)
+    puts "data loaded"
+
+    labeled_samples = []
+    i = 0
+    CSV.foreach(csv_eval, :headers => true) do |row|
+      i += 1
+      if i % 1000 == 0
+        puts i
+      end
+      # puts "predicting #{row["content_id"]} for #{row["user_id"]}"
+      prediction = self.predict(
+          row["user_id"].to_i,
+          row["content_id"].to_i,
+          similarity_matrix,
+          user_ratings)
+      label = (prediction > PREDICTION_THRESHOLD) ? 1 : 0
+      confidence = prediction
+      labeled_samples << [
+          row["user_id"], row["content_id"], label.to_s, confidence].join(",")
+    end
+    open(csv_labeled_samples, "w").write(
+      "#{Crs::Models::CSV_LABELED_SAMPLES_HEADER}\n#{labeled_samples.join("\n")}")
+  end
+
+  # Predicts whether content is going to be liked by a user based on a
+  # similarity matrix and based on the interests of other users on content.
+  def self.predict(uid, cid, simils, user_ratings)
+    sum_simil = 0.0
+    weighted_simil = 0.0
+    cids_without_ratings = 0
+    missing_tuples_simil = 0
+    simils.keys.each do |ccid|
+      next if ccid == cid
+      # puts ccid
+      if !(user_ratings.include?(uid) && user_ratings[uid].include?(ccid))
+        cids_without_ratings += 1
+        next
+      end
+
+      if !simils.include?(cid) || !simils[cid].include?(ccid)
+        missing_tuples_simil += 1
+        next  # unknown item
+      end
+
+      # Because interests are binary (0: no interest or 1: interest) we need to
+      # use 1, 2 instead of 0, 1 because else we will zero out all dinterests.
+      rating = user_ratings[uid][ccid] ? 2 : 1
+
+      sum_simil += simils[cid][ccid]
+      weighted_simil += simils[cid][ccid] * rating
+    end
+    # puts "#{cids_without_ratings} #{missing_tuples_simil} out of #{simils.keys.size}"
+    return 0 if sum_simil == 0
+
+    # puts "#{weighted_simil} / #{sum_simil}"
+    (weighted_simil / sum_simil) - 1
+  end
+end  # UserSimilarity
 
 end  # Models
 end  # Crs

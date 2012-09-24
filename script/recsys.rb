@@ -17,7 +17,8 @@ module CRF
     common_items.each do |user, _|
       sumEuc += (item_ratings[user][item1] - item_ratings[user][item2]) ** 2
     end
-    return 1 / (1 + sumEuc)
+
+    1 / (1 + sumEuc)
   end
 
   def dist_pearson(c1, c2, cruco)
@@ -50,11 +51,11 @@ module CRF
     end
 
     # Calculate Pearson score
-    num=pSum-(sum1*sum2/n)
-    den=Math.sqrt((sum1Sq - sum1**2/n)*(sum2Sq-sum2**2/n))
+    num = pSum - (sum1 * sum2 / n)
+    den = Math.sqrt((sum1Sq - sum1**2/n) * (sum2Sq - sum2**2/n))
     return 0 if den == 0
     v_i = num/den
-     (v_i+1 - 0)/(2.0-0)*(1.0 - 0) + 0
+    (v_i + 1 - 0)/(2.0 - 0) * (1.0 - 0) + 0
   end
 
   def predict(uid, cid, simils, user_ratings)
@@ -75,13 +76,13 @@ module CRF
   end
 
   def compute_similarity_matrix(items, users, scored_items_by_users)
-    total = (contents.size ** 2) # / 2 - contents.size
+    total = (contents.size ** 2)
     puts "total: #{total}"
     i = 0.0
     prev_pcent = -1
     contents.each do |cid|
       simils[cid] = Hash[*(k_ids).zip([0.0]*k_ids_size).flatten]
-       (contents - [cid]).each do |ccid|
+      (contents - [cid]).each do |ccid|
         i += 1
         if ccid > cid # we need to calculate it
           simils[cid][ccid] = dist(cid, ccid, cr_u_content)

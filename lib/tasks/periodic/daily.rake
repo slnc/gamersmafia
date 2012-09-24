@@ -43,5 +43,7 @@ namespace :gm do
     User.update_max_cache_valorations_weights_on_self_comments
     UsersNewsfeed.old.delete_all
     UsersSkill.kill_zombified_staff
+    Crs.rebuild_model
+    Crs.generate_recommendations
   end
 end

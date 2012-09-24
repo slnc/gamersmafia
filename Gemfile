@@ -11,6 +11,7 @@ gem "geoip"
 gem "gruff"
 gem "jquery-rails", ">= 1.0.12"
 gem "log4r"
+gem "msgpack"
 gem "mocha", :require => false
 gem "passenger"
 gem "pg"
