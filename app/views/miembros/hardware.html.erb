@@ -1,35 +1,25 @@
-<% if not (@curuser.hw_processor.nil? or @curuser.hw_processor.empty?) or
-      not (@curuser.pref_hw_heatsink.nil? or @curuser.pref_hw_heatsink.empty?) or
-      not (@curuser.hw_motherboard.nil? or @curuser.hw_motherboard.empty?) or
+<% if not (@curuser.hw_mouse.nil? or @curuser.hw_mouse.empty?) or
+      not (@curuser.hw_processor.nil? or @curuser.hw_processor.empty?) or
+      not (@curuser.hw_motherboard.nil? or @curuser.hw_motherboard.empty?)  or
       not (@curuser.hw_ram.nil? or @curuser.hw_ram.empty?) or
-      not (@curuser.hw_graphiccard.nil? or @curuser.hw_graphiccard.empty?) or
       not (@curuser.hw_hdd.nil? or @curuser.hw_hdd.empty?) or
-      not (@curuser.pref_hw_ssd.nil? or @curuser.pref_hw_ssd.empty?) or
-      not (@curuser.pref_hw_powersupply.nil? or @curuser.pref_hw_powersupply.empty?) or
-      not (@curuser.hw_soundcard.nil? or @curuser.hw_soundcard.empty?) or
-      not (@curuser.pref_hw_case.nil? or @curuser.pref_hw_case.empty?) or
+      not (@curuser.hw_graphiccard.nil? or @curuser.hw_graphiccard.empty?) or
       not (@curuser.hw_monitor.nil? or @curuser.hw_monitor.empty?) or
+      not (@curuser.hw_soundcard.nil? or @curuser.hw_soundcard.empty?) or
       not (@curuser.hw_headphones.nil? or @curuser.hw_headphones.empty?) or
-      not (@curuser.pref_hw_speakers.nil? or @curuser.pref_hw_speakers.empty?) or
-      not (@curuser.hw_mouse.nil? or @curuser.hw_mouse.empty?) or
-      not (@curuser.pref_hw_mousepad.nil? or @curuser.pref_hw_mousepad.empty?) or
-      not (@curuser.pref_hw_keyboard.nil? or @curuser.pref_hw_keyboard.empty?) or
       not (@curuser.hw_connection.nil? or @curuser.hw_connection.empty?) then %>
-
-<% mftext('Hardware') do %>
-<table>
-
-
+        <% mftext('Hardware') do %>
+  <table>
+<% if not @curuser.hw_mouse.nil? or @curuser.hw_mouse.empty? then %>
+    <tr class="<%=oddclass%>">
+      <td style="width: 150px;">Ratón</td>
+      <td><%=@curuser.hw_mouse%></td>
+    </tr>
+<% end -%>
 <% if not @curuser.hw_processor.nil? or @curuser.hw_processor.empty? then %>
     <tr class="<%=oddclass%>">
       <td>Procesador</td>
       <td><%=@curuser.hw_processor%></td>
-    </tr>
-<% end -%>
-<% if not @curuser.pref_hw_heatsink.nil? or @curuser.pref_hw_heatsink.empty? then %>
-    <tr class="<%=oddclass%>">
-      <td>Disipador</td>
-      <td><%=@curuser.pref_hw_heatsink%></td>
     </tr>
 <% end -%>
 <% if not @curuser.hw_motherboard.nil? or @curuser.hw_motherboard.empty? then %>
@@ -44,40 +34,16 @@
       <td><%=@curuser.hw_ram%></td>
     </tr>
 <% end -%>
-<% if not @curuser.hw_graphiccard.nil? or @curuser.hw_graphiccard.empty? then %>
-    <tr class="<%=oddclass%>">
-      <td>Gráfica</td>
-      <td><%=@curuser.hw_graphiccard%></td>
-    </tr>
-<% end -%>
 <% if not @curuser.hw_hdd.nil? or @curuser.hw_hdd.empty? then %>
     <tr class="<%=oddclass%>">
       <td>Disco duro</td>
       <td><%=@curuser.hw_hdd%></td>
     </tr>
 <% end -%>
-<% if not @curuser.pref_hw_ssd.nil? or @curuser.pref_hw_ssd.empty? then %>
+<% if not @curuser.hw_graphiccard.nil? or @curuser.hw_graphiccard.empty? then %>
     <tr class="<%=oddclass%>">
-      <td>SSD</td>
-      <td><%=@curuser.pref_hw_ssd%></td>
-    </tr>
-<% end -%>
-<% if not @curuser.pref_hw_powersupply.nil? or @curuser.pref_hw_powersupply.empty? then %>
-    <tr class="<%=oddclass%>">
-      <td>Fuente de alimentación</td>
-      <td><%=@curuser.pref_hw_powersupply%></td>
-    </tr>
-<% end -%>
-<% if not @curuser.hw_soundcard.nil? or @curuser.hw_soundcard.empty? then %>
-    <tr class="<%=oddclass%>">
-      <td>T. de sonido</td>
-      <td><%=@curuser.hw_soundcard%></td>
-    </tr>
-<% end -%>
-<% if not @curuser.pref_hw_case.nil? or @curuser.pref_hw_case.empty? then %>
-    <tr class="<%=oddclass%>">
-      <td>Torre</td>
-      <td><%=@curuser.pref_hw_case%></td>
+      <td>Gráfica</td>
+      <td><%=@curuser.hw_graphiccard%></td>
     </tr>
 <% end -%>
 <% if not @curuser.hw_monitor.nil? or @curuser.hw_monitor.empty? then %>
@@ -86,34 +52,16 @@
       <td><%=@curuser.hw_monitor%></td>
     </tr>
 <% end -%>
+<% if not @curuser.hw_soundcard.nil? or @curuser.hw_soundcard.empty? then %>
+    <tr class="<%=oddclass%>">
+      <td>T. de sonido</td>
+      <td><%=@curuser.hw_soundcard%></td>
+    </tr>
+<% end -%>
 <% if not @curuser.hw_headphones.nil? or @curuser.hw_headphones.empty? then %>
     <tr class="<%=oddclass%>">
       <td>Auriculares</td>
       <td><%=@curuser.hw_headphones%></td>
-    </tr>
-<% end -%>
-<% if not @curuser.pref_hw_speakers.nil? or @curuser.pref_hw_speakers.empty? then %>
-    <tr class="<%=oddclass%>">
-      <td>Altavoces</td>
-      <td><%=@curuser.pref_hw_speakers%></td>
-    </tr>
-<% end -%>
-<% if not @curuser.hw_mouse.nil? or @curuser.hw_mouse.empty? then %>
-    <tr class="<%=oddclass%>">
-      <td style="width: 150px;">Ratón</td>
-      <td><%=@curuser.hw_mouse%></td>
-    </tr>
-<% end -%>
-<% if not @curuser.pref_hw_mousepad.nil? or @curuser.pref_hw_mousepad.empty? then %>
-    <tr class="<%=oddclass%>">
-      <td>Alfombrilla</td>
-      <td><%=@curuser.pref_hw_mousepad%></td>
-    </tr>
-<% end -%>
-<% if not @curuser.pref_hw_keyboard.nil? or @curuser.pref_hw_keyboard.empty? then %>
-    <tr class="<%=oddclass%>">
-      <td>Teclado</td>
-      <td><%=@curuser.pref_hw_keyboard%></td>
     </tr>
 <% end -%>
 <% if not @curuser.hw_connection.nil? or @curuser.hw_connection.empty? then %>
@@ -122,8 +70,6 @@
       <td><%=@curuser.hw_connection%></td>
     </tr>
 <% end -%>
-
-
-</table>
+  </table>
 <% end -%>
 <% end -%>
