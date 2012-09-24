@@ -1,6 +1,6 @@
 <% mftext('Perfil') do %>
 <%= form_tag({:action=> 'update_profile' }, :multipart => true) %>
-<% @post = @curuser %>
+<% @post = @user %>
 
 <% @newuser and if error_messages_for @newuser %>
 <div class="Message"><%= error_messages_for @newuser %></div>
@@ -102,15 +102,15 @@
     <th colspan="2" style="padding-top: 30px;">Hardware</th>
   </tr>
   <tr>
+    <td><label for="post_firstname">Ratón</label></td>
+    <td><%= text_field "post", "hw_mouse", :size => 50, :class=>"text"%></td>
+  </tr>
+  <tr>
     <td><label for="post_firstname">Procesador</label></td>
     <td><%= text_field "post", "hw_processor", :size => 50, :class=>"text"%></td>
   </tr>
   <tr>
-    <td><label for="post_firstname">Disipador</label></td>
-    <td><%= text_field "post", "pref_hw_heatsink", :size => 50, :class=>"text"%></td>
-  </tr>
-  <tr>
-    <td><label for="post_firstname">Placa base</label></td>
+    <td><label for="post_firstname">Placa</label></td>
     <td><%= text_field "post", "hw_motherboard", :size => 50, :class=>"text"%></td>
   </tr>
   <tr>
@@ -118,57 +118,30 @@
     <td><%= text_field "post", "hw_ram", :size => 50, :class=>"text"%></td>
   </tr>
   <tr>
-    <td><label for="post_firstname">Gráfica</label></td>
-    <td><%= text_field "post", "hw_graphiccard", :size => 50, :class=>"text"%></td>
-  </tr>
-  <tr>
     <td><label for="post_firstname">Disco duro</label></td>
     <td><%= text_field "post", "hw_hdd", :size => 50, :class=>"text"%></td>
   </tr>
   <tr>
-    <td><label for="post_firstname">SSD</label></td>
-    <td><%= text_field "post", "pref_hw_ssd", :size => 50, :class=>"text"%></td>
-  </tr>
-  <tr>
-    <td><label for="post_firstname">Fuente de alimentación</label></td>
-    <td><%= text_field "post", "pref_hw_powersupply", :size => 50, :class=>"text"%></td>
-  </tr>
-  <tr>
-    <td><label for="post_firstname">Tarjeta de sonido</label></td>
-    <td><%= text_field "post", "hw_soundcard", :size => 50, :class=>"text"%></td>
-  </tr>
-  <tr>
-    <td><label for="post_firstname">Torre</label></td>
-    <td><%= text_field "post", "pref_hw_case", :size => 50, :class=>"text"%></td>
+    <td><label for="post_firstname">Gráfica</label></td>
+    <td><%= text_field "post", "hw_graphiccard", :size => 50, :class=>"text"%></td>
   </tr>
   <tr>
     <td><label for="post_firstname">Monitor</label></td>
     <td><%= text_field "post", "hw_monitor", :size => 50, :class=>"text"%></td>
   </tr>
   <tr>
+    <td><label for="post_firstname">Tarjeta de sonido</label></td>
+    <td><%= text_field "post", "hw_soundcard", :size => 50, :class=>"text"%></td>
+  </tr>
+  <tr>
     <td><label for="post_firstname">Auriculares</label></td>
     <td><%= text_field "post", "hw_headphones", :size => 50, :class=>"text"%></td>
-  </tr>
-  <tr>
-    <td><label for="post_firstname">Altavoces</label></td>
-    <td><%= text_field "post", "pref_hw_speakers", :size => 50, :class=>"text"%></td>
-  </tr>
-  <tr>
-    <td><label for="post_firstname">Ratón</label></td>
-    <td><%= text_field "post", "hw_mouse", :size => 50, :class=>"text"%></td>
-  </tr>
-  <tr>
-    <td><label for="post_firstname">Alfombrilla</label></td>
-    <td><%= text_field "post", "pref_hw_mousepad", :size => 50, :class=>"text"%></td>
-  </tr>
-  <tr>
-    <td><label for="post_firstname">Teclado</label></td>
-    <td><%= text_field "post", "pref_hw_keyboard", :size => 50, :class=>"text"%></td>
   </tr>
   <tr>
     <td><label for="post_firstname">Conexión</label></td>
     <td><%= text_field "post", "hw_connection", :size => 50, :class=>"text"%></td>
   </tr>
+
   <tr>
     <td><label for="post_firstname">Descripción</label></td>
     <td><textarea class="text form" cols="80" id="post_description" name="post[description]" rows="20"><%=@user.description%></textarea><br />(Tags HTML permitidos: a, img, p, br, em, strong, ul, li)</td>
