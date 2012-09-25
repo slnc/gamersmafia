@@ -68,6 +68,38 @@ class Content < ActiveRecord::Base
   belongs_to :bazar_district
   belongs_to :user
 
+  def self.delete_duplicated_comments
+    total= 0
+    User.db_query("
+        SELECT COUNT(*) as cnt,
+          content_id,
+          comment
+        FROM comments
+        WHERE updated_on >= now() - '2 days'::interval
+        GROUP BY comment,
+          content_id
+        HAVING count(*) > 1
+      ").each do |dbrow|
+      content = Content.find(dbrow['content_id'].to_i)
+      total += content.delete_duplicated_comments
+    end
+    total
+  end
+
+  def self.orphaned
+    q_cts = Cms::CONTENTS_WITH_CATEGORIES.collect { |ctn| "'#{ctn}'"}
+    Content.find_by_sql("
+      SELECT *
+      FROM contents
+      WHERE content_type_id in (
+        SELECT id
+        FROM content_types
+        WHERE name IN (#{q_cts.join(',')}))
+      AND id not in (SELECT id FROM contents_terms)
+      ORDER BY id
+      LIMIT 10")
+  end
+
   # Karma points are a weighted sum of unique users commenting on the content
   # and the rating of that content. Contents belonging to portals with more
   # active users have a higher starting karma points.
@@ -318,23 +350,18 @@ class Content < ActiveRecord::Base
     true
   end
 
-  def self.orphaned
-    q_cts = Cms::CONTENTS_WITH_CATEGORIES.collect { |ctn| "'#{ctn}'"}
-    #Content.find_by_sql("SELECT *
-    #                      FROM contents
-    #                     WHERE id IN (select a.id
-    #                                    from contents a
-    #                               left join contents_terms b on a.id = b.content_id
-    #                                   where a.clan_id IS NULL
-    #                                     and b.content_id is null
-    #                                     and content_type_id in (select id
-    #                                                               from content_types
-    #                                                              where name in (#{q_cts.join(',')})))
-    #                  ORDER BY created_on")
-    Content.find_by_sql("SELECT *
-                           FROM contents
-                          WHERE content_type_id in (select id from content_types where name in (#{q_cts.join(',')}))
-                            AND id not in (select id from contents_terms)
-                       ORDER BY id LIMIT 10")
+  def delete_duplicated_comments
+    previous = nil
+    i = 0
+    self.comments.find(:all, :order => 'id').each do |comment|
+      if (previous &&
+          previous.comment == comment.comment &&
+          previous.user_id == comment.user_id)
+        i += 1
+        comment.update_attributes(:state => Comment::DUPLICATED)
+      end
+      previous = comment
+    end
+    i
   end
 end
