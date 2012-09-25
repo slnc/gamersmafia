@@ -53,13 +53,13 @@ def tag_and_notify
   padded_id = "%02d" % (daily_id + 1)
   new_tag = "#{tag_prefix}-#{padded_id}"
 
-  format = 'format:"[%s]\n%an - %H - %ar\n%b"'
-  detailed_log = `git log production --pretty=#{format} #{git_interval}`
+  detailed_log = `git log production --pretty=format:"[%s]\n%an - %H - %ar\n%b" #{git_interval}`
   if do_email
     body = "RESUMEN\n#{short_log}\n\n\nDETALLES\n#{detailed_log}"
+    changes = "cambio#{commits_count  > 1 ? "s" : ""}"
     send_email(
         "gm-hackers@googlegroups.com",
-        :subject => "GM actualizada a #{new_tag}: #{commits_count} cambios",
+        :subject => "GM actualizada a #{new_tag}: #{commits_count} #{changes}",
         :body => body)
   end
 end
