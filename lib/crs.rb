@@ -29,12 +29,20 @@ require "msgpack"
 # Collaborative Recommender System module
 module Crs
 
+  # Returns the last built model
+  def self.latest_known_model
+    Pathname.glob(
+        "#{Rails.root}/config/models/crs/*/").map(&:basename).sort.last.to_s
+  end
+
   def self.current_model_name
     Time.now.strftime("%Y%m%d")
   end
 
   def self.rebuild_model
     model_id = self.current_model_name
+    raise "No model found" if model_id.empty?
+
     model_base = "#{Rails.root}/config/models/crs/#{model_id}"
     training_csv = "#{model_base}_training.csv"
     Crs::Training.GenerateGoldenSet(
@@ -80,7 +88,7 @@ module Crs
     end
     puts "#{i} samples generated"
 
-    model_id = self.current_model_name
+    model_id = self.latest_known_model
     model_base = "#{Rails.root}/config/models/crs/#{model_id}"
     eval_csv = "#{model_base}_eval.csv"
     labeled_samples_csv = "#{model_base}_UserSimilarity.csv"
