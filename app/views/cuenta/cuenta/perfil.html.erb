@@ -107,7 +107,8 @@
   </tr>
   <tr>
     <td><label for="post_firstname">Disipador</label></td>
-    <td><%= text_field "post", "pref_hw_heatsink", :size => 50, :class=>"text"%></td>
+    <td><input type="text" name="pref_hw_heatsink" size="50" class="text"
+               value="<%=post.pref_hw_heatsink%>"/></td>
   </tr>
   <tr>
     <td><label for="post_firstname">Placa</label></td>
