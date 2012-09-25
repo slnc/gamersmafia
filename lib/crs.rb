@@ -26,7 +26,8 @@ require "csv"
 require "set"
 require "msgpack"
 
-module Crs  # Collaborative Recommender System
+# Collaborative Recommender System module
+module Crs
 
   def self.current_model_name
     Time.now.strftime("%Y%m%d")
@@ -48,19 +49,19 @@ module Crs  # Collaborative Recommender System
     # We generate recommendations for active users only and for
     user_ids = {}
     i = 0
-    User.non_zombies.find_each(:conditions => 'cache_karma_points > 0') do |user|
+    User.non_zombies.find_each(:conditions => "cache_karma_points > 0") do |user|
       i += 1
-      # puts user.login
       user_ids[user.id] = []
-      # TODO(juanalonso): we delete items from tracker_items after 3 months so
-      # we don't look back longer than that.
+      # We delete items from tracker_items after 3 months so we don't look back
+      # longer than that.
       Content.published.recent.find_each(
           :conditions => ["id NOT IN (SELECT content_id
                                       FROM tracker_items
                                       WHERE user_id = #{user.id})
                          AND id not IN (SELECT content_id
-                                      FROM contents_recommendations
-                                  WHERE user_id = #{user.id} and seen_on IS NULL)"],
+                                        FROM contents_recommendations
+                                        WHERE user_id = #{user.id}
+                                        AND seen_on IS NULL)"],
           :batch_size => 10000) do |content|
         user_ids[user.id].append(content.id)
       end
@@ -72,7 +73,7 @@ module Crs  # Collaborative Recommender System
       contents.each do |content_id|
         i += 1
         # TODO(slnc): this csv should have all the features from
-        # GenerateGoldenSet. We don't populate ir right now for perf reasons
+        # GenerateGoldenSet. We don't populate it right now for perf reasons
         # because the current model doesn't use any of them.
         eval_samples << CSV.generate_line([user_id, content_id])
       end
