@@ -108,7 +108,7 @@
   <tr>
     <td><label for="post_firstname">Disipador</label></td>
     <td><input type="text" name="pref_hw_heatsink" size="50" class="text"
-               value="<%=post.pref_hw_heatsink%>"/></td>
+               value="<%=@post.pref_hw_heatsink%>"/></td>
   </tr>
   <tr>
     <td><label for="post_firstname">Placa</label></td>
@@ -128,11 +128,13 @@
   </tr>
   <tr>
     <td><label for="post_firstname">SSD</label></td>
-    <td><%= text_field "post", "pref_hw_ssd", :size => 50, :class=>"text"%></td>
+    <td><input type="text" name="pref_hw_ssd" size="50" class="text"
+               value="<%=@post.pref_hw_ssd%>"/></td>
   </tr>
   <tr>
-    <td><label for="post_firstname">F.Alimentacion</label></td>
-    <td><%= text_field "post", "pref_hw_powersupply", :size => 50, :class=>"text"%></td>
+    <td><label for="post_firstname">F. Alimentacion</label></td>
+    <td><input type="text" name="pref_hw_powersupply" size="50" class="text"
+               value="<%=@post.pref_hw_powersupply%>"/></td>
   </tr>
   <tr>
     <td><label for="post_firstname">Tarjeta de sonido</label></td>
@@ -140,7 +142,8 @@
   </tr>
   <tr>
     <td><label for="post_firstname">Torre</label></td>
-    <td><%= text_field "post", "pref_hw_case", :size => 50, :class=>"text"%></td>
+    <td><input type="text" name="pref_hw_case" size="50" class="text"
+               value="<%=@post.pref_hw_case%>"/></td>
   </tr>
   <tr>
     <td><label for="post_firstname">Monitor</label></td>
@@ -152,7 +155,8 @@
   </tr>
   <tr>
     <td><label for="post_firstname">Altavoces</label></td>
-    <td><%= text_field "post", "pref_hw_speakers", :size => 50, :class=>"text"%></td>
+    <td><input type="text" name="pref_hw_speakers" size="50" class="text"
+               value="<%=@post.pref_hw_speakers%>"/></td>
   </tr>
   <tr>
     <td><label for="post_firstname">Ratón</label></td>
@@ -160,11 +164,13 @@
   </tr>
   <tr>
     <td><label for="post_firstname">Alfombrilla</label></td>
-    <td><%= text_field "post", "pref_hw_mousepad", :size => 50, :class=>"text"%></td>
+    <td><input type="text" name="pref_hw_mousepad" size="50" class="text"
+               value="<%=@post.pref_hw_mousepad%>"/></td>
   </tr>
   <tr>
     <td><label for="post_firstname">Teclado</label></td>
-    <td><%= text_field "post", "pref_hw_keyboard", :size => 50, :class=>"text"%></td>
+    <td><input type="text" name="pref_hw_keyboard" size="50" class="text"
+               value="<%=@post.pref_hw_keyboard%>"/></td>
   </tr>
   <tr>
     <td><label for="post_firstname">Conexión</label></td>
