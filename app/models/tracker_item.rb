@@ -11,10 +11,10 @@ class TrackerItem < ActiveRecord::Base
         "INSERT INTO archive.tracker_items (
            SELECT *
            FROM public.tracker_items
-           WHERE lastseen_on < now() - '3 months'::interval)")
+           WHERE lastseen_on < now() - '6 months'::interval)")
     User.db_query(
         "DELETE FROM tracker_items
-         WHERE lastseen_on < now() - '3 months'::interval")
+         WHERE lastseen_on < now() - '6 months'::interval")
   end
 
   def self.updated_for_user(someuser, only_new, limit='50')

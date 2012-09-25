@@ -49,6 +49,20 @@ function cfgPage(user_is_authed, contents, controller, action, model_id,
   $j('.hidden-comments-warning a').click(function() {
     return GM.utils.showAllHiddenComments();
   });
+
+  $j('.comment-textarea .btn-comentar').click(PreventDuplicatedClicks);
+  $j('.comment-textarea .btn-responder').click(PreventDuplicatedClicks);
+}
+
+function PreventDuplicatedClicks() {
+  var now = (new Date()).valueOf();
+
+  // Ignore clicks on Comentar that take place within the same minute
+  if ((now - GM.last_click_on_comment) < 60 * 1000) {
+    return false;
+  }
+  GM.last_click_on_comment = now;
+  return true;
 }
 
 function report_comment(comment_id) {
@@ -229,6 +243,7 @@ function rate(content_id, v) {
 
 var GM = GM || {};
 GM = {};
+GM.last_click_on_comment = 0;
 GM.menu = function() {
   var sawbottom_mode = 'comunidad';
   var sawbottom_cur = '';

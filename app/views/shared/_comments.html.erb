@@ -46,7 +46,7 @@ hidden_comments_count = 0
 
   i += 1
 
-  if comment.moderated?
+  if comment.moderated? || comment.duplicated?
     next
   end
 

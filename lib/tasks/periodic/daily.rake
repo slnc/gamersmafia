@@ -24,6 +24,7 @@ namespace :gm do
     Advertiser.send_reports_to_publisher_if_on_due_date
     AutologinKey.forget_old_autologin_keys
     Cache.clear_file_caches
+    Content.delete_duplicated_comments
     Faction.check_daily_karma
     Faction.check_faction_leaders
     Faith.update_ranking
@@ -43,7 +44,10 @@ namespace :gm do
     User.update_max_cache_valorations_weights_on_self_comments
     UsersNewsfeed.old.delete_all
     UsersSkill.kill_zombified_staff
-    Crs.rebuild_model
+
+    # We only rebuild the model every 3 days because of the load it adds to the
+    # server.
+    Crs.rebuild_model if Time.now.strftime("%d").to_i % 3 == 0
     Crs.generate_recommendations
   end
 end

@@ -28,6 +28,9 @@ class Comment < ActiveRecord::Base
   # Comment is not visible to anyone because it violates the netiquette.
   MODERATED = 2
 
+  # Comment is not visible because it's duplicated.
+  DUPLICATED = 3
+
   # Minimum number of comment valorations to hide a comment.
   NEGATIVE_VALORATIONS_TO_HIDE = 3
 
@@ -94,6 +97,10 @@ class Comment < ActiveRecord::Base
 
   def hidden?
     self.state == HIDDEN
+  end
+
+  def duplicated?
+    self.state == DUPLICATED
   end
 
   def moderated?

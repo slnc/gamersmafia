@@ -37,7 +37,7 @@ module Crs  # Collaborative Recommender System
     model_base = "#{Rails.root}/config/models/crs/#{model_id}"
     training_csv = "#{model_base}_training.csv"
     Crs::Training.GenerateGoldenSet(
-        "#{Rails.root}/config/models/crs/#{model_id}", [1.0, 0.0])
+        "#{Rails.root}/config/models/crs/#{model_id}", [1.0, 0.0], false)
     Crs::Models::UserSimilarity.Train(training_csv, "#{model_base}/")
   end
 
@@ -47,35 +47,44 @@ module Crs  # Collaborative Recommender System
     # For each active user look at all the contents they have visited
     # We generate recommendations for active users only and for
     user_ids = {}
-    User.non_zombies.find_each do |user|
+    i = 0
+    User.non_zombies.find_each(:conditions => 'cache_karma_points > 0') do |user|
+      i += 1
+      # puts user.login
       user_ids[user.id] = []
       # TODO(juanalonso): we delete items from tracker_items after 3 months so
       # we don't look back longer than that.
       Content.published.recent.find_each(
           :conditions => ["id NOT IN (SELECT content_id
                                       FROM tracker_items
-                                      WHERE user_id = #{user.id})"],
+                                      WHERE user_id = #{user.id})
+                         AND id not IN (SELECT content_id
+                                      FROM contents_recommendations
+                                  WHERE user_id = #{user.id} and seen_on IS NULL)"],
           :batch_size => 10000) do |content|
         user_ids[user.id].append(content.id)
       end
     end
 
+    i = 0
     eval_samples = ["user_id,content_id\n"]
     user_ids.each do |user_id, contents|
       contents.each do |content_id|
+        i += 1
         # TODO(slnc): this csv should have all the features from
         # GenerateGoldenSet. We don't populate ir right now for perf reasons
         # because the current model doesn't use any of them.
         eval_samples << CSV.generate_line([user_id, content_id])
       end
     end
+    puts "#{i} samples generated"
 
     model_id = self.current_model_name
     model_base = "#{Rails.root}/config/models/crs/#{model_id}"
     eval_csv = "#{model_base}_eval.csv"
     labeled_samples_csv = "#{model_base}_UserSimilarity.csv"
     open(eval_csv, "wb").write(eval_samples.join)
-    Rails.logger.info("Generated #{eval_samples.size} labeled samples")
+    puts "Generated #{eval_samples.size} labeled samples"
     Crs::Models::UserSimilarity.Eval(
         eval_csv, labeled_samples_csv, "#{model_base}/")
     recommendations = 0
@@ -86,11 +95,12 @@ module Crs  # Collaborative Recommender System
           :receiver_user_id => row["user_id"].to_i,
           :content_id => row["content_id"].to_i,
           :confidence => row["confidence"].to_f,
-          :comment => labeled_samples_csv,
+          :comment => "#{(row["confidence"].to_f * 100).to_i}% interesante",
       })
       recommendations += 1
+      puts "#{recommendations} generated" if i % 10000 == 0
     end
-    Rails.logger.info("Generated #{recommendations} recommendations")
+    puts "Generated #{recommendations} recommendations"
   end
 
 module Util
@@ -129,7 +139,7 @@ module Training
   # probability that a sample will go to a given bucket. Eg: [0.8, 0.1] will
   # assign 98% of the samples to the training set, 10% to the eval set and 10%
   # (implicit) to the test set.
-  def self.GenerateGoldenSet(basename, bucket_sizes=nil)
+  def self.GenerateGoldenSet(basename, bucket_sizes=nil, anonymize=true)
     # We limit to contents created within the last 3 months because we don't
     # have ground truth (TrackerItem) for further than that. If we don't limit
     # we might have a content that was of interest to a user and he commented
@@ -217,36 +227,71 @@ module Training
         tracker_item.is_tracked?
       )
 
-      root_terms = content.terms.collect { |t|
-          t.taxonomy != 'ContentsTag' ? t.root.id : nil}.compact
-
-      if root_terms
-        first_non_tag_term = root_terms.first
-      else
-        first_non_tag_term = ""
-      end
-
-      author_is_friend = content.user.is_friend_of?(tracker_item.user)
+#      root_terms = content.terms.collect { |t|
+#          t.taxonomy != 'ContentsTag' ? t.root.id : nil}.compact
+#
+#      if root_terms
+#        first_non_tag_term = root_terms.first
+#      else
+#        first_non_tag_term = ""
+#      end
+#
+#      author_is_friend = content.user.is_friend_of?(tracker_item.user)
 
       buckets[self.GetBucketFromKey(key, bucket_sizes)] << CSV.generate_line([
-        Crs::Util.anonymize_id(tracker_item.user_id),
-        Crs::Util.anonymize_id(tracker_item.content_id),
+        anonymize ? Crs::Util.anonymize_id(tracker_item.user_id) : tracker_item.user_id,
+        anonymize ? Crs::Util.anonymize_id(tracker_item.content_id) : tracker_item.content_id,
         Crs::Util.bool_to_i(interested),
-        Crs::Util.bool_to_i(has_commented),
-        num_own_comments,
-        Crs::Util.bool_to_i(has_recommended_it),
-        num_recommendations,
-        Crs::Util.bool_to_i(rating_value != -1),
-        rating_value,
-        Crs::Util.bool_to_i(rated_positive),
-        Crs::Util.bool_to_i(rated_negative),
-        Crs::Util.bool_to_i(tracker_item.is_tracked?),
-        first_non_tag_term,
-        Crs::Util.bool_to_i(author_is_friend),
-        tracker_item.content.content_type_id,
-        content.comments_count,
-        Crs::Util.bool_to_i(content.user_id),
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        #
+#        Crs::Util.bool_to_i(has_commented),
+#        num_own_comments,
+#        Crs::Util.bool_to_i(has_recommended_it),
+#        num_recommendations,
+#        Crs::Util.bool_to_i(rating_value != -1),
+#        rating_value,
+#        Crs::Util.bool_to_i(rated_positive),
+#        Crs::Util.bool_to_i(rated_negative),
+#        Crs::Util.bool_to_i(tracker_item.is_tracked?),
+#        first_non_tag_term,
+#        Crs::Util.bool_to_i(author_is_friend),
+#        tracker_item.content.content_type_id,
+#        content.comments_count,
+#        Crs::Util.bool_to_i(content.user_id),
       ])
+
+#      buckets[self.GetBucketFromKey(key, bucket_sizes)] << CSV.generate_line([
+#        anonymize ? Crs::Util.anonymize_id(tracker_item.user_id) : tracker_item.user_id,
+#        anonymize ? Crs::Util.anonymize_id(tracker_item.content_id) : tracker_item.content_id,
+#        Crs::Util.bool_to_i(interested),
+#        Crs::Util.bool_to_i(has_commented),
+#        num_own_comments,
+#        Crs::Util.bool_to_i(has_recommended_it),
+#        num_recommendations,
+#        Crs::Util.bool_to_i(rating_value != -1),
+#        rating_value,
+#        Crs::Util.bool_to_i(rated_positive),
+#        Crs::Util.bool_to_i(rated_negative),
+#        Crs::Util.bool_to_i(tracker_item.is_tracked?),
+#        first_non_tag_term,
+#        Crs::Util.bool_to_i(author_is_friend),
+#        tracker_item.content.content_type_id,
+#        content.comments_count,
+#        Crs::Util.bool_to_i(content.user_id),
+#      ])
     end
 
     basedir = File.dirname(basename)
@@ -501,7 +546,8 @@ module UserSimilarity
       similarities[content] = base_row.clone
       # puts "content: #{content}: #{similarities[content]}"
 
-      (contents - [content]).sort.each do |content_i|
+      contents.sort.each do |content_i|
+        next if content_i == content
         i += 1
         puts i if i % 10000 == 0
         # puts "content_i: #{content_i}"
@@ -541,7 +587,7 @@ module UserSimilarity
     eudistance
   end
 
-  PREDICTION_THRESHOLD = 0.1
+  PREDICTION_THRESHOLD = 0.5
 
   def self.Eval(csv_eval, csv_labeled_samples, work_dir)
     cache_file = self.cache_from_work_dir(work_dir)
@@ -553,8 +599,8 @@ module UserSimilarity
     i = 0
     CSV.foreach(csv_eval, :headers => true) do |row|
       i += 1
-      if i % 1000 == 0
-        puts i
+      if i % 10000 == 0
+        puts "#{i} samples predicted"
       end
       # puts "predicting #{row["content_id"]} for #{row["user_id"]}"
       prediction = self.predict(
@@ -563,6 +609,7 @@ module UserSimilarity
           similarity_matrix,
           user_ratings)
       label = (prediction > PREDICTION_THRESHOLD) ? 1 : 0
+      next if label == 0  # We don't need this class of samples for anything
       confidence = prediction
       labeled_samples << [
           row["user_id"], row["content_id"], label.to_s, confidence].join(",")
