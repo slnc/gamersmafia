@@ -5,7 +5,7 @@ require 'net/smtp'
 
 # You must pass opts[:body] and opts[:subject]
 def send_email(to,opts={})
-  opts[:server]      ||= 'aspmx.l.google.com'
+  opts[:server]      ||= 'localhost'
   opts[:from]        ||= 'nagato@gamersmafia.com'
   opts[:from_alias]  ||= 'nagato'
 
@@ -55,13 +55,14 @@ def tag_and_notify
 
   detailed_log = `git log production --pretty=format:"[%s]\n%an - %H - %ar\n%b" #{git_interval}`
   if do_email
-    body = "RESUMEN\n#{short_log}\n\n\nDETALLES\n#{detailed_log}"
+    body = "#{short_log}\n\n\nDETALLES\n#{detailed_log}"
     changes = "cambio#{commits_count  > 1 ? "s" : ""}"
     send_email(
         "gm-hackers@googlegroups.com",
         :subject => "GM actualizada a #{new_tag}: #{commits_count} #{changes}",
         :body => body)
   end
+  `git tag -a -m #{new_tag} #{new_tag}`
 end
 
 tag_and_notify
