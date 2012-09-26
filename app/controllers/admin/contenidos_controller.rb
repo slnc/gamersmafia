@@ -166,15 +166,11 @@ class Admin::ContenidosController < ApplicationController
         :scope => scope,
         :type_id => ttype,
         :reporter_user_id => @user.id,
-        :headline => ({
-            :scope => scope,
-            :type_id => ttype,
-            :reporter_user_id => @user.id,
-            :headline =>
-                "#{Cms.faction_favicon(@content.real_content)}<strong>"+
-                "<a href=\"#{Routing.url_for_content_onlyurl(@content.real_content)}\">"+
-                "#{@content.id}</a></strong> reportado (#{params[:reason]}) "+
-                "por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"})
+        :headline => (
+            "#{Cms.faction_favicon(@content.real_content)}<strong>"+
+            "<a href=\"#{Routing.url_for_content_onlyurl(@content.real_content)}\">"+
+            "#{@content.id}</a></strong> reportado (#{params[:reason]}) "+
+            "por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"),
     })
 
     if sl.new_record?

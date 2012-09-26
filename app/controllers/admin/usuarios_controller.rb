@@ -305,7 +305,14 @@ Quedo a la espera de tu respuesta :)")
     if @user.is_hq?
       reason_str = (params[:reason] && params[:reason].to_s != '' && params[:reason].to_s != 'Razón..') ? " (#{params[:reason]})" : ''
 
-      sl = SlogEntry.create({:type_id => SlogEntry::TYPES[:user_report], :reporter_user_id => @user.id, :headline => "Perfil de <strong><a href=\"#{gmurl(@curuser)}\">#{@curuser.login}</a></strong> reportado #{reason_str} por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"})
+      sl = SlogEntry.create({
+          :type_id => SlogEntry::TYPES[:user_report],
+          :reporter_user_id => @user.id,
+          :headline => (
+              "Perfil de <strong><a href=\"#{gmurl(@curuser)}\">"
+              "#{@curuser.login}</a></strong> Reportado #{reason_str} por" +
+              " <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"),
+      })
       if sl.new_record?
         flash[:error] = "Error al reportar al usuario:<br />#{sl.errors.full_messages_html}"
       else
