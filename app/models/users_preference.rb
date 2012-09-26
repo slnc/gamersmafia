@@ -16,6 +16,9 @@ class UsersPreference < ActiveRecord::Base
     :hw_speakers => String,
     :hw_mousepad => String,
     :hw_keyboard => String,
+    :contact_steam => String,
+    :contact_origin => String,
+    :contact_psn_id => String,
  }
 
   serialize :value

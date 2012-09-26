@@ -307,6 +307,18 @@ dat = Stats.user_contents_by_portal(@curuser)
       <td><%=@curuser.xfire%></td>
     </tr>
 <% end -%>
+<% if @curuser.pref_contact_steam.to_s != '' then %>
+    <tr class="<%=oddclass%>">
+      <td class="w100">Steam</td>
+      <td><%=@curuser.pref_contact_steam%></td>
+    </tr>
+<% end -%>
+<% if @curuser.pref_contact_origin.to_s != '' then %>
+    <tr class="<%=oddclass%>">
+      <td class="w100">Origin</td>
+      <td><%=@curuser.pref_contact_origin%></td>
+    </tr>
+<% end -%>
 <% if @curuser.wii_code.to_s.strip != '' then %>
     <tr class="<%=oddclass%>">
       <td class="w100">Wii Code</td>
@@ -317,6 +329,12 @@ dat = Stats.user_contents_by_portal(@curuser)
     <tr class="<%=oddclass%>">
       <td class="w100">GamerTag</td>
       <td><%=@curuser.gamertag%></td>
+    </tr>
+<% end -%>
+<% if @curuser.pref_contact_psn_id.to_s != '' then %>
+    <tr class="<%=oddclass%>">
+      <td class="w100">PSN ID</td>
+      <td><%=@curuser.pref_contact_psn_id%></td>
     </tr>
 <% end -%>
   </table>
