@@ -53,7 +53,7 @@ def tag_and_notify
   padded_id = "%02d" % (daily_id + 1)
   new_tag = "#{tag_prefix}-#{padded_id}"
 
-  detailed_log = `git log production --pretty=format:"[%s]\n%an - %H - %ar\n%b" #{git_interval}`
+  detailed_log = `git log production --pretty=format:"[%s]\n%an - %H - %ar\n\n%b\n" #{git_interval}`
   if do_email
     body = "#{short_log}\n\n\nDETALLES\n#{detailed_log}"
     changes = "cambio#{commits_count  > 1 ? "s" : ""}"
