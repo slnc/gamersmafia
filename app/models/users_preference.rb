@@ -3,6 +3,9 @@ class UsersPreference < ActiveRecord::Base
   belongs_to :user
   DEFAULTS = {
     :comments_autoscroll => 1,
+    :contact_origin => String,
+    :contact_psn_id => String,
+    :contact_steam => String,
     :looking_for => String,
     :public_ban_reason => String,
     :quicklinks => Array,
@@ -16,9 +19,6 @@ class UsersPreference < ActiveRecord::Base
     :hw_speakers => String,
     :hw_mousepad => String,
     :hw_keyboard => String,
-    :contact_steam => String,
-    :contact_origin => String,
-    :contact_psn_id => String,
  }
 
   serialize :value
