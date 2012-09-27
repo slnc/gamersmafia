@@ -352,43 +352,43 @@ class Cuenta::CuentaController < ApplicationController
         :first,
         :conditions => ["login = ? AND state <> #{User::ST_UNCONFIRMED}",
                         @user.login])
-    @newuser.lastname = strip_tags(params[:post][:lastname])
-    @newuser.firstname= strip_tags(params[:post][:firstname])
     @newuser.birthday = Date.new(params[:post]['birthday(1i)'].to_i,params[:post]['birthday(2i)'].to_i, params[:post]['birthday(3i)'].to_i) if params[:post]['birthday(1i)']
-    @newuser.msn = strip_tags(params[:post][:msn])
-    @newuser.googletalk = strip_tags(params[:post][:googletalk])
-    @newuser.yahoo_im = strip_tags(params[:post][:yahoo_im])
-    @newuser.wii_code = strip_tags(params[:post][:wii_code].to_s.gsub(' ', '').gsub('-', ''))
+    @newuser.city = strip_tags(params[:post][:city])
+    @newuser.competition_roster = params[:user][:competition_roster]
+    @newuser.country_id = params[:user][:country_id] # TODO hackk
+    @newuser.firstname= strip_tags(params[:post][:firstname])
     @newuser.gamertag = strip_tags(params[:post][:gamertag])
-    @newuser.xfire = strip_tags(params[:post][:xfire])
-    @newuser.irc = strip_tags(params[:post][:irc])
-    @newuser.hw_processor = strip_tags(params[:post][:hw_processor])
-    @newuser.pref_hw_heatsink = strip_tags(params[:post][:pref_hw_heatsink])
-    @newuser.hw_motherboard = strip_tags(params[:post][:hw_motherboard])
-    @newuser.hw_ram = strip_tags(params[:post][:hw_ram])
+    @newuser.googletalk = strip_tags(params[:post][:googletalk])
+    @newuser.homepage = strip_tags(params[:post][:homepage])
+    @newuser.hw_connection = strip_tags(params[:post][:hw_connection])
     @newuser.hw_graphiccard = strip_tags(params[:post][:hw_graphiccard])
     @newuser.hw_hdd = strip_tags(params[:post][:hw_hdd])
-    @newuser.pref_hw_ssd = strip_tags(params[:post][:pref_hw_ssd])
-    @newuser.pref_hw_powersupply = strip_tags(params[:post][:pref_hw_powersupply])
-    @newuser.hw_soundcard = strip_tags(params[:post][:hw_soundcard])
-    @newuser.pref_hw_case = strip_tags(params[:post][:pref_hw_case])
-    @newuser.hw_monitor = strip_tags(params[:post][:hw_monitor])
     @newuser.hw_headphones = strip_tags(params[:post][:hw_headphones])
-    @newuser.pref_hw_speakers = strip_tags(params[:post][:pref_hw_speakers])
+    @newuser.hw_monitor = strip_tags(params[:post][:hw_monitor])
+    @newuser.hw_motherboard = strip_tags(params[:post][:hw_motherboard])
     @newuser.hw_mouse = strip_tags(params[:post][:hw_mouse])
-    @newuser.pref_hw_mousepad = strip_tags(params[:post][:pref_hw_mousepad])
+    @newuser.hw_processor = strip_tags(params[:post][:hw_processor])
+    @newuser.hw_ram = strip_tags(params[:post][:hw_ram])
+    @newuser.hw_soundcard = strip_tags(params[:post][:hw_soundcard])
+    @newuser.ipaddr = remote_ip
+    @newuser.irc = strip_tags(params[:post][:irc])
+    @newuser.lastname = strip_tags(params[:post][:lastname])
+    @newuser.msn = strip_tags(params[:post][:msn])
+    @newuser.photo = params[:user][:photo] if params[:user][:photo]
+    @newuser.pref_hw_case = strip_tags(params[:post][:pref_hw_case])
+    @newuser.pref_hw_heatsink = strip_tags(params[:post][:pref_hw_heatsink])
     @newuser.pref_hw_keyboard = strip_tags(params[:post][:pref_hw_keyboard])
-    @newuser.hw_connection = strip_tags(params[:post][:hw_connection])
-    @newuser.homepage = strip_tags(params[:post][:homepage])
+    @newuser.pref_hw_mousepad = strip_tags(params[:post][:pref_hw_mousepad])
+    @newuser.pref_hw_powersupply = strip_tags(params[:post][:pref_hw_powersupply])
+    @newuser.pref_hw_speakers = strip_tags(params[:post][:pref_hw_speakers])
+    @newuser.pref_hw_ssd = strip_tags(params[:post][:pref_hw_ssd])
+    @newuser.profile_last_updated_on = Time.now
+    @newuser.wii_code = strip_tags(params[:post][:wii_code].to_s.gsub(' ', '').gsub('-', ''))
+    @newuser.xfire = strip_tags(params[:post][:xfire])
+    @newuser.yahoo_im = strip_tags(params[:post][:yahoo_im])
     @newuser.description = strip_tags_allowed(
       params[:post][:description],
       ['object', 'embed', 'param'] + ActionViewMixings::DEF_ALLOW_TAGS)
-    @newuser.city = strip_tags(params[:post][:city])
-    @newuser.ipaddr = remote_ip
-    @newuser.country_id = params[:user][:country_id] # TODO hackk
-    @newuser.photo = params[:user][:photo] if params[:user][:photo]
-    @newuser.competition_roster = params[:user][:competition_roster]
-    @newuser.profile_last_updated_on = Time.now
 
     if params[:sex].to_i == 0 then
       @newuser.sex = 0

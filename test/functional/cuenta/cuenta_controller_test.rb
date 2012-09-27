@@ -665,6 +665,33 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert u.description.include?("<object")
   end
 
+  test "update_profile_should_work_with_prefs" do
+    sym_login 1
+    u = User.find(1)
+    last = u.profile_last_updated_on
+    assert_nil last
+    pref_options = {
+            :pref_hw_heatsink => "heatsink",
+            :pref_hw_sdd => "sdd",
+            :pref_hw_powersupply => "powersupply",
+            :pref_hw_case => "case",
+            :pref_hw_speakers => "speakers",
+            :pref_hw_mousepad => "mousepad",
+            :pref_hw_keyboard => "keyboard",
+    }
+
+    post :update_profile, {
+        :post => pref_options,
+        :user => {},
+    }
+    assert_response :redirect
+    u.reload
+    assert u.profile_last_updated_on >= 1.minute.ago
+    pref_options.each do |key, value|
+      assert_equal value, u.send(key)
+    end
+  end
+
   test "should_save_tracker_config" do
     sym_login 1
     u = User.find(1)
