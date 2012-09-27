@@ -100,7 +100,7 @@ module Crs
     CSV.foreach(labeled_samples_csv, :headers => true) do |row|
       next unless row["interested"] == "1"
       ContentsRecommendation.create({
-          :sender_user_id => Ias.MrMan.id,
+          :sender_user_id => Ias.jabba.id,
           :receiver_user_id => row["user_id"].to_i,
           :content_id => row["content_id"].to_i,
           :confidence => row["confidence"].to_f,

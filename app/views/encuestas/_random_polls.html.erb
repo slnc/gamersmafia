@@ -1,0 +1,12 @@
+<% cache("/#{controller.portal.code}/encuestas/daily_random/#{Time.now.strftime('%Y%m%d')}") do %>
+  <% mfcontents_list(
+    'Aleatorias de hoy',
+    Proc.new { Poll.in_portal(controller.portal).published.find(
+        :all, :order => 'RANDOM()', :limit => 5) }) do |o| %>
+<a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a>
+<br />
+<div class="infoinline right"><%=o.votes%> votos |
+  <span class="comments-count"><a style="display: inline;" href="<%=gmurl(o)%>#comments"><%=o.cache_comments_count%></a></span>
+</div>
+  <% end -%>
+<% end -%>

@@ -41,7 +41,7 @@ def tag_and_notify
 
   last_tag = all_tags.sort.last
   git_interval = "#{last_tag}..HEAD"
-  short_log = `git log production --pretty=format:"- %s" #{git_interval}`
+  short_log = `git log production --pretty=format:"- %s" #{git_interval} | grep -v "Merge branch"`
   commits_count = short_log.split("\n").size
   if commits_count == 0
     puts "No new commits since last release #{last_tag}. Nothing to report."
@@ -53,7 +53,7 @@ def tag_and_notify
   padded_id = "%02d" % (daily_id + 1)
   new_tag = "#{tag_prefix}-#{padded_id}"
 
-  detailed_log = `git log production --pretty=format:"[%s]\n%an - %H - %ar\n\n%b\n" #{git_interval}`
+  detailed_log = `git log production --pretty=format:"[%s]\n%an - %H - %ar\n\n%b\n" #{git_interval} | grep -v "\[Merge branch" | grep -v "\[Merge pull" `
   if do_email
     body = "#{short_log}\n\n\nDETALLES\n#{detailed_log}"
     changes = "cambio#{commits_count  > 1 ? "s" : ""}"

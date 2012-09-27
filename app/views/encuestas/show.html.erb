@@ -1,22 +1,14 @@
 <% content_support(:content => @poll.unique_content) do %>
-<% if !@poll.is_public? then %>
-<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @poll } %>
-<% else %>
-
-<%cache("/#{controller.portal.code}/encuestas/daily_random/#{Time.now.strftime('%Y%m%d')}") do %>
-<%
-mfcontents_list('Aleatorias de hoy',
-				   Proc.new { controller.portal.poll.find(:published, :order => 'random()', :limit => 5) }) do |o| %>
-<a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
-<div class="infoinline right"><%=o.votes%> votos | <span class="comments-count"><a style="display: inline;" href="<%=gmurl(o)%>#comments"><%=o.cache_comments_count%></a></span></div>
-<% end %>
-<% end %>
-
-<% end -%>
+  <% if !@poll.is_public? then %>
+    <%= render :partial => '/shared/content_publishing_state',
+               :locals => { :object => @poll } %>
+  <% else %>
+    <%= render :partial => '/encuestas/random_polls' %>
+  <% end -%>
 <% end -%>
 
 <% content_main do %>
-<%mfcontent(@poll) do %>
+  <% mfcontent(@poll) do %>
 <br />
 <%
 total_votes_reg = 0
@@ -33,7 +25,8 @@ for option in @poll.polls_options.find(:all, :order => 'id asc')
 end
 
 %>
-<h2><%=faction_favicon(@poll.my_faction)%> Resultados de la encuesta (<%=total_votes_anon + total_votes_reg%> votos)</h2>
+<h2><%=faction_favicon(@poll.my_faction)%>
+  Resultados de la encuesta (<%=total_votes_anon + total_votes_reg%> votos)</h2>
 <br />
 <table class="pollvotes">
   <tr>
@@ -42,9 +35,8 @@ end
     <th>Anónimos</th>
     <th>Votos</th>
   </tr>
-<%
 
-for option in @poll.polls_options.find(:all, :order => 'id asc')
+<% @poll.polls_options.find(:all, :order => 'id asc').each do |option|
   votes_reg = option.polls_votes.count(:conditions => 'user_id is not null')
   votes_anon = option.polls_votes.count(:conditions => 'user_id is null')
   cur_pc_reg = total_votes_reg > 0 ? (votes_reg.to_f / max_reg * 100).to_i : 0
@@ -62,26 +54,24 @@ for option in @poll.polls_options.find(:all, :order => 'id asc')
   <span class="infoinline" style="color: #d95e5e"><%=cur_pc_reg_abs%>%</span> / <span class="infoinline" style="color: #A09090"><%=cur_pc_anon_abs%>%</span>
 </td>
 </tr>
-<%
-end
-%>
+<% end %>
+
 <tr>
   <th colspan="3">Total:</th>
   <td class="centered"><strong style="color: #d95e5e"><%=total_votes_reg%></strong> / <strong style="color: #A09090"><%=total_votes_anon%></strong> </td>
 </tr>
 </table>
 
-
 <br />
 <table>
-       <tr>
-               <td class="infoinline" style="text-align: right;">Inicio de la encuesta:&nbsp;</td>
-               <td class="infoinline"><%=print_tstamp(@poll.starts_on)%></td>
-       </tr>
-       <tr>
-               <td class="infoinline" style="text-align: right;">Fin de la encuesta:&nbsp;</td>
-               <td class="infoinline"><%=print_tstamp(@poll.ends_on)%></td>
-       </tr>
+  <tr>
+    <td class="infoinline" style="text-align: right;">Inicio de la encuesta:&nbsp;</td>
+    <td class="infoinline"><%=print_tstamp(@poll.starts_on)%></td>
+  </tr>
+  <tr>
+    <td class="infoinline" style="text-align: right;">Fin de la encuesta:&nbsp;</td>
+    <td class="infoinline"><%=print_tstamp(@poll.ends_on)%></td>
+  </tr>
 </table>
-<% end -%>
+  <% end -%>
 <% end -%>
