@@ -34,6 +34,33 @@ class Poll < ActiveRecord::Base
     User.db_query("UPDATE polls SET polls_votes_count = #{new_polls_votes_count} WHERE id = #{self.id}")
   end
 
+  def registered_users_stats
+    PollsOption.db_query("
+        SELECT a.id,
+          a.name,
+          COALESCE(count(b.id), 0) as count
+        FROM polls_options a
+        LEFT JOIN polls_votes b ON
+          a.id = b.polls_option_id AND
+          b.user_id is not null
+        WHERE a.poll_id = #{self.id}
+        GROUP BY a.id,
+          a.name ORDER BY id asc")
+  end
+
+  def anonymous_users_stats
+    PollsOption.db_query("
+        SELECT a.id,
+          a.name,
+          COALESCE(count(b.id), 0) as count
+        FROM polls_options a
+        LEFT JOIN polls_votes b ON
+          a.id = b.polls_option_id AND
+          b.user_id is null
+        WHERE a.poll_id = #{self.id}
+        GROUP BY a.id,
+          a.name ORDER BY id asc")
+  end
 
   def options_new=(opts_new)
     @_tmp_options_new = opts_new
