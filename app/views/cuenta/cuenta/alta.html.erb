@@ -88,7 +88,7 @@
         var email = $j('#signup_user_email').val();
 		if (email == '')
 			return;
-       if (!email.match(/^([a-zA-Z0-9_.]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/)){
+       if (!email.match(/^([a-zA-Z0-9+_.]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/)){
             $j('#email_msg').html('Email inválido');
             email_stat = class_toggle('bad','email_msg');
             }
