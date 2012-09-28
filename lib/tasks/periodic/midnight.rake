@@ -97,7 +97,7 @@ namespace :gm do
       end
 
       # Contents
-      Content.find(:all, :conditions => "state = #{Cms::PUBLISHED} AND created_on BETWEEN date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS'))  AND date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS')) + '1 day'::interval - '1 second'::interval", :include => [:content_type]).each do |content|
+      Content.published.find(:all, :conditions => "created_on BETWEEN date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS'))  AND date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS')) + '1 day'::interval - '1 second'::interval", :include => [:content_type]).each do |content|
         if content.game # Contenido de facción
           # Warning: un juego puede aparecer en más de un portal
           portal = Portal.find(:first, :conditions => ['code = ?', content.game.code])
@@ -189,7 +189,7 @@ namespace :gm do
       cur_str = first_stat.strftime('%Y-%m-%d')
       next_stat = first_stat.advance(:days => 1)
       created_clans = Clan.count(:conditions => "date_trunc('day', created_on) = date_trunc('day', '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'::timestamp)")
-      new_closed_topics = Topic.count(:conditions => "state = #{Cms::PUBLISHED} AND closed = 't' AND date_trunc('day', updated_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'")
+      new_closed_topics = Topic.published.count(:conditions => "closed = 't' AND date_trunc('day', updated_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'")
       new_clans_portals = ClansPortal.count(:conditions => "clan_id IS NOT NULL AND date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'")
       dbrender = User.db_query("SELECT avg(time), stddev(time), avg(db_queries) as avg_dbq, stddev(db_queries) as stddev_dbq FROM stats.pageloadtime WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'")[0]
       sql_created_on = "date_trunc('day', created_on) = date_trunc('day', '#{first_stat.strftime('%Y-%m-%d 00:00:00')}'::timestamp)"

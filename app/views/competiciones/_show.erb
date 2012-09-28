@@ -176,7 +176,7 @@
 
   <%
   previous_day = nil
-  for news in competition.event.coverages.find(:all, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 10)
+  for news in competition.event.coverages.published.find(:all, :order => 'created_on DESC', :limit => 10)
     cur_day = Date.new(news.created_on.year, news.created_on.month, news.created_on.day)
 
     if cur_day != previous_day then

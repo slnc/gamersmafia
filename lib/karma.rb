@@ -2,44 +2,48 @@
 module Karma
   POINTS_FIRST_LEVEL = 500
   INCREMENT_PER_LEVEL = 0.05
-  KPS_CREATE = {'News'=> 60,
-                'Image'=> 5,
-                'Download'=> 30,
-                'Demo'=> 40,
-                'Topic'=> 20,
-                'Poll'=> 40,
-                'Bet'=> 40,
-                'Event'=> 30,
-                'Coverage'=> 30,
-                'Tutorial'=> 400,
-                'Interview'=> 500,
-                'Column'=> 300,
-                'Review'=> 200,
-                'Funthing'=> 20,
-                'Blogentry'=> 20,
-                'Question'=> 20,
-                'RecruitmentAd'=> 20,
-                'Copypaste'=> 20,
-                'Comment'=> 5,
+  KPS_CREATE = {
+      'Bet'=> 40,
+      'Blogentry'=> 20,
+      'Column'=> 300,
+      'Comment'=> 5,
+      'Copypaste'=> 20,
+      'Coverage'=> 30,
+      'Demo'=> 40,
+      'Download'=> 30,
+      'Event'=> 30,
+      'Funthing'=> 20,
+      'Image'=> 5,
+      'Interview'=> 500,
+      'News'=> 60,
+      'Poll'=> 40,
+      'Question'=> 20,
+      'RecruitmentAd'=> 20,
+      'Review'=> 200,
+      'Topic'=> 20,
+      'Tutorial'=> 400,
   }
 
-  KPS_SAVE = {'News'=> 10,
-              'Image'=> 10,
-              'Download'=> 10,
-              'Demo'=> 10,
-              'Poll'=> 10,
-              'Bet'=> 10,
-              'Event'=> 10,
-              'Coverage'=> 10,
-              'Tutorial'=> 70,
-              'Interview'=> 70,
-              'Column'=> 70,
-              'Review'=> 40,
-              'Question'=> 5,
-              'Funthing'=> 10}
+  KPS_SAVE = {
+      'Bet'=> 10,
+      'Column'=> 70,
+      'Coverage'=> 10,
+      'Demo'=> 10,
+      'Download'=> 10,
+      'Event'=> 10,
+      'Funthing'=> 10,
+      'Image'=> 10,
+      'Interview'=> 70,
+      'News'=> 10,
+      'Poll'=> 10,
+      'Question'=> 5,
+      'Review'=> 40,
+      'Tutorial'=> 70,
+  }
 
-  def Karma.kp_for_level level
-   (POINTS_FIRST_LEVEL * level) + (POINTS_FIRST_LEVEL * (level - 1)) * (INCREMENT_PER_LEVEL * level)
+  def Karma.kp_for_level(level)
+   (POINTS_FIRST_LEVEL * level) + (
+     (POINTS_FIRST_LEVEL * (level - 1)) * (INCREMENT_PER_LEVEL * level))
   end
 
   def Karma.pc_done_for_next_level(kp)
@@ -55,12 +59,10 @@ module Karma
 
   def Karma.level(kp)
     kp = kp.karma_points unless kp.is_a?(Fixnum)
-
     lvl = 0
     kp_for_lvl = 0
 
     if kp >= POINTS_FIRST_LEVEL
-
       while (kp > kp_for_lvl)
         lvl += 1
         kp_for_lvl = Karma.kp_for_level(lvl + 1)
@@ -76,12 +78,14 @@ module Karma
 
   def self.user_daily_karma(u, date_start, date_end)
     res = {}
-    User.db_query("SELECT karma,
-                        created_on
-                   FROM stats.users_daily_stats
-                  WHERE user_id = #{u.id}
-                    AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'  AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
-                 ORDER BY created_on").each do |dbr|
+    User.db_query("
+        SELECT karma,
+          created_on
+        FROM stats.users_daily_stats
+        WHERE user_id = #{u.id}
+        AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'
+          AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
+        ORDER BY created_on").each do |dbr|
       res[dbr['created_on'][0..10]] = dbr['karma'].to_i
     end
     curdate = date_start
@@ -99,40 +103,55 @@ module Karma
   def self.karma_points_of_users_at_date_range(date_start, date_end)
     date_start, date_end = date_end, date_start if date_start > date_end
     points = {}
-    User.db_query("SELECT count(*),
-                          user_id
-                     FROM comments
-                    WHERE deleted = 'f'
-                      AND (select is_bot FROM users WHERE id = user_id) = 'f'
-                      AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'  AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
-                 GROUP BY user_id").each do |dbc|
+    User.db_query("
+        SELECT count(*),
+          user_id
+        FROM comments
+        WHERE deleted = 'f'
+        AND (SELECT is_bot
+             FROM users
+             WHERE id = user_id) = 'f'
+        AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'
+          AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
+        GROUP BY user_id").each do |dbc|
       points[dbc['user_id']] = dbc['count'].to_i * Karma::KPS_CREATE['Comment']
     end
 
     # ahora contenidos
-    User.db_query("SELECT count(*),
-                          user_id,
-                          content_type_id
-                     FROM contents
-                    WHERE state = #{Cms::PUBLISHED}
-                      AND source IS NULL
-                      AND (select is_bot FROM users WHERE id = user_id) = 'f'
-                      AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'  AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
-                 GROUP BY user_id, content_type_id").each do |dbc|
+    User.db_query("
+        SELECT count(*),
+          user_id,
+          content_type_id
+        FROM contents
+        WHERE state = #{Cms::PUBLISHED}
+        AND source IS NULL
+        AND (SELECT is_bot
+             FROM users
+             WHERE id = user_id) = 'f'
+        AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'
+          AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
+        GROUP BY user_id, content_type_id").each do |dbc|
       points[dbc['user_id']] ||= 0
-      points[dbc['user_id']] += dbc['count'].to_i * Karma::KPS_CREATE[ContentType.find(dbc['content_type_id'].to_i).name]
+      karma_content_creation = (
+          Karma::KPS_CREATE[ContentType.find(dbc['content_type_id'].to_i).name])
+      points[dbc['user_id']] += dbc['count'].to_i * karma_content_creation
     end
 
-    User.db_query("SELECT count(*),
-                          user_id
-                     FROM contents
-                    WHERE state = #{Cms::PUBLISHED}
-                      AND source IS NOT NULL
-                      AND (select is_bot FROM users WHERE id = user_id) = 'f'
-                      AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'  AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
-                 GROUP BY user_id").each do |dbc|
+    User.db_query("
+        SELECT count(*),
+          user_id
+        FROM contents
+        WHERE state = #{Cms::PUBLISHED}
+        AND source IS NOT NULL
+        AND (SELECT is_bot
+             FROM users
+             WHERE id = user_id) = 'f'
+        AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'
+          AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
+        GROUP BY user_id").each do |dbc|
       points[dbc['user_id']] ||= 0
-      points[dbc['user_id']] += dbc['count'].to_i * Karma::KPS_CREATE['Copypaste']
+      points[dbc['user_id']] += (
+          dbc['count'].to_i * Karma::KPS_CREATE['Copypaste'])
     end
 
     points
@@ -142,48 +161,46 @@ module Karma
     # devuelve un array
     # [-1][50] 50 puntos en el portal con id -1
     points = {}
-    User.db_query("SELECT count(*),
-                          portal_id
-                     FROM comments
-                    WHERE user_id = #{user.id}
-                      AND deleted = 'f'
-                      AND date_trunc('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
-                 GROUP BY portal_id").each do |dbc|
-      points[dbc['portal_id']] = dbc['count'].to_i * Karma::KPS_CREATE['Comment']
+    User.db_query("
+        SELECT count(*),
+          portal_id
+        FROM comments
+        WHERE user_id = #{user.id}
+        AND deleted = 'f'
+        AND DATE_TRUNC('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
+        GROUP BY portal_id").each do |dbc|
+      points[dbc['portal_id']] = (
+          dbc['count'].to_i * Karma::KPS_CREATE['Comment'])
     end
 
     # ahora contenidos
-    User.db_query("SELECT count(*),
-                          portal_id,
-                          content_type_id
-                     FROM contents
-                    WHERE user_id = #{user.id}
-                      AND source IS NULL
-                      AND state = #{Cms::PUBLISHED}
-                      AND date_trunc('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
-                 GROUP BY portal_id, content_type_id").each do |dbc|
+    User.db_query("
+    SELECT count(*),
+      portal_id,
+      content_type_id
+    FROM contents
+    WHERE user_id = #{user.id}
+    AND source IS NULL
+    AND state = #{Cms::PUBLISHED}
+    AND DATE_TRUNC('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
+    GROUP BY portal_id, content_type_id").each do |dbc|
       points[dbc['portal_id']] ||= 0
-      points[dbc['portal_id']] += dbc['count'].to_i * Karma::KPS_CREATE[ContentType.find(dbc['content_type_id'].to_i).name]
+      points[dbc['portal_id']] += (
+          dbc['count'].to_i * Karma::KPS_CREATE[ContentType.find(dbc['content_type_id'].to_i).name])
     end
 
-    User.db_query("SELECT count(*),
-                          portal_id
-                     FROM contents
-                    WHERE user_id = #{user.id}
-                      AND source IS NOT NULL
-                      AND state = #{Cms::PUBLISHED}
-                      AND date_trunc('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
-                 GROUP BY portal_id").each do |dbc|
+    User.db_query("
+        SELECT count(*),
+          portal_id
+        FROM contents
+        WHERE user_id = #{user.id}
+        AND source IS NOT NULL
+        AND state = #{Cms::PUBLISHED}
+        AND date_trunc('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
+        GROUP BY portal_id").each do |dbc|
       points[dbc['portal_id']] ||= 0
       points[dbc['portal_id']] += dbc['count'].to_i * Karma::KPS_CREATE['Copypaste']
     end
-
-    # TODO contenidos approved_by_user_id no se contabilizan
-    #for c in Cms::contents_classes_publishable
-    # author of
-    #      points += c.count(:conditions => "user_id = #{thing.id} and state = #{Cms::PUBLISHED}") * Karma::KPS_CREATE[c.name]
-    #points += c.count(:conditions => "approved_by_user_id = #{thing.id} and state = #{Cms::PUBLISHED}") * Karma::KPS_SAVE[c.name] # legacy
-    #end
 
     points
   end
@@ -192,16 +209,17 @@ module Karma
     if thing.kind_of?(User)
       points = 0
 
-      points += thing.comments.count(:conditions => 'comments.deleted = \'f\'') * Karma::KPS_CREATE['Comment']
-      points += thing.blogentries.count(:conditions => "state = #{Cms::PUBLISHED}") * Karma::KPS_CREATE['Blogentry']
-      points += thing.topics.count(:conditions => "state = #{Cms::PUBLISHED}") * Karma::KPS_CREATE['Topic']
+      points += (thing.comments.count(:conditions => "comments.deleted = 'f'") *
+                 Karma::KPS_CREATE['Comment'])
+      points += thing.blogentries.published.count * Karma::KPS_CREATE['Blogentry']
+      points += thing.topics.published.count * Karma::KPS_CREATE['Topic']
 
       for c in Cms::contents_classes_publishable
         # author of
         if c.new.respond_to?(:source)
-          points += c.count(:conditions => "user_id = #{thing.id} and state = #{Cms::PUBLISHED} AND source IS NULL") * Karma::KPS_CREATE[c.name]
-          points += c.count(:conditions => "user_id = #{thing.id} and state = #{Cms::PUBLISHED} AND source IS NOT NULL") * Karma::KPS_CREATE['Copypaste']
-          points += c.count(:conditions => "approved_by_user_id = #{thing.id} and state = #{Cms::PUBLISHED}") * Karma::KPS_SAVE[c.name] # legacy
+          points += c.published.count(:conditions => "user_id = #{thing.id} AND source IS NULL") * Karma::KPS_CREATE[c.name]
+          points += c.published.count(:conditions => "user_id = #{thing.id} AND source IS NOT NULL") * Karma::KPS_CREATE['Copypaste']
+          points += c.published.count(:conditions => "approved_by_user_id = #{thing.id}") * Karma::KPS_SAVE[c.name] # legacy
         else
           points += c.count(:conditions => "user_id = #{thing.id} and state = #{Cms::PUBLISHED}") * Karma::KPS_CREATE[c.name]
           points += c.count(:conditions => "approved_by_user_id = #{thing.id} and state = #{Cms::PUBLISHED}") * Karma::KPS_SAVE[c.name] # legacy

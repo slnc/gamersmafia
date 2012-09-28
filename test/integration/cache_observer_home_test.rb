@@ -99,7 +99,7 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
     assert_cache_exists "gm/home/index/potd_#{d.strftime('%Y%m%d')}"
 
     # copypasted de potd_test
-    im = Image.find(:first, :conditions => "approved_by_user_id is not null and state = #{Cms::PUBLISHED}")
+    im = Image.published.find(:first, :conditions => "approved_by_user_id is not null")
     assert_not_nil im
     potd = Potd.new({:date => Time.now, :image_id => im.id})
     assert_equal true, potd.save

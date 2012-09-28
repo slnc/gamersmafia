@@ -666,8 +666,8 @@ class CacheObserver < ActiveRecord::Observer
       # TODO es un copypaste de news
 
       # borramos las páginas de listado de noticias posteriores a la actual
-      prev_count = Funthing.count(:conditions => ["state = #{Cms::PUBLISHED} and created_on <= ?", object.created_on])
-      next_count = Funthing.count(:conditions => ["state = #{Cms::PUBLISHED} and created_on >= ?", object.created_on])
+      prev_count = Funthing.published.count(:conditions => ["created_on <= ?", object.created_on])
+      next_count = Funthing.published.count(:conditions => ["created_on >= ?", object.created_on])
       start_page = prev_count / 20 # TODO especificar esto en un único sitio
       end_page = start_page + next_count / 20 + 1
       [start_page..end_page].each do |i|

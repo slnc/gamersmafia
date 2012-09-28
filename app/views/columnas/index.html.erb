@@ -23,7 +23,7 @@
 <ul class="sidelist">
 <% cache("/#{controller.portal.code}/columnas/index/most_popular_authors_#{Time.now.to_i/(86400)}") do %>
 <% controller.portal.column.most_popular_authors(:content_type => 'Column').each do |u| %>
-  <li class="<%=oddclass%>"><%=draw_user_info(u[0])%><div class="more"><a href="<%=gmurl(u[0])%>/contenidos/columnas">Ver sus columnas (<%=u[0].columns.count(:conditions => "state = #{Cms::PUBLISHED}")%>)</a></div></li>
+  <li class="<%=oddclass%>"><%=draw_user_info(u[0])%><div class="more"><a href="<%=gmurl(u[0])%>/contenidos/columnas">Ver sus columnas (<%=u[0].columns.published.count%>)</a></div></li>
   <% end -%>
 <% end -%>
 </ul>

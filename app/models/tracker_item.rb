@@ -19,7 +19,7 @@ class TrackerItem < ActiveRecord::Base
 
   def self.updated_for_user(someuser, only_new, limit='50')
     q_only = only_new ? "AND b.lastseen_on < a.updated_on " : ''
-    db_query(
+    User.db_query(
         "SELECT a.*
          FROM contents a
          JOIN tracker_items b on a.id = b.content_id

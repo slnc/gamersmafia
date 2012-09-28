@@ -157,7 +157,7 @@ class Bet < ActiveRecord::Base
       where_sql = " AND closes_on >= now() - '#{time_window}'::interval"
     end
 
-    db_query("SELECT user_id,
+    User.db_query("SELECT user_id,
                      SUM(net_ammount)
                 FROM stats.bets_results
                WHERE bet_id IN (SELECT id

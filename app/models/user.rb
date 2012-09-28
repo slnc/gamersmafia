@@ -942,7 +942,7 @@ class User < ActiveRecord::Base
     total = 0
     for c in Karma::KPS_SAVE
       begin
-        total += Object.const_get(c[0]).count(:conditions => ["approved_by_user_id = ? and state = #{Cms::PUBLISHED}", self.id]) * c[1]
+        total += Object.const_get(c[0]).published.count(:conditions => ["approved_by_user_id = ?", self.id]) * c[1]
       rescue
         raise c[0]
       end
@@ -1014,7 +1014,7 @@ class User < ActiveRecord::Base
   def contents_stats
     res = {}
      (Cms.contents_classes + [Blogentry]).each do |cls|
-      res[Cms.translate_content_name(cls.name).titleize] = self.send(ActiveSupport::Inflector::tableize(cls.name)).count(:conditions => "state = #{Cms::PUBLISHED}")
+      res[Cms.translate_content_name(cls.name).titleize] = self.send(ActiveSupport::Inflector::tableize(cls.name)).published.count
     end
     res['Comentarios'] = self.comments_count
     res

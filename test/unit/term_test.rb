@@ -104,7 +104,7 @@ class TermTest < ActiveSupport::TestCase
   test "last_published_content" do
     test_mirror_category
     @lasttc = Term.find(:first, :order => 'id DESC')
-    @content = Content.find(:first, :conditions => "state = #{Cms::PUBLISHED}", :order => 'id DESC')
+    @content = Content.published.find(:first, :order => 'id DESC')
     @lasttc.link(@content)
     assert_equal @content.id, @lasttc.last_published_content('Download').id
     assert_equal @content.id, @lasttc.root.last_published_content('Download').id
@@ -120,7 +120,7 @@ class TermTest < ActiveSupport::TestCase
   test "recalculate_contents_count_works" do
     test_mirror_category
     @lasttc = Term.find(:first, :order => 'id DESC')
-    @content = Content.find(:first, :conditions => "state = #{Cms::PUBLISHED}", :order => 'id DESC')
+    @content = Content.published.find(:first, :order => 'id DESC')
     @lasttc.link(@content)
     assert_equal 1, @lasttc.contents_count
     @lasttc.update_attributes(:contents_count => 0)

@@ -25,7 +25,7 @@
 	<td><%=i%></td>
     <td><a href="/blogs/<%=u.login%>"><%=u.login%></a></td>
 	<td><%=(Blogs.user_authority(u)*100).to_i.to_f / 100%></td>
-	<td><%=u.blogentries.count(:all, :conditions => "state = #{Cms::PUBLISHED}")%></td>
+	<td><%=u.blogentries.published.count(:all)%></td>
 	<td><%=User.db_query("select sum(hits_anonymous + hits_registered)/count(*) as media from blogentries where state = #{Cms::PUBLISHED} AND user_id = #{u.id}")[0]['media']%></td>
 </tr>
 <% i += 1

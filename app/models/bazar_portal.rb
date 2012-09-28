@@ -109,7 +109,7 @@ end
 
 class BazarPortalPollProxy
   def self.current
-    Term.single_toplevel(:slug => 'bazar').poll.find(:all, :conditions => "starts_on <= now() and ends_on >= now() and state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 1)
+    Term.single_toplevel(:slug => 'bazar').poll.published.find(:all, :conditions => "starts_on <= now() and ends_on >= now()", :order => 'created_on DESC', :limit => 1)
   end
 
   def self.method_missing(method_id, *args)

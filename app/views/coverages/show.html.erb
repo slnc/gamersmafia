@@ -4,7 +4,7 @@
 <%# TODO ctivar cache cuando esté arreglada
 %>
 <%# cache("/coverages/latest_by_event_#{@coverage.event_id}") do %>
-<% other_news = @coverage.event.coverages.find(:all, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 5)
+<% other_news = @coverage.event.coverages.published.find(:all, :order => 'created_on DESC', :limit => 5)
 if other_news.size > 0 then %>
 <% mftext("Más noticias de #{@coverage.event.title}") do %>
 <ul class="content-hid">

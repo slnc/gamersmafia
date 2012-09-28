@@ -8,7 +8,7 @@
 <% mftext('Entradas') do %>
 <%# TODO cachear !!!
 %>
-<% @blogentries = Blogentry.paginate(:page => params[:page], :per_page => 20, :conditions => ["state = #{Cms::PUBLISHED} AND user_id = ?", @curuser.id], :order => 'created_on DESC') %>
+<% @blogentries = Blogentry.published.paginate(:page => params[:page], :per_page => 20, :conditions => ["user_id = ?", @curuser.id], :order => 'created_on DESC') %>
 <%= render :partial => 'shared/pager2', :locals => {:collection => @blogentries, :pos => 'top'} %>
 <% for blogentry in @blogentries%>
 <h2><a href="/blogs/<%=@curuser.login%>/<%=blogentry.id%>"><%=blogentry.title%></a></h2>

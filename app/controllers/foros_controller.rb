@@ -149,7 +149,7 @@ class ForosController < ComunidadController
       if @user.created_on > 1.day.ago && @user.topics.count > 1 then
         flash[:error] = "Para evitar spam las cuentas recién creadas solo pueden crear un tópic el primer día."
         render :action => 'nuevo_topic'
-      elsif @user.topics.count(:conditions => "created_on >= now() - '5 days'::interval AND sticky is false AND state = #{Cms::PUBLISHED} AND cache_comments_count = 0") > 3 then
+      elsif @user.topics.published.count(:conditions => "created_on >= now() - '5 days'::interval AND sticky is false AND cache_comments_count = 0") > 3 then
         flash[:error] = "Tienes demasiados tópics abiertos sin que otros usuarios hayan respondido, debes esperar un poco antes de publicar un nuevo tópic."
         render :action => 'nuevo_topic'
       else

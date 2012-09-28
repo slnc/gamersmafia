@@ -195,7 +195,7 @@ max = vals.max
 <table>
 	<tr>
 		<td class="infoinline">Total contenidos</td>
-		<td class="right infoinline"><%=@curuser.contents.count(:conditions => "state = #{Cms::PUBLISHED}")%></td>
+		<td class="right infoinline"><%=@curuser.contents.published.count%></td>
 	</tr>
 </table>
 <% end -%>

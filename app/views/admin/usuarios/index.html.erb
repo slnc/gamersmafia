@@ -52,9 +52,7 @@
   <%# TODO copypasted de mi facción/staff y a su vez de mi facción/index %>
 <%
   for user in User.find_by_sql('SELECT * from users where id IN (select id from users_skills where role in (\'Boss\', \'Underboss\')) ORDER BY lower(login) ASC')
-  %>
-  <% # buscamos contenido %>
-  last_most_recent = user.contents.find(:first, :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC')
+  last_most_recent = user.contents.published.find(:first, :order => 'created_on DESC')
   %>
   <strong><a href="/admin/usuarios/edit/<%=user.id%>"><%=user.login%></a></strong><br /><div class="infoinline">
   <%
