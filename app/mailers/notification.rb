@@ -358,7 +358,7 @@ class Notification < ActionMailer::Base
     vars.merge!({
         :actions => [],
         :title => "Informe de tiempo de render de los últimos 7 días"})
-    setup('slnc@gamersmafia.com', vars)
+    setup(App.weekly_internal_report_recipient, vars)
   end
 
   # keys: subject, user, email, message

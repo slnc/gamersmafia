@@ -339,18 +339,18 @@ module Karma
       kpc = Karma::KPS_CREATE[content.content_type.name]
     end
 
-    faction_factor = Math.log10(recent_portal_commentators)
+    portal_factor = Math.log10(recent_portal_commentators)
     comments_factor = w_comments * users_ratio
-    ratings_factor = w_ratings * (rating/10.0)
-    karma = (kpc * faction_factor * (comments_factor + ratings_factor)).ceil
+    ratings_factor = w_ratings * (rating / 10.0)
+    karma = (kpc * portal_factor * (comments_factor + ratings_factor)).ceil
 
     # We compute debugging line
-    faction_factor_explained = "%.2f" % faction_factor
+    portal_factor_explained = "%.2f" % portal_factor
     users_ratio_explained = "%.2f" % users_ratio
     comments_factor_explained = "#{w_comments} * #{users_ratio_explained}"
     ratings_factor_explained = "#{w_ratings} * (#{rating/10.0})"
     karma_explained = (
-        "#{kpc} * #{faction_factor_explained} * (#{comments_factor_explained}" +
+        "#{kpc} * #{portal_factor_explained} * (#{comments_factor_explained}" +
         " + #{ratings_factor_explained}):  # usuarios:" +
         " #{content_commentators} de #{recent_portal_commentators}," +
         " valoración: #{rating}")
