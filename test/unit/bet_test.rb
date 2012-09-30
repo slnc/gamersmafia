@@ -341,7 +341,7 @@ class BetTest < ActiveSupport::TestCase
   #      50 |      50       (u2)
   #      25 |      75       (u3)
   test "should_properly_distribute_money_if_tie_mixed" do
-    prepare_first_three_users
+    self.prepare_first_three_users
 
     @bets_option_foo.bets_tickets.create({
       :user_id => 1,
@@ -361,15 +361,15 @@ class BetTest < ActiveSupport::TestCase
 
     @bet.complete('tie')
 
-    assert_equal true, @bet.completed?
+    assert @bet.completed?
 
     @u1.reload
     @u2.reload
     @u3.reload
 
-    assert_equal 10.23, @u1.cash
-    assert_equal 223.33, @u2.cash
-    assert_equal 74.44, @u3.cash
+    assert_equal 2.23, @u1.cash.to_f
+    assert_equal 223.33, @u2.cash.to_f
+    assert_equal 74.44, @u3.cash.to_f
   end
 
   test "should properly return earnings" do

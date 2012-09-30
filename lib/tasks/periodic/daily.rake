@@ -29,6 +29,7 @@ namespace :gm do
     Faction.check_faction_leaders
     Faith.update_ranking
     Karma.update_ranking
+    Karma.award_karma_points_new_ugc
     Ladder.check_ladder_matches
     Popularity.update_rankings
     Question.close_old_open_questions

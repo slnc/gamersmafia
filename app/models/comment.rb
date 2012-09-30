@@ -1,23 +1,5 @@
 # -*- encoding : utf-8 -*-
 class Comment < ActiveRecord::Base
-  belongs_to :content
-  belongs_to :user
-  after_create :do_after_create
-  after_create :schedule_image_parsing
-  after_save :schedule_ne_references_calculation
-
-  belongs_to :lastedited_by, {:class_name => 'User',
-                              :foreign_key => 'lastedited_by_user_id'}
-  has_many :comments_valorations, :dependent => :destroy
-
-  before_save :truncate_long_comments
-  before_save :set_portal_id_based_on_content
-  before_save :check_copy_if_changing_lastedited_by_user_id
-  before_save :check_not_moderated
-  serialize :cache_rating
-
-  validates_presence_of :comment, :message => 'no puede estar en blanco'
-  validates_presence_of :user_id, :message => 'no puede estar en blanco'
 
   # Comment is visible to everybody.
   VISIBLE = 0
@@ -46,6 +28,28 @@ class Comment < ActiveRecord::Base
     :comment,
   ].freeze
 
+  belongs_to :content
+  belongs_to :user
+  after_create :do_after_create
+  after_create :schedule_image_parsing
+  after_save :schedule_ne_references_calculation
+
+  belongs_to :lastedited_by, {:class_name => 'User',
+                              :foreign_key => 'lastedited_by_user_id'}
+  has_many :comments_valorations, :dependent => :destroy
+
+  before_save :truncate_long_comments
+  before_save :set_portal_id_based_on_content
+  before_save :check_copy_if_changing_lastedited_by_user_id
+  before_save :check_not_moderated
+  serialize :cache_rating
+
+  validates_presence_of :comment, :message => 'no puede estar en blanco'
+  validates_presence_of :user_id, :message => 'no puede estar en blanco'
+
+  scope :karma_eligible,
+        :conditions => ["state NOT IN (?)", [MODERATED, DUPLICATED]]
+
   def check_not_moderated
     if self.moderated?
       FROZEN_ATTRIBUTES_IF_MODERATED.each do |attribute|
@@ -61,13 +65,8 @@ class Comment < ActiveRecord::Base
     self.errors.size == 0
   end
 
-  def new_karma_points
-    positive_ratings = self.comments_valorations_ratings.positive.count(
-        :conditions => (
-            "created_on <= (SELECT created_on FROM comments WHERE id =" +
-            " #{self.id}) + '2 weeks'::interval"))
-
-    (positive_ratings ** Math.log10(positive_ratings)).ceil
+  def karma_eligible?
+    !(self.moderated? || self.duplicated?)
   end
 
   def moderation_reason_sym
@@ -187,8 +186,6 @@ class Comment < ActiveRecord::Base
   end
 
   def mark_as_deleted
-    del_karma
-
     # update last_commented_on
     u = self.user
     last_comment = Comment.find_by_user_id(u.id, :conditions => "deleted = 'f'", :order => 'created_on DESC')
@@ -217,7 +214,6 @@ class Comment < ActiveRecord::Base
   end
 
   def do_after_create
-    self.add_karma
     self.user.update_attributes(:lastcommented_on => self.created_on)
     self.delay.notify_trackers
   end
@@ -311,14 +307,6 @@ class Comment < ActiveRecord::Base
       end
       w
     end
-  end
-
-  def add_karma
-    Karma.add_karma_after_comment_is_created(self)
-  end
-
-  def del_karma
-    Karma.del_karma_after_comment_is_deleted(self)
   end
 
   def can_edit_comment?(user, saving=false)

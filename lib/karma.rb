@@ -41,12 +41,38 @@ module Karma
       'Tutorial'=> 70,
   }
 
-  def Karma.kp_for_level(level)
+  UGC_OLD_ENOUGH_FOR_KARMA_DAYS = 14
+
+  def self.recalculate_karma
+    User.db_query("UPDATE users SET cache_karma_points = NULL")
+    self.award_karma_points_new_ugc(false)
+    # TODO(slnc): we need to recalculate factions and daily stats
+  end
+
+  def self.award_karma_points_new_ugc(give_gmfs=true)
+    Content.published.find_each(
+        :conditions => (
+          "created_on <= NOW() - '#{UGC_OLD_ENOUGH_FOR_KARMA_DAYS}" +
+          " days'::interval AND karma_points IS NULL")
+    ) do |content|
+      self.add_karma_after_content_is_published(content, give_gmfs)
+    end
+
+    Comment.karma_eligible.find_each(
+        :conditions => (
+          "created_on <= NOW() - '#{UGC_OLD_ENOUGH_FOR_KARMA_DAYS}" +
+          " days'::interval AND karma_points IS NULL")
+    ) do |content|
+      self.add_karma_after_comment_is_created(content, give_gmfs)
+    end
+  end
+
+  def self.kp_for_level(level)
    (POINTS_FIRST_LEVEL * level) + (
      (POINTS_FIRST_LEVEL * (level - 1)) * (INCREMENT_PER_LEVEL * level))
   end
 
-  def Karma.pc_done_for_next_level(kp)
+  def self.pc_done_for_next_level(kp)
     cur_level = Karma.level(kp)
     kp_cur_lvl  = Karma.kp_for_level cur_level
     kp_next_lvl = Karma.kp_for_level(cur_level + 1)
@@ -57,7 +83,7 @@ module Karma
     return (100 * diff_done / diff_100).to_i
   end
 
-  def Karma.level(kp)
+  def self.level(kp)
     kp = kp.karma_points unless kp.is_a?(Fixnum)
     lvl = 0
     kp_for_lvl = 0
@@ -104,54 +130,34 @@ module Karma
     date_start, date_end = date_end, date_start if date_start > date_end
     points = {}
     User.db_query("
-        SELECT count(*),
+        SELECT SUM(karma_points) AS karma_points,
           user_id
         FROM comments
-        WHERE deleted = 'f'
-        AND (SELECT is_bot
-             FROM users
-             WHERE id = user_id) = 'f'
+        WHERE (
+            SELECT is_bot
+            FROM users
+            WHERE id = user_id) = 'f'
         AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'
           AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
         GROUP BY user_id").each do |dbc|
-      points[dbc['user_id']] = dbc['count'].to_i * Karma::KPS_CREATE['Comment']
+      points[dbc['user_id']] = dbc['karma_points'].to_i
     end
 
     # ahora contenidos
     User.db_query("
-        SELECT count(*),
+        SELECT SUM(karma_points) AS karma_points,
           user_id,
           content_type_id
         FROM contents
-        WHERE state = #{Cms::PUBLISHED}
-        AND source IS NULL
-        AND (SELECT is_bot
-             FROM users
-             WHERE id = user_id) = 'f'
+        WHERE (
+            SELECT is_bot
+            FROM users
+            WHERE id = user_id) = 'f'
         AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'
           AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
         GROUP BY user_id, content_type_id").each do |dbc|
       points[dbc['user_id']] ||= 0
-      karma_content_creation = (
-          Karma::KPS_CREATE[ContentType.find(dbc['content_type_id'].to_i).name])
-      points[dbc['user_id']] += dbc['count'].to_i * karma_content_creation
-    end
-
-    User.db_query("
-        SELECT count(*),
-          user_id
-        FROM contents
-        WHERE state = #{Cms::PUBLISHED}
-        AND source IS NOT NULL
-        AND (SELECT is_bot
-             FROM users
-             WHERE id = user_id) = 'f'
-        AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'
-          AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
-        GROUP BY user_id").each do |dbc|
-      points[dbc['user_id']] ||= 0
-      points[dbc['user_id']] += (
-          dbc['count'].to_i * Karma::KPS_CREATE['Copypaste'])
+      points[dbc['user_id']] += dbc['karma_points'].to_i
     end
 
     points
@@ -162,225 +168,323 @@ module Karma
     # [-1][50] 50 puntos en el portal con id -1
     points = {}
     User.db_query("
-        SELECT count(*),
+        SELECT SUM(karma_points) AS karma_points,
           portal_id
         FROM comments
         WHERE user_id = #{user.id}
-        AND deleted = 'f'
         AND DATE_TRUNC('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
         GROUP BY portal_id").each do |dbc|
-      points[dbc['portal_id']] = (
-          dbc['count'].to_i * Karma::KPS_CREATE['Comment'])
+      points[dbc['portal_id']] = dbc['karma_points'].to_i
     end
 
     # ahora contenidos
     User.db_query("
-    SELECT count(*),
-      portal_id,
-      content_type_id
-    FROM contents
-    WHERE user_id = #{user.id}
-    AND source IS NULL
-    AND state = #{Cms::PUBLISHED}
-    AND DATE_TRUNC('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
-    GROUP BY portal_id, content_type_id").each do |dbc|
-      points[dbc['portal_id']] ||= 0
-      points[dbc['portal_id']] += (
-          dbc['count'].to_i * Karma::KPS_CREATE[ContentType.find(dbc['content_type_id'].to_i).name])
-    end
-
-    User.db_query("
-        SELECT count(*),
-          portal_id
+        SELECT SUM(karma_points) AS karma_points,
+          portal_id,
+          content_type_id
         FROM contents
         WHERE user_id = #{user.id}
-        AND source IS NOT NULL
-        AND state = #{Cms::PUBLISHED}
-        AND date_trunc('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
-        GROUP BY portal_id").each do |dbc|
+        AND DATE_TRUNC('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
+        GROUP BY portal_id, content_type_id").each do |dbc|
       points[dbc['portal_id']] ||= 0
-      points[dbc['portal_id']] += dbc['count'].to_i * Karma::KPS_CREATE['Copypaste']
+      points[dbc['portal_id']] += dbc['karma_points'].to_i
     end
 
     points
   end
 
-  def self.calculate_karma_points(thing)
+  def self.calculate_karma_points(thing, other_conditions=nil)
+    opts = other_conditions ? {:conditions => other_conditions} : {}
     if thing.kind_of?(User)
-      points = 0
-
-      points += (thing.comments.count(:conditions => "comments.deleted = 'f'") *
-                 Karma::KPS_CREATE['Comment'])
-      points += thing.blogentries.published.count * Karma::KPS_CREATE['Blogentry']
-      points += thing.topics.published.count * Karma::KPS_CREATE['Topic']
-
-      for c in Cms::contents_classes_publishable
-        # author of
-        if c.new.respond_to?(:source)
-          points += c.published.count(:conditions => "user_id = #{thing.id} AND source IS NULL") * Karma::KPS_CREATE[c.name]
-          points += c.published.count(:conditions => "user_id = #{thing.id} AND source IS NOT NULL") * Karma::KPS_CREATE['Copypaste']
-          points += c.published.count(:conditions => "approved_by_user_id = #{thing.id}") * Karma::KPS_SAVE[c.name] # legacy
-        else
-          points += c.count(:conditions => "user_id = #{thing.id} and state = #{Cms::PUBLISHED}") * Karma::KPS_CREATE[c.name]
-          points += c.count(:conditions => "approved_by_user_id = #{thing.id} and state = #{Cms::PUBLISHED}") * Karma::KPS_SAVE[c.name] # legacy
-        end
-      end
-
-      points
-
+      (thing.contents.sum('karma_points', opts) +
+       thing.comments.sum('karma_points', opts))
     elsif thing.kind_of?(Faction)
-      total = 0
-
-      # para cada contenido calculamos el total de elementos que salgan de
+      # Para cada contenido calculamos el total de elementos que salgan de
       # nuestra categoría base y a la vez calculamos los puntos por comentarios
       # (requiere que cache_karma_points != NULL)
       rthing = thing.referenced_thing
-      root_term = Term.single_toplevel(thing.referenced_thing_field => rthing.id)
-      cat_ids = root_term.all_children_ids
-      dbrs = User.db_query("SELECT count(a.*) as count_contents, (SELECT name FROM content_types where id = a.content_type_id) as content_type_name, sum(a.comments_count) as sum_comments FROM contents a JOIN contents_terms b ON a.id = b.content_id AND b.term_id IN (#{cat_ids.join(',')}) WHERE a.state = #{Cms::PUBLISHED} GROUP BY content_type_name")
-      total = 0
-      ct_topics_id = ContentType.find_by_name('Topic').id
-      dbrs.each do |dbr|
-        total += dbr['count_contents'].to_i * Karma::KPS_CREATE[dbr['content_type_name']]
-        total += dbr['sum_comments'].to_i * Karma::KPS_CREATE['Comment']
-      end
-      # TODO no se tienen en cuenta los approved_by_user_id
-      total
-
+      sql_other_conditions = other_conditions ? " AND #{other_conditions}" : ""
+      comments_karma = Comment.sum(
+          :karma_points,
+          :conditions => "
+              content_id IN (
+                SELECT id
+                FROM contents
+                WHERE #{thing.referenced_thing_field} = #{rthing.id})
+              #{sql_other_conditions}")
+      root_term = Term.single_toplevel(
+          thing.referenced_thing_field => rthing.id)
+      total = (
+          Content.in_term_tree(root_term).sum(:karma_points, opts) +
+          comments_karma)
     elsif thing.class.kind_of?(ActsAsContent::AddActsAsContent)
-      Karma.contents_karma(thing)
+      if other_conditions
+        raise "Unable to pass other_conditions for acts_as_content"
+      end
+      (karma_points, trace) = Karma.contents_karma(thing.unique_content)
+      karma_points
+    else
+      raise "calculate_karma_points of unsupported class #{thing.class.name}."
     end
   end
 
   def self.give(user, points)
-    raise TypeError unless (user.kind_of?(User) and points.kind_of?(Fixnum))
-    raise ValueError unless points > 0
-
-    user.karma_points # forzamos el cálculo desde 0, esto sí que puede incurrir en race condition
-    user.cache_karma_points = User.db_query("UPDATE users SET cache_karma_points = cache_karma_points + #{points} WHERE id = #{user.id}; SELECT cache_karma_points FROM users WHERE id = #{user.id}")[0]['cache_karma_points']
+    self.modify_user_karma(user, points, "+")
   end
 
   def self.take(user, points)
+    self.modify_user_karma(user, points, "-")
+  end
+
+  def self.modify_user_karma(user, points, operation)
     raise TypeError unless (user.kind_of?(User) and points.kind_of?(Fixnum))
-    raise ValueError unless points > 0
-    user.karma_points # forzamos el cálculo desde 0, esto sí que puede incurrir en race condition
-    user.cache_karma_points = User.db_query("UPDATE users SET cache_karma_points = cache_karma_points - #{points} WHERE id = #{user.id}; SELECT cache_karma_points FROM users WHERE id = #{user.id}")[0]['cache_karma_points']
+      raise ArgumentError("#{points} <= 0") unless points > 0
+
+    # forzamos el cálculo desde 0, esto sí que puede incurrir en race condition
+    user.karma_points
+    user.cache_karma_points = User.db_query("
+        UPDATE users
+        SET cache_karma_points = cache_karma_points #{operation} #{points}
+        WHERE id = #{user.id};
+
+        SELECT cache_karma_points
+        FROM users
+        WHERE id = #{user.id}")[0]['cache_karma_points']
   end
 
   def self.ranking_user(u)
-    # contamos incluso los que tienen 0
-    ucount = User.db_query("SELECT count(*) FROM users WHERE state IN (#{User::STATES_CAN_LOGIN.join(',')})")[0]['count'].to_i
-    pos = u.ranking_karma_pos ? u.ranking_karma_pos : ucount
-    {:pos => pos, :total => ucount }
+    total = User.can_login.count
+    pos = u.ranking_karma_pos || total
+    {:pos => pos, :total => total}
   end
 
   def self.update_ranking
-    lista = {}
-    User.db_query("SELECT id, cache_karma_points FROM users WHERE state IN (#{User::STATES_CAN_LOGIN.join(',')})").each do |dbr|
-      lista[dbr['cache_karma_points'].to_i] ||= []
-      lista[dbr['cache_karma_points'].to_i] << dbr['id'].to_i
+    users_by_karma = {}
+    old_ranks = {}
+    User.can_login.each do |user|
+      users_by_karma[user.cache_karma_points] ||= []
+      users_by_karma[user.cache_karma_points] << user.id
+      old_ranks[user.id] = user.ranking_karma_pos
     end
 
     pos = 1
-    lista.keys.sort.reverse.each do |k|
-      # en caso de empate los ids menores (mas antiguos) tienen preferencia
-      lista[k].sort.each do |uid|
-        User.db_query("UPDATE users SET ranking_karma_pos = #{pos} WHERE id = #{uid}")
+    users_by_karma.keys.sort.reverse.each do |k|
+      # In case of tie older users come first.
+      users_by_karma[k].sort.each do |uid|
+        if old_ranks[uid] != pos
+          User.db_query(
+            "UPDATE users SET ranking_karma_pos = #{pos} WHERE id = #{uid}")
+        end
         pos += 1
       end
     end
   end
 
-  def self.contents_karma(content, include_comments=false, public_check=true)
-    content = content.real_content if content.kind_of?(Content)
+  # Karma points are a weighted sum of unique users commenting on the content
+  # and the rating of that content. Contents belonging to portals with more
+  # active users have a higher starting karma points.
+  # content: a Content object.
+  def self.contents_karma(content)
+    content_commentators = User.db_query(
+        "SELECT COUNT(DISTINCT(user_id)) as count
+         FROM comments
+         WHERE content_id = #{content.id}
+         AND created_on <= (
+              SELECT created_on
+              FROM contents
+              WHERE id = #{content.id}) + '2 weeks'::interval")[0]['count'].to_f
 
-    unless public_check && !content.is_public?
-      comments_karma = include_comments ? (content.unique_content.comments_count * Karma::KPS_CREATE['Comment']) : 0
-      if content.respond_to?(:source) && content.source
-        Karma::KPS_CREATE['Copypaste'] + comments_karma
-      else
-        Karma::KPS_CREATE[content.class.name] + comments_karma
-      end
+    recent_portal_commentators = User.db_query(
+        "SELECT COUNT(DISTINCT(user_id)) as count
+         FROM comments
+         WHERE portal_id = #{content.portal_id}
+         AND created_on BETWEEN (
+           SELECT created_on
+           FROM contents
+           WHERE id = #{content.id}) AND (
+           SELECT created_on
+           FROM contents
+           WHERE id = #{content.id}) + '2 weeks'::interval")[0]['count'].to_f
+
+    ratings = content.content_ratings.count
+    if ratings >= 3
+      rating =  content.content_ratings.average(
+          :rating,
+          :conditions => "created_on <= (
+              SELECT created_on
+              FROM contents
+              WHERE id = #{content.id}) + '2 weeks'::interval")
+      rating = 0 if rating.nil?
+      w_ratings = 0.5
+      w_comments = 0.5
     else
-      0
+      ratings = 0  # that way they don't affect w_comments
+      rating = 0
+      w_ratings = 0
+      w_comments = 0.7
     end
+
+    recent_portal_commentators = 1 if recent_portal_commentators == 0
+    users_ratio = Math.log10(
+        10.0 * content_commentators / recent_portal_commentators)
+    users_ratio = content_commentators/recent_portal_commentators
+    if users_ratio < 0 && content_commentators > 0
+      users_ratio = 0.1
+    end
+    users_ratio = 0 if users_ratio < 0
+
+    if (content.source)
+      kpc = Karma::KPS_CREATE['Copypaste']
+    else
+      kpc = Karma::KPS_CREATE[content.content_type.name]
+    end
+
+    faction_factor = Math.log10(recent_portal_commentators)
+    comments_factor = w_comments * users_ratio
+    ratings_factor = w_ratings * (rating/10.0)
+    karma = (kpc * faction_factor * (comments_factor + ratings_factor)).ceil
+
+    # We compute debugging line
+    faction_factor_explained = "%.2f" % faction_factor
+    users_ratio_explained = "%.2f" % users_ratio
+    comments_factor_explained = "#{w_comments} * #{users_ratio_explained}"
+    ratings_factor_explained = "#{w_ratings} * (#{rating/10.0})"
+    karma_explained = (
+        "#{kpc} * #{faction_factor_explained} * (#{comments_factor_explained}" +
+        " + #{ratings_factor_explained}):  # usuarios:" +
+        " #{content_commentators} de #{recent_portal_commentators}," +
+        " valoración: #{rating}")
+
+    [karma, karma_explained]
   end
 
-  def self.add_karma_after_content_is_published(content)
-    u = content.user
-    points = Karma.contents_karma(content, false, false)
-    Karma.give(u, points)
-    # puts Karma.contents_karma(content, false, false)
-    Bank.transfer(:bank,
-                  u,
-                  Bank::convert(points, 'karma_points'),
-                  "Karma por resultar aceptado \"#{content.resolve_hid}\" (#{Cms::CLASS_NAMES[content.class.name]})")
+  def self.add_karma_after_content_is_published(content, give_gmfs=true)
+    if !content.karma_points.nil?
+      raise "content #{content.id} already has karma points."
+    end
+
+    if (content.karma_points ||
+        content.created_on > UGC_OLD_ENOUGH_FOR_KARMA_DAYS.days.ago)
+      return
+    end
+
+    (karma_points, trace_log) = self.contents_karma(content)
+    if !content.update_column(:karma_points, karma_points)
+      raise ("Error adding karma_points to content:" +
+             " #{content.errors.full_messages_html}")
+    end
+    return if karma_points == 0
+
+    user = content.user
+    Karma.give(user, karma_points.to_i)
+    return if !give_gmfs
+    Bank.transfer(
+        :bank,
+        user,
+        Bank::convert(karma_points, 'karma_points'),
+        "Karma por resultar aceptado \"#{content.name}\"" +
+        " (#{Cms::CLASS_NAMES[content.real_content.class.name]})")
   end
 
   def self.del_karma_after_content_is_unpublished(content)
-    u = content.user
-    points = Karma.contents_karma(content, false, false)
-    Karma.take(u, points)
-    Bank.transfer(u,
-                  :bank,
-                  Bank::convert(points, 'karma_points'),
-                  "Devolución de karma por contenido despublicado: #{content.resolve_hid} (#{Cms::CLASS_NAMES[content.class.name]})")
-    # TODO karma/gmf leak quitar karma a los comentadores, no? o se lo quitamos cuando se borre definitivamente de la papelera?
+    return if content.karma_points.nil?
+
+    old_karma_points = content.karma_points
+    if !content.frozen?
+      content.update_column(:karma_points, nil)
+    end
+    return if old_karma_points == 0
+
+    user = content.user
+    Karma.take(user, old_karma_points.to_i)
+    Bank.transfer(
+        user,
+        :bank,
+        Bank::convert(old_karma_points, 'karma_points'),
+        "Devolución de karma por contenido despublicado:" +
+        " #{content.name}" +
+        " (#{Cms::CLASS_NAMES[content.real_content.class.name]})")
   end
 
-  def self.add_karma_after_comment_is_created(comment)
+  def self.comment_karma(comment)
+    return nil if !comment.karma_eligible?
+
+    positive_ratings = comment.comments_valorations.positive.count(
+        :conditions => "
+            created_on <= (
+              SELECT created_on
+              FROM comments
+              WHERE id = #{comment.id}) +
+                         '#{UGC_OLD_ENOUGH_FOR_KARMA_DAYS} days'::interval")
+
+    if positive_ratings == 0
+      0
+    else
+      (positive_ratings ** Math.log10(positive_ratings)).ceil
+    end
+  end
+
+  def self.add_karma_after_comment_is_created(comment, give_gmfs=true)
+    if !comment.karma_points.nil?
+      raise "Comment #{comment.id} already has karma points."
+    end
+
+    if (comment.karma_points ||
+        comment.created_on > UGC_OLD_ENOUGH_FOR_KARMA_DAYS.days.ago)
+      return
+    end
+
+    karma_points = self.comment_karma(comment)
+    if !comment.update_column(:karma_points, karma_points)
+      raise ("Error adding karma_points to comment:" +
+             " #{comment.errors.full_messages_html}")
+    end
+    return if karma_points == 0
+
     u = comment.user
-    Karma.give(u, Karma::KPS_CREATE['Comment'])
-    Bank.transfer(:bank,
-                  u,
-                  Bank::convert(Karma::KPS_CREATE['Comment'], 'karma_points'),
-                    "Karma por comentario a #{comment.content.real_content.resolve_hid} (#{Cms::CLASS_NAMES[comment.content.real_content.class.name]})")
+    Karma.give(u, karma_points.to_i)
+    return if !give_gmfs
+    Bank.transfer(
+        :bank,
+        u,
+        Bank::convert(karma_points, 'karma_points'),
+        "Karma por comentario a #{comment.content.real_content.resolve_hid}" +
+        " (#{Cms::CLASS_NAMES[comment.content.real_content.class.name]})")
   end
 
   def self.del_karma_after_comment_is_deleted(comment)
+    old_points = comment.karma_points
+    return if old_points == 0
+
     u = comment.user
-    Karma.take(u, Karma::KPS_CREATE['Comment'])
-    new_cash = Bank::convert(Karma::KPS_CREATE['Comment'], 'karma_points')
-    Bank.transfer(u, :bank, new_cash, "Devolución de Karma por comentario borrado a #{comment.content.real_content.resolve_hid} (#{Cms::CLASS_NAMES[comment.content.real_content.class.name]})")
+    Karma.take(u, old_points.to_i)
+
+    new_cash = Bank::convert(old_points, 'karma_points')
+    return if new_cash == 0
+
+    Bank.transfer(
+        u,
+        :bank,
+        new_cash,
+        "Devolución de Karma por comentario borrado a" +
+        " #{comment.content.real_content.resolve_hid}" +
+        " (#{Cms::CLASS_NAMES[comment.content.real_content.class.name]})")
   end
 
-  def self.karma_in_time_period(t1, t2)
+  def self.karma_in_time_period(t1, t2, other_conditions=nil)
     points = 0
-    cond = { :conditions => "deleted = 'f' AND created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'" }
-    cond_content = { :conditions => "state = #{Cms::PUBLISHED} AND created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'" }
-    points += Comment.count(cond) * Karma::KPS_CREATE['Comment']
-    points += Blogentry.count(cond_content) * Karma::KPS_CREATE['Blogentry']
-    points += Topic.count(cond_content) * Karma::KPS_CREATE['Topic']
-    points += Question.count(cond_content) * Karma::KPS_CREATE['Question']
-
-    for c in Cms::contents_classes_publishable
-      # author of
-      if c.new.respond_to?(:source)
-        points += c.count("#{cond_content[:conditions]} AND source IS NOT NULL") * Karma::KPS_CREATE['Copypaste']
-        points += c.count("#{cond_content[:conditions]} AND source IS NULL") * Karma::KPS_CREATE[c.name]
-      else
-        points += c.count(cond_content) * Karma::KPS_CREATE[c.name]
-      end
-
-      points += c.count(:conditions => "state = #{Cms::PUBLISHED} AND created_on between '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}' and approved_by_user_id is not null") * Karma::KPS_SAVE[c.name] # legacy
-    end
-
-    points
+    cond = {
+        :conditions => "karma_points > 0 AND
+                        created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}'
+                          AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'",
+    }
+    cond[:conditions] += " AND #{other_conditions}" if other_conditions
+    Content.sum(:karma_points, cond) + Comment.sum(:karma_points, cond)
   end
 
   def self.faction_karma_in_time_period(faction, t1, t2)
-    # TODO falta karma por comentarios
-    # TODO esto no usa terms correctamente
-    k = 0
-    root_term = Term.single_toplevel(faction.referenced_thing_field => faction.referenced_thing.id)
-    Cms::CONTENTS_WITH_CATEGORIES.each do |cls_name|
-      if Object.const_get(cls_name).respond_to?(:source)
-        k += root_term.contents_count(cls_name, :conditions => "state = #{Cms::PUBLISHED} AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}' AND source IS NOT NULL") * Karma::KPS_CREATE['Copypaste']
-        k += root_term.contents_count(cls_name, :conditions => "state = #{Cms::PUBLISHED} AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}' AND source IS NULL") * Karma::KPS_CREATE[c.items_class.name]
-      else
-        k += root_term.contents_count(cls_name, :conditions => "state = #{Cms::PUBLISHED} AND created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}' AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'") * Karma::KPS_CREATE[c.items_class.name]
-      end
-    end
-    k
+    time_condition = "created_on BETWEEN '#{t1.strftime('%Y-%m-%d %H:%M:%S')}'
+                        AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'"
+    self.calculate_karma_points(faction, time_condition)
   end
 end

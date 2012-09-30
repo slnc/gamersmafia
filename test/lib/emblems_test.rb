@@ -167,13 +167,21 @@ class EmblemsTest < ActiveSupport::TestCase
 
   test "give_emblems_karma_fury" do
     assert_gives_emblem('karma_fury') do
-      c_count = Comment.count
-      Comment.create(:user_id => @u.id, :comment => 'holaaa', :content_id => 1, :host => '127.0.0.1')
-      Comment.create(:user_id => @u.id, :comment => 'holaaa jajajaja', :content_id => 1, :host => '127.0.0.1')
-      Comment.create(:user_id => @u.id + 1, :comment => 'holooo', :content_id => 1, :host => '127.0.0.1')
-      User.db_query("UPDATE comments SET created_on = created_on - '10 minutes'::interval")
-      User.db_query("UPDATE contents SET created_on = now()")
-      assert_equal c_count + 3, Comment.count
+      c = Comment.create({
+        :user_id => @u.id,
+        :comment => 'holaaa',
+        :content_id => 1,
+        :host => '127.0.0.1',
+        :created_on => (Karma::UGC_OLD_ENOUGH_FOR_KARMA_DAYS + 2).days.ago,
+      })
+      c.update_column(:karma_points, nil)
+      c.comments_valorations.create({
+        :comments_valorations_type_id => CommentsValorationsType.positive.find(:first).id,
+        :weight => 0.5,
+        :user_id => 2,
+        :created_on => (Karma::UGC_OLD_ENOUGH_FOR_KARMA_DAYS + 1).days.ago,
+      })
+      c.save
     end
   end
 

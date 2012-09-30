@@ -8,6 +8,7 @@ first_comment:
   comment: caca
   has_comments_valorations: false
   portal_id: 1
+  karma_points: 1
 
 second_comment:
   id: 2
@@ -19,3 +20,4 @@ second_comment:
   comment: caca
   has_comments_valorations: false
   portal_id: 1
+  karma_points: 1

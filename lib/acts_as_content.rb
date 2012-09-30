@@ -141,7 +141,7 @@ module ActsAsContent
         t_name = ActiveSupport::Inflector::tableize(table_name)
         agfirst = args.first
         if agfirst.is_a?(Symbol) && [:drafts, :published, :deleted, :pending].include?(agfirst) then
-          options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
+          options = args.last.is_a?(Hash) ? args.pop : {}  # copypasted de extract_options_from_args!(args)
           new_cond = "#{t_name}.state = #{Cms.const_get(agfirst.to_s.upcase)}"
 
           if options[:conditions].kind_of?(Array)
@@ -164,7 +164,7 @@ module ActsAsContent
         if args.size > 0
           agfirst = args.first
           if agfirst.is_a?(Symbol) && [:drafts, :published, :deleted, :pending].include?(agfirst) then
-            options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
+            options = args.last.is_a?(Hash) ? args.pop : {}  # copypasted de extract_options_from_args!(args)
             args.delete_at(0)
             new_cond = "state = #{Cms.const_get(agfirst.to_s.upcase)}"
             if options[:conditions].kind_of?(Array)
@@ -240,7 +240,6 @@ module ActsAsContent
       self.state = Cms::PUBLISHED
       self.log_action('recuperado', user)
       self.save
-      self.add_karma if is_public?
     end
 
     def do_after_save
@@ -417,8 +416,6 @@ module ActsAsContent
       raise ValueError if !new_user.kind_of?(User)
       return if new_user.id == self.user_id
 
-      self.del_karma if is_public?
-
       # TODO ya no :p hacemos esto para no triggerear record_timestamps
       # self.class.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} SET user_id = #{new_user.id} WHERE id = #{self.id}")
       # self.reload
@@ -426,8 +423,6 @@ module ActsAsContent
       self.user = new_user # necesario hacer ambos cambios por si ya se ha cargado self.user antes
       self.log_action('cambiada autoría', editor)
       self.save
-
-      self.add_karma if is_public?
     end
 
     # Devuelve un array de todos los atributos de este objeto que son únicos
@@ -525,9 +520,6 @@ module ActsAsContent
 
       self.unique_content_id = c.id
       User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} SET unique_content_id = #{c.id} WHERE id = #{self.id}")
-
-      # añadimos karma si es un contenido que no necesita ser moderado
-      add_karma if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(self.class.name)
     end
 
     def delete_unique_content
@@ -536,15 +528,7 @@ module ActsAsContent
 
     # this content's contributed karma
     def karma
-      Karma.contents_karma(self)
-    end
-
-    def add_karma
-      Karma.add_karma_after_content_is_published(self)
-    end
-
-    def del_karma
-      Karma.del_karma_after_content_is_unpublished(self)
+      self.unique_content.karma_points
     end
 
     def change_state(new_state, editor)
@@ -560,7 +544,6 @@ module ActsAsContent
         raise "impossible, current_state #{self.id} = #{self.state}" unless [Cms::PENDING, Cms::DELETED, Cms::ONHOLD, Cms::DRAFT].include?(self.state)
         self.created_on = Time.now if self.state == Cms::PENDING # solo le cambiamos la hora si el estado anterior era cola de moderación
         self.log_action('publicado', editor)
-        add_karma
         self.unique_content.tracker_items.each do |ti|
           ti.lastseen_on = Time.now
           ti.save
@@ -570,7 +553,6 @@ module ActsAsContent
         when Cms::DELETED
         raise 'impossible' unless [Cms::PENDING, Cms::PUBLISHED, Cms::ONHOLD, Cms::DRAFT].include?(self.state)
         self.log_action('borrado', editor)
-        del_karma if self.state == Cms::PUBLISHED
         ContentsRecommendation.find(
             :all,
             :conditions => ['content_id = ?',
@@ -581,7 +563,6 @@ module ActsAsContent
         when Cms::ONHOLD
         raise 'impossible' unless [Cms::PUBLISHED, Cms::DELETED, Cms::ONHOLD].include?(self.state)
         self.log_action('movido a espera', editor)
-        del_karma if self.state == Cms::PUBLISHED
       else
         raise 'unimplemented'
       end
@@ -591,7 +572,8 @@ module ActsAsContent
 
     def rating
       # devuelve el rating del contenido
-      if (self.cache_rating.nil? and self.cache_rated_times.nil?) or (self.cache_rating.nil? and self.cache_rated_times >= 2) then
+      if (self.cache_rating.nil? && self.cache_rated_times.nil?) ||
+         (self.cache_rating.nil? && self.cache_rated_times >= 2)
         self.cache_rating = Content.db_query("SELECT avg(rating) from content_ratings where content_id = #{self.unique_content.id}")[0]['avg']
         self.cache_rated_times = Content.db_query("SELECT count(id) from content_ratings where content_id = #{self.unique_content.id}")[0]['count']
         self.cache_rating = 0 if self.cache_rating.nil?
@@ -773,10 +755,6 @@ module ActsAsContent
 
     def prepare_destruction
       self.unique_content.destroy
-
-      if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(self.class.name) or (self.state == Cms::PUBLISHED) then # el elemento estaba publicado o era un tópic, quitamos karma
-        del_karma
-      end
     end
 
     def is_locked_for_user?(user)

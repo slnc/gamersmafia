@@ -197,34 +197,6 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert_equal m, Message.count
   end
 
-  test "should_give_karma_when_changing_state_from_draft_to_published" do
-    @u = User.find(1)
-    @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::DRAFT})
-    assert_not_nil @n
-    k = @u.karma_points
-    Cms::publish_content(@n, @u)
-    @u.reload
-    assert_equal k + Karma::KPS_CREATE['News'], @u.karma_points
-  end
-
-  test "should_give_karma_when_changing_state_from_pending_to_published" do
-    @u = User.find(1)
-    @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::PENDING})
-    assert_not_nil @n
-    k = @u.karma_points
-    Cms::publish_content(@n, @u)
-    @u.reload
-    assert_equal k + Karma::KPS_CREATE['News'], @u.karma_points
-  end
-
-  test "should_take_karma_when_changing_state_from_published_to_deleted" do
-    test_should_give_karma_when_changing_state_from_pending_to_published
-    k = @u.karma_points
-    Cms::modify_content_state(@n, @u, Cms::DELETED)
-    @u.reload
-    assert_equal k - Karma::KPS_CREATE['News'], @u.karma_points
-  end
-
   test "should_add_to_tracker_of_creator" do
     # TODO y si cambiamos la autoría qué pasa con el tracker?
     @u = User.find(1)
