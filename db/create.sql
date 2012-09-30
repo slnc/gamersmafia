@@ -1,12 +1,12 @@
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
-SET standard_conforming_strings = off;
+SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
-SET escape_string_warning = off;
 CREATE SCHEMA archive;
 CREATE SCHEMA stats;
-CREATE PROCEDURAL LANGUAGE plpgsql;
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 SET search_path = archive, pg_catalog;
 SET default_tablespace = '';
 SET default_with_oids = false;
@@ -50,8 +50,8 @@ SET search_path = public, pg_catalog;
 CREATE SEQUENCE ab_tests_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 CREATE TABLE ab_tests (
     id integer DEFAULT nextval('ab_tests_id_seq'::regclass) NOT NULL,
@@ -83,8 +83,8 @@ CREATE TABLE ads (
 CREATE SEQUENCE ads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ads_id_seq OWNED BY ads.id;
 CREATE TABLE ads_slots (
@@ -99,8 +99,8 @@ CREATE TABLE ads_slots (
 CREATE SEQUENCE ads_slots_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ads_slots_id_seq OWNED BY ads_slots.id;
 CREATE TABLE ads_slots_instances (
@@ -113,8 +113,8 @@ CREATE TABLE ads_slots_instances (
 CREATE SEQUENCE ads_slots_instances_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ads_slots_instances_id_seq OWNED BY ads_slots_instances.id;
 CREATE TABLE ads_slots_portals (
@@ -125,8 +125,8 @@ CREATE TABLE ads_slots_portals (
 CREATE SEQUENCE ads_slots_portals_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ads_slots_portals_id_seq OWNED BY ads_slots_portals.id;
 CREATE TABLE advertisers (
@@ -140,8 +140,8 @@ CREATE TABLE advertisers (
 CREATE SEQUENCE advertisers_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE advertisers_id_seq OWNED BY advertisers.id;
 CREATE TABLE allowed_competitions_participants (
@@ -152,8 +152,8 @@ CREATE TABLE allowed_competitions_participants (
 CREATE SEQUENCE allowed_competitions_participants_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE allowed_competitions_participants_id_seq OWNED BY allowed_competitions_participants.id;
 CREATE TABLE autologin_keys (
@@ -166,8 +166,8 @@ CREATE TABLE autologin_keys (
 CREATE SEQUENCE autologin_keys_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE autologin_keys_id_seq OWNED BY autologin_keys.id;
 CREATE TABLE avatars (
@@ -184,8 +184,8 @@ CREATE TABLE avatars (
 CREATE SEQUENCE avatars_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE avatars_id_seq OWNED BY avatars.id;
 CREATE TABLE babes (
@@ -196,8 +196,8 @@ CREATE TABLE babes (
 CREATE SEQUENCE babes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE babes_id_seq OWNED BY babes.id;
 CREATE TABLE ban_requests (
@@ -217,8 +217,8 @@ CREATE TABLE ban_requests (
 CREATE SEQUENCE ban_requests_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ban_requests_id_seq OWNED BY ban_requests.id;
 CREATE TABLE bazar_districts (
@@ -235,8 +235,8 @@ CREATE TABLE bazar_districts (
 CREATE SEQUENCE bazar_districts_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bazar_districts_id_seq OWNED BY bazar_districts.id;
 CREATE TABLE bets (
@@ -278,15 +278,15 @@ CREATE TABLE bets_categories (
 CREATE SEQUENCE bets_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bets_categories_id_seq OWNED BY bets_categories.id;
 CREATE SEQUENCE bets_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bets_id_seq OWNED BY bets.id;
 CREATE TABLE bets_options (
@@ -298,8 +298,8 @@ CREATE TABLE bets_options (
 CREATE SEQUENCE bets_options_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bets_options_id_seq OWNED BY bets_options.id;
 CREATE TABLE bets_tickets (
@@ -312,8 +312,8 @@ CREATE TABLE bets_tickets (
 CREATE SEQUENCE bets_tickets_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bets_tickets_id_seq OWNED BY bets_tickets.id;
 CREATE TABLE blogentries (
@@ -338,8 +338,8 @@ CREATE TABLE blogentries (
 CREATE SEQUENCE blogentries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE blogentries_id_seq OWNED BY blogentries.id;
 CREATE TABLE cash_movements (
@@ -355,8 +355,8 @@ CREATE TABLE cash_movements (
 CREATE SEQUENCE cash_movements_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE cash_movements_id_seq OWNED BY cash_movements.id;
 SET default_with_oids = true;
@@ -370,8 +370,8 @@ CREATE TABLE chatlines (
 CREATE SEQUENCE chatlines_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE chatlines_id_seq OWNED BY chatlines.id;
 CREATE TABLE clans (
@@ -406,8 +406,8 @@ CREATE TABLE clans_friends (
 CREATE SEQUENCE clans_friends_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_friends_id_seq OWNED BY clans_friends.id;
 CREATE TABLE clans_games (
@@ -423,8 +423,8 @@ CREATE TABLE clans_groups (
 CREATE SEQUENCE clans_groups_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_groups_id_seq OWNED BY clans_groups.id;
 CREATE TABLE clans_groups_types (
@@ -434,8 +434,8 @@ CREATE TABLE clans_groups_types (
 CREATE SEQUENCE clans_groups_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_groups_types_id_seq OWNED BY clans_groups_types.id;
 CREATE TABLE clans_groups_users (
@@ -445,8 +445,8 @@ CREATE TABLE clans_groups_users (
 CREATE SEQUENCE clans_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_id_seq OWNED BY clans.id;
 SET default_with_oids = false;
@@ -459,8 +459,8 @@ CREATE TABLE clans_logs_entries (
 CREATE SEQUENCE clans_logs_entries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_logs_entries_id_seq OWNED BY clans_logs_entries.id;
 CREATE TABLE clans_movements (
@@ -473,8 +473,8 @@ CREATE TABLE clans_movements (
 CREATE SEQUENCE clans_movements_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_movements_id_seq OWNED BY clans_movements.id;
 SET default_with_oids = true;
@@ -488,8 +488,8 @@ CREATE TABLE clans_sponsors (
 CREATE SEQUENCE clans_sponsors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_sponsors_id_seq OWNED BY clans_sponsors.id;
 SET default_with_oids = false;
@@ -529,15 +529,15 @@ CREATE TABLE columns_categories (
 CREATE SEQUENCE columns_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE columns_categories_id_seq OWNED BY columns_categories.id;
 CREATE SEQUENCE columns_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE columns_id_seq OWNED BY columns.id;
 CREATE TABLE comment_violation_opinions (
@@ -551,8 +551,8 @@ CREATE TABLE comment_violation_opinions (
 CREATE SEQUENCE comment_violation_opinions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE comment_violation_opinions_id_seq OWNED BY comment_violation_opinions.id;
 CREATE TABLE comments (
@@ -573,13 +573,13 @@ CREATE TABLE comments (
     random_v numeric DEFAULT random(),
     state smallint DEFAULT 0 NOT NULL,
     moderation_reason smallint,
-    karma_paid boolean DEFAULT false NOT NULL
+    karma_points integer
 );
 CREATE SEQUENCE comments_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE comments_id_seq OWNED BY comments.id;
 CREATE TABLE comments_valorations (
@@ -594,8 +594,8 @@ CREATE TABLE comments_valorations (
 CREATE SEQUENCE comments_valorations_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE comments_valorations_id_seq OWNED BY comments_valorations.id;
 CREATE TABLE comments_valorations_types (
@@ -606,8 +606,8 @@ CREATE TABLE comments_valorations_types (
 CREATE SEQUENCE comments_valorations_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE comments_valorations_types_id_seq OWNED BY comments_valorations_types.id;
 CREATE TABLE competitions (
@@ -650,8 +650,8 @@ CREATE TABLE competitions_games_maps (
 CREATE SEQUENCE competitions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_id_seq OWNED BY competitions.id;
 CREATE TABLE competitions_logs_entries (
@@ -663,8 +663,8 @@ CREATE TABLE competitions_logs_entries (
 CREATE SEQUENCE competitions_logs_entries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_logs_entries_id_seq OWNED BY competitions_logs_entries.id;
 CREATE TABLE competitions_matches (
@@ -701,8 +701,8 @@ CREATE TABLE competitions_matches_clans_players (
 CREATE SEQUENCE competitions_matches_clans_players_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_matches_clans_players_id_seq OWNED BY competitions_matches_clans_players.id;
 CREATE TABLE competitions_matches_games_maps (
@@ -715,15 +715,15 @@ CREATE TABLE competitions_matches_games_maps (
 CREATE SEQUENCE competitions_matches_games_maps_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_matches_games_maps_id_seq OWNED BY competitions_matches_games_maps.id;
 CREATE SEQUENCE competitions_matches_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_matches_id_seq OWNED BY competitions_matches.id;
 CREATE TABLE competitions_matches_reports (
@@ -736,8 +736,8 @@ CREATE TABLE competitions_matches_reports (
 CREATE SEQUENCE competitions_matches_reports_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_matches_reports_id_seq OWNED BY competitions_matches_reports.id;
 CREATE TABLE competitions_matches_uploads (
@@ -751,8 +751,8 @@ CREATE TABLE competitions_matches_uploads (
 CREATE SEQUENCE competitions_matches_uploads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_matches_uploads_id_seq OWNED BY competitions_matches_uploads.id;
 CREATE TABLE competitions_participants (
@@ -772,8 +772,8 @@ CREATE TABLE competitions_participants (
 CREATE SEQUENCE competitions_participants_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_participants_id_seq OWNED BY competitions_participants.id;
 CREATE TABLE competitions_participants_types (
@@ -783,8 +783,8 @@ CREATE TABLE competitions_participants_types (
 CREATE SEQUENCE competitions_participants_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_participants_types_id_seq OWNED BY competitions_participants_types.id;
 CREATE TABLE competitions_sponsors (
@@ -797,8 +797,8 @@ CREATE TABLE competitions_sponsors (
 CREATE SEQUENCE competitions_sponsors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE competitions_sponsors_id_seq OWNED BY competitions_sponsors.id;
 CREATE TABLE competitions_supervisors (
@@ -816,8 +816,8 @@ CREATE TABLE content_ratings (
 CREATE SEQUENCE content_ratings_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE content_ratings_id_seq OWNED BY content_ratings.id;
 CREATE TABLE content_types (
@@ -827,8 +827,8 @@ CREATE TABLE content_types (
 CREATE SEQUENCE content_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE content_types_id_seq OWNED BY content_types.id;
 CREATE TABLE contents (
@@ -850,13 +850,13 @@ CREATE TABLE contents (
     bazar_district_id integer,
     closed boolean DEFAULT false NOT NULL,
     source character varying,
-    karma_paid boolean DEFAULT false NOT NULL
+    karma_points integer
 );
 CREATE SEQUENCE contents_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE contents_id_seq OWNED BY contents.id;
 CREATE TABLE contents_locks (
@@ -869,8 +869,8 @@ CREATE TABLE contents_locks (
 CREATE SEQUENCE contents_locks_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE contents_locks_id_seq OWNED BY contents_locks.id;
 CREATE TABLE contents_recommendations (
@@ -888,8 +888,8 @@ CREATE TABLE contents_recommendations (
 CREATE SEQUENCE contents_recommendations_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE contents_recommendations_id_seq OWNED BY contents_recommendations.id;
 CREATE TABLE contents_terms (
@@ -901,8 +901,8 @@ CREATE TABLE contents_terms (
 CREATE SEQUENCE contents_terms_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE contents_terms_id_seq OWNED BY contents_terms.id;
 CREATE TABLE contents_versions (
@@ -914,8 +914,8 @@ CREATE TABLE contents_versions (
 CREATE SEQUENCE contents_versions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE contents_versions_id_seq OWNED BY contents_versions.id;
 CREATE TABLE countries (
@@ -961,8 +961,8 @@ CREATE TABLE delayed_jobs (
 CREATE SEQUENCE delayed_jobs_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE delayed_jobs_id_seq OWNED BY delayed_jobs.id;
 CREATE TABLE demo_mirrors (
@@ -973,8 +973,8 @@ CREATE TABLE demo_mirrors (
 CREATE SEQUENCE demo_mirrors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE demo_mirrors_id_seq OWNED BY demo_mirrors.id;
 CREATE TABLE demos (
@@ -1027,15 +1027,15 @@ CREATE TABLE demos_categories (
 CREATE SEQUENCE demos_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE demos_categories_id_seq OWNED BY demos_categories.id;
 CREATE SEQUENCE demos_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE demos_id_seq OWNED BY demos.id;
 CREATE TABLE dictionary_words (
@@ -1048,8 +1048,8 @@ CREATE TABLE dictionary_words (
 CREATE SEQUENCE dictionary_words_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE dictionary_words_id_seq OWNED BY dictionary_words.id;
 CREATE TABLE download_mirrors (
@@ -1060,8 +1060,8 @@ CREATE TABLE download_mirrors (
 CREATE SEQUENCE download_mirrors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE download_mirrors_id_seq OWNED BY download_mirrors.id;
 CREATE TABLE downloaded_downloads (
@@ -1077,8 +1077,8 @@ CREATE TABLE downloaded_downloads (
 CREATE SEQUENCE downloaded_downloads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE downloaded_downloads_id_seq OWNED BY downloaded_downloads.id;
 CREATE TABLE downloads (
@@ -1120,15 +1120,15 @@ CREATE TABLE downloads_categories (
 CREATE SEQUENCE downloads_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE downloads_categories_id_seq OWNED BY downloads_categories.id;
 CREATE SEQUENCE downloads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE downloads_id_seq OWNED BY downloads.id;
 CREATE TABLE dudes (
@@ -1139,8 +1139,8 @@ CREATE TABLE dudes (
 CREATE SEQUENCE dudes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE dudes_id_seq OWNED BY dudes.id;
 CREATE TABLE events (
@@ -1183,22 +1183,22 @@ CREATE TABLE events_categories (
 CREATE SEQUENCE events_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE events_categories_id_seq OWNED BY events_categories.id;
 CREATE SEQUENCE events_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE events_id_seq OWNED BY events.id;
 CREATE SEQUENCE events_news_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE events_news_id_seq OWNED BY coverages.id;
 CREATE TABLE events_users (
@@ -1233,8 +1233,8 @@ CREATE TABLE factions_banned_users (
 CREATE SEQUENCE factions_banned_users_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE factions_banned_users_id_seq OWNED BY factions_banned_users.id;
 CREATE TABLE factions_capos (
@@ -1245,8 +1245,8 @@ CREATE TABLE factions_capos (
 CREATE SEQUENCE factions_capos_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE factions_capos_id_seq OWNED BY factions_capos.id;
 CREATE TABLE factions_editors (
@@ -1258,8 +1258,8 @@ CREATE TABLE factions_editors (
 CREATE SEQUENCE factions_editors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE factions_editors_id_seq OWNED BY factions_editors.id;
 CREATE TABLE factions_headers (
@@ -1271,15 +1271,15 @@ CREATE TABLE factions_headers (
 CREATE SEQUENCE factions_headers_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE factions_headers_id_seq OWNED BY factions_headers.id;
 CREATE SEQUENCE factions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE factions_id_seq OWNED BY factions.id;
 CREATE TABLE factions_links (
@@ -1292,15 +1292,22 @@ CREATE TABLE factions_links (
 CREATE SEQUENCE factions_links_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE factions_links_id_seq OWNED BY factions_links.id;
 CREATE TABLE factions_portals (
     faction_id integer NOT NULL,
     portal_id integer NOT NULL,
-    id integer
+    id integer NOT NULL
 );
+CREATE SEQUENCE factions_portals_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE factions_portals_id_seq OWNED BY factions_portals.id;
 SET default_with_oids = true;
 CREATE TABLE faq_categories (
     id integer NOT NULL,
@@ -1312,8 +1319,8 @@ CREATE TABLE faq_categories (
 CREATE SEQUENCE faq_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE faq_categories_id_seq OWNED BY faq_categories.id;
 CREATE TABLE faq_entries (
@@ -1327,8 +1334,8 @@ CREATE TABLE faq_entries (
 CREATE SEQUENCE faq_entries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE faq_entries_id_seq OWNED BY faq_entries.id;
 SET default_with_oids = false;
@@ -1352,8 +1359,8 @@ CREATE TABLE topics_categories (
 CREATE SEQUENCE forum_forums_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE forum_forums_id_seq OWNED BY topics_categories.id;
 CREATE TABLE topics (
@@ -1380,8 +1387,8 @@ CREATE TABLE topics (
 CREATE SEQUENCE forum_topics_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE forum_topics_id_seq OWNED BY topics.id;
 CREATE TABLE friends_recommendations (
@@ -1396,8 +1403,8 @@ CREATE TABLE friends_recommendations (
 CREATE SEQUENCE friends_recommendations_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE friends_recommendations_id_seq OWNED BY friends_recommendations.id;
 SET default_with_oids = true;
@@ -1414,8 +1421,8 @@ CREATE TABLE friendships (
 CREATE SEQUENCE friends_users_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE friends_users_id_seq OWNED BY friendships.id;
 SET default_with_oids = false;
@@ -1442,8 +1449,8 @@ CREATE TABLE funthings (
 CREATE SEQUENCE funthings_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE funthings_id_seq OWNED BY funthings.id;
 CREATE TABLE gamersmafiageist_codes (
@@ -1451,13 +1458,13 @@ CREATE TABLE gamersmafiageist_codes (
     user_id integer NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     code character varying,
-    survey_edition_date character varying NOT NULL
+    survey_edition_date date NOT NULL
 );
 CREATE SEQUENCE gamersmafiageist_codes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE gamersmafiageist_codes_id_seq OWNED BY gamersmafiageist_codes.id;
 SET default_with_oids = true;
@@ -1471,8 +1478,8 @@ CREATE TABLE games (
 CREATE SEQUENCE games_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE games_id_seq OWNED BY games.id;
 SET default_with_oids = false;
@@ -1486,8 +1493,8 @@ CREATE TABLE games_maps (
 CREATE SEQUENCE games_maps_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE games_maps_id_seq OWNED BY games_maps.id;
 CREATE TABLE games_modes (
@@ -1499,8 +1506,8 @@ CREATE TABLE games_modes (
 CREATE SEQUENCE games_modes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE games_modes_id_seq OWNED BY games_modes.id;
 CREATE TABLE games_platforms (
@@ -1519,8 +1526,8 @@ CREATE TABLE games_versions (
 CREATE SEQUENCE games_versions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE games_versions_id_seq OWNED BY games_versions.id;
 CREATE TABLE global_vars (
@@ -1538,8 +1545,8 @@ CREATE TABLE global_vars (
 CREATE SEQUENCE global_vars_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE global_vars_id_seq OWNED BY global_vars.id;
 CREATE TABLE gmtv_broadcast_messages (
@@ -1551,8 +1558,8 @@ CREATE TABLE gmtv_broadcast_messages (
 CREATE SEQUENCE gmtv_broadcast_messages_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE gmtv_broadcast_messages_id_seq OWNED BY gmtv_broadcast_messages.id;
 CREATE TABLE gmtv_channels (
@@ -1567,15 +1574,15 @@ CREATE TABLE gmtv_channels (
 CREATE SEQUENCE gmtv_channels_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE gmtv_channels_id_seq OWNED BY gmtv_channels.id;
 CREATE SEQUENCE goals_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 CREATE TABLE groups (
     id integer NOT NULL,
@@ -1587,8 +1594,8 @@ CREATE TABLE groups (
 CREATE SEQUENCE groups_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE groups_id_seq OWNED BY groups.id;
 CREATE TABLE groups_messages (
@@ -1603,108 +1610,10 @@ CREATE TABLE groups_messages (
 CREATE SEQUENCE groups_messages_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE groups_messages_id_seq OWNED BY groups_messages.id;
-CREATE TABLE ias (
-    id integer,
-    login character varying(80),
-    password character varying(40),
-    validkey character varying(40),
-    email character varying(100),
-    newemail character varying(100),
-    ipaddr character varying(15),
-    created_on timestamp without time zone,
-    updated_at timestamp without time zone,
-    firstname character varying,
-    lastname character varying,
-    image bytea,
-    lastseen_on timestamp without time zone,
-    faction_id integer,
-    faction_last_changed_on timestamp without time zone,
-    avatar_id integer,
-    city character varying,
-    homepage character varying,
-    sex smallint,
-    msn character varying,
-    icq character varying,
-    birthday date,
-    cache_karma_points integer,
-    irc character varying,
-    country_id integer,
-    photo character varying,
-    hw_mouse character varying,
-    hw_processor character varying,
-    hw_motherboard character varying,
-    hw_ram character varying,
-    hw_hdd character varying,
-    hw_graphiccard character varying,
-    hw_soundcard character varying,
-    hw_headphones character varying,
-    hw_monitor character varying,
-    hw_connection character varying,
-    description text,
-    is_superadmin boolean,
-    comments_count integer,
-    referer_user_id integer,
-    cache_faith_points integer,
-    notifications_global boolean,
-    notifications_newmessages boolean,
-    notifications_newregistrations boolean,
-    notifications_trackerupdates boolean,
-    xfire character varying,
-    cache_unread_messages integer,
-    resurrected_by_user_id integer,
-    resurrection_started_on timestamp without time zone,
-    using_tracker boolean,
-    secret character(32),
-    cash numeric(14,2),
-    lastcommented_on timestamp without time zone,
-    global_bans integer,
-    last_clan_id integer,
-    antiflood_level smallint,
-    last_competition_id integer,
-    competition_roster character varying,
-    enable_competition_indicator boolean,
-    is_hq boolean,
-    enable_profile_signatures boolean,
-    profile_signatures_count integer,
-    wii_code character(16),
-    email_public boolean,
-    gamertag character varying,
-    googletalk character varying,
-    yahoo_im character varying,
-    notifications_newprofilesignature boolean,
-    tracker_autodelete_old_contents boolean,
-    comment_adds_to_tracker_enabled boolean,
-    cache_remaining_rating_slots integer,
-    has_seen_tour boolean,
-    is_bot boolean,
-    admin_permissions character varying,
-    state smallint,
-    cache_is_faction_leader boolean,
-    profile_last_updated_on timestamp without time zone,
-    visitor_id character varying,
-    comments_valorations_type_id integer,
-    comments_valorations_strength numeric(10,2),
-    enable_comments_sig boolean,
-    comments_sig character varying,
-    comment_show_sigs boolean,
-    has_new_friend_requests boolean,
-    default_portal character varying,
-    emblems_mask character varying,
-    random_id double precision,
-    is_staff boolean,
-    pending_slog integer,
-    ranking_karma_pos integer,
-    ranking_faith_pos integer,
-    ranking_popularity_pos integer,
-    cache_popularity integer,
-    login_is_ne_unfriendly boolean,
-    cache_valorations_weights_on_self_comments numeric,
-    default_comments_valorations_weight double precision
-);
 CREATE TABLE images (
     id integer NOT NULL,
     description character varying,
@@ -1741,15 +1650,15 @@ CREATE TABLE images_categories (
 CREATE SEQUENCE images_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE images_categories_id_seq OWNED BY images_categories.id;
 CREATE SEQUENCE images_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE images_id_seq OWNED BY images.id;
 CREATE TABLE interviews (
@@ -1787,15 +1696,15 @@ CREATE TABLE interviews_categories (
 CREATE SEQUENCE interviews_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE interviews_categories_id_seq OWNED BY interviews_categories.id;
 CREATE SEQUENCE interviews_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE interviews_id_seq OWNED BY interviews.id;
 CREATE TABLE ip_bans (
@@ -1809,8 +1718,8 @@ CREATE TABLE ip_bans (
 CREATE SEQUENCE ip_bans_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ip_bans_id_seq OWNED BY ip_bans.id;
 CREATE TABLE ip_passwords_resets_requests (
@@ -1821,8 +1730,8 @@ CREATE TABLE ip_passwords_resets_requests (
 CREATE SEQUENCE ip_passwords_resets_requests_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ip_passwords_resets_requests_id_seq OWNED BY ip_passwords_resets_requests.id;
 CREATE TABLE macropolls (
@@ -1877,15 +1786,15 @@ CREATE TABLE macropolls_2007_1 (
 CREATE SEQUENCE macropolls_2007_1_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE macropolls_2007_1_id_seq OWNED BY macropolls_2007_1.id;
 CREATE SEQUENCE macropolls_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE macropolls_id_seq OWNED BY macropolls.id;
 SET default_with_oids = true;
@@ -1907,8 +1816,8 @@ CREATE TABLE messages (
 CREATE SEQUENCE messages_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE messages_id_seq OWNED BY messages.id;
 SET default_with_oids = false;
@@ -1924,8 +1833,8 @@ CREATE TABLE ne_references (
 CREATE SEQUENCE ne_references_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ne_references_id_seq OWNED BY ne_references.id;
 CREATE TABLE news (
@@ -1966,15 +1875,15 @@ CREATE TABLE news_categories (
 CREATE SEQUENCE news_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE news_categories_id_seq OWNED BY news_categories.id;
 CREATE SEQUENCE news_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE news_id_seq OWNED BY news.id;
 CREATE TABLE outstanding_entities (
@@ -1988,8 +1897,8 @@ CREATE TABLE outstanding_entities (
 CREATE SEQUENCE outstanding_users_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE outstanding_users_id_seq OWNED BY outstanding_entities.id;
 CREATE TABLE platforms (
@@ -2000,8 +1909,8 @@ CREATE TABLE platforms (
 CREATE SEQUENCE platforms_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE platforms_id_seq OWNED BY platforms.id;
 CREATE TABLE platforms_users (
@@ -2045,15 +1954,15 @@ CREATE TABLE polls_categories (
 CREATE SEQUENCE polls_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE polls_categories_id_seq OWNED BY polls_categories.id;
 CREATE SEQUENCE polls_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE polls_id_seq OWNED BY polls.id;
 CREATE TABLE polls_options (
@@ -2066,8 +1975,8 @@ CREATE TABLE polls_options (
 CREATE SEQUENCE polls_options_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE polls_options_id_seq OWNED BY polls_options.id;
 CREATE TABLE polls_votes (
@@ -2080,8 +1989,8 @@ CREATE TABLE polls_votes (
 CREATE SEQUENCE polls_votes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE polls_votes_id_seq OWNED BY polls_votes.id;
 CREATE TABLE portal_headers (
@@ -2093,8 +2002,8 @@ CREATE TABLE portal_headers (
 CREATE SEQUENCE portal_headers_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE portal_headers_id_seq OWNED BY portal_headers.id;
 CREATE TABLE portal_hits (
@@ -2106,8 +2015,8 @@ CREATE TABLE portal_hits (
 CREATE SEQUENCE portal_hits_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE portal_hits_id_seq OWNED BY portal_hits.id;
 CREATE TABLE portals (
@@ -2128,8 +2037,8 @@ CREATE TABLE portals (
 CREATE SEQUENCE portals_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE portals_id_seq OWNED BY portals.id;
 CREATE TABLE portals_skins (
@@ -2147,8 +2056,8 @@ CREATE TABLE potds (
 CREATE SEQUENCE potds_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE potds_id_seq OWNED BY potds.id;
 CREATE TABLE products (
@@ -2164,8 +2073,8 @@ CREATE TABLE products (
 CREATE SEQUENCE products_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE products_id_seq OWNED BY products.id;
 CREATE TABLE profile_signatures (
@@ -2178,8 +2087,8 @@ CREATE TABLE profile_signatures (
 CREATE SEQUENCE profile_signatures_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE profile_signatures_id_seq OWNED BY profile_signatures.id;
 CREATE TABLE publishing_decisions (
@@ -2197,8 +2106,8 @@ CREATE TABLE publishing_decisions (
 CREATE SEQUENCE publishing_decisions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE publishing_decisions_id_seq OWNED BY publishing_decisions.id;
 CREATE TABLE publishing_personalities (
@@ -2210,8 +2119,8 @@ CREATE TABLE publishing_personalities (
 CREATE SEQUENCE publishing_personalities_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE publishing_personalities_id_seq OWNED BY publishing_personalities.id;
 CREATE TABLE questions (
@@ -2257,15 +2166,15 @@ CREATE TABLE questions_categories (
 CREATE SEQUENCE questions_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE questions_categories_id_seq OWNED BY questions_categories.id;
 CREATE SEQUENCE questions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE questions_id_seq OWNED BY questions.id;
 CREATE TABLE recruitment_ads (
@@ -2294,8 +2203,8 @@ CREATE TABLE recruitment_ads (
 CREATE SEQUENCE recruitment_ads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE recruitment_ads_id_seq OWNED BY recruitment_ads.id;
 CREATE TABLE refered_hits (
@@ -2308,8 +2217,8 @@ CREATE TABLE refered_hits (
 CREATE SEQUENCE refered_hits_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE refered_hits_id_seq OWNED BY refered_hits.id;
 CREATE TABLE reviews (
@@ -2347,15 +2256,15 @@ CREATE TABLE reviews_categories (
 CREATE SEQUENCE reviews_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE reviews_categories_id_seq OWNED BY reviews_categories.id;
 CREATE SEQUENCE reviews_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE reviews_id_seq OWNED BY reviews.id;
 CREATE TABLE schema_migrations (
@@ -2374,8 +2283,8 @@ CREATE TABLE sent_emails (
 CREATE SEQUENCE sent_emails_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE sent_emails_id_seq OWNED BY sent_emails.id;
 CREATE TABLE silenced_emails (
@@ -2385,8 +2294,8 @@ CREATE TABLE silenced_emails (
 CREATE SEQUENCE silenced_emails_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE silenced_emails_id_seq OWNED BY silenced_emails.id;
 CREATE TABLE skin_textures (
@@ -2402,8 +2311,8 @@ CREATE TABLE skin_textures (
 CREATE SEQUENCE skin_textures_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE skin_textures_id_seq OWNED BY skin_textures.id;
 CREATE TABLE skins (
@@ -2426,15 +2335,15 @@ CREATE TABLE skins_files (
 CREATE SEQUENCE skins_files_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE skins_files_id_seq OWNED BY skins_files.id;
 CREATE SEQUENCE skins_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE skins_id_seq OWNED BY skins.id;
 CREATE TABLE slog_entries (
@@ -2456,8 +2365,8 @@ CREATE TABLE slog_entries (
 CREATE SEQUENCE slog_entries_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE slog_entries_id_seq OWNED BY slog_entries.id;
 CREATE TABLE slog_visits (
@@ -2476,10 +2385,24 @@ CREATE TABLE sold_products (
 CREATE SEQUENCE sold_products_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE sold_products_id_seq OWNED BY sold_products.id;
+CREATE TABLE staff_candidate_votes (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    staff_candidate_id integer NOT NULL,
+    staff_position_id integer NOT NULL
+);
+CREATE SEQUENCE staff_candidate_votes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE staff_candidate_votes_id_seq OWNED BY staff_candidate_votes.id;
 CREATE TABLE staff_candidates (
     id integer NOT NULL,
     staff_position_id integer NOT NULL,
@@ -2497,23 +2420,10 @@ CREATE TABLE staff_candidates (
 CREATE SEQUENCE staff_candidates_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE staff_candidates_id_seq OWNED BY staff_candidates.id;
-CREATE TABLE staff_canditate_votes (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    staff_candidate_id integer NOT NULL
-);
-CREATE SEQUENCE staff_canditate_votes_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
-ALTER SEQUENCE staff_canditate_votes_id_seq OWNED BY staff_canditate_votes.id;
 CREATE TABLE staff_positions (
     id integer NOT NULL,
     staff_type_id integer NOT NULL,
@@ -2526,8 +2436,8 @@ CREATE TABLE staff_positions (
 CREATE SEQUENCE staff_positions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE staff_positions_id_seq OWNED BY staff_positions.id;
 CREATE TABLE staff_types (
@@ -2537,8 +2447,8 @@ CREATE TABLE staff_types (
 CREATE SEQUENCE staff_types_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE staff_types_id_seq OWNED BY staff_types.id;
 CREATE TABLE terms (
@@ -2560,8 +2470,8 @@ CREATE TABLE terms (
 CREATE SEQUENCE terms_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE terms_id_seq OWNED BY terms.id;
 CREATE TABLE textures (
@@ -2574,8 +2484,8 @@ CREATE TABLE textures (
 CREATE SEQUENCE textures_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE textures_id_seq OWNED BY textures.id;
 SET default_with_oids = true;
@@ -2590,8 +2500,8 @@ CREATE TABLE tracker_items (
 CREATE SEQUENCE tracker_items_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE tracker_items_id_seq OWNED BY tracker_items.id;
 SET default_with_oids = false;
@@ -2607,8 +2517,8 @@ CREATE TABLE training_questions (
 CREATE SEQUENCE treated_visitors_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 CREATE TABLE treated_visitors (
     id integer DEFAULT nextval('treated_visitors_id_seq'::regclass) NOT NULL,
@@ -2616,14 +2526,6 @@ CREATE TABLE treated_visitors (
     visitor_id character varying NOT NULL,
     treatment integer NOT NULL,
     user_id integer
-);
-CREATE TABLE tterms (
-    id integer,
-    name character varying,
-    slug character varying,
-    taxonomy character varying,
-    parent_id integer,
-    root_id integer
 );
 CREATE TABLE tutorials (
     id integer NOT NULL,
@@ -2660,15 +2562,15 @@ CREATE TABLE tutorials_categories (
 CREATE SEQUENCE tutorials_categories_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE tutorials_categories_id_seq OWNED BY tutorials_categories.id;
 CREATE SEQUENCE tutorials_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE tutorials_id_seq OWNED BY tutorials.id;
 CREATE TABLE user_login_changes (
@@ -2680,8 +2582,8 @@ CREATE TABLE user_login_changes (
 CREATE SEQUENCE user_login_changes_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE user_login_changes_id_seq OWNED BY user_login_changes.id;
 CREATE TABLE users (
@@ -2793,8 +2695,8 @@ CREATE TABLE users_actions (
 CREATE SEQUENCE users_actions_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_actions_id_seq OWNED BY users_actions.id;
 CREATE TABLE users_contents_tags (
@@ -2808,8 +2710,8 @@ CREATE TABLE users_contents_tags (
 CREATE SEQUENCE users_contents_tags_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_contents_tags_id_seq OWNED BY users_contents_tags.id;
 CREATE TABLE users_emblems (
@@ -2822,8 +2724,8 @@ CREATE TABLE users_emblems (
 CREATE SEQUENCE users_emblems_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_emblems_id_seq OWNED BY users_emblems.id;
 CREATE TABLE users_guids (
@@ -2837,15 +2739,15 @@ CREATE TABLE users_guids (
 CREATE SEQUENCE users_guids_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_guids_id_seq OWNED BY users_guids.id;
 CREATE SEQUENCE users_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_id_seq OWNED BY users.id;
 CREATE TABLE users_lastseen_ips (
@@ -2858,8 +2760,8 @@ CREATE TABLE users_lastseen_ips (
 CREATE SEQUENCE users_lastseen_ips_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_lastseen_ips_id_seq OWNED BY users_lastseen_ips.id;
 CREATE TABLE users_newsfeeds (
@@ -2872,8 +2774,8 @@ CREATE TABLE users_newsfeeds (
 CREATE SEQUENCE users_newsfeeds_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_newsfeeds_id_seq OWNED BY users_newsfeeds.id;
 CREATE TABLE users_preferences (
@@ -2885,8 +2787,8 @@ CREATE TABLE users_preferences (
 CREATE SEQUENCE users_preferences_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_preferences_id_seq OWNED BY users_preferences.id;
 CREATE TABLE users_skills (
@@ -2899,8 +2801,8 @@ CREATE TABLE users_skills (
 CREATE SEQUENCE users_roles_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_roles_id_seq OWNED BY users_skills.id;
 SET search_path = stats, pg_catalog;
@@ -2928,15 +2830,15 @@ CREATE TABLE ads_daily (
 CREATE SEQUENCE ads_daily_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ads_daily_id_seq OWNED BY ads_daily.id;
 CREATE SEQUENCE ads_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ads_id_seq OWNED BY ads.id;
 CREATE TABLE bandit_treatments (
@@ -2969,8 +2871,8 @@ CREATE TABLE bandit_treatments (
 CREATE SEQUENCE bandit_treatments_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bandit_treatments_id_seq OWNED BY bandit_treatments.id;
 CREATE TABLE bets_results (
@@ -2982,8 +2884,8 @@ CREATE TABLE bets_results (
 CREATE SEQUENCE bets_results_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bets_results_id_seq OWNED BY bets_results.id;
 CREATE TABLE clans_daily_stats (
@@ -2995,8 +2897,8 @@ CREATE TABLE clans_daily_stats (
 CREATE SEQUENCE clans_daily_stats_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE clans_daily_stats_id_seq OWNED BY clans_daily_stats.id;
 CREATE TABLE dates (
@@ -3061,8 +2963,8 @@ CREATE TABLE pageloadtime (
 CREATE SEQUENCE pageloadtime_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE pageloadtime_id_seq OWNED BY pageloadtime.id;
 CREATE TABLE pageviews (
@@ -3089,8 +2991,8 @@ CREATE TABLE pageviews (
 CREATE SEQUENCE pageviews_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE pageviews_id_seq OWNED BY pageviews.id;
 CREATE TABLE portals (
@@ -3106,8 +3008,8 @@ CREATE TABLE portals (
 CREATE SEQUENCE portals_stats_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE portals_stats_id_seq OWNED BY portals.id;
 CREATE TABLE users_daily_stats (
@@ -3123,8 +3025,8 @@ CREATE TABLE users_daily_stats (
 CREATE SEQUENCE users_daily_stats_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_daily_stats_id_seq OWNED BY users_daily_stats.id;
 CREATE TABLE users_karma_daily_by_portal (
@@ -3137,164 +3039,165 @@ CREATE TABLE users_karma_daily_by_portal (
 CREATE SEQUENCE users_karma_daily_by_portal_id_seq
     START WITH 1
     INCREMENT BY 1
-    NO MAXVALUE
     NO MINVALUE
+    NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_karma_daily_by_portal_id_seq OWNED BY users_karma_daily_by_portal.id;
 SET search_path = public, pg_catalog;
-ALTER TABLE ads ALTER COLUMN id SET DEFAULT nextval('ads_id_seq'::regclass);
-ALTER TABLE ads_slots ALTER COLUMN id SET DEFAULT nextval('ads_slots_id_seq'::regclass);
-ALTER TABLE ads_slots_instances ALTER COLUMN id SET DEFAULT nextval('ads_slots_instances_id_seq'::regclass);
-ALTER TABLE ads_slots_portals ALTER COLUMN id SET DEFAULT nextval('ads_slots_portals_id_seq'::regclass);
-ALTER TABLE advertisers ALTER COLUMN id SET DEFAULT nextval('advertisers_id_seq'::regclass);
-ALTER TABLE allowed_competitions_participants ALTER COLUMN id SET DEFAULT nextval('allowed_competitions_participants_id_seq'::regclass);
-ALTER TABLE autologin_keys ALTER COLUMN id SET DEFAULT nextval('autologin_keys_id_seq'::regclass);
-ALTER TABLE avatars ALTER COLUMN id SET DEFAULT nextval('avatars_id_seq'::regclass);
-ALTER TABLE babes ALTER COLUMN id SET DEFAULT nextval('babes_id_seq'::regclass);
-ALTER TABLE ban_requests ALTER COLUMN id SET DEFAULT nextval('ban_requests_id_seq'::regclass);
-ALTER TABLE bazar_districts ALTER COLUMN id SET DEFAULT nextval('bazar_districts_id_seq'::regclass);
-ALTER TABLE bets ALTER COLUMN id SET DEFAULT nextval('bets_id_seq'::regclass);
-ALTER TABLE bets_categories ALTER COLUMN id SET DEFAULT nextval('bets_categories_id_seq'::regclass);
-ALTER TABLE bets_options ALTER COLUMN id SET DEFAULT nextval('bets_options_id_seq'::regclass);
-ALTER TABLE bets_tickets ALTER COLUMN id SET DEFAULT nextval('bets_tickets_id_seq'::regclass);
-ALTER TABLE blogentries ALTER COLUMN id SET DEFAULT nextval('blogentries_id_seq'::regclass);
-ALTER TABLE cash_movements ALTER COLUMN id SET DEFAULT nextval('cash_movements_id_seq'::regclass);
-ALTER TABLE chatlines ALTER COLUMN id SET DEFAULT nextval('chatlines_id_seq'::regclass);
-ALTER TABLE clans ALTER COLUMN id SET DEFAULT nextval('clans_id_seq'::regclass);
-ALTER TABLE clans_friends ALTER COLUMN id SET DEFAULT nextval('clans_friends_id_seq'::regclass);
-ALTER TABLE clans_groups ALTER COLUMN id SET DEFAULT nextval('clans_groups_id_seq'::regclass);
-ALTER TABLE clans_groups_types ALTER COLUMN id SET DEFAULT nextval('clans_groups_types_id_seq'::regclass);
-ALTER TABLE clans_logs_entries ALTER COLUMN id SET DEFAULT nextval('clans_logs_entries_id_seq'::regclass);
-ALTER TABLE clans_movements ALTER COLUMN id SET DEFAULT nextval('clans_movements_id_seq'::regclass);
-ALTER TABLE clans_sponsors ALTER COLUMN id SET DEFAULT nextval('clans_sponsors_id_seq'::regclass);
-ALTER TABLE columns ALTER COLUMN id SET DEFAULT nextval('columns_id_seq'::regclass);
-ALTER TABLE columns_categories ALTER COLUMN id SET DEFAULT nextval('columns_categories_id_seq'::regclass);
-ALTER TABLE comment_violation_opinions ALTER COLUMN id SET DEFAULT nextval('comment_violation_opinions_id_seq'::regclass);
-ALTER TABLE comments ALTER COLUMN id SET DEFAULT nextval('comments_id_seq'::regclass);
-ALTER TABLE comments_valorations ALTER COLUMN id SET DEFAULT nextval('comments_valorations_id_seq'::regclass);
-ALTER TABLE comments_valorations_types ALTER COLUMN id SET DEFAULT nextval('comments_valorations_types_id_seq'::regclass);
-ALTER TABLE competitions ALTER COLUMN id SET DEFAULT nextval('competitions_id_seq'::regclass);
-ALTER TABLE competitions_logs_entries ALTER COLUMN id SET DEFAULT nextval('competitions_logs_entries_id_seq'::regclass);
-ALTER TABLE competitions_matches ALTER COLUMN id SET DEFAULT nextval('competitions_matches_id_seq'::regclass);
-ALTER TABLE competitions_matches_clans_players ALTER COLUMN id SET DEFAULT nextval('competitions_matches_clans_players_id_seq'::regclass);
-ALTER TABLE competitions_matches_games_maps ALTER COLUMN id SET DEFAULT nextval('competitions_matches_games_maps_id_seq'::regclass);
-ALTER TABLE competitions_matches_reports ALTER COLUMN id SET DEFAULT nextval('competitions_matches_reports_id_seq'::regclass);
-ALTER TABLE competitions_matches_uploads ALTER COLUMN id SET DEFAULT nextval('competitions_matches_uploads_id_seq'::regclass);
-ALTER TABLE competitions_participants ALTER COLUMN id SET DEFAULT nextval('competitions_participants_id_seq'::regclass);
-ALTER TABLE competitions_participants_types ALTER COLUMN id SET DEFAULT nextval('competitions_participants_types_id_seq'::regclass);
-ALTER TABLE competitions_sponsors ALTER COLUMN id SET DEFAULT nextval('competitions_sponsors_id_seq'::regclass);
-ALTER TABLE content_ratings ALTER COLUMN id SET DEFAULT nextval('content_ratings_id_seq'::regclass);
-ALTER TABLE content_types ALTER COLUMN id SET DEFAULT nextval('content_types_id_seq'::regclass);
-ALTER TABLE contents ALTER COLUMN id SET DEFAULT nextval('contents_id_seq'::regclass);
-ALTER TABLE contents_locks ALTER COLUMN id SET DEFAULT nextval('contents_locks_id_seq'::regclass);
-ALTER TABLE contents_recommendations ALTER COLUMN id SET DEFAULT nextval('contents_recommendations_id_seq'::regclass);
-ALTER TABLE contents_terms ALTER COLUMN id SET DEFAULT nextval('contents_terms_id_seq'::regclass);
-ALTER TABLE contents_versions ALTER COLUMN id SET DEFAULT nextval('contents_versions_id_seq'::regclass);
-ALTER TABLE coverages ALTER COLUMN id SET DEFAULT nextval('events_news_id_seq'::regclass);
-ALTER TABLE delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_id_seq'::regclass);
-ALTER TABLE demo_mirrors ALTER COLUMN id SET DEFAULT nextval('demo_mirrors_id_seq'::regclass);
-ALTER TABLE demos ALTER COLUMN id SET DEFAULT nextval('demos_id_seq'::regclass);
-ALTER TABLE demos_categories ALTER COLUMN id SET DEFAULT nextval('demos_categories_id_seq'::regclass);
-ALTER TABLE dictionary_words ALTER COLUMN id SET DEFAULT nextval('dictionary_words_id_seq'::regclass);
-ALTER TABLE download_mirrors ALTER COLUMN id SET DEFAULT nextval('download_mirrors_id_seq'::regclass);
-ALTER TABLE downloaded_downloads ALTER COLUMN id SET DEFAULT nextval('downloaded_downloads_id_seq'::regclass);
-ALTER TABLE downloads ALTER COLUMN id SET DEFAULT nextval('downloads_id_seq'::regclass);
-ALTER TABLE downloads_categories ALTER COLUMN id SET DEFAULT nextval('downloads_categories_id_seq'::regclass);
-ALTER TABLE dudes ALTER COLUMN id SET DEFAULT nextval('dudes_id_seq'::regclass);
-ALTER TABLE events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
-ALTER TABLE events_categories ALTER COLUMN id SET DEFAULT nextval('events_categories_id_seq'::regclass);
-ALTER TABLE factions ALTER COLUMN id SET DEFAULT nextval('factions_id_seq'::regclass);
-ALTER TABLE factions_banned_users ALTER COLUMN id SET DEFAULT nextval('factions_banned_users_id_seq'::regclass);
-ALTER TABLE factions_capos ALTER COLUMN id SET DEFAULT nextval('factions_capos_id_seq'::regclass);
-ALTER TABLE factions_editors ALTER COLUMN id SET DEFAULT nextval('factions_editors_id_seq'::regclass);
-ALTER TABLE factions_headers ALTER COLUMN id SET DEFAULT nextval('factions_headers_id_seq'::regclass);
-ALTER TABLE factions_links ALTER COLUMN id SET DEFAULT nextval('factions_links_id_seq'::regclass);
-ALTER TABLE faq_categories ALTER COLUMN id SET DEFAULT nextval('faq_categories_id_seq'::regclass);
-ALTER TABLE faq_entries ALTER COLUMN id SET DEFAULT nextval('faq_entries_id_seq'::regclass);
-ALTER TABLE friends_recommendations ALTER COLUMN id SET DEFAULT nextval('friends_recommendations_id_seq'::regclass);
-ALTER TABLE friendships ALTER COLUMN id SET DEFAULT nextval('friends_users_id_seq'::regclass);
-ALTER TABLE funthings ALTER COLUMN id SET DEFAULT nextval('funthings_id_seq'::regclass);
-ALTER TABLE gamersmafiageist_codes ALTER COLUMN id SET DEFAULT nextval('gamersmafiageist_codes_id_seq'::regclass);
-ALTER TABLE games ALTER COLUMN id SET DEFAULT nextval('games_id_seq'::regclass);
-ALTER TABLE games_maps ALTER COLUMN id SET DEFAULT nextval('games_maps_id_seq'::regclass);
-ALTER TABLE games_modes ALTER COLUMN id SET DEFAULT nextval('games_modes_id_seq'::regclass);
-ALTER TABLE games_versions ALTER COLUMN id SET DEFAULT nextval('games_versions_id_seq'::regclass);
-ALTER TABLE global_vars ALTER COLUMN id SET DEFAULT nextval('global_vars_id_seq'::regclass);
-ALTER TABLE gmtv_broadcast_messages ALTER COLUMN id SET DEFAULT nextval('gmtv_broadcast_messages_id_seq'::regclass);
-ALTER TABLE gmtv_channels ALTER COLUMN id SET DEFAULT nextval('gmtv_channels_id_seq'::regclass);
-ALTER TABLE groups ALTER COLUMN id SET DEFAULT nextval('groups_id_seq'::regclass);
-ALTER TABLE groups_messages ALTER COLUMN id SET DEFAULT nextval('groups_messages_id_seq'::regclass);
-ALTER TABLE images ALTER COLUMN id SET DEFAULT nextval('images_id_seq'::regclass);
-ALTER TABLE images_categories ALTER COLUMN id SET DEFAULT nextval('images_categories_id_seq'::regclass);
-ALTER TABLE interviews ALTER COLUMN id SET DEFAULT nextval('interviews_id_seq'::regclass);
-ALTER TABLE interviews_categories ALTER COLUMN id SET DEFAULT nextval('interviews_categories_id_seq'::regclass);
-ALTER TABLE ip_bans ALTER COLUMN id SET DEFAULT nextval('ip_bans_id_seq'::regclass);
-ALTER TABLE ip_passwords_resets_requests ALTER COLUMN id SET DEFAULT nextval('ip_passwords_resets_requests_id_seq'::regclass);
-ALTER TABLE macropolls ALTER COLUMN id SET DEFAULT nextval('macropolls_id_seq'::regclass);
-ALTER TABLE macropolls_2007_1 ALTER COLUMN id SET DEFAULT nextval('macropolls_2007_1_id_seq'::regclass);
-ALTER TABLE messages ALTER COLUMN id SET DEFAULT nextval('messages_id_seq'::regclass);
-ALTER TABLE ne_references ALTER COLUMN id SET DEFAULT nextval('ne_references_id_seq'::regclass);
-ALTER TABLE news ALTER COLUMN id SET DEFAULT nextval('news_id_seq'::regclass);
-ALTER TABLE news_categories ALTER COLUMN id SET DEFAULT nextval('news_categories_id_seq'::regclass);
-ALTER TABLE outstanding_entities ALTER COLUMN id SET DEFAULT nextval('outstanding_users_id_seq'::regclass);
-ALTER TABLE platforms ALTER COLUMN id SET DEFAULT nextval('platforms_id_seq'::regclass);
-ALTER TABLE polls ALTER COLUMN id SET DEFAULT nextval('polls_id_seq'::regclass);
-ALTER TABLE polls_categories ALTER COLUMN id SET DEFAULT nextval('polls_categories_id_seq'::regclass);
-ALTER TABLE polls_options ALTER COLUMN id SET DEFAULT nextval('polls_options_id_seq'::regclass);
-ALTER TABLE polls_votes ALTER COLUMN id SET DEFAULT nextval('polls_votes_id_seq'::regclass);
-ALTER TABLE portal_headers ALTER COLUMN id SET DEFAULT nextval('portal_headers_id_seq'::regclass);
-ALTER TABLE portal_hits ALTER COLUMN id SET DEFAULT nextval('portal_hits_id_seq'::regclass);
-ALTER TABLE portals ALTER COLUMN id SET DEFAULT nextval('portals_id_seq'::regclass);
-ALTER TABLE potds ALTER COLUMN id SET DEFAULT nextval('potds_id_seq'::regclass);
-ALTER TABLE products ALTER COLUMN id SET DEFAULT nextval('products_id_seq'::regclass);
-ALTER TABLE profile_signatures ALTER COLUMN id SET DEFAULT nextval('profile_signatures_id_seq'::regclass);
-ALTER TABLE publishing_decisions ALTER COLUMN id SET DEFAULT nextval('publishing_decisions_id_seq'::regclass);
-ALTER TABLE publishing_personalities ALTER COLUMN id SET DEFAULT nextval('publishing_personalities_id_seq'::regclass);
-ALTER TABLE questions ALTER COLUMN id SET DEFAULT nextval('questions_id_seq'::regclass);
-ALTER TABLE questions_categories ALTER COLUMN id SET DEFAULT nextval('questions_categories_id_seq'::regclass);
-ALTER TABLE recruitment_ads ALTER COLUMN id SET DEFAULT nextval('recruitment_ads_id_seq'::regclass);
-ALTER TABLE refered_hits ALTER COLUMN id SET DEFAULT nextval('refered_hits_id_seq'::regclass);
-ALTER TABLE reviews ALTER COLUMN id SET DEFAULT nextval('reviews_id_seq'::regclass);
-ALTER TABLE reviews_categories ALTER COLUMN id SET DEFAULT nextval('reviews_categories_id_seq'::regclass);
-ALTER TABLE sent_emails ALTER COLUMN id SET DEFAULT nextval('sent_emails_id_seq'::regclass);
-ALTER TABLE silenced_emails ALTER COLUMN id SET DEFAULT nextval('silenced_emails_id_seq'::regclass);
-ALTER TABLE skin_textures ALTER COLUMN id SET DEFAULT nextval('skin_textures_id_seq'::regclass);
-ALTER TABLE skins ALTER COLUMN id SET DEFAULT nextval('skins_id_seq'::regclass);
-ALTER TABLE skins_files ALTER COLUMN id SET DEFAULT nextval('skins_files_id_seq'::regclass);
-ALTER TABLE slog_entries ALTER COLUMN id SET DEFAULT nextval('slog_entries_id_seq'::regclass);
-ALTER TABLE sold_products ALTER COLUMN id SET DEFAULT nextval('sold_products_id_seq'::regclass);
-ALTER TABLE staff_candidates ALTER COLUMN id SET DEFAULT nextval('staff_candidates_id_seq'::regclass);
-ALTER TABLE staff_canditate_votes ALTER COLUMN id SET DEFAULT nextval('staff_canditate_votes_id_seq'::regclass);
-ALTER TABLE staff_positions ALTER COLUMN id SET DEFAULT nextval('staff_positions_id_seq'::regclass);
-ALTER TABLE staff_types ALTER COLUMN id SET DEFAULT nextval('staff_types_id_seq'::regclass);
-ALTER TABLE terms ALTER COLUMN id SET DEFAULT nextval('terms_id_seq'::regclass);
-ALTER TABLE textures ALTER COLUMN id SET DEFAULT nextval('textures_id_seq'::regclass);
-ALTER TABLE topics ALTER COLUMN id SET DEFAULT nextval('forum_topics_id_seq'::regclass);
-ALTER TABLE topics_categories ALTER COLUMN id SET DEFAULT nextval('forum_forums_id_seq'::regclass);
-ALTER TABLE tracker_items ALTER COLUMN id SET DEFAULT nextval('tracker_items_id_seq'::regclass);
-ALTER TABLE tutorials ALTER COLUMN id SET DEFAULT nextval('tutorials_id_seq'::regclass);
-ALTER TABLE tutorials_categories ALTER COLUMN id SET DEFAULT nextval('tutorials_categories_id_seq'::regclass);
-ALTER TABLE user_login_changes ALTER COLUMN id SET DEFAULT nextval('user_login_changes_id_seq'::regclass);
-ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
-ALTER TABLE users_actions ALTER COLUMN id SET DEFAULT nextval('users_actions_id_seq'::regclass);
-ALTER TABLE users_contents_tags ALTER COLUMN id SET DEFAULT nextval('users_contents_tags_id_seq'::regclass);
-ALTER TABLE users_emblems ALTER COLUMN id SET DEFAULT nextval('users_emblems_id_seq'::regclass);
-ALTER TABLE users_guids ALTER COLUMN id SET DEFAULT nextval('users_guids_id_seq'::regclass);
-ALTER TABLE users_lastseen_ips ALTER COLUMN id SET DEFAULT nextval('users_lastseen_ips_id_seq'::regclass);
-ALTER TABLE users_newsfeeds ALTER COLUMN id SET DEFAULT nextval('users_newsfeeds_id_seq'::regclass);
-ALTER TABLE users_preferences ALTER COLUMN id SET DEFAULT nextval('users_preferences_id_seq'::regclass);
-ALTER TABLE users_skills ALTER COLUMN id SET DEFAULT nextval('users_roles_id_seq'::regclass);
+ALTER TABLE ONLY ads ALTER COLUMN id SET DEFAULT nextval('ads_id_seq'::regclass);
+ALTER TABLE ONLY ads_slots ALTER COLUMN id SET DEFAULT nextval('ads_slots_id_seq'::regclass);
+ALTER TABLE ONLY ads_slots_instances ALTER COLUMN id SET DEFAULT nextval('ads_slots_instances_id_seq'::regclass);
+ALTER TABLE ONLY ads_slots_portals ALTER COLUMN id SET DEFAULT nextval('ads_slots_portals_id_seq'::regclass);
+ALTER TABLE ONLY advertisers ALTER COLUMN id SET DEFAULT nextval('advertisers_id_seq'::regclass);
+ALTER TABLE ONLY allowed_competitions_participants ALTER COLUMN id SET DEFAULT nextval('allowed_competitions_participants_id_seq'::regclass);
+ALTER TABLE ONLY autologin_keys ALTER COLUMN id SET DEFAULT nextval('autologin_keys_id_seq'::regclass);
+ALTER TABLE ONLY avatars ALTER COLUMN id SET DEFAULT nextval('avatars_id_seq'::regclass);
+ALTER TABLE ONLY babes ALTER COLUMN id SET DEFAULT nextval('babes_id_seq'::regclass);
+ALTER TABLE ONLY ban_requests ALTER COLUMN id SET DEFAULT nextval('ban_requests_id_seq'::regclass);
+ALTER TABLE ONLY bazar_districts ALTER COLUMN id SET DEFAULT nextval('bazar_districts_id_seq'::regclass);
+ALTER TABLE ONLY bets ALTER COLUMN id SET DEFAULT nextval('bets_id_seq'::regclass);
+ALTER TABLE ONLY bets_categories ALTER COLUMN id SET DEFAULT nextval('bets_categories_id_seq'::regclass);
+ALTER TABLE ONLY bets_options ALTER COLUMN id SET DEFAULT nextval('bets_options_id_seq'::regclass);
+ALTER TABLE ONLY bets_tickets ALTER COLUMN id SET DEFAULT nextval('bets_tickets_id_seq'::regclass);
+ALTER TABLE ONLY blogentries ALTER COLUMN id SET DEFAULT nextval('blogentries_id_seq'::regclass);
+ALTER TABLE ONLY cash_movements ALTER COLUMN id SET DEFAULT nextval('cash_movements_id_seq'::regclass);
+ALTER TABLE ONLY chatlines ALTER COLUMN id SET DEFAULT nextval('chatlines_id_seq'::regclass);
+ALTER TABLE ONLY clans ALTER COLUMN id SET DEFAULT nextval('clans_id_seq'::regclass);
+ALTER TABLE ONLY clans_friends ALTER COLUMN id SET DEFAULT nextval('clans_friends_id_seq'::regclass);
+ALTER TABLE ONLY clans_groups ALTER COLUMN id SET DEFAULT nextval('clans_groups_id_seq'::regclass);
+ALTER TABLE ONLY clans_groups_types ALTER COLUMN id SET DEFAULT nextval('clans_groups_types_id_seq'::regclass);
+ALTER TABLE ONLY clans_logs_entries ALTER COLUMN id SET DEFAULT nextval('clans_logs_entries_id_seq'::regclass);
+ALTER TABLE ONLY clans_movements ALTER COLUMN id SET DEFAULT nextval('clans_movements_id_seq'::regclass);
+ALTER TABLE ONLY clans_sponsors ALTER COLUMN id SET DEFAULT nextval('clans_sponsors_id_seq'::regclass);
+ALTER TABLE ONLY columns ALTER COLUMN id SET DEFAULT nextval('columns_id_seq'::regclass);
+ALTER TABLE ONLY columns_categories ALTER COLUMN id SET DEFAULT nextval('columns_categories_id_seq'::regclass);
+ALTER TABLE ONLY comment_violation_opinions ALTER COLUMN id SET DEFAULT nextval('comment_violation_opinions_id_seq'::regclass);
+ALTER TABLE ONLY comments ALTER COLUMN id SET DEFAULT nextval('comments_id_seq'::regclass);
+ALTER TABLE ONLY comments_valorations ALTER COLUMN id SET DEFAULT nextval('comments_valorations_id_seq'::regclass);
+ALTER TABLE ONLY comments_valorations_types ALTER COLUMN id SET DEFAULT nextval('comments_valorations_types_id_seq'::regclass);
+ALTER TABLE ONLY competitions ALTER COLUMN id SET DEFAULT nextval('competitions_id_seq'::regclass);
+ALTER TABLE ONLY competitions_logs_entries ALTER COLUMN id SET DEFAULT nextval('competitions_logs_entries_id_seq'::regclass);
+ALTER TABLE ONLY competitions_matches ALTER COLUMN id SET DEFAULT nextval('competitions_matches_id_seq'::regclass);
+ALTER TABLE ONLY competitions_matches_clans_players ALTER COLUMN id SET DEFAULT nextval('competitions_matches_clans_players_id_seq'::regclass);
+ALTER TABLE ONLY competitions_matches_games_maps ALTER COLUMN id SET DEFAULT nextval('competitions_matches_games_maps_id_seq'::regclass);
+ALTER TABLE ONLY competitions_matches_reports ALTER COLUMN id SET DEFAULT nextval('competitions_matches_reports_id_seq'::regclass);
+ALTER TABLE ONLY competitions_matches_uploads ALTER COLUMN id SET DEFAULT nextval('competitions_matches_uploads_id_seq'::regclass);
+ALTER TABLE ONLY competitions_participants ALTER COLUMN id SET DEFAULT nextval('competitions_participants_id_seq'::regclass);
+ALTER TABLE ONLY competitions_participants_types ALTER COLUMN id SET DEFAULT nextval('competitions_participants_types_id_seq'::regclass);
+ALTER TABLE ONLY competitions_sponsors ALTER COLUMN id SET DEFAULT nextval('competitions_sponsors_id_seq'::regclass);
+ALTER TABLE ONLY content_ratings ALTER COLUMN id SET DEFAULT nextval('content_ratings_id_seq'::regclass);
+ALTER TABLE ONLY content_types ALTER COLUMN id SET DEFAULT nextval('content_types_id_seq'::regclass);
+ALTER TABLE ONLY contents ALTER COLUMN id SET DEFAULT nextval('contents_id_seq'::regclass);
+ALTER TABLE ONLY contents_locks ALTER COLUMN id SET DEFAULT nextval('contents_locks_id_seq'::regclass);
+ALTER TABLE ONLY contents_recommendations ALTER COLUMN id SET DEFAULT nextval('contents_recommendations_id_seq'::regclass);
+ALTER TABLE ONLY contents_terms ALTER COLUMN id SET DEFAULT nextval('contents_terms_id_seq'::regclass);
+ALTER TABLE ONLY contents_versions ALTER COLUMN id SET DEFAULT nextval('contents_versions_id_seq'::regclass);
+ALTER TABLE ONLY coverages ALTER COLUMN id SET DEFAULT nextval('events_news_id_seq'::regclass);
+ALTER TABLE ONLY delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_id_seq'::regclass);
+ALTER TABLE ONLY demo_mirrors ALTER COLUMN id SET DEFAULT nextval('demo_mirrors_id_seq'::regclass);
+ALTER TABLE ONLY demos ALTER COLUMN id SET DEFAULT nextval('demos_id_seq'::regclass);
+ALTER TABLE ONLY demos_categories ALTER COLUMN id SET DEFAULT nextval('demos_categories_id_seq'::regclass);
+ALTER TABLE ONLY dictionary_words ALTER COLUMN id SET DEFAULT nextval('dictionary_words_id_seq'::regclass);
+ALTER TABLE ONLY download_mirrors ALTER COLUMN id SET DEFAULT nextval('download_mirrors_id_seq'::regclass);
+ALTER TABLE ONLY downloaded_downloads ALTER COLUMN id SET DEFAULT nextval('downloaded_downloads_id_seq'::regclass);
+ALTER TABLE ONLY downloads ALTER COLUMN id SET DEFAULT nextval('downloads_id_seq'::regclass);
+ALTER TABLE ONLY downloads_categories ALTER COLUMN id SET DEFAULT nextval('downloads_categories_id_seq'::regclass);
+ALTER TABLE ONLY dudes ALTER COLUMN id SET DEFAULT nextval('dudes_id_seq'::regclass);
+ALTER TABLE ONLY events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
+ALTER TABLE ONLY events_categories ALTER COLUMN id SET DEFAULT nextval('events_categories_id_seq'::regclass);
+ALTER TABLE ONLY factions ALTER COLUMN id SET DEFAULT nextval('factions_id_seq'::regclass);
+ALTER TABLE ONLY factions_banned_users ALTER COLUMN id SET DEFAULT nextval('factions_banned_users_id_seq'::regclass);
+ALTER TABLE ONLY factions_capos ALTER COLUMN id SET DEFAULT nextval('factions_capos_id_seq'::regclass);
+ALTER TABLE ONLY factions_editors ALTER COLUMN id SET DEFAULT nextval('factions_editors_id_seq'::regclass);
+ALTER TABLE ONLY factions_headers ALTER COLUMN id SET DEFAULT nextval('factions_headers_id_seq'::regclass);
+ALTER TABLE ONLY factions_links ALTER COLUMN id SET DEFAULT nextval('factions_links_id_seq'::regclass);
+ALTER TABLE ONLY factions_portals ALTER COLUMN id SET DEFAULT nextval('factions_portals_id_seq'::regclass);
+ALTER TABLE ONLY faq_categories ALTER COLUMN id SET DEFAULT nextval('faq_categories_id_seq'::regclass);
+ALTER TABLE ONLY faq_entries ALTER COLUMN id SET DEFAULT nextval('faq_entries_id_seq'::regclass);
+ALTER TABLE ONLY friends_recommendations ALTER COLUMN id SET DEFAULT nextval('friends_recommendations_id_seq'::regclass);
+ALTER TABLE ONLY friendships ALTER COLUMN id SET DEFAULT nextval('friends_users_id_seq'::regclass);
+ALTER TABLE ONLY funthings ALTER COLUMN id SET DEFAULT nextval('funthings_id_seq'::regclass);
+ALTER TABLE ONLY gamersmafiageist_codes ALTER COLUMN id SET DEFAULT nextval('gamersmafiageist_codes_id_seq'::regclass);
+ALTER TABLE ONLY games ALTER COLUMN id SET DEFAULT nextval('games_id_seq'::regclass);
+ALTER TABLE ONLY games_maps ALTER COLUMN id SET DEFAULT nextval('games_maps_id_seq'::regclass);
+ALTER TABLE ONLY games_modes ALTER COLUMN id SET DEFAULT nextval('games_modes_id_seq'::regclass);
+ALTER TABLE ONLY games_versions ALTER COLUMN id SET DEFAULT nextval('games_versions_id_seq'::regclass);
+ALTER TABLE ONLY global_vars ALTER COLUMN id SET DEFAULT nextval('global_vars_id_seq'::regclass);
+ALTER TABLE ONLY gmtv_broadcast_messages ALTER COLUMN id SET DEFAULT nextval('gmtv_broadcast_messages_id_seq'::regclass);
+ALTER TABLE ONLY gmtv_channels ALTER COLUMN id SET DEFAULT nextval('gmtv_channels_id_seq'::regclass);
+ALTER TABLE ONLY groups ALTER COLUMN id SET DEFAULT nextval('groups_id_seq'::regclass);
+ALTER TABLE ONLY groups_messages ALTER COLUMN id SET DEFAULT nextval('groups_messages_id_seq'::regclass);
+ALTER TABLE ONLY images ALTER COLUMN id SET DEFAULT nextval('images_id_seq'::regclass);
+ALTER TABLE ONLY images_categories ALTER COLUMN id SET DEFAULT nextval('images_categories_id_seq'::regclass);
+ALTER TABLE ONLY interviews ALTER COLUMN id SET DEFAULT nextval('interviews_id_seq'::regclass);
+ALTER TABLE ONLY interviews_categories ALTER COLUMN id SET DEFAULT nextval('interviews_categories_id_seq'::regclass);
+ALTER TABLE ONLY ip_bans ALTER COLUMN id SET DEFAULT nextval('ip_bans_id_seq'::regclass);
+ALTER TABLE ONLY ip_passwords_resets_requests ALTER COLUMN id SET DEFAULT nextval('ip_passwords_resets_requests_id_seq'::regclass);
+ALTER TABLE ONLY macropolls ALTER COLUMN id SET DEFAULT nextval('macropolls_id_seq'::regclass);
+ALTER TABLE ONLY macropolls_2007_1 ALTER COLUMN id SET DEFAULT nextval('macropolls_2007_1_id_seq'::regclass);
+ALTER TABLE ONLY messages ALTER COLUMN id SET DEFAULT nextval('messages_id_seq'::regclass);
+ALTER TABLE ONLY ne_references ALTER COLUMN id SET DEFAULT nextval('ne_references_id_seq'::regclass);
+ALTER TABLE ONLY news ALTER COLUMN id SET DEFAULT nextval('news_id_seq'::regclass);
+ALTER TABLE ONLY news_categories ALTER COLUMN id SET DEFAULT nextval('news_categories_id_seq'::regclass);
+ALTER TABLE ONLY outstanding_entities ALTER COLUMN id SET DEFAULT nextval('outstanding_users_id_seq'::regclass);
+ALTER TABLE ONLY platforms ALTER COLUMN id SET DEFAULT nextval('platforms_id_seq'::regclass);
+ALTER TABLE ONLY polls ALTER COLUMN id SET DEFAULT nextval('polls_id_seq'::regclass);
+ALTER TABLE ONLY polls_categories ALTER COLUMN id SET DEFAULT nextval('polls_categories_id_seq'::regclass);
+ALTER TABLE ONLY polls_options ALTER COLUMN id SET DEFAULT nextval('polls_options_id_seq'::regclass);
+ALTER TABLE ONLY polls_votes ALTER COLUMN id SET DEFAULT nextval('polls_votes_id_seq'::regclass);
+ALTER TABLE ONLY portal_headers ALTER COLUMN id SET DEFAULT nextval('portal_headers_id_seq'::regclass);
+ALTER TABLE ONLY portal_hits ALTER COLUMN id SET DEFAULT nextval('portal_hits_id_seq'::regclass);
+ALTER TABLE ONLY portals ALTER COLUMN id SET DEFAULT nextval('portals_id_seq'::regclass);
+ALTER TABLE ONLY potds ALTER COLUMN id SET DEFAULT nextval('potds_id_seq'::regclass);
+ALTER TABLE ONLY products ALTER COLUMN id SET DEFAULT nextval('products_id_seq'::regclass);
+ALTER TABLE ONLY profile_signatures ALTER COLUMN id SET DEFAULT nextval('profile_signatures_id_seq'::regclass);
+ALTER TABLE ONLY publishing_decisions ALTER COLUMN id SET DEFAULT nextval('publishing_decisions_id_seq'::regclass);
+ALTER TABLE ONLY publishing_personalities ALTER COLUMN id SET DEFAULT nextval('publishing_personalities_id_seq'::regclass);
+ALTER TABLE ONLY questions ALTER COLUMN id SET DEFAULT nextval('questions_id_seq'::regclass);
+ALTER TABLE ONLY questions_categories ALTER COLUMN id SET DEFAULT nextval('questions_categories_id_seq'::regclass);
+ALTER TABLE ONLY recruitment_ads ALTER COLUMN id SET DEFAULT nextval('recruitment_ads_id_seq'::regclass);
+ALTER TABLE ONLY refered_hits ALTER COLUMN id SET DEFAULT nextval('refered_hits_id_seq'::regclass);
+ALTER TABLE ONLY reviews ALTER COLUMN id SET DEFAULT nextval('reviews_id_seq'::regclass);
+ALTER TABLE ONLY reviews_categories ALTER COLUMN id SET DEFAULT nextval('reviews_categories_id_seq'::regclass);
+ALTER TABLE ONLY sent_emails ALTER COLUMN id SET DEFAULT nextval('sent_emails_id_seq'::regclass);
+ALTER TABLE ONLY silenced_emails ALTER COLUMN id SET DEFAULT nextval('silenced_emails_id_seq'::regclass);
+ALTER TABLE ONLY skin_textures ALTER COLUMN id SET DEFAULT nextval('skin_textures_id_seq'::regclass);
+ALTER TABLE ONLY skins ALTER COLUMN id SET DEFAULT nextval('skins_id_seq'::regclass);
+ALTER TABLE ONLY skins_files ALTER COLUMN id SET DEFAULT nextval('skins_files_id_seq'::regclass);
+ALTER TABLE ONLY slog_entries ALTER COLUMN id SET DEFAULT nextval('slog_entries_id_seq'::regclass);
+ALTER TABLE ONLY sold_products ALTER COLUMN id SET DEFAULT nextval('sold_products_id_seq'::regclass);
+ALTER TABLE ONLY staff_candidate_votes ALTER COLUMN id SET DEFAULT nextval('staff_candidate_votes_id_seq'::regclass);
+ALTER TABLE ONLY staff_candidates ALTER COLUMN id SET DEFAULT nextval('staff_candidates_id_seq'::regclass);
+ALTER TABLE ONLY staff_positions ALTER COLUMN id SET DEFAULT nextval('staff_positions_id_seq'::regclass);
+ALTER TABLE ONLY staff_types ALTER COLUMN id SET DEFAULT nextval('staff_types_id_seq'::regclass);
+ALTER TABLE ONLY terms ALTER COLUMN id SET DEFAULT nextval('terms_id_seq'::regclass);
+ALTER TABLE ONLY textures ALTER COLUMN id SET DEFAULT nextval('textures_id_seq'::regclass);
+ALTER TABLE ONLY topics ALTER COLUMN id SET DEFAULT nextval('forum_topics_id_seq'::regclass);
+ALTER TABLE ONLY topics_categories ALTER COLUMN id SET DEFAULT nextval('forum_forums_id_seq'::regclass);
+ALTER TABLE ONLY tracker_items ALTER COLUMN id SET DEFAULT nextval('tracker_items_id_seq'::regclass);
+ALTER TABLE ONLY tutorials ALTER COLUMN id SET DEFAULT nextval('tutorials_id_seq'::regclass);
+ALTER TABLE ONLY tutorials_categories ALTER COLUMN id SET DEFAULT nextval('tutorials_categories_id_seq'::regclass);
+ALTER TABLE ONLY user_login_changes ALTER COLUMN id SET DEFAULT nextval('user_login_changes_id_seq'::regclass);
+ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
+ALTER TABLE ONLY users_actions ALTER COLUMN id SET DEFAULT nextval('users_actions_id_seq'::regclass);
+ALTER TABLE ONLY users_contents_tags ALTER COLUMN id SET DEFAULT nextval('users_contents_tags_id_seq'::regclass);
+ALTER TABLE ONLY users_emblems ALTER COLUMN id SET DEFAULT nextval('users_emblems_id_seq'::regclass);
+ALTER TABLE ONLY users_guids ALTER COLUMN id SET DEFAULT nextval('users_guids_id_seq'::regclass);
+ALTER TABLE ONLY users_lastseen_ips ALTER COLUMN id SET DEFAULT nextval('users_lastseen_ips_id_seq'::regclass);
+ALTER TABLE ONLY users_newsfeeds ALTER COLUMN id SET DEFAULT nextval('users_newsfeeds_id_seq'::regclass);
+ALTER TABLE ONLY users_preferences ALTER COLUMN id SET DEFAULT nextval('users_preferences_id_seq'::regclass);
+ALTER TABLE ONLY users_skills ALTER COLUMN id SET DEFAULT nextval('users_roles_id_seq'::regclass);
 SET search_path = stats, pg_catalog;
-ALTER TABLE ads ALTER COLUMN id SET DEFAULT nextval('ads_id_seq'::regclass);
-ALTER TABLE ads_daily ALTER COLUMN id SET DEFAULT nextval('ads_daily_id_seq'::regclass);
-ALTER TABLE bandit_treatments ALTER COLUMN id SET DEFAULT nextval('bandit_treatments_id_seq'::regclass);
-ALTER TABLE bets_results ALTER COLUMN id SET DEFAULT nextval('bets_results_id_seq'::regclass);
-ALTER TABLE clans_daily_stats ALTER COLUMN id SET DEFAULT nextval('clans_daily_stats_id_seq'::regclass);
-ALTER TABLE pageloadtime ALTER COLUMN id SET DEFAULT nextval('pageloadtime_id_seq'::regclass);
-ALTER TABLE pageviews ALTER COLUMN id SET DEFAULT nextval('pageviews_id_seq'::regclass);
-ALTER TABLE portals ALTER COLUMN id SET DEFAULT nextval('portals_stats_id_seq'::regclass);
-ALTER TABLE users_daily_stats ALTER COLUMN id SET DEFAULT nextval('users_daily_stats_id_seq'::regclass);
-ALTER TABLE users_karma_daily_by_portal ALTER COLUMN id SET DEFAULT nextval('users_karma_daily_by_portal_id_seq'::regclass);
+ALTER TABLE ONLY ads ALTER COLUMN id SET DEFAULT nextval('ads_id_seq'::regclass);
+ALTER TABLE ONLY ads_daily ALTER COLUMN id SET DEFAULT nextval('ads_daily_id_seq'::regclass);
+ALTER TABLE ONLY bandit_treatments ALTER COLUMN id SET DEFAULT nextval('bandit_treatments_id_seq'::regclass);
+ALTER TABLE ONLY bets_results ALTER COLUMN id SET DEFAULT nextval('bets_results_id_seq'::regclass);
+ALTER TABLE ONLY clans_daily_stats ALTER COLUMN id SET DEFAULT nextval('clans_daily_stats_id_seq'::regclass);
+ALTER TABLE ONLY pageloadtime ALTER COLUMN id SET DEFAULT nextval('pageloadtime_id_seq'::regclass);
+ALTER TABLE ONLY pageviews ALTER COLUMN id SET DEFAULT nextval('pageviews_id_seq'::regclass);
+ALTER TABLE ONLY portals ALTER COLUMN id SET DEFAULT nextval('portals_stats_id_seq'::regclass);
+ALTER TABLE ONLY users_daily_stats ALTER COLUMN id SET DEFAULT nextval('users_daily_stats_id_seq'::regclass);
+ALTER TABLE ONLY users_karma_daily_by_portal ALTER COLUMN id SET DEFAULT nextval('users_karma_daily_by_portal_id_seq'::regclass);
 SET search_path = archive, pg_catalog;
 ALTER TABLE ONLY pageviews
     ADD CONSTRAINT pageviews_pkey PRIMARY KEY (id);
@@ -3475,8 +3378,6 @@ ALTER TABLE ONLY coverages
     ADD CONSTRAINT events_news_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY events_users
-    ADD CONSTRAINT events_users_pkey PRIMARY KEY (event_id, user_id);
 ALTER TABLE ONLY factions_banned_users
     ADD CONSTRAINT factions_banned_users_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY factions
@@ -3657,10 +3558,10 @@ ALTER TABLE ONLY slog_visits
     ADD CONSTRAINT slog_visits_pkey PRIMARY KEY (user_id);
 ALTER TABLE ONLY sold_products
     ADD CONSTRAINT sold_products_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY staff_candidate_votes
+    ADD CONSTRAINT staff_candidate_votes_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY staff_candidates
     ADD CONSTRAINT staff_candidates_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY staff_canditate_votes
-    ADD CONSTRAINT staff_canditate_votes_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY staff_positions
     ADD CONSTRAINT staff_positions_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY staff_types
@@ -3674,11 +3575,7 @@ ALTER TABLE ONLY textures
 ALTER TABLE ONLY textures
     ADD CONSTRAINT textures_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY tracker_items
-    ADD CONSTRAINT tracker_items_pkey UNIQUE (id);
-ALTER TABLE ONLY tracker_items
     ADD CONSTRAINT tracker_items_pkey1 PRIMARY KEY (id);
-ALTER TABLE ONLY training_questions
-    ADD CONSTRAINT training_questions_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY treated_visitors
     ADD CONSTRAINT treated_visitors_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY tutorials_categories
@@ -3787,7 +3684,6 @@ CREATE INDEX contents_is_public ON contents USING btree (is_public);
 CREATE INDEX contents_is_public_and_game_id ON contents USING btree (is_public, game_id);
 CREATE UNIQUE INDEX contents_locks_uniq ON contents_locks USING btree (content_id);
 CREATE UNIQUE INDEX contents_recommendations_content_id_sender_user_id_receiver_use ON contents_recommendations USING btree (content_id, sender_user_id, receiver_user_id);
-CREATE INDEX contents_recommendations_created_on ON contents_recommendations USING btree (created_on);
 CREATE INDEX contents_recommendations_receiver_user_id_marked_as_bad ON contents_recommendations USING btree (receiver_user_id, marked_as_bad);
 CREATE INDEX contents_recommendations_seen_on_content_id_receiver_user_id ON contents_recommendations USING btree (content_id, receiver_user_id);
 CREATE INDEX contents_recommendations_sender_user_id ON contents_recommendations USING btree (sender_user_id);
@@ -3830,7 +3726,6 @@ CREATE INDEX friends_recommendations_user_id_undecided ON friends_recommendation
 CREATE UNIQUE INDEX friends_users_uniq ON friendships USING btree (sender_user_id, receiver_user_id);
 CREATE INDEX funthings_state ON funthings USING btree (state);
 CREATE UNIQUE INDEX funthings_title_uniq ON funthings USING btree (title);
-CREATE INDEX gamersmafiageist_codes_user_edition ON gamersmafiageist_codes USING btree (user_id, survey_edition_date);
 CREATE UNIQUE INDEX games_maps_name_game_id ON games_maps USING btree (name, game_id);
 CREATE UNIQUE INDEX games_modes_uniq ON games_modes USING btree (name, game_id);
 CREATE INDEX games_users_game_id ON games_users USING btree (game_id);
@@ -4092,14 +3987,16 @@ ALTER TABLE ONLY reviews
     ADD CONSTRAINT reviews_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY skins_files
     ADD CONSTRAINT skins_files_skin_id_fkey FOREIGN KEY (skin_id) REFERENCES skins(id) MATCH FULL;
+ALTER TABLE ONLY staff_candidate_votes
+    ADD CONSTRAINT staff_candidate_votes_staff_candidate_id_fkey FOREIGN KEY (staff_candidate_id) REFERENCES staff_candidates(id) MATCH FULL;
+ALTER TABLE ONLY staff_candidate_votes
+    ADD CONSTRAINT staff_candidate_votes_staff_position_id_fkey FOREIGN KEY (staff_position_id) REFERENCES staff_positions(id) MATCH FULL;
+ALTER TABLE ONLY staff_candidate_votes
+    ADD CONSTRAINT staff_candidate_votes_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY staff_candidates
     ADD CONSTRAINT staff_candidates_staff_position_id_fkey FOREIGN KEY (staff_position_id) REFERENCES staff_positions(id) MATCH FULL;
 ALTER TABLE ONLY staff_candidates
     ADD CONSTRAINT staff_candidates_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY staff_canditate_votes
-    ADD CONSTRAINT staff_canditate_votes_staff_candidate_id_fkey FOREIGN KEY (staff_candidate_id) REFERENCES staff_candidates(id) MATCH FULL;
-ALTER TABLE ONLY staff_canditate_votes
-    ADD CONSTRAINT staff_canditate_votes_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY staff_positions
     ADD CONSTRAINT staff_positions_staff_type_id_fkey FOREIGN KEY (staff_type_id) REFERENCES staff_types(id) MATCH FULL;
 ALTER TABLE ONLY terms
@@ -4120,10 +4017,6 @@ ALTER TABLE ONLY topics
     ADD CONSTRAINT topics_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY topics
     ADD CONSTRAINT topics_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-ALTER TABLE ONLY training_questions
-    ADD CONSTRAINT training_questions__ner_annotate_comment_comment_id_fkey FOREIGN KEY (_ner_annotate_comment_comment_id) REFERENCES comments(id) MATCH FULL;
-ALTER TABLE ONLY training_questions
-    ADD CONSTRAINT training_questions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY tutorials
     ADD CONSTRAINT tutorials_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY users

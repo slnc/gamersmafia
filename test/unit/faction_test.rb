@@ -124,7 +124,7 @@ class FactionTest < ActiveSupport::TestCase
 
   test "karma_points_should_work_correctly" do
     f1 = Faction.find(1)
-    assert_equal 1745, f1.karma_points
+    assert_equal 41, f1.karma_points
   end
 
   test "check_daily_karma smoke test" do

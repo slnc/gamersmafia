@@ -58,6 +58,7 @@ module Gamersmafia
     config.active_record.observers = [
       :cache_observer,
       :faith_observer,
+      :karma_observer,
       :users_action_observer,
       :achmed_observer,
     ]

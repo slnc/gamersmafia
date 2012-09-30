@@ -25,4 +25,5 @@ gem "will_paginate", "~> 3.0"
 
 group :test do
   gem "ci_reporter"
+  gem "minitest-colorize"
 end

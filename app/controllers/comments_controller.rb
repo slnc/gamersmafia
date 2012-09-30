@@ -113,7 +113,7 @@ class CommentsController < ApplicationController
       @disable_ratings = (@user.remaining_rating_slots - 1 <= 0)
       @comment.delay.rate(@user, @cvt)
     else
-      Rails.logger.warn("User #{@user.login} can't rate comment #{@comment}")
+      Rails.logger.warn("User #{@user.login} can't rate comment #{@comment.id}")
       @disable_ratings = true
       @cvt = CommentsValorationsType.new({:name => 'Ninguna'})
     end

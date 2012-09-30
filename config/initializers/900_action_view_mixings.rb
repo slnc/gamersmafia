@@ -27,7 +27,11 @@ module ActionViewMixings
     end
 
     ab_test = AbTest.find_by_name(test_name)
-    ab_test = create_ab_test(test_name, treatment) if ab_test.nil?
+    if Rails.env == "test"
+      return if ab_test.nil?
+    else
+      ab_test = create_ab_test(test_name, treatment) if ab_test.nil?
+    end
 
     if ab_test.completed_on || controller.is_crawler?
       # We show control version if test is completed or user is a crawler.

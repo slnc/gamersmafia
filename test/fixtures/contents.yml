@@ -10,6 +10,7 @@ news_deleted:
   state: 3
   user_id: 3
   portal_id: 1
+  karma_points: 1
 
 bet_deleted:
   id: 2002
@@ -23,6 +24,7 @@ bet_deleted:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 column_deleted:
   id: 2003
@@ -36,6 +38,7 @@ column_deleted:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 funthing_deleted:
   id: 2004
@@ -49,6 +52,7 @@ funthing_deleted:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 download_deleted:
   id: 2005
@@ -62,6 +66,7 @@ download_deleted:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 poll_deleted:
   id: 2006
@@ -75,6 +80,7 @@ poll_deleted:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 tutorial_deleted:
   id: 2007
@@ -88,6 +94,7 @@ tutorial_deleted:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 interview_deleted:
   id: 2008
@@ -101,6 +108,7 @@ interview_deleted:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 event_deleted:
   id: 2010
@@ -114,6 +122,7 @@ event_deleted:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 coverage_deleted:
   id: 2011
@@ -127,6 +136,7 @@ coverage_deleted:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 review_deleted:
   id: 2012
@@ -140,6 +150,7 @@ review_deleted:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 forums_topic_deleted:
   id: 2013
@@ -153,6 +164,7 @@ forums_topic_deleted:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 image_deleted:
   id: 2014
@@ -166,6 +178,7 @@ image_deleted:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 demo_deleted:
   id: 2015
@@ -179,7 +192,7 @@ demo_deleted:
   state: 3
   user_id: 1
   portal_id: 1
-
+  karma_points: 1
 
 news_unpublished:
   id: 1000
@@ -193,6 +206,7 @@ news_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 bet_unpublished:
   id: 1002
@@ -206,6 +220,7 @@ bet_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 column_unpublished:
   id: 1003
@@ -219,6 +234,7 @@ column_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 funthing_unpublished:
   id: 1004
@@ -232,6 +248,7 @@ funthing_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 download_unpublished:
   id: 1005
@@ -245,6 +262,7 @@ download_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 poll_unpublished:
   id: 1006
@@ -258,6 +276,7 @@ poll_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 tutorial_unpublished:
   id: 1007
@@ -271,6 +290,7 @@ tutorial_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 interview_unpublished:
   id: 1008
@@ -284,6 +304,7 @@ interview_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 event_unpublished:
   id: 1010
@@ -297,6 +318,7 @@ event_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 coverage_unpublished:
   id: 1011
@@ -310,6 +332,7 @@ coverage_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 review_unpublished:
   id: 1012
@@ -323,6 +346,7 @@ review_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 forums_topic_unpublished:
   id: 1013
@@ -336,6 +360,7 @@ forums_topic_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 image_unpublished:
   id: 1014
@@ -349,6 +374,7 @@ image_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 demo_unpublished:
   id: 1015
@@ -362,6 +388,7 @@ demo_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 news_published:
   id: 1
@@ -377,6 +404,7 @@ news_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 bet_published:
   id: 2
@@ -392,6 +420,7 @@ bet_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 column_published:
   id: 3
@@ -407,6 +436,7 @@ column_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 funthing_published:
   id: 4
@@ -421,6 +451,7 @@ funthing_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 download_published:
   id: 5
@@ -436,6 +467,7 @@ download_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 poll_published:
   id: 6
@@ -451,6 +483,7 @@ poll_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 tutorial_published:
   id: 7
@@ -466,6 +499,7 @@ tutorial_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 interview_published:
   id: 8
@@ -481,6 +515,7 @@ interview_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 event_published:
   id: 10
@@ -496,6 +531,7 @@ event_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 coverage_published:
   id: 11
@@ -511,6 +547,7 @@ coverage_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 review_published:
   id: 12
@@ -526,6 +563,7 @@ review_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 forums_topic_published:
   id: 13
@@ -541,6 +579,7 @@ forums_topic_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 image_published:
   id: 14
@@ -556,6 +595,7 @@ image_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 image_babe:
   id: 15
@@ -570,6 +610,7 @@ image_babe:
   user_id: 1
   state: 2
   portal_id: 1
+  karma_points: 1
 
 image_dude:
   id: 16
@@ -584,6 +625,7 @@ image_dude:
   user_id: 1
   state: 2
   portal_id: 1
+  karma_points: 1
 
 demo_published:
   id: 17
@@ -598,8 +640,7 @@ demo_published:
   user_id: 1
   portal_id: 1
   state: 2
-
-
+  karma_points: 1
 
 <% i = 100 %>
 <% [0,1,2,3,4].each do |state| %>
@@ -623,6 +664,7 @@ demo_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
             <% i += 1 %>
           <% end %>
@@ -645,6 +687,7 @@ blogentry_first:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 blogentry_second:
   id: 1200
@@ -659,6 +702,7 @@ blogentry_second:
   state: 2
   user_id: 2
   portal_id: 1
+  karma_points: 1
 
 noticia_clan1:
   id: 1100
@@ -673,6 +717,7 @@ noticia_clan1:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 foo3vsbar3:
   id: 1102
@@ -687,6 +732,7 @@ foo3vsbar3:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 news_pending_clan1:
   id: 1103
@@ -700,6 +746,7 @@ news_pending_clan1:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 news_64:
   id: 1104
@@ -713,6 +760,7 @@ news_64:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 topics_1265:
   id: 1105
@@ -726,6 +774,7 @@ topics_1265:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 topics_9734:
   id: 1106
@@ -739,6 +788,7 @@ topics_9734:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 topics_7761:
   id: 1107
@@ -752,6 +802,7 @@ topics_7761:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 topics_3417:
   id: 1108
@@ -765,6 +816,7 @@ topics_3417:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 topics_1265:
   id: 1109
@@ -778,6 +830,7 @@ topics_1265:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 question_published:
   id: 1110
@@ -793,6 +846,7 @@ question_published:
   state: 2
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 question_unpublished:
   id: 1111
@@ -806,6 +860,7 @@ question_unpublished:
   state: 1
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 question_deleted:
   id: 1112
@@ -819,6 +874,7 @@ question_deleted:
   state: 3
   user_id: 1
   portal_id: 1
+  karma_points: 1
 
 news_published_anime:
   id: 1113
@@ -834,6 +890,7 @@ news_published_anime:
   user_id: 1
   portal_id: 31
   bazar_district_id: 1
+  karma_points: 1
 
 news_published_gm:
   id: 1114
@@ -848,6 +905,7 @@ news_published_gm:
   state: 2
   user_id: 1
   portal_id: -1
+  karma_points: 1
 
 polls_published_gm:
   id: 1115
@@ -862,6 +920,7 @@ polls_published_gm:
   state: 2
   user_id: 1
   portal_id: -1
+  karma_points: 1
 
 polls_pending_gm:
   id: 1116
@@ -876,6 +935,7 @@ polls_pending_gm:
   state: 1
   user_id: 1
   portal_id: -1
+  karma_points: 1
 
 news_published_rj:
   id: 1117
@@ -890,3 +950,4 @@ news_published_rj:
   state: 2
   user_id: 1
   portal_id: 21
+  karma_points: 100

@@ -128,7 +128,7 @@ module Emblems
       u.users_emblems.create(:emblem => 'moderator')
     end
 
-    points = Karma::karma_points_of_users_at_date_range(Time.now, 1.week.ago)
+    points = Karma::karma_points_of_users_at_date_range(2.weeks.ago, 3.weeks.ago)
     if points.size > 0
       maxk = 0
       max_uid = nil

@@ -29,7 +29,11 @@ class FaithTest < ActiveSupport::TestCase
 
   test "calculate_faith_points_should_consider_content_ratings" do
     initial_cr = ContentRating.count
-    @u1.content_ratings.create({:ip => '0.0.0.0', :content_id => Content.find(:first, :conditions => 'id NOT IN (SELECT content_id from content_ratings where user_id = 1)').id, :rating => 1})
+    @u1.content_ratings.create({
+        :ip => '0.0.0.0',
+        :content_id => Content.find(:first, :conditions => 'id NOT IN (SELECT content_id from content_ratings where user_id = 1)', :order => 'id').id,
+        :rating => 1,
+    })
     assert_equal initial_cr + 1, ContentRating.count
     @u1.cache_faith_points = nil
     @u1.save
@@ -96,8 +100,9 @@ class FaithTest < ActiveSupport::TestCase
   test "update_ranking" do
     User.db_query("UPDATE users SET cache_faith_points = id")
     Faith.update_ranking
-    assert_equal 17, User.find(1).ranking_faith_pos
-    assert_equal 16, User.find(2).ranking_faith_pos
-    assert_equal 15, User.find(3).ranking_faith_pos
+    users_count = User.can_login.count
+    assert_equal users_count, User.find(1).ranking_faith_pos
+    assert_equal users_count - 1, User.find(2).ranking_faith_pos
+    assert_equal users_count - 2, User.find(3).ranking_faith_pos
   end
 end

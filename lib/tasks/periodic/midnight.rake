@@ -107,7 +107,7 @@ namespace :gm do
           if portal
             games_r_portals[content.game_id] ||= portal.id
             portals_stats[games_r_portals[content.game_id]] ||= 0
-            portals_stats[games_r_portals[content.game_id]] += Karma.contents_karma(content, false)
+            portals_stats[games_r_portals[content.game_id]] += content.unique_content.karma_points
           else
             Rails.logger.warn(
               "game #{content.game_id ? content.game.name : content.name} has" +
@@ -116,22 +116,22 @@ namespace :gm do
         elsif content.platform # Contenido de facción
           platforms_r_portals[content.platform_id] ||= Portal.find(:first, :conditions => ['code = ?', content.platform.code]).id
           portals_stats[platforms_r_portals[content.platform_id]] ||= 0
-          portals_stats[platforms_r_portals[content.platform_id]] += Karma.contents_karma(content, false)
+          portals_stats[platforms_r_portals[content.platform_id]] += content.unique_content.karma_points
         elsif content.bazar_district # Contenido de facción
           bazar_districts_r_portals[content.bazar_district_id] ||= Portal.find(:first, :conditions => ['code = ?', content.bazar_district.code]).id
           portals_stats[bazar_districts_r_portals[content.bazar_district_id]] ||= 0
-          portals_stats[bazar_districts_r_portals[content.bazar_district_id]] += Karma.contents_karma(content, false)
+          portals_stats[bazar_districts_r_portals[content.bazar_district_id]] += content.unique_content.karma_points
         elsif content.clan # Contenido de clan
           portal = Portal.find(:first, :conditions => ['clan_id = ?', content.clan_id])
           if portal
             clans_r_portals[content.clan_id] ||= portal.id
             portals_stats[clans_r_portals[content.clan_id]] ||= 0
-            portals_stats[clans_r_portals[content.clan_id]] += Karma.contents_karma(content, false)
+            portals_stats[clans_r_portals[content.clan_id]] += content.unique_content.karma_points
           else
             Rails.logger.warn("clan_id: #{content.clan_id} has no portal")
           end
         else
-          general += Karma.contents_karma(content, false)
+          general += content.unique_content.karma_points
         end
       end
 

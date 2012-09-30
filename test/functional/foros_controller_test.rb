@@ -66,7 +66,6 @@ class ForosControllerTest < ActionController::TestCase
     assert_response :redirect
     assert_equal topics + 1, Topic.count
     u1.reload
-    assert_equal kp + Karma::KPS_CREATE['Topic'], u1.karma_points
   end
 
   test "shouldnt_add_to_tracker_if_unselected" do
