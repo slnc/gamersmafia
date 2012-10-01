@@ -17,10 +17,10 @@ class HqControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-    test "slog_archive" do
-    assert_raises(AccessDenied) { get :slog_archive }
+    test "alerts_archive" do
+    assert_raises(AccessDenied) { get :alerts_archive }
     sym_login 1
-    get :slog_archive
+    get :alerts_archive
     assert_response :success
   end
 end

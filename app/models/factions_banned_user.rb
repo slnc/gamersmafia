@@ -11,6 +11,6 @@ class FactionsBannedUser < ActiveRecord::Base
 
   private
   def notify_admins
-    SlogEntry.create({:type_id => SlogEntry::TYPES[:security], :headline => "Usuario <strong><a href=\"#{Routing.gmurl(self.user)}\">#{self.user.login}</a></strong> baneado de la facción <a href=\"#{Routing.gmurl(Faction.find(self.faction_id))}\">#{self.faction.name}</a>" })
+    Alert.create({:type_id => Alert::TYPES[:security], :headline => "Usuario <strong><a href=\"#{Routing.gmurl(self.user)}\">#{self.user.login}</a></strong> baneado de la facción <a href=\"#{Routing.gmurl(Faction.find(self.faction_id))}\">#{self.faction.name}</a>" })
   end
 end

@@ -1,0 +1,3 @@
+<%=render :partial => 'scope_selector', :locals => { :collection => @available_scopes, :active_scope => @scope } %>
+
+<%=render :partial => 'task_browser', :locals => { :alerts_filter => { :domain => :competition_admin, :scope => @scope } } %>

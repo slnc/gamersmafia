@@ -1,25 +1,25 @@
 # -*- encoding : utf-8 -*-
-class SlogController < ApplicationController
+class AlertasController < ApplicationController
   before_filter :require_auth_users
 
   def submenu
-    'slog'
+    'alertas'
   end
 
   def submenu_items
     its = []
     # TODO permisos
-    its << ['Webmaster', '/slog/webmaster'] if @user.is_superadmin?
-    its << ['Capo', '/slog/capo'] if @user.has_admin_permission?(:capo)
-    its << ['Alcalde', '/slog/bazar_manager'] if @user.has_admin_permission?(:bazar_manager)
-    its << ['Gladiador', '/slog/gladiador'] if @user.has_admin_permission?(:gladiador)
-    its << ['Boss', '/slog/faction_bigboss'] if @user.is_faction_leader?
-    its << ['Don', '/slog/bazar_district_bigboss'] if @user.is_district_leader?
-    its << ['Moderador', '/slog/moderator'] if @user.is_moderator?
-    its << ['Editor', '/slog/editor'] if @user.is_faction_editor?
-    its << ['Sicario', '/slog/sicario'] if @user.is_sicario?
-    its << ['Admin comp', '/slog/competition_admin'] if @user.is_competition_admin?
-    its << ['Supervisor comp', '/slog/competition_supervisor'] if @user.is_competition_supervisor?
+    its << ['Webmaster', '/alertas/webmaster'] if @user.is_superadmin?
+    its << ['Capo', '/alertas/capo'] if @user.has_admin_permission?(:capo)
+    its << ['Alcalde', '/alertas/bazar_manager'] if @user.has_admin_permission?(:bazar_manager)
+    its << ['Gladiador', '/alertas/gladiador'] if @user.has_admin_permission?(:gladiador)
+    its << ['Boss', '/alertas/faction_bigboss'] if @user.is_faction_leader?
+    its << ['Don', '/alertas/bazar_district_bigboss'] if @user.is_district_leader?
+    its << ['Moderador', '/alertas/moderator'] if @user.is_moderator?
+    its << ['Editor', '/alertas/editor'] if @user.is_faction_editor?
+    its << ['Sicario', '/alertas/sicario'] if @user.is_sicario?
+    its << ['Admin comp', '/alertas/competition_admin'] if @user.is_competition_admin?
+    its << ['Supervisor comp', '/alertas/competition_supervisor'] if @user.is_competition_supervisor?
     its
   end
 
@@ -153,8 +153,8 @@ class SlogController < ApplicationController
     process_scopes(:competition_supervisor)
   end
 
-  def slog_entry_reviewed
-    sle = SlogEntry.find(:first, :conditions => ['id = ? AND (reviewer_user_id IS NULL OR reviewer_user_id = ?)', params[:id], @user.id])
+  def alert_reviewed
+    sle = Alert.find(:first, :conditions => ['id = ? AND (reviewer_user_id IS NULL OR reviewer_user_id = ?)', params[:id], @user.id])
     require_can_edit_sle?(sle)
     if sle.nil?
       flash[:error] = "La entrada especificada ya ha sido resuelta, ha sido asignada a otro usuario o no existe."
@@ -167,8 +167,8 @@ class SlogController < ApplicationController
            :locals => { :js_response => @js_response }
   end
 
-  def slog_entry_assigntome
-    @sle = SlogEntry.find_or_404(
+  def alert_assigntome
+    @sle = Alert.find_or_404(
         :first,
         :conditions => ['id = ? AND reviewer_user_id IS NULL', params[:id]])
     require_can_edit_sle?(@sle)
@@ -178,17 +178,17 @@ class SlogController < ApplicationController
       @sle.reviewer_user_id = @user.id
       @sle.save
     end
-    render :partial => '/site/slog_feedback', :layout => false
+    render :partial => '/site/alertas_feedback', :layout => false
   end
 
   protected
   def process_scopes(domain)
-    @available_scopes = SlogEntry.scopes(domain, @user)
+    @available_scopes = Alert.scopes(domain, @user)
     valid_scopes = @available_scopes.collect { |s| s.id }
     if params[:scope]
       if domain != :editor && !valid_scopes.include?(params[:scope].to_i)
         raise AccessDenied
-      elsif domain == :editor && !valid_scopes.include?(params[:scope].to_i) && !valid_scopes.include?((params[:scope].to_i / SlogEntry::EDITOR_SCOPE_CONTENT_TYPE_ID_MASK) * SlogEntry::EDITOR_SCOPE_CONTENT_TYPE_ID_MASK)
+      elsif domain == :editor && !valid_scopes.include?(params[:scope].to_i) && !valid_scopes.include?((params[:scope].to_i / Alert::EDITOR_SCOPE_CONTENT_TYPE_ID_MASK) * Alert::EDITOR_SCOPE_CONTENT_TYPE_ID_MASK)
         # quitamos la mascara para ver si tiene poderes sobre todos los content types
         raise AccessDenied
       end
@@ -198,7 +198,7 @@ class SlogController < ApplicationController
   end
 
   def require_can_edit_sle?(sle)
-    case SlogEntry.domain_from_type_id(sle.type_id)
+    case Alert.domain_from_type_id(sle.type_id)
       when :webmaster
       raise AccessDenied unless @user.is_superadmin?
 
@@ -215,7 +215,7 @@ class SlogController < ApplicationController
       raise AccessDenied unless Faction.find(sle.scope).is_moderator?(@user)
 
       when :editor
-      faction_id, content_type_id = SlogEntry.decode_editor_scope(sle.scope)
+      faction_id, content_type_id = Alert.decode_editor_scope(sle.scope)
       raise AccessDenied unless Faction.find(faction_id).is_editor_of_content_type?(@user, ContentType.find(content_type_id))
 
       when :bazar_district_bigboss

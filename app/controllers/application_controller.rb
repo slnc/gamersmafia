@@ -152,7 +152,7 @@ Request information:
 * URL: #{request.protocol}#{request.host}#{request.fullpath}
 * Remote IP: #{self.remote_ip}
 * Parameters: #{params_copy.inspect}</code>"""
-    SlogEntry.create({:type_id => SlogEntry::TYPES[:info],
+    Alert.create({:type_id => Alert::TYPES[:info],
                       :headline => headline, :info => info,
                       :reviewer_user_id => User.find_by_login('MrAchmed').id,
                       :completed_on => Time.now})

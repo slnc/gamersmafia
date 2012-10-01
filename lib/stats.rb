@@ -170,7 +170,7 @@ module Stats
           :all, :conditions => conditions, :group => :user_id).keys)
       users.merge(PublishingDecision.count(
           :all, :conditions => conditions, :group => :user_id).keys)
-      users.merge(SlogEntry.count(
+      users.merge(Alert.count(
           :all,
           :conditions => ["completed_on >= ? AND completed_on <= ?",
                           timestamp_start, timestamp_end],

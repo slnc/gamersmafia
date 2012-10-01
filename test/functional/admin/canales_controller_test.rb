@@ -18,7 +18,7 @@ class Admin::CanalesControllerTest < ActionController::TestCase
 
   test "del_should_work" do
     sym_login 1
-    assert_count_increases(SlogEntry) do
+    assert_count_increases(Alert) do
       assert_count_decreases(GmtvChannel) do
         post :del, :id => 1
         assert_response :redirect

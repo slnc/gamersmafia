@@ -74,7 +74,7 @@ class BanRequest < ActiveRecord::Base
           :sender_user_id => nagato.id,
           :recipient_user_id => u.id,
           :title => "Iniciado ban contra el usuario #{self.banned_user.login}",
-          :message => "<a href=\"http://gamersmafia.com/site/slog\">Ir al log" +
+          :message => "<a href=\"http://gamersmafia.com/site/alertas\">Ir al log" +
                       " de sistema</a>",
       })
     end

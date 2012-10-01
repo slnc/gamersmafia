@@ -9,7 +9,7 @@ class Avatar < ActiveRecord::Base
 
   before_destroy :set_users_avatar_to_nil
 
-  after_create :create_slog_entry
+  after_create :create_alert
   after_save :update_image
 
   validates_presence_of :name
@@ -22,7 +22,7 @@ class Avatar < ActiveRecord::Base
       if sp
         Bank.transfer(:bank, self.submitter, sp.price_paid, "Devolución por avatar \"#{self.name}\" borrado")
       else
-        SlogEntry.create({:type => SlogEntry::TYPES[:info], :headline => ['Al borrar el avatar "?" no se encontró un producto vendido (no se devuelve dinero a ?)', self.name, self.submitter_user_id]})
+        Alert.create({:type => Alert::TYPES[:info], :headline => ['Al borrar el avatar "?" no se encontró un producto vendido (no se devuelve dinero a ?)', self.name, self.submitter_user_id]})
       end
     end
     super()
@@ -59,10 +59,10 @@ class Avatar < ActiveRecord::Base
     true
   end
 
-  def create_slog_entry
+  def create_alert
     additional_text = ''
     additional_text << "#{Cms::faction_favicon(self.faction)}" if self.faction_id
-    SlogEntry.create(:type_id => SlogEntry::TYPES[:new_avatar],
+    Alert.create(:type_id => Alert::TYPES[:new_avatar],
                      :reporter_user_id => User.find_by_login('MrAchmed').id,
     :headline => "#{additional_text} Nuevo avatar de #{mode}: <a href=\"http://#{App.domain}/avatares/edit/#{self.id}\"><img src=\"/cache/thumbnails/f/50x50/#{self.path.to_s}\" /></a></strong>")
   end

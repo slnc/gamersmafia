@@ -1,10 +1,10 @@
 <%
-slog_entries = SlogEntry.closed.in_domain_and_scope(@domain, @scope).paginate(
+alerts = Alert.closed.in_domain_and_scope(@domain, @scope).paginate(
     :page => params[:page], :per_page => 50, :include => [:reviewer, :reporter],
-    :order => 'slog_entries.id DESC')
+    :order => 'alerts.id DESC')
 %>
 <%= render :partial => 'shared/pager2',
-           :locals => {:collection => slog_entries,
+           :locals => {:collection => alerts,
                        :pos => 'top',
                        :options => {
                            :preserve_keys => [:domain, :scope],
@@ -21,10 +21,10 @@ slog_entries = SlogEntry.closed.in_domain_and_scope(@domain, @scope).paginate(
 		<th>Ejecutor</th>
 		<th class="w125 centered infoinline">Completada</th>
 </tr>
-<% slog_entries.each do |sle| %>
+<% alerts.each do |sle| %>
 <tr class="<%=oddclass%>">
 	<td style="width: 16px;">
-    <img class="sprite1 slog-type<%=sle.type_id%>" src="/images/blank.gif" />
+    <img class="sprite1 alert-type<%=sle.type_id%>" src="/images/blank.gif" />
   </scope_conditionstd>
 	<td class="w125 centered infoinline"><%=print_tstamp(sle.created_on, 'compact')%></td>
 	<td><%=sle.headline%></td>
@@ -35,7 +35,7 @@ slog_entries = SlogEntry.closed.in_domain_and_scope(@domain, @scope).paginate(
 <% end -%>
 </table>
 <%= render :partial => 'shared/pager2',
-           :locals => {:collection => slog_entries,
+           :locals => {:collection => alerts,
                        :pos => 'bottom',
                        :options => {
                            :preserve_keys => [:domain, :scope],

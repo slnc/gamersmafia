@@ -6,7 +6,8 @@
 # Esta clase se encarga de gestionar los fragmentos de vista cacheados
 # TODO TODO TODO optimizar todo esto para no limpiar con tanta facilidad
 class CacheObserver < ActiveRecord::Observer
-  observe BazarDistrict,
+  observe Alert,
+          BazarDistrict,
           Bet,
           Blogentry,
           Clan,
@@ -42,7 +43,6 @@ class CacheObserver < ActiveRecord::Observer
           RecruitmentAd,
           Review,
           Skin,
-          SlogEntry,
           Term,
           Topic,
           Tutorial,
@@ -72,8 +72,8 @@ class CacheObserver < ActiveRecord::Observer
         faction_id =object.role == 'Moderator' ? object.role_data : object.role_data_yaml[:faction_id]
         expire_fragment("/common/facciones/#{faction_id}/staff")
       end
-      when 'SlogEntry'
-      expire_fragment "/common/slog/*"
+      when 'Alert'
+      expire_fragment "/common/alertas/*"
 
       when 'UsersEmblem'
       expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/emblemas"

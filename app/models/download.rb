@@ -134,8 +134,8 @@ class Download < ActiveRecord::Base
       end
 
       if d.file.nil? && d.download_mirrors.count == 0
-        ttype, scope = SlogEntry.fill_ttype_and_scope_for_content_report(d.unique_content)
-        sl = SlogEntry.create({:scope => scope, :type_id => ttype, :reporter_user_id => u.id, :headline => "#{Cms.faction_favicon(d)}<strong><a href=\"#{Routing.url_for_content_onlyurl(d)}\">#{d.unique_content_id}</a></strong> reportado (Ni descarga directa ni mirrors) por <a href=\"#{Routing.gmurl(u)}\">#{u}</a>"})
+        ttype, scope = Alert.fill_ttype_and_scope_for_content_report(d.unique_content)
+        sl = Alert.create({:scope => scope, :type_id => ttype, :reporter_user_id => u.id, :headline => "#{Cms.faction_favicon(d)}<strong><a href=\"#{Routing.url_for_content_onlyurl(d)}\">#{d.unique_content_id}</a></strong> reportado (Ni descarga directa ni mirrors) por <a href=\"#{Routing.gmurl(u)}\">#{u}</a>"})
       end
     end and nil
   end

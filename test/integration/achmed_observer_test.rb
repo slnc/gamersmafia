@@ -7,8 +7,8 @@ class AchmedObserverTest < ActionController::IntegrationTest
     host! App.domain
   end
 
-  test "should create slog entry if ammount > 5000" do
-    assert_count_increases(SlogEntry) do
+  test "should create alert if ammount > 5000" do
+    assert_count_increases(Alert) do
       Bank.transfer(
           :bank,
           User.find(1),

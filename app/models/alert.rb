@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-class SlogEntry < ActiveRecord::Base
+class Alert < ActiveRecord::Base
   TYPES = {
       :info => 0,
       :security => 1,
@@ -99,7 +99,7 @@ class SlogEntry < ActiveRecord::Base
 
   before_create :populate_reporter
 
-  after_save :update_pending_slog
+  after_save :update_pending_alerts
 
   # - faction_comment_report
   # - general_comment_report
@@ -132,11 +132,12 @@ class SlogEntry < ActiveRecord::Base
     { :conditions => "#{sql_cond} type_id IN (#{valid_types.join(',')})" }
   }
 
-  def update_pending_slog
+  def update_pending_alerts
     # TODO hacer en segundo plano
-    # buscamos usuarios que puedan hacerse cargo de esta entrada de slog y actualizamos el num de entradas pendientes
+    # buscamos usuarios que puedan hacerse cargo de esta alerta y actualizamos
+    # el num de entradas pendientes
 
-    users = case SlogEntry.domain_from_type_id(self.type_id)
+    users = case Alert.domain_from_type_id(self.type_id)
       when :faction_bigboss
       f = Faction.find(scope)
       [f.boss, f.underboss]
@@ -152,7 +153,7 @@ class SlogEntry < ActiveRecord::Base
       Competition.find(scope).supervisors
 
       when :editor
-      faction_id, content_type_id = SlogEntry.decode_editor_scope(scope)
+      faction_id, content_type_id = Alert.decode_editor_scope(scope)
       Faction.find(faction_id).editors(ContentType.find_by_id(content_type_id))
 
       when :moderator
@@ -173,17 +174,17 @@ class SlogEntry < ActiveRecord::Base
       when :webmaster
       [User.find(1)]
     else
-      raise "update_pending_slog doesnt understand type_id #{self.type_id}"
+      raise "update_pending_alerts doesnt understand type_id #{self.type_id}"
     end
 
     users.each do |u|
       # Lo hacemos en diferido para evitar deadlocks que se están produciendo
-      SlogEntry.delay.update_pending_slog(u)
+      Alert.delay.update_pending_alerts(u)
     end
   end
 
-  def self.update_pending_slog(u)
-    # actualiza el campon pending_slog de u en base a sus permisos
+  def self.update_pending_alerts(u)
+    # actualiza el campon pending_alerts de u en base a sus permisos
     # TODO capo y bazar_manager falta
     total = 0
 
@@ -196,14 +197,14 @@ class SlogEntry < ActiveRecord::Base
 
     u.users_skills.find(:all, :conditions => "role IN (#{valid_roles.join(',')})").each do |ur|
       if ur.role == 'Editor'
-        total += ccount(:open, :domain => :editor, :scope => SlogEntry.encode_editor_scope(ur.role_data_yaml[:faction_id].to_i, ur.role_data_yaml[:content_type_id].to_i))
+        total += ccount(:open, :domain => :editor, :scope => Alert.encode_editor_scope(ur.role_data_yaml[:faction_id].to_i, ur.role_data_yaml[:content_type_id].to_i))
       elsif ur.role_data.to_s != ''
         total += ccount(:open, :domain => USERS_ROLES_2_DOMAINS.fetch(ur.role), :scope => ur.role_data.to_i)
       else
         total += ccount(:open, :domain => USERS_ROLES_2_DOMAINS.fetch(ur.role))
       end
     end
-    u.update_attributes(:pending_slog => total)
+    u.update_attributes(:pending_alerts => total)
   end
 
   def populate_reporter
@@ -226,7 +227,7 @@ class SlogEntry < ActiveRecord::Base
   end
 
   def check_valid_scope
-    case SlogEntry.domain_from_type_id(self.type_id)
+    case Alert.domain_from_type_id(self.type_id)
       when :faction_bigboss
       !Faction.find_by_id(scope).nil?
       when :bazar_district_bigboss
@@ -236,7 +237,7 @@ class SlogEntry < ActiveRecord::Base
       when :competition_supervisor
       !Competition.find_by_id(scope).nil?
       when :editor
-      faction_id, content_type_id = SlogEntry.decode_editor_scope(scope)
+      faction_id, content_type_id = Alert.decode_editor_scope(scope)
       !Faction.find_by_id(faction_id).nil? && !ContentType.find_by_id(content_type_id).nil?
       when :moderator
       !Faction.find_by_id(scope).nil?
@@ -265,12 +266,12 @@ class SlogEntry < ActiveRecord::Base
     opts2.delete(:scope)
     opts2.delete(:domain)
     opts2.delete(:user_id)
-    SlogEntry.find(:all, {:conditions => "#{sql_cond} AND type_id IN (#{valid_types.join(',')})"}.merge(opts2))
+    Alert.find(:all, {:conditions => "#{sql_cond} AND type_id IN (#{valid_types.join(',')})"}.merge(opts2))
   end
 
   def self.ccount(mode, opts)
     sql_cond, valid_types = _process_get_query(mode, opts)
-    SlogEntry.count(:conditions => "#{sql_cond} AND type_id IN (#{valid_types.join(',')})")
+    Alert.count(:conditions => "#{sql_cond} AND type_id IN (#{valid_types.join(',')})")
   end
 
   def self.recursive_ccount(mode, opts)
@@ -438,7 +439,7 @@ class SlogEntry < ActiveRecord::Base
         scope = org.id
       elsif org.class.name == 'Faction'
         ttype =  :faction_content_report
-        scope = org.id * SlogEntry::EDITOR_SCOPE_CONTENT_TYPE_ID_MASK + content.content_type_id
+        scope = org.id * Alert::EDITOR_SCOPE_CONTENT_TYPE_ID_MASK + content.content_type_id
       else
         ttype = :bazar_district_content_report
         scope = org.id
@@ -450,7 +451,7 @@ class SlogEntry < ActiveRecord::Base
     [TYPES.fetch(ttype), scope]
   end
 
-  def self.reset_users_pending_slog
+  def self.reset_users_pending_alerts
     us = User.find_with_admin_permissions(:capo)
 
     UsersSkill.find(:all, :include => :user).each do |ur|
@@ -459,7 +460,7 @@ class SlogEntry < ActiveRecord::Base
 
     us.uniq!
 
-    us.each { |u| SlogEntry.update_pending_slog(u) }
+    us.each { |u| Alert.update_pending_alerts(u) }
   end
 end
 
@@ -470,7 +471,7 @@ class EditorScope
   end
 
   def id
-    SlogEntry.encode_editor_scope(@faction_id.to_i, @content_type_id.to_i)
+    Alert.encode_editor_scope(@faction_id.to_i, @content_type_id.to_i)
   end
 
   def name

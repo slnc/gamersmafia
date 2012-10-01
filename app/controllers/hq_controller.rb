@@ -12,7 +12,7 @@ class HqController < ApplicationController
     @title = "Antifloods activos"
   end
 
-  def slog_archive
+  def alerts_archive
     @title = "Histórico de sucesos"
   end
 end

@@ -81,7 +81,7 @@ class CommentsControllerTest < ActionController::TestCase
   test "report invalid moderation_reason" do
     test_should_allow_registered_user_to_comment
     sym_login 1
-    assert_difference("SlogEntry.count", 0) do
+    assert_difference("Alert.count", 0) do
       post :report, :id => @c.id
     end
     assert_response :success
@@ -90,7 +90,7 @@ class CommentsControllerTest < ActionController::TestCase
   test "report valid moderation_reason" do
     test_should_allow_registered_user_to_comment
     sym_login 1
-    assert_difference("SlogEntry.count", 1) do
+    assert_difference("Alert.count", 1) do
       post :report, :id => @c.id, :moderation_reason => Comment::MODERATION_REASONS_TO_SYM.keys.first
     end
     assert_response :success

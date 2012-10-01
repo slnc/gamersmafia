@@ -1,6 +1,6 @@
 <%=render :partial => 'scope_selector', :locals => { :collection => @available_scopes, :active_scope => @scope } %>
 
-<%=render :partial => 'task_browser', :locals => { :slog_entries_filter => { :domain => :faction_bigboss, :scope => @scope } } %>
+<%=render :partial => 'task_browser', :locals => { :alerts_filter => { :domain => :faction_bigboss, :scope => @scope } } %>
 
 <div class="grid-9 glast">
 <% f = Faction.find(@scope)%>
@@ -19,15 +19,15 @@
 <table>
 	<tr class="<%=oddclass%>">
 		<td>Moderadores</td>
-		<td class="centered"><a href="/slog/moderator?scope=<%=@scope%>"><%=SlogEntry.ccount(:open, { :domain => :editor, :scope => @scope})%></a></td>
+		<td class="centered"><a href="/alertas/moderator?scope=<%=@scope%>"><%=Alert.ccount(:open, { :domain => :editor, :scope => @scope})%></a></td>
 	</tr>
 	<%
 cnames = Cms::CONTENTS_WITH_CATEGORIES.collect { |cname| "'#{cname}'" }
 ContentType.find(:all, :conditions => "name IN (#{cnames.join(',')})", :order => 'lower(name)').each do |ct|
-scope = SlogEntry.encode_editor_scope(@scope, ct.id) %>
+scope = Alert.encode_editor_scope(@scope, ct.id) %>
 	<tr class="<%=oddclass%>">
 		<td>Editores de <%=Cms::translate_content_name(ct.name)%></td>
-		<td class="centered"><a href="/slog/editor?scope=<%=scope%>"><%=SlogEntry.ccount(:open, { :domain => :editor, :scope => scope})%></a></td>
+		<td class="centered"><a href="/alertas/editor?scope=<%=scope%>"><%=Alert.ccount(:open, { :domain => :editor, :scope => scope})%></a></td>
 	</tr>
 <% end -%>
 </table>

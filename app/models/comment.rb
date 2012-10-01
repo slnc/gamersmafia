@@ -401,9 +401,9 @@ class Comment < ActiveRecord::Base
       scope = nil
     end
 
-    sl = SlogEntry.create({
+    sl = Alert.create({
       :scope => scope,
-      :type_id => SlogEntry::TYPES[ttype],
+      :type_id => Alert::TYPES[ttype],
       :data => {:moderation_reason => moderation_reason},
       :reporter_user_id => user.id,
       :entity_id => self.id,

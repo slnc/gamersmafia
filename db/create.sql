@@ -144,6 +144,22 @@ CREATE SEQUENCE advertisers_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE advertisers_id_seq OWNED BY advertisers.id;
+CREATE TABLE alerts (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    type_id integer NOT NULL,
+    info character varying NOT NULL,
+    headline character varying NOT NULL,
+    request text,
+    reporter_user_id integer,
+    reviewer_user_id integer,
+    long_version character varying,
+    short_version character varying,
+    completed_on timestamp without time zone,
+    scope integer,
+    entity_id integer,
+    data character varying
+);
 CREATE TABLE allowed_competitions_participants (
     id integer NOT NULL,
     competition_id integer NOT NULL,
@@ -2346,33 +2362,13 @@ CREATE SEQUENCE skins_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE skins_id_seq OWNED BY skins.id;
-CREATE TABLE slog_entries (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    type_id integer NOT NULL,
-    info character varying NOT NULL,
-    headline character varying NOT NULL,
-    request text,
-    reporter_user_id integer,
-    reviewer_user_id integer,
-    long_version character varying,
-    short_version character varying,
-    completed_on timestamp without time zone,
-    scope integer,
-    entity_id integer,
-    data character varying
-);
 CREATE SEQUENCE slog_entries_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE slog_entries_id_seq OWNED BY slog_entries.id;
-CREATE TABLE slog_visits (
-    user_id integer NOT NULL,
-    lastvisit_on timestamp without time zone DEFAULT now() NOT NULL
-);
+ALTER SEQUENCE slog_entries_id_seq OWNED BY alerts.id;
 CREATE TABLE sold_products (
     id integer NOT NULL,
     product_id integer NOT NULL,
@@ -2675,7 +2671,7 @@ CREATE TABLE users (
     emblems_mask character varying,
     random_id double precision DEFAULT random(),
     is_staff boolean DEFAULT false NOT NULL,
-    pending_slog integer DEFAULT 0 NOT NULL,
+    pending_alerts integer DEFAULT 0 NOT NULL,
     ranking_karma_pos integer,
     ranking_faith_pos integer,
     ranking_popularity_pos integer,
@@ -3049,6 +3045,7 @@ ALTER TABLE ONLY ads_slots ALTER COLUMN id SET DEFAULT nextval('ads_slots_id_seq
 ALTER TABLE ONLY ads_slots_instances ALTER COLUMN id SET DEFAULT nextval('ads_slots_instances_id_seq'::regclass);
 ALTER TABLE ONLY ads_slots_portals ALTER COLUMN id SET DEFAULT nextval('ads_slots_portals_id_seq'::regclass);
 ALTER TABLE ONLY advertisers ALTER COLUMN id SET DEFAULT nextval('advertisers_id_seq'::regclass);
+ALTER TABLE ONLY alerts ALTER COLUMN id SET DEFAULT nextval('slog_entries_id_seq'::regclass);
 ALTER TABLE ONLY allowed_competitions_participants ALTER COLUMN id SET DEFAULT nextval('allowed_competitions_participants_id_seq'::regclass);
 ALTER TABLE ONLY autologin_keys ALTER COLUMN id SET DEFAULT nextval('autologin_keys_id_seq'::regclass);
 ALTER TABLE ONLY avatars ALTER COLUMN id SET DEFAULT nextval('avatars_id_seq'::regclass);
@@ -3164,7 +3161,6 @@ ALTER TABLE ONLY silenced_emails ALTER COLUMN id SET DEFAULT nextval('silenced_e
 ALTER TABLE ONLY skin_textures ALTER COLUMN id SET DEFAULT nextval('skin_textures_id_seq'::regclass);
 ALTER TABLE ONLY skins ALTER COLUMN id SET DEFAULT nextval('skins_id_seq'::regclass);
 ALTER TABLE ONLY skins_files ALTER COLUMN id SET DEFAULT nextval('skins_files_id_seq'::regclass);
-ALTER TABLE ONLY slog_entries ALTER COLUMN id SET DEFAULT nextval('slog_entries_id_seq'::regclass);
 ALTER TABLE ONLY sold_products ALTER COLUMN id SET DEFAULT nextval('sold_products_id_seq'::regclass);
 ALTER TABLE ONLY staff_candidate_votes ALTER COLUMN id SET DEFAULT nextval('staff_candidate_votes_id_seq'::regclass);
 ALTER TABLE ONLY staff_candidates ALTER COLUMN id SET DEFAULT nextval('staff_candidates_id_seq'::regclass);
@@ -3552,10 +3548,8 @@ ALTER TABLE ONLY skins
     ADD CONSTRAINT skins_hid_key UNIQUE (hid);
 ALTER TABLE ONLY skins
     ADD CONSTRAINT skins_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY slog_entries
+ALTER TABLE ONLY alerts
     ADD CONSTRAINT slog_entries_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY slog_visits
-    ADD CONSTRAINT slog_visits_pkey PRIMARY KEY (user_id);
 ALTER TABLE ONLY sold_products
     ADD CONSTRAINT sold_products_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY staff_candidate_votes
@@ -3776,10 +3770,10 @@ CREATE INDEX reviews_state ON reviews USING btree (state);
 CREATE INDEX reviews_user_id ON reviews USING btree (user_id);
 CREATE INDEX sent_emails_created_on ON sent_emails USING btree (created_on);
 CREATE INDEX silenced_emails_lower ON silenced_emails USING btree (lower((email)::text));
-CREATE INDEX slog_entries_completed_on ON slog_entries USING btree (completed_on);
-CREATE INDEX slog_entries_headline ON slog_entries USING btree (headline);
-CREATE INDEX slog_entries_scope ON slog_entries USING btree (scope);
-CREATE INDEX slog_type_id ON slog_entries USING btree (type_id);
+CREATE INDEX slog_entries_completed_on ON alerts USING btree (completed_on);
+CREATE INDEX slog_entries_headline ON alerts USING btree (headline);
+CREATE INDEX slog_entries_scope ON alerts USING btree (scope);
+CREATE INDEX slog_type_id ON alerts USING btree (type_id);
 CREATE UNIQUE INDEX staff_candidates_uniq ON staff_candidates USING btree (staff_position_id, user_id, term_starts_on);
 CREATE INDEX terms_lower_name ON terms USING btree (lower((name)::text));
 CREATE INDEX terms_name_uniq ON terms USING btree (game_id, bazar_district_id, platform_id, clan_id, taxonomy, parent_id, name);
