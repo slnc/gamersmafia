@@ -6,7 +6,7 @@ require 'net/smtp'
 # You must pass opts[:body] and opts[:subject]
 def send_email(to,opts={})
   opts[:server]      ||= 'localhost'
-  opts[:from]        ||= 'nagato@gamersmafia.com'
+  opts[:from]        ||= 's@slnc.me'
   opts[:from_alias]  ||= 'nagato'
 
   raise "Missing subject" unless opts[:subject]
