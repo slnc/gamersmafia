@@ -281,8 +281,8 @@ class Faction < ActiveRecord::Base
     end
 
     dst_role_name = newuser.nil? ? 'nadie' : newuser.login
-    SlogEntry.create(
-        :type_id => SlogEntry::TYPES[:info],
+    Alert.create(
+        :type_id => Alert::TYPES[:info],
         :reviewer_user_id => User.find_by_login('MrAchmed').id,
         :headline => "Actualizado #{role} de #{self.name} a #{dst_role_name}",
         :completed_on => Time.now)
@@ -294,8 +294,8 @@ class Faction < ActiveRecord::Base
         :conditions => ["role IN ('Boss', 'Underboss') AND user_id = ?",
                         user.id]).each do |ur|
         ur.destroy
-        SlogEntry.create(
-          :type_id => SlogEntry::TYPES[:info],
+        Alert.create(
+          :type_id => Alert::TYPES[:info],
           :reviewer_user_id => User.find_by_login('MrAchmed').id,
           :headline => (
             "Eliminado permiso <strong>#{ur.role}</strong> de" +
@@ -398,8 +398,8 @@ class Faction < ActiveRecord::Base
   end
 
   def notify_capos_on_create
-    SlogEntry.create({
-        :type_id => SlogEntry::TYPES[:info],
+    Alert.create({
+        :type_id => Alert::TYPES[:info],
         :headline => (
             "Nueva facción creada <strong><a href=\"#{Routing.gmurl(self)}\">" +
             "#{self.name}</a></strong>.")

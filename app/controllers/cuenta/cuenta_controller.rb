@@ -183,8 +183,8 @@ class Cuenta::CuentaController < ApplicationController
       # Si está baneado le hacemos ver que todo va bien para que se quede
       # esperando el mensaje de confirmación.
       nagato = Ias.nagato
-      SlogEntry.create(
-          :type_id => SlogEntry::TYPES[:security],
+      Alert.create(
+          :type_id => Alert::TYPES[:security],
           :headline => ("IP baneada #{remote_ip} (#{ban.comment}) ha" +
           " intentado crearse una cuenta"))
       flash[:notice] = (
@@ -223,8 +223,8 @@ class Cuenta::CuentaController < ApplicationController
         users_same_ip.collect {|u| "<a href=\"#{gmurl(u)}\">#{u.login}</a>"}
       ).join(', ')
 
-      SlogEntry.create({
-          :type_id => SlogEntry::TYPES[:security],
+      Alert.create({
+          :type_id => Alert::TYPES[:security],
           :headline => (
               "Registro desde IP existente <strong><a href=\"" +
               "#{gmurl(@newuser)}\">#{@newuser.login}</a></strong>" +

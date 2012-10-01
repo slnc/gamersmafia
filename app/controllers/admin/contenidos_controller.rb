@@ -161,8 +161,8 @@ class Admin::ContenidosController < ApplicationController
     @content = Content.find(params[:id])
     raise AccessDenied unless @user.is_hq?
 
-    ttype, scope = SlogEntry.fill_ttype_and_scope_for_content_report(@content)
-    sl = SlogEntry.create({
+    ttype, scope = Alert.fill_ttype_and_scope_for_content_report(@content)
+    sl = Alert.create({
         :scope => scope,
         :type_id => ttype,
         :reporter_user_id => @user.id,

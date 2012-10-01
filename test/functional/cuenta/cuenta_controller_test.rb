@@ -327,7 +327,7 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
       },
     }
 
-    assert_count_increases(SlogEntry) do
+    assert_count_increases(Alert) do
       post :create, params
     end
 

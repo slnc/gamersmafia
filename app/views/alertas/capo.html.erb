@@ -1,4 +1,4 @@
-<%=render :partial => 'task_browser', :locals => { :slog_entries_filter => { :domain => :capo } } %>
+<%=render :partial => 'task_browser', :locals => { :alerts_filter => { :domain => :capo } } %>
 
 <div class="grid-9 glast">
 	<%mftext('Bans', :has_submodules => true, :blast => true) do %>
@@ -60,7 +60,7 @@
 	<% end %>
 
 	<div class="grid-9 glast">
-		<%cache("/common/slog/capo/#{Time.now.to_i / (3600 * 6)}") do %>
+		<%cache("/common/alertas/capo/#{Time.now.to_i / (3600 * 6)}") do %>
 			<%=render :partial => 'organization_status', :locals => { :cls => Faction }%>
 		<% end -%>
 		<div class="infoinline">Esta tabla se refresca cada 6h.</div>

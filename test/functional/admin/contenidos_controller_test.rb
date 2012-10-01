@@ -145,7 +145,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
 
   test "report" do
     sym_login 1
-    assert_count_increases(SlogEntry) do
+    assert_count_increases(Alert) do
       post :report, :id => Content.find(:first).id
     end
     assert_response :success
@@ -153,7 +153,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
 
   test "report_with_bazar_district_content" do
     sym_login 1
-    assert_count_increases(SlogEntry) do
+    assert_count_increases(Alert) do
       post :report, :id => 1113
     end
     assert_response :success

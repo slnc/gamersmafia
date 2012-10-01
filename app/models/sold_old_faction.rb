@@ -19,7 +19,7 @@ class SoldOldFaction < SoldProduct
 
     if f.update_boss(user)
       Factions::user_joins_faction(self.user, f.id) unless self.user.faction_id == f.id
-      SlogEntry.create({:type_id => SlogEntry::TYPES[:info], :headline => "Facción huérfana comprada <strong><a href=\"#{Routing.gmurl(f)}\">#{f.name}</a></strong> por <a href=\"#{Routing.gmurl(f.boss)}\">#{f.boss.login}</a>"})
+      Alert.create({:type_id => Alert::TYPES[:info], :headline => "Facción huérfana comprada <strong><a href=\"#{Routing.gmurl(f)}\">#{f.name}</a></strong> por <a href=\"#{Routing.gmurl(f.boss)}\">#{f.boss.login}</a>"})
       true
     else
       f.errors.each do |err|

@@ -48,7 +48,7 @@ class UsersSkill < ActiveRecord::Base
     UsersSkill.find(:all, :conditions => "role IN ('Don', 'ManoDerecha', 'Boss', 'Underboss', 'Editor', 'Moderator', 'Sicario')", :include => :user).each do |ur|
       if ur.user.lastseen_on < limit
         ur.destroy
-        SlogEntry.create(:type_id => SlogEntry::TYPES[:info], :headline => "Quitando permiso de <strong>#{ur.role}</strong> a <strong>#{ur.user.login}</strong> por volverse zombie", :reviewer_user_id => mrcheater.id, :completed_on => now)
+        Alert.create(:type_id => Alert::TYPES[:info], :headline => "Quitando permiso de <strong>#{ur.role}</strong> a <strong>#{ur.user.login}</strong> por volverse zombie", :reviewer_user_id => mrcheater.id, :completed_on => now)
       end
     end
   end

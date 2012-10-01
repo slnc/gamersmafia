@@ -226,7 +226,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     post :confirm_ban_request, {:id => last.id }
     last.reload
     assert_equal @u4.id, last.confirming_user_id
-    assert_redirected_to "/slog/capo"
+    assert_redirected_to "/alertas/capo"
   end
 
   test "create_unban_request_should_work_for_capo" do
@@ -251,7 +251,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     test_create_ban_request_should_work_for_capo
     last = BanRequest.find(:first, :order => 'id desc')
     assert_count_decreases(BanRequest) { post :cancel_ban_request, {:id => last.id } }
-    assert_redirected_to "/site/slog"
+    assert_redirected_to "/site/alertas"
   end
 
   test "should_set_antiflood_level_if_capo" do
@@ -280,7 +280,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     sym_login @u4
     u2 = User.find(2)
     assert_equal -1, u2.antiflood_level
-    assert_count_increases(SlogEntry) do
+    assert_count_increases(Alert) do
       post :set_antiflood_level, {:user_id => 2, :antiflood_level => '5'}
     end
     assert_redirected_to "/miembros/#{u2.login}"
@@ -320,7 +320,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     @u4.is_hq = true
     assert @u4.save
     sym_login @u4.id
-    assert_count_increases(SlogEntry) do
+    assert_count_increases(Alert) do
       post :report, :id => User.find(:first)
     end
     assert_response :success

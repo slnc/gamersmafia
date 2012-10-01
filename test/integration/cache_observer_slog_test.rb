@@ -14,13 +14,17 @@ class CacheObserverSlogTest < ActionController::IntegrationTest
     superadmin = User.find_by_login('superadmin')
     sym_login 'superadmin', 'lalala'
     go_to '/'
-    assert_cache_exists "common/slog/#{superadmin.id}"
-    assert_count_increases(SlogEntry) do
-      SlogEntry.create(:type_id => SlogEntry::TYPES[:error], :headline => 'soy una slogentry molona', :info => 'lolali')
+    assert_cache_exists "common/alertas/#{superadmin.id}"
+    assert_count_increases(Alert) do
+      Alert.create({
+          :type_id => Alert::TYPES[:error],
+          :headline => 'soy una alertalerta molona',
+          :info => 'lolali',
+      })
     end
-    assert_cache_dont_exist "common/slog/#{superadmin.id}"
-    go_to '/site/slog', 'site/slog_html'
-    #assert_cache_dont_exist "common/slog/#{superadmin.id}"
+    assert_cache_dont_exist "common/alertas/#{superadmin.id}"
+    go_to '/site/alertas', 'site/alertas_html'
+    #assert_cache_dont_exist "common/alertas/#{superadmin.id}"
   end
 
   def teardown

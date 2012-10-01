@@ -228,7 +228,7 @@ class Admin::UsuariosController < ApplicationController
     else
       flash[:error] = "Error al confirmar el ban: #{br.errors.full_messages_html}."
     end
-    redirect_to "/slog/capo"
+    redirect_to "/alertas/capo"
   end
 
   def confirm_unban_request
@@ -239,7 +239,7 @@ class Admin::UsuariosController < ApplicationController
     else
       flash[:error] = "Error al confirmar el desbaneo: #{br.errors.full_messages_html}."
     end
-    redirect_to "/slog/capo"
+    redirect_to "/alertas/capo"
   end
 
   def cancel_ban_request
@@ -250,7 +250,7 @@ class Admin::UsuariosController < ApplicationController
     else
       flash[:error] = "Error al destruir el ban: #{br.errors.full_messages_html}."
     end
-    redirect_to "/site/slog"
+    redirect_to "/site/alertas"
   end
 
   def send_hq_invitation
@@ -305,8 +305,8 @@ Quedo a la espera de tu respuesta :)")
     if @user.is_hq?
       reason_str = (params[:reason] && params[:reason].to_s != '' && params[:reason].to_s != 'Razón..') ? " (#{params[:reason]})" : ''
 
-      sl = SlogEntry.create({
-          :type_id => SlogEntry::TYPES[:user_report],
+      sl = Alert.create({
+          :type_id => Alert::TYPES[:user_report],
           :reporter_user_id => @user.id,
           :headline => (
               "Perfil de <strong><a href=\"#{gmurl(@curuser)}\">"

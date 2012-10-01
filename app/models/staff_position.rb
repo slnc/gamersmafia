@@ -65,7 +65,7 @@ class StaffPosition < ActiveRecord::Base
           :after => [:elect_winning_candidates, :save] do
       transitions :to => :elect, :from => [:voting]
       # TODO(slnc): email whoever needs to approve positions and create
-      # SlogEntry
+      # Alert
     end
 
     event :confirm_winners,

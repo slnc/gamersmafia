@@ -48,8 +48,8 @@ class FactionTest < ActiveSupport::TestCase
     assert_equal [], f1.editors
   end
 
-  test "create_should_create_slog_entry" do
-    assert_count_increases(SlogEntry) do
+  test "create_should_create_alert" do
+    assert_count_increases(Alert) do
       f = Faction.new({:code => 'oo', :name => "Oinoiroko"})
       assert f.save, f.errors.full_messages_html
     end

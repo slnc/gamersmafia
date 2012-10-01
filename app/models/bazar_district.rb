@@ -135,8 +135,8 @@ class BazarDistrict < ActiveRecord::Base
           :conditions => ["role IN ('#{ROLE_DON}', '#{ROLE_MANO_DERECHA}')
                            AND user_id = ?", newuser.id]).each do |ur|
         ur.destroy
-        SlogEntry.create({
-            :type_id => SlogEntry::TYPES[:info],
+        Alert.create({
+            :type_id => Alert::TYPES[:info],
             :reviewer_user_id => User.find_by_login('MrAchmed').id,
             :headline => (
                 "Eliminado permiso <strong>#{ur.role}</strong> de" +
@@ -152,8 +152,8 @@ class BazarDistrict < ActiveRecord::Base
     prev.destroy if prev
 
     receiver_name = newuser.nil? ? 'nadie' : newuser.login
-    SlogEntry.create({
-        :type_id => SlogEntry::TYPES[:info],
+    Alert.create({
+        :type_id => Alert::TYPES[:info],
         :reviewer_user_id => User.find_by_login('MrAchmed').id,
         :headline => "Actualizado #{role} de #{self.name} a #{receiver_name}",
         :completed_on => Time.now,

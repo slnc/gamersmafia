@@ -1,6 +1,6 @@
 <%=render :partial => 'scope_selector', :locals => { :collection => @available_scopes, :active_scope => @scope } %>
 
-<%=render :partial => 'task_browser', :locals => { :slog_entries_filter => { :domain => :bazar_district_bigboss, :scope => @scope } } %>
+<%=render :partial => 'task_browser', :locals => { :alerts_filter => { :domain => :bazar_district_bigboss, :scope => @scope } } %>
 
 <div class="grid-9 glast">
 <% bd = BazarDistrict.find(@scope)%>
@@ -19,7 +19,7 @@
 <table>
 	<tr class="<%=oddclass%>">
 		<td>Sicarios</td>
-		<td class="centered"><a href="/slog/sicario?scope=<%=@scope%>"><%=SlogEntry.ccount(:open, { :domain => :sicario, :scope => @scope})%></a></td>
+		<td class="centered"><a href="/alertas/sicario?scope=<%=@scope%>"><%=Alert.ccount(:open, { :domain => :sicario, :scope => @scope})%></a></td>
 	</tr>
 </table>
 <% end -%>

@@ -23,7 +23,7 @@ fixtures = [
 :content_types,
 :contents,
 :bets,
-:slog_entries,
+:alerts,
 :bets_options,
 :bets_tickets,
 :blogentries,

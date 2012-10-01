@@ -3,12 +3,12 @@ one:
   created_on: 2006-01-01 00:00:00
   headline: foo
   info: bar
-  type_id: <%=SlogEntry::TYPES[:security]%>
+  type_id: <%=Alert::TYPES[:security]%>
   reporter_user_id: 1
 two:
   id: 2
   created_on: 2006-01-01 00:00:00
   headline: Perfil reportado
   info: bar
-  type_id: <%=SlogEntry::TYPES[:general_content_report]%>
+  type_id: <%=Alert::TYPES[:general_content_report]%>
   reporter_user_id: 1

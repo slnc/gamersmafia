@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'test_helper'
 
-class SlogControllerTest < ActionController::TestCase
+class AlertasControllerTest < ActionController::TestCase
 
   test "submenu shouldnt crash if 401 error" do
     assert_raises(AccessDenied) { get :index }
@@ -14,7 +14,7 @@ class SlogControllerTest < ActionController::TestCase
     sym_login 1
     get :index
     assert_response :success
-    assert_template 'slog/webmaster'
+    assert_template 'alertas/webmaster'
     assert_not_nil @response.body.index('Gladiador')
   end
 
@@ -157,14 +157,14 @@ class SlogControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  def atest_slog_entry_reviewed
-    assert_raises(AccessDenied) { get :slog_entry_reviewed, :id => 1 }
+  def atest_alert_reviewed
+    assert_raises(AccessDenied) { get :alert_reviewed, :id => 1 }
 
     sym_login 5
-    assert_raises(AccessDenied) { get :slog_entry_reviewed, :id => 1 }
+    assert_raises(AccessDenied) { get :alert_reviewed, :id => 1 }
 
     sym_login 1
-    get :slog_entry_reviewed, :id => 1
+    get :alert_reviewed, :id => 1
     assert_response :success
   end
 
@@ -172,7 +172,7 @@ class SlogControllerTest < ActionController::TestCase
     # TODO faltan tests
     @f = Faction.find(1)
     @bd = BazarDistrict.find(1)
-    @editor_scope = 1 * SlogEntry::EDITOR_SCOPE_CONTENT_TYPE_ID_MASK + 1
+    @editor_scope = 1 * Alert::EDITOR_SCOPE_CONTENT_TYPE_ID_MASK + 1
     [
      [:test_sicario, :bazar_district_content_report, :@bd, :id, nil, nil],
      [:test_don, :bazar_district_content_report, :@bd, :id, nil, nil],
@@ -192,17 +192,17 @@ class SlogControllerTest < ActionController::TestCase
       User.db_query("UPDATE users SET is_superadmin = 'f', cache_is_faction_leader = 'f' AND admin_permissions = '0'")
       self.send t
       # @f.reload
-      sle = SlogEntry.create({
-          :type_id => SlogEntry::TYPES[type_id_sym],
+      sle = Alert.create({
+          :type_id => Alert::TYPES[type_id_sym],
           :headline => 'foo',
           :data => data,
           :entity_id => entity_id,
           :scope => instance_variable_get(obj).send(meth)
       })
-      get :slog_entry_assigntome, :id => sle.id
+      get :alert_assigntome, :id => sle.id
       assert_response :success
 
-      get :slog_entry_reviewed, :id => sle.id
+      get :alert_reviewed, :id => sle.id
       assert_response :success
     end
   end

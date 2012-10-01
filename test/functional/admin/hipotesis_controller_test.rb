@@ -31,11 +31,11 @@ class Admin::HipotesisControllerTest < ActionController::TestCase
     assert_response :redirect
   end
 
-  test "editar" do
-    self.create_abtest
-    get :editar, :id => @ab_test.id
-    assert_response :success
-  end
+  #test "editar" do
+  #  self.create_abtest
+  #  get :editar, :id => @ab_test.id
+  #  assert_response :success
+  #end
 
   test "update" do
     self.create_abtest

@@ -41,7 +41,7 @@ class AvatarTest < ActiveSupport::TestCase
   #end
 
   test "should_create_logentry_after_create" do
-    assert_count_increases(SlogEntry) do
+    assert_count_increases(Alert) do
       assert_count_increases(Avatar) do
         @av = Avatar.create({:name => 'fulanito de tal', :submitter_user_id => 1, :path => fixture_file_upload("files/buddha.jpg")})
       end

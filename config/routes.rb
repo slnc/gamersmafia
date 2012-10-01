@@ -183,12 +183,11 @@ Gamersmafia::Application.routes.draw do
   match 'miembros/:login/contenidos/:content_name' => 'miembros#contenidos_tipo', :login => /[^\/]+/
   match 'site/banners/duke' => 'site#banners_duke'
   match 'site/banners/misc' => 'site#banners_misc'
-  match 'site/slog.:format' => 'site#slog'
   match 'site/sponsors' => 'site#sponsors'
   match 'site/sponsors/:sponsor' => 'site#sponsor'
   match 'site/:action(/:id)' => 'site'
-  match 'slog' => 'slog#index'
-  match 'slog/:action(/:id)' => 'slog'
+  match 'alertas' => 'alertas#index'
+  match 'alertas/:action(/:id)' => 'alertas'
   match 'tutoriales/:category' => 'tutoriales#index', :constraints => { :category => /\d+/ }
   match 'tutoriales/create' => 'tutoriales#create'
   match 'tutoriales/list' => 'tutoriales#index'

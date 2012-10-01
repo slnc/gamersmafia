@@ -741,9 +741,9 @@ module Cms
       end
     elsif PublishingDecision.find_sum_for_content(content) >= 1.0
       content.change_state(Cms::PUBLISHED, Ias.MrMan)
-      ttype, scope = SlogEntry.fill_ttype_and_scope_for_content_report(uniq)
+      ttype, scope = Alert.fill_ttype_and_scope_for_content_report(uniq)
       mrman = Ias.MrMan
-      SlogEntry.create(:type_id => ttype, :scope => scope, :reporter_user_id => mrman.id, :headline => "#{Cms.faction_favicon(content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.real_content.resolve_html_hid}</a></strong> publicado") if prev_state == Cms::PENDING
+      Alert.create(:type_id => ttype, :scope => scope, :reporter_user_id => mrman.id, :headline => "#{Cms.faction_favicon(content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.real_content.resolve_html_hid}</a></strong> publicado") if prev_state == Cms::PENDING
     elsif PublishingDecision.find_sum_for_content(content) <= -1.0
       content.change_state(Cms::DELETED, Ias.MrMan)
       msg = "Lo lamentamos pero tu contenido ha sido denegado por las siguientes razones:\n\n"
@@ -751,9 +751,9 @@ module Cms
         msg<< "[~#{pd.user.login}]: #{pd.deny_reason}\n" if not pd.publish?
       end
 
-      ttype, scope = SlogEntry.fill_ttype_and_scope_for_content_report(uniq)
+      ttype, scope = Alert.fill_ttype_and_scope_for_content_report(uniq)
       mrman = Ias.MrMan
-      SlogEntry.create(:type_id => ttype, :scope => scope, :reporter_user_id => mrman.id, :headline => "#{Cms.faction_favicon(content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.real_content.resolve_html_hid}</a></strong> denegado") if prev_state == Cms::PENDING
+      Alert.create(:type_id => ttype, :scope => scope, :reporter_user_id => mrman.id, :headline => "#{Cms.faction_favicon(content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.real_content.resolve_html_hid}</a></strong> denegado") if prev_state == Cms::PENDING
 
       m = Message.new({ :message => msg, :sender => Ias.nagato, :recipient => content.user, :title => "Contenido \"#{content.resolve_hid}\" denegado"})
       m.save
