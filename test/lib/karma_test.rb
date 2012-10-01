@@ -44,11 +44,12 @@ class KarmaTest < ActiveSupport::TestCase
 
   test "update_ranking" do
     User.db_query("UPDATE users SET cache_karma_points = id")
+    User.db_query("UPDATE users SET cache_karma_points = NULL WHERE id = 1")
     Karma.update_ranking
     users_count = User.can_login.count
-    assert_equal users_count, User.find(1).ranking_karma_pos
-    assert_equal users_count - 1, User.find(2).ranking_karma_pos
-    assert_equal users_count - 2, User.find(3).ranking_karma_pos
+    assert_equal 1, User.find(1).ranking_karma_pos
+    assert_equal users_count, User.find(2).ranking_karma_pos
+    assert_equal users_count - 1, User.find(3).ranking_karma_pos
   end
 
   test "calculate_new_comments_karma_points shouldn't touch unpublished contents" do

@@ -262,8 +262,8 @@ module Karma
     users_by_karma = {}
     old_ranks = {}
     User.can_login.each do |user|
-      users_by_karma[user.cache_karma_points] ||= []
-      users_by_karma[user.cache_karma_points] << user.id
+      users_by_karma[user.karma_points] ||= []
+      users_by_karma[user.karma_points] << user.id
       old_ranks[user.id] = user.ranking_karma_pos
     end
 
