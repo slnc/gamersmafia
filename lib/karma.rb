@@ -44,7 +44,7 @@ module Karma
   UGC_OLD_ENOUGH_FOR_KARMA_DAYS = 14
 
   def self.recalculate_karma
-    User.db_query("UPDATE users SET cache_karma_points = NULL")
+    # User.db_query("UPDATE users SET cache_karma_points = NULL")
     self.award_karma_points_new_ugc(false)
     # TODO(slnc): we need to recalculate factions and daily stats
   end
@@ -191,6 +191,15 @@ module Karma
     end
 
     points
+  end
+
+  def self.regenerate_users_karma_points
+    i = 0
+    User.find_each do |u|
+      u.update_column(:cache_karma_points, self.calculate_karma_points(u))
+      i += 1
+      puts i if i % 1000 == 0
+    end
   end
 
   def self.calculate_karma_points(thing, other_conditions=nil)
