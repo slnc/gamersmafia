@@ -30,6 +30,7 @@ def tag_and_notify
   git_st = `git status`
   if git_st.include?("# Changed but not updated:")
     puts "Working directory is dirty, cannot create release."
+    return
   end
 
   all_tags = `git tag | grep release`.strip.split("\n")
