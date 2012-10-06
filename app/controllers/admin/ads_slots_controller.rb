@@ -1,5 +1,10 @@
 # -*- encoding : utf-8 -*-
 class Admin::AdsSlotsController < AdministrationController
+
+  before_filter do |c|
+    raise AccessDenied if !(c.user && c.user.has_skill?("Webmaster"))
+  end
+
   def index
   end
 
@@ -93,8 +98,9 @@ class Admin::AdsSlotsController < AdministrationController
     end
 
     def require_user_can_owns_ads_slot(ads_slot_id)
-      @user.is_superadmin? ||
-        !@user.users_skills.count(:conditions => "role = 'Advertiser' AND
-                                                 role_data = '#{ads_slot_id}'") == 0
+      (@user.has_skill?("Webmaster") ||
+       @user.users_skills.count(
+           :conditions => "role = 'Advertiser' AND
+                           role_data = '#{ads_slot_id}'") > 0)
     end
   end

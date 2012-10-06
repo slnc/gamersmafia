@@ -1,17 +1,54 @@
 # -*- encoding : utf-8 -*-
 class Admin::UsuariosController < ApplicationController
-  before_filter :require_auth_admins, :except => [ :edit, :index, :clear_photo, :clear_description, :report, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request, :confirmar_ban_request , :set_antiflood_level, :update, :users_skill_destroy, :ipsduplicadas]
-  before_filter :only => [ :index, :clear_photo, :clear_description, :ban_request, :create_unban_request, :confirm_unban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request] do |c|
-    raise AccessDenied unless c.user && c.user.has_admin_permission?(:capo)
-  end
-  before_filter :only => [ :confirmar_ban_request ] do |c|
-    raise AccessDenied unless c.user && (c.user.has_admin_permission?(:capo) || c.user.is_hq?)
-  end
-  before_filter :only => [ :report, :set_antiflood_level ] do |c|
-    raise AccessDenied unless c.user && c.user.is_hq?
+  before_filter :require_auth_admins,
+                :except => [
+                    :ban_request,
+                    :cancel_ban_request,
+                    :clear_description,
+                    :clear_photo,
+                    :confirm_ban_request,
+                    :confirm_unban_request,
+                    :confirmar_ban_request ,
+                    :create_ban_request,
+                    :create_unban_request,
+                    :edit,
+                    :index,
+                    :ipsduplicadas,
+                    :report,
+                    :set_antiflood_level,
+                    :update,
+                    :users_skill_destroy,
+  ]
+
+  before_filter :only => [
+      :ban_request,
+      :cancel_ban_request,
+      :clear_description,
+      :clear_photo,
+      :confirm_ban_request,
+      :confirm_unban_request,
+      :create_ban_request,
+      :create_unban_request,
+      :index,
+  ] do |c|
+    raise AccessDenied unless c.user && c.user.has_skill?("Capo")
   end
 
-  #verify :method => :post, :only => [ :update, :check_karma, :check_faith, :check_registered_on ], :redirect_to => '/admin/usuarios'
+  before_filter :only => [ :confirmar_ban_request ] do |c|
+    raise AccessDenied unless c.user && (c.user.has_skill?("Capo") || c.user.is_hq?)
+  end
+
+  before_filter :only => [ :report ] do |c|
+    if !(c.user && Authorization::Users.can_report_users?(c.user))
+      raise AccessDenied
+    end
+  end
+
+  before_filter :only => [ :set_antiflood_level ] do |c|
+    if !(c.user && Authorization::Users.can_antiflood_users?(c.user))
+      raise AccessDenied
+    end
+  end
 
   def index
     order_by = 'id DESC'
@@ -46,17 +83,30 @@ class Admin::UsuariosController < ApplicationController
   end
 
   def destroy
-	  raise AccessDenied unless @user.is_hq?
-    @edituser = User.find_or_404(:first, :conditions => ['id = ? and is_superadmin is false', params[:id]])
-    flash[:notice] = "Usuario #{@edituser.login} borrado correctamente." if @edituser.destroy
+	  raise AccessDenied unless @user.has_skill?("Capo")
+    @edituser = User.find_or_404(:first, :conditions => ['id = ?', params[:id]])
+    if @edituser.destroy
+      flash[:notice] = "Usuario #{@edituser.login} borrado correctamente."
+    else
+      flash[:error] = (
+          "Error al borrar el usuario: #{@edituser.errors.full_messages_html}")
+    end
     redirect_to '/admin/usuarios'
   end
 
   def ban
-    @edituser = User.find_or_404(:first, :conditions => ['id = ? and is_superadmin is false', params[:id]])
+    @edituser = User.find_or_404(:first, :conditions => ['id = ?', params[:id]])
     @edituser.change_internal_state 'banned'
-    IpBan.create({:user_id => @user.id, :ip => @edituser.ipaddr, :comment => "Ban al usuario #{@edituser.login}", :expires_on => 7.days.since})
-    flash[:notice] = "Usuario <strong>#{@edituser.login}</strong> baneado. Ip <strong>#{@edituser.ipaddr}</strong> baneada para nuevos registros durante 7 días."
+    IpBan.create({
+        :user_id => @user.id,
+        :ip => @edituser.ipaddr,
+        :comment => "Ban al usuario #{@edituser.login}",
+        :expires_on => 7.days.since,
+    })
+    flash[:notice] = (
+        "Usuario <strong>#{@edituser.login}</strong> baneado. Ip" +
+        " <strong>#{@edituser.ipaddr}</strong> baneada para nuevos registros" +
+        " durante 7 días.")
     redirect_to '/admin/usuarios'
   end
 
@@ -74,14 +124,24 @@ class Admin::UsuariosController < ApplicationController
     end
 
     if params[:users_skill] && params[:users_skill][:role].to_s != '' # añadir rol
-      u.users_skills<< UsersSkill.create(:role => params[:users_skill][:role], :role_data => params[:users_skill][:role_data])
+      u.users_skills<< UsersSkill.create({
+          :role => params[:users_skill][:role],
+          :role_data => params[:users_skill][:role_data],
+      })
     end
 
-    if !params[:edituser][:admin_permissions].to_s.empty?
-      u.update_admin_permissions(params[:edituser][:admin_permissions])
-    end
-
-    if u.update_attributes(params[:edituser].pass_sym(:firstname, :lastname, :login, :antiflood_level, :state, :password, :password_confirmation, :email, :is_hq, :comments_sig))
+    if u.update_attributes(params[:edituser].pass_sym(
+        :antiflood_level,
+        :comments_sig,
+        :email,
+        :firstname,
+        :is_hq,
+        :lastname,
+        :login,
+        :password,
+        :password_confirmation,
+        :state
+    ))
       flash[:notice] = 'Cambios guardados correctamente.'
       redirect_to :action => 'edit', :id => u.id
     else
@@ -189,7 +249,7 @@ class Admin::UsuariosController < ApplicationController
 
   def create_ban_request
     params[:public_ban_reason] = [] if params[:public_ban_reason].nil?
-    require_admin_permission(:capo)
+    require_skill("Capo")
     u = User.find_by_login!(params[:login])
     b = BanRequest.new({:user_id => @user.id, :banned_user_id => u.id, :reason => params[:reason]})
     if b.save
@@ -208,7 +268,7 @@ class Admin::UsuariosController < ApplicationController
   end
 
   def create_unban_request
-    require_admin_permission(:capo)
+    require_skill("Capo")
     u = User.find_by_login!(params[:login])
     b = BanRequest.find(:first, :conditions => ['banned_user_id = ? and confirmed_on is not null', u.id], :order => 'confirmed_on DESC')
     raise ActiveRecord::RecordNotFound unless b
@@ -274,6 +334,7 @@ Quedo a la espera de tu respuesta :)")
   end
 
   def set_antiflood_level
+    raise AccessDenied if !@user.has_skill?("Antiflood")
     u = User.find(params[:user_id])
     if u.impose_antiflood(params[:antiflood_level].to_i, @user)
 	    flash[:notice] = "Antiflood modificado correctamente"
@@ -302,25 +363,22 @@ Quedo a la espera de tu respuesta :)")
 
   def report
     @curuser = User.find(params[:id])
-    if @user.is_hq?
-      reason_str = (params[:reason] && params[:reason].to_s != '' && params[:reason].to_s != 'Razón..') ? " (#{params[:reason]})" : ''
+    reason_str = (params[:reason] && params[:reason].to_s != '' && params[:reason].to_s != 'Razón..') ? " (#{params[:reason]})" : ''
 
-      sl = Alert.create({
-          :type_id => Alert::TYPES[:user_report],
-          :reporter_user_id => @user.id,
-          :headline => (
-              "Perfil de <strong><a href=\"#{gmurl(@curuser)}\">"
-              "#{@curuser.login}</a></strong> Reportado #{reason_str} por" +
-              " <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"),
-      })
-      if sl.new_record?
-        flash[:error] = "Error al reportar al usuario:<br />#{sl.errors.full_messages_html}"
-      else
-        flash[:notice] = "Usuario reportado correctamente"
-      end
-      render :partial => '/shared/ajax_facebox_feedback', :layout => false
+    sl = Alert.create({
+      :type_id => Alert::TYPES[:user_report],
+      :reporter_user_id => @user.id,
+      :headline => (
+        "Perfil de <strong><a href=\"#{gmurl(@curuser)}\">"
+      "#{@curuser.login}</a></strong> Reportado #{reason_str} por" +
+        " <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"),
+    })
+
+    if sl.new_record?
+      flash[:error] = "Error al reportar al usuario:<br />#{sl.errors.full_messages_html}"
     else
-      raise AccessDenied
+      flash[:notice] = "Usuario reportado correctamente"
     end
+    render :partial => '/shared/ajax_facebox_feedback', :layout => false
   end
 end

@@ -1,0 +1,4 @@
+<%mftable("Habilidades", karma_skills_percentages(curuser)) do |name, percentage|%>
+  <td><%=name%></td>
+  <td class="w50"><%=draw_pcent_bar(percentage)%></td>
+<% end -%>

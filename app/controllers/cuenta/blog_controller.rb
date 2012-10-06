@@ -29,7 +29,7 @@ class Cuenta::BlogController < ApplicationController
   def edit
     navpath2<< ['Preferencias', '/cuenta']
     @blogentry = Blogentry.find_or_404(:first, :conditions => ['id = ?', params[:id]])
-    raise AccessDenied unless @user.has_admin_permission?(:capo) || @user.id == @blogentry.user_id
+    raise AccessDenied unless @user.has_skill?("Capo") || @user.id == @blogentry.user_id
     @title = "Editar entrada de blog \"#{@blogentry.title}\""
   end
 

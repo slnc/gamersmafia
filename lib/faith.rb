@@ -152,7 +152,7 @@ module Faith
                      FROM publishing_decisions
                     WHERE #{created_on_sql}
                       AND #{PublishingDecision::VALID_SQL}
-                      AND (select is_bot FROM users WHERE id = user_id) = 'f'
+                      AND user_id NOT IN (SELECT user_id FROM users_skills WHERE role = 'Bot')
                  GROUP BY user_id").each do |dbc|
       points[dbc['user_id']] ||= 0
       points[dbc['user_id']] += dbc['count'].to_i * Faith::FPS_ACTIONS['publishing_decision']

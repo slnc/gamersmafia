@@ -36,7 +36,13 @@ class DescargasControllerTest < ActionController::TestCase
   test "create_from_zip_should_work_if_good_guy" do
     sym_login 1
     d_count = Download.count
-    post :create_from_zip, { :categories_terms => [Term.with_taxonomy('DownloadsCategory').find(:first).id], :download => { :file => fixture_file_upload('/files/images.zip', 'application/zip') } }
+    post :create_from_zip, {
+        :categories_terms => [
+            Term.with_taxonomy('DownloadsCategory').find(:first).id],
+        :download => {
+            :file => fixture_file_upload('/files/images.zip', 'application/zip'),
+        },
+    }
     assert_response :redirect
     assert_equal d_count + 2, Download.count
   end

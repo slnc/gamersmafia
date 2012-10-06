@@ -75,7 +75,7 @@ module Emblems
       u.users_emblems.create(:emblem => 'hq')
     end
 
-    User.find(:all, :conditions => 'is_superadmin = \'t\'').each do |u|
+    UsersSkill.find_users_with_skill("Webmaster").each do |u|
       u.users_emblems.create(:emblem => 'webmaster')
     end
 
@@ -112,7 +112,7 @@ module Emblems
       mano_derechas<< u.id
     end
 
-    User.find_with_admin_permissions(:capo).each do |u|
+    UsersSkill.find_users_with_skill("Capo").each do |u|
       u.users_emblems.create(:emblem => 'capo')
     end
 
@@ -176,7 +176,7 @@ module Emblems
 
   # wealthiest living
   maxc = nil
-  User.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED} and cash > 0 and is_bot is false AND lastseen_on > now() - '3 months'::interval", :order => 'cash DESC', :limit => 10).each do |u|
+  User.humans.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED} and cash > 0 AND lastseen_on > now() - '3 months'::interval", :order => 'cash DESC', :limit => 10).each do |u|
     maxc = u.cash if maxc.nil? || u.cash > maxc
     u.users_emblems.create(:emblem => 'wealthiest', :details => "Muchos GMFs") if u.cash == maxc
   end

@@ -65,18 +65,6 @@ class UserTest < ActiveSupport::TestCase
     assert user.update_attributes(:is_hq => true)
   end
 
-  test "find_with_permissions" do
-    u1 = User.find(1)
-    assert u1.update_attributes(:admin_permissions => nil)
-    assert u1.give_admin_permission(:capo)
-    assert_equal '00000100000000', u1.admin_permissions
-    u1.reload
-    u1.reload
-    capos = User.find_with_admin_permissions(:capo)
-    assert_equal 1, capos.size
-    assert_equal 1, capos[0].id
-  end
-
   test "del_user_from_hq_should_work" do
     panzer = User.find_by_login('panzer')
     add_user_to_hq(panzer)
@@ -269,5 +257,16 @@ class UserTest < ActiveSupport::TestCase
 
   test "comments_valorations_weights" do
     assert_equal 0.5, Comment.find(1).user.valorations_weights_on_self_comments
+  end
+
+  test "has_skill_no_skill" do
+    u1 = User.find(1)
+    assert !u1.has_skill?("Bank")
+  end
+
+  test "has_skill_skill" do
+    u1 = User.find(1)
+    u1.users_skills.create(:role => "Bank")
+    assert u1.has_skill?("Bank")
   end
 end

@@ -3,13 +3,23 @@ require 'test_helper'
 
 class Admin::BazarDistrictsControllerTest < ActionController::TestCase
 
+  test "index no skill" do
+    sym_login 1
+    assert_raises(AccessDenied) do
+      get :index
+    end
+    assert_response :success
+  end
+
   test "index" do
+    give_skill(1, "BazarManager")
     sym_login 1
     get :index
     assert_response :success
   end
 
   test "create" do
+    give_skill(1, "BazarManager")
     sym_login 1
     assert_count_increases(BazarDistrict) do
       post :create, {:bazar_district => {:name => 'el nombrecico', :code => 'codecico'}}
@@ -18,25 +28,14 @@ class Admin::BazarDistrictsControllerTest < ActionController::TestCase
   end
 
   test "edit" do
+    give_skill(1, "BazarManager")
     sym_login 1
     get :edit, :id => 1
     assert_response :success
   end
 
-  test "user_with_admin_permission_should_allow_if_registered" do
-    assert_raises(AccessDenied) { get :index }
-    u2 = User.find(2)
-    sym_login u2
-    assert_raises(AccessDenied) { get :index }
-
-    u2.give_admin_permission(:bazar_manager)
-
-    sym_login u2
-    get :index
-    assert_response :success
-  end
-
   test "update" do
+    give_skill(1, "BazarManager")
     sym_login 1
     u1 = User.find(1)
     u2 = User.find(2)

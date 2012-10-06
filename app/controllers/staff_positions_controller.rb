@@ -13,7 +13,7 @@ class StaffPositionsController < ApplicationController
 
   def move_to_candidacy_presentation
     require_auth_users
-    require_admin_permission :capo
+    require_skill("Capo")
     @staff_position = StaffPosition.find_or_404(
       params[:id], :include => :staff_type)
     @staff_position.open_candidacy_presentation

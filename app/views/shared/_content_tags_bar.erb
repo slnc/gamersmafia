@@ -33,7 +33,7 @@ root_slugs<< this_root
 	<div class="clearl"></div>
 	</div>
 
-<% if user_is_authed then %>
+<% if user_is_authed && @user.has_skill?("TagContents") %>
 <div id="tag-this-content">
   <img src="/images/dot.gif" title="Añadir tag" class="floatl user-tag-icon-add ico16 sprite1" />
 </div>

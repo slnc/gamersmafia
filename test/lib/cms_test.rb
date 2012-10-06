@@ -391,9 +391,9 @@ class CmsTest < ActiveSupport::TestCase
     assert Cms.user_can_edit_content?(u10, Image.new(:terms => 1))
   end
 
-  test "capo_can_edit_blogentry" do
+  test "edit_contents_can_edit_blogentry" do
     u10 = User.find(10)
-    u10.give_admin_permission(:capo)
+    give_skill(u10.id, "EditContents")
     be = Blogentry.find(:first)
     assert Cms.user_can_edit_content?(u10, be)
   end

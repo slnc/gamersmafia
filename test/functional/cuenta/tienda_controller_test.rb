@@ -3,17 +3,22 @@ require 'test_helper'
 
 class Cuenta::TiendaControllerTest < ActionController::TestCase
 
-
-  test_min_acl_level :user, [ :index, :show, :buy ]
-  # TODO probar con todos los productos
+  test "should_not show_index unauthenticated" do
+    sym_login 1
+    assert_raises(AccessDenied) do
+      get :index
+    end
+  end
 
   test "should_show_index" do
+    give_skill(1, "GmShop")
     sym_login 1
     get :index
     assert_response :success
   end
 
   test "should_show_producto" do
+    give_skill(2, "GmShop")
     sym_login 2 # un usuario sin profile signatures
     prod = Product.find_by_cls('SoldProfileSignatures')
     assert_not_nil prod
@@ -22,6 +27,7 @@ class Cuenta::TiendaControllerTest < ActionController::TestCase
   end
 
   test "should_buy_product_if_enough_money" do
+    give_skill(2, "GmShop")
     sym_login 2
     prod = Product.find(:first, :conditions => 'cls = \'SoldChangeNick\' AND price > 0')
     assert_not_nil prod
@@ -46,6 +52,7 @@ class Cuenta::TiendaControllerTest < ActionController::TestCase
   end
 
   test "should_not_buy_product_if_insufficient_money" do
+    give_skill(1, "GmShop")
     sym_login 1
     prod = Product.find(:first, :conditions => 'price > 0')
     assert_not_nil prod
@@ -57,12 +64,14 @@ class Cuenta::TiendaControllerTest < ActionController::TestCase
   end
 
   test "should_show_mis_compras" do
+    give_skill(1, "GmShop")
     test_should_buy_product_if_enough_money
     get :mis_compras
     assert_response :success
   end
 
   test "should_show_configure_page_of_mis_compras" do
+    give_skill(1, "GmShop")
     test_should_buy_product_if_enough_money
     get :configurar_compra, { :id => @bp.id }
     assert_response :success

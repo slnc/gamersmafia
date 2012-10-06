@@ -1,5 +1,10 @@
 # -*- encoding : utf-8 -*-
 class Admin::AdsController < AdministrationController
+
+  before_filter do |c|
+    raise AccessDenied if !(c.user && c.user.has_skill?("Webmaster"))
+  end
+
   def index
   end
 

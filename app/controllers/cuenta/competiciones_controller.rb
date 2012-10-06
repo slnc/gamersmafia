@@ -478,7 +478,10 @@ class Cuenta::CompeticionesController < ApplicationController
   end
 
   def require_auth_competition_admin
-    raise AccessDenied unless @competition && (@competition.user_is_admin(@user.id) || @user.is_superadmin?)
+    if !(@competition && (@competition.user_is_admin(@user.id) ||
+                          @user.has_skill?("Webmaster")))
+      raise AccessDenied
+    end
   end
 
   def require_auth_competition_participant

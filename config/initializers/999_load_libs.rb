@@ -10,6 +10,7 @@
    acts_as_content_browser
    acts_as_tree
    all
+   authorization
    cms
    bank
    gmstats

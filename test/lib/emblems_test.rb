@@ -2,6 +2,7 @@
 require 'test_helper'
 
 class EmblemsTest < ActiveSupport::TestCase
+
   def assert_gives_emblem(emblem, &block)
     @u = User.find(1) if @u.nil?
     assert_equal 0, @u.users_emblems.count(:conditions => "emblem = '#{emblem}'")
@@ -36,8 +37,9 @@ class EmblemsTest < ActiveSupport::TestCase
   end
 
   test "give_emblems_capo" do
+    User.find(1).users_skills.clear
     assert_gives_emblem('capo') do
-      assert @u.give_admin_permission(:capo)
+      give_skill(@u.id, "Capo")
     end
   end
 
@@ -102,11 +104,14 @@ class EmblemsTest < ActiveSupport::TestCase
     end
   end
 
-  test "give_emblems_webmaster" do
-    assert_gives_emblem('webmaster') do
-      assert @u.update_attributes(:is_superadmin => true)
-    end
-  end
+  #test "give_emblems_webmaster" do
+  #  User.find(1).users_skills.clear
+  #  assert_gives_emblem('webmaster') do
+  #    assert_count_increases("@u.users_skills.count") do
+  #      @u.users_skills.create(:role => "Webmaster")
+  #    end
+  #  end
+  #end
 
   test "give_emblems_boss" do
     assert_gives_emblem('boss') do

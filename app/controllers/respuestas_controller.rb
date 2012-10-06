@@ -92,7 +92,7 @@ class RespuestasController < InformacionController
 
     # raise ActiveRecord
     # TODO loguear quién ha puesto una respuesta
-    raise AccessDenied unless Cms.user_can_delete_content?(@user, @question)
+    raise AccessDenied unless Cms.user_can_edit_content?(@user, @question)
 
     if @question.revert_set_best_answer(@user)
       flash[:notice] = "Mejor respuesta quitada correctamente."

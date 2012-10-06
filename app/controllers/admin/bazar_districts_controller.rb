@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Admin::BazarDistrictsController < AdministrationController
-  require_admin_permission :bazar_manager
+
+  require_skill("BazarManager")
 
   def index
   end

@@ -23,7 +23,7 @@ class Admin::CategoriasController < ApplicationController
             'Editor',
             'ManoDerecha',
             'Sicario',
-            'Underboss')") > 0 || user.has_admin_permission?(:capo)
+            'Underboss')") > 0 || user.has_skill?("Capo")
   end
 
   public

@@ -17,7 +17,9 @@ class PortalsResolutionTest < ActionController::IntegrationTest
     n = News.find(:first, :order => 'id desc')
     assert !n.is_public?
     host! App.domain
-    post '/admin/contenidos/mass_moderate', { :mass_action => 'publish', :items => [n.unique_content_id.to_s] }
+    post '/admin/contenidos/mass_moderate', {
+        :mass_action => 'publish', :items => [n.unique_content_id.to_s],
+    }
     assert_redirected_to '/admin/contenidos'
     n.reload
     assert n.is_public?

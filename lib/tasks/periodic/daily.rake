@@ -45,6 +45,7 @@ namespace :gm do
     User.update_max_cache_valorations_weights_on_self_comments
     UsersNewsfeed.old.delete_all
     UsersSkill.kill_zombified_staff
+    UsersSkill.give_karma_skills
 
     # We only rebuild the model every 3 days because of the load it adds to the
     # server.

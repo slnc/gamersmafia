@@ -700,7 +700,10 @@ module Cms
   end
 
   def self.modify_content_state(content, user, new_state, reason=nil)
-    raise AccessDenied if (user.id == content.user_id and not Cms::user_can_edit_content?(user, content))
+    if user.id == content.user_id && !Cms::user_can_edit_content?(user, content)
+      raise AccessDenied
+    end
+
     uniq = content.unique_content
     u_weight = Cms::get_user_weight_with(uniq.content_type, user, content)
 
@@ -784,7 +787,7 @@ module Cms
 
   # Devuelve el peso de un usuario a la hora de moderar un contenido del tipo dado. En caso de superadmins o editores el peso es siempre Infinito
   def self.get_user_weight_with(content_type, user, content=nil)
-    if user.has_admin_permission?(:capo) or (!content.nil? and Cms::user_can_edit_content?(user, content))
+    if user.has_skill?("Capo") or (!content.nil? and Cms::user_can_edit_content?(user, content))
       Infinity
     else
       aciertos = User.db_query("SELECT count(a.id) FROM publishing_decisions A JOIN contents b ON a.content_id = b.id WHERE a.is_right = 't' AND b.content_type_id = #{content_type.id} AND a.user_id = #{user.id} AND a.created_on >= now() - '1 year'::interval")[0]['count'].to_i
@@ -823,53 +826,60 @@ module Cms
   end
 
   def self.user_can_delete_content?(user, content)
-    old = content.created_on
-    content.created_on = 20.minutes.ago
-    ret = user_can_edit_content?(user, content)
-    content.created_on = old
-    ret
+    user.has_skill?("DeleteContents")
+    # TODO(slnc): temporal, hack una vez que limpiemos user_can_edit_content?
+    # tenemos que cambiar estas reglas para permitir ciertas combinaciones de
+    # usuarios y tipos de contenido. Eg: a autores de entradas de blog borrar
+    # sus entradas o a autores de anuncios de reclutamiento borrar sus anuncios.
   end
 
   def self.user_can_edit_content?(user, content)
+    return true if user && user.has_skill?("EditContents")
     return false unless user && user.id
 
-    if user.has_admin_permission?(:capo)
+    if (content.respond_to?(:state) &&
+        content.user_id == user.id &&
+        content.state == Cms::DRAFT)
       true
     elsif (content.respond_to?(:state) &&
+           user.is_hq? &&
+           content.state == Cms::PENDING)
+      true
+    elsif (content.class.name == 'Question' &&
            content.user_id == user.id &&
-           content.state == Cms::DRAFT) then
+           (content.created_on > 15.minutes.ago ||
+            content.unique_content.comments_count == 0))
       true
-    elsif (content.respond_to?(:state) and user.is_hq? and content.state == Cms::PENDING) then
+    elsif (content.class.name == 'RecruitmentAd' &&
+           (user.has_skill?("Capo") ||
+            user.id == content.user_id ||
+            (content.clan_id && content.clan.user_is_clanleader(user.id))))
       true
-    elsif content.class.name == 'Question' && content.user_id == user.id && (content.created_on > 15.minutes.ago || content.unique_content.comments_count == 0)
+    elsif (Cms::AUTHOR_CAN_EDIT_CONTENTS.include?(content.class.name) &&
+           content.user_id == user.id)
       true
-    elsif content.class.name == 'RecruitmentAd' && (user.has_admin_permission?(:capo) || user.id == content.user_id || (content.clan_id && content.clan.user_is_clanleader(user.id)))
-      true
-    elsif Cms::AUTHOR_CAN_EDIT_CONTENTS.include?(content.class.name) && content.user_id == user.id
-      true
-    elsif content.kind_of?(Coverage) && (c = content.event.competition) then
+    elsif content.kind_of?(Coverage) && (c = content.event.competition)
       c.user_is_admin(user.id) ? true : false
     elsif content.kind_of?(Coverage) then
       Cms::user_can_edit_content?(user, content.event)
-    elsif content.class.name == 'Topic' or content.class.name == 'Comment' then
+    elsif content.class.name == 'Topic' or content.class.name == 'Comment'
       # jefazo o moderador de la organization?
       # chequeamos que sea boss, underboss o moderador de la facción
       org = Organizations.find_by_content(content)
       # el autor del topic/comment y no está baneado
-      if content.class.name == 'Topic' && user.id == content.user_id && content.created_on.to_i > 15.minutes.ago.to_i && (org.nil? || !org.user_is_banned?(content.user)) then
+      if (content.class.name == 'Topic' &&
+          user.id == content.user_id &&
+          content.created_on.to_i > 15.minutes.ago.to_i &&
+          (org.nil? || !org.user_is_banned?(content.user)))
         true
       elsif org
         if org.user_is_moderator(user)
           true
-        # TODO
-        #elsif content.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(content.main_category.id)) && c.user_is_admin(user.id)
-        #  true
         elsif content.class.name == 'Comment'
           real = content.content.real_content
-          # TODO
-          #if real.class.name == 'Topic' && (c = Competition.find_by_topics_category_id(real.main_category.id)) && c.user_is_admin(user.id)
-          #  true
-          if real.class.name == 'Event' && (cm = CompetitionsMatch.find_by_event_id(real.id)) && cm.competition.user_is_admin(user.id)
+          if (real.class.name == 'Event' &&
+              (cm = CompetitionsMatch.find_by_event_id(real.id)) &&
+              cm.competition.user_is_admin(user.id))
             true
           else
             false
@@ -878,17 +888,21 @@ module Cms
           false
         end
       else # categoría Otros o categoría GM
-        if content.respond_to?(:content) && (real = content.content.real_content) && real.class.name == 'Coverage' && (c = Competition.find_by_event_id(real.event_id)) && c.user_is_admin(user.id)
+        if (content.respond_to?(:content) &&
+            (real = content.content.real_content) &&
+            real.class.name == 'Coverage' &&
+            (c = Competition.find_by_event_id(real.event_id)) &&
+            c.user_is_admin(user.id))
           true
         else
-          user.has_admin_permission?(:capo)
+          user.has_skill?("Capo")
         end
       end
     else # editor o jefazo de organization?
-
       org = Organizations.find_by_content(content)
       if org
-        org.user_is_editor_of_content_type?(user, ContentType.find_by_name(content.class.name))
+        org.user_is_editor_of_content_type?(
+            user, ContentType.find_by_name(content.class.name))
       else
         false
       end
@@ -916,8 +930,8 @@ module Cms
     page
   end
 
-  def self.user_can_mass_upload(u)
-    u.is_hq || u.is_bigboss? || Faith.level(u) >= 2
+  def self.user_can_bulk_upload(u)
+    u.has_skill?("BulkUpload")
   end
 
   def self.faction_favicon(thing)
@@ -1075,7 +1089,7 @@ module Cms
   end
 
   def self.can_admin_term?(u, term, taxonomy)
-    return true if u.has_admin_permission?(:capo)
+    return true if u.has_skill?("Capo")
 
     if term.game_id
       f = Faction.find_by_code(term.game.code)
@@ -1095,7 +1109,7 @@ module Cms
   def self.get_editable_terms_by_group(u)
     terms = {:games => [], :platforms => [], :clans => [], :bazar_districts => [], :special => []}
 
-    if u.has_admin_permission?(:capo)
+    if u.has_skill?("Capo")
       Term.top_level(:conditions => 'taxonomy <> \'ContentsTag\'').each do |t|
         if t.game_id
           terms[:games] << t
@@ -1107,7 +1121,7 @@ module Cms
       end
     end
 
-    if u.has_admin_permission?(:bazar_manager)
+    if u.has_skill?("BazarManager")
       Term.find(:all, :conditions => 'id = root_id AND bazar_district_id IS NOT NULL').each do |t|
         terms[:bazar_districts] << t
       end

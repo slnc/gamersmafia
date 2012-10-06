@@ -34,8 +34,8 @@ class ApplicationController < ActionController::Base
     before_filter { |c| c.check_portal_access_mode(class_names) }
   end
 
-  def self.require_admin_permission(mode)
-    before_filter { |c| c.send(:require_admin_permission, mode) }
+  def self.require_skill(mode)
+    before_filter { |c| c.send(:require_skill, mode) }
   end
 
   def init_xab
@@ -613,7 +613,7 @@ Request information:
     return [] unless user_is_authed
     # TODO hack
     items = []
-    if @user.is_superadmin?
+    if @user.has_skill?("Webmaster")
       items<< ['Ads', '/admin/ads']
       items<< ['Ads Slots', '/admin/ads_slots']
       items<< ['Canales GMTV', '/admin/canales']
@@ -621,7 +621,7 @@ Request information:
       items<< ['Hipótesis', '/admin/hipotesis']
     end
 
-    if @user.has_admin_permission?(:capo)
+    if @user.has_skill?("Capo")
       items<< ['Avatares', '/avatares']
       items<< ['Clanes', '/admin/clanes']
       items<< ['Competiciones', '/admin/competiciones']
@@ -637,16 +637,16 @@ Request information:
       items<< ['Violaciones Netiqueta', '/comments/violaciones_netiqueta']
     end
 
-    if @user.has_admin_permission?(:bazar_manager) || @user.has_admin_permission?(:capo)
+    if @user.has_skill?("BazarManager") || @user.has_skill?("Capo")
       items<< ['Cat Contenidos', '/admin/categorias']
     end
 
-    if @user.has_admin_permission?(:capo) || @user.has_admin_permission?(:faq)
+    if Authorization::Users.can_edit_faq?(@user)
       items<< ['Entradas FAQ', '/admin/entradasfaq']
       items<< ['Cat FAQ', '/admin/categoriasfaq']
     end
 
-    if @user.has_admin_permission?(:capo) || @user.has_admin_permission?(:bazar_manager)
+    if @user.has_skill?("Capo") || @user.has_skill?("BazarManager")
       items<< ['Distritos bazar', '/admin/bazar_districts']
     end
 

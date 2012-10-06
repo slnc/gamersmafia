@@ -38,9 +38,10 @@ module Users
     end
 
     protected
-    def require_admin_permission(perm_name)
+    def require_skill(skill_name)
+      # TODO(slnc): migrate these calls to lib/authorization.rb
       @no_ads = true
-      raise AccessDenied unless user_is_authed && ((perm_name.to_s == 'hq' && @user.is_hq?) || @user.has_admin_permission?(perm_name))
+      raise AccessDenied if !(user_is_authed && (@user.has_skill?(skill_name)))
     end
 
     def require_user_is_staff
@@ -60,16 +61,11 @@ module Users
     end
 
     def require_auth_admins
-      raise AccessDenied unless (@user && @user.is_superadmin)
+      raise AccessDenied unless (@user && @user.has_skill?("Webmaster"))
     end
 
     def require_auth_hq
       raise AccessDenied unless (@user && @user.is_hq)
-    end
-
-    def require_auth_admin_permissions
-      @no_ads = true
-      raise AccessDenied unless (@user && (@user.is_superadmin? || @user.admin_permissions.include?('1')))
     end
 
     def logout_forcibly

@@ -165,7 +165,31 @@ class ActiveSupport::TestCase
     assert_not_nil session[:user]
   end
 
-  def post_comment_on content
+  def give_skill(user_id, role)
+    if user_id.kind_of?(Fixnum)
+      user = User.find(user_id)
+    elsif user_id.kind_of?(String)
+      user = User.find_by_login(user_id)
+    end
+    assert_difference("user.users_skills.count") do
+      new_skill = user.users_skills.create(:role => role)
+      puts new_skill.errors.full_messages_html if new_skill.new_record?
+    end
+  end
+
+  def remove_skill(user_id, role)
+    if user_id.kind_of?(Fixnum)
+      user = User.find(user_id)
+    elsif user_id.kind_of?(String)
+      user = User.find_by_login(user_id)
+    end
+
+    assert_difference("user.users_skills.count", -1) do
+      user.users_skills.find_by_role(role).destroy
+    end
+  end
+
+  def post_comment_on(content)
     assert request.session[:user]
     c_text = (Kernel.rand * 100000).to_s
     comments_count = Comment.count

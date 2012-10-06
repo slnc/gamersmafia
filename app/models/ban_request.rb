@@ -66,13 +66,10 @@ class BanRequest < ActiveRecord::Base
 
   private
   def after_create
-    User.find(
-        :all,
-        :conditions => ['admin_permissions LIKE \'_____1%\' and id <> ?',
-                        self.user_id]).each do |u|
+    UsersSkill.find_users_with_skill("Capo").each do |user|
       Message.create({
           :sender_user_id => nagato.id,
-          :recipient_user_id => u.id,
+          :recipient_user_id => user.id,
           :title => "Iniciado ban contra el usuario #{self.banned_user.login}",
           :message => "<a href=\"http://gamersmafia.com/site/alertas\">Ir al log" +
                       " de sistema</a>",

@@ -7,6 +7,7 @@ class UsersActionObserverTest < ActionController::IntegrationTest
     assert_count_increases(UsersAction) do
       @ra = RecruitmentAd.create(
         :user_id => 1, :game_id => 1, :title => 'busco cosas', :main => 'hola')
+      puts @ra.errors.full_messages_html if @ra.new_record?
     end
 
     assert_count_decreases(UsersAction) do

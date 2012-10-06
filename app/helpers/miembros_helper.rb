@@ -68,4 +68,33 @@ module MiembrosHelper
       wii_code
     end
   end
+
+  def show_member_control_box
+    user_is_authed && (
+        @user.has_skill?("Webmaster") ||
+        @user.has_skill?("Capo") ||
+        Authorization::Users.can_report_users?(@user) ||
+        @user.has_skill?("Antiflood")
+    )
+  end
+
+  # Returns a list of all available karma skills and percentage of completion
+  # for a given user.
+  def karma_skills_percentages(user)
+    out = []
+    UsersSkill::KARMA_SKILLS.each do |name, karma|
+      if user.has_skill?(name)
+        pcent = 1.0
+      elsif user.karma_points >= karma
+        pcent = 0.99
+      else
+        pcent = user.karma_points.to_f / karma
+      end
+      # We always return karma to make sure we always sort the table the same
+      # way regardless of the user.
+      out << [karma, name, pcent]
+    end
+    out.sort.reverse.collect {|skill_info| [gm_translate(skill_info[1]),
+                                            skill_info[2]]}
+  end
 end

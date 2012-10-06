@@ -67,19 +67,55 @@ class CommentsControllerTest < ActionController::TestCase
     assert_equal items_count + 1, u.tracker_items.count
   end
 
-  test "rate" do
+  test "rateup with skill" do
+    test_should_allow_registered_user_to_comment
+    give_skill(1, "RateCommentsUp")
+    sym_login 1
+    User.db_query(
+        "UPDATE users set created_on = '2006-01-01 00:00:00' where id = 1")
+    assert_difference("CommentsValoration.count") do
+      post :rate, {:comment_id => @c.id, :rate_id => 2}
+    end
+    assert_response :success
+  end
+
+  test "rateup no skill" do
     test_should_allow_registered_user_to_comment
     sym_login 1
     User.db_query(
         "UPDATE users set created_on = '2006-01-01 00:00:00' where id = 1")
-    assert_count_increases(CommentsValoration) do
-      post :rate, {:comment_id => @c.id, :rate_id => 1}
+    assert_difference("CommentsValoration.count", 0) do
+      post :rate, {:comment_id => @c.id, :rate_id => 2}
+    end
+    assert_response :success
+  end
+
+  test "ratedown with skill" do
+    test_should_allow_registered_user_to_comment
+    give_skill(1, "RateCommentsDown")
+    sym_login 1
+    User.db_query(
+        "UPDATE users set created_on = '2006-01-01 00:00:00' where id = 1")
+    assert_difference("CommentsValoration.count") do
+      post :rate, {:comment_id => @c.id, :rate_id => 5}
+    end
+    assert_response :success
+  end
+
+  test "ratedown no skill" do
+    test_should_allow_registered_user_to_comment
+    sym_login 1
+    User.db_query(
+        "UPDATE users set created_on = '2006-01-01 00:00:00' where id = 1")
+    assert_difference("CommentsValoration.count", 0) do
+      post :rate, {:comment_id => @c.id, :rate_id => 5}
     end
     assert_response :success
   end
 
   test "report invalid moderation_reason" do
     test_should_allow_registered_user_to_comment
+    give_skill(1, "ReportComments")
     sym_login 1
     assert_difference("Alert.count", 0) do
       post :report, :id => @c.id
@@ -87,11 +123,27 @@ class CommentsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "report valid moderation_reason" do
+  test "report valid moderation_reason no skill" do
     test_should_allow_registered_user_to_comment
     sym_login 1
+    assert_raises(AccessDenied) do
+      post :report, {
+          :id => @c.id,
+          :moderation_reason => Comment::MODERATION_REASONS_TO_SYM.keys.first,
+      }
+    end
+    assert_response :success
+  end
+
+  test "report valid moderation_reason with skill" do
+    test_should_allow_registered_user_to_comment
+    give_skill(1, "ReportComments")
+    sym_login 1
     assert_difference("Alert.count", 1) do
-      post :report, :id => @c.id, :moderation_reason => Comment::MODERATION_REASONS_TO_SYM.keys.first
+      post :report, {
+          :id => @c.id,
+          :moderation_reason => Comment::MODERATION_REASONS_TO_SYM.keys.first,
+      }
     end
     assert_response :success
   end

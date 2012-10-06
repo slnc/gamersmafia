@@ -260,7 +260,6 @@ class Comment < ActiveRecord::Base
   def can_be_rated_by?(user)
     !(user.id == self.user_id ||  # is author
      user.created_on > 7.days.ago ||  # is_too_young
-     Karma.level(user.karma_points) == 0 ||  # no karma
      (user.remaining_rating_slots == 0 &&  # no ratings left
       user.comments_valorations.find_by_comment_id(self.id).nil?))
   end
@@ -347,10 +346,6 @@ class Comment < ActiveRecord::Base
       self.save
     end
     self.cache_rating
-  end
-
-  def user_can_report_comment?(user)
-    user.is_hq?
   end
 
   # Returns previous comment if there is a previous comment to the current one

@@ -176,7 +176,7 @@ class Faction < ActiveRecord::Base
   end
 
   def is_moderator?(u)
-    (u.has_admin_permission?(:capo) ||
+    (u.has_skill?("Capo") ||
      UsersSkill.count(
         :conditions => [
             "role IN ('Boss', 'Underboss', 'Moderator')
@@ -188,7 +188,7 @@ class Faction < ActiveRecord::Base
   end
 
   def is_editor?(user)
-    return true if user.has_admin_permission?(:capo)
+    return true if user.has_skill?("Capo")
     if self.is_bigboss?(user)
       true
     elsif UsersSkill.count(
@@ -211,7 +211,7 @@ class Faction < ActiveRecord::Base
   end
 
   def is_bigboss?(u)
-    u.has_admin_permission?(:capo) || is_boss?(u) || is_underboss?(u)
+    u.has_skill?("Capo") || is_boss?(u) || is_underboss?(u)
   end
 
   def is_boss?(u)
@@ -730,7 +730,7 @@ class Faction < ActiveRecord::Base
   end
 
   def user_is_editor_of_content_type?(user, content_type)
-    return true if user.is_superadmin || user.has_admin_permission?(:capo)
+    return true if user.has_skill?("Webmaster") || user.has_skill?("Capo")
     if self.is_bigboss?(user)
       true
     elsif UsersSkill.count(

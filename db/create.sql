@@ -2620,7 +2620,6 @@ CREATE TABLE users (
     hw_monitor character varying,
     hw_connection character varying,
     description text,
-    is_superadmin boolean DEFAULT false NOT NULL,
     comments_count integer DEFAULT 0 NOT NULL,
     referer_user_id integer,
     cache_faith_points integer,
@@ -2655,8 +2654,6 @@ CREATE TABLE users (
     comment_adds_to_tracker_enabled boolean DEFAULT true NOT NULL,
     cache_remaining_rating_slots integer,
     has_seen_tour boolean DEFAULT false NOT NULL,
-    is_bot boolean DEFAULT false NOT NULL,
-    admin_permissions character varying DEFAULT '00000'::bpchar NOT NULL,
     state smallint DEFAULT 0 NOT NULL,
     cache_is_faction_leader boolean DEFAULT false NOT NULL,
     profile_last_updated_on timestamp without time zone,
@@ -2678,7 +2675,8 @@ CREATE TABLE users (
     cache_popularity integer,
     login_is_ne_unfriendly boolean DEFAULT false NOT NULL,
     cache_valorations_weights_on_self_comments numeric,
-    default_comments_valorations_weight double precision DEFAULT 1.0 NOT NULL
+    default_comments_valorations_weight double precision DEFAULT 1.0 NOT NULL,
+    last_karma_skill_points integer DEFAULT 0 NOT NULL
 );
 CREATE TABLE users_actions (
     id integer NOT NULL,

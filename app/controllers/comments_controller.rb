@@ -110,8 +110,14 @@ class CommentsController < ApplicationController
     @comment = Comment.find(params[:comment_id])
     if @comment.can_be_rated_by?(@user)
       @cvt = CommentsValorationsType.find(params[:rate_id])
-      @disable_ratings = (@user.remaining_rating_slots - 1 <= 0)
-      @comment.delay.rate(@user, @cvt)
+      if (@cvt.positive? && !@user.has_skill?("RateCommentsUp") ||
+         (@cvt.negative? && !@user.has_skill?("RateCommentsDown")))
+        flash[:error] = "No puedes valorar este comentario con las opciones elegidas."
+        @disable_ratings = true
+      else
+        @comment.delay.rate(@user, @cvt)
+        @disable_ratings = (@user.remaining_rating_slots - 1 <= 0)
+      end
     else
       Rails.logger.warn("User #{@user.login} can't rate comment #{@comment.id}")
       @disable_ratings = true
@@ -123,7 +129,7 @@ class CommentsController < ApplicationController
 
   def report
     @comment = Comment.find(params[:id])
-    if @comment.user_can_report_comment?(@user)
+    if @user.has_skill?("ReportComments")
       @comment.report_violation(@user, params[:moderation_reason].to_i)
       if @comment.errors.size > 0
         flash[:error] = "Error al reportar el comentario:<br />#{@comment.errors.full_messages_html}"
@@ -139,7 +145,7 @@ class CommentsController < ApplicationController
 
   def no_violation
     @comment = Comment.find(params[:id])
-    raise AccessDenied unless @user && @user.has_admin_permission?(:capo)
+    raise AccessDenied unless @user && @user.has_skill?("Capo")
     require_user_can_edit(@comment)
     @comment.update_attributes(
         :netiquette_violation => false, :lastedited_by_user_id => @user.id)
@@ -150,6 +156,6 @@ class CommentsController < ApplicationController
   end
 
   def violaciones_netiqueta
-	  raise AccessDenied unless @user.has_admin_permission?(:capo)
+	  raise AccessDenied unless @user.has_skill?("Capo")
   end
 end

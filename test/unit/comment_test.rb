@@ -45,7 +45,7 @@ class CommentTest < ActiveSupport::TestCase
 
   test "capo reporting a comment triggers automatic removal" do
     user = User.find(4)
-    user.give_admin_permission(:capo)
+    give_skill(user.id, "Capo")
     comment = create_a_comment
     comment.report_violation(user, COPYRIGHT)
     comment.reload

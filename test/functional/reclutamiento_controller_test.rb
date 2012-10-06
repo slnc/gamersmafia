@@ -41,8 +41,8 @@ class ReclutamientoControllerTest < ActionController::TestCase
 
   test "del_by_capo" do
     test_create_type_1
+    give_skill(2, "Capo")
     u2 = User.find(2)
-    u2.give_admin_permission(:capo)
     sym_login 2
     post :destroy, :id => @ra.id
     @ra.reload

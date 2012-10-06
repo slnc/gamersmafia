@@ -21,6 +21,9 @@ class UsersActionObserver < ActiveRecord::Observer
         UsersAction.create(:user_id => object.signer_user_id, :type_id => UsersAction::NEW_PROFILE_SIGNATURE_RECEIVED, :object_id => object.id, :data => data)
       end
 
+      when 'RecruitmentAd'
+        UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_RECRUITMENT_AD, :object_id => object.id, :data => "Nuevo anuncio de reclutamiento <a href=\"#{gmurl(object)}\">#{object.title}</a>")
+
       when 'ClansMovement'
       data = "#{user_link(object.user)} #{ClansMovement.translate_direction(object.direction)} <a href=\"/clanes/clan/#{object.id}\">#{object.clan}</a>"
       UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_CLANS_MOVEMENT, :object_id => object.id, :data => data)

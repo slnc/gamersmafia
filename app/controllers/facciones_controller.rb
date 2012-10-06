@@ -13,7 +13,7 @@ class FaccionesController < ComunidadController
   end
 
   def borrar
-    require_admin_permission :capo
+    require_skill("Capo")
     @faction = Faction.find(params[:id])
     raise AccessDenied unless @faction.created_on.to_i >= 2.weeks.ago.to_i
     @faction.referenced_thing.destroy

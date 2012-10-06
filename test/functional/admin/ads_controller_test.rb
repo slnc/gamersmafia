@@ -2,7 +2,14 @@
 require 'test_helper'
 
 class Admin::AdsControllerTest < ActionController::TestCase
-  test_min_acl_level :superadmin, [ :index, :new, :edit, :update, :destroy ]
+
+  test "index no skill" do
+    sym_login 2
+    assert_raises(AccessDenied) do
+      get :index
+    end
+    assert_response :success
+  end
 
   test "index" do
     sym_login 1
@@ -33,7 +40,13 @@ class Admin::AdsControllerTest < ActionController::TestCase
   test "update" do
     test_create
 
-    post :update, { :id => Ad.find(:first).id, :ad => { :name => 'fourling2', :html => 'bbbb'}}
+    post :update, {
+        :id => Ad.find(:first).id,
+        :ad => {
+            :name => 'fourling2',
+            :html => 'bbbb',
+        },
+    }
 
     assert_response :redirect
     assert_equal 'fourling2', Ad.find(:first, :order => 'id desc').name

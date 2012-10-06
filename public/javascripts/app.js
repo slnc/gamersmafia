@@ -119,13 +119,16 @@ function check_comments_controls(
     user_is_hq,
     first_time_content,
     do_autoscroll,
-    do_show_all_comments) {
+    do_show_all_comments,
+    can_rate_comments_up,
+    can_rate_comments_down,
+    can_report_comments) {
   // NO calcular tiempo unix_now por el cliente, es una caja de pandora
   var scroll_to_comment;
   // contiene el elemento al que hacer scroll
   for (key in comments) {
     var comment_div = $j('#comment' + key);
-    if (comments[key][1] != user_id && old_enough) {
+    if (can_rate_comments_up && comments[key][1] != user_id && old_enough) {
       // Puede valorarlo
       if (comments_ratings[key] != undefined)
         $j('#moderate-comments-opener-rating' + key).html(comments_ratings[key]);
@@ -135,6 +138,16 @@ function check_comments_controls(
         // // necesario por un error js raro
         $j('#moderate-comments-opener' + key).show();
       }
+
+      if (!can_rate_comments_down) {
+        $j('#moderate-comments-opener' + key + ' .negative').hide();
+      }
+    } else {
+      // TODO(slnc): hack, por culpa de orden de importación de reglas CSS se
+      // está el div de valoración se está mostrando siempre. Vamos a eliminar
+      // todo este código con Pollo Suicida así que corrigiendo el hack con otro
+      // hack.
+      $j('#moderate-comments-opener' + key).hide();
     }
 
     if (comments[key][0] > user_last_visited_on && comments[key][1] != user_id) {
@@ -151,9 +164,11 @@ function check_comments_controls(
       $j('#comment' + key + 'editlink').removeClass('hidden');
     }
 
-    var rpc = $j('#report-comments' + key);
-    if (rpc && (user_is_mod || user_is_hq)) {
-      rpc.removeClass('hidden');
+    if (can_report_comments) {
+      var rpc = $j('#report-comments' + key);
+      if (rpc && (user_is_mod || user_is_hq)) {
+        rpc.removeClass('hidden');
+      }
     }
   }
 

@@ -1,5 +1,32 @@
 # -*- encoding : utf-8 -*-
 module ApplicationHelper
+  TRANSLATIONS = {
+    'Advertiser' => 'Anunciante',
+    'Bank' => 'Banco GM',
+    'BazarManager' => 'Manager del bazar',
+    'BulkUpload' => 'Subir contenidos en masa',
+    'CompetitionAdmin' => 'Admin de competiciones',
+    'CompetitionSupervisor' => 'Supervisor de competiciones',
+    'ContentModerationQueue' => 'Cola de moderación',
+    'DeleteContents' => 'Borrar contenidos',
+    'EditContents' => 'Editar contenidos',
+    'EditFaq' => 'Editar FAQ',
+    'Gladiator' => 'Gladiador',
+    'GmShop' => 'Tienda GM',
+    'GroupAdministrator' => 'Administrador de grupo',
+    'GroupMember' => 'Miembro de grupo',
+    'ManoDerecha' => 'Mano derecha',
+    'MassModerateContents' => 'Moderar contenidos en masa',
+    'ProfileSignatures' => 'Dejar firmas',
+    'RateCommentsDown' => 'Valorar comentarios negativamente',
+    'RateCommentsUp' => 'Valorar comentarios positivamente',
+    'RateContents' => 'Valorar contenidos',
+    'ReportComments' => 'Reportar comentarios',
+    'ReportContents' => 'Reportar contenidos',
+    'ReportUsers' => 'Reportar usuarios',
+    'TagContents' => 'Taguear contenidos',
+  }
+
   ANALYTICS_SNIPPET = <<-END
 <script type="text/javascript">
   var _gaq = _gaq || [];
@@ -73,6 +100,14 @@ module ApplicationHelper
     (count == 1) ? word : "#{word}s"
   end
 
+  def gm_translate(word)
+    translation = TRANSLATIONS[word]
+    if translation.nil?
+      logger.warn("Asked to translate '#{word}' but no translation found.")
+    end
+    translation || word
+  end
+
   def portal_code
     controller.portal_code
   end
@@ -80,11 +115,11 @@ module ApplicationHelper
   def sawmode
     @sawmode ||= begin
       if user_is_authed then
-        if @user.is_superadmin?
+        if @user.has_skill?("Webmaster")
           sawmode = 'full'
         elsif @user.is_hq?
           sawmode = 'hq'
-        elsif @user.has_admin_permission?(:advertiser)
+        elsif @user.has_skill?("Advertiser")
           sawmode = 'anunciante'
         else
           sawmode = ''
@@ -93,6 +128,11 @@ module ApplicationHelper
         sawmode = ''
       end
     end
+  end
+
+  def skill_needed_disclaimer(skill_name)
+    "Necesitas la <a href=\"/cuenta/cuenta/habilidades\">habilidad #{skill_name}
+    </a> para poder acceder a esta sección."
   end
 
   # Global var shortcut function

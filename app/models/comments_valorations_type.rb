@@ -15,4 +15,12 @@ class CommentsValorationsType < ActiveRecord::Base
   def self.find_neutral
     self.neutral.find(:all, :order => 'lower(name) ASC')
   end
+
+  def positive?
+    self.direction != -1
+  end
+
+  def negative?
+    !self.positive?
+  end
 end

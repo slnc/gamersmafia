@@ -2,16 +2,26 @@
 require 'test_helper'
 
 class Admin::EntradasfaqControllerTest < ActionController::TestCase
-  test_min_acl_level :superadmin, [ :index, :new, :create, :edit, :update, :destroy ]
 
-  test "index" do
-    get :index, {}, {:user => 1}
+  test "index no skill" do
+    sym_login 1
+    assert_raises(AccessDenied) do
+      get :index
+    end
+  end
+
+  test "index with skill" do
+    give_skill(1, "EditFaq")
+    sym_login 1
+    get :index
     assert_response :success
     assert_template 'index'
   end
 
   test "new" do
-    get :new, {}, {:user => 1}
+    give_skill(1, "EditFaq")
+    sym_login 1
+    get :new
 
     assert_response :success
     assert_template 'new'
@@ -20,18 +30,21 @@ class Admin::EntradasfaqControllerTest < ActionController::TestCase
   end
 
   test "create" do
-    num_faq_entries = FaqEntry.count
-
-    post :create, {:faq_entry => {:question => 'foo?', :answer => 'bar', :faq_category_id => 1}}, {:user => 1}
+    give_skill(1, "EditFaq")
+    sym_login 1
+    assert_difference("FaqEntry.count") do
+      post :create, {:faq_entry => {:question => 'foo?', :answer => 'bar', :faq_category_id => 1}}
+    end
 
     assert_response :redirect
     assert_redirected_to :action => 'index'
-
-    assert_equal num_faq_entries + 1, FaqEntry.count
   end
 
   test "edit" do
-    get :edit, {:id => 1}, {:user => 1}
+    give_skill(1, "EditFaq")
+    sym_login 1
+
+    get :edit, {:id => 1}
 
     assert_response :success
     assert_template 'edit'
@@ -41,34 +54,27 @@ class Admin::EntradasfaqControllerTest < ActionController::TestCase
   end
 
   test "update" do
-    post :update, {:id => 1}, {:user => 1}
+    give_skill(1, "EditFaq")
+    sym_login 1
+
+    post :update, {:id => 1}
     assert_response :redirect
     assert_redirected_to :action => 'edit', :id => 1
   end
 
   test "destroy" do
+    give_skill(1, "EditFaq")
+    sym_login 1
+
     assert_not_nil FaqEntry.find(1)
 
-    post :destroy, {:id => 1}, {:user => 1}
+    post :destroy, {:id => 1}
     assert_response :redirect
     assert_redirected_to :action => 'index'
 
     assert_raise(ActiveRecord::RecordNotFound) {
       FaqEntry.find(1)
     }
-  end
-
-  test "user_with_admin_permission_should_allow_if_registered" do
-    assert_raises(AccessDenied) { get :index }
-    u2 = User.find(2)
-    sym_login u2
-    assert_raises(AccessDenied) { get :index }
-
-    u2.give_admin_permission(:faq)
-
-    sym_login u2
-    get :index
-    assert_response :success
   end
 
   test "should_moveup_faq_Entry" do

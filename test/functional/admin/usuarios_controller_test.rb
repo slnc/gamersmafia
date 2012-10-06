@@ -58,11 +58,6 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_equal 'feooo', User.find(51).ban_reason
   end
 
-  test "should_not_destroy_superadmin_user" do
-    sym_login :superadmin
-    assert_raises(ActiveRecord::RecordNotFound) { post :destroy, :id => 1 }
-  end
-
   test "del_comments_should_work" do
     sym_login :superadmin
     post :del_comments, { :comments => ['1']}
@@ -177,8 +172,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
   end
 
   test "ban_request_should_work_for_capo" do
-    u2 = User.find(2)
-    u2.give_admin_permission(:capo)
+    give_skill(2, "Capo")
     sym_login 2
     @u3 = User.find(3)
     get :ban_request, :login => @u3.login
@@ -187,8 +181,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
 
 
   test "confirmar_ban_request_should_work_for_capo" do
-    u2 = User.find(2)
-    u2.give_admin_permission(:capo)
+    give_skill(2, "Capo")
     sym_login 2
     get :confirmar_ban_request, :id => 1
     assert_response :success
@@ -204,13 +197,16 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
   end
 
   test "create_ban_request_should_work_for_capo" do
-    u2 = User.find(2)
-    u2.give_admin_permission(:capo)
+    give_skill(2, "Capo")
     @u3 = User.find(3)
     sym_login 2
     assert_count_increases(UsersPreference) do
       assert_count_increases(BanRequest) do
-        post :create_ban_request, {:login => @u3.login, :reason => "Reiteradas violaciones del código de conducta.", :public_reasons => ['Foo', 'Bar'] }
+        post :create_ban_request, {
+            :login => @u3.login,
+            :reason => "Reiteradas violaciones del código de conducta.",
+            :public_reasons => ['Foo', 'Bar'],
+        }
         assert_redirected_to "/miembros/#{@u3.login}"
       end
     end
@@ -219,8 +215,8 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
 
   test "confirm_ban_request_should_work_for_capo" do
     test_create_ban_request_should_work_for_capo
+    give_skill(56, "Capo")
     @u4 = User.find(56)
-    @u4.give_admin_permission(:capo)
     sym_login @u4
     last = BanRequest.find(:first, :order => 'id desc')
     post :confirm_ban_request, {:id => last.id }
@@ -254,9 +250,9 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_redirected_to "/site/alertas"
   end
 
-  test "should_set_antiflood_level_if_capo" do
+  test "should_set_antiflood_level_if_skill" do
     @u4 = User.find(56)
-    @u4.give_admin_permission(:capo)
+    give_skill(@u4.id, "Antiflood")
     sym_login @u4
     u2 = User.find(2)
     assert_equal -1, u2.antiflood_level
@@ -266,16 +262,22 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_equal 5, u2.antiflood_level
   end
 
-  test "should_set_antiflood_max_if_hq" do
+  test "should_not_set_antiflood_level_if_not_skill" do
     @u4 = User.find(56)
-    @u4.is_superadmin = false
-    @u4.save
-    assert @u4.take_admin_permission(:capo)
-    assert !@u4.has_admin_permission?(:capo)
-    @u4.reload
-    @u4.is_hq = true
-    assert @u4.save
+    sym_login @u4
+    u2 = User.find(2)
+    assert_equal -1, u2.antiflood_level
+    assert_raises(AccessDenied) do
+      post :set_antiflood_level, {:user_id => 2, :antiflood_level => '5'}
+    end
+  end
 
+  test "should_set_antiflood_max_if_antiflood" do
+    @u4 = User.find(56)
+    @u4.users_skills.clear
+    give_skill(@u4.id, "Antiflood")
+    @u4.reload
+    assert @u4.save
 
     sym_login @u4
     u2 = User.find(2)
@@ -290,7 +292,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
 
   test "clear_description" do
     @u4 = User.find(56)
-    @u4.give_admin_permission(:capo)
+    give_skill(56, "Capo")
     sym_login @u4
     @u2 = User.find(2)
     @u2.description = "I rock"
@@ -303,8 +305,8 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
   end
 
   test "clear_photo" do
+    give_skill(56, "Capo")
     @u4 = User.find(56)
-    @u4.give_admin_permission(:capo)
     sym_login @u4
     @u2 = User.find(2)
     User.db_query("UPDATE users SET photo = 'asdadad' WHERE id = #{@u2.id}")
@@ -315,23 +317,28 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_nil @u2.photo
   end
 
-  test "report" do
-    @u4 = User.find(56)
-    @u4.is_hq = true
-    assert @u4.save
-    sym_login @u4.id
+  test "report with skill" do
+    give_skill(56, "ReportUsers")
+    sym_login 56
     assert_count_increases(Alert) do
       post :report, :id => User.find(:first)
     end
     assert_response :success
   end
 
+  test "report no skill" do
+    sym_login 56
+    assert_raises(AccessDenied) do
+      post :report, :id => User.find(:first)
+    end
+  end
+
   test "capos should be able to delete underboss roles" do
     u2 = User.find(2)
     u3 = User.find(3)
-    u2.give_admin_permission(:capo)
+    give_skill(2, "Capo")
     u2.reload
-    assert u2.has_admin_permission?(:capo)
+    assert u2.has_skill?("Capo")
 
     f1 = Faction.find(1)
     f1.update_underboss(u3)
@@ -345,7 +352,7 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
   test "capos should be able to update users data" do
     u2 = User.find(2)
     u3 = User.find(3)
-    u2.give_admin_permission(:capo)
+    give_skill(2, "Capo")
     u2.reload
     post :update, :id => u3.id, :edituser => { :email => 'foo@barbaz.com' }
     u3.reload

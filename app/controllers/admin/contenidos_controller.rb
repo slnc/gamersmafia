@@ -7,14 +7,15 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def submenu_items
-    if @user.is_bigboss? then
+    # TODO(slnc): adapt to new skills system
+    if @user.is_bigboss?
       return [
           ['Hotmap', '/admin/contenidos/hotmap'],
           ['Pendientes', '/admin/contenidos'],
           ['Huérfanos', '/admin/contenidos/huerfanos'],
           ['Últimas decisiones', '/admin/contenidos/ultimas_decisiones'],
           ['Papelera', '/admin/contenidos/papelera'], ]
-    elsif @user.is_editor? then
+    elsif @user.is_editor?
       return [
           ['Pendientes', '/admin/contenidos'],
           ['Huérfanos', '/admin/contenidos/huerfanos'],
@@ -25,6 +26,7 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def index
+    raise AccessDenied unless @user.has_skill?("ContentModerationQueue")
     @title = 'Contenidos pendientes de moderar'
     @contents = []
 
@@ -42,7 +44,7 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def papelera
-    require_user_is_staff
+    raise AccessDenied unless @user.has_skill?("DeleteContents")
     if (params[:portal].nil? &&
         self.portal.id != -1 &&
         self.portal.type == 'FactionsPortal')
@@ -100,6 +102,8 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def mass_moderate
+    raise AccessDenied unless @user.has_skill?("MassModerateContents")
+
     if params[:items] then
       if (params[:deny_reason] == 'Otra')
         params[:deny_reason] = params[:deny_reason_other]
@@ -132,6 +136,7 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def publish_content
+    raise AccessDenied unless @user.has_skill?("ContentModerationQueue")
     Cms::publish_content(
         Content.find(params[:id]).real_content,
         @user,
@@ -141,6 +146,8 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def deny_content
+    raise AccessDenied unless @user.has_skill?("ContentModerationQueue")
+
     if (params[:deny_reason] == 'Otra')
       params[:deny_reason] = params[:deny_reason_other]
     end
@@ -158,8 +165,8 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def report
+    raise AccessDenied unless @user.has_skill?("ReportContents")
     @content = Content.find(params[:id])
-    raise AccessDenied unless @user.is_hq?
 
     ttype, scope = Alert.fill_ttype_and_scope_for_content_report(@content)
     sl = Alert.create({
@@ -202,6 +209,7 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def tag_content
+    raise AccessDenied unless @user.has_skill?("TagContents")
     @content = Content.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @content
     UsersContentsTag.tag_content(
@@ -214,6 +222,7 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def remove_user_tag
+    raise AccessDenied unless @user.has_skill?("TagContents")
     @uct = UsersContentsTag.find(
         :first,
         :conditions => ['user_id = ? AND id = ?', @user.id, params[:id]])

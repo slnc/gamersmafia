@@ -9,8 +9,7 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
   end
 
   test "index_capo" do
-    u2 = User.find(2)
-    u2.give_admin_permission(:capo)
+    give_skill(2, "Capo")
     sym_login 2
     get :index
     assert_response :success
@@ -52,8 +51,7 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
   end
 
   test "hijos_if_perm" do
-    u2 = User.find(2)
-    u2.give_admin_permission(:capo)
+    give_skill(2, "Capo")
     sym_login 2
     get :hijos, :id => 1, :content_type => 'News'
   end
@@ -75,8 +73,7 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
   end
 
   test "contenidos_if_perm" do
-    u2 = User.find(2)
-    u2.give_admin_permission(:capo)
+    give_skill(2, "Capo")
     sym_login 2
     get :contenidos, :id => 1, :content_type => 'Topic'
   end
@@ -90,9 +87,7 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
   end
 
   test "cant_create_root_level_blank_taxonomy_term" do
-    u2 = User.find(2)
-    u2.give_admin_permission(:capo)
-
+    give_skill(2, "Capo")
     sym_login 2
     assert_raises(AccessDenied) do
       post :create, :term => { :name => 'furrinori', :taxonomy => ''}

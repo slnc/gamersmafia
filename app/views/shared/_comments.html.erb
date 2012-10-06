@@ -106,7 +106,11 @@ function load_comments()
       <%=@user.is_hq?%>,
       <%=@first_time_content%>,
       '<%=@user.pref_comments_autoscroll%>',
-      '<%=@user.pref_show_all_comments%>');
+      '<%=@user.pref_show_all_comments%>',
+      <%=@user.has_skill?("RateCommentsUp")%>,
+      <%=@user.has_skill?("RateCommentsDown")%>,
+      <%=@user.has_skill?("ReportComments")%>
+      );
 }
 
 /* for Mozilla */

@@ -43,17 +43,19 @@ class AdsController < ApplicationController
     @ad = Ad.find(params[:id])
     require_user_can_edit_ad
     User.db_query("UPDATE ads_slots_instances SET deleted = 't' WHERE ad_id = #{@ad.id}")
-    # @ad.ads_slots_instances.find(:first, :conditions => ['ads_slot_id = ?', @as.id]).update_attributes(:deleted => true)
     flash[:notice] = "Banner borrado correctamente"
     redirect_to "/home/anunciante"
   end
 
   def check_perms
-    raise AccessDenied unless user_is_authed && @user.has_admin_permission?(:advertiser)
+    raise AccessDenied unless user_is_authed && @user.has_skill?("Advertiser")
   end
 
   def require_user_can_owns_ads_slot(ads_slot)
-    @user.is_superadmin? || !@user.users_skills.find(:first, :conditions => 'role = \'Advertiser\' AND role_data = \'#{ads_slot.advertiser_id}\'', :order => 'id').nil?
+    (@user.has_skill?("Webmaster") ||
+     @user.users_skills.count(
+         :conditions => "role = 'Advertiser' AND
+                         role_data = '#{ads_slot.advertiser_id}'") > 0)
   end
 
   def require_user_can_edit_ad

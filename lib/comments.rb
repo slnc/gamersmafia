@@ -127,7 +127,7 @@ module Comments
   end
 
   def self.user_can_moderate_comments_of_content(user, content)
-    return true if user.has_admin_permission?(:capo)
+    return true if user.has_skill?("Capo")
 
     f = Organizations.find_by_content(content)
     return true if f && f.user_is_moderator(user)
