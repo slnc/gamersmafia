@@ -16,7 +16,7 @@ class Advertiser < ActiveRecord::Base
         :all,
         :conditions => ["active='t' AND due_on_day = ?", Time.now.day]
     ).each do |advertiser|
-      Notification.ad_report(
+      NotificationEmail.ad_report(
           advertiser, {:tstart => tstart, :tend => tend}).deliver
     end
   end

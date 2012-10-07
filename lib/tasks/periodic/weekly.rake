@@ -153,7 +153,7 @@ having portal_id in (select id
                  GROUP BY controller, action
                  HAVING count(*) > 10
                  ORDER BY count(*) DESC")
-    Notification.weekly_avg_page_render_time(
+    NotificationEmail.weekly_avg_page_render_time(
         :top_avg_time => @top_avg_time, :top_count => @top_count).deliver
 
     User.db_query("DELETE FROM stats.pageloadtime WHERE created_on <= now() - '1 week'::interval")

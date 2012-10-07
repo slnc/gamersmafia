@@ -56,11 +56,12 @@ module Gamersmafia
 
     # Activate observers that should always be running
     config.active_record.observers = [
+      :achmed_observer,
       :cache_observer,
       :faith_observer,
       :karma_observer,
+      :notification_observer,
       :users_action_observer,
-      :achmed_observer,
     ]
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.

@@ -35,7 +35,7 @@ class BanRequest < ActiveRecord::Base
       self.confirmed_on = Time.now
       self.save
       self.banned_user.change_internal_state('banned')
-      Notification.yourebanned(
+      NotificationEmail.yourebanned(
         self.banned_user, {:reason => self.reason}).deliver
     end
     true
@@ -65,18 +65,6 @@ class BanRequest < ActiveRecord::Base
   end
 
   private
-  def after_create
-    UsersSkill.find_users_with_skill("Capo").each do |user|
-      Message.create({
-          :sender_user_id => nagato.id,
-          :recipient_user_id => user.id,
-          :title => "Iniciado ban contra el usuario #{self.banned_user.login}",
-          :message => "<a href=\"http://gamersmafia.com/site/alertas\">Ir al log" +
-                      " de sistema</a>",
-      })
-    end
-  end
-
   def check_unban_requirements
     if self.unban_user_id_changed?
       if self.reason_unban.to_s == ''

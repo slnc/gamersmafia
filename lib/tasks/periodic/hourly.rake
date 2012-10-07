@@ -5,7 +5,7 @@ namespace :gm do
     AbTest.delay.update_ab_tests
     CacheObserver.update_pending_contents
     Competitions.delay.update_user_competitions_indicators
-    Notification.check_system_emails
+    NotificationEmail.check_system_emails
     UsersNewsfeed.delay.process
     Cache.hourly_clear_file_caches
   end

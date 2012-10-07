@@ -222,7 +222,7 @@ class Comment < ActiveRecord::Base
     self.content.tracker_items.find(:all, :conditions => 'is_tracked = \'t\'', :include => [:user]).each do |t|
       u = t.user
       if u.id != self.user_id and u.notifications_trackerupdates and (t.notification_sent_on.nil? or t.lastseen_on > t.notification_sent_on) then
-        Notification.trackerupdate(
+        NotificationEmail.trackerupdate(
             u, {:content => self.content.real_content}).deliver
         t.notification_sent_on = Time.now
         t.save

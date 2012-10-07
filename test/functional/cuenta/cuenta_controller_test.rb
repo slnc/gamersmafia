@@ -877,4 +877,20 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_response :redirect
     assert_equal User::ST_DELETED, User.find(1).state
   end
+
+  test "notifications should work no notifications" do
+    sym_login 1
+    get :notificaciones
+    assert_response :success
+  end
+
+  test "notifications should work with notifications" do
+    sym_login 1
+    u1 = User.find(1)
+    u1.notifications.create(:description => "Hello there")
+    get :notificaciones
+    assert_response :success
+    u1.reload
+    assert !u1.has_unread_notifications
+  end
 end

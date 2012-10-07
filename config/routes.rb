@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 Gamersmafia::Application.routes.draw do
+  get "notificaciones/index"
+
   resources :staff_positions, :path => "staff" do
     member do
       get 'move_to_candidacy_presentation'
@@ -149,7 +151,7 @@ Gamersmafia::Application.routes.draw do
   match 'cuenta/mis_compras' => 'cuenta/tienda#mis_compras'
   match 'cuenta/mis_compras/:id' => 'cuenta/tienda#configurar_compra'
   match 'cuenta/mis_compras/:id/:action' => 'cuenta/tienda#index'
-  match 'cuenta/notificaciones' => 'cuenta/cuenta#notificaciones'
+  match 'cuenta/preferencias_notificaciones' => 'cuenta/cuenta#preferencias_notificaciones'
   match 'cuenta/perfil' => 'cuenta/cuenta#perfil'
   match 'cuenta/skins' => 'cuenta/skins#index'
   match 'cuenta/skins/:action' => 'cuenta/skins'

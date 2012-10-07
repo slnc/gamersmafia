@@ -91,6 +91,7 @@ class User < ActiveRecord::Base
   has_many :gmtv_channels
   has_many :chatlines
   has_many :content_ratings
+  has_many :notifications
   has_many :contents, :dependent => :destroy
   has_many :publishing_personalities
   has_many :publishing_decisions
@@ -211,13 +212,13 @@ class User < ActiveRecord::Base
   def self.new_accounts_cleanup
     # 1st warning
     User.find(:all, :conditions => "state = #{User::ST_UNCONFIRMED} AND updated_at < now() - '3 days'::interval", :limit => 200).each do |u|
-      Notification.unconfirmed_1w(u).deliver
+      NotificationEmail.unconfirmed_1w(u).deliver
       User.db_query("UPDATE users SET state = #{User::ST_UNCONFIRMED_1W}, updated_at = now() WHERE id = #{u.id}")
     end
 
     # 2nd warning
     User.find(:all, :conditions => "state = #{User::ST_UNCONFIRMED_1W} AND updated_at < now() - '3 days'::interval", :limit => 200).each do |u|
-      Notification.unconfirmed_2w(u).deliver
+      NotificationEmail.unconfirmed_2w(u).deliver
       User.db_query("UPDATE users SET state = #{User::ST_UNCONFIRMED_2W}, updated_at = now() WHERE id = #{u.id}")
     end
 
@@ -235,7 +236,7 @@ class User < ActiveRecord::Base
           :recipient => u,
           :title => '¡Feliz cumpleaños!',
           :message => (
-              "¡En nombre de todo el staff de gamersmafia te deseo un feliz" +
+              "¡En nombre de todo el staff de gamersmafia te deseo un feliz"
               " día de cumpleaños! :)\n\nNos vemos por la web.")
       })
     end
@@ -965,7 +966,7 @@ class User < ActiveRecord::Base
   def resurrect
     # método llamado cuando un usuario en modo resurreción incompleta inicia sesión
     Faith.reset(self.resurrector)
-    Notification.resurrection(resurrector, {:resurrected => self}).deliver
+    NotificationEmail.resurrection(resurrector, {:resurrected => self}).deliver
   end
 
   def contents_stats
@@ -1135,10 +1136,10 @@ class User < ActiveRecord::Base
     self.state = User::ST_SHADOW
     self.save
     if self.referer_user_id
-      Notification.newregistration(
+      NotificationEmail.newregistration(
           User.find(self.referer_user_id), {:refered => self}).deliver
     end
-    Notification.welcome(self).deliver
+    NotificationEmail.welcome(self).deliver
   end
 
   def friendships_received_pending

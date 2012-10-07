@@ -10,9 +10,7 @@ class SoldOutstandingUserTest < ActiveSupport::TestCase
       SoldOutstandingUser.create(DEF_OPTIONS)
     end
     s = SoldOutstandingUser.find(:first, :order => 'id DESC')
-    assert_count_increases(Message) do
-      assert_count_increases(OutstandingUser) { s.use({:portal_id => -1}) }
-    end
+    assert_count_increases(OutstandingUser) { s.use({:portal_id => -1}) }
     ou = OutstandingUser.find(:first, :order => 'id DESC')
     assert_equal 1.day.since.gmtime.strftime('%Y%m%d'), ou.active_on.strftime('%Y%m%d')
   end

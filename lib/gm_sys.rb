@@ -87,7 +87,7 @@ module GmSys
     pending_jobs = User.db_query(
         "SELECT COUNT(*) as count FROM delayed_jobs")[0]["count"].to_i
     if pending_jobs >= TOO_MANY_JOBS
-      Notification.too_many_delayed_jobs(
+      NotificationEmail.too_many_delayed_jobs(
           User.find(App.webmaster_user_id),
           :pending_jobs => pending_jobs).deliver
     end

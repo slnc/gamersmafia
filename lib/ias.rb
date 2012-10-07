@@ -12,7 +12,7 @@ module Ias
   @@cache_ias = {}
   def self.ia(login)
     @@cache_ias[login] ||= User.find(
-        :first, :conditions => ["login = ?", login])
+        :first, :conditions => ["LOWER(login) = LOWER(?)", login])
   end
 
   def self.method_missing(method_name)

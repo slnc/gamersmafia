@@ -1,0 +1,5 @@
+<%= render :partial => '/notification_email/header' %>
+De: <%=@user%> (<%=@email%>)<br />
+<br />
+<%=strip_tags(@message)%>
+<%= render :partial => '/notification_email/footer' %>

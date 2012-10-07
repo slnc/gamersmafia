@@ -147,6 +147,11 @@ a > #sendbutton {
     height: 16px;
 }
 
+#userbox2 .notifications a {
+    padding-left: 16px;
+    height: 16px;
+}
+
 #userbox2 .moderation-queue a {
     padding-left: 16px;
     height: 16px;

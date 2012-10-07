@@ -1,8 +1,0 @@
-<%= render :partial => '/notification/header' %>
-Se ha recibido una solicitud para cambiar la dirección de correo actual de <strong><a href="<%=gmurl(@recipient)%>"><%=@recipient.login%></a></strong>:
-<br />
-<br />Dirección antigua: <strong><%=@old_email%></strong>
-  <br />Dirección nueva: <strong><%=@recipient.email%></strong>
-<br />
-Si no has solicitado ningún cambio de dirección de email por favor ignora este mensaje.
-<%= render :partial => '/notification/footer' %>

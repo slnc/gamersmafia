@@ -52,6 +52,7 @@ function cfgPage(user_is_authed, contents, controller, action, model_id,
 
   $j('.comment-textarea .btn-comentar').click(PreventDuplicatedClicks);
   $j('.comment-textarea .btn-responder').click(PreventDuplicatedClicks);
+  $j('#notifications-indicator').click(HandleNotificationsClick);
 }
 
 function PreventDuplicatedClicks() {

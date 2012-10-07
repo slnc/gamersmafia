@@ -4,6 +4,8 @@
 <div style="float: right;"><a href="/cuenta">mi cuenta</a></div>
 <div class="ratings" style="float: right; margin-right: 25px;"><% rem = @user.remaining_rating_slots%><img src="/images/blank.gif" class="left-ratings sprite1 <%='none-remaining' if rem == 0%>" /><%=rem%></div>
 <div id="messages-indicator"><div style="float: left;" class="messages<%= ' has-unread' if @user.unread_messages > 0%>"><a class="sprite1 nav" title="Leer mis mensajes" href="/cuenta/mensajes"><%=@user.unread_messages%></a></div></div>
+
+<div id="notifications-indicator"><div style="float: left; margin-left: 5px;" class="notifications<%= ' has-unread' if @user.has_unread_notifications %>"><a class="sprite1 nav" title="Historial de notificaciones" href="/cuenta/cuenta/notificaciones"></a></div></div>
 <%# TODO clear cache%>
 
 <% cache("/common/globalnavbar/#{@user.id % 1000}/#{@user.id}_avatar") do %>

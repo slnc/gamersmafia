@@ -36,7 +36,7 @@ class Friendship < ActiveRecord::Base
     if self.sender.respond_to?(:friends_recommendations)
       FriendsRecommendation.users_are_now_friends(self.receiver, self.sender)
     end
-    Notification.new_friendship_accepted(
+    NotificationEmail.new_friendship_accepted(
         self.sender, {:receiver => self.receiver}).deliver
   end
 
@@ -87,12 +87,12 @@ class Friendship < ActiveRecord::Base
     }
     recipient = self.receiver ? self.receiver : self.receiver_email
     if self.receiver_user_id then
-      Notification.new_friendship_request(recipient, vars).deliver
+      NotificationEmail.new_friendship_request(recipient, vars).deliver
       if self.sender.respond_to?(:friends_recommendations)
         FriendsRecommendation.users_are_now_friends(self.receiver, self.sender)
       end
     else # external
-      Notification.new_friendship_request_external(recipient, vars).deliver
+      NotificationEmail.new_friendship_request_external(recipient, vars).deliver
     end
   end
 

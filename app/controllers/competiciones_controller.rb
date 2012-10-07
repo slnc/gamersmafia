@@ -344,7 +344,7 @@ class CompeticionesController < ArenaController
   end
 
   def notify(thing, notification, vars)
-    Notification.send(notification, thing, vars).deliver
+    NotificationEmail.send(notification, thing, vars).deliver
   end
 
 

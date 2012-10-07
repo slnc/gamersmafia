@@ -104,7 +104,7 @@ class CompetitionsMatch < ActiveRecord::Base
       end
     end
     self.save
-    Notification.rechallenge(self.participant2.the_real_thing,
+    NotificationEmail.rechallenge(self.participant2.the_real_thing,
                              :participant => self.participant1).deliver
   end
 
@@ -123,14 +123,14 @@ class CompetitionsMatch < ActiveRecord::Base
   # Solo para ladders
   def accept_challenge
     self.update_attribute(:accepted, true)
-    Notification.reto_aceptado(self.participant1.the_real_thing,
+    NotificationEmail.reto_aceptado(self.participant1.the_real_thing,
                                :participant => self.participant2).deliver
   end
 
   # Solo para ladders
   def reject_challenge
     self.competition.log("#{self.participant2.name} rechaza el reto de #{self.participant1.name}")
-    Notification.reto_rechazado(self.participant1.the_real_thing,
+    NotificationEmail.reto_rechazado(self.participant1.the_real_thing,
                                 :participant => self.participant2).deliver
     self.destroy
   end

@@ -10,7 +10,7 @@ class ProfileSignature < ActiveRecord::Base
 
   def notify_signed
     if self.user.notifications_newprofilesignature then
-      Notification.newprofilesignature(
+      NotificationEmail.newprofilesignature(
           self.user, {:signer => self.signer}).deliver
     end
   end

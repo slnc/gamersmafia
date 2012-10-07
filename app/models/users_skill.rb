@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class UsersSkill < ActiveRecord::Base
 
+  # TODO(slnc): remove Editor, Sicario and Moderator after Dec 1st, 2012
   VALID_SKILLS = %w(
     Advertiser
     Antiflood
@@ -157,44 +158,6 @@ class UsersSkill < ActiveRecord::Base
 
   end
 
-  protected
-  def check_role
-    if VALID_SKILLS.include?(self.role)
-      true
-    else
-      self.errors.add("role", "Rol '#{self.role}' invalido.")
-      false
-    end
-  end
-
-  def toyaml_if_role_data_not_basic_type
-    if !%w(NilClass String Fixnum).include?(self.role_data.class.name)
-      self.role_data = self.role_data.to_yaml
-    end
-  end
-
-  def check_is_staff
-    nagato = Ias.nagato
-    if self.frozen? # quitando permiso
-      if self.role == 'Don'
-        bd = BazarDistrict.find(self.role_data.to_i)
-        bd.update_don(bd.mano_derecha) if bd.mano_derecha
-      end
-
-      if self.role == 'Boss'
-        bd = Faction.find_by_id(self.role_data.to_i)
-       	# al borrar algunas facciones viejas no se borraban los roles
-        bd.update_boss(bd.underboss) if bd && bd.underboss
-      end
-
-      Message.create(:title => "Permiso de #{format_scope} eliminado", :message => "Ya no tienes permisos de #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id) if bd
-    else
-      Message.create(:title => "Recibido permiso de #{format_scope}", :message => "Acabas de recibir permisos de #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id)
-    end
-
-    self.user.update_is_staff
-  end
-
   def format_scope
     # cambiar tb cuenta_helper role_data
     case role
@@ -222,6 +185,42 @@ class UsersSkill < ActiveRecord::Base
       "Admin de #{Competition.find(self.role_data.to_i).name}"
       when 'CompetitionSupervisor'
       "Supervisor de #{Competition.find(self.role_data.to_i).name}"
+      else
+        Translation.translate(role)
     end
   end
+
+  protected
+  def check_role
+    if VALID_SKILLS.include?(self.role)
+      true
+    else
+      self.errors.add("role", "Rol '#{self.role}' invalido.")
+      false
+    end
+  end
+
+  def toyaml_if_role_data_not_basic_type
+    if !%w(NilClass String Fixnum).include?(self.role_data.class.name)
+      self.role_data = self.role_data.to_yaml
+    end
+  end
+
+  def check_is_staff
+    if self.frozen? # quitando permiso
+      if self.role == 'Don'
+        bd = BazarDistrict.find(self.role_data.to_i)
+        bd.update_don(bd.mano_derecha) if bd.mano_derecha
+      end
+
+      if self.role == 'Boss'
+        bd = Faction.find_by_id(self.role_data.to_i)
+       	# al borrar algunas facciones viejas no se borraban los roles
+        bd.update_boss(bd.underboss) if bd && bd.underboss
+      end
+    end
+
+    self.user.update_is_staff
+  end
+
 end

@@ -16,6 +16,7 @@
    gmstats
    skins
    ads
+   translation
    stats
    stats_mixings_ab_tests
    acts_as_rootable

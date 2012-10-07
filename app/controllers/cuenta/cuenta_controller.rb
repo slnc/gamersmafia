@@ -27,6 +27,17 @@ class Cuenta::CuentaController < ApplicationController
     @title = 'Tracker'
   end
 
+  def notificaciones
+    unread_ids = []
+    # TODO(slnc): periodically remove old notifications for users with too many
+    # notifications.
+    @notifications = @user.notifications.find(
+        :all, :order => 'id DESC', :limit => 100).each do |notification|
+      unread_ids << notification.id if notification.unread?
+    end
+    Notification.mark_as_read(@user, unread_ids)
+  end
+
   def alta
     @no_ads = true
   end
@@ -231,7 +242,7 @@ class Cuenta::CuentaController < ApplicationController
               " (#{remote_ip}): #{users_same_ip_html}")
       })
 
-      Notification.signup(@newuser, :mode => @mmode).deliver
+      NotificationEmail.signup(@newuser, :mode => @mmode).deliver
       flash[:notice] = (
           "Te hemos enviado un mensaje a #{@newuser.email} con la clave de" +
           " confirmación.")
@@ -313,7 +324,7 @@ class Cuenta::CuentaController < ApplicationController
         sentemail = true
         @newuser.generate_validkey
 
-        Notification.emailchange(@newuser).deliver
+        NotificationEmail.emailchange(@newuser).deliver
       else
         notice = "Ya hay una cuenta usando el email \"#{params[:user][:newemail]}\"."
       end
@@ -336,7 +347,7 @@ class Cuenta::CuentaController < ApplicationController
 
   def resendnewemail
    (redirect_to '/cuenta' and return) if cookies[:adn3]
-    Notification.emailchange(@user).deliver
+    NotificationEmail.emailchange(@user).deliver
     flash[:notice] = "Te hemos enviado un email a #{@user.newemail} para confirmar el cambio."
     redirect_to '/cuenta'
   end
@@ -405,8 +416,8 @@ class Cuenta::CuentaController < ApplicationController
     #redirect_to :action => 'perfil'
   end
 
-  def notificaciones
-    @navpath = [['Cuenta', '/cuenta'], ['Notificaciones', '/cuenta/notificaciones']]
+  def preferencias_notificaciones
+    @navpath = [['Cuenta', '/cuenta'], ['Notificaciones', '/cuenta/preferencias_notificaciones']]
     @title = 'Notificaciones'
   end
 
@@ -424,7 +435,7 @@ class Cuenta::CuentaController < ApplicationController
     newuser.notifications_newprofilesignature = params[:user][:notifications_newprofilesignature] if params[:user][:notifications_newprofilesignature] && @user.enable_profile_signatures?
     newuser.save
     flash[:notice] = 'Preferencias de notificaciones guardadas correctamente.'
-    redirect_to :action => 'notificaciones'
+    redirect_to :action => 'preferencias_notificaciones'
   end
 
   def estadisticas
@@ -550,7 +561,7 @@ class Cuenta::CuentaController < ApplicationController
       flash[:error] = "Demasiadas peticiones de reseteo de contraseña. Debes esperar un poco antes de poder realizar una nueva petición."
       redirect_to :action => 'olvide_clave'
     else
-      Notification.forgot(u).deliver
+      NotificationEmail.forgot(u).deliver
       flash[:notice] = 'Notificación enviada correctamente.'
     end
   end
@@ -597,7 +608,7 @@ class Cuenta::CuentaController < ApplicationController
         flash[:notice] = "¡No hay ninguna cuenta registrada con esa dirección de email! "
         flash[:notice] << "O tu cuenta no ha sido confirmada o necesitas crear una nueva cuenta."
       else
-        Notification.signup(user).deliver
+        NotificationEmail.signup(user).deliver
         cookies[:email] = { :value => user.email, :expires => nil, :domain => COOKIEDOMAIN}
         flash[:notice] = "Hemos enviado un email a #{user.email}. "
         flash[:notice] << "Por favor, pega la clave de confirmación que recibirás en el email."
