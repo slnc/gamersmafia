@@ -237,17 +237,8 @@ textarea {
     background: #860000;
 }
 
-.karma .pcent-bar .bar {
-    background: #2577A7;
-}
-
-.karma .points {
+.karma {
     color: #2577A7;
-}
-
-.karma .pcent-bar {
-    background: #D9D9D9;
-    border-color: #2577A7;
 }
 
 .comments-bar .pcent-bar {

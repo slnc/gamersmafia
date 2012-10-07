@@ -281,10 +281,10 @@ th.sm-icon, td.sm-icon {
     text-align: center;
 }
 
-.karma .points {
+.karma {
     font-weight: bold;
     text-align: right;
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .userinfonick a {

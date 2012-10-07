@@ -87,9 +87,17 @@ module MiembrosHelper
   end
 
   def draw_karma_bar_sm(user)
-    pcdone = Karma.pc_done_for_next_level(user.karma_points)
-    "<div class=\"karma\"><div class=\"points\" style=\"float: left; width: 10px; text-align: right;\">#{Karma.level(user.karma_points)}</div> <div style=\"margin-left: 12px; padding-top: 2px;\"><div class=\"karma\">#{draw_pcent_bar(pcdone.to_f/100, "#{pcdone}%", true)}</div></div></div>"
-    #""
+    if user.karma_points < 1000
+      formatted = user.karma_points
+    elsif user.karma_points < 10000
+      formatted = "#{(user.karma_points.to_f / 1000).to_s.gsub(".", ",")}"
+    elsif user.karma_points < 1000000
+      formatted = "#{((user.karma_points.to_f / 1000) * 10).to_i.to_f / 10}k"
+    else
+      formatted = "#{((user.karma_points.to_f / 1000000) * 10).to_i.to_f / 10}M"
+    end
+
+    "<div class=\"karma\" title=\"#{user.karma_points} puntos de karma.\">#{formatted}</div>"
   end
 
   def draw_comments_bar_sm(user, refobj)
