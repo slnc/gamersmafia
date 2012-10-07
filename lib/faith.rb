@@ -297,11 +297,6 @@ module Faith
    (Faith.level(user.faith_points) + 1) * 5
   end
 
-  def self.max_daily_ratings(user)
-    ratings = (Faith.level(user.faith_points) + 1) * 5
-  end
-
-
   def self.max_user_points
     User.db_query("SELECT max(cache_faith_points) FROM users")[0]['max'].to_i
   end

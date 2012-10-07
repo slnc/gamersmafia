@@ -228,7 +228,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal av1.id, u1.avatar_id
   end
 
-  def test_user_should_not_be_zombie_if_logged_in
+  test "user_should_not_be_zombie_if_logged_in" do
     u1 = User.find(1)
     assert u1.update_attributes(:state => User::ST_ZOMBIE)
     u1.comments.each do |c|
@@ -251,5 +251,12 @@ class UserTest < ActiveSupport::TestCase
     u1 = User.find(1)
     u1.users_skills.create(:role => "Bank")
     assert u1.has_skill?("Bank")
+  end
+
+  test "remaining_rating_slots" do
+    u1 = User.find(1)
+    u1.cache_remaining_rating_slots = nil
+    u1.reload
+    assert_equal User::MAX_DAILY_RATINGS, u1.remaining_rating_slots
   end
 end

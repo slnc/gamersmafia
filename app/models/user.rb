@@ -5,6 +5,13 @@ require 'karma'
 require 'set'
 
 class User < ActiveRecord::Base
+  ANTIFLOOD_LEVELS = {
+    1 => 'suave',
+    2 => 'moderado',
+    3 => 'duro',
+    4 => 'extremo',
+    5 => 'absoluto'}
+
   BANNED_DOMAINS = %w(
       10minutemail.com
       correo.nu
@@ -18,26 +25,14 @@ class User < ActiveRecord::Base
       yopmail.com
   )
 
-  ANTIFLOOD_LEVELS = {
-    1 => 'suave',
-    2 => 'moderado',
-    3 => 'duro',
-    4 => 'extremo',
-    5 => 'absoluto'}
+  # Maximum number of combined contents + comments valorations that a user can
+  # do per day.
+  MAX_DAILY_RATINGS = 40
 
   VALID_SEXUAL_ORIENTATIONS = [:women, :men, :both, :none]
   MALE = 0
   FEMALE = 1
   SEXUAL_ORIENTATIONS_REL = { :women => "sex = #{FEMALE}", :men => "sex = #{FEMALE}", }
-  MESSAGE_WELCOME_TO_HQ = <<-end
-  Ya estás dado de alta en el HQ.
-
-  Te recomiendo que para empezar vayas al wiki (menú horizontal encima de la
-  cabecera HQ -> Wiki) ya que hay un información sobre cómo usar tanto el wiki
-  como GitHub y la lista de correo interna..
-
-  Un saludete :D
-  end
 
   ST_UNCONFIRMED = 0
   ST_ACTIVE = 1
@@ -805,9 +800,18 @@ class User < ActiveRecord::Base
 
   def remaining_rating_slots
     if self.cache_remaining_rating_slots.nil?
-      self.cache_remaining_rating_slots = Faith.max_daily_ratings(self) - self.content_ratings.count(:conditions => 'created_on >= date_trunc(\'day\', now())') - self.comments_valorations.count(:conditions => 'created_on >= date_trunc(\'day\', now())')
-      User.db_query("UPDATE users SET cache_remaining_rating_slots = #{self.cache_remaining_rating_slots} WHERE id = #{self.id}")
-      raise "Error updating remaining_rating_slots" if self.cache_remaining_rating_slots.nil?
+      ratings_spent_today = (
+          self.content_ratings.count(
+              :conditions => "created_on >= date_trunc('day', now())") -
+          self.comments_valorations.count(
+              :conditions => "created_on >= date_trunc('day', now())")
+      )
+      self.update_column(
+          :cache_remaining_rating_slots,
+          MAX_DAILY_RATINGS - ratings_spent_today)
+      if self.cache_remaining_rating_slots.nil?
+        raise "Error updating remaining_rating_slots"
+      end
     end
     self.cache_remaining_rating_slots < 0 ? 0 : self.cache_remaining_rating_slots
   end
