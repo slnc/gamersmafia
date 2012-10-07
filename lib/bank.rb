@@ -12,7 +12,7 @@ module Bank
     # convierte una cantidad ammount de tipo units a su equivalente en gmd
     case units
       when 'karma_points'
-      ammount * 0.2
+      ammount
 
       when 'faith_level'
       case ammount
