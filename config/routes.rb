@@ -57,6 +57,8 @@ Gamersmafia::Application.routes.draw do
   match 'admin/usuarios' => 'admin/usuarios#index'
   match 'admin/usuarios/:action' => 'admin/usuarios'
   match 'admin/contenidos/recover/:id' => 'admin/contenidos#recover'
+  match 'alertas' => 'alertas#index'
+  match 'alertas/:action(/:id)' => 'alertas'
   match 'blogs/:login' => 'blogs#blog', :login => /[^\/]+/
   match 'blogs/:login/:id' => 'blogs#blogentry', :login => /[^\/]+/, :constraints => { :id => /\d+/ }
   match 'blogs/ranking' => 'blogs#ranking'
@@ -164,6 +166,8 @@ Gamersmafia::Application.routes.draw do
   match 'descargas/create_from_zip' => 'descargas#create_from_zip'
   match 'descargas/list' => 'descargas#index'
   match 'descargas/new' => 'descargas#new'
+  match 'emblemas' => 'emblemas#index'
+  match 'emblemas/:id' => 'emblemas#emblema'
   match 'foros/nuevo_topic' => 'foros#nuevo_topic'
   match 'foros/topics_activos' => 'foros#topics_activos'
   match 'foros/forum/:id' => 'foros#forum', :constraints => {:id => /\d+/}
@@ -188,8 +192,6 @@ Gamersmafia::Application.routes.draw do
   match 'site/sponsors' => 'site#sponsors'
   match 'site/sponsors/:sponsor' => 'site#sponsor'
   match 'site/:action(/:id)' => 'site'
-  match 'alertas' => 'alertas#index'
-  match 'alertas/:action(/:id)' => 'alertas'
   match 'tutoriales/:category' => 'tutoriales#index', :constraints => { :category => /\d+/ }
   match 'tutoriales/create' => 'tutoriales#create'
   match 'tutoriales/list' => 'tutoriales#index'

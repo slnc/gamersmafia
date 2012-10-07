@@ -6,6 +6,56 @@ module MiembrosHelper
     :normal => 50,
   }
 
+  def user_emblem_stats(user)
+    split_emblems_mask = user.emblems_mask_or_calculate.split(".")
+    out = []
+    UsersEmblem::SORTED_DECREASE_FREQUENCIES .each do |frequency|
+      emblems_count = split_emblems_mask[User::USER_EMBLEMS_MASKS[frequency]]
+      next if emblems_count == '0'
+      out << [frequency, emblems_count]
+    end
+    out
+  end
+
+  def sorted_user_emblems_all
+    emblems = {}
+    UsersEmblem::FREQ_NAME.keys.each do |frequency|
+      emblems[frequency] = []
+    end
+
+    UsersEmblem::EMBLEMS_INFO.each do |emblem, info|
+      emblems[info[:frequency]] << {:emblem => emblem}.merge(info)
+    end
+
+    sort_emblems_by_frequency(emblems)
+  end
+
+  def sorted_user_emblems(user)
+    emblems = {}
+    UsersEmblem::FREQ_NAME.keys.each do |frequency|
+      emblems[frequency] = []
+    end
+
+    user.users_emblems.each do |emblem|
+      info = UsersEmblem::EMBLEMS_INFO[emblem.emblem]
+      emblems[info[:frequency]] << emblem
+    end
+
+    sort_emblems_by_frequency(emblems)
+  end
+
+  # Sorts a hash of emblems keyed by their rarity. Each value is a hash with
+  # EMBLEMS_INFO-like values.
+  def sort_emblems_by_frequency(emblems)
+    out =  []
+    UsersEmblem::SORTED_DECREASE_FREQUENCIES.each do |frequency|
+      emblems[frequency].sort_by {|el| el[:name]}.each do |emblem|
+        out << emblem
+      end
+    end
+    out
+  end
+
   def draw_user_info(user)
     out = "<div class=\"members-user-info\">
         <div class=\"avatar\"><img src=\"#{ASSET_URL}#{user.show_avatar}\" /></div>
@@ -96,5 +146,13 @@ module MiembrosHelper
     end
     out.sort.reverse.collect {|skill_info| [gm_translate(skill_info[1]),
                                             skill_info[2]]}
+  end
+
+  def special_skills(user)
+    out = []
+    user.users_skills.special_skills.find(:all).each do |skill|
+      out << skill.format_scope
+    end
+    out.sort
   end
 end

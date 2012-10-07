@@ -28,11 +28,14 @@ class UsersActionObserver < ActiveRecord::Observer
       data = "#{user_link(object.user)} #{ClansMovement.translate_direction(object.direction)} <a href=\"/clanes/clan/#{object.id}\">#{object.clan}</a>"
       UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_CLANS_MOVEMENT, :object_id => object.id, :data => data)
 
-      when 'UsersEmblem'
-      if Emblems::EMBLEMS_TO_REPORT.include?(object.emblem)
-        data = "#{user_link(object.user)} ha obtenido el emblema de <strong>#{Emblems::EMBLEMS[object.emblem.to_sym][:title]}</strong>"
-        UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_USERS_EMBLEM, :object_id => object.id, :data => data)
-      end
+      # TODO(slnc): do we want to notify these things on the community log
+      # table? Probably no, right? It's gonna get noisy if you have 100 friends
+      # and about 50 emblems that can be easily achieved.
+      #when 'UsersEmblem'
+      #if Emblems::EMBLEMS_TO_REPORT.include?(object.emblem)
+      #  data = "#{user_link(object.user)} ha obtenido el emblema de <strong>#{Emblems::EMBLEMS[object.emblem.to_sym][:title]}</strong>"
+      #  UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_USERS_EMBLEM, :object_id => object.id, :data => data)
+      #end
 
       when 'Clan'
       if object.creator_user_id

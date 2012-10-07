@@ -59,6 +59,22 @@ class UsersSkill < ActiveRecord::Base
     'TagContents' => 75,
   }
 
+  NON_KARMA_SKILLS = [
+    'BazarManager',
+    'Boss',
+    'Bot',
+    'Capo',
+    'CompetitionAdmin',
+    'CompetitionSupervisor',
+    'Don',
+    'Gladiator',
+    'ManoDerecha',
+    'Moderator',
+    'Sicario',
+    'Underboss',
+    'Webmaster',
+  ]
+
   # role                  | role_data
   # ------------------------------------------
   # Advertiser            | advertiser_id
@@ -93,6 +109,9 @@ class UsersSkill < ActiveRecord::Base
 
   after_create :check_is_staff
   after_destroy :check_is_staff
+
+  scope :special_skills,
+        :conditions => ["role IN (?)", NON_KARMA_SKILLS]
 
   def self.give_karma_skills
     user_karma = Karma.karma_points_of_users_at_date_range(3.days.ago, Time.now)

@@ -10,16 +10,27 @@
      <div class="user-info-bar"><%=draw_faith_bar_sm(comment.user)%></div>
      <div class="user-info-bar"><%=draw_comments_bar_sm(comment.user, comment)%></div>
 	   <div class="emblemas">
-	 <% if ckey != 'perm' && comment.user.emblems_mask.to_s.index('1') then
-		    emi = 0
-			comment.user.emblems_mask.split('').each do |char|
-			  if char == '1' then
-			 %>
-		 	<img class="sprite1 emblema emblema-<%=Emblems::EMBLEMS_BY_INDEX[emi]%>" src="/images/blank.gif" title="<%=Emblems::EMBLEMS[Emblems::EMBLEMS_BY_INDEX[emi]][:title]%>" />
-			<% end %><%# if -%>
-		<% emi+=1
-end %><%# each -%>
-		<% end %><%# if -%>
+
+       <% emblems_to_show = user_emblem_stats(comment.user)
+       if emblems_to_show.size > 0
+         chunked = emblems_to_show.each_slice(3).to_a
+     %>
+       <table>
+         <% chunked.each do |chunk| %>
+           <tr>
+             <%chunk.each do |frequency, count| %>
+               <td style="padding: 0; width: 20px;"><img class="sprite1 emblem-<%=frequency%> ico16" src="/images/blank.gif" /></td>
+             <% end -%>
+           </tr>
+           <tr>
+             <%chunk.each do |frequency, count| %>
+               <td style="padding: 0; width: 18px;"><%=count%></td>
+             <% end -%>
+           </tr>
+         <% end -%>
+       </table>
+       <% end  # if emblems_to_show.size > 0 -%>
+
 		 </div>
    </div>
  </div>

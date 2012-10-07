@@ -53,17 +53,6 @@ class UsersActionObserverTest < ActionController::IntegrationTest
     end
   end
 
-  test "should_properly_work_with_emblems" do
-    @ue = UsersEmblem.new(:user_id => 1, :emblem => Emblems::EMBLEMS_TO_REPORT[0])
-    assert_count_increases(UsersAction) do
-      assert @ue.save
-    end
-
-    assert_count_decreases(UsersAction) do
-      @ue.destroy
-    end
-  end
-
   test "should_properly_work_with_profile_signatures" do
     @ps = ProfileSignature.new(:user_id => 1, :signer_user_id => 2, :signature => 'fada')
     uai = UsersAction.count

@@ -409,25 +409,6 @@ if last_matches.size > 0 then
     </ul>
 <% end -%>
 
-
-<% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/emblemas") do %>
-		<% sql_emblems = Emblems::EMBLEMS_TO_REPORT.collect { |e| "'#{e}'" }.join(',')
-		dbe = User.db_query("SELECT count(*), emblem from users_emblems where user_id = #{@curuser.id} AND emblem in (#{sql_emblems}) GROUP BY emblem ORDER BY emblem")
-
-		if dbe.size > 0 then %>
-		<%mftext('Emblemas') do %>
-		<ul style="margin: 0; padding-left: 0;">
-	<%dbe.each do |db| %>
-	<li class="<%=oddclass%>" style="float: left; padding: 3px; list-style: none;">
-		<img class="sprite1 emblema emblema-<%=db['emblem']%>" src="/images/blank.gif" title="<%=Emblems::EMBLEMS[db['emblem'].to_sym][:title]%>" />
-		<%=db['count']%>
-	</li>
-	<% end -%>
-	</ul>
-	<br />
-	<% end %><%# if -%>
-<% end -%>
-<% end %><%# cache -%>
   <div style="clear: left;"></div>
 
 
@@ -521,6 +502,9 @@ if prev_nicks.size > 0 then %>
   <% end  # if mftext('Control') do -%>
 <% end -%>
 <%= render :partial => '/miembros/skills_table',
+           :locals => { :curuser => @curuser } %>
+
+<%= render :partial => '/miembros/emblems_table',
            :locals => { :curuser => @curuser } %>
 
 </div>

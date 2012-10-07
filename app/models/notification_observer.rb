@@ -5,6 +5,7 @@ class NotificationObserver < ActiveRecord::Observer
           Question,
           SoldOutstandingClan,
           SoldOutstandingUser,
+          UsersEmblem,
           UsersSkill
 
   def after_create(o)
@@ -26,6 +27,13 @@ class NotificationObserver < ActiveRecord::Observer
               \">ban contra #{o.banned_user.login}</a>"),
         })
       end
+
+    when 'UsersEmblem'
+      o.user.notifications.create({
+        :description => (
+            "Acabas de obtener el emblema #{o.inline_html}.
+            ¡Enhorabuena!"),
+      })
 
     when 'UsersSkill'
       o.user.notifications.create({

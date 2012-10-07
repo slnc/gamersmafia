@@ -62,6 +62,7 @@ module Gamersmafia
       :karma_observer,
       :notification_observer,
       :users_action_observer,
+      :user_emblem_observer,
     ]
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.

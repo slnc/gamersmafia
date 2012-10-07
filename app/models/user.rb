@@ -69,6 +69,15 @@ class User < ActiveRecord::Base
     ST_UNCONFIRMED_2W => 'no confirmada'
   }
 
+  USER_EMBLEMS_MASKS = {
+    "common" => 0,
+    "unfrequent" => 1,
+    "rare" => 2,
+    "legendary" => 3,
+    "special" => 4,
+  }
+
+
   has_many :groups_messages
 
   has_many :users_skills, :dependent => :destroy
@@ -220,6 +229,27 @@ class User < ActiveRecord::Base
     User.find(:all, :conditions => "state = #{User::ST_UNCONFIRMED_2W} AND updated_at < now() - '3 days'::interval", :limit => 200).each do |u|
       User.db_query("UPDATE users SET state = #{User::ST_DELETED}, updated_at = now() WHERE id = #{u.id}")
     end
+  end
+
+  def emblems_mask_or_calculate
+    if self.emblems_mask.nil?
+      frequencies = {}
+      USER_EMBLEMS_MASKS.each do |k, v|
+        frequencies[k] = 0
+      end
+
+      self.users_emblems.each do |emblem|
+        frequencies[emblem.frequency] += 1
+      end
+      mask = []
+      UsersEmblem::SORTED_DECREASE_FREQUENCIES.each do |frequency|
+        emblems_count = frequencies[frequency]
+        mask << emblems_count.to_s
+      end
+
+      self.update_column("emblems_mask", mask.join("."))
+    end
+    self.emblems_mask
   end
 
   def self.send_happy_birthday
@@ -747,6 +777,10 @@ class User < ActiveRecord::Base
   def has_skill?(skill)
     @cache_skills ||= Set.new(self.users_skills.find(:all).collect {|s| s.role})
     @cache_skills.include?(skill)
+  end
+
+  def has_emblem?(emblem)
+    self.users_emblems.count(:conditions => ["emblem = ?", emblem]) > 0
   end
 
   def is_bigboss?

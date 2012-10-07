@@ -6,6 +6,7 @@ module Reports
     ActionView::Base.send :include, ApplicationHelper
     # envía una noticia semanal con información varia
 
+    raise "broken, must update"
     # emblemas
     last_ue = UsersEmblem.find(:first, :order => 'id DESC', :limit => 1)
     raise "imposible, no hay emblemas!" unless last_ue

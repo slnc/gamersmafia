@@ -210,19 +210,4 @@ end
 </table>
 <% end -%>
 
-<% cache("/home/comunidad/top_semanal/#{Time.now.strftime('%Y%W')}") do %>
-<%mftext('Top semanal', :grid => 6, :glast => true) do
-emblems = Emblems.get_latest_emblems.chunk(2)
-	2.times do |itime| %>
-<div class="grid-3 <%='glast' if itime == 1%>">
-	<table>
-	<%emblems[itime].each do |ue| %>
-		<tr style="height: 32px; line-height: 32px;" class="<%=oddclass%>"><td><%=draw_emblem(ue.emblem)%> <%=user_link(ue.user)%></td></tr>
-	<% end -%>
-	</table>
-</div>
-	<% end -%>
-<% end -%>
-<% end %><%# cache-%>
-
 <div class="clearb"></div>

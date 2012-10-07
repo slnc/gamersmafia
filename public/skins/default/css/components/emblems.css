@@ -1,0 +1,24 @@
+.emblem {
+  border-color: #000;
+  background: #000;
+}
+
+.emblem.common {
+  color: #d8d8d8; /* common */
+}
+
+.emblem.unfrequent {
+  color: #88a7ff;
+}
+
+.emblem.rare {
+  color: #fcf65e; /* rare */
+}
+
+.emblem.legendary {
+  color: #ff7200; /* legendary */
+}
+
+.emblem.special {
+  color: #a7ff88; /* special */
+}

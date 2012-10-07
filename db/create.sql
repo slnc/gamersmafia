@@ -2725,7 +2725,7 @@ CREATE SEQUENCE users_contents_tags_id_seq
 ALTER SEQUENCE users_contents_tags_id_seq OWNED BY users_contents_tags.id;
 CREATE TABLE users_emblems (
     id integer NOT NULL,
-    created_on date DEFAULT (now())::date NOT NULL,
+    created_on timestamp without time zone DEFAULT (now())::date NOT NULL,
     user_id integer,
     emblem character varying NOT NULL,
     details character varying

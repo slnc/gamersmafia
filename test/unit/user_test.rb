@@ -259,4 +259,10 @@ class UserTest < ActiveSupport::TestCase
     u1.reload
     assert_equal User::MAX_DAILY_RATINGS, u1.remaining_rating_slots
   end
+
+  test "emblems_mask" do
+    u1 = User.find(1)
+    u1.users_emblems.create(:emblem => "comments_count_1")
+    assert_equal '1.0.0.0.0', u1.emblems_mask_or_calculate
+  end
 end

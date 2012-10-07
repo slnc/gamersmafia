@@ -1,4 +1,10 @@
-<%mftable("Habilidades", karma_skills_percentages(curuser)) do |name, percentage|%>
+<%mftable("Habilidades", karma_skills_percentages(curuser),
+          options={:class_container => 'no-title-icon'}) do |name, percentage|%>
   <td><%=name%></td>
   <td class="w50"><%=draw_pcent_bar(percentage)%></td>
+<% end -%>
+
+<%mftable("Habilidades especiales", special_skills(curuser),
+          options={:class_container => 'no-title-icon'}) do |name|%>
+  <td><%=name%></td>
 <% end -%>

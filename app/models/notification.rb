@@ -6,6 +6,7 @@ class Notification < ActiveRecord::Base
   before_save :ensure_sender_user_id
   after_create :touch_user
   belongs_to :user
+  belongs_to :sender, :class_name => 'User', :foreign_key => 'sender_user_id'
 
   scope :unread, :conditions => "read_on IS NULL"
   scope :read, :conditions => "read_on IS NOT NULL"

@@ -28,14 +28,14 @@ class Cuenta::CuentaController < ApplicationController
   end
 
   def notificaciones
-    unread_ids = []
+    @unread_ids = []
     # TODO(slnc): periodically remove old notifications for users with too many
     # notifications.
     @notifications = @user.notifications.find(
         :all, :order => 'id DESC', :limit => 100).each do |notification|
-      unread_ids << notification.id if notification.unread?
+      @unread_ids << notification.id if notification.unread?
     end
-    Notification.mark_as_read(@user, unread_ids)
+    Notification.mark_as_read(@user, @unread_ids)
   end
 
   def alta
