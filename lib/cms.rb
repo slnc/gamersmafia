@@ -714,7 +714,9 @@ module Cms
     end
 
     do_we_publish = (new_state == Cms::PUBLISHED) ? true : false
-    pd = PublishingDecision.find(:first, :conditions => ['user_id = ? and content_id = ?', user.id, uniq.id])
+    pd = PublishingDecision.find(
+        :first,
+        :conditions => ['user_id = ? and content_id = ?', user.id, uniq.id])
     if pd then # ya había voto, actualizamos en lugar de crear
       pd.publish = do_we_publish
       pd.deny_reason = reason if !do_we_publish
@@ -722,7 +724,12 @@ module Cms
       pd.user_weight = real_weight
       pd.save
     else
-      base = {:user_id => user.id, :content_id => uniq.id, :publish => do_we_publish, :user_weight => real_weight}
+      base = {
+          :user_id => user.id,
+          :content_id => uniq.id,
+          :publish => do_we_publish,
+          :user_weight => real_weight,
+      }
       if do_we_publish
         base.merge!({ :accept_comment => reason })
       else
@@ -731,7 +738,10 @@ module Cms
       pd = PublishingDecision.create(base)
     end
     prev_state = content.state
-    if u_weight == Infinity # está votando un moderador, actualizamos campo 'is_right' de todos los publishing_decisions
+
+    # está votando un moderador, actualizamos campo 'is_right' de todos los
+    # publishing_decisions
+    if u_weight == Infinity
       content.change_state(new_state, user)
       if new_state == Cms::DELETED && prev_state == PENDING then
         msg = "Lo lamentamos pero tu contenido ha sido denegado por las siguientes razones:\n\n"
@@ -756,24 +766,35 @@ module Cms
 
       ttype, scope = Alert.fill_ttype_and_scope_for_content_report(uniq)
       mrman = Ias.MrMan
-      Alert.create(:type_id => ttype, :scope => scope, :reporter_user_id => mrman.id, :headline => "#{Cms.faction_favicon(content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.real_content.resolve_html_hid}</a></strong> denegado") if prev_state == Cms::PENDING
+      if prev_state == Cms::PENDING
+        Alert.create({
+            :type_id => ttype,
+            :scope => scope,
+            :reporter_user_id => mrman.id,
+            :headline => (
+                "#{Cms.faction_favicon(content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.real_content.resolve_html_hid}</a></strong> denegado"),
+        })
+      end
 
-      m = Message.new({ :message => msg, :sender => Ias.nagato, :recipient => content.user, :title => "Contenido \"#{content.resolve_hid}\" denegado"})
-      m.save
+      Message.create({
+          :message => msg,
+          :sender => Ias.nagato,
+          :recipient => content.user,
+          :title => "Contenido \"#{content.resolve_hid}\" denegado",
+      })
     end
 
-    if [Cms::PUBLISHED, Cms::DELETED].include?(content.state) then # actualizamos campo 'is_right' de todos los publishing_decisions ya que o bien un editor ha tomado una decisión o bien la suma de los pesos de las personas que han votado ya ha superado uno de los ratios
+    # Actualizamos campo 'is_right' de todos los publishing_decisions ya que o
+    # bien un editor ha tomado una decisión o bien la suma de los pesos de las
+    # personas que han votado ya ha superado uno de los ratios.
+    if [Cms::PUBLISHED, Cms::DELETED].include?(content.state) then
       uniq.publishing_decisions.find(:all).each do |pd|
-        pd.is_right = ((content.state == Cms::PUBLISHED && pd.publish) || ((content.state == Cms::DELETED && !pd.publish))) ? true : false
+        pd.is_right = (
+            (content.state == Cms::PUBLISHED && pd.publish) ||
+            ((content.state == Cms::DELETED && !pd.publish))) ? true : false
         pd.save
         pd.personality.recalculate
       end
-
-      #if content.state == Cms::PUBLISHED then
-      #User.db_query("UPDATE publishing_decisions set is_right = publish WHERE content_id = #{uniq.id}")
-      #else
-      #User.db_query("UPDATE publishing_decisions set is_right = not publish WHERE content_id = #{uniq.id}")
-      #end
     end
   end
 
@@ -785,16 +806,16 @@ module Cms
     self.modify_content_state(content, user, Cms::DELETED, reason)
   end
 
-  # Devuelve el peso de un usuario a la hora de moderar un contenido del tipo dado. En caso de superadmins o editores el peso es siempre Infinito
+  # Devuelve el peso de un usuario a la hora de moderar un contenido del tipo
+  # dado. En caso de superadmins o editores el peso es siempre Infinito.
   def self.get_user_weight_with(content_type, user, content=nil)
-    if user.has_skill?("Capo") or (!content.nil? and Cms::user_can_edit_content?(user, content))
+    if user.has_skill?("Capo") || (
+        !content.nil? && Cms::user_can_edit_content?(user, content))
       Infinity
     else
       aciertos = User.db_query("SELECT count(a.id) FROM publishing_decisions A JOIN contents b ON a.content_id = b.id WHERE a.is_right = 't' AND b.content_type_id = #{content_type.id} AND a.user_id = #{user.id} AND a.created_on >= now() - '1 year'::interval")[0]['count'].to_i
       fallos = User.db_query("SELECT count(a.id) * 8 as count FROM publishing_decisions A JOIN contents b ON a.content_id = b.id WHERE a.is_right = 'f' AND b.content_type_id = #{content_type.id} AND a.user_id = #{user.id} AND A.created_on >= now() - '1 year'::interval")[0]['count'].to_i
       if fallos > aciertos
-        #res = ((aciertos - fallos).abs.to_f / Cms::min_hits_before_reaching_max_publishing_power(content_type.name)) ** Math::E
-        #res *= -1
         res = 0
       else
         res = ((aciertos - fallos).to_f / Cms::min_hits_before_reaching_max_publishing_power(content_type.name)) ** Math::E
@@ -812,7 +833,6 @@ module Cms
   def self.to_fqdn(str)
     str.bare.gsub('-', '').gsub('_', '').gsub('.', '')
   end
-
 
   def self.read_image(im)
     @@_images_read ||= 0
@@ -842,8 +862,8 @@ module Cms
         content.state == Cms::DRAFT)
       true
     elsif (content.respond_to?(:state) &&
-           user.is_hq? &&
-           content.state == Cms::PENDING)
+           content.state == Cms::PENDING &&
+           Authorization::Users.can_modify_pending_content?(user))
       true
     elsif (content.class.name == 'Question' &&
            content.user_id == user.id &&
@@ -852,6 +872,7 @@ module Cms
       true
     elsif (content.class.name == 'RecruitmentAd' &&
            (user.has_skill?("Capo") ||
+            user.has_skill?("Bot") ||
             user.id == content.user_id ||
             (content.clan_id && content.clan.user_is_clanleader(user.id))))
       true

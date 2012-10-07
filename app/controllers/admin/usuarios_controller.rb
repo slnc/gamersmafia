@@ -35,7 +35,7 @@ class Admin::UsuariosController < ApplicationController
   end
 
   before_filter :only => [ :confirmar_ban_request ] do |c|
-    raise AccessDenied unless c.user && (c.user.has_skill?("Capo") || c.user.is_hq?)
+    raise AccessDenied unless c.user && c.user.has_skill?("Capo")
   end
 
   before_filter :only => [ :report ] do |c|
@@ -135,7 +135,6 @@ class Admin::UsuariosController < ApplicationController
         :comments_sig,
         :email,
         :firstname,
-        :is_hq,
         :lastname,
         :login,
         :password,

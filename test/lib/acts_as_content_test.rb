@@ -44,8 +44,9 @@ class ActsAsContentTest < ActiveSupport::TestCase
     test_should_link_if_terms_given_as_param
     @n.root_terms_add_ids([2])
     assert_equal 2, @n.terms.size
-    assert_equal 1, @n.terms[0].id
-    assert_equal 2, @n.terms[1].id
+    term_ids = @n.terms.collect {|t| t.id}
+    assert term_ids.include?(1)
+    assert term_ids.include?(2)
   end
 
   test "should_not_allow_to_link_to_child_term_if_content_is_categorizable_and_root_term_given" do

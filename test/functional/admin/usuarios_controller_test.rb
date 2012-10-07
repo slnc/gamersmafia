@@ -187,15 +187,6 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "confirmar_ban_request_should_work_for_hq" do
-    u2 = User.find(2)
-    u2.is_hq = true
-    u2.save
-    sym_login 2
-    get :confirmar_ban_request, :id => 1
-    assert_response :success
-  end
-
   test "create_ban_request_should_work_for_capo" do
     give_skill(2, "Capo")
     @u3 = User.find(3)

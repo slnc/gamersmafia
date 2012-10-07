@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Admin::TagsController < AdministrationController
   before_filter do |c|
-    if !(c.user && (c.user.has_skill?("Capo") || c.user.is_hq?))
+    if !(c.user && c.user.has_skill?("Capo"))
       raise AccessDenied
     end
   end

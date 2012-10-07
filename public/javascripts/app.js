@@ -117,7 +117,6 @@ function check_comments_controls(
     comments_ratings,
     remaining_slots,
     old_enough,
-    user_is_hq,
     first_time_content,
     do_autoscroll,
     do_show_all_comments,
@@ -167,7 +166,7 @@ function check_comments_controls(
 
     if (can_report_comments) {
       var rpc = $j('#report-comments' + key);
-      if (rpc && (user_is_mod || user_is_hq)) {
+      if (rpc && user_is_mod) {
         rpc.removeClass('hidden');
       }
     }

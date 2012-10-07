@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class HqController < ApplicationController
   before_filter do |c|
-    raise AccessDenied unless c.user && c.user.is_hq?
+    raise AccessDenied unless c.user && c.user.has_skill?("Capo")
   end
 
   def bans_requests

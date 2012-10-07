@@ -64,10 +64,6 @@ module Users
       raise AccessDenied unless (@user && @user.has_skill?("Webmaster"))
     end
 
-    def require_auth_hq
-      raise AccessDenied unless (@user && @user.is_hq)
-    end
-
     def logout_forcibly
       session[:user] = nil
       cookies[:ak] = {:value => '', :expires => 1.second.ago, :domain => COOKIEDOMAIN}

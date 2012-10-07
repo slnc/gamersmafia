@@ -291,13 +291,13 @@ class SiteController < ApplicationController
   end
 
   def stats_hipotesis
-    require_auth_hq
+    require_auth_admins
     @title = "Hipótesis activas"
     @active_sawmode = 'hq'
   end
 
   def stats_hipotesis_archivo
-    require_auth_hq
+    require_auth_admins
     @title = "Hipótesis completadas"
     @active_sawmode = 'hq'
   end
@@ -409,7 +409,7 @@ class SiteController < ApplicationController
 
   def ipinfo
     require_auth_users
-    raise AccessDenied unless @user.is_hq?
+    raise AccessDenied unless @user.has_skill?("Capo")
     @ipinfo = Geolocation.ip_info(params[:ip])
     render :layout => false
   end

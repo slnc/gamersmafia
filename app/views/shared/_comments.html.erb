@@ -103,7 +103,6 @@ function load_comments()
       <%=ActiveSupport::JSON.encode(Comments::comments_ratings_for_user_in_object_in_page(@user, object, params[:page]))%>,
       <%=Karma.level(@user.karma_points) > 0 ? @user.remaining_rating_slots : 0%>,
       <%=ActiveSupport::JSON.encode(@user.created_on < 7.days.ago)%>,
-      <%=@user.is_hq?%>,
       <%=@first_time_content%>,
       '<%=@user.pref_comments_autoscroll%>',
       '<%=@user.pref_show_all_comments%>',

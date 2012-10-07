@@ -86,8 +86,6 @@ module ApplicationHelper
       if user_is_authed then
         if @user.has_skill?("Webmaster")
           sawmode = 'full'
-        elsif @user.is_hq?
-          sawmode = 'hq'
         elsif @user.has_skill?("Advertiser")
           sawmode = 'anunciante'
         else

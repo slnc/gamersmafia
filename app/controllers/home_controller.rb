@@ -108,7 +108,6 @@ class HomeController < ApplicationController
 
   def hq
     require_auth_users
-    raise AccessDenied unless @user.is_hq?
     @active_sawmode = 'hq'
   end
 end

@@ -170,7 +170,6 @@ class User < ActiveRecord::Base
   before_save :check_age
 
   after_save :update_competition_name
-  after_save :check_is_hq
   after_save :check_login_changed
   after_save :check_permissions
 
@@ -638,17 +637,6 @@ class User < ActiveRecord::Base
       true
     else
       super
-    end
-  end
-
-  def check_is_hq
-    return unless self.is_hq_changed?
-
-    if self.is_hq?
-      Message.create(:sender => Ias.nagato,
-                     :recipient => self,
-                     :title => "¡Bienvenido al HQ!",
-                     :message => MESSAGE_WELCOME_TO_HQ)
     end
   end
 

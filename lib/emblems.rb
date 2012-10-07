@@ -70,11 +70,6 @@ module Emblems
       end
     end
 
-    # hq
-    User.find(:all, :conditions => 'is_hq = \'t\'').each do |u|
-      u.users_emblems.create(:emblem => 'hq')
-    end
-
     UsersSkill.find_users_with_skill("Webmaster").each do |u|
       u.users_emblems.create(:emblem => 'webmaster')
     end

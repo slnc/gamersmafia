@@ -2656,7 +2656,6 @@ CREATE TABLE users (
     last_competition_id integer,
     competition_roster character varying,
     enable_competition_indicator boolean DEFAULT false NOT NULL,
-    is_hq boolean DEFAULT false NOT NULL,
     enable_profile_signatures boolean DEFAULT false NOT NULL,
     profile_signatures_count integer DEFAULT 0 NOT NULL,
     wii_code character(16),

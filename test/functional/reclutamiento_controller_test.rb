@@ -8,7 +8,16 @@ class ReclutamientoControllerTest < ActionController::TestCase
   test "create_type_1" do
     sym_login 1
     assert_count_increases(RecruitmentAd) do
-      post :create, :reclutsearching => 'clan', :recruitment_ad => { :title => 'buscamos miembros', :main => 'fulanitos del copon', :game_id => 1, :levels => ['low', 'med', 'high'], :clan_id => '1'}
+      post :create, {
+          :reclutsearching => 'clan',
+          :recruitment_ad => {
+              :title => 'buscamos miembros',
+              :main => 'fulanitos del copon',
+              :game_id => 1,
+              :levels => ['low', 'med', 'high'],
+              :clan_id => '1',
+          },
+      }
     end
     @ra = RecruitmentAd.find(:first, :order => 'id DESC')
     assert_equal 'fulanitos del copon', @ra.main
@@ -18,7 +27,15 @@ class ReclutamientoControllerTest < ActionController::TestCase
   test "create_type_2" do
     sym_login 1
     assert_count_increases(RecruitmentAd) do
-      post :create, :reclutsearching => 'users', :recruitment_ad => { :title => 'buscamos miembros', :main => 'fulanitos del copon', :game_id => 1, :clan_id => 1}
+      post :create, {
+          :reclutsearching => 'users',
+          :recruitment_ad => {
+              :title => 'buscamos miembros',
+              :main => 'fulanitos del copon',
+              :game_id => 1,
+              :clan_id => 1,
+          },
+      }
     end
     @ra = RecruitmentAd.find(:first, :order => 'id DESC')
     assert_equal 'fulanitos del copon', @ra.main
@@ -51,6 +68,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
 
   test "update" do
     test_create_type_1
+    sym_login 1
     post :update, :id => @ra.id, :recruitment_ad => { :game_id => 2 }
     @ra.reload
     assert_equal 2, @ra.game_id

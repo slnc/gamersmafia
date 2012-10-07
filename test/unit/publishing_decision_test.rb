@@ -39,8 +39,9 @@ class PublishingDecisionTest < ActiveSupport::TestCase
   # poder de publicacion (0.99)
   def maximize_exp(user)
     raise 'MrMan no puede ser el user a maximizar' if user.login == 'MrMan'
-    personality = PublishingPersonality.find_or_create(user, ContentType.find_by_name('News'))
-    personality.update_attribute(:experience, 0.99)
+    personality = PublishingPersonality.find_or_create(
+        user, ContentType.find_by_name('News'))
+    assert personality.update_attribute(:experience, 0.99)
   end
 
   # reject: cuando un usuario vota que un contenido no se publique
@@ -164,6 +165,7 @@ class PublishingDecisionTest < ActiveSupport::TestCase
     @mralariko = Ias.MrAlariko
     assert_not_nil @mralariko
     maximize_exp(@mralariko)
+    @mralariko.users_skills.create(:role => "Capo")
 
     6.times do |t|
       n = News.create({:title => "maximize_exp#{t}", :description => 'foo', :terms => 1, :user_id => @mrman.id, :state => 1})
@@ -183,16 +185,31 @@ class PublishingDecisionTest < ActiveSupport::TestCase
     test_users_exp_increases_when_a_content_he_accepted_is_published
     @mralariko = User.find_by_login('mralariko')
     assert_not_nil @mralariko
+    # TODO(slnc): Actually this isn't doing anything
     maximize_exp(@mralariko)
+    @mralariko.users_skills.create(:role => "Capo")
 
     6.times do |t|
-      n = News.create({:title => "maximize_exp#{t}", :description => 'foo', :terms => 1, :user_id => @mrman.id, :state => 1})
+      n = News.create({
+          :title => "maximize_exp#{t}",
+          :description => 'foo',
+          :terms => 1,
+          :user_id => @mrman.id,
+          :state => 1,
+      })
       assert_not_nil n
       Cms.publish_content(n, @superadmin)
       Cms.publish_content(n, @panzer)
     end
 
-    @n = News.create({:title => "maximize_exp2", :description => 'foo', :terms => 1, :user_id => @mrman.id, :state => 1})
+    n = News.create({
+        :title => "maximize_exp2",
+        :description => 'foo',
+        :terms => 1,
+        :user_id => @mrman.id,
+        :state => 1,
+    })
+
     assert_not_nil @n
     Cms.deny_content(@n, @mralariko, 'feo')
     Cms.deny_content(@n, @panzer, 'feo')

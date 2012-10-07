@@ -14,26 +14,21 @@ class EmblemsTest < ActiveSupport::TestCase
   end
 
   test "give_emblems_doesnt_repeat_if_too_soon" do
-    test_give_emblems_hq
+    test_give_emblems_capo
     ue_count = UsersEmblem.count
     Emblems.give_emblems
     assert_equal ue_count, UsersEmblem.count
   end
 
   test "should_reset_emblems_mask_of_older" do
-    test_give_emblems_hq
+    test_give_emblems_capo
     User.db_query("UPDATE users_emblems SET created_on = now() - '1 week 1 day'::interval")
-    assert @u.update_attributes(:is_hq => false)
+    @u.users_skills.clear
     assert @u.emblems_mask.index('1') != nil
     Emblems.give_emblems
     @u.reload
-    assert_equal '0', @u.emblems_mask[Emblems::EMBLEMS[:hq][:index]..Emblems::EMBLEMS[:hq][:index]]
-  end
-
-  test "give_emblems_hq" do
-    assert_gives_emblem('hq') do
-      assert @u.update_attributes(:is_hq => true)
-    end
+    assert_equal '0', @u.emblems_mask[
+        Emblems::EMBLEMS[:capo][:index]..Emblems::EMBLEMS[:capo][:index]]
   end
 
   test "give_emblems_capo" do

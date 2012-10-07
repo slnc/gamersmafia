@@ -54,23 +54,6 @@ class UserTest < ActiveSupport::TestCase
     assert u2.is_editor?
   end
 
-  test "check_is_hq should create message" do
-    panzer = User.find_by_login('panzer')
-    assert_difference('panzer.messages_received.count') do
-      add_user_to_hq(panzer)
-    end
-  end
-
-  def add_user_to_hq(user)
-    assert user.update_attributes(:is_hq => true)
-  end
-
-  test "del_user_from_hq_should_work" do
-    panzer = User.find_by_login('panzer')
-    add_user_to_hq(panzer)
-    assert panzer.update_attributes(:is_hq => false)
-  end
-
   test "create" do
     params = {
         :login => 'dharana',

@@ -18,5 +18,9 @@ module Authorization
     def self.can_antiflood_users?(user)
       user.has_skill?("Antiflood")
     end
+
+    def self.can_modify_pending_content?(user)
+      user.has_skill?("EditContents")
+    end
   end
 end

@@ -13,7 +13,6 @@ superadmin:
   ipaddr: 127.0.0.3
   secret: mamba
   enable_competition_indicator: false
-  is_hq: true
   is_staff: true
   enable_profile_signatures: true
 
@@ -30,7 +29,6 @@ panzer:
   ipaddr: 127.0.0.3
   secret: mambohahaha
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
   photo: blah/bleh/bluh.jpg
 
@@ -47,7 +45,6 @@ mralariko:
   ipaddr: 127.0.0.3
   secret: mambohahaha2
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
 
 panzer4:
@@ -63,7 +60,6 @@ panzer4:
   ipaddr: 127.0.0.3
   secret: mam2f2v1sa
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
 
 panzer5:
@@ -79,7 +75,6 @@ panzer5:
   ipaddr: 127.0.0.3
   secret: mambohahahasac
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
 
 faction_boss:
@@ -95,7 +90,6 @@ faction_boss:
   ipaddr: 127.0.0.3
   secret: mambusefuealaguerra
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
 
 faction_editor:
@@ -111,7 +105,6 @@ faction_editor:
   ipaddr: 127.0.0.3
   secret: mireudmireudquepena
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
 
 faction_moderator:
@@ -126,7 +119,6 @@ faction_moderator:
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu13
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
 
 faction_moderator2:
@@ -141,7 +133,6 @@ faction_moderator2:
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu14
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
 
 faction_moderator3:
@@ -156,7 +147,6 @@ faction_moderator3:
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu15
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
 
 unconfirmed:
@@ -171,7 +161,6 @@ unconfirmed:
   validkey: blablabla16
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
 
 banned:
@@ -186,7 +175,6 @@ banned:
   validkey: blablablablbilib17
   ipaddr: 127.0.0.2
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
 
 disabled:
@@ -201,7 +189,6 @@ disabled:
   validkey: blablablableblel18
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
 
 mrman:
@@ -216,7 +203,6 @@ mrman:
   validkey: blablablableblella19
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
 
 nagato:
@@ -231,7 +217,6 @@ nagato:
   validkey: blablablableblella20
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
 
 mrcheater:
@@ -246,7 +231,6 @@ mrcheater:
   validkey: blablablableblella21
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
 
 superadmin2:
@@ -261,7 +245,6 @@ superadmin2:
   validkey: matsuhiratomatsuhiratomatsuhiratomatsuh2
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: true
 
 raulinho:
@@ -276,7 +259,6 @@ raulinho:
   validkey: matsuhiratomatsuhiratomatsuhiratomatsuh3
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: true
 
 mrachmed:
@@ -291,7 +273,6 @@ mrachmed:
   validkey: blablablableblella50
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
 
 advertiser:
@@ -306,7 +287,6 @@ advertiser:
   validkey: blablablableblella72
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
 
 jabba:
@@ -321,7 +301,6 @@ jabba:
   validkey: blablablableblella60
   ipaddr: 127.0.0.4
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
 
 mrgod:
@@ -336,5 +315,4 @@ mrgod:
   validkey: blablablableblella61
   ipaddr: 127.0.0.4
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false

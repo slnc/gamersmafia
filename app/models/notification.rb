@@ -1,5 +1,8 @@
 class Notification < ActiveRecord::Base
-  # TODO(slnc): add sender
+  # TODO(slnc): add as many notifications from NotificationEmail as possible
+  # here.
+  # TODO(slnc): add ability to specify that you want to receive email for
+  # notifications (per notification, per horu, per day, none).
   before_save :ensure_sender_user_id
   after_create :touch_user
   belongs_to :user
