@@ -3,18 +3,6 @@ require 'test_helper'
 
 class UsersActionObserverTest < ActionController::IntegrationTest
 
-  test "should_properly_work_with_recruitment_ads" do
-    assert_count_increases(UsersAction) do
-      @ra = RecruitmentAd.create(
-        :user_id => 1, :game_id => 1, :title => 'busco cosas', :main => 'hola')
-      puts @ra.errors.full_messages_html if @ra.new_record?
-    end
-
-    assert_count_decreases(UsersAction) do
-      @ra.mark_as_deleted
-    end
-  end
-
   test "should_properly_work_with_photos_updated_in_profiles" do
     u1 = User.find(1)
     u1.photo = fixture_file_upload('files/buddha.jpg')

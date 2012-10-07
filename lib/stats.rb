@@ -644,8 +644,6 @@ group by date_trunc('day', created_on) order by s asc
           "INSERT INTO refered_hits(user_id, ipaddr, referer)
            VALUES (#{user_id}, '#{remote_ip}',
              #{User.connection.quote(referer)})")
-      referer.cache_faith_points
-      Faith.give(referer, Faith::FPS_ACTIONS["hit"])
       # TODO chequear que las visitas referidas de nuestros propios dominios ni
       # de bots cuenten.
     end
@@ -831,27 +829,20 @@ group by date_trunc('day', created_on) order by s asc
         # TODO here
 
         Karma.karma_points_of_user_at_date(u, cur_day).each do |portal_id, points|
-          pointz[u.id] ||= {:karma => 0, :faith => 0, :popularity => 0}
+          pointz[u.id] ||= {:karma => 0, :popularity => 0}
           pointz[u.id][:karma] += points
         end
       end
 
-      # ahora calculamos stats de fe
-      faithres = Faith.faith_points_of_users_at_date_range(cur_day.beginning_of_day, cur_day.end_of_day)
-      faithres.keys.each do |uid|
-        pointz[uid] ||= {:karma => 0, :faith => 0, :popularity => 0}
-        pointz[uid][:faith] += faithres[uid]
-      end
-
       # popularidad
       User.hot('all', cur_day.beginning_of_day, cur_day.end_of_day).each do |hinfo|
-        pointz[hinfo[0].id] ||= {:karma => 0, :faith => 0, :popularity => 0}
+        pointz[hinfo[0].id] ||= {:karma => 0, :popularity => 0}
         pointz[hinfo[0].id][:popularity] = hinfo[1]
       end
 
       pointz.keys.each do |uid|
         v = pointz[uid]
-        User.db_query("INSERT INTO stats.users_daily_stats(user_id, karma, faith, popularity, created_on) VALUES(#{uid}, #{v[:karma]}, #{v[:faith]}, #{v[:popularity]}, '#{cur_day.strftime('%Y-%m-%d')}')")
+        User.db_query("INSERT INTO stats.users_daily_stats(user_id, karma, popularity, created_on) VALUES(#{uid}, #{v[:karma]}, #{v[:popularity]}, '#{cur_day.strftime('%Y-%m-%d')}')")
       end
 
       # clans

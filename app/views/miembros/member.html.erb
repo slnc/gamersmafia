@@ -49,7 +49,7 @@
 <p>Este usuario todavía está en proceso de resurrección.</p>
 <% elsif (@curuser.resurrected_by_user_id and @curuser.resurrection_started_on.to_i > Time.now.to_i - 86400 * 7) %>
 <p><%=@curuser.login%> está en un proceso de resurrección iniciado por otro usuario.</p>
-<% elsif Faith.resurrections_incomplete(@user) >= Faith.max_incomplete_resurrections(@user)%>
+<% elsif @user.incomplete_resurrections >= User::MAX_INCOMPLETE_RESURRECTIONS%>
 <p>Has alcanzado tu límite de resurrecciones incompletas. Debes esperar a que alguna se complete o se desactive o bien subas de nivel de fe.</p>
 <% else %>
 <p><%=@curuser.login%> lleva más de 3 meses sin aparecer por la web. Si sabes cómo hacer que vuelva a iniciar sesión en la web y consigues que lo haga tu nivel de fe aumentará.<br />
@@ -100,16 +100,6 @@
 </div>
 <div class="clearb"><%=sparkline(:size => '145x25', :data => Karma.user_daily_karma(@curuser, 30.days.ago, 1.day.ago).collect { |k,v| v } )%></div>
 <div class="infoinline right"><strong><%=@curuser.karma_points%></strong> ptos (Nivel <strong><%=Karma.level(@curuser.karma_points)%></strong>)</div>
-<% end -%>
-
-<%mftext('Fe') do %>
-<%faith_rk_info = Faith.ranking_user(@curuser)%>
-<div class="infoinline right" style="margin-bottom: 3px;">
-	#<strong><%=faith_rk_info[:pos]%></strong> de <%=faith_rk_info[:total]%>
-</div>
-
-<div class="clearb"><%=sparkline(:size => '145x25', :data => Faith.user_daily_faith(@curuser, 30.days.ago, 1.day.ago).collect { |k,v| v }, :colors => ['c311dd'], :fillcolors => ['f9e8fc'])%></div>
-<div class="infoinline right"><strong><%=@curuser.faith_points%></strong> ptos (<strong><%=Faith::NAMES[Faith.level(@curuser.faith_points)]%></strong>)</div>
 <% end -%>
 
 <%mftext('Popularidad') do %>

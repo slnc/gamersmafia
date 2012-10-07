@@ -212,8 +212,7 @@ class Question < ActiveRecord::Base
                           a.id,
                           a.avatar_id,
                           a.login,
-                          a.cache_karma_points,
-                          a.cache_faith_points
+                          a.cache_karma_points
                      FROM users a
                      join comments b on a.id = b.user_id
                     WHERE b.id IN (SELECT accepted_answer_comment_id
@@ -223,8 +222,7 @@ class Question < ActiveRecord::Base
                  GROUP BY a.id,
                           a.login,
                           a.avatar_id,
-                          a.cache_karma_points,
-                          a.cache_faith_points
+                          a.cache_karma_points
 		HAVING count(*) > 1
                  ORDER BY count(*) DESC,
                           lower(a.login)
@@ -236,8 +234,7 @@ class Question < ActiveRecord::Base
                           a.id,
                           a.avatar_id,
                           a.login,
-                          a.cache_karma_points,
-                          a.cache_faith_points
+                          a.cache_karma_points
                      FROM users a
                      join comments b on a.id = b.user_id
                     WHERE b.id IN (SELECT accepted_answer_comment_id
@@ -250,8 +247,7 @@ class Question < ActiveRecord::Base
                  GROUP BY a.id,
                           a.login,
                           a.avatar_id,
-                          a.cache_karma_points,
-                          a.cache_faith_points
+                          a.cache_karma_points
                  ORDER BY count(a.id) DESC,
                           lower(a.login)
                     LIMIT #{limit}").each do |dbu|

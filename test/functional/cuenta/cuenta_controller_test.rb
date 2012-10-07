@@ -354,7 +354,6 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
 
   test "should_properly_acknowledge_referer" do
     panzer = User.find_by_login('panzer')
-    fp = panzer.faith_points
     mails_sent = ActionMailer::Base.deliveries.size
     post :create, {:referer => 'panzer'}.update(VALID_CREATE_ARGS)
 
@@ -364,7 +363,6 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_equal panzer.id, u.referer_user_id
     assert_equal mails_sent + 2, ActionMailer::Base.deliveries.size # el email de bienvenida y el de referido
     assert_equal u.email, ActionMailer::Base.deliveries.at(-1).to[0]
-    assert_equal Faith::FPS_ACTIONS['registration'] + fp, panzer.faith_points
   end
 
   test "should_send_confirmation_email_after_creating_account" do
@@ -628,12 +626,10 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
 
   test "should_show_estadisticas_and_not_reset" do
     u = User.find(1)
-    faith_points = u.faith_points
     sym_login 1
     get :estadisticas
     assert_response :success
     u.reload
-    assert_equal faith_points, u.faith_points
   end
 
   test "should_show_estadisticas_hits" do

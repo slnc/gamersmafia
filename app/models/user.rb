@@ -29,6 +29,8 @@ class User < ActiveRecord::Base
   # do per day.
   MAX_DAILY_RATINGS = 40
 
+  MAX_INCOMPLETE_RESURRECTIONS = 20
+
   VALID_SEXUAL_ORIENTATIONS = [:women, :men, :both, :none]
   MALE = 0
   FEMALE = 1
@@ -901,17 +903,16 @@ class User < ActiveRecord::Base
     end
   end
 
-  def faith_points
-    if self.cache_faith_points.nil? then
-      self.update_attribute('cache_faith_points', Faith::calculate_faith_points(self))
-    end
-
-    self.cache_faith_points
-  end
-
   def karma_points
     if self.cache_karma_points.nil? then
-      self.cache_karma_points = db_query("UPDATE users SET cache_karma_points = #{Karma::calculate_karma_points(self)} WHERE id = #{self.id} AND cache_karma_points is null; SELECT cache_karma_points FROM users WHERE id = #{self.id}")[0]['cache_karma_points']
+      self.cache_karma_points = db_query(
+          "UPDATE users
+           SET cache_karma_points = #{Karma::calculate_karma_points(self)}
+           WHERE id = #{self.id}
+           AND cache_karma_points is null;
+           SELECT cache_karma_points
+           FROM users
+           WHERE id = #{self.id}")[0]['cache_karma_points']
     end
 
     self.cache_karma_points
@@ -991,7 +992,6 @@ class User < ActiveRecord::Base
 
   def resurrect
     # método llamado cuando un usuario en modo resurreción incompleta inicia sesión
-    Faith.reset(self.resurrector)
     NotificationEmail.resurrection(resurrector, {:resurrected => self}).deliver
   end
 
@@ -1056,8 +1056,17 @@ class User < ActiveRecord::Base
   end
 
 
+  def incomplete_resurrections
+    User.can_login.count(
+        :conditions => [
+            "resurrected_by_user_id = ?
+             AND resurrection_started_on > now() - '7 days'::interval
+             AND lastseen_on < now() - '3 months'::interval",
+             self.id])
+  end
+
   def start_resurrection(resurrector)
-    if self.state == User::ST_ZOMBIE and not (self.resurrected_by_user_id and self.resurrection_started_on > Time.now - 86400 * 7) and Faith.resurrections_incomplete(resurrector) < Faith.max_incomplete_resurrections(resurrector) then
+    if (self.state == User::ST_ZOMBIE and not (self.resurrected_by_user_id and self.resurrection_started_on > Time.now - 86400 * 7) and self.incomplete_resurrections < MAX_INCOMPLETE_RESURRECTIONS) then
       #raise self.update_attributes({:resurrected_by_user_id => resurrector.id, :resurrection_started_on => Time.now}).to_s
       self.resurrected_by_user_id = resurrector.id
       self.resurrection_started_on = Time.now

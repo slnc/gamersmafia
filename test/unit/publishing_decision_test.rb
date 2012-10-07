@@ -216,22 +216,6 @@ class PublishingDecisionTest < ActiveSupport::TestCase
     assert_equal Cms::DELETED, @n.state
   end
 
-  test "users_faith_increases_when_making_a_publishing_decision" do
-    initial_faith = @panzer.faith_points
-    @n = News.find(:first, :conditions => 'state = 1')
-    Cms.publish_content(@n, @panzer)
-    @panzer.reload
-    assert_equal initial_faith + Faith::FPS_ACTIONS['publishing_decision'], @panzer.faith_points
-  end
-
-  test "users_faith_points_doesnt_increase_with_incorrect_publishing_decisions" do
-    test_users_faith_increases_when_making_a_publishing_decision
-    initial_faith = @panzer.faith_points
-    make_a_decision :deny_content, @superadmin, 'feo'
-    @panzer.reload
-    assert_equal initial_faith - Faith::FPS_ACTIONS['publishing_decision'], @panzer.faith_points
-  end
-
   # 0 aciertos => 0.00
   # 1 acierto  => 0.01
   # 20 aciertos => 0.99

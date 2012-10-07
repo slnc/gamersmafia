@@ -577,17 +577,6 @@ img.topic-indicator.topic-sticky {
     line-height: 100%;
 }
 
-.faith .points {
-    float: left;
-    width: 10px;
-	height: 10px;
-    margin-top: 2px;
-    text-align: right;
-}
-
-.faith .points img { width: 8px; height: 8px; }
-
-
 img.icon16 {
     width: 16px;
     height: 16px;

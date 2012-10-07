@@ -279,19 +279,14 @@ class Comment < ActiveRecord::Base
       Math.log10(user_authority)/Math.log10(Blogs.max_user_authority)
     else
       max_karma = Karma.max_user_points
-      max_faith = Faith.max_user_points
       # en caso de que no haya nadie popular
       max_friends = User.most_friends(1)[:friends] rescue 1
       ukp = user.karma_points
       ukp = 1.1 if ukp < 1.1
 
-      ufp = user.faith_points
-      ufp = 1.1 if ufp < 1.1
-
       karma_score = Math.log10(ukp) / Math.log10(max_karma)
-      faith_score = Math.log10(ufp) / Math.log10(max_faith)
       friends_score = user.friends_count / (max_friends)
-      w = (karma_score + faith_score + friends_score) / 3.0
+      w = (karma_score + friends_score) / 2.0
 
       # Aproximación: si el usuario está comentado en su facción multiplicamos
       # por 2. Si usásemos los puntos de karma y de fe para esta facción no

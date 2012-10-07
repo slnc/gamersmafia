@@ -11,24 +11,8 @@ module Bank
     raise NegativeAmmountError unless ammount >= 0
     # convierte una cantidad ammount de tipo units a su equivalente en gmd
     case units
-      when 'karma_points'
+    when 'karma_points'
       ammount
-
-      when 'faith_level'
-      case ammount
-        when 0
-        0
-        when 1
-        5
-        when 2
-        15
-        when 3
-        35
-        when 4
-        75
-        when 5
-        100
-      end
     end
   end
 

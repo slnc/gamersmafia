@@ -8,8 +8,6 @@ namespace :gm do
     end
 
     # Order matters for these calls
-    Faith.clear_faith_points_of_referers_and_resurrectors
-    Faith.pay_faith_prices
     Stats.update_users_karma_stats
     Stats.update_users_daily_stats
 
@@ -27,7 +25,6 @@ namespace :gm do
     Content.delete_duplicated_comments
     Faction.check_daily_karma
     Faction.check_faction_leaders
-    Faith.update_ranking
     Karma.update_ranking
     Karma.award_karma_points_new_ugc
     Ladder.check_ladder_matches

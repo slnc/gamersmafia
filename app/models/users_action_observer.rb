@@ -5,7 +5,6 @@ class UsersActionObserver < ActiveRecord::Observer
           Content,
           Friendship,
           ProfileSignature,
-          RecruitmentAd,
           User,
           UsersEmblem
 
@@ -20,9 +19,6 @@ class UsersActionObserver < ActiveRecord::Observer
         UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_PROFILE_SIGNATURE_SIGNED, :object_id => object.id, :data => data)
         UsersAction.create(:user_id => object.signer_user_id, :type_id => UsersAction::NEW_PROFILE_SIGNATURE_RECEIVED, :object_id => object.id, :data => data)
       end
-
-      when 'RecruitmentAd'
-        UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_RECRUITMENT_AD, :object_id => object.id, :data => "Nuevo anuncio de reclutamiento <a href=\"#{gmurl(object)}\">#{object.title}</a>")
 
       when 'ClansMovement'
       data = "#{user_link(object.user)} #{ClansMovement.translate_direction(object.direction)} <a href=\"/clanes/clan/#{object.id}\">#{object.clan}</a>"
@@ -83,15 +79,6 @@ class UsersActionObserver < ActiveRecord::Observer
                            :data => "#{user_link(object)} #{msg}")
       end
 
-      when 'RecruitmentAd'
-      if object.deleted_changed?
-        UsersAction.find(
-            :all,
-            :conditions => ['type_id = ? AND object_id = ?',
-                            UsersAction::NEW_RECRUITMENT_AD,
-                            object.id]).each { |ra| ra.destroy }
-      end
-
       when 'Friendship'
       if object.accepted_on_changed? && !object.accepted_on.nil?
         UsersAction.create(:user_id => object.sender_user_id,
@@ -123,10 +110,6 @@ class UsersActionObserver < ActiveRecord::Observer
       UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_CLANS_MOVEMENT, object.id]).each { |ra| ra.destroy }
       when 'UsersEmblem'
       UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_USERS_EMBLEM, object.id]).each { |ra| ra.destroy }
-      # TODO
-      #Faith.reset(object.referer) if object.referer_user_id # no hacemos lo siguiente porque ahora mismo no controlamos muy bien cuándo pasa de un estado a otro y los puntos de fe asociados.
-      #Faith.reset(object.resurrector) if object.resurrected_by_user_id && (object.referer_user_id.nil? || object.referer_user_id != object.resurrected_by_user_id)
-      # Faith.take(object.referer, Faith::FPS_ACTIONS['registration']) if object.referer_user_id && object.state != 'zombie'
     end
   end
 end

@@ -12,7 +12,7 @@ module Reports
     raise "imposible, no hay emblemas!" unless last_ue
     cur_date = last_ue.created_on
     base = 'Buenas queridos. Los emblemas de esta semana han sido otorgados a los siguientes mafiosos:<br><br><br><table>'
-    %w(best_overall karma_fury faith_avalanche most_knowledgeable living_legend funniest profoundest most_informational most_interesting wealthiest okupa bets_master talker best_blogger).each do |emblema|
+    %w(best_overall karma_fury most_knowledgeable living_legend funniest profoundest most_informational most_interesting wealthiest okupa bets_master talker best_blogger).each do |emblema|
       ues = UsersEmblem.find(:all, :conditions => ["created_on = ? AND emblem = ?", cur_date, emblema])
       if ues.size > 0
         base << "<tr class=\"#{oddclass}\"><td class=\"w150\"><img class=\"sprite1 emblema emblema-#{emblema}\" src=\"/images/blank.gif\" /> #{Emblems::EMBLEMS[emblema.to_sym][:title]}</td> <td><strong>"

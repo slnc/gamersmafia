@@ -250,19 +250,6 @@ textarea {
     border-color: #2577A7;
 }
 
-.faith .pcent-bar .bar {
-    background: #8F04AD;
-}
-
-.faith .pcent-bar {
-    background: #D9D9D9;
-    border-color: #8F04AD;
-}
-
-.faith .points {
-    color: #8F04AD;
-}
-
 .comments-bar .pcent-bar {
     background: #D9D9D9;
     border-color: #ddd;

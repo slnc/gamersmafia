@@ -1,6 +1,6 @@
 <% content_main do %>
 <% mftext('Resurrecciones') do %>
-<p>Máximas resurrecciones incompletas simultáneas: <strong><%=Faith.max_incomplete_resurrections(@user)%></strong>.</p>
+<p>Máximas resurrecciones incompletas simultáneas: <strong><%=User::MAX_INCOMPLETE_RESURRECTIONS%></strong>.</p>
 <table>
   <tr>
     <th></th>

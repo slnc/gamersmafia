@@ -37,14 +37,6 @@
       <td>Popularidad</td>
       <td><%=Popularity.ranking_user(@curuser)[:pos]%> de <%=Popularity.ranking_user(@curuser)[:total]%></td>
     </tr>
-    <tr class="<%=oddclass%>">
-      <td>Fe</td>
-      <td><%=@curuser.faith_points%></td>
-    </tr>
-    <tr class="<%=oddclass%>">
-      <td>Fe al día</td>
-      <td><%=((@curuser.faith_points.to_f / ((Time.now.to_i + 1 - [@curuser.created_on, Time.local(2006, 3, 18)].max.to_i) / 86400.0))*100).to_i.to_f / 100%></td>
-    </tr>
     <% end %>
   </table>
   <% end -%>
@@ -63,5 +55,5 @@ for key in (stats.keys.sort - ['Comentarios']) %>
     <% end -%>
     </table>
 	<% end -%>
-	
+
 <% end -%>

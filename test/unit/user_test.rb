@@ -28,11 +28,6 @@ class UserTest < ActiveSupport::TestCase
     assert u.users_skills.count == 0
   end
 
-  test "faith_ok" do
-    u = User.find(1)
-    assert u.faith_points == 5
-  end
-
   test "website should do nothing if nothing" do
     u = User.find(1)
     assert u.update_attributes(:homepage => nil)

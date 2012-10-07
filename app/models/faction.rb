@@ -622,10 +622,6 @@ class Faction < ActiveRecord::Base
     Karma.calculate_karma_points(self)
   end
 
-  def faith_points
-    Faith.faction_faith_points(self)
-  end
-
   def rank_members
     # devuelve el rango que ocupa la facción en cuanto a número de usuarios
     # registrados.

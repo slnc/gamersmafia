@@ -10,7 +10,7 @@ class UserEmblemObserver < ActiveRecord::Observer
   end
 
   module Emblems
-    def self.give_emblem_if_not_present(u, emblem)
+    def self.give_emblem_if_not_present(user, emblem)
       if !user.has_emblem?(emblem)
         user.users_emblems.create(:emblem => emblem)
       end

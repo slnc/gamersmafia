@@ -183,19 +183,6 @@ class Admin::UsuariosController < ApplicationController
     end
   end
 
-  def check_faith
-    @edituser = User.find(params[:id])
-    @fp_previous = @edituser.faith_points
-    @edituser.update_attributes(:cache_faith_points => nil)
-    @fp_correct = @edituser.faith_points
-
-    if @fp_previous != @fp_correct then
-      render :layout => false, :action => 'check_faith_fixed'
-    else
-      render :layout => false, :action => 'check_faith_ok'
-    end
-  end
-
   def check_gmf
     u = User.find(params[:id])
     @edituser = u

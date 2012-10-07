@@ -3,7 +3,7 @@ class PublishingDecision < ActiveRecord::Base
   VALID_SQL = "(is_right = 't' OR is_right IS NULL)"
   belongs_to :user
   belongs_to :content
-  after_save :update_faith_counters
+  after_save :recalculate_publishing_personality
   plain_text :deny_reason
   validates_uniqueness_of :content_id, :scope => :user_id
 
@@ -26,7 +26,7 @@ class PublishingDecision < ActiveRecord::Base
     User.db_query("SELECT count(user_id) FROM publishing_decisions WHERE content_id = #{content.unique_content.id}")[0]['count'].to_i
   end
 
-  def update_faith_counters
+  def recalculate_publishing_personality
     personality.recalculate
   end
 

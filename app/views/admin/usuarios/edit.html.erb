@@ -48,18 +48,6 @@
       </td>
     </tr>
     <tr>
-      <td class="infoinline">Fe:</td>
-      <td class="infoinline">
-        <div id="check_faith"><%=draw_faith_bar_sm(@edituser)%>
-        <% if @user.has_skill?("Capo") then %>
-          <%=link_to('check',
-                     "/admin/usuarios/check_faith/#{@edituser.id}",
-                     :remote => true)%>
-        <% end -%>
-        </div>
-      </td>
-    </tr>
-    <tr>
       <td class="infoinline"><%=gmd12%></td>
       <td class="infoinline">
         <div id="check_gmf"><%=@edituser.cash%> <%=gmd10%>

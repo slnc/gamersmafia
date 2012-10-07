@@ -2,7 +2,12 @@
 require 'test_helper'
 
 class Admin::UsuariosControllerTest < ActionController::TestCase
-  test_min_acl_level :superadmin, [ :index, :destroy, :check_registered_on, :check_karma, :check_faith ]
+  test_min_acl_level :superadmin, [
+      :index,
+      :destroy,
+      :check_registered_on,
+      :check_karma,
+  ]
 
   test "index" do
     sym_login :superadmin
@@ -37,12 +42,6 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
       post :send_hq_invitation, { :id => 2}
       assert_response :redirect
     end
-  end
-
-  test "check_faith" do
-    sym_login 1
-    post :check_karma, { :id => 1}
-    assert_response :success
   end
 
   test "check_gmf" do

@@ -285,7 +285,6 @@ class SiteControllerTest < ActionController::TestCase
 
   test "should_properly_acknowledge_resurrection" do
     u1 = User.find(1)
-    fp = u1.faith_points
     u2 = User.find(2)
     u2.lastseen_on = 4.months.ago
     u2.resurrected_by_user_id = 1
@@ -298,7 +297,6 @@ class SiteControllerTest < ActionController::TestCase
     assert_response :success
 
     u1.reload
-    assert_equal Faith::FPS_ACTIONS['resurrection'] + fp, u1.faith_points
     assert_equal mails_sent + 1, ActionMailer::Base.deliveries.size # el email de aviso  referer
     assert_equal u1.email, ActionMailer::Base.deliveries.at(-1).to[0]
   end
