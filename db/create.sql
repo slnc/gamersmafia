@@ -3823,6 +3823,7 @@ CREATE INDEX users_newsfeeds_created_on ON users_newsfeeds USING btree (created_
 CREATE INDEX users_newsfeeds_created_on_user_id ON users_newsfeeds USING btree (created_on, user_id);
 CREATE UNIQUE INDEX users_preferences_user_id_name ON users_preferences USING btree (user_id, name);
 CREATE INDEX users_random_id ON users USING btree (random_id);
+CREATE INDEX users_referer_user_id ON users USING btree (referer_user_id);
 CREATE INDEX users_roles_role ON users_skills USING btree (role);
 CREATE INDEX users_roles_role_role_data ON users_skills USING btree (role, role_data);
 CREATE UNIQUE INDEX users_roles_uniq ON users_skills USING btree (user_id, role, role_data);

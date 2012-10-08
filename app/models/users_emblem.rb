@@ -1,8 +1,17 @@
 # -*- encoding : utf-8 -*-
 class UsersEmblem < ActiveRecord::Base
-  T_COMMENTS_COUNT_1 = 50
+  T_COMMENTS_COUNT_1 = 10
   T_COMMENTS_COUNT_2 = 500
-  T_COMMENTS_COUNT_3 = 5000
+  T_COMMENTS_COUNT_3 = 7500
+  T_THE_BEAST_KARMA_POINTS = 100000
+  T_COMMENT_VALORATIONS_1 = 1
+  T_COMMENT_VALORATIONS_2 = 100
+  T_COMMENT_VALORATIONS_2_MATCHING_USERS = 7
+  T_COMMENT_VALORATIONS_3 = 5000
+  T_COMMENT_VALORATIONS_3_MATCHING_USERS = 10
+  T_REFERER_1 = 1
+  T_REFERER_2 = 25
+  T_REFERER_3 = 100
 
   FREQ_NAME = {
       "common" => "común",
@@ -24,17 +33,77 @@ class UsersEmblem < ActiveRecord::Base
       "comments_count_1" => {
           :frequency => "common",
           :name => "Hablador",
-          :description => "50 comentarios publicados"},
+          :description => (
+              "#{T_COMMENTS_COUNT_1} comentarios visibles."),
+      },
 
       "comments_count_2" => {
           :frequency => "unfrequent",
           :name => "Parlanchín",
-          :description => "500 comentarios publicados"},
+          :description => (
+              "#{T_COMMENTS_COUNT_2} comentarios visibles por defecto."),
+      },
 
       "comments_count_3" => {
           :frequency => "rare",
           :name => "Gran Orador",
-          :description => "5000 comentarios publicados"},
+          :description => (
+              "#{T_COMMENTS_COUNT_3} comentarios visibles por defecto."),
+      },
+
+      "comments_valorations_1" => {
+          :frequency => "common",
+          :name => "Asertivo",
+          :description => "#{T_COMMENT_VALORATIONS_1} comentario valorado.",
+      },
+
+      "comments_valorations_2" => {
+          :frequency => "unfrequent",
+          :name => "Sentencioso",
+          :description => (
+              "#{T_COMMENT_VALORATIONS_2} comentarios valorados en comentarios
+              con al menos #{T_COMMENT_VALORATIONS_2_MATCHING_USERS}
+              valoraciones."),
+      },
+
+      "comments_valorations_3" => {
+          :frequency => "rare",
+          :name => "Dogmático",
+          :description => (
+              "#{T_COMMENT_VALORATIONS_3} comentarios valorados en comentarios
+              con al menos #{T_COMMENT_VALORATIONS_3_MATCHING_USERS}
+              valoraciones."),
+      },
+
+      "user_referer_1" => {
+          :frequency => "common",
+          :name => "Puerta",
+          :description => (
+              "#{T_REFERER_1} usuario referido activo durante al menos el
+               primer mes."),
+      },
+
+      "user_referer_2" => {
+          :frequency => "unfrequent",
+          :name => "Sacerdote",
+          :description => (
+              "#{T_REFERER_2} usuarios referidos activos durante al menos el
+               primer mes."),
+      },
+
+      "user_referer_3" => {
+          :frequency => "rare",
+          :name => "Agente Smith",
+          :description => (
+              "#{T_REFERER_3} usuarios referidos activos durante al menos el
+               primer mes."),
+      },
+
+      "the_beast" => {
+          :frequency => "legendary",
+          :name => "La Bestia",
+          :description => "#{T_THE_BEAST_KARMA_POINTS} puntos de karma.",
+      },
   }
 
 

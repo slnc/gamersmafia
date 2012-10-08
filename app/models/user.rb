@@ -905,14 +905,8 @@ class User < ActiveRecord::Base
 
   def karma_points
     if self.cache_karma_points.nil? then
-      self.cache_karma_points = db_query(
-          "UPDATE users
-           SET cache_karma_points = #{Karma::calculate_karma_points(self)}
-           WHERE id = #{self.id}
-           AND cache_karma_points is null;
-           SELECT cache_karma_points
-           FROM users
-           WHERE id = #{self.id}")[0]['cache_karma_points']
+      self.update_attributes(
+          :cache_karma_points, Karma::calculate_karma_points(self))
     end
 
     self.cache_karma_points

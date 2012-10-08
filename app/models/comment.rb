@@ -50,6 +50,9 @@ class Comment < ActiveRecord::Base
   scope :karma_eligible,
         :conditions => ["state NOT IN (?)", [MODERATED, DUPLICATED]]
 
+  scope :visible,
+        :conditions => ["state = ?", VISIBLE]
+
   def check_not_moderated
     if self.moderated?
       FROZEN_ATTRIBUTES_IF_MODERATED.each do |attribute|
