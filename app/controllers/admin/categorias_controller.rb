@@ -8,7 +8,7 @@ class Admin::CategoriasController < ApplicationController
     if params[:id]
       t = Term.find_by_id(params[:id])
       if t && (params[:content_type] || t.taxonomy)
-        raise AccessDenied unless Cms::can_admin_term?(
+        raise AccessDenied unless Authorization.can_edit_term?(
             user,
             t,
             params[:content_type] ? params[:content_type] :
@@ -16,14 +16,7 @@ class Admin::CategoriasController < ApplicationController
       end
     end
 
-    raise AccessDenied unless user.users_skills.count(
-        :conditions => "role IN (
-            'Boss',
-            'Don',
-            'Editor',
-            'ManoDerecha',
-            'Sicario',
-            'Underboss')") > 0 || user.has_skill?("Capo")
+    raise AccessDenied unless Authorization.can_admin_non_root_terms?(@user)
   end
 
   public
@@ -110,7 +103,7 @@ class Admin::CategoriasController < ApplicationController
     raise AccessDenied if params[:term][:taxonomy].to_s == ''
     @term = Term.new(params[:term])
     if @term.save
-      if !Cms.can_edit_term?(
+      if !Authorization.can_create_term?(
           user,
           @term,
           Cms.extract_content_name_from_taxonomy(params[:term][:taxonomy]))

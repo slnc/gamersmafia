@@ -177,7 +177,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::PENDING})
     assert_not_nil @n
     k = @u.karma_points
-    Cms::deny_content(@n, @u, 'ffff')
+    Content.deny_content(@n, @u, 'ffff')
     @u.reload
     assert_equal k, @u.karma_points
   end
@@ -187,7 +187,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::DRAFT})
     assert_not_nil @n
     k = @u.karma_points
-    Cms::deny_content(@n, @u, 'ffff')
+    Content.deny_content(@n, @u, 'ffff')
     @u.reload
     assert_equal k, @u.karma_points
   end
@@ -217,7 +217,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     User.db_query("UPDATE tracker_items SET lastseen_on = now() - '23 hours'::interval WHERE content_id = #{@n.unique_content.id}")
     ti.reload
     assert_equal true, ti.lastseen_on < 1.hour.ago
-    Cms::publish_content(@n, @u)
+    Content.publish_content(@n, @u)
     ti.reload
     assert_equal true, ti.lastseen_on > 1.hour.ago
   end

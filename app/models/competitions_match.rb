@@ -159,7 +159,7 @@ class CompetitionsMatch < ActiveRecord::Base
         :user_id => mrman.id})
 
       self.competition.event.main_category.link(my_event.unique_content)
-      Cms::publish_content(my_event, mrman)
+      Content.publish_content_directly(my_event, mrman)
       self.event_id = my_event.id
       self.save
     else # just update if we changed the participants

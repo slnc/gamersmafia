@@ -58,7 +58,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
 
   test "del_by_capo" do
     test_create_type_1
-    give_skill(2, "Capo")
+    give_skill(2, "DeleteContents")
     u2 = User.find(2)
     sym_login 2
     post :destroy, :id => @ra.id
@@ -81,7 +81,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
       assert ra.save
     end
 
-    Cms::modify_content_state(ra, User.find(1), Cms::PUBLISHED)
+    Content.publish_content_directly(ra, User.find(1))
     get :index, :search => 1, :game_id => 1, :type => 'searching_clan'
     assert_response :success
     assert @response.body.index("#{User.find(1).login}"), @response.body

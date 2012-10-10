@@ -258,7 +258,7 @@ module Karma
 
         SELECT cache_karma_points
         FROM users
-        WHERE id = #{user.id}")[0]['cache_karma_points']
+        WHERE id = #{user.id}")[0]['cache_karma_points'].to_i
   end
 
   def self.ranking_user(u)

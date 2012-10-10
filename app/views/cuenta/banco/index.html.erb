@@ -5,7 +5,7 @@
 <% end %>
 
 <% mftext('Tienda') do %>
-  <% if @user.has_skill?("GmShop") %>
+  <% if Authorization.can_access_gmshop?(@user) %>
   <div class="centered-link"><a href="/cuenta/tienda">Ir a la tienda</a></div>
   <% else %>
     <div class="centered-link"><%=skill_needed_disclaimer("GmShop")%></div>

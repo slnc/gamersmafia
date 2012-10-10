@@ -2,6 +2,7 @@
 class NotificationObserver < ActiveRecord::Observer
   observe AbTest,
           BanRequest,
+          Content,
           Question,
           SoldOutstandingClan,
           SoldOutstandingUser,
@@ -45,8 +46,25 @@ class NotificationObserver < ActiveRecord::Observer
     end
   end
 
+  def send_denied_content_notification(content)
+    msg = "Lo lamentamos pero tu contenido ha sido denegado por las siguientes razones:\n\n"
+    content.publishing_decisions.find(:all, :include => :user).each do |pd|
+      msg<< "[~#{pd.user.login}]: #{pd.deny_reason}\n" if not pd.publish?
+    end
+    content.user.notifications.create({
+      :description => msg,
+      :sender_user_id => Ias.MrMan,
+    })
+  end
+
   def after_save(o)
     case o.class.name
+    when 'Content'
+      if (o.state_changed? && o.state == Cms::DELETED &&
+          o.state_was == Cms::PENDING)
+        self.send_denied_content_notification(o)
+      end
+
     when 'Question'
       if o.answered_on_changed?
         if o.accepted_answer_comment_id.nil?

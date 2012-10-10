@@ -24,7 +24,7 @@ class GmPortalTest < ActiveSupport::TestCase
 
     question = Question.create(:user_id => 1, :title => 'holaaaaa')
     assert !question.new_record?
-    Cms.publish_content(question, User.find(1))
+    Content.publish_content(question, User.find(1))
     question.reload
 
     assert_equal Cms::PUBLISHED, question.state

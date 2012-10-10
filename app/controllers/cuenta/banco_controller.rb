@@ -3,16 +3,17 @@ class Cuenta::BancoController < ApplicationController
 
   VALID_CLASSES = %(User Clan Faction)
 
-  before_filter :require_auth_users
+  before_filter do |c|
+    if !user_is_authed || !Authorization.can_access_bank?(c.user)
+      raise AccessDenied
+    end
+  end
 
   def index
     @navpath = [['Preferencias', '/cuenta'], ['Banco', '/cuenta/banco']]
   end
 
   def confirmar_transferencia
-    require_auth_users
-    raise AccessDenied if !(self.user_is_authed && self.user.has_skill?("Bank"))
-
     params[:redirto] ||= '/'
 
     if params[:recipient_class] == "Clan" && params[:recipient_clan_name]
@@ -49,9 +50,6 @@ class Cuenta::BancoController < ApplicationController
   end
 
   def transferencia_confirmada
-    require_auth_users
-    raise AccessDenied if !(self.user_is_authed && self.user.has_skill?("Bank"))
-
     sender = self.get_party(params[:sender_class], params[:sender_id])
     recipient = self.get_party(params[:recipient_class], params[:recipient_id])
     errors = self.transfer_errors(sender, recipient)
@@ -104,7 +102,8 @@ class Cuenta::BancoController < ApplicationController
         errors << ("Solo bosses pueden pueden efectuar transferencias.")
     end
 
-    if recipient.class.name == 'User' && !recipient.has_skill?("Bank")
+    if (recipient.class.name == 'User' &&
+        !Authorization.can_access_bank?(recipient))
       errors << "El destinatario todavía no tiene la habilidad de recibir
                  transferencias."
     end

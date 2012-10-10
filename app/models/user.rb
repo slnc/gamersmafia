@@ -546,7 +546,7 @@ class User < ActiveRecord::Base
     return false unless self.update_attribute(:antiflood_level, level)
 
     # TODO This should go into an observer
-    if impositor.has_skill?("Capo")
+    if Authorization.can_edit_users?(impositor)
       Alert.create(:type_id => Alert::TYPES[:emergency_antiflood],
                        :reporter_user_id => impositor.id,
                        :headline => "Antiflood #{User::ANTIFLOOD_LEVELS[self.antiflood_level]} impuesto a <strong><a href=\"#{Routing.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{Routing.gmurl(impositor)}\">#{impositor.login}</a>")
@@ -781,6 +781,13 @@ class User < ActiveRecord::Base
     @cache_skills.include?(skill)
   end
 
+  def has_any_skill?(skills)
+    skills.each do |skill|
+      return true if self.has_skill?(skill)
+    end
+    false
+  end
+
   def has_emblem?(emblem)
     self.users_emblems.count(:conditions => ["emblem = ?", emblem]) > 0
   end
@@ -831,7 +838,7 @@ class User < ActiveRecord::Base
   def is_friend_of?(user)
     # si self está en la lista de amigos de user devuelve true
     f = Friendship.find_between(self, user)
-    (f && f.accepted_on) ? true : false
+    f && f.accepted_on
   end
 
   def remaining_rating_slots
@@ -905,7 +912,7 @@ class User < ActiveRecord::Base
 
   def karma_points
     if self.cache_karma_points.nil? then
-      self.update_attributes(
+      self.update_attribute(
           :cache_karma_points, Karma::calculate_karma_points(self))
     end
 

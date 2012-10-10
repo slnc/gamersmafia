@@ -4,14 +4,15 @@ module AppR
 
   def self.ondisk_git_version
     @_cache_v  ||= begin
-      if File.exists?(REVISION_FILE)
-        version = File.open(REVISION_FILE).read.strip[0..6]
+      all_tags = `git tag | grep release`.strip.split("\n")
+      if all_tags.size == 0
+        last_tag = `git log production --no-merges --pretty=format:"%h" | head -n 1`.strip
       else
-        version = "HEAD"
+        last_tag = all_tags.sort.last
       end
 
-      GlobalVars.update_var("svn_revision", version)
-      version
+      GlobalVars.update_var("svn_revision", last_tag)
+      last_tag
     end
   end
 end

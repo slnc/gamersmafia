@@ -231,7 +231,7 @@ class ActiveSupport::TestCase
 
   def delete_content(content)
     assert content.state != Cms::DELETED
-    Cms::delete_content(content)
+    content.update_attribute(:state, Cms::DELETED)
     content.reload
     assert_equal Cms::DELETED, content.state
   end
@@ -251,7 +251,7 @@ class ActiveSupport::TestCase
 
   def publish_content(content)
     assert content.state != Cms::PUBLISHED
-    Cms::publish_content(content, User.find(1))
+    Content.publish_content_directly(content, User.find(1))
     content.reload
     assert_equal Cms::PUBLISHED, content.state
   end

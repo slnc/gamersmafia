@@ -9,7 +9,6 @@ class Cuenta::BancoControllerTest < ActionController::TestCase
     assert_response :success
   end
   test "transfer_should_redirect_if_all_missing" do
-    give_skill(1, "Bank")
     Bank.transfer(:bank, User.find(1), 10, 'f')
     sym_login(1)
     assert_raises(ActiveRecord::RecordNotFound) do
@@ -18,7 +17,6 @@ class Cuenta::BancoControllerTest < ActionController::TestCase
   end
 
   test "transfer_should_redirect_if_recipient_class_empty" do
-    give_skill(1, "Bank")
     Bank.transfer(:bank, User.find(1), 10, 'f')
     sym_login(1)
     assert_raises(ActiveRecord::RecordNotFound) do
@@ -27,7 +25,6 @@ class Cuenta::BancoControllerTest < ActionController::TestCase
   end
 
   test "transfer_should_redirect_if_not_found_recipient" do
-    give_skill(1, "Bank")
     Bank.transfer(:bank, User.find(1), 10, 'f')
     sym_login(1)
     post :confirmar_transferencia, {
@@ -42,7 +39,6 @@ class Cuenta::BancoControllerTest < ActionController::TestCase
   end
 
   test "transfer_should_redirect_if_no_description" do
-    give_skill(1, "Bank")
     Bank.transfer(:bank, User.find(1), 10, 'f')
     sym_login(1)
     post :confirmar_transferencia, {
@@ -57,7 +53,6 @@ class Cuenta::BancoControllerTest < ActionController::TestCase
   end
 
   test "transfer_should_redirect_if_no_ammount" do
-    give_skill(1, "Bank")
     Bank.transfer(:bank, User.find(1), 10, 'f')
     sym_login(1)
     post :confirmar_transferencia, {
@@ -72,7 +67,6 @@ class Cuenta::BancoControllerTest < ActionController::TestCase
   end
 
   test "transfer_should_redirect_if_same_sender_and_recipient" do
-    give_skill(1, "Bank")
     Bank.transfer(:bank, User.find(1), 10, 'f')
     sym_login(1)
     post :confirmar_transferencia, {
@@ -87,7 +81,6 @@ class Cuenta::BancoControllerTest < ActionController::TestCase
   end
 
   test "shouldn't transfer if one party doesn't have the skill" do
-    give_skill(1, "Bank")
     Bank.transfer(:bank, User.find(1), 10, 'f')
     User.db_query(
         "UPDATE users
@@ -106,7 +99,6 @@ class Cuenta::BancoControllerTest < ActionController::TestCase
   end
 
   test "transfer_should_show_confirm_dialog_if_all_existing" do
-    give_skill(1, "Bank")
     give_skill(User.find_by_login("panzer").id, "Bank")
     Bank.transfer(:bank, User.find(1), 10, 'f')
     User.db_query(

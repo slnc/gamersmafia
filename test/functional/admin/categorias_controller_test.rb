@@ -101,7 +101,11 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
 
     sym_login 2
     assert_count_increases(Term) do
-      post :create, :term => { :name => 'furrinori', :taxonomy => 'TopicsCategory', :parent_id => 1}
+      post :create, :term => {
+          :name => 'furrinori',
+          :taxonomy => 'TopicsCategory',
+          :parent_id => 1,
+      }
       assert_response :redirect
     end
 

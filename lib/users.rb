@@ -44,6 +44,18 @@ module Users
       raise AccessDenied if !(user_is_authed && (@user.has_skill?(skill_name)))
     end
 
+    def require_authorization(permission)
+      raise AccessDenied if !user_is_authed
+      raise AccessDenied if !Authorization.send(permission, @user)
+    end
+
+    def require_authorization_for_object(permission, object)
+      raise AccessDenied if !user_is_authed
+      if !Authorization.send(permission, @user, object)
+        raise AccessDenied
+      end
+    end
+
     def require_user_is_staff
       raise AccessDenied unless user_is_authed && @user.is_bigboss?
     end
@@ -53,7 +65,7 @@ module Users
     end
 
     def require_user_can_edit(item)
-      raise AccessDenied unless user_is_authed && Cms::user_can_edit_content?(@user, item)
+      raise AccessDenied unless user_is_authed && Authorization.can_edit_content?(@user, item)
     end
 
     def require_auth_users

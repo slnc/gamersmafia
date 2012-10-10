@@ -79,7 +79,7 @@ class DescargasController < InformacionController
 
   def create_from_zip
     require_auth_users
-    raise ActiveRecord::RecordNotFound unless Cms::user_can_bulk_upload(@user)
+    raise ActiveRecord::RecordNotFound unless Authorization.can_bulk_upload?(@user)
     if params[:categories_terms].nil? || params[:categories_terms].size == 0
       flash[:error] = "Debes elegir una categoría donde subir las descargas."
       new
@@ -142,7 +142,7 @@ class DescargasController < InformacionController
     @navpath = []
     @navpath << [@download.title, "/descargas/#{@download.main_category.id}/#{@download.id}"] if @download.main_category
     @navpath << ['Editar', "/descargas/edit/#{@download.id}"]
-    if Cms::user_can_edit_content?(@user, @download) then
+    if Authorization.can_edit_content?(@user, @download) then
       @download.lock(@user)
       render :action => 'edit'
     else

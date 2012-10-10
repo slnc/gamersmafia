@@ -613,19 +613,22 @@ Request information:
     return [] unless user_is_authed
     # TODO hack
     items = []
-    if @user.has_skill?("Webmaster")
+    if Authorization.can_edit_ads_directly?(@user)
       items<< ['Ads', '/admin/ads']
       items<< ['Ads Slots', '/admin/ads_slots']
-      items<< ['Canales GMTV', '/admin/canales']
-      items<< ['Grupos', '/admin/grupos']
+    end
+
+    if Authorization.can_access_experiments?(@user)
       items<< ['Hipótesis', '/admin/hipotesis']
     end
 
-    if @user.has_skill?("Capo")
+    if Authorization.can_admin_all_items?(@user)
       items<< ['Avatares', '/avatares']
+      # items<< ['Canales GMTV', '/admin/canales']
       items<< ['Clanes', '/admin/clanes']
       items<< ['Competiciones', '/admin/competiciones']
       items<< ['Facciones', '/admin/facciones']
+      # items<< ['Grupos', '/admin/grupos']
       items<< ['IP Bans', '/admin/ip_bans']
       items<< ['IPs Duplicadas', '/admin/usuarios/ipsduplicadas']
       items<< ['Juegos', '/admin/juegos']
@@ -637,16 +640,16 @@ Request information:
       items<< ['Violaciones Netiqueta', '/comments/violaciones_netiqueta']
     end
 
-    if @user.has_skill?("BazarManager") || @user.has_skill?("Capo")
+    if Authorization.can_admin_toplevel_terms?(@user)
       items<< ['Cat Contenidos', '/admin/categorias']
     end
 
-    if Authorization::Users.can_edit_faq?(@user)
+    if Authorization.can_edit_faq?(@user)
       items<< ['Entradas FAQ', '/admin/entradasfaq']
       items<< ['Cat FAQ', '/admin/categoriasfaq']
     end
 
-    if @user.has_skill?("Capo") || @user.has_skill?("BazarManager")
+    if Authorization.can_admin_bazar_districts?(@user)
       items<< ['Distritos bazar', '/admin/bazar_districts']
     end
 

@@ -467,13 +467,13 @@ if prev_nicks.size > 0 then %>
 
   <div class="centered-link"><a href="/admin/usuarios/clear_description/<%=@curuser.id%>" onclick="return confirm('¿Estás seguro? ¡Esta acción no se puede deshacer!');">Borrar Descripción</a></div>
   <div class="centered-link"><a href="/admin/usuarios/clear_photo/<%=@curuser.id%>" onclick="return confirm('¿Estás seguro? ¡Esta acción no se puede deshacer!');">Borrar Foto</a></div>
-  <% elsif @curuser.antiflood_level != 5 && Authorization::Users.can_antiflood_users?(@user) %>
+  <% elsif @curuser.antiflood_level != 5 && Authorization.can_antiflood_users?(@user) %>
     <div class="centered-link">
       <a onclick="return confirm('El usuario no podrá enviar contenidos ni publicar comentarios hasta que un capo lo revise. SOLO PARA EMERGENCIAS. ¿Estás seguro?');" href="/admin/usuarios/set_antiflood_level?user_id=<%=@curuser.id%>&antiflood_level=5"><strong>Poner antiflood de emergencia</strong></a>
     </div>
   <% end %>
 
-  <% if Authorization::Users.can_report_users?(@user) %>
+  <% if Authorization.can_report_users?(@user) %>
     <div id="report-users<%=@curuser.id%>" class="centered-link"><a href="" title="Reportar el perfil de este usuario por violación del código de conducta" onclick="return report_user(<%=@curuser.id%>);">Reportar</a></div>
   <% end -%>
 

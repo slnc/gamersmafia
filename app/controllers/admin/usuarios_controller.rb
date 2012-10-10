@@ -31,21 +31,21 @@ class Admin::UsuariosController < ApplicationController
       :create_unban_request,
       :index,
   ] do |c|
-    raise AccessDenied unless c.user && c.user.has_skill?("Capo")
+    raise AccessDenied unless c.user && Authorization.can_edit_users?(c.user)
   end
 
   before_filter :only => [ :confirmar_ban_request ] do |c|
-    raise AccessDenied unless c.user && c.user.has_skill?("Capo")
+    raise AccessDenied unless c.user && Authorization.can_edit_users?(c.user)
   end
 
   before_filter :only => [ :report ] do |c|
-    if !(c.user && Authorization::Users.can_report_users?(c.user))
+    if !(c.user && Authorization.can_report_users?(c.user))
       raise AccessDenied
     end
   end
 
   before_filter :only => [ :set_antiflood_level ] do |c|
-    if !(c.user && Authorization::Users.can_antiflood_users?(c.user))
+    if !(c.user && Authorization.can_antiflood_users?(c.user))
       raise AccessDenied
     end
   end
@@ -83,7 +83,7 @@ class Admin::UsuariosController < ApplicationController
   end
 
   def destroy
-	  raise AccessDenied unless @user.has_skill?("Capo")
+    raise AccessDenied unless @user && Authorization.can_edit_users?(@user)
     @edituser = User.find_or_404(:first, :conditions => ['id = ?', params[:id]])
     if @edituser.destroy
       flash[:notice] = "Usuario #{@edituser.login} borrado correctamente."
@@ -320,7 +320,7 @@ Quedo a la espera de tu respuesta :)")
   end
 
   def set_antiflood_level
-    raise AccessDenied if !@user.has_skill?("Antiflood")
+    raise AccessDenied if !Authorization.can_antiflood_users?(@user)
     u = User.find(params[:user_id])
     if u.impose_antiflood(params[:antiflood_level].to_i, @user)
 	    flash[:notice] = "Antiflood modificado correctamente"

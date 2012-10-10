@@ -15,7 +15,7 @@ class RecruitmentAd < ActiveRecord::Base
   after_create :link_to_root_term
 
   def link_to_root_term
-    Cms::modify_content_state(self, Ias.MrMan, Cms::PUBLISHED)
+    Content.publish_content_directly(self, Ias.MrMan)
     Term.single_toplevel(:game_id => self.game_id).link(self.unique_content)
     true
   end
@@ -29,7 +29,7 @@ class RecruitmentAd < ActiveRecord::Base
   end
 
   def mark_as_deleted
-    Cms.modify_content_state(self, Ias.MrMan, Cms::DELETED)
+    Content.delete_content(self, Ias.MrMan)
     self.update_attributes(:deleted => true)
   end
 end

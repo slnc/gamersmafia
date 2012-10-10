@@ -699,118 +699,11 @@ module Cms
     end
   end
 
-  def self.modify_content_state(content, user, new_state, reason=nil)
-    if user.id == content.user_id && !Cms::user_can_edit_content?(user, content)
-      raise AccessDenied
-    end
-
-    uniq = content.unique_content
-    u_weight = Cms::get_user_weight_with(uniq.content_type, user, content)
-
-    if u_weight == Infinity
-      real_weight = 1.0
-    else
-      real_weight = u_weight
-    end
-
-    do_we_publish = (new_state == Cms::PUBLISHED) ? true : false
-    pd = PublishingDecision.find(
-        :first,
-        :conditions => ['user_id = ? and content_id = ?', user.id, uniq.id])
-    if pd then # ya había voto, actualizamos en lugar de crear
-      pd.publish = do_we_publish
-      pd.deny_reason = reason if !do_we_publish
-      pd.accept_comment = reason if do_we_publish
-      pd.user_weight = real_weight
-      pd.save
-    else
-      base = {
-          :user_id => user.id,
-          :content_id => uniq.id,
-          :publish => do_we_publish,
-          :user_weight => real_weight,
-      }
-      if do_we_publish
-        base.merge!({ :accept_comment => reason })
-      else
-        base.merge!({ :deny_reason => reason })
-      end
-      pd = PublishingDecision.create(base)
-    end
-    prev_state = content.state
-
-    # está votando un moderador, actualizamos campo 'is_right' de todos los
-    # publishing_decisions
-    if u_weight == Infinity
-      content.change_state(new_state, user)
-      if new_state == Cms::DELETED && prev_state == PENDING then
-        msg = "Lo lamentamos pero tu contenido ha sido denegado por las siguientes razones:\n\n"
-        uniq.publishing_decisions.find(:all, :include => :user).each do |pd|
-          msg<< "[~#{pd.user.login}]: #{pd.deny_reason}\n" if not pd.publish?
-        end
-
-        m = Message.new({ :message => msg, :sender => Ias.nagato, :recipient => content.user, :title => "Contenido \"#{content.resolve_hid}\" denegado"})
-        m.save
-      end
-    elsif PublishingDecision.find_sum_for_content(content) >= 1.0
-      content.change_state(Cms::PUBLISHED, Ias.MrMan)
-      ttype, scope = Alert.fill_ttype_and_scope_for_content_report(uniq)
-      mrman = Ias.MrMan
-      Alert.create(:type_id => ttype, :scope => scope, :reporter_user_id => mrman.id, :headline => "#{Cms.faction_favicon(content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.real_content.resolve_html_hid}</a></strong> publicado") if prev_state == Cms::PENDING
-    elsif PublishingDecision.find_sum_for_content(content) <= -1.0
-      content.change_state(Cms::DELETED, Ias.MrMan)
-      msg = "Lo lamentamos pero tu contenido ha sido denegado por las siguientes razones:\n\n"
-      uniq.publishing_decisions.find(:all, :include => :user).each do |pd|
-        msg<< "[~#{pd.user.login}]: #{pd.deny_reason}\n" if not pd.publish?
-      end
-
-      ttype, scope = Alert.fill_ttype_and_scope_for_content_report(uniq)
-      mrman = Ias.MrMan
-      if prev_state == Cms::PENDING
-        Alert.create({
-            :type_id => ttype,
-            :scope => scope,
-            :reporter_user_id => mrman.id,
-            :headline => (
-                "#{Cms.faction_favicon(content)}<strong><a href=\"#{Routing.url_for_content_onlyurl(uniq.real_content)}\">#{uniq.real_content.resolve_html_hid}</a></strong> denegado"),
-        })
-      end
-
-      Message.create({
-          :message => msg,
-          :sender => Ias.nagato,
-          :recipient => content.user,
-          :title => "Contenido \"#{content.resolve_hid}\" denegado",
-      })
-    end
-
-    # Actualizamos campo 'is_right' de todos los publishing_decisions ya que o
-    # bien un editor ha tomado una decisión o bien la suma de los pesos de las
-    # personas que han votado ya ha superado uno de los ratios.
-    if [Cms::PUBLISHED, Cms::DELETED].include?(content.state) then
-      uniq.publishing_decisions.find(:all).each do |pd|
-        pd.is_right = (
-            (content.state == Cms::PUBLISHED && pd.publish) ||
-            ((content.state == Cms::DELETED && !pd.publish))) ? true : false
-        pd.save
-        pd.personality.recalculate
-      end
-    end
-  end
-
-  def self.publish_content(content, user, reason=nil)
-    self.modify_content_state(content, user, Cms::PUBLISHED, reason)
-  end
-
-  def self.deny_content(content, user, reason)
-    self.modify_content_state(content, user, Cms::DELETED, reason)
-  end
-
   # Devuelve el peso de un usuario a la hora de moderar un contenido del tipo
   # dado. En caso de superadmins o editores el peso es siempre Infinito.
   def self.get_user_weight_with(content_type, user, content=nil)
-    if user.has_skill?("Capo") || (
-        !content.nil? && Cms::user_can_edit_content?(user, content))
+    if user.has_skill?("Capo") || user.has_skill?("Webmaster") || (
+        !content.nil? && Authorization.can_edit_content?(user, content))
       Infinity
     else
       aciertos = User.db_query("SELECT count(a.id) FROM publishing_decisions A JOIN contents b ON a.content_id = b.id WHERE a.is_right = 't' AND b.content_type_id = #{content_type.id} AND a.user_id = #{user.id} AND a.created_on >= now() - '1 year'::interval")[0]['count'].to_i
@@ -823,11 +716,6 @@ module Cms
         res
       end
     end
-  end
-
-  def self.delete_content(content)
-    content.state = Cms::DELETED
-    content.save
   end
 
   def self.to_fqdn(str)
@@ -843,91 +731,6 @@ module Cms
       GC.start
     end
     Magick::Image.read(im).first
-  end
-
-  def self.user_can_delete_content?(user, content)
-    user.has_skill?("DeleteContents")
-    # TODO(slnc): temporal, hack una vez que limpiemos user_can_edit_content?
-    # tenemos que cambiar estas reglas para permitir ciertas combinaciones de
-    # usuarios y tipos de contenido. Eg: a autores de entradas de blog borrar
-    # sus entradas o a autores de anuncios de reclutamiento borrar sus anuncios.
-  end
-
-  def self.user_can_edit_content?(user, content)
-    return true if user && user.has_skill?("EditContents")
-    return false unless user && user.id
-
-    if (content.respond_to?(:state) &&
-        content.user_id == user.id &&
-        content.state == Cms::DRAFT)
-      true
-    elsif (content.respond_to?(:state) &&
-           content.state == Cms::PENDING &&
-           Authorization::Users.can_modify_pending_content?(user))
-      true
-    elsif (content.class.name == 'Question' &&
-           content.user_id == user.id &&
-           (content.created_on > 15.minutes.ago ||
-            content.unique_content.comments_count == 0))
-      true
-    elsif (content.class.name == 'RecruitmentAd' &&
-           (user.has_skill?("Capo") ||
-            user.has_skill?("Bot") ||
-            user.id == content.user_id ||
-            (content.clan_id && content.clan.user_is_clanleader(user.id))))
-      true
-    elsif (Cms::AUTHOR_CAN_EDIT_CONTENTS.include?(content.class.name) &&
-           content.user_id == user.id)
-      true
-    elsif content.kind_of?(Coverage) && (c = content.event.competition)
-      c.user_is_admin(user.id) ? true : false
-    elsif content.kind_of?(Coverage) then
-      Cms::user_can_edit_content?(user, content.event)
-    elsif content.class.name == 'Topic' or content.class.name == 'Comment'
-      # jefazo o moderador de la organization?
-      # chequeamos que sea boss, underboss o moderador de la facción
-      org = Organizations.find_by_content(content)
-      # el autor del topic/comment y no está baneado
-      if (content.class.name == 'Topic' &&
-          user.id == content.user_id &&
-          content.created_on.to_i > 15.minutes.ago.to_i &&
-          (org.nil? || !org.user_is_banned?(content.user)))
-        true
-      elsif org
-        if org.user_is_moderator(user)
-          true
-        elsif content.class.name == 'Comment'
-          real = content.content.real_content
-          if (real.class.name == 'Event' &&
-              (cm = CompetitionsMatch.find_by_event_id(real.id)) &&
-              cm.competition.user_is_admin(user.id))
-            true
-          else
-            false
-          end
-        else # TODO Coverage
-          false
-        end
-      else # categoría Otros o categoría GM
-        if (content.respond_to?(:content) &&
-            (real = content.content.real_content) &&
-            real.class.name == 'Coverage' &&
-            (c = Competition.find_by_event_id(real.event_id)) &&
-            c.user_is_admin(user.id))
-          true
-        else
-          user.has_skill?("Capo")
-        end
-      end
-    else # editor o jefazo de organization?
-      org = Organizations.find_by_content(content)
-      if org
-        org.user_is_editor_of_content_type?(
-            user, ContentType.find_by_name(content.class.name))
-      else
-        false
-      end
-    end
   end
 
   def self.page_to_show(user, somecontent, objlastseen_on)
@@ -949,10 +752,6 @@ module Cms
     end
 
     page
-  end
-
-  def self.user_can_bulk_upload(u)
-    u.has_skill?("BulkUpload")
   end
 
   def self.faction_favicon(thing)
@@ -1095,36 +894,6 @@ module Cms
       end
     end
     code
-  end
-
-  def self.user_can_select_best_answer(user, content)
-    content.class.name == 'Question' && (Cms::user_can_edit_content?(user, content) || user.id == content.user_id)
-  end
-
-  def self.user_can_create_content(user)
-    User::STATES_CAN_LOGIN.include?(user.state) && user.antiflood_level < 5
-  end
-
-  def self.can_edit_term?(u, term, taxonomy)
-    self.can_admin_term?(u, term, taxonomy) && term.id != term.root_id
-  end
-
-  def self.can_admin_term?(u, term, taxonomy)
-    return true if u.has_skill?("Capo")
-
-    if term.game_id
-      f = Faction.find_by_code(term.game.code)
-      f.is_bigboss?(u) || f.user_is_editor_of_content_type?(u, ContentType.find_by_name(taxonomy))
-    elsif term.platform_id
-      f = Faction.find_by_code(term.platform.code)
-      f.is_bigboss?(u) || f.user_is_editor_of_content_type?(u, ContentType.find_by_name(taxonomy))
-    elsif term.bazar_district_id
-      f = term.bazar_district
-      f.is_bigboss?(u) || f.is_sicario?(u)
-    elsif term.clan_id
-      c = term.clan
-      c.user_is_clanleader(u)
-    end
   end
 
   def self.get_editable_terms_by_group(u)

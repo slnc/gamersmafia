@@ -3,6 +3,15 @@ require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
 
+  test "has_any_skill" do
+    u = User.find(1)
+    skills = %w(Moderator Webmaster)
+    skills.each do |skill|
+      assert u.has_skill?(skill)
+    end
+    assert u.has_any_skill?(skills)
+  end
+
   test "boss who changes to another faction should lose boss permission" do
     u = User.find(1)
     u.faction_id = 1
@@ -239,6 +248,7 @@ class UserTest < ActiveSupport::TestCase
 
   test "has_skill_no_skill" do
     u1 = User.find(1)
+    u1.users_skills.clear
     assert !u1.has_skill?("Bank")
   end
 

@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Admin::EntradasfaqController < ApplicationController
   before_filter do |c|
-    if !c.user || !Authorization::Users.can_edit_faq?(c.user)
+    if !c.user || !Authorization.can_edit_faq?(c.user)
       raise AccessDenied
     end
   end

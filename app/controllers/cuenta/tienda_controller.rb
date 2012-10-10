@@ -2,7 +2,7 @@
 class Cuenta::TiendaController < ApplicationController
   before_filter :require_auth_users
   before_filter do |c|
-    raise AccessDenied if !(c.user_is_authed && c.user.has_skill?("GmShop"))
+    require_authorization(:can_access_gmshop?)
   end
 
   def index

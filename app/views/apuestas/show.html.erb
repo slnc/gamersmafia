@@ -1,7 +1,7 @@
 <% content_support(:content => @bet.unique_content) do %>
 <% if @bet.is_public? then %>
 
-<% if @bet.can_be_reopened? && user_is_authed && Cms::user_can_edit_content?(@user, @bet) then %>
+<% if @bet.can_be_reopened? && user_is_authed && Authorization.can_edit_content?(@user, @bet) then %>
 <%mftext('Cambiar Resultado') do %>
 	<div class="centered"><a href="/apuestas/cambiar_resultado/<%=@bet.id%>" onclick="return confirm('¿Estás seguro?');">Cambiar resultado</a></div>
 <% end -%>

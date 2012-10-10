@@ -123,10 +123,8 @@ module MiembrosHelper
 
   def show_member_control_box
     user_is_authed && (
-        @user.has_skill?("Webmaster") ||
-        @user.has_skill?("Capo") ||
-        Authorization::Users.can_report_users?(@user) ||
-        @user.has_skill?("Antiflood")
+        Authorization.can_antiflood_users?(@user) ||
+        Authorization.can_report_users?(@user)
     )
   end
 

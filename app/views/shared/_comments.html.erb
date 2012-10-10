@@ -79,7 +79,7 @@ hidden_comments_count = 0
 
 <script type="text/javascript">
 <% if (questions_mode && user_is_authed && object.answered_on.nil? &&
-       (@_cache_can_select ||= Cms.user_can_select_best_answer(@user, object)))  %>
+       (@_cache_can_select ||= Authorization.can_set_best_answer(@user, object)))  %>
   $j('div.questions-best-answer').removeClass('hidden');
 <% end -%>
 

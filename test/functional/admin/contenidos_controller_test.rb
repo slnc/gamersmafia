@@ -34,7 +34,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
 
   test "mass_moderate_should_work_if_mass_approve" do
     n = self.create_some_news
-    Cms.modify_content_state(n, User.find(1), Cms::PENDING)
+    Content.send_draft_to_moderation_queue(n)
     n.reload
     assert_equal Cms::PENDING, n.state
     sym_login 1
@@ -48,7 +48,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
 
   test "mass_moderate_should_work_if_mass_deny" do
     n = self.create_some_news
-    Cms.modify_content_state(n, User.find(1), Cms::PENDING)
+    Content.send_draft_to_moderation_queue(n)
     n.reload
     assert_equal Cms::PENDING, n.state
     sym_login 1
@@ -72,10 +72,9 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
   end
 
   test "recover_should_work" do
-    give_skill(1, "DeleteContents")
     sym_login 1
     n = News.find(1)
-    Cms.modify_content_state(n, User.find(1), Cms::DELETED, "feooote")
+    Content.delete_content(n, User.find(1), "feooote")
     n.reload
     assert_equal Cms::DELETED, n.state
     post :recover, :id => n.unique_content.id
@@ -129,7 +128,6 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
   end
 
   test "should_see_papelera_if_admin" do
-    give_skill(1, "DeleteContents")
     sym_login 1
     get :papelera
     assert_response :success
@@ -259,7 +257,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     give_skill(2, "TagContents")
     sym_login 2
     uct = UsersContentsTag.find(:first, :conditions => ['user_id = 1'])
-    assert_raises(ActiveRecord::RecordNotFound) do
+    assert_raises(AccessDenied) do
       post :remove_user_tag, :id => uct.id
     end
   end

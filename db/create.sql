@@ -3671,6 +3671,7 @@ CREATE INDEX comments_created_on ON comments USING btree (created_on);
 CREATE INDEX comments_created_on_content_id ON comments USING btree (created_on, content_id);
 CREATE INDEX comments_created_on_date_trunc ON comments USING btree (date_trunc('day'::text, created_on));
 CREATE INDEX comments_has_comments_valorations_user_id ON comments USING btree (has_comments_valorations, user_id);
+CREATE INDEX comments_netiquette_violations ON comments USING btree (netiquette_violation);
 CREATE INDEX comments_random_v ON comments USING btree (random_v);
 CREATE INDEX comments_user_id_created_on ON comments USING btree (user_id, created_on);
 CREATE UNIQUE INDEX comments_valorations_comment_id_user_id ON comments_valorations USING btree (comment_id, user_id);

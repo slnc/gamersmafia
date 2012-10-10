@@ -84,7 +84,7 @@ class MiembrosController < ComunidadController
 
   def update_signature
     raise ActiveRecord::RecordNotFound if !@curuser.enable_profile_signatures?
-    if @curuser.id == @user.id || !@user.has_skill?("ProfileSignatures")
+    if @curuser.id == @user.id || !Authorization.can_create_profile_signatures?(@user)
       raise AccessDenied
     end
 

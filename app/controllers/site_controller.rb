@@ -409,7 +409,7 @@ class SiteController < ApplicationController
 
   def ipinfo
     require_auth_users
-    raise AccessDenied unless @user.has_skill?("Capo")
+    raise AccessDenied unless Authorization.can_edit_users?(@user)
     @ipinfo = Geolocation.ip_info(params[:ip])
     render :layout => false
   end

@@ -161,7 +161,7 @@ class BazarDistrict < ActiveRecord::Base
   end
 
   def user_is_editor_of_content_type?(user, content_type)
-    user.has_skill?("BazarManager") || is_sicario?(user)
+    user.has_skill?("BazarManager") || self.is_sicario?(user)
   end
 
   def user_is_banned?(user)

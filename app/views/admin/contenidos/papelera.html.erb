@@ -29,7 +29,7 @@ uniq = @item.unique_content
 %>
   <tr id="content<%=uniq.id%>" class="<%=oddclass%>">
     <td style="width: 16px;" class="content-hid"><%=faction_favicon(@item)%></td>
-    <% if Cms::user_can_edit_content?(@user, @item) then %>
+    <% if Authorization.can_edit_content?(@user, @item) then %>
       <td><a href="<%=url%>"><%=@item.resolve_hid == '' ? '(Sin nombre)' : @item.resolve_hid%></a></td>
     <% else %>
       <td><%=@item.resolve_hid == '' ? '(Sin nombre)' : @item.resolve_hid%></td>
@@ -39,7 +39,7 @@ uniq = @item.unique_content
     <td class="infoinline"><%=@item.cache_comments_count%></td>
     <td class="infoinline"><%=(@item.hits_anonymous + @item.hits_registered)%></td>
       <td>
-      <% if Cms::user_can_edit_content?(@user, @item) then %>
+      <% if Authorization.can_edit_content?(@user, @item) then %>
         <%=link_to(
             "Recuperar",
             "/admin/contenidos/recover/#{uniq.id}",

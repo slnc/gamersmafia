@@ -21,14 +21,13 @@ class PublishingDecisionTest < ActiveSupport::TestCase
 
     assert %w(publish_content deny_content destroy_content).include?(decision.to_s)
     b_decision = (decision.to_s == 'publish_content')
-    # n = News.find(:first, :conditions => 'state = 1', :order => 'id DESC')
     assert_not_nil @n
     if decision == :deny_content
-      Cms.deny_content(@n, user, deny_reason)
+      Content.deny_content(@n, user, deny_reason)
     elsif decision == :destroy_content
-      Cms.modify_content_state(@n, user, Cms::DELETED, deny_reason)
+      Content.delete_content(@n, user, deny_reason)
     else
-      Cms.publish_content(@n, user)
+      Content.publish_content(@n, user)
     end
     if %w(publish_content deny_content).include?(decision.to_s)
       assert_not_nil PublishingDecision.find(:first, :conditions => ['user_id = ? and content_id = ? and publish = ?', user.id, @n.unique_content.id, b_decision])
@@ -170,14 +169,14 @@ class PublishingDecisionTest < ActiveSupport::TestCase
     6.times do |t|
       n = News.create({:title => "maximize_exp#{t}", :description => 'foo', :terms => 1, :user_id => @mrman.id, :state => 1})
       assert_not_nil n
-      Cms.publish_content(n, @superadmin)
-      Cms.publish_content(n, @panzer)
+      Content.publish_content(n, @superadmin)
+      Content.publish_content(n, @panzer)
     end
 
     n = News.create({:title => "maximize_exp2", :description => 'foo', :terms => 1, :user_id => @mrman.id, :state => 1})
     assert_not_nil n
-    Cms.publish_content(n, @mralariko)
-    Cms.publish_content(n, @panzer)
+    Content.publish_content(n, @mralariko)
+    Content.publish_content(n, @panzer)
     assert_equal Cms::PUBLISHED, n.state
   end
 
@@ -198,21 +197,23 @@ class PublishingDecisionTest < ActiveSupport::TestCase
           :state => 1,
       })
       assert_not_nil n
-      Cms.publish_content(n, @superadmin)
-      Cms.publish_content(n, @panzer)
+      Content.publish_content(n, @superadmin)
+      Content.publish_content(n, @panzer)
     end
 
-    n = News.create({
+    @n = News.create({
         :title => "maximize_exp2",
         :description => 'foo',
         :terms => 1,
         :user_id => @mrman.id,
         :state => 1,
     })
-
+    assert !@n.new_record?
     assert_not_nil @n
-    Cms.deny_content(@n, @mralariko, 'feo')
-    Cms.deny_content(@n, @panzer, 'feo')
+
+    puts " "
+    Content.deny_content(@n, @mralariko, 'feo')
+    Content.deny_content(@n, @panzer, 'feo')
     assert_equal Cms::DELETED, @n.state
   end
 
@@ -227,27 +228,11 @@ class PublishingDecisionTest < ActiveSupport::TestCase
   test "last_editor_must_overturn_any_previous_publishing_decision" do
     test_multiple_users_can_manage_to_deny_a_content_if_reaches_minus_1_0
     User.db_query("UPDATE publishing_personalities set experience = 1.0")
-    Cms.deny_content(@n, @superadmin2, 'fff')
+    Content.deny_content(@n, @superadmin2, 'fff')
     @n.reload
     assert_equal Cms::DELETED, @n.state
-    Cms.publish_content(@n, @superadmin)
+    Content.publish_content_directly(@n, @superadmin)
     @n.reload
     assert_equal Cms::PUBLISHED, @n.state
   end
-
-  test "non_editor_cant_vote_on_his_content" do
-    n = News.create({
-        :title => "check_exp_non_editor",
-        :description => 'foo',
-        :terms => 1,
-        :user_id => @panzer.id,
-        :state => Cms::PENDING,
-    })
-    assert_not_nil n
-    assert_equal Cms::PENDING, n.state
-    assert_raises(AccessDenied) { Cms::publish_content(n, @panzer) }
-    assert_raises(AccessDenied) { Cms::deny_content(n, @panzer, 'foo') }
-  end
-
-  # TODO faltan tests para cuando se modifica una decisión
 end

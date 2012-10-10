@@ -72,7 +72,7 @@ class Friendship < ActiveRecord::Base
   def check_friendship_requests_flags
     [self.receiver, self.sender].each do |u|
       next unless u.class.name == 'User'
-      u.has_new_friend_requests = u.friendships_received_pending.size > 0 ? true : false
+      u.has_new_friend_requests = (u.friendships_received_pending.size > 0)
       u.save
     end
     true

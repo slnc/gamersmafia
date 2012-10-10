@@ -86,7 +86,7 @@ module ApplicationHelper
       if user_is_authed then
         if @user.has_skill?("Webmaster")
           sawmode = 'full'
-        elsif @user.has_skill?("Advertiser")
+        elsif Authorization.is_advertiser?(@user)
           sawmode = 'anunciante'
         else
           sawmode = ''
@@ -785,7 +785,7 @@ skin: 'v2'
 
 
   def content_bottom(obj)
-    if user_is_authed and obj.state == Cms::PENDING and obj.class.name != 'Blogentry' and @user.id != obj.user_id
+    if user_is_authed && obj.state == Cms::PENDING && obj.class.name != 'Blogentry' && @user.id != obj.user_id
       controller.send(:render_to_string, :partial => '/shared/accept_or_deny', :locals => { :object => obj }).force_encoding("utf-8")
     elsif [Cms::PUBLISHED, Cms::DELETED, Cms::ONHOLD].include?(obj.state)
       out = controller.send(:render_to_string, :partial => 'shared/contentinfobar', :locals => { :object => obj }).force_encoding("utf-8")

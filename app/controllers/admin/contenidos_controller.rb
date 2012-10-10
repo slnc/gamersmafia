@@ -26,7 +26,7 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def index
-    raise AccessDenied unless @user.has_skill?("ContentModerationQueue")
+    raise AccessDenied unless Authorization.can_access_moderation_queue?(@user)
     @title = 'Contenidos pendientes de moderar'
     @contents = []
 
@@ -44,7 +44,7 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def papelera
-    raise AccessDenied unless @user.has_skill?("DeleteContents")
+    raise AccessDenied unless Authorization.can_delete_contents?(@user)
     if (params[:portal].nil? &&
         self.portal.id != -1 &&
         self.portal.type == 'FactionsPortal')
@@ -102,7 +102,7 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def mass_moderate
-    raise AccessDenied unless @user.has_skill?("MassModerateContents")
+    raise AccessDenied unless Authorization.can_mass_moderate_contents?(@user)
 
     if params[:items] then
       if (params[:deny_reason] == 'Otra')
@@ -112,13 +112,12 @@ class Admin::ContenidosController < ApplicationController
       for k in params[:items]
         content = Content.find(k.to_i)
         obj = content.real_content
-        require_user_can_edit(obj)
 
         # TODO borrar caches de portada
         if params[:mass_action] == 'publish' then
-          Cms::publish_content(obj, @user)
+          Content.publish_content(obj, @user)
         elsif params[:mass_action] == 'deny' then
-          Cms::deny_content(obj, @user, params[:deny_reason])
+          Content.deny_content(obj, @user, params[:deny_reason])
         end
       end
     end
@@ -129,24 +128,26 @@ class Admin::ContenidosController < ApplicationController
   def switch_decision
     # TODO this is not a switch, it-s one way
     pd = PublishingDecision.find(params[:id], :include => :content)
-    require_user_can_edit pd.content.real_content
-    Cms::publish_content(pd.content.real_content, pd.user)
-    redirect_to Routing.url_for_content_onlyurl(pd.content.real_content).gsub(
-        'show', 'edit')
+    real_content = pd.content.real_content
+    require_authorization_for_object(:can_publish_decision?, real_content)
+
+    Content.publish_content(real_content, pd.user)
+    redirect_to(Routing.url_for_content_onlyurl(
+        pd.content.real_content).gsub('show', 'edit'))
   end
 
   def publish_content
-    raise AccessDenied unless @user.has_skill?("ContentModerationQueue")
-    Cms::publish_content(
-        Content.find(params[:id]).real_content,
-        @user,
-        params[:accept_comment])
+    real_content = Content.find(params[:id]).real_content
+    require_authorization_for_object(:can_publish_decision?, real_content)
+
+    Content.publish_content(real_content, @user, params[:accept_comment])
     flash[:notice] = 'Tu voto se ha contabilizado correctamente. Gracias'
     redirect_to '/admin/contenidos'
   end
 
   def deny_content
-    raise AccessDenied unless @user.has_skill?("ContentModerationQueue")
+    real_content = Content.find(params[:id]).real_content
+    require_authorization_for_object(:can_publish_decision?, real_content)
 
     if (params[:deny_reason] == 'Otra')
       params[:deny_reason] = params[:deny_reason_other]
@@ -155,17 +156,14 @@ class Admin::ContenidosController < ApplicationController
     if params[:deny_reason].to_s == ''
       flash[:error] = 'Debes especificar una razón para denegar el contenido'
     else
-      Cms::deny_content(
-          Content.find(params[:id]).real_content,
-          @user,
-          params[:deny_reason])
+      Content.deny_content(real_content, @user, params[:deny_reason])
       flash[:notice] = 'Tu voto se ha contabilizado correctamente. Gracias'
     end
     redirect_to '/admin/contenidos'
   end
 
   def report
-    raise AccessDenied unless @user.has_skill?("ReportContents")
+    raise AccessDenied unless Authorization.can_report_contents?(@user)
     @content = Content.find(params[:id])
 
     ttype, scope = Alert.fill_ttype_and_scope_for_content_report(@content)
@@ -209,7 +207,7 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def tag_content
-    raise AccessDenied unless @user.has_skill?("TagContents")
+    raise AccessDenied unless Authorization.can_tag_contents?(@user)
     @content = Content.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @content
     UsersContentsTag.tag_content(
@@ -222,7 +220,7 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def remove_user_tag
-    raise AccessDenied unless @user.has_skill?("TagContents")
+    raise AccessDenied unless Authorization.can_admin_tags?(@user)
     @uct = UsersContentsTag.find(
         :first,
         :conditions => ['user_id = ? AND id = ?', @user.id, params[:id]])

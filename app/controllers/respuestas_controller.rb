@@ -61,7 +61,7 @@ class RespuestasController < InformacionController
     @question = @comment.content.real_content
     # raise ActiveRecord
     # TODO loguear quién ha puesto una respuesta
-    raise AccessDenied unless Cms.user_can_select_best_answer(@user, @question)
+    raise AccessDenied unless Authorization.can_set_best_answer(@user, @question)
 
     if @question.set_best_answer(@comment.id, @user)
       flash[:notice] = "Mejor respuesta guardada correctamente."
@@ -92,7 +92,7 @@ class RespuestasController < InformacionController
 
     # raise ActiveRecord
     # TODO loguear quién ha puesto una respuesta
-    raise AccessDenied unless Cms.user_can_edit_content?(@user, @question)
+    raise AccessDenied unless Authorization.can_edit_content?(@user, @question)
 
     if @question.revert_set_best_answer(@user)
       flash[:notice] = "Mejor respuesta quitada correctamente."

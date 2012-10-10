@@ -388,14 +388,14 @@ class CmsTest < ActiveSupport::TestCase
     ut = Faction.find_by_code('ut')
     assert ut.update_boss(u10)
     assert_equal ut.id, u10.faction_id
-    assert Cms.user_can_edit_content?(u10, Image.new(:terms => 1))
+    assert Authorization.can_edit_content?(u10, Image.new(:terms => 1))
   end
 
   test "edit_contents_can_edit_blogentry" do
     u10 = User.find(10)
     give_skill(u10.id, "EditContents")
     be = Blogentry.find(:first)
-    assert Cms.user_can_edit_content?(u10, be)
+    assert Authorization.can_edit_content?(u10, be)
   end
 
   test "mano_derecha_can_edit_contents_of_own_district" do
@@ -403,7 +403,7 @@ class CmsTest < ActiveSupport::TestCase
     u59 = User.find(59)
     bd.update_mano_derecha(u59)
     n65 = News.find(65)
-    assert Cms.user_can_edit_content?(u59, n65)
+    assert Authorization.can_edit_content?(u59, n65)
   end
 
   test "factions_editor_can_edit_contents_of_own_faction" do
@@ -411,7 +411,7 @@ class CmsTest < ActiveSupport::TestCase
     u59 = User.find(59)
     assert_count_increases(UsersSkill) { f.add_editor(u59, ContentType.find_by_name('News'))}
     n1 = News.find(1)
-    assert Cms.user_can_edit_content?(u59, n1)
+    assert Authorization.can_edit_content?(u59, n1)
   end
 
   test "boss_can_edit_contents_of_own_faction" do
@@ -419,7 +419,7 @@ class CmsTest < ActiveSupport::TestCase
     u59 = User.find(59)
     assert f.update_boss(u59)
     n1 = News.find(1)
-    assert Cms.user_can_edit_content?(u59, n1)
+    assert Authorization.can_edit_content?(u59, n1)
   end
 
   test "underboss_can_edit_contents_of_own_faction" do
@@ -427,7 +427,7 @@ class CmsTest < ActiveSupport::TestCase
     u59 = User.find(59)
     assert f.update_underboss(u59)
     n1 = News.find(1)
-    assert Cms.user_can_edit_content?(u59, n1)
+    assert Authorization.can_edit_content?(u59, n1)
   end
 
   test "don_can_edit_contents_of_own_district" do
@@ -435,7 +435,7 @@ class CmsTest < ActiveSupport::TestCase
     u59 = User.find(59)
     bd.update_don(u59)
     n1 = News.find(65)
-    assert Cms.user_can_edit_content?(u59, n1)
+    assert Authorization.can_edit_content?(u59, n1)
   end
 
   test "don_can_edit_topic_of_own_district" do
@@ -447,7 +447,7 @@ class CmsTest < ActiveSupport::TestCase
     t1 = Topic.create(:user_id => 1, :terms => tcc.id, :title => 'hola anime', :main => 'soy un topic de anime')
     assert !t1.new_record?, t1.errors.full_messages_html
     p t1.terms
-    assert Cms.user_can_edit_content?(u59, t1)
+    assert Authorization.can_edit_content?(u59, t1)
   end
 
   test "manoderecha_can_edit_contents_of_own_district" do
@@ -455,7 +455,7 @@ class CmsTest < ActiveSupport::TestCase
     u59 = User.find(59)
     bd.update_mano_derecha(u59)
     n1 = News.find(65)
-    assert Cms.user_can_edit_content?(u59, n1)
+    assert Authorization.can_edit_content?(u59, n1)
   end
 
   test "sicario_can_edit_contents_of_own_district" do
@@ -463,7 +463,7 @@ class CmsTest < ActiveSupport::TestCase
     u59 = User.find(59)
     bd.add_sicario(u59)
     n1 = News.find(65)
-    assert Cms.user_can_edit_content?(u59, n1)
+    assert Authorization.can_edit_content?(u59, n1)
   end
 
   test "user_can_edit_coverage_of_event_where_you_have_permissions" do
@@ -476,16 +476,16 @@ class CmsTest < ActiveSupport::TestCase
     e = Event.new(:starts_on => 1.year.ago, :ends_on => 11.months.ago, :user_id => 1, :title => 'foo')
     assert e.save, e.errors.full_messages_html
     Term.single_toplevel(:slug => 'ut').link(e.unique_content)
-    Cms::publish_content(e, User.find(1))
+    Content.publish_content_directly(e, User.find(1))
     e.reload
     assert_equal Cms::PUBLISHED, e.state
 
     c = Coverage.new(:user_id => 1, :event_id => e.id, :title => "foo", :description => "bar")
     assert c.save, c.errors.full_messages_html
-    Cms::publish_content(c, User.find(1))
+    Content.publish_content_directly(c, User.find(1))
     c.reload
     assert_equal Cms::PUBLISHED, e.state
-    assert Cms.user_can_edit_content?(u10, c)
+    assert Authorization.can_edit_content?(u10, c)
   end
 
   # permissions

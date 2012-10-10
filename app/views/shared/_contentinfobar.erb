@@ -22,8 +22,8 @@
 
   <ul style="font-size:11px;">
   <% if user_is_authed then
-can_edit = Cms::user_can_edit_content?(@user, object)
-can_delete = Cms::user_can_delete_content?(@user, object) %>
+can_edit = Authorization.can_edit_content?(@user, object)
+can_delete = Authorization.can_delete_content?(@user, object) %>
 
       <% if @user.tracker_has?(object.unique_content.id) then %>
       <li class="actions first"><%=link_to 'Quitar del tracker', {:controller => 'site', :action => 'del_from_tracker', :id => object.unique_content.id, :params => {:redirto => request.fullpath}}, {:confirm => '¿Estás seguro de que quieres quitarlo de tu tracker?', :class => 'action'}%></li>

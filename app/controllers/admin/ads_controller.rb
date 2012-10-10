@@ -2,7 +2,7 @@
 class Admin::AdsController < AdministrationController
 
   before_filter do |c|
-    raise AccessDenied if !(c.user && c.user.has_skill?("Webmaster"))
+    require_authorization(:can_edit_ads_directly?)
   end
 
   def index

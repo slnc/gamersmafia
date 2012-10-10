@@ -115,3 +115,14 @@ mrcheater_profile_signatures:
   id: 22
   user_id: 55
   role: ProfileSignatures
+
+superadmin_delete_contents:
+  id: 23
+  user_id: 1
+  role: DeleteContents
+
+superadmin_bank:
+  id: 24
+  user_id: 1
+  role: Bank
+

@@ -21,12 +21,12 @@ class UsersActionObserverTest < ActionController::IntegrationTest
   test "should_properly_reflect_content" do
     n = News.create(:terms => 1, :user_id => 1, :title => "titulin", :description => "fooo")
     assert_count_increases(UsersAction) do
-      Cms.publish_content(n, User.find(1))
+      Content.publish_content(n, User.find(1))
     end
 
     n.reload
     assert_count_decreases(UsersAction) do
-      Cms.deny_content(n, User.find(1), 'feillo')
+      Content.deny_content(n, User.find(1), 'feillo')
     end
   end
 

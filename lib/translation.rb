@@ -28,10 +28,6 @@ module Translation
   }
 
   def self.translate(word)
-    translation = TRANSLATIONS[word]
-    if translation.nil?
-      Rails.logger.warn("Asked to translate '#{word}' but no translation found.")
-    end
-    translation || word
+    TRANSLATIONS[word] || word
   end
 end

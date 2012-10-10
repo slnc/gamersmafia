@@ -45,7 +45,7 @@ class Question < ActiveRecord::Base
   def user_can_set_no_question?(user)
     # que pueda editar el contenido sin ser el autor o siendo el autor pero
     # siendo del hq
-    (Cms::user_can_edit_content?(user, self) && user.id != self.user_id)
+    (Authorization.can_edit_content?(user, self) && user.id != self.user_id)
   end
 
   def check_max_open

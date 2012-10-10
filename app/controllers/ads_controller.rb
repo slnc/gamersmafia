@@ -48,14 +48,11 @@ class AdsController < ApplicationController
   end
 
   def check_perms
-    raise AccessDenied unless user_is_authed && @user.has_skill?("Advertiser")
+    raise AccessDenied unless user_is_authed && Authorization.is_advertiser?(@user)
   end
 
   def require_user_can_owns_ads_slot(ads_slot)
-    (@user.has_skill?("Webmaster") ||
-     @user.users_skills.count(
-         :conditions => "role = 'Advertiser' AND
-                         role_data = '#{ads_slot.advertiser_id}'") > 0)
+    raise AccessDenied unless Authorization.can_edit_ad_slot?(@user, ads_slot)
   end
 
   def require_user_can_edit_ad
