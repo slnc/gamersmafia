@@ -171,9 +171,10 @@ class Admin::UsuariosController < ApplicationController
   end
 
   def check_karma
+    require_authorization(:can_force_recalculate_user_attributes?)
     @edituser = User.find(params[:id])
     @kp_previous = @edituser.karma_points
-    @edituser.update_attributes(:cache_karma_points => nil)
+    @edituser.recalculate_karma_points
     @kp_correct = @edituser.karma_points
 
     if @kp_previous != @kp_correct then

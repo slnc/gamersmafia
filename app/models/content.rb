@@ -48,6 +48,13 @@ class Content < ActiveRecord::Base
   }
 
   scope :recent, :conditions => "created_on >= now() - '3 months'::interval"
+  scope :content_type_name, lambda { |name| {
+            :conditions => ["content_type_id = (
+                              SELECT id
+                              FROM content_types
+                              WHERE name = ?)", name]
+        }
+  }
 
   after_save do |m|
     m.contents_locks.clear if m.contents_locks

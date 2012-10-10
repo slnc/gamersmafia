@@ -996,12 +996,17 @@ class User < ActiveRecord::Base
     NotificationEmail.resurrection(resurrector, {:resurrected => self}).deliver
   end
 
+  def recalculate_karma_points
+    self.update_attribute(
+        :cache_karma_points, Karma::calculate_karma_points(self))
+  end
+
   def contents_stats
     res = {}
      (Cms.contents_classes + [Blogentry]).each do |cls|
-      res[Cms.translate_content_name(cls.name).titleize] = self.send(ActiveSupport::Inflector::tableize(cls.name)).published.count
+      res[Cms.translate_content_name(cls.name).titleize] = self.contents.content_type_name(cls.name).sum(:karma_points)
     end
-    res['Comentarios'] = self.comments_count
+    res['Comentarios'] = self.comments.sum(:karma_points)
     res
   end
 
