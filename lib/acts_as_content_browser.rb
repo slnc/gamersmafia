@@ -43,7 +43,7 @@ module ActsAsContentBrowser
       cls = Object.const_get(content_name) # ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       #cls = portal.send ActiveSupport::Inflector::underscore(content_name).to_sym # ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.find(params[:id])
-      raise ActiveRecord::RecordNotFound unless obj.is_public? or (user_is_authed and Cms::user_can_edit_content?(@user, obj))
+      raise ActiveRecord::RecordNotFound unless obj.is_public? or (user_is_authed and Authorization.can_edit_content?(@user, obj))
       # puts "http://#{request.host}#{request.fullpath} #{obj.unique_content.url}"
       # puts "http://#{request.host}#{request.fullpath}".index(obj.unique_content.url)
       Routing.gmurl(obj.unique_content) if obj.unique_content.url.nil?
@@ -77,7 +77,7 @@ module ActsAsContentBrowser
 
       instance_variable_set(
           "@#{ActiveSupport::Inflector::underscore(content_name)}", obj)
-      if Cms.user_can_create_content(@user)
+      if Authorization.can_create_content?(@user)
         if obj.respond_to?(:game_id) && params[:root_terms].nil?
           params[:root_terms] = [
               Term.single_toplevel(:game_id => obj.game_id).id]
@@ -139,7 +139,7 @@ module ActsAsContentBrowser
       @title = "Editando #{obj.resolve_hid}"
       navpath2<< [obj.resolve_hid, request.fullpath.gsub('edit', 'show')]
       instance_variable_set("@#{ActiveSupport::Inflector::underscore(content_name)}", obj)
-      if Cms::user_can_edit_content?(@user, obj) then
+      if Authorization.can_edit_content?(@user, obj) then
         obj.lock(@user)
         render :action => 'edit'
       else
@@ -173,17 +173,17 @@ module ActsAsContentBrowser
     define_method 'destroy' do
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.find(params[:id])
-      require_user_can_edit(obj) # TODO duplicado
-      Cms::modify_content_state(obj, @user, Cms::DELETED, "Preguntar a #{@user.login}")
-      flash[:notice] = 'Contenido enviado a la papelera correctamente'
+      require_authorization_for_object(:can_delete_content?, obj)
+      Content.delete_content(obj, @user, "Preguntar a #{@user.login}")
+      flash[:notice] = 'Contenido enviado a la papelera.'
       redirect_to :action => 'index'
     end
 
     define_method 'recover' do
       cls = ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.find(params[:id])
-      require_user_can_edit(obj) # TODO duplicado
-      Cms::modify_content_state(obj, @user, Cms::PUBLISHED)
+      require_authorization_for_object(:can_recover_content?, obj)
+      Content.recover_content(obj, @user)
       flash[:notice] = 'Contenido recuperado de la papelera correctamente'
       redirect_to :action => 'show', :id => obj.id
     end
@@ -205,7 +205,8 @@ module ActsAsContentBrowser
         flash[:notice] = "#{Cms::CLASS_NAMES[cls.name]} actualizado correctamente." unless flash[:error]
 
         if params[:publish_content] == '1'
-          Cms::publish_content(obj, @user)
+          require_authorization_for_object(:can_bypass_publish_decision?, obj)
+          Content.publish_content_directly(obj, @user)
           flash[:notice] += "\nContenido publicado correctamente. Gracias."
         end
 

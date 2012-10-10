@@ -16,5 +16,4 @@ class UsersAction < ActiveRecord::Base
   NEW_USERS_EMBLEM = 10
 
   validates_presence_of :type_id, :user_id
-
 end

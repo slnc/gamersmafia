@@ -19,7 +19,6 @@ class ReclutamientoController < ApplicationController
         levels_sql = nil
       end
 
-      # sql << "game_id = #{params[:game_id].to_i} AND "
       sql << " AND #{levels_sql}" if levels_sql
 
       @results = RecruitmentAd.find(:all, :conditions => sql, :order => 'created_on DESC', :limit => 50)
@@ -34,15 +33,11 @@ class ReclutamientoController < ApplicationController
   def _before_create
     require_auth_users
 
-    #params[:recruitment_ad][:user_id] = @user.id
     if params[:reclutsearching] == 'users' then
       raise AccessDenied unless Clan.find(params[:recruitment_ad][:clan_id]).user_is_clanleader(@user.id)
     else
       params[:recruitment_ad][:clan_id] = nil
     end
-    # params[:recruitment_ad][:clan_id] = .id
-    #@recruitment = RecruitmentAd.new(params[:recruitment_ad])
-    #save_or_error(@recruitment, "/reclutamiento/anuncio/@recruitment_ad.id", 'create')
     true
   end
 end

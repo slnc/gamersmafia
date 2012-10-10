@@ -6,6 +6,56 @@ module MiembrosHelper
     :normal => 50,
   }
 
+  def user_emblem_stats(user)
+    split_emblems_mask = user.emblems_mask_or_calculate.split(".")
+    out = []
+    UsersEmblem::SORTED_DECREASE_FREQUENCIES .each do |frequency|
+      emblems_count = split_emblems_mask[User::USER_EMBLEMS_MASKS[frequency]]
+      next if emblems_count == '0'
+      out << [frequency, emblems_count]
+    end
+    out
+  end
+
+  def sorted_user_emblems_all
+    emblems = {}
+    UsersEmblem::FREQ_NAME.keys.each do |frequency|
+      emblems[frequency] = []
+    end
+
+    UsersEmblem::EMBLEMS_INFO.each do |emblem, info|
+      emblems[info[:frequency]] << {:emblem => emblem}.merge(info)
+    end
+
+    sort_emblems_by_frequency(emblems)
+  end
+
+  def sorted_user_emblems(user)
+    emblems = {}
+    UsersEmblem::FREQ_NAME.keys.each do |frequency|
+      emblems[frequency] = []
+    end
+
+    user.users_emblems.each do |emblem|
+      info = UsersEmblem::EMBLEMS_INFO[emblem.emblem]
+      emblems[info[:frequency]] << emblem
+    end
+
+    sort_emblems_by_frequency(emblems)
+  end
+
+  # Sorts a hash of emblems keyed by their rarity. Each value is a hash with
+  # EMBLEMS_INFO-like values.
+  def sort_emblems_by_frequency(emblems)
+    out =  []
+    UsersEmblem::SORTED_DECREASE_FREQUENCIES.each do |frequency|
+      emblems[frequency].sort_by {|el| el[:name]}.each do |emblem|
+        out << emblem
+      end
+    end
+    out
+  end
+
   def draw_user_info(user)
     out = "<div class=\"members-user-info\">
         <div class=\"avatar\"><img src=\"#{ASSET_URL}#{user.show_avatar}\" /></div>
@@ -13,7 +63,6 @@ module MiembrosHelper
 
         <ul class=\"infoinline\">
           <li>#{draw_karma_bar_sm(user)}</li>
-          <li>#{draw_faith_bar_sm(user)}</li>
         </ul>
         <div class=\"clearl\"></div></div>"
   end
@@ -38,14 +87,17 @@ module MiembrosHelper
   end
 
   def draw_karma_bar_sm(user)
-    pcdone = Karma.pc_done_for_next_level(user.karma_points)
-    "<div class=\"karma\"><div class=\"points\" style=\"float: left; width: 10px; text-align: right;\">#{Karma.level(user.karma_points)}</div> <div style=\"margin-left: 12px; padding-top: 2px;\"><div class=\"karma\">#{draw_pcent_bar(pcdone.to_f/100, "#{pcdone}%", true)}</div></div></div>"
-    #""
-  end
+    if user.karma_points < 1000
+      formatted = user.karma_points
+    elsif user.karma_points < 10000
+      formatted = "#{(user.karma_points.to_f / 1000).to_s.gsub(".", ",")}"
+    elsif user.karma_points < 1000000
+      formatted = "#{((user.karma_points.to_f / 1000) * 10).to_i.to_f / 10}k"
+    else
+      formatted = "#{((user.karma_points.to_f / 1000000) * 10).to_i.to_f / 10}M"
+    end
 
-  def draw_faith_bar_sm(user)
-    pcdone = Faith.pc_done_for_next_level(user.faith_points)
-    "<div class=\"faith\"><div class=\"points\"><img title=\"Fe: #{Faith::NAMES[Faith.level(user.faith_points)]}\" class=\"sprite1 level#{Faith.level(user.faith_points)}\" style=\"margin: 0;\" src=\"/images/blank.gif\" /></div> <div style=\"margin-left: 12px; padding-top: 2px;\"><div class=\"faith\">#{draw_pcent_bar(pcdone.to_f/100, "#{pcdone}%", true)}</div></div></div>"
+    "<div class=\"karma\" title=\"#{user.karma_points} puntos de karma.\">#{formatted}</div>"
   end
 
   def draw_comments_bar_sm(user, refobj)
@@ -67,5 +119,40 @@ module MiembrosHelper
     else
       wii_code
     end
+  end
+
+  def show_member_control_box
+    user_is_authed && (
+        Authorization.can_antiflood_users?(@user) ||
+        Authorization.can_report_users?(@user)
+    )
+  end
+
+  # Returns a list of all available karma skills and percentage of completion
+  # for a given user.
+  def karma_skills_percentages(user)
+    out = []
+    UsersSkill::KARMA_SKILLS.each do |name, karma|
+      if user.has_skill?(name)
+        pcent = 1.0
+      elsif user.karma_points >= karma
+        pcent = 0.99
+      else
+        pcent = user.karma_points.to_f / karma
+      end
+      # We always return karma to make sure we always sort the table the same
+      # way regardless of the user.
+      out << [karma, name, pcent]
+    end
+    out.sort.reverse.collect {|skill_info| [gm_translate(skill_info[1]),
+                                            skill_info[2]]}
+  end
+
+  def special_skills(user)
+    out = []
+    user.users_skills.special_skills.find(:all).each do |skill|
+      out << skill.format_scope
+    end
+    out.sort
   end
 end

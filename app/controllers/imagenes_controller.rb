@@ -57,13 +57,13 @@ class ImagenesController < BazarController
     # @image.reload
     if @image.file.nil? || @image.file == ''
       flash[:error] = "Error al crear la imagen"
-      Cms::modify_content_state(@image, Ias.MrMan, Cms::DELETED, "Sin imagen")
+      Content.delete_content(@image, Ias.MrMan, "Sin imagen")
     end
   end
 
   def create_from_zip
     require_auth_users
-    raise ActiveRecord::RecordNotFound unless Cms::user_can_mass_upload(@user)
+    raise ActiveRecord::RecordNotFound unless Authorization.can_bulk_upload?(@user)
     if params[:categories_terms].size == 0
       flash[:error] = "Debes elegir una categoría donde subir las imágenes."
       new

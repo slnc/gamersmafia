@@ -211,82 +211,6 @@ class SiteController < ApplicationController
     render :layout => 'popup'
   end
 
-  def confirmar_transferencia
-    require_auth_users
-
-    params[:redirto] = '/' unless params[:redirto]
-
-    @title = 'Confirmar transferencia'
-    if params[:recipient_class] == 'User'
-      @recipient = User.find(:first, :conditions => ['login = ? AND created_on <= now() - \'1 month\'::interval', params[:recipient_user_login]]) #_by_login(params[:recipient_user_login])
-    elsif params[:recipient_class] == 'Clan'
-      @recipient = Clan.find_by_name(params[:recipient_clan_name])
-    else
-      cls = Object.const_get(params[:recipient_class]) if params[:recipient_class] && params[:recipient_class] != ''
-       (@recipient = cls.find(params["recipient_#{params[:recipient_class]}_id".to_sym])) if cls
-    end
-
-    if not defined?(@recipient) or @recipient.nil?
-      flash[:error] = 'No se ha encontrado el destinatario especificado.'
-      redirect_to params[:redirto] and return
-    elsif params[:description].to_s.strip == ''
-      flash[:error] = 'La descripción no puede estar en blanco.'
-      redirect_to params[:redirto] and return
-    else
-      @sender = Object.const_get(params[:sender_class]).find(params[:sender_id])
-
-      if params[:ammount].to_f <= 0 || @sender.cash < 0 || @sender.cash < params[:ammount].to_f then
-        flash[:error] = 'No tienes el dinero suficiente para hacer esa transferencia'
-        redirect_to params[:redirto] and return
-      else
-        case @sender.class.name
-          when 'Clan'
-          raise AccessDenied unless @sender.user_is_clanleader(@user.id)
-          when 'Competition'
-          raise AccessDenied  unless @sender.user_is_admin(@user.id)
-          when 'User'
-          raise AccessDenied unless @user.id == @sender.id
-          when 'Faction'
-          raise AccessDenied unless @sender.is_boss?(@user)
-          when 'User'
-          raise AccessDenied unless @user.id == @sender.id
-        end
-      end
-
-      if @sender.class.name == @recipient.class.name && @sender.id == @recipient.id
-        flash[:error] = 'El destinatario debe ser distinto del remitente.'
-        redirect_to params[:redirto]
-      end
-    end
-  end
-
-  def transferencia_confirmada
-    require_auth_users
-    sender = Object.const_get(params[:sender_class]).find(params[:sender_id])
-
-    case sender.class.name
-      when 'Clan'
-      raise AccessDenied unless sender.user_is_clanleader(@user.id)
-      when 'Competition'
-      raise AccessDenied unless sender.user_is_admin(@user.id)
-      when 'Faction'
-      raise AccessDenied unless sender.is_boss?(@user)
-    end
-
-    if params[:ammount].to_f < 0 || sender.cash < 0 || sender.cash < params[:ammount].to_f then
-      flash[:error] = 'No tienes el dinero suficiente para hacer esa transferencia'
-      redirect_to params[:redirto]
-    else
-      recipient = Object.const_get(params[:recipient_class]).find(params[:recipient_id])
-      if recipient.class.name == 'User' and recipient.created_on >= 2.months.ago
-        raise ActiveRecord::RecordNotFound
-      end
-      Bank.transfer(sender, recipient, params[:ammount].to_f, params[:description])
-      flash[:notice] = 'Transferencia realizada correctamente.'
-      redirect_to params[:redirto]
-    end
-  end
-
   def http_401
     raise AccessDenied
   end
@@ -367,13 +291,13 @@ class SiteController < ApplicationController
   end
 
   def stats_hipotesis
-    require_auth_hq
+    require_auth_admins
     @title = "Hipótesis activas"
     @active_sawmode = 'hq'
   end
 
   def stats_hipotesis_archivo
-    require_auth_hq
+    require_auth_admins
     @title = "Hipótesis completadas"
     @active_sawmode = 'hq'
   end
@@ -450,7 +374,7 @@ class SiteController < ApplicationController
       if user_is_authed
         m = Message.create(:title => params[:subject], :message => params[:message], :user_id_from => @user.id, :user_id_to => User.find(1))
       else
-        Notification.newcontactar(params).deliver
+        NotificationEmail.newcontactar(params).deliver
       end
     end
     end
@@ -485,7 +409,7 @@ class SiteController < ApplicationController
 
   def ipinfo
     require_auth_users
-    raise AccessDenied unless @user.is_hq?
+    raise AccessDenied unless Authorization.can_edit_users?(@user)
     @ipinfo = Geolocation.ip_info(params[:ip])
     render :layout => false
   end

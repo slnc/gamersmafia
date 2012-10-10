@@ -14,7 +14,7 @@ google_ad_height = 250;
   END
 
   def adsense_comments
-    if App.show_ads && (!user_is_authed || @user.created_on > 1.year.ago)
+    if App.show_ads && !(user_is_authed && Authorization.gets_less_ads?(@user))
       ADSENSE_COMMENTS_SNIPPET
     end
   end

@@ -1,6 +1,6 @@
-.sprite1 { 
-background-image: url(../../images/s.png);
-background-repeat: no-repeat; 
+.sprite1 {
+  background-image: url(../../images/s.2.png);
+  background-repeat: no-repeat;
 }
 
 .ico16 { width: 16px; height: 16px; vertical-align: middle; }
@@ -159,4 +159,47 @@ img.cash-in {
 
 .user-tag-icon-del {
     background-position: -48px -192px;
+}
+
+/* We leave 3px of left margin */
+/* These appear on emblems badges. */
+.emblem.common {
+  background-position: -307px 5px;
+}
+
+.emblem.unfrequent {
+  background-position: -307px -60px;
+}
+
+.emblem.rare {
+  background-position: -307px -28px;
+}
+
+.emblem.legendary {
+  background-position: -307px -124px;
+}
+
+.emblem.special {
+  background-position: -307px -93px;
+}
+
+/* These appear on user info portraits. */
+.emblem-common {
+  background-position: -309px 5px;
+}
+
+.emblem-unfrequent {
+  background-position: -309px -60px;
+}
+
+.emblem-rare {
+  background-position: -309px -28px;
+}
+
+.emblem-legendary {
+  background-position: -309px -124px;
+}
+
+.emblem-special {
+  background-position: -309px -93px;
 }

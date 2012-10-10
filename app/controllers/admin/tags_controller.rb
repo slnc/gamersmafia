@@ -1,13 +1,10 @@
 # -*- encoding : utf-8 -*-
 class Admin::TagsController < AdministrationController
   before_filter do |c|
-    if !(c.user && (c.user.has_admin_permission?(:capo) || c.user.is_hq?))
-      raise AccessDenied
-    end
+    raise AccessDenied if !Authorization.can_admin_tags?(c.user)
   end
 
   def index
-
   end
 
   def destroy

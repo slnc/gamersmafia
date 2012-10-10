@@ -73,7 +73,7 @@ class MiembrosController < ComunidadController
 
   def del_firma
     require_auth_users
-    require_admin_permission :capo
+    require_skill("Capo")
     ps = ProfileSignature.find(params[:id])
     raise ActiveRecord::RecordNotFound unless ps
     ps.destroy
@@ -83,10 +83,18 @@ class MiembrosController < ComunidadController
   end
 
   def update_signature
-    raise ActiveRecord::RecordNotFound unless @curuser.enable_profile_signatures?
-    raise AccessDenied if @curuser.id == @user.id
+    raise ActiveRecord::RecordNotFound if !@curuser.enable_profile_signatures?
+    if @curuser.id == @user.id || !Authorization.can_create_profile_signatures?(@user)
+      raise AccessDenied
+    end
+
     my_ps = @curuser.profile_signatures.find_by_signer_user_id(@user.id)
-    my_ps = @curuser.profile_signatures.new({:signer_user_id => @user.id, :user_id => @curuser.id}) if my_ps.nil?
+    if my_ps.nil?
+      my_ps = @curuser.profile_signatures.new({
+          :signer_user_id => @user.id,
+          :user_id => @curuser.id,
+      })
+    end
     my_ps.signature = params[:profile_signature][:signature][0..500]
     my_ps.save # TODO filter
     redirect_to "#{gmurl(@curuser)}/firmas"

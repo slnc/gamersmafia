@@ -531,9 +531,12 @@ module ActsAsContent
       self.unique_content.karma_points
     end
 
-    def change_state(new_state, editor)
+    def change_state(new_state, editor, force_decision=false)
       return if new_state == self.state || self.invalid?
-      raise AccessDenied unless Cms::user_can_edit_content?(editor, self)
+      if !force_decision && !Authorization.can_edit_content?(editor, self)
+        raise AccessDenied
+      end
+
       case new_state
         when Cms::DRAFT
         raise 'impossible'

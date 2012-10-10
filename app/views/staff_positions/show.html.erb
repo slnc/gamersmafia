@@ -1,5 +1,5 @@
 <% generic_support do %>
-  <% if @staff_position.state == 'unassigned' && @user.is_superadmin %>
+  <% if @staff_position.state == 'unassigned' && @user.has_skill?("Webmaster") %>
     <% mftext("Administración") do %>
       <%= link_to("Mover a presentación de candidaturas",
                  move_to_candidacy_presentation_staff_position_path(

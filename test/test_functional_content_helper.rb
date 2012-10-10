@@ -8,7 +8,10 @@ module TestCaseMixings
     def test_common_content_crud(opt={})
       cattr_accessor :opt, :content_name, :content_sym, :content_class, :post_vars
 
-      opt = {:authed_user_id => 1, :non_authed_user_id => 2}.merge(opt)
+      opt = {
+          :authed_user_id => 1,
+          :non_authed_user_id => 2,
+      }.merge(opt)
       self.content_name = opt[:name]
       self.content_sym = ActiveSupport::Inflector::underscore(opt[:name]).to_sym
       self.content_class = Object.const_get(opt[:name])

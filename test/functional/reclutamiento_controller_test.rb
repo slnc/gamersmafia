@@ -8,7 +8,16 @@ class ReclutamientoControllerTest < ActionController::TestCase
   test "create_type_1" do
     sym_login 1
     assert_count_increases(RecruitmentAd) do
-      post :create, :reclutsearching => 'clan', :recruitment_ad => { :title => 'buscamos miembros', :main => 'fulanitos del copon', :game_id => 1, :levels => ['low', 'med', 'high'], :clan_id => '1'}
+      post :create, {
+          :reclutsearching => 'clan',
+          :recruitment_ad => {
+              :title => 'buscamos miembros',
+              :main => 'fulanitos del copon',
+              :game_id => 1,
+              :levels => ['low', 'med', 'high'],
+              :clan_id => '1',
+          },
+      }
     end
     @ra = RecruitmentAd.find(:first, :order => 'id DESC')
     assert_equal 'fulanitos del copon', @ra.main
@@ -18,7 +27,15 @@ class ReclutamientoControllerTest < ActionController::TestCase
   test "create_type_2" do
     sym_login 1
     assert_count_increases(RecruitmentAd) do
-      post :create, :reclutsearching => 'users', :recruitment_ad => { :title => 'buscamos miembros', :main => 'fulanitos del copon', :game_id => 1, :clan_id => 1}
+      post :create, {
+          :reclutsearching => 'users',
+          :recruitment_ad => {
+              :title => 'buscamos miembros',
+              :main => 'fulanitos del copon',
+              :game_id => 1,
+              :clan_id => 1,
+          },
+      }
     end
     @ra = RecruitmentAd.find(:first, :order => 'id DESC')
     assert_equal 'fulanitos del copon', @ra.main
@@ -41,8 +58,8 @@ class ReclutamientoControllerTest < ActionController::TestCase
 
   test "del_by_capo" do
     test_create_type_1
+    give_skill(2, "DeleteContents")
     u2 = User.find(2)
-    u2.give_admin_permission(:capo)
     sym_login 2
     post :destroy, :id => @ra.id
     @ra.reload
@@ -51,6 +68,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
 
   test "update" do
     test_create_type_1
+    sym_login 1
     post :update, :id => @ra.id, :recruitment_ad => { :game_id => 2 }
     @ra.reload
     assert_equal 2, @ra.game_id
@@ -63,7 +81,7 @@ class ReclutamientoControllerTest < ActionController::TestCase
       assert ra.save
     end
 
-    Cms::modify_content_state(ra, User.find(1), Cms::PUBLISHED)
+    Content.publish_content_directly(ra, User.find(1))
     get :index, :search => 1, :game_id => 1, :type => 'searching_clan'
     assert_response :success
     assert @response.body.index("#{User.find(1).login}"), @response.body

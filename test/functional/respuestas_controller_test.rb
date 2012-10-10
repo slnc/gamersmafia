@@ -31,7 +31,9 @@ class RespuestasControllerTest < ActionController::TestCase
   end
 
   test "sin_respuesta_ok" do
-    sym_login 1
+    sym_login 2
+    u2 = User.find(2)
+    u2.users_skills.create(:role => "EditContents")
     @q = Question.find(1)
     post :sin_respuesta, :id => @q.id
     assert_response :redirect

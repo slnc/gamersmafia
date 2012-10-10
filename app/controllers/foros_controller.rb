@@ -63,7 +63,7 @@ class ForosController < ComunidadController
 
   def topic
     @topic = Topic.find(params[:id])
-    raise ActiveRecord::RecordNotFound unless @topic.is_public? or (user_is_authed and Cms::user_can_edit_content?(@user, @topic))
+    raise ActiveRecord::RecordNotFound unless @topic.is_public? or (user_is_authed and Authorization.can_edit_content?(@user, @topic))
     obj = @topic
     # TODO las 4 líneas siguientes duplicadas en acts_as_content_browser
     if "http://#{request.host}#{request.fullpath}".index(gmurl(obj)).nil?
@@ -183,9 +183,8 @@ class ForosController < ComunidadController
 
   def destroy
     @topic = Topic.find(params[:id])
-    require_user_can_edit(@topic)
-    Cms::modify_content_state(@topic, @user, Cms::DELETED)
-    #@topic.mark_as_deleted(@user)
+    require_authorization_for_object(:can_delete_content?, @topic)
+    Content.delete_content(@topic, @user)
     redirect_to '/foros'
   end
 end

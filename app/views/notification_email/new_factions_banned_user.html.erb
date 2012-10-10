@@ -1,0 +1,20 @@
+<%= render :partial => '/notification_email/header' %>
+<table>
+<tr class="<%=oddclass%>">
+  <td>Facción</td>
+  <td><%=@factions_ban.faction.name%></td>
+</tr>
+<tr class="<%=oddclass%>">
+  <td>Usuario baneado</td>
+  <td><%=user_link(@factions_ban.user)%></td>
+</tr>
+<tr class="<%=oddclass%>">
+  <td>Razón</td>
+  <td><%=@factions_ban.reason%></td>
+</tr>
+<tr class="<%=oddclass%>">
+  <td>Baneado por </td>
+  <td><%=user_link(@factions_ban.banner_user)%></td>
+</tr>
+</table>
+<%= render :partial => '/notification_email/footer' %>

@@ -1,6 +1,9 @@
 # -*- encoding : utf-8 -*-
 class Cuenta::TiendaController < ApplicationController
   before_filter :require_auth_users
+  before_filter do |c|
+    require_authorization(:can_access_gmshop?)
+  end
 
   def index
   end
@@ -11,10 +14,18 @@ class Cuenta::TiendaController < ApplicationController
   end
 
   def buy
-    @product = Product.find(:first, :conditions => ['id = ? and enabled=\'t\'', params[:id]])
+    @product = Product.find(
+        :first,
+        :conditions => ["id = ? and enabled='t'", params[:id]])
     sp = Shop.buy(@product, @user)
-    flash[:notice] = sp.used? ? 'Producto comprado y consumido correctamente' : 'Producto comprado correctamente. Debes configurarlo para poder consumirlo.'
-    redirect_to sp.used? ? '/cuenta/tienda' : "/cuenta/mis_compras/#{sp.id}"
+    if sp.used?
+      flash[:notice] = "Producto comprado y consumido correctamente"
+    else
+      flash[:notice] = (
+        "Producto comprado correctamente. Debes configurarlo para poder
+        consumirlo.")
+    end
+    redirect_to sp.used? ? "/cuenta/tienda" : "/cuenta/mis_compras/#{sp.id}"
   end
 
   def mis_compras
@@ -31,9 +42,11 @@ class Cuenta::TiendaController < ApplicationController
     raise ActiveRecord::RecordNotFound if @sold_product.used?
 
     if @sold_product.use(params)
-      flash[:notice] = 'Producto consumido correctamente'
+      flash[:notice] = "Producto consumido correctamente"
     else
-      flash[:error] = "Ocurrió un error al intentar consumir el producto:<br />#{@sold_product.errors.full_messages_html}"
+      flash[:error] = (
+        "Ocurrió un error al intentar consumir el producto:<br />
+        #{@sold_product.errors.full_messages_html}")
     end
 
     redirect_to :action => :mis_compras

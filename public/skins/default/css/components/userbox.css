@@ -5,6 +5,16 @@
     height: 12px;
 }
 
+#notifications-indicator .notifications a {
+    background-position: -153px -232px;
+    line-height: 12px;
+    height: 12px;
+}
+
+#notifications-indicator .notifications.has-unread a {
+    background-position: -153px -248px;
+}
+
 #messages-indicator .messages.has-unread a {
     background-position: -153px -137px;
 }

@@ -23,9 +23,7 @@ class QuestionTest < ActiveSupport::TestCase
     @q.ammount = Question::MIN_AMMOUNT
     assert @q.save, @q.errors.full_messages_html
     @u_cash = @q.user.cash
-    assert_count_increases(Message) do
-      assert @q.set_no_best_answer(User.find(1))
-    end
+    assert @q.set_no_best_answer(User.find(1))
     assert @q.reload
     assert_equal sprintf("%.2f", @q.user.cash), sprintf("%.2f", (@u_cash + Question::MIN_AMMOUNT))
   end
@@ -45,13 +43,6 @@ class QuestionTest < ActiveSupport::TestCase
     assert_equal @q.user.id, @q.answer_selected_by_user.id
     @c.user.reload
     assert_equal ("%.2f" % (@u_cash + @q.prize)), ("%.2f" % @c.user.cash)
-  end
-
-  test "should_send_message_when_best_answer_is_selected" do
-    assert_count_increases(Message) do
-      test_set_set_best_answer
-    end
-    assert_equal @c.id, Message.find(:first, :order => 'id DESC').user_id_to
   end
 
   test "should_be_able_to_revert" do
@@ -110,7 +101,7 @@ class QuestionTest < ActiveSupport::TestCase
   test "should_get_back_the_money_if_changed_from_published" do
     test_should_be_able_to_create_question_with_min_ammount
     # @u2.reload
-    Cms::deny_content(@bt, User.find(1), "fuck you")
+    Content.deny_content(@bt, User.find(1), "fuck you")
     assert_equal Cms::DELETED, @bt.state
     assert_equal 0.0, @bt.ammount
   end

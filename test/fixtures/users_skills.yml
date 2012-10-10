@@ -30,3 +30,99 @@ faction_boss:
   user_id: 10
   role: Boss
   role_data: 2
+
+jabba_bot:
+  id: 6
+  user_id: 60
+  role: Bot
+
+mralariko_bot:
+  id: 7
+  user_id: 3
+  role: Bot
+
+mrachmed_bot:
+  id: 8
+  user_id: 59
+  role: Bot
+
+mrcheater_bot:
+  id: 9
+  user_id: 55
+  role: Bot
+
+mrman_bot:
+  id: 10
+  user_id: 53
+  role: Bot
+
+nagato_bot:
+  id: 11
+  user_id: 54
+  role: Bot
+
+mrgod_bot:
+  id: 12
+  user_id: 61
+  role: Bot
+
+superadmin_webmaster:
+  id: 13
+  user_id: 1
+  role: Webmaster
+
+u14_webmaster:
+  id: 14
+  user_id: 53
+  role: Webmaster
+
+u15_webmaster:
+  id: 15
+  user_id: 56
+  role: Webmaster
+
+superadmin_capo:
+  id: 16
+  user_id: 1
+  role: Capo
+
+superadmin_edit_contents:
+  id: 17
+  user_id: 1
+  role: EditContents
+
+superadmin_content_moderations_queue:
+  id: 18
+  user_id: 1
+  role: ContentModerationQueue
+
+superadmin_bulk_upload:
+  id: 19
+  user_id: 1
+  role: BulkUpload
+
+superadmin_advertiser:
+  id: 20
+  user_id: 1
+  role: Advertiser
+
+superadmin_mass_moderate_contents:
+  id: 21
+  user_id: 1
+  role: MassModerateContents
+
+mrcheater_profile_signatures:
+  id: 22
+  user_id: 55
+  role: ProfileSignatures
+
+superadmin_delete_contents:
+  id: 23
+  user_id: 1
+  role: DeleteContents
+
+superadmin_bank:
+  id: 24
+  user_id: 1
+  role: Bank
+

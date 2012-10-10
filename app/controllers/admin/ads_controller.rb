@@ -1,5 +1,10 @@
 # -*- encoding : utf-8 -*-
 class Admin::AdsController < AdministrationController
+
+  before_filter do |c|
+    require_authorization(:can_edit_ads_directly?)
+  end
+
   def index
   end
 

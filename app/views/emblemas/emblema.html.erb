@@ -1,0 +1,16 @@
+<% mftext(@emblem_info[:name]) do %>
+  <%=UsersEmblem.inline_html_from_info(@emblem_info)%>
+  <%=@emblem_info[:description] %>
+<% end -%>
+
+<% mftable("Últimos usuarios en adquirirlo",
+           @users_emblems,
+           options={:class_container => 'no-title-icon'}) do |emblem| %>
+  <td class="timestamp infoinline" style="padding-right: 10px;">
+    <%=print_tstamp(emblem.created_on)%>
+  </td>
+  <td>
+    <%=avatar_img(emblem.user, :very_small)%>
+    <a href="<%=gmurl(emblem.user)%>"><%=emblem.user.login%></a>
+  </td>
+<% end -%>

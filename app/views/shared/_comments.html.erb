@@ -79,7 +79,7 @@ hidden_comments_count = 0
 
 <script type="text/javascript">
 <% if (questions_mode && user_is_authed && object.answered_on.nil? &&
-       (@_cache_can_select ||= Cms.user_can_select_best_answer(@user, object)))  %>
+       (@_cache_can_select ||= Authorization.can_set_best_answer(@user, object)))  %>
   $j('div.questions-best-answer').removeClass('hidden');
 <% end -%>
 
@@ -103,10 +103,13 @@ function load_comments()
       <%=ActiveSupport::JSON.encode(Comments::comments_ratings_for_user_in_object_in_page(@user, object, params[:page]))%>,
       <%=Karma.level(@user.karma_points) > 0 ? @user.remaining_rating_slots : 0%>,
       <%=ActiveSupport::JSON.encode(@user.created_on < 7.days.ago)%>,
-      <%=@user.is_hq?%>,
       <%=@first_time_content%>,
       '<%=@user.pref_comments_autoscroll%>',
-      '<%=@user.pref_show_all_comments%>');
+      '<%=@user.pref_show_all_comments%>',
+      <%=@user.has_skill?("RateCommentsUp")%>,
+      <%=@user.has_skill?("RateCommentsDown")%>,
+      <%=@user.has_skill?("ReportComments")%>
+      );
 }
 
 /* for Mozilla */

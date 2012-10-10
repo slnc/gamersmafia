@@ -3,7 +3,7 @@ class Admin::FaccionesController < ApplicationController
   helper :miembros
   audit :destroy
 
-  require_admin_permission :capo
+  require_skill("Capo")
 
   def index
     @title = 'Facciones'

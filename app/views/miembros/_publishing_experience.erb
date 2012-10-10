@@ -1,4 +1,4 @@
-<% if curuser.has_admin_permission?(:capo) then %>
+<% if curuser.has_skill?("Capo") then %>
 <div class="centered-link"><strong>100%</strong> en todos los contenidos</div>
 <% else %>
 <table>

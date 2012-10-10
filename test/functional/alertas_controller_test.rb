@@ -15,7 +15,7 @@ class AlertasControllerTest < ActionController::TestCase
     get :index
     assert_response :success
     assert_template 'alertas/webmaster'
-    assert_not_nil @response.body.index('Gladiador')
+    assert_not_nil @response.body.index('Webmaster')
   end
 
   test "index_should_work" do
@@ -28,8 +28,8 @@ class AlertasControllerTest < ActionController::TestCase
   test "bazar_manager" do
     sym_login 2
     assert_raises(AccessDenied) { get :bazar_manager }
+    give_skill(2, "BazarManager")
     @u2 = User.find(2)
-    @u2.give_admin_permission(:bazar_manager)
     get :bazar_manager
     assert_response :success
   end
@@ -37,8 +37,8 @@ class AlertasControllerTest < ActionController::TestCase
   test "capo" do
     sym_login 2
     assert_raises(AccessDenied) { get :capo }
+    give_skill(2, "Capo")
     @u2 = User.find(2)
-    @u2.give_admin_permission(:capo)
     get :capo
     assert_response :success
   end
@@ -46,8 +46,8 @@ class AlertasControllerTest < ActionController::TestCase
   test "gladiador" do
     sym_login 2
     assert_raises(AccessDenied) { get :gladiador }
+    give_skill(2, "Gladiator")
     @u2 = User.find(2)
-    @u2.give_admin_permission(:gladiador)
     get :gladiador
     assert_response :success
   end
@@ -83,7 +83,6 @@ class AlertasControllerTest < ActionController::TestCase
   test "editor" do
     sym_login 2
     @u2 = User.find(2)
-    @u2.take_admin_permission(:capo)
     @u2.users_skills.clear
 
     assert_raises(AccessDenied) { get :editor }
@@ -188,8 +187,7 @@ class AlertasControllerTest < ActionController::TestCase
      [:test_capo, :faction_content_report, :@editor_scope, :to_i, nil, nil],
     ].each do |t, type_id_sym, obj, meth, entity_id, data|
       User.db_query("DELETE FROM users_skills")
-      # UsersSkill.find(:all).each do |ur| ur.destroy end
-      User.db_query("UPDATE users SET is_superadmin = 'f', cache_is_faction_leader = 'f' AND admin_permissions = '0'")
+      User.db_query("UPDATE users SET cache_is_faction_leader = 'f'")
       self.send t
       # @f.reload
       sle = Alert.create({

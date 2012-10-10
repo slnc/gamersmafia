@@ -20,14 +20,13 @@
   <div class="clearb"></div>
   	<% if @question.accepted_answer_comment_id then
 		comment = @question.best_answer %>
-		
+
 		<div class="question-best-answer-comment">
 			<%mftext('Mejor respuesta') do %>
 			  <div class="user-info">
   	<div class="user-info-holder">
      <div class="avatar" style="margin-bottom: 2px;"><img src="<%=ASSET_URL%><%=comment.user.show_avatar%>" /></div>
      <div style="height: 12px; width: 50px;"><%=draw_karma_bar_sm(comment.user)%></div>
-     <div style=" width: 50px;"><%=draw_faith_bar_sm(comment.user)%></div>
      <div style=" width: 50px;"><%=draw_comments_bar_sm(comment.user, comment)%></div>
   </div></div>
 
@@ -46,13 +45,13 @@
 	<% if user_is_authed && @question.user_can_set_no_question?(@user) then %>
 	<a onclick="return confirm('¿Seguro que quieres cerrar esta pregunta sin elegir una mejor respuesta?');" href="/respuestas/sin_respuesta/<%=@question.id%>"><img src="/skins/default/images/btn_sin_respuesta.png" class="icon" /></a>
 	<% end -%>
-	
+
 	<% if user_is_authed && @user.id == @question.user_id && @question.answered_on.nil? then %>
 	<form style="display: inline;" method="post" action="/respuestas/update_ammount/<%=@question.id%>">
 	| Subir a: <input type="text" size="4" name="question[ammount]" value="<%=@question.ammount ? @question.ammount : ''%>" /> <input type="submit" value="Guardar" onclick="return confirm('¿Estás seguro? La recompensa se puede subir pero no bajar.');" />
 	</form>
 	<% end -%>
-	
+
 	<div style="clear: left;">&nbsp;</div>
 	<% end %><%# if -%>
   <% end %><%# mfcontent -%>

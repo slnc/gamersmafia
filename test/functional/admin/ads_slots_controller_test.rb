@@ -2,7 +2,14 @@
 require 'test_helper'
 
 class Admin::AdsSlotsControllerTest < ActionController::TestCase
-  test_min_acl_level :superadmin, [ :index, :new, :edit, :update, :destroy ]
+
+  test "index no skill" do
+    sym_login 2
+    assert_raises(AccessDenied) do
+      get :index
+    end
+    assert_response :success
+  end
 
   test "index" do
     sym_login 1
@@ -19,7 +26,13 @@ class Admin::AdsSlotsControllerTest < ActionController::TestCase
   test "create" do
     sym_login 1
     assert_count_increases(AdsSlot) do
-      post :create, { :ads_slot => { :name => 'fourling', :location => 'bottom', :behaviour_class => 'Random'}}
+      post :create, {
+          :ads_slot => {
+              :name => 'fourling',
+              :location => 'bottom',
+              :behaviour_class => 'Random',
+          },
+      }
     end
     assert_response :redirect
   end

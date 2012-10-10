@@ -11,12 +11,10 @@ superadmin:
   email: superadmin@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsuhi
   ipaddr: 127.0.0.3
-  is_superadmin: true
   secret: mamba
   enable_competition_indicator: false
-  is_hq: true
+  is_staff: true
   enable_profile_signatures: true
-  admin_permissions: '00000000000000'
 
 panzer:
   id: 2
@@ -31,9 +29,7 @@ panzer:
   ipaddr: 127.0.0.3
   secret: mambohahaha
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
-  admin_permissions: '00000000000000'
   photo: blah/bleh/bluh.jpg
 
 mralariko:
@@ -45,14 +41,11 @@ mralariko:
   updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
   email: mralariko@gamersmafia.com
-  is_bot: true
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu10
   ipaddr: 127.0.0.3
   secret: mambohahaha2
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
-  admin_permissions: '00000000000000'
 
 panzer4:
   id: 4
@@ -67,9 +60,7 @@ panzer4:
   ipaddr: 127.0.0.3
   secret: mam2f2v1sa
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
-  admin_permissions: '00000000000000'
 
 panzer5:
   id: 5
@@ -84,9 +75,7 @@ panzer5:
   ipaddr: 127.0.0.3
   secret: mambohahahasac
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
-  admin_permissions: '00000000000000'
 
 faction_boss:
   id: 10
@@ -101,9 +90,7 @@ faction_boss:
   ipaddr: 127.0.0.3
   secret: mambusefuealaguerra
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
-  admin_permissions: '00000000000000'
 
 faction_editor:
   id: 11
@@ -118,9 +105,7 @@ faction_editor:
   ipaddr: 127.0.0.3
   secret: mireudmireudquepena
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
-  admin_permissions: '00000000000000'
 
 faction_moderator:
   id: 12
@@ -134,9 +119,7 @@ faction_moderator:
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu13
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
-  admin_permissions: '00000000000000'
 
 faction_moderator2:
   id: 13
@@ -150,9 +133,7 @@ faction_moderator2:
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu14
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
-  admin_permissions: '00000000000000'
 
 faction_moderator3:
   id: 14
@@ -166,9 +147,7 @@ faction_moderator3:
   validkey: matsuhiratomatsuhiratomatsuhiratomatsu15
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: false
-  admin_permissions: '00000000000000'
 
 unconfirmed:
   id: 50
@@ -182,9 +161,7 @@ unconfirmed:
   validkey: blablabla16
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
-  admin_permissions: '00000000000000'
 
 banned:
   id: 51
@@ -198,9 +175,7 @@ banned:
   validkey: blablablablbilib17
   ipaddr: 127.0.0.2
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
-  admin_permissions: '00000000000000'
 
 disabled:
   id: 52
@@ -214,9 +189,7 @@ disabled:
   validkey: blablablableblel18
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: false
-  admin_permissions: '00000000000000'
 
 mrman:
   id: 53
@@ -230,11 +203,7 @@ mrman:
   validkey: blablablableblella19
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_superadmin: true
-  is_hq: true
   enable_profile_signatures: false
-  is_bot: true
-  admin_permissions: '00000000000000'
 
 nagato:
   id: 54
@@ -248,11 +217,7 @@ nagato:
   validkey: blablablableblella20
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_superadmin: false
-  is_hq: true
   enable_profile_signatures: false
-  is_bot: true
-  admin_permissions: '00000000000000'
 
 mrcheater:
   id: 55
@@ -266,11 +231,7 @@ mrcheater:
   validkey: blablablableblella21
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_superadmin: false
-  is_hq: false
   enable_profile_signatures: false
-  is_bot: true
-  admin_permissions: '00000000000000'
 
 superadmin2:
   id: 56
@@ -283,11 +244,8 @@ superadmin2:
   email: superadmin2@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsuh2
   ipaddr: 127.0.0.3
-  is_superadmin: true
   enable_competition_indicator: false
-  is_hq: true
   enable_profile_signatures: true
-  admin_permissions: '00000000000000'
 
 raulinho:
   id: 57
@@ -300,11 +258,8 @@ raulinho:
   email: raulinho@gamersmafia.com
   validkey: matsuhiratomatsuhiratomatsuhiratomatsuh3
   ipaddr: 127.0.0.3
-  is_superadmin: false
   enable_competition_indicator: false
-  is_hq: false
   enable_profile_signatures: true
-  admin_permissions: '00000000000000'
 
 mrachmed:
   id: 58
@@ -318,11 +273,7 @@ mrachmed:
   validkey: blablablableblella50
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_superadmin: false
-  is_hq: false
   enable_profile_signatures: false
-  is_bot: true
-  admin_permissions: '00000000000000'
 
 advertiser:
   id: 59
@@ -336,11 +287,7 @@ advertiser:
   validkey: blablablableblella72
   ipaddr: 127.0.0.3
   enable_competition_indicator: false
-  is_superadmin: false
-  is_hq: false
   enable_profile_signatures: false
-  is_bot: true
-  admin_permissions: '00000000001000'
 
 jabba:
   id: 60
@@ -354,8 +301,18 @@ jabba:
   validkey: blablablableblella60
   ipaddr: 127.0.0.4
   enable_competition_indicator: false
-  is_superadmin: false
-  is_hq: false
   enable_profile_signatures: false
-  is_bot: true
-  admin_permissions: '00000000000000'
+
+mrgod:
+  id: 61
+  state: <%=User::ST_ACTIVE%>
+  login: mrgod
+  password: <%=Digest::MD5.hexdigest('mrgodpass') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: mrgod@gamersmafia.com
+  validkey: blablablableblella61
+  ipaddr: 127.0.0.4
+  enable_competition_indicator: false
+  enable_profile_signatures: false

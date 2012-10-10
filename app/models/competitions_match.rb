@@ -48,18 +48,6 @@ class CompetitionsMatch < ActiveRecord::Base
   scope :approved, :conditions => "accepted = 't'"
   scope :result_pending,
         :conditions => CompetitionsMatch::RESULT_PENDING_SQL
-  #  after_save :reset_faith_indicators
-
-  # TODO
-  #def reset_faith_indicators
-  #  if self.completed?
-  #    if self.competition.competitions_participants_type_id == 1 # user
-  #      if self.participant1_id
-  #        rl = self.participant1.the_real_thing
-  #        u
-  #
-  #    end
-  #  end
 
   # Acepta un reto
 
@@ -104,7 +92,7 @@ class CompetitionsMatch < ActiveRecord::Base
       end
     end
     self.save
-    Notification.rechallenge(self.participant2.the_real_thing,
+    NotificationEmail.rechallenge(self.participant2.the_real_thing,
                              :participant => self.participant1).deliver
   end
 
@@ -123,14 +111,14 @@ class CompetitionsMatch < ActiveRecord::Base
   # Solo para ladders
   def accept_challenge
     self.update_attribute(:accepted, true)
-    Notification.reto_aceptado(self.participant1.the_real_thing,
+    NotificationEmail.reto_aceptado(self.participant1.the_real_thing,
                                :participant => self.participant2).deliver
   end
 
   # Solo para ladders
   def reject_challenge
     self.competition.log("#{self.participant2.name} rechaza el reto de #{self.participant1.name}")
-    Notification.reto_rechazado(self.participant1.the_real_thing,
+    NotificationEmail.reto_rechazado(self.participant1.the_real_thing,
                                 :participant => self.participant2).deliver
     self.destroy
   end
@@ -171,7 +159,7 @@ class CompetitionsMatch < ActiveRecord::Base
         :user_id => mrman.id})
 
       self.competition.event.main_category.link(my_event.unique_content)
-      Cms::publish_content(my_event, mrman)
+      Content.publish_content_directly(my_event, mrman)
       self.event_id = my_event.id
       self.save
     else # just update if we changed the participants
@@ -489,10 +477,6 @@ class CompetitionsMatch < ActiveRecord::Base
         when 'League'
           update_league_points
       end
-
-      # Damos puntos de fe
-      self.participant1.users.each { |u| Faith.give(u, Faith::FPS_ACTIONS['competitions_match']) } if self.participant1_id and not self.forfeit_participant1
-      self.participant2.users.each { |u| Faith.give(u, Faith::FPS_ACTIONS['competitions_match']) } if self.participant2_id and not self.forfeit_participant2
     end
   end
 

@@ -45,8 +45,7 @@ class Question < ActiveRecord::Base
   def user_can_set_no_question?(user)
     # que pueda editar el contenido sin ser el autor o siendo el autor pero
     # siendo del hq
-    (Cms::user_can_edit_content?(user, self) &&
-     (user.is_hq? || !(user.id == self.user_id)))
+    (Authorization.can_edit_content?(user, self) && user.id != self.user_id)
   end
 
   def check_max_open
@@ -102,8 +101,11 @@ class Question < ActiveRecord::Base
     self.answer_selected_by_user_id = modifying_user.id
     if self.save
       self.log_action('set_sin_respuesta', modifying_user.login)
-      Message.create(:user_id_from => Ias.nagato.id, :user_id_to => self.user_id, :title => "Tu pregunta \"#{self.title}\" ha sido cerrada sin una respuesta", :message => "Lo sentimos pero nadie ha dado con una respuesta a tu pregunta o se ha cancelado por otra razón.")
-      Bank.transfer(:bank, self.user, self.prize, "Devolución por pregunta sin respuesta a \"#{self.title}\"") if self.ammount
+      if self.ammount
+        Bank.transfer(
+            :bank, self.user, self.prize,
+            "Devolución por pregunta sin respuesta a \"#{self.title}\"")
+      end
       true
     else
       false
@@ -112,7 +114,8 @@ class Question < ActiveRecord::Base
 
   def set_best_answer(comment_id, modifying_user)
     if !self.comments_ids.include?(comment_id.to_s)
-      self.errors[:base] << ('La respuesta especificada no se corresponde con esta pregunta.')
+      self.errors[:base] << (
+          'La respuesta especificada no se corresponde con esta pregunta.')
       false
     elsif self.answered_on
       self.errors[:base] << ('Esta pregunta ya tiene una mejor respuesta.')
@@ -124,8 +127,13 @@ class Question < ActiveRecord::Base
       if self.save
         comment = Comment.find(comment_id)
         self.log_action('set_respuesta', modifying_user.login)
-        Message.create(:user_id_from => Ias.nagato.id, :user_id_to => comment.user_id, :title => "Has dado la mejor respuesta a \"#{self.title}\"", :message => "Enhorabuena, la mejor respuesta a \"#{self.title}\" ha sido tuya por lo que te llevas la recompensa de #{self.prize} GMFs.")
-        Bank.transfer(:bank, comment.user, self.prize, "Recompensa por mejor respuesta a la pregunta \"#{self.title}\"")
+        if self.prize
+          Bank.transfer(
+              :bank,
+              comment.user,
+              self.prize,
+              "Recompensa por mejor respuesta a la pregunta \"#{self.title}\"")
+        end
         true
       else
         false
@@ -134,7 +142,11 @@ class Question < ActiveRecord::Base
   end
 
   def best_answer
-    self.accepted_answer_comment_id.nil? ? nil : Comment.find(self.accepted_answer_comment_id)
+    if self.accepted_answer_comment_id.nil?
+      nil
+    else
+      Comment.find(self.accepted_answer_comment_id)
+    end
   end
 
   # TODO dup de topic.rb
@@ -200,8 +212,7 @@ class Question < ActiveRecord::Base
                           a.id,
                           a.avatar_id,
                           a.login,
-                          a.cache_karma_points,
-                          a.cache_faith_points
+                          a.cache_karma_points
                      FROM users a
                      join comments b on a.id = b.user_id
                     WHERE b.id IN (SELECT accepted_answer_comment_id
@@ -211,8 +222,7 @@ class Question < ActiveRecord::Base
                  GROUP BY a.id,
                           a.login,
                           a.avatar_id,
-                          a.cache_karma_points,
-                          a.cache_faith_points
+                          a.cache_karma_points
 		HAVING count(*) > 1
                  ORDER BY count(*) DESC,
                           lower(a.login)
@@ -224,8 +234,7 @@ class Question < ActiveRecord::Base
                           a.id,
                           a.avatar_id,
                           a.login,
-                          a.cache_karma_points,
-                          a.cache_faith_points
+                          a.cache_karma_points
                      FROM users a
                      join comments b on a.id = b.user_id
                     WHERE b.id IN (SELECT accepted_answer_comment_id
@@ -238,8 +247,7 @@ class Question < ActiveRecord::Base
                  GROUP BY a.id,
                           a.login,
                           a.avatar_id,
-                          a.cache_karma_points,
-                          a.cache_faith_points
+                          a.cache_karma_points
                  ORDER BY count(a.id) DESC,
                           lower(a.login)
                     LIMIT #{limit}").each do |dbu|

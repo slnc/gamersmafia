@@ -99,8 +99,8 @@ class HomeController < ApplicationController
 
   def anunciante
     require_auth_users
-    raise AccessDenied unless @user.has_admin_permission?(:advertiser)
-    @advertisers = @user.users_skills.find(:all, :conditions => 'role = \'Advertiser\'')
+    require_authorization(:is_advertiser?)
+    @advertisers = @user.users_skills.find(:all, :conditions => "role = 'Advertiser'")
     @advertisers_ids = [0] + @advertisers.collect { |adv| adv.role_data.to_i }
     # @advertisers_ids << 0] if @advertisers_ids.size == 0
     @active_sawmode = 'anunciante'
@@ -108,7 +108,6 @@ class HomeController < ApplicationController
 
   def hq
     require_auth_users
-    raise AccessDenied unless @user.is_hq?
     @active_sawmode = 'hq'
   end
 end

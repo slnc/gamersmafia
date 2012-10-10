@@ -179,7 +179,6 @@ module Skins
     :progress_bars_border_color => '',
     :progress_bars_fill_background_color => '',
     :karma => '',
-    :faith => '',
     :ads_background_color => '',
     :ads_text_color => '',
     :a_ads_color => '',
@@ -435,7 +434,6 @@ module Skins
         s[:progress_bars_background_color] = [h, 0.98, 0.18]
         s[:progress_bars_fill_background_color] = [h, 1.0, 0.69]
         s[:progress_bars_border_color] = [h, 1.0, 0.69]
-        s[:faith] = [0.80, 0.98, 0.68]
         s[:karma] = [0.56, 0.78, 0.75]
         s[:ads_background_color] = [h, 0.1, 0.1]
         s[:selected_row_background_color] = [h, 0.5, 0.5] # TODO
@@ -571,7 +569,6 @@ module Skins
         s[:bad_background_color] = [h, 0.44, base_b]
         s[:karma] = [h, 0.44, base_b]
         s[:macro_quote_background_color] = [h, 0.44, base_b]
-        s[:faith] = [h, 0.44, base_b]
 
         s[:good_color] = [h, 0.44, base_b]
         s[:a_info_color] = [h, 0.44, base_b]
@@ -667,7 +664,6 @@ module Skins
         s[:bad_background_color] = [h, 0.44, 0.85] # TODO
         s[:karma] = [h, 0.44, 0.85] # TODO
         s[:macro_quote_background_color] = [h, 0.44, 0.85] # TODO
-        s[:faith] = [h, 0.44, 0.85] # TODO
 
         s[:good_color] = [h, 0.44, 0.85] # TODO
         s[:a_info_color] = [h, 0.44, 0.85] # TODO
@@ -776,7 +772,6 @@ module Skins
         s[:bad_background_color] = [h, 0.44, 0.85]
         s[:karma] = [h, 0.44, 0.85]
         s[:macro_quote_background_color] = [h, 0.44, 0.85]
-        s[:faith] = [h, 0.44, 0.85]
 
         s[:good_color] = [h, 0.44, 0.85]
         s[:a_info_color] = [h, 0.44, 0.85]
@@ -801,7 +796,7 @@ module Skins
         DEF_OPTIONS = {}
 
         def self.get_colors(options=nil)
-          colors2gen = ['pagebg_color', 'text_color', 'link_color', 'nav_link_color', 'nav_color', 'content_color', 'ccontent_module_content_background_color', 'info_link_color', 'nav_background_color', 'link_hover_color', 'box_borders_colors', 'info_link_hover_color', 'nav_link_visited_color', 'info_background_color', 'body_background_color', 'info_link_visited_color', 'info_color', 'link_visited_color', 'nav_link_hover_color', 'cpageout_background_color', 'body_color', 'cpagein', 'module_header_background_color', 'icons_actionable', 'form_text_and_selects_background_color', 'ads_text_color', 'module_content_background_color', 'comments_header_unread', 'icons_non_actionable', 'a_content_color', 'a_ads_color', 'module_content_color', 'selected_row_background_color', 'updated_since_last_visit', 'a_action_color', 'good_background_color', 'container_background_color', 'macro_quote_color', 'progress_bars_background_color', 'progress_bars_border_color', 'progress_bars_fill_background_color', 'a_content_visited_color', 'bad_background_color', 'karma', 'macro_quote_background_color', 'faith', 'module_title_background_color', 'good_color', 'a_info_color', 'form_text_and_selects_color', 'ads_background_color', 'module_title_color', 'bad_color', 'a_nav_color', 'good_border_color', 'bad_border_color' ]
+          colors2gen = ['pagebg_color', 'text_color', 'link_color', 'nav_link_color', 'nav_color', 'content_color', 'ccontent_module_content_background_color', 'info_link_color', 'nav_background_color', 'link_hover_color', 'box_borders_colors', 'info_link_hover_color', 'nav_link_visited_color', 'info_background_color', 'body_background_color', 'info_link_visited_color', 'info_color', 'link_visited_color', 'nav_link_hover_color', 'cpageout_background_color', 'body_color', 'cpagein', 'module_header_background_color', 'icons_actionable', 'form_text_and_selects_background_color', 'ads_text_color', 'module_content_background_color', 'comments_header_unread', 'icons_non_actionable', 'a_content_color', 'a_ads_color', 'module_content_color', 'selected_row_background_color', 'updated_since_last_visit', 'a_action_color', 'good_background_color', 'container_background_color', 'macro_quote_color', 'progress_bars_background_color', 'progress_bars_border_color', 'progress_bars_fill_background_color', 'a_content_visited_color', 'bad_background_color', 'karma', 'macro_quote_background_color', 'module_title_background_color', 'good_color', 'a_info_color', 'form_text_and_selects_color', 'ads_background_color', 'module_title_color', 'bad_color', 'a_nav_color', 'good_border_color', 'bad_border_color' ]
 
           colors_generated = {}
           colors2gen.each do |x|
@@ -886,7 +881,6 @@ module Skins
           s[:bad_background_color] = [bg_h, 0.44, 0.85]
           s[:karma] = [bg_h, 0.44, 0.85]
           s[:macro_quote_background_color] = [bg_h, 0.44, 0.85]
-          s[:faith] = [bg_h, 0.44, 0.85]
           s[:module_title_background_color] = [bg_h, 0.44, 0.85]
           s[:good_color] = [bg_h, 0.44, 0.85]
           s[:a_info_color] = [bg_h, 0.44, 0.85]
@@ -987,7 +981,6 @@ module Skins
           s[:bad_background_color] = [h, 0.44, 0.85]
           s[:karma] = [h, 0.44, 0.85]
           s[:macro_quote_background_color] = [h, 0.44, 0.85]
-          s[:faith] = [h, 0.44, 0.85]
           s[:module_title_background_color] = [h, 0.44, 0.85]
           s[:good_color] = [h, 0.44, 0.85]
           s[:a_info_color] = [h, 0.44, 0.85]
@@ -1080,7 +1073,6 @@ module Skins
         s[:bad_background_color] = [h, 0.44, 0.85] # TODO
         s[:karma] = [h, 0.44, 0.85] # TODO
         s[:macro_quote_background_color] = [h, 0.44, 0.85] # TODO
-        s[:faith] = [h, 0.44, 0.85] # TODO
 
         s[:good_color] = [h, 0.44, 0.85] # TODO
         s[:a_info_color] = [h, 0.44, 0.85] # TODO

@@ -9,7 +9,8 @@ function update_transfer_recipient(id) {
 }
 </script>
   <%mftext('Hacer transferencia') do %>
-  <form method="post" action="/site/confirmar_transferencia">
+    <% if @user.has_skill?("Bank") %>
+  <form method="post" action="/cuenta/banco/confirmar_transferencia">
 
   <input type="hidden" name="sender_class" value="<%=sender.class.name%>" />
   <input type="hidden" name="sender_id" value="<%=sender.id%>" />
@@ -25,7 +26,7 @@ function update_transfer_recipient(id) {
     <option value="Faction">Facción</option>
   </select></td>
   	</tr>
-	
+
 	<tr>
   	<td colspan="2">
 	<select class="hidden" id="Factionopt" name="recipient_Faction_id">
@@ -37,8 +38,8 @@ function update_transfer_recipient(id) {
     <% end -%>
 	<% end -%>
 	</select>
-	
-	<span class="hidden" id="Clanopt">Nombre <input type="text" class="text" name="recipient_clan_name" /></span>	
+
+	<span class="hidden" id="Clanopt">Nombre <input type="text" class="text" name="recipient_clan_name" /></span>
 	<span class="hidden" id="Useropt">Nombre <input type="text" class="text" name="recipient_user_login" /></span>
   </td>
   </tr>
@@ -52,4 +53,7 @@ function update_transfer_recipient(id) {
   </table>
   <div class="centered-link"><input type="submit" class="button" value="Siguiente" /></div>
   </form>
+  <% else -%>
+    <%=skill_needed_disclaimer("Bank")%>
+  <% end -%>
 <% end -%>

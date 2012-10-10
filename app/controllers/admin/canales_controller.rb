@@ -10,6 +10,10 @@ class Admin::CanalesController < AdministrationController
   end
 
   def del
+    # TODO(slnc): temporary, to prevent malicious users from deleting existing
+    # channels.
+    raise AccessDenied if !(user && user.has_skill?("Webmaster"))
+
     @gmtv_channel = GmtvChannel.find(params[:id])
     @gmtv_channel.destroy
 
@@ -28,14 +32,14 @@ class Admin::CanalesController < AdministrationController
     if @gmtv_channel.update_attributes(:file => nil)
       flash[:notice] = "Cabecera reseteada correctamente"
       if params[:notify] == '1'
-        Message.create({
+        Notification.create({
             :user_id_from => @user.id,
-            :user_id_to => @gmtv_channel.user_id,
-            :title => 'Cabecera reseteada',
-            :message => "Tu cabecera con Id "+
-                        "<strong>#{@gmtv_channel.id}</strong> ha sido "+
-                        "reseteada por la siguiente razón: "+
-                        "\"<strong>#{params[:reset_reason]}\"</strong>"})
+            :user_id => @gmtv_channel.user_id,
+            :description => (
+                "Tu cabecera con Id <strong>#{@gmtv_channel.id}</strong> ha"
+                " sido reseteada por la siguiente razón: "
+                "\"<strong>#{params[:reset_reason]}\"</strong>"),
+        })
       end
     else
       flash[:error] = "Error al intentar resetear: "+

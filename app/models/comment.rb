@@ -50,6 +50,9 @@ class Comment < ActiveRecord::Base
   scope :karma_eligible,
         :conditions => ["state NOT IN (?)", [MODERATED, DUPLICATED]]
 
+  scope :visible,
+        :conditions => ["state = ?", VISIBLE]
+
   def check_not_moderated
     if self.moderated?
       FROZEN_ATTRIBUTES_IF_MODERATED.each do |attribute|
@@ -222,7 +225,7 @@ class Comment < ActiveRecord::Base
     self.content.tracker_items.find(:all, :conditions => 'is_tracked = \'t\'', :include => [:user]).each do |t|
       u = t.user
       if u.id != self.user_id and u.notifications_trackerupdates and (t.notification_sent_on.nil? or t.lastseen_on > t.notification_sent_on) then
-        Notification.trackerupdate(
+        NotificationEmail.trackerupdate(
             u, {:content => self.content.real_content}).deliver
         t.notification_sent_on = Time.now
         t.save
@@ -260,7 +263,6 @@ class Comment < ActiveRecord::Base
   def can_be_rated_by?(user)
     !(user.id == self.user_id ||  # is author
      user.created_on > 7.days.ago ||  # is_too_young
-     Karma.level(user.karma_points) == 0 ||  # no karma
      (user.remaining_rating_slots == 0 &&  # no ratings left
       user.comments_valorations.find_by_comment_id(self.id).nil?))
   end
@@ -280,19 +282,14 @@ class Comment < ActiveRecord::Base
       Math.log10(user_authority)/Math.log10(Blogs.max_user_authority)
     else
       max_karma = Karma.max_user_points
-      max_faith = Faith.max_user_points
       # en caso de que no haya nadie popular
       max_friends = User.most_friends(1)[:friends] rescue 1
       ukp = user.karma_points
       ukp = 1.1 if ukp < 1.1
 
-      ufp = user.faith_points
-      ufp = 1.1 if ufp < 1.1
-
       karma_score = Math.log10(ukp) / Math.log10(max_karma)
-      faith_score = Math.log10(ufp) / Math.log10(max_faith)
       friends_score = user.friends_count / (max_friends)
-      w = (karma_score + faith_score + friends_score) / 3.0
+      w = (karma_score + friends_score) / 2.0
 
       # Aproximación: si el usuario está comentado en su facción multiplicamos
       # por 2. Si usásemos los puntos de karma y de fe para esta facción no
@@ -347,10 +344,6 @@ class Comment < ActiveRecord::Base
       self.save
     end
     self.cache_rating
-  end
-
-  def user_can_report_comment?(user)
-    user.is_hq?
   end
 
   # Returns previous comment if there is a previous comment to the current one

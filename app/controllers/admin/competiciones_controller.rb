@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Admin::CompeticionesController < ApplicationController
-  require_admin_permission :capo
+  require_skill("Capo")
 
   def index
     navpath2<< ['Admin', '/admin']

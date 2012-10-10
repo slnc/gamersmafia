@@ -3,17 +3,6 @@ require 'test_helper'
 
 class UsersActionObserverTest < ActionController::IntegrationTest
 
-  test "should_properly_work_with_recruitment_ads" do
-    assert_count_increases(UsersAction) do
-      @ra = RecruitmentAd.create(
-        :user_id => 1, :game_id => 1, :title => 'busco cosas', :main => 'hola')
-    end
-
-    assert_count_decreases(UsersAction) do
-      @ra.mark_as_deleted
-    end
-  end
-
   test "should_properly_work_with_photos_updated_in_profiles" do
     u1 = User.find(1)
     u1.photo = fixture_file_upload('files/buddha.jpg')
@@ -32,12 +21,12 @@ class UsersActionObserverTest < ActionController::IntegrationTest
   test "should_properly_reflect_content" do
     n = News.create(:terms => 1, :user_id => 1, :title => "titulin", :description => "fooo")
     assert_count_increases(UsersAction) do
-      Cms.publish_content(n, User.find(1))
+      Content.publish_content(n, User.find(1))
     end
 
     n.reload
     assert_count_decreases(UsersAction) do
-      Cms.deny_content(n, User.find(1), 'feillo')
+      Content.deny_content(n, User.find(1), 'feillo')
     end
   end
 
@@ -49,17 +38,6 @@ class UsersActionObserverTest < ActionController::IntegrationTest
 
     assert_count_decreases(UsersAction) do
       @cm.destroy
-    end
-  end
-
-  test "should_properly_work_with_emblems" do
-    @ue = UsersEmblem.new(:user_id => 1, :emblem => Emblems::EMBLEMS_TO_REPORT[0])
-    assert_count_increases(UsersAction) do
-      assert @ue.save
-    end
-
-    assert_count_decreases(UsersAction) do
-      @ue.destroy
     end
   end
 

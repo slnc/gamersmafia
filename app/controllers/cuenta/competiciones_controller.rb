@@ -289,9 +289,9 @@ class Cuenta::CompeticionesController < ApplicationController
       flash[:notice] = 'Participante invitado correctamente' # TODO enviar email de que ha sido invitado
       if @competition.state == 3 then
         #        if @competition.competitions_participants_type_id == Competition::CLANS
-        #          new_p_real.admins.each { |admin| Notification.invitedparticipant(admin, {:competition => @competition}) }
+        #          new_p_real.admins.each { |admin| NotificationEmail.invitedparticipant(admin, {:competition => @competition}) }
         #        else
-        #          Notification.invitedparticipant(new_p_real, {:competition => @competition})
+        #          NotificationEmail.invitedparticipant(new_p_real, {:competition => @competition})
         #        end
         #        TODO enviar email al comenzar competición
       end
@@ -478,7 +478,9 @@ class Cuenta::CompeticionesController < ApplicationController
   end
 
   def require_auth_competition_admin
-    raise AccessDenied unless @competition && (@competition.user_is_admin(@user.id) || @user.is_superadmin?)
+    if !@competition || !Authorization.can_admin_competition?(@user, @competition)
+      raise AccessDenied
+    end
   end
 
   def require_auth_competition_participant

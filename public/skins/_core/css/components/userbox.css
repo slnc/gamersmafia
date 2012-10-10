@@ -65,16 +65,6 @@ a > #sendbutton {
     padding: 0;
 }
 
-.userbox-faith-bar {
-	margin-top: 0px;
-    width: 93px;
-    height: 13px;
-}
-
-#userbox-logged > #userbox-bars .userbox-faith-bar {
-	margin-top: 0;
-}
-
 #userbox-gmf-and-ratings {
     position: absolute;
     right: 82px;
@@ -144,6 +134,11 @@ a > #sendbutton {
 #userbox-indicators .messages.has-unread > a {
     padding-left: 16px;
     line-height: 16px;
+    height: 16px;
+}
+
+#userbox2 .notifications a {
+    padding-left: 16px;
     height: 16px;
 }
 

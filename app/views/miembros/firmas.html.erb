@@ -4,11 +4,15 @@
   my_ps = @curuser.profile_signatures.new if my_ps.nil?
   %>
   <% mftext("Di algo sobre #{@curuser.login}") do %>
+    <% if @user.has_skill?("ProfileSignatures") %>
     <form method="post" action="<%=gmurl(@curuser)%>/update_signature">
       <textarea style="width: 225px; height: 200px;" name="profile_signature[signature]"><%=my_ps.signature%></textarea><br />
       <br />
       <input type="submit" class="button" value="<%=my_ps.new_record? ? 'Dejar mi firma' : 'Actualizar mi firma'%>" />
     </form>
+  <% else %>
+    <p>Debes conseguir la habilidad de firmas para poder usar esta sección.</p>
+  <% end -%>
   <% end -%>
   <% end -%>
 <% end -%>
@@ -42,7 +46,7 @@
   </div>
 <%  end %>
 <%  end %>
-<% if user_is_authed && @user.has_admin_permission?(:capo) then %>
+<% if user_is_authed && @user.has_skill?("Capo") then %>
 <script type="text/javascript">$j('div.delprofilesignature').removeClass('hidden');</script>
 <% end -%>
 <% end -%>

@@ -6,7 +6,7 @@ module Import
       obj = cls.new(dba)
       obj.save
       if obj.respond_to?(:state) && !dba.has_key?(:state)
-        Cms::modify_content_state(obj, mrMan, Cms::PUBLISHED)
+        Content.publish_content_directly(obj, mrMan)
       end
       obj
     end

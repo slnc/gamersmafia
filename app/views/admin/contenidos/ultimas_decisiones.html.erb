@@ -65,7 +65,7 @@ cache_category_paths = {}
             </table>
         </td>
         <% else %>
-        <% if Cms::user_can_edit_content?(@user, @item) then %>
+        <% if Authorization.can_edit_content?(@user, @item) then %>
       <td><a href="<%=gmurl(@item).gsub('show', 'edit')%>"><%=@item.resolve_hid%></a></td>
       <% else %>
       <td><%=@item.resolve_hid%></td>

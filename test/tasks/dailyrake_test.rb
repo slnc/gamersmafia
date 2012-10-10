@@ -85,34 +85,6 @@ class DailyRakeTest < ActiveSupport::TestCase
     assert /Feliz cumplea/ =~ ActionMailer::Base.deliveries.last.subject
   end
 
-  test "should_update_faith_of_users_with_zombie_refered" do
-    u2 = User.find(2)
-    u2.state = User::ST_ACTIVE
-    u2.referer_user_id = 1
-    assert_equal true, u2.save
-    u1 = User.find(1)
-    u1.cache_faith_points = nil
-    fp = u1.faith_points
-    User.db_query("UPDATE users SET lastseen_on = now() - '3 months 1 day'::interval where id = 2")
-    Rake::Task['gm:daily'].send :clear_faith_points_of_referers_and_resurrectors
-    u1.reload
-    assert_equal fp - Faith::FPS_ACTIONS['registration'], u1.faith_points
-  end
-
-  test "should_update_faith_of_users_with_zombie_resurrected" do
-    u2 = User.find(2)
-    u2.state = User::ST_ACTIVE
-    u2.resurrected_by_user_id = 1
-    assert_equal true, u2.save
-    u1 = User.find(1)
-    u1.cache_faith_points = nil
-    fp = u1.faith_points
-    User.db_query("UPDATE users SET lastseen_on = now() - '3 months 1 day'::interval where id = 2")
-    Rake::Task['gm:daily'].send :clear_faith_points_of_referers_and_resurrectors
-    u1.reload
-    assert_equal fp - Faith::FPS_ACTIONS['resurrection'], u1.faith_points
-  end
-
   test "should_send_1w_confirmation_email" do
     User.db_query("UPDATE users SET updated_at = now() - '4 days'::interval, state=#{User::ST_UNCONFIRMED} WHERE id = 1")
     Rake::Task['gm:daily'].send :new_accounts_cleanup

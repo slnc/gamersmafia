@@ -3,23 +3,23 @@ class Cuenta::FaccionController < ApplicationController
   before_filter :require_auth_users
 
   def submenu
-    if @faction and (user_is_boss(@user, @faction) or @faction.is_editor?(@user)) then
-      return 'Facción'
+    if @faction && Authorization.can_edit_faction?(@user, @faction)
+      'Facción'
     else
-      return nil
+      nil
     end
   end
 
   def submenu_items
     l = []
-    if @faction and (user_is_boss(@user, @faction) or @user.has_admin_permission?(:capo)) then
+    if @faction || Authorization.can_edit_faction?(@user, @faction)
       l<<['Información', '/cuenta/faccion/informacion']
       l<<['Staff', '/cuenta/faccion/staff']
       l<<['Cabeceras', '/cuenta/faccion/cabeceras']
       l<<['Links', '/cuenta/faccion/links']
       l<<['Mapas del juego', '/cuenta/faccion/mapas_juegos']
       l<<['Bans', '/cuenta/faccion/bans']
-      l<<['Juego', '/cuenta/faccion/juego'] if @faction.game # TODO save this on the model
+      l<<['Juego', '/cuenta/faccion/juego'] if @faction.game
     end
 
     if @faction and @faction.is_editor?(@user) then
@@ -27,15 +27,6 @@ class Cuenta::FaccionController < ApplicationController
     end
 
     l
-  end
-
-  def user_is_boss(user, faction)
-    if ((faction.boss && faction.boss.id == user.id) ||
-        (faction.underboss && faction.underboss.id == user.id))
-      true
-    else
-      false
-    end
   end
 
   def index
@@ -116,7 +107,9 @@ class Cuenta::FaccionController < ApplicationController
 
   def require_auth_faction_leader
     @faction = @user.faction
-    raise AccessDenied unless @faction && (@user.is_superadmin || @faction.is_bigboss?(@user))
+    if !@faction && Authorization.can_edit_faction?(@user, @faction)
+      raise AccessDenied
+    end
   end
 
   def join

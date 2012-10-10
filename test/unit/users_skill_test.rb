@@ -83,4 +83,22 @@ class UsersSkillTest < ActiveSupport::TestCase
     u1.reload
     assert !u1.is_district_leader?
   end
+
+  test "give_karma_skills should give skill if new skills in range" do
+    Karma.expects(:karma_points_of_users_at_date_range).returns({
+        '2' => 100,
+    })
+    u2 = User.find(2)
+    first_skill = UsersSkill::KARMA_SKILLS.first
+    # cache_karma_points is protected
+    u2.update_attribute(:cache_karma_points, first_skill[1])
+    assert u2.update_attributes({
+        :last_karma_skill_points => first_skill[1] - 1,
+    })
+    assert_difference("u2.users_skills.count") do
+      UsersSkill.give_karma_skills
+    end
+    u2.reload
+    assert_equal first_skill[1], u2.last_karma_skill_points
+  end
 end

@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Admin::IpBansController < ApplicationController
-  require_admin_permission :capo
+  require_skill("Capo")
 
   def index
     @ip_ban = IpBan.new({:expires_on => 7.days.since})

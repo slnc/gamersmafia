@@ -1,19 +1,79 @@
 # -*- encoding : utf-8 -*-
 class UsersSkill < ActiveRecord::Base
-  VALID_ROLES = %w(
+
+  # TODO(slnc): remove Editor, Sicario and Moderator after Dec 1st, 2012
+  VALID_SKILLS = %w(
     Advertiser
+    Antiflood
+    Bank
+    BazarManager
     Boss
+    Bot
+    BulkUpload
+    Capo
     CompetitionAdmin
     CompetitionSupervisor
+    ContentModerationQueue
+    DeleteContents
     Don
+    EditContents
+    EditFaq
     Editor
+    Gladiator
+    GmShop
     GroupAdministrator
     GroupMember
     ManoDerecha
+    MassModerateContents
     Moderator
+    ProfileSignatures
+    RateCommentsDown
+    RateCommentsUp
+    RateContents
+    ReportComments
+    ReportContents
+    ReportUsers
     Sicario
+    TagContents
     Underboss
+    Webmaster
   )
+
+  KARMA_SKILLS = {
+    'Antiflood' => 8500,
+    'Bank' => 35,
+    'BulkUpload' => 100,
+    'ContentModerationQueue' => 50,
+    'DeleteContents' => 10000,
+    'EditContents' => 5000,
+    'EditFaq' => 7000,
+    'GmShop' => 25,
+    'MassModerateContents' => 1000,
+    'ProfileSignatures' => 20,
+    'RateCommentsDown' => 250,
+    'RateCommentsUp' => 10,
+    'RateContents' => 15,
+    'ReportComments' => 1500,
+    'ReportContents' => 1750,
+    'ReportUsers' => 2000,
+    'TagContents' => 75,
+  }
+
+  NON_KARMA_SKILLS = [
+    'BazarManager',
+    'Boss',
+    'Bot',
+    'Capo',
+    'CompetitionAdmin',
+    'CompetitionSupervisor',
+    'Don',
+    'Gladiator',
+    'ManoDerecha',
+    'Moderator',
+    'Sicario',
+    'Underboss',
+    'Webmaster',
+  ]
 
   # role                  | role_data
   # ------------------------------------------
@@ -30,6 +90,16 @@ class UsersSkill < ActiveRecord::Base
   # CompetitionAdmin      | competition_id
   # CompetitionSupervisor | competition_id
 
+  SKILLS_ZOMBIES_LOSE = %w(
+      Boss
+      Don
+      Editor
+      ManoDerecha
+      Moderator
+      Sicario
+      Underboss
+  )
+
   validates_presence_of :role, :user_id
   validates_uniqueness_of :role, :scope => [:user_id, :role_data]
 
@@ -40,15 +110,60 @@ class UsersSkill < ActiveRecord::Base
   after_create :check_is_staff
   after_destroy :check_is_staff
 
+  scope :special_skills,
+        :conditions => ["role IN (?)", NON_KARMA_SKILLS]
+
+  def self.give_karma_skills
+    user_karma = Karma.karma_points_of_users_at_date_range(3.days.ago, Time.now)
+    user_karma.each do |user_id, unused_karma|
+      user = User.find(user_id.to_i)
+      self.karma_skills_in_range(
+          user.last_karma_skill_points + 1, user.karma_points).each do |role|
+            user.users_skills.create(:role => role)
+          end
+      user.update_attribute(:last_karma_skill_points, user.karma_points)
+    end
+  end
+
+  def self.karma_skills_in_range(karma_start, karma_end)
+    if karma_start > karma_end
+      raise ValueError("#{karma_start} <= #{karma_end}")
+    end
+
+    out = []
+    KARMA_SKILLS.each do |name, karma|
+      out.append([karma, name]) if karma >= karma_start && karma <= karma_end
+    end
+    # We sort the skills by increasing karma
+    out.sort.collect {|skill_info| skill_info[1]}
+  end
+
+  def self.find_users_with_skill(skill_name)
+    User.find(
+        :all,
+        :conditions => [
+            "id IN (SELECT user_id FROM users_skills WHERE role = ?)",
+            skill_name])
+  end
+
   def self.kill_zombified_staff
     # bigbosses, editors, moderators and sicarios
     limit = 3.months.ago
     now = Time.now
     mrcheater = Ias.MrCheater
-    UsersSkill.find(:all, :conditions => "role IN ('Don', 'ManoDerecha', 'Boss', 'Underboss', 'Editor', 'Moderator', 'Sicario')", :include => :user).each do |ur|
+    UsersSkill.find(
+        :all,
+        :conditions => ["role IN ?", SKILLS_ZOMBIES_LOSE],
+        :include => :user).each do |ur|
       if ur.user.lastseen_on < limit
         ur.destroy
-        Alert.create(:type_id => Alert::TYPES[:info], :headline => "Quitando permiso de <strong>#{ur.role}</strong> a <strong>#{ur.user.login}</strong> por volverse zombie", :reviewer_user_id => mrcheater.id, :completed_on => now)
+        Alert.create(
+            :type_id => Alert::TYPES[:info],
+            :headline => ("Quitando permiso de <strong>#{ur.role}</strong> a" +
+                          " <strong>#{ur.user.login}</strong> por volverse" +
+                          " zombie"),
+            :reviewer_user_id => mrcheater.id,
+            :completed_on => now)
       end
     end
   end
@@ -60,42 +175,6 @@ class UsersSkill < ActiveRecord::Base
 
   def role_data_yaml=(new_role_data)
 
-  end
-
-  protected
-  def check_role
-    if VALID_ROLES.include?(self.role)
-      true
-    else
-      self.errors.add("role", "Rol '#{self.role}' invalido.")
-      false
-    end
-  end
-
-  def toyaml_if_role_data_not_basic_type
-    self.role_data = self.role_data.to_yaml unless %w(NilClass String Fixnum).include?(self.role_data.class.name)
-  end
-
-  def check_is_staff
-    nagato = Ias.nagato
-    if self.frozen? # quitando permiso
-      if self.role == 'Don'
-        bd = BazarDistrict.find(self.role_data.to_i)
-        bd.update_don(bd.mano_derecha) if bd.mano_derecha
-      end
-
-      if self.role == 'Boss'
-        bd = Faction.find_by_id(self.role_data.to_i)
-	# al borrar algunas facciones viejas no se borraban los roles
-        bd.update_boss(bd.underboss) if bd && bd.underboss
-      end
-
-      Message.create(:title => "Permiso de #{format_scope} eliminado", :message => "Ya no tienes permisos de #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id) if bd
-    else
-      Message.create(:title => "Recibido permiso de #{format_scope}", :message => "Acabas de recibir permisos de #{format_scope}", :user_id_from => nagato.id, :user_id_to => self.user_id)
-    end
-
-    self.user.update_is_staff
   end
 
   def format_scope
@@ -125,6 +204,42 @@ class UsersSkill < ActiveRecord::Base
       "Admin de #{Competition.find(self.role_data.to_i).name}"
       when 'CompetitionSupervisor'
       "Supervisor de #{Competition.find(self.role_data.to_i).name}"
+      else
+        Translation.translate(role)
     end
   end
+
+  protected
+  def check_role
+    if VALID_SKILLS.include?(self.role)
+      true
+    else
+      self.errors.add("role", "Rol '#{self.role}' invalido.")
+      false
+    end
+  end
+
+  def toyaml_if_role_data_not_basic_type
+    if !%w(NilClass String Fixnum).include?(self.role_data.class.name)
+      self.role_data = self.role_data.to_yaml
+    end
+  end
+
+  def check_is_staff
+    if self.frozen? # quitando permiso
+      if self.role == 'Don'
+        bd = BazarDistrict.find(self.role_data.to_i)
+        bd.update_don(bd.mano_derecha) if bd.mano_derecha
+      end
+
+      if self.role == 'Boss'
+        bd = Faction.find_by_id(self.role_data.to_i)
+       	# al borrar algunas facciones viejas no se borraban los roles
+        bd.update_boss(bd.underboss) if bd && bd.underboss
+      end
+    end
+
+    self.user.update_is_staff
+  end
+
 end

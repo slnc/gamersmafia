@@ -3,11 +3,29 @@ require 'test_helper'
 
 class Admin::ContenidosControllerTest < ActionController::TestCase
 
-  test "should_allow_to_publish_content_if_user_is_not_the_author" do
-    n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
+  def create_some_news
+    News.create({
+        :title => 'mi noticiaaaa',
+        :description => 'mi summaryyyy',
+        :terms => 1,
+        :user_id => User.find_by_login('panzer'),
+    })
+  end
+
+  test "should_not_allow_to_publish_content_if_user_no skill" do
+    n = self.create_some_news
     assert_not_nil n
-    assert_equal 'mi noticiaaaa', n.title
     sym_login :mralariko
+    assert_raises(AccessDenied) do
+      post :publish_content, { :id => n.unique_content.id }
+    end
+  end
+
+  test "should_allow_to_publish_content_if_user_is_not_the_author" do
+    give_skill("mralariko", "ContentModerationQueue")
+    sym_login :mralariko
+    n = self.create_some_news
+    assert_equal 'mi noticiaaaa', n.title
     publishing_decisions_count = PublishingDecision.count
     post :publish_content, { :id => n.unique_content.id }
     assert_response :redirect
@@ -15,25 +33,29 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
   end
 
   test "mass_moderate_should_work_if_mass_approve" do
-    n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
-    assert_not_nil n
-    Cms.modify_content_state(n, User.find(1), Cms::PENDING)
+    n = self.create_some_news
+    Content.send_draft_to_moderation_queue(n)
     n.reload
     assert_equal Cms::PENDING, n.state
     sym_login 1
-    post :mass_moderate, { :mass_action => 'publish', :items => [n.unique_content.id]}
+    post :mass_moderate, {
+        :mass_action => 'publish',
+        :items => [n.unique_content.id],
+    }
     n.reload
     assert_equal Cms::PUBLISHED, n.state
   end
 
   test "mass_moderate_should_work_if_mass_deny" do
-    n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
-    assert_not_nil n
-    Cms.modify_content_state(n, User.find(1), Cms::PENDING)
+    n = self.create_some_news
+    Content.send_draft_to_moderation_queue(n)
     n.reload
     assert_equal Cms::PENDING, n.state
     sym_login 1
-    post :mass_moderate, { :mass_action => 'deny', :items => [n.unique_content.id]}
+    post :mass_moderate, {
+        :mass_action => 'deny',
+        :items => [n.unique_content.id],
+    }
     n.reload
     assert_equal Cms::DELETED, n.state
   end
@@ -52,7 +74,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
   test "recover_should_work" do
     sym_login 1
     n = News.find(1)
-    Cms.modify_content_state(n, User.find(1), Cms::DELETED, "feooote")
+    Content.delete_content(n, User.find(1), "feooote")
     n.reload
     assert_equal Cms::DELETED, n.state
     post :recover, :id => n.unique_content.id
@@ -62,9 +84,8 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
   end
 
   test "should_not_allow_to_deny_content_if_user_is_not_the_author_but_no_deny_reason" do
-    n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
-    assert_not_nil n
-    assert_equal 'mi noticiaaaa', n.title
+    n = self.create_some_news
+    give_skill("mralariko", "ContentModerationQueue")
     sym_login :mralariko
     publishing_decisions_count = PublishingDecision.count
     post :deny_content, { :id => n.unique_content.id }
@@ -73,12 +94,15 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
   end
 
   test "should_allow_to_deny_content_if_user_is_not_the_author_and_deny_reason" do
-    @n = News.create({ :title => 'mi noticiaaaa', :description => 'mi summaryyyy', :terms => 1, :user_id => User.find_by_login('panzer') })
-    assert_not_nil @n
-    assert_equal 'mi noticiaaaa', @n.title
+    User.find_by_login("mralariko").users_skills.find(:all)
+    give_skill("mralariko", "ContentModerationQueue")
+    @n = self.create_some_news
     sym_login :mralariko
     publishing_decisions_count = PublishingDecision.count
-    post :deny_content, { :id => @n.unique_content.id, :deny_reason => 'me molo a mi mismo' }
+    post :deny_content, {
+        :id => @n.unique_content.id,
+        :deny_reason => 'me molo a mi mismo',
+    }
     assert_response :redirect
     assert_equal publishing_decisions_count + 1, PublishingDecision.count
   end
@@ -88,22 +112,14 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_equal 1, n.user_id
     sym_login 1
     u2 = User.find(2)
-    post :change_authorship, { :content_id => n.unique_content.id, :login => u2.login}
+    post :change_authorship, {
+        :content_id => n.unique_content.id,
+        :login => u2.login,
+    }
     assert_response :redirect
     n.reload
     assert_equal 2, n.user_id
   end
-
-  test "content_must_be_at_0_00_when_sent_to_state1" do
-  end
-
-  #  test "content_must_be_published_if_editor_votes_that" do
-  #  end
-
-  #  test "content_must_be_denied_if_editor_votes_that" do
-  #  end
-
-  #  test "content_must_increment" do
 
   test "should_see_index_if_admin" do
     sym_login 1
@@ -143,7 +159,15 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "report" do
+  test "report no skill" do
+    sym_login 1
+    assert_raises(AccessDenied) do
+      post :report, :id => Content.find(:first).id
+    end
+  end
+
+  test "report with skill" do
+    give_skill(1, "ReportContents")
     sym_login 1
     assert_count_increases(Alert) do
       post :report, :id => Content.find(:first).id
@@ -152,6 +176,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
   end
 
   test "report_with_bazar_district_content" do
+    give_skill(1, "ReportContents")
     sym_login 1
     assert_count_increases(Alert) do
       post :report, :id => 1113
@@ -188,28 +213,52 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert !n.closed?
   end
 
-  test "tag_content should work" do
+  test "tag_content shouldnt work if no skill" do
     sym_login 1
-    t_count = Term.contents_tags.count
-    post :tag_content, :id => 1, :tags => 'fumanchu se fue a la guerra'
-    assert_response :redirect
-    assert_equal t_count + 6, Term.contents_tags.count
+    assert_raises(AccessDenied) do
+      post :tag_content, :id => 1, :tags => 'fumanchu se fue a la guerra'
+    end
   end
 
-  test "remove_user_tag should work" do
-    test_tag_content_should_work
-    sym_login 2
+  test "tag_content should work if skill" do
+    give_skill(1, "TagContents")
+    sym_login 1
+    assert_difference("Term.contents_tags.count", 6) do
+      post :tag_content, :id => 1, :tags => 'fumanchu se fue a la guerra'
+    end
+    assert_response :redirect
+  end
+
+  test "remove_user_tag shouldnt work if no skill" do
+    test_tag_content_should_work_if_skill
+    remove_skill(1, "TagContents")
+
     uct = UsersContentsTag.find(:first, :conditions => ['user_id = 1'])
-    assert_raises(ActiveRecord::RecordNotFound) do
+    sym_login 1
+    assert_raises(AccessDenied) do
       post :remove_user_tag, :id => uct.id
     end
+  end
 
+  test "remove_user_tag should work if skill" do
+    test_tag_content_should_work_if_skill
     sym_login 1
+    uct = UsersContentsTag.find(:first, :conditions => ['user_id = 1'])
     assert_count_decreases(ContentsTerm) do
       assert_count_decreases(UsersContentsTag) do
         post :remove_user_tag, :id => uct.id
         assert_response :success
       end
+    end
+  end
+
+  test "remove_user_tag shouldnt remove others tags" do
+    self.test_tag_content_should_work_if_skill
+    give_skill(2, "TagContents")
+    sym_login 2
+    uct = UsersContentsTag.find(:first, :conditions => ['user_id = 1'])
+    assert_raises(AccessDenied) do
+      post :remove_user_tag, :id => uct.id
     end
   end
 end

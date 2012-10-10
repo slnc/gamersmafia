@@ -39,21 +39,9 @@
       <td class="infoinline">Karma:</td>
       <td class="infoinline">
         <div id="check_karma"><%=draw_karma_bar_sm(@edituser)%>
-        <% if @user.has_admin_permission?(:capo) then %>
+        <% if @user.has_skill?("Capo") then %>
           <%=link_to('check',
                      "/admin/usuarios/check_karma/#{@edituser.id}",
-                     :remote => true)%>
-        <% end -%>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class="infoinline">Fe:</td>
-      <td class="infoinline">
-        <div id="check_faith"><%=draw_faith_bar_sm(@edituser)%>
-        <% if @user.has_admin_permission?(:capo) then %>
-          <%=link_to('check',
-                     "/admin/usuarios/check_faith/#{@edituser.id}",
                      :remote => true)%>
         <% end -%>
         </div>
@@ -63,7 +51,7 @@
       <td class="infoinline"><%=gmd12%></td>
       <td class="infoinline">
         <div id="check_gmf"><%=@edituser.cash%> <%=gmd10%>
-        <% if @user.has_admin_permission?(:capo) then %>
+        <% if @user.has_skill?("Capo") then %>
           <%=link_to('check',
                      "/admin/usuarios/check_gmf/#{@edituser.id}",
                      :remote => true)%>
@@ -72,7 +60,7 @@
       </td>
     </tr>
   </table>
-<% if @user.has_admin_permission?(:capo) then %>
+<% if @user.has_skill?("Capo") then %>
   Avatar: <img class="avatar" src="<%=ASSET_URL%><%=@edituser.show_avatar%>" /><br />
 
   <div class="centered-link"><form method="post" action="/admin/usuarios/reset_avatar"><input type="hidden" name="id" value="<%=@edituser.id%>" /><input type="submit" class="button" value="Resetear" onclick="return confirm('¿Estás seguro?');" /></form></div>
@@ -106,7 +94,7 @@
 
 <% content_main do %>
 <%mftext(@edituser) do %>
-<% if @user.has_admin_permission?(:capo) then %>
+<% if @user.has_skill?("Capo") then %>
 <table>
 <tr><td>
 
@@ -192,25 +180,10 @@
 
 <td><td valign="top">
   <table>
-    <tr>
-       <td><label for="post_confirmed">¿Es miembro de HQ?</label></td>
-       <td><%=check_box "edituser", "is_hq"%></td>
-    </tr>
-<tr>
-       <td><label for="post_confirmed">Permisos de admin</label></td>
-       <td>
-       <%=text_field(:edituser, :admin_permissions)%>
-       <br />
-       <% User::ADMIN_PERMISSIONS_INDEXES.values.sort.each do |v| %>
-         <%=User::ADMIN_PERMISSIONS_INDEXES.key(v)%>,
-       <%end%>
-       <br />
-</td>
-    </tr>
 	<tr>
-	<td><label for="post_confirmed">Roles</label></td>
-	<td>
-		<table>
+    <td><label for="post_confirmed">Habilidades</label></td>
+    <td>
+      <table>
 		<% @edituser.users_skills.find(:all, :order => 'role, role_data').each do |role| %>
 		<tr class="<%=oddclass%>" id="users_skill<%=role.id%>">
 			<td><%=role.role%></td>
@@ -218,7 +191,7 @@
 			<td><%=link_to(
           "del",
           "/admin/usuarios/users_skill_destroy/#{role.id}&aj=1",
-          :confirm => '¿Estás seguro de que deseas este rol?',
+          :confirm => '¿Estás seguro de que deseas borrar este rol?',
           :remote => true)%>
       </td>
 		</tr>
@@ -228,7 +201,7 @@
 	Añadir rol<br />
 	<select name="users_skill[role]">
 		<option value=""></option>
-		<%=options_for_select(UsersSkill::VALID_ROLES.collect { |r| [r, r] } )%>
+		<%=options_for_select(UsersSkill::VALID_SKILLS.collect { |r| [r, r] } )%>
 	</select>
 	<input type="text" class="text" name="users_skill[role_data]" />
 	<input type="submit" class="button submit" value="Añadir" />

@@ -1,7 +1,7 @@
 <%mftext('Pendientes de moderar') do %>
 <ul class="content-hid">
 <% for obj in pending %>
-<% if Cms::user_can_edit_content?(@user, obj) then %>
+<% if Authorization.can_edit_content?(@user, obj) then %>
 <li><%=link_to obj.resolve_hid, :action => 'edit', :id => obj%><br />
 <% else %>
 <li><%=obj.resolve_hid%><br />

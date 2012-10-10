@@ -49,7 +49,7 @@ class ApuestasControllerTest < ActionController::TestCase
     test_should_create_with_options
     sym_login 1
     Bank.transfer(:bank, User.find(1), 100, "Asuntos sucios")
-    Cms::publish_content(@b, Ias.MrMan)
+    Content.publish_content_directly(@b, Ias.MrMan)
     assert_equal Cms::PUBLISHED, @b.state
     bop1 = @b.bets_options.find(:first)
     post :update_cash_for_bet, {:id => @b.id, :bet_options => {bop1.id.to_s => '10'}}
@@ -77,7 +77,7 @@ class ApuestasControllerTest < ActionController::TestCase
 
   test "complete_should_work" do
     test_should_create_with_options
-    Cms::modify_content_state(@b, User.find(1), Cms::PUBLISHED)
+    Content.publish_content_directly(@b, User.find(1))
     @b.reload
     @b.closes_on = 1.week.ago
     assert @b.save
@@ -90,7 +90,7 @@ class ApuestasControllerTest < ActionController::TestCase
 
   test "resolve_should_work" do
     test_should_create_with_options
-    Cms::modify_content_state(@b, User.find(1), Cms::PUBLISHED)
+    Content.publish_content_directly(@b, User.find(1))
     @b.reload
     @b.closes_on = 1.week.ago
     assert @b.save

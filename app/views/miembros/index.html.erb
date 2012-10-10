@@ -39,22 +39,6 @@
 <% end -%>
 
 <%content_3col do %>
-<%mftext('Top Fe') do%>
-<table>
-        <% cache("/common/miembros/index/top_faith_#{Time.now.to_i/21600}") do
-        %>
-        <% i=0
-        User.can_login.humans.find(:all, :conditions => "cache_faith_points is not null and cache_faith_points > 0", :order => 'cache_faith_points DESC', :limit => 10).each do |u| %>
-        <tr class="<%=oddclass%>">
-          <td class="sm-icon number f_number"><%=i+=1%></td>
-          <td><%if i <= 3 then %><%=draw_user_info(u)%>
-            <% else %><%=member_state(u.hstate)%> <span class="nick"><%=link_to u.login, gmurl(u) %></span><br /> <div class="infoinline" style="width: 67px;"><%=render :partial => '/shared/faithbar', :locals => {:user => u}%></div><% end -%></td>
-        </tr>
-        <% end -%>
-      <% end -%>
-      </table>
-<% end -%>
-
 <%mftext('Top ricos') do %>
 <table>
           <% cache("/common/miembros/index/top_richest_#{Time.now.to_i/21600}") do

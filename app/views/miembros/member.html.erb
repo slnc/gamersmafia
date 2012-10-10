@@ -13,7 +13,6 @@
       <%=@curuser.city%> <%=ip_country_flag(@curuser.ipaddr)%><br /><br />
       </div>
 
-
   </div>
   <table>
 	  	<tr>
@@ -50,7 +49,7 @@
 <p>Este usuario todavía está en proceso de resurrección.</p>
 <% elsif (@curuser.resurrected_by_user_id and @curuser.resurrection_started_on.to_i > Time.now.to_i - 86400 * 7) %>
 <p><%=@curuser.login%> está en un proceso de resurrección iniciado por otro usuario.</p>
-<% elsif Faith.resurrections_incomplete(@user) >= Faith.max_incomplete_resurrections(@user)%>
+<% elsif @user.incomplete_resurrections >= User::MAX_INCOMPLETE_RESURRECTIONS%>
 <p>Has alcanzado tu límite de resurrecciones incompletas. Debes esperar a que alguna se complete o se desactive o bien subas de nivel de fe.</p>
 <% else %>
 <p><%=@curuser.login%> lleva más de 3 meses sin aparecer por la web. Si sabes cómo hacer que vuelva a iniciar sesión en la web y consigues que lo haga tu nivel de fe aumentará.<br />
@@ -101,16 +100,6 @@
 </div>
 <div class="clearb"><%=sparkline(:size => '145x25', :data => Karma.user_daily_karma(@curuser, 30.days.ago, 1.day.ago).collect { |k,v| v } )%></div>
 <div class="infoinline right"><strong><%=@curuser.karma_points%></strong> ptos (Nivel <strong><%=Karma.level(@curuser.karma_points)%></strong>)</div>
-<% end -%>
-
-<%mftext('Fe') do %>
-<%faith_rk_info = Faith.ranking_user(@curuser)%>
-<div class="infoinline right" style="margin-bottom: 3px;">
-	#<strong><%=faith_rk_info[:pos]%></strong> de <%=faith_rk_info[:total]%>
-</div>
-
-<div class="clearb"><%=sparkline(:size => '145x25', :data => Faith.user_daily_faith(@curuser, 30.days.ago, 1.day.ago).collect { |k,v| v }, :colors => ['c311dd'], :fillcolors => ['f9e8fc'])%></div>
-<div class="infoinline right"><strong><%=@curuser.faith_points%></strong> ptos (<strong><%=Faith::NAMES[Faith.level(@curuser.faith_points)]%></strong>)</div>
 <% end -%>
 
 <%mftext('Popularidad') do %>
@@ -410,25 +399,6 @@ if last_matches.size > 0 then
     </ul>
 <% end -%>
 
-
-<% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/emblemas") do %>
-		<% sql_emblems = Emblems::EMBLEMS_TO_REPORT.collect { |e| "'#{e}'" }.join(',')
-		dbe = User.db_query("SELECT count(*), emblem from users_emblems where user_id = #{@curuser.id} AND emblem in (#{sql_emblems}) GROUP BY emblem ORDER BY emblem")
-
-		if dbe.size > 0 then %>
-		<%mftext('Emblemas') do %>
-		<ul style="margin: 0; padding-left: 0;">
-	<%dbe.each do |db| %>
-	<li class="<%=oddclass%>" style="float: left; padding: 3px; list-style: none;">
-		<img class="sprite1 emblema emblema-<%=db['emblem']%>" src="/images/blank.gif" title="<%=Emblems::EMBLEMS[db['emblem'].to_sym][:title]%>" />
-		<%=db['count']%>
-	</li>
-	<% end -%>
-	</ul>
-	<br />
-	<% end %><%# if -%>
-<% end -%>
-<% end %><%# cache -%>
   <div style="clear: left;"></div>
 
 
@@ -468,58 +438,63 @@ if prev_nicks.size > 0 then %>
 <% end -%>
 
 
-  	<% if user_is_authed && (@user.is_superadmin || @user.is_hq?) then %>
-	<% mftext('Control') do %>
+<% if show_member_control_box %>
+<% mftext('Control') do %>
 	<%
 		users_same_ip = User.find(:all, :conditions => ['login <> ? and ipaddr not in (\'0.0.0.0\', \'127.0.0.1\') and ipaddr = ?', @curuser.login, @curuser.ipaddr], :order => 'lastseen_on')
-if users_same_ip.size > 0 then %>
-<div class="infoinline"><%=member_state('active')%> <strong><%=users_same_ip.size%></strong> usuario<%='s' if users_same_ip.size > 1%> con la misma ip:</div>
-<ul class="inline infoinline">
-<% users_same_ip.each do |user| %>
-	<li><a href="<%=gmurl(user)%>"><%=user.login%></a></li>
-<% end %>
-</ul>
-<% else %>
-<%=member_state('zombie')%> <strong>Ningún</strong> usuario con la misma ip.
-<% end %>
+  if users_same_ip.size > 0 %>
+  <div class="infoinline"><%=member_state('active')%> <strong><%=users_same_ip.size%></strong> usuario<%='s' if users_same_ip.size > 1%> con la misma ip:</div>
+  <ul class="inline infoinline">
+  <% users_same_ip.each do |user| %>
+    <li><a href="<%=gmurl(user)%>"><%=user.login%></a></li>
+  <% end %>
+  </ul>
+  <% else %>
+  <%=member_state('zombie')%> <strong>Ningún</strong> usuario con la misma ip.
+  <% end %>
 
-<% if @user.has_admin_permission?(:capo) then %>
-<div class="centered-link">
-Antiflood: <select name="antiflood_level" id="antiflood_level" onchange="document.location = '/admin/usuarios/set_antiflood_level?user_id=<%=@curuser.id%>&antiflood_level='+this.value;">
-        <option value="-1">Sin límite</option>
-        <option value="5">0 comentarios al día</option>
-        <option value="4">5 comentarios al día</option>
-        <option value="3">10 comentarios al día</option>
-        <option value="2">15 comentarios al día</option>
-        <option value="1">20 comentarios al día</option>
-    </select><script type="text/javascript">$j('#antiflood_level').val(<%=@curuser.antiflood_level%>);</script>
-</div>
+  <% if @user.has_skill?("Capo") %>
+  <div class="centered-link">
+  Antiflood: <select name="antiflood_level" id="antiflood_level" onchange="document.location = '/admin/usuarios/set_antiflood_level?user_id=<%=@curuser.id%>&antiflood_level='+this.value;">
+          <option value="-1">Sin límite</option>
+          <option value="5">0 comentarios al día</option>
+          <option value="4">5 comentarios al día</option>
+          <option value="3">10 comentarios al día</option>
+          <option value="2">15 comentarios al día</option>
+          <option value="1">20 comentarios al día</option>
+      </select><script type="text/javascript">$j('#antiflood_level').val(<%=@curuser.antiflood_level%>);</script>
+  </div>
 
-<div class="centered-link"><a href="/admin/usuarios/clear_description/<%=@curuser.id%>" onclick="return confirm('¿Estás seguro? ¡Esta acción no se puede deshacer!');">Borrar Descripción</a></div>
-<div class="centered-link"><a href="/admin/usuarios/clear_photo/<%=@curuser.id%>" onclick="return confirm('¿Estás seguro? ¡Esta acción no se puede deshacer!');">Borrar Foto</a></div>
-<% elsif @curuser.antiflood_level != 5 then %>
-	<div class="centered-link">
-		<a onclick="return confirm('El usuario no podrá enviar contenidos ni publicar comentarios hasta que un capo lo revise. SOLO PARA EMERGENCIAS. ¿Estás seguro?');" href="/admin/usuarios/set_antiflood_level?user_id=<%=@curuser.id%>&antiflood_level=5"><strong>Poner antiflood de emergencia</strong></a>
-	</div>
-<% end %>
+  <div class="centered-link"><a href="/admin/usuarios/clear_description/<%=@curuser.id%>" onclick="return confirm('¿Estás seguro? ¡Esta acción no se puede deshacer!');">Borrar Descripción</a></div>
+  <div class="centered-link"><a href="/admin/usuarios/clear_photo/<%=@curuser.id%>" onclick="return confirm('¿Estás seguro? ¡Esta acción no se puede deshacer!');">Borrar Foto</a></div>
+  <% elsif @curuser.antiflood_level != 5 && Authorization.can_antiflood_users?(@user) %>
+    <div class="centered-link">
+      <a onclick="return confirm('El usuario no podrá enviar contenidos ni publicar comentarios hasta que un capo lo revise. SOLO PARA EMERGENCIAS. ¿Estás seguro?');" href="/admin/usuarios/set_antiflood_level?user_id=<%=@curuser.id%>&antiflood_level=5"><strong>Poner antiflood de emergencia</strong></a>
+    </div>
+  <% end %>
 
-<% if !@user.has_admin_permission?(:capo) then %>
-	<div id="report-users<%=@curuser.id%>" class="centered-link"><a href="" title="Reportar el perfil de este usuario por violación del código de conducta" onclick="return report_user(<%=@curuser.id%>);">Reportar</a></div>
-<% end -%>
+  <% if Authorization.can_report_users?(@user) %>
+    <div id="report-users<%=@curuser.id%>" class="centered-link"><a href="" title="Reportar el perfil de este usuario por violación del código de conducta" onclick="return report_user(<%=@curuser.id%>);">Reportar</a></div>
+  <% end -%>
 
-<% if @curuser.hstate != User::ST_BANNED && @user.has_admin_permission?(:capo) then
-bp = BanRequest.find(:first, :conditions => ['banned_user_id = ?', @curuser.id], :order => 'created_on DESC')
-if bp && bp.confirming_user_id.nil? then %>
-<div class="centered-link"><strong><a href="/admin/usuarios/confirmar_ban_request?id=<%=bp.id%>">Proceso de ban en marcha</a></strong></div>
-<% elsif bp && bp.confirming_user_id && bp.unban_user_id.nil? %>
-<div class="centered-link"><strong><a href="/admin/usuarios/confirmar_ban_request?id=<%=bp.id%>">Usuario baneado</a></strong></div>
-<% elsif bp && bp.confirming_user_id && bp.unban_user_id && bp.unban_confirming_user_id.nil? %>
-<div class="centered-link"><strong><a href="/admin/usuarios/confirmar_ban_request?id=<%=bp.id%>">Proceso de unban en marcha</a></strong></div>
-<% else %>
-<div class="centered-link"><strong><a href="/admin/usuarios/ban_request?login=<%=@curuser.login%>">Banear</a></strong></div>
+    <% if @curuser.hstate != User::ST_BANNED && @user.has_skill?("Capo")
+      bp = BanRequest.find(:first, :conditions => ['banned_user_id = ?', @curuser.id], :order => 'created_on DESC')
+      if bp && bp.confirming_user_id.nil?  %>
+      <div class="centered-link"><strong><a href="/admin/usuarios/confirmar_ban_request?id=<%=bp.id%>">Proceso de ban en marcha</a></strong></div>
+      <% elsif bp && bp.confirming_user_id && bp.unban_user_id.nil? %>
+      <div class="centered-link"><strong><a href="/admin/usuarios/confirmar_ban_request?id=<%=bp.id%>">Usuario baneado</a></strong></div>
+      <% elsif bp && bp.confirming_user_id && bp.unban_user_id && bp.unban_confirming_user_id.nil? %>
+      <div class="centered-link"><strong><a href="/admin/usuarios/confirmar_ban_request?id=<%=bp.id%>">Proceso de unban en marcha</a></strong></div>
+      <% else %>
+      <div class="centered-link"><strong><a href="/admin/usuarios/ban_request?login=<%=@curuser.login%>">Banear</a></strong></div>
+      <% end  # if bp && bp.confirming_user_id.nil? -%>
+    <% end -%>
+  <% end  # if mftext('Control') do -%>
 <% end -%>
-<% end -%>
-<% end -%>
-<% end -%>
+<%= render :partial => '/miembros/skills_table',
+           :locals => { :curuser => @curuser } %>
+
+<%= render :partial => '/miembros/emblems_table',
+           :locals => { :curuser => @curuser } %>
 
 </div>

@@ -2,8 +2,16 @@
 require 'digest/sha1'
 require 'digest/md5'
 require 'karma'
+require 'set'
 
 class User < ActiveRecord::Base
+  ANTIFLOOD_LEVELS = {
+    1 => 'suave',
+    2 => 'moderado',
+    3 => 'duro',
+    4 => 'extremo',
+    5 => 'absoluto'}
+
   BANNED_DOMAINS = %w(
       10minutemail.com
       correo.nu
@@ -17,26 +25,16 @@ class User < ActiveRecord::Base
       yopmail.com
   )
 
-  ANTIFLOOD_LEVELS = {
-    1 => 'suave',
-    2 => 'moderado',
-    3 => 'duro',
-    4 => 'extremo',
-    5 => 'absoluto'}
+  # Maximum number of combined contents + comments valorations that a user can
+  # do per day.
+  MAX_DAILY_RATINGS = 40
+
+  MAX_INCOMPLETE_RESURRECTIONS = 20
 
   VALID_SEXUAL_ORIENTATIONS = [:women, :men, :both, :none]
   MALE = 0
   FEMALE = 1
   SEXUAL_ORIENTATIONS_REL = { :women => "sex = #{FEMALE}", :men => "sex = #{FEMALE}", }
-  MESSAGE_WELCOME_TO_HQ = <<-end
-  Ya estás dado de alta en el HQ.
-
-  Te recomiendo que para empezar vayas al wiki (menú horizontal encima de la
-  cabecera HQ -> Wiki) ya que hay un información sobre cómo usar tanto el wiki
-  como GitHub y la lista de correo interna..
-
-  Un saludete :D
-  end
 
   ST_UNCONFIRMED = 0
   ST_ACTIVE = 1
@@ -73,20 +71,14 @@ class User < ActiveRecord::Base
     ST_UNCONFIRMED_2W => 'no confirmada'
   }
 
-  ADMIN_PERMISSIONS_INDEXES = {
-      :faq => 0,
-      :blogs => 1,
-      :clans => 2,
-      :avatars => 3,
-      :faction_headers => 4,
-      :capo => 5,
-      :designer => 6,
-      :qa => 7,
-      :fusions => 8,
-      :gladiador => 9,
-      :advertiser => 10,
-      :bazar_manager => 11,
+  USER_EMBLEMS_MASKS = {
+    "common" => 0,
+    "unfrequent" => 1,
+    "rare" => 2,
+    "legendary" => 3,
+    "special" => 4,
   }
+
 
   has_many :groups_messages
 
@@ -105,6 +97,7 @@ class User < ActiveRecord::Base
   has_many :gmtv_channels
   has_many :chatlines
   has_many :content_ratings
+  has_many :notifications
   has_many :contents, :dependent => :destroy
   has_many :publishing_personalities
   has_many :publishing_decisions
@@ -183,15 +176,13 @@ class User < ActiveRecord::Base
   before_save :check_age
 
   after_save :update_competition_name
-  after_save :check_is_hq
   after_save :check_login_changed
   after_save :check_permissions
 
   before_create :generate_validkey
   after_create :change_avatar
   attr_accessor :ident, :expire_at
-  attr_protected :cache_karma_points, :is_superadmin, :admin_permissions,
-                 :faction_id
+  attr_protected :cache_karma_points, :faction_id
 
   before_save :check_if_shadow
   before_save :check_if_website
@@ -204,7 +195,9 @@ class User < ActiveRecord::Base
             " date_part('day', now())::text ||" +
             " date_part('month', now())::text")
 
-  scope :humans, :conditions => 'is_bot is false'
+  scope :humans,
+        :conditions => "id NOT IN (
+                          SELECT user_id FROM users_skills WHERE role = 'Bot')"
 
   scope :non_zombies,
         :conditions => "lastseen_on >= now() - '3 months'::interval"
@@ -224,13 +217,13 @@ class User < ActiveRecord::Base
   def self.new_accounts_cleanup
     # 1st warning
     User.find(:all, :conditions => "state = #{User::ST_UNCONFIRMED} AND updated_at < now() - '3 days'::interval", :limit => 200).each do |u|
-      Notification.unconfirmed_1w(u).deliver
+      NotificationEmail.unconfirmed_1w(u).deliver
       User.db_query("UPDATE users SET state = #{User::ST_UNCONFIRMED_1W}, updated_at = now() WHERE id = #{u.id}")
     end
 
     # 2nd warning
     User.find(:all, :conditions => "state = #{User::ST_UNCONFIRMED_1W} AND updated_at < now() - '3 days'::interval", :limit => 200).each do |u|
-      Notification.unconfirmed_2w(u).deliver
+      NotificationEmail.unconfirmed_2w(u).deliver
       User.db_query("UPDATE users SET state = #{User::ST_UNCONFIRMED_2W}, updated_at = now() WHERE id = #{u.id}")
     end
 
@@ -238,6 +231,27 @@ class User < ActiveRecord::Base
     User.find(:all, :conditions => "state = #{User::ST_UNCONFIRMED_2W} AND updated_at < now() - '3 days'::interval", :limit => 200).each do |u|
       User.db_query("UPDATE users SET state = #{User::ST_DELETED}, updated_at = now() WHERE id = #{u.id}")
     end
+  end
+
+  def emblems_mask_or_calculate
+    if self.emblems_mask.nil?
+      frequencies = {}
+      USER_EMBLEMS_MASKS.each do |k, v|
+        frequencies[k] = 0
+      end
+
+      self.users_emblems.each do |emblem|
+        frequencies[emblem.frequency] += 1
+      end
+      mask = []
+      UsersEmblem::SORTED_DECREASE_FREQUENCIES.each do |frequency|
+        emblems_count = frequencies[frequency]
+        mask << emblems_count.to_s
+      end
+
+      self.update_column("emblems_mask", mask.join("."))
+    end
+    self.emblems_mask
   end
 
   def self.send_happy_birthday
@@ -248,7 +262,7 @@ class User < ActiveRecord::Base
           :recipient => u,
           :title => '¡Feliz cumpleaños!',
           :message => (
-              "¡En nombre de todo el staff de gamersmafia te deseo un feliz" +
+              "¡En nombre de todo el staff de gamersmafia te deseo un feliz"
               " día de cumpleaños! :)\n\nNos vemos por la web.")
       })
     end
@@ -319,22 +333,6 @@ class User < ActiveRecord::Base
       akey.touch
       akey.user
     end
-  end
-
-  def self.find_with_admin_permissions(args)
-    if args.kind_of?(Symbol)
-      args = [ADMIN_PERMISSIONS_INDEXES[args]]
-    elsif args.kind_of?(Hash) && args[0].kind_of?(Symbol)
-      args = args.collect { |a| ADMIN_PERMISSIONS_INDEXES[a] }
-    end
-
-    # args tiene que valer ahora
-    s = ''
-    args.each do |a|
-      s<< ('_'*a) if a > 0
-      s<< '1%'
-    end
-    User.find(:all, :conditions => "admin_permissions LIKE '#{s}'")
   end
 
   def self.online_users(order='faction_id asc, lastseen_on desc')
@@ -548,7 +546,7 @@ class User < ActiveRecord::Base
     return false unless self.update_attribute(:antiflood_level, level)
 
     # TODO This should go into an observer
-    if impositor.has_admin_permission?(:capo)
+    if Authorization.can_edit_users?(impositor)
       Alert.create(:type_id => Alert::TYPES[:emergency_antiflood],
                        :reporter_user_id => impositor.id,
                        :headline => "Antiflood #{User::ANTIFLOOD_LEVELS[self.antiflood_level]} impuesto a <strong><a href=\"#{Routing.gmurl(self)}\">#{self.login}</a></strong> por <a href=\"#{Routing.gmurl(impositor)}\">#{impositor.login}</a>")
@@ -572,21 +570,31 @@ class User < ActiveRecord::Base
   end
 
 
+  STAFF_SKILLS = %w(
+      BazarManager
+      Boss
+      Capo
+      CompetitionAdmin
+      CompetitionSupervisor
+      Don
+      Editor
+      Gladiator
+      ManoDerecha
+      Moderator
+      Sicario
+      Underboss
+      Webmaster
+  )
+
   def update_is_staff
+    # TODO(slnc): remove this
     # Actualiza la variable is_staff.
-    has_some_roles = self.users_skills.count(:conditions => "role IN ('Don',
-                                                                     'ManoDerecha',
-                                                                     'Sicario',
-                                                                     'Moderator',
-                                                                     'Editor',
-                                                                     'Boss',
-                                                                     'Underboss')") > 0
+    staff_roles_count = self.users_skills.count(
+        :conditions => ["role IN (?)", STAFF_SKILLS])
 
-    is_staff = has_some_roles || has_admin_permissions? || is_competition_admin? ||
-    is_competition_supervisor?
-
-    self.update_attributes(:is_staff => is_staff,
-                           :cache_is_faction_leader => self._no_cache_is_faction_leader?)
+    self.update_attributes(
+        :is_staff => staff_roles_count > 0,
+        :cache_is_faction_leader => self._no_cache_is_faction_leader?)
   end
 
   def check_comments_values
@@ -659,19 +667,8 @@ class User < ActiveRecord::Base
     end
   end
 
-  def check_is_hq
-    return unless self.is_hq_changed?
-
-    if self.is_hq?
-      Message.create(:sender => Ias.nagato,
-                     :recipient => self,
-                     :title => "¡Bienvenido al HQ!",
-                     :message => MESSAGE_WELCOME_TO_HQ)
-    end
-  end
-
   def _no_cache_is_faction_leader?
-   (!self.faction_id.nil?) && (self.has_admin_permission?(:capo) || self.users_skills.count(:conditions => "role IN ('Boss', 'Underboss')") > 0)
+   (!self.faction_id.nil?) && (self.has_skill?("Capo") || self.users_skills.count(:conditions => "role IN ('Boss', 'Underboss')") > 0)
   end
 
   def is_faction_leader?
@@ -679,7 +676,7 @@ class User < ActiveRecord::Base
   end
 
   def is_district_leader?
-    self.has_admin_permission?(:bazar_manager) ||
+    self.has_skill?("BazarManager") ||
     UsersSkill.count(:conditions => ["role IN ('#{BazarDistrict::ROLE_DON}',
                                               '#{BazarDistrict::ROLE_MANO_DERECHA}')
                                      AND user_id = ?", self.id]) > 0
@@ -700,39 +697,9 @@ class User < ActiveRecord::Base
     self.state == User::ST_DISABLED
   end
 
-  def has_admin_permissions?
-    self.admin_permissions.to_i > 0
-  end
-
-  def has_admin_permission?(permission)
-    is_superadmin ||
-    admin_permissions[User::ADMIN_PERMISSIONS_INDEXES.fetch(permission.to_sym)..
-    User::ADMIN_PERMISSIONS_INDEXES.fetch(permission.to_sym)] == '1'
-  end
-
-  def give_admin_permission(permission)
-    if self.admin_permissions.size < User::ADMIN_PERMISSIONS_INDEXES[permission]
-      self.admin_permissions << '0' * (User::ADMIN_PERMISSIONS_INDEXES.size -
-      self.admin_permissions.size)
-    end
-    self.admin_permissions[User::ADMIN_PERMISSIONS_INDEXES[permission]] = '1'
-    self.save
-  end
-
-  def take_admin_permission(permission)
-    self.admin_permissions[User::ADMIN_PERMISSIONS_INDEXES[permission]] = '0'
-    self.save
-  end
-
-  def update_admin_permissions(new_permissions)
-    self.admin_permissions = new_permissions
-    save
-  end
-
   def clearpasswd(password)
     Digest::MD5.hexdigest(password)
   end
-
 
   public
   def get_new_autologin_key
@@ -809,12 +776,28 @@ class User < ActiveRecord::Base
     end
   end
 
+  def has_skill?(skill)
+    @cache_skills ||= Set.new(self.users_skills.find(:all).collect {|s| s.role})
+    @cache_skills.include?(skill)
+  end
+
+  def has_any_skill?(skills)
+    skills.each do |skill|
+      return true if self.has_skill?(skill)
+    end
+    false
+  end
+
+  def has_emblem?(emblem)
+    self.users_emblems.count(:conditions => ["emblem = ?", emblem]) > 0
+  end
+
   def is_bigboss?
-   (self.users_skills.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha')") > 0) || self.has_admin_permission?(:bazar_manager) || self.has_admin_permission?(:capo)
+   (self.users_skills.count(:conditions => "role IN ('Boss', 'Underboss', 'Don', 'ManoDerecha')") > 0) || self.has_skill?("BazarManager") || self.has_skill?("Capo")
   end
 
   def is_faction_editor?
-    is_faction_leader? || self.users_skills.count(:conditions => "role = 'Editor'") > 0 || has_admin_permission?(:capo)
+    is_faction_leader? || self.users_skills.count(:conditions => "role = 'Editor'") > 0 || has_skill?("Capo")
   end
 
   def is_editor?
@@ -836,11 +819,11 @@ class User < ActiveRecord::Base
   end
 
   def is_competition_admin?
-    has_admin_permission?(:gladiador) || self.users_skills.count(:conditions => "role = 'CompetitionAdmin'") > 0
+    has_skill?("Gladiator") || self.users_skills.count(:conditions => "role = 'CompetitionAdmin'") > 0
   end
 
   def is_competition_supervisor?
-    has_admin_permission?(:gladiador) || is_competition_admin? || self.users_skills.count(:conditions => "role = 'CompetitionSupervisor'") > 0
+    has_skill?("Gladiator") || is_competition_admin? || self.users_skills.count(:conditions => "role = 'CompetitionSupervisor'") > 0
   end
 
   def is_sicario?
@@ -855,19 +838,29 @@ class User < ActiveRecord::Base
   def is_friend_of?(user)
     # si self está en la lista de amigos de user devuelve true
     f = Friendship.find_between(self, user)
-    (f && f.accepted_on) ? true : false
+    f && f.accepted_on
   end
 
   def remaining_rating_slots
     if self.cache_remaining_rating_slots.nil?
-      self.cache_remaining_rating_slots = Faith.max_daily_ratings(self) - self.content_ratings.count(:conditions => 'created_on >= date_trunc(\'day\', now())') - self.comments_valorations.count(:conditions => 'created_on >= date_trunc(\'day\', now())')
-      User.db_query("UPDATE users SET cache_remaining_rating_slots = #{self.cache_remaining_rating_slots} WHERE id = #{self.id}")
-      raise "Error updating remaining_rating_slots" if self.cache_remaining_rating_slots.nil?
+      ratings_spent_today = (
+          self.content_ratings.count(
+              :conditions => "created_on >= date_trunc('day', now())") -
+          self.comments_valorations.count(
+              :conditions => "created_on >= date_trunc('day', now())")
+      )
+      self.update_column(
+          :cache_remaining_rating_slots,
+          MAX_DAILY_RATINGS - ratings_spent_today)
+      if self.cache_remaining_rating_slots.nil?
+        raise "Error updating remaining_rating_slots"
+      end
     end
     self.cache_remaining_rating_slots < 0 ? 0 : self.cache_remaining_rating_slots
   end
 
   def can_rate?(content)
+    return false if !self.has_skill?("RateContents")
     if content.user_id == self.id || remaining_rating_slots == 0 || ContentRating.count(:conditions => ['content_id = ? and user_id = ?', content.unique_content.id, self.id]) > 0
       false
     else
@@ -917,17 +910,10 @@ class User < ActiveRecord::Base
     end
   end
 
-  def faith_points
-    if self.cache_faith_points.nil? then
-      self.update_attribute('cache_faith_points', Faith::calculate_faith_points(self))
-    end
-
-    self.cache_faith_points
-  end
-
   def karma_points
     if self.cache_karma_points.nil? then
-      self.cache_karma_points = db_query("UPDATE users SET cache_karma_points = #{Karma::calculate_karma_points(self)} WHERE id = #{self.id} AND cache_karma_points is null; SELECT cache_karma_points FROM users WHERE id = #{self.id}")[0]['cache_karma_points']
+      self.update_attribute(
+          :cache_karma_points, Karma::calculate_karma_points(self))
     end
 
     self.cache_karma_points
@@ -1007,8 +993,7 @@ class User < ActiveRecord::Base
 
   def resurrect
     # método llamado cuando un usuario en modo resurreción incompleta inicia sesión
-    Faith.reset(self.resurrector)
-    Notification.resurrection(resurrector, {:resurrected => self}).deliver
+    NotificationEmail.resurrection(resurrector, {:resurrected => self}).deliver
   end
 
   def contents_stats
@@ -1072,8 +1057,17 @@ class User < ActiveRecord::Base
   end
 
 
+  def incomplete_resurrections
+    User.can_login.count(
+        :conditions => [
+            "resurrected_by_user_id = ?
+             AND resurrection_started_on > now() - '7 days'::interval
+             AND lastseen_on < now() - '3 months'::interval",
+             self.id])
+  end
+
   def start_resurrection(resurrector)
-    if self.state == User::ST_ZOMBIE and not (self.resurrected_by_user_id and self.resurrection_started_on > Time.now - 86400 * 7) and Faith.resurrections_incomplete(resurrector) < Faith.max_incomplete_resurrections(resurrector) then
+    if (self.state == User::ST_ZOMBIE and not (self.resurrected_by_user_id and self.resurrection_started_on > Time.now - 86400 * 7) and self.incomplete_resurrections < MAX_INCOMPLETE_RESURRECTIONS) then
       #raise self.update_attributes({:resurrected_by_user_id => resurrector.id, :resurrection_started_on => Time.now}).to_s
       self.resurrected_by_user_id = resurrector.id
       self.resurrection_started_on = Time.now
@@ -1178,10 +1172,10 @@ class User < ActiveRecord::Base
     self.state = User::ST_SHADOW
     self.save
     if self.referer_user_id
-      Notification.newregistration(
+      NotificationEmail.newregistration(
           User.find(self.referer_user_id), {:refered => self}).deliver
     end
-    Notification.welcome(self).deliver
+    NotificationEmail.welcome(self).deliver
   end
 
   def friendships_received_pending

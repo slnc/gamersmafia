@@ -44,8 +44,9 @@ class ActsAsContentTest < ActiveSupport::TestCase
     test_should_link_if_terms_given_as_param
     @n.root_terms_add_ids([2])
     assert_equal 2, @n.terms.size
-    assert_equal 1, @n.terms[0].id
-    assert_equal 2, @n.terms[1].id
+    term_ids = @n.terms.collect {|t| t.id}
+    assert term_ids.include?(1)
+    assert term_ids.include?(2)
   end
 
   test "should_not_allow_to_link_to_child_term_if_content_is_categorizable_and_root_term_given" do
@@ -176,7 +177,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::PENDING})
     assert_not_nil @n
     k = @u.karma_points
-    Cms::deny_content(@n, @u, 'ffff')
+    Content.deny_content(@n, @u, 'ffff')
     @u.reload
     assert_equal k, @u.karma_points
   end
@@ -186,7 +187,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::DRAFT})
     assert_not_nil @n
     k = @u.karma_points
-    Cms::deny_content(@n, @u, 'ffff')
+    Content.deny_content(@n, @u, 'ffff')
     @u.reload
     assert_equal k, @u.karma_points
   end
@@ -216,7 +217,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     User.db_query("UPDATE tracker_items SET lastseen_on = now() - '23 hours'::interval WHERE content_id = #{@n.unique_content.id}")
     ti.reload
     assert_equal true, ti.lastseen_on < 1.hour.ago
-    Cms::publish_content(@n, @u)
+    Content.publish_content(@n, @u)
     ti.reload
     assert_equal true, ti.lastseen_on > 1.hour.ago
   end

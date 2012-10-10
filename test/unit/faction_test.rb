@@ -73,7 +73,7 @@ class FactionTest < ActiveSupport::TestCase
     f1.update_underboss(nil)
     Factions.user_joins_faction(User.find(3), f1.id)
 
-    m = Message.count
+    m = Notification.count
     tgen = Term.single_toplevel(:slug => f1.code).children.find(
         :first,
         :conditions => ["taxonomy = 'TopicsCategory' AND name = 'General'"])
@@ -82,7 +82,7 @@ class FactionTest < ActiveSupport::TestCase
       f1.golpe_de_estado
     end
     assert_equal topics_count + 1, tgen.contents_count(:cls_name => 'Topic')
-    assert_equal m + 3, Message.count  # un mensaje al boss y otro al miembro
+    assert_equal m + 3, Notification.count  # un mensaje al boss y otro al miembro
 
     f1.reload
     assert_nil f1.boss
@@ -160,9 +160,9 @@ class FactionTest < ActiveSupport::TestCase
     faction.update_boss(boss_user)
     assert_equal boss_user, faction.boss
     Stats::Portals.expects(:daily_karma).at_least(1).returns([1]+[0]*13)
-    message_count = Message.count
+    notification_count = Notification.count
     Faction.check_daily_karma
-    assert Message.count > message_count
+    assert Notification.count > notification_count
     faction.reload
     assert_equal boss_user, faction.boss
   end

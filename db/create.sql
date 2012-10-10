@@ -1902,6 +1902,21 @@ CREATE SEQUENCE news_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE news_id_seq OWNED BY news.id;
+CREATE TABLE notifications (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    description character varying,
+    read_on timestamp without time zone,
+    sender_user_id integer NOT NULL
+);
+CREATE SEQUENCE notifications_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE notifications_id_seq OWNED BY notifications.id;
 CREATE TABLE outstanding_entities (
     id integer NOT NULL,
     entity_id integer NOT NULL,
@@ -2620,10 +2635,8 @@ CREATE TABLE users (
     hw_monitor character varying,
     hw_connection character varying,
     description text,
-    is_superadmin boolean DEFAULT false NOT NULL,
     comments_count integer DEFAULT 0 NOT NULL,
     referer_user_id integer,
-    cache_faith_points integer,
     notifications_global boolean DEFAULT true NOT NULL,
     notifications_newmessages boolean DEFAULT true NOT NULL,
     notifications_newregistrations boolean DEFAULT true NOT NULL,
@@ -2642,7 +2655,6 @@ CREATE TABLE users (
     last_competition_id integer,
     competition_roster character varying,
     enable_competition_indicator boolean DEFAULT false NOT NULL,
-    is_hq boolean DEFAULT false NOT NULL,
     enable_profile_signatures boolean DEFAULT false NOT NULL,
     profile_signatures_count integer DEFAULT 0 NOT NULL,
     wii_code character(16),
@@ -2655,8 +2667,6 @@ CREATE TABLE users (
     comment_adds_to_tracker_enabled boolean DEFAULT true NOT NULL,
     cache_remaining_rating_slots integer,
     has_seen_tour boolean DEFAULT false NOT NULL,
-    is_bot boolean DEFAULT false NOT NULL,
-    admin_permissions character varying DEFAULT '00000'::bpchar NOT NULL,
     state smallint DEFAULT 0 NOT NULL,
     cache_is_faction_leader boolean DEFAULT false NOT NULL,
     profile_last_updated_on timestamp without time zone,
@@ -2673,12 +2683,13 @@ CREATE TABLE users (
     is_staff boolean DEFAULT false NOT NULL,
     pending_alerts integer DEFAULT 0 NOT NULL,
     ranking_karma_pos integer,
-    ranking_faith_pos integer,
     ranking_popularity_pos integer,
     cache_popularity integer,
     login_is_ne_unfriendly boolean DEFAULT false NOT NULL,
     cache_valorations_weights_on_self_comments numeric,
-    default_comments_valorations_weight double precision DEFAULT 1.0 NOT NULL
+    default_comments_valorations_weight double precision DEFAULT 1.0 NOT NULL,
+    last_karma_skill_points integer DEFAULT 0 NOT NULL,
+    has_unread_notifications boolean DEFAULT false NOT NULL
 );
 CREATE TABLE users_actions (
     id integer NOT NULL,
@@ -2712,7 +2723,7 @@ CREATE SEQUENCE users_contents_tags_id_seq
 ALTER SEQUENCE users_contents_tags_id_seq OWNED BY users_contents_tags.id;
 CREATE TABLE users_emblems (
     id integer NOT NULL,
-    created_on date DEFAULT (now())::date NOT NULL,
+    created_on timestamp without time zone DEFAULT (now())::date NOT NULL,
     user_id integer,
     emblem character varying NOT NULL,
     details character varying
@@ -2908,7 +2919,6 @@ CREATE TABLE general (
     users_banned integer DEFAULT 0 NOT NULL,
     users_disabled integer DEFAULT 0 NOT NULL,
     karma_diff integer DEFAULT 0.0 NOT NULL,
-    faith_diff integer DEFAULT 0 NOT NULL,
     cash_diff numeric(10,4) DEFAULT 0 NOT NULL,
     new_comments integer DEFAULT 0 NOT NULL,
     refered_hits integer DEFAULT 0 NOT NULL,
@@ -3013,7 +3023,6 @@ CREATE TABLE users_daily_stats (
     user_id integer NOT NULL,
     created_on date NOT NULL,
     karma integer,
-    faith integer,
     popularity integer,
     played_bets_participation integer DEFAULT 0 NOT NULL,
     played_bets_correctly_predicted integer DEFAULT 0 NOT NULL
@@ -3136,6 +3145,7 @@ ALTER TABLE ONLY messages ALTER COLUMN id SET DEFAULT nextval('messages_id_seq':
 ALTER TABLE ONLY ne_references ALTER COLUMN id SET DEFAULT nextval('ne_references_id_seq'::regclass);
 ALTER TABLE ONLY news ALTER COLUMN id SET DEFAULT nextval('news_id_seq'::regclass);
 ALTER TABLE ONLY news_categories ALTER COLUMN id SET DEFAULT nextval('news_categories_id_seq'::regclass);
+ALTER TABLE ONLY notifications ALTER COLUMN id SET DEFAULT nextval('notifications_id_seq'::regclass);
 ALTER TABLE ONLY outstanding_entities ALTER COLUMN id SET DEFAULT nextval('outstanding_users_id_seq'::regclass);
 ALTER TABLE ONLY platforms ALTER COLUMN id SET DEFAULT nextval('platforms_id_seq'::regclass);
 ALTER TABLE ONLY polls ALTER COLUMN id SET DEFAULT nextval('polls_id_seq'::regclass);
@@ -3474,6 +3484,8 @@ ALTER TABLE ONLY news_categories
     ADD CONSTRAINT news_categories_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY news
     ADD CONSTRAINT news_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY notifications
+    ADD CONSTRAINT notifications_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY outstanding_entities
     ADD CONSTRAINT outstanding_users_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY platforms
@@ -3659,6 +3671,7 @@ CREATE INDEX comments_created_on ON comments USING btree (created_on);
 CREATE INDEX comments_created_on_content_id ON comments USING btree (created_on, content_id);
 CREATE INDEX comments_created_on_date_trunc ON comments USING btree (date_trunc('day'::text, created_on));
 CREATE INDEX comments_has_comments_valorations_user_id ON comments USING btree (has_comments_valorations, user_id);
+CREATE INDEX comments_netiquette_violations ON comments USING btree (netiquette_violation);
 CREATE INDEX comments_random_v ON comments USING btree (random_v);
 CREATE INDEX comments_user_id_created_on ON comments USING btree (user_id, created_on);
 CREATE UNIQUE INDEX comments_valorations_comment_id_user_id ON comments_valorations USING btree (comment_id, user_id);
@@ -3744,6 +3757,7 @@ CREATE INDEX news_approved_by_user_id ON news USING btree (approved_by_user_id);
 CREATE UNIQUE INDEX news_categories_unique ON news_categories USING btree (name, parent_id);
 CREATE INDEX news_state ON news USING btree (state);
 CREATE INDEX news_user_id ON news USING btree (user_id);
+CREATE INDEX notifications_common ON notifications USING btree (user_id, read_on);
 CREATE UNIQUE INDEX outstanding_entities_uniq ON outstanding_entities USING btree (type, portal_id, active_on);
 CREATE INDEX platforms_users_platform_id ON platforms_users USING btree (platform_id);
 CREATE UNIQUE INDEX platforms_users_platform_id_user_id ON platforms_users USING btree (user_id, platform_id);
@@ -3810,6 +3824,7 @@ CREATE INDEX users_newsfeeds_created_on ON users_newsfeeds USING btree (created_
 CREATE INDEX users_newsfeeds_created_on_user_id ON users_newsfeeds USING btree (created_on, user_id);
 CREATE UNIQUE INDEX users_preferences_user_id_name ON users_preferences USING btree (user_id, name);
 CREATE INDEX users_random_id ON users USING btree (random_id);
+CREATE INDEX users_referer_user_id ON users USING btree (referer_user_id);
 CREATE INDEX users_roles_role ON users_skills USING btree (role);
 CREATE INDEX users_roles_role_role_data ON users_skills USING btree (role, role_data);
 CREATE UNIQUE INDEX users_roles_uniq ON users_skills USING btree (user_id, role, role_data);
@@ -3941,6 +3956,10 @@ ALTER TABLE ONLY news
     ADD CONSTRAINT news_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY news
     ADD CONSTRAINT news_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
+ALTER TABLE ONLY notifications
+    ADD CONSTRAINT notifications_sender_user_id_fkey FOREIGN KEY (sender_user_id) REFERENCES users(id) MATCH FULL;
+ALTER TABLE ONLY notifications
+    ADD CONSTRAINT notifications_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 ALTER TABLE ONLY platforms_users
     ADD CONSTRAINT platforms_users_platform_id_fkey FOREIGN KEY (platform_id) REFERENCES platforms(id) MATCH FULL ON DELETE CASCADE;
 ALTER TABLE ONLY platforms_users

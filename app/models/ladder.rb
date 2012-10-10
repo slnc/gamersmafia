@@ -14,7 +14,7 @@ class Ladder < Competition
         end
 
         recipients.each do |u|
-          Notification.reto_pendiente_1w(
+          NotificationEmail.reto_pendiente_1w(
               u, {:match => m, :participant => m.participant2}).deliver
         end
       end
@@ -30,7 +30,7 @@ class Ladder < Competition
 
         recipients.each do |u|
           # TODO(slnc): temporalmente deshabilitado
-          # Notification.deliver_reto_pendiente_2w(u, {:match => m, :participant => m.participant2})
+          # NotificationEmail.deliver_reto_pendiente_2w(u, {:match => m, :participant => m.participant2})
         end
       end
 
@@ -45,7 +45,7 @@ class Ladder < Competition
         end
 
         recipients.each do |u|
-          Notification.reto_cancelado_sin_respuesta(
+          NotificationEmail.reto_cancelado_sin_respuesta(
               u, {:match => m, :participant => m.participant2}).deliver
         end
         m.destroy
@@ -65,7 +65,7 @@ class Ladder < Competition
 
           recipients.each do |u|
             # TODO(slnc): deberíamos habilitar esto de nuevo?
-            #Notification.reto_cancelado_sin_respuesta(u, {:match => m, :participant => m.participant2})
+            #NotificationEmail.reto_cancelado_sin_respuesta(u, {:match => m, :participant => m.participant2})
           end
           m.complete_match(Ias.MrMan, {}, true)
         end
@@ -108,7 +108,7 @@ class Ladder < Competition
         end
       end
       log("#{challenger.name} reta a #{challengee.name}")
-      Notification.reto_recibido(
+      NotificationEmail.reto_recibido(
         challengee.the_real_thing, { :participant => challenger}).deliver
       cm
     end

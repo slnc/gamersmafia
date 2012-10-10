@@ -6,12 +6,13 @@ module Reports
     ActionView::Base.send :include, ApplicationHelper
     # envía una noticia semanal con información varia
 
+    raise "broken, must update"
     # emblemas
     last_ue = UsersEmblem.find(:first, :order => 'id DESC', :limit => 1)
     raise "imposible, no hay emblemas!" unless last_ue
     cur_date = last_ue.created_on
     base = 'Buenas queridos. Los emblemas de esta semana han sido otorgados a los siguientes mafiosos:<br><br><br><table>'
-    %w(best_overall karma_fury faith_avalanche most_knowledgeable living_legend funniest profoundest most_informational most_interesting wealthiest okupa bets_master talker best_blogger).each do |emblema|
+    %w(best_overall karma_fury most_knowledgeable living_legend funniest profoundest most_informational most_interesting wealthiest okupa bets_master talker best_blogger).each do |emblema|
       ues = UsersEmblem.find(:all, :conditions => ["created_on = ? AND emblem = ?", cur_date, emblema])
       if ues.size > 0
         base << "<tr class=\"#{oddclass}\"><td class=\"w150\"><img class=\"sprite1 emblema emblema-#{emblema}\" src=\"/images/blank.gif\" /> #{Emblems::EMBLEMS[emblema.to_sym][:title]}</td> <td><strong>"
@@ -51,6 +52,6 @@ module Reports
     report_i = User.db_query("SELECT count(distinct(created_on)) FROM users_emblems")[0]['count'].to_i
     n = News.create(:title => "El dominical de MrAchmed ##{(report_i)}", :user_id => User.find_by_login('MrAchmed').id, :description => base, :main => main)
     Term.single_toplevel(:slug => 'gm').link(n.unique_content)
-    Cms.publish_content(n, Ias.MrMan)
+    Content.publish_content(n, Ias.MrMan)
   end
 end

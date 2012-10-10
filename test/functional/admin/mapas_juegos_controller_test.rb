@@ -2,14 +2,17 @@
 require 'test_helper'
 
 class Admin::MapasJuegosControllerTest < ActionController::TestCase
+
   test "index" do
-    get :index, {}, {:user => 1}
+    sym_login 1
+    get :index, {}
     assert_response :success
     assert_template 'index'
   end
 
   test "new" do
-    get :new, {}, {:user => 1}
+    sym_login 1
+    get :new, {}
 
     assert_response :success
     assert_template 'new'
@@ -18,18 +21,18 @@ class Admin::MapasJuegosControllerTest < ActionController::TestCase
   end
 
   test "create" do
-    num_games_maps = GamesMap.count
-
-    post :create, {:games_map => {:game_id => 1, :name => 'foo'}}, {:user => 1}
+    sym_login 1
+    assert_difference("GamesMap.count") do
+      post :create, {:games_map => {:game_id => 1, :name => 'foo'}}
+    end
 
     assert_response :redirect
     assert_redirected_to :action => 'index'
-
-    assert_equal num_games_maps + 1, GamesMap.count
   end
 
   test "edit" do
-    get :edit, {:id => 1}, {:user => 1}
+    sym_login 1
+    get :edit, {:id => 1}
 
     assert_response :success
     assert_template 'edit'
@@ -39,12 +42,14 @@ class Admin::MapasJuegosControllerTest < ActionController::TestCase
   end
 
   test "update" do
-    post :update, {:id => 1, :games_map =>  {}}, {:user => 1}
+    sym_login 1
+    post :update, {:id => 1, :games_map =>  {}}
     assert_response :redirect
     assert_redirected_to :action => 'edit', :id => 1
   end
 
   test "destroy" do
+    sym_login 1
     assert_not_nil GamesMap.find(1)
 
     post :destroy, {:id => 1}, {:user => 1}

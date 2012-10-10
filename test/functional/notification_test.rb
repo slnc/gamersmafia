@@ -1,10 +1,10 @@
 # -*- encoding : utf-8 -*-
 require 'test_helper'
 
-class NotificationTest < ActionMailer::TestCase
+class NotificationEmailTest < ActionMailer::TestCase
   test "yourebanned" do
     assert_difference("ActionMailer::Base.deliveries.size") do
-      Notification.yourebanned(User.find(1), { :reason => "Feo" }).deliver
+      NotificationEmail.yourebanned(User.find(1), { :reason => "Feo" }).deliver
     end
   end
 
@@ -18,7 +18,7 @@ class NotificationTest < ActionMailer::TestCase
     }
 
     assert_difference("ActionMailer::Base.deliveries.size") do
-      Notification.weekly_avg_page_render_time({
+      NotificationEmail.weekly_avg_page_render_time({
           :top_avg_time => [sample_output],
           :top_count => [sample_output]
        }).deliver
@@ -35,7 +35,7 @@ class NotificationTest < ActionMailer::TestCase
         :banner_user_id => 1
     })
     assert_difference("ActionMailer::Base.deliveries.size") do
-      Notification.new_factions_banned_user(
+      NotificationEmail.new_factions_banned_user(
           'webmaster@gamersmafia.com',
           { :sender => fb.banner_user, :factions_ban => fb }).deliver
     end
@@ -46,7 +46,7 @@ class NotificationTest < ActionMailer::TestCase
     recipient = User.find(2)
     deliveries = ActionMailer::Base.deliveries.size
 
-    Notification.faction_summary(recipient,
+    NotificationEmail.faction_summary(recipient,
                                  {:faction => Faction.find(1)}).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
@@ -54,7 +54,7 @@ class NotificationTest < ActionMailer::TestCase
   test "invited_participant" do
     recipient = User.find(1)
     deliveries = ActionMailer::Base.deliveries.size
-    Notification.invited_participant(
+    NotificationEmail.invited_participant(
         recipient, {:competition => Competition.find(:first) }).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
@@ -64,7 +64,7 @@ class NotificationTest < ActionMailer::TestCase
     recipient = User.find(2)
     deliveries = ActionMailer::Base.deliveries.size
 
-    Notification.del_from_hq(recipient).deliver
+    NotificationEmail.del_from_hq(recipient).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
@@ -73,7 +73,7 @@ class NotificationTest < ActionMailer::TestCase
     recipient = User.find(2)
     deliveries = ActionMailer::Base.deliveries.size
 
-    Notification.add_to_hq(sender, :new_member => recipient).deliver
+    NotificationEmail.add_to_hq(sender, :new_member => recipient).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
@@ -83,7 +83,7 @@ class NotificationTest < ActionMailer::TestCase
     deliveries = ActionMailer::Base.deliveries.size
     nm = Message.new({:user_id_from => sender.id, :user_id_to => recipient.id, :title => 'Mensaje de prueba', :message => 'texto del mensaje de prueba', :created_on => Time.now})
 
-    Notification.newmessage(recipient, { :sender => sender, :message => nm
+    NotificationEmail.newmessage(recipient, { :sender => sender, :message => nm
         }).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
@@ -98,7 +98,7 @@ class NotificationTest < ActionMailer::TestCase
     sender = User.find(1)
     recipient = User.find(2)
     deliveries = ActionMailer::Base.deliveries.size
-    Notification.newprofilesignature(recipient, { :signer => sender }).deliver
+    NotificationEmail.newprofilesignature(recipient, { :signer => sender }).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
@@ -111,7 +111,7 @@ class NotificationTest < ActionMailer::TestCase
     c.add_admin(u)
     assert_equal 1, c.admins.size
     deliveries = ActionMailer::Base.deliveries.size
-    Notification.competition_started(
+    NotificationEmail.competition_started(
         u2, { :sender => c.admins[0], :competition => c}).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
@@ -119,34 +119,34 @@ class NotificationTest < ActionMailer::TestCase
   test "welcome" do
     deliveries = ActionMailer::Base.deliveries.size
     u1 = User.find(1)
-    Notification.welcome(u1).deliver
+    NotificationEmail.welcome(u1).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
   test "forgot" do
     deliveries = ActionMailer::Base.deliveries.size
     u1 = User.find(1)
-    Notification.forgot(u1).deliver
+    NotificationEmail.forgot(u1).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
   test "signup" do
     deliveries = ActionMailer::Base.deliveries.size
     u1 = User.find(1)
-    Notification.signup(u1).deliver
+    NotificationEmail.signup(u1).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
   test "emailchange" do
     deliveries = ActionMailer::Base.deliveries.size
     u1 = User.find(1)
-    Notification.emailchange(u1).deliver
+    NotificationEmail.emailchange(u1).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
   test "ad_report" do
     deliveries = ActionMailer::Base.deliveries.size
-    Notification.ad_report(Advertiser.find(:first), {:tstart => 1.week.ago,
+    NotificationEmail.ad_report(Advertiser.find(:first), {:tstart => 1.week.ago,
         :tend => Time.now}).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
@@ -155,7 +155,7 @@ class NotificationTest < ActionMailer::TestCase
     deliveries = ActionMailer::Base.deliveries.size
     u1 = User.find(1)
     u2 = User.find(2)
-    Notification.newregistration(u1, { :refered => u2 }).deliver
+    NotificationEmail.newregistration(u1, { :refered => u2 }).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
@@ -163,7 +163,7 @@ class NotificationTest < ActionMailer::TestCase
     deliveries = ActionMailer::Base.deliveries.size
     u1 = User.find(1)
     u2 = User.find(2)
-    Notification.resurrection(u1, { :resurrected => u2 }).deliver
+    NotificationEmail.resurrection(u1, { :resurrected => u2 }).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
@@ -174,7 +174,7 @@ class NotificationTest < ActionMailer::TestCase
     c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and type = \'Ladder\'')
     assert_not_nil c
     p = CompetitionsParticipant.new({:name => 'foobakala', :competition_id => c.id})
-    Notification.reto_aceptado(u, { :participant => p }).deliver
+    NotificationEmail.reto_aceptado(u, { :participant => p }).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
@@ -184,7 +184,7 @@ class NotificationTest < ActionMailer::TestCase
     c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and type = \'Ladder\'')
     assert_not_nil c
     p = CompetitionsParticipant.new({:name => 'foobakala', :competition_id => c.id})
-    Notification.reto_recibido(u, { :participant => p }).deliver
+    NotificationEmail.reto_recibido(u, { :participant => p }).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
@@ -194,7 +194,7 @@ class NotificationTest < ActionMailer::TestCase
     c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and type = \'Ladder\'')
     assert_not_nil c
     p = CompetitionsParticipant.new({:name => 'foobakala', :competition_id => c.id})
-    Notification.reto_pendiente_1w(u, { :participant => p }).deliver
+    NotificationEmail.reto_pendiente_1w(u, { :participant => p }).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
@@ -204,7 +204,7 @@ class NotificationTest < ActionMailer::TestCase
     c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and type = \'Ladder\'')
     assert_not_nil c
     p = CompetitionsParticipant.new({:name => 'foobakala', :competition_id => c.id})
-    Notification.reto_pendiente_2w(u, { :participant => p }).deliver
+    NotificationEmail.reto_pendiente_2w(u, { :participant => p }).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
@@ -214,7 +214,7 @@ class NotificationTest < ActionMailer::TestCase
     c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and type = \'Ladder\'')
     assert_not_nil c
     p = CompetitionsParticipant.new({:name => 'foobakala', :competition_id => c.id})
-    Notification.reto_cancelado_sin_respuesta(u, { :participant => p }).deliver
+    NotificationEmail.reto_cancelado_sin_respuesta(u, { :participant => p }).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
@@ -224,7 +224,7 @@ class NotificationTest < ActionMailer::TestCase
       u = User.find(1)
       c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and type = \'Ladder\'')
       p = CompetitionsParticipant.new({:name => 'foobakala', :competition_id => c.id})
-      Notification.rechallenge(u, { :participant => p }).deliver
+      NotificationEmail.rechallenge(u, { :participant => p }).deliver
     end
   end
 
@@ -234,7 +234,7 @@ class NotificationTest < ActionMailer::TestCase
     c = Competition.find(:first, :conditions => 'invitational is false and fee is null and competitions_participants_type_id = 1 and type = \'Ladder\'')
     assert_not_nil c
     p = CompetitionsParticipant.new({:name => 'foobakala', :competition_id => c.id})
-    Notification.reto_rechazado(u, { :participant => p }).deliver
+    NotificationEmail.reto_rechazado(u, { :participant => p }).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
@@ -243,26 +243,26 @@ class NotificationTest < ActionMailer::TestCase
     u = User.find(1)
     c = Content.find(:first)
     assert_not_nil c
-    Notification.trackerupdate(u, { :content => c.real_content }).deliver
+    NotificationEmail.trackerupdate(u, { :content => c.real_content }).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
   test "unconfirmed_1w" do
     assert_difference("ActionMailer::Base.deliveries.size") do
       u1 = User.find(1)
-      Notification.unconfirmed_1w(u1).deliver
+      NotificationEmail.unconfirmed_1w(u1).deliver
     end
   end
 
   test "unconfirmed_2w" do
     assert_difference("ActionMailer::Base.deliveries.size") do
-      Notification.unconfirmed_1w(User.find(1)).deliver
+      NotificationEmail.unconfirmed_1w(User.find(1)).deliver
     end
   end
 
   test "newcontactar" do
     assert_difference("ActionMailer::Base.deliveries.size") do
-      Notification.newcontactar(:subject => 'hola', :message => 'que tal',
+      NotificationEmail.newcontactar(:subject => 'hola', :message => 'que tal',
           :email => 'fulanito de tal').deliver
     end
   end
@@ -272,7 +272,7 @@ class NotificationTest < ActionMailer::TestCase
     u1 = User.find(1)
     deliveries = ActionMailer::Base.deliveries.size
     assert_difference("ActionMailer::Base.deliveries.size") do
-      Notification.new_friendship_request(
+      NotificationEmail.new_friendship_request(
           recipient,
           {:from => "#{u1.login} <#{u1.email}>",
            :invitation_key => '4d186321c1a7f0f354b297e8914ab240',
@@ -292,7 +292,7 @@ class NotificationTest < ActionMailer::TestCase
     recipient = User.find(2)
     deliveries = ActionMailer::Base.deliveries.size
     u1 = User.find(1)
-    Notification.new_friendship_request_external(recipient, {:from =>
+    NotificationEmail.new_friendship_request_external(recipient, {:from =>
         "#{u1.login} <#{u1.email}>", :invitation_key =>
         '4d186321c1a7f0f354b297e8914ab240', :sender => u1}).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
@@ -301,7 +301,7 @@ class NotificationTest < ActionMailer::TestCase
   test "new_friendship_accepted" do
     sender = User.find(1)
     assert_difference("ActionMailer::Base.deliveries.size") do
-      Notification.new_friendship_accepted(sender, { :receiver =>
+      NotificationEmail.new_friendship_accepted(sender, { :receiver =>
           User.find(2)}).deliver
     end
   end

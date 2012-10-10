@@ -3,6 +3,15 @@ require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
 
+  test "has_any_skill" do
+    u = User.find(1)
+    skills = %w(Moderator Webmaster)
+    skills.each do |skill|
+      assert u.has_skill?(skill)
+    end
+    assert u.has_any_skill?(skills)
+  end
+
   test "boss who changes to another faction should lose boss permission" do
     u = User.find(1)
     u.faction_id = 1
@@ -28,11 +37,6 @@ class UserTest < ActiveSupport::TestCase
     assert u.users_skills.count == 0
   end
 
-  test "faith_ok" do
-    u = User.find(1)
-    assert u.faith_points == 5
-  end
-
   test "website should do nothing if nothing" do
     u = User.find(1)
     assert u.update_attributes(:homepage => nil)
@@ -52,35 +56,6 @@ class UserTest < ActiveSupport::TestCase
   test "is_editor" do
     u2 = User.find(2)
     assert u2.is_editor?
-  end
-
-  test "check_is_hq should create message" do
-    panzer = User.find_by_login('panzer')
-    assert_difference('panzer.messages_received.count') do
-      add_user_to_hq(panzer)
-    end
-  end
-
-  def add_user_to_hq(user)
-    assert user.update_attributes(:is_hq => true)
-  end
-
-  test "find_with_permissions" do
-    u1 = User.find(1)
-    assert u1.update_attributes(:admin_permissions => nil)
-    assert u1.give_admin_permission(:capo)
-    assert_equal '00000100000000', u1.admin_permissions
-    u1.reload
-    u1.reload
-    capos = User.find_with_admin_permissions(:capo)
-    assert_equal 1, capos.size
-    assert_equal 1, capos[0].id
-  end
-
-  test "del_user_from_hq_should_work" do
-    panzer = User.find_by_login('panzer')
-    add_user_to_hq(panzer)
-    assert panzer.update_attributes(:is_hq => false)
   end
 
   test "create" do
@@ -257,7 +232,7 @@ class UserTest < ActiveSupport::TestCase
     assert_equal av1.id, u1.avatar_id
   end
 
-  def test_user_should_not_be_zombie_if_logged_in
+  test "user_should_not_be_zombie_if_logged_in" do
     u1 = User.find(1)
     assert u1.update_attributes(:state => User::ST_ZOMBIE)
     u1.comments.each do |c|
@@ -269,5 +244,30 @@ class UserTest < ActiveSupport::TestCase
 
   test "comments_valorations_weights" do
     assert_equal 0.5, Comment.find(1).user.valorations_weights_on_self_comments
+  end
+
+  test "has_skill_no_skill" do
+    u1 = User.find(1)
+    u1.users_skills.clear
+    assert !u1.has_skill?("Bank")
+  end
+
+  test "has_skill_skill" do
+    u1 = User.find(1)
+    u1.users_skills.create(:role => "Bank")
+    assert u1.has_skill?("Bank")
+  end
+
+  test "remaining_rating_slots" do
+    u1 = User.find(1)
+    u1.cache_remaining_rating_slots = nil
+    u1.reload
+    assert_equal User::MAX_DAILY_RATINGS, u1.remaining_rating_slots
+  end
+
+  test "emblems_mask" do
+    u1 = User.find(1)
+    u1.users_emblems.create(:emblem => "comments_count_1")
+    assert_equal '1.0.0.0.0', u1.emblems_mask_or_calculate
   end
 end

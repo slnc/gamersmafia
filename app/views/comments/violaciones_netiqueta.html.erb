@@ -1,7 +1,7 @@
 <%
 @comments = Comment.paginate(
     :page => params[:page],
-    :conditions => 'netiquette_violation = \'t\'',
+    :conditions => "netiquette_violation = 't'",
     :order => 'created_on DESC',
     :per_page => 50,
     :include => [:user, :content, :lastedited_by]) %>

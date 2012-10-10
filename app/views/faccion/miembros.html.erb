@@ -19,7 +19,6 @@ for member in @users
     <td class="sm-icon"><%=member_state(member.hstate)%></td>
     <td><%=link_to member.login, :controller => 'miembros', :action => member.login%></td>
     <td class="infoinline"><%=render :partial => '/shared/karmabar', :locals => {:user => member}%></td>
-    <td class="infoinline"><%=render :partial => '/shared/faithbar', :locals => {:user => member}%></td>
     <td class="infoinline"><%=format_interval((Time.now - member.faction_last_changed_on).to_i, 'días')%></td>
   </tr>
 <% end %>

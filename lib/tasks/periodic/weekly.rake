@@ -4,7 +4,6 @@ namespace :gm do
     # Eliminamos cache de páginas de comentarios (limpiando avatares y stats)
     `find #{FRAGMENT_CACHE_PATH}/comments -mindepth 1 -mmin +10080 -type d -exec rm -r {} \\; &> /dev/null` if File.exists?("#{FRAGMENT_CACHE_PATH}/comments")
     pay_organizations_wages
-    Emblems.give_emblems
     Reports.send_mrachmed_dominical
     #Download.check_invalid_downloads
     send_weekly_page_render_report_and_truncate
@@ -153,7 +152,7 @@ having portal_id in (select id
                  GROUP BY controller, action
                  HAVING count(*) > 10
                  ORDER BY count(*) DESC")
-    Notification.weekly_avg_page_render_time(
+    NotificationEmail.weekly_avg_page_render_time(
         :top_avg_time => @top_avg_time, :top_count => @top_count).deliver
 
     User.db_query("DELETE FROM stats.pageloadtime WHERE created_on <= now() - '1 week'::interval")

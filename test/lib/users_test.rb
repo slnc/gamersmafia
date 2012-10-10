@@ -21,8 +21,8 @@ class UsersTestController < ActionController::Base
     require_auth_users
   end
 
-  def action_require_admin_permission_faq
-    require_admin_permission_faq
+  def action_require_skill_faq
+    require_skill_faq
   end
 
   def action_require_auth_admins

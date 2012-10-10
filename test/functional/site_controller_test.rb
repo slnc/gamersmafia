@@ -95,9 +95,18 @@ class SiteControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "rate_content_should_work_if_authed" do
+  test "rate_content_should_work_if_authed_and_skill" do
+    give_skill(2, "RateContents")
     sym_login 2
-    assert_count_increases(ContentRating) do
+    assert_difference("ContentRating.count") do
+      post :rate_content, { :content_rating => { :rating => '1', :content_id => 1}}
+    end
+    assert_response :success
+  end
+
+  test "rate_content_shouldnt_work_if_authed_no_skill" do
+    sym_login 2
+    assert_difference("ContentRating.count", 0) do
       post :rate_content, { :content_rating => { :rating => '1', :content_id => 1}}
     end
     assert_response :success
@@ -248,74 +257,6 @@ class SiteControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "transfer_should_redirect_if_all_missing" do
-    Bank.transfer(:bank, User.find(1), 10, 'f')
-    sym_login(1)
-    post :confirmar_transferencia, {}
-    assert_redirected_to '/'
-  end
-
-  test "transfer_should_redirect_if_recipient_class_empty" do
-    Bank.transfer(:bank, User.find(1), 10, 'f')
-    sym_login(1)
-    post :confirmar_transferencia, {:recipient_class => ''}
-    assert_redirected_to '/'
-  end
-
-  test "transfer_should_redirect_if_not_found_recipient" do
-    Bank.transfer(:bank, User.find(1), 10, 'f')
-    sym_login(1)
-    post :confirmar_transferencia, {:sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_user_login => 'bananito', :description => 'foo', :ammount => '500'}
-    assert_redirected_to '/'
-  end
-
-  test "transfer_should_redirect_if_no_description" do
-    Bank.transfer(:bank, User.find(1), 10, 'f')
-    sym_login(1)
-    post :confirmar_transferencia, {:sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_user_login => 'panzer', :description => '', :ammount => '500'}
-    assert_redirected_to '/'
-  end
-
-  test "transfer_should_redirect_if_no_ammount" do
-    Bank.transfer(:bank, User.find(1), 10, 'f')
-    sym_login(1)
-    post :confirmar_transferencia, {:sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_user_login => 'panzer', :description => 'foobar', :ammount => ''}
-    assert_redirected_to '/'
-  end
-
-  test "transfer_should_redirect_if_same_sender_and_recipient" do
-    Bank.transfer(:bank, User.find(1), 10, 'f')
-    sym_login(1)
-    post :confirmar_transferencia, {:sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_user_login => 'superadmin', :description => 'foobar', :ammount => '500'}
-    assert_redirected_to '/'
-  end
-
-  test "shouldn't transfer if user is too young" do
-    Bank.transfer(:bank, User.find(1), 10, 'f')
-    User.db_query("UPDATE users SET created_on = now() - '1 day'::interval where login = 'panzer'")
-    sym_login(1)
-    post :confirmar_transferencia, {:sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_user_login => 'panzer', :description => 'foobar', :ammount => '1'}
-    assert_response :redirect
-  end
-
-  test "transfer_should_show_confirm_dialog_if_all_existing" do
-    Bank.transfer(:bank, User.find(1), 10, 'f')
-    User.db_query("UPDATE users SET created_on = now() - '2 months'::interval where login = 'panzer'")
-    sym_login(1)
-    post :confirmar_transferencia, {:sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_user_login => 'panzer', :description => 'foobar', :ammount => '1'}
-    assert_response :success
-    assert_template 'site/confirmar_transferencia'
-  end
-
-  test "transferencia_confirmada" do
-    test_transfer_should_show_confirm_dialog_if_all_existing
-    assert_count_increases(CashMovement) do
-      post :transferencia_confirmada, {:redirto => '/', :sender_class => 'User', :sender_id => 1, :recipient_class => 'User', :recipient_id => User.find_by_login('panzer').id, :description => 'foobar', :ammount => '1'}
-    end
-    assert_response :redirect
-  end
-
-
   test "should_update_online_state_if_x" do
     sym_login(1)
     u = User.find(1)
@@ -344,7 +285,6 @@ class SiteControllerTest < ActionController::TestCase
 
   test "should_properly_acknowledge_resurrection" do
     u1 = User.find(1)
-    fp = u1.faith_points
     u2 = User.find(2)
     u2.lastseen_on = 4.months.ago
     u2.resurrected_by_user_id = 1
@@ -357,7 +297,6 @@ class SiteControllerTest < ActionController::TestCase
     assert_response :success
 
     u1.reload
-    assert_equal Faith::FPS_ACTIONS['resurrection'] + fp, u1.faith_points
     assert_equal mails_sent + 1, ActionMailer::Base.deliveries.size # el email de aviso  referer
     assert_equal u1.email, ActionMailer::Base.deliveries.at(-1).to[0]
   end

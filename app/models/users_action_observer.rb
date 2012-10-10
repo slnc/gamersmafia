@@ -5,7 +5,6 @@ class UsersActionObserver < ActiveRecord::Observer
           Content,
           Friendship,
           ProfileSignature,
-          RecruitmentAd,
           User,
           UsersEmblem
 
@@ -25,11 +24,14 @@ class UsersActionObserver < ActiveRecord::Observer
       data = "#{user_link(object.user)} #{ClansMovement.translate_direction(object.direction)} <a href=\"/clanes/clan/#{object.id}\">#{object.clan}</a>"
       UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_CLANS_MOVEMENT, :object_id => object.id, :data => data)
 
-      when 'UsersEmblem'
-      if Emblems::EMBLEMS_TO_REPORT.include?(object.emblem)
-        data = "#{user_link(object.user)} ha obtenido el emblema de <strong>#{Emblems::EMBLEMS[object.emblem.to_sym][:title]}</strong>"
-        UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_USERS_EMBLEM, :object_id => object.id, :data => data)
-      end
+      # TODO(slnc): do we want to notify these things on the community log
+      # table? Probably no, right? It's gonna get noisy if you have 100 friends
+      # and about 50 emblems that can be easily achieved.
+      #when 'UsersEmblem'
+      #if Emblems::EMBLEMS_TO_REPORT.include?(object.emblem)
+      #  data = "#{user_link(object.user)} ha obtenido el emblema de <strong>#{Emblems::EMBLEMS[object.emblem.to_sym][:title]}</strong>"
+      #  UsersAction.create(:user_id => object.user_id, :type_id => UsersAction::NEW_USERS_EMBLEM, :object_id => object.id, :data => data)
+      #end
 
       when 'Clan'
       if object.creator_user_id
@@ -77,15 +79,6 @@ class UsersActionObserver < ActiveRecord::Observer
                            :data => "#{user_link(object)} #{msg}")
       end
 
-      when 'RecruitmentAd'
-      if object.deleted_changed?
-        UsersAction.find(
-            :all,
-            :conditions => ['type_id = ? AND object_id = ?',
-                            UsersAction::NEW_RECRUITMENT_AD,
-                            object.id]).each { |ra| ra.destroy }
-      end
-
       when 'Friendship'
       if object.accepted_on_changed? && !object.accepted_on.nil?
         UsersAction.create(:user_id => object.sender_user_id,
@@ -117,10 +110,6 @@ class UsersActionObserver < ActiveRecord::Observer
       UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_CLANS_MOVEMENT, object.id]).each { |ra| ra.destroy }
       when 'UsersEmblem'
       UsersAction.find(:all, :conditions => ['type_id = ? AND object_id = ?', UsersAction::NEW_USERS_EMBLEM, object.id]).each { |ra| ra.destroy }
-      # TODO
-      #Faith.reset(object.referer) if object.referer_user_id # no hacemos lo siguiente porque ahora mismo no controlamos muy bien cuándo pasa de un estado a otro y los puntos de fe asociados.
-      #Faith.reset(object.resurrector) if object.resurrected_by_user_id && (object.referer_user_id.nil? || object.referer_user_id != object.resurrected_by_user_id)
-      # Faith.take(object.referer, Faith::FPS_ACTIONS['registration']) if object.referer_user_id && object.state != 'zombie'
     end
   end
 end

@@ -50,11 +50,6 @@ class HomeControllerTest < ActionController::TestCase
   end
 
   test "hq" do
-    assert_raises(AccessDenied) { get :hq }
-
-    sym_login 5
-    assert_raises(AccessDenied) { get :hq }
-
     sym_login 1
     get :hq
     assert_response :success

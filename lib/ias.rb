@@ -1,21 +1,22 @@
 module Ias
   VALID_IAS = %w(
     jabba
-    MrAlariko
-    MrAchmed
-    MrCheater
-    MrMan
+    mralariko
+    mrachmed
+    mrcheater
+    mrgod
+    mrman
     nagato
   )
 
   @@cache_ias = {}
   def self.ia(login)
     @@cache_ias[login] ||= User.find(
-        :first, :conditions => ["login = ? AND is_bot IS TRUE", login])
+        :first, :conditions => ["LOWER(login) = LOWER(?)", login])
   end
 
   def self.method_missing(method_name)
-    if !VALID_IAS.include?(method_name.to_s)
+    if !VALID_IAS.include?(method_name.downcase.to_s)
       raise "Invalid IA name #{method_name}"
     end
 

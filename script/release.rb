@@ -63,6 +63,7 @@ def tag_and_notify
         :subject => "GM actualizada a #{new_tag}: #{commits_count} #{changes}",
         :body => body)
   end
+  open("public/storage/gitlog", "w").write(body)
   `git tag -a -m #{new_tag} #{new_tag}`
 end
 

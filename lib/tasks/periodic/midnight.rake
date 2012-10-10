@@ -10,7 +10,6 @@ namespace :gm do
     #`python script/spark.py metric #{dbi.collect {|dbr| dbr['count'] }.concat([0] * (days - dbi.size)).reverse.join(',')} "#{dst_file}"`
     #return
 
-    Faith.delay.reset_remaining_rating_slots
     Faction.delay.update_factions_cohesion
     Bet.generate_top_bets_winners_minicolumns
     update_factions_stats # Order is important
@@ -201,7 +200,6 @@ namespace :gm do
       avg_db_queries_per_request = dbrender['avg_dbq'].to_f
       stddev_db_queries_per_request = dbrender['stddev_dbq'].to_f
       karma_diff = Gmstats.karma_in_time_period(first_stat, next_stat)
-      faith_diff = Gmstats.faith_in_time_period(first_stat, next_stat)
       users_generating_karma = User.count(:conditions => "id IN (SELECT user_id FROM comments WHERE deleted = 'f' AND date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' UNION SELECT user_id FROM contents WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}')")
       active_factions_portals = User.db_query("SELECT count(*) FROM stats.portals WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND karma > 0 AND portal_id IN (SELECT id FROM portals WHERE type='FactionsPortal')")[0]['count']
       active_clans_portals = User.db_query("SELECT count(*) FROM stats.portals WHERE date_trunc('day', created_on) = '#{first_stat.strftime('%Y-%m-%d 00:00:00')}' AND karma > 0 AND portal_id IN (SELECT id FROM portals WHERE type='ClansPortal')")[0]['count']
@@ -243,7 +241,6 @@ namespace :gm do
                         active_factions_portals = '#{active_factions_portals}',
                         active_clans_portals = '#{active_clans_portals}',
                         karma_per_user = '#{karma_diff.to_f / (users_generating_karma+0.1)}',
-                        faith_diff = '#{faith_diff}',
                         requests = '#{requests}',
                         karma_diff = '#{karma_diff}',
                         proxy_errors = '#{proxy_errors}',

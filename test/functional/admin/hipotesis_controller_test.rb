@@ -5,13 +5,10 @@ class Admin::HipotesisControllerTest < ActionController::TestCase
   test_min_acl_level :superadmin, [ :index, :nueva, :create, :editar, :update ]
 
   def setup
-    sym_login 1
     # TODO(slnc): temporary hack. This test is failing when running rake test
     # but not when running only this testcase
-    [1, 2].each do |ab_test_id|
-      abtest = AbTest.find_by_id(ab_test_id)
-      abtest.destroy if abtest
-    end
+    User.db_query("DELETE FROM ab_tests")
+    sym_login 1
   end
 
   test "index" do
@@ -31,11 +28,11 @@ class Admin::HipotesisControllerTest < ActionController::TestCase
     assert_response :redirect
   end
 
-  #test "editar" do
-  #  self.create_abtest
-  #  get :editar, :id => @ab_test.id
-  #  assert_response :success
-  #end
+  test "editar" do
+    self.create_abtest
+    get :editar, :id => @ab_test.id
+    assert_response :success
+  end
 
   test "update" do
     self.create_abtest

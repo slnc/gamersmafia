@@ -10,11 +10,13 @@
    acts_as_content_browser
    acts_as_tree
    all
+   authorization
    cms
    bank
    gmstats
    skins
    ads
+   translation
    stats
    stats_mixings_ab_tests
    acts_as_rootable

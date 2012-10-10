@@ -2,6 +2,14 @@
 require 'test_helper'
 
 class Admin::IpBansControllerTest < ActionController::TestCase
+
+  test "index no skill" do
+    sym_login 2
+    assert_raises(AccessDenied) do
+      get :index
+    end
+  end
+
   test "index" do
     sym_login 1
     get :index
@@ -23,18 +31,5 @@ class Admin::IpBansControllerTest < ActionController::TestCase
       post :destroy, {:id => IpBan.find(:first)}
       assert_response :success
     end
-  end
-
-  test "user_with_admin_permission_should_allow_if_registered" do
-    assert_raises(AccessDenied) { get :index }
-    u2 = User.find(2)
-    sym_login u2
-    assert_raises(AccessDenied) { get :index }
-
-    u2.give_admin_permission(:capo)
-
-    sym_login u2
-    get :index
-    assert_response :success
   end
 end

@@ -22,22 +22,6 @@ class KarmaTest < ActiveSupport::TestCase
     assert_equal kp_initial - 1, u.karma_points
   end
 
-  test "should_not_corrupt_karma_points_cache_due_to_concurrency" do
-    u_a = User.find(1)
-    u_b = User.find(1)
-    kp_initial = u_a.karma_points
-    Karma.give(u_a, 1)
-    Karma.give(u_b, 1)
-    # La primera instancia no tiene los datos frescos, ok, para eso usamos la
-    # cache.
-    assert_equal kp_initial + 1, u_a.karma_points
-    assert_equal kp_initial + 2, u_b.karma_points
-    u_a.reload
-    u_b.reload
-    assert_equal kp_initial + 2, u_a.karma_points
-    assert_equal kp_initial + 2, u_b.karma_points
-  end
-
   test "award_karma_points_new_ugc" do
     Karma.award_karma_points_new_ugc
   end

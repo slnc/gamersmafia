@@ -45,7 +45,7 @@ class KarmaObserverTest < ActiveSupport::TestCase
     n.reload
 
     # publicamos
-    Cms::publish_content(n, User.find(1))
+    Content.publish_content_directly(n, User.find(1))
     assert n.is_public?
     u2.reload
     assert_equal u2_kp_initial + n.unique_content.karma_points, u2.karma_points
@@ -60,7 +60,7 @@ class KarmaObserverTest < ActiveSupport::TestCase
     n.reload
 
     # publicamos
-    Cms::publish_content(n, User.find(1))
+    Content.publish_content_directly(n, User.find(1))
     original_kp = n.unique_content.karma_points
     assert n.is_public?
     u2.reload
@@ -76,7 +76,7 @@ class KarmaObserverTest < ActiveSupport::TestCase
     n.reload
 
     # publicamos
-    Cms::publish_content(n, User.find(1))
+    Content.publish_content_directly(n, User.find(1))
     original_kp = n.unique_content.karma_points
     assert n.is_public?
     u2.reload
@@ -97,7 +97,7 @@ class KarmaObserverTest < ActiveSupport::TestCase
     n = News.find(:first, :order => 'id DESC')
     assert_equal true, n.is_public?
     original_kp = n.unique_content.karma_points
-    Cms::deny_content(n, User.find(1), 'foo')
+    Content.deny_content(n, User.find(1), 'foo')
     u2.reload
     assert_equal u2_kp_initial - original_kp, u2.karma_points
   end

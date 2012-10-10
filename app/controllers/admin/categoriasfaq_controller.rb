@@ -1,6 +1,10 @@
 # -*- encoding : utf-8 -*-
 class Admin::CategoriasfaqController < ApplicationController
-  require_admin_permission :faq
+  before_filter do |c|
+    if !c.user || !Authorization.can_edit_faq?(c.user)
+      raise AccessDenied
+    end
+  end
 
   def index
     @faq_categories = FaqCategory.find(

@@ -73,6 +73,10 @@ module ApplicationHelper
     (count == 1) ? word : "#{word}s"
   end
 
+  def gm_translate(word)
+    Translation.translate(word)
+  end
+
   def portal_code
     controller.portal_code
   end
@@ -80,11 +84,9 @@ module ApplicationHelper
   def sawmode
     @sawmode ||= begin
       if user_is_authed then
-        if @user.is_superadmin?
+        if @user.has_skill?("Webmaster")
           sawmode = 'full'
-        elsif @user.is_hq?
-          sawmode = 'hq'
-        elsif @user.has_admin_permission?(:advertiser)
+        elsif Authorization.is_advertiser?(@user)
           sawmode = 'anunciante'
         else
           sawmode = ''
@@ -93,6 +95,11 @@ module ApplicationHelper
         sawmode = ''
       end
     end
+  end
+
+  def skill_needed_disclaimer(skill_name)
+    "Necesitas la <a href=\"/cuenta/cuenta/habilidades\">habilidad #{skill_name}
+    </a> para poder acceder a esta sección."
   end
 
   # Global var shortcut function
@@ -778,7 +785,7 @@ skin: 'v2'
 
 
   def content_bottom(obj)
-    if user_is_authed and obj.state == Cms::PENDING and obj.class.name != 'Blogentry' and @user.id != obj.user_id
+    if user_is_authed && obj.state == Cms::PENDING && obj.class.name != 'Blogentry' && @user.id != obj.user_id
       controller.send(:render_to_string, :partial => '/shared/accept_or_deny', :locals => { :object => obj }).force_encoding("utf-8")
     elsif [Cms::PUBLISHED, Cms::DELETED, Cms::ONHOLD].include?(obj.state)
       out = controller.send(:render_to_string, :partial => 'shared/contentinfobar', :locals => { :object => obj }).force_encoding("utf-8")

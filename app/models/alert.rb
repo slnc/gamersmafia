@@ -50,7 +50,7 @@ class Alert < ActiveRecord::Base
       :webmaster => [:error]
   }
 
-  VALID_ROLES = %w(
+  VALID_SKILLS = %w(
       Don
       ManoDerecha
       Sicario
@@ -62,7 +62,7 @@ class Alert < ActiveRecord::Base
       CompetitionSupervisor
   )
 
-  USERS_ROLES_2_DOMAINS = {
+  USERS_SKILLS_2_DOMAINS = {
       'Boss' => :faction_bigboss,
       'CompetitionAdmin' => :competition_admin,
       'CompetitionSupervisor' => :competition_supervisor,
@@ -163,13 +163,13 @@ class Alert < ActiveRecord::Base
       BazarDistrict.find(scope).sicarios
 
       when :capo
-      User.find_with_admin_permissions(:capo)
+      UsersSkill.find_users_with_skill("Capo")
 
       when :bazar_manager
-      User.find_with_admin_permissions(:bazar_manager)
+      UsersSkill.find_users_with_skill("BazarManager")
 
       when :gladiador
-      User.find_with_admin_permissions(:gladiador)
+      UsersSkill.find_users_with_skill("Gladiator")
 
       when :webmaster
       [User.find(1)]
@@ -188,20 +188,20 @@ class Alert < ActiveRecord::Base
     # TODO capo y bazar_manager falta
     total = 0
 
-    total += ccount(:open, :domain => :capo) if u.has_admin_permission?(:capo)
-    total += ccount(:open, :domain => :bazar_manager) if u.has_admin_permission?(:bazar_manager)
-    total += ccount(:open, :domain => :gladiador) if u.has_admin_permission?(:gladiador)
+    total += ccount(:open, :domain => :capo) if u.has_skill?("Capo")
+    total += ccount(:open, :domain => :bazar_manager) if u.has_skill?("BazarManager")
+    total += ccount(:open, :domain => :gladiador) if u.has_skill?("Gladiator")
     total += ccount(:open, :domain => :webmaster) if u.id == 1
 
-    valid_roles = USERS_ROLES_2_DOMAINS.keys.collect { |k| "'#{k}'" }
+    valid_roles = USERS_SKILLS_2_DOMAINS.keys.collect { |k| "'#{k}'" }
 
     u.users_skills.find(:all, :conditions => "role IN (#{valid_roles.join(',')})").each do |ur|
       if ur.role == 'Editor'
         total += ccount(:open, :domain => :editor, :scope => Alert.encode_editor_scope(ur.role_data_yaml[:faction_id].to_i, ur.role_data_yaml[:content_type_id].to_i))
       elsif ur.role_data.to_s != ''
-        total += ccount(:open, :domain => USERS_ROLES_2_DOMAINS.fetch(ur.role), :scope => ur.role_data.to_i)
+        total += ccount(:open, :domain => USERS_SKILLS_2_DOMAINS.fetch(ur.role), :scope => ur.role_data.to_i)
       else
-        total += ccount(:open, :domain => USERS_ROLES_2_DOMAINS.fetch(ur.role))
+        total += ccount(:open, :domain => USERS_SKILLS_2_DOMAINS.fetch(ur.role))
       end
     end
     u.update_attributes(:pending_alerts => total)
@@ -369,21 +369,21 @@ class Alert < ActiveRecord::Base
   def self.scopes(domain, u)
     case domain
       when :bazar_district_bigboss
-      if u.has_admin_permission?(:bazar_manager)
+      if u.has_skill?("BazarManager")
         BazarDistrict.find(:all, :order => 'lower(name)')
       else
         [BazarDistrict.find_by_bigboss(u)].compact
       end
 
       when :faction_bigboss
-      if u.has_admin_permission?(:capo)
+      if u.has_skill?("Capo")
         Faction.find(:all, :order => 'lower(name)')
       else
         [Faction.find_by_bigboss(u)].compact
       end
 
       when :moderator
-      if u.has_admin_permission?(:capo)
+      if u.has_skill?("Capo")
         Faction.find(:all, :order => 'lower(name)')
       else
         # en las que tenga moderator
@@ -392,7 +392,7 @@ class Alert < ActiveRecord::Base
       end
 
       when :editor
-      if u.has_admin_permission?(:capo)
+      if u.has_skill?("Capo")
         Faction.find(:all, :order => 'lower(name)').collect { |f| EditorScope.new(f.id, nil) }
       else
         # todas en las que sea boss
@@ -407,21 +407,21 @@ class Alert < ActiveRecord::Base
       end
 
       when :sicario
-      if u.has_admin_permission?(:bazar_manager)
+      if u.has_skill?("BazarManager")
         BazarDistrict.find(:all, :order => 'lower(name)')
       else
         [BazarDistrict.find_by_bigboss(u)].compact + BazarDistrict.find_by_sicario(u)
       end
 
       when :competition_admin
-      if u.has_admin_permission?(:gladiador)
+      if u.has_skill?("Gladiator")
         Competition.find(:all, :conditions => 'deleted = \'f\'', :order => 'lower(name)')
       else
         Competition.find_by_admin(u)
       end
 
       when :competition_supervisor
-      if u.has_admin_permission?(:gladiador)
+      if u.has_skill?("Gladiator")
         Competition.find(:all, :conditions => 'deleted = \'f\'', :order => 'lower(name)')
       else
         Competition.find_by_admin(u) + Competition.find_by_supervisor(u)
@@ -452,7 +452,7 @@ class Alert < ActiveRecord::Base
   end
 
   def self.reset_users_pending_alerts
-    us = User.find_with_admin_permissions(:capo)
+    us = UsersSkill.find_users_with_skill("Capo")
 
     UsersSkill.find(:all, :include => :user).each do |ur|
       us << ur.user

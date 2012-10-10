@@ -1,7 +1,7 @@
 <%
 author = object.user
 
-if not object.new_record? and Cms::user_can_edit_content?(@user, object) then %>
+if not object.new_record? and Authorization.can_edit_content?(@user, object) then %>
 <script type="text/javascript">
 //<![CDATA[
 

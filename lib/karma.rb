@@ -133,10 +133,10 @@ module Karma
         SELECT SUM(karma_points) AS karma_points,
           user_id
         FROM comments
-        WHERE (
-            SELECT is_bot
-            FROM users
-            WHERE id = user_id) = 'f'
+        WHERE user_id NOT IN (
+            SELECT user_id
+            FROM users_skills
+            WHERE role = 'Bot')
         AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'
           AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
         GROUP BY user_id").each do |dbc|
@@ -149,10 +149,10 @@ module Karma
           user_id,
           content_type_id
         FROM contents
-        WHERE (
-            SELECT is_bot
-            FROM users
-            WHERE id = user_id) = 'f'
+        WHERE user_id NOT IN (
+            SELECT user_id
+            FROM users_skills
+            WHERE role = 'Bot')
         AND created_on BETWEEN '#{date_start.strftime('%Y-%m-%d %H:%M:%S')}'
           AND '#{date_end.strftime('%Y-%m-%d %H:%M:%S')}'
         GROUP BY user_id, content_type_id").each do |dbc|
@@ -258,7 +258,7 @@ module Karma
 
         SELECT cache_karma_points
         FROM users
-        WHERE id = #{user.id}")[0]['cache_karma_points']
+        WHERE id = #{user.id}")[0]['cache_karma_points'].to_i
   end
 
   def self.ranking_user(u)

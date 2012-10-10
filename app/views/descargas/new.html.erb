@@ -22,7 +22,7 @@
 </form>
 <% end -%>
 
-<% if Cms.user_can_mass_upload(@user) then %>
+<% if Authorization.can_bulk_upload?(@user) then %>
 <%mftext('Añadir descargas en masa') do %>
 <%= form_tag({:action => 'create_from_zip'}, :multipart => true) %>
 <%=render :partial => '/shared/category_term_select', :locals => { :index => 100, :content_type => 'Download' } %>

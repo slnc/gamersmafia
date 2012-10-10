@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Admin::ClanesController < ApplicationController
-  require_admin_permission :capo
+  require_skill("Capo")
 
   def index
     @title = 'Clanes'

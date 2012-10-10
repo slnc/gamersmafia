@@ -1,0 +1,4 @@
+<%mftable("Emblemas", sorted_user_emblems(@curuser),
+          options={:class_container => 'no-title-icon'}) do |emblem| %>
+  <td><%=emblem.inline_html%></td>
+<% end -%>

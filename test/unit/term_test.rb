@@ -229,7 +229,7 @@ class TermTest < ActiveSupport::TestCase
     a_term = Term.single_toplevel(:slug => "ut")
     original_last_item = a_term.get_or_resolve_last_updated_item
 
-    Cms::modify_content_state(original_last_item, User.find(1), Cms::DELETED)
+    Content.delete_content(original_last_item, User.find(1))
 
     a_term.reload
     original_last_item.reload
@@ -258,7 +258,7 @@ class TermTest < ActiveSupport::TestCase
 
   test "should_update_parent_categories_counter_after_marking_as_deleted_topic" do
     test_should_update_parent_categories_counter
-    Cms::modify_content_state(@topic, User.find(1), Cms::DELETED)
+    Content.delete_content(@topic, User.find(1))
     @topic.reload
     assert_equal Cms::DELETED, @topic.state
     @cat1.reload

@@ -3,7 +3,7 @@
   <ul class="content-hid">
   	<%# TODO perf cache("/common/admin/contenidos/index/pending_bets") do %>
   <% Bet.published.awaiting_result.find(:all).each do |bet| %>
-    <% if Cms::user_can_edit_content?(@user, bet) then %>
+    <% if Authorization.can_edit_content?(@user, bet) then %>
     <li><%=link_to bet.resolve_hid, "/apuestas/resolve/#{bet.id}"%></li>
     <% else %>
     <li><%=bet.resolve_hid%></li>
@@ -55,7 +55,7 @@ for @item in collection
   next if @item.class.name == 'Image' and i >= 50
 %>
     <tr class="<%=oddclass%>">
-    <% if Cms::user_can_edit_content?(@user, @item) && !lock then %>
+    <% if @user.has_skill?("MassModerateContents") && !lock %>
       <td class="checkbox"><input type="checkbox" name="items[]" onclick="slnc.hilit_row(this, 'selrow');" value="<%=@item.unique_content.id%>" /></td>
     <% else %>
       <td class="checkbox">&nbsp;</td>
@@ -143,7 +143,7 @@ function mass_deny()
     return false;
 }
 </script>
-<% if @user.has_admin_permission?(:capo) || @user.is_editor? || @user.is_sicario? then %>
+<% if Authorization.can_mass_moderate_contents?(@user) %>
 <hr />
 <table style="width: 100%" class="accept-or-deny">
   <tr valign="top">

@@ -525,7 +525,7 @@ class Competition < ActiveRecord::Base
             if self.send_notifications?
               vars = {:competition => self}
               recipients.each do |rcpt|
-                  Notification.invited_participant(rcpt, vars).deliver
+                  NotificationEmail.invited_participant(rcpt, vars).deliver
               end
             end
           end
@@ -553,7 +553,7 @@ class Competition < ActiveRecord::Base
         raise Exception unless self.class.name == 'Ladder' || self.competitions_participants.count > 1
         if self.send_notifications?
           self.competitions_participants.each do |participant|
-            Notification.competition_started(
+            NotificationEmail.competition_started(
                 participant.the_real_thing, {:competition => self}).deliver
           end
         end

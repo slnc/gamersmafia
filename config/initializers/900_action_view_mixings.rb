@@ -57,20 +57,11 @@ module ActionViewMixings
   end
 
   def create_ab_test(test_name, treatment)
-    ab_test = AbTest.create({
+    AbTest.create({
       :name => test_name,
       :treatments => treatment > 1 ? treatment : 1,
-      :metrics => [:clickthrough]
+      :metrics => [:clickthrough],
     })
-
-    Message.create({
-      :user_id_from => User.find_by_login(App.ia_auto_ab_tests).id,
-      :user_id_to => App.webmaster_user_id,
-      :title => ("AB Test '#{ab_test.name}' creado automáticamente con" +
-                 " #{ab_test.treatments} tratamientos"),
-      :message => "Revisa que esté bien, ¿vale?"
-    })
-    ab_test
   end
 
   def get_ab_test_strings(ab_test, treatment, opts)

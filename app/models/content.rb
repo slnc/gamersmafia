@@ -68,6 +68,89 @@ class Content < ActiveRecord::Base
   belongs_to :bazar_district
   belongs_to :user
 
+  def self.delete_content(real_item, user, reason="(sin razón)")
+    self.modify_content_state(real_item, user, Cms::DELETED, reason)
+  end
+
+  def self.deny_content(content, user, reason)
+    self.handle_publishing_decision(content, user, reason, false)
+  end
+
+  def self.publish_content(content, user, reason=nil)
+    self.handle_publishing_decision(content, user, reason, true)
+  end
+
+  def self.publish_content_directly(content, user)
+    self.modify_content_state(content, user, Cms::PUBLISHED)
+  end
+
+  def self.recover_content(content, user)
+    self.publish_content_directly(content, user)
+  end
+
+  def self.send_draft_to_moderation_queue(content)
+    self.modify_content_state(content, content.user, Cms::PENDING)
+  end
+
+  def self.handle_publishing_decision(content, user, reason, do_we_publish)
+    uniq = content.unique_content
+    pd = PublishingDecision.create_or_update_decision(
+        user, uniq, do_we_publish, reason)
+
+    overall_decision_score = PublishingDecision.find_sum_for_content(content)
+    if overall_decision_score >= 1.0
+      prev_state = content.state
+      content.change_state(Cms::PUBLISHED, Ias.MrMan)
+      if prev_state == Cms::PENDING
+        self.create_alert_after_crowd_publishing_decision(uniq, "publicado")
+      end
+    elsif overall_decision_score <= -1.0
+      prev_state = content.state
+      content.change_state(Cms::DELETED, Ias.MrMan)
+      if prev_state == Cms::PENDING
+        self.create_alert_after_crowd_publishing_decision(uniq, "denegado")
+      end
+    end
+
+    if content.state != Cms::PENDING
+      PublishingDecision.update_is_right_based_on_state(uniq)
+    end
+  end
+
+  def self.create_alert_after_crowd_publishing_decision(uniq, action_taken)
+    ttype, scope = Alert.fill_ttype_and_scope_for_content_report(uniq)
+    content_url = Routing.url_for_content_onlyurl(uniq.real_content)
+    Alert.create({
+      :type_id => ttype,
+      :scope => scope,
+      :reporter_user_id => Ias.MrMan.id,
+      :headline => (
+          "#{Cms.faction_favicon(uniq)}<strong>
+          <a href=\"#{content_url}\">#{uniq.real_content.resolve_html_hid}</a>
+          </strong> #{action_taken}"),
+    })
+  end
+
+  # Call this function if you want to change a content state regardless outside
+  # of the moderation queue voting mechanism.
+  def self.modify_content_state(content, user, new_state, reason=nil)
+    uniq = content.unique_content
+
+    pd = PublishingDecision.create_or_update_decision(
+        user, uniq, (new_state == Cms::PUBLISHED), reason)
+    pd.update_attribute(:user_weight, 1.0)
+
+    prev_state = content.state
+    content.change_state(new_state, user, force=true)
+
+    # Actualizamos campo 'is_right' de todos los publishing_decisions ya que o
+    # bien un editor ha tomado una decisión o bien la suma de los pesos de las
+    # personas que han votado ya ha superado uno de los ratios.
+    if [Cms::PUBLISHED, Cms::DELETED].include?(content.state)
+      PublishingDecision.update_is_right_based_on_state(content.unique_content)
+    end
+  end
+
   def self.delete_duplicated_comments
     total= 0
     User.db_query("

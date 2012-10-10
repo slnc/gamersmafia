@@ -83,7 +83,7 @@ class DemosController < ArenaController
     @title = "Editar #{@demo.title}"
     paths, navpath = get_category_address(@demo.main_category, 'DemosCategory')
     @navpath = navpath + [[@demo.title, "/demos/#{@demo.main_category.id}/#{@demo.id}"], ['Editar', "/demos/edit/#{@demo.id}"]]
-    if Cms::user_can_edit_content?(@user, @demo) then
+    if Authorization.can_edit_content?(@user, @demo) then
       @demo.lock(@user)
       render :action => 'edit'
     else

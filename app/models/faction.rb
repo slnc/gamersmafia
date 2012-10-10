@@ -88,14 +88,13 @@ class Faction < ActiveRecord::Base
   def send_warning_coup_detat
     mrcheater = User.find_by_login!("MrCheater")
     [self.boss, self.underboss].compact.each do |user|
-      Message.create({
-          :user_id_from => mrcheater.id,
-          :user_id_to => user.id,
-          :title => "Peligro: Golpe de estado inminente",
-          :message => (
-              "Han pasado muchos días sin generarse karma en tu facción (" +
-              "#{self.name}). Si no se genera karma en la próxima semana" +
-              " perderás el control de la facción.")
+      Notification.create({
+          :sender_user_id => Ias.mrcheater.id,
+          :user_id => user.id,
+          :description => (
+              "Peligro: Golpe de estado inminente. Han pasado muchos días sin"
+              " generarse karma en #{self.name}). Si no se genera karma en la"
+              " próxima semana perderás el control de la facción."),
       })
     end
   end
@@ -176,7 +175,7 @@ class Faction < ActiveRecord::Base
   end
 
   def is_moderator?(u)
-    (u.has_admin_permission?(:capo) ||
+    (u.has_skill?("Capo") ||
      UsersSkill.count(
         :conditions => [
             "role IN ('Boss', 'Underboss', 'Moderator')
@@ -188,7 +187,7 @@ class Faction < ActiveRecord::Base
   end
 
   def is_editor?(user)
-    return true if user.has_admin_permission?(:capo)
+    return true if user.has_skill?("Capo")
     if self.is_bigboss?(user)
       true
     elsif UsersSkill.count(
@@ -211,7 +210,7 @@ class Faction < ActiveRecord::Base
   end
 
   def is_bigboss?(u)
-    u.has_admin_permission?(:capo) || is_boss?(u) || is_underboss?(u)
+    u.has_skill?("Capo") || is_boss?(u) || is_underboss?(u)
   end
 
   def is_boss?(u)
@@ -623,10 +622,6 @@ class Faction < ActiveRecord::Base
     Karma.calculate_karma_points(self)
   end
 
-  def faith_points
-    Faith.faction_faith_points(self)
-  end
-
   def rank_members
     # devuelve el rango que ocupa la facción en cuanto a número de usuarios
     # registrados.
@@ -700,37 +695,33 @@ class Faction < ActiveRecord::Base
         :terms => cat.id,
         :main => Comments::formatize("[IMG]http://gamersmafia.com/images/golpe_de_estado.jpg[/IMG]\n[~#{who}] no es un buen líder, no presta atención a la facción y los usuarios han hablado. ¡Quieren un cambio!\n¡Por esta razón y con el poder que el poder en la sombra me ha otorgado declaro esta facción libre de boss y underboss!\n\nCualquiera que desee hacerse cargo de esta facción puede comprarla en la tienda."))
 
-    # les enviamos un mensaje privado para notificarselo (desde MrCheater)
+    notification_options = {
+        :sender_user_id => Ias.mrcheater.id,
+        :description => (
+            "¡Golpe de estado en #{self.name}!
+            <a href=\"#{Routing.url_for_content_onlyurl(t)}\">Más
+            información</a>."),
+    }
+
     sent_uids = []
     [self.boss, self.underboss].each do |u|
       next if u.nil?
       sent_uids << u.id
-      Message.create(
-          :user_id_from => mrcheater.id,
-          :user_id_to => u.id,
-          :title => 'Golpe de estado',
-          :message => 'Más información en ' << Routing.url_for_content_onlyurl(t)
-      )
+      Notification.create({:user_id => u.id}.merge(notification_options))
+
     end
 
-    # quitamos al boss y al underboss
     self.update_boss(nil)
     self.update_underboss(nil)
 
-    # mandamos un email de notificación a los miembros
-    self.members.each do |m|
-      next if sent_uids.include?(m.id)  # si ya hemos enviado al boss/underboss
-      Message.create(
-          :user_id_from => mrcheater.id,
-          :user_id_to => m.id,
-          :title => "Golpe de estado en #{self.name}",
-          :message => "Más información en #{Routing.url_for_content_onlyurl(t)}"
-      )
+    self.members.each do |u|
+      next if sent_uids.include?(u.id)
+      Notification.create({:user_id => u.id}.merge(notification_options))
     end
   end
 
   def user_is_editor_of_content_type?(user, content_type)
-    return true if user.is_superadmin || user.has_admin_permission?(:capo)
+    return true if user.has_skill?("Webmaster") || user.has_skill?("Capo")
     if self.is_bigboss?(user)
       true
     elsif UsersSkill.count(

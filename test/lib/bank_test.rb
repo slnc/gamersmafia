@@ -13,21 +13,11 @@ class BankTest < ActiveSupport::TestCase
   end
 
   test "should_properly_convert_karma_points_to_gmf" do
-    assert_equal 0.2, Bank.convert(1, 'karma_points')
-  end
-
-  test "should_properly_convert_faith_level_to_gmf" do
-    assert_equal 0, Bank.convert(0, 'faith_level')
-    assert_equal 5, Bank.convert(1, 'faith_level')
-    assert_equal 15, Bank.convert(2, 'faith_level')
-    assert_equal 35, Bank.convert(3, 'faith_level')
-    assert_equal 75, Bank.convert(4, 'faith_level')
-    assert_equal 100, Bank.convert(5, 'faith_level')
+    assert_equal 1, Bank.convert(1, 'karma_points')
   end
 
   test "should_not_convert_if_negative_ammount" do
     assert_raises(Bank::NegativeAmmountError) { Bank.convert(-1, 'karma_points') }
-    assert_raises(Bank::NegativeAmmountError) { Bank.convert(-1, 'faith_level') }
   end
 
   test "should_not_tranfer_if_blank_description" do

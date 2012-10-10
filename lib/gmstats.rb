@@ -10,10 +10,6 @@ module Gmstats
     Karma.karma_in_time_period(t1, t2)
   end
 
-  def self.faith_in_time_period(t1, t2)
-  Faith.faith_in_time_period(t1, t2)
-  end
-
   def self.faction_karma_in_time_period(faction, t1, t2)
     Karma.faction_karma_in_time_period(faction, t1, t2)
   end

@@ -1,12 +1,9 @@
-<% mftext('Configuración de cuenta') do %>
-<form method="post" action="/cuenta/cuenta/update_notifications">
-<p>Selecciona qué notificaciones deseas recibir por email.</p>
-<label><%= check_box 'user', 'notifications_global', {} %> Noticias importantes y actualizaciones sobre gamersmafia</label><br />
-<label><%= check_box 'user', 'notifications_newmessages', {} %> Nuevos mensajes privados</label><br />
-<label><%= check_box 'user', 'notifications_newregistrations', {} %> Nuevos registros referidos por mi</label><br />
-<label><%= check_box 'user', 'notifications_trackerupdates', {} %> Nuevos comentarios en contenidos de mi tracker</label><br />
-<% if @user.enable_profile_signatures? then %><label><%= check_box 'user', 'notifications_newprofilesignature', {} %> Nuevas firmas en tu libro de firmas</label><br /><% end -%>
-<br />
-<%= submit_tag 'Guardar' %>
-</form>
+<%mftable("Notificaciones", @notifications) do |notification| %>
+  <td class="infoinline timestamp">
+    <% if @unread_ids.include?(notification.id) %><strong><% end -%>
+      <%=print_tstamp(notification.created_on)%>
+    <% if @unread_ids.include?(notification.id) %></strong><% end -%>
+  </td>
+  <td style="width: 54px; padding: 2px 4px 2px 10px;"><div class="avatar"><img src="<%=ASSET_URL%><%=notification.sender.show_avatar%>" /></div></td>
+  <td style="padding-left: 6px;"><%=notification.description%></td>
 <% end -%>

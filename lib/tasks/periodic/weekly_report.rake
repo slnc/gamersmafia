@@ -3,9 +3,9 @@ namespace :gm do
   task :weekly_report => :environment do
     nagato = User.find_by_login!(:nagato)
     Faction.find_unorphaned.each do |f|
-      Notification.faction_summary(
+      NotificationEmail.faction_summary(
           f.boss, :sender => nagato, :faction => f).deliver if f.boss
-      Notification.faction_summary(
+      NotificationEmail.faction_summary(
           f.underboss, :sender => nagato, :faction => f).deliver if f.underboss
     end
   end

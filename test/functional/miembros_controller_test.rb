@@ -61,25 +61,42 @@ class MiembrosControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should_leave_new_signature" do
+  test "should_leave_new_signature if skill" do
+    give_skill(2, "ProfileSignatures")
     sym_login 2
     @u1 = User.find(1)
-    countsigs = @u1.profile_signatures_count
-    post :update_signature, { :login => @u1.login, :profile_signature => { :signature => 'vaka' }}
-    assert_response :redirect
-    @u1.reload
-    assert_equal countsigs + 1, @u1.profile_signatures_count
+    countsigs = @u1.profile_signatures.count
+    assert_difference("@u1.profile_signatures.count") do
+      post :update_signature, {
+        :login => @u1.login,
+        :profile_signature => {:signature => 'vaka'},
+      }
+      assert_response :redirect
+    end
+  end
+
+  test "should_not leave_new_signature if no skill" do
+    sym_login 2
+    @u1 = User.find(1)
+    countsigs = @u1.profile_signatures.count
+    assert_raises(AccessDenied) do
+      post :update_signature, {
+        :login => @u1.login,
+        :profile_signature => {:signature => 'vaka'},
+      }
+    end
   end
 
   test "should_not_leave_new_signature_if_same_person" do
     sym_login 1
+    give_skill(1, "ProfileSignatures")
     @u1 = User.find(1)
-    countsigs = @u1.profile_signatures_count
+    countsigs = @u1.profile_signatures.count
     assert_raises(AccessDenied) do
       post :update_signature, { :login => @u1.login, :profile_signature => { :signature => 'vaka' }}
     end
     @u1.reload
-    assert_equal countsigs, @u1.profile_signatures_count
+    assert_equal countsigs, @u1.profile_signatures.count
   end
 
 
@@ -99,12 +116,15 @@ class MiembrosControllerTest < ActionController::TestCase
   end
 
   test "should_update_existing_signature" do
-    test_should_leave_new_signature
-    countsigs = @u1.profile_signatures_count
-    post :update_signature, { :login => @u1.login, :profile_signature => { :signature => 'vakaput' }}
+    test_should_leave_new_signature_if_skill
+    countsigs = @u1.profile_signatures.count
+    post :update_signature, {
+        :login => @u1.login,
+        :profile_signature => {:signature => 'vakaput'},
+    }
     assert_response :redirect
     @u1.reload
-    assert_equal countsigs, @u1.profile_signatures_count
+    assert_equal countsigs, @u1.profile_signatures.count
     assert_equal 'vakaput', @u1.profile_signatures.find(:first, :order => 'updated_on DESC').signature
   end
 
