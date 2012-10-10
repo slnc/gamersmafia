@@ -39,7 +39,7 @@
       <td class="infoinline">Karma:</td>
       <td class="infoinline">
         <div id="check_karma"><%=draw_karma_bar_sm(@edituser)%>
-        <% if @user.has_skill?("Capo") then %>
+        <% if Authorization.can_force_recalculate_user_attributes?(@user) %>
           <%=link_to('check',
                      "/admin/usuarios/check_karma/#{@edituser.id}",
                      :remote => true)%>

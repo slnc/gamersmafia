@@ -4,7 +4,7 @@
 
 <% content_main do %>
   <% mftext('Karma') do %>
-  <p>Tu nivel actual de karma es: <strong><%=Karma::level(@user.karma_points)%></strong> (<%=@user.karma_points%> puntos). Próximo nivel: <strong><%=Karma::level(@user.karma_points) + 1%></strong> (<%=Karma.kp_for_level(Karma::level(@user.karma_points)+1).to_i%> puntos).</p>
+  <p>Tienes <strong><%=@user.karma_points%> puntos</strong> de karma.</p>
   <table>
     <tr>
       <th>Contenido</th>

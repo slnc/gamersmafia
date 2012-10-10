@@ -214,6 +214,10 @@ module Authorization
     user.has_any_skill?(%w(Capo Webmaster))
   end
 
+  def self.can_force_recalculate_user_attributes?(user)
+    user.has_any_skill?(%w(Capo Webmaster))
+  end
+
   def self.can_mass_moderate_contents?(user)
     user.has_skill?("MassModerateContents")
   end
