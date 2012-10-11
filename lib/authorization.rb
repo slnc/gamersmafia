@@ -41,7 +41,7 @@ module Authorization
   end
 
   def self.can_admin_all_items?(user)
-    user.has_skill?("Capo")
+    user.has_any_skill?(%w(Capo Webmaster))
   end
 
   def self.can_admin_bazar_districts?(user)

@@ -154,12 +154,14 @@ if u_clans.size == 0 then %>
   <li><a href="">Tópics recomendados</a></li>
   <% end -%>
   </ul>
-<% if user_is_authed && @user.has_skill?("Capo") then %>
+  <%
+    hq_menu_items = controller.admin_menu_items
+    if hq_menu_items.size > 0 %>
 <ul id="sawbody-hq" class="hidden">
   <li style="padding-right: 10px;"><div id="mggnav-hq-admin"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-hq-admin-list');" href="/admin">Admin</a></div></div></div></div>
     <div id="mggnav-hq-admin-list" class="saw-dropdownlist hidden">
       <ul>
-    <%controller.admin_menu_items.each do |title, url| %>
+    <%hq_menu_items.each do |title, url| %>
         <li><a href="<%=url%>"><%=title%></a></li>
   <% end -%>
       </ul>
