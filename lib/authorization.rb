@@ -3,12 +3,20 @@ module Authorization
   # TODO(slnc): migrar todas las llamadas restantes a .has_skill? a que usen
   # este sistema.
 
-  def self.can_access_moderation_queue?(user)
-    user.has_skill?("ContentModerationQueue")
+  def self.can_access_bank?(user)
+    user.has_skill?("Bank")
   end
 
   def self.can_access_experiments?(user)
     user.has_skill?("Webmaster")
+  end
+
+  def self.can_access_gmshop?(user)
+    user.has_skill?("GmShop")
+  end
+
+  def self.can_access_moderation_queue?(user)
+    user.has_skill?("ContentModerationQueue")
   end
 
   def self.can_admin_competition?(u, competition)
@@ -32,16 +40,8 @@ module Authorization
     ))
   end
 
-  def self.can_access_bank?(user)
-    user.has_skill?("Bank")
-  end
-
-  def self.can_access_gmshop?(user)
-    user.has_skill?("GmShop")
-  end
-
   def self.can_admin_all_items?(user)
-    user.has_skill?("Capo")
+    user.has_any_skill?(%w(Capo Webmaster))
   end
 
   def self.can_admin_bazar_districts?(user)
@@ -103,8 +103,8 @@ module Authorization
   # TODO(slnc): simplify this and remove any checks not strictly related to
   # editing user-contributed fields.
   def self.can_edit_content?(user, content)
-    return true if user && user.has_skill?("EditContents")
-    return false unless user && user.id
+    return false if user.nil?
+    return true if user.has_skill?(%w(EditContents Capo))
 
     if (content.respond_to?(:state) &&
         content.user_id == user.id &&

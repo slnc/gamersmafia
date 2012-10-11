@@ -611,7 +611,7 @@ Request information:
 
   def admin_menu_items
     return [] unless user_is_authed
-    # TODO hack
+
     items = []
     if Authorization.can_edit_ads_directly?(@user)
       items<< ['Ads', '/admin/ads']
