@@ -68,7 +68,7 @@ class Skin < ActiveRecord::Base
         # miramos cuantas / hay y quitamos los ../ necesarios
         import_contents.gsub!(
             "url(/storage/gs.png)",
-            "url(/storage/gs.png?#{AppR.ondisk_git_version})")
+            "url(/storage/gs#{AppR.ondisk_git_version}.png)")
       end
       out.gsub!("@import url(#{import});", import_contents)
     end
@@ -83,8 +83,11 @@ class Skin < ActiveRecord::Base
 
   def self.find_by_hid(hid)
     if %w(arena default bazar).include?(hid)
-      s = Skin.new(
-        :name => hid, :hid => hid, :version => AppR.ondisk_git_version.to_i(16))
+      s = Skin.new({
+        :name => hid,
+        :hid => hid,
+        :version => AppR.ondisk_git_version,
+      })
       s.id = DEFAULT_SKINS_IDS[hid]
       s
     else
