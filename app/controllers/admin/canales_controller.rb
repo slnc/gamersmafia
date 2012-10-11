@@ -10,9 +10,7 @@ class Admin::CanalesController < AdministrationController
   end
 
   def del
-    # TODO(slnc): temporary, to prevent malicious users from deleting existing
-    # channels.
-    raise AccessDenied if !(user && user.has_skill?("Webmaster"))
+    require_authorization(:can_admin_all_items?)
 
     @gmtv_channel = GmtvChannel.find(params[:id])
     @gmtv_channel.destroy
