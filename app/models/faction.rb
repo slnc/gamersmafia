@@ -50,6 +50,8 @@ class Faction < ActiveRecord::Base
   # generated karma for some time will receive a warning or a coup d'etat from
   # MrCheater.
   def self.check_daily_karma
+    Rails.logger.warn("check_daily_karma temporarily disabled")
+    return  # Temporarily disabled
     Faction.parented.permanent.find(:all, :order => "id").each do |faction|
       karma_last_two_weeks = Stats::Portals.daily_karma(
           faction.my_portal, 14.days.ago, 1.day.ago)
