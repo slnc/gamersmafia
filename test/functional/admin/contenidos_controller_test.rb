@@ -37,11 +37,16 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     Content.send_draft_to_moderation_queue(n)
     n.reload
     assert_equal Cms::PENDING, n.state
-    sym_login 1
+    u61 = User.find(61)
+    assert_difference("u61.users_skills.count") do
+      u61.users_skills.create(:role => "MassModerateContents")
+    end
+    sym_login 61
     post :mass_moderate, {
         :mass_action => 'publish',
         :items => [n.unique_content.id],
     }
+    assert_response :redirect
     n.reload
     assert_equal Cms::PUBLISHED, n.state
   end

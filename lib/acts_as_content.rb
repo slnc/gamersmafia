@@ -531,19 +531,18 @@ module ActsAsContent
       self.unique_content.karma_points
     end
 
-    def change_state(new_state, editor, force_decision=false)
+    def change_state(new_state, editor)
       return if new_state == self.state || self.invalid?
-      if !force_decision && !Authorization.can_edit_content?(editor, self)
-        raise AccessDenied
-      end
 
       case new_state
-        when Cms::DRAFT
+      when Cms::DRAFT
         raise 'impossible'
-        when Cms::PENDING
+
+      when Cms::PENDING
         raise 'impossible' unless self.state == Cms::DRAFT
         self.log_action('enviado a cola de moderación', editor)
-        when Cms::PUBLISHED
+
+      when Cms::PUBLISHED
         raise "impossible, current_state #{self.id} = #{self.state}" unless [Cms::PENDING, Cms::DELETED, Cms::ONHOLD, Cms::DRAFT].include?(self.state)
         self.created_on = Time.now if self.state == Cms::PENDING # solo le cambiamos la hora si el estado anterior era cola de moderación
         self.log_action('publicado', editor)
@@ -553,7 +552,7 @@ module ActsAsContent
         end
 
         # Update tracker_items so they don't figure as updated
-        when Cms::DELETED
+      when Cms::DELETED
         raise 'impossible' unless [Cms::PENDING, Cms::PUBLISHED, Cms::ONHOLD, Cms::DRAFT].include?(self.state)
         self.log_action('borrado', editor)
         ContentsRecommendation.find(
@@ -563,9 +562,10 @@ module ActsAsContent
           cr.destroy
         end
 
-        when Cms::ONHOLD
+      when Cms::ONHOLD
         raise 'impossible' unless [Cms::PUBLISHED, Cms::DELETED, Cms::ONHOLD].include?(self.state)
         self.log_action('movido a espera', editor)
+
       else
         raise 'unimplemented'
       end
@@ -749,12 +749,6 @@ module ActsAsContent
       end
     end
 
-
-    # TODO DEPRECATED
-    def mark_as_deleted(cur_editor=nil)
-      raise 'DEPRECATED'
-      change_state(Cms::DELETED, cur_editor)
-    end
 
     def prepare_destruction
       self.unique_content.destroy
