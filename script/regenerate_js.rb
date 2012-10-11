@@ -31,7 +31,7 @@ def compress_js
   end
   f.close
 
-  `java -jar script/yuicompressor-2.4.2.jar #{dst} -o #{dst} --line-break 500`
+  `java -jar script/yuicompressor-2.4.2.jar #{dst} -o #{dst} --line-break 0`
 end
 
 def app_update
