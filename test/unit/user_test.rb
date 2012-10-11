@@ -150,12 +150,12 @@ class UserTest < ActiveSupport::TestCase
   test "user_shouldnt_go_into_negative_remaining_ratings" do
     u1 = User.find(1)
     u1.cache_remaining_rating_slots = -1
-    assert_equal true, u1.save
-    assert_equal true, u1.remaining_rating_slots >= 0
+    assert u1.save
+    assert u1.remaining_rating_slots >= 0
     User.db_query(
         "UPDATE users SET cache_remaining_rating_slots = -1 WHERE id = 1")
     u1.reload
-    assert_equal true, u1.remaining_rating_slots >= 0
+    assert u1.remaining_rating_slots >= 0
   end
 
   test "disable_all_email_notifications_should_work" do
@@ -263,6 +263,25 @@ class UserTest < ActiveSupport::TestCase
     u1.cache_remaining_rating_slots = nil
     u1.reload
     assert_equal User::MAX_DAILY_RATINGS, u1.remaining_rating_slots
+  end
+
+  test "remaining_rating_slots with ratings" do
+    u2 = User.find(61)
+    assert_difference("u2.content_ratings.count") do
+      u2.content_ratings.create(:content_id => 2, :rating => 9, :ip => '127.0.0.1')
+    end
+    u2.update_column(:cache_remaining_rating_slots, nil)
+    assert_equal User::MAX_DAILY_RATINGS - 1, u2.remaining_rating_slots
+
+    assert_difference("u2.comments_valorations.count") do
+      u2.comments_valorations.create({
+          :comment_id => 1,
+          :comments_valorations_type_id => 1,
+          :weight => 0.3,
+      })
+    end
+    u2.update_column(:cache_remaining_rating_slots, nil)
+    assert_equal User::MAX_DAILY_RATINGS - 2, u2.remaining_rating_slots
   end
 
   test "emblems_mask" do

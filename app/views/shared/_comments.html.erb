@@ -96,19 +96,17 @@ function load_comments()
 
   arguments.callee.done = true;
   check_comments_controls(
-      <%=Comments::user_can_moderate_comments_of_content(@user, object)%>,
       <%=@user.id%>,
       <%=@object_lastseen_on.to_i%>,
       <%=Time.now.to_i%>,
       <%=ActiveSupport::JSON.encode(Comments::comments_ratings_for_user_in_object_in_page(@user, object, params[:page]))%>,
-      <%=Karma.level(@user.karma_points) > 0 ? @user.remaining_rating_slots : 0%>,
-      <%=ActiveSupport::JSON.encode(@user.created_on < 7.days.ago)%>,
+      <%=@user.remaining_rating_slots%>,
       <%=@first_time_content%>,
       '<%=@user.pref_comments_autoscroll%>',
       '<%=@user.pref_show_all_comments%>',
-      <%=@user.has_skill?("RateCommentsUp")%>,
-      <%=@user.has_skill?("RateCommentsDown")%>,
-      <%=@user.has_skill?("ReportComments")%>
+      <%=Authorization.can_rate_comments_up?(@user)%>,
+      <%=Authorization.can_rate_comments_down?(@user)%>,
+      <%=Authorization.can_report_comments?(@user)%>
       );
 }
 

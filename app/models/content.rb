@@ -148,7 +148,7 @@ class Content < ActiveRecord::Base
     pd.update_attribute(:user_weight, 1.0)
 
     prev_state = content.state
-    content.change_state(new_state, user, force=true)
+    content.change_state(new_state, user)
 
     # Actualizamos campo 'is_right' de todos los publishing_decisions ya que o
     # bien un editor ha tomado una decisión o bien la suma de los pesos de las

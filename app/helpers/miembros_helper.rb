@@ -90,7 +90,8 @@ module MiembrosHelper
     if user.karma_points < 1000
       formatted = user.karma_points
     elsif user.karma_points < 10000
-      formatted = "#{(user.karma_points.to_f / 1000).to_s.gsub(".", ",")}"
+      points = (user.karma_points.to_f / 1000).to_s
+      formatted = "#{points.gsub(".", ",").ljust(5, "0")}"
     elsif user.karma_points < 1000000
       formatted = "#{((user.karma_points.to_f / 1000) * 10).to_i.to_f / 10}k"
     else
