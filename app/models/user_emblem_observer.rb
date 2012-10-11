@@ -82,8 +82,10 @@ class UserEmblemObserver < ActiveRecord::Observer
     end
 
     def self.the_beast(user)
+      # TODO(slnc): esto no funciona ahora porque no actualizamos
+      # cache_karma_points por update_attribute.
       if (user.cache_karma_points_changed? &&
-          user.cache_karma_points >= UsersEmblem::T_THE_BEAST_KARMA_POINTS)
+          user.cache_karma_points.to_i >= UsersEmblem::T_THE_BEAST_KARMA_POINTS)
         self.give_emblem_if_not_present(user, "the_beast")
       end
     end

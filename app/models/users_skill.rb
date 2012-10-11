@@ -23,6 +23,7 @@ class UsersSkill < ActiveRecord::Base
     GmShop
     GroupAdministrator
     GroupMember
+    LessAds
     ManoDerecha
     MassModerateContents
     Moderator
@@ -48,6 +49,7 @@ class UsersSkill < ActiveRecord::Base
     'EditContents' => 5000,
     'EditFaq' => 7000,
     'GmShop' => 25,
+    'LessAds' => 500,
     'MassModerateContents' => 1000,
     'ProfileSignatures' => 20,
     'RateCommentsDown' => 250,
@@ -119,15 +121,15 @@ class UsersSkill < ActiveRecord::Base
       user = User.find(user_id.to_i)
       self.karma_skills_in_range(
           user.last_karma_skill_points + 1, user.karma_points).each do |role|
-            user.users_skills.create(:role => role)
+            user.users_skills.create(:role => role) if !user.has_skill?(role)
           end
-      user.update_attribute(:last_karma_skill_points, user.karma_points)
+      user.update_column(:last_karma_skill_points, user.karma_points)
     end
   end
 
   def self.karma_skills_in_range(karma_start, karma_end)
     if karma_start > karma_end
-      raise ValueError("#{karma_start} <= #{karma_end}")
+      karma_start, karma_end = karma_end, karma_start
     end
 
     out = []

@@ -11,22 +11,22 @@
       <th>Puntos</th>
     </tr>
     <% contents_stats = @user.contents_stats %>
-    <%# buscamos el máximo %>
+    <%
+      # buscamos el máximo
+
+    max_karma = (contents_stats.collect {|key, karma| karma}).max
+  %>
     <% for key in contents_stats.sort
-      points = Karma::KPS_CREATE[ActiveSupport::Inflector::singularize(Cms::translate_content_name(key[0], 0))]
-      if points.nil? then
+      points = contents_stats[key].to_i
+      if points.nil?
         raise "#{key[0]} #{ActiveSupport::Inflector::singularize(Cms::translate_content_name(key[0], 0))}"
       end
     %>
         <tr class="<%=oddclass%>">
             <td style="width: 120px;"><%=key[0]%></td>
-            <td><%=draw_pcent_bar(key[1].to_f * points / ((@user.karma_points > 0) ? @user.karma_points : 1))%><br /></td>
+            <td><%=draw_pcent_bar(key[1].to_f / max_karma)%><br /></td>
         </tr>
     <% end -%>
-    <tr class="<%=oddclass%>">
-      <td>Editor</td>
-      <td><%=draw_pcent_bar(@user.karma_points_editor.to_f / ((@user.karma_points > 0) ? @user.karma_points : 1))%><br />
-    </tr>
   </table>
   <% end -%>
 <% end -%>

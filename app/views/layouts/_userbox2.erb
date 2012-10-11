@@ -10,7 +10,9 @@
 
 <% cache("/common/globalnavbar/#{@user.id % 1000}/#{@user.id}_avatar") do %>
 <div style="clear: left; padding-top: 5px; height: 40px; width: 100%;">
-<div style="margin-right: 0px; clear: none; float: left; width: 32px;"><a href="<%=gmurl(@user)%>"><img class="icon" src="/cache/thumbnails/i/32x32/<%=@user.show_avatar%>" /></a><% end -%> <br />
+  <div style="margin-right: 0px; clear: none; float: left; width: 32px;"><a href="<%=gmurl(@user)%>"><img class="icon" src="/cache/thumbnails/i/32x32/<%=@user.show_avatar%>" /></a>
+<% end -%>
+<br />
 <div style="clear:left;"><a class="nav" onclick="return confirm('¿Estás seguro?');" href="/cuenta/logout">logout</a></div>
 </div>
             <ul id="userbox-bars2" style="width: 90px; clear: none; float: right; margin: 0;">
