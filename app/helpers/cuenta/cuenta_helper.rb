@@ -50,7 +50,7 @@ module Cuenta::CuentaHelper
       c = Competition.find(ur.role_data.to_i)
       "Supervisor de <strong><a href=\"http://#{App.arena}/competiciones/show/#{c.id}\">#{c.name}</a></strong>"
     else
-      raise "role_data() of #{ur.role} is not implemented!"
+      ""
     end
   end
 end

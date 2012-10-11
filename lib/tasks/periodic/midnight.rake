@@ -15,6 +15,7 @@ namespace :gm do
     update_factions_stats # Order is important
     update_general_stats
     generate_minicolumns_factions_activity
+    User.update_remaining_ratings
   end
 
   def generate_minicolumns_factions_activity

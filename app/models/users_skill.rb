@@ -155,7 +155,7 @@ class UsersSkill < ActiveRecord::Base
     mrcheater = Ias.MrCheater
     UsersSkill.find(
         :all,
-        :conditions => ["role IN ?", SKILLS_ZOMBIES_LOSE],
+        :conditions => ["role IN (?)", SKILLS_ZOMBIES_LOSE],
         :include => :user).each do |ur|
       if ur.user.lastseen_on < limit
         ur.destroy

@@ -83,6 +83,10 @@ class Content < ActiveRecord::Base
     self.handle_publishing_decision(content, user, reason, false)
   end
 
+  def self.deny_content_directly(content, user, reason)
+    self.modify_content_state(content, user, Cms::DELETED, reason)
+  end
+
   def self.publish_content(content, user, reason=nil)
     self.handle_publishing_decision(content, user, reason, true)
   end

@@ -214,6 +214,16 @@ class User < ActiveRecord::Base
 
   scope :settled, :conditions => "created_on <= now() - '1 month'::interval"
 
+  def self.update_remaining_ratings
+    # We do this like this to not hold a lock over the whole table for too long.
+    10.times do |i|
+      User.db_query(
+        "UPDATE users
+        SET cache_remaining_rating_slots = #{MAX_DAILY_RATINGS}
+        WHERE id % 10 = #{i}")
+    end
+  end
+
   def self.new_accounts_cleanup
     # 1st warning
     User.find(:all, :conditions => "state = #{User::ST_UNCONFIRMED} AND updated_at < now() - '3 days'::interval", :limit => 200).each do |u|
