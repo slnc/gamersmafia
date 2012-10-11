@@ -17,7 +17,7 @@ Razón:
 </form>
 <script type="text/javascript">
   $j("#report-comment-form").submit(function () {
-      if ($j("#report-comment-form-moderation-reason").value() == "") {
+      if ($j("#report-comment-form-moderation-reason").val() == "") {
         alert("Debes especificar una razón para reportar este comentario.");
         return false;
       }

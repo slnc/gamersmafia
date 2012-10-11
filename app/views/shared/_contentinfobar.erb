@@ -81,7 +81,7 @@ can_delete = Authorization.can_delete_content?(@user, object) %>
         <li class="actions"><a href="" title="Cerrar este contenido" onclick="return close_content(<%=object.unique_content_id%>);">Cerrar</a></li>
         <% end -%>
 	  <% end -%>
-	  <% if user_is_authed && @user.has_skill?("ReportContents") %>
+	  <% if user_is_authed && Authorization.can_report_contents?(@user) %>
 	  		<li id="report-contents<%=object.unique_content.id%>" class="report-contents actions">
 	  		<a href="" title="Reportar este contenido por violación del código de conducta" onclick="return report_content(<%=object.unique_content.id%>);">Reportar</a></li>
       <% end -%>
