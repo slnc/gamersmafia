@@ -115,9 +115,9 @@ class Admin::ContenidosController < ApplicationController
 
         # TODO borrar caches de portada
         if params[:mass_action] == 'publish' then
-          Content.publish_content(obj, @user)
+          Content.publish_content_directly(obj, @user)
         elsif params[:mass_action] == 'deny' then
-          Content.deny_content(obj, @user, params[:deny_reason])
+          Content.deny_content_directly(obj, @user, params[:deny_reason])
         end
       end
     end
