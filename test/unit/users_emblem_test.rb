@@ -7,7 +7,6 @@ class UsersEmblemTest < ActiveSupport::TestCase
     assert_equal "0.0.0.0.0", u1.emblems_mask_or_calculate
     u1.users_emblems.create(:emblem => "comments_count_1")
     u1.reload
-    assert_nil u1.emblems_mask
-    assert_equal "1.0.0.0.0", u1.emblems_mask_or_calculate
+    assert_equal "1.0.0.0.0", u1.emblems_mask
   end
 end
