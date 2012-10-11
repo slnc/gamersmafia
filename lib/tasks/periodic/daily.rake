@@ -23,6 +23,7 @@ namespace :gm do
     AutologinKey.forget_old_autologin_keys
     Cache.clear_file_caches
     Content.delete_duplicated_comments
+    # DO NOT SUBMIT
     Faction.check_daily_karma
     Faction.check_faction_leaders
     Karma.update_ranking
@@ -47,7 +48,8 @@ namespace :gm do
 
     # We only rebuild the model every 3 days because of the load it adds to the
     # server.
-    Crs.rebuild_model if Time.now.strftime("%d").to_i % 3 == 0
-    Crs.generate_recommendations
+    # TODO(slnc): temporarily disabled due to huge load on the server
+    #Crs.rebuild_model if Time.now.strftime("%d").to_i % 3 == 0
+    #Crs.generate_recommendations
   end
 end

@@ -57,6 +57,7 @@ namespace :gm do
 
       # Comments
       # TODO esto cuenta comentarios de contenidos borrados
+      raise "Update this code"
       Comment.find(:all, :conditions => "deleted = 'f' AND comments.created_on BETWEEN date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS'))  AND date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS')) + '1 day'::interval - '1 second'::interval", :include => [ :content]).each do |comment|
         if comment.content.game # Contenido de facción
           # Warning: un juego puede aparecer en más de un portal
@@ -106,7 +107,7 @@ namespace :gm do
           if portal
             games_r_portals[content.game_id] ||= portal.id
             portals_stats[games_r_portals[content.game_id]] ||= 0
-            portals_stats[games_r_portals[content.game_id]] += content.unique_content.karma_points
+            portals_stats[games_r_portals[content.game_id]] += content.karma_points
           else
             Rails.logger.warn(
               "game #{content.game_id ? content.game.name : content.name} has" +

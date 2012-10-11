@@ -219,7 +219,7 @@ module Authorization
   end
 
   def self.can_mass_moderate_contents?(user)
-    user.has_skill?("MassModerateContents")
+    user.has_any_skill?(%w(MassModerateContents Capo Webmaster))
   end
 
   def self.can_moderate_comment?(user, comment)

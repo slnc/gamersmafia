@@ -7,11 +7,11 @@ module Skins
   end
 
   def self.update_default_skin_styles
+    Skin.find_by_hid('default').delay.gen_compressed
     FactionsSkin.find(:all).each do |skin|
       skin.delay.save_config
       skin.delay.gen_compressed
     end
-    Skin.find_by_hid('default').delay.gen_compressed
   end
 
   BUILTIN_PORTALS = [

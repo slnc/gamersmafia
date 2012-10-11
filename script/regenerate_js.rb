@@ -31,6 +31,9 @@ def compress_js
   end
   f.close
 
+  # Don't change line-break to any arbitrary value without checking that it
+  # works across all browsers. line-break 500 makes yuicompressor cut regular
+  # expressions by half and produces syntax error.
   `java -jar script/yuicompressor-2.4.2.jar #{dst} -o #{dst} --line-break 0`
 end
 

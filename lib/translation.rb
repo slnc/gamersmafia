@@ -15,6 +15,7 @@ module Translation
     'GmShop' => 'Tienda GM',
     'GroupAdministrator' => 'Administrador de grupo',
     'GroupMember' => 'Miembro de grupo',
+    'LessAds' => 'Menos publicidad',
     'ManoDerecha' => 'Mano derecha',
     'MassModerateContents' => 'Moderar contenidos en masa',
     'ProfileSignatures' => 'Dejar firmas',
