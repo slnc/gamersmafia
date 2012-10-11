@@ -843,11 +843,12 @@ class User < ActiveRecord::Base
 
   def remaining_rating_slots
     if self.cache_remaining_rating_slots.nil?
+      todays_beginning = Time.now.beginning_of_day
       ratings_spent_today = (
           self.content_ratings.count(
-              :conditions => "created_on >= date_trunc('day', now())") -
+              :conditions => ["created_on >= ?", todays_beginning]) +
           self.comments_valorations.count(
-              :conditions => "created_on >= date_trunc('day', now())")
+              :conditions => ["created_on >= ?", todays_beginning])
       )
       self.update_column(
           :cache_remaining_rating_slots,

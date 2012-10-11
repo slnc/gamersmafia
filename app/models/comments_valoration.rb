@@ -36,7 +36,7 @@ class CommentsValoration < ActiveRecord::Base
   end
 
   def check_not_self
-    self.user_id != comment.user_id
+    self.user_id != self.comment.user_id
   end
 
   def check_crowd_decision_on_visibility
@@ -50,7 +50,8 @@ class CommentsValoration < ActiveRecord::Base
   end
 
   def reset_user_cache
-    self.comment.user.update_attribute(:cache_valorations_weights_on_self_comments, nil)
+    self.comment.user.update_attribute(
+        :cache_valorations_weights_on_self_comments, nil)
   end
 
   def reset_users_daily_allocation
