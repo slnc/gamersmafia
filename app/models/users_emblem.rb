@@ -130,7 +130,8 @@ class UsersEmblem < ActiveRecord::Base
   end
 
   def reset_user_mask
-    self.user.update_column("emblems_mask", nil)
+    self.user.emblems_mask = nil
+    self.user.emblems_mask_or_calculate
   end
 
   def name

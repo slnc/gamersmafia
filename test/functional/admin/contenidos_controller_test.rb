@@ -234,7 +234,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     remove_skill(1, "TagContents")
 
     uct = UsersContentsTag.find(:first, :conditions => ['user_id = 1'])
-    sym_login 1
+    sym_login 61
     assert_raises(AccessDenied) do
       post :remove_user_tag, :id => uct.id
     end

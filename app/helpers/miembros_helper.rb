@@ -11,7 +11,7 @@ module MiembrosHelper
     out = []
     UsersEmblem::SORTED_DECREASE_FREQUENCIES .each do |frequency|
       emblems_count = split_emblems_mask[User::USER_EMBLEMS_MASKS[frequency]]
-      next if emblems_count == '0'
+      next if emblems_count.to_i == 0
       out << [frequency, emblems_count]
     end
     out
