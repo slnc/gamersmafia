@@ -104,79 +104,37 @@ module Authorization
   # editing user-contributed fields.
   def self.can_edit_content?(user, content)
     return false if user.nil?
-    return true if user.has_skill?(%w(EditContents Capo))
+    return true if user.has_any_skill?(%w(EditContents Capo Webmaster))
+    return true if content.user_id == user.id && content.state == Cms::DRAFT
 
-    if (content.respond_to?(:state) &&
-        content.user_id == user.id &&
-        content.state == Cms::DRAFT)
-      true
-    elsif (content.respond_to?(:state) &&
-           content.state == Cms::PENDING &&
-           Authorization.can_modify_pending_content?(user))
-      true
-    elsif (content.class.name == 'Question' &&
-           content.user_id == user.id &&
-           (content.created_on > 15.minutes.ago ||
-            content.unique_content.comments_count == 0))
-      true
-    elsif (content.class.name == 'RecruitmentAd' &&
-           (user.has_skill?("Capo") ||
-            user.has_skill?("Bot") ||
-            user.id == content.user_id ||
-            (content.clan_id && content.clan.user_is_clanleader(user.id))))
-      true
-    elsif (Cms::AUTHOR_CAN_EDIT_CONTENTS.include?(content.class.name) &&
-           content.user_id == user.id)
+    content = content.real_content if content.class.name == "Content"
+
+    org = Organizations.find_by_content(content)
+    if org
+      return true if org.user_is_editor_of_content_type?(
+          user, ContentType.find_by_name(content.class.name))
+      return false if org.user_is_banned?(content.user)
+    end
+
+    if (Cms::AUTHOR_CAN_EDIT_CONTENTS.include?(content.class.name) &&
+        content.user_id == user.id)
+      return true
+    end
+
+    if (content.state == Cms::PENDING && self.can_modify_pending_content?(user))
+      return true
+    end
+
+    if (content.class.name == 'RecruitmentAd' &&
+        (content.clan_id && content.clan.user_is_clanleader(user.id)))
       true
     elsif content.kind_of?(Coverage) && (c = content.event.competition)
       c.user_is_admin(user.id)
-    elsif content.kind_of?(Coverage) then
+    elsif content.kind_of?(Coverage)
       Authorization.can_edit_content?(user, content.event)
-    elsif content.class.name == 'Topic' or content.class.name == 'Comment'
-      # jefazo o moderador de la organization?
-      # chequeamos que sea boss, underboss o moderador de la facción
-      org = Organizations.find_by_content(content)
-      # el autor del topic/comment y no está baneado
-      if (content.class.name == 'Topic' &&
-          user.id == content.user_id &&
-          content.created_on.to_i > 15.minutes.ago.to_i &&
-          (org.nil? || !org.user_is_banned?(content.user)))
-        true
-      elsif org
-        if org.user_is_moderator(user)
-          true
-        elsif content.class.name == 'Comment'
-          real = content.content.real_content
-          if (real.class.name == 'Event' &&
-              (cm = CompetitionsMatch.find_by_event_id(real.id)) &&
-              cm.competition.user_is_admin(user.id))
-            true
-          else
-            false
-          end
-        else # TODO Coverage
-          false
-        end
-      else # categoría Otros o categoría GM
-        if (content.respond_to?(:content) &&
-            (real = content.content.real_content) &&
-            real.class.name == 'Coverage' &&
-            (c = Competition.find_by_event_id(real.event_id)) &&
-            c.user_is_admin(user.id))
-          true
-        else
-          user.has_skill?("Capo")
-        end
-      end
-    else # editor o jefazo de organization?
-      org = Organizations.find_by_content(content)
-      if org
-        org.user_is_editor_of_content_type?(
-            user, ContentType.find_by_name(content.class.name))
-      else
-        false
-      end
     end
+
+    false
   end
 
   def self.can_edit_faction?(user, faction)

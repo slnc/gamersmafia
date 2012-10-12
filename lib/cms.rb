@@ -104,7 +104,9 @@ module Cms
 
   AUTHOR_CAN_EDIT_CONTENTS = %w(
       Blogentry
+      Question
       RecruitmentAd
+      Topic
   )
 
   CONTENTS_WITH_CATEGORIES = %w(

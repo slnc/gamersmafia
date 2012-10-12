@@ -721,20 +721,17 @@ class Faction < ActiveRecord::Base
   end
 
   def user_is_editor_of_content_type?(user, content_type)
-    return true if user.has_skill?("Webmaster") || user.has_skill?("Capo")
-    if self.is_bigboss?(user)
-      true
-    elsif UsersSkill.count(
+    if user.has_any_skill?(%w(Capo Webmaster)) || self.is_bigboss?(user)
+      return true
+    end
+
+    UsersSkill.count(
         :conditions => [
             "role = 'Editor'
              AND user_id = ?
              AND role_data LIKE E'%%faction_id: #{self.id}\\n%%'
              AND role_data LIKE E'%%content_type_id: #{content_type.id}\\n%%'",
             user.id]) != 0
-      true
-    else
-      false
-    end
   end
 
   def self.find_by_boss(u)
