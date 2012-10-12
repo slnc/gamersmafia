@@ -23,7 +23,6 @@ namespace :gm do
     AutologinKey.forget_old_autologin_keys
     Cache.clear_file_caches
     Content.delete_duplicated_comments
-    # DO NOT SUBMIT
     Faction.check_daily_karma
     Faction.check_faction_leaders
     Karma.update_ranking

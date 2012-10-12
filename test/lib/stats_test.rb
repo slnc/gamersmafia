@@ -28,5 +28,44 @@ class StatsTest < ActiveSupport::TestCase
     assert_not_nil mean
     assert_not_nil sd
   end
+
+
+  def run_update_users_karma_stats
+    User.db_query(
+        "UPDATE contents SET created_on = NOW() - '16 days'::interval")
+    User.db_query(
+        "UPDATE comments SET created_on = NOW() - '15 days'::interval")
+    @c1 = Comment.find(1)
+    @c1.update_attributes(:karma_points => 100)
+    Stats.update_users_karma_stats
+  end
+
+  test "update_users_karma_stats" do
+    self.run_update_users_karma_stats
+    [@c1.portal_id].each do |portal_id|
+      dbr = User.db_query(
+          "SELECT karma,
+                  created_on,
+                  portal_id
+             FROM stats.users_karma_daily_by_portal
+            WHERE user_id = #{@c1.user_id}
+              AND portal_id = #{portal_id}
+              AND created_on = (NOW() - '15 days'::interval)::date")
+      assert_equal 1, dbr.size
+      assert_equal 100, dbr[0]["karma"].to_i
+    end
+  end
+
+  test "update_users_daily_stats" do
+    self.run_update_users_karma_stats
+    Stats.update_users_daily_stats
+    dbr =  User.db_query(
+        "SELECT karma
+           FROM stats.users_daily_stats
+          WHERE user_id = #{@c1.id}
+            AND created_on = (NOW() - '15 days'::interval)::date")
+    assert_equal 1, dbr.size
+    assert_equal 100, dbr[0]["karma"].to_i
+  end
 end
 

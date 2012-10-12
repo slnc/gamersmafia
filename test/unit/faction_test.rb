@@ -132,37 +132,56 @@ class FactionTest < ActiveSupport::TestCase
     Faction.check_daily_karma
   end
 
-  test "check_daily_karma faction generated karma" do
+  def setup_faction_with_boss(boss_age_days=0)
     faction = Faction.find(1)
     boss_user = User.find(1)
     faction.update_boss(boss_user)
     assert_equal boss_user, faction.boss
-    Stats::Portals.expects(:daily_karma).at_least(1).returns([1]*14)
+    if boss_age_days > 0
+      boss_skill = boss_user.users_skills.find(
+          :first, :conditions => "role = 'Boss'")
+      boss_skill.update_attribute(:created_on, boss_age_days.days.ago)
+    end
+    [faction, boss_user]
+  end
+
+  test "check_daily_karma young boss" do
+    faction, boss_user = self.setup_faction_with_boss
+    User.db_query(
+        "UPDATE contents
+            SET portal_id = -1
+          WHERE portal_id = #{faction.my_portal.id}")
     Faction.check_daily_karma
     faction.reload
     assert_equal boss_user, faction.boss
   end
 
-  test "check_daily_karma faction no karma generated in 2 weeks" do
-    faction = Faction.find(1)
-    boss_user = User.find(1)
-    faction.update_boss(boss_user)
-    assert_equal boss_user, faction.boss
-    Stats::Portals.expects(:daily_karma).at_least(1).returns([0]*14)
+  test "check_daily_karma not young boss" do
+    faction, boss_user = self.setup_faction_with_boss(15)
+    User.db_query(
+        "UPDATE contents
+            SET portal_id = -1
+          WHERE portal_id = #{faction.my_portal.id}")
     Faction.check_daily_karma
     faction.reload
     assert_nil faction.boss
   end
 
-  test "check_daily_karma faction no karma generated in 1 week" do
-    faction = Faction.find(1)
-    boss_user = User.find(1)
-    faction.update_boss(boss_user)
-    assert_equal boss_user, faction.boss
-    Stats::Portals.expects(:daily_karma).at_least(1).returns([1]+[0]*13)
-    notification_count = Notification.count
+  test "check_daily_karma faction generated karma" do
+    faction, boss_user = self.setup_faction_with_boss(15)
+    User.db_query(
+        "UPDATE contents SET created_on = now() - '3 days'::interval")
     Faction.check_daily_karma
-    assert Notification.count > notification_count
+    faction.reload
+    assert_equal boss_user, faction.boss
+  end
+
+  test "check_daily_karma faction generated karma but not last week" do
+    faction, boss_user = self.setup_faction_with_boss(15)
+    User.db_query("UPDATE contents SET created_on = now() - '9 days'::interval")
+    assert_difference("boss_user.notifications.count") do
+      Faction.check_daily_karma
+    end
     faction.reload
     assert_equal boss_user, faction.boss
   end

@@ -50,26 +50,24 @@ class Faction < ActiveRecord::Base
   # generated karma for some time will receive a warning or a coup d'etat from
   # MrCheater.
   def self.check_daily_karma
-    Rails.logger.warn("check_daily_karma temporarily disabled")
-    return  # Temporarily disabled
     Faction.parented.permanent.find(:all, :order => "id").each do |faction|
-      karma_last_two_weeks = Stats::Portals.daily_karma(
-          faction.my_portal, 14.days.ago, 1.day.ago)
-      if karma_last_two_weeks.size == 0
-        Rails.logger.warn(
-            "No daily stats found for #{faction}. Ignoring checks.")
-        next
-      end
+      next if faction.boss_age_days < 14
 
-      sum_two_weeks = karma_last_two_weeks.sum
-      sum_last_week = karma_last_two_weeks[6..-1].sum
-      age_current_boss = faction.boss_age_days
-      if sum_two_weeks == 0
+      contents_last_two_weeks = Content.published.count(
+          :conditions => ["portal_id = ? AND created_on BETWEEN ? AND ?",
+                          faction.my_portal.id, 15.days.ago, 1.day.ago])
+
+      if contents_last_two_weeks == 0
         Rails.logger.warn("Coup d'etat to '#{faction}'")
         faction.golpe_de_estado
-      elsif sum_last_week == 0
-        Rails.logger.warn("Sent coup d'etat warning to '#{faction}'")
-        faction.send_warning_coup_detat
+      else
+        contents_last_week = Content.published.count(
+            :conditions => ["portal_id = ? AND created_on BETWEEN ? AND ?",
+                            faction.my_portal.id, 7.days.ago, 1.day.ago])
+        if contents_last_week == 0
+          Rails.logger.warn("Sent coup d'etat warning to '#{faction}'")
+          faction.send_warning_coup_detat
+        end
       end
     end
   end

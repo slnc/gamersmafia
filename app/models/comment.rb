@@ -42,6 +42,7 @@ class Comment < ActiveRecord::Base
   before_save :set_portal_id_based_on_content
   before_save :check_copy_if_changing_lastedited_by_user_id
   before_save :check_not_moderated
+  belongs_to :portal
   serialize :cache_rating
 
   validates_presence_of :comment, :message => 'no puede estar en blanco'

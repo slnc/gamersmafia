@@ -790,15 +790,12 @@ group by date_trunc('day', created_on) order by s asc
       end
     end
 
-    #res.keys.each do |k|
-    # res2[k] = (res[k]/tot) * 100
-    #end
     res2
   end
 
   def self.update_users_daily_stats
     # AFTER update_users_karma_stats
-    max_day = 1.day.ago
+    max_day = 15.days.ago
     start_day = User.db_query("SELECT created_on
                                  FROM stats.users_daily_stats
                              ORDER BY created_on DESC LIMIT 1")
@@ -810,22 +807,28 @@ group by date_trunc('day', created_on) order by s asc
         cur_day = max_day
       end
     else # no hay records, cogemos el m:as viejo
-      cur_day = User.db_query("SELECT created_on from contents order by created_on asc limit 1")[0]['created_on'].to_time
+      cur_day = User.db_query(
+          "SELECT created_on
+            FROM contents
+        ORDER BY created_on asc
+           LIMIT 1")[0]['created_on'].to_time
     end
 
-    cur_day = 1.day.ago.beginning_of_day if Rails.env == 'test'
-
     while cur_day <= max_day
-      # iteramos a través de todos los users que han creado contenidos o comentarios hoy
+      # iteramos a través de todos los users que han creado contenidos o
+      # comentarios hoy.
       pointz = {}
 
-      User.find(:all, :conditions => "id IN (select user_id
-                                               from contents
-                                              where state = #{Cms::PUBLISHED}
+      User.find(:all, :conditions => "id IN (SELECT user_id
+                                               FROM contents
+                                              WHERE state = #{Cms::PUBLISHED}
+                                                AND karma_points > 0
                                                 AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00' UNION
-                                                select user_id
-                                               from comments
-                                              where deleted = 'f' AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00')").each do |u|
+                                             SELECT user_id
+                                               FROM comments
+                                              WHERE deleted = 'f'
+                                                AND karma_points > 0
+                                                AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00')").each do |u|
         # TODO here
 
         Karma.karma_points_of_user_at_date(u, cur_day).each do |portal_id, points|
@@ -842,7 +845,15 @@ group by date_trunc('day', created_on) order by s asc
 
       pointz.keys.each do |uid|
         v = pointz[uid]
-        User.db_query("INSERT INTO stats.users_daily_stats(user_id, karma, popularity, created_on) VALUES(#{uid}, #{v[:karma]}, #{v[:popularity]}, '#{cur_day.strftime('%Y-%m-%d')}')")
+        User.db_query(
+            "INSERT INTO stats.users_daily_stats(user_id,
+                                                 karma,
+                                                 popularity,
+                                                 created_on)
+                  VALUES (#{uid},
+                          #{v[:karma]},
+                          #{v[:popularity]},
+                          '#{cur_day.strftime('%Y-%m-%d')}')")
       end
 
       # clans
@@ -863,7 +874,7 @@ group by date_trunc('day', created_on) order by s asc
   end
 
   def self.update_users_karma_stats
-    max_day = 1.day.ago
+    max_day = 15.days.ago
     start_day = User.db_query("SELECT created_on
                                  FROM stats.users_karma_daily_by_portal
                              ORDER BY created_on DESC LIMIT 1")
@@ -875,20 +886,24 @@ group by date_trunc('day', created_on) order by s asc
         cur_day = max_day
       end
     else # no hay records, cogemos el m:as viejo
-      cur_day = User.db_query("SELECT created_on from contents order by created_on asc limit 1")[0]['created_on'].to_time
+      cur_day = User.db_query(
+          "SELECT created_on
+          FROM contents
+          WHERE karma_points > 0
+          ORDER BY created_on asc limit 1")[0]['created_on'].to_time
     end
 
-    cur_day = 1.day.ago.beginning_of_day if Rails.env == 'test'
-
     while cur_day <= max_day
-      # iteramos a través de todos los users que han creado contenidos o comentarios hoy
-      User.find(:all, :conditions => "id IN (select user_id
-                                               from contents
-                                              where state = #{Cms::PUBLISHED}
-                                                AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00' UNION
-                                                select user_id
-                                               from comments
-                                              where deleted = 'f' AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00')").each do |u|
+      # iteramos a través de todos los users que han creado contenidos o comentarios 14 días
+      User.find(:all,
+                :conditions => "id IN (SELECT user_id
+                                       FROM contents
+                                       WHERE state = #{Cms::PUBLISHED}
+                                       AND karma_points > 0
+                                       AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00' UNION
+                                       SELECT user_id
+                                       FROM comments
+                                       WHERE deleted = 'f' AND karma_points > 0 AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00')").each do |u|
         # TODO here
         Karma.karma_points_of_user_at_date(u, cur_day).each do |portal_id, points|
           User.db_query("INSERT INTO stats.users_karma_daily_by_portal(user_id, portal_id, karma, created_on) VALUES(#{u.id}, #{portal_id}, #{points}, '#{cur_day.strftime('%Y-%m-%d')}')")

@@ -247,7 +247,7 @@ module Karma
 
   def self.modify_user_karma(user, points, operation)
     raise TypeError unless (user.kind_of?(User) and points.kind_of?(Fixnum))
-      raise ArgumentError("#{points} <= 0") unless points > 0
+    raise ArgumentError("#{points} <= 0") unless points > 0
 
     # forzamos el cálculo desde 0, esto sí que puede incurrir en race condition
     user.karma_points
