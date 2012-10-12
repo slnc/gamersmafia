@@ -3,7 +3,8 @@ class OutstandingUser < OutstandingEntity
   SQL_CANDIDATES = <<-END
 SELECT user_id, SUM(karma) as sum
 FROM stats.users_karma_daily_by_portal
-WHERE created_on >= now() - '7 days'::interval
+WHERE created_on BETWEEN now() - '21 days'::interval
+                     AND now() - '14 days'::interval
 AND portal_id = %s
 AND user_id NOT IN (
   SELECT entity_id
@@ -12,6 +13,7 @@ AND user_id NOT IN (
   AND active_on >= now() - '3 days'::interval)
   AND user_id IN (SELECT id FROM users WHERE state IN (%s))
 GROUP BY user_id
+HAVING SUM(karma) > 0
 ORDER BY SUM(karma) DESC
 LIMIT 1
   END
@@ -38,7 +40,7 @@ LIMIT 1
         :conditions => [
             "portal_id = ? AND active_on = ? ", portal_id, Time.now])
 
-    return bought unless bought.nil?
+    return bought if bought
 
     # se lo regalamos al que más karma haya generado en los últimos 3 días en
     # toda la red y no haya sido elegido ayer.
