@@ -2,22 +2,32 @@
 class UserEmblemObserver < ActiveRecord::Observer
   observe Comment,
           CommentsValoration,
+          Content,
           User
 
   def after_create(o)
     case o.class.name
     when 'Comment'
-      UserEmblemObserver::Emblems.comments_count(o.user)
+      UserEmblemObserver::Emblems.delay.comments_count(o.user)
 
     when 'CommentsValoration'
-      UserEmblemObserver::Emblems.comments_valorations(o.user)
+      UserEmblemObserver::Emblems.delay.comments_valorations_creator(o.user)
+      if o.comments_valorations_type.direction == 1
+        UserEmblemObserver::Emblems.delay.comments_valorations_receiver(
+            o.comments_valorations_type, o.comment.user)
+      end
     end
   end
 
   def after_save(o)
     case o.class.name
-    when 'User'
-      UserEmblemObserver::Emblems.the_beast(o)
+    when 'Content'
+      if o.state_changed? && o.state == Cms::PUBLISHED
+        Emblems.give_emblem_if_not_present(o.user, "first_content")
+      end
+      if o.karma_points_changed? && o.karma_points > 0
+        Emblems.check_suv(o.user)
+      end
     end
   end
 
@@ -42,7 +52,7 @@ class UserEmblemObserver < ActiveRecord::Observer
         FROM comments_valorations AS b
         WHERE comment_id = a.comment_id) - 1 >= ##MIN_USERS) as foo;
     "
-    def self.comments_valorations(user)
+    def self.comments_valorations_creator(user)
       return if user.has_emblem?("comments_valorations_3")
 
       self.give_emblem_if_not_present(user, "comments_valorations_1")
@@ -66,6 +76,60 @@ class UserEmblemObserver < ActiveRecord::Observer
       end
     end
 
+    def self.check_suv(user)
+      rows = User.db_query(
+          "SELECT count(*), content_type_id
+          FROM contents
+          WHERE state = #{Cms::PUBLISHED}
+          AND user_id = #{user.id}
+          AND karma_points >= #{UsersEmblem::T_SUV_MIN_KARMA_POINTS}
+          GROUP BY content_type_id")
+
+      if rows.size == ContentType.count
+        self.give_emblem_if_not_present(user, "suv")
+      end
+    end
+
+    def self.comments_valorations_receiver(cvt, user)
+      downcased_named = cvt.name.downcase
+      if user.has_emblem?("comments_valorations_received_#{downcased_named}_3")
+        return
+      end
+      sql_query = "
+        SELECT count(*) as valorations,
+          COUNT(distinct(comment_id)) as unique_comments,
+          COUNT(distinct(user_id)) as unique_users
+        FROM comments_valorations
+        WHERE comment_id in (
+          SELECT id
+          FROM comments
+          WHERE user_id = #{user.id})
+        AND comments_valorations_type_id = #{cvt.id};
+      "
+      dbr = User.db_query(sql_query)[0]
+      valorations = dbr["valorations"].to_i
+      unique_comments = dbr["unique_comments"].to_i
+      unique_users = dbr["unique_users"].to_i
+      if valorations >= UsersEmblem::T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_1 &&
+        unique_comments >= UsersEmblem::T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1 &&
+        unique_users >= UsersEmblem::T_COMMENT_VALORATIONS_RECEIVED_USERS_1
+        self.give_emblem_if_not_present(
+            user, "comments_valorations_received_#{downcased_named}_1")
+      end
+      if valorations >= UsersEmblem::T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_2 &&
+        unique_comments >= UsersEmblem::T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2 &&
+        unique_users >= UsersEmblem::T_COMMENT_VALORATIONS_RECEIVED_USERS_2
+        self.give_emblem_if_not_present(
+            user, "comments_valorations_received_#{downcased_named}_2")
+      end
+      if valorations >= UsersEmblem::T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_3 &&
+        unique_comments >= UsersEmblem::T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3 &&
+        unique_users >= UsersEmblem::T_COMMENT_VALORATIONS_RECEIVED_USERS_3
+        self.give_emblem_if_not_present(
+            user, "comments_valorations_received_#{downcased_named}_3")
+      end
+    end
+
     def self.comments_count(user)
       return if user.has_emblem?("comments_count_3")
 
@@ -81,13 +145,44 @@ class UserEmblemObserver < ActiveRecord::Observer
       end
     end
 
+    def self.rockefeller(user)
+      if user.cash >= UsersEmblem::T_ROCKEFELLER
+        # Discount transfers from users from the last 3 months
+        amount_from_users = CashMovement.sum(
+            :ammount,
+            :conditions => ["object_id_from is not null AND
+                             object_id_to_class = 'User' AND
+                             object_id_to = ? AND
+                             created_on >= now() - '3 months'::interval",
+                            user.id])
+        if user.cash - amount_from_users >= UsersEmblem::T_ROCKEFELLER
+          self.give_emblem_if_not_present(user, "rockefeller")
+        end
+      end
+    end
+
     def self.the_beast(user)
-      # TODO(slnc): esto no funciona ahora porque no actualizamos
-      # cache_karma_points por update_attribute.
-      if (user.cache_karma_points_changed? &&
-          user.cache_karma_points.to_i >= UsersEmblem::T_THE_BEAST_KARMA_POINTS)
+      if user.cache_karma_points.to_i >= UsersEmblem::T_THE_BEAST_KARMA_POINTS
         self.give_emblem_if_not_present(user, "the_beast")
       end
+    end
+
+    def self.daily_checks
+      # Rockefeller
+      User.find_each(
+          :conditions => ["cash >= ?", UsersEmblem::T_ROCKEFELLER]) do |user|
+            self.rockefeller(user)
+      end
+
+      # The Beast
+      User.find_each(
+          :conditions => ["cache_karma_points >= ?",
+                          UsersEmblem::T_THE_BEAST_KARMA_POINTS]) do |user|
+            self.the_beast(user)
+      end
+
+      self.check_user_referers_candidates
+      self.check_karma_rage
     end
 
     # This function is called from daily rakes as we have to do this
@@ -121,5 +216,42 @@ class UserEmblemObserver < ActiveRecord::Observer
         end
       end
     end
+
+    def self.check_karma_rage(last_day=nil)
+      days_back = (
+          UsersEmblem::T_KARMA_RAGE_3 +
+          Karma::UGC_OLD_ENOUGH_FOR_KARMA_DAYS)
+      first_day = days_back.days.ago.beginning_of_day
+      if last_day.nil?
+        last_day = Karma::UGC_OLD_ENOUGH_FOR_KARMA_DAYS.days.ago.end_of_day
+      end
+      Karma.users_who_generated_karma_on(last_day).each do |user|
+        grouped_by_day = Karma.daily_karma_in_period(user, first_day, last_day)
+
+        # Now we look for the longest sequence
+        longest = 0
+        current = 0
+        grouped_by_day.keys.sort.each do |key|
+          if grouped_by_day[key] == 0
+            longest = current
+            current = 0
+          else
+            longest += 1
+          end
+        end
+
+        if longest >= UsersEmblem::T_KARMA_RAGE_1
+          self.give_emblem_if_not_present(user, "karma_rage_1")
+        end
+        if longest >= UsersEmblem::T_KARMA_RAGE_2
+          self.give_emblem_if_not_present(user, "karma_rage_2")
+        end
+        if longest >= UsersEmblem::T_KARMA_RAGE_3
+          self.give_emblem_if_not_present(user, "karma_rage_3")
+        end
+
+      end
+    end
+
   end
 end

@@ -43,7 +43,7 @@ namespace :gm do
     UsersNewsfeed.old.delete_all
     UsersSkill.kill_zombified_staff
     UsersSkill.give_karma_skills
-    UserEmblemObserver::Emblems.check_user_referers_candidates
+    UserEmblemObserver::Emblems.daily_checks
 
     # We only rebuild the model every 3 days because of the load it adds to the
     # server.

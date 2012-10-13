@@ -29,6 +29,16 @@ class CommentsValoration < ActiveRecord::Base
 
   scope :recent, :conditions => "created_on >= now() - '1 month'::interval"
 
+  scope :received_by, lambda { |user|
+      {:conditions => ["comment_id IN (
+                          SELECT id
+                          FROM comments
+                          WHERE user_id = ?)", user.id]}
+  }
+
+  scope :with_type, lambda { |cvt|
+      {:conditions => ["comments_valorations_type_id = ?", cvt.id]}
+  }
 
   private
   def init_randval

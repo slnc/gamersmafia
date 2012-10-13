@@ -496,4 +496,65 @@ module Karma
                         AND '#{t2.strftime('%Y-%m-%d %H:%M:%S')}'"
     self.calculate_karma_points(faction, time_condition)
   end
+
+  def self.users_who_generated_karma_on(date)
+    User.find(:all, :conditions => "id IN (
+        SELECT user_id
+        FROM contents
+        WHERE state = #{Cms::PUBLISHED}
+        AND karma_points > 0
+        AND date_trunc('day', created_on) = '#{date.strftime("%Y-%m-%d 00:00:00")}'
+
+        UNION
+
+        SELECT user_id
+        FROM comments
+        WHERE deleted = 'f'
+        AND karma_points > 0
+        AND date_trunc('day', created_on) = '#{date.strftime("%Y-%m-%d 00:00:00")}'
+        )")
+  end
+
+  # Returns a Hash keyed by timestamp <YYYY-MM-DD 00:00:00> and int value with
+  # karma points generated on every day in the provided interval.
+  def self.daily_karma_in_period(user, t_start, t_end)
+    t_start_sql = t_start.strftime("%Y-%m-%d %H:%M:%S")
+    t_end_sql = t_end.strftime("%Y-%m-%d %H:%M:%S")
+    grouped_by_day = {}
+
+    cur_date = t_start
+    while cur_date <= t_end
+      grouped_by_day[cur_date.strftime("%Y-%m-%d 00:00:00")] = 0
+      cur_date = cur_date.advance(:days => 1)
+    end
+
+    daily_karma = User.db_query("
+        SELECT date_trunc('day', created_on) as created_on,
+          SUM(karma_points) as karma
+        FROM contents
+        WHERE state = #{Cms::PUBLISHED}
+        AND user_id = #{user.id}
+        AND karma_points > 0
+        AND created_on BETWEEN '#{t_start_sql}' AND '#{t_end_sql}'
+        GROUP BY date_trunc('day', created_on)
+
+        UNION
+
+        SELECT date_trunc('day', created_on) as created_on,
+          SUM(karma_points) as karma
+        FROM comments
+        WHERE deleted = 'f'
+        AND karma_points > 0
+        AND user_id = #{user.id}
+        AND created_on BETWEEN '#{t_start_sql}' AND '#{t_end_sql}'
+        GROUP BY date_trunc('day', created_on)
+    ")
+    daily_karma.each do |dbr|
+      if !grouped_by_day.keys.include?(dbr["created_on"])
+        raise "#{dbr["created_on"]} not found in #{grouped_by_day.keys.sort}"
+      end
+      grouped_by_day[dbr["created_on"]] += dbr["karma"].to_i
+    end
+    grouped_by_day
+  end
 end

@@ -36,7 +36,10 @@ module Bank
     money_from_sender = src.remove_money(ammount) unless src == :bank
     dst.add_money(ammount) unless dst == :bank
 
-    log_entry = CashMovement.new({:ammount => ammount, :description => description})
+    log_entry = CashMovement.new({
+        :ammount => ammount,
+        :description => description,
+    })
 
     if src != :bank
       log_entry.object_id_from = src.id
