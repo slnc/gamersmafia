@@ -13,6 +13,7 @@ class Content < ActiveRecord::Base
   has_many :terms, :through => :contents_terms
   has_many :contents_terms, :dependent => :destroy
   has_many :users_contents_tags, :dependent => :destroy
+  belongs_to :portal
 
   scope :draft, :conditions => "state = #{Cms::DRAFT}"
   scope :pending, :conditions => "state = #{Cms::PENDING}"
@@ -257,6 +258,11 @@ class Content < ActiveRecord::Base
     Faction.find(
       :first,
       :conditions => "code = (SELECT code FROM games WHERE id = #{game_id})")
+  end
+
+  def my_bazar_district
+    BazarDistrict.find(:first,
+                       :conditions => ["code = ?", self.portal.code])
   end
 
   def real_content

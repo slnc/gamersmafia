@@ -77,7 +77,13 @@ module Authorization
   end
 
   def self.can_delete_content?(user, content)
-    user.has_skill?("DeleteContents")
+    return true if user.has_any_skill?(%w(Capo DeleteContents Webmaster))
+    org = Organizations.find_by_content(content)
+    if org
+      return true if org.user_is_editor_of_content_type?(
+          user, ContentType.find_by_name(content.class.name))
+    end
+    false
     # TODO(slnc): temporal, hack una vez que limpiemos user_can_edit_content?
     # tenemos que cambiar estas reglas para permitir ciertas combinaciones de
     # usuarios y tipos de contenido. Eg: a autores de entradas de blog borrar
