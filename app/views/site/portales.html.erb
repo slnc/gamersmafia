@@ -13,7 +13,7 @@
 </div>
 
 <div class="grid-5 glast">
-<%mflist('Plataformas', FactionsPortal.find(:all, :conditions => 'code IN (select code from platforms)', :order => 'lower(name)')) do |o| %>
+<%mflist('Plataformas', FactionsPortal.find(:all, :conditions => 'code IN (select code from gaming_platforms)', :order => 'lower(name)')) do |o| %>
 <a href="http://<%=o.code%>.<%=App.domain%>/"><%=faction_favicon(o.code)%><%=o.name%></a>
 <% end -%>
 

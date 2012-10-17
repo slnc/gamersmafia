@@ -859,7 +859,7 @@ CREATE TABLE contents (
     state smallint DEFAULT 0 NOT NULL,
     clan_id integer,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
-    platform_id integer,
+    gaming_platform_id integer,
     url character varying,
     user_id integer NOT NULL,
     portal_id integer,
@@ -1234,7 +1234,7 @@ CREATE TABLE factions (
     code character varying,
     members_count integer DEFAULT 0 NOT NULL,
     cash numeric(14,2) DEFAULT 0 NOT NULL,
-    is_platform boolean DEFAULT false NOT NULL,
+    is_gaming_platform boolean DEFAULT false NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     cache_member_cohesion numeric
 );
@@ -1491,6 +1491,11 @@ CREATE TABLE games (
     has_guids boolean DEFAULT false NOT NULL,
     guid_format character varying
 );
+SET default_with_oids = false;
+CREATE TABLE games_gaming_platforms (
+    game_id integer NOT NULL,
+    gaming_platform_id integer NOT NULL
+);
 CREATE SEQUENCE games_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -1498,7 +1503,6 @@ CREATE SEQUENCE games_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE games_id_seq OWNED BY games.id;
-SET default_with_oids = false;
 CREATE TABLE games_maps (
     id integer NOT NULL,
     name character varying NOT NULL,
@@ -1526,10 +1530,6 @@ CREATE SEQUENCE games_modes_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE games_modes_id_seq OWNED BY games_modes.id;
-CREATE TABLE games_platforms (
-    game_id integer NOT NULL,
-    platform_id integer NOT NULL
-);
 CREATE TABLE games_users (
     game_id integer NOT NULL,
     user_id integer NOT NULL
@@ -1546,6 +1546,15 @@ CREATE SEQUENCE games_versions_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE games_versions_id_seq OWNED BY games_versions.id;
+CREATE TABLE gaming_platforms (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    code character varying NOT NULL
+);
+CREATE TABLE gaming_platforms_users (
+    user_id integer NOT NULL,
+    gaming_platform_id integer NOT NULL
+);
 CREATE TABLE global_vars (
     id integer NOT NULL,
     online_anonymous integer DEFAULT 0 NOT NULL,
@@ -1932,22 +1941,13 @@ CREATE SEQUENCE outstanding_users_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE outstanding_users_id_seq OWNED BY outstanding_entities.id;
-CREATE TABLE platforms (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    code character varying NOT NULL
-);
 CREATE SEQUENCE platforms_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE platforms_id_seq OWNED BY platforms.id;
-CREATE TABLE platforms_users (
-    user_id integer NOT NULL,
-    platform_id integer NOT NULL
-);
+ALTER SEQUENCE platforms_id_seq OWNED BY gaming_platforms.id;
 CREATE TABLE polls (
     id integer NOT NULL,
     title character varying NOT NULL,
@@ -2469,7 +2469,7 @@ CREATE TABLE terms (
     description character varying,
     parent_id integer,
     game_id integer,
-    platform_id integer,
+    gaming_platform_id integer,
     bazar_district_id integer,
     clan_id integer,
     contents_count integer DEFAULT 0 NOT NULL,
@@ -3128,6 +3128,7 @@ ALTER TABLE ONLY games ALTER COLUMN id SET DEFAULT nextval('games_id_seq'::regcl
 ALTER TABLE ONLY games_maps ALTER COLUMN id SET DEFAULT nextval('games_maps_id_seq'::regclass);
 ALTER TABLE ONLY games_modes ALTER COLUMN id SET DEFAULT nextval('games_modes_id_seq'::regclass);
 ALTER TABLE ONLY games_versions ALTER COLUMN id SET DEFAULT nextval('games_versions_id_seq'::regclass);
+ALTER TABLE ONLY gaming_platforms ALTER COLUMN id SET DEFAULT nextval('platforms_id_seq'::regclass);
 ALTER TABLE ONLY global_vars ALTER COLUMN id SET DEFAULT nextval('global_vars_id_seq'::regclass);
 ALTER TABLE ONLY gmtv_broadcast_messages ALTER COLUMN id SET DEFAULT nextval('gmtv_broadcast_messages_id_seq'::regclass);
 ALTER TABLE ONLY gmtv_channels ALTER COLUMN id SET DEFAULT nextval('gmtv_channels_id_seq'::regclass);
@@ -3147,7 +3148,6 @@ ALTER TABLE ONLY news ALTER COLUMN id SET DEFAULT nextval('news_id_seq'::regclas
 ALTER TABLE ONLY news_categories ALTER COLUMN id SET DEFAULT nextval('news_categories_id_seq'::regclass);
 ALTER TABLE ONLY notifications ALTER COLUMN id SET DEFAULT nextval('notifications_id_seq'::regclass);
 ALTER TABLE ONLY outstanding_entities ALTER COLUMN id SET DEFAULT nextval('outstanding_users_id_seq'::regclass);
-ALTER TABLE ONLY platforms ALTER COLUMN id SET DEFAULT nextval('platforms_id_seq'::regclass);
 ALTER TABLE ONLY polls ALTER COLUMN id SET DEFAULT nextval('polls_id_seq'::regclass);
 ALTER TABLE ONLY polls_categories ALTER COLUMN id SET DEFAULT nextval('polls_categories_id_seq'::regclass);
 ALTER TABLE ONLY polls_options ALTER COLUMN id SET DEFAULT nextval('polls_options_id_seq'::regclass);
@@ -3442,8 +3442,8 @@ ALTER TABLE ONLY games
     ADD CONSTRAINT games_name_key UNIQUE (name);
 ALTER TABLE ONLY games
     ADD CONSTRAINT games_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY games_platforms
-    ADD CONSTRAINT games_platforms_pkey PRIMARY KEY (game_id, platform_id);
+ALTER TABLE ONLY games_gaming_platforms
+    ADD CONSTRAINT games_platforms_pkey PRIMARY KEY (game_id, gaming_platform_id);
 ALTER TABLE ONLY games_versions
     ADD CONSTRAINT games_versions_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY global_vars
@@ -3488,11 +3488,11 @@ ALTER TABLE ONLY notifications
     ADD CONSTRAINT notifications_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY outstanding_entities
     ADD CONSTRAINT outstanding_users_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY platforms
+ALTER TABLE ONLY gaming_platforms
     ADD CONSTRAINT platforms_code_key UNIQUE (code);
-ALTER TABLE ONLY platforms
+ALTER TABLE ONLY gaming_platforms
     ADD CONSTRAINT platforms_name_key UNIQUE (name);
-ALTER TABLE ONLY platforms
+ALTER TABLE ONLY gaming_platforms
     ADD CONSTRAINT platforms_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY polls_categories
     ADD CONSTRAINT polls_categories_pkey PRIMARY KEY (id);
@@ -3759,9 +3759,9 @@ CREATE INDEX news_state ON news USING btree (state);
 CREATE INDEX news_user_id ON news USING btree (user_id);
 CREATE INDEX notifications_common ON notifications USING btree (user_id, read_on);
 CREATE UNIQUE INDEX outstanding_entities_uniq ON outstanding_entities USING btree (type, portal_id, active_on);
-CREATE INDEX platforms_users_platform_id ON platforms_users USING btree (platform_id);
-CREATE UNIQUE INDEX platforms_users_platform_id_user_id ON platforms_users USING btree (user_id, platform_id);
-CREATE INDEX platforms_users_user_id ON platforms_users USING btree (user_id);
+CREATE INDEX platforms_users_platform_id ON gaming_platforms_users USING btree (gaming_platform_id);
+CREATE UNIQUE INDEX platforms_users_platform_id_user_id ON gaming_platforms_users USING btree (user_id, gaming_platform_id);
+CREATE INDEX platforms_users_user_id ON gaming_platforms_users USING btree (user_id);
 CREATE INDEX polls_approved_by_user_id ON polls USING btree (approved_by_user_id);
 CREATE UNIQUE INDEX polls_categories_code_parent_id ON polls_categories USING btree (code, parent_id);
 CREATE UNIQUE INDEX polls_categories_name_parent_id ON polls_categories USING btree (name, parent_id);
@@ -3790,12 +3790,12 @@ CREATE INDEX slog_entries_scope ON alerts USING btree (scope);
 CREATE INDEX slog_type_id ON alerts USING btree (type_id);
 CREATE UNIQUE INDEX staff_candidates_uniq ON staff_candidates USING btree (staff_position_id, user_id, term_starts_on);
 CREATE INDEX terms_lower_name ON terms USING btree (lower((name)::text));
-CREATE INDEX terms_name_uniq ON terms USING btree (game_id, bazar_district_id, platform_id, clan_id, taxonomy, parent_id, name);
+CREATE INDEX terms_name_uniq ON terms USING btree (game_id, bazar_district_id, gaming_platform_id, clan_id, taxonomy, parent_id, name);
 CREATE INDEX terms_parent_id ON terms USING btree (parent_id);
 CREATE INDEX terms_root_id ON terms USING btree (root_id);
 CREATE INDEX terms_root_id_parent_id_taxonomy ON terms USING btree (root_id, parent_id, taxonomy);
 CREATE UNIQUE INDEX terms_slug_toplevel ON terms USING btree (slug) WHERE (parent_id IS NULL);
-CREATE INDEX terms_slug_uniq ON terms USING btree (game_id, bazar_district_id, platform_id, clan_id, taxonomy, parent_id, slug);
+CREATE INDEX terms_slug_uniq ON terms USING btree (game_id, bazar_district_id, gaming_platform_id, clan_id, taxonomy, parent_id, slug);
 CREATE UNIQUE INDEX tracker_items_content_id_user_id ON tracker_items USING btree (content_id, user_id);
 CREATE INDEX tracker_items_full ON tracker_items USING btree (content_id, user_id, lastseen_on, is_tracked);
 CREATE INDEX tracker_items_user_id_is_tracked ON tracker_items USING btree (user_id, is_tracked) WHERE (is_tracked = true);
@@ -3883,7 +3883,7 @@ ALTER TABLE ONLY contents
 ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id) MATCH FULL;
 ALTER TABLE ONLY contents
-    ADD CONSTRAINT contents_platform_id_fkey FOREIGN KEY (platform_id) REFERENCES platforms(id) MATCH FULL;
+    ADD CONSTRAINT contents_platform_id_fkey FOREIGN KEY (gaming_platform_id) REFERENCES gaming_platforms(id) MATCH FULL;
 ALTER TABLE ONLY contents_terms
     ADD CONSTRAINT contents_terms_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id) MATCH FULL;
 ALTER TABLE ONLY contents_terms
@@ -3960,9 +3960,9 @@ ALTER TABLE ONLY notifications
     ADD CONSTRAINT notifications_sender_user_id_fkey FOREIGN KEY (sender_user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY notifications
     ADD CONSTRAINT notifications_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-ALTER TABLE ONLY platforms_users
-    ADD CONSTRAINT platforms_users_platform_id_fkey FOREIGN KEY (platform_id) REFERENCES platforms(id) MATCH FULL ON DELETE CASCADE;
-ALTER TABLE ONLY platforms_users
+ALTER TABLE ONLY gaming_platforms_users
+    ADD CONSTRAINT platforms_users_platform_id_fkey FOREIGN KEY (gaming_platform_id) REFERENCES gaming_platforms(id) MATCH FULL ON DELETE CASCADE;
+ALTER TABLE ONLY gaming_platforms_users
     ADD CONSTRAINT platforms_users_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
 ALTER TABLE ONLY polls
     ADD CONSTRAINT polls_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
@@ -4023,7 +4023,7 @@ ALTER TABLE ONLY terms
 ALTER TABLE ONLY terms
     ADD CONSTRAINT terms_parent_term_id_fkey FOREIGN KEY (parent_id) REFERENCES terms(id) MATCH FULL;
 ALTER TABLE ONLY terms
-    ADD CONSTRAINT terms_platform_id_fkey FOREIGN KEY (platform_id) REFERENCES platforms(id) MATCH FULL;
+    ADD CONSTRAINT terms_platform_id_fkey FOREIGN KEY (gaming_platform_id) REFERENCES gaming_platforms(id) MATCH FULL;
 ALTER TABLE ONLY terms
     ADD CONSTRAINT terms_root_id_fkey FOREIGN KEY (root_id) REFERENCES terms(id) MATCH FULL;
 ALTER TABLE ONLY topics

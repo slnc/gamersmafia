@@ -39,7 +39,7 @@ module Skins
     entities_with_portals = (
         BUILTIN_PORTALS +
         Game.find(:all, :order => 'lower(name) ASC') +
-        Platform.find(:all, :order => 'lower(name) ASC') +
+        GamingPlatform.find(:all, :order => 'lower(name) ASC') +
         BazarDistrict.find(:all, :order => 'lower(name) ASC')
     )
     css_out = ''

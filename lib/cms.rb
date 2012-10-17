@@ -764,7 +764,7 @@ module Cms
     elsif thing.class.name == 'Game' then
       code = thing.code
       name = thing.name
-    elsif thing.class.name == 'Platform' then
+    elsif thing.class.name == 'GamingPlatform' then
       code = thing.code
       name = thing.name
     elsif thing.class.name == 'User' then
@@ -785,7 +785,7 @@ module Cms
       name = 'bazar'
     elsif thing.class.name == 'Term'
       g = nil
-      %w(game platform bazar_district clan).each do |posattr|
+      %w(game gaming_platform bazar_district clan).each do |posattr|
         if thing.send("#{posattr}_id".to_sym)
           g = thing.send(posattr.to_sym)
           code = g.code
@@ -899,14 +899,14 @@ module Cms
   end
 
   def self.get_editable_terms_by_group(u)
-    terms = {:games => [], :platforms => [], :clans => [], :bazar_districts => [], :special => []}
+    terms = {:games => [], :gaming_platforms => [], :clans => [], :bazar_districts => [], :special => []}
 
     if u.has_skill?("Capo")
       Term.top_level(:conditions => 'taxonomy <> \'ContentsTag\'').each do |t|
         if t.game_id
           terms[:games] << t
-        elsif t.platform_id
-          terms[:platforms] << t
+        elsif t.gaming_platform_id
+          terms[:gaming_platforms] << t
         elsif t.clan_id.nil? && t.bazar_district_id.nil? && t.taxonomy.nil?
           terms[:special] << t
         end
@@ -925,7 +925,7 @@ module Cms
       if t.game_id
         terms[:games] << t
       else
-        terms[:platforms] << t
+        terms[:gaming_platforms] << t
       end
     end
 
@@ -935,7 +935,7 @@ module Cms
       if t.game_id
         terms[:games] << t
       else
-        terms[:platforms] << t
+        terms[:gaming_platforms] << t
       end
     end
 
@@ -943,7 +943,7 @@ module Cms
       terms[:bazar_districts] << BazarDistrict.find(ur.role_data.to_i).top_level_category
     end
 
-    [:games, :platforms, :special, :bazar_districts].each do |sym|
+    [:games, :gaming_platforms, :special, :bazar_districts].each do |sym|
       terms[sym].uniq!
       # terms[sym].sort {|a,b| a.name.downcase <=> b.code.name.downcase }
     end

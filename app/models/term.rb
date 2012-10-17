@@ -192,7 +192,7 @@ class Term < ActiveRecord::Base
 # OLD
   belongs_to :game
   belongs_to :bazar_district
-  belongs_to :platform
+  belongs_to :gaming_platform
   belongs_to :clan
 
   scope :contents_tags, :conditions => 'taxonomy = \'ContentsTag\''
@@ -220,8 +220,8 @@ class Term < ActiveRecord::Base
   validates_format_of :slug, :with => /^[a-z0-9_.-]{0,50}$/
   validates_format_of :name, :with => /^.{1,100}$/
   plain_text :name, :description
-  validates_uniqueness_of :name, :scope => [:game_id, :bazar_district_id, :platform_id, :clan_id, :taxonomy, :parent_id]
-  validates_uniqueness_of :slug, :scope => [:game_id, :bazar_district_id, :platform_id, :clan_id, :taxonomy, :parent_id]
+  validates_uniqueness_of :name, :scope => [:game_id, :bazar_district_id, :gaming_platform_id, :clan_id, :taxonomy, :parent_id]
+  validates_uniqueness_of :slug, :scope => [:game_id, :bazar_district_id, :gaming_platform_id, :clan_id, :taxonomy, :parent_id]
   before_save :check_scope_if_toplevel
 
   def orphan?
@@ -265,7 +265,7 @@ class Term < ActiveRecord::Base
     par = self.parent
     self.game_id = par.game_id
     self.bazar_district_id = par.bazar_district_id
-    self.platform_id = par.platform_id
+    self.gaming_platform_id = par.gaming_platform_id
     self.clan_id = par.clan_id
     self.taxonomy = par.taxonomy if par.taxonomy
     true
@@ -384,7 +384,7 @@ class Term < ActiveRecord::Base
     conditions << " AND id = #{options[:id].to_i}" if options[:id]
 
     conditions << " AND game_id = #{options[:game_id].to_i}" if options[:game_id]
-    conditions << " AND platform_id = #{options[:platform_id].to_i}" if options[:platform_id]
+    conditions << " AND gaming_platform_id = #{options[:gaming_platform_id].to_i}" if options[:gaming_platform_id]
     conditions << " AND bazar_district_id = #{options[:bazar_district_id].to_i}" if options[:bazar_district_id]
     Term.find(:all, :conditions => conditions, :order => 'lower(name)')
   end
@@ -420,7 +420,7 @@ class Term < ActiveRecord::Base
   # devuelve portales relacionados con el término actual
   def get_related_portals
     portals = [GmPortal.new]
-    if self.game_id || self.platform_id
+    if self.game_id || self.gaming_platform_id
       f = Faction.find_by_code(self.root.slug)
       if f
         portals += Portal.find(:all, :conditions => ['id in (SELECT portal_id from factions_portals where faction_id = ?)', f.id])
@@ -495,7 +495,7 @@ class Term < ActiveRecord::Base
     # primera linea es para categorias no de primer nivel
     # segunda es para categorias de primer nivel
      ((self.root_id != self.id && self.contents_count == 0) || \
-    self.root_id == self.id && (self.game_id || self.platform_id) && Faction.find_by_code(self.code).nil?)
+    self.root_id == self.id && (self.game_id || self.gaming_platform_id) && Faction.find_by_code(self.code).nil?)
   end
 
   def self.taxonomy_from_class_name(cls_name)
@@ -927,7 +927,7 @@ class Term < ActiveRecord::Base
       when 'juegos'
       Term.find(:all, :conditions => 'id = root_id AND game_id IS NOT NULL', :order => 'lower(name)')
       when 'plataformas'
-      Term.find(:all, :conditions => 'id = root_id AND platform_id IS NOT NULL', :order => 'lower(name)')
+      Term.find(:all, :conditions => 'id = root_id AND gaming_platform_id IS NOT NULL', :order => 'lower(name)')
       when 'arena'
       Term.single_toplevel(:slug => 'arena').children.find(:all, :order => 'lower(name)')
       when 'bazar'
@@ -973,7 +973,7 @@ class Term < ActiveRecord::Base
     sql_conds = Cms::CATEGORIES_TERMS_CONTENTS.collect { |s| "'#{s}'"}
     if root_term.game_id
       ContentType.find(:all, :conditions => "name in (#{sql_conds.join(',')})", :order => 'lower(name)')
-    elsif root_term.platform_id
+    elsif root_term.gaming_platform_id
       ContentType.find(:all, :conditions => "name in (#{sql_conds.join(',')})", :order => 'lower(name)')
     elsif root_term.clan_id
       ContentType.find(:all, :conditions => "name in (#{sql_conds.join(',')})", :order => 'lower(name)')

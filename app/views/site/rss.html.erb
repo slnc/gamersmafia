@@ -20,7 +20,7 @@
 <% end -%>
 </ul></td>
 <td><ul class="rss16">
-<%FactionsPortal.find(:all, :conditions => "code In (SELECT code from platforms)", :order => 'lower(name)').each do |portal| %>
+<%FactionsPortal.find(:all, :conditions => "code In (SELECT code from gaming_platforms)", :order => 'lower(name)').each do |portal| %>
 	<li><a href="http://<%=portal.code%>.<%=App.domain%>/rss/noticias"><%=portal.name%></a></li>
 <% end -%>
 </ul></td>

@@ -41,7 +41,7 @@ namespace :gm do
                        from portals
                       where code in (select code from games
                                      UNION
-                                     select code from platforms
+                                     select code from gaming_platforms
                                      UNION
                                      select code from bazar_districts))
    and created_on >= now() - '7 days'::interval
@@ -63,7 +63,7 @@ having portal_id in (select id
         master = :don
         undermaster = :mano_derecha
         organization = t.bazar_district
-      elsif t.game_id || t.platform_id
+      elsif t.game_id || t.gaming_platform_id
         master = :boss
         undermaster = :underboss
         organization = Faction.find_by_code(t.game_id ? t.game.code : t.platform.code)

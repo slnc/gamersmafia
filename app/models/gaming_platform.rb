@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-class Platform < ActiveRecord::Base
+class GamingPlatform < ActiveRecord::Base
   validates_format_of :code, :with => /^[a-z0-9]{1,6}$/
   validates_format_of :name, :with => /^[a-z0-9:[:space:]]{1,36}$/i
   validates_uniqueness_of :code
@@ -10,7 +10,7 @@ class Platform < ActiveRecord::Base
 
   def create_term_and_categories
     root_term = Term.create({
-        :platform_id => self.id,
+        :gaming_platform_id => self.id,
         :name => self.name,
         :slug => self.code
     })

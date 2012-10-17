@@ -165,7 +165,7 @@ class User < ActiveRecord::Base
   has_many :avatars
 
   has_and_belongs_to_many :games
-  has_and_belongs_to_many :platforms
+  has_and_belongs_to_many :gaming_platforms
 
   has_bank_account
 

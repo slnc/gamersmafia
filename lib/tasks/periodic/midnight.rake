@@ -51,7 +51,7 @@ namespace :gm do
 
       portals_stats = {}
       games_r_portals = {}
-      platforms_r_portals = {}
+      gaming_platforms_r_portals = {}
       bazar_districts_r_portals = {}
       clans_r_portals = {}
       general = 0
@@ -74,9 +74,9 @@ namespace :gm do
             Rails.logger.warn("game #{comment.content.game.name} has no portal")
           end
         elsif comment.content.platform # Contenido de facción
-          platforms_r_portals[comment.content.platform_id] ||= Portal.find(:first, :conditions => ['code = ?', comment.content.platform.code]).id
-          portals_stats[platforms_r_portals[comment.content.platform_id]] ||= 0
-          portals_stats[platforms_r_portals[comment.content.platform_id]] += Karma::KPS_CREATE['Comment']
+          gaming_platforms_r_portals[comment.content.gaming_platform_id] ||= Portal.find(:first, :conditions => ['code = ?', comment.content.platform.code]).id
+          portals_stats[gaming_platforms_r_portals[comment.content.gaming_platform_id]] ||= 0
+          portals_stats[gaming_platforms_r_portals[comment.content.gaming_platform_id]] += Karma::KPS_CREATE['Comment']
         elsif comment.content.bazar_district # Contenido de distrito
           bazar_districts_r_portals[comment.content.bazar_district_id] ||= Portal.find(:first, :conditions => ['code = ?', comment.content.bazar_district.code]).id
           portals_stats[bazar_districts_r_portals[comment.content.bazar_district_id]] ||= 0
@@ -115,9 +115,9 @@ namespace :gm do
               " no portal")
           end
         elsif content.platform # Contenido de facción
-          platforms_r_portals[content.platform_id] ||= Portal.find(:first, :conditions => ['code = ?', content.platform.code]).id
-          portals_stats[platforms_r_portals[content.platform_id]] ||= 0
-          portals_stats[platforms_r_portals[content.platform_id]] += content.unique_content.karma_points
+          gaming_platforms_r_portals[content.gaming_platform_id] ||= Portal.find(:first, :conditions => ['code = ?', content.platform.code]).id
+          portals_stats[gaming_platforms_r_portals[content.gaming_platform_id]] ||= 0
+          portals_stats[gaming_platforms_r_portals[content.gaming_platform_id]] += content.unique_content.karma_points
         elsif content.bazar_district # Contenido de facción
           bazar_districts_r_portals[content.bazar_district_id] ||= Portal.find(:first, :conditions => ['code = ?', content.bazar_district.code]).id
           portals_stats[bazar_districts_r_portals[content.bazar_district_id]] ||= 0

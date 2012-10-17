@@ -9,7 +9,7 @@ class TermTest < ActiveSupport::TestCase
     t = Term.new(:name => 'foo', :slug => 'bar', :parent_id => t.id, :game_id => 1)
     assert t.save
 
-    t = Term.new(:name => 'foo', :slug => 'bar', :parent_id => t.id, :platform_id => 1)
+    t = Term.new(:name => 'foo', :slug => 'bar', :parent_id => t.id, :gaming_platform_id => 1)
     assert t.save
 
     t = Term.new(:name => 'foo', :slug => 'bar', :parent_id => t.id, :bazar_district_id => 1)

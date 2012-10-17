@@ -388,12 +388,12 @@ module ActsAsContent
       end
     end
 
-    def get_my_platform_id
+    def get_my_gaming_platform_id
       if Cms::CONTENTS_WITH_CATEGORIES.include?(self.class.name) then
         maincat = self.main_category
         return unless maincat
         tld_code = maincat.root.code
-        p = Platform.find_by_code(tld_code)
+        p = GamingPlatform.find_by_code(tld_code)
         p.id if p
       end
     end

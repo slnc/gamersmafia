@@ -224,7 +224,7 @@ if clans.size > 0 then %>
 <% end -%>
 <% end -%>
 <%mftext('Plataformas', :grid => 2, :glast => true) do %>
-<%@curuser.platforms.find(:all, :order => 'lower(name)').each do |g| %>
+<%@curuser.gaming_platforms.find(:all, :order => 'lower(name)').each do |g| %>
 <%=faction_favicon(g.code)%>
 <% end -%><% end -%>
 

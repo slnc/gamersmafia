@@ -5,17 +5,17 @@ class FactionsPortal < Portal
 
   scope :softcore, :conditions => 'factions_portal_home = \'softcore\''
   scope :fps, :conditions => 'factions_portal_home = \'fps\''
-  scope :platform, :conditions => 'factions_portal_home = \'platform\''
+  scope :gaming_platform, :conditions => 'factions_portal_home = \'platform\''
 
   def juego_title
     @_cache_mgmenu_juego_title ||= begin
       games = self.games
-      platforms = self.platforms
+      gaming_platforms = self.gaming_platforms
       if games.size > 1
       'Juegos'
       elsif games.size == 1
       'Juego'
-      elsif platforms.size > 1
+      elsif gaming_platforms.size > 1
       'Plataformas'
       else
       'Plataforma'
@@ -78,8 +78,8 @@ class FactionsPortal < Portal
     self.factions.collect {|f| Game.find_by_code(f.code)} .compact.sort {|a,b| a.code <=> b.code }
   end
 
-  def platforms
-    self.factions.collect {|f| Platform.find_by_code(f.code)} .compact.sort {|a,b| a.code <=> b.code }
+  def gaming_platforms
+    self.factions.collect {|f| GamingPlatform.find_by_code(f.code)} .compact.sort {|a,b| a.code <=> b.code }
   end
 
 
@@ -206,7 +206,7 @@ class FactionsPortalCoverageProxy
     codes = @portal.factions.collect { |g| "'#{g.code}'" }
     codes = [] if codes.size == 0
     # if codes.size == 0
-    #  codes = @portal.platforms.collect { |g| "'#{g.code}'" }
+    #  codes = @portal.gaming_platforms.collect { |g| "'#{g.code}'" }
     #end
     new_cond = "event_id IN (SELECT external_id FROM contents_terms a join contents b on a.content_id = b.id AND b.content_type_id = (select id from content_types where name = 'Event') AND a.term_id = (select id from terms where parent_id IS NULL and slug = '#{@portal.code}'))"
 
