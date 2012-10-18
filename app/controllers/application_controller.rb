@@ -24,8 +24,21 @@ class ApplicationController < ActionController::Base
   cattr_accessor :navpath2
   around_filter :gm_process
 
-  layout 'default'
+  layout :set_layout
 
+  private
+  def set_layout
+    # raise "header: #{request.headers['X-PJAX'].to_s}"
+    if request.headers['X-PJAX']
+      false
+    elsif user_is_authed && @user.pref_suicidal == 1
+      "suicidal"
+    else
+      "default"
+    end
+  end
+
+  public
   def self.audit(*args)
     after_filter :sys_audit, :only => args
   end

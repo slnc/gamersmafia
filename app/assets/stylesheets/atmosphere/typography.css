@@ -1,0 +1,44 @@
+/* @import url(http://fonts.googleapis.com/css?family=Carrois+Gothic);
+ */
+
+/*
+@font-face
+{
+  font-family: MuseoSans;
+  src: url('/fonts/MuseoSans_500.otf');
+}
+
+@font-face {
+  font-family: Museo300;
+  src: url('/fonts/Museo300-Regular.otf');
+}
+
+@font-face {
+  font-family: GearedSlab;
+  src: url('/fonts/GearedSlab-Bold.ttf');
+}
+
+@font-face {
+  font-family: ExoRegular;
+  src: url('/fonts/Exo-Regular.otf');
+}
+*/
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px; font-size: 1.0rem;
+  color: #444;
+  line-height: 140%;
+}
+
+p {
+  margin-bottom: 1.5em;
+}
+
+.content-header {
+  font-family: 'Georgia', 'Times', serif;
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 100%;
+/*  font-size: 24px; */
+}

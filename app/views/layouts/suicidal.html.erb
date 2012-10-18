@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <%= stylesheet_link_tag "application" %>
+    <%= javascript_include_tag "application" %>
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
+  </head>
+  <body>
+    <div id="loading" class="hidden"><img src="/skins/suicidal/spin.gif"></div>
+    <header class="pagelevel">
+      <a id="logo" href="/"></a>
+    </header>
+    <aside id="left-sidebar" class="pagelevel">
+      <span class="dev-box-label">left-sidebar</span>
+    </aside>
+    <section class="pagelevel" id="main">
+      <%= yield %>
+    </section>
+    <footer class="pagelevel">
+      <span class="dev-box-label">footer</span>
+    </footer>
+  </body>
+</html>

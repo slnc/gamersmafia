@@ -25,4 +25,8 @@ module HomeHelper
           :conditions => "slug = 'babes' AND taxonomy = 'ImagesCategory'").id
     end
   end
+
+  def s_home_contents
+    Content.published.find(:all, :order => 'created_on DESC', :limit => 50)
+  end
 end

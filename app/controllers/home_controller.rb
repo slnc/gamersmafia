@@ -14,7 +14,16 @@ class HomeController < ApplicationController
     render :action => 'index_mobile', :layout => 'mobile'
   end
 
+  def index_suicidal
+    render :action => 'index_suicidal' #, :layout => 'suicidal'
+  end
+
   def index
+    if user_is_authed && @user.pref_suicidal == 1
+      index_suicidal
+      return
+    end
+
     if self.mobile_device?
       self.index_mobile
       return

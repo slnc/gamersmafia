@@ -1,6 +1,14 @@
 # -*- encoding : utf-8 -*-
 Gamersmafia::Application.routes.draw do
+  resources :content2s
+
   get "notificaciones/index"
+
+  resources :contents, :path => "contenidos" do
+    member do
+      get 'redir'
+    end
+  end
 
   resources :staff_positions, :path => "staff" do
     member do
@@ -70,8 +78,8 @@ Gamersmafia::Application.routes.draw do
   match 'competiciones/cancelar_reto/:participant1_id/:participant2_id' => 'competiciones#cancelar_reto'
   match 'competiciones/show/:id' => 'competiciones#show'
   match 'competiciones/show/:id/:action' => 'competiciones#index'
-  match 'contenidos/:id' => 'contenidos#show'
-  match 'contenidos/:id/redir' => 'contenidos#redir'
+  #match 'contenidos/:id' => 'contenidos#show'
+  #match 'contenidos/:id/redir' => 'contenidos#redir'
   match 'cuenta' => 'cuenta/cuenta#index'
   match 'cuenta/amigos' => 'cuenta/amigos#index'
   match 'cuenta/amigos/:action' => 'cuenta/amigos#index'

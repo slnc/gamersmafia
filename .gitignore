@@ -5,8 +5,13 @@ config/REVISION
 config/app_production.yml
 config/mode
 config/newrelic.yml
+db/structure.sql
 exception_notification
 log/*.log
+public/assets/application-*.js
+public/assets/application-*.css
+public/assets/application*.gz
+public/assets/application*.gz
 public/cache
 public/ckeditor
 public/gm.js

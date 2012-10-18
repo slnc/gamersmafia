@@ -65,6 +65,24 @@ module ApplicationHelper
     out
   end
 
+  def s_content_list(contents)
+    out = []
+    contents.each do |content|
+      out  << controller.send(
+          :render_to_string,
+          :partial => '/contenidos/headline',
+          :locals => { :content => content }).force_encoding("utf-8")
+    end
+    out.join("\n")
+  end
+
+  def s_gmurl(object)
+    case object.class.name
+    when 'Content'
+      content_path(object)
+    end
+  end
+
   def analytics_code
     ApplicationHelper::ANALYTICS_SNIPPET
   end

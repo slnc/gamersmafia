@@ -22,6 +22,7 @@ gem "redis", "~> 2.2.0", :require => ["redis/connection/hiredis", "redis"]
 gem "rmagick", :require => "RMagick"
 gem "tidy_ffi"
 gem "will_paginate", "~> 3.0"
+gem "yui-compressor"
 
 group :test do
   gem "ci_reporter"

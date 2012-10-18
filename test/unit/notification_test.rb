@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class NotificationTest < ActiveSupport::TestCase
-  test "mark_as_read works" do
+  def create_notification
     u1 = User.find(1)
     assert !u1.has_unread_notifications
 
@@ -10,8 +10,15 @@ class NotificationTest < ActiveSupport::TestCase
     end
 
     u1.reload
-    assert u1.has_unread_notifications
+  end
 
+  test "create notification should mark as unread" do
+    self.create_notification
+    assert u1.has_unread_notifications
+  end
+
+  test "mark_as_read works" do
+    self.create_notification
     Notification.mark_as_read(
         u1, u1.notifications.find(:all).collect {|n| n.id})
 

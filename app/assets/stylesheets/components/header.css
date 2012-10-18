@@ -1,0 +1,12 @@
+#logo {
+  width: 75px;
+  height: 75px;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+  display: block;
+  background: #e0381f url(/skins/suicidal/suicidal_logo.png) 0 0 no-repeat;
+}
+
+header.pagelevel {
+  margin-bottom: 20px;
+}
