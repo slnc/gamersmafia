@@ -106,6 +106,10 @@ module Routing
       end
       dom = get_domain_of_root_term(object.root)
       "http://#{dom}/#{href}/#{object.id}"
+    elsif cls_name == 'Comment'
+      base_url = self.gmurl(object.content.real_content)
+      page = object.comment_page
+      "#{base_url}?page=#{page}#comment#{object.id}"
     elsif cls_name == 'Term'
       if object.taxonomy.nil? && opts[:taxonomy].nil?
         raise "gmurl for term without taxonomy specified"

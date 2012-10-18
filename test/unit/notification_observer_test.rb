@@ -68,4 +68,46 @@ class NotificationObserverTest < ActiveSupport::TestCase
       })
     end
   end
+
+  def buy_product(user, product_class)
+    product_class.create({
+        :user_id => user.id,
+        :product_id => Product.find_by_cls(product_class.name).id,
+        :price_paid => 1,
+    })
+  end
+
+  def create_comment_user_reference(comment_id, referenced_user_id)
+    NeReference.create({
+      :entity_id => referenced_user_id,
+      :entity_class => "User",
+      :referencer_class => "Comment",
+      :referencer_id => comment_id,
+      :referenced_on => Time.now,
+    })
+  end
+
+  test "notify on ne_reference if radar enabled and pref is on" do
+    u1 = User.find(1)
+    sold_radar = self.buy_product(u1, SoldRadar)
+    assert_difference("u1.notifications.count") do
+      self.create_comment_user_reference(2, 1)
+    end
+  end
+
+  test "notify on ne_reference if radar enabled and pref is off" do
+    u1 = User.find(1)
+    sold_radar = self.buy_product(u1, SoldRadar)
+    u1.pref_radar_notifications = 0
+    assert_difference("u1.notifications.count", 0) do
+      self.create_comment_user_reference(2, 1)
+    end
+  end
+
+  test "notify on ne_reference if radar not enabled" do
+    u1 = User.find(1)
+    assert_difference("u1.notifications.count", 0) do
+      self.create_comment_user_reference(2, 1)
+    end
+  end
 end

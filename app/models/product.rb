@@ -11,10 +11,14 @@ class Product < ActiveRecord::Base
     send "cant_be_bought_by_user_reason_#{ActiveSupport::Inflector::underscore(self.cls)}".to_sym, u
   end
 
-  # TODO refactorize
+  # TODO refactorize to use Authorization lib
   private
   def can_be_bought_by_user_sold_profile_signatures(u)
-   (not u.enable_profile_signatures?)
+   !u.enable_profile_signatures?
+  end
+
+  def can_be_bought_by_user_sold_radar(u)
+    u.sold_products.radar.count == 0
   end
 
   def can_be_bought_by_user_sold_comments_sig(u)

@@ -427,12 +427,29 @@ class Cuenta::CuentaController < ApplicationController
   end
 
   def update_notifications
+    new_opts = {
+      :notifications_global => params[:user][:notifications_global],
+      :notifications_newmessages => params[:user][:notifications_newmessages],
+      :notifications_newregistrations => params[:user][:notifications_newregistrations],
+      :notifications_trackerupdates => params[:user][:notifications_trackerupdates],
+    }
+    if (params[:user][:notifications_newprofilesignature] &&
+        @user.enable_profile_signatures?)
+      opts[:notifications_newprofilesignature] = (
+          params[:user][:notifications_newprofilesignature])
+    end
     newuser = User.find(@user.id)
-    newuser.notifications_global = params[:user][:notifications_global]
-    newuser.notifications_newmessages = params[:user][:notifications_newmessages]
-    newuser.notifications_newregistrations = params[:user][:notifications_newregistrations]
-    newuser.notifications_trackerupdates = params[:user][:notifications_trackerupdates]
-    newuser.notifications_newprofilesignature = params[:user][:notifications_newprofilesignature] if params[:user][:notifications_newprofilesignature] && @user.enable_profile_signatures?
+    newuser.update_attributes(new_opts)
+
+    if @user.enable_radar_notifications?
+      if params[:user][:pref_radar_notifications].to_s == "1"
+        value = "1"
+      else
+        value = "0"
+      end
+      newuser.pref_radar_notifications = value
+    end
+
     newuser.save
     flash[:notice] = 'Preferencias de notificaciones guardadas correctamente.'
     redirect_to :action => 'preferencias_notificaciones'

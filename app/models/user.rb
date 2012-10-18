@@ -448,11 +448,11 @@ class User < ActiveRecord::Base
     }
   end
 
-
-
-
-
   # Instance methods
+  def enable_radar_notifications?
+    self.sold_products.radar.count > 0
+  end
+
   def can_login?
     STATES_CAN_LOGIN.include?(self.state)
   end

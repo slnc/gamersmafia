@@ -3,6 +3,7 @@ class NotificationObserver < ActiveRecord::Observer
   observe AbTest,
           BanRequest,
           Content,
+          NeReference,
           Question,
           SoldOutstandingClan,
           SoldOutstandingUser,
@@ -27,6 +28,14 @@ class NotificationObserver < ActiveRecord::Observer
               "Iniciado <a href=\"/admin/usuarios/confirmar_ban_request/#{o.id}
               \">ban contra #{o.banned_user.login}</a>"),
         })
+      end
+
+    when 'NeReference'
+      case o.entity_class
+      when "User"
+        handle_user_reference(o)
+      else
+        raise "Unknown reference entity_class '#{o.entity_class}'"
       end
 
     when 'UsersEmblem'
@@ -118,6 +127,27 @@ class NotificationObserver < ActiveRecord::Observer
             "Has perdido la habilidad de
             <strong>#{o.format_scope}</strong>"),
       })
+    end
+  end
+
+  private
+  def handle_user_reference(reference)
+    user = User.find(reference.entity_id)
+    return if user.pref_radar_notifications.to_i != 1
+
+    case reference.referencer_class
+    when "Comment"
+      comment = Comment.find(reference.referencer_id)
+      if comment.user_id != reference.entity_id
+        user.notifications.create({
+          :description => (
+              "<a href=\"#{Routing.gmurl(comment.user)}\">#{comment.user.login}</a>
+              te ha nombrado en <a href=\"#{Routing.gmurl(comment)}\">este
+              comentario</a>."),
+        })
+      end
+    else
+      raise "Unknown referencer_class '#{reference.referencer_class}'"
     end
   end
 end

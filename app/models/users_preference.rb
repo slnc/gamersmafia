@@ -19,6 +19,7 @@ class UsersPreference < ActiveRecord::Base
     :hw_speakers => String,
     :hw_mousepad => String,
     :hw_keyboard => String,
+    :radar_notifications => 0,
  }
 
   serialize :value

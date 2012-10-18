@@ -393,7 +393,10 @@ if last_matches.size > 0 then
       <% cache("/#{controller.portal.code}/miembros/#{@curuser.id % 1000}/#{@curuser.id}/last_comments") do %>
 <%		@curuser.comments.find(:all, :conditions => 'deleted = \'f\'', :order => 'created_on desc', :limit => 10).each do |comment|
  %>
-        <li class="<%=oddclass%>"><span class="comments-count"><a href="<%=controller.url_for_content_onlyurl(comment.content.real_content)%>?page=<%=comment.comment_page%>#comment<%=comment.id%>"><%=truncate(strip_tags(comment.comment))%></a></span></li>
+       <li class="<%=oddclass%>">
+       <span class="comments-count">
+         <a href="<%=Routing.gmurl(comment)%>"><%=truncate(strip_tags(comment.comment))%></a>
+       </span></li>
     	<% end -%>
 	<% end -%>
     </ul>

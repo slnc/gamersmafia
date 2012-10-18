@@ -6,7 +6,6 @@ class SoldProfileSignatures < SoldProduct
     u = self.user
     u.enable_profile_signatures = true
     u.save
-    self.used = true # lo "consumimos" al crearlo porque se crea ya un avatar de usuario específico
-    self.save
+    self.update_attribute(:used, true)
   end
 end
