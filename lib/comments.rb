@@ -47,6 +47,7 @@ module Comments
     newstr.gsub!(/(<(\/*)(b|i|code|quote)>)/i, '[\\2\\3]')
     newstr.gsub!(/<img class="icon" src="\/images\/flags\/([a-z]+).gif" \/>/i, '[flag=\\1]')
     newstr.gsub!(/<img src="([^"]+)" \/>/i, '[img]\\1[/img]')
+    newstr.gsub!(/<span class="user-login"><a href="\/miembros\/([^"]+)">([^<]+)<\/a><\/span>/, "@\\1")
     newstr.gsub!(/<a href="\/miembros\/([^"]+)">([^<]+)<\/a>/i, '[~\\1]')
     newstr.gsub!('url=www', 'url=http://www')
     newstr.gsub!(/<a href="([^"]+)">([^<]+)<\/a>/i, '[url=\\1]\\2[/url]')
