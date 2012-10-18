@@ -3,7 +3,7 @@ class BackfillScripts1 < ActiveRecord::Migration
     puts "Backfilling karma_rage.."
     (52 * 10).times do |year_week|
       puts "week: #{year_week}"
-      UserEmblemObserver.check_karma_rage(last_day=year_week.weeks.ago)
+      UserEmblemObserver::Emblems.check_karma_rage(last_day=year_week.weeks.ago)
     end
   end
 

@@ -12,10 +12,10 @@ namespace :gm do
 
     Faction.delay.update_factions_cohesion
     Bet.generate_top_bets_winners_minicolumns
+    User.update_remaining_ratings
     update_factions_stats # Order is important
     update_general_stats
     generate_minicolumns_factions_activity
-    User.update_remaining_ratings
   end
 
   def generate_minicolumns_factions_activity
@@ -58,6 +58,7 @@ namespace :gm do
 
       # Comments
       # TODO esto cuenta comentarios de contenidos borrados
+      # DO NOT SUBMIT
       raise "Update this code"
       Comment.find(:all, :conditions => "deleted = 'f' AND comments.created_on BETWEEN date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS'))  AND date_trunc('day', to_timestamp('#{min_time_strted}', 'YYYY-MM-DD HH24:MI:SS')) + '1 day'::interval - '1 second'::interval", :include => [ :content]).each do |comment|
         if comment.content.game # Contenido de facción

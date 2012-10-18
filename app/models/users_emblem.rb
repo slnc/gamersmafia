@@ -94,7 +94,7 @@ class UsersEmblem < ActiveRecord::Base
           :name => "Clippy",
           :description => (
               "#{T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_1} valoraciones de" +
-              " informativo entre #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
+              " informativo recibidas por #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
               " comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
               " usuarios diferentes."),
       },
@@ -104,7 +104,7 @@ class UsersEmblem < ActiveRecord::Base
           :name => "Wikipedia",
           :description => (
               "#{T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_2} valoraciones de" +
-              " informativo entre #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
+              " informativo recibidas por #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
               " comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
               " usuarios diferentes."),
       },
@@ -114,7 +114,7 @@ class UsersEmblem < ActiveRecord::Base
           :name => "Guía Galáctico",
           :description => (
               "#{T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_3} valoraciones de" +
-              "informativo entre #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
+              "informativo recibidas por #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
               "comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
               "usuarios diferentes."),
       },
@@ -124,9 +124,9 @@ class UsersEmblem < ActiveRecord::Base
           :name => "Galletita China",
           :description => (
               "#{T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_1} valoraciones de" +
-              "profundo entre #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
-              "comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
-              "usuarios diferentes."),
+              " profundo recibidas por #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
+              " comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
+              " usuarios diferentes."),
       },
 
       "comments_valorations_received_profundo_2" => {
@@ -134,9 +134,9 @@ class UsersEmblem < ActiveRecord::Base
           :name => "Meditador",
           :description => (
               "#{T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_2} valoraciones de" +
-              "profundo entre #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
-              "comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
-              "usuarios diferentes."),
+              " profundo recibidas por #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
+              " comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
+              " usuarios diferentes."),
       },
 
       "comments_valorations_received_profundo_3" => {
@@ -144,9 +144,9 @@ class UsersEmblem < ActiveRecord::Base
           :name => "Yoda",
           :description => (
               "#{T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_3} valoraciones de" +
-              "profundo entre #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
-              "comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
-              "usuarios diferentes."),
+              " profundo recibidas por #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
+              " comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
+              " usuarios diferentes."),
       },
 
       "comments_valorations_received_divertido_1" => {
@@ -154,9 +154,9 @@ class UsersEmblem < ActiveRecord::Base
           :name => "Gracioso",
           :description => (
               "#{T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_1} valoraciones de" +
-              "divertido entre #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
-              "comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
-              "usuarios diferentes."),
+              " divertido recibidas por #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
+              " comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
+              " usuarios diferentes."),
       },
 
       "comments_valorations_received_divertido_2" => {
@@ -164,9 +164,9 @@ class UsersEmblem < ActiveRecord::Base
           :name => "Cómico",
           :description => (
               "#{T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_2} valoraciones de" +
-              "divertido entre #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
-              "comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
-              "usuarios diferentes."),
+              " divertido recibidas por #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
+              " comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
+              " usuarios diferentes."),
       },
 
       "comments_valorations_received_divertido_3" => {
@@ -174,9 +174,9 @@ class UsersEmblem < ActiveRecord::Base
           :name => "Cachondo Mental",
           :description => (
               "#{T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_3} valoraciones de" +
-              "divertido entre #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
-              "comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
-              "usuarios diferentes."),
+              " divertido recibidas por #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
+              " comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
+              " usuarios diferentes."),
       },
 
       "comments_valorations_received_interesante_1" => {
@@ -184,7 +184,7 @@ class UsersEmblem < ActiveRecord::Base
           :name => "Informe Semanal",
           :description => (
               "#{T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_1} valoraciones de" +
-              " interesante entre #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
+              " interesante recibidas por #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
               " comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_1}" +
               " usuarios diferentes."),
       },
@@ -194,7 +194,7 @@ class UsersEmblem < ActiveRecord::Base
           :name => "Expediente X",
           :description => (
               "#{T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_2} valoraciones de" +
-              " interesante entre #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
+              " interesante recibidas por #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
               " comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_2}" +
               " usuarios diferentes."),
       },
@@ -204,7 +204,7 @@ class UsersEmblem < ActiveRecord::Base
           :name => "G-Man",
           :description => (
               "#{T_COMMENT_VALORATIONS_RECEIVED_VALORATIONS_3} valoraciones de" +
-              " interesante entre #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
+              " interesante recibidas por #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
               " comentarios y #{T_COMMENT_VALORATIONS_RECEIVED_COMMENTS_3}" +
               " usuarios diferentes."),
       },
