@@ -72,7 +72,18 @@ module Achmed
   end
 
   def self.clean_comment(comment_text)
-    comment_text.downcase.gsub(Cms::URL_REGEXP, '').gsub('<br />', '.').gsub('...', ' ... ').gsub(/\s{2,}/, ' ').gsub(/<\/?[^>]*>/, "").gsub(',', ' , ').gsub('.', ' . ').gsub('!', ' ! ').gsub('¡', ' ¡ ').gsub(/:[a-z]+:/, '').gsub('[IMAGEN]', '')
+    comment_text.downcase.gsub(
+        Cms::URL_REGEXP, '').
+        gsub('<br />', '.').
+        gsub('...', ' ... ').
+        gsub(/\s{2,}/, ' ').
+        gsub(/<\/?[^>]*>/, "").
+        gsub(',', ' , ').
+        gsub('.', ' . ').
+        gsub('!', ' ! ').
+        gsub('¡', ' ¡ ').
+        gsub(/:[a-z]+:/, '').
+        gsub('[IMAGEN]', '')
   end
 
   def self.split_corpus_in_sentences(corpus)

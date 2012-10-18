@@ -485,6 +485,10 @@ module Cms
     return dst
   end
 
+  # Converts an unformatted plain text string into digestible HTML
+  def self.plain_text_to_html(txt)
+    "<p>#{txt.gsub("\n", "</p>\n<p>")}</p>"
+  end
 
   def self.parse_images(html_fragment, savedir)
     if html_fragment.kind_of?(String)

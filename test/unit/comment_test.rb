@@ -200,4 +200,12 @@ class CommentTest < ActiveSupport::TestCase
     u.reload
     assert_nil u.lastcommented_on
   end
+
+  test "extract_ne_references" do
+    comment = Comment.new({
+      :comment => "hello nagato. I love you! I love you too @mrachmed!!!
+      I don't love @mrman",
+    })
+    assert_equal %w(mrachmed mrman nagato), comment.send(:extract_ne_references)
+  end
 end

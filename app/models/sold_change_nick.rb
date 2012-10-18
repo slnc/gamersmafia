@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class SoldChangeNick < SoldProduct
   def _use(options)
-    if User::LOGIN_REGEXP =~ options[:nuevo_login]
+    if User::OLD_LOGIN_REGEXP =~ options[:nuevo_login]
       old_login = self.user.login
       self.user.login = options[:nuevo_login]
       if self.user.save
