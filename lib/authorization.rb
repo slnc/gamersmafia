@@ -160,7 +160,7 @@ module Authorization
       (f.is_bigboss?(u) ||
        f.user_is_editor_of_content_type?(
            u, ContentType.find_by_name(taxonomy)))
-    elsif term.platform_id
+    elsif term.gaming_platform_id
       f = Faction.find_by_code(term.platform.code)
       (f.is_bigboss?(u) ||
        f.user_is_editor_of_content_type?(

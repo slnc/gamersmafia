@@ -14,7 +14,7 @@ class GmtvControllerTest < ActionController::TestCase
     test_should_return_channels_if_gm
   end
 
-  test "should_return_channels_if_platforms_portal" do
+  test "should_return_channels_if_gaming_platforms_portal" do
     @request.host = "wii.gamersmafia.com"
     test_should_return_channels_if_gm
   end

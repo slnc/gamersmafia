@@ -165,7 +165,7 @@ class User < ActiveRecord::Base
   has_many :avatars
 
   has_and_belongs_to_many :games
-  has_and_belongs_to_many :platforms
+  has_and_belongs_to_many :gaming_platforms
 
   has_bank_account
 
@@ -448,11 +448,11 @@ class User < ActiveRecord::Base
     }
   end
 
-
-
-
-
   # Instance methods
+  def enable_radar_notifications?
+    self.sold_products.radar.count > 0
+  end
+
   def can_login?
     STATES_CAN_LOGIN.include?(self.state)
   end
@@ -1132,10 +1132,11 @@ class User < ActiveRecord::Base
 
   validates_format_of :email, :with => /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/
   validates_format_of :newemail, :with => /^([^@\s]+)@((?:[-a-zA-Z0-9]+\.)+[A-Za-z]{2,})$/, :allow_nil => true
-  LOGIN_REGEXP = /^[-a-zA-Z0-9_~.\[\]\(\)\:=|*^]{3,18}$/
-  LOGIN_REGEXP_NOT_FULL = /[-a-zA-Z0-9_~.\[\]\(\)\:=|*^]{3,18}/
+  LOGIN_REGEXP = /([-a-zA-Z0-9_\[\]]{3,18}+)/  # /^[-a-zA-Z0-9_~.\[\]\(\)]{3,18}$/
+  OLD_LOGIN_REGEXP = /^[-a-zA-Z0-9_~.\[\]\(\)\:=|*^]{3,18}$/
+  OLD_LOGIN_REGEXP_NOT_FULL = /[-a-zA-Z0-9_~.\[\]\(\)\:=|*^]{3,18}/
   INVALID_LOGIN_CHARS = 'Caracteres válidos: a-z A-Z 0-9 _-.[]():=|*^'
-  validates_format_of :login, :with => LOGIN_REGEXP, :on => :create, :message => INVALID_LOGIN_CHARS # TODO forzar estas restricciones a cuentas existentes
+  validates_format_of :login, :with => OLD_LOGIN_REGEXP, :on => :create, :message => INVALID_LOGIN_CHARS # TODO forzar estas restricciones a cuentas existentes
 
   MESSAGE_NOTIFICATIONS_DISABLED = <<-eos
     Hola, he desactivado el envío de todas las notificaciones por email a tu

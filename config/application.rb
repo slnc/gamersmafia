@@ -47,7 +47,7 @@ module Gamersmafia
 
     config.autoload_paths << File.join(config.root, 'lib')
 
-    config.assets.enabled = false
+    config.assets.enabled = true
 
     config.assets.version = '1.0'
 

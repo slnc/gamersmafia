@@ -25,7 +25,7 @@
       name: Wii
       slug: wii
       root_id: 4
-      platform_id: 1
+      gaming_platform_id: 1
 
 - bd1:
       id: 5
@@ -238,7 +238,7 @@
       slug: general
       root_id: 4
       parent_id: 4
-      platform_id: 1
+      gaming_platform_id: 1
       taxonomy: TopicsCategory
 
 - xdbazar:

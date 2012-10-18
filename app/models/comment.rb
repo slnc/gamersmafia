@@ -126,39 +126,20 @@ class Comment < ActiveRecord::Base
     end
   end
 
-  def regenerate_ne_references(users=[])
+  def regenerate_ne_references
     NeReference.find(
         :all,
         :conditions => ["referencer_class = 'Comment' AND referencer_id = ?",
                         self.id]).each { |ne| ne.destroy }
 
-    if users == []
-      users = {}
-      User.db_query("SELECT id, lower(login) as login FROM users where login_is_ne_unfriendly = 'f'").each do |dbu|
-        users[dbu['login']] ||= []
-        users[dbu['login']]<< ['User', dbu['id'].to_i]
-      end
-
-      User.db_query("SELECT user_id, lower(old_login) as old_login FROM user_login_changes").each do |dbu|
-        users[dbu['old_login']] ||= []
-        users[dbu['old_login']]<< ['User', dbu['user_id'].to_i]
-      end
-
-      User.db_query("SELECT id, lower(tag) as tag FROM clans").each do |dbu|
-        users[dbu['tag']] ||= []
-        users[dbu['tag']]<< ['Clan', dbu['id'].to_i]
-      end
-    end
-
-    references = self.comment.slnc_tokenize & users.keys
     ne_refs = []
-    references.uniq.each do |ref|
+    extract_ne_references.each do |ref|
       ne_refs << NeReference.create({
           :entity_class => users[ref][0][0],
           :entity_id => users[ref][0][1],
           :referencer_class => 'Comment',
           :referencer_id => self.id,
-          :referenced_on => self.created_on
+          :referenced_on => self.created_on,
       })
     end
     ne_refs
@@ -411,5 +392,39 @@ class Comment < ActiveRecord::Base
       self.errors.add("state", sl.errors.full_messages_html)
       return
     end
+  end
+
+  private
+  def extract_ne_references
+    users = {}
+    User.db_query(
+        "SELECT id,
+           LOWER(login) as login
+         FROM users
+         WHERE login_is_ne_unfriendly = 'f'").each do |dbu|
+      users[dbu['login']] ||= []
+      users[dbu['login']] << ['User', dbu['id'].to_i]
+    end
+
+    User.db_query(
+        "SELECT user_id,
+           LOWER(old_login) AS old_login
+         FROM user_login_changes").each do |dbu|
+      users[dbu['old_login']] ||= []
+      users[dbu['old_login']] << ['User', dbu['user_id'].to_i]
+    end
+
+    User.db_query("SELECT id, LOWER(tag) AS tag FROM clans").each do |dbu|
+      users[dbu['tag']] ||= []
+      users[dbu['tag']]<< ['Clan', dbu['id'].to_i]
+    end
+
+    dirty_references = self.comment.gsub("@", " ").slnc_tokenize & users.keys
+    # TODO(slnc): this doesn't work with all logins, we need to restrict and
+    # upgrade logins to remove unsupported chars (OLD_LOGIN_REGEXP).
+    clean_references = self.comment.scan(
+        Regexp.new("@#{User::LOGIN_REGEXP}")).flatten
+
+    (dirty_references + clean_references).uniq.sort
   end
 end

@@ -25,7 +25,7 @@ class Potd < ActiveRecord::Base
 
     (terms - [term]).each do |t|
       term.add_sibling(t) unless (portal.code == 'gm' &&
-                                  (t.game_id.nil? && t.platform_id.nil?) )
+                                  (t.game_id.nil? && t.gaming_platform_id.nil?) )
     end
 
     im = select_from_term(

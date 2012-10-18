@@ -78,6 +78,9 @@
     background: url(../../images/shop_products/SoldWheelOfFortune.png);
 }
 
+.product-img.SoldRadar img {
+    background: url(../../images/shop_products/SoldRadar.png);
+}
 
 #ccontent a .shop-buy {
     background: url(../../images/icons/buy.gif);

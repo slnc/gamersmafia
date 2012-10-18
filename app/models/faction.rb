@@ -445,7 +445,7 @@ class Faction < ActiveRecord::Base
   end
 
   def referenced_thing
-    Game.find_by_code(self.code) || Platform.find_by_code(self.code)
+    Game.find_by_code(self.code) || GamingPlatform.find_by_code(self.code)
   end
 
   def game

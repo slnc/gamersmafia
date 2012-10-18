@@ -48,7 +48,7 @@ fixtures = [
 :downloads,
 :download_mirrors,
 :factions,
-:platforms,
+:gaming_platforms,
 :factions_headers,
 :factions_links,
 :faq_categories,

@@ -16,9 +16,9 @@
 	<% end -%>
 	<% end -%>
 	
-	<% if edterms[:platforms].size > 0 then %>
+	<% if edterms[:gaming_platforms].size > 0 then %>
 	<optgroup label="Plataformas"></optgroup>
-	<%edterms[:platforms].each do |t|%>
+	<%edterms[:gaming_platforms].each do |t|%>
 	<option <%='selected="selected"' if @term && @term.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
 	<% end -%>
 	<% end -%>

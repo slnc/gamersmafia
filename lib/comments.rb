@@ -103,7 +103,10 @@ module Comments
     str.gsub!(/\n/, "<br />\\n")
     str.gsub!(/(\[(\/*)(b|i|quote)\])/i, '<\\2\\3>')
     str.gsub!(/(<(\/*)(quote)>)/i, '<\\2blockquote>')
-    str.gsub!(/(\[~(#{User::LOGIN_REGEXP_NOT_FULL})\])/, '<a href="/miembros/\\2">\\2</a>') # ~dharana >> <a href="/miembros/dharana">dharana</a>
+    # [~dharana] >> <a href="/miembros/dharana">dharana</a>
+    str.gsub!(/(\[~(#{User::OLD_LOGIN_REGEXP_NOT_FULL})\])/, '<a href="/miembros/\\2">\\2</a>')
+    # @dharana >> <a href="/miembros/dharana">dharana</a>
+    str.gsub!(Regexp.new("@#{User::LOGIN_REGEXP}"), '<span class="user-login"><a href="/miembros/\\1">\\1</a></span>')
     str.gsub!(/\[flag=([a-z]+)\]/i, '<img class="icon" src="/images/flags/\\1.gif" />')
 
     str.gsub!(/\[img\](#{SIMPLE_URL_REGEXP})\[\/img\]/i, '<img src="\\1" />')

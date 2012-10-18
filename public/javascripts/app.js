@@ -52,6 +52,17 @@ function cfgPage(user_is_authed, contents, controller, action, model_id,
 
   $j('.comment-textarea .btn-comentar').click(PreventDuplicatedClicks);
   $j('.comment-textarea .btn-responder').click(PreventDuplicatedClicks);
+
+  $j('#suicidal_chicken_switcher').mouseover(OpenSuicidalChickenSwitcher);
+  $j('#suicidal_chicken_switcher').mouseout(CloseSuicidalChickenSwitcher);
+}
+
+function OpenSuicidalChickenSwitcher() {
+  $j('#suicidal_chicken_switcher').addClass("opened");
+}
+
+function CloseSuicidalChickenSwitcher() {
+  $j('#suicidal_chicken_switcher').removeClass("opened");
 }
 
 function PreventDuplicatedClicks() {

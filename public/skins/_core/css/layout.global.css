@@ -141,3 +141,45 @@ body {
     padding-left: 5px;
     padding-right: 5px;
 }
+
+/* suicidal chicken */
+#suicidal_chicken_switcher {
+  position: absolute;
+  top: 0;
+  right: 60px;
+  z-index: 100;
+  width: 75px;
+  height: 15px;
+  background: black;
+  color: #dc381f;
+  border: 2px solid black;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+  -webkit-transition: 200ms ease height;
+  -moz-transition: 200ms ease height;
+  -o-transition: 200ms ease height;
+  -ms-transition: 200ms ease height;
+  transition: 200ms ease height;
+}
+
+#suicidal_chicken_switcher.opened {
+  height: 75px;
+}
+
+#suicidal_chicken_switcher div {
+  margin-top: 25px;
+  overflow: hidden;
+  height: 100%;
+  visibility: hidden;
+  display: none;
+}
+
+#suicidal_chicken_switcher.opened div {
+  visibility: visible;
+  display: block;
+}
+
+#suicidal_chicken_switcher div a {
+  overflow: hidden;
+  color: #ddd;
+}

@@ -1,0 +1,16 @@
+@media screen and (max-width: 480px) {
+  body {
+    padding: 0 0.689rem;
+  }
+
+  #left-sidebar {
+    display: none;
+    /* float: none;
+    width: auto; */
+  }
+
+  #main {
+    margin-left: 0;
+  }
+}
+

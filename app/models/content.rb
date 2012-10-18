@@ -72,7 +72,7 @@ class Content < ActiveRecord::Base
   before_save :check_changed_attributes
   belongs_to :clan
   belongs_to :game
-  belongs_to :platform
+  belongs_to :gaming_platform
   belongs_to :bazar_district
   belongs_to :user
 
@@ -236,9 +236,9 @@ class Content < ActiveRecord::Base
     if g_id != self.game_id
       self.game_id = g_id
     else
-      p_id = rc.get_my_platform_id
+      p_id = rc.get_my_gaming_platform_id
       if p_id
-        self.platform_id = p_id
+        self.gaming_platform_id = p_id
       else # maybe bazar_district
         bd_id = rc.get_my_bazar_district_id
         self.bazar_district_id = bd_id if bd_id

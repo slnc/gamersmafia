@@ -443,4 +443,16 @@ class SiteController < ApplicationController
     @term = Term.find(params[:id])
     render :layout => false
   end
+
+  def suicidal_enable
+    require_auth_users
+    @user.pref_suicidal = 1
+    redirect_to "/"
+  end
+
+  def suicidal_disable
+    require_auth_users
+    @user.pref_suicidal = 0
+    redirect_to "/"
+  end
 end

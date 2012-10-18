@@ -492,4 +492,8 @@ class CmsTest < ActiveSupport::TestCase
   test "capos_should_edit_everything" do
     # TODO
   end
+
+  test "plain_text_to_html" do
+    assert_equal "<p>foo</p>\n<p>bar</p>", Cms.plain_text_to_html("foo\nbar")
+  end
 end

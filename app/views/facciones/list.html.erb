@@ -95,7 +95,7 @@
     <th>Cohesión</th>
   </tr>
 
-<% for faction in Faction.find(:all, :conditions => 'is_platform = \'f\'', :order => 'lower(name) asc') %>
+<% for faction in Faction.find(:all, :conditions => 'is_gaming_platform = \'f\'', :order => 'lower(name) asc') %>
   <tr class="<%=oddclass%>">
     <td><%=faction_favicon(faction)%> <%=link_to faction.name, gmurl(faction) %></td>
     <td><span class="members-count infoinline"><%=faction.members_count %></a></td>
@@ -119,7 +119,7 @@
     <th>Amistad</th>
   </tr>
 
-<% for faction in Faction.find(:all, :conditions => 'is_platform = \'t\'', :order => 'lower(name) asc') %>
+<% for faction in Faction.find(:all, :conditions => 'is_gaming_platform = \'t\'', :order => 'lower(name) asc') %>
   <tr class="<%=oddclass%>">
     <td><%=faction_favicon(faction)%> <%=link_to faction.name, gmurl(faction) %></td>
     <td><span class="members-count infoinline"><%=faction.members_count %></span></td>

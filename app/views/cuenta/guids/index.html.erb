@@ -26,7 +26,7 @@
   <p>Marca los juegos en los que participas habitualmente.</p>
   <%
 	g_ids = @user.game_ids
-	platforms_ids = @user.platform_ids
+	gaming_platforms_ids = @user.gaming_platform_ids
 
 %>
   <form method="post" action="/cuenta/guids/guardar">
@@ -62,9 +62,9 @@
 
   <%mftext('Plataformas') do %>
   <table>
-    <% for g in Platform.find(:all, :order => 'lower(name) ASC') %>
+    <% for g in GamingPlatform.find(:all, :order => 'lower(name) ASC') %>
     <tr class="<%=oddclass%>">
-      <td class="w20"><input type="checkbox" name="platforms[]" value="<%=g.id%>" <%=platforms_ids.include?(g.id) ? 'checked="checked"' : ''%> /></td>
+      <td class="w20"><input type="checkbox" name="gaming_platforms[]" value="<%=g.id%>" <%=gaming_platforms_ids.include?(g.id) ? 'checked="checked"' : ''%> /></td>
       <td class="w20"><%=faction_favicon(g)%></td>
       <td><%=g.name%></td>
     </tr>

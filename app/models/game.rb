@@ -113,7 +113,7 @@ class Game < ActiveRecord::Base
   end
 
   def check_code_doesnt_belong_to_portal
-    # TODO dup en Platform.rb
+    # TODO dup en GamingPlatform.rb
     if self.id
       # TODO Temp Portal.count(:conditions => ["code = ? AND id <> ?", self.code, self.id]) == 0 && !Portal::UNALLOWED_CODES.include?(code)
       true

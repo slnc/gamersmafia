@@ -1,0 +1,20 @@
+/* ...
+*= require reset
+*= require_self
+*= require_tree ./atmosphere
+*= require_tree ./components
+*= require_tree ./layout
+*/
+
+.dev-box-label {
+  font-size: 10px;
+  font-weight: bold;
+  color: #ccc;
+  margin: 2px;
+  text-transform: uppercase;
+}
+
+.pagelevel {
+  border: 1px dashed #ccc;
+}
+

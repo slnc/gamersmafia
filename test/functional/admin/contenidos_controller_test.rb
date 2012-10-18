@@ -157,7 +157,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should_see_ultimas_decisiones_if_admin_and_gm_and_platforms_portal" do
+  test "should_see_ultimas_decisiones_if_admin_and_gm_and_gaming_platforms_portal" do
     @request.host = 'wii.gamersmafia.com'
     sym_login 1
     get :ultimas_decisiones
