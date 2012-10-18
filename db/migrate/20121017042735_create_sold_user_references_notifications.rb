@@ -1,4 +1,5 @@
-class CreateSoldRadar < ActiveRecord::Migration
+# -*- encoding : utf-8 -*-
+class CreateSoldUserReferencesNotifications < ActiveRecord::Migration
   def change
     Product.create({
       :name => "Radar",

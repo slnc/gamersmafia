@@ -39,7 +39,7 @@ namespace(:customs) do
 
   task :updated_app, :roles => :app do
     `scp -P62331 /Users/slnc/core/projects/gamersmafia.com/app_production.yml #{SSH_PATH_TO_HOST.split(":")[0]}:#{release_path}/config `
-    run "cd #{release_path} && echo 'production' > config/mode && ./script/regenerate_js.rb"
+    run "cd #{release_path} && echo 'production' > config/mode && rake gm:after_deploy"
   end
 
   task :setup, :roles => :app do
