@@ -34,6 +34,8 @@ class NotificationObserver < ActiveRecord::Observer
       case o.entity_class
       when "User"
         handle_user_reference(o)
+      when "Clan"
+        # We don't do anything yet here
       else
         raise "Unknown reference entity_class '#{o.entity_class}'"
       end

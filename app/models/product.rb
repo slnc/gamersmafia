@@ -111,4 +111,8 @@ class Product < ActiveRecord::Base
       "solo el clanleader de un clan puede comprar la web y no se puede comprar más de una web para el mismo clan"
     end
   end
+
+  def cant_be_bought_by_user_reason_sold_radar(u)
+    "Ya tienes este producto"
+  end
 end

@@ -68,7 +68,7 @@ class Skin < ActiveRecord::Base
         # miramos cuantas / hay y quitamos los ../ necesarios
         import_contents.gsub!(
             "url(/storage/gs.png)",
-            "url(/storage/gs#{AppR.ondisk_git_version}.png)")
+            "url(/storage/gs.#{AppR.ondisk_git_version}.png)")
       end
       out.gsub!("@import url(#{import});", import_contents)
     end

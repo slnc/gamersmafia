@@ -487,6 +487,7 @@ module Cms
 
   # Converts an unformatted plain text string into digestible HTML
   def self.plain_text_to_html(txt)
+    # "<p>#{txt.gsub("\n\n", "</p>\n<p>").gsub(/([^\n]{1,65})\n/, "\\1</p>\n<p>").gsub("<p><p>", "<p>").gsub("</p></p>", "</p>")}</p>"
     "<p>#{txt.gsub("\n", "</p>\n<p>")}</p>"
   end
 

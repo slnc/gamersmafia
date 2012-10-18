@@ -133,7 +133,8 @@ class Comment < ActiveRecord::Base
                         self.id]).each { |ne| ne.destroy }
 
     ne_refs = []
-    extract_ne_references.each do |ref|
+    users, references = extract_ne_references
+    references.each do |ref|
       ne_refs << NeReference.create({
           :entity_class => users[ref][0][0],
           :entity_id => users[ref][0][1],
@@ -425,6 +426,6 @@ class Comment < ActiveRecord::Base
     clean_references = self.comment.scan(
         Regexp.new("@#{User::LOGIN_REGEXP}")).flatten
 
-    (dirty_references + clean_references).uniq.sort
+    [users, (dirty_references + clean_references).uniq.sort]
   end
 end

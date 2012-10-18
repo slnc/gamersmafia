@@ -494,6 +494,13 @@ class CmsTest < ActiveSupport::TestCase
   end
 
   test "plain_text_to_html" do
-    assert_equal "<p>foo</p>\n<p>bar</p>", Cms.plain_text_to_html("foo\nbar")
+    expected = (
+      "<p>foo</p>\n<p>bar baz sd klsj dlkajd lkjasd lkjasdlk jadl jadklj" +
+      "asdljasdl kjasldk jaskldjkl</p>\n<p>tapang</p>\n<p></p>\n<p>wiki</p>")
+    input_str = (
+      "foo\nbar baz sd klsj dlkajd lkjasd lkjasdlk jadl jadklj asdljasdl" +
+      "kjasldk jaskldjkl\ntapang\n\nwiki")
+    assert_equal expected, Cms.plain_text_to_html(input_str)
   end
+
 end
