@@ -883,7 +883,8 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   test "notifications should work with notifications" do
     sym_login 1
     u1 = User.find(1)
-    u1.notifications.create(:description => "Hello there")
+    u1.notifications.create(
+        :description => "Hello there", :type_id => Notification::UNDEFINED)
     get :notificaciones
     assert_response :success
     u1.reload

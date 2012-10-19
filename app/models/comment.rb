@@ -151,7 +151,7 @@ class Comment < ActiveRecord::Base
   end
 
   def schedule_ne_references_calculation
-    self.delay.regenerate_ne_references
+    self.delay.regenerate_ne_references if self.comment_changed?
   end
 
   def download_remotes

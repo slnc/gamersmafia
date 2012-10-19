@@ -1917,7 +1917,9 @@ CREATE TABLE notifications (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     description character varying,
     read_on timestamp without time zone,
-    sender_user_id integer NOT NULL
+    sender_user_id integer NOT NULL,
+    type_id integer NOT NULL,
+    data character varying
 );
 CREATE SEQUENCE notifications_id_seq
     START WITH 1
@@ -3758,6 +3760,7 @@ CREATE UNIQUE INDEX news_categories_unique ON news_categories USING btree (name,
 CREATE INDEX news_state ON news USING btree (state);
 CREATE INDEX news_user_id ON news USING btree (user_id);
 CREATE INDEX notifications_common ON notifications USING btree (user_id, read_on);
+CREATE INDEX notifications_type_id ON notifications USING btree (user_id, type_id);
 CREATE UNIQUE INDEX outstanding_entities_uniq ON outstanding_entities USING btree (type, portal_id, active_on);
 CREATE INDEX platforms_users_platform_id ON gaming_platforms_users USING btree (gaming_platform_id);
 CREATE UNIQUE INDEX platforms_users_platform_id_user_id ON gaming_platforms_users USING btree (user_id, gaming_platform_id);

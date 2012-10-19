@@ -6,7 +6,10 @@ class NotificationTest < ActiveSupport::TestCase
     assert !@u1.has_unread_notifications
 
     assert_difference("@u1.notifications.count") do
-      @u1.notifications.create(:description => "Fulanito te manda un beso")
+      @u1.notifications.create({
+          :description => "Fulanito te manda un beso",
+          :type_id => Notification::UNDEFINED,
+      })
     end
 
     @u1.reload

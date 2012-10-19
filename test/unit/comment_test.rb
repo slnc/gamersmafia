@@ -208,4 +208,21 @@ class CommentTest < ActiveSupport::TestCase
     })
     assert_equal %w(mrachmed mrman nagato), comment.send(:extract_ne_references)
   end
+
+  test "should not send 2 notifications for multiple refs or editions" do
+    comment = Comment.new({
+      :comment => "hello nagato. I love you! I love you too @mrachmed @nagato!!!
+      I don't love @mrman",
+      :content_id => 1,
+      :user_id => 1,
+      :host => '127.0.0.1',
+    })
+
+    u1 = User.find_by_login("nagato")
+    sold_radar = self.buy_product(u1, SoldRadar)
+    assert_difference("u1.notifications.count") do
+      assert comment.save
+      assert comment.save
+    end
+  end
 end

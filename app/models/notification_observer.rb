@@ -18,6 +18,7 @@ class NotificationObserver < ActiveRecord::Observer
           :description => (
               "AB Test '#{o.name}' creado automáticamente con #{o.treatments}
               tratamientos"),
+          :type_id => Notification::AUTOMATIC_AB_TEST,
       })
 
     when 'BanRequest'
@@ -27,6 +28,7 @@ class NotificationObserver < ActiveRecord::Observer
           :description => (
               "Iniciado <a href=\"/admin/usuarios/confirmar_ban_request/#{o.id}
               \">ban contra #{o.banned_user.login}</a>"),
+          :type_id => Notification::BAN_REQUEST_INITIATED,
         })
       end
 
@@ -45,6 +47,7 @@ class NotificationObserver < ActiveRecord::Observer
         :description => (
             "Acabas de obtener el emblema #{o.inline_html}.
             ¡Enhorabuena!"),
+        :type_id => Notification::USERS_EMBLEM_RECEIVED,
       })
 
     when 'UsersSkill'
@@ -52,6 +55,7 @@ class NotificationObserver < ActiveRecord::Observer
         :description => (
             "Acabas de obtener la habilidad <strong>#{o.format_scope}</strong>.
             ¡Enhorabuena!"),
+        :type_id => Notification::USERS_SKILL_RECEIVED,
       })
 
     end
@@ -65,6 +69,7 @@ class NotificationObserver < ActiveRecord::Observer
     content.user.notifications.create({
       :description => msg,
       :sender_user_id => Ias.MrMan,
+      :type_id => Notification::CONTENT_DENIED,
     })
   end
 
@@ -92,7 +97,10 @@ class NotificationObserver < ActiveRecord::Observer
               por lo que te llevas la recompensa de #{o.prize} GMFs."
           )
         end
-        recipient.notifications.create(:description => description)
+        recipient.notifications.create({
+            :description => description,
+            :type_id => Notification::BEST_ANSWER_RECEIVED,
+        })
       end
 
     when 'SoldOutstandingClan'
@@ -100,11 +108,12 @@ class NotificationObserver < ActiveRecord::Observer
 
       oe = OutstandingClan.last
       o.user.notifications.create({
-        :description => (
-            "El producto \"Clan destacado\" que acabas de comprar estará
-            activo durante todo el día
-            #{oe.active_on.strftime('%d de %B de %Y')} en portada de
-            #{oe.portal.name}."),
+          :description => (
+              "El producto \"Clan destacado\" que acabas de comprar estará
+              activo durante todo el día
+              #{oe.active_on.strftime('%d de %B de %Y')} en portada de
+              #{oe.portal.name}."),
+          :type_id => Notification::OUTSTANDING_CLAN_SCHEDULED,
       })
 
     when 'SoldOutstandingUser'
@@ -117,17 +126,29 @@ class NotificationObserver < ActiveRecord::Observer
             activo durante todo el día
             #{oe.active_on.strftime('%d de %B de %Y')} en portada de
             #{oe.portal.name}."),
+          :type_id => Notification::OUTSTANDING_USER_SCHEDULED,
       })
     end
   end
 
   def after_destroy(o)
     case o.class.name
+    when 'NeReference'
+      case o.entity_class
+      when "User"
+        handle_user_reference_destroy(o)
+      when "Clan"
+        # We don't do anything yet here
+      else
+        raise "Unknown reference entity_class '#{o.entity_class}'"
+      end
+
     when 'UsersSkill'
       o.user.notifications.create({
         :description => (
             "Has perdido la habilidad de
             <strong>#{o.format_scope}</strong>"),
+        :type_id => Notification::USERS_SKILL_LOST,
       })
     end
   end
@@ -141,13 +162,38 @@ class NotificationObserver < ActiveRecord::Observer
     when "Comment"
       comment = Comment.find(reference.referencer_id)
       if comment.user_id != reference.entity_id
+        notification = user.notifications.with_type(
+            Notification::NICK_REFERENCE_IN_COMMENT).find(
+                :first, :conditions => ["data = ?", comment.id.to_s])
+        return if notification
+
         user.notifications.create({
           :description => (
               "<a href=\"#{Routing.gmurl(comment.user)}\">#{comment.user.login}</a>
               te ha nombrado en <a href=\"#{Routing.gmurl(comment)}\">este
               comentario</a>."),
+          :type_id => Notification::NICK_REFERENCE_IN_COMMENT,
+          :data => comment.id,
         })
       end
+    else
+      raise "Unknown referencer_class '#{reference.referencer_class}'"
+    end
+  end
+
+  def handle_user_reference_destroy(reference)
+    user = User.find(reference.entity_id)
+    return if user.pref_radar_notifications.to_i != 1
+
+    case reference.referencer_class
+    when "Comment"
+      comment = Comment.find(reference.referencer_id)
+      notification = user.notifications.with_type(
+          Notification::NICK_REFERENCE_IN_COMMENT).find(
+              :first, :conditions => ["data = ?", comment.id.to_s])
+
+      notification.destroy if notification
+
     else
       raise "Unknown referencer_class '#{reference.referencer_class}'"
     end

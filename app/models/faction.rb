@@ -88,13 +88,13 @@ class Faction < ActiveRecord::Base
   def send_warning_coup_detat
     mrcheater = User.find_by_login!("MrCheater")
     [self.boss, self.underboss].compact.each do |user|
-      Notification.create({
+      user.notifications.create({
           :sender_user_id => Ias.mrcheater.id,
-          :user_id => user.id,
           :description => (
               "Peligro: Golpe de estado inminente. Han pasado muchos días sin"+
               " generarse karma en #{self.name}). Si no se genera karma en la"+
               " próxima semana perderás el control de la facción."),
+          :type_id => Notification::COUP_DETAT_INMINENT,
       })
     end
   end
@@ -701,14 +701,14 @@ class Faction < ActiveRecord::Base
             "¡Golpe de estado en #{self.name}!
             <a href=\"#{Routing.url_for_content_onlyurl(t)}\">Más
             información</a>."),
+        :type_id => Notification::COUP_DETAT_EXECUTED,
     }
 
     sent_uids = []
     [self.boss, self.underboss].each do |u|
       next if u.nil?
       sent_uids << u.id
-      Notification.create({:user_id => u.id}.merge(notification_options))
-
+      u.notifications.create(notification_options)
     end
 
     self.update_boss(nil)
@@ -716,7 +716,7 @@ class Faction < ActiveRecord::Base
 
     self.members.each do |u|
       next if sent_uids.include?(u.id)
-      Notification.create({:user_id => u.id}.merge(notification_options))
+      u.notifications.create(notification_options)
     end
   end
 

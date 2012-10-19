@@ -177,6 +177,14 @@ class ActiveSupport::TestCase
     end
   end
 
+  def buy_product(user, product_class)
+    product_class.create({
+        :user_id => user.id,
+        :product_id => Product.find_by_cls(product_class.name).id,
+        :price_paid => 1,
+    })
+  end
+
   def remove_skill(user_id, role)
     if user_id.kind_of?(Fixnum)
       user = User.find(user_id)

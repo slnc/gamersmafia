@@ -69,14 +69,6 @@ class NotificationObserverTest < ActiveSupport::TestCase
     end
   end
 
-  def buy_product(user, product_class)
-    product_class.create({
-        :user_id => user.id,
-        :product_id => Product.find_by_cls(product_class.name).id,
-        :price_paid => 1,
-    })
-  end
-
   def create_comment_user_reference(comment_id, referenced_user_id)
     NeReference.create({
       :entity_id => referenced_user_id,
@@ -110,4 +102,16 @@ class NotificationObserverTest < ActiveSupport::TestCase
       self.create_comment_user_reference(2, 1)
     end
   end
+
+  test "notify on ne_reference if radar enabled and pref is on and multiple references" do
+    u1 = User.find(1)
+    sold_radar = self.buy_product(u1, SoldRadar)
+    assert_difference("u1.notifications.count") do
+      self.create_comment_user_reference(2, 1)
+    end
+    assert_difference("u1.notifications.count", 0) do
+      self.create_comment_user_reference(2, 1)
+    end
+  end
+
 end

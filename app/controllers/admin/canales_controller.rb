@@ -30,13 +30,13 @@ class Admin::CanalesController < AdministrationController
     if @gmtv_channel.update_attributes(:file => nil)
       flash[:notice] = "Cabecera reseteada correctamente"
       if params[:notify] == '1'
-        Notification.create({
+        @gmtv_channel.user.notifications.create({
             :user_id_from => @user.id,
-            :user_id => @gmtv_channel.user_id,
             :description => (
                 "Tu cabecera con Id <strong>#{@gmtv_channel.id}</strong> ha"
                 " sido reseteada por la siguiente razón: "
                 "\"<strong>#{params[:reset_reason]}\"</strong>"),
+            :type_id => Notification::REJECTED_GMTV_CHANNEL,
         })
       end
     else

@@ -1,4 +1,21 @@
+# -*- encoding : utf-8 -*-
 class Notification < ActiveRecord::Base
+  UNDEFINED = 0
+  REJECTED_GMTV_CHANNEL = 1
+  COUP_DETAT_INMINENT = 2
+  COUP_DETAT_EXECUTED = 3
+  AUTOMATIC_AB_TEST = 4
+  BAN_REQUEST_INITIATED = 5
+  USERS_EMBLEM_RECEIVED = 6
+  USERS_SKILL_RECEIVED = 7
+  CONTENT_DENIED = 8
+  BEST_ANSWER_RECEIVED = 9
+  OUTSTANDING_CLAN_SCHEDULED = 10
+  OUTSTANDING_USER_SCHEDULED = 11
+  USERS_SKILL_LOST = 12
+  NICK_REFERENCE_IN_COMMENT = 13
+
+
   # TODO(slnc): add as many notifications from NotificationEmail as possible
   # here.
   # TODO(slnc): add ability to specify that you want to receive email for
@@ -10,6 +27,8 @@ class Notification < ActiveRecord::Base
 
   scope :unread, :conditions => "read_on IS NULL"
   scope :read, :conditions => "read_on IS NOT NULL"
+  scope :with_type,
+              lambda { |type_id| { :conditions => ["type_id = ?", type_id.to_s]}}
 
   def self.mark_as_read(user, notification_ids)
     user.notifications.find(
