@@ -28,6 +28,7 @@ namespace :gm do
     Karma.update_ranking
     Karma.award_karma_points_new_ugc
     Ladder.check_ladder_matches
+    Notification.forget_old_read_notifications
     Popularity.update_rankings
     Question.close_old_open_questions
     Stats.forget_old_pageviews

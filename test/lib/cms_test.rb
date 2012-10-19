@@ -496,7 +496,7 @@ class CmsTest < ActiveSupport::TestCase
   test "plain_text_to_html" do
     expected = (
       "<p>foo</p>\n<p>bar baz sd klsj dlkajd lkjasd lkjasdlk jadl jadklj" +
-      "asdljasdl kjasldk jaskldjkl</p>\n<p>tapang</p>\n<p></p>\n<p>wiki</p>")
+      " asdljasdlkjasldk jaskldjkl</p>\n<p>tapang</p>\n<p></p>\n<p>wiki</p>")
     input_str = (
       "foo\nbar baz sd klsj dlkajd lkjasd lkjasdlk jadl jadklj asdljasdl" +
       "kjasldk jaskldjkl\ntapang\n\nwiki")

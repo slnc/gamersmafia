@@ -2,19 +2,44 @@
 class Product < ActiveRecord::Base
   has_many :sold_products
 
-  public
+  def can_be_bought_by_user_sold_beer(u)
+    false
+  end
+
+  def can_be_bought_by_user_sold_outstanding_faction(u)
+    false
+  end
+
+  def can_be_bought_by_user_sold_sex_night(u)
+    false
+  end
+
+  def can_be_bought_by_user_sold_wheel_of_fortune(u)
+    false
+  end
+
   def can_be_bought_by_user(u)
     send "can_be_bought_by_user_#{ActiveSupport::Inflector::underscore(self.cls)}".to_sym, u
   end
 
   def cant_be_bought_by_user_reason(u)
-    send "cant_be_bought_by_user_reason_#{ActiveSupport::Inflector::underscore(self.cls)}".to_sym, u
+    method_sym = "cant_be_bought_by_user_reason_#{ActiveSupport::Inflector::underscore(self.cls)}".to_sym
+
+    if self.respond_to?(method_sym)
+      send method_sym, u
+    else
+      "No puedes comprar este producto"
+    end
   end
 
   # TODO refactorize to use Authorization lib
   private
   def can_be_bought_by_user_sold_profile_signatures(u)
    !u.enable_profile_signatures?
+  end
+
+  def can_be_bought_by_user_sold_ad100(u)
+    false
   end
 
   def can_be_bought_by_user_sold_radar(u)
@@ -115,4 +140,17 @@ class Product < ActiveRecord::Base
   def cant_be_bought_by_user_reason_sold_radar(u)
     "Ya tienes este producto"
   end
+
+  def cant_be_bought_by_user_reason_sold_ad100(u)
+    false
+  end
+
+  def cant_be_bought_by_user_reason_sold_beer(u)
+    "No puedes comprar birra"
+  end
+
+  def cant_be_bought_by_user_reason_sold_user_avatar(u)
+    "No puedes comprar un avatar de usuario"
+  end
+
 end

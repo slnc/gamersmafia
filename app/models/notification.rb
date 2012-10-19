@@ -30,6 +30,13 @@ class Notification < ActiveRecord::Base
   scope :with_type,
               lambda { |type_id| { :conditions => ["type_id = ?", type_id.to_s]}}
 
+  def self.forget_old_read_notifications
+    User.db_query(
+        "DELETE FROM notifications
+         WHERE read_on IS NOT NULL
+         AND created_on >= now() - '1 month'::interval")
+  end
+
   def self.mark_as_read(user, notification_ids)
     user.notifications.find(
         :all,
