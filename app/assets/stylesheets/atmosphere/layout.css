@@ -5,3 +5,7 @@ body {
 .hidden {
   display: none;
 }
+
+footer.pagelevel {
+  clear: both;
+}

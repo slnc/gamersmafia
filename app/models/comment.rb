@@ -426,6 +426,11 @@ class Comment < ActiveRecord::Base
     clean_references = self.comment.scan(
         Regexp.new("@#{User::LOGIN_REGEXP}")).flatten
 
-    [users, (dirty_references + clean_references).uniq.sort]
+    referenced_names = (dirty_references + clean_references).uniq.sort
+    entity_info = {}
+    referenced_names.each do |name|
+      entity_info[name] = users[name]
+    end
+    [entity_info, referenced_names]
   end
 end

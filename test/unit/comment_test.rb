@@ -206,7 +206,12 @@ class CommentTest < ActiveSupport::TestCase
       :comment => "hello nagato. I love you! I love you too @mrachmed!!!
       I don't love @mrman",
     })
-    assert_equal %w(mrachmed mrman nagato), comment.send(:extract_ne_references)
+    assert_equal [{
+      "mrachmed" => [["User", 58]],
+      "mrman" => [["User", 53]],
+      "nagato" => [["User", 54]],
+    },
+    ["mrachmed", "mrman", "nagato"]], comment.send(:extract_ne_references)
   end
 
   test "should not send 2 notifications for multiple refs or editions" do
