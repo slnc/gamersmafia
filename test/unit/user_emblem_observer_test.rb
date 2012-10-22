@@ -363,10 +363,10 @@ class UserEmblemObserverTest < ActiveSupport::TestCase
       new_content.main = "foo article"
     end
 
-
     if content_type.name != "Image"
       new_content.title = "foo #{cls.name}"
     end
+    new_content.terms = 1
     assert new_content.save, new_content.errors.full_messages_html
     Content.publish_content_directly(new_content, author)
   end
