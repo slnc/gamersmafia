@@ -947,10 +947,31 @@ class User < ActiveRecord::Base
     total
   end
 
+  def users_files_dir
+    "#{Rails.root}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/"
+  end
 
+  def users_files_dir_relative
+    "users_files/#{(self.id/1000).to_i}/#{self.id}/"
+  end
+
+  def upload_b64_filedata(filedata)
+    # data:image/jpeg;base64,base64encodeddata
+    # TODO(slnc): in a delayed way verify that the uploaded image is actually an
+    # image and not a renamed exe.
+    mime_data, b64_encoded = filedata.split(";base64,")
+    image_mime_data = /data:image\/(jpeg|gif|jpg|png)$/.match(mime_data)
+    raise ValueError("Invalid image") if !image_mime_data
+
+    tmpfile = Tempfile.new(["#{self.id}_", ".#{image_mime_data[1]}"])
+    tmpfile.binmode
+    tmpfile.write(ActiveSupport::Base64.decode64(b64_encoded))
+    tmpfile.rewind
+    self.upload_file(tmpfile)
+  end
 
   def upload_file(tmpfile)
-    d = "#{Rails.root}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/"
+    d = self.users_files_dir
     FileUtils.mkdir_p(d) unless File.exists?(d)
 
     preppend = ''
@@ -966,12 +987,15 @@ class User < ActiveRecord::Base
       preppend = "_#{preppend}"
     end
 
+    dst_file = "#{d}#{preppend}#{filename}"
     require 'fileutils'
     if tmpfile.respond_to?('path') and tmpfile.path then
-      FileUtils::cp(tmpfile.path, "#{d}#{preppend}#{filename}")
+      FileUtils::cp(tmpfile.path, dst_file)
     else
-      File.open("#{d}#{preppend}#{filename}", 'w+') { |f| f.write(tmpfile.read()) }
+      File.open(dst_file, 'w+') { |f| f.write(tmpfile.read()) }
     end
+    File.chmod(0644, dst_file)
+    dst_file.gsub("#{Rails.root}/public", "")
   end
 
   def get_tmp_basedir

@@ -1,0 +1,30 @@
+<% content.comments.each do |comment| %>
+  <div class="comment">
+    <%=comment.comment%>
+  </div>
+<% end -%>
+
+<form id="new_comment" name="new_comment" method="post" action="/comments/create">
+  <input type="hidden" name="comment[content_id]" value="<%=content.id%>" />
+  <input type="hidden" name="redirto" value="<%=content_path(content)%>" />
+  <div class="comment-main-fields-area">
+    <textarea name="comment[comment]" class="comment-textarea"></textarea>
+    <div class="droparea">arrastra imágenes</div>
+  </div>
+
+  <div id="dropped-files" class="image-gallery-sm"></div>
+  <div class="image-editor hidden">
+    <canvas class="hidden"></canvas>
+    <img src="/images/dot.png" class="image" />
+    <br />
+    <input type="text" name="meme_top" class="meme_top" maxlength="60" />
+    <br />
+    <input type="text" name="meme_middle" class="meme_middle" maxlength="60" />
+    <br />
+    <input type="text" name="meme_bottom" class="meme_bottom" maxlength="60" />
+    <br />
+  </div>
+
+  <div class="draft-feedback"></div>
+  <input type="submit" value="Enviar" class="form-submit" />
+</form>

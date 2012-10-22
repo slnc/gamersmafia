@@ -441,6 +441,7 @@ module Cms
 
   # relative_savedir is relative to #{Rails.root}/public/storage/
   # Devuelve la ruta guardada o nil si no la ha podido guardar
+  # relative_savedir (root is public/storage)
   def self.copy_image_to_dir(imgurl, relative_savedir)
     if /http(s?):\/\// =~ imgurl # download it first
       FileUtils.rm_rf("/tmp/gm_tmp_files/")

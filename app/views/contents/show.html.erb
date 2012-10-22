@@ -12,7 +12,8 @@ Entidades
 </section>
 
 <section class="comments">
-Comentarios
+<%= render :partial => '/comments/content_comments',
+           :locals => { :content => @content } %>
 </section>
 </div>
 

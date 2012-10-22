@@ -1,78 +1,113 @@
 # -*- encoding : utf-8 -*-
+require "base64"
 class CommentsController < ApplicationController
   before_filter :require_auth_users
+
+  def upload_img
+    if params[:image_url]
+      new_html = Cms.parse_images(
+          "<img src=\"#{params[:image_url]}\" />",
+          @user.users_files_dir_relative)
+      @uploaded_img_path = new_html.match(/src="([^"]+)"/)[1]
+    elsif params[:image]
+      @uploaded_img_path = @user.upload_b64_filedata(params[:image])
+    else
+      raise "Unable to upload img. No 'image' or 'image_url' params."
+    end
+
+    render :layout => false
+  end
 
   def create
     params[:comment] ||= {}
     params[:comment][:content_id] ||= 0
+
+    if params[:images]
+      params[:comment][:comment] = (
+          "#{params[:comment][:comment]}\n" +
+          "#{Comment.images_to_comment(params[:images], @user)}")
+    end
+
     content = Content.find(params[:comment][:content_id])
     object = content.real_content
+
+    if params[:redirto].to_s == '' || /create/ =~ params[:redirto]
+      params[:redirto] = '/'
+    end
 
     begin
       Comments.require_user_can_comment_on_content(@user, object)
     rescue Exception => e
       Rails.logger.warn("User #{@user} cannot comment on #{object}: #{e}")
       flash[:error] = e.to_s
-    else
-      # buscamos el último comentario y si es nuestro y de menos de 1h lo
-      # editamos en lugar de crear
-      last_comment = content.comments.find(
-          :first, :conditions => 'deleted = \'f\'', :order => 'id DESC')
-      if (last_comment && last_comment.user_id == @user.id &&
-          last_comment.created_on >= 1.hour.ago &&
-          !last_comment.moderated?)
-        if (last_comment.comment ==
+      redirect_to(params[:redirto]) && return
+    end
+
+    # Buscamos el último comentario y si es nuestro y de menos de 1h lo
+    # editamos en lugar de crear uno nuevo.
+    last_comment = content.comments.find(
+        :first, :conditions => "deleted = 'f'", :order => 'id DESC')
+    append_to_last = (
+        last_comment &&
+        last_comment.user_id == @user.id &&
+        last_comment.created_on >= 1.hour.ago &&
+        !last_comment.moderated?
+    )
+
+    if append_to_last
+      if (last_comment.comment ==
+          Comments::formatize(params[:comment][:comment]))
+        # Ha hecho doble click en enviar comentario
+        flash[:notice] = 'Comentario añadido correctamente'
+      else
+
+        if last_comment.append_update(
             Comments::formatize(params[:comment][:comment]))
-          # para evitar doble clicks a enviar comentario
           flash[:notice] = 'Comentario añadido correctamente'
         else
-          last_comment.comment = (
-              "#{last_comment.comment}<br /><br /><strong>Editado</strong>:" +
-              " #{Comments::formatize(params[:comment][:comment])}")
-          if last_comment.save
-            flash[:notice] = 'Comentario añadido correctamente'
-          else
-            flash[:error] = ("Ocurrió un error al guardar el comentario:" +
-                " <br /> #{last_comment.errors.full_messages_html}")
-          end
-        end
-      else
-        # si el último comentario de este usuario es de hace menos de 15
-        # segundos le bloqueamos
-        if @user.comments.count(
-            :conditions => 'created_on > now() - \'15 seconds\'::interval') > 0
-          flash[:error] = (
-              "Debes esperar al menos 15 segundos antes de publicar un nuevo" +
-              " comentario")
-        elsif (@user.created_on > 1.day.ago &&
-               @user.comments.count(
-                 :conditions => "created_on > now() - '1 hour'::interval") > 10)
-          flash[:error] = (
-            "No puedes publicar tantos comentarios seguidos, inténtalo un" +
-            " poco más tarde.")
-        else
-          @comment = Comment.new({
-              :comment => Comments::formatize(params[:comment][:comment]),
-              :content_id => params[:comment][:content_id],
-              :host => self.remote_ip,
-              :user_id => @user.id,
-          })
-
-          if @comment.save
-            Users.add_to_tracker(@user, @comment.content) if params[:add_to_tracker] && params[:add_to_tracker] == '1'
-            flash[:notice] = 'Comentario añadido correctamente'
-          else
-            flash[:error] = "Ocurrió un error al guardar el comentario: <br /> #{@comment.errors.full_messages_html}"
-          end
+          flash[:error] = ("Ocurrió un error al guardar el comentario:" +
+                           " <br /> #{last_comment.errors.full_messages_html}")
         end
       end
+      redirect_to(params[:redirto]) && return
     end
 
-    if (params[:redirto].to_s == '' || /create/ =~ params[:redirto])
-      params[:redirto] = '/'
+    # si el último comentario de este usuario es de hace menos de 15
+    # segundos le bloqueamos
+    # TODO(slnc): move to authorization lib
+    if @user.comments.count(
+        :conditions => "created_on > now() - '15 seconds'::interval") > 0
+      flash[:error] = (
+          "Debes esperar al menos 15 segundos antes de publicar un nuevo" +
+          " comentario")
+      redirect_to(params[:redirto]) && return
+    elsif (@user.created_on > 1.day.ago &&
+           @user.comments.count(
+             :conditions => "created_on > now() - '1 hour'::interval") > 10)
+      flash[:error] = (
+        "No puedes publicar tantos comentarios seguidos, inténtalo un" +
+        " poco más tarde.")
+      redirect_to(params[:redirto]) && return
     end
-   # tenemos que redirigir siempre ya que se crean desde distintas páginas
-    redirect_to params[:redirto]
+
+    @comment = Comment.new({
+        :comment => Comments::formatize(params[:comment][:comment]),
+        :content_id => params[:comment][:content_id],
+        :host => self.remote_ip,
+        :user_id => @user.id,
+    })
+    if @comment.save
+      if params[:add_to_tracker] && params[:add_to_tracker] == '1'
+        Users.add_to_tracker(@user, @comment.content)
+      end
+      flash[:notice] = 'Comentario añadido correctamente'
+    else
+      flash[:error] = (
+          "Ocurrió un error al guardar el comentario: <br />" +
+          "#{@comment.errors.full_messages_html}")
+    end
+
+    redirect_to(params[:redirto])
   end
 
   def edit
@@ -157,5 +192,10 @@ class CommentsController < ApplicationController
 
   def violaciones_netiqueta
     raise AccessDenied unless Authorization.can_see_netiquette_violations?(@user)
+  end
+
+  private
+  def upload_img_to_user(data_b64_encoded)
+
   end
 end

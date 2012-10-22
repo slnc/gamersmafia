@@ -1,0 +1,21 @@
+.comments .comment {
+  margin-bottom: 2em;
+}
+
+.comment-textarea {
+  height: 6em;
+}
+
+.image-deleter {
+  z-index: 10;
+
+  /* TODO(slnc): temp hack until we have an icon here */
+  font-weight: bold;
+  background: #000;
+  color: #fff;
+  float: right;
+  margin: 1px;
+  padding: 3px;
+
+  cursor: pointer;
+}

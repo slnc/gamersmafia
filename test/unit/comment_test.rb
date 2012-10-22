@@ -230,4 +230,22 @@ class CommentTest < ActiveSupport::TestCase
       assert comment.save
     end
   end
+
+  test "append_update" do
+    c1 = Comment.find(1)
+    prev = c1.comment
+    c1.append_update("bar")
+    assert_equal "#{prev}<br /><br /><strong>Editado</strong>: bar", c1.comment
+  end
+
+  test "images_to_comment_url" do
+    assert_equal "[img]/foo.jpeg[/img]",
+                 Comment.images_to_comment(["/foo.jpeg"], User.find(1))
+  end
+
+  test "images_to_comment_b64" do
+    output = Comment.images_to_comment(
+        ["data:image/jpeg;base64,foo"], User.find(1))
+    assert /^\[img\]\/storage.+\.jpeg\[\/img\]/ =~ output
+  end
 end

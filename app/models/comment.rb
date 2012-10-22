@@ -54,6 +54,27 @@ class Comment < ActiveRecord::Base
   scope :visible,
         :conditions => ["state = ?", VISIBLE]
 
+
+  # Converts a list of b64-encoded or urls into comment code uploading files
+  # where necessary.
+  def self.images_to_comment(images, user)
+    text = []
+    images.each do |img|
+      if img[0..4] == 'data:'
+        img = user.upload_b64_filedata(img)
+      end
+      text.append("[img]#{img}[/img]")
+    end
+    text.join("\n")
+  end
+
+  # Takes a formatized text and appends it to the end of the comment.
+  def append_update(text)
+    self.update_attribute(
+        :comment,
+        "#{self.comment}<br /><br /><strong>Editado</strong>: #{text}")
+  end
+
   def check_not_moderated
     if self.moderated?
       FROZEN_ATTRIBUTES_IF_MODERATED.each do |attribute|

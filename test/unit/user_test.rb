@@ -289,4 +289,10 @@ class UserTest < ActiveSupport::TestCase
     u1.users_emblems.create(:emblem => "comments_count_1")
     assert_equal '1.0.0.0.0', u1.emblems_mask_or_calculate
   end
+
+  test "upload_b64_filedata" do
+    u1 = User.find(1)
+    output = u1.upload_b64_filedata("data:image/jpeg;base64,foo")
+    assert /^\/storage.+\.jpeg/ =~ output
+  end
 end

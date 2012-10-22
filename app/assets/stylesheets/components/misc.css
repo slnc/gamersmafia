@@ -1,0 +1,12 @@
+.droparea {
+  border: 3px dashed #ccc;
+  height: 6em;
+  width: 6em;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  vertical-align: middle;
+  display: table-cell;
+  text-align: center;
+  cursor: pointer;
+}
