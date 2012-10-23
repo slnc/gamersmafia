@@ -93,9 +93,13 @@ class NotificationObserver < ActiveRecord::Observer
           recipient = o.best_answer.user
           description = (
               "¡Enhorabuena! La mejor respuesta a
-              <a href=\"#{Routing.gmurl(o)}\˝>\"#{o.title}\"</a> ha sido tuya
-              por lo que te llevas la recompensa de #{o.prize} GMFs."
-          )
+              <a href=\"#{Routing.gmurl(o)}\">\"#{o.title}\"</a> ha sido tuya")
+          if o.prize > 0
+            description = (
+                "#{description} por lo que te llevas la recompensa de" +
+                " #{o.prize} GMFs.")
+          else
+            description = "#{description}."
         end
         recipient.notifications.create({
             :description => description,
