@@ -107,18 +107,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def mobile_device?
-    if params.key?(:mobile_param)
-      session[:mobile_param] = (params[:mobile_param] == "1")
-    end
-
-    if session.key?(:mobile_param)
-      session[:mobile_param]
-    else
-      request.user_agent =~ /Mobile|webOS/
-    end
-  end
-
   def confirmar_nueva_cuenta(u)
     u.confirm_tasks
     session[:user] = u.id

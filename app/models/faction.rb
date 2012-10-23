@@ -611,7 +611,9 @@ class Faction < ActiveRecord::Base
   end
 
   def referenced_thing_field
-    "#{self.referenced_thing.class.name.downcase}_id".to_sym
+    tableized = ActiveSupport::Inflector::tableize(self.referenced_thing.class.name)
+    singularized = ActiveSupport::Inflector::singularize(tableized)
+    "#{singularized}_id".to_sym
   end
 
   def single_toplevel_term

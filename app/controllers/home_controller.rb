@@ -10,10 +10,6 @@ class HomeController < ApplicationController
     render :action => 'index_h5', :layout => 'h5'
   end
 
-  def index_mobile
-    render :action => 'index_mobile', :layout => 'mobile'
-  end
-
   def index_suicidal
     render :action => 'index_suicidal' #, :layout => 'suicidal'
   end
@@ -21,16 +17,6 @@ class HomeController < ApplicationController
   def index
     if user_is_authed && @user.pref_suicidal == 1
       index_suicidal
-      return
-    end
-
-    if self.mobile_device?
-      self.index_mobile
-      return
-    end
-
-    if params[:h5]
-      index_h5
       return
     end
 
