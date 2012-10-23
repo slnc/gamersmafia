@@ -4,6 +4,13 @@ require 'test_helper'
 class CommentTest < ActiveSupport::TestCase
   COPYRIGHT = Comment::MODERATION_REASONS[:copyright]
 
+  test "comment_without_quotes" do
+    assert_equal(
+        "foo bar baz",
+        Comment.comment_without_quotes(
+            "foo [quote]wiki[/quote]bar [quote]tapang[/quote]baz"))
+  end
+
   test "moderate should work" do
     comment = create_a_comment
     comment.moderate(User.find(1), COPYRIGHT)
@@ -247,5 +254,38 @@ class CommentTest < ActiveSupport::TestCase
     output = Comment.images_to_comment(
         ["data:image/jpeg;base64,foo"], User.find(1))
     assert /^\[img\]\/storage.+\.jpeg\[\/img\]/ =~ output
+  end
+
+  test "notify when someone replies to their comment" do
+    u1 = User.find(1)
+    u2 = User.find(2)
+    u1.pref_radar_notifications = 1
+    c1 = create_a_comment({:user_id => u1.id})
+    assert_difference("u1.notifications.count") do
+      c2 = create_a_comment({
+          :user_id => u2.id,
+          :comment => "##{c1.position_in_content} feo",
+      })
+    end
+  end
+
+  test "remove notification when reference removed" do
+    u1 = User.find(1)
+    u2 = User.find(2)
+    u1.pref_radar_notifications = 1
+    c1 = create_a_comment({:user_id => u1.id})
+    c2 = create_a_comment({
+        :user_id => u2.id,
+        :comment => "##{c1.position_in_content} feo",
+    })
+    assert_difference("u1.notifications.count", -1) do
+      c2.update_attribute(:comment, "feo")
+    end
+  end
+
+  test "extract_replied_users" do
+    c1 = create_a_comment
+    c2 = create_a_comment(:comment => "##{c1.position_in_content} feo")
+    assert_equal [c1.user_id], c2.extract_replied_users(c2.comment)
   end
 end

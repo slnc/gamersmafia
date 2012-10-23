@@ -14,6 +14,7 @@ class Notification < ActiveRecord::Base
   OUTSTANDING_USER_SCHEDULED = 11
   USERS_SKILL_LOST = 12
   NICK_REFERENCE_IN_COMMENT = 13
+  COMMENT_REFERENCE_IN_COMMENT = 14
 
 
   # TODO(slnc): add as many notifications from NotificationEmail as possible

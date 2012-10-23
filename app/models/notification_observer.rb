@@ -178,7 +178,7 @@ class NotificationObserver < ActiveRecord::Observer
               te ha nombrado en <a href=\"#{Routing.gmurl(comment)}\">este
               comentario</a>."),
           :type_id => Notification::NICK_REFERENCE_IN_COMMENT,
-          :data => comment.id,
+          :data => comment.id.to_s,
         })
       end
     else
@@ -196,9 +196,7 @@ class NotificationObserver < ActiveRecord::Observer
       notification = user.notifications.with_type(
           Notification::NICK_REFERENCE_IN_COMMENT).find(
               :first, :conditions => ["data = ?", comment.id.to_s])
-
       notification.destroy if notification
-
     else
       raise "Unknown referencer_class '#{reference.referencer_class}'"
     end

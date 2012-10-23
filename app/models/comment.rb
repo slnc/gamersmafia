@@ -172,7 +172,72 @@ class Comment < ActiveRecord::Base
   end
 
   def schedule_ne_references_calculation
-    self.delay.regenerate_ne_references if self.comment_changed?
+    if self.comment_changed?
+      self.delay.regenerate_ne_references
+      self.delay.update_replies_notifications
+    end
+  end
+
+  def extract_replied_users(text)
+    text = Comment.comment_without_quotes(text)
+    replied_users = []
+    text.scan(/#([0-9]+)/).uniq.each do |m|
+      replied_comment = Comment.find_by_position(m[0].to_i, self.content)
+      next if replied_comment.nil?
+      replied_users << replied_comment.user_id
+    end
+    replied_users.uniq
+  end
+
+  def self.find_by_position(position, content)
+    content.comments.find(:first, :order => 'created_on', :limit => 1, :offset => position - 1)
+  end
+
+  def update_replies_notifications
+    if self.comment_was
+      replied_users_was = self.extract_replied_users(self.comment_was)
+    else
+      replied_users_was = []
+    end
+    replied_users_is = self.extract_replied_users(self.comment)
+
+    return if replied_users_was.size == 0 && replied_users_is.size == 0
+
+    users_gone = replied_users_was - replied_users_is
+    new_users = replied_users_is - replied_users_was
+
+    users_gone.each do |user_id|
+      replied_user = User.find(user_id)
+      next if replied_user.pref_radar_notifications.to_i != 1
+      notification = replied_user.notifications.with_type(
+          Notification::COMMENT_REFERENCE_IN_COMMENT).find(
+              :first, :conditions => ["data = ?", self.id.to_s])
+      notification.destroy if notification
+    end
+
+    new_users.each do |user_id|
+      replied_user = User.find(user_id)
+      next if replied_user.pref_radar_notifications.to_i != 1
+      notification = replied_user.notifications.create({
+          :type_id => Notification::COMMENT_REFERENCE_IN_COMMENT,
+          :description => (
+              "<a href=\"#{Routing.gmurl(self.user)}\">#{self.user.login}</a>
+              te ha respondido en <a href=\"#{Routing.gmurl(self)}\">este
+              comentario</a>."),
+          :data => self.id.to_s,
+      })
+    end
+  end
+
+  # TODO(slnc): PERF calculate this on comment creation and store it in the
+  # table.
+  def position_in_content
+    self.content.comments.count(
+        :conditions => ["created_on < ?", self.created_on]) + 1
+  end
+
+  def self.comment_without_quotes(text)
+    text.gsub(/(\[quote\][^\[]+\[\/quote\])/, "")
   end
 
   def download_remotes
