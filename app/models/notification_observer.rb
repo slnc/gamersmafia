@@ -86,7 +86,7 @@ class NotificationObserver < ActiveRecord::Observer
         if o.accepted_answer_comment_id.nil?
           recipient = o.user
           description = (
-              "Tu pregunta <a href=\"#{Routing.gmurl(o)}\˝>\"#{o.title}\"</a>
+              "Tu pregunta <a href=\"#{Routing.gmurl(o)}\">\"#{o.title}\"</a>
               ha sido cerrada sin una respuesta por ser cancelada o por llevar
               abierta demasiado tiempo.")
         else
@@ -100,6 +100,7 @@ class NotificationObserver < ActiveRecord::Observer
                 " #{o.prize} GMFs.")
           else
             description = "#{description}."
+          end
         end
         recipient.notifications.create({
             :description => description,

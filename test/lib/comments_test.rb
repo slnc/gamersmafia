@@ -15,6 +15,13 @@ class CommentsTest < ActiveSupport::TestCase
     assert_equal expected, Comments.formatize("@nagato")
   end
 
+  test "formatize spoiler" do
+    expected = (
+        "<span class=\"spoiler\">spoiler <span class=\"spoiler-content" +
+        " hidden\">el mayordomo</span></span>")
+    assert_equal expected, Comments.formatize("[spoiler]el mayordomo[/spoiler]")
+  end
+
   test "unformatize user login" do
     formatized_comment = (
         "hello <span class=\"user-login\"><a href=\"/miembros/nagato\">nagato</a>" +
@@ -23,8 +30,23 @@ class CommentsTest < ActiveSupport::TestCase
   end
 
   test "unformatize_should_correctly_translate_known_tags" do
-    t_unformatized = "Hola Mundo![b]me siento negrita[/b] y ahora..[i]CURSIVA!!![/i]\nAdemás tengo saltos de línea, [~dharana], [flag=es], [img]http://domain.test[/img] y [url=http://otherdomain.test]enlaces!![/url]>>>Ownage!<<<[quote]mwahwahwa[/quote][code=python]foo[/code]"
-    t = "Hola Mundo!<b>me siento negrita</b> y ahora..<i>CURSIVA!!!</i><br />Además tengo saltos de línea, <a href=\"/miembros/dharana\">dharana</a>, <img class=\"icon\" src=\"/images/flags/es.gif\" />, <img src=\"http://domain.test\" /> y <a href=\"http://otherdomain.test\">enlaces!!</a>&gt;&gt;&gt;Ownage!&lt;&lt;&lt;<blockquote>mwahwahwa</blockquote><pre class=\"brush: python\">foo</pre>"
+    t_unformatized = (
+        "Hola Mundo![b]me siento negrita[/b] y ahora..[i]CURSIVA!!![/i]\n" +
+        "Además tengo saltos de línea, [~dharana], [flag=es]," +
+        " [img]http://domain.test[/img] y [url=http://otherdomain.test]" +
+        "enlaces!![/url]>>>Ownage!<<<[quote]mwahwahwa[/quote][code=python]foo" +
+        "[/code][spoiler]foo[/spoiler]")
+
+    t = (
+        "Hola Mundo!<b>me siento negrita</b> y ahora..<i>CURSIVA!!!</i><br />" +
+        "Además tengo saltos de línea, <a href=\"/miembros/dharana\">dharana" +
+        "</a>, <img class=\"icon\" src=\"/images/flags/es.gif\" />, <img" +
+        " src=\"http://domain.test\" /> y <a href=\"http://otherdomain." +
+        "test\">enlaces!!</a>&gt;&gt;&gt;Ownage!&lt;&lt;&lt;<blockquote>" +
+        "mwahwahwa</blockquote><pre class=\"brush: python\">foo</pre><span" +
+        " class=\"spoiler\">spoiler <span class=\"spoiler-content hidden\">foo" +
+        "</span></span>")
+
     assert_equal t_unformatized, Comments.unformatize(t)
   end
 

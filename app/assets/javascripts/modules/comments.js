@@ -7,6 +7,11 @@ Gm.Comments = function() {
         timeout: 30,
       onSave: Gm.Comments.DraftSaved,
       });
+
+      $('.spoiler').click(function(e) {
+        $(e.currentTarget).find('.spoiler-content').toggle();
+        e.stopPropagation();
+      });
     },
 
     DraftSaved: function() {
