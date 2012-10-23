@@ -33,54 +33,6 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     end
   end
 
-  test "mis_permisos_should_work" do
-    sym_login 2
-    %w(
-       Don
-       ManoDerecha
-       Boss
-       Underboss
-       Sicario
-       Moderator
-       Advertiser
-       GroupMember
-       GroupAdministrator
-       CompetitionAdmin
-       CompetitionSupervisor
-      ).each do |r|
-      @ur = UsersSkill.new(:user_id => 2, :role => r, :role_data => '1')
-      assert @ur.save
-    end
-
-    @ur = UsersSkill.new(
-        :user_id => 2,
-        :role => 'Editor',
-        :role_data => {
-            :content_type_id => 1,
-            :faction_id => 1
-        }.to_yaml)
-    assert @ur.save
-
-    get :mis_permisos
-    assert_response :success
-  end
-
-  test "del_role_should_work" do
-    test_mis_permisos_should_work
-    assert_count_decreases(UsersSkill) do
-      post :del_role, :id => @ur.id
-    end
-    assert_response :success
-  end
-
-  test "del_role_other_shouldnt_work" do
-    test_mis_permisos_should_work
-    sym_login 1
-    assert_raises(ActiveRecord::RecordNotFound) do
-      post :del_role, :id => @ur.id
-    end
-  end
-
   test "add_quicklink" do
     sym_login 2
     u2 = User.find(2)

@@ -42,15 +42,6 @@ class Cuenta::CuentaController < ApplicationController
     @no_ads = true
   end
 
-  def mis_permisos
-
-  end
-
-  def del_role
-    @user.users_skills.find(params[:id]).destroy
-    render :nothing => true
-  end
-
   def add_quicklink
     Personalization.add_quicklink(@user, params[:code], params[:url])
     render :nothing => true
