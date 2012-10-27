@@ -211,6 +211,8 @@ module Formatting
       .gsub(/<a href="\/miembros\/([^"]+)">([^<]+)<\/a>/i, '[~\\1]')
       .gsub('url=www', 'url=http://www')
       .gsub(/<a href="([^"]+)">([^<]+)<\/a>/i, '[url=\\1]\\2[/url]')
+      .gsub('<p>', '')
+      .gsub('</p>', '')
       .gsub('&lt;', '<')
       .gsub('&gt;', '>')
   end

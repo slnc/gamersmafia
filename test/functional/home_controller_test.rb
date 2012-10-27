@@ -142,4 +142,15 @@ class HomeControllerTest < ActionController::TestCase
     get :index
     assert_not_nil @response.body.index(b1.title)
   end
+
+  test "should show hq menu if any relevant skill" do
+    u2 = User.find(2)
+    sym_login u2
+    %w(Capo EditFaq).each do |skill|
+      u2.users_skills.clear
+      give_skill(u2, skill)
+      get :index
+      assert_not_nil @response.body.index("sawli-hq")
+    end
+  end
 end

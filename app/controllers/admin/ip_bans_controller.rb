@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Admin::IpBansController < ApplicationController
+
   require_skill("Capo")
 
   def index

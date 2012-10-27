@@ -4,6 +4,7 @@
 </div>
 <% end %>
 
+<% hq_menu_items = controller.admin_menu_items %>
 <div id="thesaw">
   <div id="sawtop" class="<%=sawmode%>">
     <ul>
@@ -12,7 +13,7 @@
   <li id="sawli-bazar"><div class="f"><a title="Ir a Bazar" href="http://bazar.<%=App.domain%>/"><span>Bazar</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('bazar');"></div></li>
   <li id="sawli-arena"><div class="f"><a title="Ir a Arena" href="http://arena.<%=App.domain%>/"><span>Arena</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('arena');"></div></li>
   <li id="sawli-foros"><div class="f"><a title="Ir a Foros" href="http://<%=App.domain%>/home/foros"><span>Foros</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('foros');"></div></li>
-  <% if %w(full hq).include?(sawmode) then %>
+  <% if hq_menu_items then %>
   <li id="sawli-hq"><div class="f"><a href="http://<%=App.domain%>/home/hq"><span>hq</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('hq');"></div></li>
   <% end -%>
   <% if %w(full anunciante).include?(sawmode) then %>
@@ -155,7 +156,6 @@ if u_clans.size == 0 then %>
   <% end -%>
   </ul>
   <%
-    hq_menu_items = controller.admin_menu_items
     if hq_menu_items.size > 0 %>
 <ul id="sawbody-hq" class="hidden">
   <li style="padding-right: 10px;"><div id="mggnav-hq-admin"><div class="sawbottom-sel-left"><div class="sawbottom-sel-bg"><div class="sawbottom-sel-right"><a style="display: block; padding: 0 24px 0 0;" onclick="return GM.menu.showSawDropDown('mggnav-hq-admin-list');" href="/admin">Admin</a></div></div></div></div>

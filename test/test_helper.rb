@@ -170,6 +170,8 @@ class ActiveSupport::TestCase
       user = User.find(user_id)
     elsif user_id.kind_of?(String)
       user = User.find_by_login(user_id)
+    elsif user_id.kind_of?(User)
+      user = user_id
     end
     assert_difference("user.users_skills.count") do
       new_skill = user.users_skills.create(:role => role)
