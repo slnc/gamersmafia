@@ -4,7 +4,10 @@ class SoldFaction < SoldProduct
     raise 'faction type unset' unless options[:type]
     cls = options[:type] == 'game' ? Game : GamingPlatform
     options[:code].downcase!
-    return false if (Game.count(:conditions => ['code = ?', options[:code]]) > 0) || (GamingPlatform.count(:conditions => ['code = ?', options[:code]]) > 0)
+    if (Game.count(:conditions => ['code = ?', options[:code]]) > 0) ||
+        (GamingPlatform.count(:conditions => ['code = ?', options[:code]]) > 0)
+      return false
+    end
 
     thing = cls.new(options.pass_sym(:code, :name))
     if thing.save
@@ -13,9 +16,6 @@ class SoldFaction < SoldProduct
       fold = Faction.find_by_underboss(user)
       fold.update_underboss(nil) if fold
       f = thing.faction
-      # puts '---------'
-      # puts thing
-      # puts f
       if f.update_boss(user)
         Factions::user_joins_faction(self.user, f.id)
         true
@@ -26,9 +26,11 @@ class SoldFaction < SoldProduct
         thing.destroy
       end
     else
+      msg = []
       thing.errors.each do |err|
-        self.errors.add(*err)
+        msg.append(err)
       end
+      self.errors[:base] << msg.join("\n")
       false
     end
   end

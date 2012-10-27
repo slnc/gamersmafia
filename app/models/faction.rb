@@ -41,8 +41,14 @@ class Faction < ActiveRecord::Base
   before_destroy :destroy_related_portals
   after_save :update_related_portal
 
-  validates_format_of :code, :with => /^[a-z0-9]{1,7}$/
-  validates_format_of :name, :with => /^[a-z0-9':[:space:]-]{1,36}$/i
+  validates_format_of :code,
+      :with => /^[a-z0-9]{1,7}$/,
+      :message => ("Caracteres inválidos: solo se permiten números y letras y" +
+                   " longitud máxima de 7 caracteres")
+  validates_format_of :name,
+      :with => /^[a-z0-9':[:space:]-]{1,36}$/i,
+      :message => ("Caracteres inválidos: solo se permiten números, letras y" +
+                   " ':- y longitud máxima de 36 caracteres")
   validates_uniqueness_of :code
   validates_uniqueness_of :name
 
