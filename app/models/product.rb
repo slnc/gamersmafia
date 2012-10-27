@@ -2,6 +2,14 @@
 class Product < ActiveRecord::Base
   has_many :sold_products
 
+  CAN_ONLY_HAVE_ONE = %w(
+      SoldRadar
+      SoldProfileSignatures
+      SoldCommentsSig
+  )
+
+  REASON_CAN_ONLY_HAVE_ONE = "solo puedes comprar este producto una vez."
+
   def can_be_bought_by_user_sold_beer(u)
     false
   end
@@ -28,7 +36,15 @@ class Product < ActiveRecord::Base
     if self.respond_to?(method_sym)
       send method_sym, u
     else
-      "No puedes comprar este producto"
+      if CAN_ONLY_HAVE_ONE.include?(self.cls)
+       REASON_CAN_ONLY_HAVE_ONE
+      else
+        Rails.logger.warn(
+            "No reason for why #{self.name} can't be bought by #{u.login}")
+        webmaster = User.find(App.webmaster_user_id)
+        "nadie lo sabe. Pregúntale a <a " +
+        " href=\"#{Routing.gmurl(webmaster)}\">#{webmaster.login}</a>."
+      end
     end
   end
 
