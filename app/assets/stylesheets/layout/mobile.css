@@ -12,5 +12,16 @@
   #main {
     margin-left: 0;
   }
+
+
+  footer.pagelevel ul,
+  footer.pagelevel div {
+    margin-bottom: 1rem;
+  }
+
+  footer.pagelevel ul:last-child,
+  footer.pagelevel div:last-child {
+    margin-bottom: 0.5rem;
+  }
 }
 

@@ -25,7 +25,7 @@ class Admin::AdsControllerTest < ActionController::TestCase
 
   test "create" do
     sym_login 1
-    assert_count_increases(Ad) do
+    assert_difference("Ad.count") do
       post :create, { :ad => { :name => 'fourling', :html => 'bbbb'}}
     end
     assert_response :redirect

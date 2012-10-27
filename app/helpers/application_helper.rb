@@ -72,7 +72,7 @@ module ApplicationHelper
     contents.each do |content|
       out  << controller.send(
           :render_to_string,
-          :partial => '/contenidos/headline',
+          :partial => '/contents/headline',
           :locals => { :content => content }).force_encoding("utf-8")
     end
     out.join("\n")

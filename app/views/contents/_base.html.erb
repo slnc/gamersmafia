@@ -1,0 +1,5 @@
+<%=@content.description if @content.respond_to?(:description)%>
+
+<%=@content.main if @content.respond_to?(:main)%>
+
+<div style="margin-bottom: 20px; margin-top: 10px;">por <a href="<%=gmurl(@content.user)%>"><%=@content.user.login%></a></div>

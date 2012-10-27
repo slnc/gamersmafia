@@ -16,8 +16,20 @@
     <section class="pagelevel" id="main">
       <%= yield %>
     </section>
-    <footer class="pagelevel">
-      <span class="dev-box-label">footer</span>
+    <footer class="pagelevel f_sm">
+      <ul class="inline-menu">
+        <li><a href="/site/acercade">acerca</a></li>
+        <li><a href="/site/faq">ayuda</a></li>
+        <li><a href="/site/netiquette">código de conducta</a></li>
+        <li><a href="/site/privacidad">privacidad</a></li>
+      </ul>
+      <div class="footer-copyright">Logo y diseño &copy; Gamersmafia; contenidos <a rel="license" href="http://creativecommons.org/licenses/by-sa/3.0/es/deed.es_ES">cc-by-sa</a>.
+      </div>
+      <ul class="inline-menu footer-dev">
+        <li><a href="http://wiki.gamersmafia.com/">wiki</a></li>
+        <li><a href="http://github.com/gamersmafia/gamersmafia">bugs e ideas</a></li>
+        <li>v<span class="gm-version"><%=AppR.last_public_version_snippet%></span></li>
+      </ul>
     </footer>
   </body>
 </html>

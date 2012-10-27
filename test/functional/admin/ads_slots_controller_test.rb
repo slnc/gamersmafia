@@ -25,7 +25,7 @@ class Admin::AdsSlotsControllerTest < ActionController::TestCase
 
   test "create" do
     sym_login 1
-    assert_count_increases(AdsSlot) do
+    assert_difference("AdsSlot.count") do
       post :create, {
           :ads_slot => {
               :name => 'fourling',

@@ -42,3 +42,7 @@ p {
   line-height: 100%;
 /*  font-size: 24px; */
 }
+
+.f_sm {
+  font-size: 0.8rem;
+}
