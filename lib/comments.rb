@@ -1,8 +1,6 @@
 # -*- encoding : utf-8 -*-
 module Comments
 
-  SIMPLE_URL_REGEXP = /[a-zA-Z0-9_.:?#&%-\/]+/
-
   def self.require_user_can_comment_on_content(user, object)
     time1 = Time.now
     time_3_months_ago = time1 - 86400 * 90
@@ -48,120 +46,6 @@ module Comments
       if contents_faction && contents_faction.user_is_banned?(user)
         raise 'Estás baneado de esta facción.'
       end
-    end
-  end
-
-  def self.formatize(str)
-    return str if str.to_s == ""
-
-    # parsea comentarios de usuarios, líneas de chat, etc
-    str = Comments.fix_incorrect_bbcode_nesting(str.clone)
-    interword_regexp = /[^><]+/
-    interword_regexp_strict = /[^\[]+/
-
-    str = str.strip
-      .gsub(/</, '&lt;')
-      .gsub(/>/, '&gt;')
-      .gsub(/\r\n/, "<br />")
-      .gsub(/\r/, "<br />\\n")
-      .gsub(/\n/, "<br />\\n")
-      .gsub(/(\[(\/*)(b|i|quote)\])/i, '<\\2\\3>')
-      .gsub(/(<(\/*)(quote)>)/i, '<\\2blockquote>')
-      .gsub(/(\[~(#{User::OLD_LOGIN_REGEXP_NOT_FULL})\])/, '<a href="/miembros/\\2">\\2</a>')
-      .gsub(Regexp.new("@#{User::LOGIN_REGEXP}"), '<span class="user-login"><a href="/miembros/\\1">\\1</a></span>')
-      .gsub(/\[flag=([a-z]+)\]/i, '<img class="icon" src="/images/flags/\\1.gif" />')
-      .gsub(/\[img\](#{SIMPLE_URL_REGEXP})\[\/img\]/i, '<img src="\\1" />')
-      .gsub(/\[url=(#{SIMPLE_URL_REGEXP})\](#{interword_regexp_strict})\[\/url\]/i, '<a href="\\1">\\2</a>')
-      .gsub(/\[color=([a-zA-Z]+)\](#{interword_regexp})\[\/color\]/i, '<span class="c_\\1">\\2</span>')
-      .gsub(/\[code=([a-zA-Z0-9]+)\](.+?)\[\/code\]/i, '<pre class="brush: \\1">\\2</pre>')
-      .gsub(/\[code\](.+?)\[\/code\]/i, '<pre class="brush: js">\\1</pre>')
-      .gsub(/\[spoiler\](.+?)\[\/spoiler\]/i,
-            '<span class="spoiler">spoiler <span class="spoiler-content hidden">\\1</span></span>')
-
-    # remove any html tag inside a <code></code>
-    str.gsub!(/<pre class="brush: [a-z]+">.*<\/pre>/) { |blck|
-      code_part = blck.scan(/<pre class="brush: [a-z]+">(.*)<\/pre>/)[0][0].to_s
-      code_part = code_part.
-        gsub("<", "&lt;").gsub(">", "&gt;").gsub("&lt;br /&gt;", "\n")
-      brush_part = blck.scan(/<pre class="brush: ([a-z]+)">.*<\/pre>/)[0][0]
-      "<pre class=\"brush: #{brush_part}\">#{code_part}<\/pre>"
-    }
-
-    str
-      .gsub("\\n", "\n")
-      .gsub("\n\n", "\n")
-  end
-
-  # Cambia de tags html a bbcode
-  def self.unformatize(str)
-    return str if str.to_s == ""
-
-    str.clone.strip
-      .gsub('<br />', "\n")
-      .gsub(/(<(\/*)(blockquote)>)/i, '<\\2quote>')
-      .gsub(/<pre class="brush: ([^"]+)">/i, '[code=\\1]')
-      .gsub(/(<(\/*)(pre)>)/i, '[\\2code]') # TODO we don't preserve the class!
-      .gsub(/(<(\/*)(b|i|code|quote)>)/i, '[\\2\\3]')
-      .gsub(/<img class="icon" src="\/images\/flags\/([a-z]+).gif" \/>/i, '[flag=\\1]')
-      .gsub(/<img src="([^"]+)" \/>/i, '[img]\\1[/img]')
-      .gsub(/<span class="spoiler">spoiler <span class="spoiler-content hidden">([^<]+)<\/span><\/span>/, "[spoiler]\\1[/spoiler]")
-      .gsub(/<span class="user-login"><a href="\/miembros\/([^"]+)">([^<]+)<\/a><\/span>/, "@\\1")
-      .gsub(/<a href="\/miembros\/([^"]+)">([^<]+)<\/a>/i, '[~\\1]')
-      .gsub('url=www', 'url=http://www')
-      .gsub(/<a href="([^"]+)">([^<]+)<\/a>/i, '[url=\\1]\\2[/url]')
-      .gsub('&lt;', '<')
-      .gsub('&gt;', '>')
-  end
-
-  def self.fix_incorrect_bbcode_nesting(input)
-    q = []
-    regexp = /(\[\/*(b|i|span|code=[^\]]*|code|spoiler|quote|img|url=[^\]]*|url)\])/i
-    next_idx = input.index(regexp)
-
-    while next_idx
-      m = regexp.match(input[next_idx..-1])
-      bbcode = m[2][0..(m[2].index(/=|$/)-1)]      # get 'b' or 'quote'
-      insertion = ''
-
-      if m[0][1..1] != '/'
-        q << bbcode
-      else
-        if bbcode.gsub('/', '') == q.last
-          q.pop
-        else
-          insertion = "[#{bbcode}]"
-          input = "#{input[0..next_idx-1]}#{insertion}#{input[next_idx..-1]}"
-        end
-      end
-
-      next_idx += m[0].size + insertion.size
-      next_idx = input.index(regexp, next_idx)
-    end
-
-    q.each do |bbcode|
-      input = "#{input}[/#{bbcode}]"
-    end
-    input.gsub(
-        /(\[(b|i|code|spoiler|quote)\]\[\/(b|i|spoiler|code|quote)\])/i, '')
-  end
-
-  def self.user_can_moderate_comments_of_content(user, content)
-    return true if user.has_skill?("Capo")
-
-    f = Organizations.find_by_content(content)
-    return true if f && f.user_is_moderator(user)
-
-    real = content
-    if (real.class.name == 'Event' &&
-        (cm = CompetitionsMatch.find_by_event_id(real.id)) &&
-        cm.competition.user_is_admin(user.id))
-      true
-    elsif (real.class.name == 'Coverage' &&
-           (c = Competition.find_by_event_id(real.event_id)) &&
-           c.user_is_admin(user.id))
-      true
-    else
-      false
     end
   end
 

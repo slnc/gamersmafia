@@ -42,6 +42,6 @@
 	</tr>
 	<tr style="vertical-align: top;">
 		<td>Mensaje del anuncio</td>
-		<td><%= bbeditor :name => 'recruitment_ad[main]', :id => 'comment_comment', :value => Comments::unformatize(@recruitment_ad.main), :style => 'width: 400px; height: 50px;' %></td>
+		<td><%= bbeditor :name => 'recruitment_ad[main]', :id => 'comment_comment', :value => Formatting.html_to_bbcode(@recruitment_ad.main), :style => 'width: 400px; height: 50px;' %></td>
 	</tr>
 </table>

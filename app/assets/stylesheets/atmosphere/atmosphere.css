@@ -18,3 +18,8 @@ a:visited {
   color: #000;
 }
 */
+
+abbr {
+  border-bottom: 1px dotted #aaa;
+  cursor: pointer;
+}

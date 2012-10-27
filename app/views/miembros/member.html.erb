@@ -80,7 +80,7 @@
         :remote => true)%>
   </div>
     <div style="float: left;"><img src="<%=ASSET_URL%>/cache/thumbnails/f/32x32<%=ps.signer.show_avatar%>" /></div>
-    <div style="margin-left: 40px;"><strong><a href="<%=gmurl(ps.signer)%>"><%=ps.signer.login%></a></strong>: <%=Comments::formatize(truncate(ps.signature.strip, 80, '..'))%></div>
+    <div style="margin-left: 40px;"><strong><a href="<%=gmurl(ps.signer)%>"><%=ps.signer.login%></a></strong>: <%=Formatting.format_bbcode(truncate(ps.signature.strip, 80, '..'))%></div>
   </div>
 <%  end %>
 <div class="more right nav"><a href="<%=gmurl(@curuser)%>/firmas">Ver todas &raquo;</a></div>

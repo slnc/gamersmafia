@@ -46,7 +46,7 @@ class CommentsControllerTest < ActionController::TestCase
     @c = Comment.find(:first, :order => 'id DESC')
 
     assert_equal @c.id, prev.id
-    assert_equal "#{prev.comment}<br /><br /><strong>Editado</strong>: bar", @c.comment
+    assert_equal "#{prev.comment}\n\n[b]Editado[/b]: bar", @c.comment
   end
 
   test "should_add_to_tracker_if_comment_created_ok" do

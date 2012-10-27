@@ -14,7 +14,7 @@
     <% end -%>
     </ul></div>
 </div>
-<div class="message-body"><%=@curmessage.message.index('<br />') ? @curmessage.message : auto_link_raw(smilelize(Comments::formatize(message_quotize(@curmessage.message))))%></div>
+<div class="message-body"><%=@curmessage.message.index('<br />') ? @curmessage.message : Formatting.format_bbcode(message_quotize(@curmessage.message))%></div>
 
 <div class="subheader"><div>Conversación</div></div>
 <%=print_thread_tree(Message.find(@curmessage.thread_id), @curmessage)%>
@@ -28,7 +28,7 @@
 <div class="subheader"><div>Responder</div></div>
 <p>
 <%
-@message.message = "" # \n\n\n> [~#{@curmessage.sender.login}] escribió (#{print_tstamp(@curmessage.created_on)})\n" << Comments::unformatize(@curmessage.message.strip).gsub(/^/,'> ')
+@message.message = ""
 
 if @curmessage.title[0,3] != 'Re:' then
   @message.title = "Re: #{@curmessage.title}"

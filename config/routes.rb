@@ -78,8 +78,6 @@ Gamersmafia::Application.routes.draw do
   match 'competiciones/cancelar_reto/:participant1_id/:participant2_id' => 'competiciones#cancelar_reto'
   match 'competiciones/show/:id' => 'competiciones#show'
   match 'competiciones/show/:id/:action' => 'competiciones#index'
-  #match 'contenidos/:id' => 'contenidos#show'
-  #match 'contenidos/:id/redir' => 'contenidos#redir'
   match 'cuenta' => 'cuenta/cuenta#index'
   match 'cuenta/amigos' => 'cuenta/amigos#index'
   match 'cuenta/amigos/:action' => 'cuenta/amigos#index'

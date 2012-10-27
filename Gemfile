@@ -16,8 +16,8 @@ gem "mocha", :require => false
 gem "passenger"
 gem "pg"
 gem "rails", "3.2.1"
-gem "rails_autolink"
 gem "hiredis", "~> 0.3.1"
+gem "rinku"
 gem "redis", "~> 2.2.0", :require => ["redis/connection/hiredis", "redis"]
 gem "rmagick", :require => "RMagick"
 gem "tidy_ffi"

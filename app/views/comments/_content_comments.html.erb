@@ -1,6 +1,8 @@
 <% content.comments.each do |comment| %>
   <div class="comment">
-    <%=comment.comment%>
+    <%=Formatting.format_bbcode(
+         Formatting.comment_with_expanded_short_replies(
+           comment.comment, comment)) %>
   </div>
 <% end -%>
 

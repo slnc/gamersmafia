@@ -869,18 +869,18 @@ module Cms
     html
   end
 
+  # Adds <p></p> to an html input text. Newlines are interpreted as paragraph
+  # separators.
   def self.add_p(text)
     return text if text.nil?
+
     # Añade tags p al texto en cuestión
     textc = "#{text}"
     ntext = ""
-    # Los paras suponemos que estan separados por <br />
     textc.gsub!("<br>", "<br />")
-    #textc.gsub!("<br />", "</p><p>")
-    # text << "\n" if text.index("\n") == -^
-    # text = text.gsub("\r", "\n").gsub("\n\n", "\n")
     textc.split("<br />").each do |para|
-      if para.index('<p>') && para.index('<p>') > 0 && para[0..0] != '<' # hay un \n, tipico parrafo inicial sin p y resto con p
+      # hay un \n, tipico parrafo inicial sin p y resto con p
+      if para.index('<p>') && para.index('<p>') > 0 && para[0..0] != '<'
         ntext << "<p>#{para.split("<p>")[0].strip}</p>\n<p>#{para.split("<p>")[1]}"
       elsif para.index('<p>').nil?
         ntext << "<p>#{para.strip}</p>\n"

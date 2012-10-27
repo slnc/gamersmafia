@@ -12,6 +12,17 @@ Gm.Comments = function() {
         $(e.currentTarget).find('.spoiler-content').toggle();
         e.stopPropagation();
       });
+
+      $('.fullquote-opener').click(function(e) {
+        var curTarget = $(e.currentTarget);
+        var fullQuote = curTarget.parent().parent().find(
+            '.fullquote-comment' + curTarget.attr('data-quote'));
+        var pos = curTarget.offset();
+        fullQuote
+          .toggleClass('hidden')
+          .css({left: pos.left, top: pos.top + curTarget.height()});
+        e.stopPropagation();
+      });
     },
 
     DraftSaved: function() {

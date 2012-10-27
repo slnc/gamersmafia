@@ -4,11 +4,24 @@ require 'test_helper'
 class CommentTest < ActiveSupport::TestCase
   COPYRIGHT = Comment::MODERATION_REASONS[:copyright]
 
-  test "comment_without_quotes" do
-    assert_equal(
-        "foo bar baz",
-        Comment.comment_without_quotes(
-            "foo [quote]wiki[/quote]bar [quote]tapang[/quote]baz"))
+  test "expand_comment_references" do
+    c1 = create_a_comment(:comment => "hola guapo")
+    c2 = create_a_comment(:comment => "##{c1.position_in_content} no, eres feo")
+    assert_equal "[fullquote=2]hola guapo[/fullquote] no, eres feo", c2.comment
+  end
+
+  test "expand_comment_references with multiple saves" do
+    c1 = create_a_comment(:comment => "hola guapo")
+    c2 = create_a_comment(:comment => "##{c1.position_in_content} no, eres feo")
+    c2.update_attribute(:comment, "#{c2.comment} y más!")
+    assert_equal "[fullquote=2]hola guapo[/fullquote] no, eres feo y más!", c2.comment
+  end
+
+  test "dont_expand_comment_references within quotes" do
+    c1 = create_a_comment(:comment => "hola guapo")
+    c2 = create_a_comment(:comment => "##{c1.position_in_content} no, eres feo")
+    c3 = create_a_comment(:comment => "##{c2.position_in_content} holaaa")
+    assert_equal "[fullquote=3]#2 no, eres feo[/fullquote] holaaa", c3.comment
   end
 
   test "moderate should work" do
@@ -242,7 +255,7 @@ class CommentTest < ActiveSupport::TestCase
     c1 = Comment.find(1)
     prev = c1.comment
     c1.append_update("bar")
-    assert_equal "#{prev}<br /><br /><strong>Editado</strong>: bar", c1.comment
+    assert_equal "#{prev}\n\n[b]Editado[/b]: bar", c1.comment
   end
 
   test "images_to_comment_url" do
@@ -285,7 +298,8 @@ class CommentTest < ActiveSupport::TestCase
 
   test "extract_replied_users" do
     c1 = create_a_comment
-    c2 = create_a_comment(:comment => "##{c1.position_in_content} feo")
+    c2 = create_a_comment(
+        :comment => "##{c1.position_in_content} feo")
     assert_equal [c1.user_id], c2.extract_replied_users(c2.comment)
   end
 end

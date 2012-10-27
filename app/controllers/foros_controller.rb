@@ -96,7 +96,7 @@ class ForosController < ComunidadController
     require_auth_users
     @topic = Topic.find(params[:topic]['id'])
     require_user_can_edit(@topic)
-    params[:topic][:main] = Comments::formatize(params[:topic][:main])
+    params[:topic][:main] = Formatting.format_bbcode(params[:topic][:main])
 
     @topic.cur_editor = @user
     if @topic.update_attributes(params[:topic])
@@ -132,7 +132,7 @@ class ForosController < ComunidadController
     raise ActiveRecord::RecordNotFound if params[:topic].nil?
 
     params[:topic][:user_id] = @user.id
-    params[:topic][:main] = Comments::formatize(params[:topic][:main])
+    params[:topic][:main] = Formatting.format_bbcode(params[:topic][:main])
 
     raise "terms must be single forum" unless params[:categories_terms] && params[:categories_terms].size == 1
     forum = Term.find_taxonomy(params[:categories_terms][0].to_i, 'TopicsCategory')

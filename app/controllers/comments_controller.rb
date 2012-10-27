@@ -55,14 +55,12 @@ class CommentsController < ApplicationController
     )
 
     if append_to_last
-      if (last_comment.comment ==
-          Comments::formatize(params[:comment][:comment]))
+      if (last_comment.comment == params[:comment][:comment])
         # Ha hecho doble click en enviar comentario
         flash[:notice] = 'Comentario añadido correctamente'
       else
 
-        if last_comment.append_update(
-            Comments::formatize(params[:comment][:comment]))
+        if last_comment.append_update(params[:comment][:comment])
           flash[:notice] = 'Comentario añadido correctamente'
         else
           flash[:error] = ("Ocurrió un error al guardar el comentario:" +
@@ -91,7 +89,7 @@ class CommentsController < ApplicationController
     end
 
     @comment = Comment.new({
-        :comment => Comments::formatize(params[:comment][:comment]),
+        :comment => params[:comment][:comment],
         :content_id => params[:comment][:content_id],
         :host => self.remote_ip,
         :user_id => @user.id,
@@ -122,7 +120,7 @@ class CommentsController < ApplicationController
   def update
     @comment = Comment.find(params[:id])
     if @comment.can_edit_comment?(@user, true)
-      @comment.comment = Comments::formatize(params[:comment][:comment])
+      @comment.comment = params[:comment][:comment]
       @comment.lastedited_by_user_id = @user.id
 
       if @comment.save

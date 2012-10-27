@@ -7,7 +7,7 @@
 	</tr>
 	<tr class="<%=oddclass%>">
 		<td>Razones privadas</td>
-		<td><%=Comments::formatize(@br.reason)%></td>
+		<td><%=Formatting.format_bbcode(@br.reason)%></td>
 	</tr>
 	<tr class="<%=oddclass%>">
 		<td>Razones pública</td>
@@ -42,7 +42,7 @@
 	</tr>
 	<tr class="<%=oddclass%>">
 		<td>Razón</td>
-		<td><%=Comments::formatize(@br.reason_unban)%></td>
+		<td><%=Formatting.format_bbcode(@br.reason_unban)%></td>
 	</tr>
 	<tr class="<%=oddclass%>">
 		<td>Fecha iniciado</td>

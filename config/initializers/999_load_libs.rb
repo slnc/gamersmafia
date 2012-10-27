@@ -14,6 +14,7 @@
    cms
    bank
    gmstats
+   formatting
    skins
    ads
    translation

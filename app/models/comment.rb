@@ -72,7 +72,7 @@ class Comment < ActiveRecord::Base
   def append_update(text)
     self.update_attribute(
         :comment,
-        "#{self.comment}<br /><br /><strong>Editado</strong>: #{text}")
+        "#{self.comment}\n\n[b]Editado[/b]: #{text}")
   end
 
   def check_not_moderated
@@ -178,11 +178,12 @@ class Comment < ActiveRecord::Base
     end
   end
 
+  # Accepts an unformatized string and returns replied users.
   def extract_replied_users(text)
-    text = Comment.comment_without_quotes(text)
+    text = Formatting.comment_without_quoted_text(text)
     replied_users = []
-    text.scan(/#([0-9]+)/).uniq.each do |m|
-      replied_comment = Comment.find_by_position(m[0].to_i, self.content)
+    text.scan(/\[(fullquote|quote)=([0-9]+)\]/).uniq.each do |m|
+      replied_comment = Comment.find_by_position(m[1].to_i, self.content)
       next if replied_comment.nil?
       replied_users << replied_comment.user_id
     end
@@ -190,16 +191,21 @@ class Comment < ActiveRecord::Base
   end
 
   def self.find_by_position(position, content)
+    return if position < 1
     content.comments.find(:first, :order => 'created_on', :limit => 1, :offset => position - 1)
   end
 
   def update_replies_notifications
     if self.comment_was
-      replied_users_was = self.extract_replied_users(self.comment_was)
+      # We unformatize because we look for [quote=<id>] tags
+      replied_users_was = self.extract_replied_users(
+          Formatting.comment_with_expanded_short_replies(
+              self.comment_was, self))
     else
       replied_users_was = []
     end
-    replied_users_is = self.extract_replied_users(self.comment)
+    replied_users_is = self.extract_replied_users(
+        Formatting.comment_with_expanded_short_replies(self.comment, self))
 
     return if replied_users_was.size == 0 && replied_users_is.size == 0
 
@@ -236,12 +242,9 @@ class Comment < ActiveRecord::Base
         :conditions => ["created_on < ?", self.created_on]) + 1
   end
 
-  def self.comment_without_quotes(text)
-    text.gsub(/(\[quote\][^\[]+\[\/quote\])/, "")
-  end
-
   def download_remotes
-    new_t = Cms.download_and_rewrite_bb_imgs(self.comment, "comments/#{self.id % 1000}/#{self.id % 100}")
+    new_t = Cms.download_and_rewrite_bb_imgs(
+        self.comment, "comments/#{self.id % 1000}/#{self.id % 100}")
     self.update_attributes(:comment => new_t) if new_t != self.comment
   end
 

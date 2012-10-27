@@ -3,7 +3,7 @@
 <table style="border: 0; border-collapse: collapse; margin: 0; padding: 0;">
 	<tr style="vertical-align: top;">
 		<td style="width: 60px; text-align: center;"><img src="http://<%=App.domain%><%=@message.sender.show_avatar%>" /></td>
-		<td><%=auto_link_raw(smilelize(Comments::formatize(@message.message))).gsub('="/', "=\"http://#{App.domain}/")%></td>
+		<td><%=Formatting.format_bbcode(@message.message).gsub('="/', "=\"http://#{App.domain}/")%></td>
 	</tr>
 </table>
 <div style="margin-right: 5px; margin-top: 20px; text-align: right;">

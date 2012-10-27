@@ -42,7 +42,7 @@
 
     <div style="float: left;" class="avatar"><img src="<%=ASSET_URL%><%=ps.signer.show_avatar%>" /></div>
     <div style="margin-left: 60px;"><strong><a href="<%=gmurl(ps.signer)%>"><%=ps.signer.login%></a></strong><br />
-    <span class="infoinline"><%=print_tstamp(ps.updated_on)%></span><br /><%=Comments::formatize(ps.signature)%></div>
+    <span class="infoinline"><%=print_tstamp(ps.updated_on)%></span><br /><%=Formatting.format_bbcode(ps.signature)%></div>
   </div>
 <%  end %>
 <%  end %>

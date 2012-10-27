@@ -80,9 +80,9 @@
   <% end -%>
 
   <div class="text" id="commenttext<%=comment.id%>">
-    <%=auto_link_raw(smilelize(comment.comment)) do |text|
-      truncate(text.gsub(/http:\/\//, ''), 50)
-    end %>
+    <%=Formatting.format_bbcode(
+         Formatting.comment_with_expanded_short_replies(
+           comment.comment, comment)) %>
 
 	<% if questions_mode && comment.user.id != object.user_id then %>
 		<div class="questions-best-answer hidden"><a href="/respuestas/mejor_respuesta/<%=comment.id%>" onclick="return confirm('¿Est&aacute;s seguro? Una vez marcada no se puede cambiar la mejor respuesta.');"><img class="icon" src="/skins/default/images/btn_mejor_respuesta.png" /></a></div>

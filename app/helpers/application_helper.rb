@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
+require 'rails_rinku'
+
 module ApplicationHelper
   ANALYTICS_SNIPPET = <<-END
 <script type="text/javascript">
@@ -586,34 +588,7 @@ type: 'bhs'}))
     text.gsub!(/\r/, "\n")
     text = Cms.add_p(text) if text.index('<p>').to_s == '' # si tiene <p> suponemos que está bien formateado ya
     text = " #{text}"
-    text.gsub!(/([\s>]{1}|^)[oO]{1}:(\))+/, '\1<img src="/images/smileys/angel.gif" />')      # o:)
-
-    text.gsub!(/([\s>]{1}|^)(:['_*´]+(\()+)/, '\1<img src="/images/smileys/cry.gif" />')      # // :'( | :*( | :_( | :´(
-    text.gsub!(/([\s>]{1}|^):([a-z0-9]+):/, '\1<img src="/images/smileys/\2.gif" />')
-    text.gsub!(/([\s>]{1}|^)(:(o)+)/i, '\1<img src="/images/smileys/eek.gif" />')             #// :o | :O
-    text.gsub!(/([\s>]{1}|^)(r_r)/i, '\1<img src="/images/smileys/roll.gif" />')
-    text.gsub!(/([\s>]{1}|^)(x_x)/i, '\1<img src="/images/smileys/ko.gif" />')
-    text.gsub!(/([\s>]{1}|^)(z_z)/i, '\1<img src="/images/smileys/zz.gif" />')
-    text.gsub!(/([\s>]{1}|^)(o(_)+(o)+)/i, '\1<img src="/images/smileys/eek.gif" />')         #// o_O
-    text.gsub!(/([\s>]{1}|^)(:(p)+)/i, '\1<img src="/images/smileys/tongue.gif" />\\4')          #// :p | :P
-
-    text.gsub!(/([\s>]{1}|^)(x(d)+)/i, '\1<img src="/images/smileys/grin.gif" />')            #// xd
-
-    text.gsub!(/([\s>]{1}|^)(:(0)+)/, '\1<img src="/images/smileys/eek.gif" />')              #// :0
-    text.gsub!(/([\s>]{1}|^)(8\)+)/, '\1<img src="/images/smileys/cool.gif" />')              #// 8)
-    text.gsub!(/([\s>]{1}|^)(:\?+)/, '\1<img src="/images/smileys/huh.gif" />')              #// :?
-    text.gsub!(/([\s>]{1}|^)(:x+)/i, '\1<img src="/images/smileys/lipsrsealed.gif" />')              #// :x
-    text.gsub!(/([\s>]{1}|^)(:(\|)+)/, '\1<img src="/images/smileys/indifferent.gif" />')     #// :|
-    text.gsub!(/([\s>]{1}|^)(\^(_)*(\^)+)/, '\1<img src="/images/smileys/happy.gif" />')      #// ^^ | ^_^
-    text.gsub!(/([\s>]{1}|^)(;([\)D])+)/, '\1<img src="/images/smileys/wink.gif" />')         #// )
-    text.gsub!(/([\s>]{1}|^)(:(\*)+)/, '\1<img src="/images/smileys/morreo.gif" />')            #// :*
-    text.gsub!(/([\s>]{1}|^)(:(\@)+)/, '\1<img src="/images/smileys/morreo.gif" />')            #// :@
-    text.gsub!(/([\s>]{1}|^)(:(\\)+)/, '\1<img src="/images/smileys/undecided.gif" />')           #// :)
-    text.gsub!(/([\s>]{1}|^)(:(\))+)/, '\1<img src="/images/smileys/smile.gif" />')           #// :)
-    text.gsub!(/([\s>]{1}|^)(x(\))+)/i, '\1<img src="/images/smileys/happy.gif" />')          # // x)
-    text.gsub!(/([\s>]{1}|^)(:(D)+)/i, '\1<img src="/images/smileys/happy.gif" />')           ##// :D
-    text.gsub!(/([\s>]{1}|^)(:(\()+)/, '\1<img src="/images/smileys/sad.gif" />')             #// :(
-    text.gsub!(/([\s>]{1}|^)=(\))+/, '\1<img src="/images/smileys/smile.gif" />')             #// =)
+    text = Formatting.add_smileys(text)
 
     if text.index('SALTOLINEA333').to_s != '' then
       text.gsub!("SALTOLINEA333\n", '</p><p>')

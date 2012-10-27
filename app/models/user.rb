@@ -1,4 +1,5 @@
 # -*- encoding : utf-8 -*-
+require 'base64'
 require 'digest/sha1'
 require 'digest/md5'
 require 'karma'
@@ -965,7 +966,7 @@ class User < ActiveRecord::Base
 
     tmpfile = Tempfile.new(["#{self.id}_", ".#{image_mime_data[1]}"])
     tmpfile.binmode
-    tmpfile.write(ActiveSupport::Base64.decode64(b64_encoded))
+    tmpfile.write(Base64.decode64(b64_encoded))
     tmpfile.rewind
     self.upload_file(tmpfile)
   end

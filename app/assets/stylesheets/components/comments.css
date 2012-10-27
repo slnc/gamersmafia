@@ -19,3 +19,10 @@
 
   cursor: pointer;
 }
+
+.fullquote-comment {
+  position: absolute;
+  z-index: 100;
+  padding: 1em;
+  background: #fff;
+}
