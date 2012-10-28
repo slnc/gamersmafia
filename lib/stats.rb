@@ -795,26 +795,26 @@ group by date_trunc('day', created_on) order by s asc
 
   def self.update_users_daily_stats
     # AFTER update_users_karma_stats
-    max_day = 15.days.ago
+    youngest_day = 15.days.ago.end_of_day  # included
     start_day = User.db_query("SELECT created_on
                                  FROM stats.users_daily_stats
                              ORDER BY created_on DESC LIMIT 1")
     if start_day.size > 0
       start_day = start_day[0]['created_on'].to_time.advance(:days => 1)
-      if start_day < max_day
+      if start_day < youngest_day
         cur_day = start_day
       else
-        cur_day = max_day
+        cur_day = youngest_day
       end
-    else # no hay records, cogemos el m:as viejo
+    else # no hay records, cogemos el más viejo
       cur_day = User.db_query(
           "SELECT created_on
             FROM contents
-        ORDER BY created_on asc
+        ORDER BY created_on
            LIMIT 1")[0]['created_on'].to_time
     end
 
-    while cur_day <= max_day
+    while cur_day <= youngest_day
       # iteramos a través de todos los users que han creado contenidos o
       # comentarios hoy.
       pointz = {}
@@ -830,7 +830,6 @@ group by date_trunc('day', created_on) order by s asc
                                                 AND karma_points > 0
                                                 AND date_trunc('day', created_on) = '#{cur_day.strftime('%Y-%m-%d')} 00:00:00')").each do |u|
         # TODO here
-
         Karma.karma_points_of_user_at_date(u, cur_day).each do |portal_id, points|
           pointz[u.id] ||= {:karma => 0, :popularity => 0}
           pointz[u.id][:karma] += points
@@ -874,7 +873,7 @@ group by date_trunc('day', created_on) order by s asc
   end
 
   def self.update_users_karma_stats
-    max_day = 15.days.ago
+    max_day = 15.days.ago.end_of_day
     start_day = User.db_query("SELECT created_on
                                  FROM stats.users_karma_daily_by_portal
                              ORDER BY created_on DESC LIMIT 1")

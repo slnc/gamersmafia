@@ -2,6 +2,7 @@
 require 'test_helper'
 
 class StatsTest < ActiveSupport::TestCase
+
   test "compute_daily_stats" do
     Stats::Metrics.expects(:compute_monthly_metric).returns([100, 25])
     Stats::Metrics.expects(:compute_yearly_metric).returns([1000, 250])
@@ -62,7 +63,7 @@ class StatsTest < ActiveSupport::TestCase
     dbr =  User.db_query(
         "SELECT karma
            FROM stats.users_daily_stats
-          WHERE user_id = #{@c1.id}
+          WHERE user_id = #{@c1.user_id}
             AND created_on = (NOW() - '15 days'::interval)::date")
     assert_equal 1, dbr.size
     assert_equal 100, dbr[0]["karma"].to_i
