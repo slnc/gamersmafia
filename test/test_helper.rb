@@ -165,6 +165,16 @@ class ActiveSupport::TestCase
     assert_not_nil session[:user]
   end
 
+  def create_a_comment(opts={})
+    final_opts = {
+      :user_id => 2,
+      :comment => "hola #{User.find(2).login}",
+      :content_id => 1,
+      :host => '127.0.0.1',
+    }.merge(opts)
+    Comment.create(final_opts)
+  end
+
   def give_skill(user_id, role)
     if user_id.kind_of?(Fixnum)
       user = User.find(user_id)

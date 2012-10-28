@@ -153,4 +153,12 @@ class HomeControllerTest < ActionController::TestCase
       assert_not_nil @response.body.index("sawli-hq")
     end
   end
+
+  test "should show not hq menu if no relevant skill" do
+    u2 = User.find(2)
+    sym_login u2
+    u2.users_skills.clear
+    get :index
+    assert_nil @response.body.index("sawli-hq")
+  end
 end

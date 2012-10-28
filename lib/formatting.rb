@@ -175,7 +175,7 @@ module Formatting
       quote_id += 1
       key = "GM_START_QUOTE_MARKER#{quote_id}GM_END_QUOTE_MARKER"
       new_str.sub(q[0], key)
-      quotes[key] = q
+      quotes[key] = q[0]
     end
 
     new_str.scan(/#([0-9]+)/).uniq.each do |m|

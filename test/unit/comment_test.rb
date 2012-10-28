@@ -4,6 +4,16 @@ require 'test_helper'
 class CommentTest < ActiveSupport::TestCase
   COPYRIGHT = Comment::MODERATION_REASONS[:copyright]
 
+  test "top_comments_valorations_type" do
+    c1 = create_a_comment(:comment => "hola guapo")
+    c1.comments_valorations.create({
+        :user_id => 1,
+        :comments_valorations_type_id => 1,
+        :weight => 0.3,
+    })
+    assert_equal 1, c1.top_comments_valorations_type.id
+  end
+
   test "expand_comment_references" do
     c1 = create_a_comment(:comment => "hola guapo")
     c2 = create_a_comment(:comment => "##{c1.position_in_content} no, eres feo")
@@ -130,16 +140,6 @@ class CommentTest < ActiveSupport::TestCase
   def assert_comment_moderated(comment, moderator)
     assert_equal Comment::MODERATED, comment.state
     assert_equal moderator.id, comment.lastedited_by_user_id
-  end
-
-  def create_a_comment(opts={})
-    final_opts = {
-      :user_id => 2,
-      :comment => "hola #{User.find(2).login}",
-      :content_id => 1,
-      :host => '127.0.0.1',
-    }.merge(opts)
-    Comment.create(final_opts)
   end
 
   test "refered_people_should_work" do

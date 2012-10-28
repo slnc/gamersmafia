@@ -2,6 +2,15 @@
 require 'test_helper'
 
 class FormattingTest < ActiveSupport::TestCase
+
+  test "comment_with_expanded_short_replies and other quotes" do
+    c1 = create_a_comment(:comment => "hola guapo")
+    c2 = create_a_comment(:comment => "##{c1.position_in_content} no, eres feo [quote]wiiii[/quote]")
+    assert_equal(
+        "[fullquote=2]hola guapo[/fullquote] no, eres feo [quote]wiiii[/quote]",
+        Formatting.comment_with_expanded_short_replies(c2.comment, c2))
+  end
+
   test "remove_quotes" do
     assert_equal(
         "foo bar baz",

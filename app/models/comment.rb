@@ -159,7 +159,7 @@ class Comment < ActiveRecord::Base
          LIMIT 1")
     if counts.size > 0
       return CommentsValorationsType.find(
-          counts['comments_valorations_type_id'].to_i)
+          counts[0]['comments_valorations_type_id'].to_i)
     end
   end
 

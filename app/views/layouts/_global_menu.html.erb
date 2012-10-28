@@ -13,7 +13,7 @@
   <li id="sawli-bazar"><div class="f"><a title="Ir a Bazar" href="http://bazar.<%=App.domain%>/"><span>Bazar</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('bazar');"></div></li>
   <li id="sawli-arena"><div class="f"><a title="Ir a Arena" href="http://arena.<%=App.domain%>/"><span>Arena</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('arena');"></div></li>
   <li id="sawli-foros"><div class="f"><a title="Ir a Foros" href="http://<%=App.domain%>/home/foros"><span>Foros</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('foros');"></div></li>
-  <% if hq_menu_items then %>
+  <% if hq_menu_items.size > 0 then %>
   <li id="sawli-hq"><div class="f"><a href="http://<%=App.domain%>/home/hq"><span>hq</span></a></div><div class="sawtop-arrow" onmouseover="GM.menu.sawbottom('hq');"></div></li>
   <% end -%>
   <% if %w(full anunciante).include?(sawmode) then %>
