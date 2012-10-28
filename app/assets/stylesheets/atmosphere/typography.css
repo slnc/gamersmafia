@@ -1,7 +1,7 @@
-/* @import url(http://fonts.googleapis.com/css?family=Carrois+Gothic);
- */
-
 /*
+
+@import url(http://fonts.googleapis.com/css?family=Carrois+Gothic);
+
 @font-face
 {
   font-family: MuseoSans;
@@ -14,20 +14,36 @@
 }
 
 @font-face {
-  font-family: GearedSlab;
-  src: url('/fonts/GearedSlab-Bold.ttf');
+  font-family: Days;
+  src: url('/fonts/days.ttf');
+}
+
+@font-face {
+  font-family: HeadlineTwo;
+  src: url('/fonts/headline2.ttf');
 }
 
 @font-face {
   font-family: ExoRegular;
   src: url('/fonts/Exo-Regular.otf');
 }
+
+@font-face {
+  font-family: GearedSlab;
+  src: url('/fonts/GearedSlab-Bold.ttf');
+}
 */
 
-body {
+@font-face {
+  font-family: LeagueGothic;
+  src: url('/fonts/league_gothic.otf');
+}
+
+body,
+textarea {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: 14px; font-size: 1.0rem;
-  color: #444;
+  font-size: 14px;
+  font-size: 1.0rem;
   line-height: 140%;
 }
 
@@ -35,14 +51,19 @@ p {
   margin-bottom: 1.5em;
 }
 
+a {
+  text-decoration: none;
+}
+
 .content-header {
-  font-family: 'Georgia', 'Times', serif;
-  font-size: 1.5rem;
-  font-weight: bold;
-  line-height: 100%;
+  font-family: 'LeagueGothic', 'Georgia', 'Times', serif;
+  font-size: 32px;
+  font-size: 2rem;
+  text-transform: uppercase;
+  line-height: 120%;
 /*  font-size: 24px; */
 }
 
 .f_sm {
-  font-size: 0.8rem;
+  font-size: 0.750rem;
 }

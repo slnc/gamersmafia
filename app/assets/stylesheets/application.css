@@ -1,9 +1,9 @@
 /* ...
 *= require reset
 *= require_self
-*= require_tree ./atmosphere
 *= require_tree ./components
 *= require_tree ./layout
+*= require_tree ./atmosphere
 */
 
 .dev-box-label {
@@ -15,6 +15,5 @@
 }
 
 .pagelevel {
-  border: 1px dashed #ccc;
 }
 

@@ -1,25 +1,62 @@
-/*
 body {
-
   background: #000;
-  color: #ccc;
+  color: #888;
 }
 
 a {
-  color: #fff;
+  color: #d8351e;
 }
 
-a:visited {
-  color: #aaa;
+a:hover {
+  text-decoration: underline;
 }
-
-#main {
-  background: #fff;
-  color: #000;
-}
-*/
 
 abbr {
   border-bottom: 1px dotted #aaa;
   cursor: pointer;
+}
+
+.content-header {
+  color: #888;
+}
+
+.pcent-bar {
+  background: #ddd;
+}
+
+.pcent-bar.positive-bar-bg .bar {
+  background: green;
+}
+
+.pcent-bar.negative-bar-bg .bar {
+  background: red;
+}
+
+.comments .comment {
+  background: #210402;
+}
+
+.button {
+  border: 3px solid #760f07;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+  background: #750e06;
+  color: #fff;
+  font-size: 1rem;
+  padding: 0.250rem 0.689rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.droparea {
+  border-color: #777;
+}
+
+.image-gallery-sm .image {
+  border-color: #777;
+}
+
+.image-gallery-sm div.selected {
+  border-color: #d5371f;
 }

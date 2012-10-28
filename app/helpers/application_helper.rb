@@ -67,6 +67,13 @@ module ApplicationHelper
     out
   end
 
+  def positive_negative_bar(negative_count, neutral_count, positive_count)
+    max = [negative_count, neutral_count, positive_count].sum
+    pcent_negative = negative_count.to_f / max
+    pcent_positive = positive_count.to_f / max
+    "<div class=\"positive-negative-bar\">#{draw_pcent_bar(pcent_negative, nil, nil, nil, css_class='align-right negative-bar-bg')}#{draw_pcent_bar(pcent_positive, nil, nil, nil, css_class='positive-bar-bg')}</div>"
+  end
+
   def s_content_list(contents)
     out = []
     contents.each do |content|
@@ -476,7 +483,7 @@ type: 'bhs'}))
       # avatar y link en negrita
       out << "<img style=\"float: left; margin-right: 5px;\" class=\"avatar\" src=\"#{user.show_avatar}\" /> <strong><a href=\"#{gmurl(user)}\">#{user.login}</a></strong>"
     else
-      out << "<a href=\"#{gmurl(user)}\">#{user.login}</a>"
+      out << "<a class=\"user-link\" href=\"#{gmurl(user)}\">#{user.login}</a>"
     end
     out
   end
@@ -624,7 +631,7 @@ type: 'bhs'}))
     out
   end
 
-  def draw_pcent_bar(pcent, text = nil, compact=false, color=nil)
+  def draw_pcent_bar(pcent, text=nil, compact=false, color=nil, css_class='')
     if pcent.nil?
       Rails.logger.warn(
           "draw_pcent_bar(nil, #{text}, #{compact}, #{color}). Using 0" +
@@ -641,7 +648,7 @@ type: 'bhs'}))
     # text = "%.2f" % pcent if text == nil
     text = "#{(pcent*100).to_i}%" if text == nil
 
-    "<div class=\"pcent-bar#{(compact)?' compact':''}\"><img src=\"/images/blank.gif\" title=\"#{text}\" class=\"bar\" style=\"width: #{(pcent*100).to_i}%; #{'background-color: ' + color + ';' if color}\" /></div>"
+    "<div class=\"pcent-bar#{(compact)?' compact':''} #{css_class}\"><img src=\"/images/blank.gif\" title=\"#{text}\" class=\"bar\" style=\"width: #{(pcent*100).to_i}%; #{'background-color: ' + color + ';' if color}\" /></div>"
   end
 
   def draw_rating(rating_h)

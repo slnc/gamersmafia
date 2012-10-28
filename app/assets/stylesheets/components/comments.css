@@ -26,3 +26,33 @@
   padding: 1em;
   background: #fff;
 }
+
+.comment-author-info {
+  width: 4rem;
+}
+
+.comment-content {
+  margin-top: 1rem;
+  margin-left: 4rem;
+  margin-right: 1rem;
+}
+
+.comment header .timestamp {
+  line-height: 2rem;
+  margin-right: 1rem;
+}
+
+.comment footer {
+  margin-left: 4rem;
+}
+
+.comment-position {
+  font-weight: bold;
+  font-size: 1.5rem;
+  display: inline-block;
+  margin-right: 0.689rem;
+}
+
+.comment-position:before {
+  content: "#";
+}

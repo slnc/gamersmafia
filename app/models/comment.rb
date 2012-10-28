@@ -139,11 +139,27 @@ class Comment < ActiveRecord::Base
     negative_valorations = self.comments_valorations.negative.count
     positive_valorations = self.comments_valorations.positive.count
     neutral_valorations = self.comments_valorations.neutral.count
-    absolute_negative = negative_valorations - positive_valorations - neutral_valorations
+    absolute_negative = (
+        negative_valorations - positive_valorations - neutral_valorations)
     if absolute_negative >= NEGATIVE_VALORATIONS_TO_HIDE && self.visible?
       self.update_attributes(:state => HIDDEN)
     elsif absolute_negative < NEGATIVE_VALORATIONS_TO_HIDE && self.hidden?
       self.update_attributes(:state => VISIBLE)
+    end
+  end
+
+  def top_comments_valorations_type
+    counts = User.db_query(
+        "SELECT comments_valorations_type_id,
+           COUNT(*) as cnt
+         FROM comments_valorations
+         WHERE comment_id = #{self.id}
+         GROUP BY comments_valorations_type_id
+         ORDER BY cnt DESC
+         LIMIT 1")
+    if counts.size > 0
+      return CommentsValorationsType.find(
+          counts['comments_valorations_type_id'].to_i)
     end
   end
 
@@ -236,7 +252,7 @@ class Comment < ActiveRecord::Base
   end
 
   # TODO(slnc): PERF calculate this on comment creation and store it in the
-  # table.
+  # object.
   def position_in_content
     self.content.comments.count(
         :conditions => ["created_on < ?", self.created_on]) + 1

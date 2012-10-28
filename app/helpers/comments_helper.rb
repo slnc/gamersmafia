@@ -13,6 +13,21 @@ google_ad_height = 250;
 </div>
   END
 
+  def positive_negative_bar_for_comment(comment)
+    count_negative = comment.comments_valorations.negative.count
+    count_positive = comment.comments_valorations.positive.count
+    count_neutral = comment.comments_valorations.neutral.count
+    return '' if count_positive + count_negative == 0
+    top_vote = comment.top_comments_valorations_type
+    out = []
+    out.append("(#{count_negative}") if count_negative > 0
+    out.append(
+        positive_negative_bar(count_negative, count_neutral, count_positive))
+    out.append("(#{count_positive}") if count_positive > 0
+    out.append(top_vote.name) if top_vote
+    out.join(" ")
+  end
+
   def adsense_comments
     if App.show_ads && !(user_is_authed && Authorization.gets_less_ads?(@user))
       ADSENSE_COMMENTS_SNIPPET

@@ -1,8 +1,26 @@
+<section class="comments">
 <% content.comments.each do |comment| %>
   <div class="comment">
+    <div class="comment-author-info float-left">
+      <div class="avatar"><img src="<%=ASSET_URL%><%=comment.user.show_avatar%>" /></div>
+    </div>
+    <header>
+      <div class="timestamp f_sm float-right"><%=print_tstamp(comment.created_on)%></div>
+      <span class="comment-position"><%=comment.position_in_content%></span>
+      <%=user_link(comment.user)%>
+
+      <div class="comment-valorations f_sm">
+        <%=positive_negative_bar_for_comment(comment)%>
+      </div>
+    </header>
+    <div class="comment-content">
     <%=Formatting.format_bbcode(
          Formatting.comment_with_expanded_short_replies(
            comment.comment, comment)) %>
+   </div>
+   <footer class="f_sm">
+     Tu valoración:
+   </footer>
   </div>
 <% end -%>
 
@@ -11,7 +29,7 @@
   <input type="hidden" name="redirto" value="<%=content_path(content)%>" />
   <div class="comment-main-fields-area">
     <textarea name="comment[comment]" class="comment-textarea"></textarea>
-    <div class="droparea">arrastra imágenes</div>
+    <div class="droparea">arrastra imágenes aquí</div>
   </div>
 
   <div id="dropped-files" class="image-gallery-sm"></div>
@@ -27,6 +45,7 @@
     <br />
   </div>
 
-  <div class="draft-feedback"></div>
-  <input type="submit" value="Enviar" class="form-submit" />
+  <div class="draft-feedback f_sm"></div>
+  <input type="submit" value="Enviar" class="button form-submit" />
 </form>
+</section>

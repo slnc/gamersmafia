@@ -9,3 +9,15 @@ body {
 footer.pagelevel {
   clear: both;
 }
+
+section.pagelevel section {
+  margin-bottom: 2rem;
+}
+
+section.pagelevel section:last-child {
+  margin-bottom: 4rem;
+}
+
+footer.pagelevel {
+  padding: 1rem;
+}

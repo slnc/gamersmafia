@@ -156,4 +156,8 @@ module MiembrosHelper
     end
     out.sort
   end
+
+  def user_link(user)
+    "<a class=\"user-link\" href=\"#{gmurl(user)}\">#{user.login}</a>"
+  end
 end

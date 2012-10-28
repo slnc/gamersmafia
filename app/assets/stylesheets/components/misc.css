@@ -1,14 +1,14 @@
 .droparea {
-  border: 3px dashed #ccc;
-  height: 6em;
-  width: 6em;
+  border: 3px dashed;
+  width: 12rem;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 10px;
   vertical-align: middle;
-  display: table-cell;
   text-align: center;
-  cursor: pointer;
+  cursor: default;
+  margin: 1rem 0;
+  line-height: 3rem;
 }
 
 .inline-menu li {
@@ -18,4 +18,42 @@
 
 .inline-menu li:last-child {
   margin-right: 0;
+}
+
+.pcent-bar {
+  display: inline-block;
+  width: 3rem;
+  height: 0.750rem;
+  line-height: 0;
+}
+
+.pcent-bar .bar {
+  background: #aaa;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.align-left {
+  text-align: left;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.positive-negative-bar {
+  display: inline-block;
+}
+
+.float-right {
+  float: right;
+}
+
+.float-left {
+  float: left;
+}
+
+.user-link {
+  font-weight: bold;
 }
