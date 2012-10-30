@@ -155,7 +155,6 @@ class CommentTest < ActiveSupport::TestCase
     assert_equal references[0].id, User.find(2).ne_references[0].id
   end
 
-
   test "should_create_comment_if_valid" do
     content = Content.find(1)
     content.url = nil
@@ -300,6 +299,21 @@ class CommentTest < ActiveSupport::TestCase
     c1 = create_a_comment
     c2 = create_a_comment(
         :comment => "##{c1.position_in_content} feo")
+    assert_equal [c1.user_id], c2.extract_replied_users(c2.comment)
+  end
+
+  test "extract_replied_users with nested quotes" do
+    c1 = create_a_comment
+    c2 = create_a_comment(
+        :comment => "##{c1.position_in_content} feo", :user_id => 2)
+    c3 = create_a_comment(
+        :comment => "##{c2.position_in_content} feo", :user_id => 3)
+    assert_equal [c2.user_id], c3.extract_replied_users(c3.comment)
+  end
+
+  test "extract_replied_users with @ mention in quote" do
+    c1 = create_a_comment(:comment => "@panzer4 hola", :user_id => 2)
+    c2 = create_a_comment(:comment => "##{c1.position_in_content} feo", :user_id => 3)
     assert_equal [c1.user_id], c2.extract_replied_users(c2.comment)
   end
 end

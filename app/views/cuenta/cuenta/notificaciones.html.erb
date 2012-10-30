@@ -1,9 +1,17 @@
-<%mftable("Notificaciones", @notifications) do |notification| %>
-  <td class="infoinline timestamp">
-    <% if @unread_ids.include?(notification.id) %><strong><% end -%>
-      <%=print_tstamp(notification.created_on)%>
-    <% if @unread_ids.include?(notification.id) %></strong><% end -%>
-  </td>
-  <td style="width: 54px; padding: 2px 4px 2px 10px;"><div class="avatar"><img src="<%=ASSET_URL%><%=notification.sender.show_avatar%>" /></div></td>
-  <td style="padding-left: 6px;"><%=notification.description%></td>
+<% if @notifications.size > 0 %>
+  <%mftable("Notificaciones", @notifications) do |notification| %>
+    <td class="infoinline timestamp">
+      <% if @unread_ids.include?(notification.id) %><strong><% end -%>
+        <%=print_tstamp(notification.created_on)%>
+      <% if @unread_ids.include?(notification.id) %></strong><% end -%>
+    </td>
+    <td style="width: 54px; padding: 2px 4px 2px 10px;">
+      <div class="avatar"><img src="<%=ASSET_URL%><%=notification.sender.show_avatar%>" /></div>
+    </td>
+    <td style="padding-left: 6px;"><%=notification.description%></td>
+  <% end -%>
+<% else -%>
+  <%mftext("Notificaciones") do %>
+    <p>No has recibido notificaciones en los últimos 30 días.</p>
+  <% end -%>
 <% end -%>
