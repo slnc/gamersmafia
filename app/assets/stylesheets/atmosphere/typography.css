@@ -1,5 +1,4 @@
 /*
-
 @import url(http://fonts.googleapis.com/css?family=Carrois+Gothic);
 
 @font-face
@@ -39,6 +38,13 @@
   src: url('/fonts/league_gothic.otf');
 }
 
+@font-face
+{
+  font-family: GmIcons;
+  src: url('/fonts/gm_icons.ttf');
+}
+
+
 body,
 textarea {
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -66,4 +72,10 @@ a {
 
 .f_sm {
   font-size: 0.750rem;
+}
+
+.gm-icon {
+  font-family: 'GmIcons';
+  font-size: 64px;
+  color: red;
 }

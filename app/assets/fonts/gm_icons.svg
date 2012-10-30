@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="1000"
+   height="1000"
+   id="svg5496"
+   sodipodi:version="0.32"
+   inkscape:version="0.48.2 r9819"
+   sodipodi:docname="gm_icons.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <metadata
+     id="metadata5594">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     inkscape:window-height="852"
+     inkscape:window-width="1440"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     showgrid="false"
+     showguides="true"
+     inkscape:guide-bbox="true"
+     inkscape:zoom="0.5"
+     inkscape:cx="548.99"
+     inkscape:cy="508.8914"
+     inkscape:window-x="3"
+     inkscape:window-y="0"
+     inkscape:current-layer="layer3"
+     inkscape:window-maximized="0">
+    <sodipodi:guide
+       orientation="horizontal"
+       position="605.72687,-26.431718"
+       id="guide5596" />
+    <inkscape:grid
+       type="xygrid"
+       id="grid3462" />
+  </sodipodi:namedview>
+  <defs
+     id="defs5498">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 500 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1000 : 500 : 1"
+       inkscape:persp3d-origin="500 : 333.33333 : 1"
+       id="perspective3931" />
+    <font
+       horiz-adv-x="1024"
+       id="font3933"
+       inkscape:label="font 1">
+      <font-face
+         units-per-em="1024"
+         id="font-face3935"
+         font-family="GM" />
+      <missing-glyph
+         d="M0,0h1000v1024h-1000z"
+         id="missing-glyph3937" />
+      <glyph
+         glyph-name="star"
+         id="glyph3832"
+         d="M 997.60539,590.48231 C 1008.627,557.41741 760.39689,378.5419 749.87852,345.31348 739.36015,312.08507 839.44331,22.9519 811.40259,2.2521 783.36188,-18.4477 536.53383,162.35756 501.68137,162.09298 466.82892,161.8284 222.7743,-22.7034 194.42256,-2.4317 166.07081,17.84 261.75281,308.45935 250.73118,341.52424 239.70956,374.58914 -11.2077,549.67541 -0.6893,582.90382 c 10.5184,33.22841 316.48117,32.03574 344.52188,52.73554 28.04072,20.69981 117.01997,313.44089 151.87243,313.70547 34.85245,0.26458 128.26584,-291.09188 156.61759,-311.36358 28.35174,-20.27171 334.26115,-14.43405 345.28279,-47.49894 z"
+         unicode="&#xe000;" />
+      <glyph
+         glyph-name="stats"
+         id="glyph3858"
+         unicode="&#xe001;"
+         d="m 722,645.56826 278,0 0,-647.99996 -278,0 z m -362,376.00004 278,0 0,-1024 -278,0 z M -2,331.56828 l 278,0 0,-333.99998 -278,0 z" />
+    </font>
+  </defs>
+  <g
+     id="layer1" />
+  <flowRoot
+     xml:space="preserve"
+     id="flowRoot3860"
+     style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
+       id="flowRegion3862"><rect
+         id="rect3864"
+         width="272"
+         height="130"
+         x="34"
+         y="16" /></flowRegion><flowPara
+       id="flowPara3866"></flowPara></flowRoot>  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="stars"
+     style="display:inline">
+    <path
+       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.03732526px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;display:inline"
+       inkscape:transform-center-x="1.2138271"
+       inkscape:transform-center-y="-48.168532"
+       d="m 997.60539,433.51769 c 11.02161,33.0649 -237.2085,211.94041 -247.72687,245.16883 -10.51837,33.22841 89.56479,322.36158 61.52407,343.06138 C 783.36188,1042.4477 536.53383,861.64244 501.68137,861.90702 466.82892,862.1716 222.7743,1046.7034 194.42256,1026.4317 166.07081,1006.16 261.75281,715.54065 250.73118,682.47576 239.70956,649.41086 -11.2077,474.32459 -0.6893,441.09618 9.8291,407.86777 315.79187,409.06044 343.83258,388.36064 371.8733,367.66083 460.85255,74.919746 495.70501,74.655166 530.55746,74.390586 623.97085,365.74705 652.3226,386.01875 c 28.35174,20.27171 334.26115,14.43405 345.28279,47.49894 z"
+       id="path3836"
+       inkscape:connector-curvature="0">
+      <title
+         id="title3870">stars</title>
+    </path>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="stats"
+     style="display:inline">
+    <g
+       id="g3943">
+      <path
+         id="path4035"
+         style="fill:#000000;fill-opacity:1"
+         d="m 722,378.43174 278,0 0,647.99996 -278,0 z M 360,2.43172 l 278,0 0,1023.99998 -278,0 z m -362,690 278,0 0,333.99998 -278,0 z"
+         inkscape:connector-curvature="0" />
+    </g>
+  </g>
+</svg>

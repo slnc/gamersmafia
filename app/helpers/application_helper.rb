@@ -27,6 +27,12 @@ module ApplicationHelper
     :Spam => '108',
   }
 
+  # Keep this in sync with app/assets/fonts/gm_icons.svg
+  GM_ICONS = {
+    "star" => "&#xe000;",
+    "stats" => "&#xe001;",
+  }
+
   WMENU_POS = {
     'arena' => %w(
         Admin::CompeticionesController
@@ -1446,5 +1452,9 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
       end
     end
     current_forum_is_present
+  end
+
+  def gm_icon(name)
+    "<span class=\"gm-icon\">#{GM_ICONS.fetch(name)}</span>"
   end
 end
