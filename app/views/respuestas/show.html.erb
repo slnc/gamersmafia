@@ -31,7 +31,10 @@
   </div></div>
 
 			<div class="author" style="padding-left: 15px;"><a class="nav" href="<%=gmurl(comment.user)%>"><%=comment.user.login%></a> <%=faction_favicon(comment.user)%></div>
-			<%=comment.comment%>
+    <%=Formatting.format_bbcode(
+         Formatting.comment_with_expanded_short_replies(
+           comment.comment, comment)) %>
+
 			<div style="clear: left;"></div>
 			<% if @question.answer_selected_by_user_id then%><div class="infoinline right">Elegida por <strong><%=user_link(@question.answer_selected_by_user)%></strong></div><%end -%>
 			<% end -%>
