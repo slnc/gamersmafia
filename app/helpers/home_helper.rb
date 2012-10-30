@@ -27,6 +27,6 @@ module HomeHelper
   end
 
   def s_home_contents
-    Content.published.find(:all, :order => 'created_on DESC', :limit => 50)
+    Content.published.find(:all, :order => 'created_on DESC', :limit => 200)
   end
 end

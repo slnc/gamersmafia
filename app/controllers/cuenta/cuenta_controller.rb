@@ -426,7 +426,7 @@ class Cuenta::CuentaController < ApplicationController
     }
     if (params[:user][:notifications_newprofilesignature] &&
         @user.enable_profile_signatures?)
-      opts[:notifications_newprofilesignature] = (
+      new_opts[:notifications_newprofilesignature] = (
           params[:user][:notifications_newprofilesignature])
     end
     newuser = User.find(@user.id)
