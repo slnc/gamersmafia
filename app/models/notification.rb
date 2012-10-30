@@ -35,11 +35,11 @@ class Notification < ActiveRecord::Base
     User.db_query(
         "DELETE FROM notifications
          WHERE read_on IS NOT NULL
-         AND created_on >= now() - '1 month'::interval")
+         AND created_on <= now() - '1 month'::interval")
   end
 
   def self.mark_as_read(user, notification_ids)
-    user.notifications.find(
+    user.notifications.unread.find(
         :all,
         :conditions => ["id IN (?)", notification_ids]).each do |notification|
       notification.update_attribute(:read_on, Time.now)
