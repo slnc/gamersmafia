@@ -23,11 +23,6 @@ module Formatting
     text.gsub!("\n", "GM_NEWLINE_MARKER")
     str = text.strip
       .gsub(/(\[(\/*)(b|i)\])/i, '<\\2\\3>')
-      .gsub(/\[quote\]([^\[]+)\[\/quote\]/i, "<blockquote><p>\\1</p></blockquote>")
-      .gsub(/\[quote=([0-9]+)\]([^\[]+)\[\/quote\]/i,
-            '<abbr title="Ver comentario original">\\1</abbr><blockquote><p>\\2</p></blockquote>')
-      .gsub(/\[fullquote=([0-9]+)\]([^\[]+)\[\/fullquote\]/i,
-            '<abbr class="fullquote-opener" title="Ver comentario original" data-quote="\\1">#\\1</abbr>')
       .gsub(/(\[~(#{User::OLD_LOGIN_REGEXP_NOT_FULL})\])/, '<a href="/miembros/\\2">\\2</a>')
       .gsub(Regexp.new("@#{User::LOGIN_REGEXP}"), '<span class="user-login"><a href="/miembros/\\1">\\1</a></span>')
       .gsub(/\[flag=([a-z]+)\]/i, '<img class="icon" src="/images/flags/\\1.gif" />')
@@ -38,10 +33,16 @@ module Formatting
       .gsub(/\[code\](.+?)\[\/code\]/i, '<pre class="brush: js">\\1</pre>')
       .gsub(/\[spoiler\](.+?)\[\/spoiler\]/i,
             '<span class="spoiler">spoiler <span class="spoiler-content hidden">\\1</span></span>')
+      .gsub(/\[quote\](.+?)\[\/quote\]/i, "<blockquote><p>\\1</p></blockquote>")
+      .gsub(/\[quote=([0-9]+)\](.+?)\[\/quote\]/i,
+            '<abbr title="Ver comentario original">\\1</abbr><blockquote><p>\\2</p></blockquote>')
+      .gsub(/\[fullquote=([0-9]+)\]([^\[]+)\[\/fullquote\]/i,
+            '<abbr class="fullquote-opener" title="Ver comentario original" data-quote="\\1">#\\1</abbr>')
+
     # collect all quotes references
     full_quotes = {}
-    text.scan(/\[fullquote=([0-9]+)\]([^\[]+)\[\/fullquote\]/i).each do |m|
-      full_quotes[m[0]] = m[1]
+    text.scan(/\[fullquote=([0-9]+)\](.+?)\[\/fullquote\]/i).each do |m|
+      full_quotes[m[0]] = Formatting.format_bbcode(m[1])
     end
     full_quotes.each do |k, v|
       str = "#{str}\n<div class=\"hidden fullquote-comment fullquote-comment#{k}\">#{v}</div>"

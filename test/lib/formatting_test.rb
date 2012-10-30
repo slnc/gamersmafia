@@ -4,11 +4,30 @@ require 'test_helper'
 class FormattingTest < ActiveSupport::TestCase
 
   test "comment_with_expanded_short_replies and other quotes" do
-    c1 = create_a_comment(:comment => "hola guapo")
-    c2 = create_a_comment(:comment => "##{c1.position_in_content} no, eres feo [quote]wiiii[/quote]")
+    c1 = create_a_comment(
+        :comment => "hola guapo\n[img]http://www.example.com/foo.png[/img]")
+    c2 = create_a_comment(
+        :comment => "##{c1.position_in_content} no, eres feo [quote]wiiii[/quote]")
     assert_equal(
-        "[fullquote=2]hola guapo[/fullquote] no, eres feo [quote]wiiii[/quote]",
+        "[fullquote=2]hola guapo\n[img]http://www.example.com/foo.png[/img][/fullquote] no, eres feo [quote]wiiii[/quote]",
         Formatting.comment_with_expanded_short_replies(c2.comment, c2))
+  end
+
+  test "format_bbcode with quotes with other bbcodes inside" do
+    c1 = create_a_comment(
+        :comment => "hola guapo\n[img]http://www.example.com/foo.png[/img]")
+    c2 = create_a_comment(
+        :comment => "comment2 [quote]Cirano de Bergerac[/quote]")
+    c3 = create_a_comment(
+        :comment => "##{c1.position_in_content} no, eres feo [quote]wiiii[/quote]\n##{c2.position_in_content} ")
+    assert_equal(
+        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"2\">#2</abbr> no, eres feo <blockquote><p>wiiii</p></blockquote>\n" +
+        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"3\">#3</abbr>\n" +
+        "<div class=\"hidden fullquote-comment fullquote-comment2\"><p>hola guapo</p>\n" +
+        "<p><img src=\"http://www.example.com/foo.png\" /></p></div>\n" +
+        "<div class=\"hidden fullquote-comment fullquote-comment3\"><p>comment2 </p></div>",
+        Formatting.replace_bbcodes(
+            Formatting.comment_with_expanded_short_replies(c3.comment, c3)))
   end
 
   test "remove_quotes" do
