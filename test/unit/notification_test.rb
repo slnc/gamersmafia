@@ -9,6 +9,7 @@ class NotificationTest < ActiveSupport::TestCase
     assert_difference("@u1.notifications.count") do
       notif.save
     end
+    @u1.reload
     notif
   end
 

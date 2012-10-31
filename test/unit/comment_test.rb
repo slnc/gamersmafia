@@ -17,21 +17,22 @@ class CommentTest < ActiveSupport::TestCase
   test "expand_comment_references" do
     c1 = create_a_comment(:comment => "hola guapo")
     c2 = create_a_comment(:comment => "##{c1.position_in_content} no, eres feo")
-    assert_equal "[fullquote=2]hola guapo[/fullquote] no, eres feo", c2.comment
+    assert_equal "[fullquote=2]hola guapo[/fullquote] no, eres feo", Formatting.comment_with_expanded_short_replies(c2.comment, c2)
   end
 
   test "expand_comment_references with multiple saves" do
     c1 = create_a_comment(:comment => "hola guapo")
     c2 = create_a_comment(:comment => "##{c1.position_in_content} no, eres feo")
     c2.update_attribute(:comment, "#{c2.comment} y más!")
-    assert_equal "[fullquote=2]hola guapo[/fullquote] no, eres feo y más!", c2.comment
+    Formatting.comment_with_expanded_short_replies(c2.comment, c2)
+    assert_equal "[fullquote=2]hola guapo[/fullquote] no, eres feo y más!", Formatting.comment_with_expanded_short_replies(c2.comment, c2)
   end
 
   test "dont_expand_comment_references within quotes" do
     c1 = create_a_comment(:comment => "hola guapo")
     c2 = create_a_comment(:comment => "##{c1.position_in_content} no, eres feo")
     c3 = create_a_comment(:comment => "##{c2.position_in_content} holaaa")
-    assert_equal "[fullquote=3]#2 no, eres feo[/fullquote] holaaa", c3.comment
+    assert_equal "[fullquote=3]#2 no, eres feo[/fullquote] holaaa", Formatting.comment_with_expanded_short_replies(c3.comment, c3)
   end
 
   test "moderate should work" do
@@ -299,7 +300,7 @@ class CommentTest < ActiveSupport::TestCase
     c1 = create_a_comment
     c2 = create_a_comment(
         :comment => "##{c1.position_in_content} feo")
-    assert_equal [c1.user_id], c2.extract_replied_users(c2.comment)
+    assert_equal [c1.user_id], c2.extract_replied_users(Formatting.comment_with_expanded_short_replies(c2.comment, c2))
   end
 
   test "extract_replied_users with nested quotes" do
@@ -308,12 +309,12 @@ class CommentTest < ActiveSupport::TestCase
         :comment => "##{c1.position_in_content} feo", :user_id => 2)
     c3 = create_a_comment(
         :comment => "##{c2.position_in_content} feo", :user_id => 3)
-    assert_equal [c2.user_id], c3.extract_replied_users(c3.comment)
+    assert_equal [c2.user_id], c3.extract_replied_users(Formatting.comment_with_expanded_short_replies(c3.comment, c3))
   end
 
   test "extract_replied_users with @ mention in quote" do
     c1 = create_a_comment(:comment => "@panzer4 hola", :user_id => 2)
     c2 = create_a_comment(:comment => "##{c1.position_in_content} feo", :user_id => 3)
-    assert_equal [c1.user_id], c2.extract_replied_users(c2.comment)
+    assert_equal [c1.user_id], c2.extract_replied_users(Formatting.comment_with_expanded_short_replies(c2.comment, c2))
   end
 end
