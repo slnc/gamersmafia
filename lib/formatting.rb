@@ -169,7 +169,7 @@ module Formatting
 
   def self.comment_with_expanded_short_replies(comment_text, comment)
     # we build a new string with quotes replaced by placeholders
-    new_str = comment_text
+    new_str = comment_text.clone
     quotes = {}
     quote_id = 0
     comment_text.scan(/(\[quote[=0-9]*\][^\[]+\[\/quote\])/).each do |q|

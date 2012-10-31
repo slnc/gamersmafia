@@ -4,6 +4,7 @@ namespace :gm do
   task :after_deploy => :environment do
     Rake::Task["db:migrate"].invoke
     Rake::Task["assets:precompile"].invoke
+    `./script/delayed_job restart`
     compress_js
     Skin.update_default_skin_zip
     Rake::Task["gm:update_default_skin_styles"].invoke

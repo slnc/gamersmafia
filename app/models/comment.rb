@@ -190,7 +190,7 @@ class Comment < ActiveRecord::Base
   def schedule_ne_references_calculation
     if self.comment_changed?
       self.delay.regenerate_ne_references
-      self.delay.update_replies_notifications
+      self.delay.update_replies_notifications(self.comment_was)
     end
   end
 
@@ -211,12 +211,11 @@ class Comment < ActiveRecord::Base
     content.comments.find(:first, :order => 'created_on', :limit => 1, :offset => position - 1)
   end
 
-  def update_replies_notifications
-    if self.comment_was
+  def update_replies_notifications(old_comment_was)
+    if old_comment_was
       # We unformatize because we look for [quote=<id>] tags
       replied_users_was = self.extract_replied_users(
-          Formatting.comment_with_expanded_short_replies(
-              self.comment_was, self))
+          Formatting.comment_with_expanded_short_replies(old_comment_was, self))
     else
       replied_users_was = []
     end
