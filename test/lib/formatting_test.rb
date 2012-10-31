@@ -30,6 +30,28 @@ class FormattingTest < ActiveSupport::TestCase
             Formatting.comment_with_expanded_short_replies(c3.comment, c3)))
   end
 
+  test "format_bbcode with fullquotes and other bbcodes inside" do
+    c0 = create_a_comment
+    c1 = create_a_comment(:comment => "##{c0.position_in_content} hellou")
+    c2 = create_a_comment(
+        :comment => "##{c1.position_in_content} ##{c1.position_in_content} obnubilado")
+    assert_equal(
+        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"3\">#3</abbr> <abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"3\">#3</abbr> obnubilado\n<div class=\"hidden fullquote-comment fullquote-comment3\"><p>#2 hellou</p></div>",
+        Formatting.replace_bbcodes(
+            Formatting.comment_with_expanded_short_replies(c2.comment, c2)))
+  end
+
+  test "format_bbcode with same replies within quote and outside" do
+    c0 = create_a_comment
+    c1 = create_a_comment(:comment => "##{c0.position_in_content} hellou")
+    c2 = create_a_comment(
+        :comment => "##{c1.position_in_content} obnubilado ##{c0.position_in_content}")
+    assert_equal(
+        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"3\">#3</abbr> obnubilado <abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"2\">#2</abbr>\n<div class=\"hidden fullquote-comment fullquote-comment3\"><p>#2 hellou</p></div>\n<div class=\"hidden fullquote-comment fullquote-comment2\"><p>hola panzer</p></div>",
+        Formatting.replace_bbcodes(
+            Formatting.comment_with_expanded_short_replies(c2.comment, c2)))
+  end
+
   test "remove_quotes" do
     assert_equal(
         "foo bar baz",
@@ -46,9 +68,9 @@ class FormattingTest < ActiveSupport::TestCase
 
   test "comment_without_quoted_text" do
     assert_equal(
-        "foo [quote=3][/quote]bar [quote][/quote]baz",
+        "foo [quote=3][/quote]bar\nbaz [quote][/quote]baz",
         Formatting.comment_without_quoted_text(
-            "foo [quote=3]wiki[/quote]bar [quote]tapang[/quote]baz"))
+            "foo [quote=3]wiki[/quote]bar\nbaz [quote]tapang[/quote]baz"))
   end
 
   test "html_to_bbcode user login" do

@@ -158,13 +158,23 @@ module Formatting
 
   # Removes [quote] bbcode pairs from text and all that they contain
   def self.remove_quotes(text)
-    text.gsub(/(\[quote[=0-9]*\][^\[]+\[\/quote\])/, "")
+    text.
+      gsub("\r\n", "GM_NEWLINE_MARKER").
+      gsub("\n", "GM_NEWLINE_MARKER").
+      gsub("\r", "GM_NEWLINE_MARKER").
+      gsub(/(\[(full)*quote[=0-9]*\][^\[]+\[\/(full)*quote\])/, "").
+      gsub("GM_NEWLINE_MARKER", "\n")
   end
 
   # Returns a string with [quote][/quote] pairs but with no text within the
   # quotes.
   def self.comment_without_quoted_text(text)
-    text.gsub(/(\[quote[=0-9]*\])([^\[]+)(\[\/quote\])/, "\\1\\3")
+    text.
+      gsub("\r\n", "GM_NEWLINE_MARKER").
+      gsub("\n", "GM_NEWLINE_MARKER").
+      gsub("\r", "GM_NEWLINE_MARKER").
+      gsub(/(\[quote[=0-9]*\])([^\[]+)(\[\/quote\])/, "\\1\\3").
+      gsub("GM_NEWLINE_MARKER", "\n")
   end
 
   def self.comment_with_expanded_short_replies(comment_text, comment)
@@ -179,13 +189,13 @@ module Formatting
       quotes[key] = q[0]
     end
 
-    new_str.scan(/#([0-9]+)/).uniq.each do |m|
-      replied_comment = Comment.find_by_position(m[0].to_i, comment.content)
-      next if replied_comment.nil? || replied_comment.id == comment.id
-      new_str.sub!(
-          /#(#{m[0]})([^0-9]+|$)/,
-          "[fullquote=\\1]#{Formatting.remove_quotes(replied_comment.comment)}[/fullquote]\\2"
-      )
+    new_str = new_str.gsub(/#([0-9]+)/) do |m|
+      replied_comment = Comment.find_by_position($1.to_i, comment.content)
+      if replied_comment.nil? || replied_comment.id == comment.id
+        m
+      else
+        "[fullquote=#{$1}]#{Formatting.remove_quotes(replied_comment.comment)}[/fullquote]#{$2}"
+      end
     end
 
     # We restore removed quotes

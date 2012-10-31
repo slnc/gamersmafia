@@ -527,13 +527,18 @@ class Comment < ActiveRecord::Base
     dirty_references = self.comment.gsub("@", " ").slnc_tokenize & users.keys
     # TODO(slnc): this doesn't work with all logins, we need to restrict and
     # upgrade logins to remove unsupported chars (OLD_LOGIN_REGEXP).
-    clean_references = self.comment.scan(
+    clean_references = self.comment.downcase.scan(
         Regexp.new("@#{User::LOGIN_REGEXP}")).flatten
 
     referenced_names = (dirty_references + clean_references).uniq.sort
     entity_info = {}
-    referenced_names.each do |name|
-      entity_info[name] = users[name]
+    referenced_names.clone.each do |name|
+      if !users.include?(name)
+        referenced_names.delete(name)
+        # @nick mention for a nonexistent nick
+        next
+      end
+      entity_info[name] = users.fetch(name)
     end
     [entity_info, referenced_names]
   end

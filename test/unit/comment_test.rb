@@ -156,6 +156,14 @@ class CommentTest < ActiveSupport::TestCase
     assert_equal references[0].id, User.find(2).ne_references[0].id
   end
 
+  test "regenerate_ne_references should work with invalid nick mentions" do
+    c = create_a_comment(:comment => "@dios no existe")
+    assert_difference("NeReference.count", 0) do
+      assert c.save
+      references = c.regenerate_ne_references
+    end
+  end
+
   test "should_create_comment_if_valid" do
     content = Content.find(1)
     content.url = nil
@@ -223,7 +231,7 @@ class CommentTest < ActiveSupport::TestCase
 
   test "extract_ne_references" do
     comment = Comment.new({
-      :comment => "hello nagato. I love you! I love you too @mrachmed!!!
+      :comment => "hello NAGATO. I love you! I love you too @MRACHMED!!!
       I don't love @mrman",
     })
     assert_equal [{
