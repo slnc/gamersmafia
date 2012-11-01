@@ -4,6 +4,20 @@ require 'test_helper'
 class CommentTest < ActiveSupport::TestCase
   COPYRIGHT = Comment::MODERATION_REASONS[:copyright]
 
+  test "should update global_vars on creation" do
+    last = GlobalVars.get_var("last_comment_on")
+    c1 = create_a_comment(:comment => "hola guapo")
+    assert_equal c1.updated_on.to_i, GlobalVars.get_var("last_comment_on").to_time.to_i
+  end
+
+  test "should update portal last_comment_on on creation" do
+    content1 = Content.find(1)
+    last = content1.portal.last_comment_on
+    c1 = create_a_comment(:comment => "hola guapo", :content_id => content1.id)
+    content1.reload
+    assert_equal c1.updated_on.to_i, content1.portal.last_comment_on.to_i
+  end
+
   test "top_comments_valorations_type" do
     c1 = create_a_comment(:comment => "hola guapo")
     c1.comments_valorations.create({

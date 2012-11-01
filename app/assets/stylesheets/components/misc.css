@@ -57,3 +57,11 @@
 .user-link {
   font-weight: bold;
 }
+
+.truncate-long-lines-a a {
+  width: 100%;
+  overflow: hidden;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

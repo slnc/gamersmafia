@@ -191,6 +191,14 @@ class Comment < ActiveRecord::Base
     if self.comment_changed?
       self.delay.regenerate_ne_references
       self.delay.update_replies_notifications(self.comment_was)
+      self.delay.update_last_comment_on
+    end
+  end
+
+  def update_last_comment_on
+    GlobalVars.update_var("last_comment_on", self.updated_on)
+    if self.content.portal
+      self.content.portal.update_attribute(:last_comment_on, self.updated_on)
     end
   end
 

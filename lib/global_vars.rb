@@ -1,9 +1,20 @@
 # -*- encoding : utf-8 -*-
 module GlobalVars
   VALID_VAR_NAME = /^[a-z0-9_]+$/
+
+  def self.flush_cache
+    @global_vars = nil
+  end
+
   def self.get_var(var)
     raise "Invalid var name '#{var}'" if !(VALID_VAR_NAME =~ var)
-    User.db_query("SELECT #{var} FROM global_vars")[0]
+    User.db_query("SELECT #{var} FROM global_vars")[0][var]
+  end
+
+  def self.get_cached_var(var)
+    raise "Invalid var name '#{var}'" if !(VALID_VAR_NAME =~ var)
+    @global_vars ||= self.get_all_vars
+    @global_vars[var]
   end
 
   def self.get_all_vars

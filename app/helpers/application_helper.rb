@@ -31,6 +31,7 @@ module ApplicationHelper
   GM_ICONS = {
     "star" => "&#xe000;",
     "stats" => "&#xe001;",
+    "gmf" => "&#xe002;",
   }
 
   WMENU_POS = {
@@ -1456,5 +1457,15 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
 
   def gm_icon(name)
     "<span class=\"gm-icon\">#{GM_ICONS.fetch(name)}</span>"
+  end
+
+  # Layout helpers
+  def content_names(contents)
+    out = ["<div class=\"content-names\">"]
+    contents.each do |content|
+      out.append("<li><a href=\"#{Routing.gmurl(content)}\">#{content.resolve_hid}</a></li>")
+    end
+    out.append("</div>")
+    out.join("\n")
   end
 end

@@ -1,5 +1,5 @@
 <section class="comments">
-<% content.comments.each do |comment| %>
+<% content.comments.find(:all, :order => 'id').each do |comment| %>
   <div class="comment">
     <div class="comment-author-info float-left">
       <div class="avatar"><img src="<%=ASSET_URL%><%=comment.user.show_avatar%>" /></div>

@@ -1,0 +1,6 @@
+<% cache("/suicidal/#{controller.portal.code}/layouts/lco/#{controller.portal.last_comment_on.to_i}") do %>
+  <div class="f_sm truncate-long-lines-a layout-sidebar-box">
+    <header>Se está hablando en</header>
+    <%=content_names(get_last_commented_contents)%>
+  </div>
+<% end -%>

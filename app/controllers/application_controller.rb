@@ -220,6 +220,7 @@ Request information:
 
   # Used to be able to leave out the action
   def gm_process
+    GlobalVars.flush_cache
     params[:page] = 1 if params.has_key?(:page) && params[:page].to_i < 1
     @madness = true
     @_track_done = false

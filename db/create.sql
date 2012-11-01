@@ -1565,7 +1565,8 @@ CREATE TABLE global_vars (
     pending_contents integer DEFAULT 0 NOT NULL,
     portals_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     max_cache_valorations_weights_on_self_comments numeric,
-    clans_updated_on timestamp without time zone
+    clans_updated_on timestamp without time zone,
+    last_comment_on timestamp without time zone
 );
 CREATE SEQUENCE global_vars_id_seq
     START WITH 1
@@ -2065,7 +2066,8 @@ CREATE TABLE portals (
     default_gmtv_channel_id integer,
     cache_recent_hits_count integer,
     factions_portal_home character varying,
-    small_header character varying
+    small_header character varying,
+    last_comment_on timestamp without time zone
 );
 CREATE SEQUENCE portals_id_seq
     START WITH 1

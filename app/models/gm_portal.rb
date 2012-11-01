@@ -4,6 +4,11 @@ class GmPortal
   def layout
     'gm'
   end
+
+  def last_comment_on
+    (GlobalVars.get_cached_var('last_comment_on') || Time.now).to_time
+  end
+
   def small_header
 	  nil
   end
