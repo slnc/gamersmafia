@@ -105,6 +105,7 @@ class User < ActiveRecord::Base
   has_many :tracker_items
   has_many :user_login_changes
   has_many :users_newsfeeds
+  has_many :user_interests
   has_many :staff_candidates
   has_many :staff_candidate_votes
 
@@ -214,6 +215,14 @@ class User < ActiveRecord::Base
             " (now() - '3 months'::interval)")
 
   scope :settled, :conditions => "created_on <= now() - '1 month'::interval"
+
+  scope :with_interest, lambda { |entity_class_name, entity_id|
+    {:conditions => ["id IN (
+                         SELECT user_id
+                         FROM user_interests
+                         WHERE entity_type_class = ?
+                         AND entity_id = ?)", entity_class_name, entity_id]}
+  }
 
   def self.update_remaining_ratings
     # We do this like this to not hold a lock over the whole table for too long.

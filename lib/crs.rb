@@ -29,6 +29,19 @@ require "msgpack"
 # Collaborative Recommender System module
 module Crs
 
+  # Looks for people who might be interested in a given content
+  def self.recommend_from_contents_term(contents_term)
+    # TODO(slnc): don't recommend very old news or closed topics, just in case
+    # we backfill this.
+    # Look for all users who have the term as an interest and haven't visited
+    # already the content.
+    User.with_interest("Term", contents_term.term_id).find_each do |user|
+      rec = user.contents_recommendations.create(
+          :content_id => contents_term.content_id,
+          :sender_user_id => Ias.jabba.id)
+    end
+  end
+
   # Returns the last built model
   def self.latest_known_model
     Pathname.glob(

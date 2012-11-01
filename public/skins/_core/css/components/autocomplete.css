@@ -1,9 +1,10 @@
-div.auto_complete {
-    width: 350px;
+.autocomplete {
     background: #fff;
+    position: absolute;
+    z-index: 100;
 }
 
-div.auto_complete ul {
+.autocomplete {
     border: 1px solid #888;
     margin: 0;
     padding: 0;
@@ -12,16 +13,16 @@ div.auto_complete ul {
     list-style-type: none;
 }
 
-div.auto_complete ul li {
+.autocomplete li {
     margin: 0;
     padding: 3px;
 }
 
-div.auto_complete ul li.selected {
+.autocomplete li.selected {
     background-color: #ffb;
 }
 
-div.auto_complete ul strong.highlight {
+.autocomplete strong.highlight {
     color: #800;
     margin: 0;
     padding: 0;

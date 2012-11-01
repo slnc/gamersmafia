@@ -2588,6 +2588,20 @@ CREATE SEQUENCE tutorials_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE tutorials_id_seq OWNED BY tutorials.id;
+CREATE TABLE user_interests (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    entity_type_class character varying NOT NULL,
+    entity_id integer NOT NULL
+);
+CREATE SEQUENCE user_interests_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE user_interests_id_seq OWNED BY user_interests.id;
 CREATE TABLE user_login_changes (
     id integer NOT NULL,
     user_id integer NOT NULL,
@@ -3187,6 +3201,7 @@ ALTER TABLE ONLY topics_categories ALTER COLUMN id SET DEFAULT nextval('forum_fo
 ALTER TABLE ONLY tracker_items ALTER COLUMN id SET DEFAULT nextval('tracker_items_id_seq'::regclass);
 ALTER TABLE ONLY tutorials ALTER COLUMN id SET DEFAULT nextval('tutorials_id_seq'::regclass);
 ALTER TABLE ONLY tutorials_categories ALTER COLUMN id SET DEFAULT nextval('tutorials_categories_id_seq'::regclass);
+ALTER TABLE ONLY user_interests ALTER COLUMN id SET DEFAULT nextval('user_interests_id_seq'::regclass);
 ALTER TABLE ONLY user_login_changes ALTER COLUMN id SET DEFAULT nextval('user_login_changes_id_seq'::regclass);
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 ALTER TABLE ONLY users_actions ALTER COLUMN id SET DEFAULT nextval('users_actions_id_seq'::regclass);
@@ -3592,6 +3607,8 @@ ALTER TABLE ONLY tutorials_categories
     ADD CONSTRAINT tutorials_categories_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY tutorials
     ADD CONSTRAINT tutorials_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY user_interests
+    ADD CONSTRAINT user_interests_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY user_login_changes
     ADD CONSTRAINT user_login_changes_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY users_actions
@@ -3810,6 +3827,8 @@ CREATE INDEX tutorials_approved_by_user_id ON tutorials USING btree (approved_by
 CREATE UNIQUE INDEX tutorials_categories_unique ON tutorials_categories USING btree (name, parent_id);
 CREATE INDEX tutorials_state ON tutorials USING btree (state);
 CREATE INDEX tutorials_user_id ON tutorials USING btree (user_id);
+CREATE INDEX user_interests_entity_class_entity_id ON user_interests USING btree (entity_type_class, entity_id);
+CREATE INDEX user_interests_user_id ON user_interests USING btree (user_id);
 CREATE INDEX users_actions_created_on ON users_actions USING btree (created_on);
 CREATE INDEX users_cache_remaning ON users USING btree (cache_remaining_rating_slots) WHERE (cache_remaining_rating_slots IS NOT NULL);
 CREATE UNIQUE INDEX users_comments_sig ON users USING btree (comments_sig);
@@ -4037,6 +4056,8 @@ ALTER TABLE ONLY topics
     ADD CONSTRAINT topics_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY tutorials
     ADD CONSTRAINT tutorials_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
+ALTER TABLE ONLY user_interests
+    ADD CONSTRAINT user_interests_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_avatar_id_fkey FOREIGN KEY (avatar_id) REFERENCES avatars(id) MATCH FULL ON DELETE SET NULL;
 ALTER TABLE ONLY users

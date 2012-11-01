@@ -33,6 +33,13 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     end
   end
 
+  test "intereses" do
+    sym_login 2
+    u2 = User.find(2)
+    get :intereses
+    assert_response :success
+  end
+
   test "add_quicklink" do
     sym_login 2
     u2 = User.find(2)

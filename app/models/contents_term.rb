@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class ContentsTerm < ActiveRecord::Base
+  after_create :schedule_recommendations
   belongs_to :content
   belongs_to :term
   validates_presence_of :content_id, :term_id
@@ -11,5 +12,9 @@ class ContentsTerm < ActiveRecord::Base
 
   def set_import_mode
     @_import_mode = true
+  end
+
+  def schedule_recommendations
+    Crs.delay.recommend_from_contents_term(self)
   end
 end

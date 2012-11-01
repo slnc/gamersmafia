@@ -1,0 +1,30 @@
+<%mftext("Intereses") do %>
+  <form method="post" action="/cuenta/cuenta/create_user_interest">
+    <select name="entity_type_class">
+      <option value="Term">Tag</option>
+    </select>
+    <input type="text" name="entity_id" id="user_interest_name" />
+    <input type="submit" class="button" value="Añadir" />
+  </form>
+  <script type="text/javascript">
+  <% if suicidal_enabled? then %>
+    $("#user_interest_name").attr('autocomplete', 'off').autocomplete("/cuenta/cuenta/intereses_autocomplete");
+  <% else %>
+    $j("#user_interest_name").attr('autocomplete', 'off').autocomplete("/cuenta/cuenta/intereses_autocomplete");
+  <% end  %>
+  </script>
+  <br />
+  <br />
+  <p><a href="/cuenta/cuenta/schedule_interest_profile">Que Jabba haga todo el trabajo</a>.</p>
+
+<table>
+  <%@user.user_interests.find(:all, :order => "entity_type_class, entity_id").each do |interest| %>
+    <tr>
+      <td><%=interest.entity_type_class%></td>
+      <td><%=interest.entity_name%></td>
+      <td><a href="/cuenta/cuenta/delete_user_interest?entity_type_class=<%=interest.entity_type_class%>&entity_id=<%=interest.entity_id%>">Eliminar</a></td>
+    </tr>
+  <% end -%>
+</table>
+
+<% end -%>

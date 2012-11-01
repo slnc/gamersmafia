@@ -849,6 +849,10 @@ skin: 'v2'
     end
   end
 
+  def suicidal_enabled?
+    @suicidal
+  end
+
   def javascript_includes
     if App.compress_js?
       out = "<script type=\"text/javascript\" src=\"#{ASSET_URL}/gm.#{AppR.ondisk_git_version}.js\"></script>\n"
@@ -868,6 +872,7 @@ skin: 'v2'
 <script src="#{ASSET_URL}/javascripts/colorpicker.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shCore.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
 <script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shBrushPython.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
+<script src="#{ASSET_URL}/javascripts/jquery.autocomplete.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
       END
     end
 

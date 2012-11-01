@@ -3,20 +3,19 @@ class ContentsRecommendation < ActiveRecord::Base
   belongs_to :sender, :class_name => 'User', :foreign_key => 'sender_user_id'
   belongs_to :receiver, :class_name => 'User', :foreign_key => 'receiver_user_id'
   belongs_to :content
-  validates_presence_of [:sender_user_id, :receiver_user_id, :content_id]
-
   before_create :check_if_already_recommended
-  validates_uniqueness_of :content_id,
-                          :scope => [:sender_user_id, :receiver_user_id]
+  validates_presence_of [:sender_user_id, :receiver_user_id, :content_id]
+  validates_uniqueness_of :content_id, :scope => [:receiver_user_id]
 
   def check_if_already_recommended
-    if ContentsRecommendation.count(:conditions => [
-        'receiver_user_id = ? AND
-         content_id = ? AND
-         seen_on IS NOT NULL', self.receiver_user_id, self.content_id]) > 0
-      self.seen_on = Time.now
-    end
-    true
+    recommended_already = ContentsRecommendation.count(
+        :conditions => [
+          'receiver_user_id = ? AND content_id = ? AND seen_on IS NOT NULL',
+          self.receiver_user_id, self.content_id]) > 0
+    visited_already = TrackerItem.count(
+        :conditions => ['user_id = ? AND content_id = ?',
+                        self.receiver_user_id, self.content_id]) > 0
+    !(recommended_already || visited_already)
   end
 
   def mark_bad

@@ -28,10 +28,13 @@ class ApplicationController < ActionController::Base
 
   private
   def set_layout
+    @suicidal = false
     # raise "header: #{request.headers['X-PJAX'].to_s}"
     if request.headers['X-PJAX']
+      @suicidal = true
       false
     elsif user_is_authed && @user.pref_suicidal == 1
+      @suicidal = true
       "suicidal"
     else
       "default"

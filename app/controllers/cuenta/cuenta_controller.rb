@@ -27,6 +27,50 @@ class Cuenta::CuentaController < ApplicationController
     @title = 'Tracker'
   end
 
+  def intereses
+    @navpath = [['Cuenta', '/cuenta'], ['Intereses', '/cuenta/cuenta/intereses']]
+    @title = 'Intereses'
+  end
+
+  def intereses_autocomplete
+    @out = {}
+    if /^[a-z0-9_ -]+$/ =~ params[:text]
+      render(:layout => false) && return
+    end
+    terms = Term.find(
+        :all,
+        :conditions => "LOWER(name) LIKE E'#{params[:text]}%'",
+        :limit => 100)
+    terms.each do |term|
+      @out[term.id] = term.name
+    end
+    render :layout => false
+  end
+
+  def create_user_interest
+    @user.user_interests.create({
+        :entity_type_class => params[:entity_type_class],
+        :entity_id => params[:entity_id],
+    })
+    flash[:notice] = "Interés guardado correctamente."
+    redirect_to :action => :intereses
+  end
+
+  def schedule_interest_profile
+    UserInterest.delay.build_interest_profile(@user)
+    flash[:notice] = (
+        "Jabba ha recibido tu petición. Refresca esta página dentro de un par"
+        " de minutos para ver los resultados.")
+    redirect_to :action => :intereses
+  end
+
+  def delete_user_interest
+    @user.user_interests.interest_tuple(
+        params[:entity_type_class], params[:entity_id]).first.destroy
+    flash[:notice] = "Interés eliminado correctamente."
+    redirect_to :action => :intereses
+  end
+
   def notificaciones
     @unread_ids = []
     # TODO(slnc): periodically remove old notifications for users with too many

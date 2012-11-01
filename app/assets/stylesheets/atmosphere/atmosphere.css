@@ -60,3 +60,12 @@ abbr {
 .image-gallery-sm div.selected {
   border-color: #d5371f;
 }
+
+.autocomplete {
+  background: #000;
+}
+
+.autocomplete:hover {
+  background: #d5371f;
+  color: #fff;
+}
