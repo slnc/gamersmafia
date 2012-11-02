@@ -34,12 +34,12 @@ class Cuenta::CuentaController < ApplicationController
 
   def intereses_autocomplete
     @out = {}
-    if /^[a-z0-9_ -]+$/ =~ params[:text]
+    if !(/^[a-zA-Z0-9_ -]+$/ =~ params[:text])
       render(:layout => false) && return
     end
     terms = Term.find(
         :all,
-        :conditions => "LOWER(name) LIKE E'#{params[:text]}%'",
+        :conditions => "LOWER(name) LIKE LOWER(E'#{params[:text]}%')",
         :limit => 100)
     terms.each do |term|
       @out[term.id] = term.name
@@ -59,7 +59,7 @@ class Cuenta::CuentaController < ApplicationController
   def schedule_interest_profile
     UserInterest.delay.build_interest_profile(@user)
     flash[:notice] = (
-        "Jabba ha recibido tu petición. Refresca esta página dentro de un par"
+        "Jabba ha recibido tu petición. Refresca esta página dentro de un par" +
         " de minutos para ver los resultados.")
     redirect_to :action => :intereses
   end
