@@ -37,7 +37,7 @@ class UserInterest < ActiveRecord::Base
       end
       term_frequencies[term_id] += 1
     end
-    threshold = 0.7
+    threshold = 0.01
     puts "user_id term_id frequency likelihood_visit"
     term_frequencies.each do |term_id, frequency|
       likelihood_visit = frequency.to_f / term_totals[term_id]
