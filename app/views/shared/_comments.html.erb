@@ -10,7 +10,7 @@ cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{Cms.comments_per_page}_#{pa
   @comments = get_comments(object)
 %>
 <script type="text/javascript">var comments = new Array();</script>
-<div class="comments-container"><a name="comments"></a>
+<div class="comments-container comments"><a name="comments"></a>
 <div class="comments-area">
 <%= render :partial => 'shared/pager2',
            :locals => {

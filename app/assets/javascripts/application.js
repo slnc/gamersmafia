@@ -5,7 +5,10 @@
 //= require_tree ./modules
 
 $(document).ready(function() {
-  $('body').pjax('a', {container: "#main"})
+  /*
+   * TODO(slnc): temporarily disabled until we can make sure that calls to
+   * refresh outside boxes are called after page refresh via pjax.
+  $('body').pjax('a', {container: "#ccontent"})
     .on('pjax:start', function() { $('#loading').show() })
     .on('pjax:end', function() {
       $('#loading').hide();
@@ -14,6 +17,7 @@ $(document).ready(function() {
         modules[i].ContentInit();
       }
     });
+    */
 
   var modules = Gm.getModules();
   for (var i in modules) {

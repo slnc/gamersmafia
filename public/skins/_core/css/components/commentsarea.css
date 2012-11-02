@@ -143,3 +143,102 @@
   margin-top: 30px;
   text-align: center;
 }
+
+/* Suicidal - clean styles from here and below */
+.fullquote-comment {
+  position: absolute;
+  z-index: 100;
+  padding: 8px;
+  background: #fff;
+  background: #FFFFF0;
+  border-color: #CFCEAF;
+}
+
+.image-deleter {
+  z-index: 100;
+
+  /* TODO(slnc): temp hack until we have an icon here */
+  font-weight: bold;
+  background: #000;
+  color: #fff;
+  float: right;
+  margin: 1px;
+  padding: 3px;
+
+  cursor: pointer;
+}
+
+.droparea {
+  border: 3px dashed;
+  width: 12rem;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  vertical-align: middle;
+  text-align: center;
+  cursor: default;
+  margin: 1rem 0;
+  line-height: 3rem;
+}
+
+.inline-menu li {
+  display: inline-block;
+  margin-right: 1em;
+}
+
+.inline-menu li:last-child {
+  margin-right: 0;
+}
+
+.align-left {
+  text-align: left;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.float-right {
+  float: right;
+}
+
+.float-left {
+  float: left;
+}
+
+.user-link {
+  font-weight: bold;
+}
+
+.fullquote-comment {
+  border: 1px solid #ccc;
+  -moz-box-shadow:    3px 3px 3px 3px #ddd;
+  -webkit-box-shadow: 3px 3px 3px 3px #ddd;
+  box-shadow:         3px 3px 3px 3px #ddd;
+}
+
+.image-gallery-sm .image2 {
+  width: 100px;
+  height: 100px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  display: inline-block;
+  margin: 3px;
+  border: 3px solid;
+}
+
+.image-editor .image2 {
+  width: 100%;
+  display: inline-block;
+  margin: 3px;
+  border: 3px solid #fff;
+  height: auto;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+abbr {
+  border-bottom: 1px dotted #aaa;
+  cursor: pointer;
+}

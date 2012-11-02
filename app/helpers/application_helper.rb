@@ -328,7 +328,7 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
     <div title="Deshacer" class="btn back"></div>
     <div title="Rehacer" class="btn forward"></div>
     <div class="clearb">
-      <textarea id="#{opts[:id]}" class="bbeditor" name="#{opts[:name]}" rows="#{opts[:rows]}" style="#{opts[:style]}">#{opts[:value]}</textarea></div>
+      <textarea id="#{opts[:id]}" class="bbeditor #{opts[:class]}" name="#{opts[:name]}" rows="#{opts[:rows]}" style="#{opts[:style]}">#{opts[:value]}</textarea></div>
 
     <script type="text/javascript">
     $j('##{opts[:id]}').bbcodeeditor(

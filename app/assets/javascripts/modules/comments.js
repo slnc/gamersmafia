@@ -5,7 +5,7 @@ Gm.Comments = function() {
     ContentInit: function() {
       $('.comments form').sisyphus({
         timeout: 30,
-      onSave: Gm.Comments.DraftSaved,
+        onSave: Gm.Comments.DraftSaved,
       });
 
       $('.spoiler').click(function(e) {

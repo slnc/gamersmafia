@@ -55,6 +55,8 @@ class UserInterest < ActiveRecord::Base
       break if new_interests.size >= max_new_interests
     end
 
+    return if new_interests.size == 0
+
     names = new_interests.collect {|interest| interest.entity_name}
     names = names.sort_by {|name| name.downcase }
 

@@ -108,7 +108,7 @@ Gm.MemeEditor = function() {
 
   function updateMemeImageReferences() {
     var imageDataUrl = $('.image-editor canvas')[0].toDataURL("image/jpeg");
-    $('.image-editor .image')[0].src = imageDataUrl;
+    $('.image-editor .image2')[0].src = imageDataUrl;
     var imageId = $('#dropped-files .selected')[0].id;
     $('#input' + imageId).val(imageDataUrl);
   }
@@ -143,8 +143,8 @@ Gm.MemeEditor = function() {
       $('.meme_middle').val('');
       $('.meme_bottom').val('');
       var curImage = $(this);
-      var prevImage = $('#dropped-files .image.selected');
-      $('#dropped-files .image').removeClass('selected');
+      var prevImage = $('#dropped-files .image2.selected');
+      $('#dropped-files .image2').removeClass('selected');
       if (prevImage.length > 0 && this.id == prevImage[0].id) {
         // De-selecting image
         return;
@@ -156,7 +156,7 @@ Gm.MemeEditor = function() {
         var canvas = $('.image-editor canvas')[0];
         canvas.width = imageLoader.width;
         canvas.height = imageLoader.height;
-        $('.image-editor .image').css('max-width', imageLoader.width + 'px');
+        $('.image-editor .image2').css('max-width', imageLoader.width + 'px');
         $('.image-editor').show();
 
         Gm.MemeEditor.generateMeme();
@@ -278,15 +278,15 @@ Gm.MemeEditor = function() {
         value: image_url,
       }).appendTo('#new_comment');
 
-      if ($('#dropped-files > .image').length < maxImages) {
+      if ($('#dropped-files > .image2').length < maxImages) {
         // Place the image inside the dropzone
         $('#dropped-files').append(
-            '<div id="' + imageId + '" class="image" style="background-image:' +
+            '<div id="' + imageId + '" class="image2" style="background-image:' +
             ' url(' + image_url + ');">' +
             '<div class="image-deleter hidden">x</div></div>');
         // We unbind because we don't know how many of the existing images
         // might already have the function bound.
-        $('#dropped-files .image')
+        $('#dropped-files .image2')
           .unbind('click', Gm.MemeEditor.EditImage)
           .bind('click', Gm.MemeEditor.EditImage)
           .unbind('mouseenter')

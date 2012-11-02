@@ -16,15 +16,34 @@ else
     btn_action_class = 'comentar'
   end
 %>
-<form action="/comments/create" method="post" name="REPLIER" style="padding-top: 25px;">
+<form id="new_comment" action="/comments/create" method="post" name="REPLIER" style="padding-top: 25px;">
   <%= hidden_field_tag 'comment[content_id]', uniq_id %>
   <%= hidden_field_tag 'redirto', request.path %>
   <div class="comment-textarea">
+    <div class="comment-main-fields-area">
     <%= bbeditor(:name => 'comment[comment]',
+                 :class => 'comment-textarea',
                  :id => 'comment_comment').force_encoding("utf-8") %>
     <% if @user.comment_adds_to_tracker_enabled? %>
       <input type="hidden" value="1" name="add_to_tracker"  />
     <% end -%>
+      <div class="droparea">arrastra imágenes aquí</div>
+    </div>
+
+    <div id="dropped-files" class="image-gallery-sm"></div>
+    <div class="image-editor hidden">
+      <canvas class="hidden"></canvas>
+      <img src="/images/dot.png" class="image2" />
+      <br />
+      <input type="text" name="meme_top" class="meme_top" maxlength="60" />
+      <br />
+      <input type="text" name="meme_middle" class="meme_middle" maxlength="60" />
+      <br />
+      <input type="text" name="meme_bottom" class="meme_bottom" maxlength="60" />
+      <br />
+    </div>
+
+    <div class="draft-feedback f_sm"></div>
     <div class="right">
       <input type="image" src="/images/blank.gif" class="btn-<%=btn_action_class%>" /></div>
   </div>

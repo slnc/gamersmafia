@@ -183,3 +183,9 @@ body {
   overflow: hidden;
   color: #ddd;
 }
+
+#loading {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+}
