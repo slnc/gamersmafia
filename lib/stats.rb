@@ -2,10 +2,248 @@
 require 'set'
 
 module Stats
+
+  def self.update_general_stats
+    # buscamos fecha más antigua de comentario
+    # buscamos fecha más antigua en stats globales que tenga info de comentarios creados
+    # actualizamos desde dicha fecha hasta ayer
+    yesterday = 1.day.ago.beginning_of_day
+    tonight = yesterday.advance(:days => 1)
+    first_comment = User.db_query(
+        "SELECT min(created_on) FROM comments")[0]['min'].to_time
+    first_stat = User.db_query(
+        "SELECT MAX(created_on) FROM stats.general WHERE new_comments IS NOT NULL")[0]['max']
+    first_stat = (first_stat.to_s != '') ? first_stat.to_time : first_comment
+    # nos ponemos en el primer día que tenemos que calcular
+    first_stat.advance(:days => 1).beginning_of_day
+    first_stat = 1.day.ago.beginning_of_day if Rails.env == 'test'
+
+    while first_stat < tonight
+      cur_str = first_stat.strftime('%Y-%m-%d')
+      next_stat = first_stat.advance(:days => 1)
+      sql_created_on = (
+          "created_on::date = '#{first_stat.strftime('%Y-%m-%d')}'::date)")
+      created_clans = Clan.count(
+          :conditions => "created_on::date '#{first_stat.strftime('%Y-%m-%d')}'::date)")
+      new_closed_topics = Topic.published.count(
+          :conditions => "closed = 't' AND updated_on::date = '#{first_stat.strftime('%Y-%m-%d')}'::date")
+      new_clans_portals = ClansPortal.count(
+          :conditions => "clan_id IS NOT NULL AND #{sql_created_on}")
+      dbrender = User.db_query(
+          "SELECT
+             avg(time),
+             stddev(time),
+             avg(db_queries) as avg_dbq,
+             stddev(db_queries) as stddev_dbq
+           FROM stats.pageloadtime
+           WHERE #{sql_created_on}")[0]
+      new_factions = Faction.count(:conditions => sql_created_on)
+      sent_emails = SentEmail.count(:conditions => sql_created_on)
+      downloaded_downloads_count = DownloadedDownload.count(
+          :conditions => sql_created_on)
+      avg_page_render_time = dbrender['avg'].to_f
+      stddev_page_render_time = dbrender['stddev'].to_f
+      avg_db_queries_per_request = dbrender['avg_dbq'].to_f
+      stddev_db_queries_per_request = dbrender['stddev_dbq'].to_f
+      karma_diff = Gmstats.karma_in_time_period(first_stat, next_stat)
+      users_generating_karma = User.count(
+          :conditions => "id IN (
+                            SELECT user_id
+                            FROM comments
+          WHERE deleted = 'f'
+          AND #{sql_created_on}
+
+          UNION
+
+          SELECT user_id
+          FROM contents
+          WHERE #{sql_created_on})")
+      active_factions_portals = User.db_query(
+          "SELECT count(*)
+           FROM stats.portals
+           WHERE #{sql_created_on}
+           AND karma > 0
+           AND portal_id IN (
+             SELECT id
+             FROM portals
+             WHERE type='FactionsPortal')")[0]['count']
+      active_clans_portals = User.db_query(
+          "SELECT count(*)
+           FROM stats.portals
+           WHERE #{sql_created_on}
+           AND karma > 0
+           AND portal_id IN (
+             SELECT id
+             FROM portals
+             WHERE type='ClansPortal')")[0]['count']
+      completed_competitions_matches = CompetitionsMatch.count(
+          :conditions => sql_created_on)
+      #proxy_errors = `grep -c "All workers are in error state" #{Rails.root}/log/error-#{first_stat.strftime('%Y%m%d')}.log`.strip
+      proxy_errors = 0 #if proxy_errors.strip == ''
+      dbsize = User.db_query("SELECT pg_database_size('#{ActiveRecord::Base.configurations[Rails.env]['database']}');")[0]['pg_database_size']
+      requests = User.db_query("SELECT count(*) FROM stats.pageloadtime WHERE #{sql_created_on}")[0]['count']
+      http_500 = User.db_query("SELECT count(*) FROM stats.pageloadtime WHERE #{sql_created_on} AND http_status = 500")[0]['count']
+      http_401 = User.db_query("SELECT count(*) FROM stats.pageloadtime WHERE #{sql_created_on} AND http_status = 401")[0]['count']
+      http_404 = User.db_query("SELECT count(*) FROM stats.pageloadtime WHERE #{sql_created_on} AND http_status = 404")[0]['count']
+      if User.db_query("SELECT * FROM stats.general WHERE created_on = '#{cur_str}'").size == 0
+        User.db_query("INSERT INTO stats.general(created_on) VALUES('#{cur_str}')")
+      end
+
+      User.db_query(
+          "UPDATE stats.general
+           SET new_comments = '#{Gmstats.comments_created_in_time_period(first_stat, next_stat)}',
+               users_total = '#{Gmstats.users(:total, next_stat)}',
+               users_confirmed = '#{Gmstats.users(:confirmed, next_stat)}',
+               users_unconfirmed = '#{Gmstats.users(:unconfirmed, next_stat)}',
+               users_unconfirmed_1w = '#{Gmstats.users(:unconfirmed_1w, next_stat)}',
+               users_unconfirmed_2w = '#{Gmstats.users(:unconfirmed_2w, next_stat)}',
+               users_active = '#{Gmstats.users(:active, next_stat)}',
+               users_shadow = '#{Gmstats.users(:shadow, next_stat)}',
+               users_resurrected = '#{Gmstats.users(:resurrected, next_stat)}',
+               users_zombie = '#{Gmstats.users(:zombie, next_stat)}',
+               users_deleted = '#{Gmstats.users(:deleted, next_stat)}',
+               users_banned = '#{Gmstats.users(:banned, next_stat)}',
+               users_disabled = '#{Gmstats.users(:disabled, next_stat)}',
+               users_generating_karma = '#{users_generating_karma}',
+               new_clans = '#{created_clans}',
+               database_size = '#{dbsize}',
+               sent_emails = '#{sent_emails}',
+               downloaded_downloads_count = '#{downloaded_downloads_count}',
+               avg_page_render_time = #{avg_page_render_time},
+               stddev_page_render_time = #{stddev_page_render_time},
+               avg_db_queries_per_request = #{avg_db_queries_per_request},
+               stddev_db_queries_per_request = #{stddev_db_queries_per_request},
+               new_closed_topics = '#{new_closed_topics}',
+               new_clans_portals = '#{new_clans_portals}',
+               active_factions_portals = '#{active_factions_portals}',
+               active_clans_portals = '#{active_clans_portals}',
+               karma_per_user = '#{karma_diff.to_f / (users_generating_karma+0.1)}',
+               requests = '#{requests}',
+               karma_diff = '#{karma_diff}',
+               proxy_errors = '#{proxy_errors}',
+               new_factions = '#{new_factions}',
+               http_500 = '#{http_500}',
+               http_401 = '#{http_401}',
+               http_404 = '#{http_404}',
+               completed_competitions_matches = #{completed_competitions_matches},
+               refered_hits = '#{Gmstats.refered_hits_in_time_period(first_stat, next_stat)}'
+             WHERE created_on = '#{cur_str}'")
+      first_stat = next_stat
+    end
+  end
+
+  module Factions
+    def self.oldest_day_without_stats
+      dbmaxstats = User.db_query(
+          "SELECT MAX(created_on) FROM stats.portals")[0]
+      if dbmaxstats['max'].to_i == 0
+        # no stats
+        min_time = [
+          Content.published.find(:first, :order => 'created_on').created_on,
+          Comment.find(:first, :order => 'created_on').created_on,
+        ].min
+      else
+        min_time = dbmaxstats['max'].to_time
+      end
+      min_time = min_time.yesterday.beginning_of_day
+      min_time = 1.day.ago.beginning_of_day if Rails.env == 'test'
+      min_time
+    end
+
+    def self.update_factions_stats
+      min_time = self.oldest_day_without_stats
+      today = Time.now.beginning_of_day
+
+      while min_time < today
+        min_time_strted = min_time.strftime('%Y-%m-%d %H:%M:%S')
+
+        portals_stats = {}
+        games_r_portals = {}
+        gaming_platforms_r_portals = {}
+        bazar_districts_r_portals = {}
+        clans_r_portals = {}
+        general = 0
+
+        portal_stats = Karma.karma_points_by_portal(
+            min_time.advance(:days - Karma::UGC_OLD_ENOUGH_FOR_KARMA_DAYS))
+
+        begin
+          User.db_query(
+              "INSERT INTO stats.portals(created_on, portal_id, karma)
+               VALUES ('#{min_time.strftime('%Y-%m-%d')}', NULL, #{general})")
+        rescue Exception
+          User.db_query(
+              "UPDATE stats.portals
+               SET karma = #{general}
+               WHERE created_on = '#{min_time.strftime('%Y-%m-%d')}'
+               AND portal_id IS NULL")
+        end
+
+        User.db_query(
+            "INSERT INTO stats.portals(
+               portal_id,
+               karma,
+               created_on,
+               pageviews,
+               visits,
+               unique_visitors,
+               unique_visitors_reg)
+             SELECT id,
+               0,
+               '#{min_time.strftime('%Y-%m-%d')}',
+               0,
+               0,
+               0,
+               0
+               FROM portals
+               WHERE id NOT IN (
+                 SELECT portal_id
+                 FROM stats.portals
+                 WHERE portal_id IS NOT NULL
+                 AND created_on = '#{min_time.strftime('%Y-%m-%d')}')")
+        # Ponemos a 0 las estadísticas del resto de portales
+        # TODO cuando el campo created_on de portals represente fielmente el
+        # nacimiento de un portal esto se puede optimizar
+
+        Portal.find(:all).each do |portal|
+          portal_id = portal.id
+          karma = portals_stats[portal_id] ? portals_stats[portal_id] : 0
+          dbrstats_visits = User.db_query(
+              "SELECT
+                 COUNT(*) as pageviews,
+                 COUNT(DISTINCT(session_id)) as visits,
+                 COUNT(DISTINCT(visitor_id)) as unique_visitors,
+                 COUNT(DISTINCT(user_id)) as unique_visitors_reg
+               FROM stats.pageviews
+               WHERE created_on::timestamp
+               BETWEEN '#{min_time_strted}'::timestamp
+               AND '#{min_time_strted}'::timestamp + '1 day'::interval - '1 second'::interval
+               AND portal_id = #{portal_id}")[0]
+
+          pageviews = dbrstats_visits['pageviews']
+          visits = dbrstats_visits['visits']
+          unique_visitors = dbrstats_visits['unique_visitors']
+          unique_visitors_reg = dbrstats_visits['unique_visitors_reg']
+
+          User.db_query(
+              "UPDATE stats.portals
+               SET karma = #{karma},
+                 pageviews = #{pageviews},
+                 visits = #{visits},
+                 unique_visitors = #{unique_visitors},
+                 unique_visitors_reg = #{unique_visitors_reg}
+               WHERE created_on = '#{min_time.strftime('%Y-%m-%d')}'
+               AND portal_id = #{portal_id}")
+        end
+        min_time = min_time.advance(:days => 1)
+      end
+    end
+  end
+
   module Portals
     def self.participation(portal, s, e)
-      # devuelve el numero de personas diferentes que han participado en dicho portal (en cuanto a karma) en el intervalo dado
-
+      # devuelve el numero de personas diferentes que han participado en dicho
+      # portal (en cuanto a karma) en el intervalo dado
     end
 
     # Returns Array where each element is an int with the karma generated on
@@ -865,7 +1103,15 @@ group by date_trunc('day', created_on) order by s asc
       pointz.keys.each do |uid|
         v = pointz[uid]
         next unless Clan.find_by_id(uid)
-        User.db_query("INSERT INTO stats.clans_daily_stats(clan_id, popularity, created_on) VALUES(#{uid}, #{v[:popularity]}, '#{cur_day.strftime('%Y-%m-%d')}')")
+        User.db_query(
+            "INSERT INTO stats.clans_daily_stats(
+               clan_id,
+               popularity,
+               created_on)
+             VALUES(
+               #{uid},
+               #{v[:popularity]},
+               '#{cur_day.strftime('%Y-%m-%d')}')")
       end
 
       cur_day = cur_day.advance(:days => 1)
@@ -893,7 +1139,8 @@ group by date_trunc('day', created_on) order by s asc
     end
 
     while cur_day <= max_day
-      # iteramos a través de todos los users que han creado contenidos o comentarios 14 días
+      # iteramos a través de todos los users que han creado contenidos o
+      # comentarios 14 días.
       User.find(:all,
                 :conditions => "id IN (SELECT user_id
                                        FROM contents

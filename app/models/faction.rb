@@ -52,6 +52,36 @@ class Faction < ActiveRecord::Base
   validates_uniqueness_of :code
   validates_uniqueness_of :name
 
+  # Actualiza las estadísticas de karma generado por cada facción y por la web
+  # general.
+  # TODO no calcula karma generado por clanes
+  def self.generate_minicolumns_factions_activity
+    Faction.find(:all).each do |f|
+      f.generate_karma_graph
+    end
+  end
+  FACTION_ACTIVITY_STATS_DAYS = 23
+
+  def generate_karma_graph
+    dbi = User.db_query(
+        "SELECT karma
+           FROM stats.portals
+           WHERE portal_id = (
+             SELECT id
+             FROM portals
+             WHERE code = '#{self.code}')
+           ORDER BY created_on DESC
+           LIMIT #{Faction::FACTION_ACTIVITY_STATS_DAYS}")
+
+    dst_file = "#{Rails.root}/public/storage/minicolumns/factions_activity/#{self.id}.png"
+    if !File.exists?(File.dirname(dst_file))
+      FileUtils.mkdir_p(File.dirname(dst_file))
+    end
+    data_points = dbi.collect {|dbr| dbr['karma'] }
+    data_points = data_points.concat([0] * (days - dbi.size)).reverse.join(',')
+    `/usr/bin/python script/spark.py faction_activity #{data_points} "#{dst_file}"`
+  end
+
   # Checks daily karma for each faction. Factions with bosses that haven't
   # generated karma for some time will receive a warning or a coup d'etat from
   # MrCheater.

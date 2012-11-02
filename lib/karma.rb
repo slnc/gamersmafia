@@ -164,15 +164,20 @@ module Karma
   end
 
   def self.karma_points_of_user_at_date(user, date)
+    self.karma_points_by_portal(date, "user_id = #{user.id}")
+  end
+
+  def self.karma_points_by_portal(date, conditions=nil)
     # devuelve un array
     # [-1][50] 50 puntos en el portal con id -1
     points = {}
+    cond_sql = conditions ? "#{conditions} AND " : ""
     User.db_query("
         SELECT SUM(karma_points) AS karma_points,
           portal_id
         FROM comments
-        WHERE user_id = #{user.id}
-        AND DATE_TRUNC('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
+        WHERE #{cond_sql}
+        DATE_TRUNC('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
         GROUP BY portal_id").each do |dbc|
       points[dbc['portal_id']] = dbc['karma_points'].to_i
     end
@@ -183,7 +188,7 @@ module Karma
           portal_id,
           content_type_id
         FROM contents
-        WHERE user_id = #{user.id}
+        WHERE #{cond_sql}
         AND DATE_TRUNC('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
         GROUP BY portal_id, content_type_id").each do |dbc|
       points[dbc['portal_id']] ||= 0
