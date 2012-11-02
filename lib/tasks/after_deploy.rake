@@ -52,6 +52,7 @@ namespace :gm do
       syntaxhighlighter/shCore
       syntaxhighlighter/shBrushPhp
       syntaxhighlighter/shBrushPython
+      jquery.autocomplete
     )
 
     dst = "#{Rails.root}/public/gm.js"
@@ -59,8 +60,6 @@ namespace :gm do
     js_libraries.each do |library|
       f.write(open("#{Rails.root}/public/javascripts/#{library}.js").read)
     end
-    # TODO(slnc): temporary until we migrate to Pollo Suicida
-    f.write(open("#{Rails.root}/app/assets/javascripts/external/jquery.autocomplete.js").read)
     f.close
 
     # Don't change line-break to any arbitrary value without checking that it
