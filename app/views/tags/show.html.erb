@@ -3,7 +3,7 @@
 
 <%content_main do %>
 <%
-tagged_contents = @tag.tagged_contents.paginate(:per_page => 100, :page => params[:page], :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 100) %>
+tagged_contents = @tag.contents.paginate(:per_page => 100, :page => params[:page], :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 100) %>
 <%mftext("Contenidos tagueados con #{@tag.name}") do %>
 <%=render :partial => '/shared/pager2', :locals => { :collection => tagged_contents, :pos => 'top' } %>
 <table>

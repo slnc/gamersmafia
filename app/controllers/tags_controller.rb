@@ -5,7 +5,7 @@ class TagsController < ApplicationController
   end
 
   def show
-    @tag = Term.find_by_slug!(params[:id])
+    @tag = Term.with_taxonomy("ContentsTag").find_by_slug!(params[:id])
     @title = @tag.name
   end
 end
