@@ -24,7 +24,7 @@ class UserInterest < ActiveRecord::Base
         (SELECT count(*)
          FROM contents_terms
          WHERE term_id = contents_terms.term_id
-         AND created_on >= NOW() - '3 months'::interval) AS total_recent_contents
+         AND created_on >= NOW() - '3 months'::interval) AS recent_contents
       FROM contents_terms
       WHERE content_id IN (
         SELECT content_id
@@ -32,7 +32,7 @@ class UserInterest < ActiveRecord::Base
         WHERE user_id = #{user.id})").each do |dbr|
       term_id = dbr['term_id'].to_i
       if !term_frequencies.include?(term_id)
-        term_totals[term_id] = dbr['total_recent_contents'].to_i
+        term_totals[term_id] = dbr['recent_contents'].to_i
         term_frequencies[term_id] = 0
       end
       term_frequencies[term_id] += 1

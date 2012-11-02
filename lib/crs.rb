@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # This module contains functions and utilities to evaluate different models for
 # contents recommendation.
 #
@@ -38,7 +39,8 @@ module Crs
     User.with_interest("Term", contents_term.term_id).find_each do |user|
       rec = user.contents_recommendations.create(
           :content_id => contents_term.content_id,
-          :sender_user_id => Ias.jabba.id)
+          :sender_user_id => Ias.jabba.id,
+          :comment => "Relacionado con '#{contents_term.term.name}' (interés)")
     end
   end
 
