@@ -15,7 +15,7 @@ class Notification < ActiveRecord::Base
   USERS_SKILL_LOST = 12
   NICK_REFERENCE_IN_COMMENT = 13
   COMMENT_REFERENCE_IN_COMMENT = 14
-
+  AUTOMATIC_INTERESTS_CREATED = 15
 
   # TODO(slnc): add as many notifications from NotificationEmail as possible
   # here.

@@ -239,11 +239,12 @@ module Formatting
       description = commit_lines[5..-1].join("\n")
       out << "<strong>#{title}</strong><br />"
       out << "<span class=\"f_sm\">por <a href=\"/miembros/#{author}\">#{author}</a> | <a href=\"http://github.com/gamersmafia/gamersmafia/commits/#{commit_id}\">commit</a></span>"
-      description = "<p>#{description.gsub(/^[ ]+/, "").strip.gsub("\n\n", "</p>\n<p>")}</p>".gsub("<p></p>", "")
-      description.gsub!(/#([0-9]+)/, "<a href=\"https://github.com/gamersmafia/gamersmafia/issues/\\1\">\\1</a>")
-      if description.empty?
+      if description.strip.empty?
         out << "<br /><br /><br />"
       else
+        description = "<p>#{description.gsub(/^[ ]+/, "").strip.gsub("\n\n", "</p>\n<p>")}</p>".gsub("<p></p>", "")
+        description.gsub!(/#([0-9]+)/, "<a href=\"https://github.com/gamersmafia/gamersmafia/issues/\\1\">\\1</a>")
+        description.gsub!("fixes ", "corrige ").gsub("closes ", "cierra ")
         out << description
         out << "<br />"
       end
