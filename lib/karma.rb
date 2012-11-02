@@ -189,7 +189,7 @@ module Karma
           content_type_id
         FROM contents
         WHERE #{cond_sql}
-        AND DATE_TRUNC('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
+        DATE_TRUNC('day', created_on) = '#{date.strftime('%Y-%m-%d')} 00:00:00'
         GROUP BY portal_id, content_type_id").each do |dbc|
       points[dbc['portal_id']] ||= 0
       points[dbc['portal_id']] += dbc['karma_points'].to_i

@@ -227,4 +227,27 @@ module Formatting
       .gsub('&lt;', '<')
       .gsub('&gt;', '>')
   end
+
+  def self.git_log_to_html(git_log)
+    out = []
+    git_log.gsub(/^commit /, "COMMIT_STARTcommit").split("COMMIT_STARTcommit").each do |commit|
+      next if commit.empty?
+      commit_lines = commit.split("\n")
+      commit_id = commit_lines[0]
+      author = commit_lines[1].split(" ")[1]
+      title = commit_lines[4].strip
+      description = commit_lines[5..-1].join("\n")
+      out << "<strong>#{title}</strong><br />"
+      out << "<span class=\"f_sm\">por <a href=\"/miembros/#{author}\">#{author}</a> | <a href=\"http://github.com/gamersmafia/gamersmafia/commits/#{commit_id}\">commit</a></span>"
+      description = "<p>#{description.gsub(/^[ ]+/, "").strip.gsub("\n\n", "</p>\n<p>")}</p>".gsub("<p></p>", "")
+      description.gsub!(/#([0-9]+)/, "<a href=\"https://github.com/gamersmafia/gamersmafia/issues/\\1\">\\1</a>")
+      if description.empty?
+        out << "<br /><br /><br />"
+      else
+        out << description
+        out << "<br />"
+      end
+    end
+    out.join("\n")
+  end
 end

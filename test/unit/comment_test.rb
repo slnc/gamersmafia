@@ -229,16 +229,24 @@ class CommentTest < ActiveSupport::TestCase
   test "should_properly_update_lastcommented_on_from_author_when_destroying_comments" do
     # caso 1: existen comentarios anteriormente
     test_should_create_comment_if_valid
-    c2 = Comment.new(:user_id => 1, :comment => 'hola mundo2!', :content_id => 1, :host => '127.0.0.1')
+    c2 = Comment.new({
+        :user_id => 1,
+        :comment => 'hola mundo2!',
+        :content_id => 1,
+        :host => '127.0.0.1',
+    })
     assert_equal true, c2.save
     c2.reload
     assert_not_nil c2.mark_as_deleted
     u = User.find(1)
-    last_c = Comment.find(:first, :conditions => 'user_id = 1', :order => 'id DESC')
+    last_c = Comment.find(
+        :first, :conditions => 'user_id = 1', :order => 'id DESC')
     assert_equal u.lastcommented_on.to_i, last_c.created_on.to_i
 
     # caso 2: no existen comentarios anteriormente
-    Comment.find(:all, :conditions => 'user_id = 1').each { |comment| comment.mark_as_deleted }
+    Comment.find(:all, :conditions => 'user_id = 1').each do |comment|
+      comment.mark_as_deleted
+    end
     u.reload
     assert_nil u.lastcommented_on
   end

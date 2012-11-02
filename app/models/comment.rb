@@ -286,7 +286,8 @@ class Comment < ActiveRecord::Base
   def mark_as_deleted
     # update last_commented_on
     u = self.user
-    last_comment = Comment.find_by_user_id(u.id, :conditions => "deleted = 'f'", :order => 'created_on DESC')
+    last_comment = u.comments.karma_eligible.find(
+        :first, :order => 'created_on DESC')
     u.lastcommented_on = last_comment ? last_comment.created_on : nil
     u.save
 
@@ -296,7 +297,8 @@ class Comment < ActiveRecord::Base
     self.content.terms.each do |t|
       t.recalculate_counters
     end
-    self.content.real_content.class.decrement_counter('cache_comments_count', self.content.real_content.id)
+    self.content.real_content.class.decrement_counter(
+        'cache_comments_count', self.content.real_content.id)
 
     self.deleted = true
     self.save
