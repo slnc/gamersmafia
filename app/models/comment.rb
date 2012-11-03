@@ -217,7 +217,12 @@ class Comment < ActiveRecord::Base
 
   def self.find_by_position(position, content)
     return if position < 1
-    content.comments.find(:first, :order => 'created_on', :limit => 1, :offset => position - 1)
+    content.comments.find(
+        :first,
+        :conditions => "deleted = 'f'",
+        :order => 'created_on',
+        :limit => 1,
+        :offset => position - 1)
   end
 
   def update_replies_notifications(old_comment_was)
