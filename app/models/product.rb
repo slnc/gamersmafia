@@ -34,7 +34,7 @@ class Product < ActiveRecord::Base
     method_sym = "cant_be_bought_by_user_reason_#{ActiveSupport::Inflector::underscore(self.cls)}".to_sym
 
     if self.respond_to?(method_sym)
-      send method_sym, u
+      self.send(method_sym, u)
     else
       if CAN_ONLY_HAVE_ONE.include?(self.cls)
        REASON_CAN_ONLY_HAVE_ONE
