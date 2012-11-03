@@ -78,7 +78,8 @@ class Faction < ActiveRecord::Base
       FileUtils.mkdir_p(File.dirname(dst_file))
     end
     data_points = dbi.collect {|dbr| dbr['karma'] }
-    data_points = data_points.concat([0] * (days - dbi.size)).reverse.join(',')
+    data_points = data_points.concat(
+      [0] * (Faction::FACTION_ACTIVITY_STATS_DAYS - dbi.size)).reverse.join(',')
     `/usr/bin/python script/spark.py faction_activity #{data_points} "#{dst_file}"`
   end
 

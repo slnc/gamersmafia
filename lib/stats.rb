@@ -22,9 +22,8 @@ module Stats
       cur_str = first_stat.strftime('%Y-%m-%d')
       next_stat = first_stat.advance(:days => 1)
       sql_created_on = (
-          "created_on::date = '#{first_stat.strftime('%Y-%m-%d')}'::date)")
-      created_clans = Clan.count(
-          :conditions => "created_on::date '#{first_stat.strftime('%Y-%m-%d')}'::date)")
+          "created_on::date = '#{first_stat.strftime('%Y-%m-%d')}'::date")
+      created_clans = Clan.count(:conditions => sql_created_on)
       new_closed_topics = Topic.published.count(
           :conditions => "closed = 't' AND updated_on::date = '#{first_stat.strftime('%Y-%m-%d')}'::date")
       new_clans_portals = ClansPortal.count(
@@ -165,7 +164,7 @@ module Stats
         general = 0
 
         portal_stats = Karma.karma_points_by_portal(
-            min_time.advance(:days - Karma::UGC_OLD_ENOUGH_FOR_KARMA_DAYS))
+            min_time.advance(:days => -Karma::UGC_OLD_ENOUGH_FOR_KARMA_DAYS))
 
         begin
           User.db_query(
