@@ -3,16 +3,10 @@
     <select name="entity_type_class">
       <option value="Term">Tag</option>
     </select>
-    <input type="text" name="entity_id" id="user_interest_name" />
+    <input type="text" name="entity_id" class="autocomplete-me" id="user_interest_name"
+        data-autocomplete-url="/cuenta/cuenta/intereses_autocomplete" />
     <input type="submit" class="button" value="Añadir" />
   </form>
-  <script type="text/javascript">
-  <% if suicidal_enabled? then %>
-    $("#user_interest_name").attr('autocomplete', 'off').autocomplete("/cuenta/cuenta/intereses_autocomplete");
-  <% else %>
-    $j("#user_interest_name").attr('autocomplete', 'off').autocomplete("/cuenta/cuenta/intereses_autocomplete");
-  <% end  %>
-  </script>
   <br />
   <br />
   <p><a href="/cuenta/cuenta/schedule_interest_profile">Añadir temas que Jabba cree que me interesan</a>.</p>

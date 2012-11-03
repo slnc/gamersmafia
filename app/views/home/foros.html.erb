@@ -34,10 +34,10 @@ end %><%# forumz each -%>
 <ul>
 	<script type="text/javascript">
 		function show_tcnav(code) {
-			prev = $j('#'+code).hasClass('hidden');
-			$j('ul.tcnav').addClass('hidden');
+			prev = $('#'+code).hasClass('hidden');
+			$('ul.tcnav').addClass('hidden');
 			if (prev)
-				$j('#'+code).removeClass('hidden');
+				$('#'+code).removeClass('hidden');
 				
 			return false;
 		}
@@ -61,10 +61,10 @@ end %><%# forumz each -%>
 <% if user_is_authed then %>
 <script type="text/javascript">
 function hilightCols() {
-	$j('#my-forums-cont .grid-4 > ul').addClass('highlighted');
+	$('#my-forums-cont .grid-4 > ul').addClass('highlighted');
 }
 function stopHilightCols() {
-	$j('#my-forums-cont .grid-4 > ul').removeClass('highlighted');
+	$('#my-forums-cont .grid-4 > ul').removeClass('highlighted');
 }
 
 var tooSoon = false;
@@ -75,10 +75,10 @@ function ajax_update_backend() {
 	setTimeout(function() { tooSoon = false; }, 250);
 	tooSoon = true;
 	
-	GM.personalization.update_user_forums_order(<%=@user.id%>, $j('#col-forums-1').sortable('serialize').replace(/forum/g, 'buckets1'), $j('#col-forums-2').sortable('serialize').replace(/forum/g, 'buckets2'), $j('#col-forums-3').sortable('serialize').replace(/forum/g, 'buckets3'));
+	Gm.Personalization.update_user_forums_order(<%=@user.id%>, $('#col-forums-1').sortable('serialize').replace(/forum/g, 'buckets1'), $('#col-forums-2').sortable('serialize').replace(/forum/g, 'buckets2'), $('#col-forums-3').sortable('serialize').replace(/forum/g, 'buckets3'));
 }
-$j('#col-forums-1').sortable({connectWith: ['#col-forums-2', '#col-forums-3'], start: hilightCols, stop: stopHilightCols, handle: '.mtitle', update: ajax_update_backend});
-$j('#col-forums-2').sortable({connectWith: ['#col-forums-1', '#col-forums-3'], start: hilightCols, stop: stopHilightCols, handle: '.mtitle', update: ajax_update_backend});
-$j('#col-forums-3').sortable({connectWith: ['#col-forums-1', '#col-forums-2'], start: hilightCols, stop: stopHilightCols, handle: '.mtitle', update: ajax_update_backend});
+$('#col-forums-1').sortable({connectWith: ['#col-forums-2', '#col-forums-3'], start: hilightCols, stop: stopHilightCols, handle: '.mtitle', update: ajax_update_backend});
+$('#col-forums-2').sortable({connectWith: ['#col-forums-1', '#col-forums-3'], start: hilightCols, stop: stopHilightCols, handle: '.mtitle', update: ajax_update_backend});
+$('#col-forums-3').sortable({connectWith: ['#col-forums-1', '#col-forums-2'], start: hilightCols, stop: stopHilightCols, handle: '.mtitle', update: ajax_update_backend});
 </script>
 <% end -%>

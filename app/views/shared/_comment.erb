@@ -98,21 +98,21 @@
 	</div>
 
   <div class="moderate-comments-opener-detail">
-    <div class="moderate-comments-opener hidden" id="moderate-comments-opener<%=comment.id%>" onmouseout="$j('#moderate-comments<%=comment.id%>').hide();" onmouseover="$j('#moderate-comments<%=comment.id%>').show();">Mi valoraci&oacute;n: <strong><span id="moderate-comments-opener-rating<%=comment.id%>">Ninguna</span></strong><br />
+    <div class="moderate-comments-opener hidden" id="moderate-comments-opener<%=comment.id%>" onmouseout="$('#moderate-comments<%=comment.id%>').hide();" onmouseover="$('#moderate-comments<%=comment.id%>').show();">Mi valoraci&oacute;n: <strong><span id="moderate-comments-opener-rating<%=comment.id%>">Ninguna</span></strong><br />
       <div class="hidden moderate-comments" id="moderate-comments<%=comment.id%>">
       <ul class="positive">
       <% CommentsValorationsType.find_positive.each do |cvt| %>
-      <li><a href="" onclick="GM.utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
+      <li><a href="" onclick="Gm.Utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
       <% end -%>
       </ul>
       <ul class="negative">
       <% CommentsValorationsType.find_negative.each do |cvt| %>
-      <li><a href="" onclick="return GM.utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
+      <li><a href="" onclick="return Gm.Utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
       <% end -%>
       </ul>
       <ul class="neutral">
       <% CommentsValorationsType.find_neutral.each do |cvt| %>
-      <li><a href="" onclick="return GM.utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
+      <li><a href="" onclick="return Gm.Utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
       <% end -%>
       </ul>
       </div>

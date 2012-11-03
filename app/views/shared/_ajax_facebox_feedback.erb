@@ -1,6 +1,6 @@
 	var close = "<div class=\"footer\"> \
-                  <a href=\"#\" class=\"close\" onclick=\"jQuery(document).trigger('close.facebox'); return false;\"> \
+                  <a href=\"#\" class=\"close\" onclick=\"$(document).trigger('close.facebox'); return false;\"> \
                     <img src=\"/skins/default/images/facebox/closelabel.gif\" title=\"close\" class=\"close_image\" /> \
                   </a> \
                 </div> ";
-	jQuery.facebox('<div class="facebox-content"><%=flash[:error] ? "<div id=\"error\">#{flash[:error]}</div>" : "<div id=\"notice\">#{flash[:notice]}</div>" %>'+close+'</div>')
+	$.facebox('<div class="facebox-content"><%=flash[:error] ? "<div id=\"error\">#{flash[:error]}</div>" : "<div id=\"notice\">#{flash[:notice]}</div>" %>'+close+'</div>')

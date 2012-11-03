@@ -1,9 +1,21 @@
-var $j = jQuery;
-$j.noConflict();
+Gm.Slnc = function() {
+  return {
+    name: 'Slnc',
 
-var slnc = slnc || {};
+    ContentInit: function() {
+      $('textarea[maxlength]').keyup(function(){
+        var jt = $(this);
+        var max = parseInt(jt.attr('maxlength'));
+        if (jt.val().length > max) {
+          jt.val(jt.val().substr(0, jt.attr('maxlength')));
+        }
+      });
+    },
 
-slnc = {
+    FullPageInit: function() {
+      this.ContentInit();
+    },
+
     /**
      * Añade una string arbitraria a todos los enlaces contenidos en un tag.
      *
@@ -27,8 +39,8 @@ slnc = {
      * Añade onclick handlers a todos los enlaces que tengan la clase slncadt.
      */
     setupAdClicks: function(){
-        $j('a.slncadt').click(function(){
-            slnc.adClick(this)
+        $('a.slncadt').click(function(){
+            Gm.Slnc.adClick(this)
         });
     },
 
@@ -41,7 +53,7 @@ slnc = {
             return;
 
         url = url + '&element_id=' + a_tag.id;
-        $j.ajax({
+        $.ajax({
             url: url,
             async: false
         });
@@ -70,7 +82,7 @@ slnc = {
      * Oculta el elemento con id tal.
      */
     hide: function(id){
-        $j('#' + id).css('visibility', 'hidden').css('display', 'none');
+        $('#' + id).css('visibility', 'hidden').css('display', 'none');
     },
 
     /**
@@ -181,23 +193,14 @@ slnc = {
      * @param {Object} id
      */
     show: function(id){
-        var s = $j('#' + id);
+        var s = $('#' + id);
         s.css('visibility', 'visible');
         if (arguments[1])
             s.css('display', arguments[1]);
         else
             s.css('display', 'block');
     }
-};
+  }; // return
+}();
 
-
-$j(document).ready(function(){
-    $j('textarea[maxlength]').keyup(function(){
-        var jt = $j(this);
-        var max = parseInt(jt.attr('maxlength'));
-        if (jt.val().length > max) {
-            jt.val(jt.val().substr(0, jt.attr('maxlength')));
-        }
-        // $j(this).parent().find('.charsRemaining').html('You have ' + (max - $j(this).val().length) + ' characters remaining');
-    });
-});
+Gm.registerModule(Gm.Slnc);

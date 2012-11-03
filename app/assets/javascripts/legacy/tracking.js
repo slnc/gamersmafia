@@ -6,7 +6,7 @@ var _uacct = ""; // set up the Urchin Account
 var _userv = 1; // service mode (0=local,1=remote,2=both)
 //-- UTM User Settings
 var _ufsc = 1; // set client info flag (1=on|0=off)
-var _udn = slnc.sld_domain(); // (auto|none|domain) set the domain name for cookies
+var _udn = Gm.Slnc.sld_domain(); // (auto|none|domain) set the domain name for cookies
 var _uhash = "off"; // (on|off) unique domain hash for cookies
 var _utimeout = "1800"; // set the inactive session timeout in seconds
 var _ugifpath = "/__utm.gif"; // set the web path to the __utm.gif file
@@ -156,7 +156,7 @@ stmodule.prototype.setupCookies = function(){
     b = dc.indexOf("__stmb=" + _udh);
     c = dc.indexOf("__stmc=" + _udh);
     if (_udn && _udn != "") {
-        _udo = " domain="+ slnc.sld_domain() +";";
+        _udo = " domain="+ Gm.Slnc.sld_domain() +";";
     }
     if (_utimeout && _utimeout != "") {
         x = new Date(_udt.getTime() + (_utimeout * 1000));
@@ -344,7 +344,7 @@ stmodule.prototype.trackPageview = function(user_is_authed, contents){
 	url = "http://" + document.domain + "/site/x?a=1" + this.getEncodedVars();
 	if (user_is_authed && contents.length > 0)
 		url = url + "&cids=" + contents.join(',');
-		$j.get(url, function(data) {
+		$.get(url, function(data) {
 			eval(data);
 		});
 }

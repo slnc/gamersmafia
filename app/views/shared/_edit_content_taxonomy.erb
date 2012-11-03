@@ -54,27 +54,27 @@ end -%>
 <% if (Cms::CATEGORIES_TERMS_CONTENTS + Cms::ROOT_TERMS_CONTENTS).include?(acts_as_content.class.name) then %>
 <script type="text/javascript">
 	hidden = 0;
-	if ($j('#categories_terms_root2').val() == '') {
-		$j('#categories_terms_root2').hide();
+	if ($('#categories_terms_root2').val() == '') {
+		$('#categories_terms_root2').hide();
 		hidden = 1;
 	}
 		
-	if ($j('#categories_terms_root3').val() == '') {
-		$j('#categories_terms_root3').hide();
+	if ($('#categories_terms_root3').val() == '') {
+		$('#categories_terms_root3').hide();
 		hidden = 1;
 	}
 
-slnc.hide('categories_terms_root_more');
+Gm.Slnc.hide('categories_terms_root_more');
 	
 	if (hidden == 1) {	
-		slnc.show('categories_terms_root_more');
+		Gm.Slnc.show('categories_terms_root_more');
 		}
 		
 function show_all_categories_terms_contents() {
-	$j('#categories_terms_root2').show();
-	$j('#categories_terms_root3').show();
+	$('#categories_terms_root2').show();
+	$('#categories_terms_root3').show();
 	
-		slnc.hide('categories_terms_root_more');
+		Gm.Slnc.hide('categories_terms_root_more');
 		return false;
 }
 

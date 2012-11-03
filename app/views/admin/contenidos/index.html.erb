@@ -56,7 +56,7 @@ for @item in collection
 %>
     <tr class="<%=oddclass%>">
     <% if @user.has_skill?("MassModerateContents") && !lock %>
-      <td class="checkbox"><input type="checkbox" name="items[]" onclick="slnc.hilit_row(this, 'selrow');" value="<%=@item.unique_content.id%>" /></td>
+      <td class="checkbox"><input type="checkbox" name="items[]" onclick="Gm.Slnc.hilit_row(this, 'selrow');" value="<%=@item.unique_content.id%>" /></td>
     <% else %>
       <td class="checkbox">&nbsp;</td>
     <% end -%>
@@ -125,7 +125,7 @@ function mass_publish()
 {
   if (confirm('¿PUBLICAR todos los contenidos seleccionados?'))
   {
-    $j('#f1action').val('publish');
+    $('#f1action').val('publish');
     return true;
   }
   else
@@ -136,7 +136,7 @@ function mass_deny()
 {
   if (confirm('¿DENEGAR todos los contenidos seleccionados?'))
   {
-    $j('#f1action').val('deny');
+    $('#f1action').val('deny');
     return true;
   }
   else

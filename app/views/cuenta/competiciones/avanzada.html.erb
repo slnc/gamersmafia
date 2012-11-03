@@ -42,7 +42,7 @@ function set_remaining_players()
 
   for (i = 0; i < l; i ++)
   {
-    player = $j('#player_to_situate_opt'+avail[i])
+    player = $('#player_to_situate_opt'+avail[i])
 
     if (player.css('display') != 'none')
     {
@@ -75,7 +75,7 @@ function set_remaining_players()
       var newopt = sel.appendChild(document.createElement('option'));
       newopt.value = avail[i];
       newopt.appendChild(document.createTextNode(player.html()));
-      $j('#' + player.id).hide();
+      $('#' + player.id).hide();
     }
   }
 }
@@ -91,15 +91,15 @@ function send_player()
   var pl_to_situate_opt = document.getElementById('player_to_situate_opt'+player_to_situate.value);
   newopt.appendChild(document.createTextNode(pl_to_situate_opt.innerHTML));
   player_to_situate.selectedIndex = -1;
-  $j('#' + pl_to_situate_opt.id).hide();
+  $('#' + pl_to_situate_opt.id).hide();
   document.getElementById('player_to_situate_send').disabled = 'disabled';
 }
 
 function update_tournament_starting_point()
 {
   var participants_count = <%=@competition.competitions_participants.count%>;
-  var num_groups = $j('#field_tourney_groups').val;
-  var num_winners_per_group = $j('#field_tourney_winners_per_group').val;
+  var num_groups = $('#field_tourney_groups').val;
+  var num_winners_per_group = $('#field_tourney_winners_per_group').val;
 
   if (!(isNaN(num_groups) || isNaN(num_winners_per_group)))
   {
@@ -131,8 +131,8 @@ function update_tournament_starting_point()
     else
       alert('No soportado');
 
-    $j('#field_tourney_tourney_rounds_desc').html(tourney_starting_desc);
-    $j('#field_tourney_tourney_rounds').val(tourney_rounds);
+    $('#field_tourney_tourney_rounds_desc').html(tourney_starting_desc);
+    $('#field_tourney_tourney_rounds').val(tourney_rounds);
     window.status = 'num_groups = ' + num_groups +' |  num_winners_per_group ' + num_winners_per_group;
   }
   else

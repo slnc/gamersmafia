@@ -162,7 +162,7 @@ class AlertasController < ApplicationController
       sle.mark_as_resolved(@user.id)
     end
 
-    @js_response = "$j('#sle#{sle.id}').fadeOut('normal');"
+    @js_response = "$('#sle#{sle.id}').fadeOut('normal');"
     render :partial => '/shared/silent_ajax_feedback',
            :locals => { :js_response => @js_response }
   end

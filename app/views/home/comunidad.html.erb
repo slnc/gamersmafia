@@ -109,8 +109,8 @@ end
 	mftext('Puede que conozcas a', :grid => 5, :glast => true, :blast => true) do %>
 	<script type="text/javascript">
 		function friend_rec(frid, y) {
-			$j.get('/cuenta/amigos/mark_fr_' + (y == 1 ? 'good' : 'bad')+ '?id=' + frid)
-			$j("#fr" + frid).addClass('hidden');
+			$.get('/cuenta/amigos/mark_fr_' + (y == 1 ? 'good' : 'bad')+ '?id=' + frid)
+			$("#fr" + frid).addClass('hidden');
 			return false;
 		}
 	</script>

@@ -183,7 +183,7 @@ class CommentsController < ApplicationController
     @comment.update_attributes(
         :netiquette_violation => false, :lastedited_by_user_id => @user.id)
 
-    @js_response = "$j('#comment#{@comment.id}').fadeOut('normal');"
+    @js_response = "$('#comment#{@comment.id}').fadeOut('normal');"
     render :partial => '/shared/silent_ajax_feedback',
            :locals => { :js_response => @js_response }
   end

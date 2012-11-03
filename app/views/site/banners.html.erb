@@ -14,7 +14,7 @@ end
   </style>
   <script type="text/javascript">
   	function update_gallery_banners(gallery) {
-		$j.get('/site/get_banners_of_gallery?gallery='+gallery, function(data) { $j('#banners-gallery').html(data); })
+		$.get('/site/get_banners_of_gallery?gallery='+gallery, function(data) { $('#banners-gallery').html(data); })
 	}
 	var prev;
 	
@@ -36,12 +36,12 @@ end
 		html_code = '<a href="http://gamersmafia.com/'+ add_ref_code +'"><img  style="border: none;" src="' + prev.childNodes[0].src +'" /></a>';	
 		
 		if (document.getElementById('code-format-js').checked) {
-			$j('#banner-code').val(js_code);
+			$('#banner-code').val(js_code);
 		}
 		else {
-			$j('#banner-code').val(html_code);
+			$('#banner-code').val(html_code);
 		}
-		$j('#banner-preview').html(html_code);
+		$('#banner-preview').html(html_code);
 	}
   </script>
   <h2>1. Elige galería</h2>
@@ -53,7 +53,7 @@ end
 	
   <h2 style="margin-top: 20px;">2. Elige un banner</h2>
   <div id="banners-gallery">
-  	<script type="text/javascript">update_gallery_banners($j('#available-galleries').val());</script>
+  	<script type="text/javascript">update_gallery_banners($('#available-galleries').val());</script>
   </div>
 
   <h2 style="padding-top: 40px; clear: left;">3. Opciones</h2>

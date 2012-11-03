@@ -545,7 +545,7 @@ class Cuenta::CuentaController < ApplicationController
 
   def borrar_imagen
     counter = @user.del_my_file(params[:filename])
-    @js_response = "$j('#fid#{counter}').fadeOut('normal');"
+    @js_response = "$('#fid#{counter}').fadeOut('normal');"
     render :partial => '/shared/silent_ajax_feedback',
            :locals => { :js_response => @js_response }
   end

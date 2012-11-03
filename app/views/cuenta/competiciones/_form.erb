@@ -42,22 +42,22 @@ function check_maps(val)
 {
   if (!val)
   {
-    $j("#maps").hide();
-    $j("#maps-points").hide();
+    $("#maps").hide();
+    $("#maps-points").hide();
   }
   else
   {
-  	$j("#maps").show();
-	$j("#maps-points").show();
+  	$("#maps").show();
+	$("#maps-points").show();
   }
 }
 
 function check_participants(val)
 {
   if (val == 'false')
-    $j('#invitational-participants').hide();
+    $('#invitational-participants').hide();
   else
-    $j('#invitational-participants').show();
+    $('#invitational-participants').show();
 }
 </script>
 <br />
@@ -104,7 +104,7 @@ opts = @competition.competitions_types_options %>
       <option value="4" selected="selected">Octavos</option>
       <option value="5">Dieciseisavos</option>
     </select>
-    <script type="text/javascript"> $j('#tourney_rounds').val('<%=opts && opts[:tourney_rounds] ? opts[:tourney_rounds] : ''%>)';</script>
+    <script type="text/javascript"> $('#tourney_rounds').val('<%=opts && opts[:tourney_rounds] ? opts[:tourney_rounds] : ''%>)';</script>
 <% end -%>
 
 <% end -%>
@@ -196,17 +196,17 @@ faction = game.faction
 function check_timetable_mode(val)
 {
   if (val == '1')
-    $j('#timetable-options').show();
+    $('#timetable-options').show();
   else
-    $j('#timetable-options').hide();
+    $('#timetable-options').hide();
 }
 
 function check_randommap_selection_mode(val)
 {
   if (val == 'true')
-    $j('#random-map-selection-mode').show();
+    $('#random-map-selection-mode').show();
   else
-    $j('#random-map-selection-mode').hide();
+    $('#random-map-selection-mode').hide();
 }
 check_randommap_selection_mode('<%=@competition.forced_maps.to_s%>');
 </script>
@@ -287,7 +287,7 @@ Máximo de partidas al día: <input type="text" name="competition[timetable_opti
 <br />
 </div>
 <script type="text/javascript">
-  check_timetable_mode($j('#timetable_for_matches').val);
+  check_timetable_mode($('#timetable_for_matches').val);
 </script>
 <% end -%>
 
@@ -300,7 +300,7 @@ Máximo de partidas al día: <input type="text" name="competition[timetable_opti
 <label id="maps-points"><input type="radio" name="competition[scoring_mode]" value="<%=Competition::SCORING_SIMPLE_PER_MAP%>" <%= @competition.scoring_mode == Competition::SCORING_SIMPLE_PER_MAP ? 'checked="checked"' : '' %> /> Por número de mapas ganados <span class="infoinline">Require indicar un "Número de mapas por partida"</label></p>
 <% end -%>
 <% end -%>
-<%=(@competition.default_maps_per_match.nil? or @competition.default_maps_per_match == 0) ? '<script type="text/javascript">check_maps($j("#maps-selector").val);</script>' : ''%>
+<%=(@competition.default_maps_per_match.nil? or @competition.default_maps_per_match == 0) ? '<script type="text/javascript">check_maps($("#maps-selector").val);</script>' : ''%>
 <% end -%>
 <!--[eoform:competition]-->
 

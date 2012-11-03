@@ -80,10 +80,10 @@ GamesVersion.find(:all, :conditions => ['game_id = ?', g_id]).each do |gm| %>
 </p>
 
 <script type="text/javascript">
-$j('#demo_game_id').blur(function() {
-	$j.ajax({data:'game_id=' + $j('#demo_game_id').val(), success:function(request){ $j('#games_mode_id').html(request);}, type:'post', url:'/demos/get_games_modes'});
-	$j.ajax({data:'game_id=' + $j('#demo_game_id').val(), success:function(request){ $j('#games_version_id').html(request);}, type:'post', url:'/demos/get_games_versions'});
-	$j.ajax({data:'game_id=' + $j('#demo_game_id').val(), success:function(request){ $j('#games_map_id').html(request);}, type:'post', url:'/demos/get_games_maps'});
+$('#demo_game_id').blur(function() {
+	$.ajax({data:'game_id=' + $('#demo_game_id').val(), success:function(request){ $('#games_mode_id').html(request);}, type:'post', url:'/demos/get_games_modes'});
+	$.ajax({data:'game_id=' + $('#demo_game_id').val(), success:function(request){ $('#games_version_id').html(request);}, type:'post', url:'/demos/get_games_versions'});
+	$.ajax({data:'game_id=' + $('#demo_game_id').val(), success:function(request){ $('#games_map_id').html(request);}, type:'post', url:'/demos/get_games_maps'});
 	})
 </script>
 

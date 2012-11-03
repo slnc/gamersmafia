@@ -2,16 +2,16 @@
   <script language="JavaScript">
   function select_image(img_src)
   {
-    var im = $j('#selectedImg');
+    var im = $('#selectedImg');
     im.attr('src', img_src);
-    $j('#must-select').addClass('hidden');
-    $j('#insertit').removeClass('hidden');
+    $('#must-select').addClass('hidden');
+    $('#insertit').removeClass('hidden');
     return false;
   }
 
   function insert_image()
   {
-    var im = $j('#selectedImg');
+    var im = $('#selectedImg');
     var img_src = im.attr('src');
 
     if (img_src == '')

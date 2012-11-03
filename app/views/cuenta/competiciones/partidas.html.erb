@@ -25,7 +25,7 @@
   <form id="superform" method="post" action="/cuenta/competiciones/partidas">
   <table>
     <tr class="<%=oddclass%>">
-      <th class="checkbox"><input type="checkbox" onclick="slnc.checkboxSwitchGroup(this);" /></th>
+      <th class="checkbox"><input type="checkbox" onclick="Gm.Slnc.checkboxSwitchGroup(this);" /></th>
       <th class="w125">Participante A</th>
       <th class="w125">Participante B</th>
       <th>Resultado<%=@competition.default_maps_per_match ? ' / Mapas' : ''%></th>
@@ -35,7 +35,7 @@
 
     <% for match in @mmatches %>
     <tr class="<%=oddclass%>">
-      <td><input type="checkbox" onclick="slnc.hilit_row(this, 'selrow');" name="competitions_matches[]" value="<%=match.id%>" /></td>
+      <td><input type="checkbox" onclick="Gm.Slnc.hilit_row(this, 'selrow');" name="competitions_matches[]" value="<%=match.id%>" /></td>
       <td><% if match.participant1_id then%><a href="/competiciones/participante/<%=match.participant1_id%>"><%=match.participant1.name%></a><% end -%></td>
       <td><% if match.participant2_id then%><a href="/competiciones/participante/<%=match.participant2_id%>"><%=match.participant2.name%></a><% end -%></td>
       <td><% case match.result
@@ -61,7 +61,7 @@
 
   <% mftext('Modificar fecha de partidas seleccionadas') do %>
   Nueva fecha de juego: <%=datetime_select 'matches', 'play_on'  %>
-  <input type="submit" class="button" value="Guardar nueva fecha" onclick="GM.utils.form_sym_action('superform', 'partidas', 'update_matches_play_on');" />
+  <input type="submit" class="button" value="Guardar nueva fecha" onclick="Gm.Utils.form_sym_action('superform', 'partidas', 'update_matches_play_on');" />
   <% end -%>
 
   <% mftext('Modificar mapas de partidas seleccionadas') do %>
@@ -74,7 +74,7 @@
 <%
    end
    %>
-  <input type="submit" class="button" value="Guardar nuevos mapas" onclick="GM.utils.form_sym_action('superform', 'partidas', 'update_matches_games_maps');" />
+  <input type="submit" class="button" value="Guardar nuevos mapas" onclick="Gm.Utils.form_sym_action('superform', 'partidas', 'update_matches_games_maps');" />
   <%
 end
 

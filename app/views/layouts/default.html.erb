@@ -76,23 +76,23 @@ end %>
     <% if user_is_authed %>
 		<div id="mgintellibar-links"><ul>
 			<% if controller.can_set_as_default_home then %>
-				<li><a href="" title="Ir a esta página directamente al entrar en gamersmafia.com" onclick="return GM.personalization.set_default_portal(<%=user_is_authed ? 'true' : 'false'%>, '<%=controller.action_name%>');">Hacer <%=controller.action_name == 'index' ? 'portada' : controller.action_name%> mi página por defecto</a></li>
+				<li><a href="" title="Ir a esta página directamente al entrar en gamersmafia.com" onclick="return Gm.Personalization.set_default_portal(<%=user_is_authed ? 'true' : 'false'%>, '<%=controller.action_name%>');">Hacer <%=controller.action_name == 'index' ? 'portada' : controller.action_name%> mi página por defecto</a></li>
 			<% end -%>
 
 			<% if can_add_as_quicklink? then %>
-				<li id="add-to-quicklinks"><a href="" title="Añadir a accesos directos" onclick="return GM.personalization.add_quicklink('<%=controller.portal.code%>', 'http://<%=controller.portal.code%>.<%=App.domain%>');">Añadir a quicklinks</a></li>
+				<li id="add-to-quicklinks"><a href="" title="Añadir a accesos directos" onclick="return Gm.Personalization.add_quicklink('<%=controller.portal.code%>', 'http://<%=controller.portal.code%>.<%=App.domain%>');">Añadir a quicklinks</a></li>
 			<% end -%>
 
 			<% if can_del_quicklink? then %>
-				<li id="del-from-quicklinks"><a href="" title="Quitar de accesos directos" onclick="return GM.personalization.del_quicklink('<%=controller.portal.code%>');">Quitar de quicklinks</a></li>
+				<li id="del-from-quicklinks"><a href="" title="Quitar de accesos directos" onclick="return Gm.Personalization.del_quicklink('<%=controller.portal.code%>');">Quitar de quicklinks</a></li>
 			<% end -%>
 
 			<% if user_is_authed && controller.controller_name == 'foros' && @forum then %>
-				<li id="add-to-user-forums" class="<%='hidden' unless can_add_as_user_forum?%>"><a href="" title="Añadir a mis foros" onclick="return GM.personalization.add_user_forum('<%=@forum.id%>', '<%=gmurl(@forum, :taxonomy => 'TopicsCategory')%>');">Añadir a mis foros</a></li>
+				<li id="add-to-user-forums" class="<%='hidden' unless can_add_as_user_forum?%>"><a href="" title="Añadir a mis foros" onclick="return Gm.Personalization.add_user_forum('<%=@forum.id%>', '<%=gmurl(@forum, :taxonomy => 'TopicsCategory')%>');">Añadir a mis foros</a></li>
 			<% end -%>
 
 			<% if user_is_authed && controller.controller_name == 'foros' && @forum then %>
-				<li id="del-from-user-forums" class="<%='hidden' unless can_del_user_forum?%>"><a href="" title="Quitar de mis foros" onclick="return GM.personalization.del_user_forum('<%=@forum.id%>');">Quitar de mis foros</a></li>
+				<li id="del-from-user-forums" class="<%='hidden' unless can_del_user_forum?%>"><a href="" title="Quitar de mis foros" onclick="return Gm.Personalization.del_user_forum('<%=@forum.id%>');">Quitar de mis foros</a></li>
 			<% end -%>
 
 			</ul>
@@ -171,7 +171,7 @@ if user_is_authed && @user.is_faction_leader? && @user.faction_id then %>
 <% end -%>
 <script type="text/javascript">
 	function open_online_friends(){
-		$j('#mgfriends-online-table').toggleClass('hidden');
+		$('#mgfriends-online-table').toggleClass('hidden');
 		return false;
 	}
 </script>
@@ -237,12 +237,6 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 </div>
 </div>
 <%=render :partial => '/layouts/footer' %>
-</div>
-
-<div id="suicidal_chicken_switcher" class="hidden">
-  <div>
-    <a href="/site/suicidal">Versión Pollo Suicida</a>
-  </div>
 </div>
 
 <script type="text/javascript">cfgPage(<%=user_is_authed%>, contents, '<%=controller.controller_name%>', '<%=controller.action_name%>', '<%=params[:id]%>'<%= params['_xnvi'] ? ", '#{params['_xnvi']}'" : ', undefined'%><%= params['_xab'].size > 0 ? ", '#{CGI::escape(params['_xab'].to_json)}'" : ', undefined'%><%= controller._xad.size > 0 ? ", '#{CGI::escape(controller._xad.to_json)}'" : ', undefined'%>);</script>

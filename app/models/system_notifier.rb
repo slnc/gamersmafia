@@ -3,7 +3,7 @@ require 'pathname'
 class SystemNotifier < ActionMailer::Base
   SYSTEM_EMAIL_ADDRESS = %{"GM Error Notifier" <httpd@gamersmafia.com>}
   SYSTEM_EMAIL_ADDRESS_CRITICAL = %{"GM Critical Condition" <httpd@gamersmafia.com>}
-  EXCEPTION_RECIPIENTS = %w{rails-gm@slnc.net}
+  EXCEPTION_RECIPIENTS = %w{rails-gm@slnc.me}
 
   def exception_notification(controller, request,
                              exception, sent_on=Time.now)

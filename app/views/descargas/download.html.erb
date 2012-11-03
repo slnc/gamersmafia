@@ -48,18 +48,18 @@ function downloadit()
 }
 function updatecounter()
 {
-  prev = Number($j('#counter').html());
+  prev = Number($('#counter').html());
 
   if (prev != 0)
   {
-    $j('#counter').html(Number($j('#counter').html()) - 1);
+    $('#counter').html(Number($('#counter').html()) - 1);
     setTimeout(updatecounter, 1000);
   }
 }
 setTimeout(downloadit, 10000);
 setTimeout(updatecounter, 1000);
 </script>
-<p>La descarga comenzará automáticamente dentro de <strong id="counter">10</strong> segundos.</p><p><a onclick="$j('#counter').html(0);" href="<%=fc_path(@download.file)%>">Si quieres descargar sin esperar pincha aquí.</a></p>
+<p>La descarga comenzará automáticamente dentro de <strong id="counter">10</strong> segundos.</p><p><a onclick="$('#counter').html(0);" href="<%=fc_path(@download.file)%>">Si quieres descargar sin esperar pincha aquí.</a></p>
 <% if @download.download_mirrors.size > 0 then %>
 <br />
 <p>Si te da problemas nuestro enlace también puedes descargarlo desde estos mirrors externos:</p>

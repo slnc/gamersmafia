@@ -49,8 +49,8 @@
 <script type="text/javascript">
 //<![CDATA[
 setInterval(function(){
-	$j.get('/site/update_chatlines?time='+cur_time_chat, function(data) {
-		$j('#bigchat').html(data);
+	$.get('/site/update_chatlines?time='+cur_time_chat, function(data) {
+		$('#bigchat').html(data);
 	})
 }, 15000);
 //]]>
@@ -60,7 +60,7 @@ setInterval(function(){
 <% if user_is_authed then %>
 <script type="text/javascript">
 function send_chatline() {
-	$j.get('/site/new_chatline?time='+cur_time_chat, {line: $j('#newline').val()}, function(data) { $j('#bigchat').html(data); });
+	$.get('/site/new_chatline?time='+cur_time_chat, {line: $('#newline').val()}, function(data) { $('#bigchat').html(data); });
 	return false;
 }
 </script>

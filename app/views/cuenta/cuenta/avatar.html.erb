@@ -40,11 +40,11 @@ function select_new_avatar(imgNode, realId)
   if (!imgNode)
     return;
 
-  var new_avatar = $j('#change_avatar_to');
-  var new_avatar_id = $j('#new_avatar_id');
+  var new_avatar = $('#change_avatar_to');
+  var new_avatar_id = $('#new_avatar_id');
 
   if (new_avatar_id.val() != '')
-    $j('#avatar'+new_avatar_id.val()).removeClass('selected');
+    $('#avatar'+new_avatar_id.val()).removeClass('selected');
 
   new_avatar.attr('src', imgNode.attr('src'));
 
@@ -59,7 +59,7 @@ function select_new_avatar(imgNode, realId)
   <tr>
     <td>
 <% @user.avatars.find(:all, :conditions => 'path is NOT NULL AND path <> \'\'', :order => 'id ASC').each do |avatar| %>
-<div class="choose-avatar"><img id="avatar<%=avatar.id%>" onclick="select_new_avatar($j(this), <%=avatar.id%>);" class="avatar" src="/<%=avatar.path%>" /></div>
+<div class="choose-avatar"><img id="avatar<%=avatar.id%>" onclick="select_new_avatar($(this), <%=avatar.id%>);" class="avatar" src="/<%=avatar.path%>" /></div>
 <% end -%>
 </td>
 </tr>
@@ -79,7 +79,7 @@ if clans_ids.size > 0 then
   <tr>
     <td>
 <% clans_avatars.each do |avatar| %>
-<div class="choose-avatar"><img id="avatar<%=avatar.id%>" onclick="select_new_avatar($j(this), <%=avatar.id%>);" class="avatar" src="/<%=avatar.path%>" /></div>
+<div class="choose-avatar"><img id="avatar<%=avatar.id%>" onclick="select_new_avatar($(this), <%=avatar.id%>);" class="avatar" src="/<%=avatar.path%>" /></div>
 <% end -%>
 </td>
 </tr>
@@ -115,14 +115,14 @@ for avatar in @avatars
   <td class="avatar-level"><h2><strong>Nivel <%=previous_level%></strong></h2></td>
   <td>
 <%  end %>
-<div class="choose-avatar"><img id="avatar<%=avatar.id%>" onclick="select_new_avatar($j(this), <%=avatar.id%>);" class="avatar" src="/<%=avatar.path%>" /></div>
+<div class="choose-avatar"><img id="avatar<%=avatar.id%>" onclick="select_new_avatar($(this), <%=avatar.id%>);" class="avatar" src="/<%=avatar.path%>" /></div>
 <% end -%>
 </table>
 <% end -%>
 </p>
 <% if @user.avatar_id then %>
 <script type="text/javascript">
-select_new_avatar($j('#avatar<%=@user.avatar_id%>'), <%=@user.avatar_id%>);
+select_new_avatar($('#avatar<%=@user.avatar_id%>'), <%=@user.avatar_id%>);
 </script>
 <% end -%>
 <% end -%>

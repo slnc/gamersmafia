@@ -7,7 +7,7 @@
     function feedback_scan(feedback,div_id)
     {
         var code=feedback.split('+=');
-		$j('#' + div_id).html(code[1]);
+		$('#' + div_id).html(code[1]);
         if (code[0]=='111')
             return class_toggle('good',div_id);
         else
@@ -18,11 +18,11 @@
     {
 
         if (type=='bad'){
-            $j('#' + div_id).removeClass('good').addClass('bad').css('display', 'inline');
+            $('#' + div_id).removeClass('good').addClass('bad').css('display', 'inline');
             return false;
         }
         else{
-            $j('#' + div_id).removeClass('bad').addClass('good').css('display', 'inline');
+            $('#' + div_id).removeClass('bad').addClass('good').css('display', 'inline');
             return true;
         }
     }
@@ -33,23 +33,23 @@
             action='blur';
         }
 
-        var login = $j('#signup_user_login').val();
+        var login = $('#signup_user_login').val();
 		if (login == '')
 			return;
 
         if (login.trim().length < 3 || login.trim().length > 25)
         {
-            $j('#username_msg').html('Mínimo 3 caracteres, máximo 25 caracteres');
+            $('#username_msg').html('Mínimo 3 caracteres, máximo 25 caracteres');
             user_stat = class_toggle('bad','username_msg');
         }
         else if (!login.match(/^[-a-zA-Z0-9_~.\[\]\(\)\:=|*^]{3,18}$/))
         {
-            $j('#username_msg').html('El nombre de usuario contiene caracteres inválidos.');
+            $('#username_msg').html('El nombre de usuario contiene caracteres inválidos.');
             user_stat = class_toggle('bad','username_msg');
         }
         else if(action !="submit")
         {
-			$j.get('/cuenta/cuenta/username_check', {login: login}, function(feedback) {
+			$.get('/cuenta/cuenta/username_check', {login: login}, function(feedback) {
             	user_stat=feedback_scan(feedback,'username_msg');});
         }
 
@@ -58,23 +58,23 @@
 
 	    function password_checks()
     {
-        var password = $j('#signup_user_password').val();
+        var password = $('#signup_user_password').val();
 		if (password == '')
 			return;
 
         if (password.length <4)
         {
-            $j('#password_msg').html('Mínimo 4 caracteres, máximo lo que dé de si tu memoria');
+            $('#password_msg').html('Mínimo 4 caracteres, máximo lo que dé de si tu memoria');
             user_stat = class_toggle('bad','password_msg');
         }
         else if (password.trim().length ==0)
         {
-            $j('#password_msg').html('contraseña inválida');
+            $('#password_msg').html('contraseña inválida');
             return class_toggle('bad','password_msg');
         }
         else
         {
-            $j('#password_msg').addClass('hidden');
+            $('#password_msg').addClass('hidden');
             return true;
         }
     }
@@ -85,16 +85,16 @@
         {
             action='blur';
         }
-        var email = $j('#signup_user_email').val();
+        var email = $('#signup_user_email').val();
 		if (email == '')
 			return;
        if (!email.match(/^([a-zA-Z0-9+_.]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/)){
-            $j('#email_msg').html('Email inválido');
+            $('#email_msg').html('Email inválido');
             email_stat = class_toggle('bad','email_msg');
             }
        else if(action !="submit")
         {
-            $j.get('/cuenta/cuenta/email_check', {email: email}, function(feedback) {
+            $.get('/cuenta/cuenta/email_check', {email: email}, function(feedback) {
             	email_stat=feedback_scan(feedback,'email_msg');});
         }
     }
@@ -127,7 +127,7 @@
 </tr>
 
 <tr>
-  <td colspan="2"  class="infoinline" style="padding-top: 10px; padding-bottom: 20px;"><a href="#" onclick="$j('#optionalfields').removeClass('hidden'); return false;">Campos opcionales</a>
+  <td colspan="2"  class="infoinline" style="padding-top: 10px; padding-bottom: 20px;"><a href="#" onclick="$('#optionalfields').removeClass('hidden'); return false;">Campos opcionales</a>
     <table class="<%='hidden' unless params[:referer]%>" id="optionalfields">
       <tr>
     	<td>Referido por el usuario</td>
@@ -137,10 +137,10 @@
   </td>
 </tr>
 <script type="text/javascript">
-	if ($j('#signup_user_login').val() != "")
+	if ($('#signup_user_login').val() != "")
 		username_checks();
 
-	if ($j('#signup_user_email').val() != "")
+	if ($('#signup_user_email').val() != "")
 		email_checks();
 </script>
 
@@ -172,10 +172,10 @@
 <% end -%>
 
 <script type="text/javascript">
-$j(document).ready(function () {
-                $j('#csupport').addClass('hidden');
-                $j('#cleft').addClass('hidden');
-                //$j('#ccontent').addClass('maximized');
-                //$j('#cmain').addClass('maximized');
+$(document).ready(function () {
+                $('#csupport').addClass('hidden');
+                $('#cleft').addClass('hidden');
+                //$('#ccontent').addClass('maximized');
+                //$('#cmain').addClass('maximized');
 });
 </script>
