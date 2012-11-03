@@ -244,7 +244,8 @@ module Formatting
       else
         description = "<p>#{description.gsub(/^[ ]+/, "").strip.gsub("\n\n", "</p>\n<p>")}</p>".gsub("<p></p>", "")
         description.gsub!(/#([0-9]+)/, "<a href=\"https://github.com/gamersmafia/gamersmafia/issues/\\1\">\\1</a>")
-        description.gsub!("fixes ", "corrige ").gsub("closes ", "cierra ")
+        description.gsub!("fixes ", "corrige ")
+        description.gsub!("closes ", "cierra ")
         out << description
         out << "<br />"
       end

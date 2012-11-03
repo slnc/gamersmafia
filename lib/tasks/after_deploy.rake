@@ -17,7 +17,6 @@ namespace :gm do
 
   private
   def publish_news(version_full, version)
-    puts "version: #{version_full}"
     title = "Gamersmafia actualizada a la versión #{version}"
     if News.published.find_by_title(title)
       Rails.logger.warn("Found news for #{version}. Skipping news creation..")
@@ -32,6 +31,9 @@ namespace :gm do
       start_rev = "HEAD~20"
     else
       start_rev = last.title.split(" ")[-1]
+    end
+    if /^[0-9]+$/ =~ start_rev
+      start_rev = "release-#{start_rev[0..-3]}-#{start_rev[-2..-1]}"
     end
 
     interval = "#{start_rev}..#{AppR.ondisk_git_version_full}"
