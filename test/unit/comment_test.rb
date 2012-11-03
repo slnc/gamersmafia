@@ -31,7 +31,7 @@ class CommentTest < ActiveSupport::TestCase
   test "expand_comment_references" do
     c1 = create_a_comment(:comment => "hola guapo")
     c2 = create_a_comment(:comment => "##{c1.position_in_content} no, eres feo")
-    assert_equal "[fullquote=2]hola guapo[/fullquote] no, eres feo", Formatting.comment_with_expanded_short_replies(c2.comment, c2)
+    assert_equal "[fullquote=2][b]#2 [~panzer][/b]:\n\nhola guapo[/fullquote] no, eres feo", Formatting.comment_with_expanded_short_replies(c2.comment, c2)
   end
 
   test "expand_comment_references with multiple saves" do
@@ -39,14 +39,14 @@ class CommentTest < ActiveSupport::TestCase
     c2 = create_a_comment(:comment => "##{c1.position_in_content} no, eres feo")
     c2.update_attribute(:comment, "#{c2.comment} y más!")
     Formatting.comment_with_expanded_short_replies(c2.comment, c2)
-    assert_equal "[fullquote=2]hola guapo[/fullquote] no, eres feo y más!", Formatting.comment_with_expanded_short_replies(c2.comment, c2)
+    assert_equal "[fullquote=2][b]#2 [~panzer][/b]:\n\nhola guapo[/fullquote] no, eres feo y más!", Formatting.comment_with_expanded_short_replies(c2.comment, c2)
   end
 
   test "dont_expand_comment_references within quotes" do
     c1 = create_a_comment(:comment => "hola guapo")
     c2 = create_a_comment(:comment => "##{c1.position_in_content} no, eres feo")
     c3 = create_a_comment(:comment => "##{c2.position_in_content} holaaa")
-    assert_equal "[fullquote=3]#2 no, eres feo[/fullquote] holaaa", Formatting.comment_with_expanded_short_replies(c3.comment, c3)
+    assert_equal "[fullquote=3][b]#3 [~panzer][/b]:\n\n#2 no, eres feo[/fullquote] holaaa", Formatting.comment_with_expanded_short_replies(c3.comment, c3)
   end
 
   test "moderate should work" do

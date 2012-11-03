@@ -273,3 +273,9 @@
       parent_id: 4
       taxonomy: DownloadsCategory
 
+- contentstag1:
+      id: 37
+      name: Aguacate
+      slug: aguacate
+      taxonomy: ContentsTag
+

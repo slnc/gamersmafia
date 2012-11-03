@@ -11,9 +11,6 @@
 <%= analytics_code if App.enable_google_analytics? %>
 <% if controller.portal.code == 'diablo' then %>
 <script src="http://eu.battle.net/d3/static/js/tooltips.js"></script>
-<% elsif controller.portal.code == 'loleu' then %>
-<script type="text/javascript" src="http://pseudobit.net/loltip/item_es.php" language="javascript" charset="utf-8"></script>
-<link rel="stylesheet" type="text/css" href="http://pseudobit.net/loltip/style.css" />
 <% end -%>
 </head>
 <% show_ab_test("show_full_menu", 0, opts={:add_xab_to_links => true}) do

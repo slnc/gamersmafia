@@ -1,4 +1,15 @@
 <%generic_support do %>
+
+
+<% cache("/common/tags/top_tags_by_interest/#{Time.now.to_i/86400}") do %>
+  <% mftable("Los tags con más seguidores", top_tags_by_interest) do |tuple| %>
+    <tr>
+      <td><span class="members-count"><%=tuple[0]%></span></td>
+      <td><a href="<%=tag_url(tuple[1])%>"><%=tuple[1].name%></a></td>
+    </tr>
+  <% end -%>
+<% end -%>
+
 <% mftext("Los que más taguean") do %>
 <% cache("/common/top_taggers/#{Time.now.strftime('%Y%m%d')}") do %>
 <table id="most_active_users">
@@ -26,7 +37,7 @@
 <% content_main do %>
 <% cache("/common/tags/index/#{Time.now.strftime('%Y%m%d')}") do %>
 <%mftext('Tags') do%>
-<% chunks = Term.with_taxonomy('ContentsTag').find(:all, :conditions => 'contents_count >= 5', :order => 'name').chunk(3) %>	
+<% chunks = Term.with_taxonomy('ContentsTag').find(:all, :conditions => 'contents_count >= 5', :order => 'name').chunk(3) %>
 <% chunks.each do |chunk| %>
 <div style="width: 31%; float: left; margin-right: 10px;">
 	<table>
