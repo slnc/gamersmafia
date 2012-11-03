@@ -104,7 +104,18 @@ module ApplicationHelper
   end
 
   def pluralize_on_count(word, count)
-    (count == 1) ? word : "#{word}s"
+    if (count == 1)
+      word
+    else
+      if /\w de \w/ =~ word
+        split_word = word.split(" ")
+        "#{pluralize_on_count(split_word[0], count)} de #{split_word[2]}"
+      elsif !%w(a e i o u w g c).include?(word[-1])
+        "#{word}es"
+      else
+        "#{word}s"
+      end
+    end
   end
 
   def gm_translate(word)

@@ -192,6 +192,7 @@ class MiembrosControllerTest < ActionController::TestCase
     get :estadisticas, :login => 'superadmin'
     assert_response :success
     assert_template 'estadisticas'
+    assert @response.body =~ /Eventos.*361/
   end
 
   test "should_show_estadisticas_with_recent_user" do

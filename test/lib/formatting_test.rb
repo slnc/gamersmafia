@@ -9,7 +9,8 @@ class FormattingTest < ActiveSupport::TestCase
     c2 = create_a_comment(
         :comment => "##{c1.position_in_content} no, eres feo [quote]wiiii[/quote]")
     assert_equal(
-        "[fullquote=2]hola guapo\n[img]http://www.example.com/foo.png[/img][/fullquote] no, eres feo [quote]wiiii[/quote]",
+        "[fullquote=2]hola guapo\n[img]http://www.example.com/foo.png[/img]" +
+        "[/fullquote] no, eres feo [quote]wiiii[/quote]",
         Formatting.comment_with_expanded_short_replies(c2.comment, c2))
   end
 
@@ -19,24 +20,33 @@ class FormattingTest < ActiveSupport::TestCase
     c2 = create_a_comment(
         :comment => "comment2 [quote]Cirano de Bergerac[/quote]")
     c3 = create_a_comment(
-        :comment => "##{c1.position_in_content} no, eres feo [quote]wiiii[/quote]\n##{c2.position_in_content} ")
+        :comment => (
+            "##{c1.position_in_content} no, eres feo [quote]wiiii[/quote]\n#"+
+            "#{c2.position_in_content} "))
     assert_equal(
-        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"2\">#2</abbr> no, eres feo <blockquote><p>wiiii</p></blockquote>\n" +
-        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"3\">#3</abbr>\n" +
-        "<div class=\"hidden fullquote-comment fullquote-comment2\"><p>hola guapo</p>\n" +
-        "<p><img src=\"http://www.example.com/foo.png\" /></p></div>\n" +
-        "<div class=\"hidden fullquote-comment fullquote-comment3\"><p>comment2 </p></div>",
-        Formatting.replace_bbcodes(
+        "<p><abbr class=\"fullquote-opener\" title=\"Ver comentario original" +
+        "\" data-quote=\"2\">#2</abbr> no, eres feo <blockquote><p>wiiii</p>" +
+        "</blockquote></p>\n<p><abbr class=\"fullquote-opener\" title=\"Ver" +
+        " comentario original\" data-quote=\"3\">#3</abbr> </p>\n<div class=" +
+        "\"hidden fullquote-comment fullquote-comment2\"><p>hola guapo</p>\n" +
+        "<p><img src=\"http://www.example.com/foo.png\" /></p></div>\n<div" +
+        " class=\"hidden fullquote-comment fullquote-comment3\"><p>comment2" +
+        " (quote)</p></div>",
+        Formatting.format_bbcode(
             Formatting.comment_with_expanded_short_replies(c3.comment, c3)))
   end
 
   test "format_bbcode with fullquotes and other bbcodes inside" do
     c0 = create_a_comment
     c1 = create_a_comment(:comment => "##{c0.position_in_content} hellou")
-    c2 = create_a_comment(
-        :comment => "##{c1.position_in_content} ##{c1.position_in_content} obnubilado")
+    pos = c1.position_in_content
+    c2 = create_a_comment(:comment => "##{pos} ##{pos} obnubilado")
     assert_equal(
-        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"3\">#3</abbr> <abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"3\">#3</abbr> obnubilado\n<div class=\"hidden fullquote-comment fullquote-comment3\"><p>#2 hellou</p></div>",
+        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\"" +
+        " data-quote=\"3\">#3</abbr> <abbr class=\"fullquote-opener\"" +
+        " title=\"Ver comentario original\" data-quote=\"3\">#3</abbr>" +
+        " obnubilado\n<div class=\"hidden fullquote-comment fullquote-"+
+        "comment3\"><p>#2 hellou</p></div>",
         Formatting.replace_bbcodes(
             Formatting.comment_with_expanded_short_replies(c2.comment, c2)))
   end
@@ -47,21 +57,56 @@ class FormattingTest < ActiveSupport::TestCase
     c2 = create_a_comment(
         :comment => "##{c1.position_in_content} obnubilado ##{c0.position_in_content}")
     assert_equal(
-        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"3\">#3</abbr> obnubilado <abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"2\">#2</abbr>\n<div class=\"hidden fullquote-comment fullquote-comment3\"><p>#2 hellou</p></div>\n<div class=\"hidden fullquote-comment fullquote-comment2\"><p>hola panzer</p></div>",
+        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\"" +
+        " data-quote=\"3\">#3</abbr> obnubilado <abbr class=\"fullquote-" +
+        "opener\" title=\"Ver comentario original\" data-quote=\"2\">#2" +
+        "</abbr>\n<div class=\"hidden fullquote-comment fullquote-comment3\">" +
+        "<p>#2 hellou</p></div>\n<div class=\"hidden fullquote-comment" +
+        " fullquote-comment2\"><p>hola panzer</p></div>",
         Formatting.replace_bbcodes(
             Formatting.comment_with_expanded_short_replies(c2.comment, c2)))
   end
 
+  test "replace_bbcodes with fullquotes" do
+    assert_equal(
+        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\"" +
+        " data-quote=\"1\">#1</abbr> baz\n<div class=\"hidden fullquote-" +
+        "comment fullquote-comment1\"><p>foo<b>bold</b>\nbar</p></div>",
+        Formatting.replace_bbcodes(
+            "[fullquote=1]foo[b]bold[/b]\nbar[/fullquote] baz"))
+  end
+
+  test "remove_quotes broken" do
+    out = Formatting.remove_quotes(
+        "#1 Está a modo de Actualización y no deja claro que realmente esa" +
+        " información esté ahí ya que el título es \"[i]Se filtra más" +
+        " material de Grand Theft Auto V[/i]\", y no \"[i]El huracán Sandy" +
+        " retrasa el nuevo tráiler de GTA V[/i]\".\r\nNo lo he puesto allí," +
+        " porque aunque esa actualización fuese del redactor de Niubie, está" +
+        " esto en GM:\r\n[quote]Si el objeto de la noticia recibe una" +
+        " actualización, [b]debemos crear una nueva entrada[/b], no lo" +
+        " pondremos en un post de la noticia original.[/quote]\r\n\r\n" +
+        "http://gamersmafia.com/site/faq?_xca=xab38-1#cat14")
+    assert_equal(
+        "#1 Está a modo de Actualización y no deja claro que realmente esa" +
+        " información esté ahí ya que el título es \"[i]Se filtra más" +
+        " material de Grand Theft Auto V[/i]\", y no \"[i]El huracán Sandy" +
+        " retrasa el nuevo tráiler de GTA V[/i]\".\nNo lo he puesto allí," +
+        " porque aunque esa actualización fuese del redactor de Niubie, está" +
+        " esto en GM:\n(quote)\n\n" +
+        "http://gamersmafia.com/site/faq?_xca=xab38-1#cat14", out)
+  end
+
   test "remove_quotes" do
     assert_equal(
-        "foo bar baz",
+        "foo\n(quote)bar (quote)\nbaz",
         Formatting.remove_quotes(
-            "foo [quote]wiki[/quote]bar [quote]tapang[/quote]baz"))
+            "foo\r\n[quote]wiki[/quote]bar [quote]tapang[/quote]\r\nbaz"))
   end
 
   test "remove_quotes with ids" do
     assert_equal(
-        "foo bar baz",
+        "foo (quote)bar (quote)baz",
         Formatting.remove_quotes(
             "foo [quote=3]wiki[/quote]bar [quote]tapang[/quote]baz"))
   end

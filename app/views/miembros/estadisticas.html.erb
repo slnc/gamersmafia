@@ -45,11 +45,16 @@
     <table>
       <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/contents_stats") do %>
       <%
-	  stats = @curuser.contents_stats
-for key in (stats.keys.sort - ['Comentarios']) %>
+	  stats = Content.published_counts_by_user(@curuser)
+    stats.sort_by { |content_type, count| content_type}.each do |content_type, count| %>
         <tr class="<%=oddclass%>">
-            <td class="w150"><%=key%></td>
-            <td><%if stats[key] > 0 then %><%=link_to stats[key], "#{gmurl(@curuser)}/contenidos/#{key}"%><% else %><%=stats[key]%><% end -%></td>
+            <td class="w150"><%=pluralize_on_count(gm_translate(content_type), count)%></td>
+            <td><%if count > 0 %>
+                  <%=link_to(count, "#{gmurl(@curuser)}/contenidos/#{content_type}")%>
+                <% else %>
+                  <%=count%>
+                <% end -%>
+            </td>
         </tr>
       <% end -%>
     <% end -%>
