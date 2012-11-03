@@ -80,11 +80,11 @@ hidden_comments_count = 0
 <script type="text/javascript">
 <% if (questions_mode && user_is_authed && object.answered_on.nil? &&
        (@_cache_can_select ||= Authorization.can_set_best_answer(@user, object)))  %>
-  $j('div.questions-best-answer').removeClass('hidden');
+  $('div.questions-best-answer').removeClass('hidden');
 <% end -%>
 
 <% if (user_is_authed && @user.comment_show_sigs?) %>
-  $j('div.comments-sig').removeClass('hidden');
+  $('div.comments-sig').removeClass('hidden');
 <% end -%>
 
 <%# TODO moderadores de faccion no pueden moderar ahora mismo %>
@@ -120,7 +120,7 @@ window.onload = load_comments;
 </script>
 
 <div class="infoinline right gotop">
-  <a href="#" onclick="return GM.utils.gototop();">Volver arriba</a>
+  <a href="#" onclick="return Gm.Utils.gototop();">Volver arriba</a>
 </div>
 
 <% if user_is_authed %>

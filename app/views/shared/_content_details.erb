@@ -6,7 +6,7 @@ if not object.new_record? and Authorization.can_edit_content?(@user, object) the
 //<![CDATA[
 
 setInterval(function(){
-	$j.get('/site/maintain_lock?id=<%=object.cur_lock.id%>')
+	$.get('/site/maintain_lock?id=<%=object.cur_lock.id%>')
 } , 25000);
 //]]>
 </script>
@@ -52,7 +52,7 @@ setInterval(function(){
   </table>
   <% if object.log then %>
   <%# TODO CACHE THIS %>
-    <div class="right infoinline"><a href="" onclick="$j('#content-log').show(); return false;">Ver log de cambios</a></div>
+    <div class="right infoinline"><a href="" onclick="$('#content-log').show(); return false;">Ver log de cambios</a></div>
     <div class="hidden" id="content-log"><%object.log.reverse.each do |l0, l1, l2|
 		u = User.find_by_login(l1)
       %>

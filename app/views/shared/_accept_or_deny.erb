@@ -28,7 +28,7 @@
 function publishContent()
 {
     // Metemos la condición de aceptar en el form de edición y enviamos ese form para que se guarden los cambios
-    var f = $j('form.editing-content')[0];
+    var f = $('form.editing-content')[0];
     var t = document.createElement('input');
     t.setAttribute('type', 'hidden');
     t.setAttribute('name', 'publish_content');
@@ -38,7 +38,7 @@ function publishContent()
 	var t2 = document.createElement('input');
     t2.setAttribute('type', 'hidden');
     t2.setAttribute('name', 'accept_comment');
-    t2.setAttribute('value', $j('#accept_comment').val());
+    t2.setAttribute('value', $('#accept_comment').val());
     f.appendChild(t2);
 
     f.submit();

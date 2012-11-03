@@ -290,7 +290,7 @@ class CommentTest < ActiveSupport::TestCase
 
   test "images_to_comment_url" do
     assert_equal "[img]/foo.jpeg[/img]",
-                 Comment.images_to_comment(["/foo.jpeg"], User.find(1))
+                 Comment.images_to_comment(["/foo.jpeg\r"], User.find(1))
   end
 
   test "images_to_comment_b64" do

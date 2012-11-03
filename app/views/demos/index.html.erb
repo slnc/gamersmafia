@@ -74,7 +74,7 @@
 <%= observe_field "demo_term_id", :update => "games_mode_id", :with => 'demo_term_id', :url => '/demos/get_games_modes' %>
 <%= observe_field "demo_term_id", :update => "games_version_id", :with => 'demo_term_id', :url => '/demos/get_games_versions' %>
 
-	value = $j('#demo_term_id').val();
+	value = $('#demo_term_id').val();
 	if (value != undefined) {
 	jQuery.ajax({data:'demo_term_id=' + value, success:function(request){jQuery('#games_map_id').html(request);}, type:'post', url:'/demos/get_games_maps'});
 	jQuery.ajax({data:'demo_term_id=' + value, success:function(request){jQuery('#games_mode_id').html(request);}, type:'post', url:'/demos/get_games_modes'});
@@ -82,7 +82,7 @@
 	}
 
   function UpdateGamesMap() {
-    value = $j('#demo_term_id').val();
+    value = $('#demo_term_id').val();
     jQuery.ajax({data:'demo_term_id=' + value, success:function(request){jQuery('#games_map_id').html(request);}, type:'post', url:'/demos/get_games_maps'});
 
     return false;

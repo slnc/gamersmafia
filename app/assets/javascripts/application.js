@@ -3,8 +3,14 @@
 //= require_tree ./external
 //= require gm
 //= require_tree ./modules
+//= require_tree ./legacy
 
 $(document).ready(function() {
+  var modules = Gm.getModules();
+  for (var i in modules) {
+    modules[i].FullPageInit();
+  }
+
   /*
    * TODO(slnc): temporarily disabled until we can make sure that calls to
    * refresh outside boxes are called after page refresh via pjax.
@@ -18,9 +24,33 @@ $(document).ready(function() {
       }
     });
     */
-
-  var modules = Gm.getModules();
-  for (var i in modules) {
-    modules[i].FullPageInit();
+  $('.bbeditor').each(function() {
+    $(this).bbcodeeditor({
+      back: $('.back'),
+      back_disable: 'btn back_disable',
+      blist: $('.blist'),
+      bold: $('.bold'),
+      code: $('.code'),
+      dsize: $('.dsize'),
+      forward: $('.forward'),
+      forward_disable: 'btn forward_disable',
+      image: $('.btn.image'),
+      italic:  $('.italic'),
+      link: $('.link'),
+      nlist: $('.nlist'),
+      quote: $('.quote'),
+      usize: $('.usize'),
+    });
+  });
+  if ($.browser.msie) {
+    // TODO(slnc): hack
+    $('.bbeditor').css('width', '100%');
   }
+
+  $('.elastic').elastic();
+
+  $('.autocomplete-me').each(function() {
+    var t = $(this);
+    t.attr('autocomplete', 'off').autocomplete(t.attr('data-autocomplete-url'));
+  });
 });

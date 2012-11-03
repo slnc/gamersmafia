@@ -5,7 +5,6 @@ namespace :gm do
     Rake::Task["db:migrate"].invoke
     Rake::Task["assets:precompile"].invoke
     `./script/delayed_job restart`
-    compress_js
     Skin.update_default_skin_zip
     Rake::Task["gm:update_default_skin_styles"].invoke
 
@@ -48,40 +47,5 @@ namespace :gm do
     Term.single_toplevel(:slug => 'gmversion').link(n.unique_content)
     Term.single_toplevel(:slug => 'gm').link(n.unique_content)
     Term.single_toplevel(:name => 'actualizaciones.gm').link(n.unique_content)
-  end
-
-  def compress_js
-    # TODO(slnc): eliminar los archivos de syntaxhighlighter, apenas se están
-    # usando.
-    js_libraries = %w(
-      web.shared/jquery-1.7.1
-      web.shared/jquery.scrollTo-1.4.0
-      jquery-ui-1.7.2.custom
-      jquery_ujs
-      jquery.facebox
-      jquery.elastic.source
-      web.shared/jgcharts-0.9
-      web.shared/slnc
-      app
-      tracking
-      app.bbeditor
-      colorpicker
-      syntaxhighlighter/shCore
-      syntaxhighlighter/shBrushPhp
-      syntaxhighlighter/shBrushPython
-      jquery.autocomplete
-    )
-
-    dst = "#{Rails.root}/public/gm.js"
-    f = open(dst, 'w')
-    js_libraries.each do |library|
-      f.write(open("#{Rails.root}/public/javascripts/#{library}.js").read)
-    end
-    f.close
-
-    # Don't change line-break to any arbitrary value without checking that it
-    # works across all browsers. line-break 500 makes yuicompressor cut regular
-    # expressions by half and produces syntax error.
-    `java -jar #{Rails.root}/script/yuicompressor-2.4.2.jar #{dst} -o #{dst} --line-break 0`
   end
 end

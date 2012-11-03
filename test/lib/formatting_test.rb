@@ -9,8 +9,7 @@ class FormattingTest < ActiveSupport::TestCase
     c2 = create_a_comment(
         :comment => "##{c1.position_in_content} no, eres feo [quote]wiiii[/quote]")
     assert_equal(
-        "[fullquote=2]hola guapo\n[img]http://www.example.com/foo.png[/img]" +
-        "[/fullquote] no, eres feo [quote]wiiii[/quote]",
+        "[fullquote=2][b]#2 [~panzer][/b]:\n\nhola guapo\n[img]http://www.example.com/foo.png[/img][/fullquote] no, eres feo [quote]wiiii[/quote]",
         Formatting.comment_with_expanded_short_replies(c2.comment, c2))
   end
 
@@ -24,14 +23,7 @@ class FormattingTest < ActiveSupport::TestCase
             "##{c1.position_in_content} no, eres feo [quote]wiiii[/quote]\n#"+
             "#{c2.position_in_content} "))
     assert_equal(
-        "<p><abbr class=\"fullquote-opener\" title=\"Ver comentario original" +
-        "\" data-quote=\"2\">#2</abbr> no, eres feo <blockquote><p>wiiii</p>" +
-        "</blockquote></p>\n<p><abbr class=\"fullquote-opener\" title=\"Ver" +
-        " comentario original\" data-quote=\"3\">#3</abbr> </p>\n<div class=" +
-        "\"hidden fullquote-comment fullquote-comment2\"><p>hola guapo</p>\n" +
-        "<p><img src=\"http://www.example.com/foo.png\" /></p></div>\n<div" +
-        " class=\"hidden fullquote-comment fullquote-comment3\"><p>comment2" +
-        " (quote)</p></div>",
+        "<p><abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"2\">#2</abbr> no, eres feo <blockquote><p>wiiii</p></blockquote></p>\n<p><abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"3\">#3</abbr> </p>\n<div class=\"hidden fullquote-comment fullquote-comment2\"><p><b>#2 <a href=\"/miembros/panzer\">panzer</a></b>:</p>\n\n<p>hola guapo</p>\n<p><img src=\"http://www.example.com/foo.png\" /></p></div>\n<div class=\"hidden fullquote-comment fullquote-comment3\"><p><b>#3 <a href=\"/miembros/panzer\">panzer</a></b>:</p>\n\n<p>comment2 (quote)</p></div>",
         Formatting.format_bbcode(
             Formatting.comment_with_expanded_short_replies(c3.comment, c3)))
   end
@@ -42,11 +34,7 @@ class FormattingTest < ActiveSupport::TestCase
     pos = c1.position_in_content
     c2 = create_a_comment(:comment => "##{pos} ##{pos} obnubilado")
     assert_equal(
-        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\"" +
-        " data-quote=\"3\">#3</abbr> <abbr class=\"fullquote-opener\"" +
-        " title=\"Ver comentario original\" data-quote=\"3\">#3</abbr>" +
-        " obnubilado\n<div class=\"hidden fullquote-comment fullquote-"+
-        "comment3\"><p>#2 hellou</p></div>",
+        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"3\">#3</abbr> <abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"3\">#3</abbr> obnubilado\n<div class=\"hidden fullquote-comment fullquote-comment3\"><p><b>#3 <a href=\"/miembros/panzer\">panzer</a></b>:\n\n#2 hellou</p></div>",
         Formatting.replace_bbcodes(
             Formatting.comment_with_expanded_short_replies(c2.comment, c2)))
   end
@@ -57,12 +45,7 @@ class FormattingTest < ActiveSupport::TestCase
     c2 = create_a_comment(
         :comment => "##{c1.position_in_content} obnubilado ##{c0.position_in_content}")
     assert_equal(
-        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\"" +
-        " data-quote=\"3\">#3</abbr> obnubilado <abbr class=\"fullquote-" +
-        "opener\" title=\"Ver comentario original\" data-quote=\"2\">#2" +
-        "</abbr>\n<div class=\"hidden fullquote-comment fullquote-comment3\">" +
-        "<p>#2 hellou</p></div>\n<div class=\"hidden fullquote-comment" +
-        " fullquote-comment2\"><p>hola panzer</p></div>",
+        "<abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"3\">#3</abbr> obnubilado <abbr class=\"fullquote-opener\" title=\"Ver comentario original\" data-quote=\"2\">#2</abbr>\n<div class=\"hidden fullquote-comment fullquote-comment3\"><p><b>#3 <a href=\"/miembros/panzer\">panzer</a></b>:\n\n#2 hellou</p></div>\n<div class=\"hidden fullquote-comment fullquote-comment2\"><p><b>#2 <a href=\"/miembros/panzer\">panzer</a></b>:\n\nhola panzer</p></div>",
         Formatting.replace_bbcodes(
             Formatting.comment_with_expanded_short_replies(c2.comment, c2)))
   end

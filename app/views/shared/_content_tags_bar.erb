@@ -64,19 +64,19 @@ root_slugs<< this_root
 <% end %><%# if user_is_authed -%>
 
 <script type="text/javascript">
-$j('#tag-this-content').click(function () {
-  var text_input = $j('#new-tag-input-text');
+$('#tag-this-content').click(function () {
+  var text_input = $('#new-tag-input-text');
   text_input.toggle();
   if (text_input.is(":visible")) {
-    $j('#new-tag-input-text').focus();
+    $('#new-tag-input-text').focus();
   }
 });
 
-$j('.one-of-my-tags').mouseover(function () {
-  $j(this).children('.one-of-my-tags-ops').show();
+$('.one-of-my-tags').mouseover(function () {
+  $(this).children('.one-of-my-tags-ops').show();
 });
-$j('.one-of-my-tags').mouseout(function () {
-  $j(this).children('.one-of-my-tags-ops').hide();
+$('.one-of-my-tags').mouseout(function () {
+  $(this).children('.one-of-my-tags-ops').hide();
 });
 </script>
 

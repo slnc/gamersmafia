@@ -1,4 +1,6 @@
 Gm.Comments = function() {
+  var last_click_on_comment = 0;
+
   return {
     name: 'Comments',
 

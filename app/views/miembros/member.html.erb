@@ -465,7 +465,7 @@ if prev_nicks.size > 0 then %>
           <option value="3">10 comentarios al día</option>
           <option value="2">15 comentarios al día</option>
           <option value="1">20 comentarios al día</option>
-      </select><script type="text/javascript">$j('#antiflood_level').val(<%=@curuser.antiflood_level%>);</script>
+      </select><script type="text/javascript">$('#antiflood_level').val(<%=@curuser.antiflood_level%>);</script>
   </div>
 
   <div class="centered-link"><a href="/admin/usuarios/clear_description/<%=@curuser.id%>" onclick="return confirm('¿Estás seguro? ¡Esta acción no se puede deshacer!');">Borrar Descripción</a></div>

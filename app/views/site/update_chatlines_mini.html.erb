@@ -16,7 +16,7 @@ for chatline in Chatline.latest %>
     <% end -%></li>
   <% if chatline.created_on.to_i > params[:time].to_i then %>
   <script type="text/javascript">
-    $j("chatline<%=chatline.id%>").effect("highlight", {}, 500);
+    $("chatline<%=chatline.id%>").effect("highlight", {}, 500);
   </script>
 <%  end %>
 <% end -%>
@@ -25,12 +25,12 @@ for chatline in Chatline.latest %>
 <script type="text/javascript">
   cur_time_chat=<%=now%>;
 <% if user_is_authed && @clear_comment_line then %>
-$j('#newline').val('');
+$('#newline').val('');
 document.getElementById('newlinesend').disabled = '';
 <% end -%>
 var chatbar = document.getElementById('chatbar');
 if (chatbar) {
 	chatbar.src = '/images/chat_progress.gif';
-	$j('#newline').focus();
+	$('#newline').focus();
 }
 </script>

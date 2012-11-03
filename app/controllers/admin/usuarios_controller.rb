@@ -152,7 +152,7 @@ class Admin::UsuariosController < ApplicationController
   def users_skill_destroy
     role = UsersSkill.find(params[:id])
     role.destroy
-    @js_response = "$j('#users_skill#{role.id}').fadeOut('normal');"
+    @js_response = "$('#users_skill#{role.id}').fadeOut('normal');"
     render :partial => '/shared/silent_ajax_feedback',
            :locals => { :js_response => @js_response }
   end

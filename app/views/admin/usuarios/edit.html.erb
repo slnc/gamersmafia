@@ -230,7 +230,7 @@
 <input type="hidden" name="user_id" value="<%=@edituser.id%>" />
 <table>
 	<tr>
-		<th class="checkbox"><input type="checkbox" onclick="slnc.checkboxSwitchGroup(this);" /></th><th>Seleccionar todos</th>
+		<th class="checkbox"><input type="checkbox" onclick="Gm.Slnc.checkboxSwitchGroup(this);" /></th><th>Seleccionar todos</th>
 	</tr>
 <%@edituser.comments.find(:all, :conditions => 'deleted = \'f\'', :order => 'comments.created_on DESC', :limit => 50, :include => :content).each do |comment| %>
 	<tr class="<%=oddclass%>">

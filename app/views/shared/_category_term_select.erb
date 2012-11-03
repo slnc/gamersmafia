@@ -30,13 +30,13 @@
 </div>
 
 <script type="text/javascript">
-	$j('#categories_terms_root<%=index%>').bind('change', function (e) {
-		$j.get('/site/root_term_children?id=' + $j('#categories_terms_root<%=index%>').val() + '&name=categories_terms[]&content_type=<%=content_type%>', function(data) {
-			$j('#categories_terms<%=index%>').html(data);
+	$('#categories_terms_root<%=index%>').bind('change', function (e) {
+		$.get('/site/root_term_children?id=' + $('#categories_terms_root<%=index%>').val() + '&name=categories_terms[]&content_type=<%=content_type%>', function(data) {
+			$('#categories_terms<%=index%>').html(data);
 		});
 	})
 	
 <% if selterm && selterm.parent_id then %>
-	$j('#categories_terms_root<%=index%>').val(<%=selterm.root_id%>);
+	$('#categories_terms_root<%=index%>').val(<%=selterm.root_id%>);
 <% end %>
 </script>

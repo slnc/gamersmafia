@@ -19,10 +19,10 @@
 <script type="text/javascript">
 
         function maximize_image(a_im) {
-                $j('#cleft').addClass('hidden');
-                $j('#csupport').addClass('hidden');
-                $j('#ccontent').addClass('maximized');
-                $j('#cmain').addClass('maximized');
+                $('#cleft').addClass('hidden');
+                $('#csupport').addClass('hidden');
+                $('#ccontent').addClass('maximized');
+                $('#cmain').addClass('maximized');
 
                 a_im.title = 'Haz click para ver la imagen más pequeña'
 
@@ -37,10 +37,10 @@
         function minimize_image(a_im) {
                 a_im.title = 'Haz click para ver la imagen más grande'
 
-                $j('#ccontent').removeClass('maximized');
-                $j('#cmain').removeClass('maximized');
-                $j('#cleft').removeClass('hidden');
-                $j('#csupport').removeClass('hidden');
+                $('#ccontent').removeClass('maximized');
+                $('#cmain').removeClass('maximized');
+                $('#cleft').removeClass('hidden');
+                $('#csupport').removeClass('hidden');
 
                 document.location = '#ccontent';
                 a_im.onclick = function(){

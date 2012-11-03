@@ -22,7 +22,7 @@ class Admin::IpBansController < ApplicationController
   def destroy
     ban = IpBan.find(params[:id])
     ban.destroy
-    @js_response = "$j('#ipban#{ban.id}').fadeOut('normal');"
+    @js_response = "$('#ipban#{ban.id}').fadeOut('normal');"
     render :partial => '/shared/silent_ajax_feedback',
            :locals => { :js_response => @js_response }
   end

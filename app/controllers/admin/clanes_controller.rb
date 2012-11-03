@@ -52,7 +52,7 @@ class Admin::ClanesController < ApplicationController
     cg = ClansGroup.find(params[:clans_group_id])
     cg.users.delete(User.find(params[:user_id]))
     @js_response = (
-        "$j('#clans_group_#{cg.id}_#{params[:user_id]}').fadeOut('normal');")
+        "$('#clans_group_#{cg.id}_#{params[:user_id]}').fadeOut('normal');")
     render :partial => '/shared/silent_ajax_feedback',
            :locals => { :js_response => @js_response }
   end

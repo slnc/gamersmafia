@@ -49,7 +49,8 @@ class Comment < ActiveRecord::Base
   validates_presence_of :user_id, :message => 'no puede estar en blanco'
 
   scope :karma_eligible,
-        :conditions => ["state NOT IN (?)", [MODERATED, DUPLICATED]]
+        :conditions => ["deleted is false AND state NOT IN (?)",
+                        [MODERATED, DUPLICATED]]
 
   scope :visible,
         :conditions => ["state = ?", VISIBLE]
@@ -63,7 +64,7 @@ class Comment < ActiveRecord::Base
       if img[0..4] == 'data:'
         img = user.upload_b64_filedata(img)
       end
-      text.append("[img]#{img}[/img]")
+      text.append("[img]#{img.strip}[/img]")
     end
     text.join("\n")
   end

@@ -1,6 +1,6 @@
 <script type="text/javascript">
 function create_member_link(tag_id, login) {
-  var member_tag = $j('#' + tag_id);
+  var member_tag = $('#' + tag_id);
   if (member_tag) {
   	member_tag.show();
   } else {
@@ -40,9 +40,9 @@ function create_member_link(tag_id, login) {
   <% end -%>
     <script type="text/javascript">
     <% if users.find_by_id(@user.id) %>
-    $j('#leave-link').show(); $j('#join-link').hide();
+    $('#leave-link').show(); $('#join-link').hide();
     <% else %>
-    $j('#join-link').show(); $j('#leave-link').hide();
+    $('#join-link').show(); $('#leave-link').hide();
     <% end -%>
     </script>
   <% end -%>

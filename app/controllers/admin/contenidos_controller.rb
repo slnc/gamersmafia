@@ -83,7 +83,7 @@ class Admin::ContenidosController < ApplicationController
     require_user_can_edit(obj)
     obj.recover(@user)
     @js_response = (
-        "$j('#content#{obj.unique_content_id}').fadeOut('normal');")
+        "$('#content#{obj.unique_content_id}').fadeOut('normal');")
     render :partial => '/shared/silent_ajax_feedback',
            :locals => { :js_response => @js_response }
   end
@@ -227,7 +227,7 @@ class Admin::ContenidosController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @uct
     @content = @uct.content
     @uct.destroy
-    @js_response = "$j('#one-of-my-tags#{@uct.id}').fadeOut('normal');"
+    @js_response = "$('#one-of-my-tags#{@uct.id}').fadeOut('normal');"
     render :partial => '/shared/silent_ajax_feedback',
            :locals => { :js_response => @js_response }
   end

@@ -22,7 +22,7 @@ Anchura de la web: <select name="skin[intelliskin][page_width]" onchange="set_pa
 
 <script type="text/javascript">
 function set_sidebar_pos() {
-    set_num_columns($j('#lynumcolumns').val());
+    set_num_columns($('#lynumcolumns').val());
 }
 
 function set_num_columns(num) {
@@ -32,11 +32,11 @@ function set_num_columns(num) {
 
 	if (parseInt(num) == 2) {
 		// assume pos is left
-		$j('#selside').show();
-		document.body.className = document.body.className + ' lycolumns2-'+$j('#lyside').val();
+		$('#selside').show();
+		document.body.className = document.body.className + ' lycolumns2-'+$('#lyside').val();
 	}
 	else { // 3
-		$j('#selside').hide();
+		$('#selside').hide();
 		document.body.className = document.body.className + ' lycolumns3';
 	}
 }

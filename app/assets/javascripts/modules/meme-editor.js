@@ -122,6 +122,7 @@ Gm.MemeEditor = function() {
      */
     handleImageDrop: function(e) {
       e.originalEvent.preventDefault();
+      e.originalEvent.stopPropagation();
 
       var textHtml = e.dataTransfer.getData("text/html");
       if (textHtml != undefined && textHtml != '') {
@@ -169,7 +170,7 @@ Gm.MemeEditor = function() {
     getSelectedImageUrl: function() {
       var selectedImage = $('#dropped-files .selected');
       return selectedImage.
-          css('background-image').replace('url(', '').replace(')', '');
+          css('background-image').replace('url(', '').replace(')', '').replace(/"/g, '');
     },
 
     /**
@@ -303,15 +304,37 @@ Gm.MemeEditor = function() {
       }
     },
 
+    IgnoreDrag: function (e) {
+      e.originalEvent.stopPropagation();
+      e.originalEvent.preventDefault();
+    },
+
     ContentInit: function() {
-      $('.comments .droparea').bind('drop', this.handleImageDrop);
-      $('.meme_top').keyup(Gm.MemeEditor.setupGenerateMemeTimer);
-      $('.meme_middle').keyup(Gm.MemeEditor.setupGenerateMemeTimer);
-      $('.meme_bottom').keyup(Gm.MemeEditor.setupGenerateMemeTimer);
+      if (Modernizr.draganddrop) {
+        $('.comments .droparea')
+          .bind('dragenter', Gm.MemeEditor.IgnoreDrag)
+          .bind('dragover', Gm.MemeEditor.IgnoreDrag)
+          .bind('drop', this.handleImageDrop);
+        $('.meme_top').keyup(Gm.MemeEditor.setupGenerateMemeTimer);
+        $('.meme_middle').keyup(Gm.MemeEditor.setupGenerateMemeTimer);
+        $('.meme_bottom').keyup(Gm.MemeEditor.setupGenerateMemeTimer);
+      } else {
+        /*
+         * TODO(slnc): disabled until we add a button to close the message and
+         * store in a cookie and check that the user is actually logged in.
+         *
+        $('.pagelevel-feedback').html(
+          'Tu navegador no soporta DragAndDrop por lo que algunas opciones se' +
+          ' han deshabilitado. Navegadores que soportan DragAndDrop:' +
+          ' Chrome 4.0+, Firefox 3.5+, Internet Explorer 10+, Opera 12.0+ y' +
+          '  Safari 3.1+.').show();
+          */
+      }
     },
 
     FullPageInit: function() {
       $.event.props.push('dataTransfer');
+      $.event.props.push('drop');
       this.ContentInit();
     },
   };  // return

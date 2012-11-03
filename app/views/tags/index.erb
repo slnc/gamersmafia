@@ -13,7 +13,7 @@
   <% end -%>
 </table>
 <% end -%>
-<script type="text/javascript">slnc.marklinks('most_active_users', '_xs=maut');</script>
+<script type="text/javascript">Gm.Slnc.marklinks('most_active_users', '_xs=maut');</script>
 <% end -%>
 
 <% mftable("Últimos tags", UsersContentsTag.find(:all, :order => 'created_on DESC', :limit => 20, :include => [:user, :term, :content])) do |uct| %>

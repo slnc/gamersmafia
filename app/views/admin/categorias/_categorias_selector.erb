@@ -1,8 +1,8 @@
 <script type="text/javascript">
   	function change_root(v) {
   		if (v != '')
-			$j.get('/<%=controller.cats_path%>/term/' + v, function(data) {
-				$j('#categorias_content').html(data);
+			$.get('/<%=controller.cats_path%>/term/' + v, function(data) {
+				$('#categorias_content').html(data);
 	})
 	}
   </script>

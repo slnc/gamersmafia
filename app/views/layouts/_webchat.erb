@@ -22,15 +22,15 @@
 <script type="text/javascript">
 //<![CDATA[
 setInterval(function(){
-	$j.get('/site/update_chatlines?time=' + cur_time_chat, function(data){
-		$j('#minichat').html(data);
+	$.get('/site/update_chatlines?time=' + cur_time_chat, function(data){
+		$('#minichat').html(data);
 	})
 } , 15000);
 //]]>
 function send_chatline() {
-	$j.post('/site/new_chatline?time='+cur_time_chat, {line: $j('#newline').val()}, function(data){
-		$j('#minichat').html(data);
-		$j('#newline').val('');
+	$.post('/site/new_chatline?time='+cur_time_chat, {line: $('#newline').val()}, function(data){
+		$('#minichat').html(data);
+		$('#newline').val('');
 		document.getElementById('newlinesend').disabled = '';
 	});
 	return false;

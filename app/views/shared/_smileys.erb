@@ -1,13 +1,13 @@
 <script type="text/javascript">
 	function show_smileys(){
-		$j.get('/site/smileys?dom_id=<%=dom_id%>', function(data){
-			$j('#available-smileys').html(data).show();
-			$j('#hidesmileys').show();
-			$j('#showsmileys').hide();
+		$.get('/site/smileys?dom_id=<%=dom_id%>', function(data){
+			$('#available-smileys').html(data).show();
+			$('#hidesmileys').show();
+			$('#showsmileys').hide();
 		});
 		return false;
 	}
 </script>
-      <div class="infoinline" style="margin-bottom: 10px;"><a class="action" id="showsmileys" onclick="return show_smileys();" href="">Ver smileys disponibles</a> <a style="display: none; visibility: hidden;" id="hidesmileys" onclick="$j('#available-smileys').hide(); $j('#hidesmileys').hide(); $j('#showsmileys').show(); return false;" href="">Ocultar smileys disponibles</a></div>
+      <div class="infoinline" style="margin-bottom: 10px;"><a class="action" id="showsmileys" onclick="return show_smileys();" href="">Ver smileys disponibles</a> <a style="display: none; visibility: hidden;" id="hidesmileys" onclick="$('#available-smileys').hide(); $('#hidesmileys').hide(); $('#showsmileys').show(); return false;" href="">Ocultar smileys disponibles</a></div>
 	  <script type="text/javascript"></script>
     <div id="available-smileys"></div>

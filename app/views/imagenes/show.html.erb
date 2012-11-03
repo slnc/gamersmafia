@@ -52,10 +52,10 @@ end %>
 	var prev_w;
 
 	function maximize_image(a_im) {
-		$j('#cleft').addClass('hidden');
-		$j('#csupport').addClass('hidden');
-		$j('#ccontent').addClass('maximized');
-		$j('#cmain').addClass('maximized');
+		$('#cleft').addClass('hidden');
+		$('#csupport').addClass('hidden');
+		$('#ccontent').addClass('maximized');
+		$('#cmain').addClass('maximized');
 
 		a_im.title = 'Haz click para ver la imagen más pequeña'
 
@@ -77,10 +77,10 @@ end %>
 		a_im.childNodes[0].src = a_im.childNodes[0].src.replace('/cache/thumbnails/k/930x700', '/cache/thumbnails/k/460x345');
 		a_im.title = 'Haz click para ver la imagen más grande'
 
-		$j('#ccontent').removeClass('maximized');
-		$j('#cmain').removeClass('maximized');
-		$j('#cleft').removeClass('hidden');
-		$j('#csupport').removeClass('hidden');
+		$('#ccontent').removeClass('maximized');
+		$('#cmain').removeClass('maximized');
+		$('#cleft').removeClass('hidden');
+		$('#csupport').removeClass('hidden');
 
 		a_im.childNodes[0].style.width = prev_w;
 

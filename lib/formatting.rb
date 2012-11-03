@@ -203,7 +203,7 @@ module Formatting
       if replied_comment.nil? || replied_comment.id == comment.id
         m
       else
-        "[fullquote=#{$1}]#{Formatting.remove_quotes(replied_comment.comment)}[/fullquote]#{$2}"
+        "[fullquote=#{$1}][b]##{$1} [~#{replied_comment.user.login}][/b]:\n\n#{Formatting.remove_quotes(replied_comment.comment)}[/fullquote]#{$2}"
       end
     end
 

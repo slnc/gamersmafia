@@ -8,7 +8,7 @@ function show_active_generator_attrs(val) {
     var el;
     for (var i = 0; i < gens.length; i ++)
     {
-        el = $j('#attrs-' + gens[i]);
+        el = $('#attrs-' + gens[i]);
 		(gens[i] == val) ? el.removeClass('hidden') : el.addClass('hidden');
     }
 }

@@ -301,26 +301,26 @@ module ApplicationHelper
   <div id="#{div_sel_id}" style="width: 20px; height: 20px; float: left; border: 1px solid black; margin-right: 5px;"><div style="width: 100%; height: 100%;"></div></div> <input name="#{field_name}" id="#{field_id}" value="#{field_value}" />
 
 <script type="text/javascript">
-$j(document).ready(function () {
-$j('##{field_id}').ColorPicker({
+$(document).ready(function () {
+$('##{field_id}').ColorPicker({
   color: '#0000ff',
   onShow: function (colpkr) {
-    $j(colpkr).fadeIn(100);
+    $(colpkr).fadeIn(100);
     return false;
   },
   onHide: function (colpkr) {
-    $j(colpkr).fadeOut(100);
+    $(colpkr).fadeOut(100);
     return false;
   },
   onBeforeShow: function () {
-    $j(this).ColorPickerSetColor(this.value);
+    $(this).ColorPickerSetColor(this.value);
   },
   onChange: function (hsb, hex, rgb) {
-    $j('##{div_sel_id} div').css('backgroundColor', '#' + hex);
-    $j('##{field_id}').val('#' + hex);
+    $('##{div_sel_id} div').css('backgroundColor', '#' + hex);
+    $('##{field_id}').val('#' + hex);
   }
 });
-$j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
+$('##{div_sel_id} div').css('backgroundColor', $('##{field_id}').val()); });
 </script>
     END
   end
@@ -328,6 +328,11 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
   def bbeditor(opts={})
     raise "id not given for bbeditor" unless opts[:id]
     raise "name not given for bbeditor" unless opts[:name]
+
+    if user_is_authed && @user.pref_use_elastic_comment_editor.to_i == 1
+      opts[:class] ||= ""
+      opts[:class] += " elastic"
+    end
 
     out = <<-EOS
     <div title="Negrita" class="btn bold"></div>
@@ -340,23 +345,9 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
     <div title="Rehacer" class="btn forward"></div>
     <div class="clearb">
       <textarea id="#{opts[:id]}" class="bbeditor #{opts[:class]}" name="#{opts[:name]}" rows="#{opts[:rows]}" style="#{opts[:style]}">#{opts[:value]}</textarea></div>
-
-    <script type="text/javascript">
-    $j('##{opts[:id]}').bbcodeeditor(
-        {
-          bold:$j('.bold'), italic:$j('.italic'), link:$j('.link'), quote:$j('.quote'), code:$j('.code'), image:$j('.btn.image'),
-          usize:$j('.usize'), dsize:$j('.dsize'), nlist:$j('.nlist'), blist:$j('.blist'),
-          back:$j('.back'), forward:$j('.forward'), back_disable:'btn back_disable', forward_disable:'btn forward_disable'
-        });
-        if ($j.browser.msie)
-    $j('##{opts[:id]}').css('width', '100%');
     EOS
 
-    if user_is_authed && @user.pref_use_elastic_comment_editor.to_i == 1
-      out << "$j('##{opts[:id]}').elastic();"
-    end
     out << <<-EOS
-    </script>
     #{controller.send(:render_to_string, :partial => '/shared/smileys', :locals => { :dom_id => opts[:id] }).force_encoding("utf-8")}
     EOS
     out.force_encoding("utf-8")
@@ -374,7 +365,7 @@ $j('##{div_sel_id} div').css('backgroundColor', $j('##{field_id}').val()); });
     # load_javascript_lib('web.shared/jgcharts-0.9')
     out << "<div id=\"line#{spid}\"></div>
 <script type=\"text/javascript\">
-$j(document).ready(function() {
+$(document).ready(function() {
 var api = new jGCharts.Api();
 jQuery('<img>')
 .attr('src', api.make({
@@ -403,7 +394,7 @@ type: 'ls'}))
     # load_javascript_lib('web.shared/jgcharts-0.9')
     out << "<div id=\"line#{spid}\"></div>
 <script type=\"text/javascript\">
-$j(document).ready(function() {
+$(document).ready(function() {
 var api = new jGCharts.Api();
 jQuery('<img>')
 .attr('src', api.make({
@@ -430,7 +421,7 @@ type: 'p'}))
     # load_javascript_lib('web.shared/jgcharts-0.9')
     out << "<div id=\"line#{spid}\"></div>
 <script type=\"text/javascript\">
-$j(document).ready(function() {
+$(document).ready(function() {
 var api = new jGCharts.Api();
 jQuery('<img>')
 .attr('src', api.make({
@@ -865,27 +856,7 @@ skin: 'v2'
   end
 
   def javascript_includes
-    if App.compress_js?
-      out = "<script type=\"text/javascript\" src=\"#{ASSET_URL}/gm.#{AppR.ondisk_git_version}.js\"></script>\n"
-    else
-      out = <<-END
-<script src="#{ASSET_URL}/javascripts/web.shared/jquery-1.7.1.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/web.shared/jquery.scrollTo-1.4.0.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/jquery-ui-1.7.2.custom.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/web.shared/jgcharts-0.9.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/jquery_ujs.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/jquery.facebox.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/jquery.elastic.source.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/web.shared/slnc.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/app.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/tracking.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/app.bbeditor.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/colorpicker.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shCore.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/syntaxhighlighter/shBrushPython.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-<script src="#{ASSET_URL}/javascripts/jquery.autocomplete.#{AppR.ondisk_git_version}.js" type="text/javascript"></script>
-      END
-    end
+    out = ""
 
     if @_additional_js_libs
       @_additional_js_libs.uniq.each do |lib|
@@ -1320,14 +1291,14 @@ skin: 'v2'
   def hue_selector(id, field_name, v)
     out = <<-END
     <div id="#{id}-hue-preview" style="width: 16px; height: 16px; float: left; border: 1px solid black;"></div>
-    <input type="text" class="text" name="#{field_name}" value="#{v}" onclick="$j('##{id}-hue-selector').removeClass('hidden');" />
+    <input type="text" class="text" name="#{field_name}" value="#{v}" onclick="$('##{id}-hue-selector').removeClass('hidden');" />
 <div id="#{id}-hue-selector" class="hidden"><img src="/images/hue_selector.png" onclick="cpMouseClick" /></div>
-<script type="text/javascript">$j('##{id}-hue-selector img').onclick = cpMouseClick;
+<script type="text/javascript">$('##{id}-hue-selector img').onclick = cpMouseClick;
     END
 
     if v then
       out<< <<-END
-        $j('##{id}-hue-preview').css('background', hsv2rgb(Math.round(#{v}), 100, 100));
+        $('##{id}-hue-preview').css('background', hsv2rgb(Math.round(#{v}), 100, 100));
       END
     end
     out<< '</script>'
@@ -1343,7 +1314,7 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
 
     if v then
       out<< <<-END
-          $j('##{id}-hue-preview').css('background', '##{v.gsub('#','')}');
+          $('##{id}-hue-preview').css('background', '##{v.gsub('#','')}');
         END
     end
     out<< '</script>'
@@ -1363,14 +1334,14 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
   def xdelitems(collection, form_destination, input_name, columns, options={})
     options = {:submit_value => 'Enviar'}.merge(options)
     out = <<-END
-    <form method="post" action="#{form_destination}"><table><tr><th><input type="checkbox" onclick="slnc.checkboxSwitchGroup(this);"></th>
+    <form method="post" action="#{form_destination}"><table><tr><th><input type="checkbox" onclick="Gm.Slnc.checkboxSwitchGroup(this);"></th>
   END
     columns.keys.each do |k|
       out<< "<th>#{k}</th>"
     end
     out<< '</tr>'
     collection.each do |item|
-      out<< "<tr class=\"#{oddclass}\"><td><input type=\"checkbox\" name=\"#{input_name}[]\" onclick=\"slnc.hilit_row(this, 'selrow');\" value=\"#{item.id}\" /></td>"
+      out<< "<tr class=\"#{oddclass}\"><td><input type=\"checkbox\" name=\"#{input_name}[]\" onclick=\"Gm.Slnc.hilit_row(this, 'selrow');\" value=\"#{item.id}\" /></td>"
       columns.each do |k,v|
         if v.kind_of?(Proc)
           out<< "<td>#{v.call(item)}</td>"
