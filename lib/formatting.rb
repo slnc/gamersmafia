@@ -20,8 +20,21 @@ module Formatting
   def self.replace_bbcodes(text)
     interword_regexp = /[^><]+/
     interword_regexp_strict = /[^\[]+/
-    text.gsub!("\n", "GM_NEWLINE_MARKER")
+
+    text = text
+      .gsub("\r\n", "GM_NEWLINE_MARKER")
+      .gsub("\r", "GM_NEWLINE_MARKER")
+      .gsub("\n", "GM_NEWLINE_MARKER")
+
+    # collect all quotes references
+    full_quotes = {}
+    text.scan(/\[fullquote=([0-9]+)\](.+?)\[\/fullquote\]/i).each do |m|
+      full_quotes[m[0]] = Formatting.replace_bbcodes(m[1])
+    end
+
     str = text.strip
+      .gsub(/\[fullquote=([0-9]+)\].+?\[\/fullquote\]/i,
+            '<abbr class="fullquote-opener" title="Ver comentario original" data-quote="\\1">#\\1</abbr>')
       .gsub(/(\[(\/*)(b|i)\])/i, '<\\2\\3>')
       .gsub(/(\[~(#{User::OLD_LOGIN_REGEXP_NOT_FULL})\])/, '<a href="/miembros/\\2">\\2</a>')
       .gsub(Regexp.new("@#{User::LOGIN_REGEXP}"), '<span class="user-login"><a href="/miembros/\\1">\\1</a></span>')
@@ -36,16 +49,9 @@ module Formatting
       .gsub(/\[quote\](.+?)\[\/quote\]/i, "<blockquote><p>\\1</p></blockquote>")
       .gsub(/\[quote=([0-9]+)\](.+?)\[\/quote\]/i,
             '<abbr title="Ver comentario original">\\1</abbr><blockquote><p>\\2</p></blockquote>')
-      .gsub(/\[fullquote=([0-9]+)\]([^\[]+)\[\/fullquote\]/i,
-            '<abbr class="fullquote-opener" title="Ver comentario original" data-quote="\\1">#\\1</abbr>')
 
-    # collect all quotes references
-    full_quotes = {}
-    text.scan(/\[fullquote=([0-9]+)\](.+?)\[\/fullquote\]/i).each do |m|
-      full_quotes[m[0]] = Formatting.format_bbcode(m[1])
-    end
     full_quotes.each do |k, v|
-      str = "#{str}\n<div class=\"hidden fullquote-comment fullquote-comment#{k}\">#{v}</div>"
+      str = "#{str}\n<div class=\"hidden fullquote-comment fullquote-comment#{k}\"><p>#{v}</p></div>"
     end
 
     # remove any html tag inside a <code></code>
@@ -158,11 +164,11 @@ module Formatting
 
   # Removes [quote] bbcode pairs from text and all that they contain
   def self.remove_quotes(text)
-    text.
+    text = text.
       gsub("\r\n", "GM_NEWLINE_MARKER").
       gsub("\n", "GM_NEWLINE_MARKER").
       gsub("\r", "GM_NEWLINE_MARKER").
-      gsub(/(\[(full)*quote[=0-9]*\][^\[]+\[\/(full)*quote\])/, "").
+      gsub(/(\[(full)*quote[=0-9]*\].+?\[\/(full)*quote\])/, "(quote)").
       gsub("GM_NEWLINE_MARKER", "\n")
   end
 
@@ -179,7 +185,10 @@ module Formatting
 
   def self.comment_with_expanded_short_replies(comment_text, comment)
     # we build a new string with quotes replaced by placeholders
-    new_str = comment_text.clone
+    new_str = comment_text.
+      gsub("\r\n", "GM_NEWLINE_MARKER").
+      gsub("\n", "GM_NEWLINE_MARKER").
+      gsub("\r", "GM_NEWLINE_MARKER")
     quotes = {}
     quote_id = 0
     comment_text.scan(/(\[quote[=0-9]*\][^\[]+\[\/quote\])/).each do |q|
@@ -202,7 +211,7 @@ module Formatting
     quotes.each do |k, v|
       new_str.sub(k, v)
     end
-    new_str
+    new_str.gsub("GM_NEWLINE_MARKER", "\n")
   end
 
   def self.html_to_bbcode(str)
