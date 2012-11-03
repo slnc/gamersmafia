@@ -2,12 +2,11 @@
 namespace :gm do
   desc "Tasks to be executed after deploying"
   task :after_deploy => :environment do
-    Rake::Task["db:migrate"].invoke
-    Rake::Task["assets:precompile"].invoke
+    `rake db:migrate`
+    `rake assets:precompile`
     `./script/delayed_job restart`
     Skin.update_default_skin_zip
-    Rake::Task["gm:update_default_skin_styles"].invoke
-
+    rake `gm:update_default_skin_styles`
     Cms.uncompress_ckeditor_if_necessary
     CacheObserver.expire_fragment("/common/gmversion")
     `touch #{Rails.root}/tmp/restart.txt`
