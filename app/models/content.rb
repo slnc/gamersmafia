@@ -76,6 +76,28 @@ class Content < ActiveRecord::Base
   belongs_to :bazar_district
   belongs_to :user
 
+  def self.published_counts_by_user(user)
+    out = {}
+    User.db_query(
+        "SELECT COUNT(*) AS cnt,
+           (SELECT name
+              FROM content_types
+              WHERE id = contents.content_type_id) AS content_type_name
+        FROM contents
+        WHERE user_id = #{user.id}
+        AND state = #{Cms::PUBLISHED}
+        GROUP BY (
+          SELECT name
+          FROM content_types
+          WHERE id = contents.content_type_id)").each do |row|
+      out[row['content_type_name']] = row['cnt'].to_i
+    end
+    ContentType.find(:all).each do |content_type|
+      out[content_type.name] ||= 0
+    end
+    out
+  end
+
   def self.delete_content(real_item, user, reason="(sin razón)")
     self.modify_content_state(real_item, user, Cms::DELETED, reason)
   end

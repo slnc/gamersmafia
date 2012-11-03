@@ -7,6 +7,28 @@ class ContentTest < ActiveSupport::TestCase
     @content = Content.find(1)
   end
 
+  test "published_counts_by_user" do
+    expected = {
+        "Bet"=>1,
+        "Blogentry"=>1,
+        "Column"=>1,
+        "Coverage"=>1,
+        "Demo"=>1,
+        "Download"=>1,
+        "Event"=>361,
+        "Funthing"=>1,
+        "Image"=>3,
+        "Interview"=>1,
+        "News"=>5,
+        "Poll"=>2,
+        "Question"=>1,
+        "Review"=>1,
+        "Topic"=>1,
+        "Tutorial"=>1,
+    }
+    assert_equal expected, Content.published_counts_by_user(User.find(1))
+  end
+
   test "refered_people_should_work_with_content_title" do
 
   end

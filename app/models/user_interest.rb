@@ -42,7 +42,7 @@ class UserInterest < ActiveRecord::Base
     puts "user_id term_id frequency likelihood_visit"
     new_interests = []
     max_new_interests = 10
-    term_frequencies.sort_by { |term_id, frequency| }.reverse.each do |term_id, frequency|
+    term_frequencies.sort_by { |term_id, frequency| frequency}.reverse.each do |term_id, frequency|
       # We ignore terms that have very low frequency either for the user or for
       # the term. We picked this numbers based just on a reasonable guess.
       next if frequency <= 3 || term_totals[term_id] < 10
