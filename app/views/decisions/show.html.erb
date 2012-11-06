@@ -1,0 +1,42 @@
+<div class="<%="facebox-title" if controller.request.xhr?%> decision-title">
+  <%=decision_title(@decision)%>
+</div>
+
+<% if controller.request.xhr? %>
+  <div class="facebox-content">
+<% end -%>
+
+<div class="decision-context"><%=decision_context(@decision)%></div>
+
+<div class="centered decision-title-n-choice">¿<%=decision_title(@decision)%>?
+<%current_choice = @decision.decision_user_choices.find_by_user_id(@user.id) %>
+<% if current_choice %>
+  <br />
+  <br />
+  Tu decisión:
+  <strong><%=current_choice.decision_choice.name%></strong>
+  (<a href="" data-reveal-selector=".decision-choices">cambiar</a>).
+<% end -%>
+</div>
+
+<div class="decision-choices choice-type-<%=@decision.choice_type_name%> <%="hidden" if current_choice%>">
+  <form method="post" action="<%=decide_decision_path(@decide)%>"
+    data-remote="true" data-decision-id="<%=@decision.id%>"
+    data-remote-on-success-update=".decision-comments">
+  <input type="hidden" name="final_decision_choice" />
+<% if @decision.binary? %>
+  <% @decision.decision_choices.each do |decision_choice| %>
+    <input type="submit" class="button" value="<%=decision_choice.name%>"
+    data-choice-id="<%=decision_choice.id%>" />
+  <% end -%>
+<% else %>
+  <% raise "not implemented yet" %>
+<% end %>
+</form>
+</div>
+
+<%=render :partial => '/decision_comments/index', :locals => {:decision => @decision}%>
+
+<% if controller.request.xhr? %>
+  </div>
+<% end -%>

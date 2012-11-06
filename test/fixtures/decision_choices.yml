@@ -1,0 +1,9 @@
+one:
+  id: 7
+  decision_id: 6
+  name: Sí
+
+two:
+  id: 8
+  decision_id: 6
+  name: No

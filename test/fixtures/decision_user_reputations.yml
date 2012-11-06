@@ -1,0 +1,39 @@
+one:
+  id: '2'
+  decision_type_class: CreateTag
+  user_id: '1'
+  created_on: '2012-11-05 02:18:32.269356'
+  updated_on: '2012-11-05 05:41:54.039867'
+  probability_right: '0.3'
+
+two:
+  id: '5'
+  decision_type_class: CreateTag
+  user_id: '2'
+  created_on: '2012-11-05 05:29:56.218623'
+  updated_on: '2012-11-05 05:41:54.211795'
+  probability_right: '0'
+
+three:
+  id: '1'
+  decision_type_class: CreateTag
+  user_id: '3'
+  created_on: '2012-11-04 22:00:23.024587'
+  updated_on: '2012-11-05 05:41:54.230498'
+  probability_right: '0.3'
+
+four:
+  id: '3'
+  decision_type_class: CreateTag
+  user_id: '4'
+  created_on: '2012-11-05 02:24:33.930321'
+  updated_on: '2012-11-05 05:41:54.250819'
+  probability_right: '0.3'
+
+five:
+  id: '6'
+  decision_type_class: CreateTag
+  user_id: '5'
+  created_on: '2012-11-05 05:36:19.96368'
+  updated_on: '2012-11-05 05:41:54.267215'
+  probability_right: '0.1'

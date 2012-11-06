@@ -210,11 +210,19 @@ class Admin::ContenidosController < ApplicationController
     raise AccessDenied unless Authorization.can_tag_contents?(@user)
     @content = Content.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @content
+    valid_terms = []
+    params[:tags].split(",").each do |tag_id|
+      term = Term.find_by_id(tag_id.to_i)
+      next if term.nil?
+      valid_terms.append(term.name)
+    end
+
     UsersContentsTag.tag_content(
         @content,
         @user,
-        params[:tags],
+        valid_terms.join(" "),
         delete_missing=false)
+
     # TODO(slnc): crear los tags por ajax en lugar de redirigir
     redirect_to gmurl(@content)
   end

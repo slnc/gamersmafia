@@ -11,6 +11,7 @@ module Translation
     'CompetitionAdmin' => 'Admin de competiciones',
     'CompetitionSupervisor' => 'Supervisor de competiciones',
     'ContentModerationQueue' => 'Cola de moderación',
+    'CreateTag' => 'Crear tag',
     'DeleteContents' => 'Borrar contenidos',
     'Download' => 'Descarga',
     'EditContents' => 'Editar contenidos',

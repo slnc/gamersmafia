@@ -87,6 +87,10 @@ fixtures = [
 :staff_types,
 :staff_positions,
 :dictionary_words,
+:decisions,
+:decision_choices,
+:decision_user_reputations,
+:decision_user_choices,
  ]
 
 ENV['FIXTURES'] = fixtures.join(',')

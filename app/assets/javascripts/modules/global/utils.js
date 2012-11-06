@@ -3,10 +3,36 @@ Gm.Utils = function() {
     name: 'Utils',
 
     ContentInit: function() {
+      $('form').each(function() {
+        var f = $(this);
+        if (f.attr('data-remote-on-success-update') != '') {
+          f.on('ajax:complete', function(event, xhr, status) {
+            $(f.attr('data-remote-on-success-update')).html(xhr.responseText);
+          });
+        }
+      });
+
+      $('a[data-reveal-selector]').click(function() {
+        $($(this).attr('data-reveal-selector')).toggle();
+        return false;
+      });
     },
 
     FullPageInit: function() {
       this.ContentInit();
+    },
+
+    TagsAutocomplete: function(li, textInput, autocomplete) {
+      textInput.before('<span class="tag">' + $(li).text() + '</span>');
+      var valueInput = textInput.next();
+      var oldValue = valueInput.val();
+      if (oldValue) {
+        oldValue += ',';
+      }
+      valueInput.val(oldValue + $(li).attr('value'));
+      textInput.val('');
+			$(li).parent().hide();
+      textInput.focus();
     },
 
     rate_comment : function(comment_id, cvt_name, cvt_id) {

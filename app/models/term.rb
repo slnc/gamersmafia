@@ -58,10 +58,53 @@ class Term < ActiveRecord::Base
 
   def check_taxonomy
     if self.taxonomy && !self.class.taxonomies.include?(self.taxonomy)
-      self.errors.add('term', "Taxonomía '#{self.taxonomy}' incorrecta. Taxonomías válidas: #{self.class.taxonomies.join(', ')}")
+      self.errors.add(
+          "term",
+          "Taxonomía '#{self.taxonomy}' incorrecta. Taxonomías válidas:" +
+          " #{self.class.taxonomies.join(', ')}")
       false
     else
       true
+    end
+  end
+
+  def self.final_decision_made(decision)
+    case decision.decision_type_class
+    when "CreateTag"
+      user = User.find(decision.context[:initiating_user_id] || Ias.jabba.id)
+      if decision.final_decision_choice.name == Decision::BINARY_YES
+        decision.context[:initial_contents].each do |content_id|
+          content = Content.find_by_id(content_id.to_i)
+          if content.nil?
+            Rails.logger.error(
+                "'#{content_id}' is not a valid content id for a new tag." +
+                " Skipping..")
+            next
+          end
+          UsersContentsTag.tag_content(
+              content, user, decision.context[:tag_name], delete_missing=false)
+        end
+        user.notifications.create({
+          :sender_user_id => Ias.mrman.id,
+          :type_id => Notification::DECISION_RESULT,
+          :description => (
+              "¡Enhorabuena! Tu solicitud para crear el tag" +
+              " '#{decision.context[:tag_name]}' ha sido aceptada." +
+              " <a href=\"/decisiones/#{decision.id}\">Más información</a>."),
+        })
+      else  # no
+        user.notifications.create({
+          :sender_user_id => Ias.mrman.id,
+          :type_id => Notification::DECISION_RESULT,
+          :description => (
+              "Tu solicitud para crear el tag '#{decision.context[:tag_name]}'" +
+              " ha sido rechazada. <a href=\"/decisiones/#{decision.id}\">Más" +
+              " información</a>."),
+        })
+      end
+    else
+      raise ("final decision made on unknown type" +
+             " (#{decision.decision_type_class})")
     end
   end
 

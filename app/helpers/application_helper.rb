@@ -74,6 +74,14 @@ module ApplicationHelper
     out
   end
 
+  def js_trigger_content_init
+    """<script type=\"text/javascript\">$(document).ready(function() {
+    Gm.triggerContentInit();
+    });
+    </script>
+    """
+  end
+
   def positive_negative_bar(negative_count, neutral_count, positive_count)
     max = [negative_count, neutral_count, positive_count].sum
     pcent_negative = negative_count.to_f / max
@@ -292,6 +300,10 @@ module ApplicationHelper
     END
 
     out << '</select>'
+  end
+
+  def javascript(*files)
+    content_for(:head) { javascript_include_tag(*files) }
   end
 
   def color_selector(field_name, field_value)
@@ -1049,10 +1061,17 @@ skin: 'v2'
     glast_cls = 'glast' if options[:glast]
     blast_cls = 'blast' if options[:blast]
     class_cls = options[:class_container] if options[:class_container]
-    return '' if collection.size == 0 && !options[:show_even_if_empty]
+    if collection.size == 0 && options[:message_on_empty].nil? && !options[:show_even_if_empty]
+      return ''
+    end
     out = "<div class=\"module mf#{mode} #{grid_cls} #{glast_cls} #{blast_cls} #{class_cls} \""
     out << " id=\"#{options[:id]}\"" if options[:id]
     concat(out << "><div class=\"mtitle #{'mcontent-title' unless options[:no_mcontent_title]}\"><span>#{title}</span></div><div class=\"mcontent\">".force_encoding("utf-8"))
+
+    if collection.size == 0 && options[:message_on_empty]
+      concat(options[:message_on_empty])
+    end
+
     concat(((mode == 'list') ? '<ul>' : '<table>'))
     collection.each do |o|
       concat("<#{(mode == 'list') ? 'li' : 'tr'} class=\"#{oddclass} #{options[:class] if options[:class]} \">")

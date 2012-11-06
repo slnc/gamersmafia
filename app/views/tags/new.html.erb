@@ -1,0 +1,18 @@
+<%generic_support do%>
+<% end -%>
+
+<%content_main do %>
+  <%mftext("Nuevo tag") do%>
+  <form method="post" action="<%=tags_path%>">
+    Tag <input type="text" name="tag[name]" value="<%=params[:tag] && params[:tag][:name]%>" />
+    <br />
+    <br />
+    URL de contenidos iniciales a usar con este tag:<br />
+    <% UsersContentsTag::MIN_INITIAL_CONTENTS.times do |i| %>
+      Contenido <%=i+1%> <input type="text" name="tag[initial_contents][]" value="" />
+      <br />
+    <% end -%>
+    <input type="submit" value="Crear" />
+  </form>
+  <% end -%>
+<% end -%>

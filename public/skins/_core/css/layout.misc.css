@@ -92,3 +92,14 @@ img.downloads-count {
   background: #fff;
   border: 3px solid #ddd;
 }
+
+.text-input {
+  padding: 2px;
+  background: #fff;
+  border: 1px solid #ccc;
+}
+
+.text-input input[type=text] {
+  border: 0;
+  outline: 0;
+}

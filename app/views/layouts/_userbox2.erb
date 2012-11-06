@@ -61,9 +61,16 @@
 <%
   count_pending = controller.global_vars['pending_contents'].to_i %>
 	<div class="moderation-queue <%='has-pending' if count_pending > 0%> infoinline right" style="text-align: right; margin-bottom: 5px;">
-<a class="nav sprite1" href="/admin/contenidos" title="Ir a la cola de moderación">En cola (<span style="<%= 'font-weight: bold;' if count_pending > 0%>"><%=count_pending%></span>)</a></div>
-<div class="centered">
-	<div style="margin-bottom: 10px;"><a onclick="return open_new_content_selector();" href=""><img class="icon" src="/skins/default/images/btn_nuevo_contenido.png" /></a></div>
+    <a class="nav sprite1" href="/admin/contenidos" title="Ir a la cola de moderación">En cola (<span style="<%= 'font-weight: bold;' if count_pending > 0%>"><%=count_pending%></span>)</a>
+  </div>
+
+	<div class="moderation-queue <%='has-pending' if @user.pending_decisions%> infoinline right" style="display: inline-block; text-align: right; margin-bottom: 5px; padding-right: 5px;">
+    <a class="nav sprite1" href="/decisiones" title="Ver decisiones pendientes"></a>
+  </div>
+
+  <div class="centered">
+    <div style="margin-bottom: 10px;"><a onclick="return open_new_content_selector();" href=""><img class="icon" src="/skins/default/images/btn_nuevo_contenido.png" /></a>
+  </div>
 </div>
 </div>
 <% end -%>

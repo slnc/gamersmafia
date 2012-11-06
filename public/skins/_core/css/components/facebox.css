@@ -43,6 +43,8 @@
 
 #facebox .facebox-content {
     padding: 10px;
+    max-height: 600px;
+    overflow: auto;
 }
 
 #facebox .loading {
@@ -94,4 +96,8 @@
 
 .facebox-content .action-buttons {
 	text-align: right;
+}
+
+.facebox-content li {
+  margin-bottom: 6px;
 }

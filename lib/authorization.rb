@@ -64,6 +64,38 @@ module Authorization
     user.has_skill?("EditContents")
   end
 
+  def self.can_comment_on_decision?(user, decision)
+    self.can_vote_on_decision?(user, decision)
+  end
+
+  def self.decision_type_class_available_for_user(user)
+    Decision::DECISION_TYPE_CLASS_SKILLS.collect {|type_class, role|
+      user.has_skill?(role) ? type_class : nil
+    }.compact
+  end
+
+  def self.users_who_can_vote_on_decision(decision)
+    case decision.decision_type_class
+    when "CreateTag"
+      User.with_skill("CreateTag").find(:all)
+    else
+      raise (
+          "Unable to return users_who_can_vote_on_decision of type" +
+          " #{decision.decision_type_class}")
+    end
+  end
+
+  def self.can_vote_on_decision?(user, decision)
+    case decision.decision_type_class
+    when "CreateTag"
+      (user.has_skill?("CreateTag") &&
+       user.id != decision.context[:initiating_user_id].to_i)
+    else
+      raise ("Unable to determine authorization for decision type" +
+             " #{decision.decision_type_class}")
+    end
+  end
+
   def self.can_create_content?(user)
     User::STATES_CAN_LOGIN.include?(user.state) && user.antiflood_level < 5
   end
@@ -235,6 +267,10 @@ module Authorization
 
   def self.can_tag_contents?(user)
     user.has_skill?("TagContents")
+  end
+
+  def self.can_create_tags?(user)
+    user.has_skill?("CreateTag")
   end
 
   def self.gets_less_ads?(user)

@@ -4,9 +4,10 @@
 <head>
 <title><%=controller.title%></title>
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
-<%=css_includes.html_safe %>
-<%=javascript_includes.html_safe %>
-<%= javascript_include_tag "application" %>
+<%=css_includes.html_safe%>
+<%=javascript_includes.html_safe%>
+<%=javascript_include_tag "application"%>
+<%= yield(:head) %>
 <link rel="alternate" type="application/rss+xml" title="Feed RSS de Gamersmafia" href="/rss/noticias" />
 <%= analytics_code if App.enable_google_analytics? %>
 <% if controller.portal.code == 'diablo' then %>

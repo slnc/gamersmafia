@@ -1,0 +1,31 @@
+.decision-comment {
+  margin-bottom: 1rem;
+}
+
+.decision-comment p {
+  margin-top: 2px;
+}
+
+.decision-comments {
+  max-height: 500px;
+  overflow: auto;
+}
+
+.decision-comment-position {
+  font-weight: bold;
+}
+
+.decision-choices {
+  padding: 1rem 0;
+}
+
+.decision-choices.choice-type-binary  {
+  text-align: center;
+}
+
+.decision-choices.choice-type-binary input {
+}
+
+.decision-title-n-choice {
+  margin: 1rem 0;
+}
