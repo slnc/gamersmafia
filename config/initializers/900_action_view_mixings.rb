@@ -78,8 +78,10 @@ module ActionViewMixings
       lines_after << <<-END
 </div>
 <script type="text/javascript">
+$(document).ready(function () {
 Gm.Slnc.marklinks(
     'xab#{ab_test.id}-#{treatment}', '_xca=xab#{ab_test.id}-#{treatment}');
+});
 </script>
       END
     end
