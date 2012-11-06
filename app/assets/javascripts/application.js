@@ -2,7 +2,7 @@
 //= require jquery_ujs
 //= require_tree ./external
 //= require gm
-//= require_tree ./modules
+//= require_tree ./modules/global
 //= require_tree ./legacy
 
 $(document).ready(function() {
@@ -43,7 +43,6 @@ $(document).ready(function() {
     });
   });
   if ($.browser.msie) {
-    // TODO(slnc): hack
     $('.bbeditor').css('width', '100%');
   }
 
@@ -51,6 +50,15 @@ $(document).ready(function() {
 
   $('.autocomplete-me').each(function() {
     var t = $(this);
-    t.attr('autocomplete', 'off').autocomplete(t.attr('data-autocomplete-url'));
+    if (t.attr('data-autocomplete-click')) {
+      t.attr('autocomplete', 'off').autocomplete(t.attr('data-autocomplete-url'), {
+        click_fn: function(li, textInput, autocomplete) {
+          eval(t.attr('data-autocomplete-click') + '(li, textInput, autocomplete);');
+        },
+      });
+    } else {
+      t.attr('autocomplete', 'off').autocomplete(t.attr('data-autocomplete-url'));
+    }
   });
+
 });

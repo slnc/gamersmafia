@@ -68,4 +68,10 @@ class AuthorizationTest < ActiveSupport::TestCase
     assert_equal bd1.id, c1.my_bazar_district.id
     assert Authorization.can_delete_content?(u61, c1)
   end
+
+  test "decision_type_class_available_for_user" do
+    assert_equal(
+        ["CreateTag"],
+        Authorization.decision_type_class_available_for_user(User.find(5)))
+  end
 end

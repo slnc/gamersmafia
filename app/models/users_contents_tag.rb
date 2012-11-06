@@ -1,6 +1,8 @@
 # -*- encoding : utf-8 -*-
 class UsersContentsTag < ActiveRecord::Base
   MAX_TAGS_REFERENCES_BEFORE_DELETE = 25
+  MIN_INITIAL_CONTENTS = 5
+
   belongs_to :user
   belongs_to :term
   belongs_to :content
@@ -18,41 +20,6 @@ class UsersContentsTag < ActiveRecord::Base
       ' (solo se permiten letras, numeros y puntos)')
   validates_uniqueness_of :term_id, :scope => [:content_id, :user_id]
 
-  def downcase_name
-    self.original_name.downcase!
-  end
-
-  private
-  def resolve_term
-    if (Cms::ROOT_TERMS_CONTENTS + Cms::CATEGORIES_TERMS_CONTENTS).include?(
-        self.content.content_type.name)
-      mc = self.content.real_content.main_category
-      if (Term.top_level.count(
-              :conditions => [
-                  'taxonomy IS NULL AND (lower(name) = ? or slug = ?)',
-              self.original_name, self.original_name]) > 0 ||
-          mc.slug == self.original_name ||
-          mc.name.downcase == self.original_name)
-        return false
-      end
-    end
-
-    t = Term.contents_tags.find_by_name(self.original_name.downcase)
-    if t.nil?
-      t = Term.create(:taxonomy => 'ContentsTag', :name => self.original_name)
-      raise ("Unable to create term for ContentsTag: " +
-            "#{t.errors.full_messages_html}") if t.new_record?
-      Rails.logger.info("Automatically created ContentsTag: #{t}")
-    end
-    self.term_id = t.id
-
-    # El validates_uniqueness_of de arriba no está funcionando
-    UsersContentsTag.count(
-        :conditions => ['term_id = ? AND user_id = ? AND content_id = ?',
-                        self.term_id, self.user_id, self.content_id]) == 0
-  end
-
-  public
   def self.tag_content(content, user, tag_str, delete_missing=true)
     return if tag_str.length > 300 or tag_str.count(' ') > 10
     tags_to_delete = content.users_contents_tags.find(
@@ -104,5 +71,39 @@ class UsersContentsTag < ActiveRecord::Base
        :relative_pcent => dbr['count'].to_i / total},
      ]
     end
+  end
+
+  def downcase_name
+    self.original_name.to_s.downcase!
+  end
+
+  private
+  def resolve_term
+    if (Cms::ROOT_TERMS_CONTENTS + Cms::CATEGORIES_TERMS_CONTENTS).include?(
+        self.content.content_type.name)
+      mc = self.content.real_content.main_category
+      if (Term.top_level.count(
+              :conditions => [
+                  'taxonomy IS NULL AND (lower(name) = ? or slug = ?)',
+              self.original_name, self.original_name]) > 0 ||
+          mc.slug == self.original_name ||
+          mc.name.downcase == self.original_name)
+        return false
+      end
+    end
+
+    t = Term.contents_tags.find_by_name(self.original_name.downcase)
+    if t.nil?
+      t = Term.create(:taxonomy => 'ContentsTag', :name => self.original_name)
+      raise ("Unable to create term for ContentsTag: " +
+            "#{t.errors.full_messages_html}") if t.new_record?
+      Rails.logger.info("Automatically created ContentsTag: #{t}")
+    end
+    self.term_id = t.id
+
+    # El validates_uniqueness_of de arriba no está funcionando
+    UsersContentsTag.count(
+        :conditions => ['term_id = ? AND user_id = ? AND content_id = ?',
+                        self.term_id, self.user_id, self.content_id]) == 0
   end
 end

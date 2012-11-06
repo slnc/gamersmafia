@@ -1,5 +1,17 @@
 # -*- encoding : utf-8 -*-
 Gamersmafia::Application.routes.draw do
+  get "decision_user_choices/create"
+
+  get "decision_comments/create"
+
+  resources :decisions, :path => "decisiones" do
+    member do
+      post 'decide'
+    end
+    resources :decision_comments do
+    end
+  end
+
   resources :content2s
 
   get "notificaciones/index"
@@ -19,7 +31,6 @@ Gamersmafia::Application.routes.draw do
     resources :staff_candidates,
         :path => "candidatos",
         :path_names => { :new => "nuevo" } do
-
       member do
         get 'deny'
         get 'delete'
@@ -28,7 +39,12 @@ Gamersmafia::Application.routes.draw do
     end
   end
 
-  resources :tags
+  resources :tags, :path_names => { :new => "nuevo" } do
+    collection do
+      get 'autocomplete'
+    end
+  end
+
   namespace :admin do
       resources :tags
   end

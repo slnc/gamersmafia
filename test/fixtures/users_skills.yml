@@ -126,3 +126,18 @@ superadmin_bank:
   user_id: 1
   role: Bank
 
+superadmin_tag_contents:
+  id: 25
+  user_id: 1
+  role: TagContents
+
+superadmin_create_tag:
+  id: 26
+  user_id: 1
+  role: CreateTag
+
+superadmin_tag_contents:
+  id: 27
+  user_id: 5
+  role: CreateTag
+

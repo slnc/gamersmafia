@@ -960,6 +960,82 @@ CREATE TABLE coverages (
     closed boolean DEFAULT false NOT NULL,
     unique_content_id integer
 );
+CREATE TABLE decision_choices (
+    id integer NOT NULL,
+    decision_id integer NOT NULL,
+    name character varying
+);
+CREATE SEQUENCE decision_choices_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE decision_choices_id_seq OWNED BY decision_choices.id;
+CREATE TABLE decision_comments (
+    id integer NOT NULL,
+    decision_id integer NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    comment character varying
+);
+CREATE SEQUENCE decision_comments_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE decision_comments_id_seq OWNED BY decision_comments.id;
+CREATE TABLE decision_user_choices (
+    id integer NOT NULL,
+    decision_id integer NOT NULL,
+    user_id integer NOT NULL,
+    decision_choice_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    probability_right double precision NOT NULL
+);
+CREATE SEQUENCE decision_user_choices_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE decision_user_choices_id_seq OWNED BY decision_user_choices.id;
+CREATE TABLE decision_user_reputations (
+    id integer NOT NULL,
+    decision_type_class character varying NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    probability_right double precision NOT NULL
+);
+CREATE SEQUENCE decision_user_reputations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE decision_user_reputations_id_seq OWNED BY decision_user_reputations.id;
+CREATE TABLE decisions (
+    id integer NOT NULL,
+    decision_type_class character varying NOT NULL,
+    choice_type_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    state integer NOT NULL,
+    min_user_choices integer NOT NULL,
+    context text,
+    final_decision_choice_id integer
+);
+CREATE SEQUENCE decisions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE decisions_id_seq OWNED BY decisions.id;
 CREATE TABLE delayed_jobs (
     id integer NOT NULL,
     priority integer DEFAULT 0,
@@ -2707,7 +2783,8 @@ CREATE TABLE users (
     cache_valorations_weights_on_self_comments numeric,
     default_comments_valorations_weight double precision DEFAULT 1.0 NOT NULL,
     last_karma_skill_points integer DEFAULT 0 NOT NULL,
-    has_unread_notifications boolean DEFAULT false NOT NULL
+    has_unread_notifications boolean DEFAULT false NOT NULL,
+    pending_decisions boolean DEFAULT false NOT NULL
 );
 CREATE TABLE users_actions (
     id integer NOT NULL,
@@ -3117,6 +3194,11 @@ ALTER TABLE ONLY contents_recommendations ALTER COLUMN id SET DEFAULT nextval('c
 ALTER TABLE ONLY contents_terms ALTER COLUMN id SET DEFAULT nextval('contents_terms_id_seq'::regclass);
 ALTER TABLE ONLY contents_versions ALTER COLUMN id SET DEFAULT nextval('contents_versions_id_seq'::regclass);
 ALTER TABLE ONLY coverages ALTER COLUMN id SET DEFAULT nextval('events_news_id_seq'::regclass);
+ALTER TABLE ONLY decision_choices ALTER COLUMN id SET DEFAULT nextval('decision_choices_id_seq'::regclass);
+ALTER TABLE ONLY decision_comments ALTER COLUMN id SET DEFAULT nextval('decision_comments_id_seq'::regclass);
+ALTER TABLE ONLY decision_user_choices ALTER COLUMN id SET DEFAULT nextval('decision_user_choices_id_seq'::regclass);
+ALTER TABLE ONLY decision_user_reputations ALTER COLUMN id SET DEFAULT nextval('decision_user_reputations_id_seq'::regclass);
+ALTER TABLE ONLY decisions ALTER COLUMN id SET DEFAULT nextval('decisions_id_seq'::regclass);
 ALTER TABLE ONLY delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_id_seq'::regclass);
 ALTER TABLE ONLY demo_mirrors ALTER COLUMN id SET DEFAULT nextval('demo_mirrors_id_seq'::regclass);
 ALTER TABLE ONLY demos ALTER COLUMN id SET DEFAULT nextval('demos_id_seq'::regclass);
@@ -3371,6 +3453,16 @@ ALTER TABLE ONLY contents_versions
     ADD CONSTRAINT contents_versions_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY countries
     ADD CONSTRAINT countries_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY decision_choices
+    ADD CONSTRAINT decision_choices_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY decision_comments
+    ADD CONSTRAINT decision_comments_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY decision_user_choices
+    ADD CONSTRAINT decision_user_choices_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY decision_user_reputations
+    ADD CONSTRAINT decision_user_reputations_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY decisions
+    ADD CONSTRAINT decisions_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY delayed_jobs
     ADD CONSTRAINT delayed_jobs_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY demo_mirrors
@@ -3721,6 +3813,13 @@ CREATE INDEX contents_terms_content_id ON contents_terms USING btree (content_id
 CREATE INDEX contents_terms_term_id ON contents_terms USING btree (term_id);
 CREATE UNIQUE INDEX contents_terms_uniq ON contents_terms USING btree (content_id, term_id);
 CREATE INDEX contents_user_id_state ON contents USING btree (user_id, state);
+CREATE INDEX decision_choices_common ON decision_choices USING btree (decision_id);
+CREATE INDEX decision_comments_decision_idx ON decision_comments USING btree (decision_id);
+CREATE INDEX decision_comments_user_idx ON decision_comments USING btree (user_id);
+CREATE INDEX decision_final_decision_choice_id ON decisions USING btree (final_decision_choice_id);
+CREATE INDEX decision_user_choices_uniq ON decision_user_choices USING btree (decision_id, user_id);
+CREATE INDEX decisions_type_class_state ON decisions USING btree (decision_type_class, state);
+CREATE UNIQUE INDEX decisions_user_reputation_uniq ON decision_user_reputations USING btree (user_id, decision_type_class);
 CREATE INDEX demos_approved_by_user_id ON demos USING btree (approved_by_user_id);
 CREATE INDEX demos_approved_by_user_id_deleted ON demos USING btree (approved_by_user_id, deleted);
 CREATE UNIQUE INDEX demos_categories_unique ON demos_categories USING btree (name, parent_id);
@@ -3828,6 +3927,7 @@ CREATE UNIQUE INDEX tutorials_categories_unique ON tutorials_categories USING bt
 CREATE INDEX tutorials_state ON tutorials USING btree (state);
 CREATE INDEX tutorials_user_id ON tutorials USING btree (user_id);
 CREATE INDEX user_interests_entity_class_entity_id ON user_interests USING btree (entity_type_class, entity_id);
+CREATE UNIQUE INDEX user_interests_uniq ON user_interests USING btree (user_id, entity_type_class, entity_id);
 CREATE INDEX user_interests_user_id ON user_interests USING btree (user_id);
 CREATE INDEX users_actions_created_on ON users_actions USING btree (created_on);
 CREATE INDEX users_cache_remaning ON users USING btree (cache_remaining_rating_slots) WHERE (cache_remaining_rating_slots IS NOT NULL);
@@ -3916,6 +4016,22 @@ ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY coverages
     ADD CONSTRAINT coverages_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
+ALTER TABLE ONLY decision_choices
+    ADD CONSTRAINT decision_choices_decision_id_fkey FOREIGN KEY (decision_id) REFERENCES decisions(id) MATCH FULL ON DELETE CASCADE;
+ALTER TABLE ONLY decision_comments
+    ADD CONSTRAINT decision_comments_decision_id_fkey FOREIGN KEY (decision_id) REFERENCES decisions(id) MATCH FULL ON DELETE CASCADE;
+ALTER TABLE ONLY decision_comments
+    ADD CONSTRAINT decision_comments_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
+ALTER TABLE ONLY decision_user_choices
+    ADD CONSTRAINT decision_user_choices_decision_choice_id_fkey FOREIGN KEY (decision_choice_id) REFERENCES decision_choices(id) MATCH FULL ON DELETE CASCADE;
+ALTER TABLE ONLY decision_user_choices
+    ADD CONSTRAINT decision_user_choices_decision_id_fkey FOREIGN KEY (decision_id) REFERENCES decisions(id) MATCH FULL ON DELETE CASCADE;
+ALTER TABLE ONLY decision_user_choices
+    ADD CONSTRAINT decision_user_choices_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
+ALTER TABLE ONLY decision_user_reputations
+    ADD CONSTRAINT decision_user_reputations_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
+ALTER TABLE ONLY decisions
+    ADD CONSTRAINT decisions_final_decision_choice_id_fkey FOREIGN KEY (final_decision_choice_id) REFERENCES decision_choices(id) ON DELETE SET NULL;
 ALTER TABLE ONLY demos
     ADD CONSTRAINT demos_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id);
 ALTER TABLE ONLY demos
@@ -3950,6 +4066,8 @@ ALTER TABLE ONLY events
     ADD CONSTRAINT events_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
+ALTER TABLE ONLY decisions
+    ADD CONSTRAINT final_decision_choice_fk FOREIGN KEY (final_decision_choice_id) REFERENCES decision_choices(id) MATCH FULL ON DELETE SET NULL;
 ALTER TABLE ONLY topics
     ADD CONSTRAINT forum_topics_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY funthings

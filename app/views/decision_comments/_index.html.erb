@@ -1,0 +1,32 @@
+<%cache("/common/decision_comments/#{decision.id % 1000}/#{decision.id}/decision_comments_#{decision.updated_on.to_i}") do %>
+<div class="decision-comments">
+  <% i = 1 %>
+  <%decision.decision_comments.find(:all, :order => 'id').each do |decision_comment| %>
+    <div class="decision-comment">
+    <div class="decision-comment-header">
+      <span class="decision-comment-position">#<%=i%></span>
+      <div style="float: right;" class="infoinline timestamp">
+        <%=print_tstamp(decision_comment.created_on)%>
+      </div>
+      <%=avatar_img(decision_comment.user, :very_small)%>
+      <%=user_link(decision_comment.user)%>
+    </div>
+    <div class="decision-comment-content">
+      <%=Formatting.format_bbcode(decision_comment.comment)%>
+    </div>
+    </div>
+    <% i += 1 %>
+  <% end -%>
+  <div class="new-comment">
+    <% if user_is_authed && Authorization.can_comment_on_decision?(@user, decision) %>
+      <form method="post" action="<%=decision_decision_comments_url(decision)%>"
+        data-remote="true" data-remote-on-success-update=".decision-comments">
+      <textarea style="width: 20rem;" name="comment"></textarea>
+      <br />
+      <input type="submit" value="Comentar" />
+    </form>
+  <% end -%>
+  </div>
+</div>
+<%=js_trigger_content_init%>
+<% end -%>

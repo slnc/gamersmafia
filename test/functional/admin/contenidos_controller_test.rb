@@ -227,14 +227,16 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
 
   test "tag_content should work if skill" do
     give_skill(1, "TagContents")
+    t = Term.create(:taxonomy => "ContentsTag", :name => "fumanchu")
     sym_login 1
-    assert_difference("Term.contents_tags.count", 6) do
-      post :tag_content, :id => 1, :tags => 'fumanchu se fue a la guerra'
+    assert_difference("UsersContentsTag.count", 1) do
+      post :tag_content, :id => 1, :tags => "#{t.id},"
     end
     assert_response :redirect
   end
 
   test "remove_user_tag shouldnt work if no skill" do
+    Term.create(:taxonomy => "TagContents", :name => "fumanchu")
     test_tag_content_should_work_if_skill
     remove_skill(1, "TagContents")
 

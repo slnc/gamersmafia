@@ -102,6 +102,9 @@ class User < ActiveRecord::Base
   has_many :contents, :dependent => :destroy
   has_many :publishing_personalities
   has_many :publishing_decisions
+  has_many :decisions
+  has_many :decision_user_choices
+  has_many :decision_user_reputations
   has_many :tracker_items
   has_many :user_login_changes
   has_many :users_newsfeeds
@@ -215,6 +218,11 @@ class User < ActiveRecord::Base
             " (now() - '3 months'::interval)")
 
   scope :settled, :conditions => "created_on <= now() - '1 month'::interval"
+
+  scope :with_skill, lambda { |role|
+    {:conditions => ["id IN (SELECT user_id FROM users_skills WHERE role = ?)",
+                     role]}
+  }
 
   scope :with_interest, lambda { |entity_class_name, entity_id|
     {:conditions => ["id IN (

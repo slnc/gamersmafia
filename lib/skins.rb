@@ -38,9 +38,9 @@ module Skins
   def self.update_portal_favicons
     entities_with_portals = (
         BUILTIN_PORTALS +
-        Game.find(:all, :order => 'lower(name) ASC') +
-        GamingPlatform.find(:all, :order => 'lower(name) ASC') +
-        BazarDistrict.find(:all, :order => 'lower(name) ASC')
+        BazarDistrict.find(:all, :order => 'id') +
+        GamingPlatform.find(:all, :order => 'id') +
+        Game.find(:all, :order => 'id')
     )
     css_out = ''
     sprite = Magick::Image.new(entities_with_portals.size * 16, 16) { |im|

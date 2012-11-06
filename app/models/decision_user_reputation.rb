@@ -1,0 +1,64 @@
+class DecisionUserReputation < ActiveRecord::Base
+  belongs_to :user
+
+  MIN_CHOICES_FOR_100 = 10
+
+  def self.get_user_probability_for(user, decision_type_class)
+    reputation = user.decision_user_reputations.find_by_decision_type_class(
+        decision_type_class)
+    if reputation.nil?
+      reputation = DecisionUserReputation.create({
+        :user_id => user.id,
+        :decision_type_class => decision_type_class,
+        :probability_right => 0,
+      })
+    elsif reputation.updated_on <= 1.month.ago
+      reputation.update_probability_right
+    end
+    reputation.probability_right
+  end
+
+  def update_probability_right
+    total_choices = self.user.decision_user_choices.recent.count(
+        :conditions => [
+          "decisions.decision_type_class = ?
+           AND decisions.state = #{Decision::DECIDED}",
+          self.decision_type_class], :include => :decision)
+
+    right_choices = self.user.decision_user_choices.recent.count(
+        :conditions => [
+          "decisions.decision_type_class = ?
+           AND decision_choice_id IN (
+             SELECT final_decision_choice_id
+             FROM decisions
+             WHERE created_on >= now() - '3 months'::interval)
+             AND decisions.state = #{Decision::DECIDED}",
+          self.decision_type_class],
+        :include => :decision)
+
+
+    g = right_choices
+    b = total_choices - g
+    # a = penalty for mistakes, [0, +inf), 0: no mistakes, no penalties, 100%
+    a = (b**2).to_f / [g, 1].max
+    # good decisions weighted by historical trend
+    w_g = (g * (1 - a)).to_f
+    w_b = b * a
+    p_g = w_g.to_f / [w_g + w_b, 1].max
+    # Rails.logger.warn(
+    #     "g: #{g}, b: #{b}, a: #{a}, w_g: #{w_g}, w_b: #{w_b}, p_g: #{p_g}")
+
+    # We now have a probability of a user being right given the weighted ratio
+    # of good and bad. However for users with too few choices we still don't
+    # have enough info and therefore we put an artificial burden on the ratio.
+    if total_choices < MIN_CHOICES_FOR_100
+      p_g *= (total_choices.to_f / MIN_CHOICES_FOR_100)
+      # Rails.logger.warn("new p_g: #{p_g}")
+    end
+
+    # We give the webmaster 100% probability of being right to seed the system
+    p_g = 1.0 if user.has_skill?("Webmaster")
+
+    self.update_attribute(:probability_right, p_g)
+  end
+end

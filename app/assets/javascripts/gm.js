@@ -8,6 +8,13 @@ Gm = function() {
       return registeredModules;
     },
 
+    triggerContentInit: function() {
+      var modules = Gm.getModules();
+      for (var i in modules) {
+        modules[i].FullPageInit();
+      }
+    },
+
     registerModule: function(module) {
       registeredModules.push(module);
     },

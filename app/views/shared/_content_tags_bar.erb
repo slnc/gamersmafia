@@ -2,13 +2,15 @@
 <div id="tags" class="f_sm infoinline">
 	<div class="system">
 		<img src="/images/dot.gif" title="Tags de sistema" class="floatl system-tag-icon ico16 sprite1" />
-		<div class="tag"><a href="/<%=Cms::CONTENTS_CONTROLLERS[object.content_type.name]%>"><%=Cms::CLASS_NAMES[object.content_type.name]%></a></div>
+    <div class="tag">
+      <a href="/<%=Cms::CONTENTS_CONTROLLERS[object.content_type.name]%>"><%=Cms::CLASS_NAMES[object.content_type.name]%></a>
+    </div>
 
 		<% if Cms::CATEGORIES_TERMS_CONTENTS.include?(object.content_type.name) then
 		root_slugs = []
 
 	%>
-	<% object.terms.find(:all, :conditions => 'taxonomy LIKE \'%Category\'').each do |tt|
+	<% object.terms.find(:all, :conditions => "taxonomy LIKE '%Category'").each do |tt|
 		this_root = tt.root
 %>
 <% if !root_slugs.include?(this_root) then
@@ -28,7 +30,10 @@ root_slugs<< this_root
 	<div id="top-content-tags">
 	<img src="/images/dot.gif" title="Tags de usuario" class="floatl user-tag-icon ico16 sprite1" />
 	<%object.terms.contents_tags.find(:all, :order => 'lower(name)').each do |t| %>
-		<div class="tag"><a title="Ver los <%=t.contents_count%> contenidos con este mismo tag" href="/tags/<%=t.slug%>"><%=t.name%></a> <span title="Contenidos con el mismo tag">(<%=t.contents_count%>)</span></div>
+    <div class="tag">
+      <a title="Ver los <%=t.contents_count%> contenidos con este mismo tag" href="/tags/<%=t.slug%>"><%=t.name%></a>
+      <span title="Contenidos con el mismo tag">(<%=t.contents_count%>)</span>
+    </div>
 	<% end -%>
 	<div class="clearl"></div>
 	</div>
@@ -41,12 +46,20 @@ root_slugs<< this_root
 <% # TODO(slnc): crear el elemento por ajax %>
 <%= form_tag('/admin/contenidos/tag_content') do %>
   <input type="hidden" name="id" value="<%=object.id%>" />
-  <input style="display: none;" id="new-tag-input-text" type="text" name="tags" />
+  <div id="tags-placeholder" class="text-input">
+    <input id="new-tag-input-text" type="text" name="tags"
+      class="autocomplete-me" data-autocomplete-url="/tags/autocomplete"
+      data-autocomplete-click="Gm.Utils.TagsAutocomplete" />
+  </div>
+  <input type="submit" id="new-tags-submit" class="button" value="Asociar" />
 <% end -%>
 </div>
 
 <div id="my-content-tags">
-<%object.users_contents_tags.find(:all, :conditions => ['user_id = ?', @user.id], :order => 'lower(original_name)').each do |uct| %>
+  <%object.users_contents_tags.find(
+      :all,
+      :conditions => ['user_id = ?', @user.id],
+      :order => 'lower(original_name)').each do |uct| %>
 	<div class="tag one-of-my-tags" id="one-of-my-tags<%=uct.id%>">
 	<div style="display: none;" class="one-of-my-tags-ops" id="one-of-my-tags-ops<%=uct.id%>">
     <%=link_to(
@@ -64,11 +77,15 @@ root_slugs<< this_root
 <% end %><%# if user_is_authed -%>
 
 <script type="text/javascript">
-$('#tag-this-content').click(function () {
-  var text_input = $('#new-tag-input-text');
-  text_input.toggle();
-  if (text_input.is(":visible")) {
-    $('#new-tag-input-text').focus();
+$('#tag-this-content').unbind('click').click(function () {
+  var tagsPlaceholder = $('#tags-placeholder');
+  var newTagsSubmit = $('#new-tags-submit');
+  var tagsInput = $('#new-tag-input-text');
+  tagsPlaceholder.toggle();
+  if (tagsPlaceholder.is(":visible")) {
+    newTagsSubmit.show();
+    tagsInput.show();
+    tagsInput.focus();
   }
 });
 
@@ -79,7 +96,6 @@ $('.one-of-my-tags').mouseout(function () {
   $(this).children('.one-of-my-tags-ops').hide();
 });
 </script>
-
 
 <div class="clearl"></div>
 </div>
