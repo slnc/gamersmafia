@@ -29,3 +29,11 @@
 .decision-title-n-choice {
   margin: 1rem 0;
 }
+
+.decision-participants {
+  margin-top: 1rem;
+}
+
+.decision-context table {
+  margin-left: 10%;
+}

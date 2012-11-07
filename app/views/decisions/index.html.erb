@@ -11,7 +11,7 @@
 <% end -%>
 
 <%content_main do %>
-  <%mftable("Decisiones pendientes accesibles",
+  <%mftable("Decisiones pendientes sin tu voto",
             pending_decisions_for_user(@user),
             :message_on_empty => "No hay decisiones pendientes.",
             :no_mcontent_title => true) do |decision| %>
@@ -26,10 +26,27 @@
       </tr>
   <% end -%>
 
+  <%mftable("Resto de decisiones pendientes",
+            Decision.pending.find(:all, :order => 'created_on DESC'),
+            :message_on_empty => "No hay decisiones pendientes.",
+            :no_mcontent_title => true) do |decision|
+    next if decision.has_vote_from(@user)
+          %>
+      <tr id="decision<%=decision.id%>">
+        <td class="w150"><%=gm_translate(decision.decision_type_class)%></td>
+        <td><a class="decision-pending" data-decision-id="<%=decision.id%>"
+            href="<%=decision_path(decision)%>"><%=decision.decision_description%></a>
+        </td>
+        <td class="w100"><%=draw_pcent_bar(decision.completion_ratio)%></td>
+        <td class="w50"><span class="members-count"><%=decision.decision_user_choices.count%></span></td>
+        <td class="timestamp infoinline"><%=print_tstamp(decision.created_on)%></td>
+      </tr>
+  <% end -%>
+
   <%mftable("Últimas decisiones tomadas",
             Decision.decided.find(
                 :all, :order => 'updated_on DESC', :limit => 30),
-            :message_on_empty => "No hay decisiones pendientes.",
+            :message_on_empty => "No hay últimas decisiones.",
             :no_mcontent_title => true) do |decision| %>
       <tr id="decision<%=decision.id%>">
         <td class="w150"><%=gm_translate(decision.decision_type_class)%></td>

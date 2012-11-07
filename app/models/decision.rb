@@ -94,12 +94,15 @@ class Decision < ActiveRecord::Base
     pending_count = 0
     type_classes = Authorization.decision_type_class_available_for_user(u)
     Decision.pending.with_type_class(type_classes).find(:all).each do |decision|
-      if decision.decision_user_choices.count(
-            :conditions => ["user_id = ?", u.id]) == 0
+      if !self.has_vote_from(u)
         return true
       end
     end
     false
+  end
+
+  def has_vote_from(u)
+    self.decision_user_choices.count(:conditions => ["user_id = ?", u.id]) == 0
   end
 
   def pending_decisions_indicators

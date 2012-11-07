@@ -1,5 +1,5 @@
-<%cache("/common/decision_comments/#{decision.id % 1000}/#{decision.id}/decision_comments_#{decision.updated_on.to_i}") do %>
 <div class="decision-comments">
+<%cache("/common/decision_comments/#{decision.id % 1000}/#{decision.id}/decision_comments_#{decision.updated_on.to_i}") do %>
   <% i = 1 %>
   <%decision.decision_comments.find(:all, :order => 'id').each do |decision_comment| %>
     <div class="decision-comment">
@@ -17,7 +17,9 @@
     </div>
     <% i += 1 %>
   <% end -%>
+<% end -%>
   <div class="new-comment">
+<% if @decision.state == Decision::PENDING %>
     <% if user_is_authed && Authorization.can_comment_on_decision?(@user, decision) %>
       <form method="post" action="<%=decision_decision_comments_url(decision)%>"
         data-remote="true" data-remote-on-success-update=".decision-comments">
@@ -26,7 +28,7 @@
       <input type="submit" value="Comentar" />
     </form>
   <% end -%>
+  <% end -%>
   </div>
 </div>
 <%=js_trigger_content_init%>
-<% end -%>

@@ -8,8 +8,7 @@ class CreateDecisions < ActiveRecord::Migration
       updated_on timestamp not null default now(),
       state int not null,
       min_user_choices int not null,
-      context text);
-    ")
+      context text);"
 
     execute "create index decisions_type_class_state on decisions(decision_type_class, state);"
 

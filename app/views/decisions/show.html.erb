@@ -19,6 +19,7 @@
 <% end -%>
 </div>
 
+<% if @decision.state == Decision::PENDING %>
 <div class="decision-choices choice-type-<%=@decision.choice_type_name%> <%="hidden" if current_choice%>">
   <form method="post" action="<%=decide_decision_path(@decide)%>"
     data-remote="true" data-decision-id="<%=@decision.id%>"
@@ -34,6 +35,19 @@
 <% end %>
 </form>
 </div>
+<% else %>
+  <div class="centered">
+    Decisión: <strong><%=@decision.final_decision_choice.name%></strong>
+  </div>
+  <div class="decision-participants">
+    Han participado en esta decisión:
+    <ul>
+      <%@decision.decision_user_choices.find(:all, :order => 'LOWER(users.login)', :include => :user).each do |choice|%>
+        <li><%=user_link(choice.user)%></li>
+      <% end -%>
+    </ul>
+  </div>
+<% end -%>
 
 <%=render :partial => '/decision_comments/index', :locals => {:decision => @decision}%>
 

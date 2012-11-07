@@ -33,9 +33,10 @@ module DecisionsHelper
           out.append("<li><a href=\"#{Routing.gmurl(content)}\">#{content.name}</a></li>")
         end
       end
+      out.append("</ul>")
 
       if decision.context[:tag_overlaps].size > 0
-        out.append("<table><tr><th>Tag</th><th>Solapamiento</th></tr>")
+        out.append("<table><tr><th class=\"w125\">Tag</th><th>Solapamiento</th></tr>")
         sorted_overlaps = decision.context[:tag_overlaps].sort_by{|term_id, overlap|
           Term.find(term_id.to_i).name
         }

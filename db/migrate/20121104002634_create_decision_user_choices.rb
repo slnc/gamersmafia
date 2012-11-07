@@ -33,6 +33,6 @@ class CreateDecisionUserChoices < ActiveRecord::Migration
 
    execute("alter table decisions add column final_decision_choice_id int references decision_choices on delete set null;");
    execute("create index decision_final_decision_choice_id on decisions(final_decision_choice_id);");
-   execute("alter table decisions add constraint $4 foreign key(final_decision_choice_id) references decision_choices match full on delete set null;");
+   execute("alter table decisions add constraint decisions_final_fk foreign key(final_decision_choice_id) references decision_choices match full on delete set null;");
   end
 end
