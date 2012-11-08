@@ -45,7 +45,6 @@ class TagsControllerTest < ActionController::TestCase
   end
 
   test "create" do
-    give_skill(1, "CreateTag")
     sym_login 1
     assert_difference("Decision.count") do
       post :create, {

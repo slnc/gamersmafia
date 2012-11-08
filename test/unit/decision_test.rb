@@ -5,7 +5,7 @@ class DecisionTest < ActiveSupport::TestCase
   test "constants match" do
     self.assert_equal(
         Decision::DECISION_TYPE_CLASS_SKILLS.keys.sort,
-        Decision::DECISION_TYPE_CHOICES.sort)
+        Decision::DECISION_TYPE_CHOICES.keys.sort)
   end
 
   test "choice_type_name" do
@@ -36,14 +36,17 @@ class DecisionTest < ActiveSupport::TestCase
   test "update_pending_decisions_indicators" do
     User.db_query("DELETE FROM decision_user_choices")
     u2 = User.find(2)
-    u2.users_skills.create(:role => "CreateTag")
+    give_skill(u2, "CreateTag")
+    u5 = User.find(5)
+
     Decision.update_pending_decisions_indicators
-    u2.reload
+
     # No because no skill
-    assert !User.find(1).pending_decisions
+    assert !User.find(61).pending_decisions
     # No because he is the initiating_user_id
     assert !User.find(5).pending_decisions
     # Yes because skill and not the initiating_user_id
+    u2.reload
     assert u2.pending_decisions
   end
 
@@ -57,10 +60,13 @@ class DecisionTest < ActiveSupport::TestCase
     u2 = User.find(2)
     u2.users_skills.create(:role => "CreateTag")
     d6 = Decision.find(6)
+
     d6.update_pending_decisions_indicators
+
     u2.reload
+
     # No because no skill
-    assert !User.find(1).pending_decisions
+    assert !User.find(61).pending_decisions
     # No because he is the initiating_user_id
     assert !User.find(5).pending_decisions
     # Yes because skill and not the initiating_user_id

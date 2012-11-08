@@ -15,10 +15,10 @@ class DecisionsControllerTest < ActionController::TestCase
 
   test "decide if initiating_user_id" do
     d6 = Decision.find(6)
-    u1 = User.find(1)
+    u5 = User.find(5)
     User.db_query("DELETE FROM decision_user_choices")
-    sym_login u1.id
     winner = d6.decision_choices.last
+    sym_login u5.id
     assert_raises(AccessDenied) do
       post :decide, {
         :id => Decision.first.id,

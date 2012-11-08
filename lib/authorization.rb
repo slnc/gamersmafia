@@ -75,8 +75,8 @@ module Authorization
   end
 
   def self.users_who_can_vote_on_decision(decision)
-    skill = Decision::DECISION_TYPE_CLASS_SKILLS[
-        decision.fetch(decision.decision_type_class)]
+    skill = Decision::DECISION_TYPE_CLASS_SKILLS.fetch(
+        decision.decision_type_class)
     User.with_skill(skill).find(:all)
   end
 

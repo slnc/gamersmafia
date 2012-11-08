@@ -3,6 +3,20 @@ class DecisionUserReputation < ActiveRecord::Base
 
   MIN_CHOICES_FOR_100 = 10
 
+  def self.recalculate_all_user_reputations
+    Decision::DECISION_TYPE_CLASS_SKILLS.keys.each do |decision_type|
+      User.find(
+          :all,
+          :conditions => "id IN
+            (SELECT distinct(user_id)
+              FROM decision_user_choices a
+              JOIN decisions b on a.decision_id = b.id
+              WHERE b.decision_type_class = '#{decision_type}')").each do |u|
+        self.get_user_probability_for(u, decision_type)
+      end
+    end
+  end
+
   def self.get_user_probability_for(user, decision_type_class)
     reputation = user.decision_user_reputations.find_by_decision_type_class(
         decision_type_class)
@@ -35,7 +49,6 @@ class DecisionUserReputation < ActiveRecord::Base
              AND decisions.state = #{Decision::DECIDED}",
           self.decision_type_class],
         :include => :decision)
-
 
     g = right_choices
     b = total_choices - g
