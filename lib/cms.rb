@@ -905,10 +905,16 @@ module Cms
   end
 
   def self.get_editable_terms_by_group(u)
-    terms = {:games => [], :gaming_platforms => [], :clans => [], :bazar_districts => [], :special => []}
+    terms = {
+      :games => [],
+      :gaming_platforms => [],
+      :clans => [],
+      :bazar_districts => [],
+      :special => [],
+    }
 
-    if u.has_skill?("Capo")
-      Term.top_level(:conditions => 'taxonomy <> \'ContentsTag\'').each do |t|
+    if u.has_any_skill?(%w(Capo Webmaster))
+      Term.top_level(:conditions => "taxonomy <> 'ContentsTag'").each do |t|
         if t.game_id
           terms[:games] << t
         elsif t.gaming_platform_id

@@ -1,6 +1,13 @@
 require 'test_helper'
 
 class DecisionTest < ActiveSupport::TestCase
+
+  test "constants match" do
+    self.assert_equal(
+        Decision::DECISION_TYPE_CLASS_SKILLS.keys.sort,
+        Decision::DECISION_TYPE_CHOICES.sort)
+  end
+
   test "choice_type_name" do
     Decision.first.choice_type_name
   end

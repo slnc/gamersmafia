@@ -1,0 +1,34 @@
+<div class="content-attribute-name">Título</div>
+<div class="content-attribute-value content-title">
+  <%=content.real_content.title%>
+</div>
+
+<div class="content-attribute-name">Descripción</div>
+<div class="content-attribute-value content-description">
+  <%=content.real_content.description%>
+</div>
+
+<div class="content-attribute-name">Comienza</div>
+<div class="content-attribute-value content-starts-on">
+  <%=print_tstamp(content.real_content.starts_on)%>
+</div>
+
+<div class="content-attribute-name">Termina</div>
+<div class="content-attribute-value content-ends-on">
+  <%=print_tstamp(content.real_content.ends_on)%>
+</div>
+
+<div class="content-attribute-name">Página web</div>
+<div class="content-attribute-value content-website">
+  <%=content.real_content.website%>
+</div>
+
+<div class="content-attribute-name">Categorías</div>
+<div class="content-attribute-value content-categories">
+  <ul>
+  <%content.terms.each do |term| %>
+    <li><%=term_with_context(term)%></li>
+  <% end -%>
+  </ul>
+</div>
+

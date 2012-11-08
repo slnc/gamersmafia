@@ -1,3 +1,4 @@
+<%# -*- encoding : utf-8 -*- %>
 <div class="decision-comments">
 <%cache("/common/decision_comments/#{decision.id % 1000}/#{decision.id}/decision_comments_#{decision.updated_on.to_i}") do %>
   <% i = 1 %>
@@ -25,7 +26,7 @@
         data-remote="true" data-remote-on-success-update=".decision-comments">
       <textarea style="width: 20rem;" name="comment"></textarea>
       <br />
-      <input type="submit" value="Comentar" />
+      <input type="submit" value="Comentar sobre la decisión" />
     </form>
   <% end -%>
   <% end -%>

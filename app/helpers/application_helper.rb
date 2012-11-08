@@ -82,11 +82,41 @@ module ApplicationHelper
     """
   end
 
+  def home_image(home_image_url)
+    return '' if home_image_url.to_s == ''
+    "<img class=\"home-image\" src=\"/#{home_image_url}\" />"
+  end
+
   def positive_negative_bar(negative_count, neutral_count, positive_count)
     max = [negative_count, neutral_count, positive_count].sum
     pcent_negative = negative_count.to_f / max
     pcent_positive = positive_count.to_f / max
     "<div class=\"positive-negative-bar\">#{draw_pcent_bar(pcent_negative, nil, nil, nil, css_class='align-right negative-bar-bg')}#{draw_pcent_bar(pcent_positive, nil, nil, nil, css_class='positive-bar-bg')}</div>"
+  end
+
+  def term_with_context(term)
+    case term.taxonomy
+    when "ContentsTag"
+      "#{term.name} (tag)"
+    when "DownloadsCategory"
+      "#{term.name} &laquo; #{term.get_ancestors.collect {|a| a.name}.join("&laquo;")}"
+    when "EventsCategory"
+      "#{term.name} &laquo; #{term.get_ancestors.collect {|a| a.name}.join("&laquo;")}"
+    when "ImagesCategory"
+      "#{term.name} &laquo; #{term.get_ancestors.collect {|a| a.name}.join("&laquo;")}"
+    when "NewsCategory"
+      "#{term.name} &laquo; #{term.get_ancestors.collect {|a| a.name}.join("&laquo;")}"
+    when "QuestionsCategory"
+      "#{term.name} &laquo; #{term.get_ancestors.collect {|a| a.name}.join("&laquo;")}"
+    when "TopicsCategory"
+      "#{term.name} &laquo; #{term.get_ancestors.collect {|a| a.name}.join("&laquo;")}"
+    when "TutorialsCategory"
+      "#{term.name} &laquo; #{term.get_ancestors.collect {|a| a.name}.join("&laquo;")}"
+    when nil
+      term.name
+    else
+      raise "Term taxonomy '#{term.taxonomy}' unknown."
+    end
   end
 
   def s_content_list(contents)

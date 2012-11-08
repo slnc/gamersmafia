@@ -1,0 +1,15 @@
+.content-attribute-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.content-attribute-value {
+  margin-bottom: 1rem;
+  background: #fff;
+  padding: 0.5rem;
+}
+
+.home-image {
+  max-width: 100%;
+  width: 100%;
+}

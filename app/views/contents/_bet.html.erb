@@ -1,0 +1,27 @@
+<div class="content-attribute-name">Título</div>
+<div class="content-attribute-value content-title"><%=content.real_content.title%></div>
+
+<div class="content-attribute-name">Descripción</div>
+<div class="content-attribute-value content-description"><%=content.real_content.description%></div>
+
+<div class="content-attribute-name">Opciones</div>
+<div class="content-attribute-value content-bet-options">
+  <ul>
+    <%content.real_content.bets_options.each do |option|%>
+      <li><%=option.name%></li>
+    <% end -%>
+  </ul>
+</div>
+
+<div class="content-attribute-name">Fecha del encuentro</div>
+<div class="content-attribute-value content-closes-on"><%=print_tstamp(content.real_content.closes_on)%></div>
+
+<div class="content-attribute-name">Categorías</div>
+<div class="content-attribute-value content-categories">
+  <ul>
+  <%content.terms.each do |term| %>
+    <li><%=term_with_context(term)%></li>
+  <% end -%>
+  </ul>
+</div>
+

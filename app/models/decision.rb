@@ -7,6 +7,11 @@
 #   initial_contents (list of ints content_ids)
 #   initiating_user_id (int with id of user who initiated the request)
 #   tag_overlaps
+#
+# PublishNews
+#   content_id
+#   content_name
+#   initiating_user_id
 class Decision < ActiveRecord::Base
   # state
   PENDING = 0
@@ -28,18 +33,55 @@ class Decision < ActiveRecord::Base
 
   DECISION_TYPE_CLASS_SKILLS = {
     "CreateTag" => "CreateTag",
+    "PublishBet" => "ContentModerationQueue",
+    "PublishColumn" => "ContentModerationQueue",
+    "PublishCoverage" => "ContentModerationQueue",
+    "PublishDemo" => "ContentModerationQueue",
+    "PublishDownload" => "ContentModerationQueue",
+    "PublishEvent" => "ContentModerationQueue",
+    "PublishFunthing" => "ContentModerationQueue",
+    "PublishImage" => "ContentModerationQueue",
+    "PublishInterview" => "ContentModerationQueue",
+    "PublishNews" => "ContentModerationQueue",
+    "PublishPoll" => "ContentModerationQueue",
+    "PublishReview" => "ContentModerationQueue",
+    "PublishTutorial" => "ContentModerationQueue",
   }
 
-  DECISION_TYPE_CLASSES = %w(
-      CreateTag
-  )
+  DECISION_TYPE_CLASSES = DECISION_TYPE_CLASS_SKILLS.keys
 
   DECISION_TYPE_CHOICES = {
     "CreateTag" => BINARY,
+    "PublishBet" => BINARY,
+    "PublishColumn" => BINARY,
+    "PublishCoverage" => BINARY,
+    "PublishDemo" => BINARY,
+    "PublishDownload" => BINARY,
+    "PublishEvent" => BINARY,
+    "PublishFunthing" => BINARY,
+    "PublishImage" => BINARY,
+    "PublishInterview" => BINARY,
+    "PublishNews" => BINARY,
+    "PublishPoll" => BINARY,
+    "PublishReview" => BINARY,
+    "PublishTutorial" => BINARY,
   }
 
   MIN_USER_CHOICES = {
     "CreateTag" => 3,
+    "PublishBet" => 3,
+    "PublishColumn" => 3,
+    "PublishCoverage" => 3,
+    "PublishDemo" => 3,
+    "PublishDownload" => 3,
+    "PublishEvent" => 3,
+    "PublishFunthing" => 3,
+    "PublishImage" => 3,
+    "PublishInterview" => 3,
+    "PublishNews" => 3,
+    "PublishPoll" => 3,
+    "PublishReview" => 3,
+    "PublishTutorial" => 3,
   }
 
   # Don't change this without also changing the names in the bd
@@ -56,6 +98,7 @@ class Decision < ActiveRecord::Base
 
   before_create :populate_decision_type_choices
   before_create :set_state
+  before_save :check_decision_type_class
   after_save :schedule_update_pending_indicators
   validates_presence_of :decision_type_class, :context
 
@@ -94,7 +137,7 @@ class Decision < ActiveRecord::Base
     pending_count = 0
     type_classes = Authorization.decision_type_class_available_for_user(u)
     Decision.pending.with_type_class(type_classes).find(:all).each do |decision|
-      if !self.has_vote_from(u)
+      if !decision.has_vote_from(u)
         return true
       end
     end
@@ -102,7 +145,7 @@ class Decision < ActiveRecord::Base
   end
 
   def has_vote_from(u)
-    self.decision_user_choices.count(:conditions => ["user_id = ?", u.id]) == 0
+    self.decision_user_choices.count(:conditions => ["user_id = ?", u.id]) > 0
   end
 
   def pending_decisions_indicators
@@ -159,6 +202,46 @@ class Decision < ActiveRecord::Base
     case self.decision_type_class
     when "CreateTag"
       "<strong>#{self.context.fetch(:tag_name)}</strong>"
+
+    when "PublishBet"
+      "<strong>#{self.context.fetch(:content_name)}</strong>"
+
+    when "PublishColumn"
+      "<strong>#{self.context.fetch(:content_name)}</strong>"
+
+    when "PublishCoverage"
+      "<strong>#{self.context.fetch(:content_name)}</strong>"
+
+    when "PublishDemo"
+      "<strong>#{self.context.fetch(:content_name)}</strong>"
+
+    when "PublishDownload"
+      "<strong>#{self.context.fetch(:content_name)}</strong>"
+
+    when "PublishEvent"
+      "<strong>#{self.context.fetch(:content_name)}</strong>"
+
+    when "PublishFunthing"
+      "<strong>#{self.context.fetch(:content_name)}</strong>"
+
+    when "PublishImage"
+      "<strong>#{self.context.fetch(:content_name)}</strong>"
+
+    when "PublishInterview"
+      "<strong>#{self.context.fetch(:content_name)}</strong>"
+
+    when "PublishNews"
+      "<strong>#{self.context.fetch(:content_name)}</strong>"
+
+    when "PublishPoll"
+      "<strong>#{self.context.fetch(:content_name)}</strong>"
+
+    when "PublishReview"
+      "<strong>#{self.context.fetch(:content_name)}</strong>"
+
+    when "PublishTutorial"
+      "<strong>#{self.context.fetch(:content_name)}</strong>"
+
     else
       raise ("Unable to generate description for decision of type" +
              " #{self.decision_type_class}")
@@ -259,8 +342,52 @@ class Decision < ActiveRecord::Base
     case self.decision_type_class
     when "CreateTag"
       Term.final_decision_made(self)
+
+    when "PublishBet"
+      Content.final_decision_made(self)
+
+    when "PublishColumn"
+      Content.final_decision_made(self)
+
+    when "PublishCoverate"
+      Content.final_decision_made(self)
+
+    when "PublishDemo"
+      Content.final_decision_made(self)
+
+    when "PublishDownload"
+      Content.final_decision_made(self)
+
+    when "PublishEvent"
+      Content.final_decision_made(self)
+
+    when "PublishFunthing"
+      Content.final_decision_made(self)
+
+    when "PublishImage"
+      Content.final_decision_made(self)
+
+    when "PublishInterview"
+      Content.final_decision_made(self)
+
+    when "PublishNews"
+      Content.final_decision_made(self)
+
+    when "PublishPoll"
+      Content.final_decision_made(self)
+
+    when "PublishReview"
+      Content.final_decision_made(self)
+
+    when "PublishTutorial"
+      Content.final_decision_made(self)
+
     else
       raise "No callback_on_final_decision for #{self.decision_type_class}"
     end
+  end
+
+  def check_decision_type_class
+    DECISION_TYPE_CLASS_SKILLS.include?(self.decision_type_class)
   end
 end

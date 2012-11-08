@@ -3,7 +3,7 @@ module DecisionsHelper
   def pending_decisions_for_user(user)
     decisions = []
     Decision.pending.find(:all, :order => 'created_on DESC').each do |decision|
-      if Authorization.can_vote_on_decision?(user, decision)
+      if Authorization.can_vote_on_decision?(user, decision) && !decision.has_vote_from(user)
         decisions.append(decision)
       end
     end
@@ -21,37 +21,97 @@ module DecisionsHelper
   end
 
   def decision_context(decision)
+    out = []
     case decision.decision_type_class
     when "CreateTag"
-      out = ["Contenidos iniciales con este tag:<br /><ul>"]
+      out.append(self.render_create_tag_context(decision))
 
-      decision.context[:initial_contents].each do |content_id|
-        content = Content.find_by_id(content_id.to_i)
-        if content.nil?
-          out.append("<li>(Contenido inválido: #{content_id.to_i})</li>")
-        else
-          out.append("<li><a href=\"#{Routing.gmurl(content)}\">#{content.name}</a></li>")
-        end
+    when "PublishBet"
+      out.append(self.render_content_from_decision(decision))
+
+    when "PublishColumn"
+      out.append(self.render_content_from_decision(decision))
+
+    when "PublishCoverage"
+      out.append(self.render_content_from_decision(decision))
+
+    when "PublishDemo"
+      out.append(self.render_content_from_decision(decision))
+
+    when "PublishDownload"
+      out.append(self.render_content_from_decision(decision))
+
+    when "PublishEvent"
+      out.append(self.render_content_from_decision(decision))
+
+    when "PublishFunthing"
+      out.append(self.render_content_from_decision(decision))
+
+    when "PublishImage"
+      out.append(self.render_content_from_decision(decision))
+
+    when "PublishInterview"
+      out.append(self.render_content_from_decision(decision))
+
+    when "PublishNews"
+      out.append(self.render_content_from_decision(decision))
+
+    when "PublishPoll"
+      out.append(self.render_content_from_decision(decision))
+
+    when "PublishReview"
+      out.append(self.render_content_from_decision(decision))
+
+    when "PublishTutorial"
+      out.append(self.render_content_from_decision(decision))
+
+    else
+      raise (
+          "No context defined for decision_type_class" +
+          " '#{decision.decision_type_class}'")
+    end
+
+    out.join("\n")
+  end
+
+  def render_content_from_decision(decision)
+    content = Content.find(decision.context.fetch(:content_id))
+    controller.send(
+        :render_to_string,
+        :partial => "/contents/#{content.content_type.name.downcase}",
+        :locals => {:content => content}).force_encoding("utf-8")
+  end
+
+  def render_create_tag_context(decision)
+    out = []
+    out.append("Contenidos iniciales con este tag:<br /><ul>")
+
+    decision.context[:initial_contents].each do |content_id|
+      content = Content.find_by_id(content_id.to_i)
+      if content.nil?
+        out.append("<li>(Contenido inválido: #{content_id.to_i})</li>")
+      else
+        out.append("<li><a href=\"#{Routing.gmurl(content)}\">#{content.name}</a></li>")
       end
-      out.append("</ul>")
+    end
+    out.append("</ul>")
 
-      if decision.context[:tag_overlaps].size > 0
-        out.append("<table><tr><th class=\"w125\">Tag</th><th>Solapamiento</th></tr>")
-        sorted_overlaps = decision.context[:tag_overlaps].sort_by{|term_id, overlap|
-          Term.find(term_id.to_i).name
-        }
-        sorted_overlaps.each do |term_id, overlap|
-          out.append(
-              "<tr>
+    if decision.context[:tag_overlaps].size > 0
+      out.append("<table><tr><th class=\"w125\">Tag</th><th>Solapamiento</th></tr>")
+      sorted_overlaps = decision.context[:tag_overlaps].sort_by{|term_id, overlap|
+        Term.find(term_id.to_i).name
+      }
+      sorted_overlaps.each do |term_id, overlap|
+        out.append(
+            "<tr>
                  <td>#{Term.find(term_id.to_i).name}</td>
                  <td class=\"w125\">#{draw_pcent_bar(overlap.to_f)}</td>
                </tr>")
-        end
-        out.append("</table>")
       end
-
-      out.append("</ul>")
-      out.join("\n")
+      out.append("</table>")
     end
+
+    out.append("</ul>")
+    out.join("\n")
   end
 end

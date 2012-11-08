@@ -24,7 +24,7 @@ module Authorization
   end
 
   def self.can_admin_toplevel_terms?(u)
-    u.has_any_skill?(%w(BazarManager Capo))
+    u.has_any_skill?(%w(BazarManager Capo Webmaster))
   end
 
   def self.can_admin_non_root_terms?(user)
@@ -75,25 +75,18 @@ module Authorization
   end
 
   def self.users_who_can_vote_on_decision(decision)
-    case decision.decision_type_class
-    when "CreateTag"
-      User.with_skill("CreateTag").find(:all)
-    else
-      raise (
-          "Unable to return users_who_can_vote_on_decision of type" +
-          " #{decision.decision_type_class}")
-    end
+    skill = Decision::DECISION_TYPE_CLASS_SKILLS[
+        decision.fetch(decision.decision_type_class)]
+    User.with_skill(skill).find(:all)
   end
 
   def self.can_vote_on_decision?(user, decision)
-    case decision.decision_type_class
-    when "CreateTag"
-      (user.has_skill?("CreateTag") &&
-       user.id != decision.context[:initiating_user_id].to_i)
-    else
-      raise ("Unable to determine authorization for decision type" +
-             " #{decision.decision_type_class}")
+    if decision.context[:initiating_user_id]
+      return false if user.id == decision.context[:initiating_user_id]
     end
+
+    user.has_skill?(
+        Decision::DECISION_TYPE_CLASS_SKILLS.fetch(decision.decision_type_class))
   end
 
   def self.can_create_content?(user)

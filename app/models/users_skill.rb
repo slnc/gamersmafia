@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class UsersSkill < ActiveRecord::Base
 
+  # TODO(slnc): replace ContentModerationQueue with PublishContent?
   # TODO(slnc): remove Editor, Sicario and Moderator after Dec 1st, 2012
   VALID_SKILLS = %w(
     Advertiser

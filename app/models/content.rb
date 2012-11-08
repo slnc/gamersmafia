@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Content < ActiveRecord::Base
+  after_save :create_decision_if_necessary
   belongs_to :content_type
   before_destroy :clear_comments
   before_destroy :unlink_real_content
@@ -75,6 +76,34 @@ class Content < ActiveRecord::Base
   belongs_to :gaming_platform
   belongs_to :bazar_district
   belongs_to :user
+
+  def self.final_decision_made(decision)
+    content = Content.find(decision.context.fetch(:content_id))
+    case decision.decision_type_class
+    when "PublishNews"
+     if !content.content_type.name == "News"
+        raise "PublishNews decision for non News"
+     end
+     self.handle_publish_decision(decision, content)
+    end
+  end
+
+  def self.handle_publish_decision(decision, uniq)
+    content = uniq.real_content
+    if decision.final_decision_choice.name == Decision::BINARY_YES
+      prev_state = content.state
+      content.change_state(Cms::PUBLISHED, Ias.MrMan)
+      if prev_state == Cms::PENDING
+        self.create_alert_after_crowd_publishing_decision(uniq, "publicado")
+      end
+    else
+      prev_state = content.state
+      content.change_state(Cms::DELETED, Ias.MrMan)
+      if prev_state == Cms::PENDING
+        self.create_alert_after_crowd_publishing_decision(uniq, "denegado")
+      end
+    end
+  end
 
   def self.published_counts_by_user(user)
     out = {}
@@ -413,5 +442,33 @@ class Content < ActiveRecord::Base
       previous = comment
     end
     i
+  end
+
+  def create_decision_if_necessary
+    if (self.state_changed? && self.state == Cms::PENDING &&
+        (self.state_was == Cms::DRAFT || self.state_was.nil?))
+      self.delay.schedule_publish_content_decision
+    end
+  end
+
+  def schedule_publish_content_decision
+    if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(self.content_type.name)
+      return
+    end
+    if self.content_type.name == "Image"
+      content_name = (
+          "<img src=\"/cache/thumbnails/i/85x60/#{self.real_content.file}\" />")
+    else
+      content_name = self.name
+    end
+
+    Decision.create({
+      :decision_type_class => "Publish#{self.content_type.name}",
+      :context => {
+        :content_id => self.id,
+        :content_name => self.name,
+        :initiating_user_id => self.user_id,
+      },
+    })
   end
 end
