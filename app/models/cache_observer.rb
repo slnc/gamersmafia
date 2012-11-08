@@ -86,12 +86,6 @@ class CacheObserver < ActiveRecord::Observer
       expire_fragment "/common/miembros/#{object.user_id % 1000}/#{object.user_id}/firmas"
       expire_fragment "#{Cache.user_base(object.user_id)}/profile/last_profile_signatures"
 
-      when 'Content'
-      CacheObserver.update_pending_contents
-      # TODO esto se cargará la cache de elementos pendientes de moderar al
-      # crear/modificar topics.
-      expire_fragment('/site/pending_contents') if object.state_changed?
-
       when 'CompetitionsMatch'
       if object.participant1_id
         expire_fragment("/common/competiciones/participante/#{object.participant1_id % 1000}/#{object.participant1_id}/retos_esperando_respuesta")
@@ -563,7 +557,6 @@ class CacheObserver < ActiveRecord::Observer
       end
 
       when 'Content'
-      CacheObserver.update_pending_contents if object.state_changed?
       if ((object.state_changed? && object.state == Cms::DELETED) ||
           object.comments_count_changed?)
         object.terms.each do |t|
@@ -945,11 +938,5 @@ class CacheObserver < ActiveRecord::Observer
     expire_fragment("/common/globalnavbar/#{user.id % 1000}/#{user.id}_clans")
     expire_fragment("/common/globalnavbar/#{user.id % 1000}/#{user.id}_clans_box_en_member")
     expire_fragment("/_users/#{user.id % 1000}/#{user.id}/layouts/clans")
-  end
-
-  def self.update_pending_contents
-    GlobalVars.update_var(
-        "pending_contents",
-        Content.count(:conditions => ["state = ?", Cms::PENDING]))
   end
 end

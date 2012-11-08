@@ -994,7 +994,9 @@ CREATE TABLE decision_user_choices (
     decision_choice_id integer NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    probability_right double precision NOT NULL
+    probability_right double precision NOT NULL,
+    custom_reason character varying,
+    canned_reason_id character varying
 );
 CREATE SEQUENCE decision_user_choices_id_seq
     START WITH 1
@@ -1638,7 +1640,6 @@ CREATE TABLE global_vars (
     svn_revision character varying,
     ads_slots_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     gmtv_channels_updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    pending_contents integer DEFAULT 0 NOT NULL,
     portals_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     max_cache_valorations_weights_on_self_comments numeric,
     clans_updated_on timestamp without time zone,

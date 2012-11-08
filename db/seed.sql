@@ -13,7 +13,7 @@ TRUNCATE global_vars;
 TRUNCATE terms CASCADE;
 TRUNCATE users CASCADE;
 
-INSERT INTO global_vars (id, online_anonymous, online_registered, svn_revision, ads_slots_updated_on, gmtv_channels_updated_on, pending_contents, portals_updated_on, max_cache_valorations_weights_on_self_comments) VALUES (1, 363, 73, '68d5428', '2011-07-30 18:17:39.727069', '2010-01-10 21:44:56.169444', 0, '2011-12-25 04:39:59.003601', 242403.0);
+INSERT INTO global_vars (id, online_anonymous, online_registered, svn_revision, ads_slots_updated_on, gmtv_channels_updated_on, portals_updated_on, max_cache_valorations_weights_on_self_comments) VALUES (1, 363, 73, '68d5428', '2011-07-30 18:17:39.727069', '2010-01-10 21:44:56.169444', '2011-12-25 04:39:59.003601', 242403.0);
 
 INSERT INTO content_types (id, name) VALUES (1, 'News');
 INSERT INTO content_types (id, name) VALUES (15, 'Bet');

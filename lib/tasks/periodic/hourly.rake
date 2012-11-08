@@ -3,7 +3,6 @@ namespace :gm do
   task :hourly => :environment do
     GmSys.kill_workers
     AbTest.delay.update_ab_tests
-    CacheObserver.update_pending_contents
     Competitions.delay.update_user_competitions_indicators
     NotificationEmail.check_system_emails
     UsersNewsfeed.delay.process
