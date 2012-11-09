@@ -62,10 +62,7 @@ class NotificationObserver < ActiveRecord::Observer
   end
 
   def send_denied_content_notification(content)
-    msg = "Lo lamentamos pero tu contenido ha sido denegado por las siguientes razones:\n\n"
-    content.publishing_decisions.find(:all, :include => :user).each do |pd|
-      msg<< "[~#{pd.user.login}]: #{pd.deny_reason}\n" if not pd.publish?
-    end
+    msg = "Lo lamentamos pero tu contenido ha sido denegado. <a href=\"/decisiones\">Más información</a>."
     content.user.notifications.create({
       :description => msg,
       :sender_user_id => Ias.MrMan,
