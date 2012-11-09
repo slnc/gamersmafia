@@ -5,10 +5,11 @@ class DecisionUserChoice < ActiveRecord::Base
   belongs_to :user
 
   before_create :populate_probability_right
+  # DO NOT SUBMIT
   after_save :touch_decision
   after_save :try_to_decide
   scope :recent,
-        :conditions => "decision_user_choices.created_on >= now() - '3 months'::interval"
+        :conditions => "decision_user_choices.created_on >= now() - '6 months'::interval"
 
   validates_presence_of :decision_choice_id
   validates_uniqueness_of :decision_choice_id, :scope => [:user_id, :decision_id]

@@ -5,6 +5,8 @@ class DecisionUserReputation < ActiveRecord::Base
 
   def self.recalculate_all_user_reputations
     Decision::DECISION_TYPE_CLASS_SKILLS.keys.each do |decision_type|
+      puts decision_type
+      # DO NOT SUBMIT
       User.find(
           :all,
           :conditions => "id IN
@@ -12,12 +14,13 @@ class DecisionUserReputation < ActiveRecord::Base
               FROM decision_user_choices a
               JOIN decisions b on a.decision_id = b.id
               WHERE b.decision_type_class = '#{decision_type}')").each do |u|
-        self.get_user_probability_for(u, decision_type)
+        self.get_user_probability_for(u, decision_type, true)
       end
     end
   end
 
-  def self.get_user_probability_for(user, decision_type_class)
+  def self.get_user_probability_for(
+      user, decision_type_class, force_recompute=false)
     reputation = user.decision_user_reputations.find_by_decision_type_class(
         decision_type_class)
     if reputation.nil?
@@ -26,7 +29,7 @@ class DecisionUserReputation < ActiveRecord::Base
         :decision_type_class => decision_type_class,
         :probability_right => 0,
       })
-    elsif reputation.updated_on <= 1.month.ago
+    elsif reputation.updated_on <= 1.week.ago && force_recompute
       reputation.update_probability_right
     end
     reputation.probability_right
@@ -45,7 +48,7 @@ class DecisionUserReputation < ActiveRecord::Base
            AND decision_choice_id IN (
              SELECT final_decision_choice_id
              FROM decisions
-             WHERE created_on >= now() - '3 months'::interval)
+             WHERE created_on >= now() - '6 months'::interval)
              AND decisions.state = #{Decision::DECIDED}",
           self.decision_type_class],
         :include => :decision)

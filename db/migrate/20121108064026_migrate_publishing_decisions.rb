@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class MigratePublishingDecisions < ActiveRecord::Migration
   def up
     # migrate_publishing_decisions
