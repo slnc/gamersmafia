@@ -31,4 +31,11 @@ class DecisionsController < ApplicationController
     end
     render :partial => '/shared/ajax_facebox_feedback', :layout => false
   end
+
+  def ranking
+    type_class = params[:id]
+    if !Decision::DECISION_TYPE_CLASS_SKILLS.include?(type_class)
+      raise ActiveRecord::RecordNotFound
+    end
+  end
 end

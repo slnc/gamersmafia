@@ -40,6 +40,19 @@ class DecisionsControllerTest < ActionController::TestCase
     }
     assert_response :success
     u2.reload
-    assert_equal winner.id, u2.decision_user_choices.find_by_decision_id(d6.id).decision_choice_id
+    assert_equal(
+        winner.id,
+        u2.decision_user_choices.find_by_decision_id(d6.id).decision_choice_id)
+  end
+
+  test "ranking nonexisting" do
+    assert_raises(ActiveRecord::RecordNotFound) do
+      get :ranking, :id => "foo"
+    end
+  end
+
+  test "ranking existing" do
+    get :ranking, :id => Decision.first.decision_type_class
+    assert_response :success
   end
 end

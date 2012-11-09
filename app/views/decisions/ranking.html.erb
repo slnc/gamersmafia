@@ -1,0 +1,31 @@
+<%generic_support do%>
+<% end -%>
+
+<%cache("/common/decisions/ranking/#{params[:id]}/#{Time.now.strftime("%Y%U")}") do%>
+<%content_main do %>
+  <%mftext("Decisiones '#{gm_translate(params[:id])}'") do%>
+    <%content_2colx do %>
+      <%mftable("Ranking total de decisiones correctas",
+                decision_reputations_total_right_ranking(params[:id]),
+                :no_mcontent_title => true) do |reputation| %>
+        <td><%=user_link(reputation.user)%></td>
+        <td class="w75 right">
+          <%=number_with_delimiter(reputation.all_time_right_choices)%>
+        </td>
+      <% end -%>
+    <% end -%>
+    <div class="w25"></div>
+
+    <%content_2colx do %>
+      <%mftable("Ranking reputación",
+                decision_reputations_total_right_ranking(params[:id]),
+                :no_mcontent_title => true) do |reputation| %>
+        <td><%=user_link(reputation.user)%></td>
+        <td class="w75 right"><%=(reputation.probability_right * 100).to_i%>%</td>
+        <td class="w125"><%=draw_pcent_bar(reputation.probability_right)%></td>
+      <% end -%>
+    <% end -%>
+  <% end -%>
+<% end -%>
+
+<% end -%>

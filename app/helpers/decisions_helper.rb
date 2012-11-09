@@ -114,4 +114,24 @@ module DecisionsHelper
     out.append("</ul>")
     out.join("\n")
   end
+
+  def decision_reputations_total_right_ranking(decision_type_class)
+    DecisionUserReputation.find(
+        :all,
+        :conditions => ["decision_type_class = ? AND probability_right > 0",
+                        decision_type_class],
+        :order => "all_time_right_choices DESC, probability_right DESC",
+        :limit => 25,
+        :include => :user)
+  end
+
+  def decision_reputations_reputation_ranking(decision_type_class)
+    DecisionUserReputation.find(
+        :all,
+        :conditions => ["decision_type_class = ? AND probability_right > 0",
+                        decision_type_class],
+        :order => "probability_right DESC, all_time_right_choices DESC",
+        :limit => 25,
+        :include => :user)
+  end
 end

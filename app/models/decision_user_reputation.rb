@@ -61,8 +61,8 @@ class DecisionUserReputation < ActiveRecord::Base
     w_g = (g * (1 - a)).to_f
     w_b = b * a
     p_g = w_g.to_f / [w_g + w_b, 1].max
-    # Rails.logger.warn(
-    #     "g: #{g}, b: #{b}, a: #{a}, w_g: #{w_g}, w_b: #{w_b}, p_g: #{p_g}")
+    #Rails.logger.warn(
+    #    "g: #{g}, b: #{b}, a: #{a}, w_g: #{w_g}, w_b: #{w_b}, p_g: #{p_g}")
 
     # We now have a probability of a user being right given the weighted ratio
     # of good and bad. However for users with too few choices we still don't
@@ -76,5 +76,20 @@ class DecisionUserReputation < ActiveRecord::Base
     p_g = 1.0 if user.has_skill?("Webmaster")
 
     self.update_attribute(:probability_right, p_g)
+    self.update_attribute(:all_time_right_choices,
+                          self.get_all_time_right_choices)
+  end
+
+  def get_all_time_right_choices
+    right_choices = self.user.decision_user_choices.count(
+        :conditions => [
+          "decisions.decision_type_class = ?
+           AND decision_choice_id IN (
+             SELECT final_decision_choice_id
+             FROM decisions
+             WHERE created_on >= now() - '6 months'::interval)
+             AND decisions.state = #{Decision::DECIDED}",
+          self.decision_type_class],
+        :include => :decision)
   end
 end

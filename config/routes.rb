@@ -8,6 +8,7 @@ Gamersmafia::Application.routes.draw do
     member do
       post 'decide'
     end
+    get "decisions/ranking/:id", :action => :ranking
     resources :decision_comments do
     end
   end

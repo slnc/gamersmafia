@@ -1011,7 +1011,8 @@ CREATE TABLE decision_user_reputations (
     user_id integer NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    probability_right double precision NOT NULL
+    probability_right double precision NOT NULL,
+    all_time_right_choices integer DEFAULT 0 NOT NULL
 );
 CREATE SEQUENCE decision_user_reputations_id_seq
     START WITH 1

@@ -90,6 +90,7 @@ body {
 .c2colx {
     width: 48%;
     float: left;
+    margin-right: 15px;
 }
 
 #cleft .module {

@@ -4,7 +4,7 @@
   <%mftable("Tu reputación decidiendo",
             current_decision_user_reputations(@user)) do |reputation |%>
     <tr>
-      <td><%=gm_translate(reputation.decision_type_class)%></td>
+      <td><a href="/decisions/ranking/<%=reputation.decision_type_class%>"><%=gm_translate(reputation.decision_type_class)%></a></td>
       <td class="w125"><%=draw_pcent_bar(reputation.probability_right)%></td>
     </tr>
   <% end -%>
