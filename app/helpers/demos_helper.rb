@@ -4,7 +4,7 @@ module DemosHelper
     if participant.kind_of?(String)
       participant
     else
-      "<a href=\"#{gmurl(entity1)}\">#{entity1.to_s}</a>"
+      "<a href=\"#{gmurl(participant)}\">#{participant.to_s}</a>"
     end
   end
 

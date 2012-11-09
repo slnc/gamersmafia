@@ -64,15 +64,27 @@ class Demo < ActiveRecord::Base
 
   public
   def entity1
-    # PERF esto puede ralentizar, a lo mejor es más rápido con 4 columnas (user1_id, user2_id, clan1_id, clan2_id)
-    # No, definitivamente no, habría que hacer un join con 4 columnas, no puede ser más rápido
-    entity1_local_id ? Object.const_get(games_mode.entity_type == Game::ENTITY_USER ? 'User' : 'Clan').find(entity1_local_id) : entity1_external
+    self.resolve_entity("entity1")
   end
 
   def entity2
-    # PERF esto puede ralentizar, a lo mejor es más rápido con 4 columnas (user1_id, user2_id, clan1_id, clan2_id)
-    # No, definitivamente no, habría que hacer un join con 4 columnas, no puede ser más rápido
-    entity2_local_id ? Object.const_get(games_mode.entity_type == Game::ENTITY_USER ? 'User' : 'Clan').find(entity2_local_id) : entity2_external
+    self.resolve_entity("entity2")
+  end
+
+  def resolve_entity(field)
+    # PERF esto puede ralentizar, a lo mejor es más rápido con 4 columnas
+    # (user1_id, user2_id, clan1_id, clan2_id) No, definitivamente no, habría
+    # que hacer un join con 4 columnas, no puede ser más rápido
+    attr = self.send("#{field}_local_id".to_sym)
+    if attr
+      if games_mode.entity_type == Game::ENTITY_USER
+        User.find(attr)
+      else
+        Clan.find(attr)
+      end
+    else
+      self.send("#{field}_external")
+    end
   end
 
   private

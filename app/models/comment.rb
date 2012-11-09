@@ -216,7 +216,7 @@ class Comment < ActiveRecord::Base
   end
 
   def self.find_by_position(position, content)
-    return if position < 1
+    return if position < 1 || position > 10000000
     content.comments.find(
         :first,
         :conditions => "deleted = 'f'",

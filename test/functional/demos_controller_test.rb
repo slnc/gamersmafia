@@ -9,7 +9,7 @@ class DemosControllerTest < ActionController::TestCase
 
   DEF_VALS = {
                :demotype => Demo::DEMOTYPES[:official],
-               :entity1_external => 'foo',
+               :entity1_local_id => 1,
                :entity2_external => 'bar',
                :games_mode_id => 1,
                :mirrors_new => ["http://google.com/foo.zip", "http://kamasutra.com/porn.zip"]

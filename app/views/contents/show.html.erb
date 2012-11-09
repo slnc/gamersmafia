@@ -4,7 +4,8 @@
 </section>
 
 <section class="content-full">
-<%=@content.real_content.respond_to?(:description) ? @content.real_content.description : @content.real_content.main%>
+<%=@content.real_content.description if @content.real_content.respond_to?(:description)%>
+<%=@content.real_content.main if @content.real_content.respond_to?(:main)%>
 </section>
 
 <section class="entities">

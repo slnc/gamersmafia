@@ -38,7 +38,6 @@ class TagsControllerTest < ActionController::TestCase
   end
 
   test "new" do
-    give_skill(1, "CreateTag")
     sym_login 1
     get :new
     assert_response :success

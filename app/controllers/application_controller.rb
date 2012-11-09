@@ -191,15 +191,12 @@ Request information:
     end
   end
 
-  # TODO PERF Do it in the background in batches. GmSys.job
   def check_referer
-    if params[:rusid]
-      begin
-        Stats.delay.register_referer(
-            params[:rusid].to_i, self.remote_ip, request.env["HTTP_REFERER"])
-      rescue ActiveRecord::RecordNotFound
-        Rails.logger.warn("No user found with id #{params[:rusid]}")
-      end
+    if params[:rusid].to_i > 0
+      Stats.delay.register_referer(
+          params[:rusid].to_i, self.remote_ip, request.env["HTTP_REFERER"])
+    elsif params[:rusid]
+      Rails.logger.warn("No user found with id '#{params[:rusid]}'")
     end
   end
 
@@ -462,7 +459,7 @@ Request information:
                                 AND visitor_id = #{User.connection.quote(params['_xvi'].to_s)}")
         end
 
-        if dbu.size == 0 then # create entry
+        if dbu.size == 0
           if user_is_authed
             User.db_query("INSERT INTO treated_visitors(ab_test_id, visitor_id, treatment, user_id) VALUES(#{test_id}, #{User.connection.quote(params['_xvi'].to_s)}, #{treatment_id}, #{@user.id});")
           else

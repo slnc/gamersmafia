@@ -51,6 +51,10 @@ class Skin < ActiveRecord::Base
   def self.rextract_css_imports(base_file_name)
     # This function will recursively extract all the @imports inside
     # and return a big string with all the @imports contents
+    if !File.exists?(base_file_name)
+      Rails.logger.warn("Skin #{self.id} has no #{base_file_name}.")
+      return
+    end
     f_contents = File.open(base_file_name).read
 
     imports = extract_css_imports(f_contents)

@@ -11,8 +11,9 @@ published:
   approved_by_user_id: 1
   games_mode_id: 1
   state: 2
-  entity1_external: fulanito
+  entity1_local_id: 1
   entity2_external: menganito
+  games_mode_id: 1
   unique_content_id: 17
 
 unpublished:
