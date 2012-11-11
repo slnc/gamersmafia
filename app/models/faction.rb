@@ -482,7 +482,7 @@ class Faction < ActiveRecord::Base
   end
 
   def referenced_thing
-    Game.find_by_code(self.code) || GamingPlatform.find_by_code(self.code)
+    Game.find_by_slug(self.code) || GamingPlatform.find_by_slug(self.code)
   end
 
   def game
@@ -491,7 +491,7 @@ class Faction < ActiveRecord::Base
   end
 
   def Faction.find_by_game_id(game_id)
-    Faction.find(:first, :conditions => "code = (SELECT code FROM games WHERE id = #{game_id})")
+    Faction.find(:first, :conditions => "code = (SELECT slug FROM games WHERE id = #{game_id})")
   end
 
   def new_members_per_day

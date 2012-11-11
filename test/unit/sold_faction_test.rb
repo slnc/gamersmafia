@@ -11,11 +11,10 @@ class SoldFactionTest < ActiveSupport::TestCase
     p = Product.find_by_name('Facción')
     u.add_money(p.price)
     receipt = Shop::buy(p, u)
+    game = self.create_a_game
     assert_count_increases(Faction) do
       receipt.use({
-          :code => 'awa',
-          :name => 'Awander',
-          :type => 'game',
+          :game_id => game.id,
       })
     end
     assert receipt.used?
@@ -30,11 +29,10 @@ class SoldFactionTest < ActiveSupport::TestCase
     p = Product.find_by_name('Facción')
     u.add_money(p.price)
     receipt = Shop::buy(p, u)
+    game = self.create_a_game
     assert_count_increases(Faction) do
       receipt.use({
-          :code => 'awi',
-          :name => 'Awinder',
-          :type => 'game',
+        :game_id => game.id,
       }) end
     assert receipt.used?
   end
@@ -71,20 +69,5 @@ class SoldFactionTest < ActiveSupport::TestCase
     p = Product.find_by_name('Facción')
     u.add_money(p.price)
     assert_raises(AccessDenied) { receipt = Shop::buy(p, u) }
-  end
-
-  test "create faction with wrong code" do
-    u = User.find(1)
-    p = Product.find_by_name('Facción')
-    u.add_money(p.price)
-    receipt = Shop::buy(p, u)
-    assert_difference("Faction.count", 0) {
-        receipt.use({
-            :code => '%!$!',
-            :name => 'Awander',
-            :type => 'game',
-        })
-    }
-    assert !receipt.used?
   end
 end

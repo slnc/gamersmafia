@@ -127,6 +127,7 @@ class User < ActiveRecord::Base
   has_many :users_contents_tags
   has_many :profile_signatures
 
+  has_many :games
 
   # contents
   has_many :news

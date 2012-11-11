@@ -378,7 +378,7 @@ class CacheObserver < ActiveRecord::Observer
 
     case object.class.name
       when 'BazarDistrict'
-      if object.name_changed? || object.code_changed?
+      if object.name_changed? || object.slug_changed?
         expire_fragment "/layouts/default/districts"
       end
 

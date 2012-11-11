@@ -32,7 +32,8 @@ class Decision < ActiveRecord::Base
   }
 
   DECISION_TYPE_CLASS_SKILLS = {
-    "CreateTag" => "CreateTag",
+    "CreateGame" => "CreateEntity",
+    "CreateTag" => "CreateEntity",
     "PublishBet" => "ContentModerationQueue",
     "PublishColumn" => "ContentModerationQueue",
     "PublishCoverage" => "ContentModerationQueue",
@@ -51,6 +52,7 @@ class Decision < ActiveRecord::Base
   DECISION_TYPE_CLASSES = DECISION_TYPE_CLASS_SKILLS.keys
 
   DECISION_TYPE_CHOICES = {
+    "CreateGame" => BINARY,
     "CreateTag" => BINARY,
     "PublishBet" => BINARY,
     "PublishColumn" => BINARY,
@@ -68,6 +70,7 @@ class Decision < ActiveRecord::Base
   }
 
   MIN_USER_CHOICES = {
+    "CreateGame" => 3,
     "CreateTag" => 3,
     "PublishBet" => 3,
     "PublishColumn" => 3,
@@ -202,6 +205,9 @@ class Decision < ActiveRecord::Base
     case self.decision_type_class
     when "CreateTag"
       "<strong>#{self.context.fetch(:tag_name)}</strong>"
+
+    when "CreateGame"
+      "<strong>#{self.context.fetch(:game)[:name]}</strong>"
 
     when "PublishBet"
       "<strong>#{self.context.fetch(:content_name)}</strong>"
@@ -342,6 +348,9 @@ class Decision < ActiveRecord::Base
     case self.decision_type_class
     when "CreateTag"
       Term.final_decision_made(self)
+
+    when "CreateGame"
+      Game.final_decision_made(self)
 
     when "PublishBet"
       Content.final_decision_made(self)

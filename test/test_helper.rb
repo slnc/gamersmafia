@@ -165,6 +165,18 @@ class ActiveSupport::TestCase
     assert_not_nil session[:user]
   end
 
+  def create_a_game
+    @_create_a_game_idx ||= 0
+    game = Game.new({
+        :name => "Game#{@_create_a_game_idx}",
+        :user_id => 1,
+        :gaming_platform_id => 1,
+    })
+    assert game.save
+    @_create_a_game_idx += 1
+    game
+  end
+
   def create_a_comment(opts={})
     final_opts = {
       :user_id => 2,

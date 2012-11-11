@@ -56,7 +56,7 @@ end
 			<td><select name="game_id">
 				<option value=""></option>
 				<%Game.find(:all, :order => 'lower(name)').each do |game| %>
-					<option <%="selected=\"selected\"" if user_is_authed && @user.faction_id && @user.faction.code == game.code %>value="<%=game.id%>"><%=game.name%></option>
+					<option <%="selected=\"selected\"" if user_is_authed && @user.faction_id && @user.faction.code == game.slug %>value="<%=game.id%>"><%=game.name%></option>
 				<% end -%>
 				</select>
 			</td>

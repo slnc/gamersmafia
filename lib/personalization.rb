@@ -51,8 +51,11 @@ module Personalization
         :all,
         :conditions => "role IN ('Don', 'ManoDerecha', 'Sicario')").each do |ur|
       bd = BazarDistrict.find(ur.role_data.to_i)
-      if !codes.include?(bd.code)
-        qlinks << {:code => bd.code, :url => "http://#{bd.code}.#{App.domain}"}
+      if !codes.include?(bd.slug)
+        qlinks << {
+          :code => bd.slug,
+          :url => "http://#{bd.slug}.#{App.domain}",
+        }
       end
     end
 

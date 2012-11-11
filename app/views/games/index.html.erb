@@ -1,0 +1,23 @@
+<% generic_support do %>
+  <%= link_to 'Nuevo juego', :action => 'new' %>
+<% end -%>
+
+<% content_main do %>
+  <%mftext(@title) do %>
+
+<%= render :partial => 'shared/pager2', :locals => {:collection => @games, :pos => 'top'} %>
+<table>
+  <tr>
+    <th>Nombre</th>
+  </tr>
+
+<% for game in @games %>
+  <tr class="<%=oddclass%>">
+    <td><%= link_to game.name, game_url(game) %></td>
+  </tr>
+<% end %>
+</table>
+
+<%= render :partial => 'shared/pager2', :locals => {:collection => @games, :pos => 'bottom'} %>
+<% end -%>
+<% end -%>

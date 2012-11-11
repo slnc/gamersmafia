@@ -65,7 +65,7 @@ class NotificationObserver < ActiveRecord::Observer
     msg = "Lo lamentamos pero tu contenido ha sido denegado. <a href=\"/decisiones\">Más información</a>."
     content.user.notifications.create({
       :description => msg,
-      :sender_user_id => Ias.MrMan,
+      :sender_user_id => Ias.MrMan.id,
       :type_id => Notification::CONTENT_DENIED,
     })
   end

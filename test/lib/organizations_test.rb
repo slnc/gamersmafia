@@ -13,7 +13,7 @@ class OrganizationsTest < ActiveSupport::TestCase
     n65 = News.find(65)
     org = Organizations.find_by_content(n65)
     assert_equal 'BazarDistrict', org.class.name
-    assert_equal n65.main_category.code, org.code
+    assert_equal n65.main_category.code, org.slug
   end
 
   test "find_organization_by_content_should_work_with_categorizable_content_in_no_organization" do

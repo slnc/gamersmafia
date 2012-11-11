@@ -6,7 +6,7 @@
 
 <% if @competition.new_record? then %>
 <p><label for="competition_description">Juego</label><br/>
-<%= select("competition", "game_id", Game.find(:all, :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%></p>
+<%= select("competition", "game_id", Game.find(:all, :conditions => "has_competitions = 't'", :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%></p>
 
 <p><label for="competition_description">Tipo de competición</label><br/>
 <select name="competition[type]">

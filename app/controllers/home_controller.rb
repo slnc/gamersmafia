@@ -28,7 +28,7 @@ class HomeController < ApplicationController
       @active_sawmode = 'facciones'
     elsif portal.kind_of?(BazarDistrictPortal) then
       @home = 'distrito'
-      @bazar_district = BazarDistrict.find_by_code(portal.code)
+      @bazar_district = BazarDistrict.find_by_slug(portal.code)
       @active_sawmode = 'bazar'
     elsif portal.code == 'gm' && ((!request.env['HTTP_REFERER']) || !(request.env['HTTP_REFERER'].include?('gamersmafia')))
       # usamos su preferencia de home

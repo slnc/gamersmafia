@@ -4,7 +4,7 @@ require 'test_helper'
 class BazarDistrictTest < ActiveSupport::TestCase
 
   test "should_create_basic_content_categories" do
-    newbd = BazarDistrict.new(:name => 'Yoga', :code => 'yoga')
+    newbd = BazarDistrict.new(:name => 'Yoga', :slug => 'yoga')
     assert newbd.save
     assert_not_nil BazarDistrictPortal.find_by_code('yoga')
 
@@ -14,7 +14,7 @@ class BazarDistrictTest < ActiveSupport::TestCase
                         newbd.id])
     assert t
     assert_equal newbd.name, t.name
-    assert_equal newbd.code, t.slug
+    assert_equal newbd.slug, t.slug
     assert t.children.count > 0
   end
 

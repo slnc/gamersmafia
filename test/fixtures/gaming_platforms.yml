@@ -1,4 +1,9 @@
 one:
   id: 1
   name: Wii
-  code: wii
+  slug: wii
+
+pc:
+  id: 2
+  name: PC
+  slug: pc

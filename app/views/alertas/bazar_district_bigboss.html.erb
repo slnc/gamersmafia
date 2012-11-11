@@ -7,10 +7,10 @@
 
 <%mftext('Estadísticas', :has_submodules => true) do%>
 <%mftext('Karma', :blast => true) do %>
-	<%=sparkline(:size => '250x50', :data => Stats::Portals.daily_karma(BazarDistrictPortal.find_by_code(bd.code), 31.days.ago, 1.day.ago))%>
+	<%=sparkline(:size => '250x50', :data => Stats::Portals.daily_karma(BazarDistrictPortal.find_by_code(bd.slug), 31.days.ago, 1.day.ago))%>
 <% end -%>
 <%mftext('Visitas', :blast => true) do %>
-	<%=sparkline(:size => '250x50', :data => Stats::Portals.daily_pageviews(BazarDistrictPortal.find_by_code(bd.code), 31.days.ago, 1.day.ago))%>
+	<%=sparkline(:size => '250x50', :data => Stats::Portals.daily_pageviews(BazarDistrictPortal.find_by_code(bd.slug), 31.days.ago, 1.day.ago))%>
 <% end -%>
 <% end -%>
 
@@ -27,7 +27,7 @@
 
 <%mftext('Los que más karma han generado en el último mes') do %>
 <%
-fp = BazarDistrictPortal.find_by_code(bd.code)
+fp = BazarDistrictPortal.find_by_code(bd.slug)
 dbk = User.db_query("SELECT COALESCE(sum(karma), 0) as sum FROM stats.portals WHERE portal_id = #{fp.id} AND created_on >= date_trunc('day', now() - '1 month'::interval) and created_on < date_trunc('day', now())")
 dbh = User.db_query("select sum(pageviews) from stats.portals where portal_id = #{fp.id} and created_on >= date_trunc('day', now() - '1 month'::interval) and created_on < date_trunc('day', now())")
 total_karma = dbk.size > 0 ? dbk[0]['sum'].to_f : 0.1

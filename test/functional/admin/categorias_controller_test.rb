@@ -156,10 +156,18 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
   test "mass_move_if_no_perm" do
     test_create_if_perm
     n = Topic.find(:first)
-    t = Term.single_toplevel(:slug => 'deportes').children.create(:name => 'general', :taxonomy => 'TopicsCategory')
+    t = Term.single_toplevel(:slug => 'deportes').children.create({
+        :name => 'general',
+        :taxonomy => 'TopicsCategory',
+    })
     # assert_count_increases(ContentsTerm) { @t.link(n.unique_content) }
     assert_raises(AccessDenied) do
-      post :mass_move, :id => t.id, :destination_term_id => 5, :content_type => 'Topic', :contents => [n.unique_content.id]
+      post :mass_move, {
+          :id => t.id,
+          :destination_term_id => 5,
+          :content_type => 'Topic',
+          :contents => [n.unique_content.id],
+      }
     end
   end
 
@@ -171,11 +179,17 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
   end
 
   test "destroy_if_perm_and_root" do
-    g = Game.new(:name => 'baaaa', :code => 'b2')
+    g = Game.new({
+      :name => 'baaaa',
+      :slug => 'b2',
+      :user_id => 1,
+      :gaming_platform_id => 1,
+    })
     assert g.save
-    @t1 = Term.single_toplevel(:slug => g.code)
+    g.create_contents_categories
+    @t1 = Term.single_toplevel(:slug => g.slug)
     assert_not_nil @t1
-    Faction.find_by_code(g.code).destroy
+    Faction.find_by_code(g.slug).destroy
     sym_login 1
     post :destroy, :id => @t1.id
     assert_response :redirect

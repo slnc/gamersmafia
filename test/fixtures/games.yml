@@ -1,18 +1,24 @@
 first_game:
   id: 1
   name: Unreal Tournament
-  code: ut
+  slug: ut
   has_guids: true
   guid_format: ^([0-9]{10})$
+  user_id: 1
+  gaming_platform_id: 1
 
 second:
   id: 2
   name: rejects faction
-  code: rj
+  slug: rj
   has_guids: false
+  user_id: 2
+  gaming_platform_id: 1
 
 third:
   id: 3
   name: third faction
-  code: th
+  slug: th
   has_guids: false
+  user_id: 3
+  gaming_platform_id: 1

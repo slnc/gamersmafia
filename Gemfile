@@ -13,6 +13,7 @@ gem "jquery-rails", ">= 1.0.12"
 gem "log4r"
 gem "msgpack"
 gem "mocha", :require => false
+gem "nokogiri"
 gem "passenger"
 gem "pg"
 gem "rails", "3.2.1"

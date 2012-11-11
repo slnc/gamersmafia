@@ -33,8 +33,9 @@ class Product < ActiveRecord::Base
   def cant_be_bought_by_user_reason(u)
     method_sym = "cant_be_bought_by_user_reason_#{ActiveSupport::Inflector::underscore(self.cls)}".to_sym
 
-    if self.respond_to?(method_sym)
-      self.send(method_sym, u)
+    Rails.logger.warn("checking for #{method_sym}")
+    if respond_to?(method_sym)
+      send(method_sym, u)
     else
       if CAN_ONLY_HAVE_ONE.include?(self.cls)
        REASON_CAN_ONLY_HAVE_ONE
@@ -49,7 +50,6 @@ class Product < ActiveRecord::Base
   end
 
   # TODO refactorize to use Authorization lib
-  private
   def can_be_bought_by_user_sold_profile_signatures(u)
    !u.enable_profile_signatures?
   end
@@ -113,14 +113,6 @@ class Product < ActiveRecord::Base
     u.clans_ids.size > 0
   end
 
-  def cant_be_bought_by_user_reason_sold_comments_sig(u)
-    "ya lo tienes."
-  end
-
-  def cant_be_bought_by_user_reason_sold_profile_signatures(u)
-    "ya lo tienes."
-  end
-
   def cant_be_bought_by_user_reason_sold_clan_avatar(u)
       "debes pertenecer a al menos un clan"
   end
@@ -151,10 +143,6 @@ class Product < ActiveRecord::Base
     else
       "solo el clanleader de un clan puede comprar la web y no se puede comprar más de una web para el mismo clan"
     end
-  end
-
-  def cant_be_bought_by_user_reason_sold_radar(u)
-    "Ya tienes este producto"
   end
 
   def cant_be_bought_by_user_reason_sold_ad100(u)

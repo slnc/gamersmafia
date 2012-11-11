@@ -1,11 +1,7 @@
-<label>Tipo de facción:<br />
-<select name="type">
-	<option value="game">Juego</option>
-	<option value="platform">Plataforma</option>
-</select><br /><br /></label>
-
-<label>Nombre:<br />
-<input type="text" name="name" /> <span class="infoinline">(Debe ser igual que el nombre oficial del juego o videoconsola)</span><br /><br /></label>
-
-<label>Abreviatura:<br />
-<input type="text" size="6" name="code" /> <span class="infoinline">(De 1 a 5 caracteres. Ej, de "Call of Duty 2" -> "cod2" solo letras y números)</span><br /></label>
+Juego:
+<select name="game_id">
+  <option></option>
+  <%Game.without_faction.find(:all, :order => 'LOWER(name)').each do |game|%>
+  <option value="<%=game.id%>"><%=game.name%></option>
+  <% end -%>
+</select>

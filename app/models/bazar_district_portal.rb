@@ -13,7 +13,7 @@ class BazarDistrictPortal < Portal
   end
 
   def bazar_district
-    BazarDistrict.find_by_code(self.code)
+    BazarDistrict.find_by_slug(self.code)
   end
 
   # Devuelve todas las categorías de primer nivel visibles en la clase dada

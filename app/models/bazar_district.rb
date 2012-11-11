@@ -3,11 +3,11 @@ class BazarDistrict < ActiveRecord::Base
   ROLE_DON = 'Don'
   ROLE_MANO_DERECHA = 'ManoDerecha'
 
-  validates_uniqueness_of :name, :code
+  validates_uniqueness_of :name, :slug
   validates_length_of :name, :within => 2..20
-  validates_length_of :code, :within => 2..20
+  validates_length_of :slug, :within => 2..20
   after_save :check_if_icon_updated
-  after_save :rename_everything_if_name_or_code_changed
+  after_save :rename_everything_if_name_or_slug_changed
   after_create :create_portal_and_terms
   before_create :check_can_be_created
 
@@ -26,19 +26,23 @@ class BazarDistrict < ActiveRecord::Base
     Term.single_toplevel(:bazar_district_id => self.id)
   end
 
-  def rename_everything_if_name_or_code_changed
-    if ((self.name_changed? || self.code_changed?) &&
-        self.code_was.to_s != '')
-      val = self.changed["code"]
-      field = :code
+  def code
+    self.slug
+  end
+
+  def rename_everything_if_name_or_slug_changed
+    if ((self.name_changed? || self.slug_changed?) &&
+        self.slug_was.to_s != '')
+      val = self.changed["slug"]
+      field = :slug
       BazarDistrictPortal.send(
           "find_by_#{field}",(val)).update_attributes(
-              :name => self.name, :code => self.code)
+              :name => self.name, :code => self.slug)
       Cms::BAZAR_DISTRICTS_VALID.each do |cname|
         cls = Object.const_get(cname).category_class
         inst = cls.find(:first,
                         :conditions => ["#{field} = ?", self.send(field)])
-        inst.update_attributes(:name => self.name, :code => self.code) if inst
+        inst.update_attributes(:name => self.name, :slug => self.slug) if inst
       end
     end
   end
@@ -198,15 +202,15 @@ class BazarDistrict < ActiveRecord::Base
 
   protected
   def check_can_be_created
-    root_term = Term.single_toplevel(:slug => self.code)
+    root_term = Term.single_toplevel(:slug => self.slug)
     if root_term
-      self.errors.add("code",
+      self.errors.add("slug",
                       "Ya existe un Term con el mísmo código: #{root_term}.")
       return false
     end
 
-    if BazarDistrictPortal.find_by_code(self.code)
-      self.errors.add("code", "Ya existe un portal para este distrito.")
+    if BazarDistrictPortal.find_by_code(self.slug)
+      self.errors.add("slug", "Ya existe un portal para este distrito.")
       return false
     end
     true
@@ -214,7 +218,7 @@ class BazarDistrict < ActiveRecord::Base
 
   def create_portal_and_terms
     root_term = Term.create(
-        :bazar_district_id => self.id, :name => self.name, :slug => self.code)
+        :bazar_district_id => self.id, :name => self.name, :slug => self.slug)
 
     Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
       term = root_term.children.create(:name => c[1], :taxonomy => c[0])
@@ -224,7 +228,7 @@ class BazarDistrict < ActiveRecord::Base
       end
     end
 
-    BazarDistrictPortal.create({:code => self.code, :name => self.name})
+    BazarDistrictPortal.create(:code => self.slug, :name => self.name)
   end
 
   def roles_by_user

@@ -383,7 +383,7 @@ module ActsAsContent
         maincat = self.main_category
         return unless maincat
         tld_code = maincat.root.code
-        g = Game.find_by_code(tld_code)
+        g = Game.find_by_slug(tld_code)
         g.id if g
       end
     end
@@ -393,7 +393,7 @@ module ActsAsContent
         maincat = self.main_category
         return unless maincat
         tld_code = maincat.root.code
-        p = GamingPlatform.find_by_code(tld_code)
+        p = GamingPlatform.find_by_slug(tld_code)
         p.id if p
       end
     end
@@ -403,7 +403,7 @@ module ActsAsContent
         maincat = self.main_category
         return unless maincat
         tld_code = maincat.root.code
-        p = BazarDistrict.find_by_code(tld_code)
+        p = BazarDistrict.find_by_slug(tld_code)
         p.id if p
       end
     end

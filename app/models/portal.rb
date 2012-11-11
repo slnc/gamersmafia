@@ -25,7 +25,7 @@ class Portal < ActiveRecord::Base
 
   def self.find_by_competitions_match(cm)
     # Buscamos los portales que estén asociados a la facción del juego de la competición de cm
-    f = Faction.find_by_code("#{cm.competition.game.code}")
+    f = Faction.find_by_code("#{cm.competition.game.slug}")
     Portal.find(:all, :conditions => "id IN (SELECT portal_id FROM factions_portals WHERE faction_id = #{f.id})")
   end
 

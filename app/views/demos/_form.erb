@@ -3,7 +3,7 @@
 <p><label>Juego</label><br/>
 <select id="demo_game_id" name="demo_game_id">
 	<option></option>
-<% Game.find(:all, :order => 'lower(name)').each do |g| %>
+<% Game.find(:all, :conditions => "has_demos = 't'", :order => 'lower(name)').each do |g| %>
     <option <%='selected="selected"' if g.id == @demo.games_mode_id && @demo.games_mode.game_id%>value="<%= g.id %>"><%= g.name %></option>
 <% end -%>
 </select>

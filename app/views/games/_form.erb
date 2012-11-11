@@ -1,0 +1,36 @@
+<%= error_messages_for @game %>
+
+<!--[form:game]-->
+<p><label for="game_name">Nombre</label><br/>
+<%= text_field 'game', 'name', :class => 'text'  %></p>
+
+<p><label for="game_name">Fecha de lanzamiento (eg: "TBA", "24 Nov, 2012", "2013p)</label><br/>
+<%= text_field 'game', 'release_date', :class => 'text'  %></p>
+
+<p><label for="game_gaming_platform">Plataforma</label><br/>
+<%= select("game", "gaming_platform_id", GamingPlatform.all.collect{|p| [ p.name, p.id ]}, {:include_blank => true}) %>
+
+<p><label for="game_publisher">Publisher</label><br/>
+<%= select("game", "publisher_id", Term.with_taxonomy("GamePublisher").all.collect{|p| [ p.name, p.id ]}, {:include_blank => true}) %>
+
+<p><label for="game_file">Archivo .GIF en blanco y negro de 16x16</label><br/>
+<img src="<%=ASSET_URL%>/storage/games/<%=@game.slug%>.gif" />
+<%= file_field 'game', 'file' %></p>
+
+<p><label for="game_gidu">¿Tiene GUID?</label><br/>
+<%= check_box 'game', 'has_guids'  %></p>
+
+<p><label for="game_code">Formato de GUID</label><br/>
+<%= text_field 'game', 'guid_format', :class => 'text'  %></p>
+
+<p><label for="game_code">¿Tiene demos?</label><br/>
+<%= check_box 'game', 'has_demos'  %></p>
+
+<p><label for="game_code">¿Tiene concepto de mapas (para competiciones)?</label><br/>
+<%= check_box 'game', 'has_game_maps'  %></p>
+
+<p><label for="game_code">¿Tiene competiciones?</label><br/>
+<%= check_box 'game', 'has_competitions'  %></p>
+
+<!--[eoform:game]-->
+

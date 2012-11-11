@@ -63,7 +63,7 @@ class Download < ActiveRecord::Base
     opts = self.attributes
 
     # TODO la categoría
-    opts['games_mode_id'] = Game.find_by_code(self.main_category.root.code).games_modes.find(:first).id
+    opts['games_mode_id'] = Game.find_by_slug(self.main_category.root.code).games_modes.find(:first).id
 
     %w(clan_id essential).each do |attr|
       opts.delete attr

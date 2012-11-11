@@ -36,7 +36,7 @@ class DecisionTest < ActiveSupport::TestCase
   test "update_pending_decisions_indicators" do
     User.db_query("DELETE FROM decision_user_choices")
     u2 = User.find(2)
-    give_skill(u2, "CreateTag")
+    give_skill(u2, "CreateEntity")
     u5 = User.find(5)
 
     Decision.update_pending_decisions_indicators
@@ -58,7 +58,7 @@ class DecisionTest < ActiveSupport::TestCase
   test "update_pending_decisions_indicators for decision" do
     User.db_query("DELETE FROM decision_user_choices")
     u2 = User.find(2)
-    u2.users_skills.create(:role => "CreateTag")
+    u2.users_skills.create(:role => "CreateEntity")
     d6 = Decision.find(6)
 
     d6.update_pending_decisions_indicators

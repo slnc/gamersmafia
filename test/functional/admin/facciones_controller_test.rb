@@ -19,7 +19,15 @@ class Admin::FaccionesControllerTest < ActionController::TestCase
     f = Faction.find(:first)
     n = f.name
     assert_not_nil f
-    post :update, { :id => f.id, :faction => { :name => "#{n} a",  :building_top => '', :building_middle => '', :building_bottom => '' }}
+    post :update, {
+        :id => f.id,
+        :faction => {
+            :name => "#{n} a",
+            :building_top => '',
+            :building_middle => '',
+            :building_bottom => '',
+        },
+    }
     assert_response :redirect
     f.reload
     assert_equal "#{n} a", f.name
@@ -27,9 +35,15 @@ class Admin::FaccionesControllerTest < ActionController::TestCase
 
   test "delete_works" do
     sym_login 1
-    g = Game.new(:name => 'faccionita', :code => 'code')
+    g = Game.new({
+        :name => 'faccionita',
+        :slug => 'code',
+        :gaming_platform_id => 1,
+        :user_id => 1,
+    })
     assert g.save, g.errors.full_messages_html
-    f = Faction.find_by_code(g.code)
+    g.create_contents_categories
+    f = Faction.find_by_code(g.slug)
     assert Portal.find_by_code(f.code)
     post :destroy, :id => f.id
     assert_response :redirect

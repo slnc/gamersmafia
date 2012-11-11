@@ -157,10 +157,10 @@ module Cache
     def self.before_destroy(object)
       case object.taxonomy
         when 'ImagesCategory'
-        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/imagenes/index/galleries") }
+        object.get_related_portals.each { |p| expire_fragment("/#{p.respond_to?(:code) ? p.code : p.slug}/imagenes/index/galleries") }
 
         when 'TopicsCategory'
-        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/foros/index/index") } # tenemos que borrarla entera porque se guardan totales
+        object.get_related_portals.each { |p| expire_fragment("/#{p.respond_to?(:code) ? p.code : p.slug}/foros/index/index") } # tenemos que borrarla entera porque se guardan totales
         expire_fragment("/common/foros/subforos/#{object.parent_id}")
         expire_fragment '/common/home/foros/topics_list'
         p = object
@@ -209,7 +209,13 @@ module Cache
         end
 
         when 'TopicsCategory' then
-        object.get_related_portals.each { |p| expire_fragment("/#{p.code}/foros/index/index")  }
+        object.get_related_portals.each { |p|
+          if p.respond_to?(:code)
+            expire_fragment("/#{p.code}/foros/index/index")
+          else
+            expire_fragment("/#{p.slug}/foros/index/index")
+          end
+        }
         expire_fragment '/common/home/foros/topics_list'
         expire_fragment("/common/foros/subforos/#{object.parent_id}")
         p = object

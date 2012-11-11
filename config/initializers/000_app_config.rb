@@ -35,4 +35,8 @@ if !defined?(::App)
   ASSET_URL = App.asset_url
   COOKIEDOMAIN = ".#{App.domain}"
   FRAGMENT_CACHE_PATH = "#{Rails.root}/tmp/fragment_cache"
+
+  if !Dir.exists?("#{Rails.root}/tmp/scraping")
+    Dir.mkdir("#{Rails.root}/tmp/scraping")
+  end
 end

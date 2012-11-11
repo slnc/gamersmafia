@@ -16,15 +16,15 @@ module Cuenta::CuentaHelper
 
       when 'Don'
       bd = BazarDistrict.find(ur.role_data.to_i)
-        "Don de <strong><a href=\"http://#{bd.code}.#{App.domain}\">#{bd.name}</a></strong>"
+        "Don de <strong><a href=\"http://#{bd.slug}.#{App.domain}\">#{bd.name}</a></strong>"
 
       when 'ManoDerecha'
       bd = BazarDistrict.find(ur.role_data.to_i)
-        "Mano derecha de <strong><a href=\"http://#{bd.code}.#{App.domain}\">#{bd.name}</a></strong>"
+        "Mano derecha de <strong><a href=\"http://#{bd.slug}.#{App.domain}\">#{bd.name}</a></strong>"
 
       when 'Sicario'
       bd = BazarDistrict.find(ur.role_data.to_i)
-        "Sicario de <strong><a href=\"http://#{bd.code}.#{App.domain}\">#{bd.name}</a></strong>"
+        "Sicario de <strong><a href=\"http://#{bd.slug}.#{App.domain}\">#{bd.name}</a></strong>"
 
       when 'GroupMember'
       g = Group.find(ur.role_data.to_i)

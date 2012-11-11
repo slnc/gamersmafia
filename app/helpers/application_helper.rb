@@ -74,6 +74,10 @@ module ApplicationHelper
     out
   end
 
+  def bool_to_str(bool)
+    bool ? "Sí" : "No"
+  end
+
   def js_trigger_content_init
     """<script type=\"text/javascript\">$(document).ready(function() {
     Gm.triggerContentInit();

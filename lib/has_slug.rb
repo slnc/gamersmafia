@@ -26,9 +26,9 @@ module HasSlug
         base_slug.gsub!(/([_-]+)$/, '')
         base_slug.gsub!(/^(-)/, '')
         # chequeamos que el slug sea único
-        if self.class.find(:first, :conditions => "slug = \'#{base_slug}\'") then
+        if self.class.find(:first, :conditions => "slug = '#{base_slug}'") then
           incrementor = 1
-          while self.class.find(:first, :conditions => "slug = \'#{base_slug}-#{incrementor}\'")
+          while self.class.find(:first, :conditions => "slug = '#{base_slug}-#{incrementor}'")
             incrementor += 1
           end
           self.slug = "#{base_slug}-#{incrementor}"

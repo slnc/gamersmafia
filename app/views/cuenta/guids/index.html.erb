@@ -39,7 +39,7 @@
       <th>GUID Actual</th>
       <th>Nuevo GUID</th>
     </tr>
-    <% for g in Game.find(:all, :order => 'lower(name) ASC')
+    <% for g in Game.find(:all, :conditions => "has_guids = 't'", :order => 'lower(name) ASC')
     last = @user.users_guids.find_last_by(@user, g) %>
     <tr class="<%=oddclass%>">
       <td class="w20"><input type="checkbox" name="games[]" value="<%=g.id%>" <%=g_ids.include?(g.id) ? 'checked="checked"' : ''%> /></td>

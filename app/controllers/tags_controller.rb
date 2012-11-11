@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class TagsController < ApplicationController
+
   def autocomplete
     require_authorization(:can_tag_contents?)
     @out = {}
@@ -9,7 +10,8 @@ class TagsController < ApplicationController
 
     terms = Term.find(
         :all,
-        :conditions => "taxonomy = 'ContentsTag' AND LOWER(name) LIKE LOWER(E'#{params[:text]}%')",
+        :conditions => "taxonomy = 'ContentsTag'
+                        AND LOWER(name) LIKE LOWER(E'#{params[:text]}%')",
         :limit => 100)
     terms.each do |term|
       @out[term.id] = term.name
@@ -26,12 +28,12 @@ class TagsController < ApplicationController
   end
 
   def new
-    require_authorization(:can_create_tags?)
+    require_authorization(:can_create_entities?)
     @title = "Nuevo tag"
   end
 
   def create
-    require_authorization(:can_create_tags?)
+    require_authorization(:can_create_entities?)
 
     uct = UsersContentsTag.new(:original_name => params[:tag][:name])
     if !uct.valid?

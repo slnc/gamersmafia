@@ -16,7 +16,7 @@ else %>
     	cond<< " AND game_id IN (#{g.join(',')})"
 	else %><%# si no tiene games tiene gaming_platforms%><%
 		plat_codes = controller.portal.factions.find(:all, :conditions => 'is_gaming_platform = \'t\'').collect { |x| "'#{x.code}'" }
-		plats_ids = GamingPlatform.find(:all, :conditions => "code IN (#{plat_codes.join(',')})").collect { |x| x.id }
+		plats_ids = GamingPlatform.find(:all, :conditions => "slug IN (#{plat_codes.join(',')})").collect { |x| x.id }
 		cond<< " AND gaming_platform_id IN (#{plats_ids.join(',')})" if plats_ids.size > 0
 	end
 end

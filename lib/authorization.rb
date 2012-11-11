@@ -168,6 +168,10 @@ module Authorization
     false
   end
 
+  def self.can_edit_entities?(user)
+    user.has_any_skill?(%w(Capo Webmaster))
+  end
+
   def self.can_edit_faction?(user, faction)
     user.has_skill?("Webmaster") || faction.is_bigboss?(user)
   end
@@ -181,12 +185,12 @@ module Authorization
     return false if term.id == term.root_id
 
     if term.game_id
-      f = Faction.find_by_code(term.game.code)
+      f = Faction.find_by_code(term.game.slug)
       (f.is_bigboss?(u) ||
        f.user_is_editor_of_content_type?(
            u, ContentType.find_by_name(taxonomy)))
     elsif term.gaming_platform_id
-      f = Faction.find_by_code(term.platform.code)
+      f = Faction.find_by_code(term.platform.slug)
       (f.is_bigboss?(u) ||
        f.user_is_editor_of_content_type?(
            u, ContentType.find_by_name(taxonomy)))
@@ -262,8 +266,8 @@ module Authorization
     user.has_skill?("TagContents")
   end
 
-  def self.can_create_tags?(user)
-    user.has_skill?("CreateTag")
+  def self.can_create_entities?(user)
+    user.has_skill?("CreateEntity")
   end
 
   def self.gets_less_ads?(user)

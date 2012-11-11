@@ -633,7 +633,6 @@ Request information:
       # items<< ['Grupos', '/admin/grupos']
       items<< ['IP Bans', '/admin/ip_bans']
       items<< ['IPs Duplicadas', '/admin/usuarios/ipsduplicadas']
-      items<< ['Juegos', '/admin/juegos']
       items<< ['Mapas', '/admin/mapas_juegos']
       items<< ['Portales', '/admin/portales']
       items<< ['Tags', '/admin/tags']

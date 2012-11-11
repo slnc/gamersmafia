@@ -41,7 +41,7 @@ class Admin::MapasJuegosController < ApplicationController
 
   def edit
     @games_map = GamesMap.find(params[:id])
-    @title = "#{@games_map.game.code} #{@games_map.name}"
+    @title = "#{@games_map.game.slug} #{@games_map.name}"
     @navpath = [
         ['Mapas de juegos', '/admin/mapas_juegos'],
         [@title, "/admin/mapas_juegos/edit/#{@games_map.id}"]]

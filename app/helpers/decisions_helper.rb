@@ -23,6 +23,9 @@ module DecisionsHelper
   def decision_context(decision)
     out = []
     case decision.decision_type_class
+    when "CreateGame"
+      out.append(self.render_create_game_context(decision))
+
     when "CreateTag"
       out.append(self.render_create_tag_context(decision))
 
@@ -80,6 +83,13 @@ module DecisionsHelper
         :render_to_string,
         :partial => "/contents/#{content.content_type.name.downcase}",
         :locals => {:content => content}).force_encoding("utf-8")
+  end
+
+  def render_create_game_context(decision)
+    controller.send(
+        :render_to_string,
+        :partial => "/games/decision_context",
+        :locals => {:game => decision.context.fetch(:game)}).force_encoding("utf-8")
   end
 
   def render_create_tag_context(decision)

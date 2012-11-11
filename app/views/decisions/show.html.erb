@@ -15,7 +15,9 @@
   <br />
   Tu decisión:
   <strong><%=current_choice.decision_choice.name%></strong>
+  <% if @decision.state == Decision::PENDING %>
   (<a href="" data-reveal-selector=".decision-choices">cambiar</a>).
+  <% end -%>
 <% end -%>
 </div>
 

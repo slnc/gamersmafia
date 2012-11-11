@@ -40,6 +40,11 @@ Gamersmafia::Application.routes.draw do
     end
   end
 
+  get "juegos/p/:platform_code", :controller => :games, :action => :index
+  resources :games, {:path => "juegos" ,
+                     :path_names => {:new => "nuevo", :edit => "editar"}} do
+  end
+
   resources :tags, :path_names => { :new => "nuevo" } do
     collection do
       get 'autocomplete'
@@ -57,7 +62,6 @@ Gamersmafia::Application.routes.draw do
   match 'admin/clanes/(:action)(/:id)' => 'admin/clanes'
   match 'admin/facciones(/:action)' => 'admin/facciones'
   match 'admin/plataformas(/:action)' => 'admin/plataformas'
-  match 'admin/juegos(/:action)' => 'admin/juegos'
   match 'admin/categorias/create' => 'admin/categorias#create'
   match 'admin/categorias/term/:id' => 'admin/categorias#root'
   match 'admin/categorias/term/:id/contenidos/:content_type' => 'admin/categorias#contenidos'

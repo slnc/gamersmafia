@@ -768,10 +768,10 @@ module Cms
       code = thing.code
       name = thing.name
     elsif thing.class.name == 'Game' then
-      code = thing.code
+      code = thing.slug
       name = thing.name
     elsif thing.class.name == 'GamingPlatform' then
-      code = thing.code
+      code = thing.slug
       name = thing.name
     elsif thing.class.name == 'User' then
       if thing.faction then
@@ -784,7 +784,7 @@ module Cms
       code = thing
       name = thing
     elsif thing.class.name == 'BazarDistrict'
-      code = thing.code
+      code = thing.slug
       name = thing.name
     elsif thing.class.name == 'Funthing'
       code = 'bazar'

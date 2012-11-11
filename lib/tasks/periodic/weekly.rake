@@ -39,11 +39,11 @@ namespace :gm do
   from stats.portals
  where portal_id in (select id
                        from portals
-                      where code in (select code from games
+                      where code in (select slug from games
                                      UNION
-                                     select code from gaming_platforms
+                                     select slug from gaming_platforms
                                      UNION
-                                     select code from bazar_districts))
+                                     select slug from bazar_districts))
    and created_on >= now() - '7 days'::interval
  group by portal_id
 having portal_id in (select id
@@ -66,7 +66,7 @@ having portal_id in (select id
       elsif t.game_id || t.gaming_platform_id
         master = :boss
         undermaster = :underboss
-        organization = Faction.find_by_code(t.game_id ? t.game.code : t.platform.code)
+        organization = Faction.find_by_code(t.game_id ? t.game.slug : t.platform.slug)
       end
       if organization.nil?
         Rails.logger.error(

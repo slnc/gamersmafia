@@ -28,7 +28,7 @@ class DecisionsControllerTest < ActionController::TestCase
   end
 
   test "decide" do
-    give_skill(2, "CreateTag")
+    give_skill(2, "CreateEntity")
     d6 = Decision.find(6)
     u2 = User.find(2)
     User.db_query("DELETE FROM decision_user_choices")

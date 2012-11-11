@@ -2,9 +2,6 @@
 require 'test_helper'
 
 class FaccionesControllerTest < ActionController::TestCase
-
-
-
   test "index" do
     get :index
     assert_response :success
@@ -13,8 +10,14 @@ class FaccionesControllerTest < ActionController::TestCase
 
   test "borrar_should_work" do
     sym_login 2
-    g = Game.new({:code => 'fooli', :name => "Foo ling pun"})
+    g = Game.new({
+        :slug => 'fooli',
+        :name => "Foo ling pun",
+        :gaming_platform_id => 1,
+        :user_id => 1,
+    })
     assert g.save, g.errors.full_messages_html
+    g.create_contents_categories
     f = g.faction
     assert_raises(AccessDenied) { post :borrar, { :id => f.id} }
 

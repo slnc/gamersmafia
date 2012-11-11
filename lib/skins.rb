@@ -14,12 +14,6 @@ module Skins
     end
   end
 
-  BUILTIN_PORTALS = [
-    Game.new(:code => 'gm'),
-    Game.new(:code => 'bazar'),
-    Game.new(:code => 'arena'),
-  ]
-
   def self.retrieve_portal_favicon(favicon_path)
     begin
       portal_favicon = Magick::Image.read("#{Rails.root}/public/#{favicon_path}").first
@@ -36,8 +30,14 @@ module Skins
   end
 
   def self.update_portal_favicons
+    builtin_portals = [
+      Game.new(:slug => 'gm'),
+      Game.new(:slug => 'bazar'),
+      Game.new(:slug => 'arena'),
+    ]
+
     entities_with_portals = (
-        BUILTIN_PORTALS +
+        builtin_portals +
         BazarDistrict.find(:all, :order => 'id') +
         GamingPlatform.find(:all, :order => 'id') +
         Game.find(:all, :order => 'id')
@@ -52,7 +52,7 @@ module Skins
       if entity.respond_to?(:icon)
         favicon_path = entity.icon
       else
-        favicon_path = "storage/games/#{entity.code}.gif"
+        favicon_path = "storage/games/#{entity.slug}.gif"
       end
       portal_favicon = self.retrieve_portal_favicon(favicon_path)
       # Copy game sprite to big sprite
@@ -62,7 +62,7 @@ module Skins
       end
 
       idx_for_sprite = portal_favicon ? i : 0
-      css_out<< ("img.gs-#{entity.code} { background-position: " +
+      css_out<< ("img.gs-#{entity.slug} { background-position: " +
                  "-#{idx_for_sprite*16}px 0; }\n")
       i += 1
     end

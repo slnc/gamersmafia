@@ -1,18 +1,21 @@
 # -*- encoding : utf-8 -*-
+require 'has_slug'
 class GamingPlatform < ActiveRecord::Base
-  validates_format_of :code, :with => /^[a-z0-9]{1,6}$/
-  validates_format_of :name, :with => /^[a-z0-9:[:space:]]{1,36}$/i
-  validates_uniqueness_of :code
+  validates_format_of :name, :with => /^[a-z0-9':[:space:]-]{1,36}$/i
   validates_uniqueness_of :name
   has_many :terms
-  before_save :check_code_doesnt_belong_to_portal
-  after_create :create_term_and_categories
+  has_slug
+  before_save :check_slug_doesnt_belong_to_portal
 
-  def create_term_and_categories
+  def code
+    self.slug
+  end
+
+  def create_contents_categories
     root_term = Term.create({
         :gaming_platform_id => self.id,
         :name => self.name,
-        :slug => self.code
+        :slug => self.slug,
     })
 
     Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
@@ -22,13 +25,13 @@ class GamingPlatform < ActiveRecord::Base
   end
 
   def faction
-    Faction.find_by_code(self.code)
+    Faction.find_by_code(self.slug)
   end
 
   # TODO copypaste de game
-  def update_code_in_other_places_if_changed
-    [:code, :name].each do |thing|
-      next unless self.code_changed?
+  def update_slug_in_other_places_if_changed
+    [:slug, :name].each do |thing|
+      next unless self.slug_changed?
 
       old_value = self.changes[thing][0]
       return if old_value.nil?
@@ -50,7 +53,7 @@ class GamingPlatform < ActiveRecord::Base
 
   # TODO copypaste de Game.rb
   after_save :update_img_file
-  after_save :update_code_in_other_places_if_changed
+  after_save :update_slug_in_other_places_if_changed
 
   def file=(incoming_file)
     @temp_file = incoming_file
@@ -59,7 +62,7 @@ class GamingPlatform < ActiveRecord::Base
   end
 
   def portals
-    [GmPortal.new] + FactionsPortal.find_by_sql("select * from portals where id in (select portal_id from factions_portals a join factions b on a.faction_id = b.id and b.code = '#{self.code}')")
+    [GmPortal.new] + FactionsPortal.find_by_sql("select * from portals where id in (select portal_id from factions_portals a join factions b on a.faction_id = b.id and b.slug = '#{self.slug}')")
   end
 
   def update_img_file
@@ -69,7 +72,7 @@ class GamingPlatform < ActiveRecord::Base
       end
       Skins.update_default_skin_styles
       @temp_file = nil
-      #self.path = "/storage/games/#{self.code}.gif"
+      #self.path = "/storage/games/#{self.slug}.gif"
       #self.save
     end
   end
@@ -79,16 +82,16 @@ class GamingPlatform < ActiveRecord::Base
   end
 
   def img_file
-    "#{Rails.root}/public/storage/games/#{self.code}.gif"
+    "#{Rails.root}/public/storage/games/#{self.slug}.gif"
   end
 
-  def check_code_doesnt_belong_to_portal
+  def check_slug_doesnt_belong_to_portal
     # TODO dup en Game.rb
     if self.id
-      # TODO temp Portal.count(:conditions => ["code = ? AND id <> ?", self.code, self.id]) == 0 && !Portal::UNALLOWED_CODES.include?(code)
+      # TODO temp Portal.count(:conditions => ["slug = ? AND id <> ?", self.slug, self.id]) == 0 && !Portal::UNALLOWED_CODES.include?(slug)
       true
     else
-      Portal.find_by_code(self.code).nil? && !Portal::UNALLOWED_CODES.include?(code)
+      Portal.find_by_code(self.slug).nil? && !Portal::UNALLOWED_CODES.include?(slug)
     end
   end
 end

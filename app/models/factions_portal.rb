@@ -75,11 +75,11 @@ class FactionsPortal < Portal
   end
 
   def games
-    self.factions.collect {|f| Game.find_by_code(f.code)} .compact.sort {|a,b| a.code <=> b.code }
+    self.factions.collect {|f| Game.find_by_slug(f.code)} .compact.sort {|a,b| a.code <=> b.code }
   end
 
   def gaming_platforms
-    self.factions.collect {|f| GamingPlatform.find_by_code(f.code)} .compact.sort {|a,b| a.code <=> b.code }
+    self.factions.collect {|f| GamingPlatform.find_by_slug(f.code)} .compact.sort {|a,b| a.code <=> b.code }
   end
 
 
@@ -183,14 +183,14 @@ class FactionsPortalPollProxy
     obj = Poll
     g = @portal.games
     if g.size > 1
-      obj = obj.category_class.find_by_code(g[0].code) # cargamos la categoría como proxy para hacer consultas y que incluya la constraint de term
+      obj = obj.category_class.find_by_code(g[0].slug) # cargamos la categoría como proxy para hacer consultas y que incluya la constraint de term
     elsif @portal.factions.size > 0 # platform
       obj = obj.category_class.find_by_code(@portal.factions[0].code)
     end
 
     if g.size > 1
       g.delete_at(0)
-      g.each { |gg| obj.add_sibling(obj.class.find_by_code(gg.code)) }
+      g.each { |gg| obj.add_sibling(obj.class.find_by_code(gg.slug)) }
     end
     obj.send(method_id, *args)
   end
@@ -205,9 +205,6 @@ class FactionsPortalCoverageProxy
     options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
     codes = @portal.factions.collect { |g| "'#{g.code}'" }
     codes = [] if codes.size == 0
-    # if codes.size == 0
-    #  codes = @portal.gaming_platforms.collect { |g| "'#{g.code}'" }
-    #end
     new_cond = "event_id IN (SELECT external_id FROM contents_terms a join contents b on a.content_id = b.id AND b.content_type_id = (select id from content_types where name = 'Event') AND a.term_id = (select id from terms where parent_id IS NULL and slug = '#{@portal.code}'))"
 
     if options[:conditions].kind_of?(Array)

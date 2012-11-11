@@ -24,7 +24,7 @@ module Organizations
 
     # las categorias de distritos cuelgan de bazar
 
-    org = BazarDistrict.find_by_code(maincat.root.code)
+    org = BazarDistrict.find_by_slug(maincat.root.code)
     return org unless org.nil?
   end
 end

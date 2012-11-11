@@ -15,7 +15,7 @@ class UsersSkill < ActiveRecord::Base
     CompetitionAdmin
     CompetitionSupervisor
     ContentModerationQueue
-    CreateTag
+    CreateEntity
     DeleteContents
     Don
     EditContents
@@ -46,7 +46,7 @@ class UsersSkill < ActiveRecord::Base
     'Antiflood' => 8500,
     'Bank' => 35,
     'BulkUpload' => 100,
-    'CreateTag' => 1250,
+    'CreateEntity' => 1250,
     'ContentModerationQueue' => 50,
     'DeleteContents' => 10000,
     'EditContents' => 5000,

@@ -71,7 +71,7 @@ class AuthorizationTest < ActiveSupport::TestCase
 
   test "decision_type_class_available_for_user" do
     assert_equal(
-        ["CreateTag"],
-        Authorization.decision_type_class_available_for_user(User.find(5)))
+        ["CreateTag", "CreateGame"].sort,
+        Authorization.decision_type_class_available_for_user(User.find(5)).sort)
   end
 end

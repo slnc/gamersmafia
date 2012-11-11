@@ -22,7 +22,7 @@ class Admin::BazarDistrictsControllerTest < ActionController::TestCase
     give_skill(1, "BazarManager")
     sym_login 1
     assert_count_increases(BazarDistrict) do
-      post :create, {:bazar_district => {:name => 'el nombrecico', :code => 'codecico'}}
+      post :create, {:bazar_district => {:name => 'el nombrecico', :slug => 'codecico'}}
       assert_redirected_to "/admin/bazar_districts"
     end
   end

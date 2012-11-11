@@ -12,8 +12,8 @@
   <div class="sidething-spaced">
   <%= form_tag({:action=> "buscar_por_guid" }) %>
     <select name="game_id">
-      <% for g in Game.find(:all, :conditions => 'has_guids = \'t\'', :order => 'lower(name) ASC') %>
-      <option value="<%=g.id%>"><%=g.code%></option>
+      <% for g in Game.find(:all, :conditions => "has_guids = 't'", :order => 'lower(name) ASC') %>
+      <option value="<%=g.id%>"><%=g.slug%></option>
       <% end -%>
     </select>
     <br /><%=popup('GUID', '/site/ejemplos_guids', 350, 225)%>: <input type="text" class="text form" size="13" name="guid" />

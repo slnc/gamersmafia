@@ -5,7 +5,7 @@
 <a href="http://<%=o.code%>.<%=App.domain%>/"><%=faction_favicon(o.code)%><%=o.name%></a>
 <% end -%>
 
-<%mflist('Juegos', FactionsPortal.find(:all, :conditions => 'code IN (select code from games)', :order => 'lower(name)')) do |o| %>
+<%mflist('Juegos', FactionsPortal.find(:all, :conditions => "code IN (select slug from games where has_faction='t')", :order => 'lower(name)')) do |o| %>
 <a href="http://<%=o.code%>.<%=App.domain%>/"><%=faction_favicon(o.code)%><%=o.name%></a>
 <% end -%>
 
@@ -13,7 +13,7 @@
 </div>
 
 <div class="grid-5 glast">
-<%mflist('Plataformas', FactionsPortal.find(:all, :conditions => 'code IN (select code from gaming_platforms)', :order => 'lower(name)')) do |o| %>
+<%mflist('Plataformas', FactionsPortal.find(:all, :conditions => "code IN (select slug from gaming_platforms where has_faction = 't')", :order => 'lower(name)')) do |o| %>
 <a href="http://<%=o.code%>.<%=App.domain%>/"><%=faction_favicon(o.code)%><%=o.name%></a>
 <% end -%>
 
@@ -28,6 +28,6 @@
 <div class="grid-5 glast">
 <%mflist('Bazar', BazarDistrictPortal.find(:all, :order => 'lower(name)')) do |o| %>
 <a href="http://<%=o.code%>.<%=App.domain%>/"><%=faction_favicon(o.code)%><%=o.name%></a>
-<% end -%>	
+<% end -%>
 </div>
 <% end -%>

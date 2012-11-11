@@ -240,7 +240,7 @@ ALTER SEQUENCE ban_requests_id_seq OWNED BY ban_requests.id;
 CREATE TABLE bazar_districts (
     id integer NOT NULL,
     name character varying NOT NULL,
-    code character varying NOT NULL,
+    slug character varying NOT NULL,
     icon character varying,
     building_top character varying,
     building_middle character varying,
@@ -1566,9 +1566,17 @@ SET default_with_oids = true;
 CREATE TABLE games (
     id integer NOT NULL,
     name character varying NOT NULL,
-    code character varying NOT NULL,
+    slug character varying NOT NULL,
     has_guids boolean DEFAULT false NOT NULL,
-    guid_format character varying
+    guid_format character varying,
+    has_game_maps boolean DEFAULT false NOT NULL,
+    has_competitions boolean DEFAULT false NOT NULL,
+    has_demos boolean DEFAULT false NOT NULL,
+    user_id integer NOT NULL,
+    has_faction boolean DEFAULT false NOT NULL,
+    gaming_platform_id integer NOT NULL,
+    release_date character varying,
+    publisher_id integer
 );
 SET default_with_oids = false;
 CREATE TABLE games_gaming_platforms (
@@ -1628,7 +1636,8 @@ ALTER SEQUENCE games_versions_id_seq OWNED BY games_versions.id;
 CREATE TABLE gaming_platforms (
     id integer NOT NULL,
     name character varying NOT NULL,
-    code character varying NOT NULL
+    slug character varying NOT NULL,
+    has_faction boolean DEFAULT false NOT NULL
 );
 CREATE TABLE gaming_platforms_users (
     user_id integer NOT NULL,
@@ -3348,7 +3357,7 @@ ALTER TABLE ONLY babes
 ALTER TABLE ONLY ban_requests
     ADD CONSTRAINT ban_requests_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY bazar_districts
-    ADD CONSTRAINT bazar_districts_code_key UNIQUE (code);
+    ADD CONSTRAINT bazar_districts_code_key UNIQUE (slug);
 ALTER TABLE ONLY bazar_districts
     ADD CONSTRAINT bazar_districts_name_key UNIQUE (name);
 ALTER TABLE ONLY bazar_districts
@@ -3545,14 +3554,10 @@ ALTER TABLE ONLY gamersmafiageist_codes
     ADD CONSTRAINT gamersmafiageist_codes_code_key UNIQUE (code);
 ALTER TABLE ONLY gamersmafiageist_codes
     ADD CONSTRAINT gamersmafiageist_codes_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY games
-    ADD CONSTRAINT games_code_unique UNIQUE (code);
 ALTER TABLE ONLY games_maps
     ADD CONSTRAINT games_maps_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY games_modes
     ADD CONSTRAINT games_modes_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY games
-    ADD CONSTRAINT games_name_key UNIQUE (name);
 ALTER TABLE ONLY games
     ADD CONSTRAINT games_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY games_gaming_platforms
@@ -3602,7 +3607,7 @@ ALTER TABLE ONLY notifications
 ALTER TABLE ONLY outstanding_entities
     ADD CONSTRAINT outstanding_users_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY gaming_platforms
-    ADD CONSTRAINT platforms_code_key UNIQUE (code);
+    ADD CONSTRAINT platforms_code_key UNIQUE (slug);
 ALTER TABLE ONLY gaming_platforms
     ADD CONSTRAINT platforms_name_key UNIQUE (name);
 ALTER TABLE ONLY gaming_platforms
@@ -3855,8 +3860,13 @@ CREATE INDEX friends_recommendations_user_id_undecided ON friends_recommendation
 CREATE UNIQUE INDEX friends_users_uniq ON friendships USING btree (sender_user_id, receiver_user_id);
 CREATE INDEX funthings_state ON funthings USING btree (state);
 CREATE UNIQUE INDEX funthings_title_uniq ON funthings USING btree (title);
+CREATE INDEX games_gaming_platform ON games USING btree (gaming_platform_id);
+CREATE INDEX games_has_competitions ON games USING btree (has_competitions);
+CREATE INDEX games_has_demos ON games USING btree (has_demos);
+CREATE INDEX games_has_game_maps ON games USING btree (has_game_maps);
 CREATE UNIQUE INDEX games_maps_name_game_id ON games_maps USING btree (name, game_id);
 CREATE UNIQUE INDEX games_modes_uniq ON games_modes USING btree (name, game_id);
+CREATE UNIQUE INDEX games_name_platform ON games USING btree (name, gaming_platform_id);
 CREATE INDEX games_users_game_id ON games_users USING btree (game_id);
 CREATE UNIQUE INDEX games_users_uniq ON games_users USING btree (user_id, game_id);
 CREATE INDEX games_users_user_id ON games_users USING btree (user_id);
@@ -4080,6 +4090,10 @@ ALTER TABLE ONLY funthings
     ADD CONSTRAINT funthings_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY gamersmafiageist_codes
     ADD CONSTRAINT gamersmafiageist_codes_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE SET NULL;
+ALTER TABLE ONLY games
+    ADD CONSTRAINT games_gaming_platform_id_fkey FOREIGN KEY (gaming_platform_id) REFERENCES gaming_platforms(id);
+ALTER TABLE ONLY games
+    ADD CONSTRAINT games_publisher_id_fkey FOREIGN KEY (publisher_id) REFERENCES terms(id);
 ALTER TABLE ONLY groups_messages
     ADD CONSTRAINT groups_messages_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES groups_messages(id) MATCH FULL;
 ALTER TABLE ONLY groups_messages

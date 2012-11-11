@@ -8,6 +8,7 @@ class Term < ActiveRecord::Base
       DemosCategory
       DownloadsCategory
       EventsCategory
+      GamePublisher
       ImagesCategory
       InterviewsCategory
       NewsCategory

@@ -308,12 +308,11 @@ class Content < ActiveRecord::Base
   def my_faction
     Faction.find(
       :first,
-      :conditions => "code = (SELECT code FROM games WHERE id = #{game_id})")
+      :conditions => "code = (SELECT slug FROM games WHERE id = #{game_id})")
   end
 
   def my_bazar_district
-    BazarDistrict.find(:first,
-                       :conditions => ["code = ?", self.portal.code])
+    BazarDistrict.find(:first, :conditions => ["slug = ?", self.portal.code])
   end
 
   def real_content

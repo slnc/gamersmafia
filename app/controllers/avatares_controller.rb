@@ -40,11 +40,6 @@ class AvataresController < ApplicationController
 
     for d1_faction in d1.entries
       next if d1_faction == '.' or d1_faction ==  '..'
-      #ogame = Game.find(:first, :conditions => ['lower(code) = ?', d1_faction])
-      #if not ogame
-      #  flash[:error] = "Juego con código #{d1_faction} no encontrado"
-      #  next
-      #end
 
       faction = Faction.find(:first, :conditions => ['lower(code) = ?', d1_faction])
       if not faction

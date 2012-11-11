@@ -49,14 +49,14 @@ matches = CompetitionsMatch.find(:all, :conditions => "(#{Competition::COMPLETED
 <%mftext('Ranking', :has_submodules => true) do
 [['Jugadores', Competition::USERS], ['Clanes', Competition::CLANS]].each do |ard| %>
 <%mftext(ard[0]) do
-	ladders = Ladder.find(:all, :conditions => "competitions.state > 1 and competitions.state < 4 and competitions_participants_type_id = #{ard[1]}", :order => '(select code from games where id = competitions.game_id), lower(competitions.name)', :include => :game)
+	ladders = Ladder.find(:all, :conditions => "competitions.state > 1 and competitions.state < 4 and competitions_participants_type_id = #{ard[1]}", :order => '(select slug from games where id = competitions.game_id), lower(competitions.name)', :include => :game)
 %>
 	<table>
 		<% ladders.each do |ladder|
 winners = ladder.winners(1)
 next unless winners.size == 1 %>
 		<tr class="<=%oddclass%>">
-			<td class="w16"><%=faction_favicon(ladder.game.code)%></td>
+			<td class="w16"><%=faction_favicon(ladder.game.slug)%></td>
 			<td><a href="/competiciones/participante/<%=winners[0].id%>"><%=winners[0].name%></a><br /><div class="infoinline"><a href="/competiciones/show/<%=ladder.id%>"><%=ladder.name%></a></div></td>
 		</tr>
 		<% end -%>

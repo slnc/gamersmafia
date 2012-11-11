@@ -4,14 +4,26 @@ require "test_helper"
 class PortalsResolutionTest < ActionController::IntegrationTest
   test "urls of contents should be correct" do
     host! App.domain
-    g = Game.new(:name => 'Diablo 3', :code => 'diablo')
+    g = Game.new({
+        :name => 'Diablo 3',
+        :slug => 'diablo',
+        :user_id => 1,
+        :gaming_platform_id => 1,
+    })
     assert_count_increases(Game) do
       g.save
     end
-    t = Term.single_toplevel(:slug => g.code)
+    g.create_contents_categories
+    t = Term.single_toplevel(:slug => g.slug)
     sym_login 'superadmin', 'lalala'
     assert_count_increases(News) do
-      post '/noticias/create', { :news => {:title => 'footapang', :description => 'bartapang'}, :root_terms => [t.id.to_s] }
+      post '/noticias/create', {
+          :news => {
+              :title => 'footapang',
+              :description => 'bartapang',
+          },
+          :root_terms => [t.id.to_s],
+      }
       assert_response :redirect
     end
     n = News.find(:first, :order => 'id desc')
@@ -23,7 +35,7 @@ class PortalsResolutionTest < ActionController::IntegrationTest
     assert_redirected_to '/admin/contenidos'
     n.reload
     assert n.is_public?
-    assert_equal "http://#{g.code}.#{App.domain}/noticias/show/#{n.id}", n.unique_content.url
+    assert_equal "http://#{g.slug}.#{App.domain}/noticias/show/#{n.id}", n.unique_content.url
   end
 
   test "should_resolve_main" do

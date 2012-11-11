@@ -1,6 +1,6 @@
 <%generic_support do %>
 
-  <% if user_is_authed && Authorization.can_create_tags?(@user) %>
+  <% if user_is_authed && Authorization.can_create_entities?(@user) %>
     <% mftext("Nuevo tag") do %>
       <a href="<%=new_tag_path%>">Nuevo tag</a>
     <% end -%>
