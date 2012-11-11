@@ -50,7 +50,7 @@
         <tr class="<%=oddclass%>">
             <td class="w150"><%=pluralize_on_count(gm_translate(content_type), count)%></td>
             <td><%if count > 0 %>
-                  <%=link_to(count, "#{gmurl(@curuser)}/contenidos/#{content_type}")%>
+                  <%=link_to(count, "#{gmurl(@curuser)}/contenidos/#{pluralize_on_count(gm_translate(content_type), 2).downcase}")%>
                 <% else %>
                   <%=count%>
                 <% end -%>
