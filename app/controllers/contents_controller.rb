@@ -10,4 +10,8 @@ class ContentsController < ApplicationController
     raise ActiveRecord::RecordNotFound unless @content
     redirect_to Routing.gmurl(@content)
   end
+
+  def nuevo
+    require_authorization(:can_create_content?)
+  end
 end

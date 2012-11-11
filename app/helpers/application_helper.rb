@@ -1407,7 +1407,7 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
       out<< '</tr>'
     end
     out<< "</table>
-    <input type=\"submit\" onclick=\"return confirm('¿Estás seguro?');\" value=\"#{options[:submit_value]}\" /></form>"
+    <input type=\"submit\" class=\"confirm-click\" value=\"#{options[:submit_value]}\" /></form>"
   end
 
   def faction_activity_minicolumns(faction)

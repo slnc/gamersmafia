@@ -61,4 +61,15 @@ $(document).ready(function() {
     }
   });
 
+  $('.confirm-click').unbind('click').click(function() {
+    return confirm('¿Estás seguro?');
+  });
+
+  $('#post_login').focus();
+
+  $('.new-content-selector').unbind('click').click(open_new_content_selector);
+  $('.new-content-selector a').unbind('click').click(close_new_content_selector);
+  $('.init-session').unbind('click').click(function() {
+    $('#login-box').removeClass('hidden'); return false;
+  });
 });

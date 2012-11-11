@@ -21,6 +21,9 @@ Gamersmafia::Application.routes.draw do
     member do
       get 'redir'
     end
+    collection do
+      get 'nuevo'
+    end
   end
 
   resources :staff_positions, :path => "staff" do

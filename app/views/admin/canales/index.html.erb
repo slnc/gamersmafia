@@ -16,7 +16,7 @@
 		<td class="centered infoinline"><%=print_tstamp(gmtvc.updated_on, 'compact')%></td>
 		<td><a href="/admin/canales/info/<%=gmtvc.id%>"><%=gmtvc.file ? '/'<< gmtvc.file : '<span class="infoinline">(Sin usar)</span>'%></a></td>
 		<td class="infoinline"><a href="<%=gmurl(gmtvc.user)%>"><%=gmtvc.user.login%></a></td>
-		<td class="centered"><strong><a href="/admin/canales/del/#{gmtvc.id}" onclick="return confirm('¿Estás seguro?');">Borrar</a></strong></td>
+		<td class="centered"><strong><a class="confirm-click" href="/admin/canales/del/#{gmtvc.id}">Borrar</a></strong></td>
 	</tr>
 	<% end%>
 </table>

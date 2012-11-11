@@ -65,7 +65,7 @@ class Skin < ActiveRecord::Base
         full = "#{Rails.root}/public#{import[0..import.length]}"
       end
       fname = (import[0..0] == '/' || import[1..1] == ':') ? full : "#{File.dirname(base_file_name)}/#{import}"
-      import_contents = self.rextract_css_imports(fname)
+      import_contents = self.rextract_css_imports(fname) || ''
       import_contents.gsub!(/(url\(([^\/]{1}))/, "url(#{File.dirname(fname).gsub(Rails.root.to_s, '').gsub('public/', '')}/\\2")
       # reemplazamos urls relativas por absolutas
       if import[0..0] != '/' then # asumimos que este import es relativo
