@@ -139,6 +139,10 @@ class Decision < ActiveRecord::Base
 
   # Updates pending decision indicators of everybody
   def self.update_pending_decisions_indicators
+    User.db_query(
+      "UPDATE users
+      SET pending_decisions = 'f'
+      WHERE lastseen_on >= NOW() - '2 days'::interval")
     users = {}
     Decision.pending.find(:all).each do |decision|
       decision.pending_decisions_indicators.each do |u_id, has_pending|
