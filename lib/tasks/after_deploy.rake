@@ -9,6 +9,7 @@ namespace :gm do
     `rake gm:update_default_skin_styles`
     Cms.uncompress_ckeditor_if_necessary
     CacheObserver.expire_fragment("/common/gmversion")
+    `gcc -o /tmp/embed script/embed_ttf/embed.c && /tmp/embed public/fonts/gm_icons.ttf`
     `touch #{Rails.root}/tmp/restart.txt`
     publish_news(AppR.ondisk_git_version_full, AppR.ondisk_git_version)
   end

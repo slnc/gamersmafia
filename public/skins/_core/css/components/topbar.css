@@ -6,6 +6,10 @@
   z-index: 101;
 }
 
+.topnavbar img {
+  border: 0;
+}
+
 /**
  * TODO(slnc): temp hack
  */
@@ -21,17 +25,17 @@
 
 @font-face
 {
-  font-family: GmIcons;
-  src: url('/fonts/gm_icons.1.ttf');
+  font-family: "GmIcons";
+  src: url(/fonts/gm_icons.3.ttf);
 }
 
 .gm-icon {
-  font-family: 'GmIcons';
+  font-family: "GmIcons";
   font-size: 15px;
 }
 
 .gm-icon.small {
-  font-family: 'GmIcons';
+  font-family: "GmIcons";
   font-size: 10px;
 }
 
@@ -189,4 +193,15 @@
 }
 
 #topbar-portal-submenu li {
+}
+
+#mgfriends-online-table ul {
+  margin: 0;
+  padding: 0;
+}
+
+#mgfriends-online-table li {
+  list-style: none;
+  margin: 0 0 8px 0;
+  padding: 0;
 }
