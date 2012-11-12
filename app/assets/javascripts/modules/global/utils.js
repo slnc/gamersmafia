@@ -44,15 +44,16 @@ Gm.Utils = function() {
     },
 
     gototop : function() {
-      if (jQuery.browser.msie && jQuery.browser.version == '6.0')
+      if (jQuery.browser.msie && jQuery.browser.version == '6.0') {
         document.location = '#';
-      else
+      } else {
         $(window).scrollTo(0, 750, {
           easing : 'swing',
           queue : true,
           axis : 'y',
           offset : -60
         });
+      }
       return false;
     },
     /**
