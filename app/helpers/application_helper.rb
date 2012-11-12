@@ -89,7 +89,7 @@ module ApplicationHelper
     if user_is_authed
       Personalization.quicklinks_for_user(@user)
     else
-      []
+      Personalization.get_default_quicklinks
     end
   end
 
