@@ -29,7 +29,7 @@ class DecisionUserReputation < ActiveRecord::Base
         :decision_type_class => decision_type_class,
         :probability_right => 0,
       })
-    elsif reputation.updated_on <= 1.week.ago && force_recompute
+    elsif reputation.updated_on <= 1.week.ago || force_recompute
       reputation.update_probability_right
     end
     reputation.probability_right
@@ -86,9 +86,8 @@ class DecisionUserReputation < ActiveRecord::Base
           "decisions.decision_type_class = ?
            AND decision_choice_id IN (
              SELECT final_decision_choice_id
-             FROM decisions
-             WHERE created_on >= now() - '6 months'::interval)
-             AND decisions.state = #{Decision::DECIDED}",
+             FROM decisions)
+           AND decisions.state = #{Decision::DECIDED}",
           self.decision_type_class],
         :include => :decision)
   end

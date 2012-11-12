@@ -32,6 +32,17 @@ module ApplicationHelper
     "star" => "&#xe000;",
     "stats" => "&#xe001;",
     "gmf" => "&#xe002;",
+    "emblem-common" => "&#xe003;",
+    "emblem-legendary" => "&#xe004;",
+    "emblem-rare" => "&#xe005;",
+    "emblem-special" => "&#xe006;",
+    "emblem-unfrequent" => "&#xe007;",
+    "user" => "&#xe008;",
+    "message" => "&#xe009;",
+    "flag" => "&#xe00a;",
+    "scale" => "&#xe00b;",
+    "gear" => "&#xe00c;",
+    "gauntlet" => "&#xe00d;",
   }
 
   WMENU_POS = {
@@ -72,6 +83,14 @@ module ApplicationHelper
       end
     end
     out
+  end
+
+  def quicklinks
+    if user_is_authed
+      Personalization.quicklinks_for_user(@user)
+    else
+      []
+    end
   end
 
   def bool_to_str(bool)
@@ -1495,8 +1514,8 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
     current_forum_is_present
   end
 
-  def gm_icon(name)
-    "<span class=\"gm-icon\">#{GM_ICONS.fetch(name)}</span>"
+  def gm_icon(name, css_class=nil)
+    "<span class=\"gm-icon #{css_class if css_class}\">#{GM_ICONS.fetch(name)}</span>"
   end
 
   # Layout helpers

@@ -72,4 +72,9 @@ $(document).ready(function() {
   $('.init-session').unbind('click').click(function() {
     $('#login-box').removeClass('hidden'); return false;
   });
+
+  $('.open-popup-on-click').unbind('click').click(function() {
+    $('#' + $(this).data('popup-id')).toggleClass('hidden');
+    return false;
+  });
 });

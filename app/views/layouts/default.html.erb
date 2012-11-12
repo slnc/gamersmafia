@@ -22,17 +22,14 @@ end %>
 end %>
 <body class="<%= body_css_classes %><%= " madness" if @madness%>">
   <div id="loading" class="hidden"><img src="/skins/suicidal/spin.gif"></div>
+  <%= render :partial => 'layouts/global_menu' %>
   <div id="cpageout" class="container gm20085">
 	<div id="cpagein" class="container">
+
     <div class="pagelevel-feedback hidden"></div>
-		<div id="mgsearch">
-        <form method="post" action="/site/search">
-        	<input type="image" class="image" alt="Buscar" title="Buscar" src="/images/blank.gif" value="S" />
-		  <input type="text" class="text" name="searchq" id="searchq" onmouseout="this.className = 'text';" onmouseover="this.className = 'text hover';" name="q" />
-      </form>
-	  </div>
 
 	  <div id="mgheader" class="module">
+
 		<div class="mcontent">
 		   <a id="logo" <% if !(controller.controller_name == 'home' && controller.action_name == 'index' && controller.portal.id == '-1') then %>onmouseover="this.className = 'hover';" onmouseout="this.className=''"<%end -%> href="http://<%=App.domain%>/"><img src="/images/blank.gif" /></a>
 			   <% if controller.portal.small_header then %>
@@ -41,69 +38,14 @@ end %>
 				   </style>
 			   <% end -%>
 
-  <%= render :partial => 'layouts/faction_building' %>
-
-  <%= render :partial => 'layouts/global_menu' %>
-
-  	<div id="mgintellibar" class="module"><div class="mcontent">
-		<% if user_is_authed then %>
-		<% cache("/_users/#{@user.id % 1000}/#{@user.id}/layouts/quicklinks2") do %>
-		<% qlinks = Personalization.quicklinks_for_user(@user)
-
-		if qlinks.size > 0 then
-	width = 8 + 25*(qlinks.size)
-%>
-	<div id="quickportals" style="width: <%=width%>px;">
-		<div id="div1">
-			<div id="div2">
-		<ul>
-			<% qlinks.each do |link| %>
-			<li><a href="<%=link[:url]%>"><%=faction_favicon(link[:code])%></a></li>
-			<% end -%>
-		</ul>
-		</div>
-		</div>
-	</div>
-	<% end -%>
-	<% end %><%# cache %>
-	<% end %><%# if user_is_authed %>
-
-
-
-		<div id="mgintellibar-switcher" class="hidden"><a href="">NAV</a> | <a href="">GMTV</a></div>
-
-    <% if user_is_authed %>
-		<div id="mgintellibar-links"><ul>
-			<% if controller.can_set_as_default_home then %>
-				<li><a href="" title="Ir a esta página directamente al entrar en gamersmafia.com" onclick="return Gm.Personalization.set_default_portal(<%=user_is_authed ? 'true' : 'false'%>, '<%=controller.action_name%>');">Hacer <%=controller.action_name == 'index' ? 'portada' : controller.action_name%> mi página por defecto</a></li>
-			<% end -%>
-
-			<% if can_add_as_quicklink? then %>
-				<li id="add-to-quicklinks"><a href="" title="Añadir a accesos directos" onclick="return Gm.Personalization.add_quicklink('<%=controller.portal.code%>', 'http://<%=controller.portal.code%>.<%=App.domain%>');">Añadir a quicklinks</a></li>
-			<% end -%>
-
-			<% if can_del_quicklink? then %>
-				<li id="del-from-quicklinks"><a href="" title="Quitar de accesos directos" onclick="return Gm.Personalization.del_quicklink('<%=controller.portal.code%>');">Quitar de quicklinks</a></li>
-			<% end -%>
-
-			<% if user_is_authed && controller.controller_name == 'foros' && @forum then %>
-				<li id="add-to-user-forums" class="<%='hidden' unless can_add_as_user_forum?%>"><a href="" title="Añadir a mis foros" onclick="return Gm.Personalization.add_user_forum('<%=@forum.id%>', '<%=gmurl(@forum, :taxonomy => 'TopicsCategory')%>');">Añadir a mis foros</a></li>
-			<% end -%>
-
-			<% if user_is_authed && controller.controller_name == 'foros' && @forum then %>
-				<li id="del-from-user-forums" class="<%='hidden' unless can_del_user_forum?%>"><a href="" title="Quitar de mis foros" onclick="return Gm.Personalization.del_user_forum('<%=@forum.id%>');">Quitar de mis foros</a></li>
-			<% end -%>
-
-			</ul>
-		</div>
-    <% end -%>
-
-		</div></div>
+    <%= render :partial => 'layouts/faction_building' %>
+    </div>
+    </div>
 
 	<% if controller.controller_name != 'home' then %>
     <div id="mgbreadcrumb" class="module"><div class="mcontent"><%=navpathgm20085%></div></div>
 	<% else %>
-	<div style="margin-top: 10px;"></div>
+	<div class="clearb" style="padding-top: 10px;"></div>
 	<% end -%>
 
 	<% if controller.submenu && !controller.rescuiing then %>
@@ -147,33 +89,6 @@ if user_is_authed && @user.is_faction_leader? && @user.faction_id then %>
 <% end %>
 <% if nil then %>
 <%=sparkline(:data => [150, 175, 22, 19, 7, 5,6,9,11], :max => 300, :size => '80x16') %>
-<% end -%>
-
-<% if user_is_authed then %>
-
-
-<br />
-	<div style="text-align: center; margin-bottom: 10px;"><a href="/cuenta/amigos"><img class="icon" src="/skins/default/images/btn_add_amigo.png" /></a></div>
-<% if user_is_authed then
-  cache("/site/_online_state/stats/friends2_#{@user.id}_#{Time.now.to_i/60}") do
-  friends = @user.friends_online %>
-  <div id="mgfriends-online"><a href="" onclick="return open_online_friends();"><strong><%=friends.size%></strong> amigos online</a></div>
- <div id="mgfriends-online-table" class="hidden mfcontents-ul">
-    <ul>
-<% for friend in friends %>
-        <li><%=link_to friend.login, gmurl(friend)%></li>
-    <% end -%>
-</ul>
-</div>
-<br />
-<% end %><%# cache %>
-<% end -%>
-<script type="text/javascript">
-	function open_online_friends(){
-		$('#mgfriends-online-table').toggleClass('hidden');
-		return false;
-	}
-</script>
 <% end -%>
 
 <%= render(:partial => '/layouts/tracker', :locals => { :user => @user }) if user_is_authed && @user.using_tracker %>

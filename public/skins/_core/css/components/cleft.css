@@ -1,15 +1,15 @@
 #cleft {
-    float: left;
-    width: 121px;
-    margin-top: 0px;
-	position: absolute;
-    left: 10px;
-    top: 96px;
-    width: 158px;
-	padding-bottom: 5px;
-	width: 156px;
-	left: auto;
-	margin-left: 0;
+  float: left;
+  width: 121px;
+  margin-top: 0px;
+  position: absolute;
+  left: 10px;
+  top: 125px;
+  width: 158px;
+  padding-bottom: 5px;
+  width: 156px;
+  left: auto;
+  margin-left: 0;
 }
 
 #cleft ul {
