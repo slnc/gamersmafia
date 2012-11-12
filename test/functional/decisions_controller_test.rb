@@ -1,8 +1,13 @@
 require 'test_helper'
 
 class DecisionsControllerTest < ActionController::TestCase
-  test "index" do
+  test "index logged in" do
     sym_login 1
+    get :index
+    assert_response :success
+  end
+
+  test "index not logged in" do
     get :index
     assert_response :success
   end
