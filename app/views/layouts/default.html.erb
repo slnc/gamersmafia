@@ -22,15 +22,110 @@ end %>
 end %>
 <body class="<%= body_css_classes %><%= " madness" if @madness%>">
   <div id="loading" class="hidden"><img src="/skins/suicidal/spin.gif"></div>
+  <div class="topnavbar">
+    <div class="topnavbar-container">
+
+      <% if user_is_authed %>
+      <div class="topbar-block topbar-profile-options">
+        <a class="open-popup-on-click"
+          data-popup-id="topbar-user-actions"
+          href="/cuenta"><%=avatar_img(@user, :very_small)%></a>
+      </div>
+
+      <div id="topbar-user-actions" class="hidden popup">
+        <div style="float: left"><%=avatar_img(@user, :normal)%></div>
+        <ul style="display: inline-block">
+          <li><a href="/cuenta">mi cuenta</a></li>
+          <li><a class="confirm-click nav" href="/cuenta/logout">cerrar sesión</a></li>
+        </ul>
+      </div>
+
+      <div class="topbar-block topbar-notifications">
+        <div class="gm-icon-button">
+          <a href="/cuenta/mensajes" class="<%= 'active-state' if @user.unread_messages > 0%>" title="Ver mensajes privados"><%=@user.unread_messages%> <%=gm_icon("message")%></a>
+        </div>
+        <div class="gm-icon-button">
+          <a href="/cuenta/cuenta/notificaciones" class="<%= 'active-state' if @user.has_unread_notifications%>" title="Ver notificaciones"><%=gm_icon("flag")%></a>
+        </div>
+        <div class="gm-icon-button">
+          <a href="/decisiones" class="<%= 'active-state' if @user.pending_decisions%>" title="Ver decisiones pendientes"><%=gm_icon("scale")%></a>
+        </div>
+      <% if @user.is_staff? then %>
+        <div class="gm-icon-button">
+          <a href="/alertas" class="<%= 'active-state' if @user.pending_alerts > 0%>" title="Ver log del sistema"><%=gm_icon("gear")%></a>
+        </div>
+      <% end -%>
+        <!--
+        <div class="gm-icon-button">
+          <a href="/cuenta/competiciones" class="<%= 'active-state' if @user.enable_competition_indicator?%>" title="Ir a mis competiciones"><%=gm_icon("gauntlet")%></a>
+        </div>
+        -->
+      </div>
+
+      <div class="topbar-block topbar-stats">
+        <div class="stat"><%=draw_karma_bar_sm(@user)%></div>
+        <div class="stat">
+          <a href="/cuenta/banco" title="Ir al banco"><%=@user.cash.to_i%> GMF</a>
+        </div>
+
+        <div class="stat"
+          title="<%=@user.remaining_rating_slots%> valoraciones restantes">
+         <%=@user.remaining_rating_slots%> <%=gm_icon("star", "small")%>
+       </div>
+
+       <div class="stat">
+<% cache("/site/_online_state/stats/friends2_#{@user.id}_#{Time.now.to_i/60}") do
+  friends = @user.friends_online %>
+  <a class="open-popup-on-click"
+    data-popup-id="mgfriends-online-table" href="/cuenta/amigos"><strong><%=friends.size%></strong> <%=gm_icon("user", "small")%></a>
+   <div id="mgfriends-online-table" class="hidden mfcontents-ul popup">
+     <strong>Amigos online</strong>
+    <ul>
+    <%friends.each do |friend|%>
+      <li><%=link_to friend.login, gmurl(friend)%></li>
+    <%end-%>
+    </ul>
+    <% if friends.size == 0 %>
+      (Ninguno)
+    <% end -%>
+  </div>
+<% end %><%# cache %>
+         </div>
+
+         <!--
+        5 <%=gm_icon("emblem-legendary")%>
+        2 <%=gm_icon("emblem-special")%>
+        3 <%=gm_icon("emblem-rare")%>
+        1 <%=gm_icon("emblem-unfrequent")%>
+        4 <%=gm_icon("emblem-common")%>
+        -->
+      </div>
+    <% end -%>
+
+    <!--
+      <div class="topbar-block topbar-interests sections-list">
+        <a href="/">Apple</a>
+        <a href="/">Desarrollo</a>
+        <a href="/">Diablo 3</a>
+        <a href="/">ias</a>
+      </div>
+
+      <div class="topbar-block topbar-all-of-gm sections-list">
+        <a href="/">Todo GM</a>
+      </div>
+      -->
+
+      <div class="topbar-block topbar-search float-right">
+        <form method="post" action="/site/search">
+        <input type="text" class="text" name="searchq" id="searchq" onmouseout="this.className = 'text';" onmouseover="this.className = 'text hover';" name="q" />
+        <input type="submit" value="Buscar" />
+      </form>
+      </div>
+    </div>
+  </div>
   <div id="cpageout" class="container gm20085">
 	<div id="cpagein" class="container">
     <div class="pagelevel-feedback hidden"></div>
-		<div id="mgsearch">
-        <form method="post" action="/site/search">
-        	<input type="image" class="image" alt="Buscar" title="Buscar" src="/images/blank.gif" value="S" />
-		  <input type="text" class="text" name="searchq" id="searchq" onmouseout="this.className = 'text';" onmouseover="this.className = 'text hover';" name="q" />
-      </form>
-	  </div>
 
 	  <div id="mgheader" class="module">
 		<div class="mcontent">
@@ -147,33 +242,6 @@ if user_is_authed && @user.is_faction_leader? && @user.faction_id then %>
 <% end %>
 <% if nil then %>
 <%=sparkline(:data => [150, 175, 22, 19, 7, 5,6,9,11], :max => 300, :size => '80x16') %>
-<% end -%>
-
-<% if user_is_authed then %>
-
-
-<br />
-	<div style="text-align: center; margin-bottom: 10px;"><a href="/cuenta/amigos"><img class="icon" src="/skins/default/images/btn_add_amigo.png" /></a></div>
-<% if user_is_authed then
-  cache("/site/_online_state/stats/friends2_#{@user.id}_#{Time.now.to_i/60}") do
-  friends = @user.friends_online %>
-  <div id="mgfriends-online"><a href="" onclick="return open_online_friends();"><strong><%=friends.size%></strong> amigos online</a></div>
- <div id="mgfriends-online-table" class="hidden mfcontents-ul">
-    <ul>
-<% for friend in friends %>
-        <li><%=link_to friend.login, gmurl(friend)%></li>
-    <% end -%>
-</ul>
-</div>
-<br />
-<% end %><%# cache %>
-<% end -%>
-<script type="text/javascript">
-	function open_online_friends(){
-		$('#mgfriends-online-table').toggleClass('hidden');
-		return false;
-	}
-</script>
 <% end -%>
 
 <%= render(:partial => '/layouts/tracker', :locals => { :user => @user }) if user_is_authed && @user.using_tracker %>

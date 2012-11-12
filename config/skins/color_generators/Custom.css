@@ -15,11 +15,6 @@ a:hover { color: ${page_link_hover_color}; }
 
 .infoinline a:hover { color: ${page_color}; }
 
-#mgsearch {
-	background-color: ${mgsearch_background_color};
-	border-color: ${mgsearch_border_color};
-}
-
 #cpageout {
 	background-color: ${cpageout_background_color};
 	background-image: ${cpageout_background_image};
@@ -31,7 +26,7 @@ a:hover { color: ${page_link_hover_color}; }
 	background-color: ${ccontent_background_color};
 	background-image: ${ccontent_background_image};
 	background-repeat: ${ccontent_background_repeat};
-	background-position: ${ccontent_background_position};	
+	background-position: ${ccontent_background_position};
 }
 
 #ccontent .alt1 { background-color: ${ccontent_alt1_background_color}; }
@@ -41,7 +36,7 @@ a:hover { color: ${page_link_hover_color}; }
 	background-image: ${ccontent_header_titles_sprite};
 	background-repeat: ${ccontent_header_background_repeat};
 	background-position: ${ccontent_header_background_position};
-	color: ${ccontent_header_color};	
+	color: ${ccontent_header_color};
 }
 
 #ccontent blockquote {
@@ -67,7 +62,7 @@ a:hover { color: ${page_link_hover_color}; }
 	background-image: ${cleft_background_image};
 	background-repeat: ${cleft_background_repeat};
 	background-position: ${cleft_background_position};
-	color: ${cleft_color};	
+	color: ${cleft_color};
 }
 
 #cleft a { color: ${cleft_link_color}; }
@@ -115,9 +110,9 @@ a:hover { color: ${page_link_hover_color}; }
 
 /* header */
 #sawtop {
-	background-color: ${mgglobalmenu_background_color}; 
+	background-color: ${mgglobalmenu_background_color};
 	background-image: ${mgglobalmenu_sprites_image};
-	border-color: ${mgglobalmenu_border_color}; 
+	border-color: ${mgglobalmenu_border_color};
 }
 
 .sawtop-arrow { background-image: ${mgglobalmenu_sprites_image}; }
@@ -138,12 +133,12 @@ a:hover { color: ${page_link_hover_color}; }
 #sawli-anunciante.alter div.f { background-image: ${mgglobalmenu_sprites_image}; }
 #sawbottom { background-image: ${mgglobalmenu_sprites_image}; }
 .sawbottom-arrow { background-image: ${mgglobalmenu_sprites_image}; }
-.saw-dropdownlist { background-color: ${mgglobalmenu_dropdown_background_color}; } 
+.saw-dropdownlist { background-color: ${mgglobalmenu_dropdown_background_color}; }
 
 
-#mgbreadcrumb ul { 
+#mgbreadcrumb ul {
   background-color: ${mgbreadcrumb_background_color};
-  color: ${mgbreadcrumb_color}; 
+  color: ${mgbreadcrumb_color};
 }
 
 #mgbreadcrumb a {
@@ -174,11 +169,11 @@ a:hover { color: ${page_link_hover_color}; }
 
 #homegamer .homebox .subheader {
     background-image: ${ccontent_header_titles_sprite};
-} 
+}
 
 #homebazar .homebox .subheader {
     background-image: ${ccontent_header_titles_sprite};
-} 
+}
 
 #home-news div {
     background-image: ${ccontent_header_titles_sprite};

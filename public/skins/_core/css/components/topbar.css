@@ -1,0 +1,130 @@
+.topnavbar {
+  text-align: left;
+  background: #000;
+  color: #777;
+  height: 2.5rem;
+  z-index: 101;
+}
+
+/**
+ * TODO(slnc): temp hack
+ */
+.topnavbar .karma  {
+  color: #777;
+  font-weight: normal;
+  font-size: inherit;
+}
+
+.topnavbar .topnavbar-container {
+  padding: 8px 1rem 8px 1rem;
+}
+
+@font-face
+{
+  font-family: GmIcons;
+  src: url('/fonts/gm_icons.ttf');
+}
+
+.gm-icon {
+  font-family: 'GmIcons';
+  font-size: 15px;
+}
+
+.gm-icon.small {
+  font-family: 'GmIcons';
+  font-size: 10px;
+}
+
+.gm-icon-button {
+  display: inline-block;
+}
+
+.gm-icon-button {
+  padding: 4px;
+  margin-right: 0px;
+}
+
+.topbar-block {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.float-right {
+  float: right;
+}
+
+.topbar-search {
+  margin-top: 2px;
+}
+
+.topbar-search .text {
+  width: 125px;
+}
+
+.topnavbar a,
+.topnavbar a:visited {
+  color: #777;
+}
+
+.gm-icon-button a.active-state,
+.gm-icon-button .active-state .gm-icon {
+  color: #e00;
+}
+
+.topnavbar a:hover,
+.topnavbar .gm-icon-button a:hover.active-state .gm-icon {
+  color: #fff;
+}
+
+.topnavbar .sections-list a,
+.topnavbar .sections-list a:visited {
+  color: #fff;
+}
+
+.topnavbar .sections-list a {
+  display: inline-block;
+  margin-right: 10px;
+  text-transform: uppercase;
+}
+
+.gm-icon-button a:hover {
+  text-decoration: none;
+}
+
+.topbar-profile-options {
+  margin-top: 4px;
+}
+
+.topbar-stats .stat {
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.popup {
+  position: absolute;
+  background: #000;
+  width: auto;
+  padding: 10px;
+  margin-left: -10px;
+  z-index: 10;
+  min-width: 150px;
+  max-width: 500px;
+  -moz-box-shadow: 5px 5px 3px #000;
+  -webkit-box-shadow: 5px 5px 3px #000;
+  box-shadow: 5px 5px 3px #000;
+}
+
+#topbar-user-actions ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#topbar-user-actions li {
+  margin: 0 0 8px 8px;
+  padding: 0;
+}

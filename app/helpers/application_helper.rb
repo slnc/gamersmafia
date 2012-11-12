@@ -29,9 +29,20 @@ module ApplicationHelper
 
   # Keep this in sync with app/assets/fonts/gm_icons.svg
   GM_ICONS = {
+    "user" => "r",
+    "message" => "m",
+    "flag" => "n",
+    "scale" => "s",
+    "gear" => "b",
+    "gauntlet" => "&#xe000;",
     "star" => "&#xe000;",
     "stats" => "&#xe001;",
     "gmf" => "&#xe002;",
+    "emblem-common" => "e",
+    "emblem-legendary" => "&#xe002;",
+    "emblem-rare" => "&#xe002;",
+    "emblem-special" => "&#xe002;",
+    "emblem-unfrequent" => "&#xe002;",
   }
 
   WMENU_POS = {
@@ -1495,8 +1506,8 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
     current_forum_is_present
   end
 
-  def gm_icon(name)
-    "<span class=\"gm-icon\">#{GM_ICONS.fetch(name)}</span>"
+  def gm_icon(name, css_class=nil)
+    "<span class=\"gm-icon #{css_class if css_class}\">#{GM_ICONS.fetch(name)}</span>"
   end
 
   # Layout helpers

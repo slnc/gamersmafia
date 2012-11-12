@@ -26,9 +26,9 @@
 @import url(css/components/mgheader.css);
 @import url(css/components/logo.css);
 @import url(css/components/mpager.css);
-@import url(css/components/mgsearch.css);
 @import url(css/components/userbox.css);
 @import url(css/components/userlisting.css);
+@import url(css/components/topbar.css);
 
 @import url(css/page_specific/competiciones.css);
 @import url(css/page_specific/descargas.css);

@@ -25,7 +25,7 @@
 <% mftext('Otras opciones') do %>
 <form method="post" action="/cuenta/skins/do_otras_opciones" enctype="multipart/form-data">
 	<input type="hidden" name="id" value="<%=params[:id]%>" />
-	
+
     <h2>Globales</h2>
     <table>
     <tr class="<%=oddclass%>">
@@ -134,14 +134,6 @@
 		<div class="infoinline f_sm">usar <a target="_blank" href="/skins/default/images/layout/cabeceras_portada.png">plantilla</a></div></td>
 	</tr>
 	<%=css_background_edit('ccontent_header')%>
-	<tr class="<%=oddclass%>">
-		<th>mgsearch_border_color</th>
-		<td><%=color_selector("skin[css_properties][mgsearch_border_color]", @skin.config[:css_properties][:mgsearch_border_color])%></td>
-	</tr>
-	<tr class="<%=oddclass%>">
-		<th>mgsearch_background_color</th>
-		<td><%=color_selector("skin[css_properties][mgsearch_background_color]", @skin.config[:css_properties][:mgsearch_background_color])%></td>
-	</tr>
 	<%=css_editor_separator%>
 	<tr class="<%=oddclass%>">
 		<th>mgfooter_separator_color</th>
@@ -181,7 +173,7 @@
 		<th>cleft_link_color</th>
 		<td><%=color_selector("skin[css_properties][cleft_link_color]", @skin.config[:css_properties][:cleft_link_color])%></td>
 	</tr>
-	
+
 	<tr class="<%=oddclass%>">
 		<th>cleft_link_updated_color</th>
 		<td><%=color_selector("skin[css_properties][cleft_link_updated_color]", @skin.config[:css_properties][:cleft_link_updated_color])%></td>
@@ -195,16 +187,16 @@
 		<td><%=color_selector("skin[css_properties][cleft_color]", @skin.config[:css_properties][:cleft_color])%></td>
 	</tr>
 	<%=css_background_edit('cleft')%>
-	
+
 	<tr class="<%=oddclass%>">
 		<th>mgfooter_spirit_image</th>
 		<td><%=css_image_selector("skin[css_properties][mgfooter_spirit_image]", @skin.config[:css_properties][:mgfooter_spirit_image], @skin) %><br />
 		<div class="infoinline f_sm">100x64</div></td>
 	</tr>
 	<%=css_background_edit('mgfooter')%>
-	
+
 	</table>
-	
+
 	<h2>Otros sprites</h2>
 	<table>
 	<tr class="<%=oddclass%>">
