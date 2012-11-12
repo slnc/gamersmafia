@@ -16,9 +16,12 @@ def cached_read(url, force=false)
   open(scraped_copy)
 end
 
-# http://www.ign.com/games?sortBy=title&sortOrder=asc&startIndex=72600
+i = 0
 
-doc = Nokogiri::HTML(cached_read("http://www.ign.com/games?sortBy=title&sortOrder=asc"))
+while i <= 72600
+url = "http://www.ign.com/games?sortBy=title&sortOrder=asc&startIndex=#{i}"
+
+doc = Nokogiri::HTML(cached_read(url))
 # doc = Nokogiri::HTML(open("ign.html"))
 
 concerts = doc.css('.gameList.allGames .gameList-gameShort')
@@ -30,7 +33,6 @@ concerts.each do |concert|
   game_publisher = concert.at_css('.publisher').text.strip
   release_date = concert.at_css('.releaseDate').text.strip
 
-  puts "#{game_platform}\t#{release_date}\t#{game_publisher}\t#{game_title}"
   platform = GamingPlatform.find_by_name(game_platform)
   platform = GamingPlatform.create(:name => game_platform) if platform.nil?
   if platform.new_record?
@@ -41,7 +43,7 @@ concerts.each do |concert|
       :first,
       :conditions => ["name = ? AND gaming_platform_id = ?",
                       game_title, platform.id])
-    puts "game exists, skipping.."
+    puts "game #{game_title} exists, skipping.."
     next
   end
 
@@ -64,6 +66,10 @@ concerts.each do |concert|
     :user_id => Ias.jabba,
   })
   if game.new_record?
+    puts "#{game_platform}\t#{release_date}\t#{game_publisher}\t#{game_title}"
     puts "Error creating game: #{game.errors.full_messages_html}"
   end
+end
+  i += 50
+  sleep 2
 end
