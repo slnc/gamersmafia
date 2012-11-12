@@ -79,13 +79,20 @@ class Content < ActiveRecord::Base
 
   def self.final_decision_made(decision)
     content = Content.find(decision.context.fetch(:content_id))
-    case decision.decision_type_class
-    when "PublishNews"
-     if !content.content_type.name == "News"
-        raise "PublishNews decision for non News"
-     end
-     self.handle_publish_decision(decision, content)
+    if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(content.content_type.name)
+      raise (
+          "Received decision for content of type '#{content.content_type.name}'
+          for which no moderation is needed.")
     end
+
+    expected_class = "Publish#{content.content_type.name}"
+    if decision.decision_type_class != expected_class
+      raise (
+          "Mismatch between decision_type_class and content_type:
+          #{decision.decision_type_class} != #{expected_class}")
+    end
+
+    self.handle_publish_decision(decision, content)
   end
 
   def self.handle_publish_decision(decision, uniq)

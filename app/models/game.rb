@@ -10,11 +10,8 @@ class Game < ActiveRecord::Base
 
   has_many :terms, :dependent => :destroy
 
-  before_save :check_slug_doesnt_belong_to_portal
-  before_create :check_hid
-
   has_slug
-  validates_format_of :name, :with => /^[a-z0-9':[:space:]-]{1,50}$/i
+  validates_format_of :name, :with => /^[a-z\/$%\+\?&~.,0-9\(\)!':[:space:]\[\]-]{1,100}$/i
   validates_uniqueness_of :name, :scope => :gaming_platform_id
   validates_presence_of :gaming_platform_id
   validates_presence_of :user_id
@@ -62,16 +59,6 @@ class Game < ActiveRecord::Base
     end
   end
 
-  def check_hid
-    # TODO(slnc): eliminar esta restricción
-    if Term.count(:conditions => ["slug = ?", self.slug]) > 0
-      self.errors.add('slug', "'#{self.slug}' ya está siendo usado")
-      return false
-    else
-      return true
-    end
-  end
-
   def code
     self.slug
   end
@@ -86,6 +73,10 @@ class Game < ActiveRecord::Base
   end
 
   def create_contents_categories
+    if !(Portal.find_by_code(self.slug).nil? && !Portal::UNALLOWED_CODES.include?(slug))
+      raise "invalid slug, must find a new slug"
+    end
+
     self.update_attribute(:has_faction, true)
     if Faction.find_by_name(self.name).nil? then
       f = Faction.new(:name => self.name, :code => self.slug)
@@ -161,15 +152,5 @@ class Game < ActiveRecord::Base
     end
     end
     true
-  end
-
-  def check_slug_doesnt_belong_to_portal
-    # TODO dup en GamingPlatform.rb
-    if self.id
-      # TODO Temp Portal.count(:conditions => ["slug = ? AND id <> ?", self.slug, self.id]) == 0 && !Portal::UNALLOWED_CODES.include?(slug)
-      true
-    else
-      Portal.find_by_code(self.slug).nil? && !Portal::UNALLOWED_CODES.include?(slug)
-    end
   end
 end

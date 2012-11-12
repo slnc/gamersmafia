@@ -39,8 +39,8 @@ module Skins
     entities_with_portals = (
         builtin_portals +
         BazarDistrict.find(:all, :order => 'id') +
-        GamingPlatform.find(:all, :order => 'id') +
-        Game.find(:all, :order => 'id')
+        GamingPlatform.find(:all, :conditions => "has_faction = 't'", :order => 'id') +
+        Game.find(:all, :conditions => "has_faction = 't'", :order => 'id')
     )
     css_out = ''
     sprite = Magick::Image.new(entities_with_portals.size * 16, 16) { |im|
