@@ -87,6 +87,24 @@ class Decision < ActiveRecord::Base
     "PublishTutorial" => 3,
   }
 
+  MAX_USER_CHOICES = {
+    "CreateGame" => 20,
+    "CreateTag" => 20,
+    "PublishBet" => 20,
+    "PublishColumn" => 20,
+    "PublishCoverage" => 20,
+    "PublishDemo" => 20,
+    "PublishDownload" => 20,
+    "PublishEvent" => 20,
+    "PublishFunthing" => 20,
+    "PublishImage" => 20,
+    "PublishInterview" => 20,
+    "PublishNews" => 20,
+    "PublishPoll" => 20,
+    "PublishReview" => 20,
+    "PublishTutorial" => 20,
+  }
+
   # Don't change this without also changing the names in the bd
   BINARY_YES = "Sí"
   BINARY_NO = "No"
@@ -313,6 +331,14 @@ class Decision < ActiveRecord::Base
     # 10 votes it requires 6.6 for the winning option and so on. It ensures that
     # there is a strong majority in favor of the winning option.
     min_votes = (((choices + 1).to_f / choices) * total_votes) / 2
+
+    if total_users > MAX_USER_CHOICES.fetch(self.decision_type_class)
+      Rails.logger.warn(
+          "Reached an impass. #{total_users} voted over max of
+          #{MAX_USER_CHOICES.fetch(self.decision_type_class)}. Defaulting to
+          simple majority")
+      return 1.0
+    end
 
     [(total_users.to_f / self.min_user_choices),
      (best_option_votes[0]['sum'].to_f / [min_votes, 1].max)
