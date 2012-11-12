@@ -9,11 +9,12 @@
     </div>
 
     <div id="topbar-user-actions" class="hidden popup">
-      <div style="float: left"><%=avatar_img(@user, :normal)%></div>
+      <div style="float: left"><a href="/miembros/<%=@user.login%>"><%=avatar_img(@user, :normal)%></a></div>
       <ul style="display: inline-block">
         <li><a href="/cuenta">mi cuenta</a></li>
         <li><a href="/cuenta/clanes">mis clanes</a></li>
         <li><a href="/cuenta/competiciones">mis competiciones</a></li>
+        <li style="padding-top: 20px; padding-bottom: 20px;"><a href="/miembros/<%=@user.login%>">mi perfil público</a></li>
         <li><a class="confirm-click nav" href="/cuenta/logout">cerrar sesión</a></li>
       </ul>
     </div>
