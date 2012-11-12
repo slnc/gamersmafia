@@ -52,10 +52,6 @@
     text-decoration: underline;
 }
 
-#mgbreadcrumb {
-    margin-top: 5px;
-}
-
 #mgbreadcrumb ul {
     padding: 0 120px 0 0;
     margin: 0 14px 0 182px;
@@ -77,9 +73,6 @@
     line-height: 23px;
 }
 
-#mgbreadcrumb {
-	margin-top: 0;
-}
 #mgbreadcrumb li {
     display: inline;
 }

@@ -29,20 +29,20 @@ module ApplicationHelper
 
   # Keep this in sync with app/assets/fonts/gm_icons.svg
   GM_ICONS = {
-    "user" => "r",
-    "message" => "m",
-    "flag" => "n",
-    "scale" => "s",
-    "gear" => "b",
-    "gauntlet" => "&#xe000;",
     "star" => "&#xe000;",
     "stats" => "&#xe001;",
     "gmf" => "&#xe002;",
-    "emblem-common" => "e",
-    "emblem-legendary" => "&#xe002;",
-    "emblem-rare" => "&#xe002;",
-    "emblem-special" => "&#xe002;",
-    "emblem-unfrequent" => "&#xe002;",
+    "emblem-common" => "&#xe003;",
+    "emblem-legendary" => "&#xe004;",
+    "emblem-rare" => "&#xe005;",
+    "emblem-special" => "&#xe006;",
+    "emblem-unfrequent" => "&#xe007;",
+    "user" => "&#xe008;",
+    "message" => "&#xe009;",
+    "flag" => "&#xe00a;",
+    "scale" => "&#xe00b;",
+    "gear" => "&#xe00c;",
+    "gauntlet" => "&#xe00d;",
   }
 
   WMENU_POS = {
@@ -83,6 +83,14 @@ module ApplicationHelper
       end
     end
     out
+  end
+
+  def quicklinks
+    if user_is_authed
+      Personalization.quicklinks_for_user(@user)
+    else
+      []
+    end
   end
 
   def bool_to_str(bool)
