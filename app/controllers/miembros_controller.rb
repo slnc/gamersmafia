@@ -7,7 +7,6 @@ class MiembrosController < ComunidadController
   before_filter :except => [ :index, :buscar, :blogs, :buscar_por_guid, :ban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request, :del_firma ] do |c|
     # /\/miembros\/([^\/]+)\/*/.match(c.params[:login])[1]
     u = User.find_by_login(c.params[:login])
-    u = User.find(c.params[:login].to_i) if u.nil?
     raise ActiveRecord::RecordNotFound unless u
     c.redirect_to("/miembros/#{u.login}", :status => 301) if c.params[:login] != u.login
     c.curuser = u

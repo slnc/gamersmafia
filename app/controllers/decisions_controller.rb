@@ -11,23 +11,26 @@ class DecisionsController < ApplicationController
 
   def decide
     @decision = Decision.find(params[:id])
+    decision_choice = DecisionChoice.find(params[:final_decision_choice].to_i)
+
     require_authorization_for_object(:can_vote_on_decision?, @decision)
-    choice = DecisionUserChoice.find(
+    user_choice = DecisionUserChoice.find(
         :first,
         :conditions => ["decision_id = ? AND user_id = ?",
                         @decision.id, @user.id])
 
-    if choice.nil?
-      choice = @decision.decision_user_choices.new({
+    if user_choice.nil?
+      user_choice = @decision.decision_user_choices.new({
         :user_id => @user.id,
       })
     end
 
-    if choice.update_attribute(
-        :decision_choice_id, params[:final_decision_choice].to_i)
+    if user_choice.update_attribute(:decision_choice_id, decision_choice.id)
       flash[:notice] = "Decisión guardada correctamente."
     else
-      flash[:error] = "Error al guardar la decisión: #{choice.errors.full_messages_html}."
+      flash[:error] = (
+          "Error al guardar tu decisión:
+          #{user_choice.errors.full_messages_html}.")
     end
     render :partial => '/shared/ajax_facebox_feedback', :layout => false
   end

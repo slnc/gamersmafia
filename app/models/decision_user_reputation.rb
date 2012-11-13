@@ -5,7 +5,6 @@ class DecisionUserReputation < ActiveRecord::Base
 
   def self.recalculate_all_user_reputations
     Decision::DECISION_TYPE_CLASS_SKILLS.keys.each do |decision_type|
-      puts decision_type
       # DO NOT SUBMIT
       User.find(
           :all,
@@ -61,15 +60,15 @@ class DecisionUserReputation < ActiveRecord::Base
     w_g = (g * (1 - a)).to_f
     w_b = b * a
     p_g = w_g.to_f / [w_g + w_b, 1].max
-    #Rails.logger.warn(
-    #    "g: #{g}, b: #{b}, a: #{a}, w_g: #{w_g}, w_b: #{w_b}, p_g: #{p_g}")
+    # Rails.logger.warn(
+    #     "g: #{g}, b: #{b}, a: #{a}, w_g: #{w_g}, w_b: #{w_b}, p_g: #{p_g}")
 
     # We now have a probability of a user being right given the weighted ratio
     # of good and bad. However for users with too few choices we still don't
     # have enough info and therefore we put an artificial burden on the ratio.
     if total_choices < MIN_CHOICES_FOR_100
       p_g *= (total_choices.to_f / MIN_CHOICES_FOR_100)
-      # Rails.logger.warn("new p_g: #{p_g}")
+      # Rails.logger.warn("new p_g: #{p_g}")
     end
 
     # We give the webmaster 100% probability of being right to seed the system

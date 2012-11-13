@@ -1,14 +1,31 @@
 require 'test_helper'
 
 class DecisionUserReputationTest < ActiveSupport::TestCase
+
   test "recalculate_all_user_reputations" do
     DecisionUserReputation.recalculate_all_user_reputations
   end
 
-  test "get_user_probability_for" do
+  test "get_user_probability_for webmaster" do
+    u1 = User.find(1)
+    u1.users_skills.clear
     probability = DecisionUserReputation.get_user_probability_for(
-        User.find(1), "CreateTag")
-    assert_equal(0.3, probability)
+        u1, "CreateTag")
+    assert_equal(0, probability)
+  end
+
+  test "get_user_probability_for webmaster with successes" do
+    u1 = User.find(1)
+    u1.users_skills.clear
+    d1 = Decision.find(6)
+    winning_choice = u1.decision_user_choices.find(
+        :first, :conditions => "decision_id = #{d1.id}")
+    d1.update_attributes(
+        :final_decision_choice_id => winning_choice.decision_choice_id,
+        :state => Decision::DECIDED)
+    probability = DecisionUserReputation.get_user_probability_for(
+        u1, "CreateTag")
+    assert_equal(0.1, probability)
   end
 
   test "update_probability_right" do

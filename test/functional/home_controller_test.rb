@@ -150,7 +150,7 @@ class HomeControllerTest < ActionController::TestCase
       u2.users_skills.clear
       give_skill(u2, skill)
       get :index
-      assert_not_nil @response.body.index("sawli-hq")
+      assert_not_nil @response.body.index("stats_hipotesis")
     end
   end
 

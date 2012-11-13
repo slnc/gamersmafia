@@ -283,7 +283,11 @@ class Decision < ActiveRecord::Base
   # We require the option with the most number of user votes to be at least
   # total_votes * 1/x
   def try_to_decide
-    raise "Decision is not in pending state." if self.state != PENDING
+    if self.state != PENDING
+      Rails.logger.error(
+          "Decision '#{self.id}' is not in pending state, can't try_to_decide.")
+      return
+    end
 
     total_votes = self.decision_user_choices.count
     return if total_votes < self.min_user_choices

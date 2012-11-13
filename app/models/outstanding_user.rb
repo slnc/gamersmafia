@@ -41,7 +41,10 @@ LIMIT 1
             "portal_id = ? AND active_on = ? ", portal_id, Time.now])
 
     return bought if bought
+    self.award_to_someone(portal_id)
+  end
 
+  def self.award_to_someone(portal_id)
     # se lo regalamos al que más karma haya generado en los últimos 3 días en
     # toda la red y no haya sido elegido ayer.
     cool_guys = User.db_query(
