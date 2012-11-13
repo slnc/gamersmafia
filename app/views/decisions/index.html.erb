@@ -33,7 +33,6 @@
               Decision.pending.find(:all, :order => 'created_on DESC'),
               :message_on_empty => "No hay decisiones pendientes.",
               :no_mcontent_title => true) do |decision|
-      next if !decision.has_vote_from(@user)
             %>
         <tr>
           <td class="w150"><%=gm_translate(decision.decision_type_class)%></td>
