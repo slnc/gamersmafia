@@ -19,10 +19,15 @@ class DecisionsControllerTest < ActionController::TestCase
   end
 
   test "decide if initiating_user_id" do
-    d6 = Decision.find(6)
-    u5 = User.find(5)
     User.db_query("DELETE FROM decision_user_choices")
+
+    d6 = Decision.find(6)
     winner = d6.decision_choices.last
+    d6.update_pending_decisions_indicators
+
+    u5 = User.find(5)
+    assert !u5.pending_decisions
+
     sym_login u5.id
     assert_raises(AccessDenied) do
       post :decide, {
@@ -33,10 +38,14 @@ class DecisionsControllerTest < ActionController::TestCase
   end
 
   test "decide" do
+    User.db_query("DELETE FROM decision_user_choices")
     give_skill(2, "CreateEntity")
     d6 = Decision.find(6)
+    d6.update_pending_decisions_indicators
+
     u2 = User.find(2)
-    User.db_query("DELETE FROM decision_user_choices")
+    assert u2.pending_decisions
+
     sym_login u2.id
     winner = d6.decision_choices.last
     post :decide, {
@@ -48,6 +57,7 @@ class DecisionsControllerTest < ActionController::TestCase
     assert_equal(
         winner.id,
         u2.decision_user_choices.find_by_decision_id(d6.id).decision_choice_id)
+    assert !u2.pending_decisions
   end
 
   test "ranking nonexisting" do

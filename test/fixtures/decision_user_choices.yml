@@ -1,26 +1,26 @@
 one:
-  id: '4'
-  decision_id: '6'
-  user_id: '1'
-  decision_choice_id: '7'
+  id: 4
+  decision_id: 6
+  user_id: 1
+  decision_choice_id: 7
   created_on: '2012-11-05 01:33:26.822269'
   updated_on: '2012-11-05 02:16:01.293689'
-  probability_right: '1'
+  probability_right: 1
 
 two:
-  id: '5'
-  decision_id: '6'
-  user_id: '2'
-  decision_choice_id: '7'
+  id: 5
+  decision_id: 6
+  user_id: 2
+  decision_choice_id: 7
   created_on: '2012-11-05 02:18:32.271997'
   updated_on: '2012-11-05 02:18:32.271997'
-  probability_right: '0'
+  probability_right: 0
 
 three:
-  id: '6'
-  decision_id: '6'
-  user_id: '3'
-  decision_choice_id: '7'
+  id: 6
+  decision_id: 6
+  user_id: 3
+  decision_choice_id: 7
   created_on: '2012-11-05 02:24:33.931813'
   updated_on: '2012-11-05 02:43:40.033865'
-  probability_right: '0'
+  probability_right: 0

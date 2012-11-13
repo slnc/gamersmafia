@@ -50,9 +50,18 @@ class DecisionTest < ActiveSupport::TestCase
     assert u2.pending_decisions
   end
 
-  test "has_pending_decisions" do
-    u5 = User.find(5)
-    assert Decision.has_pending_decisions(u5)
+  test "has_pending_decisions when no choices left" do
+    u2 = User.find(2)
+    give_skill(u2, "CreateEntity")
+    assert !Decision.has_pending_decisions(u2)
+  end
+
+  test "has_pending_decisions when choices left" do
+    u2 = User.find(2)
+    User.db_query("DELETE from decision_user_choices")
+    u2.decision_user_choices.destroy
+    give_skill(u2, "CreateEntity")
+    assert Decision.has_pending_decisions(u2)
   end
 
   test "update_pending_decisions_indicators for decision" do
@@ -71,5 +80,19 @@ class DecisionTest < ActiveSupport::TestCase
     assert !User.find(5).pending_decisions
     # Yes because skill and not the initiating_user_id
     assert u2.pending_decisions
+
+    a_choice = d6.decision_choices.first
+    assert_difference("DecisionUserChoice.count") do
+      d6.decision_user_choices.create({
+        :decision_choice_id => a_choice.id,
+        :user_id => u2.id,
+      })
+    end
+    u2.reload
+    assert !u2.pending_decisions
+  end
+
+  test "has_pending_decisions when initiating" do
+    assert !Decision.has_pending_decisions(User.find(5))
   end
 end

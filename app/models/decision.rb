@@ -159,9 +159,9 @@ class Decision < ActiveRecord::Base
   end
 
   def self.has_pending_decisions(u)
-    pending_count = 0
     type_classes = Authorization.decision_type_class_available_for_user(u)
     Decision.pending.with_type_class(type_classes).find(:all).each do |decision|
+      next if decision.context && decision.context[:initiating_user_id] == u.id
       if !decision.has_vote_from(u)
         return true
       end
