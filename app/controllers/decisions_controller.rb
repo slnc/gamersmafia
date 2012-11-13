@@ -32,7 +32,9 @@ class DecisionsController < ApplicationController
           "Error al guardar tu decisión:
           #{user_choice.errors.full_messages_html}.")
     end
-    render :partial => '/shared/ajax_facebox_feedback', :layout => false
+    render :partial => '/shared/ajax_facebox_feedback',
+           :layout => false,
+           :locals => {:custom_js => "$('#decision#{@decision.id}').fadeOut();"}
   end
 
   def ranking

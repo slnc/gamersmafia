@@ -35,7 +35,7 @@
               :no_mcontent_title => true) do |decision|
       next if !decision.has_vote_from(@user)
             %>
-        <tr id="decision<%=decision.id%>">
+        <tr>
           <td class="w150"><%=gm_translate(decision.decision_type_class)%></td>
           <td><a class="decision-pending" data-decision-id="<%=decision.id%>"
               href="<%=decision_path(decision)%>"><%=decision.decision_description%></a>
