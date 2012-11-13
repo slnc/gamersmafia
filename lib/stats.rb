@@ -870,7 +870,8 @@ group by date_trunc('day', created_on) order by s asc
   end
 
   def self.register_referer(user_id, remote_ip, referer)
-    referer = User.find(user_id)
+    referer = User.find_by_id(user_id)
+    return if referer.nil?
     recent_same_ip_hits = User.db_query(
         "SELECT *
          FROM refered_hits
