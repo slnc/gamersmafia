@@ -1,0 +1,46 @@
+<%content_2colx do%>
+  <% mftext('Mis borradores') do %>
+  <table>
+<% Cms::contents_classes_publishable.each do |cls|
+	cls.find(:all, :conditions => ['state = ? AND user_id = ?', Cms::DRAFT, @user.id], :order => 'created_on').each do |o|
+    %>
+    <tr class="<%=oddclass%>">
+      <td class="infoinline right w100"><%=gm_translate(cls.to_s)%></td>
+      <td><a href="<%=gmurl(o).gsub('show', 'edit')%>"><%=faction_favicon(o)%> <%=o.resolve_hid%></a></td>
+      <td class="infoinline right w150"><%=print_tstamp(o.created_on)%></td>
+      <td class="infoinline right w50"><%=link_to('Borrar', gmurl(o).gsub('show', 'destroy'), {:method => :post, :confirm => '¿Estás seguro?'})%></td>
+    </tr>
+    <%
+    end
+  end %>
+  </table>
+  <% end -%>
+<% end -%>
+
+<%content_2colx do%>
+  <% mftable('Pendientes de moderar', @user.contents.pending.find(:all, :include => :content_type)) do |content|%>
+  <td class="infoinline right w100"><%=gm_translate(content.content_type.name)%></td>
+    <td>
+      <a href="<%=gmurl(content).gsub('show', 'edit')%>"><%=faction_favicon(content)%> <%=content.name%></a>
+    </td>
+  <% end -%>
+<% end -%>
+
+<div class="clearb"></div>
+
+<% mftable('Últimos contenidos publicados', @user.contents.published.find(:all, :limit => 50, :include => :content_type)) do |content|%>
+  <td class="infoinline right w100"><%=gm_translate(content.content_type.name)%></td>
+  <td>
+    <a href="<%=gmurl(content)%>"><%=faction_favicon(content)%> <%=content.name%></a>
+  </td>
+  <td class="infoinline right w150"><%=print_tstamp(content.created_on)%></td>
+  <td class="infoinline right w50" title="Karma"><%=content.karma_points%></td>
+<% end -%>
+
+<% mftable('Últimos contenidos en la papelera', @user.contents.deleted.find(:all, :limit => 50, :include => :content_type)) do |content|%>
+  <td class="infoinline right w100"><%=gm_translate(content.content_type.name)%></td>
+  <td>
+    <a href="<%=gmurl(content)%>"><%=faction_favicon(content)%> <%=content.name%></a>
+  </td>
+  <td class="infoinline right w150"><%=print_tstamp(content.created_on)%></td>
+<% end -%>

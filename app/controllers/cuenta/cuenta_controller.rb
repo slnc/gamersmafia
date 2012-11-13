@@ -301,8 +301,8 @@ class Cuenta::CuentaController < ApplicationController
     redirect_to '/cuenta'
   end
 
-  def mis_borradores
-    @title = "Mis borradores"
+  def mis_contenidos
+    @title = "Mis contenidos"
   end
 
   def do_login

@@ -177,7 +177,7 @@ Gamersmafia::Application.routes.draw do
   match 'cuenta/imagenes/borrar' => 'cuenta/cuenta#borrar_imagen'
   match 'cuenta/mensajes' => 'cuenta/mensajes#mensajes'
   match 'cuenta/mensajes/:action' => 'cuenta/mensajes'
-  match 'cuenta/mis_borradores' => 'cuenta/cuenta#mis_borradores'
+  match 'cuenta/mis_contenidos' => 'cuenta/cuenta#mis_contenidos'
   match 'cuenta/mis_canales' => 'cuenta/mis_canales#index'
   match 'cuenta/mis_canales/:action' => 'cuenta/mis_canales#index'
   match 'cuenta/mis_canales/:action/:id' => 'cuenta/mis_canales#index'

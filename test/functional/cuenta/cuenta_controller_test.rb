@@ -571,9 +571,9 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
   end
 
 
-  test "should_show_mis_borradores" do
+  test "should_show_mis_contenidos" do
     sym_login 1
-    get :mis_borradores
+    get :mis_contenidos
     assert_response :success
   end
 
