@@ -28,7 +28,7 @@
     data-remote-on-success-update=".decision-comments">
   <input type="hidden" name="final_decision_choice" />
 <% if @decision.binary? %>
-  <% @decision.decision_choices.each do |decision_choice| %>
+  <% @decision.decision_choices.find(:all, :order => "name DESC").each do |decision_choice| %>
     <input type="submit" class="button" value="<%=decision_choice.name%>"
     data-choice-id="<%=decision_choice.id%>" />
   <% end -%>
