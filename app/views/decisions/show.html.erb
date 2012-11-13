@@ -40,6 +40,11 @@
 <% else %>
   <div class="centered">
     Decisión final: <strong><%=@decision.final_decision_choice.name%></strong>
+    <% if @decision.context[:result] %>
+      <br />
+      <br />
+      <%=@decision.context[:result]%>
+    <% end -%>
   </div>
   <div class="decision-participants">
     Han participado en esta decisión:

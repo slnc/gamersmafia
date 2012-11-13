@@ -103,6 +103,9 @@ class Content < ActiveRecord::Base
       if prev_state == Cms::PENDING
         self.create_alert_after_crowd_publishing_decision(uniq, "publicado")
       end
+      decision.context[:result] = (
+          "<a href=\"#{Routing.gmurl(content)}\">Ver contenido</a>")
+      decision.save
     else
       prev_state = content.state
       content.change_state(Cms::DELETED, Ias.MrMan)

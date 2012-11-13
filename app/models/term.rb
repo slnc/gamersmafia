@@ -84,6 +84,9 @@ class Term < ActiveRecord::Base
           end
           UsersContentsTag.tag_content(
               content, user, decision.context[:tag_name], delete_missing=false)
+          decision.context[:result] = (
+              "<a href=\"/tags/#{tag.code}\">Ver tag</a>")
+          decision.save
         end
         user.notifications.create({
           :sender_user_id => Ias.mrman.id,

@@ -11,7 +11,7 @@ module DecisionsHelper
   end
 
   def decision_title(decision)
-    "#{gm_translate(decision.decision_type_class)} #{decision.decision_description}"
+    "#{gm_translate(decision.decision_type_class)} '#{decision.decision_description}'"
   end
 
   def current_decision_user_reputations(user)

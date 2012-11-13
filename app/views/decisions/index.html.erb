@@ -17,7 +17,8 @@
     <%mftable("Decisiones pendientes sin tu voto",
               pending_decisions_for_user(@user),
               :message_on_empty => "No hay decisiones pendientes.",
-              :no_mcontent_title => true) do |decision| %>
+              :no_mcontent_title => true) do |decision|
+            %>
         <tr id="decision<%=decision.id%>">
           <td class="w150"><%=gm_translate(decision.decision_type_class)%></td>
           <td><a class="decision-pending" data-decision-id="<%=decision.id%>"
@@ -33,6 +34,10 @@
               Decision.pending.find(:all, :order => 'created_on DESC'),
               :message_on_empty => "No hay decisiones pendientes.",
               :no_mcontent_title => true) do |decision|
+        if (decision.context[:initiating_user] != @user.id &&
+            !decision.has_vote_from(@user))
+          next
+        end
             %>
         <tr>
           <td class="w150"><%=gm_translate(decision.decision_type_class)%></td>
