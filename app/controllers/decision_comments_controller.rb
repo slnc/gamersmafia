@@ -7,6 +7,7 @@ class DecisionCommentsController < ApplicationController
         :comment => params[:comment],
         :user_id => @user.id
     })
+    @decision.reload
     # TODO(slnc): show errors if any
     render :action => :index, :layout => false
   end
