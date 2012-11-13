@@ -18,7 +18,7 @@
 <% end -%>
 
 <%content_2colx do%>
-  <% mftable('Pendientes de moderar', @user.contents.pending.find(:all, :include => :content_type)) do |content|%>
+  <% mftable('Pendientes de moderar', @user.contents.pending.find(:all, :include => :content_type, :order => 'created_on DESC')) do |content|%>
   <td class="infoinline right w100"><%=gm_translate(content.content_type.name)%></td>
     <td>
       <a href="<%=gmurl(content).gsub('show', 'edit')%>"><%=faction_favicon(content)%> <%=content.name%></a>
@@ -28,7 +28,12 @@
 
 <div class="clearb"></div>
 
-<% mftable('Últimos contenidos publicados', @user.contents.published.find(:all, :limit => 50, :include => :content_type)) do |content|%>
+<% mftable('Últimos contenidos publicados',
+           @user.contents.published.find(
+             :all,
+             :limit => 50,
+             :include => :content_type,
+             :order => 'created_on DESC')) do |content|%>
   <td class="infoinline right w100"><%=gm_translate(content.content_type.name)%></td>
   <td>
     <a href="<%=gmurl(content)%>"><%=faction_favicon(content)%> <%=content.name%></a>
@@ -37,7 +42,12 @@
   <td class="infoinline right w50" title="Karma"><%=content.karma_points%></td>
 <% end -%>
 
-<% mftable('Últimos contenidos en la papelera', @user.contents.deleted.find(:all, :limit => 50, :include => :content_type)) do |content|%>
+<% mftable('Últimos contenidos en la papelera',
+           @user.contents.deleted.find(
+             :all,
+             :limit => 50,
+             :include => :content_type,
+             :order => 'created_on DESC')) do |content|%>
   <td class="infoinline right w100"><%=gm_translate(content.content_type.name)%></td>
   <td>
     <a href="<%=gmurl(content)%>"><%=faction_favicon(content)%> <%=content.name%></a>
