@@ -1,0 +1,19 @@
+.tag-page-header {
+  background: #000;
+  margin-bottom: 1rem;
+  background-size: auto 110px;
+  background-repeat: no-repeat;
+  background-position: right center;
+  padding: 0 1rem;
+}
+
+.tag-page-header div {
+  color: #fff;
+  font-size: 34px;
+  line-height: 110px;
+}
+
+.tag-header-image-thumbnail {
+  max-width: 100%;
+  height: auto;
+}

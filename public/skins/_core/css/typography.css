@@ -48,3 +48,12 @@ a:hover { text-decoration: underline; }
 .infoinline a { text-decoration: underline; }
 
 .sm { font-size: 10px; }
+
+.content-snippet .content-title {
+  font-size: 22px;
+  line-height: 24px;
+}
+
+#ccontent .content-snippet {
+  padding-bottom: 20px;
+}

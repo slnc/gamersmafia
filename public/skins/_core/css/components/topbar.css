@@ -26,12 +26,17 @@
 @font-face
 {
   font-family: "GmIcons";
-  src: url(/fonts/gm_icons.3.ttf);
+  src: url(/fonts/gm_icons.6.ttf);
 }
 
 .gm-icon {
   font-family: "GmIcons";
   font-size: 15px;
+}
+
+.gm-icon.big {
+  font-family: "GmIcons";
+  font-size: 20px;
 }
 
 .gm-icon.small {
@@ -204,4 +209,27 @@
   list-style: none;
   margin: 0 0 8px 0;
   padding: 0;
+}
+
+.button-with-icon {
+  font-size: 16px;
+}
+.button-with-icon .gm-icon {
+  vertical-align: middle;
+}
+
+.button-with-icon div {
+  background: #64ab1e;
+  color: #fff;
+  display: inline-block;
+  border: 2px solid #416122;
+  padding: 7px;
+  margin: 0 0 10px 0;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  border-radius: 6px;
+}
+
+.button-with-icon div a {
+  color: #fff;
 }

@@ -58,6 +58,15 @@ class Content < ActiveRecord::Base
         }
   }
 
+  scope :content_type_names, lambda { |names| {
+            :conditions => ["content_type_id IN (
+                              SELECT id
+                              FROM content_types
+                              WHERE name IN (?))",
+                              names]
+        }
+  }
+
   after_save do |m|
     m.contents_locks.clear if m.contents_locks
     old_url = m.url

@@ -1,7 +1,7 @@
 <div style="width: 50%; float: left;">
 <%mftext('Editar juego') do %>
 
-<%= form_tag({:action => 'update', :id => @game}, :multipart => true )%>
+<%= form_tag(game_url(@game), :multipart => true )%>
   <%= render :partial => 'form' %>
   <%= submit_tag 'Guardar' %>
 </form>

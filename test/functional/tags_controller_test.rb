@@ -63,4 +63,24 @@ class TagsControllerTest < ActionController::TestCase
     assert_response :redirect
   end
 
+  test "edit should work" do
+    t = Term.create(:taxonomy => 'ContentsTag', :name => 'foo')
+    t.link(Content.find(:first))
+    get :edit, :id => t.slug
+    assert_response :success
+  end
+
+  test "update should work" do
+    t = Term.create(:taxonomy => 'ContentsTag', :name => 'foo')
+    t.link(Content.find(:first))
+    post :update, :id => t.slug, :tag => {
+        :short_description => "foo desc",
+        :long_description => "long desc",
+    }
+    assert_response :redirect
+    t.reload
+    assert_equal "foo desc", t.short_description
+    assert_equal "long desc", t.long_description
+  end
+
 end

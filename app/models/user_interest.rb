@@ -5,6 +5,8 @@ class UserInterest < ActiveRecord::Base
   )
   validates_uniqueness_of :entity_id, :scope => [:user_id, :entity_type_class]
 
+  scope :show_in_menu, :conditions => "show_in_menu = 't'"
+
   scope :interest_tuple,
     lambda { |entity_type_class, entity_id|
                  {
@@ -74,12 +76,16 @@ class UserInterest < ActiveRecord::Base
   end
 
   def entity_name
-    o = Object.const_get(entity_type_class).find(self.entity_id)
+    o = self.real_item
     case self.entity_type_class
     when "Term"
       o.name
     else
       raise "Don't know what's the name of a #{o.class.name}"
     end
+  end
+
+  def real_item
+    Object.const_get(entity_type_class).find(self.entity_id)
   end
 end

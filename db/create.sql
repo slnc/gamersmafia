@@ -2567,7 +2567,11 @@ CREATE TABLE terms (
     last_updated_item_id integer,
     comments_count integer DEFAULT 0 NOT NULL,
     root_id integer,
-    taxonomy character varying
+    taxonomy character varying,
+    short_description character varying,
+    long_description text,
+    header_image character varying,
+    square_image character varying
 );
 CREATE SEQUENCE terms_id_seq
     START WITH 1
@@ -2680,7 +2684,8 @@ CREATE TABLE user_interests (
     user_id integer NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     entity_type_class character varying NOT NULL,
-    entity_id integer NOT NULL
+    entity_id integer NOT NULL,
+    show_in_menu boolean DEFAULT true NOT NULL
 );
 CREATE SEQUENCE user_interests_id_seq
     START WITH 1
@@ -3939,6 +3944,7 @@ CREATE UNIQUE INDEX tutorials_categories_unique ON tutorials_categories USING bt
 CREATE INDEX tutorials_state ON tutorials USING btree (state);
 CREATE INDEX tutorials_user_id ON tutorials USING btree (user_id);
 CREATE INDEX user_interests_entity_class_entity_id ON user_interests USING btree (entity_type_class, entity_id);
+CREATE INDEX user_interests_show_in_menu ON user_interests USING btree (user_id, show_in_menu);
 CREATE UNIQUE INDEX user_interests_uniq ON user_interests USING btree (user_id, entity_type_class, entity_id);
 CREATE INDEX user_interests_user_id ON user_interests USING btree (user_id);
 CREATE INDEX users_actions_created_on ON users_actions USING btree (created_on);

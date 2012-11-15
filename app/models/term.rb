@@ -22,7 +22,8 @@ class Term < ActiveRecord::Base
   acts_as_tree :order => 'name'
 
   has_slug :name
-  file_column :image
+  file_column :header_image
+  file_column :square_image
 
   before_save :check_no_parent_if_contents_tag
   before_save :check_references_to_ancestors
@@ -84,8 +85,10 @@ class Term < ActiveRecord::Base
           end
           UsersContentsTag.tag_content(
               content, user, decision.context[:tag_name], delete_missing=false)
+          tag = Term.with_taxonomy("ContentsTag").find_by_name(
+              decision.context[:tag_name])
           decision.context[:result] = (
-              "<a href=\"/tags/#{self.code}\">Ver tag</a>")
+              "<a href=\"/tags/#{tag.code}\">Ver tag</a>")
           decision.save
         end
         user.notifications.create({
@@ -950,7 +953,9 @@ class Term < ActiveRecord::Base
                              GROUP BY user_id
                              ORDER BY count(A.id) DESC
                                 LIMIT #{opts[:limit]}").collect do |dbr|
-      {:user => User.find(dbr['user_id'].to_i), :count => dbr['count'].to_i, :pcent => dbr['count'].to_i / total}
+      {:user => User.find(dbr['user_id'].to_i),
+       :count => dbr['count'].to_i,
+       :pcent => dbr['count'].to_i / total}
     end
   end
 

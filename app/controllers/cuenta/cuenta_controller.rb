@@ -32,6 +32,16 @@ class Cuenta::CuentaController < ApplicationController
     @title = 'Intereses'
   end
 
+  def update_interests
+    params[:interests_show_in_menu] ||= []
+    interest_ids = params[:interests_show_in_menu].collect {|i| i.to_i}
+    @user.user_interests.each do |interest|
+      interest.update_attribute(
+          :show_in_menu, interest_ids.include?(interest.id))
+    end
+    redirect_to :action => "intereses"
+  end
+
   def intereses_autocomplete
     @out = {}
     if !(/^[a-zA-Z0-9_ -]+$/ =~ params[:text])
@@ -53,7 +63,11 @@ class Cuenta::CuentaController < ApplicationController
         :entity_id => params[:entity_id],
     })
     flash[:notice] = "Interés guardado correctamente."
-    redirect_to :action => :intereses
+    if params[:redirto].to_s != ""
+      redirect_to params[:redirto]
+    else
+      redirect_to :action => :intereses
+    end
   end
 
   def schedule_interest_profile

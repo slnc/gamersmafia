@@ -178,8 +178,11 @@ class Decision < ActiveRecord::Base
     users_can_vote = self.users_who_can_vote.collect {|u| u.id}
     users_have_voted = self.users_who_voted.collect {|u| u.id}
     users_can_vote.each do |u_id|
-      users[u_id] ||= true
+      users[u_id] ||= ((self.state == PENDING) ? true : false)
     end
+
+    return users if self.state != PENDING
+
     users_have_voted.each do |u_id|
       users[u_id] = false
     end
