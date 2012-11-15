@@ -43,6 +43,7 @@ module ApplicationHelper
     "scale" => "&#xe00b;",
     "gear" => "&#xe00c;",
     "gauntlet" => "&#xe00d;",
+    "plus" => "&#xe00e;",
   }
 
   WMENU_POS = {

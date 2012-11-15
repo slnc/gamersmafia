@@ -63,7 +63,11 @@ class Cuenta::CuentaController < ApplicationController
         :entity_id => params[:entity_id],
     })
     flash[:notice] = "Interés guardado correctamente."
-    redirect_to :action => :intereses
+    if params[:redirto].to_s != ""
+      redirect_to params[:redirto]
+    else
+      redirect_to :action => :intereses
+    end
   end
 
   def schedule_interest_profile
