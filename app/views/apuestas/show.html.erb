@@ -76,7 +76,7 @@ end
 </table>
 <% end -%>
 
-<% if user_is_authed and @bet.closes_on > Time.now then %>
+<% if user_is_authed && @bet.closes_on > Time.now then %>
 <%mftext('Tus apuestas para esta partida') do %>
 <div class="infoinline">(mínimo por opción: 5<%=gmd10%>)</div>
 <form method="post" action="/apuestas/update_cash_for_bet/<%=@bet.id%>">

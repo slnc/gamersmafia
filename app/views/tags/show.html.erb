@@ -60,6 +60,11 @@
   </div>
 <% end -%>
 
+  <%= render :partial => '/apuestas/top_entry.html.erb', :locals => {
+    :bets => Bet.in_term(@tag).published.open_bets.find(
+        :all, :order => 'closes_on DESC', :limit => 20)
+  } %>
+
 <%content_2colx do %>
   <% tagged_contents = @tag.contents.content_type_name("News").published.find(
       :all, :order => 'created_on DESC', :limit => 10) %>
