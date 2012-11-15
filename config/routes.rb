@@ -52,6 +52,10 @@ Gamersmafia::Application.routes.draw do
     collection do
       get 'autocomplete'
     end
+    member do
+      get 'edit'
+      post 'update'
+    end
   end
 
   namespace :admin do

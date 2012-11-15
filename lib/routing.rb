@@ -112,7 +112,7 @@ module Routing
       "#{base_url}?page=#{page}#comment#{object.id}"
     elsif cls_name == 'Term'
       if object.taxonomy.nil? && opts[:taxonomy].nil?
-        raise "gmurl for term without taxonomy specified"
+        "http://#{object.slug}.#{App.domain}"
       elsif object.taxonomy == 'ContentsTag'
         "/tags/#{object.slug}"
       else

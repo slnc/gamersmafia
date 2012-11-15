@@ -22,7 +22,8 @@ class Term < ActiveRecord::Base
   acts_as_tree :order => 'name'
 
   has_slug :name
-  file_column :image
+  file_column :header_image
+  file_column :square_image
 
   before_save :check_no_parent_if_contents_tag
   before_save :check_references_to_ancestors
@@ -952,7 +953,9 @@ class Term < ActiveRecord::Base
                              GROUP BY user_id
                              ORDER BY count(A.id) DESC
                                 LIMIT #{opts[:limit]}").collect do |dbr|
-      {:user => User.find(dbr['user_id'].to_i), :count => dbr['count'].to_i, :pcent => dbr['count'].to_i / total}
+      {:user => User.find(dbr['user_id'].to_i),
+       :count => dbr['count'].to_i,
+       :pcent => dbr['count'].to_i / total}
     end
   end
 

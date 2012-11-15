@@ -1,21 +1,128 @@
 <%generic_support do%>
+  <% if user_is_authed && Authorization.can_edit_term?(@user, @tag, "ContentsTag") %>
+    <a href="<%=edit_tag_url%>">Editar tag</a>
+  <% end -%>
+
+  <%mftext("Última imagen") do%>
+  <div class="imagesgallery centered">
+  <% image = Image.in_term(@tag).published.find(
+       :first, :order => 'created_on DESC')
+     if image then %>
+    <span class="screenshot">
+      <%=link_to fc_thumbnail(image.file, 'i', '153x115', false), gmurl(image)%>
+    </span>
+  <% end -%>
+  </div>
+  <% end -%>
+
+  <%mftable("Expertos", Question.top_term_sages(@tag.id, 10)) do |info|%>
+    <td><%=user_link(info[:user])%></td>
+    <td><%=info[:points]%></td>
+  <%end -%>
+
+  <!--
+  <%mftext("Tags relacionados") do%>
+  <%end -%>
+  -->
+
+  <%mftable("Los que más han aportado",
+            @tag.top_contributors(
+                :taxonomy => @tag.taxonomy, :limit => 5)) do |info|%>
+    <td><%=user_link(info[:user])%></td>
+    <td class="w50 right"><%=info[:count]%></td>
+    <td class="w50"><%=draw_pcent_bar(info[:pcent])%></td>
+<% end -%>
+
+  <%mftext("Estadísticas") do%>
+    <table>
+      <tr>
+        <td>Seguido por</td>
+        <td>
+          <span class="members-count"><%=UserInterest.interest_tuple("ContentsTag", @tag.id).count%></span>
+        </td>
+      </tr>
+      <tr>
+        <td>Contenidos</td>
+        <td><%=@tag.contents_count%></td>
+      </tr>
+    </table>
+  <%end -%>
 <% end -%>
 
 <%content_main do %>
-<%
-tagged_contents = @tag.contents.paginate(:per_page => 100, :page => params[:page], :conditions => "state = #{Cms::PUBLISHED}", :order => 'created_on DESC', :limit => 100) %>
-<%mftext("Contenidos tagueados con #{@tag.name}") do %>
-<%=render :partial => '/shared/pager2', :locals => { :collection => tagged_contents, :pos => 'top' } %>
-<table>
-<% tagged_contents.uniq.collect { |c| c.real_content}.each do |c| %>
-	<tr class="<%=oddclass%>">
-	<td><a href="<%=gmurl(c)%>"><%=faction_favicon(c)%></a> <a href="<%=gmurl(c)%>"><%=c.class.name == 'Image' ? "<img src=\"/cache/thumbnails/i/#{Cms::IMG_SIZE_GRID2}/#{c.file}\" />" : c.resolve_hid%></a></td>
-    <td style="width: 75px;"><%=draw_rating(c.rating)%></td>
-    <td style="width: 35px;"><span class="infoinline comments-count"><a href="<%=controller.url_for_content_onlyurl(c)%>"><%=c.cache_comments_count%></a></span></td>
-<td class="infoinline timestamp"><%=print_tstamp(c.created_on, 'intelligent')%></td>
-</tr>
-<% end -%>
-</table>
-<%=render :partial => '/shared/pager2', :locals => { :collection => tagged_contents, :pos => 'bottom' } %>
-<% end -%>
+<div class="tag-page-header" style="background-image: url('/<%=@tag.header_image%>'); ">
+  <div style=""><%=@tag.name%></div>
+</div>
+<br />
+
+<%content_2colx do %>
+  <% tagged_contents = @tag.contents.content_type_name("News").published.find(
+      :all, :order => 'created_on DESC', :limit => 10) %>
+    <%mftable("Últimas noticias", tagged_contents.uniq.collect { |c| c.real_content}) do |c| %>
+        <td class="content-snippet">
+          <a class="content-title" href="<%=gmurl(c)%>"><%=c.resolve_hid%></a>
+          <br />
+          <%=strip_tags(c.description)[0..100]%>
+          <br />
+          <div class="infoinline timestamp">
+            <%=print_tstamp(c.created_on, 'intelligent')%>,
+            <span class="infoinline comments-count"><a href="<%=controller.url_for_content_onlyurl(c)%>"><%=c.cache_comments_count%></a></span>
+          </div>
+      </td>
+    <% end -%>
+  <% end -%>
+
+  <%content_2colx do %>
+    <%mftable("Artículos",
+              @tag.contents.published.content_type_names(
+                  %w(Review Column Interview Tutorial)).paginate(
+                      :per_page => 25,
+                      :page => params[:page],
+                      :order => 'created_on DESC',
+                      :limit => 2),
+                  :no_mcontent_title => true) do |c|
+      c = c.real_content %>
+      <tr class="<%=oddclass%>">
+        <td class="content-snippet">
+          <a href="<%=gmurl(c)%>"><img src="/cache/thumbnails/k/300x150/<%=c.home_image%>" /></a>
+          <br />
+          <a class="content-title" href="<%=gmurl(c)%>"><%=c.resolve_hid%></a>
+          <br />
+          <%=strip_tags(c.description)[0..100]%>
+          <br />
+          <div class="infoinline timestamp">
+            <%=print_tstamp(c.created_on, 'intelligent')%>,
+            <span class="infoinline comments-count"><a href="<%=controller.url_for_content_onlyurl(c)%>"><%=c.cache_comments_count%></a></span>
+          </div>
+      </td>
+    </tr>
+    <% end -%>
+  <% end -%>
+
+  <div class="clearb"></div>
+  <%content_2colx do %>
+    <%=mfcontents_basic("Tópics activos",
+          Proc.new { @tag.contents.published.content_type_name("Topic").find(
+              :all,
+              :order => 'updated_on DESC',
+              :limit => 10).collect {|c| c.real_content} },
+            [],
+            :truncate_at => 28,
+            :faction_favicon => true,
+            :blast => true)%>
+            <br />
+  <% end -%>
+
+  <%content_2colx do %>
+    <%=mfcontents_basic("Últimas preguntas",
+          Proc.new { @tag.contents.published.content_type_name("Question").find(
+              :all,
+              :order => 'updated_on DESC',
+              :limit => 10).collect {|c| c.real_content} },
+            [],
+            :truncate_at => 28,
+            :faction_favicon => true,
+            :blast => true)%>
+            <br />
+  <% end -%>
 <% end -%>

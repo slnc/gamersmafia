@@ -87,7 +87,13 @@ module ApplicationHelper
 
   def quicklinks
     if user_is_authed
-      Personalization.quicklinks_for_user(@user)
+      # TODO(slnc): PERF cache this
+      interests = @user.user_interests.show_in_menu.find(:all).collect {|i|
+        {:code => i.entity_name, :url => gmurl(i.real_item)}
+      }
+      (interests + Personalization.quicklinks_for_user(@user)).sort_by{|i|
+        i[:code].downcase
+      }
     else
       Personalization.get_default_quicklinks
     end

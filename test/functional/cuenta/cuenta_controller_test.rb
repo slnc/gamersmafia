@@ -849,4 +849,17 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     u1.reload
     assert !u1.has_unread_notifications
   end
+
+  test "update_interests" do
+    sym_login 1
+    u1 = User.find(1)
+    t1 = Term.with_taxonomy("ContentsTag").first
+    assert_difference("u1.user_interests.count") do
+      u1.user_interests.create(:entity_type_class => "Term", :entity_id => t1.id)
+    end
+    post :update_interests, :interests_show_in_menu => []
+    assert_response :redirect
+    interest = u1.user_interests.last
+    assert !interest.show_in_menu?
+  end
 end

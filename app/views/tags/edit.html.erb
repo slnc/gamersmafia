@@ -1,0 +1,21 @@
+<%mftext("Editar tag '#{@tag.name}'") do%>
+  <form method="post" action="<%=tag_url(@tag)%>" enctype="multipart/form-data">
+  Descripción breve: <br />
+  <textarea name="tag[short_description]"><%=@tag.short_description%></textarea>
+  <br />
+  <br />
+  Descripción larga: <br />
+  <textarea name="tag[long_description]"><%=@tag.long_description%></textarea>
+  <br />
+  <br />
+  Imagen alargada de cabecera: <br />
+  <input type="file" name="tag[header_image]" />
+  <br />
+  <br />
+  Imagen cuadrada: <br />
+  <input type="file" name="tag[square_image]" />
+  <br />
+  <br />
+  <input type="submit" value="Guardar" />
+  </form>
+<% end -%>

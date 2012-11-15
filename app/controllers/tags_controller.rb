@@ -27,6 +27,21 @@ class TagsController < ApplicationController
     @title = @tag.name
   end
 
+  def edit
+    @tag = Term.with_taxonomy("ContentsTag").find_by_slug!(params[:id])
+    @title = @tag.name
+  end
+
+  def update
+    @tag = Term.with_taxonomy("ContentsTag").find_by_slug!(params[:id])
+    if @tag.update_attributes(params[:tag])
+      flash[:notice] = "Cambios guardados correctamente"
+    else
+      flash[:error] = "Error al guardar los cambios: #{@tag.errors.full_messages_html}"
+    end
+    redirect_to :action => :edit, :id => @tag.slug
+  end
+
   def new
     require_authorization(:can_create_entities?)
     @title = "Nuevo tag"

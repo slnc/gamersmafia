@@ -1,5 +1,4 @@
-<%
-mftable('Contenidos con tags', Term.contents_tags.in_category(category).find(:all, :order => 'name')) do |t| %>
+<% mftable('Contenidos con tags', Term.contents_tags.in_category(category).find(:all, :order => 'name')) do |t| %>
 <td><a href="/tags/<%=t.slug%>"><%=t.name%></a></td>
 <td class="right"><%=t.contents_tagged_count%></td>
 <% end -%>
