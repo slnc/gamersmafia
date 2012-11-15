@@ -8,6 +8,7 @@
 
 <div class="decision-context"><%=decision_context(@decision)%></div>
 
+<% if user_is_authed %>
 <div class="centered decision-title-n-choice">¿<%=decision_title(@decision)%>?
 <%current_choice = @decision.decision_user_choices.find_by_user_id(@user.id) %>
 <% if current_choice %>
@@ -20,6 +21,7 @@
   <% end -%>
 <% end -%>
 </div>
+<% end -%>
 
 <% if @decision.state == Decision::PENDING %>
 <div class="decision-choices choice-type-<%=@decision.choice_type_name%> <%="hidden" if current_choice%>">
