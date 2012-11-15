@@ -64,6 +64,16 @@ class DecisionTest < ActiveSupport::TestCase
     assert Decision.has_pending_decisions(u2)
   end
 
+  test "pending_decisions_indicators when already decided" do
+    u2 = User.find(2)
+    User.db_query("DELETE from decision_user_choices")
+    u2.decision_user_choices.destroy
+    give_skill(u2, "CreateEntity")
+    d1 = Decision.first
+    d1.update_attribute(:state, Decision::DECIDED)
+    assert !d1.pending_decisions_indicators.fetch(u2.id)
+  end
+
   test "update_pending_decisions_indicators for decision" do
     User.db_query("DELETE FROM decision_user_choices")
     u2 = User.find(2)
