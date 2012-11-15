@@ -85,6 +85,17 @@ module ApplicationHelper
     out
   end
 
+  def droparea
+    <<-END
+      <div class="droparea">arrastra imágenes aquí</div>
+      <div id="dropped-files" class="image-gallery-sm"></div>
+      <div class="image-editor hidden">
+        <canvas class="hidden"></canvas>
+        <img src="/images/dot.png" class="image2" />
+      </div>
+    END
+  end
+
   def quicklinks
     if user_is_authed
       # TODO(slnc): PERF cache this

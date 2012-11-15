@@ -106,7 +106,7 @@ Gm.MemeEditor = function() {
     };
   };
 
-  function updateMemeImageReferences() {
+  function saveImageReferences() {
     var imageDataUrl = $('.image-editor canvas')[0].toDataURL("image/jpeg");
     $('.image-editor .image2')[0].src = imageDataUrl;
     var imageId = $('#dropped-files .selected')[0].id;
@@ -253,7 +253,7 @@ Gm.MemeEditor = function() {
       initCanvas();
       drawMemeText();
       Gm.MemeEditor.saveMemeLines();
-      updateMemeImageReferences();
+      saveImageReferences();
     },
 
     removeImage: function(e) {
@@ -340,4 +340,5 @@ Gm.MemeEditor = function() {
   };  // return
 }();
 
-Gm.registerModule(Gm.MemeEditor);
+// DO NOT SUBMIT adapt this to work with droparea
+// Gm.registerModule(Gm.MemeEditor);
