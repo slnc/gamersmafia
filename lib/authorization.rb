@@ -168,6 +168,11 @@ module Authorization
     false
   end
 
+  # TODO(slnc): temp
+  def self.can_edit_games?(user)
+    user.has_any_skill?(%w(Capo Webmaster))
+  end
+
   def self.can_edit_entities?(user)
     user.has_any_skill?(%w(Capo Webmaster))
   end

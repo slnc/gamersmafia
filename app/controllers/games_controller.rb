@@ -103,7 +103,9 @@ class GamesController < ApplicationController
   end
 
   def edit
-    require_authorization(:can_edit_entities?)
+    # TODO(slnc): temporal until we make sure changes to games can't screw up
+    # factions.
+    require_authorization(:can_edit_games?)
     @game = Game.find(params[:id])
   end
 
@@ -112,7 +114,9 @@ class GamesController < ApplicationController
   end
 
   def update
-    require_authorization(:can_edit_entities?)
+    # TODO(slnc): temporal until we make sure changes to games can't screw up
+    # factions.
+    require_authorization(:can_edit_games?)
     @game = Game.find(params[:id])
     if @game.update_attributes(params[:game])
       flash[:notice] = 'Juego actualizado correctamente.'

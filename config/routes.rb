@@ -46,6 +46,9 @@ Gamersmafia::Application.routes.draw do
   get "juegos/p/:platform_code", :controller => :games, :action => :index
   resources :games, {:path => "juegos" ,
                      :path_names => {:new => "nuevo", :edit => "editar"}} do
+    member do
+      post 'update'
+    end
   end
 
   resources :tags, :path_names => { :new => "nuevo" } do
