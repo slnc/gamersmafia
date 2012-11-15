@@ -8,12 +8,24 @@
   <textarea name="tag[long_description]"><%=@tag.long_description%></textarea>
   <br />
   <br />
-  Imagen alargada de cabecera: <br />
+  Imagen alargada de cabecera (anchura_px/altura_px &gt;= 5.28, eg: 1000x189 (ok), 1500x284 (ok), 200x200 (mal). Recomendado: 1243x235), tamaño máximo: 150kb:<br />
+  <% if @tag.header_image %>
+    <img class="tag-header-image-thumbnail" src="/<%=@tag.header_image%>" />
+  <% end -%>
   <input type="file" name="tag[header_image]" />
+
+<!--
+  <#%=droparea%>
+
   <br />
   <br />
   Imagen cuadrada: <br />
+  <% if @tag.square_image %>
+    <img class="tag-header-image-thumbnail" src="/<%=@tag.square_image%>" />
+  <% end -%>
   <input type="file" name="tag[square_image]" />
+-->
+
   <br />
   <br />
   <input type="submit" value="Guardar" />
