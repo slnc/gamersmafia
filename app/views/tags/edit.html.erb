@@ -9,10 +9,19 @@
   <br />
   <br />
   Imagen alargada de cabecera: <br />
+  <% if @tag.header_image %>
+    <img class="tag-header-image-thumbnail" src="/<%=@tag.header_image%>" />
+  <% end -%>
   <input type="file" name="tag[header_image]" />
+
+  <%=droparea%>
+
   <br />
   <br />
   Imagen cuadrada: <br />
+  <% if @tag.square_image %>
+    <img class="tag-header-image-thumbnail" src="/<%=@tag.square_image%>" />
+  <% end -%>
   <input type="file" name="tag[square_image]" />
   <br />
   <br />

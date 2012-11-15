@@ -12,3 +12,8 @@
   font-size: 34px;
   line-height: 110px;
 }
+
+.tag-header-image-thumbnail {
+  max-width: 100%;
+  height: auto;
+}
