@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class DistritoController < ApplicationController
   before_filter :populate_cur_district
+
   def index
   end
 

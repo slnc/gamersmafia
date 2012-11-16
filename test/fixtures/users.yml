@@ -316,3 +316,17 @@ mrgod:
   ipaddr: 127.0.0.4
   enable_competition_indicator: false
   enable_profile_signatures: false
+
+mendel:
+  id: 62
+  state: <%=User::ST_ACTIVE%>
+  login: mendel
+  password: <%=Digest::MD5.hexdigest('mendelpass') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: mendel@gamersmafia.com
+  validkey: blablablableblella62
+  ipaddr: 127.0.0.4
+  enable_competition_indicator: false
+  enable_profile_signatures: false

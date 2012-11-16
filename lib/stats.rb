@@ -297,6 +297,7 @@ module Stats
         "http.global.errors.external_404",
         "http.global.errors.internal_404",
         "http.global.errors.500",
+        "tags.subscribed_users_per_tag",
     ]
 
     # Computes 30d active users from 30d ago to eod of date arg.
@@ -322,13 +323,24 @@ module Stats
 
     def self.compute_daily_metrics(date)
       timestamp_end = date.end_of_day
-      timestamp_start = timestamp_end.advance(:days => -30).beginning_of_day
-      active_users_30d = self.active_users(timestamp_start, timestamp_end)
+      timestamp_30d_ago = timestamp_end.advance(:days => -30).beginning_of_day
+      timestamp_7d_ago = timestamp_end.advance(:days => -7).beginning_of_day
+
+      active_users_30d = self.active_users(timestamp_30d_ago, timestamp_end)
       Keystore.set("kpi.core.active_users_30d.#{date.strftime("%Y%m%d")}",
                    active_users_30d)
 
-      date_before = date.beginning_of_day.advance(:days => -1).beginning_of_day
+      tags_subscribed_users_per_tag = Term.subscribed_users_per_tag
+      Keystore.set("tags.subscribed_users_per_tag.#{date.strftime("%Y%m%d")}",
+                   tags_subscribed_users_per_tag)
 
+      tags_percent_set_by_ias = UsersContentsTag.percent_set_by_ias(
+          timestamp_7d_ago, timestamp_end)
+      Keystore.set("tags.percent_set_by_ias.#{date.strftime("%Y%m%d")}",
+                   tags_percent_set_by_ias)
+
+      # Monthly avg
+      date_before = date.beginning_of_day.advance(:days => -1).beginning_of_day
       if date.strftime("%Y-%m") != date_before.strftime("%Y-%m")
         (monthly_avg, monthly_sd) = self.compute_monthly_metric(
             "kpi.core.active_users_30d", date_before)
@@ -336,8 +348,19 @@ module Stats
                      monthly_avg)
         Keystore.set("kpi.core.active_users_30d.sd.#{date.strftime("%Y%m")}",
                      monthly_sd)
+
+        (monthly_avg, monthly_sd) = self.compute_monthly_metric(
+            "tags.subscribed_users_per_tag", date_before)
+        Keystore.set("tags.subscribed_users_per_tag.#{date.strftime("%Y%m")}",
+                     monthly_avg)
+
+        (monthly_avg, monthly_sd) = self.compute_monthly_metric(
+            "tags.percent_set_by_ias", date_before)
+        Keystore.set("tags.percent_set_by_ias.#{date.strftime("%Y%m")}",
+                     monthly_avg)
       end
 
+      # Yearly avg
       if date.strftime("%Y") != date_before.strftime("%Y")
         (yearly_avg, yearly_sd) = self.compute_yearly_metric(
             "kpi.core.active_users_30d", date_before)
@@ -345,6 +368,16 @@ module Stats
                      yearly_avg)
         Keystore.set("kpi.core.active_users_30d.sd.#{date.strftime("%Y")}",
                      yearly_sd)
+
+        (yearly_avg, yearly_sd) = self.compute_yearly_metric(
+            "tags.subscribed_users_per_tag.", date_before)
+        Keystore.set("tags.subscribed_users_per_tag.#{date.strftime("%Y")}",
+                     yearly_avg)
+
+        (yearly_avg, yearly_sd) = self.compute_yearly_metric(
+            "tags.percent_set_by_ias.", date_before)
+        Keystore.set("tags.percent_set_by_ias.#{date.strftime("%Y")}",
+                     yearly_avg)
       end
     end
 

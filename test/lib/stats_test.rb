@@ -4,14 +4,24 @@ require 'test_helper'
 class StatsTest < ActiveSupport::TestCase
 
   test "compute_daily_stats" do
+    Stats::Metrics.expects(:compute_monthly_metric).returns([0.2, 0])
+    Stats::Metrics.expects(:compute_monthly_metric).returns([2, 0])
     Stats::Metrics.expects(:compute_monthly_metric).returns([100, 25])
+    Stats::Metrics.expects(:compute_yearly_metric).returns([0.1, 0])
+    Stats::Metrics.expects(:compute_yearly_metric).returns([3, 0])
     Stats::Metrics.expects(:compute_yearly_metric).returns([1000, 250])
     Stats::Metrics.compute_daily_metrics(DateTime.parse("2006-01-01"))
-    assert_equal("3", Keystore.get("kpi.core.active_users_30d.2006-01-01"))
-    assert_equal("100", Keystore.get("kpi.core.active_users_30d.2006-01.avg"))
-    assert_equal("25", Keystore.get("kpi.core.active_users_30d.2006-01.sd"))
-    assert_equal("1000", Keystore.get("kpi.core.active_users_30d.2006.avg"))
-    assert_equal("250", Keystore.get("kpi.core.active_users_30d.2006.sd"))
+    assert_equal("0.0", Keystore.get("tags.percent_set_by_ias.20060101"))
+    assert_equal("0.2", Keystore.get("tags.percent_set_by_ias.200601"))
+    assert_equal("0.1", Keystore.get("tags.percent_set_by_ias.2006"))
+    assert_equal("0", Keystore.get("tags.subscribed_users_per_tag.20060101"))
+    assert_equal("2", Keystore.get("tags.subscribed_users_per_tag.200601"))
+    assert_equal("3", Keystore.get("tags.subscribed_users_per_tag.2006"))
+    assert_equal("3", Keystore.get("kpi.core.active_users_30d.20060101"))
+    assert_equal("100", Keystore.get("kpi.core.active_users_30d.avg.200601"))
+    assert_equal("1000", Keystore.get("kpi.core.active_users_30d.avg.2006"))
+    assert_equal("25", Keystore.get("kpi.core.active_users_30d.sd.200601"))
+    assert_equal("250", Keystore.get("kpi.core.active_users_30d.sd.2006"))
   end
 
   test "compute_monthly_metric" do

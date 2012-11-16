@@ -107,4 +107,15 @@ class UsersContentsTagTest < ActiveSupport::TestCase
     UsersContentsTag.recalculate_content_top_tags(@c1, 1)
     assert_equal ct_old + 1, ContentsTerm.count
   end
+
+  test "percent_set_by_ias" do
+    assert_difference("UsersContentsTag.count") do
+      UsersContentsTag.create(:user_id => Ias.mendel.id,
+                              :term_id => 37,
+                              :content_id => 2,
+                              :original_name => "aguacate")
+    end
+    assert_equal 1, UsersContentsTag.percent_set_by_ias(
+        1.hour.ago, Time.now)
+  end
 end

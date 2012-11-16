@@ -38,6 +38,21 @@ class Term < ActiveRecord::Base
   validates_uniqueness_of :name, :scope => [:parent_id, :taxonomy]  # missing :type
   validates_uniqueness_of :slug, :scope => [:parent_id, :taxonomy]  # missing :type
 
+  def self.subscribed_users_per_tag
+    rows = User.db_query(
+        "SELECT
+          entity_id,
+          COUNT(*) AS cnt
+        FROM user_interests a
+        JOIN terms b
+        ON a.entity_type_class = 'Term'
+        AND a.entity_id = b.id
+        AND b.taxonomy = 'ContentsTag'
+        GROUP BY entity_id")
+    zero_tags = Term.with_taxonomy("ContentsTag").count - rows.size
+    (rows.collect{|row| row['cnt'].to_i } + [0]*zero_tags).percentile(0.99) || 0
+  end
+
   def self.delete_empty_content_tags_terms
     Term.contents_tags.find(:all, :conditions => 'contents_count = 0').each do |t|
       next if t.contents_terms.count > 0 || t.users_contents_tags.count > 0

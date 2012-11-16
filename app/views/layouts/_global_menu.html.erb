@@ -179,23 +179,24 @@ friends = @user.friends_online %>
 <div id="topbar-portal-submenu" class="hidden">
   <ul>
     <li class="first"><a href="/noticias">Noticias</a></li>
+    <li><a href="/apuestas">Apuestas</a></li>
     <li><a href="/articulos">Artículos</a></li>
     <li><a href="/respuestas">Respuestas</a></li>
     <li><a href="/imagenes">Imágenes</a></li>
     <li><a href="/descargas">Descargas</a></li>
     <li><a href="/encuestas">Encuestas</a></li>
-    <% if controller.portal.kind_of?(FactionsPortal) then %>
+  <% if controller.portal.kind_of?(FactionsPortal) %>
     <li><a href="/faccion">Información</a></li>
     <li><a href="/faccion/miembros">Miembros</a></li>
     <li><a href="/faccion/staff">Staff</a></li>
-    <% end -%>
+  <% end -%>
 
-    <% if controller.portal.kind_of?(BazarDistrictPortal) then %>
-      <% if controller.portal.code == 'deportes' %>
-        <li><a href="/apuestas">Apuestas</a></li>
-        <li><a href="/distrito">Staff</a></li>
-      <% end -%>
+  <% if controller.portal.kind_of?(BazarDistrictPortal) then %>
+    <% if controller.portal.code == 'deportes' %>
+      <li><a href="/apuestas">Apuestas</a></li>
     <% end -%>
+    <li><a href="/distrito">Staff</a></li>
+  <% end -%>
   </ul>
 </div>
 <% end -%>

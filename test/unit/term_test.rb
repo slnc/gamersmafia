@@ -353,4 +353,14 @@ class TermTest < ActiveSupport::TestCase
       assert t.save
       assert_equal 'hola&lt;script type="text/javascript"&gt;alert(\'hola\');&lt;/script&gt;', t.description
   end
+
+  test "subscribed_users_per_tag" do
+    u1 = User.find(1)
+    assert_difference("u1.user_interests.count") do
+      u1.user_interests.create(
+          :entity_id => Term.with_taxonomy("ContentsTag").first.id,
+          :entity_type_class => "Term")
+    end
+    assert_equal 1.0, Term.subscribed_users_per_tag
+  end
 end
