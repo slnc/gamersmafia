@@ -1,6 +1,7 @@
 module Ias
   VALID_IAS = %w(
     jabba
+    mendel
     mralariko
     mrachmed
     mrcheater

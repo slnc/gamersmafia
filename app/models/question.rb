@@ -243,6 +243,7 @@ class Question < ActiveRecord::Base
 
   def self.top_term_sages(term_ids, limit)
     term_ids = [term_ids] if term_ids.class == Fixnum
+    res = []
     User.db_query(
         "SELECT count(a.id) as answers,
            a.id as user_id
@@ -268,6 +269,7 @@ class Question < ActiveRecord::Base
         :points => dbu['answers'].to_i,
       }
     end
+    res
   end
 
   def self.top_sages_in_date_range(date_start, date_end, limit=10)

@@ -7,6 +7,15 @@
   <% end -%>
 
 
+<% cache("/common/tags/top_tags_by_activity/#{Time.now.to_i/86400}") do %>
+  <% mftable("Los tags más activos", top_tags_by_activity) do |tuple| %>
+    <tr>
+      <td><a href="<%=tag_url(tuple[1])%>"><%=tuple[1].name%></a></td>
+      <td class="infoinline right"><%=tuple[0]%></td>
+    </tr>
+  <% end -%>
+<% end -%>
+
 <% cache("/common/tags/top_tags_by_interest/#{Time.now.to_i/86400}") do %>
   <% mftable("Los tags con más seguidores", top_tags_by_interest) do |tuple| %>
     <tr>
