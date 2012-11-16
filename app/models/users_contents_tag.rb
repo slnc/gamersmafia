@@ -20,6 +20,17 @@ class UsersContentsTag < ActiveRecord::Base
       ' (solo se permiten letras, numeros y puntos)')
   validates_uniqueness_of :term_id, :scope => [:content_id, :user_id]
 
+  # 7d sliding window
+  def self.percent_set_by_ias(timestamp_start, timestamp_end)
+    set_by_ias = UsersContentsTag.count(
+        :conditions => ["created_on BETWEEN ? AND ? AND user_id = ?",
+                        timestamp_start, timestamp_end, Ias.mendel.id])
+    all = UsersContentsTag.count(
+        :conditions => ["created_on BETWEEN ? AND ?",
+                        timestamp_start, timestamp_end])
+    set_by_ias.to_f / [all, 1.0].max
+  end
+
   def self.tag_content(content, user, tag_str, delete_missing=true)
     return if tag_str.length > 300 or tag_str.count(' ') > 10
     tags_to_delete = content.users_contents_tags.find(
