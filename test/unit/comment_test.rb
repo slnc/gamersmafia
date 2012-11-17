@@ -347,4 +347,16 @@ class CommentTest < ActiveSupport::TestCase
     c2 = create_a_comment(:comment => "##{c1.position_in_content} feo", :user_id => 3)
     assert_equal [c1.user_id], c2.extract_replied_users(Formatting.comment_with_expanded_short_replies(c2.comment, c2))
   end
+
+  test "referring to yourself shouldnt create a notification" do
+    u1 = User.find(1)
+    u1.pref_radar_notifications = 1
+    c1 = create_a_comment({:user_id => u1.id})
+    assert_difference("u1.notifications.count", 0) do
+      c2 = create_a_comment({
+          :user_id => u1.id,
+          :comment => "##{c1.position_in_content} feo",
+      })
+    end
+  end
 end

@@ -236,6 +236,9 @@ class Comment < ActiveRecord::Base
     replied_users_is = self.extract_replied_users(
         Formatting.comment_with_expanded_short_replies(self.comment, self))
 
+    replied_users_is -= [self.user_id]
+    replied_users_was -= [self.user_id]
+
     return if replied_users_was.size == 0 && replied_users_is.size == 0
 
     users_gone = replied_users_was - replied_users_is
