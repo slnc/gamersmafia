@@ -190,11 +190,8 @@ friends = @user.friends_online %>
     <li><a href="/faccion/miembros">Miembros</a></li>
     <li><a href="/faccion/staff">Staff</a></li>
   <% end -%>
-
+    <li><a href="/respuestas">Respuestas</a></li>
   <% if controller.portal.kind_of?(BazarDistrictPortal) then %>
-    <% if controller.portal.code == 'deportes' %>
-      <li><a href="/apuestas">Apuestas</a></li>
-    <% end -%>
     <li><a href="/distrito">Staff</a></li>
   <% end -%>
   </ul>

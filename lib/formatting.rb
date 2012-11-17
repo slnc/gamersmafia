@@ -42,8 +42,8 @@ module Formatting
       .gsub(/\[img\](#{SIMPLE_URL_REGEXP})\[\/img\]/i, '<img src="\\1" />')
       .gsub(/\[url=(#{SIMPLE_URL_REGEXP})\](#{interword_regexp_strict})\[\/url\]/i, '<a href="\\1">\\2</a>')
       .gsub(/\[color=([a-zA-Z]+)\](#{interword_regexp})\[\/color\]/i, '<span class="c_\\1">\\2</span>')
-      .gsub(/\[code=([a-zA-Z0-9]+)\](.+?)\[\/code\]/i, '<pre class="brush: \\1">\\2</pre>')
-      .gsub(/\[code\](.+?)\[\/code\]/i, '<pre class="brush: js">\\1</pre>')
+      .gsub(/\[code=([a-zA-Z0-9]+)\](.+?)\[\/code\]/i, '<pre data-lllanguage="\\1">\\2</pre>')
+      .gsub(/\[code\](.+?)\[\/code\]/i, '<pre>\\1</pre>')
       .gsub(/\[spoiler\](.+?)\[\/spoiler\]/i,
             '<span class="spoiler">spoiler <span class="spoiler-content hidden">\\1</span></span>')
       .gsub(/\[quote\](.+?)\[\/quote\]/i, "<blockquote><p>\\1</p></blockquote>")

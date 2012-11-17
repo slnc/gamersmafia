@@ -16,6 +16,11 @@ Gm.Utils = function() {
         $($(this).attr('data-reveal-selector')).toggle();
         return false;
       });
+
+      $('pre').litelighter({
+          clone: false,
+          style: 'light',
+      });
     },
 
     FullPageInit: function() {
