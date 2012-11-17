@@ -9,8 +9,6 @@
 </ul>
 <% end -%>
 
-<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @question} %>
-
 <%= render :partial => 'shared/pending', :object => Question.pending %>
 <% end -%>
 
@@ -21,7 +19,6 @@
   <%= render :partial => 'form' %>
   <%= submit_tag 'Guardar' %>
 </form>
-<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @question}%>
 <%=render :partial => '/shared/change_authorship', :locals => {:object => @question}%>
 
 <br />

@@ -10,8 +10,6 @@
 	:faction_favicon => true,
 	:comments_count => true)%>
 		<%= render :partial => 'top_bloggers' %>
-	<% else %>
-		<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @blogentry } %>
 	<% end -%>
 <% end -%>
 

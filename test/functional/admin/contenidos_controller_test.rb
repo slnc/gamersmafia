@@ -12,26 +12,6 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     })
   end
 
-  test "should_not_allow_to_publish_content_if_user_no skill" do
-    n = self.create_some_news
-    assert_not_nil n
-    sym_login :mralariko
-    assert_raises(AccessDenied) do
-      post :publish_content, { :id => n.unique_content.id }
-    end
-  end
-
-  test "should_allow_to_publish_content_if_user_is_not_the_author" do
-    give_skill("mralariko", "ContentModerationQueue")
-    sym_login :mralariko
-    n = self.create_some_news
-    assert_equal 'mi noticiaaaa', n.title
-    publishing_decisions_count = PublishingDecision.count
-    post :publish_content, { :id => n.unique_content.id }
-    assert_response :redirect
-    assert_equal publishing_decisions_count + 1, PublishingDecision.count
-  end
-
   test "mass_moderate_should_work_if_mass_approve" do
     n = self.create_some_news
     Content.send_draft_to_moderation_queue(n)
@@ -65,17 +45,6 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_equal Cms::DELETED, n.state
   end
 
-  test "switch_decision_should_work" do
-    test_should_allow_to_deny_content_if_user_is_not_the_author_and_deny_reason
-    sym_login 1
-    pd = PublishingDecision.find(:first, :order => 'id desc')
-    assert !pd.publish
-    post :switch_decision, { :id => pd.id}
-    assert_response :redirect
-    pd.reload
-    assert pd.publish
-  end
-
   test "recover_should_work" do
     sym_login 1
     n = News.find(1)
@@ -86,30 +55,6 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     assert_response :success
     n.reload
     assert_equal Cms::PUBLISHED, n.state
-  end
-
-  test "should_not_allow_to_deny_content_if_user_is_not_the_author_but_no_deny_reason" do
-    n = self.create_some_news
-    give_skill("mralariko", "ContentModerationQueue")
-    sym_login :mralariko
-    publishing_decisions_count = PublishingDecision.count
-    post :deny_content, { :id => n.unique_content.id }
-    assert_response :redirect
-    assert_equal publishing_decisions_count, PublishingDecision.count
-  end
-
-  test "should_allow_to_deny_content_if_user_is_not_the_author_and_deny_reason" do
-    User.find_by_login("mralariko").users_skills.find(:all)
-    give_skill("mralariko", "ContentModerationQueue")
-    @n = self.create_some_news
-    sym_login :mralariko
-    publishing_decisions_count = PublishingDecision.count
-    post :deny_content, {
-        :id => @n.unique_content.id,
-        :deny_reason => 'me molo a mi mismo',
-    }
-    assert_response :redirect
-    assert_equal publishing_decisions_count + 1, PublishingDecision.count
   end
 
   test "change_authorship_should_work" do
@@ -141,26 +86,6 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
   test "should_see_hotmap_if_admin" do
     sym_login 1
     get :hotmap
-    assert_response :success
-  end
-
-  test "should_see_ultimas_decisiones_if_admin_and_gm" do
-    sym_login 1
-    get :ultimas_decisiones
-    assert_response :success
-  end
-
-  test "should_see_ultimas_decisiones_if_admin_and_factions_portal" do
-    @request.host = 'ut.gamersmafia.com'
-    sym_login 1
-    get :ultimas_decisiones
-    assert_response :success
-  end
-
-  test "should_see_ultimas_decisiones_if_admin_and_gm_and_gaming_platforms_portal" do
-    @request.host = 'wii.gamersmafia.com'
-    sym_login 1
-    get :ultimas_decisiones
     assert_response :success
   end
 

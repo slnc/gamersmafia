@@ -10,7 +10,6 @@
 </ul>
 <% end -%>
 
-<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @funthing } %>
 <%= render :partial => 'shared/pending', :object => Funthing.pending %>
 <% end -%>
 
@@ -21,7 +20,6 @@
   <%= render :partial => 'form' %>
   <%= submit_tag 'Edit' %>
 </form>
-<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @funthing}%>
 <%=render :partial => '/shared/change_authorship', :locals => {:object => @funthing}%>
 
 <br />

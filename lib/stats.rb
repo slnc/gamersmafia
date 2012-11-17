@@ -438,7 +438,7 @@ module Stats
           :all, :conditions => conditions, :group => :user_id_from).keys)
       users.merge(PollsVote.count(
           :all, :conditions => conditions, :group => :user_id).keys)
-      users.merge(PublishingDecision.count(
+      users.merge(DecisionUserChoice.count(
           :all, :conditions => conditions, :group => :user_id).keys)
       users.merge(Alert.count(
           :all,

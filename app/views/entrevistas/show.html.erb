@@ -7,8 +7,6 @@
  	:rating => true,
 	:comments_count => true,
 	:more_link => "<a href=\"#{gmurl(@interview.user)}/contenidos/entrevistas\">Ver todas sus entrevistas (#{@interview.user.interviews.count})</a>")%>
-<% else %>
-<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @interview } %>
 <% end -%>
 <% end -%>
 

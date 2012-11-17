@@ -100,8 +100,6 @@ class User < ActiveRecord::Base
   has_many :content_ratings
   has_many :notifications
   has_many :contents, :dependent => :destroy
-  has_many :publishing_personalities
-  has_many :publishing_decisions
   has_many :decisions
   has_many :decision_user_choices
   has_many :decision_user_reputations

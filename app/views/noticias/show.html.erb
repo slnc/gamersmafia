@@ -5,8 +5,6 @@
                         @news.main_category.news, [:published, {:order => 'created_on desc', :limit => 10}],
                         :cache => "/common/noticias/show/_latest_by_cat_#{@news.main_category.id}",
                         :faction_favicon => true)%>
-                      <% else %>
-                        <%= render :partial => '/shared/content_publishing_state', :locals => { :object => @news } %>
                       <% end -%>
                     <% end -%>
 

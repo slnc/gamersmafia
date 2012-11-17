@@ -866,9 +866,7 @@ skin: 'v2'
 
 
   def content_bottom(obj)
-    if user_is_authed && obj.state == Cms::PENDING && obj.class.name != 'Blogentry' && @user.id != obj.user_id
-      controller.send(:render_to_string, :partial => '/shared/accept_or_deny', :locals => { :object => obj }).force_encoding("utf-8")
-    elsif [Cms::PUBLISHED, Cms::DELETED, Cms::ONHOLD].include?(obj.state)
+    if [Cms::PUBLISHED, Cms::DELETED, Cms::ONHOLD].include?(obj.state)
       out = controller.send(:render_to_string, :partial => 'shared/contentinfobar', :locals => { :object => obj }).force_encoding("utf-8")
       out<< controller.send(:render_to_string, :partial => 'shared/comments', :locals => { :object => obj }).force_encoding("utf-8")
     else

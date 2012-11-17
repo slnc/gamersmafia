@@ -6,7 +6,6 @@
 <li>Descripción informativa</li>
 </ul>
 <% end -%>
-<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @download } %>
 <%= render :partial => 'shared/pending', :object => Download.pending %>
 <% end -%>
 
@@ -17,7 +16,6 @@
   <%= render :partial => 'form' %>
   <%= submit_tag 'Guardar' %>
 </form>
-<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @download}%>
 <%=render :partial => '/shared/change_authorship', :locals => {:object => @download}%>
 
 <%= link_to 'Ver descarga publicada', gmurl(@download) %> |

@@ -2213,38 +2213,6 @@ CREATE SEQUENCE profile_signatures_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE profile_signatures_id_seq OWNED BY profile_signatures.id;
-CREATE TABLE publishing_decisions (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    content_id integer NOT NULL,
-    publish boolean NOT NULL,
-    user_weight numeric NOT NULL,
-    deny_reason character varying,
-    is_right boolean,
-    accept_comment character varying
-);
-CREATE SEQUENCE publishing_decisions_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE publishing_decisions_id_seq OWNED BY publishing_decisions.id;
-CREATE TABLE publishing_personalities (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    content_type_id integer NOT NULL,
-    experience numeric DEFAULT 0.0
-);
-CREATE SEQUENCE publishing_personalities_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE publishing_personalities_id_seq OWNED BY publishing_personalities.id;
 CREATE TABLE questions (
     id integer NOT NULL,
     title character varying NOT NULL,
@@ -3274,8 +3242,6 @@ ALTER TABLE ONLY portals ALTER COLUMN id SET DEFAULT nextval('portals_id_seq'::r
 ALTER TABLE ONLY potds ALTER COLUMN id SET DEFAULT nextval('potds_id_seq'::regclass);
 ALTER TABLE ONLY products ALTER COLUMN id SET DEFAULT nextval('products_id_seq'::regclass);
 ALTER TABLE ONLY profile_signatures ALTER COLUMN id SET DEFAULT nextval('profile_signatures_id_seq'::regclass);
-ALTER TABLE ONLY publishing_decisions ALTER COLUMN id SET DEFAULT nextval('publishing_decisions_id_seq'::regclass);
-ALTER TABLE ONLY publishing_personalities ALTER COLUMN id SET DEFAULT nextval('publishing_personalities_id_seq'::regclass);
 ALTER TABLE ONLY questions ALTER COLUMN id SET DEFAULT nextval('questions_id_seq'::regclass);
 ALTER TABLE ONLY questions_categories ALTER COLUMN id SET DEFAULT nextval('questions_categories_id_seq'::regclass);
 ALTER TABLE ONLY recruitment_ads ALTER COLUMN id SET DEFAULT nextval('recruitment_ads_id_seq'::regclass);
@@ -3649,10 +3615,6 @@ ALTER TABLE ONLY products
     ADD CONSTRAINT products_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY profile_signatures
     ADD CONSTRAINT profile_signatures_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY publishing_decisions
-    ADD CONSTRAINT publishing_decisions_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY publishing_personalities
-    ADD CONSTRAINT publishing_personalities_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY questions_categories
     ADD CONSTRAINT questions_categories_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY questions
@@ -3910,8 +3872,6 @@ CREATE UNIQUE INDEX portals_name_code_type ON portals USING btree (name, code, t
 CREATE UNIQUE INDEX potds_uniq ON potds USING btree (date, portal_id, images_category_id);
 CREATE INDEX profile_signatures_user_id ON profile_signatures USING btree (user_id);
 CREATE UNIQUE INDEX profile_signatures_user_id_signer_user_id ON profile_signatures USING btree (user_id, signer_user_id);
-CREATE UNIQUE INDEX publishing_decisions_user_id_content_id ON publishing_decisions USING btree (user_id, content_id);
-CREATE UNIQUE INDEX publishing_personalities_user_id_content_type_id ON publishing_personalities USING btree (user_id, content_type_id);
 CREATE UNIQUE INDEX questions_categories_code_name_parent_id ON questions_categories USING btree (code, name, parent_id);
 CREATE INDEX questions_state ON questions USING btree (state);
 CREATE INDEX questions_user_id ON questions USING btree (user_id);

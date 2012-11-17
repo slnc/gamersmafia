@@ -316,7 +316,7 @@ class UserEmblemObserverTest < ActiveSupport::TestCase
     assert !u1.has_emblem?("suv")
     ContentType.find(:all).each do |ct|
       assert !u1.has_emblem?("suv")
-      assert self.publish_content_of_type(ct, u1)
+      self.publish_content_of_type(ct, u1)
       content = u1.contents.find(:first, :order => 'id DESC')
       assert content.update_attribute(
           :karma_points, UsersEmblem::T_SUV_MIN_KARMA_POINTS)
@@ -369,5 +369,6 @@ class UserEmblemObserverTest < ActiveSupport::TestCase
     new_content.terms = 1
     assert new_content.save, new_content.errors.full_messages_html
     Content.publish_content_directly(new_content, author)
+    assert_equal(Cms::PUBLISHED, new_content.state)
   end
 end

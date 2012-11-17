@@ -101,7 +101,7 @@ class QuestionTest < ActiveSupport::TestCase
   test "should_get_back_the_money_if_changed_from_published" do
     test_should_be_able_to_create_question_with_min_ammount
     # @u2.reload
-    Content.deny_content(@bt, User.find(1), "fuck you")
+    Content.deny_content_directly(@bt, User.find(1), "fuck you")
     assert_equal Cms::DELETED, @bt.state
     assert_equal 0.0, @bt.ammount
   end

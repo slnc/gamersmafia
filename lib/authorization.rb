@@ -228,12 +228,6 @@ module Authorization
     user.has_skill?("EditContents")
   end
 
-  # Determines whether or not the user can vote whether or not to publish
-  # pending contents.
-  def self.can_publish_decision?(user, content)
-    user.has_skill?("ContentModerationQueue")
-  end
-
   def self.can_rate_comments_down?(user)
     user.has_skill?("RateCommentsDown")
   end

@@ -177,7 +177,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::PENDING})
     assert_not_nil @n
     k = @u.karma_points
-    Content.deny_content(@n, @u, 'ffff')
+    Content.deny_content_directly(@n, @u, 'ffff')
     @u.reload
     assert_equal k, @u.karma_points
   end
@@ -187,7 +187,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::DRAFT})
     assert_not_nil @n
     k = @u.karma_points
-    Content.deny_content(@n, @u, 'ffff')
+    Content.deny_content_directly(@n, @u, 'ffff')
     @u.reload
     assert_equal k, @u.karma_points
   end
@@ -214,10 +214,13 @@ class ActsAsContentTest < ActiveSupport::TestCase
     assert_equal @n.unique_content.id, ti.content_id
     @n.created_on = 1.day.since
     assert_equal true, @n.save
-    User.db_query("UPDATE tracker_items SET lastseen_on = now() - '23 hours'::interval WHERE content_id = #{@n.unique_content.id}")
+    User.db_query(
+        "UPDATE tracker_items
+        SET lastseen_on = now() - '23 hours'::interval
+        WHERE content_id = #{@n.unique_content.id}")
     ti.reload
     assert_equal true, ti.lastseen_on < 1.hour.ago
-    Content.publish_content(@n, @u)
+    Content.publish_content_directly(@n, @u)
     ti.reload
     assert_equal true, ti.lastseen_on > 1.hour.ago
   end
@@ -233,7 +236,8 @@ class ActsAsContentTest < ActiveSupport::TestCase
   end
 
   test "related_portals_of_district_proper_district" do
-    n = News.new(:title => 'Noticia 1', :description => 'sumario', :user_id => 1)
+    n = News.new(
+        :title => 'Noticia 1', :description => 'sumario', :user_id => 1)
     assert n.save
     Term.single_toplevel(:slug => 'anime').link(n.unique_content)
     relportals = n.get_related_portals

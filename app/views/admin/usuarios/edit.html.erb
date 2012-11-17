@@ -87,9 +87,6 @@
     <li><%=member_state(u.hstate)%> <a href="/admin/usuarios/edit/<%=u.id%>"><%=u.login%></a></li>
 <% end -%>
   </ul>
-
-  <div class="subheader"><div>Su nivel de moderación</div></div>
-  <%= render :partial => '/miembros/publishing_experience', :locals => { :curuser => @edituser, :detailed => true } %>
 <% end -%>
 
 <% content_main do %>

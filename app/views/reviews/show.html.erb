@@ -7,11 +7,9 @@
     :cache => "/common/reviews/_latest_by_cat/#{@review.main_category.id}",
  	:rating => true,
 	:skip_id => @review.id,
-	:comments_count => true)%>	
+	:comments_count => true)%>
 
 <%=render :partial => 'other_categories', :locals => {:category => @review.main_category} %>
-<% else %>
-<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @review } %>
 <% end -%>
 <% end -%>
 

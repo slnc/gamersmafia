@@ -6,7 +6,6 @@
 <li>Descripción informativa</li>
 </ul>
 <% end -%>
-<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @demo } %>
 <%= render :partial => 'shared/pending', :object => Demo.pending %>
 <% end -%>
 
@@ -18,7 +17,6 @@
   <br />
   <%= submit_tag 'Guardar' %>
 </form>
-<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @demo}%>
 <%=render :partial => '/shared/change_authorship', :locals => {:object => @demo}%>
 
 <%= link_to 'Ver demo publicada', gmurl(@demo) %> |

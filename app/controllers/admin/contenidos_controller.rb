@@ -13,7 +13,6 @@ class Admin::ContenidosController < ApplicationController
           ['Hotmap', '/admin/contenidos/hotmap'],
           ['Pendientes', '/admin/contenidos'],
           ['Huérfanos', '/admin/contenidos/huerfanos'],
-          ['Últimas decisiones', '/admin/contenidos/ultimas_decisiones'],
           ['Papelera', '/admin/contenidos/papelera'], ]
     elsif @user.is_editor?
       return [
@@ -68,11 +67,6 @@ class Admin::ContenidosController < ApplicationController
           Cms::translate_content_name(c.name)]
   end
 
-  def ultimas_decisiones
-    @title = 'Últimas decisiones'
-    require_user_is_staff
-  end
-
   def hotmap
     @title = 'Hotmap'
     require_user_is_staff
@@ -122,43 +116,6 @@ class Admin::ContenidosController < ApplicationController
       end
     end
 
-    redirect_to '/admin/contenidos'
-  end
-
-  def switch_decision
-    # TODO this is not a switch, it-s one way
-    pd = PublishingDecision.find(params[:id], :include => :content)
-    real_content = pd.content.real_content
-    require_authorization_for_object(:can_publish_decision?, real_content)
-
-    Content.publish_content(real_content, pd.user)
-    redirect_to(Routing.url_for_content_onlyurl(
-        pd.content.real_content).gsub('show', 'edit'))
-  end
-
-  def publish_content
-    real_content = Content.find(params[:id]).real_content
-    require_authorization_for_object(:can_publish_decision?, real_content)
-
-    Content.publish_content(real_content, @user, params[:accept_comment])
-    flash[:notice] = 'Tu voto se ha contabilizado correctamente. Gracias'
-    redirect_to '/admin/contenidos'
-  end
-
-  def deny_content
-    real_content = Content.find(params[:id]).real_content
-    require_authorization_for_object(:can_publish_decision?, real_content)
-
-    if (params[:deny_reason] == 'Otra')
-      params[:deny_reason] = params[:deny_reason_other]
-    end
-
-    if params[:deny_reason].to_s == ''
-      flash[:error] = 'Debes especificar una razón para denegar el contenido'
-    else
-      Content.deny_content(real_content, @user, params[:deny_reason])
-      flash[:notice] = 'Tu voto se ha contabilizado correctamente. Gracias'
-    end
     redirect_to '/admin/contenidos'
   end
 

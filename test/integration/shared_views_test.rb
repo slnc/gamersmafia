@@ -12,11 +12,13 @@ class SharedViewsTest < ActionController::IntegrationTest
     get '/site' # para cargar request
     already_logged_in = (not request.session.nil? and not request.session[:user].nil?)
     sym_login('superadmin', 'lalala') unless already_logged_in
-    post "/noticias/create", { :news => { :title => 'titulito', :description => 'fo' }, :root_terms => [1] }
+    post "/noticias/create", {
+      :news => { :title => 'titulito', :description => 'fo' },
+      :root_terms => [1],
+    }
     assert_response :redirect, @response.body
     n = News.find(:first, :order => 'id DESC')
-    post "/admin/contenidos/publish_content", { :id => n.unique_content.id }
-    assert_response :redirect
+    Content.publish_content_directly(n, User.find(1))
     n.reload
     assert_equal Cms::PUBLISHED, n.state
     logout unless already_logged_in

@@ -18,10 +18,6 @@
 					[],
 					:truncate_at => 28, :faction_favicon => true, :blast => true)%>
 
-  <%mftext('Mi nivel de moderación') do %>
-  <%= render :partial => '/miembros/publishing_experience', :locals => { :curuser => @user } %>
-  <% end -%>
-
   <% if nil then %>
   <%# esto no funciona pq no sabemos cuándo se ha modificado el estado de un contenido por última vez %>
   <div class="subheader"><div>Últimos contenidos resueltos</div></div>

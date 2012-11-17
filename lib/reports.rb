@@ -52,6 +52,6 @@ module Reports
     report_i = User.db_query("SELECT count(distinct(created_on)) FROM users_emblems")[0]['count'].to_i
     n = News.create(:title => "El dominical de MrAchmed ##{(report_i)}", :user_id => User.find_by_login('MrAchmed').id, :description => base, :main => main)
     Term.single_toplevel(:slug => 'gm').link(n.unique_content)
-    Content.publish_content(n, Ias.MrMan)
+    Content.publish_content_directly(n, Ias.MrMan)
   end
 end

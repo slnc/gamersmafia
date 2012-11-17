@@ -1,7 +1,6 @@
 <% generic_support do %>
   <%= render :partial => '/shared/drafts', :locals => { :cls => Image } if user_is_authed %>
 <%= render :partial => 'shared/content_details', :locals => { :object => @image} %>
-<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @image} %>
 <%= render :partial => 'shared/pending', :object => Image.pending %>
 <% end -%>
 
@@ -12,7 +11,6 @@
   <%= render :partial => 'form' %>
   <%= submit_tag 'Guardar' %>
 </form>
-<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @image}%>
 <%=render :partial => '/shared/change_authorship', :locals => {:object => @image}%>
 
 <br />

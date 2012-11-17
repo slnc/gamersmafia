@@ -17,8 +17,6 @@ function open_demo_win(demo_id)
 	:downloads_count => true,
 	:comments_count => true,
 	:more_link => "<a href=\"/demos/buscar?demo_term_id=#{@demo.main_category.id}\">Ver todas</a>")%>
-	<% else %>
-<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @demo } %>
 	<% end -%>
 <% end -%>
 

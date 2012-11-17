@@ -1,7 +1,6 @@
 <% generic_support do %>
 <%= render :partial => '/shared/drafts', :locals => { :cls => Coverage } if user_is_authed %>
 <%=render :partial => 'shared/content_details', :locals => { :object => @coverage} %>
-<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @coverage} %>
 <%= render :partial => 'shared/pending', :object => Coverage.pending %>
 <% end -%>
 
@@ -11,7 +10,6 @@
   <%= render :partial => 'form' %>
   <%= submit_tag 'Guardar' %>
 </form>
-<%=render :partial => '/shared/accept_or_deny', :locals => {:object => @coverage}%>
 <%=render :partial => '/shared/change_authorship', :locals => {:object => @coverage}%>
 
 <br />

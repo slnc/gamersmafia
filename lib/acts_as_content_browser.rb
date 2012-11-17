@@ -202,12 +202,9 @@ module ActsAsContentBrowser
       if obj.update_attributes(params[ActiveSupport::Inflector::underscore(content_name)])
         proc_terms(obj)
         # obj.process_wysiwyg_fields
-        flash[:notice] = "#{Cms::CLASS_NAMES[cls.name]} actualizado correctamente." unless flash[:error]
-
-        if params[:publish_content] == '1'
-          require_authorization_for_object(:can_bypass_publish_decision?, obj)
-          Content.publish_content_directly(obj, @user)
-          flash[:notice] += "\nContenido publicado correctamente. Gracias."
+        if !flash[:error]
+          flash[:notice] = (
+              "#{Cms::CLASS_NAMES[cls.name]} actualizado correctamente.")
         end
 
         if obj.state == Cms::PUBLISHED then

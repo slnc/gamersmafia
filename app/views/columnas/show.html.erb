@@ -7,8 +7,6 @@
  	:rating => true,
 	:comments_count => true,
 	:more_link => "<a href=\"#{gmurl(@column.user)}/contenidos/columnas\">Ver todas sus columnas (#{@column.user.columns.count})</a>")%>
-<% else %>
-<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @column } %>
 <% end -%>
 <% end -%>
 

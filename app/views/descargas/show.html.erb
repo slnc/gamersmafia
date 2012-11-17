@@ -7,9 +7,6 @@ function open_download_win(download_id)
 </script>
 
 <% content_support(:content => @download.unique_content) do %>
-	<% if !@download.is_public? then %>
-	<%= render :partial => '/shared/content_publishing_state', :locals => { :object => @download } %>
-	<% end -%>
 <% end -%>
 
 <% content_main do %>
@@ -35,7 +32,7 @@ if mirrors.size > 0 then %>
     rescue
       mirror_name = nil
     end
-%>	
+%>
 		<tr class="<%=oddclass%>">
 			<td style="text-align: left;"><% if mirror_name then %><a target="_blank" href="http://<%=mirror_name%>/"><%=mirror_name%></a><% end -%></td>
 			<td class="right"><a href="/descargas/download/<%=@download.id%>?r=<%=dm.url%>"><img class="icon" src="/skins/default/images/btn_descargar_mirror.png" /></a></td>

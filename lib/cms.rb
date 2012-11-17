@@ -707,25 +707,6 @@ module Cms
     end
   end
 
-  # Devuelve el peso de un usuario a la hora de moderar un contenido del tipo
-  # dado. En caso de superadmins o editores el peso es siempre Infinito.
-  def self.get_user_weight_with(content_type, user, content=nil)
-    if user.has_skill?("Capo") || user.has_skill?("Webmaster") || (
-        !content.nil? && Authorization.can_edit_content?(user, content))
-      Infinity
-    else
-      aciertos = User.db_query("SELECT count(a.id) FROM publishing_decisions A JOIN contents b ON a.content_id = b.id WHERE a.is_right = 't' AND b.content_type_id = #{content_type.id} AND a.user_id = #{user.id} AND a.created_on >= now() - '1 year'::interval")[0]['count'].to_i
-      fallos = User.db_query("SELECT count(a.id) * 8 as count FROM publishing_decisions A JOIN contents b ON a.content_id = b.id WHERE a.is_right = 'f' AND b.content_type_id = #{content_type.id} AND a.user_id = #{user.id} AND A.created_on >= now() - '1 year'::interval")[0]['count'].to_i
-      if fallos > aciertos
-        res = 0
-      else
-        res = ((aciertos - fallos).to_f / Cms::min_hits_before_reaching_max_publishing_power(content_type.name)) ** Math::E
-        res = 0.99 if res >= 1.0
-        res
-      end
-    end
-  end
-
   def self.to_fqdn(str)
     str.bare.gsub('-', '').gsub('_', '').gsub('.', '')
   end
