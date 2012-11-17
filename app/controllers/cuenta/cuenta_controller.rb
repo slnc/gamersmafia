@@ -69,11 +69,15 @@ class Cuenta::CuentaController < ApplicationController
   end
 
   def create_user_interest
-    @user.user_interests.create({
+    interest = @user.user_interests.create({
         :entity_type_class => params[:entity_type_class],
         :entity_id => params[:entity_id],
     })
-    flash[:notice] = "Interés guardado correctamente."
+    if interest.new_record?
+      flash[:error] = "Error al guardar nuevo interés: #{interest.errors.full_messages_html}."
+    else
+      flash[:notice] = "Interés guardado correctamente."
+    end
     if params[:redirto].to_s != ""
       redirect_to params[:redirto]
     else

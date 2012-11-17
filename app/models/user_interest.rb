@@ -22,6 +22,7 @@ class UserInterest < ActiveRecord::Base
 
   belongs_to :user
   before_validation :populate_menu_shortcut
+  validate :specified_interest_is_valid
 
   def self.build_interest_profile(user)
     term_frequencies = {}
@@ -81,10 +82,25 @@ class UserInterest < ActiveRecord::Base
     })
   end
 
+  def specified_interest_is_valid
+    begin
+      self.real_item
+    rescue ActiveRecord::RecordNotFound
+      self.errors.add(:entity_id, "El interés especificado no existe")
+    end
+  end
+
   def populate_menu_shortcut
     return if self.menu_shortcut.to_s != ""
 
-    o = self.real_item
+    begin
+      o = self.real_item
+    rescue ActiveRecord::RecordNotFound
+      # The validation code will prevent the interest from being saved in an
+      # invalid state.
+      return
+    end
+
     case self.entity_type_class
     when "Term"
       self.menu_shortcut = o.slug
