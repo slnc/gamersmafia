@@ -17,6 +17,7 @@
       <th>Tipo</th>
       <th>Interés</th>
       <th>Mostrar en el menú superior</th>
+      <th>Abreviatura para el menú superior</th>
       <th></th>
     </tr>
     <%interests = @user.user_interests.find(:all, :order => "entity_type_class, entity_id").sort_by{|i| i.entity_name.downcase}
@@ -25,6 +26,7 @@
       <td><%=interest.entity_type_class%></td>
       <td><%=interest.entity_name%></td>
       <td><input type="checkbox" name="interests_show_in_menu[]" value="<%=interest.id%>" <%="checked=\"checked\"" if interest.show_in_menu?%> /></td>
+      <td><input type="text" class="text" name="interests_menu_shortcut_<%=interest.id%>" value="<%=interest.menu_shortcut%>" /></td>
       <td><a href="/cuenta/cuenta/delete_user_interest?entity_type_class=<%=interest.entity_type_class%>&entity_id=<%=interest.entity_id%>">Eliminar</a></td>
     </tr>
   <% end -%>

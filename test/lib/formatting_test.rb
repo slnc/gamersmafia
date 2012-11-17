@@ -177,13 +177,13 @@ class FormattingTest < ActiveSupport::TestCase
 
 
   test "formatize should properly formatize code tags" do
-    assert_equal "<p><pre class=\"brush: js\">hola[]</pre></p>", Formatting.format_bbcode("[code]hola[][/code]")
-    assert_equal "<p><pre class=\"brush: js\">hola \n*argv[]</pre></p>", Formatting.format_bbcode("[code]hola \n*argv[][/code]")
+    assert_equal "<p><pre>hola[]</pre></p>", Formatting.format_bbcode("[code]hola[][/code]")
+    assert_equal "<p><pre>hola \n*argv[]</pre></p>", Formatting.format_bbcode("[code]hola \n*argv[][/code]")
 
-    assert_equal "<p><pre class=\"brush: cpp\">\nint main(int argc, char *argv[]) { }</pre></p>", Formatting.format_bbcode("[code=cpp]\nint main(int argc, char *argv[]) { }[/code]")
+    assert_equal "<p><pre data-lllanguage=\"cpp\">\nint main(int argc, char *argv[]) { }</pre></p>", Formatting.format_bbcode("[code=cpp]\nint main(int argc, char *argv[]) { }[/code]")
 
-    assert_equal "<p><pre class=\"brush: python\">hola</pre></p>", Formatting.format_bbcode("[code=python]hola[/code]")
-    assert_equal "<p><pre class=\"brush: js\">hola\n  mundo</pre></p>", Formatting.format_bbcode("[code]hola\n  mundo[/code]")
+    assert_equal "<p><pre data-lllanguage=\"python\">hola</pre></p>", Formatting.format_bbcode("[code=python]hola[/code]")
+    assert_equal "<p><pre>hola\n  mundo</pre></p>", Formatting.format_bbcode("[code]hola\n  mundo[/code]")
   end
 
   test "should formatize 2 urls in the same line" do

@@ -2653,7 +2653,8 @@ CREATE TABLE user_interests (
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     entity_type_class character varying NOT NULL,
     entity_id integer NOT NULL,
-    show_in_menu boolean DEFAULT true NOT NULL
+    show_in_menu boolean DEFAULT true NOT NULL,
+    menu_shortcut character varying NOT NULL
 );
 CREATE SEQUENCE user_interests_id_seq
     START WITH 1

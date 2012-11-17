@@ -35,10 +35,21 @@ class Cuenta::CuentaController < ApplicationController
   def update_interests
     params[:interests_show_in_menu] ||= []
     interest_ids = params[:interests_show_in_menu].collect {|i| i.to_i}
+    errors = []
     @user.user_interests.each do |interest|
-      interest.update_attribute(
-          :show_in_menu, interest_ids.include?(interest.id))
+      if !interest.update_attributes({
+          :show_in_menu => interest_ids.include?(interest.id),
+          :menu_shortcut => params["interests_menu_shortcut_#{interest.id}"],
+      })
+        errors.append("Error al guardar interés '#{interest.entity_name}': #{interest.errors.full_messages_html}")
+      end
     end
+    if errors.size > 0
+      flash[:error] = "Error al guardar cambios: #{errors.join("<br />")}"
+    else
+      flash[:notice] = "Cambios guardados correctamente"
+    end
+
     redirect_to :action => "intereses"
   end
 

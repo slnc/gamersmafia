@@ -4,6 +4,11 @@ class UserInterest < ActiveRecord::Base
     Term
   )
   validates_uniqueness_of :entity_id, :scope => [:user_id, :entity_type_class]
+  validates_presence_of :menu_shortcut
+  validates_format_of :menu_shortcut,
+    :with => /^[a-z0-9':[:space:]_-]{1,36}$/i,
+    :message => ("Caracteres inválidos: solo se permiten números, letras,
+                  espacios y guiones")
 
   scope :show_in_menu, :conditions => "show_in_menu = 't'"
 
@@ -16,6 +21,7 @@ class UserInterest < ActiveRecord::Base
   }
 
   belongs_to :user
+  before_validation :populate_menu_shortcut
 
   def self.build_interest_profile(user)
     term_frequencies = {}
@@ -73,6 +79,19 @@ class UserInterest < ActiveRecord::Base
             " <a href=\"/cuenta/cuenta/intereses\">Configura tus temas de" +
             " interés</a>.")
     })
+  end
+
+  def populate_menu_shortcut
+    return if self.menu_shortcut.to_s != ""
+
+    o = self.real_item
+    case self.entity_type_class
+    when "Term"
+      self.menu_shortcut = o.slug
+    else
+      raise "Don't know what's the name of a #{o.class.name}"
+    end
+    true
   end
 
   def entity_name
