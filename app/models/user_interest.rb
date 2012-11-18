@@ -82,6 +82,15 @@ class UserInterest < ActiveRecord::Base
     })
   end
 
+  def specific_entity_type_class
+    case self.entity_type_class
+    when "Term"
+      self.real_item.taxonomy
+    else
+      self.entity_type_class
+    end
+  end
+
   def specified_interest_is_valid
     begin
       self.real_item
@@ -113,8 +122,12 @@ class UserInterest < ActiveRecord::Base
   def entity_name
     o = self.real_item
     case self.entity_type_class
+    when "Portal"
+      o.name
+
     when "Term"
       o.name
+
     else
       raise "Don't know what's the name of a #{o.class.name}"
     end

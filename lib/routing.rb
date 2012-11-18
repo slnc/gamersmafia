@@ -111,10 +111,29 @@ module Routing
       page = object.comment_page
       "#{base_url}?page=#{page}#comment#{object.id}"
     elsif cls_name == 'Term'
-      if object.taxonomy.nil? && opts[:taxonomy].nil?
+      if %w(BazarDistrict Homepage).include?(object.taxonomy)
         "http://#{object.slug}.#{App.domain}"
+
+      elsif object.taxonomy == 'Game'
+        if Faction.find_by_code(object.slug)
+          "http://#{object.slug}.#{App.domain}"
+        else
+          "/juegos/#{Game.find_by_name(object.name).id}"
+        end
+
+      elsif object.taxonomy == 'GamingPlatform'
+        if Faction.find_by_slug(object.slug)
+          "http://#{object.slug}.#{App.domain}"
+        else
+          "/plataformas/#{GamingPlatform.find_by_name(object.name).id}"
+        end
+
+      elsif object.taxonomy == 'Clan'
+        "/clanes/show/#{object.id}"
+
       elsif object.taxonomy == 'ContentsTag'
         "/tags/#{object.slug}"
+
       else
         opts[:taxonomy] = object.taxonomy unless opts[:taxonomy]
         if opts[:taxonomy].index('Category')

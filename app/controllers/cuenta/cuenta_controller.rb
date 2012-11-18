@@ -58,7 +58,13 @@ class Cuenta::CuentaController < ApplicationController
     if !(/^[a-zA-Z0-9_ -]+$/ =~ params[:text])
       render(:layout => false) && return
     end
-    terms = Term.find(
+
+    # TODO(slnc): temporary hack until we have a single unified custom homepage
+    # and we can get rid of this.
+    if !Term::VALID_TAXONOMIES.include?(params[:entity_type_class])
+      raise ActiveRecord::RecordNotFound
+    end
+    terms = Term.with_taxonomy(params[:entity_type_class]).find(
         :all,
         :conditions => "LOWER(name) LIKE LOWER(E'#{params[:text]}%')",
         :limit => 100)
@@ -69,6 +75,9 @@ class Cuenta::CuentaController < ApplicationController
   end
 
   def create_user_interest
+    if Term::VALID_TAXONOMIES.include?(params[:entity_type_class])
+      params[:entity_type_class] = "Term"
+    end
     interest = @user.user_interests.create({
         :entity_type_class => params[:entity_type_class],
         :entity_id => params[:entity_id],

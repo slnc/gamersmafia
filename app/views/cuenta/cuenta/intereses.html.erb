@@ -1,10 +1,16 @@
 <%mftext("Intereses") do %>
   <form method="post" action="/cuenta/cuenta/create_user_interest">
-    <select name="entity_type_class">
-      <option value="Term">Tag</option>
+    <select name="entity_type_class" id="entity_type_class">
+      <option value=""></option>
+      <option value="BazarDistrict">Distrito del bazar</option>
+      <option value="Clan">Clan</option>
+      <option value="Game">Juego</option>
+      <option value="GamingPlatform">Plataforma</option>
+      <option value="Homepage">Portada</option>
+      <option value="ContentsTag">Tag</option>
     </select>
     <input type="text" name="entity_id" class="autocomplete-me" id="user_interest_name"
-        data-autocomplete-url="/cuenta/cuenta/intereses_autocomplete" />
+        data-autocomplete-url="/cuenta/cuenta/intereses_autocomplete" data-autocomplete-before="Gm.Utils.setEntityTypeClassInterestAutocomplete" />
     <input type="submit" class="button" value="Añadir" />
   </form>
   <br />
@@ -23,7 +29,7 @@
     <%interests = @user.user_interests.find(:all, :order => "entity_type_class, entity_id").sort_by{|i| i.entity_name.downcase}
     interests.each do |interest| %>
     <tr>
-      <td><%=interest.entity_type_class%></td>
+      <td><%=gm_translate(interest.specific_entity_type_class)%></td>
       <td><%=interest.entity_name%></td>
       <td><input type="checkbox" name="interests_show_in_menu[]" value="<%=interest.id%>" <%="checked=\"checked\"" if interest.show_in_menu?%> /></td>
       <td><input type="text" class="text" name="interests_menu_shortcut_<%=interest.id%>" value="<%=interest.menu_shortcut%>" /></td>

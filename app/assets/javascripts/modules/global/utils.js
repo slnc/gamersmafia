@@ -40,6 +40,10 @@ Gm.Utils = function() {
       textInput.focus();
     },
 
+    setEntityTypeClassInterestAutocomplete: function(input, text, settings) {
+      settings.parameters.entity_type_class = $('#entity_type_class').val();
+    },
+
     rate_comment : function(comment_id, cvt_name, cvt_id) {
       $.get('/comments/rate?comment_id=' + comment_id + '&rate_id=' + cvt_id + '&redirto=' + document.location, function(data) {
         $('#moderate-comments-opener-rating' + comment_id).html(data);

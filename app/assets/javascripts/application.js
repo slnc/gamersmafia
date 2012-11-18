@@ -57,7 +57,13 @@ $(document).ready(function() {
         },
       });
     } else {
-      t.attr('autocomplete', 'off').autocomplete(t.attr('data-autocomplete-url'));
+      t.attr('autocomplete', 'off').autocomplete(
+        t.attr('data-autocomplete-url'), {
+          before: function(textInput, text, settings) {
+            eval(t.attr('data-autocomplete-before') +
+                 '(textInput, text, settings)');
+          }
+        });
     }
   });
 

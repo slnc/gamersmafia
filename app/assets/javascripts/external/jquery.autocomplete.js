@@ -31,7 +31,7 @@
 *	       validSelection:false,
 *	       click_fn: function(li, textInput) { $(this).doSomething()},
 *	       parameters: {'myparam': 'myvalue'},
-*	       before: function(input,text) {},
+*	       before: function(input, text, settings) {},
 *	       after : function(input,text) {},
 *	   });
 *
@@ -96,8 +96,8 @@ jQuery.fn.autocomplete = function(url, settings) {
 			if (text != oldText &&
           (settings.minChars != null && text.length >= settings.minChars)) {
 				clear();
-				if (settings.before == "function") {
-					settings.before(textInput,text);
+				if (settings.before) {
+					settings.before(textInput, text, settings);
 				}
 				textInput.addClass('autocomplete-loading');
 				settings.parameters.text = text;
