@@ -24,7 +24,7 @@ module Personalization
         :url => "http://#{portal.code}.#{App.domain}",
       })
     }
-    qlinks
+    qlinks.sort_by {|qlink| qlink[:code].downcase}
     end
     @_cached_quicklinks_anon
   end
