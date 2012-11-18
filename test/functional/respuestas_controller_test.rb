@@ -92,22 +92,8 @@ class RespuestasControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "abiertas_non_root" do
-    t1 = Term.find(1)
-    t1c = t1.children.create(:name => 'Especificas', :taxonomy => 'QuestionsCategory')
-    get :abiertas, :id => t1c.id
-    assert_response :success
-  end
-
   test "cerradas_root" do
     get :cerradas, :id => 1
-    assert_response :success
-  end
-
-    test "cerradas_non_root" do
-    t1 = Term.find(1)
-    t1c = t1.children.create(:name => 'Especificas', :taxonomy => 'QuestionsCategory')
-    get :cerradas, :id => t1c.id
     assert_response :success
   end
 

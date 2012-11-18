@@ -8,7 +8,6 @@ module Organizations
      ['TopicsCategory', 'Ayuda'],
      ['ImagesCategory', 'General'],
      ['TutorialsCategory', 'General'],
-     ['QuestionsCategory', 'General'],
     ]
 
   def self.find_by_content(obj)

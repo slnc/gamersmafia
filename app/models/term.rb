@@ -5,9 +5,7 @@ class Term < ActiveRecord::Base
   VALID_TAXONOMIES = %w(
       BazarDistrict
       Clan
-      ColumnsCategory
       ContentsTag
-      DemosCategory
       DownloadsCategory
       EventsCategory
       Game
@@ -15,10 +13,7 @@ class Term < ActiveRecord::Base
       GamingPlatform
       Homepage
       ImagesCategory
-      InterviewsCategory
       NewsCategory
-      QuestionsCategory
-      ReviewsCategory
       TopicsCategory
       TutorialsCategory
   )

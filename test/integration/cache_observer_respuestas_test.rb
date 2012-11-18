@@ -9,9 +9,14 @@ class CacheObserverRespuestasTest < ActionController::IntegrationTest
   end
 
   test "should_clear_cache_latest_by_author_on_create" do
-    @t = Term.find(1).children.find_by_taxonomy('QuestionsCategory')
+    @t = Term.find(1)
     sym_login 'superadmin', 'lalala'
-    create_content :question, {:title => 'hola mundillo', :description => 'iole'}, :categories_terms => @t.id
+    create_content(
+        :question, {
+            :title => 'hola mundillo',
+            :description => 'iole',
+        },
+        :categories_terms => @t.id)
     @q = Question.find(:first, :order => 'id DESC')
     go_to "respuestas/show/#{@q.id}", 'respuestas/show'
     assert_cache_exists "/#{@t.root.slug}/respuestas/show/latest_by_author_#{@q.user_id}"
@@ -36,7 +41,7 @@ class CacheObserverRespuestasTest < ActionController::IntegrationTest
 
   test "should_clear_top_sabios_on_answer_category" do
     test_should_clear_cache_latest_by_author_on_create
-    cat_id = @q.unique_content.linked_terms('QuestionsCategory')[0].root_id
+    cat_id = @q.unique_content.terms.first.root_id
     go_to "respuestas/categoria/#{cat_id}", 'respuestas/index'
     assert_cache_exists "/common/respuestas/top_sabios/#{cat_id}"
     post_comment_on @q

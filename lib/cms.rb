@@ -77,6 +77,7 @@ module Cms
       Interview
       News
       Poll
+      Question
       RecruitmentAd
       Review
   )
@@ -86,7 +87,6 @@ module Cms
       Download
       Topic
       Tutorial
-      Question
   )
 
   NO_MODERATION_NEEDED_CONTENTS = %w(

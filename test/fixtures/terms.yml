@@ -154,15 +154,6 @@
       game_id: 1
       taxonomy: TutorialsCategory
 
-- utquestionsgeneral:
-      id: 20
-      name: General
-      slug: general
-      root_id: 1
-      parent_id: 1
-      game_id: 1
-      taxonomy: QuestionsCategory
-
 - bazar:
       id: 21
       name: Bazar

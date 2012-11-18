@@ -134,8 +134,6 @@ module ApplicationHelper
       "#{term.name} &laquo; #{term.get_ancestors.collect {|a| a.name}.join("&laquo;")}"
     when "NewsCategory"
       "#{term.name} &laquo; #{term.get_ancestors.collect {|a| a.name}.join("&laquo;")}"
-    when "QuestionsCategory"
-      "#{term.name} &laquo; #{term.get_ancestors.collect {|a| a.name}.join("&laquo;")}"
     when "TopicsCategory"
       "#{term.name} &laquo; #{term.get_ancestors.collect {|a| a.name}.join("&laquo;")}"
     when "TutorialsCategory"

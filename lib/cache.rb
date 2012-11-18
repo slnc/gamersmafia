@@ -141,7 +141,7 @@ module Cache
       end
 
       if object.unique_content
-        object.unique_content.linked_terms('QuestionsCategory').each do |t|
+        object.unique_content.terms.find(:all).each do |t|
           expire_fragment("/common/respuestas/top_sabios/#{t.root_id}")
         end
       end

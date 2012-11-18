@@ -234,8 +234,7 @@ class Question < ActiveRecord::Base
         res<< {:user => User.new(dbu.block_sym(:points)), :points => dbu['points'].to_i}
       end
     else
-      term_ids = category.root.all_children_ids(
-          :taxonomy => 'QuestionsCategory')
+      term_ids = category.root.id
       self.top_term_sages(term_ids, 10)
     end
     res

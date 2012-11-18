@@ -51,18 +51,4 @@
 </td>
 </tr>
 </table>
-
-<%mftext(params[:category] ? "Categorías de #{@category.name}" : 'Categorías') do %>
-<%
-if params[:category] then
-  @categories = @category.children.find(:all, :conditions => 'taxonomy = \'QuestionsCategory\'')
-else
-  @categories = controller.portal.questions_categories[0].children.find(:all, :conditions => 'taxonomy = \'QuestionsCategory\'')
-end %>
-<ul class="skeletal">
-<% for category in @categories %>
-<li class="<%=oddclass%>"><div style="float: left; margin-right: 5px;"><%=faction_favicon(category)%></div> <strong><%=link_to category.name, gmurl(category, :taxonomy => 'QuestionsCategory')%></strong> (<%=category.contents_count(:cls_name => 'Question')%>)</li>
-<% end -%>
-</ul>
-<% end -%>
 <%end %><%# content_main%>

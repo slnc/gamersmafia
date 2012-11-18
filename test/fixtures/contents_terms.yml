@@ -181,17 +181,17 @@ event_deleted:
 question_published:
     id: 37
     content_id: 1110
-    term_id: 20
+    term_id: 1
 
 question_unpublished:
     id: 38
     content_id: 1111
-    term_id: 20
+    term_id: 1
 
 question_deleted:
     id: 39
     content_id: 1112
-    term_id: 20
+    term_id: 1
 
 news66:
     id: 40

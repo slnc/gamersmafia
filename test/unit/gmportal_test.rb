@@ -16,11 +16,6 @@ class GmPortalTest < ActiveSupport::TestCase
 
   test "should return question from a game's subcategory" do
     term_ut = Term.single_toplevel(:slug => 'ut')
-    general_questions_category = term_ut.children.find(
-        :first,
-        :conditions => ["taxonomy = ? AND name = ?",
-                        "QuestionsCategory", "General"])
-    assert_not_nil general_questions_category
 
     question = Question.create(:user_id => 1, :title => 'holaaaaa')
     assert !question.new_record?
@@ -30,7 +25,7 @@ class GmPortalTest < ActiveSupport::TestCase
     assert_equal Cms::PUBLISHED, question.state
     assert_nil GmPortal.new.question.find(
         :first, :conditions => ['questions.id = ?', question.id])
-    general_questions_category.link(question.unique_content)
+    term_ut.link(question.unique_content)
     assert_not_nil GmPortal.new.question.find(
         :first, :conditions => ['questions.id = ?', question.id])
   end
