@@ -67,7 +67,6 @@ class CacheObserver < ActiveRecord::Observer
       when 'ContentsRecommendation'
       expire_fragment "/_users/#{object.receiver_user_id % 1000}/#{object.receiver_user_id}/layouts/recommendations"
       when 'UsersSkill'
-      Cache::Personalization.expire_quicklinks(object.user) if %w(Don ManoDerecha Sicario).include?(object.role)
       if %w(Editor Moderator).include?(object.role)
         faction_id =object.role == 'Moderator' ? object.role_data : object.role_data_yaml[:faction_id]
         expire_fragment("/common/facciones/#{faction_id}/staff")
@@ -213,7 +212,6 @@ class CacheObserver < ActiveRecord::Observer
       when 'RecruitmentAd'
       expire_fragment "/home/comunidad/recruitment_ads_#{object.clan_id ? 'clans' : 'users'}"
       when 'UsersSkill'
-      Cache::Personalization.expire_quicklinks(object.user) if %w(Don ManoDerecha Sicario).include?(object.role)
       if %w(Editor Moderator).include?(object.role)
         faction_id =object.role == 'Moderator' ? object.role_data : object.role_data_yaml[:faction_id]
         expire_fragment("/common/facciones/#{faction_id}/staff")
@@ -896,9 +894,6 @@ class CacheObserver < ActiveRecord::Observer
       if object.state_changed?
         expire_fragment("/common/carcel")
         expire_fragment("/common/carcel_full")
-      end
-      if object.faction_id_changed?
-        Cache::Personalization.expire_quicklinks(object)
       end
       if object.state_changed?
         expire_fragment("/common/miembros/_rightside/ultimos_registros")

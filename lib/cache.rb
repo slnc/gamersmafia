@@ -41,9 +41,6 @@ module Cache
 
   module Personalization
     extend Cache::Common
-    def self.expire_quicklinks(u)
-      CacheObserver.expire_fragment "/_users/#{u.id % 1000}/#{u.id}/layouts/quicklinks2"
-    end
   end
 
   module Competition

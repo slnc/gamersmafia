@@ -40,59 +40,6 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "add_quicklink" do
-    sym_login 2
-    u2 = User.find(2)
-    post :add_quicklink, :code => 'ut', :link => 'http://ut.gamersmafia.com/'
-    assert_response :success
-    qlinks = u2.pref_quicklinks
-    assert qlinks[0][:code] == 'ut'
-  end
-
-  test "del_quicklink" do
-    sym_login 2
-    u2 = User.find(2)
-    orig_qlinks = u2.pref_quicklinks.size
-    test_add_quicklink
-    post :del_quicklink, :code => 'ut'
-    assert_response :success
-    u2.reload
-    assert_equal orig_qlinks, u2.pref_quicklinks.size
-  end
-
-  test "add_user_forum" do
-    sym_login 2
-    u2 = User.find(2)
-    post :add_user_forum, :id => '1'
-    assert_response :success
-    ufs = u2.pref_user_forums
-    assert_equal 1, ufs[0][0]
-  end
-
-  test "del_user_forum" do
-    sym_login 2
-    u2 = User.find(2)
-    test_add_user_forum
-    post :del_user_forum, :id => 1
-    assert_response :success
-    ufs = u2.pref_user_forums
-    assert_equal 0, ufs[0].size
-    assert_equal 0, ufs[1].size
-  end
-
-  test "update_user_forums_order" do
-    sym_login 2
-    u2 = User.find(2)
-    post :update_user_forums_order,
-         :user_id => 1, :buckets1 => ['1'], :buckets2 => ['2', '3']
-    assert_response :success
-    ufs = u2.pref_user_forums
-    assert_equal 3, ufs.size
-    assert_equal 1, ufs[0][0]
-    assert_equal 2, ufs[1][0]
-    assert_equal 3, ufs[1][1]
-  end
-
   test "should_resurrect_resurrectable_user" do
     u2 = User.find(2)
     u2.lastseen_on = 4.months.ago

@@ -92,9 +92,7 @@ module ApplicationHelper
       interests = @user.user_interests.show_in_menu.find(:all).collect {|i|
         {:code => i.menu_shortcut, :url => gmurl(i.real_item)}
       }
-      (interests + Personalization.quicklinks_for_user(@user)).sort_by{|i|
-        i[:code].downcase
-      }
+      interests.sort_by{|i| i[:code].downcase }
     else
       Personalization.get_default_quicklinks
     end
@@ -276,16 +274,6 @@ module ApplicationHelper
 
   QUICKLINK_ENABLED_PORTALS = %w(FactionsPortal BazarDistrictPortal)
 
-  def can_add_as_quicklink?
-    return false if !quicklinks_enabled_current_user_portal
-    !current_portal_is_quicklink
-  end
-
-  def can_del_quicklink?
-    return false if !quicklinks_enabled_current_user_portal
-    current_portal_is_quicklink
-  end
-
   def error_messages_for(obj)
     return "" unless obj && obj.errors.any?
     out = ""
@@ -294,16 +282,6 @@ module ApplicationHelper
       out << "<li>#{msg}</li>"
     end
     out << "</ul>"
-  end
-
-  def can_add_as_user_forum?
-    return false if !user_forums_enabled?
-    !user_forum_is_present
-  end
-
-  def can_del_user_forum?
-    return false if !user_forums_enabled?
-    user_forum_is_present
   end
 
   def url_for_content(object, text)
@@ -1486,39 +1464,6 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
   end
 
   private
-  def quicklinks_enabled_current_user_portal
-    !user_is_authed || !ApplicationHelper::QUICKLINK_ENABLED_PORTALS.include?(
-        controller.portal.class.name)
-  end
-
-  def current_portal_is_quicklink
-    quicklinks = Personalization.quicklinks_for_user(@user)
-    current_is_quicklink = false
-    quicklinks.each do |quicklink|
-      if quicklink[:code] == controller.portal.code
-        current_is_quicklink = true
-        break
-      end
-    end
-    current_is_quicklink
-  end
-
-  def user_forums_enabled?
-    user_is_authed && controller_name && 'foros' && !@forum.nil?
-  end
-
-  def user_forum_is_present
-    buckets = Personalization.get_user_forums(@user)
-    current_forum_is_present = false
-      buckets.each do |saved_forum_id|
-      if saved_forum_id == @forum.id
-        current_forum_is_present = true
-        break
-      end
-    end
-    current_forum_is_present
-  end
-
   def gm_icon(name, css_class=nil)
     "<span class=\"gm-icon #{css_class if css_class}\">#{GM_ICONS.fetch(name)}</span>"
   end

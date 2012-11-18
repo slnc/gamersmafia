@@ -29,64 +29,6 @@ module Personalization
     @_cached_quicklinks_anon
   end
 
-  def self.get_user_quicklinks(user)
-    quicklinks = user.pref_quicklinks
-    (quicklinks && quicklinks.size > 0) ? quicklinks : []
-  end
-
-  def self.add_quicklink(user, code, link)
-    qlinks = self.get_user_quicklinks(user)
-    return if qlinks.size >= MAX_QUICKLINKS
-    found = false
-    qlinks.each do |ql|
-      if ql[:code] == code
-        found = true
-        break
-      end
-    end
-    return if found
-    qlinks << {:code => code, :url => link}
-    user.pref_quicklinks = qlinks.uniq
-    Cache::Personalization.expire_quicklinks(user)
-  end
-
-  def self.del_quicklink(user, code)
-    quicklinks = self.get_user_quicklinks(user)
-    user.pref_quicklinks = quicklinks.delete_if { |q| q[:code] == code }
-    Cache::Personalization.expire_quicklinks(user)
-  end
-
-  def self.clear_quicklinks(user)
-    user.pref_quicklinks = nil
-    Cache::Personalization.expire_quicklinks(user)
-  end
-
-  def self.quicklinks_for_user(user)
-    qlinks = self.get_user_quicklinks(user)
-    codes = qlinks.collect { |a| a[:code] }
-
-    # TODO añadir facciones de las que eres editor/moderador
-    if user.faction_id && !codes.include?(user.faction.code)
-      qlinks << {
-          :code => user.faction.code,
-          :url => "http://#{user.faction.code}.#{App.domain}/"}
-    end
-
-    user.users_skills.find(
-        :all,
-        :conditions => "role IN ('Don', 'ManoDerecha', 'Sicario')").each do |ur|
-      bd = BazarDistrict.find(ur.role_data.to_i)
-      if !codes.include?(bd.slug)
-        qlinks << {
-          :code => bd.slug,
-          :url => "http://#{bd.slug}.#{App.domain}",
-        }
-      end
-    end
-
-    qlinks.uniq[0..MAX_QUICKLINKS]
-  end
-
   def self.default_user_forums
     # TODO aqui se podria aplicar inteligencia en base al historial de
     # navegación del usuario.

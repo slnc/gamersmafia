@@ -124,26 +124,6 @@ class Cuenta::CuentaController < ApplicationController
     @no_ads = true
   end
 
-  def add_quicklink
-    Personalization.add_quicklink(@user, params[:code], params[:url])
-    render :nothing => true
-  end
-
-  def del_quicklink
-    Personalization.del_quicklink(@user, params[:code])
-    render :nothing => true
-  end
-
-  def add_user_forum
-    Personalization.add_user_forum(@user, params[:id], params[:url])
-    render :nothing => true
-  end
-
-  def del_user_forum
-    Personalization.del_user_forum(@user, params[:id])
-    render :nothing => true
-  end
-
   def update_user_forums_order
     Personalization.update_user_forums_order(@user, (params[:buckets1] || []), (params[:buckets2] || []), (params[:buckets3] || []))
     render :nothing => true
