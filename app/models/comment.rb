@@ -208,7 +208,8 @@ class Comment < ActiveRecord::Base
     text = Formatting.comment_without_quoted_text(text)
     replied_users = []
     text.scan(/\[(fullquote|quote)=([0-9]+)\]/).uniq.each do |m|
-      replied_comment = Comment.find_by_position(m[1].to_i, self.content)
+      replied_comment = Comment.karma_eligible.find_by_position(
+          m[1].to_i, self.content)
       next if replied_comment.nil?
       replied_users << replied_comment.user_id
     end

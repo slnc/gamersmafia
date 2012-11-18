@@ -12,6 +12,16 @@ class FormattingTest < ActiveSupport::TestCase
         "[fullquote=2][b]#2 [~panzer][/b]:\n\nhola guapo\n[img]http://www.example.com/foo.png[/img][/fullquote] no, eres feo [quote]wiiii[/quote]",
         Formatting.comment_with_expanded_short_replies(c2.comment, c2))
   end
+  test "comment_with_expanded_short_replies to moderated comment" do
+    c1 = create_a_comment(
+        :comment => "hola guapo\n[img]http://www.example.com/foo.png[/img]")
+    c1.update_attribute(:state, Comment::MODERATED)
+    c2 = create_a_comment(
+        :comment => "##{c1.position_in_content} no, eres feo [quote]wiiii[/quote]")
+    assert_equal(
+        "#2 no, eres feo [quote]wiiii[/quote]",
+        Formatting.comment_with_expanded_short_replies(c2.comment, c2))
+  end
 
   test "format_bbcode with quotes with other bbcodes inside" do
     c1 = create_a_comment(

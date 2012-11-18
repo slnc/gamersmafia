@@ -199,7 +199,7 @@ module Formatting
     end
 
     new_str = new_str.gsub(/#([0-9]+)/) do |m|
-      replied_comment = Comment.find_by_position($1.to_i, comment.content)
+      replied_comment = Comment.karma_eligible.find_by_position($1.to_i, comment.content)
       if replied_comment.nil? || replied_comment.id == comment.id
         m
       else
