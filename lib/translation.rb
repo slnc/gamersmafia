@@ -28,6 +28,7 @@ module Translation
     'GmShop' => 'Tienda GM',
     'GroupAdministrator' => 'Administrador de grupo',
     'GroupMember' => 'Miembro de grupo',
+    'Homepage' => 'Portada',
     'Image' => 'Imagen',
     'Interview' => 'Entrevista',
     'LessAds' => 'Menos publicidad',
@@ -58,6 +59,9 @@ module Translation
     'ReportContents' => 'Reportar contenidos',
     'ReportUsers' => 'Reportar usuarios',
     'TagContents' => 'Taguear contenidos',
+    'TutorialsCategory' => 'Categoría (tutoriales)',
+    'DownloadsCategory' => 'Categoría (descargas)',
+    'ImagesCategory' => 'Categoría (imágenes)',
   }
 
   def self.translate(word)

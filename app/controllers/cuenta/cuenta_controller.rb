@@ -69,7 +69,12 @@ class Cuenta::CuentaController < ApplicationController
         :conditions => "LOWER(name) LIKE LOWER(E'#{params[:text]}%')",
         :limit => 100)
     terms.each do |term|
-      @out[term.id] = term.name
+      if term.taxonomy.include?("Category")
+        ancestors_tree = term.get_ancestors.collect{|t| t.name}.join(" &laquo; ")
+        @out[term.id] = "#{term.name} &laquo; #{ancestors_tree}"
+      else
+        @out[term.id] = term.name
+      end
     end
     render :layout => false
   end

@@ -64,7 +64,7 @@ jQuery.fn.autocomplete = function(url, settings) {
 		var list = valueInput.next().css({
       top: textInput.offset().top + textInput.outerHeight(),
       left: textInput.offset().left,
-      width: textInput.width()
+      width: 'auto'
     }).hide();
     if (wasHidden) {
       $(this).hide();
