@@ -3,12 +3,17 @@ require 'has_slug'
 
 class Term < ActiveRecord::Base
   VALID_TAXONOMIES = %w(
+      BazarDistrict
+      Clan
       ColumnsCategory
       ContentsTag
       DemosCategory
       DownloadsCategory
       EventsCategory
+      Game
       GamePublisher
+      GamingPlatform
+      Homepage
       ImagesCategory
       InterviewsCategory
       NewsCategory
@@ -27,7 +32,6 @@ class Term < ActiveRecord::Base
 
   before_save :check_no_parent_if_contents_tag
   before_save :check_references_to_ancestors
-  before_save :check_scope_if_toplevel
   before_save :check_taxonomy
   before_save :copy_parent_attrs
 
@@ -35,8 +39,8 @@ class Term < ActiveRecord::Base
   validates_format_of :slug, :with => /^[a-z0-9_.-]{0,50}$/
   validates_format_of :name, :with => /^.{1,100}$/
   plain_text :name, :description
-  validates_uniqueness_of :name, :scope => [:parent_id, :taxonomy]  # missing :type
-  validates_uniqueness_of :slug, :scope => [:parent_id, :taxonomy]  # missing :type
+  validates_uniqueness_of :name, :scope => [:parent_id, :taxonomy]
+  validates_uniqueness_of :slug, :scope => [:parent_id, :taxonomy]
 
   def self.subscribed_users_per_tag
     rows = User.db_query(
@@ -130,47 +134,9 @@ class Term < ActiveRecord::Base
     end
   end
 
-  def check_scope_if_toplevel
-    if self.new_record? && self.parent_id.nil?
-      if Term.count(:conditions => ['parent_id IS NULL AND slug = ?', self.slug]) > 0
-        self.errors.add('slug', 'Slug is already taken')
-        false
-      else
-        true
-      end
-    elsif (!self.new_record?) && self.parent_id.nil?
-      if Term.count(:conditions => ['id <> ? AND parent_id IS NULL AND slug = ?', self.id, self.slug]) > 0
-        self.errors.add('slug', 'Slug is already taken')
-        false
-      else
-        true
-      end
-    else
-      true
-    end
-  end
-
-  def copy_parent_attrs
-    return true if self.id == self.root_id
-
-    par = self.parent
-
-    self.taxonomy = par.taxonomy if par.taxonomy
-    true
-  end
-
-
-  def set_slug
-    if self.slug.nil? || self.slug.to_s == ''
-      self.slug = self.name.bare.downcase
-      # TODO esto no comprueba si el slug está repetido
-    end
-    true
-  end
-
   def self.find_taxonomy(id, taxonomy)
-    sql_tax = taxonomy.nil? ? 'IS NULL' : "= #{User.connection.quote(taxonomy)}"
-    Term.find(:first, :conditions => ["id = ? AND taxonomy #{sql_tax}", id])
+    raise "Taxonomy can't be nil" if taxonomy.nil?
+    Term.with_taxonomy(taxonomy).find(:first, :conditions => ["id = ?", id])
   end
 
   def self.find_taxonomy_by_code(code, taxonomy)
@@ -236,6 +202,7 @@ class Term < ActiveRecord::Base
   def check_no_parent_if_contents_tag
     !(self.taxonomy == "ContentsTag" && !self.parent_id.nil?)
   end
+
   def check_references_to_ancestors
     if !self.new_record?
       if self.parent_id_changed?
@@ -260,11 +227,45 @@ class Term < ActiveRecord::Base
   belongs_to :gaming_platform
   belongs_to :clan
 
+  scope :portal_root_term, lambda { |portal|
+    taxonomy = case portal.class.name
+    when "BazarPortal"
+      "Homepage"
+    when "ArenaPortal"
+      "Homepage"
+    when "BazarDistrictPortal"
+      "BazarDistrict"
+    when "FactionsPortal"
+      Game.find_by_slug(portal.code) ?  "Game" : "GamingPlatform"
+    when "ClansPortal"
+      "Clan"
+    else
+      raise "Unknown portal type '#{portal.type}' for portal '#{portal.code}'"
+    end
+    {:conditions => "taxonomy = '#{taxonomy}' AND slug = '#{portal.code}'"}
+  }
+
   scope :contents_tags, :conditions => 'taxonomy = \'ContentsTag\''
   scope :not_contents_tags, :conditions => 'taxonomy IS NULL or taxonomy <> \'ContentsTag\''
-  scope :top_level, :conditions => 'id = root_id AND parent_id IS NULL AND clan_id IS NULL'
   scope :with_taxonomy, lambda { |taxonomy| {:conditions => "taxonomy = '#{taxonomy}'"}}
-  scope :in_category, lambda { |t| { :conditions => ['id IN (SELECT term_id FROM contents_terms WHERE content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?)))', t.all_children_ids]} }
+  scope :with_taxonomies, lambda { |taxonomies|
+      joined_taxonomies = taxonomies.collect{|t| "'#{t}'"}.join(", ")
+      {:conditions => "taxonomy IN (#{joined_taxonomies})"}
+  }
+
+  scope :editable_taxonomies,
+      {:conditions => "taxonomy IN ('Game', 'GamingPlatform', 'BazarDistrict')"}
+
+  scope :in_category, lambda { |t| {
+    :conditions => ['id IN (
+                       SELECT term_id
+                       FROM contents_terms
+                       WHERE content_id IN (
+                         SELECT content_id
+                         FROM contents_terms
+                         WHERE term_id IN (?)))',
+                    t.all_children_ids]}
+  }
 
   has_many :contents_terms, :dependent => :destroy
   has_many :contents, :through => :contents_terms
@@ -278,6 +279,7 @@ class Term < ActiveRecord::Base
   acts_as_tree :order => 'name'
 
   has_slug :name
+  before_destroy :sanity_check
   before_save :check_references_to_ancestors
   before_save :copy_parent_attrs
 
@@ -287,7 +289,6 @@ class Term < ActiveRecord::Base
   plain_text :name, :description
   validates_uniqueness_of :name, :scope => [:game_id, :bazar_district_id, :gaming_platform_id, :clan_id, :taxonomy, :parent_id]
   validates_uniqueness_of :slug, :scope => [:game_id, :bazar_district_id, :gaming_platform_id, :clan_id, :taxonomy, :parent_id]
-  before_save :check_scope_if_toplevel
 
   def orphan?
     self.contents.count == 0
@@ -298,27 +299,6 @@ class Term < ActiveRecord::Base
     User.db_query("SELECT count(distinct(content_id)) FROM users_contents_tags WHERE term_id = #{self.id}")[0]['count'].to_i
   end
 
-  def check_scope_if_toplevel
-    if self.new_record? && self.parent_id.nil?
-       if Term.count(:conditions => ['parent_id IS NULL AND slug = ?', self.slug]) > 0
-	       self.errors.add('slug', 'Slug is already taken')
-	       false
-       else
-	       true
-       end
-    elsif (!self.new_record?) && self.parent_id.nil?
-       if Term.count(:conditions => ['id <> ? AND parent_id IS NULL AND slug = ?', self.id, self.slug]) > 0
-	       self.errors.add('slug', 'Slug is already taken')
-	       false
-       else
-	       true
-       end
-    else
-       true
-    end
-  end
-
-  before_destroy :sanity_check
 
   def sanity_check
     true # return false if self.contents_count > 25
@@ -332,7 +312,9 @@ class Term < ActiveRecord::Base
     self.bazar_district_id = par.bazar_district_id
     self.gaming_platform_id = par.gaming_platform_id
     self.clan_id = par.clan_id
-    self.taxonomy = par.taxonomy if par.taxonomy
+    if par.taxonomy && par.taxonomy.include?("Category")
+      self.taxonomy = par.taxonomy
+    end
     true
   end
 
@@ -370,7 +352,8 @@ class Term < ActiveRecord::Base
       return true
     end
 
-    if Cms::CATEGORIES_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy.nil?
+    if (Cms::CATEGORIES_TERMS_CONTENTS.include?(content.content_type.name) &&
+        !self.taxonomy.include?("Category"))
       Rails.logger.warn(
         "#{self} is a root term but #{content} requires a category" +
         " term.")

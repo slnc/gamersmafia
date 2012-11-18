@@ -895,7 +895,10 @@ module Cms
     }
 
     if u.has_any_skill?(%w(Capo Webmaster))
-      Term.top_level(:conditions => "taxonomy <> 'ContentsTag'").each do |t|
+      # the contents_count > 0 condition is to filter out all 65k games without
+      # contents associated with them.
+      Term.editable_taxonomies.find(
+          :all, :conditions => "contents_count > 0").each do |t|
         if t.game_id
           terms[:games] << t
         elsif t.gaming_platform_id

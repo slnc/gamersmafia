@@ -11,7 +11,11 @@ class CacheObserverTutorialesTest < ActionController::IntegrationTest
   test "should_clear_tutoriales_index_index_after_creating_a_new_category" do
     get '/tutoriales'
     assert_cache_exists '/gm/tutoriales/index/folders'
-    @tc = Term.create({:name => 'foocat', :slug => 'codecot'})
+    @tc = Term.create({
+        :taxonomy => "Homepage",
+        :name => 'foocat',
+        :slug => 'codecot',
+    })
     assert_cache_exists '/gm/tutoriales/index/folders'
     @tcc = @tc.children.create(:name => 'tutoriales del fin der mundo', :taxonomy => 'TutorialsCategory')
     assert_cache_dont_exist '/gm/tutoriales/index/folders'

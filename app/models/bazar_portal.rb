@@ -8,6 +8,10 @@ class BazarPortal
     1
   end
 
+  def terms_ids(taxonomy)
+    Term.portal_root_term(self).first.all_children_ids(:taxonomy => taxonomy)
+  end
+
   def small_header
 	  nil
   end
@@ -34,10 +38,6 @@ class BazarPortal
 
   def skin_id
     nil
-  end
-
-  def terms_ids(taxonomy=nil)
-    Term.top_level.find_by_slug('bazar').all_children_ids(:taxonomy => taxonomy)
   end
 
   def latest_articles

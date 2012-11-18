@@ -13,7 +13,11 @@ class ArenaPortal
   end
 
   def channels
-    GmtvChannel.find(:all, :conditions => "gmtv_channels.file is not null AND (gmtv_channels.faction_id IS NULL)", :order => 'gmtv_channels.id ASC', :include => :user)
+    GmtvChannel.find(
+        :all,
+        :conditions => "gmtv_channels.file is not null AND (gmtv_channels.faction_id IS NULL)",
+        :order => 'gmtv_channels.id ASC',
+        :include => :user)
   end
 
   def name
@@ -45,10 +49,6 @@ class ArenaPortal
     Skin.find_by_hid('default')
   end
 
-  def terms_ids(taxonomy=nil)
-    Term.top_level.find_by_slug('arena').all_children_ids(:taxonomy => taxonomy)
-  end
-
   def respond_to?(method_id, include_priv = false)
     if Cms::contents_classes_symbols.include?(method_id) # contents
       true
@@ -78,6 +78,11 @@ class ArenaPortal
     else
       super
     end
+  end
+
+  def terms_ids(taxonomy)
+    arena_portal = Term.with_taxonomy("Homepage").find_by_slug!('arena')
+    arena_portal.all_children_ids(:taxonomy => taxonomy)
   end
 
   def competitions

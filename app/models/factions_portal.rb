@@ -7,6 +7,25 @@ class FactionsPortal < Portal
   scope :fps, :conditions => 'factions_portal_home = \'fps\''
   scope :gaming_platform, :conditions => 'factions_portal_home = \'platform\''
 
+  def terms_ids(taxonomy)
+    # factionsportals can either be multi-game, single-game or
+    # single-gaming-platform
+    if factions[0].is_gaming_platform
+      root_taxonomy = "GamingPlatform"
+    else
+      root_taxonomy = "Game"
+    end
+    terms = Term.with_taxonomy(root_taxonomy).find(
+        :all,
+        :conditions => "slug IN (#{toplevel_categories_codes.join(',')})",
+        :order => 'UPPER(name) ASC')
+    res = []
+    terms.each do |t|
+      res += t.all_children_ids(:taxonomy => taxonomy)
+    end
+    res
+  end
+
   def juego_title
     @_cache_mgmenu_juego_title ||= begin
       games = self.games
@@ -85,15 +104,6 @@ class FactionsPortal < Portal
 
   def competitions
     FactionsPortalCompetitionProxy.new(self)
-  end
-
-  def terms_ids(taxonomy=nil)
-    terms = Term.top_level.find(:all, :conditions => "slug IN (#{toplevel_categories_codes.join(',')})", :order => 'UPPER(name) ASC')
-    res = []
-    terms.each do |t|
-      res += t.all_children_ids(:taxonomy => taxonomy)
-    end
-    res
   end
 
   def method_missing(method_id, *args)

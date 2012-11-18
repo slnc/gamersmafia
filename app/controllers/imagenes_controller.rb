@@ -5,8 +5,7 @@ class ImagenesController < BazarController
 
   def category
     @category = Term.find_taxonomy(params[:category].to_i, 'ImagesCategory')
-    @category = Term.find_taxonomy(params[:category].to_i, nil) if @category.nil?
-    raise ActiveRecord::RecordNotFound unless @category
+    @category = Term.find(params[:category].to_i) if @category.nil?
     @title = @category.name
     if not @category.parent_id then
       @navpath = [

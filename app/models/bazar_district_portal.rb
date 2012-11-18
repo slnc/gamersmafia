@@ -4,6 +4,10 @@ class BazarDistrictPortal < Portal
     GmtvChannel.find(:all, :conditions => "gmtv_channels.file is not null AND (gmtv_channels.faction_id IS NULL)", :order => 'gmtv_channels.id ASC', :include => :user)
   end
 
+  def terms_ids(taxonomy)
+    Term.portal_root_term(self).first.all_children_ids(:taxonomy => taxonomy)
+  end
+
   def layout
     'bazar'
   end
@@ -19,15 +23,6 @@ class BazarDistrictPortal < Portal
   # Devuelve todas las categorías de primer nivel visibles en la clase dada
   def categories(content_class)
     Term.toplevel(:slug => self.code)
-  end
-
-  def terms_ids(taxonomy=nil)
-    terms = Term.top_level.find(:all, :conditions => ["slug = ?", self.code], :order => 'UPPER(name) ASC')
-    res = []
-    terms.each do |t|
-      res += t.all_children_ids(:taxonomy => taxonomy)
-    end
-    res
   end
 
   # devuelve array de ints con las ids de las categorías visibles del tipo dado

@@ -217,8 +217,12 @@ class BazarDistrict < ActiveRecord::Base
   end
 
   def create_portal_and_terms
-    root_term = Term.create(
-        :bazar_district_id => self.id, :name => self.name, :slug => self.slug)
+    root_term = Term.create({
+        :bazar_district_id => self.id,
+        :name => self.name,
+        :slug => self.slug,
+        :taxonomy => "BazarDistrict",
+    })
 
     Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
       term = root_term.children.create(:name => c[1], :taxonomy => c[0])

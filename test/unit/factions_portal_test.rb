@@ -54,11 +54,6 @@ class FactionsPortalTest < ActiveSupport::TestCase
     assert_equal 1, cats[1]
   end
 
-  test 'terms_ids_should_work_if_no_taxonomy_and_single_game_portal' do
-    fput = FactionsPortal.find_by_code('ut')
-    assert_equal [1, 16, 17, 18, 19, 20, 29], fput.terms_ids
-  end
-
   test 'terms_ids_should_work_if_root_term_taxonomy_and_single_game_portal' do
     fput = FactionsPortal.find_by_code('ut')
     assert_equal [1], fput.terms_ids('NewsCategory')

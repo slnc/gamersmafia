@@ -78,9 +78,9 @@ class ContentTest < ActiveSupport::TestCase
   test "linked_terms" do
     c = Content.find(1)
     assert_equal 'News', c.content_type.name
-    lterms = c.linked_terms
+    lterms = c.linked_terms("Game")
     assert_equal 1, lterms.size
-    assert_nil lterms[0].taxonomy
+    assert_equal "Game", lterms[0].taxonomy
     assert_equal 1, lterms[0].id
   end
 
@@ -93,7 +93,7 @@ class ContentTest < ActiveSupport::TestCase
 
   test "linked_terms_null" do
     c = Content.find(1)
-    lterms = c.linked_terms('NULL')
+    lterms = c.linked_terms("Game")
     assert_equal 1, lterms.size
     assert_equal 1, lterms[0].id
   end

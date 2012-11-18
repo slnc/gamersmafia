@@ -48,7 +48,13 @@ module ActsAsContent
           {:conditions => "unique_content_id NOT IN (SELECT id FROM contents WHERE bazar_district_id IS NOT NULL)"}
         else
           taxonomy = "#{ActiveSupport::Inflector.pluralize(self.name)}Category"
-          { :conditions => ["unique_content_id IN (SELECT content_id FROM contents_terms WHERE term_id IN (?))", portal.terms_ids(taxonomy)] }
+          {
+            :conditions => [
+              "unique_content_id IN (
+              SELECT content_id
+              FROM contents_terms
+              WHERE term_id IN (?))",
+              portal.terms_ids(taxonomy)] }
         end
       }
 
@@ -244,6 +250,7 @@ module ActsAsContent
 
     def do_after_save
       return false if self.unique_content_id.nil?
+
       if @_terms_to_add
         @_terms_to_add.each do |tid|
           Term.find(tid).link(self.unique_content)
@@ -453,7 +460,7 @@ module ActsAsContent
         cats = @_terms_to_add.collect { |tid| Term.find(tid) }
       else
         if Cms::ROOT_TERMS_CONTENTS.include?(self.class.name)
-          cats = uniq.linked_terms('NULL')
+          cats = uniq.root_terms
         else
           cats = uniq.linked_terms("#{ActiveSupport::Inflector::pluralize(self.class.name)}Category")
         end
@@ -462,7 +469,7 @@ module ActsAsContent
       if cats.size > 0
         cats[0]
       else
-        self.unique_content.linked_terms('NULL')[0]
+        self.unique_content.root_terms[0]
       end
     end
 

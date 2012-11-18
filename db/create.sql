@@ -2535,7 +2535,7 @@ CREATE TABLE terms (
     last_updated_item_id integer,
     comments_count integer DEFAULT 0 NOT NULL,
     root_id integer,
-    taxonomy character varying,
+    taxonomy character varying NOT NULL,
     short_description character varying,
     long_description text,
     header_image character varying,

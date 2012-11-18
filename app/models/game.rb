@@ -87,7 +87,12 @@ class Game < ActiveRecord::Base
     portal.factions<< f
 
     # El orden es importante
-    root_term = Term.create(:game_id => self.id, :name => self.name, :slug => self.slug)
+    root_term = Term.create({
+        :game_id => self.id,
+        :name => self.name,
+        :slug => self.slug,
+        :taxonomy => "Game",
+    })
     raise "Term isn't created #{root_term.errors.full_messages_html}" if root_term.new_record?
     Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|
       root_term.children.create(:name => c[1], :taxonomy => c[0])

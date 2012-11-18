@@ -331,18 +331,30 @@ class Content < ActiveRecord::Base
     end
   end
 
-  def linked_terms(taxonomy=nil)
-    if taxonomy.nil?
-      self.terms.find(:all)
-    elsif taxonomy == 'NULL'
-      self.terms.find(:all, :conditions => 'taxonomy IS NULL', :order => 'created_on')
-    else
-      self.terms.find(:all, :conditions => ["taxonomy = ?", taxonomy], :order => 'created_on')
-    end
+  def linked_terms(taxonomy)
+    self.terms.with_taxonomy(taxonomy).find(:all, :order => 'created_on')
   end
 
   def root_terms
-    self.linked_terms('NULL')
+    if self.game_id
+      taxonomy = "Game"
+    elsif self.gaming_platform_id
+      taxonomy = "GamingPlatform"
+    elsif self.clan_id
+      taxonomy = "Clan"
+    elsif self.bazar_district_id
+      taxonomy = "BazarDistrict"
+    else
+      # gm
+      taxonomy = "Homepage"
+    end
+    # TODO(slnc): temp hack until we git read of dual content classes
+    root_terms = self.linked_terms(taxonomy)
+    if root_terms.size == 0
+      self.terms.with_taxonomies(%w(Game GamingPlatform Clan BazarDistrict Homepage)).find(:all)
+    else
+      root_terms
+    end
   end
 
   def categories_terms(taxonomy)
@@ -382,7 +394,7 @@ class Content < ActiveRecord::Base
   def root_terms_add_ids(terms)
     terms = [terms] unless terms.kind_of?(Array)
     terms.each do |tid|
-      t = Term.find_taxonomy(tid, nil)
+      t = Term.find(:first, :conditions => ["id = ? AND parent_id IS NULL", tid])
       t.link(self)
     end
     self.url = nil

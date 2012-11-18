@@ -93,12 +93,14 @@ class UsersContentsTag < ActiveRecord::Base
     if (Cms::ROOT_TERMS_CONTENTS + Cms::CATEGORIES_TERMS_CONTENTS).include?(
         self.content.content_type.name)
       mc = self.content.real_content.main_category
-      if (Term.top_level.count(
+      if (Term.count(
               :conditions => [
-                  'taxonomy IS NULL AND (lower(name) = ? or slug = ?)',
+                  "taxonomy IN ('Game', 'GamingPlatform', 'BazarDistrict', 'Clan') AND (LOWER(name) = ? OR slug = ?)",
               self.original_name, self.original_name]) > 0 ||
           mc.slug == self.original_name ||
           mc.name.downcase == self.original_name)
+        # We don't allow tags for which there are already other term types
+        # created to prevent duplicating information.
         return false
       end
     end

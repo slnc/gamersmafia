@@ -152,7 +152,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
 
   test "tag_content should work if skill" do
     give_skill(1, "TagContents")
-    t = Term.create(:taxonomy => "ContentsTag", :name => "fumanchu")
+    t = Term.create({:taxonomy => "ContentsTag", :name => "fumanchu"})
     sym_login 1
     assert_difference("UsersContentsTag.count", 1) do
       post :tag_content, :id => 1, :tags => "#{t.id},"

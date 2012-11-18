@@ -50,7 +50,13 @@ class ActsAsContentTest < ActiveSupport::TestCase
   end
 
   test "should_not_allow_to_link_to_child_term_if_content_is_categorizable_and_root_term_given" do
-    @tut = Tutorial.new(:user_id => 1, :title => 'footapang', :description => 'bartapang', :main => 'aaa', :terms => 1)
+    @tut = Tutorial.new({
+        :user_id => 1,
+        :title => 'footapang',
+        :description => 'bartapang',
+        :main => 'aaa',
+        :terms => 1,
+    })
     assert @tut.save, @tut.errors.full_messages_html
     @tut.reload
     assert @tut.terms.size == 0

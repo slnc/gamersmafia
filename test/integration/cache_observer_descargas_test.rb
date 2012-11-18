@@ -11,7 +11,7 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
   # GLOBAL NAVIGATOR
   test "should_delete_subcategories_cache_after_creating_download" do
     # creation
-    c1 = Term.create({:slug => 'c1', :name => 'foo1'})
+    c1 = Term.create({:taxonomy => "Homepage", :slug => 'c1', :name => 'foo1'})
     c1.reload
     assert_not_nil c1
     c2 = c1.children.create({:taxonomy => 'DownloadsCategory', :slug => 'c2', :name => 'foo1'})

@@ -1,6 +1,19 @@
 # -*- encoding : utf-8 -*-
 class Portal < ActiveRecord::Base
-  UNALLOWED_CODES = %w(bazar arena gm sys sistema webmaster secure ssl static ww www admin)
+  UNALLOWED_CODES = %w(
+      admin
+      arena
+      bazar
+      gm
+      secure
+      sistema
+      ssl
+      static
+      sys
+      webmaster
+      ww
+      www
+  )
   serialize :options
   has_and_belongs_to_many :factions # las necesitamos aquí
   has_and_belongs_to_many :skins

@@ -16,6 +16,7 @@ class GamingPlatform < ActiveRecord::Base
         :gaming_platform_id => self.id,
         :name => self.name,
         :slug => self.slug,
+        :taxonomy => "GamingPlatform",
     })
 
     Organizations::DEFAULT_CONTENTS_CATEGORIES.each do |c|

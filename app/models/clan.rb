@@ -341,7 +341,12 @@ class Clan < ActiveRecord::Base
         :name => 'Miembros',
         :clans_groups_type_id => ClansGroupsType::MEMBERS,
         :clan_id => self.id})
-    Term.create(:clan_id => self.id, :name => self.name, :slug => self.tag)
+    Term.create({
+        :clan_id => self.id,
+        :name => self.name,
+        :slug => self.tag,
+        :taxonomy => "Clan",
+    })
     self.log("Clan creado")
   end
 

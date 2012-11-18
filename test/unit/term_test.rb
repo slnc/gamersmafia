@@ -3,22 +3,22 @@ require 'test_helper'
 
 class TermTest < ActiveSupport::TestCase
   test "scopes" do
-    t = Term.new(:name => 'foo', :slug => 'bar')
+    t = Term.new(:name => 'foo', :slug => 'bar', :taxonomy => "Homepage")
     assert t.save
 
-    t = Term.new(:name => 'foo', :slug => 'bar', :parent_id => t.id, :game_id => 1)
+    t = Term.new(:name => 'foo', :slug => 'bar', :parent_id => t.id, :game_id => 1, :taxonomy => "Game")
     assert t.save
 
-    t = Term.new(:name => 'foo', :slug => 'bar', :parent_id => t.id, :gaming_platform_id => 1)
+    t = Term.new(:name => 'foo', :slug => 'bar', :parent_id => t.id, :gaming_platform_id => 1, :taxonomy => "GamingPlatform")
     assert t.save
 
-    t = Term.new(:name => 'foo', :slug => 'bar', :parent_id => t.id, :bazar_district_id => 1)
+    t = Term.new(:name => 'foo', :slug => 'bar', :parent_id => t.id, :bazar_district_id => 1, :taxonomy => "BazarDistrict")
     assert t.save
 
-    tc = Term.new(:name => 'foo 3', :slug => 'bar3', :clan_id => 1)
+    tc = Term.new(:name => 'foo 3', :slug => 'bar3', :clan_id => 1, :taxonomy => "Clan")
     assert tc.save, tc.errors.full_messages_html
 
-    t = Term.new(:name => 'foo 4', :slug => 'bar3', :clan_id => 1, :parent_id => tc.id)
+    t = Term.new(:name => 'foo 4', :slug => 'bar3', :clan_id => 1, :parent_id => tc.id, :taxonomy => "Clan")
     assert t.save
   end
 
@@ -41,19 +41,19 @@ class TermTest < ActiveSupport::TestCase
   end
 
   test "mirror_category" do
-    @t = Term.new(:name => 'foo', :slug => 'bar')
+    @t = Term.new(:name => 'foo', :slug => 'bar', :taxonomy => "Homepage")
     assert @t.save
 
     @ndcs1 = @t.children.create(:name => 'subhijo1', :taxonomy => 'DownloadsCategory')
     assert @ndcs1
-    @ndcss1 = @ndcs1.children.create(:name => 'subhijo11')
+    @ndcss1 = @ndcs1.children.create(:name => 'subhijo11', :taxonomy => 'DownloadsCategory')
     assert @ndcss1
-    @ndcsss1 = @ndcss1.children.create(:name => 'subhijo111')
+    @ndcsss1 = @ndcss1.children.create(:name => 'subhijo111', :taxonomy => 'DownloadsCategory')
     assert @ndcsss1
   end
 
   test "link with root term" do
-    term = Term.new(:name => 'foo', :slug => 'bar')
+    term = Term.new(:name => 'foo', :slug => 'bar', :taxonomy => "Homepage")
     assert term.save
 
     # We pick a Funthing because it works with root categories
@@ -129,13 +129,13 @@ class TermTest < ActiveSupport::TestCase
   end
 
   test "should_automatically_create_slug" do
-    @n1 = Term.create({:name => 'Hola Mundo!!'})
+    @n1 = Term.create({:name => 'Hola Mundo!!', :taxonomy => "Homepage"})
     assert_not_nil @n1
     assert_equal 'hola-mundo', @n1.slug
   end
 
   test "should_creating_a_root_category_should_properly_initialize_attributes" do
-    @n1 = Term.create({:name => 'cacttest1'})
+    @n1 = Term.create({:name => 'cacttest1', :taxonomy => "Homepage"})
     assert_not_nil @n1
     assert_equal @n1.id, @n1.root_id
     assert_nil @n1.parent_id
@@ -159,14 +159,14 @@ class TermTest < ActiveSupport::TestCase
 
   test "should_properly_create_children" do
     test_should_creating_a_root_category_should_properly_initialize_attributes
-    @n1child = @n1.children.create({:name => 'first_child'})
+    @n1child = @n1.children.create({:name => 'first_child', :taxonomy => "DownloadsCategory"})
     assert_not_nil @n1child
     assert_equal @n1.id, @n1child.root_id
   end
 
   test "should_properly_update_root_id_when_moving_a_category_from_one_root_to_another" do
     test_should_properly_create_children
-    @n2 = Term.create({:name => 'cacttest2'})
+    @n2 = Term.create({:name => 'cacttest2', :taxonomy => "Homepage"})
     assert_not_nil @n2
     @n1child.parent_id = @n2.id
     @n1child.save
@@ -175,7 +175,7 @@ class TermTest < ActiveSupport::TestCase
 
   test "should_properly_update_root_id_when_moving_a_category_from_one_root_to_another_and_it_has_subcategories" do
     test_should_properly_create_children
-    @n2 = Term.create({:name => 'cacttest2'})
+    @n2 = Term.create({:name => 'cacttest2', :taxonomy => "Homepage"})
     assert_not_nil @n2
     @n1.parent_id = @n2.id
     @n1.save
@@ -185,16 +185,16 @@ class TermTest < ActiveSupport::TestCase
   end
 
   test "should_properly_return_related_portals_if_not_matching_a_factions_code" do
-    nc = Term.new({:name => 'catnonfaction'})
+    nc = Term.new({:name => 'catnonfaction', :taxonomy => "Homepage"})
     assert_equal true, nc.save
     assert_equal (FactionsPortal.count + BazarDistrictPortal.count + 1), nc.get_related_portals.size
     assert_equal 'GmPortal', nc.get_related_portals[0].class.name
   end
 
   test "should_properly_return_related_portals_if_not_matching_a_factions_code_and_child" do
-    nc = Term.new({:name => 'catnonfaction'})
+    nc = Term.new({:name => 'catnonfaction', :taxonomy => "Homepage"})
     assert nc.save
-    ncchild = nc.children.create({:name => 'subcat'})
+    ncchild = nc.children.create({:name => 'subcat', :taxonomy => "DownloadsCategory"})
     assert_equal true, ncchild.save
     assert_equal (FactionsPortal.count + BazarDistrictPortal.count + 1), ncchild.get_related_portals.size
     assert_equal 'GmPortal', ncchild.get_related_portals[0].class.name
@@ -207,8 +207,8 @@ class TermTest < ActiveSupport::TestCase
   end
 
   test "all_children_ids_should_properly_return_if_root_id_given" do
-    @nc = Term.create({:name => 'catnonfaction'})
-    @ncchild = @nc.children.create({:name => 'subcat'})
+    @nc = Term.create({:name => 'catnonfaction', :taxonomy => "Homepage"})
+    @ncchild = @nc.children.create({:name => 'subcat', :taxonomy => "DownloadsCategory"})
     @cats = @nc.all_children_ids
     assert_equal 2, @cats.size
     @cats.each { |catid| assert_equal true, catid.kind_of?(Fixnum)}
@@ -239,7 +239,7 @@ class TermTest < ActiveSupport::TestCase
   end
 
   test "should_update_parent_categories_counter" do
-    @cat1 = Term.new(:name => 'pelopincho')
+    @cat1 = Term.new(:name => 'pelopincho', :taxonomy => "Homepage")
     assert @cat1.save, @cat1.errors.full_messages_html
     @subcat1 = @cat1.children.create(:name => 'catsubfather', :taxonomy => 'TopicsCategory')
     assert @subcat1.save
@@ -271,7 +271,7 @@ class TermTest < ActiveSupport::TestCase
   test "should_update_parent_categories_counter_after_moving_to_new_category" do
     test_should_update_parent_categories_counter
 
-    @cat2 = Term.new(:name => 'eunuco')
+    @cat2 = Term.new(:name => 'eunuco', :taxonomy => "Homepage")
     assert @cat2.save
     @subcat2 = @cat2.children.create(:name => 'catsubfather', :taxonomy => 'TopicsCategory')
     assert @subcat2.save
@@ -336,20 +336,20 @@ class TermTest < ActiveSupport::TestCase
   end
 
   test "no xss names" do
-      t = Term.new(:name => '<script type="text/javascript">alert(\'hola\');</script>')
+      t = Term.new(:name => '<script type="text/javascript">alert(\'hola\');</script>', :taxonomy => "Homepage")
       assert t.save
 
-      t = Term.new(:name => 'General<script type="text/javascript">alert(\'hola\');</script>')
+      t = Term.new(:name => 'General<script type="text/javascript">alert(\'hola\');</script>', :taxonomy => "Homepage")
       assert t.save
       assert_equal "General&lt;script type=\"text/javascript\"&gt;alert('hola');&lt;/script&gt;", t.name
   end
 
   test "no xss descriptions" do
-      t = Term.new(:name => 'alksjdlajd', :description  => '<script type="text/javascript">alert(\'hola\');</script>')
+      t = Term.new(:name => 'alksjdlajd', :description  => '<script type="text/javascript">alert(\'hola\');</script>', :taxonomy => "Homepage")
       assert t.save
       assert_equal "&lt;script type=\"text/javascript\"&gt;alert('hola');&lt;/script&gt;", t.description
 
-      t = Term.new(:name => 'alksjdlajd2', :description  => 'hola<script type="text/javascript">alert(\'hola\');</script>')
+      t = Term.new(:name => 'alksjdlajd2', :description  => 'hola<script type="text/javascript">alert(\'hola\');</script>', :taxonomy => "Homepage")
       assert t.save
       assert_equal 'hola&lt;script type="text/javascript"&gt;alert(\'hola\');&lt;/script&gt;', t.description
   end

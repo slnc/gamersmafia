@@ -5,13 +5,14 @@ class DescargasController < InformacionController
 
   def index
     @title = 'Descargas'
-    params[:category] = Term.top_level.find_by_slug(portal.code) if params[:category].nil? && portal.id > 0
+    if params[:category].nil? && portal.id > 0
+      params[:category] = Term.portal_root_term(portal).first
+    end
     parent_id = params[:category]
     if parent_id then
       # TODO BUG no estamos chequeando que la categoría se pueda ver desde aquí
       @category = Term.find_taxonomy(parent_id, 'DownloadsCategory')
-      @category = Term.find_taxonomy(parent_id, nil) if @category.nil?
-      raise ActiveRecord::RecordNotFound if @category.nil?
+      @category = Term.find(parent_id) if @category.nil?
       paths, @navpath = get_category_address(@category, 'DownloadsCategory')
       @title = paths.join(' &raquo; ')
     end
