@@ -122,7 +122,7 @@ module Routing
         end
 
       elsif object.taxonomy == 'GamingPlatform'
-        if Faction.find_by_slug(object.slug)
+        if Faction.find_by_code(object.slug)
           "http://#{object.slug}.#{App.domain}"
         else
           "/plataformas/#{GamingPlatform.find_by_name(object.name).id}"

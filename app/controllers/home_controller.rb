@@ -75,11 +75,6 @@ class HomeController < ApplicationController
     #index
   end
 
-  def foros
-    @active_sawmode = 'foros'
-    #index
-  end
-
   def bazar
     @active_sawmode = 'bazar'
     @title = @portal.name

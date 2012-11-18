@@ -25,15 +25,6 @@ class HomeControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "foros" do
-    get :foros
-    assert_response :success
-
-    sym_login 1
-    get :foros
-    assert_response :success
-  end
-
   test "anunciante" do
     assert_raises(AccessDenied) { get :anunciante }
 

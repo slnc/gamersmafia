@@ -124,11 +124,6 @@ class Cuenta::CuentaController < ApplicationController
     @no_ads = true
   end
 
-  def update_user_forums_order
-    Personalization.update_user_forums_order(@user, (params[:buckets1] || []), (params[:buckets2] || []), (params[:buckets3] || []))
-    render :nothing => true
-  end
-
   def save_tracker_config
     @user.update_attributes(params[:user].pass_sym(:tracker_autodelete_old_contents, :comment_adds_to_tracker_enabled))
     flash[:notice] = 'Opciones del tracker guardadas correctamente'
