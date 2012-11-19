@@ -138,10 +138,8 @@ module ApplicationHelper
       "#{term.name} &laquo; #{term.get_ancestors.collect {|a| a.name}.join("&laquo;")}"
     when "TutorialsCategory"
       "#{term.name} &laquo; #{term.get_ancestors.collect {|a| a.name}.join("&laquo;")}"
-    when nil
-      term.name
     else
-      raise "Term taxonomy '#{term.taxonomy}' unknown."
+      term.name
     end
   end
 
