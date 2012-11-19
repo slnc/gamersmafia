@@ -1,0 +1,9 @@
+.unread-notification {
+  background: #000;
+  color: #ccc;
+}
+
+.unread-notification a,
+.unread-notification a:hover {
+  color: #aaa;
+}

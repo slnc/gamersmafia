@@ -17,6 +17,7 @@ class Notification < ActiveRecord::Base
   COMMENT_REFERENCE_IN_COMMENT = 14
   AUTOMATIC_INTERESTS_CREATED = 15
   DECISION_RESULT = 16
+  DECISION_COMMENT = 17
 
   # TODO(slnc): add as many notifications from NotificationEmail as possible
   # here.
