@@ -262,7 +262,7 @@ class Comment < ActiveRecord::Base
           :description => (
               "<a href=\"#{Routing.gmurl(self.user)}\">#{self.user.login}</a>
               te ha respondido en <a href=\"#{Routing.gmurl(self)}\">este
-              comentario</a>."),
+              comentario</a> a <strong><a href=\"#{Routing.gmurl(self.content)}\">#{self.content.name}</a></strong>."),
           :data => self.id.to_s,
       })
     end

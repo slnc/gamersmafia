@@ -814,3 +814,29 @@ img.cash-in {
   text-align: right;
   width: auto;
 }
+
+#mggmgeist {
+  border: 1px solid #eee;
+  background: #fff;
+  padding: 3px;
+  float: right;
+  width: 100px;
+  margin-right: 20px;
+  height: 25px;
+}
+
+#mggmgeist .wrapper {
+  margin-bottom: 4px;
+  text-align: center;
+  font-weight: bold;
+}
+
+#mggmgeist .header {
+  margin-top: -69px;
+  margin-left: 7px;
+  position: absolute;
+  z-index: 3;
+}
+
+#mggmgeist a {
+}

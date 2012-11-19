@@ -3,9 +3,7 @@ require 'test_helper'
 require 'test_functional_content_helper'
 
 class RespuestasControllerTest < ActionController::TestCase
-  test_common_content_crud :name => 'Question', :form_vars => {:title => 'footapang', :description => "abracadabra"}, :categories_terms => 20
-
-
+  test_common_content_crud :name => 'Question', :form_vars => {:title => 'footapang', :description => "abracadabra"}, :root_terms => 1
 
   test "categoria_should_work" do
     get :categoria, :id => 1

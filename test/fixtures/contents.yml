@@ -861,6 +861,7 @@ question_unpublished:
   user_id: 1
   portal_id: 1
   karma_points: 1
+  game_id: 1
 
 question_deleted:
   id: 1112

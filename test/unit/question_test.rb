@@ -13,7 +13,7 @@ class QuestionTest < ActiveSupport::TestCase
         :title => "should_be_able_to_create_question_with_min_ammount",
         :ammount => Question::MIN_AMMOUNT,
     })
-    Term.find(20).link(@bt.unique_content)
+    Term.find(1).link(@bt.unique_content)
     assert !@bt.new_record?
     assert_equal Question::MIN_AMMOUNT.to_i, @bt.ammount.to_i
   end

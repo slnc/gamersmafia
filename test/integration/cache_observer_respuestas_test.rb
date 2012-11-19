@@ -16,7 +16,7 @@ class CacheObserverRespuestasTest < ActionController::IntegrationTest
             :title => 'hola mundillo',
             :description => 'iole',
         },
-        :categories_terms => @t.id)
+        :root_terms => @t.id)
     @q = Question.find(:first, :order => 'id DESC')
     go_to "respuestas/show/#{@q.id}", 'respuestas/show'
     assert_cache_exists "/#{@t.root.slug}/respuestas/show/latest_by_author_#{@q.user_id}"
