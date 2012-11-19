@@ -114,4 +114,12 @@ class NotificationObserverTest < ActiveSupport::TestCase
     end
   end
 
+  test "notify on content state changed to publish" do
+    u1 = User.find(1)
+    c = u1.contents.pending.first
+    assert_difference("u1.notifications.count") do
+      c.update_attribute(:state, Cms::PUBLISHED)
+    end
+  end
+
 end

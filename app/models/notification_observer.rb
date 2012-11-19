@@ -62,7 +62,8 @@ class NotificationObserver < ActiveRecord::Observer
   end
 
   def send_denied_content_notification(content)
-    msg = "Lo lamentamos pero tu contenido ha sido denegado. <a href=\"/decisiones\">Más información</a>."
+    msg = ("Lo lamentamos pero tu contenido ha sido denegado.
+           <a href=\"/decisiones\">Más información</a>.")
     content.user.notifications.create({
       :description => msg,
       :sender_user_id => Ias.MrMan.id,
@@ -70,12 +71,25 @@ class NotificationObserver < ActiveRecord::Observer
     })
   end
 
+  def send_published_content_notification(content)
+    msg = ("¡Enhorabuena! ¡GM ha decidido publicar tu contenido <strong><a
+           href=\"#{Routing.gmurl(content)}\">#{content.name}</a></strong>!")
+    content.user.notifications.create({
+      :description => msg,
+      :sender_user_id => Ias.MrMan.id,
+      :type_id => Notification::CONTENT_PUBLISHED,
+    })
+  end
+
   def after_save(o)
     case o.class.name
     when 'Content'
-      if (o.state_changed? && o.state == Cms::DELETED &&
-          o.state_was == Cms::PENDING)
-        self.send_denied_content_notification(o)
+      if o.state_changed?
+        if o.state == Cms::DELETED && o.state_was == Cms::PENDING
+          self.send_denied_content_notification(o)
+        elsif o.state == Cms::PUBLISHED && o.state_was == Cms::PENDING
+          self.send_published_content_notification(o)
+        end
       end
 
     when 'Question'

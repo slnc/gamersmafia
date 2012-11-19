@@ -3893,7 +3893,7 @@ CREATE INDEX terms_name_uniq ON terms USING btree (game_id, bazar_district_id, g
 CREATE INDEX terms_parent_id ON terms USING btree (parent_id);
 CREATE INDEX terms_root_id ON terms USING btree (root_id);
 CREATE INDEX terms_root_id_parent_id_taxonomy ON terms USING btree (root_id, parent_id, taxonomy);
-CREATE UNIQUE INDEX terms_slug_toplevel ON terms USING btree (slug) WHERE (parent_id IS NULL);
+CREATE INDEX terms_slug_toplevel ON terms USING btree (slug) WHERE (parent_id IS NULL);
 CREATE INDEX terms_slug_uniq ON terms USING btree (game_id, bazar_district_id, gaming_platform_id, clan_id, taxonomy, parent_id, slug);
 CREATE UNIQUE INDEX tracker_items_content_id_user_id ON tracker_items USING btree (content_id, user_id);
 CREATE INDEX tracker_items_full ON tracker_items USING btree (content_id, user_id, lastseen_on, is_tracked);
