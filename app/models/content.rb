@@ -86,6 +86,7 @@ class Content < ActiveRecord::Base
   belongs_to :user
 
   def self.final_decision_made(decision)
+    puts "final decision!"
     content = Content.find(decision.context.fetch(:content_id))
     if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(content.content_type.name)
       raise (

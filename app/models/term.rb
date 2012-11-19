@@ -240,8 +240,7 @@ class Term < ActiveRecord::Base
     {:conditions => "taxonomy = '#{taxonomy}' AND slug = '#{portal.code}'"}
   }
 
-  scope :contents_tags, :conditions => 'taxonomy = \'ContentsTag\''
-  scope :not_contents_tags, :conditions => 'taxonomy IS NULL or taxonomy <> \'ContentsTag\''
+  scope :contents_tags, :conditions => "taxonomy = 'ContentsTag'"
   scope :with_taxonomy, lambda { |taxonomy| {:conditions => "taxonomy = '#{taxonomy}'"}}
   scope :with_taxonomies, lambda { |taxonomies|
       joined_taxonomies = taxonomies.collect{|t| "'#{t}'"}.join(", ")

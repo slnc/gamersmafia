@@ -74,11 +74,14 @@ class NotificationObserver < ActiveRecord::Observer
   def send_published_content_notification(content)
     msg = ("¡Enhorabuena! ¡GM ha decidido publicar tu contenido <strong><a
            href=\"#{Routing.gmurl(content)}\">#{content.name}</a></strong>!")
-    content.user.notifications.create({
+    notification = content.user.notifications.create({
       :description => msg,
       :sender_user_id => Ias.MrMan.id,
       :type_id => Notification::CONTENT_PUBLISHED,
     })
+    if notification.new_record?
+      raise "Error creating notification: #{notification.errors.full_messages_html}"
+    end
   end
 
   def after_save(o)
