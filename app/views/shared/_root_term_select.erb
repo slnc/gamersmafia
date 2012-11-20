@@ -1,21 +1,22 @@
 <select id="categories_terms_root<%=index%>" name="root_terms[]" style="margin-bottom: 15px;">
   	<option></option>
 	<optgroup label="Juegos"></optgroup>
-	<%Term.find(:all, :conditions => 'id = root_id AND game_id IS NOT NULL', :order => 'lower(name)').each do |t|%>
+	<%Term.with_taxonomy("Game").find(:all, :conditions => 'id = root_id AND game_id IS NOT NULL', :order => 'lower(name)').each do |t|%>
 	<option <%='selected="selected"' if selterm && selterm.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
 	<% end -%>
-	
+
 	<optgroup label="Plataformas"></optgroup>
-	<%Term.find(:all, :conditions => 'id = root_id AND gaming_platform_id IS NOT NULL', :order => 'lower(name)').each do |t|%>
+	<%Term.with_taxonomy("GamingPlatform").find(:all, :conditions => 'id = root_id AND gaming_platform_id IS NOT NULL', :order => 'lower(name)').each do |t|%>
 	<option <%='selected="selected"' if selterm && selterm.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
 	<% end -%>
-	
+
   	<optgroup label="Distritos"></optgroup>
-	<%Term.find(:all, :conditions => 'id = root_id AND bazar_district_id IS NOT NULL', :order => 'lower(name)').each do |t|%>
+	<%Term.with_taxonomy("BazarDistrict").find(:all, :conditions => 'id = root_id AND bazar_district_id IS NOT NULL', :order => 'lower(name)').each do |t|%>
 	<option <%='selected="selected"' if selterm && selterm.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
 	<% end -%>
+
 	<optgroup label="Especiales"></optgroup>
-	<%Term.find(:all, :conditions => 'id = root_id AND bazar_district_id IS NULL AND clan_id IS NULL and gaming_platform_id IS NULL and game_id IS NULL and taxonomy IS NULL', :order => 'lower(name)').each do |t|
+	<%Term.with_taxonomy("Homepage").find(:all, :conditions => 'id = root_id', :order => 'lower(name)').each do |t|
     next unless t.name == 'Gamersmafia' || @user.has_skill?("Capo") %>
 	<option <%='selected="selected"' if selterm && selterm.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
 	<% end -%>

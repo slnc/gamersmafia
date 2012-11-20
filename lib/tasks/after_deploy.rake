@@ -6,7 +6,7 @@ namespace :gm do
     `rake assets:precompile`
     `./script/delayed_job restart`
     Skin.update_default_skin_zip
-    Skin.find_by_hid("defaul").gen_compressed
+    Skin.find_by_hid("default").gen_compressed
     `rake gm:update_default_skin_styles`
     Cms.uncompress_ckeditor_if_necessary
     CacheObserver.expire_fragment("/common/gmversion")
