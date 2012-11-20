@@ -90,9 +90,14 @@ module ApplicationHelper
     if user_is_authed
       # TODO(slnc): PERF cache this
       interests = @user.user_interests.show_in_menu.find(:all).collect {|i|
-        {:code => i.menu_shortcut, :url => gmurl(i.real_item)}
+        begin
+          {:code => i.menu_shortcut, :url => gmurl(i.real_item)}
+        rescue ActiveRecord::RecordNotFound
+          # Item destroyed somehow
+          i.destroy
+        end
       }
-      interests.sort_by{|i| i[:code].downcase }
+      interests.compact.sort_by{|i| i[:code].downcase }
     else
       Personalization.get_default_quicklinks
     end
