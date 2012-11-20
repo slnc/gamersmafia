@@ -57,6 +57,31 @@ class Content < ActiveRecord::Base
         }
   }
 
+  scope :of_interest_to, lambda {|user|
+    # We need these 3 queries in order to find contents associated with
+    # categories associated with the top level terms that the user has an
+    # interest in.
+    game_ids = UserInterest.game_ids_of_interest(user)
+    gaming_platform_ids = UserInterest.gaming_platform_ids_of_interest(user)
+    bazar_district_ids = UserInterest.bazar_district_ids_of_interest(user)
+    {:conditions => ["id IN (
+                       SELECT content_id
+                       FROM contents_terms
+                       WHERE term_id IN (
+                         SELECT entity_id
+                         FROM user_interests
+                         WHERE user_id = ?
+                         AND entity_type_class = 'Term')
+                      OR game_id IN (?)
+                      OR gaming_platform_id IN (?)
+                      OR bazar_district_id IN (?)
+                      )",
+                     user.id,
+                     game_ids,
+                     gaming_platform_ids,
+                     bazar_district_ids]}
+  }
+
   scope :content_type_names, lambda { |names| {
             :conditions => ["content_type_id IN (
                               SELECT id

@@ -14,9 +14,18 @@ class HomeController < ApplicationController
     render :action => 'index_suicidal' #, :layout => 'suicidal'
   end
 
+  def stream
+    render :action => "stream"
+  end
+
   def index
     if user_is_authed && @user.pref_suicidal == 1
       index_suicidal
+      return
+    end
+
+    if user_is_authed && @user.pref_homepage_mode == 'stream'
+      stream
       return
     end
 

@@ -444,6 +444,18 @@ class SiteController < ApplicationController
     render :layout => false
   end
 
+  def stream_enable
+    require_auth_users
+    @user.pref_homepage_mode = "stream"
+    redirect_to "/"
+  end
+
+  def stream_disable
+    require_auth_users
+    @user.pref_homepage_mode = ""
+    redirect_to "/"
+  end
+
   def suicidal_enable
     require_auth_users
     @user.pref_suicidal = 1

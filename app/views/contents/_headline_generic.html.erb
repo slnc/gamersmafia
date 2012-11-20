@@ -1,0 +1,8 @@
+<div class="content-headline">
+  <header><a href="<%=gmurl(content)%>"><%=content.name%></a></header>
+  <div class="authorship infoinline">
+    por <strong><%=user_link(content.user)%></strong> -
+    <span class="timestamp"><%=print_tstamp(content.created_on)%></span> -
+    <%=content.contents_terms.find(:all, :include => :term).collect{|ct| "<a href=\"#{gmurl(ct.term)}\">#{ct.term.name}</a>" }.join(", ")%>
+  </div>
+</div>
