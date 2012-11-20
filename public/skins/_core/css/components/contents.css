@@ -13,3 +13,12 @@
   max-width: 100%;
   width: 100%;
 }
+
+.content-headline {
+  margin-bottom: 1.5rem;
+}
+
+.content-headline header {
+  font-size: 18px;
+  margin-bottom: 5px;
+}

@@ -1,0 +1,20 @@
+<%generic_support do%>
+  here be ads and more static stuff
+<% end -%>
+
+<%content_main do %>
+  <%mftext("Stream") do%>
+    <% content_ids = []
+        Content.recent.of_interest_to(@user).published.find(
+          :all,
+          :order => 'created_on DESC',
+          :limit => 100,
+          :include => :content_type).each do |content|
+          content_ids.append(content.id)
+        %>
+      <%= render :partial => "/contents/headline_generic",
+                 :locals => { :content => content } %>
+    <% end -%>
+    <script type="text/javascript">contents = contents.concat(<%=content_ids.join(",")%>);</script>
+  <% end -%>
+<% end -%>

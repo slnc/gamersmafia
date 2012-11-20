@@ -6,6 +6,7 @@ class UsersPreference < ActiveRecord::Base
     :contact_origin => String,
     :contact_psn_id => String,
     :contact_steam => String,
+    :homepage_mode => String,
     :hw_case => String,
     :hw_heatsink => String,
     :hw_keyboard => String,

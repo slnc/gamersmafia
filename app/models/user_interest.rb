@@ -82,6 +82,33 @@ class UserInterest < ActiveRecord::Base
     })
   end
 
+  def self.game_ids_of_interest(user)
+    self.ids_of_interest(user, "Game")
+  end
+
+  def self.gaming_platform_ids_of_interest(user)
+    self.ids_of_interest(user, "GamingPlatform")
+  end
+
+  def self.bazar_district_ids_of_interest(user)
+    self.ids_of_interest(user, "BazarDistrict")
+  end
+
+  def self.ids_of_interest(user, taxonomy)
+    table_name = ActiveSupport::Inflector::tableize(taxonomy)
+    User.db_query("
+      SELECT id
+      FROM #{table_name}
+      WHERE name IN (
+        SELECT a.name
+        FROM terms a
+        JOIN user_interests b
+        ON a.id = b.entity_id
+        AND b.entity_type_class = 'Term'
+        WHERE a.taxonomy = '#{taxonomy}'
+        AND b.user_id = #{user.id})").collect {|dbr| dbr['id'].to_i}
+  end
+
   def specific_entity_type_class
     case self.entity_type_class
     when "Term"
