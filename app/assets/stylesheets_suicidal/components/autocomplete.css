@@ -1,0 +1,6 @@
+.autocomplete {
+  position: absolute;
+  z-index: 100;
+  cursor: pointer;
+  padding: 0.2rem;
+}
