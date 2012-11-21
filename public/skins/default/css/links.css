@@ -16,10 +16,6 @@ a:hover {
 
 .infoinline a:hover { color: #000000; }
 
-#sawbottom a {
-    color: #fff;
-}
-
 #messages-indicator .messages.has-unread a {
     color: #6e4b00;
 }

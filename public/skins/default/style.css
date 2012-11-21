@@ -24,7 +24,6 @@
 @import url(css/components/mgadsbottom.css);
 @import url(css/components/mgbreadcrumb.css);
 @import url(css/components/mgfooter.css);
-@import url(css/components/mgglobalmenu.css);
 @import url(css/components/mgheader.css);
 @import url(css/components/mgintellibar.css);
 @import url(css/components/mgsubmenu.css);
@@ -33,7 +32,7 @@
 @import url(css/components/sidecontentlist.css);
 @import url(css/components/subheader.css);
 @import url(css/components/tracker.css);
-@import url(css/components/userbox.css);
+@import url(css/components/new-content-selector.css);
 
 @import url(css/sprites/buttons.css);
 @import url(css/sprites/cms.css);

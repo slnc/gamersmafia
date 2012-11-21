@@ -116,7 +116,7 @@ friends = @user.friends_online %>
             <li><a href="http://<%=App.domain_bazar%>/">Portada</a></li>
 <% cache("/layouts/default/districts") do %>
 <%BazarDistrict.find(:all, :order => 'lower(name)').each do |c| %>
-<li class="sawbody-bazar-tema"><a href="http://<%=c.slug%>.<%=App.domain%>/"><%=faction_favicon(c)%> <%=c.name%></a></li>
+  <li><a href="http://<%=c.slug%>.<%=App.domain%>/"><%=faction_favicon(c)%> <%=c.name%></a></li>
 <% end -%>
 <% end %><%# bazar_district %>
 

@@ -1,12 +1,12 @@
-
 #tracker .panel-title {
-    display: none;
-    visibility: hidden;
+  display: none;
+  visibility: hidden;
 }
 
 #tracker .mcontent {
-    padding-bottom: 3px;
+  padding-bottom: 3px;
 }
 
-
-#tracker { margin-bottom: 20px; }
+#tracker {
+  margin-bottom: 20px;
+}

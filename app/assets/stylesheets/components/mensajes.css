@@ -1,6 +1,5 @@
 #ccontent .messages {
     table-layout: fixed;
-    /*	border-top: 5px solid #333;*/
     border-collapse: collapse;
     background: #fff;
 }
@@ -35,4 +34,3 @@
 #ccontent .messages .preview span {
     padding-left: 13px;
 }
-

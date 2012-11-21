@@ -1,17 +1,14 @@
 .autocomplete {
     background: #fff;
-    position: absolute;
-    z-index: 100;
-  cursor: pointer;
-}
-
-.autocomplete {
     border: 1px solid #888;
-    margin: 0;
-    padding: 0;
-    width: 200px;
+    cursor: pointer;
     font-size: 11px;
     list-style-type: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    width: 200px;
+    z-index: 100;
 }
 
 .autocomplete li {
