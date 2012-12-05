@@ -1,6 +1,19 @@
-<%
+<% content_main do %>
+  <% mftext('Mis partidas en esta competición') do %>
+  <ul>
+  <% for match in @competition.matches(:approved, :participant => participant) %>
+    <% if @competition.state == Competition::STARTED then %><%#@competition.current_match_stage == match.stage then %>
+      <li><a href="/competiciones/partida/<%=match.id%>"><%=match_vs_name(match)%></a></li>
+    <% else %>
+      <li><%=match_vs_name(match)%></li>
+    <% end %>
+  <% end -%>
+  </ul>
+  <% end -%>
+<% end -%>
+
+<% generic_support do %>
 participant = @competition.get_active_participant_for_user(@user)
-generic_support do %>
   <%
   raise ActiveRecord::RecordNotFound if participant.nil?
   %>
@@ -48,16 +61,3 @@ generic_support do %>
   <% end -%>
 <% end -%>
 
-<% content_main do %>
-  <% mftext('Mis partidas en esta competición') do %>
-  <ul>
-  <% for match in @competition.matches(:approved, :participant => participant) %>
-    <% if @competition.state == Competition::STARTED then %><%#@competition.current_match_stage == match.stage then %>
-      <li><a href="/competiciones/partida/<%=match.id%>"><%=match_vs_name(match)%></a></li>
-    <% else %>
-      <li><%=match_vs_name(match)%></li>
-    <% end %>
-  <% end -%>
-  </ul>
-  <% end -%>
-<% end -%>

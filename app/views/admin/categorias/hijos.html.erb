@@ -1,3 +1,55 @@
+<%content_main do %>
+<%#=render :partial => 'categorias_selector' %>
+<% mftext("Subcategorías de #{@term.name} (#{ActiveSupport::Inflector::titleize(Cms::translate_content_name(params[:content_type]))})") do %>
+<form method="post" action="/<%=controller.cats_path%>/create?redirto=<%=controller.request.fullpath%>">
+<p><strong>Nueva categoría</strong><br/>
+<% @tterm = @term
+@term = nil %>
+<%= text_field 'term', 'name', :class => 'text'  %>
+<% @term = @tterm%>
+<input type="hidden" name="term[taxonomy]" value="<%=Term.taxonomy_from_class_name(params[:content_type])%>" />
+<input type="hidden" name="term[parent_id]" value="<%=@term.id%>" /> <input type="submit" class="button" value="Crear" /></p>
+</form>
+  <table>
+    <tr>
+      <th>Categoría</th>
+      <th>Subcategorías</th>
+      <th>Contenidos</th>
+    </tr>
+
+	<% ct = ContentType.find_by_name(params[:content_type])%>
+  <% @term.children.find(:all, :conditions => ["taxonomy = ?", Term.taxonomy_from_class_name(params[:content_type])]).each do |category| %>
+    <tr class="<%=oddclass%>">
+      <td><%=
+        obj = category
+        path = [link_to(category.name, "/#{controller.cats_path}/term/#{category.id}/hijos/#{params[:content_type]}")]
+        obj = obj.parent
+        while obj != nil and obj.id != obj.parent_id
+          path<< obj.name
+          obj = obj.parent
+        end
+		path.pop
+        path = path.reverse
+        path.join(' » ')
+        %></td>
+	    <td><%=category.all_children_ids(:taxonomy => Term.taxonomy_from_class_name(params[:content_type])).uniq.size - 1%></td>
+		<td><a href="/<%=controller.cats_path%>/term/<%=category.id%>/contenidos/<%=ct.name%>"><%=category.contents_count(:cls_name => ct.name)%></a></td>
+      <td><a href="/<%=controller.cats_path%>/term/<%=category.id%>/destroy?redirto=<%=controller.request.fullpath%>" class="confirm-click">Eliminar</a></td>
+    </tr>
+  <% end %>
+  </table>
+<% end -%>
+
+<% if @user.has_skill?("Capo") && @term.can_be_destroyed? then %>
+	<%mftext('Borrar categoría de primer nivel') do %>
+	<form method="post" action="/admin/categorias/destroy/<%=@term.id%>">
+		<input type="submit" class="button confirm-click" value="Borrar" />
+	</form>
+	<% end -%>
+<% end -%>
+
+<% end -%>
+
 <% generic_support(:show_ads => false) do %>
 <%mftext('Información de esta categoría') do %>
 <table>
@@ -37,7 +89,7 @@ path.each do |thep| %>
 i += 1
 end
 %></div>
-			
+
 		</td>
 		</tr>
 </table>
@@ -52,59 +104,7 @@ end
 <%= render_tree_select(@term.root.children.find(:all, :conditions => ["taxonomy = ?", Term.taxonomy_from_class_name(params[:content_type])]), 'name', 'term[parent_id]', @term.parent_id, true)%></p>
 <br />
 <% end %>
-<input type="submit" value="Guardar" />
+<input type="submit" class="button" value="Guardar" />
 </form>
 <% end -%>
-<% end -%>
-
-<%content_main do %>
-<%#=render :partial => 'categorias_selector' %>
-<% mftext("Subcategorías de #{@term.name} (#{ActiveSupport::Inflector::titleize(Cms::translate_content_name(params[:content_type]))})") do %>
-<form method="post" action="/<%=controller.cats_path%>/create?redirto=<%=controller.request.fullpath%>">
-<p><strong>Nueva categoría</strong><br/>
-<% @tterm = @term
-@term = nil %>
-<%= text_field 'term', 'name', :class => 'text'  %>
-<% @term = @tterm%>
-<input type="hidden" name="term[taxonomy]" value="<%=Term.taxonomy_from_class_name(params[:content_type])%>" />
-<input type="hidden" name="term[parent_id]" value="<%=@term.id%>" /> <input type="submit" value="Crear" /></p>
-</form>
-  <table>
-    <tr>
-      <th>Categoría</th>
-      <th>Subcategorías</th>
-      <th>Contenidos</th>
-    </tr>
-
-	<% ct = ContentType.find_by_name(params[:content_type])%>
-  <% @term.children.find(:all, :conditions => ["taxonomy = ?", Term.taxonomy_from_class_name(params[:content_type])]).each do |category| %>
-    <tr class="<%=oddclass%>">
-      <td><%=
-        obj = category
-        path = [link_to(category.name, "/#{controller.cats_path}/term/#{category.id}/hijos/#{params[:content_type]}")]
-        obj = obj.parent
-        while obj != nil and obj.id != obj.parent_id
-          path<< obj.name
-          obj = obj.parent
-        end
-		path.pop
-        path = path.reverse
-        path.join(' » ')
-        %></td>
-	    <td><%=category.all_children_ids(:taxonomy => Term.taxonomy_from_class_name(params[:content_type])).uniq.size - 1%></td>
-		<td><a href="/<%=controller.cats_path%>/term/<%=category.id%>/contenidos/<%=ct.name%>"><%=category.contents_count(:cls_name => ct.name)%></a></td>
-      <td><a href="/<%=controller.cats_path%>/term/<%=category.id%>/destroy?redirto=<%=controller.request.fullpath%>" onclick="return confirm('¿Estás seguro?');">Eliminar</a></td>
-    </tr>
-  <% end %>
-  </table>
-<% end -%>
-
-<% if @user.has_skill?("Capo") && @term.can_be_destroyed? then %>
-	<%mftext('Borrar categoría de primer nivel') do %>
-	<form method="post" action="/admin/categorias/destroy/<%=@term.id%>">
-		<input type="submit" value="Borrar" onclick="return confirm('¿Estás seguro?');" />
-	</form>
-	<% end -%>
-<% end -%>
-
 <% end -%>

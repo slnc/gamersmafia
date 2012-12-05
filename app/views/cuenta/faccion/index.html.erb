@@ -1,3 +1,78 @@
+<% content_main do %>
+
+<% if @user.is_faction_leader? && @user.faction_id then %>
+<% if !@user.faction.referenced_thing.has_img_file? || @user.faction.building_top == '' then %>
+<%mftext('Avisos') do %>
+<% if !@user.faction.referenced_thing.has_img_file? then %>
+<div class="bad-block">Tu facción todavía no tiene icono. Consigue un icono de
+16x16 en blanco y negro y formato gif y envíaselo a <a href="/site/staff">algún
+capo</a> para activarlo.</div>
+<% end -%>
+
+<% if @user.faction.building_top == '' then %>
+<% end -%>
+<div class="bad-block">Tu facción todavía no tiene edificio. Cuando consigas un
+edificio (<a href="http://gamersmafia.com/tutoriales/show/1183">tutorial</a>)
+envíaselo a <a href="/site/staff">algún capo</a> para activarlo.</div>
+<% end -%>
+<% end -%>
+
+<%mftext('Estadísticas') do %>
+<div id="line1"></div>
+<script type="text/javascript">
+	<% cache("/common/stats/factions/#{Time.now.strftime('%Y-%m-%d')}/#{@user.faction_id}") do %>
+	<%
+	ddata = User.db_query("select avg(karma) as karma, (extract('epoch' from created_on) / 259200)::int as epoch from stats.portals where portal_id = (select id from portals where code = '#{@user.faction.code}') group by (extract('epoch' from created_on) / 259200)::int order by (extract('epoch' from created_on) / 259200)::int desc limit 30")
+	ddata.reverse!
+	data = ddata.collect { |dbr| dbr['karma'].to_i }
+	data_ready = data.collect { |da| "[#{da}]" }
+	i = 0
+	axis = ddata.collect { |da|
+	i += 1
+		if i % 4 == 0 then
+		Time.at(da['epoch'].to_i*86440*3).strftime("'%d %b'")
+		else
+		"' '"
+		end
+	}
+	%>
+var api = new jGCharts.Api();
+jQuery('<img>')
+.attr('src', api.make({
+data: [<%=data.join(',')%>],
+axis_labels: [<%=axis.join(',')%>],
+fillarea: true,
+fillbottom: true,
+size: '500x150',
+title: 'Karma en los últimos 3 meses',
+type: 'lc'}))
+.appendTo("#line1");
+</script>
+<% end %><%# cache -%>
+<% end -%>
+<% end -%>
+
+<% mftext('Elegir facción') do %>
+<% if not @faction and (@user.faction_last_changed_on.nil? or @user.faction_last_changed_on < 1.month.ago) then %>
+  <div class="bad-block">Si eliges una facción y luego quieres cambiar a otra tendrás que esperar un mes.</div>
+  <form method="post" action="/cuenta/faccion/join">
+  <%= collection_select :user, :id, Faction.find(:all, :order => 'lower(name) ASC'), :id, :name, {:include_blank => true} %>
+  <br />
+  <br />
+  <input type="submit" class="button" value="Unirme" />
+  </form>
+  <div class="secondary-block system-message">
+    Si quieres saber más sobre facciones puedes visitar la
+    <a href="/site/faq">sección de ayuda</a>.
+  </div>
+<% elsif !@faction && @user.faction_last_changed_on >= 1.month.ago %>
+  <p>No puedes elegir una nueva facción hasta
+  <strong><%=print_tstamp @user.can_change_faction_after%></strong>.
+  </p>
+<% end %><%# if -%>
+<% end %><%# mftext -%>
+<% end %><%# content-%>
+
 <% generic_support do %>
 <% if @faction then %>
 <% mftext('Cambiar de facción') do %>
@@ -34,72 +109,3 @@ Líderes:<br />
 <% end %><%# mftext -%>
 <% end %><%# content support-%>
 
-<% content_main do %>
-
-<% if @user.is_faction_leader? && @user.faction_id then %>
-<% if !@user.faction.referenced_thing.has_img_file? || @user.faction.building_top == '' then %>
-<%mftext('Avisos') do %>
-<% if !@user.faction.referenced_thing.has_img_file? then %>
-<div class="warning">Tu facción todavía no tiene icono. Consigue un icono de
-16x16 en blanco y negro y formato gif y envíaselo a <a href="/site/staff">algún
-capo</a> para activarlo.</div>
-<% end -%>
-
-<% if @user.faction.building_top == '' then %>
-<% end -%>
-<div class="warning">Tu facción todavía no tiene edificio. Cuando consigas un
-edificio (<a href="http://gamersmafia.com/tutoriales/show/1183">tutorial</a>)
-envíaselo a <a href="/site/staff">algún capo</a> para activarlo.</div>
-<% end -%>
-<% end -%>
-
-<%mftext('Estadísticas') do %>
-<div id="line1"></div>
-<script type="text/javascript">
-	<% cache("/common/stats/factions/#{Time.now.strftime('%Y-%m-%d')}/#{@user.faction_id}") do %>
-	<% 	
-	ddata = User.db_query("select avg(karma) as karma, (extract('epoch' from created_on) / 259200)::int as epoch from stats.portals where portal_id = (select id from portals where code = '#{@user.faction.code}') group by (extract('epoch' from created_on) / 259200)::int order by (extract('epoch' from created_on) / 259200)::int desc limit 30")
-	ddata.reverse!
-	data = ddata.collect { |dbr| dbr['karma'].to_i }
-	data_ready = data.collect { |da| "[#{da}]" }
-	i = 0
-	axis = ddata.collect { |da|
-	i += 1
-		if i % 4 == 0 then
-		Time.at(da['epoch'].to_i*86440*3).strftime("'%d %b'")
-		else
-		"' '"
-		end
-	}
-	%>
-var api = new jGCharts.Api();
-jQuery('<img>')
-.attr('src', api.make({
-data: [<%=data.join(',')%>],
-axis_labels: [<%=axis.join(',')%>],
-fillarea: true,
-fillbottom: true,
-size: '500x150',
-title: 'Karma en los últimos 3 meses',
-type: 'lc'}))
-.appendTo("#line1");
-</script>
-<% end %><%# cache -%>
-<% end -%>
-<% end -%>
-
-<% mftext('Elegir facción') do %>
-<% if not @faction and (@user.faction_last_changed_on.nil? or @user.faction_last_changed_on < 1.month.ago) then %>
-  <div class="warning">Si eliges una facción y luego quieres cambiar a otra tendrás que esperar un mes.</div>
-  <form method="post" action="/cuenta/faccion/join">
-  <%= collection_select :user, :id, Faction.find(:all, :order => 'lower(name) ASC'), :id, :name, {:include_blank => true} %>
-  <br />
-  <br />
-  <input type="submit" class="button" value="Unirme" />
-  </form>
-  <div class="system-message">Si quieres saber más sobre facciones puedes visitar la <a href="/site/faq">sección de ayuda</a>.</div>
-<% elsif not @faction and @user.faction_last_changed_on >= 1.month.ago %>
-   <p>No puedes elegir una nueva facción hasta <strong><%=print_tstamp @user.can_change_faction_after%></strong>.</p>
-<% end %><%# if -%>
-<% end %><%# mftext -%>
-<% end %><%# content-%>

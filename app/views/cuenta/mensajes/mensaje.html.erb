@@ -1,8 +1,5 @@
-<% generic_support do %>
-<% end -%>
-
 <% content_main do %>
-<div class="contenttitle message-content" style="border: 0;">
+<div class="message-content" style="border: 0;">
     <div class="titleavatar"><img src="<%=ASSET_URL%><%=@curmessage.sender.show_avatar%>" /></div> <h1><%=@curmessage.title%></h1>
     <div class="infoinline"><ul>
     <li class="first">de <%=link_to @curmessage.sender.login, :controller => '/miembros', :action => @curmessage.sender.login%> para <%=link_to @curmessage.recipient.login, :controller => '/miembros', :action => @curmessage.recipient.login%></li>
@@ -16,7 +13,7 @@
 </div>
 <div class="message-body"><%=@curmessage.message.index('<br />') ? @curmessage.message : Formatting.format_bbcode(message_quotize(@curmessage.message))%></div>
 
-<div class="subheader"><div>Conversación</div></div>
+<div class="subheader f_deca"><div>Conversación</div></div>
 <%=print_thread_tree(Message.find(@curmessage.thread_id), @curmessage)%>
 
 
@@ -25,7 +22,7 @@
 <input type="hidden" name="message[recipient_user_login]" value="<%=@curmessage.sender.login%>" />
 <br />
 <br />
-<div class="subheader"><div>Responder</div></div>
+<div class="subheader f_deca"><div>Responder</div></div>
 <p>
 <%
 @message.message = ""
@@ -48,3 +45,7 @@ $('#message_message').focus();
   <%= submit_tag 'Enviar' %>
 </form>
 <% end -%>
+
+<% generic_support do %>
+<% end -%>
+

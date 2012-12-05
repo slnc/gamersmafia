@@ -1,0 +1,35 @@
+.grid-2,
+.grid-3,
+.grid-4,
+.grid-5,
+.grid-6,
+.grid-7,
+.grid-8,
+.grid-9,
+.grid-10,
+.grid-11,
+.grid-12,
+.grid-13,
+.grid-14 {
+	float: left;
+	margin-right: 20px;
+}
+
+.glast { margin-right: 0; }
+
+.grid-1  { width: 35px; }
+.grid-2  { width: 90px; }
+.grid-3  { width: 145px; }
+.grid-4  { width: 200px; }
+.grid-5  { width: 255px; }
+.grid-6  { width: 310px; }
+.grid-7  { width: 365px; }
+.grid-8  { width: 420px; }
+.grid-9  { width: 475px; }
+.grid-10 { width: 530px; }
+.grid-11 { width: 585px; }
+.grid-12 { width: 640px; }
+.grid-13 { width: 695px; }
+.grid-14 { width: 750px; }
+.grid-15 { width: 805px; }
+.grid-16 { width: 860px; }

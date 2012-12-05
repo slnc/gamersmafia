@@ -1,7 +1,7 @@
 <% # -*- coding: UTF-8 -*- %>
-<div id="tags" class="f_sm infoinline">
+<div id="tags" class="f_milli infoinline">
 	<div class="system">
-		<img src="/images/dot.gif" title="Tags de sistema" class="floatl system-tag-icon ico16 sprite1" />
+    <div class="floatl"><%=gm_icon("tag")%></div>
     <div class="tag">
       <a href="/<%=Cms::CONTENTS_CONTROLLERS[object.content_type.name]%>"><%=Cms::CLASS_NAMES[object.content_type.name]%></a>
     </div>
@@ -28,7 +28,7 @@ root_slugs<< this_root
 	</div>
 
 	<div id="top-content-tags">
-	<img src="/images/dot.gif" title="Tags de usuario" class="floatl user-tag-icon ico16 sprite1" />
+  <div class="floatl"><%=gm_icon("tag")%></div>
 	<%object.terms.contents_tags.find(:all, :order => 'lower(name)').each do |t| %>
     <div class="tag">
       <a title="Ver los <%=t.contents_count%> contenidos con este mismo tag" href="/tags/<%=t.slug%>"><%=t.name%></a>
@@ -40,7 +40,7 @@ root_slugs<< this_root
 
 <% if user_is_authed && @user.has_skill?("TagContents") %>
 <div id="tag-this-content">
-  <img src="/images/dot.gif" title="Añadir tag" class="floatl user-tag-icon-add ico16 sprite1" />
+  <div class="floatl"><%=gm_icon("tag-add")%></div>
 </div>
 <div id="new-tag-input">
 <% # TODO(slnc): crear el elemento por ajax %>
@@ -48,7 +48,7 @@ root_slugs<< this_root
   <input type="hidden" name="id" value="<%=object.id%>" />
   <div id="tags-placeholder" class="text-input">
     <input id="new-tag-input-text" type="text" name="tags"
-      class="autocomplete-me" data-autocomplete-url="/tags/autocomplete"
+      class="autocomplete-me user-input" data-autocomplete-url="/tags/autocomplete"
       data-autocomplete-click="Gm.Utils.TagsAutocomplete" />
   </div>
   <input type="submit" id="new-tags-submit" class="button" value="Asociar" />
@@ -63,8 +63,7 @@ root_slugs<< this_root
 	<div class="tag one-of-my-tags" id="one-of-my-tags<%=uct.id%>">
 	<div style="display: none;" class="one-of-my-tags-ops" id="one-of-my-tags-ops<%=uct.id%>">
     <%=link_to(
-        '<img src="/images/dot.gif" title="Eliminar tag" class="floatl' +
-        ' user-tag-icon-del ico16 sprite1" />',
+        gm_icon("tag-del"),
         "/admin/contenidos/remove_user_tag/?id=#{uct.id}",
         :remote => true)%>
   </div>

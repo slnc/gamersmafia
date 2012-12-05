@@ -1,14 +1,3 @@
-<% generic_support do %>
-  <% mftext('Configuración') do %>
-  <form method="post" action="/cuenta/cuenta/save_tracker_config">
-  <label><%=check_box 'user', 'comment_adds_to_tracker_enabled' %> Por defecto activar "Añadir al tracker" en tus comentarios</label><br />
-  <label style="margin-top: 10px; display: block;"><%=check_box 'user', 'tracker_autodelete_old_contents' %> Eliminar del tracker automáticamente contenidos sin nuevos comentarios después de 3 meses</label><br />
-  <div style="text-align: center;"><input style="margin: 5px;" type="submit" class="button" value="Guardar" /></div>
-  </form>
-  <div style="margin-top: 25px; text-align: center;"><strong><a class="nav" href="/cuenta/cuenta/preferencias_notificaciones">Configurar notificaciones por email</a></strong></div>
-  <% end -%>
-<% end -%>
-
 <% content_main do %>
   <% mftext('Contenidos') do %>
 <%# @tracker_item_pages, @tracker_items = controller.paginate :tracker_item, :conditions => ['tracker_items.user_id = ?', @user.id], :order => 'lastseen_on desc', :per_page => 50, :include => :content %>
@@ -32,3 +21,15 @@
   </table>
   <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <% mftext('Configuración') do %>
+  <form method="post" action="/cuenta/cuenta/save_tracker_config">
+  <label><%=check_box 'user', 'comment_adds_to_tracker_enabled' %> Por defecto activar "Añadir al tracker" en tus comentarios</label><br />
+  <label style="margin-top: 10px; display: block;"><%=check_box 'user', 'tracker_autodelete_old_contents' %> Eliminar del tracker automáticamente contenidos sin nuevos comentarios después de 3 meses</label><br />
+  <div style="text-align: center;"><input style="margin: 5px;" type="submit" class="button" value="Guardar" /></div>
+  </form>
+  <div style="margin-top: 25px; text-align: center;"><strong><a class="nav" href="/cuenta/cuenta/preferencias_notificaciones">Configurar notificaciones por email</a></strong></div>
+  <% end -%>
+<% end -%>
+

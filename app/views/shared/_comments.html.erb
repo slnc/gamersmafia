@@ -119,8 +119,8 @@ window.onload = load_comments;
 <% end -%>
 </script>
 
-<div class="infoinline right gotop">
-  <a href="#" onclick="return Gm.Utils.gototop();">Volver arriba</a>
+<div class="right secondary f_milli">
+  <a href="#" onclick="return Gm.Utils.gototop();">Volver arriba <%=gm_icon("uparrow", "small")%></a>
 </div>
 
 <% if user_is_authed %>
@@ -131,12 +131,12 @@ window.onload = load_comments;
                :uniq_id => uniq_id
            } %>
 <% else %>
-    <div class="system-message">
+    <div class="secondary-block system-message">
       <div class="register-now">
         <a href="/cuenta/alta"><img src="/images/hentai/<%=get_enticing_image%>.jpg" /></a>
       </div>
       <p style="text-align: center;">
-      <a href="/cuenta/alta"><img style="border: 0;" src="/skins/default/images/btn_register.png" /></a>
+      <a href="/cuenta/alta"><%=button("Regístrate")%></a>
       <br />y comenta.</p>
     </div>
 <% end -%>

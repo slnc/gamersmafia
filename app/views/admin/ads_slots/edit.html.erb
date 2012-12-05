@@ -1,18 +1,9 @@
-<% generic_support(:show_ads => false) do %>
-<% mftext('Herramientas') do %>
-<form method="post" action="/admin/ads_slots/copy/<%=@ads_slot.id%>">
-Nombre: <input type="text" name="ads_slot[name]" /><br />
-<input type="submit" value="Copiar" />	
-</form>
-<% end -%>
-<% end -%>
-
 <% content_main do %>
 <h1>Editar ads slot</h1>
 
 <%= form_tag({:action => 'update', :id => @ads_slot}, :multipart => true )%>
   <%= render :partial => 'form' %>
-  <%= submit_tag 'Guardar' %>
+  <%= submit_tag 'Guardar', :class => 'button' %>
 </form>
 
 
@@ -53,7 +44,7 @@ instances.each do |adsi|
 cur_mean_ctr = ddata.collect { |dbr| dbr['ctr'].to_f }.mean * 1000
 
 %>
-<tr class="<%=oddclass%> value-is-<%='low' if cur_mean_ctr <= low_ctr_threshold %><%='high' if cur_mean_ctr >= high_ctr_threshold %>" id="adsi<%=adsi.id%>">
+<tr class="<%=oddclass%> value-is-<%='low bad' if cur_mean_ctr <= low_ctr_threshold %><%='high good' if cur_mean_ctr >= high_ctr_threshold %>" id="adsi<%=adsi.id%>">
 	<td><a href="/admin/ads/edit/<%=adsi.ad.id%>"><%=adsi.ad.name%></a><br />
 	<%=fc_thumbnail(adsi.ad.file, 'k', '153x60') if adsi.ad.file%></td>
 	<td><%=sparkline(:size => '125x50', :data => data, :max => max_ctr)%></td>
@@ -68,7 +59,7 @@ cur_mean_ctr = ddata.collect { |dbr| dbr['ctr'].to_f }.mean * 1000
 <br />
 <br />
 <h1>Ads asociados a este slot</h1>
-<div class="subheader"><div>Nuevo</div></div>
+<div class="subheader f_deca"><div>Nuevo</div></div>
 <% @ad = Ad.new %>
 
 <%= form_tag('/admin/ads/create_and_associate', :multipart => true )%>
@@ -78,7 +69,7 @@ cur_mean_ctr = ddata.collect { |dbr| dbr['ctr'].to_f }.mean * 1000
   <%= submit_tag 'Crear y asociar ad' %>
 </form>
 
-<div class="subheader"><div>Existente</div></div>
+<div class="subheader f_deca"><div>Existente</div></div>
 
 
 <%= form_tag({:action => 'update_slots_instances', :id => @ads_slot})%>
@@ -97,13 +88,13 @@ Ad.find(:all, :order => 'name').each do |ad| %>
 
 <br />
 
-<div class="subheader"><div>Portales en los que aparece</div></div>
+<div class="subheader f_deca"><div>Portales en los que aparece</div></div>
 <form method="post" action="/admin/ads_slots/add_to_portal/<%=@ads_slot.id%>">
 	Portal:
 	<select name="portal_id">
 		<%=options_for_select([['gm', GmPortal.new.id], ['arena', ArenaPortal.new.id], ['bazar', BazarPortal.new.id]] + Portal.find(:all, :conditions => 'type <> \'ClansPortal\'', :order => 'code').collect { |o| [o.code, o.id] }) %>
 	</select><br />
-	<input type="submit" value="Asociar" />
+	<input type="submit" class="button" value="Asociar" />
 </form>
 <% if @ads_slot.portals.size == 0 then %>
 <p>Aparece en todos los portales</p>
@@ -118,5 +109,14 @@ Ad.find(:all, :order => 'name').each do |ad| %>
 	<% end -%>
 </table>
 </p>
+<% end -%>
+<% end -%>
+
+<% generic_support(:show_ads => false) do %>
+<% mftext('Herramientas') do %>
+<form method="post" action="/admin/ads_slots/copy/<%=@ads_slot.id%>">
+Nombre: <input type="text" name="ads_slot[name]" /><br />
+<input type="submit" class="button" value="Copiar" />
+</form>
 <% end -%>
 <% end -%>

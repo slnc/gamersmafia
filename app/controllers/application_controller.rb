@@ -18,13 +18,17 @@ class ApplicationController < ActionController::Base
   before_filter :ident, :resolve_portal_mode, :check_referer,
                 :populate_navpath2, :parse_params_page, :init_xab
 
-  attr_accessor :active_sawmode, :competition, :global_vars, :portal,
-                :third_menu, :_xad, :smodel_id
+  attr_accessor :competition, :global_vars, :portal, :third_menu, :_xad, :smodel_id
 
   cattr_accessor :navpath2
   around_filter :gm_process
+  before_filter :init_start_time
 
   layout :set_layout
+
+  def init_start_time
+    @start_time = Time.now
+  end
 
   private
   def set_layout

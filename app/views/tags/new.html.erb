@@ -1,6 +1,3 @@
-<%generic_support do%>
-<% end -%>
-
 <%content_main do %>
   <%mftext("Nuevo tag") do%>
   <form method="post" action="<%=tags_path%>">
@@ -12,7 +9,11 @@
       Contenido <%=i+1%> <input type="text" name="tag[initial_contents][]" value="" />
       <br />
     <% end -%>
-    <input type="submit" value="Crear" />
+    <input type="submit" class="button" value="Crear" />
   </form>
   <% end -%>
 <% end -%>
+
+<%generic_support do%>
+<% end -%>
+

@@ -3,7 +3,7 @@
   <form method="post" action="/cuenta/faccion/links/create" enctype="multipart/form-data">
   <%= form_tag({:action => 'create'}, :multipart => true )%>
     <%= render :partial => 'factions_link' %>
-    <%= submit_tag 'Crear' %>
+    <%= submit_tag 'Crear', :class => 'button' %>
   </form>
 
   <br />

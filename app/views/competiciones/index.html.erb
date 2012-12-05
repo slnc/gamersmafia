@@ -1,21 +1,3 @@
-<% generic_support do %>
-<%=render :partial => '/competiciones/inscripciones_abiertas' %>
-
-  <% mftext('Últimos resultados') do %>
-  <%=render :partial => 'competiciones/ultimos_resultados' %>
-  <% end -%>
-
-  <% mftext('Competiciones finalizadas') do %>
-  <ul class="sidelist">
-  <% cache("/#{controller.portal.code}/competiciones/index/competiciones_finalizadas") do %>
-  <% controller.portal.competitions.find(:all, :conditions => 'state >= 4').each do |competition| %>
-    <li><%=competition.pro? ? '<div style="float: right; margin: 3px 3px 0 0;"><img class="competition-pro" src="/images/blank.gif" /></div>' : ''%><div style="float: right;" class="infoinline"><%=competition.kind_of?(League) ? 'liga' : 'torneo'%></div><%=faction_favicon(competition.game)%> <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a></li>
-  <% end -%>
-<% end -%>
-  </ul>
-  <% end -%>
-<% end -%>
-
 <% content_main do %>
   <% mftext('Competiciones en curso') do %>
   <br />
@@ -26,7 +8,7 @@
   <table>
   <% controller.portal.competitions.find(:all, :conditions => 'type = \'Ladder\' and state > 1 and state < 4', :order => 'game_id ASC, lower(name) ASC').each do |competition| %>
     <tr class="<%=oddclass%>">
-      <td><%=competition.pro? ? '<div style="float: right; margin: 3px 3px 0 0;"><img class="competition-pro" src="/images/blank.gif" /></div>' : ''%>
+      <td><%=competition.pro? ? '(pro)' : ''%>
          <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a><br />
         <table class="compact">
           <tr>
@@ -49,7 +31,7 @@
 	<table>
 	<%leagues.each do |competition| %>
     <tr class="<%=oddclass%>">
-      <td><%=competition.pro? ? '<div style="float: right; margin: 3px 3px 0 0;"><img class="competition-pro" src="/images/blank.gif" /></div>' : ''%>
+      <td><%=competition.pro? ? '(pro)' : ''%>
          <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a><br />
         <table class="compact">
           <tr>
@@ -73,7 +55,7 @@
 	<table>
 	<%tournaments.each do |competition| %>
     <tr class="<%=oddclass%>">
-      <td><%=competition.pro? ? '<div style="float: right; margin: 3px 3px 0 0;"><img class="competition-pro" src="/images/blank.gif" /></div>' : ''%>
+      <td><%=competition.pro? ? '(pro)' : ''%>
          <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a><br />
         <table class="compact">
           <tr>
@@ -96,3 +78,53 @@
 
   <div style="clear: left; margin-top: 10px;"></div>
 <% end -%>
+
+<% generic_support do %>
+<%mftext('Ladders') do %>
+    <%=render :partial => '/competiciones/open_ladders' %>
+<% end -%>
+
+<%cache("/arena/home/index/ranking") do %>
+<%mftext('Ranking', :has_submodules => true) do
+[['Jugadores', Competition::USERS], ['Clanes', Competition::CLANS]].each do |ard| %>
+<%mftext(ard[0]) do
+	ladders = Ladder.find(:all, :conditions => "competitions.state > 1 and competitions.state < 4 and competitions_participants_type_id = #{ard[1]}", :order => '(select slug from games where id = competitions.game_id), lower(competitions.name)', :include => :game)
+%>
+	<table>
+		<% ladders.each do |ladder|
+winners = ladder.winners(1)
+next unless winners.size == 1 %>
+		<tr class="<=%oddclass%>">
+			<td class="w16"><%=faction_favicon(ladder.game.slug)%></td>
+			<td><a href="/competiciones/participante/<%=winners[0].id%>"><%=winners[0].name%></a><br /><div class="infoinline"><a href="/competiciones/show/<%=ladder.id%>"><%=ladder.name%></a></div></td>
+		</tr>
+		<% end -%>
+	</table>
+	<% end -%>
+<% end %><%# ard -%>
+<% end -%>
+<% end %><%# cache -%>
+
+<% cache("/#{controller.portal.code}/competiciones/index/inscripciones_abiertas2") do %>
+<%mflist('Inscripciones abiertas', controller.portal.competitions.find(:all, :conditions => 'type <> \'Ladder\' and state = 1')) do |competition| %>
+<%# TODO mostrar solo las que se deberían ver aquí %>
+      <li><%=competition.pro? ? '(pro)' : ''%><div style="float: right;" class="infoinline"><%=competition.kind_of?(League) ? 'liga' : 'torneo'%></div><%=faction_favicon(competition.game)%> <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a></li>
+  <% end -%>
+<% end -%>
+<%=render :partial => '/competiciones/inscripciones_abiertas' %>
+
+  <% mftext('Últimos resultados') do %>
+  <%=render :partial => 'competiciones/ultimos_resultados' %>
+  <% end -%>
+
+  <% mftext('Competiciones finalizadas') do %>
+  <ul class="sidelist">
+  <% cache("/#{controller.portal.code}/competiciones/index/competiciones_finalizadas") do %>
+  <% controller.portal.competitions.find(:all, :conditions => 'state >= 4').each do |competition| %>
+  <li><%=competition.pro? ? '(pro)' : ''%><div style="float: right;" class="infoinline"><%=competition.kind_of?(League) ? 'liga' : 'torneo'%></div><%=faction_favicon(competition.game)%> <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a></li>
+  <% end -%>
+<% end -%>
+  </ul>
+  <% end -%>
+<% end -%>
+

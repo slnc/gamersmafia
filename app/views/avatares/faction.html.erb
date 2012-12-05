@@ -2,7 +2,7 @@
 <p>
 <table>
   <tr>
-    <td style="width: 125px;"><h2><strong>Nivel 0</strong></h2></td>
+    <td style="width: 125px;"><h2 class="f_hecto"><strong>Nivel 0</strong></h2></td>
     <td>
 <% previous_level = 0
 for avatar in @faction.avatars.find(:all, :order => 'level ASC')
@@ -12,7 +12,7 @@ for avatar in @faction.avatars.find(:all, :order => 'level ASC')
 </td>
 </tr>
 <tr>
-  <td style="width: 125px;"><h2><strong>Nivel <%=previous_level%></strong></h2></td>
+  <td style="width: 125px;"><h2 class="f_hecto"><strong>Nivel <%=previous_level%></strong></h2></td>
   <td>
 <%  end %>
 <div style="display: inline; margin-right: 5px;"><a href="/avatares/edit/<%=avatar.id%>"><img id="avatar<%=avatar.id%>" onclick="select_new_avatar(this, <%=avatar.id%>);" class="avatar" src="/<%=avatar.path%>" /></a></div><span class="infoinline"> <% for uz in User.find(:all, :conditions => ['avatar_id = ?', avatar.id], :order => 'lower(login) asc') %> <%=link_to uz.login, gmurl(uz)%>, </span><% end -%>

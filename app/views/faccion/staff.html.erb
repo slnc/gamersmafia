@@ -1,18 +1,3 @@
-<% generic_support do%>
-<%mftext('Descripciones de los puestos') do %>
-<dl>
-	<dt>Boss</dt>
-	<dd>Encargado de administrar la facción. Entre sus labores están: gestionar baneados, promocionar la facción, gestionar la ficha de información, gestionar los avatares disponibles, supervisar que todo marcha correctamente, gestionar el staff de la facción y cobrar un sueldo semanal.</dd>
-	<dt>Underboss</dt>
-	<dd>Tiene las mismas funciones que el boss con excepción de elegir un underboss.</dd>
-	<dt>Editor</dt>
-	<dd>Se encarga de publicar contenidos de alta calidad en su sección y de revisar que los contenidos enviados por el resto de usuarios estén bien formateados, elegantes y legibles.</dd>
-	<dt>Moderador</dt>
-	<dd>Se asegura de que los comentarios de la facción cumplan el código de conducta de la web y de supervisar los foros y asegurarse de que todo marche sobre ruedas.</dd>
-</dl>
-<% end -%>
-<% end -%>
-
 <%content_main do%>
 <div class="grid-5">
 <%mftext('Boss') do
@@ -86,7 +71,7 @@ next if ordered[ct.name] && ordered[ct.name].size > 0
 <tr class="<%=oddclass%>"><td><%=Cms.translate_content_name(ct.name).titleize%></td></tr>
 <% end %><%# each -%>
 </table>
-<% end -%>	
+<% end -%>
 
 
 
@@ -96,8 +81,24 @@ next if ordered[ct.name] && ordered[ct.name].size > 0
 	<tr class="<%=oddclass%>"><td><%=user_link(moderator)%></td></tr>
 	<% end -%>
 </table>
-<% end -%>	
+<% end -%>
 </div>
 
 <div class="clearb"></div>
 <%end -%>
+
+<% generic_support do%>
+<%mftext('Descripciones de los puestos') do %>
+<dl>
+	<dt>Boss</dt>
+	<dd>Encargado de administrar la facción. Entre sus labores están: gestionar baneados, promocionar la facción, gestionar la ficha de información, gestionar los avatares disponibles, supervisar que todo marcha correctamente, gestionar el staff de la facción y cobrar un sueldo semanal.</dd>
+	<dt>Underboss</dt>
+	<dd>Tiene las mismas funciones que el boss con excepción de elegir un underboss.</dd>
+	<dt>Editor</dt>
+	<dd>Se encarga de publicar contenidos de alta calidad en su sección y de revisar que los contenidos enviados por el resto de usuarios estén bien formateados, elegantes y legibles.</dd>
+	<dt>Moderador</dt>
+	<dd>Se asegura de que los comentarios de la facción cumplan el código de conducta de la web y de supervisar los foros y asegurarse de que todo marche sobre ruedas.</dd>
+</dl>
+<% end -%>
+<% end -%>
+

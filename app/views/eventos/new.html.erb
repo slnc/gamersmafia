@@ -1,8 +1,3 @@
-<% generic_support do %>
-<%= render :partial => '/shared/drafts', :locals => { :cls => Event } if user_is_authed %>
-<%= render :partial => 'shared/pending', :object => Event.pending %>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Nuevo evento') do %>
 
@@ -10,10 +5,14 @@
   <%= render :partial => 'form' %>
   <%= render :partial => '/shared/new_content_tags' %>
   <br />
-  <%= submit_tag 'Crear' %>
+  <%= submit_tag 'Crear', :class => 'button' %>
 </form>
 
 <br />
 <%= link_to 'Volver', :action => 'list' %>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<% end -%>
+

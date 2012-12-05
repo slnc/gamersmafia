@@ -76,16 +76,6 @@ module MiembrosHelper
     END
   end
 
-  def draw_user_info2(user)
-    out = "<div class=\"userinfobox2\">
-
-            <div class=\"userinfo\">
-                <div class=\"avatar\" style=\"float: left;\"><img src=\"#{ASSET_URL}#{user.show_avatar}\" /></div>
-                <div class=\"attributes\">#{render :partial => '/shared/karmabar', :locals => {:user => user}}<br />#{render :partial => '/shared/karmabar', :locals => {:user => user}}<br />#{faction_favicon(user)}</div>
-            </div>
-            </div>"
-  end
-
   def draw_karma_bar_sm(user)
     if user.karma_points < 1000
       formatted = user.karma_points
@@ -111,7 +101,7 @@ module MiembrosHelper
     # rgb_color = '#' + [1 - opacity, 1 - opacity, 1 - opacity].collect { |v| sprintf("%02x", (v*255).to_i) }.join
     # rgb_color = '#c0c0c0' if rgb_color > '#c0c0c0'
 
-    "<style type=\"text/css\">#comment#{refobj.id} .comments-bar .points, #comment#{refobj.id} .comments-bar .pcent-bar .bar { filter: alpha(opacity=#{(opacity*100).to_i}); -khtml-opacity: #{opacity.to_s[0..3]}; -moz-opacity: #{opacity.to_s[0..3]}; opacity: #{opacity.to_s[0..3]}; }</style> <div class=\"comments-bar\"><div class=\"points\" style=\"float: left; width: 10px; margin-top: 2px; text-align: right;\">#{comments_icon(cvt.name.to_sym)}</div> <div style=\"margin-left: 12px; padding-top: 2px;\"><div class=\"comments-bar\">#{draw_pcent_bar(strength, nil, true)}</div></div></div>"
+    "<style type=\"text/css\">#comment#{refobj.id} .comments-bar .points, #comment#{refobj.id} .comments-bar .pcent-bar .bar { filter: alpha(opacity=#{(opacity*100).to_i}); -khtml-opacity: #{opacity.to_s[0..3]}; -moz-opacity: #{opacity.to_s[0..3]}; opacity: #{opacity.to_s[0..3]}; }</style> <div class=\"comments-bar\"><div class=\"points\" style=\"float: left; width: 10px; margin-top: 2px; text-align: right;\">#{gm_icon(cvt.icon, "small")}</div> <div style=\"margin-left: 12px; padding-top: 2px;\"><div class=\"comments-bar\">#{draw_pcent_bar(strength, nil, true)}</div></div></div>"
   end
 
   def wii_code(wii_code)

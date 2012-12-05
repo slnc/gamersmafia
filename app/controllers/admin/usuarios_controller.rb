@@ -300,26 +300,6 @@ class Admin::UsuariosController < ApplicationController
     redirect_to "/site/alertas"
   end
 
-  def send_hq_invitation
-    recipient = User.find(params[:id])
-    raise ActiveRecord::RecordNotFound unless recipient
-    m = Message.new(:sender => User.find(1), :recipient => recipient, :title => 'Invitación para formar parte del HQ', :message => "Buenas #{recipient.login},
-
-¿Te gustaría formar parte del HQ? El HQ son un conjunto de usuarios de gamersmafia con acceso a la zona de gestión de bugs e ideas y al wiki interno de la web. Aparte de esas zonas especiales también tenemos una lista de correo interna donde se anuncian ideas, los detalles de las actualizaciones de la web y otros temas.
-
-Lo único que es necesario para formar parte del HQ son ganas de mejorar la comunidad y la web y un mínimo de participación en al menos una de las áreas como la lista de correo.
-
-¿Qué me dices? Si te interesa respóndeme con un email en el que quieras recibir los correos de la lista interna. Es importante que la dirección no sea hotmail porque con hotmail es imposible seguir una lista de correo. Cuentas como @gmail o cuentas que no sean webmail sí que sirven.
-
-Quedo a la espera de tu respuesta :)")
-    if m.save
-      flash[:notice] = "Invitación enviada correctamente"
-    else
-      flash[:error] = "Error al enviar el mensaje"
-    end
-    redirect_to "/admin/usuarios/edit/#{params[:id]}"
-  end
-
   def set_antiflood_level
     raise AccessDenied if !Authorization.can_antiflood_users?(@user)
     u = User.find(params[:user_id])

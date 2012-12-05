@@ -4,7 +4,7 @@ require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'test_unit_mixings.rb'
 require 'test/unit'
-require 'mocha'
+require 'mocha/setup'
 
 # lo metemos aquí porque test_helper parece que se incluye varias veces
 class ActionController::TestRequest
@@ -250,14 +250,10 @@ class ActiveSupport::TestCase
   def go_to(url, template=nil)
     get url
     assert_response :success, response.body
-    if url == '/' then
-      assert_template portal.home # 'index'
+    if template.nil?
+      assert_template url[1..-1] # quitamos el /
     else
-      if template.nil?
-        assert_template url[1..-1] # quitamos el /
-      else
-        assert_template template
-      end
+      assert_template template
     end
   end
 

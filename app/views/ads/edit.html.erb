@@ -1,3 +1,20 @@
+<%content_main do %>
+<%mftext('Editar banner') do%>
+<%= form_tag({:action => 'update', :id => @ad}, :multipart => true )%>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar', :class => 'button' %>
+</form>
+<% end -%>
+
+<%mftext('Borrar banner') do%>
+<form method="post" action="/ads/destroy/<%=@ad.id%>">
+<input type="submit" class="button confirm-click" value="Borrar banner" />
+</form>
+<br />
+
+<% end -%>
+<% end -%>
+
 <% generic_support(:show_ads => false) do %>
 	<%mftext('Información') do %>
 	<table>
@@ -18,19 +35,3 @@
 	<% end -%>
 <% end -%>
 
-<%content_main do %>
-<%mftext('Editar banner') do%>
-<%= form_tag({:action => 'update', :id => @ad}, :multipart => true )%>
-  <%= render :partial => 'form' %>
-  <%= submit_tag 'Guardar' %>
-</form>
-<% end -%>
-
-<%mftext('Borrar banner') do%>
-<form method="post" action="/ads/destroy/<%=@ad.id%>">
-<input type="submit" value="Borrar banner" onclick="return confirm('¿Estás seguro de que deseas borrar este banner?');" />	
-</form>
-<br />
-
-<% end -%>
-<% end -%>

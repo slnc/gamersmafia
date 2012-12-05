@@ -3,7 +3,7 @@
   comments[<%=comment.id%>] = new Array(
       <%=comment.created_on.to_i%>, <%=comment.user_id%>);
 </script>
-  <div class="user-info">
+  <div class="user-info secondary-block f_milli">
   	<div class="user-info-holder">
      <div class="avatar"><img src="<%=ASSET_URL%><%=comment.user.show_avatar%>" /></div>
      <div class="user-info-bar"><%=draw_karma_bar_sm(comment.user)%></div>
@@ -18,12 +18,12 @@
          <% chunked.each do |chunk| %>
            <tr>
              <%chunk.each do |frequency, count| %>
-               <td style="padding: 0; width: 20px;"><img class="sprite1 emblem-<%=frequency%> ico16" src="/images/blank.gif" /></td>
+               <td style=" width: 20px;"><%=gm_icon("emblem-#{frequency}", "small")%></td>
              <% end -%>
            </tr>
            <tr>
              <%chunk.each do |frequency, count| %>
-               <td style="padding: 0; width: 18px;"><%=count%></td>
+               <td class="f_milli" style=" width: 18px;"><%=count%></td>
              <% end -%>
            </tr>
          <% end -%>
@@ -34,19 +34,19 @@
    </div>
  </div>
 
-  <div class="comment-header">
+  <div class="comment-header secondary-block">
     <div class="comment-info infoinline">
       <span class="hidden" id="comment<%=comment.id%>editlink"><a class="action" href="" onclick="document.location='/comments/edit/<%=comment.id%>?redirto=<%=request.path%>'; return false;">Editar</a> |</span>
       <%=print_tstamp comment.created_on%>
       <span class="commentlink">
-        <a title="Enlace a este comentario" href="#comment<%=comment.id%>"><img src="/images/blank.gif" class="icon16 sprite1" /></a>
+        <a title="Enlace a este comentario" href="#comment<%=comment.id%>"><%=gm_icon("bookmark", "small")%></a>
       </span>
     </div>
 
-    <div class="comment-number f_number">#<span><%=comment_number-1%></span></div>
+    <div class="comment-number f_deca">#<span><%=comment_number-1%></span></div>
 
-    <div class="author" style="padding-left: 15px;">
-      <a class="nav" href="<%=gmurl(comment.user)%>"><%=comment.user.login%></a>
+    <div class="author">
+      <a href="<%=gmurl(comment.user)%>"><%=comment.user.login%></a>
       <%=faction_favicon(comment.user)%>
     </div>
   </div>
@@ -56,9 +56,9 @@
              when 0
                'normal-rating'
              when 1
-               'positive-rating'
+               'good'
              when -1
-               'negative-rating'
+               'bad'
              else
                raise "error! #{crating[0].direction}"
       end
@@ -71,10 +71,10 @@
        ie_opacity = (crating[1]*100).to_i
     end
   %>
-  <div class="comment-rating-state <%=colour%>"
+  <div class="comment-rating-state secondary-block <%=colour%> f_milli"
        style="opacity: <%=opacity%>; filter=alpha(opacity=<%=ie_opacity%>)">
     <div>
-      <%=comments_icon(crating[0].name.to_sym, true)%> <%=crating[0].name%>
+      <%=gm_icon(crating[0].icon, "small")%> <%=crating[0].name%>
     </div>
   </div>
   <% end -%>
@@ -85,7 +85,9 @@
            comment.comment, comment)) %>
 
 	<% if questions_mode && comment.user.id != object.user_id then %>
-		<div class="questions-best-answer hidden"><a href="/respuestas/mejor_respuesta/<%=comment.id%>" onclick="return confirm('¿Est&aacute;s seguro? Una vez marcada no se puede cambiar la mejor respuesta.');"><img class="icon" src="/skins/default/images/btn_mejor_respuesta.png" /></a></div>
+    <div class="questions-best-answer hidden">
+      <a class="confirm-click" href="/respuestas/mejor_respuesta/<%=comment.id%>"><%=button("Mejor respuesta")%></a>
+    </div>
 	<% end -%>
 
 	<% if show_signature then %>
@@ -97,22 +99,22 @@
 		<a href="" title="Reportar este comentario por violaci&oacute;n del c&oacute;digo de conducta" onclick="return report_comment(<%=comment.id%>);">Reportar</a>
 	</div>
 
-  <div class="moderate-comments-opener-detail">
-    <div class="moderate-comments-opener hidden" id="moderate-comments-opener<%=comment.id%>" onmouseout="$('#moderate-comments<%=comment.id%>').hide();" onmouseover="$('#moderate-comments<%=comment.id%>').show();">Mi valoraci&oacute;n: <strong><span id="moderate-comments-opener-rating<%=comment.id%>">Ninguna</span></strong><br />
-      <div class="hidden moderate-comments" id="moderate-comments<%=comment.id%>">
-      <ul class="positive">
+  <div class="moderate-comments-opener-detail secondary-block f_milli">
+    <div class="moderate-comments-opener secondary-block hidden" id="moderate-comments-opener<%=comment.id%>" onmouseout="$('#moderate-comments<%=comment.id%>').hide();" onmouseover="$('#moderate-comments<%=comment.id%>').show();">Mi valoraci&oacute;n: <strong><span id="moderate-comments-opener-rating<%=comment.id%>">Ninguna</span></strong><br />
+      <div class="hidden moderate-comments secondary-block" id="moderate-comments<%=comment.id%>">
+      <ul class="good">
       <% CommentsValorationsType.find_positive.each do |cvt| %>
-      <li><a href="" onclick="Gm.Utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
+        <li><a href="" onclick="Gm.Utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=gm_icon(cvt.icon, "small")%> <%=cvt.name%></a></li>
       <% end -%>
       </ul>
-      <ul class="negative">
+      <ul class="bad">
       <% CommentsValorationsType.find_negative.each do |cvt| %>
-      <li><a href="" onclick="return Gm.Utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
+      <li><a href="" onclick="return Gm.Utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=gm_icon(cvt.icon, "small")%> <%=cvt.name%></a></li>
       <% end -%>
       </ul>
       <ul class="neutral">
       <% CommentsValorationsType.find_neutral.each do |cvt| %>
-      <li><a href="" onclick="return Gm.Utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=comments_icon(cvt.name.to_sym, true)%> <%=cvt.name%></a></li>
+      <li><a href="" onclick="return Gm.Utils.rate_comment(<%=comment.id%>, '<%=cvt.name%>', <%=cvt.id%>); return false;"><%=gm_icon(cvt.icon, "small")%> <%=cvt.name%></a></li>
       <% end -%>
       </ul>
       </div>

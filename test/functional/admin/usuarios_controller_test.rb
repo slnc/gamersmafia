@@ -36,14 +36,6 @@ class Admin::UsuariosControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "send_hq_invitation" do
-    sym_login 1
-    assert_count_increases(Message) do
-      post :send_hq_invitation, { :id => 2}
-      assert_response :redirect
-    end
-  end
-
   test "check_gmf" do
     sym_login 1
     post :check_karma, { :id => 1}

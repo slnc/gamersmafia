@@ -40,12 +40,6 @@ class HomeControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "hq" do
-    sym_login 1
-    get :hq
-    assert_response :success
-  end
-
   test "home" do
     get :index
     assert_response :success
@@ -77,14 +71,6 @@ class HomeControllerTest < ActionController::TestCase
     assert @controller.portal.kind_of?(GmPortal)
   end
 
-
-  test "should_show_normal_page_if_bazar_site" do
-    @request.host = "bazar.#{App.domain}"
-    get :index
-    assert_response :success
-    assert_template 'bazar'
-    assert @controller.portal.kind_of?(BazarPortal)
-  end
 
   test "should_show_normal_page_if_arena_site" do
     @request.host = "arena.#{App.domain}"
@@ -150,6 +136,6 @@ class HomeControllerTest < ActionController::TestCase
     sym_login u2
     u2.users_skills.clear
     get :index
-    assert_nil @response.body.index("sawli-hq")
+    assert_nil @response.body.index("stats_hipotesis")
   end
 end

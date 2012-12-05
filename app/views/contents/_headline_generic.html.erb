@@ -1,8 +1,19 @@
 <div class="content-headline">
-  <header><a href="<%=gmurl(content)%>"><%=content.name%></a></header>
-  <div class="authorship infoinline">
-    por <strong><%=user_link(content.user)%></strong> -
+  <header class="f_hecto">
+    <%=content_headline_image(content.real_content)%>
+    <a href="<%=gmurl(content)%>"><%=content.name%></a>
+  </header>
+  <div class="authorship secondary f_milli">
+    por <strong><%=user_link(content.user)%></strong>
+    &mdash;
     <span class="timestamp"><%=print_tstamp(content.created_on)%></span> -
-    <%=content.contents_terms.find(:all, :include => :term).collect{|ct| "<a href=\"#{gmurl(ct.term)}\">#{ct.term.name}</a>" }.join(", ")%>
+    <%=content_tags(content)%>
+    &mdash;
+    <%=comment_count(content)%>
   </div>
+  <% if content.real_content.respond_to?(:description) && content.real_content.description.to_s != ""%>
+    <%=initial_sentences(content.real_content.description)%>
+  <% elsif content.real_content.respond_to?(:main) && content.real_content.main.to_s != ""%>
+    <%=initial_sentences(content.real_content.main)%>
+  <% end -%>
 </div>

@@ -44,7 +44,7 @@ end
 		$('#banner-preview').html(html_code);
 	}
   </script>
-  <h2>1. Elige galería</h2>
+  <h2 class="f_hecto">1. Elige galería</h2>
 	<select id="available-galleries" onchange="update_gallery_banners(this.value);">
 		<%gmbanners_galleries.each do |gmg|%>
 		<option <%='selected="selected"' if gmg == default_gal%> value="<%=gmg%>"><%=gmg%></option>

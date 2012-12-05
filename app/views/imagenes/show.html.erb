@@ -1,48 +1,3 @@
-<% content_support(:content => @image.unique_content) do %>
-<% if @image.is_public? && !@image.main_category then
-  Rails.logger.warn("Image #{@image} has no main_category")
-end %>
-
-<% if @image.is_public? && @image.main_category then %>
-  <%=render :partial => '/shared/content_summary', :locals => { :content => @image }%>
-<% mftext('Navegador de galería') do %>
-<ul class="sidelist images">
-  <% cache("/common/imagenes/show/g#{@image.main_category.id}/#{@image.id}") do %>
-  <%
-  im_prev = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id < ?', Cms::PUBLISHED, @image.unique_content_id], :order => 'images.id DESC')
-
-  im_next = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id > ?', Cms::PUBLISHED, @image.unique_content_id], :order => 'images.id ASC')
-  %>
-  <% if im_prev %>
-    <li><div class="image"><a class="new" href="/imagenes/show/<%=im_prev.id%>"><%=fc_thumbnail(im_prev.file, 'i', '85x85', false)%></a></div></li>
-  <% end -%>
-
-  <li style="background: #f3f3f3;"><div class="image"><%=fc_thumbnail(@image.file, 'i', '85x85', false)%></div></li>
-
-  <% if im_next %>
-    <li><div class="image"><a class="new" href="/imagenes/show/<%=im_next.id%>"><%=fc_thumbnail(im_next.file, 'i', '85x85', false)%></a></div></li>
-  <% end -%>
-<% end -%>
-</ul>
-<% end -%>
-
-		<%#= render :partial => '/imagenes/random', :locals => {:category => @image.main_category} %>
-
-<%= render :partial => '/imagenes/best_rated', :locals => {:category => @image.main_category} %>
-
-<% cache("/#{controller.portal_code}/imagenes/show/_other_images_by_user/#{@image.user_id % 1000}/#{@image.user_id}") do %>
-<% mftext("Más imágenes de #{@image.user.login}") do %>
-<ul class="sidelist images">
-	<% controller.portal.image.find(:published, :content_type => 'Image', :conditions => ['contents.user_id = ?', @image.user_id], :order => 'created_on DESC', :limit => 2).each do |image| %>
-  <li><div class="image"><a class="new" href="/imagenes/show/<%=image.id%>"><%=fc_thumbnail(image.file, 'i', '85x85', false)%></a></div></li>
-  <% end -%>
-  </ul>
-<% end -%>
-
-<% end -%>
-<% end -%>
-<% end -%>
-
 <% content_main do %>
 <%mfcontent(@image) do %>
 <div style="margin: 10px; text-align: center;">
@@ -97,3 +52,49 @@ end %>
 
 <% end -%>
 <% end -%>
+
+<% content_support(:content => @image.unique_content) do %>
+<% if @image.is_public? && !@image.main_category then
+  Rails.logger.warn("Image #{@image} has no main_category")
+end %>
+
+<% if @image.is_public? && @image.main_category then %>
+  <%=render :partial => '/shared/content_summary', :locals => { :content => @image }%>
+<% mftext('Navegador de galería') do %>
+<ul class="sidelist images">
+  <% cache("/common/imagenes/show/g#{@image.main_category.id}/#{@image.id}") do %>
+  <%
+  im_prev = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id < ?', Cms::PUBLISHED, @image.unique_content_id], :order => 'images.id DESC')
+
+  im_next = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id > ?', Cms::PUBLISHED, @image.unique_content_id], :order => 'images.id ASC')
+  %>
+  <% if im_prev %>
+    <li><div class="image"><a class="new" href="/imagenes/show/<%=im_prev.id%>"><%=fc_thumbnail(im_prev.file, 'i', '85x85', false)%></a></div></li>
+  <% end -%>
+
+  <li class="secondary-block"><div class="image"><%=fc_thumbnail(@image.file, 'i', '85x85', false)%></div></li>
+
+  <% if im_next %>
+    <li><div class="image"><a class="new" href="/imagenes/show/<%=im_next.id%>"><%=fc_thumbnail(im_next.file, 'i', '85x85', false)%></a></div></li>
+  <% end -%>
+<% end -%>
+</ul>
+<% end -%>
+
+		<%#= render :partial => '/imagenes/random', :locals => {:category => @image.main_category} %>
+
+<%= render :partial => '/imagenes/best_rated', :locals => {:category => @image.main_category} %>
+
+<% cache("/#{controller.portal_code}/imagenes/show/_other_images_by_user/#{@image.user_id % 1000}/#{@image.user_id}") do %>
+<% mftext("Más imágenes de #{@image.user.login}") do %>
+<ul class="sidelist images">
+	<% controller.portal.image.find(:published, :content_type => 'Image', :conditions => ['contents.user_id = ?', @image.user_id], :order => 'created_on DESC', :limit => 2).each do |image| %>
+  <li><div class="image"><a class="new" href="/imagenes/show/<%=image.id%>"><%=fc_thumbnail(image.file, 'i', '85x85', false)%></a></div></li>
+  <% end -%>
+  </ul>
+<% end -%>
+
+<% end -%>
+<% end -%>
+<% end -%>
+

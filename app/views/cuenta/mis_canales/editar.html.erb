@@ -1,6 +1,3 @@
-<% generic_support do %>
-<% end -%>
-
 <% content_main do %>
 	<% mftext('Editar canal') do %>
 	<form method="post" action="/cuenta/mis_canales/update/<%=@gmtv_channel.id%>" enctype="multipart/form-data">
@@ -13,7 +10,7 @@ real_path = "#{Rails.root}/public/" + @gmtv_channel.file
 		<td class="w125">Archivo Flash (.swf)</td>
 		<td><%=flash_obj(:url => "/#{@gmtv_channel.file}", :width => '100%', :height => '61px', :name => 'gmtvc')%><% if @gmtv_channel.file then%><br /><a href="<%=fc_path(@gmtv_channel.file)%>"><%=File.basename(@gmtv_channel.file)%></a> <span class="infoinline"><%=(File.exists?(real_path) ? number_to_human_size(File.size(real_path)) : 'El archivo físico no existe')%></span><% end -%><input type="file" name="gmtv_channel[file]" /></td>
 	</tr>
-	
+
 	<tr class="<%=oddclass%>">
 		<td class="w125">Screenshot (se mostrará a 50x50)</td>
 		<td><% if @gmtv_channel.screenshot then %>
@@ -30,3 +27,7 @@ real_path = "#{Rails.root}/public/" + @gmtv_channel.file
 	</form>
 	<% end -%>
 <% end -%>
+
+<% generic_support do %>
+<% end -%>
+

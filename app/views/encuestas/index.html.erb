@@ -1,3 +1,26 @@
+<% content_main do %>
+    <% mftext('Encuestas') do %>
+	<% @polls = Poll.in_portal(controller.portal).published.paginate(:order => 'created_on', :page => params[:page], :per_page => 20) %>
+    <%= render :partial => 'shared/pager2', :locals => {:collection => @polls, :pos => 'top'} %>
+
+    <table>
+<% cache("/#{controller.portal_code}/encuestas/index/page_#{params[:page]}") do %>
+<% @polls.each do |poll| %>
+    <tr class="<%=oddclass%>">
+      <td class="icon"><%=faction_favicon(Organizations.find_by_content(poll))%></td>
+      <td><strong><%=link_to poll.title, gmurl(poll) %></strong><br /><br /></td>
+      <td class="infoinline w75 right"><strong><%=poll.votes%></strong> votos</td>
+      <td class="w50"><span class="f_milli" title="Leído <%=poll.hits_anonymous + poll.hits_registered%> veces"><%=gm_icon("pageviews", "small")%><%=poll.hits_anonymous + poll.hits_registered%></span> </td>
+      <td class="w50"><span class="f_milli"><%=gm_icon("comment", "small")%> <a title="Ver comentarios" href="<%=controller.url_for_content_onlyurl(poll)%>#comments"><%=poll.cache_comments_count%></a></span></td>
+      <td class="timestamp infoinline"><%=print_tstamp(poll.created_on)%></td>
+    </tr>
+  <% end %>
+<% end %>
+</table>
+    <%= render :partial => 'shared/pager2', :locals => {:collection => @polls, :pos => 'bottom'} %>
+	<% end -%>
+<% end -%>
+
 <% generic_support do %>
 <% cache ("/#{controller.portal_code}/encuestas/index/most_votes") do %>
 <%
@@ -22,31 +45,9 @@ mfcontents_list('Más leídas',
 mfcontents_list('Más comentadas',
 				   Proc.new { Poll.in_portal(controller.portal).published.find(:all, :order => 'cache_comments_count DESC', :limit => 5) }) do |o| %>
 <a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
-<div class="infoinline right"><span class="comments-count"><a style="display: inline;" href="<%=gmurl(o)%>#comments"><%=o.cache_comments_count%></a></span></div>
+<div class="infoinline right"><span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(o)%>#comments"><%=o.cache_comments_count%></a></span></div>
 <% end %>
 <% end -%>
 
 <% end -%>
 
-<% content_main do %>
-    <% mftext('Encuestas') do %>
-	<% @polls = Poll.in_portal(controller.portal).published.paginate(:order => 'created_on', :page => params[:page], :per_page => 20) %>
-    <%= render :partial => 'shared/pager2', :locals => {:collection => @polls, :pos => 'top'} %>
-
-    <table>
-<% cache("/#{controller.portal_code}/encuestas/index/page_#{params[:page]}") do %>
-<% @polls.each do |poll| %>
-    <tr class="<%=oddclass%>">
-      <td class="icon"><%=faction_favicon(Organizations.find_by_content(poll))%></td>
-      <td><strong><%=link_to poll.title, gmurl(poll) %></strong><br /><br /></td>
-      <td class="infoinline w75 right"><strong><%=poll.votes%></strong> votos</td>
-      <td class="w50"><span class="pageviews-count" style="line-height: 18px;" title="Leído <%=poll.hits_anonymous + poll.hits_registered%> veces"><%=poll.hits_anonymous + poll.hits_registered%></span> </td>
-      <td class="w50"><span class="comments-count"><a title="Ver comentarios" href="<%=controller.url_for_content_onlyurl(poll)%>#comments"><%=poll.cache_comments_count%></a></span></td>
-      <td class="timestamp infoinline"><%=print_tstamp(poll.created_on)%></td>
-    </tr>
-  <% end %>
-<% end %>
-</table>
-    <%= render :partial => 'shared/pager2', :locals => {:collection => @polls, :pos => 'bottom'} %>
-	<% end -%>
-<% end -%>

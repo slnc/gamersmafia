@@ -5,6 +5,6 @@
 <% else %>
 <%= render :partial => '/shared/clan_selector', :locals => { :field_name => 'participant_hid' } %>
 <% end -%>
-<input type="submit" class="button" value="Añadir participante" <% if @competition.state == 2 then %>onclick="return confirm('Se volverán a generar las partidas. ¿Estás seguro?');"<% end -%> />
+<input type="submit" class="button <% if @competition.state == 2 then %>confirm-click<% end -%>" value="Añadir participante" />
 </form>
 <% end -%>

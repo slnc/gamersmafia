@@ -1,21 +1,3 @@
-<% generic_support do %>
-
-<% if nil then %>
-<% mftext('Mejor valoradas') do %>
-<ul class="content-hid">
-<%  # TODO BUG portal unsafe
-  cache("/common/imagenes/potds/best_rated_all#{Time.now.strftime('%Y%m%d')}") do %>
-  <% for c in ImagesCategory.most_rated_items(:content_type => 'Image') %>
-  <li class="<%=oddclass%>"><span class="screenshot"><%=link_to fc_thumbnail(c.file, 'f', '85x60', false), gmurl(c)%></span><br /><%=draw_rating(c.rating)%></li>
-  <% end -%>
-<% end -%>
-</ul>
-<% end -%>
-
-
-<% end -%>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Imágenes del día') do %>
 
@@ -34,3 +16,22 @@ cache("/#{controller.portal_code}/imagenes/potds/page_#{params[:page]}") do
 </div>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+
+<% if nil then %>
+<% mftext('Mejor valoradas') do %>
+<ul class="content-hid">
+<%  # TODO BUG portal unsafe
+  cache("/common/imagenes/potds/best_rated_all#{Time.now.strftime('%Y%m%d')}") do %>
+  <% for c in ImagesCategory.most_rated_items(:content_type => 'Image') %>
+  <li class="<%=oddclass%>"><span class="screenshot"><%=link_to fc_thumbnail(c.file, 'f', '85x60', false), gmurl(c)%></span><br /><%=draw_rating(c.rating)%></li>
+  <% end -%>
+<% end -%>
+</ul>
+<% end -%>
+
+
+<% end -%>
+<% end -%>
+

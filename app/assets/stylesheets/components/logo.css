@@ -1,10 +1,20 @@
-#logo img {
-    margin: 10px 0 0 6px;
-    border: 0;
-    width: 194px;
-    height: 54px;
+#mgheader .logo {
+  display: inline-block;
+  font-size: 16px;
+  line-height: 35px;
 }
 
-#logo.hover img {
-    background-position: 0 -54px;
+#mgheader a:hover.logo {
+  text-decoration: none;
+}
+
+#mgheader .mascot {
+  font-size: 45px;
+}
+
+#mgheader .letters {
+  display: inline-block;
+  margin-left: 55px;
+  margin-top: -45px;
+  position: absolute;
 }

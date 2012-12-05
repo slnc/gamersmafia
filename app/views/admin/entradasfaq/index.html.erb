@@ -1,8 +1,3 @@
-<% generic_support do %>
-  <div class="subheader first"><div>Nueva entrada</div></div>
-  <div class="centered-link"><%= link_to 'Nueva entrada al FAQ', :action => 'new' %></div>
-<% end -%>
-
 <% content_main do %>
 <%mftext('Entradas en el FAQ') do %>
 <%= render :partial => 'shared/pager2', :locals => {:collection => @faq_entries, :pos => 'top'} %>
@@ -38,4 +33,9 @@ end %>
 </table>
 <%= render :partial => 'shared/pager2', :locals => {:collection => @faq_entries, :pos => 'bottom'} %>
 <% end -%>
+<% end -%>
+
+<% generic_support do %>
+  <div class="subheader f_deca first"><div>Nueva entrada</div></div>
+  <div class="centered-link"><%= link_to 'Nueva entrada al FAQ', :action => 'new' %></div>
 <% end -%>

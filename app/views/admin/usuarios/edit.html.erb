@@ -3,92 +3,6 @@
   <input type="submit" class="button" name="search" value="Buscar" /> <span class="infoinline">"m%@hotmail.com" encontrará "mike@hotmail.com" y "mik666@hotmail.com"</span>
 </form>
 
-<% generic_support do %>
-  <div style="text-align: centered;"><a href="/admin/usuarios/send_hq_invitation/<%=@edituser.id%>" onclick="return confirm('¿Seguro?');">Invitar al HQ</a></div>
-  <div class="subheader first"><div>General</div></div>
-  <div class="centered-link infoinline"><a href="<%=gmurl(@edituser)%>">Ver ficha pública</a></div>
-  <table>
-    <tr>
-      <td class="infoinline">Registro:</td>
-      <td class="infoinline"><%=print_tstamp(@edituser.created_on)%>
-        <div id="check_registered_on">
-          <%=link_to(
-              "check",
-              "/admin/usuarios/check_registered_on/#{@edituser.id}",
-              :remote => true)%>
-        </div>
-      </td>
-    </tr>
-	<tr>
-      <td class="infoinline">Bans globales:</td>
-      <td class="infoinline"><%=@edituser.global_bans%></td>
-    </tr>
-	<tr>
-      <td class="infoinline">Facciones en las que está baneado:</td>
-      <td class="infoinline"><%=@edituser.factions_banned_users.count%></td>
-    </tr>
-    <tr>
-      <td class="infoinline">Último acceso:</td>
-      <td class="infoinline"><%=print_tstamp(@edituser.lastseen_on)%></td>
-    </tr>
-    <tr>
-      <td class="infoinline">Última ip:</td>
-      <td class="infoinline"><%=@edituser.ipaddr%></td>
-    </tr>
-    <tr>
-      <td class="infoinline">Karma:</td>
-      <td class="infoinline">
-        <div id="check_karma"><%=draw_karma_bar_sm(@edituser)%>
-        <% if Authorization.can_force_recalculate_user_attributes?(@user) %>
-          <%=link_to('check',
-                     "/admin/usuarios/check_karma/#{@edituser.id}",
-                     :remote => true)%>
-        <% end -%>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class="infoinline"><%=gmd12%></td>
-      <td class="infoinline">
-        <div id="check_gmf"><%=@edituser.cash%> <%=gmd10%>
-        <% if @user.has_skill?("Capo") then %>
-          <%=link_to('check',
-                     "/admin/usuarios/check_gmf/#{@edituser.id}",
-                     :remote => true)%>
-        <% end -%>
-        </div>
-      </td>
-    </tr>
-  </table>
-<% if @user.has_skill?("Capo") then %>
-  Avatar: <img class="avatar" src="<%=ASSET_URL%><%=@edituser.show_avatar%>" /><br />
-
-  <div class="centered-link"><form method="post" action="/admin/usuarios/reset_avatar"><input type="hidden" name="id" value="<%=@edituser.id%>" /><input type="submit" class="button" value="Resetear" onclick="return confirm('¿Estás seguro?');" /></form></div>
-    <br />
-  <br />
-<% end -%>
-  <div class="subheader"><div>Comentarios al día</div></div>
-  <table>
-    <% for dbc in User.db_query("select count(id), date_trunc('day', created_on) from comments where deleted = \'f\' AND user_id = #{@edituser.id} group by  date_trunc('day', created_on) order by date_trunc('day', created_on) desc LIMIT 14")
-        d = dbc['date_trunc']
-        t = Time.local(d[0..3], d[5..6], d[8..9])
-    %>
-    <tr class="<%=oddclass%>">
-      <td><%=dbc['count']%></td>
-      <td class="timestamp"><%=print_tstamp(t, 'date')%></td>
-    </tr>
-    <% end -%>
-  </table>
-
-
-  <div class="subheader"><div>Referidos</div></div>
-  <ul class="sidelist">
-    <% for u in User.find(:all, :conditions => ['referer_user_id = ?', @edituser.id]) %>
-    <li><%=member_state(u.hstate)%> <a href="/admin/usuarios/edit/<%=u.id%>"><%=u.login%></a></li>
-<% end -%>
-  </ul>
-<% end -%>
-
 <% content_main do %>
 <%mftext(@edituser) do %>
 <% if @user.has_skill?("Capo") then %>
@@ -97,18 +11,6 @@
 
  <%= form_tag({:action=> "update" }, :multipart => true) %>
  <input type="hidden" name="id" value="<%=@edituser.id%>" />
-
-  <% if flash['notice'] %>
-  <div class="Message">
-  <%= flash['notice'] %>
-  </div>
-  <% end %>
-
-  <% @edituser and if error_messages_for @edituser %>
-  <div class="Message"><%= error_messages_for @edituser %></div>
-  <% end %>
-
-	<div id="edituserinfo"></div>
 
 <table cellpadding="3" cellspacing="3" border="0" class="signup">
 
@@ -220,7 +122,7 @@
 
 <%= render :partial => '/shared/cash_movements', :locals => { :entity => @edituser, :show_amount_filter => true } %>
 
-<div class="subheader"><div>Últimos 50 comentarios</div></div>
+<div class="subheader f_deca"><div>Últimos 50 comentarios</div></div>
 
 <a name="comments"></a>
 <form method="post" action="/admin/usuarios/del_comments" >
@@ -236,7 +138,7 @@
 	</tr>
 	<% end -%>
 </table>
-<input type="submit" class="button" value="Borrar" onclick="return confirm('¿Estás seguro de BORRAR todos los comentarios?');" />
+<input type="submit" class="button confirm-click" value="Borrar" />
 </form>
 <% end -%>
 
@@ -244,8 +146,94 @@
 <%mftext("Razón del ban") do %>
 <form method="post" action="/admin/usuarios/update_public_ban_reason/<%=@edituser.id%>">
 <%=wysiwyg('public_ban_reason', :value => @edituser.ban_reason, :height => '100px')%>
-<input type="submit" value="Guardar" />
+<input type="submit" class="button" value="Guardar" />
 </form>
 <% end -%>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <div class="subheader f_deca first"><div>General</div></div>
+  <div class="centered-link infoinline"><a href="<%=gmurl(@edituser)%>">Ver ficha pública</a></div>
+  <table>
+    <tr>
+      <td class="infoinline">Registro:</td>
+      <td class="infoinline"><%=print_tstamp(@edituser.created_on)%>
+        <div id="check_registered_on">
+          <%=link_to(
+              "check",
+              "/admin/usuarios/check_registered_on/#{@edituser.id}",
+              :remote => true)%>
+        </div>
+      </td>
+    </tr>
+	<tr>
+      <td class="infoinline">Bans globales:</td>
+      <td class="infoinline"><%=@edituser.global_bans%></td>
+    </tr>
+	<tr>
+      <td class="infoinline">Facciones en las que está baneado:</td>
+      <td class="infoinline"><%=@edituser.factions_banned_users.count%></td>
+    </tr>
+    <tr>
+      <td class="infoinline">Último acceso:</td>
+      <td class="infoinline"><%=print_tstamp(@edituser.lastseen_on)%></td>
+    </tr>
+    <tr>
+      <td class="infoinline">Última ip:</td>
+      <td class="infoinline"><%=@edituser.ipaddr%></td>
+    </tr>
+    <tr>
+      <td class="infoinline">Karma:</td>
+      <td class="infoinline">
+        <div id="check_karma"><%=draw_karma_bar_sm(@edituser)%>
+        <% if Authorization.can_force_recalculate_user_attributes?(@user) %>
+          <%=link_to('check',
+                     "/admin/usuarios/check_karma/#{@edituser.id}",
+                     :remote => true)%>
+        <% end -%>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="infoinline"><%=gm_icon("gmf", "small")%></td>
+      <td class="infoinline">
+        <div id="check_gmf"><%=@edituser.cash%> <%=gm_icon("gmf", "small")%>
+        <% if @user.has_skill?("Capo") then %>
+          <%=link_to('check',
+                     "/admin/usuarios/check_gmf/#{@edituser.id}",
+                     :remote => true)%>
+        <% end -%>
+        </div>
+      </td>
+    </tr>
+  </table>
+<% if @user.has_skill?("Capo") then %>
+  Avatar: <img class="avatar" src="<%=ASSET_URL%><%=@edituser.show_avatar%>" /><br />
+
+  <div class="centered-link"><form method="post" action="/admin/usuarios/reset_avatar"><input type="hidden" name="id" value="<%=@edituser.id%>" /><input type="submit" class="button confirm-click" value="Resetear" /></form></div>
+    <br />
+  <br />
+<% end -%>
+  <div class="subheader f_deca"><div>Comentarios al día</div></div>
+  <table>
+    <% for dbc in User.db_query("select count(id), date_trunc('day', created_on) from comments where deleted = \'f\' AND user_id = #{@edituser.id} group by  date_trunc('day', created_on) order by date_trunc('day', created_on) desc LIMIT 14")
+        d = dbc['date_trunc']
+        t = Time.local(d[0..3], d[5..6], d[8..9])
+    %>
+    <tr class="<%=oddclass%>">
+      <td><%=dbc['count']%></td>
+      <td class="timestamp"><%=print_tstamp(t, 'date')%></td>
+    </tr>
+    <% end -%>
+  </table>
+
+
+  <div class="subheader f_deca"><div>Referidos</div></div>
+  <ul class="sidelist">
+    <% for u in User.find(:all, :conditions => ['referer_user_id = ?', @edituser.id]) %>
+    <li><%=member_state(u.hstate)%> <a href="/admin/usuarios/edit/<%=u.id%>"><%=u.login%></a></li>
+<% end -%>
+  </ul>
+<% end -%>
+

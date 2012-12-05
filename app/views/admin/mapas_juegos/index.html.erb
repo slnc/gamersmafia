@@ -1,9 +1,3 @@
-<%generic_support do%>
-<%mftext('Nuevo') do %>
-	<div class="sidebutton-spaced"><%= link_to 'Nuevo mapa de juego', :action => 'new' %></div>
-<% end -%>
-<% end -%>
-
 <%content_main do%>
 <%mftext('Mapas de juegos') do %>
 <%= render :partial => 'shared/pager2', :locals => {:collection => @games_maps, :pos => 'top'} %>
@@ -29,4 +23,10 @@
 <%= render :partial => 'shared/pager2', :locals => {:collection => @games_maps, :pos => 'bottom'} %>
 
 <% end -%>
+<% end -%>
+
+<%generic_support do%>
+  <%mftext('Nuevo') do %>
+    <div class="sidebutton-spaced"><%= link_to 'Nuevo mapa de juego', :action => 'new' %></div>
+  <% end -%>
 <% end -%>

@@ -11,7 +11,7 @@ cache("/common/foros/_topics_list/#{forum.id}/page_#{params[:page]}") do
     <% if defined?(show_forum_name) %>
     <th>Foro</th>
     <% end -%>
-    <th style="text-align: right;"><img class="comments-count" src="/images/blank.gif" alt="Comentarios" /></th>
+    <th style="text-align: right;"><%=gm_icon("comment")%></th>
     <th style="text-align: right;">Visitas</th>
     <th style="text-align: right;">Último comentario</th>
   </tr>
@@ -29,7 +29,7 @@ topics.each do |topic|
     <% end -%>
     <td class="infoinline" style="text-align: right; padding-right: 4px;"><%=topic.cache_comments_count.to_s%></td>
     <td class="infoinline" style="text-align: right; padding-right: 4px;"><%=(topic.hits_anonymous + topic.hits_registered)%></td>
-    <td class="infoinline" style="text-align: right; padding-right: 4px;"><% if last_comment != nil %><%=print_tstamp(last_comment.created_on)%><br /><%=link_to last_comment.user.login, :controller => 'miembros', :action => last_comment.user.login %> <a href="<%=gmurl(topic)%>#comment<%=last_comment.id%>"><img class="go-to-topic" src="/images/blank.gif" /></a><% end -%></td>
+    <td class="infoinline" style="text-align: right; padding-right: 4px;"><% if last_comment != nil %><%=print_tstamp(last_comment.created_on)%><br /><%=link_to last_comment.user.login, :controller => 'miembros', :action => last_comment.user.login %> <a href="<%=gmurl(topic)%>#comment<%=last_comment.id%>">Ir</a><% end -%></td>
   </tr>
 <% end -%>
 </table>

@@ -2204,7 +2204,8 @@ CREATE TABLE profile_signatures (
     user_id integer NOT NULL,
     signer_user_id integer NOT NULL,
     signature character varying NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL
 );
 CREATE SEQUENCE profile_signatures_id_seq
     START WITH 1

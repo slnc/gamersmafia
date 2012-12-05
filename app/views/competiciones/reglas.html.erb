@@ -1,3 +1,9 @@
+<% content_main do %>
+  <% mftext('Reglas') do %>
+  <%=@competition.rules%>
+  <% end -%>
+<% end %>
+
 <% generic_support do %>
   <% mftext('Mapas para esta competición') do %>
   <ul class="skeletal centered">
@@ -8,8 +14,3 @@
   <% end -%>
 <% end -%>
 
-<% content_main do %>
-  <% mftext('Reglas') do %>
-  <%=@competition.rules%>
-  <% end -%>
-<% end %>

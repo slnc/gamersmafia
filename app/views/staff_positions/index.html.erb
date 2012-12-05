@@ -1,3 +1,18 @@
+<% content_main do %>
+  <% mftext('Staff de Gamersmafia') do %>
+    <table>
+    <% StaffType.find(
+           :all,
+           :order => 'lower(name)').each do |staff_type| %>
+      <tr>
+        <td><%= staff_type.name %></td>
+        <td><%# =staff_position.staff_candidate.user.login %></td>
+      </tr>
+    <% end -%>
+    </table>
+  <% end -%>
+<% end -%>
+
 <% generic_support do %>
   <%mftable('Candidaturas abiertas',
             StaffPosition.candidacy_presentation.find(
@@ -26,17 +41,3 @@
    <% end -%>
 <% end %>
 
-<% content_main do %>
-  <% mftext('Staff de Gamersmafia') do %>
-    <table>
-    <% StaffType.find(
-           :all,
-           :order => 'lower(name)').each do |staff_type| %>
-      <tr>
-        <td><%= staff_type.name %></td>
-        <td><%# =staff_position.staff_candidate.user.login %></td>
-      </tr>
-    <% end -%>
-    </table>
-  <% end -%>
-<% end -%>

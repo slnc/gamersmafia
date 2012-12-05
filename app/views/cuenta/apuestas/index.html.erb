@@ -17,7 +17,7 @@
   <tr class="<%=oddclass%>">
     <td><%=faction_favicon(bet.main_category)%> <a href="<%=gmurl(bet)%>"><%=bet.resolve_hid%></a></td>
     <td><%=ticket.bets_option.name%></td>
-    <td class="timestamp"><%=ticket.ammount%><%=gmd11%></td>
+    <td class="timestamp"><%=ticket.ammount%> <%=gm_icon("gmf", "small")%></td>
     <td class="infoinline"><% if bet.completed? then %>Confirmada<% elsif bet.closes_on < Time.now then %>Pendiente de confirmar<% else %>Abierta<% end %></td>
   </tr>
   <% end %>

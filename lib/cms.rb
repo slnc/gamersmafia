@@ -18,8 +18,6 @@ rescue
 end
 $VERBOSE = prev_verbose
 
-
-
 require 'RMagick'
 require 'net/http'
 require 'open-uri'
@@ -399,6 +397,16 @@ module Cms
         rs
       end
     end
+  end
+
+  # Returns a list with all the image src values found in a string.
+  def self.extract_html_images(corpus)
+    out = []
+    return out if corpus.nil?
+    corpus.scan(/<img[^>]+src="([^"]+)"/i) do |rs|
+      out << rs[0]
+    end
+    out
   end
 
   def self.get_url_contents(url)
@@ -811,7 +819,7 @@ module Cms
     return if code.nil?
 
     src = 'games'
-    "<img class=\"factionfavicon gs-#{code}\" title=\"#{name}\" src=\"/images/blank.gif\" />"
+    "<img class=\"factionfavicon gs-#{code}\" title=\"#{name}\" src=\"/images/dot.gif\" />"
   end
 
   VERBOTEN_TAGS = %w(form script plaintext u applet iframe) unless defined?(VERBOTEN_TAGS)

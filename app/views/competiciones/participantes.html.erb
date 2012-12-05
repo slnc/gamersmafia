@@ -1,18 +1,3 @@
-<% generic_support do %>
-  <% mftext('Últimas inscripciones') do %>
-    <table>
-<% cache("/common/competiciones/#{@competition.id}/ultimas_inscripciones") do %>
-  <% for p in @competition.competitions_participants.find(:all, :order => 'created_on DESC', :limit => 10) %>
-  <tr class="<%=oddclass%>">
-    <td><a href="/competiciones/participante/<%=p.id%>"><%=notags(p.name)%></a></td>
-    <td class="timestamp infoinline"><%=print_tstamp(p.created_on)%></td>
-  </tr>
-  <% end -%>
-<% end -%>
-</table>
-<% end -%>
-<% end -%>
-
 <% content_main do %>
   <% mftext('Participantes') do %>
   <table>
@@ -38,3 +23,19 @@ end %>
   </table>
   <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <% mftext('Últimas inscripciones') do %>
+    <table>
+<% cache("/common/competiciones/#{@competition.id}/ultimas_inscripciones") do %>
+  <% for p in @competition.competitions_participants.find(:all, :order => 'created_on DESC', :limit => 10) %>
+  <tr class="<%=oddclass%>">
+    <td><a href="/competiciones/participante/<%=p.id%>"><%=notags(p.name)%></a></td>
+    <td class="timestamp infoinline"><%=print_tstamp(p.created_on)%></td>
+  </tr>
+  <% end -%>
+<% end -%>
+</table>
+<% end -%>
+<% end -%>
+

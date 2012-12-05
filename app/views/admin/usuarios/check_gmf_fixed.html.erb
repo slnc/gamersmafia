@@ -1,1 +1,1 @@
-$('#check_gmf').html('<%=@edituser.cash%> <%=gmd11%><div class="warning infoinline"><strong>FIXED</strong>: Antes: <%=@cash_previous%> <%=gmd11%><br />Después: <%=@cash_correct%> <%=gmd11%><br />Diff: (<%=@cash_correct - @cash_previous%>)</div>');
+$('#check_gmf').html('<%=@edituser.cash%> <%=gm_icon("gmf", "small")%><div class="bad-block infoinline"><strong>FIXED</strong>: Antes: <%=@cash_previous%> <%=gm_icon("gmf", "small")%><br />Después: <%=@cash_correct%> <%=gm_icon("gmf", "small")%><br />Diff: (<%=@cash_correct - @cash_previous%>)</div>');

@@ -52,8 +52,7 @@ function cfgPage(user_is_authed, contents, controller, action, model_id,
     return Gm.Utils.showAllHiddenComments();
   });
 
-  $('.comment-textarea .btn-comentar').click(PreventDuplicatedClicks);
-  $('.comment-textarea .btn-responder').click(PreventDuplicatedClicks);
+  $('.comment-textarea .btn-comment').click(PreventDuplicatedClicks);
 }
 
 function PreventDuplicatedClicks() {
@@ -150,7 +149,7 @@ function check_comments_controls(
     }
 
     if (comments[key][0] > user_last_visited_on && comments[key][1] != user_id) {
-      comment_div.addClass('new');
+      comment_div.addClass('unread-item');
       // hacemos scroll excepto que sea primera pag y primer comment
       if ((!first_time_content) && !scroll_to_comment) {
         scroll_to_comment = $('#comment' + key);
@@ -202,7 +201,7 @@ function mark_new(item_id, base) {
 }
 
 function mark_visited(item_id) {
-  $('.content' + item_id).removeClass('new');
+  $('.content' + item_id).removeClass('new').removeClass('unread-item');
 }
 
 function mailto(p1) {
@@ -241,17 +240,6 @@ function switch_block_visi(block_base) {
     $('#' + max).hide();
     $('#' + min).show();
   }
-  return false;
-}
-
-function setratebar(v) {
-  $('#ratebar').css('background-position', "0px -" + (287 + ( v - 1) * 13) + "px");
-}
-
-function rate(content_id, v) {
-  $.get('/site/rate_content?content_rating[rating]=' + v + '&content_rating[content_id]=' + content_id, function(data) {
-    $('#ratebar-container').html(data);
-  })
   return false;
 }
 

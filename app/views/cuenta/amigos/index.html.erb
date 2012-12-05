@@ -1,3 +1,80 @@
+<% content_main do %>
+  	<% received_pending = @user.friendships_received_pending
+if received_pending.size > 0 then %>
+<%mftext('Quieren ser tus amigos') do %>
+  	<table>
+  	<% received_pending.each do |f| %>
+		<tr class="<%=oddclass%>" id="friendship<%=f.id%>">
+			<td class="sm-icon"><%=member_state(f.sender.hstate)%></td>
+			<td><%=user_link(f.sender)%></td>
+			<td class="timestamp"><%=print_tstamp(f.created_on, 'date')%></td>
+			<td style="width: 117px; text-align: center;">
+        <%=link_to(
+            '<span class="button">Aceptar</span>',
+            "/cuenta/amigos/aceptar_amistad/#{f.sender.login}?aj=1",
+            :remote => true)%>
+      </td>
+			<td style="width: 117px; text-align: center;">
+        <%=link_to(
+            '<span class="button">Rechazar</span>',
+            "/cuenta/amigos/cancelar_amistad/#{f.sender.login}?aj=1",
+            :remote => true)%>
+      </td>
+		</tr>
+	<% end -%>
+	</table>
+<% end -%>
+<% end -%>
+
+
+<%mftext('Invitar por email') do %>
+<form method="post" action="/cuenta/amigos/invitar_email" style="margin-top: 10px;">
+<table>
+
+	<tr>
+		<th>Email</th>
+		<th>Mensaje</th>
+	</tr>
+	<% (1..7).each do |i| %>
+	<tr class="<%=oddclass%>">
+		<td><input type="text" style="width: 150px;" name="email_invitation_eml<%=i%>" /></td>
+		<td><input style="width: 220px;" type="text" name="email_invitation_msg<%=i%>" value="Te invito a unirte a mi red de amigos en Gamersmafia" /></td>
+	</tr>
+	<% end %>
+	</table>
+	<input type="submit" class="button" value="Enviar invitación" />
+
+	</form>
+<% end -%>
+
+<%mftext('Tus amigos') do %>
+<% friends = @user.friends
+if friends.size == 0 then %>
+<div class="centered f_milli">Todavía no tienes amigos.</div>
+<% else  %>
+  	<table class="w100pc">
+  	  	<% friends.each do |f| %>
+		<tr id="friendshipu<%=f.id%>" class="<%=oddclass%>">
+			<td class="sm-icon"><%=member_state(f.hstate)%></td>
+			<td><%=user_link(f)%></td>
+			<td class="w100 f_milli" style="text-align: right;">
+        <%=link_to(
+            'Terminar amistad',
+            "/cuenta/amigos/cancelar_amistad/#{f.login}?aj=1",
+            :confirm => '¿Estás seguro de que deseas terminar con esta' +
+                        ' amistad? Mira que nunca sabemos qué puede pasar en' +
+                        ' el futuro..',
+            :remote => true)%>
+      </td>
+
+		</tr>
+	<% end -%>
+	</table>
+<% end -%>
+<% end -%>
+
+<% end -%>
+
 <% generic_support do %>
 <%mftext('¿Sabías que..') do %>
 <div style="text-align: right;">..cada amigo que introduzcas en Gamersmafia hace subir tu nivel de fe*?</div>
@@ -30,82 +107,3 @@ if pending_users.size > 0 then %>
 <% end %><%# if pending -%>
 <% end %><%# csupport -%>
 
-<% content_main do %>
-
-  	<% received_pending = @user.friendships_received_pending
-if received_pending.size > 0 then %>
-<%mftext('Quieren ser tus amigos') do %>
-  	<table>
-  	<% received_pending.each do |f| %>
-		<tr class="<%=oddclass%>" id="friendship<%=f.id%>">
-			<td class="sm-icon"><%=member_state(f.sender.hstate)%></td>
-			<td><%=user_link(f.sender)%></td>
-			<td class="timestamp"><%=print_tstamp(f.created_on, 'date')%></td>
-			<td style="width: 117px; text-align: center;">
-        <%=link_to(
-            '<img class="icon" title="Aceptar amistad" alt="Aceptar amistad"' +
-            ' src="/skins/default/images/btn_aceptar_sm.png" />',
-            "/cuenta/amigos/aceptar_amistad/#{f.sender.login}?aj=1",
-            :remote => true)%>
-      </td>
-			<td style="width: 117px; text-align: center;">
-        <%=link_to(
-            '<img class="icon" title="Rechazar amistad" alt="Rechazar' +
-            ' amistad" src="/skins/default/images/btn_rechazar_sm.png" />',
-            "/cuenta/amigos/cancelar_amistad/#{f.sender.login}?aj=1",
-            :remote => true)%>
-      </td>
-		</tr>
-	<% end -%>
-	</table>
-<% end -%>
-<% end -%>
-
-
-<%mftext('Invitar por email') do %>
-<form method="post" action="/cuenta/amigos/invitar_email" style="margin-top: 10px;">
-<table>
-
-	<tr>
-		<th>Email</th>
-		<th>Mensaje</th>
-	</tr>
-	<% (1..7).each do |i| %>
-	<tr class="<%=oddclass%>">
-		<td><input type="text" style="width: 150px;" name="email_invitation_eml<%=i%>" /></td>
-		<td><input style="width: 220px;" type="text" name="email_invitation_msg<%=i%>" value="Te invito a unirte a mi red de amigos en Gamersmafia" /></td>
-	</tr>
-	<% end %>
-	</table>
-	<input type="submit" value="Enviar invitación" />
-
-	</form>
-<% end -%>
-
-<%mftext('Tus amigos') do %>
-<% friends = @user.friends
-if friends.size == 0 then %>
-<div class="centered sm">Todavía no tienes amigos.</div>
-<% else  %>
-  	<table class="w100pc">
-  	  	<% friends.each do |f| %>
-		<tr id="friendshipu<%=f.id%>" class="<%=oddclass%>">
-			<td class="sm-icon"><%=member_state(f.hstate)%></td>
-			<td><%=user_link(f)%></td>
-			<td class="w100 sm" style="text-align: right;">
-        <%=link_to(
-            'Terminar amistad',
-            "/cuenta/amigos/cancelar_amistad/#{f.login}?aj=1",
-            :confirm => '¿Estás seguro de que deseas terminar con esta' +
-                        ' amistad? Mira que nunca sabemos qué puede pasar en' +
-                        ' el futuro..',
-            :remote => true)%>
-      </td>
-
-		</tr>
-	<% end -%>
-	</table>
-<% end -%>
-<% end -%>
-
-<% end -%>

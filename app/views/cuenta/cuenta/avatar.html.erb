@@ -1,37 +1,3 @@
-<% generic_support do %>
-  <% mftext('Tu avatar actual') do %>
-  <p class="centered"><img id="change_avatar_to" class="avatar" /><br />
-  <%= form_tag :action => 'save_avatar' %>
-      <input type="hidden" name="action" value="user_avatar_change" />
-      <input type="hidden" name="new_avatar_id" id="new_avatar_id" value="" />
-      <div class="centered"><%= submit_tag 'Guardar cambios', :id => 'btn_change_avatar' %></div>
-  </form>
-  </p>
-  <br />
-  <br />
-  <div class="infoinline">Si cambias de avatar es posible que no se vean los cambios inmediatamente en las páginas de comentarios. No hay que hacer nada, al cabo de unas horas se actualizarán solas.</div>
-
-  <% end -%>
-
-  <% if @user.avatars.count(:conditions => 'path is null or path = \'\'') > 0 then %>
-  <% mftext('Avatares personalizados') do %>
-    <div class="infoinline">Sólo <strong>JPG</strong>s a 50x50.</div>
-    <form method="post" action="/cuenta/cuenta/custom_avatars_set" enctype="multipart/form-data">
-      <table>
-    <% @user.avatars.find(:all, :conditions => 'path is null or path = \'\'', :order => 'id ASC').each do |a| %>
-      <tr class="<%=oddclass%>">
-        <td><%=a.name%></td>
-        <td><input type="file" size="10" name="custom_avatars[<%=a.id%>]" /></td>
-      </tr>
-    <% end -%>
-  </table>
-  <div class="centered-link"><input type="submit" class="button" value="Guardar" onclick="return confirm('Una vez configurado el avatar la imagen no se puede cambiar. ¿Estás seguro de que es la imagen CORRECTA?');" /></div>
-    </form>
-	<% end -%>
-  <% end -%>
-<% end -%>
-
-
 <% content_main do %>
   <% mftext('Elige tu avatar') do %>
 <script type="text/JavaScript">
@@ -97,7 +63,7 @@ end
 <p>
 <table>
   <tr>
-    <td class="avatar-level"><h2><strong>Nivel 0</strong></h2></td>
+    <td class="avatar-level"><h2 class="f_hecto"><strong>Nivel 0</strong></h2></td>
     <td>
 <% previous_level = 0
 user_is_faction_boss = @user.faction.is_bigboss?(@user)
@@ -112,7 +78,7 @@ for avatar in @avatars
 </td>
 </tr>
 <tr>
-  <td class="avatar-level"><h2><strong>Nivel <%=previous_level%></strong></h2></td>
+  <td class="avatar-level"><h2 class="f_hecto"><strong>Nivel <%=previous_level%></strong></h2></td>
   <td>
 <%  end %>
 <div class="choose-avatar"><img id="avatar<%=avatar.id%>" onclick="select_new_avatar($(this), <%=avatar.id%>);" class="avatar" src="/<%=avatar.path%>" /></div>
@@ -127,3 +93,37 @@ select_new_avatar($('#avatar<%=@user.avatar_id%>'), <%=@user.avatar_id%>);
 <% end -%>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <% mftext('Tu avatar actual') do %>
+  <p class="centered"><img id="change_avatar_to" class="avatar" /><br />
+  <%= form_tag :action => 'save_avatar' %>
+      <input type="hidden" name="action" value="user_avatar_change" />
+      <input type="hidden" name="new_avatar_id" id="new_avatar_id" value="" />
+      <div class="centered"><%= submit_tag 'Guardar cambios', :id => 'btn_change_avatar' %></div>
+  </form>
+  </p>
+  <br />
+  <br />
+  <div class="infoinline">Si cambias de avatar es posible que no se vean los cambios inmediatamente en las páginas de comentarios. No hay que hacer nada, al cabo de unas horas se actualizarán solas.</div>
+
+  <% end -%>
+
+  <% if @user.avatars.count(:conditions => 'path is null or path = \'\'') > 0 then %>
+  <% mftext('Avatares personalizados') do %>
+    <div class="infoinline">Sólo <strong>JPG</strong>s a 50x50.</div>
+    <form method="post" action="/cuenta/cuenta/custom_avatars_set" enctype="multipart/form-data">
+      <table>
+    <% @user.avatars.find(:all, :conditions => 'path is null or path = \'\'', :order => 'id ASC').each do |a| %>
+      <tr class="<%=oddclass%>">
+        <td><%=a.name%></td>
+        <td><input type="file" size="10" name="custom_avatars[<%=a.id%>]" /></td>
+      </tr>
+    <% end -%>
+  </table>
+  <div class="centered-link"><input type="submit" class="button" value="Guardar" onclick="return confirm('Una vez configurado el avatar la imagen no se puede cambiar. ¿Estás seguro de que es la imagen CORRECTA?');" /></div>
+    </form>
+	<% end -%>
+  <% end -%>
+<% end -%>
+

@@ -5,7 +5,7 @@
     <% for admin in @competition.admins %>
     <tr class="<%=oddclass%>">
       <td><a href="<%=gmurl(admin)%>"><%=admin.login%></a></td>
-      <td><a href="/cuenta/competiciones/eliminar_admin?user_id=<%=admin.id%>" onclick="return confirm('¿Estás seguro?');">Borrar</a></td>
+      <td><a href="/cuenta/competiciones/eliminar_admin?user_id=<%=admin.id%>" class="button confirm-click">Borrar</a></td>
     </tr>
   <% end -%>
   </table>
@@ -26,7 +26,7 @@
     <% for supervisor in @competition.supervisors %>
     <tr class="<%=oddclass%>">
       <td><a href="<%=gmurl(supervisor)%>"><%=supervisor.login%></a></td>
-      <td><a href="/cuenta/competiciones/eliminar_supervisor?user_id=<%=supervisor.id%>" onclick="return confirm('¿Estás seguro?');">Borrar</a></td>
+      <td><a href="/cuenta/competiciones/eliminar_supervisor?user_id=<%=supervisor.id%>" class="button confirm-click">Borrar</a></td>
     </tr>
   <% end -%>
   </table>

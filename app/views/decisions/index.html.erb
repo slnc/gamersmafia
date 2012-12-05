@@ -1,17 +1,5 @@
 <% javascript 'modules/controllers/decisions' %>
 
-<%generic_support do%>
-  <% if user_is_authed %>
-    <%mftable("Tu reputación decidiendo",
-              current_decision_user_reputations(@user)) do |reputation |%>
-      <tr>
-        <td><a href="/decisions/ranking/<%=reputation.decision_type_class%>"><%=gm_translate(reputation.decision_type_class)%></a></td>
-        <td class="w125"><%=draw_pcent_bar(reputation.probability_right)%></td>
-      </tr>
-    <% end -%>
-  <% end -%>
-<% end -%>
-
 <%content_main do %>
   <% if user_is_authed %>
     <%mftable("Decisiones pendientes sin tu voto",
@@ -25,7 +13,7 @@
               href="<%=decision_path(decision)%>"><%=decision.decision_description%></a>
           </td>
           <td class="w100"><%=draw_pcent_bar(decision.completion_ratio)%></td>
-          <td class="w50"><span class="members-count"><%=decision.decision_user_choices.count%></span></td>
+          <td class="w50 align-right"><%=gm_icon("user", "small")%> <%=decision.decision_user_choices.count%></td>
           <td class="timestamp infoinline"><%=print_tstamp(decision.created_on)%></td>
         </tr>
     <% end -%>
@@ -45,7 +33,7 @@
               href="<%=decision_path(decision)%>"><%=decision.decision_description%></a>
           </td>
           <td class="w100"><%=draw_pcent_bar(decision.completion_ratio)%></td>
-          <td class="w50"><span class="members-count"><%=decision.decision_user_choices.count%></span></td>
+          <td class="w50 align-right"><%=gm_icon("user", "small")%> <%=decision.decision_user_choices.count%></td>
           <td class="timestamp infoinline"><%=print_tstamp(decision.created_on)%></td>
         </tr>
     <% end -%>
@@ -61,9 +49,22 @@
         <td><a class="decision-pending" data-decision-id="<%=decision.id%>"
             href="<%=decision_path(decision)%>"><%=decision.decision_description%></a>
         </td>
-        <td class="w50"><span class="members-count"><%=decision.decision_user_choices.count%></span></td>
+        <td class="w50 align-right"><%=gm_icon("user", "small")%> <%=decision.decision_user_choices.count%></td>
         <td class="timestamp infoinline"><%=print_tstamp(decision.created_on)%></td>
       </tr>
+  <% end -%>
+<% end -%>
+
+
+<%generic_support do%>
+  <% if user_is_authed %>
+    <%mftable("Tu reputación decidiendo",
+              current_decision_user_reputations(@user)) do |reputation |%>
+      <tr>
+        <td><a href="/decisions/ranking/<%=reputation.decision_type_class%>"><%=gm_translate(reputation.decision_type_class)%></a></td>
+        <td class="w125"><%=draw_pcent_bar(reputation.probability_right)%></td>
+      </tr>
+    <% end -%>
   <% end -%>
 <% end -%>
 

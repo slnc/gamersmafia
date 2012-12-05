@@ -1,9 +1,3 @@
-<% generic_support do %>
-  <% mftext('Crear cabecera') do %>
-    <p><a href="/cuenta/faccion/cabeceras/new">Nueva cabecera</a></p>
-	<% end -%>
-<% end -%>
-
 <% content_main do %>
   <% mftext('Cabeceras') do %>
 
@@ -28,3 +22,10 @@
 <%= render :partial => 'shared/pager2', :locals => { :collection => @factions_headers, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <% mftext('Crear cabecera') do %>
+    <p><a href="/cuenta/faccion/cabeceras/new">Nueva cabecera</a></p>
+	<% end -%>
+<% end -%>
+

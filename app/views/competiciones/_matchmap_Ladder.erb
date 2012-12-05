@@ -25,8 +25,8 @@
     <% end %>
 
 
-    <td class="centered" style="width: 20px;"><%= cm.result && cm.competitions_matches_uploads.count > 0  ? '<img class="downloads-count" title="Archivos adjuntos" src="/images/blank.gif" />' : ''%></td>
-    <td class="centered" style="width: 20px;"><%= cm.result && cm.competitions_matches_reports.count > 0  ? '<img class="pageviews-count" title="Informes adjuntos" src="/images/blank.gif" />' : ''%></td>
+    <td class="centered" style="width: 20px;"><%= cm.result && cm.competitions_matches_uploads.count > 0  ? gm_icon("download", "small") : ''%></td>
+    <td class="centered" style="width: 20px;"><%= cm.result && cm.competitions_matches_reports.count > 0  ? gm_icon("pageviews", "small") : ''%></td>
   </tr>
 <% end -%>
 </table>

@@ -1,0 +1,5 @@
+<%cache("/home/last_profile_signatures/#{Keystore.get("timestamps.last_profile_signature")}") do%>
+  <%mftable('Últimas firmas', ProfileSignature.find(:all, :order => 'id DESC', :limit => 5)) do |ps|%>
+    <td><a href="<%=gmurl(ps.user)%>/firmas"><%=ps.signer%> a <%=ps.user%></a></td>
+  <% end -%>
+<% end # cache -%>

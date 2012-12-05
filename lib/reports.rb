@@ -15,7 +15,7 @@ module Reports
     %w(best_overall karma_fury most_knowledgeable living_legend funniest profoundest most_informational most_interesting wealthiest okupa bets_master talker best_blogger).each do |emblema|
       ues = UsersEmblem.find(:all, :conditions => ["created_on = ? AND emblem = ?", cur_date, emblema])
       if ues.size > 0
-        base << "<tr class=\"#{oddclass}\"><td class=\"w150\"><img class=\"sprite1 emblema emblema-#{emblema}\" src=\"/images/blank.gif\" /> #{Emblems::EMBLEMS[emblema.to_sym][:title]}</td> <td><strong>"
+        base << "<tr class=\"#{oddclass}\"><td class=\"w150\"><img class=\"emblema emblema-#{emblema}\" src=\"/images/dot.gif\" /> #{Emblems::EMBLEMS[emblema.to_sym][:title]}</td> <td><strong>"
         base << ues.collect { |ue| "<a href=\"#{Routing.gmurl(ue.user)}\">#{ue.user.login}</a>" }.join(', ')
         base << "</strong></td><td>#{ues[0].details}</td></tr>\n"
       end

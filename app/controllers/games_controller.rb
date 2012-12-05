@@ -111,6 +111,8 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find(params[:id])
+    @title = @game.name
+    @game_term = Term.game_term(@game)
   end
 
   def update

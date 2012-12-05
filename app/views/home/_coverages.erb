@@ -1,13 +1,13 @@
 <div class="homebox">
 <% cache("/#{controller.portal.code}/home/index/coverages") do %>
-<div id="home-coverages" class="subheader first"><div><span>Coverages</span></div></div>
+<div id="home-coverages" class="subheader f_deca first"><div><span>Coverages</span></div></div>
         <ul class="content-hid">
 		<% @last_news = Coverage.find(:published, :limit => 5, :order => 'coverages.created_on DESC', :include => :event)
 shown_news = []
 for news in @last_news
     shown_news << news.unique_content.id
 %>
-<li class="content<%=news.unique_content.id%> new <%=oddclass%>" style="clear: left;"><%= link_to truncate(news.title, 35), gmurl(news) %><br /><div class="infoinline"><%=content_category(news.event.main_category)%><a style="background: none; padding-left: 0;" href="<%=gmurl(news.event)%>"><%=news.event.title%></a></div></li>
+<li class="content<%=news.unique_content.id%> new <%=oddclass%>" style="clear: left;"><%= link_to truncate(news.title, 35), gmurl(news) %><br /><div class="infoinline"><%=content_category(news.event.main_category)%><a href="<%=gmurl(news.event)%>"><%=news.event.title%></a></div></li>
 <% end %>
 </ul>
 	<script type="text/javascript">contents = contents.concat(<%=shown_news.join(',')%>);</script>

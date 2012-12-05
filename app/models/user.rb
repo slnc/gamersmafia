@@ -194,10 +194,10 @@ class User < ActiveRecord::Base
   scope :can_login, :conditions => "state IN (#{STATES_CAN_LOGIN.join(',')})"
   scope :birthday_today,
         :conditions => (
-            "date_part('day', birthday)::text ||" +
-            " date_part('month', birthday)::text =" +
-            " date_part('day', now())::text ||" +
-            " date_part('month', now())::text")
+            "(date_part('day', birthday)::text || date_part('month', birthday)::text) =
+             (date_part('day', NOW())::text || date_part('month', now())::text)
+            AND birthday BETWEEN NOW() - '100 years'::interval
+            AND NOW() - '3 years'::interval")
 
   scope :humans,
         :conditions => "id NOT IN (

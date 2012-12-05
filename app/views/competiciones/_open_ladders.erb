@@ -4,7 +4,7 @@
   :conditions => ["type = 'Ladder' AND state > 1 AND state < 4"],
   :order => 'game_id ASC, lower(name) ASC').each do |competition| %>
     <tr class="<%=oddclass%>">
-      <td style="line-height: 20px;">
+      <td>
          <%=faction_favicon(competition.game)%>
          <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a>
       </td>

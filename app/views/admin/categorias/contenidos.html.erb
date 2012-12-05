@@ -20,7 +20,7 @@
 
 <br />
 
-Mover a la categoría: <%= render_tree_select(@term.root.children.find(:all, :conditions => ["taxonomy = ?", Term.taxonomy_from_class_name(params[:content_type])]), 'name', 'destination_term_id', @term.id, true)%><input type="submit" value="Mover" onclick="return confirm('¿Estás seguro? Este paso no se puede deshacer.');" />
+Mover a la categoría: <%= render_tree_select(@term.root.children.find(:all, :conditions => ["taxonomy = ?", Term.taxonomy_from_class_name(params[:content_type])]), 'name', 'destination_term_id', @term.id, true)%><input type="submit" class="button confirm-click" value="Mover" />
 </form>
 </p>
 <% end -%>

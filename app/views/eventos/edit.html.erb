@@ -1,14 +1,8 @@
-<% generic_support do %>
-<%= render :partial => '/shared/drafts', :locals => { :cls => Event } if user_is_authed %>
-<%= render :partial => 'shared/content_details', :locals => { :object => @event} %>
-<%= render :partial => 'shared/pending', :object => Event.pending %>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Editar evento') do %>
 <%= form_tag({:action => 'update', :id => @event}, { :class => 'editing-content' }) %>
   <%= render :partial => 'form' %>
-  <%= submit_tag 'Guardar' %>
+  <%= submit_tag 'Guardar', :class => 'button' %>
 </form>
 <%=render :partial => '/shared/change_authorship', :locals => {:object => @event}%>
 
@@ -17,3 +11,8 @@
 <%= link_to 'Volver', :action => 'list' %>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<%= render :partial => 'shared/content_details', :locals => { :object => @event} %>
+<% end -%>
+

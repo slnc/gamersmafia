@@ -11,9 +11,9 @@ else
                         @user.id])
   end
   if questions_mode && @user.id != content.user_id
-    btn_action_class = 'responder'
+    btn_action_class = 'Responder'
   else
-    btn_action_class = 'comentar'
+    btn_action_class = 'Comentar'
   end
 %>
 <form id="new_comment" action="/comments/create" method="post" name="REPLIER" style="padding-top: 25px;">
@@ -27,13 +27,18 @@ else
     <% if @user.comment_adds_to_tracker_enabled? %>
       <input type="hidden" value="1" name="add_to_tracker"  />
     <% end -%>
-      <div class="droparea">arrastra imágenes aquí</div>
+    <div class="droparea secondary-area">
+      <div class="float-left">
+        <span class="f_kilo"><%=gm_icon("upload")%></span>
+      </div>
+      arrastra imágenes aquí
+    </div>
     </div>
 
     <div id="dropped-files" class="image-gallery-sm"></div>
     <div class="image-editor hidden">
       <canvas class="hidden"></canvas>
-      <img src="/images/dot.png" class="image2" />
+      <img src="/images/dot.gif" class="image2" />
       <br />
       <input type="text" name="meme_top" class="meme_top" maxlength="60" />
       <br />
@@ -43,9 +48,9 @@ else
       <br />
     </div>
 
-    <div class="draft-feedback f_sm"></div>
+    <div class="draft-feedback f_milli"></div>
     <div class="right">
-      <input type="image" src="/images/blank.gif" class="btn-<%=btn_action_class%>" /></div>
+      <input type="button" src="/images/dot.gif" class="button comment-button" value="<%=btn_action_class%>" /></div>
   </div>
 </form>
 <% end %><%# begin..rescue %>

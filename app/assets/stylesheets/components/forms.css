@@ -1,0 +1,5 @@
+input[type=text],
+input[type=password],
+textarea {
+  padding: 0.2rem 0.4rem;
+}

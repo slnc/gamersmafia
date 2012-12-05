@@ -1,0 +1,404 @@
+/**
+ * basic tags
+ */
+body {
+  background: $body-bg;
+  color: $body-color;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: $heading-color;
+}
+
+a {
+  color: $link-color;
+}
+
+a:visited {
+  color: $link-visited-color;
+}
+
+a:hover {
+  color: $link-hover-color;
+}
+
+blockquote {
+  background: $blockquote-bg;
+  border-color: $blockquote-border-color;
+}
+
+/**
+ * classes
+ */
+a.nav:visited {
+  color: $link-color;
+}
+
+#mgheader {
+  background: $page-level-header-bg;
+}
+
+#mgsubmenu {
+  background: $submenu-bg;
+  color: $submenu-color;
+}
+
+#mgsubmenu a,
+#mgsubmenu a:visited {
+  color: $submenu-link-color;
+}
+
+#mgfooter {
+  border-color: $footer-border-color;
+}
+
+#footer-spirit {
+  background: $footer-spirit-bg;
+}
+
+/* TODO(slnc): remove all .infoinline and replace with f_milli and secondary */
+.secondary,
+.secondary a,
+.secondary a:visited {
+  color: $secondary-color;
+}
+
+.secondary a:hover,
+.infoinline a:hover {
+  color: $secondary-link-hover-color;
+}
+
+.secondary-block {
+  color: $secondary-color;
+  background: $secondary-block-bg;
+  border: 1px solid $secondary-block-border-color;
+}
+
+.secondary-area {
+  color: $secondary-color;
+  border: 3px dashed $secondary-block-border-color;
+}
+
+#mgfooter {
+  background: $footer-bg;
+}
+
+.unread-item,
+.alt0.unread-item,
+.alt1.unread-item {
+  background: $unread-item-bg;
+  color: $unread-item-color;
+}
+
+.unread-item a,
+.unread-item a:hover {
+  color: $unread-item-color;
+}
+
+.good {
+  color: $good-color;
+}
+
+.bad {
+  color: $bad-color;
+}
+
+.good-block,
+.good-block .pcent-bar .bar {
+  background: $good-block-bg;
+  border-color: $good-block-border-color;
+  color: $good-block-color;
+}
+
+.bad-block,
+.bad-block .pcent-bar .bar {
+  background: $bad-block-bg;
+  border-color: $bad-block-border-color;
+  color: $bad-block-color;
+}
+
+.good a,
+.good a:hover,
+.good a:visited {
+  color: $good-link-color;
+}
+
+.bad a,
+.bad a:hover,
+.bad a:visited {
+  color: $bad-link-color;
+}
+
+
+/*******************************************************************************
+ * user-input
+ */
+.user-input .selected {
+  background-color: $user-input-selected-bg;
+}
+
+.user-input {
+  border-color: $user-input-border-color;
+  background: $user-input-bg;
+  color: $user-input-color;
+}
+
+.button {
+  background: $button-bg;
+  color: $button-color;
+  border-color: $button-border-color;
+  -moz-box-shadow: inset 0px 1px 0px 0px $button-border-shadow-color;
+  -webkit-box-shadow: inset 0px 1px 0px 0px $button-border-shadow-color;
+  box-shadow: inset 0px 1px 0px 0px $button-border-shadow-color;
+}
+
+a.button,
+a.button:visited {
+  color: $button-color;
+}
+
+.user-input-overlay {
+  background: $user-input-overlay-control-bg;
+  color: $user-input-overlay-control-color;
+}
+
+/*******************************************************************************
+ * topbar
+ */
+.topnavbar {
+  background: $topbar-bg;
+  color: $topbar-color;
+}
+
+.topnavbar a,
+.topnavbar a:visited {
+  color: $topbar-color;
+}
+
+.topnavbar .gm-icon-button a {
+  color: $topbar-color;
+}
+
+.topnavbar .sections-list a,
+.topnavbar .sections-list a:visited {
+  color: $topbar-link-color;
+}
+
+.topnavbar .gm-icon-button a.active-state,
+.topnavbar .gm-icon-button .active-state .gm-icon {
+  color: $topbar-notification-color;
+}
+
+.topnavbar a:hover,
+.topnavbar .gm-icon-button a:hover.active-state .gm-icon,
+#topbar-portal-submenu a:hover {
+  color: $topbar-link-color;
+}
+
+/**
+ * dropdown divs
+ */
+.dropdown {
+  background: $dropdown-bg;
+  color: $dropdown-color;
+}
+
+.dropdown header {
+  color: $dropdown-header-color;
+}
+
+
+/**
+ * facebox
+ */
+.facebox_overlayBG {
+  background-color: $full-page-overlay-bg;
+}
+
+.popup {
+  background: $page-level-content-bg;
+  color: $page-level-content-color;
+  border-color: $page-level-content-border-color;
+}
+
+
+/**
+ * color.global.css
+ */
+.header {
+  background: $header-bg;
+  color: $header-color;
+}
+
+.header-secondary {
+  background: $header-secondary-bg;
+  color: $header-secondary-color;
+}
+
+.subheader {
+  background: $subheader-bg;
+  border-color: $subheader-border-color;
+  color: $subheader-color;
+}
+
+.alt1 .alt0 {
+  background-color: $body-bg;
+}
+
+.alt1,
+.alt0 .alt1 {
+  background-color: $alt1-bg;
+}
+
+.pcent-bar,
+.percent-bar {
+  background: $percent-bar-bg;
+  border-color: $percent-bar-bg-border-color;
+}
+
+.pcent-bar .bar,
+.percent-bar .bar {
+  background: $percent-bar-fg;
+}
+
+.percent-bar.twoclasses {
+  background: $percent-bar-twoclasses-bg;
+}
+
+.percent-bar.twoclasses .bar {
+  background: $percent-bar-twoclasses-fg;
+}
+
+#ccontent tr.alt1.selrow td,
+#ccontent tr.alt0.selrow td {
+  background: $selected-bg;
+}
+
+.page-level-content {
+  background: $page-level-content-bg;
+  border-color: $page-level-content-border-color;
+  color: $page-level-content-color;
+}
+
+.content-headline header a {
+  background: $page-level-content-bg;
+}
+
+.warning10 .pcent-bar .bar {
+  background: #ff172f;
+}
+
+.warning9 .pcent-bar .bar {
+  background: #CA4200;
+}
+
+.warning8 .pcent-bar .bar {
+  background: #F95E00;
+}
+
+.warning7 .pcent-bar .bar {
+  background: orange;
+}
+
+.warning6 .pcent-bar .bar {
+  background: #FFDF00;
+}
+
+.warning5 .pcent-bar .bar {
+  background: yellow;
+}
+
+.warning4 .pcent-bar .bar {
+  background: #C7FF04;
+}
+
+.warning3 .pcent-bar .bar {
+  background: #71FF1C;
+}
+
+.warning2 .pcent-bar .bar {
+  background: #00E624;
+}
+
+.warning1 .pcent-bar .bar,
+.positive .pcent-bar .bar {
+  background: green;
+}
+
+.warning10 .pcent-bar {
+  border-color: #ff172f;
+}
+
+.warning9 .pcent-bar {
+  border-color: #CA4200;
+}
+
+.warning8 .pcent-bar {
+  border-color: #F95E00;
+}
+
+.warning7 .pcent-bar {
+  border-color: orange;
+}
+
+.warning6 .pcent-bar {
+  border-color: #FFDF00;
+}
+
+.warning5 .pcent-bar {
+  border-color: yellow;
+}
+
+.warning4 .pcent-bar {
+  border-color: #C7FF04;
+}
+
+.warning3 .pcent-bar {
+  border-color: #71FF1C;
+}
+
+.warning2 .pcent-bar {
+  border-color: #00E624;
+}
+
+.warning1 .pcent-bar {
+  border-color: green;
+}
+
+/**
+ * emblems
+ */
+.emblem {
+  border-color: #000;
+  background: #000;
+}
+
+.emblem.common {
+  color: #d8d8d8;
+}
+
+.emblem.unfrequent {
+  color: #88a7ff;
+}
+
+.emblem.rare {
+  color: #fcf65e;
+}
+
+.emblem.legendary {
+  color: #ff7200;
+}
+
+.emblem.special {
+  color: #a7ff88;
+}
+
+a.logo,
+a.logo:visited {
+  color: #000;
+}
+
+a .logo-mafia,
+a:visited .logo-mafia {
+  color: #cc1f26;
+}

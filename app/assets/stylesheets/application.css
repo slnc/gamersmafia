@@ -3,7 +3,6 @@
 *= require_self
 *= require_tree ./layout
 *= require_tree ./components
-*= require_tree ./atmosphere
+*= require_tree ./media-queries
 *= require typography
-*= require grid
 */

@@ -5,7 +5,7 @@
     <% for member in clangroup.users %>
     <tr class="<%=oddclass%>">
       <td><a href="<%=gmurl(member)%>"><%=member.login%></a></td>
-      <td><a href="/cuenta/clanes/remove_member_from_group/?clans_group_id=<%=clangroup.id%>&user_id=<%=member.id%>" onclick="return confirm('¿Estás seguro?');">Borrar</a></td>
+      <td><a href="/cuenta/clanes/remove_member_from_group/?clans_group_id=<%=clangroup.id%>&user_id=<%=member.id%>" class="button confirm-click">Borrar</a></td>
     </tr>
     <% end -%>
   </table>

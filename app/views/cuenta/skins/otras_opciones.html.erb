@@ -1,32 +1,9 @@
-<% generic_support do %>
-<%mftext('Estado de la skin') do %>
-	<div class="centered-link">
-		<% if @skin.is_public? then %><strong>Pública</strong> <br /><span class="f_sm"><a href="/cuenta/skins/make_private?id=<%=@skin.id%>&redirto=/cuenta/skins/edit/<%=@skin.id%>">Hacer privada</a></span>
-		<% else %><strong>Privada</strong><br /><span class="f_sm"><a href="/cuenta/skins/make_public?id=<%=@skin.id%>&redirto=/cuenta/skins/edit/<%=@skin.id%>">Hacer pública</a></span><% end -%>
-	</div>
-<% end -%>
-<%mftext('Leyenda') do %>
-<div class="centered-link"><a href="/images/leyenda_intelliskin.png">Ver leyenda</a></div>
-<% end -%>
-
-<%mftable('Archivos relacionados', @skin.skins_files) do |sfn| %>
-<td><%=File.basename(sfn.file)%></td>
-<td><a href="/cuenta/skins/delete_skins_file?skin_id=<%=@skin.id%>&skins_file_id=<%=sfn.id%>">del</a></td>
-<% end -%>
-
-<form method="post" action="/cuenta/skins/create_skins_file" enctype="multipart/form-data">
-	<input type="hidden" name="skin_id" value="<%=@skin.id%>" />
-	<input type="file" name="skins_file[file]" />
-	<input type="submit" value="Crear" />
-</form>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Otras opciones') do %>
 <form method="post" action="/cuenta/skins/do_otras_opciones" enctype="multipart/form-data">
 	<input type="hidden" name="id" value="<%=params[:id]%>" />
 
-    <h2>Globales</h2>
+    <h2 class="f_hecto">Globales</h2>
     <table>
     <tr class="<%=oddclass%>">
 		<th>page_color</th>
@@ -50,24 +27,6 @@
 		<td><%=color_selector("skin[css_properties][mgheader_border_color]", @skin.config[:css_properties][:mgheader_border_color])%></td>
 	</tr>
 	<%=css_background_edit('mgheader')%>
-	<tr class="<%=oddclass%>">
-		<th>mgglobalmenu_sprites_image</th>
-		<td><%=css_image_selector("skin[css_properties][mgglobalmenu_sprites_image]", @skin.config[:css_properties][:mgglobalmenu_sprites_image], @skin) %><br />
-		<div class="infoinline f_sm">usar <a target="_blank" href="/skins/default/images/gm20085navmenu.png">plantilla</a></div></td>
-	</tr>
-	<tr class="<%=oddclass%>">
-		<th>mgglobalmenu_background_color</th>
-		<td><%=color_selector("skin[css_properties][mgglobalmenu_background_color]", @skin.config[:css_properties][:mgglobalmenu_background_color])%></td>
-	</tr>
-	<tr class="<%=oddclass%>">
-		<th>mgglobalmenu_dropdown_background_color</th>
-		<td><%=color_selector("skin[css_properties][mgglobalmenu_dropdown_background_color]", @skin.config[:css_properties][:mgglobalmenu_dropdown_background_color])%></td>
-	</tr>
-	<tr class="<%=oddclass%>">
-		<th>mgglobalmenu_border_color</th>
-		<td><%=color_selector("skin[css_properties][mgglobalmenu_border_color]", @skin.config[:css_properties][:mgglobalmenu_border_color])%></td>
-	</tr>
-	<%=css_editor_separator%>
 	<tr class="<%=oddclass%>">
 		<th>mgsubmenu_color</th>
 		<td><%=color_selector("skin[css_properties][mgsubmenu_color]", @skin.config[:css_properties][:mgsubmenu_color])%></td>
@@ -99,7 +58,7 @@
 	<tr class="<%=oddclass%>">
 		<th>logo_background_image</th>
 		<td><%=css_image_selector("skin[css_properties][logo_background_image]", @skin.config[:css_properties][:logo_background_image], @skin) %><br />
-		<div class="infoinline f_sm">194x54 (2 estados, ver logo por defecto)</div></td>
+		<div class="infoinline f_milli">194x54 (2 estados, ver logo por defecto)</div></td>
 	</tr>
 	<%=css_editor_separator%>
 
@@ -127,11 +86,6 @@
 	<tr class="<%=oddclass%>">
 		<th>ccontent_header_color</th>
 		<td><%=color_selector("skin[css_properties][ccontent_header_color]", @skin.config[:css_properties][:ccontent_header_color])%></td>
-	</tr>
-	<tr class="<%=oddclass%>">
-		<th>ccontent_header_titles_sprite</th>
-		<td><%=css_image_selector("skin[css_properties][ccontent_header_titles_sprite]", @skin.config[:css_properties][:ccontent_header_titles_sprite], @skin) %><br />
-		<div class="infoinline f_sm">usar <a target="_blank" href="/skins/default/images/layout/cabeceras_portada.png">plantilla</a></div></td>
 	</tr>
 	<%=css_background_edit('ccontent_header')%>
 	<%=css_editor_separator%>
@@ -165,11 +119,6 @@
 		<td><%=color_selector("skin[css_properties][cleft_lineseparator_color]", @skin.config[:css_properties][:cleft_lineseparator_color])%></td>
 	</tr>
 	<tr class="<%=oddclass%>">
-		<th>cleft_titles_sprites_image</th>
-		<td><%=css_image_selector("skin[css_properties][cleft_titles_sprites_image]", @skin.config[:css_properties][:cleft_titles_sprites_image], @skin) %><br />
-		<span class="infoinline f_sm">usar <a target="_blank" href="/skins/default/images/txts_sidebar.png">plantilla</a></span></td>
-	</tr>
-	<tr class="<%=oddclass%>">
 		<th>cleft_link_color</th>
 		<td><%=color_selector("skin[css_properties][cleft_link_color]", @skin.config[:css_properties][:cleft_link_color])%></td>
 	</tr>
@@ -191,26 +140,35 @@
 	<tr class="<%=oddclass%>">
 		<th>mgfooter_spirit_image</th>
 		<td><%=css_image_selector("skin[css_properties][mgfooter_spirit_image]", @skin.config[:css_properties][:mgfooter_spirit_image], @skin) %><br />
-		<div class="infoinline f_sm">100x64</div></td>
+		<div class="infoinline f_milli">100x64</div></td>
 	</tr>
 	<%=css_background_edit('mgfooter')%>
-
-	</table>
-
-	<h2>Otros sprites</h2>
-	<table>
-	<tr class="<%=oddclass%>">
-		<th>sprite1_sprites</th>
-		<td><%=css_image_selector("skin[css_properties][sprite1_sprites]", @skin.config[:css_properties][:sprite1_sprites], @skin) %><br />
-		<div class="infoinline f_sm">usar <a target="_blank" href="/skins/default/images/s.png">plantilla</a></div></td>
-	</tr>
-	<tr class="<%=oddclass%>">
-		<th>bbeditor_sprites</th>
-		<td><%=css_image_selector("skin[css_properties][bbeditor_sprites]", @skin.config[:css_properties][:bbeditor_sprites], @skin) %><br />
-		<div class="infoinline f_sm">usar <a target="_blank" href="/skins/default/images/bbeditor.gif">plantilla</a></div></td>
-	</tr>
 	</table>
 <input type="submit" class="button" value="Guardar" />
 </form>
 <% end %>
 <% end %>
+
+<% generic_support do %>
+<%mftext('Estado de la skin') do %>
+	<div class="centered-link">
+		<% if @skin.is_public? then %><strong>Pública</strong> <br /><span class="f_milli"><a href="/cuenta/skins/make_private?id=<%=@skin.id%>&redirto=/cuenta/skins/edit/<%=@skin.id%>">Hacer privada</a></span>
+		<% else %><strong>Privada</strong><br /><span class="f_milli"><a href="/cuenta/skins/make_public?id=<%=@skin.id%>&redirto=/cuenta/skins/edit/<%=@skin.id%>">Hacer pública</a></span><% end -%>
+	</div>
+<% end -%>
+<%mftext('Leyenda') do %>
+<div class="centered-link"><a href="/images/leyenda_intelliskin.png">Ver leyenda</a></div>
+<% end -%>
+
+<%mftable('Archivos relacionados', @skin.skins_files) do |sfn| %>
+<td><%=File.basename(sfn.file)%></td>
+<td><a href="/cuenta/skins/delete_skins_file?skin_id=<%=@skin.id%>&skins_file_id=<%=sfn.id%>">del</a></td>
+<% end -%>
+
+<form method="post" action="/cuenta/skins/create_skins_file" enctype="multipart/form-data">
+	<input type="hidden" name="skin_id" value="<%=@skin.id%>" />
+	<input type="file" name="skins_file[file]" />
+	<input type="submit" class="button" value="Crear" />
+</form>
+<% end -%>
+

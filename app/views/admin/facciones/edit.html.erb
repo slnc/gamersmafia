@@ -1,13 +1,9 @@
-<% generic_support do %>
-	<div class="sidething-spaced"><a href="<%=gmurl(@faction)%>">Ver ficha pública</a></div>
-<% end -%>
-
 <% content_main do %>
 <%mftext('Editar facción') do %>
 
 <%= form_tag({:action => 'update', :id => @faction}, :multipart => true )%>
   <%= render :partial => 'form' %>
-  <%= submit_tag 'Guardar' %>
+  <%= submit_tag 'Guardar', :class => 'button' %>
 </form>
 <br />
 <br />
@@ -16,9 +12,14 @@
 <%mftext('Borrar la facción') do %>
 <%= form_tag({:action => 'destroy', :id => @faction})%>
 
-  <input type="submit" value="Borrar" onclick="return confirm('¿Estás seguro?');" />
+  <input type="submit" class="button confirm-click" value="Borrar" />
 </form>
 <% end -%>
 <% end -%>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+	<div class="sidething-spaced"><a href="<%=gmurl(@faction)%>">Ver ficha pública</a></div>
+<% end -%>
+

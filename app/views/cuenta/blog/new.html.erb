@@ -2,7 +2,7 @@
 <% mftext('Nueva entrada de blog') do %>
 <%= form_tag :action => 'create' %>
   <%= render :partial => 'form' %>
-  <%= submit_tag "Crear" %>
+  <%= submit_tag 'Crear', :class => 'button' %>
 </form>
 
 <br />

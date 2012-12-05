@@ -30,6 +30,14 @@ require "msgpack"
 # Collaborative Recommender System module
 module Crs
 
+  def self.recommend_from_interests
+    Term.find(:all, :conditions => "id IN (SELECT DISTINCT(entity_id) from user_interests)").each do |t|
+      t.contents_terms.find(:all, :conditions => "created_on >= now() - '2 weeks'::interval").each do |content_term|
+        Crs.recommend_from_contents_term(content_term)
+      end
+    end
+  end
+
   # Looks for people who might be interested in a given content
   def self.recommend_from_contents_term(contents_term)
     # TODO(slnc): don't recommend very old news or closed topics, just in case

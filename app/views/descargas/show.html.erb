@@ -6,9 +6,6 @@ function open_download_win(download_id)
 }
 </script>
 
-<% content_support(:content => @download.unique_content) do %>
-<% end -%>
-
 <% content_main do %>
   <% mfcontent(@download) do %>
   <% if nil then %><div style="float: right; margin-right: 10px;"><span class="infoinline"><strong><%=@download.downloaded_times%></strong> descargas</span></div><% end -%>
@@ -17,12 +14,12 @@ function open_download_win(download_id)
 
 	<div style="margin: 20px; text-align: center;">
 <% if @download.file.to_s != '' then %>
-<a href="/descargas/download/<%=@download.id%>"><img class="icon" src="/skins/default/images/btn_descargar.png" /></a><br />
+  <a href="/descargas/download/<%=@download.id%>"><%=button("Descargar")%></a><br />
 <% end -%>
 
 	<% mirrors = @download.download_mirrors.find(:all, :order => 'lower(url)')
 if mirrors.size > 0 then %>
-	<table style="margin-top: 20px; border: 1px solid #efefef;">
+	<table style="margin-top: 20px;">
 		<tr>
 			<th colspan="2">Descargas alternativas</th>
 		</tr>
@@ -35,7 +32,9 @@ if mirrors.size > 0 then %>
 %>
 		<tr class="<%=oddclass%>">
 			<td style="text-align: left;"><% if mirror_name then %><a target="_blank" href="http://<%=mirror_name%>/"><%=mirror_name%></a><% end -%></td>
-			<td class="right"><a href="/descargas/download/<%=@download.id%>?r=<%=dm.url%>"><img class="icon" src="/skins/default/images/btn_descargar_mirror.png" /></a></td>
+      <td class="right">
+        <a href="/descargas/download/<%=@download.id%>?r=<%=dm.url%>"><%=button("Descargar desde mirror")%></a>
+      </td>
 		</tr>
 		<% end -%>
 	</table>
@@ -43,3 +42,6 @@ if mirrors.size > 0 then %>
 	</div>
   <% end %>
 <%end -%>
+
+<% content_support(:content => @download.unique_content) do %>
+<% end -%>

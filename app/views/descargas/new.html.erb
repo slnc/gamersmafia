@@ -1,16 +1,3 @@
-<% generic_support do %>
-<%= render :partial => '/shared/drafts', :locals => { :cls => Download } if user_is_authed %>
-<% mftext('Consejos') do %>
-<ul class="content-hid">
-  <li style="margin-bottom: 10px;">Este formulario no es un buscador</li>
-  <li style="margin-bottom: 10px;">En el campo descripción debes poner para qué sirve, qué hace el archivo o si es un mapa/mod cuál es el tema, diferencias, etc. Es imprescindible rellenarlo.</li>
-  <li style="margin-bottom: 10px;">Si el archivo ocupa menos de 4Mb o 5Mb elígelo de tu disco duro en el campo Archivo</li>
-  <li style="margin-bottom: 10px;">Un mirror es una dirección alternativa para descargar el archivo</li>
-</ul>
-<% end -%>
-<%= render :partial => 'shared/pending', :object => Download.pending %>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Nueva descarga') do %>
 
@@ -18,7 +5,7 @@
   <%= render :partial => 'form' %>
   <%= render :partial => '/shared/new_content_tags' %>
   <br />
-  <%= submit_tag 'Crear' %>
+  <%= submit_tag 'Crear', :class => 'button' %>
 </form>
 <% end -%>
 
@@ -28,8 +15,20 @@
 <%=render :partial => '/shared/category_term_select', :locals => { :index => 100, :content_type => 'Download' } %>
   <p><label for="download_file">Archivo</label><br/>
   <%= file_field 'download', 'file' %></p>
-  <%= submit_tag 'Crear' %>
+  <%= submit_tag 'Crear', :class => 'button' %>
 </form>
 <% end -%>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+  <li style="margin-bottom: 10px;">Este formulario no es un buscador</li>
+  <li style="margin-bottom: 10px;">En el campo descripción debes poner para qué sirve, qué hace el archivo o si es un mapa/mod cuál es el tema, diferencias, etc. Es imprescindible rellenarlo.</li>
+  <li style="margin-bottom: 10px;">Si el archivo ocupa menos de 4Mb o 5Mb elígelo de tu disco duro en el campo Archivo</li>
+  <li style="margin-bottom: 10px;">Un mirror es una dirección alternativa para descargar el archivo</li>
+</ul>
+<% end -%>
+<% end -%>
+

@@ -50,24 +50,13 @@ a:hover {
 }
 
 .nav a:hover {
-	color: #${nav_link_hover_color};	
+	color: #${nav_link_hover_color};
 }
 
 #ccontent.header,
 #ccontent.header td {
 	background-color: #${ccontent_module_background_color};
 	color: #${content_header_color};
-}
-
-/* TODO copypasted */
-#navpath .nav {
-   background-color: #${ccontent_module_background_color};
-   color: #${content_header_color};
-}
-
-#navpath ul {
-	margin: 0 5px;
-	padding: 0;
 }
 
 #ccontent.comment .authorship {

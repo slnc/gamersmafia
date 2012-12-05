@@ -1,6 +1,3 @@
-<% generic_support do %>
-  <%= render :partial => 'unused_products' %>
-<% end -%>
 <% content_main do %>
 <% mftext('Tienda') do %>
 <% Product.find(:all, :conditions => 'enabled = \'t\'', :order => 'LOWER(name) ASC').each do |product| %>
@@ -11,4 +8,8 @@
 </div>
 <% end %>
 <% end -%>
+<% end -%>
+
+<% generic_support do %>
+  <%= render :partial => 'unused_products' %>
 <% end -%>

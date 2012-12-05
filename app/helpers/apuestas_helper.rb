@@ -3,6 +3,20 @@ module ApuestasHelper
   GM_KEY = "%gm"
   MIN_BETS_PREDICTION_RANKING = 15
 
+  def bet_open_message(bet)
+    if bet.closes_on > Time.now
+      <<-EOD
+      Las apuestas para esta partida se cierran en
+      <br />
+      <div class="centered">
+        <strong>#{format_interval(bet.closes_on.to_i - Time.now.to_i)}</strong>
+      </div>
+      EOD
+    else
+      "La partida está en curso o finalizada, ya no se permiten las apuestas."
+    end
+  end
+
   def bets_prediction_ranking
     accuracy_table = {}
     # Get top ranked individuals' score

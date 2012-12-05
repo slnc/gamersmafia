@@ -1,3 +1,7 @@
+<% content_main do %>
+  <%=mfcontent(@interview)%>
+<%end -%>
+
 <% content_support(:content => @interview.unique_content) do %>
 <% if @interview.is_public? then %>
 <%=mfcontents_basic("Más entrevistas de #{@interview.user.login}",
@@ -9,7 +13,3 @@
 	:more_link => "<a href=\"#{gmurl(@interview.user)}/contenidos/entrevistas\">Ver todas sus entrevistas (#{@interview.user.interviews.count})</a>")%>
 <% end -%>
 <% end -%>
-
-<% content_main do %>
-  <%=mfcontent(@interview)%>
-<%end -%>

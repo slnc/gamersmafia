@@ -7,13 +7,13 @@ size = all1.size
   <tr>
     <th></th>
     <% size.times do |j| %>
-    <th class="centered" style="text-align: center; width: <%=100.0/(size + 1)%>%; font-size: 10px;"><%=notags(all1[j].name)%></th>
+    <th class="centered f_milli" style="text-align: center; width: <%=100.0/(size + 1)%>%;"><%=notags(all1[j].name)%></th>
     <% end -%>
   </tr>
 
   <% size.times do |i| %>
   <tr class="<%=oddclass%>">
-    <th style="font-size: 10px;"><%=notags(all1[i].name)%></th>
+    <th class="f_milli"><%=notags(all1[i].name)%></th>
     <% size.times do |j|
          match = @competition.find_league_match_between(all1[i].id, all2[j].id) # TODO cuando usemos ligas con ida y vuelta quitar el i < j
          if match and i < j then %>
@@ -32,7 +32,7 @@ size = all1.size
 <%
 max = @competition.competitions_matches.find(:first, :order => 'stage DESC').stage
 (max+1).times do |time| %>
-<div class="subheader"><div>Jornada <%=time+1%></div></div>
+<div class="subheader f_deca"><div>Jornada <%=time+1%></div></div>
 <table>
   <% for cm in @competition.competitions_matches.find(:all, :conditions => ['stage = ?', time], :order => 'play_on ASC') %>
   <tr class="<%=oddclass%>">
@@ -52,8 +52,8 @@ max = @competition.competitions_matches.find(:first, :order => 'stage DESC').sta
     <% end %>
     </td>
 
-    <td class="centered" style="width: 20px;"><%= cm.result && cm.competitions_matches_uploads.count > 0  ? '<img class="downloads-count" title="Archivos adjuntos" src="/images/blank.gif" />' : ''%></td>
-    <td class="centered" style="width: 20px;"><%= cm.result && cm.competitions_matches_reports.count > 0  ? '<img class="pageviews-count" title="Informes adjuntos" src="/images/blank.gif" />' : ''%></td>
+    <td class="centered" style="width: 20px;"><%= cm.result && cm.competitions_matches_uploads.count > 0  ? gm_icon("download", "small") : ''%></td>
+    <td class="centered" style="width: 20px;"><%= cm.result && cm.competitions_matches_reports.count > 0  ? gm_icon("pageviews", "small") : ''%></td>
     <td class="timestamp infoinline"><%=print_tstamp(cm.play_on)%></td>
   </tr>
 <% end -%>

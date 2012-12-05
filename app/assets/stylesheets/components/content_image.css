@@ -1,0 +1,29 @@
+.content-headline header a {
+  display: inline-block;
+  padding-right: 1rem;
+}
+
+.content-image {
+  padding: 2px;
+}
+
+.content-image img {
+  width: 100%;
+}
+
+.content-headline-image {
+  position: relative;
+  z-index: -1;
+  margin-bottom: -1.5rem;
+  max-width: 700px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 10rem;
+}
+
+.content-thumbnail-image {
+  width: 75px;
+  height: 75px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}

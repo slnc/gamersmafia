@@ -5,11 +5,11 @@
       <div class="avatar"><img src="<%=ASSET_URL%><%=comment.user.show_avatar%>" /></div>
     </div>
     <header>
-      <div class="timestamp f_sm float-right"><%=print_tstamp(comment.created_on)%></div>
+      <div class="timestamp f_milli float-right"><%=print_tstamp(comment.created_on)%></div>
       <span class="comment-position"><%=comment.position_in_content%></span>
       <%=user_link(comment.user)%>
 
-      <div class="comment-valorations f_sm">
+      <div class="comment-valorations f_milli">
         <%=positive_negative_bar_for_comment(comment)%>
       </div>
     </header>
@@ -18,7 +18,7 @@
          Formatting.comment_with_expanded_short_replies(
            comment.comment, comment)) %>
    </div>
-   <footer class="f_sm">
+   <footer class="f_milli">
      Tu valoración:
    </footer>
   </div>
@@ -34,7 +34,7 @@
   <div id="dropped-files" class="image-gallery-sm"></div>
   <div class="image-editor hidden">
     <canvas class="hidden"></canvas>
-    <img src="/images/dot.png" class="image" />
+    <img src="/images/dot.gif" class="image" />
     <br />
     <input type="text" name="meme_top" class="meme_top" maxlength="60" />
     <br />
@@ -44,7 +44,7 @@
     <br />
   </div>
 
-  <div class="draft-feedback f_sm"></div>
+  <div class="draft-feedback f_milli"></div>
   <input type="submit" value="Enviar" class="button form-submit" />
 </form>
 </section>

@@ -181,6 +181,19 @@ class Bet < ActiveRecord::Base
     self.closes_on > 2.weeks.ago
   end
 
+  def amount_on_team1
+    self.bets_options.first.ammount
+  end
+
+  def amount_on_team2
+    self.bets_options.last.ammount
+  end
+
+  def ratio_amounts
+    amount1 = self.amount_on_team1.to_f
+    amount1 / [amount1 + self.amount_on_team2, 1].max
+  end
+
   def complete(result)
     # Completes a bet.
     #
@@ -261,6 +274,22 @@ class Bet < ActiveRecord::Base
     end
 
     User.db_query("DELETE FROM stats.bets_results WHERE bet_id = #{self.id}")
+  end
+
+  def team1
+    self.bets_options.first.name
+  end
+
+  def team2
+    self.bets_options.last.name
+  end
+
+  def users_with_bets
+    User.db_query(
+      "SELECT COUNT(DISTINCT(user_id))
+       FROM bets_tickets
+       WHERE bets_option_id IN (SELECT id FROM bets_options WHERE bet_id = #{self.id})
+       AND ammount > 0")[0]['cnt'].to_i
   end
 
   protected
@@ -449,7 +478,6 @@ class Bet < ActiveRecord::Base
                                     FROM bets_options
                                    WHERE bet_id = #{self.id}))")
   end
-
 
   def total_user_amount(user)
     # Returns the total amount of money placed on this bet by a user.

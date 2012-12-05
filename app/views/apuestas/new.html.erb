@@ -1,24 +1,19 @@
+<% content_main do %>
+  <%mftext('Nueva apuesta') do %>
+    <%= form_tag :action => 'create' %>
+    <%= render :partial => 'form' %>
+    <%= render :partial => '/shared/new_content_tags' %>
+    <br />
+    <%= submit_tag 'Crear', :class => 'button' %>
+  </form>
+  <% end -%>
+<% end -%>
+
 <% generic_support do %>
-<%= render :partial => '/shared/drafts', :locals => { :cls => Bet } if user_is_authed %>
 <%mftext('Consejos') do %>
 <ul class="content-hid">
 <li>Solo apuestas de partidas oficiales y verificables</li>
 <li>Indica la URL del torneo o partida correspondiente en el campo información adicional</li>
 </ul>
-<% end -%>
-
-<%= render :partial => 'shared/pending', :object => Bet.pending %>
-<% end -%>
-
-<% content_main do %>
-<%mftext('Nueva apuesta') do %>
-
-<%= form_tag :action => 'create' %>
-  <%= render :partial => 'form' %>
-  <%= render :partial => '/shared/new_content_tags' %>
-  <br />
-  <%= submit_tag 'Crear' %>
-</form>
-
 <% end -%>
 <% end -%>

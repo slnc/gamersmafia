@@ -2,7 +2,7 @@
 
 <%= form_tag({:action => 'update', :id => @games_map}, :multipart => true)%>
   <%= render :partial => 'form' %>
-  <%= submit_tag 'Edit' %>
+  <%= submit_tag 'Guardar', :class => 'button' %>
 </form>
 
 <%= link_to 'Show', :action => 'show', :id => @games_map %> |

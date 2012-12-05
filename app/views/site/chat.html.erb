@@ -1,18 +1,3 @@
-<% generic_support do %>
-  <%mftext('Online') do %>
-  <ul class="skeletal">
-    <%
-    now = Time.now.to_i
-    max = 60 * 30
-    for u in @online_users %>
-    <li class="<%=oddclass%>"><div style="float: right; width: 67px; margin-top: 5px;" class="infoinline"><%=draw_pcent_bar(1 - (now - u.lastseen_on.to_i) / max.to_f, "#{format_interval(now - u.lastseen_on.to_i, 'secs')}")%></div><span class="nick"><%=link_to u.login, gmurl(u) %></span></li>
-  <% end -%>
-  </ul>
-  <% end -%>
-
-  <p style="clear: left;">.. y <strong><%=Stats::online_users['anonymous']%></strong> anónimos.
-<% end -%>
-
 <% content_main do %>
 <%mftext('Bigchat') do %>
   <div>
@@ -100,3 +85,19 @@ window.onresize=check_chat_size;
 check_chat_size();
 </script>
 <% end -%>
+
+<% generic_support do %>
+  <%mftext('Online') do %>
+  <ul class="skeletal">
+    <%
+    now = Time.now.to_i
+    max = 60 * 30
+    for u in @online_users %>
+    <li class="<%=oddclass%>"><div style="float: right; width: 67px; margin-top: 5px;" class="infoinline"><%=draw_pcent_bar(1 - (now - u.lastseen_on.to_i) / max.to_f, "#{format_interval(now - u.lastseen_on.to_i, 'secs')}")%></div><span class="nick"><%=link_to u.login, gmurl(u) %></span></li>
+  <% end -%>
+  </ul>
+  <% end -%>
+
+  <p style="clear: left;">.. y <strong><%=Stats::online_users['anonymous']%></strong> anónimos.
+<% end -%>
+

@@ -1,15 +1,3 @@
-<% generic_support do %>
-    <% if @clan && (@clan.admins.size > 1 || !@clan.user_is_clanleader(@user.id)) then %>
-    <%mftext('Abandonar el clan') do %>
-    <p class="centered"><a onclick="return confirm('¿Estás seguro de que no deseas seguir perteneciendo a este clan?');" href="/cuenta/clanes/general/abandonar?clan_id=<%=@clan.id%>">Abandonar el clan <%=@clan.name%></a></p>
-	<% end -%>
-    <% elsif @clan && @clan.user_is_clanleader(@user.id) then %>
-    <%mftext('Borrar el clan') do %>
-    <p class="centered"><a onclick="return confirm('¿Estás seguro de que deseas eliminar este clan?');" href="/cuenta/clanes/general/borrar?clan_id=<%=@clan.id%>">Borrar el clan <%=@clan.name%></a></p>
-	<% end -%>
-  <% end -%>
-<% end %>
-
 <% content_main do %>
   <% mftext('Mis clanes') do %>
   <p>
@@ -30,7 +18,7 @@
 </tr>
 <tr class="<%=oddclass%>">
 	<td>Saldo de la cuenta del clan</td>
-	<td><%=@clan.cash%> <%=gmd12%></td>
+	<td><%=@clan.cash%> <%=gm_icon("gmf", "small")%></td>
 </tr>
 <tr class="<%=oddclass%>">
 	<td>Competiciones activas</td>
@@ -42,3 +30,16 @@
 <% end -%>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+    <% if @clan && (@clan.admins.size > 1 || !@clan.user_is_clanleader(@user.id)) then %>
+    <%mftext('Abandonar el clan') do %>
+    <p class="centered"><a href="/cuenta/clanes/general/abandonar?clan_id=<%=@clan.id%>" class="button confirm-click">Abandonar el clan <%=@clan.name%></a></p>
+	<% end -%>
+    <% elsif @clan && @clan.user_is_clanleader(@user.id) then %>
+    <%mftext('Borrar el clan') do %>
+    <p class="centered"><a href="/cuenta/clanes/general/borrar?clan_id=<%=@clan.id%>" class="button-confirm-click">Borrar el clan <%=@clan.name%></a></p>
+	<% end -%>
+  <% end -%>
+<% end %>
+

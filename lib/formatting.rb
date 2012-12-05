@@ -247,7 +247,7 @@ module Formatting
       title = commit_lines[4].strip
       description = commit_lines[5..-1].join("\n")
       out << "<strong>#{title}</strong><br />"
-      out << "<span class=\"f_sm\">por <a href=\"/miembros/#{author}\">#{author}</a> | <a href=\"http://github.com/gamersmafia/gamersmafia/commits/#{commit_id}\">commit</a></span>"
+      out << "<span class=\"f_milli\">por <a href=\"/miembros/#{author}\">#{author}</a> | <a href=\"http://github.com/gamersmafia/gamersmafia/commits/#{commit_id}\">commit</a></span>"
       if description.strip.empty?
         out << "<br /><br /><br />"
       else

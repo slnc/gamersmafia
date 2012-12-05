@@ -21,6 +21,48 @@ Gm.Utils = function() {
           clone: false,
           style: 'light',
       });
+
+      $('.ratebar').each(function() {
+        $(this).find('.stars').click(function(e) {
+          var url = (
+            '/site/rate_content?content_rating[rating]=' +
+            $(this).data("rating") + '&content_rating[content_id]=' +
+            $(this).data("content-id"));
+
+          $.get(url, function(data) {
+            $(e.currentTarget).parent().html("Muchas gracias por tu valoración.");
+          });
+        });
+
+        $(this).find('.stars').mousemove(function(e) {
+          var cur = $(this);
+          var parentOffset = cur.parent().offset();
+          var relX = (e.pageX - parentOffset.left) / cur.width();
+          if (relX < 0.1) {
+            relX = 0.1;
+          }
+
+          var rating = Math.ceil(relX * 10);
+          cur.data("rating", rating);
+
+          var full = Math.floor(rating / 2.0);
+          var half = rating % 2;
+          var empty = 5 - full - half;
+
+          var str = "";
+          for (var i = 0; i < full; i++) {
+            str += "&#xe000;"
+          }
+          for (var i = 0; i < half; i++) {
+            str += "&#xe01b;"
+          }
+          for (var i = 0; i < empty; i++) {
+            str += "&#xe045;"
+          }
+
+          cur.html(str);
+        });
+      });
     },
 
     FullPageInit: function() {

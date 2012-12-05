@@ -1,3 +1,10 @@
+<% content_main do %>
+<% mftext('Información', :blast => false) do %>
+  	<p>Tu saldo actual: <strong><span class="account-balance f_number f_hecto"><%=@user.cash.to_i%></span></strong> <%=gm_icon("gmf", "small")%></p>
+<% end %>
+<%= render :partial => '/shared/cash_movements', :locals => { :entity => @user } %>
+<% end %>
+
 <% generic_support do %>
 <% mftext('Información') do %>
   <div class="centered"><img class="icon" src="/images/bank.png" /></div>
@@ -14,9 +21,3 @@
 <%=render :partial => '/shared/cash_transfer', :locals => { :sender => @user } %>
 <% end %>
 
-<% content_main do %>
-<% mftext('Información', :blast => false) do %>
-  	<p>Tu saldo actual: <strong><span class="account-balance f_number"><%=@user.cash.to_i%></span></strong><%=gmd12%></p>
-<% end %>
-<%= render :partial => '/shared/cash_movements', :locals => { :entity => @user } %>
-<% end %>

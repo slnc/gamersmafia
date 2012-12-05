@@ -19,8 +19,8 @@
     </tr>
 	<% end -%>
     </table>
-	
-  <input type="submit" class="button" value="Aceptar" onclick="return confirm('¿Estás seguro?');" />
+
+  <input type="submit" class="button confirm-click" value="Aceptar" />
     </form>
 	<% end -%>
 
@@ -65,7 +65,7 @@ end %>
 		</tr>
 		         <% end %>
 		    </table>
-    <input type="submit" class="button" value="<% if @competitions_match.new_record? then %>Retar<% else %>Contrarreto<% end%>" onclick="return confirm('¿Estás seguro?');" />
+    <input type="submit" class="button confirm-click" value="<% if @competitions_match.new_record? then %>Retar<% else %>Contrarreto<% end%>" />
   </form>
   <% end -%>
 
@@ -74,7 +74,7 @@ end %>
     <% mftext('Rechazar reto') do %>
             <form method="post" action="/competiciones/do_deny_challenge">
                     <input type="hidden" name="competitions_match_id" value="<%=@competitions_match.id%>" />
-    <input type="submit" class="button" value="Rechazar" onclick="return confirm('¿Estás seguro?');" />
+    <input type="submit" class="button confirm-click" value="Rechazar" />
     </form>
 	<% end %><%# mftext -%>
     <%end -%>

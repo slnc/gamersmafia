@@ -299,12 +299,6 @@ class UsersEmblem < ActiveRecord::Base
             {:conditions => ["emblem = ?", emblem]}
         }
 
-  def self.inline_html_from_info(info)
-    "<div class=\"emblem sprite1 #{info[:frequency]}\">
-       <div class=\"name\" title=\"#{info[:description]}\">#{info[:name]}</div>
-    </div>"
-  end
-
   def reset_user_mask
     self.user.emblems_mask = nil
     self.user.emblems_mask_or_calculate
@@ -316,10 +310,6 @@ class UsersEmblem < ActiveRecord::Base
 
   def frequency
     EMBLEMS_INFO[self.emblem][:frequency]
-  end
-
-  def inline_html
-    UsersEmblem.inline_html_from_info(EMBLEMS_INFO[self.emblem])
   end
 
   protected

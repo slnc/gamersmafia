@@ -47,10 +47,6 @@
   margin-top: 5px;
 }
 
-#tag-this-content img {
-  margin-top: 5px;
-}
-
 #tag-this-content, #new-tag-input {
     padding-top: 7px;
 }
@@ -60,5 +56,5 @@
 }
 
 #tag-this-content {
-    cursor: pointer;
+  cursor: pointer;
 }

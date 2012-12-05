@@ -1,20 +1,3 @@
-<%generic_support(:show_ads => false) do %>
-	<ul>
-		<li>Borrar solo tags que violen el codigo de conducta (es decir, no borrar tags solo porque creáis que el tag no sirve para nada)</li>
-		<li>información privada (creo q sobra decirlo pero esta info no es publica en la web por lo que no mencionar nunca publicamente: "fulanito taguea bien, mal o regular", etc</li>
-		<li>borrar tags es rapido pero hay que tratar tags que violen el codigo como si fueran comentarios o topics que lo violen (aviso, ban si reincide, etc)</li>
-	</ul>
-	<% if nil then %>
-	<%mftext('Reglas') do %>
-	<form method="post" action="/admin/tags/rules_create">
-	El sistema usa expresiones regulares POSIX. NO AÑADIR SI NO ESTÁS COMPLETAMENTE SEGURO DE CÓMO FUNCIONAN.
-	Original: <input type="text" name="s" /><br />
-	Final: <input type="text" name="d" /><br />
-	</form>
-	<% end -%>
-	<% end -%>
-<% end -%>
-
 <%content_main do
   @tags = UsersContentsTag.paginate(:page => params[:page],
                                     :order => 'created_on DESC',
@@ -45,4 +28,21 @@
 
 <%=render(:partial => '/shared/pager2',
           :locals => {:collection => @tags, :pos => 'bottom'})%>
+<% end -%>
+
+<%generic_support(:show_ads => false) do %>
+	<ul>
+		<li>Borrar solo tags que violen el codigo de conducta (es decir, no borrar tags solo porque creáis que el tag no sirve para nada)</li>
+		<li>información privada (creo q sobra decirlo pero esta info no es publica en la web por lo que no mencionar nunca publicamente: "fulanito taguea bien, mal o regular", etc</li>
+		<li>borrar tags es rapido pero hay que tratar tags que violen el codigo como si fueran comentarios o topics que lo violen (aviso, ban si reincide, etc)</li>
+	</ul>
+	<% if nil then %>
+	<%mftext('Reglas') do %>
+	<form method="post" action="/admin/tags/rules_create">
+	El sistema usa expresiones regulares POSIX. NO AÑADIR SI NO ESTÁS COMPLETAMENTE SEGURO DE CÓMO FUNCIONAN.
+	Original: <input type="text" name="s" /><br />
+	Final: <input type="text" name="d" /><br />
+	</form>
+	<% end -%>
+	<% end -%>
 <% end -%>

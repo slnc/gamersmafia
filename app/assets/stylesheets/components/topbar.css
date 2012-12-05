@@ -1,8 +1,6 @@
 .topnavbar {
   text-align: left;
-  background: #000;
-  color: #777;
-  height: 2.5rem;
+  height: 4.0rem;
   z-index: 101;
 }
 
@@ -14,98 +12,39 @@
  * TODO(slnc): temp hack
  */
 .topnavbar .karma  {
-  color: #777;
   font-weight: normal;
-  font-size: inherit;
 }
 
 .topnavbar .topnavbar-container {
-  padding: 8px 1rem 8px 1rem;
-}
-
-@font-face
-{
-  font-family: "GmIcons";
-  src: url(/fonts/gm_icons.6.ttf);
-}
-
-.gm-icon {
-  font-family: "GmIcons";
-  font-size: 15px;
-}
-
-.gm-icon.big {
-  font-family: "GmIcons";
-  font-size: 20px;
-}
-
-.gm-icon.small {
-  font-family: "GmIcons";
-  font-size: 10px;
-}
-
-.gm-icon-button {
-  display: inline-block;
-}
-
-.gm-icon-button {
-  padding: 4px;
-  margin-right: 0px;
+  padding: 8px 2rem 8px 2rem;
 }
 
 .topbar-block {
   display: inline-block;
-  margin-right: 1rem;
-}
-
-.align-right {
-  text-align: right;
-}
-
-.float-right {
-  float: right;
+  margin-right: 2rem;
+  line-height: 3rem;
 }
 
 .topbar-search {
-  margin-top: 2px;
+  margin-top: 0px;
   position: absolute;
   right: 0;
-  top: 8px;
+  top: 4px;
   z-index: 101;
 }
 
 .topbar-search .text {
   width: 125px;
+  line-height: 1rem;
 }
 
-.topnavbar a,
-.topnavbar a:visited,
-#topbar-portal-submenu a:visited,
-#topbar-portal-submenu a {
-  color: #777;
+.topbar-search .button {
+  padding: 0.5rem 0.5rem 0.2rem 0.5rem;
 }
 
-.gm-icon-button a.active-state,
-.gm-icon-button .active-state .gm-icon {
-  color: #e00;
-}
-
-.topnavbar a:hover,
-.topnavbar .gm-icon-button a:hover.active-state .gm-icon,
-#topbar-portal-submenu a:hover {
-  color: #fff;
-}
-
-.topnavbar .sections-list a,
-.topnavbar .sections-list a:visited {
-  color: #fff;
-}
-
-.topnavbar .sections-list a,
 #topbar-portal-submenu li {
   display: inline-block;
   margin-right: 10px;
-  line-height: 24px;
   text-transform: uppercase;
 }
 
@@ -136,15 +75,8 @@
   box-shadow: 5px 5px 3px #000;
 }
 
-#topbar-user-actions ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
 #topbar-user-actions li {
   margin: 0 0 8px 8px;
-  padding: 0;
 }
 
 #topbar-sitemap .sections-list2 {
@@ -159,13 +91,10 @@
 
 #topbar-sitemap ul {
   margin: 0 0 40px 0;
-  padding: 0;
 }
 
 #topbar-sitemap li {
-  list-style: none;
   margin: 0 0 8px 0;
-  padding: 0;
 }
 
 #topbar-sitemap a {
@@ -175,68 +104,28 @@
 
 #topbar-sitemap header {
   font-weight: bold;
-  text-transform: uppercase;
-  font-size: 20px;
-  color: #444;
   margin-bottom: 4px;
 }
 
 #topbar-portal-submenu {
   text-align: left;
-  background: #000;
-  color: #777;
-  height: 1.5rem;
+  height: 3rem;
   z-index: 102;
   position: absolute;
   width: auto;
-  margin-left: 5rem;
-  padding: 0 1rem;
+  margin-left: 10rem;
+  padding: 0 2rem;
   -moz-box-shadow: 5px 5px 3px #000;
   -webkit-box-shadow: 5px 5px 3px #000;
   box-shadow: 5px 5px 3px #000;
 }
 
 #topbar-portal-submenu ul {
-  margin: 0;
-  padding: 0;
   display: inline-block;
-}
-
-#topbar-portal-submenu li {
-}
-
-#mgfriends-online-table ul {
-  margin: 0;
-  padding: 0;
 }
 
 #mgfriends-online-table li {
-  list-style: none;
   margin: 0 0 8px 0;
-  padding: 0;
-}
-
-.button-with-icon {
-  font-size: 16px;
-}
-.button-with-icon .gm-icon {
-  vertical-align: middle;
-}
-
-.button-with-icon div {
-  background: #64ab1e;
-  color: #fff;
-  display: inline-block;
-  border: 2px solid #416122;
-  padding: 7px;
-  margin: 0 0 10px 0;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
-}
-
-.button-with-icon div a {
-  color: #fff;
 }
 
 .topnavbar-container {

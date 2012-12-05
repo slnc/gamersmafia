@@ -1,3 +1,20 @@
+<% content_main do %>
+<% mftext('Visitas referidas') do %>
+<table>
+  <tr>
+    <th>Visitas</th>
+    <th>Origen de las visitas</th>
+  </tr>
+  <% for dbinfo in User.db_query("SELECT count(created_on), referer FROM refered_hits WHERE user_id = #{@user.id} GROUP BY (referer)") %>
+  <tr class="<%=oddclass%>">
+    <td><%=dbinfo['count']%></td>
+    <td><% if dbinfo['referer'].to_s != '' then %><a target="_blank" href="<%=dbinfo['referer']%>"><%=dbinfo['referer']%></a><% else %>Desconocido<%end -%></td>
+  </tr>
+<% end -%>
+</table>
+<% end -%>
+<% end -%>
+
 <% generic_support do %>
   <% mftext('Por días') do %>
   <table>
@@ -22,19 +39,3 @@
   <% end -%>
 <% end -%>
 
-<% content_main do %>
-<% mftext('Visitas referidas') do %>
-<table>
-  <tr>
-    <th>Visitas</th>
-    <th>Origen de las visitas</th>
-  </tr>
-  <% for dbinfo in User.db_query("SELECT count(created_on), referer FROM refered_hits WHERE user_id = #{@user.id} GROUP BY (referer)") %>
-  <tr class="<%=oddclass%>">
-    <td><%=dbinfo['count']%></td>
-    <td><% if dbinfo['referer'].to_s != '' then %><a target="_blank" href="<%=dbinfo['referer']%>"><%=dbinfo['referer']%></a><% else %>Desconocido<%end -%></td>
-  </tr>
-<% end -%>
-</table>
-<% end -%>
-<% end -%>

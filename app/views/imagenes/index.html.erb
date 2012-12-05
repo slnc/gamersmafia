@@ -1,17 +1,3 @@
-<% generic_support do %>
-<% mftext('Últimas imágenes del día') do %>
-<ul class="sidelist images">
-<% cache("/#{controller.portal_code}/imagenes/index/last_potds_#{Time.now.to_i/86400}") do %>
-<%  # TODO portal
-for im in Image.find_by_sql('SELECT a.* FROM images a JOIN potds b on a.id = b.image_id ORDER BY b.date DESC LIMIT 3') %>
-<li><%=render :partial => '/imagenes/image_thumbnail', :locals => {:image => im}%></li>
-<% end -%>
-<% end -%>
-</ul>
-  <div class="more"><a href="/imagenes/potds">Ver anteriores..</a></div>
-  <% end -%>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Galerías') do %>
 
@@ -45,3 +31,18 @@ for im in Image.find_by_sql('SELECT a.* FROM images a JOIN potds b on a.id = b.i
 </table>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<% mftext('Últimas imágenes del día') do %>
+<ul class="sidelist images">
+<% cache("/#{controller.portal_code}/imagenes/index/last_potds_#{Time.now.to_i/86400}") do %>
+<%  # TODO portal
+for im in Image.find_by_sql('SELECT a.* FROM images a JOIN potds b on a.id = b.image_id ORDER BY b.date DESC LIMIT 3') %>
+<li><%=render :partial => '/imagenes/image_thumbnail', :locals => {:image => im}%></li>
+<% end -%>
+<% end -%>
+</ul>
+  <div class="more"><a href="/imagenes/potds">Ver anteriores..</a></div>
+  <% end -%>
+<% end -%>
+

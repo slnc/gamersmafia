@@ -1,0 +1,2 @@
+module GamingPlatformsHelper
+end

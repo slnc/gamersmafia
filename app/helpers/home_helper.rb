@@ -1,5 +1,9 @@
 # -*- encoding : utf-8 -*-
 module HomeHelper
+  def home_mode
+    @home_mode
+  end
+
   def comunidad_user_with_photo(user)
     return <<-END
     <div class="centered">
@@ -28,5 +32,25 @@ module HomeHelper
 
   def s_home_contents
     Content.published.find(:all, :order => 'created_on DESC', :limit => 200)
+  end
+
+  def stream_main_contents
+    content_types = %w(
+      BlogEntry
+      Column
+      Coverage
+      Interview
+      News
+      Question
+      Review
+      Topic
+      Tutorial
+    )
+    Content.content_type_names(
+        content_types).recent.published.of_interest_to(@user).find(
+            :all,
+            :order => 'created_on DESC',
+            :limit => 100,
+            :include => :content_type)
   end
 end

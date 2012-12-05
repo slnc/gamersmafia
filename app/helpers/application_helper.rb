@@ -32,58 +32,138 @@ module ApplicationHelper
     "star" => "&#xe000;",
     "stats" => "&#xe001;",
     "gmf" => "&#xe002;",
-    "emblem-common" => "&#xe003;",
-    "emblem-legendary" => "&#xe004;",
-    "emblem-rare" => "&#xe005;",
-    "emblem-special" => "&#xe006;",
-    "emblem-unfrequent" => "&#xe007;",
-    "user" => "&#xe008;",
-    "message" => "&#xe009;",
-    "flag" => "&#xe00a;",
-    "scale" => "&#xe00b;",
-    "gear" => "&#xe00c;",
-    "gauntlet" => "&#xe00d;",
-    "plus" => "&#xe00e;",
+    "gear" => "&#xe003;",
+    "message" => "&#xe004;",
+    "flag" => "&#xe005;",
+    "scale" => "&#xe006;",
+    "emblem-common" => "&#xe007;",
+    "emblem-unfrequent" => "&#xe008;",
+    "user" => "&#xe009;",
+    "plus" => "&#xe00a;",
+    "spam" => "&#xe00b;",
+    "uparrow" => "&#xe00c;",
+    "normal" => "&#xe00d;",
+    "home" => "&#xe00e;",
+    "comment" => "&#xe00f;",
+    "irrelevant" => "&#xe010;",
+    "tag-add" => "&#xe011;",
+    "tag-del" => "&#xe012;",
+    "tracker-add" => "&#xe013;",
+    "tracker-del" => "&#xe014;",
+    "redundant" => "&#xe015;",
+    "lol" => "&#xe016;",
+    "zoom" => "&#xe017;",
+    "interesting" => "&#xe018;",
+    "tag" => "&#xe019;",
+    "bookmark" => "&#xe01a;",
+    "star-half" => "&#xe01b;",
+    "deep" => "&#xe01c;",
+    "flame" => "&#xe01d;",
+    "lock" => "&#xe01e;",
+    "informativo" => "&#xe01f;",
+    "female" => "&#xe020;",
+    "male" => "&#xe021;",
+    "access-denied" => "&#xe022;",
+    "error-404" => "&#xe023;",
+    "bold" => "&#xe024;",
+    "italic" => "&#xe025;",
+    "quote" => "&#xe026;",
+    "code" => "&#xe027;",
+    "image" => "&#xe028;",
+    "undo" => "&#xe029;",
+    "redo" => "&#xe02a;",
+    "insert-link" => "&#xe02b;",
+    "bet" => "&#xe02c;",
+    "rss" => "&#xe02d;",
+    "warning" => "&#xe02e;",
+    "event" => "&#xe02f;",
+    "poll" => "&#xe030;",
+    "news" => "&#xe031;",
+    "funthing" => "&#xe032;",
+    "tutorial" => "&#xe033;",
+    "interview" => "&#xe034;",
+    "review" => "&#xe035;",
+    "download" => "&#xe036;",
+    "column" => "&#xe037;",
+    "clan" => "&#xe038;",
+    "coverage" => "&#xe039;",
+    "demo" => "&#xe03a;",
+    "recruitment-ad" => "&#xe03b;",
+    "question" => "&#xe03c;",
+    "platform" => "&#xe03d;",
+    "game" => "&#xe03e;",
+    "topic" => "&#xe03f;",
+    "emblem-legendary" => "&#xe040;",
+    "emblem-rare" => "&#xe041;",
+    "emblem-special" => "&#xe042;",
+    "blogentry" => "&#xe043;",
+    "upload" => "&#xe044;",
+    "star-empty" => "&#xe045;",
+    "delete" => "&#xe046;",
+    "alarm" => "&#xe047;",
+    "approve" => "&#xe048;",
+    "pageviews" => "&#xe049;",
+    "user-deleted" => "&#xe04a;",
+    "replied" => "&#xe04b;",
+    "cup" => "&#xe04c;",
+    "alarm-assigned" => "&#xe04d;",
+    "sticky" => "&#xe04e;",
+    "gm-mascot" => "&#xe04f;",
+    "gm-logo-g" => "&#xe050;",
+    "gm-logo-m" => "&#xe051;",
+    "gm-logo-a" => "&#xe052;",
+    "gm-logo-e" => "&#xe053;",
+    "gm-logo-r" => "&#xe054;",
+    "gm-logo-s" => "&#xe055;",
+    "gm-logo-f" => "&#xe056;",
+    "gm-logo-i" => "&#xe057;",
+    "home-stream" => "&#xe058;",
+    "home-tetris" => "&#xe059;",
   }
+  def show_render_stats
+    App.debug || (user_is_authed && @user.id == App.webmaster_user_id)
+  end
 
-  WMENU_POS = {
-    'arena' => %w(
-        Admin::CompeticionesController
-        ArenaController
-    ),
-    'bazar' => %w(
-        Cuenta::TiendaController
-        BazarController
-    ),
-    'foros' => %w(ForosController),
-    'hq' => %w(
-        Admin::CategoriasController
-        Admin::ClanesController
-        Admin::CategoriasfaqController
-        Admin::EntradasfaqController
-        Admin::FaccionesController
-        Admin::IpBansController
-        Admin::MapasJuegosController
-        Admin::UsuariosController
-        AdministrationController
-        AvataresController
-    ),
-    'comunidad' => %w(
-        Cuenta::Clanes::GeneralController
-        ReclutamientoController
-        ComunidadController
-    )
-  }
+  def content_image(image_url)
+    "<div class=\"content-image\"><img src=\"#{image_url}\" /></div>"
+  end
 
-  # Class-level array for fast lookups
-  WMENU_POS_BY_CONTROLLER = begin
-    out = {}
-    WMENU_POS.each do |k,v|
-      v.each do |controller_name|
-        out[controller_name] = k
-      end
+  def content_headline_image(content)
+    main_image = content.main_image
+    return "" if main_image.nil?
+
+    "<div class=\"content-headline-image\" style=\"background-image: url(#{main_image});\"></div>"
+  end
+
+  def content_thumbnail_image(content)
+    main_image = content.main_image
+    return "" if main_image.nil?
+
+    "<div class=\"content-thumbnail-image\" style=\"background-image: url(/cache/thumbnails/i/125x125#{main_image});\"><img src=\"/images/dot.gif\" /></div>"
+  end
+
+  def content_tags(content)
+    tags = content.contents_terms.find(:all, :include => :term)
+    "#{gm_icon("tag")}
+     #{tags.collect{|ct| "<a href=\"#{gmurl(ct.term)}\">#{ct.term.name}</a>" }.join(", ")}"
+  end
+
+  # Returns the initial sentences of a given html string.
+  def initial_sentences(html_str, max_len=120)
+    if html_str.index("<p>")
+      candidate = html_str.gsub(/[\n\r]/, " ").scan(/<p>(.*?)<\/p>/)[0][0]
+      candidate = strip_tags(candidate)
+    else
+      candidate = html_str[0..max_len]
     end
-    out
+    candidate = "#{candidate} "
+    last_space_before_max = candidate.rindex(" ", max_len)
+    trailing = (last_space_before_max < (candidate.size - 1)) ? " ..." : ""
+    "#{candidate[0..last_space_before_max].strip}#{trailing}"
+  end
+
+  def button(text)
+    "<span class=\"button\">#{text}</span>"
   end
 
   def quicklinks
@@ -260,16 +340,6 @@ module ApplicationHelper
     end
   end
 
-  def active_sawmode
-    if controller.active_sawmode
-      @active_sawmode
-    else
-      WMENU_POS[controller.controller_name] || ''
-    end
-  end
-
-  QUICKLINK_ENABLED_PORTALS = %w(FactionsPortal BazarDistrictPortal)
-
   def error_messages_for(obj)
     return "" unless obj && obj.errors.any?
     out = ""
@@ -381,14 +451,14 @@ $('##{div_sel_id} div').css('backgroundColor', $('##{field_id}').val()); });
     end
 
     out = <<-EOS
-    <div title="Negrita" class="btn bold"></div>
-    <div title="Cursiva" class="btn italic"></div>
-    <div title="Enlace" class="btn link"></div>
-    <div title="Quote" class="btn quote"></div>
-    <div title="Código (bash,cpp,csharp,css,java,perl,php,python,ruby,sql,vb,xml)" class="btn code"></div>
-    <div title="Imagen" class="btn image"></div>
-    <div title="Deshacer" class="btn back"></div>
-    <div title="Rehacer" class="btn forward"></div>
+    <div title="Negrita" class="btn bold">#{gm_icon("bold")}</div>
+    <div title="Cursiva" class="btn italic">#{gm_icon("italic")}</div>
+    <div title="Enlace" class="btn link">#{gm_icon("insert-link")}</div>
+    <div title="Quote" class="btn quote">#{gm_icon("quote")}</div>
+    <div title="Código (bash,cpp,csharp,css,java,perl,php,python,ruby,sql,vb,xml)" class="btn code">#{gm_icon("code")}</div>
+    <div title="Imagen" class="btn image">#{gm_icon("image")}</div>
+    <div title="Deshacer" class="btn back">#{gm_icon("undo")}</div>
+    <div title="Rehacer" class="btn forward">#{gm_icon("redo")}</div>
     <div class="clearb">
       <textarea id="#{opts[:id]}" class="bbeditor #{opts[:class]}" name="#{opts[:name]}" rows="#{opts[:rows]}" style="#{opts[:style]}">#{opts[:value]}</textarea></div>
     EOS
@@ -397,10 +467,6 @@ $('##{div_sel_id} div').css('backgroundColor', $('##{field_id}').val()); });
     #{controller.send(:render_to_string, :partial => '/shared/smileys', :locals => { :dom_id => opts[:id] }).force_encoding("utf-8")}
     EOS
     out.force_encoding("utf-8")
-  end
-
-  def draw_emblem(emblema)
-    "<img class=\"sprite1 emblema emblema-#{emblema}\" src=\"/images/blank.gif\" />"
   end
 
   def sparkline(opts)
@@ -527,8 +593,18 @@ type: 'bhs'}))
     Routing.gmurl(object, opts)
   end
 
+  MEMBER_HSTATE_TO_ICON = {
+      "unconfirmed" => "user",
+      "active" => "user",
+      "zombie" => "user",
+      "resurrected" => "user",
+      "shadow" => "user",
+      "banned" => "user-deleted",
+      "disabled" => "user-deleted",
+      "deleted" => "user-deleted",
+  }
   def member_state(state)
-    "<img class=\"sprite1 member-state #{state}\" src=\"/images/blank.gif\" />"
+    gm_icon(MEMBER_HSTATE_TO_ICON.fetch(state), "small")
   end
 
   def user_link(user, opts={})
@@ -543,11 +619,6 @@ type: 'bhs'}))
     out
   end
 
-  def comments_icon(name, desp=false)
-    vdesp = desp ? '547' : '559'
-    '<img alt="' << "#{name}" << '" title="' << "#{name}" << '" class="sprite1 comments-icon" src="/images/blank.gif" style="background-position: -' << COMMENTS_DESPL[name] << 'px -' << vdesp << 'px;" />'
-  end
-
   def notags(txt)
     txt.to_s.gsub('<', '&lt;').gsub('>', '&gt;')
   end
@@ -557,7 +628,7 @@ type: 'bhs'}))
   end
 
   def content_category(thing)
-    "<div class=\"sprite1 content-category\">#{faction_favicon(thing)}</div>"
+    "<div class=\"content-category f_milli\">#{faction_favicon(thing)}</div>"
   end
 
   def render_tree_list(objs, options = {})
@@ -686,6 +757,11 @@ type: 'bhs'}))
     out
   end
 
+  def draw_percent_bar(pcent, opts)
+    opts = {:class => ""}.merge(opts)
+    "<div class=\"percent-bar #{opts[:class]}\"><div class=\"bar\" style=\"width: #{(pcent*100).to_i}%;\"></div></div>"
+  end
+
   def draw_pcent_bar(pcent, text=nil, compact=false, color=nil, css_class='')
     if pcent.nil?
       Rails.logger.warn(
@@ -703,24 +779,57 @@ type: 'bhs'}))
     # text = "%.2f" % pcent if text == nil
     text = "#{(pcent*100).to_i}%" if text == nil
 
-    "<div class=\"pcent-bar#{(compact)?' compact':''} #{css_class}\"><img src=\"/images/blank.gif\" title=\"#{text}\" class=\"bar\" style=\"width: #{(pcent*100).to_i}%; #{'background-color: ' + color + ';' if color}\" /></div>"
+    "<div class=\"pcent-bar#{(compact)?' compact':''} #{css_class}\"><img src=\"/images/dot.gif\" title=\"#{text}\" class=\"bar\" style=\"width: #{(pcent*100).to_i}%; #{'background-color: ' + color + ';' if color}\" /></div>"
   end
 
   def draw_rating(rating_h)
     rating_points = rating_h[0]
     if rating_points.nil?
-      src = 'grey'
+      full = 0
+      half = 0
+      empty = 5
       text = 'No hay suficientes valoraciones'
+      return ""
     else
-      src = rating_points
-      text = "Valoración: #{src}"
+      full = rating_points / 2
+      half = rating_points % 2
+      empty = 5 - full - half
+      text = "Valoración: #{rating_points} (#{rating_h[1]})"
     end
 
-    "<span class=\"rating stars#{src}\"><span class=\"sprite1\"><img alt=\"#{text}\" title=\"#{text} (#{rating_h[1]} valoraciones)\" src=\"/images/blank.gif\" width=\"64\" height=\"13\" /></span></span>"
+    out = []
+    full.times do
+      out.append(gm_icon("star", "small"))
+    end
+    half.times do
+      out.append(gm_icon("star-half", "small"))
+    end
+    empty.times do
+      out.append(gm_icon("star-empty", "small"))
+    end
+
+    "<span title=\"#{text}\">#{out.join("")}</span>"
   end
 
   def draw_contentheadline(content)
-    "<div class=\"infoinline\">#{print_tstamp(content.created_on)} | #{draw_rating(content.rating)} | <span class=\"comments-count\"><a title=\"Ver comentarios\" href=\"#{Routing.url_for_content_onlyurl(content)}\#comments\">#{content.unique_content.comments_count}</a></span></div>"
+    out = <<-EOD
+    <div class="infoinline">
+      #{print_tstamp(content.created_on)} |
+      #{draw_rating(content.rating)} |
+      <span class=\"f_milli\">#{gm_icon("comment", "small")} <a title=\"Ver comentarios\" href=\"#{Routing.url_for_content_onlyurl(content)}\#comments\">#{content.unique_content.comments_count}</a></span>
+      <span class="f_milli" title="Leído #{content.hits_anonymous + content.hits_registered} veces">
+      #{gm_icon("pageviews", "small")}#{content.hits_anonymous + content.hits_registered}</span>
+    EOD
+
+    if %w(Download Demo).include?(content.class.name)
+      out << <<-EOD
+        &nbsp;
+        <span title="Descargado #{content.downloaded_times} veces">
+          #{gm_icon("download", "small")} #{content.downloaded_times}
+        </span>
+      EOD
+    end
+    out << "</div>"
   end
 
   def draw_organization_building(org, stories=1)
@@ -735,18 +844,6 @@ type: 'bhs'}))
       out << "<img src=\"/#{bldgs[1]}\" /><br />"
     end
     out << "<img src=\"/#{bldgs[2]}\" /></div>"
-  end
-
-  def gmd10
-    '<img class="gmd10 sprite1" alt="Dólares GM" src="/images/blank.gif" />'
-  end
-
-  def gmd12
-    '<img class="gmd12" alt="Dólares GM" src="/images/blank.gif" />'
-  end
-
-  def gmd11
-    '<img class="gmd11" alt="Dólares GM" src="/images/blank.gif" />'
   end
 
   def clan_switcher
@@ -957,17 +1054,16 @@ skin: 'v2'
 
   def navpathgm20085
     out = '<ul>'
-    firstlevelname = "Portada #{controller.portal.code}" # controller.active_sawmode ? controller.active_sawmode.titleize : 'Portada'
-    out<< "<li class=\"home\"><a title=\"Ir a portada\" class=\"sprite1 nav\" href=\"/\"><span>#{firstlevelname}</span></a></li>"
+    out<< "<li class=\"home\"><a title=\"Ir a portada\" class=\"nav\" href=\"/\">#{gm_icon("home")}</a></li>"
     if @navpath # TODO oldschool navpath, remove all of 'em
       #return '' if @navpath.size == 1
       last = @navpath.pop # TODO remove pop directamente en todos los controllers y quitar aquí (a la vez)
-      @navpath.each { |np_name, np_url| out<< "<li><a class=\"sprite1 nav\" href=\"#{np_url}\">#{np_name}</a></li>" unless np_name == 'Application'}
-      out<< "<li class=\"current sprite1\">#{last[0]}</li>" if last
+      @navpath.each { |np_name, np_url| out<< "<li><a class=\"nav\" href=\"#{np_url}\">#{np_name}</a></li>" unless np_name == 'Application'}
+      out<< "<li class=\"current\">#{last[0]}</li>" if last
     elsif controller.controller_name != 'home' && controller.navpath2 then
       #return '' if controller.navpath2.size == 1
-      controller.navpath2.each { |np_name, np_url| out<< "<li><a class=\"sprite1 nav\" href=\"#{np_url}\">#{np_name}</a></li>"  unless np_name == 'Application' }
-      out<< "<li class=\"current sprite1\">#{controller.title}</li>"
+      controller.navpath2.each { |np_name, np_url| out<< "<li><a class=\"nav\" href=\"#{np_url}\">#{np_name}</a></li>"  unless np_name == 'Application' }
+      out<< "<li class=\"current\">#{controller.title}</li>"
       #else
       #return ''
     end
@@ -981,21 +1077,17 @@ skin: 'v2'
   end
 
   def show_rating_title(obj)
-    if obj.is_public?
-      out = "<div id=\"content-stats-title\">"
-      out<< "<div id=\"content-stats2\" class=\"content-rating\" class=\"centered\">#{draw_rating(obj.rating)}</div>"
-      out<< '</div>'
-    end
+    draw_rating(obj.rating)
   end
 
   def show_rating(obj)
     if obj.is_public?
-      out = "<div id=\"content-stats\">"
+      out = "<div id=\"content-stats\" class=\"f_milli\">"
       out<< "<div class=\"content-rating\" class=\"centered\">#{draw_rating(obj.rating)}<br /><span class=\"infoinline\">(#{obj.rating[1]} valoraciones)</span></div>"
       if obj.respond_to?(:downloaded_times) then
-        out<< "<div class=\"pageviews-count\" style=\"line-height: 18px;\" title=\"Leído #{obj.hits_anonymous + obj.hits_registered} veces\"><strong>#{obj.hits_anonymous + obj.hits_registered}</strong> lecturas</div><div class=\"downloads-count\" style=\"line-height: 18px;\" title=\"Descargado #{obj.downloaded_times} veces\"><strong>#{obj.downloaded_times}</strong> descargas</div>"
+        out<< "<div class=\"f_milli\" title=\"Leído #{obj.hits_anonymous + obj.hits_registered} veces\">#{gm_icon("pageviews", "small")}<strong>#{obj.hits_anonymous + obj.hits_registered}</strong> lecturas</div><div title=\"Descargado #{obj.downloaded_times} veces\">#{gm_icon("download", "small")} <strong>#{obj.downloaded_times}</strong> descargas</div>"
       else
-        out<< "<div class=\"pageviews-count\" style=\"line-height: 18px;\" title=\"Leído #{obj.hits_anonymous + obj.hits_registered} veces\"><strong>#{obj.hits_anonymous + obj.hits_registered}</strong> lecturas</div>"
+        out<< "<div class=\"f_milli\" title=\"Leído #{obj.hits_anonymous + obj.hits_registered} veces\">#{gm_icon("pageviews", "small")}<strong>#{obj.hits_anonymous + obj.hits_registered}</strong> lecturas</div>"
       end
       out<< '</div>'
     end
@@ -1043,7 +1135,7 @@ skin: 'v2'
     out = "<div class=\"module mftext #{grid_cls} #{glast_cls} #{blast_cls} #{'sub-modules' if opts[:has_submodules]}\""
     out << " id=\"#{opts[:id]}\"" if opts[:id]
     concat(out << ">".force_encoding("utf-8"))
-    concat("<div class=\"mtitle#{opts[:additional_class]}\"><span>#{title}</span></div>".force_encoding("utf-8")) if title
+    concat("<div class=\"mtitle f_hecto#{opts[:additional_class]}\"><span>#{title}</span></div>".force_encoding("utf-8")) if title
     concat("<div class=\"mcontent\">")
     yield
     concat("</div></div>")
@@ -1061,7 +1153,7 @@ skin: 'v2'
     return '' if collection.size == 0 && !options[:show_even_if_empty]
     out = "<div class=\"module mflist #{grid_cls} #{glast_cls} #{blast_cls} #{class_cls} \""
     out << " id=\"#{options[:id]}\"" if options[:id]
-    concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\"><ul>".force_encoding("utf-8"))
+    concat(out << "><div class=\"mtitle f_hecto mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\"><ul>".force_encoding("utf-8"))
     collection.each do |o|
       concat("<li class=\"#{oddclass} #{options[:class] if options[:class]} \">")
       yield o
@@ -1098,7 +1190,14 @@ skin: 'v2'
     end
     out = "<div class=\"module mf#{mode} #{grid_cls} #{glast_cls} #{blast_cls} #{class_cls} \""
     out << " id=\"#{options[:id]}\"" if options[:id]
-    concat(out << "><div class=\"mtitle #{'mcontent-title' unless options[:no_mcontent_title]}\"><span>#{title}</span></div><div class=\"mcontent\">".force_encoding("utf-8"))
+
+    if title
+      title_str = "<div class=\"mtitle f_hecto #{'mcontent-title' unless options[:no_mcontent_title]}\"><span>#{title}</span></div>"
+    else
+      title_str = ""
+    end
+
+    concat(out << ">#{title_str}<div class=\"mcontent\">".force_encoding("utf-8"))
 
     if collection.size == 0 && options[:message_on_empty]
       concat(options[:message_on_empty])
@@ -1126,7 +1225,16 @@ skin: 'v2'
 
   def mfcontent(content, &block)
     out = <<-END
-     <div class="module mfcontent"><div class="mtitle mcontent-title"><div class=\"iset iset#{content.class.name.downcase}\"></div> <span>#{show_rating_title(content)} #{content.resolve_hid}</span></div>
+     <h1 class="f_kilo">#{content.resolve_hid}</h1>
+     <div class="content-meta f_milli secondary">
+       #{gm_icon(content.class.name.downcase)} por #{content.user.login} &mdash;
+       #{print_tstamp(content.created_on)} &mdash;
+       #{gm_icon("comment", "small")} #{content.cache_comments_count} #{show_rating_title(content)}
+       &nbsp;
+       <span title="Leído #{content.hits_anonymous + content.hits_registered} veces">
+       #{gm_icon("pageviews", "small")}#{content.hits_anonymous + content.hits_registered}</span>
+     </div>
+     <div class="module mfcontent">
      <div class="mcontent">
     END
     out.force_encoding("utf-8")
@@ -1136,7 +1244,7 @@ skin: 'v2'
       yield
     else
       out<< <<-END
-    #{"<div class=\"xdescription\">"<<auto_link_raw(smilelize(content.description))<<"</div><br />" if content.respond_to?(:description) && content.description.to_s != ''}
+    #{"<div class=\"xdescription\">"<<auto_link_raw(smilelize(content.description))<<"</div>" if content.respond_to?(:description) && content.description.to_s != ''}
 
 
 #{"<div class=\"xmain\">"<<auto_link_raw(smilelize(content.main))<<"</div>" if content.respond_to?(:main) && content.main.to_s != ''}
@@ -1157,7 +1265,7 @@ skin: 'v2'
     #find_args.last[:include] = :user
     out = <<-END
     <div class="module mfcontents-summaries" id="#{opts[:id] if opts[:id]}">
-  <div class="mtitle"><span>#{title}</span></div>
+  <div class="mtitle f_hecto"><span>#{title}</span></div>
   <div class="mcontent">
     END
 
@@ -1179,13 +1287,13 @@ skin: 'v2'
           cur_day = Date.new(item.created_on.year, item.created_on.month, item.created_on.day)
           if cur_day != previous_day then
             previous_day = Date.new(item.created_on.year, item.created_on.month, item.created_on.day)
-            out2 << "<div class=\"day-separator\">#{print_tstamp(cur_day, 'date')}</div>"
+            out2 << "<div class=\"day-separator secondary-block\">#{print_tstamp(cur_day, 'date')}</div>"
           end
 
           out2<< <<-END
         <div class=\"mfcontents-summaries-item #{oddclass}\">
         <h2><a class=\"content\" href=\"#{gmurl(item)}\">#{item.title}</a></h2>
-        <div class="infoinline" style="line-height: 16px;">por #{link_to item.user.login, "#{gmurl(item.user)}", :class => 'nav' } | #{item.main_category.root.name} | #{print_tstamp(item.created_on, 'time')} | <span class="comments-count"><a title="Leer los comentarios de esta noticia" class="content" href="/noticias/show/#{item.id}#comments">#{item.cache_comments_count}</a></span></div>
+        <div class="infoinline">por #{link_to item.user.login, "#{gmurl(item.user)}", :class => 'nav' } | #{item.main_category.root.name} | #{print_tstamp(item.created_on, 'time')} | #{gm_icon("comment", "small")} <a title="Leer los comentarios de esta noticia" class="content" href="/noticias/show/#{item.id}#comments">#{item.cache_comments_count}</a></div>
           <div class="xdescription">#{auto_link_raw(smilelize(item.description))}</div>
         </div>
           END
@@ -1242,7 +1350,11 @@ skin: 'v2'
     ids = []
     out = "<div class=\"module mfcontents-list #{grid_cls} #{glast_cls} #{blast_cls}\"".force_encoding("utf-8")
     out << " id=\"#{options[:id]}\"" if options[:id]
-    concat(out << "><div class=\"mtitle mcontent-title\"><span>#{title}</span></div><div class=\"mcontent\"><ul>")
+    title_str = ""
+    if title
+      title_str = "<div class=\"mtitle f_hecto mcontent-title\"><span>#{title}</span></div>"
+    end
+    concat(out << ">#{title_str}<div class=\"mcontent\"><ul>")
     collection.each do |o|
       concat("<li #{'class="'<< options[:class] << '"' if options[:class]}>")
       yield o
@@ -1284,9 +1396,13 @@ skin: 'v2'
     ids = []
     out = "<div class=\"module mfcontents-#{container_tag} #{grid_cls} #{blast_cls} #{glast_cls}\"".force_encoding("utf-8")
     out << " id=\"#{options[:id]}\"" if options[:id]
-    concat(out << "><div class=\"mtitle\"><span>#{title}</span></div><div class=\"mcontent\"><#{container_tag}>")
+    title_str = ""
+    if title
+      title_str = "<div class=\"mtitle f_hecto\"><span>#{title}</span></div>"
+    end
+    concat(out << ">#{title}<div class=\"mcontent\"><#{container_tag}>")
     collection.each do |o|
-      concat("<#{row_tag} class=\"content#{o.unique_content.id} new #{oddclass} #{options[:class] if options[:class]}\">")
+      concat("<#{row_tag} class=\"ellipsis content#{o.unique_content.id} #{oddclass} new unread-item #{options[:class] if options[:class]}\">")
       yield o
       concat("</#{row_tag}>")
       ids<< o.unique_content.id
@@ -1299,7 +1415,6 @@ skin: 'v2'
   end
 
   def _mfcontents_basic(title, object, find_args, opts={})
-    opts = {:truncate_at => 30}.merge(opts)
     if object.class.name == 'Array'
       collection = object
     elsif object.respond_to?(:call)
@@ -1318,16 +1433,16 @@ skin: 'v2'
     ids = []
     out = <<-END
         <div class="module mfcontents-basic #{grid_cls} #{glast_cls} #{blast_cls}">
-        <div class="mtitle"><span>#{title}</span></div>
+        <div class="mtitle f_hecto"><span>#{title}</span></div>
         <div class="mcontent">
         <ul>
         END
     out.force_encoding("utf-8")
     collection.each do |item|
       ids<< item.unique_content.id
-      out<< "<li class=\"new #{oddclass} content#{item.unique_content.id}\"><a title=\"#{tohtmlattribute(item.title)}\" href=\"#{gmurl(item)}\">"
+      out<< "<li class=\"new #{oddclass} ellipsis content#{item.unique_content.id}\"><a title=\"#{tohtmlattribute(item.title)}\" href=\"#{gmurl(item)}\">"
       out<< content_category(item) if opts[:faction_favicon]
-      out<< "#{truncate(item.title, opts[:truncate_at], '..')}</a></li>"
+      out<< "#{item.title}</a></li>"
     end
     out<< '</ul>'
     out<< '<script type="text/javascript">contents = contents.concat('<< ids.join(',') <<');</script>'
@@ -1421,7 +1536,7 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
   end
 
   def winner_cup(winner)
-    "<img src=\"/images/blank.gif\" class=\"sprite1 competition-cup cup#{winner}\" />"
+    "<span class=\"competition-cup cup#{winner}\">#{gm_icon("cup", "small")}</span>"
   end
 
   def faction_cohesion(faction=@faction)

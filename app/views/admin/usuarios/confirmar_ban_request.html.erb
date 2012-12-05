@@ -13,7 +13,7 @@
 		<td>Razones pública</td>
 		<td><%=@br.banned_user.pref_public_ban_reason%></td>
 	</tr>
-		
+
 	<tr class="<%=oddclass%>">
 		<td>Fecha</td>
 		<td><%=print_tstamp @br.created_on%></td>
@@ -71,7 +71,7 @@
 <br />
 <form method="post" action="/admin/usuarios/confirm_ban_request">
 	<input type="hidden" name="id" value="<%=@br.id%>" />
-	<input type="submit" class="button" value="Doy mi aprobación a este ban" onclick="return confirm('¿Estás seguro con el usuario Y la razón?');" />
+	<input type="submit" class="button confirm-click" value="Doy mi aprobación a este ban" />
 </form>
 <% else %>
 <form method="post" action="/admin/usuarios/cancel_ban_request">
@@ -126,7 +126,7 @@ if brs.size == 0 then %>
 	</table>
 	<% end -%>
 <% end %><%# if -%>
-	
+
 	<%mftext('Bans de facción') do
 		fbus = FactionsBannedUser.find(:all, :conditions => ['user_id = ?', @br.banned_user_id], :order => 'created_on DESC')
 if fbus.size == 0 then %>
@@ -147,9 +147,9 @@ if fbus.size == 0 then %>
 	</table>
 	<% end -%>
 	<% end %><%# if -%>
-	
-	
-	
+
+
+
 	<% end %><%# mftext historial -%>
 </div>
 

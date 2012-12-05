@@ -1,29 +1,13 @@
 <style type="text/css">
-	#netiquette li { margin-bottom: 15px; line-height: 15px; }
+	#netiquette li { margin-bottom: 15px; }
 	#netiquette ul { margin-bottom: 30px;}
 </style>
 <div id="netiquette">
-<% generic_support(:show_ads => false) do %>
-	<% mftext('Versión resumida') do %>
-		<p>No generes mal ambiente, comparte y disfruta.</p>
-	<% end 	%>
-
-	<%mftext('La Cárcel') do %>
-	<div class="centered"><a href="/site/carcel"><img class="icon" src="/images/carcel.png" /></a></div>
-	<p><strong><strong><a href="/site/carcel"><% cache('/common/carcel') do %><%=User.count(:conditions => "state = #{User::ST_BANNED}")%><% end -%></strong> personas</a></strong> se pasaron de mafiosos y disfrutan de unas vacaciones con todos los gastos pagados.</p>
-	<% end -%>
-
-	<%mftext('Infracciones') do %>
-	<p>En la <strong><a href="/site/staff">sección de staff</a></strong> de la web puedes encontrar a los responsables de los distintos apartados de la web a los que te animamos que informes de violaciones de este código.</p>
-	<p>En la <strong><a href="/site/responsabilidades">sección de responsabilidades</a></strong> están listadas las funciones de cada miembro del staff.</p>
-	<% end -%>
-<% end %>
-
 <% content_main do %>
 	<% mftext('Código de conducta general') do %>
 <p>El incumplimiento de este código de conducta puede suponer la desactivación temporal o permanente de una cuenta. El desconocimiento de estas normas no exime de su cumplimiento.</p>
 
-<h2>Política general</h2>
+<h2 class="f_hecto">Política general</h2>
 <p>Como usuario registrado de Gamersmafia y mientras te encuentres en ella te comprometes a no publicar, transmitir o facilitar la distribución de cualquier contenido, incluyendo texto, imágenes, sonido, archivos, información o software, que:</p>
 <ul>
       <li>incite o manifieste racismo, xenofobia o discriminación sexual.
@@ -50,7 +34,7 @@
   <p>Gamersmafia es una comunidad con multitud de juegos por lo que es imperativo el respeto entre todos. Si un juego no te agrada puedes ocultarlo en las preferencias.</p>
 <p>&nbsp;</p>
 
-<h2>Política específica sobre comentarios</h2>
+<h2 class="f_hecto">Política específica sobre comentarios</h2>
 <ul>
       <li>Comentar masivamente para aumentar los puntos de karma está terminantemente prohibido.
 
@@ -68,7 +52,7 @@
 
 	<%mftext('Código de conducta para miembros del staff') do %>
 	<p>Las siguientes acciones son delictivas y motivo de pérdida de poderes especiales. Si algun miembro del staff se extralimita por favor informar a su boss correspondiente o a <a href="http://<%=App.domain%>/site/staff">cualquiera de los capos</a>.</p>
-	<h2>Bosses y underbosses</h2>
+	<h2 class="f_hecto">Bosses y underbosses</h2>
 	<ul>
     	<li>No actuar en beneficio de la facción de forma manifiesta (diciendo que no le importa mucho la facción) o de forma inmanifiesta (que se le detecte borrando contenidos, comentarios o actuando con mala fe desde el punto de vista de capos)</li>
     	<li>Actuar de forma parcial. Ejemplo: en medio de un flame de un tópic en el que dos usuarios se están tirando los trastos editar o borrar los comentarios de uno y dejar el otro intacto.</li>
@@ -76,13 +60,13 @@
 		<li>Ignorar o hacer mal uso de los eventos del log del sistema.</li>
 	</ul>
 
-	<h2>Editores y sicarios</h2>
+	<h2 class="f_hecto">Editores y sicarios</h2>
 	<ul>
     	<li>Publicar contenidos que no cumplen los requisitos mínimos de calidad (noticias que son dos líneas, contenidos a categorías incorrectas, etc)
 		<li>Ignorar o hacer mal uso de los eventos del log del sistema.</li>
 	</ul>
 
-	<h2>Moderadores y sicarios</h2>
+	<h2 class="f_hecto">Moderadores y sicarios</h2>
 	<ul>
     	<li>Borrar o editar comentarios o partes de comentarios que no incumplan el código de conducta y sin que haya una causa justificada.</li>
     	<li>Editar comentarios de otras personas poniendo como razón de la modificación joyas del estilo: "me la comes" o "neo, para qué quieres un teléfono si no puedes hablar".</li>
@@ -103,3 +87,20 @@
 <% end %>
 <% end %>
 </div>
+
+<% generic_support(:show_ads => false) do %>
+	<% mftext('Versión resumida') do %>
+		<p>No generes mal ambiente, comparte y disfruta.</p>
+	<% end 	%>
+
+	<%mftext('La Cárcel') do %>
+	<div class="centered"><a href="/site/carcel"><img class="icon" src="/images/carcel.png" /></a></div>
+	<p><strong><strong><a href="/site/carcel"><% cache('/common/carcel') do %><%=User.count(:conditions => "state = #{User::ST_BANNED}")%><% end -%></strong> personas</a></strong> se pasaron de mafiosos y disfrutan de unas vacaciones con todos los gastos pagados.</p>
+	<% end -%>
+
+	<%mftext('Infracciones') do %>
+	<p>En la <strong><a href="/site/staff">sección de staff</a></strong> de la web puedes encontrar a los responsables de los distintos apartados de la web a los que te animamos que informes de violaciones de este código.</p>
+	<p>En la <strong><a href="/site/responsabilidades">sección de responsabilidades</a></strong> están listadas las funciones de cada miembro del staff.</p>
+	<% end -%>
+<% end %>
+

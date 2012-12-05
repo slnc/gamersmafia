@@ -23,7 +23,7 @@ end %>
   <tr class="<%=oddclass%>">
     <td><strong><%=x%></strong></td>
     <% for f in @factions %>
-    <td class="centered"><%total = f.avatars.find(:all, :conditions => ['level = ?', x])%><%= total.empty? ? '<div style="background: #f00;">0</div>' : total.size%></td>
+    <td class="centered"><%total = f.avatars.find(:all, :conditions => ['level = ?', x])%><%= total.empty? ? '<div class="bad-block">0</div>' : total.size%></td>
     <% end -%>
   </tr>
 <% end %>

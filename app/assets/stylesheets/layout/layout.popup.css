@@ -2,16 +2,10 @@ body.lypopup {
     padding: 10px;
 }
 
-body.lypopup {
-    padding: 0;
-}
-
-body.lypopup #ccontent {
-    margin: 0 0 0 0;
-}
-
 body.lypopup .popup-contents {
     margin-left: 10px;
 }
 
-table.messages { width: 100%;}
+table.messages {
+  width: 100%;
+}

@@ -1,3 +1,6 @@
+<% content_main do %>
+<% end -%>
+
 <% generic_support do %>
 	<%mftext('Apuestas pendientes de completar') do %>
   <ul class="content-hid">
@@ -16,11 +19,11 @@
 <%=mfcontents_basic("Preguntas en el limbo",
 					Proc.new { Question.find(:published, :conditions => "created_on < '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'created_on ASC') },
 					[],
-					:truncate_at => 28, :faction_favicon => true, :blast => true)%>
+					:faction_favicon => true, :blast => true)%>
 
   <% if nil then %>
   <%# esto no funciona pq no sabemos cuándo se ha modificado el estado de un contenido por última vez %>
-  <div class="subheader"><div>Últimos contenidos resueltos</div></div>
+  <div class="subheader f_deca"><div>Últimos contenidos resueltos</div></div>
   <ul class="content-hid">
     <% Content.find(:all, :conditions => "state IN (#{Cms::PUBLISHED}, #{Cms::DELETED})", :order => 'updated_on DESC', :limit => 20).each do |obj| %>
 <li class="<%=oddclass%>"><%=obj.name%></li>
@@ -28,6 +31,3 @@
 </ul>
 <%  end %>
 <% end %>
-
-<% content_main do %>
-<% end -%>

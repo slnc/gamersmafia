@@ -1,6 +1,6 @@
 <div class="grid-11">
 <% unless @curuser.can_login? %>
-<div class="warning">Esta cuenta está <strong><%=User::STATES_DESCRIPTIONS[@curuser.state]%></strong><% if @curuser.state == User::ST_BANNED then %>. Razones: <strong><%=@curuser.ban_reason%></strong><% end -%></div>
+<div class="bad-block">Esta cuenta está <strong><%=User::STATES_DESCRIPTIONS[@curuser.state]%></strong><% if @curuser.state == User::ST_BANNED then %>. Razones: <strong><%=@curuser.ban_reason%></strong><% end -%></div>
 <% end -%>
 
 <%mftext(@curuser.login, :grid => 5) do %>
@@ -8,8 +8,10 @@
 <div style="float: left; text-align: center; margin-right: 7px;"><%=fc_thumbnail(@curuser.show_photo, 'k', '161x161', false)%></div>
   <div style="margin-left: 60px;">
   <div class="avatar" style="text-align: right;"><img src="<%=ASSET_URL%><%=@curuser.show_avatar%>" /></div>
-    <strong style="font-size: 14px;"></strong> <% if @curuser.firstname != '' and @curuser.lastname != '' then %><span class="infoinline"><%=@curuser.firstname%> <%=@curuser.lastname%></span><% end -%><br />
-    <div class="right infoinline" style="margin-top: 0px; line-height: 16px; color: #000;"><%=@curuser.age%> años <img style="vertical-align: middle; margin-top: -6px;" class="user-sex <%=(@curuser.sex != 1) ? 'male' : 'female'%>" src="/images/blank.gif" /> <br />
+    <strong></strong> <% if @curuser.firstname != '' and @curuser.lastname != '' then %><span class="infoinline"><%=@curuser.firstname%> <%=@curuser.lastname%></span><% end -%><br />
+    <div class="right infoinline">
+      <%=@curuser.age%> años <%=gm_icon(@curuser.sex.to_i == 1 ? "female" : "male") %>
+      <br />
       <%=@curuser.city%> <%=ip_country_flag(@curuser.ipaddr)%><br /><br />
       </div>
 
@@ -71,7 +73,7 @@
 
 <%mftext('Últimas firmas', :grid => 6, :glast => true) do %>
 <% @curuser.profile_signatures.find(:all, :order => 'updated_on DESC', :include => :signer, :limit => 4).each do |ps| %>
-  <div id="ps<%=ps.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 5px; font-size: 11px; line-height: 15px; padding: 3px;">
+  <div id="ps<%=ps.id%>" class="<%=oddclass%>" style="clear: left; margin-top: 5px; padding: 3px;">
   <div class="hidden infoinline delprofilesignature">
     <%=link_to(
         'Borrar',
@@ -130,7 +132,7 @@ negative_valorations_types = CommentsValorationsType.find_negative
     <% positive_valorations_types.each do |cvt|
 dat[cvt.id] = 0 unless dat[cvt.id] %>
     <tr>
-    	<td class="w20" style="height: 16px;"><%=comments_icon(cvt.name.to_sym, true)%></td>
+    	<td class="w20" style="height: 16px;"><%=gm_icon(cvt.icon, "small")%></td>
 		<td><%=draw_pcent_bar(dat[cvt.id]/(100*max))%></td>
 	</tr>
     <% end -%>
@@ -140,7 +142,7 @@ dat[cvt.id] = 0 unless dat[cvt.id] %>
     <% neutral_valorations_types.each do |cvt|
 dat[cvt.id] = 0 unless dat[cvt.id] %>
     <tr>
-    	<td class="w20" style="height: 16px;"><%=comments_icon(cvt.name.to_sym, true)%></td>
+    	<td class="w20" style="height: 16px;"><%=gm_icon(cvt.icon, "small")%></td>
 		<td><%=draw_pcent_bar(dat[cvt.id]/(100*max))%></td>
 	</tr>
     <% end -%>
@@ -150,8 +152,8 @@ dat[cvt.id] = 0 unless dat[cvt.id] %>
     <% negative_valorations_types.each do |cvt|
 dat[cvt.id] = 0 unless dat[cvt.id] %>
     <tr>
-    	<td class="w20" style="height: 16px;"><%=comments_icon(cvt.name.to_sym, true)%></td>
-		<td><%=draw_pcent_bar(dat[cvt.id]/(100*max))%></td>
+    	<td class="w20" style="height: 16px;"><%=gm_icon(cvt.icon, "small")%></td>
+      <td class="bad-block"><%=draw_pcent_bar(dat[cvt.id]/(100*max))%></td>
 	</tr>
     <% end -%>
     </table>
@@ -394,7 +396,7 @@ if last_matches.size > 0 then
 <%		@curuser.comments.find(:all, :conditions => 'deleted = \'f\'', :order => 'created_on desc', :limit => 10).each do |comment|
  %>
        <li class="<%=oddclass%>">
-       <span class="comments-count">
+       <span class="f_milli"><%=gm_icon("comment", "small")%>
          <a href="<%=Routing.gmurl(comment)%>"><%=truncate(strip_tags(comment.comment))%></a>
        </span></li>
     	<% end -%>
@@ -411,7 +413,7 @@ if last_matches.size > 0 then
 <div style="clear: left;">
 <%
 User.find(:all, :conditions => "id IN (#{@curuser.friends_ids_sql}) AND photo IS NOT NULL AND photo <> ''", :order => 'random()', :limit => 9).each do |u| %>
-		<div style="font-size: 11px; width: 63px; overflow: hidden; float: left; text-align: center; margin: 5px 0 15px 0px;"><a href="<%=gmurl(u)%>"><img src="/cache/thumbnails/i/50x50/<%=u.show_photo%>" /></a><br /><%=user_link(u)%></div>
+		<div style="width: 63px; overflow: hidden; float: left; text-align: center; margin: 5px 0 15px 0px;"><a href="<%=gmurl(u)%>"><img src="/cache/thumbnails/i/50x50/<%=u.show_photo%>" /></a><br /><%=user_link(u)%></div>
 <% if i % 3 == 2 %></div><div style="clear: left;"><% end -%>
 
 	<% i += 1

@@ -45,7 +45,7 @@ class NotificationObserver < ActiveRecord::Observer
     when 'UsersEmblem'
       o.user.notifications.create({
         :description => (
-            "Acabas de obtener el emblema #{o.inline_html}.
+            "Acabas de obtener el emblema #{ApplicationController.helpers.emblem_inline_html(o)}.
             ¡Enhorabuena!"),
         :type_id => Notification::USERS_EMBLEM_RECEIVED,
       })

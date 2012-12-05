@@ -14,6 +14,16 @@ class CmsTest < ActiveSupport::TestCase
     File.unlink(THUMB_FILE) if File.exists?(THUMB_FILE)
   end
 
+  test "extract_html_images no images" do
+    assert_equal [], Cms.extract_html_images("foo")
+  end
+
+  test "extract_html_images images" do
+    extracted_imgs = Cms.extract_html_images(
+      "<img src=\"/foo.jpg\" />\n<img src=\"/bar.jpg\" />")
+    assert_equal ["/foo.jpg", "/bar.jpg"], extracted_imgs
+  end
+
   # SQUARE (f)
   test "square_f_wide" do
     Cms::image_thumbnail(SQUARE_FILE, THUMB_FILE, 200, 50, 'f')

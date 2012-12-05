@@ -7,7 +7,7 @@
   <input type="hidden" name="sender_id" value="<%=params[:sender_id]%>" />
   <input type="hidden" name="recipient_class" value="<%=params[:recipient_class]%>" />
   <input type="hidden" name="recipient_id" value="<%=@recipient.id%>" />
-  <div class="centered" style="margin: 20px;"><p>¿Estás seguro de que quieres transferir <strong><%=params[:ammount]%></strong> <%=gmd12%> a <strong><a href="<%=gmurl(@recipient)%>"><%=@recipient%></a></strong> con la razón <strong><%=params[:description]%></strong>?</p></div>
+  <div class="centered" style="margin: 20px;"><p>¿Estás seguro de que quieres transferir <strong><%=params[:ammount]%></strong> <%=gm_icon("gmf", "small")%> a <strong><a href="<%=gmurl(@recipient)%>"><%=@recipient%></a></strong> con la razón <strong><%=params[:description]%></strong>?</p></div>
   <div class="centered"><input type="submit" class="button" value="Confirmar transferencia" /></div>
 </form>
 <% end -%>

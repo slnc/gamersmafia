@@ -1,6 +1,3 @@
-<% generic_support do %>
-<% end -%>
-
 <% content_main do %>
 <% mftext("#{params[:content_name].capitalize}") do %>
 <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/contenidos/#{@c.name.downcase}/page_#{params['page']}") do
@@ -16,7 +13,7 @@ end
   <tr class="<%=oddclass%>">
     <td><%=url_for_content(content, content.resolve_hid)%></td>
     <td style="width: 75px;"><%=draw_rating(content.rating)%></td>
-    <td style="width: 35px;"><span class="infoinline comments-count"><a href="<%=controller.url_for_content_onlyurl(content)%>"><%=content.cache_comments_count%></a></span></td>
+    <td style="width: 35px;"><span class="infoinline f_milli"><%=gm_icon("comment", "small")%> <a href="<%=controller.url_for_content_onlyurl(content)%>"><%=content.cache_comments_count%></a></span></td>
     <td style="width: 75px;"><abbr title="Puntos de karma">K: </abbr> <%=content.unique_content.karma_points || '<abbr title="Todavía no han pasado 2 semanas. Puntos de karma no disponibles.">-</abbr>'%></td>
     <td class="infoinline" style="width: 125px;"><%=print_tstamp(content.created_on)%></td>
   </tr>
@@ -26,3 +23,7 @@ end
 <% end -%>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<% end -%>
+

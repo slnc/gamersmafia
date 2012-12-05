@@ -1,3 +1,12 @@
+<% content_main do %>
+  <% mftext('Nueva competición') do %>
+  <%= form_tag :action => 'create' %>
+    <%= render :partial => 'form' %>
+    <%= submit_tag 'Crear', :class => 'button' %>
+  </form>
+  <% end -%>
+<% end -%>
+
 <% generic_support do %>
   <% mftext('Tipos de competiciones') do %>
   <dl>
@@ -18,11 +27,3 @@
   <% end -%>
 <% end -%>
 
-<% content_main do %>
-  <% mftext('Nueva competición') do %>
-  <%= form_tag :action => 'create' %>
-    <%= render :partial => 'form' %>
-    <%= submit_tag 'Crear' %>
-  </form>
-  <% end -%>
-<% end -%>

@@ -363,4 +363,8 @@ class TermTest < ActiveSupport::TestCase
     end
     assert_equal 1.0, Term.subscribed_users_per_tag
   end
+
+  test "game_term" do
+    assert_not_nil Term.game_term(Game.first)
+  end
 end

@@ -1,3 +1,7 @@
+<% content_main do %>
+  <%=mfcontent(@blogentry)%>
+<%end -%>
+
 <% content_support(:content => @blogentry.unique_content) do %>
 	<% if @blogentry.is_public? then %>
 <%=mfcontents_basic("Archivo",
@@ -12,7 +16,3 @@
 		<%= render :partial => 'top_bloggers' %>
 	<% end -%>
 <% end -%>
-
-<% content_main do %>
-  <%=mfcontent(@blogentry)%>
-<%end -%>

@@ -1,3 +1,63 @@
+<% content_main do %>
+  <%mftext('Apuestas en curso') do %>
+  <table>
+  <tr>
+    <th>Apuesta</th>
+    <th class="right w100"> <%=gm_icon("gmf", "small")%> apostados</th>
+    <th class="right timestamp" style="width: 150px;">Termina en</th>
+  </tr>
+  <% Bet.in_portal(controller.portal).published.find(
+      :all,
+      :conditions => Bet::OPEN_BETS_SQL,
+      :order => 'closes_on ASC, id ASC').each do |bet| %>
+  <tr class="<%=oddclass%>">
+    <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
+    <td class="right"><%=bet.total_ammount.to_i%></td>
+    <td class="right infoinline"><%=format_interval(bet.closes_on.to_i - Time.now.to_i)%></td>
+  </tr>
+  <% end -%>
+</table>
+<% end -%>
+
+  <%mftext('Apuestas pendientes de confirmar resultado') do %>
+  <table>
+  <tr>
+    <th>Apuesta</th>
+    <th style="width: 125px;"> <%=gm_icon("gmf", "small")%> apostados</th>
+  </tr>
+  <% Bet.in_portal(controller.portal).published.find(
+      :all,
+      :conditions => Bet::AWAITING_RESULT_SQL,
+      :order => 'closes_on DESC, id DESC').each do |bet| %>
+  <tr class="<%=oddclass%>">
+    <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
+    <td class="right"><%=bet.total_ammount%></td>
+  </tr>
+  <% end -%>
+</table>
+<% end -%>
+
+  <%mftext('Últimas apuestas cerradas') do %>
+  <table>
+  <tr>
+    <th>Apuesta</th>
+    <th style="width: 125px;"> <%=gm_icon("gmf", "small")%> apostados</th>
+    <th class="timestamp">Terminó hace</th>
+  </tr>
+  <% cache("/#{controller.portal_code}/apuestas/index/closed_#{Time.now.to_i/3600}") do %>
+  <% Bet.in_term(controller.portal.bet).closed_bets.published.find(
+      :all, :limit => 20).each do |bet| %>
+    <tr class="<%=oddclass%>">
+      <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
+      <td class="right"><%=bet.total_ammount.to_i%></td>
+      <td class="infoinline"><%=format_interval(Time.now.to_i - bet.closes_on.to_i, 'horas')%></td>
+    </tr>
+    <% end -%>
+  <% end -%>
+</table>
+<% end -%>
+<% end -%>
+
 <% generic_support do %>
 
 <%= render :partial => "/apuestas/top_accuracy" %>
@@ -31,13 +91,13 @@ end
 %>
 
 <tr class="<%=oddclass%>">
-	<td style="padding: 0 0 0 2px; font-size: 11px;"><strong><%=member_state(u.hstate)%> <a href="<%=gmurl(u)%>"><%=u.login%></a></strong></td>
-	<td style="padding: 2px 0 2px 0; text-align: right; line-height: 20px;">
+	<td style="padding: 0 0 0 2px;"><strong><%=member_state(u.hstate)%> <a href="<%=gmurl(u)%>"><%=u.login%></a></strong></td>
+	<td style="padding: 2px 0 2px 0; text-align: right;">
 	<img title="<%=-data[k][:sum]%> gmf en el último mes (se muestran últimas 30 apuestas)" src="<%=ASSET_URL%>/storage/minicolumns/bets_top_last30/<%=u.id%>.png?<%=Time.now.strftime('%Y-%m-%d')%>" style="margin-right: 2px; " />
 	</td>
-	<td style="margin-right: 2px;"><div class="infoinline" style="line-height: 10px; font-weight: bold; float: right; text-align: right; font-size: 8px;">
-	<span class="supermini good" style="color: #00790b;"><%=won%></span><br />
-	<span class="supermini bad" style="color: #a90014;"><%=lost%></span></div></td>
+	<td style="margin-right: 2px;"><div class="infoinline f_micro" style="font-weight: bold; float: right; text-align: right;">
+	<span class="supermini good"><%=won%></span><br />
+	<span class="supermini bad"><%=lost%></span></div></td>
 
 </tr>
 <% end -%>
@@ -48,76 +108,16 @@ end
 <% end %><%# if File.exists -%>
 
 <% cache("/common/apuestas/index/stats_laterales_#{Time.now.to_i/86400}") do %>
-  <%mftext("#{gmd12} movidos en la última semana") do %>
+  <%mftext("#{gm_icon("gmf", "small")} movidos en la última semana") do %>
   <table>
   <% for dbentry in dbinfo = User.db_query("SELECT sum(total_ammount), date_trunc('day', closes_on) FROM bets WHERE closes_on < now() and state = #{Cms::PUBLISHED} group by date_trunc('day', closes_on) order by date_trunc('day', closes_on) DESC LIMIT 7;") %>
   <tr class="<%=oddclass%>">
     <td style="width: 90px;"><%=dbentry['date_trunc']%></td>
-    <td class="timestamp"><%=dbentry['sum'].to_i%><%=gmd12%></td>
+    <td class="timestamp"><%=dbentry['sum'].to_i%> <%=gm_icon("gmf", "small")%></td>
   </tr>
   <% end -%>
   </table>
 
   <% end -%>
   <% end %><%# cache -%>
-<% end -%>
-
-<% content_main do %>
-  <%mftext('Apuestas en curso') do %>
-  <table>
-  <tr>
-    <th>Apuesta</th>
-    <th class="right w100"><%=gmd11%> apostados</th>
-    <th class="right timestamp" style="width: 150px;">Termina en</th>
-  </tr>
-  <% Bet.in_portal(controller.portal).published.find(
-      :all,
-      :conditions => Bet::OPEN_BETS_SQL,
-      :order => 'closes_on ASC, id ASC').each do |bet| %>
-  <tr class="<%=oddclass%>">
-    <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
-    <td class="right"><%=bet.total_ammount.to_i%></td>
-    <td class="right infoinline"><%=format_interval(bet.closes_on.to_i - Time.now.to_i)%></td>
-  </tr>
-  <% end -%>
-</table>
-<% end -%>
-
-  <%mftext('Apuestas pendientes de confirmar resultado') do %>
-  <table>
-  <tr>
-    <th>Apuesta</th>
-    <th style="width: 125px;"><%=gmd11%> apostados</th>
-  </tr>
-  <% Bet.in_portal(controller.portal).published.find(
-      :all,
-      :conditions => Bet::AWAITING_RESULT_SQL,
-      :order => 'closes_on DESC, id DESC').each do |bet| %>
-  <tr class="<%=oddclass%>">
-    <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
-    <td class="right"><%=bet.total_ammount%></td>
-  </tr>
-  <% end -%>
-</table>
-<% end -%>
-
-  <%mftext('Últimas apuestas cerradas') do %>
-  <table>
-  <tr>
-    <th>Apuesta</th>
-    <th style="width: 125px;"><%=gmd11%> apostados</th>
-    <th class="timestamp">Terminó hace</th>
-  </tr>
-  <% cache("/#{controller.portal_code}/apuestas/index/closed_#{Time.now.to_i/3600}") do %>
-  <% Bet.in_term(controller.portal.bet).closed_bets.published.find(
-      :all, :limit => 20).each do |bet| %>
-    <tr class="<%=oddclass%>">
-      <td><%=faction_favicon(bet.main_category)%> <%=link_to bet.title, gmurl(bet) %></td>
-      <td class="right"><%=bet.total_ammount.to_i%></td>
-      <td class="infoinline"><%=format_interval(Time.now.to_i - bet.closes_on.to_i, 'horas')%></td>
-    </tr>
-    <% end -%>
-  <% end -%>
-</table>
-<% end -%>
 <% end -%>

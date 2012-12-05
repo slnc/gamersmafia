@@ -1,20 +1,3 @@
-<%generic_support do %>
-<% if user_is_authed then %>
-	<%mftext do %>
-		<div class="centered"><a href="/reclutamiento/new"><img class="icon" alt="Nuevo anuncio" src="/skins/default/images/btn_nuevo_anuncio.png" /></a></div>
-	<% end -%>
-<% end -%>
-
-<% mflist("Últimos anuncios", Proc.new { RecruitmentAd.find(:all, :conditions => 'deleted = \'f\'', :order => 'created_on desc', :limit => 10) }, :class => 'lh16') do |ra| %>
-		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title%></a>
-		<div class="infoinline right"><%=print_tstamp(ra.created_on, 'intelligent')%></div>
-	<% end %><%# mflist-%>
-
-<% mflist("Movimientos", Proc.new { ClansMovement.find(:all, :conditions => 'clan_id NOT IN (SELECT id FROM clans where deleted = \'t\')', :order => 'created_on DESC', :limit => 10)}) do |cm| %>
-		<%=user_link(cm.user)%> <%=ClansMovement.translate_direction(cm.direction)%> <%=clan_link(cm.clan)%>
-	<% end %><%# mflist-%>	
-<% end -%>
-
 <% content_main do %>
 
 <%mftext('Buscar') do %>
@@ -67,9 +50,27 @@
 </table>
 
 <% if @results.size == 0 then %>
-<p class="warning">No se han encontrado resultados.</p>
+<p class="bad-block">No se han encontrado resultados.</p>
 <% end -%>
 
 <% end -%>
 <% end -%>
 <% end -%>
+
+<%generic_support do %>
+<% if user_is_authed then %>
+	<%mftext do %>
+    <div class="centered"><a href="/reclutamiento/new"><%=button("Nuevo anuncio")%></a></div>
+	<% end -%>
+<% end -%>
+
+<% mflist("Últimos anuncios", Proc.new { RecruitmentAd.find(:all, :conditions => 'deleted = \'f\'', :order => 'created_on desc', :limit => 10) }) do |ra| %>
+		<%=faction_favicon(ra.game)%> <a href="<%=gmurl(ra)%>"><%=ra.title%></a>
+		<div class="infoinline right"><%=print_tstamp(ra.created_on, 'intelligent')%></div>
+	<% end %><%# mflist-%>
+
+<% mflist("Movimientos", Proc.new { ClansMovement.find(:all, :conditions => 'clan_id NOT IN (SELECT id FROM clans where deleted = \'t\')', :order => 'created_on DESC', :limit => 10)}) do |cm| %>
+		<%=user_link(cm.user)%> <%=ClansMovement.translate_direction(cm.direction)%> <%=clan_link(cm.clan)%>
+	<% end %><%# mflist-%>
+<% end -%>
+

@@ -3,40 +3,157 @@ body, input, textarea {
 	font-family: Tahoma, Arial, "sans-serif";
 }
 
-.f_sm {
-	font-family: Verdana, Arial, "sans-serif";
-}
-
 .f_number {
 	font-family: Georgia, "Courier New", "Times New Roman", serif;
 }
 
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p,
+blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img,
+ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i,
+center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption,
+tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section,
+summary, time, mark, audio, video {
+  font-size: inherit;
+}
 
 /* Font sizes */
+html {
+  /* We set this default size so that rem sizing is easy:
+   * For 17px we have 1.7rem, for 15px -> 1.5rem;
+   */
+  font-size: 62.5%;
+}
+
 body, body td, input, textarea {
-	font-size: 12px;
+	font-size: 14px;
+  font-size: 1.4rem;
+  line-height: 2.1rem;
 }
 
-.f_sm {
+p {
+  margin-bottom: 2.1rem;
+}
+
+p+p {
+  margin-top: 2.1rem;
+}
+
+li {
+  margin-bottom: 0.4rem;
+}
+
+/* .infoinline is deprecated, use .f_* */
+.infoinline,
+.infoinline td {
 	font-size: 10px;
+	font-size: 1.0rem;
 }
 
+/**
+ * Uses:
+ * -
+ */
+.f_giga {
+  font-size: 34px;
+  font-size: 3.4rem;
+  font-weight: bold;
+  line-height: 4.2rem;
+}
+
+/**
+ * Uses:
+ * - page titles that are 1 or 2 word titles long (tags pages, member pages)
+ */
+.f_mega {
+  font-size: 30px;
+  font-size: 3.0rem;
+  font-weight: bold;
+  line-height: 3.0rem;
+}
+
+/**
+ * Uses:
+ * - content titles
+ */
+.f_kilo {
+  font-size: 24px;
+  font-size: 2.4rem;
+  font-weight: bold;
+  line-height: 3.0rem;
+  margin-bottom: 0.6rem;
+}
+
+/**
+ * Uses:
+ * - content titles in lists where more than the title is shown
+ * - module headers
+ * - top menu headers
+ */
+.f_hecto {
+  font-size: 18px;
+  font-size: 1.8rem;
+  font-weight: bold;
+  line-height: 2rem;
+}
+
+/**
+ * Uses:
+ * - content first paragraph
+ * - subheaders
+ * - content titles where only the content's title is shown
+ */
+.f_deca {
+  font-size: 16px;
+  font-size: 1.6rem;
+  line-height: 1.6rem;
+}
+
+/**
+ * Uses:
+ * - headers of left sidebar
+ */
+.f_deci {
+  font-size: 11px;
+  font-size: 1.1rem;
+  line-height: 1.1rem;
+  font-weight: bold;
+}
+
+/**
+ * (class for non-headers)
+ * Uses:
+ * - everything less important than the body of a page
+ */
+.f_milli,
+.f_milli input,
+.f_milli textarea {
+  font-size: 12px;
+  font-size: 1.2rem;
+  line-height: 1.4rem;
+}
+
+/**
+ * - numbers in very small charts
+ */
+.f_micro {
+  font-size: 10px;
+  font-size: 1rem;
+  line-height: 1rem;
+}
+
+/*
 h1 { font-size: 1.55em; letter-spacing: 0.09em; word-spacing: 0.09em}
 h2 { font-size: 1.45em; letter-spacing: 0.09em; }
 h3 { font-size: 1.36em; letter-spacing: 0.09em; }
 h4 { font-size: 1.27em; letter-spacing: 0.09em; }
 h5 { font-size: 1.18em; letter-spacing: 0.09em; }
 h6 { font-size: 1.09em; }
+*/
 
 /* Font decorations */
 .module .mtitle {
-	font-size: 1.09em;
 	font-weight: bold;
-}
-
-p {
-	font-size: 1em;
-	line-height: 1.55em;
 }
 
 a {
@@ -51,7 +168,19 @@ a:hover {
   text-decoration: underline;
 }
 
-.content-snippet .content-title {
-  font-size: 22px;
-  line-height: 24px;
+.f-module-title {
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+/**
+ * global navbar & submenu
+ */
+.secondary a {
+  text-decoration: underline;
+}
+
+#cleft .mfcontents-ul li a {
+  line-height: 2rem;
 }

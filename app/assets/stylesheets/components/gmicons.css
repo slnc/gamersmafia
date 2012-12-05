@@ -1,0 +1,34 @@
+@font-face
+{
+  font-family: "GmIcons";
+  src: url(/fonts/gm_icons.25.ttf);
+}
+
+.gm-icon {
+  font-family: "GmIcons";
+  /* font-size: 15px; */
+}
+
+.gm-icon.full-page {
+  font-family: "GmIcons";
+  font-size: 400px;
+}
+
+.gm-icon.big {
+  font-family: "GmIcons";
+  font-size: 20px;
+}
+
+.gm-icon.small {
+  font-family: "GmIcons";
+  font-size: 10px;
+}
+
+.gm-icon-button {
+  display: inline-block;
+}
+
+.gm-icon-button {
+  padding: 4px;
+  margin-right: 0px;
+}

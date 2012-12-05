@@ -1,22 +1,3 @@
-<% generic_support do %>
-  <% if user_is_authed and @user.id != @curuser.id then
-  my_ps = @curuser.profile_signatures.find_by_signer_user_id(@user.id)
-  my_ps = @curuser.profile_signatures.new if my_ps.nil?
-  %>
-  <% mftext("Di algo sobre #{@curuser.login}") do %>
-    <% if @user.has_skill?("ProfileSignatures") %>
-    <form method="post" action="<%=gmurl(@curuser)%>/update_signature">
-      <textarea style="width: 225px; height: 200px;" name="profile_signature[signature]"><%=my_ps.signature%></textarea><br />
-      <br />
-      <input type="submit" class="button" value="<%=my_ps.new_record? ? 'Dejar mi firma' : 'Actualizar mi firma'%>" />
-    </form>
-  <% else %>
-    <p>Debes conseguir la habilidad de firmas para poder usar esta sección.</p>
-  <% end -%>
-  <% end -%>
-  <% end -%>
-<% end -%>
-
 <% content_main do %>
   <% mftext("Lo que opinan de #{@curuser.login}") do %>
   <% if @curuser.profile_signatures_count == 0 and Friendship.find_between(Ias.MrCheater, @curuser).nil? then %>
@@ -51,3 +32,23 @@
 <% end -%>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <% if user_is_authed and @user.id != @curuser.id then
+  my_ps = @curuser.profile_signatures.find_by_signer_user_id(@user.id)
+  my_ps = @curuser.profile_signatures.new if my_ps.nil?
+  %>
+  <% mftext("Di algo sobre #{@curuser.login}") do %>
+    <% if @user.has_skill?("ProfileSignatures") %>
+    <form method="post" action="<%=gmurl(@curuser)%>/update_signature">
+      <textarea style="width: 225px; height: 200px;" name="profile_signature[signature]"><%=my_ps.signature%></textarea><br />
+      <br />
+      <input type="submit" class="button" value="<%=my_ps.new_record? ? 'Dejar mi firma' : 'Actualizar mi firma'%>" />
+    </form>
+  <% else %>
+    <p>Debes conseguir la habilidad de firmas para poder usar esta sección.</p>
+  <% end -%>
+  <% end -%>
+  <% end -%>
+<% end -%>
+

@@ -22,6 +22,8 @@ module ActsAsContent
       scope :deleted, :conditions => "state = #{Cms::DELETED}"
       scope :onhold, :conditions => "state = #{Cms::ONHOLD}"
 
+      scope :recent, :conditions => "created_on >= NOW() - '1 month'::interval"
+
       scope :in_term, lambda { |term|
           if term.nil?
             raise ArgumentError, "Invalid term passed (#{term})"
@@ -101,6 +103,8 @@ module ActsAsContent
     end
 
     module ClassMethods
+      # Returns a string with the url of the main image associated with this
+      # content, if any.
       # TODO integrar limit en opts
       def most_popular_authors(opts={})
         q_add = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
@@ -187,15 +191,36 @@ module ActsAsContent
       end
     end
 
+    def main_image
+      candidates = []
+      if self.respond_to?(:file) && self.file.to_s != ""
+        return "/#{self.file}"
+      end
+
+      [:description, :main].each do |field|
+        if self.respond_to?(field)
+          images = Cms.extract_html_images(self.send(field))
+          if images.size > 0
+            image = images[0].gsub("http://", "")
+            domain = image.split("/")[0]
+            return image.sub(domain, "")
+          end
+        end
+      end
+      nil
+    end
+
     # Procesa los campos wysiwyg y manipula las imágenes en caso de
-    # encontrarlas: se las descarga si son remotas y crea thumbnails si están
+      # encontrarlas: se las descarga si son remotas y crea thumbnails si están
     # resizeadas y no tienen ya un link alrededor.
     def process_wysiwyg_fields
       attrs = {}
 
       if !Cms::DONT_PARSE_IMAGES_OF_CONTENTS.include?(self.class.name) then
         for d in Cms::WYSIWYG_ATTRIBUTES[self.class.name]
-          attrs[d] = Cms::parse_images(self.attributes[d], "#{self.class.name.downcase}/#{self.id % 1000}/#{self.id}")
+          attrs[d] = Cms::parse_images(
+              self.attributes[d],
+              "#{self.class.name.downcase}/#{self.id % 1000}/#{self.id}")
         end
       end
 

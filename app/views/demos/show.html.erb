@@ -6,20 +6,6 @@ function open_demo_win(demo_id)
 }
 </script>
 
-<% content_support(:content => @demo.unique_content) do %>
-	<% if @demo.is_public? then %>
-	<%=mfcontents_basic("Más demos de #{@demo.main_category.name}",
-	controller.portal.demo,
-	[:published, { :order => 'created_on DESC', :limit => 5}],
- 	:rating => true,
-	:cache => "/common/demos/show/_latest_cat#{@demo.main_category.id}",
-	:skip_id => @demo.id,
-	:downloads_count => true,
-	:comments_count => true,
-	:more_link => "<a href=\"/demos/buscar?demo_term_id=#{@demo.main_category.id}\">Ver todas</a>")%>
-	<% end -%>
-<% end -%>
-
 <% content_main do %>
   <% mfcontent(@demo) do %>
   <div style="float: right; margin: 5px;"><%=fc_thumbnail(@demo.games_map.screenshot, 'k', '153x115', false) if @demo.games_map%></div>
@@ -70,7 +56,7 @@ function open_demo_win(demo_id)
 
 	<% mirrors = @demo.demo_mirrors.find(:all, :order => 'lower(url)')
 if mirrors.size > 0 then %>
-	<table style="margin-top: 20px; border: 1px solid #efefef;">
+	<table style="margin-top: 20px;">
 		<tr>
 			<th colspan="2">Descargas alternativas</th>
 		</tr>
@@ -83,7 +69,7 @@ if mirrors.size > 0 then %>
 %>
 		<tr class="<%=oddclass%>">
 			<td style="text-align: left;"><% if mirror_name then %><a target="_blank" href="http://<%=mirror_name%>/"><%=mirror_name%></a><% end -%></td>
-			<td class="right"><a href="/demos/download/<%=@demo.id%>?r=<%=dm.url%>"><img class="icon" src="/skins/default/images/btn_descargar_mirror.png" /></a></td>
+      <td class="right"><a href="/demos/download/<%=@demo.id%>?r=<%=dm.url%>"><%=button("Descargar desde mirror")%></a></td>
 		</tr>
 		<% end -%>
 	</table>
@@ -91,7 +77,22 @@ if mirrors.size > 0 then %>
 	</div>
 
 	<% if @demo.file.to_s == '' && mirrors.size == 0 then %>
-		<div class="warning">Esta demo no tiene ni enlaces ni tenemos el archivo para descargar en gamersmafia.</div>
+		<div class="bad-block">Esta demo no tiene ni enlaces ni tenemos el archivo para descargar en gamersmafia.</div>
 	<% end -%>
   <% end %>
 <%end -%>
+
+<% content_support(:content => @demo.unique_content) do %>
+	<% if @demo.is_public? then %>
+	<%=mfcontents_basic("Más demos de #{@demo.main_category.name}",
+	controller.portal.demo,
+	[:published, { :order => 'created_on DESC', :limit => 5}],
+ 	:rating => true,
+	:cache => "/common/demos/show/_latest_cat#{@demo.main_category.id}",
+	:skip_id => @demo.id,
+	:downloads_count => true,
+	:comments_count => true,
+	:more_link => "<a href=\"/demos/buscar?demo_term_id=#{@demo.main_category.id}\">Ver todas</a>")%>
+	<% end -%>
+<% end -%>
+

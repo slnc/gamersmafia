@@ -69,6 +69,6 @@ module CompeticionesHelper
     else offset = 0
     end
 
-    "<img class=\"competition-progress\" src=\"/images/blank.gif\" style=\"background-position: 0 -#{offset}px;\" />"
+    draw_pcent_bar(pc)
   end
 end

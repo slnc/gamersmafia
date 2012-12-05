@@ -1,10 +1,10 @@
-<?xml version="1.0"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
   <title><%=@title%></title>
   <%=css_includes.html_safe %>
   <%=javascript_includes.html_safe %>
+  <%=javascript_include_tag "application"%>
 </head>
 <body class="popup">
   <div id="content">
@@ -14,6 +14,6 @@
   <script type="text/javascript">
   	if (contents == undefined)
   		var contents=[];
-	<script type="text/javascript">cfgPage(<%=user_is_authed%>, [], '<%=controller.controller_name%>', '<%=controller.action_name%>', '<%=params[:id]%>'<%= params['_xnvi'] ? ", '#{params['_xnvi']}'" : ', undefined'%><%= params['_xab'].size > 0 ? ", '#{CGI::escape(params['_xab'].to_json)}'" : ', undefined'%><%= controller._xad.size > 0 ? ", '#{CGI::escape(controller._xad.to_json)}'" : ', undefined'%>);</script>
+  </script>
 </body>
 </html>

@@ -1,5 +1,19 @@
+<% content_main do %>
+<% mftext('Editar curiosidad') do %>
+
+<%= form_tag({:action => 'update', :id => @funthing}, { :class => 'editing-content' }) %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar', :class => 'button' %>
+</form>
+<%=render :partial => '/shared/change_authorship', :locals => {:object => @funthing}%>
+
+<br />
+<%= link_to 'Mostrar funthing publicado', gmurl(@funthing) %> |
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>
+
 <% generic_support do %>
-<%= render :partial => '/shared/drafts', :locals => { :cls => Funthing } if user_is_authed %>
 <%=render :partial => 'shared/content_details', :locals => { :object => @funthing} %>
 <% mftext('Consejos') do %>
 <ul class="content-hid">
@@ -9,21 +23,5 @@
 <li>Descripción recomendada</li>
 </ul>
 <% end -%>
-
-<%= render :partial => 'shared/pending', :object => Funthing.pending %>
 <% end -%>
 
-<% content_main do %>
-<% mftext('Editar curiosidad') do %>
-
-<%= form_tag({:action => 'update', :id => @funthing}, { :class => 'editing-content' }) %>
-  <%= render :partial => 'form' %>
-  <%= submit_tag 'Edit' %>
-</form>
-<%=render :partial => '/shared/change_authorship', :locals => {:object => @funthing}%>
-
-<br />
-<%= link_to 'Mostrar funthing publicado', gmurl(@funthing) %> |
-<%= link_to 'Volver', :action => 'list' %>
-<% end -%>
-<% end -%>

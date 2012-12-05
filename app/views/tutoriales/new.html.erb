@@ -1,16 +1,3 @@
-<% generic_support do %>
-<%= render :partial => '/shared/drafts', :locals => { :cls => Tutorial } if user_is_authed %>
-<% mftext('Consejos') do %>
-<ul class="content-hid">
-<li>Debe tener una cierta longitud</li>
-<li>Revisar ortografía y gramática</li>
-<li>De interés general</li>
-</ul>
-<% end -%>
-
-<%= render :partial => 'shared/pending', :object => Tutorial.pending %>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Nuevo tutorial') do %>
 
@@ -18,7 +5,17 @@
   <%= render :partial => 'form' %>
   <%= render :partial => '/shared/new_content_tags' %>
   <br />
-  <%= submit_tag 'Crear' %>
+  <%= submit_tag 'Crear', :class => 'button' %>
 </form>
 <% end -%>
+<% end -%>
+
+<% generic_support do %>
+  <% mftext('Consejos') do %>
+    <ul class="content-hid">
+      <li>Debe tener una cierta longitud</li>
+      <li>Revisar ortografía y gramática</li>
+      <li>De interés general</li>
+    </ul>
+  <% end -%>
 <% end -%>

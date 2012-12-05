@@ -3,6 +3,13 @@ require 'test_helper'
 
 class ApplicationHelperTest < ActionView::TestCase
 
+  test "initial_sentences1" do
+    assert_equal "hello ...", initial_sentences("hello world foo", 5)
+    assert_equal "hello ...", initial_sentences("hello world foo", 6)
+    assert_equal "hello world ...", initial_sentences("hello world foo", 12)
+    assert_equal "hello world", initial_sentences("<p>hello\nworld</p> foo", 12)
+  end
+
   test "smilelize" do
     assert_equal '<p>foo</p>', smilelize('foo')
     assert_equal '<p><img src="/images/smileys/666.gif" /></p>', smilelize(':666:')

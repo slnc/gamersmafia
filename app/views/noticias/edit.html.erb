@@ -1,5 +1,19 @@
+<% content_main do %>
+<%mftext('Editar noticia') do %>
+
+<%= form_tag({:action => 'update', :id => @news}, { :class => 'editing-content', :multipart => true }) do %>
+  <%= render :partial => 'form' %>
+  <%= submit_tag 'Guardar', :class => 'button' %>
+<% end %>
+<%=render :partial => '/shared/change_authorship', :locals => {:object => @news}%>
+
+<br />
+<%= link_to 'Ver noticia publicada', gmurl(@news) %> |
+<%= link_to 'Volver', :action => 'list' %>
+<% end -%>
+<% end -%>
+
 <% generic_support do %>
-  <%= render :partial => '/shared/drafts', :locals => { :cls => News } if user_is_authed %>
   <%=render :partial => 'shared/content_details', :locals => { :object => @news } %>
 <% mftext('Consejos') do %>
 <ul class="content-hid">
@@ -10,21 +24,5 @@
 <li>Indicar fuente</li>
 </ul>
 <% end -%>
-
-<%= render :partial => 'shared/pending', :object => News.pending %>
 <% end -%>
 
-<% content_main do %>
-<%mftext('Editar noticia') do %>
-
-<%= form_tag({:action => 'update', :id => @news}, { :class => 'editing-content', :multipart => true }) do %>
-  <%= render :partial => 'form' %>
-  <%= submit_tag 'Guardar' %>
-<% end %>
-<%=render :partial => '/shared/change_authorship', :locals => {:object => @news}%>
-
-<br />
-<%= link_to 'Ver noticia publicada', gmurl(@news) %> |
-<%= link_to 'Volver', :action => 'list' %>
-<% end -%>
-<% end -%>

@@ -1,29 +1,3 @@
-<%
-opts = HashWithIndifferentAccess.new({ :tourney_groups => 8, :tourney_winners_per_group => 2, :tourney_rounds => 4 })
-opts.merge!(@competition.competitions_types_options)
--%>
-<% generic_support do %>
-  <% mftext('Jugadores disponibles') do %>
-  <select id="player_to_situate" size="10" onchange="document.getElementById('player_to_situate_send').disabled = '';">
-    <% @competition.competitions_participants.find(:all, :order => 'position ASC').each do |cp| %>
-    <option id="player_to_situate_opt<%=cp.id%>" value="<%=cp.id%>"><%=notags(cp.name)%></option>
-    <% end %>
-  </select>
-  <% end -%>
-
-  <br />
-  <select id="dst_group">
-    <%# TODO aquí lo hacemos con ruby y abajo con jscript, solo una forma please
-    %>
-    <% opts[:tourney_groups].to_i.times do |i| %>
-    <option value="<%=i+1%>">Grupo <%=i+1%></option>
-    <% end %>
-  </select> <input id="player_to_situate_send" type="button" class="button" value="Enviar" onclick="send_player();" disabled="disabled" />
-  <br />
-  <br />
-  <input type="button" class="button" value="Colocar resto de jugadores" onclick="set_remaining_players();" />
-<% end -%>
-
 <% content_main do %>
 <% mftext('1er PASO: Configuración de grupos') do %>
   <form method="post" action="/cuenta/competiciones/update_tourney_groups/<%=@competition.id%>" enctype="multipart/form-data">
@@ -245,7 +219,7 @@ function send_seeds()
       </tr>
     </table>
 
-    <input type="submit" class="button" value="Guardar" onclick="return confirm('Al guardar se borrará cualquier selección de seeds. ¿Seguro que quieres continuar?');" />
+    <input type="submit" class="button confirm-click" value="Guardar" />
   </form>
   <% end -%>
 
@@ -283,3 +257,30 @@ function send_seeds()
   </form>
   <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<%
+opts = HashWithIndifferentAccess.new({ :tourney_groups => 8, :tourney_winners_per_group => 2, :tourney_rounds => 4 })
+opts.merge!(@competition.competitions_types_options)
+-%>
+  <% mftext('Jugadores disponibles') do %>
+  <select id="player_to_situate" size="10" onchange="document.getElementById('player_to_situate_send').disabled = '';">
+    <% @competition.competitions_participants.find(:all, :order => 'position ASC').each do |cp| %>
+    <option id="player_to_situate_opt<%=cp.id%>" value="<%=cp.id%>"><%=notags(cp.name)%></option>
+    <% end %>
+  </select>
+  <% end -%>
+
+  <br />
+  <select id="dst_group">
+    <%# TODO aquí lo hacemos con ruby y abajo con jscript, solo una forma please
+    %>
+    <% opts[:tourney_groups].to_i.times do |i| %>
+    <option value="<%=i+1%>">Grupo <%=i+1%></option>
+    <% end %>
+  </select> <input id="player_to_situate_send" type="button" class="button" value="Enviar" onclick="send_player();" disabled="disabled" />
+  <br />
+  <br />
+  <input type="button" class="button" value="Colocar resto de jugadores" onclick="set_remaining_players();" />
+<% end -%>
+

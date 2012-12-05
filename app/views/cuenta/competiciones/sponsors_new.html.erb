@@ -3,7 +3,7 @@
 
 <%= form_tag({:action => 'sponsors_create'}, :multipart => true)%>
   <%= render :partial => 'sponsors_form' %>
-  <%= submit_tag 'Crear' %>
+  <%= submit_tag 'Crear', :class => 'button' %>
 </form>
 
 <%= link_to 'Volver', :action => 'sponsors_list' %>

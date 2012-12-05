@@ -1,0 +1,260 @@
+<div class="f_hecto home-mode-selector right">
+  <%if home_mode == "stream"%>
+    <span class="secondary"><%=gm_icon("home-stream")%></span>
+    <a href="/home/tetris" title="Activar portada tetris"><%=gm_icon("home-tetris")%></a>
+  <% else %>
+    <a href="/home/stream" title="Activar portada stream"><%=gm_icon("home-stream")%></a>
+    <span class="secondary"><%=gm_icon("home-tetris")%></span>
+  <% end -%>
+</div>
+
+<div id="homecontents">
+  <!--<div class="homezonedetail contents"></div>-->
+  <div class="container">
+<% cache("/#{controller.portal_code}/home/index/news") do %>
+    <div class="homebox" id="hmnt">
+        <div id="home-news" class="subheader f_deca first"><div><span>Noticias</span></div></div>
+        <ul class="content-hid2">
+          <% @last_news = News.published.find(
+              :all,
+              :conditions => 'clan_id IS NULL and title not LIKE \'Gamersmafia actualizada a%\'', :limit => 60, :order => 'created_on DESC')
+%>
+<%# @last_news = @portal.news_find(:all, :state => :published, :limit => 15) %>
+<%
+shown_news = []
+accum_portals = {}
+max = 20
+i = 0
+for news in @last_news
+	next unless news.main_category && news.main_category.bazar_district_id.nil?
+	accum_portals[news.main_category.root_id] ||= 0
+	accum_portals[news.main_category.root_id] += 1
+	next if accum_portals[news.main_category.root_id] > 6
+	break if i > max
+    shown_news << news.unique_content.id
+%>
+<li class="content<%=news.unique_content.id%> new <%=oddclass%>"><%= link_to "#{content_category(news.main_category)}#{news.title}", gmurl(news) %></li>
+<%
+	i += 1
+end
+%>
+</ul>
+	<script type="text/javascript">contents = contents.concat(<%=shown_news.join(',')%>);</script>
+    <div class="more"><a title="Ver más noticias" href="/noticias/">Más noticias &raquo;</a></div>
+    </div>
+<% end -%>
+
+<%=render :partial => '/home/articles' %>
+
+<% cache("/#{controller.portal_code}/home/index/downloads") do %>
+    <div class="homebox">
+        <div id="home-downloads" class="subheader f_deca first"><div><span>Descargas</span></div></div>
+        <ul class="content-hid2">
+<%
+@last_downloads = Download.in_portal(controller.portal).published.find(:all, :limit => 10, :order => 'created_on DESC')
+shown_downloads = []
+for download in @last_downloads
+    shown_downloads << download.unique_content.id
+%>
+    <li class="content<%=download.unique_content.id%> new <%=oddclass%>"><%=link_to "#{content_category(download.main_category)}#{download.title}", gmurl(download)%></li>
+<% end %>
+</ul>
+<script type="text/javascript">contents = contents.concat(<%=shown_downloads.join(',')%>);</script>
+  <div class="more"><a title="Ver más descargas" href="/descargas/">Más descargas &raquo;</a></div>
+    </div>
+<% end -%>
+  </div>
+
+</div>
+
+
+<div id="homecommunity">
+  <div class="container">
+
+<% cache("/#{controller.portal_code}/home/index/topics") do %>
+    <div class="homebox">
+        <div id="home-topics" class="subheader f_deca first"><div><span>Foros</span></div></div>
+    <ul class="content-hid2">
+<%
+shown_topics = []
+@last_topics = Topic.latest_by_category(20)
+
+for topic in @last_topics
+  # topic = Topic.find(topicid)
+  shown_topics << topic.unique_content_id
+  root = topic.main_category.root
+  active_topics = root.count(:content_type => 'Topic', :conditions => 'contents.updated_on > now() - \'1 week\'::interval') - 1
+%>
+  <li class="content<%=topic.unique_content.id%> new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "#{content_category(topic.main_category)}#{topic.title.gsub('<', '')}", gmurl(topic)%></li>
+<% end %>
+
+        </ul>
+<script type="text/javascript">contents = contents.concat(<%=shown_topics.join(',')%>);</script>
+      <div class="more"><a title="Ir a los foros" href="/foros/">Ir a los foros &raquo;</a></div>
+    </div>
+<% end %><%# cache -%>
+
+
+  <%=render :partial => "polls"%>
+
+<div class="homebox">
+        <div id="home-blogs" class="subheader f_deca first"><div><span>Blogs</span></div></div>
+		<%=render :partial => '/blogs/ultimas' %>
+</div>
+
+<% cache("/common/home/index/factions_stats#{Time.now.strftime('%Y-%m-%d')}") do %>
+    <div class="homebox" style="width: 100%;">
+        <div id="home-factions" class="subheader f_deca first"><div><span>Tops Facciones</span></div></div>
+		<table>
+			<tr class="<%=oddclass%>"><th colspan="2">La más joven</th></tr>
+			<tr>
+				<%f = Faction.find(:first, :order => 'created_on DESC', :limit => 1)%>
+        <% if f then %>
+				<td><%=faction_favicon(f)%> <%=link_to f.name, gmurl(f)%></td>
+        <% end %>
+				<td></td>
+			</tr>
+
+			<%f = Faction.fastest_karma_generators[0]
+			  if f then %>
+			<tr class="<%=oddclass%>"><th colspan="2">La que más karma genera</th></tr>
+			<tr>
+				<td><%=faction_favicon(f[1])%> <%=link_to f[1].name, gmurl(f[1])%></td>
+      			<td class="w50 infoinline"><%="#{f[0].to_i}"%></td>
+			</tr>
+			<% end -%>
+
+			<%f = Faction.fastest_karma_growing[0]
+			  if f then %>
+			<tr class="<%=oddclass%>"><th colspan="2">La que más se autosupera</th></tr>
+			<tr>
+				<td><%=faction_favicon(f[1])%> <%=link_to f[1].name, gmurl(f[1])%></td>
+      			<td class="w50 infoinline"><%="#{f[0].to_i}"%>%</td>
+			</tr>
+			<% end -%>
+
+			<%f = Faction.fastest_growing(1)[0]%>
+			<% if f then %>
+			<tr class="<%=oddclass%>"><th colspan="2">La que más miembros gana</th></tr>
+			<tr>
+
+				<td><%=faction_favicon(f[1])%> <%=link_to f[1].name, gmurl(f[1])%></td>
+      			<td class="w50 infoinline"><%="#{f[0].to_i}"%></td>
+			</tr>
+			<% end -%>
+
+
+      <%f = Faction.find(:first, :order => 'members_count DESC', :limit => 1)%>
+			<% if f then %>
+			<tr class="<%=oddclass%>"><th colspan="2">La que más miembros tiene</th></tr>
+			<tr>
+				<td><%=faction_favicon(f)%> <%=link_to f.name, gmurl(f)%></td>
+        <td class="w50 infoinline"><%=gm_icon("user", "small")%> <%=f.members_count%></td>
+			</tr>
+      <% end %>
+
+			<%f = Faction.top_cohesion(1)[0]
+			  if f then %>
+			<tr class="<%=oddclass%>"><th colspan="2">La más conectada</th></tr>
+			<tr>
+				<td><%=faction_favicon(f)%> <%=link_to f.name, gmurl(f)%></td>
+        <td class="w50 infoinline"><%=gm_icon("user", "small")%> <%=faction_cohesion(f)%></td>
+			</tr>
+		 	<% end -%>
+		</table>
+        <div class="more"><a title="Ver todas las facciones" href="/facciones/">Índice de facciones &raquo;</a></div>
+      </div>
+<% end -%>
+
+<%mftext('Destacados') do %>
+<%= render :partial => '/home/outstanding_entity', :locals => { :outstanding_entity_cls => OutstandingUser } %>
+
+<%= render :partial => '/home/outstanding_entity', :locals => { :outstanding_entity_cls => OutstandingClan } %>
+<% end -%>
+
+</div>
+</div>
+
+
+<div id="homegamer">
+  <div class="container">
+
+	<%= render :partial => '/home/preguntas' %>
+
+    <div class="homebox">
+        <div id="home-bets" class="subheader f_deca first"><div><span>Apuestas</span></div></div>
+	<% cache("/#{controller.portal_code}/home/index/apuestas_#{Time.now.to_i / 3600}") do %>
+<table>
+      <% shown_bets = []
+      Bet.in_portal(controller.portal).published.find(:all, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC').each do |o|
+shown_bets<< o.unique_content.id %>
+        <tr class="<%=oddclass%> new content<%=o.unique_content.id%>">
+<td><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
+<div class="infoinline" style="float: left;"><%=format_interval(o.closes_on.to_i - Time.now.to_i, 'horas', true)%></div>
+<div class="infoinline" style="float: right;"><%=o.total_ammount.to_i%> <%=gm_icon("gmf", "small")%></div>
+</td>
+        </tr>
+        <% end -%>
+		<script type="text/javascript">contents = contents.concat(<%=shown_bets.join(',')%>);</script>
+      </table>
+      <% end -%>
+
+	  <div class="more"><a title="Ver más apuestas" href="http://arena.<%=App.domain%>/apuestas">Más apuestas &raquo;</a></div>
+    </div>
+
+		<%=render :partial => '/home/eventos' %>
+
+    <div class="homebox">
+        <div id="home-competitions" class="subheader f_deca first"><div><span>Competiciones</span></div></div>
+        <%=render :partial => 'competiciones/ultimos_resultados' %>
+		<div class="more"><a title="Ir al arena" href="http://arena.<%=App.domain%>">Más resultados &raquo;</a></div>
+    </div>
+
+
+
+
+	<%=render :partial => '/home/coverages' %>
+
+        <div class="homebox">
+        <div id="home-demos" class="subheader f_deca first"><div><span>Demo</span></div></div>
+<% cache("/#{controller.portal_code}/home/index/demos") do %>
+        <ul class="content-hid2">
+
+<%
+@last_demos = Demo.in_portal(controller.portal).published.find(:all, :limit => 5, :order => 'created_on DESC')
+shown_demos = []
+for demo in @last_demos
+    shown_demos << demo.unique_content.id
+%>
+    <li class="content<%=demo.unique_content.id%> new <%=oddclass%>"><%=link_to "#{content_category(demo.main_category)}#{demo.title}", gmurl(demo)%></li>
+<% end -%>
+
+</ul>
+<script type="text/javascript">contents = contents.concat(<%=shown_demos.join(',')%>);</script>
+<% end -%>
+       <div class="more"><a title="Ver más demos" href="/demos">Más demos &raquo;</a></div>
+    </div>
+
+<div id="homebazar">
+<% d = Date.today
+cache("/#{controller.portal_code}/home/index/potd_#{d.strftime('%Y%m%d')}") do
+
+@daily_img = Potd.current_portal(controller.portal)
+@daily_img = @daily_img.image if @daily_img
+
+if @daily_img then %>
+    <div class="homebox">
+        <div id="home-images" class="subheader f_deca first"><div><span>Imagen del Día</span></div></div>
+        <%=render :partial => '/imagenes/image_thumbnail', :locals => {:image => @daily_img, :size => '153x115'}%>
+        <div class="more"><a href="/imagenes/potds">Ver anteriores..</a></div>
+    </div>
+<% end -%>
+<% end -%>
+
+      <div class="homebox">
+        <%=render :partial => 'daily_joy' %>
+      </div>
+
+	</div>
+    </div>
+  </div>

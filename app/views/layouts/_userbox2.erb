@@ -1,71 +1,65 @@
-<%mftext('') do %>
-<div id="userbox2" style="margin-bottom: 5px;">
+<div id="userbox2" style="margin-top: 10px; margin-bottom: 5px;">
 <% if user_is_authed then %>
-
-<div style="clear: left;">
-</div>
-<% else %>
-<div class="centered">
-  <div style="margin-bottom: 10px;">
-    <a href="/cuenta/alta"><img class="icon" src="/skins/default/images/btn_register.png" /></a>
+  <%mftext do%>
+    <div class="centered">
+      <div style="margin-bottom: 10px;">
+        <a class="new-content-selector" href="/contenidos/nuevo"><span class="button">Nuevo contenido</span></a>
+    </div>
   </div>
-	<a class="init-session" href="/cuenta/login">iniciar sesión</a>
 
-	<div class="<%= ' hidden' unless cookies[:login] %>" id="login-box">
-		<form action="/cuenta/do_login" method="post">
-<% if not (/login/ =~ request.path) then%><input type="hidden" name="redirto" value="<%=request.path%>" /><% end -%>
-		<table class="signup" style="margin-top: 10px;">
-  <tr>
-    <td><label for="post_login">login</label></td>
-    <td><input id="post_login" name="login" size="20" type="text" class="text" value="<%=@user%>" /></td>
-  </tr>
-  <tr>
-    <td style="padding-right: 3px;"><label for="post_password">contraseña</label></td>
-    <td><input id="post_password" name="password" size="20" class="text" type="password" /></td>
-  </tr>
-</table>
-<div class="centered"><input type="submit" value="iniciar sesión" /></div>
-</form>
-	</div>
-</div>
-<% end -%>
+    <div id="new-content-selector" class="hidden dropdown">
+      <div class="title centered drafts"><a class="nav" href="/cuenta/mis_contenidos">Mis contenidos</a></div>
+      <div class="title centered">Enviar contenidos</div>
+      <ul>
+        <li><a class="nav" href="http://<%=App.domain%>/reclutamiento/new">Anuncio reclutamiento</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/apuestas/new">Apuesta</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/columnas/new">Columna</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/coverages/new">Coverage</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/curiosidades/new">Curiosidad</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/descargas/new">Descarga</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/demos/new">Demo</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/encuestas/new">Encuesta</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/entrevistas/new">Entrevista</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/eventos/new">Evento</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/imagenes/new">Imagen</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/noticias/new">Noticia</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/respuestas/new">Pregunta</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/reviews/new">Review</a></li>
+        <li><a class="nav" href="/foros/nuevo_topic">Tópic</a></li>
+        <li><a class="nav" href="http://<%=App.domain%>/tutoriales/new">Tutorial</a></li>
+        <li><a href="http://<%=App.domain%>/cuenta/blog/new">Entrada de blog</a></li>
+        <li class="centered"><a class="nav" href="#">cerrar</a></li>
+      </ul>
+    </div>
+    <% end -%>
 
-<% end -%>
+  <% else %>
 
-<% if user_is_authed then %>
-<%mftext() do%>
   <div class="centered">
-    <div style="margin-bottom: 10px;">
-      <a class="new-content-selector" href="/contenidos/nuevo"><img class="icon" src="/skins/default/images/btn_nuevo_contenido.png" /></a>
-  </div>
-</div>
-</div>
-<% end -%>
+    <div style="margin-bottom: 25px;">
+      <a href="/cuenta/alta"><%=button("Regístrate")%></a>
+    </div>
 
-<% if user_is_authed then %>
-          <div id="new-content-selector" class="hidden">
-            <div class="title centered drafts"><a class="nav" href="/cuenta/mis_contenidos">Mis contenidos</a></div>
-            <div class="title centered">Enviar contenidos</div>
-            <ul>
-              <li class="alt0"><a class="nav" href="http://<%=App.domain%>/reclutamiento/new">Anuncio reclutamiento</a></li>
-              <li class="alt0"><a class="nav" href="http://<%=App.domain%>/apuestas/new">Apuesta</a></li>
-              <li class="alt0"><a class="nav" href="http://<%=App.domain%>/columnas/new">Columna</a></li>
-              <li class="alt0"><a class="nav" href="http://<%=App.domain%>/coverages/new">Coverage</a></li>
-              <li class="alt0"><a class="nav" href="http://<%=App.domain%>/curiosidades/new">Curiosidad</a></li>
-              <li class="alt1"><a class="nav" href="http://<%=App.domain%>/descargas/new">Descarga</a></li>
-              <li class="alt1"><a class="nav" href="http://<%=App.domain%>/demos/new">Demo</a></li>
-              <li class="alt1"><a class="nav" href="http://<%=App.domain%>/encuestas/new">Encuesta</a></li>
-              <li class="alt0"><a class="nav" href="http://<%=App.domain%>/entrevistas/new">Entrevista</a></li>
-              <li class="alt0"><a class="nav" href="http://<%=App.domain%>/eventos/new">Evento</a></li>
-              <li class="alt1"><a class="nav" href="http://<%=App.domain%>/imagenes/new">Imagen</a></li>
-              <li class="alt1"><a class="nav" href="http://<%=App.domain%>/noticias/new">Noticia</a></li>
-              <li class="alt1"><a class="nav" href="http://<%=App.domain%>/respuestas/new">Pregunta</a></li>
-              <li class="alt0"><a class="nav" href="http://<%=App.domain%>/reviews/new">Review</a></li>
-              <li class="alt0"><a class="nav" href="/foros/nuevo_topic">Tópic</a></li>
-              <li class="alt0"><a class="nav" href="http://<%=App.domain%>/tutoriales/new">Tutorial</a></li>
-              <li style="padding-top: 10px;" class="alt0"><a href="http://<%=App.domain%>/cuenta/blog/new">Entrada de blog</a></li>
-              <li class="centered"><a class="nav" href="#">cerrar</a></li>
-            </ul>
-          </div>
-          <% end -%>
+    <a class="init-session <%=' hidden' if cookies[:login]%>" href="/cuenta/login">iniciar sesión</a>
+
+    <div class="<%= ' hidden' unless cookies[:login] %>" id="login-box" style="margin-bottom: 25px;">
+      <form action="/cuenta/do_login" method="post">
+        <% if !(/login/ =~ request.path)%>
+          <input type="hidden" name="redirto" value="<%=request.path%>" />
+        <% end -%>
+      <table class="signup" style="margin-top: 10px;">
+        <tr>
+          <td><label for="post_login">login</label></td>
+          <td><input id="post_login" name="login" type="text" style="width: 75px;" class="text" value="<%=@user%>" /></td>
+        </tr>
+        <tr>
+          <td style="padding-right: 3px;"><label for="post_password">contraseña</label></td>
+          <td><input id="post_password" name="password" style="width: 75px;" class="text" type="password" /></td>
+        </tr>
+      </table>
+      <div class="centered"><input type="submit" class="button" value="iniciar sesión" /></div>
+      </form>
+    </div>
+  </div>
 <% end -%>
+</div>

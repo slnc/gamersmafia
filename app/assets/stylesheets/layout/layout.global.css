@@ -1,188 +1,99 @@
 /* Global elements */
-body {
-    margin: 0;
-    padding: 0;
-    text-align: center;
-}
-
-#cpageout {
-    margin-top: 67px;
-}
-
 #cpagein {
-    text-align: left;
-    padding: 0;
-    margin: 0;
-    width: auto;
-    margin-left: 20px;
-    margin-right: 20px;
+  padding-top: 2.1rem;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+#cpagein:after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 #ccontent {
-    height: 1%;
-    min-height: auto;
-    line-height: 145%;
-    padding: 8px 10px 20px 8px;
-    margin: 6px 0 30px 165px;
-    border: 0;
-    clear: left;
+  height: 1%;
+  min-height: auto;
+  border: 0;
+  float: right;
+  width: 83.0%;
+}
+
+#cmain {
+  padding-left: 1rem;
+  float: left;
+  width: 73%;
+}
+
+#csupport {
+  width: 23%;
+  max-width: 400px;
 }
 
 .module {
-    margin-bottom: 2.27em;
-}
-
-.module .mtitle {
-    padding: 0.27em;
-}
-
-#cpageout .module .mtitle {
-    line-height: 30px;
+  margin-bottom: 2.27em;
 }
 
 #ccontent .module .mcontent {
-    padding-top: 8px;
-    overflow: hidden;
+  padding-top: 8px;
+  overflow: hidden;
 }
 
 .c3col {
-    width: 32%;
-    float: left;
-    padding-right: 10px;
+  width: 32%;
+  float: left;
+  padding-right: 10px;
 }
 
 .c3colx {
-    width: 39%;
-    float: left;
-    padding-right: 10px;
+  width: 39%;
+  float: left;
+  padding-right: 10px;
 }
 
 .c3coly {
-    width: 19%;
-    float: left;
+  width: 19%;
+  float: left;
 }
 
 .adslot a img, #ccontent .adslot a img {
-    border: 1px solid #aaa;
+  border: 1px solid #aaa;
 }
 
 #csupport .adslot {
-    margin: 0 0 10px 0;
+  margin: 0 0 10px 0;
 }
 
 .c3col {
-    width: 32%;
-    float: left;
-    padding-right: 10px;
+  width: 32%;
+  float: left;
+  padding-right: 10px;
 }
 
 .c3colx {
-    width: 39%;
-    float: left;
-    padding-right: 10px;
+  width: 39%;
+  float: left;
+  padding-right: 10px;
 }
 
 .c3coly {
-    width: 19%;
-    float: left;
+  width: 19%;
+  float: left;
 }
 
 .c2colx {
-    width: 48%;
-    float: left;
-    margin-right: 15px;
-}
-
-#cleft .module {
-    margin-bottom: 10px;
-}
-
-body {
-    background: #fff;
-}
-
-#logo2 img {
-    margin: 10px 0 0 6px;
-    border: 0;
-    background: url(/skins/default/images/header.png) 0 0;
-    width: 194px;
-    height: 54px;
-}
-
-#logo2.hover img {
-    background-position: 0 -54px;
-}
-
-#mgmenu2 {
-    position: absolute;
-    top: 0;
-    margin-left: -10px;
-    padding-left: 0;
-    height: 67px;
-    margin-bottom: 0;
-    border-bottom: 1px solid #eaeaea;
-    width: 1000px;
-    background: url(/skins/default/images/header_bg.png) right 25px no-repeat;
-}
-
-.notification-header {
-    background-color: #000;
-    padding-left: 15px;
-    color: #fff;
-    line-height: 33px;
-    font-weight: bold;
-    font-size: 16px;
+  width: 48%;
+  float: left;
+  margin-right: 15px;
 }
 
 .editing-content {
-    margin-bottom: 30px;
+  margin-bottom: 30px;
 }
 
 #cpageout.gm20085 #ccontent .xmain td, #cpageout.gm20085 #ccontent .xdescription td {
-    padding-left: 5px;
-    padding-right: 5px;
-}
-
-/* suicidal chicken */
-#suicidal_chicken_switcher {
-  position: absolute;
-  top: 0;
-  right: 60px;
-  z-index: 100;
-  width: 75px;
-  height: 15px;
-  background: black;
-  color: #dc381f;
-  border: 2px solid black;
-  border-bottom-right-radius: 6px;
-  border-bottom-left-radius: 6px;
-  -webkit-transition: 200ms ease height;
-  -moz-transition: 200ms ease height;
-  -o-transition: 200ms ease height;
-  -ms-transition: 200ms ease height;
-  transition: 200ms ease height;
-}
-
-#suicidal_chicken_switcher.opened {
-  height: 75px;
-}
-
-#suicidal_chicken_switcher div {
-  margin-top: 25px;
-  overflow: hidden;
-  height: 100%;
-  visibility: hidden;
-  display: none;
-}
-
-#suicidal_chicken_switcher.opened div {
-  visibility: visible;
-  display: block;
-}
-
-#suicidal_chicken_switcher div a {
-  overflow: hidden;
-  color: #ddd;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 #loading {

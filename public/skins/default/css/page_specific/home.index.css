@@ -1,491 +1,193 @@
 #homecontents {
-    float: left;
-    width: 32%;
+  float: left;
+  width: 32%;
 }
 
 #homecommunity {
-    float: left;
-    width: 33%;
-    margin: 0 8px;
+  float: left;
+  width: 33%;
+  margin: 0 8px;
 }
 
 #homegamer {
-    float: left;
-    width: 31%;
+  float: left;
+  width: 31%;
 }
 
-#homecontents .subheader, #homecommunity .subheader, #homegamer .subheader, #homebazar .subheader {
-    border: 1px solid #000;
-    margin-bottom: 3px;
-    height: 26px;
+#homecontents .subheader,
+#homecommunity .subheader,
+#homegamer .subheader,
+#homebazar .subheader {
+  margin-bottom: 3px;
 }
 
 #homegamer .calendar a {
-    display: block;
-    width: 100%;
+  display: block;
+  width: 100%;
 }
 
 .homebox .subheader div {
-    width: 200px;
-    height: 26px;
+  width: 200px;
 }
 
 .lyarena .homebox .subheader div {
-	width: 200px;
-}
-
-#homecontents .homebox .subheader {
-    background: url(../../images/layout/cabeceras_portada.png) left 0 repeat-x;
-}
-
-#homecommunity .homebox .subheader {
-    background: url(../../images/layout/cabeceras_portada.png) left -26px repeat-x;
-}
-
-#homegamer .homebox .subheader {
-    background: url(../../images/layout/cabeceras_portada.png) left -52px repeat-x;
-}
-
-#homebazar .homebox .subheader {
-    background: url(../../images/layout/cabeceras_portada.png) left -78px repeat-x;
-}
-
-#home-news div {
-    background: url(../../images/layout/cabeceras_portada.png) left -104px no-repeat;
-}
-
-#home-articles div {
-    background: url(../../images/layout/cabeceras_portada.png) left -130px no-repeat;
-}
-
-#home-downloads div {
-    background: url(../../images/layout/cabeceras_portada.png) left -156px no-repeat;
-}
-
-#home-topics div {
-    background: url(../../images/layout/cabeceras_portada.png) left -260px no-repeat;
-}
-
-#home-polls div {
-    background: url(../../images/layout/cabeceras_portada.png) left -234px no-repeat;
-}
-
-#home-topfactions div {
-    background: url(../../images/layout/cabeceras_portada.png) left -286px no-repeat;
-}
-
-#home-factions div {
-    background: url(../../images/layout/cabeceras_portada.png) left -338px no-repeat;
-}
-
-#home-thefaction div {
-    background: url(../../images/layout/cabeceras_portada.png) left -312px no-repeat;
-}
-
-#home-blogs div {
-    background: url(../../images/layout/cabeceras_portada.png) left -182px no-repeat;
-}
-
-#home-outstanding div {
-    background: url(../../images/layout/cabeceras_portada.png) left -208px no-repeat;
-}
-
-#home-events div {
-    background: url(../../images/layout/cabeceras_portada.png) left -442px no-repeat;
-}
-
-#home-competitions div {
-    background: url(../../images/layout/cabeceras_portada.png) left -390px no-repeat;
-}
-
-#home-bets div {
-    background: url(../../images/layout/cabeceras_portada.png) left -364px no-repeat;
-}
-
-#home-demos div {
-    background: url(../../images/layout/cabeceras_portada.png) left -416px no-repeat;
-}
-
-#home-offtopics div {
-    background: url(../../images/layout/cabeceras_portada.png) left -468px no-repeat;
-}
-
-#home-sex div {
-    background: url(../../images/layout/cabeceras_portada.png) left -520px no-repeat;
-}
-
-#home-funthings div {
-    background: url(../../images/layout/cabeceras_portada.png) left -546px no-repeat;
-}
-
-#home-images div {
-    background: url(../../images/layout/cabeceras_portada.png) left -494px no-repeat;
-}
-
-#home-we-need {
-    background: url(../../images/layout/cabeceras_portada.png) left -364px no-repeat;
-}
-
-#home-xd div {
-    background: url(../../images/layout/cabeceras_portada.png) left -572px no-repeat;
-}
-
-#home-wallpapers div {
-    background: url(../../images/layout/cabeceras_portada.png) left -598px no-repeat;
-}
-
-#home-anime div {
-    background: url(../../images/layout/cabeceras_portada.png) left -624px no-repeat;
-}
-
-#home-diseno div {
-    background: url(../../images/layout/cabeceras_portada.png) left -728px no-repeat;
-}
-
-#home-cine div {
-    background: url(../../images/layout/cabeceras_portada.png) left -650px no-repeat;
-}
-
-#home-hardware div {
-    background: url(../../images/layout/cabeceras_portada.png) left -676px 	no-repeat;
-}
-
-#home-musica div {
-    background: url(../../images/layout/cabeceras_portada.png) left -702px 	no-repeat;
-}
-
-#home-estudiante div {
-    background: url(../../images/layout/cabeceras_portada.png) left -1066px 	no-repeat;
-}
-
-#home-questions div {
-    background: url(../../images/layout/cabeceras_portada.png) left -1092px 	no-repeat;
-}
-
-
-#home-seriestv div {
-    background: url(../../images/layout/cabeceras_portada.png) left -728px 	no-repeat;
-}
-
-#home-informatica div {
-    background: url(../../images/layout/cabeceras_portada.png) left -468px 	no-repeat;
-}
-
-#home-hw div {
-    background: url(../../images/layout/cabeceras_portada.png) left -676px 	no-repeat;
-}
-
-#home-deportes div {
-    background: url(../../images/layout/cabeceras_portada.png) left -1014px 	no-repeat;
-}
-
-#home-desarrollo div {
-    background: url(../../images/layout/cabeceras_portada.png) left -1040px 	no-repeat;
-}
-
-#home-newsgamer div {
-    background: url(../../images/layout/cabeceras_portada.png) left -754px 	no-repeat;
-}
-
-#home-results div {
-    background: url(../../images/layout/cabeceras_portada.png) left -780px 	no-repeat;
-}
-
-#home-inscribete div {
-    background: url(../../images/layout/cabeceras_portada.png) left -806px 	no-repeat;
-}
-
-#home-forosgamer div {
-    background: url(../../images/layout/cabeceras_portada.png) left -832px 	no-repeat;
-}
-
-#home-ladders div {
-    background: url(../../images/layout/cabeceras_portada.png) left -858px 	no-repeat;
-}
-
-#home-gamesplayednow div {
-    background: url(../../images/layout/cabeceras_portada.png) left -884px 	no-repeat;
-}
-
-#home-nextgames div {
-    background: url(../../images/layout/cabeceras_portada.png) left -910px 	no-repeat;
-}
-
-#home-outstanding-clan div {
-    background: url(../../images/layout/cabeceras_portada.png) left -936px 	no-repeat;
-}
-
-#home-esenciales div {
-    background: url(../../images/layout/cabeceras_portada.png) left -962px 	no-repeat;
-}
-
-#home-coverages div {
-    background: url(../../images/layout/cabeceras_portada.png) left -988px 	no-repeat;
-}
-
-
-.homebox .subheader div span {
-    display: none;
-    visibility: hidden;
+  width: 200px;
 }
 
 #home-sex, #home-sex div {
-    display: block;
-    visibility: visible;
+  display: block;
+  visibility: visible;
 }
 
 #home-sex #home-sex-title {
-    display: none;
-    visibility: hidden;
+  display: none;
+  visibility: hidden;
 }
 
-#homecontents .container li > a, #homecommunity .container li > a, #homegamer .container li > a, #homebazar .container li > a {
-    width: auto;
+#homecontents .container li > a,
+#homecommunity .container li > a,
+#homegamer .container li > a,
+#homebazar .container li > a {
+  width: auto;
 }
 
 .homebox .screenshot {
-    margin: 5px 0;
+  margin: 5px 0;
 }
 
 .homebox .screenshot img {
-    border: 1px solid;
+  border: 1px solid;
 }
 
 .homebox ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+  ;
 }
 
 .homebox .content-hid2 li {
-    line-height: 24px;
-    clear: left;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-.homebox .classifier {
-    margin-left: 3px;
-    padding-top: 4px;
+  clear: left;
+  ;
 }
 
 .homebox .factions td.percent {
-    width: 50%;
+  width: 50%;
 }
 
 .homebox.poll .option,
 .faction-poll .option,
 #small-poll .option {
-    margin-left: 5px;
+  margin-left: 5px;
 }
 
 .homebox.poll .percent,
 .faction-poll .percent,
 #small-poll .percent {
-    width: 98%;
-    margin-right: 5px;
-    margin-bottom: 10px;
-}
-
-.homebox .percent img,
-.faction-poll .percent img,
-#small-poll .percent img {
-    height: 7px;
+  width: 98%;
+  margin-right: 5px;
+  margin-bottom: 10px;
 }
 
 .homebox.articles li {
-    line-height: 100%;
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .homebox.articles img {
-    border: 1px solid;
-    margin-bottom: 5px;
-    margin-right: 5px;
+  border: 1px solid;
+  margin-bottom: 5px;
+  margin-right: 5px;
 }
 
 .daily-joy-babe, .daily-joy-dude, .daily-joy-void, .daily-joy-babe2, .daily-joy-dude2, .daily-joy-void2 {
-    display: inline;
-    width: auto;
-    cursor: pointer;
+  display: inline;
+  width: auto;
+  cursor: pointer;
 }
 
 .daily-joy-babe img {
-    width: 16px;
-    height: 16px;
-    background: url(/skins/default/images/icons/sex.2.png) left top no-repeat;
+  width: 16px;
+  height: 16px;
 }
 
 .daily-joy-dude img {
-    width: 16px;
-    height: 16px;
-    background: url(/skins/default/images/icons/sex.2.png) -16px 0 no-repeat;
+  width: 16px;
+  height: 16px;
 }
 
 .daily-joy-void img {
-    width: 16px;
-    height: 16px;
-    background: url(/skins/default/images/icons/sex.2.png) -32px 0 no-repeat;
+  width: 16px;
+  height: 16px;
 }
 
 #ccontent a.daily-joy-babe2 img {
-    width: 16px;
-    height: 16px;
-	border: 0;
-    background: url(/skins/default/images/icons/sex.2.png) left -16px no-repeat;
+  width: 16px;
+  height: 16px;
+  border: 0;
 }
 
 #ccontent a.daily-joy-dude2 img {
-    width: 16px;
-    height: 16px;
-	border: 0;
-    background: url(/skins/default/images/icons/sex.2.png) -16px -16px no-repeat;
+  width: 16px;
+  height: 16px;
+  border: 0;
 }
 
 #ccontent a.daily-joy-void2 img {
-    width: 16px;
-    height: 16px;
-	border: 0;
-    background: url(/skins/default/images/icons/sex.2.png) -32px -16px no-repeat;
+  width: 16px;
+  height: 16px;
+  border: 0;
 }
 
-
-#homecontents .container, #homecommunity .container, #homegamer .container, #homebazar .container {
-    border-color: #DFDFDF;
+#home-factions td {
+  padding-bottom: 10px;
 }
 
-#homecontents .subheader {
-    color: #ffffff;
-    border-color: #0B0060;
-}
-
-#homecontents .content-hid .alt1 a {
-    background-color: #F9F9FD;
-}
-
-#homecontents .content-hid .alt1 a:hover {
-    background-color: #EFEFFA;
-}
-
-#homecontents .content-hid .alt0 a:hover {
-    background-color: #F4F4FB;
-}
-
-
-
-#homecommunity .subheader {
-    color: #ffffff;
-}
-
-#homecommunity .content-hid .alt1 a, body.community .alt1 {
-    background-color: #FDF9F9;
-}
-
-#homecommunity .content-hid .alt1 a:hover {
-    background-color: #FAEFEF;
-}
-
-#homecommunity .content-hid .alt0 a:hover {
-    background-color: #FBF4F4;
-}
-
-#homecommunity .percent img,
-#small-poll .percent img,
-.faction-poll .percent img {
-    background-color: #AD0011;
-}
-
-#homegamer .subheader {
-    color: #ffffff;
-}
-
-#homegamer .content-hid .alt1 a {
-    background-color: #F9FDF9;
-}
-
-#homegamer .content-hid .alt1 a:hover {
-    background-color: #EFFAEF;
-}
-
-#homegamer .content-hid .alt0 a:hover {
-    background-color: #F4FBF4;
-}
-
-#homegamer .percent img {
-    background-color: #228B29;
-}
-
-#homebazar .subheader {
-    color: #ffffff;
-}
-
-#homebazar .content-hid .alt1 a {
-    background-color: #fcf9fd;
-}
-
-#homebazar .content-hid .alt1 a:hover {
-    background-color: #f8effa;
-}
-
-#homebazar .content-hid .alt0 a:hover {
-    background-color: #fbf4fb;
-}
-
-#home-factions td { padding-bottom: 10px; }
-
-.homebox table.calendar, .homebox table.calendar td, #ccontent .homebox table.calendar th {
-    font-size: 10px;
-    text-align: center;
+.homebox table.calendar,
+.homebox table.calendar td,
+#ccontent .homebox table.calendar th {
+  text-align: center;
 }
 
 .homebox .calendar .day.today {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .homebox table.calendar .dayName th {
-    text-align: center;
+  text-align: center;
 }
 
 .homebox table tr.monthName td {
-    text-align: left;
-}
-
-.homebox table.factions td, .homebox table.factions th {
-    font-size: 11px;
+  text-align: left;
 }
 
 .homebox table.factions th {
-    font-weight: bold;
+  font-weight: bold;
 }
 
-.homebox .content-hid a, .homebox .content-hid2 a, .messages .new a {
-    font-weight: bold;
-    text-decoration: none;
-    overflow: hidden;
-    display: block;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    -o-text-overflow: ellipsis;
-    -icab-text-overflow: ellipsis;
-    -khtml-text-overflow: ellipsis;
-    -moz-text-overflow: ellipsis;
-    -webkit-text-overflow: ellipsis;
+.homebox .content-hid a,
+.homebox .content-hid2 a,
+.messages .new a {
+  font-weight: bold;
+  text-decoration: none;
+  overflow: hidden;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  -icab-text-overflow: ellipsis;
+  -khtml-text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
 }
 
 .homebox .content-hid a:visited, .homebox .content-hid2 a:visited {
-    font-weight: normal;
+  font-weight: normal;
 }
 
 #homecontents .subheader, #homecommunity .subheader, #homegamer .subheader {
-    font-size: 15px;
-    text-transform: uppercase;
-    font-weight: normal;
-    line-height: 20px;
+  text-transform: uppercase;
+  font-weight: normal;
 }
 
 #homecontents .container a, #homecommunity .container a, #homegamer .container a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 #homecontents .container { border: 0; margin-right: 10px; }

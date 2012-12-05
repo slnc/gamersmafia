@@ -4,7 +4,7 @@
 <table>
 <%Alert.get(:open, alerts_filter).each do |sle| %>
 <tr class="<%=oddclass%>" id="sle<%=sle.id%>" style="vertical-align: top;">
-	<td style="width: 16px;"><img class="sprite1 alert-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
+  <td style="width: 16px;"><%=gm_icon("gear", "small")%></td>
 	<td><%=sle.headline%>
 	<% if sle.completed_on && sle.reviewer_user_id then %><div class="right infoinline">Resuelto por <%=user_link(sle.reviewer)%> (<%=print_tstamp(sle.completed_on)%>)</div><% end -%>
 	<% if sle.completed_on.nil? then %><div class="infoinline"><%=print_tstamp(sle.created_on)%></div><%end -%>
@@ -13,17 +13,14 @@
 	<% if sle.reviewer_user_id.nil? then %>
 	<td class="w25">
     <%=link_to(
-        "<img title=\"Asignarme este evento\" class=\"icon\"" +
-        " src=\"/skins/default/images/icons/status_assigned.gif\" \>",
+        gm_icon("alarm-assigned", "small"),
         "/alertas/alert_assigntome/#{sle.id}",
         :remote => true)%>
     </td>
 	<% end -%>
 	<% if sle.completed_on.nil? then %>
     <td class="w25">
-      <%=link_to(
-          "<img title=\"Marcar como resuelto\" class=\"icon\"" +
-          " src=\"/skins/default/images/icons/confirm_16.png\" \>",
+      <%=link_to(gm_icon("approve", "small"),
           "/alertas/alert_reviewed/#{sle.id}",
           :remote => true) %>
     </td>
@@ -37,15 +34,13 @@
 <table>
 <%Alert.get(:assigned_to_me, alerts_filter.merge(:user_id => @user.id)).each do |sle| %>
 <tr class="<%=oddclass%>" id="sle<%=sle.id%>" style="vertical-align: top;">
-	<td style="width: 16px;"><img class="sprite1 alert-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
+	<td style="width: 16px;"><%=gm_icon("gear", "small")%></td>
 	<td><%=sle.headline%>
 	<div class="infoinline">Creada: <%=print_tstamp(sle.created_on)%></div>
 	</td>
 
     <td class="w25">
-      <%=link_to(
-          "<img title=\"Marcar como resuelto\" class=\"icon\"" +
-          " src=\"/skins/default/images/icons/confirm_16.png\" \>",
+      <%=link_to(gm_icon("approve", "small"),
           "/alertas/alert_reviewed/#{sle.id}",
           :remote => true)%>
     </td>
@@ -58,7 +53,7 @@
 <table>
 <%Alert.get(:assigned_to_others, alerts_filter.merge(:user_id => @user.id)).each do |sle| %>
 <tr class="<%=oddclass%>" id="sle<%=sle.id%>" style="vertical-align: top;">
-	<td style="width: 16px;"><img class="sprite1 alert-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
+	<td style="width: 16px;"><%=gm_icon("gear", "small")%></td>
 	<td><%=sle.headline%>
 	<div class="infoinline">Creada: <%=print_tstamp(sle.created_on)%></div>
 	</td>
@@ -72,7 +67,7 @@
 <table>
 <%Alert.get(:closed, alerts_filter.merge(:order => 'completed_on DESC', :limit => 10)).each do |sle| %>
 <tr class="<%=oddclass%>" id="sle<%=sle.id%>" style="vertical-align: top;">
-	<td style="width: 16px;"><img class="sprite1 alert-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
+	<td style="width: 16px;"><%=gm_icon("gear", "small")%></td>
 	<td><%=sle.headline%>
 	<div class="right infoinline">Resuelto por <%=user_link(sle.reviewer)%> (<%=print_tstamp(sle.completed_on)%>)</div>
 	</td>

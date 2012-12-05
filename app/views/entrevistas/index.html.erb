@@ -1,25 +1,3 @@
-<% generic_support do %>
-<% mftext('Mejor valoradas') do %>
-<ul class="sidelist">
-<% cache ("/#{controller.portal_code}/entrevistas/index/best_rated#{Time.now.strftime('%Y%m%d')}") do %>
-  <% controller.portal.interview.most_rated_items(:content_type => 'Interview').each do |c| %>
-  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
-  <% end -%>
-<% end -%>
-</ul>
-<% end -%>
-
-<% mftext('Más populares') do %>
-<ul class="sidelist">
-<% cache ("/#{controller.portal_code}/entrevistas/index/most_popular_#{Time.now.to_i/86400}") do %>
-  <% controller.portal.interview.most_popular_items(:content_type => 'Interview').each do |c| %>
-  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
-  <% end -%>
-<% end -%>
-</ul>
-<% end -%>
-<% end -%>
-
 <% content_main do %>
   <% mftext('Entrevistas') do %>
 	<% @interviews = Interview.in_portal(controller.portal).published.paginate(:order => 'created_on', :page => params[:page], :per_page => 15) %>
@@ -27,7 +5,7 @@
     <% cache("/#{controller.portal_code}/entrevistas/index/page_#{params[:page]}") do %>
 <% @interviews.each do |interview| %>
     <div class="<%=oddclass%>">
-   	  <h2><%= link_to interview.title, gmurl(interview) %></h2>
+   	  <h2 class="f_hecto"><%= link_to interview.title, gmurl(interview) %></h2>
       <%=draw_contentheadline(interview)%>
       <% if interview.home_image then %><div style="float: left;  margin-top: 5px;margin-right: 10px;"><%=fc_thumbnail(interview.home_image, 'f', Cms::IMG_ARTICLE_THUMB, false)%></div><% end -%>
       <div style="margin-left: 110px;" class="summary"><%=interview.description%></div>
@@ -38,6 +16,29 @@
 </div>
     <%= render :partial => 'shared/pager2', :locals => {:collection => @interviews, :pos => 'bottom'} %>
 </div>
+<% end -%>
+<% end -%>
+
+
+<% generic_support do %>
+<% mftext('Mejor valoradas') do %>
+<ul class="sidelist">
+<% cache ("/#{controller.portal_code}/entrevistas/index/best_rated#{Time.now.strftime('%Y%m%d')}") do %>
+  <% controller.portal.interview.most_rated_items(:content_type => 'Interview').each do |c| %>
+    <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
+  <% end -%>
+<% end -%>
+</ul>
+<% end -%>
+
+<% mftext('Más populares') do %>
+<ul class="sidelist">
+<% cache ("/#{controller.portal_code}/entrevistas/index/most_popular_#{Time.now.to_i/86400}") do %>
+  <% controller.portal.interview.most_popular_items(:content_type => 'Interview').each do |c| %>
+    <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
+  <% end -%>
+<% end -%>
+</ul>
 <% end -%>
 <% end -%>
 

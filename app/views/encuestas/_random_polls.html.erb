@@ -6,7 +6,7 @@
 <a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a>
 <br />
 <div class="infoinline right"><%=o.votes%> votos |
-  <span class="comments-count"><a style="display: inline;" href="<%=gmurl(o)%>#comments"><%=o.cache_comments_count%></a></span>
+  <span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(o)%>#comments"><%=o.cache_comments_count%></a></span>
 </div>
   <% end -%>
 <% end -%>

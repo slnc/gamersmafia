@@ -14,7 +14,7 @@ module Keystore
   end
 
   def self.cleanup_keys
-    init
+    self.init
     yesterday = 1.day.ago.strftime("%Y%m%d")
     self.expire("http.global.errors.internal_404.#{yesterday}", 86400 * 365)
     self.expire("http.global.errors.external_404.#{yesterday}", 86400 * 365)

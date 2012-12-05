@@ -1,3 +1,21 @@
+<% content_main do %>
+  <%mftext(competition.name) do %>
+  <%=competition.description%>
+
+  <%
+  previous_day = nil
+  for news in competition.event.coverages.published.find(:all, :order => 'created_on DESC', :limit => 10)
+    cur_day = Date.new(news.created_on.year, news.created_on.month, news.created_on.day)
+
+    if cur_day != previous_day then
+      previous_day = Date.new(news.created_on.year, news.created_on.month, news.created_on.day) %>
+    <div class="day-separator secondary-block"><%=print_tstamp(cur_day, 'date')%></div>
+    <% end %>
+    <%=render(:partial => '/coverages/news', :object => @object = news)%>
+  <% end %>
+  <% end -%>
+<% end -%>
+
 <% generic_support do %>
   <%mftext('Estado de la competición') do %>
   <div class="centered"><strong><%=Competition::STATES_ES[competition.state]%></strong></div>
@@ -10,7 +28,7 @@
     <% if competition.competitions_participants_type_id == 1 then %><%# TODO horrible hack, kill me %>
       <% if (competition.competitions_participants_type_id == 1 && competition.user_is_participant(@user.id)) then %>
       <p>Inscripción en la competición correcta.</p>
-      <% if competition.state == 1 then %><div class="centered-link"><form method="post" action="/competiciones/leave/<%=@competition.id%>"><input type="submit" class="button" value="Desinscribirme" onclick="return confirm('¿Estás seguro?');" /></form></div><% end -%>
+      <% if competition.state == 1 then %><div class="centered-link"><form method="post" action="/competiciones/leave/<%=@competition.id%>"><input type="submit" class="button confirm-click" value="Desinscribirme" /></form></div><% end -%>
       <% else %>
       <form method="post" action="/competiciones/join/<%=competition.id%>">
         <input type="hidden" name="participant_id" value="<%=@user.id%>" />
@@ -18,12 +36,12 @@
           <p>No puedes inscribirte porque no has sido invitado a esta competición.</p>
         <% else %>
           <% if competition.fee %>
-          <div class="centered">Coste participación: <span style="font-weight: bold;"><%=competition.fee%></span><%=gmd12%></div>
+          <div class="centered">Coste participación: <span style="font-weight: bold;"><%=competition.fee%></span> <%=gm_icon("gmf", "small")%></div>
           <% end -%>
           <% if competition.fee and @user.cash < competition.fee then %>
-          <p>No tienes suficientes <%=gmd12%> para inscribirte.</p>
+          <p>No tienes suficientes <%=gm_icon("gmf", "small")%> para inscribirte.</p>
           <% else %>
-          <div class="centered-link"><input type="submit" class="button" value="Inscribirme" onclick="return confirm('¿Estás seguro?');" /></div>
+          <div class="centered-link"><input type="submit" class="button confirm-click" value="Inscribirme" /></div>
           <% end -%>
           <% end -%>
       </form>
@@ -34,7 +52,7 @@
 
         if competition.competitions_participants.find_by_participant_id(last_clan.id) then %>
         <p>Inscripción del clan <%=notags(last_clan.tag)%> correcta.</p>
-        <% if competition.state == 1 then %><div class="centered-link"><form method="post" action="/competiciones/leave/<%=@competition.id%>"><input type="submit" class="button" value="Desinscribirme" onclick="return confirm('¿Estás seguro?');" /></form></div><%
+        <% if competition.state == 1 then %><div class="centered-link"><form method="post" action="/competiciones/leave/<%=@competition.id%>"><input type="submit" class="button confirm-click" value="Desinscribirme"  /></form></div><%
            end -%>
       <% else %>
         <form method="post" action="/competiciones/join/<%=competition.id%>">
@@ -46,15 +64,15 @@
             <div class="centered">
               Coste participación:
               <span style="font-weight: bold;"><%=competition.fee%></span>
-              <%=gmd12%>
+              <%=gm_icon("gmf", "small")%>
             </div>
             <% end -%>
 
             <% if competition.fee and last_clan.cash < competition.fee then %>
-              <p>Tu clan no tiene suficientes <%=gmd12%> para inscribirse.</p>
+              <p>Tu clan no tiene suficientes <%=gm_icon("gmf", "small")%> para inscribirse.</p>
             <% else %>
               <div class="centered-link">
-                <input type="submit" class="button" value="Inscribir a <%=tohtmlattribute(last_clan.tag)%>" onclick="return confirm('¿Estás seguro?');" />
+                <input type="submit" class="button confirm-click" value="Inscribir a <%=tohtmlattribute(last_clan.tag)%>" />
               </div>
             <% end -%>
           <% end -%>
@@ -71,11 +89,6 @@
     <% end %>
 	<% end %><%# mftext -%>
   <% end %>
-  <style type="text/css">
-  #ccontent.competition-calendar th {text-align: center; font-size: 11px;}
-  #ccontent.competition-calendar td.competition-day { background: #eeeeee; font-size: 11px; }
-  #ccontent.competition-calendar td.competition-day.today { font-weight: bold; }
-  </style>
 
   <%
   sponsors = competition.competitions_sponsors.find(:all, :order => 'id ASC')
@@ -89,20 +102,6 @@
   </ul>
   <% end -%>
 <% end %>
-  <% if nil then %>
-  <%mftext('Calendario') do %>
-  <div class="competition-calendar">
-  <%= calendar(:year => Time.now.year, :month => Time.now.month, :day => Time.now.day) do |d|
-  cls = (d == Date.today) ? 'day today' : 'day'
-  if competition.state > 0 && competition.state < 4 && competition.created_on.to_date <= d && (competition.closed_on.nil? or competition.closed_on.to_date >= d) then
-    cls << ' competition-day '
-  end
-  ["#{d.day}", {:class => cls}]
-    end %>
-  </div>
-  <% end -%>
-  <% end -%>
-
   <%mftext('Últimos resultados') do %>
   <%# TODO esto está cuasiduplicado en list.rhtml
   %>
@@ -113,8 +112,8 @@
       if cm.result == 1
         p1_class = p2_class = 'match-tie'
       else
-        p1_class = (cm.result == 0) ? 'match-won' : 'match-lost'
-        p2_class = (cm.result == 2) ? 'match-won' : 'match-lost'
+        p1_class = (cm.result == 0) ? 'match-won good' : 'match-lost bad'
+        p2_class = (cm.result == 2) ? 'match-won good' : 'match-lost bad'
       end
     %>
       <tr class="<%=oddclass%>">
@@ -170,20 +169,3 @@
   <% end -%>
 <% end -%>
 
-<% content_main do %>
-  <%mftext(competition.name) do %>
-  <%=competition.description%>
-
-  <%
-  previous_day = nil
-  for news in competition.event.coverages.published.find(:all, :order => 'created_on DESC', :limit => 10)
-    cur_day = Date.new(news.created_on.year, news.created_on.month, news.created_on.day)
-
-    if cur_day != previous_day then
-      previous_day = Date.new(news.created_on.year, news.created_on.month, news.created_on.day) %>
-    <div class="day-separator"><%=print_tstamp(cur_day, 'date')%></div>
-    <% end %>
-    <%=render(:partial => '/coverages/news', :object => @object = news)%>
-  <% end %>
-  <% end -%>
-<% end -%>

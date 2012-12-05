@@ -1,11 +1,14 @@
-#content-stats {
-    color: #ccc;
+#ratebar-container {
+  float: left;
+  z-index: 1000;
+  width: 47px;
 }
 
-#ratebar {
-    background-position: 0px -274px;
-	background-repeat: no-repeat;
+.ratebar {
+  display: inline-block;
 }
 
-#ratebar-container { float: left; z-index: 1000; width: 47px; }
-#ratebar img {  height: 13px; margin: 0; }
+.ratebar div {
+  cursor: pointer;
+  display: inline-block;
+}

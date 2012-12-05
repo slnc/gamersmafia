@@ -1,35 +1,7 @@
-<style>
-div.auto_complete {
-width: 350px;
-background: #fff;
-}
-div.auto_complete ul {
-border: 1px solid #888;
-margin:0;
-padding:0;
-width: 200px;
-font-size: 11px;
-list-style-type:none;
-}
-div.auto_complete ul li {
-margin:0;
-padding:3px;
-}
-div.auto_complete ul li.selected {
-background-color: #ffb;
-}
-div.auto_complete ul strong.highlight {
-color: #800;
-margin:0;
-padding:0;
-}
-</style>
-
-
 <script src="/clanes/clan_selector_list" type="text/javascript"></script>
 
 <input type="text" class="text" id="clan_lookup" name="<%=field_name%>" />
-<div class="auto_complete" id="clan_lookup_auto_complete" ></div>
+<div class="auto_complete autocomplete" id="clan_lookup_auto_complete" ></div>
 <script type="text/javascript">
 	<% @clans = Clan.find(:all, :order => 'lower(name) ASC') -%>
 var clans_selector = new Array(<%= @clans.size %>);
@@ -39,4 +11,3 @@ clans_selector[<%=index%>] = "<%=clan.name %>" ;
 
 	</script>
 <%= javascript_tag("new Autocompleter.Local('clan_lookup', 'clan_lookup_auto_complete', clans_selector, {fullSearch: true, frequency: 0, minChars: 1 });") %>
-

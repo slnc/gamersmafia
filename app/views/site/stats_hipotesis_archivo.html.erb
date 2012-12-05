@@ -1,5 +1,5 @@
 <% mftext('Experimentos completados') do %>
-<div id="admin-stats">
+<div>
 <% @ab_tests = AbTest.paginate(:conditions => "completed_on IS NOT NULL AND active = 't'", :order => 'completed_on DESC', :page => params[:page], :per_page => 50) %>
 <%= render :partial => 'shared/pager2', :locals => {:collection => @ab_tests, 'pos' => 'top'} %>
 <table>

@@ -21,7 +21,7 @@
 <%= select("competition", "competitions_participants_type_id", CompetitionsParticipantsType.find(:all, :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%></p>
 
 <% else %>
-<div class="subheader"><div>General</div></div>
+<div class="subheader f_deca"><div>General</div></div>
 <p><label for="competition_description">Descripción</label><br/>
 <%=wysiwyg('competition[description]', :value => @competition.description, :height => '200px')%></p>
 
@@ -63,10 +63,10 @@ function check_participants(val)
 <br />
 <br />
 
-<div class="subheader"><div>Participantes</div></div>
+<div class="subheader f_deca"><div>Participantes</div></div>
 <strong>Precio admisión</strong><br />
 <label><input type="radio" value="false" name="competition_fee_on" <%=@competition.fee.nil? ? 'checked="checked"' : '' %> /> Gratis</label><br />
-<label><input type="radio" value="true" name="competition_fee_on" <%= @competition.fee ? 'checked="checked"' : '' %> /> Hay que pagar </label><input type="text" style="text-align: right;" class="text sm-text" name="competition[fee]" value="<%=@competition.fee%>" /> <%=gmd12%> para poder unirse a la competición.</p>
+<label><input type="radio" value="true" name="competition_fee_on" <%= @competition.fee ? 'checked="checked"' : '' %> /> Hay que pagar </label><input type="text" style="text-align: right;" class="text sm-text" name="competition[fee]" value="<%=@competition.fee%>" /> <%=gm_icon("gmf", "small")%> para poder unirse a la competición.</p>
 <br />
 <br />
 
@@ -83,7 +83,7 @@ function check_participants(val)
 
 <% if @competition.has_options? then
 opts = @competition.competitions_types_options %>
-<div class="subheader"><div>Opciones de <%=@competition.class.name%></div></div>
+<div class="subheader f_deca"><div>Opciones de <%=@competition.class.name%></div></div>
 <% case @competition.class.name
     when 'League' %>
     <% if nil then %>
@@ -111,7 +111,7 @@ opts = @competition.competitions_types_options %>
 <% end -%>
 
 <% if @competition.state < 4 then %>
-<div class="subheader"><div>Mapas</div></div>
+<div class="subheader f_deca"><div>Mapas</div></div>
 <% if @competition.state < 3 then %>
 <p><label for="competition_description">Número de mapas por partida</label><br/>
 <input type="text" id="maps-selector" name="competition[default_maps_per_match]" class="text sm-text " onkeyup="check_maps(this.value);" value="<%=@competition.default_maps_per_match%>" /> <span class="infoinline">Dejar en blanco para no gestionar mapas en esta competición.</span></p>
@@ -128,9 +128,13 @@ total_games_maps = @competition.game.games_maps.count
 g = @competition.game
 f = g.faction
 
-if total_games_maps == 0 then
+if total_games_maps == 0
 %>
-<div id="error">El juego <strong><%=g.name%></strong> no tiene ningún mapa. Por favor, ponte en contacto con los <a href="<%=gmurl(f)%>">líderes de la facción de <%=g.name%></a> antes de crear la competición para que ellos añadan los mapas necesarios.</div>
+<div class="bad-block">
+  El juego <strong><%=g.name%></strong> no tiene ningún mapa. Por favor, ponte
+  en contacto con los <a href="<%=gmurl(f)%>">líderes de la facción de <%=g.name%></a>
+  antes de crear la competición para que ellos añadan los mapas necesarios.
+</div>
 <%
 else
 interval = total_games_maps / 3
@@ -212,7 +216,7 @@ check_randommap_selection_mode('<%=@competition.forced_maps.to_s%>');
 </script>
 
 <% if @competition.class.name != 'Ladder' && @competition.state < 3 then %>
-<div class="subheader"><div>Fechas de las partidas</div></div>
+<div class="subheader f_deca"><div>Fechas de las partidas</div></div>
 <p><strong>Fechas de las partidas</strong><br />
 <select id="timetable_for_matches" name="competition[timetable_for_matches]" onchange="check_timetable_mode(this.value);">
   <option></option>
@@ -293,7 +297,7 @@ Máximo de partidas al día: <input type="text" name="competition[timetable_opti
 
 
 <% if @competition.state < Competition::STARTED then %>
-<div class="subheader"><div>Puntuación</div></div>
+<div class="subheader f_deca"><div>Puntuación</div></div>
 <p><strong>Modo de puntuar</strong></label><br/>
 <label><input type="radio" name="competition[scoring_mode]" value="<%=Competition::SCORING_SIMPLE%>" <%=@competition.scoring_mode == Competition::SCORING_SIMPLE ? 'checked="checked"' : '' %> /> Modo simple</label><br />
 <label><input type="radio" name="competition[scoring_mode]" value="<%=Competition::SCORING_PARTIAL%>" <%=@competition.scoring_mode == Competition::SCORING_PARTIAL ? 'checked="checked"' : '' %> /> Por suma de puntos/mapas/rondas</label><br />

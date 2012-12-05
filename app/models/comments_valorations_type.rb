@@ -4,6 +4,18 @@ class CommentsValorationsType < ActiveRecord::Base
   scope :negative, :conditions => 'direction = -1'
   scope :neutral, :conditions => 'direction = 0'
 
+  ICON_MAPPING = {
+    "divertido" => "lol",
+    "informativo" => "informativo",
+    "interesante" => "interesting",
+    "profundo" => "deep",
+    "normal" => "normal",
+    "flame" => "flame",
+    "irrelevante" => "irrelevant",
+    "redundante" => "redundant",
+    "spam" => "spam",
+  }
+
   def self.find_positive
     self.positive.find(:all, :order => 'lower(name) ASC')
   end
@@ -22,5 +34,9 @@ class CommentsValorationsType < ActiveRecord::Base
 
   def negative?
     !self.positive?
+  end
+
+  def icon
+    ICON_MAPPING.fetch(self.name.downcase)
   end
 end

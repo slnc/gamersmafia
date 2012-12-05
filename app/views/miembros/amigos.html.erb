@@ -1,7 +1,3 @@
-<% generic_support do %>
-
-<% end -%>
-
 <% content_main do %>
   <% mftext("Amigos de #{@curuser.login}") do %>
   <table>
@@ -19,7 +15,7 @@ f_count = friends.size
     part3 = ''
     i = 0
     friends.each do |friend|
-    out = "<tr class=\"#{oddclass}\"><td style=\"line-height: 32px;\"><a style=\"display: block; float: left; margin-right: 5px;\" href=\"#{gmurl(friend)}\"><img style=\"width: 32px; height: 32px;\" src=\"/cache/thumbnails/i/32x32#{friend.show_avatar}\" /></a> <strong><a href=\"#{gmurl(friend)}\">#{friend.login}</a></strong></td></tr>"
+    out = "<tr class=\"#{oddclass}\"><td><a style=\"display: block; float: left; margin-right: 5px;\" href=\"#{gmurl(friend)}\"><img style=\"width: 32px; height: 32px;\" src=\"/cache/thumbnails/i/32x32#{friend.show_avatar}\" /></a> <strong><a href=\"#{gmurl(friend)}\">#{friend.login}</a></strong></td></tr>"
     if i <= parts
       part1 << out
     elsif i <= parts * 2 + 1
@@ -39,3 +35,7 @@ f_count = friends.size
 </table>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<% end -%>
+

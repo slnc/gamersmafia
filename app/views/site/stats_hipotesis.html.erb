@@ -1,5 +1,5 @@
 <% mftext('Experimentos activos') do %>
-<div id="admin-stats">
+<div>
 <table>
 <% AbTest.find(:all, :conditions => 'active = \'t\' AND completed_on is null', :order => 'id').each do |t| %>
 <%= render :partial => 'stats_hipotesis_tr', :locals => { :t => t} %>

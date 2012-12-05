@@ -1,6 +1,3 @@
-<% generic_support do %>
-<% end -%>
-
 <% content_main do %>
   <% mftext('General') do %>
   <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/general_stats_#{Time.now.to_i / 86400}") do %>
@@ -62,3 +59,7 @@
 	<% end -%>
 
 <% end -%>
+
+<% generic_support do %>
+<% end -%>
+

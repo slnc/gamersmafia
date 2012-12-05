@@ -1,7 +1,5 @@
 .product-line {
-    padding-left: 5px;
     text-align: left;
-    padding-left: 25px;
 }
 
 .product-img {
@@ -15,11 +13,5 @@
 }
 
 #ccontent .product-img a img {
-    border: 0;
-}
-
-#ccontent a .shop-buy {
-    width: 162px;
-    height: 66px;
     border: 0;
 }

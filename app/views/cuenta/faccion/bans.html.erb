@@ -1,21 +1,3 @@
-<% generic_support do %>
-  <% mftext('Banear a un usuario') do %>
-  <form method="post" action="/cuenta/faccion/ban_user">
-    <table>
-    <tr>
-    <td>Nick:</td>
-    <td><input type="text" class="text" name="login" /></td>
-    </tr>
-    <tr>
-    <td>Razón:</td>
-    <td><input type="text" class="text" name="reason" /></td>
-    </tr>
-    </table>
-    <div class="centered-link"><input type="submit" class="button" value="Banear" /></div>
-  </form>
-  <% end -%>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Bans activos') do %>
   <table>
@@ -35,3 +17,22 @@
   </table>
   <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <% mftext('Banear a un usuario') do %>
+  <form method="post" action="/cuenta/faccion/ban_user">
+    <table>
+    <tr>
+    <td>Nick:</td>
+    <td><input type="text" class="text" name="login" /></td>
+    </tr>
+    <tr>
+    <td>Razón:</td>
+    <td><input type="text" class="text" name="reason" /></td>
+    </tr>
+    </table>
+    <div class="centered-link"><input type="submit" class="button" value="Banear" /></div>
+  </form>
+  <% end -%>
+<% end -%>
+

@@ -1,16 +1,13 @@
 .tag-page-header {
   background: #000;
+  color: #fff;
   margin-bottom: 1rem;
+  line-height: 110px;
+  height: 110px;
   background-size: auto 110px;
   background-repeat: no-repeat;
   background-position: right center;
   padding: 0 1rem;
-}
-
-.tag-page-header div {
-  color: #fff;
-  font-size: 34px;
-  line-height: 110px;
 }
 
 .tag-header-image-thumbnail {

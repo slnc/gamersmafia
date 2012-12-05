@@ -1,0 +1,3 @@
+<%mflist("Encuestas", live_polls) do |poll| %>
+  <%=render :partial => '/encuestas/encuesta', :locals => {:poll => poll} %>
+<% end -%>

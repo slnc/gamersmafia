@@ -1,16 +1,11 @@
 #cleft .mfcontents-ul li {
-    padding: 0 1px 0 0;
-    line-height: 16px;
-    margin-bottom: 1px;
+  margin-bottom: 1px;
 }
 
 #cleft .mfcontents-ul li a {
-    display: block;
-    width: 100%;
-    padding: 2px 2px;
-    font-size: 10px;
-    height: 16px;
-    line-height: 16px;
-	margin-bottom: 1px;
-	overflow: hidden;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
 }

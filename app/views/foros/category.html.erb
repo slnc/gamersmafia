@@ -1,11 +1,3 @@
-<% generic_support do %>
-  <%=render :partial => '/foros/nuevo_topic'%>
-  <%=render :partial => '/shared/last_commented_items_in_category', :locals => { :category => @forum, :content_type => 'Topic' } %>
-  <%=render :partial => 'most_active_users', :object => @object = @forum%>
-  <%=render :partial => 'most_active_topics', :object => @object = @forum%>
-  <%=render :partial => 'all_time_users', :object => @object = @forum%>
-<% end -%>
-
 <% content_main do %>
   <%mftext(@forum.name) do %>
 <table>
@@ -19,3 +11,12 @@
 </table>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <%=render :partial => '/foros/nuevo_topic'%>
+  <%=render :partial => '/shared/last_commented_items_in_category', :locals => { :category => @forum, :content_type => 'Topic' } %>
+  <%=render :partial => 'most_active_users', :object => @object = @forum%>
+  <%=render :partial => 'most_active_topics', :object => @object = @forum%>
+  <%=render :partial => 'all_time_users', :object => @object = @forum%>
+<% end -%>
+

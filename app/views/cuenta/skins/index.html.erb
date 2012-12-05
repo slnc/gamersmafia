@@ -1,9 +1,3 @@
-<% generic_support do %>
-<%mftext('Estás usando la skin') do %>
-<div class="centered-link"><strong><%=controller.skin.name%></strong></div>
-<% end -%>
-<% end -%>
-
 <% content_main do %>
 <%mftext('Crear tu skin') do %>
 <form method="post" action="/cuenta/skins/create">
@@ -28,8 +22,8 @@ Tipo: <select name="skin[type]">
     <td><% if skin.is_public? then %><strong>Pública</strong> (<a href="/cuenta/skins/make_private?id=<%=skin.id%>">Hacer privada</a>)
 	<% else %><strong>Privada</strong> (<a href="/cuenta/skins/make_public?id=<%=skin.id%>">Hacer pública</a>)<% end -%></td>
     <td><strong><a href="/cuenta/skins/activate?skin=<%=skin.id%>">Ponérmela</a></strong></td>
-    <td class="infoinline f_sm"><a href="/<%=skin.file%>">Descargar</a></td>
-    <td class="infoinline f_sm"><a href="/cuenta/skins/destroy/<%=skin.id%>" onclick="return confirm('¿Estás seguro?');">Borrar</a></td>
+    <td class="infoinline f_milli"><a href="/<%=skin.file%>">Descargar</a></td>
+    <td class="infoinline f_milli"><a href="/cuenta/skins/destroy/<%=skin.id%>" onclick="return confirm('¿Estás seguro?');">Borrar</a></td>
 </tr>
 <% end -%>
 </table>
@@ -56,10 +50,17 @@ Tipo: <select name="skin[type]">
     <td><strong><a href="/cuenta/skins/activate?skin=<%=skin.id%>">Ponérmela</a></strong></td>
 	<td class="infoinline"><%=user_link(skin.user)%></td>
     <td class="infoinline"><a href="/<%=skin.file%>">Descargar</a></td>
-    <td class="w50 infoinline"><div title="Usuarios que usan esta skin" class="members-count"><%=skin.used_by_users_count%></div></td>
+    <td class="w50 infoinline" title="Usuarios que usan esta skin"><%=gm_icon("user", "small")%> <%=skin.used_by_users_count%></td>
 </tr>
 <% end -%>
 </table>
 <% end -%>
 
 <% end -%>
+
+<% generic_support do %>
+  <%mftext('Estás usando la skin') do %>
+    <div class="centered-link"><strong><%=controller.skin.name%></strong></div>
+  <% end -%>
+<% end -%>
+

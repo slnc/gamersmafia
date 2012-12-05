@@ -1,9 +1,9 @@
 <div class="homebox" id="hhome-events">
-<div id="home-events" class="subheader"><div><span>Eventos</span></div></div>
+<div id="home-events" class="subheader f_deca"><div><span>Eventos</span></div></div>
 <%  cache("/#{controller.portal.code}/home/index/eventos/#{Time.now.strftime('%Y%m%d')}") do %>
 <%mfcontents_table(nil, Event.in_portal(controller.portal).published.current_events.find(:all)) do |e| %>
-    <td style="font-size: 11px;"><a href="<%=gmurl(e)%>"><%=content_category(e)%><%=e.title%></a></td>
-	<td class="w25" style="font-size: 11px;"><div class="members-count"><%=e.users.count if e.respond_to?(:users)%></div></td>
+    <td><a href="<%=gmurl(e)%>"><%=content_category(e)%><%=e.title%></a></td>
+    <td class="w25"><%=gm_icon("user", "small")%> <%=e.users.count if e.respond_to?(:users)%></td>
       <% end %><%# for -%>
 <% end %><%# cache-%>
 </div>

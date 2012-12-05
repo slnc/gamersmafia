@@ -1,6 +1,3 @@
-<% generic_support do %>
-<% end -%>
-
 <% content_main do %>
   <% mftext("Candidatos a #{@staff_position.staff_type.name}") do %>
     <% @staff_position.staff_candidates.find(
@@ -13,3 +10,7 @@
   <%= link_to "Volver", staff_position_path(@staff_position) %>
   <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<% end -%>
+

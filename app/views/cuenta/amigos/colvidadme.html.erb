@@ -4,9 +4,9 @@
   <h1>¿Estás seguro?</h1>
 <form method="post" action="/cuenta/amigos/olvidadme">
 	<input type="hidden" name="eik" value="<%=params[:eik]%>" />
-	<div class="warning">Si haces click en el botón "Confirmar" no volverás a recibir ninguna invitación de tus amigos desde LaFlecha.</div>
+	<div class="bad-block">Si haces click en el botón "Confirmar" no volverás a recibir ninguna invitación de tus amigos desde LaFlecha.</div>
   <br />
-  <input type="submit" value="Confirmar" />
+  <input type="submit" class="button" value="Confirmar" />
 </form>
 </dd>
 </dl>

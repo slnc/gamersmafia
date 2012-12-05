@@ -1,6 +1,3 @@
-<% generic_support do %>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Resultados de la búsqueda') do %>
 <table>
@@ -10,9 +7,9 @@
     <th>Participante B</th>
     <th>Mapa</th>
     <th>Modo</th>
-    <th class="w25"><img class="pageviews-count" title="Comentarios" src="/images/blank.gif" /></th>
-    <th class="w25"><img class="comments-count" title="Comentarios" src="/images/blank.gif" /></th>
-    <th class="w25"><img class="downloads-count" title="Veces descargada" src="/images/blank.gif" /></th>
+    <th class="w25"><%=gm_icon("pageviews", "small")%></th>
+    <th class="w25"><%=gm_icon("comment", "small")%></th>
+    <th class="w25"><%=gm_icon("download")%></th>
 </tr>
 <% @demos.each do |demo| %>
 <tr class="<%=oddclass%>">
@@ -38,14 +35,18 @@
 </table>
 
 <% if @demos.size == 0 then %>
-<div class="warning">No se ha encontrado ninguna demo con las condiciones indicadas.</div>
+<div class="bad-block">No se ha encontrado ninguna demo con las condiciones indicadas.</div>
 <% end -%>
 
 <% if @limited then %>
-<div class="warning">Se han encontrado más de 50 demos con las condiciones indicadas pero los resultados están limitados a 50 demos. Indica más condiciones si no encuentras la demo que buscas.</div>
+<div class="bad-block">Se han encontrado más de 50 demos con las condiciones indicadas pero los resultados están limitados a 50 demos. Indica más condiciones si no encuentras la demo que buscas.</div>
 <% end -%>
 <br />
 <br />
 <a href="/demos">Nueva búsqueda</a>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<% end -%>
+

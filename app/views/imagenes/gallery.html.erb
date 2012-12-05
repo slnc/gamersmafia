@@ -1,3 +1,26 @@
+<% content_main do %>
+  <% mftext("#{@category.parent.name} &raquo; #{@category.name}") do %>
+<div class="imagesgallery">
+<%
+images = Image.in_term(@category).published.paginate(
+    :page => params[:page], :per_page => 15, :order => 'id')
+%>
+<%= render :partial => 'shared/pager2',
+           :locals => {:collection => images, :pos => 'top'} %>
+<% cache("/common/imagenes/gallery/#{@category.id}/page_#{params[:page]}") do
+images.each do |image| %>
+  <span class="screenshot">
+    <%=link_to fc_thumbnail(image.file, 'i', '153x115', false), gmurl(image)%>
+  </span>
+<% end %>
+<% end %>
+<div style="clear: both;">&nbsp;</div>
+<%= render :partial => 'shared/pager2',
+           :locals => {:collection => images, :pos => 'bottom'} %>
+</div>
+<% end -%>
+<% end -%>
+
 <% generic_support do %>
 	<%#= render :partial => '/imagenes/random', :locals => {:category => @category} %>
 
@@ -30,25 +53,3 @@
   <% end -%>
 <% end -%>
 
-<% content_main do %>
-  <% mftext("#{@category.parent.name} &raquo; #{@category.name}") do %>
-<div class="imagesgallery">
-<%
-images = Image.in_term(@category).published.paginate(
-    :page => params[:page], :per_page => 15, :order => 'id')
-%>
-<%= render :partial => 'shared/pager2',
-           :locals => {:collection => images, :pos => 'top'} %>
-<% cache("/common/imagenes/gallery/#{@category.id}/page_#{params[:page]}") do
-images.each do |image| %>
-  <span class="screenshot">
-    <%=link_to fc_thumbnail(image.file, 'i', '153x115', false), gmurl(image)%>
-  </span>
-<% end %>
-<% end %>
-<div style="clear: both;">&nbsp;</div>
-<%= render :partial => 'shared/pager2',
-           :locals => {:collection => images, :pos => 'bottom'} %>
-</div>
-<% end -%>
-<% end -%>

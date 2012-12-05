@@ -1,3 +1,7 @@
+<% content_main do %>
+  <%=mfcontent(@topic)%>
+<%end -%>
+
 <% content_support(:content => @topic.unique_content) do %>
   <%=render :partial => '/shared/content_summary', :locals => { :content => @topic }%>
   <%=render :partial => '/foros/nuevo_topic'%>
@@ -23,7 +27,3 @@
 <% end -%>
 <% end -%>
 <% end -%>
-
-<% content_main do %>
-  <%=mfcontent(@topic)%>
-<%end -%>

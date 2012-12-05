@@ -2,19 +2,9 @@
 module ForosHelper
   def draw_topic_indicators(topic)
     icons = []
-    if topic.closed then
-      icons<< '<img class="sprite1 topic-indicator topic-locked" src="/images/blank.gif" />'
-    end
-
-    if topic.moved_on and topic.moved_on > Time.now - 86400 * 7 then
-      icons<< '<img class="sprite1 topic-indicator topic-moved" src="/images/blank.gif" />'
-    end
-
-    if topic.sticky? then
-      icons<< '<img class="sprite1 topic-indicator topic-sticky" src="/images/blank.gif" />'
-    end
-
-    icons.join(' ')
+    icons << gm_icon("lock", "small") if topic.closed
+    icons << gm_icon("sticky", "small") if topic.sticky?
+    icons.join(" ")
   end
 
   def subforums(forum)

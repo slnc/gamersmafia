@@ -1,5 +1,16 @@
+<% content_main do %>
+<% mftext('Nueva noticia') do %>
+
+<%= form_tag({:action => 'create'}, { :class => 'editing-content', :multipart => true }) do %>
+  <%= render :partial => 'form' %>
+  <%= render :partial => '/shared/new_content_tags' %>
+  <br />
+  <%= submit_tag 'Crear', :class => 'button' %>
+<% end %>
+<% end -%>
+<% end -%>
+
 <% generic_support do %>
-  <%= render :partial => '/shared/drafts', :locals => { :cls => News } if user_is_authed %>
 <% mftext('Consejos') do %>
 <ul class="content-hid">
 <li>Escueta</li>
@@ -9,17 +20,5 @@
 <li>Indicar fuente / poner enlaces</li>
 </ul>
 <% end -%>
-<%= render :partial => 'shared/pending', :object => News.pending %>
 <% end -%>
 
-<% content_main do %>
-<% mftext('Nueva noticia') do %>
-
-<%= form_tag({:action => 'create'}, { :class => 'editing-content', :multipart => true }) do %>
-  <%= render :partial => 'form' %>
-  <%= render :partial => '/shared/new_content_tags' %>
-  <br />
-  <%= submit_tag 'Crear' %>
-<% end %>
-<% end -%>
-<% end -%>

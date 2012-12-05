@@ -1,8 +1,8 @@
 <% if flash[:notice] -%>
-  <div id="notice"><%= flash[:notice] %></div>
+  <div id="notice" class="good-block"><%= flash[:notice] %></div>
   <script type="text/javascript"> window.setTimeout("$('#notice').fadeOut('normal')", 4000); </script>
 <% end -%>
 
 <% if flash[:error] -%>
-<div id="error"><%= flash[:error] %></div>
+<div class="warning"><%= flash[:error] %></div>
 <% end -%>

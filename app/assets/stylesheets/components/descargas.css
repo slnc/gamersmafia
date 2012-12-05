@@ -1,12 +1,3 @@
 #ccontent .download-mirror {
     border: 0;
 }
-
-/* downloads  */
-#ccontent tr.downloads-folder td.first {
-    padding-left: 20px;
-}
-
-#ccontent tr.downloads-download td.first {
-    padding-left: 20px;
-}

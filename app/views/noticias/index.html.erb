@@ -1,3 +1,12 @@
+<% content_main do %>
+<%= mfcontents_summaries('Noticias',
+        News.in_portal(controller.portal).published,
+        {:order => 'created_on asc', :page => params['page'], :per_page => 30},
+				{:cache =>
+             "/#{controller.portal_code}/noticias/index/page_#{params['page']}",
+				 :show_day_separator => true})%>
+<% end -%>
+
 <% generic_support do %>
 <% cache ("/#{controller.portal_code}/noticias/index/best_rated#{Time.now.strftime('%Y%m%d')}") do %>
 <%mftext('Mejor valoradas') do %>
@@ -7,7 +16,8 @@
   <li style="padding-left: 3px;" class="<%=oddclass%>">
     <%=url_for_content(c, c.title)%>
     <div class="infoinline"><%=draw_rating(c.rating)%>
-      <span class="comments-count">
+      <span class="f_milli">
+        <%=gm_icon("comment", "small")%>
         <a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a>
       </span>
     </div>
@@ -18,11 +28,3 @@
 <% end -%>
 <% end -%>
 
-<% content_main do %>
-<%= mfcontents_summaries('Noticias',
-        News.in_portal(controller.portal).published,
-        {:order => 'created_on asc', :page => params['page'], :per_page => 30},
-				{:cache =>
-             "/#{controller.portal_code}/noticias/index/page_#{params['page']}",
-				 :show_day_separator => true})%>
-<% end -%>

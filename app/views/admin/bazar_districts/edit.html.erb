@@ -1,7 +1,7 @@
 <%mftext("Distrito de bazar: #{@bd.name}") do %>
 <%= form_tag('/admin/bazar_districts/update', {:multipart => true}) %>
 <form method="post" action="">
-<input type="hidden" name="id" value="<%=@bd.id%>" />	
+<input type="hidden" name="id" value="<%=@bd.id%>" />
 
 <table>
 	<tr class="<%=oddclass%>">
@@ -36,7 +36,7 @@ real_path = "#{Rails.root}/public/" + @bd.icon
 
 </table>
 
-<input type="submit" value="Guardar" />
+<input type="submit" class="button" value="Guardar" />
 </form>
 <% end -%>
 

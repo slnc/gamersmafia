@@ -3,7 +3,7 @@
 
 <%= form_tag({:action => 'create'}, :multipart => true)%>
   <%= render :partial => 'form' %>
-  <%= submit_tag 'Crear' %>
+  <%= submit_tag 'Crear', :class => 'button' %>
 </form>
 
 <%= link_to 'Volver', :action => 'list' %>

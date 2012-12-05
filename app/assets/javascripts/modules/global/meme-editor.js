@@ -284,7 +284,7 @@ Gm.MemeEditor = function() {
         $('#dropped-files').append(
             '<div id="' + imageId + '" class="image2" style="background-image:' +
             ' url(' + image_url + ');">' +
-            '<div class="image-deleter hidden">x</div></div>');
+            '<div class="image-deleter hidden gm-icon user-input-overlay">&#xe046;</div></div>');
         // We unbind because we don't know how many of the existing images
         // might already have the function bound.
         $('#dropped-files .image2')

@@ -9,5 +9,5 @@
 		<%=faction_favicon(demo)%> <%=demo.games_map.name unless demo.games_map.nil? %></td>
 </tr>
 </table>
-<div class="right infoinline"><span class="downloads-count"><%=demo.downloaded_times%></span> | <%=draw_rating(demo.rating)%></div>
+<div class="right infoinline"><%=gm_icon("download", "small")%> <%=demo.downloaded_times%> | <%=draw_rating(demo.rating)%></div>
 <% end -%>

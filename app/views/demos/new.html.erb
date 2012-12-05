@@ -1,13 +1,3 @@
-<% generic_support do %>
-<%= render :partial => '/shared/drafts', :locals => { :cls => Demo } if user_is_authed %>
-<% mftext('Consejos') do %>
-<ul class="content-hid">
-  <li style="margin-bottom: 10px;">Rellena el mayor número de campos para facilitar búsquedas futuras</li>
-</ul>
-<% end -%>
-<%= render :partial => 'shared/pending', :object => Demo.pending %>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Nueva demo') do %>
 
@@ -15,7 +5,16 @@
   <%= render :partial => 'form' %>
   <%= render :partial => '/shared/new_content_tags' %>
   <br />
-  <%= submit_tag 'Crear' %>
+  <%= submit_tag 'Crear', :class => 'button' %>
 </form>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <% mftext('Consejos') do %>
+    <ul class="content-hid">
+      <li style="margin-bottom: 10px;">Rellena el mayor número de campos para facilitar búsquedas futuras</li>
+    </ul>
+  <% end -%>
+<% end -%>
+

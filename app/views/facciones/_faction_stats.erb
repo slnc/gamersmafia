@@ -3,27 +3,27 @@
 	<tr class="<%=oddclass%>">
   		<td style="padding-left: 3px;">Karma</td>
 		<td><%=draw_karma_bar_sm(faction)%></td>
-		<td style="width: 75px; background: #fff;" class="right" rowspan="5"><%=draw_organization_building(faction)%></td>
+		<td style="width: 75px;" class="right" rowspan="5"><%=draw_organization_building(faction)%></td>
   	</tr>
-	
+
   	<tr class="<%=oddclass%>">
   		<td style="padding-left: 3px;">Amistad</td>
 		<td><%=faction_cohesion(faction)%></td>
   	</tr>
-	
+
 	<tr class="<%=oddclass%>">
   		<td style="padding-left: 3px;">Miembros</td>
-		<td><span title="Miembros" class="members-count"><%=faction.members_count%></span></td>
+      <td title="Miembros"><%=gm_icon("user", "small")%> <%=faction.members_count%></td>
   	</tr>
-	
+
 	<tr class="<%=oddclass%>">
   		<td style="padding-left: 3px;">Incorporaciones/día</td>
-		<td><span title="Miembros" class="members-count"><%="%.2f" % faction.new_members_per_day%></span></td>
+      <td title="Miembros"><%=gm_icon("user", "small")%> <%="%.2f" % faction.new_members_per_day%></td>
   	</tr>
-	
+
 	<tr class="<%=oddclass%>">
   		<td style="padding-left: 3px;">Salud</td>
-		<td><span title="Miembros" class="members-count"><%=(faction.health * 100).to_i %>%</span></td>
+      <td title="Miembros"><%=gm_icon("user", "small")%> <%=(faction.health * 100).to_i %>%</td>
   	</tr>
   </table>
 

@@ -1,5 +1,31 @@
+<% content_main do %>
+<form method="post" action="/admin/usuarios" style="clear:left;">
+  <input size="20" type="text" class="text" name="s" />
+  <input type="submit" class="button" name="search" value="Buscar" /> <span class="infoinline">"m%@hotmail.com" encontrará "mike@hotmail.com" y "mik666@hotmail.com"</span>
+</form>
+
+<br />
+<strong>Online:</strong> <% for u in User.online_users('lower(login)') %>
+<a href="/admin/usuarios/edit/<%=u.id%>"><%=u.login%></a>,
+<% end
+%>
+<br />
+<br />
+<%= render :partial => 'shared/pager2', :locals => {:collection => @users, :pos => 'top'} %>
+<table>
+  <tr>
+		<th>Login</th>
+		<th>Email</th>
+    	<th class="timestamp">Última visita</th>
+	</tr>
+<%= render :partial => "user", :collection => @users %>
+</table>
+
+<%= render :partial => 'shared/pager2', :locals => {:collection => @users, :pos => 'bottom'} %>
+<% end -%>
+
 <% generic_support do %>
-  <div class="subheader first"><div>Estadísticas</div></div>
+  <div class="subheader f_deca first"><div>Estadísticas</div></div>
 <%
   total = User.count
   confirmed = User.count(:conditions => "state <> #{User::ST_UNCONFIRMED}")
@@ -48,7 +74,7 @@
 <% if nil then %>
   <br />
   <br />
-  <div class="subheader"><div>Último contenido de líderes de facción</div></div>
+  <div class="subheader f_deca"><div>Último contenido de líderes de facción</div></div>
   <%# TODO copypasted de mi facción/staff y a su vez de mi facción/index %>
 <%
   for user in User.find_by_sql('SELECT * from users where id IN (select id from users_skills where role in (\'Boss\', \'Underboss\')) ORDER BY lower(login) ASC')
@@ -78,28 +104,3 @@
 
 <% end -%>
 
-<% content_main do %>
-<form method="post" action="/admin/usuarios" style="clear:left;">
-  <input size="20" type="text" class="text" name="s" />
-  <input type="submit" class="button" name="search" value="Buscar" /> <span class="infoinline">"m%@hotmail.com" encontrará "mike@hotmail.com" y "mik666@hotmail.com"</span>
-</form>
-
-<br />
-<strong>Online:</strong> <% for u in User.online_users('lower(login)') %>
-<a href="/admin/usuarios/edit/<%=u.id%>"><%=u.login%></a>,
-<% end
-%>
-<br />
-<br />
-<%= render :partial => 'shared/pager2', :locals => {:collection => @users, :pos => 'top'} %>
-<table>
-  <tr>
-		<th>Login</th>
-		<th>Email</th>
-    	<th class="timestamp">Última visita</th>
-	</tr>
-<%= render :partial => "user", :collection => @users %>
-</table>
-
-<%= render :partial => 'shared/pager2', :locals => {:collection => @users, :pos => 'bottom'} %>
-<% end -%>

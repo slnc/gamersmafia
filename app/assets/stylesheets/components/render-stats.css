@@ -1,0 +1,6 @@
+#render-stats {
+  position: absolute;
+  z-index: 201;
+  top: 5.0rem;
+  right: 2rem;
+}

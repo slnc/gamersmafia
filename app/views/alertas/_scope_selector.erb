@@ -1,11 +1,11 @@
 <% if collection.size > 1 then %>
-<div style="padding: 3px 0 3px 5px; background: #efefef; margin-bottom: 10px;">
-<select id="scope-selector">
-	<option></option>
-	<%collection.each do |item| %>
-	<option <%='selected="selected"' if active_scope && active_scope.to_i == item.id %> value="<%=item.id%>"><%=item.name%></option>
-	<% end -%>	
-</select>
+<div style="padding: 3px 0 3px 5px; margin-bottom: 10px;">
+  <select id="scope-selector">
+    <option></option>
+    <%collection.each do |item| %>
+    <option <%='selected="selected"' if active_scope && active_scope.to_i == item.id %> value="<%=item.id%>"><%=item.name%></option>
+    <% end -%>
+  </select>
 </div>
 
 <script type="text/javascript">

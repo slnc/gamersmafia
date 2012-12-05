@@ -50,11 +50,11 @@ dbu = User.db_query("select sum(karma), (select login from users where id = stat
   <td style="width: 150px;"><a href="http://<%=App.domain%>/miembros/<%=dbi['login']%>"><%=dbi['login']%></a></td>
   <td style="text-align: right; width: 50px;"><%=dbi['sum']%></td>
   <td style="text-align: right; width: 40px;"><%="%.2f" % ((dbi['sum'].to_i / total_karma)*100)%>%</td>
-  <td style="width: 200px;"><div style="width: <%=(dbi['sum'].to_i / total_karma)*100.to_i%>%; background: #333; height: 20px;"></div></td>
+  <td style="width: 200px;"><%=draw_pcent_bar(dbi['sum'].to_f / total_karma)%></td>
 </tr>
 <% end -%>
 </table>
 <% end -%>
 
-<div class="right"><strong><a href="/cuenta/faccion">Administración</a></strong></div>	
+<div class="right"><strong><a href="/cuenta/faccion">Administración</a></strong></div>
 </div>

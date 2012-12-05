@@ -1,42 +1,38 @@
 /* unclean */
 .contentinfobar {
-   margin-bottom: 30px;
-   margin-top: 25px;
+  margin-bottom: 30px;
+  margin-top: 25px;
+  min-height: 54px;
 }
 
 .contentinfobar ul {
-   margin: 0;
-   padding: 0;
-   height: 27px;
-   width: 100%;
+  width: 100%;
 }
 
 .contentinfobar li {
-   list-style: none;
-   float: left;
-   padding: 0 5px;
-   margin: 0;
-   height: 57px;
+  ;
+  display: inline-block;
+  padding: 0 5px;
 }
 
 .contentinfobar a img {
-   border: 0;
+  border: 0;
 }
 
 .contentinfobar .content-details {
-   float: right;
-   padding-right: 6px;
+  float: right;
+  padding-right: 6px;
 }
 
 .contentinfobar .author-avatar {
-   float: right;
+  float: right;
 }
 
 .contentinfobar .last {
-   width: 183px;
-   height: 56px;
-   padding-right: 2px;
-   padding-top: 2px;
-   float: right;
-   margin: 0 0 0 -3px;
+  width: 183px;
+  height: 56px;
+  padding-right: 2px;
+  padding-top: 2px;
+  float: right;
+  margin: 0 0 0 -3px;
 }

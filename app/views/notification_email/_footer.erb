@@ -3,11 +3,11 @@
 	<tr>
 		<td style="background-image: url(http://<%=App.domain%>/skins/default/images/notifications/actionslisttop.gif); background-position: left top; background-repeat: no-repeat; height: 11px;"></td>
 	<tr>
-		<td style="background: url(http://<%=App.domain%>/skins/default/images/notifications/actionslistmiddle.gif) 0 0 repeat; font-weight: bold; font-size: 11px; font-family: tahoma, arial; list-style: none; padding-left: 12px;">
+		<td style="background: url(http://<%=App.domain%>/skins/default/images/notifications/actionslistmiddle.gif) 0 0 repeat; font-weight: bold; font-size: 11px; font-family: tahoma, arial; ; padding-left: 12px;">
 		Enlaces relacionados:<br />
 <ul style="margin-bottom: 0; padding: 0 0 0 5px;">
 <% @actions.each do |text, link| %>
-  <li style="background: url(http://<%=App.domain%>/skins/default/images/notifications/lidetail.gif) left 1px no-repeat; line-height: 18px; margin: 0; padding: 0 0 0 12px; list-style: none;"><a href="<%=@base_url unless link.include?('http://')%><%=link%>"><%=text%></a></li>
+  <li style="background: url(http://<%=App.domain%>/skins/default/images/notifications/lidetail.gif) left 1px no-repeat; line-height: 18px; margin: 0; padding: 0 0 0 12px; ;"><a href="<%=@base_url unless link.include?('http://')%><%=link%>"><%=text%></a></li>
 <% end -%>
 </ul>
 </td>

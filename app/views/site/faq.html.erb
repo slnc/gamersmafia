@@ -2,21 +2,9 @@
     @faq_categories = FaqCategory.find(:all, :conditions => 'parent_id is null', :order => 'position asc')
     @last_modified = FaqCategory.db_query('SELECT max(updated_on) as last_modified from faq_entries')[0]['last_modified']
 %>
-<% generic_support do %>
-<%mftext('Mi pregunta no figura aquí') do %>
-<p>Si tienes una pregunta que no figura aquí puedes enviárnosla <a href="javascript: mailto('preguntas')" onclick="mailto('preguntas'); return false;">por email</a> para ampliar este listado.
-<% end -%>
-
-<%mftext('Temas') do %>
-<ul class="content-hid">
-<%=render_tree_list(@faq_categories, {:ul_class => 'content-hid'})%>
-</ul>
-<% end -%>
-<% end -%>
-
 <% content_main do %>
 <%mftext('Ayuda') do %>
-<ul style="margin: 0; padding: 0;">
+<ul style=" ">
 <% for category in @faq_categories %>
 <%=render :partial => 'faq_intro_entry', :locals => { :faq_intro_entry => category } %>
 <% end -%>
@@ -35,3 +23,16 @@
 <p class="centered" style="margin-top: 40px;">Actualizado por última vez: <strong><%=@last_modified[0,19]%></strong></p>.
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<%mftext('Mi pregunta no figura aquí') do %>
+<p>Si tienes una pregunta que no figura aquí puedes enviárnosla <a href="javascript: mailto('preguntas')" onclick="mailto('preguntas'); return false;">por email</a> para ampliar este listado.
+<% end -%>
+
+<%mftext('Temas') do %>
+<ul class="content-hid">
+<%=render_tree_list(@faq_categories, {:ul_class => 'content-hid'})%>
+</ul>
+<% end -%>
+<% end -%>
+

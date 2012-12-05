@@ -1,0 +1,12 @@
+<%mftext('Perfiles actualizados', :grid => 3) do %>
+  <table>
+<%# cache("/common/miembros/_rightside/birthdays_#{Time.now.strftime('%Y%m%d')}") do %>
+      <% User.can_login.find(:all, :conditions => "profile_last_updated_on is not null", :order => 'profile_last_updated_on DESC', :limit => 5).each do |u| %>
+      <tr class="<%=oddclass%>">
+        <td><strong><%=user_link(u)%></strong><br /> <span class="infoinline"><%=print_tstamp(u.profile_last_updated_on, 'intelligent')%></span></td>
+    <td class="right"><img src="/cache/thumbnails/f/32x32/<%=u.show_photo%>" /></td>
+      </tr>
+      <% end -%>
+    <%# end -%>
+  </table>
+<% end -%>

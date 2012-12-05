@@ -8,5 +8,5 @@
 
 <% if @question.new_record? || (@user.id == @question.user_id && @question.answered_on.nil?) then %>
 <p><label for="question_title">Recompensa GMFs <span class="infoinline">(opcional: si la respuesta tiene recompensa habrá más posibilidades de que te respondan)</span></label><br/>
-<%= text_field 'question', 'ammount', :class => 'text', :size => 5  %><%=gmd12%> <span class="infoinline">(¡salen de tu bolsillo! Mínimo: <%=(@question.ammount.nil? || @question.ammount < Question::MIN_AMMOUNT) ? Question::MIN_AMMOUNT.to_i : @question.ammount + 1 %> | Máximo: <%=@user.cash.to_i%>)</span></p>
+<%= text_field 'question', 'ammount', :class => 'text', :size => 5  %> <%=gm_icon("gmf", "small")%> <span class="infoinline">(¡salen de tu bolsillo! Mínimo: <%=(@question.ammount.nil? || @question.ammount < Question::MIN_AMMOUNT) ? Question::MIN_AMMOUNT.to_i : @question.ammount + 1 %> | Máximo: <%=@user.cash.to_i%>)</span></p>
 <% end -%>

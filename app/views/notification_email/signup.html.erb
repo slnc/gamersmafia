@@ -1,7 +1,7 @@
 <%= render :partial => '/notification_email/header' %>
 <%if @mode == :new then %>
 Para confirmar la creación de tu nueva cuenta en gamersmafia haz click sobre el siguiente botón:<br />
-<div style="margin: 10px 0; text-align: center;"><a href="http://<%=App.domain%><%=@confirm_url%>"><img src="http://<%=App.domain%>/skins/default/images/btn_confirmar_cuenta.png" alt="Confirmar cuenta" style="border: 0" /></a></div>
+<div style="margin: 10px 0; text-align: center;"><a href="http://<%=App.domain%><%=@confirm_url%>"><%=button("Confirmar cuenta")%></a></div>
 <br />
 Si el enlace superior te da problemas para completar el proceso de registro puedes hacer la <a href="http://<%=App.domain%>/cuenta/confirmar">confirmación manualmente</a>. Tu clave de confirmación es: <strong><%= @recipient.validkey %></strong>
 <% else -%>

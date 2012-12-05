@@ -15,8 +15,9 @@
 <%=@invitation_text%>
 <% end %>
 
-<div style="margin-right: 5px; margin-top: 20px; text-align: right;"><a href="http://<%=App.domain%>/cuenta/amigos/aceptar_amistad?eik=<%=@invitation_key%>"><img style="border: 0;" src="http://<%=App.domain%>/skins/default/images/btn_aceptar.png" /></a>
-&nbsp; &nbsp; &nbsp; <a href="http://<%=App.domain%>/cuenta/amigos/cancelar_amistad?eik=<%=@invitation_key%>"><img style="border: 0;" src="http://<%=App.domain%>/skins/default/images/btn_rechazar.png" /></a>
+<div style="margin-right: 5px; margin-top: 20px; text-align: right;"><a href="http://<%=App.domain%>/cuenta/amigos/aceptar_amistad?eik=<%=@invitation_key%>"><span class="button">Aceptar</span></a>
+  &nbsp; &nbsp; &nbsp;
+  <a href="http://<%=App.domain%>/cuenta/amigos/cancelar_amistad?eik=<%=@invitation_key%>"><span class="button">Rechazar</span></a>
 </div>
 
 <%= render :partial => '/notification_email/footer' %>

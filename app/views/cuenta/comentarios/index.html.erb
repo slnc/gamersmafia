@@ -1,11 +1,3 @@
-<%generic_support do %>
-<% if @user.enable_comments_sig? then %>
-<%mftext('Aviso') do %>
-<p>Cuando actives tu firma es posible que no se vea automáticamente en las páginas de comentarios antiguas. Al cabo de unos días se actualizarán.</p>
-<% end -%>
-<% end -%>
-<% end -%>
-
 <%content_main do %>
 <% mftext('Configuración de comentarios') do %>
 <%=form_tag(:action=> 'save') %>
@@ -19,7 +11,15 @@
 <label><%=check_box 'user', 'pref_comments_autoscroll' %> Hacer autoscroll en comentarios</label><br />
 <label><%=check_box 'user', 'pref_show_all_comments' %> Mostrar todos los comentarios</label><br />
 <br />
-<input type="submit" value="Guardar" />
+<input type="submit" class="button" value="Guardar" />
 </form>
 <% end -%>
+<% end -%>
+
+<%generic_support do %>
+  <% if @user.enable_comments_sig? then %>
+    <%mftext('Aviso') do %>
+      <p>Cuando actives tu firma es posible que no se vea automáticamente en las páginas de comentarios antiguas. Al cabo de unos días se actualizarán.</p>
+    <% end -%>
+  <% end -%>
 <% end -%>

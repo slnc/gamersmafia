@@ -13,6 +13,24 @@ function create_member_link(tag_id, login) {
   }
 }
 </script>
+<% content_main do %>
+<% mfcontent(@event) do %>
+<table>
+    <tr>
+        <td style="width: 100px;">Página web:</td>
+        <td><% if @event.website.to_s != '' then %><strong><a href="<%=@event.website%>"><%=@event.website%></a></strong><% end -%></td>
+    </tr>
+        <td>Comienza</td>
+        <td><strong><%=print_tstamp(@event.starts_on)%></strong></td>
+    </tr>
+        <td>Termina</td>
+        <td><strong><%=print_tstamp(@event.ends_on)%></strong></td>
+    </tr>
+</table>
+<p><%=@event.description%></p>
+<% end -%>
+<% end -%>
+
 <% content_support(:content => @event.unique_content) do %>
 <% if @event.is_public? then %>
 <% if @event.respond_to?(:coverages) then %>
@@ -56,20 +74,3 @@ function create_member_link(tag_id, login) {
 
 <% end -%>
 
-<% content_main do %>
-<% mfcontent(@event) do %>
-<table>
-    <tr>
-        <td style="width: 100px;">Página web:</td>
-        <td><% if @event.website.to_s != '' then %><strong><a href="<%=@event.website%>"><%=@event.website%></a></strong><% end -%></td>
-    </tr>
-        <td>Comienza</td>
-        <td><strong><%=print_tstamp(@event.starts_on)%></strong></td>
-    </tr>
-        <td>Termina</td>
-        <td><strong><%=print_tstamp(@event.ends_on)%></strong></td>
-    </tr>
-</table>
-<p><%=@event.description%></p>
-<% end -%>
-<% end -%>

@@ -50,7 +50,7 @@ a:hover {
 }
 
 .nav a:hover {
-	color: #${nav_link_hover_color};	
+	color: #${nav_link_hover_color};
 }
 
 #ccontent.header,
@@ -60,16 +60,6 @@ a:hover {
 }
 
 /* TODO copypasted */
-#navpath .nav {
-   background-color: #${ccontent_module_background_color};
-   color: #${content_header_color};
-}
-
-#navpath ul {
-	margin: 0 5px;
-	padding: 0;
-}
-
 #ccontent.comment .authorship {
 	background-color: #${comments_background_color};
 	border-color: #${comments_border_color};

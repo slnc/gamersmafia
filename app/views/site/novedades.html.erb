@@ -1,7 +1,3 @@
-<% generic_support do %>
-
-<% end -%>
-
 <% content_main do
 params[:page] = 1 if params[:page].nil?
 %>
@@ -11,4 +7,7 @@ params[:page] = 1 if params[:page].nil?
             {:order => 'created_on asc', :page => params['page'], :per_page => 30},
 						{:cache => "/common/novedades/page_#{params['page']}",
 						:show_day_separator => true})%>
+<% end -%>
+
+<% generic_support do %>
 <% end -%>

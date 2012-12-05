@@ -28,6 +28,10 @@ google_ad_height = 250;
     out.join(" ")
   end
 
+  def comment_count(content)
+    "<a href=\"#{gmurl(content)}#comments\">#{gm_icon("comment")} #{content.comments_count}</a>"
+  end
+
   def adsense_comments
     if App.show_ads && !(user_is_authed && Authorization.gets_less_ads?(@user))
       ADSENSE_COMMENTS_SNIPPET

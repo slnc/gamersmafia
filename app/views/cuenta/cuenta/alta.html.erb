@@ -100,23 +100,23 @@
     }
 	</script>
 	<style type="text/css">
-		.signup input.text { padding: 2px; font-size: 12px;}
+		.signup input.text { padding: 2px; }
 	</style>
 	<div style="margin-left: 75px; margin-top: 50px;">
 <table class="signup">
 <tr><td style="width: 100px; height: 30px;">Usuario</td><td>
-  <%= text_field 'user', "login", :size => 20, :id => 'signup_user_login', :class=>"text username", :onblur => 'username_checks()' %><span class="f_sm" id="username_msg" style="display:none;"></span>
+  <%= text_field 'user', "login", :size => 20, :id => 'signup_user_login', :class=>"text username", :onblur => 'username_checks()' %><span class="f_milli" id="username_msg" style="display:none;"></span>
 </td>
 </tr>
 
 <tr>
   <td style="height: 30px;">Contraseña</td>
-  <td><%= password_field 'user', "password", :size => 20, :class=>"text password", :id => 'signup_user_password', :onblur => 'password_checks()'%> <span class="f_sm" id="password_msg" style="display:none;"></span></td>
+  <td><%= password_field 'user', "password", :size => 20, :class=>"text password", :id => 'signup_user_password', :onblur => 'password_checks()'%> <span class="f_milli" id="password_msg" style="display:none;"></span></td>
 </tr>
 
 <tr>
   <td style="height: 30px;">Email</td>
-  <td><%= text_field 'user', 'email', :id => 'signup_user_email', :size => 20, :class=>"text form", :onblur => 'email_checks()' %><span class="f_sm" id="email_msg" style="display:none;"></span></td>
+  <td><%= text_field 'user', 'email', :id => 'signup_user_email', :size => 20, :class=>"text form", :onblur => 'email_checks()' %><span class="f_milli" id="email_msg" style="display:none;"></span></td>
 </tr>
 
 <tr>
@@ -146,7 +146,7 @@
 
 <tr><td>&nbsp;</td>
 <td>
-  <input type="image" class="button primary" src="/skins/default/images/btn_crear_cuenta.png" value="Crear cuenta &#187;" />
+  <input type="button" class="button primary" value="Crear cuenta &#187;" />
 </td></tr>
 </table>
 </div>

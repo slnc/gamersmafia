@@ -1,85 +1,31 @@
-.gmd10 {
-    width: 7px;
-    height: 7px;
-}
-
-.gmd11 {
-    width: 9px;
-    height: 8px;
-}
-
-.gmd12 {
-    width: 9px;
-    height: 9px;
-}
-
-.comments-icon {
-    width: 12px;
-    height: 12px;
-
-}
-
-img.pageviews-count {
-    width: 16px;
-    height: 16px;
-}
-
-img.comments-count {
-    width: 16px;
-    height: 16px;
-
-}
-
-img.downloads-count {
-    width: 16px;
-    height: 16px;
-
-}
-
 #notice, #error {
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .adslot a img, #ccontent .adslot a img {
-    border: 1px solid #aaa;
+  border: 1px solid #aaa;
 }
 
 #csupport .adslot {
-    margin: 0 0 10px 0;
+  margin: 0 0 10px 0;
 }
 
 .notification-header {
-    padding-left: 15px;
-    line-height: 33px;
-    font-weight: bold;
-    font-size: 16px;
+  padding-left: 15px;
+  font-weight: bold;
 }
 
 .editing-content {
-    margin-bottom: 30px;
-}
-
-#cmain .module .mtitle span {
-    display: block;
-    padding: 7px 5px;
-	padding-top: 0;
-}
-
-#csupport .module .mtitle span {
-	padding-left: 10px;
-}
-
-#tracker .mtitle, #lastcomments .mtitle {
-    display: none;
-    visibility: hidden;
+  margin-bottom: 30px;
 }
 
 .minicolumns {
-    padding: 3px;
+  padding: 3px;
+  max-width: 100%;
 }
 
 .day-separator {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .pagelevel-feedback {

@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Poll < ActiveRecord::Base
+  CURRENT_SQL = 'starts_on <= now() and ends_on >= now()'
   acts_as_content
   acts_as_categorizable
 
@@ -9,7 +10,8 @@ class Poll < ActiveRecord::Base
   has_many :polls_options, :dependent => :destroy
 
 
-  CURRENT_SQL = 'starts_on <= now() and ends_on >= now()'
+  scope :is_live, :conditions => CURRENT_SQL
+
 
   validates_uniqueness_of :title, :message => 'Ya hay otra encuesta con el mismo título'
 

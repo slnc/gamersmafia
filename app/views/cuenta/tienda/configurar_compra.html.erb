@@ -1,7 +1,3 @@
-<% generic_support do %>
-  <%= render :partial => 'unused_products' %>
-<% end -%>
-
 <% content_main do %>
   <% mftext(@sold_product.product.name) do %>
   <div style="float: right;"><%=product_img(@sold_product.product, false)%></div>
@@ -13,3 +9,8 @@
 </form>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <%= render :partial => 'unused_products' %>
+<% end -%>
+

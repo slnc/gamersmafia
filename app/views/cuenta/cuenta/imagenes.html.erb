@@ -1,5 +1,5 @@
-<div style="background: #fff; text-align: left; padding: 10px;">
-  <script language="JavaScript">
+<div style="text-align: left; padding: 10px;">
+  <script>
   function select_image(img_src)
   {
     var im = $('#selectedImg');
@@ -31,7 +31,7 @@
   }
   </script>
   <div style="float: right; width: 200px; margin-right: 30px; ">
-  <h2>Insertar</h2>
+  <h2 class="f_hecto">Insertar</h2>
   <div class="infoinline" id="must-select"> <p>No has elegido ninguna imagen.</p> </div>
   <div id="insertit" class="hidden">
 	  <div style="text-align: center;">
@@ -41,16 +41,16 @@
   </div>
   <br />
   <br />
-  <h2>Subir al servidor</h2>
+  <h2 class="f_hecto">Subir al servidor</h2>
   <p class="infoinline">Formatos admitidos: JPG, GIF y PNG. Si subes un archivo ZIP que contenga
   imágenes éstas serán descomprimidas.</p>
   <form method="post" action="/cuenta/cuenta/subir_imagen/?sEditorId=<%=params[:sEditorId]%>" enctype="multipart/form-data">
-  <input type="file" name="file" style="font-size: 10px;" /><br />
+  <input type="file" name="file" /><br />
   <input type="submit" class="button" value="Subir" />
   </form>
   </div>
 
-  <h2>Elegir</h2>
+  <h2 class="f_hecto">Elegir</h2>
   <div style="width: 325px; height: 360px; clear: left; overflow: scroll;">
   <table style="width: 308px;">
 <%

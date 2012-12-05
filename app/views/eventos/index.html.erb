@@ -1,33 +1,3 @@
-<% generic_support do %>
-<% mftext('Más populares') do %>
-<ul class="sidelist">
-<% cache("/#{controller.portal.code}/eventos/index/most_popular_#{Time.now.strftime('%Y%m%d')}") do %>
-  <% controller.portal.event.most_popular_items(:content_type => 'Event').each do |c| %>
-  <li style="padding-left: 3px;" class="<%=oddclass%>"><strong><%=url_for_content(c, c.title)%></strong><div class="infoinline"><span class="pageviews-count" style="line-height: 18px;" title="Leído <%=c.hits_anonymous + c.hits_registered%> veces"><%=c.hits_anonymous + c.hits_registered%></span>  &nbsp; &nbsp; <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span> &nbsp; &nbsp; <%=draw_rating(c.rating[0])%></li>
-  <% end -%>
-<% end -%>
-</ul>
-<% end -%>
-
-<% mftext('Eventos en curso') do %>
-<ul class="sidelist">
-<% cache("/#{controller.portal.code}/eventos/index/cur_events_#{Time.now.strftime('%Y%m%d')}") do %>
-	<% controller.portal.event.find(:all, :content_type => 'Event', :conditions => "events.parent_id is null and starts_on <= now() and ends_on >= now()", :order => 'starts_on ASC', :limit => 5).each do |c| %>
-  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
-  <% end -%>
-</ul>
-<% end -%>
-
-<% mftext('Próximos eventos') do %>
-<ul class="sidelist">
-  <% controller.portal.event.find(:all, :content_type => 'Event', :conditions => "events.parent_id is null and starts_on >= now()", :order => 'starts_on ASC', :limit => 5).each do |c| %>
-  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="comments-count"><a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
-  <% end -%>
-</ul>
-<% end -%>
-<% end -%>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Eventos') do %>
 
@@ -54,8 +24,8 @@ event.description = (event.description.to_s == '') ? '&nbsp;' : event.descriptio
   <td><strong><%= link_to event.title, gmurl(event) %></strong><br /><span class="infoinline"><%=truncate(strip_tags(event.description), 150)%></span></td>
   <td class="timestamp infoinline"><strong><%=print_tstamp(event.starts_on)%></strong></td>
   <td class="timestamp infoinline"><strong><%=print_tstamp(event.ends_on)%></strong></td>
-  <td class="w50"><span class="members-count"><%=event.users.count%></span></td>
-  <td class="w50"><span class="comments-count"><a title="Ver comentarios" href="<%=controller.url_for_content_onlyurl(event)%>#comments"><%=event.cache_comments_count%></a></span></td>
+  <td class="w50 align-right"><%=gm_icon("user", "small")%> <%=event.users.count%></td>
+  <td class="w50"><span class="f_milli"><%=gm_icon("comment", "small")%> <a title="Ver comentarios" href="<%=controller.url_for_content_onlyurl(event)%>#comments"><%=event.cache_comments_count%></a></span></td>
 </tr>
   <% end %>
 <% end %>
@@ -64,3 +34,34 @@ event.description = (event.description.to_s == '') ? '&nbsp;' : event.descriptio
 <%= render :partial => 'shared/pager2', :locals => {:collection => @events, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<% mftext('Más populares') do %>
+<ul class="sidelist">
+<% cache("/#{controller.portal.code}/eventos/index/most_popular_#{Time.now.strftime('%Y%m%d')}") do %>
+  <% controller.portal.event.most_popular_items(:content_type => 'Event').each do |c| %>
+    <li style="padding-left: 3px;" class="<%=oddclass%>"><strong><%=url_for_content(c, c.title)%></strong><div class="infoinline"><span class="f_milli" title="Leído <%=c.hits_anonymous + c.hits_registered%> veces"><%=gm_icon("pageviews", "small")%><%=c.hits_anonymous + c.hits_registered%></span>  &nbsp; &nbsp; <span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span> &nbsp; &nbsp; <%=draw_rating(c.rating[0])%></li>
+  <% end -%>
+<% end -%>
+</ul>
+<% end -%>
+
+<% mftext('Eventos en curso') do %>
+<ul class="sidelist">
+<% cache("/#{controller.portal.code}/eventos/index/cur_events_#{Time.now.strftime('%Y%m%d')}") do %>
+	<% controller.portal.event.find(:all, :content_type => 'Event', :conditions => "events.parent_id is null and starts_on <= now() and ends_on >= now()", :order => 'starts_on ASC', :limit => 5).each do |c| %>
+    <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
+  <% end -%>
+</ul>
+<% end -%>
+
+<% mftext('Próximos eventos') do %>
+<ul class="sidelist">
+  <% controller.portal.event.find(:all, :content_type => 'Event', :conditions => "events.parent_id is null and starts_on >= now()", :order => 'starts_on ASC', :limit => 5).each do |c| %>
+    <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
+  <% end -%>
+</ul>
+<% end -%>
+<% end -%>
+<% end -%>
+

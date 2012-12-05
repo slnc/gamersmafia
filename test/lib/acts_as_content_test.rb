@@ -3,9 +3,45 @@ require 'test_helper'
 require 'RMagick'
 
 class ActsAsContentTest < ActiveSupport::TestCase
+  test "extract images from news with no images" do
+    n = News.new({
+      :title => "Hello world",
+      :terms => 1,
+      :user_id => 1,
+      :description => 'foojahaha',
+    })
+    assert n.save
+    assert_nil n.main_image, n.main_image
+  end
+
+  test "extract images from image" do
+    image = Image.find(1)
+    assert_equal "/#{image.file}", image.main_image
+  end
+
+  test "extract images from news with images in description and main" do
+    n = News.new({
+      :title => "Hello world",
+      :terms => 1,
+      :user_id => 1,
+      :description => '<img src="/description_image.jpg" />',
+      :main => '<img src="/main_image.jpg" />',
+    })
+    assert n.save
+    assert_equal "/description_image.jpg", n.main_image
+  end
+
   test "change state should return false if model is invalid" do
-    f1 = Funthing.new({:title => 'foo funthing', :main => 'http://www.youtube.com/watch?v=rrNriyDJmdw', :user_id => 1})
-    f2 = Funthing.new({:title => 'foo funthing2', :main => 'http://www.youtube.com/watch?v=rrNriyDJmdw2', :user_id => 1})
+    f1 = Funthing.new({
+      :title => 'foo funthing',
+      :main => 'http://www.youtube.com/watch?v=rrNriyDJmdw',
+      :user_id => 1,
+    })
+    f2 = Funthing.new({
+      :title => 'foo funthing2',
+      :main => 'http://www.youtube.com/watch?v=rrNriyDJmdw2',
+      :user_id => 1,
+    })
     assert f1.save
     assert f2.save
     User.db_query("UPDATE funthings SET title = '' WHERE id = #{f2.id}")
@@ -14,7 +50,12 @@ class ActsAsContentTest < ActiveSupport::TestCase
   end
 
   test "no_null_title_in_content" do
-    n = News.new({:title => '', :terms => 1, :user_id => 1, :description => 'foojahaha'})
+    n = News.new({
+      :title => '',
+      :terms => 1,
+      :user_id => 1,
+      :description => 'foojahaha',
+    })
     assert !n.save
   end
 

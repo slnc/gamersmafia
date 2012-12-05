@@ -1,0 +1,13 @@
+.button {
+  border: 1px solid;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  display: inline-block;
+  font-family: arial;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 1rem 0.7rem 0.7rem 0.7rem;
+  text-transform: uppercase;
+  cursor: pointer;
+}

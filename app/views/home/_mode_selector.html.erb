@@ -1,0 +1,9 @@
+<div class="f_hecto home-mode-selector right">
+  <%if home_mode == "stream"%>
+    <span class="secondary"><%=gm_icon("home-stream")%></span>
+    <a href="/home/tetris" title="Activar portada tetris" class="nav"><%=gm_icon("home-tetris")%></a>
+  <% else %>
+    <a href="/home/stream" title="Activar portada stream" class="nav"><%=gm_icon("home-stream")%></a>
+    <span class="secondary"><%=gm_icon("home-tetris")%></span>
+  <% end -%>
+</div>

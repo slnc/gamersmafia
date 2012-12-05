@@ -1,26 +1,3 @@
-<% generic_support do %>
-  <% if @staff_position.state == 'unassigned' && @user.has_skill?("Webmaster") %>
-    <% mftext("Administración") do %>
-      <%= link_to("Mover a presentación de candidaturas",
-                 move_to_candidacy_presentation_staff_position_path(
-                    @staff_position),
-                 :confirm => '¿Estás seguro?') %>
-    <% end -%>
-  <% end -%>
-
-  <% if @staff_position.state == 'candidacy_presentation' then %>
-    <% mflist("Candidatos",
-              @staff_position.staff_candidates.find(
-                  :all, :include => :user)) do |candidate| %>
-    <%= link_to(candidate.user.login,
-                staff_position_staff_candidate_path(
-                    @staff_position, candidate)) %>
-    <% end -%>
-    <%= link_to("Ver todos los candidatos",
-                staff_position_staff_candidates_path(@staff_position)) %>
-  <% end -%>
-<% end %>
-
 <% content_main do %>
   <% mftext(@staff_position.staff_type.name) do %>
     <% if @staff_position.state == 'candidacy_presentation' then %>
@@ -72,3 +49,27 @@
 
   <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <% if @staff_position.state == 'unassigned' && @user.has_skill?("Webmaster") %>
+    <% mftext("Administración") do %>
+      <%= link_to("Mover a presentación de candidaturas",
+                 move_to_candidacy_presentation_staff_position_path(
+                    @staff_position),
+                 :confirm => '¿Estás seguro?') %>
+    <% end -%>
+  <% end -%>
+
+  <% if @staff_position.state == 'candidacy_presentation' then %>
+    <% mflist("Candidatos",
+              @staff_position.staff_candidates.find(
+                  :all, :include => :user)) do |candidate| %>
+    <%= link_to(candidate.user.login,
+                staff_position_staff_candidate_path(
+                    @staff_position, candidate)) %>
+    <% end -%>
+    <%= link_to("Ver todos los candidatos",
+                staff_position_staff_candidates_path(@staff_position)) %>
+  <% end -%>
+<% end %>
+

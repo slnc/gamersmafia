@@ -22,18 +22,14 @@ class FaccionController < ApplicationController
   end
 
   def index
-    @active_sawmode = 'facciones'
   end
 
   def miembros
-    @active_sawmode = 'facciones'
   end
 
   def clanes
-    @active_sawmode = 'facciones'
   end
 
   def staff
-    @active_sawmode = 'facciones'
   end
 end

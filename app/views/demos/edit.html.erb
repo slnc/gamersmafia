@@ -1,21 +1,10 @@
-<% generic_support do %>
-<%= render :partial => '/shared/drafts', :locals => { :cls => Demo } if user_is_authed %>
-<%=render :partial => 'shared/content_details', :locals => { :object => @demo} %>
-<% mftext('Consejos') do %>
-<ul class="content-hid">
-<li>Descripción informativa</li>
-</ul>
-<% end -%>
-<%= render :partial => 'shared/pending', :object => Demo.pending %>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Editar demo') do %>
 
 <%= form_tag({:action => 'update', :id => @demo}, {:multipart => true, :class => 'editing-content' }) %>
   <%= render :partial => 'form' %>
   <br />
-  <%= submit_tag 'Guardar' %>
+  <%= submit_tag 'Guardar', :class => 'button' %>
 </form>
 <%=render :partial => '/shared/change_authorship', :locals => {:object => @demo}%>
 
@@ -23,3 +12,13 @@
 <%= link_to 'Volver', :action => 'list' %>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<%=render :partial => 'shared/content_details', :locals => { :object => @demo} %>
+<% mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Descripción informativa</li>
+</ul>
+<% end -%>
+<% end -%>
+

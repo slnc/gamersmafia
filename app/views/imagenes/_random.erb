@@ -1,7 +1,7 @@
 <%mftext('Aleatorias de esta galería') do %>
     <ul class="sidelist images">
     <% category.random(5).each do |c|  %>
-    <li class="<%=oddclass%>"><span class="screenshot"><%=link_to fc_thumbnail(c.file, 'i', '85x85', false), gmurl(c)%></span><br /><%=draw_rating(c.rating)%> <span class="infoinline">| <span class="comments-count"><a href="/images/show/<%=c.id%>"><%=c.cache_comments_count%></a></span></span></li>
+      <li class="<%=oddclass%>"><span class="screenshot"><%=link_to fc_thumbnail(c.file, 'i', '85x85', false), gmurl(c)%></span><br /><%=draw_rating(c.rating)%> <span class="infoinline">| <span class="f_milli"><%=gm_icon("comment", "small")%> <a href="/images/show/<%=c.id%>"><%=c.cache_comments_count%></a></span></span></li>
     <% end -%>
   </ul>
 <% end -%>

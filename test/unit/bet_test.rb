@@ -336,11 +336,7 @@ class BetTest < ActiveSupport::TestCase
     assert_equal @cash_u2, @u2.cash
   end
 
-  # opcion1 | opcion2
-  #     100 |       0       (u1)
-  #      50 |      50       (u2)
-  #      25 |      75       (u3)
-  test "should_properly_distribute_money_if_tie_mixed" do
+  def bet_with_mixed_amounts
     self.prepare_first_three_users
 
     @bets_option_foo.bets_tickets.create({
@@ -358,9 +354,16 @@ class BetTest < ActiveSupport::TestCase
     @bets_option_bar.bets_tickets.create({
       :user_id => 3,
       :ammount => 75})
+  end
+
+  # opcion1 | opcion2
+  #     100 |       0       (u1)
+  #      50 |      50       (u2)
+  #      25 |      75       (u3)
+  test "should_properly_distribute_money_if_tie_mixed" do
+    self.bet_with_mixed_amounts
 
     @bet.complete('tie')
-
     assert @bet.completed?
 
     @u1.reload
@@ -384,5 +387,10 @@ class BetTest < ActiveSupport::TestCase
     bet = Bet.find(1)
     assert bet.close(User.find(1), 'blah')
     assert bet.closed?
+  end
+
+  test "ratio_amounts" do
+    self.bet_with_mixed_amounts
+    self.assert_equal(175.0 / (125 + 175.0), @bet.ratio_amounts)
   end
 end

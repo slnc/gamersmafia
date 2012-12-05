@@ -1,3 +1,58 @@
+<% content_main do %>
+<%mftext('Underboss') do %>
+<% if @faction.is_boss?(@user) then %>
+<form method="post" action="/cuenta/faccion/update_underboss">
+	Underboss: <input type="text" class="text" name="login" value="<%=@faction.underboss.login if @faction.underboss%>" /><br />
+	<input type="submit" class="button" value="Guardar" />
+</form>
+<% end -%>
+<% end -%>
+
+<%mftext('Editores') do %>
+<table>
+  <tr>
+    <th>Usuario</th>
+    <th colspan="2">Contenido</th>
+  </tr>
+<% @editors.each do |ctype, user| %>
+  <tr class="<%=oddclass%>">
+    <td><%=link_to user.login, gmurl(user) %></td>
+    <td><%=Cms::CLASS_NAMES[ctype.name].pluralize.titleize%></td>
+    <td><%=link_to 'Eliminar', "/cuenta/faccion/del_editor/#{user.id}?content_type_id=#{ctype.id}", :confirm => '¿Estás seguro?'%></td>
+  </tr>
+<% end -%>
+</table>
+<form method="post" action="/cuenta/faccion/add_editor">
+Usuario: <input type="text" class="text" name="login" />
+<select name="content_type_id">
+	<% ContentType.find(:all, :conditions => 'name not in (\'Funthing\', \'Topic\', \'Blogentry\') AND name NOT LIKE \'Clan%\'', :order => 'name').each do |ctype| %>
+	<option value="<%=ctype.id%>"><%=Cms::CLASS_NAMES[ctype.name].pluralize.titleize%></option>
+	<% end -%>
+</select>
+
+<input type="submit" class="button" value="Añadir" />
+</form>
+<% end -%>
+
+<%mftext('Moderadores') do %>
+<table>
+  <tr>
+    <th colspan="2">Usuario</th>
+  </tr>
+<% for moderator in @moderators %>
+  <tr class="<%=oddclass%>">
+    <td><%=link_to moderator.login, gmurl(moderator) %></td>
+    <td><%=link_to 'Eliminar', {:action => 'del_moderator', :id => moderator.id}, :confirm => '¿Estás seguro?'%></td>
+  </tr>
+<% end -%>
+</table>
+<%=form_tag :action => 'add_moderator'%>
+Usuario: <input type="text" class="text" name="login" />
+<input type="submit" class="button" value="Añadir" />
+</form>
+<% end -%>
+<% end -%>
+
 <% generic_support do %>
   <% mftext('Último contenido creado para la facción') do %>
   <%
@@ -61,58 +116,4 @@
   <br />
   <% end -%>
   <% end -%>
-<% end -%>
-
-<% content_main do %>
-<%mftext('Underboss') do %>
-<% if @faction.is_boss?(@user) then %>
-<form method="post" action="/cuenta/faccion/update_underboss">
-	Underboss: <input type="text" class="text" name="login" value="<%=@faction.underboss.login if @faction.underboss%>" /><br />
-	<input type="submit" value="Guardar" />
-</form>
-<% end -%>
-<% end -%>
-
-<%mftext('Editores') do %>
-<table>
-  <tr>
-    <th>Usuario</th>
-    <th colspan="2">Contenido</th>
-  </tr>
-<% @editors.each do |ctype, user| %>
-  <tr class="<%=oddclass%>">
-    <td><%=link_to user.login, gmurl(user) %></td>
-    <td><%=Cms::CLASS_NAMES[ctype.name].pluralize.titleize%></td>
-    <td><%=link_to 'Eliminar', "/cuenta/faccion/del_editor/#{user.id}?content_type_id=#{ctype.id}", :confirm => '¿Estás seguro?'%></td>
-  </tr>
-<% end -%>
-</table>
-<form method="post" action="/cuenta/faccion/add_editor">
-Usuario: <input type="text" class="text" name="login" />
-<select name="content_type_id">
-	<% ContentType.find(:all, :conditions => 'name not in (\'Funthing\', \'Topic\', \'Blogentry\') AND name NOT LIKE \'Clan%\'', :order => 'name').each do |ctype| %>
-	<option value="<%=ctype.id%>"><%=Cms::CLASS_NAMES[ctype.name].pluralize.titleize%></option>
-	<% end -%>
-</select>
-
-<input type="submit" class="button" value="Añadir" />
-</form>
-<% end -%>
-
-<%mftext('Moderadores') do %>
-<table>
-  <tr>
-    <th colspan="2">Usuario</th>
-  </tr>
-<% for moderator in @moderators %>
-  <tr class="<%=oddclass%>">
-    <td><%=link_to moderator.login, gmurl(moderator) %></td>
-    <td><%=link_to 'Eliminar', {:action => 'del_moderator', :id => moderator.id}, :confirm => '¿Estás seguro?'%></td>
-  </tr>
-<% end -%>
-</table>
-<%=form_tag :action => 'add_moderator'%>
-Usuario: <input type="text" class="text" name="login" /> <input type="submit" class="button" value="Añadir" />
-</form>
-<% end -%>
 <% end -%>

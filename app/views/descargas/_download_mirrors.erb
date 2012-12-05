@@ -1,6 +1,6 @@
-  <ul style="margin: 0; padding: 0; list-style: none;">
+  <ul style="  ;">
   <% for mirror in download_mirrors %>
-    <li class="<%=oddclass%>" style="height: 48px;"><a target="_blank" class="infoinline external" title="Descargar desde <%=mirror_name%>" href="<%=mirror.url%>"><img src="/images/blank.gif" class="download-mirror" /></a>
+    <li class="<%=oddclass%>" style="height: 48px;"><a target="_blank" class="infoinline external" title="Descargar desde <%=mirror_name%>" href="<%=mirror.url%>"><img src="/images/dot.gif" class="download-mirror" /></a>
   <strong><%=mirror.hostname_from_url%></strong><br />
   <a target="_blank" class="infoinline external" title="Descargar desde <%=mirror_name%>" href="<%=mirror.url%>"><%=mirror.url%></a>
   </li>

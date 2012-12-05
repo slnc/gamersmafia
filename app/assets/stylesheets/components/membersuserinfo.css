@@ -1,8 +1,8 @@
 .members-user-info ul {
   margin: 5px 0 0 52px;
-  padding: 0;
+  
   text-align: left;
-  list-style: none;
+  ;
 }
 
 .members-user-info .avatar {
@@ -12,6 +12,5 @@
 
 .members-user-info li {
   width: 69px;
-  line-height: 10px;
   margin-bottom: 2px;
 }

@@ -1,9 +1,3 @@
-<% generic_support do %>
-  <% mftext('Crear link') do %>
-    <p><a href="/cuenta/faccion/links/new">Nuevo link</a></p>
-	<% end -%>
-<% end -%>
-
 <% content_main do %>
   <% mftext('Links') do %>
 
@@ -28,3 +22,10 @@
 <%= render :partial => 'shared/pager2', :locals => {:collection => @factions_links, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <% mftext('Crear link') do %>
+    <p><a href="/cuenta/faccion/links/new">Nuevo link</a></p>
+	<% end -%>
+<% end -%>
+

@@ -4,9 +4,9 @@ module Cuenta::MensajesHelper
     out = (indent_level == 0) ? '<ul class="messages-thread">' : ""
     # '&nbsp; '*indent_level
     if msg.id == curmsg.id then
-      out << "<li><table class=\"compact\"><tr><td class=\"preview\"><strong>#{msg.preview[0..500]}</strong></td><td class=\"w125\">&nbsp; <span class=\"infoinline\">#{print_tstamp(msg.created_on, 'intelligent')}</span> <span class=\"infoinline\"><a href=\"#{gmurl(msg.sender)}\">#{msg.sender.login}</a></span></td></tr></table>"
+      out << "<li><table class=\"compact\"><tr><td class=\"preview\">#{gm_icon("message")} <strong>#{msg.preview[0..500]}</strong></td><td class=\"w125\">&nbsp; <span class=\"infoinline\">#{print_tstamp(msg.created_on, 'intelligent')}</span> <span class=\"infoinline\"><a href=\"#{gmurl(msg.sender)}\">#{msg.sender.login}</a></span></td></tr></table>"
     else
-      out << "<li><table class=\"compact\"><tr><td class=\"preview\"><a href=\"/cuenta/mensajes/mensaje/#{msg.id}/\">#{msg.preview[0..500]}</a></td><td class=\"w125\">&nbsp; <span class=\"infoinline\">#{print_tstamp(msg.created_on, 'intelligent')}</span> <span class=\"infoinline\"><a href=\"#{gmurl(msg.sender)}\">#{msg.sender.login}</a></span></td></tr></table>"
+      out << "<li><table class=\"compact\"><tr><td class=\"preview\">#{gm_icon("message")} <a href=\"/cuenta/mensajes/mensaje/#{msg.id}/\">#{msg.preview[0..500]}</a></td><td class=\"w125\">&nbsp; <span class=\"infoinline\">#{print_tstamp(msg.created_on, 'intelligent')}</span> <span class=\"infoinline\"><a href=\"#{gmurl(msg.sender)}\">#{msg.sender.login}</a></span></td></tr></table>"
     end
 
     Message.find(:all, :conditions => ['in_reply_to = ?', msg.id], :order => 'created_on').each do |m|

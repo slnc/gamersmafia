@@ -5,7 +5,7 @@ categories.each do |nc|
 	tc = TopicsCategory.find(:first, :conditions => ['code = ?', nc.code])
     next unless tc
 %>
-<div id="home-<%=tc.code%>" class="subheader"><div><span><%=tc.name%></span></div></div>
+<div id="home-<%=tc.code%>" class="subheader f_deca"><div><span><%=tc.name%></span></div></div>
 <ul class="content-hid">
 <%
 shown_offtopics = []
@@ -21,7 +21,7 @@ nc.news.find(:published, :limit => 12, :order => 'created_on DESC').each do |off
 			<% tc.topics.find(:all, :conditions => "state = #{Cms::PUBLISHED}", :order => 'updated_on DESC', :limit => 3).each do |topic| %>
 			<tr class="<%=oddclass%>">
 				<td class="content<%=topic.unique_content.id%> new"><a href="<%=gmurl(topic)%>"><%=topic.title%></a></td>
-				<td class="w50 right"><span class="comments-count"><a href="<%=gmurl(topic)%>#comments"><%=topic.cache_comments_count%></a></span></td>
+        <td class="w50 right"><span class="f_milli"><%=gm_icon("comment", "small")%> <a href="<%=gmurl(topic)%>#comments"><%=topic.cache_comments_count%></a></span></td>
 			</tr>
 			<% end -%>
 		</table>

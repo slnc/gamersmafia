@@ -1,16 +1,3 @@
-<% content_support(:content => @funthing.unique_content) do %>
-	<% if @funthing.is_public? %>
-    <%=render :partial => '/shared/content_summary', :locals => { :content => @funthing }%>
-		<%=mfcontents_basic("Últimas curiosidades",
-							 Funthing, [:published, {:order => 'created_on desc', :limit => 10}],
-							:cache => "/common/curiosidades/show/_latest",
-							:faction_favicon => true)%>
-
-		<%= render :partial => 'shared/best_rated', :locals => { :cls => Funthing } %>
-	<% end -%>
-
-<% end -%>
-
 <% content_main do %>
   <%mfcontent(@funthing) do %>
 <div style="margin: 10px; text-align: center;">
@@ -59,3 +46,15 @@
 </div>
   <% end -%>
 <%end -%>
+
+<% content_support(:content => @funthing.unique_content) do %>
+	<% if @funthing.is_public? %>
+    <%=render :partial => '/shared/content_summary', :locals => { :content => @funthing }%>
+		<%=mfcontents_basic("Últimas curiosidades",
+							 Funthing, [:published, {:order => 'created_on desc', :limit => 10}],
+							:cache => "/common/curiosidades/show/_latest",
+							:faction_favicon => true)%>
+
+		<%= render :partial => 'shared/best_rated', :locals => { :cls => Funthing } %>
+	<% end -%>
+<% end -%>

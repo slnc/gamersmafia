@@ -1,15 +1,9 @@
-<% generic_support do %>
-  <%= render :partial => '/shared/drafts', :locals => { :cls => Image } if user_is_authed %>
-<%= render :partial => 'shared/content_details', :locals => { :object => @image} %>
-<%= render :partial => 'shared/pending', :object => Image.pending %>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Editar imagen') do %>
 
 <%= form_tag({:action => 'update', :id => @image}, {:multipart => true, :class => 'editing-content' }) %>
   <%= render :partial => 'form' %>
-  <%= submit_tag 'Guardar' %>
+  <%= submit_tag 'Guardar', :class => 'button' %>
 </form>
 <%=render :partial => '/shared/change_authorship', :locals => {:object => @image}%>
 
@@ -18,3 +12,8 @@
 <%= link_to 'Volver', :action => 'list' %>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <%= render :partial => 'shared/content_details', :locals => { :object => @image} %>
+<% end -%>
+

@@ -1,99 +1,75 @@
-<?xml version="1.0"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="es">
+<!DOCTYPE html>
+<html>
 <head>
-<title><%=controller.title%></title>
-<%=stylesheet_link_tag "application"%>
-<%=css_includes.html_safe%>
-<%=javascript_includes.html_safe%>
-<%=javascript_include_tag "application"%>
-<%= yield(:head) %>
-<link rel="alternate" type="application/rss+xml" title="Feed RSS de Gamersmafia" href="/rss/noticias" />
-<%= analytics_code if App.enable_google_analytics? %>
-<% if controller.portal.code == 'diablo' then %>
-<script src="http://eu.battle.net/d3/static/js/tooltips.js"></script>
-<% end -%>
+  <title><%=controller.title%></title>
+  <%=css_includes.html_safe%>
+  <%=stylesheet_link_tag "application"%>
+  <%=stylesheet_link_tag "bricks"%>
+  <%=javascript_includes.html_safe%>
+  <%=javascript_include_tag "application"%>
+  <%= yield(:head) %>
+  <link rel="alternate" type="application/rss+xml" title="Feed RSS de Gamersmafia" href="/rss/noticias" />
+  <%= analytics_code if App.enable_google_analytics? %>
+  <% if controller.portal.code == 'diablo' then %>
+  <script src="http://eu.battle.net/d3/static/js/tooltips.js"></script>
+  <% end -%>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
 </head>
-<% show_ab_test("show_full_menu", 0, opts={:add_xab_to_links => true}) do
-  @madness = true
-end %>
-<% show_ab_test("show_full_menu", 1, opts={:add_xab_to_links => true}) do
-  @madness = false
-end %>
-<body class="<%= body_css_classes %><%= " madness" if @madness%>">
+<body class="<%=body_css_classes%>">
+  <script type="text/javascript">var contents = [];</script>
   <div id="loading" class="hidden"><img src="/skins/suicidal/spin.gif"></div>
+
   <%= render :partial => 'layouts/global_menu' %>
+
+  <div id="mgheader">
+    <a href="/" class="logo" title="Ir a portada">
+      <span class="mascot"><%=gm_icon("gm-mascot")%></span>
+      <span class="letters"><%=gm_icon("gm-logo-g")%><%=gm_icon("gm-logo-a")%><%=gm_icon("gm-logo-m")%><%=gm_icon("gm-logo-e")%><%=gm_icon("gm-logo-r")%><span style="margin-left: -1px;"><%=gm_icon("gm-logo-s")%></span><span class="logo-mafia"><%=gm_icon("gm-logo-m")%><%=gm_icon("gm-logo-a")%><%=gm_icon("gm-logo-f")%><span style="margin-left: -5px;"><%=gm_icon("gm-logo-i")%></span><span style="margin-left: -4px;"><%=gm_icon("gm-logo-a")%></span></span></span></a>
+
+   <%= render :partial => 'layouts/faction_building' %>
+  </div>
+
+  <style type="text/css">#mgheader { background-position-x: 725px; }</style>
+
   <div id="cpageout" class="container gm20085">
 	<div id="cpagein" class="container">
 
     <div class="pagelevel-feedback hidden"></div>
 
-    <style type="text/css">#mgheader { background-position-x: 725px; }</style>
-
     <%=render :partial => '/layouts/gmgeist_progress'%>
 
-	  <div id="mgheader" class="module">
-
-		<div class="mcontent">
-		   <a id="logo" <% if !(controller.controller_name == 'home' && controller.action_name == 'index' && controller.portal.id == '-1') then %>onmouseover="this.className = 'hover';" onmouseout="this.className=''"<%end -%> href="http://<%=App.domain%>/"><img src="/images/blank.gif" /></a>
-			   <% if controller.portal.small_header then %>
-				   <style type="text/css">
-				   #logo img { background: url(/<%=controller.portal.small_header%>) 0 0 no-repeat; }
-				   </style>
-			   <% end -%>
-
-    <%= render :partial => 'layouts/faction_building' %>
-    </div>
-    </div>
-
+<div id="ccontent" class="container page-level-content" name="ccontent">
 	<% if controller.controller_name != 'home' then %>
-    <div id="mgbreadcrumb" class="module"><div class="mcontent"><%=navpathgm20085%></div></div>
-	<% else %>
-	<div class="clearb" style="padding-top: 10px;"></div>
+    <div id="mgbreadcrumb" class="f_milli secondary"><%=navpathgm20085%></div>
 	<% end -%>
 
 	<% if controller.submenu && !controller.rescuiing then %>
-	<div id="mgsubmenu" class="module"><div clas="mcontent">
-	<ul>
-    <li class="first"><span><%=submenu_name%></span></li>
-    <% for item in (controller.submenu_items || [])
-    htmlclass= (item[1].gsub("/", "") == controller.controller_name.gsub("/", "")) ? ' class="current"' : ''
-    %>
-    <li id="wms-<%=item[0].bare%>" <%=htmlclass-%>><a href="<%=item[1]%>"><%=item[0]%></a></li>
-    <% end %>
-    </ul>
-	<div class="clearl"></div>
-  </div>
-</div>
-<% end -%>
-<div id="ccontent" class="container" name="ccontent">
-<script type="text/javascript">var contents = [];</script>
-<% if flash[:notice] -%><div id="notice"><%= flash[:notice] %></div><% end -%>
-<% if flash[:error] -%><div id="error"><%= flash[:error] %></div><% end -%>
+    <div id="mgsubmenu" class="f_milli navbar">
+      <ul>
+        <li class="first"><span><%=submenu_name%></span></li>
+        <% for item in (controller.submenu_items || [])
+        htmlclass= (item[1].gsub("/", "") == controller.controller_name.gsub("/", "")) ? ' class="current"' : ''
+        %>
+        <li id="wms-<%=item[0].bare%>" <%=htmlclass-%>><a href="<%=item[1]%>"><%=item[0]%></a></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end -%>
+
+<% if flash[:notice] -%><div id="notice" class="good-block"><%= flash[:notice] %></div><% end -%>
+<% if flash[:error] -%><div id="error" class="bad-block"><%= flash[:error] %></div><% end -%>
 <%= yield %>
 <div style="clear:both;">&nbsp;</div>
 </div>
 
-<div id="mgads-bottom"><div class="mgads-bottom1"><%=ads_slots('bottom', '0-0') unless @no_ads%></div></div>
-
-
-<div id="cleft" class="container">
-	<div class="det-bottom">
-		<div class="det-bottom2">
-	<% if nil then %>
-	<div style="padding: 0 0 7px 5px; font-weight: bold; font-size: 11px;"><a href="http://<%=App.domain%>/">Portada GM</a></div>
-	<% if user_is_authed && @user.faction_id then %><div style="padding: 0 0 10px 5px; font-weight: bold; font-size: 11px;"><a href="http://<%=@user.faction.code%>.<%=App.domain%>/">Portada <%=@user.faction.code.upcase%></a></div><% end -%>
-	<% end -%>
-
+<div id="cleft" class="container f_milli page-level-content">
+  <div class="wrapper">
 	<%= render :partial => '/layouts/userbox2' %>
 <%
 if user_is_authed && @user.is_faction_leader? && @user.faction_id then %>
 <%mftext('Monitor de Facción', :id => 'mgfaction-monitor') do %><%=faction_favicon(@user.faction)%><%=faction_activity_minicolumns(@user.faction)%>
 <div style="text-align: right"><a href="/cuenta/faccion">mi facción</a></div><% end -%>
 <% end %>
-<% if nil then %>
-<%=sparkline(:data => [150, 175, 22, 19, 7, 5,6,9,11], :max => 300, :size => '80x16') %>
-<% end -%>
 
 <%= render(:partial => '/layouts/tracker', :locals => { :user => @user }) if user_is_authed && @user.using_tracker %>
 
@@ -101,10 +77,10 @@ if user_is_authed && @user.is_faction_leader? && @user.faction_id then %>
 <% cache("/_users/#{@user.id % 1000}/#{@user.id}/layouts/recommendations") do %>
 <% crecs = ContentsRecommendation.find_for_user(@user)
 if crecs.size > 0 then %>
-<div id="recommended-bg-text"></div>
-<%mflist('Recomendaciones',
+<div class="f_deci f-module-title">Recomendaciones</div>
+<%mflist(nil,
     crecs, {
-        :class => 'new',
+        :class => 'new unread-item',
         :class_container => 'mfcontents-ul',
         :id => 'recommendations4u',
     }) do |crec|
@@ -122,7 +98,7 @@ if crecs.size > 0 then %>
         category_prefix, h(crec.content.name), crec.sender.login,
         comment_suffix]
     %>
-	<a class="content<%=crec.content.id%>"
+	<a class="ellipsis content<%=crec.content.id%>"
      href="<%=gmurl(crec.content)%>"
      title="<%=title_text%>"><%=truncate(crec.content.name, 26, '..')%></a>
 <% end -%>
@@ -133,7 +109,8 @@ if crecs.size > 0 then %>
 <%= render :partial => '/layouts/last_commented_objects' %>
 
 <div id="mgads" class="container">
-  <div class="mcontent"><%=ads_slots('sideleft', '1-0')%>
+  <div class="mcontent">
+    <%=ads_slots('sideleft', '1-0')%>
     <br />
     <% if should_show_bottom_ad? then %>
 <script type="text/javascript"><!--
@@ -152,6 +129,10 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 <%= render(:partial => '/layouts/webs_aliadas') if @portal.kind_of?(FactionsPortal) && controller.controller_name == 'home' %>
 </div>
 </div>
+
+
+<div id="mgads-bottom">
+  <div class="mgads-bottom1"><%=ads_slots('bottom', '0-0') unless @no_ads%></div>
 </div>
 </div>
 <%=render :partial => '/layouts/footer' %>
@@ -159,5 +140,10 @@ src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
 
 <script type="text/javascript">cfgPage(<%=user_is_authed%>, contents, '<%=controller.controller_name%>', '<%=controller.action_name%>', '<%=params[:id]%>'<%= params['_xnvi'] ? ", '#{params['_xnvi']}'" : ', undefined'%><%= params['_xab'].size > 0 ? ", '#{CGI::escape(params['_xab'].to_json)}'" : ', undefined'%><%= controller._xad.size > 0 ? ", '#{CGI::escape(controller._xad.to_json)}'" : ', undefined'%>);</script>
 <%= render :partial => '/shared/dbstats' if App.enable_dbstats? %>
+<% if show_render_stats %>
+  <div id="render-stats" class="secondary-block f_milli">
+    <%=((Time.now - @start_time) * 1000).to_i%>ms
+  </div>
+<% end -%>
 </body>
 </html>

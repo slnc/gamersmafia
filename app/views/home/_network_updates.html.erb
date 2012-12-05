@@ -1,0 +1,27 @@
+<%mftext('En tu red', :grid => 6, :id => 'en-tu-red') do %>
+<ul>
+<%
+cur_date = nil
+is_first = true
+@user.users_newsfeeds.find(:all, :order => 'created_on DESC', :limit => 28).each do |unf|
+if cur_date.nil? && unf.created_on >= Time.now.beginning_of_day
+cur_date = Time.now.beginning_of_day
+cur_str = 'Hoy'
+output_date = true
+end
+if cur_date.nil? || (cur_date && cur_date.strftime('%Y%m%d') > unf.created_on.strftime('%Y%m%d'))
+cur_date = unf.created_on
+cur_str = cur_date.strftime('%d %b %Y')
+output_date = true
+end
+
+if output_date then %>
+<li class="en-tu-red-date <%='first' if is_first%>"><%=cur_str%></li>
+<% output_date = false
+is_first = false
+end
+%>
+<li class="<%=oddclass%>"><%=unf.summary%></li>
+<% end -%>
+</ul>
+<% end -%>

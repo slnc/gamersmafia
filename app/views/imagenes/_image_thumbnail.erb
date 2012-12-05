@@ -7,4 +7,4 @@ mode = 'f'
 end
 -%>
 <div class="screenshot"><%=link_to fc_thumbnail(image.file, mode, size, false), gmurl(image)%>
-  <div class="infoinline" style="margin-top: 2px;"><%=faction_favicon(image.main_category)%> | <span class="comments-count"><a title="Ver comentarios" style="display: inline;" href="<%=gmurl(image)%>#comments"><%=image.cache_comments_count%></a></span></div></div>
+  <div class="infoinline" style="margin-top: 2px;"><%=faction_favicon(image.main_category)%> | <span class="f_milli"><%=gm_icon("comment", "small")%> <a title="Ver comentarios" style="display: inline;" href="<%=gmurl(image)%>#comments"><%=image.cache_comments_count%></a></span></div></div>

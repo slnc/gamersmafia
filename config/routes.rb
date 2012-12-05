@@ -1,5 +1,13 @@
 # -*- encoding : utf-8 -*-
 Gamersmafia::Application.routes.draw do
+  resources :gaming_platforms, {
+      :path => "plataformas",
+      :path_names => {:new => "nueva", :edit => "editar"}} do
+    member do
+      post 'update'
+    end
+  end
+
   get "decision_user_choices/create"
 
   get "decision_comments/create"
@@ -65,6 +73,8 @@ Gamersmafia::Application.routes.draw do
       resources :tags
   end
 
+  match 'home/stream' => 'home#set_stream'
+  match 'home/tetris' => 'home#set_tetris'
   match 'account/messages' => 'account#messages'
   match 'account/messages/:id' => 'account#show_message'
   match 'admin/bazar_districts(/:action)(/:id)' => 'admin/bazar_districts'

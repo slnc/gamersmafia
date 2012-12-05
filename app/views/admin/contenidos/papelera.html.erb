@@ -16,11 +16,11 @@ Portal: <select onchange="document.location = '/admin/contenidos/papelera?portal
 %>
 
 <tr>
-  <th colspan="2" style="padding-top: 20px;"><h2><%=name%></h2></th>
+  <th colspan="2" style="padding-top: 20px;"><h2 class="f_hecto"><%=name%></h2></th>
   <th style="padding-top: 20px;">Eliminado</th>
   <th style="padding-top: 20px;">Autor</th>
-  <th style="padding-top: 20px;"><img class="comments-count" src="/images/blank.gif" /></th>
-  <th style="padding-top: 20px;"><img class="pageviews-count" src="/images/blank.gif" /></th>
+  <th style="padding-top: 20px;"><%=gm_icon("comment", "small")%></th>
+  <th style="padding-top: 20px;"><%=gm_icon("pageviews", "small")%></th>
 </tr>
 <%
 for @item in collection

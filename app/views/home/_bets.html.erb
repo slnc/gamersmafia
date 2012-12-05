@@ -1,0 +1,24 @@
+<% bets = Content.content_type_name("Bet").published.recent.of_interest_to(
+      @user).find(:all, :order => "created_on")
+      bets.delete_if {|b| b.real_content.closes_on < Time.now} %>
+  <%mflist("Apuestas abiertas", bets) do |bet| %>
+    <div class="secondary f_milli centered"><%=link_to bet.real_content.title, gmurl(bet)%></div>
+    <div class="centered">
+      <table>
+        <tr>
+          <td style="width: 48%" class="centered"><strong class="f_deca"><%=bet.real_content.team1%></strong></td>
+          <td>vs</td>
+          <td style="width: 48%" class="centered"><strong class="f_deca"><%=bet.real_content.team2%></strong></td>
+        </tr>
+      </table>
+    </div>
+    <div class="centered">
+      <%=draw_percent_bar(bet.ratio_amounts, :class => "twoclasses")%><br />
+      <%=bet.real_content.total_ammount%><%=gm_icon("gmf")%>
+      apostados por <%=gm_icon("user")%><%=bet.real_content.users_with_bets%>
+    </div>
+
+    <div class="f_milli centered secondary">
+      <%=bet_open_message(bet.real_content)%>
+    </div>
+<% end -%>

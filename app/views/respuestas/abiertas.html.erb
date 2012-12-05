@@ -1,9 +1,3 @@
-<% obj = @category ? @category : controller.portal.question %>
-
-<%generic_support do %>
-<%=render :partial => '/respuestas/top_sabios', :locals => { :category => @category } %>
-<% end -%>
-
 <%content_main do %>
 <%mftext(@title) do %>
 <% @questions = Question.in_portal(controller.portal).published.unanswered.paginate(:order => 'COALESCE(ammount, 0) desc, created_on', :page => params[:page], :per_page => 30) %>
@@ -11,10 +5,15 @@
 <% @questions.each do |question| %>
     <div class="<%=oddclass%>">
 			<div><img class="avatar" style="float: left; margin-right: 10px;" src="/cache/thumbnails/f/38x38<%=question.user.show_avatar%>" /> <%=faction_favicon(question)%> <strong><%= link_to question.title, gmurl(question) %></strong></div>
-			<div class="infoinline"><% if question.prize > Question::MIN_AMMOUNT then %><strong><%=question.prize.to_i%></strong> <%=gmd11%> | <% end-%><%=draw_rating(question.rating)%> | <%=user_link(question.user)%></div>
+			<div class="infoinline"><% if question.prize > Question::MIN_AMMOUNT then %><strong><%=question.prize.to_i%></strong> <%=gm_icon("gmf", "small")%> | <% end-%><%=draw_rating(question.rating)%> | <%=user_link(question.user)%></div>
     </div>
     <br />
 <% end %>
 <%= render :partial => 'shared/pager2', :locals => {:collection => @questions, :pos => 'bottom'} %>
 <% end -%>
 <% end -%>
+
+<%generic_support do %>
+<%=render :partial => '/respuestas/top_sabios', :locals => { :category => @category } %>
+<% end -%>
+

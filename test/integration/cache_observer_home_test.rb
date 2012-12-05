@@ -45,7 +45,6 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
   def go_to_index
     get '/'
     assert_response :success, response.body
-    assert_template 'home/gm'
   end
 
   #  test "should_clear_competitions_box_on_main_when_competitions_match_is_confirmed" do
@@ -138,18 +137,6 @@ class CacheObserverHomeTest < ActionController::IntegrationTest
     be = Blogentry.find(:first, :order => 'id DESC')
     assert be.update_attributes({:title => 'foofito'})
     assert_cache_dont_exist 'common/home/index/blogentries'
-  end
-
-  test "should_clear_last_news_of_district" do
-    n = News.new(:title => 'Noticia 1', :description => 'sumario', :user_id => 1)
-    assert n.save
-    assert Term.single_toplevel(:slug => 'anime').link(n.unique_content)
-    host! "anime.#{App.domain}"
-    get '/'
-    assert_response :success, @response.body
-    assert_cache_exists "/anime/home/index/news2"
-    publish_content n
-    assert_cache_dont_exist "/anime/home/index/news2"
   end
 
   def teardown

@@ -61,6 +61,10 @@ class Content < ActiveRecord::Base
     # We need these 3 queries in order to find contents associated with
     # categories associated with the top level terms that the user has an
     # interest in.
+
+    # Hack until we anonymous users have profiles oo.
+    return {} if user.nil?
+
     game_ids = UserInterest.game_ids_of_interest(user)
     gaming_platform_ids = UserInterest.gaming_platform_ids_of_interest(user)
     bazar_district_ids = UserInterest.bazar_district_ids_of_interest(user)
@@ -111,7 +115,6 @@ class Content < ActiveRecord::Base
   belongs_to :user
 
   def self.final_decision_made(decision)
-    puts "final decision!"
     content = Content.find(decision.context.fetch(:content_id))
     if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(content.content_type.name)
       raise (

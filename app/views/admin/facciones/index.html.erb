@@ -27,13 +27,13 @@
     <td class="centered"><%# =((active.to_f / (faction.members_count == 0 ? 1 : faction.members_count)) * 100).round%>%</td>
     <td><%=if faction.boss then link_to faction.boss.login, gmurl(faction.boss) end%></td>
     <td><%=if faction.underboss then link_to faction.underboss.login, gmurl(faction.underboss) end%></td>
-	<td class="centered"><%h = faction.editors_total%><%= h == 0 ? "<span class=\"feedback-error\">#{h}</span>" : h%></td>
-    <td class="centered"><%h = faction.moderators_total%><%= h == 0 ? "<span class=\"feedback-error\">#{h}</span>" : h%></td>
+	<td class="centered"><%h = faction.editors_total%><%= h == 0 ? "<span class=\"bad-block\">#{h}</span>" : h%></td>
+    <td class="centered"><%h = faction.moderators_total%><%= h == 0 ? "<span class=\"bad-block\">#{h}</span>" : h%></td>
 	<td><%=faction_activity_minicolumns(faction)%></td>
-    <td class="centered"><%= File.exists?("#{Rails.root}/public/storage/factions/#{faction.id}/building_top.png") ? '<span class="feedback-ok">Sí</span>' : '<span class="feedback-error">No</span>' %></td>
-    <td class="centered"><%a = faction.factions_links.count%><%= a == 0 ? "<span class=\"feedback-error\">#{a}</span>" : a%></td>
-    <td class="centered"><%h = faction.factions_headers.count%><%= h == 0 ? "<span class=\"feedback-error\">#{h}</span>" : h%></td>
-    <td class="centered"><%a = faction.avatars.count%><%= a == 0 ? "<span class=\"feedback-error\">#{a}</span>" : a%></td>
+    <td class="centered"><%= File.exists?("#{Rails.root}/public/storage/factions/#{faction.id}/building_top.png") ? '<span class="good-block">Sí</span>' : '<span class="bad-block">No</span>' %></td>
+    <td class="centered"><%a = faction.factions_links.count%><%= a == 0 ? "<span class=\"bad-block\">#{a}</span>" : a%></td>
+    <td class="centered"><%h = faction.factions_headers.count%><%= h == 0 ? "<span class=\"bad-block\">#{h}</span>" : h%></td>
+    <td class="centered"><%a = faction.avatars.count%><%= a == 0 ? "<span class=\"bad-block\">#{a}</span>" : a%></td>
   </tr>
 <% end %>
 </table>

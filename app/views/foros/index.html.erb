@@ -1,7 +1,3 @@
-<% generic_support do %>
-  <%=render :partial => '/foros/nuevo_topic'%>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Foros') do %>
 <table>
@@ -16,13 +12,13 @@ cache("/#{controller.portal_code}/foros/index/index") do
 controller.portal.categories('Topic').each do |toplevelt|
 toplevelt.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'], :order => 'lower(name)').each do |category|
   %>
-  <tr class="subheader <%= 'forum-category' if controller.portal_code and controller.portal.id > -1%>">
+  <tr class="subheader f_deca <%= 'forum-category' if controller.portal_code and controller.portal.id > -1%>">
     <td style="width: 20px;"><%=faction_favicon(category)%></td>
-    <td style="line-height: 18px;"><strong><div style="float: left; vertical-align: middle; width: 20px;"></div> <a class="nav" href="<%=gmurl(category, :taxonomy => 'TopicsCategory')%>"><%=category.name%></a></strong></td>
+    <td><strong><div style="float: left; vertical-align: middle; width: 20px;"></div> <a class="nav" href="<%=gmurl(category, :taxonomy => 'TopicsCategory')%>"><%=category.name%></a></strong></td>
     <td style="" class="infoinline timestamp"><%=category.contents_count(:cls_name => 'Topic')%></td>
     <td style="" class="infoinline timestamp"><%=category.comments_count%></td>
     <td class="timestamp infoinline" style="font-weight: normal;"><%last = category.get_or_resolve_last_updated_item
-    if last then %><%=print_tstamp(last.updated_on)%> <a class="nav" href="<%=gmurl(last)%>"><img class="go-to-topic" src="/images/blank.gif" /></a><% end -%></td>
+    if last then %><%=print_tstamp(last.updated_on)%> <a class="nav" href="<%=gmurl(last)%>">Ir</a><% end -%></td>
   </tr>
   <% if controller.portal_code and controller.portal.id > -1 then %>
   <%= render(:partial => 'forums_list', :locals => {:parent => category}) %>
@@ -36,3 +32,8 @@ toplevelt.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'],
 </table>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <%=render :partial => '/foros/nuevo_topic'%>
+<% end -%>
+

@@ -1,18 +1,7 @@
-<% generic_support do %>
-<%mftext('Consejos') do %>
-<ul class="content-hid">
-<li>Mínimo 2 opciones</li>
-<li>Máximo 5 o 6</li>
-<li>De interés general</li>
-</ul>
-<% end -%>
-<%= render :partial => 'shared/pending', :object => @pending %>
-<% end -%>
-
 <% content_main do %>
 <%mftext('Fecha del partido') do %>
 <% if @bet.winning_bets_option_id then %>
-<div class="warning">La apuesta ha sido completada, imposible cambiar la fecha de término.</div>
+<div class="bad-block">La apuesta ha sido completada, imposible cambiar la fecha de término.</div>
 <% else %>
 <form method="post" action="/apuestas/update/<%=@bet.id%>">
 <p><label for="bet_closes_on">Fecha y hora a la que se juega la partida</label><br/>
@@ -35,9 +24,20 @@
   <label><input type="radio" name="winner" value="cancelled" /> La partida se canceló por alguna razón</label>
 <br />
 <br />
-<input type="submit" class="button" value="Completar apuesta" onclick="return confirm('¿Estás seguro de que has elegido el resultado correcto?');" />
+<input type="submit" class="button confirm-click" value="Completar apuesta" />
 </form>
 <% end %><%# mftext -%>
 
 <%= link_to 'Mostrar apuesta', gmurl(@bet) %>
 <% end -%>
+
+<% generic_support do %>
+<%mftext('Consejos') do %>
+<ul class="content-hid">
+<li>Mínimo 2 opciones</li>
+<li>Máximo 5 o 6</li>
+<li>De interés general</li>
+</ul>
+<% end -%>
+<% end -%>
+

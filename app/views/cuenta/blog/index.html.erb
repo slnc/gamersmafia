@@ -1,9 +1,3 @@
-<% generic_support do %>
-  <% mftext('Nueva entrada') do %>
-  <div class="centered-link"><a href="/cuenta/blog/new">Redactar nueva entrada</a></div>
-  <% end -%>
-<% end -%>
-
 <% content_main do %>
 <% mftext('Entradas de blog') do %>
 <% @blogentries = Blogentry.paginate(:conditions => ['user_id = ? and state = ?', @user.id, Cms::PUBLISHED], :order => 'created_on DESC', :page => params[:page], :per_page => 20) %>
@@ -31,3 +25,10 @@
   <%= render :partial => 'shared/pager2', :locals => {:collection => @blogentries, :pos => 'bottom'} %>
   <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <% mftext('Nueva entrada') do %>
+  <div class="centered-link"><a href="/cuenta/blog/new">Redactar nueva entrada</a></div>
+  <% end -%>
+<% end -%>
+

@@ -1,15 +1,3 @@
-<% generic_support do %>
-<% mftext('Borrar cuenta') do %>
-
-<form method="post" action="/cuenta/cuenta/borrar">
-Contraseña: <input type="password" name="password" />
-<div class="sidething-spaced">
-<input type="submit" value="Borrar mi cuenta" onclick="return confirm('¿Estás seguro de que deseas borrar tu cuenta? Esta acción no se puede deshacer.')" />
-</div>	
-</form>
-<% end -%>
-<% end -%>
-
 <%content_main do %>
 <% mftext('Configuración de cuenta') do %>
 <%=form_tag(:action=> 'update_configuration') %>
@@ -64,3 +52,16 @@ Contraseña: <input type="password" name="password" />
 </form>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<% mftext('Borrar cuenta') do %>
+
+<form method="post" action="/cuenta/cuenta/borrar">
+Contraseña: <input type="password" name="password" />
+<div class="sidething-spaced">
+<input type="submit" class="button" value="Borrar mi cuenta" onclick="return confirm('¿Estás seguro de que deseas borrar tu cuenta? Esta acción no se puede deshacer.')" />
+</div>
+</form>
+<% end -%>
+<% end -%>
+

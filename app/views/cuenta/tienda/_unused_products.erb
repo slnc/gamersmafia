@@ -2,11 +2,14 @@
 <% prods = @user.sold_products.find(:all, :conditions => 'sold_products.used is false', :order => 'sold_products.created_on ASC', :include => :product)
 if prods.size > 0 then
 %>
-<div class="information">Tienes <strong><%=prods.size%></strong> productos no usados.</div>
+<div class="bad-block">
+  Tienes <strong><%=prods.size%></strong> productos no usados.
+</div>
 <% end -%>
 <ul class="content-hid">
   <%prods.each do |sp| %>
-  <li class="<%=oddclass%>" style="padding: 3px;"><strong><a href="/cuenta/mis_compras/<%=sp.id%>"><%=sp.product.name%></a></strong><div class="infoinline"><%=print_tstamp(sp.created_on)%></div></li>
+    <li class="<%=oddclass%>" style="padding: 3px;"><strong><a href="/cuenta/mis_compras/<%=sp.id%>"><%=sp.product.name%></a></strong>
+    <div class="infoinline"><%=print_tstamp(sp.created_on)%></div></li>
   <% end -%>
 </ul>
 <% end -%>

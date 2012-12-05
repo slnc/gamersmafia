@@ -1,0 +1,35 @@
+<% if user_is_authed then
+  us = User.random_same_city(@user, :limit => 1)
+  if us.size > 0 then %>
+    <%mftext('De tu ciudad', :grid => 2) do %><%=comunidad_user_with_photo(us[0]) %><% end -%>
+ <% end %><%# if us -%>
+ <% else%>
+ <p><strong><a href="/cuenta/alta">Regístrate</a></strong> para recibir recomendaciones de amigos.</p>
+<% end %><%# user_is_authed -%>
+
+<% if user_is_authed then %>
+<%	poss = User.possible_friends_of(@user, :limit => 3)
+  if poss.size > 0 then
+mftext('Puede que conozcas a', :grid => 5, :glast => true, :blast => true) do %>
+<script type="text/javascript">
+  function friend_rec(frid, y) {
+    $.get('/cuenta/amigos/mark_fr_' + (y == 1 ? 'good' : 'bad')+ '?id=' + frid)
+    $("#fr" + frid).addClass('hidden');
+    return false;
+  }
+</script>
+<table>
+  <% poss.each do |po| %>
+  <tr id="fr<%=po.id%>" class="<%=oddclass%>">
+    <td style="width: 37px;"><img src="/cache/thumbnails/f/32x32/<%=po.recommended_user.show_photo%>" /></td>
+    <td><div class="infoinline" style="float: right;"><a href="" onclick="return friend_rec(<%=po.id%>, 1);">Es mi amigo</a> | <a href="" onclick="return friend_rec(<%=po.id%>, 0);">X</a>
+    </div>
+      <%=user_link(po.recommended_user)%><br />
+    <div class="infoinline"><%=h po.reason%></div></td>
+  </tr>
+  <% end -%>
+</table>
+
+<% end %><%# mftext -%>
+<% end %><%# if -%>
+<% end -%>

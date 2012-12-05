@@ -1,368 +1,137 @@
-
-#ccontent .content-hid li, #csupport ul.sidelist, #csupport .fcontents-basic li {
-    line-height: 23px;
-}
-
-h2 {
-    letter-spacing: 0;
-}
-
-#navigator select {
-    font-size: 10px;
-}
-
-#cmain .module .mtitle {
-    font-size: 15px;
-}
-
-#mgbreadcrumb {
-    font-size: 11px;
-    font-weight: bold;
-}
-
-#ccontent .contentinfobar {
-    font-size: 10px;
-}
-
-.contentinfobar ul a {
-    line-height: 24px;
-}
-
 /* really dirty down here */
 /* TEMP NOTCLEAN typography * /
- /* :=TYPOGRAPHY */
-tr, td {
-    font-size: 12px;
-}
-
-#navpath {
-    font-size: 11px;
-}
-
-.homebox .title {
-    font-weight: bold;
-    font-size: 0.85em;
-    line-height: 27px;
-}
-
-.homebox {
-    font-size: 11px;
-}
-
+/* :=TYPOGRAPHY */
 .homebox .screenshot {
-    text-align: center;
-}
-
-.homebox li {
-    line-height: 155%;
-}
-
-.homebox.articles li {
-    line-height: 100%;
-}
-
-.homebox .classifier {
-    font-weight: bold;
-    text-align: left;
-    font-size: 10px;
-}
-
-h2 {
-    font-size: 17px;
-}
-
-.contenttitle h1 {
-    line-height: 27px;
-    font-size: 15px;
-    font-weight: bold;
+  text-align: center;
 }
 
 body.lypopup h1 {
-    font-size: 15px;
-    font-weight: bold;
-    padding: 10px 10px;
-    margin: 0 0 10px 0;
-}
-
-.contenttitle .infoinline {
-    font-size: 10px;
-}
-
-.contenttitle .author {
-    font-size: 11px;
-}
-
-.userinfobox .nick {
-    line-height: 52px;
+  font-weight: bold;
+  padding: 10px 10px;
+  margin: 0 0 10px 0;
 }
 
 /* comentarios TODO cleanup */
 /* COMMENTS */
-.comments-area .authorship .userinfo {
-    line-height: normal;
-}
-
 .comments-area .nav.title {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .comments-area .comment-number, .number {
-    font-weight: bold;
-    font-size: 15px;
+  font-weight: bold;
 }
 
 .comments-area .author {
-    font-weight: bold;
-}
-
-.comments-area .userinfo .attributes, .userinfobox .attributes {
-    font-size: 10px;
+  font-weight: bold;
 }
 
 .karmapoints, .reputation {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .comments-area .userinfo .rank {
-    text-align: right;
-}
-
-.karmalevel {
-    line-height: normal;
-}
-
-.infoinline, #ccontent .pageviews-count, #ccontent .comments-count, .infoinline td {
-    font-size: 10px;
+  text-align: right;
 }
 
 #ccontent th {
-    text-align: left;
-}
-
-#ccontent td.content-hid {
-    line-height: 18px;
+  text-align: left;
 }
 
 /* downloads  */
-tr.downloads-folder td.first {
-    font-size: 11px;
-    line-height: 15px;
-}
-
-tr.downloads-download td.first {;
-    font-size: 11px;
-    line-height: 15px;
-}
-
-tr.downloads-folder a, tr.downloads-download a {
-    text-decoration: none;
-}
-
 .content-category {
-    font-size: 10px;
-    text-transform: uppercase;
-    font-weight: normal;
+  text-transform: uppercase;
+  font-weight: normal;
 }
 
 .more {
-    text-align: right;
+  text-align: right;
 }
 
-.more a {
-    font-size: 11px;
-}
-
-.more a:hover {
-    font-size: 11px;
-}
-
-ul.online li, .userinfobox {
-    font-weight: bold;
+ul.online li {
+  font-weight: bold;
 }
 
 /* wysiwyg */
-.wsEditor {
-}
-
 .button.selectable {
-    text-decoration: underline;
-    cursor: pointer;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 #ccontent label {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 #ccontent .homebox label {
-    font-weight: normal;
-}
-
-img.none {
+  font-weight: normal;
 }
 
 .faq_category {
-    font-weight: bold;
-    font-size: 14px;
-}
-
-input, textarea {
-    font-size: 11px;
-}
-
-#online th {
-    text-align: left;
-    font-size: 10px;
+  font-weight: bold;
 }
 
 #minichat {
-    overflow: auto;
-    font-size: 11px;
+  overflow: auto;
 }
 
 #minichat .nick {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .day-separator {
-    font-weight: bold;
-}
-
-.summary {
-    line-height: 1.3em;
+  font-weight: bold;
 }
 
 #ccontent table label {
-    font-weight: normal;
+  font-weight: normal;
 }
 
 .more a {
-    font-weight: bold;
-}
-
-textarea {
-    font-size: 12px;
-}
-
-.contentinfobar li {
-    line-height: 27px;
-}
-
-.contentinfobar {
-    font-size: 10px;
+  font-weight: bold;
 }
 
 #ccontent table.calendar .monthName th {
-    text-transform: uppercase;
+  text-transform: uppercase;
 }
 
 .homebox .factions td.members {
-    text-align: right;
-}
-
-.warning {
-    font-size: 13px;
-}
-
-#csupport select {
-    font-size: 10px;
+  text-align: right;
 }
 
 th.timestamp, td.timestamp, th.number, td.number {
-    text-align: right;
+  text-align: right;
 }
 
 th.sm-icon, td.sm-icon {
-    text-align: center;
-}
-
-.karma {
-    font-weight: bold;
-    text-align: right;
-    font-size: 11px;
-}
-
-.userinfonick a {
-    text-decoration: none;
-    font-weight: bold;
+  text-align: center;
 }
 
 .cash-in, .cash-out {
-    font-weight: bold;
-}
-
-.feedback-ok {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .comment-rating-state {
-    font-size: 10px;
-    font-weight: bold;
-}
-
-#lastcomments li, #tracker li {
-    font-size: 10px;
-}
-
-#navigator select {
-    font-size: 11px;
-}
-
-.matchmap-tourney td {
-    font-size: 11px;
+  font-weight: bold;
 }
 
 .match-won, .match-lost, .match-tie {
-    font-weight: bold;
-    font-size: 10px;
+  font-weight: bold;
 }
 
 #ccontent dt {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 #ccontent .message-preview {
-    font-weight: normal;
+  font-weight: normal;
 }
 
 #ccontent .comments-mood {
-    font-size: 11px;
-    font-weight: normal;
-}
-
-#content-stats {
-    font-size: 10px;
+  font-weight: normal;
 }
 
 /**
  * Userbox
  */
-
-
 #ccontent .cmain tr.forum-category td.infoinline {
-    font-weight: bold;
-}
-
-tr.forum-category td {
-    background: #ddd;
-}
-
-#admin-stats .good, #admin-stats .goodsoft {
-    font-size: 17px;
-}
-
-#admin-stats .bad, #admin-stats .badsoft {
-    font-size: 17px;
-}
-
-#admin-stats .default-treatment {
-    font-size: 17px;
-}
-
-#content .sm {
-    font-size: 10px;
-    font-weight: normal;
-}
-
-#ccontent .account-balance {
-    font-size: 18px;
+  font-weight: bold;
 }

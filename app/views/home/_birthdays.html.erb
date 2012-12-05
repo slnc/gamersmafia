@@ -1,0 +1,10 @@
+<%cache("/common/miembros/_rightside/birthdays_#{Time.now.strftime('%Y%m%d')}") do
+  mftable("Cumplen años hoy",
+          User.can_login.birthday_today.non_zombies.find(
+              :all, :order => 'lower(login)')) do |u|
+%>
+      <td><%=user_link(u)%><br />
+        <span class="infoinline"><strong><%=u.age%></strong> años</span></td>
+      <td class="right"><img src="/cache/thumbnails/f/32x32/<%=u.show_photo%>" /></td>
+  <% end -%>
+<% end # cache -%>

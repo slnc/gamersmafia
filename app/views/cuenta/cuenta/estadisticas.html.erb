@@ -1,7 +1,3 @@
-<% generic_support do %>
-
-<% end -%>
-
 <% content_main do %>
   <% mftext('Karma') do %>
   <p>Tienes <strong><%=@user.karma_points%> puntos</strong> de karma.</p>
@@ -29,4 +25,7 @@
     <% end -%>
   </table>
   <% end -%>
+<% end -%>
+
+<% generic_support do %>
 <% end -%>

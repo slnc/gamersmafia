@@ -9,7 +9,7 @@ end %>
 <% show_amount_filter ||= false
 if show_amount_filter then %>
 <form class="right" method="get" action="?">
-<span class="f_sm infoinline">Mostrar solo movimientos de al menos <input class="text w50" type="text" name="min_cash" value="<%=params[:min_cash] if params[:min_cash].to_f > 0 %>" /> <%=gmd10%></span>
+<span class="f_milli infoinline">Mostrar solo movimientos de al menos <input class="text w50" type="text" name="min_cash" value="<%=params[:min_cash] if params[:min_cash].to_f > 0 %>" /> <%=gm_icon("gmf", "small")%></span>
 </form>
 <% end -%>
 
@@ -20,8 +20,7 @@ if show_amount_filter then %>
 
 <table class="cash_movements">
 <tr>
-  <th style="width: 50px;"></th>
-  <th style="width: 25px; text-align: right;"><%=gmd12%></th>
+  <th style="width: 25px; text-align: right;"> <%=gm_icon("gmf", "small")%></th>
   <th>Concepto</th>
   <th>Entidad</th>
   <th>Fecha</th>
@@ -32,11 +31,11 @@ odd = 0 %>
 <%
 for cash_movement in @cash_movements
   if cash_movement.object_id_from == entity.id then
-    sense = '<img class="cash-out" src="/images/blank.gif" />'
-    css_class = 'cash-out'
+    css_class = 'cash-out bad'
+    amount_sign = "-"
   else
-    sense = '<img class="cash-in" src="/images/blank.gif" />'
-    css_class = 'cash-in'
+    css_class = 'cash-in good'
+    amount_sign = ""
   end
 %>
   <%# TODO PERF 1 + n queries!! %>
@@ -51,8 +50,7 @@ for cash_movement in @cash_movements
 
   odd = 1 - odd%>
 <tr class="alt<%=odd%>">
-  <td class="centered"><%=sense%></td>
-  <td class="right <%=css_class%>"><%=cash_movement.ammount%></td>
+  <td class="right <%=css_class%>"><%=amount_sign%><%=cash_movement.ammount%></td>
   <td><%=cash_movement.description%></td>
   <td>
     <% if other_user == 'Banco' then %><%=other_user%>

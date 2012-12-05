@@ -1,6 +1,3 @@
-<% generic_support(:show_ads => false) do %>
-<% end -%>
-
 <% content_main do %>
     <%mftext('Editar tópic') do %>
 <form method="post" action="/foros/update_topic/<%=@topic.id%>" name="REPLIER">
@@ -40,3 +37,7 @@
 <% end -%>
 
 <% end -%>
+
+<% generic_support(:show_ads => false) do %>
+<% end -%>
+

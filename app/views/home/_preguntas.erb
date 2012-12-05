@@ -1,5 +1,5 @@
 <div class="homebox">
-    <div id="home-questions" class="subheader first">
+    <div id="home-questions" class="subheader f_deca first">
         <div>
             <span>Preguntas</span>
         </div>
@@ -11,11 +11,11 @@
         qs.each do |bet|
         	shown_questions<< bet.unique_content.id %>
         <tr class="<%=oddclass%>">
-            <td class="content<%=bet.unique_content.id%> new" style="font-size: 11px;">
+            <td class="content<%=bet.unique_content.id%> new">
                 <%=content_category(bet.main_category) %><%=link_to truncate(bet.title, 35), gmurl(bet) %>
             </td>
-            <td style="font-size: 11px;" class="right">
-                <%= "#{bet.ammount.to_i}#{gmd11}" if bet.prize > Question::MIN_AMMOUNT %>
+            <td class="right">
+                <%="#{bet.ammount.to_i}#{gm_icon("gmf", "small")}" if bet.prize > Question::MIN_AMMOUNT %>
             </td>
         </tr>
         	<% end -%>

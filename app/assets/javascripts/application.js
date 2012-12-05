@@ -76,7 +76,9 @@ $(document).ready(function() {
   $('.new-content-selector').unbind('click').click(open_new_content_selector);
   $('.new-content-selector a').unbind('click').click(close_new_content_selector);
   $('.init-session').unbind('click').click(function() {
-    $('#login-box').removeClass('hidden'); return false;
+    $('#login-box').removeClass('hidden');
+    $(this).hide();
+    return false;
   });
 
   $('.open-popup-on-click').unbind('click').click(function() {

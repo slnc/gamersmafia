@@ -13,32 +13,51 @@
 .w100pc { width: 100%; }
 
 .hidden {
-    display: none;
+  display: none;
 }
 
 .centered-link {
-    padding: 15px 0;
-    text-align: center;
+  padding: 15px 0;
+  text-align: center;
 }
 
 .centered {
-    text-align: center;
+  text-align: center;
 }
 
 img.icon, a img.icon {
-    border: 0;
+  border: 0;
 }
 
 .show {
-    display: block;
-    visibility: visible;
+  display: block;
+  visibility: visible;
 }
 
 .ico16 { width: 16px; height: 16px; }
 
 .floatl { float: left; }
 
-
 .ico16.floatl { margin-right: 3px; }
 
 #ccontent a .ico16 { border: 0; }
+
+.ellipsis {
+  overflow: hidden;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  -khtml-text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+  -moz-text-overflow: ellipsis;
+  -webkit-text-overflow: ellipsis;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.float-right {
+  float: right;
+}

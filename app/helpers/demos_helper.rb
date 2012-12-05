@@ -22,8 +22,7 @@ module DemosHelper
 
   def demo_download_link(demo)
     if demo.file
-      ("<a href=\"/demos/download/#{demo.id}\"><img class=\"icon\""+
-       " src=\"/skins/default/images/btn_descargar.png\" /></a>")
+      "<a href=\"/demos/download/#{demo.id}\">#{button("Descargar")}</a>"
     end
   end
 end

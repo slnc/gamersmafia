@@ -5,8 +5,8 @@
 	<% if nil then %>
 
 		<td class="infoinline">
-		<a onclick="return confirm('¿Estás seguro de querer BORRAR a <%=user.login%>?');" href="/admin/usuarios/destroy/<%=user.id%>">Borrar</a><br />
-		<a onclick="return confirm('¿Estás seguro de querer BANEAR a <%=user.login%>?');" href="/admin/usuarios/ban/<%=user.id%>">Banear</a><br />
+		<a href="/admin/usuarios/destroy/<%=user.id%>" class="button confirm-click">Borrar</a><br />
+		<a href="/admin/usuarios/ban/<%=user.id%>" class="button confirm-click">Banear</a><br />
 		</td>
 	 <% end -%>
 	 </tr>

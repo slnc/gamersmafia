@@ -1,3 +1,7 @@
+<% content_main do %>
+  <%=mfcontent(@column)%>
+<%end -%>
+
 <% content_support(:content => @column.unique_content) do %>
 <% if @column.is_public? then %>
 <%=mfcontents_basic("Más columnas de #{@column.user.login}",
@@ -9,7 +13,3 @@
 	:more_link => "<a href=\"#{gmurl(@column.user)}/contenidos/columnas\">Ver todas sus columnas (#{@column.user.columns.count})</a>")%>
 <% end -%>
 <% end -%>
-
-<% content_main do %>
-  <%=mfcontent(@column)%>
-<%end -%>

@@ -8,7 +8,7 @@
 </p>
 
 <% if @bet.winning_bets_option_id then %>
-<div class="warning">La apuesta ha sido completada, imposible cambiar la fecha de término.</div>
+<div class="bad-block">La apuesta ha sido completada, imposible cambiar la fecha de término.</div>
 <% else %>
 <p><label for="bet_closes_on">Fecha y hora a la que se juega la partida</label><br/>
 <%= datetime_select 'bet', 'closes_on'  %></p>

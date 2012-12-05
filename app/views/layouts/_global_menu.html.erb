@@ -1,4 +1,4 @@
-<div class="topnavbar">
+<div class="topnavbar f_deci">
   <div class="topnavbar-container">
 
     <% if user_is_authed %>
@@ -36,7 +36,7 @@
     <% end -%>
       <!--
       <div class="gm-icon-button">
-        <a href="/cuenta/competiciones" class="<%= 'active-state' if @user.enable_competition_indicator?%>" title="Ir a mis competiciones"><%=gm_icon("gauntlet")%></a>
+        <a href="/cuenta/competiciones" class="<%= 'active-state' if @user.enable_competition_indicator?%>" title="Ir a mis competiciones"><%#=gm_icon("gauntlet")%></a>
       </div>
       -->
     </div>
@@ -44,7 +44,7 @@
     <div class="topbar-block topbar-stats">
       <div class="stat"><%=draw_karma_bar_sm(@user)%></div>
       <div class="stat">
-        <a href="/cuenta/banco" title="Ir al banco"><%=@user.cash.to_i%>GMF</a>
+        <a href="/cuenta/banco" title="Ir al banco"><%=@user.cash.to_i%><%=gm_icon("gmf", "small")%></a>
       </div>
 
       <div class="stat"
@@ -81,13 +81,15 @@ friends = @user.friends_online %>
     </div>
   <% end -%>
 
-    <div class="topbar-block topbar-interests sections-list">
+    <div class="topbar-block topbar-interests sections-list navbar">
+      <ul>
     <% quicklinks.each do |qlink|%>
-      <a href="<%=qlink[:url]%>"><%=qlink[:code]%></a>
+      <li><a href="<%=qlink[:url]%>"><%=qlink[:code]%></a></li>
     <% end -%>
+      </ul>
     </div>
 
-    <div class="topbar-block topbar-all-of-gm sections-list">
+    <div class="topbar-block topbar-all-of-gm sections-list navbar">
       <a href="/" class="open-popup-on-click"
         data-popup-id="topbar-sitemap">Todo GM</a>
     <% if controller.portal.id.to_s != "-1" %>
@@ -96,11 +98,11 @@ friends = @user.friends_online %>
     <% end -%>
     </div>
 
-    <div id="topbar-sitemap" class="hidden popup">
+    <div id="topbar-sitemap" class="hidden popup dropdown">
   <% hq_menu_items = controller.admin_menu_items %>
   <% if hq_menu_items.size > 0 %>
       <div class="sections-list2">
-        <header>Admin</header>
+        <header class="f_hecto f-module-title">Admin</header>
           <ul>
             <li><a href="/site/stats_hipotesis">Experimentos</a></li>
           <%hq_menu_items.each do |title, url| %>
@@ -111,7 +113,7 @@ friends = @user.friends_online %>
       <% end -%>
 
       <div class="sections-list2">
-        <header>Bazar</header>
+        <header class="f_hecto f-module-title">Bazar</header>
           <ul>
             <li><a href="http://<%=App.domain_bazar%>/">Portada</a></li>
 <% cache("/layouts/default/districts") do %>
@@ -126,7 +128,7 @@ friends = @user.friends_online %>
             <li><a href="http://<%=App.domain_bazar%>/imagenes/1543">xD</a></li>
           </ul>
 
-        <header>Comunidad</header>
+        <header class="f_hecto f-module-title">Comunidad</header>
           <ul>
             <li><a href="http://<%=App.domain%>/blogs">Blogs</a></li>
             <li><a href="http://<%=App.domain%>/miembros">Miembros</a></li>
@@ -135,7 +137,7 @@ friends = @user.friends_online %>
         </div>
 
       <div class="sections-list2">
-        <header>Gamersmafia</header>
+        <header class="f_hecto f-module-title">Gamersmafia</header>
           <ul>
             <li><a href="http://<%=App.domain%>/site/novedades">Novedades sobre la web</a></li>
             <li><a href="http://<%=App.domain%>/site/gmcity">GM City</a></li>
@@ -145,7 +147,7 @@ friends = @user.friends_online %>
             <li><a href="https://github.com/gamersmafia/gamersmafia/issues">Bugs e Ideas</a></li>
           </ul>
 
-        <header>Gaming</header>
+        <header class="f_hecto f-module-title">Gaming</header>
           <ul>
             <li><a href="http://<%=App.domain%>/clanes">Clanes</a></li>
             <li><a href="http://<%=App.domain_arena%>/competiciones">Competiciones</a></li>
@@ -155,7 +157,7 @@ friends = @user.friends_online %>
             <li><a href="http://<%=App.domain%>/reclutamiento">Reclutamiento</a></li>
           </ul>
 
-        <header>General</header>
+        <header class="f_hecto f-module-title">General</header>
           <ul>
             <li><a href="http://<%=App.domain_arena%>/apuestas">Apuestas</a></li>
             <li><a href="/site/portales">Portales</a></li>
@@ -168,7 +170,7 @@ friends = @user.friends_online %>
     <div class="topbar-block topbar-search">
       <form method="post" action="/site/search">
         <input type="text" class="text" name="searchq" id="searchq" name="q" />
-        <input type="submit" value="Buscar" />
+        <input type="submit" class="button" value="Buscar" />
       </form>
     </div>
 
@@ -176,7 +178,7 @@ friends = @user.friends_online %>
 </div>
 
 <% if controller.portal.id != "-1" %>
-<div id="topbar-portal-submenu" class="hidden">
+<div id="topbar-portal-submenu" class="hidden dropdown">
   <ul>
     <li class="first"><a href="/noticias">Noticias</a></li>
     <li><a href="/apuestas">Apuestas</a></li>

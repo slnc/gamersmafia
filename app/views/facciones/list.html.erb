@@ -1,3 +1,55 @@
+<% content_main do %>
+<% cache("/common/facciones/list_#{params[:page]}") do %>
+  <%mftext('Juegos online') do %>
+<table>
+  <tr>
+    <th>Nombre</th>
+    <th>Miembros</th>
+    <th>Boss</th>
+    <th>Underboss</th>
+    <th>PIB</th>
+    <th>Cohesión</th>
+  </tr>
+
+<% for faction in Faction.find(:all, :conditions => 'is_gaming_platform = \'f\'', :order => 'lower(name) asc') %>
+  <tr class="<%=oddclass%>">
+    <td><%=faction_favicon(faction)%> <%=link_to faction.name, gmurl(faction) %></td>
+    <td class="infoinline"><%=gm_icon("user", "small")%> <%=faction.members_count %></a></td>
+    <td><%=if faction.boss then link_to faction.boss.login, gmurl(faction.boss) end%></td>
+    <td><%=if faction.underboss then link_to faction.underboss.login, gmurl(faction.underboss) end%></td>
+    <td class="infoinline right"><%=faction.pib.to_i.to_s.gsub(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1.")%></td>
+    <td class="infoinline right"><%=faction_cohesion(faction)%></td>
+  </tr>
+<% end %>
+</table>
+<% end -%>
+
+<%mftext('Plataformas') do %>
+<table>
+  <tr>
+    <th>Nombre</th>
+    <th>Miembros</th>
+    <th>Boss</th>
+    <th>Underboss</th>
+    <th>PIB</th>
+    <th>Amistad</th>
+  </tr>
+
+<% for faction in Faction.find(:all, :conditions => 'is_gaming_platform = \'t\'', :order => 'lower(name) asc') %>
+  <tr class="<%=oddclass%>">
+    <td><%=faction_favicon(faction)%> <%=link_to faction.name, gmurl(faction) %></td>
+    <td class="infoinline"><%=gm_icon("user", "small")%> <%=faction.members_count %></td>
+    <td><%=if faction.boss then link_to faction.boss.login, gmurl(faction.boss) end%></td>
+    <td><%=if faction.underboss then link_to faction.underboss.login, gmurl(faction.underboss) end%></td>
+    <td class="infoinline right"><%=faction.pib.to_i.to_s.gsub(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1.")%></td>
+    <td class="infoinline right"><%=faction_cohesion(faction)%></td>
+  </tr>
+<% end %>
+</table>
+<% end -%>
+<% end -%>
+<% end -%>
+
 <% generic_support do %>
 <% mftext('Las más jóvenes') do%>
   <table>
@@ -72,7 +124,7 @@
     <% for f in Faction.find(:all, :order => 'members_count DESC', :limit => 3) %>
     <tr class="<%=oddclass%>">
       <td><%=faction_favicon(f)%> <%=link_to f.name, gmurl(f)%></td>
-      <td class="infoinline right"><span class="members-count infoinline"><%=f.members_count %></span></td>
+      <td class="infoinline right"><%=gm_icon("user", "small")%> <%=f.members_count %></td>
     </tr>
     <% end -%>
   </table>
@@ -82,54 +134,3 @@
 
 <% end -%>
 
-<% content_main do %>
-<% cache("/common/facciones/list_#{params[:page]}") do %>
-  <%mftext('Juegos online') do %>
-<table>
-  <tr>
-    <th>Nombre</th>
-    <th>Miembros</th>
-    <th>Boss</th>
-    <th>Underboss</th>
-    <th>PIB</th>
-    <th>Cohesión</th>
-  </tr>
-
-<% for faction in Faction.find(:all, :conditions => 'is_gaming_platform = \'f\'', :order => 'lower(name) asc') %>
-  <tr class="<%=oddclass%>">
-    <td><%=faction_favicon(faction)%> <%=link_to faction.name, gmurl(faction) %></td>
-    <td><span class="members-count infoinline"><%=faction.members_count %></a></td>
-    <td><%=if faction.boss then link_to faction.boss.login, gmurl(faction.boss) end%></td>
-    <td><%=if faction.underboss then link_to faction.underboss.login, gmurl(faction.underboss) end%></td>
-    <td class="infoinline right"><%=faction.pib.to_i.to_s.gsub(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1.")%></td>
-    <td class="infoinline right"><%=faction_cohesion(faction)%></td>
-  </tr>
-<% end %>
-</table>
-<% end -%>
-
-<%mftext('Plataformas') do %>
-<table>
-  <tr>
-    <th>Nombre</th>
-    <th>Miembros</th>
-    <th>Boss</th>
-    <th>Underboss</th>
-    <th>PIB</th>
-    <th>Amistad</th>
-  </tr>
-
-<% for faction in Faction.find(:all, :conditions => 'is_gaming_platform = \'t\'', :order => 'lower(name) asc') %>
-  <tr class="<%=oddclass%>">
-    <td><%=faction_favicon(faction)%> <%=link_to faction.name, gmurl(faction) %></td>
-    <td><span class="members-count infoinline"><%=faction.members_count %></span></td>
-    <td><%=if faction.boss then link_to faction.boss.login, gmurl(faction.boss) end%></td>
-    <td><%=if faction.underboss then link_to faction.underboss.login, gmurl(faction.underboss) end%></td>
-    <td class="infoinline right"><%=faction.pib.to_i.to_s.gsub(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1.")%></td>
-    <td class="infoinline right"><%=faction_cohesion(faction)%></td>
-  </tr>
-<% end %>
-</table>
-<% end -%>
-<% end -%>
-<% end -%>

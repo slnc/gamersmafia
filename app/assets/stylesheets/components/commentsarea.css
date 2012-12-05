@@ -6,20 +6,18 @@
 
 .comments-area .user-info,
 .question-best-answer-comment .user-info {
-    float: left;
-    width: 72px;
-    border: 1px solid;
-    padding: 0;
+  float: left;
+  width: 72px;
 }
 
 .comments-area .user-info-holder .avatar { margin-bottom: 2px; }
 
-.comments-area .user-info-bar { margin-left: 3px; height: 12px; width: 50px; }
+.comments-area .user-info-bar {
+  margin-left: 3px;
+  width: 50px;
+}
 .comments-area .comment-header {
-    border: 1px solid;
-    height: 22px;
-    line-height: 22px;
-    margin-left: 77px;
+  margin-left: 77px;
 }
 
 .comments-area .avatar {
@@ -36,14 +34,17 @@
     padding: 0px 5px 0px 80px;
 }
 
+.comments-area .comment-header div {
+  display: inline-block;
+}
+
 .comments-area .comment-number {
-    float: left;
-    width: 50px;
-    margin: 0px 0 0 2px;
+  margin-right: 2rem;
 }
 
 .comments-area .authorship > .comment-number {
-    margin: 2px 0 0 2px; /* necesario por el fucking ie */
+  margin: 2px 0 0 2px; /* necesario por el fucking ie */
+  width: 100px;
 }
 
 .comments-area .post-comment {
@@ -52,14 +53,6 @@
 
 .comments-area .comment-actions {
     margin-top: 14px;
-}
-
-.comments-detail {
-    position: absolute;
-    width: 39px;
-    height: 29px;
-    margin-top: -13px;
-    margin-left: 5px;
 }
 
 .comments-container {
@@ -100,21 +93,21 @@
 }
 
 .moderate-comments ul {
-    margin: 0;
-    padding: 0;
+
+
 }
 
 .moderate-comments li {
-    list-style: none;
+    ;
 }
 
-.moderate-comments .positive {
+.moderate-comments .good {
     float: left;
     width: 50%;
     background: #E8F6EA;
 }
 
-.moderate-comments .negative {
+.moderate-comments .bad {
     float: left;
     width: 50%;
 }
@@ -127,8 +120,6 @@
     padding-left: 3px;
     display: block;
     width: 100%;
-    height: 20px;
-    line-height: 20px;
 }
 
 #ccontent .moderate-comments a img {
@@ -160,8 +151,6 @@
 
   /* TODO(slnc): temp hack until we have an icon here */
   font-weight: bold;
-  background: #000;
-  color: #fff;
   float: right;
   margin: 1px;
   padding: 3px;
@@ -171,7 +160,7 @@
 
 .droparea {
   border: 3px dashed;
-  width: 12rem;
+  width: 16rem;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   border-radius: 10px;
@@ -179,7 +168,10 @@
   text-align: center;
   cursor: default;
   margin: 1rem 0;
-  line-height: 3rem;
+}
+
+.droparea div {
+  padding-left: 1rem;
 }
 
 .inline-menu li {
@@ -242,4 +234,68 @@
 abbr {
   border-bottom: 1px dotted #aaa;
   cursor: pointer;
+}
+
+/* Old uncleaned */
+.comment-rating-state {
+  border: 1px solid;
+  border-bottom-left-radius: 5px;
+  -webkit-border-bottom-left-radius: 5px;
+  -moz-border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  -webkit-border-bottom-right-radius: 5px;
+  -moz-border-bottom-right-radius: 5px;
+}
+
+.comments-sig {
+  font-style: italic;
+  text-align: right;
+  margin-bottom: -14px;
+}
+
+.moderate-comments a {
+  font-weight: bold;
+}
+
+#comment_comment {
+  height: 50px;
+}
+
+.comment-textarea {
+  width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.inactive .user-info .user-info-bar,
+.inactive .user-info .emblemas,
+.inactive .comments-sig {
+  opacity: 0.4;
+}
+
+.inactive .user-info .avatar {
+  opacity: 0.8
+}
+
+.inactive .comment-header {
+  opacity: 0.8
+}
+
+.inactive .comment-header .comment-info,
+.inactive .moderate-comments-opener-detail {
+  opacity: 1.0;
+}
+
+.inactive .user-info .user-info-bar,
+.inactive .user-info .emblemas,
+.inactive .comment-header,
+.inactive .comment-header .comment-info,
+.inactive .moderate-comments-opener-detail,
+.inactive .user-info .avatar,
+.inactive .comments-sig {
+  -webkit-transition: all 250ms ease-in-out;
+  -moz-transition: all 250ms ease-in-out;
+  -o-transition: all 250ms ease-in-out;
+  -ms-transition: all 250ms ease-in-out;
+  transition: all 250ms ease-in-out;
 }

@@ -1,10 +1,9 @@
-<div id="lastcommented-bg-text"></div>
-
 <% cache("/#{controller.portal_code}/site/last_commented_objects") do %>
-<% mfcontents_list('Últimos comentarios',
+<div class="f_deci f-module-title">Se está hablando en</div>
+<% mfcontents_list(nil,
 		get_last_commented_contents,
 		:id => 'lastcomments',
 		:show_even_if_empty => true) do |o| %>
-	<a title="<%=o.main_category ? "#{o.main_category.root.code} | " : ''%><%=h o.resolve_hid%>" href="<%=controller.url_for_content_onlyurl(o)%>"><%=truncate(o.resolve_hid, 26, '..')%></a>
+	<a class="ellipsis" title="<%=o.main_category ? "#{o.main_category.root.code} | " : ''%><%=h o.resolve_hid%>" href="<%=controller.url_for_content_onlyurl(o)%>"><%=o.resolve_hid%></a>
 <% end %>
 <% end -%>

@@ -81,14 +81,6 @@ class NotificationEmail < ActionMailer::Base
   end
 
   # keys: new_member
-  def add_to_hq(user, vars)
-    vars.merge!({
-        :actions => [],
-        :title => "Añadir a #{vars[:new_member].login} a la lista de correo"
-    })
-    setup(user, vars)
-  end
-
   def yourebanned(user, vars)
     vars.merge!({
         :actions => [],
@@ -118,12 +110,6 @@ class NotificationEmail < ActionMailer::Base
         :title => ("Informe semanal sobre #{vars[:faction].code.upcase} -" +
                    "#{Time.now.strftime('%d %b, %Y')}")
     })
-    setup(user, vars)
-  end
-
-  # keys:
-  def del_from_hq(user)
-    vars = {:actions => [], :title => "Eliminar a #{user.login} del HQ"}
     setup(user, vars)
   end
 

@@ -1,11 +1,3 @@
-<% generic_support do %>
-  <% mftext('Información') do %>
-  <p>Se permite editar comentarios hasta 15 minutos después de su creación.
-<cite>Quince es el número que se contará. Y el número de la cuenta será quince. No se deberán contar dieciséis ni se contarán catorce, salvo para seguir después a quince. Eliminado será el diecisiete.</cite>
-  </p>
-  <% end -%>
-<% end -%>
-
 <% content_main do %>
   <% mftext('Modificar comentario') do %>
 <form method="post" action="/comments/update/<%=@comment.id%>" name="REPLIER">
@@ -22,8 +14,17 @@
   <% end -%>
   		<label style="display: block; margin-bottom: 10px;"><input type="checkbox" name="comment[netiquette_violation]" value="true" <%= 'checked="checked"' if (@comment.netiquette_violation.nil? || @comment.netiquette_violation? == true)%> /> Modificado por violar el código de conducta.</label>
   <% end -%>
-  <%= submit_tag 'Guardar' %>
+  <%= submit_tag 'Guardar', :class => 'button' %>
   </div>
 </form>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+  <% mftext('Información') do %>
+  <p>Se permite editar comentarios hasta 15 minutos después de su creación.
+<cite>Quince es el número que se contará. Y el número de la cuenta será quince. No se deberán contar dieciséis ni se contarán catorce, salvo para seguir después a quince. Eliminado será el diecisiete.</cite>
+  </p>
+  <% end -%>
+<% end -%>
+

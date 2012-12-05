@@ -1,3 +1,70 @@
+<% content_main do %>
+<% mftext(strip_tags(match_vs_name(@competitions_match, nil, false))) do %>
+  <br />
+  Fecha y Hora del reto: <strong><%=@competitions_match.play_on ? print_tstamp(@competitions_match.play_on) : 'Sin especificar' %></strong>
+  <% end -%>
+  <% mftext('Mapas') do %>
+  <div class="competitions-match-maps">
+  <%
+  if @competitions_match.maps then
+  @competitions_match.maps.times do |time|
+  m = @competitions_match.competitions_matches_games_maps.find(:all, :order => 'id ASC', :limit => 1, :offset => time)
+    if m then
+      m = m[0]
+    end
+
+    if m then %>
+      <%=fc_thumbnail(m.games_map.screenshot, 'k', '153x115', false)%>
+      <%  else %>
+        (No especificado)
+      <% end
+  end %>
+  <% end -%>
+</div>
+<% end -%>
+
+  <% user_is_competition_admin = (user_is_authed && @competition.user_is_admin(@user.id)) %>
+  <% mftext('Informes') do %>
+  <table>
+  <% for r in @competitions_match.competitions_matches_reports.find(:all, :order => 'created_on DESC') %>
+    <tr class="<%=oddclass%>" id="u<%=r.id%>">
+      <td><a href="/competiciones/informe/<%=r.id%>">Informe de <%=r.user.login%></a></td>
+      <td><a href="<%=gmurl(r.user)%>"><%=r.user.login%></a></td>
+      <td class="timestamp infoinline"><%=print_tstamp(r.created_on)%></td>
+      <% if user_is_competition_admin then %>
+      <td>
+        <%=link_to('Borrar',
+                   "/competiciones/borrar_upload/#{r.id}",
+                   :remote => true)%>
+      </td>
+      <% end -%>
+    </tr>
+  <% end -%>
+  </table>
+  <% end -%>
+
+  <% mftext('Archivos') do %>
+  <table>
+  <%@competitions_match.competitions_matches_uploads.find(
+      :all, :order => 'created_on DESC').each do |f| %>
+    <tr class="<%=oddclass%>" id="u<%=f.id%>">
+      <td><a target="_blank" href="/<%=f.file%>"><%=f.file ? File.basename(f.file) : ''%></a></td>
+      <td><%=notags(f.description)%></td>
+      <td class="infoinline"><%=(f.file && File.exists?("#{Rails.root}/public/#{f.file}")) ? number_to_human_size(File.size("#{Rails.root}/public/#{f.file}")) : ''%></a></td>
+      <td><a href="<%=gmurl(f.user)%>"><%=f.user.login%></a></td>
+      <td class="timestamp infoinline"><%=print_tstamp(f.created_on)%></td>
+      <% if user_is_competition_admin then %>
+      <td><%=link_to('Borrar', :url => "/competiciones/borrar_upload/#{f.id}")%>
+      </td>
+      <% end -%>
+    </tr>
+  <% end -%>
+  </table>
+  <% end -%>
+
+  <%= render(:partial => 'shared/comments', :locals => { :object => @competitions_match.event} ) %>
+<% end -%>
+
 <% generic_support do %>
   <% mftext('Resultado') do %>
   <% if controller.user_can_set_result then %>
@@ -11,7 +78,7 @@
         <% if @competitions_match.participant2_id then %><label><input type="radio" name="result" value="2" <%=@competitions_match.result == 2 ? 'checked="checked"' : ''%> /> Gana <%=notags(@competitions_match.participant2.name)%></label><br /><% end -%>
         <br />
         <%=render :partial => 'match_participation', :locals => { :match => @competitions_match } %>
-        <div class="centered"><input type="submit" class="button" value="<%if @competitions_match.completed? then %>Cambiar<% else %>Enviar<% end -%> resultado" onclick="return confirm('¿Estás seguro?');" /></div>
+        <div class="centered"><input type="submit" class="button confirm-click" value="<%if @competitions_match.completed? then %>Cambiar<% else %>Enviar<% end -%> resultado" /></div>
       </form>
 
         <% when Competition::SCORING_PARTIAL %>
@@ -53,7 +120,7 @@
          <% end %>
         </table>
         <%=render :partial => 'match_participation', :locals => { :match => @competitions_match } %>
-        <div class="centered"><input type="submit" class="button" value="<%if @competitions_match.completed? then %>Cambiar<% else %>Enviar<% end -%> resultado" onclick="return confirm('¿Estás seguro?');" /></div>
+        <div class="centered"><input type="submit" class="button confirm-click" value="<%if @competitions_match.completed? then %>Cambiar<% else %>Enviar<% end -%> resultado" /></div>
       </form>
 
       <% when Competition::SCORING_SIMPLE_PER_MAP %>
@@ -75,7 +142,7 @@
         </table>
 
         <%=render :partial => 'match_participation', :locals => { :match => @competitions_match } %>
-        <div class="centered"><input type="submit" class="button" value="Enviar resultado" onclick="return confirm('¿Estás seguro?');" /></div>
+        <div class="centered"><input type="submit" class="button confirm-click" value="Enviar resultado" /></div>
         </form>
         <%# TODO que digan los mapas que nos falten
         %>
@@ -99,8 +166,8 @@
     if cm.result == 1
       p1_class = p2_class = 'match-tie'
     else
-      p1_class = (cm.result == 0) ? 'match-won' : 'match-lost'
-      p2_class = (cm.result == 2) ? 'match-won' : 'match-lost'
+      p1_class = (cm.result == 0) ? 'match-won good' : 'match-lost bad'
+      p2_class = (cm.result == 2) ? 'match-won good' : 'match-lost bad'
     end
   case @competition.scoring_mode
         when 1 %>
@@ -158,75 +225,9 @@
 
   <% if user_is_authed && @competition.user_is_admin(@user.id) && @competition.matches_can_be_reset? then %>
   <% mftext('Resetear resultado') do %>
-  	<a href="/competiciones/reset_match/<%=@competitions_match.id%>" onclick="return confirm('¿Estás seguro de que quieres RESETEAR el resultado de la partida?');">Resetear resultado</a>
+  	<a href="/competiciones/reset_match/<%=@competitions_match.id%>" class="confirm-click">Resetear resultado</a>
   <% end -%>
   <% end -%>
 
 <% end -%>
 
-<% content_main do %>
-<% mftext(strip_tags(match_vs_name(@competitions_match, nil, false))) do %>
-  <br />
-  Fecha y Hora del reto: <strong><%=@competitions_match.play_on ? print_tstamp(@competitions_match.play_on) : 'Sin especificar' %></strong>
-  <% end -%>
-  <% mftext('Mapas') do %>
-  <div class="competitions-match-maps">
-  <%
-  if @competitions_match.maps then
-  @competitions_match.maps.times do |time|
-  m = @competitions_match.competitions_matches_games_maps.find(:all, :order => 'id ASC', :limit => 1, :offset => time)
-    if m then
-      m = m[0]
-    end
-
-    if m then %>
-      <%=fc_thumbnail(m.games_map.screenshot, 'k', '153x115', false)%>
-      <%  else %>
-      <img class="unknown-map" src="/images/blank.gif" />
-      <% end
-  end %>
-  <% end -%>
-</div>
-<% end -%>
-
-  <% user_is_competition_admin = (user_is_authed && @competition.user_is_admin(@user.id)) %>
-  <% mftext('Informes') do %>
-  <table>
-  <% for r in @competitions_match.competitions_matches_reports.find(:all, :order => 'created_on DESC') %>
-    <tr class="<%=oddclass%>" id="u<%=r.id%>">
-      <td><a href="/competiciones/informe/<%=r.id%>">Informe de <%=r.user.login%></a></td>
-      <td><a href="<%=gmurl(r.user)%>"><%=r.user.login%></a></td>
-      <td class="timestamp infoinline"><%=print_tstamp(r.created_on)%></td>
-      <% if user_is_competition_admin then %>
-      <td>
-        <%=link_to('Borrar',
-                   "/competiciones/borrar_upload/#{r.id}",
-                   :remote => true)%>
-      </td>
-      <% end -%>
-    </tr>
-  <% end -%>
-  </table>
-  <% end -%>
-
-  <% mftext('Archivos') do %>
-  <table>
-  <%@competitions_match.competitions_matches_uploads.find(
-      :all, :order => 'created_on DESC').each do |f| %>
-    <tr class="<%=oddclass%>" id="u<%=f.id%>">
-      <td><a target="_blank" href="/<%=f.file%>"><%=f.file ? File.basename(f.file) : ''%></a></td>
-      <td><%=notags(f.description)%></td>
-      <td class="infoinline"><%=(f.file && File.exists?("#{Rails.root}/public/#{f.file}")) ? number_to_human_size(File.size("#{Rails.root}/public/#{f.file}")) : ''%></a></td>
-      <td><a href="<%=gmurl(f.user)%>"><%=f.user.login%></a></td>
-      <td class="timestamp infoinline"><%=print_tstamp(f.created_on)%></td>
-      <% if user_is_competition_admin then %>
-      <td><%=link_to('Borrar', :url => "/competiciones/borrar_upload/#{f.id}")%>
-      </td>
-      <% end -%>
-    </tr>
-  <% end -%>
-  </table>
-  <% end -%>
-
-  <%= render(:partial => 'shared/comments', :locals => { :object => @competitions_match.event} ) %>
-<% end -%>

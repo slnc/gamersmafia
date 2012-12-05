@@ -1,33 +1,18 @@
-<% content_support(:content => @question.unique_content) do %>
-<%= render :partial => '/respuestas/preguntar' if user_is_authed %>
-<%= render :partial => '/respuestas/top_sabios', :locals => { :category => @question.main_category } %>
-<% if @question.is_public? then %>
-<%=mfcontents_basic("Más preguntas de #{@question.user.login}",
-	controller.portal.question,
-	[:published, {:content_type => 'Question', :conditions => ['contents.user_id = ?', @question.user_id], :order => 'created_on DESC', :limit => 5}],
-    :cache => "/#{controller.portal_code}/respuestas/show/latest_by_author_#{@question.user_id}",
- 	:rating => true,
-	:comments_count => true,
-	:more_link => "<a href=\"#{gmurl(@question.user)}/contenidos/Preguntas\">Ver todas sus preguntas (#{@question.user.questions.count})</a>")%>
-<% else %>
-<% end -%>
-<% end -%>
-
 <% content_main do %>
   <%mfcontent(@question) do %>
   <%=@question.description%>
-  <div class="question-prize">Recompensa: <span class="ammount f_number"><%=@question.prize.to_i%><%=gmd12%></ammount></span></div>
+  <div class="question-prize">Recompensa: <span class="ammount f_number f_hecto"><%=@question.prize.to_i%> <%=gm_icon("gmf", "small")%></ammount></span></div>
   <div class="clearb"></div>
   	<% if @question.accepted_answer_comment_id then
 		comment = @question.best_answer %>
 
 		<div class="question-best-answer-comment">
 			<%mftext('Mejor respuesta') do %>
-			  <div class="user-info">
+			  <div class="user-info secondary-block">
   	<div class="user-info-holder">
      <div class="avatar" style="margin-bottom: 2px;"><img src="<%=ASSET_URL%><%=comment.user.show_avatar%>" /></div>
-     <div style="height: 12px; width: 50px;"><%=draw_karma_bar_sm(comment.user)%></div>
-     <div style=" width: 50px;"><%=draw_comments_bar_sm(comment.user, comment)%></div>
+     <div style="width: 50px;"><%=draw_karma_bar_sm(comment.user)%></div>
+     <div style="width: 50px;"><%=draw_comments_bar_sm(comment.user, comment)%></div>
   </div></div>
 
 			<div class="author" style="padding-left: 15px;"><a class="nav" href="<%=gmurl(comment.user)%>"><%=comment.user.login%></a> <%=faction_favicon(comment.user)%></div>
@@ -46,12 +31,12 @@
 			<% end -%>
 	<% else %>
 	<% if user_is_authed && @question.user_can_set_no_question?(@user) then %>
-	<a onclick="return confirm('¿Seguro que quieres cerrar esta pregunta sin elegir una mejor respuesta?');" href="/respuestas/sin_respuesta/<%=@question.id%>"><img src="/skins/default/images/btn_sin_respuesta.png" class="icon" /></a>
+    <a onclick="return confirm('¿Seguro que quieres cerrar esta pregunta sin elegir una mejor respuesta?');" href="/respuestas/sin_respuesta/<%=@question.id%>"><%=button("Sin respuesta")%></a>
 	<% end -%>
 
 	<% if user_is_authed && @user.id == @question.user_id && @question.answered_on.nil? then %>
 	<form style="display: inline;" method="post" action="/respuestas/update_ammount/<%=@question.id%>">
-	| Subir a: <input type="text" size="4" name="question[ammount]" value="<%=@question.ammount ? @question.ammount : ''%>" /> <input type="submit" value="Guardar" onclick="return confirm('¿Estás seguro? La recompensa se puede subir pero no bajar.');" />
+	| Subir a: <input type="text" size="4" name="question[ammount]" value="<%=@question.ammount ? @question.ammount : ''%>" /> <input type="submit" class="button" value="Guardar" onclick="return confirm('¿Estás seguro? La recompensa se puede subir pero no bajar.');" />
 	</form>
 	<% end -%>
 
@@ -59,3 +44,18 @@
 	<% end %><%# if -%>
   <% end %><%# mfcontent -%>
 <%end %><%# content_main -%>
+
+<% content_support(:content => @question.unique_content) do %>
+<%= render :partial => '/respuestas/preguntar' if user_is_authed %>
+<%= render :partial => '/respuestas/top_sabios', :locals => { :category => @question.main_category } %>
+<% if @question.is_public? then %>
+<%=mfcontents_basic("Más preguntas de #{@question.user.login}",
+	controller.portal.question,
+	[:published, {:content_type => 'Question', :conditions => ['contents.user_id = ?', @question.user_id], :order => 'created_on DESC', :limit => 5}],
+    :cache => "/#{controller.portal_code}/respuestas/show/latest_by_author_#{@question.user_id}",
+ 	:rating => true,
+	:comments_count => true,
+	:more_link => "<a href=\"#{gmurl(@question.user)}/contenidos/Preguntas\">Ver todas sus preguntas (#{@question.user.questions.count})</a>")%>
+<% else %>
+<% end -%>
+<% end -%>

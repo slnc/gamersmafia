@@ -1,0 +1,9 @@
+@media screen and (max-width: 800px) {
+  #cleft,
+  #ccontent {
+    float: none;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+

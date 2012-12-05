@@ -7,11 +7,11 @@
 		<th class="w50 centered infoinline"></th>
 		<th>Suceso</th>
 		<th>Reportero</th>
-		<th>Ejecutor</th>	
+		<th>Ejecutor</th>
 </tr>
 <% @alerts.each do |sle| %>
 <tr class="<%=oddclass%>">
-	<td style="width: 16px;"><img class="sprite1 alert-type<%=sle.type_id%>" src="/images/blank.gif" /></td>
+  <td style="width: 16px;"><%=gm_icon("gear", "small")%></td>
 	<td class="w50 centered infoinline"><%=print_tstamp(sle.created_on, 'intelligent')%></td>
 	<td><%=sle.headline%></td>
 	<td class="infoinline"><%=user_link(sle.reporter)%></td>

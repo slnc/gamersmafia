@@ -52,6 +52,11 @@ class Term < ActiveRecord::Base
     (rows.collect{|row| row['cnt'].to_i } + [0]*zero_tags).percentile(0.99) || 0
   end
 
+  # Returns the term associated with a game
+  def self.game_term(game)
+    Term.with_taxonomy("Game").find_by_game_id!(game.id)
+  end
+
   def self.delete_empty_content_tags_terms
     Term.contents_tags.find(:all, :conditions => 'contents_count = 0').each do |t|
       next if t.contents_terms.count > 0 || t.users_contents_tags.count > 0

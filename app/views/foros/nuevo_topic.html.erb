@@ -1,3 +1,29 @@
+<% content_main do %>
+    <%mftext('Nuevo tópic') do %>
+<form method="post" action="/foros/create_topic" name="REPLIER" style="width: 100%;">
+<% @topic = Topic.new unless defined?(@topic) %>
+
+<table>
+  <tr class="<%=oddclass%>">
+    <td style="padding: 5px 0;" class="w100">Foro</td>
+    <td style="padding: 5px 0;"><%=render :partial => '/shared/category_term_select', :locals => { :content_type => 'Topic', :index => 0, :selterm => @forum } %></td>
+  </tr>
+  <tr class="<%=oddclass%>">
+    <td style="padding: 5px 0;">Título</td>
+    <td style="padding: 5px 0;"><%=text_field(:topic, "title", :class => 'text w200') %></td>
+  </tr>
+<tr  class="<%=oddclass%>" style="vertical-align: top;">
+<td style="padding: 5px 0;">Texto</td>
+<td style="padding: 5px 0;">
+	<%= bbeditor :name => 'topic[main]', :id => 'comment_comment', :value => Formatting.html_to_bbcode(@topic.main), :style => 'width: 500px; height: 50px;' %>
+  </td>
+<input type="hidden" name="add_to_tracker" value="1" />
+</table>
+<div class="right"><input type="button" class="button" value="Crear" /></div>
+</form>
+<% end -%>
+<% end -%>
+
 <% generic_support do %>
   <%mftext('Consejos') do %>
 <p>Malos Títulos:</p>
@@ -16,30 +42,3 @@
 <% end %>
 <% end -%>
 
-<% content_main do %>
-    <%mftext('Nuevo tópic') do %>
-<form method="post" action="/foros/create_topic" name="REPLIER" style="width: 100%;">
-<%
-@topic = Topic.new unless defined?(@topic)
-%>
-
-<table>
-  <tr class="<%=oddclass%>">
-    <td style="padding: 5px 0;" class="w100">Foro</td>
-    <td style="padding: 5px 0;"><%=render :partial => '/shared/category_term_select', :locals => { :content_type => 'Topic', :index => 0, :selterm => @forum } %></td>
-  </tr>
-  <tr class="<%=oddclass%>">
-    <td style="padding: 5px 0;">Título</td>
-    <td style="padding: 5px 0;"><%=text_field(:topic, "title", :class => 'text w200') %></td>
-  </tr>
-<tr  class="<%=oddclass%>" style="vertical-align: top;">
-<td style="padding: 5px 0;">Texto</td>
-<td style="padding: 5px 0;">
-	<%= bbeditor :name => 'topic[main]', :id => 'comment_comment', :value => Formatting.html_to_bbcode(@topic.main), :style => 'width: 500px; height: 50px;' %>
-  </td>
-<input type="hidden" name="add_to_tracker" value="1" />
-</table>
-<div class="right"><input type="image" src="/images/blank.gif" class="btn-crear" /></div>
-</form>
-<% end -%>
-<% end -%>

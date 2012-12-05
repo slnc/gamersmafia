@@ -24,7 +24,7 @@ alerts = Alert.closed.in_domain_and_scope(@domain, @scope).paginate(
 <% alerts.each do |sle| %>
 <tr class="<%=oddclass%>">
 	<td style="width: 16px;">
-    <img class="sprite1 alert-type<%=sle.type_id%>" src="/images/blank.gif" />
+    <%=gm_icon("gear", "small")%>
   </scope_conditionstd>
 	<td class="w125 centered infoinline"><%=print_tstamp(sle.created_on, 'compact')%></td>
 	<td><%=sle.headline%></td>

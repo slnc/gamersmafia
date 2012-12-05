@@ -8,7 +8,6 @@ class DistritoController < ApplicationController
   protected
   def populate_cur_district
     @cur_district = BazarDistrict.find_by_slug(@portal.code)
-    @active_sawmode = 'bazar'
     raise ActiveRecord::RecordNotFound unless @cur_district
   end
 end

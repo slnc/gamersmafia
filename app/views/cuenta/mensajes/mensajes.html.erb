@@ -1,13 +1,3 @@
-<% generic_support do %>
-<% mftext('Enviar mensaje') do %>
-<%= form_tag :action => 'create_message' %>
-  <%= render :partial => 'message' %>
-<br />
-  <%= submit_tag 'Enviar' %>
-</form>
-<% end -%>
-<% end -%>
-
 <% content_main do %>
 <% mftext(@title) do %>
 <%= form_tag(:action=> 'del_messages')%>
@@ -29,7 +19,7 @@ for message in @messages
 <tr class="<%=oddclass%><%=(message.is_read == false && message.user_id_to == @user.id) ? ' new' : ''%>">
   <td class="w20"><input type="checkbox" name="messages[]" onclick="Gm.Slnc.hilit_row(this, 'selrow');" value="<%=message.id%>" /></td>
   <td class="w125"><%= link_to message.send(@highlighted_user).login, :controller => '/miembros', :action => message.send(@highlighted_user).login %></td>
-  <td class="preview"><span <%='class="replied"' if @highlighted_user == :receiver || message.has_replies %>>&nbsp;</span><a title="Haz click para leer el mensaje completo" href="/cuenta/mensajes/mensaje/<%=message.id%>"><%=message.title%> <span class="message-preview">- <%=message.preview%></span></a></td>
+  <td class="preview"><%=gm_icon("replied", "small") if @highlighted_user == :receiver || !message.has_replies %>&nbsp;</span><a title="Haz click para leer el mensaje completo" href="/cuenta/mensajes/mensaje/<%=message.id%>"><%=message.title%> <span class="secondary">- <%=message.preview%></span></a></td>
   <td class="infoinline timestamp-short"><%= print_tstamp(message.created_on, 'intelligent') %></td>
 </tr>
 <% end %>
@@ -40,4 +30,14 @@ for message in @messages
 <input type="hidden" name="redirto" value="<%=request.fullpath%>" />
 </form>
 <% end -%>
+<% end -%>
+
+<% generic_support do %>
+  <% mftext('Enviar mensaje') do %>
+    <%= form_tag :action => 'create_message' %>
+    <%= render :partial => 'message' %>
+    <br />
+    <%= submit_tag 'Enviar' %>
+  </form>
+  <% end -%>
 <% end -%>

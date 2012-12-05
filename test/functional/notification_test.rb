@@ -59,24 +59,6 @@ class NotificationEmailTest < ActionMailer::TestCase
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 
-  test "del_from_hq" do
-    sender = User.find(1)
-    recipient = User.find(2)
-    deliveries = ActionMailer::Base.deliveries.size
-
-    NotificationEmail.del_from_hq(recipient).deliver
-    assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
-  end
-
-  test "add_to_hq" do
-    sender = User.find(1)
-    recipient = User.find(2)
-    deliveries = ActionMailer::Base.deliveries.size
-
-    NotificationEmail.add_to_hq(sender, :new_member => recipient).deliver
-    assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
-  end
-
   test "newmessage" do
     sender = User.find(1)
     recipient = User.find(2)

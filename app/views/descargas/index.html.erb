@@ -1,28 +1,3 @@
-<% generic_support do %>
-<% if @category then %>
-<%=render :partial => '/shared/category_tag_browser', :locals => {:cls => Download, :category => @category}%>
-<%=render :partial => '/descargas/esenciales2', :locals => { :category => @category }%>
-
-<% mftext('Los más descargados') do %>
-<ul class="content-hid">
-<% cache("/common/descargas/index/most_downloaded_#{@category.root_id}") do %>
-  <% @category.root.find(:published, :content_type => 'Download', :order => 'downloads.downloaded_times DESC', :limit => 5).each do |d| %>
-  <li class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%>
-  <div class="infoinline"><span class="downloads-count"><%=d.downloaded_times%></span> | <%=draw_rating(d.rating)%></div></li>
-  <% end -%>
-<% end -%>
-</ul>
-<% end -%>
-<% end -%>
-
-<% mftext('Los que más han aportado') do %>
-<% cache("/common/descargas/index/most_productive_author_by_cat_#{@category.nil? ? '' : @category.id}") do %>
-<%=render :partial => '/shared/most_productive_authors', :locals => {:cls => Download, :category => @category}%>
-<% end -%>
-
-<% end if @category-%>
-<% end -%>
-
 <% content_main do %>
 <% mftext(@title) do %>
 <table>
@@ -65,7 +40,7 @@ downloads = Download.in_term(@category).published.paginate(
 <%= render :partial => 'shared/pager2',
            :locals => {:collection => downloads, :pos => 'top'} %>
 <table>
-<tr class="downloads-download <%=oddclass%>">
+<tr class="<%=oddclass%>">
   <th class="first">Archivo</th>
   <th class="timestamp">Publicado</th>
   <th class="centered w150">Veces descargado</th>
@@ -73,7 +48,7 @@ downloads = Download.in_term(@category).published.paginate(
 </tr>
 <% cache("/common/descargas/index/downloads_#{@category.id}/page_#{params[:page]}") do %>
 <% downloads.each do |download| %>
-<tr class="downloads-download <%=oddclass%>">
+<tr class="<%=oddclass%>">
   <td class="first"><%=link_to download.title, gmurl(download)%></td>
   <td class="infoinline timestamp centered"><%=print_tstamp download.created_on%></td>
   <td class="infoinline centered"><%=download.downloaded_times%></td>
@@ -87,3 +62,29 @@ downloads = Download.in_term(@category).published.paginate(
 <% end -%>
 <% end -%>
 <% end -%>
+
+<% generic_support do %>
+<% if @category then %>
+<%=render :partial => '/shared/category_tag_browser', :locals => {:cls => Download, :category => @category}%>
+<%=render :partial => '/descargas/esenciales2', :locals => { :category => @category }%>
+
+<% mftext('Los más descargados') do %>
+<ul class="content-hid">
+<% cache("/common/descargas/index/most_downloaded_#{@category.root_id}") do %>
+  <% @category.root.find(:published, :content_type => 'Download', :order => 'downloads.downloaded_times DESC', :limit => 5).each do |d| %>
+  <li class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%>
+  <div class="infoinline"><%=gm_icon("download", "small")%> <%=d.downloaded_times%> | <%=draw_rating(d.rating)%></div></li>
+  <% end -%>
+<% end -%>
+</ul>
+<% end -%>
+<% end -%>
+
+<% mftext('Los que más han aportado') do %>
+<% cache("/common/descargas/index/most_productive_author_by_cat_#{@category.nil? ? '' : @category.id}") do %>
+<%=render :partial => '/shared/most_productive_authors', :locals => {:cls => Download, :category => @category}%>
+<% end -%>
+
+<% end if @category-%>
+<% end -%>
+

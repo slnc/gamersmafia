@@ -1,3 +1,19 @@
+<% content_main do %>
+  <%mftext(@title) do %>
+<table>
+  <tr>
+    <th colspan="2">Foro</td>
+    <th style="text-align: center; width: 50px;">Tópics</td>
+    <th style="text-align: center; width: 50px;">Comentarios</td>
+    <th style="text-align: right; width: 150px;">Último</td>
+  </tr>
+<%=render(:partial => 'forums_list', :locals => {:parent => @forum}) %>
+</table>
+
+<%=render(:partial => 'topics_list', :locals => {:forum => @forum})%>
+<% end -%>
+<% end -%>
+
 <% generic_support do %>
   <%=render :partial => '/foros/nuevo_topic'%>
 
@@ -26,18 +42,3 @@
 
 <% end -%>
 
-<% content_main do %>
-  <%mftext(@title) do %>
-<table>
-  <tr>
-    <th colspan="2">Foro</td>
-    <th style="text-align: center; width: 50px;">Tópics</td>
-    <th style="text-align: center; width: 50px;">Comentarios</td>
-    <th style="text-align: right; width: 150px;">Último</td>
-  </tr>
-<%=render(:partial => 'forums_list', :locals => {:parent => @forum}) %>
-</table>
-
-<%=render(:partial => 'topics_list', :locals => {:forum => @forum})%>
-<% end -%>
-<% end -%>

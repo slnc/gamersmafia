@@ -4,7 +4,7 @@
     <% get_biggest_clans(controller.portal).each do |clan| %>
     <tr class="<%=oddclass%>">
       <td><a href="/clanes/clan/<%=clan.id%>"><%=notags(clan.name)%></a></td>
-      <td><span class="members-count"><%=clan.members_count%></span></td>
+      <td class="align-right"><%=gm_icon("user", "small")%> <%=clan.members_count%></td>
     </tr>
 <% end %>
 </table>

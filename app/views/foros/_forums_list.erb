@@ -9,7 +9,7 @@ parent.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'], :o
   <td class="w50 infoinline right"><%=forum.contents_count%></td>
   <td class="w50 infoinline right"><%=forum.comments_count%></td>
   <td class="timestamp infoinline"><%last = forum.get_or_resolve_last_updated_item
-    if last then %><%=print_tstamp(last.updated_on)%> <a class="content" href="<%=gmurl(last)%>"><img class="go-to-topic" src="/images/blank.gif" /></a><% end -%></td>
+    if last then %><%=print_tstamp(last.updated_on)%> <a class="content" href="<%=gmurl(last)%>">Ir</a><% end -%></td>
 </tr>
 <% end -%>
 <% end -%>

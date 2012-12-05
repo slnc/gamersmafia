@@ -21,6 +21,7 @@ gem "hiredis", "~> 0.3.1"
 gem "rinku"
 gem "redis", "~> 2.2.0", :require => ["redis/connection/hiredis", "redis"]
 gem "rmagick", :require => "RMagick"
+gem "sass"
 gem "tidy_ffi"
 gem "will_paginate", "~> 3.0"
 gem "yui-compressor"

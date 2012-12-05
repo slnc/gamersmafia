@@ -3,7 +3,7 @@
 
 <%= form_tag({:action => 'update', :id => @clans_sponsor}, :multipart => true)%>
   <%= render :partial => 'form' %>
-  <%= submit_tag 'Guardar' %>
+  <%= submit_tag 'Guardar', :class => 'button' %>
 </form>
 
 <%= link_to 'Volver', :action => 'list' %>

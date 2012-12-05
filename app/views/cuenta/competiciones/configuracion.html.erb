@@ -3,7 +3,7 @@
 
   <form method="post" action="/cuenta/competiciones/update/<%=@competition.id%>" enctype="multipart/form-data">
     <%= render :partial => 'form' %>
-    <%= submit_tag 'Guardar' %>
+    <%= submit_tag 'Guardar', :class => 'button' %>
   </form>
   <% end -%>
 <% end -%>

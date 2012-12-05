@@ -97,7 +97,7 @@ class SiteController < ApplicationController
     end
 
     @obj = rating.content.real_content
-    render :layout => false
+    render :nothing => true
   end
 
   def clean_html
@@ -293,13 +293,11 @@ class SiteController < ApplicationController
   def stats_hipotesis
     require_auth_admins
     @title = "Hipótesis activas"
-    @active_sawmode = 'hq'
   end
 
   def stats_hipotesis_archivo
     require_auth_admins
     @title = "Hipótesis completadas"
-    @active_sawmode = 'hq'
   end
 
   def x
@@ -325,7 +323,7 @@ class SiteController < ApplicationController
 
   def i
     track(:cookiereq => false)
-    send_file "#{Rails.root}/public/images/blank.gif", :type => 'image/gif', :disposition => 'inline'
+    send_file "#{Rails.root}/public/images/dot.gif", :type => 'image/gif', :disposition => 'inline'
   end
 
   def smileys

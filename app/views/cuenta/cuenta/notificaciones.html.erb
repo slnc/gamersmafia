@@ -1,7 +1,7 @@
 <% if @notifications.size > 0 %>
   <%mftable("Notificaciones", @notifications) do |notification|
     if @unread_ids.include?(notification.id)
-      unread_css = " unread-notification"
+      unread_css = " unread-item"
     else
       unread_css = ""
     end

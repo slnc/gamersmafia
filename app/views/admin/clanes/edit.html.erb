@@ -1,6 +1,15 @@
+<% content_main do %>
+  <%mftext('Editar clan') do %>
+  <%= form_tag({:action => 'update', :id => @clan}, :multipart => true)%>
+    <%= render :partial => 'form' %>
+    <%= submit_tag 'Guardar', :class => 'button' %>
+  </form>
+  <% end -%>
+<% end -%>
+
 <% generic_support do %>
 <%@clan.clans_groups.each do |cg| %>
-  <div class="subheader"><div><%=cg.name%></div></div>
+  <div class="subheader f_deca"><div><%=cg.name%></div></div>
   <form method="post" action="/admin/clanes/add_user_to_clans_group">
   <input type="hidden" name="clans_group_id" value="<%=cg.id%>" />
   Login: <input type="text" class="text" name="login" /> <input type="submit" class="button" value="Añadir" />
@@ -20,13 +29,4 @@
   </table>
 
 <% end -%>
-<% end -%>
-
-<% content_main do %>
-  <%mftext('Editar clan') do %>
-  <%= form_tag({:action => 'update', :id => @clan}, :multipart => true)%>
-    <%= render :partial => 'form' %>
-    <%= submit_tag 'Guardar' %>
-  </form>
-  <% end -%>
 <% end -%>

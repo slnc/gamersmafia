@@ -60,7 +60,7 @@ jQuery.fn.autocomplete = function(url, settings) {
       .attr("name", textInput.attr("name") + "_text");
 		var valueInput = $(this).next();
 		// create the ul that will hold the text and values
-		valueInput.after('<ul class="autocomplete"></ul>');
+		valueInput.after('<ul class="autocomplete user-input"></ul>');
 		var list = valueInput.next().css({
       top: textInput.offset().top + textInput.outerHeight(),
       left: textInput.offset().left,

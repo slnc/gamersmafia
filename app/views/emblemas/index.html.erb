@@ -2,7 +2,7 @@
            sorted_user_emblems_all,
            options={:class_container => 'no-title-icon'}) do |info| %>
   <td class="w150">
-    <a href="/emblemas/<%=info[:emblem]%>"><%=UsersEmblem.inline_html_from_info(info)%></a>
+    <a href="/emblemas/<%=info[:emblem]%>"><%=emblem_inline_html_from_info(info)%></a>
   </td>
   <td class="w100">x <%=UsersEmblem.emblem(info[:emblem]).count%></td>
   <td><%=info[:description]%></td>

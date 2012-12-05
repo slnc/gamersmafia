@@ -41,7 +41,7 @@ instances.each do |adsi|
 	data = ddata.collect { |dbr| dbr['ctr'].to_f*100 }
 	cur_mean_ctr = avgs_ctr[adsi.id] # ddata.collect { |dbr| dbr['ctr'].to_f }.mean * 100
 %>
-<tr class="<%=oddclass%> value-is-<%='low' if cur_mean_ctr && cur_mean_ctr <= low_ctr_threshold %><%='high' if cur_mean_ctr && cur_mean_ctr >= high_ctr_threshold %>" id="adsi<%=adsi.id%>">
+<tr class="<%=oddclass%> value-is-<%='low bad' if cur_mean_ctr && cur_mean_ctr <= low_ctr_threshold %><%='high good' if cur_mean_ctr && cur_mean_ctr >= high_ctr_threshold %>" id="adsi<%=adsi.id%>">
 	<td><strong><a href="/ads/edit/<%=adsi.ad.id%>"><%=adsi.ad.name%></a></strong><br />
 	<%=fc_thumbnail(adsi.ad.file, 'k', '153x60') if adsi.ad.file%></td>
 	<td style="padding: 5px 0;" class="w150 centered"><%=sparkline(:size => '125x50', :data => data, :max => max_ctr) unless cur_mean_ctr.nil? || cur_mean_ctr == 0.0%></td>

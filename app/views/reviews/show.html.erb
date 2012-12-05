@@ -1,3 +1,7 @@
+<% content_main do %>
+  <%=mfcontent(@review)%>
+<%end -%>
+
 <% content_support(:content => @review.unique_content) do %>
 <% if @review.is_public? then %>
 <%=mfcontents_basic("Más reviews de #{@review.main_category.name}",
@@ -12,7 +16,3 @@
 <%=render :partial => 'other_categories', :locals => {:category => @review.main_category} %>
 <% end -%>
 <% end -%>
-
-<% content_main do %>
-  <%=mfcontent(@review)%>
-<%end -%>

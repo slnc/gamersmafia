@@ -3,7 +3,7 @@
 
 <%= form_tag(game_url(@game), :multipart => true )%>
   <%= render :partial => 'form' %>
-  <%= submit_tag 'Guardar' %>
+  <%= submit_tag 'Guardar', :class => 'button' %>
 </form>
 <% end -%>
 </div>

@@ -1,3 +1,34 @@
+<% content_main do %>
+  <% if @competition.user_is_admin(@user.id) then %>
+    <% if @user.has_skill?("Capo") then %>
+  <div class="bad-block"><strong>Acciones temporales para pruebas (SOLO LO VEMOS LOS SUPERADMINS)</strong><br />
+  <ul>
+    <li><form method="post" action="/cuenta/competiciones/hack/add_participants">
+      Añadir número de participantes: <input type="text" class="text sm-text" name="participants_count" />
+      <input type="submit" class="button" value="Añadir" /> (Esta opción es leeeeenta)
+    </form>
+    </li>
+    <li><a class="button confirm-click" href="/cuenta/competiciones/hack/remove_all_participants">Quitar todos los participantes actuales</a></li>
+    <li><a class="button confirm-click" href="/cuenta/competiciones/hack/recreate_matches">Recrear todas las partidas según configuración actual</a></li>
+    <% if (@competition.default_maps_per_match and @competition.forced_maps) then %>
+      <li><a class="button confirm-click" href="/cuenta/competiciones/hack/reselect_maps">Reelegir todos los mapas para las partidas según configuración actual</a></li>
+    <% end -%>
+    <% if @competition.state > 0 then %>
+      <li><a class="button confirm-click" href="/cuenta/competiciones/hack/previous_stage">Ir al estado de competición anterior</a></li>
+    <% end -%>
+  </ul>
+  </div>
+    <% end -%>
+    <% mftext('Consejos') do %>
+    <div class="subheader f_deca"><div>Informa con coverages</div></div>
+    <p>Mantén informados a tus jugadores. Avísales de cambios en las reglas o noticias importantes:</p>
+    <div style="margin-left: 20px;"><strong><a href="/coverages/new?coverage[event_id]=<%=@competition.event_id%>">Nuevo coverage</a></strong></div>
+    <div class="subheader f_deca"><div>Seriedad</div></div>
+    <p>Si te tienen que criticar de algo que sea de ser demasiado severo y de querer hacer bien las cosas, no hay nada malo en ello.</p>
+  <% end -%>
+  <% end -%>
+<% end -%>
+
 <% generic_support do %>
   <% if @competition.user_is_admin(@user.id) then %>
   <% mftext('Estado actual') do %>
@@ -18,7 +49,7 @@
     <% if @competition.configured? then %>
       <form method="post" action="/cuenta/competiciones/change_state">
       <input type="hidden" name="new_state_id" value="<%=@competition.kind_of?(Ladder) ? 3 : 1%>" />
-      <input type="submit" class="button" value="<%=@competition.kind_of?(Ladder) ? 'Iniciar competición' : 'Abrir inscripciones'%>" onclick="return confirm('¿Estás seguro?');" />
+      <input type="submit" class="button confirm-click" value="<%=@competition.kind_of?(Ladder) ? 'Iniciar competición' : 'Abrir inscripciones'%>"  />
     <% else %>
     <p>Debes <a href="/cuenta/competiciones/configuracion">configurar la competición</a> antes de abrir las inscripciones.</p>
     <% end -%>
@@ -35,7 +66,7 @@
     <% else %>
     <form method="post" action="/cuenta/competiciones/change_state">
       <input type="hidden" name="new_state_id" value="2" />
-      <input type="submit" class="button" value="Cerrar inscripciones" onclick="return confirm('¿Estás seguro?');" />
+      <input type="submit" class="button confirm-click" value="Cerrar inscripciones" />
     </form>
     <% end -%>
   </div>
@@ -44,10 +75,10 @@
   when 'inscriptions_closed'
   %>
   <% mftext('Avanzar competición') do %>
-  <div class="centered" style="padding: 10px 0;">	
+  <div class="centered" style="padding: 10px 0;">
   <form method="post" action="/cuenta/competiciones/change_state">
     <input type="hidden" name="new_state_id" value="3" />
-    <input type="submit" class="button" value="Iniciar competición" onclick="return confirm('¿Estás seguro?');" />
+    <input type="submit" class="button confirm-click" value="Iniciar competición" />
   </form>
   <br />
   <br />
@@ -96,33 +127,3 @@
 <% end -%>
 <% end -%>
 
-<% content_main do %>
-  <% if @competition.user_is_admin(@user.id) then %>
-    <% if @user.has_skill?("Capo") then %>
-  <div id="error"><strong>Acciones temporales para pruebas (SOLO LO VEMOS LOS SUPERADMINS)</strong><br />
-  <ul>
-    <li><form method="post" action="/cuenta/competiciones/hack/add_participants">
-      Añadir número de participantes: <input type="text" class="text sm-text" name="participants_count" />
-      <input type="submit" class="button" value="Añadir" /> (Esta opción es leeeeenta)
-    </form>
-    </li>
-    <li><a onclick="return confirm('¿Estás seguro?');" href="/cuenta/competiciones/hack/remove_all_participants">Quitar todos los participantes actuales</a></li>
-    <li><a onclick="return confirm('¿Estás seguro?');" href="/cuenta/competiciones/hack/recreate_matches">Recrear todas las partidas según configuración actual</a></li>
-    <% if (@competition.default_maps_per_match and @competition.forced_maps) then %>
-      <li><a onclick="return confirm('¿Estás seguro?');" href="/cuenta/competiciones/hack/reselect_maps">Reelegir todos los mapas para las partidas según configuración actual</a></li>
-    <% end -%>
-    <% if @competition.state > 0 then %>
-      <li><a onclick="return confirm('¿Estás seguro?');" href="/cuenta/competiciones/hack/previous_stage">Ir al estado de competición anterior</a></li>
-    <% end -%>
-  </ul>
-  </div>
-    <% end -%>
-    <% mftext('Consejos') do %>
-    <div class="subheader"><div>Informa con coverages</div></div>
-    <p>Mantén informados a tus jugadores. Avísales de cambios en las reglas o noticias importantes:</p>
-    <div style="margin-left: 20px;"><strong><a href="/coverages/new?coverage[event_id]=<%=@competition.event_id%>">Nuevo coverage</a></strong></div>
-    <div class="subheader"><div>Seriedad</div></div>
-    <p>Si te tienen que criticar de algo que sea de ser demasiado severo y de querer hacer bien las cosas, no hay nada malo en ello.</p>
-  <% end -%>
-  <% end -%>
-<% end -%>

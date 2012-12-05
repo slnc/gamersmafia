@@ -5,10 +5,10 @@ names = {'Interview' => 'Entrevista', 'Column' => 'Columna', 'Tutorial' => 'Tuto
 namess = {'Interview' => 'entrevistas', 'Column' => 'columnas', 'Tutorial' => 'tutoriales', 'Review' => 'reviews'}
 %>
 <%
-mfcontents_list("<a style=\"color: #969696;\" href=\"http://#{bazar_district.code}.#{App.domain}/articulos\">Artículos</a>",
-					Proc.new { bazar_district_portal.latest_articles(3) },				
+mfcontents_list("<a href=\"http://#{bazar_district.code}.#{App.domain}/articulos\">Artículos</a>",
+					Proc.new { bazar_district_portal.latest_articles(3) },
 					:blast => true) do |o| %>
-					
+
 <%=content_category(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
     <% if o.home_image then %><div style="float: right;"><%=fc_thumbnail(o.home_image, 'f', Cms::IMG_ARTICLE_THUMB, false)%></div><% end -%>
     <div class="infoinline" style="text-transform: uppercase;"><%=names[o.class.name]%></div>

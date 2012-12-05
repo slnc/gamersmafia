@@ -1,29 +1,13 @@
-.product-line {
-    background: url(../../images/icons/cart.png) left center no-repeat;
-}
-
 .product-img.SoldClanAvatar img {
     background: url(../../images/shop_products/SoldClanAvatar.png);
-}
-
-.product-img.SoldBeer img {
-    background: url(../../images/shop_products/SoldBeer.png);
 }
 
 .product-img.SoldChangeNick img {
     background: url(../../images/shop_products/SoldChangeNick.png);
 }
 
-.product-img.SoldBroadcastMessage img {
-    background: url(../../images/shop_products/SoldBroadcastMessage.png);
-}
-
 .product-img.SoldClanAvatar img {
     background: url(../../images/shop_products/SoldClanAvatar.png);
-}
-
-.product-img.SoldClanWebsite img {
-    background: url(../../images/shop_products/SoldClanWebsite.png);
 }
 
 .product-img.SoldUserAvatar img {
@@ -66,22 +50,6 @@
     background: url(../../images/shop_products/SoldProfileSignatures.png);
 }
 
-.product-img.SoldSexNight img {
-    background: url(../../images/shop_products/SoldSexNight.png);
-}
-
-.product-img.SoldSexNightMale img {
-    background: url(../../images/shop_products/SoldSexNightMale.png);
-}
-
-.product-img.SoldWheelOfFortune img {
-    background: url(../../images/shop_products/SoldWheelOfFortune.png);
-}
-
 .product-img.SoldRadar img {
     background: url(../../images/shop_products/SoldRadar.png);
-}
-
-#ccontent a .shop-buy {
-    background: url(../../images/icons/buy.gif);
 }

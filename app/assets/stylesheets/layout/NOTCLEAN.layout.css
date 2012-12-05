@@ -1,814 +1,543 @@
 th.checkbox, td.checkbox {
-    width: 25px;
-    text-align: center;
+  width: 25px;
+  text-align: center;
 }
-
 
 #ccontent table.compact {
-    margin: 0;
-    padding: 0;
-    border-collapse: collapse;
-}
-
-#ccontent table.compact td {
-    margin: 0;
-    padding: 0;
+  border-collapse: collapse;
 }
 
 #csupport .current a {
-    display: block;
+  display: block;
 }
 
 #csupport .current a {
-    width: 178px;
-    padding-left: 5px;
+  width: 178px;
+  padding-left: 5px;
 }
 
 .titleavatar {
-    padding: 0;
-    width: 61px;
-    height: 62px;
-    float: left;
+  width: 61px;
+  height: 62px;
+  float: left;
 }
 
 .titleavatar img {
-    border: 1px solid;
-    margin: 5px 0 0 5px;
-}
-
-.contenttitle {
-    padding: 1px;
-    border: 1px solid;
-}
-
-.contenttitle.nav {
-    margin-bottom: 0;
-}
-
-.contenttitle h1 {
-    height: 27px;
-    padding-left: 5px;
-    margin: 0;
-}
-
-.contenttitle .infoinline {
-    padding-left: 64px;
-}
-
-.contenttitle .infoinline ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.contenttitle .infoinline li {
-    display: inline;
-    padding-left: 7px;
-    padding-right: 3px;
-}
-
-.contenttitle .author {
-    float: right;
-    margin-right: 3px;
+  border: 1px solid;
+  margin: 5px 0 0 5px;
 }
 
 .message-body {
-    padding: 10px 10px 10px 66px;
+  padding: 10px 10px 10px 66px;
 }
 
 #ccontent table.pollvotes td {
-    padding-bottom: 6px;
-    padding-top: 6px;
-}
-
-.userinfobox {
-    height: 54px;
-}
-
-.userinfobox .userinfo {
-    float: right;
-}
-
-.userinfobox .attributes {
-    float: left;
-    margin-right: 3px;
-}
-
-.userinfobox .avatar img {
-    margin-top: 2px;
-    margin-right: 1px;
-    border: 0;
-    width: 50px;
-    height: 50px;
+  padding-bottom: 6px;
+  padding-top: 6px;
 }
 
 .avatar img {
-    width: 50px;
-    height: 50px;
-}
-
-.karmalevel {
-    position: absolute;
-    z-index: 4;
-    margin-top: -2px;
-    margin-left: 2px;
-    padding: 0;
-}
-
-.karmapoints > .karmalevel {
-    margin-top: -14px;
-    margin-left: 12px;
-}
-
-.karmabar_bg {
-    width: 55px;
-    height: 2px;
-    border: 1px solid;
-}
-
-.karmabar_fill {
-    position: absolute;
-    margin-left: -59px;
-    margin-top: 7px;
-    z-index: 2;
-    height: 2px;
-    border: 0;
-}
-
-.karmapoints > .karmabar_fill {
-    margin-left: -57px;
-}
-
-.karmabar_marks {
-    position: absolute;
-    margin-left: -59px;
-    margin-top: 7px;
-    z-index: 3;
-    border: 0;
+  width: 50px;
+  height: 50px;
 }
 
 .subheader {
-    clear: left;
-    padding: 0 1px;
-    margin: 25px 1px 5px 0;
+  clear: left;
+  padding: 0 1px;
+  margin: 25px 1px 5px 0;
 }
 
 .subheader.first {
-    margin: 1px 1px 7px 1px;
+  margin: 1px 1px 7px 1px;
 }
 
 .subheader div {
-    padding-left: 12px;
+  padding-left: 12px;
 }
 
 #csupport {
-    float: right;
-    width: 234px;
-    margin-left: 5px;
-}
-
-#cmain {
-    margin-right: 239px;
-    height: 1%;
+  float: right;
+  margin-left: 5px;
 }
 
 #csupport p {
-    margin-left: 3px;
+  margin-left: 3px;
 }
 
 #ccontent td.content-hid, #csupport .fcontents-basic .content-hid {
-    padding-left: 12px;
+  padding-left: 12px;
 }
 
-#csupport ul.content-hid, #cmain ul.content-hid, #csupport ul.sidelist, #csupport .fcontents-basic ul {
-    list-style: none;
-    margin: 0 0 20px 0;
-    padding: 0;
+#csupport ul.content-hid,
+#cmain ul.content-hid,
+#csupport ul.sidelist,
+#csupport .fcontents-basic ul {
+  margin: 0 0 20px 0;
+
 }
 
 #ccontent ul.content-hid ul.content-hid {
-    margin-bottom: 0;
-}
-
-#lastcomments .panel-title {
-    display: none;
-    visibility: hidden;
+  margin-bottom: 0;
 }
 
 #ccontent .content-hid li a, #csupport .fcontents-basic li a {
-    padding-left: 14px;
+  padding-left: 14px;
 }
 
 #webchat input {
-    width: 100px;
+  width: 100px;
 }
 
 .boxtitle {
-    padding-top: 16px;
-    margin: 0;
+  padding-top: 16px;
+
 }
 
 .homebox {
-    margin-bottom: 25px;
-    padding: 0;
+  margin-bottom: 25px;
+
 }
 
 .homebox .subheader {
-    margin: 0;
-    height: 23px;
-    line-height: 23px;
-    margin-left: -1px;
-    margin-right: -1px;
+  margin-left: -1px;
+  margin-right: -1px;
 }
 
 .homebox.servers ul {
-    padding-bottom: 10px;
+  padding-bottom: 10px;
 }
 
 h2 {
-    margin: 0 0 5px 0;
+  margin: 0 0 5px 0;
 }
 
 ul.online {
-    margin: 0 10px 0 0;
-    padding: 0;
-}
+  margin: 0 10px 0 0;
 
-.userinfobox {
-    padding-left: 10px;
 }
 
 .content-category {
-    float: left;
-    height: 24px;
-    width: 24px;
-    margin-right: 2px;
-    margin-top: -1px;
+  float: left;
+  width: 24px;
+  margin-right: 2px;
+  margin-top: -1px;
 }
 
 a > .content-category {
 }
 
 .content-category img {
-    margin: 2px 0 0 3px;
+  margin: 2px 0 0 3px;
 }
 
 .more {
-    margin: 5px 4px 0 0;
+  margin: 5px 4px 0 0;
 }
 
 /* wysiwyg */
 .wsEditor {
-    border: 0;
-    padding: 3px;
-    margin: 2px;
+  border: 0;
+  padding: 3px;
+  margin: 2px;
 }
 
 .button.selectable {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 #ccontent .homebox label {
 }
 
 img.none {
-    border: 0;
+  border: 0;
 }
 
 .freehtml {
-    clear: both;
+  clear: both;
 }
 
 .clearleft {
-    clear: left;
+  clear: left;
 }
 
 #notice, .notice, .information {
-    padding: 10px;
-    border: 1px solid;
+  padding: 10px;
+  border: 1px solid;
 }
 
 #minichat {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    height: 125px;
-    overflow: auto;
-    height: 250px;
+  ;
+  overflow: auto;
+  height: 25.2rem;
 }
 
 #bigchat {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    overflow: auto;
+  ;
+
+
+  overflow: auto;
 }
 
 #minichat li {
-    padding: 2px 0 12px 2px;
+  padding: 2px 0 12px 2px;
 }
 
 #bigchat li {
-    padding: 2px 0 12px 2px;
+  padding: 2px 0 12px 2px;
 }
 
 .day-separator {
-    margin-top: 10px;
-    padding: 5px 15px;
+  margin-top: 10px;
+  padding: 5px 15px;
 }
 
 .summary {
-    padding: 10px 5px;
+  padding: 10px 5px;
 }
 
 .summary p {
-    margin: 0 0 1.5em 0;
+  margin: 0 0 1.5em 0;
 }
 
 .category {
-    top: 104px;
-    right: 12px;
-    width: 2px;
-    height: 23px;
-    position: absolute;
-    z-index: 2;
-    background: red;
+  top: 104px;
+  right: 12px;
+  width: 2px;
+  position: absolute;
+  z-index: 2;
 }
 
 body > .category { /* si no ponemos esto ie no pinta bien el final de la navbar */
-    right: 14px;
+  right: 14px;
 }
 
 #submenu li.title {
-    padding: 3px 6px 2px 6px;
-    margin: 0;
+  padding: 3px 6px 2px 6px;
+
 }
 
 textarea {
-    border: 1px solid;
-    padding: 3px;
+  border: 1px solid;
+  padding: 3px;
 }
 
 #ccontent ul.skeletal {
-    margin: 0;
-    padding: 0;
+
+
 }
 
 #ccontent ul.skeletal li {
-    list-style: none;
-    padding-bottom: 20px;
-    padding-left: 5px;
+  ;
+  padding-bottom: 20px;
+  padding-left: 5px;
 }
 
 #ccontent ul.tutorialscategories {
-    margin: 2px 0 5px 0;
-    padding: 0;
+  margin: 2px 0 5px 0;
+
 }
 
 #ccontent .tutorialscategories li {
-    margin-left: 0;
-    display: inline;
-    margin-right: 10px;
-    list-style: none;
-    padding: 0;
+  margin-left: 0;
+  display: inline;
+  margin-right: 10px;
+  ;
+
 }
 
- #ccontent td {
-    padding: 3px 3px 3px 6px;
+#ccontent td {
+  padding: 3px 3px 3px 6px;
 }
 
 .system-message {
-    padding: 20px;
-    border: 1px solid;
-    margin-top: 3px;
-    margin-bottom: 10px;
+  padding: 20px;
+  border: 1px solid;
+  margin-top: 3px;
+  margin-bottom: 10px;
 }
 
 .system-message .register-now img {
-    border: 1px solid;
+  border: 1px solid;
 }
 
 #ccontent .system-message .register-now {
-    float: left;
-    margin-right: 10px;
-    margin-bottom: 10px;
+  float: left;
+  margin-right: 10px;
+  margin-bottom: 10px;
 }
 
 .warning {
-    padding: 20px;
-    border: 1px solid;
-    margin-top: 3px;
-    margin-bottom: 10px;
+  padding: 20px;
+  border: 1px solid;
+  margin-top: 3px;
+  margin-bottom: 10px;
 }
 
 #error {
-    padding: 10px;
-    border: 1px solid;
-    margin-top: 3px;
-    margin-bottom: 3px;
+  padding: 10px;
+  border: 1px solid;
+  margin-top: 3px;
+  margin-bottom: 3px;
 }
 
 #ccontent img.example {
-    border: 1px solid;
+  border: 1px solid;
 }
 
 #ccontent blockquote {
-    border: 1px solid;
-    margin: 0px 20px;
-    padding: 5px 10px;
+  margin: 0px 20px;
+  padding: 5px 10px;
 }
 
 #ccontent .message-body blockquote {
-    margin-left: 0;
+  margin-left: 0;
+}
+
+.percent-bar {
+  width: 100%;
+}
+
+.percent-bar,
+.percent-bar .bar {
+  height: 1.4rem;
 }
 
 .pcent-bar {
-    height: 4px;
-    border: 1px solid;
-    margin: 2px;
+  height: 0.4rem;
+  border: 1px solid;
+  margin: 2px;
 }
 
 .pcent-bar.compact {
-    border: 0;
+  border: 0;
 }
 
 .pcent-bar .bar {
-    height: 4px;
+  height: 0.4rem;
 }
 
 .vmember #ccontent .pcent-bar {
-    height: 7px;
+  height: 0.7rem;
 }
 
 .vmember #ccontent .pcent-bar .bar {
-    height: 7px;
+  height: 0.7rem;
 }
 
 th.timestamp, td.timestamp {
-    width: 120px;
+  width: 120px;
 }
 
 th.timestamp-short, td.timestamp-short {
-    width: 50px;
-    text-align: center;
+  width: 50px;
+  text-align: center;
 }
 
 #ccontent a img {
-    border: 1px solid;
+  border: 1px solid;
 }
 
-#ccontent img.factionfavicon, img.factionfavicon, img.icon16 {
-    border: 0;
-    width: 16px;
-    height: 16px;
+#ccontent img.factionfavicon,
+img.factionfavicon,
+img.icon16 {
+  border: 0;
+  width: 16px;
+  height: 16px;
 }
 
 img.factionfavicon {
-    background-image: url(/storage/gs.png);
-    background-repeat: no-repeat;
-    background-position: 25px 0; /* por defecto que no se vean los iconos de facción nuevos */
+  background-image: url(/storage/gs.png);
+  background-repeat: no-repeat;
+  background-position: 25px 0; /* por defecto que no se vean los iconos de facción nuevos */
 }
 
 th.sm-icon, td.sm-icon {
-    width: 18px;
-}
-
-#navigator .mcontent {
-    width: 120px;
-    height: 23px;
-    line-height: 23px;
-}
-
-#navigator > .mcontent {
-    width: 118px;
-}
-
-#navigator select {
-    width: 117px;
-    margin: 1px 0 0 1px;
-    padding-left: 18px;
+  width: 18px;
 }
 
 img.icon, #ccontent a img.icon, #ccontent a img.icon16 {
-    border: 0;
-}
-
-.comments-count a, .comments-count span {
-    padding-left: 18px;
-
-}
-
-.pageviews-count {
-    padding-left: 18px;
-
-}
-
-.downloads-count {
-    padding-left: 18px;
-}
-
-.members-count {
-    padding-left: 18px;
-}
-
-#ccontent .clans-count {
-    padding-left: 18px;
-}
-
-img.topic-indicator {
-    width: 24px;
-    height: 24px;
-}
-
-img.topic-indicator.topic-hot {
-    background-position: 0px 0px;
-}
-
-img.topic-indicator.topic-moved {
-    background-position: -24px -480px;
-}
-
-img.topic-indicator.topic-locked {
-    background-position: -48px -480px;
-}
-
-img.topic-indicator.topic-sticky {
-    background-position: -72px -480px;
-}
-
-.topic-indicators {
-    width: 24px;
+  border: 0;
 }
 
 .sidelist.images li {
-    text-align: center;
-    margin-bottom: 10px;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 #webs-aliadas .mcontent {
-    padding-bottom: 3px;
+  padding-bottom: 3px;
 }
 
 #webs-aliadas .banner {
-    margin-top: 3px;
+  margin-top: 3px;
 }
 
 #webs-aliadas .banner img {
-    width: 88px;
-    height: 31px;
+  width: 88px;
+  height: 31px;
 }
 
 .faction-poll li {
-    list-style: none;
-}
-
-#ccontent .commentlink a img.icon16 {
-    width: 16px;
-    height: 16px;
-    line-height: 22px;
-}
-
-.user-info {
-    line-height: 100%;
+  ;
 }
 
 img.icon16 {
-    width: 16px;
-    height: 16px;
-    border: 0;
+  width: 16px;
+  height: 16px;
+  border: 0;
 }
 
 /* section specific */
 body.cocuenta-cuenta .avatar-level {
-    width: 150px;
+  width: 150px;
 }
 
 body.cocuenta-cuenta .choose-avatar {
-    display: inline;
-    margin-right: 5px;
+  display: inline;
+  margin-right: 5px;
 }
 
 body.cocuenta-cuenta .choose-avatar img {
-    border: 3px solid #fff;
+  border: 3px solid #fff;
 }
 
 .matchmap-tourney td, #ccontent .matchmap-tourney th {
-    text-align: center;
+  text-align: center;
 }
 
 .matchmap-tourney td.match {
-    height: 50px;
+  height: 50px;
 }
 
 input.sm-text {
-    width: 50px;
+  width: 50px;
 }
 
-#ccontent .right, .righta {
-    text-align: right;
+#ccontent .right {
+  text-align: right;
 }
 
 .centered-link {
-    padding: 15px;
-    text-align: center;
+  padding: 15px;
+  text-align: center;
 }
 
 .sidething-spaced {
-    padding: 10px;
-    text-align: center;
+  padding: 10px;
+  text-align: center;
 }
 
 .match-won, .match-lost, .match-tie {
-    text-align: center;
-    width: 20px;
-}
-
-#ccontent dl {
-    margin: 0;
-    padding: 0;
+  text-align: center;
+  width: 20px;
 }
 
 #ccontent dd {
-    padding: 5px 0 20px 15px;
-    margin: 0;
+  padding: 5px 0 20px 15px;
 }
 
 #ccontent .competitions-match-maps {
-    text-align: center;
+  text-align: center;
 }
 
 #ccontent .competitions-match-maps img {
-    border: 1px solid #000;
+  border: 1px solid #000;
 }
 
 #available-smileys {
-    background: #fbfbfb;
-    border: 1px solid #f3f3f3;
-    width: 98%;
-    height: 110px;
-    padding: 3px;
-    overflow: auto;
-    margin-bottom: 10px;
-    margin-top: 5px;
-    display: none;
+  width: 98%;
+  height: 11rem;
+  padding: 3px;
+  overflow: auto;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  display: none;
 }
 
 #ccontent a img.slncadt {
-    border: 0;
-}
-
-.unknown-map {
-    width: 153px;
-    height: 115px;
-    border: 1px solid #000;
-}
-
-img.cash-out {
-    width: 14px;
-    height: 12px;
-}
-
-img.cash-in {
-    width: 14px;
-    height: 12px;
-}
-
-.go-to-topic {
-    width: 15px;
-    height: 15px;
-}
-
-#ccontent .go-to-topic {
-    border: 0;
-}
-
-.modbar {
-    width: 102px;
-
-}
-
-.modbar img {
-
-    height: 7px;
+  border: 0;
 }
 
 #ccontent .comments-mood {
-    float: right;
-    margin: 5px 15px 0 0;
+  float: right;
+  margin: 5px 15px 0 0;
 }
 
 .clanlogo {
-    float: right;
-    margin: 10px;
+  float: right;
+  margin: 10px;
 }
 
 .moderate-comments-opener {
-    cursor: default;
+  cursor: default;
 }
 
 #webchat #newline {
-    width: 90%;
+  width: 90%;
 }
 
 #webchat .panel-title {
-    display: none;
-    visibility: hidden;
+  display: none;
+  visibility: hidden;
 }
 
 #lastcomments a {
-    display: block;
-}
-
-.flhdr {
-    width: 16px;
-    height: 16px;
-
+  display: block;
 }
 
 #ccontent ul.inline {
-    display: inline;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+  display: inline;
 }
 
 #ccontent ul.inline li {
-    display: inline;
-    margin: 0;
-    padding: 0;
+  display: inline;
 }
 
 #ccontent ul.messages-thread li {
-
-    padding-left: 18px;
-    list-style: none;
+  padding-left: 18px;
 }
 
 #ccontent ul.messages-thread table {
-    width: auto;
+  width: auto;
 }
 
 #ccontent #cmain > ul.messages-thread table {
-    width: 100%;
+  width: 100%;
 }
-
-#ccontent ul.messages-thread li td {
-    line-height: 24px;
-}
-
 
 #ccontent ul.messages-thread ul {
-    margin-left: 0;
-    padding-left: 0
+  margin-left: 0;
+  padding-left: 0
 }
 
 #ccontent .news-category-image {
-    width: 188px;
-    height: 110px;
+  width: 188px;
+  height: 110px;
 }
 
 .karmabar_marks {
-    position: absolute;
-}
-
-#mgbreadcrumb li a, #mgbreadcrumb li.current {
-    padding-left: 12px;
+  position: absolute;
 }
 
 .homebox .calendar td.day {
-    margin: 0;
-    padding: 0;
-    border-width: 0;
-}
-
-.homebox table.calendar {
-    padding: 0;
+  border-width: 0;
 }
 
 .rss {
-    padding-left: 14px;
-}
-
-.karmalevel {
-    position: absolute;
-}
-
-.karmabar_fill {
-    position: absolute;
+  padding-left: 14px;
 }
 
 .mfcontents-summaries-item {
-    margin-bottom: 20px;
-    padding: 3px;
+  margin-bottom: 20px;
+  padding: 3px;
 }
 
 #mgads-bottom .adslot {
-    text-align: center;
-    margin: 0 0 10px 0;
+  text-align: center;
+  margin: 0 0 10px 0;
 }
 
 .potd-pref-selector {
-  background: none;
   float: right;
   padding: 0px 4px 0 0;
   text-align: right;
@@ -817,12 +546,11 @@ img.cash-in {
 
 #mggmgeist {
   border: 1px solid #eee;
-  background: #fff;
   padding: 3px;
-  float: right;
+  position: absolute;
   width: 100px;
+  right: 2rem;
   margin-right: 20px;
-  height: 25px;
 }
 
 #mggmgeist .wrapper {
@@ -836,7 +564,4 @@ img.cash-in {
   margin-left: 7px;
   position: absolute;
   z-index: 3;
-}
-
-#mggmgeist a {
 }

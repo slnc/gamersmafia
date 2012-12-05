@@ -1,5 +1,0 @@
-<ul style="margin: 0; padding: 0; list-style: none;">
-<% get_last_commented_contents.each do |c| %>
-  <li style="height: 30px; padding: 3px 2px 1px 2px; border-top: 1px solid #ddd;"><%=link_to c.resolve_hid, "/contenidos/#{c.unique_content_id}" %></li>
-<% end %>
-</ul>

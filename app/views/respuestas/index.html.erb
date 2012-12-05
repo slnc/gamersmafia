@@ -1,17 +1,11 @@
-<%generic_support do %>
-<%=render :partial => '/respuestas/top_sabios', :locals => { :category => @category } %>
-
-<%=render(:partial => '/shared/category_tag_browser', :locals => {:cls => Download, :category => @category}) if @category %>
-
-<% end -%>
 <% obj = @category ? @category : controller.portal.question %>
 <%content_main do %>
 <%mftext('Pregunta') do %>
 <% if user_is_authed then %>
 		<form method="post" action="/respuestas/new">
-			<textarea style="width: 80%; height: 42px;" name="question[title]"></textarea>
+			<textarea style="width: 80%;" name="question[title]"></textarea>
 			<br />
-			<input type="submit" value="Preguntar" />
+			<input type="submit" class="button" value="Preguntar" />
 		</form>
 		<% else %>
 		<p>Necesitas <a href="/cuenta/alta">registrarte</a> para poder preguntar.</p>
@@ -27,7 +21,7 @@
 @questions.each do |question| %>
     <div class="<%=oddclass%>">
 			<div><img class="avatar" style="float: left; margin-right: 10px;" src="/cache/thumbnails/f/38x38<%=question.user.show_avatar%>" /> <%=faction_favicon(question)%> <strong><%= link_to question.title, gmurl(question) %></strong></div>
-			<div class="infoinline"><% if question.prize > Question::MIN_AMMOUNT then %><strong><%=question.prize.to_i%></strong> <%=gmd11%> | <% end-%><%=draw_rating(question.rating)%> | <%=user_link(question.user)%></div>
+			<div class="infoinline"><% if question.prize > Question::MIN_AMMOUNT then %><strong><%=question.prize.to_i%></strong> <%=gm_icon("gmf", "small")%> | <% end-%><%=draw_rating(question.rating)%> | <%=user_link(question.user)%></div>
     </div>
     <br />
 <% end %>
@@ -52,3 +46,10 @@
 </tr>
 </table>
 <%end %><%# content_main%>
+
+<%generic_support do %>
+<%=render :partial => '/respuestas/top_sabios', :locals => { :category => @category } %>
+
+<%=render(:partial => '/shared/category_tag_browser', :locals => {:cls => Download, :category => @category}) if @category %>
+
+<% end -%>

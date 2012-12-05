@@ -1,3 +1,11 @@
+<% content_main do %>
+  <% mftext("Informe de #{@report.user.login}") do %>
+  <div style="float: right; margin: 5px;"><%=participant_roster(@competitions_participant)%></div>
+  <%=@report.report%>
+  <div style="clear: left; margin-top: 20px;"><a href="/competiciones/partida/<%=@competitions_match.id%>">&laquo; Volver a la partida</a></div>
+  <% end -%>
+<% end -%>
+
 <% generic_support do %>
   <% mftext('Informes de la partida') do %>
   <ul class="skeletal">
@@ -10,10 +18,3 @@
 <% end -%>
 
 
-<% content_main do %>
-  <% mftext("Informe de #{@report.user.login}") do %>
-  <div style="float: right; margin: 5px;"><%=participant_roster(@competitions_participant)%></div>
-  <%=@report.report%>
-  <div style="clear: left; margin-top: 20px;"><a href="/competiciones/partida/<%=@competitions_match.id%>">&laquo; Volver a la partida</a></div>
-  <% end -%>
-<% end -%>
