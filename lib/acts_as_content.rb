@@ -781,7 +781,6 @@ module ActsAsContent
       end
     end
 
-
     def prepare_destruction
       self.unique_content.destroy
     end
