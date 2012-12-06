@@ -7,6 +7,7 @@ class Content < ActiveRecord::Base
   has_many :comments, :dependent => :destroy
   has_many :contents_versions, :dependent => :destroy
   has_many :content_ratings, :dependent => :destroy
+  has_many :content_attributes
   has_many :tracker_items, :dependent => :destroy
   has_many :contents_locks, :dependent => :destroy
   has_many :contents_recommendations, :dependent => :destroy

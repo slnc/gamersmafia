@@ -821,6 +821,23 @@ CREATE TABLE competitions_supervisors (
     competition_id integer NOT NULL,
     user_id integer NOT NULL
 );
+CREATE TABLE content_attributes (
+    id integer NOT NULL,
+    content_id integer NOT NULL,
+    name character varying NOT NULL,
+    varchar_value character varying,
+    int_value integer,
+    float_value double precision,
+    timestamp_value timestamp without time zone,
+    text_value text
+);
+CREATE SEQUENCE content_attributes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE content_attributes_id_seq OWNED BY content_attributes.id;
 CREATE TABLE content_ratings (
     id integer NOT NULL,
     user_id integer,
@@ -3172,6 +3189,7 @@ ALTER TABLE ONLY competitions_matches_uploads ALTER COLUMN id SET DEFAULT nextva
 ALTER TABLE ONLY competitions_participants ALTER COLUMN id SET DEFAULT nextval('competitions_participants_id_seq'::regclass);
 ALTER TABLE ONLY competitions_participants_types ALTER COLUMN id SET DEFAULT nextval('competitions_participants_types_id_seq'::regclass);
 ALTER TABLE ONLY competitions_sponsors ALTER COLUMN id SET DEFAULT nextval('competitions_sponsors_id_seq'::regclass);
+ALTER TABLE ONLY content_attributes ALTER COLUMN id SET DEFAULT nextval('content_attributes_id_seq'::regclass);
 ALTER TABLE ONLY content_ratings ALTER COLUMN id SET DEFAULT nextval('content_ratings_id_seq'::regclass);
 ALTER TABLE ONLY content_types ALTER COLUMN id SET DEFAULT nextval('content_types_id_seq'::regclass);
 ALTER TABLE ONLY contents ALTER COLUMN id SET DEFAULT nextval('contents_id_seq'::regclass);
@@ -3415,6 +3433,8 @@ ALTER TABLE ONLY competitions_sponsors
     ADD CONSTRAINT competitions_sponsors_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY competitions_supervisors
     ADD CONSTRAINT competitions_supervisors_pkey PRIMARY KEY (competition_id, user_id);
+ALTER TABLE ONLY content_attributes
+    ADD CONSTRAINT content_attributes_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY content_ratings
     ADD CONSTRAINT content_ratings_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY content_types
@@ -3772,6 +3792,7 @@ CREATE INDEX competitions_matches_participant2_id ON competitions_matches USING 
 CREATE INDEX competitions_participants_competition_id ON competitions_participants USING btree (competition_id);
 CREATE UNIQUE INDEX competitions_participants_uniq ON competitions_participants USING btree (competition_id, participant_id, competitions_participants_type_id);
 CREATE UNIQUE INDEX competitions_supervisors_uniq ON competitions_supervisors USING btree (competition_id, user_id);
+CREATE INDEX content_attributes_uniq ON content_attributes USING btree (content_id, name);
 CREATE INDEX content_ratings_comb ON content_ratings USING btree (ip, user_id, created_on);
 CREATE UNIQUE INDEX content_ratings_user_id_content_id ON content_ratings USING btree (user_id, content_id);
 CREATE INDEX contents_created_on ON contents USING btree (created_on);
@@ -3980,6 +4001,8 @@ ALTER TABLE ONLY competitions_matches
     ADD CONSTRAINT competitions_matches_participant1_id_fkey FOREIGN KEY (participant1_id) REFERENCES competitions_participants(id);
 ALTER TABLE ONLY competitions_matches
     ADD CONSTRAINT competitions_matches_participant2_id_fkey FOREIGN KEY (participant2_id) REFERENCES competitions_participants(id);
+ALTER TABLE ONLY content_attributes
+    ADD CONSTRAINT content_attributes_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id) MATCH FULL;
 ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY contents
