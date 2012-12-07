@@ -1,4 +1,21 @@
 # -*- encoding : utf-8 -*-
+# ContentAttribute:
+# - entity1_local_id (int)
+# - entity2_local_id (int)
+# - entity1_external (varchar)
+# - entity2_external (varchar)
+# - games_map_id (int)
+# - event_id (int)
+# - pov_type (int)
+# - pov_entity (int)
+# - file (varchar)
+# - file_hash_md5 (varchar)
+# - downloaded_times (int)
+# - file_size (bigint)
+# - games_mode_id (int)
+# - games_version_id (int)
+# - demotype (int)
+# - played_on (date)
 class Demo < ActiveRecord::Base
   POVS = {:freeflight => 0, :chase => 1, :in_eyes => 2, :server => 3}
   DEMOTYPES = {:official => 0, :friendly => 1, :tutorial => 2 }

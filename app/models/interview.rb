@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
+# ContentAttribute:
+# - home_image (varchar)
 class Interview < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable

@@ -1,4 +1,7 @@
 # -*- encoding : utf-8 -*-
+# ContentAttribute:
+# - sticky (bool)
+# - moved_on (timestamp)
 class Topic < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable

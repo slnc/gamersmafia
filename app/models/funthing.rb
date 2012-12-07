@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
+# ContentAttribute:
+# (none)
 class Funthing < ActiveRecord::Base
   YOUTUBE_EMBED = /^http:\/\/([a-z.]*)youtube.com\/watch\?v=([a-zA-Z0-9]+)/
   # http://       www.youtube.com/v/6-ecf9_X_Dk&hl=es&fs=1

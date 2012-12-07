@@ -824,12 +824,16 @@ CREATE TABLE competitions_supervisors (
 CREATE TABLE content_attributes (
     id integer NOT NULL,
     content_id integer NOT NULL,
-    name character varying NOT NULL,
+    attribute_id integer NOT NULL,
     varchar_value character varying,
     int_value integer,
     float_value double precision,
     timestamp_value timestamp without time zone,
-    text_value text
+    text_value text,
+    bool_value boolean,
+    numeric_value numeric(14,2),
+    date_value date,
+    bigint_value bigint
 );
 CREATE SEQUENCE content_attributes_id_seq
     START WITH 1
@@ -883,7 +887,16 @@ CREATE TABLE contents (
     bazar_district_id integer,
     closed boolean DEFAULT false NOT NULL,
     source character varying,
-    karma_points integer
+    karma_points integer,
+    description text,
+    main text,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count smallint DEFAULT 0 NOT NULL,
+    log character varying,
+    cache_weighted_rank numeric(10,2)
 );
 CREATE SEQUENCE contents_id_seq
     START WITH 1
@@ -3792,7 +3805,7 @@ CREATE INDEX competitions_matches_participant2_id ON competitions_matches USING 
 CREATE INDEX competitions_participants_competition_id ON competitions_participants USING btree (competition_id);
 CREATE UNIQUE INDEX competitions_participants_uniq ON competitions_participants USING btree (competition_id, participant_id, competitions_participants_type_id);
 CREATE UNIQUE INDEX competitions_supervisors_uniq ON competitions_supervisors USING btree (competition_id, user_id);
-CREATE INDEX content_attributes_uniq ON content_attributes USING btree (content_id, name);
+CREATE INDEX content_attributes_uniq ON content_attributes USING btree (content_id, attribute_id);
 CREATE INDEX content_ratings_comb ON content_ratings USING btree (ip, user_id, created_on);
 CREATE UNIQUE INDEX content_ratings_user_id_content_id ON content_ratings USING btree (user_id, content_id);
 CREATE INDEX contents_created_on ON contents USING btree (created_on);

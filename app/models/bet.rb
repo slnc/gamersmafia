@@ -1,4 +1,11 @@
 # -*- encoding : utf-8 -*-
+# ContentAttribute:
+# - cancelled (bool)
+# - closes_on (timestamp)
+# - forfeit (bool)
+# - tie (bool)
+# - total_ammount (numeric(14, 2))
+# - winning_bets_option_id (int)
 class Bet < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable

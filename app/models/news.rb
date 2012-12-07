@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
+# ContentAttribute:
+# (none)
 class News < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable

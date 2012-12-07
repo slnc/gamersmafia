@@ -1,4 +1,9 @@
 # -*- encoding : utf-8 -*-
+# ContentAttribute:
+# - country_id (int)
+# - levels (varchar)
+# - clan_id (int)
+# - game_id (int)
 class RecruitmentAd < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable

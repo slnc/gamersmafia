@@ -1,4 +1,9 @@
 # -*- encoding : utf-8 -*-
+# ContentAttribute:
+# - downloaded_times (int)
+# - essential (bool)
+# - file_hash_md5 (varchar)
+# - file (varchar)
 require 'digest/md5'
 
 class Download < ActiveRecord::Base

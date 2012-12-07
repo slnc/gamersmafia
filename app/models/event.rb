@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
+# ContentAttribute:
+# - event_id (int)
 class Event < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable

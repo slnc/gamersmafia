@@ -1,4 +1,8 @@
 # -*- encoding : utf-8 -*-
+# ContentAttribute:
+# - starts_on (timestamp)
+# - ends_on (timestamp)
+# - polls_votes_count (int)
 class Poll < ActiveRecord::Base
   CURRENT_SQL = 'starts_on <= now() and ends_on >= now()'
   acts_as_content

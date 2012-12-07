@@ -2,6 +2,10 @@
 class Unpublished < Exception; end
 class AlreadyAnswered < Exception; end
 
+# ContentAttribute:
+# - ammount (numeric(10, 2))
+# - answered_on (timestamp)
+# - answer_selected_by_user_id (int)
 class Question < ActiveRecord::Base
   MIN_AMMOUNT = 6.0
   DEFAULT_AMMOUNT = 5.0

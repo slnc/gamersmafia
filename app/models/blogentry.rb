@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
+# ContentAttribute:
+# (none)
 class Blogentry < ActiveRecord::Base
   acts_as_content
 

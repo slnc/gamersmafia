@@ -1,4 +1,7 @@
 # -*- encoding : utf-8 -*-
+# ContentAttribute:
+# - file_hash_md5 (varchar)
+# - file (varchar)
 class Image < ActiveRecord::Base
   acts_as_content
   acts_as_categorizable
