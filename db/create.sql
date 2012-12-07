@@ -896,7 +896,8 @@ CREATE TABLE contents (
     cache_rated_times smallint,
     cache_comments_count smallint DEFAULT 0 NOT NULL,
     log character varying,
-    cache_weighted_rank numeric(10,2)
+    cache_weighted_rank numeric(10,2),
+    type character varying NOT NULL
 );
 CREATE SEQUENCE contents_id_seq
     START WITH 1

@@ -1,6 +1,6 @@
 news_deleted:
   id: 2000
-  content_type_id: 1
+  type: News
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -14,7 +14,7 @@ news_deleted:
 
 bet_deleted:
   id: 2002
-  content_type_id: 15
+  type: Bet
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -28,7 +28,7 @@ bet_deleted:
 
 column_deleted:
   id: 2003
-  content_type_id: 12
+  type: Column
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -42,7 +42,7 @@ column_deleted:
 
 funthing_deleted:
   id: 2004
-  content_type_id: 14
+  type: Funthing
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -56,7 +56,7 @@ funthing_deleted:
 
 download_deleted:
   id: 2005
-  content_type_id: 5
+  type: Download
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -70,7 +70,7 @@ download_deleted:
 
 poll_deleted:
   id: 2006
-  content_type_id: 7
+  type: Poll
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -84,7 +84,7 @@ poll_deleted:
 
 tutorial_deleted:
   id: 2007
-  content_type_id: 10
+  type: Tutorial
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -98,7 +98,7 @@ tutorial_deleted:
 
 interview_deleted:
   id: 2008
-  content_type_id: 11
+  type: Interview
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -112,7 +112,7 @@ interview_deleted:
 
 event_deleted:
   id: 2010
-  content_type_id: 8
+  type: Event
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -126,7 +126,7 @@ event_deleted:
 
 coverage_deleted:
   id: 2011
-  content_type_id: 9
+  type: Coverage
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -140,7 +140,7 @@ coverage_deleted:
 
 review_deleted:
   id: 2012
-  content_type_id: 13
+  type: Review
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -154,7 +154,7 @@ review_deleted:
 
 forums_topic_deleted:
   id: 2013
-  content_type_id: 6
+  type: Topic
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -168,7 +168,7 @@ forums_topic_deleted:
 
 image_deleted:
   id: 2014
-  content_type_id: 4
+  type: Image
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -182,7 +182,7 @@ image_deleted:
 
 demo_deleted:
   id: 2015
-  content_type_id: 23
+  type: Demo
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -196,7 +196,7 @@ demo_deleted:
 
 news_unpublished:
   id: 1000
-  content_type_id: 1
+  type: News
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -210,7 +210,7 @@ news_unpublished:
 
 bet_unpublished:
   id: 1002
-  content_type_id: 15
+  type: Bet
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -224,7 +224,7 @@ bet_unpublished:
 
 column_unpublished:
   id: 1003
-  content_type_id: 12
+  type: Column
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -238,7 +238,7 @@ column_unpublished:
 
 funthing_unpublished:
   id: 1004
-  content_type_id: 14
+  type: Funthing
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -252,7 +252,7 @@ funthing_unpublished:
 
 download_unpublished:
   id: 1005
-  content_type_id: 5
+  type: Download
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -266,7 +266,7 @@ download_unpublished:
 
 poll_unpublished:
   id: 1006
-  content_type_id: 7
+  type: Poll
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -280,7 +280,7 @@ poll_unpublished:
 
 tutorial_unpublished:
   id: 1007
-  content_type_id: 10
+  type: Tutorial
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -294,7 +294,7 @@ tutorial_unpublished:
 
 interview_unpublished:
   id: 1008
-  content_type_id: 11
+  type: Interview
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -308,7 +308,7 @@ interview_unpublished:
 
 event_unpublished:
   id: 1010
-  content_type_id: 8
+  type: Event
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -322,7 +322,7 @@ event_unpublished:
 
 coverage_unpublished:
   id: 1011
-  content_type_id: 9
+  type: Coverage
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -336,7 +336,7 @@ coverage_unpublished:
 
 review_unpublished:
   id: 1012
-  content_type_id: 13
+  type: Review
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -350,7 +350,7 @@ review_unpublished:
 
 forums_topic_unpublished:
   id: 1013
-  content_type_id: 6
+  type: Topic
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -364,7 +364,7 @@ forums_topic_unpublished:
 
 image_unpublished:
   id: 1014
-  content_type_id: 4
+  type: Image
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -378,7 +378,7 @@ image_unpublished:
 
 demo_unpublished:
   id: 1015
-  content_type_id: 23
+  type: Demo
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -392,7 +392,7 @@ demo_unpublished:
 
 news_published:
   id: 1
-  content_type_id: 1
+  type: News
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -408,7 +408,7 @@ news_published:
 
 bet_published:
   id: 2
-  content_type_id: 15
+  type: Bet
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -424,7 +424,7 @@ bet_published:
 
 column_published:
   id: 3
-  content_type_id: 12
+  type: Column
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -440,7 +440,7 @@ column_published:
 
 funthing_published:
   id: 4
-  content_type_id: 14
+  type: Funthing
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -455,7 +455,7 @@ funthing_published:
 
 download_published:
   id: 5
-  content_type_id: 5
+  type: Download
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -471,7 +471,7 @@ download_published:
 
 poll_published:
   id: 6
-  content_type_id: 7
+  type: Poll
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -487,7 +487,7 @@ poll_published:
 
 tutorial_published:
   id: 7
-  content_type_id: 10
+  type: Tutorial
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -503,7 +503,7 @@ tutorial_published:
 
 interview_published:
   id: 8
-  content_type_id: 11
+  type: Interview
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -519,7 +519,7 @@ interview_published:
 
 event_published:
   id: 10
-  content_type_id: 8
+  type: Event
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -535,7 +535,7 @@ event_published:
 
 coverage_published:
   id: 11
-  content_type_id: 9
+  type: Coverage
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -551,7 +551,7 @@ coverage_published:
 
 review_published:
   id: 12
-  content_type_id: 13
+  type: Review
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -567,7 +567,7 @@ review_published:
 
 forums_topic_published:
   id: 13
-  content_type_id: 6
+  type: Topic
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -583,7 +583,7 @@ forums_topic_published:
 
 image_published:
   id: 14
-  content_type_id: 4
+  type: Image
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -599,7 +599,7 @@ image_published:
 
 image_babe:
   id: 15
-  content_type_id: 4
+  type: Image
   external_id: 4
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -614,7 +614,7 @@ image_babe:
 
 image_dude:
   id: 16
-  content_type_id: 4
+  type: Image
   external_id: 5
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -629,7 +629,7 @@ image_dude:
 
 demo_published:
   id: 17
-  content_type_id: 23
+  type: Demo
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -652,7 +652,7 @@ demo_published:
 
 <%=competitions_type%><%=i%>:
   id: <%=i%>
-  content_type_id: 8
+  type: Event
   external_id: <%=i - 90%>
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -676,7 +676,7 @@ demo_published:
 
 blogentry_first:
   id: 1001
-  content_type_id: 17
+  type: Blogentry
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -691,7 +691,7 @@ blogentry_first:
 
 blogentry_second:
   id: 1200
-  content_type_id: 17
+  type: Blogentry
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -706,7 +706,7 @@ blogentry_second:
 
 noticia_clan1:
   id: 1100
-  content_type_id: 1
+  type: News
   external_id: 4
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -721,7 +721,7 @@ noticia_clan1:
 
 foo3vsbar3:
   id: 1102
-  content_type_id: 8
+  type: Event
   external_id: 5000
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -736,7 +736,7 @@ foo3vsbar3:
 
 news_pending_clan1:
   id: 1103
-  content_type_id: 1
+  type: News
   external_id: 5
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -750,7 +750,7 @@ news_pending_clan1:
 
 news_64:
   id: 1104
-  content_type_id: 1
+  type: News
   external_id: 64
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -764,7 +764,7 @@ news_64:
 
 topics_1265:
   id: 1105
-  content_type_id: 6
+  type: Topic
   external_id: 1265
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -778,7 +778,7 @@ topics_1265:
 
 topics_9734:
   id: 1106
-  content_type_id: 6
+  type: Topic
   external_id: 9734
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -792,7 +792,7 @@ topics_9734:
 
 topics_7761:
   id: 1107
-  content_type_id: 6
+  type: Topic
   external_id: 7761
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -806,7 +806,7 @@ topics_7761:
 
 topics_3417:
   id: 1108
-  content_type_id: 6
+  type: Topic
   external_id: 3417
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -820,7 +820,7 @@ topics_3417:
 
 topics_1265:
   id: 1109
-  content_type_id: 6
+  type: Topic
   external_id: 1265
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -834,7 +834,7 @@ topics_1265:
 
 question_published:
   id: 1110
-  content_type_id: 24
+  type: Question
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -850,7 +850,7 @@ question_published:
 
 question_unpublished:
   id: 1111
-  content_type_id: 24
+  type: Question
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -865,7 +865,7 @@ question_unpublished:
 
 question_deleted:
   id: 1112
-  content_type_id: 24
+  type: Question
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -879,7 +879,7 @@ question_deleted:
 
 news_published_anime:
   id: 1113
-  content_type_id: 1
+  type: News
   external_id: 65
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -895,7 +895,7 @@ news_published_anime:
 
 news_published_gm:
   id: 1114
-  content_type_id: 1
+  type: News
   external_id: 66
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -910,7 +910,7 @@ news_published_gm:
 
 polls_published_gm:
   id: 1115
-  content_type_id: 7
+  type: Poll
   external_id: 4
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -925,7 +925,7 @@ polls_published_gm:
 
 polls_pending_gm:
   id: 1116
-  content_type_id: 7
+  type: Poll
   external_id: 5
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
@@ -940,7 +940,7 @@ polls_pending_gm:
 
 news_published_rj:
   id: 1117
-  content_type_id: 1
+  type: News
   external_id: 67
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00

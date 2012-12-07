@@ -22,4 +22,9 @@ class Image < ActiveRecord::Base
   def to_s
     ("Image: id: #{self.id}")
   end
+
+  def home_image
+    raise "not implemented"
+    return "/#{self.file}"
+  end
 end
