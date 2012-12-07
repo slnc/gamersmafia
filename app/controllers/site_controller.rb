@@ -90,13 +90,13 @@ class SiteController < ApplicationController
     params[:content_rating][:user_id] = @user.id if user_is_authed
     rating = ContentRating.new(params[:content_rating])
 
-    if user_is_authed && @user.can_rate?(rating.content.real_content) then
+    if user_is_authed && @user.can_rate?(rating.content) then
       rating.save
     elsif !user_is_authed && ContentRating.count(:conditions => ['user_id is null and content_id = ? and ip = ?', rating.content_id, rating.ip]) == 0
       rating.save
     end
 
-    @obj = rating.content.real_content
+    @obj = rating.content
     render :nothing => true
   end
 

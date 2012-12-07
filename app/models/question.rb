@@ -39,11 +39,11 @@ class Question < ActiveRecord::Base
         :order => 'id').each do |q|
       c_text = Kernel.rand > 0.5 ? 'Esta pregunta lleva pendiente de respuesta demasiado tiempo y le está empezando a salir musgo verde así que me veo en la obligación de cerrarla.' : 'Esta pregunta lleva demasiado tiempo abierta y se encuentra en paupérrimas condiciones. Por consiguiente me siento con la obligación de cerrarla.'
 
-      if q.unique_content.comments.count(:conditions => ['user_id <> ?', q.user_id]) > 0
+      if q.comments.count(:conditions => ['user_id <> ?', q.user_id]) > 0
         c_text << ' Si alguna de las respuestas es válida por favor avisad al staff.'
       end
 
-      c = Comment.create(:user_id => mrman.id, :comment => c_text, :host => '127.0.0.1', :content_id => q.unique_content_id)
+      c = Comment.create(:user_id => mrman.id, :comment => c_text, :host => '127.0.0.1', :content_id => q.id)
 
       q.set_no_best_answer(mrman)
     end
@@ -255,7 +255,7 @@ class Question < ActiveRecord::Base
          WHERE b.id IN (
            SELECT accepted_answer_comment_id
            FROM questions a
-           JOIN contents b on a.unique_content_id = b.id
+           JOIN contents b on a.id = b.id
            JOIN contents_terms c on b.id = c.content_id
            WHERE a.state = #{Cms::PUBLISHED}
            AND a.accepted_answer_comment_id IS NOT NULL

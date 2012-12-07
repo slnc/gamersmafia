@@ -1,6 +1,6 @@
 <div class="content-headline">
   <header class="f_hecto">
-    <%=content_headline_image(content.real_content)%>
+    <%=content_headline_image(content)%>
     <a href="<%=gmurl(content)%>"><%=content.name%></a>
   </header>
   <div class="authorship secondary f_milli">
@@ -11,9 +11,9 @@
     &mdash;
     <%=comment_count(content)%>
   </div>
-  <% if content.real_content.respond_to?(:description) && content.real_content.description.to_s != ""%>
-    <%=initial_sentences(content.real_content.description)%>
-  <% elsif content.real_content.respond_to?(:main) && content.real_content.main.to_s != ""%>
-    <%=initial_sentences(content.real_content.main)%>
+  <% if content.respond_to?(:description) && content.description.to_s != ""%>
+    <%=initial_sentences(content.description)%>
+  <% elsif content.respond_to?(:main) && content.main.to_s != ""%>
+    <%=initial_sentences(content.main)%>
   <% end -%>
 </div>

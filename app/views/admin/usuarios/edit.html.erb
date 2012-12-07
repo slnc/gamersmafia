@@ -134,7 +134,7 @@
 <%@edituser.comments.find(:all, :conditions => 'deleted = \'f\'', :order => 'comments.created_on DESC', :limit => 50, :include => :content).each do |comment| %>
 	<tr class="<%=oddclass%>">
 		<td class="w25"><input type="checkbox" name="comments[]" value="<%=comment.id%>" /></td>
-		<td class="w150 infoinline"><strong><a href="<%=gmurl(comment.content.real_content)%>"><%=comment.content.name[0..25]%></a></strong><br /><%=print_tstamp(comment.created_on)%></td><td><%=strip_tags(comment.comment[0..100]).gsub('<br />', ' ')%></td>
+		<td class="w150 infoinline"><strong><a href="<%=gmurl(comment.content)%>"><%=comment.content.name[0..25]%></a></strong><br /><%=print_tstamp(comment.created_on)%></td><td><%=strip_tags(comment.comment[0..100]).gsub('<br />', ' ')%></td>
 	</tr>
 	<% end -%>
 </table>

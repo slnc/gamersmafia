@@ -1,22 +1,22 @@
 <div class="content-attribute-name">Título</div>
 <div class="content-attribute-value f_hecto content-title">
-  <%=content.real_content.title%>
+  <%=content.title%>
 </div>
 
 <div class="content-attribute-name">Comienza</div>
 <div class="content-attribute-value content-starts-on">
-  <%=print_tstamp(content.real_content.starts_on)%>
+  <%=print_tstamp(content.starts_on)%>
 </div>
 
 <div class="content-attribute-name">Termina</div>
 <div class="content-attribute-value content-ends-on">
-  <%=print_tstamp(content.real_content.ends_on)%>
+  <%=print_tstamp(content.ends_on)%>
 </div>
 
 <div class="content-attribute-name">Opciones</div>
 <div class="content-attribute-value content-poll-">
   <ul>
-    <%content.real_content.polls_options.each do |option| %>
+    <%content.polls_options.each do |option| %>
       <li><%=option.name%></a></li>
     <% end -%>
   </ul>

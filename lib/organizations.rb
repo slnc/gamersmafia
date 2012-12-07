@@ -11,8 +11,8 @@ module Organizations
     ]
 
   def self.find_by_content(obj)
-    obj = obj.real_content if obj.class.name == 'Content'
-    obj = obj.content.real_content if obj.class.name == 'Comment'
+    obj = obj if obj.class.name == 'Content'
+    obj = obj.content if obj.class.name == 'Comment'
     return nil unless Cms::CONTENTS_WITH_CATEGORIES.include?(obj.class.name)
 
     maincat = obj.main_category

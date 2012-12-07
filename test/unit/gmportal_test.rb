@@ -25,7 +25,7 @@ class GmPortalTest < ActiveSupport::TestCase
     assert_equal Cms::PUBLISHED, question.state
     assert_nil GmPortal.new.question.find(
         :first, :conditions => ['questions.id = ?', question.id])
-    term_ut.link(question.unique_content)
+    term_ut.link(question)
     assert_not_nil GmPortal.new.question.find(
         :first, :conditions => ['questions.id = ?', question.id])
   end

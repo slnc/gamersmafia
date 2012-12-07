@@ -225,7 +225,7 @@ class NotificationEmailTest < ActionMailer::TestCase
     u = User.find(1)
     c = Content.find(:first)
     assert_not_nil c
-    NotificationEmail.trackerupdate(u, { :content => c.real_content }).deliver
+    NotificationEmail.trackerupdate(u, { :content => c }).deliver
     assert_equal deliveries + 1, ActionMailer::Base.deliveries.size
   end
 

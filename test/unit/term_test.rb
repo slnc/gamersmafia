@@ -57,7 +57,7 @@ class TermTest < ActiveSupport::TestCase
     assert term.save
 
     # We pick a Funthing because it works with root categories
-    content = Funthing.find(:first).unique_content
+    content = Funthing.find(:first)
     link_content_to_term(content, term)
   end
 
@@ -66,7 +66,7 @@ class TermTest < ActiveSupport::TestCase
     assert term.save
 
     # We pick a Topic because it works with root categories
-    content = Topic.find(:first).unique_content
+    content = Topic.find(:first)
     link_content_to_term(content, term)
   end
 
@@ -218,11 +218,11 @@ class TermTest < ActiveSupport::TestCase
 
   test "reset_contents_urls" do
     topic = Topic.find(1)
-    User.db_query("UPDATE contents SET url = 'fuuck yu' WHERE id = #{topic.unique_content_id}")
+    User.db_query("UPDATE contents SET url = 'fuuck yu' WHERE id = #{topic.id}")
     topic.reload
     topic.main_category.reset_contents_urls
     topic.reload
-    assert_equal "http://ut.#{App.domain}/foros/topic/1", topic.unique_content.url
+    assert_equal "http://ut.#{App.domain}/foros/topic/1", topic.url
   end
 
   test "get_or_resolve_last_updated_item_id" do
@@ -234,7 +234,7 @@ class TermTest < ActiveSupport::TestCase
     a_term.reload
     original_last_item.reload
     assert_equal Cms::DELETED, original_last_item.state
-    assert_equal Cms::DELETED, original_last_item.unique_content.state
+    assert_equal Cms::DELETED, original_last_item.state
     assert_not_equal a_term.get_or_resolve_last_updated_item, original_last_item
   end
 
@@ -246,10 +246,10 @@ class TermTest < ActiveSupport::TestCase
     @topic = Topic.new(:user_id => 1, :title => 'topic 1', :main => 'topic1')
     assert @topic.save, @topic.errors.full_messages_html
     assert_equal Cms::PUBLISHED, @topic.state
-    assert_equal Cms::PUBLISHED, @topic.unique_content.state
-    @subcat1.link(@topic.unique_content)
+    assert_equal Cms::PUBLISHED, @topic.state
+    @subcat1.link(@topic)
     rtoutside = Term.find(17)
-    rtoutside.link(@topic.unique_content)
+    rtoutside.link(@topic)
     @cat1.reload
     @subcat1.reload
     assert_equal 1, @subcat1.contents_count(:cls_name => 'Topic')
@@ -276,8 +276,8 @@ class TermTest < ActiveSupport::TestCase
     @subcat2 = @cat2.children.create(:name => 'catsubfather', :taxonomy => 'TopicsCategory')
     assert @subcat2.save
 
-    @subcat1.unlink(@topic.unique_content)
-    @subcat2.link(@topic.unique_content)
+    @subcat1.unlink(@topic)
+    @subcat2.link(@topic)
 
     @cat1.reload
     @subcat1.reload
@@ -291,8 +291,8 @@ class TermTest < ActiveSupport::TestCase
 
   test "last_updated_children_should_work" do
     test_should_update_parent_categories_counter
-    @topic.terms.each { |t| t.unlink(@topic.unique_content) }
-    @subcat1.link(@topic.unique_content)
+    @topic.terms.each { |t| t.unlink(@topic) }
+    @subcat1.link(@topic)
     # puts "\n@topic1.terms: "
     #p @topic.terms
     @cat1.reload
@@ -307,14 +307,14 @@ class TermTest < ActiveSupport::TestCase
 
   test "should_update_categories_comments_count_after_commenting" do
     test_should_update_parent_categories_counter
-    @comment = Comment.new({:content_id => @topic.unique_content.id,
+    @comment = Comment.new({:content_id => @topic.id,
       :user_id => 1,
       :host => '0.0.0.0',
       :comment => 'holitas vecinito'})
     assert @comment.save
     @topic.reload
     assert_equal 1, @topic.cache_comments_count
-    assert_equal 1, @topic.unique_content.comments_count
+    assert_equal 1, @topic.comments_count
     @cat1.reload
     @subcat1.reload
     assert_equal 1, @subcat1.comments_count

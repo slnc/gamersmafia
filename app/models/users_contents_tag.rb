@@ -92,7 +92,7 @@ class UsersContentsTag < ActiveRecord::Base
   def resolve_term
     if (Cms::ROOT_TERMS_CONTENTS + Cms::CATEGORIES_TERMS_CONTENTS).include?(
         self.content.content_type.name)
-      mc = self.content.real_content.main_category
+      mc = self.content.main_category
       if (Term.count(
               :conditions => [
                   "taxonomy IN ('Game', 'GamingPlatform', 'BazarDistrict', 'Clan') AND (LOWER(name) = ? OR slug = ?)",

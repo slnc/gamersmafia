@@ -31,7 +31,7 @@ module AppR
         if /^[0-9]{10}$/ =~ version
           version = "#{version[0..8]}.#{version[8..-1]}"
         end
-        "<a href=\"#{Routing.gmurl(news.unique_content)}\">#{version}</a>"
+        "<a href=\"#{Routing.gmurl(news)}\">#{version}</a>"
       else
         Appr.ondisk_git_version
       end

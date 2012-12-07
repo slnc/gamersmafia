@@ -76,8 +76,8 @@ class Admin::CategoriasController < ApplicationController
         :content_type => params[:content_type],
         :conditions => "contents.id in "+
                        "(#{params[:contents].join(', ')})").each do |c|
-      @term.unlink(c.unique_content)
-      dst.link(c.unique_content)
+      @term.unlink(c)
+      dst.link(c)
     end
     @term.update_attributes(params[:term]) # TODO why?
     redirect_to params[:redirto] ? params[:redirto] : '/admin/categorias'

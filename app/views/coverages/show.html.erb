@@ -2,7 +2,7 @@
 <%= mfcontent(@coverage)%>
 <% end -%>
 
-<% content_support(:content => @coverage.unique_content) do %>
+<% content_support(:content => @coverage) do %>
 <% if @coverage.is_public? then %>
 <%=render :partial => 'shared/content_stats', :locals => {:object => @coverage} %>
 <%# TODO ctivar cache cuando esté arreglada

@@ -90,8 +90,8 @@ if crecs.size > 0 then %>
       next
     end
     category_prefix = ""
-    if crec.content.real_content.main_category
-      category_prefix = "#{crec.content.real_content.main_category.root.code} | "
+    if crec.content.main_category
+      category_prefix = "#{crec.content.main_category.root.code} | "
     end
     comment_suffix = (crec.comment.to_s == "") ? "" : ": #{crec.comment}"
     title_text = "%s%s (%s) %s" % [

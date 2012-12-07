@@ -1,11 +1,11 @@
 <%
  per_page = Cms.comments_per_page
-  uniq_id = object.unique_content.id
+  uniq_id = object.id
   params[:page] = Cms::page_to_show(@user, object, @object_lastseen_on) if user_is_authed and not params[:page]
   params[:page] = (params[:page].nil? or params[:page].to_i < 1) ? 1 : params[:page].to_i
   ckey = object.updated_on < 1.month.ago ? 'perm' : Time.now.to_i/(86400*7)
   questions_mode = (object.class.name == 'Question')
-  @comments = Comment.paginate(:page => params[:page], :per_page => per_page, :conditions => ['deleted = \'f\' AND content_id = ?', object.unique_content.id], :order => 'comments.created_on asc', :include => :user)
+  @comments = Comment.paginate(:page => params[:page], :per_page => per_page, :conditions => ['deleted = \'f\' AND content_id = ?', object.id], :order => 'comments.created_on asc', :include => :user)
 %>
 <div class="comments-container">
   <div class="comments-area">

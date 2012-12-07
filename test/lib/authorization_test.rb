@@ -37,7 +37,7 @@ class AuthorizationTest < ActiveSupport::TestCase
     u61 = User.find(61)
     u61.users_skills.clear
     u61.users_skills.create(:role => "EditContents")
-    e1 = Event.published.find(1).unique_content
+    e1 = Event.published.find(1)
     assert Authorization.can_edit_content?(u61, e1)
   end
 
@@ -45,7 +45,7 @@ class AuthorizationTest < ActiveSupport::TestCase
     u61 = User.find(61)
     u61.users_skills.clear
     u61.users_skills.create(:role => "EditContents")
-    be1 = Blogentry.published.find(1).unique_content
+    be1 = Blogentry.published.find(1)
     assert Authorization.can_edit_content?(u61, be1)
   end
 

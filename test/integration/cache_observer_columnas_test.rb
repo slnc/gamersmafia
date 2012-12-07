@@ -79,7 +79,7 @@ class CacheObserverColumnasTest < ActionController::IntegrationTest
     faction_host FactionsPortal.find_by_code('ut')
     # TODO hack temporal hasta que las referencias desde inet se hayan reducido
     Column.published.find(:all).each do |c|
-      uniq = c.unique_content
+      uniq = c
       uniq.url = uniq.url.gsub("http://#{App.domain}", "http://ut.#{App.domain}")
       uniq.save
     end

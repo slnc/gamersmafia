@@ -18,7 +18,7 @@ class NotificationObserverTest < ActiveSupport::TestCase
 
   test "notify on question closed with response" do
     question = Question.published.first
-    comment = question.unique_content.comments.create({
+    comment = question.comments.create({
         :user_id => 2,
         :comment => 'foo',
         :host => '127.0.0.1',
@@ -118,7 +118,7 @@ class NotificationObserverTest < ActiveSupport::TestCase
     u1 = User.find(1)
     c = Content.find(1000)
     assert_not_equal Cms::PUBLISHED, c.state
-    assert_not_equal Cms::PUBLISHED, c.real_content.state
+    assert_not_equal Cms::PUBLISHED, c.state
     # Emblem + content published
     assert_difference("u1.notifications.count", 2) do
       c.update_attribute(:state, Cms::PUBLISHED)

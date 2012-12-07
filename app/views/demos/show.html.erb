@@ -82,7 +82,7 @@ if mirrors.size > 0 then %>
   <% end %>
 <%end -%>
 
-<% content_support(:content => @demo.unique_content) do %>
+<% content_support(:content => @demo) do %>
 	<% if @demo.is_public? then %>
 	<%=mfcontents_basic("Más demos de #{@demo.main_category.name}",
 	controller.portal.demo,

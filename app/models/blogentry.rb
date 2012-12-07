@@ -9,6 +9,6 @@ class Blogentry < ActiveRecord::Base
   end
 
   def self.reset_urls_of_user_id(user_id)
-    Blogentry.find(:all, :conditions => ['user_id = ?', user_id]).collect {|be| be.unique_content}.each { |c| c.url = nil; Routing.gmurl(c) }
+    Blogentry.find(:all, :conditions => ['user_id = ?', user_id]).collect {|be| be}.each { |c| c.url = nil; Routing.gmurl(c) }
   end
 end

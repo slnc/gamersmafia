@@ -35,7 +35,7 @@ class Topic < ActiveRecord::Base
     while p
       # TODO taxonomies DEPRECATED?
       p.contents_count += 1 # no usamos :counter_cache por los estados
-      p.last_updated_item_id = self.unique_content.id
+      p.last_updated_item_id = self.id
       p.save # tb actualizamos updated_on
       p = p.parent
     end
@@ -85,12 +85,12 @@ class Topic < ActiveRecord::Base
                                 AND updated_on >= now() - '1 week'::interval
                        ORDER BY updated_on DESC").each do |content|
       break if i >= limit
-      next if contents_r_root_id.values.include?(content.real_content.id)
+      next if contents_r_root_id.values.include?(content.id)
       root_term = content.terms.find(:all, :conditions => 'taxonomy = \'TopicsCategory\'')[0]
       next if root_term.nil?
       root_term = root_term.root
       next if contents_r_root_id.keys.include?(root_term.id)
-      contents_r_root_id[root_term.id] ||= content.real_content.id
+      contents_r_root_id[root_term.id] ||= content.id
       i += 1
     end
     contents_r_root_id.values.collect { |tid| Topic.find(tid) }.sort_by { |t| t.updated_on }.reverse

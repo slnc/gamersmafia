@@ -31,7 +31,7 @@ function create_member_link(tag_id, login) {
 <% end -%>
 <% end -%>
 
-<% content_support(:content => @event.unique_content) do %>
+<% content_support(:content => @event) do %>
 <% if @event.is_public? then %>
 <% if @event.respond_to?(:coverages) then %>
 <% mftext('Noticias relacionadas') do %>

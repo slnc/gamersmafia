@@ -274,15 +274,15 @@ module ActsAsContent
     end
 
     def do_after_save
-      return false if self.unique_content_id.nil?
+      return false if self.id.nil?
 
       if @_terms_to_add
         @_terms_to_add.each do |tid|
-          Term.find(tid).link(self.unique_content)
+          Term.find(tid).link(self)
         end
         @_terms_to_add = []
-        if self.unique_content_id
-          uniq = self.unique_content
+        if self.id
+          uniq = self
           uniq.url = nil
           Routing.gmurl(uniq)
         end
@@ -294,7 +294,7 @@ module ActsAsContent
     def do_after_create
       create_my_unique_content
       # Lo añadimos al tracker del usuario
-      Users.add_to_tracker(self.user, self.unique_content)
+      Users.add_to_tracker(self.user, self)
     end
 
     def terms=(new_terms)
@@ -304,37 +304,37 @@ module ActsAsContent
     end
 
     def unique_content
-      @_cache_unique_content ||= Content.find(self.unique_content_id) if self.unique_content_id
+      @_cache_unique_content ||= Content.find(self.id) if self.id
     end
 
     def root_terms
-      self.unique_content.root_terms
+      self.root_terms
     end
 
     def root_terms_ids=(arg)
-      self.unique_content.root_terms_ids=(arg)
-      self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
+      self.root_terms_ids=(arg)
+      self.reload # necesario porque no se borra la cache del objeto de terms
     end
 
     # arg[0] arg
     # arg[1] taxonomy
     def categories_terms_ids=(arg)
-      self.unique_content.categories_terms_ids=(arg)
-      self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
+      self.categories_terms_ids=(arg)
+      self.reload # necesario porque no se borra la cache del objeto de terms
     end
 
     def root_terms_add_ids(arg)
-      self.unique_content.root_terms_add_ids(arg)
-      self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
+      self.root_terms_add_ids(arg)
+      self.reload # necesario porque no se borra la cache del objeto de terms
     end
 
     def categories_terms
-      self.unique_content.categories_terms
+      self.categories_terms
     end
 
     def categories_terms_add_ids(arg, taxonomy)
-      self.unique_content.categories_terms_add_ids(arg, taxonomy)
-      self.unique_content.reload # necesario porque no se borra la cache del objeto de terms
+      self.categories_terms_add_ids(arg, taxonomy)
+      self.reload # necesario porque no se borra la cache del objeto de terms
     end
 
     def do_before_save
@@ -375,7 +375,7 @@ module ActsAsContent
           end
         end
 
-        self.unique_content.contents_versions.create(:data => oldv) if copy
+        self.contents_versions.create(:data => oldv) if copy
       end
 
       if self.respond_to?(:title)
@@ -407,7 +407,7 @@ module ActsAsContent
 
 
     def terms(*args)
-      self.unique_content.send(:terms, *args)
+      self.send(:terms, *args)
     end
 
     def get_game_id
@@ -441,7 +441,7 @@ module ActsAsContent
     end
 
     def comments_ids
-      User.db_query("SELECT id FROM comments WHERE content_id = #{self.unique_content.id}").collect! { |dbc| dbc['id']}
+      User.db_query("SELECT id FROM comments WHERE content_id = #{self.id}").collect! { |dbc| dbc['id']}
     end
 
     def change_authorship(new_user, editor)
@@ -468,7 +468,7 @@ module ActsAsContent
     end
 
     def last_comment
-      return self.unique_content.comments.find(:first, :conditions => 'deleted = \'f\'', :order => 'created_on desc')
+      return self.comments.find(:first, :conditions => 'deleted = \'f\'', :order => 'created_on desc')
     end
 
     def has_category?
@@ -478,7 +478,7 @@ module ActsAsContent
     # Devuelve la primera categoría asociada a este contenido
     def main_category
       # DEPRECATED
-      uniq = self.unique_content
+      uniq = self
       # para que haya un main_category a la hora de guardar el contenido
       if uniq.nil? # no linked_terms yet, perhaps given?
         return nil if @_terms_to_add.nil? || (@_terms_to_add.kind_of?(Array) && @_terms_to_add.size == 0)
@@ -494,7 +494,7 @@ module ActsAsContent
       if cats.size > 0
         cats[0]
       else
-        self.unique_content.root_terms[0]
+        self.root_terms[0]
       end
     end
 
@@ -508,7 +508,7 @@ module ActsAsContent
 
     def update_content
       if self.record_timestamps == true then
-        uniq = self.unique_content
+        uniq = self
 
         if uniq then
           uniq.state = self.state
@@ -526,10 +526,6 @@ module ActsAsContent
     end
 
     # funciones para crear contenido único
-    def OLD_unique_content
-      @_cache_unique_content ||= self.unique_content_type.contents.find(:first, :conditions => "external_id = #{self.id}")
-    end
-
     def unique_content_type
       # TODO arreglar esto, guardar nombre de clase y listo
       @_cache_unique_content_type ||= ContentType.find_by_name(self.class.name)
@@ -537,6 +533,7 @@ module ActsAsContent
 
     # no llamarlo create_unique_content pq rails es demasiado listo
     def create_my_unique_content
+      raise "Deprecated"
       myctype = ContentType.find(:first, :conditions => "name = '#{self.class.name}'")
       base_opts = { :content_type_id => myctype.id,
                   :external_id => self.id,
@@ -550,17 +547,17 @@ module ActsAsContent
 
       raise "error creating content!" if c.new_record?
 
-      self.unique_content_id = c.id
+      self.id = c.id
       User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(self.class.name)} SET unique_content_id = #{c.id} WHERE id = #{self.id}")
     end
 
     def delete_unique_content
-      self.unique_content.destroy
+      self.destroy
     end
 
     # this content's contributed karma
     def karma
-      self.unique_content.karma_points
+      self.karma_points
     end
 
     def change_state(new_state, editor)
@@ -578,7 +575,7 @@ module ActsAsContent
         raise "impossible, current_state #{self.id} = #{self.state}" unless [Cms::PENDING, Cms::DELETED, Cms::ONHOLD, Cms::DRAFT].include?(self.state)
         self.created_on = Time.now if self.state == Cms::PENDING # solo le cambiamos la hora si el estado anterior era cola de moderación
         self.log_action('publicado', editor)
-        self.unique_content.tracker_items.each do |ti|
+        self.tracker_items.each do |ti|
           ti.lastseen_on = Time.now
           ti.save
         end
@@ -590,7 +587,7 @@ module ActsAsContent
         ContentsRecommendation.find(
             :all,
             :conditions => ['content_id = ?',
-                            self.unique_content_id]).each do |cr|
+                            self.id]).each do |cr|
           cr.destroy
         end
 
@@ -609,8 +606,8 @@ module ActsAsContent
       # devuelve el rating del contenido
       if (self.cache_rating.nil? && self.cache_rated_times.nil?) ||
          (self.cache_rating.nil? && self.cache_rated_times >= 2)
-        self.cache_rating = Content.db_query("SELECT avg(rating) from content_ratings where content_id = #{self.unique_content.id}")[0]['avg']
-        self.cache_rated_times = Content.db_query("SELECT count(id) from content_ratings where content_id = #{self.unique_content.id}")[0]['count']
+        self.cache_rating = Content.db_query("SELECT avg(rating) from content_ratings where content_id = #{self.id}")[0]['avg']
+        self.cache_rated_times = Content.db_query("SELECT count(id) from content_ratings where content_id = #{self.id}")[0]['count']
         self.cache_rating = 0 if self.cache_rating.nil?
 
 
@@ -738,12 +735,12 @@ module ActsAsContent
     def hit_reg(user)
       self.class.increment_counter('hits_registered', self.id)
 
-      uniq = self.unique_content
+      uniq = self
       # si el usuario no tiene un elemento del tracker para este contenido lo creamos
       tracker_item = TrackerItem.find(
           :first,
           :conditions => ['user_id = ? and content_id = ?',
-                          user.id, self.unique_content.id])
+                          user.id, self.id])
 
       if not tracker_item then
         tracker_item = TrackerItem.new(
@@ -775,26 +772,26 @@ module ActsAsContent
         reason.strip!
 
         if not reason.empty? then
-          message = Message.new({:title => 'Contenido denegado', :user_id_from => editor.id, :user_id_to => self.user_id, :message => "El contenido \"#{self.resolve_hid}\" (#{self.unique_content.content_type.name}) ha sido denegado. Razón: [quote]#{reason}[/quote]"})
+          message = Message.new({:title => 'Contenido denegado', :user_id_from => editor.id, :user_id_to => self.user_id, :message => "El contenido \"#{self.resolve_hid}\" (#{self.content_type.name}) ha sido denegado. Razón: [quote]#{reason}[/quote]"})
           message.save
         end
       end
     end
 
     def prepare_destruction
-      self.unique_content.destroy
+      self.destroy
     end
 
     def is_locked_for_user?(user)
-      self.unique_content.locked_for_user?(user)
+      self.locked_for_user?(user)
     end
 
     def lock(user)
-      self.unique_content.lock(user)
+      self.lock(user)
     end
 
     def cur_lock
-      self.unique_content.cur_lock
+      self.cur_lock
     end
 
     def is_public?

@@ -889,7 +889,7 @@ class User < ActiveRecord::Base
 
   def can_rate?(content)
     return false if !self.has_skill?("RateContents")
-    if content.user_id == self.id || remaining_rating_slots == 0 || ContentRating.count(:conditions => ['content_id = ? and user_id = ?', content.unique_content.id, self.id]) > 0
+    if content.user_id == self.id || remaining_rating_slots == 0 || ContentRating.count(:conditions => ['content_id = ? and user_id = ?', content.id, self.id]) > 0
       false
     else
       true

@@ -81,7 +81,7 @@ for option in @bet.bets_options.find(:all, :order => 'lower(name) asc')
 <% end -%>
 <% end -%>
 
-<% content_support(:content => @bet.unique_content) do %>
+<% content_support(:content => @bet) do %>
 <% if @bet.is_public? then %>
 
 <% if @bet.can_be_reopened? && user_is_authed && Authorization.can_edit_content?(@user, @bet) then %>

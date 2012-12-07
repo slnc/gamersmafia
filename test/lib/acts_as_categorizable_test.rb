@@ -29,7 +29,7 @@ class ActsAsCategorizableTest < ActiveSupport::TestCase
     @t2child = @t2cat.children.create({:name => 'firstchild2'})
     t1 = Topic.create({:topics_category_id => @t1child.id, :title => 'fooo topic in test', :main => 'abracadabra', :user_id => 1, :state => Cms::PUBLISHED, :user_id => 1})
     assert_not_nil t1
-    c = Comment.new({:user_id => 1, :comment => 'hola mundo!', :content_id => t1.unique_content.id, :host => '127.0.0.1'})
+    c = Comment.new({:user_id => 1, :comment => 'hola mundo!', :content_id => t1.id, :host => '127.0.0.1'})
     assert_equal true, c.save
     t1.topics_category_id = @t2child.id
     t1.save

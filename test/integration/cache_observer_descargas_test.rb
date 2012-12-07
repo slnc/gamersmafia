@@ -143,7 +143,7 @@ class CacheObserverDescargasTest < ActionController::IntegrationTest
     get "/descargas/#{mc.id}"
     assert_response :success, response.body
     assert_cache_exists "/common/descargas/index/downloads_#{mc.id}/page_"
-    mc.unlink(tut.unique_content)
+    mc.unlink(tut)
     assert_cache_dont_exist "/common/descargas/index/downloads_#{mc.id}/page_"
   end
 

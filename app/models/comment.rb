@@ -307,8 +307,8 @@ class Comment < ActiveRecord::Base
     self.content.terms.each do |t|
       t.recalculate_counters
     end
-    self.content.real_content.class.decrement_counter(
-        'cache_comments_count', self.content.real_content.id)
+    self.content.class.decrement_counter(
+        'cache_comments_count', self.content.id)
 
     self.deleted = true
     self.save
@@ -333,7 +333,7 @@ class Comment < ActiveRecord::Base
       u = t.user
       if u.id != self.user_id and u.notifications_trackerupdates and (t.notification_sent_on.nil? or t.lastseen_on > t.notification_sent_on) then
         NotificationEmail.trackerupdate(
-            u, {:content => self.content.real_content}).deliver
+            u, {:content => self.content}).deliver
         t.notification_sent_on = Time.now
         t.save
       end
@@ -381,7 +381,7 @@ class Comment < ActiveRecord::Base
   def user_weight(user)
     return 0 if user.default_comments_valorations_weight == 0
 
-    content = self.content.real_content
+    content = self.content
     case content.class.name
       when 'Blogentry'
       user_authority = Blogs.user_authority(user)
@@ -474,7 +474,7 @@ class Comment < ActiveRecord::Base
     end
 
     content = self.content
-    if content.nil? || content.real_content.nil?
+    if content.nil? || content.nil?
       self.errors[:base] << (
         'El contenido al que se refiere este comentario ya no existe')
       return false
@@ -508,8 +508,8 @@ class Comment < ActiveRecord::Base
       :reporter_user_id => user.id,
       :entity_id => self.id,
       :headline => (
-          "#{Cms.faction_favicon(self.content.real_content)} <strong>
-          <a href=\"#{Routing.url_for_content_onlyurl(self.content.real_content)}?page=#{self.comment_page}#comment#{self.id}\">#{self.id}</a></strong>
+          "#{Cms.faction_favicon(self.content)} <strong>
+          <a href=\"#{Routing.url_for_content_onlyurl(self.content)}?page=#{self.comment_page}#comment#{self.id}\">#{self.id}</a></strong>
           (<a href=\"#{Routing.gmurl(self.user)}\">#{self.user.login}</a>) reportado #{Comment::MODERATION_REASONS_TO_SYM[moderation_reason]} por <a href=\"#{Routing.gmurl(user)}\">#{user.login}</a>"),
     })
 

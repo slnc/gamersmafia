@@ -226,10 +226,10 @@ class ActiveSupport::TestCase
     c_text = (Kernel.rand * 100000).to_s
     comments_count = Comment.count
     post '/comments/create', { :comment => { :comment => c_text,
-                                             :content_id => content.unique_content.id } }
+                                             :content_id => content.id } }
     assert_response :redirect, @response.body
     assert_equal comments_count + 1, Comment.count
-    last_c = content.unique_content.comments.find(:first, :conditions => "deleted = 'f'",
+    last_c = content.comments.find(:first, :conditions => "deleted = 'f'",
                                                   :order => 'id DESC')
     assert_not_nil last_c
     assert_equal c_text, last_c.comment
@@ -240,7 +240,7 @@ class ActiveSupport::TestCase
                                            :user_id => 1,
                                            :host => '127.0.0.1' })
     content_id = (content.class.name == 'Content') ? content.id :
-                                                     content.unique_content.id
+                                                     content.id
 
     content = Comment.new(options.merge({:content_id => content_id}))
     assert_equal true, content.save
@@ -272,7 +272,7 @@ class ActiveSupport::TestCase
 
   def rate_content(content)
     prev = ContentRating.count
-    post '/site/rate_content', { :content_rating => { :content_id => content.unique_content.id, :rating => '5'} }
+    post '/site/rate_content', { :content_rating => { :content_id => content.id, :rating => '5'} }
     assert_response :success
     assert_equal prev + 1, ContentRating.count
   end

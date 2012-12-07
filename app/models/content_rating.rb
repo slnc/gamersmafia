@@ -24,6 +24,6 @@ class ContentRating < ActiveRecord::Base
   end
 
   def update_content_rating
-    Content.find(self.content_id).real_content.delay.clear_rating_cache
+    Content.find(self.content_id).delay.clear_rating_cache
   end
 end

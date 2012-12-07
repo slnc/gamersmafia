@@ -101,14 +101,14 @@ class ContentTest < ActiveSupport::TestCase
   test "recover_content shouldnt create decision" do
     c = Content.deleted.first
     assert_difference("Decision.count", 0) do
-      Content.recover_content(c.real_content, Ias.mrman)
+      Content.recover_content(c, Ias.mrman)
     end
   end
 
   test "recover_content shouldnt create decision via recover2" do
     c = Content.deleted.first
     assert_difference("Decision.count", 0) do
-      c.real_content.recover(Ias.mrman)
+      c.recover(Ias.mrman)
     end
   end
 end

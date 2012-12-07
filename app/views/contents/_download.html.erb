@@ -1,27 +1,27 @@
 <div class="content-attribute-name">Título</div>
 <div class="content-attribute-value f_hecto content-title">
-  <%=content.real_content.title%>
+  <%=content.title%>
 </div>
 
 <div class="content-attribute-name">Descripción</div>
 <div class="content-attribute-value content-description">
-  <%=content.real_content.description%>
+  <%=content.description%>
 </div>
 
 <div class="content-attribute-name">¿Esencial para jugar?</div>
 <div class="content-attribute-value content-essential">
-  <%=content.real_content.essential ? "Sí" : "No"%>
+  <%=content.essential ? "Sí" : "No"%>
 </div>
 
 <div class="content-attribute-name">Archivo</div>
 <div class="content-attribute-value content-file">
-  <%=demo_download_link(content.real_content)%>
+  <%=demo_download_link(content)%>
 </div>
 
 <div class="content-attribute-name">Mirrors</div>
 <div class="content-attribute-value content-mirrors">
   <ul>
-    <%content.real_content.download_mirrors.each do |mirror| %>
+    <%content.download_mirrors.each do |mirror| %>
       <li><a href="<%=mirror.url%>"><%=mirror.url%></a></li>
     <% end -%>
   </ul>

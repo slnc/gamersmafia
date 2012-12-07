@@ -47,7 +47,7 @@
   <% end -%>
 <%end -%>
 
-<% content_support(:content => @funthing.unique_content) do %>
+<% content_support(:content => @funthing) do %>
 	<% if @funthing.is_public? %>
     <%=render :partial => '/shared/content_summary', :locals => { :content => @funthing }%>
 		<%=mfcontents_basic("Últimas curiosidades",

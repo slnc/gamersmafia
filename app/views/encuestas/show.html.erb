@@ -72,7 +72,7 @@ end
   <% end -%>
 <% end -%>
 
-<% content_support(:content => @poll.unique_content) do %>
+<% content_support(:content => @poll) do %>
   <% if @poll.is_public? then %>
     <%= render :partial => '/encuestas/random_polls' %>
   <% end -%>

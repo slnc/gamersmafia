@@ -114,7 +114,7 @@ class HomeControllerTest < ActionController::TestCase
   test "home_bazar_district_should_show_closed_bets_from_self" do
     b1 = Bet.find(1)
     assert b1.update_attributes(:closes_on => 1.day.since)
-    Term.single_toplevel(:slug => 'anime').link(b1.unique_content)
+    Term.single_toplevel(:slug => 'anime').link(b1)
     @request.host = "anime.#{App.domain}"
     get :index
     assert_not_nil @response.body.index(b1.title)

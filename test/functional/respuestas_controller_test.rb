@@ -43,8 +43,8 @@ class RespuestasControllerTest < ActionController::TestCase
   test "mejor_respuesta_ok" do
     sym_login 1
     @q = Question.find(1)
-    assert @q.unique_content.comments(:conditions => 'deleted = \'f\'').count > 0
-    baid = @q.unique_content.comments.find(:first, :conditions => 'deleted = \'f\'').id
+    assert @q.comments(:conditions => 'deleted = \'f\'').count > 0
+    baid = @q.comments.find(:first, :conditions => 'deleted = \'f\'').id
     post :mejor_respuesta, :id => baid
     assert_response :redirect
     assert_nil flash[:error], flash[:error]

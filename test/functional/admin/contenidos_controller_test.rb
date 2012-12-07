@@ -24,7 +24,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     sym_login 61
     post :mass_moderate, {
         :mass_action => 'publish',
-        :items => [n.unique_content.id],
+        :items => [n.id],
     }
     assert_response :redirect
     n.reload
@@ -39,7 +39,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     sym_login 1
     post :mass_moderate, {
         :mass_action => 'deny',
-        :items => [n.unique_content.id],
+        :items => [n.id],
     }
     n.reload
     assert_equal Cms::DELETED, n.state
@@ -51,7 +51,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     Content.delete_content(n, User.find(1), "feooote")
     n.reload
     assert_equal Cms::DELETED, n.state
-    post :recover, :id => n.unique_content.id
+    post :recover, :id => n.id
     assert_response :success
     n.reload
     assert_equal Cms::PUBLISHED, n.state
@@ -63,7 +63,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     sym_login 1
     u2 = User.find(2)
     post :change_authorship, {
-        :content_id => n.unique_content.id,
+        :content_id => n.id,
         :login => u2.login,
     }
     assert_response :redirect
@@ -124,7 +124,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     sym_login 1
     n = News.find(1)
     assert !n.closed?
-    post :close, :id => n.unique_content_id, :reason => 'me caía mal'
+    post :close, :id => n.id, :reason => 'me caía mal'
     assert_response :redirect
     n.reload
     assert n.closed?
@@ -137,7 +137,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
     sym_login 1
     n = News.find(1)
     assert !n.closed?
-    post :close, :id => n.unique_content_id, :reason => ''
+    post :close, :id => n.id, :reason => ''
     assert_response :redirect
     n.reload
     assert !n.closed?

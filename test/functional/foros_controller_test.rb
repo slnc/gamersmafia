@@ -7,7 +7,7 @@ class ForosControllerTest < ActionController::TestCase
     @request.host = "ut.#{App.domain}"
     @topic = Topic.find(1)
     @forum = @topic.terms.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'')
-    @forum.unlink(@topic.unique_content)
+    @forum.unlink(@topic)
     assert_equal 0, @topic.terms.count
 
     assert_raises(ActiveRecord::RecordNotFound) do

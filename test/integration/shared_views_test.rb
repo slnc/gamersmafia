@@ -29,7 +29,7 @@ class SharedViewsTest < ActionController::IntegrationTest
     get '/site' # para cargar request
     already_logged_in = (not request.session.nil? and not request.session[:user].nil?)
     sym_login('superadmin', 'lalala') unless already_logged_in
-    uniq = obj.unique_content
+    uniq = obj
     i_count = obj.cache_comments_count
 
     base = i_count
@@ -46,7 +46,7 @@ class SharedViewsTest < ActionController::IntegrationTest
   test "should_show_first_page_to_anonymous_users" do
     Cms.comments_per_page = 1
     n = create_news
-    Term.single_toplevel(:slug => 'gm').link(n.unique_content)
+    Term.single_toplevel(:slug => 'gm').link(n)
     create_comments n, 2
     get "/noticias/show/#{n.id}"
     assert_response :success
@@ -58,7 +58,7 @@ class SharedViewsTest < ActionController::IntegrationTest
     sym_login('superadmin', 'lalala')
     Cms.comments_per_page = 1
     n = create_news
-    Term.single_toplevel(:slug => 'gm').link(n.unique_content)
+    Term.single_toplevel(:slug => 'gm').link(n)
     create_comments n, 3
     get "/noticias/show/#{n.id}"
     assert_response :success
@@ -71,13 +71,13 @@ class SharedViewsTest < ActionController::IntegrationTest
     Cms.comments_per_page = 2
     n = create_news
     create_comments n, 1
-    Term.single_toplevel(:slug => 'gm').link(n.unique_content)
+    Term.single_toplevel(:slug => 'gm').link(n)
     # User.db_query("UPDATE comments set created_on = created_on - '5 minutes'::interval where id = (SELECT max(id) FROM comments)")
 
     get "/noticias/show/#{n.id}"
     assert_response :success, @response.body
     assert /Comentario 1/ =~ @response.body
-    # User.db_query("UPDATE tracker_items SET lastseen_on = lastseen_on - '4 minutes'::interval WHERE content_id = #{n.unique_content.id} AND user_id = #{request.session[:user]}") # set created_on = now() - '5 minutes'::interval where id = #{c.id}")
+    # User.db_query("UPDATE tracker_items SET lastseen_on = lastseen_on - '4 minutes'::interval WHERE content_id = #{n.id} AND user_id = #{request.session[:user]}") # set created_on = now() - '5 minutes'::interval where id = #{c.id}")
     create_comments n, 2
 #    User.db_query("UPDATE comments set created_on = created_on - '2 minutes'::interval where id IN (SELECT id FROM comments ORDER BY id DESC LIMIT 2)")
     # Kernel.sleep 1

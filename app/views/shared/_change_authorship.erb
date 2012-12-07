@@ -2,7 +2,7 @@
 <%mftext('Cambiar autoría') do %>
 <%=form_tag :controller => '/admin/contenidos', :action => 'change_authorship'%>
 <input type="hidden" name="redirto" value="<%=controller.request.fullpath%>" />
-<input type="hidden" name="content_id" value="<%=object.unique_content.id%>" />
+<input type="hidden" name="content_id" value="<%=object.id%>" />
 Autor actual: <strong><%=object.user.login%></strong><br />
 Nuevo autor: <input type="text" class="text" name="login" /><br />
 <%=submit_tag 'Cambiar' %>

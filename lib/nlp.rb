@@ -20,7 +20,7 @@ module Nlp
         sentences<< self.extract_texts_from_string(content.main)
       end
 
-      content.unique_content.comments.each do |comment|
+      content.comments.each do |comment|
         sentences<< self.extract_texts_from_string(comment.comment)
       end
       sentences.join(". ")
@@ -40,7 +40,7 @@ module Nlp
             :all,
             :conditions => "created_on >= now() - '6 months'::interval",
             :order => 'created_on DESC').each do |content|
-        text = Nlp::Extractor.extract_texts_from_content(content.real_content)
+        text = Nlp::Extractor.extract_texts_from_content(content)
         Nlp::Summarization::TextRank.tokenize(text).each do |word|
           frequencies[word] = 0 unless frequencies.has_key?(word)
           frequencies[word] = frequencies[word] + 1

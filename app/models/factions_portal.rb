@@ -213,6 +213,7 @@ class FactionsPortalCoverageProxy
   end
 
   def _add_event_ids_cond(*args)
+    raise "Deprecated" # won't work after content classes unification
     options = args.last.is_a?(Hash) ? args.pop : {} # copypasted de extract_options_from_args!(args)
     codes = @portal.factions.collect { |g| "'#{g.code}'" }
     codes = [] if codes.size == 0

@@ -158,7 +158,7 @@ class CompetitionsMatch < ActiveRecord::Base
         :website => "#{App.domain_arena}/competiciones/partida/#{self.id}",
         :user_id => mrman.id})
 
-      self.competition.event.main_category.link(my_event.unique_content)
+      self.competition.event.main_category.link(my_event)
       Content.publish_content_directly(my_event, mrman)
       self.event_id = my_event.id
       self.save

@@ -83,11 +83,11 @@ module Cache
       expire_fragment('/gm/site/last_commented_objects')
       expire_fragment('/gm/site/last_commented_objects_ids')
 
-      object.content.real_content.get_related_portals.each do |p|
+      object.content.get_related_portals.each do |p|
         expire_fragment("/#{p.code}/miembros/#{object.user_id % 1000}/#{object.user_id}/last_comments")
-        if object.content.real_content.class.name == 'Topic'
+        if object.content.class.name == 'Topic'
           expire_fragment("/#{p.code}/foros/index/index")
-          expire_fragment("/bazar/home/categories/#{object.content.real_content.main_category.root.code}") if object.content.real_content.main_category
+          expire_fragment("/bazar/home/categories/#{object.content.main_category.root.code}") if object.content.main_category
         end
         expire_fragment("/#{p.code}/site/last_commented_objects")
         expire_fragment("/#{p.code}/site/last_commented_objects_ids")
@@ -96,16 +96,14 @@ module Cache
       # TODO hack, los observers no funcionan bien así que lo ponemos aquí
       content = object.content
       ctype = Object.const_get(content.content_type.name)
-      obj = ctype.find(content.external_id)
       content.save
-      obj.save
 
       User.increment_counter('comments_count', object.user_id)
       Content.increment_counter('comments_count', object.content_id)
-      object.content.real_content.class.increment_counter('cache_comments_count', object.content.real_content.id)
+      object.content.class.increment_counter('cache_comments_count', object.content.id)
       # TODO hacky
       if ctype.name == 'Topic'
-       (object.content.real_content.main_category.get_ancestors + [object.content.real_content.main_category]).each do |anc|
+       (object.content.main_category.get_ancestors + [object.content.main_category]).each do |anc|
           anc.class.increment_counter("comments_count", anc.id)
         end
       end
@@ -113,7 +111,7 @@ module Cache
 
     def self.after_destroy(content_id, comment_user_id)
       object = Content.find(content_id)
-      object.real_content.get_related_portals.each do |p|
+      object.get_related_portals.each do |p|
         expire_fragment("/#{p.code}/miembros/#{comment_user_id % 1000}/#{comment_user_id}/last_comments")
       end
     end
@@ -140,8 +138,8 @@ module Cache
         expire_fragment("/#{p.code}/respuestas/top_sabios/")
       end
 
-      if object.unique_content
-        object.unique_content.terms.find(:all).each do |t|
+      if object
+        object.terms.find(:all).each do |t|
           expire_fragment("/common/respuestas/top_sabios/#{t.root_id}")
         end
       end

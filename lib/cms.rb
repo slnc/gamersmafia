@@ -732,7 +732,7 @@ module Cms
 
   def self.page_to_show(user, somecontent, objlastseen_on)
     objlastseen_on ||= Time.at(1)
-    uniq_id = somecontent.unique_content.id
+    uniq_id = somecontent.id
     tracker_item = TrackerItem.find(:first, :conditions => ['user_id = ? and content_id = ?', user.id, uniq_id])
     if tracker_item then
       comments_seen = Comment.db_query("SELECT count(id)
@@ -794,7 +794,7 @@ module Cms
       end
     else # es categoría o contenido
       if thing.class.name == 'Content' then
-        thing = thing.real_content
+        thing = thing
       end
       if /Category/ =~ thing.class.name then
         #

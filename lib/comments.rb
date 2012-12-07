@@ -40,7 +40,7 @@ module Comments
       # usuarios.
     end
 
-    game_id = object.unique_content.game_id
+    game_id = object.game_id
     if game_id
       contents_faction = Faction.find_by_game_id(game_id)
       if contents_faction && contents_faction.user_is_banned?(user)
@@ -106,7 +106,7 @@ module Comments
       elsif content.game_id
         refobj = content.my_faction
       else
-        refobj = content.real_content
+        refobj = content
       end
     end
 
@@ -226,7 +226,7 @@ module Comments
          WHERE a.comment_id in (
            SELECT id
            FROM comments
-           WHERE content_id = #{object.unique_content.id}
+           WHERE content_id = #{object.id}
            ORDER BY created_on
            LIMIT 30 OFFSET #{(page-1)*30})
          AND a.user_id = #{user.id}").each do |dbr|

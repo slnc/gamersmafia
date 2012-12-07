@@ -41,7 +41,7 @@ class CacheObserverRespuestasTest < ActionController::IntegrationTest
 
   test "should_clear_top_sabios_on_answer_category" do
     test_should_clear_cache_latest_by_author_on_create
-    cat_id = @q.unique_content.terms.first.root_id
+    cat_id = @q.terms.first.root_id
     go_to "respuestas/categoria/#{cat_id}", 'respuestas/index'
     assert_cache_exists "/common/respuestas/top_sabios/#{cat_id}"
     post_comment_on @q

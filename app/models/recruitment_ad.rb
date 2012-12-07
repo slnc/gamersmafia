@@ -21,7 +21,7 @@ class RecruitmentAd < ActiveRecord::Base
 
   def link_to_root_term
     Content.publish_content_directly(self, Ias.MrMan)
-    Term.single_toplevel(:game_id => self.game_id).link(self.unique_content)
+    Term.single_toplevel(:game_id => self.game_id).link(self)
     true
   end
 

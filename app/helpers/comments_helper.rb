@@ -66,7 +66,7 @@ google_ad_height = 250;
         :page => params[:page],
         :per_page => Cms.comments_per_page,
         :conditions => ["deleted = 'f' AND content_id = ?",
-                        object.unique_content.id],
+                        object.id],
         :order => 'comments.created_on asc',
         :include => :user
     })

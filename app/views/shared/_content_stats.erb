@@ -4,7 +4,7 @@
   <div class="infoinline centered" style="margin-top: 9px; margin-bottom: 5px;"><span class="f_milli" title="Leído <%=object.hits_anonymous + object.hits_registered%> veces"><%=gm_icon("pageviews", "small")%><%=object.hits_anonymous + object.hits_registered%></span> &nbsp;
     <span class="f_milli">
       <%=gm_icon("comment", "small")%>
-      <a title="Leer los comentarios de este contenido" href="<%=controller.url_for_content_onlyurl(object)%>#comments"><%=object.unique_content.comments_count%></a></span>
+      <a title="Leer los comentarios de este contenido" href="<%=controller.url_for_content_onlyurl(object)%>#comments"><%=object.comments_count%></a></span>
     <% if %w(Download Demo).include?(object.class.name) then%>
       &nbsp;
       <span title="Descargado <%=object.downloaded_times%> veces"><%=gm_icon("download", "small")%> <%=object.downloaded_times%></span>

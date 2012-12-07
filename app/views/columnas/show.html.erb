@@ -2,7 +2,7 @@
   <%=mfcontent(@column)%>
 <%end -%>
 
-<% content_support(:content => @column.unique_content) do %>
+<% content_support(:content => @column) do %>
 <% if @column.is_public? then %>
 <%=mfcontents_basic("Más columnas de #{@column.user.login}",
 	controller.portal.column,

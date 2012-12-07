@@ -1,13 +1,13 @@
 # -*- encoding : utf-8 -*-
 module Routing
   def self.url_for_content_onlyurl(object)
-    uniq = object.class.name == 'Content' ?  object : object.unique_content
+    uniq = object.class.name == 'Content' ?  object : object
     if uniq.url.nil?
       # actualizamos url y portal_id
       # competitions
       # %w(Competition CompetitionsMatch)
 
-      object = uniq.real_content
+      object = uniq
       cls_name = object.class.name
       # determinamos dominio
       if %w(Funthing).include?(cls_name)
@@ -107,7 +107,7 @@ module Routing
       dom = get_domain_of_root_term(object.root)
       "http://#{dom}/#{href}/#{object.id}"
     elsif cls_name == 'Comment'
-      base_url = self.gmurl(object.content.real_content)
+      base_url = self.gmurl(object.content)
       page = object.comment_page
       "#{base_url}?page=#{page}#comment#{object.id}"
     elsif cls_name == 'Term'

@@ -61,37 +61,6 @@ class Download < ActiveRecord::Base
     true
   end
 
-
-  # select id, (select name from downloads_categories where id = a.root_id), downloads_count from downloads_categories a where lower(name) like  '%demos%' and downloads_count > 0;
-  def mute_to_demo
-    raise "DEPRECATED"
-    opts = self.attributes
-
-    # TODO la categoría
-    opts['games_mode_id'] = Game.find_by_slug(self.main_category.root.code).games_modes.find(:first).id
-
-    %w(clan_id essential).each do |attr|
-      opts.delete attr
-    end
-
-    if self.file_hash_md5 && Demo.find_by_file_hash_md5(self.file_hash_md5)
-      raise "Ya hay otra demo con este hash: #{self.file_hash_md5}"
-    end
-    demo = Demo.new(opts)
-    demo.changed
-    demo.entity1_external = self.title
-    demo.entity2_external = self.title
-    raise "Error al guardar la demo: #{demo.errors.full_messages}" unless demo.save
-    User.db_query("UPDATE demos SET created_on = '#{opts['created_on'].strftime('%Y-%m-%d %H:%M:%S')}', updated_on = '#{opts['updated_on'].strftime('%Y-%m-%d %H:%M:%S')}' WHERE id = #{demo.id}")
-    ucdownload = self.unique_content
-    ucdemo = demo.unique_content
-    User.db_query("UPDATE contents SET external_id = 50000 + id WHERE id = #{ucdownload.id}")
-    User.db_query("UPDATE contents SET external_id = 50000 + id WHERE id = #{ucdemo.id}")
-    User.db_query("UPDATE contents SET content_type_id = (select id from content_types where name = 'Demo'), external_id = #{demo.id} WHERE id = #{ucdownload.id}")
-    User.db_query("UPDATE contents SET content_type_id = (select id from content_types where name = 'Download'), external_id = #{self.id} WHERE id = #{ucdemo.id}")
-    self.destroy
-  end
-
   def self.create_symlink(cookie, download_file, mirror=nil)
     # crea un symlink con la cookie dada al archivo dado o bien en un host remoto o bien en local
     # si es local lo crea en public/d/#{cookie}/#{File.basename(download.file)}
@@ -139,8 +108,8 @@ class Download < ActiveRecord::Base
       end
 
       if d.file.nil? && d.download_mirrors.count == 0
-        ttype, scope = Alert.fill_ttype_and_scope_for_content_report(d.unique_content)
-        sl = Alert.create({:scope => scope, :type_id => ttype, :reporter_user_id => u.id, :headline => "#{Cms.faction_favicon(d)}<strong><a href=\"#{Routing.url_for_content_onlyurl(d)}\">#{d.unique_content_id}</a></strong> reportado (Ni descarga directa ni mirrors) por <a href=\"#{Routing.gmurl(u)}\">#{u}</a>"})
+        ttype, scope = Alert.fill_ttype_and_scope_for_content_report(d)
+        sl = Alert.create({:scope => scope, :type_id => ttype, :reporter_user_id => u.id, :headline => "#{Cms.faction_favicon(d)}<strong><a href=\"#{Routing.url_for_content_onlyurl(d)}\">#{d.id}</a></strong> reportado (Ni descarga directa ni mirrors) por <a href=\"#{Routing.gmurl(u)}\">#{u}</a>"})
       end
     end and nil
   end

@@ -46,7 +46,7 @@ class RespuestasController < InformacionController
     require_auth_users
     @comment = Comment.find(params[:id])
     raise ActiveRecord::RecordNotFound unless @comment && !@comment.deleted?
-    @question = @comment.content.real_content
+    @question = @comment.content
     # raise ActiveRecord
     # TODO loguear quién ha puesto una respuesta
     raise AccessDenied unless Authorization.can_set_best_answer(@user, @question)

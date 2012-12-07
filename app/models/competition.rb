@@ -296,7 +296,7 @@ class Competition < ActiveRecord::Base
       :user_id => mrman.id,
       :website => "http://#{App.domain_arena}/competiciones/show/#{self.id}"})
     e.change_state(Cms::PUBLISHED, mrman)
-    Term.single_toplevel(:game_id => self.game_id).link(e.unique_content)
+    Term.single_toplevel(:game_id => self.game_id).link(e)
     self.event_id = e.id
 
     arena_tld = Term.single_toplevel(:slug => 'arena')

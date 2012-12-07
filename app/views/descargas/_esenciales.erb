@@ -3,9 +3,9 @@
 <% cache("/common/descargas/index/essential_#{category.root_id}") do %>
 <% shown_downloads = []
 category.root.find(:published, :conditions => "essential is true", :order => 'created_on DESC', :limit => 12).each do |d|
-    shown_downloads << d.unique_content_id
+    shown_downloads << d.id
 %>
-  <li class="content<%=d.unique_content_id%> content new <%=oddclass%>"><%=link_to "#{content_category(d.main_category)}#{d.title}", gmurl(d)%></li>
+  <li class="content<%=d.id%> content new <%=oddclass%>"><%=link_to "#{content_category(d.main_category)}#{d.title}", gmurl(d)%></li>
   <% end -%>
 <script type="text/javascript">contents = contents.concat(<%=shown_downloads.join(',')%>);</script>
 <% end -%>

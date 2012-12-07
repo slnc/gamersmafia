@@ -145,12 +145,12 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
   test "mass_move_if_perm" do
     test_create_if_perm
     n = Topic.find(:first)
-    assert_count_increases(ContentsTerm) { @t.link(n.unique_content) }
-    post :mass_move, :id => @t.id, :destination_term_id => 17, :content_type => 'Topic', :contents => [n.unique_content.id]
+    assert_count_increases(ContentsTerm) { @t.link(n) }
+    post :mass_move, :id => @t.id, :destination_term_id => 17, :content_type => 'Topic', :contents => [n.id]
     assert_response :redirect
-    assert_equal 0, @t.find(:all, :content_type => 'Topic', :conditions => ['contents.id = ?', n.unique_content_id]).size
+    assert_equal 0, @t.find(:all, :content_type => 'Topic', :conditions => ['contents.id = ?', n.id]).size
     t17 = Term.find(17)
-    assert_equal 1, t17.find(:all, :content_type => 'Topic', :conditions => ['contents.id = ?', n.unique_content_id]).size
+    assert_equal 1, t17.find(:all, :content_type => 'Topic', :conditions => ['contents.id = ?', n.id]).size
   end
 
   test "mass_move_if_no_perm" do
@@ -160,13 +160,13 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
         :name => 'general',
         :taxonomy => 'TopicsCategory',
     })
-    # assert_count_increases(ContentsTerm) { @t.link(n.unique_content) }
+    # assert_count_increases(ContentsTerm) { @t.link(n) }
     assert_raises(AccessDenied) do
       post :mass_move, {
           :id => t.id,
           :destination_term_id => 5,
           :content_type => 'Topic',
-          :contents => [n.unique_content.id],
+          :contents => [n.id],
       }
     end
   end
@@ -207,7 +207,7 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
   test "destroy_if_perm_but_not_empty" do
     test_create_if_perm
     n = Topic.find(:first)
-    assert_count_increases(ContentsTerm) { @t.link(n.unique_content) }
+    assert_count_increases(ContentsTerm) { @t.link(n) }
     post :destroy, :id => @t.id
     assert_response :redirect
     assert Term.find_by_id(@t.id)

@@ -2,7 +2,7 @@
   <%=mfcontent(@news).html_safe%>
 <%end -%>
 
-<% content_support(:content => @news.unique_content) do %>
+<% content_support(:content => @news) do %>
   <% if @news.is_public? then %>
     <%=render :partial => '/shared/content_summary', :locals => { :content => @news }%>
     <%=mfcontents_basic("Últimas noticias",

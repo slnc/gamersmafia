@@ -44,11 +44,11 @@ module ActsAsContentBrowser
       #cls = portal.send ActiveSupport::Inflector::underscore(content_name).to_sym # ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
       obj = cls.find(params[:id])
       raise ActiveRecord::RecordNotFound unless obj.is_public? or (user_is_authed and Authorization.can_edit_content?(@user, obj))
-      # puts "http://#{request.host}#{request.fullpath} #{obj.unique_content.url}"
-      # puts "http://#{request.host}#{request.fullpath}".index(obj.unique_content.url)
-      Routing.gmurl(obj.unique_content) if obj.unique_content.url.nil?
-      if "http://#{request.host}#{request.fullpath}".index(obj.unique_content.url).nil?
-        redirect_to(obj.unique_content.url, :status => 301) and return
+      # puts "http://#{request.host}#{request.fullpath} #{obj.url}"
+      # puts "http://#{request.host}#{request.fullpath}".index(obj.url)
+      Routing.gmurl(obj) if obj.url.nil?
+      if "http://#{request.host}#{request.fullpath}".index(obj.url).nil?
+        redirect_to(obj.url, :status => 301) and return
       end
       @title = obj.resolve_hid
       # TODO si tiene categoría se la añadimos al navpath
@@ -110,7 +110,7 @@ module ActsAsContentBrowser
           # TODO lo estamos haciendo en _dos sitios_ ???
           obj.process_wysiwyg_fields
           flash[:notice] = "Contenido de tipo <strong>#{Cms::CLASS_NAMES[cls.name]}</strong> creado correctamente."
-          # UsersContentsTag.tag_content(obj.unique_content, @user, params[:tags], delete_missing=false) if params[:tags]
+          # UsersContentsTag.tag_content(obj, @user, params[:tags], delete_missing=false) if params[:tags]
           if obj.state == Cms::DRAFT
             rediring = Proc.new { redirect_to :action => 'edit', :id => obj.id }
           else

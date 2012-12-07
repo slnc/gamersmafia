@@ -51,7 +51,7 @@ namespace :cs410 do
     CommentsValoration.find_each(:conditions => "created_on <= '#{max_time}'", :include => [:comments_valorations_type, :comment]) do |cv|
       direction = cv.comments_valorations_type.direction
       content = cv.comment.content
-      maincat = content.real_content.main_category
+      maincat = content.main_category
       forum_id = maincat ? maincat.root.id : -1
       author_commented_before_on_same_topic = content.comments.count(:conditions => ['created_on < ? AND user_id = ?', cv.comment.created_on, cv.comment.user_id]) > 0
 
@@ -323,7 +323,7 @@ namespace :cs410 do
     end
 
     def _extract_feature_forum_id(cv)
-      maincat = cv.comment.content.real_content.main_category
+      maincat = cv.comment.content.main_category
       maincat ? maincat.root.id : -1
     end
 

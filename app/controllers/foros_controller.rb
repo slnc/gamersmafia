@@ -67,7 +67,7 @@ class ForosController < ComunidadController
     obj = @topic
     # TODO las 4 líneas siguientes duplicadas en acts_as_content_browser
     if "http://#{request.host}#{request.fullpath}".index(gmurl(obj)).nil?
-      redirect_to(obj.unique_content.url, :status => 301) and return
+      redirect_to(obj.url, :status => 301) and return
     end
 
     @forum = @topic.terms.find(:first, :conditions => 'taxonomy = \'TopicsCategory\'')
@@ -114,8 +114,8 @@ class ForosController < ComunidadController
     # chequear que no lo esté intentando mover a una categoría prohibida
     newt = Term.find(:first, :conditions => ['id = ? AND taxonomy = \'TopicsCategory\'', params[:categories_terms][0]])
     raise ActiveRecord::RecordNotFound unless newt
-    @topic.terms.each { |t| t.unlink(@topic.unique_content) }
-    newt.link(@topic.unique_content)
+    @topic.terms.each { |t| t.unlink(@topic) }
+    newt.link(@topic)
     params[:topic][:moved_on] = Time.now
     @topic.cur_editor = @user
     if @topic.update_attributes(params[:topic])
@@ -158,7 +158,7 @@ class ForosController < ComunidadController
           flash[:error] = "Permiso denegado: Estás baneado de la facción #{fac.name}."
           redirect_to '/foros'
         elsif @topic.save
-          forum.link(@topic.unique_content)
+          forum.link(@topic)
           begin
             Comments.require_user_can_comment_on_content(@user, @topic)
           rescue Exception => e
@@ -169,7 +169,7 @@ class ForosController < ComunidadController
           else
             flash[:notice] = 'Tópic creado correctamente.'
             # no es una tonter:ia quitarlo, lo dejamos que se añada para que no le salga como nuevo elemento pendiente de leer
-            Users.remove_from_tracker(@user, @topic.unique_content) if params[:add_to_tracker] != '1'
+            Users.remove_from_tracker(@user, @topic) if params[:add_to_tracker] != '1'
             redirect_to :action => 'topic', :id => @topic
           end
 

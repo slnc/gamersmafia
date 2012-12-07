@@ -45,8 +45,8 @@ namespace :gm do
         :description => html_log,
         :user_id => 1,
         :state => Cms::DRAFT)
-    Term.single_toplevel(:slug => 'gmversion').link(n.unique_content)
-    Term.single_toplevel(:slug => 'gm').link(n.unique_content)
-    Term.single_toplevel(:name => 'actualizaciones.gm').link(n.unique_content)
+    Term.single_toplevel(:slug => 'gmversion').link(n)
+    Term.single_toplevel(:slug => 'gm').link(n)
+    Term.single_toplevel(:name => 'actualizaciones.gm').link(n)
   end
 end

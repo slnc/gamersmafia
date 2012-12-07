@@ -45,7 +45,7 @@
   <% end %><%# mfcontent -%>
 <%end %><%# content_main -%>
 
-<% content_support(:content => @question.unique_content) do %>
+<% content_support(:content => @question) do %>
 <%= render :partial => '/respuestas/preguntar' if user_is_authed %>
 <%= render :partial => '/respuestas/top_sabios', :locals => { :category => @question.main_category } %>
 <% if @question.is_public? then %>

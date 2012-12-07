@@ -35,7 +35,7 @@ class Cuenta::BlogControllerTest < ActionController::TestCase
 
   test "should_add_blogentry_to_tracker" do
     test_should_create_blogentry
-    assert @u2.tracker_has?(@last.unique_content.id)
+    assert @u2.tracker_has?(@last.id)
   end
 
   test "should_update_blogentry_if_owner" do

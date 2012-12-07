@@ -85,7 +85,7 @@ class CompetitionsMatchTest < ActiveSupport::TestCase
   test "should_properly_update_related_content_after_changing_participant" do
       cm = CompetitionsMatch.find(:first)
       e = cm.event
-      uq = cm.event.unique_content
+      uq = cm.event
       prev_e = e.title
       prev_uq = uq.name
       cm.participant2_id = 2

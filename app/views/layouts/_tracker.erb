@@ -2,7 +2,7 @@
 <div class="f_deci f-module-title">Tracker</div>
 <%# NOTA Mostrar siempre el tracker, aunque no haya elementos. Hay gente que usa el "Ver tracker" aunque no haya items nuevos. %>
 <% mflist(nil,
-		   TrackerItem.updated_for_user(@user, true, 25).collect {|c| Content.new(c).real_content},
+		   TrackerItem.updated_for_user(@user, true, 25).collect {|c| Content.new(c)},
 		   :id => 'tracker',
 		   :class_container => 'mfcontents-ul',
 	       :class => 'new unread-item',

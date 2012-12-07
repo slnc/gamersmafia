@@ -73,17 +73,17 @@ class Admin::ContenidosController < ApplicationController
   end
 
   def recover
-    obj = Content.find(params[:id]).real_content
+    obj = Content.find(params[:id])
     require_user_can_edit(obj)
     obj.recover(@user)
     @js_response = (
-        "$('#content#{obj.unique_content_id}').fadeOut('normal');")
+        "$('#content#{obj.id}').fadeOut('normal');")
     render :partial => '/shared/silent_ajax_feedback',
            :locals => { :js_response => @js_response }
   end
 
   def change_authorship
-    obj = Content.find(params[:content_id]).real_content
+    obj = Content.find(params[:content_id])
     require_user_can_edit(obj)
     new_author = User.find_by_login(params[:login])
     if new_author
@@ -105,7 +105,7 @@ class Admin::ContenidosController < ApplicationController
 
       for k in params[:items]
         content = Content.find(k.to_i)
-        obj = content.real_content
+        obj = content
 
         # TODO borrar caches de portada
         if params[:mass_action] == 'publish' then
@@ -129,8 +129,8 @@ class Admin::ContenidosController < ApplicationController
         :type_id => ttype,
         :reporter_user_id => @user.id,
         :headline => (
-            "#{Cms.faction_favicon(@content.real_content)}<strong>"+
-            "<a href=\"#{Routing.url_for_content_onlyurl(@content.real_content)}\">"+
+            "#{Cms.faction_favicon(@content)}<strong>"+
+            "<a href=\"#{Routing.url_for_content_onlyurl(@content)}\">"+
             "#{@content.id}</a></strong> reportado (#{params[:reason]}) "+
             "por <a href=\"#{gmurl(@user)}\">#{@user.login}</a>"),
     })
@@ -146,7 +146,7 @@ class Admin::ContenidosController < ApplicationController
 
   def close
     params[:reason] = nil if params[:reason] && params[:reason] == 'Razón...'
-    @content = Content.find(params[:id]).real_content
+    @content = Content.find(params[:id])
     return if @content.closed
     require_user_can_edit(@content)
     if params[:reason].to_s.strip == ''

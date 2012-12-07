@@ -2,7 +2,7 @@
   <%=mfcontent(@tutorial)%>
 <%end -%>
 
-<% content_support(:content => @tutorial.unique_content) do %>
+<% content_support(:content => @tutorial) do %>
 <% if @tutorial.is_public? then %>
 <%=mfcontents_basic("Más tutoriales de #{@tutorial.main_category.name}",
 	controller.portal.tutorial,

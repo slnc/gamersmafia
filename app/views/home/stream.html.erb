@@ -15,19 +15,19 @@
   <%=render :partial => "bets"%>
 
   <%mflist("Imágenes", Content.content_type_name("Image").published.recent.of_interest_to(@user).find(:all, :order => "created_on")) do |image| %>
-    <%=link_to content_image(image.real_content.file), gmurl(image)%>
+    <%=link_to content_image(image.file), gmurl(image)%>
   <% end -%>
 
   <%=render :partial => "polls"%>
 
   <%mflist("Eventos", Content.content_type_name("Event").published.recent.of_interest_to(@user).find(:all, :order => "created_on")) do |event| %>
     <%=link_to event.name, gmurl(event)%>
-    <img src="<%=event.real_content.main_image%>" />
+    <img src="<%=event.main_image%>" />
   <% end -%>
 
   <%mflist("Descargas", Content.content_type_name("Download").published.recent.of_interest_to(@user).find(:all, :order => "created_on")) do |download| %>
   <div class="content-headline">
-    <div class="float-right w100"><%=content_thumbnail_image(download.real_content)%></div>
+    <div class="float-right w100"><%=content_thumbnail_image(download)%></div>
     <%=gm_icon("download")%> <%=link_to download.name, gmurl(download)%>
     <div class="secondary f_milli"><%=content_tags(download)%></div>
   </div>

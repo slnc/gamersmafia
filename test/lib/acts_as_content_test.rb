@@ -132,7 +132,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
 
   test "in_term should work" do
     n = News.find(1)
-    t = n.unique_content.contents_terms.first.term
+    t = n.contents_terms.first.term
     assert !t.nil?
 
     assert_not_nil News.in_term(t).find(n.id)
@@ -141,14 +141,14 @@ class ActsAsContentTest < ActiveSupport::TestCase
 
   test "in_term_tree should work" do
     i = Image.find(4)
-    t = i.unique_content.contents_terms.first.term
+    t = i.contents_terms.first.term
     assert_not_nil Image.in_term_tree(t.root).find(i.id)
     assert_nil Image.in_term_tree(t.root).find_by_id(1)
   end
 
   test "in_portal should work" do
     d = Download.find(1)
-    t = d.unique_content.contents_terms.first.term
+    t = d.contents_terms.first.term
     assert_not_nil Download.in_term_tree(t.root).find(d.id)
     assert_nil Download.in_term_tree(t.root).find_by_id(3)
   end
@@ -250,7 +250,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     @u = User.find(1)
     @n = News.create({:terms => 1, :title => 'mi titulito', :description => 'mi sumarito', :user_id => @u.id, :state => Cms::PENDING})
     assert_not_nil @n
-    assert_equal true, @u.tracker_has?(@n.unique_content.id)
+    assert_equal true, @u.tracker_has?(@n.id)
   end
 
   test "shouldnt_appear_as_updated_in_tracker_after_publishing" do
@@ -258,13 +258,13 @@ class ActsAsContentTest < ActiveSupport::TestCase
     ti = TrackerItem.find(:first, :order => 'id DESC')
     assert_not_nil ti
     assert_equal Cms::PENDING, @n.state
-    assert_equal @n.unique_content.id, ti.content_id
+    assert_equal @n.id, ti.content_id
     @n.created_on = 1.day.since
     assert_equal true, @n.save
     User.db_query(
         "UPDATE tracker_items
         SET lastseen_on = now() - '23 hours'::interval
-        WHERE content_id = #{@n.unique_content.id}")
+        WHERE content_id = #{@n.id}")
     ti.reload
     assert_equal true, ti.lastseen_on < 1.hour.ago
     Content.publish_content_directly(@n, @u)
@@ -286,7 +286,7 @@ class ActsAsContentTest < ActiveSupport::TestCase
     n = News.new(
         :title => 'Noticia 1', :description => 'sumario', :user_id => 1)
     assert n.save
-    Term.single_toplevel(:slug => 'anime').link(n.unique_content)
+    Term.single_toplevel(:slug => 'anime').link(n)
     relportals = n.get_related_portals
     assert_equal 4, relportals.size
     assert_equal 'anime', relportals[3].code

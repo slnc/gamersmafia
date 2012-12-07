@@ -134,7 +134,7 @@ class Content < ActiveRecord::Base
   end
 
   def self.handle_publish_decision(decision, uniq)
-    content = uniq.real_content
+    content = uniq
     if decision.final_decision_choice.name == Decision::BINARY_YES
       prev_state = content.state
       content.change_state(Cms::PUBLISHED, Ias.MrMan)
@@ -197,14 +197,14 @@ class Content < ActiveRecord::Base
 
   def self.create_alert_after_crowd_publishing_decision(uniq, action_taken)
     ttype, scope = Alert.fill_ttype_and_scope_for_content_report(uniq)
-    content_url = Routing.url_for_content_onlyurl(uniq.real_content)
+    content_url = Routing.url_for_content_onlyurl(uniq)
     Alert.create({
       :type_id => ttype,
       :scope => scope,
       :reporter_user_id => Ias.MrMan.id,
       :headline => (
           "#{Cms.faction_favicon(uniq)}<strong>
-          <a href=\"#{content_url}\">#{uniq.real_content.resolve_html_hid}</a>
+          <a href=\"#{content_url}\">#{uniq.resolve_html_hid}</a>
           </strong> #{action_taken}"),
     })
   end
@@ -212,7 +212,7 @@ class Content < ActiveRecord::Base
   # Call this function if you want to change a content state regardless outside
   # of the moderation queue voting mechanism.
   def self.modify_content_state(content, user, new_state, reason=nil)
-    uniq = content.unique_content
+    uniq = content
 
     prev_state = content.state
     content.change_state(new_state, user)
@@ -473,7 +473,7 @@ class Content < ActiveRecord::Base
     end
     if self.content_type.name == "Image"
       content_name = (
-          "<img src=\"/cache/thumbnails/i/85x60/#{self.real_content.file}\" />")
+          "<img src=\"/cache/thumbnails/i/85x60/#{self.file}\" />")
     else
       content_name = self.name
     end

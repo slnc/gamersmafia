@@ -98,7 +98,7 @@ having portal_id in (select id
     processed_root_cats = []
     processed_ctypes = []
     ContentRating.find(:all, :conditions => "date_trunc('day', created_on) = date_trunc('day', now() - '8 days'::interval)").each do |cr|
-      rc = cr.content.real_content
+      rc = cr.content
       if Cms::CONTENTS_WITH_CATEGORIES.include?(rc.class.name) then
         root_cat = rc.main_category.root
         proc_root_cat_id = "#{ActiveSupport::Inflector::tableize(rc.class.name)}#{root_cat.id}"

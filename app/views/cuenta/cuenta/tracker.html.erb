@@ -12,10 +12,10 @@
 <% TrackerItem.updated_for_user(@user, false).each do |item|
   c = Content.new(item) %>
     <tr class="<%=oddclass%>">
-      <td><%=Cms::translate_content_name(c.real_content.class.name)%></td>
-      <td><%=url_for_content(c.real_content, c.name)%></td>
+      <td><%=Cms::translate_content_name(c.class.name)%></td>
+      <td><%=url_for_content(c, c.name)%></td>
       <td><%=print_tstamp(c.updated_on, 'intelligent')%></td>
-      <td><%=item[:id]%><%=link_to 'Quitar', {:controller => '/site', :action => 'del_from_tracker', :id => c.real_content.unique_content.id, :params => {:redirto => request.fullpath}}, :confirm => '¿Estás seguro de que quieres borrarlo de tu tracker?' %></td>
+      <td><%=item[:id]%><%=link_to 'Quitar', {:controller => '/site', :action => 'del_from_tracker', :id => c.id, :params => {:redirto => request.fullpath}}, :confirm => '¿Estás seguro de que quieres borrarlo de tu tracker?' %></td>
     </tr>
 <% end -%>
   </table>

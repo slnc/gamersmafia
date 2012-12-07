@@ -24,7 +24,7 @@ Portal: <select onchange="document.location = '/admin/contenidos/papelera?portal
 </tr>
 <%
 for @item in collection
-uniq = @item.unique_content
+uniq = @item
   url = gmurl(@item).gsub('show', 'edit')
 %>
   <tr id="content<%=uniq.id%>" class="<%=oddclass%>">

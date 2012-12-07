@@ -48,7 +48,7 @@ class KarmaObserverTest < ActiveSupport::TestCase
     Content.publish_content_directly(n, User.find(1))
     assert n.is_public?
     u2.reload
-    assert_equal u2_kp_initial + n.unique_content.karma_points, u2.karma_points
+    assert_equal u2_kp_initial + n.karma_points, u2.karma_points
   end
 
   test "should_give_reduced_karma_when_copypaste_content_is_published" do
@@ -61,7 +61,7 @@ class KarmaObserverTest < ActiveSupport::TestCase
 
     # publicamos
     Content.publish_content_directly(n, User.find(1))
-    original_kp = n.unique_content.karma_points
+    original_kp = n.karma_points
     assert n.is_public?
     u2.reload
     assert_equal u2_kp_initial + original_kp, u2.karma_points
@@ -77,7 +77,7 @@ class KarmaObserverTest < ActiveSupport::TestCase
 
     # publicamos
     Content.publish_content_directly(n, User.find(1))
-    original_kp = n.unique_content.karma_points
+    original_kp = n.karma_points
     assert n.is_public?
     u2.reload
     assert_equal u2_kp_initial + original_kp, u2.karma_points
@@ -96,7 +96,7 @@ class KarmaObserverTest < ActiveSupport::TestCase
     u2_kp_initial = u2.karma_points
     n = News.find(:first, :order => 'id DESC')
     assert_equal true, n.is_public?
-    original_kp = n.unique_content.karma_points
+    original_kp = n.karma_points
     Content.deny_content_directly(n, User.find(1), 'foo')
     u2.reload
     assert_equal u2_kp_initial - original_kp, u2.karma_points
@@ -110,7 +110,7 @@ class KarmaObserverTest < ActiveSupport::TestCase
     assert n.is_public?
     n.change_state(Cms::DELETED, User.find(1))
     u2.reload
-    assert_equal u2_kp_initial - Karma.contents_karma(n.unique_content)[0], u2.karma_points
+    assert_equal u2_kp_initial - Karma.contents_karma(n)[0], u2.karma_points
   end
 
   test "should_take_karma_from_owner_when_content_is_directly_deleted_and_was_published" do
@@ -119,7 +119,7 @@ class KarmaObserverTest < ActiveSupport::TestCase
     u2_kp_initial = u2.karma_points
     n = News.find(:first, :order => 'id DESC')
     assert n.is_public?
-    original_kp = n.unique_content.karma_points
+    original_kp = n.karma_points
     n.destroy
     u2.reload
     assert_equal u2_kp_initial - original_kp, u2.karma_points
@@ -145,12 +145,12 @@ class KarmaObserverTest < ActiveSupport::TestCase
         :created_on => (Karma::UGC_OLD_ENOUGH_FOR_KARMA_DAYS + 1).days.ago,
     }.merge(opts))
     assert news.save
-    news.unique_content.update_attributes(
+    news.update_attributes(
         :created_on => (Karma::UGC_OLD_ENOUGH_FOR_KARMA_DAYS + 1).days.ago)
 
-    assert_difference("news.unique_content.comments.count", 3) do
+    assert_difference("news.comments.count", 3) do
       3.times do |i|
-        news.unique_content.comments.create(
+        news.comments.create(
           :user_id => news.user_id + i,
           :comment => "hellllo #{i}",
           :host => '127.0.0.1',

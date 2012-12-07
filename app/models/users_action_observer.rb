@@ -49,8 +49,8 @@ class UsersActionObserver < ActiveRecord::Observer
 
           # TODO si es foto poner thumbnail
           data = "#{user_link(object.user)} ha publicado <a href=\"#{gmurl(object)}\">#{Cms.faction_favicon(object)} "
-          if object.real_content.class.name == 'Image'
-            data << "<img src=\"/cache/thumbnails/i/32x32/#{object.real_content.file}\" />"
+          if object.class.name == 'Image'
+            data << "<img src=\"/cache/thumbnails/i/32x32/#{object.file}\" />"
           else
             data << "#{object.name}"
           end

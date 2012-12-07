@@ -138,7 +138,7 @@ module Authorization
     return true if user.has_any_skill?(%w(EditContents Capo Webmaster))
     return true if content.user_id == user.id && content.state == Cms::DRAFT
 
-    content = content.real_content if content.class.name == "Content"
+    content = content if content.class.name == "Content"
 
     org = Organizations.find_by_content(content)
     if org

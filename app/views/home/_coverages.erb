@@ -5,9 +5,9 @@
 		<% @last_news = Coverage.find(:published, :limit => 5, :order => 'coverages.created_on DESC', :include => :event)
 shown_news = []
 for news in @last_news
-    shown_news << news.unique_content.id
+    shown_news << news.id
 %>
-<li class="content<%=news.unique_content.id%> new <%=oddclass%>" style="clear: left;"><%= link_to truncate(news.title, 35), gmurl(news) %><br /><div class="infoinline"><%=content_category(news.event.main_category)%><a href="<%=gmurl(news.event)%>"><%=news.event.title%></a></div></li>
+<li class="content<%=news.id%> new <%=oddclass%>" style="clear: left;"><%= link_to truncate(news.title, 35), gmurl(news) %><br /><div class="infoinline"><%=content_category(news.event.main_category)%><a href="<%=gmurl(news.event)%>"><%=news.event.title%></a></div></li>
 <% end %>
 </ul>
 	<script type="text/javascript">contents = contents.concat(<%=shown_news.join(',')%>);</script>

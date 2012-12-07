@@ -1,62 +1,62 @@
 <div class="content-attribute-name">Título</div>
 <div class="content-attribute-value f_hecto content-title">
-  <%=content.real_content.title%>
+  <%=content.title%>
 </div>
 
 <div class="content-attribute-name">Descripción</div>
 <div class="content-attribute-value content-description">
-  <%=content.real_content.description%>
+  <%=content.description%>
 </div>
 
 <div class="content-attribute-name">Equipo 1</div>
 <div class="content-attribute-value content-participant">
-  <%=demo_participant(content.real_content.entity1)%>
+  <%=demo_participant(content.entity1)%>
 </div>
 
 <div class="content-attribute-name">Equipo 2</div>
 <div class="content-attribute-value content-participant">
-  <%=demo_participant(content.real_content.entity2)%>
+  <%=demo_participant(content.entity2)%>
 </div>
 
 <div class="content-attribute-name">Fecha en que se jugó</div>
 <div class="content-attribute-value content-played-on">
-  <%=print_tstamp(content.real_content.played_on)%>
+  <%=print_tstamp(content.played_on)%>
 </div>
 
 <div class="content-attribute-name">Modo de juego</div>
 <div class="content-attribute-value content-game-mode">
-  <%=content.real_content.games_mode.name%>
+  <%=content.games_mode.name%>
 </div>
 
 <div class="content-attribute-name">Versión</div>
 <div class="content-attribute-value content-description">
-  <%=content.real_content.games_version.version%>
+  <%=content.games_version.version%>
 </div>
 
 <div class="content-attribute-name">Evento</div>
 <div class="content-attribute-value content-event">
-  <%=demo_event(content.real_content.event)%>
+  <%=demo_event(content.event)%>
 </div>
 
 <div class="content-attribute-name">POV</div>
 <div class="content-attribute-value content-pov_type">
-  <%=demo_pov_type(content.real_content.pov_type)%>
+  <%=demo_pov_type(content.pov_type)%>
 </div>
 
 <div class="content-attribute-name">Tipo</div>
 <div class="content-attribute-value content-demotype">
-  <%=demo_demotype(content.real_content.demotype)%>
+  <%=demo_demotype(content.demotype)%>
 </div>
 
 <div class="content-attribute-name">Archivo</div>
 <div class="content-attribute-value content-file">
-  <%=demo_download_link(content.real_content)%>
+  <%=demo_download_link(content)%>
 </div>
 
 <div class="content-attribute-name">Mirrors</div>
 <div class="content-attribute-value content-mirrors">
   <ul>
-    <%content.real_content.demo_mirrors.each do |mirror| %>
+    <%content.demo_mirrors.each do |mirror| %>
       <li><a href="<%=mirror.url%>"><%=mirror.url%></a></li>
     <% end -%>
   </ul>

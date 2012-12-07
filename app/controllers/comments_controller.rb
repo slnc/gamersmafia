@@ -29,7 +29,7 @@ class CommentsController < ApplicationController
     end
 
     content = Content.find(params[:comment][:content_id])
-    object = content.real_content
+    object = content
 
     if params[:redirto].to_s == '' || /create/ =~ params[:redirto]
       params[:redirto] = '/'

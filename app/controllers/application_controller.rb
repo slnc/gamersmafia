@@ -554,7 +554,7 @@ Request information:
   protected
   def track_item(obj)
     if user_is_authed
-      tracker_item = TrackerItem.find(:first, :conditions => ["user_id = ? and content_id = ? and lastseen_on is not null", @user.id, obj.unique_content.id])
+      tracker_item = TrackerItem.find(:first, :conditions => ["user_id = ? and content_id = ? and lastseen_on is not null", @user.id, obj.id])
       if (tracker_item && tracker_item.lastseen_on)
         @object_lastseen_on =  tracker_item.lastseen_on
         @first_time_content = false

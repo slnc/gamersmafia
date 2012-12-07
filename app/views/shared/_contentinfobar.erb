@@ -4,7 +4,7 @@
 <% end -%>
 
 <div id="content-tags">
-<%=render :partial => '/shared/content_tags_bar', :locals => { :object => object.unique_content } %>
+<%=render :partial => '/shared/content_tags_bar', :locals => { :object => object } %>
 </div>
 
 <div class="contentinfobar f_milli secondary-block">
@@ -25,10 +25,10 @@
 can_edit = Authorization.can_edit_content?(@user, object)
 can_delete = Authorization.can_delete_content?(@user, object) %>
 
-      <% if @user.tracker_has?(object.unique_content.id) then %>
-        <li class="actions first"><%=link_to "#{gm_icon("tracker-del", "small")} Quitar del tracker", {:controller => 'site', :action => 'del_from_tracker', :id => object.unique_content.id, :params => {:redirto => request.fullpath}}, {:confirm => '¿Estás seguro de que quieres quitarlo de tu tracker?', :class => 'action'}%></li>
+      <% if @user.tracker_has?(object.id) then %>
+        <li class="actions first"><%=link_to "#{gm_icon("tracker-del", "small")} Quitar del tracker", {:controller => 'site', :action => 'del_from_tracker', :id => object.id, :params => {:redirto => request.fullpath}}, {:confirm => '¿Estás seguro de que quieres quitarlo de tu tracker?', :class => 'action'}%></li>
       <% else %>
-      <li class="actions first"><%=link_to "#{gm_icon("tracker-add", "small")} Añadir al tracker", :controller => 'site', :action => 'add_to_tracker', :id => object.unique_content.id, :params => {:redirto => request.fullpath}, :class => 'action' %></li>
+      <li class="actions first"><%=link_to "#{gm_icon("tracker-add", "small")} Añadir al tracker", :controller => 'site', :action => 'add_to_tracker', :id => object.id, :params => {:redirto => request.fullpath}, :class => 'action' %></li>
       <% end -%>
 
     <% if user_is_authed && can_edit %>
@@ -52,12 +52,12 @@ can_delete = Authorization.can_delete_content?(@user, object) %>
         <% if object.closed then %>
           <li class="actions"><%= link_to 'Reabrir', {:action => 'reopen', :id => object}, {:confirm => '¿Estás seguro de que quieres reabrir este contenido a comentarios?', :class => 'action'} %></li>
         <% else %>
-        <li class="actions"><a href="" title="Cerrar este contenido" onclick="return close_content(<%=object.unique_content_id%>);">Cerrar</a></li>
+        <li class="actions"><a href="" title="Cerrar este contenido" onclick="return close_content(<%=object.id%>);">Cerrar</a></li>
         <% end -%>
 	  <% end -%>
 	  <% if user_is_authed && Authorization.can_report_contents?(@user) %>
-	  		<li id="report-contents<%=object.unique_content.id%>" class="report-contents actions">
-	  		<a href="" title="Reportar este contenido por violación del código de conducta" onclick="return report_content(<%=object.unique_content.id%>);">Reportar</a></li>
+	  		<li id="report-contents<%=object.id%>" class="report-contents actions">
+	  		<a href="" title="Reportar este contenido por violación del código de conducta" onclick="return report_content(<%=object.id%>);">Reportar</a></li>
       <% end -%>
 	<% end %><%# if user_is_authed -%>
 	  <%
@@ -66,7 +66,7 @@ can_delete = Authorization.can_delete_content?(@user, object) %>
   <li class="actions <%='first' unless user_is_authed%>">
   <div id="ratebar-container">Valorar:</div>
   <div class="ratebar">
-    <div data-rating="" data-content-id="<%=object.unique_content.id%>" class="stars gm-icon">&#xe045;&#xe045;&#xe045;&#xe045;&#xe045;</div>
+    <div data-rating="" data-content-id="<%=object.id%>" class="stars gm-icon">&#xe045;&#xe045;&#xe045;&#xe045;&#xe045;</div>
   </div>
 
   </li>

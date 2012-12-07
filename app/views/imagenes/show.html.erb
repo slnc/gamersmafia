@@ -53,7 +53,7 @@
 <% end -%>
 <% end -%>
 
-<% content_support(:content => @image.unique_content) do %>
+<% content_support(:content => @image) do %>
 <% if @image.is_public? && !@image.main_category then
   Rails.logger.warn("Image #{@image} has no main_category")
 end %>
@@ -64,9 +64,9 @@ end %>
 <ul class="sidelist images">
   <% cache("/common/imagenes/show/g#{@image.main_category.id}/#{@image.id}") do %>
   <%
-  im_prev = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id < ?', Cms::PUBLISHED, @image.unique_content_id], :order => 'images.id DESC')
+  im_prev = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id < ?', Cms::PUBLISHED, @image.id], :order => 'images.id DESC')
 
-  im_next = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id > ?', Cms::PUBLISHED, @image.unique_content_id], :order => 'images.id ASC')
+  im_next = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id > ?', Cms::PUBLISHED, @image.id], :order => 'images.id ASC')
   %>
   <% if im_prev %>
     <li><div class="image"><a class="new" href="/imagenes/show/<%=im_prev.id%>"><%=fc_thumbnail(im_prev.file, 'i', '85x85', false)%></a></div></li>

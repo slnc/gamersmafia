@@ -235,7 +235,7 @@ module Karma
       if other_conditions
         raise "Unable to pass other_conditions for acts_as_content"
       end
-      (karma_points, trace) = Karma.contents_karma(thing.unique_content)
+      (karma_points, trace) = Karma.contents_karma(thing)
       karma_points
     else
       raise "calculate_karma_points of unsupported class #{thing.class.name}."
@@ -397,7 +397,7 @@ module Karma
         user,
         Bank::convert(karma_points, 'karma_points'),
         "Karma por resultar aceptado \"#{content.name}\"" +
-        " (#{Cms::CLASS_NAMES[content.real_content.class.name]})")
+        " (#{Cms::CLASS_NAMES[content.class.name]})")
   end
 
   def self.del_karma_after_content_is_unpublished(content)
@@ -417,7 +417,7 @@ module Karma
         Bank::convert(old_karma_points, 'karma_points'),
         "Devolución de karma por contenido despublicado:" +
         " #{content.name}" +
-        " (#{Cms::CLASS_NAMES[content.real_content.class.name]})")
+        " (#{Cms::CLASS_NAMES[content.class.name]})")
   end
 
   def self.comment_karma(comment)
@@ -462,8 +462,8 @@ module Karma
         :bank,
         u,
         Bank::convert(karma_points, 'karma_points'),
-        "Karma por comentario a #{comment.content.real_content.resolve_hid}" +
-        " (#{Cms::CLASS_NAMES[comment.content.real_content.class.name]})")
+        "Karma por comentario a #{comment.content.resolve_hid}" +
+        " (#{Cms::CLASS_NAMES[comment.content.class.name]})")
   end
 
   def self.del_karma_after_comment_is_deleted(comment)
@@ -481,8 +481,8 @@ module Karma
         :bank,
         new_cash,
         "Devolución de Karma por comentario borrado a" +
-        " #{comment.content.real_content.resolve_hid}" +
-        " (#{Cms::CLASS_NAMES[comment.content.real_content.class.name]})")
+        " #{comment.content.resolve_hid}" +
+        " (#{Cms::CLASS_NAMES[comment.content.class.name]})")
   end
 
   def self.karma_in_time_period(t1, t2, other_conditions=nil)

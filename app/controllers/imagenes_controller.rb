@@ -101,7 +101,7 @@ class ImagenesController < BazarController
             im.description = ''
             im.user_id = @user.id
             if im.save
-              @category.link(im.unique_content)
+              @category.link(im)
               i += 1
             end
           end

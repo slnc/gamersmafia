@@ -8,7 +8,7 @@ class CommentsTest < ActiveSupport::TestCase
     bd.add_sicario(u59)
     n65 = News.find(65)
     c = Comment.new(
-        :content_id => n65.unique_content.id,
+        :content_id => n65.id,
         :user_id => 1,
         :host => '127.0.0.1',
         :comment => 'comentario')

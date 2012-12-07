@@ -17,7 +17,7 @@ class Cuenta::BlogController < ApplicationController
   def create
     be = @user.blogentries.create(params[:blogentry].merge({ :state => Cms::PUBLISHED }))
     if be
-      Users.add_to_tracker(@user, be.unique_content)
+      Users.add_to_tracker(@user, be)
       flash[:notice] = 'Entrada creada correctamente'
       redirect_to :action => 'index'
     else

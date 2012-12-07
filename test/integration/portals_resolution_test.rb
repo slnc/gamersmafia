@@ -30,12 +30,12 @@ class PortalsResolutionTest < ActionController::IntegrationTest
     assert !n.is_public?
     host! App.domain
     post '/admin/contenidos/mass_moderate', {
-        :mass_action => 'publish', :items => [n.unique_content_id.to_s],
+        :mass_action => 'publish', :items => [n.id.to_s],
     }
     assert_redirected_to '/admin/contenidos'
     n.reload
     assert n.is_public?
-    assert_equal "http://#{g.slug}.#{App.domain}/noticias/show/#{n.id}", n.unique_content.url
+    assert_equal "http://#{g.slug}.#{App.domain}/noticias/show/#{n.id}", n.url
   end
 
   test "should_resolve_main" do

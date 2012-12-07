@@ -2,7 +2,7 @@
 <%= adsense_comments %>
 <%
 resolve_comments_page(object)
-uniq_id = object.unique_content.id
+uniq_id = object.id
 ckey = (object.updated_on < 1.month.ago) ? 'perm' : Time.now.to_i/(86400*7)
 questions_mode = (object.class.name == 'Question')
 

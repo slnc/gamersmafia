@@ -816,7 +816,7 @@ type: 'bhs'}))
     <div class="infoinline">
       #{print_tstamp(content.created_on)} |
       #{draw_rating(content.rating)} |
-      <span class=\"f_milli\">#{gm_icon("comment", "small")} <a title=\"Ver comentarios\" href=\"#{Routing.url_for_content_onlyurl(content)}\#comments\">#{content.unique_content.comments_count}</a></span>
+      <span class=\"f_milli\">#{gm_icon("comment", "small")} <a title=\"Ver comentarios\" href=\"#{Routing.url_for_content_onlyurl(content)}\#comments\">#{content.comments_count}</a></span>
       <span class="f_milli" title="Leído #{content.hits_anonymous + content.hits_registered} veces">
       #{gm_icon("pageviews", "small")}#{content.hits_anonymous + content.hits_registered}</span>
     EOD
@@ -932,7 +932,7 @@ skin: 'v2'
     else
       contents = Content.find(:all, :conditions => "comments_count > 0 and is_public = 't' AND ((game_id is null AND clan_id IS NULL) OR game_id IS NOT NULL)", :order => 'updated_on DESC', :limit => 25)
     end
-    contents.collect { |c| c.real_content }
+    contents.collect { |c| c }
   end
 
 
@@ -1359,7 +1359,7 @@ skin: 'v2'
       concat("<li #{'class="'<< options[:class] << '"' if options[:class]}>")
       yield o
       concat("</li>")
-      ids<< o.unique_content.id
+      ids<< o.id
     end
     concat("</ul>")
     concat('<script type="text/javascript">contents = contents.concat('<< ids.join(',') <<');</script>')
@@ -1402,10 +1402,10 @@ skin: 'v2'
     end
     concat(out << ">#{title}<div class=\"mcontent\"><#{container_tag}>")
     collection.each do |o|
-      concat("<#{row_tag} class=\"ellipsis content#{o.unique_content.id} #{oddclass} new unread-item #{options[:class] if options[:class]}\">")
+      concat("<#{row_tag} class=\"ellipsis content#{o.id} #{oddclass} new unread-item #{options[:class] if options[:class]}\">")
       yield o
       concat("</#{row_tag}>")
-      ids<< o.unique_content.id
+      ids<< o.id
     end
     concat("</#{container_tag}>")
     concat('<script type="text/javascript">contents = contents.concat('<< ids.join(',') <<');</script>')
@@ -1439,8 +1439,8 @@ skin: 'v2'
         END
     out.force_encoding("utf-8")
     collection.each do |item|
-      ids<< item.unique_content.id
-      out<< "<li class=\"new #{oddclass} ellipsis content#{item.unique_content.id}\"><a title=\"#{tohtmlattribute(item.title)}\" href=\"#{gmurl(item)}\">"
+      ids<< item.id
+      out<< "<li class=\"new #{oddclass} ellipsis content#{item.id}\"><a title=\"#{tohtmlattribute(item.title)}\" href=\"#{gmurl(item)}\">"
       out<< content_category(item) if opts[:faction_favicon]
       out<< "#{item.title}</a></li>"
     end

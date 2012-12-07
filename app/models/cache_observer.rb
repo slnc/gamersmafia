@@ -515,7 +515,7 @@ class CacheObserver < ActiveRecord::Observer
 
       when 'Comment'
       expire_fragment("/comments/#{Time.now.to_i/(86400*7)}/#{object.content_id%100}/#{object.content_id}_*") # cacheamos una semana para q se actualicen barras
-      real = object.content.real_content
+      real = object.content
 
       # TODO solo hay que limpiar cache si aparecen en portada y tb
       # TODO ESTO se sigue usando?
@@ -544,8 +544,8 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment(:controller => '/home', :action => 'index', :part => 'downloads')
         when 'Poll'
         expire_fragment(:controller => '/home', :action => 'index', :part => 'polls')
-        if object.content.real_content.my_faction
-          expire_fragment(:controller => '/home', :action => 'index', :part => "polls_#{object.content.real_content.my_faction.id}")
+        if object.content.my_faction
+          expire_fragment(:controller => '/home', :action => 'index', :part => "polls_#{object.content.my_faction.id}")
         end
         when 'Image'
         expire_fragment(:controller => '/home', :action => 'index', :part => "daily_image#{Time.now.to_i/86400}")

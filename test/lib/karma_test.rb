@@ -41,7 +41,7 @@ class KarmaTest < ActiveSupport::TestCase
     assert content.update_attributes(:karma_points => nil)
 
     [Cms::DELETED].each do |state|
-      content.real_content.change_state(state, Ias.MrMan)
+      content.change_state(state, Ias.MrMan)
       Karma.award_karma_points_new_ugc
       content.reload
       assert content.karma_points.nil?

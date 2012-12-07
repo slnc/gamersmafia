@@ -31,9 +31,9 @@ for news in @last_news
 	accum_portals[news.main_category.root_id] += 1
 	next if accum_portals[news.main_category.root_id] > 6
 	break if i > max
-    shown_news << news.unique_content.id
+    shown_news << news.id
 %>
-<li class="content<%=news.unique_content.id%> new <%=oddclass%>"><%= link_to "#{content_category(news.main_category)}#{news.title}", gmurl(news) %></li>
+<li class="content<%=news.id%> new <%=oddclass%>"><%= link_to "#{content_category(news.main_category)}#{news.title}", gmurl(news) %></li>
 <%
 	i += 1
 end
@@ -54,9 +54,9 @@ end
 @last_downloads = Download.in_portal(controller.portal).published.find(:all, :limit => 10, :order => 'created_on DESC')
 shown_downloads = []
 for download in @last_downloads
-    shown_downloads << download.unique_content.id
+    shown_downloads << download.id
 %>
-    <li class="content<%=download.unique_content.id%> new <%=oddclass%>"><%=link_to "#{content_category(download.main_category)}#{download.title}", gmurl(download)%></li>
+    <li class="content<%=download.id%> new <%=oddclass%>"><%=link_to "#{content_category(download.main_category)}#{download.title}", gmurl(download)%></li>
 <% end %>
 </ul>
 <script type="text/javascript">contents = contents.concat(<%=shown_downloads.join(',')%>);</script>
@@ -81,11 +81,11 @@ shown_topics = []
 
 for topic in @last_topics
   # topic = Topic.find(topicid)
-  shown_topics << topic.unique_content_id
+  shown_topics << topic.id
   root = topic.main_category.root
   active_topics = root.count(:content_type => 'Topic', :conditions => 'contents.updated_on > now() - \'1 week\'::interval') - 1
 %>
-  <li class="content<%=topic.unique_content.id%> new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "#{content_category(topic.main_category)}#{topic.title.gsub('<', '')}", gmurl(topic)%></li>
+  <li class="content<%=topic.id%> new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "#{content_category(topic.main_category)}#{topic.title.gsub('<', '')}", gmurl(topic)%></li>
 <% end %>
 
         </ul>
@@ -187,8 +187,8 @@ for topic in @last_topics
 <table>
       <% shown_bets = []
       Bet.in_portal(controller.portal).published.find(:all, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC').each do |o|
-shown_bets<< o.unique_content.id %>
-        <tr class="<%=oddclass%> new content<%=o.unique_content.id%>">
+shown_bets<< o.id %>
+        <tr class="<%=oddclass%> new content<%=o.id%>">
 <td><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline" style="float: left;"><%=format_interval(o.closes_on.to_i - Time.now.to_i, 'horas', true)%></div>
 <div class="infoinline" style="float: right;"><%=o.total_ammount.to_i%> <%=gm_icon("gmf", "small")%></div>
@@ -224,9 +224,9 @@ shown_bets<< o.unique_content.id %>
 @last_demos = Demo.in_portal(controller.portal).published.find(:all, :limit => 5, :order => 'created_on DESC')
 shown_demos = []
 for demo in @last_demos
-    shown_demos << demo.unique_content.id
+    shown_demos << demo.id
 %>
-    <li class="content<%=demo.unique_content.id%> new <%=oddclass%>"><%=link_to "#{content_category(demo.main_category)}#{demo.title}", gmurl(demo)%></li>
+    <li class="content<%=demo.id%> new <%=oddclass%>"><%=link_to "#{content_category(demo.main_category)}#{demo.title}", gmurl(demo)%></li>
 <% end -%>
 
 </ul>

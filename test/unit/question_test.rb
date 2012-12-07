@@ -13,7 +13,7 @@ class QuestionTest < ActiveSupport::TestCase
         :title => "should_be_able_to_create_question_with_min_ammount",
         :ammount => Question::MIN_AMMOUNT,
     })
-    Term.find(1).link(@bt.unique_content)
+    Term.find(1).link(@bt)
     assert !@bt.new_record?
     assert_equal Question::MIN_AMMOUNT.to_i, @bt.ammount.to_i
   end
@@ -30,7 +30,7 @@ class QuestionTest < ActiveSupport::TestCase
 
   test "set_set_best_answer" do
     @q = Question.find(1)
-    @c = @q.unique_content.comments.find(:first, :conditions => 'deleted = \'f\'')
+    @c = @q.comments.find(:first, :conditions => 'deleted = \'f\'')
     baid = @c.id
     @u_cash = @c.user.cash
     assert_nil @q.best_answer

@@ -17,7 +17,7 @@
 <%content_2colx do %>
   <% tagged_contents = @tag.contents.content_type_name("News").published.find(
       :all, :order => 'created_on DESC', :limit => 10) %>
-      <%mftable("Últimas noticias", tagged_contents.uniq.collect { |c| c.real_content},
+      <%mftable("Últimas noticias", tagged_contents.uniq.collect { |c| c},
               :no_mcontent_title => true) do |c| %>
         <td class="content-snippet">
           <a class="f_hecto content-title" href="<%=gmurl(c)%>"><%=c.resolve_hid%></a>
@@ -41,7 +41,7 @@
                       :order => 'created_on DESC',
                       :limit => 2),
                   :no_mcontent_title => true) do |c|
-      c = c.real_content %>
+      c = c %>
       <tr class="<%=oddclass%>">
         <td class="content-snippet">
           <a href="<%=gmurl(c)%>"><img src="/cache/thumbnails/k/300x150/<%=c.home_image%>" /></a>
@@ -68,7 +68,7 @@
           Proc.new { @tag.contents.published.content_type_name("Topic").find(
               :all,
               :order => 'updated_on DESC',
-              :limit => 10).collect {|c| c.real_content} },
+              :limit => 10).collect {|c| c} },
             [],
             :faction_favicon => true,
             :blast => true)%>
@@ -80,7 +80,7 @@
           Proc.new { @tag.contents.published.content_type_name("Question").find(
               :all,
               :order => 'updated_on DESC',
-              :limit => 10).collect {|c| c.real_content} },
+              :limit => 10).collect {|c| c} },
             [],
             :faction_favicon => true,
             :blast => true)%>

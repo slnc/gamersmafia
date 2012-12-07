@@ -27,9 +27,9 @@ namess = {'Interview' => 'entrevistas', 'Column' => 'columnas', 'Tutorial' => 't
 i = 0
 while i < 8 and i < articles.length do
   article = articles[i][1]
-  shown_articles << article.unique_content.id
+  shown_articles << article.id
 %>
-    <li class="content<%=article.unique_content.id%> new <%=oddclass%>">
+    <li class="content<%=article.id%> new <%=oddclass%>">
     <%=content_category(article.main_category)%>
     <%=link_to article.title, gmurl(article)%>
     <% if article.home_image then %><div style="float: right;"><%=fc_thumbnail(article.home_image, 'f', Cms::IMG_ARTICLE_THUMB, false)%></div><% end -%>

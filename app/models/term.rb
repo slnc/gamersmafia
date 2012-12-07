@@ -518,7 +518,7 @@ class Term < ActiveRecord::Base
   # it will call resolve_last_updated_item.
   def get_or_resolve_last_updated_item
     self.resolve_last_updated_item if self.last_updated_item_id.nil?
-    self.last_updated_item ? self.last_updated_item.real_content : nil
+    self.last_updated_item ? self.last_updated_item : nil
   end
 
   def last_published_content(cls_name, opts={})
@@ -591,7 +591,7 @@ class Term < ActiveRecord::Base
   def reset_contents_urls
     # TODO PERF más inteligencia
     self.find(:published, :treemode => true).each do |rc|
-      uniq = rc.unique_content
+      uniq = rc
       User.db_query("UPDATE contents SET url = NULL, portal_id = NULL WHERE id = #{uniq.id}")
       uniq.reload
       Routing.gmurl(uniq)
@@ -605,9 +605,9 @@ class Term < ActiveRecord::Base
     res = Content.find(*args)
 
     if res.kind_of?(Array)
-      res.uniq.collect { |cont| cont.real_content }
+      res.uniq.collect { |cont| cont }
     elsif res
-      res.real_content
+      res
     end
   end
 
@@ -690,14 +690,14 @@ class Term < ActiveRecord::Base
 
     if options[:content_type]
       new_cond << " AND contents.content_type_id = #{ContentType.find_by_name(options[:content_type]).id}"
-      options[:joins] = "JOIN #{ActiveSupport::Inflector::tableize(options[:content_type])} ON #{ActiveSupport::Inflector::tableize(options[:content_type])}.unique_content_id = contents.id"
+      options[:joins] = "JOIN #{ActiveSupport::Inflector::tableize(options[:content_type])} ON #{ActiveSupport::Inflector::tableize(options[:content_type])}.id = contents.id"
     end
 
 
     if options[:content_type_id]
       new_cond << " AND contents.content_type_id = #{options[:content_type_id]}"
       ct = ContentType.find(options[:content_type_id])
-      options[:joins] = "JOIN #{ActiveSupport::Inflector::tableize(ct.name)} ON #{ActiveSupport::Inflector::tableize(ct.name)}.unique_content_id = contents.id"
+      options[:joins] = "JOIN #{ActiveSupport::Inflector::tableize(ct.name)} ON #{ActiveSupport::Inflector::tableize(ct.name)}.id = contents.id"
       #options[:include] ||= []
       #options[:include] << :contents
     end
@@ -750,7 +750,7 @@ class Term < ActiveRecord::Base
     dbitems = User.db_query("SELECT count(contents.id),
                                     contents.user_id
                               from #{ActiveSupport::Inflector::tableize(opts[:content_type])}
-                              JOIN contents on  #{ActiveSupport::Inflector::tableize(opts[:content_type])}.unique_content_id = contents.id
+                              JOIN contents on  #{ActiveSupport::Inflector::tableize(opts[:content_type])}.id = contents.id
                              WHERE contents.state = #{Cms::PUBLISHED}#{q_add}
                           GROUP BY contents.user_id
                           ORDER BY sum((coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0))) desc
