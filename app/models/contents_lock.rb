@@ -5,4 +5,6 @@ class ContentsLock < ActiveRecord::Base
   validates_presence_of :content_id
 
   belongs_to :user
+
+  scope :active, :conditions => "updated_on > NOW() - '35 seconds'::interval"
 end

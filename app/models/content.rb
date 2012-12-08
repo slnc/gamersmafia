@@ -8,7 +8,7 @@ class Content < ActiveRecord::Base
 
   before_create :log_creation
   before_destroy :clear_comments
-  before_destroy :unlink_real_content
+  before_destroy :change_to_deleted_state
 
   before_save :check_changed_attributes
   before_save :log_changes
@@ -177,7 +177,9 @@ class Content < ActiveRecord::Base
                   COALESCE(cache_comments_count * 10, 0) +
                   COALESCE(cache_rated_times * 20, 0))) DESC
          LIMIT #{opts[:limit]}")
-    dbitems.collect { |dbitem| [User.find(dbitem['user_id']), dbitem['count'].to_i] }
+    dbitems.collect { |dbitem|
+      [User.find(dbitem['user_id']), dbitem['count'].to_i]
+    }
   end
 
   # devuelve los contenidos publicados mejor valorados
@@ -208,13 +210,12 @@ class Content < ActiveRecord::Base
         :limit => opts[:limit])
   end
 
-  def self.handle_publish_decision(decision, uniq)
-    content = uniq
+  def self.handle_publish_decision(decision, content)
     if decision.final_decision_choice.name == Decision::BINARY_YES
       prev_state = content.state
       content.change_state(Cms::PUBLISHED, Ias.MrMan)
       if prev_state == Cms::PENDING
-        self.create_alert_after_crowd_publishing_decision(uniq, "publicado")
+        self.create_alert_after_crowd_publishing_decision(content, "publicado")
       end
       decision.context[:result] = (
           "<a href=\"#{Routing.gmurl(content)}\">Ver contenido</a>")
@@ -223,7 +224,7 @@ class Content < ActiveRecord::Base
       prev_state = content.state
       content.change_state(Cms::DELETED, Ias.MrMan)
       if prev_state == Cms::PENDING
-        self.create_alert_after_crowd_publishing_decision(uniq, "denegado")
+        self.create_alert_after_crowd_publishing_decision(content, "denegado")
       end
     end
   end
@@ -270,16 +271,16 @@ class Content < ActiveRecord::Base
     self.modify_content_state(content, content.user, Cms::PENDING)
   end
 
-  def self.create_alert_after_crowd_publishing_decision(uniq, action_taken)
-    ttype, scope = Alert.fill_ttype_and_scope_for_content_report(uniq)
-    content_url = Routing.url_for_content_onlyurl(uniq)
+  def self.create_alert_after_crowd_publishing_decision(content, action_taken)
+    ttype, scope = Alert.fill_ttype_and_scope_for_content_report(content)
+    content_url = Routing.url_for_content_onlyurl(content)
     Alert.create({
       :type_id => ttype,
       :scope => scope,
       :reporter_user_id => Ias.MrMan.id,
       :headline => (
-          "#{Cms.faction_favicon(uniq)}<strong>
-          <a href=\"#{content_url}\">#{uniq.resolve_html_hid}</a>
+          "#{Cms.faction_favicon(content)}<strong>
+          <a href=\"#{content_url}\">#{content.resolve_html_hid}</a>
           </strong> #{action_taken}"),
     })
   end
@@ -287,8 +288,6 @@ class Content < ActiveRecord::Base
   # Call this function if you want to change a content state regardless outside
   # of the moderation queue voting mechanism.
   def self.modify_content_state(content, user, new_state, reason=nil)
-    uniq = content
-
     prev_state = content.state
     content.change_state(new_state, user)
     # TODO(slnc): update Decisions wrong on this content
@@ -592,16 +591,11 @@ class Content < ActiveRecord::Base
     self.terms.contents_tags.find(:all, :order => 'lower(name)')
   end
 
-  def unlink_real_content
+  def change_to_deleted_state
     self.update_attribute(:state, Cms::DELETED)
     self.terms.each do |term|
       term.resolve_last_updated_item
     end
-
-    cls_name = Object.const_get(self.content_type.name)
-    User.db_query("UPDATE #{ActiveSupport::Inflector::tableize(cls_name)}
-                      SET unique_content_id = NULL
-                    WHERE id = #{self.external_id}")
     true
   end
 
@@ -615,16 +609,15 @@ class Content < ActiveRecord::Base
   end
 
   def check_changed_attributes
-    rc = real_content
-    g_id = rc.get_game_id
+    g_id = self.get_game_id
     if g_id != self.game_id
       self.game_id = g_id
     else
-      p_id = rc.get_my_gaming_platform_id
+      p_id = self.get_my_gaming_platform_id
       if p_id
         self.gaming_platform_id = p_id
       else # maybe bazar_district
-        bd_id = rc.get_my_bazar_district_id
+        bd_id = self.get_my_bazar_district_id
         self.bazar_district_id = bd_id if bd_id
       end
     end
@@ -632,9 +625,7 @@ class Content < ActiveRecord::Base
     if self.state_changed? && self.state != Cms::PUBLISHED
       self.contents_recommendations.each { |cr| cr.destroy }
     end
-    self.name = rc.resolve_hid if self.name != rc.resolve_hid
-    self.is_public = rc.is_public?
-    self.user_id = rc.user_id
+
     true
   end
 
@@ -648,19 +639,6 @@ class Content < ActiveRecord::Base
     BazarDistrict.find(:first, :conditions => ["slug = ?", self.portal.code])
   end
 
-  def real_content
-    # devuelve el objeto real al que referencia
-    @_cache_real_content ||= begin
-      ctype = Object.const_get(self.content_type.name)
-      ctype.send(:with_exclusive_scope) { ctype.find(self.external_id) }
-      # NECESSARY because we use find_each in weekly.rb and there is a rails bug
-      # (
-      # https://rails.lighthouseapp.com/projects/8994/tickets/
-      #   1267-methods-invoked-within-scope-procs-should-respect-the-scope-stack
-      # )
-    end
-  end
-
   def clear_comments
     self.comments.clear
   end
@@ -671,7 +649,7 @@ class Content < ActiveRecord::Base
   end
 
   def cur_lock
-    ContentsLock.find(:first, :conditions => ['content_id = ? and updated_on > now() - \'35 seconds\'::interval', self.id])
+    self.contents_locks.active.last
   end
 
   def lock(user)
@@ -681,10 +659,12 @@ class Content < ActiveRecord::Base
     elsif mlock
       mlock.save # touch updated_on
     else
-      ContentsLock.delete_all("content_id = #{self.id}") # borramos si queda alguno viejo
-      cl = ContentsLock.create({:content_id => self.id, :user_id => user.id})
-      raise "lock  couldnt be created: #{cl.errors.full_messages_html}" unless cl
-      # raise "lock created #{}"
+     # borramos si queda alguno viejo
+      self.contents_locks.delete_all
+      cl = ContentsLock.create(:content_id => self.id, :user_id => user.id)
+      if cl.new_record?
+        raise "Cannot create lock: #{cl.errors.full_messages_html}"
+      end
       cl
     end
   end

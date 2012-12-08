@@ -870,7 +870,6 @@ CREATE SEQUENCE content_types_id_seq
 ALTER SEQUENCE content_types_id_seq OWNED BY content_types.id;
 CREATE TABLE contents (
     id integer NOT NULL,
-    content_type_id integer NOT NULL,
     external_id integer NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     name character varying NOT NULL,
@@ -3455,8 +3454,6 @@ ALTER TABLE ONLY content_types
     ADD CONSTRAINT content_types_name_key UNIQUE (name);
 ALTER TABLE ONLY content_types
     ADD CONSTRAINT content_types_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY contents
-    ADD CONSTRAINT contents_content_type_id_key UNIQUE (content_type_id, external_id);
 ALTER TABLE ONLY contents_locks
     ADD CONSTRAINT contents_locks_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY contents
@@ -3810,7 +3807,6 @@ CREATE INDEX content_attributes_uniq ON content_attributes USING btree (content_
 CREATE INDEX content_ratings_comb ON content_ratings USING btree (ip, user_id, created_on);
 CREATE UNIQUE INDEX content_ratings_user_id_content_id ON content_ratings USING btree (user_id, content_id);
 CREATE INDEX contents_created_on ON contents USING btree (created_on);
-CREATE INDEX contents_id_state_content_type_id ON contents USING btree (id, state, content_type_id);
 CREATE INDEX contents_is_public ON contents USING btree (is_public);
 CREATE INDEX contents_is_public_and_game_id ON contents USING btree (is_public, game_id);
 CREATE UNIQUE INDEX contents_locks_uniq ON contents_locks USING btree (content_id);
@@ -4019,8 +4015,6 @@ ALTER TABLE ONLY content_attributes
     ADD CONSTRAINT content_attributes_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id) MATCH FULL;
 ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-ALTER TABLE ONLY contents
-    ADD CONSTRAINT contents_content_type_id_fkey FOREIGN KEY (content_type_id) REFERENCES content_types(id) MATCH FULL;
 ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id) MATCH FULL;
 ALTER TABLE ONLY contents

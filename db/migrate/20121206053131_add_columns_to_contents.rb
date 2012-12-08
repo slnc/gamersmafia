@@ -12,5 +12,7 @@ class AddColumnsToContents < ActiveRecord::Migration
     execute "alter table contents add column type varchar;"
     execute "update contents set type = (SELECT name from content_types WHERE id = content_type_id);"
     execute "alter table contents alter column type set not null"
+    execute "alter table contents drop content_type_id;"
+    execute "alter table contents drop is_public;"
   end
 end
