@@ -5,8 +5,8 @@
 <% content_support(:content => @interview) do %>
 <% if @interview.is_public? then %>
 <%=mfcontents_basic("Más entrevistas de #{@interview.user.login}",
-	controller.portal.interview,
-	[:published, {:conditions => ['contents.user_id = ?', @interview.user_id], :order => 'created_on DESC', :limit => 5}],
+	Interview.published,
+    [:all, {:conditions => ['user_id = ?', @interview.user_id], :order => 'created_on DESC', :limit => 5}],
     :cache => "/#{controller.portal_code}/entrevistas/show/latest_by_author_#{@interview.user_id}",
  	:rating => true,
 	:comments_count => true,

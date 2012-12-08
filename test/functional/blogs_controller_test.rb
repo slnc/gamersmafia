@@ -25,7 +25,7 @@ class BlogsControllerTest < ActionController::TestCase
   end
 
   test "blogentry_should_work_if_blogentry_exists" do
-    get :blogentry, {:login => User.find(1).login, :id => Blogentry.find(:published, :order => 'id', :limit => 1)[0].id }
+    get :blogentry, {:login => User.find(1).login, :id => Blogentry.published.find(:all, :order => 'id', :limit => 1)[0].id }
     assert_response :success
     assert_template 'blogentry'
   end

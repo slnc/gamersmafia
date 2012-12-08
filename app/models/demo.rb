@@ -16,14 +16,13 @@
 # - games_version_id (int)
 # - demotype (int)
 # - played_on (date)
-class Demo < ActiveRecord::Base
+class Demo < Content
   POVS = {:freeflight => 0, :chase => 1, :in_eyes => 2, :server => 3}
   DEMOTYPES = {:official => 0, :friendly => 1, :tutorial => 2 }
 
   before_save :check_model # order is important
   before_save :set_name
 
-  acts_as_content
   acts_as_categorizable
 
   belongs_to :event

@@ -71,11 +71,9 @@ class Admin::CategoriasController < ApplicationController
     # TODO permisos
     @term = Term.find(params[:id])
     dst = Term.find(params[:destination_term_id])
-    @term.find(
+    Content.in_term(@term).content_type_name(params[:content_type]).find(
         :all,
-        :content_type => params[:content_type],
-        :conditions => "contents.id in "+
-                       "(#{params[:contents].join(', ')})").each do |c|
+        :conditions => "id in (#{params[:contents].join(', ')})").each do |c|
       @term.unlink(c)
       dst.link(c)
     end

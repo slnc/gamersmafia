@@ -1,7 +1,7 @@
 <div class="grid-5">
 <%mftext('Noticias', :has_submodules => true) do %>
 		<%=mfcontents_basic("Generales",
-					Proc.new { controller.portal.news.find(:published, :order => 'created_on desc', :limit => 10) },
+					Proc.new { News.published.in_term(@gaming_platform).find(:all, :order => 'created_on desc', :limit => 10) },
 					[],
 					:faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/news2")%>
 <% end -%>
@@ -10,7 +10,7 @@
 <%mftext('En los foros', :has_submodules => true, :grid => 10, :glast => true) do %>
 
 	<%=mfcontents_basic("Tópics activos",
-					Proc.new { controller.portal.topic.find(:published, :conditions => 'contents.closed is false', :order => 'contents.updated_on desc', :limit => 10) },
+					Proc.new { Topic.published.in_term_tree(@gaming_platform).find(:all, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 10) },
 					[],
 					:faction_favicon => true, :grid => 6, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 
@@ -22,7 +22,7 @@
 
 <div class="grid-12">
 
-<% mflist("Imágenes", Proc.new { controller.portal.image.find(:published, :order => 'created_on desc', :limit => 4) }, :class_container => 'mflist-row-images', :grid => 6, :glast => true ) do |im| %>
+<% mflist("Imágenes", Proc.new { Image.published.in_term_tree(@gaming_platform).find(:all, :order => 'created_on desc', :limit => 4) }, :class_container => 'mflist-row-images', :grid => 6, :glast => true ) do |im| %>
 		<%=link_to fc_thumbnail(im.file, 'i', Cms::IMG_SIZE_GRID2, false), gmurl(im)%>
 	<% end %><%# mflist-%>
 
@@ -45,7 +45,7 @@
 <% classes.each do |it| %>
 <% dafirst = true
 mfcontents_list(Cms::translate_content_name(it),
-					Proc.new { controller.portal.send(it.downcase).find(:published, :order => 'created_on desc', :limit => 3) },
+					Proc.new { Object.const_get(it).published.in_term(@gaming_platform).find(:all, :order => 'created_on desc', :limit => 3) },
 					:grid => grid_size, :glast => (it == classes.last)) do |o| %>
 
 <%=content_category(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
@@ -66,14 +66,14 @@ category = controller.portal.categories(Download)[0]
 %>
 	<div class="grid-4">
 	<%=mfcontents_basic('Últimas',
-								      Proc.new { category.root.find(:published, :content_type => 'Download', :order => 'created_on DESC', :limit => 12) },
+								      Proc.new { Download.published.in_term_tree(@gaming_platform).find(:all, :order => 'created_on DESC', :limit => 12) },
 					[],
 					:faction_favicon => true)%>
 	</div>
 
 	<div class="grid-4 glast">
 	<%=mfcontents_basic('Esenciales',
-					Proc.new { category.root.download.find(:published, :conditions => "essential is true", :order => 'created_on DESC', :limit => 12) },
+					Proc.new { Download.published.in_term_tree(@gaming_platform).find(:all, :conditions => "essential is true", :order => 'created_on DESC', :limit => 12) },
 					[],
 					:faction_favicon => true)%>
 	</div>

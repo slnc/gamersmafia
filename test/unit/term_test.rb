@@ -143,7 +143,7 @@ class TermTest < ActiveSupport::TestCase
 
   test "find_contents_should_work" do
     root_term = Term.single_toplevel(:slug => 'ut')
-    nlist = root_term.find(:all, :content_type => 'News')
+    nlist = News.in_term(root_term).find(:all)
     assert nlist.size > 0
     assert_equal 'News', nlist[0].class.name
     assert_equal root_term.id, nlist[0].terms[0].id

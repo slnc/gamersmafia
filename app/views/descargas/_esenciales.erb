@@ -2,7 +2,11 @@
 <ul class="content-hid2">
 <% cache("/common/descargas/index/essential_#{category.root_id}") do %>
 <% shown_downloads = []
-category.root.find(:published, :conditions => "essential is true", :order => 'created_on DESC', :limit => 12).each do |d|
+Content.published.in_term(category.root).find(
+    :all,
+    :conditions => "essential is true",
+    :order => 'created_on DESC',
+    :limit => 12).each do |d|
     shown_downloads << d.id
 %>
   <li class="content<%=d.id%> content new <%=oddclass%>"><%=link_to "#{content_category(d.main_category)}#{d.title}", gmurl(d)%></li>

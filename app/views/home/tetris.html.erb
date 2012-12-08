@@ -19,7 +19,6 @@
               :all,
               :conditions => 'clan_id IS NULL and title not LIKE \'Gamersmafia actualizada a%\'', :limit => 60, :order => 'created_on DESC')
 %>
-<%# @last_news = @portal.news_find(:all, :state => :published, :limit => 15) %>
 <%
 shown_news = []
 accum_portals = {}
@@ -83,7 +82,7 @@ for topic in @last_topics
   # topic = Topic.find(topicid)
   shown_topics << topic.id
   root = topic.main_category.root
-  active_topics = root.count(:content_type => 'Topic', :conditions => 'contents.updated_on > now() - \'1 week\'::interval') - 1
+  active_topics = Topic.published.in_term_tree(root).count(:conditions => 'updated_on > now() - \'1 week\'::interval') - 1
 %>
   <li class="content<%=topic.id%> new <%=oddclass%>"><div style="float: right; margin-right: 2px; width: 24px; height: 20px; font-weight: bold;" class="activetopicsind infoinline"><a title="Topics activos en este foro" href="/foros/forum/<%=root.id%>">+<%=active_topics%></a></div><%=link_to "#{content_category(topic.main_category)}#{topic.title.gsub('<', '')}", gmurl(topic)%></li>
 <% end %>

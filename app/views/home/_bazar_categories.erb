@@ -10,7 +10,7 @@ categories.each do |nc|
 <%
 shown_offtopics = []
 raise nc.code unless tc
-nc.news.find(:published, :limit => 12, :order => 'created_on DESC').each do |offtopic|
+News.published.in_term(nc).find(:all, :limit => 12, :order => 'created_on DESC').each do |offtopic|
   shown_offtopics << offtopic.id
 %>
     <li class="content<%=offtopic.id%> new <%=oddclass%>"><%=link_to truncate(offtopic.title, 35), gmurl(offtopic)%></li>

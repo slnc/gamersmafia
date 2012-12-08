@@ -3,9 +3,8 @@
 # - starts_on (timestamp)
 # - ends_on (timestamp)
 # - polls_votes_count (int)
-class Poll < ActiveRecord::Base
+class Poll < Content
   CURRENT_SQL = 'starts_on <= now() and ends_on >= now()'
-  acts_as_content
   acts_as_categorizable
 
   before_save :check_start_ends

@@ -6,7 +6,6 @@
    has_hid
    ruby_mixings
    acts_as_categorizable
-   acts_as_content
    acts_as_content_browser
    acts_as_tree
    all

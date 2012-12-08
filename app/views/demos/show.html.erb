@@ -85,8 +85,8 @@ if mirrors.size > 0 then %>
 <% content_support(:content => @demo) do %>
 	<% if @demo.is_public? then %>
 	<%=mfcontents_basic("Más demos de #{@demo.main_category.name}",
-	controller.portal.demo,
-	[:published, { :order => 'created_on DESC', :limit => 5}],
+	Demo.published.in_term_tree(@demo.main_category),
+	[:all, { :order => 'created_on DESC', :limit => 5}],
  	:rating => true,
 	:cache => "/common/demos/show/_latest_cat#{@demo.main_category.id}",
 	:skip_id => @demo.id,

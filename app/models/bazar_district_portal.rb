@@ -75,10 +75,11 @@ class BazarDistrictPortalPollProxy
       :first,
       :conditions => "id = root_id AND slug IN (#{codes.join(',')})",
       :order => 'UPPER(name) ASC')
-    t.poll.find(:published,
-                :conditions => Poll::CURRENT_SQL,
-                :order => 'created_on DESC',
-                :limit => 1)
+    Poll.published.in_term(t).find(
+        :all,
+        :conditions => Poll::CURRENT_SQL,
+        :order => 'created_on DESC',
+        :limit => 1)
   end
 
   def respond_to?(method_id, include_priv = false)

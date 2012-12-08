@@ -2,7 +2,7 @@
 <% cache("/#{controller.portal.code}/home/index/coverages") do %>
 <div id="home-coverages" class="subheader f_deca first"><div><span>Coverages</span></div></div>
         <ul class="content-hid">
-		<% @last_news = Coverage.find(:published, :limit => 5, :order => 'coverages.created_on DESC', :include => :event)
+		<% @last_news = Coverage.published.find(:all, :limit => 5, :order => 'created_on DESC')
 shown_news = []
 for news in @last_news
     shown_news << news.id

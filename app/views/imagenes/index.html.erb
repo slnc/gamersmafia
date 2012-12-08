@@ -13,7 +13,7 @@
     if category.children.size > 0 then %>
   <tr class="<%=oddclass%>">
     <td><%=link_to category.name, gmurl(category, :taxonomy => 'ImagesCategory')%></td>
-    <td><% im_last = category.find(:published, :content_type => 'Image', :order => 'created_on DESC', :limit => 1)[0]
+    <td><% im_last = Image.published.in_term(category).find(:all, :order => 'created_on DESC', :limit => 1)[0]
       if im_last then
       %>
       <span class="screenshot"><%=link_to fc_thumbnail(im_last.file, 'f', '85x60', false), gmurl(im_last)%></span>

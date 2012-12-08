@@ -6,11 +6,10 @@
 # - file (varchar)
 require 'digest/md5'
 
-class Download < ActiveRecord::Base
+class Download < Content
   MIRRORS_REQUEST = ["http://#{App.domain}/dauth"] #, "http://descargas.newlightsystems.com/GM/auth_download.php"]
   MIRRORS_DOWNLOAD = ["http://#{App.domain}/"] #, "http://descargas.newlightsystems.com/GM/"]
   VALID_DOWNLOAD_COOKIE = /^[a-z0-9]{32}$/
-  acts_as_content
   acts_as_categorizable
 
   has_many :downloaded_downloads

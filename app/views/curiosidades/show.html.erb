@@ -51,7 +51,7 @@
 	<% if @funthing.is_public? %>
     <%=render :partial => '/shared/content_summary', :locals => { :content => @funthing }%>
 		<%=mfcontents_basic("Últimas curiosidades",
-							 Funthing, [:published, {:order => 'created_on desc', :limit => 10}],
+							 Funthing.published, [:all, {:order => 'created_on desc', :limit => 10}],
 							:cache => "/common/curiosidades/show/_latest",
 							:faction_favicon => true)%>
 

@@ -5,9 +5,9 @@
 <% content_support(:content => @review) do %>
 <% if @review.is_public? then %>
 <%=mfcontents_basic("Más reviews de #{@review.main_category.name}",
-	controller.portal.review,
-	[:published,
-	{:content_type => 'Review', :order => 'created_on desc', :limit => 5}],
+	Review.published.in_term_tree(@review.main_category),
+	[:all,
+	{:order => 'created_on desc', :limit => 5}],
     :cache => "/common/reviews/_latest_by_cat/#{@review.main_category.id}",
  	:rating => true,
 	:skip_id => @review.id,

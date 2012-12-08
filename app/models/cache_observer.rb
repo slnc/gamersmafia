@@ -302,9 +302,9 @@ class CacheObserver < ActiveRecord::Observer
       end
 
       # borramos las páginas de listado de noticias posteriores a la actual
-      stickies = object.main_category.count(:content_type => 'Topic', :conditions => "sticky is true and state = #{Cms::PUBLISHED}")
-      prev_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and state = #{Cms::PUBLISHED} and created_on <= ?", object.created_on]) + stickies
-      next_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and state = #{Cms::PUBLISHED} and created_on >= ?", object.created_on])
+      stickies = Topic.published.in_term(object.main_category).count(:conditions => "sticky is true and state = #{Cms::PUBLISHED}")
+      prev_count = Topic.published.in_term(object.main_category).count(:conditions => ["sticky is false and state = #{Cms::PUBLISHED} and created_on <= ?", object.created_on]) + stickies
+      next_count = Topic.published.in_term(object.main_category).count(:conditions => ["sticky is false and state = #{Cms::PUBLISHED} and created_on >= ?", object.created_on])
       start_page = prev_count / 50 # TODO especificar esto en un único sitio
       end_page = start_page + next_count / 50 + 1
 
@@ -460,13 +460,6 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/home/index/articles")
         expire_fragment("/#{p.code}/home/index/articles2")
         next unless p.column
-        # borramos las páginas de listado de columnas posteriores a la actual
-        #prev_count = p.column.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        #next_count = p.column.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        #start_page = prev_count / ColumnasController::COLUMNS_PER_PAGE
-        #end_page = start_page + next_count / ColumnasController::COLUMNS_PER_PAGE + 1
-
-        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/columnas/index/page_#{i}") }
         expire_fragment("/#{p.code}/columnas/index/page_")
         expire_fragment("/#{p.code}/columnas/index/page_*")
         expire_fragment("/#{p.code}/columnas/show/latest_by_author_#{object.user_id}")
@@ -618,16 +611,6 @@ class CacheObserver < ActiveRecord::Observer
       object.get_related_portals.each do |p|
         expire_fragment("/#{p.code}/home/index/eventos/#{Time.now.strftime('%Y%m%d')}")
         expire_fragment("/#{p.code}/home/index/eventos2/#{Time.now.strftime('%Y%m%d')}")
-        #next if p.event.nil?
-        # borramos las páginas de listado de noticias posteriores a la actual
-        # TODO PERF
-        #prev_count = p.event.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        #next_count = p.event.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        #start_page = prev_count / EventosController::PER_PAGE
-        #end_page = start_page + next_count / EventosController::PER_PAGE + 1
-
-        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/eventos/index/page_#{i}") }
-
         expire_fragment("/#{p.code}/eventos/index/page_")
         expire_fragment("/#{p.code}/eventos/index/page_*")
       end
@@ -695,14 +678,6 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/home/index/articles")
         expire_fragment("/#{p.code}/home/index/articles2")
         next unless p.interview
-        # borramos las páginas de listado de entrevistas posteriores a la actual
-        # TODO PERF
-        #prev_count = p.interview.count(:published, :conditions => ["created_on <= ?", object.created_on])
-        #next_count = p.interview.count(:published, :conditions => ["created_on >= ?", object.created_on])
-        #start_page = prev_count / EntrevistasController::INTERVIEWS_PER_PAGE
-        #end_page = start_page + next_count / EntrevistasController::INTERVIEWS_PER_PAGE + 1
-
-        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/entrevistas/index/page_#{i}") }
 
         expire_fragment("/#{p.code}/entrevistas/index/page_")
         expire_fragment("/#{p.code}/entrevistas/index/page_*")
@@ -738,13 +713,6 @@ class CacheObserver < ActiveRecord::Observer
         expire_fragment("/#{p.code}/home/index/news30")
 
         expire_fragment("/#{p.code}/home/index/news_developed")
-        # borramos las páginas de listado de noticias posteriores a la actual
-        #prev_count = p.news.count(:published, :content_type => 'News', :conditions => "contents.created_on <= '#{object.created_on.strftime('%Y-%m-%d %H:%M:%s')}'")
-        #next_count = p.news.count(:published, :content_type => 'News', :conditions => "contents.created_on >= '#{object.created_on.strftime('%Y-%m-%d %H:%M:%s')}'")
-        #start_page = prev_count / NoticiasController::NEWS_PER_PAGE
-        #end_page = start_page + next_count / NoticiasController::NEWS_PER_PAGE + 1
-        # TODO PERF
-        # (start_page..end_page).each { |i| expire_fragment("/#{p.code}/noticias/index/page_#{i}") }
 
         expire_fragment("/#{p.code}/noticias/index/page_*")
         expire_fragment("/#{p.code}/noticias/index/page_")
@@ -847,9 +815,9 @@ class CacheObserver < ActiveRecord::Observer
       end
 
       # borramos las páginas de listado de noticias posteriores a la actual
-      stickies = object.main_category.count(:content_type => 'Topic', :conditions => "sticky is true and contents.state = #{Cms::PUBLISHED}")
-      prev_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and contents.state = #{Cms::PUBLISHED} and contents.updated_on <= ?", object.created_on]) + stickies
-      next_count = object.main_category.count(:content_type => 'Topic', :conditions => ["sticky is false and contents.state = #{Cms::PUBLISHED} and contents.updated_on >= ?", object.created_on])
+      stickies = Topic.published.in_term(object.main_category).count(:conditions => "sticky is true and contents.state = #{Cms::PUBLISHED}")
+      prev_count = Topic.published.in_term(object.main_category).count(:conditions => ["sticky is false and contents.state = #{Cms::PUBLISHED} and contents.updated_on <= ?", object.created_on]) + stickies
+      next_count = Topic.published.in_term(object.main_category).count(:conditions => ["sticky is false and contents.state = #{Cms::PUBLISHED} and contents.updated_on >= ?", object.created_on])
       start_page = (prev_count / 50).to_i # TODO especificar esto en un único sitio
       end_page = start_page + next_count / 50 + 1
 

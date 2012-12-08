@@ -5,8 +5,8 @@
 <% content_support(:content => @tutorial) do %>
 <% if @tutorial.is_public? then %>
 <%=mfcontents_basic("Más tutoriales de #{@tutorial.main_category.name}",
-	controller.portal.tutorial,
-	[:published, {:content_type => 'Tutorial', :order => 'created_on desc', :limit => 5}],
+	Tutorial.published.in_term_tree(@tutorial.main_category),
+    [:all, {:order => 'created_on desc', :limit => 5}],
     :cache => "/tutoriales/latest_by_cat_#{@tutorial.main_category.id}",
  	:rating => true,
 	:faction_favicon => true,

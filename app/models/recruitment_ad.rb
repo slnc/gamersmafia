@@ -4,8 +4,7 @@
 # - levels (varchar)
 # - clan_id (int)
 # - game_id (int)
-class RecruitmentAd < ActiveRecord::Base
-  acts_as_content
+class RecruitmentAd < Content
   acts_as_categorizable
 
   belongs_to :clan

@@ -590,12 +590,11 @@ class Term < ActiveRecord::Base
 
   def reset_contents_urls
     # TODO PERF más inteligencia
-    self.find(:published, :treemode => true).each do |rc|
-      uniq = rc
-      User.db_query("UPDATE contents SET url = NULL, portal_id = NULL WHERE id = #{uniq.id}")
-      uniq.reload
+    Content.published.in_term_tree(self).find_each do |content|
+      User.db_query(
+          "UPDATE contents SET url = NULL, portal_id = NULL WHERE id = #{content.id}")
+      content.reload
       Routing.gmurl(uniq)
-      # self.children.each { |child| child.reset_contents}
     end
   end
 
@@ -654,21 +653,10 @@ class Term < ActiveRecord::Base
   end
 
 
-  # acepta keys: treemode (true: incluye categorías de hijos)
   def _add_cats_ids_cond(*args)
     @_add_cats_ids_done = true
-    options = {:treemode => true}.merge(args.last.is_a?(Hash) ? args.pop : {}) # copypasted de extract_options_from_args!(args)
+    options = {}.merge(args.last.is_a?(Hash) ? args.pop : {}) # copypasted de extract_options_from_args!(args)
     @siblings ||= []
-
-    if options[:treemode]
-      @_cache_cats_ids ||= (self.all_children_ids + [self.id])
-      @siblings.each { |s| @_cache_cats_ids += s.all_children_ids }
-      # options[:conditions] = (options[:conditions]) ? ' AND ' : ''
-
-      new_cond = "term_id IN (#{@_cache_cats_ids.join(',')})"
-    else
-      new_cond = "term_id IN (#{([self.id] + @siblings.collect { |s| s.id }).join(',')})"
-    end
 
     # si el primer arg es un id caso especial!
     if args.reverse.first.kind_of?(Fixnum)
@@ -705,7 +693,6 @@ class Term < ActiveRecord::Base
     options[:joins] ||= ''
     options[:joins] <<= " JOIN contents_terms on contents.id = contents_terms.content_id "
 
-    options.delete :treemode
     options.delete :content_type
     options.delete :content_type_id
 
@@ -744,38 +731,31 @@ class Term < ActiveRecord::Base
     self.class.items_class.find(:all, :conditions => "state = #{Cms::PUBLISHED} and #{ActiveSupport::Inflector.underscore(self.class.name)}_id in (#{cat_ids.join(',')})", :order => 'RANDOM()', :limit => limit)
   end
 
-  def most_popular_authors(opts)
-    q_add = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
-    opts[:limit] ||= 5
-    dbitems = User.db_query("SELECT count(contents.id),
-                                    contents.user_id
-                              from #{ActiveSupport::Inflector::tableize(opts[:content_type])}
-                              JOIN contents on  #{ActiveSupport::Inflector::tableize(opts[:content_type])}.id = contents.id
-                             WHERE contents.state = #{Cms::PUBLISHED}#{q_add}
-                          GROUP BY contents.user_id
-                          ORDER BY sum((coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0))) desc
-                             limit #{opts[:limit]}")
-    dbitems.collect { |dbitem| [User.find(dbitem['user_id']), dbitem['count'].to_i] }
-  end
-
-
   def most_rated_items(opts)
     raise "content_type unspecified" unless opts[:content_type] || opts[:joins]
     opts = {:limit => 5}.merge(opts)
-    self.find(:published,
-              :content_type => opts[:content_type],
-              :conditions => "cache_rated_times > 1",
-    :order => 'coalesce(cache_weighted_rank, 0) DESC',
-    :limit => opts[:limit])
+    Content.published.in_term(self).content_type_name(opts[:content_type]).find(
+        :all,
+        :conditions => "cache_rated_times > 1",
+        :order => 'COALESCE(cache_weighted_rank, 0) DESC',
+        :limit => opts[:limit])
   end
 
   def most_popular_items(opts)
     opts = {:limit => 3}.merge(opts)
     raise "content_type unspecified" unless opts[:content_type]
-    self.find(:published,
-              :content_type => opts[:content_type],
-              :conditions => "cache_rated_times > 1",
-    :order => '(coalesce(hits_anonymous, 0) + coalesce(hits_registered * 2, 0)+ coalesce(cache_comments_count * 10, 0) + coalesce(cache_rated_times * 20, 0)) DESC',
+    if opts[:content_type]
+      cls = Object.const_get(opts[:content_type])
+    else
+      cls = Content
+    end
+    cls.published.in_term(self).find(
+        :all,
+        :conditions => "cache_rated_times > 1",
+        :order => "(COALESCE(hits_anonymous, 0) +
+                    COALESCE(hits_registered * 2, 0) +
+                    COALESCE(cache_comments_count * 10, 0) +
+                    COALESCE(cache_rated_times * 20, 0)) DESC",
     :limit => opts[:limit])
   end
 
@@ -788,23 +768,24 @@ class Term < ActiveRecord::Base
                       AND A.state = #{Cms::PUBLISHED}")[0]['sum'].to_i
   end
 
-  def last_created_items(limit = 3) # TODO esta ya sobra me parece, mirar en tutoriales
-    self.find(:published,
-              :order => 'created_on DESC',
-    :limit => limit)
+  def last_created_items(limit=3)
+    # TODO esta ya sobra me parece, mirar en tutoriales
+    Content.published.in_term(self).find(
+        :all,
+        :order => 'created_on DESC',
+        :limit => limit)
   end
 
   def random_item
     # TODO PERF usar campo random_id
-    self.find(:published,
-              :order => 'random()')
+    Content.published.in_term(self).find(
+        :all, :order => 'random()', :limit => 1)
   end
 
   def last_updated_items(opts={})
     opts = {:limit => 5, :order => 'updated_on DESC'}.merge(opts)
-    self.find(:published, opts)
+    Content.published.in_term(self).find(:all,opts)
   end
-
 
   def last_updated_children(opts={})
     opts = {:limit => 5}.merge(opts)
@@ -925,11 +906,12 @@ class Term < ActiveRecord::Base
   def most_active_items(content_type)
     # TODO per hit
     # TODO no filtramos
-    self.find(:published,
-              :conditions => "contents.updated_on > now() - '3 months'::interval",
-    :content_type => content_type,
-    :order => '(contents.comments_count / extract (epoch from (now() - contents.created_on))) desc',
-    :limit => 5)
+    Content.published.in_term(self).content_type_name(content_type).find(
+        :all,
+        :conditions => "contents.updated_on > now() - '3 months'::interval",
+        :order => '(contents.comments_count /
+                    EXTRACT(epoch from (NOW() - contents.created_on))) DESC',
+        :limit => 5)
   end
 
 

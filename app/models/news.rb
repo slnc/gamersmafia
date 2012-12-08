@@ -1,8 +1,7 @@
 # -*- encoding : utf-8 -*-
 # ContentAttribute:
 # (none)
-class News < ActiveRecord::Base
-  acts_as_content
+class News < Content
   acts_as_categorizable
 
   validates_format_of :source,

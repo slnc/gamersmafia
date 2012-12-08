@@ -1,8 +1,7 @@
 # -*- encoding : utf-8 -*-
 # ContentAttribute:
 # - event_id (int)
-class Coverage < ActiveRecord::Base
-  acts_as_content
+class Coverage < Content
   acts_as_categorizable
   belongs_to :event
 

@@ -2,8 +2,7 @@
 # ContentAttribute:
 # - file_hash_md5 (varchar)
 # - file (varchar)
-class Image < ActiveRecord::Base
-  acts_as_content
+class Image < Content
   acts_as_categorizable
 
   has_many :potds, :dependent => :destroy

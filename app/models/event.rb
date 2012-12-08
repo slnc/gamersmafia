@@ -1,8 +1,7 @@
 # -*- encoding : utf-8 -*-
 # ContentAttribute:
 # - event_id (int)
-class Event < ActiveRecord::Base
-  acts_as_content
+class Event < Content
   acts_as_categorizable
   acts_as_tree :order => 'title'
 

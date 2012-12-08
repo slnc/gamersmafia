@@ -20,15 +20,15 @@ Faction.find(:all, :order => 'lower(name) asc').each do |f|
   c = "#{ActiveSupport::Inflector::pluralize(cls_name)}Category"
     next if %w(TopicsCategory ReviewsCategory EventsCategory).include?(c)
     max_t = Cms::SAFE_PUBLICATION_THRESHOLDS[cls_name]
-	root_t = Term.single_toplevel(:slug => f.code)
-    last = root_t.find(:published, :content_type => cls_name, :order => 'created_on DESC')
+    root_t = Term.single_toplevel(:slug => f.code)
+    last = Content.published.in_term(root_t).content_type(cls_name).find(
+        :last, :order => 'created_on DESC')
 
-    if last.size > 0 then
-		last = last[0]
-        last_t = (Time.now - last.created_on).to_i
-        if last_t > max_t then
-          last_t = max_t
-        end
+    if last
+      last_t = (Time.now - last.created_on).to_i
+      if last_t > max_t then
+        last_t = max_t
+      end
     else
       last_t = max_t
     end

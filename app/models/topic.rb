@@ -2,8 +2,7 @@
 # ContentAttribute:
 # - sticky (bool)
 # - moved_on (timestamp)
-class Topic < ActiveRecord::Base
-  acts_as_content
+class Topic < Content
   acts_as_categorizable
 
   has_one :last_updated_item, :class_name => 'Topic'

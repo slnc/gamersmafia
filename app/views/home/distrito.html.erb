@@ -3,7 +3,7 @@
 <div class="grid-5 blast">
 <%mftext('Noticias', :has_submodules => true, :blast => true) do %>
 <%=mfcontents_basic("Generales",
-    Proc.new { cat.top_level_category.find(:published, :content_type => 'News', :order => 'created_on desc', :limit => 10) },
+    Proc.new { News.puuusin_term(cat.top_level_category).find(:all, :order => 'created_on desc', :limit => 10) },
     [],
     :faction_favicon => true,
     :blast => true,
@@ -18,7 +18,7 @@
 
 	<div class="grid-6">
 	<%=mfcontents_basic("Tópics activos",
-					Proc.new { cat.top_level_category.find(:published, :content_type => 'Topic', :conditions => 'topics.closed is false', :order => 'updated_on desc', :limit => 10) },
+					Proc.new { Topic.published.in_term_tree(cat.top_level_category).find(:all, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 10) },
 					[],
 					:faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
 	</div>
@@ -38,7 +38,7 @@ gencat.name = 'General' %>
 	<div class="grid-8">
 		<% imcat = cat.top_level_category
 
-	mflist("Imágenes", Proc.new { imcat.find(:published, :content_type => 'Image', :order => 'created_on desc', :limit => 6) }, :class_container => 'mflist-row-images' ) do |im| %>
+	mflist("Imágenes", Proc.new { Image.published.in_term_tree(imcat).find(:all, :order => 'created_on desc', :limit => 6) }, :class_container => 'mflist-row-images' ) do |im| %>
 		<%=link_to fc_thumbnail(im.file, 'i', Cms::IMG_SIZE_GRIDB1, false), gmurl(im)%>
 	<% end if imcat -%>
 	</div>
@@ -66,7 +66,7 @@ next if controller.portal.send(it.downcase).nil?
 %>
 <% dafirst = true
 mfcontents_list(Cms::translate_content_name(it),
-					Proc.new { cat.top_level_category.find(:published, :content_type => it, :order => 'created_on desc', :limit => 3) },
+					Proc.new { Object.const_get(it).published.in_term_tree(cat.top_level_category).find(:all, :order => 'created_on desc', :limit => 3) },
 					:grid => grid_size, :glast => (it == classes.last)) do |o| %>
 
 <%=content_category(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
@@ -86,7 +86,7 @@ category = controller.portal.categories(Download)[0]
 if category then
 %>
 	<%=mfcontents_basic('Últimas',
-					Proc.new { category.root.find(:published, :content_type => 'Download', :order => 'created_on DESC', :limit => 12) },
+					Proc.new { Download.published.in_term_tree(category.root).find(:all, :order => 'created_on DESC', :limit => 12) },
 					[],
 					:truncat_at => 28, :faction_favicon => true)%>
 

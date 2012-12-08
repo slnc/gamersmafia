@@ -162,6 +162,52 @@ class Content < ActiveRecord::Base
     self.handle_publish_decision(decision, content)
   end
 
+  def self.most_popular_authors(opts)
+    q_add = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
+    opts[:limit] ||= 5
+    dbitems = User.db_query(
+        "SELECT count(id),
+           user_id
+         FROM contents
+         WHERE type = #{self.name}
+         AND state = #{Cms::PUBLISHED}#{q_add}
+         GROUP BY user_id
+         ORDER BY SUM((coalesce(hits_anonymous, 0) +
+                  COALESCE(hits_registered * 2, 0) +
+                  COALESCE(cache_comments_count * 10, 0) +
+                  COALESCE(cache_rated_times * 20, 0))) DESC
+         LIMIT #{opts[:limit]}")
+    dbitems.collect { |dbitem| [User.find(dbitem['user_id']), dbitem['count'].to_i] }
+  end
+
+  # devuelve los contenidos publicados mejor valorados
+  def self.best_rated(opts={})
+    opts = {:limit => 5}.merge(opts)
+    q_add = opts[:conditions] ? " AND #{opts[:conditions]}" : ''
+
+    self.published.find(
+        :all,
+        :conditions => "cache_rated_times > 1#{q_add}",
+        :order => 'COALESCE(cache_weighted_rank, 0) DESC,
+                   (hits_anonymous + hits_registered) DESC',
+        :limit => opts[:limit])
+  end
+
+  # devuelve los contenidos publicados más populares (considera hits,
+  # comentarios y veces valorado)
+  def self.most_popular(opts={})
+    opts[:limit] ||= 3
+
+    self.published.find(
+        :all,
+        :conditions => opts[:conditions],
+        :order => '(COALESCE(hits_anonymous, 0) +
+                    COALESCE(hits_registered * 2, 0) +
+                    COALESCE(cache_comments_count * 10, 0) +
+                    COALESCE(cache_rated_times * 20, 0)) DESC',
+        :limit => opts[:limit])
+  end
+
   def self.handle_publish_decision(decision, uniq)
     content = uniq
     if decision.final_decision_choice.name == Decision::BINARY_YES
@@ -285,6 +331,23 @@ class Content < ActiveRecord::Base
      " name: #{self.name}")
   end
 
+  # Procesa los campos wysiwyg y manipula las imágenes en caso de
+  # encontrarlas: se las descarga si son remotas y crea thumbnails si están
+  # resizeadas y no tienen ya un link alrededor.
+  def process_wysiwyg_fields
+    attrs = {}
+
+    if !Cms::DONT_PARSE_IMAGES_OF_CONTENTS.include?(self.type) then
+      for d in Cms::WYSIWYG_ATTRIBUTES[self.type]
+        attrs[d] = Cms::parse_images(
+            self.attributes[d],
+            "#{self.type.downcase}/#{self.id % 1000}/#{self.id}")
+      end
+    end
+
+    self.update_attributes(attrs)
+  end
+
   # this content's contributed karma
   def karma
     self.karma_points
@@ -349,7 +412,7 @@ class Content < ActiveRecord::Base
     # calculamos "m"
     if Cms::CONTENTS_WITH_CATEGORIES.include?(self.type) then
       return 0 if self.main_category.nil?# TODO hack temporal
-      total = self.main_category.root.count(:content_type => self.type)
+      total = self.in_term(self.main_category.root).count
       # TODO esto debería ir en term
       joined_children = self.main_category.root.all_children_ids(
         :content_type => self.type).join(',')
@@ -672,13 +735,88 @@ class Content < ActiveRecord::Base
     end
   end
 
+  def get_game_id
+    if Cms::CONTENTS_WITH_CATEGORIES.include?(self.type) then
+      maincat = self.main_category
+      return unless maincat
+      tld_code = maincat.root.code
+      g = Game.find_by_slug(tld_code)
+      g.id if g
+    end
+  end
+
+  def get_my_gaming_platform_id
+    if Cms::CONTENTS_WITH_CATEGORIES.include?(self.type) then
+      maincat = self.main_category
+      return unless maincat
+      tld_code = maincat.root.code
+      p = GamingPlatform.find_by_slug(tld_code)
+      p.id if p
+    end
+  end
+
+  def get_my_bazar_district_id
+    if Cms::CONTENTS_WITH_CATEGORIES.include?(self.type) then
+      maincat = self.main_category
+      return unless maincat
+      tld_code = maincat.root.code
+      p = BazarDistrict.find_by_slug(tld_code)
+      p.id if p
+    end
+  end
+
+  def my_faction
+    if self.main_category.nil?
+      Rails.logger.warn("No main_category found for #{self}")
+      raise ActiveRecord::RecordNotFound
+    end
+    Faction.find_by_name(self.main_category.root.name)
+  end
+
   def resolve_hid
     if self.name.to_s != ""
       self.name
     elsif self.type == "Image" && (im = self.content_attributes.attribute(:file).first)
-      File.basename(im)
+      File.basename(im.varchar_value)
     else
       self.id.to_s
+    end
+  end
+
+  def resolve_html_hid
+    if self.name.to_s != ""
+      self.name
+    elsif self.type == "Image" && (im = self.content_attributes.attribute(:file).first)
+      "<img src=\"/cache/thumbnails/f/85x60/#{im.varchar_value}\" />"
+    else
+      self.id.to_s
+    end
+  end
+
+  #def terms=(new_terms)
+  #  @_terms_to_add ||= []
+  #  new_terms = [new_terms] unless new_terms.kind_of?(Array)
+  #  @_terms_to_add += new_terms
+  #end
+
+  # Devuelve los portales en los que este contenido se muestra.
+  # TODO esto no es correcto
+  def get_related_portals
+    raise "DEPRECATED"
+    if self.respond_to?(:clan_id) && self.clan_id && self.type != 'RecruitmentAd'
+      [ClansPortal.find_by_clan_id(self.clan_id)]
+    else
+      portals = [GmPortal.new, ArenaPortal.new, BazarPortal.new]
+      f = Organizations.find_by_content(self)
+      if f.nil? then # No es un contenido de facción o es de categoría gm/otros TODO esto no usarlo con caches, madre del amor hermoso
+        portals += Portal.find(:all, :conditions => 'type <> \'ClansPortal\'')
+      elsif f.class.name == 'Faction'
+        # TODO plataforma PC va a fallar
+        portals += Portal.find(:all, :conditions => ['id in (SELECT portal_id from factions_portals where faction_id = ?)', f.id])
+      elsif f.class.name == 'BazarDistrict'
+        portals += [Portal.find_by_code(f.code)]
+      end
+      portals
     end
   end
 

@@ -148,9 +148,9 @@ class Admin::CategoriasControllerTest < ActionController::TestCase
     assert_count_increases(ContentsTerm) { @t.link(n) }
     post :mass_move, :id => @t.id, :destination_term_id => 17, :content_type => 'Topic', :contents => [n.id]
     assert_response :redirect
-    assert_equal 0, @t.find(:all, :content_type => 'Topic', :conditions => ['contents.id = ?', n.id]).size
+    assert_equal 0, Topic.in_term(@t).find(:all, :conditions => ['id = ?', n.id]).size
     t17 = Term.find(17)
-    assert_equal 1, t17.find(:all, :content_type => 'Topic', :conditions => ['contents.id = ?', n.id]).size
+    assert_equal 1, Topic.in_term(t17).find(:all, :conditions => ['id = ?', n.id]).size
   end
 
   test "mass_move_if_no_perm" do

@@ -1,12 +1,11 @@
 # -*- encoding : utf-8 -*-
 # ContentAttribute:
 # (none)
-class Funthing < ActiveRecord::Base
+class Funthing < Content
   YOUTUBE_EMBED = /^http:\/\/([a-z.]*)youtube.com\/watch\?v=([a-zA-Z0-9]+)/
   # http://       www.youtube.com/v/6-ecf9_X_Dk&hl=es&fs=1
   YOUTUBE_EMBED2 = /http:\/\/([a-z.]*)youtube.com\/v\/([a-zA-Z0-9_-]+)/
 
-  acts_as_content
   before_validation :check_youtube_embed
   before_validation :filter_main
 

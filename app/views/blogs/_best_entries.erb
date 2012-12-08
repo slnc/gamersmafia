@@ -1,6 +1,6 @@
-<%  base = (defined?(user) && user) ? user.blogentries : Blogentry %>
+<%  base = (defined?(user) && user) ? user.blogentries.published : Blogentry.published %>
 
 <%=mfcontents_basic("#{(defined?(user) && user) ? 'Sus' : 'Las'} mejores entradas",
-	base, [:published, {:conditions => "cache_rated_times > 1", :order => 'coalesce(cache_weighted_rank, 0) DESC, (hits_anonymous + hits_registered) DESC', :limit => 5}],
-	
+	base, [:all, {:conditions => "cache_rated_times > 1", :order => 'COALESCE(cache_weighted_rank, 0) DESC, (hits_anonymous + hits_registered) DESC', :limit => 5}],
+
 	:faction_favicon => true)%>

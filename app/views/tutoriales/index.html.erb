@@ -95,7 +95,7 @@ if @category then
 cache("/common/tutoriales/_latest_by_cat/#{@category.id}") do %>
 <% mftext('Más recientes') do %>
 <ul class="sidelist">
-	<% @category.find(:published, :content_type => 'Tutorial', :order => 'created_on DESC', :limit => 5).each do |c| %>
+	<% Tutorial.published.in_term(@category).find(:all, :order => 'created_on DESC', :limit => 5).each do |c| %>
   <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
   <% end -%>
 </ul>

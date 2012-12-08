@@ -71,7 +71,7 @@ downloads = Download.in_term(@category).published.paginate(
 <% mftext('Los más descargados') do %>
 <ul class="content-hid">
 <% cache("/common/descargas/index/most_downloaded_#{@category.root_id}") do %>
-  <% @category.root.find(:published, :content_type => 'Download', :order => 'downloads.downloaded_times DESC', :limit => 5).each do |d| %>
+  <% Download.published.in_term(@category.root).find(:all, :order => 'downloaded_times DESC', :limit => 5).each do |d| %>
   <li class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%>
   <div class="infoinline"><%=gm_icon("download", "small")%> <%=d.downloaded_times%> | <%=draw_rating(d.rating)%></div></li>
   <% end -%>

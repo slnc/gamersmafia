@@ -5,8 +5,8 @@
 <% content_support(:content => @column) do %>
 <% if @column.is_public? then %>
 <%=mfcontents_basic("Más columnas de #{@column.user.login}",
-	controller.portal.column,
-	[:published, {:content_type => 'Column', :conditions => ['contents.user_id = ?', @column.user_id], :order => 'created_on DESC', :limit => 5}],
+	Column.published,
+	[:all, {:conditions => ['user_id = ?', @column.user_id], :order => 'created_on DESC', :limit => 5}],
     :cache => "/#{controller.portal_code}/columnas/show/latest_by_author_#{@column.user_id}",
  	:rating => true,
 	:comments_count => true,

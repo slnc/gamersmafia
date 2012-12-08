@@ -6,11 +6,11 @@ class AlreadyAnswered < Exception; end
 # - ammount (numeric(10, 2))
 # - answered_on (timestamp)
 # - answer_selected_by_user_id (int)
-class Question < ActiveRecord::Base
+class Question < Content
   MIN_AMMOUNT = 6.0
   DEFAULT_AMMOUNT = 5.0
   WARNING_AFTER_OPEN_FOR = 86400 * 7
-  acts_as_content
+
   acts_as_categorizable
 
   has_one :last_updated_item, :class_name => 'Question'
@@ -57,8 +57,8 @@ class Question < ActiveRecord::Base
   end
 
   def check_max_open
-    if Question.count(:published,
-                      :conditions => ['answered_on is NULL AND user_id = ?', self.user_id]) >= Question.max_open(self.user)
+    if Question.published.count(
+        :conditions => ['answered_on is NULL AND user_id = ?', self.user_id]) >= Question.max_open(self.user)
       self.errors[:base] << ('Tienes demasiadas preguntas abiertas. Debes esperar a que reciban respuesta o cancelarlas.')
       false
     else
