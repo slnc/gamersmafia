@@ -95,12 +95,12 @@ if crecs.size > 0 then %>
     end
     comment_suffix = (crec.comment.to_s == "") ? "" : ": #{crec.comment}"
     title_text = "%s%s (%s) %s" % [
-        category_prefix, h(crec.content.name), crec.sender.login,
+        category_prefix, h(crec.content.title), crec.sender.login,
         comment_suffix]
     %>
 	<a class="ellipsis content<%=crec.content.id%>"
      href="<%=gmurl(crec.content)%>"
-     title="<%=title_text%>"><%=truncate(crec.content.name, 26, '..')%></a>
+     title="<%=title_text%>"><%=truncate(crec.content.title, 26, '..')%></a>
 <% end -%>
 <% end %><%# mftext -%>
 <% end %><%# if crecs -%>

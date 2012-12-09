@@ -101,7 +101,7 @@ module DecisionsHelper
       if content.nil?
         out.append("<li>(Contenido inválido: #{content_id.to_i})</li>")
       else
-        out.append("<li><a href=\"#{Routing.gmurl(content)}\">#{content.name}</a></li>")
+        out.append("<li><a href=\"#{Routing.gmurl(content)}\">#{content.title}</a></li>")
       end
     end
     out.append("</ul>")

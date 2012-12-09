@@ -73,7 +73,7 @@ class NotificationObserver < ActiveRecord::Observer
 
   def send_published_content_notification(content)
     msg = ("¡Enhorabuena! ¡GM ha decidido publicar tu contenido <strong><a
-           href=\"#{Routing.gmurl(content)}\">#{content.name}</a></strong>!")
+           href=\"#{Routing.gmurl(content)}\">#{content.title}</a></strong>!")
     notification = content.user.notifications.create({
       :description => msg,
       :sender_user_id => Ias.MrMan.id,
@@ -82,6 +82,32 @@ class NotificationObserver < ActiveRecord::Observer
     if notification.new_record?
       raise "Error creating notification: #{notification.errors.full_messages_html}"
     end
+  end
+
+  def after_question_answered(o)
+    if o.accepted_answer_comment_id.nil?
+      recipient = o.user
+      description = (
+          "Tu pregunta <a href=\"#{Routing.gmurl(o)}\">\"#{o.title}\"</a>
+          ha sido cerrada sin una respuesta por ser cancelada o por llevar
+          abierta demasiado tiempo.")
+    else
+      recipient = o.best_answer.user
+      description = (
+          "¡Enhorabuena! La mejor respuesta a
+          <a href=\"#{Routing.gmurl(o)}\">\"#{o.title}\"</a> ha sido tuya")
+      if o.prize > 0
+        description = (
+            "#{description} por lo que te llevas la recompensa de" +
+            " #{o.prize} GMFs.")
+      else
+        description = "#{description}."
+      end
+    end
+    recipient.notifications.create({
+        :description => description,
+        :type_id => Notification::BEST_ANSWER_RECEIVED,
+    })
   end
 
   def after_save(o)
@@ -93,33 +119,6 @@ class NotificationObserver < ActiveRecord::Observer
         elsif o.state == Cms::PUBLISHED && o.state_was == Cms::PENDING
           self.send_published_content_notification(o)
         end
-      end
-
-    when 'Question'
-      if o.answered_on_changed?
-        if o.accepted_answer_comment_id.nil?
-          recipient = o.user
-          description = (
-              "Tu pregunta <a href=\"#{Routing.gmurl(o)}\">\"#{o.title}\"</a>
-              ha sido cerrada sin una respuesta por ser cancelada o por llevar
-              abierta demasiado tiempo.")
-        else
-          recipient = o.best_answer.user
-          description = (
-              "¡Enhorabuena! La mejor respuesta a
-              <a href=\"#{Routing.gmurl(o)}\">\"#{o.title}\"</a> ha sido tuya")
-          if o.prize > 0
-            description = (
-                "#{description} por lo que te llevas la recompensa de" +
-                " #{o.prize} GMFs.")
-          else
-            description = "#{description}."
-          end
-        end
-        recipient.notifications.create({
-            :description => description,
-            :type_id => Notification::BEST_ANSWER_RECEIVED,
-        })
       end
 
     when 'SoldOutstandingClan'

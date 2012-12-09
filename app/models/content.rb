@@ -57,15 +57,15 @@ class Content < ActiveRecord::Base
 
   scope :in_portal, lambda { |portal|
     if portal.id == -1
-      {:conditions => "unique_content_id NOT IN (SELECT id FROM contents WHERE bazar_district_id IS NOT NULL)"}
+      {:conditions => "bazar_district_id IS NULL"}
     else
       taxonomy = "#{ActiveSupport::Inflector.pluralize(self.name)}Category"
       {
         :conditions => [
-          "unique_content_id IN (
-          SELECT content_id
-          FROM contents_terms
-          WHERE term_id IN (?))",
+          "id IN (
+              SELECT content_id
+              FROM contents_terms
+              WHERE term_id IN (?))",
           portal.terms_ids(taxonomy)] }
     end
   }
@@ -422,7 +422,7 @@ class Content < ActiveRecord::Base
               AND term_id IN (#{joined_children})"
 
         contents_ids = User.db_query(q).collect { |dbr| dbr['content_id'] }
-        q = "AND unique_content_id IN (#{contents_ids.join(',')})"
+        q = "AND contents.id IN (#{contents_ids.join(',')})"
     else
       q = ''
       total = self.class.count(:conditions => "state = #{Cms::PUBLISHED} #{q}")
@@ -522,14 +522,16 @@ class Content < ActiveRecord::Base
          AND term_id IN (#{joined_children})").collect {|dbr| dbr['content_id']}
 
       mean = User.db_query("SELECT avg(cache_rating)
-                              FROM #{ActiveSupport::Inflector::tableize(self.type)}
+                              FROM contents
                              WHERE cache_rating is not null
+                               AND type = '#{self.type}'
                                AND cache_rated_times >= #{m}
-                               AND unique_content_id IN (#{contents_ids.join(',')})")[0]['avg'].to_f
+                               AND id IN (#{contents_ids.join(',')})")[0]['avg'].to_f
     else
       mean = User.db_query("SELECT avg(cache_rating)
-                              FROM #{ActiveSupport::Inflector::tableize(self.type)}
+                              FROM contents
                              WHERE cache_rating is not null
+                               AND type = '#{self.type}
                                AND cache_rated_times >= #{m}")[0]['avg'].to_f
     end
   end
@@ -756,7 +758,7 @@ class Content < ActiveRecord::Base
   def resolve_hid
     if self.name.to_s != ""
       self.name
-    elsif self.type == "Image" && (im = self.content_attributes.attribute(:file).first)
+    elsif self.type == "Image" && self.file.to_s != ""
       File.basename(im.varchar_value)
     else
       self.id.to_s
@@ -766,7 +768,7 @@ class Content < ActiveRecord::Base
   def resolve_html_hid
     if self.name.to_s != ""
       self.name
-    elsif self.type == "Image" && (im = self.content_attributes.attribute(:file).first)
+    elsif self.type == "Image" && self.file.to_s != ""
       "<img src=\"/cache/thumbnails/f/85x60/#{im.varchar_value}\" />"
     else
       self.id.to_s

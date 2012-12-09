@@ -30,9 +30,9 @@ class Admin::ContenidosController < ApplicationController
     @contents = []
 
     for c in Cms::contents_classes_publishable
-      controller = Cms::translate_content_name(c.name)
+      controller = Cms::translate_content_name(c.title)
       @contents << [
-          Cms::translate_content_name(c.name).capitalize,
+          Cms::translate_content_name(c.title).capitalize,
           c.pending,
           controller]
     end
@@ -60,11 +60,11 @@ class Admin::ContenidosController < ApplicationController
     for c in Cms::contents_classes_publishable + [Topic]
     end
       @contents << [
-          Cms::translate_content_name(c.name).capitalize,
-          b.send(ActiveSupport::Inflector::underscore(c.name)).find(
+          Cms::translate_content_name(c.title).capitalize,
+          b.send(ActiveSupport::Inflector::underscore(c.title)).find(
               :deleted,
               :conditions => 'contents.updated_on > now() - \'1 month\'::interval'),
-          Cms::translate_content_name(c.name)]
+          Cms::translate_content_name(c.title)]
   end
 
   def hotmap

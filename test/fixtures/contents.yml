@@ -4,13 +4,19 @@ news_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1001
+  title: foooiki1001
   comments_count: 0
   url: http://ut.<%=App.domain%>/noticias/show/3
   state: 3
   user_id: 3
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo3
+  description: foo3
+  main: foo3
 
 bet_deleted:
   id: 2002
@@ -18,13 +24,20 @@ bet_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1021
   comments_count: 0
   url: http://arena.<%=App.domain%>/apuestas/show/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo3 vs bar3
+  closes_on: 2006-01-01 00:00:00
+  total_ammount: 0
+  cancelled: false
+  forfeit: false
 
 column_deleted:
   id: 2003
@@ -32,13 +45,18 @@ column_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1031
   comments_count: 0
   url: http://ut.<%=App.domain%>/columnas/show/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo3
+  description: foo3
+  main: foo3
 
 funthing_deleted:
   id: 2004
@@ -46,13 +64,18 @@ funthing_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1041
   comments_count: 0
   url: http://bazar.<%=App.domain%>/curiosidades/show/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo3
+  description: bar3
+  main: http://youtube.com/ha3
 
 download_deleted:
   id: 2005
@@ -60,13 +83,19 @@ download_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1051
+  title: foooiki1051
   comments_count: 0
   url: http://ut.<%=App.domain%>/descargas/show/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo3
+  essential: false
+  downloaded_times: 0
 
 poll_deleted:
   id: 2006
@@ -74,13 +103,18 @@ poll_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1061
   comments_count: 0
   url: http://ut.<%=App.domain%>/encuestas/show/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  starts_on: <%=1.month.since%>
+  ends_on: <%=2.months.since%>
+  title: foo3
 
 tutorial_deleted:
   id: 2007
@@ -88,13 +122,18 @@ tutorial_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1071
   comments_count: 0
   url: http://ut.<%=App.domain%>/tutoriales/show/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: tut3
+  description: sum3
+  main: foo3
 
 interview_deleted:
   id: 2008
@@ -102,13 +141,19 @@ interview_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1081
+  title: foooiki1081
   comments_count: 0
   url: http://ut.<%=App.domain%>/entrevistas/show/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo3
+  description: foo3
+  main: foo3
 
 event_deleted:
   id: 2010
@@ -116,13 +161,18 @@ event_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1101
   comments_count: 0
   url: http://ut.<%=App.domain%>/eventos/show/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  starts_on: 2006-01-01 00:00:00
+  ends_on: 2006-01-30 00:00:00
+  title: foo3
 
 coverage_deleted:
   id: 2011
@@ -130,13 +180,19 @@ coverage_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1111
   comments_count: 0
   url: http://ut.<%=App.domain%>/coverages/show/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: tut3
+  description: sum3
+  main: foo3
+  event_id: 1
 
 review_deleted:
   id: 2012
@@ -144,13 +200,18 @@ review_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1121
   comments_count: 0
   url: http://ut.<%=App.domain%>/reviews/show/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo3
+  description: foo3
+  main: foo3
 
 forums_topic_deleted:
   id: 2013
@@ -158,13 +219,19 @@ forums_topic_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1131
   comments_count: 0
   url: http://<%=App.domain%>/foros/topic/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: footopicdel
+  main: footopicdel
+  closed: false
+  sticky: false
 
 image_deleted:
   id: 2014
@@ -172,13 +239,17 @@ image_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1141
+  title: foooiki1141
   comments_count: 0
   url: http://ut.<%=App.domain%>/imagenes/show/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  file: storage/images/foo3.jpg
 
 demo_deleted:
   id: 2015
@@ -186,13 +257,20 @@ demo_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1151
   comments_count: 0
   url: http://arena.<%=App.domain%>/demos/show/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  games_mode_id: 1
+  cache_comments_count: 0
+  title: foo3
+  downloaded_times: 0
+  entity1_external: fulanito
+  entity2_external: menganito
 
 news_unpublished:
   id: 1000
@@ -200,13 +278,19 @@ news_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki100
+  title: foooiki100
   comments_count: 0
   url: http://ut.<%=App.domain%>/noticias/show/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo2
+  description: foo2
+  main: foo2
 
 bet_unpublished:
   id: 1002
@@ -214,13 +298,20 @@ bet_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki102
   comments_count: 0
   url: http://arena.<%=App.domain%>/apuestas/show/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo2 vs bar2
+  closes_on: 2006-01-01 00:00:00
+  total_ammount: 0
+  cancelled: false
+  forfeit: false
 
 column_unpublished:
   id: 1003
@@ -228,13 +319,19 @@ column_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki103
+  title: foooiki103
   comments_count: 0
   url: http://ut.<%=App.domain%>/columnas/show/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo2
+  description: foo2
+  main: foo2
 
 funthing_unpublished:
   id: 1004
@@ -242,13 +339,18 @@ funthing_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki104
   comments_count: 0
   url: http://bazar.<%=App.domain%>/curiosidades/show/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo2
+  description: bar2
+  main: http://youtube.com/ha2
 
 download_unpublished:
   id: 1005
@@ -256,13 +358,19 @@ download_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki105
+  title: foooiki105
   comments_count: 0
   url: http://ut.<%=App.domain%>/descargas/show/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo2
+  essential: false
+  downloaded_times: 0
 
 poll_unpublished:
   id: 1006
@@ -270,13 +378,18 @@ poll_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki106
   comments_count: 0
   url: http://ut.<%=App.domain%>/encuestas/show/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  starts_on: <%=1.month.since%>
+  ends_on: <%=2.months.since%>
+  title: foo2
 
 tutorial_unpublished:
   id: 1007
@@ -284,13 +397,18 @@ tutorial_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki107
   comments_count: 0
   url: http://ut.<%=App.domain%>/tutoriales/show/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: tut2
+  description: sum2
+  main: foo2
 
 interview_unpublished:
   id: 1008
@@ -298,13 +416,18 @@ interview_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki108
   comments_count: 0
   url: http://ut.<%=App.domain%>/entrevistas/show/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo2
+  description: foo2
+  main: foo2
 
 event_unpublished:
   id: 1010
@@ -312,13 +435,18 @@ event_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki110
   comments_count: 0
   url: http://ut.<%=App.domain%>/eventos/show/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  starts_on: 2006-01-01 00:00:00
+  ends_on: 2006-01-30 00:00:00
+  title: foo2
 
 coverage_unpublished:
   id: 1011
@@ -326,13 +454,19 @@ coverage_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki111
   comments_count: 0
   url: http://ut.<%=App.domain%>/coverages/show/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: tut2
+  description: sum2
+  main: foo2
+  event_id: 1
 
 review_unpublished:
   id: 1012
@@ -340,13 +474,18 @@ review_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki112
   comments_count: 0
   url: http://ut.<%=App.domain%>/reviews/show/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo2
+  description: foo2
+  main: foo2
 
 forums_topic_unpublished:
   id: 1013
@@ -354,13 +493,19 @@ forums_topic_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki113
   comments_count: 0
   url: http://<%=App.domain%>/foros/topic/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: footopicunpub
+  main: footopic
+  closed: false
+  sticky: false
 
 image_unpublished:
   id: 1014
@@ -368,13 +513,17 @@ image_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki114
+  title: foooiki114
   comments_count: 0
   url: http://ut.<%=App.domain%>/imagenes/show/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  file: storage/images/foo2.jpg
 
 demo_unpublished:
   id: 1015
@@ -382,13 +531,20 @@ demo_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki11t
   comments_count: 0
   url: http://arena.<%=App.domain%>/demos/show/2
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  games_mode_id: 1
+  title: foo2
+  downloaded_times: 0
+  entity1_external: fulanito
+  entity2_external: menganito
 
 news_published:
   id: 1
@@ -396,15 +552,19 @@ news_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki
+  title: foo & war
+  description: foo & war
+  main: foo & war
   comments_count: 0
-  is_public: true
   game_id: 1
   url: http://ut.<%=App.domain%>/noticias/show/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
 
 bet_published:
   id: 2
@@ -412,15 +572,21 @@ bet_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki2
   comments_count: 0
   game_id: 1
-  is_public: true
   url: http://arena.<%=App.domain%>/apuestas/show/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo vs bar
+  closes_on: 2006-01-01 00:00:00
+  total_ammount: 0
+  cancelled: false
+  forfeit: false
 
 column_published:
   id: 3
@@ -428,15 +594,19 @@ column_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki3
   comments_count: 0
   game_id: 1
-  is_public: true
   url: http://ut.<%=App.domain%>/columnas/show/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo
+  description: foo
+  main: foo
 
 funthing_published:
   id: 4
@@ -444,14 +614,18 @@ funthing_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki4
   comments_count: 0
-  is_public: true
   url: http://bazar.<%=App.domain%>/curiosidades/show/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo
+  description: bar
+  main: http://youtube.com/ha
 
 download_published:
   id: 5
@@ -459,15 +633,19 @@ download_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki5
   comments_count: 0
   game_id: 1
-  is_public: true
   url: http://ut.<%=App.domain%>/descargas/show/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo
+  essential: true
+  downloaded_times: 0
 
 poll_published:
   id: 6
@@ -475,15 +653,20 @@ poll_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki6
   comments_count: 0
   game_id: 1
-  is_public: true
   url: http://ut.<%=App.domain%>/encuestas/show/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  starts_on: <%=1.year.since%>
+  ends_on: <%=2.year.since%>
+  title: foo
+  polls_votes_count: 1
 
 tutorial_published:
   id: 7
@@ -491,15 +674,19 @@ tutorial_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki7
   comments_count: 0
   game_id: 1
-  is_public: true
   url: http://ut.<%=App.domain%>/tutoriales/show/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: tut
+  description: sum
+  main: foo
 
 interview_published:
   id: 8
@@ -507,15 +694,20 @@ interview_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki8
+  title: foooiki8
   comments_count: 0
   game_id: 1
-  is_public: true
   url: http://ut.<%=App.domain%>/entrevistas/show/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo
+  description: foo
+  main: foo
 
 event_published:
   id: 10
@@ -523,15 +715,19 @@ event_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki10
   comments_count: 0
   game_id: 1
-  is_public: true
   url: http://ut.<%=App.domain%>/eventos/show/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  starts_on: 2006-01-01 00:00:00
+  ends_on: 2006-01-30 00:00:00
+  title: foo
 
 coverage_published:
   id: 11
@@ -539,15 +735,20 @@ coverage_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki11
   comments_count: 0
   game_id: 1
-  is_public: true
   url: http://ut.<%=App.domain%>/coverages/show/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: tut
+  description: sum
+  main: foo
+  event_id: 1
 
 review_published:
   id: 12
@@ -555,15 +756,19 @@ review_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki12
   comments_count: 0
   game_id: 1
-  is_public: true
   url: http://ut.<%=App.domain%>/reviews/show/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo
+  description: foo
+  main: foo
 
 forums_topic_published:
   id: 13
@@ -571,15 +776,20 @@ forums_topic_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki13
   comments_count: 0
   game_id: 1
-  is_public: true
   url: http://ut.<%=App.domain%>/foros/topic/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: footopic
+  main: footopic
+  closed: false
+  sticky: false
 
 image_published:
   id: 14
@@ -587,15 +797,18 @@ image_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki14
+  title: foooiki14
   comments_count: 0
   game_id: 1
-  is_public: true
   url: http://ut.<%=App.domain%>/imagenes/show/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  file: storage/images/foo.jpg
 
 image_babe:
   id: 15
@@ -603,14 +816,17 @@ image_babe:
   external_id: 4
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: babe
+  title: babe
   comments_count: 0
   url: http://<%=App.domain%>/imagenes/show/4
-  is_public: true
   user_id: 1
   state: 2
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  file: storage/images/babe.jpg
 
 image_dude:
   id: 16
@@ -618,14 +834,17 @@ image_dude:
   external_id: 5
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: dude
+  title: dude
   comments_count: 0
   url: http://<%=App.domain%>/imagenes/show/5
-  is_public: true
   user_id: 1
   state: 2
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  file: storage/images/dude.jpg
 
 demo_published:
   id: 17
@@ -633,18 +852,25 @@ demo_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: fadasdkjadlkjald
   comments_count: 0
   url: http://arena.<%=App.domain%>/demos/show/1
-  is_public: true
   user_id: 1
   portal_id: 1
   state: 2
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo
+  downloaded_times: 0
+  games_mode_id: 1
+  entity1_local_id: 1
+  entity2_external: menganito
+  games_mode_id: 1
 
 <% i = 100 %>
 <% [0,1,2,3,4].each do |state| %>
-  <% %w(League Tournament Ladder).each do |competitions_type| %>
+  <% %w(League Tourtitlent Ladder).each do |competitions_type| %>
     <% [1,2].each do |competitions_participants_type| %>
       <% [true, false].each do |fee| %>
         <% [true, false].each do |invitational| %>
@@ -656,15 +882,19 @@ demo_published:
   external_id: <%=i - 90%>
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: <%=competitions_type%><%=i%>
+  title: <%=competitions_type%><%=i%>
   comments_count: 0
   game_id: 1
-  is_public: true
   url: http://arena.<%=App.domain%>/competiciones/show/<%=i - 90%>
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  starts_on: 2006-01-01 00:00:00
+  ends_on: 2006-01-30 00:00:00
 
             <% i += 1 %>
           <% end %>
@@ -680,14 +910,14 @@ blogentry_first:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooikitapang
   comments_count: 0
-  is_public: true
   url: http://<%=App.domain%>/blogs/superadmin/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  title: foo
+  main: bar
 
 blogentry_second:
   id: 1200
@@ -695,14 +925,14 @@ blogentry_second:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooikitapang2
   comments_count: 0
-  is_public: true
   url: http://<%=App.domain%>/blogs/panzer/2
   state: 2
   user_id: 2
   portal_id: 1
   karma_points: 1
+  title: foo2
+  main: bar2
 
 noticia_clan1:
   id: 1100
@@ -710,14 +940,18 @@ noticia_clan1:
   external_id: 4
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooikitapang
   comments_count: 0
-  is_public: true
   url: http://mapaches.<%=App.domain%>/noticias/show/4
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo & war2
+  description: foo & war2
+  main: foo & war2
 
 foo3vsbar3:
   id: 1102
@@ -725,14 +959,18 @@ foo3vsbar3:
   external_id: 5000
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foo3vsbar3
   comments_count: 0
-  is_public: true
   url: http://ut.<%=App.domain%>/eventos/show/5000
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  starts_on: 2006-01-01 00:00:00
+  ends_on: 2006-01-30 00:00:00
+  title: foo3vsbar3
 
 news_pending_clan1:
   id: 1103
@@ -740,13 +978,18 @@ news_pending_clan1:
   external_id: 5
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1001
   comments_count: 0
   url: http://mapaches.<%=App.domain%>/noticias/show/5
   state: 1
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo & war24
+  description: foo & war24
+  main: foo & war24
 
 news_64:
   id: 1104
@@ -754,13 +997,18 @@ news_64:
   external_id: 64
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1001 64
   comments_count: 0
   url: http://ut.<%=App.domain%>/noticias/show/64
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo & war 64
+  description: foo & war 64
+  main: foo & war
 
 topics_1265:
   id: 1105
@@ -768,7 +1016,7 @@ topics_1265:
   external_id: 1265
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1131 1265
+  title: foooiki1131 1265
   comments_count: 0
   url: http://<%=App.domain%>/foros/topic/1265
   state: 3
@@ -782,13 +1030,19 @@ topics_9734:
   external_id: 9734
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1131 9734
   comments_count: 0
   url: http://<%=App.domain%>/foros/topic/9734
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: footopicdel trast
+  main: footopicdel ttrast
+  closed: false
+  sticky: false
 
 topics_7761:
   id: 1107
@@ -796,13 +1050,19 @@ topics_7761:
   external_id: 7761
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1131 7761
   comments_count: 0
   url: http://<%=App.domain%>/foros/topic/7761
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: footopicdel trast 7761
+  main: footopicdel ttrast 7761
+  closed: false
+  sticky: false
 
 topics_3417:
   id: 1108
@@ -810,13 +1070,19 @@ topics_3417:
   external_id: 3417
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1131 3417
   comments_count: 0
   url: http://<%=App.domain%>/foros/topic/3417
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: footopicdel trast 3417
+  main: footopicdel ttrast 3417
+  closed: false
+  sticky: false
 
 topics_1265:
   id: 1109
@@ -824,13 +1090,19 @@ topics_1265:
   external_id: 1265
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1131 1265
   comments_count: 0
   url: http://<%=App.domain%>/foros/topic/1265
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: footopicdel trast 1265
+  main: footopicdel ttrast 1265
+  closed: false
+  sticky: false
 
 question_published:
   id: 1110
@@ -838,15 +1110,18 @@ question_published:
   external_id: 1
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki7
   comments_count: 0
   game_id: 1
-  is_public: true
   url: http://ut.<%=App.domain%>/respuestas/show/1
   state: 2
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo
+  description: foo
 
 question_unpublished:
   id: 1111
@@ -854,7 +1129,6 @@ question_unpublished:
   external_id: 2
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki112
   comments_count: 0
   url: http://ut.<%=App.domain%>/respuestas/show/2
   state: 1
@@ -862,6 +1136,11 @@ question_unpublished:
   portal_id: 1
   karma_points: 1
   game_id: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo2
+  description: foo2
 
 question_deleted:
   id: 1112
@@ -869,13 +1148,17 @@ question_deleted:
   external_id: 3
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: foooiki1001
   comments_count: 0
   url: http://ut.<%=App.domain%>/respuestas/show/3
   state: 3
   user_id: 1
   portal_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: foo3
+  description: foo3
 
 news_published_anime:
   id: 1113
@@ -883,15 +1166,19 @@ news_published_anime:
   external_id: 65
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: noticia de anime 1
   comments_count: 0
-  is_public: true
   url: http://bazar.<%=App.domain%>/noticias/show/65
   state: 2
   user_id: 1
   portal_id: 31
   bazar_district_id: 1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: noticia de anime 1
+  description: noticiad e anime 1 description
+  main:
 
 news_published_gm:
   id: 1114
@@ -899,14 +1186,18 @@ news_published_gm:
   external_id: 66
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: noticia de gm 1
   comments_count: 0
-  is_public: true
   url: http://<%=App.domain%>/noticias/show/66
   state: 2
   user_id: 1
   portal_id: -1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: noticia de gm 1
+  description: noticia de gm description
+  main:
 
 polls_published_gm:
   id: 1115
@@ -914,14 +1205,19 @@ polls_published_gm:
   external_id: 4
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: encuesta de gm 1
   comments_count: 0
-  is_public: true
   url: http://<%=App.domain%>/encuestas/show/4
   state: 2
   user_id: 1
   portal_id: -1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  starts_on: <%=1.month.since%>
+  ends_on: <%=2.months.since%>
+  polls_votes_count: 0
+  title: foo de gm
 
 polls_pending_gm:
   id: 1116
@@ -929,14 +1225,19 @@ polls_pending_gm:
   external_id: 5
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: encuesta de gm 1s
   comments_count: 0
-  is_public: true
   url: http://<%=App.domain%>/encuestas/show/5
   state: 1
   user_id: 1
   portal_id: -1
   karma_points: 1
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  starts_on: <%=1.month.since%>
+  ends_on: <%=2.months.since%>
+  polls_votes_count: 0
+  title: foo de gms
 
 news_published_rj:
   id: 1117
@@ -944,11 +1245,16 @@ news_published_rj:
   external_id: 67
   created_on: 2006-01-01 00:00:00
   updated_on: 2006-01-01 00:00:00
-  name: noticia de rj 1
+  title: noticia de rj 1
   comments_count: 0
-  is_public: true
   url: http://rj.<%=App.domain%>/noticias/show/67
   state: 2
   user_id: 1
   portal_id: 21
   karma_points: 100
+  hits_anonymous: 0
+  hits_registered: 0
+  cache_comments_count: 0
+  title: noticia de rj 1
+  description: noticia de rj description
+  main:

@@ -197,7 +197,6 @@ module ActsAsContentBrowser
       raise ContentLocked if obj.is_locked_for_user?(@user)
       obj.state = Cms::PENDING if obj.state == Cms::DRAFT and params[:draft].to_s != '1'
       params[ActiveSupport::Inflector::underscore(content_name)][:state] = obj.state
-      params[ActiveSupport::Inflector::underscore(content_name)].delete(:approved_by_user_id) unless obj.respond_to? :approved_by_user_id
       instance_variable_set("@#{ActiveSupport::Inflector::underscore(content_name)}", obj)
       if obj.update_attributes(params[ActiveSupport::Inflector::underscore(content_name)])
         proc_terms(obj)

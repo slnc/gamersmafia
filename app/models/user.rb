@@ -951,19 +951,6 @@ class User < ActiveRecord::Base
     self.cache_popularity
   end
 
-  def karma_points_editor
-    # devuelve el numero de puntos de karma acumulados por editar contenidos
-    total = 0
-    for c in Karma::KPS_SAVE
-      begin
-        total += Object.const_get(c[0]).published.count(:conditions => ["approved_by_user_id = ?", self.id]) * c[1]
-      rescue
-        raise c[0]
-      end
-    end
-    total
-  end
-
   def users_files_dir
     "#{Rails.root}/public/storage/users_files/#{(self.id/1000).to_i}/#{self.id}/"
   end

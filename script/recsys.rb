@@ -180,9 +180,9 @@ cratings.each do |cr|
   end
 
   if prediction > 6
-    puts "I would recommend (#{prediction}>#{THRESHOLD_TO_RECOMMEND}) #{cr.content.name} to #{cr.user.login} (he voted it as #{cr.rating})"
+    puts "I would recommend (#{prediction}>#{THRESHOLD_TO_RECOMMEND}) #{cr.content.title} to #{cr.user.login} (he voted it as #{cr.rating})"
   else
-    puts "NOT recommend (#{prediction}<#{THRESHOLD_TO_RECOMMEND}) #{cr.content.name} to #{cr.user.login} (he voted it as #{cr.rating})"
+    puts "NOT recommend (#{prediction}<#{THRESHOLD_TO_RECOMMEND}) #{cr.content.title} to #{cr.user.login} (he voted it as #{cr.rating})"
   end
 
   if prediction >= THRESHOLD_TO_RECOMMEND && cr.rating < THRESHOLD_TO_RECOMMEND or prediction < THRESHOLD_TO_RECOMMEND && cr.rating >= THRESHOLD_TO_RECOMMEND

@@ -396,7 +396,7 @@ module Karma
         :bank,
         user,
         Bank::convert(karma_points, 'karma_points'),
-        "Karma por resultar aceptado \"#{content.name}\"" +
+        "Karma por resultar aceptado \"#{content.title}\"" +
         " (#{Cms::CLASS_NAMES[content.class.name]})")
   end
 
@@ -416,7 +416,7 @@ module Karma
         :bank,
         Bank::convert(old_karma_points, 'karma_points'),
         "Devolución de karma por contenido despublicado:" +
-        " #{content.name}" +
+        " #{content.title}" +
         " (#{Cms::CLASS_NAMES[content.class.name]})")
   end
 

@@ -24,9 +24,7 @@ class EncuestasControllerTest < ActionController::TestCase
   test "should_publish_as_is" do
     test_should_create_with_options
     b = Poll.find_by_title('footapang')
-    post :update, {:id => b.id,
-                   :poll => {:approved_by_user_id => 1}
-                  }
+    post :update, {:id => b.id }
     b.reload
     assert_equal 2, b.polls_options.count
     assert_not_nil b.polls_options.find_by_name('opcion1')

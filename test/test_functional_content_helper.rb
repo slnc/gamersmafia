@@ -192,7 +192,7 @@ module TestCaseMixings
       end
 
       test "should_allow_update_published_if_authed_superadmin" do
-        post_vars[content_sym] = post_vars[content_sym].merge(:approved_by_user_id => 1)
+        post_vars[content_sym] = post_vars[content_sym]
         post :update, post_vars.merge({:id => 1}), {:user => opt[:authed_user_id]}
         assert_response :redirect
         obj = Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)).find(1)
@@ -232,7 +232,7 @@ module TestCaseMixings
 
       test "should_allow_update_unpublished_if_authed_superadmin" do
         return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
-        post_vars[content_sym] = post_vars[content_sym].merge(:approved_by_user_id => nil)
+        post_vars[content_sym] = post_vars[content_sym]
         post :update, post_vars.merge({:id => 2}), {:user => opt[:authed_user_id]}
         assert_response :redirect
         assert_redirected_to :action => 'edit', :id => 2 # ya que el contenido 2 está pendiente de publicar

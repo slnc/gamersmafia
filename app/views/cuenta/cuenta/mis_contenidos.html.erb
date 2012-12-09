@@ -21,7 +21,7 @@
   <% mftable('Pendientes de moderar', @user.contents.pending.find(:all, :include => :content_type, :order => 'created_on DESC')) do |content|%>
   <td class="infoinline right w100"><%=gm_translate(content.content_type.name)%></td>
     <td>
-      <a href="<%=gmurl(content).gsub('show', 'edit')%>"><%=faction_favicon(content)%> <%=content.name%></a>
+      <a href="<%=gmurl(content).gsub('show', 'edit')%>"><%=faction_favicon(content)%> <%=content.title%></a>
     </td>
   <% end -%>
 <% end -%>
@@ -36,7 +36,7 @@
              :order => 'created_on DESC')) do |content|%>
   <td class="infoinline right w100"><%=gm_translate(content.content_type.name)%></td>
   <td>
-    <a href="<%=gmurl(content)%>"><%=faction_favicon(content)%> <%=content.name%></a>
+    <a href="<%=gmurl(content)%>"><%=faction_favicon(content)%> <%=content.title%></a>
   </td>
   <td class="infoinline right w150"><%=print_tstamp(content.created_on)%></td>
   <td class="infoinline right w50" title="Karma"><%=content.karma_points%></td>
@@ -50,7 +50,7 @@
              :order => 'created_on DESC')) do |content|%>
   <td class="infoinline right w100"><%=gm_translate(content.content_type.name)%></td>
   <td>
-    <a href="<%=gmurl(content)%>"><%=faction_favicon(content)%> <%=content.name%></a>
+    <a href="<%=gmurl(content)%>"><%=faction_favicon(content)%> <%=content.title%></a>
   </td>
   <td class="infoinline right w150"><%=print_tstamp(content.created_on)%></td>
 <% end -%>

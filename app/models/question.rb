@@ -142,6 +142,7 @@ class Question < Content
               self.prize,
               "Recompensa por mejor respuesta a la pregunta \"#{self.title}\"")
         end
+        self.notify_observers(:after_question_answered)
         true
       else
         false

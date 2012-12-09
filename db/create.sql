@@ -872,9 +872,8 @@ CREATE TABLE contents (
     id integer NOT NULL,
     external_id integer NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    name character varying NOT NULL,
+    title character varying NOT NULL,
     comments_count integer DEFAULT 0 NOT NULL,
-    is_public boolean DEFAULT false NOT NULL,
     game_id integer,
     state smallint DEFAULT 0 NOT NULL,
     clan_id integer,
@@ -896,7 +895,41 @@ CREATE TABLE contents (
     cache_comments_count smallint DEFAULT 0 NOT NULL,
     log character varying,
     cache_weighted_rank numeric(10,2),
-    type character varying NOT NULL
+    type character varying NOT NULL,
+    cancelled boolean DEFAULT false,
+    closes_on timestamp without time zone,
+    forfeit boolean DEFAULT false,
+    tie boolean DEFAULT false,
+    total_ammount numeric(14,2),
+    winning_bets_option_id integer,
+    file_hash_md5 character varying,
+    file character varying,
+    downloaded_times integer,
+    essential boolean DEFAULT false NOT NULL,
+    sticky boolean,
+    moved_on timestamp without time zone,
+    starts_on timestamp without time zone,
+    ends_on timestamp without time zone,
+    polls_votes_count integer DEFAULT 0 NOT NULL,
+    event_id integer,
+    home_image character varying,
+    entity1_local_id integer,
+    entity2_local_id integer,
+    entity1_external character varying,
+    entity2_external character varying,
+    games_map_id integer,
+    pov_type smallint,
+    pov_entity smallint,
+    file_size bigint,
+    games_mode_id integer,
+    games_version_id integer,
+    demotype integer,
+    played_on date,
+    ammount numeric(10,2),
+    answered_on timestamp without time zone,
+    answer_selected_by_user_id integer,
+    country_id integer,
+    levels character varying
 );
 CREATE SEQUENCE contents_id_seq
     START WITH 1
@@ -3807,8 +3840,6 @@ CREATE INDEX content_attributes_uniq ON content_attributes USING btree (content_
 CREATE INDEX content_ratings_comb ON content_ratings USING btree (ip, user_id, created_on);
 CREATE UNIQUE INDEX content_ratings_user_id_content_id ON content_ratings USING btree (user_id, content_id);
 CREATE INDEX contents_created_on ON contents USING btree (created_on);
-CREATE INDEX contents_is_public ON contents USING btree (is_public);
-CREATE INDEX contents_is_public_and_game_id ON contents USING btree (is_public, game_id);
 CREATE UNIQUE INDEX contents_locks_uniq ON contents_locks USING btree (content_id);
 CREATE UNIQUE INDEX contents_recommendations_content_id_sender_user_id_receiver_use ON contents_recommendations USING btree (content_id, sender_user_id, receiver_user_id);
 CREATE INDEX contents_recommendations_receiver_user_id_marked_as_bad ON contents_recommendations USING btree (receiver_user_id, marked_as_bad);
@@ -3819,6 +3850,7 @@ CREATE INDEX contents_state_clan_id ON contents USING btree (state, clan_id);
 CREATE INDEX contents_terms_content_id ON contents_terms USING btree (content_id);
 CREATE INDEX contents_terms_term_id ON contents_terms USING btree (term_id);
 CREATE UNIQUE INDEX contents_terms_uniq ON contents_terms USING btree (content_id, term_id);
+CREATE INDEX contents_type ON contents USING btree (type);
 CREATE INDEX contents_user_id_state ON contents USING btree (user_id, state);
 CREATE INDEX decision_choices_common ON decision_choices USING btree (decision_id);
 CREATE INDEX decision_comments_decision_idx ON decision_comments USING btree (decision_id);
@@ -4014,9 +4046,19 @@ ALTER TABLE ONLY competitions_matches
 ALTER TABLE ONLY content_attributes
     ADD CONSTRAINT content_attributes_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id) MATCH FULL;
 ALTER TABLE ONLY contents
+    ADD CONSTRAINT contents_answer_selected_by_user_id_fkey FOREIGN KEY (answer_selected_by_user_id) REFERENCES users(id);
+ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY contents
+    ADD CONSTRAINT contents_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id);
+ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id) MATCH FULL;
+ALTER TABLE ONLY contents
+    ADD CONSTRAINT contents_games_map_id_fkey FOREIGN KEY (games_map_id) REFERENCES games_maps(id);
+ALTER TABLE ONLY contents
+    ADD CONSTRAINT contents_games_mode_id_fkey FOREIGN KEY (games_mode_id) REFERENCES games_modes(id);
+ALTER TABLE ONLY contents
+    ADD CONSTRAINT contents_games_version_id_fkey FOREIGN KEY (games_version_id) REFERENCES games_versions(id);
 ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_platform_id_fkey FOREIGN KEY (gaming_platform_id) REFERENCES gaming_platforms(id) MATCH FULL;
 ALTER TABLE ONLY contents_terms
@@ -4025,6 +4067,8 @@ ALTER TABLE ONLY contents_terms
     ADD CONSTRAINT contents_terms_term_id_fkey FOREIGN KEY (term_id) REFERENCES terms(id) MATCH FULL;
 ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
+ALTER TABLE ONLY contents
+    ADD CONSTRAINT contents_winning_bets_option_id_fkey FOREIGN KEY (winning_bets_option_id) REFERENCES bets_options(id);
 ALTER TABLE ONLY coverages
     ADD CONSTRAINT coverages_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY decision_choices

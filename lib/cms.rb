@@ -28,24 +28,6 @@ module Cms
   # Este módulo contiene toda la información de todos los tipos de contenidos
   # específicos
   # Atributos comunes a todas las clases de contenidos
-  COMMON_CLASS_ATTRIBUTES = [
-      :created_on,
-      :updated_on,
-      :user_id,
-      :approved_by_user_id,
-      :hits_registered,
-      :hits_anonymous,
-      :cache_rating,
-      :cache_rated_times,
-      :cache_weighted_rank,
-      :cache_comments_count,
-      :log,
-      :state,
-      :closed,
-      :terms,
-      :source,
-  ]
-
   DRAFT = 0
   PENDING = 1
   PUBLISHED = 2

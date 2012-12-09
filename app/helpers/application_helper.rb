@@ -1330,44 +1330,6 @@ skin: 'v2'
     end
   end
 
-  def mfcontents_list_old(title, object, options={}, &block)
-    raise "DEPRECATED"
-    if object.class.name == 'Array'
-      collection = object
-    elsif object.respond_to?(:call)
-      collection = object.call
-    elsif object.respond_to?(:unique_content_id)
-      collection = object
-    else
-      collection = object.find(*find_args)
-    end
-    return '' if collection.size == 0
-    old_oddclass = @oddclass
-    oddclass_reset
-    grid_cls = options[:grid] ? "grid-#{options[:grid]}" : ''
-    glast_cls = 'glast' if options[:glast]
-    blast_cls = 'blast' if options[:blast]
-    ids = []
-    out = "<div class=\"module mfcontents-list #{grid_cls} #{glast_cls} #{blast_cls}\"".force_encoding("utf-8")
-    out << " id=\"#{options[:id]}\"" if options[:id]
-    title_str = ""
-    if title
-      title_str = "<div class=\"mtitle f_hecto mcontent-title\"><span>#{title}</span></div>"
-    end
-    concat(out << ">#{title_str}<div class=\"mcontent\"><ul>")
-    collection.each do |o|
-      concat("<li #{'class="'<< options[:class] << '"' if options[:class]}>")
-      yield o
-      concat("</li>")
-      ids<< o.id
-    end
-    concat("</ul>")
-    concat('<script type="text/javascript">contents = contents.concat('<< ids.join(',') <<');</script>')
-    concat(options[:bottom]) if options[:bottom]
-    concat("</div></div>")
-    @oddclass = old_oddclass
-  end
-
   def mfcontents_table(title, object, options={}, &block)
     mfcontents_thing('table', 'tr', title, object, options, &block)
   end
@@ -1381,7 +1343,7 @@ skin: 'v2'
       collection = object
     elsif object.respond_to?(:call)
       collection = object.call
-    elsif object.respond_to?(:unique_content_id)
+    elsif object.respond_to?(:main)  # hack to detect contents
       collection = object
     else
       collection = object.find(*find_args)
@@ -1419,7 +1381,7 @@ skin: 'v2'
       collection = object
     elsif object.respond_to?(:call)
       collection = object.call
-    elsif object.respond_to?(:unique_content_id)
+    elsif object.respond_to?(:main)  # hack to detect contents
       collection = object
     else
       collection = object.find(*find_args)
