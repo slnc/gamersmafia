@@ -7,7 +7,12 @@ class KarmaObserver < ActiveRecord::Observer
   end
 
   def after_save(object)
-    case object.class.name
+    class_name = object.class.name
+    if object.class.superclass.name == "Content"
+      class_name = "Content"
+    end
+
+    case class_name
     when 'Comment'
       if object.karma_eligible? && object.karma_points.nil?
         Karma.add_karma_after_comment_is_created(object)

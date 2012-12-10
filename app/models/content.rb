@@ -1,10 +1,32 @@
 # -*- encoding : utf-8 -*-
 class Content < ActiveRecord::Base
 
+  CONTENT_TYPE_IDS = {
+      "Bet" => 15,
+      "Blogentry" => 17,
+      "Column" => 12,
+      "Coverage" =>  9,
+      "Demo" => 23,
+      "Download" =>  5,
+      "Event" =>  8,
+      "Funthing" => 14,
+      "Image" =>  4,
+      "Interview" => 11,
+      "News" =>  1,
+      "Poll" =>  7,
+      "Question" => 24,
+      "RecruitmentAd" => 25,
+      "Review" => 13,
+      "Topic" =>  6,
+      "Tutorial" => 10,
+  }
+
   after_create :do_after_create
   after_save :clear_save_locks
   after_save :create_decision_if_necessary
   after_save :do_after_save
+
+  attr_accessor :cur_editor
 
   before_create :log_creation
   before_destroy :clear_comments
@@ -52,7 +74,7 @@ class Content < ActiveRecord::Base
     if portal.id == -1
       {:conditions => "bazar_district_id IS NULL"}
     else
-      taxonomy = "#{ActiveSupport::Inflector.pluralize(self.name)}Category"
+      taxonomy = "#{ActiveSupport::Inflector.pluralize(self.class.name)}Category"
       {
         :conditions => [
           "id IN (
@@ -136,16 +158,17 @@ class Content < ActiveRecord::Base
   serialize :log
 
   validates_presence_of :user
+  validates_presence_of :title
 
   def self.final_decision_made(decision)
     content = Content.find(decision.context.fetch(:content_id))
-    if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(content.content_type.name)
+    if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(content.type)
       raise (
-          "Received decision for content of type '#{content.content_type.name}'
+          "Received decision for content of type '#{content.type}'
           for which no moderation is needed.")
     end
 
-    expected_class = "Publish#{content.content_type.name}"
+    expected_class = "Publish#{content.type}"
     if decision.decision_type_class != expected_class
       raise (
           "Mismatch between decision_type_class and content_type:
@@ -162,7 +185,7 @@ class Content < ActiveRecord::Base
         "SELECT count(id),
            user_id
          FROM contents
-         WHERE type = #{self.name}
+         WHERE type = #{self.type}
          AND state = #{Cms::PUBLISHED}#{q_add}
          GROUP BY user_id
          ORDER BY SUM((coalesce(hits_anonymous, 0) +
@@ -226,20 +249,15 @@ class Content < ActiveRecord::Base
     out = {}
     User.db_query(
         "SELECT COUNT(*) AS cnt,
-           (SELECT name
-              FROM content_types
-              WHERE id = contents.content_type_id) AS content_type_name
+           type AS content_type_name
         FROM contents
         WHERE user_id = #{user.id}
         AND state = #{Cms::PUBLISHED}
-        GROUP BY (
-          SELECT name
-          FROM content_types
-          WHERE id = contents.content_type_id)").each do |row|
+        GROUP BY type").each do |row|
       out[row['content_type_name']] = row['cnt'].to_i
     end
-    ContentType.find(:all).each do |content_type|
-      out[content_type.name] ||= 0
+    CONTENT_TYPE_IDS.keys.each do |k|
+      out[k] ||= 0
     end
     out
   end
@@ -319,8 +337,8 @@ class Content < ActiveRecord::Base
   end
 
   def to_s
-    ("Content: id: #{self.id}, content_type_id: #{self.content_type_id}," +
-     " name: #{self.name}")
+    ("Content: id: #{self.id}, type: #{self.type}," +
+     " name: #{self.title}")
   end
 
   # Procesa los campos wysiwyg y manipula las imágenes en caso de
@@ -338,6 +356,10 @@ class Content < ActiveRecord::Base
     end
 
     self.update_attributes(attrs)
+  end
+
+  def new_content_type_id
+    CONTENT_TYPE_IDS.fetch(self.type)
   end
 
   # this content's contributed karma
@@ -404,7 +426,7 @@ class Content < ActiveRecord::Base
     # calculamos "m"
     if Cms::CONTENTS_WITH_CATEGORIES.include?(self.type) then
       return 0 if self.main_category.nil?# TODO hack temporal
-      total = self.in_term(self.main_category.root).count
+      total = self.class.in_term(self.main_category.root).count
       # TODO esto debería ir en term
       joined_children = self.main_category.root.all_children_ids(
         :content_type => self.type).join(',')
@@ -423,8 +445,9 @@ class Content < ActiveRecord::Base
 
     dbm = User.db_query(
       "SELECT cache_rated_times
-     FROM #{ActiveSupport::Inflector::tableize(self.type)}
+     FROM contents
      WHERE state = #{Cms::PUBLISHED} #{q}
+     AND type = '#{self.type}'
      AND cache_rated_times > 0
      ORDER BY cache_rated_times
      LIMIT 1 OFFSET #{(total/100*25 + 0.5).to_i}")
@@ -777,7 +800,6 @@ class Content < ActiveRecord::Base
   # Devuelve los portales en los que este contenido se muestra.
   # TODO esto no es correcto
   def get_related_portals
-    raise "DEPRECATED"
     if self.respond_to?(:clan_id) && self.clan_id && self.type != 'RecruitmentAd'
       [ClansPortal.find_by_clan_id(self.clan_id)]
     else
@@ -889,21 +911,21 @@ class Content < ActiveRecord::Base
   end
 
   def schedule_publish_content_decision
-    if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(self.content_type.name)
+    if Cms::NO_MODERATION_NEEDED_CONTENTS.include?(self.type)
       return
     end
-    if self.content_type.name == "Image"
+    if self.type == "Image"
       content_name = (
           "<img src=\"/cache/thumbnails/i/85x60/#{self.file}\" />")
     else
-      content_name = self.name
+      content_name = self.title
     end
 
     Decision.create({
-      :decision_type_class => "Publish#{self.content_type.name}",
+      :decision_type_class => "Publish#{self.type}",
       :context => {
         :content_id => self.id,
-        :content_name => self.name,
+        :content_name => self.title,
         :initiating_user_id => self.user_id,
       },
     })
@@ -927,7 +949,7 @@ class Content < ActiveRecord::Base
   end
 
   def has_category?
-    Cms::CONTENTS_WITH_CATEGORIES.include?(self.type.name)
+    Cms::CONTENTS_WITH_CATEGORIES.include?(self.type)
   end
 
   def change_authorship(new_user, editor)
@@ -1027,9 +1049,9 @@ class Content < ActiveRecord::Base
     if !Cms::DONT_PARSE_IMAGES_OF_CONTENTS.include?(self.type) && self.record_timestamps
       tmpid = id
       tmpid = 0 if self.id.nil?
-      Cms::WYSIWYG_ATTRIBUTES[self.class.name].each do |d|
+      Cms::WYSIWYG_ATTRIBUTES[self.type].each do |d|
         attrs[d] = Cms::parse_images(
-            self.attributes[d], "#{self.class.name.downcase}/#{tmpid % 1000}")
+            self.attributes[d], "#{self.type.downcase}/#{tmpid % 1000}")
       end
 
       self.attributes = attrs

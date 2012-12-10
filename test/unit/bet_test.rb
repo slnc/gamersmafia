@@ -384,7 +384,7 @@ class BetTest < ActiveSupport::TestCase
   end
 
   test "should be able to close bet to comments" do
-    bet = Bet.find(1)
+    bet = Bet.published.first
     assert bet.close(User.find(1), 'blah')
     assert bet.closed?
   end

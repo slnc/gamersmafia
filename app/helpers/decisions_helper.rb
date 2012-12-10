@@ -81,7 +81,7 @@ module DecisionsHelper
     content = Content.find(decision.context.fetch(:content_id))
     controller.send(
         :render_to_string,
-        :partial => "/contents/#{content.content_type.name.downcase}",
+        :partial => "/contents/#{content.type.downcase}",
         :locals => {:content => content}).force_encoding("utf-8")
   end
 

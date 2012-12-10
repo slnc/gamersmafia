@@ -1,4 +1,4 @@
 first_download_mirror:
   id: 1
-  download_id: 1
+  content_id: 1
   url: http://google.com

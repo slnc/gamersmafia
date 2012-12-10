@@ -4,7 +4,7 @@ require 'test_helper'
 class DownloadTest < ActiveSupport::TestCase
 
   def setup
-    @download = Download.find(1)
+    @download = Download.published.first
   end
 
   test "should_update_md5_hash_after_creating_with_file" do
@@ -50,7 +50,7 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "check_invalid_downloads_with_valid_download" do
-    d1 = Download.find(1)
+    d1 = @download
     d1.file = fixture_file_upload('/files/images.zip', 'application/zip')
     assert d1.save
     alerts = Alert.count
@@ -62,7 +62,7 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "check_invalid_downloads_with_valid_download_with_mirrors" do
-    d1 = Download.find(1)
+    d1 = @download
     assert_equal 1, d1.download_mirrors.size
     alerts = Alert.count
     User.db_query("DELETE FROM downloads WHERE id <> 1")
@@ -72,7 +72,7 @@ class DownloadTest < ActiveSupport::TestCase
   end
 
   test "check_invalid_downloads_with_invalid_download_without_mirrors" do
-    d1 = Download.find(1)
+    d1 = @download
     d1.download_mirrors.clear
     assert d1.update_attributes({:file => nil})
     assert_nil d1.file

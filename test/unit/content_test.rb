@@ -77,7 +77,7 @@ class ContentTest < ActiveSupport::TestCase
 
   test "linked_terms" do
     c = Content.find(1)
-    assert_equal 'News', c.content_type.name
+    assert_equal 'News', c.type
     lterms = c.linked_terms("Game")
     assert_equal 1, lterms.size
     assert_equal "Game", lterms[0].taxonomy
@@ -125,7 +125,7 @@ class ContentTest < ActiveSupport::TestCase
   end
 
   test "extract images from image" do
-    image = Image.find(1)
+    image = Image.published.first
     assert_equal "/#{image.file}", image.main_image
   end
 
@@ -241,7 +241,7 @@ class ContentTest < ActiveSupport::TestCase
   end
 
   test "in_term should work" do
-    n = News.find(1)
+    n = News.published.first
     t = n.contents_terms.first.term
     assert !t.nil?
 
@@ -250,14 +250,14 @@ class ContentTest < ActiveSupport::TestCase
   end
 
   test "in_term_tree should work" do
-    i = Image.find(4)
+    i = Image.find(15)  # babe
     t = i.contents_terms.first.term
     assert_not_nil Image.in_term_tree(t.root).find(i.id)
     assert_nil Image.in_term_tree(t.root).find_by_id(1)
   end
 
   test "in_portal should work" do
-    d = Download.find(1)
+    d = Download.published.first
     t = d.contents_terms.first.term
     assert_not_nil Download.in_term_tree(t.root).find(d.id)
     assert_nil Download.in_term_tree(t.root).find_by_id(3)

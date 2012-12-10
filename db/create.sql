@@ -870,7 +870,7 @@ CREATE SEQUENCE content_types_id_seq
 ALTER SEQUENCE content_types_id_seq OWNED BY content_types.id;
 CREATE TABLE contents (
     id integer NOT NULL,
-    external_id integer NOT NULL,
+    external_id integer,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     title character varying NOT NULL,
     comments_count integer DEFAULT 0 NOT NULL,

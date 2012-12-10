@@ -343,7 +343,7 @@ class Term < ActiveRecord::Base
   end
 
   def link(content, normal_op=true)
-    raise "TypeError, arg is #{content.class.name}" unless content.class.name == 'Content'
+    raise "TypeError, arg is #{content.class.name}" unless content.class.superclass.name == 'Content'
 
     # dupcheck, don't link twice.
     if !self.contents.find(:first, :conditions => ['contents.id = ?', content.id]).nil?
@@ -351,7 +351,7 @@ class Term < ActiveRecord::Base
       return true
     end
 
-    if (Cms::CATEGORIES_TERMS_CONTENTS.include?(content.content_type.name) &&
+    if (Cms::CATEGORIES_TERMS_CONTENTS.include?(content.type) &&
         !self.taxonomy.include?("Category"))
       Rails.logger.warn(
         "#{self} is a root term but #{content} requires a category" +
@@ -359,11 +359,11 @@ class Term < ActiveRecord::Base
       return false if normal_op
 
       # Exceptional behavior
-      taxo = "#{ActiveSupport::Inflector::pluralize(content.content_type.name)}Category"
+      taxo = "#{ActiveSupport::Inflector::pluralize(content.type)}Category"
       t = self.children.find(:first, :conditions => "taxonomy = '#{taxo}'")
       t = self.children.create(:name => 'General', :taxonomy => taxo) if t.nil?
       t.link(content, normal_op)
-    elsif Cms::ROOT_TERMS_CONTENTS.include?(content.content_type.name) && self.taxonomy && self.taxonomy.index('Category')
+    elsif Cms::ROOT_TERMS_CONTENTS.include?(content.type) && self.taxonomy && self.taxonomy.index('Category')
       Rails.logger.warn(
         "Current term has taxonomy: #{self.taxonomy} but the specific content" +
         " #{content} can only be linked to root terms.")
@@ -394,7 +394,7 @@ class Term < ActiveRecord::Base
   end
 
   def unlink(content)
-    raise "TypeError" unless content.class.name == 'Content'
+    raise "TypeError, arg is #{content.class.name}" unless content.class.superclass.name == 'Content'
     self.contents_terms.find(:all, :conditions => ['content_id = ?', content.id]).each do |ct|
       ct.destroy
     end

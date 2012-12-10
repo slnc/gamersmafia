@@ -119,8 +119,7 @@ module Comments
            FROM comments a join contents b ON a.content_id = b.id
            WHERE a.has_comments_valorations = 't'
            AND a.user_id = #{user.id}
-           AND b.content_type_id = (
-              SELECT id FROM content_types WHERE name = 'Blogentry')")
+           AND b.type = 'Blogentry'")
 
       when 'Clan'
       comments_ids = User.db_query(

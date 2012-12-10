@@ -161,7 +161,7 @@ module Training
       "user_id,content_id,interested,has_commented,num_own_comments," +
       "has_recommended,num_recommendations,has_rated_it,rating_value," +
       "rating_positive,rating_negative,is_tracked,first_non_tag_term," +
-      "author_is_friend,content_type_id,num_comments,content_author_id")
+      "author_is_friend,content_type,num_comments,content_author_id")
 
   # This method generates 3 csv files:
   # - basename_training.csv: dataset to use to train ml models. (60%)
@@ -300,7 +300,7 @@ module Training
 #        Crs::Util.bool_to_i(tracker_item.is_tracked?),
 #        first_non_tag_term,
 #        Crs::Util.bool_to_i(author_is_friend),
-#        tracker_item.content.content_type_id,
+#        tracker_item.content.type,
 #        content.comments_count,
 #        Crs::Util.bool_to_i(content.user_id),
       ])
@@ -320,7 +320,7 @@ module Training
 #        Crs::Util.bool_to_i(tracker_item.is_tracked?),
 #        first_non_tag_term,
 #        Crs::Util.bool_to_i(author_is_friend),
-#        tracker_item.content.content_type_id,
+#        tracker_item.content.type,
 #        content.comments_count,
 #        Crs::Util.bool_to_i(content.user_id),
 #      ])

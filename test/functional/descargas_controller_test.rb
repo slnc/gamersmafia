@@ -79,7 +79,7 @@ class DescargasControllerTest < ActionController::TestCase
   test "descargas with invalid r should show error" do
       dm = DownloadMirror.find(:first)
       assert dm
-      get :download, :id => dm.download_id, :r => dm.url
+      get :download, :id => dm.content_id, :r => dm.url
       assert_response :success
       assert flash[:error].nil?
   end

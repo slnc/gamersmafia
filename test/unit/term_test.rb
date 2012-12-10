@@ -32,14 +32,6 @@ class TermTest < ActiveSupport::TestCase
     assert !term.save
   end
 
-  test "find_by_id" do
-    n = News.find(1)
-    t = n.terms[0]
-    res = t.news.find(1)
-    assert_equal 'News', res.class.name
-    assert_equal 1, res.id
-  end
-
   test "mirror_category" do
     @t = Term.new(:name => 'foo', :slug => 'bar', :taxonomy => "Homepage")
     assert @t.save
@@ -217,7 +209,7 @@ class TermTest < ActiveSupport::TestCase
   end
 
   test "reset_contents_urls" do
-    topic = Topic.find(1)
+    topic = Topic.published.first
     User.db_query("UPDATE contents SET url = 'fuuck yu' WHERE id = #{topic.id}")
     topic.reload
     topic.main_category.reset_contents_urls

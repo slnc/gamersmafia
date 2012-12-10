@@ -23,8 +23,8 @@ class Admin::MapasJuegosController < ApplicationController
 
   def create
     @games_map = GamesMap.new(params[:games_map])
-    if (params[:games_map][:download_id].to_s != '' &&
-        Download.find_by_id(params[:games_map][:download_id].to_i).nil?)
+    if (params[:games_map][:content_id].to_s != '' &&
+        Download.find_by_id(params[:games_map][:content_id].to_i).nil?)
       then
       flash[:error] = 'La ID de descarga especificada no es válida.'
       render :action => 'new'
@@ -49,8 +49,8 @@ class Admin::MapasJuegosController < ApplicationController
 
   def update
     @games_map = GamesMap.find(params[:id])
-    if (params[:games_map][:download_id].to_s != '' &&
-        Download.find_by_id(params[:games_map][:download_id].to_i).nil?)
+    if (params[:games_map][:content_id].to_s != '' &&
+        Download.find_by_id(params[:games_map][:content_id].to_i).nil?)
       then
       flash[:error] = 'La ID de descarga especificada no es válida.'
       render :action => 'edit'

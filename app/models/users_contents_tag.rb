@@ -91,7 +91,7 @@ class UsersContentsTag < ActiveRecord::Base
   private
   def resolve_term
     if (Cms::ROOT_TERMS_CONTENTS + Cms::CATEGORIES_TERMS_CONTENTS).include?(
-        self.content.content_type.name)
+        self.content.type)
       mc = self.content.main_category
       if (Term.count(
               :conditions => [

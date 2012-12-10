@@ -8,7 +8,7 @@
 		<th>Lecturas</th>
 		<th>Comentarios</th>
 	</tr>
-<%Content.published.in_term_tree(@term).content_type_name(params[:content_type]).find(:all, :order => 'LOWER(name)', :limit => 100).each do |c| %>
+<%Content.published.in_term_tree(@term).content_type_name(params[:content_type]).find(:all, :order => 'LOWER(title)', :limit => 100).each do |c| %>
 <tr class="<%=oddclass%>">
 	<td class="checkbox"><input type="checkbox" name="contents[]" value="<%=c.id%>" onclick="Gm.Slnc.hilit_row(this, 'selrow');" /></td>
 	<td><a href="<%=gmurl(c)%>"><%=c.title%></a></td>

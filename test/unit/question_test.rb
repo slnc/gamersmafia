@@ -19,7 +19,7 @@ class QuestionTest < ActiveSupport::TestCase
   end
 
   test "should_return_money_to_owner_if_no_best_answer" do
-    @q = Question.find(1)
+    @q = Question.published.first
     @q.ammount = Question::MIN_AMMOUNT
     assert @q.save, @q.errors.full_messages_html
     @u_cash = @q.user.cash
@@ -29,7 +29,7 @@ class QuestionTest < ActiveSupport::TestCase
   end
 
   test "set_set_best_answer" do
-    @q = Question.find(1)
+    @q = Question.published.first
     @c = @q.comments.find(:first, :conditions => 'deleted = \'f\'')
     baid = @c.id
     @u_cash = @c.user.cash

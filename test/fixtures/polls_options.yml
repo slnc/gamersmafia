@@ -1,15 +1,15 @@
 first_polls_option:
   id: 1
   name: foo
-  poll_id: 1
+  content_id: 1
 
 second_polls_option:
   id: 2
   name: foobar
-  poll_id: 4
+  content_id: 4
 
 
 third_polls_option:
   id: 3
   name: foobars
-  poll_id: 5
+  content_id: 5

@@ -231,7 +231,7 @@ module Karma
       total = (
           Content.in_term_tree(root_term).sum(:karma_points, opts) +
           comments_karma)
-    elsif thing.class.kind_of?(ActsAsContent::AddActsAsContent)
+    elsif thing.class.superclass.name == "Content"
       if other_conditions
         raise "Unable to pass other_conditions for acts_as_content"
       end
@@ -350,7 +350,7 @@ module Karma
     if (content.source)
       kpc = Karma::KPS_CREATE['Copypaste']
     else
-      kpc = Karma::KPS_CREATE[content.content_type.name]
+      kpc = Karma::KPS_CREATE[content.type]
     end
 
     portal_factor = Math.log10(recent_portal_commentators)

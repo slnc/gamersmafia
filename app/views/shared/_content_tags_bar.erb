@@ -3,10 +3,10 @@
 	<div class="system">
     <div class="floatl"><%=gm_icon("tag")%></div>
     <div class="tag">
-      <a href="/<%=Cms::CONTENTS_CONTROLLERS[object.content_type.name]%>"><%=Cms::CLASS_NAMES[object.content_type.name]%></a>
+      <a href="/<%=Cms::CONTENTS_CONTROLLERS[object.type]%>"><%=Cms::CLASS_NAMES[object.type]%></a>
     </div>
 
-		<% if Cms::CATEGORIES_TERMS_CONTENTS.include?(object.content_type.name) then
+		<% if Cms::CATEGORIES_TERMS_CONTENTS.include?(object.type) then
 		root_slugs = []
 
 	%>

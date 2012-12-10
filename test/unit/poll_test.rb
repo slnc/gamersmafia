@@ -4,7 +4,7 @@ require 'test_helper'
 class PollTest < ActiveSupport::TestCase
 
   def setup
-    @poll1 = Poll.find(1)
+    @poll1 = Poll.published.first
   end
 
   test "should_not_allow_to_create_poll_with_end_date_sooner_than_start_date" do

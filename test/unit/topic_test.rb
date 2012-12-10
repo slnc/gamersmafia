@@ -3,7 +3,7 @@ require 'test_helper'
 
 class TopicTest < ActiveSupport::TestCase
   def setup
-    @forum_topic = Topic.find(1)
+    @forum_topic = Topic.published.first
   end
 
   test "latest_by_category" do

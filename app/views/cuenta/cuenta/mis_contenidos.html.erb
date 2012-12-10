@@ -19,7 +19,7 @@
 
 <%content_2colx do%>
   <% mftable('Pendientes de moderar', @user.contents.pending.find(:all, :include => :content_type, :order => 'created_on DESC')) do |content|%>
-  <td class="infoinline right w100"><%=gm_translate(content.content_type.name)%></td>
+  <td class="infoinline right w100"><%=gm_translate(content.type)%></td>
     <td>
       <a href="<%=gmurl(content).gsub('show', 'edit')%>"><%=faction_favicon(content)%> <%=content.title%></a>
     </td>
@@ -34,7 +34,7 @@
              :limit => 50,
              :include => :content_type,
              :order => 'created_on DESC')) do |content|%>
-  <td class="infoinline right w100"><%=gm_translate(content.content_type.name)%></td>
+  <td class="infoinline right w100"><%=gm_translate(content.type)%></td>
   <td>
     <a href="<%=gmurl(content)%>"><%=faction_favicon(content)%> <%=content.title%></a>
   </td>
@@ -48,7 +48,7 @@
              :limit => 50,
              :include => :content_type,
              :order => 'created_on DESC')) do |content|%>
-  <td class="infoinline right w100"><%=gm_translate(content.content_type.name)%></td>
+  <td class="infoinline right w100"><%=gm_translate(content.type)%></td>
   <td>
     <a href="<%=gmurl(content)%>"><%=faction_favicon(content)%> <%=content.title%></a>
   </td>

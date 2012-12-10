@@ -8,6 +8,6 @@ class CoveragesControllerTest < ActionController::TestCase
       :form_vars => {
           :title => 'footapang',
           :description => 'bartapang',
-          :event_id => 1,
+          :event_id => Event.published.first,
       })
 end

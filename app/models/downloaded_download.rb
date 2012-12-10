@@ -9,7 +9,7 @@ class DownloadedDownload < ActiveRecord::Base
   validates_presence_of :ip
 
   def set_download_cookie
-    self.download_cookie = Digest::MD5.hexdigest("#{Time.now.to_i}.#{session_id}.#{self.ip}.#{self.download_id}")
+    self.download_cookie = Digest::MD5.hexdigest("#{Time.now.to_i}.#{session_id}.#{self.ip}.#{self.content_id}")
     true
   end
 end

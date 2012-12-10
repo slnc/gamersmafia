@@ -434,12 +434,12 @@ class Alert < ActiveRecord::Base
   def self.fill_ttype_and_scope_for_content_report(content)
     org = Organizations.find_by_content(content)
     if org
-      if org.class.name == 'Faction' && content.content_type.name == 'Topic'
+      if org.class.name == 'Faction' && content.type == 'Topic'
         ttype = :faction_topic_report
         scope = org.id
       elsif org.class.name == 'Faction'
         ttype =  :faction_content_report
-        scope = org.id * Alert::EDITOR_SCOPE_CONTENT_TYPE_ID_MASK + content.content_type_id
+        scope = org.id * Alert::EDITOR_SCOPE_CONTENT_TYPE_ID_MASK + content.new_content_type_id
       else
         ttype = :bazar_district_content_report
         scope = org.id

@@ -26,13 +26,15 @@ module Blogs
     User.find_by_sql("SELECT a.id,
                              a.login
                         FROM users a
-                        JOIN blogentries padre on a.id = padre.user_id
+                        JOIN contents padre on a.id = padre.user_id
                        WHERE padre.state = #{Cms::PUBLISHED}
+                        AND padre.type = 'Blogentry'
                     GROUP BY a.id, a.login, padre.user_id
                     ORDER BY count(*) * ((SELECT coalesce(avg(cache_rating),
                                                           5.0)
-                                            FROM blogentries
+                                            FROM contents
                                            WHERE user_id = padre.user_id
+                                             AND type = 'Blogentry'
                                              AND state <> '#{Cms::PUBLISHED}'
                                              AND cache_rated_times > 0)
                                          / 10.0)  DESC

@@ -48,29 +48,33 @@ module TestCaseMixings
 
       test "should_not_show_unpublished" do
         setup_functional_content_hbr
+        obj = content_class.pending.first
         assert_raises(ActiveRecord::RecordNotFound) do
-          get :show, {:id => 2}
+          get :show, {:id => obj.id}
         end
       end
 
       test "should_show_unpublished_to_ppl_with_edit_permissions" do
         setup_functional_content_hbr
         sym_login 'superadmin'
-        get :show, {:id => 2}
+        obj = content_class.pending.first
+        get :show, {:id => obj.id}
         assert_response :success
       end
 
       test "should_show_deleted_to_ppl_with_edit_permissions" do
         setup_functional_content_hbr
         sym_login 'superadmin'
-        get :show, {:id => 3}
+        obj = content_class.deleted.first
+        get :show, {:id => obj.id}
         assert_response :success
       end
 
       test "should_not_show_deleted" do
         setup_functional_content_hbr
+        obj = content_class.deleted.first
         assert_raises(ActiveRecord::RecordNotFound) do
-          get :show, {:id => 3}
+          get :show, {:id => obj.id}
         end
       end
 
@@ -133,7 +137,7 @@ module TestCaseMixings
         post :create, post_vars.merge({:draft => 1}), { :user => opt[:authed_user_id] }
 
         assert_response :redirect
-        assert_redirected_to :action => 'edit', :id => content_class.find(:first, :order => 'id DESC').id
+        assert_redirected_to :action => 'edit', :id => content_class.last.id
 
         assert_equal num_news + 1, content_class.count
       end
@@ -195,12 +199,12 @@ module TestCaseMixings
         post_vars[content_sym] = post_vars[content_sym]
         post :update, post_vars.merge({:id => 1}), {:user => opt[:authed_user_id]}
         assert_response :redirect
-        obj = Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)).find(1)
+        obj = Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)).published.first
         assert_redirected_to Routing.gmurl(obj)
       end
 
       test "should_allow_update_published_if_authed_faction_leader" do
-        obj = Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)).find(2)
+        obj = Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)).pending.first
         obj.created_on = 1.week.ago
         obj.save
         return unless obj.respond_to? :is_categorizable?
@@ -215,45 +219,42 @@ module TestCaseMixings
             assert f.is_bigboss?(panzer)
           end
 
-          post :update, post_vars.merge({:id => 2}), {:user => panzer.id}
+          post :update, post_vars.merge({:id => obj.id}), {:user => panzer.id}
           assert_response :redirect
         end
       end
 
       test "should_allow_edit_published_if_authed_faction_leader" do
-        get :edit, {:id => 2}, {:user => opt[:authed_user_id]}
-        assert_response :success
-      end
-
-      test "should_allow_edit_published_if_authed_superadmin" do
-        get :edit, {:id => 2}, {:user => opt[:authed_user_id]}
+        obj = Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)).pending.first
+        get :edit, {:id => obj.id}, {:user => opt[:authed_user_id]}
         assert_response :success
       end
 
       test "should_allow_update_unpublished_if_authed_superadmin" do
         return unless Cms::contents_classes_publishable.include?(Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)))
         post_vars[content_sym] = post_vars[content_sym]
-        post :update, post_vars.merge({:id => 2}), {:user => opt[:authed_user_id]}
+        obj = Object.const_get(ActiveSupport::Inflector::camelize(content_sym.to_s)).pending.first
+        post :update, post_vars.merge({:id => obj.id}), {:user => opt[:authed_user_id]}
         assert_response :redirect
-        assert_redirected_to :action => 'edit', :id => 2 # ya que el contenido 2 está pendiente de publicar
+        assert_redirected_to :action => 'edit', :id => obj.id # ya que el contenido 2 está pendiente de publicar
       end
 
       test "should_not_allow_destroy_if_not_authed" do
-        assert_not_nil content_class.find(1)
-        assert_raises(AccessDenied) { post :destroy, {:id => 1} }
+        obj = content_class.published.first
+        assert_raises(AccessDenied) { post :destroy, {:id => obj.id} }
       end
 
       test "should_not_allow_to_destroy_if_authed_but_no_perms" do
-        assert_not_nil content_class.find(1)
-        assert_raises(AccessDenied) { post :destroy, {:id => 1}, {:user => opt[:non_authed_user_id]} }
+        obj = content_class.published.first
+        assert_raises(AccessDenied) { post :destroy, {:id => obj.id}, {:user => opt[:non_authed_user_id]} }
       end
 
       test "should_allow_to_destroy_if_authed_and_superadmin" do
-        assert_not_nil content_class.find(1)
-        post :destroy, {:id => 1}, {:user => opt[:authed_user_id]}
+        obj = content_class.published.first
+        post :destroy, {:id => obj.id}, {:user => opt[:authed_user_id]}
         assert_response :redirect
         assert_redirected_to :action => 'index'
-        assert_equal Cms::DELETED, content_class.find(1).state
+        assert_equal Cms::DELETED, obj.state
       end
 
       # Solo diferenciamos entre usuarios anónimos, registrados y autorizados

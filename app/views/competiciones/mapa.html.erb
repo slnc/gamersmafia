@@ -1,7 +1,7 @@
 <div style="float: right; margin: 25px 10px 10px 10px; border: 1px solid #000;"><%=fc_thumbnail(@games_map.screenshot, 'k', '195x147', false)%></div>
 <h1><%=@games_map.name%></h1>
 
-<% if @games_map.download_id then
-@download = @games_map.download %>
+<% if @games_map.content_id then
+@download = @games_map.content %>
 <div style="padding: 10px; font-weight: bold;"><a target="_blank" href="<%=gmurl(@download)%>">Descargar mapa</a></div>
 <% end -%>

@@ -14,6 +14,6 @@
 <%=select('games_map', 'game_id', Game.find(:all, :conditions => "has_game_maps = 't'", :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true }) %></p>
 
 <p><label for="games_map_game_id">ID de Descarga asociada</label><br/>
-<%= text_field 'games_map', 'download_id', :class => 'text' %> <span class="infoinline">Si el mapa no viene con el juego subirlo como descarga y poner aquí el ID (número en la url) de dicha descarga.</span></p>
+<%= text_field 'games_map', 'content_id', :class => 'text' %> <span class="infoinline">Si el mapa no viene con el juego subirlo como descarga y poner aquí el ID (número en la url) de dicha descarga.</span></p>
 <!--[eoform:games_map]-->
 

@@ -95,7 +95,7 @@ module Cache
 
       # TODO hack, los observers no funcionan bien así que lo ponemos aquí
       content = object.content
-      ctype = Object.const_get(content.content_type.name)
+      ctype = Object.const_get(content.type)
       content.save
 
       User.increment_counter('comments_count', object.user_id)

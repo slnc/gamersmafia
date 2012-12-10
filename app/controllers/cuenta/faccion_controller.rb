@@ -299,7 +299,7 @@ class Cuenta::FaccionController < ApplicationController
   def mapas_juegos_create
     require_auth_faction_leader
     params[:games_map][:game_id] = @user.faction.game.id # TODO hell..
-    if params[:games_map][:download_id].to_s != '' && Download.find_by_id(params[:games_map][:download_id].to_i).nil? then
+    if params[:games_map][:content_id].to_s != '' && Download.find_by_id(params[:games_map][:content_id].to_i).nil? then
       flash[:error] = 'La ID de descarga especificada no es válida.'
       render :action => 'mapas_juegos_new'
     else
@@ -325,7 +325,7 @@ class Cuenta::FaccionController < ApplicationController
     require_auth_faction_leader
     @games_map = GamesMap.find(params[:id])
     params[:games_map][:game_id] = @user.faction.game.id # TODO hell..
-    if params[:games_map][:download_id].to_s != '' && Download.find_by_id(params[:games_map][:download_id].to_i).nil? then
+    if params[:games_map][:content_id].to_s != '' && Download.find_by_id(params[:games_map][:content_id].to_i).nil? then
       flash[:error] = 'La ID de descarga especificada no es válida.'
       render :action => 'mapas_juegos_edit'
     else

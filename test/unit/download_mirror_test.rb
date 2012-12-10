@@ -8,16 +8,16 @@ class DownloadMirrorTest < ActiveSupport::TestCase
   end
 
   test "shouldn't allow incorrect url" do
-    dm = DownloadMirror.new(:download_id => 1,
+    dm = DownloadMirror.new(:content_id => 1,
                             :url => "\"><script>alet('foo');</script>")
     assert !dm.save
 
-    dm = DownloadMirror.new(:download_id => 1,
+    dm = DownloadMirror.new(:content_id => 1,
                             :url => "http://example.com/\"><script>alet('foo');" +
                             "</script>")
     assert !dm.save
 
-    dm = DownloadMirror.new(:download_id => 1, :url => "http://example.com/")
+    dm = DownloadMirror.new(:content_id => 1, :url => "http://example.com/")
     assert dm.save
   end
 end

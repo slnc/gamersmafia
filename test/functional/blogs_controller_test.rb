@@ -31,7 +31,7 @@ class BlogsControllerTest < ActionController::TestCase
   end
 
   test "should_notshow_users_blogentry_if_existing_but_unpublished" do
-    be = Blogentry.find(1)
+    be = Blogentry.published.first
     assert be.update_attributes({:state => Cms::DELETED})
     assert_equal Cms::DELETED, be.state
     assert_raises(ActiveRecord::RecordNotFound) { get :blogentry, { :login => 'superadmin', :id => 1 } }

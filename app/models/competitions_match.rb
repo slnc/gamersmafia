@@ -19,7 +19,8 @@ class CompetitionsMatch < ActiveRecord::Base
   END
 
   belongs_to :competition
-  belongs_to :event
+  belongs_to :event, :class_name => 'Content',
+             :foreign_key => 'content_id'
   belongs_to :participant1, :class_name => 'CompetitionsParticipant',
                             :foreign_key => 'participant1_id'
 
