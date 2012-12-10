@@ -172,7 +172,6 @@ class MigrateContentAttributes < ActiveRecord::Migration
      WHERE type = 'Interview';
     "
 
-    # home_image
     execute "
     update contents set
         description = (select description from columns where id = external_id),
@@ -188,7 +187,6 @@ class MigrateContentAttributes < ActiveRecord::Migration
      WHERE type = 'Column';
     "
 
-    # home_image
     execute "
     update contents set
         description = (select description from reviews where id = external_id),
@@ -204,7 +202,6 @@ class MigrateContentAttributes < ActiveRecord::Migration
      WHERE type = 'Review';
     "
 
-    # home_image
     execute "
     update contents set
         description = (select description from funthings where id = external_id),
@@ -216,10 +213,9 @@ class MigrateContentAttributes < ActiveRecord::Migration
         cache_comments_count = (select cache_comments_count from funthings where id = external_id),
         log = (select log from funthings where id = external_id),
         cache_weighted_rank = (select cache_weighted_rank from funthings where id = external_id)
-     WHERE type = 'Review';
+     WHERE type = 'Funthing';
     "
 
-    # home_image
     execute "
     update contents set
         description = (select description from blogentries where id = external_id),
@@ -234,7 +230,6 @@ class MigrateContentAttributes < ActiveRecord::Migration
      WHERE type = 'Blogentry';
     "
 
-    # home_image
     execute "
     update contents set
         description = (select description from demos where id = external_id),
@@ -265,7 +260,6 @@ class MigrateContentAttributes < ActiveRecord::Migration
      WHERE type = 'Demo';
     "
 
-    # home_image
     execute "
     update contents set
         description = (select description from questions where id = external_id),
@@ -279,11 +273,10 @@ class MigrateContentAttributes < ActiveRecord::Migration
         cache_weighted_rank = (select cache_weighted_rank from questions where id = external_id),
         ammount = (select ammount from questions where id = external_id),
         answered_on = (select answered_on from questions where id = external_id),
-        answer_selected_by_user_idanswer_selected_by_user_id = (select  from questions where id = external_id)
+        answer_selected_by_user_id = (select answer_selected_by_user_id from questions where id = external_id)
      WHERE type = 'Question';
     "
 
-    # home_image
     execute "
     update contents set
         description = (select description from recruitment_ads where id = external_id),
@@ -298,7 +291,7 @@ class MigrateContentAttributes < ActiveRecord::Migration
         country_id = (select country_id from recruitment_ads where id = external_id),
         levels = (select levels from recruitment_ads where id = external_id),
         clan_id = (select clan_id from recruitment_ads where id = external_id),
-        game_id = (select game_id from recruitment_ads where id = external_id),
+        game_id = (select game_id from recruitment_ads where id = external_id)
      WHERE type = 'RecruitmentAd';
     "
 
