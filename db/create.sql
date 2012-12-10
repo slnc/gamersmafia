@@ -307,7 +307,7 @@ CREATE SEQUENCE bets_id_seq
 ALTER SEQUENCE bets_id_seq OWNED BY bets.id;
 CREATE TABLE bets_options (
     id integer NOT NULL,
-    bet_id integer NOT NULL,
+    content_id integer NOT NULL,
     name character varying NOT NULL,
     ammount numeric(14,2)
 );
@@ -700,7 +700,7 @@ CREATE TABLE competitions_matches (
     completed_on timestamp without time zone,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     play_on timestamp without time zone,
-    event_id integer,
+    content_id integer,
     forfeit_participant1 boolean DEFAULT false NOT NULL,
     forfeit_participant2 boolean DEFAULT false NOT NULL,
     servers character varying,
@@ -1013,7 +1013,7 @@ CREATE TABLE coverages (
     hits_registered integer DEFAULT 0 NOT NULL,
     description text NOT NULL,
     main text,
-    event_id integer NOT NULL,
+    content_id integer NOT NULL,
     cache_rating smallint,
     cache_rated_times smallint,
     cache_comments_count integer DEFAULT 0 NOT NULL,
@@ -1156,7 +1156,7 @@ CREATE TABLE demos (
     entity1_external character varying,
     entity2_external character varying,
     games_map_id integer,
-    event_id integer,
+    content_id integer,
     pov_type smallint,
     pov_entity smallint,
     file character varying,
@@ -1212,7 +1212,7 @@ CREATE SEQUENCE dictionary_words_id_seq
 ALTER SEQUENCE dictionary_words_id_seq OWNED BY dictionary_words.id;
 CREATE TABLE download_mirrors (
     id integer NOT NULL,
-    download_id integer NOT NULL,
+    content_id integer NOT NULL,
     url character varying NOT NULL
 );
 CREATE SEQUENCE download_mirrors_id_seq
@@ -1224,7 +1224,7 @@ CREATE SEQUENCE download_mirrors_id_seq
 ALTER SEQUENCE download_mirrors_id_seq OWNED BY download_mirrors.id;
 CREATE TABLE downloaded_downloads (
     id integer NOT NULL,
-    download_id integer NOT NULL,
+    content_id integer NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     ip inet NOT NULL,
     session_id character varying,
@@ -1657,7 +1657,7 @@ CREATE TABLE games_maps (
     id integer NOT NULL,
     name character varying NOT NULL,
     game_id integer NOT NULL,
-    download_id integer,
+    content_id integer,
     screenshot character varying
 );
 CREATE SEQUENCE games_maps_id_seq
@@ -2151,7 +2151,7 @@ CREATE SEQUENCE polls_id_seq
 ALTER SEQUENCE polls_id_seq OWNED BY polls.id;
 CREATE TABLE polls_options (
     id integer NOT NULL,
-    poll_id integer NOT NULL,
+    content_id integer NOT NULL,
     name character varying NOT NULL,
     polls_votes_count integer DEFAULT 0 NOT NULL,
     "position" integer
@@ -2233,7 +2233,7 @@ CREATE TABLE portals_skins (
 CREATE TABLE potds (
     id integer NOT NULL,
     date date NOT NULL,
-    image_id integer NOT NULL,
+    content_id integer NOT NULL,
     portal_id integer,
     images_category_id integer,
     term_id integer
@@ -3654,7 +3654,7 @@ ALTER TABLE ONLY polls_categories
 ALTER TABLE ONLY polls_options
     ADD CONSTRAINT polls_options_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY polls_options
-    ADD CONSTRAINT polls_options_poll_id_key UNIQUE (poll_id, name);
+    ADD CONSTRAINT polls_options_poll_id_key UNIQUE (content_id, name);
 ALTER TABLE ONLY polls_votes
     ADD CONSTRAINT polls_options_users_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY polls
@@ -3830,7 +3830,7 @@ CREATE INDEX comments_user_id_created_on ON comments USING btree (user_id, creat
 CREATE UNIQUE INDEX comments_valorations_comment_id_user_id ON comments_valorations USING btree (comment_id, user_id);
 CREATE UNIQUE INDEX competitions_games_maps_uniq ON competitions_games_maps USING btree (competition_id, games_map_id);
 CREATE INDEX competitions_matches_competition_id ON competitions_matches USING btree (competition_id);
-CREATE INDEX competitions_matches_event_id ON competitions_matches USING btree (event_id);
+CREATE INDEX competitions_matches_event_id ON competitions_matches USING btree (content_id);
 CREATE INDEX competitions_matches_participant1_id ON competitions_matches USING btree (participant1_id);
 CREATE INDEX competitions_matches_participant2_id ON competitions_matches USING btree (participant2_id);
 CREATE INDEX competitions_participants_competition_id ON competitions_participants USING btree (competition_id);
@@ -4017,6 +4017,8 @@ CREATE UNIQUE INDEX portals_stats_uniq ON portals USING btree (created_on, porta
 CREATE INDEX users_daily_stats_user_id_created_on ON users_daily_stats USING btree (user_id, created_on);
 CREATE UNIQUE INDEX users_karma_daily_by_portal_uniq ON users_karma_daily_by_portal USING btree (user_id, portal_id, created_on);
 SET search_path = public, pg_catalog;
+ALTER TABLE ONLY bets_options
+    ADD CONSTRAINT bet_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
 ALTER TABLE ONLY bets
     ADD CONSTRAINT bets_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id);
 ALTER TABLE ONLY bets
@@ -4045,6 +4047,18 @@ ALTER TABLE ONLY competitions_matches
     ADD CONSTRAINT competitions_matches_participant2_id_fkey FOREIGN KEY (participant2_id) REFERENCES competitions_participants(id);
 ALTER TABLE ONLY content_attributes
     ADD CONSTRAINT content_attributes_content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id) MATCH FULL;
+ALTER TABLE ONLY games_maps
+    ADD CONSTRAINT content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
+ALTER TABLE ONLY downloaded_downloads
+    ADD CONSTRAINT content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
+ALTER TABLE ONLY download_mirrors
+    ADD CONSTRAINT content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
+ALTER TABLE ONLY polls_options
+    ADD CONSTRAINT content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
+ALTER TABLE ONLY competitions_matches
+    ADD CONSTRAINT content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
+ALTER TABLE ONLY demos
+    ADD CONSTRAINT content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
 ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_answer_selected_by_user_id_fkey FOREIGN KEY (answer_selected_by_user_id) REFERENCES users(id);
 ALTER TABLE ONLY contents
@@ -4090,8 +4104,6 @@ ALTER TABLE ONLY decisions
 ALTER TABLE ONLY demos
     ADD CONSTRAINT demos_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id);
 ALTER TABLE ONLY demos
-    ADD CONSTRAINT demos_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) MATCH FULL;
-ALTER TABLE ONLY demos
     ADD CONSTRAINT demos_games_map_id_fkey FOREIGN KEY (games_map_id) REFERENCES games_maps(id) MATCH FULL;
 ALTER TABLE ONLY demos
     ADD CONSTRAINT demos_games_mode_id_fkey FOREIGN KEY (games_mode_id) REFERENCES games_modes(id) MATCH FULL;
@@ -4105,14 +4117,14 @@ ALTER TABLE ONLY downloads
     ADD CONSTRAINT downloads_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY downloads
     ADD CONSTRAINT downloads_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
+ALTER TABLE ONLY coverages
+    ADD CONSTRAINT event_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY events
     ADD CONSTRAINT events_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY coverages
     ADD CONSTRAINT events_news_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY coverages
-    ADD CONSTRAINT events_news_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id) MATCH FULL;
 ALTER TABLE ONLY coverages
     ADD CONSTRAINT events_news_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY events
@@ -4143,6 +4155,8 @@ ALTER TABLE ONLY groups_messages
     ADD CONSTRAINT groups_messages_root_id_fkey FOREIGN KEY (root_id) REFERENCES groups_messages(id) MATCH FULL;
 ALTER TABLE ONLY groups_messages
     ADD CONSTRAINT groups_messages_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
+ALTER TABLE ONLY potds
+    ADD CONSTRAINT image_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
 ALTER TABLE ONLY images
     ADD CONSTRAINT images_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY images
@@ -4169,8 +4183,6 @@ ALTER TABLE ONLY polls
     ADD CONSTRAINT polls_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY polls
     ADD CONSTRAINT polls_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-ALTER TABLE ONLY potds
-    ADD CONSTRAINT potds_image_id_fkey FOREIGN KEY (image_id) REFERENCES images(id) MATCH FULL ON DELETE CASCADE;
 ALTER TABLE ONLY potds
     ADD CONSTRAINT potds_images_category_id_fkey FOREIGN KEY (images_category_id) REFERENCES images_categories(id) MATCH FULL;
 ALTER TABLE ONLY potds
