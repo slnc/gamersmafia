@@ -600,6 +600,7 @@ class Term < ActiveRecord::Base
 
   # Busca contenidos asociados a este término o a uno de sus hijos
   def find(*args)
+    raise "deprecated, do it another way man..."
     args = _add_cats_ids_cond(*args)
     res = Content.find(*args)
 
@@ -657,14 +658,16 @@ class Term < ActiveRecord::Base
     @_add_cats_ids_done = true
     options = {}.merge(args.last.is_a?(Hash) ? args.pop : {}) # copypasted de extract_options_from_args!(args)
     @siblings ||= []
+    new_cond = ""
 
     # si el primer arg es un id caso especial!
     if args.reverse.first.kind_of?(Fixnum)
+      raise "wtf, deprecated man!"
       nargs = args.reverse
       theid = nargs.pop
       nargs.push(:first)
       raise "find(id) a traves de term sin haber especificado content_type" unless options[:content_type]
-      new_cond << " AND #{ActiveSupport::Inflector::tableize(options[:content_type])}.id = #{theid}"
+      new_cond << " AND type = #{ActiveSupport::Inflector::tableize(options[:content_type])}.id = #{theid}"
       args = nargs
     end
 
@@ -677,8 +680,7 @@ class Term < ActiveRecord::Base
     end
 
     if options[:content_type]
-      new_cond << " AND contents.content_type_id = #{ContentType.find_by_name(options[:content_type]).id}"
-      options[:joins] = "JOIN #{ActiveSupport::Inflector::tableize(options[:content_type])} ON #{ActiveSupport::Inflector::tableize(options[:content_type])}.id = contents.id"
+      new_cond << " AND type = '#{options[:content_type]}'"
     end
 
 

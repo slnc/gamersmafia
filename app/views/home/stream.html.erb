@@ -21,14 +21,14 @@
   <%=render :partial => "polls"%>
 
   <%mflist("Eventos", Content.content_type_name("Event").published.recent.of_interest_to(@user).find(:all, :order => "created_on")) do |event| %>
-    <%=link_to event.name, gmurl(event)%>
+    <%=link_to event.title, gmurl(event)%>
     <img src="<%=event.main_image%>" />
   <% end -%>
 
   <%mflist("Descargas", Content.content_type_name("Download").published.recent.of_interest_to(@user).find(:all, :order => "created_on")) do |download| %>
   <div class="content-headline">
     <div class="float-right w100"><%=content_thumbnail_image(download)%></div>
-    <%=gm_icon("download")%> <%=link_to download.name, gmurl(download)%>
+    <%=gm_icon("download")%> <%=link_to download.title, gmurl(download)%>
     <div class="secondary f_milli"><%=content_tags(download)%></div>
   </div>
   <% end -%>
@@ -36,11 +36,11 @@
   <%=render :partial => "curiosidades"%>
 
   <%mflist("Demos", Content.content_type_name("Demo").published.recent.of_interest_to(@user).find(:all, :order => "created_on")) do |demo| %>
-    <%=link_to demo.name, gmurl(demo)%>
+    <%=link_to demo.title, gmurl(demo)%>
   <% end -%>
 
   <%mflist("RecruitmentAd", Content.content_type_name("RecruitmentAd").published.recent.of_interest_to(@user).find(:all, :order => "created_on")) do |ad| %>
-    <%=link_to ad.name, gmurl(ad)%>
+    <%=link_to ad.title, gmurl(ad)%>
   <% end -%>
 
 	<%=render :partial => 'daily_joy' %>

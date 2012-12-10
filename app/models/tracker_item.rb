@@ -19,8 +19,9 @@ class TrackerItem < ActiveRecord::Base
 
   def self.updated_for_user(someuser, only_new, limit='50')
     q_only = only_new ? "AND b.lastseen_on < a.updated_on " : ''
-    User.db_query(
-        "SELECT a.*
+    items = User.db_query(
+        "SELECT a.id,
+           a.updated_on
          FROM contents a
          JOIN tracker_items b on a.id = b.content_id
          WHERE b.user_id = #{someuser.id}
@@ -28,6 +29,11 @@ class TrackerItem < ActiveRecord::Base
          AND a.state = #{Cms::PUBLISHED}
          #{q_only}
          ORDER BY a.updated_on DESC LIMIT #{limit}")
+    joined_content_ids = items.collect {|dbr| dbr['id'].to_s }
+    Content.published.find(
+        :all,
+        :conditions => ["id IN (?)", joined_content_ids],
+        :order => "updated_on DESC")
   end
 
   def check_if_recommended

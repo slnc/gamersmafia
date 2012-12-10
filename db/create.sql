@@ -255,7 +255,25 @@ CREATE SEQUENCE bazar_districts_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bazar_districts_id_seq OWNED BY bazar_districts.id;
-CREATE TABLE bets (
+CREATE TABLE bets_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    bets_count integer DEFAULT 0 NOT NULL
+);
+CREATE SEQUENCE bets_categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE bets_categories_id_seq OWNED BY bets_categories.id;
+CREATE TABLE old_bets (
     id integer NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
@@ -280,31 +298,13 @@ CREATE TABLE bets (
     closed boolean DEFAULT false NOT NULL,
     unique_content_id integer
 );
-CREATE TABLE bets_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    bets_count integer DEFAULT 0 NOT NULL
-);
-CREATE SEQUENCE bets_categories_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE bets_categories_id_seq OWNED BY bets_categories.id;
 CREATE SEQUENCE bets_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE bets_id_seq OWNED BY bets.id;
+ALTER SEQUENCE bets_id_seq OWNED BY old_bets.id;
 CREATE TABLE bets_options (
     id integer NOT NULL,
     content_id integer NOT NULL,
@@ -332,7 +332,7 @@ CREATE SEQUENCE bets_tickets_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE bets_tickets_id_seq OWNED BY bets_tickets.id;
-CREATE TABLE blogentries (
+CREATE TABLE old_blogentries (
     id integer NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
@@ -357,7 +357,7 @@ CREATE SEQUENCE blogentries_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE blogentries_id_seq OWNED BY blogentries.id;
+ALTER SEQUENCE blogentries_id_seq OWNED BY old_blogentries.id;
 CREATE TABLE cash_movements (
     id integer NOT NULL,
     description character varying NOT NULL,
@@ -509,7 +509,24 @@ CREATE SEQUENCE clans_sponsors_id_seq
     CACHE 1;
 ALTER SEQUENCE clans_sponsors_id_seq OWNED BY clans_sponsors.id;
 SET default_with_oids = false;
-CREATE TABLE columns (
+CREATE TABLE columns_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    columns_count integer DEFAULT 0 NOT NULL
+);
+CREATE SEQUENCE columns_categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE columns_categories_id_seq OWNED BY columns_categories.id;
+CREATE TABLE old_columns (
     id integer NOT NULL,
     title character varying NOT NULL,
     description text NOT NULL,
@@ -532,30 +549,13 @@ CREATE TABLE columns (
     unique_content_id integer,
     source character varying
 );
-CREATE TABLE columns_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    columns_count integer DEFAULT 0 NOT NULL
-);
-CREATE SEQUENCE columns_categories_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE columns_categories_id_seq OWNED BY columns_categories.id;
 CREATE SEQUENCE columns_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE columns_id_seq OWNED BY columns.id;
+ALTER SEQUENCE columns_id_seq OWNED BY old_columns.id;
 CREATE TABLE comment_violation_opinions (
     id integer NOT NULL,
     user_id integer NOT NULL,
@@ -1002,27 +1002,6 @@ CREATE TABLE countries (
     code character varying,
     name character varying
 );
-CREATE TABLE coverages (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    approved_by_user_id integer,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    description text NOT NULL,
-    main text,
-    content_id integer NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL,
-    unique_content_id integer
-);
 CREATE TABLE decision_choices (
     id integer NOT NULL,
     decision_id integer NOT NULL,
@@ -1135,7 +1114,25 @@ CREATE SEQUENCE demo_mirrors_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE demo_mirrors_id_seq OWNED BY demo_mirrors.id;
-CREATE TABLE demos (
+CREATE TABLE demos_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    demos_count integer DEFAULT 0 NOT NULL
+);
+CREATE SEQUENCE demos_categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE demos_categories_id_seq OWNED BY demos_categories.id;
+CREATE TABLE old_demos (
     id integer NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
@@ -1171,31 +1168,13 @@ CREATE TABLE demos (
     closed boolean DEFAULT false NOT NULL,
     unique_content_id integer
 );
-CREATE TABLE demos_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    demos_count integer DEFAULT 0 NOT NULL
-);
-CREATE SEQUENCE demos_categories_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE demos_categories_id_seq OWNED BY demos_categories.id;
 CREATE SEQUENCE demos_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE demos_id_seq OWNED BY demos.id;
+ALTER SEQUENCE demos_id_seq OWNED BY old_demos.id;
 CREATE TABLE dictionary_words (
     id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
@@ -1239,7 +1218,26 @@ CREATE SEQUENCE downloaded_downloads_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE downloaded_downloads_id_seq OWNED BY downloaded_downloads.id;
-CREATE TABLE downloads (
+CREATE TABLE downloads_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    description character varying,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    root_id integer,
+    code character varying,
+    downloads_count integer DEFAULT 0 NOT NULL,
+    last_updated_item_id integer,
+    clan_id integer
+);
+CREATE SEQUENCE downloads_categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE downloads_categories_id_seq OWNED BY downloads_categories.id;
+CREATE TABLE old_downloads (
     id integer NOT NULL,
     title character varying NOT NULL,
     description text,
@@ -1263,32 +1261,13 @@ CREATE TABLE downloads (
     closed boolean DEFAULT false NOT NULL,
     unique_content_id integer
 );
-CREATE TABLE downloads_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    description character varying,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    root_id integer,
-    code character varying,
-    downloads_count integer DEFAULT 0 NOT NULL,
-    last_updated_item_id integer,
-    clan_id integer
-);
-CREATE SEQUENCE downloads_categories_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE downloads_categories_id_seq OWNED BY downloads_categories.id;
 CREATE SEQUENCE downloads_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE downloads_id_seq OWNED BY downloads.id;
+ALTER SEQUENCE downloads_id_seq OWNED BY old_downloads.id;
 CREATE TABLE dudes (
     id integer NOT NULL,
     date date NOT NULL,
@@ -1301,7 +1280,26 @@ CREATE SEQUENCE dudes_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE dudes_id_seq OWNED BY dudes.id;
-CREATE TABLE events (
+CREATE TABLE events_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    events_count integer DEFAULT 0 NOT NULL,
+    clan_id integer
+);
+CREATE SEQUENCE events_categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE events_categories_id_seq OWNED BY events_categories.id;
+CREATE TABLE old_events (
     id integer NOT NULL,
     title character varying NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
@@ -1326,39 +1324,41 @@ CREATE TABLE events (
     closed boolean DEFAULT false NOT NULL,
     unique_content_id integer
 );
-CREATE TABLE events_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    events_count integer DEFAULT 0 NOT NULL,
-    clan_id integer
-);
-CREATE SEQUENCE events_categories_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE events_categories_id_seq OWNED BY events_categories.id;
 CREATE SEQUENCE events_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE events_id_seq OWNED BY events.id;
+ALTER SEQUENCE events_id_seq OWNED BY old_events.id;
+CREATE TABLE old_coverages (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    approved_by_user_id integer,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    description text NOT NULL,
+    main text,
+    content_id integer NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
+);
 CREATE SEQUENCE events_news_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE events_news_id_seq OWNED BY coverages.id;
+ALTER SEQUENCE events_news_id_seq OWNED BY old_coverages.id;
 CREATE TABLE events_users (
     event_id integer NOT NULL,
     user_id integer NOT NULL
@@ -1521,7 +1521,7 @@ CREATE SEQUENCE forum_forums_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE forum_forums_id_seq OWNED BY topics_categories.id;
-CREATE TABLE topics (
+CREATE TABLE old_topics (
     id integer NOT NULL,
     title character varying NOT NULL,
     main text NOT NULL,
@@ -1548,7 +1548,7 @@ CREATE SEQUENCE forum_topics_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE forum_topics_id_seq OWNED BY topics.id;
+ALTER SEQUENCE forum_topics_id_seq OWNED BY old_topics.id;
 CREATE TABLE friends_recommendations (
     id integer NOT NULL,
     user_id integer NOT NULL,
@@ -1584,7 +1584,7 @@ CREATE SEQUENCE friends_users_id_seq
     CACHE 1;
 ALTER SEQUENCE friends_users_id_seq OWNED BY friendships.id;
 SET default_with_oids = false;
-CREATE TABLE funthings (
+CREATE TABLE old_funthings (
     id integer NOT NULL,
     title character varying NOT NULL,
     description character varying,
@@ -1610,7 +1610,7 @@ CREATE SEQUENCE funthings_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE funthings_id_seq OWNED BY funthings.id;
+ALTER SEQUENCE funthings_id_seq OWNED BY old_funthings.id;
 CREATE TABLE gamersmafiageist_codes (
     id integer NOT NULL,
     user_id integer NOT NULL,
@@ -1790,7 +1790,26 @@ CREATE SEQUENCE groups_messages_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE groups_messages_id_seq OWNED BY groups_messages.id;
-CREATE TABLE images (
+CREATE TABLE images_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    images_count integer DEFAULT 0 NOT NULL,
+    clan_id integer
+);
+CREATE SEQUENCE images_categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE images_categories_id_seq OWNED BY images_categories.id;
+CREATE TABLE old_images (
     id integer NOT NULL,
     description character varying,
     file character varying,
@@ -1811,33 +1830,31 @@ CREATE TABLE images (
     closed boolean DEFAULT false NOT NULL,
     unique_content_id integer
 );
-CREATE TABLE images_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    images_count integer DEFAULT 0 NOT NULL,
-    clan_id integer
-);
-CREATE SEQUENCE images_categories_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE images_categories_id_seq OWNED BY images_categories.id;
 CREATE SEQUENCE images_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE images_id_seq OWNED BY images.id;
-CREATE TABLE interviews (
+ALTER SEQUENCE images_id_seq OWNED BY old_images.id;
+CREATE TABLE interviews_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    interviews_count integer DEFAULT 0 NOT NULL
+);
+CREATE SEQUENCE interviews_categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE interviews_categories_id_seq OWNED BY interviews_categories.id;
+CREATE TABLE old_interviews (
     id integer NOT NULL,
     title character varying NOT NULL,
     description text NOT NULL,
@@ -1859,30 +1876,13 @@ CREATE TABLE interviews (
     unique_content_id integer,
     source character varying
 );
-CREATE TABLE interviews_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    interviews_count integer DEFAULT 0 NOT NULL
-);
-CREATE SEQUENCE interviews_categories_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE interviews_categories_id_seq OWNED BY interviews_categories.id;
 CREATE SEQUENCE interviews_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE interviews_id_seq OWNED BY interviews.id;
+ALTER SEQUENCE interviews_id_seq OWNED BY old_interviews.id;
 CREATE TABLE ip_bans (
     id integer NOT NULL,
     ip inet NOT NULL,
@@ -2013,7 +2013,27 @@ CREATE SEQUENCE ne_references_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ne_references_id_seq OWNED BY ne_references.id;
-CREATE TABLE news (
+CREATE TABLE news_categories (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    parent_id integer,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    root_id integer,
+    code character varying,
+    description character varying,
+    last_updated_item_id integer,
+    news_count integer DEFAULT 0 NOT NULL,
+    clan_id integer,
+    file character varying
+);
+CREATE SEQUENCE news_categories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+ALTER SEQUENCE news_categories_id_seq OWNED BY news_categories.id;
+CREATE TABLE old_news (
     id integer NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
@@ -2035,33 +2055,13 @@ CREATE TABLE news (
     unique_content_id integer,
     source character varying
 );
-CREATE TABLE news_categories (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    parent_id integer,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    root_id integer,
-    code character varying,
-    description character varying,
-    last_updated_item_id integer,
-    news_count integer DEFAULT 0 NOT NULL,
-    clan_id integer,
-    file character varying
-);
-CREATE SEQUENCE news_categories_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE news_categories_id_seq OWNED BY news_categories.id;
 CREATE SEQUENCE news_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE news_id_seq OWNED BY news.id;
+ALTER SEQUENCE news_id_seq OWNED BY old_news.id;
 CREATE TABLE notifications (
     id integer NOT NULL,
     user_id integer NOT NULL,
@@ -2079,6 +2079,118 @@ CREATE SEQUENCE notifications_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE notifications_id_seq OWNED BY notifications.id;
+CREATE TABLE old_polls (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    approved_by_user_id integer,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    starts_on timestamp without time zone NOT NULL,
+    ends_on timestamp without time zone NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    clan_id integer,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer,
+    polls_votes_count integer DEFAULT 0 NOT NULL
+);
+CREATE TABLE old_questions (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    description text,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    accepted_answer_comment_id integer,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    approved_by_user_id integer,
+    ammount numeric(10,2),
+    answered_on timestamp without time zone,
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer,
+    answer_selected_by_user_id integer
+);
+CREATE TABLE old_recruiment_ads (
+    id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    user_id integer NOT NULL,
+    clan_id integer,
+    game_id integer NOT NULL,
+    levels character varying,
+    country_id integer,
+    main text,
+    deleted boolean DEFAULT false NOT NULL,
+    title character varying NOT NULL,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer
+);
+CREATE TABLE old_reviews (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    description text NOT NULL,
+    main text NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    approved_by_user_id integer,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    home_image character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer,
+    source character varying
+);
+CREATE TABLE old_tutorials (
+    id integer NOT NULL,
+    title character varying NOT NULL,
+    description text NOT NULL,
+    main text NOT NULL,
+    user_id integer NOT NULL,
+    created_on timestamp without time zone DEFAULT now() NOT NULL,
+    updated_on timestamp without time zone DEFAULT now() NOT NULL,
+    approved_by_user_id integer,
+    hits_anonymous integer DEFAULT 0 NOT NULL,
+    hits_registered integer DEFAULT 0 NOT NULL,
+    home_image character varying,
+    cache_rating smallint,
+    cache_rated_times smallint,
+    cache_comments_count integer DEFAULT 0 NOT NULL,
+    log character varying,
+    state smallint DEFAULT 0 NOT NULL,
+    cache_weighted_rank numeric(10,2),
+    closed boolean DEFAULT false NOT NULL,
+    unique_content_id integer,
+    source character varying
+);
 CREATE TABLE outstanding_entities (
     id integer NOT NULL,
     entity_id integer NOT NULL,
@@ -2101,28 +2213,6 @@ CREATE SEQUENCE platforms_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE platforms_id_seq OWNED BY gaming_platforms.id;
-CREATE TABLE polls (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    approved_by_user_id integer,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    starts_on timestamp without time zone NOT NULL,
-    ends_on timestamp without time zone NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    clan_id integer,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL,
-    unique_content_id integer,
-    polls_votes_count integer DEFAULT 0 NOT NULL
-);
 CREATE TABLE polls_categories (
     id integer NOT NULL,
     name character varying NOT NULL,
@@ -2148,7 +2238,7 @@ CREATE SEQUENCE polls_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE polls_id_seq OWNED BY polls.id;
+ALTER SEQUENCE polls_id_seq OWNED BY old_polls.id;
 CREATE TABLE polls_options (
     id integer NOT NULL,
     content_id integer NOT NULL,
@@ -2277,29 +2367,6 @@ CREATE SEQUENCE profile_signatures_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE profile_signatures_id_seq OWNED BY profile_signatures.id;
-CREATE TABLE questions (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    description text,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    accepted_answer_comment_id integer,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    approved_by_user_id integer,
-    ammount numeric(10,2),
-    answered_on timestamp without time zone,
-    closed boolean DEFAULT false NOT NULL,
-    unique_content_id integer,
-    answer_selected_by_user_id integer
-);
 CREATE TABLE questions_categories (
     id integer NOT NULL,
     name character varying NOT NULL,
@@ -2330,37 +2397,14 @@ CREATE SEQUENCE questions_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE questions_id_seq OWNED BY questions.id;
-CREATE TABLE recruitment_ads (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    user_id integer NOT NULL,
-    clan_id integer,
-    game_id integer NOT NULL,
-    levels character varying,
-    country_id integer,
-    main text,
-    deleted boolean DEFAULT false NOT NULL,
-    title character varying NOT NULL,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL,
-    unique_content_id integer
-);
+ALTER SEQUENCE questions_id_seq OWNED BY old_questions.id;
 CREATE SEQUENCE recruitment_ads_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE recruitment_ads_id_seq OWNED BY recruitment_ads.id;
+ALTER SEQUENCE recruitment_ads_id_seq OWNED BY old_recruiment_ads.id;
 CREATE TABLE refered_hits (
     user_id integer NOT NULL,
     created_on timestamp without time zone DEFAULT now() NOT NULL,
@@ -2375,28 +2419,6 @@ CREATE SEQUENCE refered_hits_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE refered_hits_id_seq OWNED BY refered_hits.id;
-CREATE TABLE reviews (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    description text NOT NULL,
-    main text NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    approved_by_user_id integer,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    home_image character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL,
-    unique_content_id integer,
-    source character varying
-);
 CREATE TABLE reviews_categories (
     id integer NOT NULL,
     name character varying NOT NULL,
@@ -2420,7 +2442,7 @@ CREATE SEQUENCE reviews_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE reviews_id_seq OWNED BY reviews.id;
+ALTER SEQUENCE reviews_id_seq OWNED BY old_reviews.id;
 CREATE TABLE schema_migrations (
     version character varying NOT NULL
 );
@@ -2665,28 +2687,6 @@ CREATE TABLE treated_visitors (
     treatment integer NOT NULL,
     user_id integer
 );
-CREATE TABLE tutorials (
-    id integer NOT NULL,
-    title character varying NOT NULL,
-    description text NOT NULL,
-    main text NOT NULL,
-    user_id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    approved_by_user_id integer,
-    hits_anonymous integer DEFAULT 0 NOT NULL,
-    hits_registered integer DEFAULT 0 NOT NULL,
-    home_image character varying,
-    cache_rating smallint,
-    cache_rated_times smallint,
-    cache_comments_count integer DEFAULT 0 NOT NULL,
-    log character varying,
-    state smallint DEFAULT 0 NOT NULL,
-    cache_weighted_rank numeric(10,2),
-    closed boolean DEFAULT false NOT NULL,
-    unique_content_id integer,
-    source character varying
-);
 CREATE TABLE tutorials_categories (
     id integer NOT NULL,
     name character varying NOT NULL,
@@ -2710,7 +2710,7 @@ CREATE SEQUENCE tutorials_id_seq
     NO MINVALUE
     NO MAXVALUE
     CACHE 1;
-ALTER SEQUENCE tutorials_id_seq OWNED BY tutorials.id;
+ALTER SEQUENCE tutorials_id_seq OWNED BY old_tutorials.id;
 CREATE TABLE user_interests (
     id integer NOT NULL,
     user_id integer NOT NULL,
@@ -3205,11 +3205,9 @@ ALTER TABLE ONLY avatars ALTER COLUMN id SET DEFAULT nextval('avatars_id_seq'::r
 ALTER TABLE ONLY babes ALTER COLUMN id SET DEFAULT nextval('babes_id_seq'::regclass);
 ALTER TABLE ONLY ban_requests ALTER COLUMN id SET DEFAULT nextval('ban_requests_id_seq'::regclass);
 ALTER TABLE ONLY bazar_districts ALTER COLUMN id SET DEFAULT nextval('bazar_districts_id_seq'::regclass);
-ALTER TABLE ONLY bets ALTER COLUMN id SET DEFAULT nextval('bets_id_seq'::regclass);
 ALTER TABLE ONLY bets_categories ALTER COLUMN id SET DEFAULT nextval('bets_categories_id_seq'::regclass);
 ALTER TABLE ONLY bets_options ALTER COLUMN id SET DEFAULT nextval('bets_options_id_seq'::regclass);
 ALTER TABLE ONLY bets_tickets ALTER COLUMN id SET DEFAULT nextval('bets_tickets_id_seq'::regclass);
-ALTER TABLE ONLY blogentries ALTER COLUMN id SET DEFAULT nextval('blogentries_id_seq'::regclass);
 ALTER TABLE ONLY cash_movements ALTER COLUMN id SET DEFAULT nextval('cash_movements_id_seq'::regclass);
 ALTER TABLE ONLY chatlines ALTER COLUMN id SET DEFAULT nextval('chatlines_id_seq'::regclass);
 ALTER TABLE ONLY clans ALTER COLUMN id SET DEFAULT nextval('clans_id_seq'::regclass);
@@ -3219,7 +3217,6 @@ ALTER TABLE ONLY clans_groups_types ALTER COLUMN id SET DEFAULT nextval('clans_g
 ALTER TABLE ONLY clans_logs_entries ALTER COLUMN id SET DEFAULT nextval('clans_logs_entries_id_seq'::regclass);
 ALTER TABLE ONLY clans_movements ALTER COLUMN id SET DEFAULT nextval('clans_movements_id_seq'::regclass);
 ALTER TABLE ONLY clans_sponsors ALTER COLUMN id SET DEFAULT nextval('clans_sponsors_id_seq'::regclass);
-ALTER TABLE ONLY columns ALTER COLUMN id SET DEFAULT nextval('columns_id_seq'::regclass);
 ALTER TABLE ONLY columns_categories ALTER COLUMN id SET DEFAULT nextval('columns_categories_id_seq'::regclass);
 ALTER TABLE ONLY comment_violation_opinions ALTER COLUMN id SET DEFAULT nextval('comment_violation_opinions_id_seq'::regclass);
 ALTER TABLE ONLY comments ALTER COLUMN id SET DEFAULT nextval('comments_id_seq'::regclass);
@@ -3243,7 +3240,6 @@ ALTER TABLE ONLY contents_locks ALTER COLUMN id SET DEFAULT nextval('contents_lo
 ALTER TABLE ONLY contents_recommendations ALTER COLUMN id SET DEFAULT nextval('contents_recommendations_id_seq'::regclass);
 ALTER TABLE ONLY contents_terms ALTER COLUMN id SET DEFAULT nextval('contents_terms_id_seq'::regclass);
 ALTER TABLE ONLY contents_versions ALTER COLUMN id SET DEFAULT nextval('contents_versions_id_seq'::regclass);
-ALTER TABLE ONLY coverages ALTER COLUMN id SET DEFAULT nextval('events_news_id_seq'::regclass);
 ALTER TABLE ONLY decision_choices ALTER COLUMN id SET DEFAULT nextval('decision_choices_id_seq'::regclass);
 ALTER TABLE ONLY decision_comments ALTER COLUMN id SET DEFAULT nextval('decision_comments_id_seq'::regclass);
 ALTER TABLE ONLY decision_user_choices ALTER COLUMN id SET DEFAULT nextval('decision_user_choices_id_seq'::regclass);
@@ -3251,15 +3247,12 @@ ALTER TABLE ONLY decision_user_reputations ALTER COLUMN id SET DEFAULT nextval('
 ALTER TABLE ONLY decisions ALTER COLUMN id SET DEFAULT nextval('decisions_id_seq'::regclass);
 ALTER TABLE ONLY delayed_jobs ALTER COLUMN id SET DEFAULT nextval('delayed_jobs_id_seq'::regclass);
 ALTER TABLE ONLY demo_mirrors ALTER COLUMN id SET DEFAULT nextval('demo_mirrors_id_seq'::regclass);
-ALTER TABLE ONLY demos ALTER COLUMN id SET DEFAULT nextval('demos_id_seq'::regclass);
 ALTER TABLE ONLY demos_categories ALTER COLUMN id SET DEFAULT nextval('demos_categories_id_seq'::regclass);
 ALTER TABLE ONLY dictionary_words ALTER COLUMN id SET DEFAULT nextval('dictionary_words_id_seq'::regclass);
 ALTER TABLE ONLY download_mirrors ALTER COLUMN id SET DEFAULT nextval('download_mirrors_id_seq'::regclass);
 ALTER TABLE ONLY downloaded_downloads ALTER COLUMN id SET DEFAULT nextval('downloaded_downloads_id_seq'::regclass);
-ALTER TABLE ONLY downloads ALTER COLUMN id SET DEFAULT nextval('downloads_id_seq'::regclass);
 ALTER TABLE ONLY downloads_categories ALTER COLUMN id SET DEFAULT nextval('downloads_categories_id_seq'::regclass);
 ALTER TABLE ONLY dudes ALTER COLUMN id SET DEFAULT nextval('dudes_id_seq'::regclass);
-ALTER TABLE ONLY events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
 ALTER TABLE ONLY events_categories ALTER COLUMN id SET DEFAULT nextval('events_categories_id_seq'::regclass);
 ALTER TABLE ONLY factions ALTER COLUMN id SET DEFAULT nextval('factions_id_seq'::regclass);
 ALTER TABLE ONLY factions_banned_users ALTER COLUMN id SET DEFAULT nextval('factions_banned_users_id_seq'::regclass);
@@ -3272,7 +3265,6 @@ ALTER TABLE ONLY faq_categories ALTER COLUMN id SET DEFAULT nextval('faq_categor
 ALTER TABLE ONLY faq_entries ALTER COLUMN id SET DEFAULT nextval('faq_entries_id_seq'::regclass);
 ALTER TABLE ONLY friends_recommendations ALTER COLUMN id SET DEFAULT nextval('friends_recommendations_id_seq'::regclass);
 ALTER TABLE ONLY friendships ALTER COLUMN id SET DEFAULT nextval('friends_users_id_seq'::regclass);
-ALTER TABLE ONLY funthings ALTER COLUMN id SET DEFAULT nextval('funthings_id_seq'::regclass);
 ALTER TABLE ONLY gamersmafiageist_codes ALTER COLUMN id SET DEFAULT nextval('gamersmafiageist_codes_id_seq'::regclass);
 ALTER TABLE ONLY games ALTER COLUMN id SET DEFAULT nextval('games_id_seq'::regclass);
 ALTER TABLE ONLY games_maps ALTER COLUMN id SET DEFAULT nextval('games_maps_id_seq'::regclass);
@@ -3284,9 +3276,7 @@ ALTER TABLE ONLY gmtv_broadcast_messages ALTER COLUMN id SET DEFAULT nextval('gm
 ALTER TABLE ONLY gmtv_channels ALTER COLUMN id SET DEFAULT nextval('gmtv_channels_id_seq'::regclass);
 ALTER TABLE ONLY groups ALTER COLUMN id SET DEFAULT nextval('groups_id_seq'::regclass);
 ALTER TABLE ONLY groups_messages ALTER COLUMN id SET DEFAULT nextval('groups_messages_id_seq'::regclass);
-ALTER TABLE ONLY images ALTER COLUMN id SET DEFAULT nextval('images_id_seq'::regclass);
 ALTER TABLE ONLY images_categories ALTER COLUMN id SET DEFAULT nextval('images_categories_id_seq'::regclass);
-ALTER TABLE ONLY interviews ALTER COLUMN id SET DEFAULT nextval('interviews_id_seq'::regclass);
 ALTER TABLE ONLY interviews_categories ALTER COLUMN id SET DEFAULT nextval('interviews_categories_id_seq'::regclass);
 ALTER TABLE ONLY ip_bans ALTER COLUMN id SET DEFAULT nextval('ip_bans_id_seq'::regclass);
 ALTER TABLE ONLY ip_passwords_resets_requests ALTER COLUMN id SET DEFAULT nextval('ip_passwords_resets_requests_id_seq'::regclass);
@@ -3294,11 +3284,26 @@ ALTER TABLE ONLY macropolls ALTER COLUMN id SET DEFAULT nextval('macropolls_id_s
 ALTER TABLE ONLY macropolls_2007_1 ALTER COLUMN id SET DEFAULT nextval('macropolls_2007_1_id_seq'::regclass);
 ALTER TABLE ONLY messages ALTER COLUMN id SET DEFAULT nextval('messages_id_seq'::regclass);
 ALTER TABLE ONLY ne_references ALTER COLUMN id SET DEFAULT nextval('ne_references_id_seq'::regclass);
-ALTER TABLE ONLY news ALTER COLUMN id SET DEFAULT nextval('news_id_seq'::regclass);
 ALTER TABLE ONLY news_categories ALTER COLUMN id SET DEFAULT nextval('news_categories_id_seq'::regclass);
 ALTER TABLE ONLY notifications ALTER COLUMN id SET DEFAULT nextval('notifications_id_seq'::regclass);
+ALTER TABLE ONLY old_bets ALTER COLUMN id SET DEFAULT nextval('bets_id_seq'::regclass);
+ALTER TABLE ONLY old_blogentries ALTER COLUMN id SET DEFAULT nextval('blogentries_id_seq'::regclass);
+ALTER TABLE ONLY old_columns ALTER COLUMN id SET DEFAULT nextval('columns_id_seq'::regclass);
+ALTER TABLE ONLY old_coverages ALTER COLUMN id SET DEFAULT nextval('events_news_id_seq'::regclass);
+ALTER TABLE ONLY old_demos ALTER COLUMN id SET DEFAULT nextval('demos_id_seq'::regclass);
+ALTER TABLE ONLY old_downloads ALTER COLUMN id SET DEFAULT nextval('downloads_id_seq'::regclass);
+ALTER TABLE ONLY old_events ALTER COLUMN id SET DEFAULT nextval('events_id_seq'::regclass);
+ALTER TABLE ONLY old_funthings ALTER COLUMN id SET DEFAULT nextval('funthings_id_seq'::regclass);
+ALTER TABLE ONLY old_images ALTER COLUMN id SET DEFAULT nextval('images_id_seq'::regclass);
+ALTER TABLE ONLY old_interviews ALTER COLUMN id SET DEFAULT nextval('interviews_id_seq'::regclass);
+ALTER TABLE ONLY old_news ALTER COLUMN id SET DEFAULT nextval('news_id_seq'::regclass);
+ALTER TABLE ONLY old_polls ALTER COLUMN id SET DEFAULT nextval('polls_id_seq'::regclass);
+ALTER TABLE ONLY old_questions ALTER COLUMN id SET DEFAULT nextval('questions_id_seq'::regclass);
+ALTER TABLE ONLY old_recruiment_ads ALTER COLUMN id SET DEFAULT nextval('recruitment_ads_id_seq'::regclass);
+ALTER TABLE ONLY old_reviews ALTER COLUMN id SET DEFAULT nextval('reviews_id_seq'::regclass);
+ALTER TABLE ONLY old_topics ALTER COLUMN id SET DEFAULT nextval('forum_topics_id_seq'::regclass);
+ALTER TABLE ONLY old_tutorials ALTER COLUMN id SET DEFAULT nextval('tutorials_id_seq'::regclass);
 ALTER TABLE ONLY outstanding_entities ALTER COLUMN id SET DEFAULT nextval('outstanding_users_id_seq'::regclass);
-ALTER TABLE ONLY polls ALTER COLUMN id SET DEFAULT nextval('polls_id_seq'::regclass);
 ALTER TABLE ONLY polls_categories ALTER COLUMN id SET DEFAULT nextval('polls_categories_id_seq'::regclass);
 ALTER TABLE ONLY polls_options ALTER COLUMN id SET DEFAULT nextval('polls_options_id_seq'::regclass);
 ALTER TABLE ONLY polls_votes ALTER COLUMN id SET DEFAULT nextval('polls_votes_id_seq'::regclass);
@@ -3308,11 +3313,8 @@ ALTER TABLE ONLY portals ALTER COLUMN id SET DEFAULT nextval('portals_id_seq'::r
 ALTER TABLE ONLY potds ALTER COLUMN id SET DEFAULT nextval('potds_id_seq'::regclass);
 ALTER TABLE ONLY products ALTER COLUMN id SET DEFAULT nextval('products_id_seq'::regclass);
 ALTER TABLE ONLY profile_signatures ALTER COLUMN id SET DEFAULT nextval('profile_signatures_id_seq'::regclass);
-ALTER TABLE ONLY questions ALTER COLUMN id SET DEFAULT nextval('questions_id_seq'::regclass);
 ALTER TABLE ONLY questions_categories ALTER COLUMN id SET DEFAULT nextval('questions_categories_id_seq'::regclass);
-ALTER TABLE ONLY recruitment_ads ALTER COLUMN id SET DEFAULT nextval('recruitment_ads_id_seq'::regclass);
 ALTER TABLE ONLY refered_hits ALTER COLUMN id SET DEFAULT nextval('refered_hits_id_seq'::regclass);
-ALTER TABLE ONLY reviews ALTER COLUMN id SET DEFAULT nextval('reviews_id_seq'::regclass);
 ALTER TABLE ONLY reviews_categories ALTER COLUMN id SET DEFAULT nextval('reviews_categories_id_seq'::regclass);
 ALTER TABLE ONLY sent_emails ALTER COLUMN id SET DEFAULT nextval('sent_emails_id_seq'::regclass);
 ALTER TABLE ONLY silenced_emails ALTER COLUMN id SET DEFAULT nextval('silenced_emails_id_seq'::regclass);
@@ -3326,10 +3328,8 @@ ALTER TABLE ONLY staff_positions ALTER COLUMN id SET DEFAULT nextval('staff_posi
 ALTER TABLE ONLY staff_types ALTER COLUMN id SET DEFAULT nextval('staff_types_id_seq'::regclass);
 ALTER TABLE ONLY terms ALTER COLUMN id SET DEFAULT nextval('terms_id_seq'::regclass);
 ALTER TABLE ONLY textures ALTER COLUMN id SET DEFAULT nextval('textures_id_seq'::regclass);
-ALTER TABLE ONLY topics ALTER COLUMN id SET DEFAULT nextval('forum_topics_id_seq'::regclass);
 ALTER TABLE ONLY topics_categories ALTER COLUMN id SET DEFAULT nextval('forum_forums_id_seq'::regclass);
 ALTER TABLE ONLY tracker_items ALTER COLUMN id SET DEFAULT nextval('tracker_items_id_seq'::regclass);
-ALTER TABLE ONLY tutorials ALTER COLUMN id SET DEFAULT nextval('tutorials_id_seq'::regclass);
 ALTER TABLE ONLY tutorials_categories ALTER COLUMN id SET DEFAULT nextval('tutorials_categories_id_seq'::regclass);
 ALTER TABLE ONLY user_interests ALTER COLUMN id SET DEFAULT nextval('user_interests_id_seq'::regclass);
 ALTER TABLE ONLY user_login_changes ALTER COLUMN id SET DEFAULT nextval('user_login_changes_id_seq'::regclass);
@@ -3403,11 +3403,11 @@ ALTER TABLE ONLY bets_categories
     ADD CONSTRAINT bets_categories_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY bets_options
     ADD CONSTRAINT bets_options_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY bets
+ALTER TABLE ONLY old_bets
     ADD CONSTRAINT bets_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY bets_tickets
     ADD CONSTRAINT bets_tickets_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY blogentries
+ALTER TABLE ONLY old_blogentries
     ADD CONSTRAINT blogentries_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY cash_movements
     ADD CONSTRAINT cash_movements_pkey PRIMARY KEY (id);
@@ -3437,7 +3437,7 @@ ALTER TABLE ONLY clans
     ADD CONSTRAINT clans_tag_key UNIQUE (tag);
 ALTER TABLE ONLY columns_categories
     ADD CONSTRAINT columns_categories_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY columns
+ALTER TABLE ONLY old_columns
     ADD CONSTRAINT columns_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY comment_violation_opinions
     ADD CONSTRAINT comment_violation_opinions_pkey PRIMARY KEY (id);
@@ -3517,7 +3517,7 @@ ALTER TABLE ONLY demo_mirrors
     ADD CONSTRAINT demo_mirrors_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY demos_categories
     ADD CONSTRAINT demos_categories_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY demos
+ALTER TABLE ONLY old_demos
     ADD CONSTRAINT demos_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY dictionary_words
     ADD CONSTRAINT dictionary_words_name_key UNIQUE (name);
@@ -3529,9 +3529,9 @@ ALTER TABLE ONLY download_mirrors
     ADD CONSTRAINT downloadmirrors_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY downloads_categories
     ADD CONSTRAINT downloads_categories_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY downloads
+ALTER TABLE ONLY old_downloads
     ADD CONSTRAINT downloads_path_key UNIQUE (file);
-ALTER TABLE ONLY downloads
+ALTER TABLE ONLY old_downloads
     ADD CONSTRAINT downloads_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY dudes
     ADD CONSTRAINT dudes_date_key UNIQUE (date);
@@ -3539,9 +3539,9 @@ ALTER TABLE ONLY dudes
     ADD CONSTRAINT dudes_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY events_categories
     ADD CONSTRAINT events_categories_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY coverages
+ALTER TABLE ONLY old_coverages
     ADD CONSTRAINT events_news_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY events
+ALTER TABLE ONLY old_events
     ADD CONSTRAINT events_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY factions_banned_users
     ADD CONSTRAINT factions_banned_users_pkey PRIMARY KEY (id);
@@ -3575,7 +3575,7 @@ ALTER TABLE ONLY faq_entries
     ADD CONSTRAINT faq_entries_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY topics_categories
     ADD CONSTRAINT forum_forums_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY topics
+ALTER TABLE ONLY old_topics
     ADD CONSTRAINT forum_topics_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY friends_recommendations
     ADD CONSTRAINT friends_recommendations_pkey PRIMARY KEY (id);
@@ -3583,9 +3583,9 @@ ALTER TABLE ONLY friendships
     ADD CONSTRAINT friends_users_external_invitation_key_key UNIQUE (external_invitation_key);
 ALTER TABLE ONLY friendships
     ADD CONSTRAINT friends_users_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY funthings
+ALTER TABLE ONLY old_funthings
     ADD CONSTRAINT funthings_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY funthings
+ALTER TABLE ONLY old_funthings
     ADD CONSTRAINT funthings_url_key UNIQUE (main);
 ALTER TABLE ONLY gamersmafiageist_codes
     ADD CONSTRAINT gamersmafiageist_codes_code_key UNIQUE (code);
@@ -3615,13 +3615,13 @@ ALTER TABLE ONLY groups
     ADD CONSTRAINT groups_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY images_categories
     ADD CONSTRAINT images_categories_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY images
+ALTER TABLE ONLY old_images
     ADD CONSTRAINT images_path_key UNIQUE (file);
-ALTER TABLE ONLY images
+ALTER TABLE ONLY old_images
     ADD CONSTRAINT images_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY interviews_categories
     ADD CONSTRAINT interviews_categories_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY interviews
+ALTER TABLE ONLY old_interviews
     ADD CONSTRAINT interviews_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY ip_bans
     ADD CONSTRAINT ip_bans_pkey PRIMARY KEY (id);
@@ -3637,7 +3637,7 @@ ALTER TABLE ONLY ne_references
     ADD CONSTRAINT ne_references_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY news_categories
     ADD CONSTRAINT news_categories_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY news
+ALTER TABLE ONLY old_news
     ADD CONSTRAINT news_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY notifications
     ADD CONSTRAINT notifications_pkey PRIMARY KEY (id);
@@ -3657,9 +3657,9 @@ ALTER TABLE ONLY polls_options
     ADD CONSTRAINT polls_options_poll_id_key UNIQUE (content_id, name);
 ALTER TABLE ONLY polls_votes
     ADD CONSTRAINT polls_options_users_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY polls
+ALTER TABLE ONLY old_polls
     ADD CONSTRAINT polls_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY polls
+ALTER TABLE ONLY old_polls
     ADD CONSTRAINT polls_title_key UNIQUE (title);
 ALTER TABLE ONLY portal_headers
     ADD CONSTRAINT portal_headers_pkey PRIMARY KEY (id);
@@ -3683,15 +3683,15 @@ ALTER TABLE ONLY profile_signatures
     ADD CONSTRAINT profile_signatures_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY questions_categories
     ADD CONSTRAINT questions_categories_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY questions
+ALTER TABLE ONLY old_questions
     ADD CONSTRAINT questions_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY recruitment_ads
+ALTER TABLE ONLY old_recruiment_ads
     ADD CONSTRAINT recruitment_ads_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY refered_hits
     ADD CONSTRAINT refered_hits_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY reviews_categories
     ADD CONSTRAINT reviews_categories_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY reviews
+ALTER TABLE ONLY old_reviews
     ADD CONSTRAINT reviews_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY schema_migrations
     ADD CONSTRAINT schema_migrations_version_key UNIQUE (version);
@@ -3737,7 +3737,7 @@ ALTER TABLE ONLY treated_visitors
     ADD CONSTRAINT treated_visitors_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY tutorials_categories
     ADD CONSTRAINT tutorials_categories_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY tutorials
+ALTER TABLE ONLY old_tutorials
     ADD CONSTRAINT tutorials_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY user_interests
     ADD CONSTRAINT user_interests_pkey PRIMARY KEY (id);
@@ -3795,13 +3795,13 @@ CREATE INDEX avatars_clan_id ON avatars USING btree (clan_id);
 CREATE INDEX avatars_faction_id ON avatars USING btree (faction_id);
 CREATE UNIQUE INDEX avatars_name_faction_id ON avatars USING btree (name, faction_id);
 CREATE INDEX avatars_user_id ON avatars USING btree (user_id);
-CREATE INDEX bets_approved_by_user_id ON bets USING btree (approved_by_user_id);
+CREATE INDEX bets_approved_by_user_id ON old_bets USING btree (approved_by_user_id);
 CREATE UNIQUE INDEX bets_categories_unique ON bets_categories USING btree (name, parent_id);
-CREATE INDEX bets_state ON bets USING btree (state);
+CREATE INDEX bets_state ON old_bets USING btree (state);
 CREATE INDEX bets_tickets_user_id ON bets_tickets USING btree (user_id);
-CREATE INDEX bets_user_id ON bets USING btree (user_id);
-CREATE INDEX blogentries_published ON blogentries USING btree (user_id, deleted);
-CREATE INDEX blogentries_state ON blogentries USING btree (state);
+CREATE INDEX bets_user_id ON old_bets USING btree (user_id);
+CREATE INDEX blogentries_published ON old_blogentries USING btree (user_id, deleted);
+CREATE INDEX blogentries_state ON old_blogentries USING btree (state);
 CREATE INDEX cash_movements_from ON cash_movements USING btree (object_id_from, object_id_from_class);
 CREATE INDEX cash_movements_to ON cash_movements USING btree (object_id_to, object_id_to_class);
 CREATE INDEX chatlines_created_on ON chatlines USING btree (created_on);
@@ -3812,11 +3812,11 @@ CREATE INDEX clans_r_games_clan_id ON clans_games USING btree (clan_id);
 CREATE INDEX clans_r_games_game_id ON clans_games USING btree (game_id);
 CREATE UNIQUE INDEX clans_sponsors_clan_id_name ON clans_sponsors USING btree (clan_id, name);
 CREATE INDEX clans_tag ON clans USING btree (tag);
-CREATE INDEX columns_appr_and_not_deleted ON columns USING btree (approved_by_user_id, deleted);
-CREATE INDEX columns_approved_by_user_id ON columns USING btree (approved_by_user_id);
+CREATE INDEX columns_appr_and_not_deleted ON old_columns USING btree (approved_by_user_id, deleted);
+CREATE INDEX columns_approved_by_user_id ON old_columns USING btree (approved_by_user_id);
 CREATE UNIQUE INDEX columns_categories_unique ON columns_categories USING btree (name, parent_id);
-CREATE INDEX columns_state ON columns USING btree (state);
-CREATE INDEX columns_user_id ON columns USING btree (user_id);
+CREATE INDEX columns_state ON old_columns USING btree (state);
+CREATE INDEX columns_user_id ON old_columns USING btree (user_id);
 CREATE UNIQUE INDEX comment_violation_opinion ON comment_violation_opinions USING btree (user_id, comment_id);
 CREATE INDEX comment_violation_opinions_user_id ON comment_violation_opinions USING btree (user_id);
 CREATE INDEX comments_content_id ON comments USING btree (content_id);
@@ -3859,25 +3859,25 @@ CREATE INDEX decision_final_decision_choice_id ON decisions USING btree (final_d
 CREATE INDEX decision_user_choices_uniq ON decision_user_choices USING btree (decision_id, user_id);
 CREATE INDEX decisions_type_class_state ON decisions USING btree (decision_type_class, state);
 CREATE UNIQUE INDEX decisions_user_reputation_uniq ON decision_user_reputations USING btree (user_id, decision_type_class);
-CREATE INDEX demos_approved_by_user_id ON demos USING btree (approved_by_user_id);
-CREATE INDEX demos_approved_by_user_id_deleted ON demos USING btree (approved_by_user_id, deleted);
+CREATE INDEX demos_approved_by_user_id ON old_demos USING btree (approved_by_user_id);
+CREATE INDEX demos_approved_by_user_id_deleted ON old_demos USING btree (approved_by_user_id, deleted);
 CREATE UNIQUE INDEX demos_categories_unique ON demos_categories USING btree (name, parent_id);
-CREATE UNIQUE INDEX demos_file ON demos USING btree (file);
-CREATE UNIQUE INDEX demos_hash_md5 ON demos USING btree (file_hash_md5);
-CREATE INDEX demos_state ON demos USING btree (state);
-CREATE INDEX demos_user_id ON demos USING btree (user_id);
-CREATE INDEX downloads_approved_by_user_id ON downloads USING btree (approved_by_user_id);
+CREATE UNIQUE INDEX demos_file ON old_demos USING btree (file);
+CREATE UNIQUE INDEX demos_hash_md5 ON old_demos USING btree (file_hash_md5);
+CREATE INDEX demos_state ON old_demos USING btree (state);
+CREATE INDEX demos_user_id ON old_demos USING btree (user_id);
+CREATE INDEX downloads_approved_by_user_id ON old_downloads USING btree (approved_by_user_id);
 CREATE UNIQUE INDEX downloads_categories_unique ON downloads_categories USING btree (name, parent_id);
-CREATE INDEX downloads_hash_md5 ON downloads USING btree (file_hash_md5);
-CREATE INDEX downloads_state ON downloads USING btree (state);
-CREATE INDEX downloads_user_id ON downloads USING btree (user_id);
-CREATE INDEX events_appr_and_not_deleted ON events USING btree (approved_by_user_id, deleted);
-CREATE INDEX events_approved_by_user_id ON events USING btree (approved_by_user_id);
-CREATE INDEX events_news_approved_by_user_id ON coverages USING btree (approved_by_user_id);
-CREATE INDEX events_news_state ON coverages USING btree (state);
-CREATE INDEX events_news_user_id ON coverages USING btree (user_id);
-CREATE INDEX events_state ON events USING btree (state);
-CREATE INDEX events_user_id ON events USING btree (user_id);
+CREATE INDEX downloads_hash_md5 ON old_downloads USING btree (file_hash_md5);
+CREATE INDEX downloads_state ON old_downloads USING btree (state);
+CREATE INDEX downloads_user_id ON old_downloads USING btree (user_id);
+CREATE INDEX events_appr_and_not_deleted ON old_events USING btree (approved_by_user_id, deleted);
+CREATE INDEX events_approved_by_user_id ON old_events USING btree (approved_by_user_id);
+CREATE INDEX events_news_approved_by_user_id ON old_coverages USING btree (approved_by_user_id);
+CREATE INDEX events_news_state ON old_coverages USING btree (state);
+CREATE INDEX events_news_user_id ON old_coverages USING btree (user_id);
+CREATE INDEX events_state ON old_events USING btree (state);
+CREATE INDEX events_user_id ON old_events USING btree (user_id);
 CREATE UNIQUE INDEX factions_banned_users_fu ON factions_banned_users USING btree (faction_id, user_id);
 CREATE UNIQUE INDEX factions_capos_uniq ON factions_capos USING btree (faction_id, user_id);
 CREATE UNIQUE INDEX factions_editors_uniq ON factions_editors USING btree (faction_id, user_id, content_type_id);
@@ -3885,13 +3885,13 @@ CREATE INDEX factions_headers_lasttime_used_on ON factions_headers USING btree (
 CREATE UNIQUE INDEX factions_headers_names_faction_id ON factions_headers USING btree (faction_id, name);
 CREATE UNIQUE INDEX factions_links_names_faction_id ON factions_links USING btree (faction_id, name);
 CREATE UNIQUE INDEX forum_forums_code_name_parent_id ON topics_categories USING btree (code, name, parent_id);
-CREATE INDEX forum_topics_state ON topics USING btree (state);
-CREATE INDEX forum_topics_user_id ON topics USING btree (user_id);
+CREATE INDEX forum_topics_state ON old_topics USING btree (state);
+CREATE INDEX forum_topics_user_id ON old_topics USING btree (user_id);
 CREATE UNIQUE INDEX friends_recommendations_uniq ON friends_recommendations USING btree (user_id, recommended_user_id);
 CREATE INDEX friends_recommendations_user_id_undecided ON friends_recommendations USING btree (user_id, added_as_friend);
 CREATE UNIQUE INDEX friends_users_uniq ON friendships USING btree (sender_user_id, receiver_user_id);
-CREATE INDEX funthings_state ON funthings USING btree (state);
-CREATE UNIQUE INDEX funthings_title_uniq ON funthings USING btree (title);
+CREATE INDEX funthings_state ON old_funthings USING btree (state);
+CREATE UNIQUE INDEX funthings_title_uniq ON old_funthings USING btree (title);
 CREATE INDEX games_gaming_platform ON games USING btree (gaming_platform_id);
 CREATE INDEX games_has_competitions ON games USING btree (has_competitions);
 CREATE INDEX games_has_demos ON games USING btree (has_demos);
@@ -3903,48 +3903,48 @@ CREATE INDEX games_users_game_id ON games_users USING btree (game_id);
 CREATE UNIQUE INDEX games_users_uniq ON games_users USING btree (user_id, game_id);
 CREATE INDEX games_users_user_id ON games_users USING btree (user_id);
 CREATE UNIQUE INDEX games_versions_uniq ON games_versions USING btree (version, game_id);
-CREATE INDEX images_approved_by_user_id ON images USING btree (approved_by_user_id);
+CREATE INDEX images_approved_by_user_id ON old_images USING btree (approved_by_user_id);
 CREATE UNIQUE INDEX images_categories_unique ON images_categories USING btree (name, parent_id);
-CREATE INDEX images_hash_md5 ON images USING btree (file_hash_md5);
-CREATE INDEX images_state ON images USING btree (state);
-CREATE INDEX images_user_id ON images USING btree (user_id);
-CREATE INDEX interviews_approved_by_user_id ON interviews USING btree (approved_by_user_id);
+CREATE INDEX images_hash_md5 ON old_images USING btree (file_hash_md5);
+CREATE INDEX images_state ON old_images USING btree (state);
+CREATE INDEX images_user_id ON old_images USING btree (user_id);
+CREATE INDEX interviews_approved_by_user_id ON old_interviews USING btree (approved_by_user_id);
 CREATE UNIQUE INDEX interviews_categories_unique ON interviews_categories USING btree (name, parent_id);
-CREATE INDEX interviews_state ON interviews USING btree (state);
-CREATE INDEX interviews_user_id ON interviews USING btree (user_id);
+CREATE INDEX interviews_state ON old_interviews USING btree (state);
+CREATE INDEX interviews_user_id ON old_interviews USING btree (user_id);
 CREATE INDEX ip_passwords_resets_requests_ip_created_on ON ip_passwords_resets_requests USING btree (ip, created_on);
 CREATE INDEX messages_user_id_is_read ON messages USING btree (user_id_to) WHERE (is_read IS FALSE);
 CREATE INDEX ne_references_entity ON ne_references USING btree (entity_class, entity_id);
 CREATE INDEX ne_references_referencer ON ne_references USING btree (referencer_class, referencer_id);
 CREATE UNIQUE INDEX ne_references_uniq ON ne_references USING btree (entity_class, entity_id, referencer_class, referencer_id);
-CREATE INDEX news_approved_by_user_id ON news USING btree (approved_by_user_id);
+CREATE INDEX news_approved_by_user_id ON old_news USING btree (approved_by_user_id);
 CREATE UNIQUE INDEX news_categories_unique ON news_categories USING btree (name, parent_id);
-CREATE INDEX news_state ON news USING btree (state);
-CREATE INDEX news_user_id ON news USING btree (user_id);
+CREATE INDEX news_state ON old_news USING btree (state);
+CREATE INDEX news_user_id ON old_news USING btree (user_id);
 CREATE INDEX notifications_common ON notifications USING btree (user_id, read_on);
 CREATE INDEX notifications_type_id ON notifications USING btree (user_id, type_id);
 CREATE UNIQUE INDEX outstanding_entities_uniq ON outstanding_entities USING btree (type, portal_id, active_on);
 CREATE INDEX platforms_users_platform_id ON gaming_platforms_users USING btree (gaming_platform_id);
 CREATE UNIQUE INDEX platforms_users_platform_id_user_id ON gaming_platforms_users USING btree (user_id, gaming_platform_id);
 CREATE INDEX platforms_users_user_id ON gaming_platforms_users USING btree (user_id);
-CREATE INDEX polls_approved_by_user_id ON polls USING btree (approved_by_user_id);
+CREATE INDEX polls_approved_by_user_id ON old_polls USING btree (approved_by_user_id);
 CREATE UNIQUE INDEX polls_categories_code_parent_id ON polls_categories USING btree (code, parent_id);
 CREATE UNIQUE INDEX polls_categories_name_parent_id ON polls_categories USING btree (name, parent_id);
-CREATE INDEX polls_state ON polls USING btree (state);
-CREATE INDEX polls_user_id ON polls USING btree (user_id);
+CREATE INDEX polls_state ON old_polls USING btree (state);
+CREATE INDEX polls_user_id ON old_polls USING btree (user_id);
 CREATE UNIQUE INDEX portal_hits_uniq ON portal_hits USING btree (portal_id, date);
 CREATE UNIQUE INDEX portals_name_code_type ON portals USING btree (name, code, type);
 CREATE UNIQUE INDEX potds_uniq ON potds USING btree (date, portal_id, images_category_id);
 CREATE INDEX profile_signatures_user_id ON profile_signatures USING btree (user_id);
 CREATE UNIQUE INDEX profile_signatures_user_id_signer_user_id ON profile_signatures USING btree (user_id, signer_user_id);
 CREATE UNIQUE INDEX questions_categories_code_name_parent_id ON questions_categories USING btree (code, name, parent_id);
-CREATE INDEX questions_state ON questions USING btree (state);
-CREATE INDEX questions_user_id ON questions USING btree (user_id);
+CREATE INDEX questions_state ON old_questions USING btree (state);
+CREATE INDEX questions_user_id ON old_questions USING btree (user_id);
 CREATE INDEX refered_hits_user_id ON refered_hits USING btree (user_id);
-CREATE INDEX reviews_approved_by_user_id ON reviews USING btree (approved_by_user_id);
+CREATE INDEX reviews_approved_by_user_id ON old_reviews USING btree (approved_by_user_id);
 CREATE UNIQUE INDEX reviews_categories_unique ON reviews_categories USING btree (name, parent_id);
-CREATE INDEX reviews_state ON reviews USING btree (state);
-CREATE INDEX reviews_user_id ON reviews USING btree (user_id);
+CREATE INDEX reviews_state ON old_reviews USING btree (state);
+CREATE INDEX reviews_user_id ON old_reviews USING btree (user_id);
 CREATE INDEX sent_emails_created_on ON sent_emails USING btree (created_on);
 CREATE INDEX silenced_emails_lower ON silenced_emails USING btree (lower((email)::text));
 CREATE INDEX slog_entries_completed_on ON alerts USING btree (completed_on);
@@ -3964,10 +3964,10 @@ CREATE INDEX tracker_items_full ON tracker_items USING btree (content_id, user_i
 CREATE INDEX tracker_items_user_id_is_tracked ON tracker_items USING btree (user_id, is_tracked) WHERE (is_tracked = true);
 CREATE INDEX treated_visitors_multi ON treated_visitors USING btree (ab_test_id, visitor_id, treatment);
 CREATE UNIQUE INDEX treated_visitors_per_test ON treated_visitors USING btree (ab_test_id, visitor_id);
-CREATE INDEX tutorials_approved_by_user_id ON tutorials USING btree (approved_by_user_id);
+CREATE INDEX tutorials_approved_by_user_id ON old_tutorials USING btree (approved_by_user_id);
 CREATE UNIQUE INDEX tutorials_categories_unique ON tutorials_categories USING btree (name, parent_id);
-CREATE INDEX tutorials_state ON tutorials USING btree (state);
-CREATE INDEX tutorials_user_id ON tutorials USING btree (user_id);
+CREATE INDEX tutorials_state ON old_tutorials USING btree (state);
+CREATE INDEX tutorials_user_id ON old_tutorials USING btree (user_id);
 CREATE INDEX user_interests_entity_class_entity_id ON user_interests USING btree (entity_type_class, entity_id);
 CREATE INDEX user_interests_show_in_menu ON user_interests USING btree (user_id, show_in_menu);
 CREATE UNIQUE INDEX user_interests_uniq ON user_interests USING btree (user_id, entity_type_class, entity_id);
@@ -4019,21 +4019,21 @@ CREATE UNIQUE INDEX users_karma_daily_by_portal_uniq ON users_karma_daily_by_por
 SET search_path = public, pg_catalog;
 ALTER TABLE ONLY bets_options
     ADD CONSTRAINT bet_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
-ALTER TABLE ONLY bets
+ALTER TABLE ONLY old_bets
     ADD CONSTRAINT bets_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id);
-ALTER TABLE ONLY bets
+ALTER TABLE ONLY old_bets
     ADD CONSTRAINT bets_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-ALTER TABLE ONLY bets
+ALTER TABLE ONLY old_bets
     ADD CONSTRAINT bets_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
-ALTER TABLE ONLY bets
+ALTER TABLE ONLY old_bets
     ADD CONSTRAINT bets_winning_bets_option_id_fkey FOREIGN KEY (winning_bets_option_id) REFERENCES bets_options(id) MATCH FULL ON DELETE SET NULL;
-ALTER TABLE ONLY blogentries
+ALTER TABLE ONLY old_blogentries
     ADD CONSTRAINT blogentries_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-ALTER TABLE ONLY blogentries
+ALTER TABLE ONLY old_blogentries
     ADD CONSTRAINT blogentries_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY clans
     ADD CONSTRAINT clans_creator_user_id_fkey FOREIGN KEY (creator_user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY columns
+ALTER TABLE ONLY old_columns
     ADD CONSTRAINT columns_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY comment_violation_opinions
     ADD CONSTRAINT comment_violation_opinions_comment_id_fkey FOREIGN KEY (comment_id) REFERENCES comments(id);
@@ -4057,14 +4057,14 @@ ALTER TABLE ONLY polls_options
     ADD CONSTRAINT content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
 ALTER TABLE ONLY competitions_matches
     ADD CONSTRAINT content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
-ALTER TABLE ONLY demos
+ALTER TABLE ONLY old_demos
     ADD CONSTRAINT content_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
 ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_answer_selected_by_user_id_fkey FOREIGN KEY (answer_selected_by_user_id) REFERENCES users(id);
 ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
 ALTER TABLE ONLY contents
-    ADD CONSTRAINT contents_event_id_fkey FOREIGN KEY (event_id) REFERENCES events(id);
+    ADD CONSTRAINT contents_event_id_fkey FOREIGN KEY (event_id) REFERENCES old_events(id);
 ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id) MATCH FULL;
 ALTER TABLE ONLY contents
@@ -4083,7 +4083,7 @@ ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY contents
     ADD CONSTRAINT contents_winning_bets_option_id_fkey FOREIGN KEY (winning_bets_option_id) REFERENCES bets_options(id);
-ALTER TABLE ONLY coverages
+ALTER TABLE ONLY old_coverages
     ADD CONSTRAINT coverages_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY decision_choices
     ADD CONSTRAINT decision_choices_decision_id_fkey FOREIGN KEY (decision_id) REFERENCES decisions(id) MATCH FULL ON DELETE CASCADE;
@@ -4101,47 +4101,47 @@ ALTER TABLE ONLY decision_user_reputations
     ADD CONSTRAINT decision_user_reputations_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
 ALTER TABLE ONLY decisions
     ADD CONSTRAINT decisions_final_decision_choice_id_fkey FOREIGN KEY (final_decision_choice_id) REFERENCES decision_choices(id) ON DELETE SET NULL;
-ALTER TABLE ONLY demos
+ALTER TABLE ONLY old_demos
     ADD CONSTRAINT demos_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id);
-ALTER TABLE ONLY demos
+ALTER TABLE ONLY old_demos
     ADD CONSTRAINT demos_games_map_id_fkey FOREIGN KEY (games_map_id) REFERENCES games_maps(id) MATCH FULL;
-ALTER TABLE ONLY demos
+ALTER TABLE ONLY old_demos
     ADD CONSTRAINT demos_games_mode_id_fkey FOREIGN KEY (games_mode_id) REFERENCES games_modes(id) MATCH FULL;
-ALTER TABLE ONLY demos
+ALTER TABLE ONLY old_demos
     ADD CONSTRAINT demos_games_version_id_fkey FOREIGN KEY (games_version_id) REFERENCES games_versions(id) MATCH FULL;
-ALTER TABLE ONLY demos
+ALTER TABLE ONLY old_demos
     ADD CONSTRAINT demos_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-ALTER TABLE ONLY demos
+ALTER TABLE ONLY old_demos
     ADD CONSTRAINT demos_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id);
-ALTER TABLE ONLY downloads
+ALTER TABLE ONLY old_downloads
     ADD CONSTRAINT downloads_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-ALTER TABLE ONLY downloads
+ALTER TABLE ONLY old_downloads
     ADD CONSTRAINT downloads_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-ALTER TABLE ONLY coverages
+ALTER TABLE ONLY old_coverages
     ADD CONSTRAINT event_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
-ALTER TABLE ONLY events
+ALTER TABLE ONLY old_events
     ADD CONSTRAINT events_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY events
+ALTER TABLE ONLY old_events
     ADD CONSTRAINT events_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-ALTER TABLE ONLY coverages
+ALTER TABLE ONLY old_coverages
     ADD CONSTRAINT events_news_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY coverages
+ALTER TABLE ONLY old_coverages
     ADD CONSTRAINT events_news_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY events
-    ADD CONSTRAINT events_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES events(id) MATCH FULL;
-ALTER TABLE ONLY events
+ALTER TABLE ONLY old_events
+    ADD CONSTRAINT events_parent_id_fkey FOREIGN KEY (parent_id) REFERENCES old_events(id) MATCH FULL;
+ALTER TABLE ONLY old_events
     ADD CONSTRAINT events_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-ALTER TABLE ONLY events
+ALTER TABLE ONLY old_events
     ADD CONSTRAINT events_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY decisions
     ADD CONSTRAINT final_decision_choice_fk FOREIGN KEY (final_decision_choice_id) REFERENCES decision_choices(id) MATCH FULL ON DELETE SET NULL;
-ALTER TABLE ONLY topics
+ALTER TABLE ONLY old_topics
     ADD CONSTRAINT forum_topics_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY funthings
+ALTER TABLE ONLY old_funthings
     ADD CONSTRAINT funthings_approved_by_user_id_fkey FOREIGN KEY (approved_by_user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY funthings
+ALTER TABLE ONLY old_funthings
     ADD CONSTRAINT funthings_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-ALTER TABLE ONLY funthings
+ALTER TABLE ONLY old_funthings
     ADD CONSTRAINT funthings_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY gamersmafiageist_codes
     ADD CONSTRAINT gamersmafiageist_codes_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE SET NULL;
@@ -4157,19 +4157,19 @@ ALTER TABLE ONLY groups_messages
     ADD CONSTRAINT groups_messages_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY potds
     ADD CONSTRAINT image_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);
-ALTER TABLE ONLY images
+ALTER TABLE ONLY old_images
     ADD CONSTRAINT images_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-ALTER TABLE ONLY images
+ALTER TABLE ONLY old_images
     ADD CONSTRAINT images_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-ALTER TABLE ONLY interviews
+ALTER TABLE ONLY old_interviews
     ADD CONSTRAINT interviews_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY macropolls_2007_1
     ADD CONSTRAINT macropolls_2007_1_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY macropolls
     ADD CONSTRAINT macropolls_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY news
+ALTER TABLE ONLY old_news
     ADD CONSTRAINT news_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-ALTER TABLE ONLY news
+ALTER TABLE ONLY old_news
     ADD CONSTRAINT news_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY notifications
     ADD CONSTRAINT notifications_sender_user_id_fkey FOREIGN KEY (sender_user_id) REFERENCES users(id) MATCH FULL;
@@ -4179,37 +4179,37 @@ ALTER TABLE ONLY gaming_platforms_users
     ADD CONSTRAINT platforms_users_platform_id_fkey FOREIGN KEY (gaming_platform_id) REFERENCES gaming_platforms(id) MATCH FULL ON DELETE CASCADE;
 ALTER TABLE ONLY gaming_platforms_users
     ADD CONSTRAINT platforms_users_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;
-ALTER TABLE ONLY polls
+ALTER TABLE ONLY old_polls
     ADD CONSTRAINT polls_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-ALTER TABLE ONLY polls
+ALTER TABLE ONLY old_polls
     ADD CONSTRAINT polls_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY potds
     ADD CONSTRAINT potds_images_category_id_fkey FOREIGN KEY (images_category_id) REFERENCES images_categories(id) MATCH FULL;
 ALTER TABLE ONLY potds
     ADD CONSTRAINT potds_term_id_fkey FOREIGN KEY (term_id) REFERENCES terms(id) MATCH FULL ON DELETE CASCADE;
-ALTER TABLE ONLY questions
+ALTER TABLE ONLY old_questions
     ADD CONSTRAINT questions_accepted_answer_comment_id_fkey FOREIGN KEY (accepted_answer_comment_id) REFERENCES comments(id);
-ALTER TABLE ONLY questions
+ALTER TABLE ONLY old_questions
     ADD CONSTRAINT questions_answer_selected_by_user_id_fkey FOREIGN KEY (answer_selected_by_user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY questions
+ALTER TABLE ONLY old_questions
     ADD CONSTRAINT questions_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-ALTER TABLE ONLY questions
+ALTER TABLE ONLY old_questions
     ADD CONSTRAINT questions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
-ALTER TABLE ONLY recruitment_ads
+ALTER TABLE ONLY old_recruiment_ads
     ADD CONSTRAINT recruitment_ads_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-ALTER TABLE ONLY recruitment_ads
+ALTER TABLE ONLY old_recruiment_ads
     ADD CONSTRAINT recruitment_ads_country_id_fkey FOREIGN KEY (country_id) REFERENCES countries(id) MATCH FULL;
-ALTER TABLE ONLY recruitment_ads
+ALTER TABLE ONLY old_recruiment_ads
     ADD CONSTRAINT recruitment_ads_game_id_fkey FOREIGN KEY (game_id) REFERENCES games(id);
-ALTER TABLE ONLY recruitment_ads
+ALTER TABLE ONLY old_recruiment_ads
     ADD CONSTRAINT recruitment_ads_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id) MATCH FULL;
-ALTER TABLE ONLY recruitment_ads
+ALTER TABLE ONLY old_recruiment_ads
     ADD CONSTRAINT recruitment_ads_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY refered_hits
     ADD CONSTRAINT refered_hits_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL;
 ALTER TABLE ONLY users
     ADD CONSTRAINT resurrected_by_user_idfk FOREIGN KEY (resurrected_by_user_id) REFERENCES users(id);
-ALTER TABLE ONLY reviews
+ALTER TABLE ONLY old_reviews
     ADD CONSTRAINT reviews_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY skins_files
     ADD CONSTRAINT skins_files_skin_id_fkey FOREIGN KEY (skin_id) REFERENCES skins(id) MATCH FULL;
@@ -4239,11 +4239,11 @@ ALTER TABLE ONLY terms
     ADD CONSTRAINT terms_platform_id_fkey FOREIGN KEY (gaming_platform_id) REFERENCES gaming_platforms(id) MATCH FULL;
 ALTER TABLE ONLY terms
     ADD CONSTRAINT terms_root_id_fkey FOREIGN KEY (root_id) REFERENCES terms(id) MATCH FULL;
-ALTER TABLE ONLY topics
+ALTER TABLE ONLY old_topics
     ADD CONSTRAINT topics_clan_id_fkey FOREIGN KEY (clan_id) REFERENCES clans(id) MATCH FULL;
-ALTER TABLE ONLY topics
+ALTER TABLE ONLY old_topics
     ADD CONSTRAINT topics_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
-ALTER TABLE ONLY tutorials
+ALTER TABLE ONLY old_tutorials
     ADD CONSTRAINT tutorials_unique_content_id_fkey FOREIGN KEY (unique_content_id) REFERENCES contents(id);
 ALTER TABLE ONLY user_interests
     ADD CONSTRAINT user_interests_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) MATCH FULL ON DELETE CASCADE;

@@ -39,19 +39,12 @@ class Content < ActiveRecord::Base
   scope :onhold, :conditions => "state = #{Cms::ONHOLD}"
 
   scope :content_type_name, lambda { |name| {
-            :conditions => ["content_type_id = (
-                              SELECT id
-                              FROM content_types
-                              WHERE name = ?)", name]
+            :conditions => ["type = ?", name]
         }
   }
 
   scope :content_type_names, lambda { |names| {
-            :conditions => ["content_type_id IN (
-                              SELECT id
-                              FROM content_types
-                              WHERE name IN (?))",
-                              names]
+            :conditions => ["type IN (?)", names]
         }
   }
 
@@ -756,8 +749,8 @@ class Content < ActiveRecord::Base
   end
 
   def resolve_hid
-    if self.name.to_s != ""
-      self.name
+    if self.title.to_s != ""
+      self.title
     elsif self.type == "Image" && self.file.to_s != ""
       File.basename(im.varchar_value)
     else
@@ -766,8 +759,8 @@ class Content < ActiveRecord::Base
   end
 
   def resolve_html_hid
-    if self.name.to_s != ""
-      self.name
+    if self.title.to_s != ""
+      self.title
     elsif self.type == "Image" && self.file.to_s != ""
       "<img src=\"/cache/thumbnails/f/85x60/#{im.varchar_value}\" />"
     else

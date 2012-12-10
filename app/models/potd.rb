@@ -32,12 +32,12 @@ class Potd < ActiveRecord::Base
       term,
       "images.clan_id IS NULL
        AND images.id NOT IN
-         (SELECT DISTINCT(image_id) FROM potds WHERE portal_id = #{portal.id})")
+         (SELECT DISTINCT(content_id) FROM potds WHERE portal_id = #{portal.id})")
 
     if im
       begin
         Potd.create({:date => Date.today,
-                     :image_id => im.id,
+                     :content_id => im.id,
                      :portal_id => portal.id})
       rescue ActiveRecord::StatementInvalid
         # necesario por si dos usuarios visitan la web a la vez
@@ -48,13 +48,13 @@ class Potd < ActiveRecord::Base
   def self.choose_one_category(term_id, d=Date.today)
     im = select_from_term(
       Term.find(term_id),
-      "images.clan_id IS NULL
-   AND images.id NOT IN (SELECT distinct(image_id)
+      "clan_id IS NULL
+   AND id NOT IN (SELECT distinct(content_id)
                            FROM potds
                           WHERE term_id = #{term_id})")
     if im
       begin
-        Potd.create({:date => d, :image_id => im.id, :term_id => term_id})
+        Potd.create({:date => d, :content_id => im.id, :term_id => term_id})
       rescue ActiveRecord::StatementInvalid
         # Necesario por si dos usuarios visitan la web a la vez
       end
@@ -76,19 +76,18 @@ class Potd < ActiveRecord::Base
       return
     end
 
-    im = image_proxy.find(
+    im = Image.in_term(term).published.find(
       :first,
-      :conditions => "contents.state = #{Cms::PUBLISHED}
-                      AND #{conditions}
+      :conditions => "#{conditions}
                       AND cache_weighted_rank >= #{MIN_RANK_FOR_POTD}
                       AND cache_rated_times > #{MIN_RANK_FOR_POTD}",
       :order => "cache_weighted_rank DESC")
 
     if im.nil? then
       # averiguar categorías de las imgs de los últimos 7 días
-      im = term.images.find(
+      im = Image.in_term(term).published.find(
         :first,
-        :conditions => "#{conditions} AND contents.state = #{Cms::PUBLISHED}",
+        :conditions => conditions,
         :order => 'RANDOM()')
     end
     im
