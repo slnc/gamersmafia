@@ -1,5 +1,3 @@
-<% cache("/home/comunidad/clans_movements") do %>
-  <% mflist("Movimientos", Proc.new { ClansMovement.find(:all, :order => 'created_on DESC', :limit => 8)}, :grid => 3, :glast => true, :blast => true) do |cm| %>
-    <%=user_link(cm.user)%> <%=ClansMovement.translate_direction(cm.direction)%> <a href="<%=gmurl(cm.clan)%>"><%=cm.clan.tag%></a>
-  <% end %><%# mflist-%>
-<% end %><%# cache -%>
+<% mflist("Movimientos", Proc.new { ClansMovement.find(:all, :order => 'created_on DESC', :limit => 8)}, :grid => 3, :glast => true, :blast => true) do |cm| %>
+  <%=user_link(cm.user)%> <%=ClansMovement.translate_direction(cm.direction)%> <a href="<%=gmurl(cm.clan)%>"><%=cm.clan.tag%></a>
+<% end %><%# mflist-%>

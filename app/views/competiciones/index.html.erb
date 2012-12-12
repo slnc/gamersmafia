@@ -2,7 +2,6 @@
   <% mftext('Competiciones en curso') do %>
   <br />
 
-<% cache("/#{controller.portal.code}/competiciones/index/competiciones_en_curso") do %>
 <div style="float: left; width: 49%;">
     <%mftext('Ladders') do %>
   <table>
@@ -74,7 +73,6 @@
   <% end -%>
   </div>
 <% end -%>
-<% end -%>
 
   <div style="clear: left; margin-top: 10px;"></div>
 <% end -%>
@@ -84,7 +82,6 @@
     <%=render :partial => '/competiciones/open_ladders' %>
 <% end -%>
 
-<%cache("/arena/home/index/ranking") do %>
 <%mftext('Ranking', :has_submodules => true) do
 [['Jugadores', Competition::USERS], ['Clanes', Competition::CLANS]].each do |ard| %>
 <%mftext(ard[0]) do
@@ -103,14 +100,11 @@ next unless winners.size == 1 %>
 	<% end -%>
 <% end %><%# ard -%>
 <% end -%>
-<% end %><%# cache -%>
 
-<% cache("/#{controller.portal.code}/competiciones/index/inscripciones_abiertas2") do %>
 <%mflist('Inscripciones abiertas', controller.portal.competitions.find(:all, :conditions => 'type <> \'Ladder\' and state = 1')) do |competition| %>
 <%# TODO mostrar solo las que se deberían ver aquí %>
       <li><%=competition.pro? ? '(pro)' : ''%><div style="float: right;" class="infoinline"><%=competition.kind_of?(League) ? 'liga' : 'torneo'%></div><%=faction_favicon(competition.game)%> <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a></li>
   <% end -%>
-<% end -%>
 <%=render :partial => '/competiciones/inscripciones_abiertas' %>
 
   <% mftext('Últimos resultados') do %>
@@ -119,11 +113,9 @@ next unless winners.size == 1 %>
 
   <% mftext('Competiciones finalizadas') do %>
   <ul class="sidelist">
-  <% cache("/#{controller.portal.code}/competiciones/index/competiciones_finalizadas") do %>
   <% controller.portal.competitions.find(:all, :conditions => 'state >= 4').each do |competition| %>
   <li><%=competition.pro? ? '(pro)' : ''%><div style="float: right;" class="infoinline"><%=competition.kind_of?(League) ? 'liga' : 'torneo'%></div><%=faction_favicon(competition.game)%> <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a></li>
   <% end -%>
-<% end -%>
   </ul>
   <% end -%>
 <% end -%>

@@ -4,7 +4,6 @@
     <%= render :partial => 'shared/pager2', :locals => {:collection => @polls, :pos => 'top'} %>
 
     <table>
-<% cache("/#{controller.portal_code}/encuestas/index/page_#{params[:page]}") do %>
 <% @polls.each do |poll| %>
     <tr class="<%=oddclass%>">
       <td class="icon"><%=faction_favicon(Organizations.find_by_content(poll))%></td>
@@ -15,21 +14,18 @@
       <td class="timestamp infoinline"><%=print_tstamp(poll.created_on)%></td>
     </tr>
   <% end %>
-<% end %>
 </table>
     <%= render :partial => 'shared/pager2', :locals => {:collection => @polls, :pos => 'bottom'} %>
 	<% end -%>
 <% end -%>
 
 <% generic_support do %>
-<% cache ("/#{controller.portal_code}/encuestas/index/most_votes") do %>
 <%
 mfcontents_list('Más votadas',
 				   Proc.new { Poll.in_portal(controller.portal).published.find(:all, :order => 'polls_votes_count DESC', :limit => 5) }) do |o| %>
 <a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline right"><%=o.votes%> votos</div>
 <% end %>
-<% end -%>
 
 <% cache ("/#{controller.portal_code}/encuestas/index/most_commented/#{Time.now.strftime('%Y%m%d')}") do %>
 <%

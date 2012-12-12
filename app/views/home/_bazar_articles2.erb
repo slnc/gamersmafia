@@ -1,4 +1,3 @@
-<% cache("/common/home/index/articles2b#{bazar_district.code}") do %>
 <%
 bazar_district_portal = BazarDistrictPortal.find_by_code(bazar_district.code)
 names = {'Interview' => 'Entrevista', 'Column' => 'Columna', 'Tutorial' => 'Tutorial', 'Review' => 'Review'}
@@ -12,5 +11,4 @@ mfcontents_list("<a href=\"http://#{bazar_district.code}.#{App.domain}/articulos
 <%=content_category(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a>
     <% if o.home_image then %><div style="float: right;"><%=fc_thumbnail(o.home_image, 'f', Cms::IMG_ARTICLE_THUMB, false)%></div><% end -%>
     <div class="infoinline" style="text-transform: uppercase;"><%=names[o.class.name]%></div>
-<% end -%>
 <% end -%>

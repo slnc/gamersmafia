@@ -7,17 +7,15 @@
 		<%=mfcontents_basic("Generales",
 					Proc.new { News.in_term(@game_term).published.find(:all, :order => 'created_on desc', :limit => 10) },
 					[],
-					:faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/news2")%>
+					:faction_favicon => true, :blast => true)%>
 					</div>
 
 <div class="grid-4 glast">
-<% cache("/#{controller.portal_code}/home/index/coverages2") do %>
 	<% mfcontents_list('Coverages',
 				   Proc.new { Coverage.in_term(@game_term).published.find(:all, :order => 'coverages.created_on DESC', :limit => 8, :include => :event)},
 				   :blast => true) do |o| %>
 <a href="<%=gmurl(o)%>"><%=content_category(o)%> <%=o.title%></a><br />
 <div class="infoinline right"><a href="<%=gmurl(o.event)%>"><%=o.event.title%></a></div>
-<% end -%>
 <% end -%>
 </div>
 <div class="clearb"></div>
@@ -31,7 +29,7 @@
 	<%=mfcontents_basic("Tópics activos",
 					Proc.new { Topic.in_term(@game_term).published.find(:all, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 10) },
 					[],
-					:faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
+					:faction_favicon => true, :blast => true)%>
 	</div>
 
 	<%mftext('Foros activos', :grid => 3, :glast => true, :blast => true) do %>
@@ -50,18 +48,15 @@
 
 <div class="grid-4"><%=render :partial => '/home/open_bets' %></div>
 
-<% cache("/#{controller.portal_code}/home/index/demos2") do %>
 <%mfcontents_list('Demos',
 					Proc.new { Demo.in_term(@game_term).published.find(:all, :content_type => 'Demo', :order => 'demos.created_on desc', :limit => 5) },
 					{:faction_favicon => true, :grid => 4, :glast => true}) do |o| %>
 <%=content_category(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a><br />
 <div style="float: right;"><%=gm_icon("download", "small")%> <%=o.downloaded_times%></div><div class="infoinline"><% if o.event_id then %><a href="<%=gmurl(o.event)%>"><%=truncate(o.event.title, 24, '..')%></a><% else %>&nbsp;<% end -%></div>
 <% end -%>
-<% end -%>
 
 <div class="clearb"></div>
 
-<% cache("/#{controller.portal_code}/home/index/articles2") do %>
 <%mftext('Artículos', :has_submodules => true, :grid => 12, :glast => true) do
 	revs = controller.portal.review.count > 0
 	classes = %w(Column Interview Tutorial Review)
@@ -87,14 +82,12 @@ mfcontents_list(Cms::translate_content_name(it),
 	end -%>
 <% end -%>
 <% end -%>
-<% end -%>
 
 
 <div class="clearb"></div>
 
 
 <%mftext('Descargas', :has_submodules => true, :grid => 8) do
-cache("/#{controller.portal_code}/home/index/downloads2") do
 category = @game_term
 %>
 	<div class="grid-4">
@@ -110,7 +103,6 @@ category = @game_term
 					[],
 					:faction_favicon => true)%>
 	</div>
-<% end %><%# cache -%>
 <% end -%>
 
 <%=render :partial => '/home/poll' %>

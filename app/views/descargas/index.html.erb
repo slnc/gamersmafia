@@ -6,16 +6,7 @@
     <th>Archivos</th>
   </tr>
 
-<%
-if params[:category]
-  cache_path = "/common/descargas/index/folders_#{@category.id}"
-else
-  cache_path = "/#{controller.portal_code}/descargas/index/folders"
-end
-
-cache(cache_path) do
-
-if params[:category] then
+<% if params[:category] then
   @categories = @category.children.find(:all, :conditions => ['taxonomy = \'DownloadsCategory\' AND parent_id = ?', params[:category]], :order => 'lower(name) ASC')
 else
   @categories = controller.portal.downloads_categories[0].children.find(:all, :conditions => 'taxonomy = \'DownloadsCategory\'')
@@ -26,7 +17,6 @@ end %>
   <td class="first"><%=link_to subcategory.name, gmurl(subcategory, :taxonomy => 'DownloadsCategory')%></td>
   <td class="infoinline"><%=subcategory.contents_count(:cls_name => 'Download')%></td>
 </tr>
-<% end -%>
 <% end -%>
 </table>
 <% end -%>
@@ -46,7 +36,6 @@ downloads = Download.in_term(@category).published.paginate(
   <th class="centered w150">Veces descargado</th>
   <th class="timestamp">Tamaño</th>
 </tr>
-<% cache("/common/descargas/index/downloads_#{@category.id}/page_#{params[:page]}") do %>
 <% downloads.each do |download| %>
 <tr class="<%=oddclass%>">
   <td class="first"><%=link_to download.title, gmurl(download)%></td>
@@ -54,7 +43,6 @@ downloads = Download.in_term(@category).published.paginate(
   <td class="infoinline centered"><%=download.downloaded_times%></td>
   <td class="infoinline timestamp"><%=(download.file.to_s != '' and File.exists?("#{Rails.root}/public/#{download.file}")) ? number_to_human_size(File.size("#{Rails.root}/public/#{download.file}")) : ''%></td>
 </tr>
-<% end -%>
 <% end -%>
 </table>
 <%= render :partial => 'shared/pager2',
@@ -70,20 +58,16 @@ downloads = Download.in_term(@category).published.paginate(
 
 <% mftext('Los más descargados') do %>
 <ul class="content-hid">
-<% cache("/common/descargas/index/most_downloaded_#{@category.root_id}") do %>
   <% Download.published.in_term(@category.root).find(:all, :order => 'downloaded_times DESC', :limit => 5).each do |d| %>
   <li class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%>
   <div class="infoinline"><%=gm_icon("download", "small")%> <%=d.downloaded_times%> | <%=draw_rating(d.rating)%></div></li>
   <% end -%>
-<% end -%>
 </ul>
 <% end -%>
 <% end -%>
 
 <% mftext('Los que más han aportado') do %>
-<% cache("/common/descargas/index/most_productive_author_by_cat_#{@category.nil? ? '' : @category.id}") do %>
 <%=render :partial => '/shared/most_productive_authors', :locals => {:cls => Download, :category => @category}%>
-<% end -%>
 
 <% end if @category-%>
 <% end -%>

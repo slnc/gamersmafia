@@ -74,7 +74,6 @@ if user_is_authed && @user.is_faction_leader? && @user.faction_id then %>
 <%= render(:partial => '/layouts/tracker', :locals => { :user => @user }) if user_is_authed && @user.using_tracker %>
 
 <% if user_is_authed then %>
-<% cache("/_users/#{@user.id % 1000}/#{@user.id}/layouts/recommendations") do %>
 <% crecs = ContentsRecommendation.find_for_user(@user)
 if crecs.size > 0 then %>
 <div class="f_deci f-module-title">Recomendaciones</div>
@@ -104,7 +103,6 @@ if crecs.size > 0 then %>
 <% end -%>
 <% end %><%# mftext -%>
 <% end %><%# if crecs -%>
-<% end %><%# cache -%>
 
 <%= render :partial => '/layouts/last_commented_objects' %>
 

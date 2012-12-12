@@ -40,7 +40,6 @@
 
     <% mftext('Contenidos publicados') do %>
     <table>
-      <% cache("/common/miembros/#{@curuser.id % 1000}/#{@curuser.id}/contents_stats") do %>
       <%
 	  stats = Content.published_counts_by_user(@curuser)
     stats.sort_by { |content_type, count| content_type}.each do |content_type, count| %>
@@ -54,7 +53,6 @@
             </td>
         </tr>
       <% end -%>
-    <% end -%>
     </table>
 	<% end -%>
 

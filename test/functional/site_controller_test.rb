@@ -2,7 +2,7 @@
 require 'test_helper'
 
 class SiteControllerTest < ActionController::TestCase
-  basic_test :carcel, :smileys, :rss, :contactar, :privacidad, :album, :fusiones, :webs_de_clanes, :logo, :responsabilidades, :portales, :novedades
+  basic_test :carcel, :smileys, :rss, :contactar, :privacidad, :album, :fusiones, :webs_de_clanes, :logo, :responsabilidades, :novedades
 
   test "should_create_pageview" do
     dbr = User.db_query("SELECT count(*) FROM stats.pageviews")
@@ -82,11 +82,6 @@ class SiteControllerTest < ActionController::TestCase
     assert_count_increases(ContentRating) do
       post :rate_content, { :content_rating => { :rating => '1', :content_id => 1}}
     end
-    assert_response :success
-  end
-
-  test "unserviceable_domain" do
-    get :unserviceable_domain
     assert_response :success
   end
 

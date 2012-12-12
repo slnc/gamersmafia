@@ -37,7 +37,6 @@
 <% end -%>
 
 <% @category = @faction.single_toplevel_term %>
-<% cache("/common/descargas/index/essential3_#{@category.nil? ? '' : @category.root_id}") do %>
 <% mftext('Descargas esenciales') do %>
 <ul class="content-hid">
 <% for d in Download.published.in_term_tree(@category).find(:all, :conditions => 'essential is true', :order => 'created_on DESC', :limit => 12) %>
@@ -45,10 +44,8 @@
   <% end -%>
 <% end -%>
 </ul>
-<% end -%>
 
 <% mftext('Últimas incorporaciones') do %>
-<% cache("/common/facciones/#{@faction.id}/last_joined") do %>
 <table>
   <% for user in User.find(:all, :conditions => ['faction_id = ?', @faction.id], :order => 'faction_last_changed_on desc', :limit => 10)%>
   <tr class="<%=oddclass%>">
@@ -56,7 +53,6 @@
     <td class="infoinline timestamp"><%=print_tstamp(user.faction_last_changed_on, 'date')%></td>
   </tr>
   <% end -%>
-<% end -%>
 </table>
 <% end -%>
 
@@ -66,11 +62,9 @@
 <% end -%>
 
 <% mftext('Webs aliadas') do %>
-<% cache("/common/facciones/#{@faction.id}/webs_aliadas") do %>
   <% for l in @faction.factions_links.find(:all, :order => 'id asc') %>
   <div style="text-align: center; margin-top: 3px;"><a href="<%=l.url%>" title="<%=l.name%>" target="_blank"><img class="icon" src="<%=fc_path(l.image)%>" style="width: 88px; height: 31px;" /></a></div>
   <% end -%>
-<% end -%>
 <% end -%>
 
 <% if user_is_authed && @user.has_skill?("Capo") && @faction.created_on >= 2.weeks.ago then %>

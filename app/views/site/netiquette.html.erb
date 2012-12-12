@@ -95,7 +95,7 @@
 
 	<%mftext('La Cárcel') do %>
 	<div class="centered"><a href="/site/carcel"><img class="icon" src="/images/carcel.png" /></a></div>
-	<p><strong><strong><a href="/site/carcel"><% cache('/common/carcel') do %><%=User.count(:conditions => "state = #{User::ST_BANNED}")%><% end -%></strong> personas</a></strong> se pasaron de mafiosos y disfrutan de unas vacaciones con todos los gastos pagados.</p>
+	<p><strong><strong><a href="/site/carcel"><%=User.count(:conditions => "state = #{User::ST_BANNED}")%></strong> personas</a></strong> se pasaron de mafiosos y disfrutan de unas vacaciones con todos los gastos pagados.</p>
 	<% end -%>
 
 	<%mftext('Infracciones') do %>

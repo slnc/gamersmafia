@@ -94,7 +94,6 @@ for option in @bet.bets_options.find(:all, :order => 'lower(name) asc')
 
 
 <%# TODO esto está mal , revisar todas, no podemos poner and id <> ? %>
-<% cache("/common/apuestas/show/latest_by_cat_#{@bet.main_category.id}") do %>
 <% other_bets = Bet.in_term(@bet.main_category).published.find(
     :all, :order => 'created_on desc', :limit => 5)
 if other_bets.size > 0 then %>
@@ -105,7 +104,5 @@ if other_bets.size > 0 then %>
 <% end -%>
 
 <% end -%>
-<% end %><%# cache-%>
 <% end -%>
 <% end -%>
-

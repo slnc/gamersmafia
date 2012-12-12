@@ -31,10 +31,6 @@ class SiteController < ApplicationController
     @title = 'El callejón'
   end
 
-  def portales
-
-  end
-
   def banners_bottom
     render :layout => false
   end
@@ -217,10 +213,6 @@ class SiteController < ApplicationController
 
   def http_500
     raise Exception
-  end
-
-  def unserviceable_domain
-    @title = 'Dominio fuera de servicio'
   end
 
   def maintain_lock

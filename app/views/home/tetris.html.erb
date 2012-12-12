@@ -11,7 +11,6 @@
 <div id="homecontents">
   <!--<div class="homezonedetail contents"></div>-->
   <div class="container">
-<% cache("/#{controller.portal_code}/home/index/news") do %>
     <div class="homebox" id="hmnt">
         <div id="home-news" class="subheader f_deca first"><div><span>Noticias</span></div></div>
         <ul class="content-hid2">
@@ -24,7 +23,7 @@ shown_news = []
 accum_portals = {}
 max = 20
 i = 0
-for news in @last_news
+@last_news.each do |news|
 	next unless news.main_category && news.main_category.bazar_district_id.nil?
 	accum_portals[news.main_category.root_id] ||= 0
 	accum_portals[news.main_category.root_id] += 1
@@ -41,11 +40,9 @@ end
 	<script type="text/javascript">contents = contents.concat(<%=shown_news.join(',')%>);</script>
     <div class="more"><a title="Ver más noticias" href="/noticias/">Más noticias &raquo;</a></div>
     </div>
-<% end -%>
 
 <%=render :partial => '/home/articles' %>
 
-<% cache("/#{controller.portal_code}/home/index/downloads") do %>
     <div class="homebox">
         <div id="home-downloads" class="subheader f_deca first"><div><span>Descargas</span></div></div>
         <ul class="content-hid2">
@@ -61,7 +58,6 @@ for download in @last_downloads
 <script type="text/javascript">contents = contents.concat(<%=shown_downloads.join(',')%>);</script>
   <div class="more"><a title="Ver más descargas" href="/descargas/">Más descargas &raquo;</a></div>
     </div>
-<% end -%>
   </div>
 
 </div>
@@ -70,7 +66,6 @@ for download in @last_downloads
 <div id="homecommunity">
   <div class="container">
 
-<% cache("/#{controller.portal_code}/home/index/topics") do %>
     <div class="homebox">
         <div id="home-topics" class="subheader f_deca first"><div><span>Foros</span></div></div>
     <ul class="content-hid2">
@@ -91,7 +86,6 @@ for topic in @last_topics
 <script type="text/javascript">contents = contents.concat(<%=shown_topics.join(',')%>);</script>
       <div class="more"><a title="Ir a los foros" href="/foros/">Ir a los foros &raquo;</a></div>
     </div>
-<% end %><%# cache -%>
 
 
   <%=render :partial => "polls"%>
@@ -216,7 +210,6 @@ shown_bets<< o.id %>
 
         <div class="homebox">
         <div id="home-demos" class="subheader f_deca first"><div><span>Demo</span></div></div>
-<% cache("/#{controller.portal_code}/home/index/demos") do %>
         <ul class="content-hid2">
 
 <%
@@ -230,7 +223,6 @@ for demo in @last_demos
 
 </ul>
 <script type="text/javascript">contents = contents.concat(<%=shown_demos.join(',')%>);</script>
-<% end -%>
        <div class="more"><a title="Ver más demos" href="/demos">Más demos &raquo;</a></div>
     </div>
 

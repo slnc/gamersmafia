@@ -7,12 +7,10 @@ images = Image.in_term(@category).published.paginate(
 %>
 <%= render :partial => 'shared/pager2',
            :locals => {:collection => images, :pos => 'top'} %>
-<% cache("/common/imagenes/gallery/#{@category.id}/page_#{params[:page]}") do
-images.each do |image| %>
+<% images.each do |image| %>
   <span class="screenshot">
     <%=link_to fc_thumbnail(image.file, 'i', '153x115', false), gmurl(image)%>
   </span>
-<% end %>
 <% end %>
 <div style="clear: both;">&nbsp;</div>
 <%= render :partial => 'shared/pager2',
@@ -30,13 +28,11 @@ images.each do |image| %>
 
   <% mftext('Aportaciones a la galería') do %>
   <ul class="content-hid">
-<% cache("/common/imagenes/gallery/#{@category.id}/aportaciones") do %>
   <%
 	@category.top_contributors(:limit => 10).each do |h| %>
   <li><%=draw_user_info(h[:user])%><br /><%=draw_pcent_bar(h[:pcent], "#{h[:count]} imágenes")%></li>
   <% end %>
   </ul>
-  <% end -%>
 
   <% mftext("Otras galerías de #{@category.parent.name}") do %>
   <ul class="content-hid">

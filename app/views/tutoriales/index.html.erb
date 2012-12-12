@@ -1,13 +1,6 @@
 <% content_main do %>
 <% mftext(@title) do %>
 <%
-if params[:category]
-  cache_path = "/common/tutoriales/index/folders_#{@category.id}"
-else
-  cache_path = "/#{controller.portal_code}/tutoriales/index/folders"
-end
-
-cache(cache_path) do
 if params[:category] then
   @categories = @category.children.find(:all, :conditions => 'taxonomy = \'TutorialsCategory\'')
 else
@@ -27,7 +20,6 @@ end %>
 <% end -%>
 </ul>
 <% end -%>
-<% end -%>
 
 <% if @category then %>
 
@@ -40,7 +32,6 @@ if tutorials.size > 0 then %>
 <%mftext('Tutoriales en esta categoría') do %>
 <%= render :partial => 'shared/pager2',
            :locals => {:collection => tutorials, :pos => 'top'} %>
-<% cache("/common/tutoriales/index/tutorials_#{@category.id}/page_#{params[:page]}") do %>
 <% tutorials.each do |tutorial| %>
 <div class="<%=oddclass%>">
       <h2 class="f_hecto"><%= link_to tutorial.title, gmurl(tutorial) %></h2>
@@ -54,7 +45,6 @@ if tutorials.size > 0 then %>
 </div>
 <% end -%>
 <% end -%>
-<% end %><%# cache -%>
 
 <%= render :partial => 'shared/pager2',
            :locals => {:collection => tutorials, :pos => 'bottom'} %>
@@ -78,7 +68,6 @@ if tutorials.size > 0 then %>
 -%>
 
 <% mftext('Más populares') do %>
-<% cache("/common/tutoriales/index/most_popular/#{@category.id}_#{Time.now.to_i/(86400)}") do %>
 <ul class="sidelist">
   <% @category.most_popular_items(:content_type => 'Tutorial').each do |c| %>
   <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
@@ -86,30 +75,20 @@ if tutorials.size > 0 then %>
 </ul>
 <% end -%>
 <% end -%>
-<% end %><%# cache
--%>
+
+  <% if @category then %>
+  <% mftext('Más recientes') do %>
+    <ul class="sidelist">
+      <% Tutorial.published.in_term(@category).find(:all, :order => 'created_on DESC', :limit => 5).each do |c| %>
+        <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
+        <% end -%>
+      </ul>
+    <% end -%>
 
 
-<%
-if @category then
-cache("/common/tutoriales/_latest_by_cat/#{@category.id}") do %>
-<% mftext('Más recientes') do %>
-<ul class="sidelist">
-	<% Tutorial.published.in_term(@category).find(:all, :order => 'created_on DESC', :limit => 5).each do |c| %>
-  <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
+    <% mftext('Autores más productivos') do %>
+      <%=render :partial => '/shared/most_productive_authors', :locals => { :cls => Tutorial, :category => @category, :taxonomy => 'TutorialsCategory'}%>
+    <% end -%>
   <% end -%>
-</ul>
-<% end -%>
-<% end %><%# cache
--%>
-
-
-<% cache("/common/tutoriales/_most_productive_author_by_cat/#{@category.id}") do %>
-<% mftext('Autores más productivos') do %>
-<%=render :partial => '/shared/most_productive_authors', :locals => { :cls => Tutorial, :category => @category, :taxonomy => 'TutorialsCategory'}%>
-<% end -%>
-<% end -%>
-<% end %><%# if
-%>
-<% end -%>
+<% end %>
 

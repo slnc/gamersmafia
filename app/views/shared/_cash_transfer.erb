@@ -30,13 +30,11 @@ function update_transfer_recipient(id) {
 	<tr>
   	<td colspan="2">
 	<select class="hidden" id="Factionopt" name="recipient_Faction_id">
-  	<% cache("/common/shared/_cash_transfer_factions") do %>
     <% Faction.find(:all, :order => 'lower(name) ASC').each do |f|
     next if sender.class.name == 'Faction' && sender.id == f.id
     %>
     <option value="<%=f.id%>"><%=f.name%></option>
     <% end -%>
-	<% end -%>
 	</select>
 
 	<span class="hidden" id="Clanopt">Nombre <input type="text" class="text" name="recipient_clan_name" /></span>

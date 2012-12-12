@@ -8,7 +8,6 @@
 <% end -%>
 
   <%mftext('Buscar por GUID') do %>
-  <% cache("/common/miembros/_rightside/buscar_por_guid") do %>
   <div class="sidething-spaced">
   <%= form_tag({:action=> "buscar_por_guid" }) %>
     <select name="game_id">
@@ -21,17 +20,14 @@
   </form>
   </div>
   <% end -%>
-  <% end -%>
 
   <%mftext('Últimos registros') do %>
   <table>
-    <% cache('/common/miembros/_rightside/ultimos_registros') do %>
       <% for u in User.find(:all, :conditions => "state <> #{User::ST_UNCONFIRMED}", :order => 'created_on DESC', :limit => 5) %>
       <tr class="<%=oddclass%>">
         <td><%=member_state(u.hstate)%> <%=link_to u.login, gmurl(u) %><br /> <span class="infoinline"><%=print_tstamp(u.created_on)%></span></td>
       </tr>
       <% end -%>
-    <% end -%>
   </table>
   <% end -%>
 

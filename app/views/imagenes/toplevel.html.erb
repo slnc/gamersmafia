@@ -13,9 +13,7 @@ galleries = Term.paginate(
 <%= render :partial => 'shared/pager2',
            :locals => {:collection => galleries, :pos => 'top'} %>
 <dl class="root-gallery">
-<%
-cache("/common/imagenes/toplevel/#{@category.id}/page_#{params[:page]}") do
-  galleries.each do |subcategory| %>
+<% galleries.each do |subcategory| %>
 <dt style="clear: left;">
   <h2 class="f_hecto"><%= link_to subcategory.name, gmurl(subcategory)%></h2>
 </dt>
@@ -47,7 +45,6 @@ cache("/common/imagenes/toplevel/#{@category.id}/page_#{params[:page]}") do
   </div>
 
   </dd>
-<% end -%>
 <% end -%>
 </dl>
 

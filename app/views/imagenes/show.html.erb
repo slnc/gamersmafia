@@ -62,7 +62,6 @@ end %>
   <%=render :partial => '/shared/content_summary', :locals => { :content => @image }%>
 <% mftext('Navegador de galería') do %>
 <ul class="sidelist images">
-  <% cache("/common/imagenes/show/g#{@image.main_category.id}/#{@image.id}") do %>
   <%
   im_prev = @image.main_category.images.find(:first, :conditions => ['contents.state = ? and contents.id < ?', Cms::PUBLISHED, @image.id], :order => 'images.id DESC')
 
@@ -77,7 +76,6 @@ end %>
   <% if im_next %>
     <li><div class="image"><a class="new" href="/imagenes/show/<%=im_next.id%>"><%=fc_thumbnail(im_next.file, 'i', '85x85', false)%></a></div></li>
   <% end -%>
-<% end -%>
 </ul>
 <% end -%>
 
@@ -85,15 +83,12 @@ end %>
 
 <%= render :partial => '/imagenes/best_rated', :locals => {:category => @image.main_category} %>
 
-<% cache("/#{controller.portal_code}/imagenes/show/_other_images_by_user/#{@image.user_id % 1000}/#{@image.user_id}") do %>
 <% mftext("Más imágenes de #{@image.user.login}") do %>
 <ul class="sidelist images">
 	<% Image.published.find(:all, :conditions => ['user_id = ?', @image.user_id], :order => 'created_on DESC', :limit => 2).each do |image| %>
   <li><div class="image"><a class="new" href="/imagenes/show/<%=image.id%>"><%=fc_thumbnail(image.file, 'i', '85x85', false)%></a></div></li>
   <% end -%>
   </ul>
-<% end -%>
-
 <% end -%>
 <% end -%>
 <% end -%>

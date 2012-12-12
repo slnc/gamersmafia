@@ -1,9 +1,6 @@
 <%# coding: utf-8 %>
 <% topics = get_topics(forum) %>
 <%= render :partial => 'shared/pager2', :locals => {:collection => topics, :pos => 'top'} %>
-<%
-cache("/common/foros/_topics_list/#{forum.id}/page_#{params[:page]}") do
-%>
 <table>
   <tr>
     <th class="topic-indicators">&nbsp;</th>
@@ -33,6 +30,5 @@ topics.each do |topic|
   </tr>
 <% end -%>
 </table>
-<% end -%>
 
 <%= render :partial => 'shared/pager2', :locals => {:collection => topics, :pos => 'bottom'} %>

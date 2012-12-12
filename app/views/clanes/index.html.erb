@@ -1,6 +1,5 @@
 <% content_main do %>
 <% mftext('Clanes') do %>
-<% cache("/#{controller.portal_code}/clanes/index/page_#{params[:page]}") do %>
 <%
 games = (controller.portal_code != 'gm' && controller.portal.respond_to?(:games))? controller.portal.games : []
 if games.size > 0
@@ -31,7 +30,6 @@ end
   </table>
 
 <%= render :partial => 'shared/pager2', :locals => {:collection => @clans, :pos => 'bottom'} %>
-<% end -%>
 <% end -%>
 <% end -%>
 

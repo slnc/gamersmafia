@@ -4,12 +4,8 @@
 <div class="imagesgallery">
 	<% @potds = Potd.paginate(:page => params[:page], :conditions => ['portal_id = ?', controller.portal.id], :order => 'date ASC', :per_page => 18, :include => [:image]) %>
 <%= will_paginate @potds, :class => 'digg_pagination'%>
-<%
-cache("/#{controller.portal_code}/imagenes/potds/page_#{params[:page]}") do
-
-@potds.each do |potd| %>
+<% @potds.each do |potd| %>
 <div class="screenshot" style="float: left; width: 160px;"><div style="text-align: center"><%=potd.date%></div><%=link_to "<img src=\"#{ASSET_URL}/cache/thumbnails/i/153x115/#{potd.image.file}\" />", gmurl(potd.image)%></div>
-<% end %>
 <% end %>
 <div style="clear: both;">&nbsp;</div>
 <%= will_paginate @potds, :class => 'digg_pagination'%>

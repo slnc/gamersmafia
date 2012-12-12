@@ -8,7 +8,6 @@
     <th style="text-align: right; width: 150px;">Último</td>
   </tr>
 <%
-cache("/#{controller.portal_code}/foros/index/index") do
 controller.portal.categories('Topic').each do |toplevelt|
 toplevelt.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'], :order => 'lower(name)').each do |category|
   %>
@@ -30,7 +29,6 @@ toplevelt.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'],
 <% end %>
 <% end %>
 </table>
-<% end -%>
 <% end -%>
 
 <% generic_support do %>

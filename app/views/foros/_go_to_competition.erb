@@ -1,9 +1,7 @@
-<% cache("/common/foros/_go_to_competition/#{@object.id}") do
-if @object.respond_to?(:competition) && @object.competition then
+<% if @object.respond_to?(:competition) && @object.competition then
   c = @object.competition
 %>
-<%mftext('Competición relacionada') do %>
-<div style="margin: 10px 0;" class="centered"><a href="/competiciones/show/<%=c.id%>"><strong><%=c.name%></strong></a></div>
-<% end -%>
+  <%mftext('Competición relacionada') do %>
+  <div style="margin: 10px 0;" class="centered"><a href="/competiciones/show/<%=c.id%>"><strong><%=c.name%></strong></a></div>
   <% end -%>
 <% end -%>

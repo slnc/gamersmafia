@@ -1,4 +1,3 @@
-<% cache('/common/home/index/curiosidades2') do %>
 <%
 is_first = true
 mfcontents_list("Curiosidades", Proc.new { Funthing.published.find(:all, :order => 'created_on DESC LIMIT 10') }, :bottom => '<div class="more"><a title="Ver más curiosidades" href="/curiosidades">Más curiosidades &raquo;</a></div>') do |ft|
@@ -8,5 +7,4 @@ thumb = ft.thumbnail %>
 	<% end -%>
 	<a href="<%=gmurl(ft)%>"><%=content_category(ft)%> <%=truncate(ft.title, 17, '..')%></a>
 <% is_first = false
-end
-end -%>
+end %>

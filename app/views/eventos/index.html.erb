@@ -15,7 +15,6 @@
   <th class="w50"></th>
 </tr>
 
-<% cache("/#{controller.portal.code}/eventos/index/page_#{params['page']}") do %>
 <% @events.each do |event|
 event.description = (event.description.to_s == '') ? '&nbsp;' : event.description
 %>
@@ -28,7 +27,6 @@ event.description = (event.description.to_s == '') ? '&nbsp;' : event.descriptio
   <td class="w50"><span class="f_milli"><%=gm_icon("comment", "small")%> <a title="Ver comentarios" href="<%=controller.url_for_content_onlyurl(event)%>#comments"><%=event.cache_comments_count%></a></span></td>
 </tr>
   <% end %>
-<% end %>
 </table>
 
 <%= render :partial => 'shared/pager2', :locals => {:collection => @events, :pos => 'bottom'} %>

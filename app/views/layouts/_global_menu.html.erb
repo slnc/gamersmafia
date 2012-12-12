@@ -116,11 +116,9 @@ friends = @user.friends_online %>
         <header class="f_hecto f-module-title">Bazar</header>
           <ul>
             <li><a href="http://<%=App.domain_bazar%>/">Portada</a></li>
-<% cache("/layouts/default/districts") do %>
 <%BazarDistrict.find(:all, :order => 'lower(name)').each do |c| %>
   <li><a href="http://<%=c.slug%>.<%=App.domain%>/"><%=faction_favicon(c)%> <%=c.name%></a></li>
 <% end -%>
-<% end %><%# bazar_district %>
 
             <li><a href="http://<%=App.domain_bazar%>/imagenes/1559">Babes</a></li>
             <li><a href="http://<%=App.domain_bazar%>/curiosidades">Curiosidades</a></li>

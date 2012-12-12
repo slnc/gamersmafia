@@ -1,6 +1,5 @@
 <div id="home-esenciales" class="subheader f_deca first"><div><span>Esenciales</span></div></div>
 <ul class="content-hid2">
-<% cache("/common/descargas/index/essential_#{category.root_id}") do %>
 <% shown_downloads = []
 Content.published.in_term(category.root).find(
     :all,
@@ -12,6 +11,4 @@ Content.published.in_term(category.root).find(
   <li class="content<%=d.id%> content new <%=oddclass%>"><%=link_to "#{content_category(d.main_category)}#{d.title}", gmurl(d)%></li>
   <% end -%>
 <script type="text/javascript">contents = contents.concat(<%=shown_downloads.join(',')%>);</script>
-<% end -%>
 </ul>
-

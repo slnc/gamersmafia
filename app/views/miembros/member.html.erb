@@ -69,7 +69,6 @@
 <% end -%>
 
 <% if @curuser.enable_profile_signatures? then %>
-<%cache("#{Cache.user_base(@curuser.id)}/profile/last_profile_signatures") do %>
 
 <%mftext('Últimas firmas', :grid => 6, :glast => true) do %>
 <% @curuser.profile_signatures.find(:all, :order => 'updated_on DESC', :include => :signer, :limit => 4).each do |ps| %>
@@ -86,7 +85,6 @@
   </div>
 <%  end %>
 <div class="more right nav"><a href="<%=gmurl(@curuser)%>/firmas">Ver todas &raquo;</a></div>
-<% end -%>
 <% end -%>
 <% end -%>
 
@@ -174,7 +172,6 @@ dat[cvt.id] = 0 unless dat[cvt.id] %>
 <%#=horizontal_stacked_bar(:size => '94x80', :data => dat.values, :axis_labels => dat.keys.collect { |pid| Portal.find_by_id(pid).code }) %>
 <% end -%>
 
-<%cache("#{Cache.user_base(@curuser.id)}/profile/sus_contenidos_son") do %>
 <%mftext('Sus contenidos son') do
 dat = Stats.user_contents_by_rating(@curuser)
 vals = []
@@ -191,7 +188,6 @@ max = vals.max
 </table>
 <% end -%>
 <% end -%>
-<% end -%>
 
 </div>
 
@@ -200,7 +196,6 @@ max = vals.max
 
 <%mftext('Gamer', :has_submodules => true, :grid => 5, :glast => true) do %>
 
-<%# cache("#{Cache.user_base(@curuser.id)}/profile/clanes") do %>
 <% clans = @curuser.clans %>
 <%
 if clans.size > 0 then %>
@@ -209,7 +204,6 @@ if clans.size > 0 then %>
 	  <td class="infoinline right"><%=c.user_is_clanleader(@curuser.id) ? 'Clanleader' : 'Miembro' %></td>
 	<% end -%>
 <% end -%>
-<%# end -%>
 
 <%if @curuser.faction_id %>
 <%mftext('Facción') do %>
@@ -238,7 +232,6 @@ if clans.size > 0 then %>
   <%=@curuser.description%>
 <% end -%>
 <div class="grid-5 glast">
-<%cache("#{Cache.user_base(@curuser.id)}/profile/aportaciones") do %>
 <%mftext('Aportaciones', :has_submodules => true) do %>
 <%mftext('Por tipo') do
 dat = Stats.user_contents_by_type(@curuser)
@@ -250,7 +243,6 @@ dat = Stats.user_contents_by_type(@curuser)
 dat = Stats.user_contents_by_portal(@curuser)
 %>
 <%=pie(:size => '250x110', :data => dat.values, :axis_labels => dat.keys.collect { |pid| pid != 'Otros' ? Portal.find_by_id(pid).code : pid}) %>
-<% end -%>
 <% end -%>
 <% end -%>
 
@@ -340,11 +332,9 @@ dat = Stats.user_contents_by_portal(@curuser)
 
 <div class="grid-4 glast">
 <%=new_ads(:grid => 4) %>
-
-<%cache("#{Cache.user_base(@curuser.id)}/profile/competicion") do %>
 <%
 last_matches = Competitions.find_all_matches_from_user(@curuser, Competition::COMPLETED_ON_SQL, 3)
-if last_matches.size > 0 then
+if last_matches.size > 0
 %>
 <%mftext('Competición', :has_submodules => true) do %>
 	<%
@@ -388,11 +378,9 @@ if last_matches.size > 0 then
 	<% end -%>
 <% end -%>
 <% end -%>
-<% end -%>
 
 <%mftext('Últimos comentarios') do %>
     <ul class="content-hid sidelist">
-      <% cache("/#{controller.portal.code}/miembros/#{@curuser.id % 1000}/#{@curuser.id}/last_comments") do %>
 <%		@curuser.comments.find(:all, :conditions => 'deleted = \'f\'', :order => 'created_on desc', :limit => 10).each do |comment|
  %>
        <li class="<%=oddclass%>">
@@ -400,7 +388,6 @@ if last_matches.size > 0 then
          <a href="<%=Routing.gmurl(comment)%>"><%=truncate(strip_tags(comment.comment))%></a>
        </span></li>
     	<% end -%>
-	<% end -%>
     </ul>
 <% end -%>
 

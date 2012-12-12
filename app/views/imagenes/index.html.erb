@@ -8,7 +8,6 @@
     <th>Últimas galerías actualizadas</th>
     <th>Imágenes</th>
   </tr>
-<% cache("/#{controller.portal_code}/imagenes/index/galleries") do %>
 <% @categories.each do |category|
     if category.children.size > 0 then %>
   <tr class="<%=oddclass%>">
@@ -29,7 +28,6 @@
 <% end -%>
 <% end -%>
 </table>
-<% end -%>
 <% end -%>
 
 <% generic_support do %>

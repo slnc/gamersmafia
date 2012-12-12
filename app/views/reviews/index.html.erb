@@ -2,7 +2,6 @@
     <%mftext('Reviews') do %>
 	<% @reviews = Review.in_portal(controller.portal).published.paginate(:order => 'created_on', :page => params[:page], :per_page => 15) %>
     <%= render :partial => 'shared/pager2', :locals => {:collection => @reviews, :pos => 'top'} %>
-<% cache("/#{controller.portal_code}/reviews/index/page_#{params[:page]}") do %>
 
 <% @reviews.each do |review| %>
     <div class="<%=oddclass%>">
@@ -13,7 +12,6 @@
     </div>
     <br />
     <% end %>
-<% end %>
 
     <%= render :partial => 'shared/pager2', :locals => {:collection => @reviews, :pos => 'bottom'} %>
 	<% end -%>

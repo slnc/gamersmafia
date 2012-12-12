@@ -8,8 +8,6 @@
   <div style="clear: left;"> </div>
   <%mftext('Clanleaders') do %>
   <table>
-    <%# TODO cache
-    %>
     <% for member in @clan.admins%>
     <tr class="<%=oddclass%>">
       <td><%=member_state(member.hstate)%><a href="<%=gmurl(member)%>"><%=member.login%></a></td>
@@ -20,21 +18,17 @@
 
   <%mftext('Miembros') do %>
   <table>
-    <% cache("/common/clanes/#{@clan.id}/miembros") do
-    %>
     <% for member in @clan.members %>
     <tr class="<%=oddclass%>">
       <td><%=member_state(member.hstate)%><a href="<%=gmurl(member)%>"><%=member.login%></a></td>
     </tr>
     <% end -%>
-<% end -%>
   </table>
   <% end -%>
   <% end -%>
   </div>
 
   <div class="grid-5">
-	<%#cache("#{Cache.user_base(@clan.id)}/profile/competicion") do %>
 <%
 last_matches = Competitions.find_all_matches_from_clan(@clan, Competition::COMPLETED_ON_SQL, 3)
 if last_matches.size > 0 then
@@ -82,7 +76,6 @@ if last_matches.size > 0 then
 	<% end -%>
 <% end -%>
 <% end -%>
-<% # end -%>
 	</div>
 
 <% end -%>
@@ -94,7 +87,6 @@ if last_matches.size > 0 then
   <% end -%>
   <% end -%>
 
-<% cache("/common/clanes/#{@clan.id}/sponsors") do %>
   <% sponsors = @clan.clans_sponsors
   if sponsors.size > 0 then %>
     <%mftext('Sponsors') do %>
@@ -105,10 +97,7 @@ if last_matches.size > 0 then
   </ul>
   <% end -%>
   <% end -%>
-<% end -%>
 
-
-<% cache("/common/clanes/#{@clan.id}/amigos") do %>
   <% friends = @clan.friends
   if friends.size > 0 then %>
     <%mftext('Clanes amigos') do %>
@@ -120,5 +109,3 @@ if last_matches.size > 0 then
   <% end -%>
   <% end %><%# mftext -%>
 <% end -%>
-<% end -%>
-

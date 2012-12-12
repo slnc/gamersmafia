@@ -1,7 +1,6 @@
 <%
 categories.each do |nc|
   next if %w(inet bazar).include?(nc.code)
-  cache("/bazar/home/categories/#{nc.code}") do
 	tc = TopicsCategory.find(:first, :conditions => ['code = ?', nc.code])
     next unless tc
 %>
@@ -26,5 +25,4 @@ News.published.in_term(nc).find(:all, :limit => 12, :order => 'created_on DESC')
 			<% end -%>
 		</table>
 		<br />
-  <% end -%>
 <% end -%>

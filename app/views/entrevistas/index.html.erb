@@ -2,7 +2,6 @@
   <% mftext('Entrevistas') do %>
 	<% @interviews = Interview.in_portal(controller.portal).published.paginate(:order => 'created_on', :page => params[:page], :per_page => 15) %>
     <%= render :partial => 'shared/pager2', :locals => {:collection => @interviews, :pos => 'top'} %>
-    <% cache("/#{controller.portal_code}/entrevistas/index/page_#{params[:page]}") do %>
 <% @interviews.each do |interview| %>
     <div class="<%=oddclass%>">
    	  <h2 class="f_hecto"><%= link_to interview.title, gmurl(interview) %></h2>
@@ -12,7 +11,6 @@
     </div>
     <br />
     <% end -%>
-<% end -%>
 </div>
     <%= render :partial => 'shared/pager2', :locals => {:collection => @interviews, :pos => 'bottom'} %>
 </div>

@@ -1,5 +1,4 @@
 <% mftext('Miembros de la facción') do %>
-<% cache("/common/facciones/miembros/#{@faction.id}/page_#{params[:page]}") do
 @users = User.paginate(:conditions => ['faction_id = ?', @faction.id], :order => 'lower(login) asc', :page => params[:page], :per_page => 40)
 %>
 <%= render :partial => 'shared/pager2', :locals => {:collection => @users, 'pos' => 'top'} %>
@@ -25,5 +24,4 @@ for member in @users
 </table>
 
 <%= render :partial => 'shared/pager2', :locals => {:collection => @users, 'pos' => 'bottom'} %>
-<% end -%>
 <% end -%>

@@ -5,7 +5,6 @@
 %>
 <%= render :partial => 'shared/pager2', :locals => {:collection => @funthings, :pos => 'top'} %>
 <table>
-<% cache("/common/curiosidades/index/page_#{params[:page]}") do %>
 <%
 for funthing in @funthings.reverse %>
 <tr class="<%=oddclass%>">
@@ -16,7 +15,6 @@ for funthing in @funthings.reverse %>
   <td class="timestamp infoinline"><%=print_tstamp(funthing.created_on)%></td>
 </tr>
 <% end %>
-<% end %>
 </table>
 
 <%= render :partial => 'shared/pager2', :locals => {:collection => @funthings, :pos => 'bottom'} %>
@@ -26,5 +24,3 @@ for funthing in @funthings.reverse %>
 <% generic_support do %>
   <%= render :partial => 'shared/best_rated', :locals => { :cls => Funthing } %>
 <% end -%>
-
-

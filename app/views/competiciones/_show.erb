@@ -103,10 +103,6 @@
   <% end -%>
 <% end %>
   <%mftext('Últimos resultados') do %>
-  <%# TODO esto está cuasiduplicado en list.rhtml
-  %>
-  <%
-  cache("/common/competiciones/_show/#{@competition.id}/partidas_mas_recientes") do %>
   <table>
     <% for cm in @competition.matches(:completed, :order => 'completed_on DESC', :limit => 5)
       if cm.result == 1
@@ -124,11 +120,9 @@
     <% end -%>
   </table>
 <% end -%>
-<% end -%>
 
 <% if @competition.kind_of?(Ladder) then %>
   <%mftext('Próximas partidas') do %>
-  <% cache("/common/competiciones/_show/#{@competition.id}/proximas_partidas") do %>
   <table>
     <%# TODO usamos completed_on para saber si una partida está completada o usamos la tricombinación?
     %>
@@ -140,7 +134,6 @@
       </tr>
     <% end -%>
   </table>
-  <% end -%>
   <% end -%>
 <% end -%>
 

@@ -1,6 +1,6 @@
 <%mftext('Mejor valoradas de esta galería') do %>
   <ul class="sidelist images">
-<% cache("/common/imagenes/gallery/#{category.id}/best_rated") do %>
+    <% cache("/common/imagenes/gallery/#{category.id}/best_rated/#{Time.now.strftime("%Y-%m-%d")}") do %>
     <% category.most_rated_items(:limit => 5, :content_type => 'Image').each do |c|  %>
       <li class="<%=oddclass%>"><span class="screenshot"><%=link_to fc_thumbnail(c.file, 'i', '85x85', false), gmurl(c)%></span><br /><%=draw_rating(c.rating)%> <span class="infoinline">| <span class="f_milli"><%=gm_icon("comment", "small")%> <a href="/images/show/<%=c.id%>"><%=c.cache_comments_count%></a></span></span></li>
     <% end -%>

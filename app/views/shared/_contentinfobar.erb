@@ -9,8 +9,7 @@
 
 <div class="contentinfobar f_milli secondary-block">
   	  <div class="last">
-	  <%cache("/common/contents/#{object.class.name}/#{object.id % 100}/" +
-            "#{object.id}-#{object.updated_on}") do %>
+	  <%cache("/common/contents/#{object.class.name}/#{object.id % 100}/#{object.id}-#{object.updated_on}") do %>
     <div class="author-avatar"><img src="<%=ASSET_URL%>/cache/thumbnails/f/50x50<%=object.user.show_avatar%>" /></div>
     <div class="content-details">
       por <a class="content" href="<%=gmurl(object.user)%>"><%=object.user.login%></a>

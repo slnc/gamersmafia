@@ -90,7 +90,6 @@
   <% end -%>
 
   <% if @competition.kind_of?(Ladder) && @competition.state >= 3 then %>
-  <% cache("/common/competiciones/participante/#{@competitions_participant.id % 1000}/#{@competitions_participant.id}/retos_esperando_respuesta") do %>
   <% mftext('Retos esperando respuesta') do %>
   <table>
     <% for cm in @competition.matches(:unapproved, :participant => @competitions_participant, :order => 'play_on ASC, id ASC') %>
@@ -100,27 +99,23 @@
     <% end -%>
   </table>
   <% end -%>
-  <% end -%>
 <% end -%>
 
 <% if @competition.state >= 3 then %>
 
   <% mftext('Pendientes de jugar') do %>
   <table class="compact">
-  <% cache("/common/competiciones/participante/#{@competitions_participant.id % 1000}/#{@competitions_participant.id}/retos_pendientes_de_jugar") do %>
     <% for cm in @competition.matches(:result_pending, :participant => @competitions_participant, :order => 'play_on ASC, id ASC') %>
     <tr class="<%=oddclass%>">
       <td class="w125" style="padding-left: 3px;"><a href="/competiciones/partida/<%=cm.id%>"><%=match_vs_name(cm, @competitions_participant)%></a></td>
       <td class="timestamp infoinline"><%=print_tstamp(cm.play_on)%></td>
     </tr>
     <% end -%>
-<% end -%>
   </table>
   <% end -%>
 
   <% mftext('Últimas partidas') do %>
   <table class="compact">
-  <% cache("/common/competiciones/participante/#{@competitions_participant.id % 1000}/#{@competitions_participant.id}/ultimas_partidas") do %>
     <% for cm in @competition.matches(:completed, :participant => @competitions_participant, :limit => 30, :order => 'completed_on DESC')
 
     if cm.result == 1
@@ -145,7 +140,6 @@
       </tr>
       <% end -%>
     <% end -%>
-<% end -%>
   </table>
   <% end -%>
 <% end -%>

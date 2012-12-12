@@ -12,9 +12,6 @@
   <%=render :partial => 'go_to_competition', :object => @object = @forum%>
   <%=render :partial => 'all_time_users', :object => @object = @forum%>
 
-
-  <%# TODO cachear esto %>
-  <% cache("/common/foros/subforos/#{@forum.parent_id}") do %>
 <% if (not @forum.respond_to?(:competition) or not @forum.competition) and @forum.parent then %>
   <%mftext('Subforos') do %>
 <ul class="content-hid">
@@ -23,7 +20,6 @@
 <li><%=link_to subforum.name, :action => 'forum', :id => subforum.id%></li>
 <% end -%>
 </ul>
-<% end -%>
 <% end -%>
 <% end -%>
 <% end -%>

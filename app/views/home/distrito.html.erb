@@ -6,8 +6,7 @@
     Proc.new { News.puuusin_term(cat.top_level_category).find(:all, :order => 'created_on desc', :limit => 10) },
     [],
     :faction_favicon => true,
-    :blast => true,
-    :cache => "/#{controller.portal_code}/home/index/news2")%>
+    :blast => true)%>
 
 <div class="clearb"></div>
 <% end -%>
@@ -20,7 +19,7 @@
 	<%=mfcontents_basic("Tópics activos",
 					Proc.new { Topic.published.in_term_tree(cat.top_level_category).find(:all, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 10) },
 					[],
-					:faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/topics2")%>
+					:faction_favicon => true, :blast => true)%>
 	</div>
 
 	<%mftext('Foros activos', :grid => 4, :glast => true, :blast => true) do
@@ -47,7 +46,6 @@ gencat.name = 'General' %>
 
 <div class="clearb"></div>
 
-<% cache("/#{controller.portal_code}/home/index/articles2") do %>
 <%mftext('Artículos', :has_submodules => true, :grid => 12, :glast => true) do
 	revs = (controller.portal.review && controller.portal.review.count > 0)
 	classes = %w(Column Interview Tutorial Review)
@@ -75,13 +73,11 @@ mfcontents_list(Cms::translate_content_name(it),
 	end -%>
 <% end -%>
 <% end -%>
-<% end -%>
 
 
 <div class="clearb"></div>
 
 <% mftext('Descargas', :has_submodules => true, :grid => 4) do
-cache("/#{controller.portal_code}/home/index/downloads2") do
 category = controller.portal.categories(Download)[0]
 if category then
 %>
@@ -89,10 +85,7 @@ if category then
 					Proc.new { Download.published.in_term_tree(category.root).find(:all, :order => 'created_on DESC', :limit => 12) },
 					[],
 					:truncat_at => 28, :faction_favicon => true)%>
-
-<%
-end
-end %><%# cache %>
+<% end -%>
 <% end -%>
 
 <%=render :partial => '/home/poll' %>

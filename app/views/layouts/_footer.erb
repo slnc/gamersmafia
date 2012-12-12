@@ -2,7 +2,6 @@
 
 <div id="mgfooter" class="module secondary navbar centered">
 <% if user_is_authed then %>
-<% cache('/common/gmversion') do %>
 
 <%n = News.published.find(
     :first,
@@ -19,7 +18,6 @@
 <% if n %>
 <script type="text/javascript">contents = contents.concat(
     <%=n.id%>);</script>
-<% end -%>
 <% end -%>
 <% end -%>
 

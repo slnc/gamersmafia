@@ -1,5 +1,4 @@
 <%
-cache("/common/foros/_forums_list/#{parent.id}") do
 p = nil
 parent.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'], :order => 'lower(name)').each do |forum|
   p = forum.root if p.nil? %>
@@ -11,5 +10,4 @@ parent.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'], :o
   <td class="timestamp infoinline"><%last = forum.get_or_resolve_last_updated_item
     if last then %><%=print_tstamp(last.updated_on)%> <a class="content" href="<%=gmurl(last)%>">Ir</a><% end -%></td>
 </tr>
-<% end -%>
 <% end -%>

@@ -1,6 +1,5 @@
 <%mftext('Esenciales') do %>
 <ul class="content-hid">
-<% cache("/common/descargas/index/essential2_#{category.root_id}") do %>
 <% shown_downloads = []
 Download.published.in_term(category.root).find(
     :all,
@@ -12,6 +11,5 @@ Download.published.in_term(category.root).find(
   <li class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%></li>
   <% end -%>
 <script type="text/javascript">contents = contents.concat(<%=shown_downloads.join(',')%>);</script>
-<% end -%>
 </ul>
 <% end -%>

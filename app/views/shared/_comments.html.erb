@@ -6,7 +6,6 @@ uniq_id = object.id
 ckey = (object.updated_on < 1.month.ago) ? 'perm' : Time.now.to_i/(86400*7)
 questions_mode = (object.class.name == 'Question')
 
-cache("/comments/#{ckey}/#{uniq_id%100}/#{uniq_id}_#{Cms.comments_per_page}_#{params[:page]}") do
   @comments = get_comments(object)
 %>
 <script type="text/javascript">var comments = new Array();</script>
@@ -75,7 +74,6 @@ hidden_comments_count = 0
              :pos => 'bottom',
              :pager_params => {:anchor => 'comments'}
          } %>
-<% end # cache%>
 
 <script type="text/javascript">
 <% if (questions_mode && user_is_authed && object.answered_on.nil? &&

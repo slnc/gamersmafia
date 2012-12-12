@@ -3,7 +3,7 @@
 		<%=mfcontents_basic("Generales",
 					Proc.new { News.published.in_term(@gaming_platform).find(:all, :order => 'created_on desc', :limit => 10) },
 					[],
-					:faction_favicon => true, :blast => true, :cache => "/#{controller.portal_code}/home/index/news2")%>
+					:faction_favicon => true, :blast => true)%>
 <% end -%>
 </div>
 
@@ -12,7 +12,7 @@
 	<%=mfcontents_basic("Tópics activos",
 					Proc.new { Topic.published.in_term_tree(@gaming_platform).find(:all, :conditions => 'closed is false', :order => 'updated_on desc', :limit => 10) },
 					[],
-					:faction_favicon => true, :grid => 6, :cache => "/#{controller.portal_code}/home/index/topics2")%>
+					:faction_favicon => true, :grid => 6)%>
 
 	<%mftext('Foros activos', :grid => 4, :glast => true, :blast => true) do %>
 	<%= render :partial => '/home/foros_list', :locals => { :topterm => controller.portal.categories(Topic)[0] } %>
@@ -28,7 +28,6 @@
 
 <div class="clearb"></div>
 
-<% cache("/#{controller.portal_code}/home/index/articles2") do %>
 <%mftext('Artículos', :has_submodules => true, :grid => 12, :glast => true) do
 	revs = controller.portal.review.count > 0
 	classes = %w(Column Interview Tutorial Review)
@@ -54,14 +53,12 @@ mfcontents_list(Cms::translate_content_name(it),
 	end -%>
 <% end -%>
 <% end -%>
-<% end -%>
 
 
 <div class="clearl"></div>
 
 
 <%mftext('Descargas', :has_submodules => true, :grid => 8) do
-cache("/#{controller.portal_code}/home/index/downloads2") do
 category = controller.portal.categories(Download)[0]
 %>
 	<div class="grid-4">
@@ -77,7 +74,6 @@ category = controller.portal.categories(Download)[0]
 					[],
 					:faction_favicon => true)%>
 	</div>
-<% end %><%# cache -%>
 <% end -%>
 
 
