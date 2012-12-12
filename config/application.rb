@@ -51,8 +51,8 @@ module Gamersmafia
 
     config.assets.version = '1.0'
 
-    config.action_controller.cache_store = :file_store,
-                                           "#{Rails.root}/tmp/fragment_cache"
+    config.cache_store = :mem_cache_store
+    #config.cache_store  = :file_store, FRAGMENT_CACHE_PATH
 
     # Activate observers that should always be running
     config.active_record.observers = [
@@ -82,8 +82,6 @@ module Gamersmafia
 
     # Disable ip spoofing as it gives too many false positives
     config.action_dispatch.ip_spoofing_check = false
-
-    config.cache_store  = :file_store, FRAGMENT_CACHE_PATH
 
     config.session_store(:cookie_store,
         :key => 'adn2', :domain => ".#{App.domain}")
