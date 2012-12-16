@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 class RespuestasController < InformacionController
   acts_as_content_browser :questions
-  allowed_portals [:gm, :faction, :bazar, :bazar_district]
 
   def index
     @categories = portal.categories(Question)

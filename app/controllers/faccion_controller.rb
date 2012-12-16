@@ -1,6 +1,5 @@
 # -*- encoding : utf-8 -*-
 class FaccionController < ApplicationController
-  allowed_portals [:faction]
   before_filter do |c|
     c.faction = Faction.find_by_code(c.portal.code)
     if c.faction.nil?

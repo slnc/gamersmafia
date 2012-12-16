@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 class ReclutamientoController < ApplicationController
   acts_as_content_browser :recruitment_ads
-  allowed_portals [:gm, :faction]
 
   def index
     if params[:search]

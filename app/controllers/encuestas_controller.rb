@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 class EncuestasController < InformacionController
   acts_as_content_browser :poll
-  allowed_portals [:gm, :faction, :clan, :bazar_district, :bazar]
 
   def new
     require_auth_users

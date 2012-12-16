@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 class FaccionesController < ComunidadController
   helper :miembros
-  allowed_portals [:gm, :faction]
   def index
     list
     render :action => 'list'

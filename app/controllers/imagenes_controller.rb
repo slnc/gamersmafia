@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 class ImagenesController < BazarController
   acts_as_content_browser :image
-  allowed_portals [:gm, :faction, :clan, :bazar, :bazar_district]
 
   def category
     @category = Term.find_taxonomy(params[:category].to_i, 'ImagesCategory')

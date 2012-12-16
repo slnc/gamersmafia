@@ -1,6 +1,5 @@
 # -*- encoding : utf-8 -*-
 class CompeticionesController < ArenaController
-  allowed_portals [:gm, :arena, :faction, :competition]
   helper :calendar
   helper Cuenta::CompeticionesHelper
 

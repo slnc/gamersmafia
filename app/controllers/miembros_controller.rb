@@ -2,7 +2,6 @@
 class MiembrosController < ComunidadController
   attr_accessor :curuser
   helper :competiciones
-  allowed_portals [:gm, :faction]
   audit :del_firma
   before_filter :except => [ :index, :buscar, :blogs, :buscar_por_guid, :ban_request, :create_ban_request, :confirm_ban_request, :cancel_ban_request, :del_firma ] do |c|
     # /\/miembros\/([^\/]+)\/*/.match(c.params[:login])[1]

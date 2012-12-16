@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 class DescargasController < InformacionController
   acts_as_content_browser :download
-  allowed_portals [:gm, :faction, :clan, :bazar_district]
 
   def index
     @title = 'Descargas'
