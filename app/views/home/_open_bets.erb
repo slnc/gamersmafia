@@ -1,4 +1,4 @@
-<% cache("/#{controller.portal_code}/home/index/apuestas2_#{Time.now.to_i / 3600}") do %>
+<% cache("/home/index/apuestas2_#{Time.now.to_i / 3600}") do %>
 <% if controller.portal.bet then
 	mfcontents_table(
       'Apuestas',

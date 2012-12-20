@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 class HomeController < ApplicationController
   NEWS_PER_PAGE = 20
-  VALID_DEFAULT_PORTALS = %w(index comunidad facciones bazar hq anunciante)
 
   attr_reader :cur_faction
 
@@ -51,51 +50,7 @@ class HomeController < ApplicationController
       tetris
       return
     end
-
-    raise "Deprecated: this shouldn't happen!"
-    # TODO(slnc): remove all this once it's not necessary anymore
-
-    #if portal.kind_of?(ClansPortal) then
-    #  @home = @portal.home
-    #elsif portal.kind_of?(FactionsPortal) then
-    #  @home = @portal.home
-    #  @cur_faction = Faction.find_by_code(@portal.code) if @cur_faction.nil?
-    #elsif portal.kind_of?(BazarDistrictPortal) then
-    #  @home = 'distrito'
-    #  @bazar_district = BazarDistrict.find_by_slug(portal.code)
-    #elsif portal.code == 'gm' && ((!request.env['HTTP_REFERER']) || !(request.env['HTTP_REFERER'].include?('gamersmafia')))
-    #  # usamos su preferencia de home
-    #  @defopt = current_default_portal
-    #  @home = (@defopt.to_s != '') ? @defopt : @portal.home
-    #  @home = 'facciones_unknown' if @home == 'facciones'
-    #  @home = @portal.home if @defopt == 'index'
-    #else
-    #  @home = @portal.home
-    #end
-
-    #if portal.kind_of?(FactionsPortal) then
-    #  @title = "Comunidad española de #{@portal.name}"
-    #else
-    #  @title = (portal_code == 'gm') ? 'Gamersmafia - Bienvenido a la familia' : @portal.name
-    #end
-
-    #render(:action => @home) and return
   end
-
-  #def facciones
-  #  if @portal.nil? || !@portal.kind_of?(FactionsPortal) then
-  #    @cur_faction = Factions.default_faction_for_user(@user)
-  #    @portal = FactionsPortal.find_by_code(@cur_faction.code) if @cur_faction
-  #  end
-
-  #  @cur_faction = Faction.find_by_code(@portal.code) if @cur_faction.nil?
-
-  #  if @portal && @portal.class.name == 'FactionsPortal'
-  #    render :action => @portal.home
-  #  else
-  #    render :action => 'facciones_unknown'
-  #  end
-  #end
 
   def anunciante
     require_auth_users

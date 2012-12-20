@@ -39,7 +39,7 @@ class DemosController < ArenaController
       sql_conds<< "entity1_external = #{User.connection.quote(params[:demo][:entity_external])} OR entity2_external = #{User.connection.quote(params[:demo][:entity_external])}" if params[:demo][:entity_external]
     end
     sql_conds<< ['1 = 1']
-    @demos = Demo.in_portal(portal).published.find(
+    @demos = Demo.published.find(
       :all,
       :conditions => sql_conds.join(' AND '),
       :limit => 51,

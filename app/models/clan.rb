@@ -185,19 +185,6 @@ class Clan < ActiveRecord::Base
 
 
 
-  def activate_website
-    code = Cms::get_unique_portal_code(Cms::to_fqdn(self.tag))
-    cp = ClansPortal.create({:name => self.name, :code => code, :clan_id => self.id})
-    cs = ClansSkin.create({:name => self.name, :is_public => true, :user_id => self.admins[0].id})
-    cp.skins<< cs
-    cp.skin_id = cs.id
-    cp.save
-    all_users_of_this_clan.each do |u| CacheObserver.user_may_have_joined_clan(u) end
-    self.website_activated = true
-    create_contents_categories
-    self.save
-  end
-
   private
   def create_contents_categories
     root_term = Term.single_toplevel(:clan_id => self.id)

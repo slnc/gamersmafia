@@ -8,10 +8,11 @@
     <th style="text-align: right; width: 150px;">Último</td>
   </tr>
 <%
+raise "needs new view to show toplevel groups of forums"
 controller.portal.categories('Topic').each do |toplevelt|
 toplevelt.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'], :order => 'lower(name)').each do |category|
   %>
-  <tr class="subheader f_deca <%= 'forum-category' if controller.portal_code and controller.portal.id > -1%>">
+  <tr class="subheader f_deca">
     <td style="width: 20px;"><%=faction_favicon(category)%></td>
     <td><strong><div style="float: left; vertical-align: middle; width: 20px;"></div> <a class="nav" href="<%=gmurl(category, :taxonomy => 'TopicsCategory')%>"><%=category.name%></a></strong></td>
     <td style="" class="infoinline timestamp"><%=category.contents_count(:cls_name => 'Topic')%></td>
@@ -19,9 +20,6 @@ toplevelt.children.find(:all, :conditions => ['taxonomy = ?', 'TopicsCategory'],
     <td class="timestamp infoinline" style="font-weight: normal;"><%last = category.get_or_resolve_last_updated_item
     if last then %><%=print_tstamp(last.updated_on)%> <a class="nav" href="<%=gmurl(last)%>">Ir</a><% end -%></td>
   </tr>
-  <% if controller.portal_code and controller.portal.id > -1 then %>
-  <%= render(:partial => 'forums_list', :locals => {:parent => category}) %>
-  <% end -%>
   <tr>
     <td class="spacer" style="height: 10px;"></td>
   </tr>

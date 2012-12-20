@@ -6,7 +6,7 @@
     <th class="right w100"> <%=gm_icon("gmf", "small")%> apostados</th>
     <th class="right timestamp" style="width: 150px;">Termina en</th>
   </tr>
-  <% Bet.in_portal(controller.portal).published.find(
+  <% Bet.published.find(
       :all,
       :conditions => Bet::OPEN_BETS_SQL,
       :order => 'closes_on ASC, id ASC').each do |bet| %>
@@ -25,7 +25,7 @@
     <th>Apuesta</th>
     <th style="width: 125px;"> <%=gm_icon("gmf", "small")%> apostados</th>
   </tr>
-  <% Bet.in_portal(controller.portal).published.find(
+  <% Bet.published.find(
       :all,
       :conditions => Bet::AWAITING_RESULT_SQL,
       :order => 'closes_on DESC, id DESC').each do |bet| %>
@@ -44,7 +44,7 @@
     <th style="width: 125px;"> <%=gm_icon("gmf", "small")%> apostados</th>
     <th class="timestamp">Terminó hace</th>
   </tr>
-  <% cache("/#{controller.portal_code}/apuestas/index/closed_#{Time.now.to_i/3600}") do %>
+  <% cache("/apuestas/index/closed_#{Time.now.to_i/3600}") do %>
   <% Bet.in_term(controller.portal.bet).closed_bets.published.find(
       :all, :limit => 20).each do |bet| %>
     <tr class="<%=oddclass%>">

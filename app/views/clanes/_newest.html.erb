@@ -1,4 +1,4 @@
-<% cache("/#{portal_code}/clanes/shared/newest.#{global_var('clans_updated_on')}") do %>
+<% cache("/clanes/shared/newest.#{global_var('clans_updated_on')}") do %>
   <% mftext('Clanes más recientes') do %>
     <table>
       <% get_newest_clans(controller.portal).each do |clan| %>

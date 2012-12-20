@@ -227,24 +227,6 @@ class Term < ActiveRecord::Base
   belongs_to :gaming_platform
   belongs_to :clan
 
-  scope :portal_root_term, lambda { |portal|
-    taxonomy = case portal.class.name
-    when "BazarPortal"
-      "Homepage"
-    when "ArenaPortal"
-      "Homepage"
-    when "BazarDistrictPortal"
-      "BazarDistrict"
-    when "FactionsPortal"
-      Game.find_by_slug(portal.code) ?  "Game" : "GamingPlatform"
-    when "ClansPortal"
-      "Clan"
-    else
-      raise "Unknown portal type '#{portal.type}' for portal '#{portal.code}'"
-    end
-    {:conditions => "taxonomy = '#{taxonomy}' AND slug = '#{portal.code}'"}
-  }
-
   scope :contents_tags, :conditions => "taxonomy = 'ContentsTag'"
   scope :with_taxonomy, lambda { |taxonomy| {:conditions => "taxonomy = '#{taxonomy}'"}}
   scope :with_taxonomies, lambda { |taxonomies|
@@ -462,24 +444,6 @@ class Term < ActiveRecord::Base
       end
     end
     cats.uniq
-  end
-
-  # devuelve portales relacionados con el término actual
-  def get_related_portals
-    portals = [GmPortal.new]
-    if self.game_id || self.gaming_platform_id
-      f = Faction.find_by_code(self.root.slug)
-      if f
-        portals += Portal.find(:all, :conditions => ['id in (SELECT portal_id from factions_portals where faction_id = ?)', f.id])
-      end
-    elsif self.bazar_district_id
-      portals << self.bazar_district
-    elsif self.clan_id
-      portals << ClansPortal.find_by_clan_id(self.clan_id)
-    else # PERF devolvemos todos por contents como funthings
-      portals += Portal.find(:all, :conditions => 'type <> \'ClansPortal\'')
-    end
-    portals
   end
 
   def recalculate_counters

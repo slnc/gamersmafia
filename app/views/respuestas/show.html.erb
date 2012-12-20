@@ -52,7 +52,7 @@
 <%=mfcontents_basic("Más preguntas de #{@question.user.login}",
 	Question.published,
 	[:all, {:conditions => ['user_id = ?', @question.user_id], :order => 'created_on DESC', :limit => 5}],
-    :cache => "/#{controller.portal_code}/respuestas/show/latest_by_author_#{@question.user_id}",
+    :cache => "/respuestas/show/latest_by_author_#{@question.user_id}",
  	:rating => true,
 	:comments_count => true,
 	:more_link => "<a href=\"#{gmurl(@question.user)}/contenidos/Preguntas\">Ver todas sus preguntas (#{@question.user.questions.count})</a>")%>

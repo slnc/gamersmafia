@@ -15,10 +15,10 @@ class ApplicationController < ActionController::Base
   include Routing
 
   helper :account, :miembros, :competiciones, :calendar
-  before_filter :ident, :resolve_portal_mode, :check_referer,
-                :populate_navpath2, :parse_params_page, :init_xab
+  before_filter :ident, :check_referer, :populate_navpath2, :parse_params_page,
+                :init_xab
 
-  attr_accessor :competition, :global_vars, :portal, :third_menu, :_xad, :smodel_id
+  attr_accessor :competition, :global_vars, :third_menu, :_xad, :smodel_id
 
   cattr_accessor :navpath2
   around_filter :gm_process
@@ -48,10 +48,6 @@ class ApplicationController < ActionController::Base
   public
   def self.audit(*args)
     after_filter :sys_audit, :only => args
-  end
-
-  def self.allowed_portals(class_names)
-    before_filter { |c| c.check_portal_access_mode(class_names) }
   end
 
   def self.require_skill(mode)
@@ -125,14 +121,6 @@ class ApplicationController < ActionController::Base
 
   def redirto_or(alt)
     redirect_to(params[:redirto] ? params[:redirto] : alt)
-  end
-
-  def current_default_portal
-    user_is_authed ? @user.default_portal : cookies[:defportalpref]
-  end
-
-  def can_set_as_default_home
-    controller_name == 'home' && current_default_portal != action_name
   end
 
   def sys_audit
@@ -239,15 +227,14 @@ Request information:
     response.headers['X-Controller'] = controller_name
     response.headers['X-Action'] = action_name
     response.headers['X-ModelId'] = params[:id] ? "#{params[:id]}" : '-'
-    response.headers['X-PortalId'] = portal ? portal.id.to_s : '-'
+    response.headers['X-PortalId'] = '-'
     response.headers['X-SessionId'] = request.session_options ? request.session_options[:id].to_s : '-'
     response.headers['X-VisitorId'] = params['_xnvi'] ? params['_xnvi'].to_s : '-'
     response.headers['X-AbTreatment'] = params['_xab'] ? params['_xab'].to_json : '-'
     response.headers['X-AdsShown'] = self._xad ? self._xad.join(',') : '-'
 
     begin
-      Stats.pageloadtime(self, seconds, response, controller_name, action_name,
-                         portal)
+      Stats.pageloadtime(self, seconds, response, controller_name, action_name)
     rescue
       raise unless Rails.env == 'test'
     end
@@ -255,11 +242,6 @@ Request information:
 
   public
   def skin
-    if self.portal.nil?
-      Rails.logger.warn("portal is nil. Using GmPortal")
-      self.portal = GmPortal.new
-    end
-
     if user_is_authed && @user.pref_skin
       begin
         Skin.find(@user.pref_skin.to_i)
@@ -269,25 +251,9 @@ Request information:
       end
     elsif params['skin']
       Skin.find(params['skin'].to_i) || Skin.find_by_hid('default')
-    elsif portal.skin_id != nil
-      Skin.find(portal.skin_id) || Skin.find_by_hid('default')
     else
-      portal.skin # Skin.find_by_hid(portal)
+      Skin.find_by_hid('default')
     end
-  end
-
-  def check_portal_access_mode(allowed_portals)
-    portal_sym = ActiveSupport::Inflector::singularize(
-        ActiveSupport::Inflector::underscore(
-            @portal.class.name.gsub('Portal', ''))
-    ).to_sym
-    if defined?(allowed_portals) and not allowed_portals.include?(portal_sym)
-      raise ActiveRecord::RecordNotFound
-    end
-  end
-
-  def portal_code
-    @portal.code if @portal
   end
 
   def is_crawler?
@@ -503,10 +469,6 @@ Request information:
     ip = self.remote_ip
     # TODO PERF guardar informacion del visitante en tabla aparte
     user_agent = user_agent.bare if user_agent
-    if self.portal.nil? || self.portal.id.nil?
-      self.portal = GmPortal.new
-      Rails.logger.warn("portal is nil. Using GmPortal")
-    end
     # flash_error = #{User.connection.quote(params['_xe'])}
     User.db_query("INSERT INTO stats.pageviews(referer,
                                                user_id,
@@ -536,7 +498,7 @@ Request information:
                                             #{User.connection.quote(params['_xs'])},
                                             #{User.connection.quote(medium)},
                                             #{User.connection.quote(user_agent)},
-                                            #{self.portal.id},
+                                            -1,
                                             #{User.connection.quote(params['_xvi'])},
                                             #{User.connection.quote(params['_xsi'])},
                                             #{User.connection.quote(params['_xmi'])},
@@ -638,7 +600,6 @@ Request information:
       items<< ['IP Bans', '/admin/ip_bans']
       items<< ['IPs Duplicadas', '/admin/usuarios/ipsduplicadas']
       items<< ['Mapas', '/admin/mapas_juegos']
-      items<< ['Portales', '/admin/portales']
       items<< ['Tags', '/admin/tags']
       items<< ['Users', '/admin/usuarios']
       items<< ['Tienda', '/admin/tienda']
@@ -679,10 +640,6 @@ Request information:
         l<<['Clanes amigos', '/cuenta/clanes/amigos']
         l<<['Sponsors', '/cuenta/clanes/sponsors']
         l<<['Banco', '/cuenta/clanes/banco']
-        if @portal.kind_of?(ClansPortal)
-          l<<['Categorías de contenidos', "/admin/categorias"]
-          l<<['Skin', "/cuenta/skins/edit/#{@portal.skin_id}"]
-        end
       end
     end
 

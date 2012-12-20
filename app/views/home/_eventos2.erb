@@ -1,6 +1,6 @@
-<% cache("/#{controller.portal_code}/home/index/eventos2/#{Time.now.strftime('%Y%m%d')}") do %>
+<% cache("/home/index/eventos2/#{Time.now.strftime('%Y%m%d')}") do %>
 <% mfcontents_table('Eventos',
-				   Proc.new { Event.in_portal(controller.portal).published.current_events }
+				   Proc.new { Event.published.current_events }
 				   ) do |e| %>
 	<td><%=content_category(e)%><a href="<%=gmurl(e)%>"><%=e.title%></a></td>
   <td><%=member_state('active')%><%=e.users.count%></td>

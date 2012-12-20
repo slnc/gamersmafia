@@ -47,7 +47,7 @@ end
         <div id="home-downloads" class="subheader f_deca first"><div><span>Descargas</span></div></div>
         <ul class="content-hid2">
 <%
-@last_downloads = Download.in_portal(controller.portal).published.find(:all, :limit => 10, :order => 'created_on DESC')
+@last_downloads = Download.published.find(:all, :limit => 10, :order => 'created_on DESC')
 shown_downloads = []
 for download in @last_downloads
     shown_downloads << download.id
@@ -176,10 +176,10 @@ for topic in @last_topics
 
     <div class="homebox">
         <div id="home-bets" class="subheader f_deca first"><div><span>Apuestas</span></div></div>
-	<% cache("/#{controller.portal_code}/home/index/apuestas_#{Time.now.to_i / 3600}") do %>
+	<% cache("/home/index/apuestas_#{Time.now.to_i / 3600}") do %>
 <table>
       <% shown_bets = []
-      Bet.in_portal(controller.portal).published.find(:all, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC').each do |o|
+      Bet.published.find(:all, :conditions => Bet::OPEN_BETS_SQL, :order => 'closes_on ASC, id ASC').each do |o|
 shown_bets<< o.id %>
         <tr class="<%=oddclass%> new content<%=o.id%>">
 <td><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
@@ -213,7 +213,7 @@ shown_bets<< o.id %>
         <ul class="content-hid2">
 
 <%
-@last_demos = Demo.in_portal(controller.portal).published.find(:all, :limit => 5, :order => 'created_on DESC')
+@last_demos = Demo.published.find(:all, :limit => 5, :order => 'created_on DESC')
 shown_demos = []
 for demo in @last_demos
     shown_demos << demo.id
@@ -228,7 +228,7 @@ for demo in @last_demos
 
 <div id="homebazar">
 <% d = Date.today
-cache("/#{controller.portal_code}/home/index/potd_#{d.strftime('%Y%m%d')}") do
+cache("/home/index/potd_#{d.strftime('%Y%m%d')}") do
 
 @daily_img = Potd.current_portal(controller.portal)
 @daily_img = @daily_img.image if @daily_img

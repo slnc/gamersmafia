@@ -1,7 +1,7 @@
 <% content_main do %>
 <% mftext('Eventos') do %>
 
-<% @events = Event.in_portal(controller.portal).published.top_level.paginate(:order => 'starts_on', :page => params[:page], :per_page => 20) %>
+<% @events = Event.published.top_level.paginate(:order => 'starts_on', :page => params[:page], :per_page => 20) %>
 
 <%= render :partial => 'shared/pager2', :locals => {:collection => @events, :pos => 'top'} %>
 

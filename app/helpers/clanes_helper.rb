@@ -15,14 +15,6 @@ module ClanesHelper
   end
 
   def get_portal_clans(conditions, options)
-    games = []
-    if controller.portal_code != "gm" && controller.portal.respond_to?(:games)
-      games = controller.portal.games
-    end
-    if games.size > 0
-      Clan.active.in_games(games).find(:all, options)
-    else
-      Clan.active.find(:all, options)
-    end
+    Clan.active.find(:all, options)
   end
 end

@@ -805,13 +805,6 @@ class Cuenta::CuentaController < ApplicationController
     render :layout => false, :action => :username_check
   end
 
-  def set_default_portal
-    raise ActiveRecord::RecordNotFound unless params[:new_portal] && HomeController::VALID_DEFAULT_PORTALS.include?(params[:new_portal])
-    @user.default_portal = params[:new_portal]
-    @user.save
-    render :nothing => true
-  end
-
   private
   def only_non_registered
    (redirect_to '/' and return) if user_is_authed

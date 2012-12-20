@@ -2,15 +2,4 @@ Clan:
 <select name="clan_id">
 	<%@user.clans.each do |c| %><option value="<%=c.id%>"><%=c.name%></option><% end %>
 </select>
-<br />
-<br />
-Portal:
-        <select name="portal_id">
-          <option value="-1">gamersmafia.com</option>
-          <% for portal in Portal.find(:all, :conditions => 'type IN (\'FactionsPortal\')', :order => 'lower(code) asc')
-              selected = (controller.portal_code.to_s.upcase == portal.code.upcase) ? 'selected="selected"' : ''%>
-              <option <%=selected%> value="<%=portal.id%>."><%=portal.code.upcase%></option>
-          <% end -%>
-        </select>
-		
-		
+<input type="hidden" name="portal_id" value="-1" />

@@ -3,7 +3,6 @@ class Faction < ActiveRecord::Base
   has_many :factions_banned_users, :dependent => :destroy
   has_bank_account
 
-  has_and_belongs_to_many :portals
   has_many :avatars
   has_many :users
   has_many :gmtv_channels, :dependent => :destroy
@@ -38,8 +37,6 @@ class Faction < ActiveRecord::Base
 
   before_destroy :set_users_faction_id_to_nil
   before_destroy :destroy_editors_too
-  before_destroy :destroy_related_portals
-  after_save :update_related_portal
 
   validates_format_of :code,
       :with => /^[a-z0-9]{1,7}$/,
@@ -160,31 +157,6 @@ class Faction < ActiveRecord::Base
 
   def building_bottom
     "storage/factions/#{self.id}/building_bottom.png"
-  end
-
-  def update_related_portal
-    if self.code_changed? && self.code_was.to_s != ""
-        portal = FactionsPortal.find_by_code(self.code_was)
-        portal.update_attributes(:code => self.code) if portal
-    end
-
-    if self.name_changed? && self.name_was.to_s != ''
-        portal = FactionsPortal.find_by_code(self.code)
-        portal.update_attributes(:name => self.name) if portal
-    end
-
-    true
-  end
-
-  def my_portal
-    FactionsPortal.find_by_code!(self.code)
-  end
-
-  def destroy_related_portals
-    self.portals.clear
-    portal = FactionsPortal.find_by_code(self.code)
-    portal.destroy if portal && portal.factions.size == 0
-    true
   end
 
   def destroy_editors_too

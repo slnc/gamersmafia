@@ -63,34 +63,6 @@ class Admin::AdsSlotsControllerTest < ActionController::TestCase
     assert_equal ainst + 2, AdsSlotsInstance.count
   end
 
-  test "add_to_portal" do
-    test_create
-    @as = AdsSlot.find(:first)
-    p_size = @as.portals.size
-    post :add_to_portal, :id => @as.id, :portal_id => -1
-    assert_equal p_size + 1, @as.portals.size
-    assert_response :redirect
-  end
-
-  test "add_to_portal2" do
-    test_create
-    @as = AdsSlot.find(:first)
-    p_size = @as.portals.size
-    post :add_to_portal, :id => @as.id, :portal_id => 1
-    assert_equal p_size + 1, @as.portals.size
-    assert @as.portals[0].kind_of?(Portal)
-    assert_equal 1, @as.portals[0].id
-    assert_response :redirect
-  end
-
-  test "remove_from_portal" do
-    test_add_to_portal
-    p_size = @as.portals.size
-    post :remove_from_portal, :id => @as.id, :portal_id => -1
-    assert_equal p_size - 1, @as.portals.size
-    assert_response :redirect
-  end
-
   test "copy" do
     test_create
     @as = AdsSlot.find(:first)

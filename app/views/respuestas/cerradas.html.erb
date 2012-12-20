@@ -1,6 +1,6 @@
 <%content_main do %>
 <%mftext(@title) do %>
-<% @questions = Question.in_portal(controller.portal).published.answered.paginate(:order => 'answered_on DESC', :page => params[:page], :per_page => 30) %>
+<% @questions = Question.published.answered.paginate(:order => 'answered_on DESC', :page => params[:page], :per_page => 30) %>
 <%= render :partial => 'shared/pager2', :locals => {:collection => @questions, :pos => 'top'} %>
 <% @questions.each do |question| %>
     <div class="<%=oddclass%>">

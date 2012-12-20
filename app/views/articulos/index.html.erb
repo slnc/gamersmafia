@@ -2,7 +2,7 @@
 [%w(Column Interview), %w(Tutorial Review)].each do |par| %>
 <div class="grid-6 <%='glast' unless first%>">
 	<%par.each do |it|
-		collection = Object.const_get(it).in_portal(controller.portal).published.find(
+		collection = Object.const_get(it).published.find(
         :all, :order => 'created_on desc', :limit => 5)
 next if collection.size == 0 %>
 		<% dafirst = true

@@ -62,10 +62,6 @@ class GamingPlatform < ActiveRecord::Base
     @content_type = incoming_file.content_type if incoming_file.to_s != ''
   end
 
-  def portals
-    [GmPortal.new] + FactionsPortal.find_by_sql("select * from portals where id in (select portal_id from factions_portals a join factions b on a.faction_id = b.id and b.slug = '#{self.slug}')")
-  end
-
   def update_img_file
     if @temp_file and @filename != ''
       File.open(self.img_file, "wb+") do |f|

@@ -12,9 +12,4 @@ class PotdTest < ActiveSupport::TestCase
     assert_nil Potd.find_by_id(potd.id)
     assert_equal false, im.is_public?
   end
-
-  test "shouldnt_select_potd_from_clans_categories" do
-    User.db_query("UPDATE images SET clan_id = 1")
-    assert_nil Potd.choose_one_portal(GmPortal.new)
-  end
 end

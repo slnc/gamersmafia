@@ -44,26 +44,15 @@ class Admin::ContenidosController < ApplicationController
 
   def papelera
     raise AccessDenied unless Authorization.can_delete_contents?(@user)
-    if (params[:portal].nil? &&
-        self.portal.id != -1 &&
-        self.portal.type == 'FactionsPortal')
-      params[:portal] = self.portal.code
-    end
-
-    if params[:portal].to_s != '' then
-      b = FactionsPortal.find_by_code(params[:portal])
-    else
-      b = GmPortal.new
-    end
     @title = 'Contenidos en la papelera'
     @contents = []
     for c in Cms::contents_classes_publishable + [Topic]
     end
       @contents << [
           Cms::translate_content_name(c.name).capitalize,
-          b.send(ActiveSupport::Inflector::underscore(c.name)).find(
-              :deleted,
-              :conditions => 'contents.updated_on > now() - \'1 month\'::interval'),
+          c.deleted.find(
+              :all,
+              :conditions => "contents.updated_on > now() - '1 month'::interval"),
           Cms::translate_content_name(c.name)]
   end
 

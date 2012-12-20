@@ -85,31 +85,6 @@ Ad.find(:all, :order => 'name').each do |ad| %>
 </table>
 <%= submit_tag 'Guardar ads asociados' %>
 </form>
-
-<br />
-
-<div class="subheader f_deca"><div>Portales en los que aparece</div></div>
-<form method="post" action="/admin/ads_slots/add_to_portal/<%=@ads_slot.id%>">
-	Portal:
-	<select name="portal_id">
-		<%=options_for_select([['gm', GmPortal.new.id], ['arena', ArenaPortal.new.id], ['bazar', BazarPortal.new.id]] + Portal.find(:all, :conditions => 'type <> \'ClansPortal\'', :order => 'code').collect { |o| [o.code, o.id] }) %>
-	</select><br />
-	<input type="submit" class="button" value="Asociar" />
-</form>
-<% if @ads_slot.portals.size == 0 then %>
-<p>Aparece en todos los portales</p>
-<% else %>
-<p>Solo aparece en los portales:
-<table>
-	<%@ads_slot.portals.each do |portal| %>
-	<tr class="<%=oddclass%>">
-		<td><%=portal.code%></td>
-		<td><a href="/admin/ads_slots/remove_from_portal/<%=@ads_slot.id%>?portal_id=<%=portal.id%>">Quitar</a></td>
-	</tr>
-	<% end -%>
-</table>
-</p>
-<% end -%>
 <% end -%>
 
 <% generic_support(:show_ads => false) do %>

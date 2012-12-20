@@ -51,7 +51,6 @@ fixtures = [
 :messages,
 :polls_votes,
 :skins,
-:portals,
 :factions_portals,
 :portal_headers,
 :tracker_items,

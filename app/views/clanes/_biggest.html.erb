@@ -1,4 +1,4 @@
-<% cache("/#{portal_code}/clanes/shared/biggest.#{global_var('clans_updated_on')}") do %>
+<% cache("/clanes/shared/biggest.#{global_var('clans_updated_on')}") do %>
   <% mftext('Clanes más numerosos') do %>
   <table>
     <% get_biggest_clans(controller.portal).each do |clan| %>

@@ -40,7 +40,6 @@ class Content < ActiveRecord::Base
   belongs_to :content_type
   belongs_to :game
   belongs_to :gaming_platform
-  belongs_to :portal
   belongs_to :user
 
   has_many :comments, :dependent => :destroy
@@ -68,21 +67,6 @@ class Content < ActiveRecord::Base
   scope :content_type_names, lambda { |names| {
             :conditions => ["type IN (?)", names]
         }
-  }
-
-  scope :in_portal, lambda { |portal|
-    if portal.id == -1
-      {:conditions => "bazar_district_id IS NULL"}
-    else
-      taxonomy = "#{ActiveSupport::Inflector.pluralize(self.class.name)}Category"
-      {
-        :conditions => [
-          "id IN (
-              SELECT content_id
-              FROM contents_terms
-              WHERE term_id IN (?))",
-          portal.terms_ids(taxonomy)] }
-    end
   }
 
   scope :in_term, lambda { |term|
@@ -388,10 +372,6 @@ class Content < ActiveRecord::Base
     self.reload # necesario porque no se borra la cache del objeto de terms
   end
 
-  def resolve_portal_id
-    # primero los fáciles
-  end
-
   def rating
     # devuelve el rating del contenido
     if (self.cache_rating.nil? && self.cache_rated_times.nil?) ||
@@ -653,10 +633,6 @@ class Content < ActiveRecord::Base
       :conditions => "code = (SELECT slug FROM games WHERE id = #{game_id})")
   end
 
-  def my_bazar_district
-    BazarDistrict.find(:first, :conditions => ["slug = ?", self.portal.code])
-  end
-
   def clear_comments
     self.comments.clear
   end
@@ -796,26 +772,6 @@ class Content < ActiveRecord::Base
   #  new_terms = [new_terms] unless new_terms.kind_of?(Array)
   #  @_terms_to_add += new_terms
   #end
-
-  # Devuelve los portales en los que este contenido se muestra.
-  # TODO esto no es correcto
-  def get_related_portals
-    if self.respond_to?(:clan_id) && self.clan_id && self.type != 'RecruitmentAd'
-      [ClansPortal.find_by_clan_id(self.clan_id)]
-    else
-      portals = [GmPortal.new, ArenaPortal.new, BazarPortal.new]
-      f = Organizations.find_by_content(self)
-      if f.nil? then # No es un contenido de facción o es de categoría gm/otros TODO esto no usarlo con caches, madre del amor hermoso
-        portals += Portal.find(:all, :conditions => 'type <> \'ClansPortal\'')
-      elsif f.class.name == 'Faction'
-        # TODO plataforma PC va a fallar
-        portals += Portal.find(:all, :conditions => ['id in (SELECT portal_id from factions_portals where faction_id = ?)', f.id])
-      elsif f.class.name == 'BazarDistrict'
-        portals += [Portal.find_by_code(f.code)]
-      end
-      portals
-    end
-  end
 
   def main_image
     candidates = []
@@ -1001,14 +957,6 @@ class Content < ActiveRecord::Base
   private
   def clear_save_locks
     self.contents_locks.clear if self.contents_locks
-    old_url = self.url
-    new_url = Routing.gmurl(self)
-    if old_url != new_url  # url has changed, let's update comments
-      User.db_query(
-          "UPDATE comments
-              SET portal_id = #{self.portal_id}
-            WHERE content_id = #{self.id}")
-    end
   end
 
   def do_after_create

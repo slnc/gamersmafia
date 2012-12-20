@@ -45,14 +45,6 @@ class HomeControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-
-  test "should_show_district_portal" do
-    @request.host = "anime.#{App.domain}"
-    get :index
-    assert_response :success
-    # assert @controller.portal.nil?
-  end
-
   # testeamos aquí que el enrutado por dominios sea correcto
   test "should_show_unknown_domain_if_unrecognized_host" do
     assert_raises(DomainNotFound) do
@@ -68,56 +60,6 @@ class HomeControllerTest < ActionController::TestCase
     get :index
     assert_response :success
     assert_template 'gm'
-    assert @controller.portal.kind_of?(GmPortal)
-  end
-
-
-  test "should_show_normal_page_if_arena_site" do
-    @request.host = "arena.#{App.domain}"
-    get :index
-    assert_response :success
-    assert_template 'arena'
-    assert @controller.portal.kind_of?(ArenaPortal)
-  end
-
-  test "should_show_normal_page_if_faction_portal" do
-    @request.host = "#{FactionsPortal.find_by_code('ut').code}.#{App.domain}"
-    get :index
-    assert_response :success
-    assert_template 'facciones_fps'
-    assert @controller.portal.kind_of?(FactionsPortal)
-  end
-
-  test "should_redir_to_proper_home_if_defset_and_anonymous" do
-    @request.cookies['defportalpref'] = 'facciones'
-    get :index
-    assert_response :success
-    assert_template 'facciones_unknown'
-  end
-
-  test "home_bazar_district_shouldnt_show_bets_from_other_places" do
-    b1 = Bet.find(1)
-    assert b1.update_attributes(:closes_on => 1.day.since)
-    @request.host = "anime.#{App.domain}"
-    get :index
-    assert @response.body.index(b1.title).nil?
-  end
-
-  test "home_bazar_district_shouldnt_show_closed_bets_from_self" do
-    b1 = Bet.find(1)
-    assert b1.update_attributes(:closes_on => 1.day.ago)
-    @request.host = "anime.#{App.domain}"
-    get :index
-    assert @response.body.index(b1.title).nil?
-  end
-
-  test "home_bazar_district_should_show_closed_bets_from_self" do
-    b1 = Bet.find(1)
-    assert b1.update_attributes(:closes_on => 1.day.since)
-    Term.single_toplevel(:slug => 'anime').link(b1)
-    @request.host = "anime.#{App.domain}"
-    get :index
-    assert_not_nil @response.body.index(b1.title)
   end
 
   test "should show hq menu if any relevant skill" do

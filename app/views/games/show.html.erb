@@ -120,7 +120,7 @@ category = @game_term
 
 <%mftext('Imagen del día') do %>
 <% d = Date.today
-cache("/#{controller.portal_code}/home/index/potd20085_#{d.strftime('%Y%m%d')}") do
+cache("/home/index/potd20085_#{d.strftime('%Y%m%d')}") do
 
 @daily_img = Potd.current_portal(controller.portal)
 @daily_img = @daily_img.image if @daily_img

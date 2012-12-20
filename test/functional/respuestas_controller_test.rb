@@ -10,8 +10,7 @@ class RespuestasControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  def index_should_work_in_portal
-    host! "ut.#{App.domain}"
+  def index_should_work
     get :index
     assert_response :success
   end

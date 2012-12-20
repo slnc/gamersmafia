@@ -864,17 +864,6 @@ module Cms
     ntext.strip
   end
 
-  def self.get_unique_portal_code(code)
-    i = ''
-    if Portal.find_by_code(code) || Portal::UNALLOWED_CODES.include?(code)
-      i = 1
-      while Portal.find_by_code("#{code}#{i}") || Portal::UNALLOWED_CODES.include?(code)
-        i += 1
-      end
-    end
-    code
-  end
-
   def self.get_editable_terms_by_group(u)
     terms = {
       :games => [],

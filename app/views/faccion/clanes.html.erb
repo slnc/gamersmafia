@@ -1,7 +1,7 @@
 <% content_main do %>
   <% mftext('Clanes') do %>
-<% games = (controller.portal_code != 'gm' && controller.portal.respond_to?(:games)) ? controller.portal.games : []
-  @clans = Clan.in_games(games).paginate(:page => params[:page], :per_page => 40, :conditions => 'deleted is false') %>
+<%
+  @clans = Clan.paginate(:page => params[:page], :per_page => 40, :conditions => 'deleted is false') %>
 <%= render :partial => 'shared/pager2', :locals => {:collection => @clans, 'pos' => 'top'} %>
 
   <table>

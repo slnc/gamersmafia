@@ -65,10 +65,6 @@ class Competition < ActiveRecord::Base
 
   has_bank_account
 
-  def get_related_portals
-    self.game.portals
-  end
-
   def can_recreate_matches?
    (self.kind_of?(League) || self.kind_of?(Tournament)) && self.competitions_matches.count(:conditions => 'completed_on is NOT NULL') == 0
   end

@@ -920,7 +920,7 @@ group by date_trunc('day', created_on) order by s asc
     end
   end
 
-  def self.pageloadtime(request, seconds, response, controller_name, action_name, portal)
+  def self.pageloadtime(request, seconds, response, controller_name, action_name)
     #dbs = ActiveRecord::ConnectionAdapters::PostgreSQLAdapter.get_stats
     dbs = {:queries => 0, :rows => 0}
     db_queries = dbs[:queries]
@@ -939,7 +939,7 @@ group by date_trunc('day', created_on) order by s asc
                                                   '#{controller_name}',
                                                   '#{action_name}',
                                                   #{'%.5f' % seconds},
-                                                  #{portal.id},
+                                                  -1,
                                                   #{db_queries + 1},
                                                   #{db_rows});")
   end

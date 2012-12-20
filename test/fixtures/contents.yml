@@ -9,7 +9,6 @@ news_deleted:
   url: http://ut.<%=App.domain%>/noticias/show/3
   state: 3
   user_id: 3
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -28,7 +27,6 @@ bet_deleted:
   url: http://arena.<%=App.domain%>/apuestas/show/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -49,7 +47,6 @@ column_deleted:
   url: http://ut.<%=App.domain%>/columnas/show/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -68,7 +65,6 @@ funthing_deleted:
   url: http://bazar.<%=App.domain%>/curiosidades/show/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -88,7 +84,6 @@ download_deleted:
   url: http://ut.<%=App.domain%>/descargas/show/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -107,7 +102,6 @@ poll_deleted:
   url: http://ut.<%=App.domain%>/encuestas/show/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -126,7 +120,6 @@ tutorial_deleted:
   url: http://ut.<%=App.domain%>/tutoriales/show/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -146,7 +139,6 @@ interview_deleted:
   url: http://ut.<%=App.domain%>/entrevistas/show/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -165,7 +157,6 @@ event_deleted:
   url: http://ut.<%=App.domain%>/eventos/show/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -184,7 +175,6 @@ coverage_deleted:
   url: http://ut.<%=App.domain%>/coverages/show/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -204,7 +194,6 @@ review_deleted:
   url: http://ut.<%=App.domain%>/reviews/show/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -223,7 +212,6 @@ forums_topic_deleted:
   url: http://<%=App.domain%>/foros/topic/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -244,7 +232,6 @@ image_deleted:
   url: http://ut.<%=App.domain%>/imagenes/show/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -261,7 +248,6 @@ demo_deleted:
   url: http://arena.<%=App.domain%>/demos/show/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -283,7 +269,6 @@ news_unpublished:
   url: http://ut.<%=App.domain%>/noticias/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -302,7 +287,6 @@ bet_unpublished:
   url: http://arena.<%=App.domain%>/apuestas/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -324,7 +308,6 @@ column_unpublished:
   url: http://ut.<%=App.domain%>/columnas/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -343,7 +326,6 @@ funthing_unpublished:
   url: http://bazar.<%=App.domain%>/curiosidades/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -363,7 +345,6 @@ download_unpublished:
   url: http://ut.<%=App.domain%>/descargas/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -382,7 +363,6 @@ poll_unpublished:
   url: http://ut.<%=App.domain%>/encuestas/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -401,7 +381,6 @@ tutorial_unpublished:
   url: http://ut.<%=App.domain%>/tutoriales/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -420,7 +399,6 @@ interview_unpublished:
   url: http://ut.<%=App.domain%>/entrevistas/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -439,7 +417,6 @@ event_unpublished:
   url: http://ut.<%=App.domain%>/eventos/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -458,7 +435,6 @@ coverage_unpublished:
   url: http://ut.<%=App.domain%>/coverages/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -478,7 +454,6 @@ review_unpublished:
   url: http://ut.<%=App.domain%>/reviews/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -497,7 +472,6 @@ forums_topic_unpublished:
   url: http://<%=App.domain%>/foros/topic/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -518,7 +492,6 @@ image_unpublished:
   url: http://ut.<%=App.domain%>/imagenes/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -535,7 +508,6 @@ demo_unpublished:
   url: http://arena.<%=App.domain%>/demos/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -560,7 +532,6 @@ news_published:
   url: http://ut.<%=App.domain%>/noticias/show/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -577,7 +548,6 @@ bet_published:
   url: http://arena.<%=App.domain%>/apuestas/show/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -599,7 +569,6 @@ column_published:
   url: http://ut.<%=App.domain%>/columnas/show/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -618,7 +587,6 @@ funthing_published:
   url: http://bazar.<%=App.domain%>/curiosidades/show/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -638,7 +606,6 @@ download_published:
   url: http://ut.<%=App.domain%>/descargas/show/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -658,7 +625,6 @@ poll_published:
   url: http://ut.<%=App.domain%>/encuestas/show/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -679,7 +645,6 @@ tutorial_published:
   url: http://ut.<%=App.domain%>/tutoriales/show/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -700,7 +665,6 @@ interview_published:
   url: http://ut.<%=App.domain%>/entrevistas/show/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -720,7 +684,6 @@ event_published:
   url: http://ut.<%=App.domain%>/eventos/show/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -740,7 +703,6 @@ coverage_published:
   url: http://ut.<%=App.domain%>/coverages/show/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -761,7 +723,6 @@ review_published:
   url: http://ut.<%=App.domain%>/reviews/show/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -781,7 +742,6 @@ forums_topic_published:
   url: http://ut.<%=App.domain%>/foros/topic/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -803,7 +763,6 @@ image_published:
   url: http://ut.<%=App.domain%>/imagenes/show/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -821,7 +780,6 @@ image_babe:
   url: http://<%=App.domain%>/imagenes/show/4
   user_id: 1
   state: 2
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -839,7 +797,6 @@ image_dude:
   url: http://<%=App.domain%>/imagenes/show/5
   user_id: 1
   state: 2
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -855,7 +812,6 @@ demo_published:
   comments_count: 0
   url: http://arena.<%=App.domain%>/demos/show/1
   user_id: 1
-  portal_id: 1
   state: 2
   karma_points: 1
   hits_anonymous: 0
@@ -888,7 +844,6 @@ demo_published:
   url: http://arena.<%=App.domain%>/competiciones/show/<%=i - 90%>
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -914,7 +869,6 @@ blogentry_first:
   url: http://<%=App.domain%>/blogs/superadmin/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   title: foo
   main: bar
@@ -929,7 +883,6 @@ blogentry_second:
   url: http://<%=App.domain%>/blogs/panzer/2
   state: 2
   user_id: 2
-  portal_id: 1
   karma_points: 1
   title: foo2
   main: bar2
@@ -944,7 +897,6 @@ noticia_clan1:
   url: http://mapaches.<%=App.domain%>/noticias/show/4
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -963,7 +915,6 @@ foo3vsbar3:
   url: http://ut.<%=App.domain%>/eventos/show/5000
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -982,7 +933,6 @@ news_pending_clan1:
   url: http://mapaches.<%=App.domain%>/noticias/show/5
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -1001,7 +951,6 @@ news_64:
   url: http://ut.<%=App.domain%>/noticias/show/64
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -1021,7 +970,6 @@ topics_1265:
   url: http://<%=App.domain%>/foros/topic/1265
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
 
 topics_9734:
@@ -1034,7 +982,6 @@ topics_9734:
   url: http://<%=App.domain%>/foros/topic/9734
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -1054,7 +1001,6 @@ topics_7761:
   url: http://<%=App.domain%>/foros/topic/7761
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -1074,7 +1020,6 @@ topics_3417:
   url: http://<%=App.domain%>/foros/topic/3417
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -1094,7 +1039,6 @@ topics_1265:
   url: http://<%=App.domain%>/foros/topic/1265
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -1115,7 +1059,6 @@ question_published:
   url: http://ut.<%=App.domain%>/respuestas/show/1
   state: 2
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -1133,7 +1076,6 @@ question_unpublished:
   url: http://ut.<%=App.domain%>/respuestas/show/2
   state: 1
   user_id: 1
-  portal_id: 1
   karma_points: 1
   game_id: 1
   hits_anonymous: 0
@@ -1152,7 +1094,6 @@ question_deleted:
   url: http://ut.<%=App.domain%>/respuestas/show/3
   state: 3
   user_id: 1
-  portal_id: 1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -1170,7 +1111,6 @@ news_published_anime:
   url: http://bazar.<%=App.domain%>/noticias/show/65
   state: 2
   user_id: 1
-  portal_id: 31
   bazar_district_id: 1
   karma_points: 1
   hits_anonymous: 0
@@ -1190,7 +1130,6 @@ news_published_gm:
   url: http://<%=App.domain%>/noticias/show/66
   state: 2
   user_id: 1
-  portal_id: -1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -1209,7 +1148,6 @@ polls_published_gm:
   url: http://<%=App.domain%>/encuestas/show/4
   state: 2
   user_id: 1
-  portal_id: -1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -1229,7 +1167,6 @@ polls_pending_gm:
   url: http://<%=App.domain%>/encuestas/show/5
   state: 1
   user_id: 1
-  portal_id: -1
   karma_points: 1
   hits_anonymous: 0
   hits_registered: 0
@@ -1250,7 +1187,6 @@ news_published_rj:
   url: http://rj.<%=App.domain%>/noticias/show/67
   state: 2
   user_id: 1
-  portal_id: 21
   karma_points: 100
   hits_anonymous: 0
   hits_registered: 0

@@ -96,7 +96,6 @@ module TestCaseMixings
       end
 
       test "should_allow_new_in_portals" do
-        # @request.host = %w(Funthing).include?(content_class.name) ? "bazar.#{App.domain}" : App.domain
         setup_functional_content_hbr
         test_should_allow_new_only_to_registered
       end

@@ -4,9 +4,6 @@ class DescargasController < InformacionController
 
   def index
     @title = 'Descargas'
-    if params[:category].nil? && portal.id > 0
-      params[:category] = Term.portal_root_term(portal).first
-    end
     parent_id = params[:category]
     if parent_id then
       # TODO BUG no estamos chequeando que la categoría se pueda ver desde aquí

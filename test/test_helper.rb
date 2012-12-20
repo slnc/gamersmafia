@@ -50,16 +50,6 @@ class ActiveSupport::TestCase
     URI::split(uri)[2]
   end
 
-  def portal
-    @portal || GmPortal.new
-  end
-
-  def portal=(portal)
-    @portal = portal
-    faction_host portal
-  end
-
-
   def sym_pageview(opts)
     # req: url
     opts = {:ip => '127.0.0.1'}.merge(opts)

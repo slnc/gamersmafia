@@ -256,13 +256,6 @@ class ContentTest < ActiveSupport::TestCase
     assert_nil Image.in_term_tree(t.root).find_by_id(1)
   end
 
-  test "in_portal should work" do
-    d = Download.published.first
-    t = d.contents_terms.first.term
-    assert_not_nil Download.in_term_tree(t.root).find(d.id)
-    assert_nil Download.in_term_tree(t.root).find_by_id(3)
-  end
-
   test "should_add_log_entry_on_modification" do
     test_should_add_log_entry_on_creation
     n = News.find(:first, :order => 'id DESC')
@@ -390,49 +383,5 @@ class ContentTest < ActiveSupport::TestCase
     uattrs.each do |uattr|
       assert_equal o1[uattr], uattrs_received[uattr]
     end
-  end
-
-  test "related_portals_of_district_proper_district" do
-    n = News.new(
-        :title => 'Noticia 1', :description => 'sumario', :user_id => 1)
-    assert n.save
-    Term.single_toplevel(:slug => 'anime').link(n)
-    relportals = n.get_related_portals
-    assert_equal 4, relportals.size
-    assert_equal 'anime', relportals[3].code
-  end
-
-  test "in_portal with GmPortal should not return all contents" do
-    assert_not_equal News.count, News.in_portal(GmPortal.new).count
-  end
-
-  test "in_portal with BazarDistrictPortal should return BazarDistrict's contents" do
-    assert News.in_portal(BazarDistrictPortal.find(31)).find_by_id(65)
-  end
-
-  test "in_portal with BazarDistrictPortal should not return non-BazarDistrict's contents" do
-    assert_nil News.in_portal(BazarDistrictPortal.find(31)).find_by_id(1)
-    assert_nil News.in_portal(BazarDistrictPortal.find(31)).find_by_id(66) # gm's
-  end
-
-  test "in_portal with FactionsPortal with single faction should return the faction's contents" do
-    assert News.in_portal(FactionsPortal.find(1)).find(1)
-  end
-
-  test "in_portal with FactionsPortal with single faction should not return other faction's contents" do
-    assert_nil News.in_portal(FactionsPortal.find(20)).find_by_id(1)
-  end
-
-
-  test "in_portal with FactionsPortal with multiple factions should return all the factions's contents" do
-    fsp = FactionsPortal.find_by_code('unreal')
-    assert News.in_portal(fsp).find(1) # ut's news
-    assert News.in_portal(fsp).find(67) # rj's news
-  end
-
-  test "in_portal with FactionsPortal with multiple factions should not return other portal's contents" do
-    fsp = FactionsPortal.find_by_code('unreal')
-    assert_nil News.in_portal(fsp).find_by_id(66) # gm news
-    assert_nil News.in_portal(fsp).find_by_id(65) # anime news
   end
 end

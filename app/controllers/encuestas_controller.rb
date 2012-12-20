@@ -38,12 +38,6 @@ class EncuestasController < InformacionController
       @poll.vote(@polls_option, self.remote_ip)
     end
     flash[:notice] = 'Voto realizado correctamente'
-    # TODO esto no hay que hacerlo aquí
-    @poll.get_related_portals.each do |p|
-      CacheObserver.expire_fragment("/#{p.code}/encuestas/index/most_votes")
-      CacheObserver.expire_fragment("/#{p.code}/home/index/polls") # TODO
-    end
-
     redirect_to gmurl(@poll)
   end
 end

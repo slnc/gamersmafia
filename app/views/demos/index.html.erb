@@ -77,14 +77,14 @@
 
 <% generic_support do %>
   <% mftext('Últimas demos subidas') do %>
-    <%=generic_contents_list(Demo.in_portal(controller.portal).published.find(
+    <%=generic_contents_list(Demo.published.find(
         :all, :order => 'created_on DESC', :limit => 5))%>
   <% end -%>
 
   <% mftext('Las más descargadas') do %>
     <ul class="content-hid">
       <%	# TODO cache %>
-      <% Demo.in_portal(controller.portal).published.find(
+      <% Demo.published.find(
           :all, :order => 'downloaded_times DESC', :limit => 5).each do |d| %>
             <li class="<%=oddclass%>"><%=link_to d.title, gmurl(d)%>
             <div class="infoinline"><%=gm_icon("download", "small")%> <%=d.downloaded_times%> | <%=draw_rating(d.rating)%></div></li>

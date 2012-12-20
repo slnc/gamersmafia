@@ -3,10 +3,6 @@ class OutstandingEntity < ActiveRecord::Base
   validates_presence_of :active_on
   validates_uniqueness_of :active_on, :scope => [:type, :portal_id]
 
-  def portal
-    portal_id == -1 ? GmPortal.new : Portal.find(self.portal_id)
-  end
-
   def self.factory(portal_id, entity_cls, entity_id, reason)
     # El algoritmo de encolado funciona de la siguiente forma:
     # Se calcula el número de usuarios que están usando el servicio. El usuario

@@ -753,15 +753,6 @@ class Cuenta::CuentaControllerTest < ActionController::TestCase
     end
   end
 
-  test "set_default_portal" do
-    assert_raises(AccessDenied) { get :set_default_portal }
-    sym_login 1
-    post :set_default_portal, :new_portal => 'arena'
-    assert_response :success
-    u1 = User.find(1)
-    assert_equal 'arena', u1.default_portal
-  end
-
   test "shouldnt delete if invalid password" do
     sym_login 1
     post :borrar

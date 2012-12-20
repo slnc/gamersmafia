@@ -176,28 +176,6 @@ class TermTest < ActiveSupport::TestCase
     assert_equal @n2.id, @n1child.root_id
   end
 
-  test "should_properly_return_related_portals_if_not_matching_a_factions_code" do
-    nc = Term.new({:name => 'catnonfaction', :taxonomy => "Homepage"})
-    assert_equal true, nc.save
-    assert_equal (FactionsPortal.count + BazarDistrictPortal.count + 1), nc.get_related_portals.size
-    assert_equal 'GmPortal', nc.get_related_portals[0].class.name
-  end
-
-  test "should_properly_return_related_portals_if_not_matching_a_factions_code_and_child" do
-    nc = Term.new({:name => 'catnonfaction', :taxonomy => "Homepage"})
-    assert nc.save
-    ncchild = nc.children.create({:name => 'subcat', :taxonomy => "DownloadsCategory"})
-    assert_equal true, ncchild.save
-    assert_equal (FactionsPortal.count + BazarDistrictPortal.count + 1), ncchild.get_related_portals.size
-    assert_equal 'GmPortal', ncchild.get_related_portals[0].class.name
-  end
-
-  test "should_properly_return_related_portals_if_matching_a_factions_code" do
-    nc = Term.single_toplevel(:slug => 'ut')
-    assert_not_nil nc
-    assert_equal 3, nc.get_related_portals.size, nc.get_related_portals
-  end
-
   test "all_children_ids_should_properly_return_if_root_id_given" do
     @nc = Term.create({:name => 'catnonfaction', :taxonomy => "Homepage"})
     @ncchild = @nc.children.create({:name => 'subcat', :taxonomy => "DownloadsCategory"})

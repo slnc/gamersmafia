@@ -70,30 +70,4 @@ class Admin::AdsSlotsController < AdministrationController
     _update_slots_instances
     redirect_to "/admin/ads_slots/edit/#{@as.id}"
   end
-
-  def add_to_portal
-    as = AdsSlot.find(params[:id])
-    portal = Portal.find_by_id(params[:portal_id])
-    raise ActiveRecord::RecordNotFound unless portal
-    if as.link_to_portal(portal)
-      flash[:error] = "La asociación ya existe."
-    else
-      flash[:notice] = "Asociación creada correctamente."
-    end
-
-    redirect_to "/admin/ads_slots/edit/#{as.id}"
-  end
-
-  def remove_from_portal
-    as = AdsSlot.find(params[:id])
-    portal = Portal.find_by_id(params[:portal_id])
-    raise ActiveRecord::RecordNotFound unless portal
-    if as.unlink_from_portal(portal)
-      flash[:notice] = "Asociación eliminada correctamente."
-    else
-      flash[:error] = "La asociación no existe."
-    end
-
-    redirect_to "/admin/ads_slots/edit/#{as.id}"
-  end
 end

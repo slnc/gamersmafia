@@ -3,10 +3,10 @@
         <ul class="content-hid2">
 <%
 articles = []
-articles += Interview.in_portal(controller.portal).published.find(:all, :limit => 8, :order => 'created_on DESC') if controller.portal.interview
-articles += Column.in_portal(controller.portal).published.find(:all, :limit => 8, :order => 'created_on DESC') if  controller.portal.column
-articles += Tutorial.in_portal(controller.portal).published.find(:all, :limit => 8, :order => 'created_on DESC') if controller.portal.tutorial
-articles += Review.in_portal(controller.portal).published.find(:all, :limit => 8, :order => 'created_on DESC') if controller.portal.review
+articles += Interview.published.find(:all, :limit => 8, :order => 'created_on DESC') if controller.portal.interview
+articles += Column.published.find(:all, :limit => 8, :order => 'created_on DESC') if  controller.portal.column
+articles += Tutorial.published.find(:all, :limit => 8, :order => 'created_on DESC') if controller.portal.tutorial
+articles += Review.published.find(:all, :limit => 8, :order => 'created_on DESC') if controller.portal.review
 
 ordered = {}
 for a in articles
