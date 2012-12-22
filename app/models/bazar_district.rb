@@ -49,7 +49,7 @@ class BazarDistrict < ActiveRecord::Base
 
   def check_if_icon_updated
     if self.icon_changed?
-      Skins.delay.update_portal_favicons
+      Skins.delay.update_entity_favicons
       Skins.delay.update_default_skin_styles
     end
     true

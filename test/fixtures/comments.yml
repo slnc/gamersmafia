@@ -7,7 +7,6 @@ first_comment:
   updated_on: 2006-01-01 00:00:00
   comment: caca
   has_comments_valorations: false
-  portal_id: 1
   karma_points: 1
 
 second_comment:
@@ -19,5 +18,4 @@ second_comment:
   updated_on: 2006-01-01 00:00:00
   comment: caca
   has_comments_valorations: false
-  portal_id: 1
   karma_points: 1

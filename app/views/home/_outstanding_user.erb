@@ -1,5 +1,5 @@
-<% cache("/#{controller.portal.code}/outstanding_users/#{Time.now.strftime('%Y%m%d')}") do
-outstanding_user = OutstandingUser.current(controller.portal.id)
+<% cache("/outstanding_users/#{Time.now.strftime('%Y%m%d')}") do
+outstanding_user = OutstandingUser.current
 if outstanding_user then
 u = outstanding_user.user
 %>

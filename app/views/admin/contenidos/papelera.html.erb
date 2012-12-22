@@ -1,20 +1,9 @@
 <%mftext('Contenidos en la papelera') do %>
-<br />
-Portal: <select onchange="document.location = '/admin/contenidos/papelera?portal='+this.value;">
-          <option value="">Todos</option>
-          <% for portal in Portal.find(:all, :conditions => 'type IN (\'FactionsPortal\')', :order => 'lower(code) asc')
-              selected = params[:portal] == portal.code ? 'selected="selected"' : ''%>
-              <option <%=selected%> value="<%=portal.code%>"><%=portal.code.upcase%></option>
-          <% end -%>
-        </select>
 <div id="deleted_items">
 <table>
-<% for name, collection, controller in @contents
-    if collection.size == 0 then
-      next
-    end
+<% @contents.each do |name, collection, controller|
+    next if collection.size == 0
 %>
-
 <tr>
   <th colspan="2" style="padding-top: 20px;"><h2 class="f_hecto"><%=name%></h2></th>
   <th style="padding-top: 20px;">Eliminado</th>

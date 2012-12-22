@@ -230,7 +230,7 @@ for demo in @last_demos
 <% d = Date.today
 cache("/home/index/potd_#{d.strftime('%Y%m%d')}") do
 
-@daily_img = Potd.current_portal(controller.portal)
+@daily_img = Potd.current
 @daily_img = @daily_img.image if @daily_img
 
 if @daily_img then %>

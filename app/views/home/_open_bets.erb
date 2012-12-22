@@ -1,10 +1,8 @@
 <% cache("/home/index/apuestas2_#{Time.now.to_i / 3600}") do %>
-<% if controller.portal.bet then
-	mfcontents_table(
+<% mfcontents_table(
       'Apuestas',
 	    Proc.new {
-        Bet.open_bets.in_term(
-          controller.portal.bet).published.find(:all)
+        Bet.open_bets.published.find(:all)
       }) do |o| %>
 <td>
   <a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a>
@@ -16,6 +14,5 @@
     <%=o.total_ammount.to_i%> <%=gm_icon("gmf", "small")%>
   </div>
 </td>
-<% end -%>
 <% end -%>
 <% end -%>

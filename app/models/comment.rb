@@ -39,10 +39,8 @@ class Comment < ActiveRecord::Base
   has_many :comments_valorations, :dependent => :destroy
 
   before_save :truncate_long_comments
-  before_save :set_portal_id_based_on_content
   before_save :check_copy_if_changing_lastedited_by_user_id
   before_save :check_not_moderated
-  belongs_to :portal
   serialize :cache_rating
 
   validates_presence_of :comment, :message => 'no puede estar en blanco'
@@ -198,9 +196,6 @@ class Comment < ActiveRecord::Base
 
   def update_last_comment_on
     GlobalVars.update_var("last_comment_on", self.updated_on)
-    if self.content.portal
-      self.content.portal.update_attribute(:last_comment_on, self.updated_on)
-    end
   end
 
   # Accepts an unformatized string and returns replied users.
@@ -312,10 +307,6 @@ class Comment < ActiveRecord::Base
 
     self.deleted = true
     self.save
-  end
-
-  def set_portal_id_based_on_content
-    self.portal_id = self.content.portal_id
   end
 
   def truncate_long_comments

@@ -24,25 +24,5 @@
 </table>
 <% end -%>
 <% end -%>
-
-<%mftext('Los que más karma han generado en el último mes') do %>
-<%
-fp = BazarDistrictPortal.find_by_code(bd.slug)
-dbk = User.db_query("SELECT COALESCE(sum(karma), 0) as sum FROM stats.portals WHERE portal_id = #{fp.id} AND created_on >= date_trunc('day', now() - '1 month'::interval) and created_on < date_trunc('day', now())")
-dbh = User.db_query("select sum(pageviews) from stats.portals where portal_id = #{fp.id} and created_on >= date_trunc('day', now() - '1 month'::interval) and created_on < date_trunc('day', now())")
-total_karma = dbk.size > 0 ? dbk[0]['sum'].to_f : 0.1
-dbu = User.db_query("select sum(karma), (select login from users where id = stats.users_karma_daily_by_portal.user_id) as login from stats.users_karma_daily_by_portal where portal_id = #{fp.id} and created_on >= date_trunc('day', now() - '1 month'::interval) group by portal_id, user_id order by sum(karma) desc limit 10")
-%>
-<table>
-<% dbu.each do |dbi| %>
-<tr>
-  <td style="width: 150px;"><a href="http://<%=App.domain%>/miembros/<%=dbi['login']%>"><%=dbi['login']%></a></td>
-  <td style="text-align: right; width: 50px;"><%=dbi['sum']%></td>
-  <td style="text-align: right; width: 40px;"><%="%.2f" % ((dbi['sum'].to_i / total_karma)*100)%>%</td>
-  <td style="width: 200px;"><div style="width: <%=(dbi['sum'].to_i / total_karma)*100.to_i%>%; height: 20px;"></div></td>
-</tr>
-<% end -%>
-</table>
-<% end -%>
 <div class="right"><strong><a href="/cuenta/distrito">Administración</a></strong></div>
 </div>

@@ -1,6 +1,6 @@
 <div class="homebox" id="hhome-events">
 <div id="home-events" class="subheader f_deca"><div><span>Eventos</span></div></div>
-<%  cache("/#{controller.portal.code}/home/index/eventos/#{Time.now.strftime('%Y%m%d')}") do %>
+<%  cache("/home/index/eventos/#{Time.now.strftime('%Y%m%d')}") do %>
 <%mfcontents_table(nil, Event.published.current_events.find(:all)) do |e| %>
     <td><a href="<%=gmurl(e)%>"><%=content_category(e)%><%=e.title%></a></td>
     <td class="w25"><%=gm_icon("user", "small")%> <%=e.users.count if e.respond_to?(:users)%></td>

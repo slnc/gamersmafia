@@ -5,7 +5,7 @@ class Potd < ActiveRecord::Base
   MIN_RANK_FOR_POTD = 5
   MIN_RATINGS_FOR_POTD = 1
 
-  def self.current_portal(portal = nil)
+  def self.current
     potd = Potd.find(:first,
                      :conditions => ['date = ? AND portal_id = ?',
                                      Date.today, portal.id])

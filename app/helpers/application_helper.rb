@@ -1103,7 +1103,6 @@ skin: 'v2'
 
   def generic_support(opts={}, &block)
     opts = {:show_ads => true}.merge(opts)
-    return '' if controller.portal.kind_of?(ClansPortal)
     out = ''
 
     concat("<div class=\"container\" id=\"csupport\"><div class=\"ads-slots\"><div class=\"ads-slots1\">#{out if opts[:show_ads]}".force_encoding("utf-8"))
@@ -1509,7 +1508,7 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
       @@_cache_ads_slots = {}
       @@_cache_ads_slots_time = controller.global_vars['ads_slots_updated_on']
     end
-    cache_key = "#{controller.portal.id}-#{location}-#{game_id}"
+    cache_key = "#{location}-#{game_id}"
     @@_cache_ads_slots[cache_key] ||= AdsSlot.find(:all, :conditions => ["location = ?
                                     AND id IN (select id
                                                  from ads_slots

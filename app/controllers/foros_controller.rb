@@ -27,7 +27,6 @@ class ForosController < ComunidadController
   end
 
   def forum
-    # TODO no chequeamos que sea un foro correcto para este portal
     params[:id] = params[:id].to_i
     # Rails routes constraints no parecen funcionar. /foros/forum/index.php lleg
     # aquí.

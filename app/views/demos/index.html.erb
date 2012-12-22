@@ -6,7 +6,7 @@
 <table>
 <tr>
     <td>Juego</td>
-    <% games = controller.portal.respond_to?(:factions) ? controller.portal.factions.find(:all).collect { |f| "#{f.code}" } : Game.find(:all, :conditions => "has_demos = 't'").collect { |g| "#{g.slug}" } %>
+    <% games = Game.find(:all, :conditions => "has_demos = 't'").collect { |g| "#{g.slug}" } %>
     <td>
 
 		<%= select_tag("demo_term_id", options_for_select(['',''] + Term.with_taxonomy("Game").find(:all, :conditions => ['slug IN (?)', games], :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }), { :include_blank => true })%></p></td>

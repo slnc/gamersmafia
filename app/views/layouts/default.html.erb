@@ -10,7 +10,7 @@
   <%= yield(:head) %>
   <link rel="alternate" type="application/rss+xml" title="Feed RSS de Gamersmafia" href="/rss/noticias" />
   <%= analytics_code if App.enable_google_analytics? %>
-  <% if controller.portal.code == 'diablo' then %>
+  <% if nil then  # DO NOT SUBMIT, we need to have ability to load js files based on shown entities %>
   <script src="http://eu.battle.net/d3/static/js/tooltips.js"></script>
   <% end -%>
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0" />
@@ -25,8 +25,6 @@
     <a href="/" class="logo" title="Ir a portada">
       <span class="mascot"><%=gm_icon("gm-mascot")%></span>
       <span class="letters"><%=gm_icon("gm-logo-g")%><%=gm_icon("gm-logo-a")%><%=gm_icon("gm-logo-m")%><%=gm_icon("gm-logo-e")%><%=gm_icon("gm-logo-r")%><span style="margin-left: -1px;"><%=gm_icon("gm-logo-s")%></span><span class="logo-mafia"><%=gm_icon("gm-logo-m")%><%=gm_icon("gm-logo-a")%><%=gm_icon("gm-logo-f")%><span style="margin-left: -5px;"><%=gm_icon("gm-logo-i")%></span><span style="margin-left: -4px;"><%=gm_icon("gm-logo-a")%></span></span></span></a>
-
-   <%= render :partial => 'layouts/faction_building' %>
   </div>
 
   <style type="text/css">#mgheader { background-position-x: 725px; }</style>

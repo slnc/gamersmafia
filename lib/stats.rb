@@ -57,24 +57,6 @@ module Stats
           SELECT user_id
           FROM contents
           WHERE #{sql_created_on})")
-      active_factions_portals = User.db_query(
-          "SELECT count(*)
-           FROM stats.portals
-           WHERE #{sql_created_on}
-           AND karma > 0
-           AND portal_id IN (
-             SELECT id
-             FROM portals
-             WHERE type='FactionsPortal')")[0]['count']
-      active_clans_portals = User.db_query(
-          "SELECT count(*)
-           FROM stats.portals
-           WHERE #{sql_created_on}
-           AND karma > 0
-           AND portal_id IN (
-             SELECT id
-             FROM portals
-             WHERE type='ClansPortal')")[0]['count']
       completed_competitions_matches = CompetitionsMatch.count(
           :conditions => sql_created_on)
       #proxy_errors = `grep -c "All workers are in error state" #{Rails.root}/log/error-#{first_stat.strftime('%Y%m%d')}.log`.strip
@@ -114,8 +96,8 @@ module Stats
                stddev_db_queries_per_request = #{stddev_db_queries_per_request},
                new_closed_topics = '#{new_closed_topics}',
                new_clans_portals = '#{new_clans_portals}',
-               active_factions_portals = '#{active_factions_portals}',
-               active_clans_portals = '#{active_clans_portals}',
+               active_factions_portals = '0',
+               active_clans_portals = '0',
                karma_per_user = '#{karma_diff.to_f / (users_generating_karma+0.1)}',
                requests = '#{requests}',
                karma_diff = '#{karma_diff}',

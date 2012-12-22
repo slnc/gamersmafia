@@ -1,7 +1,7 @@
 <% cache("/clanes/shared/biggest.#{global_var('clans_updated_on')}") do %>
   <% mftext('Clanes más numerosos') do %>
   <table>
-    <% get_biggest_clans(controller.portal).each do |clan| %>
+    <% get_biggest_clans.each do |clan| %>
     <tr class="<%=oddclass%>">
       <td><a href="/clanes/clan/<%=clan.id%>"><%=notags(clan.name)%></a></td>
       <td class="align-right"><%=gm_icon("user", "small")%> <%=clan.members_count%></td>

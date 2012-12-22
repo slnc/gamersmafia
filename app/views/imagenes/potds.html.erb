@@ -2,7 +2,7 @@
 <% mftext('Imágenes del día') do %>
 
 <div class="imagesgallery">
-	<% @potds = Potd.paginate(:page => params[:page], :conditions => ['portal_id = ?', controller.portal.id], :order => 'date ASC', :per_page => 18, :include => [:image]) %>
+	<% @potds = Potd.paginate(:page => params[:page], :order => 'date ASC', :per_page => 18, :include => [:image]) %>
 <%= will_paginate @potds, :class => 'digg_pagination'%>
 <% @potds.each do |potd| %>
 <div class="screenshot" style="float: left; width: 160px;"><div style="text-align: center"><%=potd.date%></div><%=link_to "<img src=\"#{ASSET_URL}/cache/thumbnails/i/153x115/#{potd.image.file}\" />", gmurl(potd.image)%></div>
@@ -14,20 +14,4 @@
 <% end -%>
 
 <% generic_support do %>
-
-<% if nil then %>
-<% mftext('Mejor valoradas') do %>
-<ul class="content-hid">
-<%  # TODO BUG portal unsafe
-  cache("/common/imagenes/potds/best_rated_all#{Time.now.strftime('%Y%m%d')}") do %>
-  <% for c in ImagesCategory.most_rated_items(:content_type => 'Image') %>
-  <li class="<%=oddclass%>"><span class="screenshot"><%=link_to fc_thumbnail(c.file, 'f', '85x60', false), gmurl(c)%></span><br /><%=draw_rating(c.rating)%></li>
-  <% end -%>
 <% end -%>
-</ul>
-<% end -%>
-
-
-<% end -%>
-<% end -%>
-

@@ -1,6 +1,7 @@
 <%mftext('Inscripciones abiertas') do %>
   <ul class="sidelist">
-    <% controller.portal.competitions.find(:all, :conditions => 'type <> \'Ladder\' and state = 1').each do |competition| %>
+    <% Competition.find(:all,
+                        :conditions => 'type <> \'Ladder\' and state = 1').each do |competition| %>
       <li><%='<span class="infoinline">pro</span>' if competition.pro?%><div style="float: right;" class="infoinline"><%=competition.kind_of?(League) ? 'liga' : 'torneo'%></div><%=faction_favicon(competition.game)%> <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a></li>
   </ul>
 <% end -%>

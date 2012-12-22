@@ -96,10 +96,8 @@ friends = @user.friends_online %>
     <div class="topbar-block topbar-all-of-gm sections-list navbar">
       <a href="/" class="open-popup-on-click"
         data-popup-id="topbar-sitemap">Todo GM</a>
-    <% if controller.portal.id.to_s != "-1" %>
       <a href="/" class="open-popup-on-click"
-        data-popup-id="topbar-portal-submenu"><%=controller.portal.code%></a>
-    <% end -%>
+        data-popup-id="topbar-portal-submenu">Secciones</a>
     </div>
 
     <div id="topbar-sitemap" class="hidden popup dropdown">
@@ -179,7 +177,6 @@ friends = @user.friends_online %>
   </div>
 </div>
 
-<% if controller.portal.id != "-1" %>
 <div id="topbar-portal-submenu" class="hidden dropdown">
   <ul>
     <li class="first"><a href="/noticias">Noticias</a></li>
@@ -189,15 +186,15 @@ friends = @user.friends_online %>
     <li><a href="/imagenes">Imágenes</a></li>
     <li><a href="/descargas">Descargas</a></li>
     <li><a href="/encuestas">Encuestas</a></li>
-  <% if controller.portal.kind_of?(FactionsPortal) %>
+    <li><a href="/respuestas">Respuestas</a></li>
+
+    <% if nil then  # DO NOT SUBMIT %>
     <li><a href="/faccion">Información</a></li>
     <li><a href="/faccion/miembros">Miembros</a></li>
     <li><a href="/faccion/staff">Staff</a></li>
-  <% end -%>
-    <li><a href="/respuestas">Respuestas</a></li>
-  <% if controller.portal.kind_of?(BazarDistrictPortal) then %>
+
     <li><a href="/distrito">Staff</a></li>
-  <% end -%>
+    <% end -%>
   </ul>
 </div>
 <% end -%>

@@ -249,7 +249,6 @@ class SiteController < ApplicationController
     element_id = (/([a-zA-Z0-9_-])/ =~ params[:element_id]) ? params[:element_id] : 'NULL'
     user_agent = (request.user_agent.to_s != '') ? request.user_agent : ''
     referer = request.env['HTTP_REFERER'] ? request.env['HTTP_REFERER'] : ''
-    portal_id = @portal.id != -1 ? @portal.id : 'NULL'
     url = params[:url]
     ip = self.remote_ip
     cka = cookies['__stma']
@@ -274,7 +273,7 @@ class SiteController < ApplicationController
                                             #{user_id},
                                             '#{ip}',
                                             #{User.connection.quote(user_agent)},
-                                            #{portal_id},
+                                            -1,
                                             #{User.connection.quote(params['_xvi'])},
                                             #{User.connection.quote(params['_xsi'])},
                                             #{User.connection.quote(url)},

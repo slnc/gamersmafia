@@ -26,9 +26,6 @@ module ActsAsContentBrowser
     end
 
     define_method 'index' do
-      if @portal.id != -1 && @portal.kind_of?(FactionsPortal)
-        @title = "#{ActiveSupport::Inflector::demodulize(self.class.name).gsub('Controller', '')} de #{@portal.name}"
-      end
     end
 
     define_method 'new' do
@@ -40,8 +37,7 @@ module ActsAsContentBrowser
     define_method 'show' do
       _before_show if respond_to?(:_before_show)
       # TODO temp hasta que google reindexe bien
-      cls = Object.const_get(content_name) # ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
-      #cls = portal.send ActiveSupport::Inflector::underscore(content_name).to_sym # ActiveSupport::Inflector::constantize(ActiveSupport::Inflector::camelize(content_name))
+      cls = Object.const_get(content_name)
       obj = cls.find(params[:id])
       raise ActiveRecord::RecordNotFound unless obj.is_public? or (user_is_authed and Authorization.can_edit_content?(@user, obj))
       # puts "http://#{request.host}#{request.fullpath} #{obj.url}"

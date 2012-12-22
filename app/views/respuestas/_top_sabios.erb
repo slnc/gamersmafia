@@ -1,7 +1,6 @@
 <%mftext(params[:category] ? "Top sabios de #{@category.root.name}" : 'Top sabios') do %>
 <table>
-<%# TODO PERF serías más eficiente con unos contadores en users
-# TODO limitar a las preguntas del portal activo %>
+<%# TODO PERF serías más eficiente con unos contadores en users %>
 <%
 Question.top_sages(params[:category] ? @category : nil).each do |dbu| %>
 		<tr class="<%=oddclass%>">

@@ -1,22 +1,9 @@
 <%content_main do %>
-<%mftext('Feeds RSS de noticias') do%>
-<ul>
-  <li><%=gm_icon("rss", "small")%> <a href="http://<%=App.domain%>/rss/noticias">Todas</a></li>
-</ul>
-<table>
-	<tr style="vertical-align: top;"><td style="width: 20em;">
-<ul>
-<%FactionsPortal.find(:all, :conditions => "code In (SELECT slug from games where has_faction = 't')", :order => 'lower(name)').each do |portal| %>
-	<li><%=gm_icon("rss", "small")%> <a href="http://<%=portal.code%>.<%=App.domain%>/rss/noticias"><%=portal.name%></a></li>
-<% end -%>
-</ul></td>
-<td><ul>
-<%FactionsPortal.find(:all, :conditions => "code In (SELECT slug from gaming_platforms where has_faction = 't')", :order => 'lower(name)').each do |portal| %>
-	<li><%=gm_icon("rss", "small")%> <a href="http://<%=portal.code%>.<%=App.domain%>/rss/noticias"><%=portal.name%></a></li>
-<% end -%>
-</ul></td>
-</tr></table>
-<% end -%>
+  <%mftext('Feeds RSS de noticias') do%>
+    <ul>
+      <li><%=gm_icon("rss", "small")%> <a href="http://<%=App.domain%>/rss/noticias">Todas</a></li>
+    </ul>
+  <% end -%>
 <% end -%>
 
 <%generic_support do%>
@@ -26,4 +13,3 @@
     <p><a href="http://es.wikipedia.org/wiki/RSS" target="_blank" class="external">Más información</a></p>
   <% end -%>
 <% end -%>
-

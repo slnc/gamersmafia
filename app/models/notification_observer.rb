@@ -129,8 +129,7 @@ class NotificationObserver < ActiveRecord::Observer
           :description => (
               "El producto \"Clan destacado\" que acabas de comprar estará
               activo durante todo el día
-              #{oe.active_on.strftime('%d de %B de %Y')} en portada de
-              #{oe.portal.name}."),
+              #{oe.active_on.strftime('%d de %B de %Y')}."),
           :type_id => Notification::OUTSTANDING_CLAN_SCHEDULED,
       })
 
@@ -142,8 +141,7 @@ class NotificationObserver < ActiveRecord::Observer
         :description => (
             "El producto \"Usuario destacado\" que acabas de comprar estará
             activo durante todo el día
-            #{oe.active_on.strftime('%d de %B de %Y')} en portada de
-            #{oe.portal.name}."),
+            #{oe.active_on.strftime('%d de %B de %Y')}."),
           :type_id => Notification::OUTSTANDING_USER_SCHEDULED,
       })
     end

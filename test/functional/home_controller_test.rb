@@ -51,8 +51,6 @@ class HomeControllerTest < ActionController::TestCase
       @request.host = 'noexisto.gamersmafia.com'
       get :index
     end
-    # assert_response :missing
-    # assert @controller.portal.nil?
   end
 
   test "should_show_normal_page_if_main_site" do

@@ -1,4 +1,4 @@
-<% sponsors = controller.portal.clan.clans_sponsors unless defined?(:sponsors) && sponsors
+<%
 mflist('sponsors', sponsors) do |o| %>
 	<a class="content slncadt" id="sponsor-<%=o.id%>" href="<%=o.url%>" title="<%=o.name%>" target="_blank"><img class="icon" src="<%=ASSET_URL%>/cache/thumbnails/k/120x50/<%=fc_path(o.image)%>" /></a>
 <% end if sponsors.size > 0 %>

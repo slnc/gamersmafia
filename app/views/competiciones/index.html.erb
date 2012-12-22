@@ -5,7 +5,7 @@
 <div style="float: left; width: 49%;">
     <%mftext('Ladders') do %>
   <table>
-  <% controller.portal.competitions.find(:all, :conditions => 'type = \'Ladder\' and state > 1 and state < 4', :order => 'game_id ASC, lower(name) ASC').each do |competition| %>
+  <% Ladder.find(:all, :conditions => 'state > 1 and state < 4', :order => 'game_id ASC, lower(name) ASC').each do |competition| %>
     <tr class="<%=oddclass%>">
       <td><%=competition.pro? ? '(pro)' : ''%>
          <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a><br />
@@ -25,7 +25,7 @@
 
   <div style="float: left; width: 49%;">
     <%mftext('Ligas') do %>
-  	<% leagues = controller.portal.competitions.find(:all, :conditions => 'type = \'League\' and state > 1 and state < 4', :order => 'game_id ASC, lower(name) ASC') %>
+  	<% leagues = League.find(:all, :conditions => 'state > 1 and state < 4', :order => 'game_id ASC, lower(name) ASC') %>
 	<% if leagues.size > 0 then %>
 	<table>
 	<%leagues.each do |competition| %>
@@ -49,7 +49,7 @@
   <% end -%>
 
     <%mftext('Torneos') do %>
- <% tournaments = controller.portal.competitions.find(:all, :conditions => 'type = \'Tournament\' and state > 1 and state < 4', :order => 'game_id ASC, lower(name) ASC') %>
+ <% tournaments = Tournament.find(:all, :conditions => 'state > 1 and state < 4', :order => 'game_id ASC, lower(name) ASC') %>
 	<% if tournaments.size > 0 then %>
 	<table>
 	<%tournaments.each do |competition| %>
@@ -101,7 +101,7 @@ next unless winners.size == 1 %>
 <% end %><%# ard -%>
 <% end -%>
 
-<%mflist('Inscripciones abiertas', controller.portal.competitions.find(:all, :conditions => 'type <> \'Ladder\' and state = 1')) do |competition| %>
+<%mflist('Inscripciones abiertas', Competition.find(:all, :conditions => 'type <> \'Ladder\' and state = 1')) do |competition| %>
 <%# TODO mostrar solo las que se deberían ver aquí %>
       <li><%=competition.pro? ? '(pro)' : ''%><div style="float: right;" class="infoinline"><%=competition.kind_of?(League) ? 'liga' : 'torneo'%></div><%=faction_favicon(competition.game)%> <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a></li>
   <% end -%>
@@ -113,7 +113,7 @@ next unless winners.size == 1 %>
 
   <% mftext('Competiciones finalizadas') do %>
   <ul class="sidelist">
-  <% controller.portal.competitions.find(:all, :conditions => 'state >= 4').each do |competition| %>
+  <% Competition.find(:all, :conditions => 'state >= 4').each do |competition| %>
   <li><%=competition.pro? ? '(pro)' : ''%><div style="float: right;" class="infoinline"><%=competition.kind_of?(League) ? 'liga' : 'torneo'%></div><%=faction_favicon(competition.game)%> <a href="/competiciones/show/<%=competition.id%>"><%=competition.name%></a></li>
   <% end -%>
   </ul>

@@ -5,7 +5,6 @@ class GamingPlatform < ActiveRecord::Base
   validates_uniqueness_of :name
   has_many :terms
   has_slug
-  before_save :check_slug_doesnt_belong_to_portal
 
   def code
     self.slug
@@ -80,15 +79,5 @@ class GamingPlatform < ActiveRecord::Base
 
   def img_file
     "#{Rails.root}/public/storage/games/#{self.slug}.gif"
-  end
-
-  def check_slug_doesnt_belong_to_portal
-    # TODO dup en Game.rb
-    if self.id
-      # TODO temp Portal.count(:conditions => ["slug = ? AND id <> ?", self.slug, self.id]) == 0 && !Portal::UNALLOWED_CODES.include?(slug)
-      true
-    else
-      Portal.find_by_code(self.slug).nil? && !Portal::UNALLOWED_CODES.include?(slug)
-    end
   end
 end

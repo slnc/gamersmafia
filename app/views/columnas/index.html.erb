@@ -29,7 +29,7 @@
 
 <% mftext('Más populares') do %>
 <ul class="sidelist">
-<% cache ("/#{controller.portal.code}/columnas/index/most_popular_#{Time.now.to_i/(86400)}") do %>
+<% cache ("/columnas/index/most_popular_#{Time.now.to_i/(86400)}") do %>
 <% Column.most_popular.find(:all, :limit => 3).each do |c| %>
   <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></span></li>
   <% end -%>
@@ -39,7 +39,7 @@
 
 <% mftext('Autores más populares') do %>
 <ul class="sidelist">
-<% cache("/#{controller.portal.code}/columnas/index/most_popular_authors_#{Time.now.to_i/(86400)}") do %>
+<% cache("/columnas/index/most_popular_authors_#{Time.now.to_i/(86400)}") do %>
 <% Column.most_popular_authors.each do |u| %>
   <li class="<%=oddclass%>"><%=draw_user_info(u[0])%><div class="more"><a href="<%=gmurl(u[0])%>/contenidos/columnas">Ver sus columnas (<%=u[0].columns.published.count%>)</a></div></li>
   <% end -%>

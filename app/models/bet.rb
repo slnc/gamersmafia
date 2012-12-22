@@ -71,7 +71,6 @@ class Bet < Content
       `/usr/bin/python script/spark.py bet_rate #{bet_rate} "#{dst_file}"`
     end
 
-    # TODO hacer esto para CADA portal LOL
     dst = Bet::TOP_BET_WINNERS
     FileUtils.mkdir_p(File.dirname(dst)) unless File.exists?(File.dirname(dst))
     File.open(dst, 'w').write(YAML::dump(data))

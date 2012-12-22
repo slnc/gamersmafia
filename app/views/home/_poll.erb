@@ -1,10 +1,12 @@
 <%mftext('Encuesta', :id => 'small-poll', :grid => 4, :glast => true) do
-@cur_polls = controller.portal.poll.current
-@cur_polls.each do |cur_poll|
+Poll.current.each do |cur_poll|
 @cur_poll = cur_poll %>
       <%=render :partial => '/encuestas/encuesta', :locals => {:poll => cur_poll, :user => (user_is_authed ? @user : nil)} %>
       <script type="text/javascript">contents = contents.concat(<%=@cur_poll.id%>);</script>
     <% end %>
 
-	<% if @cur_polls.nil? then %><p class="centered infoinline">No hay ninguna encuesta activa.<% if user_is_authed then%> <strong><a href="/encuestas/new">Envía una</a></strong>.<% end -%></p><% end -%>
+    <% if @cur_polls.nil? then %>
+      <p class="centered infoinline">No hay ninguna encuesta activa.<% if user_is_authed then%> <strong><a href="/encuestas/new">Envía una</a></strong>.
+      <% end -%></p>
+    <% end -%>
 <% end -%>

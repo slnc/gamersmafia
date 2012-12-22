@@ -34,7 +34,7 @@ LIMIT 1
     user.show_avatar
   end
 
-  def self.current(portal_id)
+  def self.current
     bought = OutstandingUser.find(
         :first,
         :conditions => [

@@ -83,9 +83,6 @@ class Game < ActiveRecord::Base
       f.save
     end
 
-    portal = Portal.create({:name => self.name, :code => self.slug})
-    portal.factions<< f
-
     # El orden es importante
     root_term = Term.create({
         :game_id => self.id,

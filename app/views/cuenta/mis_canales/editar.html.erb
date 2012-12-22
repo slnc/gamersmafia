@@ -20,7 +20,11 @@ real_path = "#{Rails.root}/public/" + @gmtv_channel.file
 	</tr>
 	<tr class="<%=oddclass%>">
 		<td>Facción</td>
-		<td><%= select("gmtv_channel", "faction_id", Faction.find(:all, :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] }, { :include_blank => true })%><br /><span class="infoinline">Déjalo en blanco si quieres que esté disponible en todos los portales.</span></td>
+    <td><%= select("gmtv_channel",
+                   "faction_id",
+                   Faction.find(:all, :order => 'lower(name) ASC').collect {|p| [ p.name, p.id ] },
+                   {:include_blank => true})%>
+    </td>
 	</tr>
 </table>
 		<input type="submit" class="button" value="Guardar" />

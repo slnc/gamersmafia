@@ -1,4 +1,4 @@
-<% cache("/#{controller.portal.code}/encuestas/daily_random/#{Time.now.strftime('%Y%m%d')}") do %>
+<% cache("/encuestas/daily_random/#{Time.now.strftime('%Y%m%d')}") do %>
   <% mfcontents_list(
     'Aleatorias de hoy',
     Proc.new { Poll.published.find(

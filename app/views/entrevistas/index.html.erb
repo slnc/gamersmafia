@@ -22,7 +22,7 @@
 <% mftext('Mejor valoradas') do %>
 <ul class="sidelist">
 <% cache ("/entrevistas/index/best_rated#{Time.now.strftime('%Y%m%d')}") do %>
-  <% controller.portal.interview.most_rated_items(:content_type => 'Interview').each do |c| %>
+  <% Interview.most_rated_items.each do |c| %>
     <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
   <% end -%>
 <% end -%>
@@ -32,7 +32,7 @@
 <% mftext('Más populares') do %>
 <ul class="sidelist">
 <% cache ("/entrevistas/index/most_popular_#{Time.now.to_i/86400}") do %>
-  <% controller.portal.interview.most_popular_items(:content_type => 'Interview').each do |c| %>
+  <% Interview.most_popular_items.each do |c| %>
     <li style="padding-left: 3px;" class="<%=oddclass%>"><%=url_for_content(c, c.title)%><div class="infoinline"><%=draw_rating(c.rating)%> <span class="f_milli"><%=gm_icon("comment", "small")%> <a style="display: inline;" href="<%=gmurl(c)%>#comments"><%=c.cache_comments_count%></a></div></li>
   <% end -%>
 <% end -%>

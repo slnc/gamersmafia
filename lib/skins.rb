@@ -14,22 +14,22 @@ module Skins
     end
   end
 
-  def self.retrieve_portal_favicon(favicon_path)
+  def self.retrieve_entity_favicon(favicon_path)
     begin
-      portal_favicon = Magick::Image.read("#{Rails.root}/public/#{favicon_path}").first
-      if portal_favicon.columns != 16 || portal_favicon.rows != 16
+      entity_favicon = Magick::Image.read("#{Rails.root}/public/#{favicon_path}").first
+      if entity_favicon.columns != 16 || entity_favicon.rows != 16
         invalid_image = true
         Rails.logger.error("ERROR: #{favicon_path} is not a 16x16 image.")
-        portal_favicon = nil
+        entity_favicon = nil
       end
     rescue Exception => e
       invalid_image = true
       Rails.logger.error("Cannot read image #{favicon_path}: #{e}")
     end
-    portal_favicon
+    entity_favicon
   end
 
-  def self.update_portal_favicons
+  def self.update_entity_favicons
     builtin_portals = [
       Game.new(:slug => 'gm'),
       Game.new(:slug => 'bazar'),
@@ -54,14 +54,14 @@ module Skins
       else
         favicon_path = "storage/games/#{entity.slug}.gif"
       end
-      portal_favicon = self.retrieve_portal_favicon(favicon_path)
+      entity_favicon = self.retrieve_entity_favicon(favicon_path)
       # Copy game sprite to big sprite
-      if portal_favicon
+      if entity_favicon
         sprite = sprite.store_pixels(
-            i * 16, 0, 16, 16, portal_favicon.get_pixels(0, 0, 16, 16))
+            i * 16, 0, 16, 16, entity_favicon.get_pixels(0, 0, 16, 16))
       end
 
-      idx_for_sprite = portal_favicon ? i : 0
+      idx_for_sprite = entity_favicon ? i : 0
       css_out<< ("img.gs-#{entity.slug} { background-position: " +
                  "-#{idx_for_sprite*16}px 0; }\n")
       i += 1

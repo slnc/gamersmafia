@@ -58,16 +58,9 @@
 <div class="clearb"></div>
 
 <%mftext('Artículos', :has_submodules => true, :grid => 12, :glast => true) do
-	revs = controller.portal.review.count > 0
 	classes = %w(Column Interview Tutorial Review)
-	if revs
-		classes = classes - ['Review']
-		grid_size = 4
-		thumb_width = '198'
-	else
-		grid_size = 3
-		thumb_width = '143'
-	end
+  grid_size = 3
+  thumb_width = '143'
 
 %>
 <% classes.each do |it| %>
@@ -122,7 +115,7 @@ category = @game_term
 <% d = Date.today
 cache("/home/index/potd20085_#{d.strftime('%Y%m%d')}") do
 
-@daily_img = Potd.current_portal(controller.portal)
+@daily_img = Potd.current
 @daily_img = @daily_img.image if @daily_img
 
 if @daily_img then %>
