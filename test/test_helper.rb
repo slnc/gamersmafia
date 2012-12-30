@@ -56,7 +56,6 @@ class ActiveSupport::TestCase
     User.db_query("INSERT INTO stats.pageviews(
                                                user_id,
                                                url,
-                                               portal_id,
                                                controller,
                                                action,
                                                model_id,
@@ -65,8 +64,6 @@ class ActiveSupport::TestCase
                                    VALUES (
                                             #{opts[:user_id] ? opts[:user_id] : 'NULL'},
                                             '#{opts[:url]}',
-                                            #{opts[:portal_id] ? opts[:portal_id] : 'NULL'},
-
                                             '#{opts[:controller] ? opts[:controller] : 'NULL'}',
                                             '#{opts[:action] ? opts[:action] : 'NULL'}',
                                             '#{opts[:model_id] ? opts[:model_id] : 'NULL'}',
@@ -80,9 +77,6 @@ class ActiveSupport::TestCase
     assert !@s.new_record?
     assert @s.config[:general][:intelliskin]
     assert_not_nil @s.config[:intelliskin]
-    cp = FactionsPortal.find(:first)
-    cp.skin_id = @s.id
-    assert cp.save
   end
 
 
@@ -252,12 +246,6 @@ class ActiveSupport::TestCase
     content.update_attribute(:state, Cms::DELETED)
     content.reload
     assert_equal Cms::DELETED, content.state
-  end
-
-  def faction_host(portal=nil)
-    portal ||= FactionsPortal.find_by_code('ut')
-    host! "#{portal.code}.#{App.domain}"
-    @portal = portal
   end
 
   def rate_content(content)

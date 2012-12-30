@@ -26,8 +26,6 @@ module Stats
       created_clans = Clan.count(:conditions => sql_created_on)
       new_closed_topics = Topic.published.count(
           :conditions => "closed = 't' AND updated_on::date = '#{first_stat.strftime('%Y-%m-%d')}'::date")
-      new_clans_portals = ClansPortal.count(
-          :conditions => "clan_id IS NOT NULL AND #{sql_created_on}")
       dbrender = User.db_query(
           "SELECT
              avg(time),
@@ -95,7 +93,6 @@ module Stats
                avg_db_queries_per_request = #{avg_db_queries_per_request},
                stddev_db_queries_per_request = #{stddev_db_queries_per_request},
                new_closed_topics = '#{new_closed_topics}',
-               new_clans_portals = '#{new_clans_portals}',
                active_factions_portals = '0',
                active_clans_portals = '0',
                karma_per_user = '#{karma_diff.to_f / (users_generating_karma+0.1)}',
@@ -114,6 +111,11 @@ module Stats
   end
 
   module Factions
+    # Returns a list of 30 db rows with karma stats where each row represents
+    # the avg karma of 3 days
+    def self.karma_stats_last_30d(faction)
+    end
+
     def self.oldest_day_without_stats
       dbmaxstats = User.db_query(
           "SELECT MAX(created_on) FROM stats.portals")[0]
@@ -243,26 +245,6 @@ module Stats
     def self.daily_pageviews(portal, s, e)
       sql_created = "created_on BETWEEN '#{s.strftime('%Y-%m-%d')}' AND '#{e.strftime('%Y-%m-%d')}'"
       User.db_query("SELECT pageviews FROM stats.portals WHERE portal_id = #{portal.id} AND #{sql_created} ORDER BY created_on").collect { |dbr| dbr['pageviews'].to_i }
-    end
-
-    def self.update_portals_hits_stats
-      User.db_query("SELECT count(*),
-                          portal_id
-                     FROM stats.pageviews
-                    WHERE portal_id > 0
-                      AND created_on >= now() - '1 month'::interval
-                 GROUP BY portal_id").each do |dbr|
-        portal = Portal.find_by_id(dbr['portal_id'])
-        if portal.nil?
-          Rails.logger.warn(
-            "daily.update_portals_hits_stats(). Warning, portal id" +
-            " #{dbr['portal_id']} (#{dbr['count']} pageviews) not found")
-        else
-          portal.cache_recent_hits_count = dbr['count'].to_i
-          portal.save
-        end
-      end
-      CacheObserver.expire_fragment("/common/gnav/#{Time.now.strftime('%Y-%m-%d')}")
     end
   end
 

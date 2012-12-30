@@ -34,6 +34,7 @@ namespace :gm do
   end
 
   def pay_organizations_wages
+    raise "deprecated, needs to be adapted to entity stats"
     User.db_query("select (select code from portals where id = stats.portals.portal_id) as code,
                           sum(karma)
   from stats.portals

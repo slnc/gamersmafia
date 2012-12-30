@@ -23,9 +23,8 @@ class ImagenesController < BazarController
   end
 
   def index
-    @categories = portal.categories(Image)
+    @category_groups = Categories.top_level_entity_groups
     @navpath = [['Imágenes', '/imagenes'], ]
-    @category = @categories[0]
     render :action => 'toplevel'
   end
 

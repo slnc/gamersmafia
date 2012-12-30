@@ -28,24 +28,6 @@ sum_hits = dbh.size > 0 ? dbh[0]['sum'].to_f : 0.1 %>
 </table>
 <br />
 <br />
-<% if nil then %>
-  <tr>
-    <td>Usuarios únicos/día</td>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Comentarios/día</td>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>Nuevos contenidos/día</td>
-    <td></td>
-    <td></td>
-  </tr>
-</table>
-<% end -%>
 
 <%=notification_header('Secciones más visitadas')%>
 <% dbi = User.db_query("select count(*), controller from stats.pageviews where portal_id = #{fp.id} and created_on >= date_trunc('day', now() - '1 week'::interval) group by controller order by count(*) desc limit 10") %>

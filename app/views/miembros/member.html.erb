@@ -238,12 +238,6 @@ dat = Stats.user_contents_by_type(@curuser)
 %>
 <%=pie(:size => '250x110', :data => dat.values, :axis_labels => dat.keys.collect { |en| en != 'Otros' ? Cms::translate_content_name(en) : en}) %>
 <% end -%>
-
-<%mftext('Por portal') do
-dat = Stats.user_contents_by_portal(@curuser)
-%>
-<%=pie(:size => '250x110', :data => dat.values, :axis_labels => dat.keys.collect { |pid| pid != 'Otros' ? Portal.find_by_id(pid).code : pid}) %>
-<% end -%>
 <% end -%>
 
 <%mftext('Contacto', :grid => 5, :glast => true) do %>

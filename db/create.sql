@@ -27,7 +27,6 @@ CREATE TABLE pageviews (
     user_id integer,
     flash_error character varying,
     abtest_treatment character varying,
-    portal_id integer,
     source character varying,
     ads_shown character varying
 );
@@ -117,18 +116,6 @@ CREATE SEQUENCE ads_slots_instances_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE ads_slots_instances_id_seq OWNED BY ads_slots_instances.id;
-CREATE TABLE ads_slots_portals (
-    id integer NOT NULL,
-    ads_slot_id integer NOT NULL,
-    portal_id integer NOT NULL
-);
-CREATE SEQUENCE ads_slots_portals_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE ads_slots_portals_id_seq OWNED BY ads_slots_portals.id;
 CREATE TABLE advertisers (
     id integer NOT NULL,
     name character varying NOT NULL,
@@ -580,7 +567,6 @@ CREATE TABLE comments (
     updated_on timestamp without time zone DEFAULT now() NOT NULL,
     comment text NOT NULL,
     has_comments_valorations boolean DEFAULT false NOT NULL,
-    portal_id integer,
     cache_rating character varying,
     netiquette_violation boolean,
     lastowner_version character varying,
@@ -881,7 +867,6 @@ CREATE TABLE contents (
     gaming_platform_id integer,
     url character varying,
     user_id integer NOT NULL,
-    portal_id integer,
     bazar_district_id integer,
     closed boolean DEFAULT false NOT NULL,
     source character varying,
@@ -1454,18 +1439,6 @@ CREATE SEQUENCE factions_links_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE factions_links_id_seq OWNED BY factions_links.id;
-CREATE TABLE factions_portals (
-    faction_id integer NOT NULL,
-    portal_id integer NOT NULL,
-    id integer NOT NULL
-);
-CREATE SEQUENCE factions_portals_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE factions_portals_id_seq OWNED BY factions_portals.id;
 SET default_with_oids = true;
 CREATE TABLE faq_categories (
     id integer NOT NULL,
@@ -1713,7 +1686,6 @@ CREATE TABLE global_vars (
     svn_revision character varying,
     ads_slots_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     gmtv_channels_updated_on timestamp without time zone DEFAULT now() NOT NULL,
-    portals_updated_on timestamp without time zone DEFAULT now() NOT NULL,
     max_cache_valorations_weights_on_self_comments numeric,
     clans_updated_on timestamp without time zone,
     last_comment_on timestamp without time zone
@@ -2194,7 +2166,6 @@ CREATE TABLE old_tutorials (
 CREATE TABLE outstanding_entities (
     id integer NOT NULL,
     entity_id integer NOT NULL,
-    portal_id integer,
     active_on date NOT NULL,
     type character varying NOT NULL,
     reason character varying
@@ -2267,64 +2238,10 @@ CREATE SEQUENCE polls_votes_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE polls_votes_id_seq OWNED BY polls_votes.id;
-CREATE TABLE portal_headers (
-    id integer NOT NULL,
-    date timestamp without time zone NOT NULL,
-    factions_header_id integer NOT NULL,
-    portal_id integer NOT NULL
-);
-CREATE SEQUENCE portal_headers_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE portal_headers_id_seq OWNED BY portal_headers.id;
-CREATE TABLE portal_hits (
-    portal_id integer,
-    date date DEFAULT (now())::date NOT NULL,
-    hits integer DEFAULT 0 NOT NULL,
-    id integer NOT NULL
-);
-CREATE SEQUENCE portal_hits_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE portal_hits_id_seq OWNED BY portal_hits.id;
-CREATE TABLE portals (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    code character varying NOT NULL,
-    type character varying DEFAULT 'FactionsPortal'::character varying NOT NULL,
-    fqdn character varying,
-    options character varying,
-    clan_id integer,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    skin_id integer,
-    default_gmtv_channel_id integer,
-    cache_recent_hits_count integer,
-    factions_portal_home character varying,
-    small_header character varying,
-    last_comment_on timestamp without time zone
-);
-CREATE SEQUENCE portals_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE portals_id_seq OWNED BY portals.id;
-CREATE TABLE portals_skins (
-    portal_id integer NOT NULL,
-    skin_id integer NOT NULL
-);
 CREATE TABLE potds (
     id integer NOT NULL,
     date date NOT NULL,
     content_id integer NOT NULL,
-    portal_id integer,
     images_category_id integer,
     term_id integer
 );
@@ -2820,7 +2737,6 @@ CREATE TABLE users (
     comments_sig character varying,
     comment_show_sigs boolean,
     has_new_friend_requests boolean DEFAULT false NOT NULL,
-    default_portal character varying,
     emblems_mask character varying,
     random_id double precision DEFAULT random(),
     is_staff boolean DEFAULT false NOT NULL,
@@ -2963,7 +2879,6 @@ CREATE TABLE ads (
     referer character varying,
     user_id integer,
     user_agent character varying,
-    portal_id integer,
     url character varying NOT NULL,
     element_id character varying,
     ip inet NOT NULL,
@@ -3076,14 +2991,11 @@ CREATE TABLE general (
     users_unconfirmed_2w integer DEFAULT 0 NOT NULL,
     new_clans integer,
     new_closed_topics integer,
-    new_clans_portals integer,
     avg_page_render_time real,
     users_generating_karma integer,
     karma_per_user real,
     stddev_page_render_time real,
-    active_factions_portals integer,
     completed_competitions_matches integer,
-    active_clans_portals integer,
     proxy_errors integer,
     new_factions integer,
     http_401 integer,
@@ -3105,7 +3017,6 @@ CREATE TABLE pageloadtime (
     "time" numeric(10,2),
     created_on timestamp without time zone DEFAULT now() NOT NULL,
     id integer NOT NULL,
-    portal_id integer,
     http_status integer,
     db_queries integer,
     db_rows integer
@@ -3134,7 +3045,6 @@ CREATE TABLE pageviews (
     user_id integer,
     flash_error character varying,
     abtest_treatment character varying,
-    portal_id integer,
     source character varying,
     ads_shown character varying
 );
@@ -3145,23 +3055,6 @@ CREATE SEQUENCE pageviews_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE pageviews_id_seq OWNED BY pageviews.id;
-CREATE TABLE portals (
-    id integer NOT NULL,
-    created_on date NOT NULL,
-    portal_id integer,
-    karma integer NOT NULL,
-    pageviews integer,
-    visits integer,
-    unique_visitors integer,
-    unique_visitors_reg integer
-);
-CREATE SEQUENCE portals_stats_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE portals_stats_id_seq OWNED BY portals.id;
 CREATE TABLE users_daily_stats (
     id integer NOT NULL,
     user_id integer NOT NULL,
@@ -3178,25 +3071,10 @@ CREATE SEQUENCE users_daily_stats_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE users_daily_stats_id_seq OWNED BY users_daily_stats.id;
-CREATE TABLE users_karma_daily_by_portal (
-    id integer NOT NULL,
-    user_id integer NOT NULL,
-    portal_id integer,
-    karma integer,
-    created_on date NOT NULL
-);
-CREATE SEQUENCE users_karma_daily_by_portal_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE users_karma_daily_by_portal_id_seq OWNED BY users_karma_daily_by_portal.id;
 SET search_path = public, pg_catalog;
 ALTER TABLE ONLY ads ALTER COLUMN id SET DEFAULT nextval('ads_id_seq'::regclass);
 ALTER TABLE ONLY ads_slots ALTER COLUMN id SET DEFAULT nextval('ads_slots_id_seq'::regclass);
 ALTER TABLE ONLY ads_slots_instances ALTER COLUMN id SET DEFAULT nextval('ads_slots_instances_id_seq'::regclass);
-ALTER TABLE ONLY ads_slots_portals ALTER COLUMN id SET DEFAULT nextval('ads_slots_portals_id_seq'::regclass);
 ALTER TABLE ONLY advertisers ALTER COLUMN id SET DEFAULT nextval('advertisers_id_seq'::regclass);
 ALTER TABLE ONLY alerts ALTER COLUMN id SET DEFAULT nextval('slog_entries_id_seq'::regclass);
 ALTER TABLE ONLY allowed_competitions_participants ALTER COLUMN id SET DEFAULT nextval('allowed_competitions_participants_id_seq'::regclass);
@@ -3260,7 +3138,6 @@ ALTER TABLE ONLY factions_capos ALTER COLUMN id SET DEFAULT nextval('factions_ca
 ALTER TABLE ONLY factions_editors ALTER COLUMN id SET DEFAULT nextval('factions_editors_id_seq'::regclass);
 ALTER TABLE ONLY factions_headers ALTER COLUMN id SET DEFAULT nextval('factions_headers_id_seq'::regclass);
 ALTER TABLE ONLY factions_links ALTER COLUMN id SET DEFAULT nextval('factions_links_id_seq'::regclass);
-ALTER TABLE ONLY factions_portals ALTER COLUMN id SET DEFAULT nextval('factions_portals_id_seq'::regclass);
 ALTER TABLE ONLY faq_categories ALTER COLUMN id SET DEFAULT nextval('faq_categories_id_seq'::regclass);
 ALTER TABLE ONLY faq_entries ALTER COLUMN id SET DEFAULT nextval('faq_entries_id_seq'::regclass);
 ALTER TABLE ONLY friends_recommendations ALTER COLUMN id SET DEFAULT nextval('friends_recommendations_id_seq'::regclass);
@@ -3307,9 +3184,6 @@ ALTER TABLE ONLY outstanding_entities ALTER COLUMN id SET DEFAULT nextval('outst
 ALTER TABLE ONLY polls_categories ALTER COLUMN id SET DEFAULT nextval('polls_categories_id_seq'::regclass);
 ALTER TABLE ONLY polls_options ALTER COLUMN id SET DEFAULT nextval('polls_options_id_seq'::regclass);
 ALTER TABLE ONLY polls_votes ALTER COLUMN id SET DEFAULT nextval('polls_votes_id_seq'::regclass);
-ALTER TABLE ONLY portal_headers ALTER COLUMN id SET DEFAULT nextval('portal_headers_id_seq'::regclass);
-ALTER TABLE ONLY portal_hits ALTER COLUMN id SET DEFAULT nextval('portal_hits_id_seq'::regclass);
-ALTER TABLE ONLY portals ALTER COLUMN id SET DEFAULT nextval('portals_id_seq'::regclass);
 ALTER TABLE ONLY potds ALTER COLUMN id SET DEFAULT nextval('potds_id_seq'::regclass);
 ALTER TABLE ONLY products ALTER COLUMN id SET DEFAULT nextval('products_id_seq'::regclass);
 ALTER TABLE ONLY profile_signatures ALTER COLUMN id SET DEFAULT nextval('profile_signatures_id_seq'::regclass);
@@ -3350,9 +3224,7 @@ ALTER TABLE ONLY bets_results ALTER COLUMN id SET DEFAULT nextval('bets_results_
 ALTER TABLE ONLY clans_daily_stats ALTER COLUMN id SET DEFAULT nextval('clans_daily_stats_id_seq'::regclass);
 ALTER TABLE ONLY pageloadtime ALTER COLUMN id SET DEFAULT nextval('pageloadtime_id_seq'::regclass);
 ALTER TABLE ONLY pageviews ALTER COLUMN id SET DEFAULT nextval('pageviews_id_seq'::regclass);
-ALTER TABLE ONLY portals ALTER COLUMN id SET DEFAULT nextval('portals_stats_id_seq'::regclass);
 ALTER TABLE ONLY users_daily_stats ALTER COLUMN id SET DEFAULT nextval('users_daily_stats_id_seq'::regclass);
-ALTER TABLE ONLY users_karma_daily_by_portal ALTER COLUMN id SET DEFAULT nextval('users_karma_daily_by_portal_id_seq'::regclass);
 SET search_path = archive, pg_catalog;
 ALTER TABLE ONLY pageviews
     ADD CONSTRAINT pageviews_pkey PRIMARY KEY (id);
@@ -3373,8 +3245,6 @@ ALTER TABLE ONLY ads_slots
     ADD CONSTRAINT ads_slots_name_key UNIQUE (name);
 ALTER TABLE ONLY ads_slots
     ADD CONSTRAINT ads_slots_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY ads_slots_portals
-    ADD CONSTRAINT ads_slots_portals_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY advertisers
     ADD CONSTRAINT advertisers_email_key UNIQUE (email);
 ALTER TABLE ONLY advertisers
@@ -3565,8 +3435,6 @@ ALTER TABLE ONLY factions
     ADD CONSTRAINT factions_name_key UNIQUE (name);
 ALTER TABLE ONLY factions
     ADD CONSTRAINT factions_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY factions_portals
-    ADD CONSTRAINT factions_portals_pkey PRIMARY KEY (faction_id, portal_id);
 ALTER TABLE ONLY faq_categories
     ADD CONSTRAINT faq_categories_name_key UNIQUE (name);
 ALTER TABLE ONLY faq_categories
@@ -3661,16 +3529,6 @@ ALTER TABLE ONLY old_polls
     ADD CONSTRAINT polls_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY old_polls
     ADD CONSTRAINT polls_title_key UNIQUE (title);
-ALTER TABLE ONLY portal_headers
-    ADD CONSTRAINT portal_headers_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY portal_hits
-    ADD CONSTRAINT portal_hits_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY portals
-    ADD CONSTRAINT portals_code_key UNIQUE (code);
-ALTER TABLE ONLY portals
-    ADD CONSTRAINT portals_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY portals_skins
-    ADD CONSTRAINT portals_skins_pkey PRIMARY KEY (portal_id, skin_id);
 ALTER TABLE ONLY potds
     ADD CONSTRAINT potds_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY products
@@ -3780,12 +3638,8 @@ ALTER TABLE ONLY pageloadtime
     ADD CONSTRAINT pageloadtime_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY pageviews
     ADD CONSTRAINT pageviews_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY portals
-    ADD CONSTRAINT portals_stats_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY users_daily_stats
     ADD CONSTRAINT users_daily_stats_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY users_karma_daily_by_portal
-    ADD CONSTRAINT users_karma_daily_by_portal_pkey PRIMARY KEY (id);
 SET search_path = archive, pg_catalog;
 CREATE UNIQUE INDEX tracker_items_pkey ON tracker_items USING btree (id);
 SET search_path = public, pg_catalog;
@@ -3923,7 +3777,6 @@ CREATE INDEX news_state ON old_news USING btree (state);
 CREATE INDEX news_user_id ON old_news USING btree (user_id);
 CREATE INDEX notifications_common ON notifications USING btree (user_id, read_on);
 CREATE INDEX notifications_type_id ON notifications USING btree (user_id, type_id);
-CREATE UNIQUE INDEX outstanding_entities_uniq ON outstanding_entities USING btree (type, portal_id, active_on);
 CREATE INDEX platforms_users_platform_id ON gaming_platforms_users USING btree (gaming_platform_id);
 CREATE UNIQUE INDEX platforms_users_platform_id_user_id ON gaming_platforms_users USING btree (user_id, gaming_platform_id);
 CREATE INDEX platforms_users_user_id ON gaming_platforms_users USING btree (user_id);
@@ -3932,9 +3785,6 @@ CREATE UNIQUE INDEX polls_categories_code_parent_id ON polls_categories USING bt
 CREATE UNIQUE INDEX polls_categories_name_parent_id ON polls_categories USING btree (name, parent_id);
 CREATE INDEX polls_state ON old_polls USING btree (state);
 CREATE INDEX polls_user_id ON old_polls USING btree (user_id);
-CREATE UNIQUE INDEX portal_hits_uniq ON portal_hits USING btree (portal_id, date);
-CREATE UNIQUE INDEX portals_name_code_type ON portals USING btree (name, code, type);
-CREATE UNIQUE INDEX potds_uniq ON potds USING btree (date, portal_id, images_category_id);
 CREATE INDEX profile_signatures_user_id ON profile_signatures USING btree (user_id);
 CREATE UNIQUE INDEX profile_signatures_user_id_signer_user_id ON profile_signatures USING btree (user_id, signer_user_id);
 CREATE UNIQUE INDEX questions_categories_code_name_parent_id ON questions_categories USING btree (code, name, parent_id);
@@ -4009,13 +3859,9 @@ CREATE INDEX pageviews_abtest_treatmentnotnull ON pageviews USING btree (abtest_
 CREATE INDEX pageviews_abtest_treatmentnull ON pageviews USING btree (abtest_treatment) WHERE (abtest_treatment IS NULL);
 CREATE INDEX pageviews_created_on_abtest_treatment ON pageviews USING btree (created_on, abtest_treatment);
 CREATE INDEX pageviews_id_visitor_id ON pageviews USING btree (visitor_id, id);
-CREATE INDEX pageviews_portal_id ON pageviews USING btree (portal_id);
 CREATE INDEX pageviews_visitor_id ON pageviews USING btree (visitor_id);
 CREATE INDEX pageviews_visitor_id_and_tstamps ON pageviews USING btree (visitor_id, created_on);
-CREATE INDEX portals_stats_portal_id ON portals USING btree (portal_id);
-CREATE UNIQUE INDEX portals_stats_uniq ON portals USING btree (created_on, portal_id);
 CREATE INDEX users_daily_stats_user_id_created_on ON users_daily_stats USING btree (user_id, created_on);
-CREATE UNIQUE INDEX users_karma_daily_by_portal_uniq ON users_karma_daily_by_portal USING btree (user_id, portal_id, created_on);
 SET search_path = public, pg_catalog;
 ALTER TABLE ONLY bets_options
     ADD CONSTRAINT bet_id_fkey FOREIGN KEY (content_id) REFERENCES contents(id);

@@ -4,14 +4,16 @@ class DescargasController < InformacionController
 
   def index
     @title = 'Descargas'
+    raise ImplementationError
+  end
+
+  def category
     parent_id = params[:category]
-    if parent_id then
-      # TODO BUG no estamos chequeando que la categoría se pueda ver desde aquí
-      @category = Term.find_taxonomy(parent_id, 'DownloadsCategory')
-      @category = Term.find(parent_id) if @category.nil?
-      paths, @navpath = get_category_address(@category, 'DownloadsCategory')
-      @title = paths.join(' &raquo; ')
-    end
+    # TODO BUG no estamos chequeando que la categoría se pueda ver desde aquí
+    @category = Term.find_taxonomy(parent_id, 'DownloadsCategory')
+    @category = Term.find(parent_id) if @category.nil?
+    paths, @navpath = get_category_address(@category, 'DownloadsCategory')
+    @title = paths.join(' &raquo; ')
   end
 
   def _after_show

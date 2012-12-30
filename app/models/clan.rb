@@ -4,7 +4,6 @@ class Clan < ActiveRecord::Base
   has_many :clans_groups, :dependent => :destroy
   has_many :clans_logs_entries, :dependent => :destroy
   has_many :clans_movements, :dependent => :destroy
-  has_many :clans_portals, :dependent => :destroy
   has_many :clans_sponsors, :dependent => :destroy
   has_many :recruitment_ads
   has_many :terms
@@ -52,13 +51,7 @@ class Clan < ActiveRecord::Base
   end
 
   def website
-    if not self.website_activated then
-      begin
-        "http://#{self.clans_portals[0].code}.#{App.domain}"
-      rescue
-        "" # TODO log a warning in this case
-      end
-    elsif self.website_external.to_s =~ (/^http:\/\//) then
+    if self.website_external.to_s =~ (/^http:\/\//) then
       "#{self.website_external}"
     elsif self.website_external.to_s =~ (/^www/) then
       "http://#{self.website_external}"

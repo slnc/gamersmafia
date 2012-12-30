@@ -95,11 +95,6 @@ module TestCaseMixings
         assert_template 'new'
       end
 
-      test "should_allow_new_in_portals" do
-        setup_functional_content_hbr
-        test_should_allow_new_only_to_registered
-      end
-
       test "should_not_allow_to_create_if_not_authed" do
         num_news = content_class.count
 

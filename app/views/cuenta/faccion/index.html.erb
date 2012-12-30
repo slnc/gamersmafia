@@ -22,7 +22,7 @@ envíaselo a <a href="/site/staff">algún capo</a> para activarlo.</div>
 <script type="text/javascript">
 	<% cache("/common/stats/factions/#{Time.now.strftime('%Y-%m-%d')}/#{@user.faction_id}") do %>
 	<%
-	ddata = User.db_query("select avg(karma) as karma, (extract('epoch' from created_on) / 259200)::int as epoch from stats.portals where portal_id = (select id from portals where code = '#{@user.faction.code}') group by (extract('epoch' from created_on) / 259200)::int order by (extract('epoch' from created_on) / 259200)::int desc limit 30")
+	ddata = Stats::Factions.karma_stats_last_30d(@user.faction)
 	ddata.reverse!
 	data = ddata.collect { |dbr| dbr['karma'].to_i }
 	data_ready = data.collect { |da| "[#{da}]" }

@@ -10,14 +10,6 @@ class CommentTest < ActiveSupport::TestCase
     assert_equal c1.updated_on.to_i, GlobalVars.get_var("last_comment_on").to_time.to_i
   end
 
-  test "should update portal last_comment_on on creation" do
-    content1 = Content.find(1)
-    last = content1.portal.last_comment_on
-    c1 = create_a_comment(:comment => "hola guapo", :content_id => content1.id)
-    content1.reload
-    assert_equal c1.updated_on.to_i, content1.portal.last_comment_on.to_i
-  end
-
   test "top_comments_valorations_type" do
     c1 = create_a_comment(:comment => "hola guapo")
     c1.comments_valorations.create({
@@ -181,9 +173,7 @@ class CommentTest < ActiveSupport::TestCase
   test "should_create_comment_if_valid" do
     content = Content.find(1)
     content.url = nil
-    content.portal_id = nil
     Routing.gmurl(content)
-    assert_not_nil content.portal_id
     c = Comment.new({
         :user_id => 1,
         :comment => 'hola mundo!',
@@ -191,8 +181,6 @@ class CommentTest < ActiveSupport::TestCase
         :host => '127.0.0.1',
     })
     assert c.save
-    c.reload
-    assert_not_nil c.portal_id
     c.reload
     u = User.find(1)
     assert_equal u.lastcommented_on.to_i, c.created_on.to_i

@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Skin < ActiveRecord::Base
   has_hid
-  has_and_belongs_to_many :portals
   has_many :skin_textures
   has_many :skins_files, :dependent => :destroy
 

@@ -6,7 +6,6 @@ class BazarDistrictTest < ActiveSupport::TestCase
   test "should_create_basic_content_categories" do
     newbd = BazarDistrict.new(:name => 'Yoga', :slug => 'yoga')
     assert newbd.save
-    assert_not_nil BazarDistrictPortal.find_by_code('yoga')
 
     t = Term.find(
         :first,

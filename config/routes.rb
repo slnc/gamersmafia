@@ -93,7 +93,6 @@ Gamersmafia::Application.routes.draw do
   match 'admin/ip_bans(/:action)(/:id)' => 'admin/ip_bans'
   match 'admin/contenidos/:action' => 'admin/contenidos'
   match 'admin/tienda(/:action)' => 'admin/tienda'
-  match 'admin/portales(/:action)' => 'admin/portales'
   match 'admin/mapas_juegos(/:action)' => 'admin/mapas_juegos'
   match 'admin/hipotesis(/:action)' => 'admin/hipotesis'
   match 'admin/grupos(/:action)' => 'admin/grupos'

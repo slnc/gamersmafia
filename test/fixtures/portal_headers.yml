@@ -1,6 +1,0 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-first:
-  id: 1
-  date: 2006-01-01
-  factions_header_id: 1
-  portal_id: 1

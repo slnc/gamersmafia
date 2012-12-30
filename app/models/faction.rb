@@ -49,55 +49,27 @@ class Faction < ActiveRecord::Base
   validates_uniqueness_of :code
   validates_uniqueness_of :name
 
-  # Actualiza las estadísticas de karma generado por cada facción y por la web
-  # general.
-  # TODO no calcula karma generado por clanes
-  def self.generate_minicolumns_factions_activity
-    Faction.find(:all).each do |f|
-      f.generate_karma_graph
-    end
-  end
-  FACTION_ACTIVITY_STATS_DAYS = 23
-
-  def generate_karma_graph
-    dbi = User.db_query(
-        "SELECT karma
-           FROM stats.portals
-           WHERE portal_id = (
-             SELECT id
-             FROM portals
-             WHERE code = '#{self.code}')
-           ORDER BY created_on DESC
-           LIMIT #{Faction::FACTION_ACTIVITY_STATS_DAYS}")
-
-    dst_file = "#{Rails.root}/public/storage/minicolumns/factions_activity/#{self.id}.png"
-    if !File.exists?(File.dirname(dst_file))
-      FileUtils.mkdir_p(File.dirname(dst_file))
-    end
-    data_points = dbi.collect {|dbr| dbr['karma'] }
-    data_points = data_points.concat(
-      [0] * (Faction::FACTION_ACTIVITY_STATS_DAYS - dbi.size)).reverse.join(',')
-    `/usr/bin/python script/spark.py faction_activity #{data_points} "#{dst_file}"`
-  end
-
   # Checks daily karma for each faction. Factions with bosses that haven't
   # generated karma for some time will receive a warning or a coup d'etat from
   # MrCheater.
   def self.check_daily_karma
+    raise ("Needs to be updated to use entity karma stats, now it's giving same
+            karma to all factions")
+
     Faction.parented.permanent.find(:all, :order => "id").each do |faction|
       next if faction.boss_age_days < 14
 
+      # this won't work now
       contents_last_two_weeks = Content.published.count(
-          :conditions => ["portal_id = ? AND created_on BETWEEN ? AND ?",
-                          faction.my_portal.id, 15.days.ago, 1.day.ago])
+          :conditions => ["created_on BETWEEN ? AND ?", 15.days.ago, 1.day.ago])
 
       if contents_last_two_weeks == 0
         Rails.logger.warn("Coup d'etat to '#{faction}'")
         faction.golpe_de_estado
       else
         contents_last_week = Content.published.count(
-            :conditions => ["portal_id = ? AND created_on BETWEEN ? AND ?",
-                            faction.my_portal.id, 7.days.ago, 1.day.ago])
+            :conditions => ["created_on BETWEEN ? AND ?",
+                            7.days.ago, 1.day.ago])
         if contents_last_week == 0
           Rails.logger.warn("Sent coup d'etat warning to '#{faction}'")
           faction.send_warning_coup_detat
@@ -108,7 +80,13 @@ class Faction < ActiveRecord::Base
 
   def self.check_faction_leaders
     # TODO TEMP, esto no debería ser necesario
-    User.db_query("update users set cache_is_faction_leader = 't' where id in (select user_id FROM users_skills WHERE role IN ('Boss', 'Underboss'));")
+    User.db_query(
+        "UPDATE users
+         SET cache_is_faction_leader = 't'
+         WHERE id in (
+           SELECT user_id
+           FROM users_skills
+           WHERE role IN ('Boss', 'Underboss'))")
   end
 
   # Returns number of days that the current boss has been a boss.
@@ -496,74 +474,18 @@ class Faction < ActiveRecord::Base
     stats2
   end
 
+  # Returns a list of [karma, faction_id] tuples
   def self.fastest_karma_growing
-    # devuelve el top de facciones cuyo karma está creciendo más rápidamente
-    stats = []
-    db_query("select COALESCE(sum(karma), 0)::decimal / (select COALESCE(sum(karma),0)+50
-                                                  from stats.portals
-                                                 where portal_id = parent.portal_id
-                                                   and created_on between now() - '2 weeks'::interval and now() - '1 week'::interval) as susum,
-                     (select id
-                        from factions
-                       where code = (select code
-                                       from portals
-                                      where id = parent.portal_id)) as faction_id
-                from stats.portals as parent
-               where portal_id in (select id
-                                     from portals
-                                    where code in (select code
-                                                     from factions
-                                                    where created_on < now() - '2 weeks'::interval))
-                 AND created_on > now() - '1 week'::interval
-            group by portal_id
-              having sum(karma) > 0
-                 and COALESCE(sum(karma), 0) > 100
-            order by susum desc
-               limit 3").each do |dbf|
-      stats<< [dbf['susum'].to_f, Faction.find(dbf['faction_id'].to_i)]
-    end
-    stats
+    raise (
+      "deprecated, needs to be adapted to entity karma stats and we need to
+       store per entity-type karma rank")
   end
 
-  def self.most_visited(opts={})
-    opts = {:sql_interval => '1 month', :limit => 10}.merge(opts)
-    stats = []
-    db_query("select count(*),
-                     portal_id
-                FROM stats.pageviews
-               WHERE created_on >= now() - '#{opts[:sql_interval]}'::interval
-                 AND portal_id IN (SELECT id FROM portals WHERE type = 'FactionsPortal')
-            GROUP BY portal_id
-            ORDER BY count(*) desc
-               LIMIT #{opts[:limit]}").each do |dbr|
-      stats << [Faction.find(dbr['portal_id'].to_i), dbr['count']]
-    end
-    stats
-  end
-
+  # devuelve el top de facciones que más karma han generado en la última semana
   def self.fastest_karma_generators
-    # devuelve el top de facciones que más karma han generado en la última semana
-    stats = []
-    db_query("select sum(karma) as sum,
-                     (select id
-                        from factions
-                       where code = (select code
-                                       from portals
-                                      where id = parent.portal_id)) as faction_id
-                from stats.portals as parent
-               where portal_id in (select id
-                                     from portals
-                                    where code in (select code
-                                                     from factions
-                                                    where created_on < now() - '2 weeks'::interval))
-                 AND created_on > now() - '1 week'::interval
-            group by portal_id
-              having sum(karma) > 100
-            order by sum(karma) desc
-               limit 3").each do |dbf|
-      stats<< [dbf['sum'].to_f, Faction.find(dbf['faction_id'].to_i)]
-    end
-    stats
+    raise (
+      "deprecated, needs to be adapted to entity karma stats and we need to
+       store per entity-type karma rank")
   end
 
   def self.top_cohesion(limit=3)

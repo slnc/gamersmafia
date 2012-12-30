@@ -6,6 +6,5 @@ namespace :gm do
     User.update_remaining_ratings
     Stats::Factions.update_factions_stats # Order is important
     Stats.update_general_stats
-    Faction.generate_minicolumns_factions_activity
   end
 end

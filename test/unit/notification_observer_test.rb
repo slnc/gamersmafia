@@ -48,10 +48,7 @@ class NotificationObserverTest < ActiveSupport::TestCase
         :price_paid => 1,
     })
     assert_difference("u1.notifications.count") do
-      sold_outstanding_clan.use({
-        :portal_id => Portal.first.id,
-        :clan_id => Clan.first.id,
-      })
+      sold_outstanding_clan.use(:clan_id => Clan.first.id)
     end
   end
 
@@ -63,9 +60,7 @@ class NotificationObserverTest < ActiveSupport::TestCase
         :price_paid => 1,
     })
     assert_difference("u1.notifications.count") do
-      sold_outstanding_user.use({
-        :portal_id => Portal.first.id,
-      })
+      sold_outstanding_user.use
     end
   end
 

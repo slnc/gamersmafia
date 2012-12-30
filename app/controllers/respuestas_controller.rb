@@ -3,11 +3,7 @@ class RespuestasController < InformacionController
   acts_as_content_browser :questions
 
   def index
-    @categories = portal.categories(Question)
-    if @categories.size == 1
-      @category = @categories[0]
-      categoria
-    end
+    @category_groups = Categories.top_level_entity_groups
   end
 
   def categoria

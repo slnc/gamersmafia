@@ -1509,16 +1509,8 @@ attachColorPicker(document.getElementById('#{id}-hue-input'));
       @@_cache_ads_slots_time = controller.global_vars['ads_slots_updated_on']
     end
     cache_key = "#{location}-#{game_id}"
-    @@_cache_ads_slots[cache_key] ||= AdsSlot.find(:all, :conditions => ["location = ?
-                                    AND id IN (select id
-                                                 from ads_slots
-                                                where id not in (select ads_slot_id
-                                                                   from ads_slots_portals)
-                                                UNION select id
-                                                                   from ads_slots
-                                                                  where id in (select ads_slot_id
-                                                                                 from ads_slots_portals
-                                                                                where portal_id = #{controller.portal.id}))", location], :order => 'position')
+    @@_cache_ads_slots[cache_key] ||= AdsSlot.find(
+        :all, :conditions => ["location = ? ", location], :order => 'position')
     out = ''
     @@_cache_ads_slots[cache_key].each do |asl|
       asi = asl.get_ad(game_id)

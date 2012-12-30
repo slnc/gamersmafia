@@ -2,4 +2,3 @@ Clan:
 <select name="clan_id">
 	<%@user.clans.each do |c| %><option value="<%=c.id%>"><%=c.name%></option><% end %>
 </select>
-<input type="hidden" name="portal_id" value="-1" />

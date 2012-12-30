@@ -8,7 +8,6 @@ class SharedViewsTest < ActionController::IntegrationTest
   end
 
   def create_news
-    faction_host FactionsPortal.find_by_code('ut')
     get '/site' # para cargar request
     already_logged_in = (not request.session.nil? and not request.session[:user].nil?)
     sym_login('superadmin', 'lalala') unless already_logged_in

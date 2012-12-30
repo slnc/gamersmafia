@@ -10,18 +10,6 @@ class FactionTest < ActiveSupport::TestCase
     assert f1.has_building?
   end
 
-  test "should update related portal" do
-    f1 = Faction.find(1)
-    fp1 = FactionsPortal.find_by_code(f1.code)
-    assert f1.update_attributes(:code => 'lolii')
-    fp1.reload
-    assert_equal 'lolii', fp1.code
-
-    assert f1.update_attributes(:name => 'macguire')
-    fp1.reload
-    assert_equal 'macguire', fp1.name
-  end
-
   test "find_by_bigboss" do
     f1 = Faction.find(1)
     u1 = User.find(1)
@@ -32,15 +20,6 @@ class FactionTest < ActiveSupport::TestCase
     f1.update_underboss(u1)
     assert_equal 1, u1.faction_id
     assert_equal 1, Faction.find_by_bigboss(u1).id
-  end
-
-  test "destroy_faction_should_destroy_related_factions_portals" do
-    f1 = Faction.find(1)
-    faction_portal = f1.portals.find(1)
-    assert_not_nil faction_portal
-    f1.destroy
-    assert Faction.find_by_id(f1.id).nil?
-    assert FactionsPortal.find_by_id(faction_portal.id).nil?
   end
 
   test "faction_editors" do

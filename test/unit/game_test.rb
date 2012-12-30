@@ -69,10 +69,4 @@ class GameTest < ActiveSupport::TestCase
       assert_not_nil root_term.children.find(:first, :conditions => ['taxonomy = ? AND name = ?', c[0], c[1]])
     end
   end
-
-  test "should_create_portal_if_everything_ok" do
-    test_should_create_if_everything_ok
-    @g.create_contents_categories
-    f = Faction.find(:first, :conditions => ['name = ? and code = ?', @g.name, @g.slug])
-  end
 end

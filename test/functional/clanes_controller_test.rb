@@ -9,13 +9,6 @@ class ClanesControllerTest < ActionController::TestCase
     assert_template 'clanes/index'
   end
 
-  test "index_should_work_on_platform" do
-    @request.host = "#{FactionsPortal.find_by_code('wii').code}.#{App.domain}"
-    get :index
-    assert_response :success
-    assert_template 'clanes/index'
-  end
-
   test "clan" do
     get :clan, :id => Clan.find(:first).id
     assert_response :success

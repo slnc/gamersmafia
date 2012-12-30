@@ -1,12 +1,9 @@
 # -*- encoding : utf-8 -*-
 class FaccionController < ApplicationController
   before_filter do |c|
-    c.faction = Faction.find_by_code(c.portal.code)
-    if c.faction.nil?
-      raise ActiveRecord::RecordNotFound
-      Rails.logger.error("Cannot find faction for portal #{c.portal.code}")
-    end
+    c.faction = Faction.find(params[:id])
   end
+
   attr_accessor :faction
 
   def submenu

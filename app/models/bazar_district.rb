@@ -8,7 +8,7 @@ class BazarDistrict < ActiveRecord::Base
   validates_length_of :slug, :within => 2..20
   after_save :check_if_icon_updated
   after_save :rename_everything_if_name_or_slug_changed
-  after_create :create_portal_and_terms
+  after_create :create_terms
   before_create :check_can_be_created
 
   file_column :icon
@@ -35,9 +35,6 @@ class BazarDistrict < ActiveRecord::Base
         self.slug_was.to_s != '')
       val = self.changed["slug"]
       field = :slug
-      BazarDistrictPortal.send(
-          "find_by_#{field}",(val)).update_attributes(
-              :name => self.name, :code => self.slug)
       Cms::BAZAR_DISTRICTS_VALID.each do |cname|
         cls = Object.const_get(cname).category_class
         inst = cls.find(:first,
@@ -208,15 +205,10 @@ class BazarDistrict < ActiveRecord::Base
                       "Ya existe un Term con el mísmo código: #{root_term}.")
       return false
     end
-
-    if BazarDistrictPortal.find_by_code(self.slug)
-      self.errors.add("slug", "Ya existe un portal para este distrito.")
-      return false
-    end
     true
   end
 
-  def create_portal_and_terms
+  def create_terms
     root_term = Term.create({
         :bazar_district_id => self.id,
         :name => self.name,
@@ -231,8 +223,6 @@ class BazarDistrict < ActiveRecord::Base
         raise "Unable to create term for new district: #{error}"
       end
     end
-
-    BazarDistrictPortal.create(:code => self.slug, :name => self.name)
   end
 
   def roles_by_user

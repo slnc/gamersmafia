@@ -34,7 +34,6 @@ namespace :gm do
     Stats.forget_old_pageviews
     Stats.generate_daily_ads_stats
     Stats::Metrics.compute_daily_metrics(1.day.ago)
-    Stats::Portals.update_portals_hits_stats
     Term.delete_empty_content_tags_terms
     TrackerItem.forget_old_tracker_items
     User.new_accounts_cleanup

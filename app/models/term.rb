@@ -551,17 +551,6 @@ class Term < ActiveRecord::Base
     end
   end
 
-
-  def reset_contents_urls
-    # TODO PERF más inteligencia
-    Content.published.in_term_tree(self).find_each do |content|
-      User.db_query(
-          "UPDATE contents SET url = NULL, portal_id = NULL WHERE id = #{content.id}")
-      content.reload
-      Routing.gmurl(uniq)
-    end
-  end
-
   # Busca contenidos asociados a este término o a uno de sus hijos
   def find(*args)
     raise "deprecated, do it another way man..."
@@ -959,8 +948,6 @@ class Term < ActiveRecord::Base
           child.save
         end
       end
-
-      self.delay.reset_contents_urls if self.root_id_changed?
     end
     true
   end

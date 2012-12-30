@@ -60,10 +60,6 @@ module Users
       raise AccessDenied unless user_is_authed && @user.is_bigboss?
     end
 
-    def require_auth_clanleader
-      raise AccessDenied unless user_is_authed && @portal.clan.user_is_clanleader(@user.id)
-    end
-
     def require_user_can_edit(item)
       raise AccessDenied unless user_is_authed && Authorization.can_edit_content?(@user, item)
     end

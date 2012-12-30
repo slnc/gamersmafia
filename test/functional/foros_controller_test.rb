@@ -84,14 +84,6 @@ class ForosControllerTest < ActionController::TestCase
     assert_nil(@response.body.index('>mapaches<'))
   end
 
-  test "should_not_show_clans_categories_in_mover_page_from_factions_portal" do
-    @request.host = 'ut.gamersmafia.com'
-    sym_login 1
-    get :edit, :id => 1
-    assert_response :success
-    assert_nil(@response.body.index('>mapaches<'))
-  end
-
   # TODO
   test "should_show_index" do
     get :index

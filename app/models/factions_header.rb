@@ -2,7 +2,6 @@
 class FactionsHeader < ActiveRecord::Base
     after_save :update_img_file
     after_destroy :delete_files
-    has_many :portal_headers, :dependent => :destroy
 
     def file=(incoming_file)
         @temp_file = incoming_file

@@ -186,15 +186,6 @@ class TermTest < ActiveSupport::TestCase
     assert_equal true, @cats.include?(@ncchild.id)
   end
 
-  test "reset_contents_urls" do
-    topic = Topic.published.first
-    User.db_query("UPDATE contents SET url = 'fuuck yu' WHERE id = #{topic.id}")
-    topic.reload
-    topic.main_category.reset_contents_urls
-    topic.reload
-    assert_equal "http://ut.#{App.domain}/foros/topic/1", topic.url
-  end
-
   test "get_or_resolve_last_updated_item_id" do
     a_term = Term.single_toplevel(:slug => "ut")
     original_last_item = a_term.get_or_resolve_last_updated_item

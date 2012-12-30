@@ -42,7 +42,7 @@
   padding: 0.5rem 0.5rem 0.2rem 0.5rem;
 }
 
-#topbar-portal-submenu li {
+#topbar-sections-submenu li {
   display: inline-block;
   margin-right: 10px;
   text-transform: uppercase;
@@ -107,7 +107,7 @@
   margin-bottom: 4px;
 }
 
-#topbar-portal-submenu {
+#topbar-sections-submenu {
   text-align: left;
   height: 3rem;
   z-index: 102;
@@ -120,7 +120,7 @@
   box-shadow: 5px 5px 3px #000;
 }
 
-#topbar-portal-submenu ul {
+#topbar-sections-submenu ul {
   display: inline-block;
 }
 

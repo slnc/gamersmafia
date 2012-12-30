@@ -26,23 +26,6 @@ module Routing
     end
   end
 
-  # Devuelve el dominio para el término raíz dado
-  def self.get_domain_of_root_term(term)
-    raise "term is not root term" unless term.id == term.root_id
-    theportal = Portal.find_by_code(term.slug)
-    if theportal
-      "#{theportal.code}.#{App.domain}"
-    elsif term.slug == 'gm'
-      App.domain
-    elsif %w(bazar otros).include?(term.slug)
-      App.domain_bazar
-    elsif %w(arena).include?(term.slug)
-      App.domain_arena
-    else
-      App.domain
-    end
-  end
-
   def self.gmurl(object, opts={})
     cls_name = object.class.name
     if cls_name.index('Category')
@@ -57,8 +40,7 @@ module Routing
         when 'anuncios-de-reclutamiento'
         href = 'reclutamiento'
       end
-      dom = get_domain_of_root_term(object.root)
-      "http://#{dom}/#{href}/#{object.id}"
+      "/#{href}/#{object.id}"
     elsif cls_name == 'Comment'
       base_url = self.gmurl(object.content)
       page = object.comment_page
