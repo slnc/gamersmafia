@@ -76,14 +76,11 @@ mfcontents_list(Cms::translate_content_name(it),
 <div class="clearb"></div>
 
 <% mftext('Descargas', :has_submodules => true, :grid => 4) do
-category = controller.portal.categories(Download)[0]
-if category then
 %>
 	<%=mfcontents_basic('Últimas',
-					Proc.new { Download.published.in_term_tree(category.root).find(:all, :order => 'created_on DESC', :limit => 12) },
+					Proc.new { Download.published.in_term_tree(bazar_district).find(:all, :order => 'created_on DESC', :limit => 12) },
 					[],
 					:truncat_at => 28, :faction_favicon => true)%>
-<% end -%>
 <% end -%>
 
 <%=render :partial => '/home/poll' %>

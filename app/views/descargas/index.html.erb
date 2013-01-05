@@ -6,11 +6,13 @@
     <th>Archivos</th>
   </tr>
 
-<% if params[:category] then
-  @categories = @category.children.find(:all, :conditions => ['taxonomy = \'DownloadsCategory\' AND parent_id = ?', params[:category]], :order => 'lower(name) ASC')
-else
-  @categories = controller.portal.downloads_categories[0].children.find(:all, :conditions => 'taxonomy = \'DownloadsCategory\'')
-end %>
+<%
+@categories = @category.children.find(
+    :all,
+    :conditions => ["taxonomy = 'DownloadsCategory' AND parent_id = ?",
+                    params[:category]],
+    :order => 'lower(name) ASC')
+%>
 
 <% for subcategory in @categories %>
 <tr class="downloads-folder <%=oddclass%>">

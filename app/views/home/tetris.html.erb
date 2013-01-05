@@ -20,14 +20,14 @@
 %>
 <%
 shown_news = []
-accum_portals = {}
+accum_terms = {}
 max = 20
 i = 0
 @last_news.each do |news|
 	next unless news.main_category && news.main_category.bazar_district_id.nil?
-	accum_portals[news.main_category.root_id] ||= 0
-	accum_portals[news.main_category.root_id] += 1
-	next if accum_portals[news.main_category.root_id] > 6
+	accum_terms[news.main_category.root_id] ||= 0
+	accum_terms[news.main_category.root_id] += 1
+	next if accum_terms[news.main_category.root_id] > 6
 	break if i > max
     shown_news << news.id
 %>

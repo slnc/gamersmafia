@@ -15,7 +15,7 @@
 					:faction_favicon => true, :grid => 6)%>
 
 	<%mftext('Foros activos', :grid => 4, :glast => true, :blast => true) do %>
-	<%= render :partial => '/home/foros_list', :locals => { :topterm => controller.portal.categories(Topic)[0] } %>
+	<%= render :partial => '/home/foros_list', :locals => { :topterm => Term.with_taxonomy('TopicsCategory').in_term_tree(@gaming_platform) } %>
 	<% end -%>
 
 <% end -%>
@@ -58,9 +58,7 @@ mfcontents_list(Cms::translate_content_name(it),
 <div class="clearl"></div>
 
 
-<%mftext('Descargas', :has_submodules => true, :grid => 8) do
-category = controller.portal.categories(Download)[0]
-%>
+<%mftext('Descargas', :has_submodules => true, :grid => 8) do %>
 	<div class="grid-4">
 	<%=mfcontents_basic('Últimas',
 								      Proc.new { Download.published.in_term_tree(@gaming_platform).find(:all, :order => 'created_on DESC', :limit => 12) },
