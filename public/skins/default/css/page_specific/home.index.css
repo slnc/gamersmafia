@@ -181,11 +181,6 @@
   font-weight: normal;
 }
 
-#homecontents .subheader, #homecommunity .subheader, #homegamer .subheader {
-  text-transform: uppercase;
-  font-weight: normal;
-}
-
 #homecontents .container a, #homecommunity .container a, #homegamer .container a {
   text-decoration: none;
 }

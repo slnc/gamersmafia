@@ -13,7 +13,7 @@
   <div class="container">
 <% cache("/#{controller.portal_code}/home/index/news") do %>
     <div class="homebox" id="hmnt">
-        <div id="home-news" class="subheader f_deca first"><div><span>Noticias</span></div></div>
+        <div id="home-news" class="subheader f-module-title f_deca first"><div><span>Noticias</span></div></div>
         <ul class="content-hid2">
           <% @last_news = News.published.find(
               :all,

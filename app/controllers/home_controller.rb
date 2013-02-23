@@ -38,6 +38,7 @@ class HomeController < ApplicationController
   end
 
   def index
+    @title = "Gamersmafia"
     if user_is_authed && @user.pref_suicidal == 1
       index_suicidal
       return
