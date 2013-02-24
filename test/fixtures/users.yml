@@ -330,3 +330,17 @@ mendel:
   ipaddr: 127.0.0.4
   enable_competition_indicator: false
   enable_profile_signatures: false
+
+unnamed:
+  id: 63
+  state: <%=User::ST_ACTIVE%>
+  login: unnamed
+  password: <%=Digest::MD5.hexdigest('unnamedhacker') %>
+  created_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  updated_at: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  lastseen_on: <%=Time.now.strftime('%Y-%m-%d %H:%M:%S')%>
+  email: unnamed@gamersmafia.com
+  validkey: blablablableblella64
+  ipaddr: 127.0.0.4
+  enable_competition_indicator: false
+  enable_profile_signatures: false

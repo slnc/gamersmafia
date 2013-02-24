@@ -1,4 +1,5 @@
 module Ias
+  # TODO(slnc): hacer que test/fixtures/users.yml lea las ias de aquí
   VALID_IAS = %w(
     jabba
     mendel
