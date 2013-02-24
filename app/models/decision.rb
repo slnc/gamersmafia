@@ -383,6 +383,7 @@ class Decision < ActiveRecord::Base
 
   def callback_on_final_decision
     case self.decision_type_class
+
     when "CreateTag"
       Term.final_decision_made(self)
 
@@ -395,7 +396,7 @@ class Decision < ActiveRecord::Base
     when "PublishColumn"
       Content.final_decision_made(self)
 
-    when "PublishCoverate"
+    when "PublishCoverage"
       Content.final_decision_made(self)
 
     when "PublishDemo"
