@@ -79,6 +79,7 @@ CloneRepo() {
 }
 
 InstallSystemPackages() {
+  sudo apt-get update -qq -y
   sudo apt-get install -qq -y `echo ${PACKAGES_TO_INSTALL} | tr '\n' ' '`
   sudo gem update rubygems-update=1.3.5
   sudo REALLY_GEM_UPDATE_SYSTEM=1 gem update --system
