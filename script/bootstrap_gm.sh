@@ -82,7 +82,10 @@ InstallSystemPackages() {
   sudo apt-get install -qq -y `echo ${PACKAGES_TO_INSTALL} | tr '\n' ' '`
   sudo gem update rubygems-update=1.3.5
   sudo REALLY_GEM_UPDATE_SYSTEM=1 gem update --system
-  sudo gem install passenger --no-rdoc --no-ri
+  if ! gem list --local | grep -q passenger
+  then
+    sudo gem install passenger --no-rdoc --no-ri
+  fi
   sudo gem install bundler --no-rdoc --no-ri
 }
 
@@ -114,7 +117,7 @@ SetupGamersmafiaApp() {
   if ! psql -c "${SQL_USERS_TABLE_EXISTS}" gamersmafia | grep -q users
   then
     psql -f db/create.sql gamersmafia
-    psql -f db/seed.sql gamersmafia
+    rake db:fixtures:load
     ./script/sync_testenv.sh
     cp ${GM_CURRENT}/config/app.yml ${GM_CURRENT}/config/app_production.yml
     rpl ".com" ".dev" ${GM_CURRENT}/config/app_production.yml

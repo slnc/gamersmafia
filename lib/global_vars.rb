@@ -18,7 +18,13 @@ module GlobalVars
   end
 
   def self.get_all_vars
-    User.db_query("SELECT * FROM global_vars")[0]
+    out = User.db_query("SELECT * FROM global_vars")[0]
+    if out.nil?
+      Rails.logger.warn("No global_vars found. Creating empty row.")
+      User.db_query("INSERT INTO global_vars(svn_revision) VALUES('#{AppR.ondisk_git_version}')")
+      out = User.db_query("SELECT * FROM global_vars")[0]
+    end
+    out
   end
 
   def self.update_var(var, new_value)
