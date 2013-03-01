@@ -44,7 +44,7 @@ common: &common
   system_mail_user: nagatodev@gamersmafia.com
   webmaster_email: unnamed@gamersmafia.dev
   webmaster_user_id: 1
-  weekly_internal_report_recipient: gm-hackers@googlegroups.com
+  weekly_internal_report_recipient: alerts@gamersmafia.com
 
 # Basic roles.
 development: &development

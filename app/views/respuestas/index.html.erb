@@ -1,3 +1,4 @@
+<%cache("/#{controller.portal.code}/respuestas/index") do%>
 <%generic_support do %>
 <%=render :partial => '/respuestas/top_sabios', :locals => { :category => @category } %>
 
@@ -52,3 +53,4 @@
 </tr>
 </table>
 <%end %><%# content_main%>
+<% end -%>

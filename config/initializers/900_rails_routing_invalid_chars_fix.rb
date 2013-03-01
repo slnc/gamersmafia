@@ -7,27 +7,27 @@
 # https://github.com/rails/rails/commit/3fc561a1f71edf1c2bae695cafa03909d24a5ca3,
 # but edited to work in 3.0.x.
 # 3.1.x, 3.2.x compatibility unknown
-require 'action_dispatch/routing/route_set'
-
-module ActionDispatch
-  module Routing
-    class RouteSet
-      class Dispatcher
-        def call_with_invalid_char_handling(env)
-          params = env[PARAMETERS_KEY]
-
-          # If any of the path parameters has a invalid encoding then
-          # raise since it's likely to trigger errors further on.
-          params.each do |key, value|
-            if value.is_a?(String) and !value.valid_encoding?
-              return [400, {'X-Cascade' => 'pass'}, []]
-            end
-          end
-          call_without_invalid_char_handling(env)
-        end
-
-        alias_method_chain :call, :invalid_char_handling
-      end
-    end
-  end
-end
+#require 'action_dispatch/routing/route_set'
+#
+#module ActionDispatch
+#  module Routing
+#    class RouteSet
+#      class Dispatcher
+#        def call_with_invalid_char_handling(env)
+#          params = env[PARAMETERS_KEY]
+#
+#          # If any of the path parameters has a invalid encoding then
+#          # raise since it's likely to trigger errors further on.
+#          params.each do |key, value|
+#            if value.is_a?(String) and !value.valid_encoding?
+#              return [400, {'X-Cascade' => 'pass'}, []]
+#            end
+#          end
+#          call_without_invalid_char_handling(env)
+#        end
+#
+#        alias_method_chain :call, :invalid_char_handling
+#      end
+#    end
+#  end
+#end

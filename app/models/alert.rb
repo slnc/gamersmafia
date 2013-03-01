@@ -249,7 +249,7 @@ class Alert < ActiveRecord::Base
   end
 
   def check_reporter_user_id
-    self.reporter_user_id = User.find_by_login('MrAchmed') if self.reporter_user_id.nil?
+    self.reporter_user_id = User.find_by_login('MrAchmed').id if self.reporter_user_id.nil?
   end
 
   def mark_as_resolved(resolver_user_id)

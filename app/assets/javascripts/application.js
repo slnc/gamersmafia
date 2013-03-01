@@ -46,7 +46,9 @@ $(document).ready(function() {
     $('.bbeditor').css('width', '100%');
   }
 
-  $('.elastic').elastic();
+  if (!$.browser.msie) {
+    $('.elastic').elastic();
+  }
 
   $('.autocomplete-me').each(function() {
     var t = $(this);

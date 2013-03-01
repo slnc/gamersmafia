@@ -45,7 +45,7 @@ instances.each do |adsi|
 	<td><strong><a href="/ads/edit/<%=adsi.ad.id%>"><%=adsi.ad.name%></a></strong><br />
 	<%=fc_thumbnail(adsi.ad.file, 'k', '153x60') if adsi.ad.file%></td>
 	<td style="padding: 5px 0;" class="w150 centered"><%=sparkline(:size => '125x50', :data => data, :max => max_ctr) unless cur_mean_ctr.nil? || cur_mean_ctr == 0.0%></td>
-<td class="centered value" style="font-weight: bold;"><%=sprintf("%.3f", cur_mean_ctr) unless cur_mean_ctr.nil?%>%</td>
+<td class="centered value" style="font-weight: bold;"></td>
 <td class="right"><%=ddata.collect { |dbr| dbr['hits'].to_i }.sum2 %></td>
 <td class="right"><%=ddata.collect { |dbr| dbr['pageviews'].to_i }.sum2 %></td>
 </tr>
@@ -53,8 +53,6 @@ instances.each do |adsi|
 </table>
 <div class="infoinline right">Las estadísticas muestran los datos del último mes y se recalculan de madrugada. Última actualización: <strong><%=Stats::Ads.last_update%></strong></div>
 <div class="infoinline">
-Rendimiento bajo a partir de CTR <strong><%=sprintf("%.3f", low_ctr_threshold)%>%</strong>.<br />
-Rendimiento alto a partir de CTR <strong><%=sprintf("%.3f", high_ctr_threshold)%>%</strong>.<br />
 El rendimiento se mide comparándolos con el resto de banners por lo que siempre habrá banners en rojo y en verde.<br />
 </div>
 <div class="infoinline">

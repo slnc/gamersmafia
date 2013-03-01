@@ -91,7 +91,7 @@
 
 <% content_main do %>
 <%mftext(@edituser) do %>
-<% if @user.has_skill?("Capo") then %>
+<% if @user.has_skill?("Capo") or @user.has_skill?("Webmaster") then %>
 <table>
 <tr><td>
 

@@ -16,6 +16,7 @@ gem "mocha", :require => false
 gem "nokogiri"
 gem "passenger"
 gem "pg"
+gem "rack", "1.4.1"
 gem "rails", "3.2.1"
 gem "hiredis", "~> 0.3.1"
 gem "rinku"
