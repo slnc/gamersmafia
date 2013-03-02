@@ -88,7 +88,7 @@ module MiembrosHelper
       formatted = "#{((user.karma_points.to_f / 1000000) * 10).to_i.to_f / 10}M"
     end
 
-    "<div class=\"karma\" title=\"#{user.karma_points} puntos de karma.\">#{formatted}</div>"
+    "<div class=\"karma\" title=\"#{user.karma_points} puntos de karma.\">#{formatted}K</div>"
   end
 
   def draw_comments_bar_sm(user, refobj)

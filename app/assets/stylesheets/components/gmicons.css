@@ -6,8 +6,15 @@
 
 .gm-icon {
   font-family: "GmIcons";
-  /* font-size: 15px; */
 }
+
+.topnavbar-container .gm-icon {
+  line-height: 15px;
+  line-height: 1.5rem;
+  font-size: 15px;
+  font-size: 1.5rem;
+}
+
 
 .gm-icon.full-page {
   font-family: "GmIcons";
