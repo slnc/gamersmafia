@@ -114,7 +114,7 @@ SQL_USERS_TABLE_EXISTS="select * from pg_tables where schemaname='public' and ta
 SetupGamersmafiaApp() {
   old_pwd=`pwd`
   cd ${GM_CURRENT}
-  bundle install
+  sudo bundle install
   if ! psql -c "${SQL_USERS_TABLE_EXISTS}" gamersmafia | grep -q users
   then
     psql -f db/create.sql gamersmafia
