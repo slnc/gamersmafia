@@ -42,9 +42,6 @@ $(document).ready(function() {
       usize: $('.usize'),
     });
   });
-  if ($.browser.msie) {
-    $('.bbeditor').css('width', '100%');
-  }
 
   $('.elastic').elastic();
 

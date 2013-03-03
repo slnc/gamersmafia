@@ -215,10 +215,11 @@ a.button:visited {
   background-color: $full-page-overlay-bg;
 }
 
-.popup {
-  background: $page-level-content-bg;
-  color: $page-level-content-color;
-  border-color: $page-level-content-border-color;
+.popup,
+.dropdown {
+  background: $popup-bg;
+  color: $popup-color;
+  border-color: $popup-border-color;
 }
 
 
