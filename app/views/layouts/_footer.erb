@@ -1,25 +1,4 @@
 <div id="mgfooter" class="module secondary navbar centered">
-<% if user_is_authed then %>
-<% cache('/common/gmversion') do %>
-
-<%n = News.published.find(
-    :first,
-    :conditions => "title LIKE 'Gamersmafia actualizada a la versión%'",
-    :order => 'created_on DESC')
-    url = n ? gmurl(n) : '/noticias' %>
-
-<div id="gmversion" class="f_milli centered">
-  <div class="content<%=n ? n.unique_content_id : 'foooo'%> new unread-item">
-    <a href="<%=url%>"><%=n ? n.title.split(' ').last : 'HEAD' %></a>
-  </div>
-</div>
-
-<% if n %>
-<script type="text/javascript">contents = contents.concat(
-    <%=n.unique_content_id%>);</script>
-<% end -%>
-<% end -%>
-<% end -%>
 
 <div class="mcontent">
   <ul class="second">
@@ -28,6 +7,22 @@
     <li><a href="/site/netiquette">código de conducta</a></li>
     <li><a href="/site/privacidad">privacidad</a></li>
     <li><a href="/site/rss">rss</a></li>
+    <li id="gmversion" class="f_milli centered">
+  <% cache('/common/gmversion') do %>
+  <%n = News.published.find(
+      :first,
+      :conditions => "title LIKE 'Gamersmafia actualizada a la versión%'",
+      :order => 'created_on DESC')
+      url = n ? gmurl(n) : '/noticias' %>
+    <span class="content<%=n ? n.unique_content_id : 'foooo'%> new unread-item">
+      <a href="<%=url%>"><%=n ? n.title.split(' ').last : 'HEAD' %></a>
+    </span>
+    <% if n %>
+    <script type="text/javascript">contents = contents.concat(
+        <%=n.unique_content_id%>);</script>
+    <% end -%>
+  <% end -%>
+    </li>
   </ul>
 </div>
 </div>

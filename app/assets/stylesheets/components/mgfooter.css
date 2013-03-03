@@ -10,18 +10,3 @@
   content: "|";
   padding-right: 1.5rem;
 }
-
-#gmversion {
-  float: right;
-  margin-top: 10px;
-  position: absolute;
-  right: 4px;
-  width: 100px;
-  z-index: 5;
-}
-
-#gmversion div {
-	margin-left: auto;
-	margin-right: auto;
-	width: 47px;
-}
