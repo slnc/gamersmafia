@@ -99,10 +99,6 @@ a:hover { color: ${page_link_hover_color}; }
 	background: ${mgfooter_new_background_color};
 }
 
-#footer-spirit {
-	background-image: ${mgfooter_spirit_image};
-}
-
 #logo img { background-image: ${logo_background_image}; }
 
 /* header */

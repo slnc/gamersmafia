@@ -11,17 +11,6 @@
   padding-right: 1.5rem;
 }
 
-#footer-spirit {
-  width: 64px;
-  height: 100px;
-  margin-right: 3px;
-  float: right;
-  z-index: 5;
-  position: absolute;
-  right: 17px;
-  margin-top: -89px;
-}
-
 #gmversion {
   float: right;
   margin-top: 10px;
