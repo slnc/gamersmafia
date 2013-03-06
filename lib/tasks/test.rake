@@ -79,7 +79,6 @@ namespace :test do
       `git submodule init`
       `git submodule update`
       Rake::Task['db:test:real_prepare'].invoke
-      Rake::Task['gm:update_default_skin_styles'].invoke
       Rake::Task['ci:setup:testunit'].invoke
     end
 

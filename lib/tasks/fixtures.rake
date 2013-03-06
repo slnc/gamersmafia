@@ -78,7 +78,6 @@ fixtures = [
 :comments_valorations_types,
 :comments_valorations,
 :gmtv_channels,
-:textures,
 :ab_tests,
 :questions,
 :friendships,

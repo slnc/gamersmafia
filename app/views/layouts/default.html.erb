@@ -2,9 +2,8 @@
 <html>
 <head>
   <title><%=controller.title%></title>
-  <%=css_includes.html_safe%>
-  <%=stylesheet_link_tag "application"%>
-  <%=stylesheet_link_tag "bricks"%>
+  <%=stylesheet_link_tag("application")%>
+  <%=stylesheet_link_tag(user_skin)%>
   <%=javascript_includes.html_safe%>
   <%=javascript_include_tag "application"%>
   <%= yield(:head) %>

@@ -1,9 +1,0 @@
-<% content_main do %>
-<% mftext('Configurar Textura') do %>
-<form method="post" action="/cuenta/skins/update_skin_texture">
-	<input type="hidden" name="id" value="<%=@sk.id%>" />
-	<input type="hidden" name="skin_texture[texture_id]" value="<%=@sk.texture_id%>" />
-<%= render :partial => '/cuenta/skins/textura_config' %>
-</form>
-<% end %>
-<% end %>

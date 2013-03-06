@@ -1,18 +1,47 @@
-<a href="/<%=@skin.file%>">Descargar zip</a>
-<br />
-<br />
-<div class="infoinline">La descomprimes en tu pc, modificas el style.css, generas un nuevo .zip y...</div>
-<br />
-<br />
-<%mftext('Actualizar skin') do %>
-<form method="post" action="/cuenta/skins/update/<%=@skin.id%>" enctype="multipart/form-data">
-Archivo .zip con la skin: <input type="file" name="skin[file]" /><br />
-<br />
-<%= radio_button("skin", "is_public", true) %> Pública &nbsp; &nbsp; &nbsp;
-<%= radio_button("skin", "is_public", false) %> Privada
-<br />
-<br />
+<% content_main do %>
+<% mftext('Colores de la skin') do %>
+<form method="post" action="/cuenta/skins/update" enctype="multipart/form-data">
+	<input type="hidden" name="id" value="<%=params[:id]%>" />
+
+  <table>
+    <%Skin::SKIN_COLORS.each do |color_name|%>
+      <%if color_name[-2..-1] == 'bgg'%>
+        <%=css_background_edit(color_name) %>
+      <%else%>
+      <tr class="<%=oddclass%>">
+        <th><%=color_name%></th>
+        <td><%=color_selector("skin[skin_variables][#{color_name}]",
+                              @skin.skin_variables[color_name])%></td>
+      </tr>
+      <%end -%>
+    <% end -%>
+  </table>
 
 <input type="submit" class="button" value="Guardar" />
 </form>
+<% end %>
+<% end %>
+
+<% generic_support do %>
+<%mftext('Estado de la skin') do %>
+	<div class="centered-link">
+		<% if @skin.is_public? then %><strong>Pública</strong> <br /><span class="f_milli"><a href="/cuenta/skins/make_private?id=<%=@skin.id%>&redirto=/cuenta/skins/edit/<%=@skin.id%>">Hacer privada</a></span>
+		<% else %><strong>Privada</strong><br /><span class="f_milli"><a href="/cuenta/skins/make_public?id=<%=@skin.id%>&redirto=/cuenta/skins/edit/<%=@skin.id%>">Hacer pública</a></span><% end -%>
+	</div>
 <% end -%>
+<%mftext('Leyenda') do %>
+<div class="centered-link"><a href="/images/leyenda_intelliskin.png">Ver leyenda</a></div>
+<% end -%>
+
+<%mftable('Archivos relacionados', @skin.skins_files) do |sfn| %>
+<td><%=File.basename(sfn.file)%></td>
+<td><a href="/cuenta/skins/delete_skins_file?skin_id=<%=@skin.id%>&skins_file_id=<%=sfn.id%>">del</a></td>
+<% end -%>
+
+<form method="post" action="/cuenta/skins/create_skins_file" enctype="multipart/form-data">
+	<input type="hidden" name="skin_id" value="<%=@skin.id%>" />
+	<input type="file" name="skins_file[file]" />
+	<input type="submit" class="button" value="Crear" />
+</form>
+<% end -%>
+

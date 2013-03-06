@@ -176,7 +176,9 @@ a.button:visited {
 }
 
 .topnavbar .sections-list a,
-.topnavbar .sections-list a:visited {
+.topnavbar .sections-list a:visited,
+.dropdown a,
+.dropdown a:visited {
   color: $topbar-link-color;
 }
 
@@ -187,7 +189,8 @@ a.button:visited {
 
 .topnavbar a:hover,
 .topnavbar .gm-icon-button a:hover.active-state .gm-icon,
-#topbar-portal-submenu a:hover {
+#topbar-portal-submenu a:hover,
+.dropdown a:hover {
   color: $topbar-link-color;
 }
 

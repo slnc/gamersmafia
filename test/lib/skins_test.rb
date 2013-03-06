@@ -38,24 +38,6 @@ class SkinsTest < ActiveSupport::TestCase
     assert !css.include?('${'), css
   end
 
-  test "processing_core_css_without_optional_elements_should_remove_optional_elements_css_definition" do
-
-  end
-
-  test "processing_core_css_with_optional_elements_should_leave_elements" do
-
-  end
-
-  test "skin_color_generator_with_unrecognized_colors_must_include_css" do
-
-  end
-
-  test "texture_with_user_color_should_bring_color_to_skins_configurable_colors" do
-
-  end
-
-  test "skin_with_custom_style_css_should_have_it_included" do
-  end
   test "css_regexp_optional_is_ok" do
     re = Skins::ColorGenerators::AbstractGenerator.get_re_for_key('sample')
     css_sample1 = <<-END

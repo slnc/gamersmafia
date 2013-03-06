@@ -86,7 +86,7 @@ class ActiveSupport::TestCase
   end
 
   def setup_faction_skin
-    @s = FactionsSkin.create({:user_id => 1, :name => 'labeling'})
+    @s = Skin.create({:user_id => 1, :name => 'labeling'})
     assert !@s.new_record?
     assert @s.config[:general][:intelliskin]
     assert_not_nil @s.config[:intelliskin]

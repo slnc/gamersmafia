@@ -2389,34 +2389,15 @@ CREATE SEQUENCE silenced_emails_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE silenced_emails_id_seq OWNED BY silenced_emails.id;
-CREATE TABLE skin_textures (
-    id integer NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    skin_id integer NOT NULL,
-    texture_id integer NOT NULL,
-    textured_element_position integer NOT NULL,
-    texture_skin_position integer NOT NULL,
-    user_config character varying,
-    element character varying NOT NULL
-);
-CREATE SEQUENCE skin_textures_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE skin_textures_id_seq OWNED BY skin_textures.id;
 CREATE TABLE skins (
     id integer NOT NULL,
     name character varying NOT NULL,
     hid character varying NOT NULL,
     user_id integer NOT NULL,
     is_public boolean DEFAULT false NOT NULL,
-    type character varying NOT NULL,
     file character varying,
     version integer DEFAULT 0 NOT NULL,
-    intelliskin_header character varying,
-    intelliskin_favicon character varying
+    skin_variables text
 );
 CREATE TABLE skins_files (
     id integer NOT NULL,
@@ -2549,20 +2530,6 @@ CREATE SEQUENCE terms_id_seq
     NO MAXVALUE
     CACHE 1;
 ALTER SEQUENCE terms_id_seq OWNED BY terms.id;
-CREATE TABLE textures (
-    id integer NOT NULL,
-    name character varying,
-    generator character varying NOT NULL,
-    created_on timestamp without time zone DEFAULT now() NOT NULL,
-    valid_element_selectors character varying
-);
-CREATE SEQUENCE textures_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-ALTER SEQUENCE textures_id_seq OWNED BY textures.id;
 SET default_with_oids = true;
 CREATE TABLE tracker_items (
     id integer NOT NULL,
@@ -3252,7 +3219,6 @@ ALTER TABLE ONLY reviews ALTER COLUMN id SET DEFAULT nextval('reviews_id_seq'::r
 ALTER TABLE ONLY reviews_categories ALTER COLUMN id SET DEFAULT nextval('reviews_categories_id_seq'::regclass);
 ALTER TABLE ONLY sent_emails ALTER COLUMN id SET DEFAULT nextval('sent_emails_id_seq'::regclass);
 ALTER TABLE ONLY silenced_emails ALTER COLUMN id SET DEFAULT nextval('silenced_emails_id_seq'::regclass);
-ALTER TABLE ONLY skin_textures ALTER COLUMN id SET DEFAULT nextval('skin_textures_id_seq'::regclass);
 ALTER TABLE ONLY skins ALTER COLUMN id SET DEFAULT nextval('skins_id_seq'::regclass);
 ALTER TABLE ONLY skins_files ALTER COLUMN id SET DEFAULT nextval('skins_files_id_seq'::regclass);
 ALTER TABLE ONLY sold_products ALTER COLUMN id SET DEFAULT nextval('sold_products_id_seq'::regclass);
@@ -3261,7 +3227,6 @@ ALTER TABLE ONLY staff_candidates ALTER COLUMN id SET DEFAULT nextval('staff_can
 ALTER TABLE ONLY staff_positions ALTER COLUMN id SET DEFAULT nextval('staff_positions_id_seq'::regclass);
 ALTER TABLE ONLY staff_types ALTER COLUMN id SET DEFAULT nextval('staff_types_id_seq'::regclass);
 ALTER TABLE ONLY terms ALTER COLUMN id SET DEFAULT nextval('terms_id_seq'::regclass);
-ALTER TABLE ONLY textures ALTER COLUMN id SET DEFAULT nextval('textures_id_seq'::regclass);
 ALTER TABLE ONLY topics ALTER COLUMN id SET DEFAULT nextval('forum_topics_id_seq'::regclass);
 ALTER TABLE ONLY topics_categories ALTER COLUMN id SET DEFAULT nextval('forum_forums_id_seq'::regclass);
 ALTER TABLE ONLY tracker_items ALTER COLUMN id SET DEFAULT nextval('tracker_items_id_seq'::regclass);
@@ -3639,8 +3604,6 @@ ALTER TABLE ONLY silenced_emails
     ADD CONSTRAINT silenced_emails_email_key UNIQUE (email);
 ALTER TABLE ONLY silenced_emails
     ADD CONSTRAINT silenced_emails_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY skin_textures
-    ADD CONSTRAINT skin_textures_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY skins_files
     ADD CONSTRAINT skins_files_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY skins
@@ -3663,10 +3626,6 @@ ALTER TABLE ONLY staff_types
     ADD CONSTRAINT staff_types_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY terms
     ADD CONSTRAINT terms_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY textures
-    ADD CONSTRAINT textures_name_key UNIQUE (name);
-ALTER TABLE ONLY textures
-    ADD CONSTRAINT textures_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY tracker_items
     ADD CONSTRAINT tracker_items_pkey1 PRIMARY KEY (id);
 ALTER TABLE ONLY treated_visitors

@@ -126,7 +126,6 @@ class Game < ActiveRecord::Base
         f.write(@temp_file.read)
       end
       @temp_file = nil
-      GmSys.command('rake gm:update_default_skin_styles')
     end
   end
 

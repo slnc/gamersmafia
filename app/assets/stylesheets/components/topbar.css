@@ -75,7 +75,8 @@
   box-shadow: 5px 5px 3px #000;
 }
 
-#topbar-user-actions li {
+#topbar-user-actions li,
+.dropdown li {
   margin: 0 0 8px 8px;
 }
 

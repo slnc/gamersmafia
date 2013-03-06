@@ -18,7 +18,7 @@
 
 		<tr class="<%=oddclass%>">
 			<td>Skin</td>
-			<td><%= select("portal", "skin_id", FactionsSkin.only_public.collect {|p| [ p.name, p.id ] }, {:include_blank => 'Ninguna'}) %>
+			<td><%= select("portal", "skin_id", Skin.only_public.collect {|p| [ p.name, p.id ] }, {:include_blank => 'Ninguna'}) %>
 </td>
 		</tr>
 

@@ -71,10 +71,7 @@ class GamingPlatform < ActiveRecord::Base
       File.open(self.img_file, "wb+") do |f|
         f.write(@temp_file.read)
       end
-      Skins.update_default_skin_styles
       @temp_file = nil
-      #self.path = "/storage/games/#{self.slug}.gif"
-      #self.save
     end
   end
 

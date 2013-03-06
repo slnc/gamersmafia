@@ -82,10 +82,10 @@ class Cuenta::SkinsControllerTest < ActionController::TestCase
   end
 
   test "should_create_factions_skin_if_everything_ok" do
-    FactionsSkin.any_instance.stubs(:call_yuicompressor).at_least_once
+    Skin.any_instance.stubs(:call_yuicompressor).at_least_once
     sym_login 1
     assert_count_increases(Skin) do
-      post :create, {:skin => {:name => 'foooskin', :type => 'FactionsSkin', :intelliskin_header => fixture_file_upload('/files/buddha.jpg', 'image/jpeg')}}
+      post :create, {:skin => {:name => 'foooskin' }}
       assert_response :redirect
     end
     @skin = Skin.find(:first, :order => 'id DESC')
@@ -101,17 +101,16 @@ class Cuenta::SkinsControllerTest < ActionController::TestCase
   end
 
   test "should_create_clans_skin_if_everything_ok" do
-    FactionsSkin.any_instance.stubs(:call_yuicompressor).at_least_once
+    Skin.any_instance.stubs(:call_yuicompressor).at_least_once
     sym_login 1
     assert_count_increases(Skin) do
-      post :create, {:skin => {:name => 'foooskin', :type => 'FactionsSkin'}}
+      post :create, {:skin => {:name => 'foooskin'}}
       assert_response :redirect
     end
   end
 
-
   test "should_edit" do
-    FactionsSkin.any_instance.stubs(:call_yuicompressor).at_least_once
+    Skin.any_instance.stubs(:call_yuicompressor).at_least_once
     Skin.find(1).send :setup_initial_zip
     sym_login 1
     get :edit, {:id => 1}

@@ -6,14 +6,6 @@ module Skins
     end
   end
 
-  def self.update_default_skin_styles
-    Skin.find_by_hid('default').delay.gen_compressed
-    FactionsSkin.find(:all).each do |skin|
-      skin.delay.save_config
-      skin.delay.gen_compressed
-    end
-  end
-
   def self.retrieve_portal_favicon(favicon_path)
     begin
       portal_favicon = Magick::Image.read("#{Rails.root}/public/#{favicon_path}").first
@@ -1133,5 +1125,3 @@ module Skins
     end
   end
 end
-
-load 'textures.rb'

@@ -1015,8 +1015,17 @@ skin: 'v2'
     out.strip
   end
 
-  def css_includes
-    "<link href=\"#{ASSET_URL}#{controller.skin.css_include}\" media=\"all\" rel=\"Stylesheet\" type=\"text/css\" />"
+  def user_skin
+    if user_is_authed
+      skin_id = @user.pref_skin.to_i
+    else
+      skin_id = -1
+    end
+    if skin_id < 1
+      Skin::BUILTIN_SKINS[skin_id]
+    else
+      "user_skins/#{skin_id.to_i}"
+    end
   end
 
   def submenu_name

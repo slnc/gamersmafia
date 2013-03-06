@@ -27,16 +27,16 @@ class SkinTest < ActiveSupport::TestCase
   test "create_skin_should_create_default_file_with_factions_skin" do
     FileUtils.rm_rf("#{Skin::SKINS_DIR}/miwanna") if File.exists?("#{Skin::SKINS_DIR}/miwanna")
     FileUtils.rm("#{Skin::SKINS_DIR}/miwanna_initial.zip") if File.exists?("#{Skin::SKINS_DIR}/miwanna_initial.zip")
-    FactionsSkin.any_instance.stubs(:call_yuicompressor).at_least_once
-    @s = FactionsSkin.create({:user_id => 1, :name => 'miwanna'})
+    Skin.any_instance.stubs(:call_yuicompressor).at_least_once
+    @s = Skin.create({:user_id => 1, :name => 'miwanna'})
     assert_equal false, @s.new_record?
     assert_equal true, File.exists?("#{Rails.root}/public/#{@s.file}")
     assert_equal true, File.exists?("#{@s.send(:realpath)}/config.yml")
   end
 
   test "create_skin_should_create_default_file_with_clans_skin" do
-    FactionsSkin.any_instance.stubs(:call_yuicompressor).at_least_once
-    @s = FactionsSkin.create({:user_id => 1, :name => 'miwanna'})
+    Skin.any_instance.stubs(:call_yuicompressor).at_least_once
+    @s = Skin.create({:user_id => 1, :name => 'miwanna'})
     assert_equal false, @s.new_record?
     assert_equal true, File.exists?("#{Rails.root}/public/#{@s.file}")
   end
@@ -106,34 +106,5 @@ class SkinTest < ActiveSupport::TestCase
     File.unlink("#{@s.send(:realpath)}/style_compressed.css")
     assert_equal true, @s.send(:unzip_package)
     assert_equal true, File.exists?("#{@s.send(:realpath)}/style_compressed.css")
-  end
-
-  def assert_css_contents_match(f1, f_compressed)
-    css_files = Skin.extract_css_imports(f1)
-    expected = ''
-    css_files.each do |f| expected<< f.read end
-    assert_equal expected, f_compressed
-  end
-
-  test "extract_css_imports_should_correctly_work" do
-    s = '''@import url(css/layout.css);
-@import url(css/colourscheme.css);
-@import url(/css/typography.css);
-/* @import url(css/commented_out.css); */'''
-    out = Skin.extract_css_imports(s)
-    assert_equal 3, out.length
-    assert_equal 'css/layout.css', out[0]
-    assert_equal 'css/colourscheme.css', out[1]
-    assert_equal "/css/typography.css", out[2]
-  end
-
-  test "rextract_should_work" do
-    out = Skin.rextract_css_imports('test/fixtures/files/skin_recursive/style.css')
-    out.gsub!("\r\n", "\n")
-    assert_equal(".sublayout {} \n\n.layout {}\n\n.typo {}\n.test {}\n/* @import url(css/commented_out.css); */", out)
-  end
-
-  test "provided_colors_should_return_color_gen_colors" do
-
   end
 end

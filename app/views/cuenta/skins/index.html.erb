@@ -2,13 +2,6 @@
 <%mftext('Crear tu skin') do %>
 <form method="post" action="/cuenta/skins/create">
 Nombre: <input type="text" class="text" name="skin[name]" /><br />
-<input type="hidden" name="skin[type]" value="FactionsSkin" />
-<% if nil then %>
-Tipo: <select name="skin[type]">
-<option value="FactionsSkin">Skin de Facción</option>
-<option value="ClansSkin">Skin de Clan</option>
-</select>
-<% end -%>
 <br />
 <input type="submit" class="button" value="Crear" />
 </form>

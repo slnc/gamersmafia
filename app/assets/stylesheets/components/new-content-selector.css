@@ -6,8 +6,6 @@
 /* USERBOX */
 #new-content-selector {
   position: absolute;
-  right: 13px;
-  top: 12px;
   width: 120px;
   border: 1px solid;
   z-index: 30;
