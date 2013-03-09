@@ -260,10 +260,14 @@ module Cms
   end
 
   def self.uncompress_ckeditor_if_necessary
-    if !File.exists?("#{Rails.root}/public/ckeditor")
+    custom_js = "#{Rails.root}/public/ckeditor_custom.js"
+    all_js = "#{Rails.root}/public/ckeditor/ckeditor.js"
+    if (!File.exists?("#{Rails.root}/public/ckeditor") ||
+        File.mtime(custom_js) > File.mtime(all_js))
+      Rails.logger.warn("Updating #{all_js};.")
       system("tar xfz \"#{Rails.root}/public/ckeditor_3.0.1.tar.gz\" -C public")
-      system("cat \"#{Rails.root}/public/ckeditor/lang/es.js\" >> \"#{Rails.root}/public/ckeditor/ckeditor.js\"")
-      system("cat \"#{Rails.root}/public/ckeditor_custom.js\" >> \"#{Rails.root}/public/ckeditor/ckeditor.js\"")
+      system("cat \"#{Rails.root}/public/ckeditor/lang/es.js\" >> \"#{all_js}\"")
+      system("cat \"#{custom_js}\" >> \"#{all_js}\"")
     end
   end
 
