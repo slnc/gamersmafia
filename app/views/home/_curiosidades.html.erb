@@ -1,7 +1,7 @@
 <% cache('/common/home/index/curiosidades2') do %>
 <%
 is_first = true
-mfcontents_list("Curiosidades", Proc.new { Funthing.published.find(:all, :order => 'created_on DESC LIMIT 10') }, :bottom => '<div class="more"><a title="Ver más curiosidades" href="/curiosidades">Más curiosidades &raquo;</a></div>') do |ft|
+mfcontents_list("Curiosidades", Proc.new { Funthing.published.find(:all, :order => 'created_on DESC LIMIT 10') }, :bottom => '<div class="more"><a class="f_milli" title="Ver más curiosidades" href="/curiosidades">Más curiosidades &raquo;</a></div>') do |ft|
 thumb = ft.thumbnail %>
 	<% if is_first && thumb then %>
 	<div class="centered" style="margin-bottom: 2px;"><a href="<%=gmurl(ft)%>"><img src="<%=thumb%>" /></a><br /></div>

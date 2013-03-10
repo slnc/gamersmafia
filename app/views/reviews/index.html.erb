@@ -44,7 +44,7 @@
 <ul class="sidelist">
 <% cache ("/#{controller.portal_code}/reviews/index/most_popular_authors_#{Time.now.to_i/86400}") do %>
   <% controller.portal.review.most_popular_authors(:content_type => 'Review').each do |u| %>
-  <li class="<%=oddclass%>"><%=draw_user_info(u[0])%><div class="more"><a href="<%=gmurl(u[0])%>/contenidos/reviews">Ver sus reviews (<%=u[0].reviews.published.count%>)</a></div></li>
+  <li class="<%=oddclass%>"><%=draw_user_info(u[0])%><div class="more"><a class="f_milli" href="<%=gmurl(u[0])%>/contenidos/reviews">Ver sus reviews (<%=u[0].reviews.published.count%>)</a></div></li>
   <% end -%>
 <% end -%>
 </ul>

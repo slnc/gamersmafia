@@ -14,5 +14,5 @@ User.db_query("select user_id, (select created_on from blogentries where state =
 <% end %>
 </ul>
 <script type="text/javascript">contents = contents.concat(<%=shown_blogentries.join(',')%>);</script>
-    <div class="more"><a title="Ver más blogs" href="/blogs">Ver más blogs &raquo;</a></div>
+    <div class="more"><a class="f_milli" title="Ver más blogs" href="/blogs">Ver más blogs &raquo;</a></div>
 <% end -%>

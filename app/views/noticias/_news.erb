@@ -7,7 +7,7 @@
 </div>
 <div class="summary"><%=@object.description%></div>
 <% if @object.main and not strip_tags(@object.main.strip).to_s.empty? then %>
-<div class="more"><a class="content" href="<%=gmurl(@object)%>">Seguir leyendo..</a></div>
+<div class="more"><a class="f_milli" class="content" href="<%=gmurl(@object)%>">Seguir leyendo..</a></div>
 <% end -%>
 <br />
 <br />

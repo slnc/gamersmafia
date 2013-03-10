@@ -40,7 +40,7 @@ end
 %>
 </ul>
 	<script type="text/javascript">contents = contents.concat(<%=shown_news.join(',')%>);</script>
-    <div class="more"><a title="Ver más noticias" href="/noticias/">Más noticias &raquo;</a></div>
+    <div class="more"><a class="f_milli" title="Ver más noticias" href="/noticias/">Más noticias &raquo;</a></div>
     </div>
 <% end -%>
 
@@ -60,7 +60,7 @@ for download in @last_downloads
 <% end %>
 </ul>
 <script type="text/javascript">contents = contents.concat(<%=shown_downloads.join(',')%>);</script>
-  <div class="more"><a title="Ver más descargas" href="/descargas/">Más descargas &raquo;</a></div>
+  <div class="more"><a class="f_milli" title="Ver más descargas" href="/descargas/">Más descargas &raquo;</a></div>
     </div>
 <% end -%>
   </div>
@@ -90,7 +90,7 @@ for topic in @last_topics
 
         </ul>
 <script type="text/javascript">contents = contents.concat(<%=shown_topics.join(',')%>);</script>
-      <div class="more"><a title="Ir a los foros" href="/foros/">Ir a los foros &raquo;</a></div>
+      <div class="more"><a class="f_milli" title="Ir a los foros" href="/foros/">Ir a los foros &raquo;</a></div>
     </div>
 <% end %><%# cache -%>
 
@@ -162,7 +162,7 @@ for topic in @last_topics
 			</tr>
 		 	<% end -%>
 		</table>
-        <div class="more"><a title="Ver todas las facciones" href="/facciones/">Índice de facciones &raquo;</a></div>
+        <div class="more"><a class="f_milli" title="Ver todas las facciones" href="/facciones/">Índice de facciones &raquo;</a></div>
       </div>
 <% end -%>
 
@@ -199,7 +199,7 @@ shown_bets<< o.unique_content.id %>
       </table>
       <% end -%>
 
-	  <div class="more"><a title="Ver más apuestas" href="http://arena.<%=App.domain%>/apuestas">Más apuestas &raquo;</a></div>
+	  <div class="more"><a class="f_milli" title="Ver más apuestas" href="http://arena.<%=App.domain%>/apuestas">Más apuestas &raquo;</a></div>
     </div>
 
 		<%=render :partial => '/home/eventos' %>
@@ -207,7 +207,7 @@ shown_bets<< o.unique_content.id %>
     <div class="homebox">
         <div id="home-competitions" class="subheader f_deca first"><div><span>Competiciones</span></div></div>
         <%=render :partial => 'competiciones/ultimos_resultados' %>
-		<div class="more"><a title="Ir al arena" href="http://arena.<%=App.domain%>">Más resultados &raquo;</a></div>
+		<div class="more"><a class="f_milli" title="Ir al arena" href="http://arena.<%=App.domain%>">Más resultados &raquo;</a></div>
     </div>
 
 
@@ -232,7 +232,7 @@ for demo in @last_demos
 </ul>
 <script type="text/javascript">contents = contents.concat(<%=shown_demos.join(',')%>);</script>
 <% end -%>
-       <div class="more"><a title="Ver más demos" href="/demos">Más demos &raquo;</a></div>
+       <div class="more"><a class="f_milli" title="Ver más demos" href="/demos">Más demos &raquo;</a></div>
     </div>
 
 <div id="homebazar">
@@ -246,7 +246,7 @@ if @daily_img then %>
     <div class="homebox">
         <div id="home-images" class="subheader f_deca first"><div><span>Imagen del Día</span></div></div>
         <%=render :partial => '/imagenes/image_thumbnail', :locals => {:image => @daily_img, :size => '153x115'}%>
-        <div class="more"><a href="/imagenes/potds">Ver anteriores..</a></div>
+        <div class="more"><a class="f_milli" href="/imagenes/potds">Ver anteriores..</a></div>
     </div>
 <% end -%>
 <% end -%>
