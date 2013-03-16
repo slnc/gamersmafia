@@ -10,7 +10,7 @@ set :scm, :git
 set :scm_username, 'git'
 set :scm_command, '/usr/local/hosting/bin/git'
 set :git_enable_submodules, 1
-set :branch, 'production'
+set :branch, 'master'
 
 SSH_PATH_TO_HOST = "httpd@light.slnc.net:62331"
 
