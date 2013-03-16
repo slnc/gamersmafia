@@ -43,7 +43,9 @@ $(document).ready(function() {
     });
   });
 
-  $('.elastic').elastic();
+  if (!$.browser.msie) {
+    $('.elastic').elastic();
+  }
 
   $('.autocomplete-me').each(function() {
     var t = $(this);

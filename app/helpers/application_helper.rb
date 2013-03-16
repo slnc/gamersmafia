@@ -8,6 +8,7 @@ module ApplicationHelper
   _gaq.push(['_setAccount', 'UA-130555-1']);
   _gaq.push(['_setDomainName', '.gamersmafia.com']);
   _gaq.push(['_trackPageview']);
+  %custom%
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
@@ -170,9 +171,14 @@ module ApplicationHelper
     if user_is_authed
       # TODO(slnc): PERF cache this
       interests = @user.user_interests.show_in_menu.find(:all).collect {|i|
-        {:code => i.menu_shortcut, :url => gmurl(i.real_item)}
+        begin
+          {:code => i.menu_shortcut, :url => gmurl(i.real_item)}
+        rescue ActiveRecord::RecordNotFound
+          # Item destroyed somehow
+          i.destroy
+        end
       }
-      interests.sort_by{|i| i[:code].downcase }
+      interests.compact.sort_by{|i| i[:code].downcase }
     else
       Personalization.get_default_quicklinks
     end
@@ -242,7 +248,12 @@ module ApplicationHelper
   end
 
   def analytics_code
-    ApplicationHelper::ANALYTICS_SNIPPET
+    if user_is_authed
+      ApplicationHelper::ANALYTICS_SNIPPET.sub(
+          "%custom%", "_gaq.push(['_setCustomVar', 1, 'loggedin', 'yes', 2]);")
+    else
+      ApplicationHelper::ANALYTICS_SNIPPET.sub("%custom%", "")
+    end
   end
 
   def pluralize_on_count(word, count)

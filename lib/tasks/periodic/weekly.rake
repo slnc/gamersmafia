@@ -129,8 +129,6 @@ having portal_id in (select id
   end
 
   def send_weekly_page_render_report_and_truncate
-    # TODO
-    # TODO User.db_query("DELETE FROM stats.pageloadtime WHERE created_on <= now() - '1 week'::interval")
     @top_avg_time = User.db_query("SELECT avg(time),
                           stddev(time),
                           count(*),

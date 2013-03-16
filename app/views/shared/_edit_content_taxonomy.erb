@@ -5,7 +5,7 @@
 <% if Cms::ROOT_TERMS_CONTENTS.include?(acts_as_content.class.name) then %>
 <% created_selects = 0 %>
 <% if !acts_as_content.new_record? then %>
-<% acts_as_content.terms.find(:all, :conditions => 'taxonomy IS NULL and terms.id = terms.root_id').each do |tt| %>
+<% acts_as_content.terms.editable_taxonomies.find(:all, :conditions => 'terms.id = terms.root_id').each do |tt| %>
 	<%=render :partial => '/shared/root_term_select', :locals => { :index => created_selects + 1, :content_type => acts_as_content.class.name, :selterm => tt} %>
 	<% created_selects += 1
 end %>
@@ -58,22 +58,22 @@ end -%>
 		$('#categories_terms_root2').hide();
 		hidden = 1;
 	}
-		
+
 	if ($('#categories_terms_root3').val() == '') {
 		$('#categories_terms_root3').hide();
 		hidden = 1;
 	}
 
 Gm.Slnc.hide('categories_terms_root_more');
-	
-	if (hidden == 1) {	
+
+	if (hidden == 1) {
 		Gm.Slnc.show('categories_terms_root_more');
 		}
-		
+
 function show_all_categories_terms_contents() {
 	$('#categories_terms_root2').show();
 	$('#categories_terms_root3').show();
-	
+
 		Gm.Slnc.hide('categories_terms_root_more');
 		return false;
 }

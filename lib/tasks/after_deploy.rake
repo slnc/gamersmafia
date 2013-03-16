@@ -5,7 +5,6 @@ namespace :gm do
     `rake db:migrate`
     `rake assets:precompile`
     `./script/delayed_job restart`
-    Skin.find_by_hid("defaul").gen_compressed
     Cms.uncompress_ckeditor_if_necessary
     CacheObserver.expire_fragment("/common/gmversion")
     `gcc -o /tmp/embed script/embed_ttf/embed.c && /tmp/embed public/fonts/gm_icons.ttf`

@@ -31,7 +31,8 @@ class DecisionUserReputation < ActiveRecord::Base
     elsif reputation.updated_on <= 1.week.ago || force_recompute
       reputation.update_probability_right
     end
-    reputation.probability_right
+    # DO NOT SUBMIT fix this
+    reputation.probability_right < 0 ? 0 : reputation.probability_right
   end
 
   def update_probability_right

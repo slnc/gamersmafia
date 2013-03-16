@@ -6,7 +6,7 @@ class DecisionsController < ApplicationController
 
   def show
     @decision = Decision.find(params[:id])
-    render :layout => !self.request.xhr?
+    render :layout => false # !self.request.xhr?
   end
 
   def decide

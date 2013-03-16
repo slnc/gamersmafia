@@ -186,12 +186,6 @@ class Term < ActiveRecord::Base
     path
   end
 
-  # TODO PERF
-  def set_dummy
-    @siblings ||= []
-    Term.toplevel(:clan_id => nil).each do |t| @siblings<< t end
-  end
-
   def add_sibling(sibling_term)
     raise "sibling_term must be a term but is a #{sibling_term.class.name}" unless sibling_term.class.name == 'Term'
     @siblings ||= []
@@ -986,12 +980,6 @@ class Term < ActiveRecord::Base
     end
   end
 
-
-  # TODO PERF
-  def set_dummy
-    @siblings ||= []
-    Term.toplevel(:clan_id => nil).each do |t| @siblings<< t end
-  end
 
   def add_sibling(sibling_term)
     raise "sibling_term must be a term but is a #{sibling_term.class.name}" unless sibling_term.class.name == 'Term'

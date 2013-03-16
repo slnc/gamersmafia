@@ -4,7 +4,7 @@
 	<optgroup label="Juegos"></optgroup>
   <%Term.with_taxonomy("Game").find(
       :all,
-      :conditions => "game_id is not null AND id IN (SELECT id FROM games WHERE has_faction = 't')",
+      :conditions => "game_id is not null AND game_id IN (SELECT id FROM games WHERE has_faction = 't')",
       :order => 'LOWER(name)').each do |t|%>
 	<option <%='selected="selected"' if selterm && selterm.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
 	<% end -%>
@@ -12,7 +12,7 @@
 	<optgroup label="Plataformas"></optgroup>
   <%Term.with_taxonomy("GamingPlatform").find(
       :all,
-      :conditions => "gaming_platform_id IS NOT NULL AND id IN (SELECT id FROM gaming_platforms WHERE has_faction ='t')",
+      :conditions => "gaming_platform_id IS NOT NULL AND game_id IN (SELECT id FROM gaming_platforms WHERE has_faction ='t')",
       :order => 'lower(name)').each do |t|%>
 	<option <%='selected="selected"' if selterm && selterm.id == t.id%> value="<%=t.id%>"><%=t.name%></option>
 	<% end -%>

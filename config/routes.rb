@@ -12,7 +12,10 @@ Gamersmafia::Application.routes.draw do
 
   get "decision_comments/create"
 
+  # get "decisiones/:id", :controller => :decisions, :action => :show
+
   resources :decisions, :path => "decisiones" do
+    # get 'decisions/:id', :action => :show
     member do
       post 'decide'
     end
@@ -20,6 +23,7 @@ Gamersmafia::Application.routes.draw do
     resources :decision_comments do
     end
   end
+
 
   resources :content2s
 

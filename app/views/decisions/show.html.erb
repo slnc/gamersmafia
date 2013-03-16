@@ -8,7 +8,7 @@
 
 <div class="decision-context"><%=decision_context(@decision)%></div>
 
-<% if user_is_authed %>
+<% if user_is_authed && @user.id != @decision.context[:initiating_user_id] %>
 <div class="centered decision-title-n-choice">¿<%=decision_title(@decision)%>?
 <%current_choice = @decision.decision_user_choices.find_by_user_id(@user.id) %>
 <% if current_choice %>
@@ -24,6 +24,7 @@
 <% end -%>
 
 <% if @decision.state == Decision::PENDING %>
+  <% if user_is_authed && @user.id != @decision.context[:initiating_user_id] %>
 <div class="decision-choices choice-type-<%=@decision.choice_type_name%> <%="hidden" if current_choice%>">
   <form method="post" action="<%=decide_decision_path(@decide)%>"
     data-remote="true" data-decision-id="<%=@decision.id%>"
@@ -39,6 +40,7 @@
 <% end %>
 </form>
 </div>
+  <% end -%>
 <% else %>
   <div class="centered">
     Decisión final: <strong><%=@decision.final_decision_choice.name%></strong>

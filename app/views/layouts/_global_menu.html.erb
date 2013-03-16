@@ -112,6 +112,15 @@ friends = @user.friends_online %>
         </div>
       <% end -%>
 
+      <% if user_is_authed && @user.has_skill?("Advertiser") %>
+      <div class="sections-list2">
+        <header>Anunciante</header>
+          <ul>
+            <li><a href="/home/anunciante">Panel de control</a></li>
+          </ul>
+      </div>
+      <% end -%>
+
       <div class="sections-list2">
         <header class="f_hecto f-module-title">Bazar</header>
           <ul>
