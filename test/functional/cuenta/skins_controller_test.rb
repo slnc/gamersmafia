@@ -82,14 +82,13 @@ class Cuenta::SkinsControllerTest < ActionController::TestCase
   end
 
   test "should_create_factions_skin_if_everything_ok" do
-    Skin.any_instance.stubs(:call_yuicompressor).at_least_once
     sym_login 1
     assert_count_increases(Skin) do
       post :create, {:skin => {:name => 'foooskin' }}
       assert_response :redirect
     end
     @skin = Skin.find(:first, :order => 'id DESC')
-    assert_not_nil @skin.intelliskin_header
+    assert_not_nil @skin
   end
 
   test "update_should_work" do
@@ -101,7 +100,6 @@ class Cuenta::SkinsControllerTest < ActionController::TestCase
   end
 
   test "should_create_clans_skin_if_everything_ok" do
-    Skin.any_instance.stubs(:call_yuicompressor).at_least_once
     sym_login 1
     assert_count_increases(Skin) do
       post :create, {:skin => {:name => 'foooskin'}}
@@ -110,8 +108,6 @@ class Cuenta::SkinsControllerTest < ActionController::TestCase
   end
 
   test "should_edit" do
-    Skin.any_instance.stubs(:call_yuicompressor).at_least_once
-    Skin.find(1).send :setup_initial_zip
     sym_login 1
     get :edit, {:id => 1}
     assert_response :success

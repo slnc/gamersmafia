@@ -8,7 +8,7 @@ class Admin::ContenidosControllerTest < ActionController::TestCase
         :title => 'mi noticiaaaa',
         :description => 'mi summaryyyy',
         :terms => 1,
-        :user_id => User.find_by_login('panzer'),
+        :user_id => User.find_by_login('panzer').id,
     })
   end
 

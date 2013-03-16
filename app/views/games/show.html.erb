@@ -52,7 +52,7 @@
 
 <% cache("/#{controller.portal_code}/home/index/demos2") do %>
 <%mfcontents_list('Demos',
-					Proc.new { Demo.in_term(@game_term).published.find(:all, :content_type => 'Demo', :order => 'demos.created_on desc', :limit => 5) },
+					Proc.new { Demo.in_term(@game_term).published.find(:all, :order => 'demos.created_on desc', :limit => 5) },
 					{:faction_favicon => true, :grid => 4, :glast => true}) do |o| %>
 <%=content_category(o)%><a href="<%=gmurl(o)%>"><%=o.title%></a><br />
 <div style="float: right;"><%=gm_icon("download", "small")%> <%=o.downloaded_times%></div><div class="infoinline"><% if o.event_id then %><a href="<%=gmurl(o.event)%>"><%=truncate(o.event.title, 24, '..')%></a><% else %>&nbsp;<% end -%></div>

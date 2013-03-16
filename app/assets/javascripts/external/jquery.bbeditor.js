@@ -23,7 +23,9 @@
 				ie_btn = e.target;
 			});
 		}
-		if ($.browser.msie || $.browser.opera) lb = '\r\n';
+		if ($.browser.msie || $.browser.opera) {
+      lb = '\r\n';
+    }
 
 		if (options.bold != false) options.bold.click(function() {print_bbc('texto','[b]','[/b]')});
 		if (options.italic != false) options.italic.click(function() {print_bbc('texto','[i]','[/i]')});
@@ -100,7 +102,9 @@
 	}
 
 	function backup_handler(e) {
-		if ($.browser.msie) ie_cache = document.selection.createRange();
+		if ($.browser.msie) {
+      ie_cache = document.selection.createRange();
+    }
 
 		if (e.keyCode != 17 && !(e.ctrlKey && (e.keyCode == 89 || e.keyCode == 90))) {
 			if (textarea.val().length != 0)

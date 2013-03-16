@@ -11,7 +11,12 @@ cache(cache_path) do
 if params[:category] then
   @categories = @category.children.find(:all, :conditions => 'taxonomy = \'TutorialsCategory\'')
 else
-  @categories = controller.portal.tutorials_categories[0].children.find(:all, :conditions => 'taxonomy = \'TutorialsCategory\'')
+  root = controller.portal.tutorials_categories[0]
+  if root
+    @categories = root.children.find(:all, :conditions => 'taxonomy = \'TutorialsCategory\'')
+  else
+    @categories = []
+  end
 end %>
 <ul class="skeletal">
 <% for category in @categories %>

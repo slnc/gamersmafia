@@ -42,6 +42,6 @@ class AchmedObserver < ActiveRecord::Observer
   def moderate_comment(user, alert)
     comment = Comment.find(alert.entity_id)
     comment.moderate(user, alert.data[:moderation_reason])
-    alert.mark_as_resolved(Ias.MrAchmed)
+    alert.mark_as_resolved(Ias.MrAchmed.id)
   end
 end

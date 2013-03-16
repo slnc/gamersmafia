@@ -7,7 +7,6 @@ class Skin < ActiveRecord::Base
   file_column :file
   serialize :skin_variables
 
-  before_save :update_version_if_file_changed
   after_save :update_assets_file
   before_create :check_names
 
@@ -159,90 +158,4 @@ class Skin < ActiveRecord::Base
     UsersPreference.count(
         :conditions => "name = 'skin' AND value = '#{self.id}'")
   end
-
-  def clear_redundant_rules(str)
-    str.gsub(/([a-z-]+:\sinherit;)/, "").gsub(/([a-z-]+:\s;)/, "")
-  end
-
-  def config
-    @__cache_config ||= HashWithIndifferentAccess.new(
-      YAML::load(File.open("#{realpath}/config.yml") { |f| f.read }))
-  end
-
-  def save_config
-    cfg_path = "#{realpath}/config.yml"
-    return false unless File.exists?(cfg_path)
-    self.config # necesario ponerlo aquí
-    self.version += 1
-    self.save
-    File.open(cfg_path, 'w') { |f| f.write(YAML::dump(config)) }
-    build_skin
-    true
-  end
-
-  def clean_style_file(start_marker, end_marker)
-    style_css = File.open("#{realpath}/style.css") { |f| f.read }
-
-    if style_css.index(start_marker) && style_css.index(end_marker)
-      style_css = "#{style_css[0..(style_css.index(start_marker)-1)]}#{style_css[(style_css.index(end_marker)+end_marker.size)..style_css.size]}"
-      style_css.gsub!("\n\n", "\n")
-      File.open("#{realpath}/style.css", 'w') { |f| f.write(style_css) }
-    end
-  end
-
-  def config_intelliskin
-    self.config[:intelliskin] = {} if config[:intelliskin].nil?
-    self.config[:intelliskin]
-  end
-
-  private
-  def update_version_if_file_changed
-    if self.file_changed? && self.file.index("#<Rack::").nil?
-      self.version += 1
-    end
-  end
-
-  def check_file_changed
-    self.update_assets_file
-    # TODO comprobar que la estructura es correcta, no haya symlinks, que el hid
-    # es válido, etc
-  end
-
-  def add_intelliskin_colors
-    self.clean_style_file(CGEN_CSS_START, CGEN_CSS_END)
-    injected_css = [
-        CGEN_CSS_START,
-        self.clear_redundant_rules(
-            Skins::ColorGenerators::Custom.process(config[:css_properties])),
-        CGEN_CSS_END,
-    ]
-    inject_into_css(injected_css.join("\n"))
-  end
-
-  def build_skin
-    add_intelliskin_colors
-  end
-
-  def inject_into_css(str, mode=APPEND)
-    fpath = "#{realpath}/style.css"
-    old = File.exists?(fpath) ? File.open(fpath) { |f| f.read } : ''
-    File.open(fpath, 'w') do |f|
-      if mode == APPEND
-        f.write("#{old}\n#{str}")
-      else
-        f.write("#{str}\n#{old}")
-      end
-    end
-  end
-
-  def uripath
-    %w(default arena bazar).include?(hid) ? "/skins/#{hid}" : "/storage/skins/#{hid}"
-  end
-
-  def realpath
-    "#{Rails.root}/public#{uripath}"
-  end
-
 end
-
-FileUtils.mkdir_p(Skin::SKINS_DIR) unless File.exists?(Skin::SKINS_DIR)

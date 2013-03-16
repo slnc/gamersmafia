@@ -65,8 +65,8 @@ class GmPortal
         end
       end
     elsif /_categories/ =~ method_id.to_s then
-      # Term.toplevel(:clan_id => nil)
-      []
+      Term.toplevel(:clan_id => nil)
+      # []
     else
       super
     end

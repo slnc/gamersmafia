@@ -4,7 +4,6 @@ class RespuestasController < InformacionController
   allowed_portals [:gm, :faction, :bazar, :bazar_district]
 
   def index
-    raise ActiveRecord::RecordNotFound
     @categories = portal.categories(Question)
     if @categories.size == 1
       @category = @categories[0]

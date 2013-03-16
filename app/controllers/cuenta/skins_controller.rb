@@ -65,15 +65,6 @@ class Cuenta::SkinsController < ApplicationController
     redirect_to :action => :index
   end
 
-  def do_colores
-    @skin = @user.skins.find(params[:skin_id].to_i)
-    @skin.config[:intelliskin] ||= {}
-    @skin.config[:intelliskin].merge!(params[:skin][:intelliskin])
-    @skin.save_config
-    flash[:notice] = "Skin #{@skin.name} actualizada correctamente"
-    redirect_to "/cuenta/skins/colores/#{@skin.id}"
-  end
-
   def create_skins_file
     @skin = @user.skins.find(params[:skin_id].to_i)
     sfn = @skin.skins_files.create(params[:skins_file])

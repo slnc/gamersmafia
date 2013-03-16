@@ -370,7 +370,11 @@ class SiteController < ApplicationController
     # TODO más protecciones
     if params[:fsckspmr] && params[:fsckspmr] == self.class.do_contactar_key
       if user_is_authed
-        m = Message.create(:title => params[:subject], :message => params[:message], :user_id_from => @user.id, :user_id_to => User.find(1))
+        m = Message.create(
+          :title => params[:subject],
+          :message => params[:message],
+          :user_id_from => @user.id,
+          :user_id_to => App.webmaster_user_id)
       else
         NotificationEmail.newcontactar(params).deliver
       end

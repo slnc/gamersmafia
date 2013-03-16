@@ -2,29 +2,6 @@
 require 'test_helper'
 
 class HomeControllerTest < ActionController::TestCase
-  test "comunidad" do
-    get :comunidad
-    assert_response :success
-
-    sym_login 1
-    get :comunidad
-    assert_response :success
-  end
-
-  test "facciones_should_render_index_if_no_faction_for_user" do
-    get :facciones
-    assert_response :success
-  end
-
-  test "facciones_should_render_faction_home_if_faction_for_user" do
-    u1 = User.find(1)
-    Factions.user_joins_faction(u1, 1)
-    assert Factions.default_faction_for_user(u1)
-    sym_login u1.id
-    get :facciones
-    assert_response :success
-  end
-
   test "anunciante" do
     assert_raises(AccessDenied) { get :anunciante }
 
@@ -44,7 +21,6 @@ class HomeControllerTest < ActionController::TestCase
     get :index
     assert_response :success
   end
-
 
   test "should_show_district_portal" do
     @request.host = "anime.#{App.domain}"
@@ -71,22 +47,6 @@ class HomeControllerTest < ActionController::TestCase
     assert @controller.portal.kind_of?(GmPortal)
   end
 
-
-  test "should_show_normal_page_if_arena_site" do
-    @request.host = "arena.#{App.domain}"
-    get :index
-    assert_response :success
-    assert_template 'arena'
-    assert @controller.portal.kind_of?(ArenaPortal)
-  end
-
-  test "should_show_normal_page_if_faction_portal" do
-    @request.host = "#{FactionsPortal.find_by_code('ut').code}.#{App.domain}"
-    get :index
-    assert_response :success
-    assert_template 'facciones_fps'
-    assert @controller.portal.kind_of?(FactionsPortal)
-  end
 
   test "should_redir_to_proper_home_if_defset_and_anonymous" do
     @request.cookies['defportalpref'] = 'facciones'

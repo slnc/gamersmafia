@@ -7,7 +7,7 @@
     <table>
         <% cache("/#{controller.portal_code}#{Cache::FRAG_HOME_INDEX_QUESTIONS}") do %>
         <% shown_questions = []
-        qs = controller.portal.question.find(:published, :content_type => 'Question', :conditions => "contents.created_on >= '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'COALESCE(ammount, 0) desc, contents.created_on desc', :limit => 7)
+        qs = Question.in_portal(controller.portal).published.find(:all, :conditions => "created_on >= '#{Time.at(Time.now.to_i - Question::WARNING_AFTER_OPEN_FOR).strftime('%Y-%m-%d %H:%M:%S')}' AND answered_on is null", :order => 'COALESCE(ammount, 0) desc, created_on desc', :limit => 7)
         qs.each do |bet|
         	shown_questions<< bet.unique_content.id %>
         <tr class="<%=oddclass%>">

@@ -93,7 +93,7 @@ class Content < ActiveRecord::Base
       ORDER BY a.created_on DESC
       LIMIT 100
       ")
-  end
+  }
 
   scope :content_type_names, lambda { |names| {
             :conditions => ["content_type_id IN (
