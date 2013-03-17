@@ -37,6 +37,7 @@ namespace(:customs) do
   end
 
   task :updated_app, :roles => :app do
+    tag_release
     run "ln -s #{shared_path}/system/app_production.yml #{release_path}/config/app_production.yml"
     run "cd #{release_path} && echo 'production' > config/mode && rake gm:after_deploy"
   end
@@ -59,6 +60,21 @@ namespace(:customs) do
       end
     end
   end
+end
+
+# Creates a new tag
+def tag_release
+  # Determine tag name to create
+  all_tags = `git tag | grep release`.strip.split("\n")
+  tag_prefix = "release-#{Time.now.strftime("%Y%m%d")}"
+  daily_id = all_tags.count {|item| item.include?(tag_prefix)}
+  padded_id = "%02d" % (daily_id + 1)
+  new_tag = "#{tag_prefix}-#{padded_id}"
+
+  `git tag -a -m #{new_tag} #{new_tag}`
+  `git push tag #{new_tag}`
+
+  # TODO(juanalonso): cleanup old tags
 end
 
 before "deploy:update","customs:check_clean_wc"

@@ -35,13 +35,14 @@ def tag_and_notify
 
   all_tags = `git tag | grep release`.strip.split("\n")
   do_email = true
-  if all_tags.size == 0
-    puts "No previous tags found, no email will be sent."
+  if all_tags.size < 2
+    puts "Not enough tags to do diff. No email will be sent."
     do_email = false
   end
 
-  last_tag = all_tags.sort.last
-  git_interval = "#{last_tag}..HEAD"
+  diff_start_tag, diff_end_tag = all_tags.sort[-2..-1]
+  git_interval = "#{diff_start_tag}..#{diff_end_tag}"
+
   short_log = `git log master --no-merges --pretty=format:"- %s" #{git_interval}`
   commits_count = short_log.split("\n").size
   if commits_count == 0
@@ -49,22 +50,15 @@ def tag_and_notify
     return
   end
 
-  tag_prefix = "release-#{Time.now.strftime("%Y%m%d")}"
-  daily_id = all_tags.count {|item| item.include?(tag_prefix)}
-  padded_id = "%02d" % (daily_id + 1)
-  new_tag = "#{tag_prefix}-#{padded_id}"
-
   detailed_log = `git log --no-merges master --pretty=format:"%s%+h - %an - %cr%w(72, 3, 3)%n%+b" #{git_interval}`
   if do_email
     body = "#{detailed_log}"
     changes = "cambio#{commits_count  > 1 ? "s" : ""}"
     send_email(
         "gm-hackers@googlegroups.com",
-        :subject => "GM actualizada a #{new_tag}: #{commits_count} #{changes}",
+        :subject => "GM actualizada a #{diff_end_tag}: #{commits_count} #{changes}",
         :body => body)
   end
-  open("public/storage/gitlog", "w").write(body)
-  `git tag -a -m #{new_tag} #{new_tag}`
 end
 
 tag_and_notify
