@@ -9,6 +9,7 @@ class DecisionsController < ApplicationController
     render :layout => false # !self.request.xhr?
   end
 
+  # Do NOT use 'decide', as of Rails 3.2.10 it's a reserved keyword.
   def make_decision
     @decision = Decision.find(params[:id])
     decision_choice = DecisionChoice.find(params[:final_decision_choice].to_i)
