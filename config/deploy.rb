@@ -1,44 +1,45 @@
 # -*- encoding : utf-8 -*-
 set :application, "Gamersmafia"
-set :repository,  "ssh://git@github.com/slnc/gamersmafia.git"
-set :user, 'slnc'
+set :repository,  "git://github.com/gamersmafia/gamersmafia.git"
+set :user, 'httpd'
 set :use_sudo, false
+set :keep_releases, 5
 
 set :deploy_to, "/srv/www/gamersmafia"
 set :deploy_via, :remote_cache
 set :scm, :git
 set :scm_username, 'git'
-set :scm_command, '/usr/local/hosting/bin/git'
-set :git_enable_submodules, 1
+# set :scm_command, '/usr/local/hosting/bin/git'
+# set :git_enable_submodules, 1
 set :branch, 'master'
 
-SSH_PATH_TO_HOST = "httpd@light.slnc.net:62331"
+SSH_PATH_TO_HOST = "httpd@gamersmafia.com:62331"
 
 role :app, SSH_PATH_TO_HOST
 role :web, SSH_PATH_TO_HOST
 role :db, SSH_PATH_TO_HOST, :primary => true
 
-default_environment['PATH'] = '/bin:/usr/bin:/usr/local/bin:/usr/local/hosting/bin'
+# default_environment['PATH'] = '/bin:/usr/bin:/usr/local/bin:/usr/local/hosting/bin'
 default_environment['RAILS_ENV'] = 'production'
 
 SHARED_DIRS = [
-['public/storage', 'system/storage'],
-['public/cache', 'system/cache'],
-['tmp/fragment_cache', 'system/fragment_cache']
+  ['public/storage', 'system/storage'],
+  ['public/cache', 'system/cache'],
+  ['tmp/fragment_cache', 'system/fragment_cache']
 ]
 
 namespace(:customs) do
   task :symlink, :roles => :app do
     SHARED_DIRS.each do |dinfo|
       run <<-CMD
-       rm -rf #{release_path}/#{dinfo[0]} &&
+       rm -Ir #{release_path}/#{dinfo[0]} &&
        ln -s #{shared_path}/#{dinfo[1]} #{release_path}/#{dinfo[0]}
      CMD
     end
   end
 
   task :updated_app, :roles => :app do
-    `scp -P62331 /Users/slnc/core/projects/gamersmafia.com/app_production.yml #{SSH_PATH_TO_HOST.split(":")[0]}:#{release_path}/config `
+    `scp /Users/slnc/core/projects/gamersmafia/app_production.yml gm:#{release_path}/config `
     run "cd #{release_path} && echo 'production' > config/mode && rake gm:after_deploy"
   end
 
@@ -66,6 +67,8 @@ before "deploy:update","customs:check_clean_wc"
 after "deploy:update","customs:updated_app"
 after "deploy:setup","customs:setup"
 after "deploy:symlink","customs:symlink"
+after "deploy:restart", "deploy:cleanup"
+
 #after "deploy:migrations","customs:updated_app"
 # Hasta que no esté seguro de que funciona bien el nuevo sistema de
 # comprobación de wc antes de updatear no activo esto:
