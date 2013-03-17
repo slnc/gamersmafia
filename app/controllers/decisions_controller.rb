@@ -9,7 +9,7 @@ class DecisionsController < ApplicationController
     render :layout => false # !self.request.xhr?
   end
 
-  def decide
+  def make_decision
     @decision = Decision.find(params[:id])
     decision_choice = DecisionChoice.find(params[:final_decision_choice].to_i)
 
