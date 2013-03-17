@@ -7,7 +7,9 @@ namespace :gm do
     `./script/delayed_job restart`
     Cms.uncompress_ckeditor_if_necessary
     CacheObserver.expire_fragment("/common/gmversion")
-    `gcc -o /tmp/embed script/embed_ttf/embed.c && /tmp/embed public/fonts/gm_icons.ttf`
+    # For some reason it's generating a new version on light but it should be
+    # the same as in the repo. Temporarily disabling.
+    # `gcc -o /tmp/embed script/embed_ttf/embed.c && /tmp/embed public/fonts/gm_icons.ttf`
     `touch #{Rails.root}/tmp/restart.txt`
     publish_news(AppR.ondisk_git_version_full, AppR.ondisk_git_version)
     `./script/release.rb`
