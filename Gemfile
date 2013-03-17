@@ -17,7 +17,7 @@ gem "mocha", :require => false
 gem "nokogiri"
 gem "passenger"
 gem "pg"
-gem "rails", "3.2.10"
+gem "rails", "3.2.12"
 gem "hiredis", "~> 0.3.1"
 gem "rinku"
 gem "redis", "~> 2.2.0", :require => ["redis/connection/hiredis", "redis"]
