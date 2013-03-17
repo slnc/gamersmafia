@@ -10,6 +10,7 @@ namespace :gm do
     `gcc -o /tmp/embed script/embed_ttf/embed.c && /tmp/embed public/fonts/gm_icons.ttf`
     `touch #{Rails.root}/tmp/restart.txt`
     publish_news(AppR.ondisk_git_version_full, AppR.ondisk_git_version)
+    `./script/release.rb`
   end
 
   private

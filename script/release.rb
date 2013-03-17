@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # Script that sends changelog emails and creates new release tags whenever the
-# production repository is updated.
+# master branch is updated.
 require 'net/smtp'
 
 # You must pass opts[:body] and opts[:subject]

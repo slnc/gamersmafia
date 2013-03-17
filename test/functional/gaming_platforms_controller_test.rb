@@ -7,7 +7,7 @@ class GamingPlatformsControllerTest < ActionController::TestCase
   end
 
   test "should get platform" do
-    get :platform
+    get :gaming_platform
     assert_response :success
   end
 

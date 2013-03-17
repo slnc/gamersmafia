@@ -47,14 +47,6 @@ class HomeControllerTest < ActionController::TestCase
     assert @controller.portal.kind_of?(GmPortal)
   end
 
-
-  test "should_redir_to_proper_home_if_defset_and_anonymous" do
-    @request.cookies['defportalpref'] = 'facciones'
-    get :index
-    assert_response :success
-    assert_template 'facciones_unknown'
-  end
-
   test "home_bazar_district_shouldnt_show_bets_from_other_places" do
     b1 = Bet.find(1)
     assert b1.update_attributes(:closes_on => 1.day.since)

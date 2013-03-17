@@ -50,6 +50,7 @@ class Cuenta::SkinsController < ApplicationController
   def update
     @skin = @user.skins.find(params[:id].to_i)
     skin_variables = {}
+    params["skin"]["skin_variables"] ||= {}
     Skin::SKIN_COLORS.each do |color_name|
       skin_variables[color_name] = params["skin"]["skin_variables"][color_name]
     end

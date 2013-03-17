@@ -14,7 +14,9 @@
 		options = $.extend({},$.fn.bbcodeeditor.defaults, opt);
 		textarea = this;
 
-		if (!$.browser.opera) textarea.keydown(key_handler);
+		if (!$.browser.opera) {
+      textarea.keydown(key_handler);
+    }
 		else textarea.keypress(key_handler); // opera fix
 
 		if ($.browser.msie) {
