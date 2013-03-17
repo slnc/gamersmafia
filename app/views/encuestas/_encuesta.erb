@@ -20,8 +20,8 @@
         i = 0
         stats_reg.each do |option| %>
       <li class="option"><%=option['name']%>
-        <div class="percent" style="margin-bottom: 0;"><%=pcent_bar(option['count'].to_f / max_reg)%></div>
-        <div class="percent" style="margin-top: 1px;"><%=pcent_bar(stats_anon[i]['count'].to_f / max_anon)%></div>
+        <div class="percent" style="margin-bottom: 0;"><%=draw_pcent_bar(option['count'].to_f / max_reg)%></div>
+        <div class="percent" style="margin-top: 1px;"><%=draw_pcent_bar(stats_anon[i]['count'].to_f / max_anon)%></div>
       </li><%
           i += 1
         end
