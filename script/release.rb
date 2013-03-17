@@ -6,8 +6,8 @@ require 'net/smtp'
 # You must pass opts[:body] and opts[:subject]
 def send_email(to,opts={})
   opts[:server]      ||= 'localhost'
-  opts[:from]        ||= 's@slnc.me'
-  opts[:from_alias]  ||= 'nagato'
+  opts[:from]        ||= 'webmaster@gamersmafia.com'
+  opts[:from_alias]  ||= 'webmaster'
 
   raise "Missing subject" unless opts[:subject]
   raise "Missing body" unless opts[:body]
@@ -54,7 +54,7 @@ def tag_and_notify
   padded_id = "%02d" % (daily_id + 1)
   new_tag = "#{tag_prefix}-#{padded_id}"
 
-  detailed_log = `git log --no-merges capistrano --pretty=format:"%s%+h - %an - %cr%w(72, 3, 3)%n%+b" #{git_interval}`
+  detailed_log = `git log --no-merges master --pretty=format:"%s%+h - %an - %cr%w(72, 3, 3)%n%+b" #{git_interval}`
   if do_email
     body = "#{detailed_log}"
     changes = "cambio#{commits_count  > 1 ? "s" : ""}"

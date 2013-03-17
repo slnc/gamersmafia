@@ -32,14 +32,13 @@ namespace(:customs) do
   task :symlink, :roles => :app do
     SHARED_DIRS.each do |dinfo|
       run <<-CMD
-       rm -Ir #{release_path}/#{dinfo[0]} &&
        ln -s #{shared_path}/#{dinfo[1]} #{release_path}/#{dinfo[0]}
      CMD
     end
   end
 
   task :updated_app, :roles => :app do
-    `scp /Users/slnc/core/projects/gamersmafia/app_production.yml gm:#{release_path}/config `
+    `scp -P62331 ~/app_production.yml #{SSH_PATH_TO_HOST.split(":")[0]}:#{release_path}/config/app_production.yml `
     run "cd #{release_path} && echo 'production' > config/mode && rake gm:after_deploy"
   end
 
