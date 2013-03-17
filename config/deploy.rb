@@ -19,7 +19,6 @@ role :app, SSH_PATH_TO_HOST
 role :web, SSH_PATH_TO_HOST
 role :db, SSH_PATH_TO_HOST, :primary => true
 
-# default_environment['PATH'] = '/bin:/usr/bin:/usr/local/bin:/usr/local/hosting/bin'
 default_environment['RAILS_ENV'] = 'production'
 
 SHARED_DIRS = [
@@ -38,7 +37,7 @@ namespace(:customs) do
   end
 
   task :updated_app, :roles => :app do
-    `scp -P62331 ~/app_production.yml #{SSH_PATH_TO_HOST.split(":")[0]}:#{release_path}/config/app_production.yml `
+    run "ln -s #{shared_path}/system/app_production.yml #{release_path}/config/app_production.yml"
     run "cd #{release_path} && echo 'production' > config/mode && rake gm:after_deploy"
   end
 
