@@ -27,6 +27,7 @@ END_OF_MESSAGE
 end
 
 def tag_and_notify
+  `git fetch --tags`
   git_st = `git status`
   if git_st.include?("# Changed but not updated:")
     puts "Working directory is dirty, cannot create release."
@@ -46,7 +47,7 @@ def tag_and_notify
   short_log = `git log master --no-merges --pretty=format:"- %s" #{git_interval}`
   commits_count = short_log.split("\n").size
   if commits_count == 0
-    puts "No new commits since last release #{last_tag}. Nothing to report."
+    puts "No new commits since last release #{git_interval}. Nothing to report."
     return
   end
 

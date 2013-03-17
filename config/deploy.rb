@@ -65,6 +65,7 @@ end
 # Creates a new tag
 def tag_release
   # Determine tag name to create
+  `git fetch --tags`
   all_tags = `git tag | grep release`.strip.split("\n")
   tag_prefix = "release-#{Time.now.strftime("%Y%m%d")}"
   daily_id = all_tags.count {|item| item.include?(tag_prefix)}
@@ -72,7 +73,7 @@ def tag_release
   new_tag = "#{tag_prefix}-#{padded_id}"
 
   `git tag -a -m #{new_tag} #{new_tag}`
-  `git push tag #{new_tag}`
+  `git push --tags`
 
   # TODO(juanalonso): cleanup old tags
 end
