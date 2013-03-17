@@ -33,4 +33,25 @@ class ApplicationHelperTest < ActionView::TestCase
     @user.created_on = 1.day.ago
     assert should_show_bottom_ad?
   end
+
+  test "user_skin_anon" do
+    self.expects(:user_is_authed).returns(false)
+    assert_equal "bricks", user_skin
+  end
+
+  test "user_skin registered with pref" do
+    self.expects(:user_is_authed).returns(true)
+    @user = User.first
+    a_skin = Skin.first
+    @user.pref_skin = a_skin.id
+    assert_equal "user_skins/#{a_skin.id}", user_skin
+  end
+
+  test "user_skin registered without pref" do
+    self.expects(:user_is_authed).returns(true)
+
+    @user = User.first
+    assert_nil @user.pref_skin_id
+    assert_equal "bricks", user_skin
+  end
 end

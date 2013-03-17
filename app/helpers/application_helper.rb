@@ -1026,14 +1026,15 @@ skin: 'kama'
     out.strip
   end
 
+  # Returns string with the name of the skin in the assets dir.
   def user_skin
     if user_is_authed
       skin_id = @user.pref_skin.to_i
     else
-      skin_id = -1
+      skin_id = 0
     end
     if skin_id < 1
-      Skin::BUILTIN_SKINS[skin_id]
+      Skin::BUILTIN_SKINS.fetch(skin_id)
     else
       "user_skins/#{skin_id.to_i}"
     end
