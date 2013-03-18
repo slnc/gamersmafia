@@ -38,7 +38,7 @@ namespace :gm do
 
     interval = "#{start_rev}..#{AppR.ondisk_git_version_full}"
     html_log = Formatting.git_log_to_html(
-        `git log --no-merges production --pretty=full #{interval}`)
+        `git log --no-merges master --pretty=full #{interval}`)
 
     n = News.create(
         :title => title,
