@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ResetSkins < ActiveRecord::Migration
   def up
     subject = "Skin reseteada"
