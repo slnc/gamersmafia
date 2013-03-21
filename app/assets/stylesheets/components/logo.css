@@ -14,7 +14,17 @@
 
 #mgheader .letters {
   display: inline-block;
-  margin-left: 55px;
-  margin-top: -45px;
+  margin-left: 10px;
+  margin-top: 5px;
   position: absolute;
 }
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  #mgheader .letters {
+    display: inline-block;
+    margin-left: 55px;
+    margin-top: -45px;
+    position: absolute;
+  }
+}
+
