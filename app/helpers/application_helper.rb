@@ -916,7 +916,7 @@ type: 'bhs'}))
     opts[:height] ||= '400px'
     opts[:width] ||= '550px'
 
-#move toolbar to ckeditor_custom.js when possible
+# move toolbar to ckeditor_custom.js when possible
     load_javascript_lib('ckeditor')
       <<-END
         <textarea name="#{field_name}">#{opts[:value]}</textarea><br />
