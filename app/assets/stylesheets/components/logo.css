@@ -19,12 +19,11 @@
   position: absolute;
 }
 
+/* Fix para posicionar el logo correctamente en navegadores basados en Webkit */
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   #mgheader .letters {
-    display: inline-block;
     margin-left: 55px;
     margin-top: -45px;
-    position: absolute;
   }
 }
 
