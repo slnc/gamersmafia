@@ -97,7 +97,9 @@ Gm.Utils = function() {
     gototop : function() {
       if (jQuery.browser.msie && jQuery.browser.version == '6.0') {
         document.location = '#';
-      } else {
+      } else if(jQuery.browser.webkit){
+	  $("body, html").animate({scrollTop: "0px"});
+      }else {
         $(window).scrollTo(0, 750, {
           easing : 'swing',
           queue : true,
