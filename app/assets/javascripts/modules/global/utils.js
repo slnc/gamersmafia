@@ -97,7 +97,7 @@ Gm.Utils = function() {
     gototop : function() {
 	if (jQuery.browser.msie && jQuery.browser.version == '6.0') {
             document.location = '#';
-	} else if(jQuery.browser.webkit){
+	} else{
 	    $("body, html").animate({scrollTop: "0px"});
 	});
       }
