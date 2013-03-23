@@ -147,15 +147,6 @@ class ApuestasControllerTest < ActionController::TestCase
     assert !@b.can_be_resolved?
   end
 
-  test "resolve_should_show_if_not_completed" do
-    assert test_should_not_resolve_if_not_closed
-    assert test_should_resolve_if_closed
-    assert test_should_not_resolve_if_cancelled
-    assert test_should_not_resolve_if_forfeit
-    assert test_should_not_resolve_if_tie
-    assert test_should_not_resolve_if_winning_bets_option_id_not_nil
-  end
-
   test "cambiar_resultado_should_work" do
     test_complete_should_work
     post :cambiar_resultado, :id => @b.id
