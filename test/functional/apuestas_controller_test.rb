@@ -98,40 +98,62 @@ class ApuestasControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "resolve_should_show_if_not_completed" do
-    test_resolve_should_work
+  test "should_initialize_not_closed_bet" do
+    test_should_create_with_options
     @b.closes_on = 1.week.since
     @b.cancelled = false
     @b.forfeit = false
     @b.tie = false
     @b.winning_bets_option_id = nil
-    # no
+    assert_not_nil @b.closes_on
+    assert_equal @b.cancelled, false
+    assert_equal @b.forfeit, false
+    assert_equal @b.tie, false
+    assert_equal @b.winning_bets_option_id, nil
+  end
+
+  test "should_not_resolve_if_not_closed" do
+    test_should_initialize_not_closed_bet
     assert !@b.can_be_resolved?
+  end
+
+  test "should_resolve_if_closed" do
+    test_should_initialize_not_closed_bet
     @b.closes_on = 1.day.ago
-    # si
     assert @b.can_be_resolved?
-    @b.closes_on = 1.week.since
+  end
+
+  test "should_not_resolve_if_cancelled" do
+    test_should_initialize_not_closed_bet
     @b.cancelled = true
-    # no
     assert !@b.can_be_resolved?
-    @b.closes_on = 1.day.ago
-    # no
-    assert !@b.can_be_resolved?
-    @b.cancelled = false
+  end
+
+  test "should_not_resolve_if_forfeit" do
+    test_should_initialize_not_closed_bet
     @b.forfeit = true
-    # no
     assert !@b.can_be_resolved?
-    @b.cancelled = false
-    @b.forfeit = false
+  end
+
+  test "should_not_resolve_if_tie" do
+    test_should_initialize_not_closed_bet
     @b.tie = true
-    # no
     assert !@b.can_be_resolved?
-    @b.cancelled = false
-    @b.forfeit = false
-    @b.tie = false
+  end
+
+  test "should_not_resolve_if_winning_bets_option_id_not_nil" do
+    test_should_initialize_not_closed_bet
     @b.winning_bets_option_id = 23
-    # no
     assert !@b.can_be_resolved?
+  end
+
+  test "resolve_should_show_if_not_completed" do
+    assert test_should_not_resolve_if_not_closed
+    assert test_should_resolve_if_closed
+    assert test_should_not_resolve_if_cancelled
+    assert test_should_not_resolve_if_forfeit
+    assert test_should_not_resolve_if_tie
+    assert test_should_not_resolve_if_winning_bets_option_id_not_nil
   end
 
   test "cambiar_resultado_should_work" do
