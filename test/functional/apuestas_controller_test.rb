@@ -98,6 +98,42 @@ class ApuestasControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "resolve_should_show_if_not_completed" do
+    test_resolve_should_work
+    @b.closes_on = 1.week.since
+    @b.cancelled = false
+    @b.forfeit = false
+    @b.tie = false
+    @b.winning_bets_option_id = nil
+    # no
+    assert !@b.can_be_resolved?
+    @b.closes_on = 1.day.ago
+    # si
+    assert @b.can_be_resolved?
+    @b.closes_on = 1.week.since
+    @b.cancelled = true
+    # no
+    assert !@b.can_be_resolved?
+    @b.closes_on = 1.day.ago
+    # no
+    assert !@b.can_be_resolved?
+    @b.cancelled = false
+    @b.forfeit = true
+    # no
+    assert !@b.can_be_resolved?
+    @b.cancelled = false
+    @b.forfeit = false
+    @b.tie = true
+    # no
+    assert !@b.can_be_resolved?
+    @b.cancelled = false
+    @b.forfeit = false
+    @b.tie = false
+    @b.winning_bets_option_id = 23
+    # no
+    assert !@b.can_be_resolved?
+  end
+
   test "cambiar_resultado_should_work" do
     test_complete_should_work
     post :cambiar_resultado, :id => @b.id
