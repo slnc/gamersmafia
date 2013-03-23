@@ -75,6 +75,6 @@ color: red;
     u2 = User.find(2)
     u1.pref_skin = s1.id
     u2.pref_skin = s1.id
-    assert_not_equal s1.used_by_users_count, 0
+    assert_equal s1.used_by_users_count, 2
   end
 end
