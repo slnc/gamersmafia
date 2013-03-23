@@ -141,3 +141,7 @@ superadmin_tag_contents:
   user_id: 5
   role: CreateEntity
 
+unnamed:
+  id: 28
+  user_id: 63
+  role: <%=UsersSkill::VALID_SKILLS%>
