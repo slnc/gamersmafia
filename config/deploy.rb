@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 set :application, "Gamersmafia"
-set :repository,  "git://github.com/gamersmafia/gamersmafia.git"
+REPOSITORY = "git://github.com/gamersmafia/gamersmafia.git"
+set :repository, REPOSITORY
 set :user, 'httpd'
 set :use_sudo, false
 set :keep_releases, 5
@@ -66,15 +67,15 @@ end
 # Creates a new tag
 def tag_release
   # Determine tag name to create
-  `git fetch --tags origin`
+  `git fetch --tags #{REPOSITORY}`
   all_tags = `git tag | grep release`.strip.split("\n")
   tag_prefix = "release-#{Time.now.strftime("%Y%m%d")}"
   daily_id = all_tags.count {|item| item.include?(tag_prefix)}
   padded_id = "%02d" % (daily_id + 1)
   new_tag = "#{tag_prefix}-#{padded_id}"
   puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>> New tag: #{new_tag}"
-  `git tag -a -m #{new_tag} #{new_tag} origin`
-  `git push --tags origin`
+  `git tag -a -m #{new_tag} #{new_tag} `
+  `git push --tags #{REPOSITORY}`
 
   # TODO(juanalonso): cleanup old tags
   #
