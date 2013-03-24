@@ -141,7 +141,14 @@ superadmin_tag_contents:
   user_id: 5
   role: CreateEntity
 
-unnamed:
-  id: 28
+<% i = 28 %>
+<% UsersSkill::VALID_SKILLS.each do |skill| %>
+
+unnamed_<%=skill%>:
+  id: <%=i.to_i%>
   user_id: 63
-  role: <%=UsersSkill::VALID_SKILLS%>
+  role: <%=skill.to_s%>
+
+<% i += 1 %>
+<% end %>
+
