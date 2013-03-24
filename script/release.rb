@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # Script that sends changelog emails and creates new release tags whenever the
 # master branch is updated.
+
+require 'iconv'
 require 'net/smtp'
 
 # You must pass opts[:body] and opts[:subject]
@@ -27,7 +29,7 @@ END_OF_MESSAGE
 end
 
 def tag_and_notify
-  `git fetch --tags`
+  `git fetch --tags origin`
   git_st = `git status`
   if git_st.include?("# Changed but not updated:")
     puts "Working directory is dirty, cannot create release."
@@ -45,18 +47,25 @@ def tag_and_notify
   git_interval = "#{diff_start_tag}..#{diff_end_tag}"
 
   short_log = `git log master --no-merges --pretty=format:"- %s" #{git_interval}`
-  commits_count = short_log.split("\n").size
+  ic = Iconv.new('UTF-8//IGNORE', 'UTF-8')
+  # We need to do this because some commit messages appear to have invalid utf8
+  # characters.
+  # This specific hack comes from:
+  #   http://po-ru.com/diary/fixing-invalid-utf-8-in-ruby-revisited/
+  short_log = ic.iconv(short_log + ' ')[0..-2]
+  commits_count = short_log.count("\n")
   if commits_count == 0
     puts "No new commits since last release #{git_interval}. Nothing to report."
     return
   end
 
   detailed_log = `git log --no-merges master --pretty=format:"%s%+h - %an - %cr%w(72, 3, 3)%n%+b" #{git_interval}`
+  detailed_log = ic.iconv(detailed_log + ' ')[0..-2]
   if do_email
     body = "#{detailed_log}"
     changes = "cambio#{commits_count  > 1 ? "s" : ""}"
     send_email(
-        "gm-hackers@googlegroups.com",
+        "s@slnc.me",  # TODO(slnc): temporary until it works fine again.
         :subject => "GM actualizada a #{diff_end_tag}: #{commits_count} #{changes}",
         :body => body)
   end

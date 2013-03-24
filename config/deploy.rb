@@ -37,8 +37,9 @@ namespace(:customs) do
   end
 
   task :updated_app, :roles => :app do
-    tag_release
+    new_release = tag_release
     run "ln -s #{shared_path}/system/app_production.yml #{release_path}/config/app_production.yml"
+    run " echo '#{new_release}' > #{release_path}/config/REVISION"
     run "cd #{release_path} && echo 'production' > config/mode && rake gm:after_deploy"
   end
 
@@ -76,6 +77,8 @@ def tag_release
   `git push --tags origin`
 
   # TODO(juanalonso): cleanup old tags
+  #
+  new_tag
 end
 
 before "deploy:update","customs:check_clean_wc"
