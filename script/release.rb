@@ -53,11 +53,11 @@ def tag_and_notify
   # This specific hack comes from:
   #   http://po-ru.com/diary/fixing-invalid-utf-8-in-ruby-revisited/
   short_log = ic.iconv(short_log + ' ')[0..-2]
-  commits_count = short_log.count("\n")
-  if commits_count == 0
+  if short_log.strip == ''
     puts "No new commits since last release #{git_interval}. Nothing to report."
     return
   end
+  commits_count = short_log.count("\n")
 
   detailed_log = `git log --no-merges master --pretty=format:"%s%+h - %an - %cr%w(72, 3, 3)%n%+b" #{git_interval}`
   detailed_log = ic.iconv(detailed_log + ' ')[0..-2]
@@ -65,7 +65,7 @@ def tag_and_notify
     body = "#{detailed_log}"
     changes = "cambio#{commits_count  > 1 ? "s" : ""}"
     send_email(
-        "s@slnc.me",  # TODO(slnc): temporary until it works fine again.
+        "gm-hackers@googlegroups.com",
         :subject => "GM actualizada a #{diff_end_tag}: #{commits_count} #{changes}",
         :body => body)
   end

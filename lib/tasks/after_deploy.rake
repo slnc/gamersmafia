@@ -2,8 +2,8 @@
 namespace :gm do
   desc "Tasks to be executed after deploying"
   task :after_deploy => :environment do
-    `rake db:migrate`
-    `rake assets:precompile`
+    `bundle exec rake db:migrate`
+    `bundle exec rake assets:precompile`
     `./script/delayed_job restart`
     Cms.uncompress_ckeditor_if_necessary
     CacheObserver.expire_fragment("/common/gmversion")
@@ -11,8 +11,8 @@ namespace :gm do
     # the same as in the repo. Temporarily disabling.
     # `gcc -o /tmp/embed script/embed_ttf/embed.c && /tmp/embed public/fonts/gm_icons.ttf`
     `touch #{Rails.root}/tmp/restart.txt`
-    publish_news(AppR.ondisk_git_version_full, AppR.ondisk_git_version)
     `./script/release.rb`
+    publish_news(AppR.ondisk_git_version_full, AppR.ondisk_git_version)
   end
 
   private
