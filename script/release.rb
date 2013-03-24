@@ -57,7 +57,7 @@ def tag_and_notify
     puts "No new commits since last release #{git_interval}. Nothing to report."
     return
   end
-  commits_count = short_log.count("\n")
+  commits_count = short_log.count("\n") + 1
 
   detailed_log = `git log --no-merges master --pretty=format:"%s%+h - %an - %cr%w(72, 3, 3)%n%+b" #{git_interval}`
   detailed_log = ic.iconv(detailed_log + ' ')[0..-2]
