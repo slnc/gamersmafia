@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 set :application, "Gamersmafia"
 REPOSITORY = "git://github.com/gamersmafia/gamersmafia.git"
+REPOSITORY_RW = "git@github.com:gamersmafia/gamersmafia.git"
 set :repository, REPOSITORY
 set :user, 'httpd'
 set :use_sudo, false
@@ -73,9 +74,8 @@ def tag_release
   daily_id = all_tags.count {|item| item.include?(tag_prefix)}
   padded_id = "%02d" % (daily_id + 1)
   new_tag = "#{tag_prefix}-#{padded_id}"
-  puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>> New tag: #{new_tag}"
   `git tag -a -m #{new_tag} #{new_tag} `
-  `git push --tags #{REPOSITORY}`
+  `git push --tags #{REPOSITORY_RW}`
 
   # TODO(juanalonso): cleanup old tags
   #
