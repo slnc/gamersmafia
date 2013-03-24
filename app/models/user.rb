@@ -809,7 +809,7 @@ class User < ActiveRecord::Base
   end
 
   def has_skill?(skill)
-    if self.users_skills.find(:first, :conditions => ['role = ?', skill]) != nil
+    if !self.users_skills.find(:first, :conditions => ['role = ?', skill]).nil?
       true
     else
       false

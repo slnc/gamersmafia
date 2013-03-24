@@ -89,7 +89,7 @@ class AuthorizationTest < ActiveSupport::TestCase
     u61.users_skills.clear
     d7 = Decision.find(7)
     assert !Authorization.can_comment_on_decision?(u61, d7)
-    u61.users_skills.create(:user_id => 1, :role => "ContentModerationQueue")
+    u61.users_skills.create(:role => "ContentModerationQueue")
     assert Authorization.can_comment_on_decision?(u61, d7)
   end
 end
