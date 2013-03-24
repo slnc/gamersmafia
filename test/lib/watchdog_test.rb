@@ -25,6 +25,9 @@ class WatchdogTest < ActiveSupport::TestCase
     Watchdog.expects(:check_comments_created).returns("no nuevos comentarios")
     Watchdog.expects(:check_load).returns("carga elevada")
     Watchdog.expects(:check_pageviews).returns("no hay nuevas impresiones")
-    Watchdog.run_hourly_checks
+
+    assert_difference("NotificationEmail.count") do
+      Watchdog.run_hourly_checks
+    end
   end
 end
