@@ -72,7 +72,7 @@ def tag_release
   daily_id = all_tags.count {|item| item.include?(tag_prefix)}
   padded_id = "%02d" % (daily_id + 1)
   new_tag = "#{tag_prefix}-#{padded_id}"
-
+  puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>> New tag: #{new_tag}"
   `git tag -a -m #{new_tag} #{new_tag} origin`
   `git push --tags origin`
 

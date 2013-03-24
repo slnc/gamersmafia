@@ -29,7 +29,7 @@ END_OF_MESSAGE
 end
 
 def tag_and_notify
-  `git fetch --tags origin`
+  `git fetch --tags git://github.com/gamersmafia/gamersmafia.git`
   git_st = `git status`
   if git_st.include?("# Changed but not updated:")
     puts "Working directory is dirty, cannot create release."
