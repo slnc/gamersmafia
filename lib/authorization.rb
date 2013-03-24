@@ -20,7 +20,7 @@ module Authorization
   end
 
   def self.can_admin_competition?(u, competition)
-    competition.user_is_admin(u.id) || u.has_skill?("Capo")
+    competition.user_is_admin(u.id) || u.has_any_skill?(%w(Capo Webmaster))
   end
 
   def self.can_admin_toplevel_terms?(u)
