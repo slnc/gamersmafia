@@ -166,7 +166,7 @@ unnamed_boss:
   id: 32
   user_id: 63
   role: Boss
-  role_data: 0
+  role_data: 1
 
 unnamed_bot:
   id: 33
@@ -187,13 +187,13 @@ unnamed_competitionadmin:
   id: 36
   user_id: 63
   role: CompetitionAdmin
-  role_data: 0
+  role_data: 1
 
 unnamed_competitionsupervisor:
   id: 37
   user_id: 63
   role: CompetitionSupervisor
-  role_data: 0
+  role_data: 1
 
 unnamed_contentmoderationqueue:
   id: 38
@@ -214,7 +214,7 @@ unnamed_don:
   id: 41
   user_id: 63
   role: Don
-  role_data: 0
+  role_data: 1
 
 unnamed_editcontents:
   id: 42
@@ -231,7 +231,7 @@ unnamed_editor:
   user_id: 63
   role: Editor
   role_data:
-    faction_id: 0
+    faction_id: 1
     content_type_id: 1
 
 unnamed_gladiator:
@@ -249,12 +249,6 @@ unnamed_lessads:
   user_id: 63
   role: LessAds
 
-unnamed_manoderecha:
-  id: 50
-  user_id: 63
-  role: ManoDerecha
-  role_data: 0
-
 unnamed_massmoderatecontents:
   id: 51
   user_id: 63
@@ -264,7 +258,7 @@ unnamed_moderator:
   id: 52
   user_id: 63
   role: Moderator
-  role_data: 0
+  role_data: 1
 
 unnamed_profilesignatures:
   id: 53
@@ -301,22 +295,10 @@ unnamed_reportusers:
   user_id: 63
   role: ReportUsers
 
-unnamed_sicario:
-  id: 60
-  user_id: 63
-  role: Sicario
-  role_data: 0
-
 unnamed_tagcontents:
   id: 61
   user_id: 63
   role: TagContents
-
-unnamed_underboss:
-  id: 62
-  user_id: 63
-  role: Underboss
-  role_data: 0
 
 unnamed_webmaster:
   id: 63
