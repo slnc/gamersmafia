@@ -71,7 +71,25 @@ class AuthorizationTest < ActiveSupport::TestCase
 
   test "decision_type_class_available_for_user" do
     assert_equal(
-        ["CreateTag", "CreateGame"].sort,
+        ["CreateTag", "CreateGame", "CreateGamingPlatform"].sort,
         Authorization.decision_type_class_available_for_user(User.find(5)).sort)
+  end
+
+  test "initiating user can comment own decision" do
+    u61 = User.find(61)
+    u61.users_skills.clear
+    d7 = Decision.find(7)
+    assert !Authorization.can_comment_on_decision?(u61, d7)
+    d7.context[:initiating_user_id] = u61.id
+    assert Authorization.can_comment_on_decision?(u61, d7)
+  end
+
+  test "user with skill can comment decision" do
+    u61 = User.find(61)
+    u61.users_skills.clear
+    d7 = Decision.find(7)
+    assert !Authorization.can_comment_on_decision?(u61, d7)
+    u61.users_skills.create(:role => "ContentModerationQueue")
+    assert Authorization.can_comment_on_decision?(u61, d7)
   end
 end

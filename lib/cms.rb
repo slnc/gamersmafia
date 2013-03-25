@@ -265,7 +265,11 @@ module Cms
     if (!File.exists?("#{Rails.root}/public/ckeditor") ||
         File.mtime(custom_js) > File.mtime(all_js))
       Rails.logger.warn("Updating #{all_js}..")
-      system("tar xfz \"#{Rails.root}/public/ckeditor_3.0.1.tar.gz\" -C public")
+
+      # TODO(slnc): For the next .tar.gz version that we generate we need to
+      # call tar cfz from the same directory that contains "ckeditor" and then
+      # change "-C /" for "-C public".
+      system("tar xfz \"#{Rails.root}/public/ckeditor_4.0.2.tar.gz\" -C /")
       system("cat \"#{Rails.root}/public/ckeditor/lang/es.js\" >> \"#{all_js}\"")
       system("cat \"#{custom_js}\" >> \"#{all_js}\"")
     end
@@ -921,7 +925,7 @@ module Cms
       end
     end
 
-    if u.has_skill?("BazarManager")
+    if u.has_skill_cached?("BazarManager")
       Term.find(:all, :conditions => 'id = root_id AND bazar_district_id IS NOT NULL').each do |t|
         terms[:bazar_districts] << t
       end

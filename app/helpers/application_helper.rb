@@ -284,7 +284,7 @@ module ApplicationHelper
   def sawmode
     @sawmode ||= begin
       if user_is_authed then
-        if @user.has_skill?("Webmaster")
+        if @user.has_skill_cached?("Webmaster")
           sawmode = 'full'
         elsif Authorization.is_advertiser?(@user)
           sawmode = 'anunciante'
@@ -916,7 +916,7 @@ type: 'bhs'}))
     opts[:height] ||= '400px'
     opts[:width] ||= '550px'
 
-
+# move toolbar to ckeditor_custom.js when possible
     load_javascript_lib('ckeditor')
       <<-END
         <textarea name="#{field_name}">#{opts[:value]}</textarea><br />
@@ -925,7 +925,20 @@ type: 'bhs'}))
 					CKEDITOR.replace( '#{field_name}', {
 height: '#{opts[:height]}',
 width: '#{opts[:width]}',
-skin: 'kama'
+skin: 'kama',
+toolbar: [
+    ['Source','-','Maximize'],
+    ['Cut','Copy','Paste','PasteText','PasteFromWord'],
+    ['Undo','Redo','-','Find','Replace','-','SelectAll','RemoveFormat'],
+    '/',
+    ['Bold','Italic','Strike'],
+    ['NumberedList','BulletedList','-','Blockquote'],
+    ['JustifyLeft','JustifyCenter','JustifyRight'],
+    ['Link','Unlink','Anchor'],
+    ['Image','Table','HorizontalRule','SpecialChar'],
+    ['pbckcode','tableresize','Styles','Format']
+]
+
 }
  );
 				//]]>

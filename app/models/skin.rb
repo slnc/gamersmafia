@@ -119,6 +119,12 @@ class Skin < ActiveRecord::Base
     end
   end
 
+  def self.rebuild_all
+    Skin.find_each do |skin|
+      skin.save
+    end
+  end
+
   def complete_skin_variables
     self.update_attribute('skin_variables', {}) if self.skin_variables.nil?
 
@@ -158,6 +164,6 @@ class Skin < ActiveRecord::Base
 
   def used_by_users_count
     UsersPreference.count(
-        :conditions => "name = 'skin' AND value = '#{self.id}'")
+        :conditions => "name = 'skin' AND value = '#{YAML::dump(self.id)}'")
   end
 end

@@ -95,14 +95,14 @@ Gm.Utils = function() {
     },
 
     gototop : function() {
-	if (jQuery.browser.msie && jQuery.browser.version == '6.0') {
-            document.location = '#';
-	} else{
-	    $("body, html").animate({scrollTop: "0px"});
-	});
-      }
+      if (jQuery.browser.msie && jQuery.browser.version == '6.0') {
+        document.location = '#';
+      } else {
+        $("body, html").animate({scrollTop: "0px"});
+      };
       return false;
     },
+
     /**
      * Resalta el comentario actual.
      * @param {string} id: id del comentario a resaltar.
