@@ -253,8 +253,8 @@ class CommentTest < ActiveSupport::TestCase
 
   test "extract_ne_references" do
     comment = Comment.new({
-      :comment => "hello NAGATO. I love you! I love you too @MRACHMED!!!
-      I don't love @mrman",
+      :comment => "@MRACHMED hello NAGATO. I love you! I love you too @MRACHMED!!!
+      I don't love @mrman. Your email is mrman@mrman.com",
     })
     assert_equal [{
       "mrachmed" => [["User", 58]],
