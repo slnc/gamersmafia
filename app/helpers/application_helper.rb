@@ -914,7 +914,7 @@ type: 'bhs'}))
   def wysiwyg(field_name, opts={})
     opts[:value] ||= ''
     opts[:height] ||= '400px'
-    opts[:width] ||= '550px'
+    opts[:width] ||= '98%'
 
 # move toolbar to ckeditor_custom.js when possible
     load_javascript_lib('ckeditor')
