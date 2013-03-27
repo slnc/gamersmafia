@@ -19,7 +19,7 @@
 <% end -%>
 
 <% generic_support do %>
-  <% if Authorization.can_create_entities?(@user) %>
+  <% if user_is_authed && Authorization.can_create_entities?(@user) %>
     <%= link_to 'Nuevo juego', :action => 'new' %>
     <br />
     <a href="/juegos/nueva_plataforma">Nueva plataforma</a>
