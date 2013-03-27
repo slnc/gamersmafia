@@ -72,7 +72,7 @@ mfcontents_table("<a style=\"color: #969696;\" href=\"http://#{cat.code}.#{App.d
 				   :grid => 4) do |o| %>
 <td class="<%=oddclass%>"><a href="<%=gmurl(o)%>"><%=content_category(o)%><%=o.title%></a><br />
 <div class="infoinline" style="float: left;"><%=format_interval(o.closes_on.to_i - Time.now.to_i, 'horas', true)%></div>
-<div class="infoinline" style="float: right;"><%=o.total_ammount.to_i%> <%=gmd11%></div>
+<div class="infoinline" style="float: right;"><%=o.total_ammount.to_i%> <%=gm_icon("gmf", "small")%></div>
 </td>
 <% end
 end -%>
