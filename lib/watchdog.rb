@@ -11,6 +11,8 @@ module Watchdog
     if alerts.size > 0
       NotificationEmail.watchdog_alerts(
           "alerts@gamersmafia.com", :alerts => alerts).deliver
+      NotificationEmail.watchdog_alerts(
+          User.find(App.webmaster_user_id).email, :alerts => alerts).deliver
     end
   end
 
@@ -47,16 +49,15 @@ module Watchdog
   end
 
   def self.retrieve_top_output
-    a = `top -n1`
-    idx_load_avg = /load average: [0-9.]/ =~ a
-    if idx_load_avg.nil?
+    a = `top -n2`
+    matches = /load average: ([0-9.]+), ([0-9.]+), ([0-9.]+)/.match(a)
+    if matches.nil?
       raise "Unable to retrieve load average information from top."
     end
 
     # We retrieve the sequence of load times from the first line of top. Eg:
     # "load average: 0.02, 0.07, 0.0"
-    load_values = (a[idx_load_avg + 13..82]).gsub(",", "").split(" ")
-    load_values.collect{|x| x.to_f}
+    [matches[1].to_f, matches[2].to_f, matches[3].to_f]
   end
 
 end

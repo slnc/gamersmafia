@@ -5,7 +5,7 @@ module ApplicationHelper
   ANALYTICS_SNIPPET = <<-END
 <script type="text/javascript">
   var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-130555-1']);
+  _gaq.push(['_setAccount', 'UA-38976302-1']);
   _gaq.push(['_setDomainName', '.gamersmafia.com']);
   _gaq.push(['_trackPageview']);
   %custom%
@@ -914,7 +914,7 @@ type: 'bhs'}))
   def wysiwyg(field_name, opts={})
     opts[:value] ||= ''
     opts[:height] ||= '400px'
-    opts[:width] ||= '550px'
+    opts[:width] ||= '98%'
 
 # move toolbar to ckeditor_custom.js when possible
     load_javascript_lib('ckeditor')
