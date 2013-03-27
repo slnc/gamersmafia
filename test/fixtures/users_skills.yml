@@ -230,9 +230,7 @@ unnamed_editor:
   id: 44
   user_id: 63
   role: Editor
-  role_data:
-    faction_id: 1
-    content_type_id: 1
+  role_data: "--- \n:faction_id: \"1\"\n:content_type_id: \"1\"\n"
 
 unnamed_gladiator:
   id: 45
