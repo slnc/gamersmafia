@@ -6,7 +6,6 @@ class RespuestasController < InformacionController
   def index
     # TODO(slnc): temporalmente deshabilita índice por horribles problemas de
     # carga. https://github.com/gamersmafia/gamersmafia/issues/473
-    #raise ActiveRecord::RecordNotFound
     @categories = portal.categories(Question)
     if @categories.size == 1
       @category = @categories[0]
@@ -16,7 +15,7 @@ class RespuestasController < InformacionController
   end
 
   def categoria
-    @category = Term.find(params[:id].to_i) # Term.single_toplevel(:id => params[:id])
+    @category = Term.find(params[:id].to_i)
     raise ActiveRecord::RecordNotFound unless @category
     params[:category] = @category
 
