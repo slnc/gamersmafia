@@ -6,6 +6,8 @@ module CanHaveFaction
 
   module AddHasMethod
     def can_have_faction
+      scope :without_faction, :conditions => "has_faction = 'f'"
+
       class_eval <<-END
         include CanHaveFaction::InstanceMethods
       END

@@ -20,8 +20,6 @@ class Game < ActiveRecord::Base
   validates_presence_of :gaming_platform_id
   validates_presence_of :user_id
 
-  scope :without_faction, :conditions => "has_faction = 'f'"
-
   ENTITY_USER = 0
   ENTITY_CLAN = 1
 
