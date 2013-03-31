@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
-class Admin::JuegosController < AdministrationController
+class Admin::JuegosController < ApplicationController
+
+  require_skill("Capo")
 
   def index
     @games = Game.paginate(
