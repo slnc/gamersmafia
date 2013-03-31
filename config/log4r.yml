@@ -2,18 +2,18 @@ log4r_config:
   # define all loggers ...
   loggers:
     - name      : production
-      level     : WARN
+      level     : INFO
       trace     : 'false'
       outputters :
       - datefile
     - name      : development
-      level     : WARN
+      level     : INFO
       trace     : 'true'
       outputters :
       - datefile
       - stdout
     - name      : test
-      level     : WARN
+      level     : INFO
       trace     : 'true'
       outputters :
       - datefile
